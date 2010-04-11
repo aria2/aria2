@@ -40,7 +40,7 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -51,7 +51,7 @@ class BtLeecherStateChoke {
 private:
   int _round;
 
-  Time _lastRound;
+  Timer _lastRound;
 
   Logger* _logger;
 
@@ -95,7 +95,7 @@ public:
 
   void executeChoke(const std::vector<SharedHandle<Peer> >& peerSet);
 
-  const Time& getLastRound() const;
+  const Timer& getLastRound() const;
 };
 
 } // namespace aria2

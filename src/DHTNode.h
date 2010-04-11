@@ -38,7 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "DHTConstants.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include <string>
 
 namespace aria2 {
@@ -56,7 +56,7 @@ private:
 
   unsigned int _condition;
 
-  Time _lastContact;
+  Timer _lastContact;
 public:
   DHTNode();
   

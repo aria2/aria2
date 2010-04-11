@@ -46,6 +46,7 @@
 #include "a2netcompat.h"
 #include "StringFormat.h"
 #include "util.h"
+#include "TimeA2.h"
 
 namespace aria2 {
 

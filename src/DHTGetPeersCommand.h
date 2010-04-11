@@ -37,7 +37,7 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -72,7 +72,7 @@ private:
 
   size_t _numRetry;
 
-  Time _lastGetPeerTime;
+  Timer _lastGetPeerTime;
 public:
   DHTGetPeersCommand(cuid_t cuid, RequestGroup* requestGroup,
                      DownloadEngine* e);

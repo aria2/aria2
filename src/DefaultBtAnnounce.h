@@ -36,7 +36,7 @@
 #define _D_DEFAULT_BT_ANNOUNCE_H_
 
 #include "BtAnnounce.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "AnnounceList.h"
 
 namespace aria2 {
@@ -53,7 +53,7 @@ class DefaultBtAnnounce : public BtAnnounce {
 private:
   SharedHandle<DownloadContext> _downloadContext;
   unsigned int trackers;
-  Time prevAnnounceTime;
+  Timer prevAnnounceTimer;
   time_t interval;
   time_t minInterval;
   time_t _userDefinedInterval;

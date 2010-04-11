@@ -37,7 +37,7 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -50,7 +50,7 @@ private:
   DownloadEngine* _e;
   SharedHandle<SocketCore> _socket;
   SharedHandle<HttpServer> _httpServer;
-  Time _timeout;
+  Timer _timeoutTimer;
 public:
   HttpServerResponseCommand(cuid_t cuid,
                             const SharedHandle<HttpServer>& httpServer,

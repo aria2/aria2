@@ -61,4 +61,14 @@
 # define suseconds_t uint64_t
 #endif
 
+#ifndef CLOCK_MONOTONIC
+# define CLOCK_MONOTONIC 0
+#endif // !CLOCK_MONOTONIC
+#ifndef HAVE_STRUCT_TIMESPEC
+# define timespec int
+#endif // !HAVE_STRUCT_TIMESPEC
+#ifndef HAVE_CLOCK_GETTIME
+# define clock_gettime(ID, TP) (-1)
+#endif // !HAVE_CLOCK_GETTIME
+
 #endif // _D_A2TIME_H_

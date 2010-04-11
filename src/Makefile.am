@@ -51,6 +51,7 @@ SRCS =  Socket.h\
 	Base64.cc Base64.h\
 	base32.cc base32.h\
 	LogFactory.cc LogFactory.h\
+	TimerA2.cc TimerA2.h\
 	TimeA2.cc TimeA2.h\
 	SharedHandle.h\
 	HandleRegistry.h\

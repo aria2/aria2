@@ -537,14 +537,14 @@ size_t DefaultPieceStorage::getPieceLength(size_t index)
 
 void DefaultPieceStorage::advertisePiece(cuid_t cuid, size_t index)
 {
-  HaveEntry entry(cuid, index);
+  HaveEntry entry(cuid, index, global::wallclock);
   haves.push_front(entry);
 }
 
 void
 DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                                cuid_t myCuid,
-                                               const Time& lastCheckTime)
+                                               const Timer& lastCheckTime)
 {
   for(std::deque<HaveEntry>::const_iterator itr = haves.begin(),
         eoi = haves.end(); itr != eoi; ++itr) {
@@ -552,7 +552,7 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
     if(have.getCuid() == myCuid) {
       continue;
     }
-    if(lastCheckTime.isNewer(have.getRegisteredTime())) {
+    if(lastCheckTime > have.getRegisteredTime()) {
       break;
     }
     indexes.push_back(have.getIndex());

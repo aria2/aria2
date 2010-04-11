@@ -37,7 +37,7 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -59,7 +59,7 @@ private:
 
   time_t interval; // UNIT: sec
   DownloadEngine* e;
-  Time checkPoint;
+  Timer checkPoint;
   unsigned int _numNewConnection; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(cuid_t cuid,

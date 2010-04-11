@@ -208,6 +208,8 @@ AM_CONDITIONAL([HAVE_LIBZ], [test "x$have_libz" = "xyes"])
 # Set conditional for sqlite3
 AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 
+AC_SEARCH_LIBS([clock_gettime], [rt])
+
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
@@ -268,7 +270,7 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
 AC_TYPE_PID_T
 AC_C_VOLATILE
-AC_CHECK_TYPES([ptrdiff_t])
+AC_CHECK_TYPES([ptrdiff_t, struct timespec])
 AC_C_BIGENDIAN
 AC_SYS_LARGEFILE
 
@@ -291,6 +293,7 @@ AC_CHECK_FUNCS([__argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
+		clock_gettime \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \

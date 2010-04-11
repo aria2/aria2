@@ -81,6 +81,9 @@
    the CoreFoundation framework. */
 #undef HAVE_CFPREFERENCESCOPYAPPVALUE
 
+/* Define to 1 if you have the `clock_gettime' function. */
+#undef HAVE_CLOCK_GETTIME
+
 /* Define to 1 if you have the `daemon' function. */
 #undef HAVE_DAEMON
 
@@ -417,6 +420,9 @@
 
 /* Define to 1 if you have the `strtoull' function. */
 #undef HAVE_STRTOULL
+
+/* Define to 1 if the system has the type `struct timespec'. */
+#undef HAVE_STRUCT_TIMESPEC
 
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
 #undef HAVE_SYS_IOCTL_H

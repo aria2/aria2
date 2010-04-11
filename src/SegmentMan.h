@@ -42,7 +42,7 @@
 #include <map>
 
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "Command.h"
 #include "BitfieldMan.h"
 
@@ -98,7 +98,7 @@ private:
   // key: PeerStat's cuid, value: its download speed
   std::map<cuid_t, unsigned int> _peerStatDlspdMap;
 
-  Time _lastPeerStatDlspdMapUpdated;
+  Timer _lastPeerStatDlspdMapUpdated;
 
   unsigned int _cachedDlspd;
 

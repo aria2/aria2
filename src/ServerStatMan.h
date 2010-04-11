@@ -35,10 +35,13 @@
 #ifndef _D_SERVER_STAT_MAN_H_
 #define _D_SERVER_STAT_MAN_H_
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
 #include <iosfwd>
+
+#include "SharedHandle.h"
+#include "a2time.h"
 
 namespace aria2 {
 

@@ -43,7 +43,6 @@
 #include "ServerStat.h"
 #include "util.h"
 #include "RecoverableException.h"
-#include "wallclock.h"
 
 namespace aria2 {
 
@@ -144,12 +143,13 @@ bool ServerStatMan::load(std::istream& in)
 class FindStaleServerStat {
 private:
   time_t _timeout;
+  Time _time;
 public:
   FindStaleServerStat(time_t timeout):_timeout(timeout) {}
 
   bool operator()(const SharedHandle<ServerStat>& ss) const
   {
-    return ss->getLastUpdated().difference(global::wallclock) >= _timeout;
+    return ss->getLastUpdated().difference(_time) >= _timeout;
   }
 };
 

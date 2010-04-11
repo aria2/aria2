@@ -39,7 +39,7 @@
 
 #include <vector>
 
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "wallclock.h"
 
 namespace aria2 {
@@ -50,7 +50,7 @@ class UTMetadataRequestTracker {
 private:
   struct RequestEntry {
     size_t _index;
-    Time _dispatchedTime;
+    Timer _dispatchedTime;
 
     RequestEntry(size_t index):_index(index) {}
 

@@ -38,7 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "DHTConstants.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include <string>
 
 namespace aria2 {
@@ -57,7 +57,7 @@ private:
   
   SharedHandle<DHTMessageCallback> _callback;
 
-  Time _dispatchedTime;
+  Timer _dispatchedTime;
 
   time_t _timeout;
 public:

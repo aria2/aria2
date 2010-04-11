@@ -61,6 +61,7 @@ DefaultBtAnnounce::DefaultBtAnnounce
  const Option* option):
   _downloadContext(downloadContext),
   trackers(0),
+  prevAnnounceTimer(0),
   interval(DEFAULT_ANNOUNCE_INTERVAL),
   minInterval(DEFAULT_ANNOUNCE_INTERVAL),
   _userDefinedInterval(0),
@@ -70,9 +71,7 @@ DefaultBtAnnounce::DefaultBtAnnounce
   option(option),
   logger(LogFactory::getInstance()),
   _randomizer(SimpleRandomizer::getInstance())
-{
-  prevAnnounceTime.setTimeInSec(0);
-}
+{}
 
 DefaultBtAnnounce::~DefaultBtAnnounce() {
 }
@@ -80,7 +79,7 @@ DefaultBtAnnounce::~DefaultBtAnnounce() {
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
   return
     (trackers == 0 &&
-     prevAnnounceTime.
+     prevAnnounceTimer.
      difference(global::wallclock) >= (_userDefinedInterval==0?
                                        minInterval:_userDefinedInterval) &&
      !announceList.allTiersFailed());
@@ -207,7 +206,7 @@ bool DefaultBtAnnounce::isAllAnnounceFailed() {
 }
 
 void DefaultBtAnnounce::resetAnnounce() {
-  prevAnnounceTime = global::wallclock;
+  prevAnnounceTimer = global::wallclock;
   announceList.resetTier();
 }
 

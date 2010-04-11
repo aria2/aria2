@@ -36,7 +36,7 @@
 #define _D_CONSOLE_STAT_CALC_H_
 
 #include "StatCalc.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "util.h"
 
 namespace aria2 {
@@ -72,9 +72,9 @@ protected:
 class ConsoleStatCalc:public StatCalc
 {
 private:
-  Time _cp;
+  Timer _cp;
 
-  Time _lastSummaryNotified;
+  Timer _lastSummaryNotified;
 
   time_t _summaryInterval;
 

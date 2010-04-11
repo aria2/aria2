@@ -42,7 +42,7 @@
 
 #include "BtConstants.h"
 #include "PeerStat.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -77,9 +77,9 @@ private:
   bool _dhtEnabled;
   PeerStat _peerStat;
 
-  Time _lastDownloadUpdate;
+  Timer _lastDownloadUpdate;
 
-  Time _lastAmUnchoking;
+  Timer _lastAmUnchoking;
 
   WeakHandle<BtMessageDispatcher> _dispatcher;
 public:
@@ -216,12 +216,12 @@ public:
 
   void updateDownloadLength(size_t bytes);
 
-  const Time& getLastDownloadUpdate() const
+  const Timer& getLastDownloadUpdate() const
   {
     return _lastDownloadUpdate;
   }
 
-  const Time& getLastAmUnchoking() const
+  const Timer& getLastAmUnchoking() const
   {
     return _lastAmUnchoking;
   }

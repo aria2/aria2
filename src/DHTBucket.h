@@ -43,7 +43,7 @@
 
 #include "SharedHandle.h"
 #include "DHTConstants.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -68,7 +68,7 @@ private:
   // This is sorted by last time seen.
   std::deque<SharedHandle<DHTNode> > _cachedNodes;
 
-  Time _lastUpdated;
+  Timer _lastUpdated;
 
   Logger* _logger;
 

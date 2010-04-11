@@ -7431,6 +7431,63 @@ else
 fi
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing clock_gettime" >&5
+$as_echo_n "checking for library containing clock_gettime... " >&6; }
+if test "${ac_cv_search_clock_gettime+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char clock_gettime ();
+int
+main ()
+{
+return clock_gettime ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' rt; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_search_clock_gettime=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if test "${ac_cv_search_clock_gettime+set}" = set; then :
+  break
+fi
+done
+if test "${ac_cv_search_clock_gettime+set}" = set; then :
+
+else
+  ac_cv_search_clock_gettime=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_clock_gettime" >&5
+$as_echo "$ac_cv_search_clock_gettime" >&6; }
+ac_res=$ac_cv_search_clock_gettime
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
+
 # Checks for header files.
 # The Ultrix 4.2 mips builtin alloca declared by alloca.h only works
 # for constant arguments.  Useless!
@@ -8292,6 +8349,15 @@ if test "x$ac_cv_type_ptrdiff_t" = x""yes; then :
 
 cat >>confdefs.h <<_ACEOF
 #define HAVE_PTRDIFF_T 1
+_ACEOF
+
+
+fi
+ac_fn_cxx_check_type "$LINENO" "struct timespec" "ac_cv_type_struct_timespec" "$ac_includes_default"
+if test "x$ac_cv_type_struct_timespec" = x""yes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_STRUCT_TIMESPEC 1
 _ACEOF
 
 
@@ -14496,6 +14562,7 @@ for ac_func in __argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
+		clock_gettime \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \

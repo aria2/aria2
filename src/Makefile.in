@@ -341,9 +341,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
 	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
-	base32.h LogFactory.cc LogFactory.h TimeA2.cc TimeA2.h \
-	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
-	FeatureConfig.h DownloadEngineFactory.cc \
+	base32.h LogFactory.cc LogFactory.h TimerA2.cc TimerA2.h \
+	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
+	FeatureConfig.cc FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
@@ -800,11 +800,12 @@ am__objects_27 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	SimpleLogger.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	DefaultDiskWriter.$(OBJEXT) DefaultDiskWriterFactory.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
-	base32.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
-	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
-	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
-	SimpleRandomizer.$(OBJEXT) HttpResponse.$(OBJEXT) \
-	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
+	base32.$(OBJEXT) LogFactory.$(OBJEXT) TimerA2.$(OBJEXT) \
+	TimeA2.$(OBJEXT) FeatureConfig.$(OBJEXT) \
+	DownloadEngineFactory.$(OBJEXT) SpeedCalc.$(OBJEXT) \
+	BitfieldMan.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
+	HttpResponse.$(OBJEXT) HttpRequest.$(OBJEXT) \
+	AbstractProxyRequestCommand.$(OBJEXT) \
 	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) AbstractAuthResolver.$(OBJEXT) \
 	DefaultAuthResolver.$(OBJEXT) NetrcAuthResolver.$(OBJEXT) \
@@ -1103,9 +1104,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
 	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
-	base32.h LogFactory.cc LogFactory.h TimeA2.cc TimeA2.h \
-	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
-	FeatureConfig.h DownloadEngineFactory.cc \
+	base32.h LogFactory.cc LogFactory.h TimerA2.cc TimerA2.h \
+	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
+	FeatureConfig.cc FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
@@ -1573,6 +1574,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeBasedCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimedHaltCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimerA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TransferStat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/URIResult.Po@am__quote@

@@ -41,7 +41,7 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "Command.h"
 
 namespace aria2 {
@@ -207,7 +207,7 @@ public:
    */
   virtual void getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                          cuid_t myCuid,
-                                         const Time& lastCheckTime) = 0;
+                                         const Timer& lastCheckTime) = 0;
 
   /**
    * Removes have entry if specified seconds have elapsed since its

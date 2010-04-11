@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,65 +32,70 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_PEER_ANNOUNCE_ENTRY_H_
-#define _D_DHT_PEER_ANNOUNCE_ENTRY_H_
+#ifndef _D_TIMER_A2_H_
+#define _D_TIMER_A2_H_
 
 #include "common.h"
-
-#include <vector>
-
-#include "SharedHandle.h"
-#include "DHTConstants.h"
-#include "PeerAddrEntry.h"
-#include "TimerA2.h"
+#include "a2time.h"
 
 namespace aria2 {
 
-class Peer;
-
-class DHTPeerAnnounceEntry {
+class Timer {
 private:
-  unsigned char _infoHash[DHT_ID_LENGTH];
+  timeval _tv;
 
-  std::vector<PeerAddrEntry> _peerAddrEntries;
+  int64_t difference(const struct timeval& tv) const;
 
-  Timer _lastUpdated;
+  int64_t differenceInMillis(const struct timeval& tv) const;
 public:
-  DHTPeerAnnounceEntry(const unsigned char* infoHash);
+  // The time value is initialized so that it represents the time at which
+  // this object was created.
+  Timer();
+  Timer(const Timer& time);
+  Timer(time_t sec);
+  Timer(const struct timeval& tv);
 
-  ~DHTPeerAnnounceEntry();
+  Timer& operator=(const Timer& timer);
 
-  // add peer addr entry.
-  // if it already exists, update "Last Updated" property.
-  void addPeerAddrEntry(const PeerAddrEntry& entry);
+  bool operator<(const Timer& timer) const;
 
-  size_t countPeerAddrEntry() const;
+  bool operator>(const Timer& timer) const;
 
-  const std::vector<PeerAddrEntry>& getPeerAddrEntries() const
+  void reset();
+
+  void reset(time_t sec);
+
+  bool elapsed(time_t sec) const;
+
+  bool elapsedInMillis(int64_t millis) const;
+
+  time_t difference() const;
+
+  time_t difference(const Timer& timer) const
   {
-    return _peerAddrEntries;
+    return difference(timer._tv);
   }
 
-  void removeStalePeerAddrEntry(time_t timeout);
-  
-  bool empty() const;
+  int64_t differenceInMillis() const;
 
-  const Timer& getLastUpdated() const
+  int64_t differenceInMillis(const Timer& timer) const
   {
-    return _lastUpdated;
+    return differenceInMillis(timer._tv);
   }
 
-  void notifyUpdate();
+  // Returns true if this object's time value is zero.
+  bool isZero() const;
 
-  const unsigned char* getInfoHash() const
-  {
-    return _infoHash;
-  }
+  void advance(time_t sec);
 
-  void getPeers(std::vector<SharedHandle<Peer> >& peers) const;
+  // Returns this object's time value in seconds.
+  time_t getTime() const;
 
+  int64_t getTimeInMicros() const;
+
+  int64_t getTimeInMillis() const;
 };
 
 } // namespace aria2
 
-#endif // _D_DHT_PEER_ANNOUNCE_ENTRY_H_
+#endif // _D_TIMER_A2_H_

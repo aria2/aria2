@@ -44,7 +44,7 @@ SleepCommand::SleepCommand(cuid_t cuid, DownloadEngine* e,
                            RequestGroup* requestGroup,
                            Command* nextCommand, time_t wait):
   Command(cuid), engine(e), _requestGroup(requestGroup),
-  nextCommand(nextCommand), wait(wait) {}
+  nextCommand(nextCommand), wait(wait), checkPoint(global::wallclock) {}
 
 SleepCommand::~SleepCommand() {
   delete nextCommand;

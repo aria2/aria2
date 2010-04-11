@@ -39,7 +39,7 @@
 
 #include <map>
 
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -65,7 +65,7 @@ private:
 
   std::map<std::string, TransferStat> _peerTransferStatMap;
 
-  Time _lastTransferStatMapUpdated;
+  Timer _lastTransferStatMapUpdated;
 
   TransferStat _cachedTransferStat;
 

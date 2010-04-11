@@ -36,7 +36,7 @@
 #define _D_TIME_BASED_COMMAND_H_
 
 #include "Command.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -60,7 +60,7 @@ protected:
 
   bool _routineCommand;
 private:
-  Time _checkPoint;
+  Timer _checkPoint;
 public:
   /**
    * preProcess() is called each time when excute() is called.

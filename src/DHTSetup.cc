@@ -192,7 +192,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     }
     if(!desnodes.empty() &&
        deserializer.getSerializedTime().
-       difference(global::wallclock) >= DHT_BUCKET_REFRESH_INTERVAL) {
+       difference() >= DHT_BUCKET_REFRESH_INTERVAL) {
       SharedHandle<DHTBucketRefreshTask> task
         (dynamic_pointer_cast<DHTBucketRefreshTask>(taskFactory->createBucketRefreshTask()));
       task->setForceRefresh(true);

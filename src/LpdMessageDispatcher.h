@@ -38,7 +38,7 @@
 #include <string>
 
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -52,7 +52,7 @@ private:
   uint16_t _port;
   std::string _multicastAddress;
   uint16_t _multicastPort;
-  Time _timer;
+  Timer _timer;
   time_t _interval;
   std::string _request;
   Logger* _logger;

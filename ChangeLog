@@ -1,3 +1,9 @@
+2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use clock_gettime(CLOCK_MONOTONIC, ...) if it is available and
+	usable to prevent from aria2 from being affected by system time
+	change.
+
 2010-04-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added aria2.pause and aria2.unpause XML-RPC method.  aria2.pause

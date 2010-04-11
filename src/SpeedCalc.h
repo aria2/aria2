@@ -36,7 +36,7 @@
 #define _D_SPEED_CALC_H_
 
 #include "common.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -44,10 +44,10 @@ class SpeedCalc {
 private:
   uint64_t lengthArray[2];
   int sw;
-  Time cpArray[2];
+  Timer cpArray[2];
   unsigned int maxSpeed;
   unsigned int prevSpeed;
-  Time start;
+  Timer start;
   uint64_t accumulatedLength;
   time_t nextInterval;
 

@@ -36,8 +36,10 @@
 #define _D_DHT_PEER_ADDR_ENTRY_H_
 
 #include "common.h"
-#include "TimeA2.h"
+
 #include <string>
+
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -47,9 +49,10 @@ private:
   
   uint16_t _port;
 
-  Time _lastUpdated;
+  Timer _lastUpdated;
 public:
-  PeerAddrEntry(const std::string& ipaddr, uint16_t port, Time updated = Time()):
+  PeerAddrEntry
+  (const std::string& ipaddr, uint16_t port, Timer updated = Timer()):
     _ipaddr(ipaddr), _port(port), _lastUpdated(updated) {}
 
   const std::string& getIPAddress() const
@@ -62,7 +65,7 @@ public:
     return _port;
   }
 
-  const Time& getLastUpdated() const
+  const Timer& getLastUpdated() const
   {
     return _lastUpdated;
   }

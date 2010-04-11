@@ -370,13 +370,13 @@ bool Peer::isDHTEnabled() const
   return _res->dhtEnabled();
 }
 
-const Time& Peer::getLastDownloadUpdate() const
+const Timer& Peer::getLastDownloadUpdate() const
 {
   assert(_res);
   return _res->getLastDownloadUpdate();
 }
 
-const Time& Peer::getLastAmUnchoking() const
+const Timer& Peer::getLastAmUnchoking() const
 {
   assert(_res);
   return _res->getLastAmUnchoking();
@@ -393,7 +393,7 @@ void Peer::setIncomingPeer(bool incoming)
   _incoming = incoming;
 }
 
-void Peer::setFirstContactTime(const Time& time)
+void Peer::setFirstContactTime(const Timer& time)
 {
   _firstContactTime = time;
 }

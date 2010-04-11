@@ -37,7 +37,7 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "a2time.h"
 
 namespace aria2 {
 
@@ -47,19 +47,12 @@ class DownloadEngine;
 class FillRequestGroupCommand : public Command {
 private:
   DownloadEngine* _e;
-  time_t _interval;
-  Time _checkPoint;
 public:
-  FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
+  FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e);
 
   virtual ~FillRequestGroupCommand();
 
   virtual bool execute();
-
-  void setInterval(time_t interval)
-  {
-    _interval = interval;
-  }
 };
 
 } // namespace aria2

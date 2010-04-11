@@ -69,7 +69,7 @@ DownloadContext::DownloadContext(size_t pieceLength,
 void DownloadContext::resetDownloadStartTime()
 {
   _downloadStartTime = global::wallclock;
-  _downloadStopTime.setTimeInSec(0);
+  _downloadStopTime.reset(0);
 }
 
 void DownloadContext::resetDownloadStopTime()
@@ -79,9 +79,9 @@ void DownloadContext::resetDownloadStopTime()
 
 int64_t DownloadContext::calculateSessionTime() const
 {
-  if(_downloadStopTime.isNewer(_downloadStartTime)) {
+  if(_downloadStopTime > _downloadStartTime) {
     return
-      _downloadStopTime.getTimeInMillis()-_downloadStartTime.getTimeInMillis();
+      _downloadStartTime.differenceInMillis(_downloadStopTime);
   } else {
     return 0;
   }

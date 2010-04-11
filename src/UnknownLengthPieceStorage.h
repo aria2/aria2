@@ -229,7 +229,7 @@ public:
    */
   virtual void
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
-                            cuid_t myCuid, const Time& lastCheckTime)
+                            cuid_t myCuid, const Timer& lastCheckTime)
   {}
 
   /**

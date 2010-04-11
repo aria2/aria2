@@ -48,8 +48,6 @@
 #include "StatCalc.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "TimeA2.h"
-#include "a2time.h"
 #include "Socket.h"
 #include "util.h"
 #include "a2functional.h"
@@ -80,7 +78,7 @@ namespace global {
 
 // Global clock, this clock is reseted before executeCommand() call to
 // reduce the call gettimeofday() system call.
-Time wallclock;
+Timer wallclock;
 
 // 0 ... running
 // 1 ... stop signal detected
@@ -141,8 +139,8 @@ static void executeCommand(std::deque<Command*>& commands,
 
 void DownloadEngine::run()
 {
-  Time cp;
-  cp.setTimeInSec(0);
+  Timer cp;
+  cp.reset(0);
   while(!commands.empty() || !_routineCommands.empty()) {
     global::wallclock.reset();
     if(cp.difference(global::wallclock) >= _refreshInterval) {

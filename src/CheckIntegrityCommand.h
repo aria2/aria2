@@ -37,7 +37,6 @@
 
 #include "RealtimeCommand.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -46,7 +45,6 @@ class CheckIntegrityEntry;
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
   SharedHandle<CheckIntegrityEntry> _entry;
-  Time _timer;
 public:
   CheckIntegrityCommand(cuid_t cuid,
                         RequestGroup* requestGroup,

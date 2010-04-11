@@ -107,7 +107,7 @@ DownloadEngineFactory::newDownloadEngine
 #ifdef ENABLE_MESSAGE_DIGEST
   e->_checkIntegrityMan.reset(new CheckIntegrityMan());
 #endif // ENABLE_MESSAGE_DIGEST
-  e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get(), 1));
+  e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get()));
   e->addRoutineCommand(new FileAllocationDispatcherCommand
                        (e->newCUID(), e->_fileAllocationMan, e.get()));
 #ifdef ENABLE_MESSAGE_DIGEST

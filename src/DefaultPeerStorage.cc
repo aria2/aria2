@@ -39,7 +39,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "message.h"
-#include "a2time.h"
 #include "Peer.h"
 #include "BtRuntime.h"
 #include "BtSeederStateChoke.h"

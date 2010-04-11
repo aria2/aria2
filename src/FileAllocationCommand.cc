@@ -45,6 +45,7 @@
 #include "DownloadContext.h"
 #include "a2functional.h"
 #include "RecoverableException.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -65,7 +66,7 @@ bool FileAllocationCommand::executeInternal()
   if(_fileAllocationEntry->finished()) {
     if(logger->debug()) {
       logger->debug(MSG_ALLOCATION_COMPLETED,
-                    _timer.difference(),
+                    _timer.difference(global::wallclock),
                     util::itos(_requestGroup->getTotalLength(), true).c_str());
     }
     _e->_fileAllocationMan->dropPickedEntry();

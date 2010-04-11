@@ -32,14 +32,14 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
 namespace global {
 
 // wallclock is defined in DownloadEngine.cc
-extern Time wallclock;
+extern Timer wallclock;
 
 } // namespace global
 

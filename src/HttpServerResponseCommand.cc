@@ -93,7 +93,7 @@ bool HttpServerResponseCommand::execute()
     }
     return true;
   } else {
-    if(_timeout.difference(global::wallclock) >= 10) {
+    if(_timeoutTimer.difference(global::wallclock) >= 10) {
       if(logger->info()) {
         logger->info("CUID#%s - HttpServer: Timeout while trasmitting"
                      " response.", util::itos(cuid).c_str());

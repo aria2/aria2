@@ -37,7 +37,7 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
 
@@ -55,7 +55,7 @@ class AsyncNameResolver;
 
 class AbstractCommand : public Command {
 private:
-  Time checkPoint;
+  Timer checkPoint;
   time_t timeout;
 protected:
   RequestGroup* _requestGroup;

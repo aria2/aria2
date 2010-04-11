@@ -37,7 +37,7 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -48,7 +48,7 @@ class SocketCore;
 
 class PeerAbstractCommand : public Command {
 private:
-  Time checkPoint;
+  Timer checkPoint;
   time_t timeout;
 protected:
   DownloadEngine* e;

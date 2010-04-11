@@ -57,7 +57,7 @@ private:
   std::string _protocol;
   SpeedCalc downloadSpeed;
   SpeedCalc uploadSpeed;
-  Time downloadStartTime;
+  Timer downloadStartTime;
   PeerStat::STATUS status;
   unsigned int _avgDownloadSpeed;
   unsigned int _avgUploadSpeed;
@@ -147,7 +147,7 @@ public:
     status = PeerStat::IDLE;
   }
 
-  const Time& getDownloadStartTime() const {
+  const Timer& getDownloadStartTime() const {
     return downloadStartTime;
   }
 

@@ -206,7 +206,7 @@ void UTPexExtensionMessageTest::testAddFreshPeer()
   SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   CPPUNIT_ASSERT(msg.addFreshPeer(p1));
   SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
-  p2->setFirstContactTime(Time(Time().getTime()-61));
+  p2->setFirstContactTime(Timer(Timer().getTime()-61));
   CPPUNIT_ASSERT(!msg.addFreshPeer(p2));
   SharedHandle<Peer> p3(new Peer("10.1.1.3", 9999, true));
   CPPUNIT_ASSERT(!msg.addFreshPeer(p3));

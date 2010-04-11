@@ -36,7 +36,7 @@
 #define _D_SLEEP_COMMAND_H_
 
 #include "Command.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -49,7 +49,7 @@ private:
   RequestGroup* _requestGroup;
   Command* nextCommand;
   time_t wait;
-  Time checkPoint;
+  Timer checkPoint;
 public:
   SleepCommand(cuid_t cuid, DownloadEngine* e, RequestGroup* requestGroup,
                Command* nextCommand, time_t wait);

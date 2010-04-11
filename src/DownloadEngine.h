@@ -44,7 +44,7 @@
 
 #include "SharedHandle.h"
 #include "a2netcompat.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "a2io.h"
 #ifdef ENABLE_ASYNC_DNS
 # include "AsyncNameResolver.h"
@@ -92,7 +92,7 @@ private:
 
     time_t _timeout;
 
-    Time _registeredTime;
+    Timer _registeredTime;
   public:
     SocketPoolEntry(const SharedHandle<SocketCore>& socket,
                     const std::map<std::string, std::string>& option,
@@ -116,7 +116,7 @@ private:
   // key = IP address:port, value = SocketPoolEntry
   std::multimap<std::string, SocketPoolEntry> _socketPool;
  
-  Time _lastSocketPoolScan;
+  Timer _lastSocketPoolScan;
 
   bool _noWait;
 

@@ -37,7 +37,7 @@
 
 #include "RealtimeCommand.h"
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -46,7 +46,7 @@ class FileAllocationEntry;
 class FileAllocationCommand : public RealtimeCommand {
 private:
   SharedHandle<FileAllocationEntry> _fileAllocationEntry;
-  Time _timer;
+  Timer _timer;
 public:
   FileAllocationCommand(cuid_t cuid, RequestGroup* requestGroup,
                         DownloadEngine* e,

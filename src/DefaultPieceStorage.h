@@ -56,17 +56,18 @@ class HaveEntry {
 private:
   cuid_t cuid;
   size_t index;
-  Time registeredTime;
+  Timer registeredTime;
 public:
-  HaveEntry(cuid_t cuid, size_t index):
+  HaveEntry(cuid_t cuid, size_t index, const Timer& registeredTime):
     cuid(cuid),
-    index(index) {}
+    index(index),
+    registeredTime(registeredTime) {}
 
   cuid_t getCuid() const { return cuid; }
 
   size_t getIndex() const { return index; }
 
-  const Time& getRegisteredTime() const { return registeredTime; }
+  const Timer& getRegisteredTime() const { return registeredTime; }
 };
 
 class DefaultPieceStorage : public PieceStorage {
@@ -195,7 +196,7 @@ public:
 
   virtual void
   getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
-                            cuid_t myCuid, const Time& lastCheckTime);
+                            cuid_t myCuid, const Timer& lastCheckTime);
 
   virtual void removeAdvertisedPiece(time_t elapsed);
 

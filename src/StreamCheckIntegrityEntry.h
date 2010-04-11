@@ -36,14 +36,11 @@
 #define _D_STREAM_CHECK_INTEGRITY_ENTRY_H_
 
 #include "PieceHashCheckIntegrityEntry.h"
-#include "TimeA2.h"
 
 namespace aria2 {
 
 class StreamCheckIntegrityEntry:public PieceHashCheckIntegrityEntry
 {
-private:
-  Time _timer;
 public:
   StreamCheckIntegrityEntry(RequestGroup* requestGroup,
                             Command* nextCommand = 0);

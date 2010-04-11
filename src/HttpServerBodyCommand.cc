@@ -81,7 +81,7 @@ bool HttpServerBodyCommand::execute()
   }
   try {
     if(_socket->isReadable(0) || _httpServer->getContentLength() == 0) {
-      _timeout = global::wallclock;
+      _timeoutTimer = global::wallclock;
 
       if(_httpServer->receiveBody()) {
         // Do something for requestpath and body
@@ -108,7 +108,7 @@ bool HttpServerBodyCommand::execute()
         return false;
       } 
     } else {
-      if(_timeout.difference(global::wallclock) >= 30) {
+      if(_timeoutTimer.difference(global::wallclock) >= 30) {
         logger->info("HTTP request body timeout.");
         return true;
       } else {

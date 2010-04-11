@@ -93,7 +93,7 @@ bool HttpServerCommand::execute()
   }
   try {
     if(_socket->isReadable(0)) {
-      _timeout = global::wallclock;
+      _timeoutTimer = global::wallclock;
       SharedHandle<HttpHeader> header;
 
       header = _httpServer->receiveRequest();
@@ -128,7 +128,7 @@ bool HttpServerCommand::execute()
       _e->setNoWait(true);
       return true;
     } else {
-      if(_timeout.difference(global::wallclock) >= 30) {
+      if(_timeoutTimer.difference(global::wallclock) >= 30) {
         logger->info("HTTP request timeout.");
         return true;
       } else {

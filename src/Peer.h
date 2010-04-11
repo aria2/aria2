@@ -43,7 +43,7 @@
 #include <algorithm>
 
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "BtConstants.h"
 #include "PeerStat.h"
 #include "a2functional.h"
@@ -68,9 +68,9 @@ private:
 
   unsigned char _peerId[PEER_ID_LENGTH];
 
-  Time _firstContactTime;
+  Timer _firstContactTime;
 
-  Time _badConditionStartTime;
+  Timer _badConditionStartTime;
 
   bool _seeder;
 
@@ -146,14 +146,14 @@ public:
 
   void releaseSessionResource();
 
-  const Time& getFirstContactTime() const
+  const Timer& getFirstContactTime() const
   {
     return _firstContactTime;
   }
 
-  void setFirstContactTime(const Time& time);
+  void setFirstContactTime(const Timer& time);
 
-  const Time& getBadConditionStartTime() const
+  const Timer& getBadConditionStartTime() const
   {
     return _badConditionStartTime;
   }
@@ -269,9 +269,9 @@ public:
 
   void setExtension(const std::string& name, uint8_t id);
 
-  const Time& getLastDownloadUpdate() const;
+  const Timer& getLastDownloadUpdate() const;
 
-  const Time& getLastAmUnchoking() const;
+  const Timer& getLastAmUnchoking() const;
 
   uint64_t getCompletedLength() const;
 

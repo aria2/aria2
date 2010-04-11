@@ -39,7 +39,6 @@
 #include "Peer.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include "a2time.h"
 #include "SimpleRandomizer.h"
 #include "wallclock.h"
 
@@ -216,7 +215,7 @@ BtLeecherStateChoke::executeChoke
   }
 }
 
-const Time& BtLeecherStateChoke::getLastRound() const
+const Timer& BtLeecherStateChoke::getLastRound() const
 {
   return _lastRound;
 }

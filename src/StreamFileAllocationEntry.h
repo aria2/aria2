@@ -36,13 +36,10 @@
 #define _D_STREAM_FILE_ALLOCATION_ENTRY_H_
 
 #include "FileAllocationEntry.h"
-#include "TimeA2.h"
 
 namespace aria2 {
 
 class StreamFileAllocationEntry : public FileAllocationEntry {
-private:
-  Time _timer;
 public:
   StreamFileAllocationEntry(RequestGroup* requestGroup,
                             Command* nextCommand = 0);

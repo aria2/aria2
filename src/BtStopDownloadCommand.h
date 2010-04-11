@@ -52,7 +52,7 @@ private:
   
   time_t _timeout;
 
-  Time _checkPoint;
+  Timer _checkPoint;
 
   SharedHandle<BtRuntime> _btRuntime;
 

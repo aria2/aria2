@@ -43,7 +43,7 @@
 
 #include "SharedHandle.h"
 #include "Signature.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "A2STR.h"
 #include "BDE.h"
 #include "IntSequence.h"
@@ -78,9 +78,9 @@ private:
   
   BDE _attrs;
 
-  Time _downloadStartTime;
+  Timer _downloadStartTime;
 
-  Time _downloadStopTime;
+  Timer _downloadStopTime;
 
   SharedHandle<Signature> _signature;
 
@@ -233,7 +233,7 @@ public:
 
   void resetDownloadStopTime();
 
-  const Time& getDownloadStopTime() const
+  const Timer& getDownloadStopTime() const
   {
     return _downloadStopTime;
   }

@@ -163,11 +163,11 @@ BtMessageHandle DefaultBtInteractive::receiveAndSendHandshake() {
 }
 
 void DefaultBtInteractive::doPostHandshakeProcessing() {
-  // Set time 0 to haveCheckPoint to cache http/ftp download piece completion
-  haveCheckPoint.setTimeInSec(0);
-  keepAliveCheckPoint = global::wallclock;
-  floodingCheckPoint = global::wallclock;
-  _pexCheckPoint.setTimeInSec(0);
+  // Set time 0 to haveTimer to cache http/ftp download piece completion
+  haveTimer.reset(0);
+  keepAliveTimer = global::wallclock;
+  floodingTimer = global::wallclock;
+  _pexTimer.reset(0);
   if(peer->isExtendedMessagingEnabled()) {
     addHandshakeExtendedMessageToQueue();
   }
@@ -249,8 +249,8 @@ void DefaultBtInteractive::decideChoking() {
 
 void DefaultBtInteractive::checkHave() {
   std::vector<size_t> indexes;
-  _pieceStorage->getAdvertisedPieceIndexes(indexes, cuid, haveCheckPoint);
-  haveCheckPoint = global::wallclock;
+  _pieceStorage->getAdvertisedPieceIndexes(indexes, cuid, haveTimer);
+  haveTimer = global::wallclock;
   if(indexes.size() >= 20) {
     if(peer->isFastExtensionEnabled() && _pieceStorage->allDownloadFinished()) {
       dispatcher->addMessageToQueue(messageFactory->createHaveAllMessage());
@@ -266,10 +266,10 @@ void DefaultBtInteractive::checkHave() {
 }
 
 void DefaultBtInteractive::sendKeepAlive() {
-  if(keepAliveCheckPoint.difference(global::wallclock) >= keepAliveInterval) {
+  if(keepAliveTimer.difference(global::wallclock) >= keepAliveInterval) {
     dispatcher->addMessageToQueue(messageFactory->createKeepAliveMessage());
     dispatcher->sendMessages();
-    keepAliveCheckPoint = global::wallclock;
+    keepAliveTimer = global::wallclock;
   }
 }
 
@@ -311,7 +311,7 @@ size_t DefaultBtInteractive::receiveMessages() {
       _peerStorage->updateTransferStatFor(peer);
       // pass through
     case BtRequestMessage::ID:
-      inactiveCheckPoint = global::wallclock;
+      inactiveTimer = global::wallclock;
       break;
     }
   }
@@ -422,7 +422,7 @@ void DefaultBtInteractive::sendPendingMessage() {
 }
 
 void DefaultBtInteractive::detectMessageFlooding() {
-  if(floodingCheckPoint.
+  if(floodingTimer.
      difference(global::wallclock) >= FLOODING_CHECK_INTERVAL) {
     if(floodingStat.getChokeUnchokeCount() >= 2 ||
        floodingStat.getKeepAliveCount() >= 2) {
@@ -430,13 +430,13 @@ void DefaultBtInteractive::detectMessageFlooding() {
     } else {
       floodingStat.reset();
     }
-    floodingCheckPoint = global::wallclock;
+    floodingTimer = global::wallclock;
   }
 }
 
 void DefaultBtInteractive::checkActiveInteraction()
 {
-  time_t inactiveTime = inactiveCheckPoint.difference(global::wallclock);
+  time_t inactiveTime = inactiveTimer.difference(global::wallclock);
   // To allow aria2 to accept mutially interested peer, disconnect unintersted
   // peer.
   {
@@ -463,7 +463,7 @@ void DefaultBtInteractive::checkActiveInteraction()
 
 void DefaultBtInteractive::addPeerExchangeMessage()
 {
-  if(_pexCheckPoint.
+  if(_pexTimer.
      difference(global::wallclock) >= UTPexExtensionMessage::DEFAULT_INTERVAL) {
     UTPexExtensionMessageHandle m
       (new UTPexExtensionMessage(peer->getExtensionMessageID("ut_pex")));
@@ -489,7 +489,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
     }
     BtMessageHandle msg = messageFactory->createBtExtendedMessage(m);
     dispatcher->addMessageToQueue(msg);
-    _pexCheckPoint = global::wallclock;
+    _pexTimer = global::wallclock;
   }
 }
 
@@ -510,8 +510,8 @@ void DefaultBtInteractive::doInteractionProcessing() {
         _utMetadataRequestFactory->create(requests, num, _pieceStorage);
         dispatcher->addMessageToQueue(requests);
       }
-      if(_perSecCheckPoint.difference(global::wallclock) >= 1) {
-        _perSecCheckPoint = global::wallclock;
+      if(_perSecTimer.difference(global::wallclock) >= 1) {
+        _perSecTimer = global::wallclock;
         // Drop timeout request after queuing message to give a chance
         // to other connection to request piece.
         std::vector<size_t> indexes =
@@ -533,8 +533,8 @@ void DefaultBtInteractive::doInteractionProcessing() {
 
     detectMessageFlooding();
 
-    if(_perSecCheckPoint.difference(global::wallclock) >= 1) {
-      _perSecCheckPoint = global::wallclock;
+    if(_perSecTimer.difference(global::wallclock) >= 1) {
+      _perSecTimer = global::wallclock;
       dispatcher->checkRequestSlotAndDoNecessaryThing();
     }
     checkHave();

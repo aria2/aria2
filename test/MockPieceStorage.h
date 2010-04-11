@@ -214,7 +214,7 @@ public:
 
   virtual void getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                          cuid_t myCuid,
-                                         const Time& lastCheckTime)
+                                         const Timer& lastCheckTime)
   {}
 
   virtual void removeAdvertisedPiece(time_t elapsed) {}

@@ -36,7 +36,7 @@
 #define _D_TIME_SEED_CRITERIA_H_
 
 #include "SeedCriteria.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "wallclock.h"
 
 namespace aria2 {
@@ -45,7 +45,7 @@ class TimeSeedCriteria : public SeedCriteria {
 private:
   // How much time the client does seeding in seconds.
   time_t duration;
-  Time watch;
+  Timer watch;
 public:
   TimeSeedCriteria(time_t duration):duration(duration) {}
   virtual ~TimeSeedCriteria() {}

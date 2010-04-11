@@ -40,7 +40,7 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -51,7 +51,7 @@ class BtSeederStateChoke {
 private:
   int _round;
 
-  Time _lastRound;
+  Timer _lastRound;
 
   Logger* _logger;
 
@@ -59,7 +59,7 @@ private:
   private:
     SharedHandle<Peer> _peer;
     size_t _outstandingUpload;
-    Time _lastAmUnchoking;
+    Timer _lastAmUnchoking;
     bool _recentUnchoking;
     unsigned int _uploadSpeed;
     
@@ -87,7 +87,7 @@ public:
 
   void executeChoke(const std::vector<SharedHandle<Peer> >& peerSet);
 
-  const Time& getLastRound() const { return _lastRound; }
+  const Timer& getLastRound() const { return _lastRound; }
 };
 
 } // namespace aria2

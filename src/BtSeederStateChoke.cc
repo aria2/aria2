@@ -69,7 +69,7 @@ BtSeederStateChoke::PeerEntry::operator<(const PeerEntry& rhs) const
     return false;
   }
   if(this->_recentUnchoking &&
-     this->_lastAmUnchoking.isNewer(rhs._lastAmUnchoking)) {
+     (this->_lastAmUnchoking > rhs._lastAmUnchoking)) {
     return true;
   } else if(rhs._recentUnchoking) {
     return false;

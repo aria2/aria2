@@ -75,7 +75,7 @@ AbstractCommand::AbstractCommand(cuid_t cuid,
                                  RequestGroup* requestGroup,
                                  DownloadEngine* e,
                                  const SocketHandle& s):
-  Command(cuid), _requestGroup(requestGroup),
+  Command(cuid), checkPoint(global::wallclock), _requestGroup(requestGroup),
   req(req), _fileEntry(fileEntry), e(e), socket(s),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   nameResolverCheck(false)

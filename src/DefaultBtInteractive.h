@@ -39,7 +39,7 @@
 
 #include  <limits.h>
 
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "Command.h"
 
 namespace aria2 {
@@ -126,13 +126,13 @@ private:
 
   Logger* logger;
   size_t allowedFastSetSize;
-  Time haveCheckPoint;
-  Time keepAliveCheckPoint;
-  Time floodingCheckPoint;
+  Timer haveTimer;
+  Timer keepAliveTimer;
+  Timer floodingTimer;
   FloodingStat floodingStat;
-  Time inactiveCheckPoint;
-  Time _pexCheckPoint;
-  Time _perSecCheckPoint;
+  Timer inactiveTimer;
+  Timer _pexTimer;
+  Timer _perSecTimer;
   time_t keepAliveInterval;
   bool _utPexEnabled;
   bool _dhtEnabled;

@@ -36,14 +36,15 @@
 #define _D_REQUEST_SLOT_H_
 
 #include "common.h"
-#include "TimeA2.h"
+#include "TimerA2.h"
 #include "Piece.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
 class RequestSlot {
 private:
-  Time dispatchedTime;
+  Timer dispatchedTime;
   size_t index;
   uint32_t begin;
   size_t length;
@@ -70,6 +71,7 @@ public:
   
   RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex,
               const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
+    dispatchedTime(global::wallclock),
     index(index), begin(begin), length(length), blockIndex(blockIndex),
     _piece(piece) {}
 
@@ -113,7 +115,6 @@ public:
     }
   }
 
-  void setDispatchedTime();
   void setDispatchedTime(time_t secFromEpoch);
 
   bool isTimeout(time_t timeoutSec) const;

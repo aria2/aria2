@@ -45,11 +45,9 @@
 namespace aria2 {
 
 FillRequestGroupCommand::FillRequestGroupCommand(cuid_t cuid,
-                                                 DownloadEngine* e,
-                                                 time_t interval):
+                                                 DownloadEngine* e):
   Command(cuid),
-  _e(e),
-  _interval(interval)
+  _e(e)
 {
   setStatusRealtime();
 }
