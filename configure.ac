@@ -212,7 +212,7 @@ AC_SEARCH_LIBS([clock_gettime], [rt])
 
 case "$target" in
 	*solaris*)
-                AC_SEARCH_LIBS([getaddrinfo], [socket])
+                AC_SEARCH_LIBS([getaddrinfo], [nsl socket])
 		;;
 esac
 

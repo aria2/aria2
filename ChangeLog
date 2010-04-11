@@ -1,5 +1,10 @@
 2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added nsl to search-libs for getaddrinfo on opensolaris
+	* configure.ac
+
+2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error on opensolaris
 	* configure.ac
 	* src/Logger.h
