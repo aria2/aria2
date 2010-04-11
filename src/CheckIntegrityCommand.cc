@@ -58,6 +58,7 @@ CheckIntegrityCommand::~CheckIntegrityCommand() {}
 bool CheckIntegrityCommand::executeInternal()
 {
   if(_requestGroup->isHaltRequested()) {
+    _e->_checkIntegrityMan->dropPickedEntry();
     return true;
   }
   _entry->validateChunk();

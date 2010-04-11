@@ -59,7 +59,8 @@ FileAllocationCommand::~FileAllocationCommand() {}
 
 bool FileAllocationCommand::executeInternal()
 {
-  if(_e->isHaltRequested()) {
+  if(_requestGroup->isHaltRequested()) {
+    _e->_fileAllocationMan->dropPickedEntry();
     return true;
   }
   _fileAllocationEntry->allocateChunk();

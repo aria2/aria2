@@ -1,5 +1,14 @@
 2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that hash check hangs when aria2.pause is issued
+	while aria2 is checking piece hashes.  Fixed the bug that the
+	download is paused after file allocation completion even if
+	aria2.pause is issued during file allocation.
+	* src/CheckIntegrityCommand.cc
+	* src/FileAllocationCommand.cc
+
+2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added nsl to search-libs for getaddrinfo on opensolaris
 	* configure.ac
 
