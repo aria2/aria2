@@ -20,6 +20,7 @@
 #include "FeatureConfig.h"
 #include "util.h"
 #include "array_fun.h"
+#include "download_helper.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 # include "BtRuntime.h"
@@ -77,6 +78,7 @@ class XmlRpcMethodTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetSessionInfo);
   CPPUNIT_TEST(testChangeUri);
   CPPUNIT_TEST(testChangeUri_fail);
+  CPPUNIT_TEST(testPause);
   CPPUNIT_TEST(testSystemMulticall);
   CPPUNIT_TEST(testSystemMulticall_fail);
   CPPUNIT_TEST_SUITE_END();
@@ -139,6 +141,7 @@ public:
   void testGetSessionInfo();
   void testChangeUri();
   void testChangeUri_fail();
+  void testPause();
   void testSystemMulticall();
   void testSystemMulticall_fail();
 };
@@ -918,6 +921,64 @@ void XmlRpcMethodTest::testGetSessionInfo()
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL(util::toHex(_e->getSessionId()),
                        res._param["sessionId"].s());
+}
+
+void XmlRpcMethodTest::testPause()
+{
+  const std::string URIS[] = {
+    "http://url1",
+    "http://url2",
+    "http://url3",
+  };
+  std::vector<std::string> uris(vbegin(URIS), vend(URIS));
+  _option->put(PREF_FORCE_SEQUENTIAL, V_TRUE);
+  std::vector<SharedHandle<RequestGroup> > groups;
+  createRequestGroupForUri(groups, _option, uris);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());  
+  _e->_requestGroupMan->addReservedGroup(groups);
+  {
+    PauseXmlRpcMethod m;
+    XmlRpcRequest req(PauseXmlRpcMethod::getMethodName(), BDE::list());
+    req._params << std::string("1");
+    XmlRpcResponse res = m.execute(req, _e.get());
+    CPPUNIT_ASSERT_EQUAL(0, res._code);
+  }
+  CPPUNIT_ASSERT(groups[0]->isPauseRequested());
+  {
+    UnpauseXmlRpcMethod m;
+    XmlRpcRequest req(UnpauseXmlRpcMethod::getMethodName(), BDE::list());
+    req._params << std::string("1");
+    XmlRpcResponse res = m.execute(req, _e.get());
+    CPPUNIT_ASSERT_EQUAL(0, res._code);
+  }
+  CPPUNIT_ASSERT(!groups[0]->isPauseRequested());
+  {
+    PauseAllXmlRpcMethod m;
+    XmlRpcRequest req(PauseAllXmlRpcMethod::getMethodName(), BDE::list());
+    XmlRpcResponse res = m.execute(req, _e.get());
+    CPPUNIT_ASSERT_EQUAL(0, res._code);
+  }
+  for(size_t i = 0; i < groups.size(); ++i) {
+    CPPUNIT_ASSERT(groups[i]->isPauseRequested());
+  }
+  {
+    UnpauseAllXmlRpcMethod m;
+    XmlRpcRequest req(UnpauseAllXmlRpcMethod::getMethodName(), BDE::list());
+    XmlRpcResponse res = m.execute(req, _e.get());
+    CPPUNIT_ASSERT_EQUAL(0, res._code);
+  }
+  for(size_t i = 0; i < groups.size(); ++i) {
+    CPPUNIT_ASSERT(!groups[i]->isPauseRequested());
+  }
+  {
+    ForcePauseAllXmlRpcMethod m;
+    XmlRpcRequest req(ForcePauseAllXmlRpcMethod::getMethodName(), BDE::list());
+    XmlRpcResponse res = m.execute(req, _e.get());
+    CPPUNIT_ASSERT_EQUAL(0, res._code);
+  }
+  for(size_t i = 0; i < groups.size(); ++i) {
+    CPPUNIT_ASSERT(groups[i]->isPauseRequested());
+  }
 }
 
 void XmlRpcMethodTest::testSystemMulticall()

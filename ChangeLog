@@ -1,5 +1,15 @@
 2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added aria2.pauseAll, aria2.forcePauseAll and aria2.unpauseAll
+	XML-RPC method.
+	* doc/aria2c.1.txt
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* test/XmlRpcMethodTest.cc
+
+2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added aria2.forcePause XML-RPC command.
 	* src/XmlRpcMethodFactory.cc
 	* src/XmlRpcMethodImpl.cc

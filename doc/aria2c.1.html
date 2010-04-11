@@ -3102,16 +3102,30 @@ download without any action which takes time such as contacting
 BitTorrent tracker.</p></div>
 <div class="paragraph"><p><strong>aria2.pause</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method pauses the download denoted by <em>gid</em>. <em>gid</em> is of type
-string. The status of paused download becomes "paused" and the
-download is placed on the first position of waiting queue.  As long as
-the status is "paused", the download is not started.  To change status
-to "waiting", use <strong>aria2.unpause</strong> method.
+string. The status of paused download becomes "paused".  If the
+download is active, the download is placed on the first position of
+waiting queue.  As long as the status is "paused", the download is not
+started.  To change status to "waiting", use <strong>aria2.unpause</strong> method.
 This method returns GID of paused download.</p></div>
+<div class="paragraph"><p><strong>aria2.pauseAll</strong></p></div>
+<div class="paragraph"><p>This method is equal to calling <strong>aria2.pause</strong> for every active/waiting
+download. This methods returns "OK" for success.</p></div>
+<div class="paragraph"><p><strong>aria2.forcePause</strong> <em>pid</em></p></div>
+<div class="paragraph"><p>This method pauses the download denoted by <em>gid</em>.  This method
+behaves just like <strong>aria2.pause</strong> except that this method pauses
+download without any action which takes time such as contacting
+BitTorrent tracker.</p></div>
+<div class="paragraph"><p><strong>aria2.forcePauseAll</strong></p></div>
+<div class="paragraph"><p>This method is equal to calling <strong>aria2.forcePause</strong> for every
+active/waiting download. This methods returns "OK" for success.</p></div>
 <div class="paragraph"><p><strong>aria2.unpause</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method changes the status of the download denoted by <em>gid</em> from
 "paused" to "waiting". This makes the download eligible to restart.
 <em>gid</em> is of type string.  This method returns GID of unpaused
 download.</p></div>
+<div class="paragraph"><p><strong>aria2.unpauseAll</strong></p></div>
+<div class="paragraph"><p>This method is equal to calling <strong>aria2.unpause</strong> for every active/waiting
+download. This methods returns "OK" for success.</p></div>
 <div class="paragraph"><p><strong>aria2.tellStatus</strong> <em>gid</em></p></div>
 <div class="paragraph"><p>This method returns download progress of the download denoted by
 <em>gid</em>. <em>gid</em> is of type string. The response is of type struct and it
@@ -3794,7 +3808,7 @@ pprint(r)</tt></pre>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URIs as long as they are pointing to the same file.</td>
+<td class="content">To stop a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URIs as long as they are pointing to the same file.</td>
 </tr></table>
 </div>
 <h4 id="_download_a_file_from_2_different_http_servers">Download a file from 2 different HTTP servers</h4>
@@ -3870,7 +3884,7 @@ variables. See <strong>ENVIRONMENT</strong> section.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">To pause a download, press Ctrl-C.
+<td class="content">To stop a download, press Ctrl-C.
 You can resume the transfer by running aria2c with the same argument in the same
 directory.</td>
 </tr></table>
@@ -3922,7 +3936,7 @@ directory.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory.</td>
+<td class="content">To stop a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory.</td>
 </tr></table>
 </div>
 <h4 id="_download_using_bittorrent_magnet_uri">Download using BitTorrent Magnet URI</h4>
@@ -4174,7 +4188,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-04-09 00:32:31 JST
+Last updated 2010-04-11 23:42:41 JST
 </div>
 </div>
 </body>

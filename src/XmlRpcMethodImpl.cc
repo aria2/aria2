@@ -348,17 +348,28 @@ BDE ForceRemoveXmlRpcMethod::process
   return removeDownload(req, e, true);
 }
 
-static void pauseRequestGroup
-(const SharedHandle<RequestGroup>& group, bool forcePause)
+static bool pauseRequestGroup
+(const SharedHandle<RequestGroup>& group, bool reserved,  bool forcePause)
 {
-  // Call setHaltRequested before setPauseRequested because
-  // setHaltRequested calls setPauseRequested(false) internally.
-  if(forcePause) {
-    group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
+  if((reserved && !group->isPauseRequested()) ||
+     (!reserved &&
+      !group->isForceHaltRequested() &&
+      ((forcePause && group->isHaltRequested() && group->isPauseRequested()) ||
+       (!group->isHaltRequested() && !group->isPauseRequested())))) {
+    if(!reserved) {
+      // Call setHaltRequested before setPauseRequested because
+      // setHaltRequested calls setPauseRequested(false) internally.
+      if(forcePause) {
+        group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
+      } else {
+        group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+      }
+    }
+    group->setPauseRequested(true);
+    return true;
   } else {
-    group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+    return false;
   }
-  group->setPauseRequested(true);
 }
 
 static BDE pauseDownload
@@ -370,15 +381,19 @@ static BDE pauseDownload
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   gid_t gid = util::parseLLInt(params[0].s());
-  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
-  if(group.isNull() || group->isHaltRequested()) {
+  bool reserved = false;
+  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  if(group.isNull()) {
+    reserved = true;
+    group = e->_requestGroupMan->findReservedGroup(gid);
+  }
+  if(!group.isNull() && pauseRequestGroup(group, reserved, forcePause)) {
+    return createGIDResponse(gid);
+  } else {
     throw DL_ABORT_EX
       (StringFormat("GID#%s cannot be paused now",
                     util::itos(gid).c_str()).str());
-  } else {
-    pauseRequestGroup(group, forcePause);
   }
-  return createGIDResponse(gid);
 }
 
 BDE PauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
@@ -389,6 +404,39 @@ BDE PauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 BDE ForcePauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   return pauseDownload(req, e, true);
+}
+
+template<typename InputIterator>
+static void pauseRequestGroups
+(InputIterator first, InputIterator last, bool reserved, bool forcePause)
+{
+  for(; first != last; ++first) {
+    pauseRequestGroup(*first, reserved, forcePause);
+  }
+}
+
+static BDE pauseAllDownloads
+(const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
+{
+  const std::deque<SharedHandle<RequestGroup> >& groups =
+    e->_requestGroupMan->getRequestGroups();
+  pauseRequestGroups(groups.begin(), groups.end(), false, forcePause);
+  const std::deque<SharedHandle<RequestGroup> >& reservedGroups =
+    e->_requestGroupMan->getReservedGroups();
+  pauseRequestGroups(reservedGroups.begin(), reservedGroups.end(),
+                     true, forcePause);
+  return BDE_OK;
+}
+
+BDE PauseAllXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return pauseAllDownloads(req, e, false);
+}
+
+BDE ForcePauseAllXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return pauseAllDownloads(req, e, true);
 }
 
 BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
@@ -409,6 +457,17 @@ BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
     e->_requestGroupMan->requestQueueCheck();    
   }
   return createGIDResponse(gid);
+}
+
+BDE UnpauseAllXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  const std::deque<SharedHandle<RequestGroup> >& groups =
+    e->_requestGroupMan->getReservedGroups();
+  std::for_each(groups.begin(), groups.end(),
+                std::bind2nd(mem_fun_sh(&RequestGroup::setPauseRequested),
+                             false));
+  e->_requestGroupMan->requestQueueCheck();    
+  return BDE_OK;
 }
 
 static void createUriEntry(BDE& uriList, const SharedHandle<FileEntry>& file)

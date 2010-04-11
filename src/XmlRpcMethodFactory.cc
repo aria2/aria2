@@ -62,8 +62,14 @@ XmlRpcMethodFactory::create(const std::string& methodName)
     return SharedHandle<XmlRpcMethod>(new PauseXmlRpcMethod());
   } else if(methodName == ForcePauseXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new ForcePauseXmlRpcMethod());
+  } else if(methodName == PauseAllXmlRpcMethod::getMethodName()) {
+    return SharedHandle<XmlRpcMethod>(new PauseAllXmlRpcMethod());
+  } else if(methodName == ForcePauseAllXmlRpcMethod::getMethodName()) {
+    return SharedHandle<XmlRpcMethod>(new ForcePauseAllXmlRpcMethod());
   } else if(methodName == UnpauseXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new UnpauseXmlRpcMethod());
+  } else if(methodName == UnpauseAllXmlRpcMethod::getMethodName()) {
+    return SharedHandle<XmlRpcMethod>(new UnpauseAllXmlRpcMethod());
   } else if(methodName == ForceRemoveXmlRpcMethod::getMethodName()) {
     return SharedHandle<XmlRpcMethod>(new ForceRemoveXmlRpcMethod());
   } else if(methodName == ChangePositionXmlRpcMethod::getMethodName()) {

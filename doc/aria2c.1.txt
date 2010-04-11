@@ -1371,11 +1371,28 @@ BitTorrent tracker.
 *aria2.pause* 'gid'
 
 This method pauses the download denoted by 'gid'. 'gid' is of type
-string. The status of paused download becomes "paused" and the
-download is placed on the first position of waiting queue.  As long as
-the status is "paused", the download is not started.  To change status
-to "waiting", use *aria2.unpause* method.
+string. The status of paused download becomes "paused".  If the
+download is active, the download is placed on the first position of
+waiting queue.  As long as the status is "paused", the download is not
+started.  To change status to "waiting", use *aria2.unpause* method.
 This method returns GID of paused download.
+
+*aria2.pauseAll*
+
+This method is equal to calling *aria2.pause* for every active/waiting
+download. This methods returns "OK" for success.
+
+*aria2.forcePause* 'pid'
+
+This method pauses the download denoted by 'gid'.  This method
+behaves just like *aria2.pause* except that this method pauses
+download without any action which takes time such as contacting
+BitTorrent tracker.
+
+*aria2.forcePauseAll*
+
+This method is equal to calling *aria2.forcePause* for every
+active/waiting download. This methods returns "OK" for success.
 
 *aria2.unpause* 'gid'
 
@@ -1383,6 +1400,11 @@ This method changes the status of the download denoted by 'gid' from
 "paused" to "waiting". This makes the download eligible to restart.
 'gid' is of type string.  This method returns GID of unpaused
 download.
+
+*aria2.unpauseAll*
+
+This method is equal to calling *aria2.unpause* for every active/waiting
+download. This methods returns "OK" for success.
 
 *aria2.tellStatus* 'gid'
 

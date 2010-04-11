@@ -106,6 +106,28 @@ public:
   }
 };
 
+class PauseAllXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.pauseAll";
+    return methodName;
+  }
+};
+
+class ForcePauseAllXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.forcePauseAll";
+    return methodName;
+  }
+};
+
 class UnpauseXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
@@ -113,6 +135,17 @@ public:
   static const std::string& getMethodName()
   {
     static std::string methodName = "aria2.unpause";
+    return methodName;
+  }
+};
+
+class UnpauseAllXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.unpauseAll";
     return methodName;
   }
 };
