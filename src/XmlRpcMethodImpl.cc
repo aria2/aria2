@@ -152,6 +152,17 @@ static BDE addRequestGroup(const SharedHandle<RequestGroup>& group,
   return createGIDResponse(group->getGID());
 }
 
+static
+SharedHandle<RequestGroup>
+findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
+{
+  SharedHandle<RequestGroup> group = rgman->findRequestGroup(gid);
+  if(group.isNull()) {
+    group = rgman->findReservedGroup(gid);
+  }
+  return group;
+}
+
 static bool hasDictParam(const BDE& params, size_t index)
 {
   return params.size() > index && params[index].isDict();
@@ -337,7 +348,21 @@ BDE ForceRemoveXmlRpcMethod::process
   return removeDownload(req, e, true);
 }
 
-BDE PauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+static void pauseRequestGroup
+(const SharedHandle<RequestGroup>& group, bool forcePause)
+{
+  // Call setHaltRequested before setPauseRequested because
+  // setHaltRequested calls setPauseRequested(false) internally.
+  if(forcePause) {
+    group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
+  } else {
+    group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+  }
+  group->setPauseRequested(true);
+}
+
+static BDE pauseDownload
+(const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   const BDE& params = req._params;
   assert(params.isList());
@@ -345,18 +370,25 @@ BDE PauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   gid_t gid = util::parseLLInt(params[0].s());
-  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
   if(group.isNull() || group->isHaltRequested()) {
     throw DL_ABORT_EX
       (StringFormat("GID#%s cannot be paused now",
                     util::itos(gid).c_str()).str());
   } else {
-    // Call setHaltRequested before setPauseRequested because
-    // setHaltRequested calls setPauseRequested(false) internally.
-    group->setHaltRequested(true, RequestGroup::USER_REQUEST);
-    group->setPauseRequested(true);
+    pauseRequestGroup(group, forcePause);
   }
   return createGIDResponse(gid);
+}
+
+BDE PauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return pauseDownload(req, e, false);
+}
+
+BDE ForcePauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  return pauseDownload(req, e, true);
 }
 
 BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
@@ -585,17 +617,6 @@ void gatherStoppedDownload
   BDE files = BDE::list();
   createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end());
   entryDict[KEY_FILES] = files;
-}
-
-static
-SharedHandle<RequestGroup>
-findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
-{
-  SharedHandle<RequestGroup> group = rgman->findRequestGroup(gid);
-  if(group.isNull()) {
-    group = rgman->findReservedGroup(gid);
-  }
-  return group;
 }
 
 BDE GetFilesXmlRpcMethod::process

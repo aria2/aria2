@@ -1,5 +1,12 @@
 2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added aria2.forcePause XML-RPC command.
+	* src/XmlRpcMethodFactory.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+
+2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use global::wallclock
 	* src/DHTBucket.cc
 	* src/DHTMessageTrackerEntry.cc
