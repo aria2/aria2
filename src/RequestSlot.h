@@ -83,7 +83,8 @@ public:
     blockIndex(requestSlot.blockIndex),
     _piece(requestSlot._piece) {}
 
-  RequestSlot():index(0), begin(0), length(0), blockIndex(0) {}
+  RequestSlot():dispatchedTime(0), index(0), begin(0), length(0), blockIndex(0)
+  {}
 
   ~RequestSlot() {}
 

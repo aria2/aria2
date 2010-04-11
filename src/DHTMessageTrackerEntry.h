@@ -36,10 +36,13 @@
 #define _D_DHT_MESSAGE_TRACKER_ENTRY_H_
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "TimerA2.h"
-#include <string>
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -89,7 +92,7 @@ public:
 
   int64_t getElapsedMillis() const
   {
-    return _dispatchedTime.differenceInMillis();
+    return _dispatchedTime.differenceInMillis(global::wallclock);
   }
 };
 

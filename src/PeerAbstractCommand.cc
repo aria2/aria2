@@ -53,6 +53,7 @@ PeerAbstractCommand::PeerAbstractCommand(cuid_t cuid,
                                          DownloadEngine* e,
                                          const SocketHandle& s):
   Command(cuid),
+  checkPoint(global::wallclock),
   e(e),
   socket(s),
   peer(peer),

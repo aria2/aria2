@@ -55,6 +55,7 @@ DHTBucket::DHTBucket(size_t prefixLength,
                      const SharedHandle<DHTNode>& localNode):
   _prefixLength(prefixLength),
   _localNode(localNode),
+  _lastUpdated(global::wallclock),
   _logger(LogFactory::getInstance())
 {
   memcpy(_max, max, DHT_ID_LENGTH);
@@ -64,6 +65,7 @@ DHTBucket::DHTBucket(size_t prefixLength,
 DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode):
   _prefixLength(0),
   _localNode(localNode),
+  _lastUpdated(global::wallclock),
   _logger(LogFactory::getInstance())
 {
   memset(_max, 0xff, DHT_ID_LENGTH);

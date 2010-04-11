@@ -50,6 +50,7 @@ namespace aria2 {
 Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   ipaddr(ipaddr),
   port(port),
+  _firstContactTime(global::wallclock),
   _badConditionStartTime(0),
   _seeder(false),
   _res(0),

@@ -49,6 +49,7 @@ DHTMessageTrackerEntry::DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& s
   _transactionID(sentMessage->getTransactionID()),
   _messageType(sentMessage->getMessageType()),
   _callback(callback),
+  _dispatchedTime(global::wallclock),
   _timeout(timeout)
 {}
 

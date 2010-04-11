@@ -42,6 +42,7 @@
 #include "SpeedCalc.h"
 #include "SharedHandle.h"
 #include "Command.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -70,6 +71,7 @@ public:
     cuid(cuid),
     _hostname(hostname),
     _protocol(protocol),
+    downloadStartTime(global::wallclock),
     status(PeerStat::IDLE),
     _avgDownloadSpeed(0),
     _avgUploadSpeed(0),
@@ -132,7 +134,7 @@ public:
   void reset() {
     downloadSpeed.reset();
     uploadSpeed.reset();
-    downloadStartTime.reset();
+    downloadStartTime = global::wallclock;
     status = PeerStat::IDLE;
   }
 

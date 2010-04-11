@@ -1,5 +1,18 @@
 2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use global::wallclock
+	* src/DHTBucket.cc
+	* src/DHTMessageTrackerEntry.cc
+	* src/DHTMessageTrackerEntry.h
+	* src/DefaultBtInteractive.cc
+	* src/Peer.cc
+	* src/PeerAbstractCommand.cc
+	* src/PeerStat.h
+	* src/RequestSlot.h
+	* src/TimeBasedCommand.cc
+
+2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use clock_gettime(CLOCK_MONOTONIC, ...) if it is available and
 	usable to prevent from aria2 from being affected by system time
 	change.

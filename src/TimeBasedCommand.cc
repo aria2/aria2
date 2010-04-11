@@ -42,7 +42,7 @@ TimeBasedCommand::TimeBasedCommand(cuid_t cuid, DownloadEngine* e,
                                    time_t interval,
                                    bool routineCommand):
   Command(cuid), _e(e),_exit(false), _interval(interval),
-  _routineCommand(routineCommand) {}
+  _routineCommand(routineCommand), _checkPoint(global::wallclock) {}
 
 TimeBasedCommand::~TimeBasedCommand() {}
 
