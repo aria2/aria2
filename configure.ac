@@ -210,6 +210,12 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 
 AC_SEARCH_LIBS([clock_gettime], [rt])
 
+case "$target" in
+	*solaris*)
+                AC_SEARCH_LIBS([getaddrinfo], [socket])
+		;;
+esac
+
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_STDC

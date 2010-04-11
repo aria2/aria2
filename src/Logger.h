@@ -72,7 +72,7 @@ private:
 
   int _stdoutField;
   
-  inline bool levelEnabled(LEVEL level) const
+  inline bool levelEnabled(LEVEL level)
   {
     return (level >= _logLevel && _file.is_open()) || _stdoutField&level;
   }
@@ -195,12 +195,12 @@ public:
 
   // Returns true if this logger actually writes debug log message to
   // either file or stdout.
-  bool debug() const
+  bool debug()
   {
     return levelEnabled(DEBUG);
   }
 
-  bool info() const
+  bool info()
   {
     return levelEnabled(INFO);
   }

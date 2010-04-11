@@ -34,6 +34,7 @@
 /* copyright --> */
 #ifndef _D_GZIP_ENCODER_H_
 #define _D_GZIP_ENCODER_H_
+#include "common.h"
 
 #include <string>
 

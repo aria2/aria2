@@ -1,3 +1,10 @@
+2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error on opensolaris
+	* configure.ac
+	* src/Logger.h
+	* src/GZipEncoder.h
+
 2010-04-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added aria2.pauseAll, aria2.forcePauseAll and aria2.unpauseAll
