@@ -1,5 +1,13 @@
 2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added warning for the system which lacks clock_gettime with
+	CLOCK_MONOTONIC.
+	* src/MultiUrlRequestInfo.cc
+	* src/TimerA2.cc
+	* src/TimerA2.h
+
+2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed redundant method call for DownloadEngine.
 	* src/DownloadCommand.cc
 

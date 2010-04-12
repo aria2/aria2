@@ -158,6 +158,10 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     }
     SocketCore::setTLSContext(tlsContext);
 #endif
+    if(!Timer::monotonicClock()) {
+      _logger->warn("Don't change system time while aria2c is running."
+                    " Doing this may make aria2c hang for long time.");
+    }
 
     std::string serverStatIf = _option->get(PREF_SERVER_STAT_IF);
     if(!serverStatIf.empty()) {

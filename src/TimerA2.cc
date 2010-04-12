@@ -162,4 +162,9 @@ void Timer::advance(time_t sec)
   _tv.tv_sec += sec;
 }
 
+bool Timer::monotonicClock()
+{
+  return useClockGettime();
+}
+
 } // namespace aria2

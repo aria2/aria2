@@ -94,6 +94,10 @@ public:
   int64_t getTimeInMicros() const;
 
   int64_t getTimeInMillis() const;
+
+  // Returns true if this Timer is not affected by system time change.
+  // Otherwise return false.
+  static bool monotonicClock();
 };
 
 } // namespace aria2
