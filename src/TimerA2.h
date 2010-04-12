@@ -44,7 +44,7 @@ class Timer {
 private:
   timeval _tv;
 
-  int64_t difference(const struct timeval& tv) const;
+  time_t difference(const struct timeval& tv) const;
 
   int64_t differenceInMillis(const struct timeval& tv) const;
 public:
