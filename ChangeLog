@@ -1,5 +1,10 @@
 2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Defined struct timespec if it is not available.
+	* src/a2time.h
+
+2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added missing serialize_session.meta4 to EXTRA_DIST
 	* test/Makefile.am
 

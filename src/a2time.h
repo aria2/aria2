@@ -65,7 +65,7 @@
 # define CLOCK_MONOTONIC 0
 #endif // !CLOCK_MONOTONIC
 #ifndef HAVE_STRUCT_TIMESPEC
-# define timespec int
+struct timespec { time_t tv_sec; long tv_nsec; };
 #endif // !HAVE_STRUCT_TIMESPEC
 #ifndef HAVE_CLOCK_GETTIME
 # define clock_gettime(ID, TP) (-1)
