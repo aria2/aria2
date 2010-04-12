@@ -292,8 +292,6 @@ bool DownloadCommand::prepareForNextSegment() {
       // TODO do we need cuttrailinggarbage here?
       e->_checkIntegrityMan->pushEntry(entry);
     }
-    e->setNoWait(true);
-    e->setRefreshInterval(0);
 #endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
