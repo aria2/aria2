@@ -54,6 +54,7 @@
 #include "FileEntry.h"
 #include "A2STR.h"
 #include "a2functional.h"
+#include "download_helper.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 # include "download_helper.h"

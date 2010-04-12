@@ -1,5 +1,10 @@
 2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error without BitTorrent support.
+	* src/Metalink2RequestGroup.cc
+
+2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error on Mac OS X
 	* src/TimerA2.h
 
