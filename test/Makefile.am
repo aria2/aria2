@@ -251,4 +251,5 @@ EXTRA_DIST = 4096chunk.txt\
 	utf8.torrent\
 	metalink4.xml\
 	metalink3-dirtraversal.xml\
-	metalink4-groupbymetaurl.xml
+	metalink4-groupbymetaurl.xml\
+	serialize_session.meta4
