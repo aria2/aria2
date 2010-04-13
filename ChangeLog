@@ -1,5 +1,21 @@
 2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use elapsed time between two mach_absolute_time() calls.
+	Fixed compile error in Mac OS X.
+	* src/clock_gettime_osx.cc
+	* src/timespec.h
+
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Implemented clock_gettime() using mach_absolute_time in Mac OS X.
+	* configure.ac
+	* src/Makefile.am
+	* src/a2time.h
+	* src/clock_gettime_osx.cc
+	* src/clock_gettime_osx.h
+
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Implemented clock_gettime() using timeGetTime in mingw.
 	* configure.ac
 	* src/Makefile.am

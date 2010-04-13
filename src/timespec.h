@@ -34,6 +34,8 @@
 #ifndef _D_TIMESPEC_H_
 #define _D_TIMESPEC_H_
 
+#include "common.h"
+
 #include <time.h>
 
 #ifndef HAVE_STRUCT_TIMESPEC

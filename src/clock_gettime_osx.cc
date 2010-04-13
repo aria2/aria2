@@ -38,13 +38,21 @@
 
 int clock_gettime(int dummyid, struct timespec* tp)
 {
-  uint64_t mt = mach_absolute_time();
+  static uint64_t lasttime = mach_absolute_time();
+  static struct timespec monotime = {2678400, 0}; // 1month offset(24*3600*31)
+  uint64_t now = mach_absolute_time();
   static mach_timebase_info_data_t baseinfo;
   if(baseinfo.denom == 0) {
     mach_timebase_info(&baseinfo);
   }
-  uint64_t t = mt*baseinfo.numer/baseinfo.denom;
-  tp->tv_sec = t/1000000000+2678400; // 1month offset(24*3600*31)
-  tp->tv_nsec = t%1000000000;
-  return 1;
+  uint64_t elapsed = (now-lasttime)*baseinfo.numer/baseinfo.denom;
+  monotime.tv_sec += elapsed/1000000000;
+  monotime.tv_nsec += elapsed%1000000000;
+  if(monotime.tv_nsec >= 1000000000) {
+    monotime.tv_sec += monotime.tv_nsec/1000000000;
+    monotime.tv_nsec %= 1000000000;
+  }
+  lasttime = now;
+  *tp = monotime;
+  return 0;
 }
