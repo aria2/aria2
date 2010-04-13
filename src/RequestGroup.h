@@ -379,6 +379,8 @@ public:
   // they are not.
   void initPieceStorage();
 
+  void dropPieceStorage();
+
   bool downloadFinishedByFileLength();
 
   void loadAndOpenFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);

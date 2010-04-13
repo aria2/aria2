@@ -528,6 +528,9 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
         temp.push_back(groupToAdd);
         continue;
       }
+      // Drop pieceStorage here because paused download holds its
+      // reference.
+      groupToAdd->dropPieceStorage();
       configureRequestGroup(groupToAdd);
       createInitialCommand(groupToAdd, commands, e);
       groupToAdd->setRequestGroupMan(this);

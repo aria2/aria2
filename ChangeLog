@@ -1,3 +1,11 @@
+2010-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Hold reference to PieceStorage when paused in order to provide
+	progress information via XML-RPC.
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+
 2010-04-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Defined struct timespec if it is not available.

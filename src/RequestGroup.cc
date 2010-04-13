@@ -533,6 +533,12 @@ void RequestGroup::initPieceStorage()
   _segmentMan = tempSegmentMan;
 }
 
+void RequestGroup::dropPieceStorage()
+{
+  _segmentMan.reset();
+  _pieceStorage.reset();
+}
+
 bool RequestGroup::downloadFinishedByFileLength()
 {
   // assuming that a control file doesn't exist.
@@ -891,8 +897,8 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
   if(!_pieceStorage.isNull()) {
     _pieceStorage->removeAdvertisedPiece(0);
   }
-  _segmentMan.reset();
-  _pieceStorage.reset();
+  // Don't reset _segmentMan and _pieceStorage here to provide
+  // progress information via XML-RPC
   _progressInfoFile.reset();
   _downloadContext->releaseRuntimeResource();
 }
