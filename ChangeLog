@@ -1,5 +1,12 @@
 2010-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that user specified path is escaped using
+	util::escapePath() where it should not.
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+
+2010-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Hold reference to PieceStorage when paused in order to provide
 	progress information via XML-RPC.
 	* src/RequestGroup.cc

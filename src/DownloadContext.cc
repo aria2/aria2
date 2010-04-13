@@ -61,8 +61,7 @@ DownloadContext::DownloadContext(size_t pieceLength,
   _downloadStartTime(0),
   _downloadStopTime(0)
 {
-  SharedHandle<FileEntry> fileEntry
-    (new FileEntry(util::escapePath(path), totalLength, 0));
+  SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
   _fileEntries.push_back(fileEntry);
 }
 
