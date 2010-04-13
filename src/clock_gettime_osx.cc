@@ -1,7 +1,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,48 +31,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_A2TIME_H_
-#define _D_A2TIME_H_
+#include "clock_gettime_osx.h"
 
-#include <time.h>
-#include <sys/time.h>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
 
-#ifndef HAVE_LOCALTIME_R
-# include "localtime_r.h"
-#endif // HAVE_LOCALTIME_R
-
-#ifndef HAVE_GETTIMEOFDAY
-# include "gettimeofday.h"
-#endif // HAVE_GETTIMEOFDAY
-
-#ifndef HAVE_STRPTIME
-# include "strptime.h"
-#endif // HAVE_STRPTIME
-
-#ifndef HAVE_TIMEGM
-# include "timegm.h"
-#endif // HAVE_TIMEGM
-
-#ifndef HAVE_ASCTIME_R
-# include "asctime_r.h"
-#endif // HAVE_ASCTIME_R
-
-#ifdef __MINGW32__
-# define suseconds_t uint64_t
-#endif
-
-#ifndef CLOCK_MONOTONIC
-# define CLOCK_MONOTONIC 0
-#endif // !CLOCK_MONOTONIC
-#ifndef HAVE_CLOCK_GETTIME
-# ifdef __MINGW32__
-#   include "clock_gettime_mingw.h"
-# elif HAVE_MACH_ABSOLUTE_TIME
-#   include "clock_gettime_osx.h"
-# else
-#   include "timespec.h"
-#   define clock_gettime(ID, TP) (-1)
-# endif // !__MINGW32__
-#endif // !HAVE_CLOCK_GETTIME
-
-#endif // _D_A2TIME_H_
+int clock_gettime(int dummyid, struct timespec* tp)
+{
+  uint64_t mt = mach_absolute_time();
+  static mach_timebase_info_data_t baseinfo;
+  if(baseinfo.denom == 0) {
+    mach_timebase_info(&baseinfo);
+  }
+  uint64_t t = mt*baseinfo.numer/baseinfo.denom;
+  tp->tv_sec = t/1000000000+2678400; // 1month offset(24*3600*31)
+  tp->tv_nsec = t%1000000000;
+  return 1;
+}

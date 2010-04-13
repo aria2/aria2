@@ -387,6 +387,12 @@ AM_CONDITIONAL([HAVE_DAEMON], [test "x$have_daemon" = "xyes"])
 
 AC_CHECK_FUNCS([clock_gettime], [have_clock_gettime=yes])
 
+if test "x$have_clock_gettime" != "xyes"; then
+   AC_CHECK_FUNCS([mach_absolute_time], [have_mach_absolute_time=yes])
+fi
+AM_CONDITIONAL([HAVE_MACH_ABSOLUTE_TIME],
+		[test "x$have_mach_absolute_time" = "xyes"])
+
 case "$target" in
   *mingw*)
     dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
@@ -394,8 +400,11 @@ case "$target" in
     dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
     AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
     if test "x$have_clock_gettime" != "xyes"; then
-      AM_CONDITIONAL([HAVE_TIMEGETTIME], true)
+        AM_CONDITIONAL([HAVE_TIMEGETTIME], true)
     fi
+    ;;
+  *)
+    AM_CONDITIONAL([HAVE_TIMEGETTIME], false)
     ;;
 esac
 

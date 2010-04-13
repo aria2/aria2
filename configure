@@ -602,6 +602,8 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 HAVE_TIMEGETTIME_FALSE
 HAVE_TIMEGETTIME_TRUE
+HAVE_MACH_ABSOLUTE_TIME_FALSE
+HAVE_MACH_ABSOLUTE_TIME_TRUE
 HAVE_DAEMON_FALSE
 HAVE_DAEMON_TRUE
 HAVE_TIMEGM_FALSE
@@ -15004,6 +15006,28 @@ fi
 done
 
 
+if test "x$have_clock_gettime" != "xyes"; then
+   for ac_func in mach_absolute_time
+do :
+  ac_fn_cxx_check_func "$LINENO" "mach_absolute_time" "ac_cv_func_mach_absolute_time"
+if test "x$ac_cv_func_mach_absolute_time" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_MACH_ABSOLUTE_TIME 1
+_ACEOF
+ have_mach_absolute_time=yes
+fi
+done
+
+fi
+ if test "x$have_mach_absolute_time" = "xyes"; then
+  HAVE_MACH_ABSOLUTE_TIME_TRUE=
+  HAVE_MACH_ABSOLUTE_TIME_FALSE='#'
+else
+  HAVE_MACH_ABSOLUTE_TIME_TRUE='#'
+  HAVE_MACH_ABSOLUTE_TIME_FALSE=
+fi
+
+
 case "$target" in
   *mingw*)
          if true; then
@@ -15023,7 +15047,7 @@ else
 fi
 
     if test "x$have_clock_gettime" != "xyes"; then
-       if true; then
+         if true; then
   HAVE_TIMEGETTIME_TRUE=
   HAVE_TIMEGETTIME_FALSE='#'
 else
@@ -15032,6 +15056,16 @@ else
 fi
 
     fi
+    ;;
+  *)
+     if false; then
+  HAVE_TIMEGETTIME_TRUE=
+  HAVE_TIMEGETTIME_FALSE='#'
+else
+  HAVE_TIMEGETTIME_TRUE='#'
+  HAVE_TIMEGETTIME_FALSE=
+fi
+
     ;;
 esac
 
@@ -15361,12 +15395,20 @@ if test -z "${HAVE_DAEMON_TRUE}" && test -z "${HAVE_DAEMON_FALSE}"; then
   as_fn_error "conditional \"HAVE_DAEMON\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${HAVE_MACH_ABSOLUTE_TIME_TRUE}" && test -z "${HAVE_MACH_ABSOLUTE_TIME_FALSE}"; then
+  as_fn_error "conditional \"HAVE_MACH_ABSOLUTE_TIME\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${HAVE_GETADDRINFO_TRUE}" && test -z "${HAVE_GETADDRINFO_FALSE}"; then
   as_fn_error "conditional \"HAVE_GETADDRINFO\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_GAI_STRERROR_TRUE}" && test -z "${HAVE_GAI_STRERROR_FALSE}"; then
   as_fn_error "conditional \"HAVE_GAI_STRERROR\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_TIMEGETTIME_TRUE}" && test -z "${HAVE_TIMEGETTIME_FALSE}"; then
+  as_fn_error "conditional \"HAVE_TIMEGETTIME\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_TIMEGETTIME_TRUE}" && test -z "${HAVE_TIMEGETTIME_FALSE}"; then

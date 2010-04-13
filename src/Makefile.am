@@ -519,7 +519,11 @@ endif # !HAVE_DAEMON
 
 if HAVE_TIMEGETTIME
 SRCS += clock_gettime_mingw.cc clock_gettime_mingw.h
-endif # !HAVE_TIMEGETTIME
+endif # HAVE_TIMEGETTIME
+
+if HAVE_MACH_ABSOLUTE_TIME
+SRCS += clock_gettime_osx.cc clock_gettime_osx.h
+endif # HAVE_MACH_ABSOLUTE_TIME
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
