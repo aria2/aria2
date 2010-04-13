@@ -517,11 +517,15 @@ if !HAVE_DAEMON
 SRCS += daemon.cc daemon.h
 endif # !HAVE_DAEMON
 
+if HAVE_TIMEGETTIME
+SRCS += clock_gettime_mingw.cc clock_gettime_mingw.h
+endif # !HAVE_TIMEGETTIME
+
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
+	@LIBCARES_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
 	@SQLITE3_LIBS@ #-lprofiler
 #aria2c_LDFLAGS =  -pg
 AM_CPPFLAGS =  -Wall\

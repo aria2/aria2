@@ -600,6 +600,8 @@ ac_func_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
+HAVE_TIMEGETTIME_FALSE
+HAVE_TIMEGETTIME_TRUE
 HAVE_DAEMON_FALSE
 HAVE_DAEMON_TRUE
 HAVE_TIMEGM_FALSE
@@ -3579,8 +3581,9 @@ ac_config_headers="$ac_config_headers config.h"
 
 case "$target" in
   *mingw*|*cygwin*)
-    WINSOCK_LIBS="-lws2_32 -lpthread"
+    WINSOCK_LIBS="-lws2_32"
 
+    LIBS="-lws2_32 -lcrypto -lwsock32 -lgdi32 -lwinmm $LIBS"
     ;;
 esac
 
@@ -7855,11 +7858,17 @@ fi
 
 case "$target" in
 	*mingw*)
-                for ac_header in winsock2.h \
-                                  ws2tcpip.h
+                for ac_header in windows.h \
+				  winsock2.h \
+                                  ws2tcpip.h \
+				  mmsystem.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
-ac_fn_cxx_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+ac_fn_cxx_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+
+"
 eval as_val=\$$as_ac_Header
    if test "x$as_val" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
@@ -14623,7 +14632,6 @@ for ac_func in __argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
-		clock_gettime \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \
@@ -14984,6 +14992,18 @@ else
 fi
 
 
+for ac_func in clock_gettime
+do :
+  ac_fn_cxx_check_func "$LINENO" "clock_gettime" "ac_cv_func_clock_gettime"
+if test "x$ac_cv_func_clock_gettime" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CLOCK_GETTIME 1
+_ACEOF
+ have_clock_gettime=yes
+fi
+done
+
+
 case "$target" in
   *mingw*)
          if true; then
@@ -15002,6 +15022,16 @@ else
   HAVE_GAI_STRERROR_FALSE=
 fi
 
+    if test "x$have_clock_gettime" != "xyes"; then
+       if true; then
+  HAVE_TIMEGETTIME_TRUE=
+  HAVE_TIMEGETTIME_FALSE='#'
+else
+  HAVE_TIMEGETTIME_TRUE='#'
+  HAVE_TIMEGETTIME_FALSE=
+fi
+
+    fi
     ;;
 esac
 
@@ -15337,6 +15367,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_GAI_STRERROR_TRUE}" && test -z "${HAVE_GAI_STRERROR_FALSE}"; then
   as_fn_error "conditional \"HAVE_GAI_STRERROR\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_TIMEGETTIME_TRUE}" && test -z "${HAVE_TIMEGETTIME_FALSE}"; then
+  as_fn_error "conditional \"HAVE_TIMEGETTIME\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

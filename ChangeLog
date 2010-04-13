@@ -1,5 +1,16 @@
 2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Implemented clock_gettime() using timeGetTime in mingw.
+	* configure.ac
+	* src/Makefile.am
+	* src/a2time.h
+	* src/clock_gettime_mingw.cc
+	* src/clock_gettime_mingw.h
+	* src/timespec.h
+	* test/Makefile.am
+
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Ensure that std::ofstream is destroyed before renaming.
 	* src/SessionSerializer.cc
 	* src/util.cc

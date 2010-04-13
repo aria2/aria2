@@ -12,8 +12,9 @@ AC_CONFIG_HEADERS([config.h])
 
 case "$target" in
   *mingw*|*cygwin*)
-    WINSOCK_LIBS="-lws2_32 -lpthread"
+    WINSOCK_LIBS="-lws2_32"
     AC_SUBST(WINSOCK_LIBS)
+    LIBS="-lws2_32 -lcrypto -lwsock32 -lgdi32 -lwinmm $LIBS"
     ;;
 esac
 
@@ -222,8 +223,14 @@ AC_HEADER_STDC
 
 case "$target" in
 	*mingw*)
-                AC_CHECK_HEADERS([winsock2.h \
-                                  ws2tcpip.h])
+                AC_CHECK_HEADERS([windows.h \
+				  winsock2.h \
+                                  ws2tcpip.h \
+				  mmsystem.h], [], [],
+[[#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+]])
 		;;
 esac
 
@@ -299,7 +306,6 @@ AC_CHECK_FUNCS([__argz_count \
                 __argz_next \
                 __argz_stringify \
                 atexit \
-		clock_gettime \
                 ftruncate \
                 getcwd \
                 gethostbyaddr \
@@ -379,12 +385,17 @@ AC_CHECK_FUNCS([timegm],
 AC_CHECK_FUNCS([daemon], [have_daemon=yes])
 AM_CONDITIONAL([HAVE_DAEMON], [test "x$have_daemon" = "xyes"])
 
+AC_CHECK_FUNCS([clock_gettime], [have_clock_gettime=yes])
+
 case "$target" in
   *mingw*)
     dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
     AM_CONDITIONAL([HAVE_GETADDRINFO], true)
     dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
     AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
+    if test "x$have_clock_gettime" != "xyes"; then
+      AM_CONDITIONAL([HAVE_TIMEGETTIME], true)
+    fi
     ;;
 esac
 
