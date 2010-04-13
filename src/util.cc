@@ -1147,14 +1147,16 @@ bool saveAs
     return false;
   }
   std::string tempFilename = strconcat(filename, "__temp");
-  std::ofstream out(tempFilename.c_str(), std::ios::binary);
-  if(!out) {
-    return false;
-  }
-  out << data;
-  out.flush();
-  if(!out) {
-    return false;
+  {
+    std::ofstream out(tempFilename.c_str(), std::ios::binary);
+    if(!out) {
+      return false;
+    }
+    out << data;
+    out.flush();
+    if(!out) {
+      return false;
+    }
   }
   return File(tempFilename).renameTo(filename);
 }

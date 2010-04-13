@@ -1,3 +1,9 @@
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Ensure that std::ofstream is destroyed before renaming.
+	* src/SessionSerializer.cc
+	* src/util.cc
+
 2010-04-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that user specified path is escaped using

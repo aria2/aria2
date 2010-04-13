@@ -62,14 +62,16 @@ SessionSerializer::SessionSerializer
 bool SessionSerializer::save(const std::string& filename) const
 {
   std::string tempFilename = strconcat(filename, "__temp");
-  std::ofstream out(tempFilename.c_str(), std::ios::binary);
-  if(!out) {
-    return false;
-  }
-  save(out);
-  out.flush();
-  if(!out) {
-    return false;
+  {
+    std::ofstream out(tempFilename.c_str(), std::ios::binary);
+    if(!out) {
+      return false;
+    }
+    save(out);
+    out.flush();
+    if(!out) {
+      return false;
+    }
   }
   return File(tempFilename).renameTo(filename);
 }
