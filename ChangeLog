@@ -1,5 +1,11 @@
 2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added AC_SEARCH_LIBS for inet_aton on opensolaris.  opensolaris
+	needs -lnsl for inet_aton.
+	* configure.ac
+
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated po templates.
 	* po/aria2.pot
 
