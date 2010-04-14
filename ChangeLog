@@ -1,5 +1,10 @@
 2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.9.0
+	* doc/aria2c.1.txt
+
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated Ukrainian, Russian, Simplified Chinese, German and Greek
 	translation. Thanks to all translators.
 	* po/de.po
