@@ -4,19 +4,61 @@ aria2 1.9.1
 Release Note
 ------------
 
-This release adds the ability to download file scratch when aria2 sees
-resume is not supported by remote server.  This feature is disabled by
-default. See --always-resume option for details. --no-proxy option
-accepts IPv4 network address with CIDR block.  --remove-control-file
-option is added to remove control file before download begins.  aria2
-now doesn't send "Accept-Encoding: deflate, gzip" by default.
---http-accept-gzip option was added to toggle this behavior.  aria2
-now treats lines starting "#" in -i list as comments.  Several XML-RPC
-methods were added: aria2.shutdown and aria2.forceShutdown.  The new
-exist status code '8' was added.  Several bugs also have been fixed.
+This release adds the ability to save unfinished downloads as text
+file.  aria2 can read the file with -i option on restart.  This
+release also adds the ability to download file from scratch when aria2
+sees resume is not supported by remote server.  This feature is
+disabled by default. See --always-resume option for
+details. --no-proxy option accepts IPv4 network address with CIDR
+block. aria2 now doesn't send "Accept-Encoding: deflate, gzip" by
+default.  --http-accept-gzip option was added to toggle this behavior.
+aria2 now treats lines starting "#" in -i list as comments.  Several
+XML-RPC methods were added: aria2.pause, aria2.unpause,
+aria2.shutdown, and their families.  The new exist status code '8' was
+added. The bug that makes aria2 hang when system time changes while
+aria2 is running was fixed on MinGW32, Mac OS X and the system which
+has clock_gettime().  Several other bugs also have been fixed.
 
 Changes
 -------
+
+ * Added warning for the system which lacks clock_gettime with
+   CLOCK_MONOTONIC.
+
+ * Fixed the bug that hash check hangs when aria2.pause is issued
+   while aria2 is checking piece hashes.  Fixed the bug that the
+   download is paused after file allocation completion even if
+   aria2.pause is issued during file allocation.
+
+ * Fixed compile error on opensolaris
+
+ * Added aria2.forcePause, aria2.pauseAll, aria2.forcePauseAll and
+   aria2.unpauseAll XML-RPC method.
+
+ * Use clock_gettime(CLOCK_MONOTONIC, ...) if it is available and
+   usable to prevent from aria2 from being affected by system time
+   change.
+
+ * Added aria2.pause and aria2.unpause XML-RPC method.  aria2.pause
+   pauses the download denoted by gid. gid is of type string.  The
+   status of paused download becomes "paused" and the download is
+   placed on the first position of waiting queue. As long as the
+   status is "paused", the download is not started. To change status
+   to "waiting", use aria2.unpause method. This method returns GID of
+   paused download.  aria2.unpause changes the status of the download
+   denoted by gid from "paused" to "waiting". This makes the download
+   eligible to restart. gid is of type string. This method returns GID
+   of unpaused download.
+
+ * Added --save-session=FILE option.  This option saves
+   error/unfinished downloads to FILE on exit.  You can pass this
+   output file to aria2c with -i option on restart. Please note that
+   downloads added by aria2.addTorrent and aria2.addMetalink XML-RPC
+   method are not saved.
+
+ * Fixed the bug that FTP data connection is not established via proxy
+   when --ftp-proxy is defined and --ftp-pasv=true and
+   --proxy-method=tunnel.
 
  * Fixed the bug that web-seed URI is not percent-encoded.
 
