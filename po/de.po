@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-04-14 21:56+0900\n"
-"PO-Revision-Date: 2009-12-06 18:07+0900\n"
-"Last-Translator: adlerweb <Unknown>\n"
+"PO-Revision-Date: 2010-04-14 23:11+0900\n"
+"Last-Translator: Ulrich Zeller <Unknown>\n"
 "Language-Team: deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-12-06 08:32+0000\n"
+"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
@@ -115,15 +115,13 @@ msgstr ""
 "Datei."
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG                Dateipfad für die Log-Speicherung. Wenn '-' "
-"angegeben wird,\n"
-"                              wird das Log auf die Standardausgabe "
-"geschrieben."
+" -o, --out=DATEI Der Dateiname der herunterzuladenen Datei. Falls die -Z\n"
+"                              Option verwendet wird, wird diese Option "
+"ignoriert."
 
 #: src/usage_text.h:42
 msgid ""
@@ -145,6 +143,13 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
+" -D, --daemon Starte als Daemon. Das aktuelle Arbeitsverzeichnis wird zu \"/"
+"\"\n"
+"                              geändert. Standardeingabe, Standardausgabe "
+"und\n"
+"                              Standardfehler (stderr) wird nach \"/dev/null"
+"\"\n"
+"                              umgeleitet."
 
 #: src/usage_text.h:50
 msgid ""
@@ -160,6 +165,16 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
+" -s, --split=N Datei mit N Verbindungen herunterladen. Wenn mehr als N URLs\n"
+"                              angegeben werden, werden die ersten N URLs\n"
+"                              verwendet, weitere werden als Backup genutzt.\n"
+"                              Wenn weniger als N URLs angegeben sind, "
+"werden\n"
+"                              diese URLs mehrmals verwendet um insgesamt N\n"
+"                              Verbindungen zu erreichen. Siehe auch Option -"
+"j.\n"
+"                              Diese Einstellung betrifft Metalink-Downloads\n"
+"                              nicht, nutzen sie statt dessen -C."
 
 #: src/usage_text.h:59
 msgid ""
@@ -173,7 +188,7 @@ msgstr ""
 
 #: src/usage_text.h:62
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr ""
+msgstr " -t, --timeout=SEC Zeitüberschreitung festlegen (in Sekunden)."
 
 #: src/usage_text.h:64
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
@@ -182,31 +197,28 @@ msgstr ""
 "                              Keine Begrenzung mit 0."
 
 #: src/usage_text.h:66
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY          Diesen Proxy für HTTPS nutzen.\n"
-"                              Siehe auch --all-proxy.\n"
-"                              Dies betrifft  alle URLs."
+" --http-proxy=PROXY           Diesen Proxy-Server für HTTP verwenden. Geben\n"
+"                              Sie \"\" an, um einen vorher definierten Proxy "
+"zu\n"
+"                              löschen.\n"
+"                              Siehe auch Option --all-proxy.\n"
+"                              Dies betrifft alle URLs."
 
 #: src/usage_text.h:71
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY          Diesen Proxy für HTTPS nutzen.\n"
-"                              Siehe auch --all-proxy.\n"
-"                              Dies betrifft  alle URLs."
 
 #: src/usage_text.h:76
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
 "previously\n"
@@ -214,9 +226,6 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY          Diesen Proxy für HTTPS nutzen.\n"
-"                              Siehe auch --all-proxy.\n"
-"                              Dies betrifft  alle URLs."
 
 #: src/usage_text.h:81
 msgid ""
@@ -243,7 +252,7 @@ msgstr ""
 
 #: src/usage_text.h:93
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
-msgstr ""
+msgstr " --proxy-method=METHOD Methode für Proxy-Anfragen setzen."
 
 #: src/usage_text.h:95
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
@@ -271,6 +280,9 @@ msgid ""
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
+" -p, --ftp-pasv[=true|false] Passiven Modus für FTP nutzen. Wenn der Wert "
+"false ist\n"
+"                              wird aktives FTP verwendet."
 
 #: src/usage_text.h:106
 msgid ""
@@ -283,6 +295,16 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
+" --lowest-speed-limit=GESCHWINDIGKEIT Wenn die Geschwindigkeit kleiner oder "
+"gleich diesem\n"
+"                              Wert (Bytes pro s) ist, beende die "
+"Verbindung.\n"
+"                              0 bedeutet, aria2 hat keine "
+"Mindestgeschwindigkeit.\n"
+"                              Sie können K oder M (1K = 1024, 1M = 1024K) "
+"anhängen.\n"
+"                              Diese Option hat keine Auswirkungen auf "
+"BitTorrent Downloads."
 
 #: src/usage_text.h:112
 msgid ""
@@ -293,6 +315,14 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
+" --max-overall-download-limit=GESCHWINDIGKEIT Setze die maximale "
+"Gesamtdownloadgeschwindigkeit in Bytes/s.\n"
+"                              0 bedeutet unbegrenzt.\n"
+"                              Sie können K oder M (1K = 1024, 1M = 1024K) "
+"anhängen.\n"
+"                              Verwenden Sie --max-download-limit , um die "
+"Downloadgeschwindigkeit\n"
+"                              pro einzelnem Download zu begrenzen."
 
 #: src/usage_text.h:118
 msgid ""
@@ -349,6 +379,11 @@ msgid ""
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
+" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
+"                              während der Vorbelegung von "
+"Dateispeicherplatz\n"
+"                              verringert. Abschaltbar, falls dabei Fehler\n"
+"                              auftreten."
 
 #: src/usage_text.h:147
 msgid ""
@@ -367,6 +402,14 @@ msgid ""
 "proceed\n"
 "                              but some download progress will be lost."
 msgstr ""
+" --allow-piece-length-change=true|false  Wenn \"false\" angegeben wird, "
+"bricht\n"
+"                              Aria2 den Download ab, wenn eine "
+"Abschnittslänge\n"
+"                              des Downloads sich von der in der Steuerdatei\n"
+"                              unterscheidet. Bei \"true\" wird "
+"fortgefahren,\n"
+"                              mit Einbußen am bisherigen Downloadfortschritt."
 
 #: src/usage_text.h:156
 msgid ""
@@ -413,7 +456,7 @@ msgstr ""
 
 #: src/usage_text.h:179
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
-msgstr ""
+msgstr " --enable-http-pipelining[=true|false] Aktiviere HTTP/1.1 Pipelining."
 
 #: src/usage_text.h:181
 msgid ""
@@ -474,7 +517,7 @@ msgstr ""
 
 #: src/usage_text.h:206
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
-msgstr ""
+msgstr " -U, --user-agent=USER_AGENT  Setze User Agent für http(s) Downloads."
 
 #: src/usage_text.h:208
 msgid " -n, --no-netrc               Disables netrc support."
@@ -510,6 +553,9 @@ msgid ""
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
+" --load-cookies=Datei         Lade Cookies aus einer Datei im Firefox3 "
+"Format\n"
+"                              und Mozilla/Firefox(1.x/2.x)/Netscape Format."
 
 #: src/usage_text.h:226
 msgid ""
@@ -770,12 +816,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:338
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
 "Reads\n"
 "                              input from stdin when '-' is specified."
-msgstr " -M, --metalink-file=METALINK_FILE  Datenpfad zur metalink-Datei."
+msgstr ""
+" -M, --metalink-file=METALINK_DATEI Der Dateipfad zur .metalink Datei. "
+"Liest\n"
+"                              von stdin, wenn '-' angegeben wird."
 
 #: src/usage_text.h:341
 msgid ""
@@ -908,6 +956,8 @@ msgstr ""
 #: src/usage_text.h:401
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
+" -q, --quiet[=true|false]     aria2 lautlos schalten (keine "
+"Konsolenausgaben)."
 
 #: src/usage_text.h:403
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
@@ -1206,16 +1256,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:551
-#, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed when download\n"
 "                              is paused.\n"
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --https-proxy=PROXY          Diesen Proxy für HTTPS nutzen.\n"
-"                              Siehe auch --all-proxy.\n"
-"                              Dies betrifft  alle URLs."
 
 #: src/usage_text.h:556
 msgid ""
@@ -1336,14 +1382,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:618
-#, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
 msgstr ""
-" --enable-dht[=true|false]    Nutzung von DHT (VHT, Verteilte Hash-Tabelle)\n"
-"                              einschalten."
 
 #: src/usage_text.h:620
-#, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
 "If\n"
@@ -1352,13 +1394,6 @@ msgid ""
 "interface\n"
 "                              name and IP address."
 msgstr ""
-" --bt-require-crypto=true|false  Falls \"true\" wird Aria2 keine "
-"Verbindungen\n"
-"                              mit herkömmlichem BitTorrent-Handshake auf-\n"
-"                              bauen oder akzeptieren. Damit wird stets der\n"
-"                              Verschleierungs-Handshake (\"Obfuscation\") "
-"ver-\n"
-"                              wendet."
 
 #: src/usage_text.h:625
 msgid ""
@@ -1369,40 +1404,50 @@ msgstr ""
 #: src/usage_text.h:628
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
+" --all-proxy-user=BENUTZER    Lege Benutzernamen für die --all-proxy Option\n"
+"                              fest."
 
 #: src/usage_text.h:630
-#, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr ""
-" --ftp-passwd=PASSWORT        Festlegen des FTP-Paßworts. Wird für\n"
-"                              alle URLs verwendet."
+" --all-proxy-passwd=PASSWORT  Lege Passwort für die --all-proxy Option fest."
 
 #: src/usage_text.h:632
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
+" --http-proxy-user=BENUTZER   Lege Benutzernamen für die --http-proxy "
+"Option\n"
+"                              fest."
 
 #: src/usage_text.h:634
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr ""
+" --http-proxy-passwd=PASSWORT Lege Passwort für die --http-proxy Option fest."
 
 #: src/usage_text.h:636
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
+" --https-proxy-user=BENUTZER  Lege Benutzernamen für die --https-proxy "
+"Option\n"
+"                              fest."
 
 #: src/usage_text.h:638
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
+" --https-proxy-passwd=PASSWORT Legt das Passwort für die --https-proxy\n"
+"                              Option fest."
 
 #: src/usage_text.h:640
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
+" --ftp-proxy-user=BENUTZER    Legt den Benutzernamen für die --ftp-proxy\n"
+"                              Option fest."
 
 #: src/usage_text.h:642
-#, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr ""
-" --ftp-passwd=PASSWORT        Festlegen des FTP-Paßworts. Wird für\n"
-"                              alle URLs verwendet."
+" --ftp-proxy-passwd=PASSWORT  Legt das Passwort für die --ftp-proxy\n"
+"                              Option fest."
 
 #: src/usage_text.h:644
 msgid ""
@@ -1415,7 +1460,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:649
-#, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
 "aria2\n"
@@ -1431,21 +1475,6 @@ msgid ""
 "                              downloads file from scratch.\n"
 "                              See --max-resume-failure-tries option."
 msgstr ""
-" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
-"nach\n"
-"                              dem Download einer .torrent-Datei oder einer "
-"Da-\n"
-"                              tei, deren Inhaltstyp \"application/x-"
-"bittorrent\"\n"
-"                              ist, diese Datei als Torrent-Steuerdatei "
-"durch-\n"
-"                              sucht und alle gefundenen Download-Positionen\n"
-"                              heruntergeladen.\n"
-"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
-"                              der Festplatte gespeichert, sondern nur im \n"
-"                              Speicher gehalten.\n"
-"                              Bei \"false\" wird die .torrent-Datei nicht\n"
-"                              durchsucht."
 
 #: src/usage_text.h:659
 msgid ""
@@ -1514,6 +1543,7 @@ msgstr "Fehler an %s melden"
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
+"Aufruf: aria2c [OPTIONEN] [URI | MAGNET | TORRENT_DATEI | METALINK_DATEI]..."
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -1536,33 +1566,26 @@ msgstr "Optionen:"
 #: src/version_usage.cc:112
 #, c-format
 msgid "Printing options whose name includes '%s'."
-msgstr ""
+msgstr "Zeige Optionen deren Namen \"%s\" beinhalten"
 
 #: src/version_usage.cc:120
 #, c-format
 msgid "No option matching with '%s'."
-msgstr ""
+msgstr "Keine Option mit '%s'."
 
 #: src/version_usage.cc:128
-#, fuzzy
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
 " URIs must point to the same file or downloading will fail."
 msgstr ""
-" Sie können mehrere URLs angeben. Solange Sie nicht die -Z Option benutzen,\n"
-" müssen alle URLs zur selben Datei zeigen, oder der Download schlägt fehl."
 
 #: src/version_usage.cc:130
-#, fuzzy
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
 " treated as a separate download."
 msgstr ""
-" Es kann auch eine beliebige Anzahl von Torrent- und Metalink-Dateien auf\n"
-" einem lokalen Speichermedium angegeben werden. Dabei ist zu beachten, daß\n"
-" diese stets als separater Download behandelt werden."
 
 #: src/version_usage.cc:135
 msgid ""
@@ -1579,25 +1602,19 @@ msgid ""
 msgstr ""
 
 #: src/version_usage.cc:142
-#, fuzzy
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
-" Bitte sicherstellen, daß eine URL von Apostrophen (') oder "
-"Anführungszeichen\n"
-" (\") umschlossen ist, wenn sie \"&\" oder andere Zeichen enthält, die auf "
-"der\n"
-" Kommandozeile eine besondere Bedeutung haben."
 
 #: src/version_usage.cc:146
 msgid "Refer to man page for more information."
 msgstr "Für mehr Informationen, sehen Sie bitte in der man page nach."
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - Wurde bereits beendet: %s"
+msgstr ""
 
 #: src/message.h:102
 #, c-format
@@ -1801,7 +1818,7 @@ msgstr ""
 #: src/message.h:144
 #, c-format
 msgid "Too small payload size for %s, size=%d."
-msgstr ""
+msgstr "Zu geringe Nutzgröße für %s, Größe=%d."
 
 #: src/message.h:145
 #, c-format
@@ -1820,7 +1837,7 @@ msgstr "Das Verteilverhältnis betrug %.1f, hoch-/heruntergeladen=%sB/%sB"
 #: src/message.h:147
 #, c-format
 msgid "Missing %s in torrent metainfo."
-msgstr ""
+msgstr "Fehlendes %s in der Torrent-Metainfo."
 
 #: src/message.h:148
 msgid "Tracker returned null data."
@@ -1852,52 +1869,52 @@ msgstr ""
 #: src/message.h:156
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
-msgstr ""
+msgstr "Öffnen der ServerStat-Datei %s gescheitert."
 
 #: src/message.h:157
 #, c-format
 msgid "ServerStat file %s loaded successfully."
-msgstr ""
+msgstr "ServerStat-Datei %s erfolgreich geladen."
 
 #: src/message.h:158
 #, c-format
 msgid "Failed to read ServerStat from %s."
-msgstr ""
+msgstr "Lesen der ServerStat-Datei von %s gescheitert."
 
 #: src/message.h:161
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
-msgstr ""
+msgstr "Öffnen der ServerStat-Datei %s zum Schreiben gescheitert."
 
 #: src/message.h:162
 #, c-format
 msgid "ServerStat file %s saved successfully."
-msgstr ""
+msgstr "ServerStat-Datei %s erfolgreich gespeichert."
 
 #: src/message.h:163
 #, c-format
 msgid "Failed to write ServerStat to %s."
-msgstr ""
+msgstr "Schreiben von ServerStat nach %s fehlgeschlagen."
 
 #: src/message.h:166
 #, c-format
 msgid "Failed to establish connection, cause: %s"
-msgstr ""
+msgstr "Verbindungsherstellung fehlgeschlagen, Grund: %s"
 
 #: src/message.h:167
 #, c-format
 msgid "Network problem has occurred. cause:%s"
-msgstr ""
+msgstr "Netzwerkproblem aufgetreten: Ursache: %s"
 
 #: src/message.h:169
 #, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
-msgstr ""
+msgstr "Konnte vertraute CA-Zertifikate nicht von %s laden. Ursache: %s"
 
 #: src/message.h:171
 #, c-format
 msgid "Certificate verification failed. Cause: %s"
-msgstr ""
+msgstr "Zertifikatprüfung fehlgeschlagen. Ursache: %s"
 
 #: src/message.h:172
 msgid "No certificate found."
@@ -1909,22 +1926,25 @@ msgstr ""
 
 #: src/message.h:174
 msgid "No files to download."
-msgstr ""
+msgstr "Keine Dateien zum herunterladen."
 
 #: src/message.h:176
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
 msgstr ""
+"Sie erhalten möglicherweise einen Zertifikatprüfungsfehler des HTTPS-"
+"Servers. Siehe --ca-certificate und --check-certificate."
 
 #: src/message.h:178
 #, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr ""
+msgstr "Ausgabe des Dateiinhalts von '%s'..."
 
 #: src/message.h:179
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr ""
+"Diese Datei ist weder eine Torrent- noch eine Metalink-Datei. Überspringe."
 
 #: src/message.h:184
 #, c-format
@@ -1934,19 +1954,19 @@ msgstr "Ist '%s' eine Datei?"
 #: src/message.h:185
 #, c-format
 msgid "Failed to find given interface %s, cause: %s"
-msgstr ""
+msgstr "Angegebene Schnittstelle %s konnte nicht gefunden werden. Ursache: %s"
 
 #: src/message.h:187
 #, c-format
 msgid "Saved metadata as %s."
-msgstr ""
+msgstr "Metadaten als %s gespeichert."
 
 #: src/message.h:188
-#, fuzzy, c-format
+#, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr ""
-"Speichern der Signatur unter %s fehlgeschlagen. Möglicherweise existiert\n"
-"die Datei bereits."
+"Speichern der Metadaten als %s misslungen. Möglicherweise existiert die "
+"Datei bereits."
 
 #: src/message.h:190
 #, c-format
@@ -1996,6 +2016,8 @@ msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
+"Der angeforderte Dateiname und der vorher registrierte stimmen nicht "
+"überein. Erwartet:%s Tatsächlich:%s"
 
 #: src/message.h:202
 #, c-format
@@ -2023,7 +2045,7 @@ msgstr "SSL I/O störung"
 
 #: src/message.h:207
 msgid "SSL protocol error"
-msgstr "SSL protocol störung"
+msgstr "SSL Protokollfehler."
 
 #: src/message.h:208
 #, c-format
@@ -2129,12 +2151,12 @@ msgstr "Konnte eine Socket-Option nicht setzen, Ursache: %s"
 #: src/message.h:231
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
-msgstr ""
+msgstr "Socket kann nicht auf blockierend geändert werden, Ursache: %s"
 
 #: src/message.h:232
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
-msgstr ""
+msgstr "Socket kann nicht auf nicht-blockierend geändert werden, Ursache: %s"
 
 #: src/message.h:233
 #, c-format
@@ -2297,7 +2319,7 @@ msgstr "Ausnahme aufgetreten"
 #: src/message.h:264
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
-msgstr ""
+msgstr "Maximale Nutzdatenlänge überschritten oder ungültig. Länge = %u"
 
 #: src/message.h:265
 #, c-format
@@ -2308,14 +2330,12 @@ msgstr "Ungültige Dateigrösse. Download abgebrochen %s: local %s, remote %s"
 msgid "Errors occurred while binding port.\n"
 msgstr "Fehler beim Binden an Port aufgetreten.\n"
 
-#~ msgid "CUID#%d - The download for one segment completed successfully."
-#~ msgstr "CUID#%d - Download eines Segments erfolgreich beendet."
-
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - Kein Segment verfügbar."
-
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - Verbinde mit %s:%d"
+#~ msgid ""
+#~ "CUID#%d - Response received:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "CUID#%d - Erhaltene Antwort:\n"
+#~ "%s"
 
 #~ msgid ""
 #~ "CUID#%d - The segment changed. We send the request again with new Range "
@@ -2327,31 +2347,14 @@ msgstr "Fehler beim Binden an Port aufgetreten.\n"
 #~ msgid "CUID#%d - Redirecting to %s"
 #~ msgstr "CUID#%d - Weiterleitung zu %s"
 
-#~ msgid ""
-#~ "CUID#%d - Requesting:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - Anfordern:\n"
-#~ "%s"
+#~ msgid "CUID#%d - Connecting to %s:%d"
+#~ msgstr "CUID#%d - Verbinde mit %s:%d"
 
-#~ msgid ""
-#~ "CUID#%d - Response received:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - Erhaltene Antwort:\n"
-#~ "%s"
+#~ msgid "CUID#%d - No segment available."
+#~ msgstr "CUID#%d - Kein Segment verfügbar."
 
-#~ msgid "CUID#%d - Download aborted. URI=%s"
-#~ msgstr "CUID#%d - Download abgebrochen. URI=%s"
-
-#~ msgid "CUID#%d - Restarting the download. URI=%s"
-#~ msgstr "CUID#%d - Download wird erneut gestartet. URI=%s"
-
-#~ msgid "CUID#%d - Download aborted."
-#~ msgstr "CUID#%d - Download abgebrochen."
-
-#~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-#~ msgstr "CUID#%d - %d Versuche, aber kein Erfolg. Download abgebrochen."
+#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
+#~ msgstr "CUID#%d - cuid beim segmentManager deregistriert."
 
 #~ msgid "CUID#%d - we got new piece. index=%d"
 #~ msgstr "CUID#%d - Neues Teilstück erhalten. Index=%d"
@@ -2359,8 +2362,8 @@ msgstr "Fehler beim Binden an Port aufgetreten.\n"
 #~ msgid "CUID#%d - we got wrong piece. index=%d"
 #~ msgstr "CUID#%d - falsches Teilstück erhalten. Index=%d"
 
-#~ msgid "CUID#%d - Download not complete: %s"
-#~ msgstr "CUID#%d - Download abgebrochen. %s"
+#~ msgid "#%d - Download has already completed: %s"
+#~ msgstr "#%d - Wurde bereits beendet: %s"
 
 #~ msgid "CUID#%d - Good checksum: %s"
 #~ msgstr "CUID#%d - Prüfsumme ok: %s"
@@ -2371,20 +2374,8 @@ msgstr "Fehler beim Binden an Port aufgetreten.\n"
 #~ msgid "CUID#%d - Resolving hostname %s"
 #~ msgstr "CUID#%d - Löse Hostnamen auf %s"
 
-#~ msgid "CUID#%d - Name resolution complete: %s -> %s"
-#~ msgstr "CUID#%d - Namensauflösung abgeschlossen: %s -> %s"
-
-#~ msgid "CUID#%d - Name resolution for %s failed:%s"
-#~ msgstr "CUID#%d - Namensauflösung für %s fehlgeschlagen: %s"
-
-#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
-#~ msgstr "CUID#%d - DNS-Eintrag im Cache: %s -> %s"
-
 #~ msgid "CUID#%d - Abort requested."
 #~ msgstr "CUID#%d - Abbruch angefordert."
-
-#~ msgid "CUID#%d - Connecting to the peer %s"
-#~ msgstr "CUID#%d - Verbinde zu Peer %s"
 
 #~ msgid ""
 #~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
@@ -2400,47 +2391,15 @@ msgstr "Fehler beim Binden an Port aufgetreten.\n"
 #~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
 #~ "index=%d, begin=%d, length=%d"
 
-#~ msgid "CUID#%d - Exception caught while validating file integrity."
-#~ msgstr "CUID#%d - Ausnahmefehler beim Prüfen der Datei-Integrität."
-
-#~ msgid "CUID#%d - Not interested in the peer"
-#~ msgstr "CUID#%d - Kein Interesse am Peer"
-
-#~ msgid "CUID#%d - Extended Messaging enabled."
-#~ msgstr "CUID#%d - Erweitertes Messaging aktiviert"
-
-#~ msgid "CUID#%d - Exception caught while allocating file space."
-#~ msgstr "CUID#%d - Ausnahmefehler beim Reservieren des Speicherplatzes"
-
-#~ msgid "CUID#%d - Peer %s:%d banned."
-#~ msgstr "CUID#%d - Peer %s:%d gebannt."
-
-#~ msgid "CUID#%d - Using port %d for accepting new connections"
-#~ msgstr "CUID#%d - Benutze Port %d, um neue Verbindungen zu akzeptieren"
-
-#~ msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-#~ msgstr "CUID#%d - Eingehende Verbindung, füge neuen Befehl CUID#%d hinzu"
-
-#~ msgid "CUID#%d - Error in accepting connection"
-#~ msgstr "CUID#%d - Fehler beim Akzeptieren der Verbindung"
-
-#~ msgid "CUID#%d - Error occurred while processing tracker response."
-#~ msgstr "CUID#%d - Fehler beim Verarbeiten der Antwort des Trackers"
-
-#~ msgid "CUID#%d - Cannot create tracker request."
-#~ msgstr "CUID#%d - Konnte keinen Tracker-Request erstellen."
-
-#~ msgid "CUID#%d - The peer is DHT-enabled."
-#~ msgstr "CUID#%d - Der Peer unterstützt DHT."
-
 #~ msgid "Dispatching FileAllocationCommand for CUID#%d."
 #~ msgstr "Dispatching FileAllocationCommand for CUID#%d."
 
 #~ msgid " -o, --out=FILE               The file name of the downloaded file."
 #~ msgstr " -o, --out=FILE               Dateiname für die abgerufene Datei."
 
-#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
-#~ msgstr "CUID#%d - cuid beim segmentManager deregistriert."
-
 #~ msgid " -D, --daemon                 Run as daemon."
 #~ msgstr " -D, --daemon                 Start als Daemon-Prozeß."
+
+#~ msgid ""
+#~ " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
+#~ msgstr " -M, --metalink-file=METALINK_FILE  Datenpfad zur metalink-Datei."

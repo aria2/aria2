@@ -8,27 +8,27 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-04-14 21:56+0900\n"
-"PO-Revision-Date: 2010-02-17 08:54+0000\n"
-"Last-Translator: boltom <Unknown>\n"
+"PO-Revision-Date: 2010-03-23 10:37+0000\n"
+"Last-Translator: Tony Ren <aus.dem.Mars@gmail.com>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-03-09 15:00+0000\n"
+"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr "关闭顺序开始... 紧急关闭请再按Ctrl-C。"
+msgstr "正在关闭程序... 紧急关闭请再按Ctrl-C"
 
 #: src/DownloadEngine.cc:228
 msgid "Emergency shutdown sequence commencing..."
-msgstr "紧急关闭序列开始..."
+msgstr "紧急关闭程序..."
 
 #: src/MultiUrlRequestInfo.cc:103
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr "如果传输重新开始，aria2将续传"
+msgstr "重新启动aria2，自动继续下载文件"
 
 #: src/MultiUrlRequestInfo.cc:105
 msgid ""
@@ -1423,12 +1423,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:618
-#, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr " --enable-dht[=true|false] 启用DHT功能。"
+msgstr ""
 
 #: src/usage_text.h:620
-#, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
 "If\n"
@@ -1437,28 +1435,20 @@ msgid ""
 "interface\n"
 "                              name and IP address."
 msgstr ""
-" --bt-require-crypto=true|false 如果选择true，aria2将不会\n"
-"                              和遗留的握手接受并建立\n"
-"                              连接。因此aria2问题使用\n"
-"                              模糊握手。"
 
 #: src/usage_text.h:625
-#, fuzzy
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 msgstr ""
-" --bt-seed-unverified[=true|false] 不验证片段的哈希值，直接以上\n"
-"                              一个下载文件做种子。"
 
 #: src/usage_text.h:628
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
 
 #: src/usage_text.h:630
-#, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
-msgstr " --ftp-passwd=PASSWD 设置FTP密码。此设置对所有链接有效。"
+msgstr ""
 
 #: src/usage_text.h:632
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
@@ -1481,12 +1471,10 @@ msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
 #: src/usage_text.h:642
-#, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
-msgstr " --ftp-passwd=PASSWD 设置FTP密码。此设置对所有链接有效。"
+msgstr ""
 
 #: src/usage_text.h:644
-#, fuzzy
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
 "Using\n"
@@ -1495,13 +1483,8 @@ msgid ""
 "                              users behind proxy server which disables "
 "resume."
 msgstr ""
-" --allow-piece-length-change=true|false 如果选择false，当来自控制文件\n"
-"                              中的片段长度不相同时，aria2会放弃下\n"
-"                              载。如果选择true，您可以继续进行下\n"
-"                              载，但某些下载进度会丢失。"
 
 #: src/usage_text.h:649
-#, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
 "aria2\n"
@@ -1517,15 +1500,6 @@ msgid ""
 "                              downloads file from scratch.\n"
 "                              See --max-resume-failure-tries option."
 msgstr ""
-" --follow-torrent=true|false|mem 如果指定true或mem，当后缀为.torrent\n"
-"                              或内容类型是application/x-bittorrent的文\n"
-"                              件被下载时，aria2将分析其为torrent文件\n"
-"                              并下载其中提及的文件。\n"
-"                              \n"
-"                              如果指定mem，torrent文件不会被写入\n"
-"                              到磁盘，但只保留在内存中。\n"
-"                              如果指定false，上面提到的动作\n"
-"                              将不会被采取。"
 
 #: src/usage_text.h:659
 msgid ""
@@ -1541,12 +1515,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:666
-#, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
-msgstr " -t, --timeout=SEC 设置超时（以秒计）。"
+msgstr ""
 
 #: src/usage_text.h:668
-#, fuzzy
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
 "                              establish connection to tracker. After the\n"
@@ -1556,15 +1528,10 @@ msgid ""
 "used\n"
 "                              instead."
 msgstr ""
-" --connect-timeout=SEC 设置建立到HTTP/FTP/代理服务器的\n"
-"                              链接超时（以秒计）。在链\n"
-"                              接建立之后，此选项将失效\n"
-"                              并以--timeout选项替代。"
 
 #: src/usage_text.h:674
-#, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
-msgstr " -t, --timeout=SEC 设置超时（以秒计）。"
+msgstr ""
 
 #: src/usage_text.h:676
 msgid ""
@@ -1577,7 +1544,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:681
-#, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
 "exit.\n"
@@ -1588,10 +1554,6 @@ msgid ""
 "addMetalink\n"
 "                              XML-RPC method are not saved."
 msgstr ""
-" --connect-timeout=SEC 设置建立到HTTP/FTP/代理服务器的\n"
-"                              链接超时（以秒计）。在链\n"
-"                              接建立之后，此选项将失效\n"
-"                              并以--timeout选项替代。"
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -1674,9 +1636,9 @@ msgid "Refer to man page for more information."
 msgstr ""
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - 下载已完成: %s"
+msgstr ""
 
 #: src/message.h:102
 #, c-format
@@ -2364,98 +2326,3 @@ msgstr "无效的文件长度。不能继续下载%s：本地%s，远程%s"
 #: src/BtSetup.cc:171
 msgid "Errors occurred while binding port.\n"
 msgstr "绑定端口时发生错误。\n"
-
-#~ msgid "CUID#%d - The download for one segment completed successfully."
-#~ msgstr "CUID#%d - 一个分块的下载成功的完成了."
-
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - 已经没有多余的分块"
-
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - 连接到 %s:%d"
-
-#~ msgid ""
-#~ "CUID#%d - The segment changed. We send the request again with new Range "
-#~ "header."
-#~ msgstr "CUID#%d - 分块发生变化。将使用新的范围报头再次发送请求。"
-
-#~ msgid "CUID#%d - Redirecting to %s"
-#~ msgstr "CUID#%d - 重定向到%s"
-
-#~ msgid ""
-#~ "CUID#%d - Requesting:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - 正在请求:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "CUID#%d - Response received:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - 收到应答:\n"
-#~ "%s"
-
-#~ msgid "CUID#%d - Download aborted. URI=%s"
-#~ msgstr "CUID#%d - 下载中断。URI=%s"
-
-#~ msgid "CUID#%d - Restarting the download. URI=%s"
-#~ msgstr "CUID#%d - 重新开始下载。URI=%s"
-
-#~ msgid "CUID#%d - Download aborted."
-#~ msgstr "CUID#%d - 下载中断。"
-
-#~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-#~ msgstr "CUID#%d - %d 次尝试均告失败.下载终止."
-
-#~ msgid "CUID#%d - we got new piece. index=%d"
-#~ msgstr "CUID#%d - 获得新的分片. index=%d"
-
-#~ msgid "CUID#%d - we got wrong piece. index=%d"
-#~ msgstr "CUID#%d - 获得错误的分片. index=%d"
-
-#~ msgid "CUID#%d - Download not complete: %s"
-#~ msgstr "CUID#%d - 下载未完成: %s"
-
-#~ msgid "CUID#%d - Good checksum: %s"
-#~ msgstr "CUID#%d - 正确的校验和: %s"
-
-#~ msgid "CUID#%d - Bad checksum: %s"
-#~ msgstr "CUID#%d - 错误的校验和: %s"
-
-#~ msgid "CUID#%d - Resolving hostname %s"
-#~ msgstr "CUID#%d - 正在解析主机名 %s"
-
-#~ msgid "CUID#%d - Name resolution complete: %s -> %s"
-#~ msgstr "CUID#%d - 名字解析完成: %s -> %s"
-
-#~ msgid "CUID#%d - Name resolution for %s failed:%s"
-#~ msgstr "CUID#%d - %s的名字解析失败,原因:%s"
-
-#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
-#~ msgstr "CUID#%d - DNS cache 命中: %s -> %s"
-
-#~ msgid "CUID#%d - Abort requested."
-#~ msgstr "CUID#%d - 被请求中止。"
-
-#~ msgid ""
-#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-#~ "blockIndex=%d"
-#~ msgstr "CUID#%d - 接收的块。索引=%d，开始=%d，长度=%d，补偿=%llu，块索引=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - 拒绝队列中的块信息，因为对等机已经被堵塞。索引=%d，开始=%d，长度"
-#~ "=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because cancel message received. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - 拒绝队列中的块信息，因为取消了信息接收。索引=%d，开始=%d，长度=%"
-#~ "d"
-
-#~ msgid "CUID#%d - Exception caught while validating file integrity."
-#~ msgstr "CUID#%d - 在确认文件完整时，例外被捕获。"

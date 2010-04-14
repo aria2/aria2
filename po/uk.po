@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-04-14 21:56+0900\n"
-"PO-Revision-Date: 2010-01-27 08:21+0000\n"
+"PO-Revision-Date: 2010-04-02 14:30+0000\n"
 "Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-02-03 13:44+0000\n"
+"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
@@ -402,20 +402,12 @@ msgstr ""
 "якась помилка"
 
 #: src/usage_text.h:147
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false Restart download from scratch if the\n"
 "                              corresponding control file doesn't exist.  "
 "See\n"
 "                              also --auto-file-renaming option."
 msgstr ""
-" --allow-overwrite=true|false Якщо вказано false та файл вже існує, проте\n"
-"                              відповідний контрольний файл (ім'я файлу ."
-"aria2)\n"
-"                              не існує, тоді aria2 не буде "
-"перезавантажувати\n"
-"                              файл. Дивіться також параметр --auto-file-"
-"renaming."
 
 #: src/usage_text.h:151
 msgid ""
@@ -843,6 +835,14 @@ msgid ""
 "                              byte data are added to make its length 20 "
 "bytes."
 msgstr ""
+" --peer-id-prefix=PEER_ID_PREFIX Задати префікс для ID вузла. ID вузла у "
+"BitTorrent\n"
+"                              має розмір 20 байтів. Якщо буде вказано більше "
+"ніж 20 байтів,\n"
+"                              тоді будуть використовуватися лише перші 20, "
+"якщо ж буде вказано\n"
+"                              менше 20, то вони будуть доповнені "
+"випадколвими даними до 20 байтів."
 
 #: src/usage_text.h:295
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -976,6 +976,9 @@ msgid ""
 "Reads\n"
 "                              input from stdin when '-' is specified."
 msgstr ""
+" -M, --metalink-file=METALINK_FILE Шлях до файлу .metalink. Читає\n"
+"                              ввод з stdin, якщо у якості імені вказано \"-"
+"\"."
 
 #: src/usage_text.h:341
 msgid ""
@@ -1387,15 +1390,12 @@ msgstr ""
 "                              у параметрі --ca-certificate."
 
 #: src/usage_text.h:483
-#, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n"
 "                              network address with or without CIDR block "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
-" --no-proxy=DOMAINS Вказати розділені комами імена хостів або доменів, де\n"
-"                              проксі не треба використовувати."
 
 #: src/usage_text.h:487
 msgid ""
@@ -1703,6 +1703,30 @@ msgid ""
 "1M =\n"
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
+" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Спробувати завантажити "
+"спочатку\n"
+"                              першу та останню частини кожного файлу.\n"
+"                              Це буває корисним для попереднього \n"
+"                              перегляду файлів. Аргумен може вміщувати у "
+"собі\n"
+"                              2 ключових слова: head та tail. Для додавання\n"
+"                              обох ключів, необхідно відокремити їх комою.\n"
+"                              Ключові слова можуть прийняти один параметр: "
+"SIZE (розмір).\n"
+"                              Наприклад, якщо вказано head=SIZE, тоді "
+"частини у межах\n"
+"                              перших SIZE байтів кожного файлу отримають "
+"підвищений\n"
+"                              пріоритет. tail=SIZE задає діапазон, що вміщує "
+"у собі\n"
+"                              останні SIZE байтів кожного файлу. SIZE може\n"
+"                              вміщувати у собі літеру K або M для позначення "
+"розміру\n"
+"                              в кілобайтах або мегабайтах, відповідно\n"
+"                              (1K = 1024, 1M = 1024K). Якщо SIZE пропущено, "
+"тоді\n"
+"                              за замовчуванням буде використано значення: "
+"SIZE=1M."
 
 #: src/usage_text.h:591
 msgid ""
@@ -1710,10 +1734,14 @@ msgid ""
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
+" --interface=INTERFACE Прив'язати сокети до заданого інтерфейсу. Ви можете "
+"вказати\n"
+"                              назву інтерфейсу, IP-адресу та ім'я хосту "
+"(hostname)."
 
 #: src/usage_text.h:594
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
-msgstr ""
+msgstr " --disable-ipv6[=true|false]  Вимкнути IPv6."
 
 #: src/usage_text.h:596
 msgid ""
@@ -1762,12 +1790,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:618
-#, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr " --enable-dht[=true|false] Ввімкнути підтримку DHT."
+msgstr ""
 
 #: src/usage_text.h:620
-#, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
 "If\n"
@@ -1776,31 +1802,20 @@ msgid ""
 "interface\n"
 "                              name and IP address."
 msgstr ""
-" --certificate=FILE Використовувати клієнтський сертифікат у FILE.\n"
-"                              Сертифікат мусить бути у PEM форматі.\n"
-"                              Ви можете використовувати параметр --private-"
-"key, щоб вказати\n"
-"                              приватного ключа."
 
 #: src/usage_text.h:625
-#, fuzzy
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 msgstr ""
-" --use-head[=true|false] Використовувати метод HEAD для першого запиту до "
-"HTTP\n"
-"                              серверу."
 
 #: src/usage_text.h:628
-#, fuzzy
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
-msgstr " --xml-rpc-user=USER Встановити XML-RPC користувача."
+msgstr ""
 
 #: src/usage_text.h:630
-#, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
-msgstr " --xml-rpc-passwd=PASSWD Вказати XML-RPC пароль."
+msgstr ""
 
 #: src/usage_text.h:632
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
@@ -1823,12 +1838,10 @@ msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
 #: src/usage_text.h:642
-#, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
-msgstr " --ftp-passwd=PASSWD Задати FTP пароль. Це діє на усі URL."
+msgstr ""
 
 #: src/usage_text.h:644
-#, fuzzy
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
 "Using\n"
@@ -1837,17 +1850,8 @@ msgid ""
 "                              users behind proxy server which disables "
 "resume."
 msgstr ""
-" --allow-piece-length-change=true|false Якщо встановлено false (ні), aria2 "
-"припиняє завантаження,\n"
-"                              коли довжина частини інша за ту, що "
-"знаходиться у\n"
-"                              контрольному файлі. Якщо встановлено true "
-"(так), Ви можете продовжувати,\n"
-"                              проте деякий прогрес завантаження буде "
-"втрачено."
 
 #: src/usage_text.h:649
-#, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
 "aria2\n"
@@ -1863,16 +1867,6 @@ msgid ""
 "                              downloads file from scratch.\n"
 "                              See --max-resume-failure-tries option."
 msgstr ""
-" --follow-torrent=true|false|mem Якщо вказано true або mem, тоді "
-"завантажений файл,\n"
-"                              чий суфікс - .torrent або тип -\n"
-"                              application/x-bittorrent, aria2\n"
-"                              аналізує як torrent файл та завантажує файли\n"
-"                              згадані у ньому.\n"
-"                              Якщо вказано mem, тоді torrent файл не\n"
-"                              записується на диск, а тримається у пам'яті.\n"
-"                              Якщо вказано false, дії, згадані вище,\n"
-"                              не відбуваються."
 
 #: src/usage_text.h:659
 msgid ""
@@ -1888,12 +1882,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:666
-#, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
-msgstr " -t, --timeout=SEC Задає перерву в секундах."
+msgstr ""
 
 #: src/usage_text.h:668
-#, fuzzy
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
 "                              establish connection to tracker. After the\n"
@@ -1903,17 +1895,10 @@ msgid ""
 "used\n"
 "                              instead."
 msgstr ""
-" --connect-timeout=SEC Вказати перерву у з'єднанні для встановлення\n"
-"                              підключення до HTTP/FTP/проксі серверу. Після\n"
-"                              встановлення підключення, цей параметр не має "
-"значення\n"
-"                              та замість нього використовується параметр --"
-"timeout."
 
 #: src/usage_text.h:674
-#, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
-msgstr " -t, --timeout=SEC Задає перерву в секундах."
+msgstr ""
 
 #: src/usage_text.h:676
 msgid ""
@@ -2028,9 +2013,9 @@ msgid "Refer to man page for more information."
 msgstr "Зверніться до сторінок man задля отримання ширшої інформації."
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - Завантаження вже закінчено: %s"
+msgstr ""
 
 #: src/message.h:102
 #, c-format
@@ -2741,180 +2726,3 @@ msgstr ""
 #: src/BtSetup.cc:171
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"
-
-#~ msgid "CUID#%d - The download for one segment completed successfully."
-#~ msgstr "CUID#%d - Завантаження одного із сегментів вдало закінчено."
-
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - Нема доступного сегменту."
-
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - З'єднання із %s:%d"
-
-#~ msgid ""
-#~ "CUID#%d - The segment changed. We send the request again with new Range "
-#~ "header."
-#~ msgstr ""
-#~ "CUID#%d - Сегмент змінено. Відправляємо запит знов із новим заголовком "
-#~ "діапазонів."
-
-#~ msgid "CUID#%d - Redirecting to %s"
-#~ msgstr "CUID#%d - Переспрямування на %s"
-
-#~ msgid ""
-#~ "CUID#%d - Requesting:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - Запит:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "CUID#%d - Response received:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - Отримано відповідь:\n"
-#~ "%s"
-
-#~ msgid "CUID#%d - Download aborted. URI=%s"
-#~ msgstr "CUID#%d - Завантаження перервано. URI=%s"
-
-#~ msgid "CUID#%d - Restarting the download. URI=%s"
-#~ msgstr "CUID#%d - Перезапуск завантаження. URL=%s"
-
-#~ msgid "CUID#%d - Download aborted."
-#~ msgstr "CUID#%d - Завантаження скасовано."
-
-#~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-#~ msgstr "CUID#%d - Зроблено %d невдалих спроб. Завантаження скасовано."
-
-#~ msgid "CUID#%d - we got new piece. index=%d"
-#~ msgstr "CUID#%d - отримана нова частина. Індекс=%d"
-
-#~ msgid "CUID#%d - we got wrong piece. index=%d"
-#~ msgstr "CUID#%d - Отримана неправильна частина. Індекс=%d"
-
-#~ msgid "CUID#%d - Download not complete: %s"
-#~ msgstr "CUID#%d - Завантаження не закінчено: %s"
-
-#~ msgid "CUID#%d - Good checksum: %s"
-#~ msgstr "CUID#%d - Правильна контрольна сума: %s"
-
-#~ msgid "CUID#%d - Bad checksum: %s"
-#~ msgstr "CUID#%d - Неправильна контрольна сума: %s"
-
-#~ msgid "CUID#%d - Resolving hostname %s"
-#~ msgstr "CUID#%d - Обробка імені хосту %s"
-
-#~ msgid "CUID#%d - Name resolution complete: %s -> %s"
-#~ msgstr "CUID#%d - Визначення IP-адреси виконано: %s -> %s"
-
-#~ msgid "CUID#%d - Name resolution for %s failed:%s"
-#~ msgstr "CUID#%d - Не вдалося знайти IP-адресу %s:%s"
-
-#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
-#~ msgstr "CUID#%d - Знайдено в DNS-кеші: %s -> %s"
-
-#~ msgid "CUID#%d - Abort requested."
-#~ msgstr "CUID#%d - Перервано запит."
-
-#~ msgid "CUID#%d - Connecting to the peer %s"
-#~ msgstr "CUID#%d - З'єднання із хостом %s"
-
-#~ msgid ""
-#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-#~ "blockIndex=%d"
-#~ msgstr ""
-#~ "CUID#%d - Отримано сегмент. Індекс=%d, початок=%d, довжина=%d, відступ=%"
-#~ "llu, індекс-блоку=%d"
-
-#~ msgid "CUID#%d - Piece bitfield %s"
-#~ msgstr "CUID#%d - Біт-поле сегменту %s"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - Відкинути блок повідомлення в черзі через те, що вузол було "
-#~ "\"придушено\". Індекс=%d, початок=%d, довжина=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because cancel message received. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - Повідомлення про сегмент у черзі видалено, через те що отримано "
-#~ "повідомлення скасування. індекс=%d, початок=%d, довжина=%d"
-
-#~ msgid "CUID#%d - Exception caught while validating file integrity."
-#~ msgstr "CUID#%d - Під час перевірки цілісності було виявлено виняток."
-
-#~ msgid "CUID#%d - Interested in the peer"
-#~ msgstr "CUID#%d - Цікавиться вузол"
-
-#~ msgid "CUID#%d - Not interested in the peer"
-#~ msgstr "CUID#%d - Не зацікавлений у контактуванні"
-
-#~ msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-#~ msgstr "CUID#%d - Видаляється запит індекс=%d, блок-індекс=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
-#~ "got choked."
-#~ msgstr ""
-#~ "CUID#%d - Видаляється запит індекс=%d, блок-індекс=%d через велике "
-#~ "навантаження."
-
-#~ msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-#~ msgstr ""
-#~ "CUID#%d - Видаляється запит блок-індекс=%d, перевищено час очикування"
-
-#~ msgid ""
-#~ "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
-#~ "acquired."
-#~ msgstr "CUID#%d - Видаляється запит блок-індекс=%d, блок отримано."
-
-#~ msgid "CUID#%d - Fast extension enabled."
-#~ msgstr "CUID#%d - Прискорення ввімкнено."
-
-#~ msgid "CUID#%d - Extended Messaging enabled."
-#~ msgstr "CUID#%d - Розширені повідомлення ввімкнено."
-
-#~ msgid "CUID#%d - Exception caught while allocating file space."
-#~ msgstr "CUID#%d - Помилка під час розміщення файлу."
-
-#~ msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-#~ msgstr ""
-#~ "CUID#%d - Виявлено Content-Disposition (переадресацію). Використано %s у "
-#~ "якості імені файлу"
-
-#~ msgid "CUID#%d - Peer %s:%d banned."
-#~ msgstr "CUID#%d - Вузел %s:%d заборонено."
-
-#~ msgid "CUID#%d - Using port %d for accepting new connections"
-#~ msgstr "CUID#%d - Задля прийняття нових з'єднань використовується порт %d"
-
-#~ msgid "CUID#%d - An error occurred while binding port=%d"
-#~ msgstr "CUID#%d - Помилка при спробі зайняти порт=%d"
-
-#~ msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-#~ msgstr "CUID#%d - Вхідне з'єднання, додається нова команда CUID#%d"
-
-#~ msgid "CUID#%d - Error in accepting connection"
-#~ msgstr "CUID#%d - Помилка при встановленні з'єднання."
-
-#~ msgid "CUID#%d - Error occurred while processing tracker response."
-#~ msgstr "CUID#%d - Помилка при обробці відповіді з трекера."
-
-#~ msgid "CUID#%d - Cannot create tracker request."
-#~ msgstr "CUID#%d - Неможливо створити запит трекера."
-
-#~ msgid "CUID#%d - Creating new tracker request command #%d"
-#~ msgstr "CUID#%d - Створення нового запиту трекера #%d"
-
-#~ msgid "CUID#%d - The peer is DHT-enabled."
-#~ msgstr "CUID#%d - Вузол DHT-досяжний."
-
-#~ msgid "Dispatching FileAllocationCommand for CUID#%d."
-#~ msgstr "Відправлення FileAllocationCommand для CUID#%d."
-
-#~ msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-#~ msgstr "CUID#%d скасовує частину index=%d. CUID#%d - натомість пропонує."

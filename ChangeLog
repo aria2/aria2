@@ -1,5 +1,15 @@
 2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Ukrainian, Russian, Simplified Chinese, German and Greek
+	translation. Thanks to all translators.
+	* po/de.po
+	* po/el.po
+	* po/ru.po
+	* po/uk.po
+	* po/zh_CN.po
+
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added AC_SEARCH_LIBS for inet_aton on opensolaris.  opensolaris
 	needs -lnsl for inet_aton.
 	* configure.ac

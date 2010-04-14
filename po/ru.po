@@ -11,13 +11,13 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-04-14 21:56+0900\n"
-"PO-Revision-Date: 2010-02-25 07:32+0000\n"
-"Last-Translator: Andrew Zhuravlev <Unknown>\n"
+"PO-Revision-Date: 2010-04-02 14:24+0000\n"
+"Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-03-09 15:00+0000\n"
+"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
@@ -1406,16 +1406,12 @@ msgstr ""
 "                              в параметре --ca-certificate."
 
 #: src/usage_text.h:483
-#, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n"
 "                              network address with or without CIDR block "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
-" --no-proxy=DOMAINS Указать разделенные запятыми имена хостов или доменов, "
-"где\n"
-"                              прокси не следует использовать."
 
 #: src/usage_text.h:487
 msgid ""
@@ -1736,9 +1732,9 @@ msgstr ""
 "                              включать букву K или M для обозначения "
 "размера\n"
 "                              в килобайтах или мегабайтах, соответственно\n"
-"                              (1K = 1024, 1M = 1024K). If SIZE пропущено, "
-"будет\n"
-"                              будет использовано значение по умолчанию: "
+"                              (1K = 1024, 1M = 1024K). Если SIZE пропущено, "
+"то\n"
+"                              будет использовано по умолчанию значение: "
 "SIZE=1M."
 
 #: src/usage_text.h:591
@@ -1802,12 +1798,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:618
-#, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr " --enable-dht[=true|false] Включить поддержку DHT."
+msgstr ""
 
 #: src/usage_text.h:620
-#, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
 "If\n"
@@ -1816,30 +1810,20 @@ msgid ""
 "interface\n"
 "                              name and IP address."
 msgstr ""
-" --certificate=FILE Использовать клиентский сертификат в FILE.\n"
-"                              Сертификат должен быть в PEM формате.\n"
-"                              Вы можете использовать параметр --private-key, "
-"чтоб указать\n"
-"                              закрытый ключ."
 
 #: src/usage_text.h:625
-#, fuzzy
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 msgstr ""
-" --use-head[=true|false] Использовать метод HEAD для первого запроса к HTTP\n"
-"                              серверу."
 
 #: src/usage_text.h:628
-#, fuzzy
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
-msgstr " --xml-rpc-user=USER Указать XML-RPC пользователя."
+msgstr ""
 
 #: src/usage_text.h:630
-#, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
-msgstr " --xml-rpc-passwd=PASSWD Указать XML-RPC пароль."
+msgstr ""
 
 #: src/usage_text.h:632
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
@@ -1862,12 +1846,10 @@ msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
 #: src/usage_text.h:642
-#, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
-msgstr " --ftp-passwd=PASSWD Задать FTP пароль. Это действует на все URL."
+msgstr ""
 
 #: src/usage_text.h:644
-#, fuzzy
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
 "Using\n"
@@ -1876,17 +1858,8 @@ msgid ""
 "                              users behind proxy server which disables "
 "resume."
 msgstr ""
-" --allow-piece-length-change=true|false Если установлено false (ложь), aria2 "
-"останавливает загрузку,\n"
-"                              когда длина блока отлична от той, которая "
-"находится в\n"
-"                              контрольном файле. Если установлено true "
-"(истина), Вы можете продолжать,\n"
-"                              однако некоторый прогресс загрузки будет "
-"потерян."
 
 #: src/usage_text.h:649
-#, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
 "aria2\n"
@@ -1902,17 +1875,6 @@ msgid ""
 "                              downloads file from scratch.\n"
 "                              See --max-resume-failure-tries option."
 msgstr ""
-" --follow-torrent=true|false|mem Если указать true или mem, тогда "
-"загруженный файл,\n"
-"                              суффикс которого - .torrent или тип -\n"
-"                              application/x-bittorrent, aria2\n"
-"                              анализирует как torrent-файл и загружает "
-"файлы\n"
-"                              упомянутые в нем.\n"
-"                              Если указано mem, тогда torrent-файл не\n"
-"                              записывается на диск, а содержится в памяти.\n"
-"                              Если указано false, действия, упомянутые выше\n"
-"                              не совершаются."
 
 #: src/usage_text.h:659
 msgid ""
@@ -1928,12 +1890,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:666
-#, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
-msgstr " -t, --timeout=SEC Устанавливает timeout в секундах."
+msgstr ""
 
 #: src/usage_text.h:668
-#, fuzzy
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
 "                              establish connection to tracker. After the\n"
@@ -1943,16 +1903,10 @@ msgid ""
 "used\n"
 "                              instead."
 msgstr ""
-" --connect-timeout=SEC Указать перерыв в соединении для установки\n"
-"                              подключения к HTTP/FTP/прокси сервера. После\n"
-"                              установки подключения этот параметр не имеет "
-"значения,\n"
-"                              и вместо него используется параметр --timeout."
 
 #: src/usage_text.h:674
-#, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
-msgstr " -t, --timeout=SEC Устанавливает timeout в секундах."
+msgstr ""
 
 #: src/usage_text.h:676
 msgid ""
@@ -2079,9 +2033,9 @@ msgid "Refer to man page for more information."
 msgstr "Обратитесь к странице man для более подробной информации"
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - Скачивание уже завершилось: %s"
+msgstr ""
 
 #: src/message.h:102
 #, c-format
@@ -2798,16 +2752,6 @@ msgstr "Ошибка при открытии порта.\n"
 #~ msgid "CUID#%d - No segment available."
 #~ msgstr "CUID#%d - Нет доступного сегмента."
 
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - Соединение c %s:%d"
-
-#~ msgid ""
-#~ "CUID#%d - The segment changed. We send the request again with new Range "
-#~ "header."
-#~ msgstr ""
-#~ "CUID#%d - Сегмент изменен. Отправляем запрос повторно с новым заголовком "
-#~ "диапазонов."
-
 #~ msgid "CUID#%d - Redirecting to %s"
 #~ msgstr "CUID#%d - Перенаправление на %s"
 
@@ -2825,147 +2769,11 @@ msgstr "Ошибка при открытии порта.\n"
 #~ "CUID#%d - Получен ответ:\n"
 #~ "%s"
 
-#~ msgid "CUID#%d - Download aborted. URI=%s"
-#~ msgstr "CUID#%d - Скачивание прервано. URI=%s"
-
-#~ msgid "CUID#%d - Restarting the download. URI=%s"
-#~ msgstr "CUID#%d - Перезапуск скачивания. URI=%s"
-
 #~ msgid "CUID#%d - Download aborted."
 #~ msgstr "CUID#%d - Скачивание отменено."
 
 #~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 #~ msgstr "CUID#%d - Совершено %d безуспешных попыток. Скачивание отменено."
-
-#~ msgid "CUID#%d - we got new piece. index=%d"
-#~ msgstr "CUID#%d - получена новая часть. индекс=%d"
-
-#~ msgid "CUID#%d - we got wrong piece. index=%d"
-#~ msgstr "CUID#%d - получена неправильная часть. индекс=%d"
-
-#~ msgid "CUID#%d - Download not complete: %s"
-#~ msgstr "CUID#%d - Скачивание не завершилось: %s"
-
-#~ msgid "CUID#%d - Good checksum: %s"
-#~ msgstr "CUID#%d - Правильная контрольная сумма: %s"
-
-#~ msgid "CUID#%d - Bad checksum: %s"
-#~ msgstr "CUID#%d - Неправильная контрольная сумма: %s"
-
-#~ msgid "CUID#%d - Resolving hostname %s"
-#~ msgstr "CUID#%d - Поиск IP-адреса хоста %s"
-
-#~ msgid "CUID#%d - Name resolution complete: %s -> %s"
-#~ msgstr "CUID#%d - Определение IP-адреса завершёнo: %s -> %s"
-
-#~ msgid "CUID#%d - Name resolution for %s failed:%s"
-#~ msgstr "CUID#%d - Не удалось найти IP-адрес %s:%s"
-
-#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
-#~ msgstr "CUID#%d - Нашли в DNS-кэше: %s -> %s"
-
-#~ msgid "CUID#%d - Abort requested."
-#~ msgstr "CUID#%d - Запрошена отмена."
-
-#~ msgid "CUID#%d - Connecting to the peer %s"
-#~ msgstr "CUID#%d - Соединение с хостом %s"
-
-#~ msgid ""
-#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-#~ "blockIndex=%d"
-#~ msgstr ""
-#~ "CUID#%d - Получен сегмент. индекс=%d, начало=%d, длина=%d, отступ=%llu, "
-#~ "индексБлока=%d"
-
-#~ msgid "CUID#%d - Piece bitfield %s"
-#~ msgstr "CUID#%d - Бит-поле сегмента %s"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - Сообщение о сегменте в очереди удалено, так как хост не "
-#~ "ответил. индекс=%d, начало=%d, длина=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because cancel message received. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - Сообщение о сегменте в очереди удалено, так как получено "
-#~ "сообщение отмены. индекс=%d, начало=%d, длина=%d"
-
-#~ msgid "CUID#%d - Exception caught while validating file integrity."
-#~ msgstr "CUID#%d - Во время проверки целостности файла поймано исключение."
-
-#~ msgid "CUID#%d - Interested in the peer"
-#~ msgstr "CUID#%d - Попытка к пирингу"
-
-#~ msgid "CUID#%d - Not interested in the peer"
-#~ msgstr "CUID#%d - Не заинтересован в контакте"
-
-#~ msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-#~ msgstr "CUID#%d - Удаляется запрос index=%d, blockIndex=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
-#~ "got choked."
-#~ msgstr ""
-#~ "CUID#%d -  Удаляется запрос index=%d, blockIndex=%d по причине высокой "
-#~ "нагрузки."
-
-#~ msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-#~ msgstr "CUID#%d - Удаляется запрос blockIndex=%d, превышено время ожидания"
-
-#~ msgid ""
-#~ "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
-#~ "acquired."
-#~ msgstr "CUID#%d - Удаляется запрос blockIndex=%d, блок получен."
-
-#~ msgid "CUID#%d - Fast extension enabled."
-#~ msgstr "CUID#%d - Ускорение включено."
-
-#~ msgid "CUID#%d - Extended Messaging enabled."
-#~ msgstr "CUID#%d - Расширенное оповещение включено."
-
-#~ msgid "CUID#%d - Exception caught while allocating file space."
-#~ msgstr "CUID#%d - Ошибка при размещении файла."
-
-#~ msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-#~ msgstr ""
-#~ "CUID#%d - Обнаружена переадресовка. Использовано %s в качестве имени файла"
-
-#~ msgid "CUID#%d - Peer %s:%d banned."
-#~ msgstr "CUID#%d - Узел %s:%d запрещён."
-
-#~ msgid "CUID#%d - Using port %d for accepting new connections"
-#~ msgstr "CUID#%d - Для приёма новых соединений, используется порт %d"
-
-#~ msgid "CUID#%d - An error occurred while binding port=%d"
-#~ msgstr "CUID#%d - Ошибка, при попытке занять порт=%d"
-
-#~ msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-#~ msgstr "CUID#%d - Входящее соединение, добавляется новая комманда CUID#%d"
-
-#~ msgid "CUID#%d - Error in accepting connection"
-#~ msgstr "CUID#%d - Ошибка при установлении связи"
-
-#~ msgid "CUID#%d - Error occurred while processing tracker response."
-#~ msgstr "CUID#%d - Ошибка при обработке ответа от трекера."
-
-#~ msgid "CUID#%d - Cannot create tracker request."
-#~ msgstr "CUID#%d - Невозможно создать запрос."
-
-#~ msgid "CUID#%d - Creating new tracker request command #%d"
-#~ msgstr "CUID#%d - Создание нового запроса #%d"
-
-#~ msgid "CUID#%d - The peer is DHT-enabled."
-#~ msgstr "CUID#%d - Узел DHT-включенный."
-
-#~ msgid "Dispatching FileAllocationCommand for CUID#%d."
-#~ msgstr "Отправка FileAllocationCommand для CUID#%d."
-
-#~ msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-#~ msgstr "CUID#%d отменяет часть index=%d. CUID#%d предлагает это взамен."
 
 #~ msgid "Files:"
 #~ msgstr "Файлы:"
