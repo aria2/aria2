@@ -1,5 +1,10 @@
 2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated po templates.
+	* po/aria2.pot
+
+2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added aria2.pause, aria2.forcePause, aria2.pauseAll,
 	aria2.forcePauseAll, aria2.unpause, aria2.unpauseAll XML-RPC
 	method to aria2rpc

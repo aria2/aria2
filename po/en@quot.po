@@ -29,8 +29,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 1.9.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-04-04 00:32+0900\n"
-"PO-Revision-Date: 2010-04-04 00:32+0900\n"
+"POT-Creation-Date: 2010-04-14 21:56+0900\n"
+"PO-Revision-Date: 2010-04-14 21:56+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -38,21 +38,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/DownloadEngine.cc:224
+#: src/DownloadEngine.cc:222
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 
-#: src/DownloadEngine.cc:230
+#: src/DownloadEngine.cc:228
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Emergency shutdown sequence commencing..."
 
-#: src/MultiUrlRequestInfo.cc:101
+#: src/MultiUrlRequestInfo.cc:103
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 will resume download if the transfer is restarted."
 
-#: src/MultiUrlRequestInfo.cc:103
+#: src/MultiUrlRequestInfo.cc:105
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -60,11 +60,11 @@ msgstr ""
 "If there are any errors, then see the log file. See ‘-l’ option in help/man "
 "page for details."
 
-#: src/RequestGroupMan.cc:615
+#: src/RequestGroupMan.cc:633
 msgid "Download Results:"
 msgstr "Download Results:"
 
-#: src/RequestGroupMan.cc:665
+#: src/RequestGroupMan.cc:693
 msgid "Status Legend:"
 msgstr "Status Legend:"
 
@@ -1615,6 +1615,18 @@ msgstr ""
 
 #: src/usage_text.h:551
 msgid ""
+" --on-download-pause=COMMAND  Set the command to be executed when download\n"
+"                              is paused.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND."
+msgstr ""
+" --on-download-pause=COMMAND  Set the command to be executed when download\n"
+"                              is paused.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND."
+
+#: src/usage_text.h:556
+msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
 "                              See --on-download-start option for the\n"
@@ -1627,7 +1639,7 @@ msgstr ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 
-#: src/usage_text.h:557
+#: src/usage_text.h:562
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1651,7 +1663,7 @@ msgstr ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 
-#: src/usage_text.h:566
+#: src/usage_text.h:571
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1663,7 +1675,7 @@ msgstr ""
 "                              consecutive SEC seconds. If 0 is given, this\n"
 "                              feature is disabled."
 
-#: src/usage_text.h:570
+#: src/usage_text.h:575
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
@@ -1675,7 +1687,7 @@ msgstr ""
 "only\n"
 "                              on local loopback interface."
 
-#: src/usage_text.h:574
+#: src/usage_text.h:579
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1714,23 +1726,23 @@ msgstr ""
 "                              each file. SIZE can include K or M(1K = 1024, "
 "1M =\n"
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
-
-#: src/usage_text.h:586
-msgid ""
-" --interface=INTERFACE        Bind sockets to given interface. You can "
-"specify\n"
-"                              interface name, IP address and hostname."
-msgstr ""
-" --interface=INTERFACE        Bind sockets to given interface. You can "
-"specify\n"
-"                              interface name, IP address and hostname."
-
-#: src/usage_text.h:589
-msgid " --disable-ipv6[=true|false]  Disable IPv6."
-msgstr " --disable-ipv6[=true|false]  Disable IPv6."
 
 #: src/usage_text.h:591
 msgid ""
+" --interface=INTERFACE        Bind sockets to given interface. You can "
+"specify\n"
+"                              interface name, IP address and hostname."
+msgstr ""
+" --interface=INTERFACE        Bind sockets to given interface. You can "
+"specify\n"
+"                              interface name, IP address and hostname."
+
+#: src/usage_text.h:594
+msgid " --disable-ipv6[=true|false]  Disable IPv6."
+msgstr " --disable-ipv6[=true|false]  Disable IPv6."
+
+#: src/usage_text.h:596
+msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
 "                              effect only when BitTorrent Magnet URI is "
@@ -1759,7 +1771,7 @@ msgstr ""
 "saved.\n"
 "                              See also --bt-metadata-only option."
 
-#: src/usage_text.h:599
+#: src/usage_text.h:604
 msgid ""
 " --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
 "cache\n"
@@ -1778,111 +1790,111 @@ msgstr ""
 "                              Cache-Control header with a directive you "
 "like\n"
 "                              using --header option."
-
-#: src/usage_text.h:605
-msgid ""
-" --bt-metadata-only[=true|false] Download metadata only. The file(s) "
-"described\n"
-"                              in metadata will not be downloaded. This "
-"option\n"
-"                              has effect only when BitTorrent Magnet URI is\n"
-"                              used. See also --bt-save-metadata option."
-msgstr ""
-" --bt-metadata-only[=true|false] Download metadata only. The file(s) "
-"described\n"
-"                              in metadata will not be downloaded. This "
-"option\n"
-"                              has effect only when BitTorrent Magnet URI is\n"
-"                              used. See also --bt-save-metadata option."
 
 #: src/usage_text.h:610
 msgid ""
-" --human-readable[=true|false] Print sizes and speed in human readable "
-"format\n"
-"                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
+" --bt-metadata-only[=true|false] Download metadata only. The file(s) "
+"described\n"
+"                              in metadata will not be downloaded. This "
+"option\n"
+"                              has effect only when BitTorrent Magnet URI is\n"
+"                              used. See also --bt-save-metadata option."
 msgstr ""
-" --human-readable[=true|false] Print sizes and speed in human readable "
-"format\n"
-"                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
-
-#: src/usage_text.h:613
-msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+" --bt-metadata-only[=true|false] Download metadata only. The file(s) "
+"described\n"
+"                              in metadata will not be downloaded. This "
+"option\n"
+"                              has effect only when BitTorrent Magnet URI is\n"
+"                              used. See also --bt-save-metadata option."
 
 #: src/usage_text.h:615
 msgid ""
-" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
-"If\n"
-"                              this option is not specified, the default\n"
-"                              interface is chosen. You can specify "
-"interface\n"
-"                              name and IP address."
+" --human-readable[=true|false] Print sizes and speed in human readable "
+"format\n"
+"                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
-" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
-"If\n"
-"                              this option is not specified, the default\n"
-"                              interface is chosen. You can specify "
-"interface\n"
-"                              name and IP address."
+" --human-readable[=true|false] Print sizes and speed in human readable "
+"format\n"
+"                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
+
+#: src/usage_text.h:618
+msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
+msgstr " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
 
 #: src/usage_text.h:620
 msgid ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+msgstr ""
+" --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
+"If\n"
+"                              this option is not specified, the default\n"
+"                              interface is chosen. You can specify "
+"interface\n"
+"                              name and IP address."
+
+#: src/usage_text.h:625
+msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 msgstr ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 
-#: src/usage_text.h:623
+#: src/usage_text.h:628
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr " --all-proxy-user=USER        Set user for --all-proxy option."
 
-#: src/usage_text.h:625
+#: src/usage_text.h:630
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 
-#: src/usage_text.h:627
+#: src/usage_text.h:632
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr " --http-proxy-user=USER       Set user for --http-proxy option."
 
-#: src/usage_text.h:629
+#: src/usage_text.h:634
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 
-#: src/usage_text.h:631
+#: src/usage_text.h:636
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr " --https-proxy-user=USER      Set user for --https-proxy option."
 
-#: src/usage_text.h:633
+#: src/usage_text.h:638
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 
-#: src/usage_text.h:635
+#: src/usage_text.h:640
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 
-#: src/usage_text.h:637
+#: src/usage_text.h:642
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 
-#: src/usage_text.h:639
-msgid ""
-" --remove-control-file[=true|false] Remove control file before download. "
-"Using\n"
-"                              with --allow-overwrite=true, download always\n"
-"                              starts from scratch. This will be useful for\n"
-"                              users behind proxy server which disables "
-"resume."
-msgstr ""
-" --remove-control-file[=true|false] Remove control file before download. "
-"Using\n"
-"                              with --allow-overwrite=true, download always\n"
-"                              starts from scratch. This will be useful for\n"
-"                              users behind proxy server which disables "
-"resume."
-
 #: src/usage_text.h:644
 msgid ""
+" --remove-control-file[=true|false] Remove control file before download. "
+"Using\n"
+"                              with --allow-overwrite=true, download always\n"
+"                              starts from scratch. This will be useful for\n"
+"                              users behind proxy server which disables "
+"resume."
+msgstr ""
+" --remove-control-file[=true|false] Remove control file before download. "
+"Using\n"
+"                              with --allow-overwrite=true, download always\n"
+"                              starts from scratch. This will be useful for\n"
+"                              users behind proxy server which disables "
+"resume."
+
+#: src/usage_text.h:649
+msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
 "aria2\n"
 "                              always tries to resume download and if resume "
@@ -1911,7 +1923,7 @@ msgstr ""
 "                              downloads file from scratch.\n"
 "                              See --max-resume-failure-tries option."
 
-#: src/usage_text.h:654
+#: src/usage_text.h:659
 msgid ""
 " --max-resume-failure-tries=N When used with --always-resume=false, aria2\n"
 "                              downloads file from scratch when aria2 detects "
@@ -1933,11 +1945,11 @@ msgstr ""
 "                              given URIs do not support resume.\n"
 "                              See --always-resume option."
 
-#: src/usage_text.h:661
+#: src/usage_text.h:666
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
 msgstr " --bt-tracker-timeout=SEC     Set timeout in seconds."
 
-#: src/usage_text.h:663
+#: src/usage_text.h:668
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
 "                              establish connection to tracker. After the\n"
@@ -1955,11 +1967,11 @@ msgstr ""
 "used\n"
 "                              instead."
 
-#: src/usage_text.h:669
+#: src/usage_text.h:674
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
 msgstr " --dht-message-timeout=SEC    Set timeout in seconds."
 
-#: src/usage_text.h:671
+#: src/usage_text.h:676
 msgid ""
 " --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request "
 "header\n"
@@ -1974,6 +1986,26 @@ msgstr ""
 "responds\n"
 "                              with ‘Content-Encoding: gzip’ or\n"
 "                              'Content-Encoding: deflate'."
+
+#: src/usage_text.h:681
+msgid ""
+" --save-session=FILE          Save error/unfinished downloads to FILE on "
+"exit.\n"
+"                              You can pass this output file to aria2c with -"
+"i\n"
+"                              option on restart. Please note that downloads\n"
+"                              added by aria2.addTorrent and aria2."
+"addMetalink\n"
+"                              XML-RPC method are not saved."
+msgstr ""
+" --save-session=FILE          Save error/unfinished downloads to FILE on "
+"exit.\n"
+"                              You can pass this output file to aria2c with -"
+"i\n"
+"                              option on restart. Please note that downloads\n"
+"                              added by aria2.addTorrent and aria2."
+"addMetalink\n"
+"                              XML-RPC method are not saved."
 
 #: src/version_usage.cc:57
 msgid " version "

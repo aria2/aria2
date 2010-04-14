@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-04-04 00:32+0900\n"
+"POT-Creation-Date: 2010-04-14 21:56+0900\n"
 "PO-Revision-Date: 2009-08-25 12:32+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -17,22 +17,22 @@ msgstr ""
 "X-Launchpad-Export-Date: 2009-09-20 09:12+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:224
+#: src/DownloadEngine.cc:222
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Започване на поредица за изключване... Натиснете Ctrl-C отново за спешно "
 "изключване."
 
-#: src/DownloadEngine.cc:230
+#: src/DownloadEngine.cc:228
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Извънредно започване на поредица за изключване..."
 
-#: src/MultiUrlRequestInfo.cc:101
+#: src/MultiUrlRequestInfo.cc:103
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 ще продължи даунлоуда ако трансферът е рестартиран."
 
-#: src/MultiUrlRequestInfo.cc:103
+#: src/MultiUrlRequestInfo.cc:105
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -40,11 +40,11 @@ msgstr ""
 "Ако има някакви грешки, тогава вижте лог файла. Вижте '-l' опцията в "
 "страницата на помощника/наръчника за подробности."
 
-#: src/RequestGroupMan.cc:615
+#: src/RequestGroupMan.cc:633
 msgid "Download Results:"
 msgstr "Резултати от даунлоуда:"
 
-#: src/RequestGroupMan.cc:665
+#: src/RequestGroupMan.cc:693
 msgid "Status Legend:"
 msgstr "Легенда за състоянието:"
 
@@ -1507,6 +1507,18 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:551
+#, fuzzy
+msgid ""
+" --on-download-pause=COMMAND  Set the command to be executed when download\n"
+"                              is paused.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND."
+msgstr ""
+" --ftp-proxy=PROXY Използване на този прокси сървър за FTP.\n"
+"                              Вижте също опцията --all-proxy.\n"
+"                              Това оказва ефект върху всички URL-и."
+
+#: src/usage_text.h:556
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1515,7 +1527,7 @@ msgid ""
 "                              See also --on-download-stop option."
 msgstr ""
 
-#: src/usage_text.h:557
+#: src/usage_text.h:562
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1529,7 +1541,7 @@ msgid ""
 "                              requirement of COMMAND."
 msgstr ""
 
-#: src/usage_text.h:566
+#: src/usage_text.h:571
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1537,7 +1549,7 @@ msgid ""
 "                              feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:570
+#: src/usage_text.h:575
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
@@ -1545,7 +1557,7 @@ msgid ""
 "                              on local loopback interface."
 msgstr ""
 
-#: src/usage_text.h:574
+#: src/usage_text.h:579
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1567,18 +1579,18 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:586
+#: src/usage_text.h:591
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:589
+#: src/usage_text.h:594
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
-#: src/usage_text.h:591
+#: src/usage_text.h:596
 #, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
@@ -1606,7 +1618,7 @@ msgstr ""
 "                              Тази опция оказва ефект само върху BitTorrent\n"
 "                              даунлоуди."
 
-#: src/usage_text.h:599
+#: src/usage_text.h:604
 msgid ""
 " --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
 "cache\n"
@@ -1618,7 +1630,7 @@ msgid ""
 "                              using --header option."
 msgstr ""
 
-#: src/usage_text.h:605
+#: src/usage_text.h:610
 #, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
@@ -1635,19 +1647,19 @@ msgstr ""
 "                              някои URI селектори като 'feedback'.\n"
 "                              Вижте също --uri-selector опцията"
 
-#: src/usage_text.h:610
+#: src/usage_text.h:615
 msgid ""
 " --human-readable[=true|false] Print sizes and speed in human readable "
 "format\n"
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
-#: src/usage_text.h:613
+#: src/usage_text.h:618
 #, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
 msgstr " --enable-dht[=true|false] Включва DHT функционалността."
 
-#: src/usage_text.h:615
+#: src/usage_text.h:620
 #, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
@@ -1665,7 +1677,7 @@ msgstr ""
 "спре\n"
 "                              независимо от стойността."
 
-#: src/usage_text.h:620
+#: src/usage_text.h:625
 #, fuzzy
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
@@ -1675,41 +1687,41 @@ msgstr ""
 "без\n"
 "                              проверяване на частта на хеша."
 
-#: src/usage_text.h:623
+#: src/usage_text.h:628
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
 
-#: src/usage_text.h:625
+#: src/usage_text.h:630
 #, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr " --ftp-passwd=PASSWD Определя FTP парола. Това засяга всички URL-и."
 
-#: src/usage_text.h:627
+#: src/usage_text.h:632
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
 
-#: src/usage_text.h:629
+#: src/usage_text.h:634
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr ""
 
-#: src/usage_text.h:631
+#: src/usage_text.h:636
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
 
-#: src/usage_text.h:633
+#: src/usage_text.h:638
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
 
-#: src/usage_text.h:635
+#: src/usage_text.h:640
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
-#: src/usage_text.h:637
+#: src/usage_text.h:642
 #, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr " --ftp-passwd=PASSWD Определя FTP парола. Това засяга всички URL-и."
 
-#: src/usage_text.h:639
+#: src/usage_text.h:644
 #, fuzzy
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
@@ -1728,7 +1740,7 @@ msgstr ""
 "                              но малък прогрес от даунлоуда може да бъде "
 "загубен."
 
-#: src/usage_text.h:644
+#: src/usage_text.h:649
 #, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
@@ -1758,7 +1770,7 @@ msgstr ""
 "отгоре\n"
 "                              не се извършва."
 
-#: src/usage_text.h:654
+#: src/usage_text.h:659
 msgid ""
 " --max-resume-failure-tries=N When used with --always-resume=false, aria2\n"
 "                              downloads file from scratch when aria2 detects "
@@ -1771,12 +1783,12 @@ msgid ""
 "                              See --always-resume option."
 msgstr ""
 
-#: src/usage_text.h:661
+#: src/usage_text.h:666
 #, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
 msgstr " -t, --timeout=SEC Определя таймаут в секунди."
 
-#: src/usage_text.h:663
+#: src/usage_text.h:668
 #, fuzzy
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
@@ -1794,12 +1806,12 @@ msgstr ""
 "                              ефект и --timeout опцията се използва вместо "
 "това."
 
-#: src/usage_text.h:669
+#: src/usage_text.h:674
 #, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
 msgstr " -t, --timeout=SEC Определя таймаут в секунди."
 
-#: src/usage_text.h:671
+#: src/usage_text.h:676
 msgid ""
 " --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request "
 "header\n"
@@ -1808,6 +1820,25 @@ msgid ""
 "                              with 'Content-Encoding: gzip' or\n"
 "                              'Content-Encoding: deflate'."
 msgstr ""
+
+#: src/usage_text.h:681
+#, fuzzy
+msgid ""
+" --save-session=FILE          Save error/unfinished downloads to FILE on "
+"exit.\n"
+"                              You can pass this output file to aria2c with -"
+"i\n"
+"                              option on restart. Please note that downloads\n"
+"                              added by aria2.addTorrent and aria2."
+"addMetalink\n"
+"                              XML-RPC method are not saved."
+msgstr ""
+" --connect-timeout=SEC Определя таймаут за свързване в секунди за да се "
+"установи\n"
+"                              връзка към HTTP/FTP/proxy сървър. След като\n"
+"                              връзката е установена, тази опция няма\n"
+"                              ефект и --timeout опцията се използва вместо "
+"това."
 
 #: src/version_usage.cc:57
 msgid " version "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-04-04 00:32+0900\n"
+"POT-Creation-Date: 2010-04-14 21:56+0900\n"
 "PO-Revision-Date: 2008-10-08 08:24+0000\n"
 "Last-Translator: snufkinto <Unknown>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -17,31 +17,31 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-10-14 11:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:224
+#: src/DownloadEngine.cc:222
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "關閉序列開始...如要緊急關閉，請再次按Ctrl-C。"
 
-#: src/DownloadEngine.cc:230
+#: src/DownloadEngine.cc:228
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急關閉序列開始..."
 
-#: src/MultiUrlRequestInfo.cc:101
+#: src/MultiUrlRequestInfo.cc:103
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2將於傳輸重新開始後恢復下載。"
 
-#: src/MultiUrlRequestInfo.cc:103
+#: src/MultiUrlRequestInfo.cc:105
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
 "如有錯誤，請查看日誌記錄檔案。詳細資訊請參考幫助/man page內的 '-l' 選項。"
 
-#: src/RequestGroupMan.cc:615
+#: src/RequestGroupMan.cc:633
 msgid "Download Results:"
 msgstr "下載結果："
 
-#: src/RequestGroupMan.cc:665
+#: src/RequestGroupMan.cc:693
 msgid "Status Legend:"
 msgstr "狀態說明："
 
@@ -1079,6 +1079,14 @@ msgstr ""
 
 #: src/usage_text.h:551
 msgid ""
+" --on-download-pause=COMMAND  Set the command to be executed when download\n"
+"                              is paused.\n"
+"                              See --on-download-start option for the\n"
+"                              requirement of COMMAND."
+msgstr ""
+
+#: src/usage_text.h:556
+msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
 "                              See --on-download-start option for the\n"
@@ -1086,7 +1094,7 @@ msgid ""
 "                              See also --on-download-stop option."
 msgstr ""
 
-#: src/usage_text.h:557
+#: src/usage_text.h:562
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1100,7 +1108,7 @@ msgid ""
 "                              requirement of COMMAND."
 msgstr ""
 
-#: src/usage_text.h:566
+#: src/usage_text.h:571
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1108,7 +1116,7 @@ msgid ""
 "                              feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:570
+#: src/usage_text.h:575
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
@@ -1116,7 +1124,7 @@ msgid ""
 "                              on local loopback interface."
 msgstr ""
 
-#: src/usage_text.h:574
+#: src/usage_text.h:579
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1138,18 +1146,18 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:586
+#: src/usage_text.h:591
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:589
+#: src/usage_text.h:594
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
-#: src/usage_text.h:591
+#: src/usage_text.h:596
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1166,7 +1174,7 @@ msgid ""
 "                              See also --bt-metadata-only option."
 msgstr ""
 
-#: src/usage_text.h:599
+#: src/usage_text.h:604
 msgid ""
 " --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
 "cache\n"
@@ -1178,7 +1186,7 @@ msgid ""
 "                              using --header option."
 msgstr ""
 
-#: src/usage_text.h:605
+#: src/usage_text.h:610
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
 "described\n"
@@ -1188,19 +1196,19 @@ msgid ""
 "                              used. See also --bt-save-metadata option."
 msgstr ""
 
-#: src/usage_text.h:610
+#: src/usage_text.h:615
 msgid ""
 " --human-readable[=true|false] Print sizes and speed in human readable "
 "format\n"
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
-#: src/usage_text.h:613
+#: src/usage_text.h:618
 #, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
 msgstr " --enable-dht[=true|false] 使用DHT功能。"
 
-#: src/usage_text.h:615
+#: src/usage_text.h:620
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
 "If\n"
@@ -1210,53 +1218,53 @@ msgid ""
 "                              name and IP address."
 msgstr ""
 
-#: src/usage_text.h:620
+#: src/usage_text.h:625
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 msgstr ""
 
-#: src/usage_text.h:623
+#: src/usage_text.h:628
 #, fuzzy
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr " --http-proxy-user=USER 設定HTTP代理伺服器用戶（對所有URL有效）。"
 
-#: src/usage_text.h:625
+#: src/usage_text.h:630
 #, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr " --http-proxy-passwd=PASSWD 設定HTTP代理伺服器密碼（對所有URL有效）。"
 
-#: src/usage_text.h:627
+#: src/usage_text.h:632
 #, fuzzy
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr " --http-proxy-user=USER 設定HTTP代理伺服器用戶（對所有URL有效）。"
 
-#: src/usage_text.h:629
+#: src/usage_text.h:634
 #, fuzzy
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr " --http-proxy-passwd=PASSWD 設定HTTP代理伺服器密碼（對所有URL有效）。"
 
-#: src/usage_text.h:631
+#: src/usage_text.h:636
 #, fuzzy
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr " --http-proxy-user=USER 設定HTTP代理伺服器用戶（對所有URL有效）。"
 
-#: src/usage_text.h:633
+#: src/usage_text.h:638
 #, fuzzy
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr " --http-proxy-passwd=PASSWD 設定HTTP代理伺服器密碼（對所有URL有效）。"
 
-#: src/usage_text.h:635
+#: src/usage_text.h:640
 #, fuzzy
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr " --http-proxy-user=USER 設定HTTP代理伺服器用戶（對所有URL有效）。"
 
-#: src/usage_text.h:637
+#: src/usage_text.h:642
 #, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr " --http-proxy-passwd=PASSWD 設定HTTP代理伺服器密碼（對所有URL有效）。"
 
-#: src/usage_text.h:639
+#: src/usage_text.h:644
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
 "Using\n"
@@ -1266,7 +1274,7 @@ msgid ""
 "resume."
 msgstr ""
 
-#: src/usage_text.h:644
+#: src/usage_text.h:649
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
 "aria2\n"
@@ -1283,7 +1291,7 @@ msgid ""
 "                              See --max-resume-failure-tries option."
 msgstr ""
 
-#: src/usage_text.h:654
+#: src/usage_text.h:659
 msgid ""
 " --max-resume-failure-tries=N When used with --always-resume=false, aria2\n"
 "                              downloads file from scratch when aria2 detects "
@@ -1296,12 +1304,12 @@ msgid ""
 "                              See --always-resume option."
 msgstr ""
 
-#: src/usage_text.h:661
+#: src/usage_text.h:666
 #, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
 msgstr " -t, --timeout=SEC 設定超時（秒）。"
 
-#: src/usage_text.h:663
+#: src/usage_text.h:668
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
 "                              establish connection to tracker. After the\n"
@@ -1312,12 +1320,12 @@ msgid ""
 "                              instead."
 msgstr ""
 
-#: src/usage_text.h:669
+#: src/usage_text.h:674
 #, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
 msgstr " -t, --timeout=SEC 設定超時（秒）。"
 
-#: src/usage_text.h:671
+#: src/usage_text.h:676
 msgid ""
 " --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request "
 "header\n"
@@ -1325,6 +1333,18 @@ msgid ""
 "responds\n"
 "                              with 'Content-Encoding: gzip' or\n"
 "                              'Content-Encoding: deflate'."
+msgstr ""
+
+#: src/usage_text.h:681
+msgid ""
+" --save-session=FILE          Save error/unfinished downloads to FILE on "
+"exit.\n"
+"                              You can pass this output file to aria2c with -"
+"i\n"
+"                              option on restart. Please note that downloads\n"
+"                              added by aria2.addTorrent and aria2."
+"addMetalink\n"
+"                              XML-RPC method are not saved."
 msgstr ""
 
 #: src/version_usage.cc:57
