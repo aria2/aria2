@@ -22,6 +22,9 @@ has clock_gettime().  Several other bugs also have been fixed.
 Changes
 -------
 
+ * Updated Ukrainian, Russian, Simplified Chinese, German and Greek
+   translation. Thanks to all translators.
+
  * Added warning for the system which lacks clock_gettime with
    CLOCK_MONOTONIC.
 
