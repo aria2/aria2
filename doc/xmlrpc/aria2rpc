@@ -216,6 +216,12 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} addTorrent /path/to/torrent_file URI... [options]
        #{program_name} addMetalink /path/to/metalink_file [options]
        #{program_name} remove GID [options]
+       #{program_name} pause GID [options]
+       #{program_name} pauseAll [options]
+       #{program_name} forcePause GID [options]
+       #{program_name} forcePauseAll [options]
+       #{program_name} unpause GID [options]
+       #{program_name} unpauseAll [options]
        #{program_name} changePosition GID pos how [options]
        #{program_name} tellStatus GID [options]
        #{program_name} tellActive [options]
@@ -292,6 +298,18 @@ elsif command == "tellStopped" then
 elsif command == "getOption" then
   result=client.call("aria2."+command, resources[0])
 elsif command == "getGlobalOption" then
+  result=client.call("aria2."+command)
+elsif command == "pause" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "pauseAll" then
+  result=client.call("aria2."+command)
+elsif command == "forcePause" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "forcePauseAll" then
+  result=client.call("aria2."+command)
+elsif command == "unpause" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "unpauseAll" then
   result=client.call("aria2."+command)
 elsif command == "remove" then
   result=client.call("aria2."+command, resources[0])
