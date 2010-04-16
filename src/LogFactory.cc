@@ -42,7 +42,7 @@ namespace aria2 {
 std::string LogFactory::filename = DEV_NULL;
 Logger* LogFactory::logger = 0;
 bool LogFactory::_consoleOutput = true;
-Logger::LEVEL LogFactory::_logLevel = Logger::DEBUG;
+Logger::LEVEL LogFactory::_logLevel = Logger::A2_DEBUG;
 
 Logger* LogFactory::getInstance() {
   if(!logger) {
@@ -54,9 +54,9 @@ Logger* LogFactory::getInstance() {
     }
     slogger->setLogLevel(_logLevel);
     if(_consoleOutput) {
-      slogger->setStdoutLogLevel(Logger::NOTICE, true);
-      slogger->setStdoutLogLevel(Logger::WARN, true);
-      slogger->setStdoutLogLevel(Logger::ERROR, true);
+      slogger->setStdoutLogLevel(Logger::A2_NOTICE, true);
+      slogger->setStdoutLogLevel(Logger::A2_WARN, true);
+      slogger->setStdoutLogLevel(Logger::A2_ERROR, true);
     }
     logger = slogger;
   }
@@ -71,15 +71,15 @@ void LogFactory::setLogLevel(Logger::LEVEL level)
 void LogFactory::setLogLevel(const std::string& level)
 {
   if(level == V_DEBUG) {
-    _logLevel = Logger::DEBUG;
+    _logLevel = Logger::A2_DEBUG;
   } else if(level == V_INFO) {
-    _logLevel = Logger::INFO;
+    _logLevel = Logger::A2_INFO;
   } else if(level == V_NOTICE) {
-    _logLevel = Logger::NOTICE;
+    _logLevel = Logger::A2_NOTICE;
   } else if(level == V_WARN) {
-    _logLevel = Logger::WARN;
+    _logLevel = Logger::A2_WARN;
   } else if(level == V_ERROR) {
-    _logLevel = Logger::ERROR;
+    _logLevel = Logger::A2_ERROR;
   }
 }
 

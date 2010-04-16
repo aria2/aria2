@@ -93,8 +93,7 @@ void AsyncNameResolver::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
 
 int AsyncNameResolver::getsock(sock_t* sockets) const
 {
-  // TODO cast to int* might cause problem with Windows SOCKET?
-  return ares_getsock(channel, reinterpret_cast<int*>(sockets),
+  return ares_getsock(channel, reinterpret_cast<ares_socket_t*>(sockets),
                       ARES_GETSOCK_MAXNUM);
 }
 

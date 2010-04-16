@@ -46,6 +46,8 @@
 #include <utility>
 #include <vector>
 
+#include "a2netcompat.h"
+
 #ifdef HAVE_LIBSSL
 // for SSL
 # include <openssl/ssl.h>

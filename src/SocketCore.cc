@@ -47,7 +47,6 @@
 #endif // HAVE_LIBGNUTLS
 
 #include "message.h"
-#include "a2netcompat.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"

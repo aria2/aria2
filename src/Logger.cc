@@ -53,7 +53,7 @@ const std::string Logger::ERROR_LABEL("ERROR");
 
 const std::string Logger::INFO_LABEL("INFO");
 
-Logger::Logger():_logLevel(Logger::DEBUG), _stdoutField(0) {}
+Logger::Logger():_logLevel(Logger::A2_DEBUG), _stdoutField(0) {}
 
 Logger::~Logger()
 {

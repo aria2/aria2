@@ -49,11 +49,11 @@ class Exception;
 class Logger {
 public:
   enum LEVEL {
-    DEBUG  = 1 << 0,
-    INFO   = 1 << 1,
-    NOTICE = 1 << 2,
-    WARN   = 1 << 3,
-    ERROR  = 1 << 4,
+    A2_DEBUG  = 1 << 0,
+    A2_INFO   = 1 << 1,
+    A2_NOTICE = 1 << 2,
+    A2_WARN   = 1 << 3,
+    A2_ERROR  = 1 << 4,
   };
 
   static const std::string DEBUG_LABEL;
@@ -127,52 +127,52 @@ public:
 
   void debug(const char* msg, ...)
   {
-    WRITE_LOG(DEBUG, DEBUG_LABEL, msg);
+    WRITE_LOG(A2_DEBUG, DEBUG_LABEL, msg);
   }
 
   void debug(const char* msg, const Exception& ex, ...)
   {
-    WRITE_LOG_EX(DEBUG, DEBUG_LABEL, msg, ex);
+    WRITE_LOG_EX(A2_DEBUG, DEBUG_LABEL, msg, ex);
   }
 
   void info(const char* msg, ...)
   {
-    WRITE_LOG(INFO, INFO_LABEL, msg);
+    WRITE_LOG(A2_INFO, INFO_LABEL, msg);
   }
 
   void info(const char* msg, const Exception& ex, ...)
   {
-    WRITE_LOG_EX(INFO, INFO_LABEL, msg, ex);
+    WRITE_LOG_EX(A2_INFO, INFO_LABEL, msg, ex);
   }
 
   void notice(const char* msg, ...)
   {
-    WRITE_LOG(NOTICE, NOTICE_LABEL, msg);
+    WRITE_LOG(A2_NOTICE, NOTICE_LABEL, msg);
   }
 
   void notice(const char* msg, const Exception& ex, ...)
   {
-    WRITE_LOG_EX(NOTICE, NOTICE_LABEL, msg, ex);
+    WRITE_LOG_EX(A2_NOTICE, NOTICE_LABEL, msg, ex);
   }
 
   void warn(const char* msg, ...)
   {
-    WRITE_LOG(WARN, WARN_LABEL, msg);
+    WRITE_LOG(A2_WARN, WARN_LABEL, msg);
   }
 
   void warn(const char* msg, const Exception& ex, ...)
   {
-    WRITE_LOG_EX(WARN, WARN_LABEL, msg, ex);
+    WRITE_LOG_EX(A2_WARN, WARN_LABEL, msg, ex);
   }
 
   void error(const char*  msg, ...)
   {
-    WRITE_LOG(ERROR, ERROR_LABEL, msg);
+    WRITE_LOG(A2_ERROR, ERROR_LABEL, msg);
   }
 
   void error(const char* msg, const Exception& ex, ...)
   {
-    WRITE_LOG_EX(ERROR, ERROR_LABEL, msg, ex);
+    WRITE_LOG_EX(A2_ERROR, ERROR_LABEL, msg, ex);
   }
 
   void openFile(const std::string& filename);
@@ -197,12 +197,12 @@ public:
   // either file or stdout.
   bool debug()
   {
-    return levelEnabled(DEBUG);
+    return levelEnabled(A2_DEBUG);
   }
 
   bool info()
   {
-    return levelEnabled(INFO);
+    return levelEnabled(A2_INFO);
   }
 };
 

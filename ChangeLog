@@ -1,3 +1,14 @@
+2010-04-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error with openssl 1.1.0 and mingw32.
+	* src/AsyncNameResolver.cc
+	* src/LogFactory.cc
+	* src/Logger.cc
+	* src/Logger.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/a2netcompat.h
+
 2010-04-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.9.1
