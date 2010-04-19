@@ -292,6 +292,10 @@ bool DownloadCommand::prepareForNextSegment() {
       // TODO do we need cuttrailinggarbage here?
       e->_checkIntegrityMan->pushEntry(entry);
     }
+    // Following 2lines are needed for DownloadEngine to detect
+    // completed RequestGroups without 1sec delay.
+    e->setNoWait(true);
+    e->setRefreshInterval(0);
 #endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
