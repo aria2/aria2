@@ -44,253 +44,33 @@
 
 namespace aria2 {
 
-PollEventPoll::CommandEvent::CommandEvent(Command* command, int events):
-  _command(command), _events(events) {}
+PollEventPoll::KSocketEntry::KSocketEntry(sock_t s):
+  SocketEntry<KCommandEvent, KADNSEvent, struct pollfd>(s) {}
 
-int PollEventPoll::CommandEvent::getEvents() const
-{
-  return _events;
-}
-
-void PollEventPoll::CommandEvent::processEvents(int events)
-{
-  if((_events&events) ||
-     ((PollEventPoll::EVENT_ERROR|PollEventPoll::EVENT_HUP)&events)) {
-    _command->setStatusActive();
-  }
-  if(PollEventPoll::EVENT_READ&events) {
-    _command->readEventReceived();
-  }
-  if(PollEventPoll::EVENT_WRITE&events) {
-    _command->writeEventReceived();
-  }
-  if(PollEventPoll::EVENT_ERROR&events) {
-    _command->errorEventReceived();
-  }
-  if(PollEventPoll::EVENT_HUP&events) {
-    _command->hupEventReceived();
-  }
-}
-
-void PollEventPoll::CommandEvent::addSelf
-(const SharedHandle<SocketEntry>& socketEntry) const
-{
-  socketEntry->addCommandEvent(*this);
-}
-
-void PollEventPoll::CommandEvent::removeSelf
-(const SharedHandle<SocketEntry>& socketEntry) const
-{
-  socketEntry->removeCommandEvent(*this);
-}
-
-#ifdef ENABLE_ASYNC_DNS
-
-PollEventPoll::ADNSEvent::ADNSEvent
-(const SharedHandle<AsyncNameResolver>& resolver,
- Command* command,
- sock_t socket, int events):
-  _resolver(resolver), _command(command), _socket(socket), _events(events) {}
-
-int PollEventPoll::ADNSEvent::getEvents() const
-{
-  return _events;
-}
-
-void PollEventPoll::ADNSEvent::processEvents(int events)
-{
-  ares_socket_t readfd;
-  ares_socket_t writefd;
-  if(events&(PollEventPoll::EVENT_READ|PollEventPoll::EVENT_ERROR|
-             PollEventPoll::EVENT_HUP)) {
-    readfd = _socket;
-  } else {
-    readfd = ARES_SOCKET_BAD;
-  }
-  if(events&(PollEventPoll::EVENT_WRITE|PollEventPoll::EVENT_ERROR|
-             PollEventPoll::EVENT_HUP)) {
-    writefd = _socket;
-  } else {
-    writefd = ARES_SOCKET_BAD;
-  }
-  _resolver->process(readfd, writefd);
-  _command->setStatusActive();
-}
-
-void PollEventPoll::ADNSEvent::addSelf
-(const SharedHandle<SocketEntry>& socketEntry) const
-{
-  socketEntry->addADNSEvent(*this);
-}
-
-void PollEventPoll::ADNSEvent::removeSelf
-(const SharedHandle<SocketEntry>& socketEntry) const
-{
-  socketEntry->removeADNSEvent(*this);
-}
-
-#endif // ENABLE_ASYNC_DNS
-
-PollEventPoll::SocketEntry::SocketEntry(sock_t socket):_socket(socket)
-{
-  memset(&_pollEvent, 0, sizeof(struct pollfd));
-}
-
-void PollEventPoll::SocketEntry::addCommandEvent(const CommandEvent& cev)
-{
-  std::deque<CommandEvent>::iterator i = std::find(_commandEvents.begin(),
-                                                   _commandEvents.end(),
-                                                   cev);
-  if(i == _commandEvents.end()) {
-    _commandEvents.push_back(cev);
-  } else {
-    (*i).addEvents(cev.getEvents());
-  }
-}
-
-void PollEventPoll::SocketEntry::removeCommandEvent(const CommandEvent& cev)
-{
-  std::deque<CommandEvent>::iterator i = std::find(_commandEvents.begin(),
-                                                   _commandEvents.end(),
-                                                   cev);
-  if(i == _commandEvents.end()) {
-    // not found
-  } else {
-    (*i).removeEvents(cev.getEvents());
-    if((*i).eventsEmpty()) {
-      _commandEvents.erase(i);
-    }
-  }
-}
-
-#ifdef ENABLE_ASYNC_DNS
-
-void PollEventPoll::SocketEntry::addADNSEvent(const ADNSEvent& aev)
-{
-  std::deque<ADNSEvent>::iterator i = std::find(_adnsEvents.begin(),
-                                                _adnsEvents.end(),
-                                                aev);
-  if(i == _adnsEvents.end()) {
-    _adnsEvents.push_back(aev);
-  }
-}
-
-void PollEventPoll::SocketEntry::removeADNSEvent(const ADNSEvent& aev)
-{
-  std::deque<ADNSEvent>::iterator i = std::find(_adnsEvents.begin(),
-                                                _adnsEvents.end(),
-                                                aev);
-  if(i == _adnsEvents.end()) {
-    // not found
-  } else {
-    _adnsEvents.erase(i);
-  }
-}
-
-#endif // ENABLE_ASYNC_DNS
-
-void PollEventPoll::SocketEntry::processEvents(int events)
-{
-  std::for_each(_commandEvents.begin(), _commandEvents.end(),
-                std::bind2nd(std::mem_fun_ref
-                             (&PollEventPoll::CommandEvent::processEvents),
-                             events));
-#ifdef ENABLE_ASYNC_DNS
-
-  std::for_each(_adnsEvents.begin(), _adnsEvents.end(),
-                std::bind2nd(std::mem_fun_ref
-                             (&PollEventPoll::ADNSEvent::processEvents),
-                             events));
-
-#endif // ENABLE_ASYNC_DNS
-
-}
-
-bool PollEventPoll::SocketEntry::eventEmpty() const
-{
-
-#ifdef ENABLE_ASYNC_DNS
-
-  return _commandEvents.empty() && _adnsEvents.empty();
-
-#else // !ENABLE_ASYNC_DNS
-
-  return _commandEvents.empty();
-
-#endif // !ENABLE_ASYNC_DNS)
-
-}
-
-int accumulateEvent(int events, const PollEventPoll::Event& event)
+int accumulateEvent(int events, const PollEventPoll::KEvent& event)
 {
   return events|event.getEvents();
 }
 
-struct pollfd& PollEventPoll::SocketEntry::getPollEvent()
+struct pollfd PollEventPoll::KSocketEntry::getEvents()
 {
-  _pollEvent.fd = _socket;
+  struct pollfd pollEvent;
+  pollEvent.fd = _socket;
 #ifdef ENABLE_ASYNC_DNS
-  _pollEvent.events =
+  pollEvent.events =
     std::accumulate(_adnsEvents.begin(),
                     _adnsEvents.end(),
                     std::accumulate(_commandEvents.begin(),
                                     _commandEvents.end(), 0, accumulateEvent),
                     accumulateEvent);
 #else // !ENABLE_ASYNC_DNS
-  _pollEvent.events =
+  pollEvent.events =
     std::accumulate(_commandEvents.begin(), _commandEvents.end(), 0,
                     accumulateEvent);
 #endif // !ENABLE_ASYNC_DNS
-  return _pollEvent;
+  pollEvent.revents = 0;
+  return pollEvent;
 }
-
-#ifdef ENABLE_ASYNC_DNS
-
-PollEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry
-(const SharedHandle<AsyncNameResolver>& nameResolver, Command* command):
-  _nameResolver(nameResolver), _command(command), _socketsSize(0)
-
-{}
-
-void PollEventPoll::AsyncNameResolverEntry::addSocketEvents(PollEventPoll* e)
-{
-  _socketsSize = 0;
-  int mask = _nameResolver->getsock(_sockets);
-  if(mask == 0) {
-    return;
-  }
-  size_t i;
-  for(i = 0; i < ARES_GETSOCK_MAXNUM; ++i) {
-    int events = 0;
-    if(ARES_GETSOCK_READABLE(mask, i)) {
-      events |= PollEventPoll::EVENT_READ;
-    }
-    if(ARES_GETSOCK_WRITABLE(mask, i)) {
-      events |= PollEventPoll::EVENT_WRITE;
-    }
-    if(events == 0) {
-      // assume no further sockets are returned.
-      break;
-    }
-    LogFactory::getInstance()->debug("addSocketEvents, %d", _sockets[i]);
-    e->addEvents(_sockets[i], _command, events, _nameResolver);
-  }
-  _socketsSize = i;
-}
-  
-void PollEventPoll::AsyncNameResolverEntry::removeSocketEvents(PollEventPoll* e)
-{
-  for(size_t i = 0; i < _socketsSize; ++i) {
-    e->deleteEvents(_sockets[i], _command, _nameResolver);
-  }
-}
-
-void PollEventPoll::AsyncNameResolverEntry::processTimeout()
-{
-  _nameResolver->process(ARES_SOCKET_BAD, ARES_SOCKET_BAD);
-}
-
-#endif // ENABLE_ASYNC_DNS
 
 PollEventPoll::PollEventPoll():
   _pollfdCapacity(1024), _pollfdNum(0), _logger(LogFactory::getInstance())
@@ -311,12 +91,12 @@ void PollEventPoll::poll(const struct timeval& tv)
   while((res = ::poll(_pollfds, _pollfdNum, timeout)) == -1 &&
         errno == EINTR);
   if(res > 0) {
-    SharedHandle<SocketEntry> se(new SocketEntry(0));
+    SharedHandle<KSocketEntry> se(new KSocketEntry(0));
     for(struct pollfd* first = _pollfds, *last = _pollfds+_pollfdNum;
         first != last; ++first) {
       if(first->revents) {
         se->setSocket(first->fd);
-        std::deque<SharedHandle<SocketEntry> >::iterator itr =
+        std::deque<SharedHandle<KSocketEntry> >::iterator itr =
           std::lower_bound(_socketEntries.begin(), _socketEntries.end(), se);
         if(itr != _socketEntries.end() && (*itr) == se) {
           (*itr)->processEvents(first->revents);
@@ -334,7 +114,7 @@ void PollEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator i =
+  for(std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator i =
         _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
       i != eoi; ++i) {
     (*i)->processTimeout();
@@ -351,32 +131,32 @@ int PollEventPoll::translateEvents(EventPoll::EventType events)
 {
   int newEvents = 0;
   if(EventPoll::EVENT_READ&events) {
-    newEvents |= PollEventPoll::EVENT_READ;
+    newEvents |= IEV_READ;
   }
   if(EventPoll::EVENT_WRITE&events) {
-    newEvents |= PollEventPoll::EVENT_WRITE;
+    newEvents |= IEV_WRITE;
   }
   if(EventPoll::EVENT_ERROR&events) {
-    newEvents |= PollEventPoll::EVENT_ERROR;
+    newEvents |= IEV_ERROR;
   }
   if(EventPoll::EVENT_HUP&events) {
-    newEvents |= PollEventPoll::EVENT_HUP;
+    newEvents |= IEV_HUP;
   }
   return newEvents;
 }
 
 bool PollEventPoll::addEvents
-(sock_t socket, const PollEventPoll::Event& event)
+(sock_t socket, const PollEventPoll::KEvent& event)
 {
-  SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
-  std::deque<SharedHandle<SocketEntry> >::iterator i =
+  SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  std::deque<SharedHandle<KSocketEntry> >::iterator i =
     std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
   if(i != _socketEntries.end() && (*i) == socketEntry) {
     event.addSelf(*i);
     for(struct pollfd* first = _pollfds, *last = _pollfds+_pollfdNum;
         first != last; ++first) {
       if(first->fd == socket) {
-        *first = (*i)->getPollEvent();
+        *first = (*i)->getEvents();
         break;
       }
     }
@@ -390,7 +170,7 @@ bool PollEventPoll::addEvents
       delete [] _pollfds;
       _pollfds = newPollfds;
     }
-    _pollfds[_pollfdNum] = socketEntry->getPollEvent();
+    _pollfds[_pollfdNum] = socketEntry->getEvents();
     ++_pollfdNum;
   }
   return true;
@@ -400,7 +180,7 @@ bool PollEventPoll::addEvents
 (sock_t socket, Command* command, EventPoll::EventType events)
 {
   int pollEvents = translateEvents(events);
-  return addEvents(socket, CommandEvent(command, pollEvents));
+  return addEvents(socket, KCommandEvent(command, pollEvents));
 }
 
 #ifdef ENABLE_ASYNC_DNS
@@ -408,15 +188,15 @@ bool PollEventPoll::addEvents
 (sock_t socket, Command* command, int events,
  const SharedHandle<AsyncNameResolver>& rs)
 {
-  return addEvents(socket, ADNSEvent(rs, command, socket, events));
+  return addEvents(socket, KADNSEvent(rs, command, socket, events));
 }
 #endif // ENABLE_ASYNC_DNS
 
 bool PollEventPoll::deleteEvents
-(sock_t socket, const PollEventPoll::Event& event)
+(sock_t socket, const PollEventPoll::KEvent& event)
 {
-  SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
-  std::deque<SharedHandle<SocketEntry> >::iterator i =
+  SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
+  std::deque<SharedHandle<KSocketEntry> >::iterator i =
     std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
   if(i != _socketEntries.end() && (*i) == socketEntry) {
     event.removeSelf(*i);
@@ -430,7 +210,7 @@ bool PollEventPoll::deleteEvents
           --_pollfdNum;
           _socketEntries.erase(i);
         } else {
-          *first = (*i)->getPollEvent();
+          *first = (*i)->getEvents();
         }
         break;
       }
@@ -448,7 +228,7 @@ bool PollEventPoll::deleteEvents
 bool PollEventPoll::deleteEvents
 (sock_t socket, Command* command, const SharedHandle<AsyncNameResolver>& rs)
 {
-  return deleteEvents(socket, ADNSEvent(rs, command, socket, 0));
+  return deleteEvents(socket, KADNSEvent(rs, command, socket, 0));
 }
 #endif // ENABLE_ASYNC_DNS
 
@@ -456,16 +236,16 @@ bool PollEventPoll::deleteEvents
 (sock_t socket, Command* command, EventPoll::EventType events)
 {
   int pollEvents = translateEvents(events);
-  return deleteEvents(socket, CommandEvent(command, pollEvents));
+  return deleteEvents(socket, KCommandEvent(command, pollEvents));
 }
 
 #ifdef ENABLE_ASYNC_DNS
 bool PollEventPoll::addNameResolver
 (const SharedHandle<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<AsyncNameResolverEntry> entry
-    (new AsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
+  SharedHandle<KAsyncNameResolverEntry> entry
+    (new KAsyncNameResolverEntry(resolver, command));
+  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
     std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
   if(itr == _nameResolverEntries.end()) {
     _nameResolverEntries.push_back(entry);
@@ -479,9 +259,9 @@ bool PollEventPoll::addNameResolver
 bool PollEventPoll::deleteNameResolver
 (const SharedHandle<AsyncNameResolver>& resolver, Command* command)
 {
-  SharedHandle<AsyncNameResolverEntry> entry
-    (new AsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
+  SharedHandle<KAsyncNameResolverEntry> entry
+    (new KAsyncNameResolverEntry(resolver, command));
+  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
     std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
   if(itr == _nameResolverEntries.end()) {
     return false;

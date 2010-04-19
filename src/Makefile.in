@@ -434,7 +434,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	CreateRequestCommand.h DownloadResultCode.h wallclock.h \
 	download_helper.cc download_helper.h MetadataInfo.cc \
 	MetadataInfo.h SessionSerializer.cc SessionSerializer.h \
-	XmlRpcRequestParserController.cc \
+	Event.h XmlRpcRequestParserController.cc \
 	XmlRpcRequestParserController.h \
 	XmlRpcRequestParserStateMachine.cc \
 	XmlRpcRequestParserStateMachine.h XmlRpcRequestParserState.h \
@@ -1204,7 +1204,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	CreateRequestCommand.h DownloadResultCode.h wallclock.h \
 	download_helper.cc download_helper.h MetadataInfo.cc \
 	MetadataInfo.h SessionSerializer.cc SessionSerializer.h \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
+	Event.h $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \

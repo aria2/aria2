@@ -41,6 +41,7 @@
 
 #include <deque>
 
+#include "Event.h"
 #ifdef ENABLE_ASYNC_DNS
 # include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -50,195 +51,29 @@ namespace aria2 {
 class Logger;
 
 class PollEventPoll : public EventPoll {
+private:
+  class KSocketEntry;
+
+  typedef Event<KSocketEntry> KEvent;
+  typedef CommandEvent<KSocketEntry, PollEventPoll> KCommandEvent;
+  typedef ADNSEvent<KSocketEntry, PollEventPoll> KADNSEvent;
+  typedef AsyncNameResolverEntry<PollEventPoll> KAsyncNameResolverEntry;
+  friend class AsyncNameResolverEntry<PollEventPoll>;
+
+  class KSocketEntry:
+    public SocketEntry<KCommandEvent, KADNSEvent, struct pollfd> {
+  public:
+    KSocketEntry(sock_t socket);
+
+    virtual struct pollfd getEvents();
+  };
+
+  friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-
-  class SocketEntry;
-
-  class Event {
-  public:
-    virtual ~Event() {}
-
-    virtual void processEvents(int events) = 0;
-
-    virtual int getEvents() const = 0;
-
-    virtual void addSelf(const SharedHandle<SocketEntry>& socketEntry) const =0;
-
-    virtual void removeSelf
-    (const SharedHandle<SocketEntry>& socketEntry) const =0;
-  };
-
-  friend int accumulateEvent(int events, const Event& event);
-
-  class CommandEvent : public Event {
-  private:
-    Command* _command;
-    int _events;
-  public:
-    CommandEvent(Command* command, int events);
-    
-    Command* getCommand() const
-    {
-      return _command;
-    }
-    
-    void addEvents(int events)
-    {
-      _events |= events;
-    }
-
-    void removeEvents(int events)
-    {
-      _events &= (~events); 
-    }
-
-    bool eventsEmpty() const
-    {
-      return _events == 0;
-    }
-        
-    bool operator==(const CommandEvent& commandEvent) const
-    {
-      return _command == commandEvent._command;
-    }
-
-    virtual int getEvents() const;
-    
-    virtual void processEvents(int events);
-
-    virtual void addSelf(const SharedHandle<SocketEntry>& socketEntry) const;
-
-    virtual void removeSelf(const SharedHandle<SocketEntry>& socketEntry) const;
-  };
-  
+  std::deque<SharedHandle<KSocketEntry> > _socketEntries;
 #ifdef ENABLE_ASYNC_DNS
-
-  class ADNSEvent : public Event {
-  private:
-    SharedHandle<AsyncNameResolver> _resolver;
-    Command* _command;
-    sock_t _socket;
-    int _events;
-  public:
-    ADNSEvent(const SharedHandle<AsyncNameResolver>& resolver, Command* command,
-              sock_t socket, int events);
-    
-    bool operator==(const ADNSEvent& event) const
-    {
-      return _resolver == event._resolver;
-    }
-    
-    virtual int getEvents() const;
-
-    virtual void processEvents(int events);
-
-    virtual void addSelf(const SharedHandle<SocketEntry>& socketEntry) const;
-
-    virtual void removeSelf(const SharedHandle<SocketEntry>& socketEntry) const;
-  };
-
-#endif // ENABLE_ASYNC_DNS
-
-  class SocketEntry {
-  private:
-    sock_t _socket;
-    
-    std::deque<CommandEvent> _commandEvents;
-    
-#ifdef ENABLE_ASYNC_DNS
-    
-    std::deque<ADNSEvent> _adnsEvents;
-
-#endif // ENABLE_ASYNC_DNS
-
-    struct pollfd _pollEvent;
-
-  public:
-    SocketEntry(sock_t socket);
-
-    bool operator==(const SocketEntry& entry) const
-    {
-      return _socket == entry._socket;
-    }
-
-    bool operator<(const SocketEntry& entry) const
-    {
-      return _socket < entry._socket;
-    }
-
-    void addCommandEvent(const CommandEvent& cev);
-
-    void removeCommandEvent(const CommandEvent& cev);
-
-#ifdef ENABLE_ASYNC_DNS
-    
-    void addADNSEvent(const ADNSEvent& aev);
-    
-    void removeADNSEvent(const ADNSEvent& aev);
-
-#endif // ENABLE_ASYNC_DNS
-
-    struct pollfd& getPollEvent();
-    
-    sock_t getSocket() const
-    {
-      return _socket;
-    }
-
-    void setSocket(sock_t socket)
-    {
-      _socket = socket;
-    }
-
-    bool eventEmpty() const;
-    
-    void processEvents(int events);
-  };
-
-#ifdef ENABLE_ASYNC_DNS
-
-  class AsyncNameResolverEntry {
-  private:
-    SharedHandle<AsyncNameResolver> _nameResolver;
-
-    Command* _command;
-
-    size_t _socketsSize;
-  
-    sock_t _sockets[ARES_GETSOCK_MAXNUM];
-
-  public:
-    AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
-                           Command* command);
-
-    bool operator==(const AsyncNameResolverEntry& entry)
-    {
-      return _nameResolver == entry._nameResolver &&
-        _command == entry._command;
-    }
-
-    void addSocketEvents(PollEventPoll* socketPoll);
-    
-    void removeSocketEvents(PollEventPoll* socketPoll);
-
-    // Calls AsyncNameResolver::process(ARES_SOCKET_BAD,
-    // ARES_SOCKET_BAD).
-    void processTimeout();
-  };
-
-#endif // ENABLE_ASYNC_DNS
-private:
-  enum PollEventType {
-    EVENT_READ = POLLIN,
-    EVENT_WRITE = POLLOUT,
-    EVENT_ERROR = POLLERR,
-    EVENT_HUP = POLLHUP,
-  };
-
-  std::deque<SharedHandle<SocketEntry> > _socketEntries;
-#ifdef ENABLE_ASYNC_DNS
-  std::deque<SharedHandle<AsyncNameResolverEntry> > _nameResolverEntries;
+  std::deque<SharedHandle<KAsyncNameResolverEntry> > _nameResolverEntries;
 #endif // ENABLE_ASYNC_DNS
 
   // Allocated the number of struct pollfd in _pollfds.
@@ -251,9 +86,9 @@ private:
 
   Logger* _logger;
 
-  bool addEvents(sock_t socket, const Event& event);
+  bool addEvents(sock_t socket, const KEvent& event);
 
-  bool deleteEvents(sock_t socket, const Event& event);
+  bool deleteEvents(sock_t socket, const KEvent& event);
 
   bool addEvents(sock_t socket, Command* command, int events,
                  const SharedHandle<AsyncNameResolver>& rs);
@@ -282,6 +117,10 @@ public:
   (const SharedHandle<AsyncNameResolver>& resolver, Command* command);
 #endif // ENABLE_ASYNC_DNS
 
+  static const int IEV_READ = POLLIN;
+  static const int IEV_WRITE = POLLOUT;
+  static const int IEV_ERROR = POLLERR;
+  static const int IEV_HUP = POLLHUP;
 };
 
 } // namespace aria2

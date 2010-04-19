@@ -1,3 +1,12 @@
+2010-04-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Externalized Event, CommandEvent, ADNSEvent, SocketEntry and
+	AsyncNameResolverEntry class.
+	* src/Event.h
+	* src/Makefile.am
+	* src/PollEventPoll.cc
+	* src/PollEventPoll.h
+
 2010-04-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Supported poll() for socket event notification.  --event-poll can
