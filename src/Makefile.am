@@ -525,6 +525,10 @@ if HAVE_MACH_ABSOLUTE_TIME
 SRCS += clock_gettime_osx.cc clock_gettime_osx.h
 endif # HAVE_MACH_ABSOLUTE_TIME
 
+if HAVE_POLL
+SRCS += PollEventPoll.cc PollEventPoll.h
+endif # HAVE_POLL
+
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

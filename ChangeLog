@@ -1,5 +1,24 @@
 2010-04-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Supported poll() for socket event notification.  --event-poll can
+	take value "poll". Fixed the bug that timeout for
+	SocketCore::isReadable()/isWritable() is ignored when epoll is
+	used.
+	* src/OptionHandlerFactory.cc
+	* src/a2io.h
+	* src/prefs.h
+	* src/SocketCore.h
+	* src/Makefile.am
+	* src/main.cc
+	* src/PollEventPoll.h
+	* src/SocketCore.cc
+	* src/DownloadEngineFactory.cc
+	* src/PollEventPoll.cc
+	* src/prefs.cc
+	* configure.ac
+
+2010-04-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reverted previous change to DownloadCommand.cc with additional
 	commentary.
 	* src/DownloadCommand.cc

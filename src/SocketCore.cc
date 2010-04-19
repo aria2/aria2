@@ -596,7 +596,8 @@ bool SocketCore::isWritable(time_t timeout)
     }
     struct epoll_event epEvents[1];
     int r;
-    while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
+    while((r = epoll_wait(_epfd, epEvents, 1, timeout*1000)) == -1 &&
+          errno == EINTR);
     if(r > 0) {
       return epEvents[0].events&(EPOLLOUT|EPOLLHUP|EPOLLERR);
     } else if(r == 0) {
@@ -606,31 +607,49 @@ bool SocketCore::isWritable(time_t timeout)
     }
   } else
 #endif // HAVE_EPOLL
-    if(_pollMethod == SocketCore::POLL_METHOD_SELECT) {
-      fd_set fds;
-      FD_ZERO(&fds);
-      FD_SET(sockfd, &fds);
-
-      struct timeval tv;
-      tv.tv_sec = timeout;
-      tv.tv_usec = 0;
-
-      int r = select(sockfd+1, NULL, &fds, NULL, &tv);
-      if(r == 1) {
-        return true;
+#ifdef HAVE_POLL
+    if(_pollMethod == SocketCore::POLL_METHOD_POLL) {
+      struct pollfd p;
+      p.fd = sockfd;
+      p.events = POLLOUT;
+      int r;
+      while((r = poll(&p, 1, timeout*1000)) == -1 && errno == EINTR);
+      if(r > 0) {
+        return p.revents&(POLLOUT|POLLHUP|POLLERR);
       } else if(r == 0) {
-        // time out
         return false;
       } else {
-        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
+        throw DL_RETRY_EX
+          (StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+      }
+    } else
+#endif // HAVE_POLL
+      if(_pollMethod == SocketCore::POLL_METHOD_SELECT) {
+        fd_set fds;
+        FD_ZERO(&fds);
+        FD_SET(sockfd, &fds);
+
+        struct timeval tv;
+        tv.tv_sec = timeout;
+        tv.tv_usec = 0;
+
+        int r = select(sockfd+1, NULL, &fds, NULL, &tv);
+        if(r == 1) {
+          return true;
+        } else if(r == 0) {
+          // time out
           return false;
         } else {
-          throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+          if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
+            return false;
+          } else {
+            throw DL_RETRY_EX
+              (StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+          }
         }
+      } else {
+        abort();
       }
-    } else {
-      abort();
-    }
 }
 
 bool SocketCore::isReadable(time_t timeout)
@@ -648,7 +667,8 @@ bool SocketCore::isReadable(time_t timeout)
     }
     struct epoll_event epEvents[1];
     int r;
-    while((r = epoll_wait(_epfd, epEvents, 1, 0)) == -1 && errno == EINTR);
+    while((r = epoll_wait(_epfd, epEvents, 1, timeout*1000)) == -1 &&
+          errno == EINTR);
 
     if(r > 0) {
       return epEvents[0].events&(EPOLLIN|EPOLLHUP|EPOLLERR);
@@ -659,31 +679,49 @@ bool SocketCore::isReadable(time_t timeout)
     }
   } else
 #endif // HAVE_EPOLL
-    if(_pollMethod == SocketCore::POLL_METHOD_SELECT) {
-      fd_set fds;
-      FD_ZERO(&fds);
-      FD_SET(sockfd, &fds);
-
-      struct timeval tv;
-      tv.tv_sec = timeout;
-      tv.tv_usec = 0;
-
-      int r = select(sockfd+1, &fds, NULL, NULL, &tv);
-      if(r == 1) {
-        return true;
+#ifdef HAVE_POLL
+    if(_pollMethod == SocketCore::POLL_METHOD_POLL) {
+      struct pollfd p;
+      p.fd = sockfd;
+      p.events = POLLIN;
+      int r;
+      while((r = poll(&p, 1, timeout*1000)) == -1 && errno == EINTR);
+      if(r > 0) {
+        return p.revents&(POLLIN|POLLHUP|POLLERR);
       } else if(r == 0) {
-        // time out
         return false;
       } else {
-        if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
+        throw DL_RETRY_EX
+          (StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+      }
+    } else
+#endif // HAVE_POLL
+      if(_pollMethod == SocketCore::POLL_METHOD_SELECT) {
+        fd_set fds;
+        FD_ZERO(&fds);
+        FD_SET(sockfd, &fds);
+
+        struct timeval tv;
+        tv.tv_sec = timeout;
+        tv.tv_usec = 0;
+
+        int r = select(sockfd+1, &fds, NULL, NULL, &tv);
+        if(r == 1) {
+          return true;
+        } else if(r == 0) {
+          // time out
           return false;
         } else {
-          throw DL_RETRY_EX(StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+          if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
+            return false;
+          } else {
+            throw DL_RETRY_EX
+              (StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+          }
         }
+      } else {
+        abort();
       }
-    } else {
-      abort();
-    }
 }
 
 #ifdef HAVE_LIBSSL
@@ -1235,6 +1273,13 @@ void SocketCore::useEpoll()
   _pollMethod = SocketCore::POLL_METHOD_EPOLL;
 }
 #endif // HAVE_EPOLL
+
+#ifdef HAVE_POLL
+void SocketCore::usePoll()
+{
+  _pollMethod = SocketCore::POLL_METHOD_POLL;
+}
+#endif // HAVE_POLL
 
 void SocketCore::useSelect()
 {

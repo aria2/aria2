@@ -602,6 +602,8 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 HAVE_TIMEGETTIME_FALSE
 HAVE_TIMEGETTIME_TRUE
+HAVE_POLL_FALSE
+HAVE_POLL_TRUE
 HAVE_MACH_ABSOLUTE_TIME_FALSE
 HAVE_MACH_ABSOLUTE_TIME_TRUE
 HAVE_DAEMON_FALSE
@@ -7953,6 +7955,7 @@ for ac_header in argz.h \
                   malloc.h \
                   netdb.h \
                   netinet/in.h \
+		  poll.h \
                   stddef.h \
                   stdint.h \
                   stdio_ext.h \
@@ -15084,6 +15087,26 @@ else
 fi
 
 
+for ac_func in poll
+do :
+  ac_fn_cxx_check_func "$LINENO" "poll" "ac_cv_func_poll"
+if test "x$ac_cv_func_poll" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_POLL 1
+_ACEOF
+ have_poll=yes
+fi
+done
+
+ if test "x$have_poll" = "xyes"; then
+  HAVE_POLL_TRUE=
+  HAVE_POLL_FALSE='#'
+else
+  HAVE_POLL_TRUE='#'
+  HAVE_POLL_FALSE=
+fi
+
+
 case "$target" in
   *mingw*)
          if true; then
@@ -15453,6 +15476,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_MACH_ABSOLUTE_TIME_TRUE}" && test -z "${HAVE_MACH_ABSOLUTE_TIME_FALSE}"; then
   as_fn_error "conditional \"HAVE_MACH_ABSOLUTE_TIME\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_POLL_TRUE}" && test -z "${HAVE_POLL_FALSE}"; then
+  as_fn_error "conditional \"HAVE_POLL\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_GETADDRINFO_TRUE}" && test -z "${HAVE_GETADDRINFO_FALSE}"; then

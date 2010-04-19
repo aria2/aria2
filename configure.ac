@@ -248,6 +248,7 @@ AC_CHECK_HEADERS([argz.h \
                   malloc.h \
                   netdb.h \
                   netinet/in.h \
+		  poll.h \
                   stddef.h \
                   stdint.h \
                   stdio_ext.h \
@@ -393,6 +394,9 @@ if test "x$have_clock_gettime" != "xyes"; then
 fi
 AM_CONDITIONAL([HAVE_MACH_ABSOLUTE_TIME],
 		[test "x$have_mach_absolute_time" = "xyes"])
+
+AC_CHECK_FUNCS([poll], [have_poll=yes])
+AM_CONDITIONAL([HAVE_POLL], [test "x$have_poll" = "xyes"])
 
 case "$target" in
   *mingw*)

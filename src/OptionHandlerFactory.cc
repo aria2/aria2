@@ -210,6 +210,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 #ifdef HAVE_EPOLL
       V_EPOLL,
 #endif // HAVE_EPOLL
+#ifdef HAVE_POLL
+      V_POLL,
+#endif // HAVE_POLL
       V_SELECT
     };
     SharedHandle<OptionHandler> op(new ParameterOptionHandler

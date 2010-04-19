@@ -191,9 +191,14 @@ downloadresultcode::RESULT main(int argc, char* argv[])
     SocketCore::useEpoll();
   } else
 #endif // HAVE_EPOLL
-    if(op->get(PREF_EVENT_POLL) == V_SELECT) {
-      SocketCore::useSelect();
-    }
+#ifdef HAVE_POLL
+    if(op->get(PREF_EVENT_POLL) == V_POLL) {
+      SocketCore::usePoll();
+    } else
+#endif // HAVE_POLL
+      if(op->get(PREF_EVENT_POLL) == V_SELECT) {
+        SocketCore::useSelect();
+      }
   downloadresultcode::RESULT exitStatus = downloadresultcode::FINISHED;
 
   Logger* logger = LogFactory::getInstance();

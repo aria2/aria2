@@ -305,6 +305,12 @@
 /* Define 1 if struct option.name is const char* */
 #undef HAVE_OPTION_CONST_NAME
 
+/* Define to 1 if you have the `poll' function. */
+#undef HAVE_POLL
+
+/* Define to 1 if you have the <poll.h> header file. */
+#undef HAVE_POLL_H
+
 /* Define to 1 if you have the `posix_fallocate' function. */
 #undef HAVE_POSIX_FALLOCATE
 

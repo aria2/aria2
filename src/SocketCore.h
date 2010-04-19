@@ -88,7 +88,9 @@ private:
 #endif // HAVE_EPOLL
 
   enum PollMethod {
-    POLL_METHOD_EPOLL, POLL_METHOD_SELECT
+    POLL_METHOD_EPOLL,
+    POLL_METHOD_POLL,
+    POLL_METHOD_SELECT
   };
 
   static PollMethod _pollMethod;
@@ -360,6 +362,9 @@ public:
 #ifdef HAVE_EPOLL
   static void useEpoll();
 #endif // HAVE_EPOLL
+#ifdef HAVE_POLL
+  static void usePoll();
+#endif // HAVE_POLL
   static void useSelect();
 
 #ifdef ENABLE_SSL

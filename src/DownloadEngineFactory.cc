@@ -61,6 +61,7 @@
 #ifdef HAVE_EPOLL
 # include "EpollEventPoll.h"
 #endif // HAVE_EPOLL
+#include "PollEventPoll.h"
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
 #include "FileAllocationEntry.h"
@@ -91,11 +92,16 @@ DownloadEngineFactory::newDownloadEngine
     }
   } else
 #endif // HAVE_EPLL
-    if(op->get(PREF_EVENT_POLL) == V_SELECT) {
-      eventPoll.reset(new SelectEventPoll());
-    } else {
-      abort();
-    }
+#ifdef HAVE_POLL
+    if(op->get(PREF_EVENT_POLL) == V_POLL) {
+      eventPoll.reset(new PollEventPoll());
+    } else
+#endif // HAVE_POLL
+      if(op->get(PREF_EVENT_POLL) == V_SELECT) {
+        eventPoll.reset(new SelectEventPoll());
+      } else {
+        abort();
+      }
   DownloadEngineHandle e(new DownloadEngine(eventPoll));
   e->option = op;
 

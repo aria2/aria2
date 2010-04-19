@@ -40,7 +40,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <cerrno>
-
+#ifdef HAVE_POLL_H
+# include <poll.h>
+#endif // HAVE_POLL_H
 #ifdef HAVE_IO_H
 # include <io.h>
 #endif // HAVE_IO_H
