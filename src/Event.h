@@ -194,7 +194,7 @@ template<typename SocketEntry, typename EventPoll>
 class ADNSEvent : public Event<SocketEntry> {};
 #endif // !ENABLE_ASYNC_DNS
 
-template<typename CommandEvent, typename ADNSEvent, typename EventRType>
+template<typename CommandEvent, typename ADNSEvent>
 class SocketEntry {
 protected:
   sock_t _socket;
@@ -269,8 +269,6 @@ public:
   }
 #endif // ENABLE_ASYNC_DNS
 
-  virtual EventRType getEvents() = 0;
-    
   sock_t getSocket() const
   {
     return _socket;

@@ -45,7 +45,7 @@
 namespace aria2 {
 
 PollEventPoll::KSocketEntry::KSocketEntry(sock_t s):
-  SocketEntry<KCommandEvent, KADNSEvent, struct pollfd>(s) {}
+  SocketEntry<KCommandEvent, KADNSEvent>(s) {}
 
 int accumulateEvent(int events, const PollEventPoll::KEvent& event)
 {

@@ -1,5 +1,14 @@
 2010-04-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed EventRType template parameter
+	* src/EpollEventPoll.cc
+	* src/EpollEventPoll.h
+	* src/Event.h
+	* src/PollEventPoll.cc
+	* src/PollEventPoll.h
+
+2010-04-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use Event in EpollEventPoll
 	* src/EpollEventPoll.cc
 	* src/EpollEventPoll.h

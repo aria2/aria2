@@ -61,11 +61,11 @@ private:
   friend class AsyncNameResolverEntry<EpollEventPoll>;
 
   class KSocketEntry:
-    public SocketEntry<KCommandEvent, KADNSEvent, struct epoll_event> {
+    public SocketEntry<KCommandEvent, KADNSEvent> {
   public:
     KSocketEntry(sock_t socket);
 
-    virtual struct epoll_event getEvents();
+    struct epoll_event getEvents();
   };
 
   friend int accumulateEvent(int events, const KEvent& event);

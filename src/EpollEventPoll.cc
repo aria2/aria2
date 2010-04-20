@@ -45,7 +45,7 @@
 namespace aria2 {
 
 EpollEventPoll::KSocketEntry::KSocketEntry(sock_t s):
-  SocketEntry<KCommandEvent, KADNSEvent, struct epoll_event>(s) {}
+  SocketEntry<KCommandEvent, KADNSEvent>(s) {}
 
 int accumulateEvent(int events, const EpollEventPoll::KEvent& event)
 {
