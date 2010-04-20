@@ -77,11 +77,12 @@ struct epoll_event EpollEventPoll::KSocketEntry::getEvents()
   return epEvent;
 }
 
-EpollEventPoll::EpollEventPoll():_logger(LogFactory::getInstance())
+EpollEventPoll::EpollEventPoll():
+  _epEventsSize(EPOLL_EVENTS_MAX),
+  _epEvents(new struct epoll_event[_epEventsSize]),
+  _logger(LogFactory::getInstance())
 {
   _epfd = epoll_create(EPOLL_EVENTS_MAX);
-
-  _epEvents = new struct epoll_event[EPOLL_EVENTS_MAX];
 }
 
 EpollEventPoll::~EpollEventPoll()
@@ -178,6 +179,11 @@ bool EpollEventPoll::addEvents(sock_t socket,
     }
   } else {
     _socketEntries.insert(i, socketEntry);
+    if(_socketEntries.size() > _epEventsSize) {
+      _epEventsSize *= 2;
+      delete [] _epEvents;
+      _epEvents = new struct epoll_event[_epEventsSize];
+    }
 
     event.addSelf(socketEntry);
 

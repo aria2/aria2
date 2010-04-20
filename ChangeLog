@@ -1,5 +1,11 @@
 2010-04-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Increased _epEvents size if necessary.
+	* src/EpollEventPoll.cc
+	* src/EpollEventPoll.h
+
+2010-04-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed EventRType template parameter
 	* src/EpollEventPoll.cc
 	* src/EpollEventPoll.h

@@ -78,6 +78,8 @@ private:
 
   int _epfd;
 
+  size_t _epEventsSize;
+
   struct epoll_event* _epEvents;
 
   static const size_t EPOLL_EVENTS_MAX = 1024;
