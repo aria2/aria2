@@ -96,6 +96,7 @@ DownloadEngineFactory::newDownloadEngine
     }
   } else
 #endif // HAVE_EPLL
+#ifdef HAVE_PORT_ASSOCIATE
     if(pollMethod == V_PORT) {
       SharedHandle<PortEventPoll> pp(new PortEventPoll());
       if(pp->good()) {
@@ -105,6 +106,7 @@ DownloadEngineFactory::newDownloadEngine
                           " Try --event-poll=select");
       }
     } else
+#endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
       if(pollMethod == V_POLL) {
         eventPoll.reset(new PollEventPoll());

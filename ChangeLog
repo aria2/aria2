@@ -1,3 +1,8 @@
+2010-04-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added missing #ifdef HAVE_PORT_ASSOCIATE
+	* src/DownloadEngineFactory.cc
+
 2010-04-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added opensolaris port_associate() support.
