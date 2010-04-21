@@ -61,6 +61,9 @@
 #ifdef HAVE_EPOLL
 # include "EpollEventPoll.h"
 #endif // HAVE_EPOLL
+#ifdef HAVE_PORT_ASSOCIATE
+# include "PortEventPoll.h"
+#endif // HAVE_PORT_ASSOCIATE
 #include "PollEventPoll.h"
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
@@ -81,8 +84,9 @@ DownloadEngineFactory::newDownloadEngine
   const size_t MAX_CONCURRENT_DOWNLOADS =
     op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
   SharedHandle<EventPoll> eventPoll;
+  const std::string& pollMethod = op->get(PREF_EVENT_POLL);
 #ifdef HAVE_EPOLL
-  if(op->get(PREF_EVENT_POLL) == V_EPOLL) {
+  if(pollMethod == V_EPOLL) {
     SharedHandle<EpollEventPoll> ep(new EpollEventPoll());
     if(ep->good()) {
       eventPoll = ep;
@@ -92,16 +96,25 @@ DownloadEngineFactory::newDownloadEngine
     }
   } else
 #endif // HAVE_EPLL
-#ifdef HAVE_POLL
-    if(op->get(PREF_EVENT_POLL) == V_POLL) {
-      eventPoll.reset(new PollEventPoll());
-    } else
-#endif // HAVE_POLL
-      if(op->get(PREF_EVENT_POLL) == V_SELECT) {
-        eventPoll.reset(new SelectEventPoll());
+    if(pollMethod == V_PORT) {
+      SharedHandle<PortEventPoll> pp(new PortEventPoll());
+      if(pp->good()) {
+        eventPoll = pp;
       } else {
-        abort();
+        throw DL_ABORT_EX("Initializing PortEventPoll failed."
+                          " Try --event-poll=select");
       }
+    } else
+#ifdef HAVE_POLL
+      if(pollMethod == V_POLL) {
+        eventPoll.reset(new PollEventPoll());
+      } else
+#endif // HAVE_POLL
+        if(pollMethod == V_SELECT) {
+          eventPoll.reset(new SelectEventPoll());
+        } else {
+          abort();
+        }
   DownloadEngineHandle e(new DownloadEngine(eventPoll));
   e->option = op;
 

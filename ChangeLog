@@ -1,5 +1,20 @@
 2010-04-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added opensolaris port_associate() support.
+	* src/DownloadEngineFactory.cc
+	* src/Makefile.am
+	* src/OptionHandlerFactory.cc
+	* src/PortEventPoll.cc
+	* src/PortEventPoll.h
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/configure.ac
+	* src/main.cc
+	* src/prefs.cc
+	* src/prefs.h
+
+2010-04-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that _e is passed where e should be passed.
 	* src/HttpListenCommand.cc
 

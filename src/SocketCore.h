@@ -87,8 +87,13 @@ private:
 
 #endif // HAVE_EPOLL
 
+#ifdef HAVE_PORT_ASSOCIATE
+  int _portfd;
+#endif // HAVE_PORT_ASSOCIATE
+
   enum PollMethod {
     POLL_METHOD_EPOLL,
+    POLL_METHOD_PORT,
     POLL_METHOD_POLL,
     POLL_METHOD_SELECT
   };
@@ -134,10 +139,11 @@ private:
   void bind(const struct sockaddr* addr, socklen_t addrlen);
 
 #ifdef HAVE_EPOLL
-
   void initEPOLL();
-
 #endif // HAVE_EPOLL
+#ifdef HAVE_PORT_ASSOCIATE
+  void initPort();
+#endif // HAVE_PORT_ASSOCIATE
 
   void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
 
@@ -362,6 +368,9 @@ public:
 #ifdef HAVE_EPOLL
   static void useEpoll();
 #endif // HAVE_EPOLL
+#ifdef HAVE_PORT_ASSOCIATE
+  static void usePort();
+#endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
   static void usePoll();
 #endif // HAVE_POLL

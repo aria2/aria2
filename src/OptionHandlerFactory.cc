@@ -210,6 +210,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 #ifdef HAVE_EPOLL
       V_EPOLL,
 #endif // HAVE_EPOLL
+#ifdef HAVE_PORT_ASSOCIATE
+      V_PORT,
+#endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
       V_POLL,
 #endif // HAVE_POLL
@@ -220,7 +223,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_EVENT_POLL,
 #ifdef HAVE_EPOLL
                                     V_EPOLL,
-#else // !HAVE_EPOLL
+#elif HAVE_PORT_ASSOCIATE
+                                    V_PORT,
+#else
                                     V_SELECT,
 #endif // !HAVE_EPOLL
                                     std::vector<std::string>

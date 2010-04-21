@@ -186,19 +186,25 @@ downloadresultcode::RESULT main(int argc, char* argv[])
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }
+  const std::string& pollMethod = op->get(PREF_EVENT_POLL);
 #ifdef HAVE_EPOLL
-  if(op->get(PREF_EVENT_POLL) == V_EPOLL) {
+  if(pollMethod == V_EPOLL) {
     SocketCore::useEpoll();
   } else
 #endif // HAVE_EPOLL
-#ifdef HAVE_POLL
-    if(op->get(PREF_EVENT_POLL) == V_POLL) {
-      SocketCore::usePoll();
+#ifdef HAVE_PORT_ASSOCIATE
+    if(pollMethod == V_PORT) {
+      SocketCore::usePort();
     } else
+#endif // HAVE_PORT_ASSOCIATE
+#ifdef HAVE_POLL
+      if(pollMethod == V_POLL) {
+        SocketCore::usePoll();
+      } else
 #endif // HAVE_POLL
-      if(op->get(PREF_EVENT_POLL) == V_SELECT) {
-        SocketCore::useSelect();
-      }
+        if(pollMethod == V_SELECT) {
+          SocketCore::useSelect();
+        }
   downloadresultcode::RESULT exitStatus = downloadresultcode::FINISHED;
 
   Logger* logger = LogFactory::getInstance();

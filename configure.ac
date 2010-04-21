@@ -249,6 +249,7 @@ AC_CHECK_HEADERS([argz.h \
                   netdb.h \
                   netinet/in.h \
 		  poll.h \
+		  port.h \
                   stddef.h \
                   stdint.h \
                   stdio_ext.h \
@@ -412,6 +413,9 @@ case "$target" in
     AM_CONDITIONAL([HAVE_TIMEGETTIME], false)
     ;;
 esac
+
+AC_CHECK_FUNCS([port_associate], [have_port_associate=yes])
+AM_CONDITIONAL([HAVE_PORT_ASSOCIATE], [test "x$have_port_associate" = "xyes"])
 
 AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
                 [AC_DEFINE([HAVE_SOCKADDR_IN_SIN_LEN],[1],

@@ -600,6 +600,8 @@ ac_func_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
+HAVE_PORT_ASSOCIATE_FALSE
+HAVE_PORT_ASSOCIATE_TRUE
 HAVE_TIMEGETTIME_FALSE
 HAVE_TIMEGETTIME_TRUE
 HAVE_POLL_FALSE
@@ -7956,6 +7958,7 @@ for ac_header in argz.h \
                   netdb.h \
                   netinet/in.h \
 		  poll.h \
+		  port.h \
                   stddef.h \
                   stdint.h \
                   stdio_ext.h \
@@ -15148,6 +15151,26 @@ fi
     ;;
 esac
 
+for ac_func in port_associate
+do :
+  ac_fn_cxx_check_func "$LINENO" "port_associate" "ac_cv_func_port_associate"
+if test "x$ac_cv_func_port_associate" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PORT_ASSOCIATE 1
+_ACEOF
+ have_port_associate=yes
+fi
+done
+
+ if test "x$have_port_associate" = "xyes"; then
+  HAVE_PORT_ASSOCIATE_TRUE=
+  HAVE_PORT_ASSOCIATE_FALSE='#'
+else
+  HAVE_PORT_ASSOCIATE_TRUE='#'
+  HAVE_PORT_ASSOCIATE_FALSE=
+fi
+
+
 ac_fn_cxx_check_member "$LINENO" "struct sockaddr_in" "sin_len" "ac_cv_member_struct_sockaddr_in_sin_len" "#include <netinet/in.h>
 "
 if test "x$ac_cv_member_struct_sockaddr_in_sin_len" = x""yes; then :
@@ -15496,6 +15519,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_TIMEGETTIME_TRUE}" && test -z "${HAVE_TIMEGETTIME_FALSE}"; then
   as_fn_error "conditional \"HAVE_TIMEGETTIME\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_PORT_ASSOCIATE_TRUE}" && test -z "${HAVE_PORT_ASSOCIATE_FALSE}"; then
+  as_fn_error "conditional \"HAVE_PORT_ASSOCIATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
