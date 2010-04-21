@@ -81,7 +81,7 @@ bool HttpListenCommand::execute()
     }
   } catch(RecoverableException& e) {
     if(logger->debug()) {
-      logger->debug(MSG_ACCEPT_FAILURE, _e, util::itos(cuid).c_str());
+      logger->debug(MSG_ACCEPT_FAILURE, e, util::itos(cuid).c_str());
     }
   }
   _e->commands.push_back(this);
