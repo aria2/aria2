@@ -202,7 +202,8 @@ SRCS =  Socket.h\
 	download_helper.cc download_helper.h\
 	MetadataInfo.cc MetadataInfo.h\
 	SessionSerializer.cc SessionSerializer.h\
-	Event.h
+	Event.h\
+	timespec.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

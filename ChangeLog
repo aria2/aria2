@@ -1,5 +1,10 @@
 2010-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added missing timespec.h to SRCS
+	* src/Makefile.am
+
+2010-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that aria2.unpause fails with -s1.
 	* src/FileEntry.cc
 	* src/XmlRpcMethodImpl.cc
