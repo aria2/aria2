@@ -1,3 +1,9 @@
+2010-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that aria2.unpause fails with -s1.
+	* src/FileEntry.cc
+	* src/XmlRpcMethodImpl.cc
+
 2010-04-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing #ifdef HAVE_PORT_ASSOCIATE

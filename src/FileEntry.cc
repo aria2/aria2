@@ -313,10 +313,7 @@ void FileEntry::reuseUri(size_t num)
   }
   // Reuse at least num URIs here to avoid to
   // run this process repeatedly.
-  if(ininum > 0 && ininum < num) {
-    if(_logger->debug()) {
-      _logger->debug("fewer than num=%u", num);
-    }
+  if(ininum > 0) {
     for(size_t i = 0; i < num/ininum; ++i) {
       _uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
     }

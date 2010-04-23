@@ -360,9 +360,9 @@ static bool pauseRequestGroup
       // Call setHaltRequested before setPauseRequested because
       // setHaltRequested calls setPauseRequested(false) internally.
       if(forcePause) {
-        group->setForceHaltRequested(true, RequestGroup::USER_REQUEST);
+        group->setForceHaltRequested(true, RequestGroup::NONE);
       } else {
-        group->setHaltRequested(true, RequestGroup::USER_REQUEST);
+        group->setHaltRequested(true, RequestGroup::NONE);
       }
     }
     group->setPauseRequested(true);
