@@ -150,6 +150,7 @@ const std::string PREF_MAX_FILE_NOT_FOUND("max-file-not-found");
 // value: epoll | select
 const std::string PREF_EVENT_POLL("event-poll");
 const std::string V_EPOLL("epoll");
+const std::string V_KQUEUE("kqueue");
 const std::string V_PORT("port");
 const std::string V_POLL("poll");
 const std::string V_SELECT("select");

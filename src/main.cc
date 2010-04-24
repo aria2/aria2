@@ -192,6 +192,11 @@ downloadresultcode::RESULT main(int argc, char* argv[])
     SocketCore::useEpoll();
   } else
 #endif // HAVE_EPOLL
+#ifdef HAVE_KQUEUE
+    if(pollMethod == V_KQUEUE) {
+      SocketCore::usePoll();
+    } else
+#endif // HAVE_KQUEUE
 #ifdef HAVE_PORT_ASSOCIATE
     if(pollMethod == V_PORT) {
       SocketCore::usePort();

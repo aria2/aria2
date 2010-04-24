@@ -205,6 +205,9 @@
 /* Define to 1 if you have the <io.h> header file. */
 #undef HAVE_IO_H
 
+/* Define to 1 if you have the `kqueue' function. */
+#undef HAVE_KQUEUE
+
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
 #undef HAVE_LANGINFO_CODESET
 
@@ -556,6 +559,9 @@
 
 /* Define if integer division by zero raises signal SIGFPE. */
 #undef INTDIV0_RAISES_SIGFPE
+
+/* Define to 1 if struct kevent.udata is intptr_t */
+#undef KEVENT_UDATA_INTPTR_T
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */

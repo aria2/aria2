@@ -1,3 +1,18 @@
+2010-04-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added kqueue support. We use poll() for
+	SocketCore::isReadable()/isWritable() when kqueue is used.
+	* configure.ac
+	* src/DownloadEngineFactory.cc
+	* src/KqueueEventPoll.cc
+	* src/KqueueEventPoll.h
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/OptionHandlerFactory.cc
+	* src/main.cc
+	* src/prefs.cc
+	* src/prefs.h
+
 2010-04-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing timespec.h to SRCS

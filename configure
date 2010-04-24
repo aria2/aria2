@@ -600,6 +600,8 @@ ac_func_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
+HAVE_KQUEUE_FALSE
+HAVE_KQUEUE_TRUE
 HAVE_PORT_ASSOCIATE_FALSE
 HAVE_PORT_ASSOCIATE_TRUE
 HAVE_TIMEGETTIME_FALSE
@@ -15171,6 +15173,61 @@ else
 fi
 
 
+for ac_func in kqueue
+do :
+  ac_fn_cxx_check_func "$LINENO" "kqueue" "ac_cv_func_kqueue"
+if test "x$ac_cv_func_kqueue" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_KQUEUE 1
+_ACEOF
+ have_kqueue=yes
+fi
+done
+
+ if test "x$have_kqueue" = "xyes"; then
+  HAVE_KQUEUE_TRUE=
+  HAVE_KQUEUE_FALSE='#'
+else
+  HAVE_KQUEUE_TRUE='#'
+  HAVE_KQUEUE_FALSE=
+fi
+
+if test "x$have_kqueue" = "xyes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether struct kevent.udata is intptr_t" >&5
+$as_echo_n "checking whether struct kevent.udata is intptr_t... " >&6; }
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/time.h>
+
+int
+main ()
+{
+
+struct kevent event;
+event.udata = reinterpret_cast<intptr_t>(&event);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  kevent_udata_intptr_t=yes
+else
+  kevent_udata_intptr_t=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $kevent_udata_intptr_t" >&5
+$as_echo "$kevent_udata_intptr_t" >&6; }
+    if test "x$kevent_udata_intptr_t" = "xyes"; then
+
+$as_echo "#define KEVENT_UDATA_INTPTR_T 1" >>confdefs.h
+
+    fi
+fi
+
 ac_fn_cxx_check_member "$LINENO" "struct sockaddr_in" "sin_len" "ac_cv_member_struct_sockaddr_in_sin_len" "#include <netinet/in.h>
 "
 if test "x$ac_cv_member_struct_sockaddr_in_sin_len" = x""yes; then :
@@ -15523,6 +15580,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_PORT_ASSOCIATE_TRUE}" && test -z "${HAVE_PORT_ASSOCIATE_FALSE}"; then
   as_fn_error "conditional \"HAVE_PORT_ASSOCIATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_KQUEUE_TRUE}" && test -z "${HAVE_KQUEUE_FALSE}"; then
+  as_fn_error "conditional \"HAVE_KQUEUE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

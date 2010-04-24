@@ -417,6 +417,26 @@ esac
 AC_CHECK_FUNCS([port_associate], [have_port_associate=yes])
 AM_CONDITIONAL([HAVE_PORT_ASSOCIATE], [test "x$have_port_associate" = "xyes"])
 
+AC_CHECK_FUNCS([kqueue], [have_kqueue=yes])
+AM_CONDITIONAL([HAVE_KQUEUE], [test "x$have_kqueue" = "xyes"])
+if test "x$have_kqueue" = "xyes"; then
+    AC_MSG_CHECKING([whether struct kevent.udata is intptr_t])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/time.h>
+]],
+[[
+struct kevent event;
+event.udata = reinterpret_cast<intptr_t>(&event);
+]])],
+    [kevent_udata_intptr_t=yes], [kevent_udata_intptr_t=no])
+    AC_MSG_RESULT([$kevent_udata_intptr_t])
+    if test "x$kevent_udata_intptr_t" = "xyes"; then
+       AC_DEFINE([KEVENT_UDATA_INTPTR_T], [1], [Define to 1 if struct kevent.udata is intptr_t])
+    fi
+fi
+
 AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
                 [AC_DEFINE([HAVE_SOCKADDR_IN_SIN_LEN],[1],
                   [Define to 1 if struct sockaddr_in has sin_len member.])],

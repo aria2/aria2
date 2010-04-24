@@ -535,6 +535,10 @@ if HAVE_PORT_ASSOCIATE
 SRCS += PortEventPoll.cc PortEventPoll.h
 endif # HAVE_PORT_ASSOCIATE
 
+if HAVE_KQUEUE
+SRCS += KqueueEventPoll.cc KqueueEventPoll.h
+endif # HAVE_KQUEUE
+
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

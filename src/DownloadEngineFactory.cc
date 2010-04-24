@@ -64,6 +64,9 @@
 #ifdef HAVE_PORT_ASSOCIATE
 # include "PortEventPoll.h"
 #endif // HAVE_PORT_ASSOCIATE
+#ifdef HAVE_KQUEUE
+# include "KqueueEventPoll.h"
+#endif // HAVE_KQUEUE
 #include "PollEventPoll.h"
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
@@ -96,27 +99,38 @@ DownloadEngineFactory::newDownloadEngine
     }
   } else
 #endif // HAVE_EPLL
-#ifdef HAVE_PORT_ASSOCIATE
-    if(pollMethod == V_PORT) {
-      SharedHandle<PortEventPoll> pp(new PortEventPoll());
-      if(pp->good()) {
-        eventPoll = pp;
+#ifdef HAVE_KQUEUE
+    if(pollMethod == V_KQUEUE) {
+      SharedHandle<KqueueEventPoll> kp(new KqueueEventPoll());
+      if(kp->good()) {
+        eventPoll = kp;
       } else {
-        throw DL_ABORT_EX("Initializing PortEventPoll failed."
+        throw DL_ABORT_EX("Initializing KqueueEventPoll failed."
                           " Try --event-poll=select");
       }
     } else
+#endif // HAVE_KQUEUE
+#ifdef HAVE_PORT_ASSOCIATE
+      if(pollMethod == V_PORT) {
+        SharedHandle<PortEventPoll> pp(new PortEventPoll());
+        if(pp->good()) {
+          eventPoll = pp;
+        } else {
+          throw DL_ABORT_EX("Initializing PortEventPoll failed."
+                            " Try --event-poll=select");
+        }
+      } else
 #endif // HAVE_PORT_ASSOCIATE
 #ifdef HAVE_POLL
-      if(pollMethod == V_POLL) {
-        eventPoll.reset(new PollEventPoll());
-      } else
+        if(pollMethod == V_POLL) {
+          eventPoll.reset(new PollEventPoll());
+        } else
 #endif // HAVE_POLL
-        if(pollMethod == V_SELECT) {
-          eventPoll.reset(new SelectEventPoll());
-        } else {
-          abort();
-        }
+          if(pollMethod == V_SELECT) {
+            eventPoll.reset(new SelectEventPoll());
+          } else {
+            abort();
+          }
   DownloadEngineHandle e(new DownloadEngine(eventPoll));
   e->option = op;
 
