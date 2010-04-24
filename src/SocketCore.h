@@ -37,10 +37,6 @@
 
 #include "common.h"
 
-#ifdef HAVE_EPOLL
-# include <sys/epoll.h>
-#endif // HAVE_EPOLL
-
 #include <string>
 #include <cstdlib>
 #include <utility>
@@ -77,28 +73,6 @@ private:
   int _sockType;
   // socket endpoint descriptor
   sock_t sockfd;
-
-#ifdef HAVE_EPOLL
-
-  // file descriptor used for epoll
-  int _epfd;
-
-  struct epoll_event _epEvent;
-
-#endif // HAVE_EPOLL
-
-#ifdef HAVE_PORT_ASSOCIATE
-  int _portfd;
-#endif // HAVE_PORT_ASSOCIATE
-
-  enum PollMethod {
-    POLL_METHOD_EPOLL,
-    POLL_METHOD_PORT,
-    POLL_METHOD_POLL,
-    POLL_METHOD_SELECT
-  };
-
-  static PollMethod _pollMethod;
 
   static int _protocolFamily;
 
@@ -137,13 +111,6 @@ private:
   void init();
 
   void bind(const struct sockaddr* addr, socklen_t addrlen);
-
-#ifdef HAVE_EPOLL
-  void initEPOLL();
-#endif // HAVE_EPOLL
-#ifdef HAVE_PORT_ASSOCIATE
-  void initPort();
-#endif // HAVE_PORT_ASSOCIATE
 
   void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
 
@@ -364,17 +331,6 @@ public:
    * readData() or writeData() and the socket needs to write more data.
    */
   bool wantWrite() const;
-
-#ifdef HAVE_EPOLL
-  static void useEpoll();
-#endif // HAVE_EPOLL
-#ifdef HAVE_PORT_ASSOCIATE
-  static void usePort();
-#endif // HAVE_PORT_ASSOCIATE
-#ifdef HAVE_POLL
-  static void usePoll();
-#endif // HAVE_POLL
-  static void useSelect();
 
 #ifdef ENABLE_SSL
   static void setTLSContext(const SharedHandle<TLSContext>& tlsContext);

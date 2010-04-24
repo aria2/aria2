@@ -1,5 +1,15 @@
 2010-04-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	In SocketCore::isReadable()/isWritable(), use poll() if it is
+	available otherwise use select(). Removed epoll/port from there
+	because poll() does the good enough job for single socket event
+	notification.
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/main.cc
+
+2010-04-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added kqueue support. We use poll() for
 	SocketCore::isReadable()/isWritable() when kqueue is used.
 	* configure.ac
