@@ -1,5 +1,11 @@
 2010-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.9.2
+	* configure.ac
+	* doc/aria2c.1.txt
+
+2010-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Defined FD_SETSIZE 1024 for MinGW32.
 	* src/a2netcompat.h
 
