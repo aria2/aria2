@@ -41,6 +41,9 @@
 #  define WINVER 0x501
 # endif // !WINVER
 # ifdef HAVE_WINSOCK2_H
+#  ifndef FD_SETSIZE
+#    define FD_SETSIZE 1024
+#  endif // !FD_SETSIZE
 #  include <winsock2.h>
 #  undef ERROR
 # endif // HAVE_WINSOCK2_H
