@@ -1121,12 +1121,24 @@ Enable directI/O, which lowers cpu usage while allocating/checking files\&. Turn
 .PP
 \fB\-\-event\-poll\fR=POLL
 .RS 4
-Specify the method for polling events\&. The possible Values are
-\fIepoll\fR
+Specify the method for polling events\&. The possible values are
+\fIepoll\fR,
+\fIkqueue\fR,
+\fIport\fR,
+\fIpoll\fR
 and
-\fIselect\fR\&. If you use recent Linux that has epoll, then the default value is
-\fIepoll\fR\&. Otherwise, the default value is
-\fIselect\fR\&.
+\fIselect\fR\&. For each
+\fIepoll\fR,
+\fIkqueue\fR,
+\fIport\fR
+and
+\fIpoll\fR, it is available if system supports it\&.
+\fIepoll\fR
+is available on recent Linux\&.
+\fIkqueue\fR
+is available on various *BSD systems including Mac OS X\&.
+\fIport\fR
+is available on Open Solaris\&. The default value may vary depending on the system you use\&.
 .RE
 .PP
 \fB\-\-file\-allocation\fR=METHOD

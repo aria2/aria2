@@ -1952,10 +1952,12 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Specify the method for polling events.  The possible Values are
-  <em>epoll</em> and <em>select</em>. If you use recent Linux that has epoll, then
-  the default value is <em>epoll</em>.  Otherwise, the default value is
-  <em>select</em>.
+  Specify the method for polling events.  The possible values are
+  <em>epoll</em>, <em>kqueue</em>, <em>port</em>, <em>poll</em> and <em>select</em>.  For each <em>epoll</em>,
+  <em>kqueue</em>, <em>port</em> and <em>poll</em>, it is available if system supports it.
+  <em>epoll</em> is available on recent Linux. <em>kqueue</em> is available on
+  various *BSD systems including Mac OS X. <em>port</em> is available on Open
+  Solaris. The default value may vary depending on the system you use.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -4195,7 +4197,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-04-25 19:13:29 JST
+Last updated 2010-04-25 19:23:39 JST
 </div>
 </div>
 </body>
