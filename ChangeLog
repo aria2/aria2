@@ -1,5 +1,14 @@
 2010-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Print warning when trying to add file descriptor >= FD_SET or < 0
+	to fd_set for other than MinGW32 build. For MinGW32 build, print
+	warning when trying to add file descriptor to fd_set when it
+	already contains FD_SET file descriptors.
+	* src/SelectEventPoll.cc
+	* src/SocketCore.cc
+
+2010-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc for --event-poll option.
 	* doc/aria2c.1.txt
 

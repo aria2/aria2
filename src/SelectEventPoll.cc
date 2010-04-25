@@ -224,6 +224,16 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // ENABLE_ASYNC_DNS
 }
 
+#ifdef __MINGW32__
+static void checkFdCountMingw(const fd_set& fdset, Logger* logger)
+{
+  if(fdset.fd_count >= FD_SETSIZE) {
+    logger->warn("The number of file descriptor exceeded FD_SETSIZE. "
+                 "Download may slow down or fail.");
+  }
+}
+#endif // __MINGW32__
+
 void SelectEventPoll::updateFdSet()
 {
 #ifdef __MINGW32__
@@ -236,11 +246,24 @@ void SelectEventPoll::updateFdSet()
   for(std::deque<SharedHandle<SocketEntry> >::const_iterator i =
         _socketEntries.begin(), eoi = _socketEntries.end(); i != eoi; ++i) {
     sock_t fd = (*i)->getSocket();
+#ifndef __MINGW32__
+    if(fd < 0 || FD_SETSIZE <= fd) {
+      _logger->warn("Detected file descriptor >= FD_SETSIZE or < 0. "
+                    "Download may slow down or fail.");
+      continue;
+    }
+#endif // !__MINGW32__
     int events = (*i)->getEvents();
     if(events&EventPoll::EVENT_READ) {
+#ifdef __MINGW32__
+      checkFdCountMingw(_rfdset, _logger);
+#endif // __MINGW32__
       FD_SET(fd, &_rfdset);
     }
     if(events&EventPoll::EVENT_WRITE) {
+#ifdef __MINGW32__
+      checkFdCountMingw(_wfdset, _logger);
+#endif // __MINGW32__
       FD_SET(fd, &_wfdset);
     }
     if(_fdmax < fd) {

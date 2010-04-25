@@ -546,6 +546,14 @@ void SocketCore::closeConnection()
 #endif // HAVE_LIBGNUTLS
 }
 
+#ifndef __MINGW32__
+# define CHECK_FD(fd)                                                   \
+  if(fd < 0 || FD_SETSIZE <= fd) {                                      \
+    _logger->warn("Detected file descriptor >= FD_SETSIZE or < 0. "     \
+                  "Download may slow down or fail.");                   \
+    return false;                                                       \
+  }
+#endif // !__MINGW32__
 
 bool SocketCore::isWritable(time_t timeout)
 {
@@ -564,6 +572,9 @@ bool SocketCore::isWritable(time_t timeout)
       (StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
   }
 #else // !HAVE_POLL
+# ifndef __MINGW32__
+  CHECK_FD(sockfd);
+# endif // !__MINGW32__
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd, &fds);
@@ -611,6 +622,9 @@ bool SocketCore::isReadable(time_t timeout)
       (StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
   }
 #else // !HAVE_POLL
+# ifndef __MINGW32__
+  CHECK_FD(sockfd);
+# endif // !__MINGW32__
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd, &fds);
