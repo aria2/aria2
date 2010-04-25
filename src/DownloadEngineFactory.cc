@@ -67,7 +67,9 @@
 #ifdef HAVE_KQUEUE
 # include "KqueueEventPoll.h"
 #endif // HAVE_KQUEUE
-#include "PollEventPoll.h"
+#ifdef HAVE_POLL
+# include "PollEventPoll.h"
+#endif // HAVE_POLL
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
 #include "FileAllocationEntry.h"

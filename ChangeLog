@@ -1,3 +1,8 @@
+2010-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error on the system which lacks poll()
+	* src/DownloadEngineFactory.cc
+
 2010-04-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	In SocketCore::isReadable()/isWritable(), use poll() if it is
