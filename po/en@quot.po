@@ -27,10 +27,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2 1.9.1\n"
+"Project-Id-Version: aria2 1.9.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-04-14 21:56+0900\n"
-"PO-Revision-Date: 2010-04-14 21:56+0900\n"
+"POT-Creation-Date: 2010-04-26 23:00+0900\n"
+"PO-Revision-Date: 2010-04-26 23:00+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"

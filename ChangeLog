@@ -1,3 +1,8 @@
+2010-04-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated po templates.
+	* po/aria2.pot
+
 2010-04-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Print warning when trying to add file descriptor >= FD_SET or < 0
