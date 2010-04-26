@@ -288,7 +288,7 @@ void SocketCore::bind(uint16_t port, int flags)
       int s;
       s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
                       (*i).second,
-                      host, NI_MAXHOST, 0, NI_MAXSERV,
+                      host, NI_MAXHOST, 0, 0,
                       NI_NUMERICHOST);
       if(s) {
         error = gai_strerror(s);
@@ -1210,7 +1210,7 @@ void SocketCore::bindAddress(const std::string& iface)
       int s;
       s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
                       (*i).second,
-                      host, NI_MAXHOST, 0, NI_MAXSERV,
+                      host, NI_MAXHOST, 0, 0,
                       NI_NUMERICHOST);
       if(s == 0) {
         if(LogFactory::getInstance()->debug()) {

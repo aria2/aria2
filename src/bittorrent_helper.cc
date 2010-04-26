@@ -815,7 +815,7 @@ std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact)
   char host[NI_MAXHOST];
   int s;
   s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&in), sizeof(in),
-                  host, NI_MAXHOST, 0, NI_MAXSERV,
+                  host, NI_MAXHOST, 0, 0,
                   NI_NUMERICHOST);
   if(s) {
     return std::pair<std::string, uint16_t>();
