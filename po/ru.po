@@ -11,13 +11,13 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-04-26 23:00+0900\n"
-"PO-Revision-Date: 2010-04-02 14:24+0000\n"
-"Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
+"PO-Revision-Date: 2010-04-16 06:55+0000\n"
+"Last-Translator: Max Belozerov <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
+"X-Launchpad-Export-Date: 2010-04-26 12:52+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
@@ -203,6 +203,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --http-proxy=PROXY Использовать указанный прокси-сервер \n"
+"                    для HTTP. Ранее указанный адрес можно \n"
+"                    стереть, указав \"\". \n"
+"                    Также см. параметр --all-proxy. \n"
+"                    Влияет на все URL."
 
 #: src/usage_text.h:71
 msgid ""
@@ -211,6 +216,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" -https-proxy=PROXY Использовать указанный прокси-сервер \n"
+"                    для HTTPS. Ранее указанный адрес можно \n"
+"                    стереть, указав \"\". \n"
+"                    Также см. параметр --all-proxy. \n"
+"                    Влияет на все URL."
 
 #: src/usage_text.h:76
 msgid ""
@@ -220,6 +230,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --ftp-proxy=PROXY Использовать указанный прокси-сервер \n"
+"                    для FTP. Ранее указанный адрес можно \n"
+"                    стереть, указав \"\". \n"
+"                    Также см. параметр --all-proxy. \n"
+"                    Влияет на все URL."
 
 #: src/usage_text.h:81
 msgid ""
@@ -232,18 +247,22 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
+" --all-proxy=PROXY Использовать указанный прокси-сервер \n"
+"                    для всех протоколов. Ранее указанный \n"
+"                    адрес можно стереть, указав \"\". \n"
+"                    Параметры --http-proxy, --https-proxy \n"
+"                    и --ftp-proxy, указывающие прокси-\n"
+"                    серверы для отдельных протоколов, \n"
+"                    имеют более высокий приоритет. \n"
+"                    Влияет на все URL."
 
 #: src/usage_text.h:89
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr ""
-" --http-user=USER             Установить пользователя для HTTP. Это влияет "
-"на все URL."
+msgstr " --http-user=USER Указать пользователя для HTTP. Влияет на все URL."
 
 #: src/usage_text.h:91
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr ""
-" --http-passwd=PASSWD         Установить пароль для HTTP. Это влияет на все "
-"URL."
+msgstr " --http-passwd=PASSWD Указать пароль для HTTP. Влияет на все URL."
 
 #: src/usage_text.h:93
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
@@ -252,20 +271,19 @@ msgstr ""
 
 #: src/usage_text.h:95
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr ""
-" --referer=REFERER            Установить реферер. Это влияет на все URL."
+msgstr " --referer=REFERER Указать реферер. Влияет на все URL."
 
 #: src/usage_text.h:97
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
-msgstr " --ftp-user=USER Задать FTP пользователя. Это действует на все URL."
+msgstr " --ftp-user=USER Указать имя пользователя для FTP. Влияет на все URL."
 
 #: src/usage_text.h:99
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
-msgstr " --ftp-passwd=PASSWD Задать FTP пароль. Это действует на все URL."
+msgstr " --ftp-passwd=PASSWD Указать пароль для FTP. Влияет на все URL."
 
 #: src/usage_text.h:101
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr " --ftp-type=TYPE Задать тип FTP трансфера."
+msgstr " --ftp-type=TYPE Указать тип передачи для FTP."
 
 #: src/usage_text.h:103
 msgid ""
@@ -273,9 +291,9 @@ msgid ""
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
-" -p, --ftp-pasv[=true|false] Использовать пассивный режим в. Если указано "
+" -p, --ftp-pasv[=true|false] Использовать пассивный режим FTP. Если указано "
 "false,\n"
-"                              то будет использован активный режим."
+"то будет использован активный режим."
 
 #: src/usage_text.h:106
 msgid ""
@@ -415,6 +433,10 @@ msgid ""
 "See\n"
 "                              also --auto-file-renaming option."
 msgstr ""
+" --allow-overwrite=true|false Заново загрузить файл, если \n"
+"                    соответствующий контрольный файл \n"
+"                    отсутствует.\n"
+"                    См. также параметр --auto-file-renaming"
 
 #: src/usage_text.h:151
 msgid ""
@@ -444,7 +466,7 @@ msgid ""
 msgstr ""
 " -Z, --force-sequential[=true|false] Получить URI в последовательности\n"
 "                              командной строки и загрузить каждое URI в "
-"отдельной сесии, как в\n"
+"отдельной сессии, как в\n"
 "                              обычных утилитах загрузки командной строки."
 
 #: src/usage_text.h:160
@@ -458,12 +480,11 @@ msgid ""
 "                              appended."
 msgstr ""
 " --auto-file-renaming[=true|false] Переименовывает файл, если такой уже\n"
-"                              существует. Этот параметр работает только в "
-"http(s)/ftp\n"
-"                              загрузке.\n"
-"                              Новое імя файла получит точку и число "
-"(1..9999)\n"
-"                              в дополнение к текущему."
+"                              существует. Этот параметр работает только для "
+"загрузок по\n"
+"                              http(s)/ftp.\n"
+"                              К имени файла будет добавлена точка и число от "
+"1 до 9999."
 
 #: src/usage_text.h:166
 msgid ""
@@ -491,7 +512,7 @@ msgstr ""
 "                              Шагом счетчика можно пренебречь.\n"
 "                              Если все URI не указывают на такой же файл,\n"
 "                              как во втором приведенном выше примере, то "
-"необходимым является\n"
+"необходим\n"
 "                              параметр -Z."
 
 #: src/usage_text.h:177
@@ -504,7 +525,7 @@ msgstr ""
 #: src/usage_text.h:179
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
-" --enable-http-pipelining[=true|false] Разрешить конвейерную оброботку "
+" --enable-http-pipelining[=true|false] Разрешить конвейерную обработку "
 "HTTP/1.1."
 
 #: src/usage_text.h:181
@@ -1614,19 +1635,12 @@ msgstr ""
 "                              GID добавляется к COMMAND как первый аргумент."
 
 #: src/usage_text.h:551
-#, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed when download\n"
 "                              is paused.\n"
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --on-download-complete=COMMAND Указать команду, которая будет выполнена "
-"тогда, когда загрузка\n"
-"                              завершится.\n"
-"                              Смотрите параметр --on-download-start, чтоб\n"
-"                              прояснить требования к COMMAND.\n"
-"                              Смотрите также параметр --on-download-stop."
 
 #: src/usage_text.h:556
 msgid ""
@@ -1799,7 +1813,7 @@ msgstr ""
 
 #: src/usage_text.h:618
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr ""
+msgstr " --bt-enable-lpd[=true|false] Разрешить поиск локальных пиров."
 
 #: src/usage_text.h:620
 msgid ""
@@ -1810,6 +1824,11 @@ msgid ""
 "interface\n"
 "                              name and IP address."
 msgstr ""
+" --bt-lpd-interface=INTERFACE Использовать для поиска локальных пиров "
+"указанный интерфейс.\n"
+"                              Если этот параметр не указан, используется "
+"интерфейс по умолчанию.\n"
+"                              Можно указать имя интерфейса и IP-адрес."
 
 #: src/usage_text.h:625
 msgid ""
@@ -1820,34 +1839,40 @@ msgstr ""
 #: src/usage_text.h:628
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
+" --all-proxy-user=USER Указать имя пользователя для параметра --all-proxy."
 
 #: src/usage_text.h:630
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
-msgstr ""
+msgstr " --all-proxy-passwd=PASSWD Указать пароль для параметра --all-proxy."
 
 #: src/usage_text.h:632
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
+" --http-proxy-user=USER Указать имя пользователя для параметра --http-proxy."
 
 #: src/usage_text.h:634
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
-msgstr ""
+msgstr " --http-proxy-passwd=PASSWD Указать пароль для параметра --http-proxy."
 
 #: src/usage_text.h:636
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
+" --https-proxy-user=USER Указать имя пользователя для параметра --https-"
+"proxy."
 
 #: src/usage_text.h:638
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
+" --https-proxy-passwd=PASSWD Указать пароль для параметра --https-proxy."
 
 #: src/usage_text.h:640
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
+" --ftp-proxy-user=USER Указать имя пользователя для параметра --ftp-proxy."
 
 #: src/usage_text.h:642
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
-msgstr ""
+msgstr " --ftp-proxy-passwd=PASSWD Указать пароль для параметра --ftp-proxy."
 
 #: src/usage_text.h:644
 msgid ""
@@ -1858,6 +1883,13 @@ msgid ""
 "                              users behind proxy server which disables "
 "resume."
 msgstr ""
+" --remove-control-file[=true|false] Удалить контрольный файл перед "
+"загрузкой.\n"
+"                              При использовании с --allow-overwrite=true "
+"файл всегда\n"
+"                              загружается заново. Это может понадобиться "
+"пользователям\n"
+"                              за прокси-сервером, не поддерживающим докачку."
 
 #: src/usage_text.h:649
 msgid ""
@@ -1891,7 +1923,7 @@ msgstr ""
 
 #: src/usage_text.h:666
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
-msgstr ""
+msgstr " --bt-tracker-timeout=SEC     Указать ожидание в секундах."
 
 #: src/usage_text.h:668
 msgid ""
@@ -1906,7 +1938,7 @@ msgstr ""
 
 #: src/usage_text.h:674
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
-msgstr ""
+msgstr " --dht-message-timeout=SEC    Указать ожидание в секундах.."
 
 #: src/usage_text.h:676
 msgid ""
@@ -1919,7 +1951,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:681
-#, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
 "exit.\n"
@@ -1930,14 +1961,6 @@ msgid ""
 "addMetalink\n"
 "                              XML-RPC method are not saved."
 msgstr ""
-" --ca-certificate=FILE Использовать сертификат авторизации в FILE для "
-"проверки\n"
-"                              узлов. Сертификат должен быть в PEM\n"
-"                              формате и содержать многоразовые CA "
-"сертификаты.\n"
-"                              Используйте параметр --check-certificate, чтоб "
-"разрешить\n"
-"                              проверку."
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -2035,7 +2058,7 @@ msgstr "Обратитесь к странице man для более подр�
 #: src/message.h:57
 #, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr ""
+msgstr "GID#%s - Загрузка уже завершена: %s"
 
 #: src/message.h:102
 #, c-format

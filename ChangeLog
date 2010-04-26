@@ -1,5 +1,10 @@
 2010-04-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Russian translation. Thanks to all translators.
+	* po/ru.po
+
+2010-04-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated po templates.
 	* po/aria2.pot
 
