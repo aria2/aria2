@@ -68,6 +68,7 @@ void array_funTest::testArrayLength()
   int64_t zeroLengthArray[] = {};
 
   CPPUNIT_ASSERT_EQUAL((size_t)5, A2_ARRAY_LEN(ia));
+  // This causes compile error under gcc v3.4.3 opensolaris 5.11
   CPPUNIT_ASSERT_EQUAL((size_t)0, A2_ARRAY_LEN(zeroLengthArray));
 }
 

@@ -1,5 +1,10 @@
 2010-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* test/array_funTest.cc
+
+2010-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed segmentation fault when running unit tests on opensolaris.
 	* src/SocketCore.cc
 	* src/bittorrent_helper.cc
