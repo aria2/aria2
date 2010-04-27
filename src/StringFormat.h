@@ -35,6 +35,8 @@
 #ifndef _D_STRING_FORMAT_H_
 #define _D_STRING_FORMAT_H_
 
+#include "common.h"
+
 #include <string>
 #include <iosfwd>
 #include <cstdarg>

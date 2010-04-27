@@ -1,5 +1,11 @@
 2010-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compiler warning on opensolaris.
+	* src/StringFormat.h
+	* src/XORCloser.h
+
+2010-04-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc
 	* test/array_funTest.cc
 

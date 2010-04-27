@@ -35,6 +35,8 @@
 #ifndef _D_XOR_CLOSER_H_
 #define _D_XOR_CLOSER_H_
 
+#include "common.h"
+
 #include <cstdlib>
 
 namespace aria2 {
