@@ -1,5 +1,11 @@
 2010-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Return const reference.
+	* src/LpdMessageReceiver.h
+	* src/LpdReceiveMessageCommand.h
+
+2010-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed useless pathJoin
 	* src/MetalinkParserController.cc
 

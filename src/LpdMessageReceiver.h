@@ -66,7 +66,7 @@ public:
   // then returns SharedHandle<LpdMessage>(new LpdMessage())
   SharedHandle<LpdMessage> receiveMessage();
 
-  SharedHandle<SocketCore> getSocket() const
+  const SharedHandle<SocketCore>& getSocket() const
   {
     return _socket;
   }

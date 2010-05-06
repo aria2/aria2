@@ -63,7 +63,7 @@ public:
 
   virtual bool execute();
 
-  SharedHandle<LpdMessageReceiver> getLpdMessageReceiver() const
+  const SharedHandle<LpdMessageReceiver>& getLpdMessageReceiver() const
   {
     return _receiver;
   }
