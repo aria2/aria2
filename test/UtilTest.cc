@@ -301,7 +301,7 @@ void UtilTest::testGetContentDispositionFilename() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), util::getContentDispositionFilename(h8));
 
   std::string h9 = "attachment; filename=\"aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT\"";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT"),
                        util::getContentDispositionFilename(h9));
 
   std::string h10 = "attachment; filename=";
@@ -313,6 +313,11 @@ void UtilTest::testGetContentDispositionFilename() {
   std::string filenameWithDir = "attachment; filename=dir/file";
   CPPUNIT_ASSERT_EQUAL(std::string(""),
                        util::getContentDispositionFilename(filenameWithDir));
+
+  std::string semicolonInside = "attachment; filename=\"foo;bar\"";
+  CPPUNIT_ASSERT_EQUAL(std::string("foo;bar"),
+                       util::getContentDispositionFilename(semicolonInside));
+
   CPPUNIT_ASSERT_EQUAL
     (std::string(""),
      util::getContentDispositionFilename("filename=\"%2E%2E%2Ffoo.html\""));

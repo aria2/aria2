@@ -679,11 +679,50 @@ std::string iso8859ToUtf8(const std::string& src)
   return dest;
 }
 
+template<typename OutputIterator>
+static void parseParam(OutputIterator out, const std::string& header)
+{
+  for(std::string::const_iterator i = header.begin(), eoi = header.end();
+      i != eoi;) {
+    std::string::const_iterator paramFirst = i;
+    std::string::const_iterator paramLast = paramFirst;
+    for(; paramLast != eoi && *paramLast != '=' && *paramLast != ';';
+        ++paramLast);
+    std::string param;
+    if(paramLast == eoi || *paramLast == ';') {
+      // No value, parmname only
+      param = std::string(paramFirst, paramLast);
+    } else {
+      for(; paramLast != eoi && *paramLast != '"' && *paramLast != ';';
+          ++paramLast);
+      if(paramLast != eoi && *paramLast == '"') {
+        // quoted-string
+        ++paramLast;
+        for(; paramLast != eoi && *paramLast != '"'; ++paramLast);
+        if(paramLast != eoi) {
+          ++paramLast;
+        }
+        param = std::string(paramFirst, paramLast);
+        for(; paramLast != eoi && *paramLast != ';'; ++paramLast);
+      } else {
+        param = std::string(paramFirst, paramLast);
+      }
+    }
+    trimSelf(param);
+    *out++ = param;
+    if(paramLast == eoi) {
+      break;
+    }
+    i = paramLast;
+    ++i;
+  }
+}
+
 std::string getContentDispositionFilename(const std::string& header)
 {
   std::string filename;
   std::vector<std::string> params;
-  split(header, std::back_inserter(params), A2STR::SEMICOLON_C, true);
+  parseParam(std::back_inserter(params), header);
   for(std::vector<std::string>::const_iterator i = params.begin(),
         eoi = params.end(); i != eoi; ++i) {
     const std::string& param = *i;
