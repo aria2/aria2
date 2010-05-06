@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="..\..\example.ext">
+    <url location="fr" priority="1">http://example.com/example.ext</url>
+  </file>
+  <file name="..\..\file1.ext">
+    <size>12345</size>
+    <metaurl mediatype="torrent" name="d/file1.ext">http://example.com/example.torrent</metaurl>
+  </file>
+  <file name="..\..\file2.ext">
+    <size>12345</size>
+    <metaurl mediatype="torrent" name="d/file2.ext">http://example.com/example.torrent</metaurl>
+  </file>
+</metalink>

@@ -17,6 +17,7 @@ class Metalink2RequestGroupTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(Metalink2RequestGroupTest);
   CPPUNIT_TEST(testGenerate);
   CPPUNIT_TEST(testGenerate_groupByMetaurl);
+  CPPUNIT_TEST(testGenerate_dosDirTraversal);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Option> _option;
@@ -30,6 +31,7 @@ public:
 
   void testGenerate();
   void testGenerate_groupByMetaurl();
+  void testGenerate_dosDirTraversal();
 };
 
 
@@ -193,6 +195,31 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
   }
   
 #endif // !ENABLE_BITTORRENT
+}
+
+void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
+{
+#ifdef __MINGW32__
+#ifdef ENABLE_BITTORRENT
+  std::vector<SharedHandle<RequestGroup> > groups;
+  _option->put(PREF_DIR, "/tmp");
+  Metalink2RequestGroup().generate
+    (groups, "metalink4-dosdirtraversal.xml", _option);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
+  SharedHandle<RequestGroup> rg = groups[0];
+  SharedHandle<FileEntry> file = rg->getDownloadContext()->getFirstFileEntry();
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/.._.._example.ext"),
+                       file->getPath());
+  
+  rg = groups[2];
+  file = rg->getDownloadContext()->getFileEntries()[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/.._.._file1.ext"),
+                       file->getPath());
+  file = rg->getDownloadContext()->getFileEntries()[1];
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/.._.._file2.ext"),
+                       file->getPath());
+#endif // ENABLE_BITTORRENT
+#endif // __MINGW32__
 }
 
 } // namespace aria2

@@ -1,5 +1,15 @@
 2010-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that name attribute of file element in Metalink file
+	is not properly sanitized.
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkParserController.cc
+	* test/Makefile.am
+	* test/Metalink2RequestGroupTest.cc
+	* test/metalink4-dosdirtraversal.xml
+
+2010-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that if filename in Content-Disposition header
 	includes ';', aria2 cuts filename after ';'.
 	* src/util.cc
