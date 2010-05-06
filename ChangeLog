@@ -1,5 +1,10 @@
 2010-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed useless pathJoin
+	* src/MetalinkParserController.cc
+
+2010-05-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that name attribute of file element in Metalink file
 	is not properly sanitized.
 	* src/Metalink2RequestGroup.cc
