@@ -1,3 +1,25 @@
+aria2 1.9.3
+===========
+
+Release Note
+------------
+
+This release fixes the bug that aria2 cuts filename after ';' if
+filename in Content-Disposition header includes ';'.  It also fixes
+the bug that name attribute of file element in Metalink file is not
+properly sanitized.
+
+Changes
+-------
+
+ * Fixed the bug that name attribute of file element in Metalink file
+   is not properly sanitized.
+
+ * Fixed the bug that if filename in Content-Disposition header
+   includes ';', aria2 cuts filename after ';'.
+
+
+
 aria2 1.9.2
 ===========
 
