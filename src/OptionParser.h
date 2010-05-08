@@ -101,7 +101,7 @@ public:
   // Hidden options are not returned.
   SharedHandle<OptionHandler> findByShortName(char shortName) const;
 
-  static SharedHandle<OptionParser> getInstance();
+  static const SharedHandle<OptionParser>& getInstance();
 };
 
 typedef SharedHandle<OptionParser> OptionParserHandle;

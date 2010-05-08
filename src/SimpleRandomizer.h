@@ -46,7 +46,7 @@ private:
   SimpleRandomizer();
 public:
   
-  static SharedHandle<SimpleRandomizer> getInstance();
+  static const SharedHandle<SimpleRandomizer>& getInstance();
   
   static void init();
 

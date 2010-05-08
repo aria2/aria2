@@ -369,7 +369,7 @@ SharedHandle<OptionHandler> OptionParser::findByShortName(char shortName) const
 
 SharedHandle<OptionParser> OptionParser::_optionParser;
 
-SharedHandle<OptionParser> OptionParser::getInstance()
+const SharedHandle<OptionParser>& OptionParser::getInstance()
 {
   if(_optionParser.isNull()) {
     _optionParser.reset(new OptionParser());

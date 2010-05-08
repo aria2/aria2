@@ -201,7 +201,7 @@ public:
 
   void setDir(const std::string& dir) { _dir = dir; }
 
-  SharedHandle<Signature> getSignature() const { return _signature; }
+  const SharedHandle<Signature>& getSignature() const { return _signature; }
 
   void setSignature(const SharedHandle<Signature>& signature)
   {

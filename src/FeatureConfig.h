@@ -56,7 +56,7 @@ private:
 
   FeatureConfig();
 public:
-  static SharedHandle<FeatureConfig> getInstance();
+  static const SharedHandle<FeatureConfig>& getInstance();
 
   uint16_t getDefaultPort(const std::string& protocol) const;
 

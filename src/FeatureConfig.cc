@@ -120,7 +120,7 @@ FeatureConfig::FeatureConfig() {
   _features.insert(vbegin(featureArray), vend(featureArray));
 }
 
-SharedHandle<FeatureConfig> FeatureConfig::getInstance()
+const SharedHandle<FeatureConfig>& FeatureConfig::getInstance()
 {
   if(_featureConfig.isNull()) {
     _featureConfig.reset(new FeatureConfig());

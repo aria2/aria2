@@ -243,7 +243,7 @@ public:
     _pieceSelector = pieceSelector;
   }
 
-  SharedHandle<PieceSelector> getPieceSelector() const
+  const SharedHandle<PieceSelector>& getPieceSelector() const
   {
     return _pieceSelector;
   }
