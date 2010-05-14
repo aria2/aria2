@@ -53,15 +53,6 @@
 
 namespace aria2 {
 
-#ifdef ENABLE_MESSAGE_DIGEST
-static bool isValidHash(const std::string& algo, const std::string& hash)
-{
-  return util::isHexDigit(hash) &&
-    MessageDigestContext::supports(algo) &&
-    MessageDigestContext::digestLength(algo)*2 == hash.size();
-}
-#endif // ENABLE_MESSAGE_DIGEST
-
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker())
 {}
@@ -272,8 +263,9 @@ void MetalinkParserController::setTypeOfChecksum(const std::string& type)
   if(_tChecksum.isNull()) {
     return;
   }
-  if(MessageDigestContext::supports(type)) {
-    _tChecksum->setAlgo(type);
+  std::string calgo = MessageDigestContext::getCanonicalAlgo(type);
+  if(MessageDigestContext::supports(calgo)) {
+    _tChecksum->setAlgo(calgo);
   } else {
     cancelChecksumTransaction();
   }
@@ -286,7 +278,7 @@ void MetalinkParserController::setHashOfChecksum(const std::string& md)
   if(_tChecksum.isNull()) {
     return;
   }
-  if(isValidHash(_tChecksum->getAlgo(), md)) {
+  if(MessageDigestContext::isValidHash(_tChecksum->getAlgo(), md)) {
     _tChecksum->setMessageDigest(md);
   } else {
     cancelChecksumTransaction();
@@ -333,8 +325,9 @@ void MetalinkParserController::setTypeOfChunkChecksumV4(const std::string& type)
   if(_tChunkChecksumV4.isNull()) {
     return;
   }
-  if(MessageDigestContext::supports(type)) {
-    _tChunkChecksumV4->setAlgo(type);
+  std::string calgo = MessageDigestContext::getCanonicalAlgo(type);
+  if(MessageDigestContext::supports(calgo)) {
+    _tChunkChecksumV4->setAlgo(calgo);
   } else {
     cancelChunkChecksumTransactionV4();
   }
@@ -361,7 +354,7 @@ void MetalinkParserController::addHashOfChunkChecksumV4(const std::string& md)
   if(_tChunkChecksumV4.isNull()) {
     return;
   }
-  if(isValidHash(_tChunkChecksumV4->getAlgo(), md)) {
+  if(MessageDigestContext::isValidHash(_tChunkChecksumV4->getAlgo(), md)) {
     _tempChunkChecksumsV4.push_back(md);
   } else {
     cancelChunkChecksumTransactionV4();
@@ -411,8 +404,9 @@ void MetalinkParserController::setTypeOfChunkChecksum(const std::string& type)
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  if(MessageDigestContext::supports(type)) {
-    _tChunkChecksum->setAlgo(type);
+  std::string calgo = MessageDigestContext::getCanonicalAlgo(type);
+  if(MessageDigestContext::supports(calgo)) {
+    _tChunkChecksum->setAlgo(calgo);
   } else {
     cancelChunkChecksumTransaction();
   }
@@ -439,7 +433,7 @@ void MetalinkParserController::addHashOfChunkChecksum(size_t order, const std::s
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  if(isValidHash(_tChunkChecksum->getAlgo(), md)) {
+  if(MessageDigestContext::isValidHash(_tChunkChecksum->getAlgo(), md)) {
     _tempChunkChecksums.push_back(std::make_pair(order, md));
   } else {
     cancelChunkChecksumTransaction();
@@ -463,7 +457,7 @@ void MetalinkParserController::setMessageDigestOfChunkChecksum(const std::string
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  if(isValidHash(_tChunkChecksum->getAlgo(), md)) {
+  if(MessageDigestContext::isValidHash(_tChunkChecksum->getAlgo(), md)) {
     _tempHashPair.second = md;
   } else {
     cancelChunkChecksumTransaction();

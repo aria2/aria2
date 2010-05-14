@@ -106,6 +106,14 @@ public:
   // or both are not supported, returns false.
   static bool isStronger(const std::string& lhs, const std::string& rhs);
 
+  static bool isValidHash
+  (const std::string& algostring, const std::string& hashstring);
+
+  // Returns canonical hash algorithm name of given algostring.  If
+  // given algostring is not supported, then returns algostring
+  // unchanged.
+  static std::string getCanonicalAlgo(const std::string& algostring);
+
   std::string digestFinal();
 
 #if defined(HAVE_OLD_LIBSSL)

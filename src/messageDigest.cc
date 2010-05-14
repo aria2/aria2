@@ -42,7 +42,7 @@ const std::string MessageDigestContext::SHA1("sha-1");
 
 const std::string MessageDigestContext::SHA256("sha-256");
 
-const std::string MessageDigestContext::MD5("md-5");
+const std::string MessageDigestContext::MD5("md5");
 
 namespace {
 struct DigestAlgoEntry {
@@ -68,13 +68,9 @@ static const DigestAlgoMap& getDigestAlgos()
     DigestAlgoMap::value_type("md5", DigestAlgoEntry(EVP_md5(), STRENGTH_MD5)),
     DigestAlgoMap::value_type
     ("sha-1", DigestAlgoEntry(EVP_sha1(), STRENGTH_SHA_1)),
-    DigestAlgoMap::value_type
-    ("sha1", DigestAlgoEntry(EVP_sha1(), STRENGTH_SHA_1)),
 # ifdef HAVE_EVP_SHA256
     DigestAlgoMap::value_type
     ("sha-256", DigestAlgoEntry(EVP_sha256(), STRENGTH_SHA_256)),
-    DigestAlgoMap::value_type
-    ("sha256", DigestAlgoEntry(EVP_sha256(), STRENGTH_SHA_256)),
 # endif // HAVE_EVP_SHA256
 #elif HAVE_LIBGCRYPT
     DigestAlgoMap::value_type
@@ -82,15 +78,27 @@ static const DigestAlgoMap& getDigestAlgos()
     DigestAlgoMap::value_type
     ("sha-1", DigestAlgoEntry(GCRY_MD_SHA1, STRENGTH_SHA_1)),
     DigestAlgoMap::value_type
-    ("sha1", DigestAlgoEntry(GCRY_MD_SHA1, STRENGTH_SHA_1)),
-    DigestAlgoMap::value_type
     ("sha-256", DigestAlgoEntry(GCRY_MD_SHA256, STRENGTH_SHA_256)),
-    DigestAlgoMap::value_type
-    ("sha256", DigestAlgoEntry(GCRY_MD_SHA256, STRENGTH_SHA_256)),
 #endif // HAVE_LIBGCRYPT
   };
   static const DigestAlgoMap algomap(vbegin(digests), vend(digests));
   return algomap;
+}
+
+std::string MessageDigestContext::getCanonicalAlgo
+(const std::string& algostring)
+{
+  if(strcasecmp("sha-1", algostring.c_str()) == 0 ||
+     strcasecmp("sha1", algostring.c_str()) == 0) {
+    return SHA1;
+  } else if(strcasecmp("sha-256", algostring.c_str()) == 0 ||
+            strcasecmp("sha256", algostring.c_str()) == 0) {
+    return SHA256;
+  } else if(strcasecmp("md5", algostring.c_str()) == 0) {
+    return MD5;
+  } else {
+    return algostring;
+  }
 }
 
 std::string MessageDigestContext::digestFinal()
@@ -149,6 +157,13 @@ bool MessageDigestContext::isStronger
     return false;
   }
   return (*lhsitr).second.strength > (*rhsitr).second.strength;
+}
+
+bool MessageDigestContext::isValidHash
+(const std::string& algostring, const std::string& hashstring)
+{
+  return util::isHexDigit(hashstring) &&
+    supports(algostring) && digestLength(algostring)*2 == hashstring.size();
 }
 
 } // namespace aria2

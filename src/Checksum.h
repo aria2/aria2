@@ -36,8 +36,11 @@
 #define _D_CHECKSUM_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
+
+#include "SharedHandle.h"
+#include "messageDigest.h"
 
 namespace aria2 {
 
@@ -50,7 +53,7 @@ public:
   Checksum(const std::string& algo, const std::string& messageDigest):
     _algo(algo), _messageDigest(messageDigest) {}
   Checksum():
-    _algo("sha1") {}
+    _algo(MessageDigestContext::SHA1) {}
 
   ~Checksum() {}
 
