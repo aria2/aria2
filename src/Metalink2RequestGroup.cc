@@ -256,12 +256,11 @@ Metalink2RequestGroup::createRequestGroup
         dctx->getFirstFileEntry()->disableSingleHostMultiConnection();
       }
 #ifdef ENABLE_MESSAGE_DIGEST
-      if(entry->chunkChecksum.isNull()) {
-        if(!entry->checksum.isNull()) {
-          dctx->setChecksum(entry->checksum->getMessageDigest());
-          dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
-        }
-      } else {
+      if(!entry->checksum.isNull()) {
+        dctx->setChecksum(entry->checksum->getMessageDigest());
+        dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
+      }
+      if(!entry->chunkChecksum.isNull()) {
         dctx->setPieceHashes(entry->chunkChecksum->getChecksums().begin(),
                              entry->chunkChecksum->getChecksums().end());
         dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());

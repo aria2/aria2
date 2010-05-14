@@ -210,7 +210,7 @@ bool DownloadCommand::executeInternal() {
 #ifdef ENABLE_MESSAGE_DIGEST
 
       {
-        std::string expectedPieceHash =
+        const std::string& expectedPieceHash =
           _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
         if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
           if(segment->isHashCalculated()) {
@@ -271,26 +271,29 @@ void DownloadCommand::checkLowestDownloadSpeed() const
 
 bool DownloadCommand::prepareForNextSegment() {
   if(_requestGroup->downloadFinished()) {
+    const SharedHandle<DownloadContext>& dctx =
+      _requestGroup->getDownloadContext();
     // Remove in-flight request here.
     _fileEntry->poolRequest(req);
     // If this is a single file download, and file size becomes known
     // just after downloading, set total length to FileEntry object
     // here.
-    if(_requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
-      const SharedHandle<FileEntry>& fileEntry =
-        _requestGroup->getDownloadContext()->getFirstFileEntry();
+    if(dctx->getFileEntries().size() == 1) {
+      const SharedHandle<FileEntry>& fileEntry = dctx->getFirstFileEntry();
       if(fileEntry->getLength() == 0) {
         fileEntry->setLength
           (_requestGroup->getPieceStorage()->getCompletedLength());
       }
     }
 #ifdef ENABLE_MESSAGE_DIGEST
-    SharedHandle<CheckIntegrityEntry> entry
-      (new ChecksumCheckIntegrityEntry(_requestGroup));
-    if(entry->isValidationReady()) {
-      entry->initValidator();
-      // TODO do we need cuttrailinggarbage here?
-      e->_checkIntegrityMan->pushEntry(entry);
+    if(dctx->getPieceHashAlgo().empty()) {
+      SharedHandle<CheckIntegrityEntry> entry
+        (new ChecksumCheckIntegrityEntry(_requestGroup));
+      if(entry->isValidationReady()) {
+        entry->initValidator();
+        // TODO do we need cuttrailinggarbage here?
+        e->_checkIntegrityMan->pushEntry(entry);
+      }
     }
     // Following 2lines are needed for DownloadEngine to detect
     // completed RequestGroups without 1sec delay.

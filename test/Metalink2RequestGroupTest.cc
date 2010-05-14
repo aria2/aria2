@@ -85,8 +85,11 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, dctx->getPieceHashAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)2, dctx->getPieceHashes().size());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, dctx->getPieceLength());
-    CPPUNIT_ASSERT_EQUAL(std::string(""), dctx->getChecksumHashAlgo());
-    CPPUNIT_ASSERT_EQUAL(std::string(""), dctx->getChecksum());
+    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
+                         dctx->getChecksumHashAlgo());
+    CPPUNIT_ASSERT_EQUAL
+      (std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
+       dctx->getChecksum());
 #endif // ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(dctx->getSignature().isNull());
   }

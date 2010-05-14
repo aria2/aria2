@@ -1,3 +1,12 @@
+2010-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Store both whole checksum and piece hash in metalink file.
+	Dispatch whole checksum verification only when piece hash is not
+	set.
+	* src/DownloadCommand.cc
+	* src/Metalink2RequestGroup.cc
+	* test/Metalink2RequestGroupTest.cc
+
 2010-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Left only IANA hash function textual name in messageDigest.cc.
