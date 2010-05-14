@@ -1,3 +1,8 @@
+2010-05-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed typo in log message
+	* src/AbstractCommand.cc
+
 2010-05-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.9.3

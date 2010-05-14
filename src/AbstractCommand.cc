@@ -154,7 +154,7 @@ bool AbstractCommand::execute() {
           // canceled. So discard current request chain.
           if(logger->debug()) {
             logger->debug("CUID#%s - It seems previously assigned segments are"
-                          "canceled. Restart.", util::itos(cuid).c_str());
+                          " canceled. Restart.", util::itos(cuid).c_str());
           }
           return prepareForRetry(0);
         }
