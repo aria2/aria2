@@ -1044,7 +1044,7 @@ BDE GetServersXmlRpcMethod::process
     throw DL_ABORT_EX(StringFormat("No active download for GID#%s",
                                    util::itos(gid).c_str()).str());
   }
-  SharedHandle<DownloadContext> dctx = group->getDownloadContext();
+  const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
   BDE result = BDE::list();
   size_t index = 1;
@@ -1099,7 +1099,7 @@ BDE ChangeUriXmlRpcMethod::process
       (StringFormat("Cannot remove URIs from GID#%s",
                     util::itos(gid).c_str()).str());
   }
-  SharedHandle<DownloadContext> dctx = group->getDownloadContext();
+  const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
   if(files.size() <= index) {
     throw DL_ABORT_EX(StringFormat("fileIndex is out of range").str());

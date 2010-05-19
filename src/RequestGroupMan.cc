@@ -349,7 +349,7 @@ public:
   void operator()(const SharedHandle<RequestGroup>& group)
   {
     if(group->getNumCommand() == 0) {
-      SharedHandle<DownloadContext> dctx = group->getDownloadContext();
+      const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
       // DownloadContext::resetDownloadStopTime() is only called when
       // download completed. If
       // DownloadContext::getDownloadStopTime().isZero() is true, then

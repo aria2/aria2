@@ -1,3 +1,10 @@
+2010-05-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Code cleanup.
+	* src/RequestGroupMan.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/XmlRpcMethodImpl.cc
+
 2010-05-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Store both whole checksum and piece hash in metalink file.

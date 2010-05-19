@@ -56,7 +56,7 @@ namespace aria2 {
 bool UTMetadataPostDownloadHandler::Criteria::match
 (const RequestGroup* requestGroup) const
 {
-  SharedHandle<DownloadContext> dctx =
+  const SharedHandle<DownloadContext>& dctx =
     requestGroup->getDownloadContext();
   if(dctx->hasAttribute(bittorrent::BITTORRENT)) {
     const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
@@ -76,7 +76,7 @@ UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler():
 void UTMetadataPostDownloadHandler::getNextRequestGroups
 (std::vector<SharedHandle<RequestGroup> >& groups, RequestGroup* requestGroup)
 {
-  SharedHandle<DownloadContext> dctx = requestGroup->getDownloadContext();
+  const SharedHandle<DownloadContext>& dctx =requestGroup->getDownloadContext();
   const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
   std::string metadata =
     util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
