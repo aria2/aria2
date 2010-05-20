@@ -79,27 +79,6 @@ public:
   SharedHandle<Option> option;
 
   SharedHandle<MetadataInfo> metadataInfo;
-
-  DownloadResult(gid_t gid,
-                 const std::vector<SharedHandle<FileEntry> >& fileEntries,
-                 bool inMemoryDownload,
-                 uint64_t sessionDownloadLength,
-                 int64_t sessionTime,
-                 downloadresultcode::RESULT result,
-                 const std::vector<gid_t> followedBy,
-                 gid_t belongsTo,
-                 const SharedHandle<Option>& option,
-                 const SharedHandle<MetadataInfo>& metadataInfo):
-    gid(gid),
-    fileEntries(fileEntries),
-    inMemoryDownload(inMemoryDownload),
-    sessionDownloadLength(sessionDownloadLength),
-    sessionTime(sessionTime),
-    result(result),
-    followedBy(followedBy),
-    belongsTo(belongsTo),
-    option(option),
-    metadataInfo(metadataInfo) {}
 };
 
 typedef SharedHandle<DownloadResult> DownloadResultHandle;

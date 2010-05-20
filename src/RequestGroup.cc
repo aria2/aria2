@@ -1057,18 +1057,18 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
     sessionDownloadLength +=
       _segmentMan->calculateSessionDownloadLength();
   }
-  return
-    SharedHandle<DownloadResult>
-    (new DownloadResult(_gid,
-                        _downloadContext->getFileEntries(),
-                        _inMemoryDownload,
-                        sessionDownloadLength,
-                        _downloadContext->calculateSessionTime(),
-                        downloadResult(),
-                        _followedByGIDs,
-                        _belongsToGID,
-                        _option,
-                        _metadataInfo));
+  SharedHandle<DownloadResult> res(new DownloadResult());
+  res->gid = _gid;
+  res->fileEntries = _downloadContext->getFileEntries();
+  res->inMemoryDownload = _inMemoryDownload;
+  res->sessionDownloadLength = sessionDownloadLength;
+  res->sessionTime = _downloadContext->calculateSessionTime();
+  res->result = downloadResult();
+  res->followedBy = _followedByGIDs;
+  res->belongsTo = _belongsToGID;
+  res->option = _option;
+  res->metadataInfo = _metadataInfo;
+  return res;
 }
   
 void RequestGroup::reportDownloadFinished()

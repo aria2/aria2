@@ -674,17 +674,15 @@ void XmlRpcMethodTest::testGatherStoppedDownload()
   std::vector<gid_t> followedBy;
   followedBy.push_back(3);
   followedBy.push_back(4);
-  SharedHandle<DownloadResult> d
-    (new DownloadResult(1,
-                        fileEntries,
-                        false,
-                        UINT64_MAX,
-                        1000,
-                        downloadresultcode::FINISHED,
-                        followedBy,
-                        2,
-                        SharedHandle<Option>(),
-                        SharedHandle<MetadataInfo>()));
+  SharedHandle<DownloadResult> d(new DownloadResult());
+  d->gid = 1;
+  d->fileEntries = fileEntries;
+  d->inMemoryDownload = false;
+  d->sessionDownloadLength = UINT64_MAX;
+  d->sessionTime = 1000;
+  d->result = downloadresultcode::FINISHED;
+  d->followedBy = followedBy;
+  d->belongsTo = 2;
   BDE entry = BDE::dict();
   gatherStoppedDownload(entry, d);
 

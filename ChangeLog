@@ -1,3 +1,10 @@
+2010-05-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed DownloadResult's ctor because it has many args.
+	* src/DownloadResult.h
+	* src/RequestGroup.cc
+	* test/XmlRpcMethodTest.cc
+
 2010-05-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code cleanup.
