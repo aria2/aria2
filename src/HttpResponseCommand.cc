@@ -415,7 +415,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 void HttpResponseCommand::poolConnection()
 {
   if(req->supportsPersistentConnection()) {
-    e->poolSocket(req, isProxyDefined(), socket);
+    e->poolSocket(req, createProxyRequest(), socket);
   }
 }
 

@@ -145,7 +145,7 @@ bool HttpSkipResponseCommand::executeInternal()
 void HttpSkipResponseCommand::poolConnection() const
 {
   if(req->supportsPersistentConnection()) {
-    e->poolSocket(req, isProxyDefined(), socket);
+    e->poolSocket(req, createProxyRequest(), socket);
   }
 }
 

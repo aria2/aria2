@@ -70,7 +70,8 @@ Command* HttpInitiateConnectionCommand::createNextCommand
   Command* command;
   if(!proxyRequest.isNull()) {
     SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(req->getHost(), req->getPort());
+      e->popPooledSocket(req->getHost(), req->getPort(),
+                         proxyRequest->getHost(), proxyRequest->getPort());
     std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(pooledSocket.isNull()) {
       if(logger->info()) {

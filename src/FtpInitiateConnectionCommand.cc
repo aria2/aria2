@@ -78,12 +78,15 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     SharedHandle<SocketCore> pooledSocket;
     std::string proxyMethod = resolveProxyMethod(req->getProtocol());
     if(proxyMethod == V_GET) {
-      pooledSocket = e->popPooledSocket(req->getHost(), req->getPort());
+      pooledSocket = e->popPooledSocket
+        (req->getHost(), req->getPort(),
+         proxyRequest->getHost(), proxyRequest->getPort());
     } else {
       pooledSocket = e->popPooledSocket
         (options, req->getHost(), req->getPort(),
          e->getAuthConfigFactory()->createAuthConfig
-         (req, getOption().get())->getUser());
+         (req, getOption().get())->getUser(),
+         proxyRequest->getHost(), proxyRequest->getPort());
     }
     if(pooledSocket.isNull()) {
       if(logger->info()) {

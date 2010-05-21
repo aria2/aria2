@@ -806,7 +806,7 @@ void FtpNegotiationCommand::poolConnection() const
   if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
     std::map<std::string, std::string> options;
     options["baseWorkingDir"] = ftp->getBaseWorkingDir();
-    e->poolSocket(req, isProxyDefined(), ftp->getUser(), socket, options);
+    e->poolSocket(req, ftp->getUser(), createProxyRequest(), socket, options);
   }
 }
 

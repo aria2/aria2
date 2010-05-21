@@ -150,22 +150,10 @@ private:
 
   void afterEachIteration();
   
-  void poolSocket(const std::string& ipaddr,
-                  uint16_t port,
-                  const SocketPoolEntry& entry);
-
-  void poolSocket(const std::string& ipaddr, uint16_t port,
-                  const std::string& username,
-                  const SharedHandle<SocketCore>& sock,
-                  const std::map<std::string, std::string>& options,
-                  time_t timeout);
-
-  void poolSocket(const std::string& ipaddr, uint16_t port,
-                  const SharedHandle<SocketCore>& sock,
-                  time_t timeout);
+  void poolSocket(const std::string& key, const SocketPoolEntry& entry);
 
   std::multimap<std::string, SocketPoolEntry>::iterator
-  findSocketPoolEntry(const std::string& ipaddr, uint16_t port);
+  findSocketPoolEntry(const std::string& key);
 public:
   std::deque<Command*> commands;
   SharedHandle<RequestGroupMan> _requestGroupMan;
@@ -215,29 +203,45 @@ public:
 
   void addRoutineCommand(Command* command);
 
-  void poolSocket(const SharedHandle<Request>& request,
-                  bool proxyDefined,
+  void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& username,
+                  const std::string& proxyhost, uint16_t proxyport,
+                  const SharedHandle<SocketCore>& sock,
+                  const std::map<std::string, std::string>& options,
+                  time_t timeout);
+
+  void poolSocket(const SharedHandle<Request>& request,
+                  const std::string& username,
+                  const SharedHandle<Request>& proxyRequest,
                   const SharedHandle<SocketCore>& socket,
                   const std::map<std::string, std::string>& options,
                   time_t timeout = 15);
     
+  void poolSocket(const std::string& ipaddr, uint16_t port,
+                  const std::string& proxyhost, uint16_t proxyport,
+                  const SharedHandle<SocketCore>& sock,
+                  time_t timeout);
+
   void poolSocket(const SharedHandle<Request>& request,
-                  bool proxyDefined,
+                  const SharedHandle<Request>& proxyRequest,
                   const SharedHandle<SocketCore>& socket,
                   time_t timeout = 15);
 
-  SharedHandle<SocketCore> popPooledSocket(const std::string& ipaddr,
-                                           uint16_t port);
+  SharedHandle<SocketCore> popPooledSocket
+  (const std::string& ipaddr,
+   uint16_t port,
+   const std::string& proxyhost, uint16_t proxyport);
 
   SharedHandle<SocketCore> popPooledSocket
   (std::map<std::string, std::string>& options,
    const std::string& ipaddr,
    uint16_t port,
-   const std::string& username);
+   const std::string& username,
+   const std::string& proxyhost, uint16_t proxyport);
 
   SharedHandle<SocketCore>
-  popPooledSocket(const std::vector<std::string>& ipaddrs, uint16_t port);
+  popPooledSocket
+  (const std::vector<std::string>& ipaddrs, uint16_t port);
 
   SharedHandle<SocketCore>
   popPooledSocket

@@ -98,7 +98,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
       // pool terminated socket.  In HTTP/1.1, keep-alive is default,
       // so closing connection without Connection: close header means
       // that server is broken or not configured properly.
-      e->poolSocket(req, isProxyDefined(), socket);
+      e->poolSocket(req, createProxyRequest(), socket);
     }
     // The request was sent assuming that server supported pipelining, but
     // it turned out that server didn't support it.

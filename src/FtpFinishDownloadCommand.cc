@@ -82,7 +82,7 @@ bool FtpFinishDownloadCommand::execute()
     if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::map<std::string, std::string> options;
       options["baseWorkingDir"] = _ftpConnection->getBaseWorkingDir();
-      e->poolSocket(req, isProxyDefined(), _ftpConnection->getUser(),
+      e->poolSocket(req, _ftpConnection->getUser(), createProxyRequest(),
                     socket, options);
     }
   } catch(RecoverableException& e) {

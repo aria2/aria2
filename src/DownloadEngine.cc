@@ -279,13 +279,11 @@ void DownloadEngine::addRoutineCommand(Command* command)
   _routineCommands.push_back(command);
 }
 
-void DownloadEngine::poolSocket(const std::string& ipaddr,
-                                uint16_t port,
+void DownloadEngine::poolSocket(const std::string& key,
                                 const SocketPoolEntry& entry)
 {
-  std::string addr = strconcat(ipaddr, ":", util::uitos(port));
-  logger->info("Pool socket for %s", addr.c_str());
-  std::multimap<std::string, SocketPoolEntry>::value_type p(addr, entry);
+  logger->info("Pool socket for %s", key.c_str());
+  std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   _socketPool.insert(p);
 
   if(_lastSocketPoolScan.difference(global::wallclock) >= 60) {
@@ -310,12 +308,24 @@ void DownloadEngine::poolSocket(const std::string& ipaddr,
 }
 
 static std::string createSockPoolKey
-(const std::string& host, const std::string& username)
+(const std::string& host, uint16_t port,
+ const std::string& username,
+ const std::string& proxyhost, uint16_t proxyport)
 {
   std::string key;
-  key += util::percentEncode(username);
-  key += '@';
+  if(!username.empty()) {
+    key += util::percentEncode(username);
+    key += '@';
+  }
   key += host;
+  key += A2STR::COLON_C;
+  key += util::uitos(port);
+  if(!proxyhost.empty()) {
+    key += A2STR::SLASH_C;
+    key += proxyhost;
+    key += A2STR::COLON_C;
+    key += util::uitos(proxyport);
+  }
   return key;
 }
 
@@ -323,72 +333,78 @@ void DownloadEngine::poolSocket
 (const std::string& ipaddr,
  uint16_t port,
  const std::string& username,
+ const std::string& proxyhost,
+ uint16_t proxyport,
  const SharedHandle<SocketCore>& sock,
  const std::map<std::string, std::string>& options,
  time_t timeout)
 {
   SocketPoolEntry e(sock, options, timeout);
-  poolSocket(createSockPoolKey(ipaddr, username), port, e);
+  poolSocket(createSockPoolKey(ipaddr, port, username, proxyhost, proxyport),e);
 }
 
 void DownloadEngine::poolSocket
 (const std::string& ipaddr,
  uint16_t port,
+ const std::string& proxyhost,
+ uint16_t proxyport,
  const SharedHandle<SocketCore>& sock,
  time_t timeout)
 {
   SocketPoolEntry e(sock, timeout);
-  poolSocket(ipaddr, port, e);
+  poolSocket(createSockPoolKey(ipaddr, port, A2STR::NIL,proxyhost,proxyport),e);
 }
 
 void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
-                                bool proxyDefined,
+                                const SharedHandle<Request>& proxyRequest,
                                 const SharedHandle<SocketCore>& socket,
                                 time_t timeout)
 {
-  if(proxyDefined) {
-    // If proxy is defined, then pool socket with its hostname.
-    poolSocket(request->getHost(), request->getPort(), socket, timeout);
-  } else {
+  if(proxyRequest.isNull()) {
     std::pair<std::string, uint16_t> peerInfo;
     socket->getPeerInfo(peerInfo);
-    poolSocket(peerInfo.first, peerInfo.second, socket, timeout);
+    poolSocket(peerInfo.first, peerInfo.second,
+               A2STR::NIL, 0, socket, timeout);
+  } else {
+    // If proxy is defined, then pool socket with its hostname.
+    poolSocket(request->getHost(), request->getPort(),
+               proxyRequest->getHost(), proxyRequest->getPort(),
+               socket, timeout);
   }
 }
 
 void DownloadEngine::poolSocket
 (const SharedHandle<Request>& request,
- bool proxyDefined,
  const std::string& username,
+ const SharedHandle<Request>& proxyRequest,
  const SharedHandle<SocketCore>& socket,
  const std::map<std::string, std::string>& options,                             
  time_t timeout)
 {
-  if(proxyDefined) {
-    // If proxy is defined, then pool socket with its hostname.
-    poolSocket(request->getHost(), request->getPort(), username,
-               socket, options, timeout);
-  } else {
+  if(proxyRequest.isNull()) {
     std::pair<std::string, uint16_t> peerInfo;
     socket->getPeerInfo(peerInfo);
     poolSocket(peerInfo.first, peerInfo.second, username,
+               A2STR::NIL, 0, socket, options, timeout);
+  } else {
+    // If proxy is defined, then pool socket with its hostname.
+    poolSocket(request->getHost(), request->getPort(), username,
+               proxyRequest->getHost(), proxyRequest->getPort(),
                socket, options, timeout);
   }
 }
 
 std::multimap<std::string, DownloadEngine::SocketPoolEntry>::iterator
-DownloadEngine::findSocketPoolEntry(const std::string& ipaddr, uint16_t port)
+DownloadEngine::findSocketPoolEntry(const std::string& key)
 {
-  std::string addr = ipaddr;
-  strappend(addr, ":", util::uitos(port));
   std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
     std::multimap<std::string, SocketPoolEntry>::iterator> range =
-    _socketPool.equal_range(addr);
+    _socketPool.equal_range(key);
   for(std::multimap<std::string, SocketPoolEntry>::iterator i =
         range.first, eoi = range.second; i != eoi; ++i) {
     const SocketPoolEntry& e = (*i).second;
     if(!e.isTimeout()) {
-      logger->info("Found socket for %s", addr.c_str());
+      logger->info("Found socket for %s", key.c_str());
       return i;
     }
   }
@@ -396,11 +412,14 @@ DownloadEngine::findSocketPoolEntry(const std::string& ipaddr, uint16_t port)
 }
 
 SharedHandle<SocketCore>
-DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
+DownloadEngine::popPooledSocket
+(const std::string& ipaddr, uint16_t port,
+ const std::string& proxyhost, uint16_t proxyport)
 {
   SharedHandle<SocketCore> s;
   std::multimap<std::string, SocketPoolEntry>::iterator i =
-    findSocketPoolEntry(ipaddr, port);
+    findSocketPoolEntry
+    (createSockPoolKey(ipaddr, port, A2STR::NIL, proxyhost, proxyport));
   if(i != _socketPool.end()) {
     s = (*i).second.getSocket();
     _socketPool.erase(i);
@@ -409,13 +428,16 @@ DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
 }
 
 SharedHandle<SocketCore>
-DownloadEngine::popPooledSocket(std::map<std::string, std::string>& options,
-                                const std::string& ipaddr, uint16_t port,
-                                const std::string& username)
+DownloadEngine::popPooledSocket
+(std::map<std::string, std::string>& options,
+ const std::string& ipaddr, uint16_t port,
+ const std::string& username,
+ const std::string& proxyhost, uint16_t proxyport)
 {
   SharedHandle<SocketCore> s;
   std::multimap<std::string, SocketPoolEntry>::iterator i =
-    findSocketPoolEntry(createSockPoolKey(ipaddr, username), port);
+    findSocketPoolEntry
+    (createSockPoolKey(ipaddr, port, username, proxyhost, proxyport));
   if(i != _socketPool.end()) {
     s = (*i).second.getSocket();
     options = (*i).second.getOptions();
@@ -431,7 +453,7 @@ DownloadEngine::popPooledSocket
   SharedHandle<SocketCore> s;
   for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
         eoi = ipaddrs.end(); i != eoi; ++i) {
-    s = popPooledSocket(*i, port);
+    s = popPooledSocket(*i, port, A2STR::NIL, 0);
     if(!s.isNull()) {
       break;
     }
@@ -448,7 +470,7 @@ DownloadEngine::popPooledSocket
   SharedHandle<SocketCore> s;
   for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
         eoi = ipaddrs.end(); i != eoi; ++i) {
-    s = popPooledSocket(options, *i, port, username);
+    s = popPooledSocket(options, *i, port, username, A2STR::NIL, 0);
     if(!s.isNull()) {
       break;
     }
