@@ -52,6 +52,8 @@
 #include "Socket.h"
 #include "DownloadContext.h"
 #include "util.h"
+#include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 namespace aria2 {
 
@@ -73,9 +75,16 @@ Command* FtpInitiateConnectionCommand::createNextCommand
   Command* command;
   if(!proxyRequest.isNull()) {
     std::map<std::string, std::string> options;
-    SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(options, req->getHost(), req->getPort());
+    SharedHandle<SocketCore> pooledSocket;
     std::string proxyMethod = resolveProxyMethod(req->getProtocol());
+    if(proxyMethod == V_GET) {
+      pooledSocket = e->popPooledSocket(req->getHost(), req->getPort());
+    } else {
+      pooledSocket = e->popPooledSocket
+        (options, req->getHost(), req->getPort(),
+         e->getAuthConfigFactory()->createAuthConfig
+         (req, getOption().get())->getUser());
+    }
     if(pooledSocket.isNull()) {
       if(logger->info()) {
         logger->info(MSG_CONNECTING_TO_SERVER,
@@ -133,7 +142,9 @@ Command* FtpInitiateConnectionCommand::createNextCommand
   } else {
     std::map<std::string, std::string> options;
     SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(options, resolvedAddresses, req->getPort());
+      e->popPooledSocket(options, resolvedAddresses, req->getPort(),
+                         e->getAuthConfigFactory()->createAuthConfig
+                         (req, getOption().get())->getUser());
     if(pooledSocket.isNull()) {
       if(logger->info()) {
         logger->info(MSG_CONNECTING_TO_SERVER,

@@ -1,3 +1,17 @@
+2010-05-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that FTP download may fail when control connection
+	is reused. This happens because FTP server can offer different
+	root directory for different account. If pooled connections has
+	different root directory, then download will fail.
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+
 2010-05-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed DownloadResult's ctor because it has many args.

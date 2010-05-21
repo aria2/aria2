@@ -98,6 +98,9 @@ private:
                     const std::map<std::string, std::string>& option,
                     time_t timeout);
 
+    SocketPoolEntry(const SharedHandle<SocketCore>& socket,
+                    time_t timeout);
+
     ~SocketPoolEntry();
 
     bool isTimeout() const;
@@ -151,6 +154,16 @@ private:
                   uint16_t port,
                   const SocketPoolEntry& entry);
 
+  void poolSocket(const std::string& ipaddr, uint16_t port,
+                  const std::string& username,
+                  const SharedHandle<SocketCore>& sock,
+                  const std::map<std::string, std::string>& options,
+                  time_t timeout);
+
+  void poolSocket(const std::string& ipaddr, uint16_t port,
+                  const SharedHandle<SocketCore>& sock,
+                  time_t timeout);
+
   std::multimap<std::string, SocketPoolEntry>::iterator
   findSocketPoolEntry(const std::string& ipaddr, uint16_t port);
 public:
@@ -202,17 +215,9 @@ public:
 
   void addRoutineCommand(Command* command);
 
-  void poolSocket(const std::string& ipaddr, uint16_t port,
-                  const SharedHandle<SocketCore>& sock,
-                  const std::map<std::string, std::string>& options,
-                  time_t timeout = 15);
-
-  void poolSocket(const std::string& ipaddr, uint16_t port,
-                  const SharedHandle<SocketCore>& sock,
-                  time_t timeout = 15);
-  
   void poolSocket(const SharedHandle<Request>& request,
                   bool proxyDefined,
+                  const std::string& username,
                   const SharedHandle<SocketCore>& socket,
                   const std::map<std::string, std::string>& options,
                   time_t timeout = 15);
@@ -228,7 +233,8 @@ public:
   SharedHandle<SocketCore> popPooledSocket
   (std::map<std::string, std::string>& options,
    const std::string& ipaddr,
-   uint16_t port);
+   uint16_t port,
+   const std::string& username);
 
   SharedHandle<SocketCore>
   popPooledSocket(const std::vector<std::string>& ipaddrs, uint16_t port);
@@ -237,7 +243,8 @@ public:
   popPooledSocket
   (std::map<std::string, std::string>& options,
    const std::vector<std::string>& ipaddrs,
-   uint16_t port);
+   uint16_t port,
+   const std::string& username);
 
   const SharedHandle<CookieStorage>& getCookieStorage() const
   {

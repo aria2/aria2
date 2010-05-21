@@ -119,6 +119,8 @@ public:
   {
     return _baseWorkingDir;
   }
+
+  const std::string& getUser() const;
 };
 
 } // namespace aria2
