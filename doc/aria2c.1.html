@@ -3192,7 +3192,8 @@ bitfield
   Hexadecimal representation of the download progress. The highest bit
   corresponds to piece index 0. The set bits indicate the piece is
   available and unset bits indicate the piece is missing. The spare
-  bits at the end are set to zero.
+  bits at the end are set to zero.  When download has not started yet,
+  this key will not be included in the response.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -4197,7 +4198,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-05-07 12:53:34 JST
+Last updated 2010-05-22 20:58:42 JST
 </div>
 </div>
 </body>

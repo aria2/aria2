@@ -1444,7 +1444,8 @@ bitfield::
   Hexadecimal representation of the download progress. The highest bit
   corresponds to piece index 0. The set bits indicate the piece is
   available and unset bits indicate the piece is missing. The spare
-  bits at the end are set to zero.
+  bits at the end are set to zero.  When download has not started yet,
+  this key will not be included in the response.
 
 downloadSpeed::
 

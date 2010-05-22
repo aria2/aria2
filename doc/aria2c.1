@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 05/07/2010
+.\"      Date: 05/22/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.9.3
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "05/07/2010" "Aria2 1\&.9\&.3" "Aria2 Manual"
+.TH "ARIA2C" "1" "05/22/2010" "Aria2 1\&.9\&.3" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -2696,7 +2696,7 @@ Uploaded length of this download in bytes\&.
 .PP
 bitfield
 .RS 4
-Hexadecimal representation of the download progress\&. The highest bit corresponds to piece index 0\&. The set bits indicate the piece is available and unset bits indicate the piece is missing\&. The spare bits at the end are set to zero\&.
+Hexadecimal representation of the download progress\&. The highest bit corresponds to piece index 0\&. The set bits indicate the piece is available and unset bits indicate the piece is missing\&. The spare bits at the end are set to zero\&. When download has not started yet, this key will not be included in the response\&.
 .RE
 .PP
 downloadSpeed

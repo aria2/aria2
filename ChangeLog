@@ -1,5 +1,10 @@
 2010-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* src/aria2c.1.txt
+
+2010-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added totalLength, completedLength, uploadLength, bitfield,
 	downloadSpeed, uploadSpeed, infoHash, numSeeders, pieceLength,
 	numPieces, connections and dir to the response of
