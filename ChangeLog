@@ -1,3 +1,16 @@
+2010-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added totalLength, completedLength, uploadLength, bitfield,
+	downloadSpeed, uploadSpeed, infoHash, numSeeders, pieceLength,
+	numPieces, connections and dir to the response of
+	aria2.tellStopped XML-RPC method.  aria2.tellWaiting now always
+	returns numSeeders for BitTorrent download.
+	* src/DownloadResult.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/XmlRpcMethodImpl.cc
+	* test/XmlRpcMethodTest.cc
+
 2010-05-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that connection pooling does not take into account

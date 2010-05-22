@@ -101,6 +101,7 @@
 # include "DHTEntryPointNameResolveCommand.h"
 # include "LongestSequencePieceSelector.h"
 # include "PriorityPieceSelector.h"
+# include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
@@ -850,7 +851,7 @@ void RequestGroup::decreaseNumCommand()
 }
 
 
-TransferStat RequestGroup::calculateStat()
+TransferStat RequestGroup::calculateStat() const
 {
   TransferStat stat;
 #ifdef ENABLE_BITTORRENT
@@ -859,7 +860,11 @@ TransferStat RequestGroup::calculateStat()
   }
 #endif // ENABLE_BITTORRENT
   if(!_segmentMan.isNull()) {
-    stat.setDownloadSpeed(stat.getDownloadSpeed()+_segmentMan->calculateDownloadSpeed());
+    stat.setDownloadSpeed
+      (stat.getDownloadSpeed()+_segmentMan->calculateDownloadSpeed());
+    stat.setSessionDownloadLength
+      (stat.getSessionDownloadLength()+
+       _segmentMan->calculateSessionDownloadLength());
   }
   return stat;
 }
@@ -1045,29 +1050,35 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
     _logger->debug("GID#%s - Creating DownloadResult.",
                    util::itos(_gid).c_str());
   }
-  uint64_t sessionDownloadLength = 0;
-
-#ifdef ENABLE_BITTORRENT
-  if(!_peerStorage.isNull()) {
-    sessionDownloadLength +=
-      _peerStorage->calculateStat().getSessionDownloadLength();
-  }
-#endif // ENABLE_BITTORRENT
-  if(!_segmentMan.isNull()) {
-    sessionDownloadLength +=
-      _segmentMan->calculateSessionDownloadLength();
-  }
+  TransferStat st = calculateStat();
   SharedHandle<DownloadResult> res(new DownloadResult());
   res->gid = _gid;
   res->fileEntries = _downloadContext->getFileEntries();
   res->inMemoryDownload = _inMemoryDownload;
-  res->sessionDownloadLength = sessionDownloadLength;
+  res->sessionDownloadLength = st.getSessionDownloadLength();
   res->sessionTime = _downloadContext->calculateSessionTime();
   res->result = downloadResult();
   res->followedBy = _followedByGIDs;
   res->belongsTo = _belongsToGID;
   res->option = _option;
   res->metadataInfo = _metadataInfo;
+  res->totalLength = getTotalLength();
+  res->completedLength = getCompletedLength();
+  res->uploadLength = st.getAllTimeUploadLength();
+  if(!_pieceStorage.isNull()) {
+    if(_pieceStorage->getBitfieldLength() > 0) {
+      res->bitfieldStr = util::toHex(_pieceStorage->getBitfield(),
+                                     _pieceStorage->getBitfieldLength());
+    }
+  }
+#ifdef ENABLE_BITTORRENT
+  if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
+    res->infoHashStr = bittorrent::getInfoHashString(_downloadContext);
+  }
+#endif // ENABLE_BITTORRENT
+  res->pieceLength = _downloadContext->getPieceLength();
+  res->numPieces = _downloadContext->getNumPieces();
+  res->dir = _downloadContext->getDir();
   return res;
 }
   

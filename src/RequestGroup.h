@@ -258,7 +258,7 @@ public:
     return _gid;
   }
 
-  TransferStat calculateStat();
+  TransferStat calculateStat() const;
 
   const SharedHandle<DownloadContext>& getDownloadContext() const
   {

@@ -88,6 +88,7 @@ const BDE BDE_REMOVED = BDE("removed");
 const BDE BDE_ERROR = BDE("error");
 const BDE BDE_COMPLETE = BDE("complete");
 const BDE BDE_USED = BDE("used");
+const BDE BDE_ZERO = BDE("0");
 
 const std::string KEY_GID = "gid";
 const std::string KEY_ERROR_CODE = "errorCode";
@@ -551,7 +552,7 @@ void gatherProgressCommon
   createFileEntry
     (files, dctx->getFileEntries().begin(), dctx->getFileEntries().end());
   entryDict[KEY_FILES] = files;
-  entryDict[KEY_DIR] = group->getOption()->get(PREF_DIR);
+  entryDict[KEY_DIR] = dctx->getDir();
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -596,7 +597,9 @@ static void gatherProgressBitTorrent
   BDE btDict = BDE::dict();
   gatherBitTorrentMetadata(btDict, torrentAttrs);
   entryDict[KEY_BITTORRENT] = btDict;
-  if(!btObject.isNull()) {
+  if(btObject.isNull()) {
+    entryDict[KEY_NUM_SEEDERS] = BDE_ZERO;
+  } else {
     SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
     assert(!peerStorage.isNull());
 
@@ -676,6 +679,22 @@ void gatherStoppedDownload
   BDE files = BDE::list();
   createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end());
   entryDict[KEY_FILES] = files;
+  entryDict[KEY_TOTAL_LENGTH] = util::uitos(ds->totalLength);
+  entryDict[KEY_COMPLETED_LENGTH] = util::uitos(ds->completedLength);
+  entryDict[KEY_UPLOAD_LENGTH] = util::uitos(ds->uploadLength);
+  if(!ds->bitfieldStr.empty()) {
+    entryDict[KEY_BITFIELD] = ds->bitfieldStr;
+  }
+  entryDict[KEY_DOWNLOAD_SPEED] = BDE_ZERO;
+  entryDict[KEY_UPLOAD_SPEED] = BDE_ZERO;
+  if(!ds->infoHashStr.empty()) {
+    entryDict[KEY_INFO_HASH] = ds->infoHashStr;
+    entryDict[KEY_NUM_SEEDERS] = BDE_ZERO;
+  }
+  entryDict[KEY_PIECE_LENGTH] = util::uitos(ds->pieceLength);
+  entryDict[KEY_NUM_PIECES] = util::uitos(ds->numPieces);
+  entryDict[KEY_CONNECTIONS] = BDE_ZERO;
+  entryDict[KEY_DIR] = ds->dir;
 }
 
 BDE GetFilesXmlRpcMethod::process

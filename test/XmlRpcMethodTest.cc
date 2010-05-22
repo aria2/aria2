@@ -696,7 +696,7 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0,"aria2.tar.bz2"));
   std::string uris[] = { "http://localhost/aria2.tar.bz2" };
   dctx->getFirstFileEntry()->addUris(vbegin(uris), vend(uris));
-
+  dctx->setDir(_option->get(PREF_DIR));
   SharedHandle<RequestGroup> group(new RequestGroup(_option));
   group->setDownloadContext(dctx);
   std::vector<SharedHandle<RequestGroup> > followedBy;

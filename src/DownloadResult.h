@@ -79,6 +79,22 @@ public:
   SharedHandle<Option> option;
 
   SharedHandle<MetadataInfo> metadataInfo;
+
+  uint64_t totalLength;
+
+  uint64_t completedLength;
+
+  uint64_t uploadLength;
+
+  std::string bitfieldStr;
+
+  std::string infoHashStr;
+
+  size_t pieceLength;
+
+  size_t numPieces;
+
+  std::string dir;
 };
 
 typedef SharedHandle<DownloadResult> DownloadResultHandle;
