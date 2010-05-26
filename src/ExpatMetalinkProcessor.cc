@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "ExpatMetalinkProcessor.h"
+
+#include <iostream>
+#include <fstream>
+
 #include "DefaultDiskWriter.h"
 #include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
@@ -129,13 +133,62 @@ static void mlCharacters(void* userData, const char* ch, int len)
   }
 }
 
+static XML_Parser createParser(const SharedHandle<SessionData>& sessionData)
+{
+  XML_Parser parser = XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'));
+  XML_SetUserData(parser, sessionData.get());
+  XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);
+  XML_SetCharacterDataHandler(parser, &mlCharacters);
+  return parser;
+}
+
+static void checkError(XML_Parser parser)
+{
+  if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+  }
+  SessionData* sessionData =
+    reinterpret_cast<SessionData*>(XML_GetUserData(parser));
+  const SharedHandle<MetalinkParserStateMachine>& stm = sessionData->_stm;
+  if(!stm->finished()) {
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+  }
+  if(!stm->getErrors().empty()) {
+    throw DL_ABORT_EX(stm->getErrorString());
+  }
+}
+
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(const std::string& filename)
 {
-  SharedHandle<DefaultDiskWriter> dw(new DefaultDiskWriter(filename));
-  dw->openExistingFile();
+  if(filename == DEV_STDIN) {
+    return parseFile(std::cin);
+  } else {
+    std::ifstream infile(filename.c_str(), std::ios::binary);
+    return parseFile(infile);
+  }
+}
 
-  return parseFromBinaryStream(dw);
+SharedHandle<Metalinker>
+MetalinkProcessor::parseFile(std::istream& stream)
+{
+  _stm.reset(new MetalinkParserStateMachine());
+  char buf[4096];
+
+  SharedHandle<SessionData> sessionData(new SessionData(_stm));
+  XML_Parser parser = createParser(sessionData);
+  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
+  while(stream) {
+    stream.read(buf, sizeof(buf));
+    if(XML_Parse(parser, buf, stream.gcount(), 0) == XML_STATUS_ERROR) {
+      throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    }
+  }
+  if(stream.bad()) {
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+  }
+  checkError(parser);
+  return _stm->getResult();
 }
          
 SharedHandle<Metalinker>
@@ -146,12 +199,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
   unsigned char buf[bufSize];
 
   SharedHandle<SessionData> sessionData(new SessionData(_stm));
-  XML_Parser parser = XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'));
-  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
-  XML_SetUserData(parser, sessionData.get());
-  XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);
-  XML_SetCharacterDataHandler(parser, &mlCharacters);
-
+  XML_Parser parser = createParser(sessionData);
   off_t readOffset = 0;
   while(1) {
     ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
@@ -164,15 +212,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
     }
     readOffset += res;
   }
-  if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
-  }
-  if(!_stm->finished()) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
-  }
-  if(!_stm->getErrors().empty()) {
-    throw DL_ABORT_EX(_stm->getErrorString());
-  }
+  checkError(parser);
   return _stm->getResult();
 }
 

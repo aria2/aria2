@@ -113,7 +113,7 @@ Metalink2RequestGroup::generate
   std::vector<SharedHandle<RequestGroup> > tempgroups;
   createRequestGroup(tempgroups, entries, option);
   SharedHandle<MetadataInfo> mi;
-  if(metalinkFile == "-") {
+  if(metalinkFile == DEV_STDIN) {
     mi.reset(new MetadataInfo());
   } else {
     mi.reset(new MetadataInfo(metalinkFile));

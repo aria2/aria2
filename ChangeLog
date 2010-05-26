@@ -1,3 +1,13 @@
+2010-05-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that feeding Metalink XML via pipe (-M- option) does
+	not work when aria2 is built with expat. Fixed the bug that when
+	Metalink XML is fed via pipe and --save-session is used, entry
+	"/dev/stdin" is saved in session file.
+	* src/ExpatMetalinkProcessor.cc
+	* src/ExpatMetalinkProcessor.h
+	* src/Metalink2RequestGroup.cc
+
 2010-05-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated doc

@@ -55,6 +55,8 @@ private:
 public:
   SharedHandle<Metalinker> parseFile(const std::string& filename);
 
+  SharedHandle<Metalinker> parseFile(std::istream& stream);
+
   SharedHandle<Metalinker> parseFromBinaryStream
   (const SharedHandle<BinaryStream>& binaryStream);
 };
