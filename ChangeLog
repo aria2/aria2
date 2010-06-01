@@ -1,3 +1,8 @@
+2010-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added _logger->info() guard
+	* src/IteratableChunkChecksumValidator.cc
+
 2010-05-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that feeding Metalink XML via pipe (-M- option) does

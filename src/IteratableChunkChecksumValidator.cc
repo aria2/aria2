@@ -86,11 +86,13 @@ void IteratableChunkChecksumValidator::validateChunk()
       if(actualChecksum == _dctx->getPieceHashes()[_currentIndex]) {
         _bitfield->setBit(_currentIndex);
       } else {
-        _logger->info(EX_INVALID_CHUNK_CHECKSUM,
-                      _currentIndex,
-                      util::itos(getCurrentOffset(), true).c_str(),
-                      _dctx->getPieceHashes()[_currentIndex].c_str(),
-                      actualChecksum.c_str());
+        if(_logger->info()) {
+          _logger->info(EX_INVALID_CHUNK_CHECKSUM,
+                        _currentIndex,
+                        util::itos(getCurrentOffset(), true).c_str(),
+                        _dctx->getPieceHashes()[_currentIndex].c_str(),
+                        actualChecksum.c_str());
+        }
         _bitfield->unsetBit(_currentIndex);
       }
     } catch(RecoverableException& ex) {
