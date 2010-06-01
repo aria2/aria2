@@ -233,39 +233,35 @@ bool HttpResponseCommand::handleDefaultEncoding
 
     return true;
   }
-
+  _requestGroup->loadAndOpenFile(infoFile);
+  File file(_requestGroup->getFirstFilePath());
+  // We have to make sure that command that has Request object must
+  // have segment after PieceStorage is initialized. See
+  // AbstractCommand::execute()
+  SharedHandle<Segment> segment =
+    _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+  // pipelining requires implicit range specified. But the request for
+  // this response most likely dones't contains range header. This means
+  // we can't continue to use this socket because server sends all entity
+  // body instead of a segment.
+  // Therefore, we shutdown the socket here if pipelining is enabled.
   DownloadCommand* command = 0;
-  try {
-    _requestGroup->loadAndOpenFile(infoFile);
-    File file(_requestGroup->getFirstFilePath());
-
-    // We have to make sure that command that has Request object must
-    // have segment after PieceStorage is initialized. See
-    // AbstractCommand::execute()
-    SharedHandle<Segment> segment =
-      _requestGroup->getSegmentMan()->getSegment(cuid, 0);
-    // pipelining requires implicit range specified. But the request for
-    // this response most likely dones't contains range header. This means
-    // we can't continue to use this socket because server sends all entity
-    // body instead of a segment.
-    // Therefore, we shutdown the socket here if pipelining is enabled.
-    if(req->getMethod() == Request::METHOD_GET &&
-       !segment.isNull() && segment->getPositionToWrite() == 0 &&
-       !req->isPipeliningEnabled()) {
-      command = createHttpDownloadCommand
-        (httpResponse, getTransferEncodingDecoder(httpResponse));
-    } else {
-      _requestGroup->getSegmentMan()->cancelSegment(cuid);
-      _fileEntry->poolRequest(req);
-    }
-    prepareForNextAction(command);
-    if(req->getMethod() == Request::METHOD_HEAD) {
-      poolConnection();
-      req->setMethod(Request::METHOD_GET);
-    }
-  } catch(Exception& e) {
-    delete command;
-    throw;
+  if(req->getMethod() == Request::METHOD_GET &&
+     !segment.isNull() && segment->getPositionToWrite() == 0 &&
+     !req->isPipeliningEnabled()) {
+    command = createHttpDownloadCommand
+      (httpResponse, getTransferEncodingDecoder(httpResponse));
+  } else {
+    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+    _fileEntry->poolRequest(req);
+  }
+  // After command is passed to prepareForNextAction(), it is managed
+  // by CheckIntegrityEntry.
+  prepareForNextAction(command);
+  command = 0;
+  if(req->getMethod() == Request::METHOD_HEAD) {
+    poolConnection();
+    req->setMethod(Request::METHOD_GET);
   }
   return true;
 }

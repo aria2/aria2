@@ -1,5 +1,13 @@
 2010-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed double memory free when Exception raised from
+	AbstractCommand::prepareForNextAction() called by
+	HttpResponseCommand::handleDefaultEncoding().
+	* src/AbstractCommand.cc
+	* src/HttpResponseCommand.cc
+
+2010-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added _logger->info() guard
 	* src/IteratableChunkChecksumValidator.cc
 

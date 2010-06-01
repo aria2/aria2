@@ -697,6 +697,9 @@ std::string AbstractCommand::resolveHostname
   return ipaddr;
 }
 
+// nextCommand is going to be managed by CheckIntegrityEntry which is
+// created in side this function. Don't release nextCommand after this
+// function call.
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
   SharedHandle<CheckIntegrityEntry> entry
