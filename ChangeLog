@@ -1,5 +1,11 @@
 2010-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.9.4
+	* configure.ac
+	* doc/aria2c.1.txt
+
+2010-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't throw exception when Metalink document is empty(no file
 	element).  It is a valid Metalink document anyway.
 	* src/MetalinkHelper.cc
