@@ -1,5 +1,12 @@
 2010-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't throw exception when Metalink document is empty(no file
+	element).  It is a valid Metalink document anyway.
+	* src/MetalinkHelper.cc
+	* src/download_helper.cc
+
+2010-06-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed double memory free when Exception raised from
 	AbstractCommand::prepareForNextAction() called by
 	HttpResponseCommand::handleDefaultEncoding().

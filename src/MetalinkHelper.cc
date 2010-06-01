@@ -71,9 +71,6 @@ void MetalinkHelper::query
 (std::vector<SharedHandle<MetalinkEntry> >& result,
  const SharedHandle<Metalinker>& metalinker, const Option* option)
 {
-  if(metalinker->entries.empty()) {
-    throw DL_ABORT_EX("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
   metalinker->queryEntry(result,
                          option->get(PREF_METALINK_VERSION),
                          option->get(PREF_METALINK_LANGUAGE),

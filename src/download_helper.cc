@@ -329,9 +329,6 @@ void createRequestGroupForMetalink
     dw->setString(metalinkData);
     Metalink2RequestGroup().generate(result, dw, option);
   }
-  if(result.empty()) {
-    throw DL_ABORT_EX(MSG_NO_FILES_TO_DOWNLOAD);
-  }
 }
 #endif // ENABLE_METALINK
 
