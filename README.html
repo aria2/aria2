@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.5.1" />
+<meta name="generator" content="AsciiDoc 8.5.2" />
 <title>aria2 - The ultra fast download utility</title>
 <style type="text/css">
 /* Debug borders */
@@ -118,12 +118,14 @@ div#preamble {
 div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
 div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
 div.admonitionblock {
-  margin-top: 0.25em;
+  margin-top: 1.0em;
   margin-bottom: 1.5em;
 }
 div.admonitionblock {
-  margin-top: 2.5em;
-  margin-bottom: 2.5em;
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
 }
 
 div.content { /* Block element content. */
@@ -165,19 +167,19 @@ div.listingblock > div.content {
   padding: 0.5em;
 }
 
-div.quoteblock {
-  padding-left: 2.0em;
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
   margin-right: 10%;
+  border-left: 5px solid #dddddd;
+  color: #777777;
 }
+
 div.quoteblock > div.attribution {
   padding-top: 0.5em;
   text-align: right;
 }
 
-div.verseblock {
-  padding-left: 2.0em;
-  margin-right: 10%;
-}
 div.verseblock > div.content {
   white-space: pre;
 }
@@ -200,12 +202,12 @@ div.admonitionblock .icon {
 }
 div.admonitionblock td.content {
   padding-left: 0.5em;
-  border-left: 2px solid silver;
+  border-left: 3px solid #dddddd;
 }
 
 div.exampleblock > div.content {
-  border-left: 2px solid silver;
-  padding: 0.5em;
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
 }
 
 div.imageblock div.content { padding-left: 0; }
@@ -255,7 +257,7 @@ div.compact div, div.compact div {
 div.tableblock > table {
   border: 3px solid #527bbd;
 }
-thead {
+thead, p.table.header {
   font-family: sans-serif;
   font-weight: bold;
 }
@@ -342,6 +344,10 @@ span.footnote, span.footnoteref {
   div#footer-badges { display: none; }
 }
 
+div#toc {
+  margin-bottom: 2.5em;
+}
+
 div#toctitle {
   color: #527bbd;
   font-family: sans-serif;
@@ -402,7 +408,7 @@ div.verseblock-attribution {
 }
 
 div.exampleblock-content {
-  border-left: 2px solid silver;
+  border-left: 3px solid #dddddd;
   padding-left: 0.5em;
 }
 
@@ -461,8 +467,9 @@ toc: function (toclevels) {
       for (var i = el.firstChild; i != null; i = i.nextSibling) {
         if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
           var mo = re.exec(i.tagName);
-          if (mo)
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
             result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
           iterate(i);
         }
       }
@@ -746,7 +753,7 @@ Parameterized URI support
 width="100%"
 frame="border"
 cellspacing="0" cellpadding="4">
-<caption class="title">Table 1: External Library Dependency</caption>
+<caption class="title">Table 1. External Library Dependency</caption>
 <col width="50%" />
 <col width="50%" />
 <thead>
@@ -1038,13 +1045,18 @@ man aria2c
 <a href="http://sourceforge.net/apps/trac/aria2/wiki">http://sourceforge.net/apps/trac/aria2/wiki</a>
 </p>
 </li>
+<li>
+<p>
+<a href="http://www.rfc-editor.org/rfc/rfc5854.txt">http://www.rfc-editor.org/rfc/rfc5854.txt</a>
+</p>
+</li>
 </ul></div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-03-13 00:29:44 JST
+Last updated 2010-06-02 21:11:14 JST
 </div>
 </div>
 </body>

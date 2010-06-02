@@ -2220,6 +2220,8 @@ aria2 Wiki: http://sourceforge.net/apps/trac/aria2/wiki
 
 Metalink Homepage: http://www.metalinker.org/
 
+The Metalink Download Description Format: http://www.rfc-editor.org/rfc/rfc5854.txt
+
 COPYRIGHT
 ---------
 Copyright (C) 2006, 2010 Tatsuhiro Tsujikawa
