@@ -75,10 +75,20 @@ extern volatile sig_atomic_t globalHaltRequested;
 } // namespace global
 
 static void handler(int signal) {
-  if(global::globalHaltRequested == 0) {
-    global::globalHaltRequested = 1;
-  } else if(global::globalHaltRequested == 2) {
-    global::globalHaltRequested = 3;
+  if(
+#ifdef SIGHUP
+     signal == SIGHUP ||
+#endif // SIGHUP
+     signal == SIGTERM) {
+    if(global::globalHaltRequested == 0 || global::globalHaltRequested == 2) {
+      global::globalHaltRequested = 3;
+    }
+  } else {
+    if(global::globalHaltRequested == 0) {
+      global::globalHaltRequested = 1;
+    } else if(global::globalHaltRequested == 2) {
+      global::globalHaltRequested = 3;
+    }
   }
 }
 

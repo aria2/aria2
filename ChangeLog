@@ -1,5 +1,11 @@
 2010-06-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Treat SIGHUP and SIGTERM signal as emergency shutdown because they
+	are usually issued by system or other process.
+	* src/MultiUrlRequestInfo.cc
+
+2010-06-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use downloadresultcode::IN_PROGRESS for
 	RequestGroup::SHUTDOWN_SIGNAL.
 	* src/RequestGroup.cc
