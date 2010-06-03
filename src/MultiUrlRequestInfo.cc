@@ -126,10 +126,11 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!_option->blank(PREF_LOAD_COOKIES)) {
       File cookieFile(_option->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile()) {
-        e->getCookieStorage()->load(_option->get(PREF_LOAD_COOKIES));
+        e->getCookieStorage()->load(cookieFile.getPath());
+        _logger->info("Loaded cookies from '%s'.",
+                      cookieFile.getPath().c_str());
       } else {
-        _logger->error(MSG_LOADING_COOKIE_FAILED,
-                       _option->get(PREF_LOAD_COOKIES).c_str());
+        _logger->error(MSG_LOADING_COOKIE_FAILED, cookieFile.getPath().c_str());
       }
     }
 
@@ -212,10 +213,13 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     SessionSerializer sessionSerializer(e->_requestGroupMan);
     // TODO Add option: --save-session-status=error,inprogress,waiting
     if(!_option->blank(PREF_SAVE_SESSION)) {
-      if(sessionSerializer.save(_option->get(PREF_SAVE_SESSION))) {
-        _logger->notice("Serialized session successfully.");
+      const std::string& filename = _option->get(PREF_SAVE_SESSION);
+      if(sessionSerializer.save(filename)) {
+        _logger->notice("Serialized session to '%s' successfully.",
+                        filename.c_str());
       } else {
-        _logger->notice("Failed to serialize session.");
+        _logger->notice("Failed to serialize session to '%s'.",
+                        filename.c_str());
       }
     }
   } catch(RecoverableException& e) {
