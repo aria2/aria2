@@ -174,8 +174,17 @@ MetalinkProcessor::parseFile(const std::string& filename)
 {
   _stm.reset(new MetalinkParserStateMachine());
   SharedHandle<SessionData> sessionData(new SessionData(_stm));
+  // Old libxml2(at least 2.7.6, Ubuntu 10.04LTS) does not read stdin
+  // when "/dev/stdin" is passed as filename while 2.7.7 does. So we
+  // convert DEV_STDIN to "-" for compatibility.
+  std::string nfilename;
+  if(filename == DEV_STDIN) {
+    nfilename = "-";
+  } else {
+    nfilename = filename;
+  }
   int retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
-                                   filename.c_str());
+                                   nfilename.c_str());
   if(retval != 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }

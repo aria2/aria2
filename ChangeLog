@@ -1,5 +1,11 @@
 2010-06-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that reading Metalink from pipe fails on older
+	libxml2. It only accepts "-" as a special keyword to read stdin.
+	* src/XML2SAXMetalinkProcessor.cc
+
+2010-06-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added log message when cookies are loaded.  Added filename to log
 	message when serializing session.
 	* src/MultiUrlRequestInfo.cc
