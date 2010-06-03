@@ -226,7 +226,7 @@ void DownloadEngine::afterEachIteration()
     setRefreshInterval(0);
   } else if(global::globalHaltRequested == 3) {
     logger->notice(_("Emergency shutdown sequence commencing..."));
-    _requestGroupMan->forceHalt();
+    requestForceHalt();
     global::globalHaltRequested = 4;
     setNoWait(true);
     setRefreshInterval(0);

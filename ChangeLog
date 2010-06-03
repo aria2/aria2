@@ -1,3 +1,8 @@
+2010-06-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Call requestForceHalt() instead of _requestGroupMan->forceHalt().
+	* src/DownloadEngine.cc
+
 2010-06-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Mentioned RFC 5854 in README and man page.
