@@ -175,7 +175,8 @@ downloadresultcode::RESULT RequestGroup::downloadResult() const
     return downloadresultcode::FINISHED;
   else {
     if (_lastUriResult.isNull()) {
-      if(_haltReason == RequestGroup::USER_REQUEST) {
+      if(_haltReason == RequestGroup::USER_REQUEST ||
+         _haltReason == RequestGroup::SHUTDOWN_SIGNAL) {
         return downloadresultcode::IN_PROGRESS;
       } else {
         return downloadresultcode::UNKNOWN_ERROR;

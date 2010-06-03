@@ -1,5 +1,11 @@
 2010-06-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use downloadresultcode::IN_PROGRESS for
+	RequestGroup::SHUTDOWN_SIGNAL.
+	* src/RequestGroup.cc
+
+2010-06-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call requestForceHalt() instead of _requestGroupMan->forceHalt().
 	* src/DownloadEngine.cc
 
