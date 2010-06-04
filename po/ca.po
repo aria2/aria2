@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-04-26 23:00+0900\n"
+"POT-Creation-Date: 2010-06-04 22:15+0900\n"
 "PO-Revision-Date: 2009-11-02 23:14+0900\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,11 +29,11 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Començant la seqüència d'aturada d'emergència."
 
-#: src/MultiUrlRequestInfo.cc:103
+#: src/MultiUrlRequestInfo.cc:113
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 continuarà la descàrrega si es torna a arrancar la transferència"
 
-#: src/MultiUrlRequestInfo.cc:105
+#: src/MultiUrlRequestInfo.cc:115
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -525,8 +526,8 @@ msgid ""
 "                              You can find the file index using the\n"
 "                              --show-files option. Multiple indexes can be\n"
 "                              specified by using ',', for example: \"3,6\".\n"
-"                              You can also use '-' to specify a range: \"1-5"
-"\".\n"
+"                              You can also use '-' to specify a range: "
+"\"1-5\".\n"
 "                              ',' and '-' can be used together.\n"
 "                              When used with the -M option, index may vary\n"
 "                              depending on the query(see --metalink-* "
@@ -1891,8 +1892,8 @@ msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
-"El nom del fitxer demanat i l'anotat prèviament no son el mateix. Esperàvem:%"
-"s Actual:%s"
+"El nom del fitxer demanat i l'anotat prèviament no son el mateix. Esperàvem:"
+"%s Actual:%s"
 
 #: src/message.h:202
 #, c-format
@@ -2106,8 +2107,8 @@ msgstr "Fitxer %s existeix, però %s no existeix."
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
-"La mida de càrrega útil (payload) és incorrecte per %s, mida=%d. Ha de ser %"
-"d."
+"La mida de càrrega útil (payload) és incorrecte per %s, mida=%d. Ha de ser "
+"%d."
 
 #: src/message.h:248
 #, c-format
@@ -2117,8 +2118,8 @@ msgstr "Incorrecte ID=%d per %s. Ha de ser %d."
 #: src/message.h:249
 #, c-format
 msgid ""
-"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
-"s, actualHash=%s"
+"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash="
+"%s, actualHash=%s"
 msgstr ""
 "Ha fallat la validació de la suma de comprovació del tros. "
 "índexSumaComprovació=%d, desviació=%s, HashEsperat=%s, HashActual=%s"
@@ -2199,8 +2200,8 @@ msgstr ""
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
-"Longitud de fitxer incorrecte. No es pot continuar la descàrrega %s: local %"
-"s, remot %s"
+"Longitud de fitxer incorrecte. No es pot continuar la descàrrega %s: local "
+"%s, remot %s"
 
 #: src/BtSetup.cc:171
 msgid "Errors occurred while binding port.\n"
@@ -2290,8 +2291,8 @@ msgstr "Han ocorregut errors mentre agafàvem el port.\n"
 #~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 #~ "blockIndex=%d"
 #~ msgstr ""
-#~ "CUID#%d - Peça rebuda. índex=%d, començament=%d, longitud=%d, desviació=%"
-#~ "llu, bloc-índex=%d"
+#~ "CUID#%d - Peça rebuda. índex=%d, començament=%d, longitud=%d, desviació="
+#~ "%llu, bloc-índex=%d"
 
 #~ msgid "CUID#%d - Piece bitfield %s"
 #~ msgstr "CUID#%d - Camp de bits de la peça %s"

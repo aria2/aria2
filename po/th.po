@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-04-26 23:00+0900\n"
+"POT-Creation-Date: 2010-06-04 22:15+0900\n"
 "PO-Revision-Date: 2007-12-29 20:22+0000\n"
 "Last-Translator: pruet <Unknown>\n"
 "Language-Team: Thai <th@li.org>\n"
+"Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,11 +27,11 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:103
+#: src/MultiUrlRequestInfo.cc:113
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:105
+#: src/MultiUrlRequestInfo.cc:115
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -478,8 +479,8 @@ msgid ""
 "                              You can find the file index using the\n"
 "                              --show-files option. Multiple indexes can be\n"
 "                              specified by using ',', for example: \"3,6\".\n"
-"                              You can also use '-' to specify a range: \"1-5"
-"\".\n"
+"                              You can also use '-' to specify a range: "
+"\"1-5\".\n"
 "                              ',' and '-' can be used together.\n"
 "                              When used with the -M option, index may vary\n"
 "                              depending on the query(see --metalink-* "
@@ -2018,8 +2019,8 @@ msgstr ""
 #: src/message.h:249
 #, c-format
 msgid ""
-"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
-"s, actualHash=%s"
+"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash="
+"%s, actualHash=%s"
 msgstr ""
 
 #: src/message.h:250
