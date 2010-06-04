@@ -1,3 +1,55 @@
+aria2 1.9.4
+===========
+
+Release Note
+------------
+
+This release fixes the bug that connection reuse on FTP does not work
+if FTP server changes root directory based on account. It also fixes
+the bug that reading Metalink document from pipe (-M- option) does not
+work when aria2 is built with expat or old libxml2(2.7.6 or
+earlier). Now aria2 does not emit error if given Metalink document is
+empty(no file element).  The response of aria2.tellStopped XML-RPC
+method now has more information: totalLength, completedLength,
+uploadLength, bitfield and so on.
+
+Changes
+-------
+
+ * Fixed the bug that reading Metalink from pipe fails on older
+   libxml2. It only accepts "-" as a special keyword to read stdin.
+
+ * Added log message when cookies are loaded.  Added filename to log
+   message when serializing session.
+
+ * Treat SIGHUP and SIGTERM signal as emergency shutdown because they
+   are usually issued by system or other process.
+
+ * Don't throw exception when Metalink document is empty(no file
+   element).  It is a valid Metalink document anyway.
+
+ * Fixed the bug that feeding Metalink XML via pipe (-M- option) does
+   not work when aria2 is built with expat. Fixed the bug that when
+   Metalink XML is fed via pipe and --save-session is used, entry
+   "/dev/stdin" is saved in session file.
+
+ * Added totalLength, completedLength, uploadLength, bitfield,
+   downloadSpeed, uploadSpeed, infoHash, numSeeders, pieceLength,
+   numPieces, connections and dir to the response of aria2.tellStopped
+   XML-RPC method.  aria2.tellWaiting now always returns numSeeders
+   for BitTorrent download.
+
+ * Fixed the bug that connection pooling does not take into account
+   proxy.  This means that when connection A via proxy X is pooled, it
+   will be wrongly reused in the download using proxy Y.
+
+ * Fixed the bug that FTP download may fail when control connection is
+   reused. This happens because FTP server can offer different root
+   directory for different account. If pooled connections has
+   different root directory, then download will fail.
+
+
+
 aria2 1.9.3
 ===========
 
