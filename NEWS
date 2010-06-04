@@ -16,6 +16,9 @@ uploadLength, bitfield and so on.
 Changes
 -------
 
+ * Updated Italian translation. Added Korean translation.  Thanks to
+   all translators.
+
  * Fixed the bug that reading Metalink from pipe fails on older
    libxml2. It only accepts "-" as a special keyword to read stdin.
 
