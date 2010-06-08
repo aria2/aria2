@@ -101,7 +101,7 @@ bool DHTEntryPointNameResolveCommand::execute()
             return false;
           }
         } catch(RecoverableException& e) {
-          logger->error(EX_EXCEPTION_CAUGHT, e);
+          getLogger()->error(EX_EXCEPTION_CAUGHT, e);
         }
         _resolver->reset();
         _entryPoints.pop_front();
@@ -122,22 +122,24 @@ bool DHTEntryPointNameResolveCommand::execute()
             _resolvedEntryPoints.push_back(p);
             addPingTask(p);
           } catch(RecoverableException& e) {
-            logger->error(EX_EXCEPTION_CAUGHT, e);
+            getLogger()->error(EX_EXCEPTION_CAUGHT, e);
           }
           _entryPoints.pop_front();
         }
       }
     if(_bootstrapEnabled && _resolvedEntryPoints.size()) {
-      _taskQueue->addPeriodicTask1(_taskFactory->createNodeLookupTask(_localNode->getID()));
+      _taskQueue->addPeriodicTask1(_taskFactory->createNodeLookupTask
+                                   (_localNode->getID()));
       _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
     }
   } catch(RecoverableException& e) {
-    logger->error(EX_EXCEPTION_CAUGHT, e);
+    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
   }
   return true;
 }
 
-void DHTEntryPointNameResolveCommand::addPingTask(const std::pair<std::string, uint16_t>& addr)
+void DHTEntryPointNameResolveCommand::addPingTask
+(const std::pair<std::string, uint16_t>& addr)
 {
   SharedHandle<DHTNode> entryNode(new DHTNode());
   entryNode->setIPAddress(addr.first);
@@ -154,26 +156,26 @@ bool DHTEntryPointNameResolveCommand::resolveHostname
 {
   switch(resolver->getStatus()) {
   case AsyncNameResolver::STATUS_READY:
-    if(logger->info()) {
-      logger->info(MSG_RESOLVING_HOSTNAME,
-                   util::itos(cuid).c_str(), hostname.c_str());
+    if(getLogger()->info()) {
+      getLogger()->info(MSG_RESOLVING_HOSTNAME,
+                        util::itos(getCuid()).c_str(), hostname.c_str());
     }
     resolver->resolve(hostname);
     setNameResolverCheck(resolver);
     return false;
   case AsyncNameResolver::STATUS_SUCCESS:
-    if(logger->info()) {
-      logger->info(MSG_NAME_RESOLUTION_COMPLETE,
-                   util::itos(cuid).c_str(),
-                   resolver->getHostname().c_str(),
-                   resolver->getResolvedAddresses().front().c_str());
+    if(getLogger()->info()) {
+      getLogger()->info(MSG_NAME_RESOLUTION_COMPLETE,
+                        util::itos(getCuid()).c_str(),
+                        resolver->getHostname().c_str(),
+                        resolver->getResolvedAddresses().front().c_str());
     }
     return true;
     break;
   case AsyncNameResolver::STATUS_ERROR:
     throw DL_ABORT_EX
       (StringFormat(MSG_NAME_RESOLUTION_FAILED,
-                    util::itos(cuid).c_str(),
+                    util::itos(getCuid()).c_str(),
                     hostname.c_str(),
                     resolver->getError().c_str()).str());
   default:
@@ -199,22 +201,26 @@ void DHTEntryPointNameResolveCommand::setBootstrapEnabled(bool f)
   _bootstrapEnabled = f;
 }
 
-void DHTEntryPointNameResolveCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
+void DHTEntryPointNameResolveCommand::setTaskQueue
+(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
 
-void DHTEntryPointNameResolveCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
+void DHTEntryPointNameResolveCommand::setTaskFactory
+(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
 }
 
-void DHTEntryPointNameResolveCommand::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
+void DHTEntryPointNameResolveCommand::setRoutingTable
+(const SharedHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
 
-void DHTEntryPointNameResolveCommand::setLocalNode(const SharedHandle<DHTNode>& localNode)
+void DHTEntryPointNameResolveCommand::setLocalNode
+(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }

@@ -70,7 +70,7 @@ bool FillRequestGroupCommand::execute()
       rgman->clearQueueCheck();
       rgman->fillRequestGroupFromReserver(_e);
     } catch(RecoverableException& ex) {
-      logger->error(EX_EXCEPTION_CAUGHT, ex);
+      getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
       // Re-request queue check to fulfill the requests of all
       // downloads, some might come after this exception.
       rgman->requestQueueCheck();

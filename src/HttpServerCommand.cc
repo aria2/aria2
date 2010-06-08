@@ -111,7 +111,7 @@ bool HttpServerCommand::execute()
                                   "WWW-Authenticate: Basic realm=\"aria2\"",
                                   "","text/html");
         Command* command =
-          new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
+          new HttpServerResponseCommand(getCuid(), _httpServer, _e, _socket);
         _e->addCommand(command);
         _e->setNoWait(true);
         return true;
@@ -119,20 +119,20 @@ bool HttpServerCommand::execute()
       if(static_cast<uint64_t>
          (_e->getOption()->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
          _httpServer->getContentLength()) {
-        logger->info("Request too long. ContentLength=%s."
-                     " See --xml-rpc-max-request-size option to loose"
-                     " this limitation.",
-                     util::uitos(_httpServer->getContentLength()).c_str());
+        getLogger()->info("Request too long. ContentLength=%s."
+                          " See --xml-rpc-max-request-size option to loose"
+                          " this limitation.",
+                          util::uitos(_httpServer->getContentLength()).c_str());
         return true;
       }
-      Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
+      Command* command = new HttpServerBodyCommand(getCuid(), _httpServer, _e,
                                                    _socket);
       _e->addCommand(command);
       _e->setNoWait(true);
       return true;
     } else {
       if(_timeoutTimer.difference(global::wallclock) >= 30) {
-        logger->info("HTTP request timeout.");
+        getLogger()->info("HTTP request timeout.");
         return true;
       } else {
         _e->addCommand(this);
@@ -140,9 +140,9 @@ bool HttpServerCommand::execute()
       }
     }
   } catch(RecoverableException& e) {
-    if(logger->info()) {
-      logger->info("CUID#%s - Error occurred while reading HTTP request",
-                   e, util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info("CUID#%s - Error occurred while reading HTTP request",
+                        e, util::itos(getCuid()).c_str());
     }
     return true;
   }

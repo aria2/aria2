@@ -115,7 +115,8 @@ bool HttpResponseCommand::executeInternal()
   req->supportsPersistentConnection
     (httpResponse->supportsPersistentConnection());
   if(req->isPipeliningEnabled()) {
-    req->setMaxPipelinedRequest(getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
+    req->setMaxPipelinedRequest
+      (getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
   }
 
   if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
@@ -181,8 +182,8 @@ bool HttpResponseCommand::executeInternal()
                                    getTransferEncodingDecoder(httpResponse),
                                    getContentEncodingDecoder(httpResponse)));
     } else {
-      e->addCommand(createHttpDownloadCommand(httpResponse,
-                                                      getTransferEncodingDecoder(httpResponse)));
+      e->addCommand(createHttpDownloadCommand
+                    (httpResponse, getTransferEncodingDecoder(httpResponse)));
     }
     return true;
   }
@@ -226,13 +227,16 @@ bool HttpResponseCommand::handleDefaultEncoding
     return true;
   }
 
-  BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), getOption().get()));
+  BtProgressInfoFileHandle infoFile
+    (new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(),
+                                   _requestGroup->getPieceStorage(),
+                                   getOption().get()));
   if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
     _requestGroup->getPieceStorage()->markAllPiecesDone();
 
-    logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                   util::itos(_requestGroup->getGID()).c_str(),
-                   _requestGroup->getFirstFilePath().c_str());
+    getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                        util::itos(_requestGroup->getGID()).c_str(),
+                        _requestGroup->getFirstFilePath().c_str());
 
     return true;
   }
@@ -242,7 +246,7 @@ bool HttpResponseCommand::handleDefaultEncoding
   // have segment after PieceStorage is initialized. See
   // AbstractCommand::execute()
   SharedHandle<Segment> segment =
-    _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+    _requestGroup->getSegmentMan()->getSegment(getCuid(), 0);
   // pipelining requires implicit range specified. But the request for
   // this response most likely dones't contains range header. This means
   // we can't continue to use this socket because server sends all entity
@@ -255,7 +259,7 @@ bool HttpResponseCommand::handleDefaultEncoding
     command = createHttpDownloadCommand
       (httpResponse, getTransferEncodingDecoder(httpResponse));
   } else {
-    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+    _requestGroup->getSegmentMan()->cancelSegment(getCuid());
     _fileEntry->poolRequest(req);
   }
   // After command is passed to prepareForNextAction(), it is managed
@@ -326,9 +330,9 @@ bool HttpResponseCommand::handleOtherEncoding
     _requestGroup->initPieceStorage();
     _requestGroup->getPieceStorage()->markAllPiecesDone();
 
-    logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                   util::itos(_requestGroup->getGID()).c_str(),
-                   _requestGroup->getFirstFilePath().c_str());
+    getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                        util::itos(_requestGroup->getGID()).c_str(),
+                        _requestGroup->getFirstFilePath().c_str());
 
     poolConnection();
     return true;
@@ -348,7 +352,7 @@ bool HttpResponseCommand::handleOtherEncoding
   // We have to make sure that command that has Request object must
   // have segment after PieceStorage is initialized. See
   // AbstractCommand::execute()
-  _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+  _requestGroup->getSegmentMan()->getSegment(getCuid(), 0);
 
   e->addCommand
     (createHttpDownloadCommand(httpResponse,
@@ -365,7 +369,8 @@ bool HttpResponseCommand::skipResponseBody
   // thrown away.
 
   HttpSkipResponseCommand* command = new HttpSkipResponseCommand
-    (cuid, req, _fileEntry, _requestGroup, httpConnection, httpResponse, e, socket);
+    (getCuid(), req, _fileEntry, _requestGroup, httpConnection, httpResponse,
+     e, socket);
   command->setTransferEncodingDecoder(decoder);
 
   // If request method is HEAD or the response body is zero-length,
@@ -390,7 +395,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 {
 
   HttpDownloadCommand* command =
-    new HttpDownloadCommand(cuid, req, _fileEntry, _requestGroup,
+    new HttpDownloadCommand(getCuid(), req, _fileEntry, _requestGroup,
                             httpResponse, httpConnection, e, socket);
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit

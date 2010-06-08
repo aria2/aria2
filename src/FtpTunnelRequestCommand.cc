@@ -58,7 +58,7 @@ FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
 Command* FtpTunnelRequestCommand::getNextCommand()
 {
   return new FtpTunnelResponseCommand
-    (cuid, req, _fileEntry, _requestGroup, httpConnection, e, socket);
+    (getCuid(), req, _fileEntry, _requestGroup, httpConnection, e, socket);
 }
 
 } // namespace aria2

@@ -94,17 +94,18 @@ bool LpdReceiveMessageCommand::execute()
     SharedHandle<DownloadContext> dctx =
       reg->getDownloadContext(m->getInfoHash());
     if(dctx.isNull()) {
-      if(logger->debug()) {
-        logger->debug("Download Context is null for infohash=%s.",
-                      util::toHex(m->getInfoHash()).c_str());
+      if(getLogger()->debug()) {
+        getLogger()->debug("Download Context is null for infohash=%s.",
+                           util::toHex(m->getInfoHash()).c_str());
       }
       continue;
     }
     const BDE& torrentAttrs = dctx->getAttribute(bittorrent::BITTORRENT);
     if(torrentAttrs.containsKey(bittorrent::PRIVATE)) {
       if(torrentAttrs[bittorrent::PRIVATE].i() == 1) {
-        if(logger->debug()) {
-          logger->debug("Ignore LPD message because the torrent is private.");
+        if(getLogger()->debug()) {
+          getLogger()->debug
+            ("Ignore LPD message because the torrent is private.");
         }
         continue;
       }
@@ -117,16 +118,16 @@ bool LpdReceiveMessageCommand::execute()
     assert(!peerStorage.isNull());
     SharedHandle<Peer> peer = m->getPeer();
     if(peerStorage->addPeer(peer)) {
-      if(logger->debug()) {
-        logger->debug("LPD peer %s:%u local=%d added.",
-                      peer->ipaddr.c_str(), peer->port,
-                      peer->isLocalPeer()?1:0);
+      if(getLogger()->debug()) {
+        getLogger()->debug("LPD peer %s:%u local=%d added.",
+                           peer->ipaddr.c_str(), peer->port,
+                           peer->isLocalPeer()?1:0);
       }
     } else {
-      if(logger->debug()) {
-        logger->debug("LPD peer %s:%u local=%d not added.",
-                      peer->ipaddr.c_str(), peer->port,
-                      peer->isLocalPeer()?1:0);
+      if(getLogger()->debug()) {
+        getLogger()->debug("LPD peer %s:%u local=%d not added.",
+                           peer->ipaddr.c_str(), peer->port,
+                           peer->isLocalPeer()?1:0);
       }
     }
   }

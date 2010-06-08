@@ -101,14 +101,14 @@ bool InitiateConnectionCommand::executeInternal() {
     // TODO ipaddr might not be used if pooled sockt was found.
     e->markBadIPAddress(hostname, ipaddr, port);
     if(!e->findCachedIPAddress(hostname, port).empty()) {
-      if(logger->info()) {
-        logger->info(EX_EXCEPTION_CAUGHT, ex);
-        logger->info(MSG_CONNECT_FAILED_AND_RETRY,
-                     util::itos(cuid).c_str(), ipaddr.c_str(), port);
+      if(getLogger()->info()) {
+        getLogger()->info(EX_EXCEPTION_CAUGHT, ex);
+        getLogger()->info(MSG_CONNECT_FAILED_AND_RETRY,
+                          util::itos(getCuid()).c_str(), ipaddr.c_str(), port);
       }
       Command* command =
         InitiateConnectionCommandFactory::createInitiateConnectionCommand
-        (cuid, req, _fileEntry, _requestGroup, e);
+        (getCuid(), req, _fileEntry, _requestGroup, e);
       e->setNoWait(true);
       e->addCommand(command);
       return true;

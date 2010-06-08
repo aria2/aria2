@@ -99,7 +99,7 @@ bool HttpServerBodyCommand::execute()
           std::string responseData = res.toXml(gzip);
           _httpServer->feedResponse(responseData, "text/xml");
           Command* command =
-            new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
+            new HttpServerResponseCommand(getCuid(), _httpServer, _e, _socket);
           _e->addCommand(command);
           _e->setNoWait(true);
           return true;
@@ -112,7 +112,7 @@ bool HttpServerBodyCommand::execute()
       } 
     } else {
       if(_timeoutTimer.difference(global::wallclock) >= 30) {
-        logger->info("HTTP request body timeout.");
+        getLogger()->info("HTTP request body timeout.");
         return true;
       } else {
         _e->addCommand(this);
@@ -120,9 +120,10 @@ bool HttpServerBodyCommand::execute()
       }
     }
   } catch(RecoverableException& e) {
-    if(logger->info()) {
-      logger->info("CUID#%s - Error occurred while reading HTTP request body",
-                   e, util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info
+        ("CUID#%s - Error occurred while reading HTTP request body",
+         e, util::itos(getCuid()).c_str());
     }
     return true;
   }

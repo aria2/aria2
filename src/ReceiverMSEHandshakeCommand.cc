@@ -98,13 +98,15 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       break;
     case MSEHandshake::HANDSHAKE_LEGACY: {
       if(e->getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-        throw DL_ABORT_EX("The legacy BitTorrent handshake is not acceptable by the preference.");
+        throw DL_ABORT_EX
+          ("The legacy BitTorrent handshake is not acceptable by the"
+           " preference.");
       }
       SharedHandle<PeerConnection> peerConnection
-        (new PeerConnection(cuid, socket));
+        (new PeerConnection(getCuid(), socket));
       peerConnection->presetBuffer(_mseHandshake->getBuffer(),
                                    _mseHandshake->getBufferLength());
-      Command* c = new PeerReceiveHandshakeCommand(cuid, peer, e, socket,
+      Command* c = new PeerReceiveHandshakeCommand(getCuid(), peer, e, socket,
                                                    peerConnection);
       e->addCommand(c);
       return true;
@@ -185,7 +187,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
 void ReceiverMSEHandshakeCommand::createCommand()
 {
   SharedHandle<PeerConnection> peerConnection
-    (new PeerConnection(cuid, socket));
+    (new PeerConnection(getCuid(), socket));
   if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
     peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
                                      _mseHandshake->getDecryptor());
@@ -198,7 +200,7 @@ void ReceiverMSEHandshakeCommand::createCommand()
   // as a hint. If this info hash and one in BitTorrent Handshake does not
   // match, then drop connection.
   Command* c =
-    new PeerReceiveHandshakeCommand(cuid, peer, e, socket, peerConnection);
+    new PeerReceiveHandshakeCommand(getCuid(), peer, e, socket, peerConnection);
   e->addCommand(c);
 }
 

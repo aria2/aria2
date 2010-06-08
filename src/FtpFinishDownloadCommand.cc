@@ -90,7 +90,7 @@ bool FtpFinishDownloadCommand::execute()
                     socket, options);
     }
   } catch(RecoverableException& e) {
-    logger->info(EX_EXCEPTION_CAUGHT, e);
+    getLogger()->info(EX_EXCEPTION_CAUGHT, e);
   }
   if(_requestGroup->downloadFinished()) {
     return true;

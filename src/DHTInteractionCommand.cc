@@ -90,7 +90,7 @@ bool DHTInteractionCommand::execute()
   try {
     _dispatcher->sendMessages();
   } catch(RecoverableException& e) {
-    logger->error(EX_EXCEPTION_CAUGHT, e);
+    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
   }
   _e->addCommand(this);
   return false;

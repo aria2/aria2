@@ -64,24 +64,24 @@ bool LpdDispatchMessageCommand::execute()
   }
   if(_dispatcher->isAnnounceReady()) {
     try {
-      logger->info("Dispatching LPD message for infohash=%s",
+      getLogger()->info("Dispatching LPD message for infohash=%s",
                    util::toHex(_dispatcher->getInfoHash()).c_str());
       if(_dispatcher->sendMessage()) {
-        logger->info("Sending LPD message is complete.");
+        getLogger()->info("Sending LPD message is complete.");
         _dispatcher->resetAnnounceTimer();
         _tryCount = 0;
       } else {
         ++_tryCount;
         if(_tryCount >= 5) {
-          logger->info("Sending LPD message %u times but all failed.");
+          getLogger()->info("Sending LPD message %u times but all failed.");
           _dispatcher->resetAnnounceTimer();
           _tryCount = 0;
         } else {
-          logger->info("Could not send LPD message, retry shortly.");
+          getLogger()->info("Could not send LPD message, retry shortly.");
         }
       }
     } catch(RecoverableException& e) {
-      logger->info("Failed to send LPD message.", e);
+      getLogger()->info("Failed to send LPD message.", e);
       _dispatcher->resetAnnounceTimer();
       _tryCount = 0;
     }

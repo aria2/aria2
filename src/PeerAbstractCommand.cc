@@ -81,12 +81,13 @@ PeerAbstractCommand::~PeerAbstractCommand()
 
 bool PeerAbstractCommand::execute()
 {
-  if(logger->debug()) {
-    logger->debug("CUID#%s -"
-                  " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
-                  util::itos(cuid).c_str(),
-                  _readEvent, _writeEvent, _hupEvent, _errorEvent,
-                  noCheck);
+  if(getLogger()->debug()) {
+    getLogger()->debug("CUID#%s -"
+                       " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
+                       util::itos(getCuid()).c_str(),
+                       readEventEnabled(), writeEventEnabled(),
+                       hupEventEnabled(), errorEventEnabled(),
+                       noCheck);
   }
   if(exitBeforeExecute()) {
     onAbort();
@@ -94,11 +95,11 @@ bool PeerAbstractCommand::execute()
   }
   try {
     if(noCheck ||
-       (checkSocketIsReadable && _readEvent) ||
-       (checkSocketIsWritable && _writeEvent) ||
-       _hupEvent) {
+       (checkSocketIsReadable && readEventEnabled()) ||
+       (checkSocketIsWritable && writeEventEnabled()) ||
+       hupEventEnabled()) {
       checkPoint = global::wallclock;
-    } else if(_errorEvent) {
+    } else if(errorEventEnabled()) {
       throw DL_ABORT_EX
         (StringFormat(MSG_NETWORK_PROBLEM,
                       socket->getSocketError().c_str()).str());
@@ -108,16 +109,17 @@ bool PeerAbstractCommand::execute()
     }
     return executeInternal();
   } catch(DownloadFailureException& err) {
-    logger->error(EX_DOWNLOAD_ABORTED, err);
+    getLogger()->error(EX_DOWNLOAD_ABORTED, err);
     onAbort();
     onFailure();
     return true;
   } catch(RecoverableException& err) {
-    if(logger->debug()) {
-      logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err,
-                    util::itos(cuid).c_str());
-      logger->debug(MSG_PEER_BANNED,
-                    util::itos(cuid).c_str(), peer->ipaddr.c_str(), peer->port);
+    if(getLogger()->debug()) {
+      getLogger()->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err,
+                         util::itos(getCuid()).c_str());
+      getLogger()->debug(MSG_PEER_BANNED,
+                         util::itos(getCuid()).c_str(), peer->ipaddr.c_str(),
+                         peer->port);
     }
     onAbort();
     return prepareForNextPeer(0);

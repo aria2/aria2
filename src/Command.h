@@ -58,15 +58,40 @@ public:
 private:
   CommandUuid uuid;
   static int32_t uuidGen;
-  STATUS status;
-protected:
-  cuid_t cuid;
-  Logger* logger;
+  STATUS _status;
+
+  cuid_t _cuid;
+  Logger* _logger;
 
   bool _readEvent;
   bool _writeEvent;
   bool _errorEvent;
   bool _hupEvent;
+protected:
+  Logger* getLogger() const
+  {
+    return _logger;
+  }
+
+  bool readEventEnabled() const
+  {
+    return _readEvent;
+  }
+
+  bool writeEventEnabled() const
+  {
+    return _writeEvent;
+  }
+
+  bool errorEventEnabled() const
+  {
+    return _errorEvent;
+  }
+
+  bool hupEventEnabled() const
+  {
+    return _hupEvent;
+  }
 public:
   Command(cuid_t cuid);
 
@@ -74,21 +99,21 @@ public:
 
   virtual bool execute() = 0;
 
-  cuid_t getCuid() const { return cuid; }
+  cuid_t getCuid() const { return _cuid; }
 
   const CommandUuid& getUuid() const { return uuid; }
 
-  void setStatusActive() { this->status = STATUS_ACTIVE; }
+  void setStatusActive() { _status = STATUS_ACTIVE; }
 
-  void setStatusInactive() { this->status = STATUS_INACTIVE; }
+  void setStatusInactive() { _status = STATUS_INACTIVE; }
 
-  void setStatusRealtime() { this->status = STATUS_REALTIME; }
+  void setStatusRealtime() { _status = STATUS_REALTIME; }
 
   void setStatus(STATUS status);
 
   bool statusMatch(Command::STATUS statusFilter) const
   {
-    return statusFilter <= status;
+    return statusFilter <= _status;
   }
 
   void transitStatus();

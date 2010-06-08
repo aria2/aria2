@@ -57,9 +57,10 @@ Command* CheckIntegrityDispatcherCommand::createCommand
 (const SharedHandle<CheckIntegrityEntry>& entry)
 {
   cuid_t newCUID = _e->newCUID();
-  if(logger->info()) {
-    logger->info("CUID#%s - Dispatching CheckIntegrityCommand CUID#%s.",
-                 util::itos(cuid).c_str(), util::itos(newCUID).c_str());
+  if(getLogger()->info()) {
+    getLogger()->info("CUID#%s - Dispatching CheckIntegrityCommand CUID#%s.",
+                      util::itos(getCuid()).c_str(),
+                      util::itos(newCUID).c_str());
   }
   return new CheckIntegrityCommand
     (newCUID, entry->getRequestGroup(), _e, entry);

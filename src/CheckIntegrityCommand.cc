@@ -72,8 +72,9 @@ bool CheckIntegrityCommand::executeInternal()
     // needed.
     _requestGroup->enableSaveControlFile();
     if(_requestGroup->downloadFinished()) {
-      logger->notice(MSG_VERIFICATION_SUCCESSFUL,
-                     _requestGroup->getDownloadContext()->getBasePath().c_str());
+      getLogger()->notice
+        (MSG_VERIFICATION_SUCCESSFUL,
+         _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::vector<Command*> commands;
       try {
         _entry->onDownloadFinished(commands, _e);
@@ -83,8 +84,9 @@ bool CheckIntegrityCommand::executeInternal()
       }
       _e->addCommand(commands);
     } else {
-      logger->error(MSG_VERIFICATION_FAILED,
-                    _requestGroup->getDownloadContext()->getBasePath().c_str());
+      getLogger()->error
+        (MSG_VERIFICATION_FAILED,
+         _requestGroup->getDownloadContext()->getBasePath().c_str());
       std::vector<Command*> commands;
       try {
         _entry->onDownloadIncomplete(commands,_e);
@@ -105,10 +107,12 @@ bool CheckIntegrityCommand::executeInternal()
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
   _e->getCheckIntegrityMan()->dropPickedEntry();
-  logger->error(MSG_FILE_VALIDATION_FAILURE, e, util::itos(cuid).c_str());
-  logger->error(MSG_DOWNLOAD_NOT_COMPLETE,
-                util::itos(cuid).c_str(),
-                _requestGroup->getDownloadContext()->getBasePath().c_str());
+  getLogger()->error(MSG_FILE_VALIDATION_FAILURE, e,
+                     util::itos(getCuid()).c_str());
+  getLogger()->error
+    (MSG_DOWNLOAD_NOT_COMPLETE,
+     util::itos(getCuid()).c_str(),
+     _requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

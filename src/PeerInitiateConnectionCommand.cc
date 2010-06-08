@@ -80,16 +80,16 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 }
 
 bool PeerInitiateConnectionCommand::executeInternal() {
-  if(logger->info()) {
-    logger->info(MSG_CONNECTING_TO_SERVER,
-                 util::itos(cuid).c_str(), peer->ipaddr.c_str(),
-                 peer->port);
+  if(getLogger()->info()) {
+    getLogger()->info(MSG_CONNECTING_TO_SERVER,
+                      util::itos(getCuid()).c_str(), peer->ipaddr.c_str(),
+                      peer->port);
   }
   socket.reset(new SocketCore());
   socket->establishConnection(peer->ipaddr, peer->port);
   if(_mseHandshakeEnabled) {
     InitiatorMSEHandshakeCommand* c =
-      new InitiatorMSEHandshakeCommand(cuid, _requestGroup, peer, e,
+      new InitiatorMSEHandshakeCommand(getCuid(), _requestGroup, peer, e,
                                        _btRuntime, socket);
     c->setPeerStorage(_peerStorage);
     c->setPieceStorage(_pieceStorage);
@@ -97,7 +97,8 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   } else {
     PeerInteractionCommand* command =
       new PeerInteractionCommand
-      (cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage, _peerStorage,
+      (getCuid(), _requestGroup, peer, e, _btRuntime, _pieceStorage,
+       _peerStorage,
        socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
     e->addCommand(command);
   }

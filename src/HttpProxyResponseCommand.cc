@@ -59,7 +59,7 @@ HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
 
 Command* HttpProxyResponseCommand::getNextCommand()
 {
-  return new HttpRequestCommand(cuid, req, _fileEntry,
+  return new HttpRequestCommand(getCuid(), req, _fileEntry,
                                 _requestGroup, httpConnection, e, socket);
 }
 

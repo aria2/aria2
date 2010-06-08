@@ -70,9 +70,12 @@ FtpDownloadCommand::~FtpDownloadCommand() {}
 bool FtpDownloadCommand::prepareForNextSegment()
 {
   if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
-     static_cast<uint64_t>(_fileEntry->gtoloff(_segments.front()->getPositionToWrite())) == _fileEntry->getLength()) {
+     static_cast<uint64_t>
+     (_fileEntry->gtoloff(_segments.front()->getPositionToWrite())) ==
+     _fileEntry->getLength()) {
     Command* command = new FtpFinishDownloadCommand
-      (cuid, req, _fileEntry, _requestGroup, _ftpConnection, e, ctrlSocket);
+      (getCuid(), req, _fileEntry, _requestGroup, _ftpConnection, e,
+       ctrlSocket);
     e->addCommand(command);
 
     if(_requestGroup->downloadFinished()) {

@@ -130,11 +130,11 @@ bool PeerReceiveHandshakeCommand::executeInternal()
        btRuntime->lessThanMaxPeers()) {
       if(peerStorage->addPeer(peer)) {
 
-        peer->usedBy(cuid);
+        peer->usedBy(getCuid());
         
         PeerInteractionCommand* command =
           new PeerInteractionCommand
-          (cuid,
+          (getCuid(),
            downloadContext->getOwnerRequestGroup(),
            peer,
            e,
@@ -145,10 +145,10 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
            _peerConnection);
         e->addCommand(command);
-        if(logger->debug()) {
-          logger->debug(MSG_INCOMING_PEER_CONNECTION,
-                        util::itos(cuid).c_str(),
-                        util::itos(peer->usedBy()).c_str());
+        if(getLogger()->debug()) {
+          getLogger()->debug(MSG_INCOMING_PEER_CONNECTION,
+                             util::itos(getCuid()).c_str(),
+                             util::itos(peer->usedBy()).c_str());
         }
       }
     }

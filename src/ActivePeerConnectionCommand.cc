@@ -145,9 +145,9 @@ void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
   command->setPeerStorage(_peerStorage);
   command->setPieceStorage(_pieceStorage);
   e->addCommand(command);
-  if(logger->info()) {
-    logger->info(MSG_CONNECTING_TO_PEER,
-                 util::itos(cuid).c_str(), peer->ipaddr.c_str());
+  if(getLogger()->info()) {
+    getLogger()->info(MSG_CONNECTING_TO_PEER,
+                      util::itos(getCuid()).c_str(), peer->ipaddr.c_str());
   }
 }
 

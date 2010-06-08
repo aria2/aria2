@@ -93,9 +93,9 @@ Command* FtpInitiateConnectionCommand::createNextCommand
          proxyRequest->getHost(), proxyRequest->getPort());
     }
     if(pooledSocket.isNull()) {
-      if(logger->info()) {
-        logger->info(MSG_CONNECTING_TO_SERVER,
-                     util::itos(cuid).c_str(), addr.c_str(), port);
+      if(getLogger()->info()) {
+        getLogger()->info(MSG_CONNECTING_TO_SERVER,
+                          util::itos(getCuid()).c_str(), addr.c_str(), port);
       }
       socket.reset(new SocketCore());
       socket->establishConnection(addr, port);
@@ -104,17 +104,17 @@ Command* FtpInitiateConnectionCommand::createNextCommand
         // Use GET for FTP via HTTP proxy.
         req->setMethod(Request::METHOD_GET);
         SharedHandle<HttpConnection> hc
-          (new HttpConnection(cuid, socket, getOption().get()));
+          (new HttpConnection(getCuid(), socket, getOption().get()));
         
         HttpRequestCommand* c =
-          new HttpRequestCommand(cuid, req, _fileEntry,
+          new HttpRequestCommand(getCuid(), req, _fileEntry,
                                  _requestGroup, hc, e, socket);
         c->setConnectedAddr(hostname, addr, port);
         c->setProxyRequest(proxyRequest);
         command = c;
       } else if(proxyMethod == V_TUNNEL) {
         FtpTunnelRequestCommand* c =
-          new FtpTunnelRequestCommand(cuid, req, _fileEntry,
+          new FtpTunnelRequestCommand(getCuid(), req, _fileEntry,
                                       _requestGroup, e,
                                       proxyRequest, socket);
         c->setConnectedAddr(hostname, addr, port);
@@ -126,7 +126,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     } else {
       if(proxyMethod == V_TUNNEL) {
         command =
-          new FtpNegotiationCommand(cuid, req, _fileEntry,
+          new FtpNegotiationCommand(getCuid(), req, _fileEntry,
                                     _requestGroup, e, pooledSocket,
                                     FtpNegotiationCommand::SEQ_SEND_CWD,
                                     options["baseWorkingDir"]);
@@ -134,10 +134,10 @@ Command* FtpInitiateConnectionCommand::createNextCommand
         // Use GET for FTP via HTTP proxy.
         req->setMethod(Request::METHOD_GET);
         SharedHandle<HttpConnection> hc
-          (new HttpConnection(cuid, pooledSocket, getOption().get()));
+          (new HttpConnection(getCuid(), pooledSocket, getOption().get()));
         
         HttpRequestCommand* c =
-          new HttpRequestCommand(cuid, req, _fileEntry,
+          new HttpRequestCommand(getCuid(), req, _fileEntry,
                                  _requestGroup, hc, e, pooledSocket);
         c->setProxyRequest(proxyRequest);
         command = c;
@@ -153,20 +153,20 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                          e->getAuthConfigFactory()->createAuthConfig
                          (req, getOption().get())->getUser());
     if(pooledSocket.isNull()) {
-      if(logger->info()) {
-        logger->info(MSG_CONNECTING_TO_SERVER,
-                     util::itos(cuid).c_str(), addr.c_str(), port);
+      if(getLogger()->info()) {
+        getLogger()->info(MSG_CONNECTING_TO_SERVER,
+                          util::itos(getCuid()).c_str(), addr.c_str(), port);
       }
       socket.reset(new SocketCore());
       socket->establishConnection(addr, port);
       FtpNegotiationCommand* c =
-        new FtpNegotiationCommand(cuid, req, _fileEntry,
+        new FtpNegotiationCommand(getCuid(), req, _fileEntry,
                                   _requestGroup, e, socket);
       c->setConnectedAddr(hostname, addr, port);
       command = c;
     } else {
       command =
-        new FtpNegotiationCommand(cuid, req, _fileEntry,
+        new FtpNegotiationCommand(getCuid(), req, _fileEntry,
                                   _requestGroup, e, pooledSocket,
                                   FtpNegotiationCommand::SEQ_SEND_CWD,
                                   options["baseWorkingDir"]);

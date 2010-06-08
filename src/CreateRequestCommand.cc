@@ -97,7 +97,7 @@ bool CreateRequestCommand::executeInternal()
 
   Command* command =
     InitiateConnectionCommandFactory::createInitiateConnectionCommand
-    (cuid, req, _fileEntry, _requestGroup, e);
+    (getCuid(), req, _fileEntry, _requestGroup, e);
   e->setNoWait(true);
   e->addCommand(command);
   return true;
@@ -114,13 +114,14 @@ bool CreateRequestCommand::prepareForRetry(time_t wait)
   // CreateRequestCommand is deleted one second later: This is not
   // efficient. For this reason, reuse current CreateRequestCommand.
   if(!_requestGroup->getPieceStorage().isNull()) {
-    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+    _requestGroup->getSegmentMan()->cancelSegment(getCuid());
   }
-  if(logger->debug()) {
-    logger->debug("CUID#%s - Reusing CreateRequestCommand",
-                  util::itos(cuid).c_str());
+  if(getLogger()->debug()) {
+    getLogger()->debug("CUID#%s - Reusing CreateRequestCommand",
+                       util::itos(getCuid()).c_str());
   }
-  SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup, this, wait);
+  SleepCommand* scom = new SleepCommand
+    (getCuid(), e, _requestGroup, this, wait);
   e->addCommand(scom);
   return false;
 }

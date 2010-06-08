@@ -59,7 +59,7 @@ FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
 
 Command* FtpTunnelResponseCommand::getNextCommand()
 {
-  return new FtpNegotiationCommand(cuid, req, _fileEntry,
+  return new FtpNegotiationCommand(getCuid(), req, _fileEntry,
                                    _requestGroup, e, socket);
 }
 

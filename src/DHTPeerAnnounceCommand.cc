@@ -62,7 +62,7 @@ void DHTPeerAnnounceCommand::process()
   try {
     _peerAnnounceStorage->handleTimeout();
   } catch(RecoverableException& e) {
-    logger->error(EX_EXCEPTION_CAUGHT, e);
+    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
   }
 }
 

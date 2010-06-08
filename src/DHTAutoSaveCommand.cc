@@ -82,7 +82,7 @@ void DHTAutoSaveCommand::process()
 void DHTAutoSaveCommand::save()
 {
   std::string dhtFile = _e->getOption()->get(PREF_DHT_FILE_PATH);
-  logger->info("Saving DHT routing table to %s.", dhtFile.c_str());
+  getLogger()->info("Saving DHT routing table to %s.", dhtFile.c_str());
 
   std::string tempFile = dhtFile;
   tempFile += "__temp";
@@ -92,11 +92,12 @@ void DHTAutoSaveCommand::save()
       File dir(f.getDirname());
       if(!dir.exists()) {
         if(!dir.mkdirs()) {
-          logger->info(EX_MAKE_DIR, dir.getPath().c_str(), strerror(errno));
+          getLogger()->info(EX_MAKE_DIR,
+                            dir.getPath().c_str(), strerror(errno));
           return;
         }
       } else if(!dir.isDir()) {
-        logger->info(EX_NOT_DIRECTORY, dir.getPath().c_str());
+        getLogger()->info(EX_NOT_DIRECTORY, dir.getPath().c_str());
         return;
       }
     }
@@ -127,12 +128,12 @@ void DHTAutoSaveCommand::save()
       serializer.serialize(o);
     }
     if(!File(tempFile).renameTo(dhtFile)) {
-      logger->error("Cannot move file from %s to %s.",
-                    tempFile.c_str(), dhtFile.c_str());
+      getLogger()->error("Cannot move file from %s to %s.",
+                         tempFile.c_str(), dhtFile.c_str());
     }
   } catch(RecoverableException& e) {
-    logger->error("Exception caught while saving DHT routing table to %s",
-                  e, dhtFile.c_str());
+    getLogger()->error("Exception caught while saving DHT routing table to %s",
+                       e, dhtFile.c_str());
   }
 }
 

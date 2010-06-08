@@ -83,7 +83,7 @@ bool SeedCheckCommand::execute() {
   }
   if(checkStarted) {
     if(seedCriteria->evaluate()) {
-      logger->notice(MSG_SEEDING_END);
+      getLogger()->notice(MSG_SEEDING_END);
       _btRuntime->setHalt(true);
     }
   }

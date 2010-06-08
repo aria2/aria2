@@ -68,10 +68,11 @@ bool FileAllocationCommand::executeInternal()
   }
   _fileAllocationEntry->allocateChunk();
   if(_fileAllocationEntry->finished()) {
-    if(logger->debug()) {
-      logger->debug(MSG_ALLOCATION_COMPLETED,
-                    _timer.difference(global::wallclock),
-                    util::itos(_requestGroup->getTotalLength(), true).c_str());
+    if(getLogger()->debug()) {
+      getLogger()->debug
+        (MSG_ALLOCATION_COMPLETED,
+         _timer.difference(global::wallclock),
+         util::itos(_requestGroup->getTotalLength(), true).c_str());
     }
     _e->getFileAllocationMan()->dropPickedEntry();
     
@@ -94,9 +95,11 @@ bool FileAllocationCommand::executeInternal()
 bool FileAllocationCommand::handleException(Exception& e)
 {
   _e->getFileAllocationMan()->dropPickedEntry();
-  logger->error(MSG_FILE_ALLOCATION_FAILURE, e, util::itos(cuid).c_str());
-  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, util::itos(cuid).c_str(),
-                _requestGroup->getDownloadContext()->getBasePath().c_str());
+  getLogger()->error
+    (MSG_FILE_ALLOCATION_FAILURE, e, util::itos(getCuid()).c_str());
+  getLogger()->error
+    (MSG_DOWNLOAD_NOT_COMPLETE, util::itos(getCuid()).c_str(),
+     _requestGroup->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

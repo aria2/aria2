@@ -74,8 +74,8 @@ bool HttpListenCommand::execute()
       std::pair<std::string, uint16_t> peerInfo;
       socket->getPeerInfo(peerInfo);
 
-      logger->info("XML-RPC: Accepted the connection from %s:%u.",
-                   peerInfo.first.c_str(), peerInfo.second);
+      getLogger()->info("XML-RPC: Accepted the connection from %s:%u.",
+                        peerInfo.first.c_str(), peerInfo.second);
 
       HttpServerCommand* c =
         new HttpServerCommand(_e->newCUID(), _e, socket);
@@ -83,8 +83,8 @@ bool HttpListenCommand::execute()
       _e->addCommand(c);
     }
   } catch(RecoverableException& e) {
-    if(logger->debug()) {
-      logger->debug(MSG_ACCEPT_FAILURE, e, util::itos(cuid).c_str());
+    if(getLogger()->debug()) {
+      getLogger()->debug(MSG_ACCEPT_FAILURE, e, util::itos(getCuid()).c_str());
     }
   }
   _e->addCommand(this);
@@ -97,9 +97,9 @@ bool HttpListenCommand::bindPort(uint16_t port)
     _e->deleteSocketForReadCheck(_serverSocket, this);
   }
   _serverSocket.reset(new SocketCore());
-  if(logger->info()) {
-    logger->info("CUID#%s - Setting up HttpListenCommand",
-                 util::itos(cuid).c_str());
+  if(getLogger()->info()) {
+    getLogger()->info("CUID#%s - Setting up HttpListenCommand",
+                      util::itos(getCuid()).c_str());
   }
   try {
     int flags = 0;
@@ -109,13 +109,15 @@ bool HttpListenCommand::bindPort(uint16_t port)
     _serverSocket->bind(port, flags);
     _serverSocket->beginListen();
     _serverSocket->setNonBlockingMode();
-    if(logger->info()) {
-      logger->info(MSG_LISTENING_PORT, util::itos(cuid).c_str(), port);
+    if(getLogger()->info()) {
+      getLogger()->info(MSG_LISTENING_PORT,
+                        util::itos(getCuid()).c_str(), port);
     }
     _e->addSocketForReadCheck(_serverSocket, this);
     return true;
   } catch(RecoverableException& e) {
-    logger->error(MSG_BIND_FAILURE, e, util::itos(cuid).c_str(), port);
+    getLogger()->error(MSG_BIND_FAILURE, e,
+                       util::itos(getCuid()).c_str(), port);
     if(!_serverSocket.isNull()) {
       _e->deleteSocketForReadCheck(_serverSocket, this);
     }

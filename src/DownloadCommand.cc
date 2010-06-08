@@ -84,7 +84,8 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
 #ifdef ENABLE_MESSAGE_DIGEST
   {
     if(getOption()->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
-      std::string algo = _requestGroup->getDownloadContext()->getPieceHashAlgo();
+      std::string algo =
+        _requestGroup->getDownloadContext()->getPieceHashAlgo();
       if(MessageDigestContext::supports(algo)) {
         _messageDigestContext.reset(new MessageDigestContext());
         _messageDigestContext->trySetAlgo(algo);
@@ -124,7 +125,10 @@ bool DownloadCommand::executeInternal() {
       bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
                          BUFSIZE);
     } else {
-      bufSize = std::min(static_cast<size_t>(_fileEntry->getLastOffset()-segment->getPositionToWrite()), BUFSIZE);
+      bufSize =
+        std::min(static_cast<size_t>
+                 (_fileEntry->getLastOffset()-segment->getPositionToWrite()),
+                 BUFSIZE);
     }
   } else {
     bufSize = BUFSIZE;
@@ -185,7 +189,8 @@ bool DownloadCommand::executeInternal() {
       segmentPartComplete = true;
     }
   } else if(!_transferEncodingDecoder.isNull() &&
-            (segment->complete() || segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
+            (segment->complete() ||
+             segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
     // In this case, transferEncodingDecoder is used and
     // Content-Length is known.
     segmentPartComplete = true;
@@ -206,43 +211,48 @@ bool DownloadCommand::executeInternal() {
       // If segment->getLength() == 0, the server doesn't provide
       // content length, but the client detected that download
       // completed.
-      if(logger->info()) {
-        logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, util::itos(cuid).c_str());
+      if(getLogger()->info()) {
+        getLogger()->info(MSG_SEGMENT_DOWNLOAD_COMPLETED,
+                          util::itos(getCuid()).c_str());
       }
 #ifdef ENABLE_MESSAGE_DIGEST
 
       {
         const std::string& expectedPieceHash =
-          _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
+          _requestGroup->getDownloadContext()->getPieceHash
+          (segment->getIndex());
         if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
           if(segment->isHashCalculated()) {
-            if(logger->debug()) {
-              logger->debug("Hash is available! index=%lu",
-                            static_cast<unsigned long>(segment->getIndex()));
+            if(getLogger()->debug()) {
+              getLogger()->debug
+                ("Hash is available! index=%lu",
+                 static_cast<unsigned long>(segment->getIndex()));
             }
-            validatePieceHash(segment, expectedPieceHash, segment->getHashString());
+            validatePieceHash
+              (segment, expectedPieceHash, segment->getHashString());
           } else {
             _messageDigestContext->digestReset();
-            validatePieceHash(segment, expectedPieceHash,
-                              MessageDigestHelper::digest
-                              (_messageDigestContext.get(),
-                               _requestGroup->getPieceStorage()->getDiskAdaptor(),
-                               segment->getPosition(),
-                               segment->getLength()));
+            validatePieceHash
+              (segment, expectedPieceHash,
+               MessageDigestHelper::digest
+               (_messageDigestContext.get(),
+                _requestGroup->getPieceStorage()->getDiskAdaptor(),
+                segment->getPosition(),
+                segment->getLength()));
           }
         } else {
-          _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+          _requestGroup->getSegmentMan()->completeSegment(getCuid(), segment);
         }
       }
 
 #else // !ENABLE_MESSAGE_DIGEST
-      _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+      _requestGroup->getSegmentMan()->completeSegment(getCuid(), segment);
 #endif // !ENABLE_MESSAGE_DIGEST
     } else {
       // If segment is not canceled here, in the next pipelining
       // request, aria2 requests bad range
       // [FileEntry->getLastOffset(), FileEntry->getLastOffset())
-      _requestGroup->getSegmentMan()->cancelSegment(cuid, segment);
+      _requestGroup->getSegmentMan()->cancelSegment(getCuid(), segment);
     }
     checkLowestDownloadSpeed();
     // this unit is going to download another segment.
@@ -314,7 +324,7 @@ bool DownloadCommand::prepareForNextSegment() {
       SharedHandle<SegmentMan> segmentMan = _requestGroup->getSegmentMan();
       SharedHandle<Segment> nextSegment =
         segmentMan->getCleanSegmentIfOwnerIsIdle
-        (cuid, tempSegment->getIndex()+1);
+        (getCuid(), tempSegment->getIndex()+1);
       if(nextSegment.isNull()) {
         return prepareForRetry(0);
       } else {
@@ -334,16 +344,16 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
                                         const std::string& actualPieceHash)
 {
   if(actualPieceHash == expectedPieceHash) {
-    logger->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
-    _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+    getLogger()->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
+    _requestGroup->getSegmentMan()->completeSegment(getCuid(), segment);
   } else {
-    logger->info(EX_INVALID_CHUNK_CHECKSUM,
-                 segment->getIndex(),
-                 util::itos(segment->getPosition(), true).c_str(),
-                 expectedPieceHash.c_str(),
-                 actualPieceHash.c_str());
+    getLogger()->info(EX_INVALID_CHUNK_CHECKSUM,
+                      segment->getIndex(),
+                      util::itos(segment->getPosition(), true).c_str(),
+                      expectedPieceHash.c_str(),
+                      actualPieceHash.c_str());
     segment->clear();
-    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+    _requestGroup->getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX
       (StringFormat("Invalid checksum index=%d", segment->getIndex()).str());
   }

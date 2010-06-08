@@ -89,10 +89,11 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       socket->bind(port);
       socket->beginListen();
       socket->setNonBlockingMode();
-      logger->notice("BitTorrent: listening to port %d", port);
+      getLogger()->notice("BitTorrent: listening to port %d", port);
       return true;
     } catch(RecoverableException& ex) {
-      logger->error(MSG_BIND_FAILURE, ex, util::itos(cuid).c_str(), port);
+      getLogger()->error(MSG_BIND_FAILURE, ex,
+                         util::itos(getCuid()).c_str(), port);
       socket->closeConnection();
     }
   }
@@ -128,15 +129,15 @@ bool PeerListenCommand::execute() {
       Command* command =
         new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
       e->addCommand(command);
-      if(logger->debug()) {
-        logger->debug("Accepted the connection from %s:%u.",
-                      peer->ipaddr.c_str(),
-                      peer->port);
-        logger->debug("Added CUID#%s to receive BitTorrent/MSE handshake.",
-                      util::itos(cuid).c_str());
+      if(getLogger()->debug()) {
+        getLogger()->debug("Accepted the connection from %s:%u.",
+                           peer->ipaddr.c_str(),
+                           peer->port);
+        getLogger()->debug("Added CUID#%s to receive BitTorrent/MSE handshake.",
+                           util::itos(cuid).c_str());
       }
     } catch(RecoverableException& ex) {
-      logger->debug(MSG_ACCEPT_FAILURE, ex, util::itos(cuid).c_str());
+      getLogger()->debug(MSG_ACCEPT_FAILURE, ex, util::itos(getCuid()).c_str());
     }               
   }
   e->addCommand(this);

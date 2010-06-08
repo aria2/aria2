@@ -63,7 +63,7 @@ void DHTTokenUpdateCommand::process()
   try {
     _tokenTracker->updateTokenSecret();
   } catch(RecoverableException& e) {
-    logger->error(EX_EXCEPTION_CAUGHT, e);
+    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
   }
 }
 

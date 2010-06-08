@@ -96,8 +96,8 @@ bool TrackerWatcherCommand::execute() {
     }
   }
   if(_btAnnounce->noMoreAnnounce()) {
-    if(logger->debug()) {
-      logger->debug("no more announce");
+    if(getLogger()->debug()) {
+      getLogger()->debug("no more announce");
     }
     return true;
   }
@@ -108,13 +108,13 @@ bool TrackerWatcherCommand::execute() {
       try {
         _trackerRequestGroup->createInitialCommand(commands, e);
       } catch(RecoverableException& ex) {
-        logger->error(EX_EXCEPTION_CAUGHT, ex);
+        getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
         std::for_each(commands.begin(), commands.end(), Deleter());
         commands.clear();
       }
       e->addCommand(commands);
-      if(logger->debug()) {
-        logger->debug("added tracker request command");
+      if(getLogger()->debug()) {
+        getLogger()->debug("added tracker request command");
       }
     }
   } else if(_trackerRequestGroup->downloadFinished()){
@@ -125,7 +125,7 @@ bool TrackerWatcherCommand::execute() {
       _btAnnounce->announceSuccess();
       _btAnnounce->resetAnnounce();
     } catch(RecoverableException& ex) {
-      logger->error(EX_EXCEPTION_CAUGHT, ex);      
+      getLogger()->error(EX_EXCEPTION_CAUGHT, ex);      
       _btAnnounce->announceFailure();
       if(_btAnnounce->isAllAnnounceFailed()) {
         _btAnnounce->resetAnnounce();
@@ -180,10 +180,10 @@ void TrackerWatcherCommand::processTrackerResponse
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
     e->addCommand(command);
-    if(logger->debug()) {
-      logger->debug("CUID#%s - Adding new command CUID#%s",
-                    util::itos(cuid).c_str(),
-                    util::itos(peer->usedBy()).c_str());
+    if(getLogger()->debug()) {
+      getLogger()->debug("CUID#%s - Adding new command CUID#%s",
+                         util::itos(getCuid()).c_str(),
+                         util::itos(peer->usedBy()).c_str());
     }
   }
 }
@@ -222,12 +222,12 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   uris.push_back(uri);
   SharedHandle<RequestGroup> rg(new RequestGroup(getOption()));
   if(backupTrackerIsAvailable(_requestGroup->getDownloadContext())) {
-    if(logger->debug()) {
-      logger->debug("This is multi-tracker announce.");
+    if(getLogger()->debug()) {
+      getLogger()->debug("This is multi-tracker announce.");
     }
   } else {
-    if(logger->debug()) {
-      logger->debug("This is single-tracker announce.");
+    if(getLogger()->debug()) {
+      getLogger()->debug("This is single-tracker announce.");
     }
   }
   // If backup tracker is available, try 2 times for each tracker
@@ -253,9 +253,9 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
   util::removeMetalinkContentTypes(rg);
-  if(logger->info()) {
-    logger->info("Creating tracker request group GID#%s",
-                 util::itos(rg->getGID()).c_str());
+  if(getLogger()->info()) {
+    getLogger()->info("Creating tracker request group GID#%s",
+                      util::itos(rg->getGID()).c_str());
   }
   return rg;
 }

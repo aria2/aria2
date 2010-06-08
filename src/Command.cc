@@ -41,9 +41,9 @@ namespace aria2 {
 int32_t Command::uuidGen = 0;
 
 Command::Command(cuid_t cuid):uuid(uuidGen++),
-                              status(STATUS_INACTIVE),
-                              cuid(cuid),
-                              logger(LogFactory::getInstance()),
+                              _status(STATUS_INACTIVE),
+                              _cuid(cuid),
+                              _logger(LogFactory::getInstance()),
                               _readEvent(false),
                               _writeEvent(false),
                               _errorEvent(false),
@@ -51,17 +51,17 @@ Command::Command(cuid_t cuid):uuid(uuidGen++),
 
 void Command::transitStatus()
 {
-  switch(status) {
+  switch(_status) {
   case STATUS_REALTIME:
     break;
   default:
-    status = STATUS_INACTIVE;
+    _status = STATUS_INACTIVE;
   }
 }
 
 void Command::setStatus(STATUS status)
 {
-  this->status = status;
+  _status = status;
 }
 
 void Command::readEventReceived()

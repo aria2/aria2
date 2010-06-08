@@ -60,9 +60,9 @@ void BtStopDownloadCommand::preProcess()
     _exit = true;
   }
   if(_checkPoint.difference(global::wallclock) >= _timeout) {
-    logger->notice("GID#%s Stop downloading torrent due to"
-                   " --bt-stop-timeout option.",
-                   util::itos(_requestGroup->getGID()).c_str());
+    getLogger()->notice("GID#%s Stop downloading torrent due to"
+                        " --bt-stop-timeout option.",
+                        util::itos(_requestGroup->getGID()).c_str());
     _requestGroup->setHaltRequested(true);
     _exit = true;
   }

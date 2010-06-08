@@ -165,7 +165,7 @@ bool HttpRequestCommand::executeInternal() {
     _httpConnection->sendPendingData();
   }
   if(_httpConnection->sendBufferIsEmpty()) {
-    Command* command = new HttpResponseCommand(cuid, req, _fileEntry,
+    Command* command = new HttpResponseCommand(getCuid(), req, _fileEntry,
                                                _requestGroup,
                                                _httpConnection, e, socket);
     e->addCommand(command);

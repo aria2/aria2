@@ -109,9 +109,10 @@ bool FtpNegotiationCommand::executeInternal() {
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
     FtpDownloadCommand* command =
       new FtpDownloadCommand
-      (cuid, req, _fileEntry, _requestGroup, ftp, e, dataSocket, socket);
+      (getCuid(), req, _fileEntry, _requestGroup, ftp, e, dataSocket, socket);
     command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
-    command->setLowestDownloadSpeedLimit(getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+    command->setLowestDownloadSpeedLimit
+      (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     if(!_fileEntry->isSingleHostMultiConnectionEnabled()) {
       _fileEntry->removeURIWhoseHostnameIs(req->getHost());
     }
@@ -119,7 +120,8 @@ bool FtpNegotiationCommand::executeInternal() {
       (_fileEntry->getRemainingUris(), command);
     e->addCommand(command);
     return true;
-  } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
+  } else if(sequence == SEQ_HEAD_OK ||
+            sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
     return true;
   } else if(sequence == SEQ_FILE_PREPARATION) {
     if(getOption()->getAsBool(PREF_FTP_PASV)) {
@@ -252,9 +254,9 @@ bool FtpNegotiationCommand::recvPwd()
     throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
   ftp->setBaseWorkingDir(pwd);
-  if(logger->info()) {
-    logger->info("CUID#%s - base working directory is '%s'",
-                 util::itos(cuid).c_str(), pwd.c_str());
+  if(getLogger()->info()) {
+    getLogger()->info("CUID#%s - base working directory is '%s'",
+                      util::itos(getCuid()).c_str(), pwd.c_str());
   }
   sequence = SEQ_SEND_CWD;
   return true;
@@ -318,23 +320,24 @@ bool FtpNegotiationCommand::recvMdtm()
       time_t t = lastModifiedTime.getTime();
       struct tm* tms = gmtime(&t); // returned struct is statically allocated.
       if(tms) {
-        if(logger->debug()) {
-          logger->debug("MDTM result was parsed as: %s GMT", asctime(tms));
+        if(getLogger()->debug()) {
+          getLogger()->debug("MDTM result was parsed as: %s GMT", asctime(tms));
         }
       } else {
-        if(logger->debug()) {
-          logger->debug("gmtime() failed for MDTM result.");
+        if(getLogger()->debug()) {
+          getLogger()->debug("gmtime() failed for MDTM result.");
         }
       }
     } else {
-      if(logger->debug()) {
-        logger->debug("MDTM response was returned, but it seems not to be a"
-                      " time value as in specified in RFC3659.");
+      if(getLogger()->debug()) {
+        getLogger()->debug("MDTM response was returned, but it seems not to be"
+                           " a time value as in specified in RFC3659.");
       }
     }
   } else {
-    if(logger->info()) {
-      logger->info("CUID#%s - MDTM command failed.", util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info("CUID#%s - MDTM command failed.",
+                        util::itos(getCuid()).c_str());
     }
   }
   sequence = SEQ_SEND_SIZE;
@@ -385,9 +388,9 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       _requestGroup->getPieceStorage()->markAllPiecesDone();
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
 
-      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                     util::itos(_requestGroup->getGID()).c_str(),
-                     _requestGroup->getFirstFilePath().c_str());
+      getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          util::itos(_requestGroup->getGID()).c_str(),
+                          _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();
 
@@ -406,7 +409,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()
-    _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+    _requestGroup->getSegmentMan()->getSegment(getCuid(), 0);
     return true;
   } else {
     _requestGroup->adjustFilename
@@ -421,15 +424,18 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       return false;
     }
 
-    BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), getOption().get()));
+    BtProgressInfoFileHandle infoFile
+      (new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(),
+                                     _requestGroup->getPieceStorage(),
+                                     getOption().get()));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       _requestGroup->getPieceStorage()->markAllPiecesDone();
 
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       
-      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                     util::itos(_requestGroup->getGID()).c_str(),
-                     _requestGroup->getFirstFilePath().c_str());
+      getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          util::itos(_requestGroup->getGID()).c_str(),
+                          _requestGroup->getFirstFilePath().c_str());
 
       poolConnection();
       
@@ -439,7 +445,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()
-    _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+    _requestGroup->getSegmentMan()->getSegment(getCuid(), 0);
 
     prepareForNextAction(this);
 
@@ -458,7 +464,8 @@ bool FtpNegotiationCommand::recvSize() {
 
     if(size > INT64_MAX) {
       throw DL_ABORT_EX
-        (StringFormat(EX_TOO_LARGE_FILE, util::uitos(size, true).c_str()).str());
+        (StringFormat(EX_TOO_LARGE_FILE,
+                      util::uitos(size, true).c_str()).str());
     }
     if(_requestGroup->getPieceStorage().isNull()) {
 
@@ -470,9 +477,9 @@ bool FtpNegotiationCommand::recvSize() {
     }
 
   } else {
-    if(logger->info()) {
-      logger->info("CUID#%s - The remote FTP Server doesn't recognize SIZE"
-                   " command. Continue.", util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info("CUID#%s - The remote FTP Server doesn't recognize SIZE"
+                        " command. Continue.", util::itos(getCuid()).c_str());
     }
     // Even if one of the other servers waiting in the queue supports SIZE
     // command, resuming and segmented downloading are disabled when the first
@@ -555,10 +562,10 @@ bool FtpNegotiationCommand::recvPasv() {
     return true;
   } else {
     // make a data connection to the server.
-    if(logger->info()) {
-      logger->info(MSG_CONNECTING_TO_SERVER, util::itos(cuid).c_str(),
-                   dest.first.c_str(),
-                   dest.second);
+    if(getLogger()->info()) {
+      getLogger()->info(MSG_CONNECTING_TO_SERVER, util::itos(getCuid()).c_str(),
+                        dest.first.c_str(),
+                        dest.second);
     }
     dataSocket.reset(new SocketCore());
     dataSocket->establishConnection(dest.first, dest.second);
@@ -578,15 +585,15 @@ bool FtpNegotiationCommand::resolveProxy()
   if(_proxyAddr.empty()) {
     return false;
   }
-  if(logger->info()) {
-    logger->info(MSG_CONNECTING_TO_SERVER, util::itos(cuid).c_str(),
-                 _proxyAddr.c_str(), proxyReq->getPort());
+  if(getLogger()->info()) {
+    getLogger()->info(MSG_CONNECTING_TO_SERVER, util::itos(getCuid()).c_str(),
+                      _proxyAddr.c_str(), proxyReq->getPort());
   }
   dataSocket.reset(new SocketCore());                  
   dataSocket->establishConnection(_proxyAddr, proxyReq->getPort());
   disableReadCheckSocket();
   setWriteCheckSocket(dataSocket);
-  _http.reset(new HttpConnection(cuid, dataSocket, getOption().get()));
+  _http.reset(new HttpConnection(getCuid(), dataSocket, getOption().get()));
   sequence = SEQ_SEND_TUNNEL_REQUEST;
   return false;
 }
@@ -607,15 +614,16 @@ bool FtpNegotiationCommand::sendTunnelRequest()
             (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED,
                           error.c_str()).str());
         } else {
-          if(logger->info()) {
-            logger->info(MSG_CONNECT_FAILED_AND_RETRY,
-                         util::itos(cuid).c_str(),
-                         _proxyAddr.c_str(), proxyReq->getPort());
+          if(getLogger()->info()) {
+            getLogger()->info(MSG_CONNECT_FAILED_AND_RETRY,
+                              util::itos(getCuid()).c_str(),
+                              _proxyAddr.c_str(), proxyReq->getPort());
           }
           _proxyAddr = nextProxyAddr;
-          if(logger->info()) {
-            logger->info(MSG_CONNECTING_TO_SERVER, util::itos(cuid).c_str(),
-                         _proxyAddr.c_str(), proxyReq->getPort());
+          if(getLogger()->info()) {
+            getLogger()->info(MSG_CONNECTING_TO_SERVER,
+                              util::itos(getCuid()).c_str(),
+                              _proxyAddr.c_str(), proxyReq->getPort());
           }
           dataSocket->establishConnection(_proxyAddr, proxyReq->getPort());
           return false;

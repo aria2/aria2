@@ -76,29 +76,32 @@ bool HttpServerResponseCommand::execute()
   try {
     _httpServer->sendResponse();
   } catch(RecoverableException& e) {
-    if(logger->info()) {
-      logger->info("CUID#%s - Error occurred while transmitting response body.",
-                   e, util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info
+        ("CUID#%s - Error occurred while transmitting response body.",
+         e, util::itos(getCuid()).c_str());
     }
     return true;
   }
   if(_httpServer->sendBufferIsEmpty()) {
-    if(logger->info()) {
-      logger->info("CUID#%s - HttpServer: all response transmitted.",
-                   util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info("CUID#%s - HttpServer: all response transmitted.",
+                        util::itos(getCuid()).c_str());
     }
     if(_httpServer->supportsPersistentConnection()) {
-      if(logger->info()) {
-        logger->info("CUID#%s - Persist connection.", util::itos(cuid).c_str());
+      if(getLogger()->info()) {
+        getLogger()->info("CUID#%s - Persist connection.",
+                          util::itos(getCuid()).c_str());
       }
-      _e->addCommand(new HttpServerCommand(cuid, _httpServer, _e, _socket));
+      _e->addCommand
+        (new HttpServerCommand(getCuid(), _httpServer, _e, _socket));
     }
     return true;
   } else {
     if(_timeoutTimer.difference(global::wallclock) >= 10) {
-      if(logger->info()) {
-        logger->info("CUID#%s - HttpServer: Timeout while trasmitting"
-                     " response.", util::itos(cuid).c_str());
+      if(getLogger()->info()) {
+        getLogger()->info("CUID#%s - HttpServer: Timeout while trasmitting"
+                          " response.", util::itos(getCuid()).c_str());
       }
       return true;
     } else {

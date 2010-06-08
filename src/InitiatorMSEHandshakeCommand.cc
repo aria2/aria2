@@ -150,14 +150,15 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   case INITIATOR_RECEIVE_PAD_D: {
     if(_mseHandshake->receivePad()) {
       SharedHandle<PeerConnection> peerConnection
-        (new PeerConnection(cuid, socket));
-      if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
+        (new PeerConnection(getCuid(), socket));
+      if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4){
         peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
                                          _mseHandshake->getDecryptor());
       }
       PeerInteractionCommand* c =
         new PeerInteractionCommand
-        (cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage, _peerStorage,
+        (getCuid(), _requestGroup, peer, e, _btRuntime, _pieceStorage,
+         _peerStorage,
          socket,
          PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
          peerConnection);
@@ -174,10 +175,11 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
 bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
   if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    if(logger->info()) {
-      logger->info("CUID#%s - Establishing connection using legacy BitTorrent"
-                   " handshake is disabled by preference.",
-                   util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info
+        ("CUID#%s - Establishing connection using legacy BitTorrent"
+         " handshake is disabled by preference.",
+         util::itos(getCuid()).c_str());
     }
     if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
       SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
@@ -192,12 +194,12 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     return true;
   } else {
     // try legacy BitTorrent handshake
-    if(logger->info()) {
-      logger->info("CUID#%s - Retry using legacy BitTorrent handshake.",
-                   util::itos(cuid).c_str());
+    if(getLogger()->info()) {
+      getLogger()->info("CUID#%s - Retry using legacy BitTorrent handshake.",
+                        util::itos(getCuid()).c_str());
     }
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e,
+      new PeerInitiateConnectionCommand(getCuid(), _requestGroup, peer, e,
                                         _btRuntime, false);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
