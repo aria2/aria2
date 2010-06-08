@@ -71,6 +71,11 @@
 #include "a2functional.h"
 #include "DownloadEngine.h"
 #include "wallclock.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -93,7 +98,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     SharedHandle<DHTNode> localNode;
 
     DHTRoutingTableDeserializer deserializer;
-    std::string dhtFile = e->option->get(PREF_DHT_FILE_PATH);
+    std::string dhtFile = e->getOption()->get(PREF_DHT_FILE_PATH);
     try {
       std::ifstream in(dhtFile.c_str(), std::ios::binary);
       if(!in) {
@@ -112,7 +117,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     SharedHandle<DHTConnectionImpl> connection(new DHTConnectionImpl());
     {
       IntSequence seq =
-        util::parseIntRange(e->option->get(PREF_DHT_LISTEN_PORT));
+        util::parseIntRange(e->getOption()->get(PREF_DHT_LISTEN_PORT));
       uint16_t port;
       if(!connection->bind(port, seq)) {
         throw DL_ABORT_EX("Error occurred while binding port for DHT");
@@ -141,7 +146,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
 
     SharedHandle<DHTTokenTracker> tokenTracker(new DHTTokenTracker());
 
-    const time_t messageTimeout = e->option->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
+    const time_t messageTimeout = e->getOption()->getAsInt(PREF_DHT_MESSAGE_TIMEOUT);
     // wiring up
     tracker->setRoutingTable(routingTable);
     tracker->setMessageFactory(factory);
@@ -199,11 +204,11 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       taskQueue->addPeriodicTask1(task);
     }
 
-    if(!e->option->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
+    if(!e->getOption()->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
       {
         std::pair<std::string, uint16_t> addr
-          (e->option->get(PREF_DHT_ENTRY_POINT_HOST),
-           e->option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
+          (e->getOption()->get(PREF_DHT_ENTRY_POINT_HOST),
+           e->getOption()->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
         std::vector<std::pair<std::string, uint16_t> > entryPoints;
         entryPoints.push_back(addr);
         DHTEntryPointNameResolveCommand* command =

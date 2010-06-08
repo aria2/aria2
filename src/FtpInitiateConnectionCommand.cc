@@ -54,6 +54,10 @@
 #include "util.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 

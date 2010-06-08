@@ -72,6 +72,9 @@
 #include "bittorrent_helper.h"
 #include "UTMetadataRequestFactory.h"
 #include "UTMetadataRequestTracker.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -155,7 +158,7 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setPeerStorage(peerStorage);
   dispatcher->setRequestTimeout(getOption()->getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcher->setBtMessageFactory(factory);
-  dispatcher->setRequestGroupMan(e->_requestGroupMan);
+  dispatcher->setRequestGroupMan(e->getRequestGroupMan());
 
   DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
   receiver->setCuid(cuid);
@@ -187,7 +190,7 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractive->setExtensionMessageRegistry(exMsgRegistry);
   btInteractive->setKeepAliveInterval
     (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
-  btInteractive->setRequestGroupMan(e->_requestGroupMan);
+  btInteractive->setRequestGroupMan(e->getRequestGroupMan());
   btInteractive->setBtMessageFactory(factory);
   if((metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0) &&
      !peer->isLocalPeer()) {
@@ -301,7 +304,7 @@ bool PeerInteractionCommand::executeInternal() {
         setWriteCheckSocket(socket);
       }
 
-      if(e->_requestGroupMan->doesOverallDownloadSpeedExceed() ||
+      if(e->getRequestGroupMan()->doesOverallDownloadSpeedExceed() ||
          _requestGroup->doesDownloadSpeedExceed()) {
         disableReadCheckSocket();
         setNoCheck(true);
@@ -316,7 +319,7 @@ bool PeerInteractionCommand::executeInternal() {
   if(btInteractive->countPendingMessage() > 0) {
     setNoCheck(true);
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 
@@ -330,7 +333,7 @@ bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
       (peer->usedBy(), _requestGroup, peer, e, _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
-    e->commands.push_back(command);
+    e->addCommand(command);
   }
   return true;
 }

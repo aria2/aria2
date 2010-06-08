@@ -36,6 +36,9 @@
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 #include "FileEntry.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -46,14 +49,14 @@ AutoSaveCommand::~AutoSaveCommand() {}
 
 void AutoSaveCommand::preProcess()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     _exit = true;
   }
 }
 
 void AutoSaveCommand::process()
 {
-  _e->_requestGroupMan->save();
+  _e->getRequestGroupMan()->save();
 }
 
 } // namespace aria2

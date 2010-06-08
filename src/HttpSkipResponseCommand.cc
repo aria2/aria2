@@ -54,6 +54,10 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -137,7 +141,7 @@ bool HttpSkipResponseCommand::executeInternal()
     return processResponse();
   } else {
     setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
 }

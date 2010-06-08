@@ -134,22 +134,24 @@ DownloadEngineFactory::newDownloadEngine
             abort();
           }
   DownloadEngineHandle e(new DownloadEngine(eventPoll));
-  e->option = op;
+  e->setOption(op);
 
   RequestGroupManHandle
     requestGroupMan(new RequestGroupMan(requestGroups, MAX_CONCURRENT_DOWNLOADS,
                                         op));
-  e->_requestGroupMan = requestGroupMan;
-  e->_fileAllocationMan.reset(new FileAllocationMan());
+  e->setRequestGroupMan(requestGroupMan);
+  e->setFileAllocationMan
+    (SharedHandle<FileAllocationMan>(new FileAllocationMan()));
 #ifdef ENABLE_MESSAGE_DIGEST
-  e->_checkIntegrityMan.reset(new CheckIntegrityMan());
+  e->setCheckIntegrityMan
+    (SharedHandle<CheckIntegrityMan>(new CheckIntegrityMan()));
 #endif // ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(new FillRequestGroupCommand(e->newCUID(), e.get()));
   e->addRoutineCommand(new FileAllocationDispatcherCommand
-                       (e->newCUID(), e->_fileAllocationMan, e.get()));
+                       (e->newCUID(), e->getFileAllocationMan(), e.get()));
 #ifdef ENABLE_MESSAGE_DIGEST
   e->addRoutineCommand(new CheckIntegrityDispatcherCommand
-                       (e->newCUID(), e->_checkIntegrityMan, e.get()));
+                       (e->newCUID(), e->getCheckIntegrityMan(), e.get()));
 #endif // ENABLE_MESSAGE_DIGEST
 
   if(op->getAsInt(PREF_AUTO_SAVE_INTERVAL) > 0) {

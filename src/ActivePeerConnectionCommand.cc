@@ -51,6 +51,10 @@
 #include "bittorrent_helper.h"
 #include "wallclock.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -125,7 +129,7 @@ bool ActivePeerConnectionCommand::execute() {
       }
     }
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 
@@ -140,7 +144,7 @@ void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
                                       _btRuntime);
   command->setPeerStorage(_peerStorage);
   command->setPieceStorage(_pieceStorage);
-  e->commands.push_back(command);
+  e->addCommand(command);
   if(logger->info()) {
     logger->info(MSG_CONNECTING_TO_PEER,
                  util::itos(cuid).c_str(), peer->ipaddr.c_str());

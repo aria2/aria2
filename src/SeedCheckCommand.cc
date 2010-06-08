@@ -41,6 +41,10 @@
 #include "message.h"
 #include "RequestGroup.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -83,7 +87,7 @@ bool SeedCheckCommand::execute() {
       _btRuntime->setHalt(true);
     }
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 

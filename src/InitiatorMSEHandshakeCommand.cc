@@ -54,6 +54,10 @@
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -157,13 +161,13 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
          socket,
          PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
          peerConnection);
-      e->commands.push_back(c);
+      e->addCommand(c);
       return true;
     }
     break;
   }
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 
@@ -183,7 +187,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
                                           e, _btRuntime);
       command->setPeerStorage(_peerStorage);
       command->setPieceStorage(_pieceStorage);
-      e->commands.push_back(command);
+      e->addCommand(command);
     }
     return true;
   } else {
@@ -197,7 +201,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
                                         _btRuntime, false);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
-    e->commands.push_back(command);
+    e->addCommand(command);
     return true;
   }
 }

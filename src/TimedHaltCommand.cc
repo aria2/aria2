@@ -38,6 +38,9 @@
 #include "Logger.h"
 #include "message.h"
 #include "FileEntry.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -51,7 +54,7 @@ TimedHaltCommand::~TimedHaltCommand() {}
 
 void TimedHaltCommand::preProcess()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     _exit = true;
   }
 }

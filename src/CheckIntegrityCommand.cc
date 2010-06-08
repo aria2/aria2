@@ -43,6 +43,9 @@
 #include "a2functional.h"
 #include "RecoverableException.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -58,12 +61,12 @@ CheckIntegrityCommand::~CheckIntegrityCommand() {}
 bool CheckIntegrityCommand::executeInternal()
 {
   if(_requestGroup->isHaltRequested()) {
-    _e->_checkIntegrityMan->dropPickedEntry();
+    _e->getCheckIntegrityMan()->dropPickedEntry();
     return true;
   }
   _entry->validateChunk();
   if(_entry->finished()) {
-    _e->_checkIntegrityMan->dropPickedEntry();
+    _e->getCheckIntegrityMan()->dropPickedEntry();
     // Enable control file saving here. See also
     // RequestGroup::processCheckIntegrityEntry() to know why this is
     // needed.
@@ -94,14 +97,14 @@ bool CheckIntegrityCommand::executeInternal()
     _e->setNoWait(true);
     return true;
   } else {
-    _e->commands.push_back(this);
+    _e->addCommand(this);
     return false;
   }
 }
 
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
-  _e->_checkIntegrityMan->dropPickedEntry();
+  _e->getCheckIntegrityMan()->dropPickedEntry();
   logger->error(MSG_FILE_VALIDATION_FAILURE, e, util::itos(cuid).c_str());
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE,
                 util::itos(cuid).c_str(),

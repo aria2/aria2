@@ -69,6 +69,10 @@
 #include "LpdMessageDispatcher.h"
 #include "message.h"
 #include "SocketCore.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -160,12 +164,12 @@ void BtSetup::setup(std::vector<Command*>& commands,
   }
   if(PeerListenCommand::getNumInstance() == 0) {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
-    IntSequence seq = util::parseIntRange(e->option->get(PREF_LISTEN_PORT));
+    IntSequence seq =util::parseIntRange(e->getOption()->get(PREF_LISTEN_PORT));
     uint16_t port;
     if(listenCommand->bindPort(port, seq)) {
       btRuntime->setListenPort(port);
       // Add command to DownloadEngine directly.
-      e->commands.push_back(listenCommand);
+      e->addCommand(listenCommand);
     } else {
       delete listenCommand;
       throw DL_ABORT_EX(_("Errors occurred while binding port.\n"));
@@ -181,7 +185,8 @@ void BtSetup::setup(std::vector<Command*>& commands,
       SharedHandle<LpdMessageReceiver> receiver
         (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
       bool initialized = false;
-      const std::string& lpdInterface = e->option->get(PREF_BT_LPD_INTERFACE);
+      const std::string& lpdInterface =
+        e->getOption()->get(PREF_BT_LPD_INTERFACE);
       if(lpdInterface.empty()) {
         if(receiver->init("")) {
           initialized = true;
@@ -206,7 +211,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
                       receiver->getLocalAddress().c_str());
         LpdReceiveMessageCommand* cmd =
           LpdReceiveMessageCommand::getInstance(e, receiver);
-        e->commands.push_back(cmd);
+        e->addCommand(cmd);
       } else {
         _logger->info("LpdMessageReceiver not initialized.");
       }
@@ -227,7 +232,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
         LpdDispatchMessageCommand* cmd =
           new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
         cmd->setBtRuntime(btRuntime);
-        e->commands.push_back(cmd);
+        e->addCommand(cmd);
       } else {
         _logger->info("LpdMessageDispatcher not initialized.");
       }

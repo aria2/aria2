@@ -154,16 +154,16 @@ private:
 
   std::multimap<std::string, SocketPoolEntry>::iterator
   findSocketPoolEntry(const std::string& key);
-public:
-  std::deque<Command*> commands;
+
+  std::deque<Command*> _commands;
   SharedHandle<RequestGroupMan> _requestGroupMan;
   SharedHandle<FileAllocationMan> _fileAllocationMan;
   SharedHandle<CheckIntegrityMan> _checkIntegrityMan;
-  Option* option;
-  
+  Option* _option;
+public:  
   DownloadEngine(const SharedHandle<EventPoll>& eventPoll);
 
-  virtual ~DownloadEngine();
+  ~DownloadEngine();
 
   void run();
 
@@ -186,7 +186,55 @@ public:
                                Command* command);
 #endif // ENABLE_ASYNC_DNS
 
-  void addCommand(const std::vector<Command*>& commands);
+  void addCommand(const std::vector<Command*>& commands)
+  {
+    _commands.insert(_commands.end(), commands.begin(), commands.end());
+  }
+
+  void addCommand(Command* command)
+  {
+    _commands.push_back(command);
+  }
+
+  const SharedHandle<RequestGroupMan>& getRequestGroupMan() const
+  {
+    return _requestGroupMan;
+  }
+
+  void setRequestGroupMan(const SharedHandle<RequestGroupMan>& rgman)
+  {
+    _requestGroupMan = rgman;
+  }
+
+  const SharedHandle<FileAllocationMan>& getFileAllocationMan() const
+  {
+    return _fileAllocationMan;
+  }
+
+  void setFileAllocationMan(const SharedHandle<FileAllocationMan>& faman)
+  {
+    _fileAllocationMan = faman;
+  }
+
+  const SharedHandle<CheckIntegrityMan>& getCheckIntegrityMan() const
+  {
+    return _checkIntegrityMan;
+  }
+
+  void setCheckIntegrityMan(const SharedHandle<CheckIntegrityMan>& ciman)
+  {
+    _checkIntegrityMan = ciman;
+  }
+
+  Option* getOption() const
+  {
+    return _option;
+  }
+
+  void setOption(Option* op)
+  {
+    _option = op;
+  }
 
   void setStatCalc(const SharedHandle<StatCalc>& statCalc);
 

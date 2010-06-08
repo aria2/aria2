@@ -47,6 +47,10 @@
 #include "bittorrent_helper.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -94,7 +98,7 @@ bool DHTGetPeersCommand::execute()
     _task.reset();
   }
 
-  _e->commands.push_back(this);
+  _e->addCommand(this);
   return false;
 }
 

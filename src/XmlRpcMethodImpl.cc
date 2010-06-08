@@ -64,6 +64,9 @@
 #include "XmlRpcResponse.h"
 #include "SegmentMan.h"
 #include "TimedHaltCommand.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -146,9 +149,9 @@ static BDE addRequestGroup(const SharedHandle<RequestGroup>& group,
                            bool posGiven, int pos)
 {
   if(posGiven) {
-    e->_requestGroupMan->insertReservedGroup(pos, group);
+    e->getRequestGroupMan()->insertReservedGroup(pos, group);
   } else {
-    e->_requestGroupMan->addReservedGroup(group);
+    e->getRequestGroupMan()->addReservedGroup(group);
   }
   return createGIDResponse(group->getGID());
 }
@@ -205,7 +208,7 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   std::vector<std::string> uris;
   extractUris(std::back_inserter(uris), params[0]);
 
-  SharedHandle<Option> requestOption(new Option(*e->option));
+  SharedHandle<Option> requestOption(new Option(*e->getOption()));
   if(hasDictParam(params, 1)) {
     gatherRequestOption(requestOption, params[1]);
   }
@@ -239,7 +242,7 @@ BDE AddTorrentXmlRpcMethod::process
   if(params.size() > 1 && params[1].isList()) {
     extractUris(std::back_inserter(uris), params[1]);
   }
-  SharedHandle<Option> requestOption(new Option(*e->option));
+  SharedHandle<Option> requestOption(new Option(*e->getOption()));
   if(hasDictParam(params, 2)) {
     gatherRequestOption(requestOption, params[2]);
   }
@@ -270,7 +273,7 @@ BDE AddMetalinkXmlRpcMethod::process
     throw DL_ABORT_EX("Metalink data is not provided.");
   }
   
-  SharedHandle<Option> requestOption(new Option(*e->option));
+  SharedHandle<Option> requestOption(new Option(*e->getOption()));
   if(hasDictParam(params, 1)) {
     gatherRequestOption(requestOption, params[1]);
   };
@@ -282,9 +285,9 @@ BDE AddMetalinkXmlRpcMethod::process
   createRequestGroupForMetalink(result, requestOption, params[0].s());
   if(!result.empty()) {
     if(posGiven) {
-      e->_requestGroupMan->insertReservedGroup(pos, result);
+      e->getRequestGroupMan()->insertReservedGroup(pos, result);
     } else {
-      e->_requestGroupMan->addReservedGroup(result);
+      e->getRequestGroupMan()->addReservedGroup(result);
     }
     BDE gids = BDE::list();
     for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
@@ -310,17 +313,18 @@ static BDE removeDownload
   
   gid_t gid = util::parseLLInt(params[0].s());
 
-  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  SharedHandle<RequestGroup> group =
+    e->getRequestGroupMan()->findRequestGroup(gid);
 
   if(group.isNull()) {
-    group = e->_requestGroupMan->findReservedGroup(gid);
+    group = e->getRequestGroupMan()->findReservedGroup(gid);
     if(group.isNull()) {
       throw DL_ABORT_EX
         (StringFormat("Active Download not found for GID#%s",
                       util::itos(gid).c_str()).str());
     }
     if(group->isDependencyResolved()) {
-      e->_requestGroupMan->removeReservedGroup(gid);
+      e->getRequestGroupMan()->removeReservedGroup(gid);
     } else {
       throw DL_ABORT_EX
         (StringFormat("GID#%s cannot be removed now",
@@ -383,10 +387,11 @@ static BDE pauseDownload
   }
   gid_t gid = util::parseLLInt(params[0].s());
   bool reserved = false;
-  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  SharedHandle<RequestGroup> group =
+    e->getRequestGroupMan()->findRequestGroup(gid);
   if(group.isNull()) {
     reserved = true;
-    group = e->_requestGroupMan->findReservedGroup(gid);
+    group = e->getRequestGroupMan()->findReservedGroup(gid);
   }
   if(!group.isNull() && pauseRequestGroup(group, reserved, forcePause)) {
     return createGIDResponse(gid);
@@ -420,10 +425,10 @@ static BDE pauseAllDownloads
 (const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   const std::deque<SharedHandle<RequestGroup> >& groups =
-    e->_requestGroupMan->getRequestGroups();
+    e->getRequestGroupMan()->getRequestGroups();
   pauseRequestGroups(groups.begin(), groups.end(), false, forcePause);
   const std::deque<SharedHandle<RequestGroup> >& reservedGroups =
-    e->_requestGroupMan->getReservedGroups();
+    e->getRequestGroupMan()->getReservedGroups();
   pauseRequestGroups(reservedGroups.begin(), reservedGroups.end(),
                      true, forcePause);
   return BDE_OK;
@@ -448,14 +453,15 @@ BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
   gid_t gid = util::parseLLInt(params[0].s());
-  SharedHandle<RequestGroup> group =e->_requestGroupMan->findReservedGroup(gid);
+  SharedHandle<RequestGroup> group =
+    e->getRequestGroupMan()->findReservedGroup(gid);
   if(group.isNull() || !group->isPauseRequested()) {
     throw DL_ABORT_EX
       (StringFormat("GID#%s cannot be unpaused now",
                     util::itos(gid).c_str()).str());
   } else {
     group->setPauseRequested(false);
-    e->_requestGroupMan->requestQueueCheck();    
+    e->getRequestGroupMan()->requestQueueCheck();    
   }
   return createGIDResponse(gid);
 }
@@ -463,11 +469,11 @@ BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 BDE UnpauseAllXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
   const std::deque<SharedHandle<RequestGroup> >& groups =
-    e->_requestGroupMan->getReservedGroups();
+    e->getRequestGroupMan()->getReservedGroups();
   std::for_each(groups.begin(), groups.end(),
                 std::bind2nd(mem_fun_sh(&RequestGroup::setPauseRequested),
                              false));
-  e->_requestGroupMan->requestQueueCheck();    
+  e->getRequestGroupMan()->requestQueueCheck();    
   return BDE_OK;
 }
 
@@ -710,10 +716,11 @@ BDE GetFilesXmlRpcMethod::process
   gid_t gid = util::parseLLInt(params[0].s());
 
   BDE files = BDE::list();
-  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  SharedHandle<RequestGroup> group =
+    findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
     SharedHandle<DownloadResult> dr =
-      e->_requestGroupMan->findDownloadResult(gid);
+      e->getRequestGroupMan()->findDownloadResult(gid);
     if(dr.isNull()) {
       throw DL_ABORT_EX
         (StringFormat("No file data is available for GID#%s",
@@ -741,7 +748,8 @@ BDE GetUrisXmlRpcMethod::process
   
   gid_t gid = util::parseLLInt(params[0].s());
 
-  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  SharedHandle<RequestGroup> group =
+    findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
       (StringFormat("No URI data is available for GID#%s",
@@ -768,7 +776,8 @@ BDE GetPeersXmlRpcMethod::process
   
   gid_t gid = util::parseLLInt(params[0].s());
 
-  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  SharedHandle<RequestGroup> group =
+    findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
       (StringFormat("No peer data is available for GID#%s",
@@ -796,14 +805,15 @@ BDE TellStatusXmlRpcMethod::process
   
   gid_t gid = util::parseLLInt(params[0].s());
 
-  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  SharedHandle<RequestGroup> group =
+    e->getRequestGroupMan()->findRequestGroup(gid);
 
   BDE entryDict = BDE::dict();
   if(group.isNull()) {
-    group = e->_requestGroupMan->findReservedGroup(gid);
+    group = e->getRequestGroupMan()->findReservedGroup(gid);
     if(group.isNull()) {
       SharedHandle<DownloadResult> ds =
-        e->_requestGroupMan->findDownloadResult(gid);
+        e->getRequestGroupMan()->findDownloadResult(gid);
       if(ds.isNull()) {
         throw DL_ABORT_EX
           (StringFormat("No such download for GID#%s",
@@ -830,7 +840,7 @@ BDE TellActiveXmlRpcMethod::process
 {
   BDE list = BDE::list();
   const std::deque<SharedHandle<RequestGroup> >& groups =
-    e->_requestGroupMan->getRequestGroups();
+    e->getRequestGroupMan()->getRequestGroups();
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
         groups.begin(), eoi = groups.end(); i != eoi; ++i) {
     BDE entryDict = BDE::dict();
@@ -844,7 +854,7 @@ BDE TellActiveXmlRpcMethod::process
 const std::deque<SharedHandle<RequestGroup> >&
 TellWaitingXmlRpcMethod::getItems(DownloadEngine* e) const
 {
-  return e->_requestGroupMan->getReservedGroups();
+  return e->getRequestGroupMan()->getReservedGroups();
 }
 
 void TellWaitingXmlRpcMethod::createEntry
@@ -862,7 +872,7 @@ void TellWaitingXmlRpcMethod::createEntry
 const std::deque<SharedHandle<DownloadResult> >&
 TellStoppedXmlRpcMethod::getItems(DownloadEngine* e) const
 {
-  return e->_requestGroupMan->getDownloadResults();
+  return e->getRequestGroupMan()->getDownloadResults();
 }
 
 void TellStoppedXmlRpcMethod::createEntry
@@ -875,7 +885,7 @@ void TellStoppedXmlRpcMethod::createEntry
 BDE PurgeDownloadResultXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  e->_requestGroupMan->purgeDownloadResult();
+  e->getRequestGroupMan()->purgeDownloadResult();
   return BDE_OK;
 }
 
@@ -889,7 +899,8 @@ BDE ChangeOptionXmlRpcMethod::process
   }  
   gid_t gid = util::parseLLInt(params[0].s());
 
-  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  SharedHandle<RequestGroup> group =
+    findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
       (StringFormat("Cannot change option for GID#%s",
@@ -928,20 +939,20 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
   }
   SharedHandle<Option> option(new Option());
   gatherChangeableGlobalOption(option, params[0]);
-  applyChangeableGlobalOption(e->option, option.get());
+  applyChangeableGlobalOption(e->getOption(), option.get());
 
   if(option->defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
-    e->_requestGroupMan->setMaxOverallDownloadSpeedLimit
+    e->getRequestGroupMan()->setMaxOverallDownloadSpeedLimit
       (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
   }
   if(option->defined(PREF_MAX_OVERALL_UPLOAD_LIMIT)) {
-    e->_requestGroupMan->setMaxOverallUploadSpeedLimit
+    e->getRequestGroupMan()->setMaxOverallUploadSpeedLimit
       (option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
   }
   if(option->defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
-    e->_requestGroupMan->setMaxSimultaneousDownloads
+    e->getRequestGroupMan()->setMaxSimultaneousDownloads
       (option->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
-    e->_requestGroupMan->requestQueueCheck();
+    e->getRequestGroupMan()->requestQueueCheck();
   }
   return BDE_OK;
 }
@@ -985,7 +996,8 @@ BDE GetOptionXmlRpcMethod::process
   }  
   gid_t gid = util::parseLLInt(params[0].s());
 
-  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  SharedHandle<RequestGroup> group =
+    findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
       (StringFormat("Cannot get option for GID#%s",
@@ -1001,8 +1013,8 @@ BDE GetGlobalOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   BDE result = BDE::dict();
-  for(std::map<std::string, std::string>::const_iterator i = e->option->begin(),
-        eoi = e->option->end(); i != eoi; ++i) {
+  for(std::map<std::string, std::string>::const_iterator i =
+        e->getOption()->begin(), eoi = e->getOption()->end(); i != eoi; ++i) {
     SharedHandle<OptionHandler> h = _optionParser->findByName((*i).first);
     if(!h.isNull() && !h->isHidden()) {
       result[(*i).first] = (*i).second;
@@ -1035,7 +1047,7 @@ BDE ChangePositionXmlRpcMethod::process
     throw DL_ABORT_EX("Illegal argument.");
   }
   size_t destPos =
-    e->_requestGroupMan->changeReservedGroupPosition(gid, pos, how);
+    e->getRequestGroupMan()->changeReservedGroupPosition(gid, pos, how);
   BDE result(destPos);
   return result;
 }
@@ -1058,7 +1070,8 @@ BDE GetServersXmlRpcMethod::process
     throw DL_ABORT_EX("Bad request");
   }
   gid_t gid = util::parseLLInt(params[0].s());
-  SharedHandle<RequestGroup> group = e->_requestGroupMan->findRequestGroup(gid);
+  SharedHandle<RequestGroup> group =
+    e->getRequestGroupMan()->findRequestGroup(gid);
   if(group.isNull()) {
     throw DL_ABORT_EX(StringFormat("No active download for GID#%s",
                                    util::itos(gid).c_str()).str());
@@ -1112,7 +1125,8 @@ BDE ChangeUriXmlRpcMethod::process
   size_t index = params[1].i()-1;
   const BDE& deluris = params[2];
   const BDE& adduris = params[3];
-  SharedHandle<RequestGroup> group = findRequestGroup(e->_requestGroupMan, gid);
+  SharedHandle<RequestGroup> group =
+    findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
     throw DL_ABORT_EX
       (StringFormat("Cannot remove URIs from GID#%s",

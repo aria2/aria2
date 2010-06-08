@@ -45,6 +45,11 @@
 #include "StringFormat.h"
 #include "wallclock.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -65,7 +70,7 @@ PeerAbstractCommand::PeerAbstractCommand(cuid_t cuid,
     setReadCheckSocket(socket);
   }
   // TODO referring global option
-  timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
+  timeout = e->getOption()->getAsInt(PREF_BT_TIMEOUT);
 }
 
 PeerAbstractCommand::~PeerAbstractCommand()

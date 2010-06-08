@@ -57,6 +57,8 @@
 #include "DownloadContext.h"
 #include "SessionSerializer.h"
 #include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 #ifdef ENABLE_SSL
 # include "SocketCore.h"
 # include "TLSContext.h"
@@ -176,8 +178,8 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
 
     std::string serverStatIf = _option->get(PREF_SERVER_STAT_IF);
     if(!serverStatIf.empty()) {
-      e->_requestGroupMan->loadServerStat(serverStatIf);
-      e->_requestGroupMan->removeStaleServerStat
+      e->getRequestGroupMan()->loadServerStat(serverStatIf);
+      e->getRequestGroupMan()->removeStaleServerStat
         (_option->getAsInt(PREF_SERVER_STAT_TIMEOUT));
     }
     e->setStatCalc(_statCalc);
@@ -195,12 +197,13 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
 
     std::string serverStatOf = _option->get(PREF_SERVER_STAT_OF);
     if(!serverStatOf.empty()) {
-      e->_requestGroupMan->saveServerStat(serverStatOf);
+      e->getRequestGroupMan()->saveServerStat(serverStatOf);
     }
-    e->_requestGroupMan->showDownloadResults(_summaryOut);
+    e->getRequestGroupMan()->showDownloadResults(_summaryOut);
     _summaryOut << std::flush;
 
-    RequestGroupMan::DownloadStat s = e->_requestGroupMan->getDownloadStat();
+    RequestGroupMan::DownloadStat s =
+      e->getRequestGroupMan()->getDownloadStat();
     if(!s.allCompleted()) {
       printMessageForContinue();
       if(s.getLastErrorResult() == downloadresultcode::FINISHED &&
@@ -210,7 +213,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
         returnValue = s.getLastErrorResult();
       }
     }
-    SessionSerializer sessionSerializer(e->_requestGroupMan);
+    SessionSerializer sessionSerializer(e->getRequestGroupMan());
     // TODO Add option: --save-session-status=error,inprogress,waiting
     if(!_option->blank(PREF_SAVE_SESSION)) {
       const std::string& filename = _option->get(PREF_SAVE_SESSION);

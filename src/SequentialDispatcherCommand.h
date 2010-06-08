@@ -62,11 +62,11 @@ public:
   
   virtual bool execute()
   {
-    if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+    if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
       return true;
     }
     if(_picker->hasNext() && !_picker->isPicked()) {
-      _e->commands.push_back(createCommand(_picker->pickNext()));
+      _e->addCommand(createCommand(_picker->pickNext()));
 
       _e->setNoWait(true);
     }

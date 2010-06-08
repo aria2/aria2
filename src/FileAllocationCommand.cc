@@ -46,6 +46,9 @@
 #include "a2functional.h"
 #include "RecoverableException.h"
 #include "wallclock.h"
+#include "RequestGroupMan.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -60,7 +63,7 @@ FileAllocationCommand::~FileAllocationCommand() {}
 bool FileAllocationCommand::executeInternal()
 {
   if(_requestGroup->isHaltRequested()) {
-    _e->_fileAllocationMan->dropPickedEntry();
+    _e->getFileAllocationMan()->dropPickedEntry();
     return true;
   }
   _fileAllocationEntry->allocateChunk();
@@ -70,7 +73,7 @@ bool FileAllocationCommand::executeInternal()
                     _timer.difference(global::wallclock),
                     util::itos(_requestGroup->getTotalLength(), true).c_str());
     }
-    _e->_fileAllocationMan->dropPickedEntry();
+    _e->getFileAllocationMan()->dropPickedEntry();
     
     std::vector<Command*> commands;
     try {
@@ -83,14 +86,14 @@ bool FileAllocationCommand::executeInternal()
     _e->setNoWait(true);
     return true;
   } else {
-    _e->commands.push_back(this);
+    _e->addCommand(this);
     return false;
   }
 }
 
 bool FileAllocationCommand::handleException(Exception& e)
 {
-  _e->_fileAllocationMan->dropPickedEntry();
+  _e->getFileAllocationMan()->dropPickedEntry();
   logger->error(MSG_FILE_ALLOCATION_FAILURE, e, util::itos(cuid).c_str());
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, util::itos(cuid).c_str(),
                 _requestGroup->getDownloadContext()->getBasePath().c_str());

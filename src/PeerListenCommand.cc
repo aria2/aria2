@@ -48,6 +48,9 @@
 #include "SimpleRandomizer.h"
 #include "FileEntry.h"
 #include "util.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -108,7 +111,7 @@ uint16_t PeerListenCommand::getPort() const
 }
 
 bool PeerListenCommand::execute() {
-  if(e->isHaltRequested() || e->_requestGroupMan->downloadFinished()) {
+  if(e->isHaltRequested() || e->getRequestGroupMan()->downloadFinished()) {
     return true;
   }
   for(int i = 0; i < 3 && socket->isReadable(0); ++i) {
@@ -124,7 +127,7 @@ bool PeerListenCommand::execute() {
       cuid_t cuid = e->newCUID();
       Command* command =
         new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
-      e->commands.push_back(command);
+      e->addCommand(command);
       if(logger->debug()) {
         logger->debug("Accepted the connection from %s:%u.",
                       peer->ipaddr.c_str(),
@@ -136,7 +139,7 @@ bool PeerListenCommand::execute() {
       logger->debug(MSG_ACCEPT_FAILURE, ex, util::itos(cuid).c_str());
     }               
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 

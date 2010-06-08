@@ -41,6 +41,9 @@
 #include "Command.h"
 #include "DownloadEngine.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 

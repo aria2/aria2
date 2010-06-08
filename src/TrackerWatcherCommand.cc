@@ -61,6 +61,10 @@
 #include "bittorrent_helper.h"
 #include "a2functional.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -87,7 +91,7 @@ bool TrackerWatcherCommand::execute() {
       return true;
     } else {
       _trackerRequestGroup->setForceHaltRequested(true);
-      e->commands.push_back(this);
+      e->addCommand(this);
       return false;
     }
   }
@@ -136,7 +140,7 @@ bool TrackerWatcherCommand::execute() {
       _btAnnounce->resetAnnounce();
     }
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 
@@ -175,7 +179,7 @@ void TrackerWatcherCommand::processTrackerResponse
       (peer->usedBy(), _requestGroup, peer, e, _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
-    e->commands.push_back(command);
+    e->addCommand(command);
     if(logger->debug()) {
       logger->debug("CUID#%s - Adding new command CUID#%s",
                     util::itos(cuid).c_str(),

@@ -41,6 +41,8 @@
 #include "Logger.h"
 #include "DownloadContext.h"
 #include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -59,7 +61,7 @@ bool FillRequestGroupCommand::execute()
   if(_e->isHaltRequested()) {
     return true;
   }
-  SharedHandle<RequestGroupMan> rgman = _e->_requestGroupMan;
+  SharedHandle<RequestGroupMan> rgman = _e->getRequestGroupMan();
   if(rgman->queueCheckRequested()) {
     try {
       // During adding RequestGroup,

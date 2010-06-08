@@ -67,6 +67,8 @@
 #include "Command.h"
 #include "FileEntry.h"
 #include "StringFormat.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -379,7 +381,7 @@ public:
                 ("Adding %lu RequestGroups as a result of PostDownloadHandler.",
                  static_cast<unsigned long>(nextGroups.size()));
             }
-            _e->_requestGroupMan->insertReservedGroup(0, nextGroups);
+            _e->getRequestGroupMan()->insertReservedGroup(0, nextGroups);
           }
         } else {
           group->saveControlFile();
@@ -395,11 +397,11 @@ public:
       group->releaseRuntimeResource(_e);
       if(group->isPauseRequested()) {
         group->setForceHaltRequested(false);
-        executeHookByOptName(group, _e->option, PREF_ON_DOWNLOAD_PAUSE);
+        executeHookByOptName(group, _e->getOption(), PREF_ON_DOWNLOAD_PAUSE);
         // TODO Should we have to prepend spend uris to remaining uris
         // in case PREF_REUSE_URI is disabed?
       } else {
-        executeStopHook(_downloadResults.back(), _e->option);
+        executeStopHook(_downloadResults.back(), _e->getOption());
       }
     }
   }
@@ -541,7 +543,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       ++count;
       e->addCommand(commands);
       commands.clear();
-      executeHookByOptName(groupToAdd, e->option, PREF_ON_DOWNLOAD_START);
+      executeHookByOptName(groupToAdd, e->getOption(), PREF_ON_DOWNLOAD_START);
     } catch(RecoverableException& ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
       if(_logger->debug()) {

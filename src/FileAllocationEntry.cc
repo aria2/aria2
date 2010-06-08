@@ -39,6 +39,9 @@
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 

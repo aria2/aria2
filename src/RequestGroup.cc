@@ -76,6 +76,7 @@
 #include "a2functional.h"
 #include "SocketCore.h"
 #include "SimpleRandomizer.h"
+#include "ServerStatMan.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -221,7 +222,7 @@ void RequestGroup::createInitialCommand
         // Use UnknownLengthPieceStorage.
         initPieceStorage();
       } else {
-        if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
+        if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
           throw DOWNLOAD_FAILURE_EXCEPTION
             (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
                           _downloadContext->getBasePath().c_str()).str());
@@ -356,7 +357,7 @@ void RequestGroup::createInitialCommand
           command->setTaskFactory(DHTRegistry::_taskFactory);
           command->setRoutingTable(DHTRegistry::_routingTable);
           command->setLocalNode(DHTRegistry::_localNode);
-          e->commands.push_back(command);
+          e->addCommand(command);
         }
       }
       SharedHandle<CheckIntegrityEntry> entry(new BtCheckIntegrityEntry(this));
@@ -379,7 +380,7 @@ void RequestGroup::createInitialCommand
        _downloadContext->getTotalLength() == 0) {
       createNextCommand(commands, e, 1);
     }else {
-      if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
+      if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
         throw DOWNLOAD_FAILURE_EXCEPTION
           (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
                         _downloadContext->getBasePath().c_str()).str());
@@ -408,7 +409,7 @@ void RequestGroup::createInitialCommand
   } else {
     // In this context, multiple FileEntry objects are in
     // DownloadContext.
-    if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
+    if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
         (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
                       _downloadContext->getBasePath().c_str()).str());
@@ -467,7 +468,7 @@ void RequestGroup::processCheckIntegrityEntry
     // enableSaveControlFile() will be called after hash checking is
     // done. See CheckIntegrityCommand.
     disableSaveControlFile();
-    e->_checkIntegrityMan->pushEntry(entry);
+    e->getCheckIntegrityMan()->pushEntry(entry);
   } else
 #endif // ENABLE_MESSAGE_DIGEST
     {

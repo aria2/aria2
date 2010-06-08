@@ -46,6 +46,10 @@
 #include "message.h"
 #include "HttpHeader.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -66,13 +70,13 @@ bool AbstractProxyResponseCommand::executeInternal() {
   SharedHandle<HttpResponse> httpResponse = httpConnection->receiveResponse();
   if(httpResponse.isNull()) {
     // the server has not responded our request yet.
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
   if(httpResponse->getResponseStatus() != HttpHeader::S200) {
     throw DL_RETRY_EX(EX_PROXY_CONNECTION_FAILED);
   }
-  e->commands.push_back(getNextCommand());
+  e->addCommand(getNextCommand());
   return true;
 }
 

@@ -55,6 +55,9 @@
 #include "FileEntry.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -65,7 +68,7 @@ DHTAutoSaveCommand::~DHTAutoSaveCommand() {}
 
 void DHTAutoSaveCommand::preProcess()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     save();
     _exit = true;
   }
@@ -78,7 +81,7 @@ void DHTAutoSaveCommand::process()
 
 void DHTAutoSaveCommand::save()
 {
-  std::string dhtFile = _e->option->get(PREF_DHT_FILE_PATH);
+  std::string dhtFile = _e->getOption()->get(PREF_DHT_FILE_PATH);
   logger->info("Saving DHT routing table to %s.", dhtFile.c_str());
 
   std::string tempFile = dhtFile;

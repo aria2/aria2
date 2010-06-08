@@ -21,6 +21,8 @@
 #include "util.h"
 #include "array_fun.h"
 #include "download_helper.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 # include "BtRuntime.h"
@@ -92,14 +94,14 @@ public:
     _option.reset(new Option());
     _option->put(PREF_DIR, "/tmp");
     _option->put(PREF_SEGMENT_SIZE, "1048576");
-    _e.reset(new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
-    _e->option = _option.get();
-    _e->_requestGroupMan.reset
-      (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
-                           1, _option.get()));
+    _e.reset
+      (new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
+    _e->setOption(_option.get());
+    _e->setRequestGroupMan
+      (SharedHandle<RequestGroupMan>
+       (new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
+                            1, _option.get())));
   }
-
-  void tearDown() {}
 
   void testAddUri();
   void testAddUri_withoutUri();
@@ -159,10 +161,11 @@ void XmlRpcMethodTest::testAddUri()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     const std::deque<SharedHandle<RequestGroup> > rgs =
-      _e->_requestGroupMan->getReservedGroups();
+      _e->getRequestGroupMan()->getReservedGroups();
     CPPUNIT_ASSERT_EQUAL((size_t)1, rgs.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/"),
-                         rgs.front()->getDownloadContext()->getFirstFileEntry()->getRemainingUris().front());
+                         rgs.front()->getDownloadContext()->
+                         getFirstFileEntry()->getRemainingUris().front());
   }
   // with options
   BDE opt = BDE::dict();
@@ -172,7 +175,7 @@ void XmlRpcMethodTest::testAddUri()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink"),
-                         _e->_requestGroupMan->findReservedGroup(2)->
+                         _e->getRequestGroupMan()->findReservedGroup(2)->
                          getDownloadContext()->getDir());
   }
 }
@@ -225,7 +228,8 @@ void XmlRpcMethodTest::testAddUri_withPosition()
   m.execute(req2, _e.get());
 
   std::string uri =
-    _e->_requestGroupMan->getReservedGroups()[0]->getDownloadContext()->getFirstFileEntry()->getRemainingUris()[0];
+    _e->getRequestGroupMan()->getReservedGroups()[0]->
+    getDownloadContext()->getFirstFileEntry()->getRemainingUris()[0];
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://uri2"), uri);
 }
@@ -256,13 +260,17 @@ void XmlRpcMethodTest::testAddTorrent()
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("1"), res._param.s());
 
-    SharedHandle<RequestGroup> group = _e->_requestGroupMan->findReservedGroup(1);
+    SharedHandle<RequestGroup> group =
+      _e->getRequestGroupMan()->findReservedGroup(1);
     CPPUNIT_ASSERT(!group.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.8.2.tar.bz2"),
                          group->getFirstFilePath());
-    CPPUNIT_ASSERT_EQUAL((size_t)1, group->getDownloadContext()->getFirstFileEntry()->getRemainingUris().size());
+    CPPUNIT_ASSERT_EQUAL((size_t)1,
+                         group->getDownloadContext()->getFirstFileEntry()->
+                         getRemainingUris().size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/aria2-0.8.2.tar.bz2"),
-                         group->getDownloadContext()->getFirstFileEntry()->getRemainingUris()[0]);
+                         group->getDownloadContext()->getFirstFileEntry()->
+                         getRemainingUris()[0]);
   }
   // with options
   BDE opt = BDE::dict();
@@ -272,7 +280,8 @@ void XmlRpcMethodTest::testAddTorrent()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-0.8.2.tar.bz2"),
-                         _e->_requestGroupMan->findReservedGroup(2)->getFirstFilePath());
+                         _e->getRequestGroupMan()->findReservedGroup(2)->
+                         getFirstFilePath());
   }
 }
 
@@ -311,7 +320,7 @@ void XmlRpcMethodTest::testAddTorrent_withPosition()
   m.execute(req2, _e.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)1,
-                       _e->_requestGroupMan->getReservedGroups()[0]->
+                       _e->getRequestGroupMan()->getReservedGroups()[0]->
                        getDownloadContext()->getFileEntries().size());
 }
 
@@ -330,11 +339,13 @@ void XmlRpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL(std::string("1"), res._param[0].s());
     CPPUNIT_ASSERT_EQUAL(std::string("2"), res._param[1].s());
 
-    SharedHandle<RequestGroup> tar = _e->_requestGroupMan->findReservedGroup(1);
+    SharedHandle<RequestGroup> tar =
+      _e->getRequestGroupMan()->findReservedGroup(1);
     CPPUNIT_ASSERT(!tar.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
                          tar->getFirstFilePath());
-    SharedHandle<RequestGroup> deb = _e->_requestGroupMan->findReservedGroup(2);
+    SharedHandle<RequestGroup> deb =
+      _e->getRequestGroupMan()->findReservedGroup(2);
     CPPUNIT_ASSERT(!deb.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.deb"),
                          deb->getFirstFilePath());
@@ -347,7 +358,8 @@ void XmlRpcMethodTest::testAddMetalink()
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res._code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-5.0.0.tar.bz2"),
-                         _e->_requestGroupMan->findReservedGroup(3)->getFirstFilePath());
+                         _e->getRequestGroupMan()->findReservedGroup(3)->
+                         getFirstFilePath());
   }
 }
 
@@ -386,7 +398,7 @@ void XmlRpcMethodTest::testAddMetalink_withPosition()
   CPPUNIT_ASSERT_EQUAL(0, res2._code);
 
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
-                       _e->_requestGroupMan->getReservedGroups()[0]->
+                       _e->getRequestGroupMan()->getReservedGroups()[0]->
                        getFirstFilePath());
 }
 
@@ -395,7 +407,7 @@ void XmlRpcMethodTest::testAddMetalink_withPosition()
 void XmlRpcMethodTest::testChangeOption()
 {
   SharedHandle<RequestGroup> group(new RequestGroup(_option));
-  _e->_requestGroupMan->addReservedGroup(group);
+  _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
   XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
@@ -438,7 +450,7 @@ void XmlRpcMethodTest::testChangeOption()
 void XmlRpcMethodTest::testChangeOption_withBadOption()
 {
   SharedHandle<RequestGroup> group(new RequestGroup(_option));
-  _e->_requestGroupMan->addReservedGroup(group);
+  _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
   XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
@@ -453,7 +465,7 @@ void XmlRpcMethodTest::testChangeOption_withBadOption()
 void XmlRpcMethodTest::testChangeOption_withNotAllowedOption()
 {
   SharedHandle<RequestGroup> group(new RequestGroup(_option));
-  _e->_requestGroupMan->addReservedGroup(group);
+  _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
   XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
@@ -476,7 +488,8 @@ void XmlRpcMethodTest::testChangeOption_withoutGid()
 void XmlRpcMethodTest::testChangeGlobalOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
-  XmlRpcRequest req(ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req
+    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
 #ifdef ENABLE_BITTORRENT
@@ -486,22 +499,25 @@ void XmlRpcMethodTest::testChangeGlobalOption()
   XmlRpcResponse res = m.execute(req, _e.get());
 
   CPPUNIT_ASSERT_EQUAL(0, res._code);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
-                       _e->_requestGroupMan->getMaxOverallDownloadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL
+    ((unsigned int)100*1024,
+     _e->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
-                       _e->option->get(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
+                       _e->getOption()->get(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
-                       _e->_requestGroupMan->getMaxOverallUploadSpeedLimit());
+  CPPUNIT_ASSERT_EQUAL
+    ((unsigned int)50*1024,
+     _e->getRequestGroupMan()->getMaxOverallUploadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
-                       _e->option->get(PREF_MAX_OVERALL_UPLOAD_LIMIT));
+                       _e->getOption()->get(PREF_MAX_OVERALL_UPLOAD_LIMIT));
 #endif // ENABLE_BITTORRENT
 }
 
 void XmlRpcMethodTest::testChangeGlobalOption_withBadOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
-  XmlRpcRequest req(ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req
+    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("badvalue");
   req._params << opt;
@@ -512,7 +528,8 @@ void XmlRpcMethodTest::testChangeGlobalOption_withBadOption()
 void XmlRpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
-  XmlRpcRequest req(ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req
+    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
   BDE opt = BDE::dict();
   opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
   req._params << opt;
@@ -756,9 +773,9 @@ void XmlRpcMethodTest::testGatherBitTorrentMetadata()
 
 void XmlRpcMethodTest::testChangePosition()
 {
-  _e->_requestGroupMan->addReservedGroup
+  _e->getRequestGroupMan()->addReservedGroup
     (SharedHandle<RequestGroup>(new RequestGroup(_option)));
-  _e->_requestGroupMan->addReservedGroup
+  _e->getRequestGroupMan()->addReservedGroup
     (SharedHandle<RequestGroup>(new RequestGroup(_option)));
 
   ChangePositionXmlRpcMethod m;
@@ -770,7 +787,7 @@ void XmlRpcMethodTest::testChangePosition()
   CPPUNIT_ASSERT_EQUAL(0, res._code);
   CPPUNIT_ASSERT_EQUAL((int64_t)1, res._param.i());
   CPPUNIT_ASSERT_EQUAL
-    ((gid_t)1, _e->_requestGroupMan->getReservedGroups()[1]->getGID());
+    ((gid_t)1, _e->getRequestGroupMan()->getReservedGroups()[1]->getGID());
 }
 
 void XmlRpcMethodTest::testChangePosition_fail()
@@ -799,7 +816,7 @@ void XmlRpcMethodTest::testChangeUri()
   dctx->setFileEntries(&files[0], &files[3]);
   SharedHandle<RequestGroup> group(new RequestGroup(_option));
   group->setDownloadContext(dctx);
-  _e->_requestGroupMan->addReservedGroup(group);
+  _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeUriXmlRpcMethod m;
   XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
@@ -869,7 +886,7 @@ void XmlRpcMethodTest::testChangeUri_fail()
   dctx->setFileEntries(&files[0], &files[3]);
   SharedHandle<RequestGroup> group(new RequestGroup(_option));
   group->setDownloadContext(dctx);
-  _e->_requestGroupMan->addReservedGroup(group);
+  _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeUriXmlRpcMethod m;
   XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
@@ -933,7 +950,7 @@ void XmlRpcMethodTest::testPause()
   std::vector<SharedHandle<RequestGroup> > groups;
   createRequestGroupForUri(groups, _option, uris);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());  
-  _e->_requestGroupMan->addReservedGroup(groups);
+  _e->getRequestGroupMan()->addReservedGroup(groups);
   {
     PauseXmlRpcMethod m;
     XmlRpcRequest req(PauseXmlRpcMethod::getMethodName(), BDE::list());

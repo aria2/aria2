@@ -37,6 +37,10 @@
 #include "DownloadEngine.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -54,11 +58,11 @@ bool SleepCommand::execute() {
   if(_requestGroup->downloadFinished() || _requestGroup->isHaltRequested()) {
     return true;
   } else if(checkPoint.difference(global::wallclock) >= wait) {
-    engine->commands.push_back(nextCommand);
+    engine->addCommand(nextCommand);
     nextCommand = 0;
     return true;
   } else {
-    engine->commands.push_back(this);
+    engine->addCommand(this);
     return false;
   }
 }

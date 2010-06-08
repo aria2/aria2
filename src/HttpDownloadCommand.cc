@@ -48,6 +48,10 @@
 #include "Range.h"
 #include "DownloadContext.h"
 #include "Decoder.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -78,7 +82,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     if(resolveProxyMethod(req->getProtocol()) == V_GET) {
       command->setProxyRequest(createProxyRequest());
     }
-    e->commands.push_back(command);
+    e->addCommand(command);
     return true;
   } else {
     if(req->isPipeliningEnabled() ||

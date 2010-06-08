@@ -111,8 +111,8 @@ DownloadEngine::~DownloadEngine() {
 }
 
 void DownloadEngine::cleanQueue() {
-  std::for_each(commands.begin(), commands.end(), Deleter());
-  commands.clear();
+  std::for_each(_commands.begin(), _commands.end(), Deleter());
+  _commands.clear();
 }
 
 static void executeCommand(std::deque<Command*>& commands,
@@ -141,18 +141,18 @@ void DownloadEngine::run()
 {
   Timer cp;
   cp.reset(0);
-  while(!commands.empty() || !_routineCommands.empty()) {
+  while(!_commands.empty() || !_routineCommands.empty()) {
     global::wallclock.reset();
     if(cp.difference(global::wallclock) >= _refreshInterval) {
       _refreshInterval = DEFAULT_REFRESH_INTERVAL;
       cp = global::wallclock;
-      executeCommand(commands, Command::STATUS_ALL);
+      executeCommand(_commands, Command::STATUS_ALL);
     } else {
-      executeCommand(commands, Command::STATUS_ACTIVE);
+      executeCommand(_commands, Command::STATUS_ACTIVE);
     }
     executeCommand(_routineCommands, Command::STATUS_ALL);
     afterEachIteration();
-    if(!commands.empty()) {
+    if(!_commands.empty()) {
       waitData();
     }
     _noWait = false;
@@ -248,11 +248,6 @@ void DownloadEngine::requestForceHalt()
 void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
 {
   _statCalc = statCalc;
-}
-
-void DownloadEngine::addCommand(const std::vector<Command*>& commands)
-{
-  this->commands.insert(this->commands.end(), commands.begin(), commands.end());
 }
 
 #ifdef ENABLE_ASYNC_DNS

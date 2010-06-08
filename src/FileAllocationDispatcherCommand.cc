@@ -39,6 +39,8 @@
 #include "Logger.h"
 #include "DownloadContext.h"
 #include "util.h"
+#include "ServerStatMan.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

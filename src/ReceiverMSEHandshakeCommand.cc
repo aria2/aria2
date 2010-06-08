@@ -55,6 +55,9 @@
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
 #include "BtProgressInfoFile.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -66,9 +69,9 @@ ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand
 
   PeerAbstractCommand(cuid, peer, e, s),
   _sequence(RECEIVER_IDENTIFY_HANDSHAKE),
-  _mseHandshake(new MSEHandshake(cuid, s, e->option))
+  _mseHandshake(new MSEHandshake(cuid, s, e->getOption()))
 {
-  setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
+  setTimeout(e->getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
 }
 
 ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand()
@@ -78,7 +81,7 @@ ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand()
 
 bool ReceiverMSEHandshakeCommand::exitBeforeExecute()
 {
-  return e->isHaltRequested() || e->_requestGroupMan->downloadFinished();
+  return e->isHaltRequested() || e->getRequestGroupMan()->downloadFinished();
 }
 
 bool ReceiverMSEHandshakeCommand::executeInternal()
@@ -94,7 +97,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       _sequence = RECEIVER_WAIT_KEY;
       break;
     case MSEHandshake::HANDSHAKE_LEGACY: {
-      if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+      if(e->getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
         throw DL_ABORT_EX("The legacy BitTorrent handshake is not acceptable by the preference.");
       }
       SharedHandle<PeerConnection> peerConnection
@@ -103,7 +106,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
                                    _mseHandshake->getBufferLength());
       Command* c = new PeerReceiveHandshakeCommand(cuid, peer, e, socket,
                                                    peerConnection);
-      e->commands.push_back(c);
+      e->addCommand(c);
       return true;
     }
     default:
@@ -175,7 +178,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     }
     break;
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 
@@ -196,7 +199,7 @@ void ReceiverMSEHandshakeCommand::createCommand()
   // match, then drop connection.
   Command* c =
     new PeerReceiveHandshakeCommand(cuid, peer, e, socket, peerConnection);
-  e->commands.push_back(c);
+  e->addCommand(c);
 }
 
 } // namespace aria2

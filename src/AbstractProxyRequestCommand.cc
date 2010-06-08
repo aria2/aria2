@@ -46,6 +46,10 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -86,11 +90,11 @@ bool AbstractProxyRequestCommand::executeInternal() {
     httpConnection->sendPendingData();
   }
   if(httpConnection->sendBufferIsEmpty()) {
-    e->commands.push_back(getNextCommand());
+    e->addCommand(getNextCommand());
     return true;
   } else {
     setWriteCheckSocket(socket);
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
 }

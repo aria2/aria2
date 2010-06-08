@@ -52,6 +52,9 @@
 #include "DownloadContext.h"
 #include "wallclock.h"
 #include "util.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -76,7 +79,7 @@ HttpServerBodyCommand::~HttpServerBodyCommand()
 
 bool HttpServerBodyCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
   try {
@@ -97,14 +100,14 @@ bool HttpServerBodyCommand::execute()
           _httpServer->feedResponse(responseData, "text/xml");
           Command* command =
             new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
-          _e->commands.push_back(command);
+          _e->addCommand(command);
           _e->setNoWait(true);
           return true;
         } else {
           return true;
         }
       } else {
-        _e->commands.push_back(this);
+        _e->addCommand(this);
         return false;
       } 
     } else {
@@ -112,7 +115,7 @@ bool HttpServerBodyCommand::execute()
         logger->info("HTTP request body timeout.");
         return true;
       } else {
-        _e->commands.push_back(this);
+        _e->addCommand(this);
         return false;
       }
     }

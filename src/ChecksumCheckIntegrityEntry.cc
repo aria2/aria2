@@ -39,6 +39,9 @@
 #include "IteratableChecksumValidator.h"
 #include "DownloadEngine.h"
 #include "PieceStorage.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 

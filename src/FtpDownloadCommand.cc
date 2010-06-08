@@ -44,6 +44,10 @@
 #include "FtpConnection.h"
 #include "Logger.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -69,7 +73,7 @@ bool FtpDownloadCommand::prepareForNextSegment()
      static_cast<uint64_t>(_fileEntry->gtoloff(_segments.front()->getPositionToWrite())) == _fileEntry->getLength()) {
     Command* command = new FtpFinishDownloadCommand
       (cuid, req, _fileEntry, _requestGroup, _ftpConnection, e, ctrlSocket);
-    e->commands.push_back(command);
+    e->addCommand(command);
 
     if(_requestGroup->downloadFinished()) {
       // To run checksum checking, we had to call following function here.

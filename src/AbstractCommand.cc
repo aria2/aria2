@@ -66,6 +66,8 @@
 #include "DownloadContext.h"
 #include "wallclock.h"
 #include "NameResolver.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
 
 namespace aria2 {
 
@@ -134,7 +136,7 @@ bool AbstractCommand::execute() {
           InitiateConnectionCommandFactory::createInitiateConnectionCommand
           (cuid, fasterRequest, _fileEntry, _requestGroup, e);
         e->setNoWait(true);
-        e->commands.push_back(command);
+        e->addCommand(command);
         return true;
       }
     }
@@ -204,13 +206,13 @@ bool AbstractCommand::execute() {
         // timeout triggers ServerStat error state.
 
         SharedHandle<ServerStat> ss =
-          e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
-                                                     req->getProtocol());
+          e->getRequestGroupMan()->getOrCreateServerStat(req->getHost(),
+                                                         req->getProtocol());
         ss->setError();
 
         throw DL_RETRY_EX2(EX_TIME_OUT, downloadresultcode::TIME_OUT);
       }
-      e->commands.push_back(this);
+      e->addCommand(this);
       return false;
     }
   } catch(DlAbortEx& err) {
@@ -318,11 +320,11 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
   Command* command = new CreateRequestCommand(cuid, _requestGroup, e);
   if(wait == 0) {
     e->setNoWait(true);
-    e->commands.push_back(command);
+    e->addCommand(command);
   } else {
     SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup,
                                           command, wait);
-    e->commands.push_back(scom);
+    e->addCommand(scom);
   }
   return true;
 }
@@ -330,8 +332,8 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
 void AbstractCommand::onAbort() {
   if(!req.isNull()) {
     // TODO This might be a problem if the failure is caused by proxy.
-    e->_requestGroupMan->getOrCreateServerStat(req->getHost(),
-                                               req->getProtocol())->setError();
+    e->getRequestGroupMan()->getOrCreateServerStat(req->getHost(),
+                                                   req->getProtocol())->setError();
     _fileEntry->removeIdenticalURI(req->getUri());
     _fileEntry->removeRequest(req);
   }
@@ -610,7 +612,7 @@ bool AbstractCommand::asyncResolveHostname()
   case AsyncNameResolver::STATUS_ERROR:
     disableNameResolverCheck(_asyncNameResolver);
     if(!isProxyRequest(req->getProtocol(), getOption())) {
-      e->_requestGroupMan->getOrCreateServerStat
+      e->getRequestGroupMan()->getOrCreateServerStat
         (req->getHost(), req->getProtocol())->setError();
     }
     throw DL_ABORT_EX(StringFormat(MSG_NAME_RESOLUTION_FAILED,
@@ -671,7 +673,7 @@ std::string AbstractCommand::resolveHostname
       {
         NameResolver res;
         res.setSocktype(SOCK_STREAM);
-        if(e->option->getAsBool(PREF_DISABLE_IPV6)) {
+        if(e->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
           res.setFamily(AF_INET);
         }
         res.resolve(addrs, hostname);
@@ -737,14 +739,14 @@ bool AbstractCommand::checkIfConnectionEstablished
           InitiateConnectionCommandFactory::createInitiateConnectionCommand
           (cuid, req, _fileEntry, _requestGroup, e);
         e->setNoWait(true);
-        e->commands.push_back(command);
+        e->addCommand(command);
         return false;
       }
       e->removeCachedIPAddress(connectedHostname, connectedPort);
       // Don't set error if proxy server is used and its method is GET.
       if(resolveProxyMethod(req->getProtocol()) != V_GET ||
          !isProxyRequest(req->getProtocol(), getOption())) {
-        e->_requestGroupMan->getOrCreateServerStat
+        e->getRequestGroupMan()->getOrCreateServerStat
           (req->getHost(), req->getProtocol())->setError();
       }
       throw DL_RETRY_EX

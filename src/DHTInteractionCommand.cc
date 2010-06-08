@@ -46,6 +46,9 @@
 #include "DHTMessageCallback.h"
 #include "DHTNode.h"
 #include "FileEntry.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -71,7 +74,7 @@ void DHTInteractionCommand::disableReadCheckSocket(const SocketHandle& socket)
 
 bool DHTInteractionCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
 
@@ -89,7 +92,7 @@ bool DHTInteractionCommand::execute()
   } catch(RecoverableException& e) {
     logger->error(EX_EXCEPTION_CAUGHT, e);
   }
-  _e->commands.push_back(this);
+  _e->addCommand(this);
   return false;
 }
 

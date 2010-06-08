@@ -53,6 +53,10 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -116,7 +120,7 @@ bool HttpRequestCommand::executeInternal() {
     if(!socket->initiateSecureConnection(req->getHost())) {
       setReadCheckSocketIf(socket, socket->wantRead());
       setWriteCheckSocketIf(socket, socket->wantWrite());
-      e->commands.push_back(this);
+      e->addCommand(this);
       return false;
     }
   }
@@ -164,12 +168,12 @@ bool HttpRequestCommand::executeInternal() {
     Command* command = new HttpResponseCommand(cuid, req, _fileEntry,
                                                _requestGroup,
                                                _httpConnection, e, socket);
-    e->commands.push_back(command);
+    e->addCommand(command);
     return true;
   } else {
     setReadCheckSocketIf(socket, socket->wantRead());
     setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
 }

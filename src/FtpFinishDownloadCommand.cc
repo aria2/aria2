@@ -48,6 +48,10 @@
 #include "RequestGroup.h"
 #include "Logger.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -73,7 +77,7 @@ bool FtpFinishDownloadCommand::execute()
   try {
     unsigned int status = _ftpConnection->receiveResponse();
     if(status == 0) {
-      e->commands.push_back(this);
+      e->addCommand(this);
       return false;
     }
     if(status != 226) {

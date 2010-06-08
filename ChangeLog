@@ -1,3 +1,8 @@
+2010-06-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made public member variables of DownloadEngine private. Added
+	accessor funcs.
+
 2010-06-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.9.4

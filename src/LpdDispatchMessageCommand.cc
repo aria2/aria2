@@ -40,6 +40,11 @@
 #include "RecoverableException.h"
 #include "SocketCore.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -81,7 +86,7 @@ bool LpdDispatchMessageCommand::execute()
       _tryCount = 0;
     }
   }
-  _e->commands.push_back(this);
+  _e->addCommand(this);
   return false;
 }
 

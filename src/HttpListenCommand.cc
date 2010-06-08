@@ -45,6 +45,9 @@
 #include "prefs.h"
 #include "Option.h"
 #include "util.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -60,7 +63,7 @@ HttpListenCommand::~HttpListenCommand()
 
 bool HttpListenCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
   try {
@@ -77,14 +80,14 @@ bool HttpListenCommand::execute()
       HttpServerCommand* c =
         new HttpServerCommand(_e->newCUID(), _e, socket);
       _e->setNoWait(true);
-      _e->commands.push_back(c);
+      _e->addCommand(c);
     }
   } catch(RecoverableException& e) {
     if(logger->debug()) {
       logger->debug(MSG_ACCEPT_FAILURE, e, util::itos(cuid).c_str());
     }
   }
-  _e->commands.push_back(this);
+  _e->addCommand(this);
   return false;
 }
 
@@ -100,7 +103,7 @@ bool HttpListenCommand::bindPort(uint16_t port)
   }
   try {
     int flags = 0;
-    if(_e->option->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
+    if(_e->getOption()->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
       flags = AI_PASSIVE;
     }
     _serverSocket->bind(port, flags);

@@ -49,6 +49,10 @@
 #include "RequestGroup.h"
 #include "DownloadContext.h"
 #include "util.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "RequestGroupMan.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -89,13 +93,13 @@ bool PeerInitiateConnectionCommand::executeInternal() {
                                        _btRuntime, socket);
     c->setPeerStorage(_peerStorage);
     c->setPieceStorage(_pieceStorage);
-    e->commands.push_back(c);
+    e->addCommand(c);
   } else {
     PeerInteractionCommand* command =
       new PeerInteractionCommand
       (cuid, _requestGroup, peer, e, _btRuntime, _pieceStorage, _peerStorage,
        socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
-    e->commands.push_back(command);
+    e->addCommand(command);
   }
   return true;
 }
@@ -110,7 +114,7 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
                                         _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
-    e->commands.push_back(command);
+    e->addCommand(command);
   }
   return true;
 }

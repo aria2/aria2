@@ -42,6 +42,8 @@
 #include "DownloadEngine.h"
 #include "Option.h"
 #include "DownloadContext.h"
+#include "RequestGroupMan.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -91,7 +93,7 @@ void CheckIntegrityEntry::proceedFileAllocation
  DownloadEngine* e)
 {
   if(_requestGroup->needsFileAllocation()) {
-    e->_fileAllocationMan->pushEntry(entry);
+    e->getFileAllocationMan()->pushEntry(entry);
   } else {
     entry->prepareForNextAction(commands, e);
   }

@@ -52,6 +52,9 @@
 #include "Logger.h"
 #include "StringFormat.h"
 #include "FileEntry.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -73,7 +76,7 @@ DHTEntryPointNameResolveCommand::~DHTEntryPointNameResolveCommand()
 
 bool DHTEntryPointNameResolveCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
 #ifdef ENABLE_ASYNC_DNS
@@ -83,7 +86,7 @@ bool DHTEntryPointNameResolveCommand::execute()
 #endif // ENABLE_ASYNC_DNS
   try {
 #ifdef ENABLE_ASYNC_DNS
-    if(_e->option->getAsBool(PREF_ASYNC_DNS)) {
+    if(_e->getOption()->getAsBool(PREF_ASYNC_DNS)) {
       while(!_entryPoints.empty()) {
         std::string hostname = _entryPoints.front().first;
         try {
@@ -94,7 +97,7 @@ bool DHTEntryPointNameResolveCommand::execute()
             _resolvedEntryPoints.push_back(p);
             addPingTask(p);
           } else {
-            _e->commands.push_back(this);
+            _e->addCommand(this);
             return false;
           }
         } catch(RecoverableException& e) {

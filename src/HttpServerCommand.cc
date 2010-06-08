@@ -48,6 +48,9 @@
 #include "util.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -60,8 +63,8 @@ HttpServerCommand::HttpServerCommand(cuid_t cuid, DownloadEngine* e,
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   _e->addSocketForReadCheck(_socket, this);
-  _httpServer->setUsernamePassword(_e->option->get(PREF_XML_RPC_USER),
-                                   _e->option->get(PREF_XML_RPC_PASSWD));
+  _httpServer->setUsernamePassword(_e->getOption()->get(PREF_XML_RPC_USER),
+                                   _e->getOption()->get(PREF_XML_RPC_PASSWD));
 #ifdef HAVE_LIBZ
   _httpServer->enableGZip();
 #else // !HAVE_LIBZ
@@ -88,7 +91,7 @@ HttpServerCommand::~HttpServerCommand()
 
 bool HttpServerCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
   try {
@@ -99,7 +102,7 @@ bool HttpServerCommand::execute()
       header = _httpServer->receiveRequest();
 
       if(header.isNull()) {
-        _e->commands.push_back(this);
+        _e->addCommand(this);
         return false;
       }
       if(!_httpServer->authenticate()) {
@@ -109,12 +112,12 @@ bool HttpServerCommand::execute()
                                   "","text/html");
         Command* command =
           new HttpServerResponseCommand(cuid, _httpServer, _e, _socket);
-        _e->commands.push_back(command);
+        _e->addCommand(command);
         _e->setNoWait(true);
         return true;
       }
       if(static_cast<uint64_t>
-         (_e->option->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
+         (_e->getOption()->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
          _httpServer->getContentLength()) {
         logger->info("Request too long. ContentLength=%s."
                      " See --xml-rpc-max-request-size option to loose"
@@ -124,7 +127,7 @@ bool HttpServerCommand::execute()
       }
       Command* command = new HttpServerBodyCommand(cuid, _httpServer, _e,
                                                    _socket);
-      _e->commands.push_back(command);
+      _e->addCommand(command);
       _e->setNoWait(true);
       return true;
     } else {
@@ -132,7 +135,7 @@ bool HttpServerCommand::execute()
         logger->info("HTTP request timeout.");
         return true;
       } else {
-        _e->commands.push_back(this);
+        _e->addCommand(this);
         return false;
       }
     }

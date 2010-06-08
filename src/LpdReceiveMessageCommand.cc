@@ -49,6 +49,9 @@
 #include "BtAnnounce.h"
 #include "LpdMessage.h"
 #include "bittorrent_helper.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -75,7 +78,7 @@ LpdReceiveMessageCommand::~LpdReceiveMessageCommand()
 
 bool LpdReceiveMessageCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
   for(size_t i = 0; i < 20; ++i) {
@@ -127,7 +130,7 @@ bool LpdReceiveMessageCommand::execute()
       }
     }
   }
-  _e->commands.push_back(this);
+  _e->addCommand(this);
   return false;
 }
 

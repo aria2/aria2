@@ -47,6 +47,10 @@
 #include "SleepCommand.h"
 #include "Logger.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
 
 namespace aria2 {
 
@@ -95,7 +99,7 @@ bool CreateRequestCommand::executeInternal()
     InitiateConnectionCommandFactory::createInitiateConnectionCommand
     (cuid, req, _fileEntry, _requestGroup, e);
   e->setNoWait(true);
-  e->commands.push_back(command);
+  e->addCommand(command);
   return true;
 }
 
@@ -117,7 +121,7 @@ bool CreateRequestCommand::prepareForRetry(time_t wait)
                   util::itos(cuid).c_str());
   }
   SleepCommand* scom = new SleepCommand(cuid, e, _requestGroup, this, wait);
-  e->commands.push_back(scom);
+  e->addCommand(scom);
   return false;
 }
 

@@ -60,6 +60,7 @@
 #include "util.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
+#include "ServerStatMan.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "Peer.h"
@@ -242,37 +243,38 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     std::cout << '\r' << std::setfill(' ') << std::setw(cols) << ' ' << '\r';
   }
   std::ostringstream o;
-  if(e->_requestGroupMan->countRequestGroup() > 0) {
+  if(e->getRequestGroupMan()->countRequestGroup() > 0) {
     if((_summaryInterval > 0) &&
        _lastSummaryNotified.difference(global::wallclock) >= _summaryInterval) {
       _lastSummaryNotified = global::wallclock;
-      printProgressSummary(e->_requestGroupMan->getRequestGroups(), cols, e,
+      printProgressSummary(e->getRequestGroupMan()->getRequestGroups(), cols, e,
                            sizeFormatter);
       std::cout << "\n";
     }
 
     SharedHandle<RequestGroup> firstRequestGroup =
-      e->_requestGroupMan->getRequestGroup(0);
+      e->getRequestGroupMan()->getRequestGroup(0);
 
     printProgress(o, firstRequestGroup, e, sizeFormatter);
 
-    if(e->_requestGroupMan->countRequestGroup() > 1) {
+    if(e->getRequestGroupMan()->countRequestGroup() > 1) {
       o << "("
-        << e->_requestGroupMan->countRequestGroup()-1
+        << e->getRequestGroupMan()->countRequestGroup()-1
         << "more...)";
     }
   }
 
-  if(e->_requestGroupMan->countRequestGroup() > 1 &&
-     !e->_requestGroupMan->downloadFinished()) {
-    TransferStat stat = e->_requestGroupMan->calculateStat();
+  if(e->getRequestGroupMan()->countRequestGroup() > 1 &&
+     !e->getRequestGroupMan()->downloadFinished()) {
+    TransferStat stat = e->getRequestGroupMan()->calculateStat();
     o << " "
       << "[TOTAL SPD:"
       << sizeFormatter(stat.getDownloadSpeed()) << "Bs" << "]";
   }
 
   {
-    SharedHandle<FileAllocationEntry> entry=e->_fileAllocationMan->getPickedEntry();
+    SharedHandle<FileAllocationEntry> entry =
+      e->getFileAllocationMan()->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
         << "[FileAlloc:"
@@ -290,9 +292,9 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       }
       o << "%)"
         << "]";
-      if(e->_fileAllocationMan->hasNext()) {
+      if(e->getFileAllocationMan()->hasNext()) {
         o << "("
-          << e->_fileAllocationMan->countEntryInQueue()
+          << e->getFileAllocationMan()->countEntryInQueue()
           << "waiting...)";
       }
     }
@@ -300,7 +302,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 #ifdef ENABLE_MESSAGE_DIGEST
   {
     SharedHandle<CheckIntegrityEntry> entry =
-      e->_checkIntegrityMan->getPickedEntry();
+      e->getCheckIntegrityMan()->getPickedEntry();
     if(!entry.isNull()) {
       o << " "
         << "[Checksum:"
@@ -314,9 +316,9 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
         << 100*entry->getCurrentLength()/entry->getTotalLength()
         << "%)"
         << "]";
-      if(e->_checkIntegrityMan->hasNext()) {
+      if(e->getCheckIntegrityMan()->hasNext()) {
         o << "("
-          << e->_checkIntegrityMan->countEntryInQueue()
+          << e->getCheckIntegrityMan()->countEntryInQueue()
           << "waiting...)";
       }
     }

@@ -71,6 +71,9 @@
 #include "HttpResponse.h"
 #include "DlRetryEx.h"
 #include "CookieStorage.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -114,7 +117,7 @@ bool FtpNegotiationCommand::executeInternal() {
     }
     _requestGroup->getURISelector()->tuneDownloadCommand
       (_fileEntry->getRemainingUris(), command);
-    e->commands.push_back(command);
+    e->addCommand(command);
     return true;
   } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
     return true;
@@ -128,7 +131,7 @@ bool FtpNegotiationCommand::executeInternal() {
   } else if(sequence == SEQ_EXIT) {
     return true;
   } else {
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
 }
@@ -358,7 +361,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
         util::fixTaintedBasename(util::percentDecode(req->getFile()))));
   }
   _requestGroup->preDownloadProcessing();
-  if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
+  if(e->getRequestGroupMan()->isSameFileBeingDownloaded(_requestGroup)) {
     throw DOWNLOAD_FAILURE_EXCEPTION
       (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
                     _requestGroup->getFirstFilePath().c_str()).str());

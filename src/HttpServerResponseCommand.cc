@@ -43,6 +43,9 @@
 #include "FileEntry.h"
 #include "wallclock.h"
 #include "util.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -67,7 +70,7 @@ HttpServerResponseCommand::~HttpServerResponseCommand()
 
 bool HttpServerResponseCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
   try {
@@ -88,8 +91,7 @@ bool HttpServerResponseCommand::execute()
       if(logger->info()) {
         logger->info("CUID#%s - Persist connection.", util::itos(cuid).c_str());
       }
-      _e->commands.push_back
-        (new HttpServerCommand(cuid, _httpServer, _e, _socket));
+      _e->addCommand(new HttpServerCommand(cuid, _httpServer, _e, _socket));
     }
     return true;
   } else {
@@ -100,7 +102,7 @@ bool HttpServerResponseCommand::execute()
       }
       return true;
     } else {
-      _e->commands.push_back(this);
+      _e->addCommand(this);
       return false;
     }
   }

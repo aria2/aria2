@@ -35,6 +35,11 @@
 #include "TimeBasedCommand.h"
 #include "DownloadEngine.h"
 #include "wallclock.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -66,7 +71,7 @@ bool TimeBasedCommand::execute()
   if(_routineCommand) {
     _e->addRoutineCommand(this);
   } else {
-    _e->commands.push_back(this);
+    _e->addCommand(this);
   }
   return false;
 }

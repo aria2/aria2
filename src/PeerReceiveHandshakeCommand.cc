@@ -56,6 +56,9 @@
 #include "RequestGroupMan.h"
 #include "StringFormat.h"
 #include "RequestGroup.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -78,7 +81,7 @@ PeerReceiveHandshakeCommand::~PeerReceiveHandshakeCommand() {}
 
 bool PeerReceiveHandshakeCommand::exitBeforeExecute()
 {
-  return e->isHaltRequested() || e->_requestGroupMan->downloadFinished();
+  return e->isHaltRequested() || e->getRequestGroupMan()->downloadFinished();
 }
 
 bool PeerReceiveHandshakeCommand::executeInternal()
@@ -141,7 +144,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            socket,
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
            _peerConnection);
-        e->commands.push_back(command);
+        e->addCommand(command);
         if(logger->debug()) {
           logger->debug(MSG_INCOMING_PEER_CONNECTION,
                         util::itos(cuid).c_str(),
@@ -151,7 +154,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     }
     return true;
   } else {
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
 }

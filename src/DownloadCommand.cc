@@ -59,6 +59,8 @@
 #include "Decoder.h"
 #include "RequestGroupMan.h"
 #include "wallclock.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -106,9 +108,9 @@ DownloadCommand::~DownloadCommand() {
 }
 
 bool DownloadCommand::executeInternal() {
-  if(e->_requestGroupMan->doesOverallDownloadSpeedExceed() ||
+  if(e->getRequestGroupMan()->doesOverallDownloadSpeedExceed() ||
      _requestGroup->doesDownloadSpeedExceed()) {
-    e->commands.push_back(this);
+    e->addCommand(this);
     disableReadCheckSocket();
     return false;
   }
@@ -248,7 +250,7 @@ bool DownloadCommand::executeInternal() {
   } else {
     checkLowestDownloadSpeed();
     setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
 }
@@ -292,7 +294,7 @@ bool DownloadCommand::prepareForNextSegment() {
       if(entry->isValidationReady()) {
         entry->initValidator();
         // TODO do we need cuttrailinggarbage here?
-        e->_checkIntegrityMan->pushEntry(entry);
+        e->getCheckIntegrityMan()->pushEntry(entry);
       }
     }
     // Following 2lines are needed for DownloadEngine to detect
@@ -316,7 +318,7 @@ bool DownloadCommand::prepareForNextSegment() {
       if(nextSegment.isNull()) {
         return prepareForRetry(0);
       } else {
-        e->commands.push_back(this);
+        e->addCommand(this);
         return false;
       }
     } else {

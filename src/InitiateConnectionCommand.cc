@@ -48,6 +48,10 @@
 #include "a2functional.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "util.h"
+#include "RequestGroupMan.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -82,13 +86,13 @@ bool InitiateConnectionCommand::executeInternal() {
   std::vector<std::string> addrs;
   std::string ipaddr = resolveHostname(addrs, hostname, port);
   if(ipaddr.empty()) {
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
   try {
     Command* command = createNextCommand(hostname, ipaddr, port,
                                          addrs, proxyRequest);
-    e->commands.push_back(command);
+    e->addCommand(command);
     return true;
   } catch(RecoverableException& ex) {
     // Catch exception and retry another address.
@@ -106,7 +110,7 @@ bool InitiateConnectionCommand::executeInternal() {
         InitiateConnectionCommandFactory::createInitiateConnectionCommand
         (cuid, req, _fileEntry, _requestGroup, e);
       e->setNoWait(true);
-      e->commands.push_back(command);
+      e->addCommand(command);
       return true;
     }
     e->removeCachedIPAddress(hostname, port);

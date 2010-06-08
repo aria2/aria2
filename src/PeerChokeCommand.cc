@@ -36,6 +36,11 @@
 #include "DownloadEngine.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
+#include "ServerStatMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -53,7 +58,7 @@ bool PeerChokeCommand::execute() {
   if(_peerStorage->chokeRoundIntervalElapsed()) {
     _peerStorage->executeChoke();
   }
-  e->commands.push_back(this);
+  e->addCommand(this);
   return false;
 }
 

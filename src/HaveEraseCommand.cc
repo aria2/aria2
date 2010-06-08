@@ -38,6 +38,9 @@
 #include "PieceStorage.h"
 #include "RequestGroup.h"
 #include "DownloadContext.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -48,16 +51,17 @@ HaveEraseCommand::~HaveEraseCommand() {}
 
 void HaveEraseCommand::preProcess()
 {
-  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
     _exit = true;
   }
 }
 
 void HaveEraseCommand::process()
 {
-  size_t numLoop = _e->_requestGroupMan->countRequestGroup();
+  size_t numLoop = _e->getRequestGroupMan()->countRequestGroup();
   for(size_t i = 0; i < numLoop; ++i) {
-    PieceStorageHandle ps = _e->_requestGroupMan->getRequestGroup(i)->getPieceStorage();
+    PieceStorageHandle ps =
+      _e->getRequestGroupMan()->getRequestGroup(i)->getPieceStorage();
     if(!ps.isNull()) {
       ps->removeAdvertisedPiece(5);
     }

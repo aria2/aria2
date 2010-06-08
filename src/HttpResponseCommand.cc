@@ -66,6 +66,9 @@
 #include "AuthConfig.h"
 #include "a2functional.h"
 #include "URISelector.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -98,7 +101,7 @@ bool HttpResponseCommand::executeInternal()
     // For socket->wantRead() == true, setReadCheckSocket(socket) is already
     // done in the constructor.
     setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->commands.push_back(this);
+    e->addCommand(this);
     return false;
   }
   // check HTTP status number
@@ -137,7 +140,7 @@ bool HttpResponseCommand::executeInternal()
     }
     _fileEntry->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
-    if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
+    if(e->getRequestGroupMan()->isSameFileBeingDownloaded(_requestGroup)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
         (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
                       _requestGroup->getFirstFilePath().c_str()).str());
@@ -173,12 +176,12 @@ bool HttpResponseCommand::executeInternal()
       // Also we can't resume in this case too.  So truncate the file
       // anyway.
       _requestGroup->getPieceStorage()->getDiskAdaptor()->truncate(0);
-      e->commands.push_back
+      e->addCommand
         (createHttpDownloadCommand(httpResponse,
                                    getTransferEncodingDecoder(httpResponse),
                                    getContentEncodingDecoder(httpResponse)));
     } else {
-      e->commands.push_back(createHttpDownloadCommand(httpResponse,
+      e->addCommand(createHttpDownloadCommand(httpResponse,
                                                       getTransferEncodingDecoder(httpResponse)));
     }
     return true;
@@ -347,7 +350,7 @@ bool HttpResponseCommand::handleOtherEncoding
   // AbstractCommand::execute()
   _requestGroup->getSegmentMan()->getSegment(cuid, 0);
 
-  e->commands.push_back
+  e->addCommand
     (createHttpDownloadCommand(httpResponse,
                                getTransferEncodingDecoder(httpResponse),
                                getContentEncodingDecoder(httpResponse)));
@@ -376,7 +379,7 @@ bool HttpResponseCommand::skipResponseBody
     e->setNoWait(true);
   }
 
-  e->commands.push_back(command);
+  e->addCommand(command);
   return true;
 }
 

@@ -40,6 +40,9 @@
 #include "message.h"
 #include "Logger.h"
 #include "FileEntry.h"
+#include "ServerStatMan.h"
+#include "FileAllocationEntry.h"
+#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
@@ -51,7 +54,7 @@ DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() {}
 
 void DHTPeerAnnounceCommand::preProcess()
 {
-  _exit = _e->_requestGroupMan->downloadFinished() || _e->isHaltRequested();
+  _exit = _e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested();
 }
 
 void DHTPeerAnnounceCommand::process()
