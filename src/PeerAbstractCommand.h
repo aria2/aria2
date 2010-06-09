@@ -48,14 +48,36 @@ class SocketCore;
 
 class PeerAbstractCommand : public Command {
 private:
-  Timer checkPoint;
-  time_t timeout;
-protected:
-  DownloadEngine* e;
-  SharedHandle<SocketCore> socket;
-  SharedHandle<Peer> peer;
+  Timer _checkPoint;
+  time_t _timeout;
+  DownloadEngine* _e;
+  SharedHandle<SocketCore> _socket;
+  SharedHandle<Peer> _peer;
 
-  void setTimeout(time_t timeout) { this->timeout = timeout; }
+  bool _checkSocketIsReadable;
+  bool _checkSocketIsWritable;
+  SharedHandle<SocketCore> _readCheckTarget;
+  SharedHandle<SocketCore> _writeCheckTarget;
+  bool _noCheck;
+protected:
+  DownloadEngine* getDownloadEngine() const
+  {
+    return _e;
+  }
+
+  const SharedHandle<SocketCore>& getSocket() const
+  {
+    return _socket;
+  }
+
+  void createSocket();
+
+  const SharedHandle<Peer>& getPeer() const
+  {
+    return _peer;
+  }
+
+  void setTimeout(time_t timeout) { _timeout = timeout; }
   virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort() {};
   // This function is called when DownloadFailureException is caught right after
@@ -69,12 +91,6 @@ protected:
   void disableWriteCheckSocket();
   void setNoCheck(bool check);
   void updateKeepAlive();
-private:
-  bool checkSocketIsReadable;
-  bool checkSocketIsWritable;
-  SharedHandle<SocketCore> readCheckTarget;
-  SharedHandle<SocketCore> writeCheckTarget;
-  bool noCheck;
 public:
   PeerAbstractCommand(cuid_t cuid,
                       const SharedHandle<Peer>& peer,

@@ -82,25 +82,26 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 bool PeerInitiateConnectionCommand::executeInternal() {
   if(getLogger()->info()) {
     getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                      util::itos(getCuid()).c_str(), peer->ipaddr.c_str(),
-                      peer->port);
+                      util::itos(getCuid()).c_str(), getPeer()->ipaddr.c_str(),
+                      getPeer()->port);
   }
-  socket.reset(new SocketCore());
-  socket->establishConnection(peer->ipaddr, peer->port);
+  createSocket();
+  getSocket()->establishConnection(getPeer()->ipaddr, getPeer()->port);
   if(_mseHandshakeEnabled) {
     InitiatorMSEHandshakeCommand* c =
-      new InitiatorMSEHandshakeCommand(getCuid(), _requestGroup, peer, e,
-                                       _btRuntime, socket);
+      new InitiatorMSEHandshakeCommand(getCuid(), _requestGroup, getPeer(),
+                                       getDownloadEngine(),
+                                       _btRuntime, getSocket());
     c->setPeerStorage(_peerStorage);
     c->setPieceStorage(_pieceStorage);
-    e->addCommand(c);
+    getDownloadEngine()->addCommand(c);
   } else {
     PeerInteractionCommand* command =
       new PeerInteractionCommand
-      (getCuid(), _requestGroup, peer, e, _btRuntime, _pieceStorage,
-       _peerStorage,
-       socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
-    e->addCommand(command);
+      (getCuid(), _requestGroup, getPeer(), getDownloadEngine(),
+       _btRuntime, _pieceStorage, _peerStorage,
+       getSocket(), PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
+    getDownloadEngine()->addCommand(command);
   }
   return true;
 }
@@ -109,19 +110,19 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
   if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
     SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
-    peer->usedBy(e->newCUID());
+    peer->usedBy(getDownloadEngine()->newCUID());
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
-                                        _btRuntime);
+      new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer,
+                                        getDownloadEngine(), _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
-    e->addCommand(command);
+    getDownloadEngine()->addCommand(command);
   }
   return true;
 }
 
 void PeerInitiateConnectionCommand::onAbort() {
-  _peerStorage->returnPeer(peer);
+  _peerStorage->returnPeer(getPeer());
 }
 
 bool PeerInitiateConnectionCommand::exitBeforeExecute()

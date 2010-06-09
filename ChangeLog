@@ -1,5 +1,17 @@
 2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made protected member variable private. Added accessor funcs.
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/PeerAbstractCommand.cc
+	* src/PeerAbstractCommand.h
+	* src/PeerInitiateConnectionCommand.cc
+	* src/PeerInteractionCommand.cc
+	* src/PeerInteractionCommand.h
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/ReceiverMSEHandshakeCommand.cc
+
+2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/AbstractCommand.cc
 

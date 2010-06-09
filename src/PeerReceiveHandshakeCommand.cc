@@ -73,7 +73,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
   _peerConnection(peerConnection)
 {
   if(_peerConnection.isNull()) {
-    _peerConnection.reset(new PeerConnection(cuid, socket));
+    _peerConnection.reset(new PeerConnection(cuid, getSocket()));
   }
 }
 
@@ -81,7 +81,8 @@ PeerReceiveHandshakeCommand::~PeerReceiveHandshakeCommand() {}
 
 bool PeerReceiveHandshakeCommand::exitBeforeExecute()
 {
-  return e->isHaltRequested() || e->getRequestGroupMan()->downloadFinished();
+  return getDownloadEngine()->isHaltRequested() ||
+    getDownloadEngine()->getRequestGroupMan()->downloadFinished();
 }
 
 bool PeerReceiveHandshakeCommand::executeInternal()
@@ -97,13 +98,13 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     std::string infoHash = std::string(&data[28], &data[28+INFO_HASH_LENGTH]);
 
     SharedHandle<DownloadContext> downloadContext =
-      e->getBtRegistry()->getDownloadContext(infoHash);
+      getDownloadEngine()->getBtRegistry()->getDownloadContext(infoHash);
     if(downloadContext.isNull()) {
       throw DL_ABORT_EX
         (StringFormat("Unknown info hash %s",
                       util::toHex(infoHash).c_str()).str());
     }
-    BtObject btObject = e->getBtRegistry()->get
+    BtObject btObject = getDownloadEngine()->getBtRegistry()->get
       (downloadContext->getOwnerRequestGroup()->getGID());
     SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
     SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
@@ -128,33 +129,31 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     if((!pieceStorage->downloadFinished() &&
         tstat.getDownloadSpeed() < thresholdSpeed) ||
        btRuntime->lessThanMaxPeers()) {
-      if(peerStorage->addPeer(peer)) {
-
-        peer->usedBy(getCuid());
-        
+      if(peerStorage->addPeer(getPeer())) {
+        getPeer()->usedBy(getCuid());
         PeerInteractionCommand* command =
           new PeerInteractionCommand
           (getCuid(),
            downloadContext->getOwnerRequestGroup(),
-           peer,
-           e,
+           getPeer(),
+           getDownloadEngine(),
            btRuntime,
            pieceStorage,
            peerStorage,
-           socket,
+           getSocket(),
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
            _peerConnection);
-        e->addCommand(command);
+        getDownloadEngine()->addCommand(command);
         if(getLogger()->debug()) {
           getLogger()->debug(MSG_INCOMING_PEER_CONNECTION,
                              util::itos(getCuid()).c_str(),
-                             util::itos(peer->usedBy()).c_str());
+                             util::itos(getPeer()->usedBy()).c_str());
         }
       }
     }
     return true;
   } else {
-    e->addCommand(this);
+    getDownloadEngine()->addCommand(this);
     return false;
   }
 }

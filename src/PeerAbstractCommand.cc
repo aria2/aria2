@@ -58,19 +58,19 @@ PeerAbstractCommand::PeerAbstractCommand(cuid_t cuid,
                                          DownloadEngine* e,
                                          const SocketHandle& s):
   Command(cuid),
-  checkPoint(global::wallclock),
-  e(e),
-  socket(s),
-  peer(peer),
-  checkSocketIsReadable(false),
-  checkSocketIsWritable(false),
-  noCheck(false)
-{
-  if(!socket.isNull() && socket->isOpen()) {
-    setReadCheckSocket(socket);
-  }
+  _checkPoint(global::wallclock),
   // TODO referring global option
-  timeout = e->getOption()->getAsInt(PREF_BT_TIMEOUT);
+  _timeout(e->getOption()->getAsInt(PREF_BT_TIMEOUT)),
+  _e(e),
+  _socket(s),
+  _peer(peer),
+  _checkSocketIsReadable(false),
+  _checkSocketIsWritable(false),
+  _noCheck(false)
+{
+  if(!_socket.isNull() && _socket->isOpen()) {
+    setReadCheckSocket(_socket);
+  }
 }
 
 PeerAbstractCommand::~PeerAbstractCommand()
@@ -87,24 +87,24 @@ bool PeerAbstractCommand::execute()
                        util::itos(getCuid()).c_str(),
                        readEventEnabled(), writeEventEnabled(),
                        hupEventEnabled(), errorEventEnabled(),
-                       noCheck);
+                       _noCheck);
   }
   if(exitBeforeExecute()) {
     onAbort();
     return true;
   }
   try {
-    if(noCheck ||
-       (checkSocketIsReadable && readEventEnabled()) ||
-       (checkSocketIsWritable && writeEventEnabled()) ||
+    if(_noCheck ||
+       (_checkSocketIsReadable && readEventEnabled()) ||
+       (_checkSocketIsWritable && writeEventEnabled()) ||
        hupEventEnabled()) {
-      checkPoint = global::wallclock;
+      _checkPoint = global::wallclock;
     } else if(errorEventEnabled()) {
       throw DL_ABORT_EX
         (StringFormat(MSG_NETWORK_PROBLEM,
-                      socket->getSocketError().c_str()).str());
+                      _socket->getSocketError().c_str()).str());
     }
-    if(checkPoint.difference(global::wallclock) >= timeout) {
+    if(_checkPoint.difference(global::wallclock) >= _timeout) {
       throw DL_ABORT_EX(EX_TIME_OUT);
     }
     return executeInternal();
@@ -118,8 +118,8 @@ bool PeerAbstractCommand::execute()
       getLogger()->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err,
                          util::itos(getCuid()).c_str());
       getLogger()->debug(MSG_PEER_BANNED,
-                         util::itos(getCuid()).c_str(), peer->ipaddr.c_str(),
-                         peer->port);
+                         util::itos(getCuid()).c_str(), _peer->ipaddr.c_str(),
+                         _peer->port);
     }
     onAbort();
     return prepareForNextPeer(0);
@@ -134,10 +134,10 @@ bool PeerAbstractCommand::prepareForNextPeer(time_t wait)
 
 void PeerAbstractCommand::disableReadCheckSocket()
 {
-  if(checkSocketIsReadable) {
-    e->deleteSocketForReadCheck(readCheckTarget, this);
-    checkSocketIsReadable = false;
-    readCheckTarget = SocketHandle();
+  if(_checkSocketIsReadable) {
+    _e->deleteSocketForReadCheck(_readCheckTarget, this);
+    _checkSocketIsReadable = false;
+    _readCheckTarget.reset();
   }  
 }
 
@@ -146,26 +146,26 @@ void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket)
   if(!socket->isOpen()) {
     disableReadCheckSocket();
   } else {
-    if(checkSocketIsReadable) {
-      if(readCheckTarget != socket) {
-        e->deleteSocketForReadCheck(readCheckTarget, this);
-        e->addSocketForReadCheck(socket, this);
-        readCheckTarget = socket;
+    if(_checkSocketIsReadable) {
+      if(_readCheckTarget != socket) {
+        _e->deleteSocketForReadCheck(_readCheckTarget, this);
+        _e->addSocketForReadCheck(socket, this);
+        _readCheckTarget = socket;
       }
     } else {
-      e->addSocketForReadCheck(socket, this);
-      checkSocketIsReadable = true;
-      readCheckTarget = socket;
+      _e->addSocketForReadCheck(socket, this);
+      _checkSocketIsReadable = true;
+      _readCheckTarget = socket;
     }
   }
 }
 
 void PeerAbstractCommand::disableWriteCheckSocket()
 {
-  if(checkSocketIsWritable) {
-    e->deleteSocketForWriteCheck(writeCheckTarget, this);
-    checkSocketIsWritable = false;
-    writeCheckTarget = SocketHandle();
+  if(_checkSocketIsWritable) {
+    _e->deleteSocketForWriteCheck(_writeCheckTarget, this);
+    _checkSocketIsWritable = false;
+    _writeCheckTarget.reset();
   }
 }
 
@@ -174,28 +174,33 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket)
   if(!socket->isOpen()) {
     disableWriteCheckSocket();
   } else {
-    if(checkSocketIsWritable) {
-      if(writeCheckTarget != socket) {
-        e->deleteSocketForWriteCheck(writeCheckTarget, this);
-        e->addSocketForWriteCheck(socket, this);
-        writeCheckTarget = socket;
+    if(_checkSocketIsWritable) {
+      if(_writeCheckTarget != socket) {
+        _e->deleteSocketForWriteCheck(_writeCheckTarget, this);
+        _e->addSocketForWriteCheck(socket, this);
+        _writeCheckTarget = socket;
       }
     } else {
-      e->addSocketForWriteCheck(socket, this);
-      checkSocketIsWritable = true;
-      writeCheckTarget = socket;
+      _e->addSocketForWriteCheck(socket, this);
+      _checkSocketIsWritable = true;
+      _writeCheckTarget = socket;
     }
   }
 }
 
 void PeerAbstractCommand::setNoCheck(bool check)
 {
-  this->noCheck = check;
+  _noCheck = check;
 }
 
 void PeerAbstractCommand::updateKeepAlive()
 {
-  checkPoint = global::wallclock;
+  _checkPoint = global::wallclock;
+}
+
+void PeerAbstractCommand::createSocket()
+{
+  _socket.reset(new SocketCore());
 }
 
 } // namespace aria2

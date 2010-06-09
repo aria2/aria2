@@ -63,8 +63,8 @@ private:
 
   SharedHandle<PeerStorage> _peerStorage;
 
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
+  Seq _sequence;
+  SharedHandle<BtInteractive> _btInteractive;
 
   const SharedHandle<Option>& getOption() const;
 protected:

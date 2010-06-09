@@ -73,10 +73,10 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
   _requestGroup(requestGroup),
   _btRuntime(btRuntime),
   _sequence(INITIATOR_SEND_KEY),
-  _mseHandshake(new MSEHandshake(cuid, socket, getOption().get()))
+  _mseHandshake(new MSEHandshake(cuid, s, getOption().get()))
 {
   disableReadCheckSocket();
-  setWriteCheckSocket(socket);
+  setWriteCheckSocket(getSocket());
   setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
 
   _btRuntime->increaseConnections();
@@ -94,18 +94,18 @@ InitiatorMSEHandshakeCommand::~InitiatorMSEHandshakeCommand()
 bool InitiatorMSEHandshakeCommand::executeInternal() {
   switch(_sequence) {
   case INITIATOR_SEND_KEY: {
-    if(!socket->isWritable(0)) {
+    if(!getSocket()->isWritable(0)) {
       break;
     }
     disableWriteCheckSocket();
-    setReadCheckSocket(socket);
+    setReadCheckSocket(getSocket());
     //socket->setBlockingMode();
     setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
     _mseHandshake->initEncryptionFacility(true);
     if(_mseHandshake->sendPublicKey()) {
       _sequence = INITIATOR_WAIT_KEY;
     } else {
-      setWriteCheckSocket(socket);
+      setWriteCheckSocket(getSocket());
       _sequence = INITIATOR_SEND_KEY_PENDING;
     }
     break;
@@ -123,7 +123,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
       if(_mseHandshake->sendInitiatorStep2()) {
         _sequence = INITIATOR_FIND_VC_MARKER;
       } else {
-        setWriteCheckSocket(socket);
+        setWriteCheckSocket(getSocket());
         _sequence = INITIATOR_SEND_STEP2_PENDING;
       }
     }
@@ -150,25 +150,26 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   case INITIATOR_RECEIVE_PAD_D: {
     if(_mseHandshake->receivePad()) {
       SharedHandle<PeerConnection> peerConnection
-        (new PeerConnection(getCuid(), socket));
+        (new PeerConnection(getCuid(), getSocket()));
       if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4){
         peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
                                          _mseHandshake->getDecryptor());
       }
       PeerInteractionCommand* c =
         new PeerInteractionCommand
-        (getCuid(), _requestGroup, peer, e, _btRuntime, _pieceStorage,
+        (getCuid(), _requestGroup, getPeer(), getDownloadEngine(), _btRuntime,
+         _pieceStorage,
          _peerStorage,
-         socket,
+         getSocket(),
          PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE,
          peerConnection);
-      e->addCommand(c);
+      getDownloadEngine()->addCommand(c);
       return true;
     }
     break;
   }
   }
-  e->addCommand(this);
+  getDownloadEngine()->addCommand(this);
   return false;
 }
 
@@ -183,13 +184,13 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     }
     if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
       SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
-      peer->usedBy(e->newCUID());
+      peer->usedBy(getDownloadEngine()->newCUID());
       PeerInitiateConnectionCommand* command =
         new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer,
-                                          e, _btRuntime);
+                                          getDownloadEngine(), _btRuntime);
       command->setPeerStorage(_peerStorage);
       command->setPieceStorage(_pieceStorage);
-      e->addCommand(command);
+      getDownloadEngine()->addCommand(command);
     }
     return true;
   } else {
@@ -199,11 +200,11 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
                         util::itos(getCuid()).c_str());
     }
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(getCuid(), _requestGroup, peer, e,
-                                        _btRuntime, false);
+      new PeerInitiateConnectionCommand(getCuid(), _requestGroup, getPeer(),
+                                        getDownloadEngine(), _btRuntime, false);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
-    e->addCommand(command);
+    getDownloadEngine()->addCommand(command);
     return true;
   }
 }
@@ -211,7 +212,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 void InitiatorMSEHandshakeCommand::onAbort()
 {
   if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    _peerStorage->returnPeer(peer);
+    _peerStorage->returnPeer(getPeer());
   }
 }
 

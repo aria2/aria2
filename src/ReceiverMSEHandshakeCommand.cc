@@ -81,7 +81,8 @@ ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand()
 
 bool ReceiverMSEHandshakeCommand::exitBeforeExecute()
 {
-  return e->isHaltRequested() || e->getRequestGroupMan()->downloadFinished();
+  return getDownloadEngine()->isHaltRequested() ||
+    getDownloadEngine()->getRequestGroupMan()->downloadFinished();
 }
 
 bool ReceiverMSEHandshakeCommand::executeInternal()
@@ -97,18 +98,21 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       _sequence = RECEIVER_WAIT_KEY;
       break;
     case MSEHandshake::HANDSHAKE_LEGACY: {
-      if(e->getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+      if(getDownloadEngine()->getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
         throw DL_ABORT_EX
           ("The legacy BitTorrent handshake is not acceptable by the"
            " preference.");
       }
       SharedHandle<PeerConnection> peerConnection
-        (new PeerConnection(getCuid(), socket));
+        (new PeerConnection(getCuid(), getSocket()));
       peerConnection->presetBuffer(_mseHandshake->getBuffer(),
                                    _mseHandshake->getBufferLength());
-      Command* c = new PeerReceiveHandshakeCommand(getCuid(), peer, e, socket,
+      Command* c = new PeerReceiveHandshakeCommand(getCuid(),
+                                                   getPeer(),
+                                                   getDownloadEngine(),
+                                                   getSocket(),
                                                    peerConnection);
-      e->addCommand(c);
+      getDownloadEngine()->addCommand(c);
       return true;
     }
     default:
@@ -121,7 +125,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       if(_mseHandshake->sendPublicKey()) {
         _sequence = RECEIVER_FIND_HASH_MARKER;
       } else {
-        setWriteCheckSocket(socket);
+        setWriteCheckSocket(getSocket());
         _sequence = RECEIVER_SEND_KEY_PENDING;
       }
     }
@@ -141,7 +145,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
   }
   case RECEIVER_RECEIVE_PAD_C_LENGTH: {
     std::vector<SharedHandle<DownloadContext> > downloadContexts;
-    e->getBtRegistry()->getAllDownloadContext
+    getDownloadEngine()->getBtRegistry()->getAllDownloadContext
       (std::back_inserter(downloadContexts));
     if(_mseHandshake->receiveReceiverHashAndPadCLength(downloadContexts)) {
       _sequence = RECEIVER_RECEIVE_PAD_C;
@@ -166,7 +170,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
         createCommand();
         return true;
       } else {
-        setWriteCheckSocket(socket);
+        setWriteCheckSocket(getSocket());
         _sequence = RECEIVER_SEND_STEP2_PENDING;
       }
     }
@@ -180,14 +184,14 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     }
     break;
   }
-  e->addCommand(this);
+  getDownloadEngine()->addCommand(this);
   return false;
 }
 
 void ReceiverMSEHandshakeCommand::createCommand()
 {
   SharedHandle<PeerConnection> peerConnection
-    (new PeerConnection(getCuid(), socket));
+    (new PeerConnection(getCuid(), getSocket()));
   if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
     peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
                                      _mseHandshake->getDecryptor());
@@ -200,8 +204,9 @@ void ReceiverMSEHandshakeCommand::createCommand()
   // as a hint. If this info hash and one in BitTorrent Handshake does not
   // match, then drop connection.
   Command* c =
-    new PeerReceiveHandshakeCommand(getCuid(), peer, e, socket, peerConnection);
-  e->addCommand(c);
+    new PeerReceiveHandshakeCommand(getCuid(), getPeer(), getDownloadEngine(),
+                                    getSocket(), peerConnection);
+  getDownloadEngine()->addCommand(c);
 }
 
 } // namespace aria2
