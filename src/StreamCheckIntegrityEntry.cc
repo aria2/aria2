@@ -53,7 +53,7 @@ void StreamCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<Command*>& commands, DownloadEngine* e)
 {
   SharedHandle<FileAllocationEntry> entry
-    (new StreamFileAllocationEntry(_requestGroup, popNextCommand()));
+    (new StreamFileAllocationEntry(getRequestGroup(), popNextCommand()));
   proceedFileAllocation(commands, entry, e);
 }
 

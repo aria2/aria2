@@ -55,7 +55,7 @@ void BtCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<Command*>& commands, DownloadEngine* e)
 {
   const SharedHandle<DiskAdaptor>& diskAdaptor =
-    _requestGroup->getPieceStorage()->getDiskAdaptor();
+    getRequestGroup()->getPieceStorage()->getDiskAdaptor();
   if(diskAdaptor->isReadOnlyEnabled()) {
     // Now reopen DiskAdaptor with read only disabled.
     diskAdaptor->closeFile();
@@ -63,7 +63,7 @@ void BtCheckIntegrityEntry::onDownloadIncomplete
     diskAdaptor->openFile();
   }
   SharedHandle<BtFileAllocationEntry> entry
-    (new BtFileAllocationEntry(_requestGroup));
+    (new BtFileAllocationEntry(getRequestGroup()));
   proceedFileAllocation(commands, entry, e);
 }
 
@@ -74,9 +74,9 @@ void BtCheckIntegrityEntry::onDownloadFinished
   // are valid, then aira2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
-  if(_requestGroup->getOption()->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
+  if(getRequestGroup()->getOption()->getAsBool(PREF_BT_HASH_CHECK_SEED)) {
     SharedHandle<BtFileAllocationEntry> entry
-      (new BtFileAllocationEntry(_requestGroup));
+      (new BtFileAllocationEntry(getRequestGroup()));
     proceedFileAllocation(commands, entry, e);
   }
 }

@@ -44,7 +44,7 @@ class RequestGroup;
 class Command;
 
 class RequestGroupEntry {
-protected:
+private:
   RequestGroup* _requestGroup;
   Command* _nextCommand;
 public:

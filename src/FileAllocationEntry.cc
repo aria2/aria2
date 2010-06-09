@@ -49,12 +49,12 @@ FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* ne
   RequestGroupEntry(requestGroup, nextCommand),
   _fileAllocationIterator(requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator())
 {
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->enableDirectIO();
+  getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableDirectIO();
 }
 
 FileAllocationEntry:: ~FileAllocationEntry()
 {
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
+  getRequestGroup()->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
 }
 
 off_t FileAllocationEntry::getCurrentLength()
@@ -79,7 +79,7 @@ void FileAllocationEntry::allocateChunk()
 
 void FileAllocationEntry::disableDirectIO()
 {
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
+  getRequestGroup()->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
 }
 
 } // namespace aria2

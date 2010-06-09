@@ -40,8 +40,9 @@
 
 namespace aria2 {
 
-PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry(RequestGroup* requestGroup,
-                                                           Command* nextCommand):
+PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry
+(RequestGroup* requestGroup,
+ Command* nextCommand):
   CheckIntegrityEntry(requestGroup, nextCommand) {}
 
 PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
@@ -49,7 +50,7 @@ PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
 bool PieceHashCheckIntegrityEntry::isValidationReady()
 {
   const SharedHandle<DownloadContext>& dctx =
-    _requestGroup->getDownloadContext();
+    getRequestGroup()->getDownloadContext();
   return !dctx->getPieceHashAlgo().empty() &&
     dctx->getPieceHashes().size() > 0 &&
     dctx->getPieceHashes().size() == dctx->getNumPieces();
@@ -59,10 +60,11 @@ void PieceHashCheckIntegrityEntry::initValidator()
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   IteratableChunkChecksumValidatorHandle validator
-    (new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
-                                          _requestGroup->getPieceStorage()));
+    (new IteratableChunkChecksumValidator
+     (getRequestGroup()->getDownloadContext(),
+      getRequestGroup()->getPieceStorage()));
   validator->init();
-  _validator = validator;
+  setValidator(validator);
 #endif // ENABLE_MESSAGE_DIGEST
 }
 

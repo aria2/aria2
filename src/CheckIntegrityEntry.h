@@ -48,8 +48,10 @@ class FileAllocationEntry;
 
 class CheckIntegrityEntry : public RequestGroupEntry,
                             public ProgressAwareEntry {
-protected:
+private:
   SharedHandle<IteratableValidator> _validator;
+protected:
+  void setValidator(const SharedHandle<IteratableValidator>& validator);
 
   void proceedFileAllocation(std::vector<Command*>& commands,
                              const SharedHandle<FileAllocationEntry>& entry,

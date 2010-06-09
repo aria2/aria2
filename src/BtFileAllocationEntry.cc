@@ -55,13 +55,15 @@ BtFileAllocationEntry::~BtFileAllocationEntry() {}
 void BtFileAllocationEntry::prepareForNextAction
 (std::vector<Command*>& commands, DownloadEngine* e)
 {
-  BtSetup().setup(commands, _requestGroup, e, _requestGroup->getOption().get());
-  if(!_requestGroup->downloadFinished()) {
-    _requestGroup->getDownloadContext()->resetDownloadStartTime();
+  BtSetup().setup(commands, getRequestGroup(), e,
+                  getRequestGroup()->getOption().get());
+  if(!getRequestGroup()->downloadFinished()) {
+    getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
     const std::vector<SharedHandle<FileEntry> >& fileEntries =
-      _requestGroup->getDownloadContext()->getFileEntries();
-    if(isUriSuppliedForRequsetFileEntry(fileEntries.begin(), fileEntries.end())) {
-      _requestGroup->createNextCommandWithAdj(commands, e, 0);
+      getRequestGroup()->getDownloadContext()->getFileEntries();
+    if(isUriSuppliedForRequsetFileEntry
+       (fileEntries.begin(), fileEntries.end())) {
+      getRequestGroup()->createNextCommandWithAdj(commands, e, 0);
     }
   }
 }

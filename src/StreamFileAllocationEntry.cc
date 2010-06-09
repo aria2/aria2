@@ -59,16 +59,16 @@ void StreamFileAllocationEntry::prepareForNextAction
 (std::vector<Command*>& commands,
  DownloadEngine* e)
 {
-  _requestGroup->getDownloadContext()->resetDownloadStartTime();
-  if(_nextCommand) {
+  getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
+  if(getNextCommand()) {
     // give _nextCommand a chance to execute in the next execution loop.
-    _nextCommand->setStatus(Command::STATUS_ONESHOT_REALTIME);
+    getNextCommand()->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);
     commands.push_back(popNextCommand());
     // try remaining uris
-    _requestGroup->createNextCommandWithAdj(commands, e, -1);
+    getRequestGroup()->createNextCommandWithAdj(commands, e, -1);
   } else {
-    _requestGroup->createNextCommandWithAdj(commands, e, 0);
+    getRequestGroup()->createNextCommandWithAdj(commands, e, 0);
   }
 }
 

@@ -52,16 +52,17 @@ ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
 
 bool ChecksumCheckIntegrityEntry::isValidationReady()
 {
-  return !_requestGroup->getDownloadContext()->getChecksum().empty() &&
-    !_requestGroup->getDownloadContext()->getChecksumHashAlgo().empty();
+  return !getRequestGroup()->getDownloadContext()->getChecksum().empty() &&
+    !getRequestGroup()->getDownloadContext()->getChecksumHashAlgo().empty();
 }
 
 void ChecksumCheckIntegrityEntry::initValidator()
 {
-  _validator.reset(new IteratableChecksumValidator
-                   (_requestGroup->getDownloadContext(),
-                    _requestGroup->getPieceStorage()));
-  _validator->init();
+  SharedHandle<IteratableChecksumValidator> validator
+    (new IteratableChecksumValidator(getRequestGroup()->getDownloadContext(),
+                                     getRequestGroup()->getPieceStorage()));
+  validator->init();
+  setValidator(validator);
 }
 
 void
