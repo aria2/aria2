@@ -47,14 +47,12 @@ class DownloadEngine;
 class SocketCore;
 
 class DHTInteractionCommand:public Command {
-protected:
-  DownloadEngine* _e;
 private:
+  DownloadEngine* _e;
   SharedHandle<DHTMessageDispatcher> _dispatcher;
   SharedHandle<DHTMessageReceiver> _receiver;
   SharedHandle<DHTTaskQueue> _taskQueue;
   SharedHandle<SocketCore> _readCheckSocket;
-
 public:
   DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
 

@@ -53,13 +53,14 @@ FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
 Command* FileAllocationDispatcherCommand::createCommand
 (const SharedHandle<FileAllocationEntry>& entry)
 {
-  cuid_t newCUID = _e->newCUID();
+  cuid_t newCUID = getDownloadEngine()->newCUID();
   if(getLogger()->info()) {
     getLogger()->info(MSG_FILE_ALLOCATION_DISPATCH,
                       util::itos(newCUID).c_str());
   }
   FileAllocationCommand* command =
-    new FileAllocationCommand(newCUID, entry->getRequestGroup(), _e, entry);
+    new FileAllocationCommand(newCUID, entry->getRequestGroup(),
+                              getDownloadEngine(), entry);
   return command;
 }
 

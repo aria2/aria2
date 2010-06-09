@@ -57,9 +57,9 @@ private:
   SharedHandle<PeerStorage> _peerStorage;
   SharedHandle<BtAnnounce> _btAnnounce;
 
-  time_t interval; // UNIT: sec
-  DownloadEngine* e;
-  Timer checkPoint;
+  time_t _interval; // UNIT: sec
+  DownloadEngine* _e;
+  Timer _checkPoint;
   unsigned int _numNewConnection; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(cuid_t cuid,

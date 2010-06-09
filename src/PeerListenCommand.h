@@ -46,8 +46,8 @@ class SocketCore;
 
 class PeerListenCommand : public Command {
 private:
-  DownloadEngine* e;
-  SharedHandle<SocketCore> socket;
+  DownloadEngine* _e;
+  SharedHandle<SocketCore> _socket;
   unsigned int _lowestSpeedLimit;
 
   static unsigned int __numInstance;

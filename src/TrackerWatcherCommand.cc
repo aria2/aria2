@@ -72,7 +72,7 @@ TrackerWatcherCommand::TrackerWatcherCommand
 (cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e):
   Command(cuid),
   _requestGroup(requestGroup),
-  e(e)
+  _e(e)
 {
   _requestGroup->increaseNumCommand();
 }
@@ -91,7 +91,7 @@ bool TrackerWatcherCommand::execute() {
       return true;
     } else {
       _trackerRequestGroup->setForceHaltRequested(true);
-      e->addCommand(this);
+      _e->addCommand(this);
       return false;
     }
   }
@@ -106,13 +106,13 @@ bool TrackerWatcherCommand::execute() {
     if(!_trackerRequestGroup.isNull()) {
       std::vector<Command*> commands;
       try {
-        _trackerRequestGroup->createInitialCommand(commands, e);
+        _trackerRequestGroup->createInitialCommand(commands, _e);
       } catch(RecoverableException& ex) {
         getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
         std::for_each(commands.begin(), commands.end(), Deleter());
         commands.clear();
       }
-      e->addCommand(commands);
+      _e->addCommand(commands);
       if(getLogger()->debug()) {
         getLogger()->debug("added tracker request command");
       }
@@ -140,7 +140,7 @@ bool TrackerWatcherCommand::execute() {
       _btAnnounce->resetAnnounce();
     }
   }
-  e->addCommand(this);
+  _e->addCommand(this);
   return false;
 }
 
@@ -173,13 +173,13 @@ void TrackerWatcherCommand::processTrackerResponse
     if(peer.isNull()) {
       break;
     }
-    peer->usedBy(e->newCUID());
+    peer->usedBy(_e->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand
-      (peer->usedBy(), _requestGroup, peer, e, _btRuntime);
+      (peer->usedBy(), _requestGroup, peer, _e, _btRuntime);
     command->setPeerStorage(_peerStorage);
     command->setPieceStorage(_pieceStorage);
-    e->addCommand(command);
+    _e->addCommand(command);
     if(getLogger()->debug()) {
       getLogger()->debug("CUID#%s - Adding new command CUID#%s",
                          util::itos(getCuid()).c_str(),

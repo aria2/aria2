@@ -45,11 +45,11 @@ class RequestGroup;
 
 class SleepCommand:public Command {
 private:
-  DownloadEngine* engine;
+  DownloadEngine* _engine;
   RequestGroup* _requestGroup;
-  Command* nextCommand;
-  time_t wait;
-  Timer checkPoint;
+  Command* _nextCommand;
+  time_t _wait;
+  Timer _checkPoint;
 public:
   SleepCommand(cuid_t cuid, DownloadEngine* e, RequestGroup* requestGroup,
                Command* nextCommand, time_t wait);

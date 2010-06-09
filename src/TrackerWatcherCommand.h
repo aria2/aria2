@@ -53,7 +53,7 @@ class TrackerWatcherCommand : public Command
 private:
   RequestGroup* _requestGroup;
 
-  DownloadEngine* e;
+  DownloadEngine* _e;
 
   SharedHandle<PeerStorage> _peerStorage;
 

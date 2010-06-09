@@ -46,7 +46,7 @@ class PeerStorage;
 
 class PeerChokeCommand : public Command {
 private:
-  DownloadEngine* e;
+  DownloadEngine* _e;
 
   SharedHandle<PeerStorage> _peerStorage;
 

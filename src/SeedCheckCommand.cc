@@ -55,9 +55,9 @@ SeedCheckCommand::SeedCheckCommand
  const SharedHandle<SeedCriteria>& seedCriteria)
   :Command(cuid),
    _requestGroup(requestGroup),
-   e(e),
-   seedCriteria(seedCriteria),
-   checkStarted(false)
+   _e(e),
+   _seedCriteria(seedCriteria),
+   _checkStarted(false)
 {
   setStatusRealtime();
   _requestGroup->increaseNumCommand();
@@ -72,29 +72,29 @@ bool SeedCheckCommand::execute() {
   if(_btRuntime->isHalt()) {
     return true;
   }
-  if(!seedCriteria.get()) {
+  if(!_seedCriteria.get()) {
     return false;
   }
-  if(!checkStarted) {
+  if(!_checkStarted) {
     if(_pieceStorage->downloadFinished()) {
-      checkStarted = true;
-      seedCriteria->reset();
+      _checkStarted = true;
+      _seedCriteria->reset();
     }
   }
-  if(checkStarted) {
-    if(seedCriteria->evaluate()) {
+  if(_checkStarted) {
+    if(_seedCriteria->evaluate()) {
       getLogger()->notice(MSG_SEEDING_END);
       _btRuntime->setHalt(true);
     }
   }
-  e->addCommand(this);
+  _e->addCommand(this);
   return false;
 }
 
 void SeedCheckCommand::setSeedCriteria
 (const SharedHandle<SeedCriteria>& seedCriteria)
 {
-  this->seedCriteria = seedCriteria;
+  _seedCriteria = seedCriteria;
 }
 
 void SeedCheckCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)

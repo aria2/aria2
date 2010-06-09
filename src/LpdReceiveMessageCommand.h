@@ -55,9 +55,8 @@ private:
   LpdReceiveMessageCommand
   (cuid_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
    DownloadEngine* e);
-protected:
-  DownloadEngine* _e;
 
+  DownloadEngine* _e;
 public:
   virtual ~LpdReceiveMessageCommand();
 

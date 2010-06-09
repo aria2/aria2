@@ -56,14 +56,14 @@ CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
 Command* CheckIntegrityDispatcherCommand::createCommand
 (const SharedHandle<CheckIntegrityEntry>& entry)
 {
-  cuid_t newCUID = _e->newCUID();
+  cuid_t newCUID = getDownloadEngine()->newCUID();
   if(getLogger()->info()) {
     getLogger()->info("CUID#%s - Dispatching CheckIntegrityCommand CUID#%s.",
                       util::itos(getCuid()).c_str(),
                       util::itos(newCUID).c_str());
   }
   return new CheckIntegrityCommand
-    (newCUID, entry->getRequestGroup(), _e, entry);
+    (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
 }
 
 } // namespace aria2

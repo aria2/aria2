@@ -55,9 +55,9 @@ class AsyncNameResolver;
 #endif // ENABLE_ASYNC_DNS
 
 class DHTEntryPointNameResolveCommand:public Command {
-protected:
-  DownloadEngine* _e;
 private:
+  DownloadEngine* _e;
+
 #ifdef ENABLE_ASYNC_DNS
   SharedHandle<AsyncNameResolver> _resolver;
 #endif // ENABLE_ASYNC_DNS

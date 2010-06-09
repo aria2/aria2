@@ -50,11 +50,11 @@ class SeedCheckCommand : public Command
 {
 private:
   RequestGroup* _requestGroup;
-  DownloadEngine* e;
+  DownloadEngine* _e;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<BtRuntime> _btRuntime;
-  SharedHandle<SeedCriteria> seedCriteria;
-  bool checkStarted;
+  SharedHandle<SeedCriteria> _seedCriteria;
+  bool _checkStarted;
 public:
   SeedCheckCommand(cuid_t cuid,
                    RequestGroup* requestGroup,

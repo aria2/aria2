@@ -47,7 +47,7 @@ namespace aria2 {
 PeerChokeCommand::PeerChokeCommand(cuid_t cuid,
                                    DownloadEngine* e):
   Command(cuid),
-  e(e) {}
+  _e(e) {}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 
@@ -58,7 +58,7 @@ bool PeerChokeCommand::execute() {
   if(_peerStorage->chokeRoundIntervalElapsed()) {
     _peerStorage->executeChoke();
   }
-  e->addCommand(this);
+  _e->addCommand(this);
   return false;
 }
 

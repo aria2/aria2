@@ -66,8 +66,8 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
   :
   Command(cuid),
   _requestGroup(requestGroup),
-  interval(interval),
-  e(e),
+  _interval(interval),
+  _e(e),
   _numNewConnection(5)
 {
   _requestGroup->increaseNumCommand();
@@ -82,8 +82,8 @@ bool ActivePeerConnectionCommand::execute() {
   if(_btRuntime->isHalt()) {
     return true;
   }
-  if(checkPoint.difference(global::wallclock) >= interval) {
-    checkPoint = global::wallclock;
+  if(_checkPoint.difference(global::wallclock) >= _interval) {
+    _checkPoint = global::wallclock;
     TransferStat tstat = _requestGroup->calculateStat();
     const unsigned int maxDownloadLimit =
       _requestGroup->getMaxDownloadSpeedLimit();
@@ -129,7 +129,7 @@ bool ActivePeerConnectionCommand::execute() {
       }
     }
   }
-  e->addCommand(this);
+  _e->addCommand(this);
   return false;
 }
 
@@ -138,13 +138,13 @@ void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
   if(peer.isNull()) {
     return;
   }
-  peer->usedBy(e->newCUID());
+  peer->usedBy(_e->newCUID());
   PeerInitiateConnectionCommand* command =
-    new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
+    new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, _e,
                                       _btRuntime);
   command->setPeerStorage(_peerStorage);
   command->setPieceStorage(_pieceStorage);
-  e->addCommand(command);
+  _e->addCommand(command);
   if(getLogger()->info()) {
     getLogger()->info(MSG_CONNECTING_TO_PEER,
                       util::itos(getCuid()).c_str(), peer->ipaddr.c_str());

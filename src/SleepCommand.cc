@@ -47,22 +47,22 @@ namespace aria2 {
 SleepCommand::SleepCommand(cuid_t cuid, DownloadEngine* e,
                            RequestGroup* requestGroup,
                            Command* nextCommand, time_t wait):
-  Command(cuid), engine(e), _requestGroup(requestGroup),
-  nextCommand(nextCommand), wait(wait), checkPoint(global::wallclock) {}
+  Command(cuid), _engine(e), _requestGroup(requestGroup),
+  _nextCommand(nextCommand), _wait(wait), _checkPoint(global::wallclock) {}
 
 SleepCommand::~SleepCommand() {
-  delete nextCommand;
+  delete _nextCommand;
 }
 
 bool SleepCommand::execute() {
   if(_requestGroup->downloadFinished() || _requestGroup->isHaltRequested()) {
     return true;
-  } else if(checkPoint.difference(global::wallclock) >= wait) {
-    engine->addCommand(nextCommand);
-    nextCommand = 0;
+  } else if(_checkPoint.difference(global::wallclock) >= _wait) {
+    _engine->addCommand(_nextCommand);
+    _nextCommand = 0;
     return true;
   } else {
-    engine->addCommand(this);
+    _engine->addCommand(this);
     return false;
   }
 }

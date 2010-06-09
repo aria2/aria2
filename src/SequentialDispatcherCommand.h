@@ -47,10 +47,15 @@ class DownloadEngine;
 
 template<typename T>
 class SequentialDispatcherCommand : public Command {
-protected:
+private:
   SharedHandle<SequentialPicker<T> > _picker;
 
   DownloadEngine* _e;
+protected:
+  DownloadEngine* getDownloadEngine() const
+  {
+    return _e;
+  }
 public:
   SequentialDispatcherCommand(cuid_t cuid,
                               const SharedHandle<SequentialPicker<T> >& picker,
