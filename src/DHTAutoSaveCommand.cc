@@ -61,16 +61,18 @@
 
 namespace aria2 {
 
-DHTAutoSaveCommand::DHTAutoSaveCommand(cuid_t cuid, DownloadEngine* e, time_t interval):
+DHTAutoSaveCommand::DHTAutoSaveCommand
+(cuid_t cuid, DownloadEngine* e, time_t interval):
   TimeBasedCommand(cuid, e, interval) {}
 
 DHTAutoSaveCommand::~DHTAutoSaveCommand() {}
 
 void DHTAutoSaveCommand::preProcess()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+     getDownloadEngine()->isHaltRequested()) {
     save();
-    _exit = true;
+    enableExit();
   }
 }
 
@@ -81,7 +83,8 @@ void DHTAutoSaveCommand::process()
 
 void DHTAutoSaveCommand::save()
 {
-  std::string dhtFile = _e->getOption()->get(PREF_DHT_FILE_PATH);
+  std::string dhtFile =
+    getDownloadEngine()->getOption()->get(PREF_DHT_FILE_PATH);
   getLogger()->info("Saving DHT routing table to %s.", dhtFile.c_str());
 
   std::string tempFile = dhtFile;
@@ -142,7 +145,8 @@ void DHTAutoSaveCommand::setLocalNode(const SharedHandle<DHTNode>& localNode)
   _localNode = localNode;
 }
 
-void DHTAutoSaveCommand::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
+void DHTAutoSaveCommand::setRoutingTable
+(const SharedHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }

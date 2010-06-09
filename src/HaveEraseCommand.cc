@@ -51,17 +51,20 @@ HaveEraseCommand::~HaveEraseCommand() {}
 
 void HaveEraseCommand::preProcess()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
-    _exit = true;
+  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+     getDownloadEngine()->isHaltRequested()) {
+    enableExit();
   }
 }
 
 void HaveEraseCommand::process()
 {
-  size_t numLoop = _e->getRequestGroupMan()->countRequestGroup();
+  size_t numLoop =
+    getDownloadEngine()->getRequestGroupMan()->countRequestGroup();
   for(size_t i = 0; i < numLoop; ++i) {
     PieceStorageHandle ps =
-      _e->getRequestGroupMan()->getRequestGroup(i)->getPieceStorage();
+      getDownloadEngine()->getRequestGroupMan()->getRequestGroup(i)->
+      getPieceStorage();
     if(!ps.isNull()) {
       ps->removeAdvertisedPiece(5);
     }

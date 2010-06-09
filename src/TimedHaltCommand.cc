@@ -54,22 +54,23 @@ TimedHaltCommand::~TimedHaltCommand() {}
 
 void TimedHaltCommand::preProcess()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
-    _exit = true;
+  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+     getDownloadEngine()->isHaltRequested()) {
+    enableExit();
   }
 }
 
 void TimedHaltCommand::process()
 {
-  if(!_e->isHaltRequested()) {
-    getLogger()->notice(MSG_TIME_HAS_PASSED, _interval);
+  if(!getDownloadEngine()->isHaltRequested()) {
+    getLogger()->notice(MSG_TIME_HAS_PASSED, getInterval());
     if(_forceHalt) {
       getLogger()->notice("This is emergency shutdown.");
-      _e->requestForceHalt();
+      getDownloadEngine()->requestForceHalt();
     } else {
-      _e->requestHalt();
+      getDownloadEngine()->requestHalt();
     }
-    _exit = true;
+    enableExit();
   }
 }
 

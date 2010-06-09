@@ -57,14 +57,14 @@ BtStopDownloadCommand::BtStopDownloadCommand
 void BtStopDownloadCommand::preProcess()
 {
   if(_btRuntime->isHalt() || _pieceStorage->downloadFinished()) {
-    _exit = true;
+    enableExit();
   }
   if(_checkPoint.difference(global::wallclock) >= _timeout) {
     getLogger()->notice("GID#%s Stop downloading torrent due to"
                         " --bt-stop-timeout option.",
                         util::itos(_requestGroup->getGID()).c_str());
     _requestGroup->setHaltRequested(true);
-    _exit = true;
+    enableExit();
   }
 }
 

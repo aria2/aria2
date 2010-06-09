@@ -54,7 +54,10 @@ DHTBucketRefreshCommand::~DHTBucketRefreshCommand() {}
 
 void DHTBucketRefreshCommand::preProcess()
 {
-  _exit = _e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested();
+  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+     getDownloadEngine()->isHaltRequested()) {
+    enableExit();
+  }
 }
 
 void DHTBucketRefreshCommand::process()
@@ -62,17 +65,20 @@ void DHTBucketRefreshCommand::process()
   _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
 }
 
-void DHTBucketRefreshCommand::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
+void DHTBucketRefreshCommand::setRoutingTable
+(const SharedHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
 
-void DHTBucketRefreshCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
+void DHTBucketRefreshCommand::setTaskQueue
+(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
 
-void DHTBucketRefreshCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
+void DHTBucketRefreshCommand::setTaskFactory
+(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
 }

@@ -54,7 +54,10 @@ DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() {}
 
 void DHTPeerAnnounceCommand::preProcess()
 {
-  _exit = _e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested();
+  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+     getDownloadEngine()->isHaltRequested()) {
+    enableExit();
+  }
 }
 
 void DHTPeerAnnounceCommand::process()
@@ -66,7 +69,8 @@ void DHTPeerAnnounceCommand::process()
   }
 }
 
-void DHTPeerAnnounceCommand::setPeerAnnounceStorage(const SharedHandle<DHTPeerAnnounceStorage>& storage)
+void DHTPeerAnnounceCommand::setPeerAnnounceStorage
+(const SharedHandle<DHTPeerAnnounceStorage>& storage)
 {
   _peerAnnounceStorage = storage;
 }

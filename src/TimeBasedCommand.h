@@ -44,7 +44,7 @@ class DownloadEngine;
 
 class TimeBasedCommand : public Command
 {
-protected:
+private:
   DownloadEngine* _e;
 
   /**
@@ -59,8 +59,23 @@ protected:
   time_t _interval; // unit: sec
 
   bool _routineCommand;
-private:
+
   Timer _checkPoint;
+protected:
+  DownloadEngine* getDownloadEngine() const
+  {
+    return _e;
+  }
+
+  void enableExit()
+  {
+    _exit = true;
+  }
+
+  time_t getInterval() const
+  {
+    return _interval;
+  }
 public:
   /**
    * preProcess() is called each time when excute() is called.

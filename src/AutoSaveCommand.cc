@@ -49,14 +49,15 @@ AutoSaveCommand::~AutoSaveCommand() {}
 
 void AutoSaveCommand::preProcess()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
-    _exit = true;
+  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+     getDownloadEngine()->isHaltRequested()) {
+    enableExit();
   }
 }
 
 void AutoSaveCommand::process()
 {
-  _e->getRequestGroupMan()->save();
+  getDownloadEngine()->getRequestGroupMan()->save();
 }
 
 } // namespace aria2

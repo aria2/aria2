@@ -1,6 +1,19 @@
 2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private. Added accessor funcs.
+	* src/AutoSaveCommand.cc
+	* src/BtStopDownloadCommand.cc
+	* src/DHTAutoSaveCommand.cc
+	* src/DHTBucketRefreshCommand.cc
+	* src/DHTPeerAnnounceCommand.cc
+	* src/DHTTokenUpdateCommand.cc
+	* src/HaveEraseCommand.cc
+	* src/TimeBasedCommand.h
+	* src/TimedHaltCommand.cc
+
+2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private. Added accessor funcs.
 	* src/InitiatorMSEHandshakeCommand.cc
 	* src/PeerAbstractCommand.cc
 	* src/PeerAbstractCommand.h

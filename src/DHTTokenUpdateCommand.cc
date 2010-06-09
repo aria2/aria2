@@ -55,7 +55,10 @@ DHTTokenUpdateCommand::~DHTTokenUpdateCommand() {}
 
 void DHTTokenUpdateCommand::preProcess()
 {
-  _exit = _e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested();
+  if(getDownloadEngine()->getRequestGroupMan()->downloadFinished() ||
+     getDownloadEngine()->isHaltRequested()) {
+    enableExit();
+  }
 }
 
 void DHTTokenUpdateCommand::process()
