@@ -60,59 +60,59 @@ CheckIntegrityCommand::~CheckIntegrityCommand() {}
 
 bool CheckIntegrityCommand::executeInternal()
 {
-  if(_requestGroup->isHaltRequested()) {
-    _e->getCheckIntegrityMan()->dropPickedEntry();
+  if(getRequestGroup()->isHaltRequested()) {
+    getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
     return true;
   }
   _entry->validateChunk();
   if(_entry->finished()) {
-    _e->getCheckIntegrityMan()->dropPickedEntry();
+    getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
     // Enable control file saving here. See also
     // RequestGroup::processCheckIntegrityEntry() to know why this is
     // needed.
-    _requestGroup->enableSaveControlFile();
-    if(_requestGroup->downloadFinished()) {
+    getRequestGroup()->enableSaveControlFile();
+    if(getRequestGroup()->downloadFinished()) {
       getLogger()->notice
         (MSG_VERIFICATION_SUCCESSFUL,
-         _requestGroup->getDownloadContext()->getBasePath().c_str());
+         getRequestGroup()->getDownloadContext()->getBasePath().c_str());
       std::vector<Command*> commands;
       try {
-        _entry->onDownloadFinished(commands, _e);
+        _entry->onDownloadFinished(commands, getDownloadEngine());
       } catch(RecoverableException& e) {
         std::for_each(commands.begin(), commands.end(), Deleter());
         throw;
       }
-      _e->addCommand(commands);
+      getDownloadEngine()->addCommand(commands);
     } else {
       getLogger()->error
         (MSG_VERIFICATION_FAILED,
-         _requestGroup->getDownloadContext()->getBasePath().c_str());
+         getRequestGroup()->getDownloadContext()->getBasePath().c_str());
       std::vector<Command*> commands;
       try {
-        _entry->onDownloadIncomplete(commands,_e);
+        _entry->onDownloadIncomplete(commands, getDownloadEngine());
       } catch(RecoverableException& e) {
         std::for_each(commands.begin(), commands.end(), Deleter());
         throw;
       }
-      _e->addCommand(commands);
+      getDownloadEngine()->addCommand(commands);
     }
-    _e->setNoWait(true);
+    getDownloadEngine()->setNoWait(true);
     return true;
   } else {
-    _e->addCommand(this);
+    getDownloadEngine()->addCommand(this);
     return false;
   }
 }
 
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
-  _e->getCheckIntegrityMan()->dropPickedEntry();
+  getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
   getLogger()->error(MSG_FILE_VALIDATION_FAILURE, e,
                      util::itos(getCuid()).c_str());
   getLogger()->error
     (MSG_DOWNLOAD_NOT_COMPLETE,
      util::itos(getCuid()).c_str(),
-     _requestGroup->getDownloadContext()->getBasePath().c_str());
+     getRequestGroup()->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

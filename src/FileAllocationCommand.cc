@@ -62,8 +62,8 @@ FileAllocationCommand::~FileAllocationCommand() {}
 
 bool FileAllocationCommand::executeInternal()
 {
-  if(_requestGroup->isHaltRequested()) {
-    _e->getFileAllocationMan()->dropPickedEntry();
+  if(getRequestGroup()->isHaltRequested()) {
+    getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     return true;
   }
   _fileAllocationEntry->allocateChunk();
@@ -72,34 +72,34 @@ bool FileAllocationCommand::executeInternal()
       getLogger()->debug
         (MSG_ALLOCATION_COMPLETED,
          _timer.difference(global::wallclock),
-         util::itos(_requestGroup->getTotalLength(), true).c_str());
+         util::itos(getRequestGroup()->getTotalLength(), true).c_str());
     }
-    _e->getFileAllocationMan()->dropPickedEntry();
+    getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     
     std::vector<Command*> commands;
     try {
-      _fileAllocationEntry->prepareForNextAction(commands, _e);
+      _fileAllocationEntry->prepareForNextAction(commands, getDownloadEngine());
     } catch(RecoverableException& e) {
       std::for_each(commands.begin(), commands.end(), Deleter());
       throw;
     }
-    _e->addCommand(commands);
-    _e->setNoWait(true);
+    getDownloadEngine()->addCommand(commands);
+    getDownloadEngine()->setNoWait(true);
     return true;
   } else {
-    _e->addCommand(this);
+    getDownloadEngine()->addCommand(this);
     return false;
   }
 }
 
 bool FileAllocationCommand::handleException(Exception& e)
 {
-  _e->getFileAllocationMan()->dropPickedEntry();
+  getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
   getLogger()->error
     (MSG_FILE_ALLOCATION_FAILURE, e, util::itos(getCuid()).c_str());
   getLogger()->error
     (MSG_DOWNLOAD_NOT_COMPLETE, util::itos(getCuid()).c_str(),
-     _requestGroup->getDownloadContext()->getBasePath().c_str());
+     getRequestGroup()->getDownloadContext()->getBasePath().c_str());
   return true;
 }
 

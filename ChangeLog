@@ -1,6 +1,13 @@
 2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private. Added accessor funcs.
+	* src/CheckIntegrityCommand.cc
+	* src/FileAllocationCommand.cc
+	* src/RealtimeCommand.h
+
+2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private. Added accessor funcs.
 	* src/AutoSaveCommand.cc
 	* src/BtStopDownloadCommand.cc
 	* src/DHTAutoSaveCommand.cc

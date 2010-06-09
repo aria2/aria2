@@ -44,9 +44,19 @@ class DownloadEngine;
 class Exception;
 
 class RealtimeCommand : public Command {
-protected:
+private:
   RequestGroup* _requestGroup;
   DownloadEngine* _e;
+protected:
+  DownloadEngine* getDownloadEngine() const
+  {
+    return _e;
+  }
+
+  RequestGroup* getRequestGroup() const
+  {
+    return _requestGroup;
+  }
 public:
   RealtimeCommand(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e);
 
