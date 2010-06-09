@@ -167,7 +167,7 @@ bool AbstractCommand::execute() {
           return prepareForRetry(0);
         }
         if(_req.isNull() || _req->getMaxPipelinedRequest() == 1 ||
-           _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
+           getDownloadContext()->getFileEntries().size() == 1) {
           if(_segments.empty()) {
             SharedHandle<Segment> segment =
               getSegmentMan()->getSegment(getCuid());
@@ -287,9 +287,9 @@ bool AbstractCommand::execute() {
 }
 
 void AbstractCommand::tryReserved() {
-  if(_requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
+  if(getDownloadContext()->getFileEntries().size() == 1) {
     const SharedHandle<FileEntry>& entry =
-      _requestGroup->getDownloadContext()->getFirstFileEntry();
+      getDownloadContext()->getFirstFileEntry();
     // Don't create new command if currently file length is unknown
     // and there are no URI left. Because file length is unknown, we
     // can assume that there are no in-flight request object.
@@ -361,7 +361,7 @@ void AbstractCommand::onAbort() {
        !_fileEntry.isNull() &&
        getSegmentMan()->calculateSessionDownloadLength() == 0 &&
        !_requestGroup->p2pInvolved() &&
-       _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
+       getDownloadContext()->getFileEntries().size() == 1) {
       const int maxTries = getOption()->getAsInt(PREF_MAX_RESUME_FAILURE_TRIES);
       if((maxTries > 0 && _requestGroup->getResumeFailureCount() >= maxTries)||
          _fileEntry->emptyRequestUri()) {
