@@ -49,9 +49,9 @@ class DownloadCommand : public AbstractCommand {
 private:
   unsigned char* _buf;
 
-  time_t startupIdleTime;
-  unsigned int lowestDownloadSpeedLimit;
-  SharedHandle<PeerStat> peerStat;
+  time_t _startupIdleTime;
+  unsigned int _lowestDownloadSpeedLimit;
+  SharedHandle<PeerStat> _peerStat;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
@@ -66,15 +66,14 @@ private:
                          const std::string& actualPieceHash);
 
   void checkLowestDownloadSpeed() const;
-protected:
+
   SharedHandle<Decoder> _transferEncodingDecoder;
 
   SharedHandle<Decoder> _contentEncodingDecoder;
-
+protected:
   virtual bool executeInternal();
 
   virtual bool prepareForNextSegment();
-
 public:
   DownloadCommand(cuid_t cuid,
                   const SharedHandle<Request>& req,
@@ -84,16 +83,28 @@ public:
                   const SharedHandle<SocketCore>& s);
   virtual ~DownloadCommand();
 
+  const SharedHandle<Decoder>& getTransferEncodingDecoder() const
+  {
+    return _transferEncodingDecoder;
+  }
+
   void setTransferEncodingDecoder(const SharedHandle<Decoder>& decoder);
+
+  const SharedHandle<Decoder>& getContentEncodingDecoder() const
+  {
+    return _contentEncodingDecoder;
+  }
 
   void setContentEncodingDecoder(const SharedHandle<Decoder>& decoder);
 
-  void setStartupIdleTime(time_t startupIdleTime) {
-    this->startupIdleTime = startupIdleTime;
+  void setStartupIdleTime(time_t startupIdleTime)
+  {
+    _startupIdleTime = startupIdleTime;
   }
 
-  void setLowestDownloadSpeedLimit(unsigned int lowestDownloadSpeedLimit) {
-    this->lowestDownloadSpeedLimit = lowestDownloadSpeedLimit;
+  void setLowestDownloadSpeedLimit(unsigned int lowestDownloadSpeedLimit)
+  {
+    _lowestDownloadSpeedLimit = lowestDownloadSpeedLimit;
   }
 };
 

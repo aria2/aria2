@@ -43,16 +43,21 @@ class HttpConnection;
 class SocketCore;
 
 class AbstractProxyRequestCommand : public AbstractCommand {
-protected:
+private:
   SharedHandle<Request> _proxyRequest;
 
-  SharedHandle<HttpConnection> httpConnection;
+  SharedHandle<HttpConnection> _httpConnection;
 
   std::string _connectedHostname;
   std::string _connectedAddr;
   uint16_t _connectedPort;
-
+protected:
   virtual bool executeInternal();
+
+  const SharedHandle<HttpConnection>& getHttpConnection() const
+  {
+    return _httpConnection;
+  }
 public:
   AbstractProxyRequestCommand(cuid_t cuid,
                               const SharedHandle<Request>& req,

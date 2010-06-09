@@ -62,21 +62,21 @@ AbstractProxyResponseCommand::AbstractProxyResponseCommand
  DownloadEngine* e,
  const SocketHandle& s)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   httpConnection(httpConnection) {}
+   _httpConnection(httpConnection) {}
 
 AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
 
 bool AbstractProxyResponseCommand::executeInternal() {
-  SharedHandle<HttpResponse> httpResponse = httpConnection->receiveResponse();
+  SharedHandle<HttpResponse> httpResponse = _httpConnection->receiveResponse();
   if(httpResponse.isNull()) {
     // the server has not responded our request yet.
-    e->addCommand(this);
+    getDownloadEngine()->addCommand(this);
     return false;
   }
   if(httpResponse->getResponseStatus() != HttpHeader::S200) {
     throw DL_RETRY_EX(EX_PROXY_CONNECTION_FAILED);
   }
-  e->addCommand(getNextCommand());
+  getDownloadEngine()->addCommand(getNextCommand());
   return true;
 }
 

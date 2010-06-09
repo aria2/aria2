@@ -77,8 +77,8 @@ bool InitiateConnectionCommand::executeInternal() {
   uint16_t port;
   SharedHandle<Request> proxyRequest = createProxyRequest();
   if(proxyRequest.isNull()) {
-    hostname = req->getHost();
-    port = req->getPort();
+    hostname = getRequest()->getHost();
+    port = getRequest()->getPort();
   } else {
     hostname = proxyRequest->getHost();
     port = proxyRequest->getPort();
@@ -86,21 +86,21 @@ bool InitiateConnectionCommand::executeInternal() {
   std::vector<std::string> addrs;
   std::string ipaddr = resolveHostname(addrs, hostname, port);
   if(ipaddr.empty()) {
-    e->addCommand(this);
+    getDownloadEngine()->addCommand(this);
     return false;
   }
   try {
     Command* command = createNextCommand(hostname, ipaddr, port,
                                          addrs, proxyRequest);
-    e->addCommand(command);
+    getDownloadEngine()->addCommand(command);
     return true;
   } catch(RecoverableException& ex) {
     // Catch exception and retry another address.
     // See also AbstractCommand::checkIfConnectionEstablished
 
     // TODO ipaddr might not be used if pooled sockt was found.
-    e->markBadIPAddress(hostname, ipaddr, port);
-    if(!e->findCachedIPAddress(hostname, port).empty()) {
+    getDownloadEngine()->markBadIPAddress(hostname, ipaddr, port);
+    if(!getDownloadEngine()->findCachedIPAddress(hostname, port).empty()) {
       if(getLogger()->info()) {
         getLogger()->info(EX_EXCEPTION_CAUGHT, ex);
         getLogger()->info(MSG_CONNECT_FAILED_AND_RETRY,
@@ -108,12 +108,13 @@ bool InitiateConnectionCommand::executeInternal() {
       }
       Command* command =
         InitiateConnectionCommandFactory::createInitiateConnectionCommand
-        (getCuid(), req, _fileEntry, _requestGroup, e);
-      e->setNoWait(true);
-      e->addCommand(command);
+        (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+         getDownloadEngine());
+      getDownloadEngine()->setNoWait(true);
+      getDownloadEngine()->addCommand(command);
       return true;
     }
-    e->removeCachedIPAddress(hostname, port);
+    getDownloadEngine()->removeCachedIPAddress(hostname, port);
     throw;
   }
 }

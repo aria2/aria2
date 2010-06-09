@@ -55,19 +55,83 @@ class AsyncNameResolver;
 
 class AbstractCommand : public Command {
 private:
-  Timer checkPoint;
-  time_t timeout;
-protected:
+  Timer _checkPoint;
+  time_t _timeout;
+
   RequestGroup* _requestGroup;
-  SharedHandle<Request> req;
+  SharedHandle<Request> _req;
   SharedHandle<FileEntry> _fileEntry;
-  DownloadEngine* e;
-  SharedHandle<SocketCore> socket;
+  DownloadEngine* _e;
+  SharedHandle<SocketCore> _socket;
   std::vector<SharedHandle<Segment> > _segments;
 
 #ifdef ENABLE_ASYNC_DNS
   SharedHandle<AsyncNameResolver> _asyncNameResolver;
+#endif // ENABLE_ASYNC_DNS
 
+  bool _checkSocketIsReadable;
+  bool _checkSocketIsWritable;
+  SharedHandle<SocketCore> _readCheckTarget;
+  SharedHandle<SocketCore> _writeCheckTarget;
+  bool _nameResolverCheck;
+
+#ifdef ENABLE_ASYNC_DNS
+  void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
+
+  void disableNameResolverCheck
+  (const SharedHandle<AsyncNameResolver>& resolver);
+
+  bool nameResolveFinished() const;
+#endif // ENABLE_ASYNC_DNS
+protected:
+  RequestGroup* getRequestGroup() const
+  {
+    return _requestGroup;
+  }
+
+  const SharedHandle<Request>& getRequest() const
+  {
+    return _req;
+  }
+
+  void setRequest(const SharedHandle<Request>& request)
+  {
+    _req = request;
+  }
+
+  const SharedHandle<FileEntry>& getFileEntry() const
+  {
+    return _fileEntry;
+  }
+
+  void setFileEntry(const SharedHandle<FileEntry>& fileEntry)
+  {
+    _fileEntry = fileEntry;
+  }
+
+  DownloadEngine* getDownloadEngine() const
+  {
+    return _e;
+  }
+
+  const SharedHandle<SocketCore>& getSocket() const
+  {
+    return _socket;
+  }
+
+  void setSocket(const SharedHandle<SocketCore>& s)
+  {
+    _socket = s;
+  }
+
+  void createSocket();
+
+  const std::vector<SharedHandle<Segment> >& getSegments() const
+  {
+    return _segments;
+  }
+
+#ifdef ENABLE_ASYNC_DNS
   bool isAsyncNameResolverInitialized() const;
 
   void initAsyncNameResolver(const std::string& hostname);
@@ -106,7 +170,7 @@ protected:
    */
   void setWriteCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
 
-  void setTimeout(time_t timeout) { this->timeout = timeout; }
+  void setTimeout(time_t timeout) { _timeout = timeout; }
 
   void prepareForNextAction(Command* nextCommand = 0);
 
@@ -143,20 +207,16 @@ protected:
   {
     return _requestGroup->getDownloadContext();
   }
-private:
-  bool checkSocketIsReadable;
-  bool checkSocketIsWritable;
-  SharedHandle<SocketCore> readCheckTarget;
-  SharedHandle<SocketCore> writeCheckTarget;
-  bool nameResolverCheck;
 
-#ifdef ENABLE_ASYNC_DNS
+  const SharedHandle<SegmentMan>& getSegmentMan() const
+  {
+    return _requestGroup->getSegmentMan();
+  }
 
-  void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
-
-  void disableNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
-  bool nameResolveFinished() const;
-#endif // ENABLE_ASYNC_DNS
+  const SharedHandle<PieceStorage>& getPieceStorage() const
+  {
+    return _requestGroup->getPieceStorage();
+  }
 public:
   AbstractCommand(cuid_t cuid, const SharedHandle<Request>& req,
                   const SharedHandle<FileEntry>& fileEntry,

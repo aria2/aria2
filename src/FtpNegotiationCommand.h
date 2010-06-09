@@ -122,10 +122,10 @@ private:
 
   void onDryRunFileFound();
 
-  SharedHandle<SocketCore> dataSocket;
-  SharedHandle<SocketCore> serverSocket;
-  Seq sequence;
-  SharedHandle<FtpConnection> ftp;
+  SharedHandle<SocketCore> _dataSocket;
+  SharedHandle<SocketCore> _serverSocket;
+  Seq _sequence;
+  SharedHandle<FtpConnection> _ftp;
   // For tunneling
   SharedHandle<HttpConnection> _http;
   // IP, Port pair in pasv response

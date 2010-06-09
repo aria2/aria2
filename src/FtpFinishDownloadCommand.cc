@@ -71,13 +71,13 @@ FtpFinishDownloadCommand::FtpFinishDownloadCommand
 // AbstractCommand::_segments is empty.
 bool FtpFinishDownloadCommand::execute()
 {
-  if(_requestGroup->isHaltRequested()) {
+  if(getRequestGroup()->isHaltRequested()) {
     return true;
   }
   try {
     unsigned int status = _ftpConnection->receiveResponse();
     if(status == 0) {
-      e->addCommand(this);
+      getDownloadEngine()->addCommand(this);
       return false;
     }
     if(status != 226) {
@@ -86,13 +86,14 @@ bool FtpFinishDownloadCommand::execute()
     if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::map<std::string, std::string> options;
       options["baseWorkingDir"] = _ftpConnection->getBaseWorkingDir();
-      e->poolSocket(req, _ftpConnection->getUser(), createProxyRequest(),
-                    socket, options);
+      getDownloadEngine()->poolSocket
+        (getRequest(), _ftpConnection->getUser(), createProxyRequest(),
+         getSocket(), options);
     }
   } catch(RecoverableException& e) {
     getLogger()->info(EX_EXCEPTION_CAUGHT, e);
   }
-  if(_requestGroup->downloadFinished()) {
+  if(getRequestGroup()->downloadFinished()) {
     return true;
   } else {
     return prepareForRetry(0);

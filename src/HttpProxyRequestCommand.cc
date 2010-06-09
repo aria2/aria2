@@ -58,7 +58,8 @@ HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 Command* HttpProxyRequestCommand::getNextCommand()
 {
   return new HttpProxyResponseCommand
-    (getCuid(), req, _fileEntry, _requestGroup, httpConnection, e, socket);
+    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+     getHttpConnection(), getDownloadEngine(), getSocket());
 }
 
 } // namespace aria2

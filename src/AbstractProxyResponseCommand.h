@@ -43,10 +43,15 @@ class HttpConnection;
 class SocketCore;
 
 class AbstractProxyResponseCommand : public AbstractCommand {
+private:
+  SharedHandle<HttpConnection> _httpConnection;
 protected:
-  SharedHandle<HttpConnection> httpConnection;
-
   virtual bool executeInternal();
+
+  const SharedHandle<HttpConnection>& getHttpConnection() const
+  {
+    return _httpConnection;
+  }
 public:
   AbstractProxyResponseCommand
   (cuid_t cuid,

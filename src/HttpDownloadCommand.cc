@@ -71,29 +71,29 @@ HttpDownloadCommand::HttpDownloadCommand
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
 bool HttpDownloadCommand::prepareForNextSegment() {
-  bool downloadFinished = _requestGroup->downloadFinished();
-  if(req->isPipeliningEnabled() && !downloadFinished) {
+  bool downloadFinished = getRequestGroup()->downloadFinished();
+  if(getRequest()->isPipeliningEnabled() && !downloadFinished) {
     HttpRequestCommand* command =
-      new HttpRequestCommand(getCuid(), req, _fileEntry,
-                             _requestGroup, _httpConnection, e,
-                             socket);
+      new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
+                             getRequestGroup(), _httpConnection,
+                             getDownloadEngine(), getSocket());
     // Set proxy request here. aria2 sends the HTTP request specialized for
     // proxy.
-    if(resolveProxyMethod(req->getProtocol()) == V_GET) {
+    if(resolveProxyMethod(getRequest()->getProtocol()) == V_GET) {
       command->setProxyRequest(createProxyRequest());
     }
-    e->addCommand(command);
+    getDownloadEngine()->addCommand(command);
     return true;
   } else {
-    if(req->isPipeliningEnabled() ||
-       (req->isKeepAliveEnabled() &&
+    if(getRequest()->isPipeliningEnabled() ||
+       (getRequest()->isKeepAliveEnabled() &&
         (
-         ((!_transferEncodingDecoder.isNull() &&
-           _transferEncodingDecoder->finished()) ||
-          (!_contentEncodingDecoder.isNull() &&
-           _contentEncodingDecoder->finished())) ||
-         _fileEntry->getLastOffset() ==
-         _segments.front()->getPositionToWrite()
+         ((!getTransferEncodingDecoder().isNull() &&
+           getTransferEncodingDecoder()->finished()) ||
+          (!getContentEncodingDecoder().isNull() &&
+           getContentEncodingDecoder()->finished())) ||
+         getFileEntry()->getLastOffset() ==
+         getSegments().front()->getPositionToWrite()
          )
         )
        ) {
@@ -102,20 +102,23 @@ bool HttpDownloadCommand::prepareForNextSegment() {
       // pool terminated socket.  In HTTP/1.1, keep-alive is default,
       // so closing connection without Connection: close header means
       // that server is broken or not configured properly.
-      e->poolSocket(req, createProxyRequest(), socket);
+      getDownloadEngine()->poolSocket
+        (getRequest(), createProxyRequest(), getSocket());
     }
     // The request was sent assuming that server supported pipelining, but
     // it turned out that server didn't support it.
     // We detect this situation by comparing the end byte in range header
     // of the response with the end byte of segment.
     // If it is the same, HTTP negotiation is necessary for the next request.
-    if(!req->isPipeliningEnabled() && req->isPipeliningHint() &&
+    if(!getRequest()->isPipeliningEnabled() &&
+       getRequest()->isPipeliningHint() &&
        !downloadFinished) {
-      const SharedHandle<Segment>& segment = _segments.front();
+      const SharedHandle<Segment>& segment = getSegments().front();
 
-      off_t lastOffset =_fileEntry->gtoloff
-        (std::min(static_cast<off_t>(segment->getPosition()+segment->getLength()),
-                  _fileEntry->getLastOffset()));
+      off_t lastOffset =getFileEntry()->gtoloff
+        (std::min(static_cast<off_t>
+                  (segment->getPosition()+segment->getLength()),
+                  getFileEntry()->getLastOffset()));
       
       if(lastOffset ==
          _httpResponse->getHttpHeader()->getRange()->getEndByte()+1) {

@@ -76,7 +76,9 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
                                  DownloadEngine* e,
                                  const SocketHandle& s):
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-  _buf(new unsigned char[BUFSIZE])
+  _buf(new unsigned char[BUFSIZE]),
+  _startupIdleTime(10),
+  _lowestDownloadSpeedLimit(0)
 #ifdef ENABLE_MESSAGE_DIGEST
   , _pieceHashValidationEnabled(false)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -84,8 +86,7 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
 #ifdef ENABLE_MESSAGE_DIGEST
   {
     if(getOption()->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
-      std::string algo =
-        _requestGroup->getDownloadContext()->getPieceHashAlgo();
+      const std::string& algo = getDownloadContext()->getPieceHashAlgo();
       if(MessageDigestContext::supports(algo)) {
         _messageDigestContext.reset(new MessageDigestContext());
         _messageDigestContext->trySetAlgo(algo);
@@ -97,46 +98,47 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
   }
 #endif // ENABLE_MESSAGE_DIGEST
 
-  peerStat = req->initPeerStat();
-  peerStat->downloadStart();
-  _requestGroup->getSegmentMan()->registerPeerStat(peerStat);
+  _peerStat = req->initPeerStat();
+  _peerStat->downloadStart();
+  getSegmentMan()->registerPeerStat(_peerStat);
 }
 
 DownloadCommand::~DownloadCommand() {
-  peerStat->downloadStop();
-  _requestGroup->getSegmentMan()->updateFastestPeerStat(peerStat);
+  _peerStat->downloadStop();
+  getSegmentMan()->updateFastestPeerStat(_peerStat);
   delete [] _buf;
 }
 
 bool DownloadCommand::executeInternal() {
-  if(e->getRequestGroupMan()->doesOverallDownloadSpeedExceed() ||
-     _requestGroup->doesDownloadSpeedExceed()) {
-    e->addCommand(this);
+  if(getDownloadEngine()->getRequestGroupMan()->doesOverallDownloadSpeedExceed()
+     || getRequestGroup()->doesDownloadSpeedExceed()) {
+    getDownloadEngine()->addCommand(this);
     disableReadCheckSocket();
     return false;
   }
-  setReadCheckSocket(socket);
-  SharedHandle<Segment> segment = _segments.front();
+  setReadCheckSocket(getSocket());
+  SharedHandle<Segment> segment = getSegments().front();
 
   size_t bufSize;
   if(segment->getLength() > 0) {
     if(static_cast<uint64_t>(segment->getPosition()+segment->getLength()) <=
-       static_cast<uint64_t>(_fileEntry->getLastOffset())) {
+       static_cast<uint64_t>(getFileEntry()->getLastOffset())) {
       bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
                          BUFSIZE);
     } else {
       bufSize =
-        std::min(static_cast<size_t>
-                 (_fileEntry->getLastOffset()-segment->getPositionToWrite()),
-                 BUFSIZE);
+        std::min
+        (static_cast<size_t>
+         (getFileEntry()->getLastOffset()-segment->getPositionToWrite()),
+         BUFSIZE);
     }
   } else {
     bufSize = BUFSIZE;
   }
-  socket->readData(_buf, bufSize);
+  getSocket()->readData(_buf, bufSize);
 
   const SharedHandle<DiskAdaptor>& diskAdaptor =
-    _requestGroup->getPieceStorage()->getDiskAdaptor();
+    getPieceStorage()->getDiskAdaptor();
 
   const unsigned char* bufFinal;
   size_t bufSizeFinal;
@@ -173,24 +175,21 @@ bool DownloadCommand::executeInternal() {
   if(bufSizeFinal > 0) {
     segment->updateWrittenLength(bufSizeFinal);
   }
-
-  peerStat->updateDownloadLength(bufSize);
-
-  _requestGroup->getSegmentMan()->updateDownloadSpeedFor(peerStat);
-
+  _peerStat->updateDownloadLength(bufSize);
+  getSegmentMan()->updateDownloadSpeedFor(_peerStat);
   bool segmentPartComplete = false;
   // Note that GrowSegment::complete() always returns false.
   if(_transferEncodingDecoder.isNull() && _contentEncodingDecoder.isNull()) {
     if(segment->complete() ||
-       segment->getPositionToWrite() == _fileEntry->getLastOffset()) {
+       segment->getPositionToWrite() == getFileEntry()->getLastOffset()) {
       segmentPartComplete = true;
     } else if(segment->getLength() == 0 && bufSize == 0 &&
-              !socket->wantRead() && !socket->wantWrite()) {
+              !getSocket()->wantRead() && !getSocket()->wantWrite()) {
       segmentPartComplete = true;
     }
   } else if(!_transferEncodingDecoder.isNull() &&
             (segment->complete() ||
-             segment->getPositionToWrite() == _fileEntry->getLastOffset())) {
+             segment->getPositionToWrite() == getFileEntry()->getLastOffset())){
     // In this case, transferEncodingDecoder is used and
     // Content-Length is known.
     segmentPartComplete = true;
@@ -202,7 +201,7 @@ bool DownloadCommand::executeInternal() {
   }
 
   if(!segmentPartComplete && bufSize == 0 &&
-     !socket->wantRead() && !socket->wantWrite()) {
+     !getSocket()->wantRead() && !getSocket()->wantWrite()) {
     throw DL_RETRY_EX(EX_GOT_EOF);
   }
 
@@ -219,8 +218,7 @@ bool DownloadCommand::executeInternal() {
 
       {
         const std::string& expectedPieceHash =
-          _requestGroup->getDownloadContext()->getPieceHash
-          (segment->getIndex());
+          getDownloadContext()->getPieceHash(segment->getIndex());
         if(_pieceHashValidationEnabled && !expectedPieceHash.empty()) {
           if(segment->isHashCalculated()) {
             if(getLogger()->debug()) {
@@ -236,31 +234,31 @@ bool DownloadCommand::executeInternal() {
               (segment, expectedPieceHash,
                MessageDigestHelper::digest
                (_messageDigestContext.get(),
-                _requestGroup->getPieceStorage()->getDiskAdaptor(),
+                getPieceStorage()->getDiskAdaptor(),
                 segment->getPosition(),
                 segment->getLength()));
           }
         } else {
-          _requestGroup->getSegmentMan()->completeSegment(getCuid(), segment);
+          getSegmentMan()->completeSegment(getCuid(), segment);
         }
       }
 
 #else // !ENABLE_MESSAGE_DIGEST
-      _requestGroup->getSegmentMan()->completeSegment(getCuid(), segment);
+      getSegmentMan()->completeSegment(getCuid(), segment);
 #endif // !ENABLE_MESSAGE_DIGEST
     } else {
       // If segment is not canceled here, in the next pipelining
       // request, aria2 requests bad range
       // [FileEntry->getLastOffset(), FileEntry->getLastOffset())
-      _requestGroup->getSegmentMan()->cancelSegment(getCuid(), segment);
+      getSegmentMan()->cancelSegment(getCuid(), segment);
     }
     checkLowestDownloadSpeed();
     // this unit is going to download another segment.
     return prepareForNextSegment();
   } else {
     checkLowestDownloadSpeed();
-    setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->addCommand(this);
+    setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+    getDownloadEngine()->addCommand(this);
     return false;
   }
 }
@@ -268,67 +266,62 @@ bool DownloadCommand::executeInternal() {
 void DownloadCommand::checkLowestDownloadSpeed() const
 {
   // calculate downloading speed
-  if(peerStat->getDownloadStartTime().difference(global::wallclock) >=
-     startupIdleTime) {
-    unsigned int nowSpeed = peerStat->calculateDownloadSpeed();
-    if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
+  if(_peerStat->getDownloadStartTime().difference(global::wallclock) >=
+     _startupIdleTime) {
+    unsigned int nowSpeed = _peerStat->calculateDownloadSpeed();
+    if(_lowestDownloadSpeedLimit > 0 && nowSpeed <= _lowestDownloadSpeedLimit) {
       throw DL_ABORT_EX2(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,
                                       nowSpeed,
-                                      lowestDownloadSpeedLimit,
-                                      req->getHost().c_str()).str(),
+                                      _lowestDownloadSpeedLimit,
+                                      getRequest()->getHost().c_str()).str(),
                          downloadresultcode::TOO_SLOW_DOWNLOAD_SPEED);
     }
   }
 }
 
 bool DownloadCommand::prepareForNextSegment() {
-  if(_requestGroup->downloadFinished()) {
-    const SharedHandle<DownloadContext>& dctx =
-      _requestGroup->getDownloadContext();
+  if(getRequestGroup()->downloadFinished()) {
     // Remove in-flight request here.
-    _fileEntry->poolRequest(req);
+    getFileEntry()->poolRequest(getRequest());
     // If this is a single file download, and file size becomes known
     // just after downloading, set total length to FileEntry object
     // here.
-    if(dctx->getFileEntries().size() == 1) {
-      const SharedHandle<FileEntry>& fileEntry = dctx->getFirstFileEntry();
-      if(fileEntry->getLength() == 0) {
-        fileEntry->setLength
-          (_requestGroup->getPieceStorage()->getCompletedLength());
+    if(getDownloadContext()->getFileEntries().size() == 1) {
+      if(getFileEntry()->getLength() == 0) {
+        getFileEntry()->setLength(getPieceStorage()->getCompletedLength());
       }
     }
 #ifdef ENABLE_MESSAGE_DIGEST
-    if(dctx->getPieceHashAlgo().empty()) {
+    if(getDownloadContext()->getPieceHashAlgo().empty()) {
       SharedHandle<CheckIntegrityEntry> entry
-        (new ChecksumCheckIntegrityEntry(_requestGroup));
+        (new ChecksumCheckIntegrityEntry(getRequestGroup()));
       if(entry->isValidationReady()) {
         entry->initValidator();
         // TODO do we need cuttrailinggarbage here?
-        e->getCheckIntegrityMan()->pushEntry(entry);
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
       }
     }
     // Following 2lines are needed for DownloadEngine to detect
     // completed RequestGroups without 1sec delay.
-    e->setNoWait(true);
-    e->setRefreshInterval(0);
+    getDownloadEngine()->setNoWait(true);
+    getDownloadEngine()->setRefreshInterval(0);
 #endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
     // The number of segments should be 1 in order to pass through the next
     // segment.
-    if(_segments.size() == 1) {
-      SharedHandle<Segment> tempSegment = _segments.front();
+    if(getSegments().size() == 1) {
+      SharedHandle<Segment> tempSegment = getSegments().front();
       if(!tempSegment->complete()) {
         return prepareForRetry(0);
       }
-      SharedHandle<SegmentMan> segmentMan = _requestGroup->getSegmentMan();
       SharedHandle<Segment> nextSegment =
-        segmentMan->getCleanSegmentIfOwnerIsIdle
+        getSegmentMan()->getCleanSegmentIfOwnerIsIdle
         (getCuid(), tempSegment->getIndex()+1);
       if(nextSegment.isNull()) {
         return prepareForRetry(0);
       } else {
-        e->addCommand(this);
+        getDownloadEngine()->addCommand(this);
         return false;
       }
     } else {
@@ -345,7 +338,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
 {
   if(actualPieceHash == expectedPieceHash) {
     getLogger()->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
-    _requestGroup->getSegmentMan()->completeSegment(getCuid(), segment);
+    getSegmentMan()->completeSegment(getCuid(), segment);
   } else {
     getLogger()->info(EX_INVALID_CHUNK_CHECKSUM,
                       segment->getIndex(),
@@ -353,7 +346,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
                       expectedPieceHash.c_str(),
                       actualPieceHash.c_str());
     segment->clear();
-    _requestGroup->getSegmentMan()->cancelSegment(getCuid());
+    getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX
       (StringFormat("Invalid checksum index=%d", segment->getIndex()).str());
   }

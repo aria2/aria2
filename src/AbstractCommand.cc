@@ -77,15 +77,16 @@ AbstractCommand::AbstractCommand(cuid_t cuid,
                                  RequestGroup* requestGroup,
                                  DownloadEngine* e,
                                  const SocketHandle& s):
-  Command(cuid), checkPoint(global::wallclock), _requestGroup(requestGroup),
-  req(req), _fileEntry(fileEntry), e(e), socket(s),
-  checkSocketIsReadable(false), checkSocketIsWritable(false),
-  nameResolverCheck(false)
+  Command(cuid), _checkPoint(global::wallclock),
+  _timeout(requestGroup->getTimeout()),
+  _requestGroup(requestGroup),
+  _req(req), _fileEntry(fileEntry), _e(e), _socket(s),
+  _checkSocketIsReadable(false), _checkSocketIsWritable(false),
+  _nameResolverCheck(false)
 {
-  if(!socket.isNull() && socket->isOpen()) {
-    setReadCheckSocket(socket);
+  if(!_socket.isNull() && _socket->isOpen()) {
+    setReadCheckSocket(_socket);
   }
-  timeout = _requestGroup->getTimeout();
   _requestGroup->increaseStreamConnection();
   _requestGroup->increaseNumCommand();
 }
@@ -113,19 +114,19 @@ bool AbstractCommand::execute() {
     if(_requestGroup->downloadFinished() || _requestGroup->isHaltRequested()) {
       return true;
     }
-    if(!req.isNull() && req->removalRequested()) {
+    if(!_req.isNull() && _req->removalRequested()) {
       if(getLogger()->debug()) {
         getLogger()->debug
           ("CUID#%s - Discard original URI=%s because it is requested.",
-           util::itos(getCuid()).c_str(), req->getUri().c_str());
+           util::itos(getCuid()).c_str(), _req->getUri().c_str());
       }
       return prepareForRetry(0);
     }
     // TODO it is not needed to check other PeerStats every time.
     // Find faster Request when no segment is available.
-    if(!req.isNull() && _fileEntry->countPooledRequest() > 0 &&
-       !_requestGroup->getPieceStorage()->hasMissingUnusedPiece()) {
-      SharedHandle<Request> fasterRequest = _fileEntry->findFasterRequest(req);
+    if(!_req.isNull() && _fileEntry->countPooledRequest() > 0 &&
+       !getPieceStorage()->hasMissingUnusedPiece()) {
+      SharedHandle<Request> fasterRequest = _fileEntry->findFasterRequest(_req);
       if(!fasterRequest.isNull()) {
         if(getLogger()->info()) {
           getLogger()->info("CUID#%s - Use faster Request hostname=%s, port=%u",
@@ -134,29 +135,28 @@ bool AbstractCommand::execute() {
                             fasterRequest->getPort());
         }
         // Cancel current Request object and use faster one.
-        _fileEntry->removeRequest(req);
+        _fileEntry->removeRequest(_req);
         Command* command =
           InitiateConnectionCommandFactory::createInitiateConnectionCommand
-          (getCuid(), fasterRequest, _fileEntry, _requestGroup, e);
-        e->setNoWait(true);
-        e->addCommand(command);
+          (getCuid(), fasterRequest, _fileEntry, _requestGroup, _e);
+        _e->setNoWait(true);
+        _e->addCommand(command);
         return true;
       }
     }
-    if((checkSocketIsReadable && readEventEnabled()) ||
-       (checkSocketIsWritable && writeEventEnabled()) ||
+    if((_checkSocketIsReadable && readEventEnabled()) ||
+       (_checkSocketIsWritable && writeEventEnabled()) ||
        hupEventEnabled() ||
 #ifdef ENABLE_ASYNC_DNS
-       (nameResolverCheck && nameResolveFinished()) ||
+       (_nameResolverCheck && nameResolveFinished()) ||
 #endif // ENABLE_ASYNC_DNS
-       (!checkSocketIsReadable && !checkSocketIsWritable &&
-        !nameResolverCheck)) {
-      checkPoint = global::wallclock;
-      if(!_requestGroup->getPieceStorage().isNull()) {
+       (!_checkSocketIsReadable && !_checkSocketIsWritable &&
+        !_nameResolverCheck)) {
+      _checkPoint = global::wallclock;
+      if(!getPieceStorage().isNull()) {
         _segments.clear();
-        _requestGroup->getSegmentMan()->getInFlightSegment
-          (_segments, getCuid());
-        if(!req.isNull() && _segments.empty()) {
+        getSegmentMan()->getInFlightSegment(_segments, getCuid());
+        if(!_req.isNull() && _segments.empty()) {
           // This command previously has assigned segments, but it is
           // canceled. So discard current request chain.
           if(getLogger()->debug()) {
@@ -166,11 +166,11 @@ bool AbstractCommand::execute() {
           }
           return prepareForRetry(0);
         }
-        if(req.isNull() || req->getMaxPipelinedRequest() == 1 ||
+        if(_req.isNull() || _req->getMaxPipelinedRequest() == 1 ||
            _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
           if(_segments.empty()) {
             SharedHandle<Segment> segment =
-              _requestGroup->getSegmentMan()->getSegment(getCuid());
+              getSegmentMan()->getSegment(getCuid());
             if(!segment.isNull()) {
               _segments.push_back(segment);
             }
@@ -183,7 +183,7 @@ bool AbstractCommand::execute() {
             }
             // When all segments are ignored in SegmentMan, there are
             // no URIs available, so don't retry.
-            if(_requestGroup->getSegmentMan()->allSegmentsIgnored()) {
+            if(getSegmentMan()->allSegmentsIgnored()) {
               if(getLogger()->debug()) {
                 getLogger()->debug("All segments are ignored.");
               }
@@ -193,9 +193,9 @@ bool AbstractCommand::execute() {
             }
           }
         } else {
-          size_t maxSegments = req->getMaxPipelinedRequest();
+          size_t maxSegments = _req->getMaxPipelinedRequest();
           if(_segments.size() < maxSegments) {
-            _requestGroup->getSegmentMan()->getSegment
+            getSegmentMan()->getSegment
               (_segments, getCuid(), _fileEntry, maxSegments);
           }
           if(_segments.empty()) {
@@ -207,23 +207,23 @@ bool AbstractCommand::execute() {
     } else if(errorEventEnabled()) {
       throw DL_RETRY_EX
         (StringFormat(MSG_NETWORK_PROBLEM,
-                      socket->getSocketError().c_str()).str());
+                      _socket->getSocketError().c_str()).str());
     } else {
-      if(checkPoint.difference(global::wallclock) >= timeout) {
+      if(_checkPoint.difference(global::wallclock) >= _timeout) {
         // timeout triggers ServerStat error state.
 
         SharedHandle<ServerStat> ss =
-          e->getRequestGroupMan()->getOrCreateServerStat(req->getHost(),
-                                                         req->getProtocol());
+          _e->getRequestGroupMan()->getOrCreateServerStat(_req->getHost(),
+                                                          _req->getProtocol());
         ss->setError();
 
         throw DL_RETRY_EX2(EX_TIME_OUT, downloadresultcode::TIME_OUT);
       }
-      e->addCommand(this);
+      _e->addCommand(this);
       return false;
     }
   } catch(DlAbortEx& err) {
-    if(req.isNull()) {
+    if(_req.isNull()) {
       if(getLogger()->debug()) {
         getLogger()->debug(EX_EXCEPTION_CAUGHT, err);
       }
@@ -231,10 +231,10 @@ bool AbstractCommand::execute() {
       getLogger()->error
         (MSG_DOWNLOAD_ABORTED,
          DL_ABORT_EX2(StringFormat
-                      ("URI=%s", req->getCurrentUri().c_str()).str(),err),
-         util::itos(getCuid()).c_str(), req->getUri().c_str());
-      _fileEntry->addURIResult(req->getUri(), err.getCode());
-      _requestGroup->setLastUriResult(req->getUri(), err.getCode());
+                      ("URI=%s", _req->getCurrentUri().c_str()).str(),err),
+         util::itos(getCuid()).c_str(), _req->getUri().c_str());
+      _fileEntry->addURIResult(_req->getUri(), err.getCode());
+      _requestGroup->setLastUriResult(_req->getUri(), err.getCode());
       if(err.getCode() == downloadresultcode::CANNOT_RESUME) {
         _requestGroup->increaseResumeFailureCount();
       }
@@ -243,29 +243,29 @@ bool AbstractCommand::execute() {
     tryReserved();
     return true;
   } catch(DlRetryEx& err) {
-    assert(!req.isNull());
+    assert(!_req.isNull());
     if(getLogger()->info()) {
       getLogger()->info
         (MSG_RESTARTING_DOWNLOAD,
          DL_RETRY_EX2(StringFormat
-                      ("URI=%s", req->getCurrentUri().c_str()).str(),
+                      ("URI=%s", _req->getCurrentUri().c_str()).str(),
                       err),
-         util::itos(getCuid()).c_str(), req->getUri().c_str());
+         util::itos(getCuid()).c_str(), _req->getUri().c_str());
     }
-    req->addTryCount();
-    req->resetRedirectCount();
+    _req->addTryCount();
+    _req->resetRedirectCount();
     const unsigned int maxTries = getOption()->getAsInt(PREF_MAX_TRIES);
-    bool isAbort = maxTries != 0 && req->getTryCount() >= maxTries;
+    bool isAbort = maxTries != 0 && _req->getTryCount() >= maxTries;
     if(isAbort) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_MAX_TRY,
-                          util::itos(getCuid()).c_str(), req->getTryCount());
+                          util::itos(getCuid()).c_str(), _req->getTryCount());
       }
       getLogger()->error(MSG_DOWNLOAD_ABORTED, err,
                          util::itos(getCuid()).c_str(),
-                         req->getUri().c_str());
-      _fileEntry->addURIResult(req->getUri(), err.getCode());
-      _requestGroup->setLastUriResult(req->getUri(), err.getCode());
+                         _req->getUri().c_str());
+      _fileEntry->addURIResult(_req->getUri(), err.getCode());
+      _requestGroup->setLastUriResult(_req->getUri(), err.getCode());
       if(err.getCode() == downloadresultcode::CANNOT_RESUME) {
         _requestGroup->increaseResumeFailureCount();
       }
@@ -277,9 +277,9 @@ bool AbstractCommand::execute() {
     }
   } catch(DownloadFailureException& err) {
     getLogger()->error(EX_EXCEPTION_CAUGHT, err);
-    if(!req.isNull()) {
-      _fileEntry->addURIResult(req->getUri(), err.getCode());
-      _requestGroup->setLastUriResult(req->getUri(), err.getCode());
+    if(!_req.isNull()) {
+      _fileEntry->addURIResult(_req->getUri(), err.getCode());
+      _requestGroup->setLastUriResult(_req->getUri(), err.getCode());
     }
     _requestGroup->setHaltRequested(true);
     return true;
@@ -308,59 +308,58 @@ void AbstractCommand::tryReserved() {
                        util::itos(getCuid()).c_str());
   }
   std::vector<Command*> commands;
-  _requestGroup->createNextCommand(commands, e, 1);
-  e->setNoWait(true);
-  e->addCommand(commands);
+  _requestGroup->createNextCommand(commands, _e, 1);
+  _e->setNoWait(true);
+  _e->addCommand(commands);
 }
 
 bool AbstractCommand::prepareForRetry(time_t wait) {
-  if(!_requestGroup->getPieceStorage().isNull()) {
-    _requestGroup->getSegmentMan()->cancelSegment(getCuid());
+  if(!getPieceStorage().isNull()) {
+    getSegmentMan()->cancelSegment(getCuid());
   }
-  if(!req.isNull()) {
-    _fileEntry->poolRequest(req);
+  if(!_req.isNull()) {
+    _fileEntry->poolRequest(_req);
     if(getLogger()->debug()) {
       getLogger()->debug("CUID#%s - Pooling request URI=%s",
-                         util::itos(getCuid()).c_str(), req->getUri().c_str());
+                         util::itos(getCuid()).c_str(), _req->getUri().c_str());
     }
-    if(!_requestGroup->getSegmentMan().isNull()) {
-      _requestGroup->getSegmentMan()->recognizeSegmentFor(_fileEntry);
+    if(!getSegmentMan().isNull()) {
+      getSegmentMan()->recognizeSegmentFor(_fileEntry);
     }
   }
 
-  Command* command = new CreateRequestCommand(getCuid(), _requestGroup, e);
+  Command* command = new CreateRequestCommand(getCuid(), _requestGroup, _e);
   if(wait == 0) {
-    e->setNoWait(true);
-    e->addCommand(command);
+    _e->setNoWait(true);
+    _e->addCommand(command);
   } else {
-    SleepCommand* scom = new SleepCommand(getCuid(), e, _requestGroup,
+    SleepCommand* scom = new SleepCommand(getCuid(), _e, _requestGroup,
                                           command, wait);
-    e->addCommand(scom);
+    _e->addCommand(scom);
   }
   return true;
 }
 
 void AbstractCommand::onAbort() {
-  if(!req.isNull()) {
+  if(!_req.isNull()) {
     // TODO This might be a problem if the failure is caused by proxy.
-    e->getRequestGroupMan()->getOrCreateServerStat
-      (req->getHost(), req->getProtocol())->setError();
-    _fileEntry->removeIdenticalURI(req->getUri());
-    _fileEntry->removeRequest(req);
+    _e->getRequestGroupMan()->getOrCreateServerStat
+      (_req->getHost(), _req->getProtocol())->setError();
+    _fileEntry->removeIdenticalURI(_req->getUri());
+    _fileEntry->removeRequest(_req);
   }
   if(getLogger()->debug()) {
     getLogger()->debug("CUID#%s - Aborting download",
                        util::itos(getCuid()).c_str());
   }
-  if(!_requestGroup->getPieceStorage().isNull()) {
-    SharedHandle<SegmentMan> segmentMan = _requestGroup->getSegmentMan();
-    segmentMan->cancelSegment(getCuid());
+  if(!getPieceStorage().isNull()) {
+    getSegmentMan()->cancelSegment(getCuid());
     // Don't do following process if BitTorrent is involved or files
     // in DownloadContext is more than 1. The latter condition is
     // limitation of current implementation.
     if(!getOption()->getAsBool(PREF_ALWAYS_RESUME) &&
        !_fileEntry.isNull() &&
-       segmentMan->calculateSessionDownloadLength() == 0 &&
+       getSegmentMan()->calculateSessionDownloadLength() == 0 &&
        !_requestGroup->p2pInvolved() &&
        _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
       const int maxTries = getOption()->getAsInt(PREF_MAX_RESUME_FAILURE_TRIES);
@@ -383,9 +382,9 @@ void AbstractCommand::onAbort() {
         std::deque<URIResult> res;
         _fileEntry->extractURIResult(res, downloadresultcode::CANNOT_RESUME);
         if(!res.empty()) {
-          segmentMan->cancelAllSegments();
-          segmentMan->eraseSegmentWrittenLengthMemo();
-          _requestGroup->getPieceStorage()->markPiecesDone(0);
+          getSegmentMan()->cancelAllSegments();
+          getSegmentMan()->eraseSegmentWrittenLengthMemo();
+          getPieceStorage()->markPiecesDone(0);
           std::vector<std::string> uris;
           uris.reserve(res.size());
           std::transform(res.begin(), res.end(), std::back_inserter(uris),
@@ -396,7 +395,7 @@ void AbstractCommand::onAbort() {
                                static_cast<unsigned long int>(uris.size()));
           }
           _fileEntry->addUris(uris.begin(), uris.end());
-          segmentMan->recognizeSegmentFor(_fileEntry);
+          getSegmentMan()->recognizeSegmentFor(_fileEntry);
         }
       }
     }
@@ -404,10 +403,10 @@ void AbstractCommand::onAbort() {
 }
 
 void AbstractCommand::disableReadCheckSocket() {
-  if(checkSocketIsReadable) {
-    e->deleteSocketForReadCheck(readCheckTarget, this);
-    checkSocketIsReadable = false;
-    readCheckTarget = SocketHandle();
+  if(_checkSocketIsReadable) {
+    _e->deleteSocketForReadCheck(_readCheckTarget, this);
+    _checkSocketIsReadable = false;
+    _readCheckTarget.reset();
   }  
 }
 
@@ -415,16 +414,16 @@ void AbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
   if(!socket->isOpen()) {
     disableReadCheckSocket();
   } else {
-    if(checkSocketIsReadable) {
-      if(readCheckTarget != socket) {
-        e->deleteSocketForReadCheck(readCheckTarget, this);
-        e->addSocketForReadCheck(socket, this);
-        readCheckTarget = socket;
+    if(_checkSocketIsReadable) {
+      if(_readCheckTarget != socket) {
+        _e->deleteSocketForReadCheck(_readCheckTarget, this);
+        _e->addSocketForReadCheck(socket, this);
+        _readCheckTarget = socket;
       }
     } else {
-      e->addSocketForReadCheck(socket, this);
-      checkSocketIsReadable = true;
-      readCheckTarget = socket;
+      _e->addSocketForReadCheck(socket, this);
+      _checkSocketIsReadable = true;
+      _readCheckTarget = socket;
     }
   }
 }
@@ -440,10 +439,10 @@ void AbstractCommand::setReadCheckSocketIf
 }
 
 void AbstractCommand::disableWriteCheckSocket() {
-  if(checkSocketIsWritable) {
-    e->deleteSocketForWriteCheck(writeCheckTarget, this);
-    checkSocketIsWritable = false;
-    writeCheckTarget = SocketHandle();
+  if(_checkSocketIsWritable) {
+    _e->deleteSocketForWriteCheck(_writeCheckTarget, this);
+    _checkSocketIsWritable = false;
+    _writeCheckTarget.reset();
   }
 }
 
@@ -451,16 +450,16 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   if(!socket->isOpen()) {
     disableWriteCheckSocket();
   } else {
-    if(checkSocketIsWritable) {
-      if(writeCheckTarget != socket) {
-        e->deleteSocketForWriteCheck(writeCheckTarget, this);
-        e->addSocketForWriteCheck(socket, this);
-        writeCheckTarget = socket;
+    if(_checkSocketIsWritable) {
+      if(_writeCheckTarget != socket) {
+        _e->deleteSocketForWriteCheck(_writeCheckTarget, this);
+        _e->addSocketForWriteCheck(socket, this);
+        _writeCheckTarget = socket;
       }
     } else {
-      e->addSocketForWriteCheck(socket, this);
-      checkSocketIsWritable = true;
-      writeCheckTarget = socket;
+      _e->addSocketForWriteCheck(socket, this);
+      _checkSocketIsWritable = true;
+      _writeCheckTarget = socket;
     }
   }
 }
@@ -570,17 +569,17 @@ static bool inNoProxy(const SharedHandle<Request>& req,
 
 bool AbstractCommand::isProxyDefined() const
 {
-  return isProxyRequest(req->getProtocol(), getOption()) &&
-    !inNoProxy(req, getOption()->get(PREF_NO_PROXY));
+  return isProxyRequest(_req->getProtocol(), getOption()) &&
+    !inNoProxy(_req, getOption()->get(PREF_NO_PROXY));
 }
 
 SharedHandle<Request> AbstractCommand::createProxyRequest() const
 {
   SharedHandle<Request> proxyRequest;
-  if(inNoProxy(req, getOption()->get(PREF_NO_PROXY))) {
+  if(inNoProxy(_req, getOption()->get(PREF_NO_PROXY))) {
     return proxyRequest;
   }
-  std::string proxy = getProxyUri(req->getProtocol(), getOption());
+  std::string proxy = getProxyUri(_req->getProtocol(), getOption());
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
     if(proxyRequest->setUri(proxy)) {
@@ -625,9 +624,9 @@ bool AbstractCommand::asyncResolveHostname()
     return true;
   case AsyncNameResolver::STATUS_ERROR:
     disableNameResolverCheck(_asyncNameResolver);
-    if(!isProxyRequest(req->getProtocol(), getOption())) {
-      e->getRequestGroupMan()->getOrCreateServerStat
-        (req->getHost(), req->getProtocol())->setError();
+    if(!isProxyRequest(_req->getProtocol(), getOption())) {
+      _e->getRequestGroupMan()->getOrCreateServerStat
+        (_req->getHost(), _req->getProtocol())->setError();
     }
     throw DL_ABORT_EX
       (StringFormat(MSG_NAME_RESOLUTION_FAILED,
@@ -647,16 +646,16 @@ const std::vector<std::string>& AbstractCommand::getResolvedAddresses()
 void AbstractCommand::setNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver) {
   if(!resolver.isNull()) {
-    nameResolverCheck = true;
-    e->addNameResolverCheck(resolver, this);
+    _nameResolverCheck = true;
+    _e->addNameResolverCheck(resolver, this);
   }
 }
 
 void AbstractCommand::disableNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver) {
   if(!resolver.isNull()) {
-    nameResolverCheck = false;
-    e->deleteNameResolverCheck(resolver, this);
+    _nameResolverCheck = false;
+    _e->deleteNameResolverCheck(resolver, this);
   }
 }
 
@@ -670,7 +669,7 @@ bool AbstractCommand::nameResolveFinished() const {
 std::string AbstractCommand::resolveHostname
 (std::vector<std::string>& addrs, const std::string& hostname, uint16_t port)
 {
-  e->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
+  _e->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
   std::string ipaddr;
   if(addrs.empty()) {
 #ifdef ENABLE_ASYNC_DNS
@@ -688,7 +687,7 @@ std::string AbstractCommand::resolveHostname
       {
         NameResolver res;
         res.setSocktype(SOCK_STREAM);
-        if(e->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
+        if(_e->getOption()->getAsBool(PREF_DISABLE_IPV6)) {
           res.setFamily(AF_INET);
         }
         res.resolve(addrs, hostname);
@@ -701,9 +700,9 @@ std::string AbstractCommand::resolveHostname
     }
     for(std::vector<std::string>::const_iterator i = addrs.begin(),
           eoi = addrs.end(); i != eoi; ++i) {
-      e->cacheIPAddress(hostname, *i, port);
+      _e->cacheIPAddress(hostname, *i, port);
     }
-    ipaddr = e->findCachedIPAddress(hostname, port);
+    ipaddr = _e->findCachedIPAddress(hostname, port);
   } else {
     ipaddr = addrs.front();
     if(getLogger()->info()) {
@@ -725,13 +724,13 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
 
   std::vector<Command*> commands;
   try {
-    _requestGroup->processCheckIntegrityEntry(commands, entry, e);
+    _requestGroup->processCheckIntegrityEntry(commands, entry, _e);
   } catch(RecoverableException& e) {
     std::for_each(commands.begin(), commands.end(), Deleter());
     throw;
   }
-  e->addCommand(commands);
-  e->setNoWait(true);
+  _e->addCommand(commands);
+  _e->setNoWait(true);
 }
 
 bool AbstractCommand::checkIfConnectionEstablished
@@ -744,8 +743,8 @@ bool AbstractCommand::checkIfConnectionEstablished
     std::string error = socket->getSocketError();
     if(!error.empty()) {
       // See also InitiateConnectionCommand::executeInternal()
-      e->markBadIPAddress(connectedHostname, connectedAddr, connectedPort);
-      if(!e->findCachedIPAddress(connectedHostname, connectedPort).empty()) {
+      _e->markBadIPAddress(connectedHostname, connectedAddr, connectedPort);
+      if(!_e->findCachedIPAddress(connectedHostname, connectedPort).empty()) {
         if(getLogger()->info()) {
           getLogger()->info(MSG_CONNECT_FAILED_AND_RETRY,
                             util::itos(getCuid()).c_str(),
@@ -753,17 +752,17 @@ bool AbstractCommand::checkIfConnectionEstablished
         }
         Command* command =
           InitiateConnectionCommandFactory::createInitiateConnectionCommand
-          (getCuid(), req, _fileEntry, _requestGroup, e);
-        e->setNoWait(true);
-        e->addCommand(command);
+          (getCuid(), _req, _fileEntry, _requestGroup, _e);
+        _e->setNoWait(true);
+        _e->addCommand(command);
         return false;
       }
-      e->removeCachedIPAddress(connectedHostname, connectedPort);
+      _e->removeCachedIPAddress(connectedHostname, connectedPort);
       // Don't set error if proxy server is used and its method is GET.
-      if(resolveProxyMethod(req->getProtocol()) != V_GET ||
-         !isProxyRequest(req->getProtocol(), getOption())) {
-        e->getRequestGroupMan()->getOrCreateServerStat
-          (req->getHost(), req->getProtocol())->setError();
+      if(resolveProxyMethod(_req->getProtocol()) != V_GET ||
+         !isProxyRequest(_req->getProtocol(), getOption())) {
+        _e->getRequestGroupMan()->getOrCreateServerStat
+          (_req->getHost(), _req->getProtocol())->setError();
       }
       throw DL_RETRY_EX
         (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
@@ -786,6 +785,11 @@ const std::string& AbstractCommand::resolveProxyMethod
 const SharedHandle<Option>& AbstractCommand::getOption() const
 {
   return _requestGroup->getOption();
+}
+
+void AbstractCommand::createSocket()
+{
+  _socket.reset(new SocketCore());
 }
 
 } // namespace aria2

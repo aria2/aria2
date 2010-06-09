@@ -73,7 +73,7 @@ HttpRequestCommand::HttpRequestCommand
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
-  setWriteCheckSocket(socket);
+  setWriteCheckSocket(getSocket());
 }
 
 HttpRequestCommand::~HttpRequestCommand() {}
@@ -115,47 +115,48 @@ createHttpRequest(const SharedHandle<Request>& req,
 
 bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();
-  if(req->getProtocol() == Request::PROTO_HTTPS) {
-    socket->prepareSecureConnection();
-    if(!socket->initiateSecureConnection(req->getHost())) {
-      setReadCheckSocketIf(socket, socket->wantRead());
-      setWriteCheckSocketIf(socket, socket->wantWrite());
-      e->addCommand(this);
+  if(getRequest()->getProtocol() == Request::PROTO_HTTPS) {
+    getSocket()->prepareSecureConnection();
+    if(!getSocket()->initiateSecureConnection(getRequest()->getHost())) {
+      setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
+      setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+      getDownloadEngine()->addCommand(this);
       return false;
     }
   }
   if(_httpConnection->sendBufferIsEmpty()) {
     if(!checkIfConnectionEstablished
-       (socket, _connectedHostname, _connectedAddr, _connectedPort)) {
+       (getSocket(), _connectedHostname, _connectedAddr, _connectedPort)) {
       return true;
     }
 
-    if(_segments.empty()) {
+    if(getSegments().empty()) {
       SharedHandle<HttpRequest> httpRequest
-        (createHttpRequest(req,
-                           _fileEntry,
+        (createHttpRequest(getRequest(),
+                           getFileEntry(),
                            SharedHandle<Segment>(),
-                           _requestGroup->getTotalLength(),
+                           getRequestGroup()->getTotalLength(),
                            getOption(),
-                           _requestGroup,
-                           e->getCookieStorage(),
-                           e->getAuthConfigFactory(),
+                           getRequestGroup(),
+                           getDownloadEngine()->getCookieStorage(),
+                           getDownloadEngine()->getAuthConfigFactory(),
                            _proxyRequest));
       _httpConnection->sendRequest(httpRequest);
     } else {
       for(std::vector<SharedHandle<Segment> >::const_iterator itr =
-            _segments.begin(), eoi = _segments.end(); itr != eoi; ++itr) {
+            getSegments().begin(), eoi = getSegments().end();
+          itr != eoi; ++itr) {
         const SharedHandle<Segment>& segment = *itr;
         if(!_httpConnection->isIssued(segment)) {
           SharedHandle<HttpRequest> httpRequest
-            (createHttpRequest(req,
-                               _fileEntry,
+            (createHttpRequest(getRequest(),
+                               getFileEntry(),
                                segment,
-                               _requestGroup->getTotalLength(),
+                               getRequestGroup()->getTotalLength(),
                                getOption(),
-                               _requestGroup,
-                               e->getCookieStorage(),
-                               e->getAuthConfigFactory(),
+                               getRequestGroup(),
+                               getDownloadEngine()->getCookieStorage(),
+                               getDownloadEngine()->getAuthConfigFactory(),
                                _proxyRequest));
           _httpConnection->sendRequest(httpRequest);
         }
@@ -165,15 +166,19 @@ bool HttpRequestCommand::executeInternal() {
     _httpConnection->sendPendingData();
   }
   if(_httpConnection->sendBufferIsEmpty()) {
-    Command* command = new HttpResponseCommand(getCuid(), req, _fileEntry,
-                                               _requestGroup,
-                                               _httpConnection, e, socket);
-    e->addCommand(command);
+    Command* command = new HttpResponseCommand(getCuid(),
+                                               getRequest(),
+                                               getFileEntry(),
+                                               getRequestGroup(),
+                                               _httpConnection,
+                                               getDownloadEngine(),
+                                               getSocket());
+    getDownloadEngine()->addCommand(command);
     return true;
   } else {
-    setReadCheckSocketIf(socket, socket->wantRead());
-    setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->addCommand(this);
+    setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
+    setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+    getDownloadEngine()->addCommand(this);
     return false;
   }
 }

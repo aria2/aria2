@@ -1,5 +1,35 @@
 2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made protected member variable private. Added accessor funcs.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/AbstractProxyRequestCommand.cc
+	* src/AbstractProxyRequestCommand.h
+	* src/AbstractProxyResponseCommand.cc
+	* src/AbstractProxyResponseCommand.h
+	* src/CreateRequestCommand.cc
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/FtpDownloadCommand.cc
+	* src/FtpDownloadCommand.h
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* src/FtpTunnelRequestCommand.cc
+	* src/FtpTunnelResponseCommand.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpProxyRequestCommand.cc
+	* src/HttpProxyResponseCommand.cc
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	* src/HttpSkipResponseCommand.cc
+	* src/InitiateConnectionCommand.cc
+
+2010-06-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made protected member variables of Command private. Added accessor
 	funcs.
 

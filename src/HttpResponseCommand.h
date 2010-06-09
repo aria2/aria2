@@ -48,7 +48,7 @@ class SocketCore;
 
 class HttpResponseCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> httpConnection;
+  SharedHandle<HttpConnection> _httpConnection;
 
   bool handleDefaultEncoding(const SharedHandle<HttpResponse>& httpResponse);
   bool handleOtherEncoding(const SharedHandle<HttpResponse>& httpResponse);

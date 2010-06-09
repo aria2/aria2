@@ -87,21 +87,21 @@ HttpResponseCommand::HttpResponseCommand
  DownloadEngine* e,
  const SocketHandle& s)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   httpConnection(httpConnection)
+   _httpConnection(httpConnection)
 {}
 
 HttpResponseCommand::~HttpResponseCommand() {}
 
 bool HttpResponseCommand::executeInternal()
 {
-  SharedHandle<HttpRequest> httpRequest = httpConnection->getFirstHttpRequest();
-  SharedHandle<HttpResponse> httpResponse = httpConnection->receiveResponse();
+  SharedHandle<HttpRequest> httpRequest =_httpConnection->getFirstHttpRequest();
+  SharedHandle<HttpResponse> httpResponse = _httpConnection->receiveResponse();
   if(httpResponse.isNull()) {
     // The server has not responded to our request yet.
     // For socket->wantRead() == true, setReadCheckSocket(socket) is already
     // done in the constructor.
-    setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->addCommand(this);
+    setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+    getDownloadEngine()->addCommand(this);
     return false;
   }
   // check HTTP status number
@@ -112,39 +112,40 @@ bool HttpResponseCommand::executeInternal()
   // Disable persistent connection if:
   //   Connection: close is received or the remote server is not HTTP/1.1.
   // We don't care whether non-HTTP/1.1 server returns Connection: keep-alive.
-  req->supportsPersistentConnection
+  getRequest()->supportsPersistentConnection
     (httpResponse->supportsPersistentConnection());
-  if(req->isPipeliningEnabled()) {
-    req->setMaxPipelinedRequest
+  if(getRequest()->isPipeliningEnabled()) {
+    getRequest()->setMaxPipelinedRequest
       (getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
   }
 
   if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
     if(httpResponse->getResponseStatus() == HttpHeader::S404) {
-      _requestGroup->increaseAndValidateFileNotFoundCount();
+      getRequestGroup()->increaseAndValidateFileNotFoundCount();
     }
     return skipResponseBody(httpResponse);
   }
-  if(!_fileEntry->isSingleHostMultiConnectionEnabled()) {
+  if(!getFileEntry()->isSingleHostMultiConnectionEnabled()) {
     // TODO redirection should be considered here. We need to parse
     // original URI to get hostname.
-    _fileEntry->removeURIWhoseHostnameIs(req->getHost());
+    getFileEntry()->removeURIWhoseHostnameIs(getRequest()->getHost());
   }
-  if(_requestGroup->getPieceStorage().isNull()) {
+  if(getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();
-    _fileEntry->setLength(totalLength);
-    if(_fileEntry->getPath().empty()) {
-      _fileEntry->setPath
+    getFileEntry()->setLength(totalLength);
+    if(getFileEntry()->getPath().empty()) {
+      getFileEntry()->setPath
         (util::applyDir
          (getDownloadContext()->getDir(),
           util::fixTaintedBasename(httpResponse->determinFilename())));
     }
-    _fileEntry->setContentType(httpResponse->getContentType());
-    _requestGroup->preDownloadProcessing();
-    if(e->getRequestGroupMan()->isSameFileBeingDownloaded(_requestGroup)) {
+    getFileEntry()->setContentType(httpResponse->getContentType());
+    getRequestGroup()->preDownloadProcessing();
+    if(getDownloadEngine()->getRequestGroupMan()->
+       isSameFileBeingDownloaded(getRequestGroup())) {
       throw DOWNLOAD_FAILURE_EXCEPTION
         (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-                      _requestGroup->getFirstFilePath().c_str()).str());
+                      getRequestGroup()->getFirstFilePath().c_str()).str());
     }
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
@@ -153,8 +154,8 @@ bool HttpResponseCommand::executeInternal()
     // assume we can do segmented downloading
     if(totalLength == 0 || shouldInflateContentEncoding(httpResponse)) {
       // we ignore content-length when inflate is required
-      _fileEntry->setLength(0);
-      if(req->getMethod() == Request::METHOD_GET &&
+      getFileEntry()->setLength(0);
+      if(getRequest()->getMethod() == Request::METHOD_GET &&
          (totalLength != 0 ||
           !httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH))){
         // DownloadContext::knowsTotalLength() == true only when
@@ -167,22 +168,22 @@ bool HttpResponseCommand::executeInternal()
     }
   } else {
     // validate totalsize
-    _requestGroup->validateTotalLength(_fileEntry->getLength(),
+    getRequestGroup()->validateTotalLength(getFileEntry()->getLength(),
                                        httpResponse->getEntityLength());
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
-    if(_requestGroup->getTotalLength() == 0) {
+    if(getRequestGroup()->getTotalLength() == 0) {
       // Since total length is unknown, the file size in previously
       // failed download could be larger than the size this time.
       // Also we can't resume in this case too.  So truncate the file
       // anyway.
-      _requestGroup->getPieceStorage()->getDiskAdaptor()->truncate(0);
-      e->addCommand
+      getPieceStorage()->getDiskAdaptor()->truncate(0);
+      getDownloadEngine()->addCommand
         (createHttpDownloadCommand(httpResponse,
                                    getTransferEncodingDecoder(httpResponse),
                                    getContentEncodingDecoder(httpResponse)));
     } else {
-      e->addCommand(createHttpDownloadCommand
+      getDownloadEngine()->addCommand(createHttpDownloadCommand
                     (httpResponse, getTransferEncodingDecoder(httpResponse)));
     }
     return true;
@@ -192,7 +193,7 @@ bool HttpResponseCommand::executeInternal()
 void HttpResponseCommand::updateLastModifiedTime(const Time& lastModified)
 {
   if(getOption()->getAsBool(PREF_REMOTE_TIME)) {
-    _requestGroup->updateLastModifiedTime(lastModified);
+    getRequestGroup()->updateLastModifiedTime(lastModified);
   }
 }
 
@@ -215,12 +216,12 @@ bool HttpResponseCommand::handleDefaultEncoding
 (const SharedHandle<HttpResponse>& httpResponse)
 {
   SharedHandle<HttpRequest> httpRequest = httpResponse->getHttpRequest();
-  _requestGroup->adjustFilename
+  getRequestGroup()->adjustFilename
     (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
-                                      (_requestGroup->getDownloadContext(),
+                                      (getDownloadContext(),
                                        SharedHandle<PieceStorage>(),
                                        getOption().get())));
-  _requestGroup->initPieceStorage();
+  getRequestGroup()->initPieceStorage();
 
   if(getOption()->getAsBool(PREF_DRY_RUN)) {
     onDryRunFileFound();
@@ -228,47 +229,44 @@ bool HttpResponseCommand::handleDefaultEncoding
   }
 
   BtProgressInfoFileHandle infoFile
-    (new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(),
-                                   _requestGroup->getPieceStorage(),
+    (new DefaultBtProgressInfoFile(getDownloadContext(),
+                                   getPieceStorage(),
                                    getOption().get()));
-  if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
-    _requestGroup->getPieceStorage()->markAllPiecesDone();
-
+  if(!infoFile->exists() && getRequestGroup()->downloadFinishedByFileLength()) {
+    getPieceStorage()->markAllPiecesDone();
     getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(_requestGroup->getGID()).c_str(),
-                        _requestGroup->getFirstFilePath().c_str());
-
+                        util::itos(getRequestGroup()->getGID()).c_str(),
+                        getRequestGroup()->getFirstFilePath().c_str());
     return true;
   }
-  _requestGroup->loadAndOpenFile(infoFile);
-  File file(_requestGroup->getFirstFilePath());
+  getRequestGroup()->loadAndOpenFile(infoFile);
+  File file(getRequestGroup()->getFirstFilePath());
   // We have to make sure that command that has Request object must
   // have segment after PieceStorage is initialized. See
   // AbstractCommand::execute()
-  SharedHandle<Segment> segment =
-    _requestGroup->getSegmentMan()->getSegment(getCuid(), 0);
+  SharedHandle<Segment> segment = getSegmentMan()->getSegment(getCuid(), 0);
   // pipelining requires implicit range specified. But the request for
   // this response most likely dones't contains range header. This means
   // we can't continue to use this socket because server sends all entity
   // body instead of a segment.
   // Therefore, we shutdown the socket here if pipelining is enabled.
   DownloadCommand* command = 0;
-  if(req->getMethod() == Request::METHOD_GET &&
+  if(getRequest()->getMethod() == Request::METHOD_GET &&
      !segment.isNull() && segment->getPositionToWrite() == 0 &&
-     !req->isPipeliningEnabled()) {
+     !getRequest()->isPipeliningEnabled()) {
     command = createHttpDownloadCommand
       (httpResponse, getTransferEncodingDecoder(httpResponse));
   } else {
-    _requestGroup->getSegmentMan()->cancelSegment(getCuid());
-    _fileEntry->poolRequest(req);
+    getSegmentMan()->cancelSegment(getCuid());
+    getFileEntry()->poolRequest(getRequest());
   }
   // After command is passed to prepareForNextAction(), it is managed
   // by CheckIntegrityEntry.
   prepareForNextAction(command);
   command = 0;
-  if(req->getMethod() == Request::METHOD_HEAD) {
+  if(getRequest()->getMethod() == Request::METHOD_HEAD) {
     poolConnection();
-    req->setMethod(Request::METHOD_GET);
+    getRequest()->setMethod(Request::METHOD_GET);
   }
   return true;
 }
@@ -314,47 +312,43 @@ bool HttpResponseCommand::handleOtherEncoding
   SharedHandle<HttpRequest> httpRequest = httpResponse->getHttpRequest();
 
   if(getOption()->getAsBool(PREF_DRY_RUN)) {
-    _requestGroup->initPieceStorage();
+    getRequestGroup()->initPieceStorage();
     onDryRunFileFound();
     return true;
   }
 
-  if(req->getMethod() == Request::METHOD_HEAD) {
+  if(getRequest()->getMethod() == Request::METHOD_HEAD) {
     poolConnection();
-    req->setMethod(Request::METHOD_GET);
+    getRequest()->setMethod(Request::METHOD_GET);
     return prepareForRetry(0);
   }
 
   // For zero-length file, check existing file comparing its size
-  if(_requestGroup->downloadFinishedByFileLength()) {
-    _requestGroup->initPieceStorage();
-    _requestGroup->getPieceStorage()->markAllPiecesDone();
-
+  if(getRequestGroup()->downloadFinishedByFileLength()) {
+    getRequestGroup()->initPieceStorage();
+    getPieceStorage()->markAllPiecesDone();
     getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(_requestGroup->getGID()).c_str(),
-                        _requestGroup->getFirstFilePath().c_str());
-
+                        util::itos(getRequestGroup()->getGID()).c_str(),
+                        getRequestGroup()->getFirstFilePath().c_str());
     poolConnection();
     return true;
   }
 
-  _requestGroup->shouldCancelDownloadForSafety();
-  _requestGroup->initPieceStorage();
-
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
-
+  getRequestGroup()->shouldCancelDownloadForSafety();
+  getRequestGroup()->initPieceStorage();
+  getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
   // In this context, knowsTotalLength() is true only when the file is
   // really zero-length.
-  if(_requestGroup->getDownloadContext()->knowsTotalLength()) {
+  if(getDownloadContext()->knowsTotalLength()) {
     poolConnection();
     return true;
   }
   // We have to make sure that command that has Request object must
   // have segment after PieceStorage is initialized. See
   // AbstractCommand::execute()
-  _requestGroup->getSegmentMan()->getSegment(getCuid(), 0);
+  getSegmentMan()->getSegment(getCuid(), 0);
 
-  e->addCommand
+  getDownloadEngine()->addCommand
     (createHttpDownloadCommand(httpResponse,
                                getTransferEncodingDecoder(httpResponse),
                                getContentEncodingDecoder(httpResponse)));
@@ -369,22 +363,23 @@ bool HttpResponseCommand::skipResponseBody
   // thrown away.
 
   HttpSkipResponseCommand* command = new HttpSkipResponseCommand
-    (getCuid(), req, _fileEntry, _requestGroup, httpConnection, httpResponse,
-     e, socket);
+    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+     _httpConnection, httpResponse,
+     getDownloadEngine(), getSocket());
   command->setTransferEncodingDecoder(decoder);
 
   // If request method is HEAD or the response body is zero-length,
   // set command's status to real time so that avoid read check blocking
-  if(req->getMethod() == Request::METHOD_HEAD ||
+  if(getRequest()->getMethod() == Request::METHOD_HEAD ||
      (httpResponse->getEntityLength() == 0 &&
       !httpResponse->isTransferEncodingSpecified())) {
     command->setStatusRealtime();
     // If entity length == 0, then socket read/write check must be disabled.
     command->disableSocketCheck();
-    e->setNoWait(true);
+    getDownloadEngine()->setNoWait(true);
   }
 
-  e->addCommand(command);
+  getDownloadEngine()->addCommand(command);
   return true;
 }
 
@@ -395,8 +390,10 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 {
 
   HttpDownloadCommand* command =
-    new HttpDownloadCommand(getCuid(), req, _fileEntry, _requestGroup,
-                            httpResponse, httpConnection, e, socket);
+    new HttpDownloadCommand(getCuid(), getRequest(), getFileEntry(),
+                            getRequestGroup(),
+                            httpResponse, _httpConnection,
+                            getDownloadEngine(), getSocket());
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit
     (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
@@ -407,25 +404,26 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
     // Since the compressed file's length are returned in the response header
     // and the decompressed file size is unknown at this point, disable file
     // allocation here.
-    _requestGroup->setFileAllocationEnabled(false);
+    getRequestGroup()->setFileAllocationEnabled(false);
   }
 
-  _requestGroup->getURISelector()->tuneDownloadCommand
-    (_fileEntry->getRemainingUris(), command);
+  getRequestGroup()->getURISelector()->tuneDownloadCommand
+    (getFileEntry()->getRemainingUris(), command);
 
   return command;
 }
 
 void HttpResponseCommand::poolConnection()
 {
-  if(req->supportsPersistentConnection()) {
-    e->poolSocket(req, createProxyRequest(), socket);
+  if(getRequest()->supportsPersistentConnection()) {
+    getDownloadEngine()->poolSocket(getRequest(), createProxyRequest(),
+                                    getSocket());
   }
 }
 
 void HttpResponseCommand::onDryRunFileFound()
 {
-  _requestGroup->getPieceStorage()->markAllPiecesDone();
+  getPieceStorage()->markAllPiecesDone();
   poolConnection();
 }
 

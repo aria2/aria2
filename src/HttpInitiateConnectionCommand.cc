@@ -73,32 +73,39 @@ Command* HttpInitiateConnectionCommand::createNextCommand
   Command* command;
   if(!proxyRequest.isNull()) {
     SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(req->getHost(), req->getPort(),
-                         proxyRequest->getHost(), proxyRequest->getPort());
-    std::string proxyMethod = resolveProxyMethod(req->getProtocol());
+      getDownloadEngine()->popPooledSocket
+      (getRequest()->getHost(), getRequest()->getPort(),
+       proxyRequest->getHost(), proxyRequest->getPort());
+    std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
     if(pooledSocket.isNull()) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);
       }
-      socket.reset(new SocketCore());
-      socket->establishConnection(addr, port);
+      createSocket();
+      getSocket()->establishConnection(addr, port);
 
       if(proxyMethod == V_TUNNEL) {
         HttpProxyRequestCommand* c =
-          new HttpProxyRequestCommand(getCuid(), req, _fileEntry,
-                                      _requestGroup, e,
-                                      proxyRequest, socket);
+          new HttpProxyRequestCommand(getCuid(),
+                                      getRequest(),
+                                      getFileEntry(),
+                                      getRequestGroup(),
+                                      getDownloadEngine(),
+                                      proxyRequest,
+                                      getSocket());
         c->setConnectedAddr(hostname, addr, port);
         command = c;
       } else if(proxyMethod == V_GET) {
         SharedHandle<HttpConnection> httpConnection
-          (new HttpConnection(getCuid(), socket, getOption().get()));
-        HttpRequestCommand* c = new HttpRequestCommand(getCuid(), req,
-                                                       _fileEntry,
-                                                       _requestGroup,
-                                                       httpConnection, e,
-                                                       socket);
+          (new HttpConnection(getCuid(), getSocket(), getOption().get()));
+        HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
+                                                       getRequest(),
+                                                       getFileEntry(),
+                                                       getRequestGroup(),
+                                                       httpConnection,
+                                                       getDownloadEngine(),
+                                                       getSocket());
         c->setConnectedAddr(hostname, addr, port);
         c->setProxyRequest(proxyRequest);
         command = c;
@@ -109,10 +116,12 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     } else {
       SharedHandle<HttpConnection> httpConnection
         (new HttpConnection(getCuid(), pooledSocket, getOption().get()));
-      HttpRequestCommand* c = new HttpRequestCommand(getCuid(), req,
-                                                     _fileEntry,
-                                                     _requestGroup,
-                                                     httpConnection, e,
+      HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
+                                                     getRequest(),
+                                                     getFileEntry(),
+                                                     getRequestGroup(),
+                                                     httpConnection,
+                                                     getDownloadEngine(),
                                                      pooledSocket);
       if(proxyMethod == V_GET) {
         c->setProxyRequest(proxyRequest);
@@ -121,22 +130,26 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     }
   } else {
     SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(resolvedAddresses, req->getPort());
+      getDownloadEngine()->popPooledSocket
+      (resolvedAddresses, getRequest()->getPort());
     if(pooledSocket.isNull()) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);
       }
-      socket.reset(new SocketCore());
-      socket->establishConnection(addr, port);
+      createSocket();
+      getSocket()->establishConnection(addr, port);
     } else {
-      socket = pooledSocket;
+      setSocket(pooledSocket);
     }
     SharedHandle<HttpConnection> httpConnection
-      (new HttpConnection(getCuid(), socket, getOption().get()));
+      (new HttpConnection(getCuid(), getSocket(), getOption().get()));
     HttpRequestCommand* c =
-      new HttpRequestCommand(getCuid(), req, _fileEntry, _requestGroup,
-                             httpConnection, e, socket);
+      new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
+                             getRequestGroup(),
+                             httpConnection,
+                             getDownloadEngine(),
+                             getSocket());
     if(pooledSocket.isNull()) {
       c->setConnectedAddr(hostname, addr, port);
     }

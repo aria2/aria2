@@ -80,16 +80,16 @@ Command* FtpInitiateConnectionCommand::createNextCommand
   if(!proxyRequest.isNull()) {
     std::map<std::string, std::string> options;
     SharedHandle<SocketCore> pooledSocket;
-    std::string proxyMethod = resolveProxyMethod(req->getProtocol());
+    std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
     if(proxyMethod == V_GET) {
-      pooledSocket = e->popPooledSocket
-        (req->getHost(), req->getPort(),
+      pooledSocket = getDownloadEngine()->popPooledSocket
+        (getRequest()->getHost(), getRequest()->getPort(),
          proxyRequest->getHost(), proxyRequest->getPort());
     } else {
-      pooledSocket = e->popPooledSocket
-        (options, req->getHost(), req->getPort(),
-         e->getAuthConfigFactory()->createAuthConfig
-         (req, getOption().get())->getUser(),
+      pooledSocket = getDownloadEngine()->popPooledSocket
+        (options, getRequest()->getHost(), getRequest()->getPort(),
+         getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
+         (getRequest(), getOption().get())->getUser(),
          proxyRequest->getHost(), proxyRequest->getPort());
     }
     if(pooledSocket.isNull()) {
@@ -97,26 +97,27 @@ Command* FtpInitiateConnectionCommand::createNextCommand
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);
       }
-      socket.reset(new SocketCore());
-      socket->establishConnection(addr, port);
+      createSocket();
+      getSocket()->establishConnection(addr, port);
       
       if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
-        req->setMethod(Request::METHOD_GET);
+        getRequest()->setMethod(Request::METHOD_GET);
         SharedHandle<HttpConnection> hc
-          (new HttpConnection(getCuid(), socket, getOption().get()));
+          (new HttpConnection(getCuid(), getSocket(), getOption().get()));
         
         HttpRequestCommand* c =
-          new HttpRequestCommand(getCuid(), req, _fileEntry,
-                                 _requestGroup, hc, e, socket);
+          new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
+                                 getRequestGroup(), hc, getDownloadEngine(),
+                                 getSocket());
         c->setConnectedAddr(hostname, addr, port);
         c->setProxyRequest(proxyRequest);
         command = c;
       } else if(proxyMethod == V_TUNNEL) {
         FtpTunnelRequestCommand* c =
-          new FtpTunnelRequestCommand(getCuid(), req, _fileEntry,
-                                      _requestGroup, e,
-                                      proxyRequest, socket);
+          new FtpTunnelRequestCommand(getCuid(), getRequest(), getFileEntry(),
+                                      getRequestGroup(), getDownloadEngine(),
+                                      proxyRequest, getSocket());
         c->setConnectedAddr(hostname, addr, port);
         command = c;
       } else {
@@ -126,19 +127,21 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     } else {
       if(proxyMethod == V_TUNNEL) {
         command =
-          new FtpNegotiationCommand(getCuid(), req, _fileEntry,
-                                    _requestGroup, e, pooledSocket,
+          new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
+                                    getRequestGroup(), getDownloadEngine(),
+                                    pooledSocket,
                                     FtpNegotiationCommand::SEQ_SEND_CWD,
                                     options["baseWorkingDir"]);
       } else if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
-        req->setMethod(Request::METHOD_GET);
+        getRequest()->setMethod(Request::METHOD_GET);
         SharedHandle<HttpConnection> hc
           (new HttpConnection(getCuid(), pooledSocket, getOption().get()));
         
         HttpRequestCommand* c =
-          new HttpRequestCommand(getCuid(), req, _fileEntry,
-                                 _requestGroup, hc, e, pooledSocket);
+          new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
+                                 getRequestGroup(), hc, getDownloadEngine(),
+                                 pooledSocket);
         c->setProxyRequest(proxyRequest);
         command = c;
       } else {
@@ -149,25 +152,29 @@ Command* FtpInitiateConnectionCommand::createNextCommand
   } else {
     std::map<std::string, std::string> options;
     SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(options, resolvedAddresses, req->getPort(),
-                         e->getAuthConfigFactory()->createAuthConfig
-                         (req, getOption().get())->getUser());
+      getDownloadEngine()->popPooledSocket
+      (options, resolvedAddresses,
+       getRequest()->getPort(),
+       getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
+       (getRequest(), getOption().get())->getUser());
     if(pooledSocket.isNull()) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);
       }
-      socket.reset(new SocketCore());
-      socket->establishConnection(addr, port);
+      createSocket();
+      getSocket()->establishConnection(addr, port);
       FtpNegotiationCommand* c =
-        new FtpNegotiationCommand(getCuid(), req, _fileEntry,
-                                  _requestGroup, e, socket);
+        new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
+                                  getRequestGroup(), getDownloadEngine(),
+                                  getSocket());
       c->setConnectedAddr(hostname, addr, port);
       command = c;
     } else {
       command =
-        new FtpNegotiationCommand(getCuid(), req, _fileEntry,
-                                  _requestGroup, e, pooledSocket,
+        new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
+                                  getRequestGroup(), getDownloadEngine(),
+                                  pooledSocket,
                                   FtpNegotiationCommand::SEQ_SEND_CWD,
                                   options["baseWorkingDir"]);
     }

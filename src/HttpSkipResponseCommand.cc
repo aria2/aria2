@@ -87,13 +87,13 @@ void HttpSkipResponseCommand::setTransferEncodingDecoder
 
 bool HttpSkipResponseCommand::executeInternal()
 {
-  if(req->getMethod() == Request::METHOD_HEAD ||
+  if(getRequest()->getMethod() == Request::METHOD_HEAD ||
      (_totalLength == 0 && _transferEncodingDecoder.isNull())) {
     // If request method is HEAD or content-length header is present and
     // it's value is 0, then pool socket for reuse.
     // If content-length header is not present, then EOF is expected in the end.
     // In this case, the content is thrown away and socket cannot be pooled. 
-    if(req->getMethod() == Request::METHOD_HEAD ||
+    if(getRequest()->getMethod() == Request::METHOD_HEAD ||
        _httpResponse->getHttpHeader()->defined(HttpHeader::CONTENT_LENGTH)) {
       poolConnection();
     }
@@ -104,7 +104,7 @@ bool HttpSkipResponseCommand::executeInternal()
   size_t bufSize = BUFSIZE;
 
   try {
-    socket->readData(buf, bufSize);
+    getSocket()->readData(buf, bufSize);
 
     if(_transferEncodingDecoder.isNull()) {
       _receivedBytes += bufSize;
@@ -114,7 +114,7 @@ bool HttpSkipResponseCommand::executeInternal()
       _transferEncodingDecoder->decode(buf, bufSize);
     }
     if(_totalLength != 0 && bufSize == 0 &&
-       !socket->wantRead() && !socket->wantWrite()) {
+       !getSocket()->wantRead() && !getSocket()->wantWrite()) {
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   } catch(RecoverableException& e) {
@@ -127,7 +127,7 @@ bool HttpSkipResponseCommand::executeInternal()
   bool finished = false;
   if(_transferEncodingDecoder.isNull()) {
     if(bufSize == 0) {
-      if(!socket->wantRead() && !socket->wantWrite()) {
+      if(!getSocket()->wantRead() && !getSocket()->wantWrite()) {
         return processResponse();
       }
     } else {
@@ -140,16 +140,17 @@ bool HttpSkipResponseCommand::executeInternal()
     poolConnection();
     return processResponse();
   } else {
-    setWriteCheckSocketIf(socket, socket->wantWrite());
-    e->addCommand(this);
+    setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+    getDownloadEngine()->addCommand(this);
     return false;
   }
 }
 
 void HttpSkipResponseCommand::poolConnection() const
 {
-  if(req->supportsPersistentConnection()) {
-    e->poolSocket(req, createProxyRequest(), socket);
+  if(getRequest()->supportsPersistentConnection()) {
+    getDownloadEngine()->poolSocket
+      (getRequest(), createProxyRequest(), getSocket());
   }
 }
 
@@ -159,7 +160,8 @@ bool HttpSkipResponseCommand::processResponse()
     unsigned int rnum =
       _httpResponse->getHttpRequest()->getRequest()->getRedirectCount();
     if(rnum >= Request::MAX_REDIRECT) {
-      throw DL_ABORT_EX(StringFormat("Too many redirects: count=%u", rnum).str());
+      throw DL_ABORT_EX
+        (StringFormat("Too many redirects: count=%u", rnum).str());
     }
     _httpResponse->processRedirect();
     return prepareForRetry(0);
@@ -167,8 +169,8 @@ bool HttpSkipResponseCommand::processResponse()
     if(_httpResponse->getResponseStatus() == HttpHeader::S401) {
       if(getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
          !_httpResponse->getHttpRequest()->authenticationUsed() &&
-         e->getAuthConfigFactory()->activateBasicCred
-         (req->getHost(), req->getDir(), getOption().get())) {
+         getDownloadEngine()->getAuthConfigFactory()->activateBasicCred
+         (getRequest()->getHost(), getRequest()->getDir(), getOption().get())) {
         return prepareForRetry(0);
       } else {
         throw DL_ABORT_EX(EX_AUTH_FAILED);
@@ -177,7 +179,10 @@ bool HttpSkipResponseCommand::processResponse()
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          downloadresultcode::RESOURCE_NOT_FOUND);
     } else {
-      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, util::parseUInt(_httpResponse->getResponseStatus())).str());
+      throw DL_ABORT_EX
+        (StringFormat
+         (EX_BAD_STATUS,
+          util::parseUInt(_httpResponse->getResponseStatus())).str());
     }
   } else {
     return prepareForRetry(0);

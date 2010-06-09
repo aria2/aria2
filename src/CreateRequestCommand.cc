@@ -67,39 +67,41 @@ CreateRequestCommand::CreateRequestCommand(cuid_t cuid,
 
 bool CreateRequestCommand::executeInternal()
 {
-  if(_segments.empty()) {
-    _fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset(0);
+  if(getSegments().empty()) {
+    setFileEntry(getDownloadContext()->findFileEntryByOffset(0));
   } else {
     // We assume all segments belongs to same file.
-    _fileEntry = _requestGroup->getDownloadContext()->findFileEntryByOffset
-      (_segments.front()->getPositionToWrite());
+    setFileEntry(getDownloadContext()->findFileEntryByOffset
+                 (getSegments().front()->getPositionToWrite()));
   }
-  if(_fileEntry->getRemainingUris().empty() &&
+  if(getFileEntry()->getRemainingUris().empty() &&
      getOption()->getAsBool(PREF_REUSE_URI) &&
-     _fileEntry->countPooledRequest() == 0) {
-    _fileEntry->reuseUri(_requestGroup->getNumConcurrentCommand());
+     getFileEntry()->countPooledRequest() == 0) {
+    getFileEntry()->reuseUri(getRequestGroup()->getNumConcurrentCommand());
   }
-  req = _fileEntry->getRequest(_requestGroup->getURISelector(),
-                               getOption()->get(PREF_REFERER),
-                               // Don't use HEAD request when file
-                               // size is known.
-                               // Use HEAD for dry-run mode.
-                               (_fileEntry->getLength() == 0 &&
-                                getOption()->getAsBool(PREF_USE_HEAD)) ||
-                               getOption()->getAsBool(PREF_DRY_RUN)?
-                               Request::METHOD_HEAD:Request::METHOD_GET);
-  if(req.isNull()) {
-    if(!_requestGroup->getSegmentMan().isNull()) {
-      _requestGroup->getSegmentMan()->ignoreSegmentFor(_fileEntry);
+  setRequest
+    (getFileEntry()->getRequest(getRequestGroup()->getURISelector(),
+                                getOption()->get(PREF_REFERER),
+                                // Don't use HEAD request when file
+                                // size is known.
+                                // Use HEAD for dry-run mode.
+                                (getFileEntry()->getLength() == 0 &&
+                                 getOption()->getAsBool(PREF_USE_HEAD)) ||
+                                getOption()->getAsBool(PREF_DRY_RUN)?
+                                Request::METHOD_HEAD:Request::METHOD_GET));
+  if(getRequest().isNull()) {
+    if(!getSegmentMan().isNull()) {
+      getSegmentMan()->ignoreSegmentFor(getFileEntry());
     }
     throw DL_ABORT_EX("No URI available.");
   }
 
   Command* command =
     InitiateConnectionCommandFactory::createInitiateConnectionCommand
-    (getCuid(), req, _fileEntry, _requestGroup, e);
-  e->setNoWait(true);
-  e->addCommand(command);
+    (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+     getDownloadEngine());
+  getDownloadEngine()->setNoWait(true);
+  getDownloadEngine()->addCommand(command);
   return true;
 }
 
@@ -113,16 +115,16 @@ bool CreateRequestCommand::prepareForRetry(time_t wait)
   // called repeatedly. This means that newly created
   // CreateRequestCommand is deleted one second later: This is not
   // efficient. For this reason, reuse current CreateRequestCommand.
-  if(!_requestGroup->getPieceStorage().isNull()) {
-    _requestGroup->getSegmentMan()->cancelSegment(getCuid());
+  if(!getPieceStorage().isNull()) {
+    getSegmentMan()->cancelSegment(getCuid());
   }
   if(getLogger()->debug()) {
     getLogger()->debug("CUID#%s - Reusing CreateRequestCommand",
                        util::itos(getCuid()).c_str());
   }
   SleepCommand* scom = new SleepCommand
-    (getCuid(), e, _requestGroup, this, wait);
-  e->addCommand(scom);
+    (getCuid(), getDownloadEngine(), getRequestGroup(), this, wait);
+  getDownloadEngine()->addCommand(scom);
   return false;
 }
 

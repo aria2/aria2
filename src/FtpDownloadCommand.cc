@@ -62,7 +62,7 @@ FtpDownloadCommand::FtpDownloadCommand
  const SocketHandle& ctrlSocket)
   :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket),
    _ftpConnection(ftpConnection),
-   ctrlSocket(ctrlSocket) {}
+   _ctrlSocket(ctrlSocket) {}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
 
@@ -71,14 +71,14 @@ bool FtpDownloadCommand::prepareForNextSegment()
 {
   if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
      static_cast<uint64_t>
-     (_fileEntry->gtoloff(_segments.front()->getPositionToWrite())) ==
-     _fileEntry->getLength()) {
+     (getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())) ==
+     getFileEntry()->getLength()) {
     Command* command = new FtpFinishDownloadCommand
-      (getCuid(), req, _fileEntry, _requestGroup, _ftpConnection, e,
-       ctrlSocket);
-    e->addCommand(command);
+      (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
+       _ftpConnection, getDownloadEngine(), _ctrlSocket);
+    getDownloadEngine()->addCommand(command);
 
-    if(_requestGroup->downloadFinished()) {
+    if(getRequestGroup()->downloadFinished()) {
       // To run checksum checking, we had to call following function here.
       DownloadCommand::prepareForNextSegment();
     }
