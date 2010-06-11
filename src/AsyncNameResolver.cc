@@ -48,8 +48,8 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
 {
   AsyncNameResolver* resolverPtr = reinterpret_cast<AsyncNameResolver*>(arg);
   if(status != ARES_SUCCESS) {
-    resolverPtr->error = ares_strerror(status);
-    resolverPtr->status = AsyncNameResolver::STATUS_ERROR;
+    resolverPtr->_error = ares_strerror(status);
+    resolverPtr->_status = AsyncNameResolver::STATUS_ERROR;
     return;
   }
   for(char** ap = host->h_addr_list; *ap; ++ap) {
@@ -57,49 +57,49 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
     memcpy(&addr, *ap, sizeof(in_addr));
     resolverPtr->_resolvedAddresses.push_back(inet_ntoa(addr));
   }
-  resolverPtr->status = AsyncNameResolver::STATUS_SUCCESS;
+  resolverPtr->_status = AsyncNameResolver::STATUS_SUCCESS;
 }
 
 AsyncNameResolver::AsyncNameResolver():
-  status(STATUS_READY)
+  _status(STATUS_READY)
 {
   // TODO evaluate return value
-  ares_init(&channel);
+  ares_init(&_channel);
 }
 
 AsyncNameResolver::~AsyncNameResolver()
 {
-  ares_destroy(channel);
+  ares_destroy(_channel);
 }
 
 void AsyncNameResolver::resolve(const std::string& name)
 {
   _hostname = name;
-  status = STATUS_QUERYING;
-  ares_gethostbyname(channel, name.c_str(), AF_INET, callback, this);
+  _status = STATUS_QUERYING;
+  ares_gethostbyname(_channel, name.c_str(), AF_INET, callback, this);
 }
 
 int AsyncNameResolver::getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const
 {
-  return ares_fds(channel, rfdsPtr, wfdsPtr);
+  return ares_fds(_channel, rfdsPtr, wfdsPtr);
 }
 
 void AsyncNameResolver::process(fd_set* rfdsPtr, fd_set* wfdsPtr)
 {
-  ares_process(channel, rfdsPtr, wfdsPtr);
+  ares_process(_channel, rfdsPtr, wfdsPtr);
 }
 
 #ifdef HAVE_LIBCARES
 
 int AsyncNameResolver::getsock(sock_t* sockets) const
 {
-  return ares_getsock(channel, reinterpret_cast<ares_socket_t*>(sockets),
+  return ares_getsock(_channel, reinterpret_cast<ares_socket_t*>(sockets),
                       ARES_GETSOCK_MAXNUM);
 }
 
 void AsyncNameResolver::process(ares_socket_t readfd, ares_socket_t writefd)
 {
-  ares_process_fd(channel, readfd, writefd);
+  ares_process_fd(_channel, readfd, writefd);
 }
 
 #endif // HAVE_LIBCARES
@@ -113,10 +113,10 @@ void AsyncNameResolver::reset()
 {
   _hostname = A2STR::NIL;
   _resolvedAddresses.clear();
-  status = STATUS_READY;
-  ares_destroy(channel);
+  _status = STATUS_READY;
+  ares_destroy(_channel);
   // TODO evaluate return value
-  ares_init(&channel);
+  ares_init(&_channel);
 }
 
 } // namespace aria2
