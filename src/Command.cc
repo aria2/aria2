@@ -38,10 +38,7 @@
 
 namespace aria2 {
 
-int32_t Command::uuidGen = 0;
-
-Command::Command(cuid_t cuid):uuid(uuidGen++),
-                              _status(STATUS_INACTIVE),
+Command::Command(cuid_t cuid):_status(STATUS_INACTIVE),
                               _cuid(cuid),
                               _logger(LogFactory::getInstance()),
                               _readEvent(false),

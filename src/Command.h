@@ -42,8 +42,6 @@ namespace aria2 {
 
 class Logger;
 
-typedef int32_t CommandUuid;
-
 typedef int64_t cuid_t;
 
 class Command {
@@ -56,8 +54,6 @@ public:
     STATUS_ONESHOT_REALTIME
   };
 private:
-  CommandUuid uuid;
-  static int32_t uuidGen;
   STATUS _status;
 
   cuid_t _cuid;
@@ -100,8 +96,6 @@ public:
   virtual bool execute() = 0;
 
   cuid_t getCuid() const { return _cuid; }
-
-  const CommandUuid& getUuid() const { return uuid; }
 
   void setStatusActive() { _status = STATUS_ACTIVE; }
 
