@@ -41,6 +41,8 @@ namespace aria2 {
 
 const std::string BtHaveNoneMessage::NAME("have none");
 
+BtHaveNoneMessage::BtHaveNoneMessage():ZeroBtMessage(ID, NAME) {}
+
 SharedHandle<BtHaveNoneMessage> BtHaveNoneMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -49,7 +51,7 @@ SharedHandle<BtHaveNoneMessage> BtHaveNoneMessage::create
 
 void BtHaveNoneMessage::doReceivedAction()
 {
-  if(!peer->isFastExtensionEnabled()) {
+  if(!getPeer()->isFastExtensionEnabled()) {
     throw DL_ABORT_EX
       (StringFormat("%s received while fast extension is disabled",
                     toString().c_str()).str());

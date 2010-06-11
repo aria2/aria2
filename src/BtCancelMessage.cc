@@ -39,6 +39,10 @@ namespace aria2 {
 
 const std::string BtCancelMessage::NAME("cancel");
 
+BtCancelMessage::BtCancelMessage
+(size_t index, uint32_t begin, size_t length)
+  :RangeBtMessage(ID, NAME, index, begin, length) {}
+
 SharedHandle<BtCancelMessage> BtCancelMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -47,10 +51,11 @@ SharedHandle<BtCancelMessage> BtCancelMessage::create
 
 void BtCancelMessage::doReceivedAction()
 {
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  dispatcher->doCancelSendingPieceAction(getIndex(), getBegin(), getLength());
+  getBtMessageDispatcher()->doCancelSendingPieceAction
+    (getIndex(), getBegin(), getLength());
 }
 
 } // namespace aria2

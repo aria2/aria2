@@ -1,3 +1,40 @@
+2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private. Added accessor funcs.
+	* src/AbstractBtMessage.cc
+	* src/AbstractBtMessage.h
+	* src/BtAllowedFastMessage.cc
+	* src/BtAllowedFastMessage.h
+	* src/BtBitfieldMessage.cc
+	* src/BtBitfieldMessage.h
+	* src/BtCancelMessage.cc
+	* src/BtCancelMessage.h
+	* src/BtChokeMessage.cc
+	* src/BtChokeMessage.h
+	* src/BtExtendedMessage.cc
+	* src/BtHaveAllMessage.cc
+	* src/BtHaveAllMessage.h
+	* src/BtHaveMessage.cc
+	* src/BtHaveMessage.h
+	* src/BtHaveNoneMessage.cc
+	* src/BtHaveNoneMessage.h
+	* src/BtInterestedMessage.cc
+	* src/BtInterestedMessage.h
+	* src/BtNotInterestedMessage.cc
+	* src/BtNotInterestedMessage.h
+	* src/BtPieceMessage.cc
+	* src/BtPieceMessage.h
+	* src/BtPortMessage.cc
+	* src/BtPortMessage.h
+	* src/BtRejectMessage.cc
+	* src/BtRejectMessage.h
+	* src/BtRequestMessage.cc
+	* src/BtRequestMessage.h
+	* src/BtUnchokeMessage.cc
+	* src/BtUnchokeMessage.h
+	* src/SimpleBtMessage.cc
+	* src/SimpleBtMessage.h
+
 2010-06-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private. Added accessor funcs.

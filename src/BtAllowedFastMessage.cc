@@ -41,6 +41,9 @@ namespace aria2 {
 
 const std::string BtAllowedFastMessage::NAME("allowed fast");
 
+BtAllowedFastMessage::BtAllowedFastMessage(size_t index):
+  IndexBtMessage(ID, NAME, index) {}
+
 SharedHandle<BtAllowedFastMessage> BtAllowedFastMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -48,19 +51,19 @@ SharedHandle<BtAllowedFastMessage> BtAllowedFastMessage::create
 }
 
 void BtAllowedFastMessage::doReceivedAction() {
-  if(!peer->isFastExtensionEnabled()) {
+  if(!getPeer()->isFastExtensionEnabled()) {
     throw DL_ABORT_EX
       (StringFormat("%s received while fast extension is disabled",
                     toString().c_str()).str());
   }
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  peer->addPeerAllowedIndex(getIndex());
+  getPeer()->addPeerAllowedIndex(getIndex());
 }
 
 void BtAllowedFastMessage::onSendComplete() {
-  peer->addAmAllowedIndex(getIndex());
+  getPeer()->addAmAllowedIndex(getIndex());
 }
 
 } // namespace aria2

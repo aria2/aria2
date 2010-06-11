@@ -45,7 +45,7 @@ typedef SharedHandle<BtHaveMessage> BtHaveMessageHandle;
 
 class BtHaveMessage : public IndexBtMessage {
 public:
-  BtHaveMessage(size_t index = 0):IndexBtMessage(ID, NAME, index) {}
+  BtHaveMessage(size_t index = 0);
 
   static const uint8_t ID = 4;
 

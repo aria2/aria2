@@ -45,8 +45,7 @@ typedef SharedHandle<BtRejectMessage> BtRejectMessageHandle;
 
 class BtRejectMessage : public RangeBtMessage {
 public:
-  BtRejectMessage(size_t index = 0, uint32_t begin = 0, size_t length = 0)
-    :RangeBtMessage(ID, NAME, index, begin, length) {}
+  BtRejectMessage(size_t index = 0, uint32_t begin = 0, size_t length = 0);
 
   static const uint8_t ID = 16;
 

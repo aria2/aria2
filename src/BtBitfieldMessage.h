@@ -45,29 +45,14 @@ typedef SharedHandle<BtBitfieldMessage> BtBitfieldMessageHandle;
 
 class BtBitfieldMessage : public SimpleBtMessage {
 private:
-  unsigned char* bitfield;
-  size_t bitfieldLength;
-
-  void init() {
-    bitfield = 0;
-    bitfieldLength = 0;
-  }
+  unsigned char* _bitfield;
+  size_t _bitfieldLength;
 public:
-  BtBitfieldMessage():SimpleBtMessage(ID, NAME)
-  {
-    init();
-  }
+  BtBitfieldMessage();
 
-  BtBitfieldMessage(const unsigned char* bitfield,
-                    size_t bitfieldLength):SimpleBtMessage(ID, NAME)
-  {
-    init();
-    setBitfield(bitfield, bitfieldLength);
-  }
+  BtBitfieldMessage(const unsigned char* bitfield, size_t bitfieldLength);
 
-  virtual ~BtBitfieldMessage() {
-    delete [] bitfield;
-  }
+  virtual ~BtBitfieldMessage();
 
   static const uint8_t ID = 5;
 
@@ -75,11 +60,12 @@ public:
 
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
-  const unsigned char* getBitfield() const { return bitfield; }
+  const unsigned char* getBitfield() const { return _bitfield; }
 
-  size_t getBitfieldLength() const { return bitfieldLength; }
+  size_t getBitfieldLength() const { return _bitfieldLength; }
 
-  static BtBitfieldMessageHandle create(const unsigned char* data, size_t dataLength);
+  static BtBitfieldMessageHandle create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
 

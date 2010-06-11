@@ -48,7 +48,7 @@ class BtInterestedMessage : public ZeroBtMessage {
 private:
   SharedHandle<PeerStorage> _peerStorage;
 public:
-  BtInterestedMessage():ZeroBtMessage(ID, NAME) {}
+  BtInterestedMessage();
 
   static const uint8_t ID = 2;
 

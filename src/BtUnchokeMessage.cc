@@ -39,6 +39,8 @@ namespace aria2 {
 
 const std::string BtUnchokeMessage::NAME("unchoke");
 
+BtUnchokeMessage::BtUnchokeMessage():ZeroBtMessage(ID, NAME) {}
+
 SharedHandle<BtUnchokeMessage> BtUnchokeMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -47,19 +49,19 @@ SharedHandle<BtUnchokeMessage> BtUnchokeMessage::create
 
 void BtUnchokeMessage::doReceivedAction()
 {
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  peer->peerChoking(false);
+  getPeer()->peerChoking(false);
 }
 
 bool BtUnchokeMessage::sendPredicate() const
 {
-  return peer->amChoking();
+  return getPeer()->amChoking();
 }
 
 void BtUnchokeMessage::onSendComplete() {
-  peer->amChoking(false);
+  getPeer()->amChoking(false);
 }
 
 } // namespace aria2

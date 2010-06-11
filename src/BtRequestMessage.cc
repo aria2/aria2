@@ -43,6 +43,11 @@ namespace aria2 {
 
 const std::string BtRequestMessage::NAME("request");
 
+BtRequestMessage::BtRequestMessage
+(size_t index, uint32_t begin, uint32_t length, size_t blockIndex):
+  RangeBtMessage(ID, NAME, index, begin, length),
+  _blockIndex(blockIndex) {}
+
 SharedHandle<BtRequestMessage> BtRequestMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -51,22 +56,23 @@ SharedHandle<BtRequestMessage> BtRequestMessage::create
 
 void BtRequestMessage::doReceivedAction()
 {
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  if(pieceStorage->hasPiece(getIndex()) &&
-     (!peer->amChoking() ||
-      (peer->amChoking() && peer->isInAmAllowedIndexSet(getIndex())))) {
-    BtMessageHandle msg = messageFactory->createPieceMessage(getIndex(),
-                                                             getBegin(),
-                                                             getLength());
-    dispatcher->addMessageToQueue(msg);
+  if(getPieceStorage()->hasPiece(getIndex()) &&
+     (!getPeer()->amChoking() ||
+      (getPeer()->amChoking() &&
+       getPeer()->isInAmAllowedIndexSet(getIndex())))) {
+    BtMessageHandle msg =
+      getBtMessageFactory()->createPieceMessage
+      (getIndex(), getBegin(), getLength());
+    getBtMessageDispatcher()->addMessageToQueue(msg);
   } else {
-    if(peer->isFastExtensionEnabled()) {
-      BtMessageHandle msg = messageFactory->createRejectMessage(getIndex(),
-                                                                getBegin(),
-                                                                getLength());
-      dispatcher->addMessageToQueue(msg);
+    if(getPeer()->isFastExtensionEnabled()) {
+      BtMessageHandle msg =
+        getBtMessageFactory()->createRejectMessage
+        (getIndex(), getBegin(), getLength());
+      getBtMessageDispatcher()->addMessageToQueue(msg);
     }
   }
 }
@@ -74,16 +80,16 @@ void BtRequestMessage::doReceivedAction()
 void BtRequestMessage::onQueued()
 {
   RequestSlot requestSlot(getIndex(), getBegin(), getLength(), _blockIndex,
-                          pieceStorage->getPiece(getIndex()));
-  dispatcher->addOutstandingRequest(requestSlot);
+                          getPieceStorage()->getPiece(getIndex()));
+  getBtMessageDispatcher()->addOutstandingRequest(requestSlot);
 }
 
 void BtRequestMessage::onAbortOutstandingRequestEvent
 (const BtAbortOutstandingRequestEvent& event)
 {
   if(getIndex() == event.getPiece()->getIndex() &&
-     !invalidate && !sendingInProgress) {
-    invalidate = true;
+     !isInvalidate() && !isSendingInProgress()) {
+    setInvalidate(true);
   }
 }
 

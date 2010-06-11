@@ -59,14 +59,33 @@ namespace aria2 {
 
 const std::string BtPieceMessage::NAME("piece");
 
+BtPieceMessage::BtPieceMessage
+(size_t index, uint32_t begin, size_t blockLength):
+  AbstractBtMessage(ID, NAME),
+  _index(index),
+  _begin(begin),
+  _blockLength(blockLength),
+  _block(0),
+  _rawData(0)
+{
+  setUploading(true);
+}
+
+BtPieceMessage::~BtPieceMessage()
+{
+  delete [] _rawData;
+}
+
 void BtPieceMessage::setRawMessage(unsigned char* data)
 {
   delete [] _rawData;
   _rawData = data;
-  this->block = data+9;
+  _block = data+9;
 }
 
-BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t dataLength) {
+BtPieceMessageHandle BtPieceMessage::create
+(const unsigned char* data, size_t dataLength)
+{
   bittorrent::assertPayloadLengthGreater(9, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   BtPieceMessageHandle message(new BtPieceMessage());
@@ -76,32 +95,34 @@ BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t da
   return message;
 }
 
-void BtPieceMessage::doReceivedAction() {
-  if(_metadataGetMode) {
+void BtPieceMessage::doReceivedAction()
+{
+  if(isMetadataGetMode()) {
     return;
   }
-  RequestSlot slot = dispatcher->getOutstandingRequest(index,
-                                                       begin,
-                                                       blockLength);
-  peer->updateDownloadLength(blockLength);
+  RequestSlot slot = getBtMessageDispatcher()->getOutstandingRequest
+    (_index, _begin, _blockLength);
+  getPeer()->updateDownloadLength(_blockLength);
   if(!RequestSlot::isNull(slot)) {
-    peer->snubbing(false);
-    SharedHandle<Piece> piece = pieceStorage->getPiece(index);
-    off_t offset = (off_t)index*_downloadContext->getPieceLength()+begin;
-    if(logger->debug()) {
-      logger->debug(MSG_PIECE_RECEIVED,
-                    util::itos(cuid).c_str(), index, begin, blockLength, offset,
-                    slot.getBlockIndex());
+    getPeer()->snubbing(false);
+    SharedHandle<Piece> piece = getPieceStorage()->getPiece(_index);
+    off_t offset = (off_t)_index*_downloadContext->getPieceLength()+_begin;
+    if(getLogger()->debug()) {
+      getLogger()->debug(MSG_PIECE_RECEIVED,
+                         util::itos(getCuid()).c_str(),
+                         _index, _begin, _blockLength, offset,
+                         slot.getBlockIndex());
     }
-    pieceStorage->getDiskAdaptor()->writeData(block, blockLength, offset);
+    getPieceStorage()->getDiskAdaptor()->writeData
+      (_block, _blockLength, offset);
     piece->completeBlock(slot.getBlockIndex());
-    if(logger->debug()) {
-      logger->debug(MSG_PIECE_BITFIELD, util::itos(cuid).c_str(),
-                    util::toHex(piece->getBitfield(),
-                                piece->getBitfieldLength()).c_str());
+    if(getLogger()->debug()) {
+      getLogger()->debug(MSG_PIECE_BITFIELD, util::itos(getCuid()).c_str(),
+                         util::toHex(piece->getBitfield(),
+                                     piece->getBitfieldLength()).c_str());
     }
-    piece->updateHash(begin, block, blockLength);
-    dispatcher->removeOutstandingRequest(slot);
+    piece->updateHash(_begin, _block, _blockLength);
+    getBtMessageDispatcher()->removeOutstandingRequest(slot);
     if(piece->pieceComplete()) {
       if(checkPieceHash(piece)) {
         onNewPiece(piece);
@@ -110,9 +131,9 @@ void BtPieceMessage::doReceivedAction() {
       }
     }
   } else {
-    if(logger->debug()) {
-      logger->debug("CUID#%s - RequestSlot not found, index=%d, begin=%d",
-                    util::itos(cuid).c_str(), index, begin);
+    if(getLogger()->debug()) {
+      getLogger()->debug("CUID#%s - RequestSlot not found, index=%d, begin=%d",
+                         util::itos(getCuid()).c_str(), _index, _begin);
     }
   }
 }
@@ -130,156 +151,169 @@ unsigned char* BtPieceMessage::createMessageHeader()
    */
   unsigned char* msgHeader = new unsigned char[MESSAGE_HEADER_LENGTH];
   bittorrent::createPeerMessageString(msgHeader, MESSAGE_HEADER_LENGTH,
-                                      9+blockLength, ID);
-  bittorrent::setIntParam(&msgHeader[5], index);
-  bittorrent::setIntParam(&msgHeader[9], begin);
+                                      9+_blockLength, ID);
+  bittorrent::setIntParam(&msgHeader[5], _index);
+  bittorrent::setIntParam(&msgHeader[9], _begin);
   return msgHeader;
 }
 
-size_t BtPieceMessage::getMessageHeaderLength() {
+size_t BtPieceMessage::getMessageHeaderLength()
+{
   return MESSAGE_HEADER_LENGTH;
 }
 
-void BtPieceMessage::send() {
-  if(invalidate) {
+void BtPieceMessage::send()
+{
+  if(isInvalidate()) {
     return;
   }
   size_t writtenLength;
-  if(!sendingInProgress) {
-    if(logger->info()) {
-      logger->info(MSG_SEND_PEER_MESSAGE,
-                   util::itos(cuid).c_str(), peer->ipaddr.c_str(), peer->port,
-                   toString().c_str());
+  if(!isSendingInProgress()) {
+    if(getLogger()->info()) {
+      getLogger()->info(MSG_SEND_PEER_MESSAGE,
+                        util::itos(getCuid()).c_str(),
+                        getPeer()->ipaddr.c_str(), getPeer()->port,
+                        toString().c_str());
     }
     unsigned char* msgHdr = createMessageHeader();
     size_t msgHdrLen = getMessageHeaderLength();
-    if(logger->debug()) {
-      logger->debug("msglength = %lu bytes",
-                    static_cast<unsigned long>(msgHdrLen+blockLength));
+    if(getLogger()->debug()) {
+      getLogger()->debug("msglength = %lu bytes",
+                         static_cast<unsigned long>(msgHdrLen+_blockLength));
     }
-    peerConnection->pushBytes(msgHdr, msgHdrLen);
-    peerConnection->sendPendingData();
+    getPeerConnection()->pushBytes(msgHdr, msgHdrLen);
+    getPeerConnection()->sendPendingData();
     off_t pieceDataOffset =
-      (off_t)index*_downloadContext->getPieceLength()+begin;
-    writtenLength = sendPieceData(pieceDataOffset, blockLength);
+      (off_t)_index*_downloadContext->getPieceLength()+_begin;
+    writtenLength = sendPieceData(pieceDataOffset, _blockLength);
   } else {
-    writtenLength = peerConnection->sendPendingData();
+    writtenLength = getPeerConnection()->sendPendingData();
   }
-  peer->updateUploadLength(writtenLength);
-  sendingInProgress = !peerConnection->sendBufferIsEmpty();
+  getPeer()->updateUploadLength(writtenLength);
+  setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
 }
 
-size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
+size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const
+{
   assert(length <= 16*1024);
   unsigned char* buf = new unsigned char[length];
   ssize_t r;
   try {
-    r = pieceStorage->getDiskAdaptor()->readData(buf, length, offset);
+    r = getPieceStorage()->getDiskAdaptor()->readData(buf, length, offset);
   } catch(RecoverableException& e) {
     delete [] buf;
     throw;
   }
   if(r == static_cast<ssize_t>(length)) {
-    peerConnection->pushBytes(buf, length);
-    return peerConnection->sendPendingData();
+    getPeerConnection()->pushBytes(buf, length);
+    return getPeerConnection()->sendPendingData();
   } else {
     throw DL_ABORT_EX(EX_DATA_READ);
   }
 }
 
-std::string BtPieceMessage::toString() const {
-  return strconcat(NAME, " index=", util::itos(index), ", begin=",
-                   util::itos(begin), ", length=", util::itos(blockLength));
+std::string BtPieceMessage::toString() const
+{
+  return strconcat(NAME, " index=", util::itos(_index), ", begin=",
+                   util::itos(_begin), ", length=", util::itos(_blockLength));
 }
 
-bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece) {
+bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
+{
   if(piece->isHashCalculated()) {
-    if(logger->debug()) {
-      logger->debug("Hash is available!! index=%lu",
-                    static_cast<unsigned long>(piece->getIndex()));
+    if(getLogger()->debug()) {
+      getLogger()->debug("Hash is available!! index=%lu",
+                         static_cast<unsigned long>(piece->getIndex()));
     }
     return
       piece->getHashString()==_downloadContext->getPieceHash(piece->getIndex());
   } else {
     off_t offset = (off_t)piece->getIndex()*_downloadContext->getPieceLength();
     
-    return MessageDigestHelper::staticSHA1Digest(pieceStorage->getDiskAdaptor(), offset, piece->getLength())
+    return MessageDigestHelper::staticSHA1Digest
+      (getPieceStorage()->getDiskAdaptor(), offset, piece->getLength())
       == _downloadContext->getPieceHash(piece->getIndex());
   }
 }
 
-void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece) {
-  if(logger->info()) {
-    logger->info(MSG_GOT_NEW_PIECE, util::itos(cuid).c_str(),piece->getIndex());
+void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
+{
+  if(getLogger()->info()) {
+    getLogger()->info(MSG_GOT_NEW_PIECE,
+                      util::itos(getCuid()).c_str(), piece->getIndex());
   }
-  pieceStorage->completePiece(piece);
-  pieceStorage->advertisePiece(cuid, piece->getIndex());
+  getPieceStorage()->completePiece(piece);
+  getPieceStorage()->advertisePiece(getCuid(), piece->getIndex());
 }
 
-void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece) {
-  if(logger->info()) {
-    logger->info(MSG_GOT_WRONG_PIECE,
-                 util::itos(cuid).c_str(), piece->getIndex());
+void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece)
+{
+  if(getLogger()->info()) {
+    getLogger()->info(MSG_GOT_WRONG_PIECE,
+                      util::itos(getCuid()).c_str(), piece->getIndex());
   }
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
   piece->destroyHashContext();
-  requestFactory->removeTargetPiece(piece);
+  getBtRequestFactory()->removeTargetPiece(piece);
 }
 
-void BtPieceMessage::erasePieceOnDisk(const SharedHandle<Piece>& piece) {
+void BtPieceMessage::erasePieceOnDisk(const SharedHandle<Piece>& piece)
+{
   size_t BUFSIZE = 4096;
   unsigned char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);
   off_t offset = (off_t)piece->getIndex()*_downloadContext->getPieceLength();
   div_t res = div(piece->getLength(), BUFSIZE);
   for(int i = 0; i < res.quot; ++i) {
-    pieceStorage->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
+    getPieceStorage()->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
     offset += BUFSIZE;
   }
   if(res.rem > 0) {
-    pieceStorage->getDiskAdaptor()->writeData(buf, res.rem, offset);
+    getPieceStorage()->getDiskAdaptor()->writeData(buf, res.rem, offset);
   }
 }
 
 void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
 {
-  if(!invalidate &&
-     !sendingInProgress &&
-     !peer->isInAmAllowedIndexSet(index)) {
-    if(logger->debug()) {
-      logger->debug(MSG_REJECT_PIECE_CHOKED,
-                    util::itos(cuid).c_str(), index, begin, blockLength);
+  if(!isInvalidate() &&
+     !isSendingInProgress() &&
+     !getPeer()->isInAmAllowedIndexSet(_index)) {
+    if(getLogger()->debug()) {
+      getLogger()->debug(MSG_REJECT_PIECE_CHOKED,
+                         util::itos(getCuid()).c_str(),
+                         _index, _begin, _blockLength);
     }
-    if(peer->isFastExtensionEnabled()) {
-      BtMessageHandle rej = messageFactory->createRejectMessage(index,
-                                                                begin,
-                                                                blockLength);
-      dispatcher->addMessageToQueue(rej);
+    if(getPeer()->isFastExtensionEnabled()) {
+      BtMessageHandle rej =
+        getBtMessageFactory()->createRejectMessage
+        (_index, _begin, _blockLength);
+      getBtMessageDispatcher()->addMessageToQueue(rej);
     }
-    invalidate = true;
+    setInvalidate(true);
   }
 }
 
 void BtPieceMessage::onCancelSendingPieceEvent
 (const BtCancelSendingPieceEvent& event)
 {
-  if(!invalidate &&
-     !sendingInProgress &&
-     index == event.getIndex() &&
-     begin == event.getBegin() &&
-     blockLength == event.getLength()) {
-    if(logger->debug()) {
-      logger->debug(MSG_REJECT_PIECE_CANCEL,
-                    util::itos(cuid).c_str(), index, begin, blockLength);
+  if(!isInvalidate() &&
+     !isSendingInProgress() &&
+     _index == event.getIndex() &&
+     _begin == event.getBegin() &&
+     _blockLength == event.getLength()) {
+    if(getLogger()->debug()) {
+      getLogger()->debug(MSG_REJECT_PIECE_CANCEL,
+                         util::itos(getCuid()).c_str(),
+                         _index, _begin, _blockLength);
     }
-    if(peer->isFastExtensionEnabled()) {
-      BtMessageHandle rej = messageFactory->createRejectMessage(index,
-                                                                begin,
-                                                                blockLength);
-      dispatcher->addMessageToQueue(rej);
+    if(getPeer()->isFastExtensionEnabled()) {
+      BtMessageHandle rej =
+        getBtMessageFactory()->createRejectMessage
+        (_index, _begin, _blockLength);
+      getBtMessageDispatcher()->addMessageToQueue(rej);
     }
-    invalidate = true;
+    setInvalidate(true);
   } 
 }
 

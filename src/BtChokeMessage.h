@@ -45,7 +45,7 @@ typedef SharedHandle<BtChokeMessage> BtChokeMessageHandle;
 
 class BtChokeMessage : public ZeroBtMessage {
 public:
-  BtChokeMessage():ZeroBtMessage(ID, NAME) {}
+  BtChokeMessage();
 
   static const uint8_t ID = 0;
 

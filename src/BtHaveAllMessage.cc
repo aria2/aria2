@@ -43,6 +43,8 @@ namespace aria2 {
 
 const std::string BtHaveAllMessage::NAME("have all");
 
+BtHaveAllMessage::BtHaveAllMessage():ZeroBtMessage(ID, NAME) {}
+
 SharedHandle<BtHaveAllMessage> BtHaveAllMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -51,19 +53,20 @@ SharedHandle<BtHaveAllMessage> BtHaveAllMessage::create
 
 void BtHaveAllMessage::doReceivedAction()
 {
-  if(!peer->isFastExtensionEnabled()) {
+  if(!getPeer()->isFastExtensionEnabled()) {
     throw DL_ABORT_EX
       (StringFormat("%s received while fast extension is disabled",
                     toString().c_str()).str());
   }
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  pieceStorage->subtractPieceStats(peer->getBitfield(),
-                                   peer->getBitfieldLength());
-  peer->setAllBitfield();
-  pieceStorage->addPieceStats(peer->getBitfield(), peer->getBitfieldLength());
-  if(peer->isSeeder() && pieceStorage->downloadFinished()) {
+  getPieceStorage()->subtractPieceStats(getPeer()->getBitfield(),
+                                        getPeer()->getBitfieldLength());
+  getPeer()->setAllBitfield();
+  getPieceStorage()->addPieceStats
+    (getPeer()->getBitfield(), getPeer()->getBitfieldLength());
+  if(getPeer()->isSeeder() && getPieceStorage()->downloadFinished()) {
     throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
   }
 }

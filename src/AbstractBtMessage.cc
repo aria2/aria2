@@ -43,57 +43,59 @@ namespace aria2 {
 
 AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name):
   BtMessage(id),
-  sendingInProgress(false),
-  invalidate(false),
-  uploading(false),
-  cuid(0),
+  _sendingInProgress(false),
+  _invalidate(false),
+  _uploading(false),
+  _cuid(0),
   _name(name),
   _metadataGetMode(false),
-  logger(LogFactory::getInstance())
+  _logger(LogFactory::getInstance())
 {}
 
 AbstractBtMessage::~AbstractBtMessage() {}
 
 void AbstractBtMessage::setPeer(const SharedHandle<Peer>& peer)
 {
-  this->peer = peer;
+  _peer = peer;
 }
 
 void AbstractBtMessage::validate()
 {
-  if(validator.get()) {
-    validator->validate();
+  if(!_validator.isNull()) {
+    _validator->validate();
   }
 }
 
 void
 AbstractBtMessage::setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator) {
-  this->validator = validator;
+  _validator = validator;
 }
 
-void AbstractBtMessage::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
+void AbstractBtMessage::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
 {
-  this->pieceStorage = pieceStorage;
+  _pieceStorage = pieceStorage;
 }
 
-void AbstractBtMessage::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
+void AbstractBtMessage::setBtMessageDispatcher
+(const WeakHandle<BtMessageDispatcher>& dispatcher)
 {
-  this->dispatcher = dispatcher;
+  _dispatcher = dispatcher;
 }
 
 void AbstractBtMessage::setPeerConnection(const WeakHandle<PeerConnection>& peerConnection)
 {
-  this->peerConnection = peerConnection;
+  _peerConnection = peerConnection;
 }
 
 void AbstractBtMessage::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
 {
-  this->messageFactory = factory;
+  _messageFactory = factory;
 }
 
 void AbstractBtMessage::setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory)
 {
-  this->requestFactory = factory;
+  _requestFactory = factory;
 }
 
 } // namespace aria2

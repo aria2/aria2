@@ -47,10 +47,10 @@ typedef SharedHandle<BtPieceMessage> BtPieceMessageHandle;
 
 class BtPieceMessage : public AbstractBtMessage {
 private:
-  size_t index;
-  uint32_t begin;
-  uint32_t blockLength;
-  unsigned char* block;
+  size_t _index;
+  uint32_t _begin;
+  uint32_t _blockLength;
+  unsigned char* _block;
   unsigned char* _rawData;
   SharedHandle<DownloadContext> _downloadContext;
 
@@ -66,47 +66,37 @@ private:
 
   size_t sendPieceData(off_t offset, size_t length) const;
 public:
-  BtPieceMessage(size_t index = 0, uint32_t begin = 0, size_t blockLength = 0)
-    :AbstractBtMessage(ID, NAME),
-     index(index),
-     begin(begin),
-     blockLength(blockLength),
-     block(0),
-     _rawData(0)
-  {
-    uploading = true;
-  }
+  BtPieceMessage(size_t index = 0, uint32_t begin = 0, size_t blockLength = 0);
 
-  virtual ~BtPieceMessage() {
-    delete [] _rawData;
-  }
+  virtual ~BtPieceMessage();
 
   static const uint8_t ID = 7;
 
   static const std::string NAME;
 
-  size_t getIndex() const { return index; }
+  size_t getIndex() const { return _index; }
 
-  void setIndex(size_t index) { this->index = index; }
+  void setIndex(size_t index) { _index = index; }
 
-  uint32_t getBegin() const { return begin; }
+  uint32_t getBegin() const { return _begin; }
 
-  void setBegin(uint32_t begin) { this->begin = begin; }
+  void setBegin(uint32_t begin) { _begin = begin; }
 
-  const unsigned char* getBlock() const { return block; }
+  const unsigned char* getBlock() const { return _block; }
 
-  size_t getBlockLength() const { return blockLength; }
+  size_t getBlockLength() const { return _blockLength; }
 
   // Stores raw message data. After this function call, this object
   // has ownership of data. Caller must not be free or alter data.
   // Member block is pointed to block starting position in data.
   void setRawMessage(unsigned char* data);
 
-  void setBlockLength(size_t blockLength) { this->blockLength = blockLength; }
+  void setBlockLength(size_t blockLength) { _blockLength = blockLength; }
 
   void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
-  static BtPieceMessageHandle create(const unsigned char* data, size_t dataLength);
+  static BtPieceMessageHandle create
+  (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
 

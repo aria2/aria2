@@ -47,7 +47,7 @@ class BtUnchokeMessage : public ZeroBtMessage {
 private:
   static const size_t MESSAGE_LENGTH = 5;
 public:
-  BtUnchokeMessage():ZeroBtMessage(ID, NAME) {}
+  BtUnchokeMessage();
 
   static const uint8_t ID = 1;
 

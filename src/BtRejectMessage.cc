@@ -43,6 +43,10 @@ namespace aria2 {
 
 const std::string BtRejectMessage::NAME("reject");
 
+BtRejectMessage::BtRejectMessage
+(size_t index, uint32_t begin, size_t length):
+  RangeBtMessage(ID, NAME, index, begin, length) {}
+
 SharedHandle<BtRejectMessage> BtRejectMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -51,22 +55,23 @@ SharedHandle<BtRejectMessage> BtRejectMessage::create
 
 void BtRejectMessage::doReceivedAction()
 {
-  if(!peer->isFastExtensionEnabled()) {
+  if(!getPeer()->isFastExtensionEnabled()) {
     throw DL_ABORT_EX
       (StringFormat("%s received while fast extension is disabled.",
                     toString().c_str()).str());
   }
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
   // TODO Current implementation does not close a connection even if
   // a request for this reject message has never sent.
   RequestSlot slot =
-    dispatcher->getOutstandingRequest(getIndex(), getBegin(), getLength());
+    getBtMessageDispatcher()->getOutstandingRequest
+    (getIndex(), getBegin(), getLength());
   if(RequestSlot::isNull(slot)) {
     //throw DL_ABORT_EX("reject received, but it is not in the request slots.");
   } else {
-    dispatcher->removeOutstandingRequest(slot);
+    getBtMessageDispatcher()->removeOutstandingRequest(slot);
   }
 
 }

@@ -46,14 +46,11 @@ typedef SharedHandle<BtRequestMessage> BtRequestMessageHandle;
 class BtRequestMessage : public RangeBtMessage {
 private:
   size_t _blockIndex;
-
 public:
   BtRequestMessage(size_t index = 0,
                    uint32_t begin = 0,
                    uint32_t length = 0,
-                   size_t blockIndex = 0)
-    :RangeBtMessage(ID, NAME, index, begin, length),
-     _blockIndex(blockIndex) {}
+                   size_t blockIndex = 0);
 
   static const uint8_t ID = 6;
 

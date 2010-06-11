@@ -85,7 +85,7 @@ size_t BtExtendedMessage::getMessageLength() {
 
 bool BtExtendedMessage::sendPredicate() const
 {
-  return peer->isExtendedMessagingEnabled();
+  return getPeer()->isExtendedMessagingEnabled();
 }
 
 std::string BtExtendedMessage::toString() const {

@@ -50,71 +50,106 @@ class BtMessageValidator;
 class Logger;
 
 class AbstractBtMessage : public BtMessage {
-protected:
-  bool sendingInProgress;
-  bool invalidate;
-  bool uploading;
-  cuid_t cuid;
+private:
+  bool _sendingInProgress;
+  bool _invalidate;
+  bool _uploading;
+  cuid_t _cuid;
 
   std::string _name;
 
-  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
 
-  SharedHandle<Peer> peer;
+  SharedHandle<Peer> _peer;
 
-  WeakHandle<BtMessageDispatcher> dispatcher;
+  WeakHandle<BtMessageDispatcher> _dispatcher;
 
-  WeakHandle<BtMessageFactory> messageFactory;
+  WeakHandle<BtMessageFactory> _messageFactory;
 
-  WeakHandle<BtRequestFactory> requestFactory;
+  WeakHandle<BtRequestFactory> _requestFactory;
 
-  WeakHandle<PeerConnection> peerConnection;
+  WeakHandle<PeerConnection> _peerConnection;
 
-  SharedHandle<BtMessageValidator> validator;
+  SharedHandle<BtMessageValidator> _validator;
 
   bool _metadataGetMode;
 
-  Logger* logger;
+  Logger* _logger;
+protected:
+  Logger* getLogger() const
+  {
+    return _logger;
+  }
+
+  const SharedHandle<PieceStorage>& getPieceStorage() const
+  {
+    return _pieceStorage;
+  }
+
+  const WeakHandle<PeerConnection>& getPeerConnection() const
+  {
+    return _peerConnection;
+  }
+
+  const WeakHandle<BtMessageDispatcher>& getBtMessageDispatcher() const
+  {
+    return _dispatcher;
+  }
+
+  const WeakHandle<BtRequestFactory>& getBtRequestFactory() const
+  {
+    return _requestFactory;
+  }
+
+  const WeakHandle<BtMessageFactory>& getBtMessageFactory() const
+  {
+    return _messageFactory;
+  }
+
+  bool isMetadataGetMode() const
+  {
+    return _metadataGetMode;
+  }
 public:
   AbstractBtMessage(uint8_t id, const std::string& name);
 
   virtual ~AbstractBtMessage();
 
   virtual bool isSendingInProgress() {
-    return sendingInProgress;
+    return _sendingInProgress;
   }
 
   void setSendingInProgress(bool sendingInProgress) {
-    this->sendingInProgress = sendingInProgress;
+    _sendingInProgress = sendingInProgress;
   }
 
   virtual bool isInvalidate() {
-    return invalidate;
+    return _invalidate;
   }
 
   void setInvalidate(bool invalidate) {
-    this->invalidate = invalidate;
+    _invalidate = invalidate;
   }
 
   virtual bool isUploading() {
-    return uploading;
+    return _uploading;
   }
 
   void setUploading(bool uploading) {
-    this->uploading = uploading;
+    _uploading = uploading;
   }
 
   cuid_t getCuid() const {
-    return cuid;
+    return _cuid;
   }
 
   void setCuid(cuid_t cuid) {
-    this->cuid = cuid;
+    _cuid = cuid;
   }
 
   const SharedHandle<Peer>& getPeer() const
   {
-    return peer;
+    return _peer;
   }
 
   void setPeer(const SharedHandle<Peer>& peer);
@@ -137,7 +172,8 @@ public:
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
+  void setBtMessageDispatcher
+  (const WeakHandle<BtMessageDispatcher>& dispatcher);
 
   void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
 

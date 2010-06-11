@@ -45,8 +45,7 @@ typedef SharedHandle<BtAllowedFastMessage> BtAllowedFastMessageHandle;
 
 class BtAllowedFastMessage : public IndexBtMessage {
 public:
-  BtAllowedFastMessage(size_t index = 0)
-    :IndexBtMessage(ID, NAME, index) {}
+  BtAllowedFastMessage(size_t index = 0);
 
   static const uint8_t ID = 17;
 

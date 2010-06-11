@@ -43,8 +43,6 @@ class SimpleBtMessage : public AbstractBtMessage {
 public:
   SimpleBtMessage(uint8_t id, const std::string& name);
 
-  virtual ~SimpleBtMessage();
-
   virtual void send();
 
   virtual unsigned char* createMessage() = 0;

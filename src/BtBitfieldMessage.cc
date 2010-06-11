@@ -49,15 +49,34 @@ namespace aria2 {
 
 const std::string BtBitfieldMessage::NAME("bitfield");
 
-void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, size_t bitfieldLength) {
-  if(this->bitfield == bitfield) {
+BtBitfieldMessage::BtBitfieldMessage():SimpleBtMessage(ID, NAME),
+                                       _bitfield(0),
+                                       _bitfieldLength(0)
+{}
+
+BtBitfieldMessage::BtBitfieldMessage
+(const unsigned char* bitfield, size_t bitfieldLength):
+  SimpleBtMessage(ID, NAME),
+  _bitfield(0),
+  _bitfieldLength(0)
+{
+  setBitfield(bitfield, bitfieldLength);
+}
+
+BtBitfieldMessage::~BtBitfieldMessage()
+{
+  delete [] _bitfield;
+}
+
+void BtBitfieldMessage::setBitfield
+(const unsigned char* bitfield, size_t bitfieldLength) {
+  if(_bitfield == bitfield) {
     return;
   }
-  delete [] this->bitfield;
-
-  this->bitfieldLength = bitfieldLength;
-  this->bitfield = new unsigned char[this->bitfieldLength];
-  memcpy(this->bitfield, bitfield, this->bitfieldLength);
+  delete [] _bitfield;
+  _bitfieldLength = bitfieldLength;
+  _bitfield = new unsigned char[_bitfieldLength];
+  memcpy(_bitfield, bitfield, _bitfieldLength);
 }
 
 BtBitfieldMessageHandle
@@ -71,12 +90,13 @@ BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
 }
 
 void BtBitfieldMessage::doReceivedAction() {
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  pieceStorage->updatePieceStats(bitfield, bitfieldLength, peer->getBitfield());
-  peer->setBitfield(bitfield, bitfieldLength);
-  if(peer->isSeeder() && pieceStorage->downloadFinished()) {
+  getPieceStorage()->updatePieceStats(_bitfield, _bitfieldLength,
+                                      getPeer()->getBitfield());
+  getPeer()->setBitfield(_bitfield, _bitfieldLength);
+  if(getPeer()->isSeeder() && getPieceStorage()->downloadFinished()) {
     throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
   }
 }
@@ -88,19 +108,19 @@ unsigned char* BtBitfieldMessage::createMessage() {
    * bitfield --- bitfield, len bytes
    * total: 5+len bytes
    */
-  const size_t msgLength = 5+bitfieldLength;
+  const size_t msgLength = 5+_bitfieldLength;
   unsigned char* msg = new unsigned char[msgLength];
-  bittorrent::createPeerMessageString(msg, msgLength, 1+bitfieldLength, ID);
-  memcpy(msg+5, bitfield, bitfieldLength);
+  bittorrent::createPeerMessageString(msg, msgLength, 1+_bitfieldLength, ID);
+  memcpy(msg+5, _bitfield, _bitfieldLength);
   return msg;
 }
 
 size_t BtBitfieldMessage::getMessageLength() {
-  return 5+bitfieldLength;
+  return 5+_bitfieldLength;
 }
 
 std::string BtBitfieldMessage::toString() const {
-  return strconcat(NAME, " ", util::toHex(bitfield, bitfieldLength));
+  return strconcat(NAME, " ", util::toHex(_bitfield, _bitfieldLength));
 }
 
 } // namespace aria2

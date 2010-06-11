@@ -45,7 +45,7 @@ typedef SharedHandle<BtHaveAllMessage> BtHaveAllMessageHandle;
 
 class BtHaveAllMessage : public ZeroBtMessage {
 public:
-  BtHaveAllMessage():ZeroBtMessage(ID, NAME) {}
+  BtHaveAllMessage();
 
   static const uint8_t ID = 14;
 

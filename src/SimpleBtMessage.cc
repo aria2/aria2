@@ -44,32 +44,32 @@ namespace aria2 {
 SimpleBtMessage::SimpleBtMessage(uint8_t id, const std::string& name):
   AbstractBtMessage(id, name) {}
 
-SimpleBtMessage::~SimpleBtMessage() {}
-
 void SimpleBtMessage::send() {
-  if(invalidate) {
+  if(isInvalidate()) {
     return;
   }
-  if(!sendPredicate() && !sendingInProgress) {
+  if(!sendPredicate() && !isSendingInProgress()) {
     return;
   }
-  if(!sendingInProgress) {
-    if(logger->info()) {
-      logger->info(MSG_SEND_PEER_MESSAGE,
-                   util::itos(cuid).c_str(),
-                   peer->ipaddr.c_str(), peer->port, toString().c_str());
+  if(!isSendingInProgress()) {
+    if(getLogger()->info()) {
+      getLogger()->info(MSG_SEND_PEER_MESSAGE,
+                        util::itos(getCuid()).c_str(),
+                        getPeer()->ipaddr.c_str(),
+                        getPeer()->port,
+                        toString().c_str());
     }
     unsigned char* msg = createMessage();
     size_t msgLength = getMessageLength();
-    if(logger->debug()) {
-      logger->debug("msglength = %lu bytes",
-                    static_cast<unsigned long>(msgLength));
+    if(getLogger()->debug()) {
+      getLogger()->debug("msglength = %lu bytes",
+                         static_cast<unsigned long>(msgLength));
     }
-    peerConnection->pushBytes(msg, msgLength);
+    getPeerConnection()->pushBytes(msg, msgLength);
   }
-  peerConnection->sendPendingData();
-  sendingInProgress = !peerConnection->sendBufferIsEmpty();
-  if(!sendingInProgress) {
+  getPeerConnection()->sendPendingData();
+  setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
+  if(!isSendingInProgress()) {
     onSendComplete();
   }
 }

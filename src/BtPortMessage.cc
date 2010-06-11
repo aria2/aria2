@@ -68,15 +68,15 @@ void BtPortMessage::doReceivedAction()
 {
   if(!_taskFactory.isNull() && !_taskQueue.isNull()) {
     if(_port == 0) {
-      if(logger->debug()) {
-        logger->debug("Ignored port 0.");
+      if(getLogger()->debug()) {
+        getLogger()->debug("Ignored port 0.");
       }
       return;
     }
     // node id is random at this point. When ping reply received, new DHTNode
     // instance created with proper node ID and is added to a routing table.
     SharedHandle<DHTNode> node(new DHTNode());
-    node->setIPAddress(peer->ipaddr);
+    node->setIPAddress(getPeer()->ipaddr);
     node->setPort(_port);
     {
       SharedHandle<DHTTask> task = _taskFactory->createPingTask(node);
@@ -84,11 +84,13 @@ void BtPortMessage::doReceivedAction()
     }
     if(_routingTable->countBucket() == 1) {
       // initiate bootstrap
-      logger->info("Dispatch node_lookup since too few buckets.");
-      _taskQueue->addImmediateTask(_taskFactory->createNodeLookupTask(_localNode->getID()));
+      getLogger()->info("Dispatch node_lookup since too few buckets.");
+      _taskQueue->addImmediateTask
+        (_taskFactory->createNodeLookupTask(_localNode->getID()));
     }
   } else {
-    logger->info("DHT port message received while localhost didn't declare support it.");
+    getLogger()->info
+      ("DHT port message received while localhost didn't declare support it.");
   }
 }
 

@@ -41,6 +41,8 @@ namespace aria2 {
 
 const std::string BtChokeMessage::NAME("choke");
 
+BtChokeMessage::BtChokeMessage():ZeroBtMessage(ID, NAME) {}
+
 SharedHandle<BtChokeMessage> BtChokeMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -49,23 +51,23 @@ SharedHandle<BtChokeMessage> BtChokeMessage::create
 
 void BtChokeMessage::doReceivedAction()
 {
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  peer->peerChoking(true);
-  dispatcher->doChokedAction();
-  requestFactory->doChokedAction();
+  getPeer()->peerChoking(true);
+  getBtMessageDispatcher()->doChokedAction();
+  getBtRequestFactory()->doChokedAction();
 }
 
 bool BtChokeMessage::sendPredicate() const
 {
-  return !peer->amChoking();
+  return !getPeer()->amChoking();
 }
 
 void BtChokeMessage::onSendComplete()
 {
-  peer->amChoking(true);
-  dispatcher->doChokingAction();
+  getPeer()->amChoking(true);
+  getBtMessageDispatcher()->doChokingAction();
 }
 
 } // namespace aria2

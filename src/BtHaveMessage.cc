@@ -42,6 +42,8 @@ namespace aria2 {
 
 const std::string BtHaveMessage::NAME("have");
 
+BtHaveMessage::BtHaveMessage(size_t index):IndexBtMessage(ID, NAME, index) {}
+
 SharedHandle<BtHaveMessage> BtHaveMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -50,12 +52,12 @@ SharedHandle<BtHaveMessage> BtHaveMessage::create
 
 void BtHaveMessage::doReceivedAction()
 {
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  peer->updateBitfield(getIndex(), 1);
-  pieceStorage->addPieceStats(getIndex());
-  if(peer->isSeeder() && pieceStorage->downloadFinished()) {
+  getPeer()->updateBitfield(getIndex(), 1);
+  getPieceStorage()->addPieceStats(getIndex());
+  if(getPeer()->isSeeder() && getPieceStorage()->downloadFinished()) {
     throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
   }
 }

@@ -40,6 +40,8 @@ namespace aria2 {
 
 const std::string BtInterestedMessage::NAME("interested");
 
+BtInterestedMessage::BtInterestedMessage():ZeroBtMessage(ID, NAME) {}
+
 SharedHandle<BtInterestedMessage> BtInterestedMessage::create
 (const unsigned char* data, size_t dataLength)
 {
@@ -48,22 +50,22 @@ SharedHandle<BtInterestedMessage> BtInterestedMessage::create
 
 void BtInterestedMessage::doReceivedAction()
 {
-  if(_metadataGetMode) {
+  if(isMetadataGetMode()) {
     return;
   }
-  peer->peerInterested(true);
-  if(!peer->amChoking()) {
+  getPeer()->peerInterested(true);
+  if(!getPeer()->amChoking()) {
     _peerStorage->executeChoke();
   }
 }
 
 bool BtInterestedMessage::sendPredicate() const
 {
-  return !peer->amInterested();
+  return !getPeer()->amInterested();
 }
 
 void BtInterestedMessage::onSendComplete() {
-  peer->amInterested(true);
+  getPeer()->amInterested(true);
 }
 
 void BtInterestedMessage::setPeerStorage

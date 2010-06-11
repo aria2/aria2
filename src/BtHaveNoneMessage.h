@@ -45,7 +45,8 @@ typedef SharedHandle<BtHaveNoneMessage> BtHaveNoneMessageHandle;
 
 class BtHaveNoneMessage : public ZeroBtMessage {
 public:
-  BtHaveNoneMessage():ZeroBtMessage(ID, NAME) {}
+  BtHaveNoneMessage();
+
   static const uint8_t ID = 15;
 
   static const std::string NAME;
