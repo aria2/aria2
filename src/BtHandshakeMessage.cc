@@ -57,44 +57,44 @@ BtHandshakeMessage::BtHandshakeMessage(const unsigned char* infoHash,
   SimpleBtMessage(ID, NAME)
 {
   init();
-  memcpy(this->infoHash, infoHash, INFO_HASH_LENGTH);
-  memcpy(this->peerId, peerId, PEER_ID_LENGTH);
+  memcpy(_infoHash, infoHash, INFO_HASH_LENGTH);
+  memcpy(_peerId, peerId, PEER_ID_LENGTH);
 }
 
 void BtHandshakeMessage::init() {
-  this->pstrlen = 19;
-  pstr = new unsigned char[PSTR_LENGTH];
-  reserved = new unsigned char[RESERVED_LENGTH];
-  infoHash = new unsigned char[INFO_HASH_LENGTH];
-  peerId = new unsigned char[PEER_ID_LENGTH];
-  memcpy(this->pstr, BT_PSTR, PSTR_LENGTH);
-  memset(this->reserved, 0, RESERVED_LENGTH);
+  _pstrlen = 19;
+  _pstr = new unsigned char[PSTR_LENGTH];
+  _reserved = new unsigned char[RESERVED_LENGTH];
+  _infoHash = new unsigned char[INFO_HASH_LENGTH];
+  _peerId = new unsigned char[PEER_ID_LENGTH];
+  memcpy(_pstr, BT_PSTR, PSTR_LENGTH);
+  memset(_reserved, 0, RESERVED_LENGTH);
   // fast extension
-  this->reserved[7] |= 0x04;
+  _reserved[7] |= 0x04;
   // extended messaging
-  this->reserved[5] |= 0x10;
+  _reserved[5] |= 0x10;
 }
 
 SharedHandle<BtHandshakeMessage>
 BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
 {
   SharedHandle<BtHandshakeMessage> message(new BtHandshakeMessage());
-  message->pstrlen = data[0];
-  memcpy(message->pstr, &data[1], PSTR_LENGTH);
-  memcpy(message->reserved, &data[20], RESERVED_LENGTH);
-  memcpy(message->infoHash, &data[28], INFO_HASH_LENGTH);
-  memcpy(message->peerId, &data[48], PEER_ID_LENGTH);
+  message->_pstrlen = data[0];
+  memcpy(message->_pstr, &data[1], PSTR_LENGTH);
+  memcpy(message->_reserved, &data[20], RESERVED_LENGTH);
+  memcpy(message->_infoHash, &data[28], INFO_HASH_LENGTH);
+  memcpy(message->_peerId, &data[48], PEER_ID_LENGTH);
   return message;
 }
 
 unsigned char* BtHandshakeMessage::createMessage()
 {
   unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
-  msg[0] = pstrlen;
-  memcpy(msg+1, pstr, PSTR_LENGTH);
-  memcpy(msg+20, reserved, RESERVED_LENGTH);
-  memcpy(msg+28, infoHash, INFO_HASH_LENGTH);
-  memcpy(msg+48, peerId, PEER_ID_LENGTH);
+  msg[0] = _pstrlen;
+  memcpy(msg+1, _pstr, PSTR_LENGTH);
+  memcpy(msg+20, _reserved, RESERVED_LENGTH);
+  memcpy(msg+28, _infoHash, INFO_HASH_LENGTH);
+  memcpy(msg+48, _peerId, PEER_ID_LENGTH);
   return msg;
 }
 
@@ -104,33 +104,33 @@ size_t BtHandshakeMessage::getMessageLength() {
 
 std::string BtHandshakeMessage::toString() const {
   return strconcat(NAME, " peerId=",
-                   util::percentEncode(peerId, PEER_ID_LENGTH),
+                   util::percentEncode(_peerId, PEER_ID_LENGTH),
                    ", reserved=",
-                   util::toHex(reserved, RESERVED_LENGTH));
+                   util::toHex(_reserved, RESERVED_LENGTH));
 }
 
 bool BtHandshakeMessage::isFastExtensionSupported() const {
-  return reserved[7]&0x04;
+  return _reserved[7]&0x04;
 }
 
 bool BtHandshakeMessage::isExtendedMessagingEnabled() const
 {
-  return reserved[5]&0x10;
+  return _reserved[5]&0x10;
 }
 
 bool BtHandshakeMessage::isDHTEnabled() const
 {
-  return reserved[7]&0x01;
+  return _reserved[7]&0x01;
 }
 
 void BtHandshakeMessage::setInfoHash(const unsigned char* infoHash)
 {
-  memcpy(this->infoHash, infoHash, INFO_HASH_LENGTH);
+  memcpy(_infoHash, infoHash, INFO_HASH_LENGTH);
 }
 
 void BtHandshakeMessage::setPeerId(const unsigned char* peerId)
 {
-  memcpy(this->peerId, peerId, PEER_ID_LENGTH);
+  memcpy(_peerId, peerId, PEER_ID_LENGTH);
 }
 
 } // namespace aria2

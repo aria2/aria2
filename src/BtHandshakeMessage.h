@@ -46,11 +46,11 @@ public:
   static const size_t RESERVED_LENGTH = 8;
   static const size_t MESSAGE_LENGTH = 68;
 private:
-  uint8_t pstrlen;
-  unsigned char* pstr;
-  unsigned char* reserved;
-  unsigned char* infoHash;
-  unsigned char* peerId;
+  uint8_t _pstrlen;
+  unsigned char* _pstr;
+  unsigned char* _reserved;
+  unsigned char* _infoHash;
+  unsigned char* _peerId;
   void init();
 public:
   BtHandshakeMessage();
@@ -64,10 +64,10 @@ public:
   create(const unsigned char* data, size_t dataLength);
 
   virtual ~BtHandshakeMessage() {
-    delete [] pstr;
-    delete [] reserved;
-    delete [] infoHash;
-    delete [] peerId;
+    delete [] _pstr;
+    delete [] _reserved;
+    delete [] _infoHash;
+    delete [] _peerId;
   }
 
   static const uint8_t ID = INT8_MAX;
@@ -91,32 +91,32 @@ public:
   void setDHTEnabled(bool enabled)
   {
     if(enabled) {
-      this->reserved[7] |= 0x01;
+      _reserved[7] |= 0x01;
     } else {
-      this->reserved[7] &= ~0x01;
+      _reserved[7] &= ~0x01;
     }
   }
 
   uint8_t getPstrlen() const {
-    return pstrlen;
+    return _pstrlen;
   }
 
   const unsigned char* getPstr() const {
-    return pstr;
+    return _pstr;
   }
 
   const unsigned char* getReserved() const {
-    return reserved;
+    return _reserved;
   }
 
   const unsigned char* getInfoHash() const {
-    return infoHash;
+    return _infoHash;
   }
 
   void setInfoHash(const unsigned char* infoHash);
 
   const unsigned char* getPeerId() const {
-    return peerId;
+    return _peerId;
   }
 
   void setPeerId(const unsigned char* peerId);
