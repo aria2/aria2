@@ -1,5 +1,11 @@
 2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variable
+	* src/AnnounceList.cc
+	* src/AnnounceList.h
+
+2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made protected member variable private. Added accessor funcs.
 	* src/AbstractSingleDiskAdaptor.cc
 	* src/AbstractSingleDiskAdaptor.h

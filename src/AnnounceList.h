@@ -46,15 +46,16 @@ class BDE;
 class AnnounceList {
 public:
 private:
-  std::deque<SharedHandle<AnnounceTier> > tiers;
-  std::deque<SharedHandle<AnnounceTier> >::iterator currentTier;
-  std::deque<std::string>::iterator currentTracker;
-  bool currentTrackerInitialized;
+  std::deque<SharedHandle<AnnounceTier> > _tiers;
+  std::deque<SharedHandle<AnnounceTier> >::iterator _currentTier;
+  std::deque<std::string>::iterator _currentTracker;
+  bool _currentTrackerInitialized;
 
   void resetIterator();
-  void setCurrentTier(const std::deque<SharedHandle<AnnounceTier> >::iterator& itr);
+  void setCurrentTier
+  (const std::deque<SharedHandle<AnnounceTier> >::iterator& itr);
 public:
-  AnnounceList():currentTrackerInitialized(false) {}
+  AnnounceList():_currentTrackerInitialized(false) {}
   AnnounceList(const BDE& announceList);
   AnnounceList(const std::deque<SharedHandle<AnnounceTier> >& tiers);
 
@@ -62,7 +63,7 @@ public:
   void reconfigure(const std::string& url);
 
   size_t countTier() const {
-    return tiers.size();
+    return _tiers.size();
   }
 
   /**
