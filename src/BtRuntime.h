@@ -42,10 +42,10 @@ namespace aria2 {
 
 class BtRuntime {
 private:
-  uint64_t uploadLengthAtStartup;
-  uint16_t port;
-  bool halt;
-  unsigned int connections;
+  uint64_t _uploadLengthAtStartup;
+  uint16_t _port;
+  bool _halt;
+  unsigned int _connections;
   bool _ready;
   // Maximum number of peers to hold connections at the same time.
   // 0 means unlimited.
@@ -58,10 +58,10 @@ private:
 
 public:
   BtRuntime():
-    uploadLengthAtStartup(0),
-    port(0),
-    halt(false),
-    connections(0),
+    _uploadLengthAtStartup(0),
+    _port(0),
+    _halt(false),
+    _connections(0),
     _ready(false),
     _maxPeers(DEFAULT_MAX_PEERS),
     _minPeers(DEFAULT_MIN_PEERS)
@@ -70,44 +70,44 @@ public:
   ~BtRuntime() {}
 
   uint64_t getUploadLengthAtStartup() const {
-    return uploadLengthAtStartup;
+    return _uploadLengthAtStartup;
   }
 
   void setUploadLengthAtStartup(uint64_t length) {
-    this->uploadLengthAtStartup = length;
+    _uploadLengthAtStartup = length;
   }
 
   void setListenPort(uint16_t port) {
-    this->port = port;
+    _port = port;
   }
 
-  uint16_t getListenPort() const { return port; }
+  uint16_t getListenPort() const { return _port; }
 
-  bool isHalt() const { return halt; }
+  bool isHalt() const { return _halt; }
 
   void setHalt(bool halt) {
-    this->halt = halt;
+    _halt = halt;
   }
 
-  unsigned int getConnections() const { return connections; }
+  unsigned int getConnections() const { return _connections; }
 
-  void increaseConnections() { connections++; }
+  void increaseConnections() { ++_connections; }
 
-  void decreaseConnections() { connections--; }
+  void decreaseConnections() { --_connections; }
 
   bool lessThanMaxPeers() const
   {
-    return _maxPeers == 0 || connections < _maxPeers;
+    return _maxPeers == 0 || _connections < _maxPeers;
   }
 
   bool lessThanMinPeers() const
   {
-    return _minPeers == 0 || connections < _minPeers;
+    return _minPeers == 0 || _connections < _minPeers;
   }
 
   bool lessThanEqMinPeers() const
   {
-    return _minPeers == 0 || connections <= _minPeers;
+    return _minPeers == 0 || _connections <= _minPeers;
   }
 
   bool ready() { return _ready; }
