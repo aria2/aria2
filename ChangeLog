@@ -1,6 +1,12 @@
 2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private. Added accessor funcs.
+	* src/AbstractDiskWriter.cc
+	* src/AbstractDiskWriter.h
+
+2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private. Added accessor funcs.
 	* src/AbstractAuthResolver.h
 	* src/DefaultAuthResolver.cc
 	* src/DefaultAuthResolver.h

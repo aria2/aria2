@@ -58,10 +58,10 @@ namespace aria2 {
 
 AbstractDiskWriter::AbstractDiskWriter(const std::string& filename):
   _filename(filename),
-  fd(-1),
+  _fd(-1),
   _readOnly(false),
   _directIOAllowed(false),
-  logger(LogFactory::getInstance()) {}
+  _logger(LogFactory::getInstance()) {}
 
 AbstractDiskWriter::~AbstractDiskWriter()
 {
@@ -79,9 +79,9 @@ void AbstractDiskWriter::openFile(uint64_t totalLength)
 
 void AbstractDiskWriter::closeFile()
 {
-  if(fd >= 0) {
-    close(fd);
-    fd = -1;
+  if(_fd >= 0) {
+    close(_fd);
+    _fd = -1;
   }
 }
 
@@ -99,7 +99,7 @@ void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
     flags |= O_RDWR;
   }
 
-  if((fd = open(_filename.c_str(), flags, OPEN_MODE)) < 0) {
+  if((_fd = open(_filename.c_str(), flags, OPEN_MODE)) < 0) {
     throw DL_ABORT_EX
       (StringFormat(EX_FILE_OPEN, _filename.c_str(), strerror(errno)).str());
   }
@@ -109,7 +109,7 @@ void AbstractDiskWriter::createFile(int addFlags)
 {
   assert(!_filename.empty());
   util::mkdirs(File(_filename).getDirname());
-  if((fd = open(_filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
+  if((_fd = open(_filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
                 OPEN_MODE)) < 0) {
     throw DL_ABORT_EX(StringFormat(EX_FILE_OPEN,
                                    _filename.c_str(), strerror(errno)).str());
@@ -121,7 +121,7 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data, size_t 
   ssize_t writtenLength = 0;
   while((size_t)writtenLength < len) {
     ssize_t ret = 0;
-    while((ret = write(fd, data+writtenLength, len-writtenLength)) == -1 && errno == EINTR);
+    while((ret = write(_fd, data+writtenLength, len-writtenLength)) == -1 && errno == EINTR);
     if(ret == -1) {
       return -1;
     }
@@ -133,13 +133,13 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data, size_t 
 ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len)
 {
   ssize_t ret = 0;
-  while((ret = read(fd, data, len)) == -1 && errno == EINTR);
+  while((ret = read(_fd, data, len)) == -1 && errno == EINTR);
   return ret;
 }
 
 void AbstractDiskWriter::seek(off_t offset)
 {
-  if(a2lseek(fd, offset, SEEK_SET) == (off_t)-1) {
+  if(a2lseek(_fd, offset, SEEK_SET) == (off_t)-1) {
     throw DL_ABORT_EX
       (StringFormat(EX_FILE_SEEK, _filename.c_str(), strerror(errno)).str());
   }
@@ -173,20 +173,20 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
 
 void AbstractDiskWriter::truncate(uint64_t length)
 {
-  if(fd == -1) {
+  if(_fd == -1) {
     throw DL_ABORT_EX("File not opened.");
   }
 #ifdef __MINGW32__
   // Since mingw32's ftruncate cannot handle over 2GB files, we use SetEndOfFile
   // instead.
-  HANDLE handle = LongToHandle(_get_osfhandle(fd));
+  HANDLE handle = LongToHandle(_get_osfhandle(_fd));
   seek(length);
   if(SetEndOfFile(handle) == 0) {
     throw DL_ABORT_EX(StringFormat("SetEndOfFile failed. cause: %s",
                                    GetLastError()).str());
   }
 #else
-  if(ftruncate(fd, length) == -1) {
+  if(ftruncate(_fd, length) == -1) {
     throw DL_ABORT_EX(StringFormat("ftruncate failed. cause: %s",
                                    strerror(errno)).str());
   }
@@ -196,10 +196,10 @@ void AbstractDiskWriter::truncate(uint64_t length)
 #ifdef HAVE_POSIX_FALLOCATE
 void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
 {
-  if(fd == -1) {
+  if(_fd == -1) {
     throw DL_ABORT_EX("File not yet opened.");
   }
-  int r = posix_fallocate(fd, offset, length);
+  int r = posix_fallocate(_fd, offset, length);
   if(r != 0) {
     throw DL_ABORT_EX(StringFormat("posix_fallocate failed. cause: %s",
                                    strerror(r)).str());
@@ -217,8 +217,8 @@ void AbstractDiskWriter::enableDirectIO()
 #ifdef ENABLE_DIRECT_IO
   if(_directIOAllowed) {
     int flg;
-    while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
-    while(fcntl(fd, F_SETFL, flg|O_DIRECT) == -1 && errno == EINTR);
+    while((flg = fcntl(_fd, F_GETFL)) == -1 && errno == EINTR);
+    while(fcntl(_fd, F_SETFL, flg|O_DIRECT) == -1 && errno == EINTR);
   }
 #endif // ENABLE_DIRECT_IO
 }
@@ -227,8 +227,8 @@ void AbstractDiskWriter::disableDirectIO()
 {
 #ifdef ENABLE_DIRECT_IO
   int flg;
-  while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
-  while(fcntl(fd, F_SETFL, flg&(~O_DIRECT)) == -1 && errno == EINTR);
+  while((flg = fcntl(_fd, F_GETFL)) == -1 && errno == EINTR);
+  while(fcntl(_fd, F_SETFL, flg&(~O_DIRECT)) == -1 && errno == EINTR);
 #endif // ENABLE_DIRECT_IO
 }
 

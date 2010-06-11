@@ -43,23 +43,22 @@ namespace aria2 {
 class Logger;
 
 class AbstractDiskWriter : public DiskWriter {
-protected:
+private:
   std::string _filename;
-  int fd;
+  int _fd;
 
   bool _readOnly;
 
   bool _directIOAllowed;
 
-  Logger* logger;
+  Logger* _logger;
 
-  void createFile(int addFlags = 0);
-
-private:
   ssize_t writeDataInternal(const unsigned char* data, size_t len);
   ssize_t readDataInternal(unsigned char* data, size_t len);
 
   void seek(off_t offset);
+protected:
+  void createFile(int addFlags = 0);
 public:
   AbstractDiskWriter(const std::string& filename);
   virtual ~AbstractDiskWriter();
