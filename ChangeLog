@@ -1,6 +1,15 @@
 2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private. Added accessor funcs.
+	* src/AbstractAuthResolver.h
+	* src/DefaultAuthResolver.cc
+	* src/DefaultAuthResolver.h
+	* src/NetrcAuthResolver.cc
+	* src/NetrcAuthResolver.h
+
+2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private. Added accessor funcs.
 	* src/AbstractBtMessage.cc
 	* src/AbstractBtMessage.h
 	* src/BtAllowedFastMessage.cc

@@ -41,9 +41,8 @@ namespace aria2 {
 
 class DefaultAuthResolver : public AbstractAuthResolver {
 public:
-  virtual ~DefaultAuthResolver();
-
-  virtual SharedHandle<AuthConfig> resolveAuthConfig(const std::string& hostname);
+  virtual SharedHandle<AuthConfig> resolveAuthConfig
+  (const std::string& hostname);
 };
 
 typedef SharedHandle<DefaultAuthResolver> DefaultAuthResolverHandle;

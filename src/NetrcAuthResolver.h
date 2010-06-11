@@ -47,13 +47,13 @@ private:
 
   bool _ignoreDefault;
 
-  SharedHandle<AuthConfig> findNetrcAuthenticator(const std::string& hostname) const;
+  SharedHandle<AuthConfig> findNetrcAuthenticator
+  (const std::string& hostname) const;
 public:
   NetrcAuthResolver();
 
-  virtual ~NetrcAuthResolver() {}
-
-  virtual SharedHandle<AuthConfig> resolveAuthConfig(const std::string& hostname);
+  virtual SharedHandle<AuthConfig> resolveAuthConfig
+  (const std::string& hostname);
 
   void setNetrc(const SharedHandle<Netrc>& netrc);
 

@@ -40,12 +40,10 @@
 namespace aria2 {
 
 class AbstractAuthResolver : public AuthResolver {
-protected:
-
+private:
   SharedHandle<AuthConfig> _userDefinedAuthConfig;
 
   SharedHandle<AuthConfig> _defaultAuthConfig;
-
 public:
   AbstractAuthResolver();
 

@@ -37,14 +37,13 @@
 
 namespace aria2 {
 
-DefaultAuthResolver::~DefaultAuthResolver() {}
-
-AuthConfigHandle DefaultAuthResolver::resolveAuthConfig(const std::string& hostname)
+AuthConfigHandle DefaultAuthResolver::resolveAuthConfig
+(const std::string& hostname)
 {
-  if(_userDefinedAuthConfig.isNull()) {
-    return _defaultAuthConfig;
+  if(getUserDefinedAuthConfig().isNull()) {
+    return getDefaultAuthConfig();
   } else {
-    return _userDefinedAuthConfig;
+    return getUserDefinedAuthConfig();
   }
 }
 
