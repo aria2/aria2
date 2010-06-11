@@ -1,6 +1,13 @@
 2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variables
+	* src/BtBitfieldMessageValidator.h
+	* src/BtHandshakeMessageValidator.h
+	* src/BtPieceMessageValidator.h
+
+2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed member variables
 	* src/BtAbortOutstandingRequestEvent.h
 	* src/BtCancelSendingPieceEvent.h
 

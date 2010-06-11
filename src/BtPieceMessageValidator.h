@@ -43,21 +43,21 @@ namespace aria2 {
 
 class BtPieceMessageValidator : public BtMessageValidator {
 private:
-  const BtPieceMessage* message;
-  size_t numPiece;
-  size_t pieceLength;
+  const BtPieceMessage* _message;
+  size_t _numPiece;
+  size_t _pieceLength;
 public:
   BtPieceMessageValidator(const BtPieceMessage* message,
                           size_t numPiece,
                           size_t pieceLength):
-    message(message),
-    numPiece(numPiece),
-    pieceLength(pieceLength) {}
+    _message(message),
+    _numPiece(numPiece),
+    _pieceLength(pieceLength) {}
 
   virtual void validate()
   {
-    bittorrent::checkIndex(message->getIndex(), numPiece);
-    bittorrent::checkBegin(message->getBegin(), pieceLength);
+    bittorrent::checkIndex(_message->getIndex(), _numPiece);
+    bittorrent::checkBegin(_message->getBegin(), _pieceLength);
   }
 };
 

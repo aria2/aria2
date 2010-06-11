@@ -42,38 +42,40 @@
 #include "BtHandshakeMessage.h"
 #include "util.h"
 #include "StringFormat.h"
+#include "BtConstants.h"
 
 namespace aria2 {
 
 class BtHandshakeMessageValidator : public BtMessageValidator {
 private:
-  const BtHandshakeMessage* message;
-  unsigned char infoHash[20];
+  const BtHandshakeMessage* _message;
+  unsigned char _infoHash[INFO_HASH_LENGTH];
 public:
   BtHandshakeMessageValidator(const BtHandshakeMessage* message,
                               const unsigned char* infoHash):
-    message(message)
+    _message(message)
   {
-    memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
+    memcpy(_infoHash, infoHash, sizeof(_infoHash));
   }
 
   virtual void validate()
   {
-    if(message->getPstrlen() != 19) {
+    if(_message->getPstrlen() != 19) {
       throw DL_ABORT_EX(StringFormat("invalid handshake pstrlen=%u",
-                                     message->getPstrlen()).str());
+                                     _message->getPstrlen()).str());
     }
-    if(memcmp(BtHandshakeMessage::BT_PSTR, message->getPstr(), 19) != 0) {
+    if(memcmp(BtHandshakeMessage::BT_PSTR, _message->getPstr(), 19) != 0) {
       throw DL_ABORT_EX
         (StringFormat("invalid handshake pstr=%s",
                       util::percentEncode
-                      (message->getPstr(), 19).c_str()).str());
+                      (_message->getPstr(), 19).c_str()).str());
     }
-    if(memcmp(infoHash, message->getInfoHash(), 20) != 0) {
+    if(memcmp(_infoHash, _message->getInfoHash(), sizeof(_infoHash)) != 0) {
       throw DL_ABORT_EX
         (StringFormat("invalid handshake info hash: expected:%s, actual:%s",
-                      util::toHex(infoHash, 20).c_str(),
-                      util::toHex(message->getInfoHash(), 20).c_str()).str());
+                      util::toHex(_infoHash, sizeof(_infoHash)).c_str(),
+                      util::toHex(_message->getInfoHash(),
+                                  INFO_HASH_LENGTH).c_str()).str());
     }
   }
 };
