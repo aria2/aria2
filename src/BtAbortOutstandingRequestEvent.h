@@ -43,12 +43,12 @@ namespace aria2 {
 
 class BtAbortOutstandingRequestEvent {
 private:
-  SharedHandle<Piece> piece;
+  SharedHandle<Piece> _piece;
 public:
   BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece):
-    piece(piece) {}
+    _piece(piece) {}
 
-  const SharedHandle<Piece>& getPiece() const { return piece; }
+  const SharedHandle<Piece>& getPiece() const { return _piece; }
 };
 
 } // namespace aria2
