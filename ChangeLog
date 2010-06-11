@@ -1,6 +1,12 @@
 2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variable
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+
+2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed member variable
 	* src/AsyncNameResolver.cc
 	* src/AsyncNameResolver.h
 

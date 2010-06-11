@@ -45,21 +45,21 @@ namespace aria2 {
 
 class BitfieldMan {
 private:
-  size_t blockLength;
-  uint64_t totalLength;
-  size_t bitfieldLength;
-  size_t blocks;
-  bool filterEnabled;
-  unsigned char* bitfield;
-  unsigned char* useBitfield;
-  unsigned char* filterBitfield;
+  size_t _blockLength;
+  uint64_t _totalLength;
+  size_t _bitfieldLength;
+  size_t _blocks;
+  bool _filterEnabled;
+  unsigned char* _bitfield;
+  unsigned char* _useBitfield;
+  unsigned char* _filterBitfield;
 
   // for caching
-  size_t cachedNumMissingBlock;
-  size_t cachedNumFilteredBlock;
-  uint64_t cachedCompletedLength;
-  uint64_t cachedFilteredComletedLength;
-  uint64_t cachedFilteredTotalLength;
+  size_t _cachedNumMissingBlock;
+  size_t _cachedNumFilteredBlock;
+  uint64_t _cachedCompletedLength;
+  uint64_t _cachedFilteredCompletedLength;
+  uint64_t _cachedFilteredTotalLength;
 
   bool setBitInternal(unsigned char* bitfield, size_t index, bool on);
   bool setFilterBit(size_t index);
@@ -69,7 +69,7 @@ private:
 
   uint64_t getCompletedLength(bool useFilter) const;
 
-  // If filterBitfield is 0, allocate bitfieldLength bytes to it and
+  // If _filterBitfield is 0, allocate _bitfieldLength bytes to it and
   // set 0 to all bytes.
   void ensureFilterBitfield();
 public:
@@ -102,19 +102,19 @@ public:
 
   size_t getBlockLength() const
   {
-    return blockLength;
+    return _blockLength;
   }
 
   size_t getLastBlockLength() const
   {
-    return totalLength-blockLength*(blocks-1);
+    return _totalLength-_blockLength*(_blocks-1);
   }
 
   size_t getBlockLength(size_t index) const;
 
-  uint64_t getTotalLength() const { return totalLength; }
+  uint64_t getTotalLength() const { return _totalLength; }
 
-  // Returns true iff there is a bit index which is set in bitfield,
+  // Returns true iff there is a bit index which is set in _bitfield,
   // but not set in this object.
   //
   // affected by filter
@@ -181,23 +181,23 @@ public:
 
   const unsigned char* getBitfield() const
   {
-    return bitfield;
+    return _bitfield;
   }
 
   size_t getBitfieldLength() const
   {
-    return bitfieldLength;
+    return _bitfieldLength;
   }
 
   // affected by filter
   size_t countFilteredBlock() const
   {
-    return cachedNumFilteredBlock;
+    return _cachedNumFilteredBlock;
   }
 
   size_t countBlock() const
   {
-    return blocks;
+    return _blocks;
   }
 
   // affected by filter
@@ -205,7 +205,7 @@ public:
 
   size_t getMaxIndex() const
   {
-    return blocks-1;
+    return _blocks-1;
   }
 
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
@@ -228,13 +228,13 @@ public:
   void disableFilter();
   bool isFilterEnabled() const
   {
-    return filterEnabled;
+    return _filterEnabled;
   }
 
   // affected by filter
   uint64_t getFilteredTotalLength() const
   {
-    return cachedFilteredTotalLength;
+    return _cachedFilteredTotalLength;
   }
 
   // affected by filter
@@ -242,7 +242,7 @@ public:
 
   uint64_t getCompletedLength() const
   {
-    return cachedCompletedLength;
+    return _cachedCompletedLength;
   }
 
   uint64_t getCompletedLengthNow() const;
@@ -250,7 +250,7 @@ public:
   // affected by filter
   uint64_t getFilteredCompletedLength() const
   {
-    return cachedFilteredComletedLength;
+    return _cachedFilteredCompletedLength;
   }
 
   // affected by filter
@@ -270,7 +270,7 @@ public:
 
   const unsigned char* getFilterBitfield() const
   {
-    return filterBitfield;
+    return _filterBitfield;
   }
 };
 
