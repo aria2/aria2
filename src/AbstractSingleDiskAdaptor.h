@@ -43,9 +43,9 @@ class DiskWriter;
 class FileAllocationIterator;
 
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
-protected:
-  SharedHandle<DiskWriter> diskWriter;
-  uint64_t totalLength;
+private:
+  SharedHandle<DiskWriter> _diskWriter;
+  uint64_t _totalLength;
   bool _readOnly;
 public:
   AbstractSingleDiskAdaptor();
@@ -93,14 +93,14 @@ public:
 
   const SharedHandle<DiskWriter>& getDiskWriter() const
   {
-    return diskWriter;
+    return _diskWriter;
   }
 
   void setTotalLength(const uint64_t& totalLength);
 
   uint64_t getTotalLength() const
   {
-    return totalLength;
+    return _totalLength;
   }
 };
 

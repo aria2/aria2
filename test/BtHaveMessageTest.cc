@@ -8,6 +8,7 @@
 #include "Peer.h"
 #include "MockPieceStorage.h"
 #include "DlAbortEx.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

@@ -45,8 +45,8 @@ namespace aria2 {
 
 MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
   _diskAdaptor(diskAdaptor),
-  _entries(_diskAdaptor->diskWriterEntries.begin(),
-           _diskAdaptor->diskWriterEntries.end()),
+  _entries(_diskAdaptor->_diskWriterEntries.begin(),
+           _diskAdaptor->_diskWriterEntries.end()),
   _offset(0)
 {}
 

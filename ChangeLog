@@ -1,6 +1,23 @@
 2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private. Added accessor funcs.
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/AbstractSingleDiskAdaptor.h
+	* src/DirectDiskAdaptor.cc
+	* src/DirectDiskAdaptor.h
+	* src/DiskAdaptor.cc
+	* src/DiskAdaptor.h
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+	* src/MultiFileAllocationIterator.cc
+	* src/MultiFileAllocationIterator.h
+	* test/BtBitfieldMessageTest.cc
+	* test/BtHaveAllMessageTest.cc
+	* test/BtHaveMessageTest.cc
+
+2010-06-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private. Added accessor funcs.
 	* src/AbstractDiskWriter.cc
 	* src/AbstractDiskWriter.h
 

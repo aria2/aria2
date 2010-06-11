@@ -49,15 +49,20 @@ class Logger;
 class FileAllocationIterator;
 
 class DiskAdaptor:public BinaryStream {
-protected:
-  std::vector<SharedHandle<FileEntry> > fileEntries;
+private:
+  std::vector<SharedHandle<FileEntry> > _fileEntries;
 #ifdef HAVE_POSIX_FALLOCATE
   bool _fallocate;
 #endif // HAVE_POSIX_FALLOCATE
-  Logger* logger;
+  Logger* _logger;
+protected:
+  Logger* getLogger() const
+  {
+    return _logger;
+  }
 public:
   DiskAdaptor();
-  virtual ~DiskAdaptor();
+  virtual ~DiskAdaptor() {}
 
   virtual void openFile() = 0;
 
@@ -74,12 +79,12 @@ public:
   template<typename InputIterator>
   void setFileEntries(InputIterator first, InputIterator last)
   {
-    fileEntries.assign(first, last);
+    _fileEntries.assign(first, last);
   }
 
   const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
   {
-    return fileEntries;
+    return _fileEntries;
   }
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;

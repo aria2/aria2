@@ -41,9 +41,6 @@ namespace aria2 {
 
 class DirectDiskAdaptor : public AbstractSingleDiskAdaptor {
 public:
-  DirectDiskAdaptor() {};
-  virtual ~DirectDiskAdaptor() {};
-
   virtual const std::string& getFilePath();
 
   virtual size_t utime(const Time& actime, const Time& modtime);

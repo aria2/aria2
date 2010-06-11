@@ -43,8 +43,6 @@ DiskAdaptor::DiskAdaptor():
 #ifdef HAVE_POSIX_FALLOCATE
   _fallocate(false),
 #endif // HAVE_POSIX_FALLOCATE
-  logger(LogFactory::getInstance()) {}
-
-DiskAdaptor::~DiskAdaptor() {}
+  _logger(LogFactory::getInstance()) {}
 
 } // namespace aria2

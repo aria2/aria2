@@ -39,42 +39,45 @@
 # include "FallocFileAllocationIterator.h"
 #endif // HAVE_POSIX_FALLOCATE
 #include "DiskWriter.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
 AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor():
-  totalLength(0), _readOnly(false) {}
+  _totalLength(0), _readOnly(false) {}
 
 AbstractSingleDiskAdaptor::~AbstractSingleDiskAdaptor() {}
 
 void AbstractSingleDiskAdaptor::initAndOpenFile()
 {
-  diskWriter->initAndOpenFile(totalLength);
+  _diskWriter->initAndOpenFile(_totalLength);
 }
 
 void AbstractSingleDiskAdaptor::openFile()
 {
-  diskWriter->openFile(totalLength);
+  _diskWriter->openFile(_totalLength);
 }
 
 void AbstractSingleDiskAdaptor::closeFile()
 {
-  diskWriter->closeFile();
+  _diskWriter->closeFile();
 }
 
 void AbstractSingleDiskAdaptor::openExistingFile()
 {
-  diskWriter->openExistingFile(totalLength);
+  _diskWriter->openExistingFile(_totalLength);
 }
 
-void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, size_t len, off_t offset)
+void AbstractSingleDiskAdaptor::writeData
+(const unsigned char* data, size_t len, off_t offset)
 {
-  diskWriter->writeData(data, len, offset);
+  _diskWriter->writeData(data, len, offset);
 }
 
-ssize_t AbstractSingleDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset)
+ssize_t AbstractSingleDiskAdaptor::readData
+(unsigned char* data, size_t len, off_t offset)
 {
-  return diskWriter->readData(data, len, offset);
+  return _diskWriter->readData(data, len, offset);
 }
 
 bool AbstractSingleDiskAdaptor::fileExists()
@@ -89,21 +92,24 @@ uint64_t AbstractSingleDiskAdaptor::size()
 
 void AbstractSingleDiskAdaptor::truncate(uint64_t length)
 {
-  diskWriter->truncate(length);
+  _diskWriter->truncate(length);
 }
 
-FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
+FileAllocationIteratorHandle
+AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
 #ifdef HAVE_POSIX_FALLOCATE
-  if(_fallocate) {
+  if(doesFallocate()) {
     SharedHandle<FallocFileAllocationIterator> h
-      (new FallocFileAllocationIterator(diskWriter.get(), size(), totalLength));
+      (new FallocFileAllocationIterator
+       (_diskWriter.get(), size() ,_totalLength));
     return h;
   } else
 #endif // HAVE_POSIX_FALLOCATE
     {
       SingleFileAllocationIteratorHandle h
-        (new SingleFileAllocationIterator(diskWriter.get(),size(),totalLength));
+        (new SingleFileAllocationIterator
+         (_diskWriter.get(), size(), _totalLength));
       h->init();
       return h;
     }
@@ -111,41 +117,42 @@ FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
 
 void AbstractSingleDiskAdaptor::enableDirectIO()
 {
-  diskWriter->enableDirectIO();
+  _diskWriter->enableDirectIO();
 }
 
 void AbstractSingleDiskAdaptor::disableDirectIO()
 {
-  diskWriter->disableDirectIO();
+  _diskWriter->disableDirectIO();
 }
 
 void AbstractSingleDiskAdaptor::enableReadOnly()
 {
-  diskWriter->enableReadOnly();
+  _diskWriter->enableReadOnly();
   _readOnly = true;
 }
 
 void AbstractSingleDiskAdaptor::disableReadOnly()
 {
-  diskWriter->disableReadOnly();
+  _diskWriter->disableReadOnly();
   _readOnly = false;
 }
 
 void AbstractSingleDiskAdaptor::cutTrailingGarbage()
 {
-  if(File(getFilePath()).size() > totalLength) {
-    diskWriter->truncate(totalLength);
+  if(File(getFilePath()).size() > _totalLength) {
+    _diskWriter->truncate(_totalLength);
   }
 }
   
-void AbstractSingleDiskAdaptor::setDiskWriter(const DiskWriterHandle& diskWriter)
+void AbstractSingleDiskAdaptor::setDiskWriter
+(const DiskWriterHandle& diskWriter)
 {
-  this->diskWriter = diskWriter;
+  _diskWriter = diskWriter;
 }
 
 void AbstractSingleDiskAdaptor::setTotalLength(const uint64_t& totalLength)
 {
-  this->totalLength = totalLength;
+  _totalLength = totalLength;
 }
 
 } // namespace aria2

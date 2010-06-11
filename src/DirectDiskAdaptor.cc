@@ -40,7 +40,7 @@ namespace aria2 {
 
 const std::string& DirectDiskAdaptor::getFilePath()
 {
-  return fileEntries.front()->getPath();
+  return getFileEntries().front()->getPath();
 }
 
 size_t DirectDiskAdaptor::utime(const Time& actime, const Time& modtime)

@@ -45,15 +45,13 @@ class DiskWriter;
 
 class DiskWriterEntry {
 private:
-  SharedHandle<FileEntry> fileEntry;
-  SharedHandle<DiskWriter> diskWriter;
+  SharedHandle<FileEntry> _fileEntry;
+  SharedHandle<DiskWriter> _diskWriter;
   bool _open;
   bool _directIO;
   bool _needsFileAllocation;
 public:
   DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry);
-
-  ~DiskWriterEntry();
 
   const std::string& getFilePath() const;
 
@@ -76,14 +74,14 @@ public:
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
-    return fileEntry;
+    return _fileEntry;
   }
 
   void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 
   const SharedHandle<DiskWriter>& getDiskWriter() const
   {
-    return diskWriter;
+    return _diskWriter;
   }
 
   bool operator<(const DiskWriterEntry& entry) const;
@@ -117,8 +115,8 @@ typedef std::vector<DiskWriterEntryHandle> DiskWriterEntries;
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
 private:
-  size_t pieceLength;
-  DiskWriterEntries diskWriterEntries;
+  size_t _pieceLength;
+  DiskWriterEntries _diskWriterEntries;
 
   std::vector<SharedHandle<DiskWriterEntry> > _openedDiskWriterEntries;
 
@@ -139,8 +137,6 @@ private:
 
 public:
   MultiDiskAdaptor();
-
-  virtual ~MultiDiskAdaptor();
 
   virtual void initAndOpenFile();
 
@@ -171,12 +167,13 @@ public:
 
   virtual bool isReadOnlyEnabled() const { return _readOnly; }
 
-  void setPieceLength(size_t pieceLength) {
-    this->pieceLength = pieceLength;
+  void setPieceLength(size_t pieceLength)
+  {
+    _pieceLength = pieceLength;
   }
 
   size_t getPieceLength() const {
-    return pieceLength;
+    return _pieceLength;
   }
 
   void allowDirectIO()
@@ -193,7 +190,7 @@ public:
   const std::vector<SharedHandle<DiskWriterEntry> >&
   getDiskWriterEntries() const
   {
-    return diskWriterEntries;
+    return _diskWriterEntries;
   }
 
 };
