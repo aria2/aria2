@@ -1,5 +1,11 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variables.
+	* src/File.cc
+	* src/File.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made protected member variable private. Added accessor funcs.
 	* src/BtPostDownloadHandler.cc
 	* src/DownloadHandler.h
