@@ -55,10 +55,10 @@ class MessageDigestContext;
 
 class Piece {
 private:
-  size_t index;
-  size_t length;
+  size_t _index;
+  size_t _length;
   size_t _blockLength;
-  BitfieldMan* bitfield;
+  BitfieldMan* _bitfield;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
@@ -86,12 +86,12 @@ public:
   
   bool operator==(const Piece& piece) const
   {
-    return index == piece.index;
+    return _index == piece._index;
   }
 
   bool operator<(const Piece& piece) const
   {
-    return index < piece.index;
+    return _index < piece._index;
   }
 
   // TODO This function only used by unit tests
@@ -128,13 +128,13 @@ public:
 
   size_t getBlockLength() const;
 
-  size_t getIndex() const { return index; }
+  size_t getIndex() const { return _index; }
 
-  void setIndex(size_t index) { this->index = index; }
+  void setIndex(size_t index) { _index = index; }
 
-  size_t getLength() const { return length; }
+  size_t getLength() const { return _length; }
 
-  void setLength(size_t index) { this->length = length; }
+  void setLength(size_t length) { _length = length; }
 
   const unsigned char* getBitfield() const;
 
