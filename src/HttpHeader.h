@@ -50,7 +50,7 @@ class Range;
 
 class HttpHeader {
 private:
-  std::multimap<std::string, std::string> table;
+  std::multimap<std::string, std::string> _table;
 
   // for HTTP response header only
   // response status, e.g. "200"
@@ -107,7 +107,7 @@ public:
 
   void fill(std::istream& in);
 
-  // Clears table. _responseStatus and _version are unchanged.
+  // Clears _table. _responseStatus and _version are unchanged.
   void clearField();
 
   static const std::string LOCATION;

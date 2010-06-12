@@ -1,5 +1,11 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variables.
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed member variables. Removed unused member variable.
 	* src/AbstractProxyRequestCommand.cc
 	* src/FtpInitiateConnectionCommand.cc
