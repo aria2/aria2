@@ -51,7 +51,6 @@
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory():
-  cuid(0),
   _logger(LogFactory::getInstance())
 {
   if(_logger->debug()) {
@@ -68,7 +67,7 @@ DefaultBtRequestFactory::~DefaultBtRequestFactory()
 
 void DefaultBtRequestFactory::addTargetPiece(const SharedHandle<Piece>& piece)
 {
-  pieces.push_back(piece);
+  _pieces.push_back(piece);
 }
 
 class AbortCompletedPieceRequest
@@ -88,17 +87,19 @@ public:
 };
 
 void DefaultBtRequestFactory::removeCompletedPiece() {
-  std::for_each(pieces.begin(), pieces.end(),
-                AbortCompletedPieceRequest(dispatcher));
-  pieces.erase(std::remove_if(pieces.begin(), pieces.end(),
+  std::for_each(_pieces.begin(), _pieces.end(),
+                AbortCompletedPieceRequest(_dispatcher));
+  _pieces.erase(std::remove_if(_pieces.begin(), _pieces.end(),
                               mem_fun_sh(&Piece::pieceComplete)),
-               pieces.end());
+               _pieces.end());
 }
 
-void DefaultBtRequestFactory::removeTargetPiece(const SharedHandle<Piece>& piece) {
-  pieces.erase(std::remove(pieces.begin(), pieces.end(), piece),
-               pieces.end());
-  dispatcher->doAbortOutstandingRequestAction(piece);
+void DefaultBtRequestFactory::removeTargetPiece
+(const SharedHandle<Piece>& piece)
+{
+  _pieces.erase(std::remove(_pieces.begin(), _pieces.end(), piece),
+               _pieces.end());
+  _dispatcher->doAbortOutstandingRequestAction(piece);
   _pieceStorage->cancelPiece(piece);
 }
 
@@ -134,20 +135,20 @@ public:
 
 void DefaultBtRequestFactory::doChokedAction()
 {
-  std::for_each(pieces.begin(), pieces.end(),
-                ProcessChokedPiece(peer, _pieceStorage));
-  pieces.erase(std::remove_if(pieces.begin(), pieces.end(),
-                              FindChokedPiece(peer)),
-               pieces.end());
+  std::for_each(_pieces.begin(), _pieces.end(),
+                ProcessChokedPiece(_peer, _pieceStorage));
+  _pieces.erase(std::remove_if(_pieces.begin(), _pieces.end(),
+                              FindChokedPiece(_peer)),
+               _pieces.end());
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin(),
-        eoi = pieces.end(); itr != eoi; ++itr) {
-    dispatcher->doAbortOutstandingRequestAction(*itr);
+  for(std::deque<SharedHandle<Piece> >::iterator itr = _pieces.begin(),
+        eoi = _pieces.end(); itr != eoi; ++itr) {
+    _dispatcher->doAbortOutstandingRequestAction(*itr);
     _pieceStorage->cancelPiece(*itr);
   }
-  pieces.clear();
+  _pieces.clear();
 }
 
 void DefaultBtRequestFactory::createRequestMessages
@@ -159,8 +160,8 @@ void DefaultBtRequestFactory::createRequestMessages
   size_t getnum = max-requests.size();
   std::vector<size_t> blockIndexes;
   blockIndexes.reserve(getnum);
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin(),
-        eoi = pieces.end(); itr != eoi && getnum; ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = _pieces.begin(),
+        eoi = _pieces.end(); itr != eoi && getnum; ++itr) {
     SharedHandle<Piece>& piece = *itr;
     if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
       getnum -= blockIndexes.size();
@@ -174,7 +175,7 @@ void DefaultBtRequestFactory::createRequestMessages
                          (*i));
         }
         requests.push_back
-          (messageFactory->createRequestMessage(piece, *i));
+          (_messageFactory->createRequestMessage(piece, *i));
       }
       blockIndexes.clear();
     }
@@ -184,8 +185,8 @@ void DefaultBtRequestFactory::createRequestMessages
 void DefaultBtRequestFactory::createRequestMessagesOnEndGame
 (std::vector<SharedHandle<BtMessage> >& requests, size_t max)
 {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces.begin(),
-        eoi = pieces.end(); itr != eoi && requests.size() < max; ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = _pieces.begin(),
+        eoi = _pieces.end(); itr != eoi && requests.size() < max; ++itr) {
     SharedHandle<Piece>& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
     array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
@@ -209,7 +210,7 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
           eoi2 = missingBlockIndexes.end();
         bitr != eoi2 && requests.size() < max; ++bitr) {
       const size_t& blockIndex = *bitr;
-      if(!dispatcher->isOutstandingRequest(piece->getIndex(),
+      if(!_dispatcher->isOutstandingRequest(piece->getIndex(),
                                            blockIndex)) {
         if(_logger->debug()) {
           _logger->debug("Creating RequestMessage index=%u, begin=%u,"
@@ -218,7 +219,8 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
                          blockIndex*piece->getBlockLength(),
                          blockIndex);
         }
-        requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
+        requests.push_back(_messageFactory->createRequestMessage
+                           (piece, blockIndex));
       }
     }
   }
@@ -244,14 +246,14 @@ public:
 
 size_t DefaultBtRequestFactory::countMissingBlock()
 {
-  return std::for_each(pieces.begin(), pieces.end(),
+  return std::for_each(_pieces.begin(), _pieces.end(),
                        CountMissingBlock()).getNumMissingBlock();
 }
 
 void DefaultBtRequestFactory::getTargetPieceIndexes
 (std::vector<size_t>& indexes) const
 {
-  std::transform(pieces.begin(), pieces.end(), std::back_inserter(indexes),
+  std::transform(_pieces.begin(), _pieces.end(), std::back_inserter(indexes),
                  mem_fun_sh(&Piece::getIndex));
 }
 
@@ -263,17 +265,19 @@ void DefaultBtRequestFactory::setPieceStorage
 
 void DefaultBtRequestFactory::setPeer(const SharedHandle<Peer>& peer)
 {
-  this->peer = peer;
+  _peer = peer;
 }
 
-void DefaultBtRequestFactory::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
+void DefaultBtRequestFactory::setBtMessageDispatcher
+(const WeakHandle<BtMessageDispatcher>& dispatcher)
 {
-  this->dispatcher = dispatcher;
+  _dispatcher = dispatcher;
 }
 
-void DefaultBtRequestFactory::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+void DefaultBtRequestFactory::setBtMessageFactory
+(const WeakHandle<BtMessageFactory>& factory)
 {
-  this->messageFactory = factory;
+  _messageFactory = factory;
 }
 
 } // namespace aria2

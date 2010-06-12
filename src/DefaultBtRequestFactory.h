@@ -52,12 +52,11 @@ class Logger;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
-  cuid_t cuid;
   SharedHandle<PieceStorage> _pieceStorage;
-  SharedHandle<Peer> peer;
-  WeakHandle<BtMessageDispatcher> dispatcher;
-  WeakHandle<BtMessageFactory> messageFactory;
-  std::deque<SharedHandle<Piece> > pieces;
+  SharedHandle<Peer> _peer;
+  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageFactory> _messageFactory;
+  std::deque<SharedHandle<Piece> > _pieces;
   Logger* _logger;
 public:
   DefaultBtRequestFactory();
@@ -71,7 +70,7 @@ public:
   virtual void removeAllTargetPiece();
 
   virtual size_t countTargetPiece() {
-    return pieces.size();
+    return _pieces.size();
   }
 
   virtual size_t countMissingBlock();
@@ -90,19 +89,15 @@ public:
 
   std::deque<SharedHandle<Piece> >& getTargetPieces()
   {
-    return pieces;
-  }
-
-  void setCuid(cuid_t cuid)
-  {
-    this->cuid = cuid;
+    return _pieces;
   }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
   void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
+  void setBtMessageDispatcher
+  (const WeakHandle<BtMessageDispatcher>& dispatcher);
 
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 };

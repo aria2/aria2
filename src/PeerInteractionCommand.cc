@@ -168,7 +168,6 @@ PeerInteractionCommand::PeerInteractionCommand
 
   SharedHandle<DefaultBtRequestFactory> reqFactory
     (new DefaultBtRequestFactory());
-  reqFactory->setCuid(cuid);
   reqFactory->setPeer(getPeer());
   reqFactory->setPieceStorage(pieceStorage);
   reqFactory->setBtMessageDispatcher(dispatcher);
