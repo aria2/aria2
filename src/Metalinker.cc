@@ -42,7 +42,8 @@ Metalinker::Metalinker() {}
 
 Metalinker::~Metalinker() {}
 
-class EntryQuery:public std::unary_function<SharedHandle<MetalinkEntry>, bool> {
+class EntryQuery:
+    public std::unary_function<SharedHandle<MetalinkEntry>, bool> {
 private:
   std::string version;
   std::string language;
@@ -81,7 +82,7 @@ void Metalinker::queryEntry
  const std::string& language,
  const std::string& os) const
 {
-  std::remove_copy_if(entries.begin(), entries.end(),
+  std::remove_copy_if(_entries.begin(), _entries.end(),
                       std::back_inserter(queryResult),
                       std::not1(EntryQuery(version, language, os)));
 }

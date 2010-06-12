@@ -1,5 +1,15 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made public member variable in Metalinker private
+	* src/MetalinkParserController.cc
+	* src/Metalinker.cc
+	* src/Metalinker.h
+	* test/MetalinkParserControllerTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/MetalinkerTest.cc
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed member variables
 	* src/SharedHandle.h
 

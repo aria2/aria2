@@ -35,8 +35,8 @@ void MetalinkerTest::testQueryEntry() {
   entry2->version = "0.5.1";
   entry2->languages.push_back("ja-JP");
   entry2->oses.push_back("Linux-m68k");
-  metalinker->entries.push_back(entry1);
-  metalinker->entries.push_back(entry2);
+  metalinker->addEntry(entry1);
+  metalinker->addEntry(entry2);
 
   std::string version;
   std::string language;

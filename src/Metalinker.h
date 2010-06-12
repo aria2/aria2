@@ -47,15 +47,15 @@ namespace aria2 {
 class MetalinkEntry;
 
 class Metalinker {
-public:
-  std::vector<SharedHandle<MetalinkEntry> > entries;
+private:
+  std::vector<SharedHandle<MetalinkEntry> > _entries;
 public:
   Metalinker();
   ~Metalinker();
 
   Metalinker& operator=(const Metalinker& metalinker) {
     if(this != &metalinker) {
-      this->entries = metalinker.entries;
+      _entries = metalinker._entries;
     }
     return *this;
   }
@@ -65,6 +65,16 @@ public:
    const std::string& version,
    const std::string& language,
    const std::string& os) const;
+
+  const std::vector<SharedHandle<MetalinkEntry> >& getEntries() const
+  {
+    return _entries;
+  }
+
+  void addEntry(const SharedHandle<MetalinkEntry>& entry)
+  {
+    _entries.push_back(entry);
+  }
 };
 
 } // namespace aria2

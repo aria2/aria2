@@ -138,7 +138,7 @@ void MetalinkParserController::commitEntryTransaction()
   commitChunkChecksumTransactionV4();
   commitChunkChecksumTransaction();
   commitSignatureTransaction();
-  _metalinker->entries.push_back(_tEntry);
+  _metalinker->addEntry(_tEntry);
   _tEntry.reset();
 }
 
