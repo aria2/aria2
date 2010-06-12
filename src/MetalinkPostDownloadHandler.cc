@@ -65,9 +65,9 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
 (std::vector<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
-  if(_logger->debug()) {
-    _logger->debug("Generating RequestGroups for Metalink file %s",
-                   requestGroup->getFirstFilePath().c_str());
+  if(getLogger()->debug()) {
+    getLogger()->debug("Generating RequestGroups for Metalink file %s",
+                       requestGroup->getFirstFilePath().c_str());
   }
   SharedHandle<DiskAdaptor> diskAdaptor =
     requestGroup->getPieceStorage()->getDiskAdaptor();

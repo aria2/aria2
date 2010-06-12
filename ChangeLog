@@ -1,5 +1,12 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made protected member variable private. Added accessor funcs.
+	* src/BtPostDownloadHandler.cc
+	* src/DownloadHandler.h
+	* src/MetalinkPostDownloadHandler.cc
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed member variables.
 	* src/DownloadEngine.cc
 	* src/DownloadEngine.h

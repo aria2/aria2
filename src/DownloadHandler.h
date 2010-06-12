@@ -49,10 +49,15 @@ class RequestGroupCriteria;
 
 class DownloadHandler
 {
-protected:
+private:
   SharedHandle<RequestGroupCriteria> _criteria;
 
   Logger* _logger;
+protected:
+  Logger* getLogger() const
+  {
+    return _logger;
+  }
 public:
   DownloadHandler();
 
