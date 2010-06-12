@@ -60,20 +60,21 @@ namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
   cuid(0),
-  requestTimeout(0),
-  logger(LogFactory::getInstance()) {}
+  _requestTimeout(0),
+  _logger(LogFactory::getInstance()) {}
 
 DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
 {
-  if(logger->debug()) {
-    logger->debug("DefaultBtMessageDispatcher::deleted");
+  if(_logger->debug()) {
+    _logger->debug("DefaultBtMessageDispatcher::deleted");
   }
 }
 
-void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessageHandle& btMessage)
+void DefaultBtMessageDispatcher::addMessageToQueue
+(const BtMessageHandle& btMessage)
 {
   btMessage->onQueued();
-  messageQueue.push_back(btMessage);
+  _messageQueue.push_back(btMessage);
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue
@@ -87,9 +88,9 @@ void DefaultBtMessageDispatcher::addMessageToQueue
 
 void DefaultBtMessageDispatcher::sendMessages() {
   std::vector<SharedHandle<BtMessage> > tempQueue;
-  while(!messageQueue.empty()) {
-    BtMessageHandle msg = messageQueue.front();
-    messageQueue.pop_front();
+  while(!_messageQueue.empty()) {
+    BtMessageHandle msg = _messageQueue.front();
+    _messageQueue.pop_front();
     if(msg->isUploading() && !msg->isSendingInProgress()) {
       if(_requestGroupMan->doesOverallUploadSpeedExceed() ||
          _downloadContext->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
@@ -99,33 +100,34 @@ void DefaultBtMessageDispatcher::sendMessages() {
     }
     msg->send();
     if(msg->isUploading()) {
-      _peerStorage->updateTransferStatFor(peer);
+      _peerStorage->updateTransferStatFor(_peer);
     }
     if(msg->isSendingInProgress()) {
-      messageQueue.push_front(msg);
+      _messageQueue.push_front(msg);
       break;
     }
   }
   if(!tempQueue.empty()) {
     // Insert pending message to the front, so that message is likely sent in
     // the same order as it is queued.
-    if(!messageQueue.empty() && messageQueue.front()->isSendingInProgress()) {
-      messageQueue.insert(messageQueue.begin()+1,
-                          tempQueue.begin(), tempQueue.end());
+    if(!_messageQueue.empty() && _messageQueue.front()->isSendingInProgress()) {
+      _messageQueue.insert(_messageQueue.begin()+1,
+                           tempQueue.begin(), tempQueue.end());
     } else {
-      messageQueue.insert(messageQueue.begin(),
-                          tempQueue.begin(), tempQueue.end());
+      _messageQueue.insert(_messageQueue.begin(),
+                           tempQueue.begin(), tempQueue.end());
     }
   }
 }
 
 // Cancel sending piece message to peer.
-void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32_t begin, size_t length)
+void DefaultBtMessageDispatcher::doCancelSendingPieceAction
+(size_t index, uint32_t begin, size_t length)
 {
   BtCancelSendingPieceEvent event(index, begin, length);
 
   std::vector<SharedHandle<BtMessage> > tempQueue
-    (messageQueue.begin(), messageQueue.end());
+    (_messageQueue.begin(), _messageQueue.end());
 
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onCancelSendingPieceEvent, event);
@@ -167,19 +169,19 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
 (const SharedHandle<Piece>& piece) {
   RequestSlot rs(piece->getIndex(), 0, 0, 0);
   std::deque<RequestSlot>::iterator first =
-    std::lower_bound(requestSlots.begin(), requestSlots.end(), rs);
+    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), rs);
 
   rs.setIndex(piece->getIndex()+1);
   std::deque<RequestSlot>::iterator last =
-    std::lower_bound(requestSlots.begin(), requestSlots.end(), rs);
+    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), rs);
 
   std::for_each(first, last, AbortOutstandingRequest(piece, cuid));
-  requestSlots.erase(first, last);
+  _requestSlots.erase(first, last);
 
   BtAbortOutstandingRequestEvent event(piece);
 
   std::vector<SharedHandle<BtMessage> > tempQueue
-    (messageQueue.begin(), messageQueue.end());
+    (_messageQueue.begin(), _messageQueue.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onAbortOutstandingRequestEvent, event);
 }
@@ -232,12 +234,12 @@ public:
 // localhost received choke message from the peer.
 void DefaultBtMessageDispatcher::doChokedAction()
 {
-  std::for_each(requestSlots.begin(), requestSlots.end(),
-                ProcessChokedRequestSlot(cuid, peer, _pieceStorage));
+  std::for_each(_requestSlots.begin(), _requestSlots.end(),
+                ProcessChokedRequestSlot(cuid, _peer, _pieceStorage));
 
-  requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
-                                    FindChokedRequestSlot(peer)),
-                     requestSlots.end());
+  _requestSlots.erase(std::remove_if(_requestSlots.begin(), _requestSlots.end(),
+                                     FindChokedRequestSlot(_peer)),
+                      _requestSlots.end());
 }
 
 // localhost dispatched choke message to the peer.
@@ -246,7 +248,7 @@ void DefaultBtMessageDispatcher::doChokingAction()
   BtChokingEvent event;
 
   std::vector<SharedHandle<BtMessage> > tempQueue
-    (messageQueue.begin(), messageQueue.end());
+    (_messageQueue.begin(), _messageQueue.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onChokingEvent, event);
 }
@@ -326,25 +328,25 @@ public:
 
 void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 {
-  std::for_each(requestSlots.begin(), requestSlots.end(),
+  std::for_each(_requestSlots.begin(), _requestSlots.end(),
                 ProcessStaleRequestSlot(cuid,
-                                        peer,
+                                        _peer,
                                         _pieceStorage,
                                         this,
-                                        messageFactory,
-                                        requestTimeout));
-  requestSlots.erase(std::remove_if(requestSlots.begin(), requestSlots.end(),
-                                    FindStaleRequestSlot(_pieceStorage,
-                                                         requestTimeout)),
-                     requestSlots.end());
+                                        _messageFactory,
+                                        _requestTimeout));
+  _requestSlots.erase(std::remove_if(_requestSlots.begin(), _requestSlots.end(),
+                                     FindStaleRequestSlot(_pieceStorage,
+                                                          _requestTimeout)),
+                      _requestSlots.end());
 }
 
 bool DefaultBtMessageDispatcher::isSendingInProgress()
 {
-  if(messageQueue.size() > 0) {
-    return messageQueue.front()->isSendingInProgress();
-  } else {
+  if(_messageQueue.empty()) {
     return false;
+  } else {
+    return _messageQueue.front()->isSendingInProgress();
   }
 }
 
@@ -360,23 +362,26 @@ public:
   }
 };
 
-bool DefaultBtMessageDispatcher::isOutstandingRequest(size_t index, size_t blockIndex) {
+bool DefaultBtMessageDispatcher::isOutstandingRequest
+(size_t index, size_t blockIndex) {
   RequestSlot rs(index, 0, 0, blockIndex);
 
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots.begin(), requestSlots.end(), rs, BlockIndexLess());
-  return i != requestSlots.end() &&
+    std::lower_bound(_requestSlots.begin(), _requestSlots.end(),
+                     rs, BlockIndexLess());
+  return i != _requestSlots.end() &&
     (*i).getIndex() == index && (*i).getBlockIndex() == blockIndex;
 }
 
 RequestSlot
-DefaultBtMessageDispatcher::getOutstandingRequest(size_t index, uint32_t begin, size_t length)
+DefaultBtMessageDispatcher::getOutstandingRequest
+(size_t index, uint32_t begin, size_t length)
 {
   RequestSlot ret;
   RequestSlot rs(index, begin, length, 0);
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots.begin(), requestSlots.end(), rs);
-  if(i != requestSlots.end() && (*i) == rs) {
+    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), rs);
+  if(i != _requestSlots.end() && (*i) == rs) {
     ret = *i;
   } else {
     ret = RequestSlot::nullSlot;
@@ -384,34 +389,36 @@ DefaultBtMessageDispatcher::getOutstandingRequest(size_t index, uint32_t begin, 
   return ret;
 }
 
-void DefaultBtMessageDispatcher::removeOutstandingRequest(const RequestSlot& slot)
+void DefaultBtMessageDispatcher::removeOutstandingRequest
+(const RequestSlot& slot)
 {
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots.begin(), requestSlots.end(), slot);
-  if(i != requestSlots.end() && (*i) == slot) {
+    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), slot);
+  if(i != _requestSlots.end() && (*i) == slot) {
     AbortOutstandingRequest(slot.getPiece(), cuid)(*i);
-    requestSlots.erase(i);
+    _requestSlots.erase(i);
   }
 }
 
-void DefaultBtMessageDispatcher::addOutstandingRequest(const RequestSlot& slot)
+void DefaultBtMessageDispatcher::addOutstandingRequest
+(const RequestSlot& slot)
 {
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots.begin(), requestSlots.end(), slot);
-  if(i == requestSlots.end() || (*i) != slot) {
-    requestSlots.insert(i, slot);
+    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), slot);
+  if(i == _requestSlots.end() || (*i) != slot) {
+    _requestSlots.insert(i, slot);
   }
 }
 
 size_t DefaultBtMessageDispatcher::countOutstandingUpload()
 {
-  return std::count_if(messageQueue.begin(), messageQueue.end(),
+  return std::count_if(_messageQueue.begin(), _messageQueue.end(),
                        mem_fun_sh(&BtMessage::isUploading));
 }
 
 void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)
 {
-  this->peer = peer;
+  _peer = peer;
 }
 
 void DefaultBtMessageDispatcher::setDownloadContext
@@ -432,9 +439,10 @@ void DefaultBtMessageDispatcher::setPeerStorage
   _peerStorage = peerStorage;
 }
 
-void DefaultBtMessageDispatcher::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+void DefaultBtMessageDispatcher::setBtMessageFactory
+(const WeakHandle<BtMessageFactory>& factory)
 {
-  this->messageFactory = factory;
+  _messageFactory = factory;
 }
 
 void DefaultBtMessageDispatcher::setRequestGroupMan
