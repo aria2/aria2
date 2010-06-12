@@ -1,6 +1,12 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variables
+	* src/DefaultBtMessageFactory.cc
+	* src/DefaultBtMessageFactory.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed member variables
 	* src/DefaultBtMessageDispatcher.cc
 	* src/DefaultBtMessageDispatcher.h
 

@@ -56,19 +56,19 @@ class DHTTaskFactory;
 
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
-  cuid_t cuid;
+  cuid_t _cuid;
   SharedHandle<DownloadContext> _downloadContext;
   SharedHandle<PieceStorage> _pieceStorage;
   SharedHandle<PeerStorage> _peerStorage;
-  SharedHandle<Peer> peer;
+  SharedHandle<Peer> _peer;
 
   bool _dhtEnabled;
 
-  WeakHandle<BtMessageDispatcher> dispatcher;
+  WeakHandle<BtMessageDispatcher> _dispatcher;
 
-  WeakHandle<BtRequestFactory> requestFactory;
+  WeakHandle<BtRequestFactory> _requestFactory;
 
-  WeakHandle<PeerConnection> peerConnection;
+  WeakHandle<PeerConnection> _peerConnection;
 
   SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
 
@@ -145,14 +145,15 @@ public:
 
   void setCuid(cuid_t cuid)
   {
-    this->cuid = cuid;
+    _cuid = cuid;
   }
 
   void setDHTEnabled(bool enabled) {
     _dhtEnabled = enabled;
   }
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
+  void setBtMessageDispatcher
+  (const WeakHandle<BtMessageDispatcher>& dispatcher);
   
   void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
 

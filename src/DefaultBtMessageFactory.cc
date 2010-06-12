@@ -70,7 +70,7 @@
 
 namespace aria2 {
 
-DefaultBtMessageFactory::DefaultBtMessageFactory():cuid(0),
+DefaultBtMessageFactory::DefaultBtMessageFactory():_cuid(0),
                                                    _dhtEnabled(false),
                                                    _metadataGetMode(false)
 {}
@@ -78,7 +78,8 @@ DefaultBtMessageFactory::DefaultBtMessageFactory():cuid(0),
 DefaultBtMessageFactory::~DefaultBtMessageFactory() {}
 
 BtMessageHandle
-DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataLength)
+DefaultBtMessageFactory::createBtMessage
+(const unsigned char* data, size_t dataLength)
 {
   AbstractBtMessageHandle msg;
   if(dataLength == 0) {
@@ -162,9 +163,10 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       BtPieceMessageHandle temp = BtPieceMessage::create(data, dataLength);
       if(!_metadataGetMode) {
         BtMessageValidatorHandle validator
-          (new BtPieceMessageValidator(temp.get(),
-                                       _downloadContext->getNumPieces(),
-                                       _pieceStorage->getPieceLength(temp->getIndex())));
+          (new BtPieceMessageValidator
+           (temp.get(),
+            _downloadContext->getNumPieces(),
+            _pieceStorage->getPieceLength(temp->getIndex())));
         temp->setBtMessageValidator(validator);
       }
       temp->setDownloadContext(_downloadContext);
@@ -191,7 +193,8 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       break;
     }
     case BtSuggestPieceMessage::ID: {
-      BtSuggestPieceMessageHandle temp = BtSuggestPieceMessage::create(data, dataLength);
+      BtSuggestPieceMessageHandle temp =
+        BtSuggestPieceMessage::create(data, dataLength);
       if(!_metadataGetMode) {
         SharedHandle<BtMessageValidator> validator
           (new IndexBtMessageValidator(temp.get(),
@@ -202,7 +205,8 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       break;
     }
     case BtAllowedFastMessage::ID: {
-      BtAllowedFastMessageHandle temp = BtAllowedFastMessage::create(data, dataLength);
+      BtAllowedFastMessageHandle temp =
+        BtAllowedFastMessage::create(data, dataLength);
       if(!_metadataGetMode) {
         SharedHandle<BtMessageValidator> validator
           (new IndexBtMessageValidator(temp.get(),
@@ -213,7 +217,8 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       break;
     }
     case BtPortMessage::ID: {
-      SharedHandle<BtPortMessage> temp = BtPortMessage::create(data, dataLength);
+      SharedHandle<BtPortMessage> temp =
+        BtPortMessage::create(data, dataLength);
       temp->setLocalNode(_localNode);
       temp->setRoutingTable(_routingTable);
       temp->setTaskQueue(_taskQueue);
@@ -222,11 +227,12 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       break;
     }
     case BtExtendedMessage::ID: {
-      if(peer->isExtendedMessagingEnabled()) {
+      if(_peer->isExtendedMessagingEnabled()) {
         msg = BtExtendedMessage::create(_extensionMessageFactory,
-                                        peer, data, dataLength);
+                                        _peer, data, dataLength);
       } else {
-        throw DL_ABORT_EX("Received extended message from peer during a session with extended messaging disabled.");
+        throw DL_ABORT_EX("Received extended message from peer during"
+                          " a session with extended messaging disabled.");
       }
       break;
     }
@@ -238,23 +244,26 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
   return msg;
 }
 
-void DefaultBtMessageFactory::setCommonProperty(const AbstractBtMessageHandle& msg) {
-  msg->setCuid(cuid);
-  msg->setPeer(peer);
+void DefaultBtMessageFactory::setCommonProperty
+(const AbstractBtMessageHandle& msg) {
+  msg->setCuid(_cuid);
+  msg->setPeer(_peer);
   msg->setPieceStorage(_pieceStorage);
-  msg->setBtMessageDispatcher(dispatcher);
-  msg->setBtRequestFactory(requestFactory);
+  msg->setBtMessageDispatcher(_dispatcher);
+  msg->setBtRequestFactory(_requestFactory);
   msg->setBtMessageFactory(WeakHandle<BtMessageFactory>(this));
-  msg->setPeerConnection(peerConnection);
+  msg->setPeerConnection(_peerConnection);
   if(_metadataGetMode) {
     msg->enableMetadataGetMode();
   }
 }
 
 SharedHandle<BtHandshakeMessage>
-DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* data, size_t dataLength)
+DefaultBtMessageFactory::createHandshakeMessage
+(const unsigned char* data, size_t dataLength)
 {
-  SharedHandle<BtHandshakeMessage> msg = BtHandshakeMessage::create(data, dataLength);
+  SharedHandle<BtHandshakeMessage> msg =
+    BtHandshakeMessage::create(data, dataLength);
   BtMessageValidatorHandle validator
     (new BtHandshakeMessageValidator
      (msg.get(), bittorrent::getInfoHash(_downloadContext)));
@@ -267,7 +276,8 @@ SharedHandle<BtHandshakeMessage>
 DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
                                                 const unsigned char* peerId)
 {
-  SharedHandle<BtHandshakeMessage> msg(new BtHandshakeMessage(infoHash, peerId));
+  SharedHandle<BtHandshakeMessage> msg
+    (new BtHandshakeMessage(infoHash, peerId));
   BtMessageValidatorHandle validator
     (new BtHandshakeMessageValidator
      (msg.get(), bittorrent::getInfoHash(_downloadContext)));
@@ -297,7 +307,8 @@ DefaultBtMessageFactory::createRequestMessage
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createCancelMessage(size_t index, uint32_t begin, size_t length)
+DefaultBtMessageFactory::createCancelMessage
+(size_t index, uint32_t begin, size_t length)
 {
   BtCancelMessageHandle msg(new BtCancelMessage(index, begin, length));
   SharedHandle<BtMessageValidator> validator
@@ -311,7 +322,8 @@ DefaultBtMessageFactory::createCancelMessage(size_t index, uint32_t begin, size_
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createPieceMessage(size_t index, uint32_t begin, size_t length)
+DefaultBtMessageFactory::createPieceMessage
+(size_t index, uint32_t begin, size_t length)
 {
   BtPieceMessageHandle msg(new BtPieceMessage(index, begin, length));
   BtMessageValidatorHandle validator
@@ -406,7 +418,8 @@ DefaultBtMessageFactory::createHaveNoneMessage()
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createRejectMessage(size_t index, uint32_t begin, size_t length)
+DefaultBtMessageFactory::createRejectMessage
+(size_t index, uint32_t begin, size_t length)
 {
   BtRejectMessageHandle msg(new BtRejectMessage(index, begin, length));
   SharedHandle<BtMessageValidator> validator
@@ -439,26 +452,29 @@ DefaultBtMessageFactory::createPortMessage(uint16_t port)
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createBtExtendedMessage(const ExtensionMessageHandle& msg)
+DefaultBtMessageFactory::createBtExtendedMessage
+(const ExtensionMessageHandle& msg)
 {
   BtExtendedMessageHandle m(new BtExtendedMessage(msg));
   setCommonProperty(m);
   return m;
 }
 
-void DefaultBtMessageFactory::setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue)
+void DefaultBtMessageFactory::setTaskQueue
+(const WeakHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
 
-void DefaultBtMessageFactory::setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory)
+void DefaultBtMessageFactory::setTaskFactory
+(const WeakHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
 }
 
 void DefaultBtMessageFactory::setPeer(const SharedHandle<Peer>& peer)
 {
-  this->peer = peer;
+  _peer = peer;
 }
 
 void DefaultBtMessageFactory::setDownloadContext
@@ -479,9 +495,10 @@ void DefaultBtMessageFactory::setPeerStorage
   _peerStorage = peerStorage;
 }
 
-void DefaultBtMessageFactory::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
+void DefaultBtMessageFactory::setBtMessageDispatcher
+(const WeakHandle<BtMessageDispatcher>& dispatcher)
 {
-  this->dispatcher = dispatcher;
+  _dispatcher = dispatcher;
 }
 
 void DefaultBtMessageFactory::setExtensionMessageFactory
@@ -495,19 +512,22 @@ void DefaultBtMessageFactory::setLocalNode(const WeakHandle<DHTNode>& localNode)
   _localNode = localNode;
 }
 
-void DefaultBtMessageFactory::setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable)
+void DefaultBtMessageFactory::setRoutingTable
+(const WeakHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
 
-void DefaultBtMessageFactory::setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory)
+void DefaultBtMessageFactory::setBtRequestFactory
+(const WeakHandle<BtRequestFactory>& factory)
 {
-  this->requestFactory = factory;
+  _requestFactory = factory;
 }
 
-void DefaultBtMessageFactory::setPeerConnection(const WeakHandle<PeerConnection>& connection)
+void DefaultBtMessageFactory::setPeerConnection
+(const WeakHandle<PeerConnection>& connection)
 {
-  this->peerConnection = connection;
+  _peerConnection = connection;
 }
 
 } // namespace aria2
