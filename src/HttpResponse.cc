@@ -57,8 +57,8 @@
 
 namespace aria2 {
 
-HttpResponse::HttpResponse():cuid(0),
-                             logger(LogFactory::getInstance())
+HttpResponse::HttpResponse():_cuid(0),
+                             _logger(LogFactory::getInstance())
 {}
 
 HttpResponse::~HttpResponse() {}
@@ -70,21 +70,21 @@ void HttpResponse::validateResponse() const
     return;
   }
   if(status >= HttpHeader::S300) {
-    if(!httpHeader->defined(HttpHeader::LOCATION)) {
+    if(!_httpHeader->defined(HttpHeader::LOCATION)) {
       throw DL_ABORT_EX
         (StringFormat(EX_LOCATION_HEADER_REQUIRED,
                       util::parseUInt(status)).str());
     }
-  } else if(!httpHeader->defined(HttpHeader::TRANSFER_ENCODING)) {
+  } else if(!_httpHeader->defined(HttpHeader::TRANSFER_ENCODING)) {
     // compare the received range against the requested range
-    RangeHandle responseRange = httpHeader->getRange();
-    if(!httpRequest->isRangeSatisfied(responseRange)) {
+    RangeHandle responseRange = _httpHeader->getRange();
+    if(!_httpRequest->isRangeSatisfied(responseRange)) {
       throw DL_ABORT_EX2
         (StringFormat
          (EX_INVALID_RANGE_HEADER,
-          util::itos(httpRequest->getStartByte(), true).c_str(),
-          util::itos(httpRequest->getEndByte(), true).c_str(),
-          util::uitos(httpRequest->getEntityLength(), true).c_str(),
+          util::itos(_httpRequest->getStartByte(), true).c_str(),
+          util::itos(_httpRequest->getEndByte(), true).c_str(),
+          util::uitos(_httpRequest->getEntityLength(), true).c_str(),
           util::itos(responseRange->getStartByte(), true).c_str(),
           util::itos(responseRange->getEndByte(), true).c_str(),
           util::uitos(responseRange->getEntityLength(), true).c_str()).str(),
@@ -97,18 +97,18 @@ std::string HttpResponse::determinFilename() const
 {
   std::string contentDisposition =
     util::getContentDispositionFilename
-    (httpHeader->getFirst(HttpHeader::CONTENT_DISPOSITION));
+    (_httpHeader->getFirst(HttpHeader::CONTENT_DISPOSITION));
   if(contentDisposition.empty()) {
-    std::string file = util::percentDecode(httpRequest->getFile());
+    std::string file = util::percentDecode(_httpRequest->getFile());
     if(file.empty()) {
       return "index.html";
     } else {
       return file;
     }
   } else {
-    if(logger->info()) {
-      logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
-                   util::itos(cuid).c_str(), contentDisposition.c_str());
+    if(_logger->info()) {
+      _logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
+                    util::itos(_cuid).c_str(), contentDisposition.c_str());
     }
     return contentDisposition;
   }
@@ -116,12 +116,12 @@ std::string HttpResponse::determinFilename() const
 
 void HttpResponse::retrieveCookie()
 {
-  std::vector<std::string> v = httpHeader->get(HttpHeader::SET_COOKIE);
+  std::vector<std::string> v = _httpHeader->get(HttpHeader::SET_COOKIE);
   for(std::vector<std::string>::const_iterator itr = v.begin(), eoi = v.end();
       itr != eoi; ++itr) {
-    httpRequest->getCookieStorage()->parseAndStore(*itr,
-                                                   httpRequest->getHost(),
-                                                   httpRequest->getDir());
+    _httpRequest->getCookieStorage()->parseAndStore(*itr,
+                                                    _httpRequest->getHost(),
+                                                    _httpRequest->getDir());
   }
 }
 
@@ -129,39 +129,39 @@ bool HttpResponse::isRedirect() const
 {
   const std::string& status = getResponseStatus();
   return HttpHeader::S300 <= status && status < HttpHeader::S400 &&
-    httpHeader->defined(HttpHeader::LOCATION);
+    _httpHeader->defined(HttpHeader::LOCATION);
 }
 
 void HttpResponse::processRedirect()
 {
   
-  if(httpRequest->getRequest()->redirectUri(getRedirectURI())) {
-    if(logger->info()) {
-      logger->info(MSG_REDIRECT, util::itos(cuid).c_str(),
-                   httpRequest->getRequest()->getCurrentUri().c_str());
+  if(_httpRequest->getRequest()->redirectUri(getRedirectURI())) {
+    if(_logger->info()) {
+      _logger->info(MSG_REDIRECT, util::itos(_cuid).c_str(),
+                    _httpRequest->getRequest()->getCurrentUri().c_str());
     }
   } else {
     throw DL_RETRY_EX
       (StringFormat("CUID#%s - Redirect to %s failed. It may not be a valid"
-                    " URI.", util::itos(cuid).c_str(),
-                    httpRequest->getRequest()->getCurrentUri().c_str()).str());
+                    " URI.", util::itos(_cuid).c_str(),
+                    _httpRequest->getRequest()->getCurrentUri().c_str()).str());
   }
 }
 
 std::string HttpResponse::getRedirectURI() const
 {
-  return httpHeader->getFirst(HttpHeader::LOCATION);
+  return _httpHeader->getFirst(HttpHeader::LOCATION);
 }
 
 bool HttpResponse::isTransferEncodingSpecified() const
 {
-  return httpHeader->defined(HttpHeader::TRANSFER_ENCODING);
+  return _httpHeader->defined(HttpHeader::TRANSFER_ENCODING);
 }
 
 std::string HttpResponse::getTransferEncoding() const
 {
   // TODO See TODO in getTransferEncodingDecoder()
-  return httpHeader->getFirst(HttpHeader::TRANSFER_ENCODING);
+  return _httpHeader->getFirst(HttpHeader::TRANSFER_ENCODING);
 }
 
 SharedHandle<Decoder> HttpResponse::getTransferEncodingDecoder() const
@@ -178,12 +178,12 @@ SharedHandle<Decoder> HttpResponse::getTransferEncodingDecoder() const
 
 bool HttpResponse::isContentEncodingSpecified() const
 {
-  return httpHeader->defined(HttpHeader::CONTENT_ENCODING);
+  return _httpHeader->defined(HttpHeader::CONTENT_ENCODING);
 }
 
 const std::string& HttpResponse::getContentEncoding() const
 {
-  return httpHeader->getFirst(HttpHeader::CONTENT_ENCODING);
+  return _httpHeader->getFirst(HttpHeader::CONTENT_ENCODING);
 }
 
 SharedHandle<Decoder> HttpResponse::getContentEncodingDecoder() const
@@ -199,75 +199,75 @@ SharedHandle<Decoder> HttpResponse::getContentEncodingDecoder() const
 
 uint64_t HttpResponse::getContentLength() const
 {
-  if(httpHeader.isNull()) {
+  if(_httpHeader.isNull()) {
     return 0;
   } else {
-    return httpHeader->getRange()->getContentLength();
+    return _httpHeader->getRange()->getContentLength();
   }
 }
 
 uint64_t HttpResponse::getEntityLength() const
 {
-  if(httpHeader.isNull()) {
+  if(_httpHeader.isNull()) {
     return 0;
   } else {
-    return httpHeader->getRange()->getEntityLength();
+    return _httpHeader->getRange()->getEntityLength();
   }
 }
 
 std::string HttpResponse::getContentType() const
 {
-  if(httpHeader.isNull()) {
+  if(_httpHeader.isNull()) {
     return A2STR::NIL;
   } else {
     return
-      util::split(httpHeader->getFirst(HttpHeader::CONTENT_TYPE), ";").first;
+      util::split(_httpHeader->getFirst(HttpHeader::CONTENT_TYPE), ";").first;
   }
 }
 
 void HttpResponse::setHttpHeader(const SharedHandle<HttpHeader>& httpHeader)
 {
-  this->httpHeader = httpHeader;
+  _httpHeader = httpHeader;
 }
 
 void HttpResponse::setHttpRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
-  this->httpRequest = httpRequest;
+  _httpRequest = httpRequest;
 }
 
 // TODO return std::string
 const std::string& HttpResponse::getResponseStatus() const
 {
-  return httpHeader->getResponseStatus();
+  return _httpHeader->getResponseStatus();
 }
 
 bool HttpResponse::hasRetryAfter() const
 {
-  return httpHeader->defined(HttpHeader::RETRY_AFTER);
+  return _httpHeader->defined(HttpHeader::RETRY_AFTER);
 }
 
 time_t HttpResponse::getRetryAfter() const
 {
-  return httpHeader->getFirstAsUInt(HttpHeader::RETRY_AFTER);
+  return _httpHeader->getFirstAsUInt(HttpHeader::RETRY_AFTER);
 }
 
 Time HttpResponse::getLastModifiedTime() const
 {
-  return Time::parseHTTPDate(httpHeader->getFirst(HttpHeader::LAST_MODIFIED));
+  return Time::parseHTTPDate(_httpHeader->getFirst(HttpHeader::LAST_MODIFIED));
 }
 
 bool HttpResponse::supportsPersistentConnection() const
 {
   std::string connection =
-    util::toLower(httpHeader->getFirst(HttpHeader::CONNECTION));
-  std::string version = httpHeader->getVersion();
+    util::toLower(_httpHeader->getFirst(HttpHeader::CONNECTION));
+  std::string version = _httpHeader->getVersion();
 
   return
     connection.find(HttpHeader::CLOSE) == std::string::npos &&
     (version == HttpHeader::HTTP_1_1 ||
      connection.find("keep-alive") != std::string::npos) &&
-    (!httpRequest->isProxyRequestSet() ||
-     util::toLower(httpHeader->getFirst("Proxy-Connection")).find("keep-alive")
+    (!_httpRequest->isProxyRequestSet() ||
+     util::toLower(_httpHeader->getFirst("Proxy-Connection")).find("keep-alive")
      != std::string::npos);
 }
 
