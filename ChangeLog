@@ -1,5 +1,11 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed HandleRegistry
+	* src/HandleRegistry.h
+	* src/Makefile.am
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed member variables.
 	* src/FtpConnection.cc
 	* src/FtpConnection.h

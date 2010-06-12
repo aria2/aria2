@@ -54,7 +54,6 @@ SRCS =  Socket.h\
 	TimerA2.cc TimerA2.h\
 	TimeA2.cc TimeA2.h\
 	SharedHandle.h\
-	HandleRegistry.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
 	SpeedCalc.cc SpeedCalc.h\
