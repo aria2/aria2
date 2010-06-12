@@ -42,14 +42,14 @@ namespace aria2 {
 
 class SpeedCalc {
 private:
-  uint64_t lengthArray[2];
-  int sw;
-  Timer cpArray[2];
-  unsigned int maxSpeed;
-  unsigned int prevSpeed;
-  Timer start;
-  uint64_t accumulatedLength;
-  time_t nextInterval;
+  uint64_t _lengthArray[2];
+  int _sw;
+  Timer _cpArray[2];
+  unsigned int _maxSpeed;
+  unsigned int _prevSpeed;
+  Timer _start;
+  uint64_t _accumulatedLength;
+  time_t _nextInterval;
 
   bool isIntervalOver() const;
 
@@ -65,7 +65,7 @@ public:
   unsigned int calculateSpeed();
 
   unsigned int getMaxSpeed() const {
-    return maxSpeed;
+    return _maxSpeed;
   }
 
   unsigned int calculateAvgSpeed() const;
