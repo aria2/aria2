@@ -60,16 +60,18 @@ DefaultBtAnnounce::DefaultBtAnnounce
 (const SharedHandle<DownloadContext>& downloadContext,
  const Option* option):
   _downloadContext(downloadContext),
-  trackers(0),
-  prevAnnounceTimer(0),
-  interval(DEFAULT_ANNOUNCE_INTERVAL),
-  minInterval(DEFAULT_ANNOUNCE_INTERVAL),
+  _trackers(0),
+  _prevAnnounceTimer(0),
+  _interval(DEFAULT_ANNOUNCE_INTERVAL),
+  _minInterval(DEFAULT_ANNOUNCE_INTERVAL),
   _userDefinedInterval(0),
-  complete(0),
-  incomplete(0),
-  announceList(downloadContext->getAttribute(bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST]),
-  option(option),
-  logger(LogFactory::getInstance()),
+  _complete(0),
+  _incomplete(0),
+  _announceList
+  (downloadContext->getAttribute
+   (bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST]),
+  _option(option),
+  _logger(LogFactory::getInstance()),
   _randomizer(SimpleRandomizer::getInstance())
 {}
 
@@ -78,23 +80,23 @@ DefaultBtAnnounce::~DefaultBtAnnounce() {
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
   return
-    (trackers == 0 &&
-     prevAnnounceTimer.
+    (_trackers == 0 &&
+     _prevAnnounceTimer.
      difference(global::wallclock) >= (_userDefinedInterval==0?
-                                       minInterval:_userDefinedInterval) &&
-     !announceList.allTiersFailed());
+                                       _minInterval:_userDefinedInterval) &&
+     !_announceList.allTiersFailed());
 }
 
 bool DefaultBtAnnounce::isStoppedAnnounceReady() {
-  return (trackers == 0 &&
-          btRuntime->isHalt() &&
-          announceList.countStoppedAllowedTier());
+  return (_trackers == 0 &&
+          _btRuntime->isHalt() &&
+          _announceList.countStoppedAllowedTier());
 }
 
 bool DefaultBtAnnounce::isCompletedAnnounceReady() {
-  return (trackers == 0 &&
-          pieceStorage->allDownloadFinished() &&
-          announceList.countCompletedAllowedTier());
+  return (_trackers == 0 &&
+          _pieceStorage->allDownloadFinished() &&
+          _announceList.countCompletedAllowedTier());
 }
 
 bool DefaultBtAnnounce::isAnnounceReady() {
@@ -113,34 +115,34 @@ static bool uriHasQuery(const std::string& uri)
 
 std::string DefaultBtAnnounce::getAnnounceUrl() {
   if(isStoppedAnnounceReady()) {
-    if(!announceList.currentTierAcceptsStoppedEvent()) {
-      announceList.moveToStoppedAllowedTier();
+    if(!_announceList.currentTierAcceptsStoppedEvent()) {
+      _announceList.moveToStoppedAllowedTier();
     }
-    announceList.setEvent(AnnounceTier::STOPPED);
+    _announceList.setEvent(AnnounceTier::STOPPED);
   } else if(isCompletedAnnounceReady()) {
-    if(!announceList.currentTierAcceptsCompletedEvent()) {
-      announceList.moveToCompletedAllowedTier();
+    if(!_announceList.currentTierAcceptsCompletedEvent()) {
+      _announceList.moveToCompletedAllowedTier();
     }
-    announceList.setEvent(AnnounceTier::COMPLETED);
+    _announceList.setEvent(AnnounceTier::COMPLETED);
   } else if(isDefaultAnnounceReady()) {
     // If download completed before "started" event is sent to a tracker,
     // we change the event to something else to prevent us from
     // sending "completed" event.
-    if(pieceStorage->allDownloadFinished() &&
-       announceList.getEvent() == AnnounceTier::STARTED) {
-      announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
+    if(_pieceStorage->allDownloadFinished() &&
+       _announceList.getEvent() == AnnounceTier::STARTED) {
+      _announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
     }
   } else {
     return A2STR::NIL;
   }
   unsigned int numWant = 50;
-  if(!btRuntime->lessThanMinPeers() || btRuntime->isHalt()) {
+  if(!_btRuntime->lessThanMinPeers() || _btRuntime->isHalt()) {
     numWant = 0;
   }
-  TransferStat stat = peerStorage->calculateStat();
+  TransferStat stat = _peerStorage->calculateStat();
   uint64_t left =
-    pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
-  std::string uri = announceList.getAnnounce();
+    _pieceStorage->getTotalLength()-_pieceStorage->getCompletedLength();
+  std::string uri = _announceList.getAnnounce();
   uri += uriHasQuery(uri) ? "&" : "?";
   uri += "info_hash=";
   uri += util::torrentPercentEncode(bittorrent::getInfoHash(_downloadContext),
@@ -163,59 +165,59 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   uri += "&numwant=";
   uri += util::uitos(numWant);
   uri += "&no_peer_id=1";
-  if(btRuntime->getListenPort() > 0) {
+  if(_btRuntime->getListenPort() > 0) {
     uri += "&port=";
-    uri += util::uitos(btRuntime->getListenPort());
+    uri += util::uitos(_btRuntime->getListenPort());
   }
-  std::string event = announceList.getEventString();
+  std::string event = _announceList.getEventString();
   if(!event.empty()) {
     uri += "&event=";
     uri += event;
   }
-  if(!trackerId.empty()) {
-    uri += "&trackerid="+util::torrentPercentEncode(trackerId);
+  if(!_trackerId.empty()) {
+    uri += "&trackerid="+util::torrentPercentEncode(_trackerId);
   }
-  if(option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+  if(_option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     uri += "&requirecrypto=1";
   } else {
     uri += "&supportcrypto=1";
   }
-  if(!option->blank(PREF_BT_EXTERNAL_IP)) {
+  if(!_option->blank(PREF_BT_EXTERNAL_IP)) {
     uri += "&ip=";
-    uri += option->get(PREF_BT_EXTERNAL_IP);
+    uri += _option->get(PREF_BT_EXTERNAL_IP);
   }
   return uri;
 }
 
 void DefaultBtAnnounce::announceStart() {
-  trackers++;
+  ++_trackers;
 }
 
 void DefaultBtAnnounce::announceSuccess() {
-  trackers = 0;
-  announceList.announceSuccess();
+  _trackers = 0;
+  _announceList.announceSuccess();
 }
 
 void DefaultBtAnnounce::announceFailure() {
-  trackers = 0;
-  announceList.announceFailure();
+  _trackers = 0;
+  _announceList.announceFailure();
 }
 
 bool DefaultBtAnnounce::isAllAnnounceFailed() {
-  return announceList.allTiersFailed();
+  return _announceList.allTiersFailed();
 }
 
 void DefaultBtAnnounce::resetAnnounce() {
-  prevAnnounceTimer = global::wallclock;
-  announceList.resetTier();
+  _prevAnnounceTimer = global::wallclock;
+  _announceList.resetTier();
 }
 
 void
 DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
                                            size_t trackerResponseLength)
 {
-  if(logger->debug()) {
-    logger->debug("Now processing tracker response.");
+  if(_logger->debug()) {
+    _logger->debug("Now processing tracker response.");
   }
   const BDE dict =
     bencode::decode(trackerResponse, trackerResponseLength);
@@ -229,69 +231,67 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   }
   const BDE& warn = dict[BtAnnounce::WARNING_MESSAGE];
   if(warn.isString()) {
-    logger->warn(MSG_TRACKER_WARNING_MESSAGE, warn.s().c_str());
+    _logger->warn(MSG_TRACKER_WARNING_MESSAGE, warn.s().c_str());
   }
   const BDE& tid = dict[BtAnnounce::TRACKER_ID];
   if(tid.isString()) {
-    trackerId = tid.s();
-    if(logger->debug()) {
-      logger->debug("Tracker ID:%s", trackerId.c_str());
+    _trackerId = tid.s();
+    if(_logger->debug()) {
+      _logger->debug("Tracker ID:%s", _trackerId.c_str());
     }
   }
   const BDE& ival = dict[BtAnnounce::INTERVAL];
   if(ival.isInteger() && ival.i() > 0) {
-    interval = ival.i();
-    if(logger->debug()) {
-      logger->debug("Interval:%d", interval);
+    _interval = ival.i();
+    if(_logger->debug()) {
+      _logger->debug("Interval:%d", _interval);
     }
   }
   const BDE& mival = dict[BtAnnounce::MIN_INTERVAL];
   if(mival.isInteger() && mival.i() > 0) {
-    minInterval = mival.i();
-    if(logger->debug()) {
-      logger->debug("Min interval:%d", minInterval);
+    _minInterval = mival.i();
+    if(_logger->debug()) {
+      _logger->debug("Min interval:%d", _minInterval);
     }
-    if(minInterval > interval) {
-      minInterval = interval;
-    }
+    _minInterval = std::min(_minInterval, _interval);
   } else {
     // Use interval as a minInterval if minInterval is not supplied.
-    minInterval = interval;
+    _minInterval = _interval;
   }
   const BDE& comp = dict[BtAnnounce::COMPLETE];
   if(comp.isInteger()) {
-    complete = comp.i();
-    if(logger->debug()) {
-      logger->debug("Complete:%d", complete);
+    _complete = comp.i();
+    if(_logger->debug()) {
+      _logger->debug("Complete:%d", _complete);
     }
   }
   const BDE& incomp = dict[BtAnnounce::INCOMPLETE];
   if(incomp.isInteger()) {
-    incomplete = incomp.i();
-    if(logger->debug()) {
-      logger->debug("Incomplete:%d", incomplete);
+    _incomplete = incomp.i();
+    if(_logger->debug()) {
+      _logger->debug("Incomplete:%d", _incomplete);
     }
   }
   const BDE& peerData = dict[BtAnnounce::PEERS];
   if(peerData.isNone()) {
-    logger->info(MSG_NO_PEER_LIST_RECEIVED);
+    _logger->info(MSG_NO_PEER_LIST_RECEIVED);
   } else {
-    if(!btRuntime->isHalt() && btRuntime->lessThanMinPeers()) {
+    if(!_btRuntime->isHalt() && _btRuntime->lessThanMinPeers()) {
       std::vector<SharedHandle<Peer> > peers;
       PeerListProcessor().extractPeer(peerData, std::back_inserter(peers));
-      peerStorage->addPeer(peers);
+      _peerStorage->addPeer(peers);
     }
   }
 }
 
 bool DefaultBtAnnounce::noMoreAnnounce() {
-  return (trackers == 0 &&
-          btRuntime->isHalt() &&
-          !announceList.countStoppedAllowedTier());
+  return (_trackers == 0 &&
+          _btRuntime->isHalt() &&
+          !_announceList.countStoppedAllowedTier());
 }
 
 void DefaultBtAnnounce::shuffleAnnounce() {
-  announceList.shuffle();
+  _announceList.shuffle();
 }
 
 void DefaultBtAnnounce::setRandomizer(const RandomizerHandle& randomizer)
@@ -301,22 +301,22 @@ void DefaultBtAnnounce::setRandomizer(const RandomizerHandle& randomizer)
 
 void DefaultBtAnnounce::setBtRuntime(const BtRuntimeHandle& btRuntime)
 {
-  this->btRuntime = btRuntime;
+  _btRuntime = btRuntime;
 }
 
 void DefaultBtAnnounce::setPieceStorage(const PieceStorageHandle& pieceStorage)
 {
-  this->pieceStorage = pieceStorage;
+  _pieceStorage = pieceStorage;
 }
 
 void DefaultBtAnnounce::setPeerStorage(const PeerStorageHandle& peerStorage)
 {
-  this->peerStorage = peerStorage;
+  _peerStorage = peerStorage;
 }
 
 void DefaultBtAnnounce::overrideMinInterval(time_t interval)
 {
-  minInterval = interval;
+  _minInterval = interval;
 }
 
 } // namespace aria2

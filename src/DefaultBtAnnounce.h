@@ -52,21 +52,21 @@ class Randomizer;
 class DefaultBtAnnounce : public BtAnnounce {
 private:
   SharedHandle<DownloadContext> _downloadContext;
-  unsigned int trackers;
-  Timer prevAnnounceTimer;
-  time_t interval;
-  time_t minInterval;
+  unsigned int _trackers;
+  Timer _prevAnnounceTimer;
+  time_t _interval;
+  time_t _minInterval;
   time_t _userDefinedInterval;
-  unsigned int complete;
-  unsigned int incomplete;
-  AnnounceList announceList;
-  std::string trackerId;
-  const Option* option;
-  Logger* logger;
+  unsigned int _complete;
+  unsigned int _incomplete;
+  AnnounceList _announceList;
+  std::string _trackerId;
+  const Option* _option;
+  Logger* _logger;
   SharedHandle<Randomizer> _randomizer;
-  SharedHandle<BtRuntime> btRuntime;
-  SharedHandle<PieceStorage> pieceStorage;
-  SharedHandle<PeerStorage> peerStorage;
+  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PeerStorage> _peerStorage;
 public:
   DefaultBtAnnounce(const SharedHandle<DownloadContext>& downloadContext,
                     const Option* option);
@@ -77,21 +77,21 @@ public:
 
   const SharedHandle<BtRuntime>& getBtRuntime() const
   {
-    return btRuntime;
+    return _btRuntime;
   }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
   const SharedHandle<PieceStorage>& getPieceStorage() const
   {
-    return pieceStorage;
+    return _pieceStorage;
   }
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
   const SharedHandle<PeerStorage>& getPeerStorage() const
   {
-    return peerStorage;
+    return _peerStorage;
   }
 
   bool isDefaultAnnounceReady();
@@ -127,27 +127,27 @@ public:
 
   time_t getInterval() const
   {
-    return interval;
+    return _interval;
   }
 
   time_t getMinInterval() const
   {
-    return minInterval;
+    return _minInterval;
   }
 
   unsigned int getComplete() const
   {
-    return complete;
+    return _complete;
   }
 
   unsigned int getIncomplete() const
   {
-    return incomplete;
+    return _incomplete;
   }
 
   const std::string& getTrackerID() const
   {
-    return trackerId;
+    return _trackerId;
   }
 
   void setUserDefinedInterval(time_t interval)
