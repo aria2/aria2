@@ -161,8 +161,6 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setRequestGroupMan(getDownloadEngine()->getRequestGroupMan());
 
   DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
-  receiver->setCuid(cuid);
-  receiver->setPeer(getPeer());
   receiver->setDownloadContext(_requestGroup->getDownloadContext());
   receiver->setPeerConnection(peerConnection);
   receiver->setDispatcher(dispatcher);

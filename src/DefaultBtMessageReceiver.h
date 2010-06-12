@@ -49,40 +49,24 @@ class Logger;
 
 class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:
-  cuid_t cuid;
-  bool handshakeSent;
+  bool _handshakeSent;
   SharedHandle<DownloadContext> _downloadContext;
-  SharedHandle<Peer> peer;
-  WeakHandle<PeerConnection> peerConnection;
-  WeakHandle<BtMessageDispatcher> dispatcher;
-  WeakHandle<BtMessageFactory> messageFactory;
-  Logger* logger;
+  WeakHandle<PeerConnection> _peerConnection;
+  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageFactory> _messageFactory;
 
   void sendHandshake();
 public:
   DefaultBtMessageReceiver();
 
-  virtual ~DefaultBtMessageReceiver();
-
-  virtual SharedHandle<BtHandshakeMessage> receiveHandshake(bool quickReply = false);
+  virtual SharedHandle<BtHandshakeMessage> receiveHandshake
+  (bool quickReply = false);
 
   virtual SharedHandle<BtHandshakeMessage> receiveAndSendHandshake();
 
   virtual SharedHandle<BtMessage> receiveMessage();
 
-  void setCuid(cuid_t cuid)
-  {
-    this->cuid = cuid;
-  }
-
-  cuid_t getCuid() const
-  {
-    return cuid;
-  }
-
   void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
-
-  void setPeer(const SharedHandle<Peer>& peer);
 
   void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
 
