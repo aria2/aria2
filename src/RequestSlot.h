@@ -44,11 +44,11 @@ namespace aria2 {
 
 class RequestSlot {
 private:
-  Timer dispatchedTime;
-  size_t index;
-  uint32_t begin;
-  size_t length;
-  size_t blockIndex;
+  Timer _dispatchedTime;
+  size_t _index;
+  uint32_t _begin;
+  size_t _length;
+  size_t _blockIndex;
 
   // This is the piece whose index is index of this RequestSlot has.
   // To detect duplicate RequestSlot, we have to find the piece using
@@ -60,30 +60,31 @@ private:
   // inlined for performance reason
   void copy(const RequestSlot& requestSlot)
   {
-    dispatchedTime = requestSlot.dispatchedTime;
-    index = requestSlot.index;
-    begin = requestSlot.begin;
-    length = requestSlot.length;
-    blockIndex = requestSlot.blockIndex;
+    _dispatchedTime = requestSlot._dispatchedTime;
+    _index = requestSlot._index;
+    _begin = requestSlot._begin;
+    _length = requestSlot._length;
+    _blockIndex = requestSlot._blockIndex;
     _piece = requestSlot._piece;
   }
 public:
   
   RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex,
               const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
-    dispatchedTime(global::wallclock),
-    index(index), begin(begin), length(length), blockIndex(blockIndex),
+    _dispatchedTime(global::wallclock),
+    _index(index), _begin(begin), _length(length), _blockIndex(blockIndex),
     _piece(piece) {}
 
   RequestSlot(const RequestSlot& requestSlot):
-    dispatchedTime(requestSlot.dispatchedTime),
-    index(requestSlot.index),
-    begin(requestSlot.begin),
-    length(requestSlot.length),
-    blockIndex(requestSlot.blockIndex),
+    _dispatchedTime(requestSlot._dispatchedTime),
+    _index(requestSlot._index),
+    _begin(requestSlot._begin),
+    _length(requestSlot._length),
+    _blockIndex(requestSlot._blockIndex),
     _piece(requestSlot._piece) {}
 
-  RequestSlot():dispatchedTime(0), index(0), begin(0), length(0), blockIndex(0)
+  RequestSlot():_dispatchedTime(0), _index(0), _begin(0), _length(0),
+                _blockIndex(0)
   {}
 
   ~RequestSlot() {}
@@ -98,8 +99,8 @@ public:
 
   bool operator==(const RequestSlot& requestSlot) const
   {
-    return index == requestSlot.index && begin == requestSlot.begin
-      && length == requestSlot.length;
+    return _index == requestSlot._index && _begin == requestSlot._begin
+      && _length == requestSlot._length;
   }
 
   bool operator!=(const RequestSlot& requestSlot) const
@@ -109,10 +110,10 @@ public:
   
   bool operator<(const RequestSlot& requestSlot) const
   {
-    if(index == requestSlot.index) {
-      return begin < requestSlot.begin;
+    if(_index == requestSlot._index) {
+      return _begin < requestSlot._begin;
     } else {
-      return index < requestSlot.index;
+      return _index < requestSlot._index;
     }
   }
 
@@ -120,17 +121,17 @@ public:
 
   bool isTimeout(time_t timeoutSec) const;
 
-  size_t getIndex() const { return index; }
-  void setIndex(size_t index) { this->index = index; }
+  size_t getIndex() const { return _index; }
+  void setIndex(size_t index) { _index = index; }
 
-  uint32_t getBegin() const { return begin; }
-  void setBegin(uint32_t begin) { this->begin = begin; }
+  uint32_t getBegin() const { return _begin; }
+  void setBegin(uint32_t begin) { _begin = begin; }
 
-  size_t getLength() const { return length; }
-  void setLength(size_t length) { this->length = length; }
+  size_t getLength() const { return _length; }
+  void setLength(size_t length) { _length = length; }
 
-  size_t getBlockIndex() const { return blockIndex; }
-  void setBlockIndex(size_t blockIndex) { this->blockIndex = blockIndex; }
+  size_t getBlockIndex() const { return _blockIndex; }
+  void setBlockIndex(size_t blockIndex) { _blockIndex = blockIndex; }
 
   const SharedHandle<Piece>& getPiece() const
   {
