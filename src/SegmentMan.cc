@@ -55,16 +55,11 @@
 
 namespace aria2 {
 
-SegmentEntry::SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment):
-  cuid(cuid), segment(segment) {}
-
-SegmentEntry::~SegmentEntry() {}
-
 SegmentMan::SegmentMan(const Option* option,
                        const SharedHandle<DownloadContext>& downloadContext,
                        const PieceStorageHandle& pieceStorage):
   _option(option),
-  logger(LogFactory::getInstance()),
+  _logger(LogFactory::getInstance()),
   _downloadContext(downloadContext),
   _pieceStorage(pieceStorage),
   _lastPeerStatDlspdMapUpdated(0),
@@ -88,7 +83,8 @@ bool SegmentMan::downloadFinished() const
 
 void SegmentMan::init()
 {
-  // TODO Do we have to do something about DownloadContext and PieceStorage here?  
+  // TODO Do we have to do something about DownloadContext and
+  // PieceStorage here?
 }
 
 uint64_t SegmentMan::getTotalLength() const
@@ -117,9 +113,9 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   if(piece.isNull()) {
     return SharedHandle<Segment>();
   }
-  if(logger->debug()) {
-    logger->debug("Attach segment#%d to CUID#%s.",
-                  piece->getIndex(), util::itos(cuid).c_str());
+  if(_logger->debug()) {
+    _logger->debug("Attach segment#%d to CUID#%s.",
+                   piece->getIndex(), util::itos(cuid).c_str());
   }
   SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {
@@ -128,22 +124,22 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
     segment.reset(new PiecedSegment(_downloadContext->getPieceLength(), piece));
   }
   SegmentEntryHandle entry(new SegmentEntry(cuid, segment));
-  usedSegmentEntries.push_back(entry);
-  if(logger->debug()) {
-    logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
-                  segment->getIndex(),
-                  segment->getLength(),
-                  segment->getSegmentLength(),
-                  segment->getWrittenLength());
+  _usedSegmentEntries.push_back(entry);
+  if(_logger->debug()) {
+    _logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
+                   segment->getIndex(),
+                   segment->getLength(),
+                   segment->getSegmentLength(),
+                   segment->getWrittenLength());
   }
   if(piece->getLength() > 0) {
     std::map<size_t, size_t>::iterator positr =
       _segmentWrittenLengthMemo.find(segment->getIndex());
     if(positr != _segmentWrittenLengthMemo.end()) {
       const size_t writtenLength = (*positr).second;
-      if(logger->debug()) {
-        logger->debug("writtenLength(in memo)=%d, writtenLength=%d",
-                      writtenLength, segment->getWrittenLength());
+      if(_logger->debug()) {
+        _logger->debug("writtenLength(in memo)=%d, writtenLength=%d",
+                       writtenLength, segment->getWrittenLength());
       }
       //  If the difference between cached writtenLength and segment's
       //  writtenLength is less than one block, we assume that these
@@ -160,8 +156,8 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
 void SegmentMan::getInFlightSegment
 (std::vector<SharedHandle<Segment> >& segments, cuid_t cuid)
 {
-  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin(),
-        eoi = usedSegmentEntries.end(); itr != eoi; ++itr) {
+  for(SegmentEntries::const_iterator itr = _usedSegmentEntries.begin(),
+        eoi = _usedSegmentEntries.end(); itr != eoi; ++itr) {
     const SegmentEntryHandle& segmentEntry = *itr;
     if(segmentEntry->cuid == cuid) {
       segments.push_back(segmentEntry->segment);
@@ -220,8 +216,8 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
   if(index > 0 && _downloadContext->getNumPieces() <= index) {
     return SharedHandle<Segment>();
   }
-  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin(),
-        eoi = usedSegmentEntries.end(); itr != eoi; ++itr) {
+  for(SegmentEntries::const_iterator itr = _usedSegmentEntries.begin(),
+        eoi = _usedSegmentEntries.end(); itr != eoi; ++itr) {
     const SharedHandle<SegmentEntry>& segmentEntry = *itr;
     if(segmentEntry->segment->getIndex() == index) {
       if(segmentEntry->cuid == cuid) {
@@ -245,24 +241,24 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
 
 void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
 {
-  if(logger->debug()) {
-    logger->debug("Canceling segment#%d", segment->getIndex());
+  if(_logger->debug()) {
+    _logger->debug("Canceling segment#%d", segment->getIndex());
   }
   _pieceStorage->cancelPiece(segment->getPiece());
   _segmentWrittenLengthMemo[segment->getIndex()] = segment->getWrittenLength();
-  if(logger->debug()) {
-    logger->debug("Memorized segment index=%u, writtenLength=%u",
-                  segment->getIndex(), segment->getWrittenLength());
+  if(_logger->debug()) {
+    _logger->debug("Memorized segment index=%u, writtenLength=%u",
+                   segment->getIndex(), segment->getWrittenLength());
   }
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {
-  for(SegmentEntries::iterator itr = usedSegmentEntries.begin(),
-        eoi = usedSegmentEntries.end(); itr != eoi;) {
+  for(SegmentEntries::iterator itr = _usedSegmentEntries.begin(),
+        eoi = _usedSegmentEntries.end(); itr != eoi;) {
     if((*itr)->cuid == cuid) {
       cancelSegment((*itr)->segment);
-      itr = usedSegmentEntries.erase(itr);
-      eoi = usedSegmentEntries.end();
+      itr = _usedSegmentEntries.erase(itr);
+      eoi = _usedSegmentEntries.end();
     } else {
       ++itr;
     }
@@ -272,12 +268,12 @@ void SegmentMan::cancelSegment(cuid_t cuid) {
 void SegmentMan::cancelSegment
 (cuid_t cuid, const SharedHandle<Segment>& segment)
 {
-  for(SegmentEntries::iterator itr = usedSegmentEntries.begin(),
-        eoi = usedSegmentEntries.end(); itr != eoi;) {
+  for(SegmentEntries::iterator itr = _usedSegmentEntries.begin(),
+        eoi = _usedSegmentEntries.end(); itr != eoi;) {
     if((*itr)->cuid == cuid && (*itr)->segment == segment) {
       cancelSegment((*itr)->segment);
-      itr = usedSegmentEntries.erase(itr);
-      //eoi = usedSegmentEntries.end();
+      itr = _usedSegmentEntries.erase(itr);
+      //eoi = _usedSegmentEntries.end();
       break;
     } else {
       ++itr;
@@ -288,11 +284,11 @@ void SegmentMan::cancelSegment
 void SegmentMan::cancelAllSegments()
 {
   for(std::deque<SharedHandle<SegmentEntry> >::iterator itr =
-        usedSegmentEntries.begin(), eoi = usedSegmentEntries.end();
+        _usedSegmentEntries.begin(), eoi = _usedSegmentEntries.end();
       itr != eoi; ++itr) {
     cancelSegment((*itr)->segment);
   }
-  usedSegmentEntries.clear();
+  _usedSegmentEntries.clear();
 }
 
 void SegmentMan::eraseSegmentWrittenLengthMemo()
@@ -316,13 +312,13 @@ bool SegmentMan::completeSegment
 (cuid_t cuid, const SharedHandle<Segment>& segment) {
   _pieceStorage->completePiece(segment->getPiece());
   _pieceStorage->advertisePiece(cuid, segment->getPiece()->getIndex());
-  SegmentEntries::iterator itr = std::find_if(usedSegmentEntries.begin(),
-                                              usedSegmentEntries.end(),
+  SegmentEntries::iterator itr = std::find_if(_usedSegmentEntries.begin(),
+                                              _usedSegmentEntries.end(),
                                               FindSegmentEntry(segment));
-  if(itr == usedSegmentEntries.end()) {
+  if(itr == _usedSegmentEntries.end()) {
     return false;
   } else {
-    usedSegmentEntries.erase(itr);
+    _usedSegmentEntries.erase(itr);
     return true;
   }
 }
@@ -341,20 +337,20 @@ uint64_t SegmentMan::getDownloadLength() const {
 
 void SegmentMan::registerPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
-  for(std::vector<SharedHandle<PeerStat> >::iterator i = peerStats.begin(),
-        eoi = peerStats.end(); i != eoi; ++i) {
+  for(std::vector<SharedHandle<PeerStat> >::iterator i = _peerStats.begin(),
+        eoi = _peerStats.end(); i != eoi; ++i) {
     if((*i)->getStatus() == PeerStat::IDLE) {
       *i = peerStat;
       return;
     }
   }
-  peerStats.push_back(peerStat);
+  _peerStats.push_back(peerStat);
 }
 
 SharedHandle<PeerStat> SegmentMan::getPeerStat(cuid_t cuid) const
 {
   for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
-        peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
+        _peerStats.begin(), eoi = _peerStats.end(); i != eoi; ++i) {
     if((*i)->getCuid() == cuid) {
       return *i;
     }
@@ -401,7 +397,7 @@ unsigned int SegmentMan::calculateDownloadSpeed()
     _lastPeerStatDlspdMapUpdated = global::wallclock;
     _peerStatDlspdMap.clear();
     for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
-          peerStats.begin(), eoi = peerStats.end(); i != eoi; ++i) {
+          _peerStats.begin(), eoi = _peerStats.end(); i != eoi; ++i) {
       if((*i)->getStatus() == PeerStat::ACTIVE) {
         unsigned int s = (*i)->calculateDownloadSpeed();
         _peerStatDlspdMap[(*i)->getCuid()] = s;
@@ -455,11 +451,11 @@ size_t SegmentMan::countFreePieceFrom(size_t index) const
 
 void SegmentMan::ignoreSegmentFor(const SharedHandle<FileEntry>& fileEntry)
 {
-  if(logger->debug()) {
-    logger->debug("ignoring segment for path=%s, offset=%s, length=%s",
-                  fileEntry->getPath().c_str(),
-                  util::itos(fileEntry->getOffset()).c_str(),
-                  util::uitos(fileEntry->getLength()).c_str());
+  if(_logger->debug()) {
+    _logger->debug("ignoring segment for path=%s, offset=%s, length=%s",
+                   fileEntry->getPath().c_str(),
+                   util::itos(fileEntry->getOffset()).c_str(),
+                   util::uitos(fileEntry->getLength()).c_str());
   }
   _ignoreBitfield.addFilter(fileEntry->getOffset(), fileEntry->getLength());
 }

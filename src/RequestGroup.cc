@@ -77,6 +77,7 @@
 #include "SocketCore.h"
 #include "SimpleRandomizer.h"
 #include "ServerStatMan.h"
+#include "Segment.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST

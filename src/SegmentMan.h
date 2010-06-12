@@ -57,14 +57,11 @@ class PieceStorage;
 class Piece;
 class FileEntry;
 
-class SegmentEntry {
-public:
+struct SegmentEntry {
   cuid_t cuid;
   SharedHandle<Segment> segment;
-public:
-  SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment);
-
-  ~SegmentEntry();
+  SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment):
+    cuid(cuid), segment(segment) {}
 };
 
 typedef SharedHandle<SegmentEntry> SegmentEntryHandle;
@@ -77,20 +74,20 @@ class SegmentMan {
 private:
   const Option* _option;
 
-  Logger* logger;
+  Logger* _logger;
 
   SharedHandle<DownloadContext> _downloadContext;
 
   SharedHandle<PieceStorage> _pieceStorage;
 
-  SegmentEntries usedSegmentEntries;
+  SegmentEntries _usedSegmentEntries;
 
   // Remember writtenLength for each segment. The key is an index of a
   // segment. The value is writtenLength for that segment.
   std::map<size_t, size_t> _segmentWrittenLengthMemo;
 
   // Used for calculating download speed.
-  std::vector<SharedHandle<PeerStat> > peerStats;
+  std::vector<SharedHandle<PeerStat> > _peerStats;
 
   // Keep track of fastest PeerStat for each server
   std::vector<SharedHandle<PeerStat> > _fastestPeerStats;
@@ -207,14 +204,14 @@ public:
   uint64_t getDownloadLength() const;
 
 
-  // If there is inactive PeerStat in peerStats, it is replaced with
+  // If there is inactive PeerStat in _peerStats, it is replaced with
   // given peerStat. If no such PeerStat exist, the given peerStat is
   // inserted.
   void registerPeerStat(const SharedHandle<PeerStat>& peerStat);
 
   const std::vector<SharedHandle<PeerStat> >& getPeerStats() const
   {
-    return peerStats;
+    return _peerStats;
   }
 
   SharedHandle<PeerStat> getPeerStat(cuid_t cuid) const;

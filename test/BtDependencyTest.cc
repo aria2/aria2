@@ -10,6 +10,7 @@
 #include "Option.h"
 #include "Exception.h"
 #include "SegmentMan.h"
+#include "Segment.h"
 #include "FileEntry.h"
 #include "PieceSelector.h"
 #include "bittorrent_helper.h"

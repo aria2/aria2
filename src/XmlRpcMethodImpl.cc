@@ -67,6 +67,7 @@
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "Segment.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"

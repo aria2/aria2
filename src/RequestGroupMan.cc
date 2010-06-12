@@ -69,6 +69,7 @@
 #include "StringFormat.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "Segment.h"
 
 namespace aria2 {
 

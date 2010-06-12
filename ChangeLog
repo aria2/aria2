@@ -1,5 +1,15 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variables in SegmentMan
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* src/XmlRpcMethodImpl.cc
+	* test/BtDependencyTest.cc
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed member variables.
 	* src/RequestSlot.cc
 	* src/RequestSlot.h
