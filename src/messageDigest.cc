@@ -103,7 +103,7 @@ std::string MessageDigestContext::getCanonicalAlgo
 
 std::string MessageDigestContext::digestFinal()
 {
-  size_t length = digestLength(algo);
+  size_t length = digestLength(_algo);
   unsigned char* rawMD = new unsigned char[length];
   digestFinal(rawMD);
   std::string rawMDString(&rawMD[0], &rawMD[length]);
