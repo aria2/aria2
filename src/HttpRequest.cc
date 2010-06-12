@@ -56,37 +56,38 @@ namespace aria2 {
 const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():_contentEncodingEnabled(true),
-                           userAgent(USER_AGENT),
+                           _userAgent(USER_AGENT),
                            _noCache(true),
                            _acceptGzip(false)
 {}
 
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
 {
-  this->segment = segment;
+  _segment = segment;
 }
 
 void HttpRequest::setRequest(const SharedHandle<Request>& request)
 {
-  this->request = request;
+  _request = request;
 }
 
 off_t HttpRequest::getStartByte() const
 {
-  if(segment.isNull()) {
+  if(_segment.isNull()) {
     return 0;
   } else {
-    return _fileEntry->gtoloff(segment->getPositionToWrite());
+    return _fileEntry->gtoloff(_segment->getPositionToWrite());
   }
 }
 
 off_t HttpRequest::getEndByte() const
 {
-  if(segment.isNull() || request.isNull()) {
+  if(_segment.isNull() || _request.isNull()) {
     return 0;
   } else {
-    if(request->isPipeliningEnabled()) {
-      off_t endByte = _fileEntry->gtoloff(segment->getPosition()+segment->getLength()-1);
+    if(_request->isPipeliningEnabled()) {
+      off_t endByte =
+        _fileEntry->gtoloff(_segment->getPosition()+_segment->getLength()-1);
       return std::min(endByte, static_cast<off_t>(_fileEntry->getLength()-1));
     } else {
       return 0;
@@ -97,7 +98,7 @@ off_t HttpRequest::getEndByte() const
 RangeHandle HttpRequest::getRange() const
 {
   // content-length is always 0
-  if(segment.isNull()) {
+  if(_segment.isNull()) {
     return SharedHandle<Range>(new Range());
   } else {
     return SharedHandle<Range>(new Range(getStartByte(), getEndByte(),
@@ -107,7 +108,7 @@ RangeHandle HttpRequest::getRange() const
 
 bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
 {
-  if(segment.isNull()) {
+  if(_segment.isNull()) {
     return true;
   }
   if((getStartByte() == range->getStartByte()) &&
@@ -132,12 +133,12 @@ static std::string getHostText(const std::string& host, uint16_t port)
 
 std::string HttpRequest::createRequest()
 {
-  _authConfig = _authConfigFactory->createAuthConfig(request, _option);
-  std::string requestLine = request->getMethod();
+  _authConfig = _authConfigFactory->createAuthConfig(_request, _option);
+  std::string requestLine = _request->getMethod();
   requestLine += " ";
   if(!_proxyRequest.isNull()) {
     if(getProtocol() == Request::PROTO_FTP &&
-       request->getUsername().empty() && !_authConfig.isNull()) {
+       _request->getUsername().empty() && !_authConfig.isNull()) {
       // Insert user into URI, like ftp://USER@host/
       std::string uri = getCurrentURI();
       assert(uri.size() >= 6);
@@ -160,7 +161,7 @@ std::string HttpRequest::createRequest()
 
   std::vector<std::pair<std::string, std::string> > builtinHds;
   builtinHds.reserve(20);
-  builtinHds.push_back(std::make_pair("User-Agent:", userAgent));
+  builtinHds.push_back(std::make_pair("User-Agent:", _userAgent));
   std::string acceptTypes = "*/*";
   for(std::vector<std::string>::const_iterator i = _acceptTypes.begin(),
         eoi = _acceptTypes.end(); i != eoi; ++i) {
@@ -185,21 +186,21 @@ std::string HttpRequest::createRequest()
     builtinHds.push_back(std::make_pair("Pragma:", "no-cache"));
     builtinHds.push_back(std::make_pair("Cache-Control:", "no-cache"));
   }
-  if(!request->isKeepAliveEnabled() && !request->isPipeliningEnabled()) {
+  if(!_request->isKeepAliveEnabled() && !_request->isPipeliningEnabled()) {
     builtinHds.push_back(std::make_pair("Connection:", "close"));
   }
-  if(!segment.isNull() && segment->getLength() > 0 && 
-     (request->isPipeliningEnabled() || getStartByte() > 0)) {
+  if(!_segment.isNull() && _segment->getLength() > 0 && 
+     (_request->isPipeliningEnabled() || getStartByte() > 0)) {
     std::string rangeHeader = "bytes=";
     rangeHeader += util::itos(getStartByte());
     rangeHeader += "-";
-    if(request->isPipeliningEnabled()) {
+    if(_request->isPipeliningEnabled()) {
       rangeHeader += util::itos(getEndByte());
     }
     builtinHds.push_back(std::make_pair("Range:", rangeHeader));
   }
   if(!_proxyRequest.isNull()) {
-    if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
+    if(_request->isKeepAliveEnabled() || _request->isPipeliningEnabled()) {
       builtinHds.push_back(std::make_pair("Proxy-Connection:", "Keep-Alive"));
     } else {
       builtinHds.push_back(std::make_pair("Proxy-Connection:", "close"));
@@ -263,7 +264,7 @@ std::string HttpRequest::createProxyRequest() const
 
   std::string requestLine = "CONNECT ";
   strappend(requestLine, hostport, " HTTP/1.1\r\n");
-  strappend(requestLine, "User-Agent: ", userAgent, "\r\n");
+  strappend(requestLine, "User-Agent: ", _userAgent, "\r\n");
   strappend(requestLine, "Host: ", hostport, "\r\n");
   // TODO Is "Proxy-Connection" needed here?
   //   if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {

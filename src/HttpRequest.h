@@ -59,15 +59,15 @@ private:
   
   static const std::string USER_AGENT;
 
-  SharedHandle<Request> request;
+  SharedHandle<Request> _request;
 
   SharedHandle<FileEntry> _fileEntry;
 
-  SharedHandle<Segment> segment;
+  SharedHandle<Segment> _segment;
 
   bool _contentEncodingEnabled;
 
-  std::string userAgent;
+  std::string _userAgent;
 
   std::vector<std::string> _headers;
 
@@ -93,7 +93,7 @@ public:
 
   const SharedHandle<Segment>& getSegment() const
   {
-    return segment;
+    return _segment;
   }
 
   void setSegment(const SharedHandle<Segment>& segment);
@@ -108,52 +108,52 @@ public:
 
   const std::string& getHost() const
   {
-    return request->getHost();
+    return _request->getHost();
   }
 
   uint16_t getPort() const
   {
-    return request->getPort();
+    return _request->getPort();
   }
 
   const std::string& getMethod() const
   {
-    return request->getMethod();
+    return _request->getMethod();
   }
 
   const std::string& getProtocol() const
   {
-    return request->getProtocol();
+    return _request->getProtocol();
   }
 
   const std::string& getCurrentURI() const
   {
-    return request->getCurrentUri();
+    return _request->getCurrentUri();
   }
   
   const std::string& getDir() const
   {
-    return request->getDir();
+    return _request->getDir();
   }
 
   const std::string& getFile() const
   {
-    return request->getFile();
+    return _request->getFile();
   }
 
   const std::string& getQuery() const
   {
-    return request->getQuery();
+    return _request->getQuery();
   }
 
   const std::string& getPreviousURI() const
   {
-    return request->getPreviousUri();
+    return _request->getPreviousUri();
   }
 
   std::string getURIHost() const
   {
-    return request->getURIHost();
+    return _request->getURIHost();
   }
 
   SharedHandle<Range> getRange() const;
@@ -166,7 +166,7 @@ public:
 
   const SharedHandle<Request>& getRequest() const
   {
-    return request;
+    return _request;
   }
 
   off_t getStartByte() const;
@@ -194,7 +194,7 @@ public:
 
   void setUserAgent(const std::string& userAgent)
   {
-    this->userAgent = userAgent;
+    _userAgent = userAgent;
   }
   
   // accepts multiline headers, delimited by LF
