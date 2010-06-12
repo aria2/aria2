@@ -1016,7 +1016,7 @@ BDE GetGlobalOptionXmlRpcMethod::process
   BDE result = BDE::dict();
   for(std::map<std::string, std::string>::const_iterator i =
         e->getOption()->begin(), eoi = e->getOption()->end(); i != eoi; ++i) {
-    SharedHandle<OptionHandler> h = _optionParser->findByName((*i).first);
+    SharedHandle<OptionHandler> h = getOptionParser()->findByName((*i).first);
     if(!h.isNull() && !h->isHidden()) {
       result[(*i).first] = (*i).second;
     }

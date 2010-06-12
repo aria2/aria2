@@ -63,11 +63,11 @@ struct XmlRpcResponse;
 // subclass. If you add new XmlRpcMethod subclass, don't forget to add
 // it to XmlRpcMethodFactory.
 class XmlRpcMethod {
-protected:
+private:
   SharedHandle<OptionParser> _optionParser;
 
   Logger* _logger;
-
+protected:
   // Subclass must implement this function to fulfil XmlRpcRequest
   // req.  The return value of this method is used as a return value
   // of XML-RPC request.
@@ -91,6 +91,11 @@ protected:
   void applyChangeableGlobalOption(Option* dest, Option* src) const;
 
   BDE createErrorResponse(const Exception& e);
+
+  const SharedHandle<OptionParser>& getOptionParser() const
+  {
+    return _optionParser;
+  }
 public:
   XmlRpcMethod();
 

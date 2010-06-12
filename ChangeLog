@@ -1,6 +1,12 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private.
+	* src/XmlRpcMethod.h
+	* src/XmlRpcMethodImpl.cc
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private.
 	* src/UTMetadataDataExtensionMessage.cc
 	* src/UTMetadataExtensionMessage.h
 	* src/UTMetadataRejectExtensionMessage.cc
