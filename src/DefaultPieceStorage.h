@@ -54,34 +54,34 @@ class PieceSelector;
 
 class HaveEntry {
 private:
-  cuid_t cuid;
-  size_t index;
-  Timer registeredTime;
+  cuid_t _cuid;
+  size_t _index;
+  Timer _registeredTime;
 public:
   HaveEntry(cuid_t cuid, size_t index, const Timer& registeredTime):
-    cuid(cuid),
-    index(index),
-    registeredTime(registeredTime) {}
+    _cuid(cuid),
+    _index(index),
+    _registeredTime(registeredTime) {}
 
-  cuid_t getCuid() const { return cuid; }
+  cuid_t getCuid() const { return _cuid; }
 
-  size_t getIndex() const { return index; }
+  size_t getIndex() const { return _index; }
 
-  const Timer& getRegisteredTime() const { return registeredTime; }
+  const Timer& getRegisteredTime() const { return _registeredTime; }
 };
 
 class DefaultPieceStorage : public PieceStorage {
 private:
-  SharedHandle<DownloadContext> downloadContext;
-  BitfieldMan* bitfieldMan;
-  SharedHandle<DiskAdaptor> diskAdaptor;
+  SharedHandle<DownloadContext> _downloadContext;
+  BitfieldMan* _bitfieldMan;
+  SharedHandle<DiskAdaptor> _diskAdaptor;
   SharedHandle<DiskWriterFactory> _diskWriterFactory;
-  std::deque<SharedHandle<Piece> > usedPieces;
+  std::deque<SharedHandle<Piece> > _usedPieces;
 
-  size_t endGamePieceNum;
-  Logger* logger;
-  const Option* option;
-  std::deque<HaveEntry> haves;
+  size_t _endGamePieceNum;
+  Logger* _logger;
+  const Option* _option;
+  std::deque<HaveEntry> _haves;
 
   SharedHandle<PieceStatMan> _pieceStatMan;
 
@@ -124,7 +124,8 @@ public:
 
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
-  virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
+  virtual SharedHandle<Piece> getMissingFastPiece
+  (const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingPiece
   (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
@@ -177,11 +178,11 @@ public:
   virtual const unsigned char* getBitfield();
 
   virtual void setEndGamePieceNum(size_t num) {
-    endGamePieceNum = num;
+    _endGamePieceNum = num;
   }
 
   size_t getEndGamePieceNum() const {
-    return endGamePieceNum;
+    return _endGamePieceNum;
   }
 
   virtual bool isSelectiveDownloadingMode();
@@ -231,7 +232,8 @@ public:
    */
   void addUsedPiece(const SharedHandle<Piece>& piece);
 
-  void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
+  void setDiskWriterFactory
+  (const SharedHandle<DiskWriterFactory>& diskWriterFactory);
 
   const SharedHandle<PieceStatMan>& getPieceStatMan() const
   {
