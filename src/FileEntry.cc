@@ -48,13 +48,14 @@ FileEntry::FileEntry(const std::string& path,
                      uint64_t length,
                      off_t offset,
                      const std::vector<std::string>& uris):
-  path(path), _uris(uris.begin(), uris.end()), length(length), offset(offset),
-  requested(true),
+  _path(path), _uris(uris.begin(), uris.end()), _length(length),
+  _offset(offset),
+  _requested(true),
   _singleHostMultiConnection(true),
   _logger(LogFactory::getInstance()) {}
 
 FileEntry::FileEntry():
-  length(0), offset(0), requested(false),
+  _length(0), _offset(0), _requested(false),
   _singleHostMultiConnection(true),
   _logger(LogFactory::getInstance()) {}
 
@@ -62,23 +63,23 @@ FileEntry::~FileEntry() {}
 
 void FileEntry::setupDir()
 {
-  util::mkdirs(File(path).getDirname());
+  util::mkdirs(File(_path).getDirname());
 }
 
 FileEntry& FileEntry::operator=(const FileEntry& entry)
 {
   if(this != &entry) {
-    path = entry.path;
-    length = entry.length;
-    offset = entry.offset;
-    requested = entry.requested;
+    _path = entry._path;
+    _length = entry._length;
+    _offset = entry._offset;
+    _requested = entry._requested;
   }
   return *this;
 }
 
 bool FileEntry::operator<(const FileEntry& fileEntry) const
 {
-  return offset < fileEntry.offset;
+  return _offset < fileEntry._offset;
 }
 
 bool FileEntry::exists() const
@@ -88,8 +89,8 @@ bool FileEntry::exists() const
 
 off_t FileEntry::gtoloff(off_t goff) const
 {
-  assert(offset <= goff);
-  return goff-offset;
+  assert(_offset <= goff);
+  return goff-_offset;
 }
 
 void FileEntry::getUris(std::vector<std::string>& uris) const

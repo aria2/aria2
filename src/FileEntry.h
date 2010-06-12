@@ -57,12 +57,12 @@ class Logger;
 
 class FileEntry {
 private:
-  std::string path;
+  std::string _path;
   std::deque<std::string> _uris;
   std::deque<std::string> _spentUris;
-  uint64_t length;
-  off_t offset;
-  bool requested;
+  uint64_t _length;
+  off_t _offset;
+  bool _requested;
   std::deque<SharedHandle<Request> > _requestPool;
   std::deque<SharedHandle<Request> > _inFlightRequests;
   std::string _contentType;
@@ -86,31 +86,31 @@ public:
 
   std::string getBasename() const
   {
-    return File(path).getBasename();
+    return File(_path).getBasename();
   }
 
   std::string getDirname() const
   {
-    return File(path).getDirname();
+    return File(_path).getDirname();
   }
 
-  const std::string& getPath() const { return path; }
+  const std::string& getPath() const { return _path; }
 
-  void setPath(const std::string& path) { this->path = path; }
+  void setPath(const std::string& path) { _path = path; }
 
-  uint64_t getLength() const { return length; }
+  uint64_t getLength() const { return _length; }
 
-  void setLength(uint64_t length) { this->length = length; }
+  void setLength(uint64_t length) { _length = length; }
 
-  off_t getOffset() const { return offset; }
+  off_t getOffset() const { return _offset; }
 
-  void setOffset(off_t offset) { this->offset = offset; }
+  void setOffset(off_t offset) { _offset = offset; }
 
-  off_t getLastOffset() { return offset+length; }
+  off_t getLastOffset() { return _offset+_length; }
 
-  bool isRequested() const { return requested; }
+  bool isRequested() const { return _requested; }
 
-  void setRequested(bool flag) { this->requested = flag; }
+  void setRequested(bool flag) { _requested = flag; }
 
   void setupDir();
 
