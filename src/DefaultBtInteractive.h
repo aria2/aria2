@@ -54,7 +54,6 @@ class BtMessageReceiver;
 class BtMessageDispatcher;
 class BtMessageFactory;
 class BtRequestFactory;
-class PeerConnection;
 class ExtensionMessageFactory;
 class ExtensionMessageRegistry;
 class DHTNode;
@@ -98,7 +97,7 @@ public:
 
 class DefaultBtInteractive : public BtInteractive {
 private:
-  cuid_t cuid;
+  cuid_t _cuid;
 
   SharedHandle<DownloadContext> _downloadContext;
 
@@ -108,13 +107,12 @@ private:
 
   SharedHandle<PeerStorage> _peerStorage;
 
-  SharedHandle<Peer> peer;
+  SharedHandle<Peer> _peer;
 
-  SharedHandle<BtMessageReceiver> btMessageReceiver;
-  SharedHandle<BtMessageDispatcher> dispatcher;
-  SharedHandle<BtRequestFactory> btRequestFactory;
-  SharedHandle<PeerConnection> peerConnection;
-  SharedHandle<BtMessageFactory> messageFactory;
+  SharedHandle<BtMessageReceiver> _btMessageReceiver;
+  SharedHandle<BtMessageDispatcher> _dispatcher;
+  SharedHandle<BtRequestFactory> _btRequestFactory;
+  SharedHandle<BtMessageFactory> _messageFactory;
   SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
   SharedHandle<ExtensionMessageRegistry> _extensionMessageRegistry;
   SharedHandle<UTMetadataRequestFactory> _utMetadataRequestFactory;
@@ -124,16 +122,16 @@ private:
 
   WeakHandle<DHTNode> _localNode;
 
-  Logger* logger;
-  size_t allowedFastSetSize;
-  Timer haveTimer;
-  Timer keepAliveTimer;
-  Timer floodingTimer;
-  FloodingStat floodingStat;
-  Timer inactiveTimer;
+  Logger* _logger;
+  size_t _allowedFastSetSize;
+  Timer _haveTimer;
+  Timer _keepAliveTimer;
+  Timer _floodingTimer;
+  FloodingStat _floodingStat;
+  Timer _inactiveTimer;
   Timer _pexTimer;
   Timer _perSecTimer;
-  time_t keepAliveInterval;
+  time_t _keepAliveInterval;
   bool _utPexEnabled;
   bool _dhtEnabled;
 
@@ -191,7 +189,7 @@ public:
 
   void setCuid(cuid_t cuid)
   {
-    this->cuid = cuid;
+    _cuid = cuid;
   }
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
@@ -208,8 +206,6 @@ public:
 
   void setBtRequestFactory(const SharedHandle<BtRequestFactory>& factory);
 
-  void setPeerConnection(const SharedHandle<PeerConnection>& peerConnection);
-
   void setBtMessageFactory(const SharedHandle<BtMessageFactory>& factory);
 
   void setExtensionMessageFactory
@@ -222,7 +218,7 @@ public:
   }
 
   void setKeepAliveInterval(time_t keepAliveInterval) {
-    this->keepAliveInterval = keepAliveInterval;
+    _keepAliveInterval = keepAliveInterval;
   }
 
   void setUTPexEnabled(bool f)
