@@ -53,13 +53,13 @@ public:
     ACTIVE,
   };
 private:
-  cuid_t cuid;
+  cuid_t _cuid;
   std::string _hostname;
   std::string _protocol;
-  SpeedCalc downloadSpeed;
-  SpeedCalc uploadSpeed;
-  Timer downloadStartTime;
-  PeerStat::STATUS status;
+  SpeedCalc _downloadSpeed;
+  SpeedCalc _uploadSpeed;
+  Timer _downloadStartTime;
+  PeerStat::STATUS _status;
   unsigned int _avgDownloadSpeed;
   unsigned int _avgUploadSpeed;
   uint64_t _sessionDownloadLength;
@@ -68,59 +68,61 @@ public:
 
   PeerStat(cuid_t cuid, const std::string& hostname,
            const::std::string& protocol):
-    cuid(cuid),
+    _cuid(cuid),
     _hostname(hostname),
     _protocol(protocol),
-    downloadStartTime(global::wallclock),
-    status(PeerStat::IDLE),
+    _downloadStartTime(global::wallclock),
+    _status(PeerStat::IDLE),
     _avgDownloadSpeed(0),
     _avgUploadSpeed(0),
     _sessionDownloadLength(0),
     _sessionUploadLength(0) {}
 
-  PeerStat(cuid_t cuid = 0):cuid(cuid), status(PeerStat::IDLE),
-                            _avgDownloadSpeed(0),
-                            _avgUploadSpeed(0),
-                            _sessionDownloadLength(0),
-                            _sessionUploadLength(0) {}
+  PeerStat(cuid_t cuid = 0):
+    _cuid(cuid),
+    _status(PeerStat::IDLE),
+    _avgDownloadSpeed(0),
+    _avgUploadSpeed(0),
+    _sessionDownloadLength(0),
+    _sessionUploadLength(0) {}
 
   /**
    * Returns current download speed in byte per sec.
    */
   unsigned int calculateDownloadSpeed() {
-    return downloadSpeed.calculateSpeed();
+    return _downloadSpeed.calculateSpeed();
   }
 
   unsigned int calculateAvgDownloadSpeed() {
-    _avgDownloadSpeed = downloadSpeed.calculateAvgSpeed();
+    _avgDownloadSpeed = _downloadSpeed.calculateAvgSpeed();
     return _avgDownloadSpeed;
   }
 
   unsigned int calculateUploadSpeed() {
-    return uploadSpeed.calculateSpeed();
+    return _uploadSpeed.calculateSpeed();
   }
 
   unsigned int calculateAvgUploadSpeed() {
-    _avgUploadSpeed = uploadSpeed.calculateAvgSpeed();
+    _avgUploadSpeed = _uploadSpeed.calculateAvgSpeed();
     return _avgUploadSpeed;
   }
 
   void updateDownloadLength(size_t bytes) {
-    downloadSpeed.update(bytes);
+    _downloadSpeed.update(bytes);
     _sessionDownloadLength += bytes;
   }
 
   void updateUploadLength(size_t bytes) {
-    uploadSpeed.update(bytes);
+    _uploadSpeed.update(bytes);
     _sessionUploadLength += bytes;
   }
 
   unsigned int getMaxDownloadSpeed() const {
-    return downloadSpeed.getMaxSpeed();
+    return _downloadSpeed.getMaxSpeed();
   }
 
   unsigned int getMaxUploadSpeed() const {
-    return uploadSpeed.getMaxSpeed();
+    return _uploadSpeed.getMaxSpeed();
   }
 
   unsigned int getAvgDownloadSpeed() const {
@@ -132,33 +134,33 @@ public:
   }
 
   void reset() {
-    downloadSpeed.reset();
-    uploadSpeed.reset();
-    downloadStartTime = global::wallclock;
-    status = PeerStat::IDLE;
+    _downloadSpeed.reset();
+    _uploadSpeed.reset();
+    _downloadStartTime = global::wallclock;
+    _status = PeerStat::IDLE;
   }
 
   void downloadStart() {
     reset();
-    status = PeerStat::ACTIVE;
+    _status = PeerStat::ACTIVE;
   }
 
   void downloadStop() {
     calculateAvgDownloadSpeed();
     calculateAvgUploadSpeed();
-    status = PeerStat::IDLE;
+    _status = PeerStat::IDLE;
   }
 
   const Timer& getDownloadStartTime() const {
-    return downloadStartTime;
+    return _downloadStartTime;
   }
 
   PeerStat::STATUS getStatus() const {
-    return status;
+    return _status;
   }
 
   cuid_t getCuid() const {
-    return cuid;
+    return _cuid;
   }
 
   const std::string& getHostname() const
