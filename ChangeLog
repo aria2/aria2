@@ -1,6 +1,11 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variables
+	* src/SharedHandle.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed member variables
 	* src/messageDigest.cc
 	* src/messageDigest.h
 

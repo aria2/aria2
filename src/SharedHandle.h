@@ -193,55 +193,55 @@ private:
 
   template<typename S> friend class WeakHandle;
 
-  T* obj;
+  T* _obj;
 
-  SharedCount ucount;
+  SharedCount _ucount;
 
 public:
-  SharedHandle():obj(0), ucount() {}
+  SharedHandle():_obj(0), _ucount() {}
 
-  explicit SharedHandle(T* obj):obj(obj), ucount() {}
+  explicit SharedHandle(T* obj):_obj(obj), _ucount() {}
 
-  SharedHandle(const SharedHandle& t):obj(t.obj), ucount(t.ucount) {}
+  SharedHandle(const SharedHandle& t):_obj(t._obj), _ucount(t._ucount) {}
 
   template<typename S>
-  SharedHandle(const SharedHandle<S>& t):obj(t.obj), ucount(t.ucount) {}
+  SharedHandle(const SharedHandle<S>& t):_obj(t._obj), _ucount(t._ucount) {}
 
   template<typename S>
   SharedHandle(const SharedHandle<S>& t, T* p):
-    obj(p), ucount(t.ucount) {}
+    _obj(p), _ucount(t._ucount) {}
 
   ~SharedHandle() {
-    if(ucount.getRefCount() == 1) {
-      delete obj;
+    if(_ucount.getRefCount() == 1) {
+      delete _obj;
     }
   }
 
   SharedHandle& operator=(const SharedHandle& t) {
-    if(ucount.reassign(t.ucount)) {
-      delete obj;
+    if(_ucount.reassign(t._ucount)) {
+      delete _obj;
     }
-    obj = t.obj;
+    _obj = t._obj;
     return *this;
   }
 
   template<typename S>
   SharedHandle& operator=(const SharedHandle<S>& t) {
-    if(ucount.reassign(t.ucount)) {
-      delete obj;
+    if(_ucount.reassign(t._ucount)) {
+      delete _obj;
     }
-    obj = t.obj;
+    _obj = t._obj;
     return *this;
   }
 
-  T* operator->() const { return obj; }
+  T* operator->() const { return _obj; }
 
   T* get() const {
-    return obj;
+    return _obj;
   }
 
   size_t getRefCount() const {
-    return ucount.getRefCount();
+    return _ucount.getRefCount();
   }
 
   void reset() {
@@ -253,7 +253,7 @@ public:
   }
 
   bool isNull() const {
-    return obj == 0;
+    return _obj == 0;
   }
 };
 
@@ -269,23 +269,23 @@ dynamic_pointer_cast(const SharedHandle<S>& t) {
 
 template<typename T>
 std::ostream& operator<<(std::ostream& o, const SharedHandle<T>& sp) {
-  o << *sp.obj;
+  o << *sp._obj;
   return o;
 }
 
 template<typename T1, typename T2>
 bool operator==(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
-  return *t1.obj == *t2.obj;
+  return *t1._obj == *t2._obj;
 }
 
 template<typename T1, typename T2>
 bool operator!=(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
-  return *t1.obj != *t2.obj;
+  return *t1._obj != *t2._obj;
 }
 
 template<typename T1, typename T2>
 bool operator<(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
-  return *t1.obj < *t2.obj;
+  return *t1._obj < *t2._obj;
 }
 
 template<typename T>
@@ -307,60 +307,60 @@ private:
 
   template<typename S> friend class WeakHandle;
 
-  T* obj;
+  T* _obj;
 
-  WeakCount ucount;
+  WeakCount _ucount;
 
 public:
-  WeakHandle():obj(0), ucount(WeakRef()) {}
+  WeakHandle():_obj(0), _ucount(WeakRef()) {}
 
-  explicit WeakHandle(T* obj):obj(obj), ucount(StrongRef()) {}
+  explicit WeakHandle(T* obj):_obj(obj), _ucount(StrongRef()) {}
 
-  WeakHandle(const WeakHandle& t):obj(t.obj), ucount(t.ucount) {}
+  WeakHandle(const WeakHandle& t):_obj(t._obj), _ucount(t._ucount) {}
 
   template<typename S>
-  WeakHandle(const SharedHandle<S>& t):obj(t.obj), ucount(t.ucount) {}
+  WeakHandle(const SharedHandle<S>& t):_obj(t._obj), _ucount(t._ucount) {}
 
   template<typename S>
   WeakHandle(const WeakHandle<S>& t, T* p):
-    obj(p), ucount(t.ucount) {}
+    _obj(p), _ucount(t._ucount) {}
 
   ~WeakHandle() {}
 
   WeakHandle& operator=(const WeakHandle& t) { 
-    ucount.reassign(t.ucount);
-    obj = t.obj;
+    _ucount.reassign(t._ucount);
+    _obj = t._obj;
     return *this;
   }
 
   template<typename S>
   WeakHandle& operator=(const SharedHandle<S>& t) {
-    ucount.reassign(t.ucount);
-    obj = t.obj;
+    _ucount.reassign(t._ucount);
+    _obj = t._obj;
     return *this;
   }
 
   template<typename S>
   WeakHandle& operator=(const WeakHandle<S>& t) { 
-    ucount.reassign(t.ucount);
-    obj = t.obj;
+    _ucount.reassign(t._ucount);
+    _obj = t._obj;
     return *this;
   }
 
-  T* operator->() { return obj; }
+  T* operator->() { return _obj; }
 
-  T* operator->() const { return obj; }
+  T* operator->() const { return _obj; }
 
   T* get() const {
     if(isNull()) {
       return 0;
     } else {
-      return obj;
+      return _obj;
     }
   }
 
   size_t getRefCount() const {
-    return ucount.getRefCount();
+    return _ucount.getRefCount();
   }
 
   void reset() {
@@ -368,29 +368,29 @@ public:
   }
 
   bool isNull() const {
-    return ucount.getRefCount() == 0 || obj == 0;
+    return _ucount.getRefCount() == 0 || _obj == 0;
   }
 };
 
 template<typename T>
 std::ostream& operator<<(std::ostream& o, const WeakHandle<T>& sp) {
-  o << *sp.obj;
+  o << *sp._obj;
   return o;
 }
 
 template<typename T1, typename T2>
 bool operator==(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
-  return *t1.obj == *t2.obj;
+  return *t1._obj == *t2._obj;
 }
 
 template<typename T1, typename T2>
 bool operator!=(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
-  return *t1.obj != *t2.obj;
+  return *t1._obj != *t2._obj;
 }
 
 template<typename T1, typename T2>
 bool operator<(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
-  return *t1.obj < *t2.obj;
+  return *t1._obj < *t2._obj;
 }
 
 template<typename T, typename S>
