@@ -47,7 +47,7 @@ namespace aria2 {
 class DHTNode;
 
 class DHTMessage {
-protected:
+private:
   SharedHandle<DHTNode> _localNode;
 
   SharedHandle<DHTNode> _remoteNode;
@@ -85,11 +85,16 @@ public:
 
   virtual bool isReply() const = 0;
 
-  virtual void validate() const = 0;
+  virtual void validate() const {}
   
-  virtual std::string getMessageType() const = 0;
+  virtual const std::string& getMessageType() const = 0;
 
   virtual std::string toString() const = 0;
+
+  const std::string& getVersion() const
+  {
+    return _version;
+  }
 
   void setVersion(const std::string& version)
   {

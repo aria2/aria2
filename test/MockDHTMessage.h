@@ -38,11 +38,9 @@ public:
 
   void setReply(bool f) { _isReply = f; }
 
-  virtual std::string getMessageType() const { return _messageType; }
+  virtual const std::string& getMessageType() const { return _messageType; }
 
   virtual std::string toString() const { return "MockDHTMessage"; }
-
-  virtual void validate() const {}
 };
 
 } // namespace aria2

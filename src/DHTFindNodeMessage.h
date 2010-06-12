@@ -57,9 +57,7 @@ public:
 
   virtual BDE getArgument();
   
-  virtual std::string getMessageType() const;
-
-  virtual void validate() const;
+  virtual const std::string& getMessageType() const;
 
   const unsigned char* getTargetNodeID() const
   {

@@ -65,17 +65,15 @@ public:
 
   virtual BDE getArgument();
   
-  virtual std::string getMessageType() const;
-
-  virtual void validate() const;
+  virtual const std::string& getMessageType() const;
 
   const unsigned char* getInfoHash() const
   {
     return _infoHash;
   }
 
-  void setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage);
-
+  void setPeerAnnounceStorage
+  (const WeakHandle<DHTPeerAnnounceStorage>& storage);
 
   void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
 

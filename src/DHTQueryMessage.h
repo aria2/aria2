@@ -50,7 +50,7 @@ public:
 
   virtual ~DHTQueryMessage();
 
-  virtual std::string getType() const;
+  virtual const std::string& getType() const;
 
   virtual void fillMessage(BDE& msgDict);
 

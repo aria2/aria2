@@ -62,10 +62,8 @@ public:
   // always return false
   virtual bool isReply() const;
 
-  virtual void validate() const;
-  
   // returns "unknown"
-  virtual std::string getMessageType() const;
+  virtual const std::string& getMessageType() const;
 
   // show some sample bytes
   virtual std::string toString() const;

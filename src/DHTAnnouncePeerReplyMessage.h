@@ -51,9 +51,7 @@ public:
 
   virtual BDE getResponse();
 
-  virtual std::string getMessageType() const;
-
-  virtual void validate() const;
+  virtual const std::string& getMessageType() const;
 
   static const std::string ANNOUNCE_PEER;
 };

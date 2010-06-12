@@ -52,9 +52,10 @@ const std::string DHTFindNodeReplyMessage::FIND_NODE("find_node");
 
 const std::string DHTFindNodeReplyMessage::NODES("nodes");
 
-DHTFindNodeReplyMessage::DHTFindNodeReplyMessage(const SharedHandle<DHTNode>& localNode,
-                                                 const SharedHandle<DHTNode>& remoteNode,
-                                                 const std::string& transactionID):
+DHTFindNodeReplyMessage::DHTFindNodeReplyMessage
+(const SharedHandle<DHTNode>& localNode,
+ const SharedHandle<DHTNode>& remoteNode,
+ const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID) {}
 
 DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
@@ -63,8 +64,8 @@ void DHTFindNodeReplyMessage::doReceivedAction()
 {
   for(std::vector<SharedHandle<DHTNode> >::iterator i = _closestKNodes.begin(),
         eoi = _closestKNodes.end(); i != eoi; ++i) {
-    if(memcmp((*i)->getID(), _localNode->getID(), DHT_ID_LENGTH) != 0) {
-      _routingTable->addNode(*i);
+    if(memcmp((*i)->getID(), getLocalNode()->getID(), DHT_ID_LENGTH) != 0) {
+      getRoutingTable()->addNode(*i);
     }
   }
 }
@@ -72,7 +73,7 @@ void DHTFindNodeReplyMessage::doReceivedAction()
 BDE DHTFindNodeReplyMessage::getResponse()
 {
   BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
   size_t offset = 0;
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
@@ -90,12 +91,10 @@ BDE DHTFindNodeReplyMessage::getResponse()
   return aDict;
 }
 
-std::string DHTFindNodeReplyMessage::getMessageType() const
+const std::string& DHTFindNodeReplyMessage::getMessageType() const
 {
   return FIND_NODE;
 }
-
-void DHTFindNodeReplyMessage::validate() const {}
 
 void DHTFindNodeReplyMessage::setClosestKNodes
 (const std::vector<SharedHandle<DHTNode> >& closestKNodes)

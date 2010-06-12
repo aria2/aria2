@@ -63,11 +63,9 @@ BDE DHTPingReplyMessage::getResponse()
   return rDict;
 }
 
-std::string DHTPingReplyMessage::getMessageType() const
+const std::string& DHTPingReplyMessage::getMessageType() const
 {
   return PING;
 }
-
-void DHTPingReplyMessage::validate() const {}
 
 } // namespace aria2

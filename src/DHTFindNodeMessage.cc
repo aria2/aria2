@@ -64,26 +64,25 @@ DHTFindNodeMessage::~DHTFindNodeMessage() {}
 void DHTFindNodeMessage::doReceivedAction()
 {
   std::vector<SharedHandle<DHTNode> > nodes;
-  _routingTable->getClosestKNodes(nodes, _targetNodeID);
+  getRoutingTable()->getClosestKNodes(nodes, _targetNodeID);
   SharedHandle<DHTMessage> reply =
-    _factory->createFindNodeReplyMessage(_remoteNode, nodes, _transactionID);
-  _dispatcher->addMessageToQueue(reply);
+    getMessageFactory()->createFindNodeReplyMessage
+    (getRemoteNode(), nodes, getTransactionID());
+  getMessageDispatcher()->addMessageToQueue(reply);
 }
 
 BDE DHTFindNodeMessage::getArgument()
 {
   BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
   aDict[TARGET_NODE] = BDE(_targetNodeID, DHT_ID_LENGTH);
   return aDict;
 }
 
-std::string DHTFindNodeMessage::getMessageType() const
+const std::string& DHTFindNodeMessage::getMessageType() const
 {
   return FIND_NODE;
 }
-
-void DHTFindNodeMessage::validate() const {}
 
 std::string DHTFindNodeMessage::toStringOptional() const
 {

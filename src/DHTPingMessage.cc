@@ -54,22 +54,22 @@ DHTPingMessage::~DHTPingMessage() {}
 void DHTPingMessage::doReceivedAction()
 {
   // send back ping reply
-  SharedHandle<DHTMessage> reply = _factory->createPingReplyMessage(_remoteNode, _localNode->getID(), _transactionID);
-  _dispatcher->addMessageToQueue(reply);
+  SharedHandle<DHTMessage> reply =
+    getMessageFactory()->createPingReplyMessage
+    (getRemoteNode(), getLocalNode()->getID(), getTransactionID());
+  getMessageDispatcher()->addMessageToQueue(reply);
 }
 
 BDE DHTPingMessage::getArgument()
 {
   BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
   return aDict;
 }
 
-std::string DHTPingMessage::getMessageType() const
+const std::string& DHTPingMessage::getMessageType() const
 {
   return PING;
 }
-
-void DHTPingMessage::validate() const {}
 
 } // namespace aria2

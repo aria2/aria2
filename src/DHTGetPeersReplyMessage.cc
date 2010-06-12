@@ -76,7 +76,7 @@ void DHTGetPeersReplyMessage::doReceivedAction()
 BDE DHTGetPeersReplyMessage::getResponse()
 {
   BDE rDict = BDE::dict();
-  rDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  rDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
   rDict[TOKEN] = _token;
   if(_values.empty()) {
     size_t offset = 0;
@@ -128,12 +128,10 @@ BDE DHTGetPeersReplyMessage::getResponse()
   return rDict;  
 }
 
-std::string DHTGetPeersReplyMessage::getMessageType() const
+const std::string& DHTGetPeersReplyMessage::getMessageType() const
 {
   return GET_PEERS;
 }
-
-void DHTGetPeersReplyMessage::validate() const {}
 
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {

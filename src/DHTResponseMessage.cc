@@ -49,7 +49,7 @@ DHTResponseMessage::DHTResponseMessage(const SharedHandle<DHTNode>& localNode,
 
 DHTResponseMessage::~DHTResponseMessage() {}
 
-std::string DHTResponseMessage::getType() const
+const std::string& DHTResponseMessage::getType() const
 {
   return R;
 }
@@ -68,14 +68,14 @@ std::string DHTResponseMessage::toString() const
 {
   std::string s = strconcat
     ("dht response ", getMessageType(),
-     " TransactionID=", util::toHex(_transactionID),
-     " Remote:", _remoteNode->getIPAddress(),
-     ":", util::uitos(_remoteNode->getPort()),
-     ", id=", util::toHex(_remoteNode->getID(), DHT_ID_LENGTH),
+     " TransactionID=", util::toHex(getTransactionID()),
+     " Remote:", getRemoteNode()->getIPAddress(),
+     ":", util::uitos(getRemoteNode()->getPort()),
+     ", id=", util::toHex(getRemoteNode()->getID(), DHT_ID_LENGTH),
      ", ");
-  if(!_version.empty()) {
+  if(!getVersion().empty()) {
     s += "v=";
-    s += util::torrentPercentEncode(_version);
+    s += util::torrentPercentEncode(getVersion());
     s += ", ";
   }
   s += toStringOptional();

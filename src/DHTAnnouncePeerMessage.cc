@@ -60,12 +60,13 @@ const std::string DHTAnnouncePeerMessage::PORT("port");
 
 const std::string DHTAnnouncePeerMessage::TOKEN("token");
 
-DHTAnnouncePeerMessage::DHTAnnouncePeerMessage(const SharedHandle<DHTNode>& localNode,
-                                               const SharedHandle<DHTNode>& remoteNode,
-                                               const unsigned char* infoHash,
-                                               uint16_t tcpPort,
-                                               const std::string& token,
-                                               const std::string& transactionID):
+DHTAnnouncePeerMessage::DHTAnnouncePeerMessage
+(const SharedHandle<DHTNode>& localNode,
+ const SharedHandle<DHTNode>& remoteNode,
+ const unsigned char* infoHash,
+ uint16_t tcpPort,
+ const std::string& token,
+ const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID),
   _token(token),
   _tcpPort(tcpPort)
@@ -77,25 +78,26 @@ DHTAnnouncePeerMessage::~DHTAnnouncePeerMessage() {}
 
 void DHTAnnouncePeerMessage::doReceivedAction()
 {
-  _peerAnnounceStorage->addPeerAnnounce(_infoHash, _remoteNode->getIPAddress(),
-                                        _tcpPort);
+  _peerAnnounceStorage->addPeerAnnounce
+    (_infoHash, getRemoteNode()->getIPAddress(), _tcpPort);
 
   SharedHandle<DHTMessage> reply =
-    _factory->createAnnouncePeerReplyMessage(_remoteNode, _transactionID);
-  _dispatcher->addMessageToQueue(reply);
+    getMessageFactory()->createAnnouncePeerReplyMessage
+    (getRemoteNode(), getTransactionID());
+  getMessageDispatcher()->addMessageToQueue(reply);
 }
 
 BDE DHTAnnouncePeerMessage::getArgument()
 {
   BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
   aDict[INFO_HASH] = BDE(_infoHash, DHT_ID_LENGTH);
   aDict[PORT] = _tcpPort;
   aDict[TOKEN] = _token;
   return aDict;
 }
 
-std::string DHTAnnouncePeerMessage::getMessageType() const
+const std::string& DHTAnnouncePeerMessage::getMessageType() const
 {
   return ANNOUNCE_PEER;
 }
@@ -103,22 +105,24 @@ std::string DHTAnnouncePeerMessage::getMessageType() const
 void DHTAnnouncePeerMessage::validate() const
 {
   if(!_tokenTracker->validateToken(_token, _infoHash,
-                                   _remoteNode->getIPAddress(),
-                                   _remoteNode->getPort())) {
+                                   getRemoteNode()->getIPAddress(),
+                                   getRemoteNode()->getPort())) {
     throw DL_ABORT_EX
       (StringFormat("Invalid token=%s from %s:%u",
                     util::toHex(_token).c_str(),
-                    _remoteNode->getIPAddress().c_str(),
-                    _remoteNode->getPort()).str());
+                    getRemoteNode()->getIPAddress().c_str(),
+                    getRemoteNode()->getPort()).str());
   }
 }
 
-void DHTAnnouncePeerMessage::setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage)
+void DHTAnnouncePeerMessage::setPeerAnnounceStorage
+(const WeakHandle<DHTPeerAnnounceStorage>& storage)
 {
   _peerAnnounceStorage = storage;
 }
 
-void DHTAnnouncePeerMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker)
+void DHTAnnouncePeerMessage::setTokenTracker
+(const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
   _tokenTracker = tokenTracker;
 }

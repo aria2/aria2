@@ -77,9 +77,7 @@ bool DHTUnknownMessage::isReply() const
   return false;
 }
 
-void DHTUnknownMessage::validate() const {}
-  
-std::string DHTUnknownMessage::getMessageType() const
+const std::string& DHTUnknownMessage::getMessageType() const
 {
   return UNKNOWN;
 }

@@ -47,7 +47,7 @@ class DHTMessageFactory;
 class DHTRoutingTable;
 
 class DHTAbstractMessage:public DHTMessage {
-protected:
+private:
   WeakHandle<DHTConnection> _connection;
 
   WeakHandle<DHTMessageDispatcher> _dispatcher;
@@ -64,17 +64,37 @@ public:
 
   virtual bool send();
 
-  virtual std::string getType() const = 0;
+  virtual const std::string& getType() const = 0;
 
   virtual void fillMessage(BDE& msgDict) = 0;
 
   std::string getBencodedMessage();
 
+  const WeakHandle<DHTConnection>& getConnection() const
+  {
+    return _connection;
+  }
+
   void setConnection(const WeakHandle<DHTConnection>& connection);
+
+  const WeakHandle<DHTMessageDispatcher>& getMessageDispatcher() const
+  {
+    return _dispatcher;
+  }
 
   void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher>& dispatcher);
   
+  const WeakHandle<DHTMessageFactory>& getMessageFactory() const
+  {
+    return _factory;
+  }
+
   void setMessageFactory(const WeakHandle<DHTMessageFactory>& factory);
+
+  const WeakHandle<DHTRoutingTable>& getRoutingTable() const
+  {
+    return _routingTable;
+  }
 
   void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
 };

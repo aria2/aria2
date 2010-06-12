@@ -66,48 +66,47 @@ DHTGetPeersMessage::~DHTGetPeersMessage() {}
 
 void DHTGetPeersMessage::doReceivedAction()
 {
-  std::string token = _tokenTracker->generateToken(_infoHash,
-                                                   _remoteNode->getIPAddress(),
-                                                   _remoteNode->getPort());
+  std::string token = _tokenTracker->generateToken
+    (_infoHash, getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
   // Check to see localhost has the contents which has same infohash
   std::vector<SharedHandle<Peer> > peers;
   _peerAnnounceStorage->getPeers(peers, _infoHash);
   SharedHandle<DHTMessage> reply;
   if(peers.empty()) {
     std::vector<SharedHandle<DHTNode> > nodes;
-    _routingTable->getClosestKNodes(nodes, _infoHash);
+    getRoutingTable()->getClosestKNodes(nodes, _infoHash);
     reply =
-      _factory->createGetPeersReplyMessage(_remoteNode, nodes, token,
-                                           _transactionID);
+      getMessageFactory()->createGetPeersReplyMessage
+      (getRemoteNode(), nodes, token, getTransactionID());
   } else {
     reply =
-      _factory->createGetPeersReplyMessage(_remoteNode, peers, token,
-                                           _transactionID);
+      getMessageFactory()->createGetPeersReplyMessage
+      (getRemoteNode(), peers, token, getTransactionID());
   }
-  _dispatcher->addMessageToQueue(reply);
+  getMessageDispatcher()->addMessageToQueue(reply);
 }
 
 BDE DHTGetPeersMessage::getArgument()
 {
   BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(_localNode->getID(), DHT_ID_LENGTH);
+  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
   aDict[INFO_HASH] = BDE(_infoHash, DHT_ID_LENGTH);
   return aDict;
 }
 
-std::string DHTGetPeersMessage::getMessageType() const
+const std::string& DHTGetPeersMessage::getMessageType() const
 {
   return GET_PEERS;
 }
 
-void DHTGetPeersMessage::validate() const {}
-
-void DHTGetPeersMessage::setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage)
+void DHTGetPeersMessage::setPeerAnnounceStorage
+(const WeakHandle<DHTPeerAnnounceStorage>& storage)
 {
   _peerAnnounceStorage = storage;
 }
 
-void DHTGetPeersMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker)
+void DHTGetPeersMessage::setTokenTracker
+(const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
   _tokenTracker = tokenTracker;
 }

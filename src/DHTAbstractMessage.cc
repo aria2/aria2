@@ -56,9 +56,9 @@ DHTAbstractMessage::~DHTAbstractMessage() {}
 std::string DHTAbstractMessage::getBencodedMessage()
 {
   BDE msgDict = BDE::dict();
-  msgDict[T] = _transactionID;
+  msgDict[T] = getTransactionID();
   msgDict[Y] = getType();
-  msgDict[V] = _version;
+  msgDict[V] = getVersion();
   fillMessage(msgDict);
   return bencode::encode(msgDict);
 }
@@ -69,8 +69,8 @@ bool DHTAbstractMessage::send()
   ssize_t r = _connection->sendMessage
     (reinterpret_cast<const unsigned char*>(message.c_str()),
      message.size(),
-     _remoteNode->getIPAddress(),
-     _remoteNode->getPort());
+     getRemoteNode()->getIPAddress(),
+     getRemoteNode()->getPort());
   assert(r >= 0);
   return r == static_cast<ssize_t>(message.size());
 }
