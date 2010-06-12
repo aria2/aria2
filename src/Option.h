@@ -43,7 +43,7 @@ namespace aria2 {
 
 class Option {
 private:
-  std::map<std::string, std::string> table;
+  std::map<std::string, std::string> _table;
 public:
   Option();
   ~Option();
@@ -67,12 +67,12 @@ public:
 
   std::map<std::string, std::string>::const_iterator begin() const
   {
-    return table.begin();
+    return _table.begin();
   }
 
   std::map<std::string, std::string>::const_iterator end() const
   {
-    return table.end();
+    return _table.end();
   }
 };
 

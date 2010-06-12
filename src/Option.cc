@@ -45,23 +45,23 @@ Option::Option() {}
 Option::~Option() {}
 
 void Option::put(const std::string& name, const std::string& value) {
-  table[name] = value;
+  _table[name] = value;
 }
 
 bool Option::defined(const std::string& name) const
 {
-  return table.count(name) == 1;
+  return _table.count(name) == 1;
 }
 
 bool Option::blank(const std::string& name) const
 {
-  std::map<std::string, std::string>::const_iterator i = table.find(name);
-  return i == table.end() || (*i).second.empty();
+  std::map<std::string, std::string>::const_iterator i = _table.find(name);
+  return i == _table.end() || (*i).second.empty();
 }
 
 const std::string& Option::get(const std::string& name) const {
-  std::map<std::string, std::string>::const_iterator itr = table.find(name);
-  if(itr == table.end()) {
+  std::map<std::string, std::string>::const_iterator itr = _table.find(name);
+  if(itr == _table.end()) {
     return A2STR::NIL;
   } else {
     return (*itr).second;
@@ -101,15 +101,15 @@ double Option::getAsDouble(const std::string& name) const {
 
 void Option::remove(const std::string& name)
 {
-  std::map<std::string, std::string>::iterator i = table.find(name);
-  if(i != table.end()) {
-    table.erase(i);
+  std::map<std::string, std::string>::iterator i = _table.find(name);
+  if(i != _table.end()) {
+    _table.erase(i);
   }
 }
 
 void Option::clear()
 {
-  table.clear();
+  _table.clear();
 }
 
 } // namespace aria2
