@@ -1,6 +1,12 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variables.
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed member variables.
 	* src/FileEntry.cc
 	* src/FileEntry.h
 

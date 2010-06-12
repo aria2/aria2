@@ -56,16 +56,16 @@ class AuthConfig;
 
 class FtpConnection {
 private:
-  cuid_t cuid;
-  SharedHandle<SocketCore> socket;
-  SharedHandle<Request> req;
+  cuid_t _cuid;
+  SharedHandle<SocketCore> _socket;
+  SharedHandle<Request> _req;
 
   SharedHandle<AuthConfig> _authConfig;
 
-  const Option* option;
-  Logger* logger;
+  const Option* _option;
+  Logger* _logger;
 
-  std::string strbuf;
+  std::string _strbuf;
 
   SocketBuffer _socketBuffer;
 
