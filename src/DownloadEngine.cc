@@ -91,7 +91,7 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll):
   _eventPoll(eventPoll),
-  logger(LogFactory::getInstance()),
+  _logger(LogFactory::getInstance()),
   _haltRequested(false),
   _noWait(false),
   _refreshInterval(DEFAULT_REFRESH_INTERVAL),
@@ -219,13 +219,14 @@ void DownloadEngine::afterEachIteration()
 {
   _requestGroupMan->calculateStat();
   if(global::globalHaltRequested == 1) {
-    logger->notice(_("Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."));
+    _logger->notice(_("Shutdown sequence commencing..."
+                      " Press Ctrl-C again for emergency shutdown."));
     requestHalt();
     global::globalHaltRequested = 2;
     setNoWait(true);
     setRefreshInterval(0);
   } else if(global::globalHaltRequested == 3) {
-    logger->notice(_("Emergency shutdown sequence commencing..."));
+    _logger->notice(_("Emergency shutdown sequence commencing..."));
     requestForceHalt();
     global::globalHaltRequested = 4;
     setNoWait(true);
@@ -277,14 +278,14 @@ void DownloadEngine::addRoutineCommand(Command* command)
 void DownloadEngine::poolSocket(const std::string& key,
                                 const SocketPoolEntry& entry)
 {
-  logger->info("Pool socket for %s", key.c_str());
+  _logger->info("Pool socket for %s", key.c_str());
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   _socketPool.insert(p);
 
   if(_lastSocketPoolScan.difference(global::wallclock) >= 60) {
     std::multimap<std::string, SocketPoolEntry> newPool;
-    if(logger->debug()) {
-      logger->debug("Scaning SocketPool and erasing timed out entry.");
+    if(_logger->debug()) {
+      _logger->debug("Scaning SocketPool and erasing timed out entry.");
     }
     _lastSocketPoolScan = global::wallclock;
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
@@ -293,8 +294,8 @@ void DownloadEngine::poolSocket(const std::string& key,
         newPool.insert(*i);
       }
     }
-    if(logger->debug()) {
-      logger->debug
+    if(_logger->debug()) {
+      _logger->debug
         ("%lu entries removed.",
          static_cast<unsigned long>(_socketPool.size()-newPool.size()));
     }
@@ -399,7 +400,7 @@ DownloadEngine::findSocketPoolEntry(const std::string& key)
         range.first, eoi = range.second; i != eoi; ++i) {
     const SocketPoolEntry& e = (*i).second;
     if(!e.isTimeout()) {
-      logger->info("Found socket for %s", key.c_str());
+      _logger->info("Found socket for %s", key.c_str());
       return i;
     }
   }

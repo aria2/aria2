@@ -78,7 +78,7 @@ private:
 
   SharedHandle<EventPoll> _eventPoll;
 
-  Logger* logger;
+  Logger* _logger;
   
   SharedHandle<StatCalc> _statCalc;
 
