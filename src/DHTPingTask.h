@@ -42,7 +42,7 @@
 namespace aria2 {
 
 class DHTPingTask:public DHTAbstractTask, public DHTMessageCallbackListener {
-protected:
+private:
   SharedHandle<DHTNode> _remoteNode;
 
   size_t _numMaxRetry;

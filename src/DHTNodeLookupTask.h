@@ -46,7 +46,8 @@ public:
   virtual void getNodesFromMessage(std::vector<SharedHandle<DHTNode> >& nodes,
                                    const SharedHandle<DHTMessage>& message);
 
-  virtual SharedHandle<DHTMessage> createMessage(const SharedHandle<DHTNode>& remoteNode);
+  virtual SharedHandle<DHTMessage> createMessage
+  (const SharedHandle<DHTNode>& remoteNode);
 };
 
 } // namespace aria2

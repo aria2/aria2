@@ -62,7 +62,7 @@ DHTNodeLookupTask::getNodesFromMessage
 SharedHandle<DHTMessage>
 DHTNodeLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
 {
-  return _factory->createFindNodeMessage(remoteNode, _targetID);
+  return getMessageFactory()->createFindNodeMessage(remoteNode, getTargetID());
 }
 
 } // namespace aria2

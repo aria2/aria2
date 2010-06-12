@@ -51,7 +51,7 @@ class DHTTaskQueue;
 class Logger;
 
 class DHTAbstractTask:public DHTTask {
-protected:
+private:
   bool _finished;
   
   Logger* _logger;
@@ -65,18 +65,53 @@ protected:
   WeakHandle<DHTMessageFactory> _factory;
   
   WeakHandle<DHTTaskQueue> _taskQueue;
+protected:
+  void setFinished(bool f)
+  {
+    _finished = f;
+  }
+
+  Logger* getLogger() const
+  {
+    return _logger;
+  }
 public:
   DHTAbstractTask();
 
   virtual bool finished();
 
+  const WeakHandle<DHTRoutingTable>& getRoutingTable() const
+  {
+    return _routingTable;
+  }
+
   void setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable);
+
+  const WeakHandle<DHTMessageDispatcher>& getMessageDispatcher() const
+  {
+    return _dispatcher;
+  }
 
   void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher);
 
+  const WeakHandle<DHTMessageFactory>& getMessageFactory() const
+  {
+    return _factory;
+  }
+
   void setMessageFactory(const WeakHandle<DHTMessageFactory> factory);
 
+  const WeakHandle<DHTTaskQueue>& getTaskQueue() const
+  {
+    return _taskQueue;
+  }
+
   void setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue);
+
+  const SharedHandle<DHTNode>& getLocalNode() const
+  {
+    return _localNode;
+  }
 
   void setLocalNode(const SharedHandle<DHTNode>& localNode);
 };

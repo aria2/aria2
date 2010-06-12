@@ -62,34 +62,37 @@ void DHTReplaceNodeTask::sendMessage()
 {
   SharedHandle<DHTNode> questionableNode = _bucket->getLRUQuestionableNode();
   if(questionableNode.isNull()) {
-    _finished = true;
+    setFinished(true);
   } else {
-    SharedHandle<DHTMessage> m = _factory->createPingMessage(questionableNode);
+    SharedHandle<DHTMessage> m =
+      getMessageFactory()->createPingMessage(questionableNode);
     WeakHandle<DHTMessageCallbackListener> listener(this);
-    SharedHandle<DHTMessageCallback> callback(new DHTMessageCallbackImpl(listener));
-    _dispatcher->addMessageToQueue(m, _timeout, callback);
+    SharedHandle<DHTMessageCallback> callback
+      (new DHTMessageCallbackImpl(listener));
+    getMessageDispatcher()->addMessageToQueue(m, _timeout, callback);
   }
 }
 
 void DHTReplaceNodeTask::onReceived(const SharedHandle<DHTMessage>& message)
 {
-  _logger->info("ReplaceNode: Ping reply received from %s.",
-                message->getRemoteNode()->toString().c_str());
-  _finished = true;
+  getLogger()->info("ReplaceNode: Ping reply received from %s.",
+                    message->getRemoteNode()->toString().c_str());
+  setFinished(true);
 }
 
 void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   ++_numRetry;
   if(_numRetry >= MAX_RETRY) {
-    _logger->info("ReplaceNode: Ping failed %u times. Replace %s with %s.",
-                  _numRetry, node->toString().c_str(), _newNode->toString().c_str());
+    getLogger()->info("ReplaceNode: Ping failed %u times. Replace %s with %s.",
+                      _numRetry, node->toString().c_str(),
+                      _newNode->toString().c_str());
     node->markBad();
     _bucket->addNode(_newNode);
-    _finished = true;
+    setFinished(true);
   } else {
-    _logger->info("ReplaceNode: Ping reply timeout from %s. Try once more.",
-                  node->toString().c_str());
+    getLogger()->info("ReplaceNode: Ping reply timeout from %s. Try once more.",
+                      node->toString().c_str());
     sendMessage();
   }
 }

@@ -62,7 +62,8 @@ public:
   
   virtual void onReceivedInternal(const SharedHandle<DHTMessage>& message);
   
-  virtual SharedHandle<DHTMessage> createMessage(const SharedHandle<DHTNode>& remoteNode);
+  virtual SharedHandle<DHTMessage> createMessage
+  (const SharedHandle<DHTNode>& remoteNode);
 
   virtual void onFinish();
   

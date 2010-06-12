@@ -52,7 +52,7 @@ DHTBucketRefreshTask::~DHTBucketRefreshTask() {}
 void DHTBucketRefreshTask::startup()
 {
   std::vector<SharedHandle<DHTBucket> > buckets;
-  _routingTable->getBuckets(buckets);
+  getRoutingTable()->getBuckets(buckets);
   for(std::vector<SharedHandle<DHTBucket> >::iterator i = buckets.begin(),
         eoi = buckets.end(); i != eoi; ++i) {
     if(_forceRefresh || (*i)->needsRefresh()) {
@@ -60,17 +60,18 @@ void DHTBucketRefreshTask::startup()
       unsigned char targetID[DHT_ID_LENGTH];
       (*i)->getRandomNodeID(targetID);
       SharedHandle<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
-      task->setRoutingTable(_routingTable);
-      task->setMessageDispatcher(_dispatcher);
-      task->setMessageFactory(_factory);
-      task->setTaskQueue(_taskQueue);
-      task->setLocalNode(_localNode);
+      task->setRoutingTable(getRoutingTable());
+      task->setMessageDispatcher(getMessageDispatcher());
+      task->setMessageFactory(getMessageFactory());
+      task->setTaskQueue(getTaskQueue());
+      task->setLocalNode(getLocalNode());
 
-      _logger->info("Dispating bucket refresh. targetID=%s", util::toHex(targetID, DHT_ID_LENGTH).c_str());
-      _taskQueue->addPeriodicTask1(task);
+      getLogger()->info("Dispating bucket refresh. targetID=%s",
+                        util::toHex(targetID, DHT_ID_LENGTH).c_str());
+      getTaskQueue()->addPeriodicTask1(task);
     }
   }
-  _finished = true;
+  setFinished(true);
 }
 
 void DHTBucketRefreshTask::setForceRefresh(bool forceRefresh)

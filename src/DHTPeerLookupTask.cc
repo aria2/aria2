@@ -66,23 +66,25 @@ DHTPeerLookupTask::getNodesFromMessage
   }
 }
   
-void DHTPeerLookupTask::onReceivedInternal(const SharedHandle<DHTMessage>& message)
+void DHTPeerLookupTask::onReceivedInternal
+(const SharedHandle<DHTMessage>& message)
 {
-  SharedHandle<DHTGetPeersReplyMessage> m(dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
+  SharedHandle<DHTGetPeersReplyMessage> m
+    (dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
   if(m.isNull()) {
     return;
   }
   SharedHandle<DHTNode> remoteNode = m->getRemoteNode();
-  _tokenStorage[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] = m->getToken();
-
+  _tokenStorage[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] =
+    m->getToken();
   _peerStorage->addPeer(m->getValues());
   _peers.insert(_peers.end(), m->getValues().begin(), m->getValues().end());
-  _logger->info("Received %u peers.", m->getValues().size());
+  getLogger()->info("Received %u peers.", m->getValues().size());
 }
   
 SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
 {
-  return _factory->createGetPeersMessage(remoteNode, _targetID);
+  return getMessageFactory()->createGetPeersMessage(remoteNode, getTargetID());
 }
 
 void DHTPeerLookupTask::onFinish()
@@ -90,17 +92,17 @@ void DHTPeerLookupTask::onFinish()
   // send announce_peer message to K closest nodes
   size_t num = DHTBucket::K;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
-        _entries.begin(), eoi = _entries.end(); i != eoi && num > 0; ++i,
-        --num) {
+        getEntries().begin(), eoi = getEntries().end();
+      i != eoi && num > 0; ++i, --num) {
     if((*i)->_used) {
       const SharedHandle<DHTNode>& node = (*i)->_node;
       SharedHandle<DHTMessage> m = 
-        _factory->createAnnouncePeerMessage
+        getMessageFactory()->createAnnouncePeerMessage
         (node,
-         _targetID, // this is infoHash
+         getTargetID(), // this is infoHash
          _btRuntime->getListenPort(),
          _tokenStorage[util::toHex(node->getID(), DHT_ID_LENGTH)]);
-      _dispatcher->addMessageToQueue(m);
+      getMessageDispatcher()->addMessageToQueue(m);
     }
   }
 }

@@ -49,8 +49,9 @@ namespace aria2 {
 class DHTNode;
 class DHTMessage;
 
-class DHTAbstractNodeLookupTask:public DHTAbstractTask, public DHTMessageCallbackListener {
-protected:
+class DHTAbstractNodeLookupTask:public DHTAbstractTask,
+                                public DHTMessageCallbackListener {
+private:
   unsigned char _targetID[DHT_ID_LENGTH];
 
   std::deque<SharedHandle<DHTNodeLookupEntry> > _entries;
@@ -73,6 +74,16 @@ protected:
   void updateBucket();
 
   void sendMessageAndCheckFinish();
+protected:
+  const unsigned char* getTargetID() const
+  {
+    return _targetID;
+  }
+
+  const std::deque<SharedHandle<DHTNodeLookupEntry> >& getEntries() const
+  {
+    return _entries;
+  }
 public:
   DHTAbstractNodeLookupTask(const unsigned char* targetID);
 
@@ -93,7 +104,8 @@ public:
   
   virtual void onFinish() {}
 
-  virtual SharedHandle<DHTMessage> createMessage(const SharedHandle<DHTNode>& remoteNode) = 0;
+  virtual SharedHandle<DHTMessage> createMessage
+  (const SharedHandle<DHTNode>& remoteNode) = 0;
 };
 
 } // namespace aria2

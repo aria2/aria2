@@ -43,7 +43,8 @@ namespace aria2 {
 
 class DHTBucket;
 
-class DHTReplaceNodeTask:public DHTAbstractTask, public DHTMessageCallbackListener {
+class DHTReplaceNodeTask:public DHTAbstractTask,
+                         public DHTMessageCallbackListener {
 private:
   SharedHandle<DHTBucket> _bucket;
 

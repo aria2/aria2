@@ -1,6 +1,22 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made protected member variable private. Added accessor funcs.
+	* src/DHTAbstractNodeLookupTask.cc
+	* src/DHTAbstractNodeLookupTask.h
+	* src/DHTAbstractTask.h
+	* src/DHTBucketRefreshTask.cc
+	* src/DHTNodeLookupTask.cc
+	* src/DHTNodeLookupTask.h
+	* src/DHTPeerLookupTask.cc
+	* src/DHTPeerLookupTask.h
+	* src/DHTPingTask.cc
+	* src/DHTPingTask.h
+	* src/DHTReplaceNodeTask.cc
+	* src/DHTReplaceNodeTask.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made protected member variable private. Added accessor funcs.
 	* src/DHTAbstractMessage.cc
 	* src/DHTAbstractMessage.h
 	* src/DHTAnnouncePeerMessage.cc
