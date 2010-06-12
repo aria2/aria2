@@ -132,18 +132,18 @@ void SocketCore::setTLSContext(const SharedHandle<TLSContext>& tlsContext)
 }
 #endif // ENABLE_SSL
 
-SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1)  {
+SocketCore::SocketCore(int sockType):_sockType(sockType), _sockfd(-1)  {
   init();
 }
 
-SocketCore::SocketCore(sock_t sockfd, int sockType):_sockType(sockType), sockfd(sockfd) {
+SocketCore::SocketCore(sock_t sockfd, int sockType):_sockType(sockType), _sockfd(sockfd) {
   init();
 }
 
 void SocketCore::init()
 {
-  blocking = true;
-  secure = 0;
+  _blocking = true;
+  _secure = 0;
 
   _wantRead = false;
   _wantWrite = false;
@@ -153,17 +153,17 @@ void SocketCore::init()
   ssl = NULL;
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-  sslSession = NULL;
-  peekBufMax = 4096;
-  peekBuf = 0;
-  peekBufLength = 0;
+  _sslSession = 0;
+  _peekBufMax = 4096;
+  _peekBuf = 0;
+  _peekBufLength = 0;
 #endif //HAVE_LIBGNUTLS
 }
 
 SocketCore::~SocketCore() {
   closeConnection();
 #ifdef HAVE_LIBGNUTLS
-  delete [] peekBuf;
+  delete [] _peekBuf;
 #endif // HAVE_LIBGNUTLS
 }
 
@@ -198,7 +198,7 @@ void SocketCore::create(int family, int protocol)
     throw DL_ABORT_EX
       (StringFormat("Failed to create socket. Cause:%s", errorMsg()).str());
   }
-  sockfd = fd;
+  _sockfd = fd;
 }
 
 static sock_t bindInternal(int family, int socktype, int protocol,
@@ -254,7 +254,7 @@ void SocketCore::bindWithFamily(uint16_t port, int family, int flags)
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   } else {
-    sockfd = fd;
+    _sockfd = fd;
   }
 }
 
@@ -267,7 +267,7 @@ void SocketCore::bind(const std::string& addr, uint16_t port, int flags)
   if(fd == (sock_t)-1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   } else {
-    sockfd = fd;
+    _sockfd = fd;
   }
 }
 
@@ -278,7 +278,7 @@ void SocketCore::bind(uint16_t port, int flags)
   if(!(flags&AI_PASSIVE) || _bindAddrs.empty()) {
     sock_t fd = bindTo(0, port, _protocolFamily, _sockType, flags, error);
     if(fd != (sock_t) -1) {
-      sockfd = fd;
+      _sockfd = fd;
     }
   } else {
     for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
@@ -296,12 +296,12 @@ void SocketCore::bind(uint16_t port, int flags)
       }
       sock_t fd = bindTo(host, port, _protocolFamily, _sockType, flags, error);
       if(fd != (sock_t)-1) {
-        sockfd = fd;
+        _sockfd = fd;
         break;
       }
     }
   }
-  if(sockfd == (sock_t) -1) {
+  if(_sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   }
 }
@@ -312,7 +312,7 @@ void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
   std::string error;
   sock_t fd = bindInternal(addr->sa_family, _sockType, 0, addr, addrlen, error);
   if(fd != (sock_t)-1) {
-    sockfd = fd;
+    _sockfd = fd;
   } else {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   }
@@ -320,7 +320,7 @@ void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
 
 void SocketCore::beginListen()
 {
-  if(listen(sockfd, 1) == -1) {
+  if(listen(_sockfd, 1) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_LISTEN, errorMsg()).str());
   }
 }
@@ -330,7 +330,7 @@ SocketCore* SocketCore::acceptConnection() const
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
   sock_t fd;
-  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == (sock_t) -1 && SOCKET_ERRNO == A2_EINTR);
+  while((fd = accept(_sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == (sock_t) -1 && SOCKET_ERRNO == A2_EINTR);
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
   }
@@ -342,7 +342,7 @@ void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
-  if(getsockname(sockfd, addrp, &len) == -1) {
+  if(getsockname(_sockfd, addrp, &len) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
   addrinfo = util::getNumericNameInfo(addrp, len);
@@ -353,7 +353,7 @@ void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
-  if(getpeername(sockfd, addrp, &len) == -1) {
+  if(getpeername(_sockfd, addrp, &len) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
   peerinfo = util::getNumericNameInfo(addrp, len);
@@ -407,21 +407,21 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
       }
     }
 
-    sockfd = fd;
+    _sockfd = fd;
     // make socket non-blocking mode
     setNonBlockingMode();
     if(connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
        SOCKET_ERRNO != A2_EINPROGRESS) {
       error = errorMsg();
-      CLOSE(sockfd);
-      sockfd = (sock_t) -1;
+      CLOSE(_sockfd);
+      _sockfd = (sock_t) -1;
       continue;
     }
     // TODO at this point, connection may not be established and it may fail
     // later. In such case, next ai_addr should be tried.
     break;
   }
-  if(sockfd == (sock_t) -1) {
+  if(_sockfd == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_CONNECT, host.c_str(),
                                    error.c_str()).str());
   }
@@ -430,7 +430,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
 void SocketCore::setSockOpt
 (int level, int optname, void* optval, socklen_t optlen)
 {
-  if(setsockopt(sockfd, level, optname, (a2_sockopt_t)optval, optlen) < 0) {
+  if(setsockopt(_sockfd, level, optname, (a2_sockopt_t)optval, optlen) < 0) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_SET_OPT, errorMsg()).str());
   }
 }   
@@ -488,60 +488,60 @@ void SocketCore::setNonBlockingMode()
 {
 #ifdef __MINGW32__
   static u_long flag = 1;
-  if (::ioctlsocket(sockfd, FIONBIO, &flag) == -1) {
+  if (::ioctlsocket(_sockfd, FIONBIO, &flag) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_NONBLOCKING, errorMsg()).str());
   }
 #else
   int flags;
-  while((flags = fcntl(sockfd, F_GETFL, 0)) == -1 && errno == EINTR);
+  while((flags = fcntl(_sockfd, F_GETFL, 0)) == -1 && errno == EINTR);
   // TODO add error handling
-  while(fcntl(sockfd, F_SETFL, flags|O_NONBLOCK) == -1 && errno == EINTR);
+  while(fcntl(_sockfd, F_SETFL, flags|O_NONBLOCK) == -1 && errno == EINTR);
 #endif // __MINGW32__
-  blocking = false;
+  _blocking = false;
 }
 
 void SocketCore::setBlockingMode()
 {
 #ifdef __MINGW32__
   static u_long flag = 0;
-  if (::ioctlsocket(sockfd, FIONBIO, &flag) == -1) {
+  if (::ioctlsocket(_sockfd, FIONBIO, &flag) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BLOCKING, errorMsg()).str());
   }
 #else
   int flags;
-  while((flags = fcntl(sockfd, F_GETFL, 0)) == -1 && errno == EINTR);
+  while((flags = fcntl(_sockfd, F_GETFL, 0)) == -1 && errno == EINTR);
   // TODO add error handling
-  while(fcntl(sockfd, F_SETFL, flags&(~O_NONBLOCK)) == -1 && errno == EINTR);
+  while(fcntl(_sockfd, F_SETFL, flags&(~O_NONBLOCK)) == -1 && errno == EINTR);
 #endif // __MINGW32__
-  blocking = true;
+  _blocking = true;
 }
 
 void SocketCore::closeConnection()
 {
 #ifdef HAVE_LIBSSL
   // for SSL
-  if(secure) {
+  if(_secure) {
     SSL_shutdown(ssl);
   }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-  if(secure) {
-    gnutls_bye(sslSession, GNUTLS_SHUT_RDWR);
+  if(_secure) {
+    gnutls_bye(_sslSession, GNUTLS_SHUT_RDWR);
   }
 #endif // HAVE_LIBGNUTLS
-  if(sockfd != (sock_t) -1) {
-    CLOSE(sockfd);
-    sockfd = -1;
+  if(_sockfd != (sock_t) -1) {
+    CLOSE(_sockfd);
+    _sockfd = -1;
   }
 #ifdef HAVE_LIBSSL
   // for SSL
-  if(secure) {
+  if(_secure) {
     SSL_free(ssl);
   }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-  if(secure) {
-    gnutls_deinit(sslSession);
+  if(_secure) {
+    gnutls_deinit(_sslSession);
   }
 #endif // HAVE_LIBGNUTLS
 }
@@ -559,7 +559,7 @@ bool SocketCore::isWritable(time_t timeout)
 {
 #ifdef HAVE_POLL
   struct pollfd p;
-  p.fd = sockfd;
+  p.fd = _sockfd;
   p.events = POLLOUT;
   int r;
   while((r = poll(&p, 1, timeout*1000)) == -1 && errno == EINTR);
@@ -573,17 +573,17 @@ bool SocketCore::isWritable(time_t timeout)
   }
 #else // !HAVE_POLL
 # ifndef __MINGW32__
-  CHECK_FD(sockfd);
+  CHECK_FD(_sockfd);
 # endif // !__MINGW32__
   fd_set fds;
   FD_ZERO(&fds);
-  FD_SET(sockfd, &fds);
+  FD_SET(_sockfd, &fds);
 
   struct timeval tv;
   tv.tv_sec = timeout;
   tv.tv_usec = 0;
 
-  int r = select(sockfd+1, NULL, &fds, NULL, &tv);
+  int r = select(_sockfd+1, NULL, &fds, NULL, &tv);
   if(r == 1) {
     return true;
   } else if(r == 0) {
@@ -603,13 +603,13 @@ bool SocketCore::isWritable(time_t timeout)
 bool SocketCore::isReadable(time_t timeout)
 {
 #ifdef HAVE_LIBGNUTLS
-  if(secure && peekBufLength > 0) {
+  if(_secure && _peekBufLength > 0) {
     return true;
   }
 #endif // HAVE_LIBGNUTLS
 #ifdef HAVE_POLL
   struct pollfd p;
-  p.fd = sockfd;
+  p.fd = _sockfd;
   p.events = POLLIN;
   int r;
   while((r = poll(&p, 1, timeout*1000)) == -1 && errno == EINTR);
@@ -623,17 +623,17 @@ bool SocketCore::isReadable(time_t timeout)
   }
 #else // !HAVE_POLL
 # ifndef __MINGW32__
-  CHECK_FD(sockfd);
+  CHECK_FD(_sockfd);
 # endif // !__MINGW32__
   fd_set fds;
   FD_ZERO(&fds);
-  FD_SET(sockfd, &fds);
+  FD_SET(_sockfd, &fds);
 
   struct timeval tv;
   tv.tv_sec = timeout;
   tv.tv_usec = 0;
 
-  int r = select(sockfd+1, &fds, NULL, NULL, &tv);
+  int r = select(_sockfd+1, &fds, NULL, NULL, &tv);
   if(r == 1) {
     return true;
   } else if(r == 0) {
@@ -669,7 +669,7 @@ int SocketCore::sslHandleEAGAIN(int ret)
 #ifdef HAVE_LIBGNUTLS
 void SocketCore::gnutlsRecordCheckDirection()
 {
-  int direction = gnutls_record_get_direction(sslSession);
+  int direction = gnutls_record_get_direction(_sslSession);
   if(direction == 0) {
     _wantRead = true;
   } else { // if(direction == 1) {
@@ -684,8 +684,8 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
   _wantRead = false;
   _wantWrite = false;
 
-  if(!secure) {
-    while((ret = send(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
+  if(!_secure) {
+    while((ret = send(_sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
     if(ret == -1) {
       if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
         _wantWrite = true;
@@ -707,7 +707,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-    while((ret = gnutls_record_send(sslSession, data, len)) ==
+    while((ret = gnutls_record_send(_sslSession, data, len)) ==
           GNUTLS_E_INTERRUPTED);
     if(ret == GNUTLS_E_AGAIN) {
       gnutlsRecordCheckDirection();
@@ -727,8 +727,8 @@ void SocketCore::readData(char* data, size_t& len)
   _wantRead = false;
   _wantWrite = false;
 
-  if(!secure) {    
-    while((ret = recv(sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
+  if(!_secure) {    
+    while((ret = recv(_sockfd, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
     
     if(ret == -1) {
       if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
@@ -773,8 +773,8 @@ void SocketCore::peekData(char* data, size_t& len)
   _wantRead = false;
   _wantWrite = false;
 
-  if(!secure) {
-    while((ret = recv(sockfd, data, len, MSG_PEEK)) == -1 &&
+  if(!_secure) {
+    while((ret = recv(_sockfd, data, len, MSG_PEEK)) == -1 &&
           SOCKET_ERRNO == A2_EINTR);
     if(ret == -1) {
       if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
@@ -816,18 +816,15 @@ void SocketCore::peekData(char* data, size_t& len)
 #ifdef HAVE_LIBGNUTLS
 size_t SocketCore::shiftPeekData(char* data, size_t len)
 {
-  if(peekBufLength <= len) {
-    memcpy(data, peekBuf, peekBufLength);
-    size_t ret = peekBufLength;
-    peekBufLength = 0;
+  if(_peekBufLength <= len) {
+    memcpy(data, _peekBuf, _peekBufLength);
+    size_t ret = _peekBufLength;
+    _peekBufLength = 0;
     return ret;
   } else {
-    memcpy(data, peekBuf, len);
-    char* temp = new char[peekBufMax];
-    memcpy(temp, peekBuf+len, peekBufLength-len);
-    delete [] peekBuf;
-    peekBuf = temp;
-    peekBufLength -= len;
+    memcpy(data, _peekBuf, len);
+    _peekBufLength -= len;    
+    memmove(_peekBuf, _peekBuf+len, _peekBufLength);
     return len;
   }
 
@@ -835,15 +832,15 @@ size_t SocketCore::shiftPeekData(char* data, size_t len)
 
 void SocketCore::addPeekData(char* data, size_t len)
 {
-  if(peekBufLength+len > peekBufMax) {
-    char* temp = new char[peekBufMax+len];
-    memcpy(temp, peekBuf, peekBufLength);
-    delete [] peekBuf;
-    peekBuf = temp;
-    peekBufMax = peekBufLength+len;
+  if(_peekBufLength+len > _peekBufMax) {
+    char* temp = new char[_peekBufMax+len];
+    memcpy(temp, _peekBuf, _peekBufLength);
+    delete [] _peekBuf;
+    _peekBuf = temp;
+    _peekBufMax = _peekBufLength+len;
   }
-  memcpy(peekBuf+peekBufLength, data, len);
-  peekBufLength += len;
+  memcpy(_peekBuf+_peekBufLength, data, len);
+  _peekBufLength += len;
 }
 
 static ssize_t GNUTLS_RECORD_RECV_NO_INTERRUPT
@@ -864,7 +861,7 @@ ssize_t SocketCore::gnutlsRecv(char* data, size_t len)
   size_t plen = shiftPeekData(data, len);
   if(plen < len) {
     ssize_t ret = GNUTLS_RECORD_RECV_NO_INTERRUPT
-      (sslSession, data+plen, len-plen);
+      (_sslSession, data+plen, len-plen);
     if(ret == GNUTLS_E_AGAIN) {
       return GNUTLS_E_AGAIN;
     }
@@ -876,25 +873,25 @@ ssize_t SocketCore::gnutlsRecv(char* data, size_t len)
 
 ssize_t SocketCore::gnutlsPeek(char* data, size_t len)
 {
-  if(peekBufLength >= len) {
-    memcpy(data, peekBuf, len);
+  if(_peekBufLength >= len) {
+    memcpy(data, _peekBuf, len);
     return len;
   } else {
-    memcpy(data, peekBuf, peekBufLength);
+    memcpy(data, _peekBuf, _peekBufLength);
     ssize_t ret = GNUTLS_RECORD_RECV_NO_INTERRUPT
-      (sslSession, data+peekBufLength, len-peekBufLength);
+      (_sslSession, data+_peekBufLength, len-_peekBufLength);
     if(ret == GNUTLS_E_AGAIN) {
       return GNUTLS_E_AGAIN;
     }
-    addPeekData(data+peekBufLength, ret);
-    return peekBufLength;
+    addPeekData(data+_peekBufLength, ret);
+    return _peekBufLength;
   }
 }
 #endif // HAVE_LIBGNUTLS
 
 void SocketCore::prepareSecureConnection()
 {
-  if(!secure) {
+  if(!_secure) {
 #ifdef HAVE_LIBSSL
     // for SSL
     ssl = SSL_new(_tlsContext->getSSLCtx());
@@ -903,7 +900,7 @@ void SocketCore::prepareSecureConnection()
         (StringFormat(EX_SSL_INIT_FAILURE,
                       ERR_error_string(ERR_get_error(), 0)).str());
     }
-    if(SSL_set_fd(ssl, sockfd) == 0) {
+    if(SSL_set_fd(ssl, _sockfd) == 0) {
       throw DL_ABORT_EX
         (StringFormat(EX_SSL_INIT_FAILURE,
                       ERR_error_string(ERR_get_error(), 0)).str());
@@ -911,29 +908,29 @@ void SocketCore::prepareSecureConnection()
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
     int r;
-    gnutls_init(&sslSession, GNUTLS_CLIENT);
+    gnutls_init(&_sslSession, GNUTLS_CLIENT);
     // It seems err is not error message, but the argument string
     // which causes syntax error.
     const char* err;
     // Disables TLS1.1 here because there are servers that don't
     // understand TLS1.1.
-    r = gnutls_priority_set_direct(sslSession, "NORMAL:!VERS-TLS1.1", &err);
+    r = gnutls_priority_set_direct(_sslSession, "NORMAL:!VERS-TLS1.1", &err);
     if(r != GNUTLS_E_SUCCESS) {
       throw DL_ABORT_EX
         (StringFormat(EX_SSL_INIT_FAILURE, gnutls_strerror(r)).str());
     }
     // put the x509 credentials to the current session
-    gnutls_credentials_set(sslSession, GNUTLS_CRD_CERTIFICATE,
+    gnutls_credentials_set(_sslSession, GNUTLS_CRD_CERTIFICATE,
                            _tlsContext->getCertCred());
-    gnutls_transport_set_ptr(sslSession, (gnutls_transport_ptr_t)sockfd);
+    gnutls_transport_set_ptr(_sslSession, (gnutls_transport_ptr_t)_sockfd);
 #endif // HAVE_LIBGNUTLS
-    secure = 1;
+    _secure = 1;
   }
 }
 
 bool SocketCore::initiateSecureConnection(const std::string& hostname)
 {
-  if(secure == 1) {
+  if(_secure == 1) {
     _wantRead = false;
     _wantWrite = false;
 #ifdef HAVE_LIBSSL
@@ -953,7 +950,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         return false;
       case SSL_ERROR_WANT_X509_LOOKUP:
       case SSL_ERROR_ZERO_RETURN:
-        if (blocking) {
+        if (_blocking) {
           throw DL_ABORT_EX
             (StringFormat(EX_SSL_CONNECT_ERROR, ssl_error).str());
         }
@@ -1015,7 +1012,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-    int ret = gnutls_handshake(sslSession);
+    int ret = gnutls_handshake(_sslSession);
     if(ret == GNUTLS_E_AGAIN) {
       gnutlsRecordCheckDirection();
       return false;
@@ -1027,7 +1024,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
     if(_tlsContext->peerVerificationEnabled()) {
       // verify peer
       unsigned int status;
-      ret = gnutls_certificate_verify_peers2(sslSession, &status);
+      ret = gnutls_certificate_verify_peers2(_sslSession, &status);
       if(ret < 0) {
         throw DL_ABORT_EX
           (StringFormat("gnutls_certificate_verify_peer2() failed. Cause: %s",
@@ -1050,13 +1047,13 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         }
       }
       // certificate type: only X509 is allowed.
-      if(gnutls_certificate_type_get(sslSession) != GNUTLS_CRT_X509) {
+      if(gnutls_certificate_type_get(_sslSession) != GNUTLS_CRT_X509) {
         throw DL_ABORT_EX("Certificate type is not X509.");
       }
 
       unsigned int peerCertsLength;
       const gnutls_datum_t* peerCerts = gnutls_certificate_get_peers
-        (sslSession, &peerCertsLength);
+        (_sslSession, &peerCertsLength);
       if(!peerCerts) {
         throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
       }
@@ -1098,9 +1095,9 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         }
       }
     }
-    peekBuf = new char[peekBufMax];
+    _peekBuf = new char[_peekBufMax];
 #endif // HAVE_LIBGNUTLS
-    secure = 2;
+    _secure = 2;
     return true;
   } else {
     return true;
@@ -1124,7 +1121,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   struct addrinfo* rp;
   ssize_t r = -1;
   for(rp = res; rp; rp = rp->ai_next) {
-    while((r = sendto(sockfd, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1
+    while((r = sendto(_sockfd, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1
           && A2_EINTR == SOCKET_ERRNO);
     if(r == static_cast<ssize_t>(len)) {
       break;
@@ -1151,7 +1148,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   socklen_t sockaddrlen = sizeof(struct sockaddr_storage);
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   ssize_t r;
-  while((r = recvfrom(sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
+  while((r = recvfrom(_sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
         A2_EINTR == SOCKET_ERRNO);
   if(r == -1) {
     if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
@@ -1172,7 +1169,7 @@ std::string SocketCore::getSocketError() const
   int error;
   socklen_t optlen = sizeof(error);
 
-  if(getsockopt(sockfd, SOL_SOCKET, SO_ERROR, (a2_sockopt_t) &error, &optlen) == -1) {
+  if(getsockopt(_sockfd, SOL_SOCKET, SO_ERROR, (a2_sockopt_t) &error, &optlen) == -1) {
     throw DL_ABORT_EX(StringFormat("Failed to get socket error: %s",
                                    errorMsg()).str());
   }

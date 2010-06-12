@@ -72,14 +72,14 @@ private:
   // socket type defined in <sys/socket.h>
   int _sockType;
   // socket endpoint descriptor
-  sock_t sockfd;
+  sock_t _sockfd;
 
   static int _protocolFamily;
 
   static std::vector<std::pair<struct sockaddr_storage, socklen_t> > _bindAddrs;
 
-  bool blocking;
-  int secure;
+  bool _blocking;
+  int _secure;
 
   bool _wantRead;
   bool _wantWrite;
@@ -95,10 +95,10 @@ private:
   int sslHandleEAGAIN(int ret);
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-  gnutls_session_t sslSession;
-  char* peekBuf;
-  size_t peekBufLength;
-  size_t peekBufMax;
+  gnutls_session_t _sslSession;
+  char* _peekBuf;
+  size_t _peekBufLength;
+  size_t _peekBufMax;
 
   size_t shiftPeekData(char* data, size_t len);
   void addPeekData(char* data, size_t len);
@@ -119,9 +119,9 @@ public:
   SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();
 
-  sock_t getSockfd() const { return sockfd; }
+  sock_t getSockfd() const { return _sockfd; }
 
-  bool isOpen() const { return sockfd != (sock_t) -1; }
+  bool isOpen() const { return _sockfd != (sock_t) -1; }
 
   void setMulticastInterface(const std::string& localAddr);
 
@@ -306,7 +306,7 @@ public:
   void prepareSecureConnection();
 
   bool operator==(const SocketCore& s) {
-    return sockfd == s.sockfd;
+    return _sockfd == s._sockfd;
   }
 
   bool operator!=(const SocketCore& s) {
@@ -314,7 +314,7 @@ public:
   }
 
   bool operator<(const SocketCore& s) {
-    return sockfd < s.sockfd;
+    return _sockfd < s._sockfd;
   }
 
   std::string getSocketError() const;

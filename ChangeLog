@@ -1,5 +1,11 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variables
+	* src/SocketCore.cc
+	* src/SocketCore.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made public member variable in Metalinker private
 	* src/MetalinkParserController.cc
 	* src/Metalinker.cc
