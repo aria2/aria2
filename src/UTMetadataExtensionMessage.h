@@ -40,7 +40,7 @@
 namespace aria2 {
 
 class UTMetadataExtensionMessage:public ExtensionMessage {
-protected:
+private:
   uint8_t _extensionMessageID;
 
   size_t _index;
@@ -64,7 +64,7 @@ public:
     _index = index;
   }
 
-  size_t getIndex()
+  size_t getIndex() const
   {
     return _index;
   }

@@ -57,28 +57,28 @@ std::string UTMetadataDataExtensionMessage::getPayload()
 {
   BDE dict = BDE::dict();
   dict["msg_type"] = 1;
-  dict["piece"] = _index;
+  dict["piece"] = getIndex();
   dict["total_size"] = _totalSize;
   return bencode::encode(dict)+_data;
 }
 
 std::string UTMetadataDataExtensionMessage::toString() const
 {
-  return strconcat("ut_metadata data piece=", util::uitos(_index));
+  return strconcat("ut_metadata data piece=", util::uitos(getIndex()));
 }
 
 void UTMetadataDataExtensionMessage::doReceivedAction()
 {
-  if(_tracker->tracks(_index)) {
+  if(_tracker->tracks(getIndex())) {
     if(_logger->debug()) {
       _logger->debug("ut_metadata index=%lu found in tracking list",
-                     static_cast<unsigned long>(_index));
+                     static_cast<unsigned long>(getIndex()));
     }
-    _tracker->remove(_index);
+    _tracker->remove(getIndex());
     _pieceStorage->getDiskAdaptor()->writeData
       (reinterpret_cast<const unsigned char*>(_data.c_str()), _data.size(),
-       _index*METADATA_PIECE_SIZE);
-    _pieceStorage->completePiece(_pieceStorage->getPiece(_index));
+       getIndex()*METADATA_PIECE_SIZE);
+    _pieceStorage->completePiece(_pieceStorage->getPiece(getIndex()));
     if(_pieceStorage->downloadFinished()) {
       std::string metadata = util::toString(_pieceStorage->getDiskAdaptor());
       unsigned char infoHash[INFO_HASH_LENGTH];
@@ -99,7 +99,7 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
   } else {
     if(_logger->debug()) {
       _logger->debug("ut_metadata index=%lu is not tracked",
-                     static_cast<unsigned long>(_index));
+                     static_cast<unsigned long>(getIndex()));
     }
   }
 }

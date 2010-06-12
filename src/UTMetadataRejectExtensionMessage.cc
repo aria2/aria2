@@ -49,13 +49,13 @@ std::string UTMetadataRejectExtensionMessage::getPayload()
 {
   BDE dict = BDE::dict();
   dict["msg_type"] = 2;
-  dict["piece"] = _index;
+  dict["piece"] = getIndex();
   return bencode::encode(dict);
 }
 
 std::string UTMetadataRejectExtensionMessage::toString() const
 {
-  return strconcat("ut_metadata reject piece=", util::uitos(_index));
+  return strconcat("ut_metadata reject piece=", util::uitos(getIndex()));
 }
 
 void UTMetadataRejectExtensionMessage::doReceivedAction()

@@ -59,13 +59,13 @@ std::string UTMetadataRequestExtensionMessage::getPayload()
 {
   BDE dict = BDE::dict();
   dict["msg_type"] = 0;
-  dict["piece"] = _index;
+  dict["piece"] = getIndex();
   return bencode::encode(dict);
 }
 
 std::string UTMetadataRequestExtensionMessage::toString() const
 {
-  return strconcat("ut_metadata request piece=", util::uitos(_index));
+  return strconcat("ut_metadata request piece=", util::uitos(getIndex()));
 }
 
 void UTMetadataRequestExtensionMessage::doReceivedAction()
@@ -75,27 +75,29 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
   if(!attrs.containsKey(bittorrent::METADATA)) {
     SharedHandle<UTMetadataRejectExtensionMessage> m
       (new UTMetadataRejectExtensionMessage(id));
-    m->setIndex(_index);
+    m->setIndex(getIndex());
     SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
     _dispatcher->addMessageToQueue(msg);
-  }else if(_index*METADATA_PIECE_SIZE <
+  }else if(getIndex()*METADATA_PIECE_SIZE <
            (size_t)attrs[bittorrent::METADATA_SIZE].i()){
     SharedHandle<UTMetadataDataExtensionMessage> m
       (new UTMetadataDataExtensionMessage(id));
-    m->setIndex(_index);
+    m->setIndex(getIndex());
     m->setTotalSize(attrs[bittorrent::METADATA_SIZE].i());
     const BDE& metadata = attrs[bittorrent::METADATA];
     std::string::const_iterator begin =
-      metadata.s().begin()+_index*METADATA_PIECE_SIZE;
+      metadata.s().begin()+getIndex()*METADATA_PIECE_SIZE;
     std::string::const_iterator end =
-      (_index+1)*METADATA_PIECE_SIZE <= metadata.s().size()?
-      metadata.s().begin()+(_index+1)*METADATA_PIECE_SIZE:metadata.s().end();
+      (getIndex()+1)*METADATA_PIECE_SIZE <= metadata.s().size()?
+      metadata.s().begin()+(getIndex()+1)*METADATA_PIECE_SIZE:
+      metadata.s().end();
     m->setData(std::string(begin, end));
     SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
     _dispatcher->addMessageToQueue(msg);
   } else {
     throw DL_ABORT_EX
-      (StringFormat("Metadata piece index is too big. piece=%d", _index).str());
+      (StringFormat
+       ("Metadata piece index is too big. piece=%d", getIndex()).str());
   }
 }
 
