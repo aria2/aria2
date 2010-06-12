@@ -44,26 +44,26 @@ namespace aria2 {
 class TimeSeedCriteria : public SeedCriteria {
 private:
   // How much time the client does seeding in seconds.
-  time_t duration;
-  Timer watch;
+  time_t _duration;
+  Timer _watch;
 public:
-  TimeSeedCriteria(time_t duration):duration(duration) {}
+  TimeSeedCriteria(time_t duration):_duration(duration) {}
   virtual ~TimeSeedCriteria() {}
 
   virtual void reset() {
-    watch = global::wallclock;
+    _watch = global::wallclock;
   }
 
   virtual bool evaluate() {
-    return watch.difference(global::wallclock) >= duration;
+    return _watch.difference(global::wallclock) >= _duration;
   }
 
   void setDuration(time_t duration) {
-    this->duration = duration;
+    _duration = duration;
   }
 
   time_t getDuration() const {
-    return duration;
+    return _duration;
   }
 };
 
