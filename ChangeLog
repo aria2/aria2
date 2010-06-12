@@ -1,6 +1,14 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variables. Removed unused member variable.
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/RequestGroup.cc
+	* test/DefaultPeerStorageTest.cc
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed member variables. Removed unused member variable.
 	* src/DefaultBtRequestFactory.cc
 	* src/DefaultBtRequestFactory.h
 	* src/PeerInteractionCommand.cc

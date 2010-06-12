@@ -247,8 +247,7 @@ void RequestGroup::createInitialCommand
         progressInfoFile->setBtRuntime(btRuntime);
       }
 
-      SharedHandle<DefaultPeerStorage> peerStorage
-        (new DefaultPeerStorage(_option.get()));
+      SharedHandle<DefaultPeerStorage> peerStorage(new DefaultPeerStorage());
       peerStorage->setBtRuntime(btRuntime);
       peerStorage->setPieceStorage(_pieceStorage);
       _peerStorage = peerStorage;

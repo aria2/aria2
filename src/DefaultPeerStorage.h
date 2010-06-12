@@ -43,7 +43,6 @@
 
 namespace aria2 {
 
-class Option;
 class Logger;
 class BtRuntime;
 class BtSeederStateChoke;
@@ -54,11 +53,10 @@ class DefaultPeerStorage : public PeerStorage {
 private:
   SharedHandle<BtRuntime> _btRuntime;
   SharedHandle<PieceStorage> _pieceStorage;
-  const Option* option;
-  std::deque<SharedHandle<Peer> > peers;
-  Logger* logger;
-  uint64_t removedPeerSessionDownloadLength;
-  uint64_t removedPeerSessionUploadLength;
+  std::deque<SharedHandle<Peer> > _peers;
+  Logger* _logger;
+  uint64_t _removedPeerSessionDownloadLength;
+  uint64_t _removedPeerSessionUploadLength;
 
   BtSeederStateChoke* _seederStateChoke;
   BtLeecherStateChoke* _leecherStateChoke;
@@ -71,7 +69,7 @@ private:
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:
-  DefaultPeerStorage(const Option* option);
+  DefaultPeerStorage();
 
   virtual ~DefaultPeerStorage();
 

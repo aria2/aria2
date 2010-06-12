@@ -53,7 +53,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPeerStorageTest);
 
 void DefaultPeerStorageTest::testCountPeer() {
-  DefaultPeerStorage ps(option);
+  DefaultPeerStorage ps;
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, ps.countPeer());
 
@@ -64,7 +64,7 @@ void DefaultPeerStorageTest::testCountPeer() {
 }
 
 void DefaultPeerStorageTest::testDeleteUnusedPeer() {
-  DefaultPeerStorage ps(option);
+  DefaultPeerStorage ps;
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
   SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
@@ -95,7 +95,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 }
 
 void DefaultPeerStorageTest::testAddPeer() {
-  DefaultPeerStorage ps(option);
+  DefaultPeerStorage ps;
   SharedHandle<BtRuntime> btRuntime(new BtRuntime());
   btRuntime->setMaxPeers(3);
   ps.setBtRuntime(btRuntime);
@@ -132,7 +132,7 @@ void DefaultPeerStorageTest::testAddPeer() {
 }
 
 void DefaultPeerStorageTest::testGetUnusedPeer() {
-  DefaultPeerStorage ps(option);
+  DefaultPeerStorage ps;
   ps.setBtRuntime(btRuntime);
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
@@ -153,7 +153,7 @@ void DefaultPeerStorageTest::testGetUnusedPeer() {
 }
 
 void DefaultPeerStorageTest::testIsPeerAvailable() {
-  DefaultPeerStorage ps(option);
+  DefaultPeerStorage ps;
   ps.setBtRuntime(btRuntime);
 
   CPPUNIT_ASSERT_EQUAL(false, ps.isPeerAvailable());
@@ -176,7 +176,7 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
 }
 
 void DefaultPeerStorageTest::testActivatePeer() {
-  DefaultPeerStorage ps(option);
+  DefaultPeerStorage ps;
 
   {
     std::vector<SharedHandle<Peer> > peers;
@@ -209,7 +209,7 @@ void DefaultPeerStorageTest::testCalculateStat() {
 
 void DefaultPeerStorageTest::testReturnPeer()
 {
-  DefaultPeerStorage ps(option);
+  DefaultPeerStorage ps;
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 0));
   peer1->allocateSessionResource(1024*1024, 1024*1024*10);
