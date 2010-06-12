@@ -56,15 +56,15 @@ class ARC4Decryptor;
 
 class PeerConnection {
 private:
-  cuid_t cuid;
-  SharedHandle<SocketCore> socket;
-  Logger* logger;
+  cuid_t _cuid;
+  SharedHandle<SocketCore> _socket;
+  Logger* _logger;
 
-  unsigned char* resbuf;
-  size_t resbufLength;
-  size_t currentPayloadLength;
-  unsigned char lenbuf[4];
-  size_t lenbufLength;
+  unsigned char* _resbuf;
+  size_t _resbufLength;
+  size_t _currentPayloadLength;
+  unsigned char _lenbuf[4];
+  size_t _lenbufLength;
 
   SocketBuffer _socketBuffer;
 
@@ -97,7 +97,8 @@ public:
    * In both cases, 'msg' is filled with received bytes and the filled length
    * is assigned to 'length'.
    */
-  bool receiveHandshake(unsigned char* data, size_t& dataLength, bool peek = false);
+  bool receiveHandshake
+  (unsigned char* data, size_t& dataLength, bool peek = false);
 
   void enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,
                         const SharedHandle<ARC4Decryptor>& decryptor);
@@ -110,13 +111,13 @@ public:
 
   const unsigned char* getBuffer() const
   {
-    return resbuf;
+    return _resbuf;
   }
 
   unsigned char* detachBuffer()
   {
-    unsigned char* detachbuf = resbuf;
-    resbuf = new unsigned char[MAX_PAYLOAD_LEN];
+    unsigned char* detachbuf = _resbuf;
+    _resbuf = new unsigned char[MAX_PAYLOAD_LEN];
     return detachbuf;
   }
 };
