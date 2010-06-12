@@ -39,18 +39,18 @@
 
 namespace aria2 {
 
-std::string LogFactory::filename = DEV_NULL;
-Logger* LogFactory::logger = 0;
+std::string LogFactory::_filename = DEV_NULL;
+Logger* LogFactory::_logger = 0;
 bool LogFactory::_consoleOutput = true;
 Logger::LEVEL LogFactory::_logLevel = Logger::A2_DEBUG;
 
 Logger* LogFactory::getInstance() {
-  if(!logger) {
+  if(!_logger) {
     SimpleLogger* slogger = new SimpleLogger();
-    if(filename != DEV_NULL) {
+    if(_filename != DEV_NULL) {
       // don't open file DEV_NULL for performance sake.
       // This avoids costly unecessary message formatting and write.
-      slogger->openFile(filename);
+      slogger->openFile(_filename);
     }
     slogger->setLogLevel(_logLevel);
     if(_consoleOutput) {
@@ -58,9 +58,9 @@ Logger* LogFactory::getInstance() {
       slogger->setStdoutLogLevel(Logger::A2_WARN, true);
       slogger->setStdoutLogLevel(Logger::A2_ERROR, true);
     }
-    logger = slogger;
+    _logger = slogger;
   }
-  return logger;
+  return _logger;
 }
 
 void LogFactory::setLogLevel(Logger::LEVEL level)
@@ -84,8 +84,8 @@ void LogFactory::setLogLevel(const std::string& level)
 }
 
 void LogFactory::release() {
-  delete logger;
-  logger = 0;
+  delete _logger;
+  _logger = 0;
 }
 
 } // namespace aria2

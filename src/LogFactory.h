@@ -45,8 +45,8 @@ namespace aria2 {
 
 class LogFactory {
 private:
-  static std::string filename;
-  static Logger* logger;
+  static std::string _filename;
+  static Logger* _logger;
   static bool _consoleOutput;
   static Logger::LEVEL _logLevel;
 public:
@@ -60,7 +60,7 @@ public:
    * Set a filename to write log.
    */
   static void setLogFile(const std::string& name) {
-    filename = name;
+    _filename = name;
   }
 
   /**
