@@ -79,19 +79,17 @@ typedef std::deque<HttpRequestEntryHandle> HttpRequestEntries;
 
 class HttpConnection {
 private:
-  cuid_t cuid;
-  SharedHandle<SocketCore> socket;
+  cuid_t _cuid;
+  SharedHandle<SocketCore> _socket;
   SocketBuffer _socketBuffer;
-  const Option* option;
-  Logger* logger;
+  const Option* _option;
+  Logger* _logger;
 
-  HttpRequestEntries outstandingHttpRequests;
+  HttpRequestEntries _outstandingHttpRequests;
 
   std::string eraseConfidentialInfo(const std::string& request);
 public:
-  HttpConnection(cuid_t cuid,
-                 const SharedHandle<SocketCore>& socket,
-                 const Option* op);
+  HttpConnection(cuid_t cuid, const SharedHandle<SocketCore>& socket);
 
   /**
    * Sends Http request.

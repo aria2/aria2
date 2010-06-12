@@ -1,5 +1,15 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variables. Removed unused member variable.
+	* src/AbstractProxyRequestCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpConnection.cc
+	* src/HttpConnection.h
+	* src/HttpInitiateConnectionCommand.cc
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed HandleRegistry
 	* src/HandleRegistry.h
 	* src/Makefile.am

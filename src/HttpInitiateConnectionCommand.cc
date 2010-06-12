@@ -98,7 +98,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
         command = c;
       } else if(proxyMethod == V_GET) {
         SharedHandle<HttpConnection> httpConnection
-          (new HttpConnection(getCuid(), getSocket(), getOption().get()));
+          (new HttpConnection(getCuid(), getSocket()));
         HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
                                                        getRequest(),
                                                        getFileEntry(),
@@ -115,7 +115,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       }
     } else {
       SharedHandle<HttpConnection> httpConnection
-        (new HttpConnection(getCuid(), pooledSocket, getOption().get()));
+        (new HttpConnection(getCuid(), pooledSocket));
       HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
                                                      getRequest(),
                                                      getFileEntry(),
@@ -143,7 +143,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       setSocket(pooledSocket);
     }
     SharedHandle<HttpConnection> httpConnection
-      (new HttpConnection(getCuid(), getSocket(), getOption().get()));
+      (new HttpConnection(getCuid(), getSocket()));
     HttpRequestCommand* c =
       new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
                              getRequestGroup(),

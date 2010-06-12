@@ -64,7 +64,7 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand
   :
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   _proxyRequest(proxyRequest),
-  _httpConnection(new HttpConnection(cuid, s, getOption().get()))
+  _httpConnection(new HttpConnection(cuid, s))
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();

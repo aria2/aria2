@@ -65,12 +65,10 @@ HttpRequestEntry::HttpRequestEntry
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
-HttpConnection::HttpConnection(cuid_t cuid,
-                               const SocketHandle& socket,
-                               const Option* op):
-  cuid(cuid), socket(socket),
+HttpConnection::HttpConnection(cuid_t cuid, const SocketHandle& socket):
+  _cuid(cuid), _socket(socket),
   _socketBuffer(socket),
-  option(op), logger(LogFactory::getInstance())
+  _logger(LogFactory::getInstance())
 {}
 
 std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
@@ -95,45 +93,45 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createRequest();
-  if(logger->info()) {
-    logger->info(MSG_SENDING_REQUEST,
-                 util::itos(cuid).c_str(),
-                 eraseConfidentialInfo(request).c_str());
+  if(_logger->info()) {
+    _logger->info(MSG_SENDING_REQUEST,
+                  util::itos(_cuid).c_str(),
+                  eraseConfidentialInfo(request).c_str());
   }
   _socketBuffer.pushStr(request);
   _socketBuffer.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
-  outstandingHttpRequests.push_back(entry);
+  _outstandingHttpRequests.push_back(entry);
 }
 
 void HttpConnection::sendProxyRequest
 (const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createProxyRequest();
-  if(logger->info()) {
-    logger->info(MSG_SENDING_REQUEST,
-                 util::itos(cuid).c_str(),
-                 eraseConfidentialInfo(request).c_str());
+  if(_logger->info()) {
+    _logger->info(MSG_SENDING_REQUEST,
+                  util::itos(_cuid).c_str(),
+                  eraseConfidentialInfo(request).c_str());
   }
   _socketBuffer.pushStr(request);
   _socketBuffer.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
-  outstandingHttpRequests.push_back(entry);
+  _outstandingHttpRequests.push_back(entry);
 }
 
 SharedHandle<HttpResponse> HttpConnection::receiveResponse()
 {
-  if(outstandingHttpRequests.empty()) {
+  if(_outstandingHttpRequests.empty()) {
     throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
-  HttpRequestEntryHandle entry = outstandingHttpRequests.front();
+  HttpRequestEntryHandle entry = _outstandingHttpRequests.front();
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
 
   unsigned char buf[512];
   size_t size = sizeof(buf);
-  socket->peekData(buf, size);
+  _socket->peekData(buf, size);
   if(size == 0) {
-    if(socket->wantRead() || socket->wantWrite()) {
+    if(_socket->wantRead() || _socket->wantWrite()) {
       return SharedHandle<HttpResponse>();
     } else {
       throw DL_RETRY_EX(EX_INVALID_RESPONSE);
@@ -141,31 +139,31 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
   }
   proc->update(buf, size);
   if(!proc->eoh()) {
-    socket->readData(buf, size);
+    _socket->readData(buf, size);
     return SharedHandle<HttpResponse>();
   }
   size_t putbackDataLength = proc->getPutBackDataLength();
   size -= putbackDataLength;
-  socket->readData(buf, size);
-  if(logger->info()) {
-    logger->info(MSG_RECEIVE_RESPONSE,
-                 util::itos(cuid).c_str(), proc->getHeaderString().c_str());
+  _socket->readData(buf, size);
+  if(_logger->info()) {
+    _logger->info(MSG_RECEIVE_RESPONSE,
+                  util::itos(_cuid).c_str(), proc->getHeaderString().c_str());
   }
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
   SharedHandle<HttpResponse> httpResponse(new HttpResponse());
-  httpResponse->setCuid(cuid);
+  httpResponse->setCuid(_cuid);
   httpResponse->setHttpHeader(httpHeader);
   httpResponse->setHttpRequest(entry->getHttpRequest());
 
-  outstandingHttpRequests.pop_front();
+  _outstandingHttpRequests.pop_front();
 
   return httpResponse;
 }
 
 bool HttpConnection::isIssued(const SharedHandle<Segment>& segment) const
 {
-  for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests.begin(),
-        eoi = outstandingHttpRequests.end(); itr != eoi; ++itr) {
+  for(HttpRequestEntries::const_iterator itr = _outstandingHttpRequests.begin(),
+        eoi = _outstandingHttpRequests.end(); itr != eoi; ++itr) {
     SharedHandle<HttpRequest> httpRequest = (*itr)->getHttpRequest();
     if(httpRequest->getSegment() == segment) {
       return true;
@@ -176,10 +174,10 @@ bool HttpConnection::isIssued(const SharedHandle<Segment>& segment) const
 
 SharedHandle<HttpRequest> HttpConnection::getFirstHttpRequest() const
 {
-  if(outstandingHttpRequests.empty()) {
+  if(_outstandingHttpRequests.empty()) {
     return SharedHandle<HttpRequest>();
   } else {
-    return outstandingHttpRequests.front()->getHttpRequest();
+    return _outstandingHttpRequests.front()->getHttpRequest();
   }
 }
 

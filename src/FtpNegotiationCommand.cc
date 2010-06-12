@@ -598,7 +598,7 @@ bool FtpNegotiationCommand::resolveProxy()
   _dataSocket->establishConnection(_proxyAddr, proxyReq->getPort());
   disableReadCheckSocket();
   setWriteCheckSocket(_dataSocket);
-  _http.reset(new HttpConnection(getCuid(), _dataSocket, getOption().get()));
+  _http.reset(new HttpConnection(getCuid(), _dataSocket));
   _sequence = SEQ_SEND_TUNNEL_REQUEST;
   return false;
 }
