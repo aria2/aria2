@@ -37,26 +37,25 @@
 
 #include "common.h"
 #include "SharedHandle.h"
-#include <stdint.h>
 
 namespace aria2 {
 
 class Range {
 private:
-  off_t startByte;
-  off_t endByte;
-  uint64_t entityLength;
+  off_t _startByte;
+  off_t _endByte;
+  uint64_t _entityLength;
 public:
-  Range():startByte(0), endByte(0), entityLength(0) {}
+  Range():_startByte(0), _endByte(0), _entityLength(0) {}
 
   Range(off_t startByte, off_t endByte, uint64_t entityLength):
-    startByte(startByte), endByte(endByte), entityLength(entityLength) {}
+    _startByte(startByte), _endByte(endByte), _entityLength(entityLength) {}
 
   bool operator==(const Range& range) const
   {
-    return startByte == range.startByte &&
-      endByte == range.endByte &&
-      entityLength == range.entityLength;
+    return _startByte == range._startByte &&
+      _endByte == range._endByte &&
+      _entityLength == range._entityLength;
   }
 
   bool operator!=(const Range& range) const
@@ -66,23 +65,23 @@ public:
 
   off_t getStartByte() const
   {
-    return startByte;
+    return _startByte;
   }
 
   off_t getEndByte() const
   {
-    return endByte;
+    return _endByte;
   }
 
   uint64_t getEntityLength() const
   {
-    return entityLength;
+    return _entityLength;
   }
 
   uint64_t getContentLength() const
   {
-    if(endByte >= startByte) {
-      return endByte-startByte+1;
+    if(_endByte >= _startByte) {
+      return _endByte-_startByte+1;
     } else {
       return 0;
     }
