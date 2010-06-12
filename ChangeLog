@@ -1,6 +1,12 @@
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variables
+	* src/TimeA2.cc
+	* src/TimeA2.h
+
+2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Renamed member variables
 	* src/SpeedCalc.cc
 	* src/SpeedCalc.h
 

@@ -47,7 +47,7 @@ namespace aria2 {
 
 class Time {
 private:
-  struct timeval tv;
+  struct timeval _tv;
 
   bool _good;
 
@@ -79,7 +79,7 @@ public:
 
   time_t difference(const Time& now) const
   {
-    return difference(now.tv);
+    return difference(now._tv);
   }
 
   int64_t differenceInMillis() const;
@@ -88,7 +88,7 @@ public:
 
   int64_t differenceInMillis(const Time& now) const
   {
-    return differenceInMillis(now.tv);
+    return differenceInMillis(now._tv);
   }
 
   // Returns true if this object's time value is zero.

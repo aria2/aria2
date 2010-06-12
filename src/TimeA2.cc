@@ -49,7 +49,7 @@ Time::Time():_good(true)
 
 Time::Time(const Time& time)
 {
-  tv = time.tv;
+  _tv = time._tv;
   _good = time._good;
 }
 
@@ -60,7 +60,7 @@ Time::Time(time_t sec):_good(true)
 
 Time::Time(const struct timeval& tv):_good(true)
 {
-  this->tv = tv;
+  _tv = tv;
 }
 
 Time::~Time() {}
@@ -68,7 +68,7 @@ Time::~Time() {}
 Time& Time::operator=(const Time& time)
 {
   if(this != &time) {
-    tv = time.tv;
+    _tv = time._tv;
     _good = time._good;
   }
   return *this;
@@ -76,11 +76,11 @@ Time& Time::operator=(const Time& time)
 
 bool Time::operator<(const Time& time) const
 {
-  return util::difftv(time.tv, tv) > 0;
+  return util::difftv(time._tv, _tv) > 0;
 }
 
 void Time::reset() {
-  gettimeofday(&tv, 0);
+  gettimeofday(&_tv, 0);
 }
 
 struct timeval Time::getCurrentTime() const {
@@ -95,71 +95,71 @@ bool Time::elapsed(time_t sec) const {
   // simple test using time.
   // Then only when the further test is required, call gettimeofday.
   time_t now = time(0);
-  if(tv.tv_sec+sec < now) {
+  if(_tv.tv_sec+sec < now) {
     return true;
-  } else if(tv.tv_sec+sec == now) {
+  } else if(_tv.tv_sec+sec == now) {
     return
-      util::difftv(getCurrentTime(), tv) >= static_cast<int64_t>(sec)*1000000;
+      util::difftv(getCurrentTime(), _tv) >= static_cast<int64_t>(sec)*1000000;
   } else {
     return false;
   }
 }
 
 bool Time::elapsedInMillis(int64_t millis) const {
-  return util::difftv(getCurrentTime(), tv)/1000 >= millis;
+  return util::difftv(getCurrentTime(), _tv)/1000 >= millis;
 }
 
 bool Time::isNewer(const Time& time) const {
-  return util::difftv(this->tv, time.tv) > 0;
+  return util::difftv(_tv, time._tv) > 0;
 }
 
 time_t Time::difference() const
 {
-  return util::difftv(getCurrentTime(), tv)/1000000;
+  return util::difftv(getCurrentTime(), _tv)/1000000;
 }
 
 time_t Time::difference(const struct timeval& now) const
 {
-  return util::difftv(now, tv)/1000000;
+  return util::difftv(now, _tv)/1000000;
 }
 
 int64_t Time::differenceInMillis() const {
-  return util::difftv(getCurrentTime(), tv)/1000;
+  return util::difftv(getCurrentTime(), _tv)/1000;
 }
 
 int64_t Time::differenceInMillis(const struct timeval& now) const
 {
-  return util::difftv(now, tv)/1000;
+  return util::difftv(now, _tv)/1000;
 }
 
 bool Time::isZero() const
 {
-  return tv.tv_sec == 0 && tv.tv_usec == 0;
+  return _tv.tv_sec == 0 && _tv.tv_usec == 0;
 }
 
 int64_t Time::getTimeInMicros() const
 {
-  return (int64_t)tv.tv_sec*1000*1000+tv.tv_usec;
+  return (int64_t)_tv.tv_sec*1000*1000+_tv.tv_usec;
 }
 
 int64_t Time::getTimeInMillis() const
 {
-  return (int64_t)tv.tv_sec*1000+tv.tv_usec/1000;
+  return (int64_t)_tv.tv_sec*1000+_tv.tv_usec/1000;
 }
 
 time_t Time::getTime() const
 {
-  return tv.tv_sec;
+  return _tv.tv_sec;
 }
 
 void Time::setTimeInSec(time_t sec) {
-  tv.tv_sec = sec;
-  tv.tv_usec = 0;
+  _tv.tv_sec = sec;
+  _tv.tv_usec = 0;
 }
 
 void Time::advance(time_t sec)
 {
-  tv.tv_sec += sec;
+  _tv.tv_sec += sec;
 }
 
 bool Time::good() const
