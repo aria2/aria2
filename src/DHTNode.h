@@ -77,7 +77,7 @@ public:
     _rtt = millisec;
   }
 
-  std::string getIPAddress() const
+  const std::string& getIPAddress() const
   {
     return _ipaddr;
   }

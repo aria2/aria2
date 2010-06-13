@@ -1,3 +1,8 @@
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made DHTNode::getIPAddress() return const reference.
+	* src/DHTNode.h
+
 2010-06-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed member variables
