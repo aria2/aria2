@@ -52,7 +52,7 @@ namespace aria2 {
 class DownloadEngine;
 class Command;
 class Logger;
-class DownloadResult;
+struct DownloadResult;
 class ServerStatMan;
 class ServerStat;
 class Option;

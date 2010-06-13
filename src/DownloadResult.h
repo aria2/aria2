@@ -52,9 +52,8 @@ namespace aria2 {
 
 class FileEntry;
 
-class DownloadResult
+struct DownloadResult
 {
-public:
   gid_t gid;
  
   std::vector<SharedHandle<FileEntry> > fileEntries;

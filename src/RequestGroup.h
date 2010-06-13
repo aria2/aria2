@@ -65,7 +65,7 @@ class Option;
 class Logger;
 class RequestGroup;
 class CheckIntegrityEntry;
-class DownloadResult;
+struct DownloadResult;
 class URISelector;
 class URIResult;
 class RequestGroupMan;

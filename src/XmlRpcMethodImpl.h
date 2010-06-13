@@ -46,7 +46,7 @@
 
 namespace aria2 {
 
-class DownloadResult;
+struct DownloadResult;
 class RequestGroup;
 
 namespace xmlrpc {

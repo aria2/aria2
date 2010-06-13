@@ -1,5 +1,13 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made DownloadResult struct
+	* src/DownloadResult.h
+	* src/RequestGroup.h
+	* src/RequestGroupMan.h
+	* src/XmlRpcMethodImpl.h
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made DHTMessageEntry struct
 	* src/DHTMessageDispatcherImpl.cc
 	* src/DHTMessageDispatcherImpl.h
