@@ -28,18 +28,6 @@ public:
   void testMessageArrived();
 
   void testHandleTimeout();
-
-  class MockDHTMessageCallback2:public MockDHTMessageCallback {
-  public:
-    uint32_t _countOnRecivedCalled;
-
-    MockDHTMessageCallback2():_countOnRecivedCalled(0) {}
-
-    virtual void onReceived(const SharedHandle<DHTMessage>& message)
-    {
-      ++_countOnRecivedCalled;
-    }
-  };
 };
 
 
@@ -66,13 +54,11 @@ void DHTMessageTrackerTest::testMessageArrived()
   m3->getRemoteNode()->setIPAddress("192.168.0.3");
   m3->getRemoteNode()->setPort(6883);
 
-  SharedHandle<MockDHTMessageCallback2> c2(new MockDHTMessageCallback2());
-  
   DHTMessageTracker tracker;
   tracker.setRoutingTable(routingTable);
   tracker.setMessageFactory(factory);
   tracker.addMessage(m1, DHT_MESSAGE_TIMEOUT);
-  tracker.addMessage(m2, DHT_MESSAGE_TIMEOUT, c2);
+  tracker.addMessage(m2, DHT_MESSAGE_TIMEOUT);
   tracker.addMessage(m3, DHT_MESSAGE_TIMEOUT);
 
   {
@@ -85,7 +71,6 @@ void DHTMessageTrackerTest::testMessageArrived()
     SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(!reply.isNull());
-    CPPUNIT_ASSERT_EQUAL((uint32_t)0, c2->_countOnRecivedCalled);
     CPPUNIT_ASSERT(tracker.getEntryFor(m2).isNull());
     CPPUNIT_ASSERT_EQUAL((size_t)2, tracker.countEntry());
   }

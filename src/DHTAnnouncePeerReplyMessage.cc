@@ -35,6 +35,7 @@
 #include "DHTAnnouncePeerReplyMessage.h"
 #include "DHTNode.h"
 #include "bencode.h"
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
 
@@ -60,6 +61,11 @@ BDE DHTAnnouncePeerReplyMessage::getResponse()
 const std::string& DHTAnnouncePeerReplyMessage::getMessageType() const
 {
   return ANNOUNCE_PEER;
+}
+
+void DHTAnnouncePeerReplyMessage::accept(DHTMessageCallback* callback)
+{
+  callback->visit(this);
 }
 
 } // namespace aria2

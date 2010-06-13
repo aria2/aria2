@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,41 +32,37 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_PING_REPLY_MESSAGE_H_
-#define _D_DHT_PING_REPLY_MESSAGE_H_
+#ifndef _D_DHT_PING_REPLY_MESSAGE_CALLBACK_H_
+#define _D_DHT_PING_REPLY_MESSAGE_CALLBACK_H_
 
-#include "DHTResponseMessage.h"
-#include "DHTConstants.h"
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
 
-class DHTPingReplyMessage:public DHTResponseMessage {
+template<class Task>
+class DHTPingReplyMessageCallback:public DHTMessageCallback {
 private:
-  unsigned char _id[DHT_ID_LENGTH];
+  Task* _task;
 public:
-  DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
-                      const SharedHandle<DHTNode>& remoteNode,
-                      const unsigned char* id,
-                      const std::string& transactionID);
+  DHTPingReplyMessageCallback(Task* task):_task(task) {}
 
-  virtual ~DHTPingReplyMessage();
+  virtual void visit(const DHTAnnouncePeerReplyMessage* message) {}
 
-  virtual void doReceivedAction();
+  virtual void visit(const DHTFindNodeReplyMessage* message) {}
 
-  virtual BDE getResponse();
+  virtual void visit(const DHTGetPeersReplyMessage* message) {}
 
-  virtual const std::string& getMessageType() const;
-
-  virtual void accept(DHTMessageCallback* callback);
-
-  const unsigned char* getRemoteID()
+  virtual void visit(const DHTPingReplyMessage* message)
   {
-    return _id;
+    _task->onReceived(message);
   }
 
-  static const std::string PING;
+  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode)
+  {
+    _task->onTimeout(remoteNode);
+  }
 };
 
 } // namespace aria2
 
-#endif // _D_DHT_PING_REPLY_MESSAGE_H_
+#endif // _D_DHT_PING_REPLY_MESSAGE_CALLBACK_H_

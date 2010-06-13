@@ -388,15 +388,16 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	DHTNodeLookupEntry.cc DHTNodeLookupEntry.h\
 	BNode.cc BNode.h\
 	DHTMessageCallback.h\
-	DHTMessageCallbackImpl.cc DHTMessageCallbackImpl.h\
-	DHTMessageCallbackListener.h\
+	DHTNodeLookupTaskCallback.cc DHTNodeLookupTaskCallback.h\
+	DHTPingReplyMessageCallback.h\
+	DHTPeerLookupTaskCallback.cc DHTPeerLookupTaskCallback.h\
 	DHTAbstractTask.cc DHTAbstractTask.h\
 	DHTTask.h\
 	DHTPingTask.cc DHTPingTask.h\
 	DHTTaskQueue.h\
 	DHTTaskQueueImpl.cc DHTTaskQueueImpl.h\
 	DHTBucketRefreshTask.cc DHTBucketRefreshTask.h\
-	DHTAbstractNodeLookupTask.cc DHTAbstractNodeLookupTask.h\
+	DHTAbstractNodeLookupTask.h\
 	DHTPeerLookupTask.cc DHTPeerLookupTask.h\
 	DHTSetup.cc DHTSetup.h\
 	DHTTaskFactory.h\
@@ -544,7 +545,7 @@ aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
 	@LIBCARES_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
 	@SQLITE3_LIBS@ #-lprofiler
-#aria2c_LDFLAGS =  -pg
+#aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\

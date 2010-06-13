@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,26 +32,23 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_MESSAGE_CALLBACK_LISTENER_H_
-#define _D_DHT_MESSAGE_CALLBACK_LISTENER_H_
-
-#include "common.h"
-#include "SharedHandle.h"
+#include "DHTNodeLookupTaskCallback.h"
+#include "DHTNodeLookupTask.h"
 
 namespace aria2 {
 
-class DHTMessage;
-class DHTNode;
+DHTNodeLookupTaskCallback::DHTNodeLookupTaskCallback(DHTNodeLookupTask* task):
+  _task(task) {}
 
-class DHTMessageCallbackListener {
-public:
-  virtual ~DHTMessageCallbackListener() {}
+void DHTNodeLookupTaskCallback::visit(const DHTFindNodeReplyMessage* message)
+{
+  _task->onReceived(message);
+}
 
-  virtual void onReceived(const SharedHandle<DHTMessage>& message) = 0;
-
-  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode) = 0;
-};
+void DHTNodeLookupTaskCallback::onTimeout
+(const SharedHandle<DHTNode>& remoteNode)
+{
+  _task->onTimeout(remoteNode);
+}
 
 } // namespace aria2
-
-#endif // _D_DHT_MESSAGE_CALLBACK_LISTENER_H_

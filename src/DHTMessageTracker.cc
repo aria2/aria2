@@ -63,9 +63,9 @@ void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, time
   _entries.push_back(e);
 }
 
-std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
-DHTMessageTracker::messageArrived(const BDE& dict,
-                                  const std::string& ipaddr, uint16_t port)
+std::pair<SharedHandle<DHTResponseMessage>, SharedHandle<DHTMessageCallback> >
+DHTMessageTracker::messageArrived
+(const BDE& dict, const std::string& ipaddr, uint16_t port)
 {
   const BDE& tid = dict[DHTMessage::T];
   if(!tid.isString()) {
@@ -86,7 +86,7 @@ DHTMessageTracker::messageArrived(const BDE& dict,
       }
       SharedHandle<DHTNode> targetNode = entry->getTargetNode();
 
-      SharedHandle<DHTMessage> message =
+      SharedHandle<DHTResponseMessage> message =
         _factory->createResponseMessage(entry->getMessageType(), dict,
                                         targetNode->getIPAddress(),
                                         targetNode->getPort());
@@ -103,7 +103,8 @@ DHTMessageTracker::messageArrived(const BDE& dict,
   if(_logger->debug()) {
     _logger->debug("Tracker entry not found.");
   }
-  return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >();
+  return std::pair<SharedHandle<DHTResponseMessage>,
+                   SharedHandle<DHTMessageCallback> >();
 }
 
 void DHTMessageTracker::handleTimeout()

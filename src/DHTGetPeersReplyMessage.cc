@@ -134,6 +134,11 @@ const std::string& DHTGetPeersReplyMessage::getMessageType() const
   return GET_PEERS;
 }
 
+void DHTGetPeersReplyMessage::accept(DHTMessageCallback* callback)
+{
+  callback->visit(this);
+}
+
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {
   return strconcat("token=", util::toHex(_token),

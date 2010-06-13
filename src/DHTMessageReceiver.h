@@ -63,6 +63,8 @@ private:
   SharedHandle<DHTMessage>
   handleUnknownMessage(const unsigned char* data, size_t length,
                        const std::string& remoteAddr, uint16_t remotePort);
+
+  void onMessageReceived(const SharedHandle<DHTMessage>& message);
 public:
   DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker);
   

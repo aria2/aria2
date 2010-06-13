@@ -36,12 +36,13 @@
 #define _D_DHT_PING_TASK_H_
 
 #include "DHTAbstractTask.h"
-#include "DHTMessageCallbackListener.h"
 #include "a2time.h"
 
 namespace aria2 {
 
-class DHTPingTask:public DHTAbstractTask, public DHTMessageCallbackListener {
+class DHTPingReplyMessage;
+
+class DHTPingTask:public DHTAbstractTask {
 private:
   SharedHandle<DHTNode> _remoteNode;
 
@@ -52,6 +53,8 @@ private:
   bool _pingSuccessful;
 
   time_t _timeout;
+
+  void addMessage();
 public:
   DHTPingTask(const SharedHandle<DHTNode>& remoteNode, size_t numMaxRetry = 0);
 
@@ -59,9 +62,9 @@ public:
 
   virtual void startup();
 
-  virtual void onReceived(const SharedHandle<DHTMessage>& message);
+  void onReceived(const DHTPingReplyMessage* message);
 
-  virtual void onTimeout(const SharedHandle<DHTNode>& node);  
+  void onTimeout(const SharedHandle<DHTNode>& node);  
 
   void setTimeout(time_t timeout)
   {

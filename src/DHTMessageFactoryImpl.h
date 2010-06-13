@@ -66,7 +66,8 @@ private:
   Logger* _logger;
   
   // search node in routingTable. If it is not found, create new one.
-  SharedHandle<DHTNode> getRemoteNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
+  SharedHandle<DHTNode> getRemoteNode
+  (const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
 
   void validateID(const BDE& id) const;
 
@@ -82,78 +83,78 @@ public:
 
   virtual ~DHTMessageFactoryImpl();
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createQueryMessage(const BDE& dict,
                      const std::string& ipaddr, uint16_t port);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createResponseMessage(const std::string& messageType,
                         const BDE& dict,
                         const std::string& ipaddr, uint16_t port);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,
                     const std::string& transactionID = A2STR::NIL);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                          const unsigned char* id,
                          const std::string& transactionID);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
                         const unsigned char* targetNodeID,
                         const std::string& transactionID = A2STR::NIL);
 
-  SharedHandle<DHTMessage>
+  SharedHandle<DHTResponseMessage>
   createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                              const BDE& dict,
                              const std::string& transactionID);
 
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createFindNodeReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<DHTNode> >& closestKNodes,
    const std::string& transactionID);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
                         const unsigned char* infoHash,
                         const std::string& transactionID = A2STR::NIL);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<DHTNode> >& closestKNodes,
    const std::string& token,
    const std::string& transactionID);
 
-  SharedHandle<DHTMessage>
+  SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessageWithNodes(const SharedHandle<DHTNode>& remoteNode,
                                       const BDE& dict,
                                       const std::string& transactionID);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<Peer> >& peers,
    const std::string& token,
    const std::string& transactionID);
 
-  SharedHandle<DHTMessage>
+  SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessageWithValues(const SharedHandle<DHTNode>& remoteNode,
                                        const BDE& dict,
                                        const std::string& transactionID);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
                             const unsigned char* infoHash,
                             uint16_t tcpPort,
                             const std::string& token,
                             const std::string& transactionID = A2STR::NIL);
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                                  const std::string& transactionID);
 
@@ -167,7 +168,8 @@ public:
 
   void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher>& dispatcher);
   
-  void setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage);
+  void setPeerAnnounceStorage
+  (const WeakHandle<DHTPeerAnnounceStorage>& storage);
 
   void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
 

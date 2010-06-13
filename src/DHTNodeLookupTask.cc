@@ -39,30 +39,35 @@
 #include "DHTNodeLookupEntry.h"
 #include "LogFactory.h"
 #include "util.h"
+#include "DHTNodeLookupTaskCallback.h"
+#include "DHTQueryMessage.h"
 
 namespace aria2 {
 
 DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID):
-  DHTAbstractNodeLookupTask(targetNodeID)
+  DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage>(targetNodeID)
 {}
 
 void
 DHTNodeLookupTask::getNodesFromMessage
 (std::vector<SharedHandle<DHTNode> >& nodes,
- const SharedHandle<DHTMessage>& message)
+ const DHTFindNodeReplyMessage* message)
 {
-  SharedHandle<DHTFindNodeReplyMessage> m
-    (dynamic_pointer_cast<DHTFindNodeReplyMessage>(message));
-  if(!m.isNull()) {
-    const std::vector<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
-    nodes.insert(nodes.end(), knodes.begin(), knodes.end());
-  }
+  const std::vector<SharedHandle<DHTNode> >& knodes =
+    message->getClosestKNodes();
+  nodes.insert(nodes.end(), knodes.begin(), knodes.end());
 }
 
 SharedHandle<DHTMessage>
 DHTNodeLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
 {
   return getMessageFactory()->createFindNodeMessage(remoteNode, getTargetID());
+}
+
+SharedHandle<DHTMessageCallback> DHTNodeLookupTask::createCallback()
+{
+  return SharedHandle<DHTNodeLookupTaskCallback>
+    (new DHTNodeLookupTaskCallback(this));
 }
 
 } // namespace aria2

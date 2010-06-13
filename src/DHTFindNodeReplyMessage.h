@@ -58,6 +58,8 @@ public:
   
   virtual const std::string& getMessageType() const;
 
+  virtual void accept(DHTMessageCallback* callback);
+
   const std::vector<SharedHandle<DHTNode> >& getClosestKNodes() const
   {
     return _closestKNodes;

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,29 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DHTMessageCallbackImpl.h"
-#include "DHTMessage.h"
-#include "DHTNode.h"
-#include "DHTMessageCallbackListener.h"
+#ifndef _D_DHT_NODE_LOOKUP_TASK_CALLBACK_H_
+#define _D_DHT_NODE_LOOKUP_TASK_CALLBACK_H_
+
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
- 
-DHTMessageCallbackImpl::DHTMessageCallbackImpl(const WeakHandle<DHTMessageCallbackListener>& listener):_listener(listener) {}
 
-DHTMessageCallbackImpl::~DHTMessageCallbackImpl() {}
+class DHTNodeLookupTask;
 
-void DHTMessageCallbackImpl::onReceived(const SharedHandle<DHTMessage>& message)
-{
-  if(!_listener.isNull()) {
-    _listener->onReceived(message);
-  }
-}
+class DHTNodeLookupTaskCallback:public DHTMessageCallback {
+private:
+  DHTNodeLookupTask* _task;
+public:
+  DHTNodeLookupTaskCallback(DHTNodeLookupTask* task);
 
-void DHTMessageCallbackImpl::onTimeout(const SharedHandle<DHTNode>& remoteNode)
-{
-  if(!_listener.isNull()) {
-    _listener->onTimeout(remoteNode);
-  }
-}
+  virtual void visit(const DHTAnnouncePeerReplyMessage* message) {}
+
+  virtual void visit(const DHTFindNodeReplyMessage* message);
+
+  virtual void visit(const DHTGetPeersReplyMessage* message) {}
+
+  virtual void visit(const DHTPingReplyMessage* message) {}
+
+  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode);
+};
 
 } // namespace aria2
+
+#endif // _D_DHT_NODE_LOOKUP_TASK_CALLBACK_H_

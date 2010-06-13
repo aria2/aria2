@@ -186,15 +186,16 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DHTNodeLookupEntry.cc DHTNodeLookupEntry.h\
 @ENABLE_BITTORRENT_TRUE@	BNode.cc BNode.h\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageCallback.h\
-@ENABLE_BITTORRENT_TRUE@	DHTMessageCallbackImpl.cc DHTMessageCallbackImpl.h\
-@ENABLE_BITTORRENT_TRUE@	DHTMessageCallbackListener.h\
+@ENABLE_BITTORRENT_TRUE@	DHTNodeLookupTaskCallback.cc DHTNodeLookupTaskCallback.h\
+@ENABLE_BITTORRENT_TRUE@	DHTPingReplyMessageCallback.h\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTaskCallback.cc DHTPeerLookupTaskCallback.h\
 @ENABLE_BITTORRENT_TRUE@	DHTAbstractTask.cc DHTAbstractTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTPingTask.cc DHTPingTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTTaskQueue.h\
 @ENABLE_BITTORRENT_TRUE@	DHTTaskQueueImpl.cc DHTTaskQueueImpl.h\
 @ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshTask.cc DHTBucketRefreshTask.h\
-@ENABLE_BITTORRENT_TRUE@	DHTAbstractNodeLookupTask.cc DHTAbstractNodeLookupTask.h\
+@ENABLE_BITTORRENT_TRUE@	DHTAbstractNodeLookupTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTask.cc DHTPeerLookupTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTSetup.cc DHTSetup.h\
 @ENABLE_BITTORRENT_TRUE@	DHTTaskFactory.h\
@@ -347,8 +348,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
 	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
 	base32.h LogFactory.cc LogFactory.h TimerA2.cc TimerA2.h \
-	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
-	FeatureConfig.cc FeatureConfig.h DownloadEngineFactory.cc \
+	TimeA2.cc TimeA2.h SharedHandle.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
@@ -547,24 +548,24 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DHTMessageFactoryImpl.cc DHTMessageFactoryImpl.h \
 	DHTNodeLookupTask.cc DHTNodeLookupTask.h DHTNodeLookupEntry.cc \
 	DHTNodeLookupEntry.h BNode.cc BNode.h DHTMessageCallback.h \
-	DHTMessageCallbackImpl.cc DHTMessageCallbackImpl.h \
-	DHTMessageCallbackListener.h DHTAbstractTask.cc \
+	DHTNodeLookupTaskCallback.cc DHTNodeLookupTaskCallback.h \
+	DHTPingReplyMessageCallback.h DHTPeerLookupTaskCallback.cc \
+	DHTPeerLookupTaskCallback.h DHTAbstractTask.cc \
 	DHTAbstractTask.h DHTTask.h DHTPingTask.cc DHTPingTask.h \
 	DHTTaskQueue.h DHTTaskQueueImpl.cc DHTTaskQueueImpl.h \
 	DHTBucketRefreshTask.cc DHTBucketRefreshTask.h \
-	DHTAbstractNodeLookupTask.cc DHTAbstractNodeLookupTask.h \
-	DHTPeerLookupTask.cc DHTPeerLookupTask.h DHTSetup.cc \
-	DHTSetup.h DHTTaskFactory.h DHTTaskFactoryImpl.cc \
-	DHTTaskFactoryImpl.h DHTInteractionCommand.cc \
-	DHTInteractionCommand.h DHTPeerAnnounceEntry.cc \
-	DHTPeerAnnounceEntry.h DHTPeerAnnounceStorage.cc \
-	DHTPeerAnnounceStorage.h DHTTokenTracker.cc DHTTokenTracker.h \
-	DHTGetPeersCommand.cc DHTGetPeersCommand.h \
-	DHTTokenUpdateCommand.cc DHTTokenUpdateCommand.h \
-	DHTBucketRefreshCommand.cc DHTBucketRefreshCommand.h \
-	DHTPeerAnnounceCommand.cc DHTPeerAnnounceCommand.h \
-	DHTReplaceNodeTask.cc DHTReplaceNodeTask.h \
-	DHTEntryPointNameResolveCommand.cc \
+	DHTAbstractNodeLookupTask.h DHTPeerLookupTask.cc \
+	DHTPeerLookupTask.h DHTSetup.cc DHTSetup.h DHTTaskFactory.h \
+	DHTTaskFactoryImpl.cc DHTTaskFactoryImpl.h \
+	DHTInteractionCommand.cc DHTInteractionCommand.h \
+	DHTPeerAnnounceEntry.cc DHTPeerAnnounceEntry.h \
+	DHTPeerAnnounceStorage.cc DHTPeerAnnounceStorage.h \
+	DHTTokenTracker.cc DHTTokenTracker.h DHTGetPeersCommand.cc \
+	DHTGetPeersCommand.h DHTTokenUpdateCommand.cc \
+	DHTTokenUpdateCommand.h DHTBucketRefreshCommand.cc \
+	DHTBucketRefreshCommand.h DHTPeerAnnounceCommand.cc \
+	DHTPeerAnnounceCommand.h DHTReplaceNodeTask.cc \
+	DHTReplaceNodeTask.h DHTEntryPointNameResolveCommand.cc \
 	DHTEntryPointNameResolveCommand.h DHTRoutingTableSerializer.cc \
 	DHTRoutingTableSerializer.h DHTRoutingTableDeserializer.cc \
 	DHTRoutingTableDeserializer.h DHTAutoSaveCommand.cc \
@@ -725,12 +726,12 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	DHTNodeLookupTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTNodeLookupEntry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BNode.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTMessageCallbackImpl.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTNodeLookupTaskCallback.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTaskCallback.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTAbstractTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTPingTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTTaskQueueImpl.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshTask.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTAbstractNodeLookupTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTSetup.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTTaskFactoryImpl.$(OBJEXT) \
@@ -1123,8 +1124,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
 	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
 	base32.h LogFactory.cc LogFactory.h TimerA2.cc TimerA2.h \
-	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
-	FeatureConfig.cc FeatureConfig.h DownloadEngineFactory.cc \
+	TimeA2.cc TimeA2.h SharedHandle.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h HttpResponse.cc HttpResponse.h \
@@ -1230,7 +1231,7 @@ aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBCARES_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
 	@SQLITE3_LIBS@ #-lprofiler
 
-#aria2c_LDFLAGS =  -pg
+#aria2c_LDFLAGS = -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
@@ -1389,7 +1390,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CreateRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractNodeLookupTask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractTask.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerReplyMessage.Po@am__quote@
@@ -1406,7 +1406,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTGetPeersReplyMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTInteractionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageCallbackImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageDispatcherImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageFactoryImpl.Po@am__quote@
@@ -1416,10 +1415,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNodeLookupEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNodeLookupTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNodeLookupTaskCallback.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerLookupTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerLookupTaskCallback.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingReplyMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingTask.Po@am__quote@

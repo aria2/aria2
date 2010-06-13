@@ -29,14 +29,15 @@ public:
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
-    virtual SharedHandle<DHTMessage>
+    virtual SharedHandle<DHTResponseMessage>
     createFindNodeReplyMessage
     (const SharedHandle<DHTNode>& remoteNode,
      const std::vector<SharedHandle<DHTNode> >& closestKNodes,
      const std::string& transactionID)
     {
-      SharedHandle<MockDHTMessage> m
-        (new MockDHTMessage(_localNode, remoteNode, "find_node", transactionID));
+      SharedHandle<MockDHTResponseMessage> m
+        (new MockDHTResponseMessage
+         (_localNode, remoteNode, "find_node", transactionID));
       m->_nodes = closestKNodes;
       return m;
     }
@@ -99,8 +100,9 @@ void DHTFindNodeMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher._messageQueue.size());
-  SharedHandle<MockDHTMessage> m
-    (dynamic_pointer_cast<MockDHTMessage>(dispatcher._messageQueue[0]._message));
+  SharedHandle<MockDHTResponseMessage> m
+    (dynamic_pointer_cast<MockDHTResponseMessage>
+     (dispatcher._messageQueue[0]._message));
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("find_node"), m->getMessageType());

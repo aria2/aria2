@@ -44,8 +44,10 @@ class DownloadContext;
 class Peer;
 class PeerStorage;
 class BtRuntime;
+class DHTGetPeersReplyMessage;
 
-class DHTPeerLookupTask:public DHTAbstractNodeLookupTask {
+class DHTPeerLookupTask:
+    public DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage> {
 private:
   std::map<std::string, std::string> _tokenStorage;
 
@@ -57,13 +59,16 @@ private:
 public:
   DHTPeerLookupTask(const SharedHandle<DownloadContext>& downloadContext);
 
-  virtual void getNodesFromMessage(std::vector<SharedHandle<DHTNode> >& nodes,
-                                   const SharedHandle<DHTMessage>& message);
+  virtual void getNodesFromMessage
+  (std::vector<SharedHandle<DHTNode> >& nodes,
+   const DHTGetPeersReplyMessage* message);
   
-  virtual void onReceivedInternal(const SharedHandle<DHTMessage>& message);
+  virtual void onReceivedInternal(const DHTGetPeersReplyMessage* message);
   
   virtual SharedHandle<DHTMessage> createMessage
   (const SharedHandle<DHTNode>& remoteNode);
+
+  virtual SharedHandle<DHTMessageCallback> createCallback();
 
   virtual void onFinish();
   

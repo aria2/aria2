@@ -33,12 +33,13 @@
  */
 /* copyright --> */
 #include "DHTPingTask.h"
-#include "DHTMessageCallbackImpl.h"
 #include "DHTMessage.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTNode.h"
 #include "DHTConstants.h"
+#include "DHTPingReplyMessageCallback.h"
+#include "DHTQueryMessage.h"
 
 namespace aria2 {
 
@@ -53,17 +54,21 @@ DHTPingTask::DHTPingTask
 
 DHTPingTask::~DHTPingTask() {}
 
-void DHTPingTask::startup()
+void DHTPingTask::addMessage()
 {
   SharedHandle<DHTMessage> m =
     getMessageFactory()->createPingMessage(_remoteNode);
-  WeakHandle<DHTMessageCallbackListener> listener(this);
   SharedHandle<DHTMessageCallback> callback
-    (new DHTMessageCallbackImpl(listener));
+    (new DHTPingReplyMessageCallback<DHTPingTask>(this));
   getMessageDispatcher()->addMessageToQueue(m, _timeout, callback);
 }
 
-void DHTPingTask::onReceived(const SharedHandle<DHTMessage>& message)
+void DHTPingTask::startup()
+{
+  addMessage();
+}
+
+void DHTPingTask::onReceived(const DHTPingReplyMessage* message)
 {
   _pingSuccessful = true;
   setFinished(true);
@@ -76,12 +81,7 @@ void DHTPingTask::onTimeout(const SharedHandle<DHTNode>& node)
     _pingSuccessful = false;
     setFinished(true);
   } else {
-    SharedHandle<DHTMessage> m =
-      getMessageFactory()->createPingMessage(_remoteNode);
-    WeakHandle<DHTMessageCallbackListener> listener(this);
-    SharedHandle<DHTMessageCallback> callback
-      (new DHTMessageCallbackImpl(listener));
-    getMessageDispatcher()->addMessageToQueue(m, _timeout, callback);
+    addMessage();
   }
 }
 

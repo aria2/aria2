@@ -40,6 +40,7 @@
 #include "DHTMessageTracker.h"
 #include "DHTConnection.h"
 #include "DHTMessage.h"
+#include "DHTQueryMessage.h"
 #include "DHTResponseMessage.h"
 #include "DHTUnknownMessage.h"
 #include "DHTMessageFactory.h"
@@ -91,41 +92,47 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
                     " From:%s:%u", remoteAddr.c_str(), remotePort);
       return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
-    SharedHandle<DHTMessage> message;
-    SharedHandle<DHTMessageCallback> callback;
     if(isReply) {
-      std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
+      std::pair<SharedHandle<DHTResponseMessage>,
+                SharedHandle<DHTMessageCallback> > p =
         _tracker->messageArrived(dict, remoteAddr, remotePort);
-      message = p.first;
-      callback = p.second;
-      if(message.isNull()) {
+      if(p.first.isNull()) {
         // timeout or malicious? message
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
+      onMessageReceived(p.first);
+      if(!p.second.isNull()) {
+        p.second->onReceived(p.first);
+      }
+      return p.first;
     } else {
-      message = _factory->createQueryMessage(dict, remoteAddr, remotePort);
+      SharedHandle<DHTQueryMessage> message =
+        _factory->createQueryMessage(dict, remoteAddr, remotePort);
       if(message->getLocalNode() == message->getRemoteNode()) {
         // drop message from localnode
         _logger->info("Received DHT message from localnode.");
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
+      onMessageReceived(message);
+      return message;
     }
-    if(_logger->info()) {
-      _logger->info("Message received: %s", message->toString().c_str());
-    }
-    message->validate();
-    message->doReceivedAction();
-    message->getRemoteNode()->markGood();
-    message->getRemoteNode()->updateLastContact();
-    _routingTable->addGoodNode(message->getRemoteNode());
-    if(!callback.isNull()) {
-      callback->onReceived(message);
-    }
-    return message;
   } catch(RecoverableException& e) {
     _logger->info("Exception thrown while receiving DHT message.", e);
     return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
   }
+}
+
+void DHTMessageReceiver::onMessageReceived
+(const SharedHandle<DHTMessage>& message)
+{
+  if(_logger->info()) {
+    _logger->info("Message received: %s", message->toString().c_str());
+  }
+  message->validate();
+  message->doReceivedAction();
+  message->getRemoteNode()->markGood();
+  message->getRemoteNode()->updateLastContact();
+  _routingTable->addGoodNode(message->getRemoteNode());
 }
 
 void DHTMessageReceiver::handleTimeout()

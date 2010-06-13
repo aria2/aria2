@@ -53,6 +53,8 @@ public:
 
   virtual const std::string& getMessageType() const;
 
+  virtual void accept(DHTMessageCallback* callback);
+
   static const std::string ANNOUNCE_PEER;
 };
 

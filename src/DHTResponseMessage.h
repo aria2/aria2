@@ -40,6 +40,8 @@
 
 namespace aria2 {
 
+class DHTMessageCallback;
+
 class DHTResponseMessage:public DHTAbstractMessage {
 protected:
   virtual std::string toStringOptional() const { return A2STR::NIL; }
@@ -59,6 +61,8 @@ public:
   virtual bool isReply() const;
 
   virtual std::string toString() const;
+
+  virtual void accept(DHTMessageCallback* callback) = 0;
 
   static const std::string R;
 };

@@ -31,28 +31,30 @@ public:
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
-    virtual SharedHandle<DHTMessage>
+    virtual SharedHandle<DHTResponseMessage>
     createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                                const std::vector<SharedHandle<Peer> >& peers,
                                const std::string& token,
                                const std::string& transactionID)
     {
-      SharedHandle<MockDHTMessage> m
-        (new MockDHTMessage(_localNode, remoteNode, "get_peers", transactionID));
+      SharedHandle<MockDHTResponseMessage> m
+        (new MockDHTResponseMessage
+         (_localNode, remoteNode, "get_peers", transactionID));
       m->_peers = peers;
       m->_token = token;
       return m;
     }
 
-    virtual SharedHandle<DHTMessage>
+    virtual SharedHandle<DHTResponseMessage>
     createGetPeersReplyMessage
     (const SharedHandle<DHTNode>& remoteNode,
      const std::vector<SharedHandle<DHTNode> >& closestKNodes,
      const std::string& token,
      const std::string& transactionID)
     {
-      SharedHandle<MockDHTMessage> m
-        (new MockDHTMessage(_localNode, remoteNode, "get_peers", transactionID));
+      SharedHandle<MockDHTResponseMessage> m
+        (new MockDHTResponseMessage
+         (_localNode, remoteNode, "get_peers", transactionID));
       m->_nodes = closestKNodes;
       m->_token = token;
       return m;
@@ -133,8 +135,9 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     msg.doReceivedAction();
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher._messageQueue.size());
-    SharedHandle<MockDHTMessage> m
-      (dynamic_pointer_cast<MockDHTMessage>(dispatcher._messageQueue[0]._message));
+    SharedHandle<MockDHTResponseMessage> m
+      (dynamic_pointer_cast<MockDHTResponseMessage>
+       (dispatcher._messageQueue[0]._message));
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("get_peers"), m->getMessageType());
@@ -169,8 +172,9 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     msg.doReceivedAction();
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher._messageQueue.size());
-    SharedHandle<MockDHTMessage> m
-      (dynamic_pointer_cast<MockDHTMessage>(dispatcher._messageQueue[0]._message));
+    SharedHandle<MockDHTResponseMessage> m
+      (dynamic_pointer_cast<MockDHTResponseMessage>
+       (dispatcher._messageQueue[0]._message));
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("get_peers"), m->getMessageType());

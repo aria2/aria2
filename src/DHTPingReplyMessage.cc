@@ -38,6 +38,7 @@
 
 #include "DHTNode.h"
 #include "bencode.h"
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
 
@@ -66,6 +67,11 @@ BDE DHTPingReplyMessage::getResponse()
 const std::string& DHTPingReplyMessage::getMessageType() const
 {
   return PING;
+}
+
+void DHTPingReplyMessage::accept(DHTMessageCallback* callback)
+{
+  callback->visit(this);
 }
 
 } // namespace aria2

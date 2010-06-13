@@ -28,11 +28,13 @@ public:
   void testDoReceivedAction();
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
-    virtual SharedHandle<DHTMessage>
+    virtual SharedHandle<DHTResponseMessage>
     createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                                    const std::string& transactionID)
     {
-      return SharedHandle<DHTMessage>(new MockDHTMessage(_localNode, remoteNode, "announce_peer", transactionID));
+      return SharedHandle<DHTResponseMessage>
+        (new MockDHTResponseMessage
+         (_localNode, remoteNode, "announce_peer", transactionID));
     }
   };
 };
@@ -106,8 +108,9 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher._messageQueue.size());
-  SharedHandle<MockDHTMessage> m
-    (dynamic_pointer_cast<MockDHTMessage>(dispatcher._messageQueue[0]._message));
+  SharedHandle<MockDHTResponseMessage> m
+    (dynamic_pointer_cast<MockDHTResponseMessage>
+     (dispatcher._messageQueue[0]._message));
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("announce_peer"), m->getMessageType());

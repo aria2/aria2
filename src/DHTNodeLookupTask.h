@@ -39,15 +39,21 @@
 
 namespace aria2 {
 
-class DHTNodeLookupTask:public DHTAbstractNodeLookupTask {
+class DHTFindNodeReplyMessage;
+
+class DHTNodeLookupTask:
+    public DHTAbstractNodeLookupTask<DHTFindNodeReplyMessage> {
 public:
   DHTNodeLookupTask(const unsigned char* targetNodeID);
 
-  virtual void getNodesFromMessage(std::vector<SharedHandle<DHTNode> >& nodes,
-                                   const SharedHandle<DHTMessage>& message);
+  virtual void getNodesFromMessage
+  (std::vector<SharedHandle<DHTNode> >& nodes,
+   const DHTFindNodeReplyMessage* message);
 
   virtual SharedHandle<DHTMessage> createMessage
   (const SharedHandle<DHTNode>& remoteNode);
+
+  virtual SharedHandle<DHTMessageCallback> createCallback();
 };
 
 } // namespace aria2

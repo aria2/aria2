@@ -28,14 +28,14 @@ public:
 
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
-    virtual SharedHandle<DHTMessage>
+    virtual SharedHandle<DHTResponseMessage>
     createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                            const unsigned char* remoteNodeID,
                            const std::string& transactionID)
     {
-      return SharedHandle<DHTMessage>
-        (new MockDHTMessage(_localNode, remoteNode, "ping_reply",
-                            transactionID));
+      return SharedHandle<MockDHTResponseMessage>
+        (new MockDHTResponseMessage(_localNode, remoteNode, "ping_reply",
+                                    transactionID));
     }
   };
 };
@@ -89,8 +89,9 @@ void DHTPingMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher._messageQueue.size());
-  SharedHandle<MockDHTMessage> m
-    (dynamic_pointer_cast<MockDHTMessage>(dispatcher._messageQueue[0]._message));
+  SharedHandle<MockDHTResponseMessage> m
+    (dynamic_pointer_cast<MockDHTResponseMessage>
+     (dispatcher._messageQueue[0]._message));
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("ping_reply"), m->getMessageType());

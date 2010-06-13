@@ -11,7 +11,13 @@ public:
 
   virtual ~MockDHTMessageCallback() {}
 
-  virtual void onReceived(const SharedHandle<DHTMessage>& message) {}
+  virtual void visit(const DHTAnnouncePeerReplyMessage* message) {}
+
+  virtual void visit(const DHTFindNodeReplyMessage* message) {}
+
+  virtual void visit(const DHTGetPeersReplyMessage* message) {}
+
+  virtual void visit(const DHTPingReplyMessage* message) {}
 
   virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode) {}
 };

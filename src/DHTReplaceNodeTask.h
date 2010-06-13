@@ -36,15 +36,14 @@
 #define _D_DHT_REPLACE_NODE_TASK_H_
 
 #include "DHTAbstractTask.h"
-#include "DHTMessageCallbackListener.h"
 #include "a2time.h"
 
 namespace aria2 {
 
 class DHTBucket;
+class DHTPingReplyMessage;
 
-class DHTReplaceNodeTask:public DHTAbstractTask,
-                         public DHTMessageCallbackListener {
+class DHTReplaceNodeTask:public DHTAbstractTask {
 private:
   SharedHandle<DHTBucket> _bucket;
 
@@ -65,9 +64,9 @@ public:
 
   virtual void startup();
 
-  virtual void onReceived(const SharedHandle<DHTMessage>& message);
+  void onReceived(const DHTPingReplyMessage* message);
 
-  virtual void onTimeout(const SharedHandle<DHTNode>& node);  
+  void onTimeout(const SharedHandle<DHTNode>& node);  
 
   void setTimeout(time_t timeout)
   {

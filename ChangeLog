@@ -1,5 +1,56 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten DHTMessageCallback using Visitor pattern. Eliminated
+	dynamic_pointer_cast.
+	* src/DHTMessageCallbackImpl.cc: Removed
+	* src/DHTMessageReceiver.cc
+	* src/DHTAbstractNodeLookupTask.h
+	* src/DHTAnnouncePeerReplyMessage.h
+	* src/DHTReplaceNodeTask.h
+	* src/DHTFindNodeReplyMessage.cc
+	* src/DHTGetPeersReplyMessage.h
+	* src/DHTPeerLookupTask.h
+	* src/DHTMessageCallbackImpl.h: Removed
+	* src/DHTMessageFactory.h
+	* src/DHTNodeLookupTaskCallback.h
+	* src/DHTMessageTracker.h
+	* src/DHTMessageCallbackListener.h: Removed
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTMessageCallback.h
+	* src/DHTAnnouncePeerReplyMessage.cc
+	* src/DHTNodeLookupTask.h
+	* src/DHTReplaceNodeTask.cc
+	* src/DHTPeerLookupTaskCallback.cc
+	* src/DHTMessageTracker.cc
+	* src/DHTPingReplyMessage.cc
+	* src/DHTPingTask.cc
+	* src/DHTMessageFactoryImpl.h
+	* src/Makefile.am
+	* src/DHTNodeLookupTask.cc
+	* src/DHTPeerLookupTaskCallback.h
+	* src/DHTPeerLookupTask.cc
+	* src/DHTMessageReceiver.h
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTResponseMessage.h
+	* src/DHTFindNodeReplyMessage.h
+	* src/DHTPingReplyMessageCallback.h
+	* src/Makefile.in
+	* src/DHTBucketRefreshTask.cc
+	* src/DHTNodeLookupTaskCallback.cc
+	* src/DHTPingTask.h
+	* src/DHTPingReplyMessage.h
+	* src/DHTAbstractNodeLookupTask.cc: Removed
+	* test/DHTMessageTrackerTest.cc
+	* test/DHTPingMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/MockDHTMessage.h
+	* test/MockDHTMessageFactory.h
+	* test/DHTFindNodeMessageTest.cc
+	* test/MockDHTMessageCallback.h
+	* test/DHTAnnouncePeerMessageTest.cc
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced dynamic_pointer_cast with static_pointer_cast
 	* src/DHTSetup.cc
 	* src/DefaultBtMessageReceiver.cc

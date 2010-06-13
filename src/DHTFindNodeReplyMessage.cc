@@ -96,6 +96,11 @@ const std::string& DHTFindNodeReplyMessage::getMessageType() const
   return FIND_NODE;
 }
 
+void DHTFindNodeReplyMessage::accept(DHTMessageCallback* callback)
+{
+  callback->visit(this);
+}
+
 void DHTFindNodeReplyMessage::setClosestKNodes
 (const std::vector<SharedHandle<DHTNode> >& closestKNodes)
 {

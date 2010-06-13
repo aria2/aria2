@@ -46,6 +46,8 @@
 namespace aria2 {
 
 class DHTMessage;
+class DHTQueryMessage;
+class DHTResponseMessage;
 class DHTNode;
 class Peer;
 class BDE;
@@ -54,62 +56,62 @@ class DHTMessageFactory {
 public:
   virtual ~DHTMessageFactory() {}
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createQueryMessage(const BDE& dict,
                      const std::string& ipaddr, uint16_t port) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createResponseMessage(const std::string& messageType,
                         const BDE& dict,
                         const std::string& ipaddr, uint16_t port) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,
                     const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                          const unsigned char* id,
                          const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
                         const unsigned char* targetNodeID,
                         const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createFindNodeReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<DHTNode> >& closestKNodes,
    const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
                         const unsigned char* infoHash,
                         const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<DHTNode> >& closestKNodes,
    const std::string& token,
    const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<Peer> >& peers,
    const std::string& token,
    const std::string& transactionID) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTQueryMessage>
   createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
                             const unsigned char* infoHash,
                             uint16_t tcpPort,
                             const std::string& token,
                             const std::string& transactionID = A2STR::NIL) = 0;
 
-  virtual SharedHandle<DHTMessage>
+  virtual SharedHandle<DHTResponseMessage>
   createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
                                  const std::string& transactionID) = 0;
 

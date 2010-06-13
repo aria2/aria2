@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,29 +32,23 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_MESSAGE_CALLBACK_IMPL_H_
-#define _D_DHT_MESSAGE_CALLBACK_IMPL_H_
-
-#include "DHTMessageCallback.h"
+#include "DHTPeerLookupTaskCallback.h"
+#include "DHTPeerLookupTask.h"
 
 namespace aria2 {
 
-class DHTMessageCallbackListener;
+DHTPeerLookupTaskCallback::DHTPeerLookupTaskCallback(DHTPeerLookupTask* task):
+  _task(task) {}
 
-class DHTMessageCallbackImpl:public DHTMessageCallback {
-private:
-  WeakHandle<DHTMessageCallbackListener> _listener;
+void DHTPeerLookupTaskCallback::visit(const DHTGetPeersReplyMessage* message)
+{
+  _task->onReceived(message);
+}
 
-public:
-  DHTMessageCallbackImpl(const WeakHandle<DHTMessageCallbackListener>& listener);
-
-  virtual ~DHTMessageCallbackImpl();
-
-  virtual void onReceived(const SharedHandle<DHTMessage>& message);
-
-  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode);
-};
+void DHTPeerLookupTaskCallback::onTimeout
+(const SharedHandle<DHTNode>& remoteNode)
+{
+  _task->onTimeout(remoteNode);
+}
 
 } // namespace aria2
-
-#endif // _D_DHT_MESSAGE_CALLBACK_IMPL_H_

@@ -46,45 +46,48 @@
 #include "util.h"
 #include "DHTBucket.h"
 #include "bittorrent_helper.h"
+#include "DHTPeerLookupTaskCallback.h"
+#include "DHTQueryMessage.h"
 
 namespace aria2 {
 
 DHTPeerLookupTask::DHTPeerLookupTask
 (const SharedHandle<DownloadContext>& downloadContext):
-  DHTAbstractNodeLookupTask(bittorrent::getInfoHash(downloadContext)) {}
+  DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>
+  (bittorrent::getInfoHash(downloadContext)) {}
 
 void
 DHTPeerLookupTask::getNodesFromMessage
 (std::vector<SharedHandle<DHTNode> >& nodes,
- const SharedHandle<DHTMessage>& message)
+ const DHTGetPeersReplyMessage* message)
 {
-  SharedHandle<DHTGetPeersReplyMessage> m
-    (dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
-  if(!m.isNull()) {
-    const std::vector<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
-    nodes.insert(nodes.end(), knodes.begin(), knodes.end());
-  }
+  const std::vector<SharedHandle<DHTNode> >& knodes =
+    message->getClosestKNodes();
+  nodes.insert(nodes.end(), knodes.begin(), knodes.end());
 }
   
 void DHTPeerLookupTask::onReceivedInternal
-(const SharedHandle<DHTMessage>& message)
+(const DHTGetPeersReplyMessage* message)
 {
-  SharedHandle<DHTGetPeersReplyMessage> m
-    (dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
-  if(m.isNull()) {
-    return;
-  }
-  SharedHandle<DHTNode> remoteNode = m->getRemoteNode();
+  SharedHandle<DHTNode> remoteNode = message->getRemoteNode();
   _tokenStorage[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] =
-    m->getToken();
-  _peerStorage->addPeer(m->getValues());
-  _peers.insert(_peers.end(), m->getValues().begin(), m->getValues().end());
-  getLogger()->info("Received %u peers.", m->getValues().size());
+    message->getToken();
+  _peerStorage->addPeer(message->getValues());
+  _peers.insert(_peers.end(),
+                message->getValues().begin(), message->getValues().end());
+  getLogger()->info("Received %u peers.", message->getValues().size());
 }
   
-SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
+SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage
+(const SharedHandle<DHTNode>& remoteNode)
 {
   return getMessageFactory()->createGetPeersMessage(remoteNode, getTargetID());
+}
+
+SharedHandle<DHTMessageCallback> DHTPeerLookupTask::createCallback()
+{
+  return SharedHandle<DHTPeerLookupTaskCallback>
+    (new DHTPeerLookupTaskCallback(this));
 }
 
 void DHTPeerLookupTask::onFinish()

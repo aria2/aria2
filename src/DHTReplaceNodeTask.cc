@@ -35,11 +35,12 @@
 #include "DHTReplaceNodeTask.h"
 #include "DHTBucket.h"
 #include "DHTNode.h"
-#include "DHTMessage.h"
+#include "DHTPingReplyMessage.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
-#include "DHTMessageCallbackImpl.h"
 #include "Logger.h"
+#include "DHTPingReplyMessageCallback.h"
+#include "DHTQueryMessage.h"
 
 namespace aria2 {
 
@@ -66,14 +67,13 @@ void DHTReplaceNodeTask::sendMessage()
   } else {
     SharedHandle<DHTMessage> m =
       getMessageFactory()->createPingMessage(questionableNode);
-    WeakHandle<DHTMessageCallbackListener> listener(this);
     SharedHandle<DHTMessageCallback> callback
-      (new DHTMessageCallbackImpl(listener));
+      (new DHTPingReplyMessageCallback<DHTReplaceNodeTask>(this));
     getMessageDispatcher()->addMessageToQueue(m, _timeout, callback);
   }
 }
 
-void DHTReplaceNodeTask::onReceived(const SharedHandle<DHTMessage>& message)
+void DHTReplaceNodeTask::onReceived(const DHTPingReplyMessage* message)
 {
   getLogger()->info("ReplaceNode: Ping reply received from %s.",
                     message->getRemoteNode()->toString().c_str());
