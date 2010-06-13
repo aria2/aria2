@@ -1,5 +1,15 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variables
+	* src/HttpServerBodyCommand.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* src/XmlRpcRequest.h
+	* test/XmlRpcMethodTest.cc
+	* test/XmlRpcRequestProcessorTest.cc
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made DownloadResult struct
 	* src/DownloadResult.h
 	* src/RequestGroup.h

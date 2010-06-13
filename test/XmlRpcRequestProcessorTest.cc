@@ -64,14 +64,14 @@ void XmlRpcRequestProcessorTest::testParseMemory()
                      "   </params>"
                      "</methodCall>");
 
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.addURI"), req._methodName);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, req._params.size());
-  CPPUNIT_ASSERT_EQUAL((int64_t)100, req._params[0].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)65535, req._params[1]["max-count"].i());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.addURI"), req.methodName);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, req.params.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)100, req.params[0].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)65535, req.params[1]["max-count"].i());
   // Current implementation handles double as string.
-  CPPUNIT_ASSERT_EQUAL(std::string("0.99"), req._params[1]["seed-ratio"].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("pudding"), req._params[2][0].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("hello world"), req._params[2][1].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("0.99"), req.params[1]["seed-ratio"].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("pudding"), req.params[2][0].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("hello world"), req.params[2][1].s());
 }
 
 void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()

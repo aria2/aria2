@@ -201,7 +201,7 @@ static void extractUris(OutputIterator out, const BDE& src)
 
 BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isList() || params[0].empty()) {
     throw DL_ABORT_EX("URI is not provided.");
@@ -233,7 +233,7 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 BDE AddTorrentXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX("Torrent data is not provided.");
@@ -268,7 +268,7 @@ BDE AddTorrentXmlRpcMethod::process
 BDE AddMetalinkXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX("Metalink data is not provided.");
@@ -305,7 +305,7 @@ BDE AddMetalinkXmlRpcMethod::process
 static BDE removeDownload
 (const XmlRpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
@@ -381,7 +381,7 @@ static bool pauseRequestGroup
 static BDE pauseDownload
 (const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
@@ -448,7 +448,7 @@ BDE ForcePauseAllXmlRpcMethod::process
 
 BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
@@ -707,7 +707,7 @@ void gatherStoppedDownload
 BDE GetFilesXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
@@ -740,7 +740,7 @@ BDE GetFilesXmlRpcMethod::process
 BDE GetUrisXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
@@ -768,7 +768,7 @@ BDE GetUrisXmlRpcMethod::process
 BDE GetPeersXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
@@ -797,7 +797,7 @@ BDE GetPeersXmlRpcMethod::process
 BDE TellStatusXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
@@ -893,7 +893,7 @@ BDE PurgeDownloadResultXmlRpcMethod::process
 BDE ChangeOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
@@ -933,7 +933,7 @@ BDE ChangeOptionXmlRpcMethod::process
 BDE ChangeGlobalOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isDict()) {
     return BDE_OK;
@@ -990,7 +990,7 @@ static void pushRequestOption
 BDE GetOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   if(params.empty() || !params[0].isString()) {
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
@@ -1027,7 +1027,7 @@ BDE GetGlobalOptionXmlRpcMethod::process
 BDE ChangePositionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.size() != 3 ||
@@ -1064,7 +1064,7 @@ BDE GetSessionInfoXmlRpcMethod::process
 BDE GetServersXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.empty() || !params[0].isString()) {
@@ -1109,7 +1109,7 @@ BDE GetServersXmlRpcMethod::process
 BDE ChangeUriXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
 
   if(params.size() < 4 ||
@@ -1199,7 +1199,7 @@ BDE ForceShutdownXmlRpcMethod::process
 BDE SystemMulticallXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req._params;
+  const BDE& params = req.params;
   assert(params.isList());
   
   if(params.size() != 1) {
@@ -1244,7 +1244,7 @@ BDE NoSuchMethodXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   throw DL_ABORT_EX
-    (StringFormat("No such method: %s", req._methodName.c_str()).str());
+    (StringFormat("No such method: %s", req.methodName.c_str()).str());
 }
 
 } // namespace xmlrpc

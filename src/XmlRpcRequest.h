@@ -46,11 +46,11 @@ namespace aria2 {
 namespace xmlrpc {
 
 struct XmlRpcRequest {
-  std::string _methodName;
-  BDE _params;
+  std::string methodName;
+  BDE params;
 
   XmlRpcRequest(const std::string& methodName, const BDE& params):
-    _methodName(methodName), _params(params) {}
+    methodName(methodName), params(params) {}
 };
 
 } // namespace xmlrpc

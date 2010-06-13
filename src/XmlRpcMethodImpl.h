@@ -302,7 +302,7 @@ private:
 protected:
   virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e)
   {
-    const BDE& params = req._params;
+    const BDE& params = req.params;
     checkPaginationParams(params);
     ssize_t offset = params[0].i();
     size_t num = params[1].i();

@@ -93,7 +93,7 @@ bool HttpServerBodyCommand::execute()
             xmlrpc::XmlRpcRequestProcessor().parseMemory(_httpServer->getBody());
           
           SharedHandle<xmlrpc::XmlRpcMethod> method =
-            xmlrpc::XmlRpcMethodFactory::create(req._methodName);
+            xmlrpc::XmlRpcMethodFactory::create(req.methodName);
           xmlrpc::XmlRpcResponse res = method->execute(req, _e);
           bool gzip = _httpServer->supportsGZip();
           std::string responseData = res.toXml(gzip);
