@@ -1229,12 +1229,12 @@ BDE SystemMulticallXmlRpcMethod::process
     SharedHandle<XmlRpcMethod> method = XmlRpcMethodFactory::create(methodName);
     XmlRpcRequest innerReq(methodName, (*i)[KEY_PARAMS]);
     XmlRpcResponse res = method->execute(innerReq, e);
-    if(res._code == 0) {
+    if(res.code == 0) {
       BDE l = BDE::list();
-      l << res._param;
+      l << res.param;
       list << l;
     } else {
-      list << res._param;
+      list << res.param;
     }
   }
   return list;

@@ -47,11 +47,11 @@ namespace xmlrpc {
 
 struct XmlRpcResponse {
   // 0 for success, non-zero for error
-  int _code;
+  int code;
   
-  BDE _param;
+  BDE param;
 
-  XmlRpcResponse(int code, const BDE& param):_code(code), _param(param) {}
+  XmlRpcResponse(int code, const BDE& param):code(code), param(param) {}
 
   std::string toXml(bool gzip = false) const;
 };

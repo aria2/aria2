@@ -1,5 +1,13 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed member variables of XmlRpcResponse
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcResponse.cc
+	* src/XmlRpcResponse.h
+	* test/XmlRpcMethodTest.cc
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed member variables
 	* src/HttpServerBodyCommand.cc
 	* src/XmlRpcMethodImpl.cc

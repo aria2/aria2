@@ -113,13 +113,13 @@ std::string XmlRpcResponse::toXml(bool gzip) const
 #ifdef HAVE_LIBZ
     GZipEncoder o;
     o.init();
-    return encodeAll(o, _code, _param);
+    return encodeAll(o, code, param);
 #else // !HAVE_LIBZ
     abort();
 #endif // !HAVE_LIBZ
   } else {
     std::stringstream o;
-    return encodeAll(o, _code, _param);
+    return encodeAll(o, code, param);
   }
 }
 
