@@ -42,11 +42,10 @@ namespace aria2 {
 
 class DHTNode;
 
-class DHTNodeLookupEntry {
-public:
-  SharedHandle<DHTNode> _node;
+struct DHTNodeLookupEntry {
+  SharedHandle<DHTNode> node;
 
-  bool _used;
+  bool used;
 
   DHTNodeLookupEntry(const SharedHandle<DHTNode>& node);
 

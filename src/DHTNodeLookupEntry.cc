@@ -38,14 +38,14 @@
 namespace aria2 {
 
 DHTNodeLookupEntry::DHTNodeLookupEntry(const SharedHandle<DHTNode>& node):
-  _node(node), _used(false) {}
+  node(node), used(false) {}
 
 DHTNodeLookupEntry::DHTNodeLookupEntry():
-  _node(0), _used(false) {}
+  node(0), used(false) {}
 
 bool DHTNodeLookupEntry::operator==(const DHTNodeLookupEntry& entry) const
 {
-  return _node == entry._node;
+  return node == entry.node;
 }
 
 } // namespace aria2

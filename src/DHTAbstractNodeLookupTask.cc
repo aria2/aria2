@@ -71,15 +71,15 @@ void DHTAbstractNodeLookupTask::onReceived
   size_t count = 0;
   for(std::vector<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
         newEntries.begin(), eoi = newEntries.end(); i != eoi; ++i) {
-    if(memcmp(getLocalNode()->getID(), (*i)->_node->getID(),
+    if(memcmp(getLocalNode()->getID(), (*i)->node->getID(),
               DHT_ID_LENGTH) != 0) {
       _entries.push_front(*i);
       ++count;
       if(getLogger()->debug()) {
         getLogger()->debug("Received nodes: id=%s, ip=%s",
-                           util::toHex((*i)->_node->getID(),
+                           util::toHex((*i)->node->getID(),
                                        DHT_ID_LENGTH).c_str(),
-                           (*i)->_node->getIPAddress().c_str());
+                           (*i)->node->getIPAddress().c_str());
       }
     }
   }
@@ -106,7 +106,7 @@ void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
   --_inFlightMessage;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
         _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
-    if((*i)->_node == node) {
+    if((*i)->node == node) {
       _entries.erase(i);
       break;
     }
@@ -141,10 +141,10 @@ void DHTAbstractNodeLookupTask::sendMessage()
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
         _entries.begin(), eoi = _entries.end();
       i != eoi && _inFlightMessage < ALPHA; ++i) {
-    if((*i)->_used == false) {
+    if((*i)->used == false) {
       ++_inFlightMessage;
-      (*i)->_used = true;
-      SharedHandle<DHTMessage> m = createMessage((*i)->_node);
+      (*i)->used = true;
+      SharedHandle<DHTMessage> m = createMessage((*i)->node);
       WeakHandle<DHTMessageCallbackListener> listener(this);
       SharedHandle<DHTMessageCallback> callback
         (new DHTMessageCallbackImpl(listener));

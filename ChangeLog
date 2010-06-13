@@ -1,5 +1,15 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made DHTNodeLookupEntry struct
+	* src/DHTAbstractNodeLookupTask.cc
+	* src/DHTIDCloser.h
+	* src/DHTNodeLookupEntry.cc
+	* src/DHTNodeLookupEntry.h
+	* src/DHTPeerLookupTask.cc
+	* test/DHTIDCloserTest.cc
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed member variables
 	* src/ActivePeerConnectionCommand.cc
 	* src/BtLeecherStateChoke.cc

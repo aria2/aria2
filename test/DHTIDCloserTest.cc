@@ -56,7 +56,7 @@ void DHTIDCloserTest::testOperator()
   entries.push_back(e4);
   entries.push_back(e5);
 
-  std::sort(entries.begin(), entries.end(), DHTIDCloser(e3->_node->getID()));
+  std::sort(entries.begin(), entries.end(), DHTIDCloser(e3->node->getID()));
 
   CPPUNIT_ASSERT(e3 == entries[0]);
   CPPUNIT_ASSERT(e2 == entries[1]);

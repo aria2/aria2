@@ -94,8 +94,8 @@ void DHTPeerLookupTask::onFinish()
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
         getEntries().begin(), eoi = getEntries().end();
       i != eoi && num > 0; ++i, --num) {
-    if((*i)->_used) {
-      const SharedHandle<DHTNode>& node = (*i)->_node;
+    if((*i)->used) {
+      const SharedHandle<DHTNode>& node = (*i)->node;
       SharedHandle<DHTMessage> m = 
         getMessageFactory()->createAnnouncePeerMessage
         (node,

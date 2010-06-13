@@ -53,7 +53,7 @@ public:
   bool operator()(const SharedHandle<DHTNodeLookupEntry>& m1,
                   const SharedHandle<DHTNodeLookupEntry>& m2) const
   {
-    return _closer(m1->_node->getID(), m2->_node->getID());
+    return _closer(m1->node->getID(), m2->node->getID());
   }
 };
 
