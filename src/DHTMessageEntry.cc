@@ -39,12 +39,13 @@
 
 namespace aria2 {
 
-DHTMessageEntry::DHTMessageEntry(const SharedHandle<DHTMessage>& message,
-                                 time_t timeout,
-                                 const SharedHandle<DHTMessageCallback>& callback):
-  _message(message),
-  _timeout(timeout),
-  _callback(callback) {}
+DHTMessageEntry::DHTMessageEntry
+(const SharedHandle<DHTMessage>& message,
+ time_t timeout,
+ const SharedHandle<DHTMessageCallback>& callback):
+  message(message),
+  timeout(timeout),
+  callback(callback) {}
 
 DHTMessageEntry::~DHTMessageEntry() {}
 

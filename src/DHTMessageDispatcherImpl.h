@@ -41,7 +41,7 @@
 namespace aria2 {
 
 class DHTMessageTracker;
-class DHTMessageEntry;
+struct DHTMessageEntry;
 class Logger;
 
 class DHTMessageDispatcherImpl:public DHTMessageDispatcher {

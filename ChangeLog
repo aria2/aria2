@@ -1,5 +1,13 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made DHTMessageEntry struct
+	* src/DHTMessageDispatcherImpl.cc
+	* src/DHTMessageDispatcherImpl.h
+	* src/DHTMessageEntry.cc
+	* src/DHTMessageEntry.h
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made DHTNodeLookupEntry struct
 	* src/DHTAbstractNodeLookupTask.cc
 	* src/DHTIDCloser.h

@@ -44,11 +44,10 @@ namespace aria2 {
 class DHTMessage;
 class DHTMessageCallback;
 
-class DHTMessageEntry {
-public:
-  SharedHandle<DHTMessage> _message;
-  time_t _timeout;
-  SharedHandle<DHTMessageCallback> _callback;
+struct DHTMessageEntry {
+  SharedHandle<DHTMessage> message;
+  time_t timeout;
+  SharedHandle<DHTMessageCallback> callback;
 
   DHTMessageEntry(const SharedHandle<DHTMessage>& message,
                   time_t timeout,

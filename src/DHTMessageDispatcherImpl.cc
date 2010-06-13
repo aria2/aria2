@@ -55,44 +55,48 @@ DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
 DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
 
 void
-DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& message,
-                                            time_t timeout,
-                                            const SharedHandle<DHTMessageCallback>& callback)
+DHTMessageDispatcherImpl::addMessageToQueue
+(const SharedHandle<DHTMessage>& message,
+ time_t timeout,
+ const SharedHandle<DHTMessageCallback>& callback)
 {
-  SharedHandle<DHTMessageEntry> e(new DHTMessageEntry(message, timeout, callback));
+  SharedHandle<DHTMessageEntry> e
+    (new DHTMessageEntry(message, timeout, callback));
   _messageQueue.push_back(e);
 }
 
 void
-DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& message,
-                                            const SharedHandle<DHTMessageCallback>& callback)
+DHTMessageDispatcherImpl::addMessageToQueue
+(const SharedHandle<DHTMessage>& message,
+ const SharedHandle<DHTMessageCallback>& callback)
 {
   addMessageToQueue(message, _timeout, callback);
 }
 
 bool
-DHTMessageDispatcherImpl::sendMessage(const SharedHandle<DHTMessageEntry>& entry)
+DHTMessageDispatcherImpl::sendMessage
+(const SharedHandle<DHTMessageEntry>& entry)
 {
   try {
-    if(entry->_message->send()) {
-      if(!entry->_message->isReply()) {
-        _tracker->addMessage(entry->_message, entry->_timeout, entry->_callback);
+    if(entry->message->send()) {
+      if(!entry->message->isReply()) {
+        _tracker->addMessage(entry->message, entry->timeout, entry->callback);
       }
       if(_logger->info()) {
-        _logger->info("Message sent: %s", entry->_message->toString().c_str());
+        _logger->info("Message sent: %s", entry->message->toString().c_str());
       }
     } else {
       return false;
     }
   } catch(RecoverableException& e) {
     _logger->info("Failed to send message: %s",
-                  e, entry->_message->toString().c_str());
+                  e, entry->message->toString().c_str());
     // Add message to DHTMessageTracker with timeout 0 to treat it as
     // time out. Without this, we have untracked message and some of
     // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
     // forever.
-    if(!entry->_message->isReply()) {
-      _tracker->addMessage(entry->_message, 0, entry->_callback);
+    if(!entry->message->isReply()) {
+      _tracker->addMessage(entry->message, 0, entry->callback);
     }
   }
   return true;
