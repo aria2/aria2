@@ -103,7 +103,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
   msg->validate();
   if(msg->getId() == BtPieceMessage::ID) {
     SharedHandle<BtPieceMessage> piecemsg =
-      dynamic_pointer_cast<BtPieceMessage>(msg);
+      static_pointer_cast<BtPieceMessage>(msg);
     piecemsg->setRawMessage(_peerConnection->detachBuffer());
   }
   return msg;

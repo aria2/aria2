@@ -267,6 +267,12 @@ dynamic_pointer_cast(const SharedHandle<S>& t) {
   }
 }
 
+template<typename T, typename S>
+SharedHandle<T>
+static_pointer_cast(const SharedHandle<S>& t) {
+  return SharedHandle<T>(t, static_cast<T*>(t.get()));
+}
+
 template<typename T>
 std::ostream& operator<<(std::ostream& o, const SharedHandle<T>& sp) {
   o << *sp._obj;

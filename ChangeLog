@@ -1,5 +1,12 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced dynamic_pointer_cast with static_pointer_cast
+	* src/DHTSetup.cc
+	* src/DefaultBtMessageReceiver.cc
+	* src/SharedHandle.h
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reverted changes which deleted peerConnection from
 	DefaultBtInteractive.
 	* src/DefaultBtInteractive.cc
