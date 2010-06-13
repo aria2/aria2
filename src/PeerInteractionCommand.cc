@@ -182,6 +182,7 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractive->setBtMessageReceiver(receiver);
   btInteractive->setDispatcher(dispatcher);
   btInteractive->setBtRequestFactory(reqFactory);
+  btInteractive->setPeerConnection(peerConnection);
   btInteractive->setExtensionMessageFactory(extensionMessageFactory);
   btInteractive->setExtensionMessageRegistry(exMsgRegistry);
   btInteractive->setKeepAliveInterval

@@ -63,6 +63,7 @@
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
 #include "BtRequestFactory.h"
+#include "PeerConnection.h"
 #include "Logger.h"
 #include "LogFactory.h"
 #include "StringFormat.h"
@@ -623,6 +624,12 @@ void DefaultBtInteractive::setBtRequestFactory
 (const SharedHandle<BtRequestFactory>& factory)
 {
   _btRequestFactory = factory;
+}
+
+void DefaultBtInteractive::setPeerConnection
+(const SharedHandle<PeerConnection>& peerConnection)
+{
+  _peerConnection = peerConnection;
 }
 
 void DefaultBtInteractive::setExtensionMessageFactory

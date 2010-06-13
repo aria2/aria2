@@ -1,5 +1,13 @@
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Reverted changes which deleted peerConnection from
+	DefaultBtInteractive.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtInteractive.h
+	* src/PeerInteractionCommand.cc
+
+2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten DHTRegistry
 	* src/BtSetup.cc
 	* src/DHTRegistry.cc

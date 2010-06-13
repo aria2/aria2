@@ -54,6 +54,7 @@ class BtMessageReceiver;
 class BtMessageDispatcher;
 class BtMessageFactory;
 class BtRequestFactory;
+class PeerConnection;
 class ExtensionMessageFactory;
 class ExtensionMessageRegistry;
 class DHTNode;
@@ -112,6 +113,9 @@ private:
   SharedHandle<BtMessageReceiver> _btMessageReceiver;
   SharedHandle<BtMessageDispatcher> _dispatcher;
   SharedHandle<BtRequestFactory> _btRequestFactory;
+  // Although _peerStorage is not used in this class, this object
+  // holds the reference so that _peerConnection is not deleted.
+  SharedHandle<PeerConnection> _peerConnection;
   SharedHandle<BtMessageFactory> _messageFactory;
   SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
   SharedHandle<ExtensionMessageRegistry> _extensionMessageRegistry;
@@ -205,6 +209,8 @@ public:
   void setDispatcher(const SharedHandle<BtMessageDispatcher>& dispatcher);
 
   void setBtRequestFactory(const SharedHandle<BtRequestFactory>& factory);
+
+  void setPeerConnection(const SharedHandle<PeerConnection>& peerConnection);
 
   void setBtMessageFactory(const SharedHandle<BtMessageFactory>& factory);
 
