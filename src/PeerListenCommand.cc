@@ -131,8 +131,8 @@ bool PeerListenCommand::execute() {
       _e->addCommand(command);
       if(getLogger()->debug()) {
         getLogger()->debug("Accepted the connection from %s:%u.",
-                           peer->ipaddr.c_str(),
-                           peer->port);
+                           peer->getIPAddress().c_str(),
+                           peer->getPort());
         getLogger()->debug("Added CUID#%s to receive BitTorrent/MSE handshake.",
                            util::itos(cuid).c_str());
       }

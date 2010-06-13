@@ -80,7 +80,8 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
   for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
         eoi = peers.end(); itr != eoi; ++itr) {
     unsigned char compact[6];
-    if(bittorrent::createcompact(compact, (*itr)->ipaddr, (*itr)->port)) {
+    if(bittorrent::createcompact
+       (compact, (*itr)->getIPAddress(), (*itr)->getPort())) {
       addrstring.append(&compact[0], &compact[6]);
       flagstring += (*itr)->isSeeder() ? "2" : "0";
     }

@@ -82,7 +82,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
       SharedHandle<Peer> peer(new Peer("192.168.0."+util::uitos(i+1), 6881+i));
       unsigned char buffer[6];
       CPPUNIT_ASSERT(bittorrent::createcompact
-                     (buffer, peer->ipaddr, peer->port));
+                     (buffer, peer->getIPAddress(), peer->getPort()));
       valuesList << BDE(buffer, sizeof(buffer));
       peers.push_back(peer);
     }

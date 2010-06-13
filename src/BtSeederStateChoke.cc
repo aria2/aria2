@@ -94,7 +94,7 @@ void BtSeederStateChoke::unchoke
   for(std::vector<PeerEntry>::iterator eoi = peers.end();
       r != eoi && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
-    _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->ipaddr.c_str(),
+    _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->getIPAddress().c_str(),
                   (*r).getUploadSpeed());
   }
 
@@ -105,7 +105,7 @@ void BtSeederStateChoke::unchoke
       std::random_shuffle(r, peers.end(),
                           *(SimpleRandomizer::getInstance().get()));
       (*r).getPeer()->optUnchoking(true);
-      _logger->info("POU: %s", (*r).getPeer()->ipaddr.c_str());
+      _logger->info("POU: %s", (*r).getPeer()->getIPAddress().c_str());
     }
   }
 }

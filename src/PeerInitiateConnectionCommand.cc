@@ -82,11 +82,13 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 bool PeerInitiateConnectionCommand::executeInternal() {
   if(getLogger()->info()) {
     getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                      util::itos(getCuid()).c_str(), getPeer()->ipaddr.c_str(),
-                      getPeer()->port);
+                      util::itos(getCuid()).c_str(),
+                      getPeer()->getIPAddress().c_str(),
+                      getPeer()->getPort());
   }
   createSocket();
-  getSocket()->establishConnection(getPeer()->ipaddr, getPeer()->port);
+  getSocket()->establishConnection(getPeer()->getIPAddress(),
+                                   getPeer()->getPort());
   if(_mseHandshakeEnabled) {
     InitiatorMSEHandshakeCommand* c =
       new InitiatorMSEHandshakeCommand(getCuid(), _requestGroup, getPeer(),

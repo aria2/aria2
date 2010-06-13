@@ -157,7 +157,7 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   }
   if(_logger->info()) {
     _logger->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(_cuid).c_str(),
-                 _peer->ipaddr.c_str(), _peer->port,
+                 _peer->getIPAddress().c_str(), _peer->getPort(),
                  message->toString().c_str());
   }
   return message;
@@ -228,7 +228,7 @@ void DefaultBtInteractive::addBitfieldMessageToQueue() {
 void DefaultBtInteractive::addAllowedFastMessageToQueue() {
   if(_peer->isFastExtensionEnabled()) {
     std::vector<size_t> fastSet;
-    bittorrent::computeFastSet(fastSet, _peer->ipaddr,
+    bittorrent::computeFastSet(fastSet, _peer->getIPAddress(),
                                _downloadContext->getNumPieces(),
                                bittorrent::getInfoHash(_downloadContext),
                                _allowedFastSetSize);
@@ -294,7 +294,7 @@ size_t DefaultBtInteractive::receiveMessages() {
     ++msgcount;
     if(_logger->info()) {
       _logger->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(_cuid).c_str(),
-                   _peer->ipaddr.c_str(), _peer->port,
+                   _peer->getIPAddress().c_str(), _peer->getPort(),
                    message->toString().c_str());
     }
     message->doReceivedAction();
@@ -478,7 +478,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
       for(std::deque<SharedHandle<Peer> >::const_iterator i =
             peers.begin(), eoi = peers.end();
           i != eoi && !m->freshPeersAreFull(); ++i) {
-        if(_peer->ipaddr != (*i)->ipaddr) {
+        if(_peer->getIPAddress() != (*i)->getIPAddress()) {
           m->addFreshPeer(*i);
         }
       }
@@ -488,7 +488,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
             peers.rbegin(), eoi = peers.rend();
           i != eoi && !m->droppedPeersAreFull();
           ++i) {
-        if(_peer->ipaddr != (*i)->ipaddr) {
+        if(_peer->getIPAddress() != (*i)->getIPAddress()) {
           m->addDroppedPeer(*i);
         }
       }

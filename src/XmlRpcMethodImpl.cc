@@ -626,11 +626,11 @@ static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
     BDE peerEntry = BDE::dict();
     peerEntry[KEY_PEER_ID] = util::torrentPercentEncode((*i)->getPeerId(),
                                                         PEER_ID_LENGTH);
-    peerEntry[KEY_IP] = (*i)->ipaddr;
+    peerEntry[KEY_IP] = (*i)->getIPAddress();
     if((*i)->isIncomingPeer()) {
       peerEntry[KEY_PORT] = std::string("0");
     } else {
-      peerEntry[KEY_PORT] = util::uitos((*i)->port);
+      peerEntry[KEY_PORT] = util::uitos((*i)->getPort());
     }
     peerEntry[KEY_BITFIELD] = util::toHex((*i)->getBitfield(),
                                           (*i)->getBitfieldLength());

@@ -114,7 +114,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
 
   msg.doReceivedAction();
 
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->port);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->getPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, peer->getExtensionMessageID("ut_pex"));
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, peer->getExtensionMessageID("a2_dht"));
   CPPUNIT_ASSERT_EQUAL((int64_t)1024, attrs[bittorrent::METADATA_SIZE].i());

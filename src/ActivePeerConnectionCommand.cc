@@ -147,7 +147,8 @@ void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
   _e->addCommand(command);
   if(getLogger()->info()) {
     getLogger()->info(MSG_CONNECTING_TO_PEER,
-                      util::itos(getCuid()).c_str(), peer->ipaddr.c_str());
+                      util::itos(getCuid()).c_str(),
+                      peer->getIPAddress().c_str());
   }
 }
 

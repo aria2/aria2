@@ -42,8 +42,8 @@ void PeerListProcessorTest::testExtractPeerFromList() {
   proc.extractPeerFromList(dict["peers"], std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->port);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->getPort());
 }
 
 void PeerListProcessorTest::testExtract2PeersFromList() {
@@ -59,12 +59,12 @@ void PeerListProcessorTest::testExtract2PeersFromList() {
   proc.extractPeerFromList(dict["peers"], std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)65535, peer->port);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)65535, peer->getPort());
 
   peer = *(peers.begin()+1);
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peer->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)2007, peer->port);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peer->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)2007, peer->getPort());
 }
 
 } // namespace aria2

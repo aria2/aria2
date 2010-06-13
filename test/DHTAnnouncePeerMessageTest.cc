@@ -117,8 +117,8 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   {
     SharedHandle<Peer> peer = peers[0];
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->ipaddr);
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peer->port);
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peer->getPort());
   }
 }
 

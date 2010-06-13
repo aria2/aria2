@@ -118,8 +118,9 @@ bool PeerAbstractCommand::execute()
       getLogger()->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err,
                          util::itos(getCuid()).c_str());
       getLogger()->debug(MSG_PEER_BANNED,
-                         util::itos(getCuid()).c_str(), _peer->ipaddr.c_str(),
-                         _peer->port);
+                         util::itos(getCuid()).c_str(),
+                         _peer->getIPAddress().c_str(),
+                         _peer->getPort());
     }
     onAbort();
     return prepareForNextPeer(0);

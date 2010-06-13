@@ -120,13 +120,13 @@ bool LpdReceiveMessageCommand::execute()
     if(peerStorage->addPeer(peer)) {
       if(getLogger()->debug()) {
         getLogger()->debug("LPD peer %s:%u local=%d added.",
-                           peer->ipaddr.c_str(), peer->port,
+                           peer->getIPAddress().c_str(), peer->getPort(),
                            peer->isLocalPeer()?1:0);
       }
     } else {
       if(getLogger()->debug()) {
         getLogger()->debug("LPD peer %s:%u local=%d not added.",
-                           peer->ipaddr.c_str(), peer->port,
+                           peer->getIPAddress().c_str(), peer->getPort(),
                            peer->isLocalPeer()?1:0);
       }
     }

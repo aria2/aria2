@@ -52,7 +52,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
   CPPUNIT_ASSERT(!msg.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
                        util::toHex(msg->getInfoHash()));
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6000, msg->getPeer()->port);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6000, msg->getPeer()->getPort());
 
   // Bad infohash
   std::string badInfoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ce";

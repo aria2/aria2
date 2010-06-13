@@ -73,7 +73,8 @@ public:
 
   bool operator()(const SharedHandle<Peer>& peer) const {
     return (_peer == peer) ||
-      ((_peer->ipaddr == peer->ipaddr) && (_peer->port == peer->port));
+      ((_peer->getIPAddress() == peer->getIPAddress()) &&
+       (_peer->getPort() == peer->getPort()));
   }
 };
 
@@ -97,7 +98,7 @@ bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
   if(isPeerAlreadyAdded(peer)) {
     if(_logger->debug()) {
       _logger->debug("Adding %s:%u is rejected because it has been already"
-                    " added.", peer->ipaddr.c_str(), peer->port);
+                    " added.", peer->getIPAddress().c_str(), peer->getPort());
     }
     return false;
   }
@@ -116,7 +117,8 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
     const SharedHandle<Peer>& peer = *itr;
     if(addPeer(peer)) {
       if(_logger->debug()) {
-        _logger->debug(MSG_ADDING_PEER, peer->ipaddr.c_str(), peer->port);
+        _logger->debug(MSG_ADDING_PEER,
+                       peer->getIPAddress().c_str(), peer->getPort());
       }
     }
   }  
@@ -153,7 +155,7 @@ public:
     ipaddr(ipaddr), port(port) {}
 
   bool operator()(const SharedHandle<Peer>& peer) const {
-    return ipaddr == peer->ipaddr && port == peer->port;
+    return ipaddr == peer->getIPAddress() && port == peer->getPort();
   }
 };
 
@@ -300,7 +302,7 @@ void DefaultPeerStorage::returnPeer(const SharedHandle<Peer>& peer)
   if(itr == _peers.end()) {
     if(_logger->debug()) {
       _logger->debug("Cannot find peer %s:%u in PeerStorage.",
-                    peer->ipaddr.c_str(), peer->port);
+                    peer->getIPAddress().c_str(), peer->getPort());
     }
   } else {
     _peers.erase(itr);

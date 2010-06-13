@@ -172,7 +172,8 @@ void BtPieceMessage::send()
     if(getLogger()->info()) {
       getLogger()->info(MSG_SEND_PEER_MESSAGE,
                         util::itos(getCuid()).c_str(),
-                        getPeer()->ipaddr.c_str(), getPeer()->port,
+                        getPeer()->getIPAddress().c_str(),
+                        getPeer()->getPort(),
                         toString().c_str());
     }
     unsigned char* msgHdr = createMessageHeader();

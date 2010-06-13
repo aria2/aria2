@@ -119,7 +119,8 @@ BDE DHTGetPeersReplyMessage::getResponse()
         ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
-      if(bittorrent::createcompact(buffer, peer->ipaddr, peer->port)) {
+      if(bittorrent::createcompact
+         (buffer, peer->getIPAddress(), peer->getPort())) {
         valuesList << BDE(buffer, sizeof(buffer));
       }
     }

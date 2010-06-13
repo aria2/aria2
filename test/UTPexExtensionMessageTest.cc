@@ -85,10 +85,10 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   unsigned char c2[6];
   unsigned char c3[6];
   unsigned char c4[6];
-  bittorrent::createcompact(c1, p1->ipaddr, p1->port);
-  bittorrent::createcompact(c2, p2->ipaddr, p2->port);
-  bittorrent::createcompact(c3, p3->ipaddr, p3->port);
-  bittorrent::createcompact(c4, p4->ipaddr, p4->port);
+  bittorrent::createcompact(c1, p1->getIPAddress(), p1->getPort());
+  bittorrent::createcompact(c2, p2->getIPAddress(), p2->getPort());
+  bittorrent::createcompact(c3, p3->getIPAddress(), p3->getPort());
+  bittorrent::createcompact(c4, p4->getIPAddress(), p4->getPort());
 
   std::string expected = "d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
@@ -140,13 +140,13 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT_EQUAL((size_t)2, _peerStorage->getPeers().size());
   {
     SharedHandle<Peer> p = _peerStorage->getPeers()[0];
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p->ipaddr);
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p->port);
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p->getIPAddress());
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p->getPort());
   }
   {
     SharedHandle<Peer> p = _peerStorage->getPeers()[1];
-    CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"), p->ipaddr);
-    CPPUNIT_ASSERT_EQUAL((uint16_t)9999, p->port);
+    CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"), p->getIPAddress());
+    CPPUNIT_ASSERT_EQUAL((uint16_t)9999, p->getPort());
   }
 }
 
@@ -176,19 +176,19 @@ void UTPexExtensionMessageTest::testCreate()
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
   CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getFreshPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
-                       msg->getFreshPeers()[0]->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, msg->getFreshPeers()[0]->port);
+                       msg->getFreshPeers()[0]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, msg->getFreshPeers()[0]->getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"),
-                       msg->getFreshPeers()[1]->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)9999, msg->getFreshPeers()[1]->port);
+                       msg->getFreshPeers()[1]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)9999, msg->getFreshPeers()[1]->getPort());
   CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getDroppedPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"),
-                       msg->getDroppedPeers()[0]->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6882, msg->getDroppedPeers()[0]->port);
+                       msg->getDroppedPeers()[0]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6882, msg->getDroppedPeers()[0]->getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.3"),
-                       msg->getDroppedPeers()[1]->ipaddr);
+                       msg->getDroppedPeers()[1]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)10000,
-                       msg->getDroppedPeers()[1]->port);
+                       msg->getDroppedPeers()[1]->getPort());
   try {
     // 0 length data
     std::string in = "";

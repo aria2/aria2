@@ -55,14 +55,14 @@ class PeerSessionResource;
 class BtMessageDispatcher;
 
 class Peer {
-public:
-  std::string ipaddr;
+private:
+  std::string _ipaddr;
   // TCP port of the other end of communication.  If _incoming is
   // true, then this port is not a port the peer is listening to and
   // we cannot connect to it.
-  uint16_t port;
-private:
-  std::string id;
+  uint16_t _port;
+
+  std::string _id;
 
   cuid_t _cuid;
 
@@ -93,7 +93,7 @@ public:
 
   bool operator==(const Peer& p)
   {
-    return id == p.id;
+    return _id == p._id;
   }
   
   bool operator!=(const Peer& p)
@@ -102,6 +102,21 @@ public:
   }
 
   void resetStatus();
+
+  const std::string& getIPAddress() const
+  {
+    return _ipaddr;
+  }
+
+  uint16_t getPort() const
+  {
+    return _port;
+  }
+
+  void setPort(uint16_t port)
+  {
+    _port = port;
+  }
 
   void usedBy(cuid_t cuid);
 
@@ -135,7 +150,7 @@ public:
 
   const std::string& getID() const
   {
-    return id;
+    return _id;
   }
 
   void startBadCondition();

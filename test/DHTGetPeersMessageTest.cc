@@ -144,13 +144,13 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     CPPUNIT_ASSERT_EQUAL((size_t)2, m->_peers.size());
     {
       SharedHandle<Peer> peer = m->_peers[0];
-      CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.100"), peer->ipaddr);
-      CPPUNIT_ASSERT_EQUAL((uint16_t)6888, peer->port);
+      CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.100"), peer->getIPAddress());
+      CPPUNIT_ASSERT_EQUAL((uint16_t)6888, peer->getPort());
     }
     {
       SharedHandle<Peer> peer = m->_peers[1];
-      CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.101"), peer->ipaddr);
-      CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->port);
+      CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.101"), peer->getIPAddress());
+      CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->getPort());
     }
   }
   dispatcher._messageQueue.clear();

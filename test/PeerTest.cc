@@ -53,7 +53,7 @@ void PeerTest::testOperatorEqual()
   {
     Peer p1("localhost", 6881);
     Peer p2("localhsot", 0);
-    p2.port = 6881;
+    p2.setPort(6881);
     CPPUNIT_ASSERT(p1 != p2);
   }
 }

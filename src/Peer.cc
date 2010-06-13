@@ -48,8 +48,8 @@ namespace aria2 {
 #define BAD_CONDITION_INTERVAL 10
 
 Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
-  ipaddr(ipaddr),
-  port(port),
+  _ipaddr(ipaddr),
+  _port(port),
   _firstContactTime(global::wallclock),
   _badConditionStartTime(0),
   _seeder(false),
@@ -59,8 +59,8 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
 {
   memset(_peerId, 0, PEER_ID_LENGTH);
   resetStatus();
-  id = ipaddr;
-  strappend(id, A2STR::COLON_C, util::uitos(port));
+  _id = _ipaddr;
+  strappend(_id, A2STR::COLON_C, util::uitos(_port));
 }
 
 Peer::~Peer()

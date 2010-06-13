@@ -78,7 +78,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"),
-                       ps.getPeer("192.168.0.3", 6889)->ipaddr);
+                       ps.getPeer("192.168.0.3", 6889)->getIPAddress());
 
   ps.addPeer(peer1);
   ps.addPeer(peer2);
@@ -90,7 +90,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   // peer2 has been in use, so it did't deleted.
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"),
-                       ps.getPeer("192.168.0.2", 6889)->ipaddr);
+                       ps.getPeer("192.168.0.2", 6889)->getIPAddress());
   
 }
 
@@ -125,9 +125,10 @@ void DefaultPeerStorageTest::testAddPeer() {
 
   SharedHandle<Peer> peer5(new Peer("192.168.0.4", 0));
 
-  peer5->port = 6889;
+  peer5->setPort(6889);
 
-  // this returns false because the peer which has same ip and port has already added
+  // this returns false because the peer which has same ip and port
+  // has already added
   CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer5));
 }
 
@@ -140,7 +141,7 @@ void DefaultPeerStorageTest::testGetUnusedPeer() {
   ps.addPeer(peer1);
 
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
-                       ps.getUnusedPeer()->ipaddr);
+                       ps.getUnusedPeer()->getIPAddress());
 
   peer1->usedBy(1);
 
