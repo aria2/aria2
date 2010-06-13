@@ -46,35 +46,20 @@
 
 namespace aria2 {
 
-SharedHandle<DHTNode> DHTRegistry::_localNode;
 
-SharedHandle<DHTRoutingTable> DHTRegistry::_routingTable;
+DHTRegistry::Data DHTRegistry::_data;
 
-SharedHandle<DHTTaskQueue> DHTRegistry::_taskQueue;
-
-SharedHandle<DHTTaskFactory> DHTRegistry::_taskFactory;
-
-SharedHandle<DHTPeerAnnounceStorage> DHTRegistry::_peerAnnounceStorage;
-
-SharedHandle<DHTTokenTracker> DHTRegistry::_tokenTracker;
-
-SharedHandle<DHTMessageDispatcher> DHTRegistry::_messageDispatcher;
-
-SharedHandle<DHTMessageReceiver> DHTRegistry::_messageReceiver;
-
-SharedHandle<DHTMessageFactory> DHTRegistry::_messageFactory;
-
-void DHTRegistry::clear()
+void DHTRegistry::clearData()
 {
-  _localNode.reset();
-  _routingTable.reset();
-  _taskQueue.reset();
-  _taskFactory.reset();
-  _peerAnnounceStorage.reset();
-  _tokenTracker.reset();
-  _messageDispatcher.reset();
-  _messageReceiver.reset();
-  _messageFactory.reset();
+  _data.localNode.reset();
+  _data.routingTable.reset();
+  _data.taskQueue.reset();
+  _data.taskFactory.reset();
+  _data.peerAnnounceStorage.reset();
+  _data.tokenTracker.reset();
+  _data.messageDispatcher.reset();
+  _data.messageReceiver.reset();
+  _data.messageFactory.reset();
 }
 
 } // namespace aria2

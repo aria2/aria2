@@ -134,10 +134,10 @@ PeerInteractionCommand::PeerInteractionCommand
   factory->setPeerStorage(peerStorage);
   factory->setExtensionMessageFactory(extensionMessageFactory);
   factory->setPeer(getPeer());
-  factory->setLocalNode(DHTRegistry::_localNode);
-  factory->setRoutingTable(DHTRegistry::_routingTable);
-  factory->setTaskQueue(DHTRegistry::_taskQueue);
-  factory->setTaskFactory(DHTRegistry::_taskFactory);
+  factory->setLocalNode(DHTRegistry::getData().localNode);
+  factory->setRoutingTable(DHTRegistry::getData().routingTable);
+  factory->setTaskQueue(DHTRegistry::getData().taskQueue);
+  factory->setTaskFactory(DHTRegistry::getData().taskFactory);
   if(metadataGetMode) {
     factory->enableMetadataGetMode();
   }
@@ -195,7 +195,7 @@ PeerInteractionCommand::PeerInteractionCommand
     }
     if(DHTSetup::initialized()) {
       btInteractive->setDHTEnabled(true);
-      btInteractive->setLocalNode(DHTRegistry::_localNode);
+      btInteractive->setLocalNode(DHTRegistry::getData().localNode);
       factory->setDHTEnabled(true);
     }
   }

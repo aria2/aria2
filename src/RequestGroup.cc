@@ -353,10 +353,10 @@ void RequestGroup::createInitialCommand
           }
           DHTEntryPointNameResolveCommand* command =
             new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
-          command->setTaskQueue(DHTRegistry::_taskQueue);
-          command->setTaskFactory(DHTRegistry::_taskFactory);
-          command->setRoutingTable(DHTRegistry::_routingTable);
-          command->setLocalNode(DHTRegistry::_localNode);
+          command->setTaskQueue(DHTRegistry::getData().taskQueue);
+          command->setTaskFactory(DHTRegistry::getData().taskFactory);
+          command->setRoutingTable(DHTRegistry::getData().routingTable);
+          command->setLocalNode(DHTRegistry::getData().localNode);
           e->addCommand(command);
         }
       }

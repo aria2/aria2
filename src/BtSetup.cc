@@ -129,8 +129,8 @@ void BtSetup::setup(std::vector<Command*>& commands,
      DHTSetup::initialized()) {
     DHTGetPeersCommand* command =
       new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
-    command->setTaskQueue(DHTRegistry::_taskQueue);
-    command->setTaskFactory(DHTRegistry::_taskFactory);
+    command->setTaskQueue(DHTRegistry::getData().taskQueue);
+    command->setTaskFactory(DHTRegistry::getData().taskFactory);
     command->setBtRuntime(btRuntime);
     command->setPeerStorage(peerStorage);
     commands.push_back(command);

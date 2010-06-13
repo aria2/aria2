@@ -178,15 +178,15 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     factory->setLocalNode(localNode);
 
     // assign them into DHTRegistry
-    DHTRegistry::_localNode = localNode;
-    DHTRegistry::_routingTable = routingTable;
-    DHTRegistry::_taskQueue = taskQueue;
-    DHTRegistry::_taskFactory = taskFactory;
-    DHTRegistry::_peerAnnounceStorage = peerAnnounceStorage;
-    DHTRegistry::_tokenTracker = tokenTracker;
-    DHTRegistry::_messageDispatcher = dispatcher;
-    DHTRegistry::_messageReceiver = receiver;
-    DHTRegistry::_messageFactory = factory;
+    DHTRegistry::getMutableData().localNode = localNode;
+    DHTRegistry::getMutableData().routingTable = routingTable;
+    DHTRegistry::getMutableData().taskQueue = taskQueue;
+    DHTRegistry::getMutableData().taskFactory = taskFactory;
+    DHTRegistry::getMutableData().peerAnnounceStorage = peerAnnounceStorage;
+    DHTRegistry::getMutableData().tokenTracker = tokenTracker;
+    DHTRegistry::getMutableData().messageDispatcher = dispatcher;
+    DHTRegistry::getMutableData().messageReceiver = receiver;
+    DHTRegistry::getMutableData().messageFactory = factory;
 
     // add deserialized nodes to routing table
     const std::vector<SharedHandle<DHTNode> >& desnodes =
@@ -265,7 +265,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     commands.insert(commands.end(), tempCommands.begin(), tempCommands.end());
   } catch(RecoverableException& e) {
     _logger->error("Exception caught while initializing DHT functionality. DHT is disabled.", e);
-    DHTRegistry::clear();
+    DHTRegistry::clearData();
     std::for_each(tempCommands.begin(), tempCommands.end(), Deleter());
   }
 }

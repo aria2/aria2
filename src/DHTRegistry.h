@@ -51,28 +51,41 @@ class DHTMessageReceiver;
 class DHTMessageFactory;
 
 class DHTRegistry {
-public:
-  static SharedHandle<DHTNode> _localNode;
-
-  static SharedHandle<DHTRoutingTable> _routingTable;
-
-  static SharedHandle<DHTTaskQueue> _taskQueue;
-
-  static SharedHandle<DHTTaskFactory> _taskFactory;
-
-  static SharedHandle<DHTPeerAnnounceStorage> _peerAnnounceStorage;
-
-  static SharedHandle<DHTTokenTracker> _tokenTracker;
-
-  static SharedHandle<DHTMessageDispatcher> _messageDispatcher;
-
-  static SharedHandle<DHTMessageReceiver> _messageReceiver;
-
-  static SharedHandle<DHTMessageFactory> _messageFactory;
-
-  static void clear();
 private:
+  struct Data {
+    SharedHandle<DHTNode> localNode;
+
+    SharedHandle<DHTRoutingTable> routingTable;
+
+    SharedHandle<DHTTaskQueue> taskQueue;
+
+    SharedHandle<DHTTaskFactory> taskFactory;
+
+    SharedHandle<DHTPeerAnnounceStorage> peerAnnounceStorage;
+
+    SharedHandle<DHTTokenTracker> tokenTracker;
+
+    SharedHandle<DHTMessageDispatcher> messageDispatcher;
+
+    SharedHandle<DHTMessageReceiver> messageReceiver;
+
+    SharedHandle<DHTMessageFactory> messageFactory;
+  };
+
+  static Data _data;
   DHTRegistry();
+public:
+  static const Data& getData()
+  {
+    return _data;
+  }
+
+  static Data& getMutableData()
+  {
+    return _data;
+  }
+
+  static void clearData();
 };
 
 } // namespace aria2
