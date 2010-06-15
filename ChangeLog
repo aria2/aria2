@@ -1,3 +1,9 @@
+2010-06-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed assertion error if updateTransferStatFor is called with peer
+	X before calculateStat() after peer X is added.
+	* src/DefaultPeerStorage.cc
+
 2010-06-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten DHTMessageCallback using Visitor pattern. Eliminated

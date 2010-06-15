@@ -249,7 +249,9 @@ void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
   }
   std::map<std::string, TransferStat>::iterator itr =
     _peerTransferStatMap.find(peer->getID());
-  assert(itr != _peerTransferStatMap.end());
+  if(itr == _peerTransferStatMap.end()) {
+    return;
+  }
   _cachedTransferStat -= (*itr).second;
   TransferStat s = calculateStatFor(peer);
   _cachedTransferStat += s;
@@ -259,7 +261,13 @@ void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
 TransferStat DefaultPeerStorage::getTransferStatFor
 (const SharedHandle<Peer>& peer)
 {
-  return _peerTransferStatMap[peer->getID()];
+  std::map<std::string, TransferStat>::const_iterator itr =
+    _peerTransferStatMap.find(peer->getID());
+  if(itr == _peerTransferStatMap.end()) {
+    return TransferStat();
+  } else {
+    return (*itr).second;
+  }
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
