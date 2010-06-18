@@ -56,9 +56,8 @@ public:
     std::string peerId = "-aria2-ultrafastdltl";
 
     _dctx.reset(new DownloadContext(pieceLength, totalLength));
-    BDE torrentAttrs = BDE::dict();
-    torrentAttrs[bittorrent::INFO_HASH] =
-      std::string(vbegin(infoHash), vend(infoHash));
+    SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
+    torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
     _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
     bittorrent::setStaticPeerId(peerId);
 
@@ -97,34 +96,46 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtAnnounceTest);
 
 template<typename InputIterator>
-static BDE createAnnounceTier(InputIterator first, InputIterator last)
+static SharedHandle<List> createAnnounceTier
+(InputIterator first, InputIterator last)
 {
-  BDE announceTier = BDE::list();
+  SharedHandle<List> announceTier = List::g();
   for(; first != last; ++first) {
-    announceTier << BDE(*first);
+    announceTier->append(String::g(*first));
   }
   return announceTier;
 }
 
-static BDE createAnnounceTier(const std::string& uri)
+static SharedHandle<List> createAnnounceTier(const std::string& uri)
 {
-  BDE announceTier = BDE::list();
-  announceTier << uri;
+  SharedHandle<List> announceTier = List::g();
+  announceTier->append(String::g(uri));
   return announceTier;
 }
 
 static void setAnnounceList(const SharedHandle<DownloadContext>& dctx,
-                            const BDE& announceList)
+                            const SharedHandle<List>& announceList)
 {
-  dctx->getAttribute(bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST] =
-    announceList;
+  std::vector<std::vector<std::string> > dest;
+  for(List::ValueType::const_iterator tierIter = announceList->begin(),
+        eoi = announceList->end(); tierIter != eoi; ++tierIter) {
+    std::vector<std::string> ntier;
+    const List* tier = asList(*tierIter);
+    for(List::ValueType::const_iterator uriIter = tier->begin(),
+          eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
+      const String* uri = asString(*uriIter);
+      ntier.push_back(uri->s());
+    }
+    dest.push_back(ntier);
+  }
+  bittorrent::getTorrentAttrs(dctx)->announceList.swap(dest);
 }
 
 void DefaultBtAnnounceTest::testNoMoreAnnounce()
 {
-  BDE announceList = BDE::list();
-  announceList << createAnnounceTier("http://localhost/announce");
-  announceList << createAnnounceTier("http://backup/announce");
+  SharedHandle<List> announceList = List::g();
+  announceList->append(createAnnounceTier("http://localhost/announce"));
+  announceList->append(createAnnounceTier("http://backup/announce"));
 
   setAnnounceList(_dctx, announceList);
 
@@ -172,8 +183,8 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
 void DefaultBtAnnounceTest::testGetAnnounceUrl()
 {
 
-  BDE announceList = BDE::list();
-  announceList << createAnnounceTier("http://localhost/announce");  
+  SharedHandle<List> announceList = List::g();
+  announceList->append(createAnnounceTier("http://localhost/announce"));
   setAnnounceList(_dctx, announceList);
 
   DefaultBtAnnounce btAnnounce(_dctx, _option);
@@ -203,8 +214,8 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
 
 void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
 {
-  BDE announceList = BDE::list();
-  announceList << createAnnounceTier("http://localhost/announce?k=v");
+  SharedHandle<List> announceList = List::g();
+  announceList->append(createAnnounceTier("http://localhost/announce?k=v"));
   setAnnounceList(_dctx, announceList);
 
   DefaultBtAnnounce btAnnounce(_dctx, _option);
@@ -225,8 +236,8 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
 
 void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
 {
-  BDE announceList = BDE::list();
-  announceList << createAnnounceTier("http://localhost/announce");
+  SharedHandle<List> announceList = List::g();
+  announceList->append(createAnnounceTier("http://localhost/announce"));
   setAnnounceList(_dctx, announceList);
 
   _option->put(PREF_BT_EXTERNAL_IP, "192.168.1.1");
@@ -248,9 +259,9 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
 
 void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
 {
-  BDE announceList = BDE::list();
-  announceList << createAnnounceTier("http://localhost/announce");
-  announceList << createAnnounceTier("http://backup/announce");
+  SharedHandle<List> announceList = List::g();
+  announceList->append(createAnnounceTier("http://localhost/announce"));
+  announceList->append(createAnnounceTier("http://backup/announce"));
   setAnnounceList(_dctx, announceList);
 
   DefaultBtAnnounce btAnnounce(_dctx, _option);
@@ -281,8 +292,8 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   const char* urls[] = { "http://localhost1/announce",
                          "http://localhost2/announce" };
 
-  BDE announceList = BDE::list();
-  announceList << createAnnounceTier(vbegin(urls), vend(urls));
+  SharedHandle<List> announceList = List::g();
+  announceList->append(createAnnounceTier(vbegin(urls), vend(urls)));
   setAnnounceList(_dctx, announceList);
 
   DefaultBtAnnounce btAnnounce(_dctx, _option);
@@ -311,8 +322,8 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   const char* urls[] = { "http://localhost1/announce",
                          "http://localhost2/announce" };
 
-  BDE announceList = BDE::list();
-  announceList << createAnnounceTier(vbegin(urls), vend(urls));
+  SharedHandle<List> announceList = List::g();
+  announceList->append(createAnnounceTier(vbegin(urls), vend(urls)));
   setAnnounceList(_dctx, announceList);
 
   DefaultBtAnnounce btAnnounce(_dctx, _option);

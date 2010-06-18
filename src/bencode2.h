@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,40 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "magnet.h"
-#include "util.h"
+#ifndef _D_BENCODE2_H_
+#define _D_BENCODE2_H_
+
+#include "common.h"
+
+#include <string>
+#include <iosfwd>
+
+#include "ValueBase.h"
 
 namespace aria2 {
 
-namespace magnet {
+namespace bencode2 {
 
-SharedHandle<Dict> parse(const std::string& magnet)
-{
-  SharedHandle<Dict> dict;
-  if(!util::startsWith(magnet, "magnet:?")) {
-    return dict;
-  }
-  dict.reset(new Dict());
-  std::vector<std::string> queries;
-  util::split(std::string(magnet.begin()+8, magnet.end()),
-              std::back_inserter(queries), "&");
-  for(std::vector<std::string>::const_iterator i = queries.begin(),
-        eoi = queries.end(); i != eoi; ++i) {
-    std::pair<std::string, std::string> kv;
-    util::split(kv, *i, '=');
-    std::string value = util::percentDecode(kv.second);
-    List* l = asList(dict->get(kv.first));
-    if(l) {
-      l->append(String::g(value));
-    } else {
-      SharedHandle<List> l = List::g();
-      l->append(String::g(value));
-      dict->put(kv.first, l);
-    }
-  }
-  return dict;
-}
+const size_t MAX_STRUCTURE_DEPTH = 100;
 
-} // namespace magnet
+SharedHandle<ValueBase> decode(std::istream& in);
+
+// Decode the data in s.
+SharedHandle<ValueBase> decode(const std::string& s);
+
+// Decode the data in s. After decode is done successfully, return the
+// bencoded string length in end.
+SharedHandle<ValueBase> decode(const std::string& s, size_t& end);
+
+SharedHandle<ValueBase> decode(const unsigned char* data, size_t length);
+
+SharedHandle<ValueBase> decode
+(const unsigned char* data, size_t length, size_t& end);
+
+SharedHandle<ValueBase> decodeFromFile(const std::string& filename);
+
+std::string encode(const ValueBase* vlb);
+
+std::string encode(const SharedHandle<ValueBase>& vlb);
+
+} // namespace bencode2
 
 } // namespace aria2
+
+#endif // _D_BENCODE2_H_

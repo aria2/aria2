@@ -45,9 +45,10 @@
 #include "Signature.h"
 #include "TimerA2.h"
 #include "A2STR.h"
-#include "BDE.h"
+#include "ValueBase.h"
 #include "IntSequence.h"
 #include "FileEntry.h"
+#include "TorrentAttribute.h"
 
 namespace aria2 {
 
@@ -76,15 +77,13 @@ private:
 
   RequestGroup* _ownerRequestGroup;
   
-  BDE _attrs;
+  std::map<std::string, SharedHandle<ContextAttribute> > _attrs;
 
   Timer _downloadStartTime;
 
   Timer _downloadStopTime;
 
   SharedHandle<Signature> _signature;
-
-  void ensureAttrs();
 public:
   DownloadContext();
 
@@ -224,9 +223,10 @@ public:
   // this function.
   void setFilePathWithIndex(size_t index, const std::string& path);
 
-  void setAttribute(const std::string& key, const BDE& value);
+  void setAttribute
+  (const std::string& key, const SharedHandle<ContextAttribute>& value);
 
-  BDE& getAttribute(const std::string& key);
+  const SharedHandle<ContextAttribute>& getAttribute(const std::string& key);
 
   bool hasAttribute(const std::string& key) const;
 

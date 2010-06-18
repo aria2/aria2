@@ -202,9 +202,10 @@ void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
   m->setClientVersion(CLIENT_ARIA2);
   m->setTCPPort(_btRuntime->getListenPort());
   m->setExtensions(_extensionMessageRegistry->getExtensions());
-  const BDE& attrs = _downloadContext->getAttribute(bittorrent::BITTORRENT);
-  if(attrs.containsKey(bittorrent::METADATA)) {
-    m->setMetadataSize(attrs[bittorrent::METADATA_SIZE].i());
+  SharedHandle<TorrentAttribute> attrs =
+    bittorrent::getTorrentAttrs(_downloadContext);
+  if(!attrs->metadata.empty()) {
+    m->setMetadataSize(attrs->metadataSize);
   }
   SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
   _dispatcher->addMessageToQueue(msg);

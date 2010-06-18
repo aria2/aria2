@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,40 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "magnet.h"
-#include "util.h"
+#ifndef D_TORRENT_ATTRIBUTE_H
+#define D_TORRENT_ATTRIBUTE_H
 
-namespace aria2 {
+#include "ContextAttribute.h"
 
-namespace magnet {
+#include <string>
+#include <vector>
 
-SharedHandle<Dict> parse(const std::string& magnet)
-{
-  SharedHandle<Dict> dict;
-  if(!util::startsWith(magnet, "magnet:?")) {
-    return dict;
-  }
-  dict.reset(new Dict());
-  std::vector<std::string> queries;
-  util::split(std::string(magnet.begin()+8, magnet.end()),
-              std::back_inserter(queries), "&");
-  for(std::vector<std::string>::const_iterator i = queries.begin(),
-        eoi = queries.end(); i != eoi; ++i) {
-    std::pair<std::string, std::string> kv;
-    util::split(kv, *i, '=');
-    std::string value = util::percentDecode(kv.second);
-    List* l = asList(dict->get(kv.first));
-    if(l) {
-      l->append(String::g(value));
-    } else {
-      SharedHandle<List> l = List::g();
-      l->append(String::g(value));
-      dict->put(kv.first, l);
-    }
-  }
-  return dict;
-}
+#include "a2time.h"
 
-} // namespace magnet
+struct TorrentAttribute:public ContextAttribute {
+  std::string name;
+  std::string mode;
+  std::vector<std::vector<std::string> > announceList;
+  std::vector<std::pair<std::string, uint16_t> > nodes;
+  // raw hash value 20 bytes.
+  std::string infoHash;
+  std::string metadata;
+  size_t metadataSize;
+  bool privateTorrent;
+  time_t creationDate;
+  std::string comment;
+  std::string createdBy;
+  std::vector<std::string> urlList;
 
-} // namespace aria2
+  TorrentAttribute():metadataSize(0),
+                     privateTorrent(false),
+                     creationDate(0) {}
+};
+
+#endif // D_TORRENT_ATTRIBUTE_H
+

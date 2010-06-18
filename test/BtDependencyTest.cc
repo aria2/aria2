@@ -179,7 +179,7 @@ void BtDependencyTest::testResolve_metadata()
   pieceStorage->setDiskAdaptor(diskAdaptor);
   pieceStorage->setDownloadFinished(true);
   dependee->setPieceStorage(pieceStorage);
-  BDE attrs = BDE::dict();
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   dependee->getDownloadContext()->setAttribute(bittorrent::BITTORRENT, attrs);
 
   BtDependency dep(dependant, dependee);

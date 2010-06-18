@@ -70,27 +70,25 @@ std::string UTMetadataRequestExtensionMessage::toString() const
 
 void UTMetadataRequestExtensionMessage::doReceivedAction()
 {
-  const BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
+  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(_dctx);
   uint8_t id = _peer->getExtensionMessageID("ut_metadata");
-  if(!attrs.containsKey(bittorrent::METADATA)) {
+  if(attrs->metadata.empty()) {
     SharedHandle<UTMetadataRejectExtensionMessage> m
       (new UTMetadataRejectExtensionMessage(id));
     m->setIndex(getIndex());
     SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
     _dispatcher->addMessageToQueue(msg);
-  }else if(getIndex()*METADATA_PIECE_SIZE <
-           (size_t)attrs[bittorrent::METADATA_SIZE].i()){
+  }else if(getIndex()*METADATA_PIECE_SIZE < attrs->metadataSize) {
     SharedHandle<UTMetadataDataExtensionMessage> m
       (new UTMetadataDataExtensionMessage(id));
     m->setIndex(getIndex());
-    m->setTotalSize(attrs[bittorrent::METADATA_SIZE].i());
-    const BDE& metadata = attrs[bittorrent::METADATA];
+    m->setTotalSize(attrs->metadataSize);
     std::string::const_iterator begin =
-      metadata.s().begin()+getIndex()*METADATA_PIECE_SIZE;
+      attrs->metadata.begin()+getIndex()*METADATA_PIECE_SIZE;
     std::string::const_iterator end =
-      (getIndex()+1)*METADATA_PIECE_SIZE <= metadata.s().size()?
-      metadata.s().begin()+(getIndex()+1)*METADATA_PIECE_SIZE:
-      metadata.s().end();
+      (getIndex()+1)*METADATA_PIECE_SIZE <= attrs->metadata.size()?
+      attrs->metadata.begin()+(getIndex()+1)*METADATA_PIECE_SIZE:
+      attrs->metadata.end();
     m->setData(std::string(begin, end));
     SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
     _dispatcher->addMessageToQueue(msg);

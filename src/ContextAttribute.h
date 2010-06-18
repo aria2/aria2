@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,40 +32,13 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "magnet.h"
-#include "util.h"
+#ifndef D_CONTEXT_ATTRIBUTE_H
+#define D_CONTEXT_ATTRIBUTE_H
 
-namespace aria2 {
+#include "common.h"
 
-namespace magnet {
+struct ContextAttribute {
+  virtual ~ContextAttribute() {}
+};
 
-SharedHandle<Dict> parse(const std::string& magnet)
-{
-  SharedHandle<Dict> dict;
-  if(!util::startsWith(magnet, "magnet:?")) {
-    return dict;
-  }
-  dict.reset(new Dict());
-  std::vector<std::string> queries;
-  util::split(std::string(magnet.begin()+8, magnet.end()),
-              std::back_inserter(queries), "&");
-  for(std::vector<std::string>::const_iterator i = queries.begin(),
-        eoi = queries.end(); i != eoi; ++i) {
-    std::pair<std::string, std::string> kv;
-    util::split(kv, *i, '=');
-    std::string value = util::percentDecode(kv.second);
-    List* l = asList(dict->get(kv.first));
-    if(l) {
-      l->append(String::g(value));
-    } else {
-      SharedHandle<List> l = List::g();
-      l->append(String::g(value));
-      dict->put(kv.first, l);
-    }
-  }
-  return dict;
-}
-
-} // namespace magnet
-
-} // namespace aria2
+#endif // D_CONTEXT_ATTRIBUTE_H

@@ -745,7 +745,7 @@ void XmlRpcMethodTest::testGatherBitTorrentMetadata()
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   bittorrent::load("test.torrent", dctx);
   BDE btDict = BDE::dict();
-  gatherBitTorrentMetadata(btDict, dctx->getAttribute(bittorrent::BITTORRENT));
+  gatherBitTorrentMetadata(btDict, bittorrent::getTorrentAttrs(dctx));
   CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"), btDict["comment"].s());
   CPPUNIT_ASSERT_EQUAL((int64_t)1123456789, btDict["creationDate"].i());
   CPPUNIT_ASSERT_EQUAL(std::string("multi"), btDict["mode"].s());
@@ -756,11 +756,11 @@ void XmlRpcMethodTest::testGatherBitTorrentMetadata()
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"), announceList[1][0].s());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"), announceList[2][0].s());
   // Remove some keys
-  BDE modBtAttrs = dctx->getAttribute(bittorrent::BITTORRENT);
-  modBtAttrs.removeKey(bittorrent::COMMENT);
-  modBtAttrs.removeKey(bittorrent::CREATION_DATE);
-  modBtAttrs.removeKey(bittorrent::MODE);
-  modBtAttrs.removeKey(bittorrent::METADATA);
+  SharedHandle<TorrentAttribute> modBtAttrs = bittorrent::getTorrentAttrs(dctx);
+  modBtAttrs->comment.clear();
+  modBtAttrs->creationDate = 0;
+  modBtAttrs->mode.clear();
+  modBtAttrs->metadata.clear();
   btDict = BDE::dict();
   gatherBitTorrentMetadata(btDict, modBtAttrs);
   CPPUNIT_ASSERT(!btDict.containsKey("comment"));

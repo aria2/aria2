@@ -100,15 +100,12 @@ bool LpdReceiveMessageCommand::execute()
       }
       continue;
     }
-    const BDE& torrentAttrs = dctx->getAttribute(bittorrent::BITTORRENT);
-    if(torrentAttrs.containsKey(bittorrent::PRIVATE)) {
-      if(torrentAttrs[bittorrent::PRIVATE].i() == 1) {
-        if(getLogger()->debug()) {
-          getLogger()->debug
-            ("Ignore LPD message because the torrent is private.");
-        }
-        continue;
+    if(bittorrent::getTorrentAttrs(dctx)->privateTorrent) {
+      if(getLogger()->debug()) {
+        getLogger()->debug
+          ("Ignore LPD message because the torrent is private.");
       }
+      continue;
     }
     RequestGroup* group = dctx->getOwnerRequestGroup();
     assert(group);

@@ -202,7 +202,11 @@ SRCS =  Socket.h\
 	MetadataInfo.cc MetadataInfo.h\
 	SessionSerializer.cc SessionSerializer.h\
 	Event.h\
-	timespec.h
+	timespec.h\
+	ValueBase.cc ValueBase.h\
+	bencode2.cc bencode2.h\
+	ContextAttribute.h\
+	TorrentAttribute.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

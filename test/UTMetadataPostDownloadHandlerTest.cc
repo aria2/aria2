@@ -51,13 +51,13 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
 
   CPPUNIT_ASSERT(!handler.canHandle(_requestGroup.get()));
 
-  BDE attrs = BDE::dict();
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   _dctx->setAttribute(bittorrent::BITTORRENT, attrs);
 
   CPPUNIT_ASSERT(handler.canHandle(_requestGroup.get()));
 
-  // Only checks existence of METADATA key
-  attrs[bittorrent::METADATA] = A2STR::NIL;
+  // Only checks whether metadata is empty or not
+  attrs->metadata = "metadata";
 
   CPPUNIT_ASSERT(!handler.canHandle(_requestGroup.get()));
 }
@@ -76,12 +76,13 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     (infoHash, sizeof(infoHash), MessageDigestContext::SHA1,
      reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size());
   _dctx->getFirstFileEntry()->setLength(metadata.size());
-  BDE attrs = BDE::dict();
-  attrs[bittorrent::INFO_HASH] = std::string(&infoHash[0], &infoHash[20]);
-  BDE announceList = BDE::list();
-  announceList << BDE::list();
-  announceList[0] << std::string("http://tracker");
-  attrs[bittorrent::ANNOUNCE_LIST] = announceList;
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
+  std::vector<std::vector<std::string> > announceList;
+  std::vector<std::string> announceTier;
+  announceTier.push_back("http://tracker");
+  announceList.push_back(announceTier);
+  attrs->announceList = announceList;
   _dctx->setAttribute(bittorrent::BITTORRENT, attrs);
   _requestGroup->setDiskWriterFactory
     (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
@@ -97,13 +98,14 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   CPPUNIT_ASSERT_EQUAL((size_t)1, results.size());
   SharedHandle<RequestGroup> newRg = results.front();
   SharedHandle<DownloadContext> newDctx = newRg->getDownloadContext();
-  const BDE& newAttrs = newDctx->getAttribute(bittorrent::BITTORRENT);
-  CPPUNIT_ASSERT_EQUAL(util::toHex(attrs[bittorrent::INFO_HASH].s()),
-                       util::toHex(newAttrs[bittorrent::INFO_HASH].s()));
-  CPPUNIT_ASSERT(newAttrs.containsKey(bittorrent::ANNOUNCE_LIST));
-  CPPUNIT_ASSERT_EQUAL((size_t)1, newAttrs[bittorrent::ANNOUNCE_LIST].size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker"),
-                       newAttrs[bittorrent::ANNOUNCE_LIST][0][0].s());
+  SharedHandle<TorrentAttribute> newAttrs =
+    bittorrent::getTorrentAttrs(newDctx);
+  CPPUNIT_ASSERT_EQUAL(bittorrent::getInfoHashString(_dctx),
+                       bittorrent::getInfoHashString(newDctx));
+  const std::vector<std::vector<std::string> >& newAnnounceList =
+    newAttrs->announceList;
+  CPPUNIT_ASSERT_EQUAL((size_t)1, newAnnounceList.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker"), newAnnounceList[0][0]);
   CPPUNIT_ASSERT_EQUAL(_option->get("Hello"),
                        newRg->getOption()->get("Hello"));
   CPPUNIT_ASSERT

@@ -1,3 +1,69 @@
+2010-06-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Introduced ValueBase class, which is a replacement of BDE.  In
+	this change ValueBase is used instead of BDE except DHT messages,
+	UTMetadata messages and XML-RPC. They'll be replaced in the later
+	commits. DownloadContext::_attrs is now ContextAttribute rather
+	than BDE.
+	* src/ActivePeerConnectionCommand.cc
+	* src/AnnounceList.cc
+	* src/AnnounceList.h
+	* src/BtDependency.cc
+	* src/BtRegistry.cc
+	* src/BtSetup.cc
+	* src/ConsoleStatCalc.cc
+	* src/ContextAttribute.h
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtInteractive.cc
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/HandshakeExtensionMessage.cc
+	* src/InitiateConnectionCommand.cc
+	* src/LpdReceiveMessageCommand.cc
+	* src/MSEHandshake.cc
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/PeerInteractionCommand.cc
+	* src/PeerListProcessor.h
+	* src/ProtocolDetector.cc
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/TorrentAttribute.h
+	* src/TrackerWatcherCommand.cc
+	* src/UTMetadataDataExtensionMessage.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/UTMetadataRequestExtensionMessage.cc
+	* src/ValueBase.cc
+	* src/ValueBase.h
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* src/bencode2.cc
+	* src/bencode2.h
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/download_helper.cc
+	* src/magnet.cc
+	* src/magnet.h
+	* test/AnnounceListTest.cc
+	* test/Bencode2Test.cc
+	* test/BencodeTest.cc
+	* test/BittorrentHelperTest.cc
+	* test/BtDependencyTest.cc
+	* test/BtRegistryTest.cc
+	* test/DefaultBtAnnounceTest.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* test/MSEHandshakeTest.cc
+	* test/MagnetTest.cc
+	* test/Makefile.am
+	* test/Makefile.in
+	* test/RequestGroupManTest.cc
+	* test/UTMetadataDataExtensionMessageTest.cc
+	* test/UTMetadataPostDownloadHandlerTest.cc
+	* test/UTMetadataRequestExtensionMessageTest.cc
+	* test/ValueBaseTest.cc
+	* test/XmlRpcMethodTest.cc
+
 2010-06-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed assertion error if updateTransferStatFor is called with peer

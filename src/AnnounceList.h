@@ -38,10 +38,9 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "AnnounceTier.h"
+#include "ValueBase.h"
 
 namespace aria2 {
-
-class BDE;
 
 class AnnounceList {
 public:
@@ -56,10 +55,10 @@ private:
   (const std::deque<SharedHandle<AnnounceTier> >::iterator& itr);
 public:
   AnnounceList():_currentTrackerInitialized(false) {}
-  AnnounceList(const BDE& announceList);
+  AnnounceList(const std::vector<std::vector<std::string> >& announceList);
   AnnounceList(const std::deque<SharedHandle<AnnounceTier> >& tiers);
 
-  void reconfigure(const BDE& announceList);
+  void reconfigure(const std::vector<std::vector<std::string> >& announceList);
   void reconfigure(const std::string& url);
 
   size_t countTier() const {

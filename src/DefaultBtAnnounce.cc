@@ -50,7 +50,7 @@
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "Request.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "bittorrent_helper.h"
 #include "wallclock.h"
 
@@ -67,9 +67,7 @@ DefaultBtAnnounce::DefaultBtAnnounce
   _userDefinedInterval(0),
   _complete(0),
   _incomplete(0),
-  _announceList
-  (downloadContext->getAttribute
-   (bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST]),
+  _announceList(bittorrent::getTorrentAttrs(downloadContext)->announceList),
   _option(option),
   _logger(LogFactory::getInstance()),
   _randomizer(SimpleRandomizer::getInstance())
@@ -219,37 +217,38 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   if(_logger->debug()) {
     _logger->debug("Now processing tracker response.");
   }
-  const BDE dict =
-    bencode::decode(trackerResponse, trackerResponseLength);
-  if(!dict.isDict()) {
+  SharedHandle<ValueBase> decodedValue =
+    bencode2::decode(trackerResponse, trackerResponseLength);
+  const Dict* dict = asDict(decodedValue);
+  if(!dict) {
     throw DL_ABORT_EX(MSG_NULL_TRACKER_RESPONSE);
   }
-  const BDE& failure = dict[BtAnnounce::FAILURE_REASON];
-  if(failure.isString()) {
+  const String* failure = asString(dict->get(BtAnnounce::FAILURE_REASON));
+  if(failure) {
     throw DL_ABORT_EX
-      (StringFormat(EX_TRACKER_FAILURE, failure.s().c_str()).str());
+      (StringFormat(EX_TRACKER_FAILURE, failure->s().c_str()).str());
   }
-  const BDE& warn = dict[BtAnnounce::WARNING_MESSAGE];
-  if(warn.isString()) {
-    _logger->warn(MSG_TRACKER_WARNING_MESSAGE, warn.s().c_str());
+  const String* warn = asString(dict->get(BtAnnounce::WARNING_MESSAGE));
+  if(warn) {
+    _logger->warn(MSG_TRACKER_WARNING_MESSAGE, warn->s().c_str());
   }
-  const BDE& tid = dict[BtAnnounce::TRACKER_ID];
-  if(tid.isString()) {
-    _trackerId = tid.s();
+  const String* tid = asString(dict->get(BtAnnounce::TRACKER_ID));
+  if(tid) {
+    _trackerId = tid->s();
     if(_logger->debug()) {
       _logger->debug("Tracker ID:%s", _trackerId.c_str());
     }
   }
-  const BDE& ival = dict[BtAnnounce::INTERVAL];
-  if(ival.isInteger() && ival.i() > 0) {
-    _interval = ival.i();
+  const Integer* ival = asInteger(dict->get(BtAnnounce::INTERVAL));
+  if(ival && ival->i() > 0) {
+    _interval = ival->i();
     if(_logger->debug()) {
       _logger->debug("Interval:%d", _interval);
     }
   }
-  const BDE& mival = dict[BtAnnounce::MIN_INTERVAL];
-  if(mival.isInteger() && mival.i() > 0) {
-    _minInterval = mival.i();
+  const Integer* mival = asInteger(dict->get(BtAnnounce::MIN_INTERVAL));
+  if(mival && mival->i() > 0) {
+    _minInterval = mival->i();
     if(_logger->debug()) {
       _logger->debug("Min interval:%d", _minInterval);
     }
@@ -258,22 +257,22 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     // Use interval as a minInterval if minInterval is not supplied.
     _minInterval = _interval;
   }
-  const BDE& comp = dict[BtAnnounce::COMPLETE];
-  if(comp.isInteger()) {
-    _complete = comp.i();
+  const Integer* comp = asInteger(dict->get(BtAnnounce::COMPLETE));
+  if(comp) {
+    _complete = comp->i();
     if(_logger->debug()) {
       _logger->debug("Complete:%d", _complete);
     }
   }
-  const BDE& incomp = dict[BtAnnounce::INCOMPLETE];
-  if(incomp.isInteger()) {
-    _incomplete = incomp.i();
+  const Integer* incomp = asInteger(dict->get(BtAnnounce::INCOMPLETE));
+  if(incomp) {
+    _incomplete = incomp->i();
     if(_logger->debug()) {
       _logger->debug("Incomplete:%d", _incomplete);
     }
   }
-  const BDE& peerData = dict[BtAnnounce::PEERS];
-  if(peerData.isNone()) {
+  const SharedHandle<ValueBase>& peerData = dict->get(BtAnnounce::PEERS);
+  if(peerData.isNull()) {
     _logger->info(MSG_NO_PEER_LIST_RECEIVED);
   } else {
     if(!_btRuntime->isHalt() && _btRuntime->lessThanMinPeers()) {

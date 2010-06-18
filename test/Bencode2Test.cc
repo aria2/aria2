@@ -1,17 +1,14 @@
-#include "bencode.h"
-
-#include <cstdlib>
+#include "bencode2.h"
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "RecoverableException.h"
-#include "TimeA2.h"
 
 namespace aria2 {
 
-class BencodeTest:public CppUnit::TestFixture {
+class Bencode2Test:public CppUnit::TestFixture {
 
-  CPPUNIT_TEST_SUITE(BencodeTest);
+  CPPUNIT_TEST_SUITE(Bencode2Test);
   CPPUNIT_TEST(testDecode);
   CPPUNIT_TEST(testDecode_overflow);
   CPPUNIT_TEST(testEncode);
@@ -24,57 +21,62 @@ public:
   void testEncode();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( BencodeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( Bencode2Test );
 
-void BencodeTest::testDecode()
+void Bencode2Test::testDecode()
 {
   {
     // string, integer and list in dict
-    BDE dict =
-      bencode::decode("d4:name5:aria24:sizei12345678900e5:filesl3:bin3:docee");
-    CPPUNIT_ASSERT(dict.isDict());
-    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), dict["name"].s());
-    CPPUNIT_ASSERT_EQUAL(static_cast<BDE::Integer>(12345678900LL),
-                         dict["size"].i());
-    BDE list = dict["files"];
-    CPPUNIT_ASSERT(list.isList());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), list.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("bin"), list[0].s());
-    CPPUNIT_ASSERT_EQUAL(std::string("doc"), list[1].s());
+    SharedHandle<ValueBase> r =
+      bencode2::decode("d4:name5:aria24:sizei12345678900e5:filesl3:bin3:docee");
+    const Dict* dict = asDict(r);
+    CPPUNIT_ASSERT(dict);
+    CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
+                         asString(dict->get("name"))->s());
+    CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(12345678900LL),
+                         asInteger(dict->get("size"))->i());
+    const List* list = asList(dict->get("files"));
+    CPPUNIT_ASSERT(list);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), list->size());
+    CPPUNIT_ASSERT_EQUAL(std::string("bin"),
+                         asString(list->get(0))->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("doc"),
+                         asString(list->get(1))->s());
   }
   {
     // dict in list
-    BDE list = bencode::decode("ld1:ki123eee");
-    CPPUNIT_ASSERT(list.isList());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), list.size());
-    BDE dict = list[0];
-    CPPUNIT_ASSERT(dict.isDict());
-    CPPUNIT_ASSERT_EQUAL(static_cast<BDE::Integer>(123),
-                         dict["k"].i());
+    SharedHandle<ValueBase> r = bencode2::decode("ld1:ki123eee");
+    const List* list = asList(r);
+    CPPUNIT_ASSERT(list);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), list->size());
+    const Dict* dict = asDict(list->get(0));
+    CPPUNIT_ASSERT(dict);
+    CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(123),
+                         asInteger(dict->get("k"))->i());
   }
   {
     // empty key is allowed
-    BDE s = bencode::decode("d0:1:ve");
+    SharedHandle<ValueBase> s = bencode2::decode("d0:1:ve");
   }
   {
     // empty string
-    BDE s = bencode::decode("0:");
-    CPPUNIT_ASSERT_EQUAL(std::string(""), s.s());
+    SharedHandle<ValueBase> s = bencode2::decode("0:");
+    CPPUNIT_ASSERT_EQUAL(std::string(""), asString(s)->s());
   }
   {
     // empty dict
-    BDE d = bencode::decode("de");
-    CPPUNIT_ASSERT(d.empty());
+    SharedHandle<ValueBase> d = bencode2::decode("de");
+    CPPUNIT_ASSERT(asDict(d)->empty());
   }
   {
     // empty list
-    BDE l = bencode::decode("le");
-    CPPUNIT_ASSERT(l.empty());
+    SharedHandle<ValueBase> l = bencode2::decode("le");
+    CPPUNIT_ASSERT(asList(l)->empty());
   }
   {
     // integer, without ending 'e'
     try {
-      bencode::decode("i3");
+      bencode2::decode("i3");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -85,7 +87,7 @@ void BencodeTest::testDecode()
   {
     // dict, without ending 'e'
     try {
-      bencode::decode("d");
+      bencode2::decode("d");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -97,7 +99,7 @@ void BencodeTest::testDecode()
   {
     // list, without ending 'e'
     try {
-      bencode::decode("l");
+      bencode2::decode("l");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -109,7 +111,7 @@ void BencodeTest::testDecode()
   {
     // string, less than the specified length.
     try {
-      bencode::decode("3:ab");
+      bencode2::decode("3:ab");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -121,7 +123,7 @@ void BencodeTest::testDecode()
   {
     // string, but length is invalid
     try {
-      bencode::decode("x:abc");
+      bencode2::decode("x:abc");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -133,7 +135,7 @@ void BencodeTest::testDecode()
   {
     // string with minus length
     try {
-      bencode::decode("-1:a");
+      bencode2::decode("-1:a");
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -144,26 +146,26 @@ void BencodeTest::testDecode()
   }
   {
     // empty encoded data
-    CPPUNIT_ASSERT(bencode::decode("").isNone());
+    CPPUNIT_ASSERT(bencode2::decode("").isNull());
   }
   {
     // ignore trailing garbage at the end of the input.
-    BDE s = bencode::decode("5:aria2trail");
-    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), s.s());
+    SharedHandle<ValueBase> s = bencode2::decode("5:aria2trail");
+    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), asString(s)->s());
   }
   {
     // Get trailing garbage position
     size_t end;
-    BDE s = bencode::decode("5:aria2trail", end);
-    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), s.s());
+    SharedHandle<ValueBase> s = bencode2::decode("5:aria2trail", end);
+    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), asString(s)->s());
     CPPUNIT_ASSERT_EQUAL((size_t)7, end);
   }
 }
 
-void BencodeTest::testDecode_overflow()
+void Bencode2Test::testDecode_overflow()
 {
   std::string s;
-  size_t depth = bencode::MAX_STRUCTURE_DEPTH+1;
+  size_t depth = bencode2::MAX_STRUCTURE_DEPTH+1;
   for(size_t i = 0; i < depth; ++i) {
     s += "l";
   }
@@ -171,23 +173,25 @@ void BencodeTest::testDecode_overflow()
     s += "e";
   }
   try {
-    bencode::decode(s);
+    bencode2::decode(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // success
   }
 }
 
-void BencodeTest::testEncode()
+void Bencode2Test::testEncode()
 {
   {
-    BDE dict = BDE::dict();
-    dict["name"] = std::string("aria2");
-    dict["loc"] = 80000;
-    dict["files"] = BDE::list();
-    dict["files"] << std::string("aria2c");
-    dict["attrs"] = BDE::dict();
-    dict["attrs"]["license"] = std::string("GPL");
+    Dict dict;
+    dict["name"] = String::g("aria2");
+    dict["loc"] = Integer::g(80000);
+    SharedHandle<List> files = List::g();
+    files->append(String::g("aria2c"));
+    dict["files"] = files;
+    SharedHandle<Dict> attrs = Dict::g();
+    attrs->put("license", String::g("GPL"));
+    dict["attrs"] = attrs;
 
     CPPUNIT_ASSERT_EQUAL(std::string("d"
                                      "5:attrsd7:license3:GPLe"
@@ -195,7 +199,7 @@ void BencodeTest::testEncode()
                                      "3:loci80000e"
                                      "4:name5:aria2"
                                      "e"),
-                         bencode::encode(dict));
+                         bencode2::encode(&dict));
   }
 }
 

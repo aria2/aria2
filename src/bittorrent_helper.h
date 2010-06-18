@@ -43,8 +43,8 @@
 
 #include "SharedHandle.h"
 #include "AnnounceTier.h"
-#include "BDE.h"
 #include "util.h"
+#include "TorrentAttribute.h"
 
 namespace aria2 {
 
@@ -118,15 +118,16 @@ void loadFromMemory(const std::string& context,
                     const std::string& defaultName,
                     const std::string& overrideName = "");
 
-// Parses BitTorrent Magnet URI and returns BDE::dict() which includes
-// infoHash, name and announceList. If parsing operation failed, an
-// RecoverableException will be thrown.  infoHash and name are string
-// and announceList is a list of list of announce URI.
+// Parses BitTorrent Magnet URI and returns
+// SharedHandle<TorrentAttribute> which includes infoHash, name and
+// announceList. If parsing operation failed, an RecoverableException
+// will be thrown.  infoHash and name are string and announceList is a
+// list of list of announce URI.
 //
 // magnet:?xt=urn:btih:<info-hash>&dn=<name>&tr=<tracker-url>
 // <info-hash> comes in 2 flavors: 40bytes hexadecimal ascii string,
 // or 32bytes Base32 encoded string.
-BDE parseMagnet(const std::string& magnet);
+SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet);
 
 // Parses BitTorrent Magnet URI and set them in ctx as a
 // bittorrent::BITTORRENT attibute. If parsing operation failed, an
@@ -160,6 +161,9 @@ void computeFastSet
 
 // Writes the detailed information about torrent loaded in dctx.
 void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx);
+
+SharedHandle<TorrentAttribute> getTorrentAttrs
+(const SharedHandle<DownloadContext>& dctx);
 
 // Returns the value associated with INFO_HASH key in BITTORRENT
 // attribute.
@@ -227,14 +231,13 @@ void assertPayloadLengthEqual
 void assertID
 (uint8_t expected, const unsigned char* data, const std::string& msgName);
 
-// Converts attrs into torrent data. attrs must be a BDE::dict.  This
-// function does not guarantee the returned string is valid torrent
-// data.
-std::string metadata2Torrent(const std::string& metadata, const BDE& attrs);
+// Converts attrs into torrent data. This function does not guarantee
+// the returned string is valid torrent data.
+std::string metadata2Torrent
+(const std::string& metadata, const SharedHandle<TorrentAttribute>& attrs);
 
-// Constructs BitTorrent Magnet URI using attrs. attrs must be a
-// BDE::dict.
-std::string torrent2Magnet(const BDE& attrs);
+// Constructs BitTorrent Magnet URI using attrs.
+std::string torrent2Magnet(const SharedHandle<TorrentAttribute>& attrs);
 
 } // namespace bittorrent
 

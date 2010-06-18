@@ -15,6 +15,7 @@
 #include "UTMetadataDataExtensionMessage.h"
 #include "PieceStorage.h"
 #include "extension_message_test_helper.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -39,7 +40,7 @@ public:
     _messageFactory.reset(new WrapExtBtMessageFactory());
     _dispatcher.reset(new MockBtMessageDispatcher());
     _dctx.reset(new DownloadContext());
-    BDE attrs = BDE::dict();
+    SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
     _dctx->setAttribute(bittorrent::BITTORRENT, attrs);
     _peer.reset(new Peer("host", 6880));
     _peer->allocateSessionResource(0, 0);
@@ -124,11 +125,11 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
   msg.setBtMessageDispatcher(_dispatcher);
 
   size_t metadataSize = METADATA_PIECE_SIZE*2;
-  BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
+  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(_dctx);
   std::string first(METADATA_PIECE_SIZE, '0');
   std::string second(METADATA_PIECE_SIZE, '1');
-  attrs[bittorrent::METADATA] = first+second;
-  attrs[bittorrent::METADATA_SIZE] = metadataSize;
+  attrs->metadata = first+second;
+  attrs->metadataSize = metadataSize;
 
   msg.doReceivedAction();
 
@@ -147,8 +148,8 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
 
   metadataSize += 100;
   std::string third(100, '2');
-  attrs[bittorrent::METADATA] = attrs[bittorrent::METADATA].s()+third;
-  attrs[bittorrent::METADATA_SIZE] = metadataSize;
+  attrs->metadata = first+second+third;
+  attrs->metadataSize = metadataSize;
 
   msg.doReceivedAction();
 

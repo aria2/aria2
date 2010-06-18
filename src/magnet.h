@@ -36,17 +36,18 @@
 #define _D_MAGNET_H_
 
 #include "common.h"
-#include "BDE.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
 namespace magnet {
 
-// Parses Magnet URI magnet and stores parameters in BDE::dict().
-// Because same parameter name can appear more than once, the value
-// associated with a key is BDE::list(). A parameter value is stored
-// in a list. If parsing operation failed, BDE::none is returned.
-BDE parse(const std::string& magnet);
+// Parses Magnet URI magnet and stores parameters in
+// SharedHandle<Dict>.  Because same parameter name can appear more
+// than once, the value associated with a key is SharedHandle<List>. A
+// parameter value is stored in a list. If parsing operation failed,
+// SharedHandle<Dict>() is returned.
+SharedHandle<Dict> parse(const std::string& magnet);
 
 } // namespace magnet
 

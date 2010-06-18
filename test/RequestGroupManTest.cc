@@ -14,6 +14,7 @@
 #include "ServerStat.h"
 #include "File.h"
 #include "array_fun.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 

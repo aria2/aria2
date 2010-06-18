@@ -33,9 +33,8 @@ public:
     _dctx.reset(new DownloadContext());
     unsigned char infoHash[20];
     memset(infoHash, 0, sizeof(infoHash));
-    BDE torrentAttrs = BDE::dict();
-    torrentAttrs[bittorrent::INFO_HASH] =
-      std::string(vbegin(infoHash), vend(infoHash));
+    SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
+    torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
     _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
   }
 

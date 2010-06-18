@@ -41,6 +41,7 @@
 #include "Request.h"
 #include "File.h"
 #include "util.h"
+#include "RecoverableException.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT

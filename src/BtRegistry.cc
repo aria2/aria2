@@ -56,13 +56,12 @@ BtRegistry::getDownloadContext(const std::string& infoHash) const
   SharedHandle<DownloadContext> dctx;
   for(std::map<gid_t, BtObject>::const_iterator i = _pool.begin(),
         eoi = _pool.end(); i != eoi; ++i) {
-    const BDE& attrs =
-      (*i).second._downloadContext->getAttribute(bittorrent::BITTORRENT);
-    if(attrs[bittorrent::INFO_HASH].s() == infoHash) {
+    if(bittorrent::getTorrentAttrs((*i).second._downloadContext)->infoHash ==
+       infoHash) {
       dctx = (*i).second._downloadContext;
       break;
     }
-  }
+  }      
   return dctx;
 }
 

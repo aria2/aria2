@@ -70,6 +70,7 @@
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "Segment.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 

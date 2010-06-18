@@ -52,6 +52,7 @@
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 

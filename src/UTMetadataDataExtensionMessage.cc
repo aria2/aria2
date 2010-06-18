@@ -85,9 +85,8 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
       MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
                                   MessageDigestContext::SHA1,
                                   metadata.data(), metadata.size());
-      const BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
-      if(std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]) == 
-         attrs[bittorrent::INFO_HASH].s()){
+      if(memcmp(infoHash, bittorrent::getInfoHash(_dctx),
+                INFO_HASH_LENGTH) == 0) {
         _logger->info("Got ut_metadata");
       } else {
         _logger->info("Got wrong ut_metadata");

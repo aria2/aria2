@@ -63,10 +63,10 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
 {
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
-  BDE attrs1 = BDE::dict();
-  attrs1[bittorrent::INFO_HASH] = std::string("hash1");
-  BDE attrs2 = BDE::dict();
-  attrs2[bittorrent::INFO_HASH] = std::string("hash2");
+  SharedHandle<TorrentAttribute> attrs1(new TorrentAttribute());
+  attrs1->infoHash = "hash1";
+  SharedHandle<TorrentAttribute> attrs2(new TorrentAttribute());
+  attrs2->infoHash = "hash2";
   btRegistry.getDownloadContext(1)->setAttribute
     (bittorrent::BITTORRENT, attrs1);
   btRegistry.getDownloadContext(2)->setAttribute

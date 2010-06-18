@@ -200,15 +200,15 @@ SharedHandle<RequestGroup> TrackerWatcherCommand::createAnnounce() {
 static bool backupTrackerIsAvailable
 (const SharedHandle<DownloadContext>& context)
 {
-  const BDE& announceList =
-    context->getAttribute(bittorrent::BITTORRENT)[bittorrent::ANNOUNCE_LIST];
-  if(announceList.size() >= 2) {
+  SharedHandle<TorrentAttribute> torrentAttrs =
+    bittorrent::getTorrentAttrs(context);
+  if(torrentAttrs->announceList.size() >= 2) {
     return true;
   }
-  if(announceList.empty()) {
+  if(torrentAttrs->announceList.empty()) {
     return false;
   }
-  if(announceList[0].size() >= 2) {
+  if(torrentAttrs->announceList[0].size() >= 2) {
     return true;
   } else {
     return false;

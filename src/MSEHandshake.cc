@@ -476,14 +476,13 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
         downloadContexts.begin(), eoi = downloadContexts.end();
       i != eoi; ++i) {
     unsigned char md[20];
-    const BDE& torrentAttrs = (*i)->getAttribute(bittorrent::BITTORRENT);
-    createReq23Hash(md, torrentAttrs[bittorrent::INFO_HASH].uc());
+    const unsigned char* infohash = bittorrent::getInfoHash(*i);
+    createReq23Hash(md, infohash);
     if(memcmp(md, rbufptr, sizeof(md)) == 0) {
       if(_logger->debug()) {
         _logger->debug("CUID#%s - info hash found: %s",
                        util::itos(_cuid).c_str(),
-                       util::toHex
-                       (torrentAttrs[bittorrent::INFO_HASH].s()).c_str());
+                       util::toHex(infohash, INFO_HASH_LENGTH).c_str());
       }
       downloadContext = *i;
       break;

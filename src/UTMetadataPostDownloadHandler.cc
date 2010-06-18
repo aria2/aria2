@@ -59,8 +59,8 @@ bool UTMetadataPostDownloadHandler::Criteria::match
   const SharedHandle<DownloadContext>& dctx =
     requestGroup->getDownloadContext();
   if(dctx->hasAttribute(bittorrent::BITTORRENT)) {
-    const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
-    if(!attrs.containsKey(bittorrent::METADATA)) {
+    SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx);
+    if(attrs->metadata.empty()) {
       return true;
     }
   }
@@ -77,7 +77,7 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
 (std::vector<SharedHandle<RequestGroup> >& groups, RequestGroup* requestGroup)
 {
   const SharedHandle<DownloadContext>& dctx =requestGroup->getDownloadContext();
-  const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
+  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx);
   std::string metadata =
     util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
   std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);
@@ -85,7 +85,7 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
   if(requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
     std::string filename =
       util::applyDir(requestGroup->getOption()->get(PREF_DIR),
-                     util::toHex(attrs[bittorrent::INFO_HASH].s())+".torrent");
+                     util::toHex(attrs->infoHash)+".torrent");
     if(util::saveAs(filename, torrent)) {
       _logger->notice(MSG_METADATA_SAVED, filename.c_str());
     } else {

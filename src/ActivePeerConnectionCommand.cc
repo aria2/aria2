@@ -89,8 +89,8 @@ bool ActivePeerConnectionCommand::execute() {
       _requestGroup->getMaxDownloadSpeedLimit();
     const unsigned int maxUploadLimit = _requestGroup->getMaxUploadSpeedLimit();
     unsigned int thresholdSpeed;
-    if(_requestGroup->getDownloadContext()->
-       getAttribute(bittorrent::BITTORRENT).containsKey(bittorrent::METADATA)) {
+    if(!bittorrent::getTorrentAttrs
+       (_requestGroup->getDownloadContext())->metadata.empty()) {
       thresholdSpeed =
         _requestGroup->getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
     } else {

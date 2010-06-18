@@ -563,44 +563,43 @@ void gatherProgressCommon
 }
 
 #ifdef ENABLE_BITTORRENT
-void gatherBitTorrentMetadata(BDE& btDict, const BDE& torrentAttrs)
+void gatherBitTorrentMetadata
+(BDE& btDict, const SharedHandle<TorrentAttribute>& torrentAttrs)
 {
-  if(torrentAttrs.containsKey(bittorrent::COMMENT)) {
-    btDict[KEY_COMMENT] = torrentAttrs[bittorrent::COMMENT];
+  if(!torrentAttrs->comment.empty()) {
+    btDict[KEY_COMMENT] = torrentAttrs->comment;
   }
-  if(torrentAttrs.containsKey(bittorrent::CREATION_DATE)) {
-    btDict[KEY_CREATION_DATE] = torrentAttrs[bittorrent::CREATION_DATE];
+  if(torrentAttrs->creationDate) {
+    btDict[KEY_CREATION_DATE] = torrentAttrs->creationDate;
   }
-  if(torrentAttrs.containsKey(bittorrent::MODE)) {
-    btDict[KEY_MODE] = torrentAttrs[bittorrent::MODE];
+  if(!torrentAttrs->mode.empty()) {
+    btDict[KEY_MODE] = torrentAttrs->mode;
   }
-  // Copy announceList to avoid modification on entyDict to be
-  // affected original announceList.
-  // TODO Would it be good to add copy() method in BDE?
-  const BDE& announceList = torrentAttrs[bittorrent::ANNOUNCE_LIST];
   BDE destAnnounceList = BDE::list();
-  for(BDE::List::const_iterator l = announceList.listBegin(),
-        eoi = announceList.listEnd(); l != eoi; ++l) {
+  for(std::vector<std::vector<std::string> >::const_iterator l =
+        torrentAttrs->announceList.begin(),
+        eoi = torrentAttrs->announceList.end(); l != eoi; ++l) {
     BDE destAnnounceTier = BDE::list();
-    for(BDE::List::const_iterator t = (*l).listBegin(),
-          eoi2 = (*l).listEnd(); t != eoi2; ++t) {
-      destAnnounceTier <<  (*t);
+    for(std::vector<std::string>::const_iterator t = (*l).begin(),
+          eoi2 = (*l).end(); t != eoi2; ++t) {
+      destAnnounceTier <<  *t;
     }
     destAnnounceList << destAnnounceTier;
   }
   btDict[KEY_ANNOUNCE_LIST] = destAnnounceList;
-  if(torrentAttrs.containsKey(bittorrent::METADATA)) {
+  if(!torrentAttrs->metadata.empty()) {
     BDE infoDict = BDE::dict();
-    infoDict[KEY_NAME] = torrentAttrs[bittorrent::NAME];
+    infoDict[KEY_NAME] = torrentAttrs->name;
     btDict[KEY_INFO] = infoDict;
   }
 }
 
 static void gatherProgressBitTorrent
-(BDE& entryDict, const BDE& torrentAttrs, const BtObject& btObject)
+(BDE& entryDict,
+ const SharedHandle<TorrentAttribute>& torrentAttrs,
+ const BtObject& btObject)
 {
-  const std::string& infoHash = torrentAttrs[bittorrent::INFO_HASH].s();
-  entryDict[KEY_INFO_HASH] = util::toHex(infoHash);
+  entryDict[KEY_INFO_HASH] = util::toHex(torrentAttrs->infoHash);
   BDE btDict = BDE::dict();
   gatherBitTorrentMetadata(btDict, torrentAttrs);
   entryDict[KEY_BITTORRENT] = btDict;
@@ -651,8 +650,8 @@ static void gatherProgress
   gatherProgressCommon(entryDict, group);
 #ifdef ENABLE_BITTORRENT
   if(group->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
-    const BDE& torrentAttrs =
-      group->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
+    SharedHandle<TorrentAttribute> torrentAttrs =
+      bittorrent::getTorrentAttrs(group->getDownloadContext());
     BtObject btObject = e->getBtRegistry()->get(group->getGID());
     gatherProgressBitTorrent(entryDict, torrentAttrs, btObject);
   }

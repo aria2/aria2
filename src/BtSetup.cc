@@ -73,6 +73,7 @@
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -86,9 +87,9 @@ void BtSetup::setup(std::vector<Command*>& commands,
   if(!requestGroup->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)){
     return;
   }
-  const BDE& torrentAttrs =
-    requestGroup->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
-  bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
+  SharedHandle<TorrentAttribute> torrentAttrs =
+    bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
+  bool metadataGetMode = torrentAttrs->metadata.empty();
   BtObject btObject = e->getBtRegistry()->get(requestGroup->getGID());
   SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
   SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
@@ -125,7 +126,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
     commands.push_back(c);
   }
 
-  if((metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0) &&
+  if((metadataGetMode || !torrentAttrs->privateTorrent) &&
      DHTSetup::initialized()) {
     DHTGetPeersCommand* command =
       new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
@@ -179,7 +180,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
     btRuntime->setListenPort(listenCommand->getPort());
   }
   if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
-     (metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0)) {
+     (metadataGetMode || !torrentAttrs->privateTorrent)) {
     if(LpdReceiveMessageCommand::getNumInstance() == 0) {
       _logger->info("Initializing LpdMessageReceiver.");
       SharedHandle<LpdMessageReceiver> receiver

@@ -96,7 +96,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   RequestGroup rg(op);
   rg.setDownloadContext(dctx);
 
-  BDE attrs = BDE::dict();
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   dctx->setAttribute(bittorrent::BITTORRENT, attrs);
   dctx->markTotalLengthIsUnknown();
 
@@ -117,7 +117,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->getPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, peer->getExtensionMessageID("ut_pex"));
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, peer->getExtensionMessageID("a2_dht"));
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024, attrs[bittorrent::METADATA_SIZE].i());
+  CPPUNIT_ASSERT_EQUAL((size_t)1024, attrs->metadataSize);
   CPPUNIT_ASSERT_EQUAL((uint64_t)1024, dctx->getTotalLength());
   CPPUNIT_ASSERT(dctx->knowsTotalLength());
 }

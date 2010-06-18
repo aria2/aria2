@@ -40,6 +40,7 @@
 #include "StringFormat.h"
 #include "util.h"
 #include "wallclock.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -138,36 +139,33 @@ void DownloadContext::setFileFilter(IntSequence seq)
   }
 }
 
-void DownloadContext::ensureAttrs()
+void DownloadContext::setAttribute
+(const std::string& key, const SharedHandle<ContextAttribute>& value)
 {
-  if(_attrs.isNone()) {
-    _attrs = BDE::dict();
+  std::map<std::string, SharedHandle<ContextAttribute> >::value_type p =
+    std::make_pair(key, value);
+  std::pair<std::map<std::string, SharedHandle<ContextAttribute> >::iterator,
+            bool> r = _attrs.insert(p);
+  if(!r.second) {
+    (*r.first).second = value;
   }
 }
 
-void DownloadContext::setAttribute(const std::string& key, const BDE& value)
+const SharedHandle<ContextAttribute>& DownloadContext::getAttribute
+(const std::string& key)
 {
-  ensureAttrs();
-  _attrs[key] = value;
-}
-
-BDE& DownloadContext::getAttribute(const std::string& key)
-{
-  ensureAttrs();
-  if(_attrs.containsKey(key)) {
-    return _attrs[key];
-  } else {
+  std::map<std::string, SharedHandle<ContextAttribute> >::const_iterator itr =
+    _attrs.find(key);
+  if(itr == _attrs.end()) {
     throw DL_ABORT_EX(StringFormat("No attribute named %s", key.c_str()).str());
+  } else {
+    return (*itr).second;
   }
 }
 
 bool DownloadContext::hasAttribute(const std::string& key) const
 {
-  if(_attrs.isNone()) {
-    return false;
-  } else {
-    return _attrs.containsKey(key);
-  }
+  return _attrs.count(key) == 1;
 }
 
 void DownloadContext::releaseRuntimeResource()

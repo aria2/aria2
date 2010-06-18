@@ -85,8 +85,8 @@ bool BtDependency::resolve()
       diskAdaptor->openExistingFile();
       std::string content = util::toString(diskAdaptor);
       if(dependee->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
-        const BDE& attrs =
-          dependee->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
+        SharedHandle<TorrentAttribute> attrs =
+          bittorrent::getTorrentAttrs(dependee->getDownloadContext());
         bittorrent::loadFromMemory
           (bittorrent::metadata2Torrent(content, attrs), context, "default");
       } else {

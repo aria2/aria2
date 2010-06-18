@@ -202,16 +202,15 @@ void RequestGroup::createInitialCommand
 #ifdef ENABLE_BITTORRENT
   {
     if(_downloadContext->hasAttribute(bittorrent::BITTORRENT)) {
-      const BDE& torrentAttrs =
-        _downloadContext->getAttribute(bittorrent::BITTORRENT);
-      bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
+      SharedHandle<TorrentAttribute> torrentAttrs =
+        bittorrent::getTorrentAttrs(_downloadContext);
+      bool metadataGetMode = torrentAttrs->metadata.empty();
       if(_option->getAsBool(PREF_DRY_RUN)) {
         throw DOWNLOAD_FAILURE_EXCEPTION
           ("Cancel BitTorrent download in dry-run context.");
       }
       SharedHandle<BtRegistry> btRegistry = e->getBtRegistry();
-      if(!btRegistry->getDownloadContext
-         (torrentAttrs[bittorrent::INFO_HASH].s()).isNull()) {
+      if(!btRegistry->getDownloadContext(torrentAttrs->infoHash).isNull()) {
         // TODO If metadataGetMode == false and each FileEntry has
         // URI, then go without BT.
         throw DOWNLOAD_FAILURE_EXCEPTION
@@ -337,20 +336,14 @@ void RequestGroup::createInitialCommand
       }
       _progressInfoFile = progressInfoFile;
 
-      if(torrentAttrs[bittorrent::PRIVATE].i() == 0 &&
-         _option->getAsBool(PREF_ENABLE_DHT)) {
+      if(!torrentAttrs->privateTorrent && _option->getAsBool(PREF_ENABLE_DHT)) {
         std::vector<Command*> dhtCommands;
         DHTSetup().setup(dhtCommands, e);
         e->addCommand(dhtCommands);
-        if(!torrentAttrs[bittorrent::NODES].empty() && DHTSetup::initialized()) {
-          std::vector<std::pair<std::string, uint16_t> > entryPoints;
-          const BDE& nodes = torrentAttrs[bittorrent::NODES];
-          for(BDE::List::const_iterator i = nodes.listBegin(),
-                eoi = nodes.listEnd(); i != eoi; ++i) {
-            std::pair<std::string, uint16_t> addr
-              ((*i)[bittorrent::HOSTNAME].s(), (*i)[bittorrent::PORT].i());
-            entryPoints.push_back(addr);
-          }
+        const std::vector<std::pair<std::string, uint16_t> >& nodes =
+          torrentAttrs->nodes;
+        if(!nodes.empty() && DHTSetup::initialized()) {
+          std::vector<std::pair<std::string, uint16_t> > entryPoints(nodes);
           DHTEntryPointNameResolveCommand* command =
             new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
           command->setTaskQueue(DHTRegistry::getData().taskQueue);
@@ -1094,8 +1087,9 @@ void RequestGroup::reportDownloadFinished()
     TransferStat stat = calculateStat();
     double shareRatio =
       ((stat.getAllTimeUploadLength()*10)/getCompletedLength())/10.0;
-    const BDE& attrs = _downloadContext->getAttribute(bittorrent::BITTORRENT);
-    if(attrs.containsKey(bittorrent::METADATA)) {
+    SharedHandle<TorrentAttribute> attrs =
+      bittorrent::getTorrentAttrs(_downloadContext);
+    if(!attrs->metadata.empty()) {
       _logger->notice(MSG_SHARE_RATIO_REPORT,
                       shareRatio,
                       util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),

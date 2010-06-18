@@ -73,7 +73,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
   SharedHandle<UTMetadataRequestTracker> tracker
     (new UTMetadataRequestTracker());
   SharedHandle<DownloadContext> dctx(new DownloadContext());
-  BDE attrs = BDE::dict();
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
 
   std::string piece0 = std::string(METADATA_PIECE_SIZE, '0');
   std::string piece1 = std::string(METADATA_PIECE_SIZE, '1');
@@ -83,8 +83,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
   MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
                               MessageDigestContext::SHA1,
                               metadata.data(), metadata.size());
-  attrs[bittorrent::INFO_HASH] = std::string(&infoHash[0], &infoHash[20]);
-
+  attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
   dctx->setAttribute(bittorrent::BITTORRENT, attrs);
 
   UTMetadataDataExtensionMessage m(1);

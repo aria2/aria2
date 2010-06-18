@@ -110,21 +110,21 @@ void HandshakeExtensionMessage::doReceivedAction()
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     _peer->setExtension(vt.first, vt.second);
   }
-  BDE& attrs = _dctx->getAttribute(bittorrent::BITTORRENT);
-  if(!attrs.containsKey(bittorrent::METADATA) &&
-     !_peer->getExtensionMessageID("ut_metadata")) {
+  SharedHandle<TorrentAttribute> attrs =
+    bittorrent::getTorrentAttrs(_dctx);
+  if(attrs->metadata.empty() && !_peer->getExtensionMessageID("ut_metadata")) {
     // TODO In metadataGetMode, if peer don't support metadata
     // transfer, should we drop connection? There is a possibility
     // that peer can still tell us peers using PEX.
     throw DL_ABORT_EX("Peer doesn't support ut_metadata extension. Goodbye.");
   }
   if(_metadataSize > 0) {
-    if(attrs.containsKey(bittorrent::METADATA_SIZE)) {
-      if(_metadataSize != (size_t)attrs[bittorrent::METADATA_SIZE].i()) {
+    if(attrs->metadataSize) {
+      if(_metadataSize != attrs->metadataSize) {
         throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
       }
     } else {
-      attrs[bittorrent::METADATA_SIZE] = _metadataSize;
+      attrs->metadataSize = _metadataSize;
       _dctx->getFirstFileEntry()->setLength(_metadataSize);
       _dctx->markTotalLengthIsKnown();
       _dctx->getOwnerRequestGroup()->initPieceStorage();
@@ -133,7 +133,7 @@ void HandshakeExtensionMessage::doReceivedAction()
         _dctx->getOwnerRequestGroup()->getPieceStorage();
       pieceStorage->setEndGamePieceNum(0);
     }
-  } else if(!attrs.containsKey(bittorrent::METADATA)) {
+  } else if(attrs->metadata.empty()) {
     throw DL_ABORT_EX("Peer didn't provide metadata_size."
                       " It seems that it doesn't have whole metadata.");
   }

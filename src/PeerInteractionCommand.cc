@@ -102,11 +102,9 @@ PeerInteractionCommand::PeerInteractionCommand
     setWriteCheckSocket(getSocket());
     setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
-
-  const BDE& torrentAttrs =
-    _requestGroup->getDownloadContext()->getAttribute(bittorrent::BITTORRENT);
-
-  bool metadataGetMode = !torrentAttrs.containsKey(bittorrent::METADATA);
+  SharedHandle<TorrentAttribute> torrentAttrs =
+    bittorrent::getTorrentAttrs(_requestGroup->getDownloadContext());
+  bool metadataGetMode = torrentAttrs->metadata.empty();
 
   SharedHandle<ExtensionMessageRegistry> exMsgRegistry
     (new ExtensionMessageRegistry());
@@ -189,7 +187,7 @@ PeerInteractionCommand::PeerInteractionCommand
     (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setRequestGroupMan(getDownloadEngine()->getRequestGroupMan());
   btInteractive->setBtMessageFactory(factory);
-  if((metadataGetMode || torrentAttrs[bittorrent::PRIVATE].i() == 0) &&
+  if((metadataGetMode || !torrentAttrs->privateTorrent) &&
      !getPeer()->isLocalPeer()) {
     if(getOption()->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
       btInteractive->setUTPexEnabled(true);

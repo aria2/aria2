@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -42,13 +42,31 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( AnnounceListTest );
 
+static std::vector<std::vector<std::string> > toVector
+(const List* announceList)
+{
+  std::vector<std::vector<std::string> > dest;
+  for(List::ValueType::const_iterator tierIter = announceList->begin(),
+        eoi = announceList->end(); tierIter != eoi; ++tierIter) {
+    std::vector<std::string> ntier;
+    const List* tier = asList(*tierIter);
+    for(List::ValueType::const_iterator uriIter = tier->begin(),
+          eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
+      const String* uri = asString(*uriIter);
+      ntier.push_back(uri->s());
+    }
+    dest.push_back(ntier);
+  }
+  return dest;
+}
+
 void AnnounceListTest::testSingleElementList() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const BDE announcesList = bencode::decode(peersString);
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announcesList);
+  AnnounceList announceList(toVector(asList(announcesList)));
   
   CPPUNIT_ASSERT(!announceList.allTiersFailed());
   std::string url =  announceList.getAnnounce();
@@ -90,11 +108,11 @@ void AnnounceListTest::testSingleElementList() {
 
 void AnnounceListTest::testMultiElementList() {
   std::string peersString = "ll8:tracker18:tracker28:tracker3ee";
-  const BDE announcesList = bencode::decode(peersString);
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2, tracker3 ] ]
-  AnnounceList announceList(announcesList);
+  AnnounceList announceList(toVector(asList(announcesList)));
   
   CPPUNIT_ASSERT(!announceList.allTiersFailed());
   std::string url = announceList.getAnnounce();
@@ -123,11 +141,11 @@ void AnnounceListTest::testMultiElementList() {
 
 void AnnounceListTest::testSingleAndMulti() {
   std::string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
-  const BDE announcesList = bencode::decode(peersString);
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announcesList);
+  AnnounceList announceList(toVector(asList(announcesList)));
 
   std::string url = announceList.getAnnounce();
   CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
@@ -149,20 +167,18 @@ void AnnounceListTest::testSingleAndMulti() {
 
 void AnnounceListTest::testNoGroup() {
   std::string peersString = "llee";
-  const BDE announcesList = bencode::decode(peersString);
-
-  AnnounceList announceList(announcesList);
-
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  AnnounceList announceList(toVector(asList(announcesList)));
   CPPUNIT_ASSERT(announceList.countTier() == 0);
 }
 
 void AnnounceListTest::testNextEventIfAfterStarted() {
   std::string peersString = "ll8:tracker1ee";
-  const BDE announcesList = bencode::decode(peersString);
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ] ]
-  AnnounceList announceList(announcesList);
+  AnnounceList announceList(toVector(asList(announcesList)));
   announceList.setEvent(AnnounceTier::STOPPED);
   announceList.announceFailure();
   announceList.resetTier();
@@ -178,11 +194,11 @@ void AnnounceListTest::testNextEventIfAfterStarted() {
 
 void AnnounceListTest::testEvent() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const BDE announcesList = bencode::decode(peersString);
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announcesList);
+  AnnounceList announceList(toVector(asList(announcesList)));
 
   announceList.setEvent(AnnounceTier::STOPPED);
   announceList.announceSuccess();
@@ -202,11 +218,11 @@ void AnnounceListTest::testEvent() {
 
 void AnnounceListTest::testCountStoppedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const BDE announcesList = bencode::decode(peersString);
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announcesList);
+  AnnounceList announceList(toVector(asList(announcesList)));
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED);
@@ -229,11 +245,11 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
 
 void AnnounceListTest::testCountCompletedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  const BDE announcesList = bencode::decode(peersString);
+  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
-  AnnounceList announceList(announcesList);
+  AnnounceList announceList(toVector(asList(announcesList)));
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED);

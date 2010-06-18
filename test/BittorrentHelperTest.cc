@@ -14,7 +14,7 @@
 #include "array_fun.h"
 #include "messageDigest.h"
 #include "a2netcompat.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "TestUtil.h"
 #include "base32.h"
 
@@ -111,26 +111,6 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BittorrentHelperTest);
 
-static const BDE& getAnnounceList(const SharedHandle<DownloadContext>& dctx)
-{
-  return dctx->getAttribute(BITTORRENT)[ANNOUNCE_LIST];
-}
-
-static const std::string& getMode(const SharedHandle<DownloadContext>& dctx)
-{
-  return dctx->getAttribute(BITTORRENT)[MODE].s();
-}
-
-static const std::string& getName(const SharedHandle<DownloadContext>& dctx)
-{
-  return dctx->getAttribute(BITTORRENT)[NAME].s();
-}
-
-static const BDE& getNodes(const SharedHandle<DownloadContext>& dctx)
-{
-  return dctx->getAttribute(BITTORRENT)[NODES];
-}
-
 void BittorrentHelperTest::testGetInfoHash() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
@@ -210,21 +190,21 @@ void BittorrentHelperTest::testGetFileModeMulti() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
 
-  CPPUNIT_ASSERT_EQUAL(MULTI, getMode(dctx));
+  CPPUNIT_ASSERT_EQUAL(MULTI, getTorrentAttrs(dctx)->mode);
 }
 
 void BittorrentHelperTest::testGetFileModeSingle() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("single.torrent", dctx);
 
-  CPPUNIT_ASSERT_EQUAL(SINGLE, getMode(dctx));
+  CPPUNIT_ASSERT_EQUAL(SINGLE, getTorrentAttrs(dctx)->mode);
 }
 
 void BittorrentHelperTest::testGetNameMulti() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"), getName(dctx));
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"), getTorrentAttrs(dctx)->name);
 }
 
 void BittorrentHelperTest::testGetNameSingle() {
@@ -233,7 +213,8 @@ void BittorrentHelperTest::testGetNameSingle() {
 
   CPPUNIT_ASSERT_EQUAL(std::string("./aria2-0.8.2.tar.bz2"),
                        dctx->getBasePath());
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"), getName(dctx));
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
+                       getTorrentAttrs(dctx)->name);
 }
 
 void BittorrentHelperTest::testOverrideName()
@@ -242,46 +223,41 @@ void BittorrentHelperTest::testOverrideName()
   load("test.torrent", dctx, "aria2-override.name");
   CPPUNIT_ASSERT_EQUAL(std::string("./aria2-override.name"),
                        dctx->getBasePath());
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"), getName(dctx));
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"),
+                       getTorrentAttrs(dctx)->name);
 }
 
 
 void BittorrentHelperTest::testGetAnnounceTier() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("single.torrent", dctx);
-
-  const BDE& announceList = getAnnounceList(dctx);
-  
+  SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
   // There is 1 tier.
-  CPPUNIT_ASSERT_EQUAL((size_t)1, announceList.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList.size());
 
-  const BDE& tier = announceList[0]; 
-  CPPUNIT_ASSERT_EQUAL((size_t)1, tier.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[0].size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/announce.php"),
-                       tier[0].s());
-
+                       attrs->announceList[0][0]);
 }
 
 void BittorrentHelperTest::testGetAnnounceTierAnnounceList() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
-
-  const BDE& announceList = getAnnounceList(dctx);
-  
+  SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
   // There are 3 tiers.
-  CPPUNIT_ASSERT_EQUAL((size_t)3, announceList.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, attrs->announceList.size());
 
-  const BDE& tier1 = announceList[0];
-  CPPUNIT_ASSERT_EQUAL((size_t)1, tier1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"), tier1[0].s());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[0].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
+                       attrs->announceList[0][0]);
 
-  const BDE& tier2 = announceList[1];
-  CPPUNIT_ASSERT_EQUAL((size_t)1, tier2.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"), tier2[0].s());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[1].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"),
+                       attrs->announceList[1][0]);
 
-  const BDE& tier3 = announceList[2];
-  CPPUNIT_ASSERT_EQUAL((size_t)1, tier3.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"), tier3[0].s());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[2].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"),
+                       attrs->announceList[2][0]);
 }
 
 void BittorrentHelperTest::testGetPieceLength() {
@@ -440,7 +416,8 @@ void BittorrentHelperTest::testLoadFromMemory_overrideName()
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   loadFromMemory(memory, dctx, "default", "aria2-override.name");
 
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"), getName(dctx));
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-override.name"),
+                       getTorrentAttrs(dctx)->name);
 }
 
 void BittorrentHelperTest::testLoadFromMemory_multiFileDirTraversal()
@@ -486,12 +463,12 @@ void BittorrentHelperTest::testGetNodes()
     SharedHandle<DownloadContext> dctx(new DownloadContext());
     loadFromMemory(memory, dctx, "default");
 
-    const BDE& nodes = getNodes(dctx);
-    CPPUNIT_ASSERT_EQUAL((size_t)2, nodes.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), nodes[0][HOSTNAME].s());
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, (uint16_t)nodes[0][PORT].i());
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[1][HOSTNAME].s());
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, (uint16_t)nodes[1][PORT].i());
+    SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, attrs->nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), attrs->nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, attrs->nodes[0].second);
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), attrs->nodes[1].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, attrs->nodes[1].second);
   }
   {
     // empty hostname
@@ -506,10 +483,10 @@ void BittorrentHelperTest::testGetNodes()
     SharedHandle<DownloadContext> dctx(new DownloadContext());
     loadFromMemory(memory, dctx, "default");
 
-    const BDE& nodes = getNodes(dctx);
-    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0][HOSTNAME].s());
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, (uint16_t)nodes[0][PORT].i());
+    SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), attrs->nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, attrs->nodes[0].second);
   }
   {
     // bad port 
@@ -524,10 +501,10 @@ void BittorrentHelperTest::testGetNodes()
     SharedHandle<DownloadContext> dctx(new DownloadContext());
     loadFromMemory(memory, dctx, "default");
 
-    const BDE& nodes = getNodes(dctx);
-    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0][HOSTNAME].s());
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, (uint16_t)nodes[0][PORT].i());
+    SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), attrs->nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, attrs->nodes[0].second);
   }
   {
     // port missing
@@ -542,10 +519,10 @@ void BittorrentHelperTest::testGetNodes()
     SharedHandle<DownloadContext> dctx(new DownloadContext());
     loadFromMemory(memory, dctx, "default");
 
-    const BDE& nodes = getNodes(dctx);
-    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0][HOSTNAME].s());
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, (uint16_t)nodes[0][PORT].i());
+    SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), attrs->nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, attrs->nodes[0].second);
   }
   {
     // nodes is not a list
@@ -559,7 +536,8 @@ void BittorrentHelperTest::testGetNodes()
     SharedHandle<DownloadContext> dctx(new DownloadContext());
     loadFromMemory(memory, dctx, "default");
 
-    CPPUNIT_ASSERT_EQUAL((size_t)0, getNodes(dctx).size());
+    SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
+    CPPUNIT_ASSERT_EQUAL((size_t)0, attrs->nodes.size());
   }
   {
     // the element of node is not Data
@@ -574,10 +552,10 @@ void BittorrentHelperTest::testGetNodes()
     SharedHandle<DownloadContext> dctx(new DownloadContext());
     loadFromMemory(memory, dctx, "default");
 
-    const BDE& nodes = getNodes(dctx);
-    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0][HOSTNAME].s());
-    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, (uint16_t)nodes[0][PORT].i());
+    SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), attrs->nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, attrs->nodes[0].second);
   }
 }
 
@@ -643,11 +621,12 @@ void BittorrentHelperTest::testUTF8Torrent()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("utf8.torrent", dctx);
-  CPPUNIT_ASSERT_EQUAL(std::string("name in utf-8"), getName(dctx));
+  CPPUNIT_ASSERT_EQUAL(std::string("name in utf-8"),
+                       getTorrentAttrs(dctx)->name);
   CPPUNIT_ASSERT_EQUAL(std::string("./name in utf-8/path in utf-8"),
                        dctx->getFirstFileEntry()->getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("This is utf8 comment."),
-                       dctx->getAttribute(BITTORRENT)[COMMENT].s());
+                       getTorrentAttrs(dctx)->comment);
 }
 
 void BittorrentHelperTest::testEtc()
@@ -655,11 +634,11 @@ void BittorrentHelperTest::testEtc()
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
   CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"),
-                       dctx->getAttribute(BITTORRENT)[COMMENT].s());
+                       getTorrentAttrs(dctx)->comment);
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
-                       dctx->getAttribute(BITTORRENT)[CREATED_BY].s());
+                       getTorrentAttrs(dctx)->createdBy);
   CPPUNIT_ASSERT_EQUAL((int64_t)1123456789,
-                       dctx->getAttribute(BITTORRENT)[CREATION_DATE].i());
+                       getTorrentAttrs(dctx)->creationDate);
 }
 
 void BittorrentHelperTest::testCreatecompact()
@@ -698,13 +677,12 @@ void BittorrentHelperTest::testMetadata() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load("test.torrent", dctx);
   std::string torrentData = readFile("test.torrent");
-  BDE tr = bencode::decode(torrentData);
-  BDE infoDic = tr["info"];
-  std::string metadata = bencode::encode(infoDic);
-  const BDE& attrs = dctx->getAttribute(bittorrent::BITTORRENT);
-  CPPUNIT_ASSERT(metadata == attrs[bittorrent::METADATA].s());
-  CPPUNIT_ASSERT_EQUAL(metadata.size(),
-                       (size_t)attrs[bittorrent::METADATA_SIZE].i());
+  SharedHandle<ValueBase> tr = bencode2::decode(torrentData);
+  SharedHandle<ValueBase> infoDic = asDict(tr)->get("info");
+  std::string metadata = bencode2::encode(infoDic);
+  SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
+  CPPUNIT_ASSERT(metadata == attrs->metadata);
+  CPPUNIT_ASSERT_EQUAL(metadata.size(), attrs->metadataSize);
 }
 
 void BittorrentHelperTest::testParseMagnet()
@@ -712,29 +690,28 @@ void BittorrentHelperTest::testParseMagnet()
   std::string magnet =
     "magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c&dn=aria2"
     "&tr=http://tracker1&tr=http://tracker2";
-  BDE attrs = bittorrent::parseMagnet(magnet);
+  SharedHandle<TorrentAttribute> attrs = bittorrent::parseMagnet(magnet);
   CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
-                       util::toHex(attrs[bittorrent::INFO_HASH].s()));
-  CPPUNIT_ASSERT_EQUAL(std::string("[METADATA]aria2"),
-                       attrs[bittorrent::NAME].s());
-  CPPUNIT_ASSERT_EQUAL((size_t)2, attrs[bittorrent::ANNOUNCE_LIST].size());
+                       util::toHex(attrs->infoHash));
+  CPPUNIT_ASSERT_EQUAL(std::string("[METADATA]aria2"), attrs->name);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, attrs->announceList.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
-                       attrs[bittorrent::ANNOUNCE_LIST][0][0].s());
+                       attrs->announceList[0][0]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"),
-                       attrs[bittorrent::ANNOUNCE_LIST][1][0].s());
+                       attrs->announceList[1][0]);
 
   magnet = "magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c";
   attrs = bittorrent::parseMagnet(magnet);
   CPPUNIT_ASSERT_EQUAL
     (std::string("[METADATA]248d0a1cd08284299de78d5c1ed359bb46717d8c"),
-     attrs[bittorrent::NAME].s());
-  CPPUNIT_ASSERT(attrs[bittorrent::ANNOUNCE_LIST].size() == 0);
+     attrs->name);
+  CPPUNIT_ASSERT(attrs->announceList.empty());
 
   magnet = "magnet:?xt=urn:sha1:7899bdb90a026c746f3cbc10839dd9b2a2a3e985&"
     "xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c";
   attrs = bittorrent::parseMagnet(magnet);
   CPPUNIT_ASSERT_EQUAL(std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
-                       util::toHex(attrs[bittorrent::INFO_HASH].s()));
+                       util::toHex(attrs->infoHash));
 }
 
 void BittorrentHelperTest::testParseMagnet_base32()
@@ -742,22 +719,20 @@ void BittorrentHelperTest::testParseMagnet_base32()
   std::string infoHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
   std::string base32InfoHash = base32::encode(util::fromHex(infoHash));
   std::string magnet = "magnet:?xt=urn:btih:"+base32InfoHash+"&dn=aria2";
-  BDE attrs = bittorrent::parseMagnet(magnet);
+  SharedHandle<TorrentAttribute> attrs = bittorrent::parseMagnet(magnet);
   CPPUNIT_ASSERT_EQUAL
     (std::string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
-     util::toHex(attrs[bittorrent::INFO_HASH].s()));
+     util::toHex(attrs->infoHash));
 }
 
 void BittorrentHelperTest::testMetadata2Torrent()
 {
   std::string metadata = "METADATA";
-  BDE attrs = BDE::dict();
-  BDE announceList = BDE::list();
-  attrs[ANNOUNCE_LIST] = announceList;
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   CPPUNIT_ASSERT_EQUAL
     (std::string("d4:infoMETADATAe"), metadata2Torrent(metadata, attrs));
-  announceList << BDE::list();
-  announceList[0] << std::string("http://localhost/announce");
+  attrs->announceList.push_back(std::vector<std::string>());
+  attrs->announceList[0].push_back("http://localhost/announce");
   CPPUNIT_ASSERT_EQUAL
     (std::string("d"
                  "13:announce-list"
@@ -778,7 +753,7 @@ void BittorrentHelperTest::testTorrent2Magnet()
                  "&tr=http%3A%2F%2Ftracker1"
                  "&tr=http%3A%2F%2Ftracker2"
                  "&tr=http%3A%2F%2Ftracker3"),
-     torrent2Magnet(dctx->getAttribute(BITTORRENT)));
+     torrent2Magnet(getTorrentAttrs(dctx)));
 }
 
 } // namespace bittorrent

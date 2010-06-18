@@ -49,7 +49,8 @@ const std::string AnnounceList::STOPPED("stopped");
 
 const std::string AnnounceList::COMPLETED("completed");
 
-AnnounceList::AnnounceList(const BDE& announceList):
+AnnounceList::AnnounceList
+(const std::vector<std::vector<std::string> >& announceList):
   _currentTrackerInitialized(false) {
   reconfigure(announceList);
 }
@@ -60,30 +61,19 @@ AnnounceList::AnnounceList
   resetIterator();
 }
 
-void AnnounceList::reconfigure(const BDE& announceList)
+void AnnounceList::reconfigure
+(const std::vector<std::vector<std::string> >& announceList)
 {
-  if(announceList.isList()) {
-    for(BDE::List::const_iterator itr = announceList.listBegin(),
-          eoi = announceList.listEnd(); itr != eoi; ++itr) {
-      const BDE& elemList = *itr;
-      if(!elemList.isList()) {
-        continue;
-      }
-      std::deque<std::string> urls;
-      for(BDE::List::const_iterator elemItr = elemList.listBegin(),
-            eoi2 = elemList.listEnd(); elemItr != eoi2; ++elemItr) {
-        const BDE& data = *elemItr;
-        if(data.isString()) {
-          urls.push_back(data.s());
-        }
-      }
-      if(!urls.empty()) {
-        SharedHandle<AnnounceTier> tier(new AnnounceTier(urls));
-        _tiers.push_back(tier);
-      }
+  for(std::vector<std::vector<std::string> >::const_iterator itr =
+        announceList.begin(), eoi = announceList.end(); itr != eoi; ++itr) {
+    if((*itr).empty()) {
+      continue;
     }
-    resetIterator();
+    std::deque<std::string> urls((*itr).begin(), (*itr).end());
+    SharedHandle<AnnounceTier> tier(new AnnounceTier(urls));
+    _tiers.push_back(tier);
   }
+  resetIterator();
 }
 
 void AnnounceList::reconfigure(const std::string& url) {

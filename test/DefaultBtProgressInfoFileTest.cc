@@ -70,9 +70,8 @@ public:
     };
   
     _dctx.reset(new DownloadContext());
-    BDE torrentAttrs = BDE::dict();
-    torrentAttrs[bittorrent::INFO_HASH] =
-      std::string(vbegin(infoHash), vend(infoHash));
+    SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
+    torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
     _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
     _dctx->setDir(_option->get(PREF_DIR));
     const SharedHandle<FileEntry> fileEntries[] = {
