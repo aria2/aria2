@@ -47,51 +47,56 @@ namespace aria2 {
 namespace xmlrpc {
 
 template<typename OutputStream>
-static void encodeValue(const BDE& value, OutputStream& o);
-
-template<typename InputIterator, typename OutputStream>
-static void encodeArray
-(InputIterator first, InputIterator last, OutputStream& o)
+static void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
 {
-  o << "<array>" << "<data>";
-  for(; first != last; ++first) {
-    encodeValue(*first, o);
-  }
-  o << "</data>" << "</array>";
-}
+  class XmlValueBaseVisitor:public ValueBaseVisitor {
+  private:
+    OutputStream& o_;
+  public:
+    XmlValueBaseVisitor(OutputStream& o):o_(o) {}
 
-template<typename InputIterator, typename OutputStream>
-static void encodeStruct
-(InputIterator first, InputIterator last, OutputStream& o)
-{
-  o << "<struct>";
-  for(; first != last; ++first) {
-    o << "<member>"
-      << "<name>" << util::htmlEscape((*first).first) << "</name>";
-    encodeValue((*first).second, o);
-    o << "</member>";
-  }
-  o << "</struct>";
+    virtual ~XmlValueBaseVisitor() {}
+
+    virtual void visit(const String& v)
+    {
+      o_ << "<value><string>" << util::htmlEscape(v.s()) << "</string></value>";
+    }
+
+    virtual void visit(const Integer& v)
+    {
+      o_ << "<value><int>" << v.i() << "</int></value>";
+    }
+
+    virtual void visit(const List& v)
+    {
+      o_ << "<value><array><data>";
+      for(List::ValueType::const_iterator i = v.begin(), eoi = v.end();
+          i != eoi; ++i) {
+        (*i)->accept(*this);
+      }
+      o_ << "</data></array></value>";
+    }
+
+    virtual void visit(const Dict& v)
+    {
+      o_ << "<value><struct>";
+      for(Dict::ValueType::const_iterator i = v.begin(), eoi = v.end();
+          i != eoi; ++i) {
+        o_ << "<member><name>" << util::htmlEscape((*i).first) << "</name>";
+        (*i).second->accept(*this);
+        o_ << "</member>";
+      }
+      o_ << "</struct></value>";
+    }
+  };
+
+  XmlValueBaseVisitor visitor(o);
+  value->accept(visitor);
 }
 
 template<typename OutputStream>
-static void encodeValue(const BDE& value, OutputStream& o)
-{
-  o << "<value>";
-  if(value.isString()) {
-    o << "<string>" << util::htmlEscape(value.s()) << "</string>";
-  } else if(value.isInteger()) {
-    o << "<int>" << value.i() << "</int>";
-  } else if(value.isList()) {
-    encodeArray(value.listBegin(), value.listEnd(), o);
-  } else if(value.isDict()) {
-    encodeStruct(value.dictBegin(), value.dictEnd(), o);
-  }
-  o << "</value>";
-}
-
-template<typename OutputStream>
-std::string encodeAll(OutputStream& o, int code, const BDE& param)
+std::string encodeAll
+(OutputStream& o, int code, const SharedHandle<ValueBase>& param)
 {
   o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
   if(code == 0) {

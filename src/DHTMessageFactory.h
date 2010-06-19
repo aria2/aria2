@@ -42,6 +42,7 @@
 
 #include "SharedHandle.h"
 #include "A2STR.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
@@ -50,19 +51,18 @@ class DHTQueryMessage;
 class DHTResponseMessage;
 class DHTNode;
 class Peer;
-class BDE;
 
 class DHTMessageFactory {
 public:
   virtual ~DHTMessageFactory() {}
 
   virtual SharedHandle<DHTQueryMessage>
-  createQueryMessage(const BDE& dict,
+  createQueryMessage(const Dict* dict,
                      const std::string& ipaddr, uint16_t port) = 0;
 
   virtual SharedHandle<DHTResponseMessage>
   createResponseMessage(const std::string& messageType,
-                        const BDE& dict,
+                        const Dict* dict,
                         const std::string& ipaddr, uint16_t port) = 0;
 
   virtual SharedHandle<DHTQueryMessage>

@@ -40,7 +40,7 @@
 #include <stack>
 #include <string>
 
-#include "BDE.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
@@ -50,12 +50,12 @@ class XmlRpcRequestParserController {
 private:
 
   struct StateFrame {
-    BDE _value;
+    SharedHandle<ValueBase> _value;
     std::string _name;
 
     bool validMember() const
     {
-      return !_value.isNone() && !_name.empty();
+      return !_value.isNull() && !_name.empty();
     }
   };
 
@@ -75,17 +75,11 @@ public:
   // to p and _currentFrame = p;
   void popArrayFrame();
   
-  void setCurrentFrameValue(const BDE& value)
-  {
-    _currentFrame._value = value;
-  }
+  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
 
-  void setCurrentFrameName(const std::string& name)
-  {
-    _currentFrame._name = name;
-  }
+  void setCurrentFrameName(const std::string& name);
 
-  const BDE& getCurrentFrameValue() const { return _currentFrame._value; }
+  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
 
   void setMethodName(const std::string& methodName)
   {

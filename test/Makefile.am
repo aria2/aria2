@@ -70,11 +70,9 @@ aria2c_SOURCES = AllTest.cc\
 	LongestSequencePieceSelectorTest.cc\
 	a2algoTest.cc\
 	bitfieldTest.cc\
-	BDETest.cc\
 	DownloadContextTest.cc\
 	SessionSerializerTest.cc\
-	ValueBaseTest.cc\
-	Bencode2Test.cc
+	ValueBaseTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\
@@ -190,13 +188,13 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MockExtensionMessage.h\
 	MockExtensionMessageFactory.h\
 	MockPieceStorage.h\
-	BencodeTest.cc\
 	BittorrentHelperTest.cc\
 	PriorityPieceSelectorTest.cc\
 	MockPieceSelector.h\
 	extension_message_test_helper.h\
 	LpdMessageDispatcherTest.cc\
-	LpdMessageReceiverTest.cc
+	LpdMessageReceiverTest.cc\
+	Bencode2Test.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

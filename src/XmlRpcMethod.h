@@ -40,12 +40,12 @@
 #include <string>
 
 #include "SharedHandle.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
 class DownloadEngine;
 class OptionParser;
-class BDE;
 class Logger;
 class Option;
 class Exception;
@@ -71,26 +71,27 @@ protected:
   // Subclass must implement this function to fulfil XmlRpcRequest
   // req.  The return value of this method is used as a return value
   // of XML-RPC request.
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e) = 0;
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e) = 0;
 
-  void gatherRequestOption(const SharedHandle<Option>& option,
-                           const BDE& optionsDict);
+  void gatherRequestOption
+  (const SharedHandle<Option>& option, const Dict* optionsDict);
 
-  void gatherChangeableOption(const SharedHandle<Option>& option,
-                              const BDE& optionDict);
+  void gatherChangeableOption
+  (const SharedHandle<Option>& option, const Dict* optionDict);
 
   // Copy options which is changeable in XML-RPC changeOption command
   // to dest.
   void applyChangeableOption(Option* dest, Option* src) const;
 
   void gatherChangeableGlobalOption(const SharedHandle<Option>& option,
-                                    const BDE& optionDict);
+                                    const Dict* optionDict);
 
   // Copy options which is changeable in XML-RPC changeGlobalOption
   // command to dest.
   void applyChangeableGlobalOption(Option* dest, Option* src) const;
 
-  BDE createErrorResponse(const Exception& e);
+  SharedHandle<ValueBase> createErrorResponse(const Exception& e);
 
   const SharedHandle<OptionParser>& getOptionParser() const
   {

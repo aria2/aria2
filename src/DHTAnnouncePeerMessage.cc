@@ -47,7 +47,6 @@
 #include "DlAbortEx.h"
 #include "BtConstants.h"
 #include "StringFormat.h"
-#include "bencode.h"
 #include "a2functional.h"
 
 namespace aria2 {
@@ -87,13 +86,13 @@ void DHTAnnouncePeerMessage::doReceivedAction()
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-BDE DHTAnnouncePeerMessage::getArgument()
+SharedHandle<Dict> DHTAnnouncePeerMessage::getArgument()
 {
-  BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
-  aDict[INFO_HASH] = BDE(_infoHash, DHT_ID_LENGTH);
-  aDict[PORT] = _tcpPort;
-  aDict[TOKEN] = _token;
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
+  aDict->put(INFO_HASH, String::g(_infoHash, DHT_ID_LENGTH));
+  aDict->put(PORT, Integer::g(_tcpPort));
+  aDict->put(TOKEN, _token);
   return aDict;
 }
 

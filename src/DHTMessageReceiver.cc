@@ -51,7 +51,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "util.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -75,11 +75,12 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       return SharedHandle<DHTMessage>();
     }
     bool isReply = false;
-    const BDE dict = bencode::decode(data, length);
-    if(dict.isDict()) {
-      const BDE& y = dict[DHTMessage::Y];
-      if(y.isString()) {
-        if(y.s() == DHTResponseMessage::R || y.s() == DHTUnknownMessage::E) {
+    SharedHandle<ValueBase> decoded = bencode2::decode(data, length);
+    const Dict* dict = asDict(decoded);
+    if(dict) {
+      const String* y = asString(dict->get(DHTMessage::Y));
+      if(y) {
+        if(y->s() == DHTResponseMessage::R || y->s() == DHTUnknownMessage::E) {
           isReply = true;
         }
       } else {

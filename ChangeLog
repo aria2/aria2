@@ -1,3 +1,7 @@
+2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed BDE and bencode
+
 2010-06-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Introduced ValueBase class, which is a replacement of BDE.  In

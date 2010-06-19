@@ -6,8 +6,8 @@
 
 #include "Exception.h"
 #include "Peer.h"
-#include "bencode.h"
 #include "TimeA2.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -36,10 +36,10 @@ void PeerListProcessorTest::testExtractPeerFromList() {
     "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-00000000000000"
     "4:porti2006eeee";
 
-  const BDE dict = bencode::decode(peersString);
+  SharedHandle<ValueBase> dict = bencode2::decode(peersString);
   
   std::deque<SharedHandle<Peer> > peers;
-  proc.extractPeerFromList(dict["peers"], std::back_inserter(peers));
+  proc.extractPeer(asDict(dict)->get("peers"), std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
@@ -53,10 +53,10 @@ void PeerListProcessorTest::testExtract2PeersFromList() {
     "4:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-00000000000000"
     "4:porti2007eeee";
 
-  const BDE dict = bencode::decode(peersString);
+  SharedHandle<ValueBase> dict = bencode2::decode(peersString);
 
   std::deque<SharedHandle<Peer> > peers;
-  proc.extractPeerFromList(dict["peers"], std::back_inserter(peers));
+  proc.extractPeer(asDict(dict)->get("peers"), std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());

@@ -5,7 +5,7 @@
 #include "DHTNode.h"
 #include "Exception.h"
 #include "util.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -41,15 +41,15 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
   msg.setVersion("A200");
   std::string msgbody = msg.getBencodedMessage();
 
-  BDE dict = BDE::dict();
-  dict["t"] = transactionID;
-  dict["v"] = BDE("A200");
-  dict["y"] = BDE("r");
-  BDE rDict = BDE::dict();
-  rDict["id"] = BDE(id, DHT_ID_LENGTH);
-  dict["r"] = rDict;
+  Dict dict;
+  dict.put("t", transactionID);
+  dict.put("v", "A200");
+  dict.put("y", "r");
+  SharedHandle<Dict> rDict = Dict::g();
+  rDict->put("id", String::g(id, DHT_ID_LENGTH));
+  dict.put("r", rDict);
 
-  CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);
+  CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }
 
 } // namespace aria2

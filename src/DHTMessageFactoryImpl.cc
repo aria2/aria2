@@ -61,7 +61,6 @@
 #include "Peer.h"
 #include "Logger.h"
 #include "StringFormat.h"
-#include "bencode.h"
 
 namespace aria2 {
 
@@ -83,11 +82,10 @@ DHTMessageFactoryImpl::getRemoteNode
   return node;
 }
 
-static const BDE& getDictionary(const BDE& dict,
-                                const std::string& key)
+static const Dict* getDictionary(const Dict* dict, const std::string& key)
 {
-  const BDE& d = dict[key];
-  if(d.isDict()) {
+  const Dict* d = asDict(dict->get(key));
+  if(d) {
     return d;
   } else {
     throw DL_ABORT_EX
@@ -95,11 +93,10 @@ static const BDE& getDictionary(const BDE& dict,
   }
 }
 
-static const BDE& getString(const BDE& dict,
-                            const std::string& key)
+static const String* getString(const Dict* dict, const std::string& key)
 {
-  const BDE& c = dict[key];
-  if(c.isString()) {
+  const String* c = asString(dict->get(key));
+  if(c) {
     return c;
   } else {
     throw DL_ABORT_EX
@@ -107,11 +104,10 @@ static const BDE& getString(const BDE& dict,
   }
 }
 
-static const BDE& getInteger(const BDE& dict,
-                             const std::string& key)
+static const Integer* getInteger(const Dict* dict, const std::string& key)
 {
-  const BDE& c = dict[key];
-  if(c.isInteger()) {
+  const Integer* c = asInteger(dict->get(key));
+  if(c) {
     return c;
   } else {
     throw DL_ABORT_EX
@@ -119,10 +115,10 @@ static const BDE& getInteger(const BDE& dict,
   }
 }
 
-static const BDE& getString(const BDE& list, size_t index)
+static const String* getString(const List* list, size_t index)
 {
-  const BDE& c = list[index];
-  if(c.isString()) {
+  const String* c = asString(list->get(index));
+  if(c) {
     return c;
   } else {
     throw DL_ABORT_EX
@@ -131,10 +127,10 @@ static const BDE& getString(const BDE& list, size_t index)
   }
 }
 
-static const BDE& getInteger(const BDE& list, size_t index)
+static const Integer* getInteger(const List* list, size_t index)
 {
-  const BDE& c = list[index];
-  if(c.isInteger()) {
+  const Integer* c = asInteger(list->get(index));
+  if(c) {
     return c;
   } else {
     throw DL_ABORT_EX
@@ -143,11 +139,10 @@ static const BDE& getInteger(const BDE& list, size_t index)
   }
 }
 
-static const BDE& getList(const BDE& dict,
-                          const std::string& key)
+static const List* getList(const Dict* dict, const std::string& key)
 {
-  const BDE& l = dict[key];
-  if(l.isList()) {
+  const List* l = asList(dict->get(key));
+  if(l) {
     return l;
   } else {
     throw DL_ABORT_EX
@@ -155,78 +150,73 @@ static const BDE& getList(const BDE& dict,
   }
 }
 
-void DHTMessageFactoryImpl::validateID(const BDE& id) const
+void DHTMessageFactoryImpl::validateID(const String* id) const
 {
-  if(id.s().size() != DHT_ID_LENGTH) {
+  if(id->s().size() != DHT_ID_LENGTH) {
     throw DL_ABORT_EX
       (StringFormat("Malformed DHT message. Invalid ID length."
                     " Expected:%d, Actual:%d",
-                    DHT_ID_LENGTH, id.s().size()).str());
+                    DHT_ID_LENGTH, id->s().size()).str());
   }
 }
 
-void DHTMessageFactoryImpl::validatePort(const BDE& i) const
+void DHTMessageFactoryImpl::validatePort(const Integer* port) const
 {
-  BDE::Integer port = i.i();
-  if(!(0 < port && port < UINT16_MAX)) {
+  if(!(0 < port->i() && port->i() < UINT16_MAX)) {
     throw DL_ABORT_EX
       (StringFormat("Malformed DHT message. Invalid port=%s",
-                    util::itos(port).c_str()).str());
+                    util::itos(port->i()).c_str()).str());
   }
 }
 
-static void setVersion(const SharedHandle<DHTMessage>& msg, const BDE& dict)
+static void setVersion(const SharedHandle<DHTMessage>& msg, const Dict* dict)
 {
-  const BDE& v = dict[DHTMessage::V];
-  if(v.isString()) {
-    msg->setVersion(v.s());
+  const String* v = asString(dict->get(DHTMessage::V));
+  if(v) {
+    msg->setVersion(v->s());
   } else {
     msg->setVersion(A2STR::NIL);
   }
 }
 
 SharedHandle<DHTQueryMessage> DHTMessageFactoryImpl::createQueryMessage
-(const BDE& dict, const std::string& ipaddr, uint16_t port)
+(const Dict* dict, const std::string& ipaddr, uint16_t port)
 {
-  const BDE& messageType = getString(dict, DHTQueryMessage::Q);
-  const BDE& transactionID = getString(dict, DHTMessage::T);
-  const BDE& y = getString(dict, DHTMessage::Y);
-  const BDE& aDict = getDictionary(dict, DHTQueryMessage::A);
-  if(y.s() != DHTQueryMessage::Q) {
+  const String* messageType = getString(dict, DHTQueryMessage::Q);
+  const String* transactionID = getString(dict, DHTMessage::T);
+  const String* y = getString(dict, DHTMessage::Y);
+  const Dict* aDict = getDictionary(dict, DHTQueryMessage::A);
+  if(y->s() != DHTQueryMessage::Q) {
     throw DL_ABORT_EX("Malformed DHT message. y != q");
   }
-  const BDE& id = getString(aDict, DHTMessage::ID);
+  const String* id = getString(aDict, DHTMessage::ID);
   validateID(id);
-  SharedHandle<DHTNode> remoteNode = getRemoteNode(id.uc(), ipaddr, port);
+  SharedHandle<DHTNode> remoteNode = getRemoteNode(id->uc(), ipaddr, port);
   SharedHandle<DHTQueryMessage> msg;
-  if(messageType.s() == DHTPingMessage::PING) {
-    msg = createPingMessage(remoteNode, transactionID.s());
-  } else if(messageType.s() == DHTFindNodeMessage::FIND_NODE) {
-    const BDE& targetNodeID =
+  if(messageType->s() == DHTPingMessage::PING) {
+    msg = createPingMessage(remoteNode, transactionID->s());
+  } else if(messageType->s() == DHTFindNodeMessage::FIND_NODE) {
+    const String* targetNodeID =
       getString(aDict, DHTFindNodeMessage::TARGET_NODE);
     validateID(targetNodeID);
-    msg = createFindNodeMessage(remoteNode, targetNodeID.uc(),
-                                transactionID.s());
-  } else if(messageType.s() == DHTGetPeersMessage::GET_PEERS) {
-    const BDE& infoHash = 
-      getString(aDict, DHTGetPeersMessage::INFO_HASH);
+    msg = createFindNodeMessage(remoteNode, targetNodeID->uc(),
+                                transactionID->s());
+  } else if(messageType->s() == DHTGetPeersMessage::GET_PEERS) {
+    const String* infoHash =  getString(aDict, DHTGetPeersMessage::INFO_HASH);
     validateID(infoHash);
-    msg = createGetPeersMessage(remoteNode,
-                                infoHash.uc(), transactionID.s());
-  } else if(messageType.s() == DHTAnnouncePeerMessage::ANNOUNCE_PEER) {
-    const BDE& infoHash =
-      getString(aDict, DHTAnnouncePeerMessage::INFO_HASH);
+    msg = createGetPeersMessage(remoteNode, infoHash->uc(), transactionID->s());
+  } else if(messageType->s() == DHTAnnouncePeerMessage::ANNOUNCE_PEER) {
+    const String* infoHash = getString(aDict,DHTAnnouncePeerMessage::INFO_HASH);
     validateID(infoHash);
-    const BDE& port = getInteger(aDict, DHTAnnouncePeerMessage::PORT);
+    const Integer* port = getInteger(aDict, DHTAnnouncePeerMessage::PORT);
     validatePort(port);
-    const BDE& token = getString(aDict, DHTAnnouncePeerMessage::TOKEN);
-    msg = createAnnouncePeerMessage(remoteNode, infoHash.uc(),
-                                    static_cast<uint16_t>(port.i()),
-                                    token.s(), transactionID.s());
+    const String* token = getString(aDict, DHTAnnouncePeerMessage::TOKEN);
+    msg = createAnnouncePeerMessage(remoteNode, infoHash->uc(),
+                                    static_cast<uint16_t>(port->i()),
+                                    token->s(), transactionID->s());
   } else {
-    throw DL_ABORT_EX
-      (StringFormat("Unsupported message type: %s",
-                    messageType.s().c_str()).str());
+    throw DL_ABORT_EX(StringFormat("Unsupported message type: %s",
+                                   messageType->s().c_str()).str());
   }
   setVersion(msg, dict);
   return msg;
@@ -235,20 +225,20 @@ SharedHandle<DHTQueryMessage> DHTMessageFactoryImpl::createQueryMessage
 SharedHandle<DHTResponseMessage>
 DHTMessageFactoryImpl::createResponseMessage
 (const std::string& messageType,
- const BDE& dict,
+ const Dict* dict,
  const std::string& ipaddr,
  uint16_t port)
 {
-  const BDE& transactionID = getString(dict, DHTMessage::T);
-  const BDE& y = getString(dict, DHTMessage::Y);
-  if(y.s() == DHTUnknownMessage::E) {
+  const String* transactionID = getString(dict, DHTMessage::T);
+  const String* y = getString(dict, DHTMessage::Y);
+  if(y->s() == DHTUnknownMessage::E) {
     // for now, just report error message arrived and throw exception.
-    const BDE& e = getList(dict, DHTUnknownMessage::E);
-    if(e.size() == 2) {
+    const List* e = getList(dict, DHTUnknownMessage::E);
+    if(e->size() == 2) {
       if(_logger->info()) {
         _logger->info("Received Error DHT message. code=%s, msg=%s",
-                      util::itos(getInteger(e, 0).i()).c_str(),
-                      util::percentEncode(getString(e, 1).s()).c_str());
+                      util::itos(getInteger(e, 0)->i()).c_str(),
+                      util::percentEncode(getString(e, 1)->s()).c_str());
       }
     } else {
       if(_logger->debug()) {
@@ -256,36 +246,38 @@ DHTMessageFactoryImpl::createResponseMessage
       }
     }
     throw DL_ABORT_EX("Received Error DHT message.");
-  } else if(y.s() != DHTResponseMessage::R) {
+  } else if(y->s() != DHTResponseMessage::R) {
     throw DL_ABORT_EX
       (StringFormat("Malformed DHT message. y != r: y=%s",
-                    util::percentEncode(y.s()).c_str()).str());
+                    util::percentEncode(y->s()).c_str()).str());
   }
-  const BDE& rDict = getDictionary(dict, DHTResponseMessage::R);
-  const BDE& id = getString(rDict, DHTMessage::ID);
+  const Dict* rDict = getDictionary(dict, DHTResponseMessage::R);
+  const String* id = getString(rDict, DHTMessage::ID);
   validateID(id);
-  SharedHandle<DHTNode> remoteNode = getRemoteNode(id.uc(), ipaddr, port);
+  SharedHandle<DHTNode> remoteNode = getRemoteNode(id->uc(), ipaddr, port);
   SharedHandle<DHTResponseMessage> msg;
   if(messageType == DHTPingReplyMessage::PING) {
-    msg = createPingReplyMessage(remoteNode, id.uc(), transactionID.s());
+    msg = createPingReplyMessage(remoteNode, id->uc(), transactionID->s());
   } else if(messageType == DHTFindNodeReplyMessage::FIND_NODE) {
-    msg = createFindNodeReplyMessage(remoteNode, dict, transactionID.s());
+    msg = createFindNodeReplyMessage(remoteNode, dict, transactionID->s());
   } else if(messageType == DHTGetPeersReplyMessage::GET_PEERS) {
-    const BDE& valuesList = rDict[DHTGetPeersReplyMessage::VALUES];
-    if(valuesList.isList()) {
-      msg = createGetPeersReplyMessageWithValues(remoteNode, dict,
-                                                 transactionID.s());
+    const List* valuesList =
+      asList(rDict->get(DHTGetPeersReplyMessage::VALUES));
+    if(valuesList) {
+      msg = createGetPeersReplyMessageWithValues
+        (remoteNode, dict, transactionID->s());
     } else {
-      const BDE& nodes = rDict[DHTGetPeersReplyMessage::NODES];
-      if(nodes.isString()) {
-        msg = createGetPeersReplyMessageWithNodes(remoteNode, dict,
-                                                   transactionID.s());
+      const String* nodes = asString
+        (rDict->get(DHTGetPeersReplyMessage::NODES));
+      if(nodes) {
+        msg = createGetPeersReplyMessageWithNodes
+          (remoteNode, dict, transactionID->s());
       } else {
         throw DL_ABORT_EX("Malformed DHT message: missing nodes/values");
       }
     }
   } else if(messageType == DHTAnnouncePeerReplyMessage::ANNOUNCE_PEER) {
-    msg = createAnnouncePeerReplyMessage(remoteNode, transactionID.s());
+    msg = createAnnouncePeerReplyMessage(remoteNode, transactionID->s());
   } else {
     throw DL_ABORT_EX
       (StringFormat("Unsupported message type: %s", messageType.c_str()).str());
@@ -307,7 +299,8 @@ static const std::string& getDefaultVersion()
   return version;
 }
 
-void DHTMessageFactoryImpl::setCommonProperty(const SharedHandle<DHTAbstractMessage>& m)
+void DHTMessageFactoryImpl::setCommonProperty
+(const SharedHandle<DHTAbstractMessage>& m)
 {
   m->setConnection(_connection);
   m->setMessageDispatcher(_dispatcher);
@@ -320,7 +313,8 @@ void DHTMessageFactoryImpl::setCommonProperty(const SharedHandle<DHTAbstractMess
 SharedHandle<DHTQueryMessage> DHTMessageFactoryImpl::createPingMessage
 (const SharedHandle<DHTNode>& remoteNode, const std::string& transactionID)
 {
-  SharedHandle<DHTPingMessage> m(new DHTPingMessage(_localNode, remoteNode, transactionID));
+  SharedHandle<DHTPingMessage> m
+    (new DHTPingMessage(_localNode, remoteNode, transactionID));
   setCommonProperty(m);
   return m;
 }
@@ -385,14 +379,14 @@ DHTMessageFactoryImpl::extractNodes(const unsigned char* src, size_t length)
 SharedHandle<DHTResponseMessage>
 DHTMessageFactoryImpl::createFindNodeReplyMessage
 (const SharedHandle<DHTNode>& remoteNode,
- const BDE& dict,
+ const Dict* dict,
  const std::string& transactionID)
 {
-  const BDE& nodesData =
+  const String* nodesData =
     getString(getDictionary(dict, DHTResponseMessage::R),
               DHTFindNodeReplyMessage::NODES);
   std::vector<SharedHandle<DHTNode> > nodes =
-    extractNodes(nodesData.uc(), nodesData.s().size());
+    extractNodes(nodesData->uc(), nodesData->s().size());
   return createFindNodeReplyMessage(remoteNode, nodes, transactionID);
 }
 
@@ -413,17 +407,16 @@ DHTMessageFactoryImpl::createGetPeersMessage
 SharedHandle<DHTResponseMessage>
 DHTMessageFactoryImpl::createGetPeersReplyMessageWithNodes
 (const SharedHandle<DHTNode>& remoteNode,
- const BDE& dict,
+ const Dict* dict,
  const std::string& transactionID)
 {
-  const BDE& rDict = getDictionary(dict, DHTResponseMessage::R);
-  const BDE& nodesData = getString(rDict,
-                                   DHTGetPeersReplyMessage::NODES);
-  std::vector<SharedHandle<DHTNode> > nodes =
-    extractNodes(nodesData.uc(), nodesData.s().size());
-  const BDE& token = getString(rDict, DHTGetPeersReplyMessage::TOKEN);
-  return createGetPeersReplyMessage(remoteNode, nodes, token.s(),
-                                    transactionID);
+  const Dict* rDict = getDictionary(dict, DHTResponseMessage::R);
+  const String* nodesData = getString(rDict, DHTGetPeersReplyMessage::NODES);
+  std::vector<SharedHandle<DHTNode> > nodes = extractNodes
+    (nodesData->uc(), nodesData->s().size());
+  const String* token = getString(rDict, DHTGetPeersReplyMessage::TOKEN);
+  return createGetPeersReplyMessage
+    (remoteNode, nodes, token->s(), transactionID);
 }
 
 SharedHandle<DHTResponseMessage>
@@ -443,26 +436,26 @@ DHTMessageFactoryImpl::createGetPeersReplyMessage
 SharedHandle<DHTResponseMessage>
 DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues
 (const SharedHandle<DHTNode>& remoteNode,
- const BDE& dict,
+ const Dict* dict,
  const std::string& transactionID)
 {
-  const BDE& rDict = getDictionary(dict, DHTResponseMessage::R);
-  const BDE& valuesList = getList(rDict,
+  const Dict* rDict = getDictionary(dict, DHTResponseMessage::R);
+  const List* valuesList = getList(rDict,
                                   DHTGetPeersReplyMessage::VALUES);
   std::vector<SharedHandle<Peer> > peers;
-  for(BDE::List::const_iterator i = valuesList.listBegin(),
-        eoi = valuesList.listEnd(); i != eoi; ++i) {
-    const BDE& data = *i;
-    if(data.isString() && data.s().size() == 6) {
+  for(List::ValueType::const_iterator i = valuesList->begin(),
+        eoi = valuesList->end(); i != eoi; ++i) {
+    const String* data = asString(*i);
+    if(data && data->s().size() == 6) {
       std::pair<std::string, uint16_t> addr =
-        bittorrent::unpackcompact(data.uc());
+        bittorrent::unpackcompact(data->uc());
       SharedHandle<Peer> peer(new Peer(addr.first, addr.second));
       peers.push_back(peer);
     }
   }
-  const BDE& token = getString(rDict, DHTGetPeersReplyMessage::TOKEN);
-  return createGetPeersReplyMessage(remoteNode, peers, token.s(),
-                                    transactionID);
+  const String* token = getString(rDict, DHTGetPeersReplyMessage::TOKEN);
+  return createGetPeersReplyMessage
+    (remoteNode, peers, token->s(), transactionID);
 }
 
 SharedHandle<DHTResponseMessage>

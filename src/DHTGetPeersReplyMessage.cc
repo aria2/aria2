@@ -45,7 +45,6 @@
 #include "bittorrent_helper.h"
 #include "Peer.h"
 #include "util.h"
-#include "bencode.h"
 #include "a2functional.h"
 
 namespace aria2 {
@@ -73,11 +72,11 @@ void DHTGetPeersReplyMessage::doReceivedAction()
   // Returned peers and nodes are handled in DHTPeerLookupTask.
 }
 
-BDE DHTGetPeersReplyMessage::getResponse()
+SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
 {
-  BDE rDict = BDE::dict();
-  rDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
-  rDict[TOKEN] = _token;
+  SharedHandle<Dict> rDict = Dict::g();
+  rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
+  rDict->put(TOKEN, _token);
   if(_values.empty()) {
     size_t offset = 0;
     unsigned char buffer[DHTBucket::K*26];
@@ -91,7 +90,7 @@ BDE DHTGetPeersReplyMessage::getResponse()
         offset += 26;
       }
     }
-    rDict[NODES] = BDE(buffer, offset);
+    rDict->put(NODES, String::g(buffer, offset));
   } else {
     // Limit the size of values list.  The maxmum size of UDP datagram
     // is limited to 65535 bytes. aria2 uses 20bytes token and 2byte
@@ -113,18 +112,18 @@ BDE DHTGetPeersReplyMessage::getResponse()
     // template may get bigger than 87 bytes. So we use 100 as maximum
     // number of peer info that a message can carry.
     static const size_t MAX_VALUES_SIZE = 100;
-    BDE valuesList = BDE::list();
+    SharedHandle<List> valuesList = List::g();
     for(std::vector<SharedHandle<Peer> >::const_iterator i = _values.begin(),
-          eoi = _values.end(); i != eoi && valuesList.size() < MAX_VALUES_SIZE;
+          eoi = _values.end(); i != eoi && valuesList->size() < MAX_VALUES_SIZE;
         ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
       if(bittorrent::createcompact
          (buffer, peer->getIPAddress(), peer->getPort())) {
-        valuesList << BDE(buffer, sizeof(buffer));
+        valuesList->append(String::g(buffer, sizeof(buffer)));
       }
     }
-    rDict[VALUES] = valuesList;
+    rDict->put(VALUES, valuesList);
   }
   return rDict;  
 }

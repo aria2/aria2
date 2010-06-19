@@ -35,59 +35,59 @@ CPPUNIT_TEST_SUITE_REGISTRATION(XmlRpcRequestParserControllerTest);
 void XmlRpcRequestParserControllerTest::testPopStructFrame()
 {
   XmlRpcRequestParserController controller;
-  controller.setCurrentFrameValue(BDE::dict());
+  controller.setCurrentFrameValue(Dict::g());
   controller.pushFrame();
-  controller.setCurrentFrameValue(BDE("Hello, aria2"));
+  controller.setCurrentFrameValue(String::g("Hello, aria2"));
   controller.setCurrentFrameName("greeting");
   controller.popStructFrame();
-  const BDE& structValue = controller.getCurrentFrameValue();
-  CPPUNIT_ASSERT_EQUAL((size_t)1, structValue.size());
+  const Dict* structValue = asDict(controller.getCurrentFrameValue());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, structValue->size());
   CPPUNIT_ASSERT_EQUAL(std::string("Hello, aria2"),
-                       structValue["greeting"].s());
+                       asString(structValue->get("greeting"))->s());
 }
 
 void XmlRpcRequestParserControllerTest::testPopStructFrame_noName()
 {
   XmlRpcRequestParserController controller;
-  controller.setCurrentFrameValue(BDE::dict());
+  controller.setCurrentFrameValue(Dict::g());
   controller.pushFrame();
-  controller.setCurrentFrameValue(BDE("Hello, aria2"));
+  controller.setCurrentFrameValue(String::g("Hello, aria2"));
   controller.popStructFrame();
-  const BDE& structValue = controller.getCurrentFrameValue();
-  CPPUNIT_ASSERT(structValue.empty());
+  const Dict* structValue = asDict(controller.getCurrentFrameValue());
+  CPPUNIT_ASSERT(structValue->empty());
 }
 
 void XmlRpcRequestParserControllerTest::testPopStructFrame_noValue()
 {
   XmlRpcRequestParserController controller;
-  controller.setCurrentFrameValue(BDE::dict());
+  controller.setCurrentFrameValue(Dict::g());
   controller.pushFrame();
   controller.setCurrentFrameName("greeting");
   controller.popStructFrame();
-  const BDE& structValue = controller.getCurrentFrameValue();
-  CPPUNIT_ASSERT(structValue.empty());
+  const Dict* structValue = asDict(controller.getCurrentFrameValue());
+  CPPUNIT_ASSERT(structValue->empty());
 }
 
 void XmlRpcRequestParserControllerTest::testPopArrayFrame()
 {
   XmlRpcRequestParserController controller;
-  controller.setCurrentFrameValue(BDE::list());
+  controller.setCurrentFrameValue(List::g());
   controller.pushFrame();
-  controller.setCurrentFrameValue(BDE(100));
+  controller.setCurrentFrameValue(Integer::g(100));
   controller.popArrayFrame();
-  const BDE& array = controller.getCurrentFrameValue();
-  CPPUNIT_ASSERT_EQUAL((size_t)1, array.size());
-  CPPUNIT_ASSERT_EQUAL((BDE::Integer)100, array[0].i());
+  const List* array = asList(controller.getCurrentFrameValue());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, array->size());
+  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)100, asInteger(array->get(0))->i());
 }
 
 void XmlRpcRequestParserControllerTest::testPopArrayFrame_noValue()
 {
   XmlRpcRequestParserController controller;
-  controller.setCurrentFrameValue(BDE::list());
+  controller.setCurrentFrameValue(List::g());
   controller.pushFrame();
   controller.popArrayFrame();
-  const BDE& array = controller.getCurrentFrameValue();
-  CPPUNIT_ASSERT(array.empty());
+  const List* array = asList(controller.getCurrentFrameValue());
+  CPPUNIT_ASSERT(array->empty());
 }
 
 void XmlRpcRequestParserControllerTest::testPopArrayFrame_compound()
@@ -100,32 +100,32 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame_compound()
   //     "options":{ "timeout":120 } },
   //   [ "jp","us" ] ]
 
-  controller.setCurrentFrameValue(BDE::list());
+  controller.setCurrentFrameValue(List::g());
   controller.pushFrame();
 
-  controller.setCurrentFrameValue(BDE::dict());
+  controller.setCurrentFrameValue(Dict::g());
   controller.pushFrame();
 
   controller.setCurrentFrameName("uris");
-  controller.setCurrentFrameValue(BDE::list());
+  controller.setCurrentFrameValue(List::g());
   controller.pushFrame();
 
-  controller.setCurrentFrameValue(BDE("http://example.org/aria2"));
+  controller.setCurrentFrameValue(String::g("http://example.org/aria2"));
   controller.popArrayFrame();
   controller.pushFrame();
 
-  controller.setCurrentFrameValue(BDE("http://aria2.sf.net/"));
+  controller.setCurrentFrameValue(String::g("http://aria2.sf.net/"));
   controller.popArrayFrame();
 
   controller.popStructFrame();
   controller.pushFrame();
 
   controller.setCurrentFrameName("options");
-  controller.setCurrentFrameValue(BDE::dict());
+  controller.setCurrentFrameValue(Dict::g());
   controller.pushFrame();
 
   controller.setCurrentFrameName("timeout");
-  controller.setCurrentFrameValue(BDE(120));
+  controller.setCurrentFrameValue(Integer::g(120));
   controller.popStructFrame();
 
   controller.popStructFrame();
@@ -133,23 +133,28 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame_compound()
   controller.popArrayFrame();
   controller.pushFrame();
 
-  controller.setCurrentFrameValue(BDE::list());
+  controller.setCurrentFrameValue(List::g());
   controller.pushFrame();
 
-  controller.setCurrentFrameValue(BDE("jp"));
+  controller.setCurrentFrameValue(String::g("jp"));
   controller.popArrayFrame();
   controller.pushFrame();
 
-  controller.setCurrentFrameValue(BDE("us"));
+  controller.setCurrentFrameValue(String::g("us"));
   controller.popArrayFrame();
 
   controller.popArrayFrame();
 
-  const BDE& result = controller.getCurrentFrameValue();
+  const List* result = asList(controller.getCurrentFrameValue());
+  const Dict* dict = asDict(result->get(0));
+  const List* uris = asList(dict->get("uris"));
+  const Dict* options = asDict(dict->get("options"));
+  const List* countryList = asList(result->get(1));
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sf.net/"),
-                       result[0]["uris"][1].s());
-  CPPUNIT_ASSERT_EQUAL((BDE::Integer)120, result[0]["options"]["timeout"].i());
-  CPPUNIT_ASSERT_EQUAL(std::string("jp"), result[1][0].s());
+                       asString(uris->get(1))->s());
+  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)120,
+                       asInteger(options->get("timeout"))->i());
+  CPPUNIT_ASSERT_EQUAL(std::string("jp"), asString(countryList->get(0))->s());
 }
 
 } // namespace xmlrpc

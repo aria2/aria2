@@ -39,7 +39,7 @@
 
 #include <string>
 
-#include "BDE.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
@@ -47,9 +47,10 @@ namespace xmlrpc {
 
 struct XmlRpcRequest {
   std::string methodName;
-  BDE params;
+  SharedHandle<List> params;
 
-  XmlRpcRequest(const std::string& methodName, const BDE& params):
+  XmlRpcRequest(const std::string& methodName,
+                const SharedHandle<List>& params):
     methodName(methodName), params(params) {}
 };
 

@@ -33,10 +33,9 @@
  */
 /* copyright --> */
 #include "UTMetadataRejectExtensionMessage.h"
-#include "BDE.h"
 #include "a2functional.h"
 #include "util.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
@@ -47,10 +46,10 @@ UTMetadataRejectExtensionMessage::UTMetadataRejectExtensionMessage
 
 std::string UTMetadataRejectExtensionMessage::getPayload()
 {
-  BDE dict = BDE::dict();
-  dict["msg_type"] = 2;
-  dict["piece"] = getIndex();
-  return bencode::encode(dict);
+  Dict dict;
+  dict.put("msg_type", Integer::g(2));
+  dict.put("piece", Integer::g(getIndex()));
+  return bencode2::encode(&dict);
 }
 
 std::string UTMetadataRejectExtensionMessage::toString() const

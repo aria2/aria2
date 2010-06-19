@@ -42,7 +42,6 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
 #include "util.h"
-#include "bencode.h"
 
 namespace aria2 {
 
@@ -71,11 +70,11 @@ void DHTFindNodeMessage::doReceivedAction()
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-BDE DHTFindNodeMessage::getArgument()
+SharedHandle<Dict> DHTFindNodeMessage::getArgument()
 {
-  BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
-  aDict[TARGET_NODE] = BDE(_targetNodeID, DHT_ID_LENGTH);
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
+  aDict->put(TARGET_NODE, String::g(_targetNodeID, DHT_ID_LENGTH));
   return aDict;
 }
 

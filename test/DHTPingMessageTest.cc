@@ -8,7 +8,7 @@
 #include "MockDHTMessageFactory.h"
 #include "MockDHTMessageDispatcher.h"
 #include "MockDHTMessage.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -57,16 +57,16 @@ void DHTPingMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  BDE dict = BDE::dict();
-  dict["t"] = transactionID;
-  dict["v"] = BDE("A200");
-  dict["y"] = BDE("q");
-  dict["q"] = BDE("ping");
-  BDE aDict = BDE::dict();
-  aDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
-  dict["a"] = aDict;
+  Dict dict;
+  dict.put("t", transactionID);
+  dict.put("v", "A200");
+  dict.put("y", "q");
+  dict.put("q", "ping");
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
+  dict.put("a", aDict);
 
-  CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);
+  CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }
 
 void DHTPingMessageTest::testDoReceivedAction()

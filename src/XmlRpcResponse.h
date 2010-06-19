@@ -39,7 +39,7 @@
 
 #include <string>
 
-#include "BDE.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
@@ -49,9 +49,10 @@ struct XmlRpcResponse {
   // 0 for success, non-zero for error
   int code;
   
-  BDE param;
+  SharedHandle<ValueBase> param;
 
-  XmlRpcResponse(int code, const BDE& param):code(code), param(param) {}
+  XmlRpcResponse
+  (int code, const SharedHandle<ValueBase>& param):code(code), param(param) {}
 
   std::string toXml(bool gzip = false) const;
 };

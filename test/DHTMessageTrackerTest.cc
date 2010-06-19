@@ -10,7 +10,6 @@
 #include "DHTMessageTrackerEntry.h"
 #include "DHTRoutingTable.h"
 #include "MockDHTMessageFactory.h"
-#include "bencode.h"
 
 namespace aria2 {
 
@@ -62,11 +61,11 @@ void DHTMessageTrackerTest::testMessageArrived()
   tracker.addMessage(m3, DHT_MESSAGE_TIMEOUT);
 
   {
-    BDE resDict = BDE::dict();
-    resDict["t"] = m2->getTransactionID();
+    Dict resDict;
+    resDict.put("t", m2->getTransactionID());
     
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
-      tracker.messageArrived(resDict, m2->getRemoteNode()->getIPAddress(),
+      tracker.messageArrived(&resDict, m2->getRemoteNode()->getIPAddress(),
                              m2->getRemoteNode()->getPort());
     SharedHandle<DHTMessage> reply = p.first;
 
@@ -75,11 +74,11 @@ void DHTMessageTrackerTest::testMessageArrived()
     CPPUNIT_ASSERT_EQUAL((size_t)2, tracker.countEntry());
   }
   {
-    BDE resDict = BDE::dict();
-    resDict["t"] = m3->getTransactionID();
+    Dict resDict;
+    resDict.put("t", m3->getTransactionID());
 
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
-      tracker.messageArrived(resDict, m3->getRemoteNode()->getIPAddress(),
+      tracker.messageArrived(&resDict, m3->getRemoteNode()->getIPAddress(),
                              m3->getRemoteNode()->getPort());
     SharedHandle<DHTMessage> reply = p.first;
 
@@ -88,11 +87,11 @@ void DHTMessageTrackerTest::testMessageArrived()
     CPPUNIT_ASSERT_EQUAL((size_t)1, tracker.countEntry());
   }
   {
-    BDE resDict = BDE::dict();
-    resDict["t"] = m1->getTransactionID();
+    Dict resDict;
+    resDict.put("t", m1->getTransactionID());
 
     std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
-      tracker.messageArrived(resDict, "192.168.1.100", 6889);
+      tracker.messageArrived(&resDict, "192.168.1.100", 6889);
     SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(reply.isNull());

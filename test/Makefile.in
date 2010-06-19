@@ -137,13 +137,13 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h\
-@ENABLE_BITTORRENT_TRUE@	BencodeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.cc\
 @ENABLE_BITTORRENT_TRUE@	PriorityPieceSelectorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	MockPieceSelector.h\
 @ENABLE_BITTORRENT_TRUE@	extension_message_test_helper.h\
 @ENABLE_BITTORRENT_TRUE@	LpdMessageDispatcherTest.cc\
-@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiverTest.cc
+@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiverTest.cc\
+@ENABLE_BITTORRENT_TRUE@	Bencode2Test.cc
 
 @ENABLE_METALINK_TRUE@am__append_7 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -212,9 +212,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DNSCacheTest.cc DownloadHelperTest.cc SequentialPickerTest.cc \
 	RarestPieceSelectorTest.cc PieceStatManTest.cc \
 	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
-	a2algoTest.cc bitfieldTest.cc BDETest.cc \
-	DownloadContextTest.cc SessionSerializerTest.cc \
-	ValueBaseTest.cc Bencode2Test.cc \
+	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
+	SessionSerializerTest.cc ValueBaseTest.cc \
 	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
@@ -268,10 +267,10 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	MockDHTMessageDispatcher.h MockDHTMessageFactory.h \
 	MockDHTTask.h MockDHTTaskFactory.h MockDHTTaskQueue.h \
 	MockExtensionMessage.h MockExtensionMessageFactory.h \
-	MockPieceStorage.h BencodeTest.cc BittorrentHelperTest.cc \
+	MockPieceStorage.h BittorrentHelperTest.cc \
 	PriorityPieceSelectorTest.cc MockPieceSelector.h \
 	extension_message_test_helper.h LpdMessageDispatcherTest.cc \
-	LpdMessageReceiverTest.cc MetalinkerTest.cc \
+	LpdMessageReceiverTest.cc Bencode2Test.cc MetalinkerTest.cc \
 	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
@@ -359,11 +358,11 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BencodeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BittorrentHelperTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PriorityPieceSelectorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	LpdMessageDispatcherTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiverTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	LpdMessageReceiverTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	Bencode2Test.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_7 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -407,12 +406,11 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	DownloadHelperTest.$(OBJEXT) SequentialPickerTest.$(OBJEXT) \
 	RarestPieceSelectorTest.$(OBJEXT) PieceStatManTest.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
-	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) BDETest.$(OBJEXT) \
+	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) \
 	DownloadContextTest.$(OBJEXT) SessionSerializerTest.$(OBJEXT) \
-	ValueBaseTest.$(OBJEXT) Bencode2Test.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7)
+	ValueBaseTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6) $(am__objects_7)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -644,9 +642,8 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	DNSCacheTest.cc DownloadHelperTest.cc SequentialPickerTest.cc \
 	RarestPieceSelectorTest.cc PieceStatManTest.cc \
 	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
-	a2algoTest.cc bitfieldTest.cc BDETest.cc \
-	DownloadContextTest.cc SessionSerializerTest.cc \
-	ValueBaseTest.cc Bencode2Test.cc $(am__append_1) \
+	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
+	SessionSerializerTest.cc ValueBaseTest.cc $(am__append_1) \
 	$(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7)
 
@@ -750,12 +747,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlphaNumberDecoratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactoryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BDETest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNodeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base32Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bencode2Test.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BittorrentHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessageTest.Po@am__quote@

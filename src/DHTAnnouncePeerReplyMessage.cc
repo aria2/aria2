@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "DHTAnnouncePeerReplyMessage.h"
 #include "DHTNode.h"
-#include "bencode.h"
 #include "DHTMessageCallback.h"
 
 namespace aria2 {
@@ -51,10 +50,10 @@ DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
 
 void DHTAnnouncePeerReplyMessage::doReceivedAction() {}
 
-BDE DHTAnnouncePeerReplyMessage::getResponse()
+SharedHandle<Dict> DHTAnnouncePeerReplyMessage::getResponse()
 {
-  BDE rDict = BDE::dict();
-  rDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
+  SharedHandle<Dict> rDict = Dict::g();
+  rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   return rDict;
 }
 

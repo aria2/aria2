@@ -69,7 +69,7 @@ public:
 
   virtual void doReceivedAction();
 
-  virtual BDE getArgument();
+  virtual SharedHandle<Dict> getArgument();
   
   virtual const std::string& getMessageType() const;
 

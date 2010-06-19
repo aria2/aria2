@@ -38,7 +38,6 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageCallback.h"
-#include "bencode.h"
 
 namespace aria2 {
 
@@ -60,10 +59,10 @@ void DHTPingMessage::doReceivedAction()
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-BDE DHTPingMessage::getArgument()
+SharedHandle<Dict> DHTPingMessage::getArgument()
 {
-  BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   return aDict;
 }
 

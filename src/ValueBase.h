@@ -96,6 +96,8 @@ public:
 
   static SharedHandle<String> g(const ValueType& string);
 
+  static SharedHandle<String> g(const unsigned char* data, size_t length);
+
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:
   ValueType str_;
@@ -128,11 +130,17 @@ public:
   // Appends given v to list.
   void append(const SharedHandle<ValueBase>& v);
 
+  // Appeding string is so common that we provide shortcut function.
+  void append(const String::ValueType& string);
+
   // Alias for append()
   List& operator<<(const SharedHandle<ValueBase>& v);
 
   // Returns the object at given index.
   const SharedHandle<ValueBase>& get(size_t index) const;
+
+  // Set the object at given index.
+  void set(size_t index, const SharedHandle<ValueBase>& v);
 
   // Returns the const reference of the object at the given index.
   const SharedHandle<ValueBase>& operator[](size_t index) const;

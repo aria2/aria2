@@ -33,8 +33,7 @@
  */
 /* copyright --> */
 #include "UTMetadataDataExtensionMessage.h"
-#include "BDE.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "util.h"
 #include "a2functional.h"
 #include "DownloadContext.h"
@@ -55,11 +54,11 @@ UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
 
 std::string UTMetadataDataExtensionMessage::getPayload()
 {
-  BDE dict = BDE::dict();
-  dict["msg_type"] = 1;
-  dict["piece"] = getIndex();
-  dict["total_size"] = _totalSize;
-  return bencode::encode(dict)+_data;
+  Dict dict;
+  dict.put("msg_type", Integer::g(1));
+  dict.put("piece", Integer::g(getIndex()));
+  dict.put("total_size", Integer::g(_totalSize));
+  return bencode2::encode(&dict)+_data;
 }
 
 std::string UTMetadataDataExtensionMessage::toString() const

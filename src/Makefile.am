@@ -194,7 +194,6 @@ SRCS =  Socket.h\
 	PieceSelector.h\
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h\
 	bitfield.cc bitfield.h\
-	BDE.cc BDE.h\
 	CreateRequestCommand.cc CreateRequestCommand.h\
 	DownloadResultCode.h\
 	wallclock.h\
@@ -204,7 +203,6 @@ SRCS =  Socket.h\
 	Event.h\
 	timespec.h\
 	ValueBase.cc ValueBase.h\
-	bencode2.cc bencode2.h\
 	ContextAttribute.h\
 	TorrentAttribute.h
 
@@ -447,7 +445,6 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	RangeBtMessageValidator.h\
 	IndexBtMessageValidator.h\
 	ExtensionMessageRegistry.h\
-	bencode.cc bencode.h\
 	bittorrent_helper.cc bittorrent_helper.h\
 	BtStopDownloadCommand.cc BtStopDownloadCommand.h\
 	PriorityPieceSelector.cc PriorityPieceSelector.h\
@@ -455,7 +452,8 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	LpdMessageReceiver.cc LpdMessageReceiver.h\
 	LpdMessage.h\
 	LpdReceiveMessageCommand.cc LpdReceiveMessageCommand.h\
-	LpdDispatchMessageCommand.cc LpdDispatchMessageCommand.h
+	LpdDispatchMessageCommand.cc LpdDispatchMessageCommand.h\
+	bencode2.cc bencode2.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

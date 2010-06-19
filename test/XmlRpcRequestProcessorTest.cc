@@ -3,6 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "XmlRpcRequestParserStateMachine.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -65,13 +66,18 @@ void XmlRpcRequestProcessorTest::testParseMemory()
                      "</methodCall>");
 
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.addURI"), req.methodName);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, req.params.size());
-  CPPUNIT_ASSERT_EQUAL((int64_t)100, req.params[0].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)65535, req.params[1]["max-count"].i());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, req.params->size());
+  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)100,
+                       asInteger(req.params->get(0))->i());
+  const Dict* dict = asDict(req.params->get(1));
+  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)65535,
+                       asInteger(dict->get("max-count"))->i());
   // Current implementation handles double as string.
-  CPPUNIT_ASSERT_EQUAL(std::string("0.99"), req.params[1]["seed-ratio"].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("pudding"), req.params[2][0].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("hello world"), req.params[2][1].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("0.99"),
+                       asString(dict->get("seed-ratio"))->s());
+  const List* list = asList(req.params->get(2));
+  CPPUNIT_ASSERT_EQUAL(std::string("pudding"), asString(list->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("hello world"), asString(list->get(1))->s());
 }
 
 void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()
@@ -84,6 +90,24 @@ void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()
                      "      <param>"
                      "        <value><i4>100</i4></value>"
                      "      </param>");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException& e) {
+    // success
+  }
+  {
+    XmlRpcRequest req =
+      proc.parseMemory("<methodCall>"
+                       "  <methodName>aria2.addURI</methodName>"
+                     "    <params>"
+                     "    </params>"
+                       "</methodCall>");
+    CPPUNIT_ASSERT(!req.params.isNull());
+  }
+  try {
+    XmlRpcRequest req =
+    proc.parseMemory("<methodCall>"
+                     "  <methodName>aria2.addURI</methodName>"
+                     "</methodCall>");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // success

@@ -37,6 +37,7 @@
 
 #include "DHTAbstractMessage.h"
 #include "A2STR.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
@@ -52,9 +53,9 @@ public:
 
   virtual const std::string& getType() const;
 
-  virtual void fillMessage(BDE& msgDict);
+  virtual void fillMessage(Dict* msgDict);
 
-  virtual BDE getArgument() = 0;
+  virtual SharedHandle<Dict> getArgument() = 0;
   
   virtual bool isReply() const;
 

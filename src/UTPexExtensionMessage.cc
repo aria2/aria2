@@ -41,7 +41,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "a2functional.h"
 #include "wallclock.h"
 
@@ -64,11 +64,11 @@ std::string UTPexExtensionMessage::getPayload()
   std::pair<std::string, std::string> droppedPeerPair =
     createCompactPeerListAndFlag(_droppedPeers);
 
-  BDE dict = BDE::dict();
-  dict["added"] = freshPeerPair.first;
-  dict["added.f"] = freshPeerPair.second;
-  dict["dropped"] = droppedPeerPair.first;
-  return bencode::encode(dict);
+  Dict dict;
+  dict.put("added", freshPeerPair.first);
+  dict.put("added.f", freshPeerPair.second);
+  dict.put("dropped", droppedPeerPair.first);
+  return bencode2::encode(&dict);
 }
 
 std::pair<std::string, std::string>
@@ -158,17 +158,17 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
 
-  const BDE dict = bencode::decode(data+1, len-1);
-  if(dict.isDict()) {
+  SharedHandle<ValueBase> decoded = bencode2::decode(data+1, len-1);
+  const Dict* dict = asDict(decoded);
+  if(dict) {
     PeerListProcessor proc;
-    const BDE& added = dict["added"];
-    if(added.isString()) {
-      proc.extractPeerFromCompact(added, std::back_inserter(msg->_freshPeers));
+    const String* added = asString(dict->get("added"));
+    if(added) {
+      proc.extractPeer(added, std::back_inserter(msg->_freshPeers));
     }
-    const BDE& dropped = dict["dropped"];
-    if(dropped.isString()) {
-      proc.extractPeerFromCompact(dropped,
-                                  std::back_inserter(msg->_droppedPeers));
+    const String* dropped = asString(dict->get("dropped"));
+    if(dropped) {
+      proc.extractPeer(dropped, std::back_inserter(msg->_droppedPeers));
     }
   }
   return msg;

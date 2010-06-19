@@ -9,7 +9,6 @@
 
 #include "DHTNode.h"
 #include "Peer.h"
-#include "BDE.h"
 
 namespace aria2 {
 
@@ -77,7 +76,7 @@ public:
 
   virtual std::string toString() const { return "MockDHTMessage"; }
 
-  virtual BDE getArgument() { return BDE::dict(); }
+  virtual SharedHandle<Dict> getArgument() { return Dict::g(); }
 };
 
 class MockDHTResponseMessage:public DHTResponseMessage {
@@ -109,7 +108,7 @@ public:
 
   virtual std::string toString() const { return "MockDHTMessage"; }
 
-  virtual BDE getResponse() { return BDE::dict(); }
+  virtual SharedHandle<Dict> getResponse() { return Dict::g(); }
 
   virtual void accept(DHTMessageCallback* callback) {}
 };

@@ -41,13 +41,11 @@
 #include <map>
 #include <stack>
 
-#include "BDE.h"
 #include "XmlRpcRequestParserController.h"
 #include "XmlRpcRequestParserStateImpl.h"
+#include "ValueBase.h"
 
 namespace aria2 {
-
-class BDE;
 
 namespace xmlrpc {
 
@@ -116,12 +114,12 @@ public:
     _controller->pushFrame();
   }
 
-  void setCurrentFrameValue(const BDE& value)
+  void setCurrentFrameValue(const SharedHandle<ValueBase>& value)
   {
     _controller->setCurrentFrameValue(value);
   }
 
-  const BDE& getCurrentFrameValue() const
+  const SharedHandle<ValueBase>& getCurrentFrameValue() const
   {
     return _controller->getCurrentFrameValue();
   }

@@ -42,6 +42,7 @@
 
 #include "SharedHandle.h"
 #include "a2time.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
@@ -52,7 +53,6 @@ class DHTRoutingTable;
 class DHTMessageFactory;
 class DHTMessageTrackerEntry;
 class Logger;
-class BDE;
 
 class DHTMessageTracker {
 private:
@@ -74,7 +74,7 @@ public:
                   SharedHandle<DHTMessageCallback>());
 
   std::pair<SharedHandle<DHTResponseMessage>, SharedHandle<DHTMessageCallback> >
-  messageArrived(const BDE& dict,
+  messageArrived(const Dict* dict,
                  const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();

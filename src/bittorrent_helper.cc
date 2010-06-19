@@ -40,7 +40,6 @@
 
 #include "DownloadContext.h"
 #include "Randomizer.h"
-#include "bencode.h"
 #include "util.h"
 #include "DlAbortEx.h"
 #include "message.h"

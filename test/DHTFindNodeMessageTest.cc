@@ -9,7 +9,7 @@
 #include "MockDHTMessage.h"
 #include "MockDHTMessageDispatcher.h"
 #include "DHTRoutingTable.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -62,17 +62,17 @@ void DHTFindNodeMessageTest::testGetBencodedMessage()
   msg.setVersion("A200");
   std::string msgbody = msg.getBencodedMessage();
 
-  BDE dict = BDE::dict();
-  dict["t"] = transactionID;
-  dict["v"] = BDE("A200");
-  dict["y"] = BDE("q");
-  dict["q"] = BDE("find_node");
-  BDE aDict = BDE::dict();
-  aDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
-  aDict["target"] = BDE(targetNode->getID(), DHT_ID_LENGTH);
-  dict["a"] = aDict;
+  Dict dict;
+  dict.put("t", transactionID);
+  dict.put("v", "A200");
+  dict.put("y", "q");
+  dict.put("q", "find_node");
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
+  aDict->put("target", String::g(targetNode->getID(), DHT_ID_LENGTH));
+  dict.put("a", aDict);
 
-  CPPUNIT_ASSERT_EQUAL(bencode::encode(dict), msgbody);
+  CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
 }
 
 void DHTFindNodeMessageTest::testDoReceivedAction()

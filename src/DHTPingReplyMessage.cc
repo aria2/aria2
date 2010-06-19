@@ -37,17 +37,17 @@
 #include <cstring>
 
 #include "DHTNode.h"
-#include "bencode.h"
 #include "DHTMessageCallback.h"
 
 namespace aria2 {
 
 const std::string DHTPingReplyMessage::PING("ping");
 
-DHTPingReplyMessage::DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
-                                         const SharedHandle<DHTNode>& remoteNode,
-                                         const unsigned char* id,
-                                         const std::string& transactionID):
+DHTPingReplyMessage::DHTPingReplyMessage
+(const SharedHandle<DHTNode>& localNode,
+ const SharedHandle<DHTNode>& remoteNode,
+ const unsigned char* id,
+ const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID)
 {
   memcpy(_id, id, DHT_ID_LENGTH);
@@ -57,10 +57,10 @@ DHTPingReplyMessage::~DHTPingReplyMessage() {}
 
 void DHTPingReplyMessage::doReceivedAction() {}
 
-BDE DHTPingReplyMessage::getResponse()
+SharedHandle<Dict> DHTPingReplyMessage::getResponse()
 {
-  BDE rDict = BDE::dict();
-  rDict[DHTMessage::ID] = BDE(_id, DHT_ID_LENGTH);
+  SharedHandle<Dict> rDict = Dict::g();
+  rDict->put(DHTMessage::ID, String::g(_id, DHT_ID_LENGTH));
   return rDict;
 }
 

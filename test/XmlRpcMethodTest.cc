@@ -9,7 +9,6 @@
 #include "ServerStatMan.h"
 #include "RequestGroup.h"
 #include "XmlRpcMethodImpl.h"
-#include "BDE.h"
 #include "OptionParser.h"
 #include "OptionHandler.h"
 #include "XmlRpcRequest.h"
@@ -151,12 +150,18 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XmlRpcMethodTest);
 
+static std::string getString(const Dict* dict, const std::string& key)
+{
+  return asString(dict->get(key))->s();
+}
+
 void XmlRpcMethodTest::testAddUri()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE::list();
-  req.params[0] << BDE("http://localhost/");
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam = List::g();
+  urisParam->append("http://localhost/");
+  req.params->append(urisParam);
   {
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
@@ -168,9 +173,9 @@ void XmlRpcMethodTest::testAddUri()
                          getFirstFileEntry()->getRemainingUris().front());
   }
   // with options
-  BDE opt = BDE::dict();
-  opt[PREF_DIR] = BDE("/sink");
-  req.params << opt;
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_DIR, "/sink");
+  req.params->append(opt);
   {
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
@@ -183,7 +188,7 @@ void XmlRpcMethodTest::testAddUri()
 void XmlRpcMethodTest::testAddUri_withoutUri()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -191,9 +196,10 @@ void XmlRpcMethodTest::testAddUri_withoutUri()
 void XmlRpcMethodTest::testAddUri_notUri()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE::list();
-  req.params[0] << BDE("not uri");
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam = List::g();
+  urisParam->append("not uri");
+  req.params->append(urisParam);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -201,12 +207,13 @@ void XmlRpcMethodTest::testAddUri_notUri()
 void XmlRpcMethodTest::testAddUri_withBadOption()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE::list();
-  req.params[0] << BDE("http://localhost");
-  BDE opt = BDE::dict();
-  opt[PREF_FILE_ALLOCATION] = BDE("badvalue");
-  req.params << opt;
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam = List::g();
+  urisParam->append("http://localhost");
+  req.params->append(urisParam);
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_FILE_ALLOCATION, "badvalue");
+  req.params->append(opt);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -214,17 +221,19 @@ void XmlRpcMethodTest::testAddUri_withBadOption()
 void XmlRpcMethodTest::testAddUri_withPosition()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req1(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req1.params << BDE::list();
-  req1.params[0] << BDE("http://uri1");
+  XmlRpcRequest req1(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam1 = List::g();
+  urisParam1->append("http://uri1");
+  req1.params->append(urisParam1);
   XmlRpcResponse res1 = m.execute(req1, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res1.code);
   
-  XmlRpcRequest req2(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req2.params << BDE::list();
-  req2.params[0] << BDE("http://uri2");
-  req2.params << BDE::dict();
-  req2.params << BDE((int64_t)0);
+  XmlRpcRequest req2(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam2 = List::g();
+  urisParam2->append("http://uri2");
+  req2.params->append(urisParam2);
+  req2.params->append(Dict::g());
+  req2.params->append(Integer::g(0));
   m.execute(req2, _e.get());
 
   std::string uri =
@@ -237,11 +246,12 @@ void XmlRpcMethodTest::testAddUri_withPosition()
 void XmlRpcMethodTest::testAddUri_withBadPosition()
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE::list();
-  req.params[0] << BDE("http://localhost/");
-  req.params << BDE::dict();
-  req.params << BDE((int64_t)-1);
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam = List::g();
+  urisParam->append("http://localhost/");
+  req.params->append(urisParam);
+  req.params->append(Dict::g());
+  req.params->append(Integer::g(-1));
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -250,15 +260,15 @@ void XmlRpcMethodTest::testAddUri_withBadPosition()
 void XmlRpcMethodTest::testAddTorrent()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE(readFile("single.torrent"));
-  BDE uris = BDE::list();
-  uris << BDE("http://localhost/aria2-0.8.2.tar.bz2");
-  req.params << uris;
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), List::g());
+  req.params->append(readFile("single.torrent"));
+  SharedHandle<List> uris = List::g();
+  uris->append("http://localhost/aria2-0.8.2.tar.bz2");
+  req.params->append(uris);
   {
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
-    CPPUNIT_ASSERT_EQUAL(std::string("1"), res.param.s());
+    CPPUNIT_ASSERT_EQUAL(std::string("1"), asString(res.param)->s());
 
     SharedHandle<RequestGroup> group =
       _e->getRequestGroupMan()->findReservedGroup(1);
@@ -273,9 +283,9 @@ void XmlRpcMethodTest::testAddTorrent()
                          getRemainingUris()[0]);
   }
   // with options
-  BDE opt = BDE::dict();
-  opt[PREF_DIR] = BDE("/sink");
-  req.params << opt;
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_DIR, "/sink");
+  req.params->append(opt);
   {
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
@@ -288,7 +298,7 @@ void XmlRpcMethodTest::testAddTorrent()
 void XmlRpcMethodTest::testAddTorrent_withoutTorrent()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -296,8 +306,8 @@ void XmlRpcMethodTest::testAddTorrent_withoutTorrent()
 void XmlRpcMethodTest::testAddTorrent_notBase64Torrent()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE("not torrent");
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("not torrent");
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -305,18 +315,18 @@ void XmlRpcMethodTest::testAddTorrent_notBase64Torrent()
 void XmlRpcMethodTest::testAddTorrent_withPosition()
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req1(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
-  req1.params << BDE(readFile("test.torrent"));
-  req1.params << BDE::list();
-  req1.params << BDE::dict();
+  XmlRpcRequest req1(AddTorrentXmlRpcMethod::getMethodName(), List::g());
+  req1.params->append(readFile("test.torrent"));
+  req1.params->append(List::g());
+  req1.params->append(Dict::g());
   XmlRpcResponse res1 = m.execute(req1, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res1.code);
 
-  XmlRpcRequest req2(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
-  req2.params << BDE(readFile("single.torrent"));
-  req2.params << BDE::list();
-  req2.params << BDE::dict();
-  req2.params << BDE((int64_t)0);
+  XmlRpcRequest req2(AddTorrentXmlRpcMethod::getMethodName(), List::g());
+  req2.params->append(readFile("single.torrent"));
+  req2.params->append(List::g());
+  req2.params->append(Dict::g());
+  req2.params->append(Integer::g(0));
   m.execute(req2, _e.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)1,
@@ -330,14 +340,15 @@ void XmlRpcMethodTest::testAddTorrent_withPosition()
 void XmlRpcMethodTest::testAddMetalink()
 {
   AddMetalinkXmlRpcMethod m;
-  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE(readFile("2files.metalink"));
+  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), List::g());
+  req.params->append(readFile("2files.metalink"));
   {
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
-    CPPUNIT_ASSERT_EQUAL((size_t)2, res.param.size());
-    CPPUNIT_ASSERT_EQUAL(std::string("1"), res.param[0].s());
-    CPPUNIT_ASSERT_EQUAL(std::string("2"), res.param[1].s());
+    const List* resParams = asList(res.param);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
+    CPPUNIT_ASSERT_EQUAL(std::string("1"), asString(resParams->get(0))->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("2"), asString(resParams->get(1))->s());
 
     SharedHandle<RequestGroup> tar =
       _e->getRequestGroupMan()->findReservedGroup(1);
@@ -351,9 +362,9 @@ void XmlRpcMethodTest::testAddMetalink()
                          deb->getFirstFilePath());
   }
   // with options
-  BDE opt = BDE::dict();
-  opt[PREF_DIR] = BDE("/sink");
-  req.params << opt;
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_DIR, "/sink");
+  req.params->append(opt);
   {
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
@@ -366,7 +377,7 @@ void XmlRpcMethodTest::testAddMetalink()
 void XmlRpcMethodTest::testAddMetalink_withoutMetalink()
 {
   AddMetalinkXmlRpcMethod m;
-  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -374,8 +385,8 @@ void XmlRpcMethodTest::testAddMetalink_withoutMetalink()
 void XmlRpcMethodTest::testAddMetalink_notBase64Metalink()
 {
   AddMetalinkXmlRpcMethod m;
-  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE("not metalink");
+  XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("not metalink");
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -383,17 +394,18 @@ void XmlRpcMethodTest::testAddMetalink_notBase64Metalink()
 void XmlRpcMethodTest::testAddMetalink_withPosition()
 {
   AddUriXmlRpcMethod m1;
-  XmlRpcRequest req1(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req1.params << BDE::list();
-  req1.params[0] << BDE("http://uri");
+  XmlRpcRequest req1(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam1 = List::g();
+  urisParam1->append("http://uri");
+  req1.params->append(urisParam1);
   XmlRpcResponse res1 = m1.execute(req1, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res1.code);
 
   AddMetalinkXmlRpcMethod m2;
-  XmlRpcRequest req2("ari2.addMetalink", BDE::list());
-  req2.params << BDE(readFile("2files.metalink"));
-  req2.params << BDE::dict();
-  req2.params << BDE((int64_t)0);
+  XmlRpcRequest req2("ari2.addMetalink", List::g());
+  req2.params->append(readFile("2files.metalink"));
+  req2.params->append(Dict::g());
+  req2.params->append(Integer::g(0));
   XmlRpcResponse res2 = m2.execute(req2, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res2.code);
 
@@ -410,20 +422,20 @@ void XmlRpcMethodTest::testChangeOption()
   _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE("1");
-  BDE opt = BDE::dict();
-  opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("1");
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_MAX_DOWNLOAD_LIMIT, "100K");
 #ifdef ENABLE_BITTORRENT
-  opt[PREF_BT_MAX_PEERS] = BDE("100");
-  opt[PREF_BT_REQUEST_PEER_SPEED_LIMIT] = BDE("300K");
-  opt[PREF_MAX_UPLOAD_LIMIT] = BDE("50K");
+  opt->put(PREF_BT_MAX_PEERS, "100");
+  opt->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT, "300K");
+  opt->put(PREF_MAX_UPLOAD_LIMIT, "50K");
 
   BtObject btObject;
   btObject._btRuntime = SharedHandle<BtRuntime>(new BtRuntime());
   _e->getBtRegistry()->put(group->getGID(), btObject);
 #endif // ENABLE_BITTORRENT
-  req.params << opt;
+  req.params->append(opt);
   XmlRpcResponse res = m.execute(req, _e.get());
 
   SharedHandle<Option> option = group->getOption();
@@ -453,11 +465,11 @@ void XmlRpcMethodTest::testChangeOption_withBadOption()
   _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE("1");
-  BDE opt = BDE::dict();
-  opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("badvalue");
-  req.params << opt;
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("1");
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_MAX_DOWNLOAD_LIMIT, "badvalue");
+  req.params->append(opt);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -468,11 +480,11 @@ void XmlRpcMethodTest::testChangeOption_withNotAllowedOption()
   _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE("1");
-  BDE opt = BDE::dict();
-  opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
-  req.params << opt;
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("1");
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT, "100K");
+  req.params->append(opt);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -480,7 +492,7 @@ void XmlRpcMethodTest::testChangeOption_withNotAllowedOption()
 void XmlRpcMethodTest::testChangeOption_withoutGid()
 {
   ChangeOptionXmlRpcMethod m;
-  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(ChangeOptionXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -489,13 +501,13 @@ void XmlRpcMethodTest::testChangeGlobalOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
   XmlRpcRequest req
-    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
-  BDE opt = BDE::dict();
-  opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("100K");
+    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT, "100K");
 #ifdef ENABLE_BITTORRENT
-  opt[PREF_MAX_OVERALL_UPLOAD_LIMIT] = BDE("50K");
+  opt->put(PREF_MAX_OVERALL_UPLOAD_LIMIT, "50K");
 #endif // ENABLE_BITTORRENT
-  req.params << opt;
+  req.params->append(opt);
   XmlRpcResponse res = m.execute(req, _e.get());
 
   CPPUNIT_ASSERT_EQUAL(0, res.code);
@@ -517,10 +529,10 @@ void XmlRpcMethodTest::testChangeGlobalOption_withBadOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
   XmlRpcRequest req
-    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
-  BDE opt = BDE::dict();
-  opt[PREF_MAX_OVERALL_DOWNLOAD_LIMIT] = BDE("badvalue");
-  req.params << opt;
+    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT, "badvalue");
+  req.params->append(opt);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -529,10 +541,10 @@ void XmlRpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
 {
   ChangeGlobalOptionXmlRpcMethod m;
   XmlRpcRequest req
-    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), BDE::list());
-  BDE opt = BDE::dict();
-  opt[PREF_MAX_DOWNLOAD_LIMIT] = BDE("100K");
-  req.params << opt;
+    (ChangeGlobalOptionXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<Dict> opt = Dict::g();
+  opt->put(PREF_MAX_DOWNLOAD_LIMIT, "100K");
+  req.params->append(opt);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -540,11 +552,11 @@ void XmlRpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
 void XmlRpcMethodTest::testNoSuchMethod()
 {
   NoSuchMethodXmlRpcMethod m;
-  XmlRpcRequest req("make.hamburger", BDE::none);
+  XmlRpcRequest req("make.hamburger", List::g());
   XmlRpcResponse res = m.execute(req, 0);
   CPPUNIT_ASSERT_EQUAL(1, res.code);
   CPPUNIT_ASSERT_EQUAL(std::string("No such method: make.hamburger"),
-                       res.param["faultString"].s());
+                       getString(asDict(res.param), "faultString"));
   CPPUNIT_ASSERT_EQUAL
     (std::string("<?xml version=\"1.0\"?>"
                  "<methodResponse>"
@@ -570,7 +582,7 @@ void XmlRpcMethodTest::testNoSuchMethod()
 void XmlRpcMethodTest::testTellStatus_withoutGid()
 {
   TellStatusXmlRpcMethod m;
-  XmlRpcRequest req(TellStatusXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(TellStatusXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -579,9 +591,10 @@ static void addUri(const std::string& uri,
                    const SharedHandle<DownloadEngine>& e)
 {
   AddUriXmlRpcMethod m;
-  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE::list();
-  req.params[0] << BDE(uri);
+  XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), List::g());
+  SharedHandle<List> urisParam = List::g();
+  urisParam->append(uri);
+  req.params->append(urisParam);
   CPPUNIT_ASSERT_EQUAL(0, m.execute(req, e.get()).code);
 }
 
@@ -591,8 +604,8 @@ static void addTorrent
 (const std::string& torrentFile, const SharedHandle<DownloadEngine>& e)
 {
   AddTorrentXmlRpcMethod m;
-  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE(readFile(torrentFile));
+  XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), List::g());
+  req.params->append(readFile(torrentFile));
   XmlRpcResponse res = m.execute(req, e.get());
 }
 
@@ -610,58 +623,69 @@ void XmlRpcMethodTest::testTellWaiting()
 #endif // !ENABLE_BITTORRENT
 
   TellWaitingXmlRpcMethod m;
-  XmlRpcRequest req(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE((int64_t)1);
-  req.params << BDE((int64_t)2);
+  XmlRpcRequest req(TellWaitingXmlRpcMethod::getMethodName(), List::g());
+  req.params->append(Integer::g(1));
+  req.params->append(Integer::g(2));
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, res.param.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("2"), res.param[0]["gid"].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("3"), res.param[1]["gid"].s());
+  const List* resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"),
+                       getString(asDict(resParams->get(0)), "gid"));
+  CPPUNIT_ASSERT_EQUAL(std::string("3"),
+                       getString(asDict(resParams->get(1)), "gid"));
   // waiting.size() == offset+num 
-  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE((int64_t)1);
-  req.params << BDE((int64_t)3);
+  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), List::g());
+  req.params->append(Integer::g(1));
+  req.params->append(Integer::g(3));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, res.param.size());
+  resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, resParams->size());
   // waiting.size() < offset+num 
-  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE((int64_t)1);
-  req.params << BDE((int64_t)4);
+  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), List::g());
+  req.params->append(Integer::g(1));
+  req.params->append(Integer::g(4));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, res.param.size());
+  resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, resParams->size());
   // negative offset
-  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << BDE((int64_t)-1);
-  req.params << BDE((int64_t)2);
+  req = XmlRpcRequest(TellWaitingXmlRpcMethod::getMethodName(), List::g());
+  req.params->append(Integer::g(-1));
+  req.params->append(Integer::g(2));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, res.param.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("4"), res.param[0]["gid"].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("3"), res.param[1]["gid"].s());
+  resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
+  CPPUNIT_ASSERT_EQUAL(std::string("4"),
+                       getString(asDict(resParams->get(0)), "gid"));
+  CPPUNIT_ASSERT_EQUAL(std::string("3"),
+                       getString(asDict(resParams->get(1)), "gid"));
   // negative offset and size < num
-  req.params[1] = BDE((int64_t)100);
+  req.params->set(1, Integer::g(100));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)4, res.param.size());
+  resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)4, resParams->size());
   // nagative offset and normalized offset < 0
-  req.params[0] = BDE((int64_t)-5);
+  req.params->set(0, Integer::g(-5));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)0, res.param.size());
+  resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, resParams->size());
   // nagative offset and normalized offset == 0
-  req.params[0] = BDE((int64_t)-4);
+  req.params->set(0, Integer::g(-4));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, res.param.size());
+  resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, resParams->size());
 }
 
 void XmlRpcMethodTest::testTellWaiting_fail()
 {
   TellWaitingXmlRpcMethod m;
-  XmlRpcRequest req(TellWaitingXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(TellWaitingXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
@@ -669,15 +693,18 @@ void XmlRpcMethodTest::testTellWaiting_fail()
 void XmlRpcMethodTest::testGetVersion()
 {
   GetVersionXmlRpcMethod m;
-  XmlRpcRequest req(GetVersionXmlRpcMethod::getMethodName(), BDE::none);
+  XmlRpcRequest req(GetVersionXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL(std::string(PACKAGE_VERSION), res.param["version"].s());
-  const BDE& featureList = res.param["enabledFeatures"];
+  const Dict* resParams = asDict(res.param);
+  CPPUNIT_ASSERT_EQUAL(std::string(PACKAGE_VERSION),
+                       getString(resParams, "version"));
+  const List* featureList = asList(resParams->get("enabledFeatures"));
   std::string features;
-  for(BDE::List::const_iterator i = featureList.listBegin();
-      i != featureList.listEnd(); ++i) {
-    features += (*i).s();
+  for(List::ValueType::const_iterator i = featureList->begin();
+      i != featureList->end(); ++i) {
+    const String* s = asString(*i);
+    features += s->s();
     features += ", ";
   }
   
@@ -700,12 +727,14 @@ void XmlRpcMethodTest::testGatherStoppedDownload()
   d->result = downloadresultcode::FINISHED;
   d->followedBy = followedBy;
   d->belongsTo = 2;
-  BDE entry = BDE::dict();
+  SharedHandle<Dict> entry = Dict::g();
   gatherStoppedDownload(entry, d);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("3"), entry["followedBy"][0].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("4"), entry["followedBy"][1].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("2"), entry["belongsTo"].s());
+  const List* followedByRes = asList(entry->get("followedBy"));
+  CPPUNIT_ASSERT_EQUAL(std::string("3"), asString(followedByRes->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("4"), asString(followedByRes->get(1))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"),
+                       asString(entry->get("belongsTo"))->s());
 }
 
 void XmlRpcMethodTest::testGatherProgressCommon()
@@ -724,19 +753,28 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   group->followedBy(followedBy.begin(), followedBy.end());
   group->belongsTo(2);
 
-  BDE entry = BDE::dict();
+  SharedHandle<Dict> entry = Dict::g();
   gatherProgressCommon(entry, group);
   
+  const List* followedByRes = asList(entry->get("followedBy"));
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[0]->getGID()),
-                       entry["followedBy"][0].s());
+                       asString(followedByRes->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[1]->getGID()),
-                       entry["followedBy"][1].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("2"), entry["belongsTo"].s());
-  CPPUNIT_ASSERT_EQUAL((size_t)1, entry["files"].size());
+                       asString(followedByRes->get(1))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"),
+                       asString(entry->get("belongsTo"))->s());
+  const List* files = asList(entry->get("files"));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, files->size());
+  const Dict* file = asDict(files->get(0));
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
-                       entry["files"][0]["path"].s());
-  CPPUNIT_ASSERT_EQUAL(uris[0], entry["files"][0]["uris"][0]["uri"].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), entry["dir"].s());
+                       asString(file->get("path"))->s());
+  CPPUNIT_ASSERT_EQUAL(uris[0],
+                       asString
+                       (asDict
+                        (asList(file->get("uris"))->get(0))
+                        ->get("uri"))
+                       ->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), asString(entry->get("dir"))->s());
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -744,30 +782,41 @@ void XmlRpcMethodTest::testGatherBitTorrentMetadata()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   bittorrent::load("test.torrent", dctx);
-  BDE btDict = BDE::dict();
+  SharedHandle<Dict> btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, bittorrent::getTorrentAttrs(dctx));
-  CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"), btDict["comment"].s());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1123456789, btDict["creationDate"].i());
-  CPPUNIT_ASSERT_EQUAL(std::string("multi"), btDict["mode"].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"), btDict["info"]["name"].s());
-  const BDE& announceList = btDict["announceList"];
-  CPPUNIT_ASSERT_EQUAL((size_t)3, announceList.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"), announceList[0][0].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"), announceList[1][0].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"), announceList[2][0].s());
+  CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"),
+                       asString(btDict->get("comment"))->s());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1123456789,
+                       asInteger(btDict->get("creationDate"))->i());
+  CPPUNIT_ASSERT_EQUAL(std::string("multi"),
+                       asString(btDict->get("mode"))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"),
+                       asString
+                       (asDict
+                        (btDict->get("info"))
+                        ->get("name"))
+                       ->s());
+  const List* announceList = asList(btDict->get("announceList"));
+  CPPUNIT_ASSERT_EQUAL((size_t)3, announceList->size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
+                       asString(asList(announceList->get(0))->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"),
+                       asString(asList(announceList->get(1))->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"),
+                       asString(asList(announceList->get(2))->get(0))->s());
   // Remove some keys
   SharedHandle<TorrentAttribute> modBtAttrs = bittorrent::getTorrentAttrs(dctx);
   modBtAttrs->comment.clear();
   modBtAttrs->creationDate = 0;
   modBtAttrs->mode.clear();
   modBtAttrs->metadata.clear();
-  btDict = BDE::dict();
+  btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, modBtAttrs);
-  CPPUNIT_ASSERT(!btDict.containsKey("comment"));
-  CPPUNIT_ASSERT(!btDict.containsKey("creationDate"));
-  CPPUNIT_ASSERT(!btDict.containsKey("mode"));
-  CPPUNIT_ASSERT(!btDict.containsKey("info"));
-  CPPUNIT_ASSERT(btDict.containsKey("announceList"));
+  CPPUNIT_ASSERT(!btDict->containsKey("comment"));
+  CPPUNIT_ASSERT(!btDict->containsKey("creationDate"));
+  CPPUNIT_ASSERT(!btDict->containsKey("mode"));
+  CPPUNIT_ASSERT(!btDict->containsKey("info"));
+  CPPUNIT_ASSERT(btDict->containsKey("announceList"));
 }
 #endif // ENABLE_BITTORRENT
 
@@ -779,13 +828,13 @@ void XmlRpcMethodTest::testChangePosition()
     (SharedHandle<RequestGroup>(new RequestGroup(_option)));
 
   ChangePositionXmlRpcMethod m;
-  XmlRpcRequest req(ChangePositionXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << std::string("1");
-  req.params << BDE((int64_t)1);
-  req.params << std::string("POS_SET");
+  XmlRpcRequest req(ChangePositionXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("1");
+  req.params->append(Integer::g(1));
+  req.params->append("POS_SET");
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)1, res.param.i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, asInteger(res.param)->i());
   CPPUNIT_ASSERT_EQUAL
     ((gid_t)1, _e->getRequestGroupMan()->getReservedGroups()[1]->getGID());
 }
@@ -793,13 +842,13 @@ void XmlRpcMethodTest::testChangePosition()
 void XmlRpcMethodTest::testChangePosition_fail()
 {
   ChangePositionXmlRpcMethod m;
-  XmlRpcRequest req(ChangePositionXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(ChangePositionXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
-  req.params << std::string("1");
-  req.params << BDE((int64_t)2);
-  req.params << std::string("bad keyword");
+  req.params->append("1");
+  req.params->append(Integer::g(2));
+  req.params->append("bad keyword");
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
 
@@ -819,24 +868,24 @@ void XmlRpcMethodTest::testChangeUri()
   _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeUriXmlRpcMethod m;
-  XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << std::string("1"); // GID
-  req.params << 2; // index of FileEntry
-  BDE removeuris = BDE::list();
-  removeuris << std::string("http://example.org/mustremove1");
-  removeuris << std::string("http://example.org/mustremove2");
-  removeuris << std::string("http://example.org/notexist");
-  req.params << removeuris;
-  BDE adduris = BDE::list();
-  adduris << std::string("http://example.org/added1");
-  adduris << std::string("http://example.org/added2");
-  adduris << std::string("baduri");
-  adduris << std::string("http://example.org/added3");
-  req.params << adduris;
+  XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("1"); // GID
+  req.params->append(Integer::g(2)); // index of FileEntry
+  SharedHandle<List> removeuris = List::g();
+  removeuris->append("http://example.org/mustremove1");
+  removeuris->append("http://example.org/mustremove2");
+  removeuris->append("http://example.org/notexist");
+  req.params->append(removeuris);
+  SharedHandle<List> adduris = List::g();
+  adduris->append("http://example.org/added1");
+  adduris->append("http://example.org/added2");
+  adduris->append("baduri");
+  adduris->append("http://example.org/added3");
+  req.params->append(adduris);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)2, res.param[0].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)3, res.param[1].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, asInteger(asList(res.param)->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)3, asInteger(asList(res.param)->get(1))->i());
   CPPUNIT_ASSERT_EQUAL((size_t)0, files[0]->getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, files[2]->getRemainingUris().size());
   std::deque<std::string> uris = files[1]->getRemainingUris();
@@ -847,29 +896,29 @@ void XmlRpcMethodTest::testChangeUri()
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added3"), uris[3]);
 
   // Change adduris
-  adduris = BDE::list();
-  adduris << std::string("http://example.org/added1-1");
-  adduris << std::string("http://example.org/added1-2");
-  req.params[3] = adduris;
+  adduris = List::g();
+  adduris->append("http://example.org/added1-1");
+  adduris->append("http://example.org/added1-2");
+  req.params->set(3, adduris);
   // Set position parameter
-  req.params << 2;
+  req.params->append(Integer::g(2));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, res.param[0].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)2, res.param[1].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, asInteger(asList(res.param)->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, asInteger(asList(res.param)->get(1))->i());
   uris = files[1]->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)6, uris.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-1"), uris[2]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-2"), uris[3]);
 
   // Change index of FileEntry
-  req.params[1] = 1;
+  req.params->set(1, Integer::g(1));
   // Set position far beyond the size of uris in FileEntry.
-  req.params[4] = 1000;
+  req.params->set(4, Integer::g(1000));
   res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, res.param[0].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)2, res.param[1].i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, asInteger(asList(res.param)->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, asInteger(asList(res.param)->get(1))->i());
   uris = files[0]->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-1"), uris[0]);
@@ -889,40 +938,40 @@ void XmlRpcMethodTest::testChangeUri_fail()
   _e->getRequestGroupMan()->addReservedGroup(group);
 
   ChangeUriXmlRpcMethod m;
-  XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), BDE::list());
-  req.params << std::string("1"); // GID
-  req.params << 1; // index of FileEntry
-  BDE removeuris = BDE::list();
-  req.params << removeuris;
-  BDE adduris = BDE::list();
-  req.params << adduris;
+  XmlRpcRequest req(ChangeUriXmlRpcMethod::getMethodName(), List::g());
+  req.params->append("1"); // GID
+  req.params->append(Integer::g(1)); // index of FileEntry
+  SharedHandle<List> removeuris = List::g();
+  req.params->append(removeuris);
+  SharedHandle<List> adduris = List::g();
+  req.params->append(adduris);
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
 
-  req.params[0] = std::string("2");
+  req.params->set(0, String::g("2"));
   res = m.execute(req, _e.get());  
   // RPC request fails because GID#2 does not exist.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
-  req.params[0] = std::string("1");
-  req.params[1] = 4;
+  req.params->set(0, String::g("1"));
+  req.params->set(1, Integer::g(4));
   res = m.execute(req, _e.get());  
   // RPC request fails because FileEntry#3 does not exist.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
-  req.params[1] = std::string("0");
+  req.params->set(1, String::g("0"));
   res = m.execute(req, _e.get());  
   // RPC request fails because index of FileEntry is string.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
-  req.params[1] = 1;
-  req.params[2] = std::string("http://url");
+  req.params->set(1, Integer::g(1));
+  req.params->set(2, String::g("http://url"));
   res = m.execute(req, _e.get());  
   // RPC request fails because 3rd param is not list.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 
-  req.params[2] = BDE::list();
-  req.params[3] = std::string("http://url");
+  req.params->set(2, List::g());
+  req.params->set(3, String::g("http://url"));
   res = m.execute(req, _e.get());  
   // RPC request fails because 4th param is not list.
   CPPUNIT_ASSERT_EQUAL(1, res.code);
@@ -931,11 +980,11 @@ void XmlRpcMethodTest::testChangeUri_fail()
 void XmlRpcMethodTest::testGetSessionInfo()
 {
   GetSessionInfoXmlRpcMethod m;
-  XmlRpcRequest req(GetSessionInfoXmlRpcMethod::getMethodName(), BDE::list());
+  XmlRpcRequest req(GetSessionInfoXmlRpcMethod::getMethodName(), List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   CPPUNIT_ASSERT_EQUAL(util::toHex(_e->getSessionId()),
-                       res.param["sessionId"].s());
+                       getString(asDict(res.param), "sessionId"));
 }
 
 void XmlRpcMethodTest::testPause()
@@ -953,23 +1002,23 @@ void XmlRpcMethodTest::testPause()
   _e->getRequestGroupMan()->addReservedGroup(groups);
   {
     PauseXmlRpcMethod m;
-    XmlRpcRequest req(PauseXmlRpcMethod::getMethodName(), BDE::list());
-    req.params << std::string("1");
+    XmlRpcRequest req(PauseXmlRpcMethod::getMethodName(), List::g());
+    req.params->append("1");
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
   }
   CPPUNIT_ASSERT(groups[0]->isPauseRequested());
   {
     UnpauseXmlRpcMethod m;
-    XmlRpcRequest req(UnpauseXmlRpcMethod::getMethodName(), BDE::list());
-    req.params << std::string("1");
+    XmlRpcRequest req(UnpauseXmlRpcMethod::getMethodName(), List::g());
+    req.params->append("1");
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
   }
   CPPUNIT_ASSERT(!groups[0]->isPauseRequested());
   {
     PauseAllXmlRpcMethod m;
-    XmlRpcRequest req(PauseAllXmlRpcMethod::getMethodName(), BDE::list());
+    XmlRpcRequest req(PauseAllXmlRpcMethod::getMethodName(), List::g());
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
   }
@@ -978,7 +1027,7 @@ void XmlRpcMethodTest::testPause()
   }
   {
     UnpauseAllXmlRpcMethod m;
-    XmlRpcRequest req(UnpauseAllXmlRpcMethod::getMethodName(), BDE::list());
+    XmlRpcRequest req(UnpauseAllXmlRpcMethod::getMethodName(), List::g());
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
   }
@@ -987,7 +1036,7 @@ void XmlRpcMethodTest::testPause()
   }
   {
     ForcePauseAllXmlRpcMethod m;
-    XmlRpcRequest req(ForcePauseAllXmlRpcMethod::getMethodName(), BDE::list());
+    XmlRpcRequest req(ForcePauseAllXmlRpcMethod::getMethodName(), List::g());
     XmlRpcResponse res = m.execute(req, _e.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
   }
@@ -999,61 +1048,77 @@ void XmlRpcMethodTest::testPause()
 void XmlRpcMethodTest::testSystemMulticall()
 {
   SystemMulticallXmlRpcMethod m;
-  XmlRpcRequest req("system.multicall", BDE::list());
-  BDE reqparams = BDE::list();
-  req.params << reqparams;
+  XmlRpcRequest req("system.multicall", List::g());
+  SharedHandle<List> reqparams = List::g();
+  req.params->append(reqparams);
   for(int i = 0; i < 2; ++i) {
-    BDE dict = BDE::dict();
-    dict["methodName"] = std::string(AddUriXmlRpcMethod::getMethodName());
-    BDE params = BDE::list();
-    params << BDE::list();
-    params[0] << BDE("http://localhost/"+util::itos(i));
-    dict["params"] = params;
-    reqparams << dict;
+    SharedHandle<Dict> dict = Dict::g();
+    dict->put("methodName", AddUriXmlRpcMethod::getMethodName());
+    SharedHandle<List> params = List::g();
+    SharedHandle<List> urisParam = List::g();
+    urisParam->append("http://localhost/"+util::itos(i));
+    params->append(urisParam);
+    dict->put("params", params);
+    reqparams->append(dict);
   }
   {
-    BDE dict = BDE::dict();
-    dict["methodName"] = std::string("not exists");
-    dict["params"] = BDE::list();
-    reqparams << dict;
+    SharedHandle<Dict> dict = Dict::g();
+    dict->put("methodName", "not exists");
+    dict->put("params", List::g());
+    reqparams->append(dict);
   }
   {
-    reqparams << std::string("not struct");
+    reqparams->append("not struct");
   }
   {
-    BDE dict = BDE::dict();
-    dict["methodName"] = std::string("system.multicall");
-    dict["params"] = BDE::list();
-    reqparams << dict;
+    SharedHandle<Dict> dict = Dict::g();
+    dict->put("methodName", "system.multicall");
+    dict->put("params", List::g());
+    reqparams->append(dict);
   }
   {
     // missing params
-    BDE dict = BDE::dict();
-    dict["methodName"] = std::string(GetVersionXmlRpcMethod::getMethodName());
-    reqparams << dict;
+    SharedHandle<Dict> dict = Dict::g();
+    dict->put("methodName", GetVersionXmlRpcMethod::getMethodName());
+    reqparams->append(dict);
   }
   {
-    BDE dict = BDE::dict();
-    dict["methodName"] = std::string(GetVersionXmlRpcMethod::getMethodName());
-    dict["params"] = BDE::list();
-    reqparams << dict;
+    SharedHandle<Dict> dict = Dict::g();
+    dict->put("methodName", GetVersionXmlRpcMethod::getMethodName());
+    dict->put("params", List::g());
+    reqparams->append(dict);
   }
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((size_t)7, res.param.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("1"), res.param[0][0].s());
-  CPPUNIT_ASSERT_EQUAL(std::string("2"), res.param[1][0].s());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1, res.param[2]["faultCode"].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1, res.param[3]["faultCode"].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1, res.param[4]["faultCode"].i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1, res.param[5]["faultCode"].i());
-  CPPUNIT_ASSERT(res.param[6].isList());
+  const List* resParams = asList(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)7, resParams->size());
+  CPPUNIT_ASSERT_EQUAL(std::string("1"),
+                       asString(asList(resParams->get(0))->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("2"),
+                       asString(asList(resParams->get(1))->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1,
+                       asInteger
+                       (asDict(resParams->get(2))->get("faultCode"))
+                       ->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1,
+                       asInteger
+                       (asDict(resParams->get(3))->get("faultCode"))
+                       ->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1,
+                       asInteger
+                       (asDict(resParams->get(4))->get("faultCode"))
+                       ->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1,
+                       asInteger
+                       (asDict(resParams->get(5))->get("faultCode"))
+                       ->i());
+  CPPUNIT_ASSERT(asList(resParams->get(6)));
 }
 
 void XmlRpcMethodTest::testSystemMulticall_fail()
 {
   SystemMulticallXmlRpcMethod m;
-  XmlRpcRequest req("system.multicall", BDE::list());
+  XmlRpcRequest req("system.multicall", List::g());
   XmlRpcResponse res = m.execute(req, _e.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }

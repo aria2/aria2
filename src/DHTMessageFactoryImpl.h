@@ -69,9 +69,9 @@ private:
   SharedHandle<DHTNode> getRemoteNode
   (const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
 
-  void validateID(const BDE& id) const;
+  void validateID(const String* id) const;
 
-  void validatePort(const BDE& i) const;
+  void validatePort(const Integer* i) const;
 
   std::vector<SharedHandle<DHTNode> >
   extractNodes(const unsigned char* src, size_t length);
@@ -84,12 +84,12 @@ public:
   virtual ~DHTMessageFactoryImpl();
 
   virtual SharedHandle<DHTQueryMessage>
-  createQueryMessage(const BDE& dict,
+  createQueryMessage(const Dict* dict,
                      const std::string& ipaddr, uint16_t port);
 
   virtual SharedHandle<DHTResponseMessage>
   createResponseMessage(const std::string& messageType,
-                        const BDE& dict,
+                        const Dict* dict,
                         const std::string& ipaddr, uint16_t port);
 
   virtual SharedHandle<DHTQueryMessage>
@@ -108,7 +108,7 @@ public:
 
   SharedHandle<DHTResponseMessage>
   createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const BDE& dict,
+                             const Dict* dict,
                              const std::string& transactionID);
 
 
@@ -132,7 +132,7 @@ public:
 
   SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessageWithNodes(const SharedHandle<DHTNode>& remoteNode,
-                                      const BDE& dict,
+                                      const Dict* dict,
                                       const std::string& transactionID);
 
   virtual SharedHandle<DHTResponseMessage>
@@ -144,7 +144,7 @@ public:
 
   SharedHandle<DHTResponseMessage>
   createGetPeersReplyMessageWithValues(const SharedHandle<DHTNode>& remoteNode,
-                                       const BDE& dict,
+                                       const Dict* dict,
                                        const std::string& transactionID);
 
   virtual SharedHandle<DHTQueryMessage>

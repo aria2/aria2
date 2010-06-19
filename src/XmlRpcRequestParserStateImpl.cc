@@ -83,7 +83,7 @@ void MethodCallXmlRpcRequestParserState::beginElement
   if(name == elements::METHOD_NAME) {
     stm->pushMethodNameState();
   } else if(name == elements::A2_PARAMS) {
-    stm->setCurrentFrameValue(BDE::list());
+    stm->setCurrentFrameValue(List::g());
     stm->pushParamsState();
   } else {
     stm->pushUnknownElementState();
@@ -155,10 +155,10 @@ void ValueXmlRpcRequestParserState::beginElement
   if(name == elements::I4 || name == elements::INT) {
     stm->pushIntState();
   } else if(name == elements::STRUCT) {
-    stm->setCurrentFrameValue(BDE::dict());
+    stm->setCurrentFrameValue(Dict::g());
     stm->pushStructState();
   } else if(name == elements::ARRAY) {
-    stm->setCurrentFrameValue(BDE::list());
+    stm->setCurrentFrameValue(List::g());
     stm->pushArrayState();
   } else if(name == elements::STRING || name == elements::DOUBLE) {
     stm->pushStringState();
@@ -186,9 +186,9 @@ void IntXmlRpcRequestParserState::endElement
 {
   try {
     int64_t value = util::parseLLInt(characters);
-    stm->setCurrentFrameValue(BDE(value));
+    stm->setCurrentFrameValue(Integer::g(value));
   } catch(RecoverableException& e) {
-    // nothing to do here: We just leave current frame value to BDE::none
+    // nothing to do here: We just leave current frame value to null.
   }
 }
 
@@ -207,7 +207,7 @@ void StringXmlRpcRequestParserState::endElement
  const std::string& name,
  const std::string& characters)
 {
-  stm->setCurrentFrameValue(BDE(characters));
+  stm->setCurrentFrameValue(String::g(characters));
 }
 
 // Base64XmlRpcRequestParserState
@@ -225,7 +225,7 @@ void Base64XmlRpcRequestParserState::endElement
  const std::string& name,
  const std::string& characters)
 {
-  stm->setCurrentFrameValue(BDE(Base64::decode(characters)));
+  stm->setCurrentFrameValue(String::g(Base64::decode(characters)));
 }
 
 // StructXmlRpcRequestParserState

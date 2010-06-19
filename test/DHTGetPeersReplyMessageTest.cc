@@ -8,7 +8,7 @@
 #include "DHTBucket.h"
 #include "bittorrent_helper.h"
 #include "Peer.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -41,14 +41,14 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 
   DHTGetPeersReplyMessage msg(localNode, remoteNode, token, transactionID);
   msg.setVersion("A200");
-  BDE dict = BDE::dict();
-  dict["t"] = transactionID;
-  dict["v"] = BDE("A200");
-  dict["y"] = BDE("r");
-  BDE rDict = BDE::dict();
-  rDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
-  rDict["token"] = token;
-  dict["r"] = rDict;
+  Dict dict;
+  dict.put("t", transactionID);
+  dict.put("v", "A200");
+  dict.put("y", "r");
+  SharedHandle<Dict> rDict = Dict::g();
+  rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
+  rDict->put("token", token);
+  dict.put("r", rDict);
   {
     std::string compactNodeInfo;
     SharedHandle<DHTNode> nodes[8];
@@ -69,29 +69,29 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 
     std::string msgbody = msg.getBencodedMessage();
 
-    rDict["nodes"] = compactNodeInfo;
+    rDict->put("nodes", compactNodeInfo);
 
-    CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode::encode(dict)),
+    CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode2::encode(&dict)),
                          util::percentEncode(msgbody));
   }
-  rDict.removeKey("nodes");
+  rDict->removeKey("nodes");
   {
     std::vector<SharedHandle<Peer> > peers;
-    BDE valuesList = BDE::list();
+    SharedHandle<List> valuesList = List::g();
     for(size_t i = 0; i < 4; ++i) {
       SharedHandle<Peer> peer(new Peer("192.168.0."+util::uitos(i+1), 6881+i));
       unsigned char buffer[6];
       CPPUNIT_ASSERT(bittorrent::createcompact
                      (buffer, peer->getIPAddress(), peer->getPort()));
-      valuesList << BDE(buffer, sizeof(buffer));
+      valuesList->append(String::g(buffer, sizeof(buffer)));
       peers.push_back(peer);
     }
-    rDict["values"] = valuesList;
+    rDict->put("values", valuesList);
 
     msg.setValues(peers);
     std::string msgbody  = msg.getBencodedMessage();
 
-    CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode::encode(dict)),
+    CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode2::encode(&dict)),
                          util::percentEncode(msgbody));
   }
 }

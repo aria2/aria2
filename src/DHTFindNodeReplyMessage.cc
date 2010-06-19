@@ -44,7 +44,6 @@
 #include "DHTMessageCallback.h"
 #include "bittorrent_helper.h"
 #include "util.h"
-#include "bencode.h"
 
 namespace aria2 {
 
@@ -70,10 +69,10 @@ void DHTFindNodeReplyMessage::doReceivedAction()
   }
 }
 
-BDE DHTFindNodeReplyMessage::getResponse()
+SharedHandle<Dict> DHTFindNodeReplyMessage::getResponse()
 {
-  BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   size_t offset = 0;
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
@@ -87,7 +86,7 @@ BDE DHTFindNodeReplyMessage::getResponse()
       offset += 26;
     }
   }
-  aDict[NODES] = BDE(buffer, offset);
+  aDict->put(NODES, String::g(buffer, offset));
   return aDict;
 }
 

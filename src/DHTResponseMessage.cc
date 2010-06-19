@@ -35,7 +35,6 @@
 #include "DHTResponseMessage.h"
 #include "DHTNode.h"
 #include "util.h"
-#include "bencode.h"
 #include "a2functional.h"
 
 namespace aria2 {
@@ -54,9 +53,9 @@ const std::string& DHTResponseMessage::getType() const
   return R;
 }
 
-void DHTResponseMessage::fillMessage(BDE& msgDict)
+void DHTResponseMessage::fillMessage(Dict* msgDict)
 {
-  msgDict[R] = getResponse();
+  msgDict->put(R, getResponse());
 }
 
 bool DHTResponseMessage::isReply() const

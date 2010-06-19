@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "XmlRpcMethod.h"
 #include "DownloadEngine.h"
-#include "BDE.h"
 #include "LogFactory.h"
 #include "RecoverableException.h"
 #include "message.h"
@@ -52,6 +51,7 @@
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
 #include "FileEntry.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -61,11 +61,12 @@ XmlRpcMethod::XmlRpcMethod():
   _optionParser(OptionParser::getInstance()),
   _logger(LogFactory::getInstance()) {}
 
-BDE XmlRpcMethod::createErrorResponse(const Exception& e)
+SharedHandle<ValueBase> XmlRpcMethod::createErrorResponse
+(const Exception& e)
 {
-  BDE params = BDE::dict();
-  params["faultCode"] = BDE(1);
-  params["faultString"] = BDE(e.what());
+  SharedHandle<Dict> params = Dict::g();
+  params->put("faultCode", Integer::g(1));
+  params->put("faultString", std::string(e.what()));
   return params;
 }
 
@@ -105,29 +106,35 @@ static void gatherOption
            ("We don't know how to deal with %s option",
             optionName.c_str()).str());
       }
-      // header and index-out option can take array as value
-      const BDE& value = (*first).second;
-      if((optionName == PREF_HEADER || optionName == PREF_INDEX_OUT) &&
-         value.isList()){
-        for(BDE::List::const_iterator argiter = value.listBegin(),
-              eoi = value.listEnd(); argiter != eoi; ++argiter) {
-          if((*argiter).isString()) {
-            optionHandler->parse(*option.get(), (*argiter).s());
+      const String* opval = asString((*first).second);
+      if(opval) {
+        optionHandler->parse(*option.get(), opval->s());
+      } else {
+        // header and index-out option can take array as value
+        const List* oplist = asList((*first).second);
+        if(oplist &&
+           (optionName == PREF_HEADER || optionName == PREF_INDEX_OUT)) {
+          for(List::ValueType::const_iterator argiter = oplist->begin(),
+                eoi = oplist->end(); argiter != eoi; ++argiter) {
+            const String* opval = asString(*argiter);
+            if(opval) {
+              optionHandler->parse(*option.get(), opval->s());
+            }
           }
         }
-      } else if(value.isString()) {
-        optionHandler->parse(*option.get(), value.s());
       }
     }
   }  
 }
 
 void XmlRpcMethod::gatherRequestOption
-(const SharedHandle<Option>& option, const BDE& optionsDict)
+(const SharedHandle<Option>& option, const Dict* optionsDict)
 {
-  gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
-               listRequestOptions(),
-               option, _optionParser);
+  if(optionsDict) {
+    gatherOption(optionsDict->begin(), optionsDict->end(),
+                 listRequestOptions(),
+                 option, _optionParser);
+  }
 }
 
 // Copy option in the range [optNameFirst, optNameLast) from src to
@@ -158,11 +165,13 @@ const std::set<std::string>& listChangeableOptions()
 }
 
 void XmlRpcMethod::gatherChangeableOption
-(const SharedHandle<Option>& option, const BDE& optionsDict)
+(const SharedHandle<Option>& option, const Dict* optionsDict)
 {
-  gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
-               listChangeableOptions(),
-               option, _optionParser);
+  if(optionsDict) {
+    gatherOption(optionsDict->begin(), optionsDict->end(),
+                 listChangeableOptions(),
+                 option, _optionParser);
+  }
 }
 
 void XmlRpcMethod::applyChangeableOption(Option* dest, Option* src) const
@@ -183,11 +192,13 @@ const std::set<std::string>& listChangeableGlobalOptions()
 }
 
 void XmlRpcMethod::gatherChangeableGlobalOption
-(const SharedHandle<Option>& option, const BDE& optionsDict)
+(const SharedHandle<Option>& option, const Dict* optionsDict)
 {
-  gatherOption(optionsDict.dictBegin(), optionsDict.dictEnd(),
-               listChangeableGlobalOptions(),
-               option, _optionParser);
+  if(optionsDict) {
+    gatherOption(optionsDict->begin(), optionsDict->end(),
+                 listChangeableGlobalOptions(),
+                 option, _optionParser);
+  }
 }
 
 void XmlRpcMethod::applyChangeableGlobalOption(Option* dest, Option* src) const

@@ -37,10 +37,10 @@
 
 #include "DHTMessage.h"
 #include "A2STR.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
-class BDE;
 class DHTConnection;
 class DHTMessageDispatcher;
 class DHTMessageFactory;
@@ -66,7 +66,7 @@ public:
 
   virtual const std::string& getType() const = 0;
 
-  virtual void fillMessage(BDE& msgDict) = 0;
+  virtual void fillMessage(Dict* msgDict) = 0;
 
   std::string getBencodedMessage();
 

@@ -41,10 +41,10 @@
 #include <deque>
 #include <algorithm>
 
-#include "BDE.h"
 #include "XmlRpcRequest.h"
 #include "ValueBase.h"
 #include "TorrentAttribute.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -55,7 +55,8 @@ namespace xmlrpc {
 
 class AddUriXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -66,7 +67,8 @@ public:
 
 class RemoveXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -77,7 +79,8 @@ public:
 
 class ForceRemoveXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -88,7 +91,8 @@ public:
 
 class PauseXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -99,7 +103,8 @@ public:
 
 class ForcePauseXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -110,7 +115,8 @@ public:
 
 class PauseAllXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -121,7 +127,8 @@ public:
 
 class ForcePauseAllXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -132,7 +139,8 @@ public:
 
 class UnpauseXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -143,7 +151,8 @@ public:
 
 class UnpauseAllXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -155,7 +164,8 @@ public:
 #ifdef ENABLE_BITTORRENT
 class AddTorrentXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -168,7 +178,8 @@ public:
 #ifdef ENABLE_METALINK
 class AddMetalinkXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -180,7 +191,8 @@ public:
 
 class PurgeDownloadResultXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -191,7 +203,8 @@ public:
 
 class GetUrisXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -202,7 +215,8 @@ public:
 
 class GetFilesXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -214,7 +228,8 @@ public:
 #ifdef ENABLE_BITTORRENT
 class GetPeersXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -226,7 +241,8 @@ public:
 
 class GetServersXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -237,7 +253,8 @@ public:
 
 class TellStatusXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -248,7 +265,8 @@ public:
 
 class TellActiveXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -279,7 +297,6 @@ private:
     } else if(size <= (size_t)offset) {
       return std::make_pair(last, last);
     }
-    BDE list = BDE::list();
     size_t lastDistance;
     if(size < offset+num) {
       lastDistance = size;
@@ -292,34 +309,37 @@ private:
     return std::make_pair(first, last);
   }
 
-  void checkPaginationParams(const BDE& params) const
+  void checkPaginationParams(const SharedHandle<List>& params) const
   {
-    assert(params.isList());
-    if(params.size() != 2 ||
-       !params[0].isInteger() || !params[1].isInteger() ||
-       params[1].i() < 0) {
+    if(params->size() != 2) {
+      throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
+    }
+    const Integer* p1 = asInteger(params->get(0));
+    const Integer* p2 = asInteger(params->get(1));
+    if(!p1 || !p2 || p2->i() < 0) {
       throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
     }
   }
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e)
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e)
   {
-    const BDE& params = req.params;
+    const SharedHandle<List>& params = req.params;
     checkPaginationParams(params);
-    ssize_t offset = params[0].i();
-    size_t num = params[1].i();
+    ssize_t offset = asInteger(params->get(0))->i();
+    size_t num = asInteger(params->get(1))->i();
     const std::deque<SharedHandle<T> >& items = getItems(e);
     std::pair<typename std::deque<SharedHandle<T> >::const_iterator,
       typename std::deque<SharedHandle<T> >::const_iterator> range =
       getPaginationRange(offset, num, items.begin(), items.end());
-    BDE list = BDE::list();
+    SharedHandle<List> list = List::g();
     for(; range.first != range.second; ++range.first) {
-      BDE entryDict = BDE::dict();
+      SharedHandle<Dict> entryDict = Dict::g();
       createEntry(entryDict, *range.first, e);
-      list << entryDict;
+      list->append(entryDict);
     }
     if(offset < 0) {
-      std::reverse(list.listBegin(), list.listEnd());
+      std::reverse(list->begin(), list->end());
     }
     return list;
   }
@@ -328,7 +348,9 @@ protected:
   getItems(DownloadEngine* e) const = 0;
 
   virtual void createEntry
-  (BDE& entryDict, const SharedHandle<T>& item, DownloadEngine* e) const = 0;
+  (const SharedHandle<Dict>& entryDict,
+   const SharedHandle<T>& item,
+   DownloadEngine* e) const = 0;
 };
 
 class TellWaitingXmlRpcMethod:
@@ -338,7 +360,8 @@ protected:
   getItems(DownloadEngine* e) const;
 
   virtual void createEntry
-  (BDE& entryDict, const SharedHandle<RequestGroup>& item,
+  (const SharedHandle<Dict>& entryDict,
+   const SharedHandle<RequestGroup>& item,
    DownloadEngine* e) const;
 public:
   static const std::string& getMethodName()
@@ -355,7 +378,8 @@ protected:
    getItems(DownloadEngine* e) const;
 
   virtual void createEntry
-  (BDE& entryDict, const SharedHandle<DownloadResult>& item,
+  (const SharedHandle<Dict>& entryDict,
+   const SharedHandle<DownloadResult>& item,
    DownloadEngine* e) const;
 public:
   static const std::string& getMethodName()
@@ -367,7 +391,8 @@ public:
 
 class ChangeOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -378,7 +403,8 @@ public:
 
 class ChangeGlobalOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -389,7 +415,8 @@ public:
 
 class GetVersionXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -400,7 +427,8 @@ public:
 
 class GetOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -411,7 +439,8 @@ public:
 
 class GetGlobalOptionXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -422,7 +451,8 @@ public:
 
 class ChangePositionXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -433,7 +463,8 @@ public:
 
 class ChangeUriXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -444,7 +475,8 @@ public:
 
 class GetSessionInfoXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -455,7 +487,8 @@ public:
 
 class ShutdownXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -466,7 +499,8 @@ public:
 
 class ForceShutdownXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -477,7 +511,8 @@ public:
 
 class SystemMulticallXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -488,23 +523,25 @@ public:
 
 class NoSuchMethodXmlRpcMethod:public XmlRpcMethod {
 protected:
-  virtual BDE process(const XmlRpcRequest& req, DownloadEngine* e);
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
 };
 
 // Helper function to store data to entryDict from ds. This function
 // is used by tellStatus method.
 void gatherStoppedDownload
-(BDE& entryDict, const SharedHandle<DownloadResult>& ds);
+(const SharedHandle<Dict>& entryDict, const SharedHandle<DownloadResult>& ds);
 
 // Helper function to store data to entryDict from group. This
 // function is used by tellStatus/tellActive/tellWaiting method
 void gatherProgressCommon
-(BDE& entryDict, const SharedHandle<RequestGroup>& group);
+(const SharedHandle<Dict>& entryDict, const SharedHandle<RequestGroup>& group);
 
 #ifdef ENABLE_BITTORRENT
 // Helper function to store BitTorrent metadata from torrentAttrs.
 void gatherBitTorrentMetadata
-(BDE& btDict, const SharedHandle<TorrentAttribute>& torrentAttrs);
+(const SharedHandle<Dict>& btDict,
+ const SharedHandle<TorrentAttribute>& torrentAttrs);
 #endif // ENABLE_BITTORRENT
 
 } // namespace xmlrpc

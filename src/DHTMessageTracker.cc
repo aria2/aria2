@@ -48,7 +48,6 @@
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "StringFormat.h"
-#include "bencode.h"
 
 namespace aria2 {
 
@@ -65,20 +64,20 @@ void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, time
 
 std::pair<SharedHandle<DHTResponseMessage>, SharedHandle<DHTMessageCallback> >
 DHTMessageTracker::messageArrived
-(const BDE& dict, const std::string& ipaddr, uint16_t port)
+(const Dict* dict, const std::string& ipaddr, uint16_t port)
 {
-  const BDE& tid = dict[DHTMessage::T];
-  if(!tid.isString()) {
+  const String* tid = asString(dict->get(DHTMessage::T));
+  if(!tid) {
     throw DL_ABORT_EX(StringFormat("Malformed DHT message. From:%s:%u",
                                    ipaddr.c_str(), port).str());
   }
   if(_logger->debug()) {
     _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
-                   util::toHex(tid.s()).c_str(), ipaddr.c_str(), port);
+                   util::toHex(tid->s()).c_str(), ipaddr.c_str(), port);
   }
   for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
         _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
-    if((*i)->match(tid.s(), ipaddr, port)) {
+    if((*i)->match(tid->s(), ipaddr, port)) {
       SharedHandle<DHTMessageTrackerEntry> entry = *i;
       _entries.erase(i);
       if(_logger->debug()) {
@@ -162,12 +161,14 @@ size_t DHTMessageTracker::countEntry() const
   return _entries.size();
 }
 
-void DHTMessageTracker::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
+void DHTMessageTracker::setRoutingTable
+(const SharedHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
 
-void DHTMessageTracker::setMessageFactory(const SharedHandle<DHTMessageFactory>& factory)
+void DHTMessageTracker::setMessageFactory
+(const SharedHandle<DHTMessageFactory>& factory)
 {
   _factory = factory;
 }

@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "UTMetadataPostDownloadHandler.h"
-#include "BDE.h"
 #include "bittorrent_helper.h"
 #include "RequestGroup.h"
 #include "download_helper.h"
@@ -46,7 +45,7 @@
 #include "a2functional.h"
 #include "DiskAdaptor.h"
 #include "PieceStorage.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "message.h"
 #include "prefs.h"
 #include "Option.h"

@@ -49,10 +49,10 @@
 #include "UTMetadataDataExtensionMessage.h"
 #include "UTMetadataRejectExtensionMessage.h"
 #include "message.h"
-#include "bencode.h"
 #include "PieceStorage.h"
 #include "UTMetadataRequestTracker.h"
 #include "RequestGroup.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -74,7 +74,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
   uint8_t extensionMessageID = *data;
   if(extensionMessageID == 0) {
     // handshake
-    HandshakeExtensionMessageHandle m = HandshakeExtensionMessage::create(data, length);
+    HandshakeExtensionMessageHandle m =
+      HandshakeExtensionMessage::create(data, length);
     m->setPeer(_peer);
     m->setDownloadContext(_dctx);
     return m;
@@ -97,23 +98,24 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
                                        "ut_metadata", length).str());
       }
       size_t end;
-      BDE dict = bencode::decode(data+1, length-1, end);
-      if(!dict.isDict()) {
+      SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length-1, end);
+      const Dict* dict = asDict(decoded);
+      if(!dict) {
         throw DL_ABORT_EX("Bad ut_metadata: dictionary not found");
       }
-      const BDE& msgType = dict["msg_type"];
-      if(!msgType.isInteger()) {
+      const Integer* msgType = asInteger(dict->get("msg_type"));
+      if(!msgType) {
         throw DL_ABORT_EX("Bad ut_metadata: msg_type not found");
       }
-      const BDE& index = dict["piece"];
-      if(!index.isInteger()) {
+      const Integer* index = asInteger(dict->get("piece"));
+      if(!index) {
         throw DL_ABORT_EX("Bad ut_metadata: piece not found");
       }
-      switch(msgType.i()) {
+      switch(msgType->i()) {
       case 0: {
         SharedHandle<UTMetadataRequestExtensionMessage> m
           (new UTMetadataRequestExtensionMessage(extensionMessageID));
-        m->setIndex(index.i());
+        m->setIndex(index->i());
         m->setDownloadContext(_dctx);
         m->setPeer(_peer);
         m->setBtMessageFactory(_messageFactory);
@@ -124,14 +126,14 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         if(end == length) {
           throw DL_ABORT_EX("Bad ut_metadata data: data not found");
         }
-        const BDE& totalSize = dict["total_size"];
-        if(!totalSize.isInteger()) {
+        const Integer* totalSize = asInteger(dict->get("total_size"));
+        if(!totalSize) {
           throw DL_ABORT_EX("Bad ut_metadata data: total_size not found");
         }
         SharedHandle<UTMetadataDataExtensionMessage> m
           (new UTMetadataDataExtensionMessage(extensionMessageID));
-        m->setIndex(index.i());
-        m->setTotalSize(totalSize.i());
+        m->setIndex(index->i());
+        m->setTotalSize(totalSize->i());
         m->setData(std::string(&data[1+end], &data[length]));
         m->setUTMetadataRequestTracker(_tracker);
         m->setPieceStorage(_dctx->getOwnerRequestGroup()->getPieceStorage());
@@ -141,17 +143,18 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       case 2: {
         SharedHandle<UTMetadataRejectExtensionMessage> m
           (new UTMetadataRejectExtensionMessage(extensionMessageID));
-        m->setIndex(index.i());
+        m->setIndex(index->i());
         // No need to inject tracker because peer will be disconnected.
         return m;
       }
       default:
         throw DL_ABORT_EX(StringFormat("Bad ut_metadata: unknown msg_type=%u",
-                                       msgType.i()).str());
+                                       msgType->i()).str());
       }
     } else {
       throw DL_ABORT_EX
-        (StringFormat("Unsupported extension message received. extensionMessageID=%u, extensionName=%s",
+        (StringFormat("Unsupported extension message received."
+                      " extensionMessageID=%u, extensionName=%s",
                       extensionMessageID, extensionName.c_str()).str());
     }
   }

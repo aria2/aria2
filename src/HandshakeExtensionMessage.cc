@@ -40,7 +40,7 @@
 #include "Logger.h"
 #include "message.h"
 #include "StringFormat.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
 #include "RequestGroup.h"
@@ -59,24 +59,24 @@ HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
 std::string HandshakeExtensionMessage::getPayload()
 {
-  BDE dict = BDE::dict();
+  Dict dict;
   if(!_clientVersion.empty()) {
-    dict["v"] = _clientVersion;
+    dict.put("v", _clientVersion);
   }
   if(_tcpPort > 0) {
-    dict["p"] = _tcpPort;
+    dict.put("p", Integer::g(_tcpPort));
   }
-  BDE extDict = BDE::dict();
+  SharedHandle<Dict> extDict = Dict::g();
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin(),
         eoi = _extensions.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    extDict[vt.first] = vt.second;
+    extDict->put(vt.first, Integer::g(vt.second));
   }
-  dict["m"] = extDict;
+  dict.put("m", extDict);
   if(_metadataSize) {
-    dict["metadata_size"] = _metadataSize;
+    dict.put("metadata_size", Integer::g(_metadataSize));
   }
-  return bencode::encode(dict);
+  return bencode2::encode(&dict);
 }
 
 std::string HandshakeExtensionMessage::toString() const
@@ -168,31 +168,34 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
       ("Creating HandshakeExtensionMessage from %s",
        util::percentEncode(data, length).c_str());
   }
-  const BDE dict = bencode::decode(data+1, length-1);
-  if(!dict.isDict()) {
-    throw DL_ABORT_EX("Unexpected payload format for extended message handshake");
+  SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length-1);
+  const Dict* dict = asDict(decoded);
+  if(!dict) {
+    throw DL_ABORT_EX
+      ("Unexpected payload format for extended message handshake");
   }
-  const BDE& port = dict["p"];
-  if(port.isInteger() && 0 < port.i() && port.i() < 65536) {
-    msg->_tcpPort = port.i();
+  const Integer* port = asInteger(dict->get("p"));
+  if(port && 0 < port->i() && port->i() < 65536) {
+    msg->_tcpPort = port->i();
   }
-  const BDE& version = dict["v"];
-  if(version.isString()) {
-    msg->_clientVersion = version.s();
+  const String* version = asString(dict->get("v"));
+  if(version) {
+    msg->_clientVersion = version->s();
   }
-  const BDE& extDict = dict["m"];
-  if(extDict.isDict()) {
-    for(BDE::Dict::const_iterator i = extDict.dictBegin(),
-          eoi = extDict.dictEnd(); i != eoi; ++i) {
-      if((*i).second.isInteger()) {
-        msg->_extensions[(*i).first] = (*i).second.i();
+  const Dict* extDict = asDict(dict->get("m"));
+  if(extDict) {
+    for(Dict::ValueType::const_iterator i = extDict->begin(),
+          eoi = extDict->end(); i != eoi; ++i) {
+      const Integer* extId = asInteger((*i).second);
+      if(extId) {
+        msg->_extensions[(*i).first] = extId->i();
       }
     }
   }
-  const BDE& metadataSize = dict["metadata_size"];
+  const Integer* metadataSize = asInteger(dict->get("metadata_size"));
   // Only accept metadata smaller than 1MiB
-  if(metadataSize.isInteger() && metadataSize.i() <= 1024*1024) {
-    msg->_metadataSize = metadataSize.i();
+  if(metadataSize && metadataSize->i() <= 1024*1024) {
+    msg->_metadataSize = metadataSize->i();
   }
   return msg;
 }

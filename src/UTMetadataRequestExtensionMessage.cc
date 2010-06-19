@@ -33,8 +33,7 @@
  */
 /* copyright --> */
 #include "UTMetadataRequestExtensionMessage.h"
-#include "BDE.h"
-#include "bencode.h"
+#include "bencode2.h"
 #include "util.h"
 #include "a2functional.h"
 #include "bittorrent_helper.h"
@@ -57,10 +56,10 @@ UTMetadataRequestExtensionMessage::UTMetadataRequestExtensionMessage
 
 std::string UTMetadataRequestExtensionMessage::getPayload()
 {
-  BDE dict = BDE::dict();
-  dict["msg_type"] = 0;
-  dict["piece"] = getIndex();
-  return bencode::encode(dict);
+  Dict dict;
+  dict.put("msg_type", Integer::g(0));
+  dict.put("piece", Integer::g(getIndex()));
+  return bencode2::encode(&dict);
 }
 
 std::string UTMetadataRequestExtensionMessage::toString() const

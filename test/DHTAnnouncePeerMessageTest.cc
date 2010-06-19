@@ -9,7 +9,7 @@
 #include "MockDHTMessageDispatcher.h"
 #include "MockDHTMessage.h"
 #include "DHTPeerAnnounceStorage.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -61,19 +61,19 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
   msg.setVersion("A200");
   std::string msgbody = msg.getBencodedMessage();
 
-  BDE dict = BDE::dict();
-  dict["t"] = transactionID;
-  dict["v"] = BDE("A200");
-  dict["y"] = BDE("q");
-  dict["q"] = BDE("announce_peer");
-  BDE aDict = BDE::dict();
-  aDict["id"] = BDE(localNode->getID(), DHT_ID_LENGTH);
-  aDict["info_hash"] = BDE(infoHash, DHT_ID_LENGTH);
-  aDict["port"] = port;
-  aDict["token"] = token;
-  dict["a"] = aDict;
+  Dict dict;
+  dict.put("t", transactionID);
+  dict.put("v", "A200");
+  dict.put("y", "q");
+  dict.put("q", "announce_peer");
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
+  aDict->put("info_hash", String::g(infoHash, DHT_ID_LENGTH));
+  aDict->put("port", Integer::g(port));
+  aDict->put("token", token);
+  dict.put("a", aDict);
 
-  CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode::encode(dict)),
+  CPPUNIT_ASSERT_EQUAL(util::percentEncode(bencode2::encode(&dict)),
                        util::percentEncode(msgbody));
 }
 

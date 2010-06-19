@@ -40,120 +40,76 @@
 #include <cstring>
 
 #include "a2netcompat.h"
-#include "bencode.h"
 #include "Peer.h"
 #include "ValueBase.h"
 
 namespace aria2 {
 
 class PeerListProcessor {
-private:
+public:
   template<typename OutputIterator>
-  class PeerListValueBaseVisitor:public ValueBaseVisitor {
-    OutputIterator dest_;
-  public:
-    PeerListValueBaseVisitor(OutputIterator dest):dest_(dest) {}
+  void extractPeer(const ValueBase* peerData, OutputIterator dest)
+  {
+    class PeerListValueBaseVisitor:public ValueBaseVisitor {
+    private:
+      OutputIterator dest_;
+    public:
+      PeerListValueBaseVisitor(OutputIterator dest):dest_(dest) {}
 
-    virtual void visit(const String& peerData)
-    {
-      size_t length = peerData.s().size();
-      if(length%6 == 0) {
-        const char* base = peerData.s().data();
-        for(size_t i = 0; i < length; i += 6) {
-          struct in_addr in;
-          memcpy(&in.s_addr, base+i, sizeof(uint32_t));
-          std::string ipaddr = inet_ntoa(in);
-          uint16_t port_nworder;
-          memcpy(&port_nworder, base+i+4, sizeof(uint16_t));
-          uint16_t port = ntohs(port_nworder);
-          *dest_ = SharedHandle<Peer>(new Peer(ipaddr, port));
+      virtual ~PeerListValueBaseVisitor() {}
+
+      virtual void visit(const String& peerData)
+      {
+        size_t length = peerData.s().size();
+        if(length%6 == 0) {
+          const char* base = peerData.s().data();
+          for(size_t i = 0; i < length; i += 6) {
+            struct in_addr in;
+            memcpy(&in.s_addr, base+i, sizeof(uint32_t));
+            std::string ipaddr = inet_ntoa(in);
+            uint16_t port_nworder;
+            memcpy(&port_nworder, base+i+4, sizeof(uint16_t));
+            uint16_t port = ntohs(port_nworder);
+            *dest_ = SharedHandle<Peer>(new Peer(ipaddr, port));
+            ++dest_;
+          }
+        }
+      }
+
+      virtual void visit(const Integer& v) {}
+
+      virtual void visit(const List& peerData)
+      {
+        for(List::ValueType::const_iterator itr = peerData.begin(),
+              eoi = peerData.end(); itr != eoi; ++itr) {
+          const Dict* peerDict = asDict(*itr);
+          if(!peerDict) {
+            continue;
+          }
+          static const std::string IP = "ip";
+          static const std::string PORT = "port";
+          const String* ip = asString(peerDict->get(IP));
+          const Integer* port = asInteger(peerDict->get(PORT));
+          if(!ip || !port || !(0 < port->i() && port->i() < 65536)) {
+            continue;
+          }
+          *dest_ = SharedHandle<Peer>(new Peer(ip->s(), port->i()));
           ++dest_;
         }
       }
-    }
 
-    virtual void visit(const Integer& v) {}
-
-    virtual void visit(const List& peerData)
-    {
-      for(List::ValueType::const_iterator itr = peerData.begin(),
-            eoi = peerData.end(); itr != eoi; ++itr) {
-        const Dict* peerDict = asDict(*itr);
-        if(!peerDict) {
-          continue;
-        }
-        static const std::string IP = "ip";
-        static const std::string PORT = "port";
-        const String* ip = asString(peerDict->get(IP));
-        const Integer* port = asInteger(peerDict->get(PORT));
-        if(!ip || !port || !(0 < port->i() && port->i() < 65536)) {
-          continue;
-        }
-        *dest_ = SharedHandle<Peer>(new Peer(ip->s(), port->i()));
-        ++dest_;
-      }
-    }
-
-    virtual void visit(const Dict& v) {}
-  };
-public:
-  template<typename OutputIterator>
-  void extractPeer(const SharedHandle<ValueBase>& peerData, OutputIterator dest)
-  {
-    if(!peerData.isNull()) {
-      PeerListValueBaseVisitor<OutputIterator> visitor(dest);
+      virtual void visit(const Dict& v) {}
+    };
+    if(peerData) {
+      PeerListValueBaseVisitor visitor(dest);
       peerData->accept(visitor);
     }
   }
 
   template<typename OutputIterator>
-  void extractPeer(const BDE& peerData, OutputIterator dest)
+  void extractPeer(const SharedHandle<ValueBase>& peerData, OutputIterator dest)
   {
-    if(peerData.isList()) {
-      extractPeerFromList(peerData, dest);
-    } else if(peerData.isString()) {
-      extractPeerFromCompact(peerData, dest);
-    }
-  }
-
-  template<typename OutputIterator>
-  void extractPeerFromList(const BDE& peerData, OutputIterator dest)
-  {
-    for(BDE::List::const_iterator itr = peerData.listBegin(),
-          eoi = peerData.listEnd(); itr != eoi; ++itr) {
-      const BDE& peerDict = *itr;
-      if(!peerDict.isDict()) {
-        continue;
-      }
-      static const std::string IP = "ip";
-      static const std::string PORT = "port";
-      const BDE& ip = peerDict[IP];
-      const BDE& port = peerDict[PORT];
-      if(!ip.isString() || !port.isInteger() ||
-         !(0 < port.i() && port.i() < 65536)) {
-        continue;
-      }
-      *dest = SharedHandle<Peer>(new Peer(ip.s(), port.i()));
-      ++dest;
-    }
-  }
-
-  template<typename OutputIterator>
-  void extractPeerFromCompact(const BDE& peerData, OutputIterator dest)
-  {
-    size_t length = peerData.s().size();
-    if(length%6 == 0) {
-      for(size_t i = 0; i < length; i += 6) {
-        struct in_addr in;
-        memcpy(&in.s_addr, peerData.s().c_str()+i, sizeof(uint32_t));
-        std::string ipaddr = inet_ntoa(in);
-        uint16_t port_nworder;
-        memcpy(&port_nworder, peerData.s().c_str()+i+4, sizeof(uint16_t));
-        uint16_t port = ntohs(port_nworder);
-        *dest = SharedHandle<Peer>(new Peer(ipaddr, port));
-        ++dest;
-      }
-    }
+    return extractPeer(peerData.get(), dest);
   }
 };
 

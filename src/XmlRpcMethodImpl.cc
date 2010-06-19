@@ -39,7 +39,6 @@
 
 #include "Logger.h"
 #include "LogFactory.h"
-#include "BDE.h"
 #include "DlAbortEx.h"
 #include "Option.h"
 #include "OptionParser.h"
@@ -82,17 +81,17 @@ namespace aria2 {
 namespace xmlrpc {
 
 namespace {
-const BDE BDE_TRUE = BDE("true");
-const BDE BDE_FALSE = BDE("false");
-const BDE BDE_OK = BDE("OK");
-const BDE BDE_ACTIVE = BDE("active");
-const BDE BDE_WAITING = BDE("waiting");
-const BDE BDE_PAUSED = BDE("paused");
-const BDE BDE_REMOVED = BDE("removed");
-const BDE BDE_ERROR = BDE("error");
-const BDE BDE_COMPLETE = BDE("complete");
-const BDE BDE_USED = BDE("used");
-const BDE BDE_ZERO = BDE("0");
+const SharedHandle<String> VLB_TRUE = String::g("true");
+const SharedHandle<String> VLB_FALSE = String::g("false");
+const SharedHandle<String> VLB_OK = String::g("OK");
+const SharedHandle<String> VLB_ACTIVE = String::g("active");
+const SharedHandle<String> VLB_WAITING = String::g("waiting");
+const SharedHandle<String> VLB_PAUSED = String::g("paused");
+const SharedHandle<String> VLB_REMOVED = String::g("removed");
+const SharedHandle<String> VLB_ERROR = String::g("error");
+const SharedHandle<String> VLB_COMPLETE = String::g("complete");
+const SharedHandle<String> VLB_USED = String::g("used");
+const SharedHandle<String> VLB_ZERO = String::g("0");
 
 const std::string KEY_GID = "gid";
 const std::string KEY_ERROR_CODE = "errorCode";
@@ -140,14 +139,15 @@ const std::string KEY_MODE = "mode";
 const std::string KEY_SERVERS = "servers";
 }
 
-static BDE createGIDResponse(gid_t gid)
+static SharedHandle<ValueBase> createGIDResponse(gid_t gid)
 {
-  return BDE(util::itos(gid));
+  return String::g(util::itos(gid));
 }
 
-static BDE addRequestGroup(const SharedHandle<RequestGroup>& group,
-                           DownloadEngine* e,
-                           bool posGiven, int pos)
+static SharedHandle<ValueBase>
+addRequestGroup(const SharedHandle<RequestGroup>& group,
+                DownloadEngine* e,
+                bool posGiven, int pos)
 {
   if(posGiven) {
     e->getRequestGroupMan()->insertReservedGroup(pos, group);
@@ -168,51 +168,100 @@ findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
   return group;
 }
 
-static bool hasDictParam(const BDE& params, size_t index)
+static const String* getStringParam
+(const SharedHandle<List>& params, size_t index)
 {
-  return params.size() > index && params[index].isDict();
+  const String* stringParam = 0;
+  if(params->size() > index) {
+    stringParam = asString(params->get(index));
+  }
+  return stringParam;
 }
 
-static void getPosParam(const BDE& params, size_t posParamIndex,
+static const Integer* getIntegerParam
+(const SharedHandle<List>& params, size_t index)
+{
+  const Integer* integerParam = 0;
+  if(params->size() > index) {
+    integerParam = asInteger(params->get(index));
+  }
+  return integerParam;
+}
+
+static const List* getListParam(const SharedHandle<List>& params, size_t index)
+{
+  const List* listParam = 0;
+  if(params->size() > index) {
+    listParam = asList(params->get(index));
+  }
+  return listParam;
+}
+
+static const Dict* getDictParam(const SharedHandle<List>& params, size_t index)
+{
+  const Dict* dictParam = 0;
+  if(params->size() > index) {
+    dictParam = asDict(params->get(index));
+  }
+  return dictParam;
+}
+
+static void getPosParam(const SharedHandle<List>& params, size_t posParamIndex,
                         bool& posGiven, size_t& pos)
 {
-  if(params.size() > posParamIndex && params[posParamIndex].isInteger()) {
-    if(params[posParamIndex].i() >= 0) {
-      pos = params[posParamIndex].i();
-      posGiven = true;
-    } else {
-      throw DL_ABORT_EX("Position must be greater than or equal to 0.");
+  if(params->size() > posParamIndex) {
+    const Integer* p = asInteger(params->get(posParamIndex));
+    if(p) {
+      if(p->i() >= 0) {
+        pos = p->i();
+        posGiven = true;
+        return;
+      } else {
+        throw DL_ABORT_EX("Position must be greater than or equal to 0.");
+      }
     }
-  } else {
-    posGiven = false;
   }
+  posGiven = false;
 } 
 
-template<typename OutputIterator>
-static void extractUris(OutputIterator out, const BDE& src)
+static gid_t getRequiredGidParam
+(const SharedHandle<List>& params, size_t posParamIndex)
 {
-  for(BDE::List::const_iterator i = src.listBegin(), eoi = src.listEnd();
-      i != eoi; ++i) {
-    if((*i).isString()) {
-      out++ = (*i).s();
+  const String* gidParam = getStringParam(params, posParamIndex);
+  if(gidParam) {
+    return util::parseLLInt(gidParam->s());
+  } else {
+    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
+  }
+}
+
+template<typename OutputIterator>
+static void extractUris(OutputIterator out, const List* src)
+{
+  if(src) {
+    for(List::ValueType::const_iterator i = src->begin(), eoi = src->end();
+        i != eoi; ++i) {
+      const String* uri = asString(*i);
+      if(uri) {
+        out++ = uri->s();
+      }
     }
   }
 }
 
-BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> AddUriXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isList() || params[0].empty()) {
+  const SharedHandle<List>& params = req.params;
+  std::vector<std::string> uris;
+  extractUris(std::back_inserter(uris), getListParam(params, 0));
+  if(uris.empty()) {
     throw DL_ABORT_EX("URI is not provided.");
   }
-  std::vector<std::string> uris;
-  extractUris(std::back_inserter(uris), params[0]);
 
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  if(hasDictParam(params, 1)) {
-    gatherRequestOption(requestOption, params[1]);
-  }
+  gatherRequestOption(requestOption, getDictParam(params, 1));
+
   size_t pos = 0;
   bool posGiven = false;
   getPosParam(params, 2, posGiven, pos);
@@ -230,31 +279,28 @@ BDE AddUriXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
 }
 
 #ifdef ENABLE_BITTORRENT
-BDE AddTorrentXmlRpcMethod::process
+SharedHandle<ValueBase> AddTorrentXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isString()) {
+  const SharedHandle<List>& params = req.params;
+  const String* torrentParam = getStringParam(params, 0);
+  if(!torrentParam) {
     throw DL_ABORT_EX("Torrent data is not provided.");
   }
   
   std::vector<std::string> uris;
-  if(params.size() > 1 && params[1].isList()) {
-    extractUris(std::back_inserter(uris), params[1]);
-  }
+  extractUris(std::back_inserter(uris), getListParam(params, 1));
+
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  if(hasDictParam(params, 2)) {
-    gatherRequestOption(requestOption, params[2]);
-  }
+  gatherRequestOption(requestOption, getDictParam(params, 2));
+
   size_t pos = 0;
   bool posGiven = false;
   getPosParam(params, 3, posGiven, pos);
 
   std::vector<SharedHandle<RequestGroup> > result;
   createRequestGroupForBitTorrent(result, requestOption,
-                                  uris,
-                                  params[0].s());
+                                  uris, torrentParam->s());
 
   if(!result.empty()) {
     return addRequestGroup(result.front(), e, posGiven, pos);
@@ -265,58 +311,48 @@ BDE AddTorrentXmlRpcMethod::process
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-BDE AddMetalinkXmlRpcMethod::process
+SharedHandle<ValueBase> AddMetalinkXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isString()) {
+  const SharedHandle<List>& params = req.params;
+  const String* metalinkParam = getStringParam(params, 0);
+  if(!metalinkParam) {
     throw DL_ABORT_EX("Metalink data is not provided.");
   }
   
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  if(hasDictParam(params, 1)) {
-    gatherRequestOption(requestOption, params[1]);
-  };
+  gatherRequestOption(requestOption, getDictParam(params, 1));
+
   size_t pos = 0;
   bool posGiven = false;
   getPosParam(params, 2, posGiven, pos);
 
   std::vector<SharedHandle<RequestGroup> > result;
-  createRequestGroupForMetalink(result, requestOption, params[0].s());
+  createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
+  SharedHandle<List> gids = List::g();
   if(!result.empty()) {
     if(posGiven) {
       e->getRequestGroupMan()->insertReservedGroup(pos, result);
     } else {
       e->getRequestGroupMan()->addReservedGroup(result);
     }
-    BDE gids = BDE::list();
     for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
           result.begin(), eoi = result.end(); i != eoi; ++i) {
-      gids << BDE(util::itos((*i)->getGID()));
+      gids->append(util::itos((*i)->getGID()));
     }
-    return gids;
-  } else {
-    throw DL_ABORT_EX("No files to download.");
   }
+  return gids;
 } 
 #endif // ENABLE_METALINK
 
-static BDE removeDownload
+static SharedHandle<ValueBase> removeDownload
 (const XmlRpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
-  
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
 
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
-
   if(group.isNull()) {
     group = e->getRequestGroupMan()->findReservedGroup(gid);
     if(group.isNull()) {
@@ -338,17 +374,16 @@ static BDE removeDownload
       group->setHaltRequested(true, RequestGroup::USER_REQUEST);
     }
   }
-
   return createGIDResponse(gid);
-
 }
 
-BDE RemoveXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> RemoveXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   return removeDownload(req, e, false);
 }
 
-BDE ForceRemoveXmlRpcMethod::process
+SharedHandle<ValueBase> ForceRemoveXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   return removeDownload(req, e, true);
@@ -378,15 +413,12 @@ static bool pauseRequestGroup
   }
 }
 
-static BDE pauseDownload
+static SharedHandle<ValueBase> pauseDownload
 (const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
+
   bool reserved = false;
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
@@ -403,12 +435,14 @@ static BDE pauseDownload
   }
 }
 
-BDE PauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> PauseXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   return pauseDownload(req, e, false);
 }
 
-BDE ForcePauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ForcePauseXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   return pauseDownload(req, e, true);
 }
@@ -422,7 +456,7 @@ static void pauseRequestGroups
   }
 }
 
-static BDE pauseAllDownloads
+static SharedHandle<ValueBase> pauseAllDownloads
 (const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   const std::deque<SharedHandle<RequestGroup> >& groups =
@@ -432,28 +466,26 @@ static BDE pauseAllDownloads
     e->getRequestGroupMan()->getReservedGroups();
   pauseRequestGroups(reservedGroups.begin(), reservedGroups.end(),
                      true, forcePause);
-  return BDE_OK;
+  return VLB_OK;
 }
 
-BDE PauseAllXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> PauseAllXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   return pauseAllDownloads(req, e, false);
 }
 
-BDE ForcePauseAllXmlRpcMethod::process
+SharedHandle<ValueBase> ForcePauseAllXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   return pauseAllDownloads(req, e, true);
 }
 
-BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> UnpauseXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findReservedGroup(gid);
   if(group.isNull() || !group->isPauseRequested()) {
@@ -467,7 +499,8 @@ BDE UnpauseXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
   return createGIDResponse(gid);
 }
 
-BDE UnpauseAllXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> UnpauseAllXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   const std::deque<SharedHandle<RequestGroup> >& groups =
     e->getRequestGroupMan()->getReservedGroups();
@@ -475,177 +508,183 @@ BDE UnpauseAllXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
                 std::bind2nd(mem_fun_sh(&RequestGroup::setPauseRequested),
                              false));
   e->getRequestGroupMan()->requestQueueCheck();    
-  return BDE_OK;
-}
-
-static void createUriEntry(BDE& uriList, const SharedHandle<FileEntry>& file)
-{
-  {
-    const std::deque<std::string>& uris = file->getSpentUris();
-    for(std::deque<std::string>::const_iterator i = uris.begin(),
-          eoi = uris.end(); i != eoi; ++i) {
-      BDE entry = BDE::dict();
-      entry[KEY_URI] = *i;
-      entry[KEY_STATUS] = BDE_USED;
-      uriList << entry;
-    }
-  }
-  {
-    const std::deque<std::string>& uris = file->getRemainingUris();
-    for(std::deque<std::string>::const_iterator i = uris.begin(),
-          eoi = uris.end(); i != eoi; ++i) {
-      BDE entry = BDE::dict();
-      entry[KEY_URI] = *i;
-      entry[KEY_STATUS] = BDE_WAITING;
-      uriList << entry;
-    }
-  }
+  return VLB_OK;
 }
 
 template<typename InputIterator>
-static void createFileEntry(BDE& files, InputIterator first, InputIterator last)
+static void createUriEntry
+(const SharedHandle<List>& uriList,
+ InputIterator first, InputIterator last,
+ const SharedHandle<String>& status)
+{
+  for(; first != last; ++first) {
+    SharedHandle<Dict> entry = Dict::g();
+    entry->put(KEY_URI, *first);
+    entry->put(KEY_STATUS, status);
+    uriList->append(entry);
+  }
+}
+
+static void createUriEntry
+(const SharedHandle<List>& uriList, const SharedHandle<FileEntry>& file)
+{
+  createUriEntry(uriList,
+                 file->getSpentUris().begin(),
+                 file->getSpentUris().end(),
+                 VLB_USED);
+  createUriEntry(uriList,
+                 file->getRemainingUris().begin(),
+                 file->getRemainingUris().end(),
+                 VLB_WAITING);
+}
+
+template<typename InputIterator>
+static void createFileEntry
+(const SharedHandle<List>& files, InputIterator first, InputIterator last)
 {
   size_t index = 1;
   for(; first != last; ++first, ++index) {
-    BDE entry = BDE::dict();
-    entry[KEY_INDEX] = util::uitos(index);
-    entry[KEY_PATH] = (*first)->getPath();
-    entry[KEY_SELECTED] = (*first)->isRequested()?BDE_TRUE:BDE_FALSE;
-    entry[KEY_LENGTH] = util::uitos((*first)->getLength());
+    SharedHandle<Dict> entry = Dict::g();
+    entry->put(KEY_INDEX, util::uitos(index));
+    entry->put(KEY_PATH, (*first)->getPath());
+    entry->put(KEY_SELECTED, (*first)->isRequested()?VLB_TRUE:VLB_FALSE);
+    entry->put(KEY_LENGTH, util::uitos((*first)->getLength()));
 
-    BDE uriList = BDE::list();
+    SharedHandle<List> uriList = List::g();
     createUriEntry(uriList, *first);
-    entry[KEY_URIS] = uriList;
-    files << entry;
+    entry->put(KEY_URIS, uriList);
+    files->append(entry);
   }
 }
 
 void gatherProgressCommon
-(BDE& entryDict, const SharedHandle<RequestGroup>& group)
+(const SharedHandle<Dict>& entryDict, const SharedHandle<RequestGroup>& group)
 {
-  entryDict[KEY_GID] = util::itos(group->getGID());
+  entryDict->put(KEY_GID, util::itos(group->getGID()));
   // This is "filtered" total length if --select-file is used.
-  entryDict[KEY_TOTAL_LENGTH] = util::uitos(group->getTotalLength());
+  entryDict->put(KEY_TOTAL_LENGTH, util::uitos(group->getTotalLength()));
   // This is "filtered" total length if --select-file is used.
-  entryDict[KEY_COMPLETED_LENGTH] = util::uitos(group->getCompletedLength());
+  entryDict->put(KEY_COMPLETED_LENGTH,util::uitos(group->getCompletedLength()));
   TransferStat stat = group->calculateStat();
-  entryDict[KEY_DOWNLOAD_SPEED] = util::uitos(stat.getDownloadSpeed());
-  entryDict[KEY_UPLOAD_SPEED] = util::uitos(stat.getUploadSpeed());
-  entryDict[KEY_UPLOAD_LENGTH] = util::uitos(stat.getAllTimeUploadLength());
-  entryDict[KEY_CONNECTIONS] = util::uitos(group->getNumConnection());
+  entryDict->put(KEY_DOWNLOAD_SPEED, util::uitos(stat.getDownloadSpeed()));
+  entryDict->put(KEY_UPLOAD_SPEED, util::uitos(stat.getUploadSpeed()));
+  entryDict->put(KEY_UPLOAD_LENGTH, util::uitos(stat.getAllTimeUploadLength()));
+  entryDict->put(KEY_CONNECTIONS, util::uitos(group->getNumConnection()));
   SharedHandle<PieceStorage> ps = group->getPieceStorage();
   if(!ps.isNull()) {
     if(ps->getBitfieldLength() > 0) {
-      entryDict[KEY_BITFIELD] = util::toHex(ps->getBitfield(),
-                                            ps->getBitfieldLength());
+      entryDict->put(KEY_BITFIELD,
+                     util::toHex(ps->getBitfield(), ps->getBitfieldLength()));
     }
   }
   const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
-  entryDict[KEY_PIECE_LENGTH] = util::uitos(dctx->getPieceLength());
-  entryDict[KEY_NUM_PIECES] = util::uitos(dctx->getNumPieces());
+  entryDict->put(KEY_PIECE_LENGTH, util::uitos(dctx->getPieceLength()));
+  entryDict->put(KEY_NUM_PIECES, util::uitos(dctx->getNumPieces()));
   if(!group->followedBy().empty()) {
-    BDE list = BDE::list();
+    SharedHandle<List> list = List::g();
     // The element is GID.
     for(std::vector<gid_t>::const_iterator i = group->followedBy().begin(),
           eoi = group->followedBy().end(); i != eoi; ++i) {
-      list << util::itos(*i);
+      list->append(util::itos(*i));
     }
-    entryDict[KEY_FOLLOWED_BY] = list;
+    entryDict->put(KEY_FOLLOWED_BY, list);
   }
   if(group->belongsTo()) {
-    entryDict[KEY_BELONGS_TO] = util::itos(group->belongsTo());
+    entryDict->put(KEY_BELONGS_TO, util::itos(group->belongsTo()));
   }
-  BDE files = BDE::list();
+  SharedHandle<List> files = List::g();
   createFileEntry
     (files, dctx->getFileEntries().begin(), dctx->getFileEntries().end());
-  entryDict[KEY_FILES] = files;
-  entryDict[KEY_DIR] = dctx->getDir();
+  entryDict->put(KEY_FILES, files);
+  entryDict->put(KEY_DIR, dctx->getDir());
 }
 
 #ifdef ENABLE_BITTORRENT
 void gatherBitTorrentMetadata
-(BDE& btDict, const SharedHandle<TorrentAttribute>& torrentAttrs)
+(const SharedHandle<Dict>& btDict,
+ const SharedHandle<TorrentAttribute>& torrentAttrs)
 {
   if(!torrentAttrs->comment.empty()) {
-    btDict[KEY_COMMENT] = torrentAttrs->comment;
+    btDict->put(KEY_COMMENT, torrentAttrs->comment);
   }
   if(torrentAttrs->creationDate) {
-    btDict[KEY_CREATION_DATE] = torrentAttrs->creationDate;
+    btDict->put(KEY_CREATION_DATE, Integer::g(torrentAttrs->creationDate));
   }
   if(!torrentAttrs->mode.empty()) {
-    btDict[KEY_MODE] = torrentAttrs->mode;
+    btDict->put(KEY_MODE, torrentAttrs->mode);
   }
-  BDE destAnnounceList = BDE::list();
+  SharedHandle<List> destAnnounceList = List::g();
   for(std::vector<std::vector<std::string> >::const_iterator l =
         torrentAttrs->announceList.begin(),
         eoi = torrentAttrs->announceList.end(); l != eoi; ++l) {
-    BDE destAnnounceTier = BDE::list();
+    SharedHandle<List> destAnnounceTier = List::g();
     for(std::vector<std::string>::const_iterator t = (*l).begin(),
           eoi2 = (*l).end(); t != eoi2; ++t) {
-      destAnnounceTier <<  *t;
+      destAnnounceTier->append(*t);
     }
-    destAnnounceList << destAnnounceTier;
+    destAnnounceList->append(destAnnounceTier);
   }
-  btDict[KEY_ANNOUNCE_LIST] = destAnnounceList;
+  btDict->put(KEY_ANNOUNCE_LIST, destAnnounceList);
   if(!torrentAttrs->metadata.empty()) {
-    BDE infoDict = BDE::dict();
-    infoDict[KEY_NAME] = torrentAttrs->name;
-    btDict[KEY_INFO] = infoDict;
+    SharedHandle<Dict> infoDict = Dict::g();
+    infoDict->put(KEY_NAME, torrentAttrs->name);
+    btDict->put(KEY_INFO, infoDict);
   }
 }
 
 static void gatherProgressBitTorrent
-(BDE& entryDict,
+(const SharedHandle<Dict>& entryDict,
  const SharedHandle<TorrentAttribute>& torrentAttrs,
  const BtObject& btObject)
 {
-  entryDict[KEY_INFO_HASH] = util::toHex(torrentAttrs->infoHash);
-  BDE btDict = BDE::dict();
+  entryDict->put(KEY_INFO_HASH, util::toHex(torrentAttrs->infoHash));
+  SharedHandle<Dict> btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, torrentAttrs);
-  entryDict[KEY_BITTORRENT] = btDict;
+  entryDict->put(KEY_BITTORRENT, btDict);
   if(btObject.isNull()) {
-    entryDict[KEY_NUM_SEEDERS] = BDE_ZERO;
+    entryDict->put(KEY_NUM_SEEDERS, VLB_ZERO);
   } else {
     SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
     assert(!peerStorage.isNull());
-
     std::vector<SharedHandle<Peer> > peers;
     peerStorage->getActivePeers(peers);
-    entryDict[KEY_NUM_SEEDERS] =
-      util::uitos(countSeeder(peers.begin(), peers.end()));
+    entryDict->put(KEY_NUM_SEEDERS,
+                   util::uitos(countSeeder(peers.begin(), peers.end())));
   }
 }
 
-static void gatherPeer(BDE& peers, const SharedHandle<PeerStorage>& ps)
+static void gatherPeer
+(const SharedHandle<List>& peers, const SharedHandle<PeerStorage>& ps)
 {
   std::vector<SharedHandle<Peer> > activePeers;
   ps->getActivePeers(activePeers);
   for(std::vector<SharedHandle<Peer> >::const_iterator i =
         activePeers.begin(), eoi = activePeers.end(); i != eoi; ++i) {
-    BDE peerEntry = BDE::dict();
-    peerEntry[KEY_PEER_ID] = util::torrentPercentEncode((*i)->getPeerId(),
-                                                        PEER_ID_LENGTH);
-    peerEntry[KEY_IP] = (*i)->getIPAddress();
+    SharedHandle<Dict> peerEntry = Dict::g();
+    peerEntry->put(KEY_PEER_ID, util::torrentPercentEncode((*i)->getPeerId(),
+                                                           PEER_ID_LENGTH));
+    peerEntry->put(KEY_IP, (*i)->getIPAddress());
     if((*i)->isIncomingPeer()) {
-      peerEntry[KEY_PORT] = std::string("0");
+      peerEntry->put(KEY_PORT, VLB_ZERO);
     } else {
-      peerEntry[KEY_PORT] = util::uitos((*i)->getPort());
+      peerEntry->put(KEY_PORT, util::uitos((*i)->getPort()));
     }
-    peerEntry[KEY_BITFIELD] = util::toHex((*i)->getBitfield(),
-                                          (*i)->getBitfieldLength());
-    peerEntry[KEY_AM_CHOKING] = (*i)->amChoking()?BDE_TRUE:BDE_FALSE;
-    peerEntry[KEY_PEER_CHOKING] = (*i)->peerChoking()?BDE_TRUE:BDE_FALSE;
+    peerEntry->put(KEY_BITFIELD,
+                   util::toHex((*i)->getBitfield(), (*i)->getBitfieldLength()));
+    peerEntry->put(KEY_AM_CHOKING, (*i)->amChoking()?VLB_TRUE:VLB_FALSE);
+    peerEntry->put(KEY_PEER_CHOKING, (*i)->peerChoking()?VLB_TRUE:VLB_FALSE);
     TransferStat stat = ps->getTransferStatFor(*i);
-    peerEntry[KEY_DOWNLOAD_SPEED] = util::uitos(stat.getDownloadSpeed());
-    peerEntry[KEY_UPLOAD_SPEED] = util::uitos(stat.getUploadSpeed());
-    peerEntry[KEY_SEEDER] = (*i)->isSeeder()?BDE_TRUE:BDE_FALSE;
-    peers << peerEntry;
+    peerEntry->put(KEY_DOWNLOAD_SPEED, util::uitos(stat.getDownloadSpeed()));
+    peerEntry->put(KEY_UPLOAD_SPEED, util::uitos(stat.getUploadSpeed()));
+    peerEntry->put(KEY_SEEDER, (*i)->isSeeder()?VLB_TRUE:VLB_FALSE);
+    peers->append(peerEntry);
   }
 }
 #endif // ENABLE_BITTORRENT
 
 static void gatherProgress
-(BDE& entryDict, const SharedHandle<RequestGroup>& group, DownloadEngine* e)
+(const SharedHandle<Dict>& entryDict,
+ const SharedHandle<RequestGroup>& group, DownloadEngine* e)
 {
   gatherProgressCommon(entryDict, group);
 #ifdef ENABLE_BITTORRENT
@@ -659,63 +698,56 @@ static void gatherProgress
 }
 
 void gatherStoppedDownload
-(BDE& entryDict, const SharedHandle<DownloadResult>& ds)
+(const SharedHandle<Dict>& entryDict, const SharedHandle<DownloadResult>& ds)
 {
-  entryDict[KEY_GID] = util::itos(ds->gid);
-  entryDict[KEY_ERROR_CODE] = util::itos(static_cast<int>(ds->result));
+  entryDict->put(KEY_GID, util::itos(ds->gid));
+  entryDict->put(KEY_ERROR_CODE, util::itos(static_cast<int>(ds->result)));
   if(ds->result == downloadresultcode::IN_PROGRESS) {
-    entryDict[KEY_STATUS] = BDE_REMOVED;
+    entryDict->put(KEY_STATUS, VLB_REMOVED);
   } else if(ds->result == downloadresultcode::FINISHED) {
-    entryDict[KEY_STATUS] = BDE_COMPLETE;
+    entryDict->put(KEY_STATUS, VLB_COMPLETE);
   } else {
-    entryDict[KEY_STATUS] = BDE_ERROR;
+    entryDict->put(KEY_STATUS, VLB_ERROR);
   }
   if(!ds->followedBy.empty()) {
-    BDE list = BDE::list();
+    SharedHandle<List> list = List::g();
     // The element is GID.
     for(std::vector<gid_t>::const_iterator i = ds->followedBy.begin(),
           eoi = ds->followedBy.end(); i != eoi; ++i) {
-      list << util::itos(*i);
+      list->append(util::itos(*i));
     }
-    entryDict[KEY_FOLLOWED_BY] = list;
+    entryDict->put(KEY_FOLLOWED_BY, list);
   }
   if(ds->belongsTo) {
-    entryDict[KEY_BELONGS_TO] = util::itos(ds->belongsTo);
+    entryDict->put(KEY_BELONGS_TO, util::itos(ds->belongsTo));
   }
-  BDE files = BDE::list();
+  SharedHandle<List> files = List::g();
   createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end());
-  entryDict[KEY_FILES] = files;
-  entryDict[KEY_TOTAL_LENGTH] = util::uitos(ds->totalLength);
-  entryDict[KEY_COMPLETED_LENGTH] = util::uitos(ds->completedLength);
-  entryDict[KEY_UPLOAD_LENGTH] = util::uitos(ds->uploadLength);
+  entryDict->put(KEY_FILES, files);
+  entryDict->put(KEY_TOTAL_LENGTH, util::uitos(ds->totalLength));
+  entryDict->put(KEY_COMPLETED_LENGTH, util::uitos(ds->completedLength));
+  entryDict->put(KEY_UPLOAD_LENGTH, util::uitos(ds->uploadLength));
   if(!ds->bitfieldStr.empty()) {
-    entryDict[KEY_BITFIELD] = ds->bitfieldStr;
+    entryDict->put(KEY_BITFIELD, ds->bitfieldStr);
   }
-  entryDict[KEY_DOWNLOAD_SPEED] = BDE_ZERO;
-  entryDict[KEY_UPLOAD_SPEED] = BDE_ZERO;
+  entryDict->put(KEY_DOWNLOAD_SPEED, VLB_ZERO);
+  entryDict->put(KEY_UPLOAD_SPEED, VLB_ZERO);
   if(!ds->infoHashStr.empty()) {
-    entryDict[KEY_INFO_HASH] = ds->infoHashStr;
-    entryDict[KEY_NUM_SEEDERS] = BDE_ZERO;
+    entryDict->put(KEY_INFO_HASH, ds->infoHashStr);
+    entryDict->put(KEY_NUM_SEEDERS, VLB_ZERO);
   }
-  entryDict[KEY_PIECE_LENGTH] = util::uitos(ds->pieceLength);
-  entryDict[KEY_NUM_PIECES] = util::uitos(ds->numPieces);
-  entryDict[KEY_CONNECTIONS] = BDE_ZERO;
-  entryDict[KEY_DIR] = ds->dir;
+  entryDict->put(KEY_PIECE_LENGTH, util::uitos(ds->pieceLength));
+  entryDict->put(KEY_NUM_PIECES, util::uitos(ds->numPieces));
+  entryDict->put(KEY_CONNECTIONS, VLB_ZERO);
+  entryDict->put(KEY_DIR, ds->dir);
 }
 
-BDE GetFilesXmlRpcMethod::process
+SharedHandle<ValueBase> GetFilesXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
-  
-  gid_t gid = util::parseLLInt(params[0].s());
-
-  BDE files = BDE::list();
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
+  SharedHandle<List> files = List::g();
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
@@ -736,18 +768,11 @@ BDE GetFilesXmlRpcMethod::process
   return files;
 }
 
-BDE GetUrisXmlRpcMethod::process
+SharedHandle<ValueBase> GetUrisXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
-  
-  gid_t gid = util::parseLLInt(params[0].s());
-
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
@@ -755,7 +780,7 @@ BDE GetUrisXmlRpcMethod::process
       (StringFormat("No URI data is available for GID#%s",
                     util::itos(gid).c_str()).str());
   }
-  BDE uriList = BDE::list();
+  SharedHandle<List> uriList = List::g();
   // TODO Current implementation just returns first FileEntry's URIs.
   if(!group->getDownloadContext()->getFileEntries().empty()) {
     createUriEntry(uriList, group->getDownloadContext()->getFirstFileEntry());
@@ -764,17 +789,11 @@ BDE GetUrisXmlRpcMethod::process
 }
 
 #ifdef ENABLE_BITTORRENT
-BDE GetPeersXmlRpcMethod::process
+SharedHandle<ValueBase> GetPeersXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
-  
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -783,7 +802,7 @@ BDE GetPeersXmlRpcMethod::process
       (StringFormat("No peer data is available for GID#%s",
                     util::itos(gid).c_str()).str());
   }
-  BDE peers = BDE::list();
+  SharedHandle<List> peers = List::g();
   BtObject btObject = e->getBtRegistry()->get(group->getGID());
   if(!btObject.isNull()) {
     assert(!btObject._peerStorage.isNull());
@@ -793,22 +812,16 @@ BDE GetPeersXmlRpcMethod::process
 }
 #endif // ENABLE_BITTORRENT
 
-BDE TellStatusXmlRpcMethod::process
+SharedHandle<ValueBase> TellStatusXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
-  
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
 
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
 
-  BDE entryDict = BDE::dict();
+  SharedHandle<Dict> entryDict = Dict::g();
   if(group.isNull()) {
     group = e->getRequestGroupMan()->findReservedGroup(gid);
     if(group.isNull()) {
@@ -822,31 +835,31 @@ BDE TellStatusXmlRpcMethod::process
       gatherStoppedDownload(entryDict, ds);
     } else {
       if(group->isPauseRequested()) {
-        entryDict[KEY_STATUS] = BDE_PAUSED;
+        entryDict->put(KEY_STATUS, VLB_PAUSED);
       } else {
-        entryDict[KEY_STATUS] = BDE_WAITING;
+        entryDict->put(KEY_STATUS, VLB_WAITING);
       }
       gatherProgress(entryDict, group, e);
     }
   } else {
-    entryDict[KEY_STATUS] = BDE_ACTIVE;
+    entryDict->put(KEY_STATUS, VLB_ACTIVE);
     gatherProgress(entryDict, group, e);
   }
   return entryDict;
 }
 
-BDE TellActiveXmlRpcMethod::process
+SharedHandle<ValueBase> TellActiveXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  BDE list = BDE::list();
+  SharedHandle<List> list = List::g();
   const std::deque<SharedHandle<RequestGroup> >& groups =
     e->getRequestGroupMan()->getRequestGroups();
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
         groups.begin(), eoi = groups.end(); i != eoi; ++i) {
-    BDE entryDict = BDE::dict();
-    entryDict[KEY_STATUS] = BDE_ACTIVE;
+    SharedHandle<Dict> entryDict = Dict::g();
+    entryDict->put(KEY_STATUS, VLB_ACTIVE);
     gatherProgress(entryDict, *i, e);
-    list << entryDict;
+    list->append(entryDict);
   }
   return list;
 }
@@ -858,13 +871,13 @@ TellWaitingXmlRpcMethod::getItems(DownloadEngine* e) const
 }
 
 void TellWaitingXmlRpcMethod::createEntry
-(BDE& entryDict, const SharedHandle<RequestGroup>& item,
+(const SharedHandle<Dict>& entryDict, const SharedHandle<RequestGroup>& item,
  DownloadEngine* e) const
 {
   if(item->isPauseRequested()) {
-    entryDict[KEY_STATUS] = BDE_PAUSED;
+    entryDict->put(KEY_STATUS, VLB_PAUSED);
   } else {
-    entryDict[KEY_STATUS] = BDE_WAITING;
+    entryDict->put(KEY_STATUS, VLB_WAITING);
   }
   gatherProgress(entryDict, item, e);
 }
@@ -876,28 +889,24 @@ TellStoppedXmlRpcMethod::getItems(DownloadEngine* e) const
 }
 
 void TellStoppedXmlRpcMethod::createEntry
-(BDE& entryDict, const SharedHandle<DownloadResult>& item,
+(const SharedHandle<Dict>& entryDict, const SharedHandle<DownloadResult>& item,
  DownloadEngine* e) const
 {
   gatherStoppedDownload(entryDict, item);
 }
 
-BDE PurgeDownloadResultXmlRpcMethod::process
+SharedHandle<ValueBase> PurgeDownloadResultXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   e->getRequestGroupMan()->purgeDownloadResult();
-  return BDE_OK;
+  return VLB_OK;
 }
 
-BDE ChangeOptionXmlRpcMethod::process
+SharedHandle<ValueBase> ChangeOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }  
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -907,8 +916,9 @@ BDE ChangeOptionXmlRpcMethod::process
                     util::itos(gid).c_str()).str());
   }
   SharedHandle<Option> option(new Option());
-  if(params.size() > 1 && params[1].isDict()) {
-    gatherChangeableOption(option, params[1]);
+  const Dict* optionsParam = getDictParam(params, 1);
+  if(optionsParam) {
+    gatherChangeableOption(option, optionsParam);
     applyChangeableOption(group->getOption().get(), option.get());
     if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
       group->setMaxDownloadSpeedLimit
@@ -926,19 +936,19 @@ BDE ChangeOptionXmlRpcMethod::process
     }
 #endif // ENABLE_BITTORRENT
   }
-  return BDE_OK;
+  return VLB_OK;
 }
 
-BDE ChangeGlobalOptionXmlRpcMethod::process
+SharedHandle<ValueBase> ChangeGlobalOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isDict()) {
-    return BDE_OK;
+  const SharedHandle<List>& params = req.params;
+  const Dict* optionsParam = getDictParam(params, 0);
+  if(!optionsParam) {
+    return VLB_OK;
   }
   SharedHandle<Option> option(new Option());
-  gatherChangeableGlobalOption(option, params[0]);
+  gatherChangeableGlobalOption(option, optionsParam);
   applyChangeableGlobalOption(e->getOption(), option.get());
 
   if(option->defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
@@ -954,47 +964,44 @@ BDE ChangeGlobalOptionXmlRpcMethod::process
       (option->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
     e->getRequestGroupMan()->requestQueueCheck();
   }
-  return BDE_OK;
+  return VLB_OK;
 }
 
-BDE GetVersionXmlRpcMethod::process
+SharedHandle<ValueBase> GetVersionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  BDE result = BDE::dict();
-  result[KEY_VERSION] = std::string(PACKAGE_VERSION);
-  BDE featureList = BDE::list();
+  SharedHandle<Dict> result = Dict::g();
+  result->put(KEY_VERSION, PACKAGE_VERSION);
+  SharedHandle<List> featureList = List::g();
   const FeatureMap& features = FeatureConfig::getInstance()->getFeatures();
   for(FeatureMap::const_iterator i = features.begin(), eoi = features.end();
       i != eoi;++i){
     if((*i).second) {
-      featureList << (*i).first;
+      featureList->append((*i).first);
     }
   }
-  result[KEY_ENABLED_FEATURES] = featureList;
+  result->put(KEY_ENABLED_FEATURES, featureList);
   return result;
 }
 
 template<typename InputIterator>
 static void pushRequestOption
-(BDE& dict, InputIterator optionFirst, InputIterator optionLast)
+(const SharedHandle<Dict>& dict,
+ InputIterator optionFirst, InputIterator optionLast)
 {
   const std::set<std::string>& requestOptions = listRequestOptions();
   for(; optionFirst != optionLast; ++optionFirst) {
     if(requestOptions.count((*optionFirst).first)) {
-      dict[(*optionFirst).first] = (*optionFirst).second;
+      dict->put((*optionFirst).first, (*optionFirst).second);
     }
   }
 }
 
-BDE GetOptionXmlRpcMethod::process
+SharedHandle<ValueBase> GetOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }  
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -1003,39 +1010,39 @@ BDE GetOptionXmlRpcMethod::process
       (StringFormat("Cannot get option for GID#%s",
                     util::itos(gid).c_str()).str());
   }
-  BDE result = BDE::dict();
+  SharedHandle<Dict> result = Dict::g();
   SharedHandle<Option> option = group->getOption();
   pushRequestOption(result, option->begin(), option->end());
   return result;
 }
 
-BDE GetGlobalOptionXmlRpcMethod::process
+SharedHandle<ValueBase> GetGlobalOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  BDE result = BDE::dict();
+  SharedHandle<Dict> result = Dict::g();
   for(std::map<std::string, std::string>::const_iterator i =
         e->getOption()->begin(), eoi = e->getOption()->end(); i != eoi; ++i) {
     SharedHandle<OptionHandler> h = getOptionParser()->findByName((*i).first);
     if(!h.isNull() && !h->isHidden()) {
-      result[(*i).first] = (*i).second;
+      result->put((*i).first, (*i).second);
     }
   }
   return result;
 }
 
-BDE ChangePositionXmlRpcMethod::process
+SharedHandle<ValueBase> ChangePositionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
+  const Integer* posParam = getIntegerParam(params, 1);
+  const String* howParam = getStringParam(params, 2);
 
-  if(params.size() != 3 ||
-     !params[0].isString() || !params[1].isInteger() || !params[2].isString()) {
+  if(!posParam || !howParam) {
     throw DL_ABORT_EX("Illegal argument.");
   }
-  gid_t gid = util::parseLLInt(params[0].s());
-  int pos = params[1].i();
-  const std::string& howStr = params[2].s();
+  int pos = posParam->i();
+  const std::string& howStr = howParam->s();
   RequestGroupMan::HOW how;
   if(howStr == "POS_SET") {
     how = RequestGroupMan::POS_SET;
@@ -1048,28 +1055,23 @@ BDE ChangePositionXmlRpcMethod::process
   }
   size_t destPos =
     e->getRequestGroupMan()->changeReservedGroupPosition(gid, pos, how);
-  BDE result(destPos);
+  SharedHandle<Integer> result = Integer::g(destPos);
   return result;
 }
 
-BDE GetSessionInfoXmlRpcMethod::process
+SharedHandle<ValueBase> GetSessionInfoXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  BDE result = BDE::dict();
-  result[KEY_SESSION_ID] = util::toHex(e->getSessionId());
+  SharedHandle<Dict> result = Dict::g();
+  result->put(KEY_SESSION_ID, util::toHex(e->getSessionId()));
   return result;
 }
 
-BDE GetServersXmlRpcMethod::process
+SharedHandle<ValueBase> GetServersXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-
-  if(params.empty() || !params[0].isString()) {
-    throw DL_ABORT_EX("Bad request");
-  }
-  gid_t gid = util::parseLLInt(params[0].s());
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
   if(group.isNull()) {
@@ -1078,53 +1080,49 @@ BDE GetServersXmlRpcMethod::process
   }
   const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
-  BDE result = BDE::list();
+  SharedHandle<List> result = List::g();
   size_t index = 1;
   for(std::vector<SharedHandle<FileEntry> >::const_iterator fi = files.begin(),
         eoi = files.end(); fi != eoi; ++fi, ++index) {
-    BDE fileEntry = BDE::dict();
-    fileEntry[KEY_INDEX] = util::uitos(index);
-    BDE servers = BDE::list();
+    SharedHandle<Dict> fileEntry = Dict::g();
+    fileEntry->put(KEY_INDEX, util::uitos(index));
+    SharedHandle<List> servers = List::g();
     const std::deque<SharedHandle<Request> >& requests =
       (*fi)->getInFlightRequests();
     for(std::deque<SharedHandle<Request> >::const_iterator ri =requests.begin(),
           eoi = requests.end(); ri != eoi; ++ri) {
       SharedHandle<PeerStat> ps = (*ri)->getPeerStat();
       if(!ps.isNull()) {
-        BDE serverEntry = BDE::dict();
-        serverEntry[KEY_URI] = (*ri)->getUri();
-        serverEntry[KEY_CURRENT_URI] = (*ri)->getCurrentUri();
-        serverEntry[KEY_DOWNLOAD_SPEED] =
-          util::uitos(ps->calculateDownloadSpeed());
-        servers << serverEntry;
+        SharedHandle<Dict> serverEntry = Dict::g();
+        serverEntry->put(KEY_URI, (*ri)->getUri());
+        serverEntry->put(KEY_CURRENT_URI, (*ri)->getCurrentUri());
+        serverEntry->put(KEY_DOWNLOAD_SPEED,
+                         util::uitos(ps->calculateDownloadSpeed()));
+        servers->append(serverEntry);
       }
     }
-    fileEntry[KEY_SERVERS] = servers;
-    result << fileEntry;
+    fileEntry->put(KEY_SERVERS, servers);
+    result->append(fileEntry);
   }
   return result;
 }
 
-BDE ChangeUriXmlRpcMethod::process
+SharedHandle<ValueBase> ChangeUriXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-
-  if(params.size() < 4 ||
-     !params[0].isString() || !params[1].isInteger() ||
-     !params[2].isList() || !params[3].isList() ||
-     params[1].i() <= 0) {
+  const SharedHandle<List>& params = req.params;
+  gid_t gid = getRequiredGidParam(params, 0);
+  const Integer* indexParam = getIntegerParam(params, 1);
+  const List* delUrisParam = getListParam(params, 2);
+  const List* addUrisParam = getListParam(params, 3);
+  if(!indexParam || !delUrisParam || ! addUrisParam) {
     throw DL_ABORT_EX("Bad request");
   }
   size_t pos = 0;
   bool posGiven = false;
   getPosParam(params, 4, posGiven, pos);
 
-  gid_t gid = util::parseLLInt(params[0].s());
-  size_t index = params[1].i()-1;
-  const BDE& deluris = params[2];
-  const BDE& adduris = params[3];
+  size_t index = indexParam->i()-1;
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(group.isNull()) {
@@ -1139,25 +1137,28 @@ BDE ChangeUriXmlRpcMethod::process
   }
   SharedHandle<FileEntry> s = files[index];
   size_t delcount = 0;
-  for(BDE::List::const_iterator i = deluris.listBegin(),
-        eoi = deluris.listEnd(); i != eoi; ++i) {
-    if(s->removeUri((*i).s())) {
+  for(List::ValueType::const_iterator i = delUrisParam->begin(),
+        eoi = delUrisParam->end(); i != eoi; ++i) {
+    const String* uri = asString(*i);
+    if(uri && s->removeUri(uri->s())) {
       ++delcount;
     }
   }
   size_t addcount = 0;
   if(posGiven) {
-    for(BDE::List::const_iterator i = adduris.listBegin(),
-          eoi = adduris.listEnd(); i != eoi; ++i) {
-      if(s->insertUri((*i).s(), pos)) {
+    for(List::ValueType::const_iterator i = addUrisParam->begin(),
+          eoi = addUrisParam->end(); i != eoi; ++i) {
+      const String* uri = asString(*i);
+      if(uri && s->insertUri(uri->s(), pos)) {
         ++addcount;
         ++pos;
       }
     }
   } else {
-    for(BDE::List::const_iterator i = adduris.listBegin(),
-          eoi = adduris.listEnd(); i != eoi; ++i) {
-      if(s->addUri((*i).s())) {
+    for(List::ValueType::const_iterator i = addUrisParam->begin(),
+          eoi = addUrisParam->end(); i != eoi; ++i) {
+      const String* uri = asString(*i);
+      if(uri && s->addUri(uri->s())) {
         ++addcount;
       }
     }
@@ -1168,78 +1169,81 @@ BDE ChangeUriXmlRpcMethod::process
     e->addCommand(commands);
     group->getSegmentMan()->recognizeSegmentFor(s);
   }
-  BDE res = BDE::list();
-  res << delcount;
-  res << addcount;
+  SharedHandle<List> res = List::g();
+  res->append(Integer::g(delcount));
+  res->append(Integer::g(addcount));
   return res;
 }
 
-static BDE goingShutdown
+static SharedHandle<ValueBase> goingShutdown
 (const XmlRpcRequest& req, DownloadEngine* e, bool forceHalt)
 {
   // Schedule shutdown after 3seconds to give time to client to
   // receive XML-RPC response.
   e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e, 3, forceHalt));
   LogFactory::getInstance()->info("Scheduled shutdown in 3 seconds.");
-  return BDE_OK;
+  return VLB_OK;
 }
 
-BDE ShutdownXmlRpcMethod::process(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ShutdownXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
 {
   return goingShutdown(req, e, false);
 }
 
-BDE ForceShutdownXmlRpcMethod::process
+SharedHandle<ValueBase> ForceShutdownXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   return goingShutdown(req, e, true);
 }
 
-BDE SystemMulticallXmlRpcMethod::process
+SharedHandle<ValueBase> SystemMulticallXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  const BDE& params = req.params;
-  assert(params.isList());
-  
-  if(params.size() != 1) {
+  const SharedHandle<List>& params = req.params;
+  const List* methodSpecs = getListParam(params, 0);
+  if(!methodSpecs) {
     throw DL_ABORT_EX("Illegal argument. One item list is expected.");
   }
-  const BDE& methodSpecs = params[0];
-  BDE list = BDE::list();
-  for(BDE::List::const_iterator i = methodSpecs.listBegin(),
-        eoi = methodSpecs.listEnd(); i != eoi; ++i) {
-    if(!(*i).isDict()) {
-      list << createErrorResponse
-        (DL_ABORT_EX("system.multicall expected struct."));
+  SharedHandle<List> list = List::g();
+  for(List::ValueType::const_iterator i = methodSpecs->begin(),
+        eoi = methodSpecs->end(); i != eoi; ++i) {
+    const Dict* methodDict = asDict(*i);
+    if(!methodDict) {
+      list->append(createErrorResponse
+                   (DL_ABORT_EX("system.multicall expected struct.")));
       continue;
     }
-    if(!(*i).containsKey(KEY_METHOD_NAME) ||
-       !(*i).containsKey(KEY_PARAMS)) {
-      list << createErrorResponse
-        (DL_ABORT_EX("Missing methodName or params."));
+    const String* methodName = asString(methodDict->get(KEY_METHOD_NAME));
+    const List* paramsList = asList(methodDict->get(KEY_PARAMS));
+
+    if(!methodName || !paramsList) {
+      list->append(createErrorResponse
+                   (DL_ABORT_EX("Missing methodName or params.")));
       continue;
     }
-    const std::string& methodName = (*i)[KEY_METHOD_NAME].s();
-    if(methodName == getMethodName()) {
-      list << createErrorResponse
-        (DL_ABORT_EX("Recursive system.multicall forbidden."));
+    if(methodName->s() == getMethodName()) {
+      list->append(createErrorResponse
+                   (DL_ABORT_EX("Recursive system.multicall forbidden.")));
       continue;
     }
-    SharedHandle<XmlRpcMethod> method = XmlRpcMethodFactory::create(methodName);
-    XmlRpcRequest innerReq(methodName, (*i)[KEY_PARAMS]);
+    SharedHandle<XmlRpcMethod> method =
+      XmlRpcMethodFactory::create(methodName->s());
+    XmlRpcRequest innerReq
+      (methodName->s(), static_pointer_cast<List>(methodDict->get(KEY_PARAMS)));
     XmlRpcResponse res = method->execute(innerReq, e);
     if(res.code == 0) {
-      BDE l = BDE::list();
-      l << res.param;
-      list << l;
+      SharedHandle<List> l = List::g();
+      l->append(res.param);
+      list->append(l);
     } else {
-      list << res.param;
+      list->append(res.param);
     }
   }
   return list;
 }
 
-BDE NoSuchMethodXmlRpcMethod::process
+SharedHandle<ValueBase> NoSuchMethodXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   throw DL_ABORT_EX

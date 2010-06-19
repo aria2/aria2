@@ -9,7 +9,6 @@
 #include "DownloadContext.h"
 #include "DirectDiskAdaptor.h"
 #include "ByteArrayDiskWriter.h"
-#include "BDE.h"
 #include "DownloadContext.h"
 #include "MockPieceStorage.h"
 #include "UTMetadataRequestTracker.h"

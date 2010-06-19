@@ -64,6 +64,11 @@ SharedHandle<String> String::g(const ValueType& string)
   return SharedHandle<String>(new String(string));
 }
 
+SharedHandle<String> String::g(const unsigned char* data, size_t length)
+{
+  return SharedHandle<String>(new String(data, length));
+}
+
 void String::accept(ValueBaseVisitor& v) const
 {
   v.visit(*this);
@@ -95,9 +100,19 @@ const SharedHandle<ValueBase>& List::get(size_t index) const
   return list_[index];
 }
 
+void List::set(size_t index, const SharedHandle<ValueBase>& v)
+{
+  list_[index] = v;
+}
+
 void List::append(const SharedHandle<ValueBase>& v)
 {
   list_.push_back(v);
+}
+
+void List::append(const String::ValueType& string)
+{
+  list_.push_back(String::g(string));
 }
 
 List& List::operator<<(const SharedHandle<ValueBase>& v)

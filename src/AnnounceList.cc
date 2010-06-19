@@ -38,7 +38,6 @@
 
 #include "A2STR.h"
 #include "SimpleRandomizer.h"
-#include "bencode.h"
 #include "util.h"
 
 namespace aria2 {

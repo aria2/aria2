@@ -42,7 +42,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTRoutingTable.h"
 #include "DHTMessageCallback.h"
-#include "bencode.h"
+#include "bencode2.h"
 
 namespace aria2 {
 
@@ -55,12 +55,12 @@ DHTAbstractMessage::~DHTAbstractMessage() {}
 
 std::string DHTAbstractMessage::getBencodedMessage()
 {
-  BDE msgDict = BDE::dict();
-  msgDict[T] = getTransactionID();
-  msgDict[Y] = getType();
-  msgDict[V] = getVersion();
-  fillMessage(msgDict);
-  return bencode::encode(msgDict);
+  Dict msgDict;
+  msgDict.put(T, getTransactionID());
+  msgDict.put(Y, getType());
+  msgDict.put(V, getVersion());
+  fillMessage(&msgDict);
+  return bencode2::encode(&msgDict);
 }
 
 bool DHTAbstractMessage::send()
@@ -75,22 +75,26 @@ bool DHTAbstractMessage::send()
   return r == static_cast<ssize_t>(message.size());
 }
 
-void DHTAbstractMessage::setConnection(const WeakHandle<DHTConnection>& connection)
+void DHTAbstractMessage::setConnection
+(const WeakHandle<DHTConnection>& connection)
 {
   _connection = connection;
 }
 
-void DHTAbstractMessage::setMessageDispatcher(const WeakHandle<DHTMessageDispatcher>& dispatcher)
+void DHTAbstractMessage::setMessageDispatcher
+(const WeakHandle<DHTMessageDispatcher>& dispatcher)
 {
   _dispatcher = dispatcher;
 }
 
-void DHTAbstractMessage::setMessageFactory(const WeakHandle<DHTMessageFactory>& factory)
+void DHTAbstractMessage::setMessageFactory
+(const WeakHandle<DHTMessageFactory>& factory)
 {
   _factory = factory;
 }
 
-void DHTAbstractMessage::setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable)
+void DHTAbstractMessage::setRoutingTable
+(const WeakHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }

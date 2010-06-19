@@ -45,7 +45,6 @@
 #include "Peer.h"
 #include "DHTTokenTracker.h"
 #include "util.h"
-#include "bencode.h"
 
 namespace aria2 {
 
@@ -86,11 +85,11 @@ void DHTGetPeersMessage::doReceivedAction()
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 
-BDE DHTGetPeersMessage::getArgument()
+SharedHandle<Dict> DHTGetPeersMessage::getArgument()
 {
-  BDE aDict = BDE::dict();
-  aDict[DHTMessage::ID] = BDE(getLocalNode()->getID(), DHT_ID_LENGTH);
-  aDict[INFO_HASH] = BDE(_infoHash, DHT_ID_LENGTH);
+  SharedHandle<Dict> aDict = Dict::g();
+  aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
+  aDict->put(INFO_HASH, String::g(_infoHash, DHT_ID_LENGTH));
   return aDict;
 }
 
