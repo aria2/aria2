@@ -293,7 +293,6 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	ShareRatioSeedCriteria.h\
 	UnionSeedCriteria.h\
 	SeedCheckCommand.cc SeedCheckCommand.h\
-	PeerListProcessor.h\
 	AnnounceTier.h\
 	AnnounceList.h AnnounceList.cc\
 	PeerStorage.h\

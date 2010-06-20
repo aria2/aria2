@@ -37,7 +37,6 @@
 #include "util.h"
 #include "bittorrent_helper.h"
 #include "PeerStorage.h"
-#include "PeerListProcessor.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
@@ -161,14 +160,13 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   SharedHandle<ValueBase> decoded = bencode2::decode(data+1, len-1);
   const Dict* dict = asDict(decoded);
   if(dict) {
-    PeerListProcessor proc;
     const String* added = asString(dict->get("added"));
     if(added) {
-      proc.extractPeer(added, std::back_inserter(msg->_freshPeers));
+      bittorrent::extractPeer(added, std::back_inserter(msg->_freshPeers));
     }
     const String* dropped = asString(dict->get("dropped"));
     if(dropped) {
-      proc.extractPeer(dropped, std::back_inserter(msg->_droppedPeers));
+      bittorrent::extractPeer(dropped, std::back_inserter(msg->_droppedPeers));
     }
   }
   return msg;

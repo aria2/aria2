@@ -1,5 +1,19 @@
 2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed PeerListProcessor. Its functionality is now moved to
+	bittorrent_helper.h
+	* src/DefaultBtAnnounce.cc
+	* src/Makefile.am
+	* src/PeerListProcessor.h: Removed
+	* src/UTPexExtensionMessage.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+	* test/Makefile.am
+	* test/PeerListProcessorTest.cc: Removed
+
+2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Included util.h
 	* src/LpdReceiveMessageCommand.cc
 

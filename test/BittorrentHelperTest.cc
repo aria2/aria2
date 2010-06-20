@@ -63,6 +63,8 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseMagnet_base32);
   CPPUNIT_TEST(testMetadata2Torrent);
   CPPUNIT_TEST(testTorrent2Magnet);
+  CPPUNIT_TEST(testExtractPeerFromList);
+  CPPUNIT_TEST(testExtract2PeersFromList);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -106,6 +108,8 @@ public:
   void testParseMagnet_base32();
   void testMetadata2Torrent();
   void testTorrent2Magnet();
+  void testExtractPeerFromList();
+  void testExtract2PeersFromList();
 };
 
 
@@ -754,6 +758,43 @@ void BittorrentHelperTest::testTorrent2Magnet()
                  "&tr=http%3A%2F%2Ftracker2"
                  "&tr=http%3A%2F%2Ftracker3"),
      torrent2Magnet(getTorrentAttrs(dctx)));
+}
+
+void BittorrentHelperTest::testExtractPeerFromList()
+{
+  std::string peersString =
+    "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-00000000000000"
+    "4:porti2006eeee";
+
+  SharedHandle<ValueBase> dict = bencode2::decode(peersString);
+  
+  std::deque<SharedHandle<Peer> > peers;
+  extractPeer(asDict(dict)->get("peers"), std::back_inserter(peers));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
+  SharedHandle<Peer> peer = *peers.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->getPort());
+}
+
+void BittorrentHelperTest::testExtract2PeersFromList()
+{
+  std::string peersString =
+    "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-00000000000000"
+    "4:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-00000000000000"
+    "4:porti2007eeee";
+
+  SharedHandle<ValueBase> dict = bencode2::decode(peersString);
+
+  std::deque<SharedHandle<Peer> > peers;
+  extractPeer(asDict(dict)->get("peers"), std::back_inserter(peers));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
+  SharedHandle<Peer> peer = *peers.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)65535, peer->getPort());
+
+  peer = *(peers.begin()+1);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peer->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)2007, peer->getPort());
 }
 
 } // namespace bittorrent

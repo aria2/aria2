@@ -124,7 +124,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MockBtMessage.h\
 	MockBtMessageDispatcher.h\
 	MockBtMessageFactory.h\
-	PeerListProcessorTest.cc\
 	AnnounceListTest.cc\
 	DefaultPeerStorageTest.cc\
 	MockPeerStorage.h\

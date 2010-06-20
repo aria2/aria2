@@ -89,7 +89,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	ShareRatioSeedCriteria.h\
 @ENABLE_BITTORRENT_TRUE@	UnionSeedCriteria.h\
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.cc SeedCheckCommand.h\
-@ENABLE_BITTORRENT_TRUE@	PeerListProcessor.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceTier.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc\
 @ENABLE_BITTORRENT_TRUE@	PeerStorage.h\
@@ -479,17 +478,16 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerChokeCommand.cc PeerChokeCommand.h SeedCriteria.h \
 	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
-	PeerListProcessor.h AnnounceTier.h AnnounceList.h \
-	AnnounceList.cc PeerStorage.h DefaultPeerStorage.cc \
-	DefaultPeerStorage.h BtAnnounce.cc BtAnnounce.h \
-	DefaultBtAnnounce.cc DefaultBtAnnounce.h BtRuntime.h \
-	BtMessage.h AbstractBtMessage.cc AbstractBtMessage.h \
-	SimpleBtMessage.cc SimpleBtMessage.h BtAllowedFastMessage.cc \
-	BtAllowedFastMessage.h BtBitfieldMessage.cc \
-	BtBitfieldMessage.h BtCancelMessage.cc BtCancelMessage.h \
-	BtChokeMessage.cc BtChokeMessage.h BtHaveAllMessage.cc \
-	BtHaveAllMessage.h BtHaveMessage.cc BtHaveMessage.h \
-	BtHaveNoneMessage.cc BtHaveNoneMessage.h \
+	AnnounceTier.h AnnounceList.h AnnounceList.cc PeerStorage.h \
+	DefaultPeerStorage.cc DefaultPeerStorage.h BtAnnounce.cc \
+	BtAnnounce.h DefaultBtAnnounce.cc DefaultBtAnnounce.h \
+	BtRuntime.h BtMessage.h AbstractBtMessage.cc \
+	AbstractBtMessage.h SimpleBtMessage.cc SimpleBtMessage.h \
+	BtAllowedFastMessage.cc BtAllowedFastMessage.h \
+	BtBitfieldMessage.cc BtBitfieldMessage.h BtCancelMessage.cc \
+	BtCancelMessage.h BtChokeMessage.cc BtChokeMessage.h \
+	BtHaveAllMessage.cc BtHaveAllMessage.h BtHaveMessage.cc \
+	BtHaveMessage.h BtHaveNoneMessage.cc BtHaveNoneMessage.h \
 	BtInterestedMessage.cc BtInterestedMessage.h \
 	BtKeepAliveMessage.cc BtKeepAliveMessage.h \
 	BtNotInterestedMessage.cc BtNotInterestedMessage.h \

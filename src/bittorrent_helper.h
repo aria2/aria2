@@ -37,14 +37,16 @@
 
 #include "common.h"
 
+#include <cstring>
 #include <string>
 #include <vector>
 #include <utility>
 
 #include "SharedHandle.h"
-#include "AnnounceTier.h"
-#include "util.h"
 #include "TorrentAttribute.h"
+#include "a2netcompat.h"
+#include "Peer.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
@@ -212,6 +214,71 @@ std::string metadata2Torrent
 
 // Constructs BitTorrent Magnet URI using attrs.
 std::string torrent2Magnet(const SharedHandle<TorrentAttribute>& attrs);
+
+template<typename OutputIterator>
+void extractPeer(const ValueBase* peerData, OutputIterator dest)
+{
+  class PeerListValueBaseVisitor:public ValueBaseVisitor {
+  private:
+    OutputIterator dest_;
+  public:
+    PeerListValueBaseVisitor(OutputIterator dest):dest_(dest) {}
+
+    virtual ~PeerListValueBaseVisitor() {}
+
+    virtual void visit(const String& peerData)
+    {
+      size_t length = peerData.s().size();
+      if(length%6 == 0) {
+        const char* base = peerData.s().data();
+        for(size_t i = 0; i < length; i += 6) {
+          struct in_addr in;
+          memcpy(&in.s_addr, base+i, sizeof(uint32_t));
+          std::string ipaddr = inet_ntoa(in);
+          uint16_t port_nworder;
+          memcpy(&port_nworder, base+i+4, sizeof(uint16_t));
+          uint16_t port = ntohs(port_nworder);
+          *dest_ = SharedHandle<Peer>(new Peer(ipaddr, port));
+          ++dest_;
+        }
+      }
+    }
+
+    virtual void visit(const Integer& v) {}
+
+    virtual void visit(const List& peerData)
+    {
+      for(List::ValueType::const_iterator itr = peerData.begin(),
+            eoi = peerData.end(); itr != eoi; ++itr) {
+        const Dict* peerDict = asDict(*itr);
+        if(!peerDict) {
+          continue;
+        }
+        static const std::string IP = "ip";
+        static const std::string PORT = "port";
+        const String* ip = asString(peerDict->get(IP));
+        const Integer* port = asInteger(peerDict->get(PORT));
+        if(!ip || !port || !(0 < port->i() && port->i() < 65536)) {
+          continue;
+        }
+        *dest_ = SharedHandle<Peer>(new Peer(ip->s(), port->i()));
+        ++dest_;
+      }
+    }
+
+    virtual void visit(const Dict& v) {}
+  };
+  if(peerData) {
+    PeerListValueBaseVisitor visitor(dest);
+    peerData->accept(visitor);
+  }
+}
+
+template<typename OutputIterator>
+void extractPeer(const SharedHandle<ValueBase>& peerData, OutputIterator dest)
+{
+  return extractPeer(peerData.get(), dest);
+}
 
 } // namespace bittorrent
 

@@ -47,13 +47,11 @@
 #include "BtConstants.h"
 #include "messageDigest.h"
 #include "MessageDigestHelper.h"
-#include "SimpleRandomizer.h"
 #include "a2netcompat.h"
 #include "BtConstants.h"
 #include "bitfield.h"
 #include "base32.h"
 #include "magnet.h"
-#include "ValueBase.h"
 #include "bencode2.h"
 #include "TorrentAttribute.h"
 

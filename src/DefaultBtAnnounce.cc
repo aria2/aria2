@@ -35,7 +35,6 @@
 #include "DefaultBtAnnounce.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "PeerListProcessor.h"
 #include "util.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
@@ -277,7 +276,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   } else {
     if(!_btRuntime->isHalt() && _btRuntime->lessThanMinPeers()) {
       std::vector<SharedHandle<Peer> > peers;
-      PeerListProcessor().extractPeer(peerData, std::back_inserter(peers));
+      bittorrent::extractPeer(peerData, std::back_inserter(peers));
       _peerStorage->addPeer(peers);
     }
   }
