@@ -339,8 +339,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DownloadEngine.cc DownloadEngine.h Segment.h GrowSegment.cc \
 	GrowSegment.h PiecedSegment.cc PiecedSegment.h SegmentMan.cc \
 	SegmentMan.h util.cc util.h Request.cc Request.h common.h \
-	message.h Exception.cc Exception.h FatalException.h \
-	RecoverableException.h DlAbortEx.h DlRetryEx.h \
+	message.h Exception.cc Exception.h FatalException.cc \
+	FatalException.h RecoverableException.cc \
+	RecoverableException.h DlAbortEx.cc DlAbortEx.h DlRetryEx.cc \
+	DlRetryEx.h DownloadFailureException.cc \
 	DownloadFailureException.h Logger.cc Logger.h SimpleLogger.cc \
 	SimpleLogger.h DiskWriter.h DiskWriterFactory.h \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
@@ -812,16 +814,18 @@ am__objects_32 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FtpTunnelResponseCommand.$(OBJEXT) SleepCommand.$(OBJEXT) \
 	DownloadEngine.$(OBJEXT) GrowSegment.$(OBJEXT) \
 	PiecedSegment.$(OBJEXT) SegmentMan.$(OBJEXT) util.$(OBJEXT) \
-	Request.$(OBJEXT) Exception.$(OBJEXT) Logger.$(OBJEXT) \
-	SimpleLogger.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
-	DefaultDiskWriter.$(OBJEXT) DefaultDiskWriterFactory.$(OBJEXT) \
-	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
-	base32.$(OBJEXT) LogFactory.$(OBJEXT) TimerA2.$(OBJEXT) \
-	TimeA2.$(OBJEXT) FeatureConfig.$(OBJEXT) \
-	DownloadEngineFactory.$(OBJEXT) SpeedCalc.$(OBJEXT) \
-	BitfieldMan.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
-	HttpResponse.$(OBJEXT) HttpRequest.$(OBJEXT) \
-	AbstractProxyRequestCommand.$(OBJEXT) \
+	Request.$(OBJEXT) Exception.$(OBJEXT) FatalException.$(OBJEXT) \
+	RecoverableException.$(OBJEXT) DlAbortEx.$(OBJEXT) \
+	DlRetryEx.$(OBJEXT) DownloadFailureException.$(OBJEXT) \
+	Logger.$(OBJEXT) SimpleLogger.$(OBJEXT) \
+	AbstractDiskWriter.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
+	DefaultDiskWriterFactory.$(OBJEXT) File.$(OBJEXT) \
+	Option.$(OBJEXT) Base64.$(OBJEXT) base32.$(OBJEXT) \
+	LogFactory.$(OBJEXT) TimerA2.$(OBJEXT) TimeA2.$(OBJEXT) \
+	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
+	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
+	SimpleRandomizer.$(OBJEXT) HttpResponse.$(OBJEXT) \
+	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
 	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) AbstractAuthResolver.$(OBJEXT) \
 	DefaultAuthResolver.$(OBJEXT) NetrcAuthResolver.$(OBJEXT) \
@@ -1116,8 +1120,10 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	DownloadEngine.cc DownloadEngine.h Segment.h GrowSegment.cc \
 	GrowSegment.h PiecedSegment.cc PiecedSegment.h SegmentMan.cc \
 	SegmentMan.h util.cc util.h Request.cc Request.h common.h \
-	message.h Exception.cc Exception.h FatalException.h \
-	RecoverableException.h DlAbortEx.h DlRetryEx.h \
+	message.h Exception.cc Exception.h FatalException.cc \
+	FatalException.h RecoverableException.cc \
+	RecoverableException.h DlAbortEx.cc DlAbortEx.h DlRetryEx.cc \
+	DlRetryEx.h DownloadFailureException.cc \
 	DownloadFailureException.h Logger.cc Logger.h SimpleLogger.cc \
 	SimpleLogger.h DiskWriter.h DiskWriterFactory.h \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
@@ -1453,10 +1459,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskAdaptor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlAbortEx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlRetryEx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngineFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadFailureException.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandlerConstants.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandlerFactory.Po@am__quote@
@@ -1465,6 +1474,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExpatMetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExpatXmlRpcRequestProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FallocFileAllocationIterator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FatalException.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeedbackURISelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
@@ -1572,6 +1582,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RarestPieceSelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealtimeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReceiverMSEHandshakeCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RecoverableException.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupEntry.Po@am__quote@

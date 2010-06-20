@@ -76,4 +76,99 @@ void Logger::closeFile()
   }
 }
 
+#define WRITE_LOG(LEVEL, LEVEL_LABEL, MSG)              \
+  if(LEVEL >= _logLevel && _file.is_open()) {           \
+    va_list ap;                                         \
+    va_start(ap, MSG);                                  \
+    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
+    va_end(ap);                                         \
+    _file << std::flush;                                \
+  }                                                     \
+  if(_stdoutField&LEVEL) {                              \
+    std::cout << "\n";                                  \
+    va_list ap;                                         \
+    va_start(ap, MSG);                                  \
+    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
+    va_end(ap);                                         \
+    std::cout << std::flush;                            \
+  }                                                     \
+
+#define WRITE_LOG_EX(LEVEL, LEVEL_LABEL, MSG, EX)       \
+  if(LEVEL >= _logLevel && _file.is_open()) {           \
+    va_list ap;                                         \
+    va_start(ap, EX);                                   \
+    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
+    va_end(ap);                                         \
+    writeStackTrace(_file, LEVEL, LEVEL_LABEL, EX);     \
+    _file << std::flush;                                \
+  }                                                     \
+  if(_stdoutField&LEVEL) {                              \
+    std::cout << "\n";                                  \
+    va_list ap;                                         \
+    va_start(ap, EX);                                   \
+    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
+    va_end(ap);                                         \
+    writeStackTrace(std::cout, LEVEL, LEVEL_LABEL, EX); \
+    std::cout << std::flush;                            \
+  }                                                     \
+
+void Logger::debug(const char* msg, ...)
+{
+  WRITE_LOG(A2_DEBUG, DEBUG_LABEL, msg);
+}
+
+void Logger::debug(const char* msg, const Exception& ex, ...)
+{
+  WRITE_LOG_EX(A2_DEBUG, DEBUG_LABEL, msg, ex);
+}
+
+void Logger::info(const char* msg, ...)
+{
+  WRITE_LOG(A2_INFO, INFO_LABEL, msg);
+}
+
+void Logger::info(const char* msg, const Exception& ex, ...)
+{
+  WRITE_LOG_EX(A2_INFO, INFO_LABEL, msg, ex);
+}
+
+void Logger::notice(const char* msg, ...)
+{
+  WRITE_LOG(A2_NOTICE, NOTICE_LABEL, msg);
+}
+
+void Logger::notice(const char* msg, const Exception& ex, ...)
+{
+  WRITE_LOG_EX(A2_NOTICE, NOTICE_LABEL, msg, ex);
+}
+
+void Logger::warn(const char* msg, ...)
+{
+  WRITE_LOG(A2_WARN, WARN_LABEL, msg);
+}
+
+void Logger::warn(const char* msg, const Exception& ex, ...)
+{
+  WRITE_LOG_EX(A2_WARN, WARN_LABEL, msg, ex);
+}
+
+void Logger::error(const char*  msg, ...)
+{
+  WRITE_LOG(A2_ERROR, ERROR_LABEL, msg);
+}
+
+void Logger::error(const char* msg, const Exception& ex, ...)
+{
+  WRITE_LOG_EX(A2_ERROR, ERROR_LABEL, msg, ex);
+}
+
+void Logger::setStdoutLogLevel(Logger::LEVEL level, bool enabled)
+{
+  if(enabled) {
+    _stdoutField |= level;
+  } else {
+    _stdoutField &= ~level;
+  }
+}
+
 } // namespace aria2

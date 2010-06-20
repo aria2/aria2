@@ -1,5 +1,11 @@
 2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved non-trivial functions to *.cc file
+	* src/Logger.cc
+	* src/Logger.h
+
+2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added separete *.cc files for exception classes.
 	* src/DlAbortEx.cc
 	* src/DlAbortEx.h

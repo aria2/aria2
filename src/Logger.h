@@ -72,7 +72,7 @@ private:
 
   int _stdoutField;
   
-  inline bool levelEnabled(LEVEL level)
+  bool levelEnabled(LEVEL level)
   {
     return (level >= _logLevel && _file.is_open()) || _stdoutField&level;
   }
@@ -89,91 +89,25 @@ public:
 
   virtual ~Logger();
 
-#define WRITE_LOG(LEVEL, LEVEL_LABEL, MSG)              \
-  if(LEVEL >= _logLevel && _file.is_open()) {           \
-    va_list ap;                                         \
-    va_start(ap, MSG);                                  \
-    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
-    va_end(ap);                                         \
-    _file << std::flush;                                \
-  }                                                     \
-  if(_stdoutField&LEVEL) {                              \
-    std::cout << "\n";                                  \
-    va_list ap;                                         \
-    va_start(ap, MSG);                                  \
-    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
-    va_end(ap);                                         \
-    std::cout << std::flush;                            \
-  }                                                     \
+  void debug(const char* msg, ...);
 
-#define WRITE_LOG_EX(LEVEL, LEVEL_LABEL, MSG, EX)       \
-  if(LEVEL >= _logLevel && _file.is_open()) {           \
-    va_list ap;                                         \
-    va_start(ap, EX);                                   \
-    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
-    va_end(ap);                                         \
-    writeStackTrace(_file, LEVEL, LEVEL_LABEL, EX);     \
-    _file << std::flush;                                \
-  }                                                     \
-  if(_stdoutField&LEVEL) {                              \
-    std::cout << "\n";                                  \
-    va_list ap;                                         \
-    va_start(ap, EX);                                   \
-    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
-    va_end(ap);                                         \
-    writeStackTrace(std::cout, LEVEL, LEVEL_LABEL, EX); \
-    std::cout << std::flush;                            \
-  }                                                     \
+  void debug(const char* msg, const Exception& ex, ...);
 
-  void debug(const char* msg, ...)
-  {
-    WRITE_LOG(A2_DEBUG, DEBUG_LABEL, msg);
-  }
+  void info(const char* msg, ...);
 
-  void debug(const char* msg, const Exception& ex, ...)
-  {
-    WRITE_LOG_EX(A2_DEBUG, DEBUG_LABEL, msg, ex);
-  }
+  void info(const char* msg, const Exception& ex, ...);
 
-  void info(const char* msg, ...)
-  {
-    WRITE_LOG(A2_INFO, INFO_LABEL, msg);
-  }
+  void notice(const char* msg, ...);
 
-  void info(const char* msg, const Exception& ex, ...)
-  {
-    WRITE_LOG_EX(A2_INFO, INFO_LABEL, msg, ex);
-  }
+  void notice(const char* msg, const Exception& ex, ...);
 
-  void notice(const char* msg, ...)
-  {
-    WRITE_LOG(A2_NOTICE, NOTICE_LABEL, msg);
-  }
+  void warn(const char* msg, ...);
 
-  void notice(const char* msg, const Exception& ex, ...)
-  {
-    WRITE_LOG_EX(A2_NOTICE, NOTICE_LABEL, msg, ex);
-  }
+  void warn(const char* msg, const Exception& ex, ...);
 
-  void warn(const char* msg, ...)
-  {
-    WRITE_LOG(A2_WARN, WARN_LABEL, msg);
-  }
+  void error(const char*  msg, ...);
 
-  void warn(const char* msg, const Exception& ex, ...)
-  {
-    WRITE_LOG_EX(A2_WARN, WARN_LABEL, msg, ex);
-  }
-
-  void error(const char*  msg, ...)
-  {
-    WRITE_LOG(A2_ERROR, ERROR_LABEL, msg);
-  }
-
-  void error(const char* msg, const Exception& ex, ...)
-  {
-    WRITE_LOG_EX(A2_ERROR, ERROR_LABEL, msg, ex);
-  }
+  void error(const char* msg, const Exception& ex, ...);
 
   void openFile(const std::string& filename);
 
@@ -184,14 +118,7 @@ public:
     _logLevel = level;
   }
 
-  void setStdoutLogLevel(Logger::LEVEL level, bool enabled)
-  {
-    if(enabled) {
-      _stdoutField |= level;
-    } else {
-      _stdoutField &= ~level;
-    }
-  }
+  void setStdoutLogLevel(Logger::LEVEL level, bool enabled);
 
   // Returns true if this logger actually writes debug log message to
   // either file or stdout.
