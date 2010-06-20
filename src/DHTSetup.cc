@@ -91,8 +91,9 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
   if(_initialized) {
     return;
   }
-  std::vector<Command*> tempCommands;
   try {
+    std::vector<Command*>* tempCommands = new std::vector<Command*>();
+    auto_delete_container<std::vector<Command*> > commandsDel(tempCommands);
     // load routing table and localnode id here
 
     SharedHandle<DHTNode> localNode;
@@ -219,7 +220,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
         command->setTaskFactory(taskFactory);
         command->setRoutingTable(routingTable);
         command->setLocalNode(localNode);
-        tempCommands.push_back(command);
+        tempCommands->push_back(command);
       }
     } else {
       _logger->info("No DHT entry point specified.");
@@ -231,13 +232,13 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       command->setMessageReceiver(receiver);
       command->setTaskQueue(taskQueue);
       command->setReadCheckSocket(connection->getSocket());
-      tempCommands.push_back(command);
+      tempCommands->push_back(command);
     }
     {
       DHTTokenUpdateCommand* command =
         new DHTTokenUpdateCommand(e->newCUID(), e, DHT_TOKEN_UPDATE_INTERVAL);
       command->setTokenTracker(tokenTracker);
-      tempCommands.push_back(command);
+      tempCommands->push_back(command);
     }
     {
       DHTBucketRefreshCommand* command =
@@ -246,28 +247,29 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       command->setTaskQueue(taskQueue);
       command->setRoutingTable(routingTable);
       command->setTaskFactory(taskFactory);
-      tempCommands.push_back(command);
+      tempCommands->push_back(command);
     }
     {
       DHTPeerAnnounceCommand* command =
         new DHTPeerAnnounceCommand(e->newCUID(), e,
                                    DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
       command->setPeerAnnounceStorage(peerAnnounceStorage);
-      tempCommands.push_back(command);
+      tempCommands->push_back(command);
     }
     {
       DHTAutoSaveCommand* command =
         new DHTAutoSaveCommand(e->newCUID(), e, 30*60);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable);
-      tempCommands.push_back(command);
+      tempCommands->push_back(command);
     }
     _initialized = true;
-    commands.insert(commands.end(), tempCommands.begin(), tempCommands.end());
+    commands.insert(commands.end(), tempCommands->begin(), tempCommands->end());
+    tempCommands->clear();
   } catch(RecoverableException& e) {
-    _logger->error("Exception caught while initializing DHT functionality. DHT is disabled.", e);
+    _logger->error("Exception caught while initializing DHT functionality."
+                   " DHT is disabled.", e);
     DHTRegistry::clearData();
-    std::for_each(tempCommands.begin(), tempCommands.end(), Deleter());
   }
 }
 

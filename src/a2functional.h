@@ -36,9 +36,11 @@
 #define _D_A2_FUNCTIONAL_H_
 
 #include <functional>
+#include <string>
+#include <algorithm>
+
 #include "SharedHandle.h"
 #include "A2STR.h"
-#include <string>
 
 namespace aria2 {
 
@@ -201,6 +203,20 @@ public:
   ~auto_delete()
   {
     _deleter(_obj);
+  }
+};
+
+template<class Container>
+class auto_delete_container {
+private:
+  Container* _c;
+public:
+  auto_delete_container(Container* c):_c(c) {}
+
+  ~auto_delete_container()
+  {
+    std::for_each(_c->begin(), _c->end(), Deleter());
+    delete _c;
   }
 };
 

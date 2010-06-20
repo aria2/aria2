@@ -76,14 +76,11 @@ bool FileAllocationCommand::executeInternal()
     }
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     
-    std::vector<Command*> commands;
-    try {
-      _fileAllocationEntry->prepareForNextAction(commands, getDownloadEngine());
-    } catch(RecoverableException& e) {
-      std::for_each(commands.begin(), commands.end(), Deleter());
-      throw;
-    }
-    getDownloadEngine()->addCommand(commands);
+    std::vector<Command*>* commands = new std::vector<Command*>();
+    auto_delete_container<std::vector<Command*> > commandsDel(commands);
+    _fileAllocationEntry->prepareForNextAction(*commands, getDownloadEngine());
+    getDownloadEngine()->addCommand(*commands);
+    commands->clear();
     getDownloadEngine()->setNoWait(true);
     return true;
   } else {

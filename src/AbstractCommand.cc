@@ -722,14 +722,11 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
   SharedHandle<CheckIntegrityEntry> entry
     (new StreamCheckIntegrityEntry(_requestGroup, nextCommand));
 
-  std::vector<Command*> commands;
-  try {
-    _requestGroup->processCheckIntegrityEntry(commands, entry, _e);
-  } catch(RecoverableException& e) {
-    std::for_each(commands.begin(), commands.end(), Deleter());
-    throw;
-  }
-  _e->addCommand(commands);
+  std::vector<Command*>* commands = new std::vector<Command*>();
+  auto_delete_container<std::vector<Command*> > commandsDel(commands);
+  _requestGroup->processCheckIntegrityEntry(*commands, entry, _e);
+  _e->addCommand(*commands);
+  commands->clear();
   _e->setNoWait(true);
 }
 

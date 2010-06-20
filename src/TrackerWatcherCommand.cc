@@ -104,17 +104,17 @@ bool TrackerWatcherCommand::execute() {
   if(_trackerRequestGroup.isNull()) {
     _trackerRequestGroup = createAnnounce();
     if(!_trackerRequestGroup.isNull()) {
-      std::vector<Command*> commands;
       try {
-        _trackerRequestGroup->createInitialCommand(commands, _e);
+        std::vector<Command*>* commands = new std::vector<Command*>();
+        auto_delete_container<std::vector<Command*> > commandsDel(commands);
+        _trackerRequestGroup->createInitialCommand(*commands, _e);
+        _e->addCommand(*commands);
+        commands->clear();
+        if(getLogger()->debug()) {
+          getLogger()->debug("added tracker request command");
+        }
       } catch(RecoverableException& ex) {
         getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
-        std::for_each(commands.begin(), commands.end(), Deleter());
-        commands.clear();
-      }
-      _e->addCommand(commands);
-      if(getLogger()->debug()) {
-        getLogger()->debug("added tracker request command");
       }
     }
   } else if(_trackerRequestGroup->downloadFinished()){

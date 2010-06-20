@@ -75,26 +75,20 @@ bool CheckIntegrityCommand::executeInternal()
       getLogger()->notice
         (MSG_VERIFICATION_SUCCESSFUL,
          getRequestGroup()->getDownloadContext()->getBasePath().c_str());
-      std::vector<Command*> commands;
-      try {
-        _entry->onDownloadFinished(commands, getDownloadEngine());
-      } catch(RecoverableException& e) {
-        std::for_each(commands.begin(), commands.end(), Deleter());
-        throw;
-      }
-      getDownloadEngine()->addCommand(commands);
+      std::vector<Command*>* commands = new std::vector<Command*>();
+      auto_delete_container<std::vector<Command*> > commandsDel(commands);
+      _entry->onDownloadFinished(*commands, getDownloadEngine());
+      getDownloadEngine()->addCommand(*commands);
+      commands->clear();
     } else {
       getLogger()->error
         (MSG_VERIFICATION_FAILED,
          getRequestGroup()->getDownloadContext()->getBasePath().c_str());
-      std::vector<Command*> commands;
-      try {
-        _entry->onDownloadIncomplete(commands, getDownloadEngine());
-      } catch(RecoverableException& e) {
-        std::for_each(commands.begin(), commands.end(), Deleter());
-        throw;
-      }
-      getDownloadEngine()->addCommand(commands);
+      std::vector<Command*>* commands = new std::vector<Command*>();
+      auto_delete_container<std::vector<Command*> > commandsDel(commands);
+      _entry->onDownloadIncomplete(*commands, getDownloadEngine());
+      getDownloadEngine()->addCommand(*commands);
+      commands->clear();
     }
     getDownloadEngine()->setNoWait(true);
     return true;

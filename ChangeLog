@@ -1,5 +1,16 @@
 2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use auto_delete_container to delete created Command when exception
+	is thrown rather than deleting them in catch block.
+	* src/AbstractCommand.cc
+	* src/CheckIntegrityCommand.cc
+	* src/DHTSetup.cc
+	* src/FileAllocationCommand.cc
+	* src/TrackerWatcherCommand.cc
+	* src/a2functional.h
+
+2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed BDE and bencode
 
 2010-06-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
