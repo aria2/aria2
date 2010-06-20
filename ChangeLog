@@ -1,5 +1,13 @@
 2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved non-trivial functions to *.cc file
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/FileEntry.cc
+	* src/FileEntry.h
+
+2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused contants
 	* src/bittorrent_helper.cc
 	* src/bittorrent_helper.h

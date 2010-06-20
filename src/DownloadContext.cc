@@ -176,4 +176,33 @@ void DownloadContext::releaseRuntimeResource()
   }
 }
 
+size_t DownloadContext::getNumPieces() const
+{
+  if(_pieceLength == 0) {
+    return 0;
+  } else {
+    assert(!_fileEntries.empty());
+    return (_fileEntries.back()->getLastOffset()+_pieceLength-1)/_pieceLength;
+  }
+}
+
+uint64_t DownloadContext::getTotalLength() const
+{
+  if(_fileEntries.empty()) {
+    return 0;
+  } else {
+    return _fileEntries.back()->getLastOffset();
+  }
+}
+
+const std::string& DownloadContext::getBasePath() const
+{
+  if(_basePath.empty()) {
+    assert(!_fileEntries.empty());
+    return getFirstFileEntry()->getPath();
+  } else {
+    return _basePath;
+  }
+}
+
 } // namespace aria2

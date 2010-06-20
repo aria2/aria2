@@ -113,14 +113,7 @@ public:
     _pieceHashes.assign(first, last);
   }
 
-  uint64_t getTotalLength() const
-  {
-    if(_fileEntries.empty()) {
-      return 0;
-    } else {
-      return _fileEntries.back()->getLastOffset();
-    }
-  }
+  uint64_t getTotalLength() const;
 
   bool knowsTotalLength() const { return _knowsTotalLength; }
 
@@ -149,15 +142,7 @@ public:
 
   void setPieceLength(size_t length) { _pieceLength = length; }
 
-  size_t getNumPieces() const
-  {
-    if(_pieceLength == 0) {
-      return 0;
-    } else {
-      assert(!_fileEntries.empty());
-      return (_fileEntries.back()->getLastOffset()+_pieceLength-1)/_pieceLength;
-    }
-  }
+  size_t getNumPieces() const;
 
   const std::string& getPieceHashAlgo() const { return _pieceHashAlgo; }
 
@@ -184,15 +169,7 @@ public:
   // part of .aria2 control file. If _basePath is set, returns
   // _basePath. Otherwise, the first FileEntry's getFilePath() is
   // returned.
-  const std::string& getBasePath() const
-  {
-    if(_basePath.empty()) {
-      assert(!_fileEntries.empty());
-      return getFirstFileEntry()->getPath();
-    } else {
-      return _basePath;
-    }
-  }
+  const std::string& getBasePath() const;
 
   void setBasePath(const std::string& basePath) { _basePath = basePath; }
 

@@ -84,15 +84,9 @@ public:
 
   FileEntry& operator=(const FileEntry& entry);
 
-  std::string getBasename() const
-  {
-    return File(_path).getBasename();
-  }
+  std::string getBasename() const;
 
-  std::string getDirname() const
-  {
-    return File(_path).getDirname();
-  }
+  std::string getDirname() const;
 
   const std::string& getPath() const { return _path; }
 
@@ -129,11 +123,7 @@ public:
     return _spentUris;
   }
 
-  size_t setUris(const std::vector<std::string>& uris)
-  {
-    _uris.clear();
-    return addUris(uris.begin(), uris.end());
-  }
+  size_t setUris(const std::vector<std::string>& uris);
 
   template<typename InputIterator>
   size_t addUris(InputIterator first, InputIterator last)
@@ -147,26 +137,9 @@ public:
     return count;
   }
 
-  bool addUri(const std::string& uri)
-  {
-    if(Request().setUri(uri)) {
-      _uris.push_back(uri);
-      return true;
-    } else {
-      return false;
-    }
-  }
+  bool addUri(const std::string& uri);
 
-  bool insertUri(const std::string& uri, size_t pos)
-  {
-    if(Request().setUri(uri)) {
-      pos = std::min(pos, _uris.size());
-      _uris.insert(_uris.begin()+pos, uri);
-      return true;
-    } else {
-      return false;
-    }
-  }
+  bool insertUri(const std::string& uri, size_t pos);
 
   // Inserts _uris and _spentUris into uris.
   void getUris(std::vector<std::string>& uris) const;

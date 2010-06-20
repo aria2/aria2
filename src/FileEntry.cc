@@ -378,4 +378,41 @@ bool FileEntry::removeUri(const std::string& uri)
   }
 }
 
+std::string FileEntry::getBasename() const
+{
+  return File(_path).getBasename();
+}
+
+std::string FileEntry::getDirname() const
+{
+  return File(_path).getDirname();
+}
+
+size_t FileEntry::setUris(const std::vector<std::string>& uris)
+{
+  _uris.clear();
+  return addUris(uris.begin(), uris.end());
+}
+
+bool FileEntry::addUri(const std::string& uri)
+{
+  if(Request().setUri(uri)) {
+    _uris.push_back(uri);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool FileEntry::insertUri(const std::string& uri, size_t pos)
+{
+  if(Request().setUri(uri)) {
+    pos = std::min(pos, _uris.size());
+    _uris.insert(_uris.begin()+pos, uri);
+    return true;
+  } else {
+    return false;
+  }
+}
+
 } // namespace aria2
