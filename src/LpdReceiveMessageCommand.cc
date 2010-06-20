@@ -52,6 +52,7 @@
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "util.h"
 
 namespace aria2 {
 
