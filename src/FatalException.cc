@@ -32,34 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RECOVERABLE_EXCEPTION_H_
-#define _D_RECOVERABLE_EXCEPTION_H_
-#include "Exception.h"
-#include "DownloadResultCode.h"
+#include "FatalException.h"
 
 namespace aria2 {
 
-class RecoverableException:public Exception {
-private:
-  downloadresultcode::RESULT _code;
+SharedHandle<Exception> FatalException::copy() const
+{
+  SharedHandle<Exception> e(new FatalException(*this));
+  return e;
+}
 
-protected:
-  virtual SharedHandle<Exception> copy() const;
-public:
-  RecoverableException(const char* file, int line, const std::string& msg);
+FatalException::FatalException
+(const char* file, int line, const std::string& msg):
+  Exception(file, line, msg) {}
+ 
+FatalException::FatalException
+(const char* file, int line, const std::string& msg,
+ const Exception& cause):
+  Exception(file, line, msg, cause) {}
 
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       const Exception& cause);
-
-  RecoverableException(const char* file, int line,
-                       const RecoverableException& e);
-  
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       downloadresultcode::RESULT result);
-
-  downloadresultcode::RESULT getCode() const { return _code; }
-};
+FatalException::FatalException(const FatalException& e):Exception(e) {}
 
 } // namespace aria2
-
-#endif // _D_RECOVERABLE_EXCEPTION_EX_H_

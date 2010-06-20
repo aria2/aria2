@@ -32,34 +32,26 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RECOVERABLE_EXCEPTION_H_
-#define _D_RECOVERABLE_EXCEPTION_H_
-#include "Exception.h"
-#include "DownloadResultCode.h"
+#include "DlRetryEx.h"
 
 namespace aria2 {
 
-class RecoverableException:public Exception {
-private:
-  downloadresultcode::RESULT _code;
+SharedHandle<Exception> DlRetryEx::copy() const
+{
+  SharedHandle<Exception> e(new DlRetryEx(*this));
+  return e;
+}
 
-protected:
-  virtual SharedHandle<Exception> copy() const;
-public:
-  RecoverableException(const char* file, int line, const std::string& msg);
+DlRetryEx::DlRetryEx(const char* file, int line, const std::string& msg):
+  RecoverableException(file, line, msg) {}
 
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       const Exception& cause);
-
-  RecoverableException(const char* file, int line,
-                       const RecoverableException& e);
-  
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       downloadresultcode::RESULT result);
-
-  downloadresultcode::RESULT getCode() const { return _code; }
-};
+DlRetryEx::DlRetryEx(const char* file, int line, const std::string& msg,
+                     const Exception& cause):
+  RecoverableException(file, line, msg, cause) {}
+DlRetryEx::DlRetryEx(const char* file, int line, const DlRetryEx& e):
+  RecoverableException(file, line, e) {}
+DlRetryEx::DlRetryEx(const char* file, int line, const std::string& msg,
+                     downloadresultcode::RESULT code):
+  RecoverableException(file, line, msg, code) {}
 
 } // namespace aria2
-
-#endif // _D_RECOVERABLE_EXCEPTION_EX_H_

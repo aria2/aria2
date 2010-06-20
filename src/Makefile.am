@@ -34,11 +34,11 @@ SRCS =  Socket.h\
 	common.h\
 	message.h\
 	Exception.cc Exception.h\
-	FatalException.h\
-	RecoverableException.h\
-	DlAbortEx.h\
-	DlRetryEx.h\
-	DownloadFailureException.h\
+	FatalException.cc FatalException.h\
+	RecoverableException.cc RecoverableException.h\
+	DlAbortEx.cc DlAbortEx.h\
+	DlRetryEx.cc DlRetryEx.h\
+	DownloadFailureException.cc DownloadFailureException.h\
 	Logger.cc Logger.h\
 	SimpleLogger.cc SimpleLogger.h\
 	DiskWriter.h\

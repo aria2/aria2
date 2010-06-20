@@ -40,22 +40,17 @@ namespace aria2 {
 
 class DlAbortEx:public RecoverableException {
 protected:
-  virtual SharedHandle<Exception> copy() const
-  {
-    SharedHandle<Exception> e(new DlAbortEx(*this));
-    return e;
-  }
+  virtual SharedHandle<Exception> copy() const;
 public:
-  DlAbortEx(const char* file, int line, const std::string& msg):
-    RecoverableException(file, line, msg) {}
+  DlAbortEx(const char* file, int line, const std::string& msg);
+
   DlAbortEx(const char* file, int line, const std::string& msg,
-            const Exception& cause):
-    RecoverableException(file, line, msg, cause) {}
-  DlAbortEx(const char* file, int line, const RecoverableException& e):
-    RecoverableException(file, line, e) {}
+            const Exception& cause);
+
+  DlAbortEx(const char* file, int line, const RecoverableException& e);
+
   DlAbortEx(const char* file, int line, const std::string& msg,
-            downloadresultcode::RESULT code):
-    RecoverableException(file, line, msg, code) {}
+            downloadresultcode::RESULT code);
 };
 
 #define DL_ABORT_EX(arg) DlAbortEx(__FILE__, __LINE__, arg)

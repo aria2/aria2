@@ -40,22 +40,17 @@ namespace aria2 {
 
 class DlRetryEx:public RecoverableException {
 protected:
-  virtual SharedHandle<Exception> copy() const
-  {
-    SharedHandle<Exception> e(new DlRetryEx(*this));
-    return e;
-  }
+  virtual SharedHandle<Exception> copy() const;
 public:
-  DlRetryEx(const char* file, int line, const std::string& msg):
-    RecoverableException(file, line, msg) {}
+  DlRetryEx(const char* file, int line, const std::string& msg);
+
   DlRetryEx(const char* file, int line, const std::string& msg,
-            const Exception& cause):
-    RecoverableException(file, line, msg, cause) {}
-  DlRetryEx(const char* file, int line, const DlRetryEx& e):
-    RecoverableException(file, line, e) {}
+            const Exception& cause);
+
+  DlRetryEx(const char* file, int line, const DlRetryEx& e);
+
   DlRetryEx(const char* file, int line, const std::string& msg,
-            downloadresultcode::RESULT code):
-    RecoverableException(file, line, msg, code) {}
+            downloadresultcode::RESULT code);
 };
 
 #define DL_RETRY_EX(arg) DlRetryEx(__FILE__, __LINE__, arg)

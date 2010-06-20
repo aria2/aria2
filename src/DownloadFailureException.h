@@ -44,24 +44,19 @@ namespace aria2 {
  */
 class DownloadFailureException:public RecoverableException {
 protected:
-  virtual SharedHandle<Exception> copy() const
-  {
-    SharedHandle<Exception> e(new DownloadFailureException(*this));
-    return e;
-  }
+  virtual SharedHandle<Exception> copy() const;
 public:
-  DownloadFailureException(const char* file, int line, const std::string& msg):
-    RecoverableException(file, line, msg) {}
+  DownloadFailureException(const char* file, int line, const std::string& msg);
+
   DownloadFailureException(const char* file, int line, const std::string& msg,
-                           const Exception& cause):
-    RecoverableException(file, line, msg, cause) {}
+                           const Exception& cause);
+
   DownloadFailureException(const char* file, int line,
-                           const DownloadFailureException& e):
-    RecoverableException(file, line, e) {}
+                           const DownloadFailureException& e);
+
   DownloadFailureException(const char* file, int line,
                            const std::string& msg,
-                           downloadresultcode::RESULT code):
-    RecoverableException(file, line, msg, code) {}
+                           downloadresultcode::RESULT code);
 };
 
 #define DOWNLOAD_FAILURE_EXCEPTION(arg)                 \

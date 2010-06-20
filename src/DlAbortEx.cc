@@ -32,34 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RECOVERABLE_EXCEPTION_H_
-#define _D_RECOVERABLE_EXCEPTION_H_
-#include "Exception.h"
-#include "DownloadResultCode.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
-class RecoverableException:public Exception {
-private:
-  downloadresultcode::RESULT _code;
+SharedHandle<Exception> DlAbortEx::copy() const
+{
+  SharedHandle<Exception> e(new DlAbortEx(*this));
+  return e;
+}
 
-protected:
-  virtual SharedHandle<Exception> copy() const;
-public:
-  RecoverableException(const char* file, int line, const std::string& msg);
+DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg):
+  RecoverableException(file, line, msg) {}
 
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       const Exception& cause);
+DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
+                     const Exception& cause):
+  RecoverableException(file, line, msg, cause) {}
 
-  RecoverableException(const char* file, int line,
-                       const RecoverableException& e);
-  
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       downloadresultcode::RESULT result);
+DlAbortEx::DlAbortEx(const char* file, int line, const RecoverableException& e):
+  RecoverableException(file, line, e) {}
 
-  downloadresultcode::RESULT getCode() const { return _code; }
-};
+DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
+                     downloadresultcode::RESULT code):
+  RecoverableException(file, line, msg, code) {}
 
 } // namespace aria2
-
-#endif // _D_RECOVERABLE_EXCEPTION_EX_H_

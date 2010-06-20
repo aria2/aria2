@@ -32,34 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RECOVERABLE_EXCEPTION_H_
-#define _D_RECOVERABLE_EXCEPTION_H_
-#include "Exception.h"
-#include "DownloadResultCode.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
-class RecoverableException:public Exception {
-private:
-  downloadresultcode::RESULT _code;
+SharedHandle<Exception> DownloadFailureException::copy() const
+{
+  SharedHandle<Exception> e(new DownloadFailureException(*this));
+  return e;
+}
 
-protected:
-  virtual SharedHandle<Exception> copy() const;
-public:
-  RecoverableException(const char* file, int line, const std::string& msg);
+DownloadFailureException::DownloadFailureException
+(const char* file, int line, const std::string& msg):
+  RecoverableException(file, line, msg) {}
 
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       const Exception& cause);
+DownloadFailureException::DownloadFailureException
+(const char* file, int line, const std::string& msg,
+ const Exception& cause):
+  RecoverableException(file, line, msg, cause) {}
 
-  RecoverableException(const char* file, int line,
-                       const RecoverableException& e);
-  
-  RecoverableException(const char* file, int line, const std::string& msg,
-                       downloadresultcode::RESULT result);
+DownloadFailureException::DownloadFailureException
+(const char* file, int line,
+ const DownloadFailureException& e):
+  RecoverableException(file, line, e) {}
 
-  downloadresultcode::RESULT getCode() const { return _code; }
-};
+DownloadFailureException::DownloadFailureException
+(const char* file, int line,
+ const std::string& msg,
+ downloadresultcode::RESULT code):
+  RecoverableException(file, line, msg, code) {}
 
 } // namespace aria2
-
-#endif // _D_RECOVERABLE_EXCEPTION_EX_H_
