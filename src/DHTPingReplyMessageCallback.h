@@ -36,6 +36,10 @@
 #define _D_DHT_PING_REPLY_MESSAGE_CALLBACK_H_
 
 #include "DHTMessageCallback.h"
+#include "DHTAnnouncePeerReplyMessage.h"
+#include "DHTFindNodeReplyMessage.h"
+#include "DHTGetPeersReplyMessage.h"
+#include "Peer.h"
 
 namespace aria2 {
 
@@ -46,11 +50,20 @@ private:
 public:
   DHTPingReplyMessageCallback(Task* task):_task(task) {}
 
-  virtual void visit(const DHTAnnouncePeerReplyMessage* message) {}
+  virtual void visit(const DHTAnnouncePeerReplyMessage* message)
+  {
+    onTimeout(message->getRemoteNode());
+  }
 
-  virtual void visit(const DHTFindNodeReplyMessage* message) {}
+  virtual void visit(const DHTFindNodeReplyMessage* message)
+  {
+    onTimeout(message->getRemoteNode());
+  }
 
-  virtual void visit(const DHTGetPeersReplyMessage* message) {}
+  virtual void visit(const DHTGetPeersReplyMessage* message)
+  {
+    onTimeout(message->getRemoteNode());
+  }
 
   virtual void visit(const DHTPingReplyMessage* message)
   {

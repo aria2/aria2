@@ -34,15 +34,38 @@
 /* copyright --> */
 #include "DHTNodeLookupTaskCallback.h"
 #include "DHTNodeLookupTask.h"
+#include "DHTAnnouncePeerReplyMessage.h"
+#include "DHTGetPeersReplyMessage.h"
+#include "DHTPingReplyMessage.h"
+#include "Peer.h"
 
 namespace aria2 {
 
 DHTNodeLookupTaskCallback::DHTNodeLookupTaskCallback(DHTNodeLookupTask* task):
   _task(task) {}
 
+void DHTNodeLookupTaskCallback::visit
+(const DHTAnnouncePeerReplyMessage* message)
+{
+  // When wrong message type is received, forced to timeout
+  onTimeout(message->getRemoteNode());
+}
+
 void DHTNodeLookupTaskCallback::visit(const DHTFindNodeReplyMessage* message)
 {
   _task->onReceived(message);
+}
+
+void DHTNodeLookupTaskCallback::visit(const DHTGetPeersReplyMessage* message)
+{
+  // When wrong message type is received, forced to timeout
+  onTimeout(message->getRemoteNode());
+}
+
+void DHTNodeLookupTaskCallback::visit(const DHTPingReplyMessage* message)
+{
+  // When wrong message type is received, forced to timeout
+  onTimeout(message->getRemoteNode());
 }
 
 void DHTNodeLookupTaskCallback::onTimeout
@@ -50,5 +73,6 @@ void DHTNodeLookupTaskCallback::onTimeout
 {
   _task->onTimeout(remoteNode);
 }
+
 
 } // namespace aria2

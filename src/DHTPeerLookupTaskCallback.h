@@ -47,13 +47,13 @@ private:
 public:
   DHTPeerLookupTaskCallback(DHTPeerLookupTask* task);
 
-  virtual void visit(const DHTAnnouncePeerReplyMessage* message) {}
+  virtual void visit(const DHTAnnouncePeerReplyMessage* message);
 
-  virtual void visit(const DHTFindNodeReplyMessage* message) {}
+  virtual void visit(const DHTFindNodeReplyMessage* message);
 
   virtual void visit(const DHTGetPeersReplyMessage* message);
 
-  virtual void visit(const DHTPingReplyMessage* message) {}
+  virtual void visit(const DHTPingReplyMessage* message);
 
   virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode);
 };

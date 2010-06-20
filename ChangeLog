@@ -1,5 +1,15 @@
 2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	When wrong type DHT reply message is received for a transaction
+	ID, assume the message timed out.
+	* src/DHTNodeLookupTaskCallback.cc
+	* src/DHTNodeLookupTaskCallback.h
+	* src/DHTPeerLookupTaskCallback.cc
+	* src/DHTPeerLookupTaskCallback.h
+	* src/DHTPingReplyMessageCallback.h
+
+2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed PeerListProcessor. Its functionality is now moved to
 	bittorrent_helper.h
 	* src/DefaultBtAnnounce.cc

@@ -34,15 +34,35 @@
 /* copyright --> */
 #include "DHTPeerLookupTaskCallback.h"
 #include "DHTPeerLookupTask.h"
+#include "DHTAnnouncePeerReplyMessage.h"
+#include "DHTFindNodeReplyMessage.h"
+#include "DHTPingReplyMessage.h"
+#include "Peer.h"
 
 namespace aria2 {
 
 DHTPeerLookupTaskCallback::DHTPeerLookupTaskCallback(DHTPeerLookupTask* task):
   _task(task) {}
 
+void DHTPeerLookupTaskCallback::visit
+(const DHTAnnouncePeerReplyMessage* message)
+{
+  onTimeout(message->getRemoteNode());
+}
+
+void DHTPeerLookupTaskCallback::visit(const DHTFindNodeReplyMessage* message)
+{
+  onTimeout(message->getRemoteNode());
+}
+
 void DHTPeerLookupTaskCallback::visit(const DHTGetPeersReplyMessage* message)
 {
   _task->onReceived(message);
+}
+
+void DHTPeerLookupTaskCallback::visit(const DHTPingReplyMessage* message)
+{
+  onTimeout(message->getRemoteNode());
 }
 
 void DHTPeerLookupTaskCallback::onTimeout
