@@ -99,39 +99,11 @@ static const std::string C_CREATED_BY("created by");
 
 static const std::string DEFAULT_PEER_ID_PREFIX("aria2-");
 
-const std::string INFO_HASH("infoHash");
-
-const std::string MODE("mode");
-
-const std::string PRIVATE("private");
-
-const std::string ANNOUNCE_LIST("announceList");
-
-const std::string NODES("nodes");
-
-const std::string HOSTNAME("hostname");
-
-const std::string PORT("port");
-
-const std::string NAME("name");
-
-const std::string URL_LIST("urlList");
-
-const std::string CREATION_DATE("creationDate");
-
-const std::string COMMENT("comment");
-
-const std::string CREATED_BY("createdBy");
-
 const std::string BITTORRENT("bittorrent");
 
 const std::string MULTI("multi");
 
 const std::string SINGLE("single");
-
-const std::string METADATA_SIZE("metadataSize");
-
-const std::string METADATA("metadata");
 
 static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
                              const std::string& hashData,

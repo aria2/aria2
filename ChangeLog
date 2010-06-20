@@ -1,5 +1,11 @@
 2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused contants
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+
+2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use auto_delete_container to delete created Command when exception
 	is thrown rather than deleting them in catch block.
 	* src/AbstractCommand.cc

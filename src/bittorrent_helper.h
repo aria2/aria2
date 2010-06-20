@@ -53,29 +53,6 @@ class Randomizer;
 
 namespace bittorrent {
 
-extern const std::string INFO_HASH;
-
-extern const std::string MODE;
-
-extern const std::string PRIVATE;
-
-extern const std::string ANNOUNCE_LIST;
-
-extern const std::string NODES;
-
-extern const std::string HOSTNAME;
-
-extern const std::string PORT;
-
-extern const std::string NAME;
-
-extern const std::string URL_LIST;
-
-extern const std::string CREATION_DATE;
-
-extern const std::string COMMENT;
-
-extern const std::string CREATED_BY;
 
 extern const std::string SINGLE;
 
@@ -83,9 +60,6 @@ extern const std::string MULTI;
 
 extern const std::string BITTORRENT;
 
-extern const std::string METADATA_SIZE;
-
-extern const std::string METADATA;
 
 void load(const std::string& torrentFile,
           const SharedHandle<DownloadContext>& ctx,
