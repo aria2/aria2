@@ -48,11 +48,11 @@ namespace aria2 {
 namespace xmlrpc {
 
 struct SessionData {
-  XmlRpcRequestParserStateMachine* _stm;
+  XmlRpcRequestParserStateMachine* stm_;
 
-  std::stack<std::string> _charactersStack;
+  std::stack<std::string> charactersStack_;
 
-  SessionData(XmlRpcRequestParserStateMachine* stm):_stm(stm) {}
+  SessionData(XmlRpcRequestParserStateMachine* stm):stm_(stm) {}
 };
 
 static void mlStartElement(void* userData, const xmlChar* name,
@@ -73,9 +73,9 @@ static void mlStartElement(void* userData, const xmlChar* name,
       attrmap[name] = value;
     }
   }
-  sd->_stm->beginElement(reinterpret_cast<const char*>(name), attrmap);
-  if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.push(std::string());
+  sd->stm_->beginElement(reinterpret_cast<const char*>(name), attrmap);
+  if(sd->stm_->needsCharactersBuffering()) {
+    sd->charactersStack_.push(std::string());
   }
 }
 
@@ -83,18 +83,18 @@ static void mlEndElement(void* userData, const xmlChar* name)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
-  if(sd->_stm->needsCharactersBuffering()) {
-    characters = util::trim(sd->_charactersStack.top());
-    sd->_charactersStack.pop();
+  if(sd->stm_->needsCharactersBuffering()) {
+    characters = util::trim(sd->charactersStack_.top());
+    sd->charactersStack_.pop();
   }
-  sd->_stm->endElement(reinterpret_cast<const char*>(name), characters);
+  sd->stm_->endElement(reinterpret_cast<const char*>(name), characters);
 }
 
 static void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.top() += std::string(&ch[0], &ch[len]);
+  if(sd->stm_->needsCharactersBuffering()) {
+    sd->charactersStack_.top() += std::string(&ch[0], &ch[len]);
   }
 }
 
@@ -137,19 +137,19 @@ static xmlSAXHandler mySAXHandler =
 XmlRpcRequest
 XmlRpcRequestProcessor::parseMemory(const std::string& xml)
 {
-  _stm.reset(new XmlRpcRequestParserStateMachine());
-  SharedHandle<SessionData> sessionData(new SessionData(_stm.get()));
+  stm_.reset(new XmlRpcRequestParserStateMachine());
+  SharedHandle<SessionData> sessionData(new SessionData(stm_.get()));
 
   int r = xmlSAXUserParseMemory(&mySAXHandler, sessionData.get(),
                                 xml.data(), xml.size());
   if(r != 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
-  if(!asList(_stm->getCurrentFrameValue())) {
+  if(!asList(stm_->getCurrentFrameValue())) {
     throw DL_ABORT_EX("Bad XML-RPC parameter list");
   }
-  return XmlRpcRequest(_stm->getMethodName(),
-                       static_pointer_cast<List>(_stm->getCurrentFrameValue()));
+  return XmlRpcRequest(stm_->getMethodName(),
+                       static_pointer_cast<List>(stm_->getCurrentFrameValue()));
 }
 
 } // namespace xmlrpc

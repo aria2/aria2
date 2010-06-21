@@ -60,15 +60,15 @@ namespace aria2 {
 
 HttpRequestEntry::HttpRequestEntry
 (const SharedHandle<HttpRequest>& httpRequest):
-  _httpRequest(httpRequest),
-  _proc(new HttpHeaderProcessor()) {}
+  httpRequest_(httpRequest),
+  proc_(new HttpHeaderProcessor()) {}
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
 HttpConnection::HttpConnection(cuid_t cuid, const SocketHandle& socket):
-  _cuid(cuid), _socket(socket),
-  _socketBuffer(socket),
-  _logger(LogFactory::getInstance())
+  cuid_(cuid), socket_(socket),
+  socketBuffer_(socket),
+  logger_(LogFactory::getInstance())
 {}
 
 std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
@@ -93,45 +93,45 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createRequest();
-  if(_logger->info()) {
-    _logger->info(MSG_SENDING_REQUEST,
-                  util::itos(_cuid).c_str(),
+  if(logger_->info()) {
+    logger_->info(MSG_SENDING_REQUEST,
+                  util::itos(cuid_).c_str(),
                   eraseConfidentialInfo(request).c_str());
   }
-  _socketBuffer.pushStr(request);
-  _socketBuffer.send();
+  socketBuffer_.pushStr(request);
+  socketBuffer_.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
-  _outstandingHttpRequests.push_back(entry);
+  outstandingHttpRequests_.push_back(entry);
 }
 
 void HttpConnection::sendProxyRequest
 (const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createProxyRequest();
-  if(_logger->info()) {
-    _logger->info(MSG_SENDING_REQUEST,
-                  util::itos(_cuid).c_str(),
+  if(logger_->info()) {
+    logger_->info(MSG_SENDING_REQUEST,
+                  util::itos(cuid_).c_str(),
                   eraseConfidentialInfo(request).c_str());
   }
-  _socketBuffer.pushStr(request);
-  _socketBuffer.send();
+  socketBuffer_.pushStr(request);
+  socketBuffer_.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
-  _outstandingHttpRequests.push_back(entry);
+  outstandingHttpRequests_.push_back(entry);
 }
 
 SharedHandle<HttpResponse> HttpConnection::receiveResponse()
 {
-  if(_outstandingHttpRequests.empty()) {
+  if(outstandingHttpRequests_.empty()) {
     throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
-  HttpRequestEntryHandle entry = _outstandingHttpRequests.front();
+  HttpRequestEntryHandle entry = outstandingHttpRequests_.front();
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
 
   unsigned char buf[512];
   size_t size = sizeof(buf);
-  _socket->peekData(buf, size);
+  socket_->peekData(buf, size);
   if(size == 0) {
-    if(_socket->wantRead() || _socket->wantWrite()) {
+    if(socket_->wantRead() || socket_->wantWrite()) {
       return SharedHandle<HttpResponse>();
     } else {
       throw DL_RETRY_EX(EX_INVALID_RESPONSE);
@@ -139,31 +139,31 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
   }
   proc->update(buf, size);
   if(!proc->eoh()) {
-    _socket->readData(buf, size);
+    socket_->readData(buf, size);
     return SharedHandle<HttpResponse>();
   }
   size_t putbackDataLength = proc->getPutBackDataLength();
   size -= putbackDataLength;
-  _socket->readData(buf, size);
-  if(_logger->info()) {
-    _logger->info(MSG_RECEIVE_RESPONSE,
-                  util::itos(_cuid).c_str(), proc->getHeaderString().c_str());
+  socket_->readData(buf, size);
+  if(logger_->info()) {
+    logger_->info(MSG_RECEIVE_RESPONSE,
+                  util::itos(cuid_).c_str(), proc->getHeaderString().c_str());
   }
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
   SharedHandle<HttpResponse> httpResponse(new HttpResponse());
-  httpResponse->setCuid(_cuid);
+  httpResponse->setCuid(cuid_);
   httpResponse->setHttpHeader(httpHeader);
   httpResponse->setHttpRequest(entry->getHttpRequest());
 
-  _outstandingHttpRequests.pop_front();
+  outstandingHttpRequests_.pop_front();
 
   return httpResponse;
 }
 
 bool HttpConnection::isIssued(const SharedHandle<Segment>& segment) const
 {
-  for(HttpRequestEntries::const_iterator itr = _outstandingHttpRequests.begin(),
-        eoi = _outstandingHttpRequests.end(); itr != eoi; ++itr) {
+  for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests_.begin(),
+        eoi = outstandingHttpRequests_.end(); itr != eoi; ++itr) {
     SharedHandle<HttpRequest> httpRequest = (*itr)->getHttpRequest();
     if(httpRequest->getSegment() == segment) {
       return true;
@@ -174,21 +174,21 @@ bool HttpConnection::isIssued(const SharedHandle<Segment>& segment) const
 
 SharedHandle<HttpRequest> HttpConnection::getFirstHttpRequest() const
 {
-  if(_outstandingHttpRequests.empty()) {
+  if(outstandingHttpRequests_.empty()) {
     return SharedHandle<HttpRequest>();
   } else {
-    return _outstandingHttpRequests.front()->getHttpRequest();
+    return outstandingHttpRequests_.front()->getHttpRequest();
   }
 }
 
 bool HttpConnection::sendBufferIsEmpty() const
 {
-  return _socketBuffer.sendBufferIsEmpty();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 void HttpConnection::sendPendingData()
 {
-  _socketBuffer.send();
+  socketBuffer_.send();
 }
 
 } // namespace aria2

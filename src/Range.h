@@ -42,20 +42,20 @@ namespace aria2 {
 
 class Range {
 private:
-  off_t _startByte;
-  off_t _endByte;
-  uint64_t _entityLength;
+  off_t startByte_;
+  off_t endByte_;
+  uint64_t entityLength_;
 public:
-  Range():_startByte(0), _endByte(0), _entityLength(0) {}
+  Range():startByte_(0), endByte_(0), entityLength_(0) {}
 
   Range(off_t startByte, off_t endByte, uint64_t entityLength):
-    _startByte(startByte), _endByte(endByte), _entityLength(entityLength) {}
+    startByte_(startByte), endByte_(endByte), entityLength_(entityLength) {}
 
   bool operator==(const Range& range) const
   {
-    return _startByte == range._startByte &&
-      _endByte == range._endByte &&
-      _entityLength == range._entityLength;
+    return startByte_ == range.startByte_ &&
+      endByte_ == range.endByte_ &&
+      entityLength_ == range.entityLength_;
   }
 
   bool operator!=(const Range& range) const
@@ -65,23 +65,23 @@ public:
 
   off_t getStartByte() const
   {
-    return _startByte;
+    return startByte_;
   }
 
   off_t getEndByte() const
   {
-    return _endByte;
+    return endByte_;
   }
 
   uint64_t getEntityLength() const
   {
-    return _entityLength;
+    return entityLength_;
   }
 
   uint64_t getContentLength() const
   {
-    if(_endByte >= _startByte) {
-      return _endByte-_startByte+1;
+    if(endByte_ >= startByte_) {
+      return endByte_-startByte_+1;
     } else {
       return 0;
     }

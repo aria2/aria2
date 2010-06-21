@@ -58,22 +58,22 @@ DHTGetPeersMessage::DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
                                        const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID)
 {
-  memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
+  memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
 
 DHTGetPeersMessage::~DHTGetPeersMessage() {}
 
 void DHTGetPeersMessage::doReceivedAction()
 {
-  std::string token = _tokenTracker->generateToken
-    (_infoHash, getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
+  std::string token = tokenTracker_->generateToken
+    (infoHash_, getRemoteNode()->getIPAddress(), getRemoteNode()->getPort());
   // Check to see localhost has the contents which has same infohash
   std::vector<SharedHandle<Peer> > peers;
-  _peerAnnounceStorage->getPeers(peers, _infoHash);
+  peerAnnounceStorage_->getPeers(peers, infoHash_);
   SharedHandle<DHTMessage> reply;
   if(peers.empty()) {
     std::vector<SharedHandle<DHTNode> > nodes;
-    getRoutingTable()->getClosestKNodes(nodes, _infoHash);
+    getRoutingTable()->getClosestKNodes(nodes, infoHash_);
     reply =
       getMessageFactory()->createGetPeersReplyMessage
       (getRemoteNode(), nodes, token, getTransactionID());
@@ -89,7 +89,7 @@ SharedHandle<Dict> DHTGetPeersMessage::getArgument()
 {
   SharedHandle<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
-  aDict->put(INFO_HASH, String::g(_infoHash, DHT_ID_LENGTH));
+  aDict->put(INFO_HASH, String::g(infoHash_, DHT_ID_LENGTH));
   return aDict;
 }
 
@@ -101,18 +101,18 @@ const std::string& DHTGetPeersMessage::getMessageType() const
 void DHTGetPeersMessage::setPeerAnnounceStorage
 (const WeakHandle<DHTPeerAnnounceStorage>& storage)
 {
-  _peerAnnounceStorage = storage;
+  peerAnnounceStorage_ = storage;
 }
 
 void DHTGetPeersMessage::setTokenTracker
 (const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
-  _tokenTracker = tokenTracker;
+  tokenTracker_ = tokenTracker;
 }
 
 std::string DHTGetPeersMessage::toStringOptional() const
 {
-  return "info_hash="+util::toHex(_infoHash, INFO_HASH_LENGTH);
+  return "info_hash="+util::toHex(infoHash_, INFO_HASH_LENGTH);
 }
 
 } // namespace aria2

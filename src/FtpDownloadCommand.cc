@@ -61,8 +61,8 @@ FtpDownloadCommand::FtpDownloadCommand
  const SocketHandle& dataSocket,
  const SocketHandle& ctrlSocket)
   :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket),
-   _ftpConnection(ftpConnection),
-   _ctrlSocket(ctrlSocket) {}
+   ftpConnection_(ftpConnection),
+   ctrlSocket_(ctrlSocket) {}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
 
@@ -75,7 +75,7 @@ bool FtpDownloadCommand::prepareForNextSegment()
      getFileEntry()->getLength()) {
     Command* command = new FtpFinishDownloadCommand
       (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-       _ftpConnection, getDownloadEngine(), _ctrlSocket);
+       ftpConnection_, getDownloadEngine(), ctrlSocket_);
     getDownloadEngine()->addCommand(command);
 
     if(getRequestGroup()->downloadFinished()) {

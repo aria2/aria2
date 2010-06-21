@@ -49,25 +49,25 @@ class Logger;
 class UTMetadataRequestTracker {
 private:
   struct RequestEntry {
-    size_t _index;
-    Timer _dispatchedTime;
+    size_t index_;
+    Timer dispatchedTime_;
 
-    RequestEntry(size_t index):_index(index) {}
+    RequestEntry(size_t index):index_(index) {}
 
     bool elapsed(time_t t) const
     {
-      return _dispatchedTime.difference(global::wallclock) >= t;
+      return dispatchedTime_.difference(global::wallclock) >= t;
     }
 
     bool operator==(const RequestEntry& e) const
     {
-      return _index == e._index;
+      return index_ == e.index_;
     }
   };
 
-  std::vector<RequestEntry> _trackedRequests;
+  std::vector<RequestEntry> trackedRequests_;
 
-  Logger* _logger;
+  Logger* logger_;
 public:
   UTMetadataRequestTracker();
 
@@ -89,7 +89,7 @@ public:
   // Returns the number of tracking list.
   size_t count() const
   {
-    return _trackedRequests.size();
+    return trackedRequests_.size();
   }
 
   // Returns the number of additional index this tracker can track.

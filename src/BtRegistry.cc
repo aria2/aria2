@@ -47,18 +47,18 @@ namespace aria2 {
 SharedHandle<DownloadContext>
 BtRegistry::getDownloadContext(gid_t gid) const
 {
-  return get(gid)._downloadContext;
+  return get(gid).downloadContext_;
 }
 
 SharedHandle<DownloadContext>
 BtRegistry::getDownloadContext(const std::string& infoHash) const
 {
   SharedHandle<DownloadContext> dctx;
-  for(std::map<gid_t, BtObject>::const_iterator i = _pool.begin(),
-        eoi = _pool.end(); i != eoi; ++i) {
-    if(bittorrent::getTorrentAttrs((*i).second._downloadContext)->infoHash ==
+  for(std::map<gid_t, BtObject>::const_iterator i = pool_.begin(),
+        eoi = pool_.end(); i != eoi; ++i) {
+    if(bittorrent::getTorrentAttrs((*i).second.downloadContext_)->infoHash ==
        infoHash) {
-      dctx = (*i).second._downloadContext;
+      dctx = (*i).second.downloadContext_;
       break;
     }
   }      
@@ -67,13 +67,13 @@ BtRegistry::getDownloadContext(const std::string& infoHash) const
 
 void BtRegistry::put(gid_t gid, const BtObject& obj)
 {
-  _pool[gid] = obj;
+  pool_[gid] = obj;
 }
 
 BtObject BtRegistry::get(gid_t gid) const
 {
-  std::map<gid_t, BtObject>::const_iterator i = _pool.find(gid);
-  if(i == _pool.end()) {
+  std::map<gid_t, BtObject>::const_iterator i = pool_.find(gid);
+  if(i == pool_.end()) {
     return BtObject();
   } else {
     return (*i).second;
@@ -82,11 +82,11 @@ BtObject BtRegistry::get(gid_t gid) const
 
 bool BtRegistry::remove(gid_t gid)
 {
-  return _pool.erase(gid);
+  return pool_.erase(gid);
 }
 
 void BtRegistry::removeAll() {
-  _pool.clear();
+  pool_.clear();
 }
 
 } // namespace aria2

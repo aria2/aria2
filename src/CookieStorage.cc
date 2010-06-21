@@ -54,36 +54,36 @@
 namespace aria2 {
 
 CookieStorage::DomainEntry::DomainEntry
-(const std::string& domain):_key(domain)
+(const std::string& domain):key_(domain)
 {
-  std::reverse(_key.begin(), _key.end());
+  std::reverse(key_.begin(), key_.end());
 }
 
 void CookieStorage::DomainEntry::updateLastAccess()
 {
-  _lastAccess = time(0);
+  lastAccess_ = time(0);
 }
 
 bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie)
 {
   updateLastAccess();
-  std::deque<Cookie>::iterator i = std::find(_cookies.begin(), _cookies.end(),
+  std::deque<Cookie>::iterator i = std::find(cookies_.begin(), cookies_.end(),
                                              cookie);
-  if(i == _cookies.end()) {
+  if(i == cookies_.end()) {
     if(cookie.isExpired()) {
       return false;
     } else {
-      if(_cookies.size() >= CookieStorage::MAX_COOKIE_PER_DOMAIN) {
+      if(cookies_.size() >= CookieStorage::MAX_COOKIE_PER_DOMAIN) {
         std::deque<Cookie>::iterator m = std::min_element
-          (_cookies.begin(), _cookies.end(), LeastRecentAccess<Cookie>());
+          (cookies_.begin(), cookies_.end(), LeastRecentAccess<Cookie>());
         *m = cookie;
       } else {
-        _cookies.push_back(cookie);
+        cookies_.push_back(cookie);
       }
       return true;
     }
   } else if(cookie.isExpired()) {
-    _cookies.erase(i);
+    cookies_.erase(i);
     return false;
   } else {
     *i = cookie;
@@ -93,18 +93,18 @@ bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie)
 
 bool CookieStorage::DomainEntry::contains(const Cookie& cookie) const
 {
-  return std::find(_cookies.begin(), _cookies.end(), cookie) != _cookies.end();
+  return std::find(cookies_.begin(), cookies_.end(), cookie) != cookies_.end();
 }
 
 void CookieStorage::DomainEntry::writeCookie(std::ostream& o) const
 {
-  for(std::deque<Cookie>::const_iterator i = _cookies.begin(),
-        eoi = _cookies.end(); i != eoi; ++i) {
+  for(std::deque<Cookie>::const_iterator i = cookies_.begin(),
+        eoi = cookies_.end(); i != eoi; ++i) {
     o << (*i).toNsCookieFormat() << "\n";
   }
 }
 
-CookieStorage::CookieStorage():_logger(LogFactory::getInstance()) {}
+CookieStorage::CookieStorage():logger_(LogFactory::getInstance()) {}
 
 CookieStorage::~CookieStorage() {}
 
@@ -118,23 +118,23 @@ bool CookieStorage::store(const Cookie& cookie)
   if(!cookie.good()) {
     return false;
   }
-  if(_domains.size() >= DOMAIN_EVICTION_TRIGGER) {
-    std::sort(_domains.begin(), _domains.end(),
+  if(domains_.size() >= DOMAIN_EVICTION_TRIGGER) {
+    std::sort(domains_.begin(), domains_.end(),
               LeastRecentAccess<DomainEntry>());
-    size_t delnum = (size_t)(_domains.size()*DOMAIN_EVICTION_RATE);
-    _domains.erase(_domains.begin(), _domains.begin()+delnum);
-    std::sort(_domains.begin(), _domains.end());
+    size_t delnum = (size_t)(domains_.size()*DOMAIN_EVICTION_RATE);
+    domains_.erase(domains_.begin(), domains_.begin()+delnum);
+    std::sort(domains_.begin(), domains_.end());
   }
   DomainEntry v(cookie.getDomain());
   std::deque<DomainEntry>::iterator i =
-    std::lower_bound(_domains.begin(), _domains.end(), v);
+    std::lower_bound(domains_.begin(), domains_.end(), v);
   bool added = false;
-  if(i != _domains.end() && (*i).getKey() == v.getKey()) {
+  if(i != domains_.end() && (*i).getKey() == v.getKey()) {
     added = (*i).addCookie(cookie);
   } else {
     added = v.addCookie(cookie);
     if(added) {
-      _domains.insert(i, v);
+      domains_.insert(i, v);
     }
   }
   return added;
@@ -144,7 +144,7 @@ bool CookieStorage::parseAndStore(const std::string& setCookieString,
                                   const std::string& requestHost,
                                   const std::string& requestPath)
 {
-  Cookie cookie = _parser.parse(setCookieString, requestHost, requestPath);
+  Cookie cookie = parser_.parse(setCookieString, requestHost, requestPath);
   if(cookie.validate(requestHost, requestPath)) {
     return store(cookie);
   } else {
@@ -153,13 +153,13 @@ bool CookieStorage::parseAndStore(const std::string& setCookieString,
 }
 
 struct CookiePathDivider {
-  Cookie _cookie;
-  int _pathDepth;
-  CookiePathDivider(const Cookie& cookie):_cookie(cookie)
+  Cookie cookie_;
+  int pathDepth_;
+  CookiePathDivider(const Cookie& cookie):cookie_(cookie)
   {
     std::vector<std::string> paths;
-    util::split(_cookie.getPath(), std::back_inserter(paths), A2STR::SLASH_C);
-    _pathDepth = paths.size();
+    util::split(cookie_.getPath(), std::back_inserter(paths), A2STR::SLASH_C);
+    pathDepth_ = paths.size();
   }
 };
 
@@ -172,7 +172,7 @@ public:
 
   Cookie operator()(const CookiePathDivider& cookiePathDivider) const
   {
-    return cookiePathDivider._cookie;
+    return cookiePathDivider.cookie_;
   }
 };
 
@@ -194,9 +194,9 @@ public:
     // "name1=foo" with a path mapping of "/" should be sent after a
     // cookie "name1=foo2" with a path mapping of "/bar" if they are
     // both to be sent.
-    int comp = lhs._pathDepth-rhs._pathDepth;
+    int comp = lhs.pathDepth_-rhs.pathDepth_;
     if(comp == 0) {
-      return lhs._cookie.getCreationTime() < rhs._cookie.getCreationTime();
+      return lhs.cookie_.getCreationTime() < rhs.cookie_.getCreationTime();
     } else {
       return comp > 0;
     }
@@ -224,8 +224,8 @@ bool CookieStorage::contains(const Cookie& cookie) const
 {
   CookieStorage::DomainEntry v(cookie.getDomain());
   std::deque<CookieStorage::DomainEntry>::const_iterator i =
-    std::lower_bound(_domains.begin(), _domains.end(), v);
-  if(i != _domains.end() && (*i).getKey() == v.getKey()) {
+    std::lower_bound(domains_.begin(), domains_.end(), v);
+  if(i != domains_.end() && (*i).getKey() == v.getKey()) {
     return (*i).contains(cookie);
   } else {
     return false;
@@ -241,7 +241,7 @@ std::vector<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
   searchCookieByDomainSuffix
     ((!numericHost && requestHost.find(A2STR::DOT_C) == std::string::npos)?
      requestHost+".local":requestHost,
-     _domains.begin(), _domains.end(),
+     domains_.begin(), domains_.end(),
      std::back_inserter(res),
      requestHost, requestPath, date, secure);
   if(!numericHost) {
@@ -259,7 +259,7 @@ std::vector<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
           domainComponents.begin()+1, eoi = domainComponents.end();
         di != eoi; ++di) {
       domain = strconcat(A2STR::DOT_C, *di, domain);
-      searchCookieByDomainSuffix(domain, _domains.begin(), _domains.end(),
+      searchCookieByDomainSuffix(domain, domains_.begin(), domains_.end(),
                                  std::back_inserter(res),
                                  normRequestHost, requestPath, date, secure);
     }
@@ -276,8 +276,8 @@ std::vector<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
 size_t CookieStorage::size() const
 {
   size_t numCookie = 0;
-  for(std::deque<DomainEntry>::const_iterator i = _domains.begin(),
-        eoi = _domains.end(); i != eoi; ++i) {
+  for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
+        eoi = domains_.end(); i != eoi; ++i) {
     numCookie += (*i).countCookie();
   }
   return numCookie;
@@ -288,12 +288,12 @@ bool CookieStorage::load(const std::string& filename)
   char header[16]; // "SQLite format 3" plus \0
   std::ifstream s(filename.c_str(), std::ios::binary);
   if(!s) {
-    _logger->error("Failed to open cookie file %s", filename.c_str());
+    logger_->error("Failed to open cookie file %s", filename.c_str());
     return false;
   }
   s.get(header, sizeof(header));
   if(!s) {
-    _logger->error("Failed to read header of cookie file %s",
+    logger_->error("Failed to read header of cookie file %s",
                    filename.c_str());
     return false;
   }
@@ -313,7 +313,7 @@ bool CookieStorage::load(const std::string& filename)
     }
     return true;
   } catch(RecoverableException& e) {
-    _logger->error("Failed to load cookies from %s", filename.c_str());
+    logger_->error("Failed to load cookies from %s", filename.c_str());
     return false;
   }
 }
@@ -324,17 +324,17 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
   {
     std::ofstream o(tempfilename.c_str(), std::ios::binary);
     if(!o) {
-      _logger->error("Cannot create cookie file %s, cause %s",
+      logger_->error("Cannot create cookie file %s, cause %s",
                      filename.c_str(), strerror(errno));
       return false;
     }
-    for(std::deque<DomainEntry>::const_iterator i = _domains.begin(),
-          eoi = _domains.end(); i != eoi; ++i) {
+    for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
+          eoi = domains_.end(); i != eoi; ++i) {
       (*i).writeCookie(o);
     }
     o.flush();
     if(!o) {
-      _logger->error("Failed to save cookies to %s, cause %s",
+      logger_->error("Failed to save cookies to %s, cause %s",
                      filename.c_str(), strerror(errno));
       return false;
     }  
@@ -342,7 +342,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
   if(File(tempfilename).renameTo(filename)) {
     return true;
   } else {
-    _logger->error("Could not rename file %s as %s",
+    logger_->error("Could not rename file %s as %s",
                    tempfilename.c_str(), filename.c_str());
     return false;
   }

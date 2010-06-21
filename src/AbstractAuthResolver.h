@@ -41,9 +41,9 @@ namespace aria2 {
 
 class AbstractAuthResolver : public AuthResolver {
 private:
-  SharedHandle<AuthConfig> _userDefinedAuthConfig;
+  SharedHandle<AuthConfig> userDefinedAuthConfig_;
 
-  SharedHandle<AuthConfig> _defaultAuthConfig;
+  SharedHandle<AuthConfig> defaultAuthConfig_;
 public:
   AbstractAuthResolver();
 
@@ -53,14 +53,14 @@ public:
 
   const SharedHandle<AuthConfig>& getUserDefinedAuthConfig() const
   {
-    return _userDefinedAuthConfig;
+    return userDefinedAuthConfig_;
   }
 
   void setDefaultAuthConfig(const SharedHandle<AuthConfig>& authConfig);
 
   const SharedHandle<AuthConfig>& getDefaultAuthConfig() const
   {
-    return _defaultAuthConfig;
+    return defaultAuthConfig_;
   }
 
 };

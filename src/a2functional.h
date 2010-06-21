@@ -120,17 +120,17 @@ class adopt2nd_t:public std::binary_function<typename BinaryOp::first_argument_t
                                              typename UnaryOp::argument_type,
                                              typename BinaryOp::result_type> {
 private:
-  BinaryOp _binaryOp;
-  UnaryOp _unaryOp;
+  BinaryOp binaryOp_;
+  UnaryOp unaryOp_;
 public:
   adopt2nd_t(const BinaryOp& b, const UnaryOp& u):
-    _binaryOp(b), _unaryOp(u) {}
+    binaryOp_(b), unaryOp_(u) {}
 
   typename BinaryOp::result_type
   operator()(const typename BinaryOp::first_argument_type& x,
              const typename UnaryOp::argument_type& y)
   {
-    return _binaryOp(x, _unaryOp(y));
+    return binaryOp_(x, unaryOp_(y));
   }
 
 };
@@ -178,15 +178,15 @@ public:
 template<typename T>
 class Append {
 private:
-  T& _to;
-  T _delim;
+  T& to_;
+  T delim_;
 public:
   template<typename S>
-  Append(T& to, const S& delim):_to(to), _delim(delim) {}
+  Append(T& to, const S& delim):to_(to), delim_(delim) {}
 
   template<typename S>
   void operator()(const S& s) {
-    _to += s+_delim;
+    to_ += s+delim_;
   }
 };
 
@@ -195,28 +195,28 @@ typedef Append<std::string> StringAppend;
 template<typename T>
 class auto_delete {
 private:
-  T _obj;
-  void (*_deleter)(T);
+  T obj_;
+  void (*deleter_)(T);
 public:
-  auto_delete(T obj, void (*deleter)(T)):_obj(obj), _deleter(deleter) {}
+  auto_delete(T obj, void (*deleter)(T)):obj_(obj), deleter_(deleter) {}
 
   ~auto_delete()
   {
-    _deleter(_obj);
+    deleter_(obj_);
   }
 };
 
 template<class Container>
 class auto_delete_container {
 private:
-  Container* _c;
+  Container* c_;
 public:
-  auto_delete_container(Container* c):_c(c) {}
+  auto_delete_container(Container* c):c_(c) {}
 
   ~auto_delete_container()
   {
-    std::for_each(_c->begin(), _c->end(), Deleter());
-    delete _c;
+    std::for_each(c_->begin(), c_->end(), Deleter());
+    delete c_;
   }
 };
 

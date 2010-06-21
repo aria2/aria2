@@ -51,64 +51,64 @@ class Logger;
 
 class AbstractBtMessage : public BtMessage {
 private:
-  bool _sendingInProgress;
-  bool _invalidate;
-  bool _uploading;
-  cuid_t _cuid;
+  bool sendingInProgress_;
+  bool invalidate_;
+  bool uploading_;
+  cuid_t cuid_;
 
-  std::string _name;
+  std::string name_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  SharedHandle<Peer> _peer;
+  SharedHandle<Peer> peer_;
 
-  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher_;
 
-  WeakHandle<BtMessageFactory> _messageFactory;
+  WeakHandle<BtMessageFactory> messageFactory_;
 
-  WeakHandle<BtRequestFactory> _requestFactory;
+  WeakHandle<BtRequestFactory> requestFactory_;
 
-  WeakHandle<PeerConnection> _peerConnection;
+  WeakHandle<PeerConnection> peerConnection_;
 
-  SharedHandle<BtMessageValidator> _validator;
+  SharedHandle<BtMessageValidator> validator_;
 
-  bool _metadataGetMode;
+  bool metadataGetMode_;
 
-  Logger* _logger;
+  Logger* logger_;
 protected:
   Logger* getLogger() const
   {
-    return _logger;
+    return logger_;
   }
 
   const SharedHandle<PieceStorage>& getPieceStorage() const
   {
-    return _pieceStorage;
+    return pieceStorage_;
   }
 
   const WeakHandle<PeerConnection>& getPeerConnection() const
   {
-    return _peerConnection;
+    return peerConnection_;
   }
 
   const WeakHandle<BtMessageDispatcher>& getBtMessageDispatcher() const
   {
-    return _dispatcher;
+    return dispatcher_;
   }
 
   const WeakHandle<BtRequestFactory>& getBtRequestFactory() const
   {
-    return _requestFactory;
+    return requestFactory_;
   }
 
   const WeakHandle<BtMessageFactory>& getBtMessageFactory() const
   {
-    return _messageFactory;
+    return messageFactory_;
   }
 
   bool isMetadataGetMode() const
   {
-    return _metadataGetMode;
+    return metadataGetMode_;
   }
 public:
   AbstractBtMessage(uint8_t id, const std::string& name);
@@ -116,40 +116,40 @@ public:
   virtual ~AbstractBtMessage();
 
   virtual bool isSendingInProgress() {
-    return _sendingInProgress;
+    return sendingInProgress_;
   }
 
   void setSendingInProgress(bool sendingInProgress) {
-    _sendingInProgress = sendingInProgress;
+    sendingInProgress_ = sendingInProgress;
   }
 
   virtual bool isInvalidate() {
-    return _invalidate;
+    return invalidate_;
   }
 
   void setInvalidate(bool invalidate) {
-    _invalidate = invalidate;
+    invalidate_ = invalidate;
   }
 
   virtual bool isUploading() {
-    return _uploading;
+    return uploading_;
   }
 
   void setUploading(bool uploading) {
-    _uploading = uploading;
+    uploading_ = uploading;
   }
 
   cuid_t getCuid() const {
-    return _cuid;
+    return cuid_;
   }
 
   void setCuid(cuid_t cuid) {
-    _cuid = cuid;
+    cuid_ = cuid;
   }
 
   const SharedHandle<Peer>& getPeer() const
   {
-    return _peer;
+    return peer_;
   }
 
   void setPeer(const SharedHandle<Peer>& peer);
@@ -183,12 +183,12 @@ public:
 
   const std::string& getName() const
   {
-    return _name;
+    return name_;
   }
 
   void enableMetadataGetMode()
   {
-    _metadataGetMode = true;
+    metadataGetMode_ = true;
   }
 };
 

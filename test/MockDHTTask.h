@@ -10,11 +10,11 @@ namespace aria2 {
 
 class MockDHTTask:public DHTTask {
 public:
-  SharedHandle<DHTNode> _remoteNode;
+  SharedHandle<DHTNode> remoteNode_;
 
-  unsigned char _targetID[DHT_ID_LENGTH];
+  unsigned char targetID_[DHT_ID_LENGTH];
 
-  MockDHTTask(const SharedHandle<DHTNode>& remoteNode):_remoteNode(remoteNode) {}
+  MockDHTTask(const SharedHandle<DHTNode>& remoteNode):remoteNode_(remoteNode) {}
 
   virtual ~MockDHTTask() {}
 
@@ -27,7 +27,7 @@ public:
 
   void setTargetID(const unsigned char* targetID)
   {
-    memcpy(_targetID, targetID, DHT_ID_LENGTH);
+    memcpy(targetID_, targetID, DHT_ID_LENGTH);
   }
 };
 

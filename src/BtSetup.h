@@ -48,7 +48,7 @@ class Command;
 
 class BtSetup {
 private:
-  Logger* _logger;
+  Logger* logger_;
 public:
   BtSetup();
 

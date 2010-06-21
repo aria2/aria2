@@ -52,28 +52,28 @@ class Logger;
 
 class DHTAbstractTask:public DHTTask {
 private:
-  bool _finished;
+  bool finished_;
   
-  Logger* _logger;
+  Logger* logger_;
   
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTRoutingTable> _routingTable;
+  WeakHandle<DHTRoutingTable> routingTable_;
 
-  WeakHandle<DHTMessageDispatcher> _dispatcher;
+  WeakHandle<DHTMessageDispatcher> dispatcher_;
 
-  WeakHandle<DHTMessageFactory> _factory;
+  WeakHandle<DHTMessageFactory> factory_;
   
-  WeakHandle<DHTTaskQueue> _taskQueue;
+  WeakHandle<DHTTaskQueue> taskQueue_;
 protected:
   void setFinished(bool f)
   {
-    _finished = f;
+    finished_ = f;
   }
 
   Logger* getLogger() const
   {
-    return _logger;
+    return logger_;
   }
 public:
   DHTAbstractTask();
@@ -82,35 +82,35 @@ public:
 
   const WeakHandle<DHTRoutingTable>& getRoutingTable() const
   {
-    return _routingTable;
+    return routingTable_;
   }
 
   void setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable);
 
   const WeakHandle<DHTMessageDispatcher>& getMessageDispatcher() const
   {
-    return _dispatcher;
+    return dispatcher_;
   }
 
   void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher);
 
   const WeakHandle<DHTMessageFactory>& getMessageFactory() const
   {
-    return _factory;
+    return factory_;
   }
 
   void setMessageFactory(const WeakHandle<DHTMessageFactory> factory);
 
   const WeakHandle<DHTTaskQueue>& getTaskQueue() const
   {
-    return _taskQueue;
+    return taskQueue_;
   }
 
   void setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue);
 
   const SharedHandle<DHTNode>& getLocalNode() const
   {
-    return _localNode;
+    return localNode_;
   }
 
   void setLocalNode(const SharedHandle<DHTNode>& localNode);

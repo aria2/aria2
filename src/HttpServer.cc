@@ -51,15 +51,15 @@ namespace aria2 {
 
 HttpServer::HttpServer(const SharedHandle<SocketCore>& socket,
                        DownloadEngine* e):
-  _socket(socket),
-  _socketBuffer(socket),
-  _e(e),
-  _headerProcessor(new HttpHeaderProcessor()),
-  _logger(LogFactory::getInstance()),
-  _keepAlive(true),
-  _gzip(false),
-  _acceptsPersistentConnection(true),
-  _acceptsGZip(false)
+  socket_(socket),
+  socketBuffer_(socket),
+  e_(e),
+  headerProcessor_(new HttpHeaderProcessor()),
+  logger_(LogFactory::getInstance()),
+  keepAlive_(true),
+  gzip_(false),
+  acceptsPersistentConnection_(true),
+  acceptsGZip_(false)
 {}
 
 HttpServer::~HttpServer() {}
@@ -68,41 +68,41 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
 {
   size_t size = 512;
   unsigned char buf[size];
-  _socket->peekData(buf, size);
-  if(size == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
+  socket_->peekData(buf, size);
+  if(size == 0 && !(socket_->wantRead() || socket_->wantWrite())) {
     throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
-  _headerProcessor->update(buf, size);
-  if(!_headerProcessor->eoh()) {
-    _socket->readData(buf, size);
+  headerProcessor_->update(buf, size);
+  if(!headerProcessor_->eoh()) {
+    socket_->readData(buf, size);
     return SharedHandle<HttpHeader>();
   }
-  size_t putbackDataLength = _headerProcessor->getPutBackDataLength();
+  size_t putbackDataLength = headerProcessor_->getPutBackDataLength();
   size -= putbackDataLength;
-  _socket->readData(buf, size);
+  socket_->readData(buf, size);
 
-  SharedHandle<HttpHeader> header = _headerProcessor->getHttpRequestHeader();
+  SharedHandle<HttpHeader> header = headerProcessor_->getHttpRequestHeader();
   if(!header.isNull()) {
-    _logger->info("HTTP Server received request\n%s",
-                  _headerProcessor->getHeaderString().c_str());
-    _lastRequestHeader = header;
-    _lastBody.clear();
-    _lastBody.str("");
-    _lastContentLength =
-      _lastRequestHeader->getFirstAsUInt(HttpHeader::CONTENT_LENGTH);
-    _headerProcessor->clear();
+    logger_->info("HTTP Server received request\n%s",
+                  headerProcessor_->getHeaderString().c_str());
+    lastRequestHeader_ = header;
+    lastBody_.clear();
+    lastBody_.str("");
+    lastContentLength_ =
+      lastRequestHeader_->getFirstAsUInt(HttpHeader::CONTENT_LENGTH);
+    headerProcessor_->clear();
 
     std::string connection =
-      util::toLower(_lastRequestHeader->getFirst(HttpHeader::CONNECTION));
-    _acceptsPersistentConnection =
+      util::toLower(lastRequestHeader_->getFirst(HttpHeader::CONNECTION));
+    acceptsPersistentConnection_ =
       connection.find(HttpHeader::CLOSE) == std::string::npos &&
-      (_lastRequestHeader->getVersion() == HttpHeader::HTTP_1_1 ||
+      (lastRequestHeader_->getVersion() == HttpHeader::HTTP_1_1 ||
        connection.find("keep-alive") != std::string::npos);
 
     std::vector<std::string> acceptEncodings;
-    util::split(_lastRequestHeader->getFirst(HttpHeader::ACCEPT_ENCODING),
+    util::split(lastRequestHeader_->getFirst(HttpHeader::ACCEPT_ENCODING),
                 std::back_inserter(acceptEncodings), A2STR::COMMA_C, true);
-    _acceptsGZip =
+    acceptsGZip_ =
       std::find(acceptEncodings.begin(), acceptEncodings.end(), "gzip")
       != acceptEncodings.end();
   }
@@ -111,30 +111,30 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
 
 bool HttpServer::receiveBody()
 {
-  if(_lastContentLength == 0) {
+  if(lastContentLength_ == 0) {
     return true;
   }
   const size_t BUFLEN = 4096;
   char buf[BUFLEN];
   size_t length = std::min(BUFLEN,
                            static_cast<size_t>
-                           (_lastContentLength-_lastBody.tellg()));
-  _socket->readData(buf, length);
-  if(length == 0 && !(_socket->wantRead() || _socket->wantWrite())) {
+                           (lastContentLength_-lastBody_.tellg()));
+  socket_->readData(buf, length);
+  if(length == 0 && !(socket_->wantRead() || socket_->wantWrite())) {
     throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
-  _lastBody.write(buf, length);
-  return _lastContentLength == static_cast<uint64_t>(_lastBody.tellp());
+  lastBody_.write(buf, length);
+  return lastContentLength_ == static_cast<uint64_t>(lastBody_.tellp());
 }
 
 std::string HttpServer::getBody() const
 {
-  return _lastBody.str();
+  return lastBody_.str();
 }
 
 const std::string& HttpServer::getRequestPath() const
 {
-  return _lastRequestHeader->getRequestPath();
+  return lastRequestHeader_->getRequestPath();
 }
 
 void HttpServer::feedResponse(const std::string& text, const std::string& contentType)
@@ -165,30 +165,30 @@ void HttpServer::feedResponse(const std::string& status,
   }
 
   header += "\r\n";
-  if(_logger->debug()) {
-    _logger->debug("HTTP Server sends response:\n%s", header.c_str());
+  if(logger_->debug()) {
+    logger_->debug("HTTP Server sends response:\n%s", header.c_str());
   }
-  _socketBuffer.pushStr(header);
-  _socketBuffer.pushStr(text);
+  socketBuffer_.pushStr(header);
+  socketBuffer_.pushStr(text);
 }
 
 ssize_t HttpServer::sendResponse()
 {
-  return _socketBuffer.send();
+  return socketBuffer_.send();
 }
 
 bool HttpServer::sendBufferIsEmpty() const
 {
-  return _socketBuffer.sendBufferIsEmpty();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool HttpServer::authenticate()
 {
-  if(_username.empty()) {
+  if(username_.empty()) {
     return true;
   }
 
-  std::string authHeader = _lastRequestHeader->getFirst("Authorization");
+  std::string authHeader = lastRequestHeader_->getFirst("Authorization");
   if(authHeader.empty()) {
     return false;
   }
@@ -198,7 +198,7 @@ bool HttpServer::authenticate()
   }
   std::string userpass = Base64::decode(p.second);
   std::pair<std::string, std::string> userpassPair = util::split(userpass, ":");
-  return _username == userpassPair.first && _password == userpassPair.second;
+  return username_ == userpassPair.first && password_ == userpassPair.second;
 }
 
 } // namespace aria2

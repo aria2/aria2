@@ -46,7 +46,7 @@ namespace aria2 {
 
 FeedbackURISelector::FeedbackURISelector
 (const SharedHandle<ServerStatMan>& serverStatMan):
-  _serverStatMan(serverStatMan) {}
+  serverStatMan_(serverStatMan) {}
 
 FeedbackURISelector::~FeedbackURISelector() {}
 
@@ -77,7 +77,7 @@ std::string FeedbackURISelector::select(FileEntry* fileEntry)
       i != eoi; ++i) {
     Request r;
     r.setUri(*i);
-    SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),
+    SharedHandle<ServerStat> ss = serverStatMan_->find(r.getHost(),
                                                        r.getProtocol());
     if(!ss.isNull() && ss->isOK() && ss->getDownloadSpeed() > SPEED_THRESHOLD) {
       cands.push_back(std::pair<SharedHandle<ServerStat>, std::string>(ss, *i));
@@ -88,7 +88,7 @@ std::string FeedbackURISelector::select(FileEntry* fileEntry)
         i != eoi; ++i) {
       Request r;
       r.setUri(*i);
-      SharedHandle<ServerStat> ss = _serverStatMan->find(r.getHost(),
+      SharedHandle<ServerStat> ss = serverStatMan_->find(r.getHost(),
                                                          r.getProtocol());
       // Skip ERROR state URI
       if(ss.isNull() || ss->isOK()) {

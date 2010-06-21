@@ -56,30 +56,30 @@ CheckIntegrityEntry::~CheckIntegrityEntry() {}
 
 void CheckIntegrityEntry::validateChunk()
 {
-  _validator->validateChunk();
+  validator_->validateChunk();
 }
 
 uint64_t CheckIntegrityEntry::getTotalLength()
 {
-  if(_validator.isNull()) {
+  if(validator_.isNull()) {
     return 0;
   } else {
-    return _validator->getTotalLength();
+    return validator_->getTotalLength();
   }
 }
 
 off_t CheckIntegrityEntry::getCurrentLength()
 {
-  if(_validator.isNull()) {
+  if(validator_.isNull()) {
     return 0;
   } else {
-    return _validator->getCurrentOffset();
+    return validator_->getCurrentOffset();
   }
 }
 
 bool CheckIntegrityEntry::finished()
 {
-  return _validator->finished();
+  return validator_->finished();
 }
 
 void CheckIntegrityEntry::cutTrailingGarbage()
@@ -106,7 +106,7 @@ void CheckIntegrityEntry::proceedFileAllocation
 void CheckIntegrityEntry::setValidator
 (const SharedHandle<IteratableValidator>& validator)
 {
-  _validator = validator;
+  validator_ = validator;
 }
 
 } // namespace aria2

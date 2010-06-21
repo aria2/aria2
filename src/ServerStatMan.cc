@@ -55,8 +55,8 @@ SharedHandle<ServerStat> ServerStatMan::find(const std::string& hostname,
 {
   SharedHandle<ServerStat> ss(new ServerStat(hostname, protocol));
   std::deque<SharedHandle<ServerStat> >::const_iterator i =
-    std::lower_bound(_serverStats.begin(), _serverStats.end(), ss);
-  if(i != _serverStats.end() &&
+    std::lower_bound(serverStats_.begin(), serverStats_.end(), ss);
+  if(i != serverStats_.end() &&
      (*i)->getHostname() == hostname && (*i)->getProtocol() == protocol) {
     return *i;
   } else {
@@ -67,19 +67,19 @@ SharedHandle<ServerStat> ServerStatMan::find(const std::string& hostname,
 bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
 {
   std::deque<SharedHandle<ServerStat> >::iterator i =
-    std::lower_bound(_serverStats.begin(), _serverStats.end(), serverStat);
+    std::lower_bound(serverStats_.begin(), serverStats_.end(), serverStat);
 
-  if(i != _serverStats.end() && (*i) == serverStat) {
+  if(i != serverStats_.end() && (*i) == serverStat) {
     return false;
   } else {
-    _serverStats.insert(i, serverStat);
+    serverStats_.insert(i, serverStat);
     return true;
   } 
 }
 
 bool ServerStatMan::save(std::ostream& out) const
 {
-  std::copy(_serverStats.begin(), _serverStats.end(),
+  std::copy(serverStats_.begin(), serverStats_.end(),
             std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
   out.flush();
   return !out.bad();
@@ -142,22 +142,22 @@ bool ServerStatMan::load(std::istream& in)
 
 class FindStaleServerStat {
 private:
-  time_t _timeout;
-  Time _time;
+  time_t timeout_;
+  Time time_;
 public:
-  FindStaleServerStat(time_t timeout):_timeout(timeout) {}
+  FindStaleServerStat(time_t timeout):timeout_(timeout) {}
 
   bool operator()(const SharedHandle<ServerStat>& ss) const
   {
-    return ss->getLastUpdated().difference(_time) >= _timeout;
+    return ss->getLastUpdated().difference(time_) >= timeout_;
   }
 };
 
 void ServerStatMan::removeStaleServerStat(time_t timeout)
 {
-  _serverStats.erase(std::remove_if(_serverStats.begin(), _serverStats.end(),
+  serverStats_.erase(std::remove_if(serverStats_.begin(), serverStats_.end(),
                                     FindStaleServerStat(timeout)),
-                     _serverStats.end());
+                     serverStats_.end());
 }
 
 } // namespace aria2

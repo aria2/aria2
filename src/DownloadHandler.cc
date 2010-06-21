@@ -41,18 +41,18 @@
 
 namespace aria2 {
 
-DownloadHandler::DownloadHandler():_logger(LogFactory::getInstance()) {}
+DownloadHandler::DownloadHandler():logger_(LogFactory::getInstance()) {}
 
 DownloadHandler::~DownloadHandler() {}
 
 bool DownloadHandler::canHandle(const RequestGroup* requestGroup) const
 {
-  return !_criteria.isNull() && _criteria->match(requestGroup);
+  return !criteria_.isNull() && criteria_->match(requestGroup);
 }
 
 void DownloadHandler::setCriteria(const RequestGroupCriteriaHandle& criteria)
 {
-  _criteria = criteria;
+  criteria_ = criteria;
 }
 
 } // namespace aria2

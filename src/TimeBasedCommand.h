@@ -45,36 +45,36 @@ class DownloadEngine;
 class TimeBasedCommand : public Command
 {
 private:
-  DownloadEngine* _e;
+  DownloadEngine* e_;
 
   /**
-   * setting _exit to true if this command's job has finished and you want to
+   * setting exit_ to true if this command's job has finished and you want to
    * delete this command.
-   * The _exit variable is evaluated  after preProcess(), process(),
+   * The exit_ variable is evaluated  after preProcess(), process(),
    * postProcess(), and terminate processing immediately and excute() returns
    * true.
    */
-  bool _exit;
+  bool exit_;
 
-  time_t _interval; // unit: sec
+  time_t interval_; // unit: sec
 
-  bool _routineCommand;
+  bool routineCommand_;
 
-  Timer _checkPoint;
+  Timer checkPoint_;
 protected:
   DownloadEngine* getDownloadEngine() const
   {
-    return _e;
+    return e_;
   }
 
   void enableExit()
   {
-    _exit = true;
+    exit_ = true;
   }
 
   time_t getInterval() const
   {
-    return _interval;
+    return interval_;
   }
 public:
   /**

@@ -48,36 +48,36 @@ class SocketCore;
 
 class PeerAbstractCommand : public Command {
 private:
-  Timer _checkPoint;
-  time_t _timeout;
-  DownloadEngine* _e;
-  SharedHandle<SocketCore> _socket;
-  SharedHandle<Peer> _peer;
+  Timer checkPoint_;
+  time_t timeout_;
+  DownloadEngine* e_;
+  SharedHandle<SocketCore> socket_;
+  SharedHandle<Peer> peer_;
 
-  bool _checkSocketIsReadable;
-  bool _checkSocketIsWritable;
-  SharedHandle<SocketCore> _readCheckTarget;
-  SharedHandle<SocketCore> _writeCheckTarget;
-  bool _noCheck;
+  bool checkSocketIsReadable_;
+  bool checkSocketIsWritable_;
+  SharedHandle<SocketCore> readCheckTarget_;
+  SharedHandle<SocketCore> writeCheckTarget_;
+  bool noCheck_;
 protected:
   DownloadEngine* getDownloadEngine() const
   {
-    return _e;
+    return e_;
   }
 
   const SharedHandle<SocketCore>& getSocket() const
   {
-    return _socket;
+    return socket_;
   }
 
   void createSocket();
 
   const SharedHandle<Peer>& getPeer() const
   {
-    return _peer;
+    return peer_;
   }
 
-  void setTimeout(time_t timeout) { _timeout = timeout; }
+  void setTimeout(time_t timeout) { timeout_ = timeout; }
   virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort() {};
   // This function is called when DownloadFailureException is caught right after

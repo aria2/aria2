@@ -46,11 +46,11 @@ class DHTTaskFactory;
 
 class DHTBucketRefreshCommand:public TimeBasedCommand {
 private:
-  SharedHandle<DHTRoutingTable> _routingTable;
+  SharedHandle<DHTRoutingTable> routingTable_;
 
-  SharedHandle<DHTTaskQueue> _taskQueue;
+  SharedHandle<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> _taskFactory;
+  SharedHandle<DHTTaskFactory> taskFactory_;
 public:
   DHTBucketRefreshCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 

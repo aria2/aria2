@@ -51,21 +51,21 @@ DHTUnknownMessage::DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
                                      const unsigned char* data, size_t length,
                                      const std::string& ipaddr, uint16_t port):
   DHTMessage(localNode, SharedHandle<DHTNode>()),
-  _length(length),
-  _ipaddr(ipaddr),
-  _port(port)
+  length_(length),
+  ipaddr_(ipaddr),
+  port_(port)
 {
-  if(_length == 0) {
-    _data = 0;
+  if(length_ == 0) {
+    data_ = 0;
   } else {
-    _data = new unsigned char[length];
-    memcpy(_data, data, length);
+    data_ = new unsigned char[length];
+    memcpy(data_, data, length);
   }
 }
 
 DHTUnknownMessage::~DHTUnknownMessage()
 {
-  delete [] _data;
+  delete [] data_;
 }
 
 void DHTUnknownMessage::doReceivedAction() {}
@@ -85,13 +85,13 @@ const std::string& DHTUnknownMessage::getMessageType() const
 std::string DHTUnknownMessage::toString() const
 {
   size_t sampleLength = 8;
-  if(_length < sampleLength) {
-    sampleLength = _length;
+  if(length_ < sampleLength) {
+    sampleLength = length_;
   }
-  std::string sample(&_data[0], &_data[sampleLength]);
+  std::string sample(&data_[0], &data_[sampleLength]);
 
-  return strconcat("dht unknown Remote:", _ipaddr, ":", util::uitos(_port),
-                   " length=", util::uitos(_length),
+  return strconcat("dht unknown Remote:", ipaddr_, ":", util::uitos(port_),
+                   " length=", util::uitos(length_),
                    ", first 8 bytes(hex)=", util::toHex(sample));
 }
 

@@ -68,15 +68,15 @@ ReceiverMSEHandshakeCommand::ReceiverMSEHandshakeCommand
  const SharedHandle<SocketCore>& s):
 
   PeerAbstractCommand(cuid, peer, e, s),
-  _sequence(RECEIVER_IDENTIFY_HANDSHAKE),
-  _mseHandshake(new MSEHandshake(cuid, s, e->getOption()))
+  sequence_(RECEIVER_IDENTIFY_HANDSHAKE),
+  mseHandshake_(new MSEHandshake(cuid, s, e->getOption()))
 {
   setTimeout(e->getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
 }
 
 ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand()
 {
-  delete _mseHandshake;
+  delete mseHandshake_;
 }
 
 bool ReceiverMSEHandshakeCommand::exitBeforeExecute()
@@ -87,15 +87,15 @@ bool ReceiverMSEHandshakeCommand::exitBeforeExecute()
 
 bool ReceiverMSEHandshakeCommand::executeInternal()
 {
-  switch(_sequence) {
+  switch(sequence_) {
   case RECEIVER_IDENTIFY_HANDSHAKE: {
-    MSEHandshake::HANDSHAKE_TYPE type = _mseHandshake->identifyHandshakeType();
+    MSEHandshake::HANDSHAKE_TYPE type = mseHandshake_->identifyHandshakeType();
     switch(type) {
     case MSEHandshake::HANDSHAKE_NOT_YET:
       break;
     case MSEHandshake::HANDSHAKE_ENCRYPTED:
-      _mseHandshake->initEncryptionFacility(false);
-      _sequence = RECEIVER_WAIT_KEY;
+      mseHandshake_->initEncryptionFacility(false);
+      sequence_ = RECEIVER_WAIT_KEY;
       break;
     case MSEHandshake::HANDSHAKE_LEGACY: {
       if(getDownloadEngine()->getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
@@ -105,8 +105,8 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       }
       SharedHandle<PeerConnection> peerConnection
         (new PeerConnection(getCuid(), getSocket()));
-      peerConnection->presetBuffer(_mseHandshake->getBuffer(),
-                                   _mseHandshake->getBufferLength());
+      peerConnection->presetBuffer(mseHandshake_->getBuffer(),
+                                   mseHandshake_->getBufferLength());
       Command* c = new PeerReceiveHandshakeCommand(getCuid(),
                                                    getPeer(),
                                                    getDownloadEngine(),
@@ -121,25 +121,25 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     break;
   }
   case RECEIVER_WAIT_KEY: {
-    if(_mseHandshake->receivePublicKey()) {
-      if(_mseHandshake->sendPublicKey()) {
-        _sequence = RECEIVER_FIND_HASH_MARKER;
+    if(mseHandshake_->receivePublicKey()) {
+      if(mseHandshake_->sendPublicKey()) {
+        sequence_ = RECEIVER_FIND_HASH_MARKER;
       } else {
         setWriteCheckSocket(getSocket());
-        _sequence = RECEIVER_SEND_KEY_PENDING;
+        sequence_ = RECEIVER_SEND_KEY_PENDING;
       }
     }
     break;
   }
   case RECEIVER_SEND_KEY_PENDING:
-    if(_mseHandshake->sendPublicKey()) {
+    if(mseHandshake_->sendPublicKey()) {
       disableWriteCheckSocket();
-      _sequence = RECEIVER_FIND_HASH_MARKER;
+      sequence_ = RECEIVER_FIND_HASH_MARKER;
     }
     break;
   case RECEIVER_FIND_HASH_MARKER: {
-    if(_mseHandshake->findReceiverHashMarker()) {
-      _sequence = RECEIVER_RECEIVE_PAD_C_LENGTH;
+    if(mseHandshake_->findReceiverHashMarker()) {
+      sequence_ = RECEIVER_RECEIVE_PAD_C_LENGTH;
     }
     break;
   }
@@ -147,37 +147,37 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
     std::vector<SharedHandle<DownloadContext> > downloadContexts;
     getDownloadEngine()->getBtRegistry()->getAllDownloadContext
       (std::back_inserter(downloadContexts));
-    if(_mseHandshake->receiveReceiverHashAndPadCLength(downloadContexts)) {
-      _sequence = RECEIVER_RECEIVE_PAD_C;
+    if(mseHandshake_->receiveReceiverHashAndPadCLength(downloadContexts)) {
+      sequence_ = RECEIVER_RECEIVE_PAD_C;
     }
     break;
   }
   case RECEIVER_RECEIVE_PAD_C: {
-    if(_mseHandshake->receivePad()) {
-      _sequence = RECEIVER_RECEIVE_IA_LENGTH;
+    if(mseHandshake_->receivePad()) {
+      sequence_ = RECEIVER_RECEIVE_IA_LENGTH;
     }
     break;
   }
   case RECEIVER_RECEIVE_IA_LENGTH: {
-    if(_mseHandshake->receiveReceiverIALength()) {
-      _sequence = RECEIVER_RECEIVE_IA;
+    if(mseHandshake_->receiveReceiverIALength()) {
+      sequence_ = RECEIVER_RECEIVE_IA;
     }
     break;
   }
   case RECEIVER_RECEIVE_IA: {
-    if(_mseHandshake->receiveReceiverIA()) {
-      if(_mseHandshake->sendReceiverStep2()) {
+    if(mseHandshake_->receiveReceiverIA()) {
+      if(mseHandshake_->sendReceiverStep2()) {
         createCommand();
         return true;
       } else {
         setWriteCheckSocket(getSocket());
-        _sequence = RECEIVER_SEND_STEP2_PENDING;
+        sequence_ = RECEIVER_SEND_STEP2_PENDING;
       }
     }
     break;
   }
   case RECEIVER_SEND_STEP2_PENDING:
-    if(_mseHandshake->sendReceiverStep2()) {
+    if(mseHandshake_->sendReceiverStep2()) {
       disableWriteCheckSocket();
       createCommand();
       return true;
@@ -192,15 +192,15 @@ void ReceiverMSEHandshakeCommand::createCommand()
 {
   SharedHandle<PeerConnection> peerConnection
     (new PeerConnection(getCuid(), getSocket()));
-  if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
-    peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
-                                     _mseHandshake->getDecryptor());
+  if(mseHandshake_->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
+    peerConnection->enableEncryption(mseHandshake_->getEncryptor(),
+                                     mseHandshake_->getDecryptor());
   }
-  if(_mseHandshake->getIALength() > 0) {
-    peerConnection->presetBuffer(_mseHandshake->getIA(),
-                                 _mseHandshake->getIALength());
+  if(mseHandshake_->getIALength() > 0) {
+    peerConnection->presetBuffer(mseHandshake_->getIA(),
+                                 mseHandshake_->getIALength());
   }
-  // TODO add _mseHandshake->getInfoHash() to PeerReceiveHandshakeCommand
+  // TODO add mseHandshake_->getInfoHash() to PeerReceiveHandshakeCommand
   // as a hint. If this info hash and one in BitTorrent Handshake does not
   // match, then drop connection.
   Command* c =

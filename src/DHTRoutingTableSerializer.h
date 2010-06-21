@@ -48,9 +48,9 @@ class DHTNode;
 
 class DHTRoutingTableSerializer {
 private:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  std::vector<SharedHandle<DHTNode> > _nodes;
+  std::vector<SharedHandle<DHTNode> > nodes_;
 public:
   DHTRoutingTableSerializer();
 

@@ -43,19 +43,19 @@ namespace aria2 {
 
 class BtBitfieldMessageValidator : public BtMessageValidator {
 private:
-  const BtBitfieldMessage* _message;
-  size_t _numPiece;
+  const BtBitfieldMessage* message_;
+  size_t numPiece_;
 public:
   BtBitfieldMessageValidator(const BtBitfieldMessage* message,
                              size_t numPiece):
-    _message(message),
-    _numPiece(numPiece) {}
+    message_(message),
+    numPiece_(numPiece) {}
 
   virtual void validate()
   {
-    bittorrent::checkBitfield(_message->getBitfield(),
-                              _message->getBitfieldLength(),
-                              _numPiece);
+    bittorrent::checkBitfield(message_->getBitfield(),
+                              message_->getBitfieldLength(),
+                              numPiece_);
   }
 };
 

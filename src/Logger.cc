@@ -53,7 +53,7 @@ const std::string Logger::ERROR_LABEL("ERROR");
 
 const std::string Logger::INFO_LABEL("INFO");
 
-Logger::Logger():_logLevel(Logger::A2_DEBUG), _stdoutField(0) {}
+Logger::Logger():logLevel_(Logger::A2_DEBUG), stdoutField_(0) {}
 
 Logger::~Logger()
 {
@@ -62,8 +62,8 @@ Logger::~Logger()
 
 void Logger::openFile(const std::string& filename)
 {
-  _file.open(filename.c_str(), std::ios::app|std::ios::binary);
-  if(!_file) {
+  file_.open(filename.c_str(), std::ios::app|std::ios::binary);
+  if(!file_) {
     throw DL_ABORT_EX
       (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
   }
@@ -71,20 +71,20 @@ void Logger::openFile(const std::string& filename)
 
 void Logger::closeFile()
 {
-  if(_file.is_open()) {
-    _file.close();
+  if(file_.is_open()) {
+    file_.close();
   }
 }
 
 #define WRITE_LOG(LEVEL, LEVEL_LABEL, MSG)              \
-  if(LEVEL >= _logLevel && _file.is_open()) {           \
+  if(LEVEL >= logLevel_ && file_.is_open()) {           \
     va_list ap;                                         \
     va_start(ap, MSG);                                  \
-    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
+    writeLog(file_, LEVEL, LEVEL_LABEL, MSG, ap);       \
     va_end(ap);                                         \
-    _file << std::flush;                                \
+    file_ << std::flush;                                \
   }                                                     \
-  if(_stdoutField&LEVEL) {                              \
+  if(stdoutField_&LEVEL) {                              \
     std::cout << "\n";                                  \
     va_list ap;                                         \
     va_start(ap, MSG);                                  \
@@ -94,15 +94,15 @@ void Logger::closeFile()
   }                                                     \
 
 #define WRITE_LOG_EX(LEVEL, LEVEL_LABEL, MSG, EX)       \
-  if(LEVEL >= _logLevel && _file.is_open()) {           \
+  if(LEVEL >= logLevel_ && file_.is_open()) {           \
     va_list ap;                                         \
     va_start(ap, EX);                                   \
-    writeLog(_file, LEVEL, LEVEL_LABEL, MSG, ap);       \
+    writeLog(file_, LEVEL, LEVEL_LABEL, MSG, ap);       \
     va_end(ap);                                         \
-    writeStackTrace(_file, LEVEL, LEVEL_LABEL, EX);     \
-    _file << std::flush;                                \
+    writeStackTrace(file_, LEVEL, LEVEL_LABEL, EX);     \
+    file_ << std::flush;                                \
   }                                                     \
-  if(_stdoutField&LEVEL) {                              \
+  if(stdoutField_&LEVEL) {                              \
     std::cout << "\n";                                  \
     va_list ap;                                         \
     va_start(ap, EX);                                   \
@@ -165,9 +165,9 @@ void Logger::error(const char* msg, const Exception& ex, ...)
 void Logger::setStdoutLogLevel(Logger::LEVEL level, bool enabled)
 {
   if(enabled) {
-    _stdoutField |= level;
+    stdoutField_ |= level;
   } else {
-    _stdoutField &= ~level;
+    stdoutField_ &= ~level;
   }
 }
 

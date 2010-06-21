@@ -41,7 +41,7 @@ namespace aria2 {
 
 class SimpleRandomizer : public Randomizer {
 private:
-  static SharedHandle<SimpleRandomizer> _randomizer;
+  static SharedHandle<SimpleRandomizer> randomizer_;
 
   SimpleRandomizer();
 public:

@@ -335,46 +335,46 @@ void createRequestGroupForMetalink
 
 class AccRequestGroup {
 private:
-  std::vector<SharedHandle<RequestGroup> >& _requestGroups;
-  ProtocolDetector _detector;
-  SharedHandle<Option> _option;
-  bool _ignoreLocalPath;
+  std::vector<SharedHandle<RequestGroup> >& requestGroups_;
+  ProtocolDetector detector_;
+  SharedHandle<Option> option_;
+  bool ignoreLocalPath_;
 public:
   AccRequestGroup(std::vector<SharedHandle<RequestGroup> >& requestGroups,
                   const SharedHandle<Option>& option,
                   bool ignoreLocalPath = false):
-    _requestGroups(requestGroups), _option(option),
-    _ignoreLocalPath(ignoreLocalPath) {}
+    requestGroups_(requestGroups), option_(option),
+    ignoreLocalPath_(ignoreLocalPath) {}
 
   void
   operator()(const std::string& uri)
   {
-    if(_detector.isStreamProtocol(uri)) {
+    if(detector_.isStreamProtocol(uri)) {
       std::vector<std::string> streamURIs;
-      size_t numSplit = _option->getAsInt(PREF_SPLIT);
+      size_t numSplit = option_->getAsInt(PREF_SPLIT);
       for(size_t i = 0; i < numSplit; ++i) {
         streamURIs.push_back(uri);
       }
       SharedHandle<RequestGroup> rg =
-        createRequestGroup(_option, streamURIs);
+        createRequestGroup(option_, streamURIs);
       rg->setNumConcurrentCommand(numSplit);
-      _requestGroups.push_back(rg);
+      requestGroups_.push_back(rg);
     }
 #ifdef ENABLE_BITTORRENT
-    else if(_detector.guessTorrentMagnet(uri)) {
+    else if(detector_.guessTorrentMagnet(uri)) {
       try {
         SharedHandle<RequestGroup> group =
-          createBtMagnetRequestGroup(uri, _option, std::vector<std::string>());
-        _requestGroups.push_back(group);
+          createBtMagnetRequestGroup(uri, option_, std::vector<std::string>());
+        requestGroups_.push_back(group);
       } catch(RecoverableException& e) {
         // error occurred while parsing torrent file.
         // We simply ignore it. 
         LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
       }
-    } else if(!_ignoreLocalPath && _detector.guessTorrentFile(uri)) {
+    } else if(!ignoreLocalPath_ && detector_.guessTorrentFile(uri)) {
       try {
-        _requestGroups.push_back
-          (createBtRequestGroup(uri, _option, std::vector<std::string>()));
+        requestGroups_.push_back
+          (createBtRequestGroup(uri, option_, std::vector<std::string>()));
       } catch(RecoverableException& e) {
         // error occurred while parsing torrent file.
         // We simply ignore it. 
@@ -383,9 +383,9 @@ public:
     } 
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-    else if(!_ignoreLocalPath && _detector.guessMetalinkFile(uri)) {
+    else if(!ignoreLocalPath_ && detector_.guessMetalinkFile(uri)) {
       try {
-        Metalink2RequestGroup().generate(_requestGroups, uri, _option);
+        Metalink2RequestGroup().generate(requestGroups_, uri, option_);
       } catch(RecoverableException& e) {
         // error occurred while parsing metalink file.
         // We simply ignore it.
@@ -401,10 +401,10 @@ public:
 
 class StreamProtocolFilter {
 private:
-  ProtocolDetector _detector;
+  ProtocolDetector detector_;
 public:
   bool operator()(const std::string& uri) {
-    return _detector.isStreamProtocol(uri);
+    return detector_.isStreamProtocol(uri);
   }
 };
 

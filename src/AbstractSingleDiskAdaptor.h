@@ -44,9 +44,9 @@ class FileAllocationIterator;
 
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
 private:
-  SharedHandle<DiskWriter> _diskWriter;
-  uint64_t _totalLength;
-  bool _readOnly;
+  SharedHandle<DiskWriter> diskWriter_;
+  uint64_t totalLength_;
+  bool readOnly_;
 public:
   AbstractSingleDiskAdaptor();
 
@@ -83,7 +83,7 @@ public:
   // Make sure that DiskWriter is set before calling this function.
   virtual void disableReadOnly();
     
-  virtual bool isReadOnlyEnabled() const { return _readOnly; }
+  virtual bool isReadOnlyEnabled() const { return readOnly_; }
   
   virtual void cutTrailingGarbage();
 
@@ -93,14 +93,14 @@ public:
 
   const SharedHandle<DiskWriter>& getDiskWriter() const
   {
-    return _diskWriter;
+    return diskWriter_;
   }
 
   void setTotalLength(const uint64_t& totalLength);
 
   uint64_t getTotalLength() const
   {
-    return _totalLength;
+    return totalLength_;
   }
 };
 

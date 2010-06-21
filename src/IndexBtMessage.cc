@@ -49,7 +49,7 @@ unsigned char* IndexBtMessage::createMessage()
    */
   unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
   bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 5, getId());
-  bittorrent::setIntParam(&msg[5], _index);
+  bittorrent::setIntParam(&msg[5], index_);
   return msg;
 }
 
@@ -60,7 +60,7 @@ size_t IndexBtMessage::getMessageLength()
 
 std::string IndexBtMessage::toString() const
 {
-  return strconcat(getName(), " index=", util::itos(_index));
+  return strconcat(getName(), " index=", util::itos(index_));
 }
 
 } // namespace aria2

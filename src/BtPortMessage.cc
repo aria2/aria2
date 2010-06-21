@@ -52,7 +52,7 @@ namespace aria2 {
 const std::string BtPortMessage::NAME("port");
 
 BtPortMessage::BtPortMessage(uint16_t port):
-  SimpleBtMessage(ID, NAME), _port(port) {}
+  SimpleBtMessage(ID, NAME), port_(port) {}
 
 SharedHandle<BtPortMessage> BtPortMessage::create
 (const unsigned char* data, size_t dataLength)
@@ -66,8 +66,8 @@ SharedHandle<BtPortMessage> BtPortMessage::create
 
 void BtPortMessage::doReceivedAction()
 {
-  if(!_taskFactory.isNull() && !_taskQueue.isNull()) {
-    if(_port == 0) {
+  if(!taskFactory_.isNull() && !taskQueue_.isNull()) {
+    if(port_ == 0) {
       if(getLogger()->debug()) {
         getLogger()->debug("Ignored port 0.");
       }
@@ -77,16 +77,16 @@ void BtPortMessage::doReceivedAction()
     // instance created with proper node ID and is added to a routing table.
     SharedHandle<DHTNode> node(new DHTNode());
     node->setIPAddress(getPeer()->getIPAddress());
-    node->setPort(_port);
+    node->setPort(port_);
     {
-      SharedHandle<DHTTask> task = _taskFactory->createPingTask(node);
-      _taskQueue->addImmediateTask(task);
+      SharedHandle<DHTTask> task = taskFactory_->createPingTask(node);
+      taskQueue_->addImmediateTask(task);
     }
-    if(_routingTable->countBucket() == 1) {
+    if(routingTable_->countBucket() == 1) {
       // initiate bootstrap
       getLogger()->info("Dispatch node_lookup since too few buckets.");
-      _taskQueue->addImmediateTask
-        (_taskFactory->createNodeLookupTask(_localNode->getID()));
+      taskQueue_->addImmediateTask
+        (taskFactory_->createNodeLookupTask(localNode_->getID()));
     }
   } else {
     getLogger()->info
@@ -104,7 +104,7 @@ unsigned char* BtPortMessage::createMessage()
    */
   unsigned char* msg = new unsigned char[MESSAGE_LENGTH];
   bittorrent::createPeerMessageString(msg, MESSAGE_LENGTH, 3, ID);
-  bittorrent::setShortIntParam(&msg[5], _port);
+  bittorrent::setShortIntParam(&msg[5], port_);
   return msg;
 }
 
@@ -113,27 +113,27 @@ size_t BtPortMessage::getMessageLength() {
 }
 
 std::string BtPortMessage::toString() const {
-  return strconcat(NAME, " port=", util::uitos(_port));
+  return strconcat(NAME, " port=", util::uitos(port_));
 }
 
 void BtPortMessage::setLocalNode(const WeakHandle<DHTNode>& localNode)
 {
-  _localNode = localNode;
+  localNode_ = localNode;
 }
 
 void BtPortMessage::setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 void BtPortMessage::setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 void BtPortMessage::setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory)
 {
-  _taskFactory = taskFactory;
+  taskFactory_ = taskFactory;
 }
 
 } // namespace aria2

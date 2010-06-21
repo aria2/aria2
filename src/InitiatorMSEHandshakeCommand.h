@@ -58,16 +58,16 @@ public:
     INITIATOR_RECEIVE_PAD_D,
   };
 private:
-  RequestGroup* _requestGroup;
+  RequestGroup* requestGroup_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 
-  Seq _sequence;
-  MSEHandshake* _mseHandshake;
+  Seq sequence_;
+  MSEHandshake* mseHandshake_;
 
   const SharedHandle<Option>& getOption() const;
 protected:

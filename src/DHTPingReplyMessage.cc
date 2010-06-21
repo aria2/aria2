@@ -50,7 +50,7 @@ DHTPingReplyMessage::DHTPingReplyMessage
  const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID)
 {
-  memcpy(_id, id, DHT_ID_LENGTH);
+  memcpy(id_, id, DHT_ID_LENGTH);
 }
 
 DHTPingReplyMessage::~DHTPingReplyMessage() {}
@@ -60,7 +60,7 @@ void DHTPingReplyMessage::doReceivedAction() {}
 SharedHandle<Dict> DHTPingReplyMessage::getResponse()
 {
   SharedHandle<Dict> rDict = Dict::g();
-  rDict->put(DHTMessage::ID, String::g(_id, DHT_ID_LENGTH));
+  rDict->put(DHTMessage::ID, String::g(id_, DHT_ID_LENGTH));
   return rDict;
 }
 

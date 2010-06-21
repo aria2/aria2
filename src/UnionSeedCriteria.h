@@ -43,7 +43,7 @@ namespace aria2 {
 
 class UnionSeedCriteria : public SeedCriteria {
 private:
-  std::vector<SharedHandle<SeedCriteria> > _criterion;
+  std::vector<SharedHandle<SeedCriteria> > criterion_;
 
   class Reset {
   public:
@@ -67,24 +67,24 @@ public:
     
   virtual void reset()
   {
-    std::for_each(_criterion.begin(), _criterion.end(), Reset());
+    std::for_each(criterion_.begin(), criterion_.end(), Reset());
   }
 
   virtual bool evaluate()
   {
     std::vector<SharedHandle<SeedCriteria> >::iterator itr =
-      std::find_if(_criterion.begin(), _criterion.end(), Eval());
-    return itr != _criterion.end();
+      std::find_if(criterion_.begin(), criterion_.end(), Eval());
+    return itr != criterion_.end();
   }
 
   void addSeedCriteria(const SharedHandle<SeedCriteria>& cri)
   {
-    _criterion.push_back(cri);
+    criterion_.push_back(cri);
   }
 
   const std::vector<SharedHandle<SeedCriteria> >& getSeedCriterion() const
   {
-    return _criterion;
+    return criterion_;
   }
 };
 

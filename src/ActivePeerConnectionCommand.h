@@ -51,16 +51,16 @@ class BtAnnounce;
 
 class ActivePeerConnectionCommand : public Command {
 private:
-  RequestGroup* _requestGroup;
-  SharedHandle<BtRuntime> _btRuntime;
-  SharedHandle<PieceStorage> _pieceStorage;
-  SharedHandle<PeerStorage> _peerStorage;
-  SharedHandle<BtAnnounce> _btAnnounce;
+  RequestGroup* requestGroup_;
+  SharedHandle<BtRuntime> btRuntime_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  SharedHandle<PeerStorage> peerStorage_;
+  SharedHandle<BtAnnounce> btAnnounce_;
 
-  time_t _interval; // UNIT: sec
-  DownloadEngine* _e;
-  Timer _checkPoint;
-  unsigned int _numNewConnection; // the number of the connection to establish.
+  time_t interval_; // UNIT: sec
+  DownloadEngine* e_;
+  Timer checkPoint_;
+  unsigned int numNewConnection_; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(cuid_t cuid,
                               RequestGroup* requestGroup,
@@ -75,7 +75,7 @@ public:
 
   void setNumNewConnection(size_t numNewConnection)
   {
-    _numNewConnection = numNewConnection;
+    numNewConnection_ = numNewConnection;
   }
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);

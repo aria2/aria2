@@ -1272,13 +1272,13 @@ bool detectDirTraversal(const std::string& s)
 namespace {
 class EscapePath {
 private:
-  char _repChar;
+  char repChar_;
 public:
-  EscapePath(const char& repChar):_repChar(repChar) {}
+  EscapePath(const char& repChar):repChar_(repChar) {}
 
   char operator()(const char& c) {
     if(0x00 <= c && c <=0x1f) {
-      return _repChar;
+      return repChar_;
     }
 #ifdef __MINGW32__
     // We don't escape '/' because we use it as a path separator.
@@ -1286,7 +1286,7 @@ public:
       { '"', '*', ':', '<', '>', '?', '\\', '|' };
     if(std::find(vbegin(WIN_INVALID_PATH_CHARS), vend(WIN_INVALID_PATH_CHARS),
                  c) != vend(WIN_INVALID_PATH_CHARS)) {
-      return _repChar;
+      return repChar_;
     }
 #endif // __MINGW32__
     return c;

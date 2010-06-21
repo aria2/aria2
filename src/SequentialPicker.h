@@ -46,48 +46,48 @@ namespace aria2 {
 template<typename T>
 class SequentialPicker {
 private:
-  std::deque<SharedHandle<T> > _entries;
-  SharedHandle<T> _pickedEntry;
+  std::deque<SharedHandle<T> > entries_;
+  SharedHandle<T> pickedEntry_;
 public:
   bool isPicked() const
   {
-    return !_pickedEntry.isNull();
+    return !pickedEntry_.isNull();
   }
 
   SharedHandle<T> getPickedEntry() const
   {
-    return _pickedEntry;
+    return pickedEntry_;
   }
 
   void dropPickedEntry()
   {
-    _pickedEntry.reset();
+    pickedEntry_.reset();
   }
 
   bool hasNext() const
   {
-    return !_entries.empty();
+    return !entries_.empty();
   }
 
   SharedHandle<T> pickNext()
   {
     SharedHandle<T> r;
     if(hasNext()) {
-      r = _entries.front();
-      _entries.pop_front();
-      _pickedEntry = r;
+      r = entries_.front();
+      entries_.pop_front();
+      pickedEntry_ = r;
     }
     return r;
   }
 
   void pushEntry(const SharedHandle<T>& entry)
   {
-    _entries.push_back(entry);
+    entries_.push_back(entry);
   }
 
   size_t countEntryInQueue() const
   {
-    return _entries.size();
+    return entries_.size();
   }
 };
 

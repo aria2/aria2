@@ -41,15 +41,15 @@ namespace aria2 {
 
 class UTMetadataExtensionMessage:public ExtensionMessage {
 private:
-  uint8_t _extensionMessageID;
+  uint8_t extensionMessageID_;
 
-  size_t _index;
+  size_t index_;
 public:
   UTMetadataExtensionMessage(uint8_t extensionMessageID);
 
   virtual uint8_t getExtensionMessageID()
   {
-    return _extensionMessageID;
+    return extensionMessageID_;
   }
   
   virtual const std::string& getExtensionName() const
@@ -61,12 +61,12 @@ public:
 
   void setIndex(size_t index)
   {
-    _index = index;
+    index_ = index;
   }
 
   size_t getIndex() const
   {
-    return _index;
+    return index_;
   }
 };
 

@@ -43,45 +43,45 @@
 namespace aria2 {
 
 BNode::BNode(const SharedHandle<DHTBucket>& bucket):
-  _bucket(bucket),
-  _up(0),
-  _left(0),
-  _right(0) {}
+  bucket_(bucket),
+  up_(0),
+  left_(0),
+  right_(0) {}
 
 BNode::~BNode()
 {
-  delete _left;
-  delete _right;
+  delete left_;
+  delete right_;
 }
 
 void BNode::setLeft(BNode* left)
 {
-  _left = left;
-  _left->_up = this;
+  left_ = left;
+  left_->up_ = this;
 }
 
 void BNode::setRight(BNode* right)
 {
-  _right = right;
-  _right->_up = this;
+  right_ = right;
+  right_->up_ = this;
 }
 
 void BNode::setUp(BNode* up)
 {
-  _up = up;
+  up_ = up;
 }
 
 void BNode::setBucket(const SharedHandle<DHTBucket>& bucket)
 {
-  _bucket = bucket;
+  bucket_ = bucket;
 }
 
 bool BNode::isInRange(const unsigned char* key) const
 {
-  if(_bucket.isNull()) {
-    return _left->isInRange(key) || _right->isInRange(key);
+  if(bucket_.isNull()) {
+    return left_->isInRange(key) || right_->isInRange(key);
   } else {
-    return _bucket->isInRange(key);
+    return bucket_->isInRange(key);
   }
 }
 

@@ -56,34 +56,34 @@
 
 namespace aria2 {
 
-unsigned int LpdReceiveMessageCommand::__numInstance = 0;
+unsigned int LpdReceiveMessageCommand::numInstance_ = 0;
 
-LpdReceiveMessageCommand* LpdReceiveMessageCommand::__instance = 0;
+LpdReceiveMessageCommand* LpdReceiveMessageCommand::instance_ = 0;
 
 LpdReceiveMessageCommand::LpdReceiveMessageCommand
 (cuid_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
- DownloadEngine* e):Command(cuid), _receiver(receiver), _e(e)
+ DownloadEngine* e):Command(cuid), receiver_(receiver), e_(e)
 {
-  _e->addSocketForReadCheck(_receiver->getSocket(), this);
-  ++__numInstance;
+  e_->addSocketForReadCheck(receiver_->getSocket(), this);
+  ++numInstance_;
 }
 
 LpdReceiveMessageCommand::~LpdReceiveMessageCommand()
 {
-  _e->deleteSocketForReadCheck(_receiver->getSocket(), this);
-  --__numInstance;
-  if(__numInstance == 0) {
-    __instance = 0;
+  e_->deleteSocketForReadCheck(receiver_->getSocket(), this);
+  --numInstance_;
+  if(numInstance_ == 0) {
+    instance_ = 0;
   }
 }
 
 bool LpdReceiveMessageCommand::execute()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
   for(size_t i = 0; i < 20; ++i) {
-    SharedHandle<LpdMessage> m = _receiver->receiveMessage();
+    SharedHandle<LpdMessage> m = receiver_->receiveMessage();
     if(m.isNull()) {
       break;
     }
@@ -91,7 +91,7 @@ bool LpdReceiveMessageCommand::execute()
       // bad message
       continue;
     }
-    SharedHandle<BtRegistry> reg = _e->getBtRegistry();
+    SharedHandle<BtRegistry> reg = e_->getBtRegistry();
     SharedHandle<DownloadContext> dctx =
       reg->getDownloadContext(m->getInfoHash());
     if(dctx.isNull()) {
@@ -112,7 +112,7 @@ bool LpdReceiveMessageCommand::execute()
     assert(group);
     BtObject btobj = reg->get(group->getGID());
     assert(!btobj.isNull());
-    SharedHandle<PeerStorage> peerStorage = btobj._peerStorage;
+    SharedHandle<PeerStorage> peerStorage = btobj.peerStorage_;
     assert(!peerStorage.isNull());
     SharedHandle<Peer> peer = m->getPeer();
     if(peerStorage->addPeer(peer)) {
@@ -129,7 +129,7 @@ bool LpdReceiveMessageCommand::execute()
       }
     }
   }
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 
@@ -137,18 +137,18 @@ LpdReceiveMessageCommand*
 LpdReceiveMessageCommand::getInstance
 (DownloadEngine* e, const SharedHandle<LpdMessageReceiver>& receiver)
 {
-  if(__numInstance == 0) {
-    __instance = new LpdReceiveMessageCommand(e->newCUID(), receiver, e);
+  if(numInstance_ == 0) {
+    instance_ = new LpdReceiveMessageCommand(e->newCUID(), receiver, e);
   }
-  return __instance;
+  return instance_;
 }
 
 LpdReceiveMessageCommand* LpdReceiveMessageCommand::getInstance()
 {
-  if(__numInstance == 0) {
+  if(numInstance_ == 0) {
     return 0;
   } else {
-    return __instance;
+    return instance_;
   }
 }
 

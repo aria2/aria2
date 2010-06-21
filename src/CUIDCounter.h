@@ -42,18 +42,18 @@ namespace aria2 {
 
 class CUIDCounter {
 private:
-  cuid_t _count;
+  cuid_t count_;
 public:
-  CUIDCounter():_count(0) {}
+  CUIDCounter():count_(0) {}
 
   ~CUIDCounter() {}
 
   cuid_t newID()
   {
-    if(_count == INT64_MAX) {
-      _count = 0;
+    if(count_ == INT64_MAX) {
+      count_ = 0;
     }
-    return ++_count;
+    return ++count_;
   }
 };
 

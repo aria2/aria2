@@ -45,23 +45,23 @@ namespace aria2 {
 #ifdef ENABLE_METALINK
 
 SharedHandle<MemoryBufferPreDownloadHandler>
-DownloadHandlerFactory::_metalinkPreDownloadHandler;
+DownloadHandlerFactory::metalinkPreDownloadHandler_;
 
 SharedHandle<MetalinkPostDownloadHandler>
-DownloadHandlerFactory::_metalinkPostDownloadHandler;
+DownloadHandlerFactory::metalinkPostDownloadHandler_;
 
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
 
 SharedHandle<MemoryBufferPreDownloadHandler>
-DownloadHandlerFactory::_btPreDownloadHandler;
+DownloadHandlerFactory::btPreDownloadHandler_;
 
 SharedHandle<BtPostDownloadHandler>
-DownloadHandlerFactory::_btPostDownloadHandler;
+DownloadHandlerFactory::btPostDownloadHandler_;
 
 SharedHandle<UTMetadataPostDownloadHandler>
-DownloadHandlerFactory::_btMetadataPostDownloadHandler;
+DownloadHandlerFactory::btMetadataPostDownloadHandler_;
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
@@ -69,8 +69,8 @@ DownloadHandlerFactory::_btMetadataPostDownloadHandler;
 SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 {
-  if(_metalinkPreDownloadHandler.isNull()) {
-    _metalinkPreDownloadHandler.reset(new MemoryBufferPreDownloadHandler());
+  if(metalinkPreDownloadHandler_.isNull()) {
+    metalinkPreDownloadHandler_.reset(new MemoryBufferPreDownloadHandler());
 
     RequestGroupCriteriaHandle criteria
       (new ContentTypeRequestGroupCriteria
@@ -78,18 +78,18 @@ DownloadHandlerFactory::getMetalinkPreDownloadHandler()
         DownloadHandlerConstants::getMetalinkContentTypes().end(),
         DownloadHandlerConstants::getMetalinkExtensions().begin(),
         DownloadHandlerConstants::getMetalinkExtensions().end()));
-    _metalinkPreDownloadHandler->setCriteria(criteria);
+    metalinkPreDownloadHandler_->setCriteria(criteria);
   }
-  return _metalinkPreDownloadHandler;
+  return metalinkPreDownloadHandler_;
 }
 
 SharedHandle<MetalinkPostDownloadHandler>
 DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 {
-  if(_metalinkPostDownloadHandler.isNull()) {
-    _metalinkPostDownloadHandler.reset(new MetalinkPostDownloadHandler());
+  if(metalinkPostDownloadHandler_.isNull()) {
+    metalinkPostDownloadHandler_.reset(new MetalinkPostDownloadHandler());
   }
-  return _metalinkPostDownloadHandler;
+  return metalinkPostDownloadHandler_;
 }
 
 #endif // ENABLE_METALINK
@@ -99,8 +99,8 @@ DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::getBtPreDownloadHandler()
 {
-  if(_btPreDownloadHandler.isNull()) {
-    _btPreDownloadHandler.reset(new MemoryBufferPreDownloadHandler());
+  if(btPreDownloadHandler_.isNull()) {
+    btPreDownloadHandler_.reset(new MemoryBufferPreDownloadHandler());
 
     RequestGroupCriteriaHandle criteria
       (new ContentTypeRequestGroupCriteria
@@ -108,27 +108,27 @@ DownloadHandlerFactory::getBtPreDownloadHandler()
         DownloadHandlerConstants::getBtContentTypes().end(),
         DownloadHandlerConstants::getBtExtensions().begin(),
         DownloadHandlerConstants::getBtExtensions().end()));
-    _btPreDownloadHandler->setCriteria(criteria);
+    btPreDownloadHandler_->setCriteria(criteria);
   }
-  return _btPreDownloadHandler;
+  return btPreDownloadHandler_;
 }
 
 SharedHandle<BtPostDownloadHandler>
 DownloadHandlerFactory::getBtPostDownloadHandler()
 {
-  if(_btPostDownloadHandler.isNull()) {
-    _btPostDownloadHandler.reset(new BtPostDownloadHandler());
+  if(btPostDownloadHandler_.isNull()) {
+    btPostDownloadHandler_.reset(new BtPostDownloadHandler());
   }
-  return _btPostDownloadHandler;
+  return btPostDownloadHandler_;
 }
 
 SharedHandle<UTMetadataPostDownloadHandler>
 DownloadHandlerFactory::getUTMetadataPostDownloadHandler()
 {
-  if(_btMetadataPostDownloadHandler.isNull()) {
-    _btMetadataPostDownloadHandler.reset(new UTMetadataPostDownloadHandler());
+  if(btMetadataPostDownloadHandler_.isNull()) {
+    btMetadataPostDownloadHandler_.reset(new UTMetadataPostDownloadHandler());
   }
-  return _btMetadataPostDownloadHandler;
+  return btMetadataPostDownloadHandler_;
 }
 
 #endif // ENABLE_BITTORRENT

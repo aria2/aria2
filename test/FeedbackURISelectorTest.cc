@@ -19,7 +19,7 @@ class FeedbackURISelectorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSelect_skipErrorHost);
   CPPUNIT_TEST_SUITE_END();
 private:
-  FileEntry _fileEntry;
+  FileEntry fileEntry_;
 
   SharedHandle<ServerStatMan> ssm;
 
@@ -36,7 +36,7 @@ public:
     std::vector<std::string> uris;
     uris.assign(vbegin(urisSrc), vend(urisSrc));
     
-    _fileEntry.setUris(uris);
+    fileEntry_.setUris(uris);
 
     ssm.reset(new ServerStatMan());
     sel.reset(new FeedbackURISelector(ssm));
@@ -57,9 +57,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FeedbackURISelectorTest);
 void FeedbackURISelectorTest::testSelect_withoutServerStat()
 {
   // Without ServerStat, selector returns first URI
-  std::string uri = sel->select(&_fileEntry);
+  std::string uri = sel->select(&fileEntry_);
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), uri);
-  CPPUNIT_ASSERT_EQUAL((size_t)2, _fileEntry.getRemainingUris().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry_.getRemainingUris().size());
 }
 
 void FeedbackURISelectorTest::testSelect()
@@ -77,12 +77,12 @@ void FeedbackURISelectorTest::testSelect()
   ssm->add(alphaHTTP);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
-                       sel->select(&_fileEntry));
-  CPPUNIT_ASSERT_EQUAL((size_t)2, _fileEntry.getRemainingUris().size());
+                       sel->select(&fileEntry_));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry_.getRemainingUris().size());
   
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
-                       sel->select(&_fileEntry));
-  CPPUNIT_ASSERT_EQUAL((size_t)1, _fileEntry.getRemainingUris().size());
+                       sel->select(&fileEntry_));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry_.getRemainingUris().size());
 }
 
 void FeedbackURISelectorTest::testSelect_skipErrorHost()
@@ -97,8 +97,8 @@ void FeedbackURISelectorTest::testSelect_skipErrorHost()
 
   // See error URIs are removed from URI List.
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
-                       sel->select(&_fileEntry));
-  CPPUNIT_ASSERT_EQUAL((size_t)0, _fileEntry.getRemainingUris().size());
+                       sel->select(&fileEntry_));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry_.getRemainingUris().size());
 }
 
 } // namespace aria2

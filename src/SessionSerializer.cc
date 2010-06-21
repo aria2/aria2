@@ -54,10 +54,10 @@ namespace aria2 {
 
 SessionSerializer::SessionSerializer
 (const SharedHandle<RequestGroupMan>& requestGroupMan):
-  _rgman(requestGroupMan),
-  _saveError(true),
-  _saveInProgress(true),
-  _saveWaiting(true) {}
+  rgman_(requestGroupMan),
+  saveError_(true),
+  saveInProgress_(true),
+  saveWaiting_(true) {}
 
 bool SessionSerializer::save(const std::string& filename) const
 {
@@ -161,25 +161,25 @@ void SessionSerializer::save(std::ostream& out) const
 {
   std::set<int64_t> metainfoCache;
   const std::deque<SharedHandle<DownloadResult> >& results =
-    _rgman->getDownloadResults();
+    rgman_->getDownloadResults();
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         results.begin(), eoi = results.end(); itr != eoi; ++itr) {
     if((*itr)->result == downloadresultcode::FINISHED) {
       continue;
     } else if((*itr)->result == downloadresultcode::IN_PROGRESS) {
-      if(_saveInProgress) {
+      if(saveInProgress_) {
         writeDownloadResult(out, metainfoCache, *itr);
       }
     } else {
       // error download
-      if(_saveError) {
+      if(saveError_) {
         writeDownloadResult(out, metainfoCache, *itr);
       }
     }
   }
-  if(_saveInProgress) {
+  if(saveInProgress_) {
     const std::deque<SharedHandle<RequestGroup> >& groups =
-      _rgman->getRequestGroups();
+      rgman_->getRequestGroups();
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
           groups.begin(), eoi = groups.end(); itr != eoi; ++itr) {
       SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
@@ -189,9 +189,9 @@ void SessionSerializer::save(std::ostream& out) const
       writeDownloadResult(out, metainfoCache, result);
     }
   }
-  if(_saveWaiting) {
+  if(saveWaiting_) {
     const std::deque<SharedHandle<RequestGroup> >& groups =
-      _rgman->getReservedGroups();
+      rgman_->getReservedGroups();
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
           groups.begin(), eoi = groups.end(); itr != eoi; ++itr) {
       SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();

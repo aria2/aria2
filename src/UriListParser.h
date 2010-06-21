@@ -48,11 +48,11 @@ namespace aria2 {
 
 class UriListParser {
 private:
-  std::istream& _in;
+  std::istream& in_;
 
-  OptionParser _optparser;
+  OptionParser optparser_;
 
-  std::string _line;
+  std::string line_;
 
   void getOptions(Option& op);
 public:

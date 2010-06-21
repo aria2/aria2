@@ -78,20 +78,20 @@ private:
   friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-  std::deque<SharedHandle<KSocketEntry> > _socketEntries;
+  std::deque<SharedHandle<KSocketEntry> > socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  std::deque<SharedHandle<KAsyncNameResolverEntry> > _nameResolverEntries;
+  std::deque<SharedHandle<KAsyncNameResolverEntry> > nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
-  int _port;
+  int port_;
 
-  size_t _portEventsSize;
+  size_t portEventsSize_;
 
-  port_event_t* _portEvents;
+  port_event_t* portEvents_;
 
   static const size_t PORT_EVENTS_SIZE = 1024;
 
-  Logger* _logger;
+  Logger* logger_;
 
   bool addEvents(sock_t socket, const KEvent& event);
 

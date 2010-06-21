@@ -69,7 +69,7 @@ HttpRequestCommand::HttpRequestCommand
  DownloadEngine* e,
  const SocketHandle& s)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   _httpConnection(httpConnection)
+   httpConnection_(httpConnection)
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
@@ -124,9 +124,9 @@ bool HttpRequestCommand::executeInternal() {
       return false;
     }
   }
-  if(_httpConnection->sendBufferIsEmpty()) {
+  if(httpConnection_->sendBufferIsEmpty()) {
     if(!checkIfConnectionEstablished
-       (getSocket(), _connectedHostname, _connectedAddr, _connectedPort)) {
+       (getSocket(), connectedHostname_, connectedAddr_, connectedPort_)) {
       return true;
     }
 
@@ -140,14 +140,14 @@ bool HttpRequestCommand::executeInternal() {
                            getRequestGroup(),
                            getDownloadEngine()->getCookieStorage(),
                            getDownloadEngine()->getAuthConfigFactory(),
-                           _proxyRequest));
-      _httpConnection->sendRequest(httpRequest);
+                           proxyRequest_));
+      httpConnection_->sendRequest(httpRequest);
     } else {
       for(std::vector<SharedHandle<Segment> >::const_iterator itr =
             getSegments().begin(), eoi = getSegments().end();
           itr != eoi; ++itr) {
         const SharedHandle<Segment>& segment = *itr;
-        if(!_httpConnection->isIssued(segment)) {
+        if(!httpConnection_->isIssued(segment)) {
           SharedHandle<HttpRequest> httpRequest
             (createHttpRequest(getRequest(),
                                getFileEntry(),
@@ -157,20 +157,20 @@ bool HttpRequestCommand::executeInternal() {
                                getRequestGroup(),
                                getDownloadEngine()->getCookieStorage(),
                                getDownloadEngine()->getAuthConfigFactory(),
-                               _proxyRequest));
-          _httpConnection->sendRequest(httpRequest);
+                               proxyRequest_));
+          httpConnection_->sendRequest(httpRequest);
         }
       }
     }
   } else {
-    _httpConnection->sendPendingData();
+    httpConnection_->sendPendingData();
   }
-  if(_httpConnection->sendBufferIsEmpty()) {
+  if(httpConnection_->sendBufferIsEmpty()) {
     Command* command = new HttpResponseCommand(getCuid(),
                                                getRequest(),
                                                getFileEntry(),
                                                getRequestGroup(),
-                                               _httpConnection,
+                                               httpConnection_,
                                                getDownloadEngine(),
                                                getSocket());
     getDownloadEngine()->addCommand(command);
@@ -186,7 +186,7 @@ bool HttpRequestCommand::executeInternal() {
 void HttpRequestCommand::setProxyRequest
 (const SharedHandle<Request>& proxyRequest)
 {
-  _proxyRequest = proxyRequest;
+  proxyRequest_ = proxyRequest;
 }
 
 } // namespace aria2

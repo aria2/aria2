@@ -57,14 +57,14 @@
 namespace aria2 {
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
-  _logger(LogFactory::getInstance()) {}
+  logger_(LogFactory::getInstance()) {}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
 (const SharedHandle<Peer>& peer,
  const SharedHandle<ExtensionMessageRegistry>& registry):
-  _peer(peer),
-  _registry(registry),
-  _logger(LogFactory::getInstance()) {}
+  peer_(peer),
+  registry_(registry),
+  logger_(LogFactory::getInstance()) {}
 
 DefaultExtensionMessageFactory::~DefaultExtensionMessageFactory() {}
 
@@ -76,11 +76,11 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     // handshake
     HandshakeExtensionMessageHandle m =
       HandshakeExtensionMessage::create(data, length);
-    m->setPeer(_peer);
-    m->setDownloadContext(_dctx);
+    m->setPeer(peer_);
+    m->setDownloadContext(dctx_);
     return m;
   } else {
-    std::string extensionName = _registry->getExtensionName(extensionMessageID);
+    std::string extensionName = registry_->getExtensionName(extensionMessageID);
     if(extensionName.empty()) {
       throw DL_ABORT_EX
         (StringFormat("No extension registered for extended message ID %u",
@@ -90,7 +90,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       // uTorrent compatible Peer-Exchange
       UTPexExtensionMessageHandle m =
         UTPexExtensionMessage::create(data, length);
-      m->setPeerStorage(_peerStorage);
+      m->setPeerStorage(peerStorage_);
       return m;
     } else if(extensionName == "ut_metadata") {
       if(length == 0) {
@@ -116,10 +116,10 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         SharedHandle<UTMetadataRequestExtensionMessage> m
           (new UTMetadataRequestExtensionMessage(extensionMessageID));
         m->setIndex(index->i());
-        m->setDownloadContext(_dctx);
-        m->setPeer(_peer);
-        m->setBtMessageFactory(_messageFactory);
-        m->setBtMessageDispatcher(_dispatcher);
+        m->setDownloadContext(dctx_);
+        m->setPeer(peer_);
+        m->setBtMessageFactory(messageFactory_);
+        m->setBtMessageDispatcher(dispatcher_);
         return m;
       }
       case 1: {
@@ -135,9 +135,9 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         m->setIndex(index->i());
         m->setTotalSize(totalSize->i());
         m->setData(std::string(&data[1+end], &data[length]));
-        m->setUTMetadataRequestTracker(_tracker);
-        m->setPieceStorage(_dctx->getOwnerRequestGroup()->getPieceStorage());
-        m->setDownloadContext(_dctx);
+        m->setUTMetadataRequestTracker(tracker_);
+        m->setPieceStorage(dctx_->getOwnerRequestGroup()->getPieceStorage());
+        m->setDownloadContext(dctx_);
         return m;
       }
       case 2: {
@@ -163,12 +163,12 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
 void DefaultExtensionMessageFactory::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
-  _peerStorage = peerStorage;
+  peerStorage_ = peerStorage;
 }
 
 void DefaultExtensionMessageFactory::setPeer(const SharedHandle<Peer>& peer)
 {
-  _peer = peer;
+  peer_ = peer;
 }
 
 } // namespace aria2

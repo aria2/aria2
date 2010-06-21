@@ -49,11 +49,11 @@ class DHTNode;
 
 class DHTRoutingTableDeserializer {
 private:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  std::vector<SharedHandle<DHTNode> > _nodes;
+  std::vector<SharedHandle<DHTNode> > nodes_;
 
-  Time _serializedTime;
+  Time serializedTime_;
 public:
   DHTRoutingTableDeserializer();
 
@@ -61,17 +61,17 @@ public:
 
   const SharedHandle<DHTNode>& getLocalNode() const
   {
-    return _localNode;
+    return localNode_;
   }
 
   const std::vector<SharedHandle<DHTNode> >& getNodes() const
   {
-    return _nodes;
+    return nodes_;
   }
 
   Time getSerializedTime() const
   {
-    return _serializedTime;
+    return serializedTime_;
   }
 
   void deserialize(std::istream& in);

@@ -49,12 +49,12 @@ class PieceStorage;
 class SeedCheckCommand : public Command
 {
 private:
-  RequestGroup* _requestGroup;
-  DownloadEngine* _e;
-  SharedHandle<PieceStorage> _pieceStorage;
-  SharedHandle<BtRuntime> _btRuntime;
-  SharedHandle<SeedCriteria> _seedCriteria;
-  bool _checkStarted;
+  RequestGroup* requestGroup_;
+  DownloadEngine* e_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  SharedHandle<BtRuntime> btRuntime_;
+  SharedHandle<SeedCriteria> seedCriteria_;
+  bool checkStarted_;
 public:
   SeedCheckCommand(cuid_t cuid,
                    RequestGroup* requestGroup,

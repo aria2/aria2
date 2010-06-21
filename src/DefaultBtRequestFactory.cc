@@ -51,104 +51,104 @@
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory():
-  _logger(LogFactory::getInstance())
+  logger_(LogFactory::getInstance())
 {
-  if(_logger->debug()) {
-    _logger->debug("DefaultBtRequestFactory::instantiated");
+  if(logger_->debug()) {
+    logger_->debug("DefaultBtRequestFactory::instantiated");
   }
 }
 
 DefaultBtRequestFactory::~DefaultBtRequestFactory()
 {
-  if(_logger->debug()) {
-    _logger->debug("DefaultBtRequestFactory::deleted");
+  if(logger_->debug()) {
+    logger_->debug("DefaultBtRequestFactory::deleted");
   }
 }
 
 void DefaultBtRequestFactory::addTargetPiece(const SharedHandle<Piece>& piece)
 {
-  _pieces.push_back(piece);
+  pieces_.push_back(piece);
 }
 
 class AbortCompletedPieceRequest
 {
 private:
-  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher_;
 public:
   AbortCompletedPieceRequest(const WeakHandle<BtMessageDispatcher>& dispatcher):
-    _dispatcher(dispatcher) {}
+    dispatcher_(dispatcher) {}
 
   void operator()(const SharedHandle<Piece>& piece)
   {
     if(piece->pieceComplete()) {
-      _dispatcher->doAbortOutstandingRequestAction(piece);
+      dispatcher_->doAbortOutstandingRequestAction(piece);
     }
   }
 };
 
 void DefaultBtRequestFactory::removeCompletedPiece() {
-  std::for_each(_pieces.begin(), _pieces.end(),
-                AbortCompletedPieceRequest(_dispatcher));
-  _pieces.erase(std::remove_if(_pieces.begin(), _pieces.end(),
+  std::for_each(pieces_.begin(), pieces_.end(),
+                AbortCompletedPieceRequest(dispatcher_));
+  pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
                               mem_fun_sh(&Piece::pieceComplete)),
-               _pieces.end());
+               pieces_.end());
 }
 
 void DefaultBtRequestFactory::removeTargetPiece
 (const SharedHandle<Piece>& piece)
 {
-  _pieces.erase(std::remove(_pieces.begin(), _pieces.end(), piece),
-               _pieces.end());
-  _dispatcher->doAbortOutstandingRequestAction(piece);
-  _pieceStorage->cancelPiece(piece);
+  pieces_.erase(std::remove(pieces_.begin(), pieces_.end(), piece),
+               pieces_.end());
+  dispatcher_->doAbortOutstandingRequestAction(piece);
+  pieceStorage_->cancelPiece(piece);
 }
 
 class ProcessChokedPiece {
 private:
-  SharedHandle<Peer> _peer;
-  WeakHandle<PieceStorage> _pieceStorage;
+  SharedHandle<Peer> peer_;
+  WeakHandle<PieceStorage> pieceStorage_;
 public:
   ProcessChokedPiece(const SharedHandle<Peer>& peer,
                      const WeakHandle<PieceStorage>& pieceStorage):
-    _peer(peer),
-    _pieceStorage(pieceStorage) {}
+    peer_(peer),
+    pieceStorage_(pieceStorage) {}
 
   void operator()(const SharedHandle<Piece>& piece)
   {
-    if(!_peer->isInPeerAllowedIndexSet(piece->getIndex())) {
-      _pieceStorage->cancelPiece(piece);
+    if(!peer_->isInPeerAllowedIndexSet(piece->getIndex())) {
+      pieceStorage_->cancelPiece(piece);
     }
   }
 };
 
 class FindChokedPiece {
 private:
-  SharedHandle<Peer> _peer;
+  SharedHandle<Peer> peer_;
 public:
-  FindChokedPiece(const SharedHandle<Peer>& peer):_peer(peer) {}
+  FindChokedPiece(const SharedHandle<Peer>& peer):peer_(peer) {}
 
   bool operator()(const SharedHandle<Piece>& piece)
   {
-    return !_peer->isInPeerAllowedIndexSet(piece->getIndex());
+    return !peer_->isInPeerAllowedIndexSet(piece->getIndex());
   }
 };
 
 void DefaultBtRequestFactory::doChokedAction()
 {
-  std::for_each(_pieces.begin(), _pieces.end(),
-                ProcessChokedPiece(_peer, _pieceStorage));
-  _pieces.erase(std::remove_if(_pieces.begin(), _pieces.end(),
-                              FindChokedPiece(_peer)),
-               _pieces.end());
+  std::for_each(pieces_.begin(), pieces_.end(),
+                ProcessChokedPiece(peer_, pieceStorage_));
+  pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
+                              FindChokedPiece(peer_)),
+               pieces_.end());
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = _pieces.begin(),
-        eoi = _pieces.end(); itr != eoi; ++itr) {
-    _dispatcher->doAbortOutstandingRequestAction(*itr);
-    _pieceStorage->cancelPiece(*itr);
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
+        eoi = pieces_.end(); itr != eoi; ++itr) {
+    dispatcher_->doAbortOutstandingRequestAction(*itr);
+    pieceStorage_->cancelPiece(*itr);
   }
-  _pieces.clear();
+  pieces_.clear();
 }
 
 void DefaultBtRequestFactory::createRequestMessages
@@ -160,22 +160,22 @@ void DefaultBtRequestFactory::createRequestMessages
   size_t getnum = max-requests.size();
   std::vector<size_t> blockIndexes;
   blockIndexes.reserve(getnum);
-  for(std::deque<SharedHandle<Piece> >::iterator itr = _pieces.begin(),
-        eoi = _pieces.end(); itr != eoi && getnum; ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
+        eoi = pieces_.end(); itr != eoi && getnum; ++itr) {
     SharedHandle<Piece>& piece = *itr;
     if(piece->getMissingUnusedBlockIndex(blockIndexes, getnum)) {
       getnum -= blockIndexes.size();
       for(std::vector<size_t>::const_iterator i = blockIndexes.begin(),
             eoi2 = blockIndexes.end(); i != eoi2; ++i) {
-        if(_logger->debug()) {
-          _logger->debug("Creating RequestMessage index=%u, begin=%u,"
+        if(logger_->debug()) {
+          logger_->debug("Creating RequestMessage index=%u, begin=%u,"
                          " blockIndex=%u",
                          piece->getIndex(),
                          (*i)*piece->getBlockLength(),
                          (*i));
         }
         requests.push_back
-          (_messageFactory->createRequestMessage(piece, *i));
+          (messageFactory_->createRequestMessage(piece, *i));
       }
       blockIndexes.clear();
     }
@@ -185,8 +185,8 @@ void DefaultBtRequestFactory::createRequestMessages
 void DefaultBtRequestFactory::createRequestMessagesOnEndGame
 (std::vector<SharedHandle<BtMessage> >& requests, size_t max)
 {
-  for(std::deque<SharedHandle<Piece> >::iterator itr = _pieces.begin(),
-        eoi = _pieces.end(); itr != eoi && requests.size() < max; ++itr) {
+  for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
+        eoi = pieces_.end(); itr != eoi && requests.size() < max; ++itr) {
     SharedHandle<Piece>& piece = *itr;
     const size_t mislen = piece->getBitfieldLength();
     array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
@@ -210,16 +210,16 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
           eoi2 = missingBlockIndexes.end();
         bitr != eoi2 && requests.size() < max; ++bitr) {
       const size_t& blockIndex = *bitr;
-      if(!_dispatcher->isOutstandingRequest(piece->getIndex(),
+      if(!dispatcher_->isOutstandingRequest(piece->getIndex(),
                                            blockIndex)) {
-        if(_logger->debug()) {
-          _logger->debug("Creating RequestMessage index=%u, begin=%u,"
+        if(logger_->debug()) {
+          logger_->debug("Creating RequestMessage index=%u, begin=%u,"
                          " blockIndex=%u",
                          piece->getIndex(),
                          blockIndex*piece->getBlockLength(),
                          blockIndex);
         }
-        requests.push_back(_messageFactory->createRequestMessage
+        requests.push_back(messageFactory_->createRequestMessage
                            (piece, blockIndex));
       }
     }
@@ -229,55 +229,55 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
 class CountMissingBlock
 {
 private:
-  size_t _numMissingBlock;
+  size_t numMissingBlock_;
 public:
-  CountMissingBlock():_numMissingBlock(0) {}
+  CountMissingBlock():numMissingBlock_(0) {}
 
   size_t getNumMissingBlock()
   {
-    return _numMissingBlock;
+    return numMissingBlock_;
   }
 
   void operator()(const SharedHandle<Piece>& piece)
   {
-    _numMissingBlock += piece->countMissingBlock();
+    numMissingBlock_ += piece->countMissingBlock();
   }
 };
 
 size_t DefaultBtRequestFactory::countMissingBlock()
 {
-  return std::for_each(_pieces.begin(), _pieces.end(),
+  return std::for_each(pieces_.begin(), pieces_.end(),
                        CountMissingBlock()).getNumMissingBlock();
 }
 
 void DefaultBtRequestFactory::getTargetPieceIndexes
 (std::vector<size_t>& indexes) const
 {
-  std::transform(_pieces.begin(), _pieces.end(), std::back_inserter(indexes),
+  std::transform(pieces_.begin(), pieces_.end(), std::back_inserter(indexes),
                  mem_fun_sh(&Piece::getIndex));
 }
 
 void DefaultBtRequestFactory::setPieceStorage
 (const SharedHandle<PieceStorage>& pieceStorage)
 {
-  _pieceStorage = pieceStorage;
+  pieceStorage_ = pieceStorage;
 }
 
 void DefaultBtRequestFactory::setPeer(const SharedHandle<Peer>& peer)
 {
-  _peer = peer;
+  peer_ = peer;
 }
 
 void DefaultBtRequestFactory::setBtMessageDispatcher
 (const WeakHandle<BtMessageDispatcher>& dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
 
 void DefaultBtRequestFactory::setBtMessageFactory
 (const WeakHandle<BtMessageFactory>& factory)
 {
-  _messageFactory = factory;
+  messageFactory_ = factory;
 }
 
 } // namespace aria2

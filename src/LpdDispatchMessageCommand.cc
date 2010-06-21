@@ -53,40 +53,40 @@ LpdDispatchMessageCommand::LpdDispatchMessageCommand
  const SharedHandle<LpdMessageDispatcher>& dispatcher,
  DownloadEngine* e):
   Command(cuid),
-  _dispatcher(dispatcher),
-  _e(e),
-  _tryCount(0) {}
+  dispatcher_(dispatcher),
+  e_(e),
+  tryCount_(0) {}
 
 bool LpdDispatchMessageCommand::execute()
 {
-  if(_btRuntime->isHalt()) {
+  if(btRuntime_->isHalt()) {
     return true;
   }
-  if(_dispatcher->isAnnounceReady()) {
+  if(dispatcher_->isAnnounceReady()) {
     try {
       getLogger()->info("Dispatching LPD message for infohash=%s",
-                   util::toHex(_dispatcher->getInfoHash()).c_str());
-      if(_dispatcher->sendMessage()) {
+                   util::toHex(dispatcher_->getInfoHash()).c_str());
+      if(dispatcher_->sendMessage()) {
         getLogger()->info("Sending LPD message is complete.");
-        _dispatcher->resetAnnounceTimer();
-        _tryCount = 0;
+        dispatcher_->resetAnnounceTimer();
+        tryCount_ = 0;
       } else {
-        ++_tryCount;
-        if(_tryCount >= 5) {
+        ++tryCount_;
+        if(tryCount_ >= 5) {
           getLogger()->info("Sending LPD message %u times but all failed.");
-          _dispatcher->resetAnnounceTimer();
-          _tryCount = 0;
+          dispatcher_->resetAnnounceTimer();
+          tryCount_ = 0;
         } else {
           getLogger()->info("Could not send LPD message, retry shortly.");
         }
       }
     } catch(RecoverableException& e) {
       getLogger()->info("Failed to send LPD message.", e);
-      _dispatcher->resetAnnounceTimer();
-      _tryCount = 0;
+      dispatcher_->resetAnnounceTimer();
+      tryCount_ = 0;
     }
   }
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 

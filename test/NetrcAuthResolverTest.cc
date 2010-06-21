@@ -14,22 +14,22 @@ class NetrcAuthResolverTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testResolveAuthConfig_ignoreDefault);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Netrc> _netrc;
+  SharedHandle<Netrc> netrc_;
   //SharedHandle<Option> _option;
-  SharedHandle<NetrcAuthResolver> _resolver;
+  SharedHandle<NetrcAuthResolver> resolver_;
 public:
   void setUp()
   {
-    _netrc.reset(new Netrc());
-    _netrc->addAuthenticator
+    netrc_.reset(new Netrc());
+    netrc_->addAuthenticator
       (SharedHandle<Authenticator>(new Authenticator("localhost", "name", "passwd", "account")));
-    _netrc->addAuthenticator
+    netrc_->addAuthenticator
       (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpasswd", "defaultaccount")));
 
     //_option = new Option();
-    _resolver.reset(new NetrcAuthResolver());
-    _resolver->setNetrc(_netrc);
-    _resolver->setDefaultAuthConfig
+    resolver_.reset(new NetrcAuthResolver());
+    resolver_->setNetrc(netrc_);
+    resolver_->setDefaultAuthConfig
       (SharedHandle<AuthConfig>(new AuthConfig("foo", "bar")));
   }
 
@@ -43,42 +43,42 @@ CPPUNIT_TEST_SUITE_REGISTRATION( NetrcAuthResolverTest );
 
 void NetrcAuthResolverTest::testResolveAuthConfig_without_userDefined()
 {
-  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
+  SharedHandle<AuthConfig> authConfig = resolver_->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("name:passwd"), authConfig->getAuthText());
 
-  authConfig = _resolver->resolveAuthConfig("mymachine");
+  authConfig = resolver_->resolveAuthConfig("mymachine");
   CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpasswd"), authConfig->getAuthText());
 
-  _resolver->setNetrc(SharedHandle<Netrc>());
-  authConfig = _resolver->resolveAuthConfig("localhost");
+  resolver_->setNetrc(SharedHandle<Netrc>());
+  authConfig = resolver_->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
 
 }
 
 void NetrcAuthResolverTest::testResolveAuthConfig_with_userDefined()
 {
-  _resolver->setUserDefinedAuthConfig
+  resolver_->setUserDefinedAuthConfig
     (SharedHandle<AuthConfig>(new AuthConfig("myname", "mypasswd")));
-  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
+  SharedHandle<AuthConfig> authConfig = resolver_->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 
-  authConfig = _resolver->resolveAuthConfig("mymachine");
+  authConfig = resolver_->resolveAuthConfig("mymachine");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 
-  _resolver->setNetrc(SharedHandle<Netrc>());
-  authConfig = _resolver->resolveAuthConfig("mymachine");
+  resolver_->setNetrc(SharedHandle<Netrc>());
+  authConfig = resolver_->resolveAuthConfig("mymachine");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 }
 
 void NetrcAuthResolverTest::testResolveAuthConfig_ignoreDefault()
 {
-  _resolver->ignoreDefault();
-  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("mirror");
+  resolver_->ignoreDefault();
+  SharedHandle<AuthConfig> authConfig = resolver_->resolveAuthConfig("mirror");
   CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
 
-  _resolver->useDefault();
+  resolver_->useDefault();
   SharedHandle<AuthConfig> defAuthConfig =
-    _resolver->resolveAuthConfig("mirror");
+    resolver_->resolveAuthConfig("mirror");
   CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpasswd"),
                        defAuthConfig->getAuthText());  
 }

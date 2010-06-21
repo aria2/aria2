@@ -50,15 +50,15 @@ class Logger;
 
 class DHTMessageReceiver {
 private:
-  SharedHandle<DHTMessageTracker> _tracker;
+  SharedHandle<DHTMessageTracker> tracker_;
 
-  SharedHandle<DHTConnection> _connection;
+  SharedHandle<DHTConnection> connection_;
 
-  SharedHandle<DHTMessageFactory> _factory;
+  SharedHandle<DHTMessageFactory> factory_;
 
-  SharedHandle<DHTRoutingTable> _routingTable;
+  SharedHandle<DHTRoutingTable> routingTable_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   SharedHandle<DHTMessage>
   handleUnknownMessage(const unsigned char* data, size_t length,
@@ -76,12 +76,12 @@ public:
 
   const SharedHandle<DHTConnection>& getConnection() const
   {
-    return _connection;
+    return connection_;
   }
 
   const SharedHandle<DHTMessageTracker>& getMessageTracker() const
   {
-    return _tracker;
+    return tracker_;
   }
 
   void setConnection(const SharedHandle<DHTConnection>& connection);

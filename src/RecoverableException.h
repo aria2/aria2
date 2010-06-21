@@ -41,7 +41,7 @@ namespace aria2 {
 
 class RecoverableException:public Exception {
 private:
-  downloadresultcode::RESULT _code;
+  downloadresultcode::RESULT code_;
 
 protected:
   virtual SharedHandle<Exception> copy() const;
@@ -57,7 +57,7 @@ public:
   RecoverableException(const char* file, int line, const std::string& msg,
                        downloadresultcode::RESULT result);
 
-  downloadresultcode::RESULT getCode() const { return _code; }
+  downloadresultcode::RESULT getCode() const { return code_; }
 };
 
 } // namespace aria2

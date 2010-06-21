@@ -68,59 +68,59 @@ public:
 template<typename SocketEntry, typename EventPoll>
 class CommandEvent : public Event<SocketEntry> {
 private:
-  Command* _command;
-  int _events;
+  Command* command_;
+  int events_;
 public:
   CommandEvent(Command* command, int events):
-    _command(command), _events(events) {}
+    command_(command), events_(events) {}
 
   Command* getCommand() const
   {
-    return _command;
+    return command_;
   }
     
   void addEvents(int events)
   {
-    _events |= events;
+    events_ |= events;
   }
 
   void removeEvents(int events)
   {
-    _events &= (~events); 
+    events_ &= (~events); 
   }
 
   bool eventsEmpty() const
   {
-    return _events == 0;
+    return events_ == 0;
   }
         
   bool operator==(const CommandEvent& commandEvent) const
   {
-    return _command == commandEvent._command;
+    return command_ == commandEvent.command_;
   }
 
   virtual int getEvents() const
   {
-    return _events;
+    return events_;
   }
 
   virtual void processEvents(int events)
   {
-    if((_events&events) ||
+    if((events_&events) ||
        ((EventPoll::IEV_ERROR|EventPoll::IEV_HUP)&events)) {
-      _command->setStatusActive();
+      command_->setStatusActive();
     }
     if(EventPoll::IEV_READ&events) {
-      _command->readEventReceived();
+      command_->readEventReceived();
     }
     if(EventPoll::IEV_WRITE&events) {
-      _command->writeEventReceived();
+      command_->writeEventReceived();
     }
     if(EventPoll::IEV_ERROR&events) {
-      _command->errorEventReceived();
+      command_->errorEventReceived();
     }
     if(EventPoll::IEV_HUP&events) {
-      _command->hupEventReceived();
+      command_->hupEventReceived();
     }
   }
 
@@ -140,23 +140,23 @@ public:
 template<typename SocketEntry, typename EventPoll>
 class ADNSEvent : public Event<SocketEntry> {
 private:
-  SharedHandle<AsyncNameResolver> _resolver;
-  Command* _command;
-  sock_t _socket;
-  int _events;
+  SharedHandle<AsyncNameResolver> resolver_;
+  Command* command_;
+  sock_t socket_;
+  int events_;
 public:
   ADNSEvent(const SharedHandle<AsyncNameResolver>& resolver, Command* command,
             sock_t socket, int events):
-    _resolver(resolver), _command(command), _socket(socket), _events(events) {}
+    resolver_(resolver), command_(command), socket_(socket), events_(events) {}
 
   bool operator==(const ADNSEvent& event) const
   {
-    return _resolver == event._resolver;
+    return resolver_ == event.resolver_;
   }
     
   virtual int getEvents() const
   {
-    return _events;
+    return events_;
   }
 
   virtual void processEvents(int events)
@@ -165,18 +165,18 @@ public:
     ares_socket_t writefd;
     if(events&(EventPoll::IEV_READ|EventPoll::IEV_ERROR|
                EventPoll::IEV_HUP)) {
-      readfd = _socket;
+      readfd = socket_;
     } else {
       readfd = ARES_SOCKET_BAD;
     }
     if(events&(EventPoll::IEV_WRITE|EventPoll::IEV_ERROR|
                EventPoll::IEV_HUP)) {
-      writefd = _socket;
+      writefd = socket_;
     } else {
       writefd = ARES_SOCKET_BAD;
     }
-    _resolver->process(readfd, writefd);
-    _command->setStatusActive();
+    resolver_->process(readfd, writefd);
+    command_->setStatusActive();
   }
 
   virtual void addSelf(const SharedHandle<SocketEntry>& socketEntry) const
@@ -197,36 +197,36 @@ class ADNSEvent : public Event<SocketEntry> {};
 template<typename CommandEvent, typename ADNSEvent>
 class SocketEntry {
 protected:
-  sock_t _socket;
+  sock_t socket_;
     
-  std::deque<CommandEvent> _commandEvents;
+  std::deque<CommandEvent> commandEvents_;
     
 #ifdef ENABLE_ASYNC_DNS
     
-  std::deque<ADNSEvent> _adnsEvents;
+  std::deque<ADNSEvent> adnsEvents_;
 
 #endif // ENABLE_ASYNC_DNS
 public:
-  SocketEntry(sock_t socket):_socket(socket) {}
+  SocketEntry(sock_t socket):socket_(socket) {}
 
   virtual ~SocketEntry() {}
 
   bool operator==(const SocketEntry& entry) const
   {
-    return _socket == entry._socket;
+    return socket_ == entry.socket_;
   }
 
   bool operator<(const SocketEntry& entry) const
   {
-    return _socket < entry._socket;
+    return socket_ < entry.socket_;
   }
 
   void addCommandEvent(const CommandEvent& cev)
   {
     typename std::deque<CommandEvent>::iterator i =
-      std::find(_commandEvents.begin(), _commandEvents.end(), cev);
-    if(i == _commandEvents.end()) {
-      _commandEvents.push_back(cev);
+      std::find(commandEvents_.begin(), commandEvents_.end(), cev);
+    if(i == commandEvents_.end()) {
+      commandEvents_.push_back(cev);
     } else {
       (*i).addEvents(cev.getEvents());
     }
@@ -235,13 +235,13 @@ public:
   void removeCommandEvent(const CommandEvent& cev)
   {
     typename std::deque<CommandEvent>::iterator i =
-      std::find(_commandEvents.begin(), _commandEvents.end(), cev);
-    if(i == _commandEvents.end()) {
+      std::find(commandEvents_.begin(), commandEvents_.end(), cev);
+    if(i == commandEvents_.end()) {
       // not found
     } else {
       (*i).removeEvents(cev.getEvents());
       if((*i).eventsEmpty()) {
-        _commandEvents.erase(i);
+        commandEvents_.erase(i);
       }
     }
   }
@@ -251,51 +251,51 @@ public:
   void addADNSEvent(const ADNSEvent& aev)
   {
     typename std::deque<ADNSEvent>::iterator i =
-      std::find(_adnsEvents.begin(), _adnsEvents.end(), aev);
-    if(i == _adnsEvents.end()) {
-      _adnsEvents.push_back(aev);
+      std::find(adnsEvents_.begin(), adnsEvents_.end(), aev);
+    if(i == adnsEvents_.end()) {
+      adnsEvents_.push_back(aev);
     }
   }
 
   void removeADNSEvent(const ADNSEvent& aev)
   {
     typename std::deque<ADNSEvent>::iterator i =
-      std::find(_adnsEvents.begin(), _adnsEvents.end(), aev);
-    if(i == _adnsEvents.end()) {
+      std::find(adnsEvents_.begin(), adnsEvents_.end(), aev);
+    if(i == adnsEvents_.end()) {
       // not found
     } else {
-      _adnsEvents.erase(i);
+      adnsEvents_.erase(i);
     }
   }
 #endif // ENABLE_ASYNC_DNS
 
   sock_t getSocket() const
   {
-    return _socket;
+    return socket_;
   }
 
   void setSocket(sock_t socket)
   {
-    _socket = socket;
+    socket_ = socket;
   }
 
   bool eventEmpty() const
   {
 #ifdef ENABLE_ASYNC_DNS
-    return _commandEvents.empty() && _adnsEvents.empty();
+    return commandEvents_.empty() && adnsEvents_.empty();
 #else // !ENABLE_ASYNC_DNS
-    return _commandEvents.empty();
+    return commandEvents_.empty();
 #endif // !ENABLE_ASYNC_DNS)
   }
     
   void processEvents(int events)
   {
-    std::for_each(_commandEvents.begin(), _commandEvents.end(),
+    std::for_each(commandEvents_.begin(), commandEvents_.end(),
                   std::bind2nd(std::mem_fun_ref
                                (&CommandEvent::processEvents),
                                events));
 #ifdef ENABLE_ASYNC_DNS
-    std::for_each(_adnsEvents.begin(), _adnsEvents.end(),
+    std::for_each(adnsEvents_.begin(), adnsEvents_.end(),
                   std::bind2nd(std::mem_fun_ref
                                (&ADNSEvent::processEvents),
                                events));
@@ -308,29 +308,29 @@ public:
 template<typename EventPoll>
 class AsyncNameResolverEntry {
 private:
-  SharedHandle<AsyncNameResolver> _nameResolver;
+  SharedHandle<AsyncNameResolver> nameResolver_;
 
-  Command* _command;
+  Command* command_;
 
-  size_t _socketsSize;
+  size_t socketsSize_;
   
-  sock_t _sockets[ARES_GETSOCK_MAXNUM];
+  sock_t sockets_[ARES_GETSOCK_MAXNUM];
 
 public:
   AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
                          Command* command):
-    _nameResolver(nameResolver), _command(command), _socketsSize(0) {}
+    nameResolver_(nameResolver), command_(command), socketsSize_(0) {}
 
   bool operator==(const AsyncNameResolverEntry& entry)
   {
-    return _nameResolver == entry._nameResolver &&
-      _command == entry._command;
+    return nameResolver_ == entry.nameResolver_ &&
+      command_ == entry.command_;
   }
 
   void addSocketEvents(EventPoll* e)
   {
-    _socketsSize = 0;
-    int mask = _nameResolver->getsock(_sockets);
+    socketsSize_ = 0;
+    int mask = nameResolver_->getsock(sockets_);
     if(mask == 0) {
       return;
     }
@@ -347,15 +347,15 @@ public:
         // assume no further sockets are returned.
         break;
       }
-      e->addEvents(_sockets[i], _command, events, _nameResolver);
+      e->addEvents(sockets_[i], command_, events, nameResolver_);
     }
-    _socketsSize = i;
+    socketsSize_ = i;
   }
     
   void removeSocketEvents(EventPoll* e)
   {
-    for(size_t i = 0; i < _socketsSize; ++i) {
-      e->deleteEvents(_sockets[i], _command, _nameResolver);
+    for(size_t i = 0; i < socketsSize_; ++i) {
+      e->deleteEvents(sockets_[i], command_, nameResolver_);
     }
   }
 
@@ -363,7 +363,7 @@ public:
   // ARES_SOCKET_BAD).
   void processTimeout()
   {
-    _nameResolver->process(ARES_SOCKET_BAD, ARES_SOCKET_BAD);
+    nameResolver_->process(ARES_SOCKET_BAD, ARES_SOCKET_BAD);
   }
 };
 #else // !ENABLE_ASYNC_DNS

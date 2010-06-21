@@ -58,21 +58,21 @@ class Option;
 
 class NameMatchOptionHandler : public OptionHandler {
 protected:
-  std::string _optName;
+  std::string optName_;
 
-  std::string _description;
+  std::string description_;
 
-  std::string _defaultValue;
+  std::string defaultValue_;
 
-  std::vector<std::string> _tags;
+  std::vector<std::string> tags_;
 
-  int _id;
+  int id_;
 
-  OptionHandler::ARG_TYPE _argType;
+  OptionHandler::ARG_TYPE argType_;
 
-  char _shortName;
+  char shortName_;
 
-  bool _hidden;
+  bool hidden_;
 
   virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
@@ -81,19 +81,19 @@ public:
                          const std::string& defaultValue = NO_DEFAULT_VALUE,
                          ARG_TYPE argType = REQ_ARG,
                          char shortName = 0):
-    _optName(optName),
-    _description(description),
-    _defaultValue(defaultValue),
-    _id(0),
-    _argType(argType),
-    _shortName(shortName),
-    _hidden(false) {}
+    optName_(optName),
+    description_(description),
+    defaultValue_(defaultValue),
+    id_(0),
+    argType_(argType),
+    shortName_(shortName),
+    hidden_(false) {}
 
   virtual ~NameMatchOptionHandler() {}
   
   virtual bool canHandle(const std::string& optName)
   {
-    return strcasecmp(_optName.c_str(), optName.c_str()) == 0;
+    return strcasecmp(optName_.c_str(), optName.c_str()) == 0;
   }
 
   virtual void parse(Option& option, const std::string& arg)
@@ -101,68 +101,68 @@ public:
     try {
       parseArg(option, arg);
     } catch(Exception& e) {
-      throw OPTION_HANDLER_EXCEPTION2(_optName, e);
+      throw OPTION_HANDLER_EXCEPTION2(optName_, e);
     }
   }
 
   virtual bool hasTag(const std::string& tag) const
   {
-    return std::find(_tags.begin(), _tags.end(), tag) != _tags.end();
+    return std::find(tags_.begin(), tags_.end(), tag) != tags_.end();
   }
 
   virtual void addTag(const std::string& tag)
   {
-    _tags.push_back(tag);
+    tags_.push_back(tag);
   }
 
   virtual std::string toTagString() const
   {
-    return strjoin(_tags.begin(), _tags.end(), ", ");
+    return strjoin(tags_.begin(), tags_.end(), ", ");
   }
 
   virtual const std::string& getName() const
   {
-    return _optName;
+    return optName_;
   }
 
   virtual const std::string& getDescription() const
   {
-    return _description;
+    return description_;
   }
 
   virtual const std::string& getDefaultValue() const
   {
-    return _defaultValue;
+    return defaultValue_;
   }
 
   virtual bool isHidden() const
   {
-    return _hidden;
+    return hidden_;
   }
 
   virtual void hide()
   {
-    _hidden = true;
+    hidden_ = true;
   }
 
   virtual char getShortName() const
   {
-    return _shortName;
+    return shortName_;
   }
 
   virtual int getOptionID() const
   {
-    return _id;
+    return id_;
   }
 
   virtual void setOptionID(int id)
   {
-    _id = id;
+    id_ = id;
   }
 
   virtual OptionHandler::ARG_TYPE getArgType() const
   {
-    return _argType;
+    return argType_;
   }
 };
 

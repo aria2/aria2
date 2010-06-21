@@ -56,8 +56,8 @@
 namespace aria2 {
 
 DHTMessageReceiver::DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker):
-  _tracker(tracker),
-  _logger(LogFactory::getInstance())
+  tracker_(tracker),
+  logger_(LogFactory::getInstance())
 {}
 
 DHTMessageReceiver::~DHTMessageReceiver() {}
@@ -68,7 +68,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
   uint16_t remotePort;
   unsigned char data[64*1024];
   try {
-    ssize_t length = _connection->receiveMessage(data, sizeof(data),
+    ssize_t length = connection_->receiveMessage(data, sizeof(data),
                                                  remoteAddr,
                                                  remotePort);
     if(length <= 0) {
@@ -84,19 +84,19 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
           isReply = true;
         }
       } else {
-        _logger->info("Malformed DHT message. Missing 'y' key. From:%s:%u",
+        logger_->info("Malformed DHT message. Missing 'y' key. From:%s:%u",
                       remoteAddr.c_str(), remotePort);
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     } else {
-      _logger->info("Malformed DHT message. This is not a bencoded directory."
+      logger_->info("Malformed DHT message. This is not a bencoded directory."
                     " From:%s:%u", remoteAddr.c_str(), remotePort);
       return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
     if(isReply) {
       std::pair<SharedHandle<DHTResponseMessage>,
                 SharedHandle<DHTMessageCallback> > p =
-        _tracker->messageArrived(dict, remoteAddr, remotePort);
+        tracker_->messageArrived(dict, remoteAddr, remotePort);
       if(p.first.isNull()) {
         // timeout or malicious? message
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
@@ -108,17 +108,17 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       return p.first;
     } else {
       SharedHandle<DHTQueryMessage> message =
-        _factory->createQueryMessage(dict, remoteAddr, remotePort);
+        factory_->createQueryMessage(dict, remoteAddr, remotePort);
       if(message->getLocalNode() == message->getRemoteNode()) {
         // drop message from localnode
-        _logger->info("Received DHT message from localnode.");
+        logger_->info("Received DHT message from localnode.");
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
       onMessageReceived(message);
       return message;
     }
   } catch(RecoverableException& e) {
-    _logger->info("Exception thrown while receiving DHT message.", e);
+    logger_->info("Exception thrown while receiving DHT message.", e);
     return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
   }
 }
@@ -126,19 +126,19 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
 void DHTMessageReceiver::onMessageReceived
 (const SharedHandle<DHTMessage>& message)
 {
-  if(_logger->info()) {
-    _logger->info("Message received: %s", message->toString().c_str());
+  if(logger_->info()) {
+    logger_->info("Message received: %s", message->toString().c_str());
   }
   message->validate();
   message->doReceivedAction();
   message->getRemoteNode()->markGood();
   message->getRemoteNode()->updateLastContact();
-  _routingTable->addGoodNode(message->getRemoteNode());
+  routingTable_->addGoodNode(message->getRemoteNode());
 }
 
 void DHTMessageReceiver::handleTimeout()
 {
-  _tracker->handleTimeout();
+  tracker_->handleTimeout();
 }
 
 SharedHandle<DHTMessage>
@@ -148,26 +148,26 @@ DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
                                          uint16_t remotePort)
 {
   SharedHandle<DHTMessage> m =
-    _factory->createUnknownMessage(data, length, remoteAddr, remotePort);
-  if(_logger->info()) {
-    _logger->info("Message received: %s", m->toString().c_str());
+    factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
+  if(logger_->info()) {
+    logger_->info("Message received: %s", m->toString().c_str());
   }
   return m;
 }
 
 void DHTMessageReceiver::setConnection(const SharedHandle<DHTConnection>& connection)
 {
-  _connection = connection;
+  connection_ = connection;
 }
 
 void DHTMessageReceiver::setMessageFactory(const SharedHandle<DHTMessageFactory>& factory)
 {
-  _factory = factory;
+  factory_ = factory;
 }
 
 void DHTMessageReceiver::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 } // namespace aria2

@@ -41,8 +41,8 @@ namespace aria2 {
 
 DiskAdaptor::DiskAdaptor():
 #ifdef HAVE_POSIX_FALLOCATE
-  _fallocate(false),
+  fallocate_(false),
 #endif // HAVE_POSIX_FALLOCATE
-  _logger(LogFactory::getInstance()) {}
+  logger_(LogFactory::getInstance()) {}
 
 } // namespace aria2

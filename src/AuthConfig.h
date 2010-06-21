@@ -47,28 +47,28 @@ namespace aria2 {
 
 class AuthConfig {
 private:
-  std::string _authScheme;
-  std::string _user;
-  std::string _password;
+  std::string authScheme_;
+  std::string user_;
+  std::string password_;
 public:
 
   AuthConfig() {}
   AuthConfig(const std::string& user, const std::string& password):
-    _user(user), _password(password) {}
+    user_(user), password_(password) {}
 
   std::string getAuthText() const
   {
-    return strconcat(_user, ":", _password);
+    return strconcat(user_, ":", password_);
   }
 
   const std::string& getUser() const
   {
-    return _user;
+    return user_;
   }
 
   const std::string& getPassword() const
   {
-    return _password;
+    return password_;
   }
 };
 

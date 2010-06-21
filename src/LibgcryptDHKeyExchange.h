@@ -44,15 +44,15 @@ namespace aria2 {
 
 class DHKeyExchange {
 private:
-  size_t _keyLength;
+  size_t keyLength_;
 
-  gcry_mpi_t _prime;
+  gcry_mpi_t prime_;
 
-  gcry_mpi_t _generator;
+  gcry_mpi_t generator_;
 
-  gcry_mpi_t _privateKey;
+  gcry_mpi_t privateKey_;
 
-  gcry_mpi_t _publicKey;
+  gcry_mpi_t publicKey_;
 
   void handleError(gcry_error_t err) const
   {
@@ -62,66 +62,66 @@ private:
   }
 public:
   DHKeyExchange():
-    _keyLength(0),
-    _prime(0),
-    _generator(0),
-    _privateKey(0),
-    _publicKey(0) {}
+    keyLength_(0),
+    prime_(0),
+    generator_(0),
+    privateKey_(0),
+    publicKey_(0) {}
 
   ~DHKeyExchange()
   {
-    gcry_mpi_release(_prime);
-    gcry_mpi_release(_generator);
-    gcry_mpi_release(_privateKey);
-    gcry_mpi_release(_publicKey);
+    gcry_mpi_release(prime_);
+    gcry_mpi_release(generator_);
+    gcry_mpi_release(privateKey_);
+    gcry_mpi_release(publicKey_);
   }
 
   void init(const unsigned char* prime, size_t primeBits,
             const unsigned char* generator,
             size_t privateKeyBits)
   {
-    gcry_mpi_release(_prime);
-    gcry_mpi_release(_generator);
-    gcry_mpi_release(_privateKey);
+    gcry_mpi_release(prime_);
+    gcry_mpi_release(generator_);
+    gcry_mpi_release(privateKey_);
     {
-      gcry_error_t r = gcry_mpi_scan(&_prime, GCRYMPI_FMT_HEX,
+      gcry_error_t r = gcry_mpi_scan(&prime_, GCRYMPI_FMT_HEX,
                                      prime, 0, 0);
       if(r) {
         handleError(r);
       }
     }
     {
-      gcry_error_t r = gcry_mpi_scan(&_generator, GCRYMPI_FMT_HEX,
+      gcry_error_t r = gcry_mpi_scan(&generator_, GCRYMPI_FMT_HEX,
                                      generator, 0, 0);
       if(r) {
         handleError(r);
       }
     }
-    _privateKey = gcry_mpi_new(0);
-    gcry_mpi_randomize(_privateKey, privateKeyBits, GCRY_STRONG_RANDOM);
-    _keyLength = (primeBits+7)/8;
+    privateKey_ = gcry_mpi_new(0);
+    gcry_mpi_randomize(privateKey_, privateKeyBits, GCRY_STRONG_RANDOM);
+    keyLength_ = (primeBits+7)/8;
   }
 
   void generatePublicKey()
   {
-    gcry_mpi_release(_publicKey);
-    _publicKey = gcry_mpi_new(0);
-    gcry_mpi_powm(_publicKey, _generator, _privateKey, _prime);
+    gcry_mpi_release(publicKey_);
+    publicKey_ = gcry_mpi_new(0);
+    gcry_mpi_powm(publicKey_, generator_, privateKey_, prime_);
   }
 
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
-    if(outLength < _keyLength) {
+    if(outLength < keyLength_) {
       throw DL_ABORT_EX
         (StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
-                      _keyLength, outLength).str());
+                      keyLength_, outLength).str());
     }
     memset(out, 0, outLength);
-    size_t publicKeyBytes = (gcry_mpi_get_nbits(_publicKey)+7)/8;
-    size_t offset = _keyLength-publicKeyBytes;
+    size_t publicKeyBytes = (gcry_mpi_get_nbits(publicKey_)+7)/8;
+    size_t offset = keyLength_-publicKeyBytes;
     size_t nwritten;
     gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
-                                    outLength-offset, &nwritten, _publicKey);
+                                    outLength-offset, &nwritten, publicKey_);
     if(r) {
       handleError(r);
     }
@@ -137,10 +137,10 @@ public:
                        const unsigned char* peerPublicKeyData,
                        size_t peerPublicKeyLength) const
   {
-    if(outLength < _keyLength) {
+    if(outLength < keyLength_) {
       throw DL_ABORT_EX
         (StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
-                      _keyLength, outLength).str());
+                      keyLength_, outLength).str());
     }
     gcry_mpi_t peerPublicKey;
     {
@@ -151,12 +151,12 @@ public:
       }
     }
     gcry_mpi_t secret = gcry_mpi_new(0);
-    gcry_mpi_powm(secret, peerPublicKey, _privateKey, _prime);
+    gcry_mpi_powm(secret, peerPublicKey, privateKey_, prime_);
     gcry_mpi_release(peerPublicKey);
 
     memset(out, 0, outLength);
     size_t secretBytes = (gcry_mpi_get_nbits(secret)+7)/8;
-    size_t offset = _keyLength-secretBytes;
+    size_t offset = keyLength_-secretBytes;
     size_t nwritten;
     {
       gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,

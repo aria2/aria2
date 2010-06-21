@@ -45,48 +45,48 @@
 namespace aria2 {
 
 BtSeederStateChoke::BtSeederStateChoke():
-  _round(0),
-  _lastRound(0),
-  _logger(LogFactory::getInstance()) {}
+  round_(0),
+  lastRound_(0),
+  logger_(LogFactory::getInstance()) {}
 
 BtSeederStateChoke::~BtSeederStateChoke() {}
 
 BtSeederStateChoke::PeerEntry::PeerEntry
 (const SharedHandle<Peer>& peer):
-  _peer(peer),
-  _outstandingUpload(peer->countOutstandingUpload()),
-  _lastAmUnchoking(peer->getLastAmUnchoking()),
-  _recentUnchoking(_lastAmUnchoking.difference(global::wallclock) < TIME_FRAME),
-  _uploadSpeed(peer->calculateUploadSpeed())
+  peer_(peer),
+  outstandingUpload_(peer->countOutstandingUpload()),
+  lastAmUnchoking_(peer->getLastAmUnchoking()),
+  recentUnchoking_(lastAmUnchoking_.difference(global::wallclock) < TIME_FRAME),
+  uploadSpeed_(peer->calculateUploadSpeed())
 {}
 
 bool
 BtSeederStateChoke::PeerEntry::operator<(const PeerEntry& rhs) const
 {
-  if(this->_outstandingUpload && !rhs._outstandingUpload) {
+  if(this->outstandingUpload_ && !rhs.outstandingUpload_) {
     return true;
-  } else if(!this->_outstandingUpload && rhs._outstandingUpload) {
+  } else if(!this->outstandingUpload_ && rhs.outstandingUpload_) {
     return false;
   }
-  if(this->_recentUnchoking &&
-     (this->_lastAmUnchoking > rhs._lastAmUnchoking)) {
+  if(this->recentUnchoking_ &&
+     (this->lastAmUnchoking_ > rhs.lastAmUnchoking_)) {
     return true;
-  } else if(rhs._recentUnchoking) {
+  } else if(rhs.recentUnchoking_) {
     return false;
   } else {
-    return this->_uploadSpeed > rhs._uploadSpeed;
+    return this->uploadSpeed_ > rhs.uploadSpeed_;
   }
 }
 
 void BtSeederStateChoke::PeerEntry::disableOptUnchoking()
 {
-  _peer->optUnchoking(false);
+  peer_->optUnchoking(false);
 }
 
 void BtSeederStateChoke::unchoke
 (std::vector<BtSeederStateChoke::PeerEntry>& peers)
 {
-  int count = (_round == 2) ? 4 : 3;
+  int count = (round_ == 2) ? 4 : 3;
 
   std::sort(peers.begin(), peers.end());
 
@@ -94,18 +94,18 @@ void BtSeederStateChoke::unchoke
   for(std::vector<PeerEntry>::iterator eoi = peers.end();
       r != eoi && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
-    _logger->info("RU: %s, ulspd=%u", (*r).getPeer()->getIPAddress().c_str(),
+    logger_->info("RU: %s, ulspd=%u", (*r).getPeer()->getIPAddress().c_str(),
                   (*r).getUploadSpeed());
   }
 
-  if(_round < 2) {
+  if(round_ < 2) {
     std::for_each(peers.begin(), peers.end(),
                   std::mem_fun_ref(&PeerEntry::disableOptUnchoking));
     if(r != peers.end()) {
       std::random_shuffle(r, peers.end(),
                           *(SimpleRandomizer::getInstance().get()));
       (*r).getPeer()->optUnchoking(true);
-      _logger->info("POU: %s", (*r).getPeer()->getIPAddress().c_str());
+      logger_->info("POU: %s", (*r).getPeer()->getIPAddress().c_str());
     }
   }
 }
@@ -138,8 +138,8 @@ void
 BtSeederStateChoke::executeChoke
 (const std::vector<SharedHandle<Peer> >& peerSet)
 {
-  _logger->info("Seeder state, %d choke round started", _round);
-  _lastRound = global::wallclock;
+  logger_->info("Seeder state, %d choke round started", round_);
+  lastRound_ = global::wallclock;
 
   std::vector<PeerEntry> peerEntries;
 
@@ -154,8 +154,8 @@ BtSeederStateChoke::executeChoke
 
   unchoke(peerEntries);
   
-  if(++_round == 3) {
-    _round = 0;
+  if(++round_ == 3) {
+    round_ = 0;
   }
 }
 

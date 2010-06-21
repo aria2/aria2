@@ -44,7 +44,7 @@ class DHTPeerAnnounceStorage;
 
 class DHTPeerAnnounceCommand:public TimeBasedCommand {
 private:
-  SharedHandle<DHTPeerAnnounceStorage> _peerAnnounceStorage;
+  SharedHandle<DHTPeerAnnounceStorage> peerAnnounceStorage_;
 public:
   DHTPeerAnnounceCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
 

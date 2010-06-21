@@ -92,7 +92,7 @@ void BtExtendedMessageTest::testDoReceivedAction() {
     (new MockExtensionMessage("charlie", 1, ""));
   BtExtendedMessage msg(exmsg);
   msg.doReceivedAction();
-  CPPUNIT_ASSERT(exmsg->_doReceivedActionCalled);
+  CPPUNIT_ASSERT(exmsg->doReceivedActionCalled_);
 }
   
 void BtExtendedMessageTest::testToString() {

@@ -52,23 +52,23 @@
 namespace aria2 {
 
 HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e):
-  Command(cuid),_e(e) {}
+  Command(cuid),e_(e) {}
 
 HttpListenCommand::~HttpListenCommand()
 {
-  if(!_serverSocket.isNull()) {
-    _e->deleteSocketForReadCheck(_serverSocket, this);
+  if(!serverSocket_.isNull()) {
+    e_->deleteSocketForReadCheck(serverSocket_, this);
   }
 }
 
 bool HttpListenCommand::execute()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
   try {
-    if(_serverSocket->isReadable(0)) {
-      SharedHandle<SocketCore> socket(_serverSocket->acceptConnection());
+    if(serverSocket_->isReadable(0)) {
+      SharedHandle<SocketCore> socket(serverSocket_->acceptConnection());
       socket->setNonBlockingMode();
 
       std::pair<std::string, uint16_t> peerInfo;
@@ -78,50 +78,50 @@ bool HttpListenCommand::execute()
                         peerInfo.first.c_str(), peerInfo.second);
 
       HttpServerCommand* c =
-        new HttpServerCommand(_e->newCUID(), _e, socket);
-      _e->setNoWait(true);
-      _e->addCommand(c);
+        new HttpServerCommand(e_->newCUID(), e_, socket);
+      e_->setNoWait(true);
+      e_->addCommand(c);
     }
   } catch(RecoverableException& e) {
     if(getLogger()->debug()) {
       getLogger()->debug(MSG_ACCEPT_FAILURE, e, util::itos(getCuid()).c_str());
     }
   }
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 
 bool HttpListenCommand::bindPort(uint16_t port)
 {
-  if(!_serverSocket.isNull()) {
-    _e->deleteSocketForReadCheck(_serverSocket, this);
+  if(!serverSocket_.isNull()) {
+    e_->deleteSocketForReadCheck(serverSocket_, this);
   }
-  _serverSocket.reset(new SocketCore());
+  serverSocket_.reset(new SocketCore());
   if(getLogger()->info()) {
     getLogger()->info("CUID#%s - Setting up HttpListenCommand",
                       util::itos(getCuid()).c_str());
   }
   try {
     int flags = 0;
-    if(_e->getOption()->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
+    if(e_->getOption()->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
       flags = AI_PASSIVE;
     }
-    _serverSocket->bind(port, flags);
-    _serverSocket->beginListen();
-    _serverSocket->setNonBlockingMode();
+    serverSocket_->bind(port, flags);
+    serverSocket_->beginListen();
+    serverSocket_->setNonBlockingMode();
     if(getLogger()->info()) {
       getLogger()->info(MSG_LISTENING_PORT,
                         util::itos(getCuid()).c_str(), port);
     }
-    _e->addSocketForReadCheck(_serverSocket, this);
+    e_->addSocketForReadCheck(serverSocket_, this);
     return true;
   } catch(RecoverableException& e) {
     getLogger()->error(MSG_BIND_FAILURE, e,
                        util::itos(getCuid()).c_str(), port);
-    if(!_serverSocket.isNull()) {
-      _e->deleteSocketForReadCheck(_serverSocket, this);
+    if(!serverSocket_.isNull()) {
+      e_->deleteSocketForReadCheck(serverSocket_, this);
     }
-    _serverSocket->closeConnection();
+    serverSocket_->closeConnection();
   }
   return false;
 }

@@ -48,19 +48,19 @@ namespace aria2 {
 #define BAD_CONDITION_INTERVAL 10
 
 Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
-  _ipaddr(ipaddr),
-  _port(port),
-  _firstContactTime(global::wallclock),
-  _badConditionStartTime(0),
-  _seeder(false),
-  _res(0),
-  _incoming(incoming),
-  _localPeer(false)
+  ipaddr_(ipaddr),
+  port_(port),
+  firstContactTime_(global::wallclock),
+  badConditionStartTime_(0),
+  seeder_(false),
+  res_(0),
+  incoming_(incoming),
+  localPeer_(false)
 {
-  memset(_peerId, 0, PEER_ID_LENGTH);
+  memset(peerId_, 0, PEER_ID_LENGTH);
   resetStatus();
-  _id = _ipaddr;
-  strappend(_id, A2STR::COLON_C, util::uitos(_port));
+  id_ = ipaddr_;
+  strappend(id_, A2STR::COLON_C, util::uitos(port_));
 }
 
 Peer::~Peer()
@@ -70,345 +70,345 @@ Peer::~Peer()
 
 void Peer::usedBy(cuid_t cuid)
 {
-  _cuid = cuid;
+  cuid_ = cuid;
 }
 
 void Peer::allocateSessionResource(size_t pieceLength, uint64_t totalLength)
 {
-  delete _res;
-  _res = new PeerSessionResource(pieceLength, totalLength);
-  _res->getPeerStat().downloadStart();
+  delete res_;
+  res_ = new PeerSessionResource(pieceLength, totalLength);
+  res_->getPeerStat().downloadStart();
 }
 
 void Peer::releaseSessionResource()
 {
-  delete _res;
-  _res = 0;
+  delete res_;
+  res_ = 0;
 }
 
 void Peer::setPeerId(const unsigned char* peerId)
 {
-  memcpy(_peerId, peerId, PEER_ID_LENGTH);
+  memcpy(peerId_, peerId, PEER_ID_LENGTH);
 }
 
 void Peer::resetStatus() {
-  _cuid = 0;
+  cuid_ = 0;
 }
 
 bool Peer::amChoking() const
 {
-  assert(_res);
-  return _res->amChoking();
+  assert(res_);
+  return res_->amChoking();
 }
 
 void Peer::amChoking(bool b) const
 {
-  assert(_res);
-  _res->amChoking(b);
+  assert(res_);
+  res_->amChoking(b);
 }
 
 // localhost is interested in this peer
 bool Peer::amInterested() const
 {
-  assert(_res);
-  return _res->amInterested();
+  assert(res_);
+  return res_->amInterested();
 }
 
 void Peer::amInterested(bool b) const
 {
-  assert(_res);
-  _res->amInterested(b);
+  assert(res_);
+  res_->amInterested(b);
 }
 
 // this peer is choking localhost
 bool Peer::peerChoking() const
 {
-  assert(_res);
-  return _res->peerChoking();
+  assert(res_);
+  return res_->peerChoking();
 }
 
 void Peer::peerChoking(bool b) const
 {
-  assert(_res);
-  _res->peerChoking(b);
+  assert(res_);
+  res_->peerChoking(b);
 }
 
 // this peer is interested in localhost
 bool Peer::peerInterested() const
 {
-  assert(_res);
-  return _res->peerInterested();
+  assert(res_);
+  return res_->peerInterested();
 }
 
 void Peer::peerInterested(bool b)
 {
-  assert(_res);
-  _res->peerInterested(b);
+  assert(res_);
+  res_->peerInterested(b);
 }
   
 // this peer should be choked
 bool Peer::chokingRequired() const
 {
-  assert(_res);
-  return _res->chokingRequired();
+  assert(res_);
+  return res_->chokingRequired();
 }
 
 void Peer::chokingRequired(bool b)
 {
-  assert(_res);
-  _res->chokingRequired(b);
+  assert(res_);
+  res_->chokingRequired(b);
 }
 
 // this peer is eligible for unchoking optionally.
 bool Peer::optUnchoking() const
 {
-  assert(_res);
-  return _res->optUnchoking();
+  assert(res_);
+  return res_->optUnchoking();
 }
 
 void Peer::optUnchoking(bool b)
 {
-  assert(_res);
-  _res->optUnchoking(b);
+  assert(res_);
+  res_->optUnchoking(b);
 }
 
 // this peer is snubbing.
 bool Peer::snubbing() const
 {
-  assert(_res);
-  return _res->snubbing();
+  assert(res_);
+  return res_->snubbing();
 }
 
 void Peer::snubbing(bool b)
 {
-  assert(_res);
-  _res->snubbing(b);
+  assert(res_);
+  res_->snubbing(b);
 }
 
 void Peer::updateUploadLength(size_t bytes)
 {
-  assert(_res);
-  _res->updateUploadLength(bytes);
+  assert(res_);
+  res_->updateUploadLength(bytes);
 }
 
 void Peer::updateDownloadLength(size_t bytes)
 {
-  assert(_res);
-  _res->updateDownloadLength(bytes);
+  assert(res_);
+  res_->updateDownloadLength(bytes);
 }
 
 void Peer::updateSeeder()
 {
-  assert(_res);
-  if(_res->hasAllPieces()) {
-    _seeder = true;
+  assert(res_);
+  if(res_->hasAllPieces()) {
+    seeder_ = true;
   }  
 }
 
 void Peer::updateBitfield(size_t index, int operation) {
-  assert(_res);
-  _res->updateBitfield(index, operation);
+  assert(res_);
+  res_->updateBitfield(index, operation);
   updateSeeder();
 }
 
 unsigned int Peer::calculateUploadSpeed()
 {
-  assert(_res);
-  return _res->getPeerStat().calculateUploadSpeed();
+  assert(res_);
+  return res_->getPeerStat().calculateUploadSpeed();
 }
 
 unsigned int Peer::calculateDownloadSpeed()
 {
-  assert(_res);
-  return _res->getPeerStat().calculateDownloadSpeed();
+  assert(res_);
+  return res_->getPeerStat().calculateDownloadSpeed();
 }
 
 uint64_t Peer::getSessionUploadLength() const
 {
-  assert(_res);
-  return _res->uploadLength();
+  assert(res_);
+  return res_->uploadLength();
 }
 
 uint64_t Peer::getSessionDownloadLength() const
 {
-  assert(_res);
-  return _res->downloadLength();
+  assert(res_);
+  return res_->downloadLength();
 }
 
 void Peer::setBitfield(const unsigned char* bitfield, size_t bitfieldLength)
 {
-  assert(_res);
-  _res->setBitfield(bitfield, bitfieldLength);
+  assert(res_);
+  res_->setBitfield(bitfield, bitfieldLength);
   updateSeeder();
 }
 
 const unsigned char* Peer::getBitfield() const
 {
-  assert(_res);
-  return _res->getBitfield();
+  assert(res_);
+  return res_->getBitfield();
 }
 
 size_t Peer::getBitfieldLength() const
 {
-  assert(_res);
-  return _res->getBitfieldLength();
+  assert(res_);
+  return res_->getBitfieldLength();
 }
 
 bool Peer::shouldBeChoking() const {
-  assert(_res);
-  return _res->shouldBeChoking();
+  assert(res_);
+  return res_->shouldBeChoking();
 }
 
 bool Peer::hasPiece(size_t index) const {
-  assert(_res);
-  return _res->hasPiece(index);
+  assert(res_);
+  return res_->hasPiece(index);
 }
 
 void Peer::setFastExtensionEnabled(bool enabled)
 {
-  assert(_res);
-  return _res->fastExtensionEnabled(enabled);
+  assert(res_);
+  return res_->fastExtensionEnabled(enabled);
 }
 
 bool Peer::isFastExtensionEnabled() const
 {
-  assert(_res);
-  return _res->fastExtensionEnabled();
+  assert(res_);
+  return res_->fastExtensionEnabled();
 }
 
 size_t Peer::countPeerAllowedIndexSet() const
 {
-  assert(_res);
-  return _res->peerAllowedIndexSet().size();
+  assert(res_);
+  return res_->peerAllowedIndexSet().size();
 }
 
 const std::vector<size_t>& Peer::getPeerAllowedIndexSet() const
 {
-  assert(_res);
-  return _res->peerAllowedIndexSet();
+  assert(res_);
+  return res_->peerAllowedIndexSet();
 }
 
 bool Peer::isInPeerAllowedIndexSet(size_t index) const
 {
-  assert(_res);
-  return _res->peerAllowedIndexSetContains(index);
+  assert(res_);
+  return res_->peerAllowedIndexSetContains(index);
 }
 
 void Peer::addPeerAllowedIndex(size_t index)
 {
-  assert(_res);
-  _res->addPeerAllowedIndex(index);
+  assert(res_);
+  res_->addPeerAllowedIndex(index);
 }
 
 bool Peer::isInAmAllowedIndexSet(size_t index) const
 {
-  assert(_res);
-  return _res->amAllowedIndexSetContains(index);
+  assert(res_);
+  return res_->amAllowedIndexSetContains(index);
 }
 
 void Peer::addAmAllowedIndex(size_t index)
 {
-  assert(_res);
-  _res->addAmAllowedIndex(index);
+  assert(res_);
+  res_->addAmAllowedIndex(index);
 }
 
 void Peer::setAllBitfield() {
-  assert(_res);
-  _res->markSeeder();
-  _seeder = true;
+  assert(res_);
+  res_->markSeeder();
+  seeder_ = true;
 }
 
 void Peer::startBadCondition()
 {
-  _badConditionStartTime = global::wallclock;
+  badConditionStartTime_ = global::wallclock;
 }
 
 bool Peer::isGood() const
 {
-  return _badConditionStartTime.
+  return badConditionStartTime_.
     difference(global::wallclock) >= BAD_CONDITION_INTERVAL;
 }
 
 uint8_t Peer::getExtensionMessageID(const std::string& name) const
 {
-  assert(_res);
-  return _res->getExtensionMessageID(name);
+  assert(res_);
+  return res_->getExtensionMessageID(name);
 }
 
 std::string Peer::getExtensionName(uint8_t id) const
 {
-  assert(_res);
-  return _res->getExtensionName(id);
+  assert(res_);
+  return res_->getExtensionName(id);
 }
 
 void Peer::setExtension(const std::string& name, uint8_t id)
 {
-  assert(_res);
-  _res->addExtension(name, id);
+  assert(res_);
+  res_->addExtension(name, id);
 }
 
 void Peer::setExtendedMessagingEnabled(bool enabled)
 {
-  assert(_res);
-  _res->extendedMessagingEnabled(enabled);
+  assert(res_);
+  res_->extendedMessagingEnabled(enabled);
 }
 
 bool Peer::isExtendedMessagingEnabled() const
 {
-  assert(_res);
-  return _res->extendedMessagingEnabled();
+  assert(res_);
+  return res_->extendedMessagingEnabled();
 }
 
 void Peer::setDHTEnabled(bool enabled)
 {
-  assert(_res);
-  _res->dhtEnabled(enabled);
+  assert(res_);
+  res_->dhtEnabled(enabled);
 }
 
 bool Peer::isDHTEnabled() const
 {
-  assert(_res);
-  return _res->dhtEnabled();
+  assert(res_);
+  return res_->dhtEnabled();
 }
 
 const Timer& Peer::getLastDownloadUpdate() const
 {
-  assert(_res);
-  return _res->getLastDownloadUpdate();
+  assert(res_);
+  return res_->getLastDownloadUpdate();
 }
 
 const Timer& Peer::getLastAmUnchoking() const
 {
-  assert(_res);
-  return _res->getLastAmUnchoking();
+  assert(res_);
+  return res_->getLastAmUnchoking();
 }
 
 uint64_t Peer::getCompletedLength() const
 {
-  assert(_res);
-  return _res->getCompletedLength();
+  assert(res_);
+  return res_->getCompletedLength();
 }
 
 void Peer::setIncomingPeer(bool incoming)
 {
-  _incoming = incoming;
+  incoming_ = incoming;
 }
 
 void Peer::setFirstContactTime(const Timer& time)
 {
-  _firstContactTime = time;
+  firstContactTime_ = time;
 }
 
 void Peer::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt)
 {
-  assert(_res);
-  _res->setBtMessageDispatcher(dpt);
+  assert(res_);
+  res_->setBtMessageDispatcher(dpt);
 }
 
 size_t Peer::countOutstandingUpload() const
 {
-  assert(_res);
-  return _res->countOutstandingUpload();
+  assert(res_);
+  return res_->countOutstandingUpload();
 }
 
 } // namespace aria2

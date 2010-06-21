@@ -46,10 +46,10 @@ class DiskWriterEntry;
 class MultiFileAllocationIterator:public FileAllocationIterator
 {
 private:
-  MultiDiskAdaptor* _diskAdaptor;
-  std::deque<SharedHandle<DiskWriterEntry> > _entries;
-  SharedHandle<FileAllocationIterator> _fileAllocationIterator;
-  off_t _offset;
+  MultiDiskAdaptor* diskAdaptor_;
+  std::deque<SharedHandle<DiskWriterEntry> > entries_;
+  SharedHandle<FileAllocationIterator> fileAllocationIterator_;
+  off_t offset_;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 

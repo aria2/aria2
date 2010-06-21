@@ -45,23 +45,23 @@ SharedHandle<Exception> RecoverableException::copy() const
 RecoverableException::RecoverableException
 (const char* file, int line, const std::string& msg):
   Exception(file, line, msg),
-  _code(downloadresultcode::UNKNOWN_ERROR) {}
+  code_(downloadresultcode::UNKNOWN_ERROR) {}
 
 RecoverableException::RecoverableException
 (const char* file, int line, const std::string& msg,
  const Exception& cause):
   Exception(file, line, msg, cause),
-  _code(downloadresultcode::UNKNOWN_ERROR) {}
+  code_(downloadresultcode::UNKNOWN_ERROR) {}
 
 RecoverableException::RecoverableException
 (const char* file, int line,
  const RecoverableException& e):
   Exception(file, line, e),
-  _code(downloadresultcode::UNKNOWN_ERROR) {}
+  code_(downloadresultcode::UNKNOWN_ERROR) {}
   
 RecoverableException::RecoverableException
 (const char* file, int line, const std::string& msg,
  downloadresultcode::RESULT result):
-  Exception(file, line, msg), _code(result) {}
+  Exception(file, line, msg), code_(result) {}
 
 } // namespace aria2

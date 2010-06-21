@@ -45,9 +45,9 @@ class Command;
 
 class DHTSetup {
 private:
-  static bool _initialized;
+  static bool initialized_;
 
-  Logger* _logger;
+  Logger* logger_;
 
 public:
   DHTSetup();

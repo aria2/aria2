@@ -50,29 +50,29 @@ class XmlRpcRequestParserController {
 private:
 
   struct StateFrame {
-    SharedHandle<ValueBase> _value;
-    std::string _name;
+    SharedHandle<ValueBase> value_;
+    std::string name_;
 
     bool validMember() const
     {
-      return !_value.isNull() && !_name.empty();
+      return !value_.isNull() && !name_.empty();
     }
   };
 
-  std::stack<StateFrame> _frameStack;
+  std::stack<StateFrame> frameStack_;
 
-  StateFrame _currentFrame;
+  StateFrame currentFrame_;
 
-  std::string _methodName;
+  std::string methodName_;
 public:
   void pushFrame();
 
-  // Pops StateFrame p from _frameStack and set p[_currentFrame._name]
-  // = _currentFrame._value and _currentFrame = p;
+  // Pops StateFrame p from frameStack_ and set p[currentFrame_.name_]
+  // = currentFrame_.value_ and currentFrame_ = p;
   void popStructFrame();
 
-  // Pops StateFrame p from _frameStack and add _currentFrame._value
-  // to p and _currentFrame = p;
+  // Pops StateFrame p from frameStack_ and add currentFrame_.value_
+  // to p and currentFrame_ = p;
   void popArrayFrame();
   
   void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
@@ -83,10 +83,10 @@ public:
 
   void setMethodName(const std::string& methodName)
   {
-    _methodName = methodName;
+    methodName_ = methodName;
   }
 
-  const std::string& getMethodName() const { return _methodName; }
+  const std::string& getMethodName() const { return methodName_; }
 };
 
 } // namespace xmlrpc

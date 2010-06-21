@@ -46,7 +46,7 @@ class Peer;
 class PeerReceiveHandshakeCommand:public PeerAbstractCommand
 {
 private:
-  SharedHandle<PeerConnection> _peerConnection;
+  SharedHandle<PeerConnection> peerConnection_;
 protected:
   virtual bool executeInternal();
   virtual bool exitBeforeExecute();

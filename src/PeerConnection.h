@@ -56,23 +56,23 @@ class ARC4Decryptor;
 
 class PeerConnection {
 private:
-  cuid_t _cuid;
-  SharedHandle<SocketCore> _socket;
-  Logger* _logger;
+  cuid_t cuid_;
+  SharedHandle<SocketCore> socket_;
+  Logger* logger_;
 
-  unsigned char* _resbuf;
-  size_t _resbufLength;
-  size_t _currentPayloadLength;
-  unsigned char _lenbuf[4];
-  size_t _lenbufLength;
+  unsigned char* resbuf_;
+  size_t resbufLength_;
+  size_t currentPayloadLength_;
+  unsigned char lenbuf_[4];
+  size_t lenbufLength_;
 
-  SocketBuffer _socketBuffer;
+  SocketBuffer socketBuffer_;
 
-  bool _encryptionEnabled;
-  SharedHandle<ARC4Encryptor> _encryptor;
-  SharedHandle<ARC4Decryptor> _decryptor;
+  bool encryptionEnabled_;
+  SharedHandle<ARC4Encryptor> encryptor_;
+  SharedHandle<ARC4Decryptor> decryptor_;
 
-  bool _prevPeek;
+  bool prevPeek_;
 
   void readData(unsigned char* data, size_t& length, bool encryption);
 
@@ -111,13 +111,13 @@ public:
 
   const unsigned char* getBuffer() const
   {
-    return _resbuf;
+    return resbuf_;
   }
 
   unsigned char* detachBuffer()
   {
-    unsigned char* detachbuf = _resbuf;
-    _resbuf = new unsigned char[MAX_PAYLOAD_LEN];
+    unsigned char* detachbuf = resbuf_;
+    resbuf_ = new unsigned char[MAX_PAYLOAD_LEN];
     return detachbuf;
   }
 };

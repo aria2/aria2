@@ -41,26 +41,26 @@
 namespace aria2 {
 
 UTMetadataRequestTracker::UTMetadataRequestTracker():
-  _logger(LogFactory::getInstance()) {}
+  logger_(LogFactory::getInstance()) {}
 
 void UTMetadataRequestTracker::add(size_t index)
 {
-  _trackedRequests.push_back(RequestEntry(index));
+  trackedRequests_.push_back(RequestEntry(index));
 }
 
 bool UTMetadataRequestTracker::tracks(size_t index)
 {
-  return std::find(_trackedRequests.begin(), _trackedRequests.end(),
-                   RequestEntry(index)) != _trackedRequests.end();
+  return std::find(trackedRequests_.begin(), trackedRequests_.end(),
+                   RequestEntry(index)) != trackedRequests_.end();
 }
 
 void UTMetadataRequestTracker::remove(size_t index)
 {
   std::vector<RequestEntry>::iterator i =
-    std::find(_trackedRequests.begin(), _trackedRequests.end(),
+    std::find(trackedRequests_.begin(), trackedRequests_.end(),
               RequestEntry(index));
-  if(i != _trackedRequests.end()) {
-    _trackedRequests.erase(i);
+  if(i != trackedRequests_.end()) {
+    trackedRequests_.erase(i);
   }
 }
 
@@ -68,16 +68,16 @@ std::vector<size_t> UTMetadataRequestTracker::removeTimeoutEntry()
 {
   std::vector<size_t> indexes;
   const time_t TIMEOUT = 20;
-  for(std::vector<RequestEntry>::iterator i = _trackedRequests.begin(),
-        eoi = _trackedRequests.end(); i != eoi;) {
+  for(std::vector<RequestEntry>::iterator i = trackedRequests_.begin(),
+        eoi = trackedRequests_.end(); i != eoi;) {
     if((*i).elapsed(TIMEOUT)) {
-      if(_logger->debug()) {
-        _logger->debug("ut_metadata request timeout. index=%lu",
-                       static_cast<unsigned long>((*i)._index));
+      if(logger_->debug()) {
+        logger_->debug("ut_metadata request timeout. index=%lu",
+                       static_cast<unsigned long>((*i).index_));
       }
-      indexes.push_back((*i)._index);
-      i = _trackedRequests.erase(i);
-      eoi = _trackedRequests.end();
+      indexes.push_back((*i).index_);
+      i = trackedRequests_.erase(i);
+      eoi = trackedRequests_.end();
     } else {
       ++i;
     }
@@ -98,9 +98,9 @@ size_t UTMetadataRequestTracker::avail() const
 std::vector<size_t> UTMetadataRequestTracker::getAllTrackedIndex() const
 {
   std::vector<size_t> indexes;
-  for(std::vector<RequestEntry>::const_iterator i = _trackedRequests.begin(),
-        eoi = _trackedRequests.end(); i != eoi; ++i) {
-    indexes.push_back((*i)._index);
+  for(std::vector<RequestEntry>::const_iterator i = trackedRequests_.begin(),
+        eoi = trackedRequests_.end(); i != eoi; ++i) {
+    indexes.push_back((*i).index_);
   }
   return indexes;
 }

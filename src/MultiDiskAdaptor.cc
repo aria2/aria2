@@ -53,58 +53,58 @@
 namespace aria2 {
 
 DiskWriterEntry::DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry):
-  _fileEntry(fileEntry), _open(false), _directIO(false),
-  _needsFileAllocation(false) {}
+  fileEntry_(fileEntry), open_(false), directIO_(false),
+  needsFileAllocation_(false) {}
 
 const std::string& DiskWriterEntry::getFilePath() const
 {
-  return _fileEntry->getPath();
+  return fileEntry_->getPath();
 }
 
 void DiskWriterEntry::initAndOpenFile()
 {
-  if(!_diskWriter.isNull()) {
-    _diskWriter->initAndOpenFile(_fileEntry->getLength());
-    if(_directIO) {
-      _diskWriter->enableDirectIO();
+  if(!diskWriter_.isNull()) {
+    diskWriter_->initAndOpenFile(fileEntry_->getLength());
+    if(directIO_) {
+      diskWriter_->enableDirectIO();
     }
-    _open = true;
+    open_ = true;
   }
 }
 
 void DiskWriterEntry::openFile()
 {
-  if(!_diskWriter.isNull()) {
-    _diskWriter->openFile(_fileEntry->getLength());
-    if(_directIO) {
-      _diskWriter->enableDirectIO();
+  if(!diskWriter_.isNull()) {
+    diskWriter_->openFile(fileEntry_->getLength());
+    if(directIO_) {
+      diskWriter_->enableDirectIO();
     }
-    _open = true;
+    open_ = true;
   }
 }
 
 void DiskWriterEntry::openExistingFile()
 {
-  if(!_diskWriter.isNull()) {
-    _diskWriter->openExistingFile(_fileEntry->getLength());
-    if(_directIO) {
-      _diskWriter->enableDirectIO();
+  if(!diskWriter_.isNull()) {
+    diskWriter_->openExistingFile(fileEntry_->getLength());
+    if(directIO_) {
+      diskWriter_->enableDirectIO();
     }
-    _open = true;
+    open_ = true;
   }
 }
 
 void DiskWriterEntry::closeFile()
 {
-  if(_open) {
-    _diskWriter->closeFile();
-    _open = false;
+  if(open_) {
+    diskWriter_->closeFile();
+    open_ = false;
   }
 }
 
 bool DiskWriterEntry::fileExists()
 {
-  return _fileEntry->exists();
+  return fileEntry_->exists();
 }
 
 uint64_t DiskWriterEntry::size() const
@@ -114,35 +114,35 @@ uint64_t DiskWriterEntry::size() const
 
 void DiskWriterEntry::setDiskWriter(const SharedHandle<DiskWriter>& diskWriter)
 {
-  _diskWriter = diskWriter;
+  diskWriter_ = diskWriter;
 }
 
 bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
 {
-  return _fileEntry < entry._fileEntry;
+  return fileEntry_ < entry.fileEntry_;
 }
 
 void DiskWriterEntry::enableDirectIO()
 {
-  if(_open) {
-    _diskWriter->enableDirectIO();
+  if(open_) {
+    diskWriter_->enableDirectIO();
   }
-  _directIO = true;
+  directIO_ = true;
 }
 
 void DiskWriterEntry::disableDirectIO()
 {
-  if(_open) {
-    _diskWriter->disableDirectIO();
+  if(open_) {
+    diskWriter_->disableDirectIO();
   }
-  _directIO = false;
+  directIO_ = false;
 }
 
 MultiDiskAdaptor::MultiDiskAdaptor():
-  _pieceLength(0),
-  _maxOpenFiles(DEFAULT_MAX_OPEN_FILES),
-  _directIOAllowed(false),
-  _readOnly(false) {}
+  pieceLength_(0),
+  maxOpenFiles_(DEFAULT_MAX_OPEN_FILES),
+  directIOAllowed_(false),
+  readOnly_(false) {}
 
 static SharedHandle<DiskWriterEntry> createDiskWriterEntry
 (const SharedHandle<FileEntry>& fileEntry,
@@ -155,7 +155,7 @@ static SharedHandle<DiskWriterEntry> createDiskWriterEntry
 
 void MultiDiskAdaptor::resetDiskWriterEntries()
 {
-  _diskWriterEntries.clear();
+  diskWriterEntries_.clear();
 
   if(getFileEntries().empty()) {
     return;
@@ -163,16 +163,16 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
         getFileEntries().begin(), eoi = getFileEntries().end(); i != eoi; ++i) {
-    _diskWriterEntries.push_back
+    diskWriterEntries_.push_back
       (createDiskWriterEntry(*i, (*i)->isRequested()));
   }
   std::map<std::string, bool> dwreq;
-  // TODO Currently, _pieceLength == 0 is used for unit testing only.
-  if(_pieceLength > 0) {
+  // TODO Currently, pieceLength_ == 0 is used for unit testing only.
+  if(pieceLength_ > 0) {
     std::vector<SharedHandle<DiskWriterEntry> >::const_iterator done =
-      _diskWriterEntries.begin();
+      diskWriterEntries_.begin();
     for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator itr =
-          _diskWriterEntries.begin(), eoi = _diskWriterEntries.end();
+          diskWriterEntries_.begin(), eoi = diskWriterEntries_.end();
         itr != eoi;) {
       const SharedHandle<FileEntry>& fileEntry = (*itr)->getFileEntry();
 
@@ -181,8 +181,8 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
         continue;
       }
       off_t pieceStartOffset =
-        (fileEntry->getOffset()/_pieceLength)*_pieceLength;
-      if(itr != _diskWriterEntries.begin()) {
+        (fileEntry->getOffset()/pieceLength_)*pieceLength_;
+      if(itr != diskWriterEntries_.begin()) {
         for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
               itr-1; true; --i) {
           const SharedHandle<FileEntry>& fileEntry = (*i)->getFileEntry();
@@ -202,12 +202,12 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       if(fileEntry->getLength() > 0) {
         off_t lastPieceStartOffset =
           (fileEntry->getOffset()+fileEntry->getLength()-1)/
-          _pieceLength*_pieceLength;
+          pieceLength_*pieceLength_;
         if(getLogger()->debug()) {
           getLogger()->debug("Checking adjacent backward file to %s"
-                             " whose lastPieceStartOffset+_pieceLength=%lld",
+                             " whose lastPieceStartOffset+pieceLength_=%lld",
                              fileEntry->getPath().c_str(),
-                             lastPieceStartOffset+_pieceLength);
+                             lastPieceStartOffset+pieceLength_);
         }
         ++itr;
         // adjacent backward files are not needed to be allocated. They
@@ -221,7 +221,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
                                (*itr)->getFileEntry()->getOffset());
           }
           if((*itr)->getFileEntry()->getOffset() <
-             static_cast<off_t>(lastPieceStartOffset+_pieceLength)) {
+             static_cast<off_t>(lastPieceStartOffset+pieceLength_)) {
             if(getLogger()->debug()) {
               getLogger()->debug("%s needs diskwriter",
                                  (*itr)->getFileEntry()->getPath().c_str());
@@ -240,7 +240,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
   }
   DefaultDiskWriterFactory dwFactory;
   for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
-        _diskWriterEntries.begin(), eoi = _diskWriterEntries.end();
+        diskWriterEntries_.begin(), eoi = diskWriterEntries_.end();
       i != eoi; ++i) {
     if((*i)->needsFileAllocation() ||
        dwreq.find((*i)->getFileEntry()->getPath()) != dwreq.end() ||
@@ -250,10 +250,10 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
                            (*i)->getFilePath().c_str());
       }
       (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
-      if(_directIOAllowed) {
+      if(directIOAllowed_) {
         (*i)->getDiskWriter()->allowDirectIO();
       }
-      if(_readOnly) {
+      if(readOnly_) {
         (*i)->getDiskWriter()->enableReadOnly();
       }
     }
@@ -263,7 +263,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
 void MultiDiskAdaptor::mkdir() const
 {
   for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
-        _diskWriterEntries.begin(), eoi = _diskWriterEntries.end();
+        diskWriterEntries_.begin(), eoi = diskWriterEntries_.end();
       i != eoi; ++i) {
     (*i)->getFileEntry()->setupDir();
   }
@@ -276,20 +276,20 @@ void MultiDiskAdaptor::openIfNot
     //     getLogger()->debug("DiskWriterEntry: Cache MISS. offset=%s",
     //            util::itos(entry->getFileEntry()->getOffset()).c_str());
  
-    size_t numOpened = _openedDiskWriterEntries.size();
+    size_t numOpened = openedDiskWriterEntries_.size();
     (entry.get()->*open)();
-    if(numOpened >= _maxOpenFiles) {
+    if(numOpened >= maxOpenFiles_) {
       // Cache is full. 
       // Choose one DiskWriterEntry randomly and close it.
       size_t index =
         SimpleRandomizer::getInstance()->getRandomNumber(numOpened);
       std::vector<SharedHandle<DiskWriterEntry> >::iterator i =
-        _openedDiskWriterEntries.begin();
+        openedDiskWriterEntries_.begin();
       std::advance(i, index);
       (*i)->closeFile();
       (*i) = entry;
     } else {
-      _openedDiskWriterEntries.push_back(entry);
+      openedDiskWriterEntries_.push_back(entry);
     } 
   } else {
     //     getLogger()->debug("DiskWriterEntry: Cache HIT. offset=%s",
@@ -303,8 +303,8 @@ void MultiDiskAdaptor::openFile()
   mkdir();
   // Call DiskWriterEntry::openFile to make sure that zero-length files are
   // created.
-  for(DiskWriterEntries::const_iterator itr = _diskWriterEntries.begin(),
-        eoi = _diskWriterEntries.end(); itr != eoi; ++itr) {
+  for(DiskWriterEntries::const_iterator itr = diskWriterEntries_.begin(),
+        eoi = diskWriterEntries_.end(); itr != eoi; ++itr) {
     openIfNot(*itr, &DiskWriterEntry::openFile);
   }
 }
@@ -314,8 +314,8 @@ void MultiDiskAdaptor::initAndOpenFile()
   resetDiskWriterEntries();
   mkdir();
   // Call DiskWriterEntry::initAndOpenFile to make files truncated.
-  for(DiskWriterEntries::const_iterator itr = _diskWriterEntries.begin(),
-        eoi = _diskWriterEntries.end(); itr != eoi; ++itr) {
+  for(DiskWriterEntries::const_iterator itr = diskWriterEntries_.begin(),
+        eoi = diskWriterEntries_.end(); itr != eoi; ++itr) {
     openIfNot(*itr, &DiskWriterEntry::initAndOpenFile);
   }
 }
@@ -328,7 +328,7 @@ void MultiDiskAdaptor::openExistingFile()
 
 void MultiDiskAdaptor::closeFile()
 {
-  std::for_each(_diskWriterEntries.begin(), _diskWriterEntries.end(),
+  std::for_each(diskWriterEntries_.begin(), diskWriterEntries_.end(),
                 mem_fun_sh(&DiskWriterEntry::closeFile));
 }
 
@@ -391,12 +391,12 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
                                  off_t offset)
 {
   DiskWriterEntries::const_iterator first =
-    findFirstDiskWriterEntry(_diskWriterEntries, offset);
+    findFirstDiskWriterEntry(diskWriterEntries_, offset);
 
   size_t rem = len;
   off_t fileOffset = offset-(*first)->getFileEntry()->getOffset();
   for(DiskWriterEntries::const_iterator i = first,
-        eoi = _diskWriterEntries.end(); i != eoi; ++i) {
+        eoi = diskWriterEntries_.end(); i != eoi; ++i) {
     size_t writeLength = calculateLength(*i, fileOffset, rem);
 
     openIfNot(*i, &DiskWriterEntry::openFile);
@@ -418,13 +418,13 @@ ssize_t MultiDiskAdaptor::readData
 (unsigned char* data, size_t len, off_t offset)
 {
   DiskWriterEntries::const_iterator first =
-    findFirstDiskWriterEntry(_diskWriterEntries, offset);
+    findFirstDiskWriterEntry(diskWriterEntries_, offset);
 
   size_t rem = len;
   size_t totalReadLength = 0;
   off_t fileOffset = offset-(*first)->getFileEntry()->getOffset();
   for(DiskWriterEntries::const_iterator i = first,
-        eoi = _diskWriterEntries.end(); i != eoi; ++i) {
+        eoi = diskWriterEntries_.end(); i != eoi; ++i) {
     size_t readLength = calculateLength(*i, fileOffset, rem);
 
     openIfNot(*i, &DiskWriterEntry::openFile);
@@ -469,30 +469,30 @@ FileAllocationIteratorHandle MultiDiskAdaptor::fileAllocationIterator()
 
 void MultiDiskAdaptor::enableDirectIO()
 {
-  std::for_each(_diskWriterEntries.begin(), _diskWriterEntries.end(),
+  std::for_each(diskWriterEntries_.begin(), diskWriterEntries_.end(),
                 mem_fun_sh(&DiskWriterEntry::enableDirectIO));
 }
 
 void MultiDiskAdaptor::disableDirectIO()
 {
-  std::for_each(_diskWriterEntries.begin(), _diskWriterEntries.end(),
+  std::for_each(diskWriterEntries_.begin(), diskWriterEntries_.end(),
                 mem_fun_sh(&DiskWriterEntry::disableDirectIO));
 }
 
 void MultiDiskAdaptor::enableReadOnly()
 {
-  _readOnly = true;
+  readOnly_ = true;
 }
 
 void MultiDiskAdaptor::disableReadOnly()
 {
-  _readOnly = false;
+  readOnly_ = false;
 }
 
 void MultiDiskAdaptor::cutTrailingGarbage()
 {
   for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
-        _diskWriterEntries.begin(), eoi = _diskWriterEntries.end();
+        diskWriterEntries_.begin(), eoi = diskWriterEntries_.end();
       i != eoi; ++i) {
     uint64_t length = (*i)->getFileEntry()->getLength();
     if(File((*i)->getFilePath()).size() > length) {
@@ -505,7 +505,7 @@ void MultiDiskAdaptor::cutTrailingGarbage()
 
 void MultiDiskAdaptor::setMaxOpenFiles(size_t maxOpenFiles)
 {
-  _maxOpenFiles = maxOpenFiles;
+  maxOpenFiles_ = maxOpenFiles;
 }
 
 size_t MultiDiskAdaptor::utime(const Time& actime, const Time& modtime)

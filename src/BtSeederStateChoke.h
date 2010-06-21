@@ -49,19 +49,19 @@ class Logger;
 
 class BtSeederStateChoke {
 private:
-  int _round;
+  int round_;
 
-  Timer _lastRound;
+  Timer lastRound_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   class PeerEntry {
   private:
-    SharedHandle<Peer> _peer;
-    size_t _outstandingUpload;
-    Timer _lastAmUnchoking;
-    bool _recentUnchoking;
-    unsigned int _uploadSpeed;
+    SharedHandle<Peer> peer_;
+    size_t outstandingUpload_;
+    Timer lastAmUnchoking_;
+    bool recentUnchoking_;
+    unsigned int uploadSpeed_;
     
     const static time_t TIME_FRAME = 20;
   public:
@@ -69,9 +69,9 @@ private:
 
     bool operator<(const PeerEntry& rhs) const;
 
-    const SharedHandle<Peer>& getPeer() const { return _peer; }
+    const SharedHandle<Peer>& getPeer() const { return peer_; }
 
-    unsigned int getUploadSpeed() const { return _uploadSpeed; }
+    unsigned int getUploadSpeed() const { return uploadSpeed_; }
 
     void disableOptUnchoking();
   };
@@ -87,7 +87,7 @@ public:
 
   void executeChoke(const std::vector<SharedHandle<Peer> >& peerSet);
 
-  const Timer& getLastRound() const { return _lastRound; }
+  const Timer& getLastRound() const { return lastRound_; }
 };
 
 } // namespace aria2

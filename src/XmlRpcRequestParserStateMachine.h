@@ -51,27 +51,27 @@ namespace xmlrpc {
 
 class XmlRpcRequestParserStateMachine {
 private:
-  XmlRpcRequestParserController* _controller;
+  XmlRpcRequestParserController* controller_;
 
-  std::stack<XmlRpcRequestParserState*> _stateStack;
+  std::stack<XmlRpcRequestParserState*> stateStack_;
 
-  static InitialXmlRpcRequestParserState* _initialState;
-  static MethodCallXmlRpcRequestParserState* _methodCallState;
-  static MethodNameXmlRpcRequestParserState* _methodNameState;
-  static ParamsXmlRpcRequestParserState* _paramsState;
-  static ParamXmlRpcRequestParserState* _paramState;
-  static ValueXmlRpcRequestParserState* _valueState;
-  static IntXmlRpcRequestParserState* _intState;
-  static StringXmlRpcRequestParserState* _stringState;
-  static Base64XmlRpcRequestParserState* _base64State;
-  static StructXmlRpcRequestParserState* _structState;
-  static MemberXmlRpcRequestParserState* _memberState;
-  static NameXmlRpcRequestParserState* _nameState;
-  static ArrayXmlRpcRequestParserState* _arrayState;
-  static DataXmlRpcRequestParserState* _dataState;
-  static ArrayValueXmlRpcRequestParserState* _arrayValueState;
+  static InitialXmlRpcRequestParserState* initialState_;
+  static MethodCallXmlRpcRequestParserState* methodCallState_;
+  static MethodNameXmlRpcRequestParserState* methodNameState_;
+  static ParamsXmlRpcRequestParserState* paramsState_;
+  static ParamXmlRpcRequestParserState* paramState_;
+  static ValueXmlRpcRequestParserState* valueState_;
+  static IntXmlRpcRequestParserState* intState_;
+  static StringXmlRpcRequestParserState* stringState_;
+  static Base64XmlRpcRequestParserState* base64State_;
+  static StructXmlRpcRequestParserState* structState_;
+  static MemberXmlRpcRequestParserState* memberState_;
+  static NameXmlRpcRequestParserState* nameState_;
+  static ArrayXmlRpcRequestParserState* arrayState_;
+  static DataXmlRpcRequestParserState* dataState_;
+  static ArrayValueXmlRpcRequestParserState* arrayValueState_;
   
-  static UnknownElementXmlRpcRequestParserState* _unknownElementState;
+  static UnknownElementXmlRpcRequestParserState* unknownElementState_;
 public:
   XmlRpcRequestParserStateMachine();
 
@@ -80,89 +80,89 @@ public:
   void beginElement(const std::string& name,
                     const std::map<std::string, std::string>& attrs)
   {
-    _stateStack.top()->beginElement(this, name, attrs);
+    stateStack_.top()->beginElement(this, name, attrs);
   }
   
   void endElement(const std::string& name, const std::string& characters)
   {
-    _stateStack.top()->endElement(this, name, characters);
-    _stateStack.pop();
+    stateStack_.top()->endElement(this, name, characters);
+    stateStack_.pop();
   }
 
   void setMethodName(const std::string& methodName)
   {
-    _controller->setMethodName(methodName);
+    controller_->setMethodName(methodName);
   }
 
   const std::string& getMethodName() const
   {
-    return _controller->getMethodName();
+    return controller_->getMethodName();
   }
 
   void popArrayFrame()
   {
-    _controller->popArrayFrame();
+    controller_->popArrayFrame();
   }
 
   void popStructFrame()
   {
-    _controller->popStructFrame();
+    controller_->popStructFrame();
   }
 
   void pushFrame()
   {
-    _controller->pushFrame();
+    controller_->pushFrame();
   }
 
   void setCurrentFrameValue(const SharedHandle<ValueBase>& value)
   {
-    _controller->setCurrentFrameValue(value);
+    controller_->setCurrentFrameValue(value);
   }
 
   const SharedHandle<ValueBase>& getCurrentFrameValue() const
   {
-    return _controller->getCurrentFrameValue();
+    return controller_->getCurrentFrameValue();
   }
 
   void setCurrentFrameName(const std::string& name)
   {
-    _controller->setCurrentFrameName(name);
+    controller_->setCurrentFrameName(name);
   }
 
   bool needsCharactersBuffering() const
   {
-    return _stateStack.top()->needsCharactersBuffering();
+    return stateStack_.top()->needsCharactersBuffering();
   }
 
-  void pushUnknownElementState() { _stateStack.push(_unknownElementState); }
+  void pushUnknownElementState() { stateStack_.push(unknownElementState_); }
 
-  void pushMethodCallState() { _stateStack.push(_methodCallState); }
+  void pushMethodCallState() { stateStack_.push(methodCallState_); }
 
-  void pushMethodNameState() { _stateStack.push(_methodNameState); }
+  void pushMethodNameState() { stateStack_.push(methodNameState_); }
 
-  void pushParamsState() { _stateStack.push(_paramsState); }
+  void pushParamsState() { stateStack_.push(paramsState_); }
 
-  void pushParamState() { _stateStack.push(_paramState); }
+  void pushParamState() { stateStack_.push(paramState_); }
 
-  void pushValueState() { _stateStack.push(_valueState); }
+  void pushValueState() { stateStack_.push(valueState_); }
 
-  void pushIntState() { _stateStack.push(_intState); }
+  void pushIntState() { stateStack_.push(intState_); }
 
-  void pushStringState() { _stateStack.push(_stringState); }
+  void pushStringState() { stateStack_.push(stringState_); }
 
-  void pushBase64State() { _stateStack.push(_base64State); }
+  void pushBase64State() { stateStack_.push(base64State_); }
 
-  void pushStructState() { _stateStack.push(_structState); }
+  void pushStructState() { stateStack_.push(structState_); }
 
-  void pushMemberState() { _stateStack.push(_memberState); }
+  void pushMemberState() { stateStack_.push(memberState_); }
 
-  void pushNameState() { _stateStack.push(_nameState); }
+  void pushNameState() { stateStack_.push(nameState_); }
 
-  void pushArrayState() { _stateStack.push(_arrayState); }
+  void pushArrayState() { stateStack_.push(arrayState_); }
 
-  void pushDataState() { _stateStack.push(_dataState); }
+  void pushDataState() { stateStack_.push(dataState_); }
 
-  void pushArrayValueState() { _stateStack.push(_arrayValueState); }
+  void pushArrayValueState() { stateStack_.push(arrayValueState_); }
 };
 
 } // namespace xmlrpc

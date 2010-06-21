@@ -54,61 +54,61 @@ namespace aria2 {
 
 DHTInteractionCommand::DHTInteractionCommand(cuid_t cuid, DownloadEngine* e):
   Command(cuid),
-  _e(e) {}
+  e_(e) {}
 
 DHTInteractionCommand::~DHTInteractionCommand()
 {
-  disableReadCheckSocket(_readCheckSocket);
+  disableReadCheckSocket(readCheckSocket_);
 }
 
 void DHTInteractionCommand::setReadCheckSocket(const SocketHandle& socket)
 {
-  _readCheckSocket = socket;
-  _e->addSocketForReadCheck(socket, this);
+  readCheckSocket_ = socket;
+  e_->addSocketForReadCheck(socket, this);
 }
 
 void DHTInteractionCommand::disableReadCheckSocket(const SocketHandle& socket)
 {
-  _e->deleteSocketForReadCheck(socket, this);
+  e_->deleteSocketForReadCheck(socket, this);
 }
 
 bool DHTInteractionCommand::execute()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
 
-  _taskQueue->executeTask();
+  taskQueue_->executeTask();
 
   for(size_t i = 0; i < 20; ++i) {
-    SharedHandle<DHTMessage> m = _receiver->receiveMessage();
+    SharedHandle<DHTMessage> m = receiver_->receiveMessage();
     if(m.isNull()) {
       break;
     }
   }
-  _receiver->handleTimeout();
+  receiver_->handleTimeout();
   try {
-    _dispatcher->sendMessages();
+    dispatcher_->sendMessages();
   } catch(RecoverableException& e) {
     getLogger()->error(EX_EXCEPTION_CAUGHT, e);
   }
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 
 void DHTInteractionCommand::setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
 
 void DHTInteractionCommand::setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver)
 {
-  _receiver = receiver;
+  receiver_ = receiver;
 }
 
 void DHTInteractionCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 } // namespace aria2

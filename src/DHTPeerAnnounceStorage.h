@@ -52,15 +52,15 @@ class Logger;
 
 class DHTPeerAnnounceStorage {
 private:
-  std::deque<SharedHandle<DHTPeerAnnounceEntry> > _entries;
+  std::deque<SharedHandle<DHTPeerAnnounceEntry> > entries_;
 
   SharedHandle<DHTPeerAnnounceEntry> getPeerAnnounceEntry(const unsigned char* infoHash);
 
-  SharedHandle<DHTTaskQueue> _taskQueue;
+  SharedHandle<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> _taskFactory;
+  SharedHandle<DHTTaskFactory> taskFactory_;
 
-  Logger* _logger;
+  Logger* logger_;
 public:
   DHTPeerAnnounceStorage();
 

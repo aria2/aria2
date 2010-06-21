@@ -45,7 +45,7 @@ typedef SharedHandle<BtRequestMessage> BtRequestMessageHandle;
 
 class BtRequestMessage : public RangeBtMessage {
 private:
-  size_t _blockIndex;
+  size_t blockIndex_;
 public:
   BtRequestMessage(size_t index = 0,
                    uint32_t begin = 0,
@@ -56,8 +56,8 @@ public:
 
   static const std::string NAME;
 
-  size_t getBlockIndex() const { return _blockIndex; }
-  void setBlockIndex(size_t blockIndex) { _blockIndex = blockIndex; }
+  size_t getBlockIndex() const { return blockIndex_; }
+  void setBlockIndex(size_t blockIndex) { blockIndex_ = blockIndex; }
 
   static SharedHandle<BtRequestMessage> create
   (const unsigned char* data, size_t dataLength);

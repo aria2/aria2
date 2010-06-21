@@ -82,7 +82,7 @@ void Metalinker::queryEntry
  const std::string& language,
  const std::string& os) const
 {
-  std::remove_copy_if(_entries.begin(), _entries.end(),
+  std::remove_copy_if(entries_.begin(), entries_.end(),
                       std::back_inserter(queryResult),
                       std::not1(EntryQuery(version, language, os)));
 }

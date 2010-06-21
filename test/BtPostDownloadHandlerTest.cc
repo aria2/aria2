@@ -18,11 +18,11 @@ class BtPostDownloadHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetNextRequestGroups);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> _option;
+  SharedHandle<Option> option_;
 public:
   void setUp()
   {
-    _option.reset(new Option());
+    option_.reset(new Option());
   }
 
   void testCanHandle_extension();
@@ -36,7 +36,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtPostDownloadHandlerTest );
 void BtPostDownloadHandlerTest::testCanHandle_extension()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test.torrent"));
-  RequestGroup rg(_option);
+  RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -51,7 +51,7 @@ void BtPostDownloadHandlerTest::testCanHandle_contentType()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/x-bittorrent");
-  RequestGroup rg(_option);
+  RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
 
   BtPostDownloadHandler handler;
@@ -66,7 +66,7 @@ void BtPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(1024, 0, "test.torrent"));
-  RequestGroup rg(_option);
+  RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
 

@@ -70,22 +70,22 @@ class SocketCore {
   friend bool operator<(const SocketCore& s1, const SocketCore& s2);
 private:
   // socket type defined in <sys/socket.h>
-  int _sockType;
+  int sockType_;
   // socket endpoint descriptor
-  sock_t _sockfd;
+  sock_t sockfd_;
 
-  static int _protocolFamily;
+  static int protocolFamily_;
 
-  static std::vector<std::pair<struct sockaddr_storage, socklen_t> > _bindAddrs;
+  static std::vector<std::pair<struct sockaddr_storage, socklen_t> > bindAddrs_;
 
-  bool _blocking;
-  int _secure;
+  bool blocking_;
+  int secure_;
 
-  bool _wantRead;
-  bool _wantWrite;
+  bool wantRead_;
+  bool wantWrite_;
 
 #if ENABLE_SSL
-  static SharedHandle<TLSContext> _tlsContext;
+  static SharedHandle<TLSContext> tlsContext_;
 #endif // ENABLE_SSL
 
 #ifdef HAVE_LIBSSL
@@ -95,10 +95,10 @@ private:
   int sslHandleEAGAIN(int ret);
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-  gnutls_session_t _sslSession;
-  char* _peekBuf;
-  size_t _peekBufLength;
-  size_t _peekBufMax;
+  gnutls_session_t sslSession_;
+  char* peekBuf_;
+  size_t peekBufLength_;
+  size_t peekBufMax_;
 
   size_t shiftPeekData(char* data, size_t len);
   void addPeekData(char* data, size_t len);
@@ -119,9 +119,9 @@ public:
   SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();
 
-  sock_t getSockfd() const { return _sockfd; }
+  sock_t getSockfd() const { return sockfd_; }
 
-  bool isOpen() const { return _sockfd != (sock_t) -1; }
+  bool isOpen() const { return sockfd_ != (sock_t) -1; }
 
   void setMulticastInterface(const std::string& localAddr);
 
@@ -219,8 +219,8 @@ public:
    * all data is sent.
    * If the underlying socket is in non-blocking mode, this method may return
    * even if all data is sent. The size of written data is returned. If
-   * underlying socket gets EAGAIN, _wantRead or _wantWrite is set accordingly.
-   * This method sets _wantRead and _wantWrite to false before do anything else.
+   * underlying socket gets EAGAIN, wantRead_ or wantWrite_ is set accordingly.
+   * This method sets wantRead_ and wantWrite_ to false before do anything else.
    * @param data data to write
    * @param len length of data
    */
@@ -254,8 +254,8 @@ public:
    * at least 1byte is received.
    * If the underlying socket is in non-blocking mode, this method may return
    * even if no single byte is received. If the underlying socket gets EAGAIN,
-   * _wantRead or _wantWrite is set accordingly.
-   * This method sets _wantRead and _wantWrite to false before do anything else.
+   * wantRead_ or wantWrite_ is set accordingly.
+   * This method sets wantRead_ and wantWrite_ to false before do anything else.
    * @param data holder to store data.
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
@@ -306,7 +306,7 @@ public:
   void prepareSecureConnection();
 
   bool operator==(const SocketCore& s) {
-    return _sockfd == s._sockfd;
+    return sockfd_ == s.sockfd_;
   }
 
   bool operator!=(const SocketCore& s) {
@@ -314,7 +314,7 @@ public:
   }
 
   bool operator<(const SocketCore& s) {
-    return _sockfd < s._sockfd;
+    return sockfd_ < s.sockfd_;
   }
 
   std::string getSocketError() const;
@@ -338,13 +338,13 @@ public:
 
   static void setProtocolFamily(int protocolFamily)
   {
-    _protocolFamily = protocolFamily;
+    protocolFamily_ = protocolFamily;
   }
 
   // Bind socket to interface. interface may be specified as a
   // hostname, IP address or interface name like eth0.  If the given
   // interface is not found or binding socket is failed, exception
-  // will be thrown.  Set _protocolFamily before calling this function
+  // will be thrown.  Set protocolFamily_ before calling this function
   // if you limit protocol family.
   //
   // We cannot use interface as an argument because it is a reserved

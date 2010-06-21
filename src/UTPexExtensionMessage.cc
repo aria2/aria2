@@ -49,19 +49,19 @@ namespace aria2 {
 const std::string UTPexExtensionMessage::EXTENSION_NAME = "ut_pex";
 
 UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
-  _extensionMessageID(extensionMessageID),
-  _interval(DEFAULT_INTERVAL),
-  _maxFreshPeer(DEFAULT_MAX_FRESH_PEER),
-  _maxDroppedPeer(DEFAULT_MAX_DROPPED_PEER) {}
+  extensionMessageID_(extensionMessageID),
+  interval_(DEFAULT_INTERVAL),
+  maxFreshPeer_(DEFAULT_MAX_FRESH_PEER),
+  maxDroppedPeer_(DEFAULT_MAX_DROPPED_PEER) {}
 
 UTPexExtensionMessage::~UTPexExtensionMessage() {}
 
 std::string UTPexExtensionMessage::getPayload()
 {
   std::pair<std::string, std::string> freshPeerPair =
-    createCompactPeerListAndFlag(_freshPeers);
+    createCompactPeerListAndFlag(freshPeers_);
   std::pair<std::string, std::string> droppedPeerPair =
-    createCompactPeerListAndFlag(_droppedPeers);
+    createCompactPeerListAndFlag(droppedPeers_);
 
   Dict dict;
   dict.put("added", freshPeerPair.first);
@@ -90,20 +90,20 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
 
 std::string UTPexExtensionMessage::toString() const
 {
-  return strconcat("ut_pex added=", util::uitos(_freshPeers.size()),
-                   ", dropped=", util::uitos(_droppedPeers.size()));
+  return strconcat("ut_pex added=", util::uitos(freshPeers_.size()),
+                   ", dropped=", util::uitos(droppedPeers_.size()));
 }
 
 void UTPexExtensionMessage::doReceivedAction()
 {
-  _peerStorage->addPeer(_freshPeers);
+  peerStorage_->addPeer(freshPeers_);
 }
 
 bool UTPexExtensionMessage::addFreshPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
-     peer->getFirstContactTime().difference(global::wallclock) < _interval) {
-    _freshPeers.push_back(peer);
+     peer->getFirstContactTime().difference(global::wallclock) < interval_) {
+    freshPeers_.push_back(peer);
     return true;
   } else {
     return false;
@@ -112,15 +112,15 @@ bool UTPexExtensionMessage::addFreshPeer(const SharedHandle<Peer>& peer)
 
 bool UTPexExtensionMessage::freshPeersAreFull() const
 {
-  return _freshPeers.size() >= _maxFreshPeer;
+  return freshPeers_.size() >= maxFreshPeer_;
 }
 
 bool UTPexExtensionMessage::addDroppedPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
      peer->getBadConditionStartTime().
-     difference(global::wallclock) < _interval) {
-    _droppedPeers.push_back(peer);
+     difference(global::wallclock) < interval_) {
+    droppedPeers_.push_back(peer);
     return true;
   } else {
     return false;
@@ -129,23 +129,23 @@ bool UTPexExtensionMessage::addDroppedPeer(const SharedHandle<Peer>& peer)
 
 bool UTPexExtensionMessage::droppedPeersAreFull() const
 {
-  return _droppedPeers.size() >= _maxDroppedPeer;
+  return droppedPeers_.size() >= maxDroppedPeer_;
 }
 
 void UTPexExtensionMessage::setMaxFreshPeer(size_t maxFreshPeer)
 {
-  _maxFreshPeer = maxFreshPeer;
+  maxFreshPeer_ = maxFreshPeer;
 }
 
 void UTPexExtensionMessage::setMaxDroppedPeer(size_t maxDroppedPeer)
 {
-  _maxDroppedPeer = maxDroppedPeer;
+  maxDroppedPeer_ = maxDroppedPeer;
 }
 
 void UTPexExtensionMessage::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
-  _peerStorage = peerStorage;
+  peerStorage_ = peerStorage;
 }
 
 UTPexExtensionMessageHandle
@@ -162,11 +162,11 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   if(dict) {
     const String* added = asString(dict->get("added"));
     if(added) {
-      bittorrent::extractPeer(added, std::back_inserter(msg->_freshPeers));
+      bittorrent::extractPeer(added, std::back_inserter(msg->freshPeers_));
     }
     const String* dropped = asString(dict->get("dropped"));
     if(dropped) {
-      bittorrent::extractPeer(dropped, std::back_inserter(msg->_droppedPeers));
+      bittorrent::extractPeer(dropped, std::back_inserter(msg->droppedPeers_));
     }
   }
   return msg;

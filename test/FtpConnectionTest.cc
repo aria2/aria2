@@ -35,17 +35,17 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSendRetr);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<SocketCore> _serverSocket;
-  uint16_t _listenPort;
-  SharedHandle<SocketCore> _clientSocket;
-  SharedHandle<FtpConnection> _ftp;
-  SharedHandle<Option> _option;
-  SharedHandle<AuthConfigFactory> _authConfigFactory;
+  SharedHandle<SocketCore> serverSocket_;
+  uint16_t listenPort_;
+  SharedHandle<SocketCore> clientSocket_;
+  SharedHandle<FtpConnection> ftp_;
+  SharedHandle<Option> option_;
+  SharedHandle<AuthConfigFactory> authConfigFactory_;
 public:
   void setUp()
   {
-    _option.reset(new Option());
-    _authConfigFactory.reset(new AuthConfigFactory());
+    option_.reset(new Option());
+    authConfigFactory_.reset(new AuthConfigFactory());
 
     //_ftpServerSocket.reset(new SocketCore());
     SharedHandle<SocketCore> listenSocket(new SocketCore());
@@ -53,22 +53,22 @@ public:
     listenSocket->beginListen();
     std::pair<std::string, uint16_t> addrinfo;
     listenSocket->getAddrInfo(addrinfo);
-    _listenPort = addrinfo.second;
+    listenPort_ = addrinfo.second;
 
     SharedHandle<Request> req(new Request());
     req->setUri("ftp://localhost/dir%20sp/hello%20world.img");
 
-    _clientSocket.reset(new SocketCore());
-    _clientSocket->establishConnection("localhost", _listenPort);
+    clientSocket_.reset(new SocketCore());
+    clientSocket_->establishConnection("localhost", listenPort_);
 
-    while(!_clientSocket->isWritable(0));
-    _clientSocket->setBlockingMode();
+    while(!clientSocket_->isWritable(0));
+    clientSocket_->setBlockingMode();
 
-    _serverSocket.reset(listenSocket->acceptConnection());
-    _ftp.reset(new FtpConnection(1, _clientSocket, req,
-                                 _authConfigFactory->createAuthConfig
-                                 (req, _option.get()),
-                                 _option.get()));
+    serverSocket_.reset(listenSocket->acceptConnection());
+    ftp_.reset(new FtpConnection(1, clientSocket_, req,
+                                 authConfigFactory_->createAuthConfig
+                                 (req, option_.get()),
+                                 option_.get()));
   }
 
   void tearDown() {}
@@ -98,53 +98,53 @@ static void waitRead(const SharedHandle<SocketCore>& socket)
 
 void FtpConnectionTest::testReceiveResponse()
 {
-  _serverSocket->writeData("100");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
-  _serverSocket->writeData(" single line response");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
-  _serverSocket->writeData("\r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)100, _ftp->receiveResponse());
+  serverSocket_->writeData("100");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  serverSocket_->writeData(" single line response");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  serverSocket_->writeData("\r\n");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)100, ftp_->receiveResponse());
   // 2 responses in the buffer
-  _serverSocket->writeData("101 single1\r\n"
+  serverSocket_->writeData("101 single1\r\n"
                            "102 single2\r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)101, _ftp->receiveResponse());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)102, _ftp->receiveResponse());
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)101, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)102, ftp_->receiveResponse());
 
-  _serverSocket->writeData("103-multi line response\r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
-  _serverSocket->writeData("103-line2\r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
-  _serverSocket->writeData("103");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
-  _serverSocket->writeData(" ");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
-  _serverSocket->writeData("last\r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)103, _ftp->receiveResponse());
+  serverSocket_->writeData("103-multi line response\r\n");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  serverSocket_->writeData("103-line2\r\n");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  serverSocket_->writeData("103");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  serverSocket_->writeData(" ");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  serverSocket_->writeData("last\r\n");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)103, ftp_->receiveResponse());
 
-  _serverSocket->writeData("104-multi\r\n"
+  serverSocket_->writeData("104-multi\r\n"
                            "104 \r\n"
                            "105-multi\r\n"
                            "105 \r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)104, _ftp->receiveResponse());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)105, _ftp->receiveResponse());
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)104, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)105, ftp_->receiveResponse());
 }
 
 void FtpConnectionTest::testSendMdtm()
 {
-  _ftp->sendMdtm();
+  ftp_->sendMdtm();
   char data[32];
   size_t len = sizeof(data);
-  _serverSocket->readData(data, len);
+  serverSocket_->readData(data, len);
   data[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("MDTM hello world.img\r\n"),
                        std::string(data));
@@ -154,44 +154,44 @@ void FtpConnectionTest::testReceiveMdtmResponse()
 {
   {
     Time t;
-    _serverSocket->writeData("213 20080908124312");
-    waitRead(_clientSocket);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveMdtmResponse(t));
-    _serverSocket->writeData("\r\n");
-    waitRead(_clientSocket);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveMdtmResponse(t));
+    serverSocket_->writeData("213 20080908124312");
+    waitRead(clientSocket_);
+    CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveMdtmResponse(t));
+    serverSocket_->writeData("\r\n");
+    waitRead(clientSocket_);
+    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
     CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTime());
   }
   {
     // see milli second part is ignored
     Time t;
-    _serverSocket->writeData("213 20080908124312.014\r\n");
-    waitRead(_clientSocket);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveMdtmResponse(t));
+    serverSocket_->writeData("213 20080908124312.014\r\n");
+    waitRead(clientSocket_);
+    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
     CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTime());
   }
   {
     // hhmmss part is missing
     Time t;
-    _serverSocket->writeData("213 20080908\r\n");
-    waitRead(_clientSocket);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveMdtmResponse(t));
+    serverSocket_->writeData("213 20080908\r\n");
+    waitRead(clientSocket_);
+    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
     CPPUNIT_ASSERT(t.bad());
   }
   {
     // invalid month: 19, we don't care about invalid month..
     Time t;
-    _serverSocket->writeData("213 20081908124312\r\n");
-    waitRead(_clientSocket);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveMdtmResponse(t));
+    serverSocket_->writeData("213 20081908124312\r\n");
+    waitRead(clientSocket_);
+    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
     // Wed Jul 8 12:43:12 2009
     CPPUNIT_ASSERT_EQUAL((time_t)1247056992, t.getTime());
   }
   {
     Time t;
-    _serverSocket->writeData("550 File Not Found\r\n");
-    waitRead(_clientSocket);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)550, _ftp->receiveMdtmResponse(t));
+    serverSocket_->writeData("550 File Not Found\r\n");
+    waitRead(clientSocket_);
+    CPPUNIT_ASSERT_EQUAL((unsigned int)550, ftp_->receiveMdtmResponse(t));
   }
 }
 
@@ -201,14 +201,14 @@ void FtpConnectionTest::testReceiveResponse_overflow()
   memset(data, 0, sizeof(data));
   memcpy(data, "213 ", 4);
   for(int i = 0; i < 64; ++i) {
-    _serverSocket->writeData(data, sizeof(data));
-    waitRead(_clientSocket);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receiveResponse());
+    serverSocket_->writeData(data, sizeof(data));
+    waitRead(clientSocket_);
+    CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
   }
-  _serverSocket->writeData(data, sizeof(data));
-  waitRead(_clientSocket);
+  serverSocket_->writeData(data, sizeof(data));
+  waitRead(clientSocket_);
   try {
-    _ftp->receiveResponse();
+    ftp_->receiveResponse();
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(DlRetryEx& e) {
     // success
@@ -217,10 +217,10 @@ void FtpConnectionTest::testReceiveResponse_overflow()
 
 void FtpConnectionTest::testSendPwd()
 {
-  _ftp->sendPwd();
+  ftp_->sendPwd();
   char data[32];
   size_t len = sizeof(data);
-  _serverSocket->readData(data, len);
+  serverSocket_->readData(data, len);
   CPPUNIT_ASSERT_EQUAL((size_t)5, len);
   data[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("PWD\r\n"), std::string(data));
@@ -229,23 +229,23 @@ void FtpConnectionTest::testSendPwd()
 void FtpConnectionTest::testReceivePwdResponse()
 {
   std::string pwd;
-  _serverSocket->writeData("257 ");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, _ftp->receivePwdResponse(pwd));
+  serverSocket_->writeData("257 ");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receivePwdResponse(pwd));
   CPPUNIT_ASSERT(pwd.empty());
-  _serverSocket->writeData("\"/dir/to\" is your directory.\r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)257, _ftp->receivePwdResponse(pwd));
+  serverSocket_->writeData("\"/dir/to\" is your directory.\r\n");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)257, ftp_->receivePwdResponse(pwd));
   CPPUNIT_ASSERT_EQUAL(std::string("/dir/to"), pwd);
 }
 
 void FtpConnectionTest::testReceivePwdResponse_unquotedResponse()
 {
   std::string pwd;
-  _serverSocket->writeData("257 /dir/to\r\n");
-  waitRead(_clientSocket);
+  serverSocket_->writeData("257 /dir/to\r\n");
+  waitRead(clientSocket_);
   try {
-    _ftp->receivePwdResponse(pwd);
+    ftp_->receivePwdResponse(pwd);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(DlAbortEx& e) {
     // success
@@ -255,58 +255,58 @@ void FtpConnectionTest::testReceivePwdResponse_unquotedResponse()
 void FtpConnectionTest::testReceivePwdResponse_badStatus()
 {
   std::string pwd;
-  _serverSocket->writeData("500 failed\r\n");
-  waitRead(_clientSocket);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)500, _ftp->receivePwdResponse(pwd));
+  serverSocket_->writeData("500 failed\r\n");
+  waitRead(clientSocket_);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)500, ftp_->receivePwdResponse(pwd));
   CPPUNIT_ASSERT(pwd.empty());
 }
 
 void FtpConnectionTest::testSendCwd()
 {
-  _ftp->sendCwd();
+  ftp_->sendCwd();
   char data[32];
   size_t len = sizeof(data);
-  _serverSocket->readData(data, len);
+  serverSocket_->readData(data, len);
   data[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("CWD /dir sp\r\n"), std::string(data));
 }
 
 void FtpConnectionTest::testSendCwd_baseWorkingDir()
 {
-  _ftp->setBaseWorkingDir("/base");
-  _ftp->sendCwd();
+  ftp_->setBaseWorkingDir("/base");
+  ftp_->sendCwd();
   char data[32];
   size_t len = sizeof(data);
-  _serverSocket->readData(data, len);
+  serverSocket_->readData(data, len);
   data[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("CWD /base/dir sp\r\n"), std::string(data));
 }
 
 void FtpConnectionTest::testSendSize()
 {
-  _ftp->sendSize();
+  ftp_->sendSize();
   char data[32];
   size_t len = sizeof(data);
-  _serverSocket->readData(data, len);
+  serverSocket_->readData(data, len);
   CPPUNIT_ASSERT_EQUAL(std::string("SIZE hello world.img\r\n"),
                        std::string(&data[0], &data[len]));
 }
 
 void FtpConnectionTest::testReceiveSizeResponse()
 {
-  _serverSocket->writeData("213 4294967296\r\n");
-  waitRead(_clientSocket);
+  serverSocket_->writeData("213 4294967296\r\n");
+  waitRead(clientSocket_);
   uint64_t size;
-  CPPUNIT_ASSERT_EQUAL((unsigned int)213, _ftp->receiveSizeResponse(size));
+  CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveSizeResponse(size));
   CPPUNIT_ASSERT_EQUAL((uint64_t)4294967296LL, size);
 }
 
 void FtpConnectionTest::testSendRetr()
 {
-  _ftp->sendRetr();
+  ftp_->sendRetr();
   char data[32];
   size_t len = sizeof(data);
-  _serverSocket->readData(data, len);
+  serverSocket_->readData(data, len);
   CPPUNIT_ASSERT_EQUAL(std::string("RETR hello world.img\r\n"),
                        std::string(&data[0], &data[len]));
 }

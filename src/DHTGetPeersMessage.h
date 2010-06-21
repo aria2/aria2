@@ -46,11 +46,11 @@ class DHTTokenTracker;
 
 class DHTGetPeersMessage:public DHTQueryMessage {
 private:
-  unsigned char _infoHash[DHT_ID_LENGTH];
+  unsigned char infoHash_[DHT_ID_LENGTH];
 
-  WeakHandle<DHTPeerAnnounceStorage> _peerAnnounceStorage;
+  WeakHandle<DHTPeerAnnounceStorage> peerAnnounceStorage_;
 
-  WeakHandle<DHTTokenTracker> _tokenTracker;
+  WeakHandle<DHTTokenTracker> tokenTracker_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -69,7 +69,7 @@ public:
 
   const unsigned char* getInfoHash() const
   {
-    return _infoHash;
+    return infoHash_;
   }
 
   void setPeerAnnounceStorage

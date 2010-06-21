@@ -48,13 +48,13 @@ class DHTNode;
 
 class DHTMessage {
 private:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  SharedHandle<DHTNode> _remoteNode;
+  SharedHandle<DHTNode> remoteNode_;
 
-  std::string _transactionID;
+  std::string transactionID_;
 
-  std::string _version;
+  std::string version_;
 
   void generateTransactionID();
 public:
@@ -66,17 +66,17 @@ public:
 
   const std::string& getTransactionID() const
   {
-    return _transactionID;
+    return transactionID_;
   }
 
   const SharedHandle<DHTNode>& getLocalNode() const
   {
-    return _localNode;
+    return localNode_;
   }
 
   const SharedHandle<DHTNode>& getRemoteNode() const
   {
-    return _remoteNode;
+    return remoteNode_;
   }
 
   virtual void doReceivedAction() = 0;
@@ -93,12 +93,12 @@ public:
 
   const std::string& getVersion() const
   {
-    return _version;
+    return version_;
   }
 
   void setVersion(const std::string& version)
   {
-    _version = version;
+    version_ = version;
   }
 
   static const std::string Y;

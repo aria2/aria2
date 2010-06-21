@@ -44,40 +44,40 @@
 namespace aria2 {
 
 AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor():
-  _totalLength(0), _readOnly(false) {}
+  totalLength_(0), readOnly_(false) {}
 
 AbstractSingleDiskAdaptor::~AbstractSingleDiskAdaptor() {}
 
 void AbstractSingleDiskAdaptor::initAndOpenFile()
 {
-  _diskWriter->initAndOpenFile(_totalLength);
+  diskWriter_->initAndOpenFile(totalLength_);
 }
 
 void AbstractSingleDiskAdaptor::openFile()
 {
-  _diskWriter->openFile(_totalLength);
+  diskWriter_->openFile(totalLength_);
 }
 
 void AbstractSingleDiskAdaptor::closeFile()
 {
-  _diskWriter->closeFile();
+  diskWriter_->closeFile();
 }
 
 void AbstractSingleDiskAdaptor::openExistingFile()
 {
-  _diskWriter->openExistingFile(_totalLength);
+  diskWriter_->openExistingFile(totalLength_);
 }
 
 void AbstractSingleDiskAdaptor::writeData
 (const unsigned char* data, size_t len, off_t offset)
 {
-  _diskWriter->writeData(data, len, offset);
+  diskWriter_->writeData(data, len, offset);
 }
 
 ssize_t AbstractSingleDiskAdaptor::readData
 (unsigned char* data, size_t len, off_t offset)
 {
-  return _diskWriter->readData(data, len, offset);
+  return diskWriter_->readData(data, len, offset);
 }
 
 bool AbstractSingleDiskAdaptor::fileExists()
@@ -92,7 +92,7 @@ uint64_t AbstractSingleDiskAdaptor::size()
 
 void AbstractSingleDiskAdaptor::truncate(uint64_t length)
 {
-  _diskWriter->truncate(length);
+  diskWriter_->truncate(length);
 }
 
 FileAllocationIteratorHandle
@@ -102,14 +102,14 @@ AbstractSingleDiskAdaptor::fileAllocationIterator()
   if(doesFallocate()) {
     SharedHandle<FallocFileAllocationIterator> h
       (new FallocFileAllocationIterator
-       (_diskWriter.get(), size() ,_totalLength));
+       (diskWriter_.get(), size() ,totalLength_));
     return h;
   } else
 #endif // HAVE_POSIX_FALLOCATE
     {
       SingleFileAllocationIteratorHandle h
         (new SingleFileAllocationIterator
-         (_diskWriter.get(), size(), _totalLength));
+         (diskWriter_.get(), size(), totalLength_));
       h->init();
       return h;
     }
@@ -117,42 +117,42 @@ AbstractSingleDiskAdaptor::fileAllocationIterator()
 
 void AbstractSingleDiskAdaptor::enableDirectIO()
 {
-  _diskWriter->enableDirectIO();
+  diskWriter_->enableDirectIO();
 }
 
 void AbstractSingleDiskAdaptor::disableDirectIO()
 {
-  _diskWriter->disableDirectIO();
+  diskWriter_->disableDirectIO();
 }
 
 void AbstractSingleDiskAdaptor::enableReadOnly()
 {
-  _diskWriter->enableReadOnly();
-  _readOnly = true;
+  diskWriter_->enableReadOnly();
+  readOnly_ = true;
 }
 
 void AbstractSingleDiskAdaptor::disableReadOnly()
 {
-  _diskWriter->disableReadOnly();
-  _readOnly = false;
+  diskWriter_->disableReadOnly();
+  readOnly_ = false;
 }
 
 void AbstractSingleDiskAdaptor::cutTrailingGarbage()
 {
-  if(File(getFilePath()).size() > _totalLength) {
-    _diskWriter->truncate(_totalLength);
+  if(File(getFilePath()).size() > totalLength_) {
+    diskWriter_->truncate(totalLength_);
   }
 }
   
 void AbstractSingleDiskAdaptor::setDiskWriter
 (const DiskWriterHandle& diskWriter)
 {
-  _diskWriter = diskWriter;
+  diskWriter_ = diskWriter;
 }
 
 void AbstractSingleDiskAdaptor::setTotalLength(const uint64_t& totalLength)
 {
-  _totalLength = totalLength;
+  totalLength_ = totalLength;
 }
 
 } // namespace aria2

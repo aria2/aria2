@@ -55,26 +55,26 @@ HttpServerResponseCommand::HttpServerResponseCommand
  DownloadEngine* e,
  const SharedHandle<SocketCore>& socket):
   Command(cuid),
-  _e(e),
-  _socket(socket),
-  _httpServer(httpServer)
+  e_(e),
+  socket_(socket),
+  httpServer_(httpServer)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME); 
-  _e->addSocketForWriteCheck(_socket, this);
+  e_->addSocketForWriteCheck(socket_, this);
 }
 
 HttpServerResponseCommand::~HttpServerResponseCommand()
 {
-  _e->deleteSocketForWriteCheck(_socket, this);
+  e_->deleteSocketForWriteCheck(socket_, this);
 }
 
 bool HttpServerResponseCommand::execute()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
   try {
-    _httpServer->sendResponse();
+    httpServer_->sendResponse();
   } catch(RecoverableException& e) {
     if(getLogger()->info()) {
       getLogger()->info
@@ -83,29 +83,29 @@ bool HttpServerResponseCommand::execute()
     }
     return true;
   }
-  if(_httpServer->sendBufferIsEmpty()) {
+  if(httpServer_->sendBufferIsEmpty()) {
     if(getLogger()->info()) {
       getLogger()->info("CUID#%s - HttpServer: all response transmitted.",
                         util::itos(getCuid()).c_str());
     }
-    if(_httpServer->supportsPersistentConnection()) {
+    if(httpServer_->supportsPersistentConnection()) {
       if(getLogger()->info()) {
         getLogger()->info("CUID#%s - Persist connection.",
                           util::itos(getCuid()).c_str());
       }
-      _e->addCommand
-        (new HttpServerCommand(getCuid(), _httpServer, _e, _socket));
+      e_->addCommand
+        (new HttpServerCommand(getCuid(), httpServer_, e_, socket_));
     }
     return true;
   } else {
-    if(_timeoutTimer.difference(global::wallclock) >= 10) {
+    if(timeoutTimer_.difference(global::wallclock) >= 10) {
       if(getLogger()->info()) {
         getLogger()->info("CUID#%s - HttpServer: Timeout while trasmitting"
                           " response.", util::itos(getCuid()).c_str());
       }
       return true;
     } else {
-      _e->addCommand(this);
+      e_->addCommand(this);
       return false;
     }
   }

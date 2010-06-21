@@ -57,13 +57,13 @@ DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
 void DHTRoutingTableSerializer::setLocalNode
 (const SharedHandle<DHTNode>& localNode)
 {
-  _localNode = localNode;
+  localNode_ = localNode;
 }
 
 void DHTRoutingTableSerializer::setNodes
 (const std::vector<SharedHandle<DHTNode> >& nodes)
 {
-  _nodes = nodes;
+  nodes_ = nodes;
 }
 
 void DHTRoutingTableSerializer::serialize(std::ostream& o)
@@ -91,19 +91,19 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   // 8bytes reserved
   o.write(zero, 8);
   // 20bytes localnode ID
-  o.write(reinterpret_cast<const char*>(_localNode->getID()), DHT_ID_LENGTH);
+  o.write(reinterpret_cast<const char*>(localNode_->getID()), DHT_ID_LENGTH);
   // 4bytes reserved
   o.write(zero, 4);
 
   // number of nodes
-  uint32_t numNodes = htonl(_nodes.size());
+  uint32_t numNodes = htonl(nodes_.size());
   o.write(reinterpret_cast<const char*>(&numNodes), sizeof(uint32_t));
   // 4bytes reserved
   o.write(zero, 4);
 
   // nodes
-  for(std::vector<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin(),
-        eoi = _nodes.end(); i != eoi; ++i) {
+  for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes_.begin(),
+        eoi = nodes_.end(); i != eoi; ++i) {
     const SharedHandle<DHTNode>& node = *i;
     // Currently, only IPv4 address and IPv4-mapped address are saved.
     // 6bytes: write IP address + port in Compact IP-address/port info form.

@@ -50,16 +50,16 @@ class OptionHandler;
 
 class OptionParser {
 private:
-  int _idCounter;
+  int idCounter_;
 
-  // _optionHandlers is sorted by OptionHandler::getName() in
+  // optionHandlers_ is sorted by OptionHandler::getName() in
   // ascending order.
-  std::vector<SharedHandle<OptionHandler> > _optionHandlers;
+  std::vector<SharedHandle<OptionHandler> > optionHandlers_;
 
   SharedHandle<OptionHandler>
   getOptionHandlerByName(const std::string& optName);
 
-  static SharedHandle<OptionParser> _optionParser;
+  static SharedHandle<OptionParser> optionParser_;
 public:
   OptionParser();
 

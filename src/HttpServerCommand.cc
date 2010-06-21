@@ -57,18 +57,18 @@ namespace aria2 {
 HttpServerCommand::HttpServerCommand(cuid_t cuid, DownloadEngine* e,
                                      const SharedHandle<SocketCore>& socket):
   Command(cuid),
-  _e(e),
-  _socket(socket),
-  _httpServer(new HttpServer(socket, e))
+  e_(e),
+  socket_(socket),
+  httpServer_(new HttpServer(socket, e))
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
-  _e->addSocketForReadCheck(_socket, this);
-  _httpServer->setUsernamePassword(_e->getOption()->get(PREF_XML_RPC_USER),
-                                   _e->getOption()->get(PREF_XML_RPC_PASSWD));
+  e_->addSocketForReadCheck(socket_, this);
+  httpServer_->setUsernamePassword(e_->getOption()->get(PREF_XML_RPC_USER),
+                                   e_->getOption()->get(PREF_XML_RPC_PASSWD));
 #ifdef HAVE_LIBZ
-  _httpServer->enableGZip();
+  httpServer_->enableGZip();
 #else // !HAVE_LIBZ
-  _httpServer->disableGZip();
+  httpServer_->disableGZip();
 #endif // !HAVE_LIBZ
 }
 
@@ -77,65 +77,65 @@ HttpServerCommand::HttpServerCommand(cuid_t cuid,
                                      DownloadEngine* e,
                                      const SharedHandle<SocketCore>& socket):
   Command(cuid),
-  _e(e),
-  _socket(socket),
-  _httpServer(httpServer)
+  e_(e),
+  socket_(socket),
+  httpServer_(httpServer)
 {
-  _e->addSocketForReadCheck(_socket, this);
+  e_->addSocketForReadCheck(socket_, this);
 }
 
 HttpServerCommand::~HttpServerCommand()
 {
-  _e->deleteSocketForReadCheck(_socket, this);
+  e_->deleteSocketForReadCheck(socket_, this);
 }
 
 bool HttpServerCommand::execute()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
   try {
-    if(_socket->isReadable(0)) {
-      _timeoutTimer = global::wallclock;
+    if(socket_->isReadable(0)) {
+      timeoutTimer_ = global::wallclock;
       SharedHandle<HttpHeader> header;
 
-      header = _httpServer->receiveRequest();
+      header = httpServer_->receiveRequest();
 
       if(header.isNull()) {
-        _e->addCommand(this);
+        e_->addCommand(this);
         return false;
       }
-      if(!_httpServer->authenticate()) {
-        _httpServer->disableKeepAlive();
-        _httpServer->feedResponse("401 Unauthorized",
+      if(!httpServer_->authenticate()) {
+        httpServer_->disableKeepAlive();
+        httpServer_->feedResponse("401 Unauthorized",
                                   "WWW-Authenticate: Basic realm=\"aria2\"",
                                   "","text/html");
         Command* command =
-          new HttpServerResponseCommand(getCuid(), _httpServer, _e, _socket);
-        _e->addCommand(command);
-        _e->setNoWait(true);
+          new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
+        e_->addCommand(command);
+        e_->setNoWait(true);
         return true;
       }
       if(static_cast<uint64_t>
-         (_e->getOption()->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
-         _httpServer->getContentLength()) {
+         (e_->getOption()->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
+         httpServer_->getContentLength()) {
         getLogger()->info("Request too long. ContentLength=%s."
                           " See --xml-rpc-max-request-size option to loose"
                           " this limitation.",
-                          util::uitos(_httpServer->getContentLength()).c_str());
+                          util::uitos(httpServer_->getContentLength()).c_str());
         return true;
       }
-      Command* command = new HttpServerBodyCommand(getCuid(), _httpServer, _e,
-                                                   _socket);
-      _e->addCommand(command);
-      _e->setNoWait(true);
+      Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,
+                                                   socket_);
+      e_->addCommand(command);
+      e_->setNoWait(true);
       return true;
     } else {
-      if(_timeoutTimer.difference(global::wallclock) >= 30) {
+      if(timeoutTimer_.difference(global::wallclock) >= 30) {
         getLogger()->info("HTTP request timeout.");
         return true;
       } else {
-        _e->addCommand(this);
+        e_->addCommand(this);
         return false;
       }
     }

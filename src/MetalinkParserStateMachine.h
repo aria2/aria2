@@ -50,45 +50,45 @@ class Metalinker;
 
 class MetalinkParserStateMachine {
 private:
-  SharedHandle<MetalinkParserController> _ctrl;
+  SharedHandle<MetalinkParserController> ctrl_;
 
-  std::stack<MetalinkParserState*> _stateStack;
+  std::stack<MetalinkParserState*> stateStack_;
 
   // Error messages encountered while parsing document.
-  std::vector<std::string> _errors;
+  std::vector<std::string> errors_;
 
-  static MetalinkParserState* _initialState;
-  static MetalinkParserState* _skipTagState;
+  static MetalinkParserState* initialState_;
+  static MetalinkParserState* skipTagState_;
   
   // Metalink3
-  static MetalinkParserState* _metalinkState;
-  static MetalinkParserState* _filesState; // Metalink3Spec
-  static MetalinkParserState* _fileState;
-  static MetalinkParserState* _sizeState;
-  static MetalinkParserState* _versionState;
-  static MetalinkParserState* _languageState;
-  static MetalinkParserState* _osState;
-  static MetalinkParserState* _verificationState; // Metalink3Spec
-  static MetalinkParserState* _hashState;
-  static MetalinkParserState* _piecesState; // Metalink3Spec
-  static MetalinkParserState* _pieceHashState; // Metalink3Spec
-  static MetalinkParserState* _signatureState;
-  static MetalinkParserState* _resourcesState; // Metalink3Spec
-  static MetalinkParserState* _urlState;
+  static MetalinkParserState* metalinkState_;
+  static MetalinkParserState* filesState_; // Metalink3Spec
+  static MetalinkParserState* fileState_;
+  static MetalinkParserState* sizeState_;
+  static MetalinkParserState* versionState_;
+  static MetalinkParserState* languageState_;
+  static MetalinkParserState* osState_;
+  static MetalinkParserState* verificationState_; // Metalink3Spec
+  static MetalinkParserState* hashState_;
+  static MetalinkParserState* piecesState_; // Metalink3Spec
+  static MetalinkParserState* pieceHashState_; // Metalink3Spec
+  static MetalinkParserState* signatureState_;
+  static MetalinkParserState* resourcesState_; // Metalink3Spec
+  static MetalinkParserState* urlState_;
 
   // Metalink4
-  static MetalinkParserState* _metalinkStateV4;
-  static MetalinkParserState* _fileStateV4;
-  static MetalinkParserState* _sizeStateV4;
-  static MetalinkParserState* _versionStateV4;
-  static MetalinkParserState* _languageStateV4;
-  static MetalinkParserState* _osStateV4;
-  static MetalinkParserState* _hashStateV4;
-  static MetalinkParserState* _piecesStateV4; // Metalink4Spec
-  static MetalinkParserState* _pieceHashStateV4; // Metalink4Spec
-  static MetalinkParserState* _signatureStateV4;
-  static MetalinkParserState* _urlStateV4;
-  static MetalinkParserState* _metaurlStateV4;
+  static MetalinkParserState* metalinkStateV4_;
+  static MetalinkParserState* fileStateV4_;
+  static MetalinkParserState* sizeStateV4_;
+  static MetalinkParserState* versionStateV4_;
+  static MetalinkParserState* languageStateV4_;
+  static MetalinkParserState* osStateV4_;
+  static MetalinkParserState* hashStateV4_;
+  static MetalinkParserState* piecesStateV4_; // Metalink4Spec
+  static MetalinkParserState* pieceHashStateV4_; // Metalink4Spec
+  static MetalinkParserState* signatureStateV4_;
+  static MetalinkParserState* urlStateV4_;
+  static MetalinkParserState* metaurlStateV4_;
 public:
   MetalinkParserStateMachine();
 
@@ -255,14 +255,14 @@ public:
 
   const std::vector<std::string>& getErrors() const
   {
-    return _errors;
+    return errors_;
   }
 
   std::string getErrorString() const;
 
   const SharedHandle<Metalinker>& getResult() const
   {
-    return _ctrl->getResult();
+    return ctrl_->getResult();
   }
 };
 

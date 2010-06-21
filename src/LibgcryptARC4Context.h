@@ -46,7 +46,7 @@ namespace aria2 {
 
 class LibgcryptARC4Context {
 private:
-  gcry_cipher_hd_t _cipherCtx;
+  gcry_cipher_hd_t cipherCtx_;
 
   void handleError(gcry_error_t err) const
   {
@@ -55,39 +55,39 @@ private:
                     gcry_strerror(err)).str());
   }
 public:
-  LibgcryptARC4Context():_cipherCtx(0) {}
+  LibgcryptARC4Context():cipherCtx_(0) {}
 
   ~LibgcryptARC4Context()
   {
-    gcry_cipher_close(_cipherCtx);
+    gcry_cipher_close(cipherCtx_);
   }
 
   gcry_cipher_hd_t getCipherContext() const
   {
-    return _cipherCtx;
+    return cipherCtx_;
   }
 
   void init(const unsigned char* key, size_t keyLength)
   {
-    gcry_cipher_close(_cipherCtx);
+    gcry_cipher_close(cipherCtx_);
 
     int algo = GCRY_CIPHER_ARCFOUR;
     int mode = GCRY_CIPHER_MODE_STREAM;
     unsigned int flags = 0;
     {
-      gcry_error_t r = gcry_cipher_open(&_cipherCtx, algo, mode, flags);
+      gcry_error_t r = gcry_cipher_open(&cipherCtx_, algo, mode, flags);
       if(r) {
         handleError(r);
       }
     }
     {
-      gcry_error_t r = gcry_cipher_setkey(_cipherCtx, key, keyLength);
+      gcry_error_t r = gcry_cipher_setkey(cipherCtx_, key, keyLength);
       if(r) {
         handleError(r);
       }
     }
     {
-      gcry_error_t r = gcry_cipher_setiv(_cipherCtx, 0, 0);
+      gcry_error_t r = gcry_cipher_setiv(cipherCtx_, 0, 0);
       if(r) {
         handleError(r);
       }

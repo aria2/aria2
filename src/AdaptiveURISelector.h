@@ -47,15 +47,15 @@ class Logger;
 
 class AdaptiveURISelector:public URISelector {
 private:
-  SharedHandle<ServerStatMan> _serverStatMan;
-  // No need to delete _requestGroup
-  RequestGroup* _requestGroup;
-  unsigned int _nbServerToEvaluate;
-  unsigned int _nbConnections;
+  SharedHandle<ServerStatMan> serverStatMan_;
+  // No need to delete requestGroup_
+  RequestGroup* requestGroup_;
+  unsigned int nbServerToEvaluate_;
+  unsigned int nbConnections_;
 
   static const time_t MAX_TIMEOUT = 60;
 
-  Logger* _logger;
+  Logger* logger_;
 
   void mayRetryWithIncreasedTimeout(FileEntry* fileEntry);
 

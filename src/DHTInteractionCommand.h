@@ -48,11 +48,11 @@ class SocketCore;
 
 class DHTInteractionCommand:public Command {
 private:
-  DownloadEngine* _e;
-  SharedHandle<DHTMessageDispatcher> _dispatcher;
-  SharedHandle<DHTMessageReceiver> _receiver;
-  SharedHandle<DHTTaskQueue> _taskQueue;
-  SharedHandle<SocketCore> _readCheckSocket;
+  DownloadEngine* e_;
+  SharedHandle<DHTMessageDispatcher> dispatcher_;
+  SharedHandle<DHTMessageReceiver> receiver_;
+  SharedHandle<DHTTaskQueue> taskQueue_;
+  SharedHandle<SocketCore> readCheckSocket_;
 public:
   DHTInteractionCommand(cuid_t cuid, DownloadEngine* e);
 

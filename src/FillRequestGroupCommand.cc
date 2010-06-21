@@ -49,7 +49,7 @@ namespace aria2 {
 FillRequestGroupCommand::FillRequestGroupCommand(cuid_t cuid,
                                                  DownloadEngine* e):
   Command(cuid),
-  _e(e)
+  e_(e)
 {
   setStatusRealtime();
 }
@@ -58,17 +58,17 @@ FillRequestGroupCommand::~FillRequestGroupCommand() {}
 
 bool FillRequestGroupCommand::execute()
 {
-  if(_e->isHaltRequested()) {
+  if(e_->isHaltRequested()) {
     return true;
   }
-  SharedHandle<RequestGroupMan> rgman = _e->getRequestGroupMan();
+  SharedHandle<RequestGroupMan> rgman = e_->getRequestGroupMan();
   if(rgman->queueCheckRequested()) {
     try {
       // During adding RequestGroup,
       // RequestGroupMan::requestQueueCheck() might be called, so
       // first clear it here.
       rgman->clearQueueCheck();
-      rgman->fillRequestGroupFromReserver(_e);
+      rgman->fillRequestGroupFromReserver(e_);
     } catch(RecoverableException& ex) {
       getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
       // Re-request queue check to fulfill the requests of all
@@ -79,7 +79,7 @@ bool FillRequestGroupCommand::execute()
       return true;
     }
   }
-  _e->addRoutineCommand(this);
+  e_->addRoutineCommand(this);
   return false;
 }
 

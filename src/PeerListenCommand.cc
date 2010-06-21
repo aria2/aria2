@@ -54,26 +54,26 @@
 
 namespace aria2 {
 
-unsigned int PeerListenCommand::__numInstance = 0;
+unsigned int PeerListenCommand::numInstance_ = 0;
 
-PeerListenCommand* PeerListenCommand::__instance = 0;
+PeerListenCommand* PeerListenCommand::instance_ = 0;
 
 PeerListenCommand::PeerListenCommand(cuid_t cuid, DownloadEngine* e):
   Command(cuid),
-  _e(e),
-  _lowestSpeedLimit(20*1024)
+  e_(e),
+  lowestSpeedLimit_(20*1024)
 {
-  ++__numInstance;
+  ++numInstance_;
 }
 
 PeerListenCommand::~PeerListenCommand()
 {
-  --__numInstance;
+  --numInstance_;
 }
 
 bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
-  _socket.reset(new SocketCore());
+  socket_.reset(new SocketCore());
 
   std::vector<int32_t> randPorts = seq.flush();
   std::random_shuffle(randPorts.begin(), randPorts.end(),
@@ -86,15 +86,15 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
     }
     port = (*portItr);
     try {
-      _socket->bind(port);
-      _socket->beginListen();
-      _socket->setNonBlockingMode();
+      socket_->bind(port);
+      socket_->beginListen();
+      socket_->setNonBlockingMode();
       getLogger()->notice("BitTorrent: listening to port %d", port);
       return true;
     } catch(RecoverableException& ex) {
       getLogger()->error(MSG_BIND_FAILURE, ex,
                          util::itos(getCuid()).c_str(), port);
-      _socket->closeConnection();
+      socket_->closeConnection();
     }
   }
   return false;
@@ -102,33 +102,33 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 
 uint16_t PeerListenCommand::getPort() const
 {
-  if(_socket.isNull()) {
+  if(socket_.isNull()) {
     return 0;
   } else {
     std::pair<std::string, uint16_t> addr;
-    _socket->getAddrInfo(addr);
+    socket_->getAddrInfo(addr);
     return addr.second;
   }
 }
 
 bool PeerListenCommand::execute() {
-  if(_e->isHaltRequested() || _e->getRequestGroupMan()->downloadFinished()) {
+  if(e_->isHaltRequested() || e_->getRequestGroupMan()->downloadFinished()) {
     return true;
   }
-  for(int i = 0; i < 3 && _socket->isReadable(0); ++i) {
+  for(int i = 0; i < 3 && socket_->isReadable(0); ++i) {
     SocketHandle peerSocket;
     try {
-      peerSocket.reset(_socket->acceptConnection());
+      peerSocket.reset(socket_->acceptConnection());
       std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
 
       peerSocket->setNonBlockingMode();
 
       SharedHandle<Peer> peer(new Peer(peerInfo.first, peerInfo.second, true));
-      cuid_t cuid = _e->newCUID();
+      cuid_t cuid = e_->newCUID();
       Command* command =
-        new ReceiverMSEHandshakeCommand(cuid, peer, _e, peerSocket);
-      _e->addCommand(command);
+        new ReceiverMSEHandshakeCommand(cuid, peer, e_, peerSocket);
+      e_->addCommand(command);
       if(getLogger()->debug()) {
         getLogger()->debug("Accepted the connection from %s:%u.",
                            peer->getIPAddress().c_str(),
@@ -140,16 +140,16 @@ bool PeerListenCommand::execute() {
       getLogger()->debug(MSG_ACCEPT_FAILURE, ex, util::itos(getCuid()).c_str());
     }               
   }
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 
 PeerListenCommand* PeerListenCommand::getInstance(DownloadEngine* e)
 {
-  if(__numInstance == 0) {
-    __instance = new PeerListenCommand(e->newCUID(), e);
+  if(numInstance_ == 0) {
+    instance_ = new PeerListenCommand(e->newCUID(), e);
   }
-  return __instance;
+  return instance_;
 }
 
 } // namespace aria2

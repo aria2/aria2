@@ -45,17 +45,17 @@ namespace aria2 {
 DHTMessageTrackerEntry::DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
                                                time_t timeout,
                                                const SharedHandle<DHTMessageCallback>& callback):
-  _targetNode(sentMessage->getRemoteNode()),
-  _transactionID(sentMessage->getTransactionID()),
-  _messageType(sentMessage->getMessageType()),
-  _callback(callback),
-  _dispatchedTime(global::wallclock),
-  _timeout(timeout)
+  targetNode_(sentMessage->getRemoteNode()),
+  transactionID_(sentMessage->getTransactionID()),
+  messageType_(sentMessage->getMessageType()),
+  callback_(callback),
+  dispatchedTime_(global::wallclock),
+  timeout_(timeout)
 {}
 
 bool DHTMessageTrackerEntry::isTimeout() const
 {
-  return _dispatchedTime.difference(global::wallclock) >= _timeout;
+  return dispatchedTime_.difference(global::wallclock) >= timeout_;
 }
 
 void DHTMessageTrackerEntry::extendTimeout()
@@ -63,16 +63,16 @@ void DHTMessageTrackerEntry::extendTimeout()
 
 bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const
 {
-  if(_transactionID != transactionID || _targetNode->getPort() != port) {
+  if(transactionID_ != transactionID || targetNode_->getPort() != port) {
     return false;
   }
-  if(_targetNode->getIPAddress() == ipaddr) {
+  if(targetNode_->getIPAddress() == ipaddr) {
     return true;
   }
-  if(util::endsWith(_targetNode->getIPAddress(), ipaddr)) {
-    return _targetNode->getIPAddress() == "::ffff:"+ipaddr;
-  } else if(util::endsWith(ipaddr, _targetNode->getIPAddress())) {
-    return ipaddr == "::ffff:"+_targetNode->getIPAddress();
+  if(util::endsWith(targetNode_->getIPAddress(), ipaddr)) {
+    return targetNode_->getIPAddress() == "::ffff:"+ipaddr;
+  } else if(util::endsWith(ipaddr, targetNode_->getIPAddress())) {
+    return ipaddr == "::ffff:"+targetNode_->getIPAddress();
   }
   return false;
 }

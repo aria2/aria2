@@ -47,11 +47,11 @@ private:
     STREAM_END
   };
 
-  std::string _buf;
+  std::string buf_;
 
-  uint64_t _chunkSize;
+  uint64_t chunkSize_;
 
-  STATE _state;
+  STATE state_;
   
   static const std::string NAME;
 

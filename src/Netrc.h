@@ -55,10 +55,10 @@ public:
 
 class Authenticator : public Authenticatable {
 private:
-  std::string _machine;
-  std::string _login;
-  std::string _password;
-  std::string _account;
+  std::string machine_;
+  std::string login_;
+  std::string password_;
+  std::string account_;
 public:
   Authenticator() {}
 
@@ -66,45 +66,45 @@ public:
                 const std::string& login,
                 const std::string& password,
                 const std::string& account)
-    :_machine(machine),
-     _login(login),
-     _password(password),
-     _account(account) {}
+    :machine_(machine),
+     login_(login),
+     password_(password),
+     account_(account) {}
 
   virtual ~Authenticator() {}
 
   virtual bool match(const std::string& hostname) const
   {
-    return hostname == _machine;
+    return hostname == machine_;
   }
 
   const std::string& getMachine() const
   {
-    return _machine;
+    return machine_;
   }
 
-  void setMachine(const std::string& machine) { _machine = machine; }
+  void setMachine(const std::string& machine) { machine_ = machine; }
 
   const std::string& getLogin() const
   {
-    return _login;
+    return login_;
   }
 
-  void setLogin(const std::string& login) { _login = login; }
+  void setLogin(const std::string& login) { login_ = login; }
 
   const std::string& getPassword() const
   {
-    return _password;
+    return password_;
   }
 
-  void setPassword(const std::string& password) { _password = password; }
+  void setPassword(const std::string& password) { password_ = password; }
 
   const std::string& getAccount() const
   {
-    return _account;
+    return account_;
   }
 
-  void setAccount(const std::string& account) { _account = account; }
+  void setAccount(const std::string& account) { account_ = account; }
 };
 
 class DefaultAuthenticator : public Authenticator {
@@ -126,7 +126,7 @@ public:
 
 class Netrc {
 private:
-  std::vector<SharedHandle<Authenticator> > _authenticators;
+  std::vector<SharedHandle<Authenticator> > authenticators_;
 
   void storeAuthenticator(const SharedHandle<Authenticator>& authenticator);
 
@@ -143,12 +143,12 @@ public:
 
   const std::vector<SharedHandle<Authenticator> >& getAuthenticators() const
   {
-    return _authenticators;
+    return authenticators_;
   }
 
   void addAuthenticator(const SharedHandle<Authenticator>& authenticator)
   {
-    _authenticators.push_back(authenticator);
+    authenticators_.push_back(authenticator);
   }
 
   static const std::string MACHINE;

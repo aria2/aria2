@@ -56,34 +56,34 @@ class BtMessageDispatcher;
 
 class Peer {
 private:
-  std::string _ipaddr;
-  // TCP port of the other end of communication.  If _incoming is
+  std::string ipaddr_;
+  // TCP port of the other end of communication.  If incoming_ is
   // true, then this port is not a port the peer is listening to and
   // we cannot connect to it.
-  uint16_t _port;
+  uint16_t port_;
 
-  std::string _id;
+  std::string id_;
 
-  cuid_t _cuid;
+  cuid_t cuid_;
 
-  unsigned char _peerId[PEER_ID_LENGTH];
+  unsigned char peerId_[PEER_ID_LENGTH];
 
-  Timer _firstContactTime;
+  Timer firstContactTime_;
 
-  Timer _badConditionStartTime;
+  Timer badConditionStartTime_;
 
-  bool _seeder;
+  bool seeder_;
 
-  PeerSessionResource* _res;
+  PeerSessionResource* res_;
 
   // If true, port is assumed not to be a listening port.
-  bool _incoming;
+  bool incoming_;
 
   // If true, this peer is from local network.
-  bool _localPeer;
+  bool localPeer_;
 
   // Before calling updateSeeder(),  make sure that
-  // allocateSessionResource() is called and _res is created.
+  // allocateSessionResource() is called and res_ is created.
   // Otherwise assertion fails.
   void updateSeeder();
 public:
@@ -93,7 +93,7 @@ public:
 
   bool operator==(const Peer& p)
   {
-    return _id == p._id;
+    return id_ == p.id_;
   }
   
   bool operator!=(const Peer& p)
@@ -105,52 +105,52 @@ public:
 
   const std::string& getIPAddress() const
   {
-    return _ipaddr;
+    return ipaddr_;
   }
 
   uint16_t getPort() const
   {
-    return _port;
+    return port_;
   }
 
   void setPort(uint16_t port)
   {
-    _port = port;
+    port_ = port;
   }
 
   void usedBy(cuid_t cuid);
 
   cuid_t usedBy() const
   {
-    return _cuid;
+    return cuid_;
   }
 
   bool unused() const
   {
-    return _cuid == 0;
+    return cuid_ == 0;
   }
 
-  // Returns true iff _res != 0.
+  // Returns true iff res_ != 0.
   bool isActive() const
   {
-    return _res != 0;
+    return res_ != 0;
   }
 
   void setPeerId(const unsigned char* peerId);
 
   const unsigned char* getPeerId() const
   {
-    return _peerId;
+    return peerId_;
   }
 
   bool isSeeder() const
   {
-    return _seeder;
+    return seeder_;
   }
 
   const std::string& getID() const
   {
-    return _id;
+    return id_;
   }
 
   void startBadCondition();
@@ -163,18 +163,18 @@ public:
 
   const Timer& getFirstContactTime() const
   {
-    return _firstContactTime;
+    return firstContactTime_;
   }
 
   void setFirstContactTime(const Timer& time);
 
   const Timer& getBadConditionStartTime() const
   {
-    return _badConditionStartTime;
+    return badConditionStartTime_;
   }
 
   // Before calling following member functions,  make sure that
-  // allocateSessionResource() is called and _res is created.
+  // allocateSessionResource() is called and res_ is created.
   // Otherwise assertion fails.
 
   // localhost is choking this peer
@@ -292,19 +292,19 @@ public:
 
   bool isIncomingPeer() const
   {
-    return _incoming;
+    return incoming_;
   }
 
   void setIncomingPeer(bool incoming);
 
   bool isLocalPeer() const
   {
-    return _localPeer;
+    return localPeer_;
   }
 
   void setLocalPeer(bool flag)
   {
-    _localPeer = flag;
+    localPeer_ = flag;
   }
 
   void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt);

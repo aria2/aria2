@@ -63,8 +63,8 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand
  const SocketHandle& s)
   :
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-  _proxyRequest(proxyRequest),
-  _httpConnection(new HttpConnection(cuid, s))
+  proxyRequest_(proxyRequest),
+  httpConnection_(new HttpConnection(cuid, s))
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
@@ -75,21 +75,21 @@ AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 
 bool AbstractProxyRequestCommand::executeInternal() {
   //socket->setBlockingMode();
-  if(_httpConnection->sendBufferIsEmpty()) {
+  if(httpConnection_->sendBufferIsEmpty()) {
     if(!checkIfConnectionEstablished
-       (getSocket(), _connectedHostname, _connectedAddr, _connectedPort)) {
+       (getSocket(), connectedHostname_, connectedAddr_, connectedPort_)) {
       return true;
     }
     SharedHandle<HttpRequest> httpRequest(new HttpRequest());
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     httpRequest->setRequest(getRequest());
-    httpRequest->setProxyRequest(_proxyRequest);
+    httpRequest->setProxyRequest(proxyRequest_);
 
-    _httpConnection->sendProxyRequest(httpRequest);
+    httpConnection_->sendProxyRequest(httpRequest);
   } else {
-    _httpConnection->sendPendingData();
+    httpConnection_->sendPendingData();
   }
-  if(_httpConnection->sendBufferIsEmpty()) {
+  if(httpConnection_->sendBufferIsEmpty()) {
     getDownloadEngine()->addCommand(getNextCommand());
     return true;
   } else {

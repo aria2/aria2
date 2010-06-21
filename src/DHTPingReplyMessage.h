@@ -42,7 +42,7 @@ namespace aria2 {
 
 class DHTPingReplyMessage:public DHTResponseMessage {
 private:
-  unsigned char _id[DHT_ID_LENGTH];
+  unsigned char id_[DHT_ID_LENGTH];
 public:
   DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
                       const SharedHandle<DHTNode>& remoteNode,
@@ -61,7 +61,7 @@ public:
 
   const unsigned char* getRemoteID()
   {
-    return _id;
+    return id_;
   }
 
   static const std::string PING;

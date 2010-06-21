@@ -50,20 +50,20 @@ class Range;
 
 class HttpHeader {
 private:
-  std::multimap<std::string, std::string> _table;
+  std::multimap<std::string, std::string> table_;
 
   // for HTTP response header only
   // response status, e.g. "200"
-  std::string _responseStatus;
+  std::string responseStatus_;
 
   // HTTP version, e.g. HTTP/1.1
-  std::string _version;
+  std::string version_;
 
   // HTTP Method, e.g. GET, POST, etc
-  std::string _method;
+  std::string method_;
 
   // Request Path
-  std::string _requestPath;
+  std::string requestPath_;
 public:
   HttpHeader() {}
   ~HttpHeader() {}
@@ -79,35 +79,35 @@ public:
 
   const std::string& getResponseStatus() const
   {
-    return _responseStatus;
+    return responseStatus_;
   }
 
   void setResponseStatus(const std::string& responseStatus);
 
   const std::string& getVersion() const
   {
-    return _version;
+    return version_;
   }
 
   void setVersion(const std::string& version);
 
   const std::string& getMethod() const
   {
-    return _method;
+    return method_;
   }
 
   void setMethod(const std::string& method);
 
   const std::string& getRequestPath() const
   {
-    return _requestPath;
+    return requestPath_;
   }
 
   void setRequestPath(const std::string& requestPath);
 
   void fill(std::istream& in);
 
-  // Clears _table. _responseStatus and _version are unchanged.
+  // Clears table_. responseStatus_ and version_ are unchanged.
   void clearField();
 
   static const std::string LOCATION;

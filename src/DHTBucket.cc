@@ -53,46 +53,46 @@ namespace aria2 {
 DHTBucket::DHTBucket(size_t prefixLength,
                      const unsigned char* max, const unsigned char* min,
                      const SharedHandle<DHTNode>& localNode):
-  _prefixLength(prefixLength),
-  _localNode(localNode),
-  _lastUpdated(global::wallclock),
-  _logger(LogFactory::getInstance())
+  prefixLength_(prefixLength),
+  localNode_(localNode),
+  lastUpdated_(global::wallclock),
+  logger_(LogFactory::getInstance())
 {
-  memcpy(_max, max, DHT_ID_LENGTH);
-  memcpy(_min, min, DHT_ID_LENGTH);
+  memcpy(max_, max, DHT_ID_LENGTH);
+  memcpy(min_, min, DHT_ID_LENGTH);
 }
 
 DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode):
-  _prefixLength(0),
-  _localNode(localNode),
-  _lastUpdated(global::wallclock),
-  _logger(LogFactory::getInstance())
+  prefixLength_(0),
+  localNode_(localNode),
+  lastUpdated_(global::wallclock),
+  logger_(LogFactory::getInstance())
 {
-  memset(_max, 0xff, DHT_ID_LENGTH);
-  memset(_min, 0, DHT_ID_LENGTH);
+  memset(max_, 0xff, DHT_ID_LENGTH);
+  memset(min_, 0, DHT_ID_LENGTH);
 }
 
 DHTBucket::~DHTBucket() {}
 
 void DHTBucket::getRandomNodeID(unsigned char* nodeID) const
 {
-  if(_prefixLength == 0) {
+  if(prefixLength_ == 0) {
     util::generateRandomKey(nodeID);
   } else {
-    size_t lastByteIndex = (_prefixLength-1)/8;
+    size_t lastByteIndex = (prefixLength_-1)/8;
     util::generateRandomKey(nodeID);
-    memcpy(nodeID, _min, lastByteIndex+1);
+    memcpy(nodeID, min_, lastByteIndex+1);
   }
 }
 
 bool DHTBucket::isInRange(const SharedHandle<DHTNode>& node) const
 {
-  return isInRange(node->getID(), _max, _min);
+  return isInRange(node->getID(), max_, min_);
 }
 
 bool DHTBucket::isInRange(const unsigned char* nodeID) const
 {
-  return isInRange(nodeID, _max, _min);
+  return isInRange(nodeID, max_, min_);
 }
 
 // Returns true if nodeID is in [min, max] (inclusive).
@@ -111,45 +111,45 @@ bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
 {
   notifyUpdate();
   std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find(_nodes.begin(), _nodes.end(), node);
-  if(itr == _nodes.end()) {
-    if(_nodes.size() < K) {
-      _nodes.push_back(node);
+    std::find(nodes_.begin(), nodes_.end(), node);
+  if(itr == nodes_.end()) {
+    if(nodes_.size() < K) {
+      nodes_.push_back(node);
       return true;
     } else {
-      if(_nodes.front()->isBad()) {
-        _nodes.erase(_nodes.begin());
-        _nodes.push_back(node);
+      if(nodes_.front()->isBad()) {
+        nodes_.erase(nodes_.begin());
+        nodes_.push_back(node);
         return true;
       } else {
         return false;
       }
     }
   } else {
-    _nodes.erase(itr);
-    _nodes.push_back(node);
+    nodes_.erase(itr);
+    nodes_.push_back(node);
     return true;
   }
 }
 
 void DHTBucket::cacheNode(const SharedHandle<DHTNode>& node)
 {
-  // _cachedNodes are sorted by last time seen
-  _cachedNodes.push_front(node);
-  if(_cachedNodes.size() > CACHE_SIZE) {
-    _cachedNodes.resize(CACHE_SIZE, SharedHandle<DHTNode>());
+  // cachedNodes_ are sorted by last time seen
+  cachedNodes_.push_front(node);
+  if(cachedNodes_.size() > CACHE_SIZE) {
+    cachedNodes_.resize(CACHE_SIZE, SharedHandle<DHTNode>());
   }
 }
 
 void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 {
-  if(_cachedNodes.size()) {
+  if(cachedNodes_.size()) {
     std::deque<SharedHandle<DHTNode> >::iterator itr =
-      find(_nodes.begin(), _nodes.end(), node);
-    if(itr != _nodes.end()) {
-      _nodes.erase(itr);
-      _nodes.push_back(_cachedNodes.front());
-      _cachedNodes.erase(_cachedNodes.begin());
+      find(nodes_.begin(), nodes_.end(), node);
+    if(itr != nodes_.end()) {
+      nodes_.erase(itr);
+      nodes_.push_back(cachedNodes_.front());
+      cachedNodes_.erase(cachedNodes_.begin());
     }
   }
 }
@@ -157,26 +157,26 @@ void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 void DHTBucket::moveToHead(const SharedHandle<DHTNode>& node)
 {
   std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find(_nodes.begin(), _nodes.end(), node);
-  if(itr != _nodes.end()) {
-    _nodes.erase(itr);
-    _nodes.push_front(node);
+    std::find(nodes_.begin(), nodes_.end(), node);
+  if(itr != nodes_.end()) {
+    nodes_.erase(itr);
+    nodes_.push_front(node);
   }
 }
 
 void DHTBucket::moveToTail(const SharedHandle<DHTNode>& node)
 {
   std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find(_nodes.begin(), _nodes.end(), node);
-  if(itr != _nodes.end()) {
-    _nodes.erase(itr);
-    _nodes.push_back(node);
+    std::find(nodes_.begin(), nodes_.end(), node);
+  if(itr != nodes_.end()) {
+    nodes_.erase(itr);
+    nodes_.push_back(node);
   }
 }
 
 bool DHTBucket::splitAllowed() const
 {
-  return _prefixLength < DHT_ID_LENGTH*8-1 && isInRange(_localNode);
+  return prefixLength_ < DHT_ID_LENGTH*8-1 && isInRange(localNode_);
 }
 
 SharedHandle<DHTBucket> DHTBucket::split()
@@ -184,35 +184,35 @@ SharedHandle<DHTBucket> DHTBucket::split()
   assert(splitAllowed());
 
   unsigned char rMax[DHT_ID_LENGTH];
-  memcpy(rMax, _max, DHT_ID_LENGTH);
-  bitfield::flipBit(rMax, DHT_ID_LENGTH, _prefixLength);
+  memcpy(rMax, max_, DHT_ID_LENGTH);
+  bitfield::flipBit(rMax, DHT_ID_LENGTH, prefixLength_);
   unsigned char rMin[DHT_ID_LENGTH];
-  memcpy(rMin, _min, DHT_ID_LENGTH);
+  memcpy(rMin, min_, DHT_ID_LENGTH);
 
-  bitfield::flipBit(_min, DHT_ID_LENGTH, _prefixLength);
+  bitfield::flipBit(min_, DHT_ID_LENGTH, prefixLength_);
 
-  ++_prefixLength;
-  SharedHandle<DHTBucket> rBucket(new DHTBucket(_prefixLength,
-                                                rMax, rMin, _localNode));
+  ++prefixLength_;
+  SharedHandle<DHTBucket> rBucket(new DHTBucket(prefixLength_,
+                                                rMax, rMin, localNode_));
 
   std::deque<SharedHandle<DHTNode> > lNodes;
-  for(std::deque<SharedHandle<DHTNode> >::iterator i = _nodes.begin(),
-        eoi = _nodes.end(); i != eoi; ++i) {
+  for(std::deque<SharedHandle<DHTNode> >::iterator i = nodes_.begin(),
+        eoi = nodes_.end(); i != eoi; ++i) {
     if(rBucket->isInRange(*i)) {
       assert(rBucket->addNode(*i));
     } else {
       lNodes.push_back(*i);
     }      
   }
-  _nodes = lNodes;
+  nodes_ = lNodes;
   // TODO create toString() and use it.
-  if(_logger->debug()) {
-    _logger->debug("New bucket. prefixLength=%u, Range:%s-%s",
+  if(logger_->debug()) {
+    logger_->debug("New bucket. prefixLength=%u, Range:%s-%s",
                    static_cast<unsigned int>(rBucket->getPrefixLength()),
                    util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
                    util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
-    _logger->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
-                   static_cast<unsigned int>(_prefixLength),
+    logger_->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
+                   static_cast<unsigned int>(prefixLength_),
                    util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
                    util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
   }
@@ -222,7 +222,7 @@ SharedHandle<DHTBucket> DHTBucket::split()
 void DHTBucket::getGoodNodes
 (std::vector<SharedHandle<DHTNode> >& goodNodes) const
 {
-  goodNodes.insert(goodNodes.end(), _nodes.begin(), _nodes.end());  
+  goodNodes.insert(goodNodes.end(), nodes_.begin(), nodes_.end());  
   goodNodes.erase(std::remove_if(goodNodes.begin(), goodNodes.end(),
                                  mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
 }
@@ -233,8 +233,8 @@ SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std:
   node->setIPAddress(ipaddr);
   node->setPort(port);
   std::deque<SharedHandle<DHTNode> >::const_iterator itr =
-    std::find(_nodes.begin(), _nodes.end(), node);
-  if(itr == _nodes.end()) {
+    std::find(nodes_.begin(), nodes_.end(), node);
+  if(itr == nodes_.end()) {
     return SharedHandle<DHTNode>();
   } else {
     return *itr;
@@ -243,19 +243,19 @@ SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std:
 
 bool DHTBucket::operator==(const DHTBucket& bucket) const
 {
-  return memcmp(_max, bucket._max, DHT_ID_LENGTH) == 0 &&
-    memcmp(_min, bucket._min, DHT_ID_LENGTH) == 0;
+  return memcmp(max_, bucket.max_, DHT_ID_LENGTH) == 0 &&
+    memcmp(min_, bucket.min_, DHT_ID_LENGTH) == 0;
 }
 
 bool DHTBucket::needsRefresh() const
 {
-  return _nodes.size() < K ||
-    _lastUpdated.difference(global::wallclock) >= DHT_BUCKET_REFRESH_INTERVAL;
+  return nodes_.size() < K ||
+    lastUpdated_.difference(global::wallclock) >= DHT_BUCKET_REFRESH_INTERVAL;
 }
 
 void DHTBucket::notifyUpdate()
 {
-  _lastUpdated = global::wallclock;
+  lastUpdated_ = global::wallclock;
 }
 
 class FindQuestionableNode {
@@ -268,14 +268,14 @@ public:
 
 bool DHTBucket::containsQuestionableNode() const
 {
-  return std::find_if(_nodes.begin(), _nodes.end(), FindQuestionableNode()) != _nodes.end();
+  return std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode()) != nodes_.end();
 }
 
 SharedHandle<DHTNode> DHTBucket::getLRUQuestionableNode() const
 {
   std::deque<SharedHandle<DHTNode> >::const_iterator i =
-    std::find_if(_nodes.begin(), _nodes.end(), FindQuestionableNode());
-  if(i == _nodes.end()) {
+    std::find_if(nodes_.begin(), nodes_.end(), FindQuestionableNode());
+  if(i == nodes_.end()) {
     return SharedHandle<DHTNode>();
   } else {
     return *i;

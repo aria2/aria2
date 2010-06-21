@@ -46,34 +46,34 @@ namespace aria2 {
 
 class Checksum {
 private:
-  std::string _algo;
-  std::string _messageDigest;
+  std::string algo_;
+  std::string messageDigest_;
 public:
-  // _messageDigest is ascii hexadecimal notation.
+  // messageDigest_ is ascii hexadecimal notation.
   Checksum(const std::string& algo, const std::string& messageDigest):
-    _algo(algo), _messageDigest(messageDigest) {}
+    algo_(algo), messageDigest_(messageDigest) {}
   Checksum():
-    _algo(MessageDigestContext::SHA1) {}
+    algo_(MessageDigestContext::SHA1) {}
 
   ~Checksum() {}
 
   bool isEmpty() const {
-    return _messageDigest.empty();
+    return messageDigest_.empty();
   }
 
   void setMessageDigest(const std::string& md) {
-    this->_messageDigest = md;
+    this->messageDigest_ = md;
   }
   const std::string& getMessageDigest() const {
-    return _messageDigest;
+    return messageDigest_;
   }
   
   void setAlgo(const std::string& algo) {
-    this->_algo = algo;
+    this->algo_ = algo;
   }
 
   const std::string& getAlgo() const {
-    return _algo;
+    return algo_;
   }
 };
 

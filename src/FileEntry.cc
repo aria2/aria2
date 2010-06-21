@@ -48,38 +48,38 @@ FileEntry::FileEntry(const std::string& path,
                      uint64_t length,
                      off_t offset,
                      const std::vector<std::string>& uris):
-  _path(path), _uris(uris.begin(), uris.end()), _length(length),
-  _offset(offset),
-  _requested(true),
-  _singleHostMultiConnection(true),
-  _logger(LogFactory::getInstance()) {}
+  path_(path), uris_(uris.begin(), uris.end()), length_(length),
+  offset_(offset),
+  requested_(true),
+  singleHostMultiConnection_(true),
+  logger_(LogFactory::getInstance()) {}
 
 FileEntry::FileEntry():
-  _length(0), _offset(0), _requested(false),
-  _singleHostMultiConnection(true),
-  _logger(LogFactory::getInstance()) {}
+  length_(0), offset_(0), requested_(false),
+  singleHostMultiConnection_(true),
+  logger_(LogFactory::getInstance()) {}
 
 FileEntry::~FileEntry() {}
 
 void FileEntry::setupDir()
 {
-  util::mkdirs(File(_path).getDirname());
+  util::mkdirs(File(path_).getDirname());
 }
 
 FileEntry& FileEntry::operator=(const FileEntry& entry)
 {
   if(this != &entry) {
-    _path = entry._path;
-    _length = entry._length;
-    _offset = entry._offset;
-    _requested = entry._requested;
+    path_ = entry.path_;
+    length_ = entry.length_;
+    offset_ = entry.offset_;
+    requested_ = entry.requested_;
   }
   return *this;
 }
 
 bool FileEntry::operator<(const FileEntry& fileEntry) const
 {
-  return _offset < fileEntry._offset;
+  return offset_ < fileEntry.offset_;
 }
 
 bool FileEntry::exists() const
@@ -89,14 +89,14 @@ bool FileEntry::exists() const
 
 off_t FileEntry::gtoloff(off_t goff) const
 {
-  assert(_offset <= goff);
-  return goff-_offset;
+  assert(offset_ <= goff);
+  return goff-offset_;
 }
 
 void FileEntry::getUris(std::vector<std::string>& uris) const
 {
-  uris.insert(uris.end(), _spentUris.begin(), _spentUris.end());
-  uris.insert(uris.end(), _uris.begin(), _uris.end());
+  uris.insert(uris.end(), spentUris_.begin(), spentUris_.end());
+  uris.insert(uris.end(), uris_.begin(), uris_.end());
 }
 
 std::string FileEntry::selectUri(const SharedHandle<URISelector>& uriSelector)
@@ -125,7 +125,7 @@ FileEntry::getRequest
  const std::string& method)
 {
   SharedHandle<Request> req;
-  if(_requestPool.empty()) {
+  if(requestPool_.empty()) {
     std::vector<std::string> pending;
     while(1) {
       std::string uri = selector->select(this);
@@ -134,8 +134,8 @@ FileEntry::getRequest
       }
       req.reset(new Request());
       if(req->setUri(uri)) {
-        if(!_singleHostMultiConnection) {
-          if(inFlightHost(_inFlightRequests.begin(), _inFlightRequests.end(),
+        if(!singleHostMultiConnection_) {
+          if(inFlightHost(inFlightRequests_.begin(), inFlightRequests_.end(),
                           req->getHost())) {
             pending.push_back(uri);
             req.reset();
@@ -144,18 +144,18 @@ FileEntry::getRequest
         }
         req->setReferer(referer);
         req->setMethod(method);
-        _spentUris.push_back(uri);
-        _inFlightRequests.push_back(req);
+        spentUris_.push_back(uri);
+        inFlightRequests_.push_back(req);
         break;
       } else {
         req.reset();
       }
     }
-    _uris.insert(_uris.begin(), pending.begin(), pending.end());
+    uris_.insert(uris_.begin(), pending.begin(), pending.end());
   } else {
-    req = _requestPool.front();
-    _requestPool.pop_front();
-    _inFlightRequests.push_back(req);
+    req = requestPool_.front();
+    requestPool_.pop_front();
+    inFlightRequests_.push_back(req);
   }
   return req;
 }
@@ -163,10 +163,10 @@ FileEntry::getRequest
 SharedHandle<Request>
 FileEntry::findFasterRequest(const SharedHandle<Request>& base)
 {
-  if(_requestPool.empty()) {
+  if(requestPool_.empty()) {
     return SharedHandle<Request>();
   }
-  const SharedHandle<PeerStat>& fastest = _requestPool.front()->getPeerStat();
+  const SharedHandle<PeerStat>& fastest = requestPool_.front()->getPeerStat();
   if(fastest.isNull()) {
     return SharedHandle<Request>();
   }
@@ -178,9 +178,9 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
       difference(global::wallclock) >= startupIdleTime &&
       fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
     // TODO we should consider that "fastest" is very slow.
-    SharedHandle<Request> fastestRequest = _requestPool.front();
-    _requestPool.pop_front();
-    _inFlightRequests.push_back(fastestRequest);
+    SharedHandle<Request> fastestRequest = requestPool_.front();
+    requestPool_.pop_front();
+    inFlightRequests_.push_back(fastestRequest);
     return fastestRequest;
   }
   return SharedHandle<Request>();
@@ -211,9 +211,9 @@ void FileEntry::storePool(const SharedHandle<Request>& request)
     peerStat->calculateAvgDownloadSpeed();
   }
   std::deque<SharedHandle<Request> >::iterator i =
-    std::lower_bound(_requestPool.begin(), _requestPool.end(), request,
+    std::lower_bound(requestPool_.begin(), requestPool_.end(), request,
                      RequestFaster());
-  _requestPool.insert(i, request);
+  requestPool_.insert(i, request);
 }
 
 void FileEntry::poolRequest(const SharedHandle<Request>& request)
@@ -227,10 +227,10 @@ void FileEntry::poolRequest(const SharedHandle<Request>& request)
 bool FileEntry::removeRequest(const SharedHandle<Request>& request)
 {
   for(std::deque<SharedHandle<Request> >::iterator i =
-        _inFlightRequests.begin(), eoi = _inFlightRequests.end();
+        inFlightRequests_.begin(), eoi = inFlightRequests_.end();
       i != eoi; ++i) {
     if((*i).get() == request.get()) {
-      _inFlightRequests.erase(i);
+      inFlightRequests_.erase(i);
       return true;
     }
   }
@@ -241,39 +241,39 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
 {
   std::deque<std::string> newURIs;
   Request req;
-  for(std::deque<std::string>::const_iterator itr = _uris.begin(),
-        eoi = _uris.end(); itr != eoi; ++itr) {
+  for(std::deque<std::string>::const_iterator itr = uris_.begin(),
+        eoi = uris_.end(); itr != eoi; ++itr) {
     if(((*itr).find(hostname) == std::string::npos) ||
        (req.setUri(*itr) && (req.getHost() != hostname))) {
       newURIs.push_back(*itr);
     }
   }
-  if(_logger->debug()) {
-    _logger->debug("Removed %d duplicate hostname URIs for path=%s",
-                   _uris.size()-newURIs.size(), getPath().c_str());
+  if(logger_->debug()) {
+    logger_->debug("Removed %d duplicate hostname URIs for path=%s",
+                   uris_.size()-newURIs.size(), getPath().c_str());
   }
-  _uris = newURIs;
+  uris_ = newURIs;
 }
 
 void FileEntry::removeIdenticalURI(const std::string& uri)
 {
-  _uris.erase(std::remove(_uris.begin(), _uris.end(), uri), _uris.end());
+  uris_.erase(std::remove(uris_.begin(), uris_.end(), uri), uris_.end());
 }
 
 void FileEntry::addURIResult(std::string uri, downloadresultcode::RESULT result)
 {
-  _uriResults.push_back(URIResult(uri, result));
+  uriResults_.push_back(URIResult(uri, result));
 }
 
 class FindURIResultByResult {
 private:
-  downloadresultcode::RESULT _r;
+  downloadresultcode::RESULT r_;
 public:
-  FindURIResultByResult(downloadresultcode::RESULT r):_r(r) {}
+  FindURIResultByResult(downloadresultcode::RESULT r):r_(r) {}
 
   bool operator()(const URIResult& uriResult) const
   {
-    return uriResult.getResult() == _r;
+    return uriResult.getResult() == r_;
   }
 };
 
@@ -281,20 +281,20 @@ void FileEntry::extractURIResult
 (std::deque<URIResult>& res, downloadresultcode::RESULT r)
 {
   std::deque<URIResult>::iterator i =
-    std::stable_partition(_uriResults.begin(), _uriResults.end(),
+    std::stable_partition(uriResults_.begin(), uriResults_.end(),
                           FindURIResultByResult(r));
-  std::copy(_uriResults.begin(), i, std::back_inserter(res));
-  _uriResults.erase(_uriResults.begin(), i);
+  std::copy(uriResults_.begin(), i, std::back_inserter(res));
+  uriResults_.erase(uriResults_.begin(), i);
 }
 
 void FileEntry::reuseUri(size_t num)
 {
-  std::deque<std::string> uris = _spentUris;
+  std::deque<std::string> uris = spentUris_;
   std::sort(uris.begin(), uris.end());
   uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
 
-  std::vector<std::string> errorUris(_uriResults.size());
-  std::transform(_uriResults.begin(), _uriResults.end(),
+  std::vector<std::string> errorUris(uriResults_.size());
+  std::transform(uriResults_.begin(), uriResults_.end(),
                  errorUris.begin(), std::mem_fun_ref(&URIResult::getURI));
   std::sort(errorUris.begin(), errorUris.end());
   errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
@@ -305,32 +305,32 @@ void FileEntry::reuseUri(size_t num)
                       errorUris.begin(), errorUris.end(),
                       std::back_inserter(reusableURIs));
   size_t ininum = reusableURIs.size();
-  if(_logger->debug()) {
-    _logger->debug("Found %u reusable URIs", static_cast<unsigned int>(ininum));
+  if(logger_->debug()) {
+    logger_->debug("Found %u reusable URIs", static_cast<unsigned int>(ininum));
     for(std::vector<std::string>::const_iterator i = reusableURIs.begin(),
           eoi = reusableURIs.end(); i != eoi; ++i) {
-      _logger->debug("URI=%s", (*i).c_str());
+      logger_->debug("URI=%s", (*i).c_str());
     }
   }
   // Reuse at least num URIs here to avoid to
   // run this process repeatedly.
   if(ininum > 0) {
     for(size_t i = 0; i < num/ininum; ++i) {
-      _uris.insert(_uris.end(), reusableURIs.begin(), reusableURIs.end());
+      uris_.insert(uris_.end(), reusableURIs.begin(), reusableURIs.end());
     }
-    _uris.insert(_uris.end(), reusableURIs.begin(),
+    uris_.insert(uris_.end(), reusableURIs.begin(),
                  reusableURIs.begin()+(num%ininum));
-    if(_logger->debug()) {
-      _logger->debug("Duplication complete: now %u URIs for reuse",
-                     static_cast<unsigned int>(_uris.size()));
+    if(logger_->debug()) {
+      logger_->debug("Duplication complete: now %u URIs for reuse",
+                     static_cast<unsigned int>(uris_.size()));
     }
   }
 }
 
 void FileEntry::releaseRuntimeResource()
 {
-  _requestPool.clear();
-  _inFlightRequests.clear();
+  requestPool_.clear();
+  inFlightRequests_.clear();
 }
 
 template<typename InputIterator, typename T>
@@ -348,27 +348,27 @@ static InputIterator findRequestByUri
 bool FileEntry::removeUri(const std::string& uri)
 {
   std::deque<std::string>::iterator itr =
-    std::find(_spentUris.begin(), _spentUris.end(), uri);
-  if(itr == _spentUris.end()) {
-    itr = std::find(_uris.begin(), _uris.end(), uri);
-    if(itr == _uris.end()) {
+    std::find(spentUris_.begin(), spentUris_.end(), uri);
+  if(itr == spentUris_.end()) {
+    itr = std::find(uris_.begin(), uris_.end(), uri);
+    if(itr == uris_.end()) {
       return false;
     } else {
-      _uris.erase(itr);
+      uris_.erase(itr);
       return true;
     }
   } else {
-    _spentUris.erase(itr);
+    spentUris_.erase(itr);
     SharedHandle<Request> req;
     std::deque<SharedHandle<Request> >::iterator riter =
-      findRequestByUri(_inFlightRequests.begin(), _inFlightRequests.end(), uri);
-    if(riter == _inFlightRequests.end()) {
-      riter = findRequestByUri(_requestPool.begin(), _requestPool.end(), uri);
-      if(riter == _requestPool.end()) {
+      findRequestByUri(inFlightRequests_.begin(), inFlightRequests_.end(), uri);
+    if(riter == inFlightRequests_.end()) {
+      riter = findRequestByUri(requestPool_.begin(), requestPool_.end(), uri);
+      if(riter == requestPool_.end()) {
         return true;
       } else {
         req = *riter;
-        _requestPool.erase(riter);
+        requestPool_.erase(riter);
       }
     } else {
       req = *riter;
@@ -380,24 +380,24 @@ bool FileEntry::removeUri(const std::string& uri)
 
 std::string FileEntry::getBasename() const
 {
-  return File(_path).getBasename();
+  return File(path_).getBasename();
 }
 
 std::string FileEntry::getDirname() const
 {
-  return File(_path).getDirname();
+  return File(path_).getDirname();
 }
 
 size_t FileEntry::setUris(const std::vector<std::string>& uris)
 {
-  _uris.clear();
+  uris_.clear();
   return addUris(uris.begin(), uris.end());
 }
 
 bool FileEntry::addUri(const std::string& uri)
 {
   if(Request().setUri(uri)) {
-    _uris.push_back(uri);
+    uris_.push_back(uri);
     return true;
   } else {
     return false;
@@ -407,8 +407,8 @@ bool FileEntry::addUri(const std::string& uri)
 bool FileEntry::insertUri(const std::string& uri, size_t pos)
 {
   if(Request().setUri(uri)) {
-    pos = std::min(pos, _uris.size());
-    _uris.insert(_uris.begin()+pos, uri);
+    pos = std::min(pos, uris_.size());
+    uris_.insert(uris_.begin()+pos, uri);
     return true;
   } else {
     return false;

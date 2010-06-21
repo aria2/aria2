@@ -46,8 +46,8 @@
 
 namespace aria2 {
 
-DHTConnectionImpl::DHTConnectionImpl():_socket(new SocketCore(SOCK_DGRAM)),
-                                       _logger(LogFactory::getInstance()) {}
+DHTConnectionImpl::DHTConnectionImpl():socket_(new SocketCore(SOCK_DGRAM)),
+                                       logger_(LogFactory::getInstance()) {}
 
 DHTConnectionImpl::~DHTConnectionImpl() {}
 
@@ -73,15 +73,15 @@ bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
 bool DHTConnectionImpl::bind(uint16_t& port)
 {
   try {
-    _socket->bind(port);
-    _socket->setNonBlockingMode();
+    socket_->bind(port);
+    socket_->setNonBlockingMode();
     std::pair<std::string, uint16_t> svaddr;
-    _socket->getAddrInfo(svaddr);
+    socket_->getAddrInfo(svaddr);
     port = svaddr.second;
-    _logger->notice("DHT: listening to port %d", port);
+    logger_->notice("DHT: listening to port %d", port);
     return true;
   } catch(RecoverableException& e) {
-    _logger->error("Failed to bind for DHT. port=%u", e, port);
+    logger_->error("Failed to bind for DHT. port=%u", e, port);
   }
   return false;
 }
@@ -90,7 +90,7 @@ ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len,
                                           std::string& host, uint16_t& port)
 {
   std::pair<std::string, uint16_t> remoteHost;
-  ssize_t length = _socket->readDataFrom(data, len, remoteHost);
+  ssize_t length = socket_->readDataFrom(data, len, remoteHost);
   if(length == 0) {
     return length;
   } else {
@@ -103,7 +103,7 @@ ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len,
 ssize_t DHTConnectionImpl::sendMessage(const unsigned char* data, size_t len,
                                        const std::string& host, uint16_t port)
 {
-  return _socket->writeData(data, len, host, port);
+  return socket_->writeData(data, len, host, port);
 }
 
 } // namespace aria2

@@ -71,10 +71,10 @@ AuthConfigFactory::createAuthConfig
       }
       std::deque<BasicCred>::const_iterator i =
         findBasicCred(request->getHost(), request->getDir());
-      if(i == _basicCreds.end()) {
+      if(i == basicCreds_.end()) {
         return SharedHandle<AuthConfig>();
       } else {
-        return createAuthConfig((*i)._user, (*i)._password);
+        return createAuthConfig((*i).user_, (*i).password_);
       }
     } else {
       if(!request->getUsername().empty()) {
@@ -93,7 +93,7 @@ AuthConfigFactory::createAuthConfig
           // First, check we have password corresponding to host and
           // username
           NetrcAuthResolver authResolver;
-          authResolver.setNetrc(_netrc);
+          authResolver.setNetrc(netrc_);
 
           SharedHandle<AuthConfig> ac =
             authResolver.resolveAuthConfig(request->getHost());
@@ -133,7 +133,7 @@ AuthResolverHandle AuthConfigFactory::createHttpAuthResolver
     resolver.reset(new DefaultAuthResolver());
   } else {
     NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
-    authResolver->setNetrc(_netrc);
+    authResolver->setNetrc(netrc_);
     authResolver->ignoreDefault();
     resolver = authResolver;
   }
@@ -150,7 +150,7 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
     resolver.reset(new DefaultAuthResolver());
   } else {
     NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
-    authResolver->setNetrc(_netrc);
+    authResolver->setNetrc(netrc_);
     resolver = authResolver;
   }
   resolver->setUserDefinedAuthConfig
@@ -164,18 +164,18 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
 
 void AuthConfigFactory::setNetrc(const SharedHandle<Netrc>& netrc)
 {
-  _netrc = netrc;
+  netrc_ = netrc;
 }
 
 void AuthConfigFactory::updateBasicCred(const BasicCred& basicCred)
 {
   std::deque<BasicCred>::iterator i =
-    std::lower_bound(_basicCreds.begin(), _basicCreds.end(), basicCred);
+    std::lower_bound(basicCreds_.begin(), basicCreds_.end(), basicCred);
 
-  if(i != _basicCreds.end() && (*i) == basicCred) {
+  if(i != basicCreds_.end() && (*i) == basicCred) {
     (*i) = basicCred;
   } else {
-    _basicCreds.insert(i, basicCred);
+    basicCreds_.insert(i, basicCred);
   }
 }
 
@@ -184,7 +184,7 @@ bool AuthConfigFactory::activateBasicCred
 {
 
   std::deque<BasicCred>::iterator i = findBasicCred(host, path);
-  if(i == _basicCreds.end()) {
+  if(i == basicCreds_.end()) {
     SharedHandle<AuthConfig> authConfig =
       createHttpAuthResolver(op)->resolveAuthConfig(host);
     if(authConfig.isNull()) {
@@ -192,8 +192,8 @@ bool AuthConfigFactory::activateBasicCred
     } else {
       BasicCred bc(authConfig->getUser(), authConfig->getPassword(),
                    host, path, true);
-      i = std::lower_bound(_basicCreds.begin(), _basicCreds.end(), bc);
-      _basicCreds.insert(i, bc);
+      i = std::lower_bound(basicCreds_.begin(), basicCreds_.end(), bc);
+      basicCreds_.insert(i, bc);
       return true;
     }
   } else {
@@ -206,34 +206,34 @@ AuthConfigFactory::BasicCred::BasicCred
 (const std::string& user, const std::string& password,
  const std::string& host, const std::string& path,
  bool activated):
-  _user(user), _password(password),
-  _host(host), _path(path), _activated(activated)
+  user_(user), password_(password),
+  host_(host), path_(path), activated_(activated)
 {
-  if(!util::endsWith(_path, "/")) {
-    _path += "/";
+  if(!util::endsWith(path_, "/")) {
+    path_ += "/";
   }
 }
 
 void AuthConfigFactory::BasicCred::activate()
 {
-  _activated = true;
+  activated_ = true;
 }
 
 bool AuthConfigFactory::BasicCred::isActivated() const
 {
-  return _activated;
+  return activated_;
 }
 
 bool AuthConfigFactory::BasicCred::operator==(const BasicCred& cred) const
 {
-  return _host == cred._host && _path == cred._path;
+  return host_ == cred.host_ && path_ == cred.path_;
 }
 
 bool AuthConfigFactory::BasicCred::operator<(const BasicCred& cred) const
 {
-  int c = _host.compare(cred._host);
+  int c = host_.compare(cred.host_);
   if(c == 0) {
-    return _path > cred._path;
+    return path_ > cred.path_;
   } else {
     return c < 0;
   }
@@ -245,13 +245,13 @@ AuthConfigFactory::findBasicCred(const std::string& host,
 {
   BasicCred bc("", "", host, path);
   std::deque<BasicCred>::iterator i =
-    std::lower_bound(_basicCreds.begin(), _basicCreds.end(), bc);
-  for(; i != _basicCreds.end() && (*i)._host == host; ++i) {
-    if(util::startsWith(bc._path, (*i)._path)) {
+    std::lower_bound(basicCreds_.begin(), basicCreds_.end(), bc);
+  for(; i != basicCreds_.end() && (*i).host_ == host; ++i) {
+    if(util::startsWith(bc.path_, (*i).path_)) {
       return i;
     }
   }
-  return _basicCreds.end();
+  return basicCreds_.end();
 }
 
 } // namespace aria2

@@ -44,7 +44,7 @@ namespace aria2 {
 
 DHTPeerAnnounceEntry::DHTPeerAnnounceEntry(const unsigned char* infoHash)
 {
-  memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
+  memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
 
 DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() {}
@@ -52,9 +52,9 @@ DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() {}
 void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
 {
   std::vector<PeerAddrEntry>::iterator i =
-    std::find(_peerAddrEntries.begin(), _peerAddrEntries.end(), entry);
-  if(i == _peerAddrEntries.end()) {
-    _peerAddrEntries.push_back(entry);
+    std::find(peerAddrEntries_.begin(), peerAddrEntries_.end(), entry);
+  if(i == peerAddrEntries_.end()) {
+    peerAddrEntries_.push_back(entry);
   } else {
     (*i).notifyUpdate();
   }
@@ -63,18 +63,18 @@ void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
 
 size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
 {
-  return _peerAddrEntries.size();
+  return peerAddrEntries_.size();
 }
 
 class FindStaleEntry {
 private:
-  time_t _timeout;
+  time_t timeout_;
 public:
-  FindStaleEntry(time_t timeout):_timeout(timeout) {}
+  FindStaleEntry(time_t timeout):timeout_(timeout) {}
 
   bool operator()(const PeerAddrEntry& entry) const
   {
-    if(entry.getLastUpdated().difference(global::wallclock) >= _timeout) {
+    if(entry.getLastUpdated().difference(global::wallclock) >= timeout_) {
       return true;
     } else {
       return false;
@@ -84,20 +84,20 @@ public:
 
 void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
 {
-  _peerAddrEntries.erase(std::remove_if(_peerAddrEntries.begin(), _peerAddrEntries.end(),
-                                        FindStaleEntry(timeout)), _peerAddrEntries.end());
+  peerAddrEntries_.erase(std::remove_if(peerAddrEntries_.begin(), peerAddrEntries_.end(),
+                                        FindStaleEntry(timeout)), peerAddrEntries_.end());
 }
 
 bool DHTPeerAnnounceEntry::empty() const
 {
-  return _peerAddrEntries.empty();
+  return peerAddrEntries_.empty();
 }
 
 void DHTPeerAnnounceEntry::getPeers
 (std::vector<SharedHandle<Peer> >& peers) const
 {
-  for(std::vector<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin(),
-        eoi = _peerAddrEntries.end(); i != eoi; ++i) {
+  for(std::vector<PeerAddrEntry>::const_iterator i = peerAddrEntries_.begin(),
+        eoi = peerAddrEntries_.end(); i != eoi; ++i) {
     SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
     peers.push_back(peer);
   }
@@ -105,7 +105,7 @@ void DHTPeerAnnounceEntry::getPeers
 
 void DHTPeerAnnounceEntry::notifyUpdate()
 {
-  _lastUpdated = global::wallclock;
+  lastUpdated_ = global::wallclock;
 }
 
 } // namespace aria2

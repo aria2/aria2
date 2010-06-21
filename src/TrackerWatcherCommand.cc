@@ -71,44 +71,44 @@ namespace aria2 {
 TrackerWatcherCommand::TrackerWatcherCommand
 (cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e):
   Command(cuid),
-  _requestGroup(requestGroup),
-  _e(e)
+  requestGroup_(requestGroup),
+  e_(e)
 {
-  _requestGroup->increaseNumCommand();
+  requestGroup_->increaseNumCommand();
 }
 
 TrackerWatcherCommand::~TrackerWatcherCommand()
 {
-  _requestGroup->decreaseNumCommand();
+  requestGroup_->decreaseNumCommand();
 }
 
 bool TrackerWatcherCommand::execute() {
-  if(_requestGroup->isForceHaltRequested()) {
-    if(_trackerRequestGroup.isNull()) {
+  if(requestGroup_->isForceHaltRequested()) {
+    if(trackerRequestGroup_.isNull()) {
       return true;
-    } else if(_trackerRequestGroup->getNumCommand() == 0 ||
-              _trackerRequestGroup->downloadFinished()) {
+    } else if(trackerRequestGroup_->getNumCommand() == 0 ||
+              trackerRequestGroup_->downloadFinished()) {
       return true;
     } else {
-      _trackerRequestGroup->setForceHaltRequested(true);
-      _e->addCommand(this);
+      trackerRequestGroup_->setForceHaltRequested(true);
+      e_->addCommand(this);
       return false;
     }
   }
-  if(_btAnnounce->noMoreAnnounce()) {
+  if(btAnnounce_->noMoreAnnounce()) {
     if(getLogger()->debug()) {
       getLogger()->debug("no more announce");
     }
     return true;
   }
-  if(_trackerRequestGroup.isNull()) {
-    _trackerRequestGroup = createAnnounce();
-    if(!_trackerRequestGroup.isNull()) {
+  if(trackerRequestGroup_.isNull()) {
+    trackerRequestGroup_ = createAnnounce();
+    if(!trackerRequestGroup_.isNull()) {
       try {
         std::vector<Command*>* commands = new std::vector<Command*>();
         auto_delete_container<std::vector<Command*> > commandsDel(commands);
-        _trackerRequestGroup->createInitialCommand(*commands, _e);
-        _e->addCommand(*commands);
+        trackerRequestGroup_->createInitialCommand(*commands, e_);
+        e_->addCommand(*commands);
         commands->clear();
         if(getLogger()->debug()) {
           getLogger()->debug("added tracker request command");
@@ -117,30 +117,30 @@ bool TrackerWatcherCommand::execute() {
         getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
       }
     }
-  } else if(_trackerRequestGroup->downloadFinished()){
+  } else if(trackerRequestGroup_->downloadFinished()){
     try {
-      std::string trackerResponse = getTrackerResponse(_trackerRequestGroup);
+      std::string trackerResponse = getTrackerResponse(trackerRequestGroup_);
 
       processTrackerResponse(trackerResponse);
-      _btAnnounce->announceSuccess();
-      _btAnnounce->resetAnnounce();
+      btAnnounce_->announceSuccess();
+      btAnnounce_->resetAnnounce();
     } catch(RecoverableException& ex) {
       getLogger()->error(EX_EXCEPTION_CAUGHT, ex);      
-      _btAnnounce->announceFailure();
-      if(_btAnnounce->isAllAnnounceFailed()) {
-        _btAnnounce->resetAnnounce();
+      btAnnounce_->announceFailure();
+      if(btAnnounce_->isAllAnnounceFailed()) {
+        btAnnounce_->resetAnnounce();
       }
     }
-    _trackerRequestGroup.reset();
-  } else if(_trackerRequestGroup->getNumCommand() == 0){
+    trackerRequestGroup_.reset();
+  } else if(trackerRequestGroup_->getNumCommand() == 0){
     // handle errors here
-    _btAnnounce->announceFailure(); // inside it, trackers = 0.
-    _trackerRequestGroup.reset();
-    if(_btAnnounce->isAllAnnounceFailed()) {
-      _btAnnounce->resetAnnounce();
+    btAnnounce_->announceFailure(); // inside it, trackers = 0.
+    trackerRequestGroup_.reset();
+    if(btAnnounce_->isAllAnnounceFailed()) {
+      btAnnounce_->resetAnnounce();
     }
   }
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 
@@ -165,21 +165,21 @@ std::string TrackerWatcherCommand::getTrackerResponse
 void TrackerWatcherCommand::processTrackerResponse
 (const std::string& trackerResponse)
 {
-  _btAnnounce->processAnnounceResponse
+  btAnnounce_->processAnnounceResponse
     (reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
      trackerResponse.size());
-  while(!_btRuntime->isHalt() && _btRuntime->lessThanMinPeers()) {
-    SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
+  while(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
+    SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
     if(peer.isNull()) {
       break;
     }
-    peer->usedBy(_e->newCUID());
+    peer->usedBy(e_->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand
-      (peer->usedBy(), _requestGroup, peer, _e, _btRuntime);
-    command->setPeerStorage(_peerStorage);
-    command->setPieceStorage(_pieceStorage);
-    _e->addCommand(command);
+      (peer->usedBy(), requestGroup_, peer, e_, btRuntime_);
+    command->setPeerStorage(peerStorage_);
+    command->setPieceStorage(pieceStorage_);
+    e_->addCommand(command);
     if(getLogger()->debug()) {
       getLogger()->debug("CUID#%s - Adding new command CUID#%s",
                          util::itos(getCuid()).c_str(),
@@ -190,9 +190,9 @@ void TrackerWatcherCommand::processTrackerResponse
 
 SharedHandle<RequestGroup> TrackerWatcherCommand::createAnnounce() {
   SharedHandle<RequestGroup> rg;
-  if(_btAnnounce->isAnnounceReady()) {
-    rg = createRequestGroup(_btAnnounce->getAnnounceUrl());
-    _btAnnounce->announceStart(); // inside it, trackers++.
+  if(btAnnounce_->isAnnounceReady()) {
+    rg = createRequestGroup(btAnnounce_->getAnnounceUrl());
+    btAnnounce_->announceStart(); // inside it, trackers++.
   }
   return rg;
 }
@@ -221,7 +221,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   std::vector<std::string> uris;
   uris.push_back(uri);
   SharedHandle<RequestGroup> rg(new RequestGroup(getOption()));
-  if(backupTrackerIsAvailable(_requestGroup->getDownloadContext())) {
+  if(backupTrackerIsAvailable(requestGroup_->getDownloadContext())) {
     if(getLogger()->debug()) {
       getLogger()->debug("This is multi-tracker announce.");
     }
@@ -263,30 +263,30 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 void TrackerWatcherCommand::setBtRuntime
 (const SharedHandle<BtRuntime>& btRuntime)
 {
-  _btRuntime = btRuntime;
+  btRuntime_ = btRuntime;
 }
 
 void TrackerWatcherCommand::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
-  _peerStorage = peerStorage;
+  peerStorage_ = peerStorage;
 }
 
 void TrackerWatcherCommand::setPieceStorage
 (const SharedHandle<PieceStorage>& pieceStorage)
 {
-  _pieceStorage = pieceStorage;
+  pieceStorage_ = pieceStorage;
 }
 
 void TrackerWatcherCommand::setBtAnnounce
 (const SharedHandle<BtAnnounce>& btAnnounce)
 {
-  _btAnnounce = btAnnounce;
+  btAnnounce_ = btAnnounce;
 }
 
 const SharedHandle<Option>& TrackerWatcherCommand::getOption() const
 {
-  return _requestGroup->getOption();
+  return requestGroup_->getOption();
 }
 
 } // namespace aria2

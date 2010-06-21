@@ -98,52 +98,52 @@ public:
 
 class DefaultBtInteractive : public BtInteractive {
 private:
-  cuid_t _cuid;
+  cuid_t cuid_;
 
-  SharedHandle<DownloadContext> _downloadContext;
+  SharedHandle<DownloadContext> downloadContext_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  SharedHandle<Peer> _peer;
+  SharedHandle<Peer> peer_;
 
-  SharedHandle<BtMessageReceiver> _btMessageReceiver;
-  SharedHandle<BtMessageDispatcher> _dispatcher;
-  SharedHandle<BtRequestFactory> _btRequestFactory;
-  // Although _peerStorage is not used in this class, this object
-  // holds the reference so that _peerConnection is not deleted.
-  SharedHandle<PeerConnection> _peerConnection;
-  SharedHandle<BtMessageFactory> _messageFactory;
-  SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
-  SharedHandle<ExtensionMessageRegistry> _extensionMessageRegistry;
-  SharedHandle<UTMetadataRequestFactory> _utMetadataRequestFactory;
-  SharedHandle<UTMetadataRequestTracker> _utMetadataRequestTracker;
+  SharedHandle<BtMessageReceiver> btMessageReceiver_;
+  SharedHandle<BtMessageDispatcher> dispatcher_;
+  SharedHandle<BtRequestFactory> btRequestFactory_;
+  // Although peerStorage_ is not used in this class, this object
+  // holds the reference so that peerConnection_ is not deleted.
+  SharedHandle<PeerConnection> peerConnection_;
+  SharedHandle<BtMessageFactory> messageFactory_;
+  SharedHandle<ExtensionMessageFactory> extensionMessageFactory_;
+  SharedHandle<ExtensionMessageRegistry> extensionMessageRegistry_;
+  SharedHandle<UTMetadataRequestFactory> utMetadataRequestFactory_;
+  SharedHandle<UTMetadataRequestTracker> utMetadataRequestTracker_;
 
-  bool _metadataGetMode;
+  bool metadataGetMode_;
 
-  WeakHandle<DHTNode> _localNode;
+  WeakHandle<DHTNode> localNode_;
 
-  Logger* _logger;
-  size_t _allowedFastSetSize;
-  Timer _haveTimer;
-  Timer _keepAliveTimer;
-  Timer _floodingTimer;
-  FloodingStat _floodingStat;
-  Timer _inactiveTimer;
-  Timer _pexTimer;
-  Timer _perSecTimer;
-  time_t _keepAliveInterval;
-  bool _utPexEnabled;
-  bool _dhtEnabled;
+  Logger* logger_;
+  size_t allowedFastSetSize_;
+  Timer haveTimer_;
+  Timer keepAliveTimer_;
+  Timer floodingTimer_;
+  FloodingStat floodingStat_;
+  Timer inactiveTimer_;
+  Timer pexTimer_;
+  Timer perSecTimer_;
+  time_t keepAliveInterval_;
+  bool utPexEnabled_;
+  bool dhtEnabled_;
 
-  size_t _numReceivedMessage;
+  size_t numReceivedMessage_;
 
-  size_t _maxOutstandingRequest;
+  size_t maxOutstandingRequest_;
 
-  WeakHandle<RequestGroupMan> _requestGroupMan;
+  WeakHandle<RequestGroupMan> requestGroupMan_;
 
   static const time_t FLOODING_CHECK_INTERVAL = 5;
 
@@ -193,7 +193,7 @@ public:
 
   void setCuid(cuid_t cuid)
   {
-    _cuid = cuid;
+    cuid_ = cuid;
   }
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
@@ -220,23 +220,23 @@ public:
   void setExtensionMessageRegistry
   (const SharedHandle<ExtensionMessageRegistry>& registry)
   {
-    _extensionMessageRegistry = registry;
+    extensionMessageRegistry_ = registry;
   }
 
   void setKeepAliveInterval(time_t keepAliveInterval) {
-    _keepAliveInterval = keepAliveInterval;
+    keepAliveInterval_ = keepAliveInterval;
   }
 
   void setUTPexEnabled(bool f)
   {
-    _utPexEnabled = f;
+    utPexEnabled_ = f;
   }
 
   void setLocalNode(const WeakHandle<DHTNode>& node);
 
   void setDHTEnabled(bool f)
   {
-    _dhtEnabled = f;
+    dhtEnabled_ = f;
   }
 
   void setRequestGroupMan(const WeakHandle<RequestGroupMan>& rgman);
@@ -244,18 +244,18 @@ public:
   void setUTMetadataRequestTracker
   (const SharedHandle<UTMetadataRequestTracker>& tracker)
   {
-    _utMetadataRequestTracker = tracker;
+    utMetadataRequestTracker_ = tracker;
   }
 
   void setUTMetadataRequestFactory
   (const SharedHandle<UTMetadataRequestFactory>& factory)
   {
-    _utMetadataRequestFactory = factory;
+    utMetadataRequestFactory_ = factory;
   }
 
   void enableMetadataGetMode()
   {
-    _metadataGetMode = true;
+    metadataGetMode_ = true;
   }
 };
 

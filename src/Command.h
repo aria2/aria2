@@ -54,39 +54,39 @@ public:
     STATUS_ONESHOT_REALTIME
   };
 private:
-  STATUS _status;
+  STATUS status_;
 
-  cuid_t _cuid;
-  Logger* _logger;
+  cuid_t cuid_;
+  Logger* logger_;
 
-  bool _readEvent;
-  bool _writeEvent;
-  bool _errorEvent;
-  bool _hupEvent;
+  bool readEvent_;
+  bool writeEvent_;
+  bool errorEvent_;
+  bool hupEvent_;
 protected:
   Logger* getLogger() const
   {
-    return _logger;
+    return logger_;
   }
 
   bool readEventEnabled() const
   {
-    return _readEvent;
+    return readEvent_;
   }
 
   bool writeEventEnabled() const
   {
-    return _writeEvent;
+    return writeEvent_;
   }
 
   bool errorEventEnabled() const
   {
-    return _errorEvent;
+    return errorEvent_;
   }
 
   bool hupEventEnabled() const
   {
-    return _hupEvent;
+    return hupEvent_;
   }
 public:
   Command(cuid_t cuid);
@@ -95,19 +95,19 @@ public:
 
   virtual bool execute() = 0;
 
-  cuid_t getCuid() const { return _cuid; }
+  cuid_t getCuid() const { return cuid_; }
 
-  void setStatusActive() { _status = STATUS_ACTIVE; }
+  void setStatusActive() { status_ = STATUS_ACTIVE; }
 
-  void setStatusInactive() { _status = STATUS_INACTIVE; }
+  void setStatusInactive() { status_ = STATUS_INACTIVE; }
 
-  void setStatusRealtime() { _status = STATUS_REALTIME; }
+  void setStatusRealtime() { status_ = STATUS_REALTIME; }
 
   void setStatus(STATUS status);
 
   bool statusMatch(Command::STATUS statusFilter) const
   {
-    return statusFilter <= _status;
+    return statusFilter <= status_;
   }
 
   void transitStatus();

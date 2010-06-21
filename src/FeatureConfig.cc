@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-SharedHandle<FeatureConfig> FeatureConfig::_featureConfig;
+SharedHandle<FeatureConfig> FeatureConfig::featureConfig_;
 
 const std::string FeatureConfig::FEATURE_HTTPS("HTTPS");
 const std::string FeatureConfig::FEATURE_BITTORRENT("BitTorrent");
@@ -102,9 +102,9 @@ const std::string FeatureConfig::FEATURE_FIREFOX3_COOKIE("Firefox3 Cookie");
 #endif // !HAVE_SQLITE3
 
 FeatureConfig::FeatureConfig() {
-  _defaultPorts.insert(PortMap::value_type(Request::PROTO_HTTP, 80));
-  _defaultPorts.insert(PortMap::value_type(Request::PROTO_HTTPS, 443));
-  _defaultPorts.insert(PortMap::value_type(Request::PROTO_FTP, 21));
+  defaultPorts_.insert(PortMap::value_type(Request::PROTO_HTTP, 80));
+  defaultPorts_.insert(PortMap::value_type(Request::PROTO_HTTPS, 443));
+  defaultPorts_.insert(PortMap::value_type(Request::PROTO_FTP, 21));
 
   FeatureMap::value_type featureArray[] = {
     FeatureMap::value_type(FEATURE_HTTPS, HTTPS_ENABLED),
@@ -117,21 +117,21 @@ FeatureConfig::FeatureConfig() {
     FeatureMap::value_type(FEATURE_FIREFOX3_COOKIE, FIREFOX3_COOKIE_ENABLED),
   };
 
-  _features.insert(vbegin(featureArray), vend(featureArray));
+  features_.insert(vbegin(featureArray), vend(featureArray));
 }
 
 const SharedHandle<FeatureConfig>& FeatureConfig::getInstance()
 {
-  if(_featureConfig.isNull()) {
-    _featureConfig.reset(new FeatureConfig());
+  if(featureConfig_.isNull()) {
+    featureConfig_.reset(new FeatureConfig());
   }
-  return _featureConfig;
+  return featureConfig_;
 }
 
 uint16_t FeatureConfig::getDefaultPort(const std::string& protocol) const
 {
-  PortMap::const_iterator itr = _defaultPorts.find(protocol);
-  if(itr == _defaultPorts.end()) {
+  PortMap::const_iterator itr = defaultPorts_.find(protocol);
+  if(itr == defaultPorts_.end()) {
     return 0;
   } else {
     return itr->second;
@@ -140,8 +140,8 @@ uint16_t FeatureConfig::getDefaultPort(const std::string& protocol) const
 
 bool FeatureConfig::isSupported(const std::string& feature) const
 {
-  FeatureMap::const_iterator itr = _features.find(feature);
-  if(itr == _features.end()) {
+  FeatureMap::const_iterator itr = features_.find(feature);
+  if(itr == features_.end()) {
     return false;
   } else {
     return itr->second;
@@ -151,7 +151,7 @@ bool FeatureConfig::isSupported(const std::string& feature) const
 std::string FeatureConfig::featureSummary() const
 {
   std::string s;
-  for(FeatureMap::const_iterator i = _features.begin(), eoi = _features.end();
+  for(FeatureMap::const_iterator i = features_.begin(), eoi = features_.end();
       i != eoi; ++i) {
     if((*i).second) {
       s += (*i).first;

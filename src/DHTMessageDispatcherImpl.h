@@ -46,13 +46,13 @@ class Logger;
 
 class DHTMessageDispatcherImpl:public DHTMessageDispatcher {
 private:
-  SharedHandle<DHTMessageTracker> _tracker;
+  SharedHandle<DHTMessageTracker> tracker_;
 
-  std::deque<SharedHandle<DHTMessageEntry> > _messageQueue;
+  std::deque<SharedHandle<DHTMessageEntry> > messageQueue_;
 
-  time_t _timeout;
+  time_t timeout_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   bool sendMessage(const SharedHandle<DHTMessageEntry>& msg);
 public:
@@ -77,7 +77,7 @@ public:
 
   void setTimeout(time_t timeout)
   {
-    _timeout = timeout;
+    timeout_ = timeout;
   }
 };
 

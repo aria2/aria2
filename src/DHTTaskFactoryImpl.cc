@@ -54,8 +54,8 @@
 namespace aria2 {
 
 DHTTaskFactoryImpl::DHTTaskFactoryImpl():
-  _timeout(DHT_MESSAGE_TIMEOUT),
-  _logger(LogFactory::getInstance()) {}
+  timeout_(DHT_MESSAGE_TIMEOUT),
+  logger_(LogFactory::getInstance()) {}
 
 DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
@@ -64,7 +64,7 @@ DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
                                    size_t numRetry)
 {
   SharedHandle<DHTPingTask> task(new DHTPingTask(remoteNode, numRetry));
-  task->setTimeout(_timeout);
+  task->setTimeout(timeout_);
   setCommonProperty(task);
   return task;
 }
@@ -111,43 +111,43 @@ DHTTaskFactoryImpl::createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
                                           const SharedHandle<DHTNode>& newNode)
 {
   SharedHandle<DHTReplaceNodeTask> task(new DHTReplaceNodeTask(bucket, newNode));
-  task->setTimeout(_timeout);
+  task->setTimeout(timeout_);
   setCommonProperty(task);
   return task;
 }
 
 void DHTTaskFactoryImpl::setCommonProperty(const SharedHandle<DHTAbstractTask>& task)
 {
-  task->setRoutingTable(_routingTable);
-  task->setMessageDispatcher(_dispatcher);
-  task->setMessageFactory(_factory);
-  task->setTaskQueue(_taskQueue);
-  task->setLocalNode(_localNode);
+  task->setRoutingTable(routingTable_);
+  task->setMessageDispatcher(dispatcher_);
+  task->setMessageFactory(factory_);
+  task->setTaskQueue(taskQueue_);
+  task->setLocalNode(localNode_);
 }
 
 void DHTTaskFactoryImpl::setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 void DHTTaskFactoryImpl::setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
 
 void DHTTaskFactoryImpl::setMessageFactory(const WeakHandle<DHTMessageFactory> factory)
 {
-  _factory = factory;
+  factory_ = factory;
 }
 
 void DHTTaskFactoryImpl::setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 void DHTTaskFactoryImpl::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
-  _localNode = localNode;
+  localNode_ = localNode;
 }
 
 } // namespace aria2

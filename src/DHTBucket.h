@@ -52,25 +52,25 @@ class Logger;
 
 class DHTBucket {
 private:
-  size_t _prefixLength;
+  size_t prefixLength_;
 
-  // this bucket contains nodes of distance between [_min, _max](inclusive).
-  unsigned char _min[DHT_ID_LENGTH];
+  // this bucket contains nodes of distance between [min_, max_](inclusive).
+  unsigned char min_[DHT_ID_LENGTH];
 
-  unsigned char _max[DHT_ID_LENGTH];
+  unsigned char max_[DHT_ID_LENGTH];
 
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
   // sorted in ascending order
-  std::deque<SharedHandle<DHTNode> > _nodes;
+  std::deque<SharedHandle<DHTNode> > nodes_;
 
   // a replacement cache. The maximum size is specified by CACHE_SIZE.
   // This is sorted by last time seen.
-  std::deque<SharedHandle<DHTNode> > _cachedNodes;
+  std::deque<SharedHandle<DHTNode> > cachedNodes_;
 
-  Timer _lastUpdated;
+  Timer lastUpdated_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   bool isInRange(const unsigned char* nodeID,
                  const unsigned char* max, const unsigned char* min) const;
@@ -103,27 +103,27 @@ public:
   
   size_t getPrefixLength() const
   {
-    return _prefixLength;
+    return prefixLength_;
   }
 
   const unsigned char* getMaxID() const
   {
-    return _max;
+    return max_;
   }
 
   const unsigned char* getMinID() const
   {
-    return _min;
+    return min_;
   }
 
   size_t countNode() const
   {
-    return _nodes.size();
+    return nodes_.size();
   }
 
   const std::deque<SharedHandle<DHTNode> >& getNodes() const
   {
-    return _nodes;
+    return nodes_;
   }
 
   void getGoodNodes(std::vector<SharedHandle<DHTNode> >& nodes) const;
@@ -150,7 +150,7 @@ public:
 
   const std::deque<SharedHandle<DHTNode> >& getCachedNodes() const
   {
-    return _cachedNodes;
+    return cachedNodes_;
   }
 
 };

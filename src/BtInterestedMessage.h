@@ -46,7 +46,7 @@ typedef SharedHandle<BtInterestedMessage> BtInterestedMessageHandle;
 
 class BtInterestedMessage : public ZeroBtMessage {
 private:
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 public:
   BtInterestedMessage();
 

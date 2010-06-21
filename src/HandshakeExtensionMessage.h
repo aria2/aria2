@@ -49,19 +49,19 @@ class DownloadContext;
 
 class HandshakeExtensionMessage:public ExtensionMessage {
 private:
-  std::string _clientVersion;
+  std::string clientVersion_;
 
-  uint16_t _tcpPort;
+  uint16_t tcpPort_;
 
-  size_t _metadataSize;
+  size_t metadataSize_;
 
-  std::map<std::string, uint8_t> _extensions;
+  std::map<std::string, uint8_t> extensions_;
 
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
 
-  SharedHandle<Peer> _peer;
+  SharedHandle<Peer> peer_;
 
-  Logger* _logger;
+  Logger* logger_;
 
 public:
   HandshakeExtensionMessage();
@@ -88,47 +88,47 @@ public:
 
   void setClientVersion(const std::string& version)
   {
-    _clientVersion = version;
+    clientVersion_ = version;
   }
 
   const std::string& getClientVersion() const
   {
-    return _clientVersion;
+    return clientVersion_;
   }
 
   void setTCPPort(uint16_t port)
   {
-    _tcpPort = port;
+    tcpPort_ = port;
   }
 
   uint16_t getTCPPort() const
   {
-    return _tcpPort;
+    return tcpPort_;
   }
 
   size_t getMetadataSize()
   {
-    return _metadataSize;
+    return metadataSize_;
   }
 
   void setMetadataSize(size_t size)
   {
-    _metadataSize = size;
+    metadataSize_ = size;
   }
 
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {
-    _dctx = dctx;
+    dctx_ = dctx;
   }
 
   void setExtension(const std::string& name, uint8_t id)
   {
-    _extensions[name] = id;
+    extensions_[name] = id;
   }
 
   void setExtensions(const Extensions& extensions)
   {
-    _extensions = extensions;
+    extensions_ = extensions;
   }
 
   uint8_t getExtensionMessageID(const std::string& name) const;

@@ -44,24 +44,24 @@ OptionHandlerException::OptionHandlerException(const char* file, int line,
                                                const std::string& optName):
   RecoverableException
   (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str()),
-  _optName(optName) {}
+  optName_(optName) {}
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
                                                const std::string& optName,
                                                const Exception& cause):
   RecoverableException
   (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str(), cause),
-  _optName(optName) {}
+  optName_(optName) {}
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
                                                const OptionHandlerException& e):
-  RecoverableException(file, line, e), _optName(e._optName) {}
+  RecoverableException(file, line, e), optName_(e.optName_) {}
 
 OptionHandlerException::~OptionHandlerException() throw() {}
 
 const std::string& OptionHandlerException::getOptionName() const throw()
 {
-  return _optName;
+  return optName_;
 }
 
 SharedHandle<Exception> OptionHandlerException::copy() const

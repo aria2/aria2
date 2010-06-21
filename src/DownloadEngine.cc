@@ -90,20 +90,20 @@ volatile sig_atomic_t globalHaltRequested = 0;
 } // namespace global
 
 DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll):
-  _eventPoll(eventPoll),
-  _logger(LogFactory::getInstance()),
-  _haltRequested(false),
-  _noWait(false),
-  _refreshInterval(DEFAULT_REFRESH_INTERVAL),
-  _cookieStorage(new CookieStorage()),
+  eventPoll_(eventPoll),
+  logger_(LogFactory::getInstance()),
+  haltRequested_(false),
+  noWait_(false),
+  refreshInterval_(DEFAULT_REFRESH_INTERVAL),
+  cookieStorage_(new CookieStorage()),
 #ifdef ENABLE_BITTORRENT
-  _btRegistry(new BtRegistry()),
+  btRegistry_(new BtRegistry()),
 #endif // ENABLE_BITTORRENT
-  _dnsCache(new DNSCache())
+  dnsCache_(new DNSCache())
 {
   unsigned char sessionId[20];
   util::generateRandomKey(sessionId);
-  _sessionId = std::string(&sessionId[0], & sessionId[sizeof(sessionId)]);
+  sessionId_ = std::string(&sessionId[0], & sessionId[sizeof(sessionId)]);
 }
 
 DownloadEngine::~DownloadEngine() {
@@ -111,8 +111,8 @@ DownloadEngine::~DownloadEngine() {
 }
 
 void DownloadEngine::cleanQueue() {
-  std::for_each(_commands.begin(), _commands.end(), Deleter());
-  _commands.clear();
+  std::for_each(commands_.begin(), commands_.end(), Deleter());
+  commands_.clear();
 }
 
 static void executeCommand(std::deque<Command*>& commands,
@@ -141,21 +141,21 @@ void DownloadEngine::run()
 {
   Timer cp;
   cp.reset(0);
-  while(!_commands.empty() || !_routineCommands.empty()) {
+  while(!commands_.empty() || !routineCommands_.empty()) {
     global::wallclock.reset();
-    if(cp.difference(global::wallclock) >= _refreshInterval) {
-      _refreshInterval = DEFAULT_REFRESH_INTERVAL;
+    if(cp.difference(global::wallclock) >= refreshInterval_) {
+      refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
       cp = global::wallclock;
-      executeCommand(_commands, Command::STATUS_ALL);
+      executeCommand(commands_, Command::STATUS_ALL);
     } else {
-      executeCommand(_commands, Command::STATUS_ACTIVE);
+      executeCommand(commands_, Command::STATUS_ACTIVE);
     }
-    executeCommand(_routineCommands, Command::STATUS_ALL);
+    executeCommand(routineCommands_, Command::STATUS_ALL);
     afterEachIteration();
-    if(!_commands.empty()) {
+    if(!commands_.empty()) {
       waitData();
     }
-    _noWait = false;
+    noWait_ = false;
     calculateStatistics();
   }
   onEndOfRun();
@@ -164,69 +164,69 @@ void DownloadEngine::run()
 void DownloadEngine::waitData()
 {
   struct timeval tv;
-  if(_noWait) {
+  if(noWait_) {
     tv.tv_sec = tv.tv_usec = 0;
   } else {
     tv.tv_sec = 1;
     tv.tv_usec = 0;
   }
-  _eventPoll->poll(tv);
+  eventPoll_->poll(tv);
 }
 
 bool DownloadEngine::addSocketForReadCheck(const SocketHandle& socket,
                                            Command* command)
 {
-  return _eventPoll->addEvents(socket->getSockfd(), command,
+  return eventPoll_->addEvents(socket->getSockfd(), command,
                                EventPoll::EVENT_READ);
 }
 
 bool DownloadEngine::deleteSocketForReadCheck(const SocketHandle& socket,
                                               Command* command)
 {
-  return _eventPoll->deleteEvents(socket->getSockfd(), command,
+  return eventPoll_->deleteEvents(socket->getSockfd(), command,
                                   EventPoll::EVENT_READ);
 }
 
 bool DownloadEngine::addSocketForWriteCheck(const SocketHandle& socket,
                                             Command* command)
 {
-  return _eventPoll->addEvents(socket->getSockfd(), command,
+  return eventPoll_->addEvents(socket->getSockfd(), command,
                                EventPoll::EVENT_WRITE);
 }
 
 bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
                                                Command* command)
 {
-  return _eventPoll->deleteEvents(socket->getSockfd(), command,
+  return eventPoll_->deleteEvents(socket->getSockfd(), command,
                                   EventPoll::EVENT_WRITE);
 }
 
 void DownloadEngine::calculateStatistics()
 {
-  if(!_statCalc.isNull()) {
-    _statCalc->calculateStat(this);
+  if(!statCalc_.isNull()) {
+    statCalc_->calculateStat(this);
   }
 }
 
 void DownloadEngine::onEndOfRun()
 {
-  _requestGroupMan->updateServerStat();
-  _requestGroupMan->closeFile();
-  _requestGroupMan->save();
+  requestGroupMan_->updateServerStat();
+  requestGroupMan_->closeFile();
+  requestGroupMan_->save();
 }
 
 void DownloadEngine::afterEachIteration()
 {
-  _requestGroupMan->calculateStat();
+  requestGroupMan_->calculateStat();
   if(global::globalHaltRequested == 1) {
-    _logger->notice(_("Shutdown sequence commencing..."
+    logger_->notice(_("Shutdown sequence commencing..."
                       " Press Ctrl-C again for emergency shutdown."));
     requestHalt();
     global::globalHaltRequested = 2;
     setNoWait(true);
     setRefreshInterval(0);
   } else if(global::globalHaltRequested == 3) {
-    _logger->notice(_("Emergency shutdown sequence commencing..."));
+    logger_->notice(_("Emergency shutdown sequence commencing..."));
     requestForceHalt();
     global::globalHaltRequested = 4;
     setNoWait(true);
@@ -236,70 +236,70 @@ void DownloadEngine::afterEachIteration()
 
 void DownloadEngine::requestHalt()
 {
-  _haltRequested = true;
-  _requestGroupMan->halt();
+  haltRequested_ = true;
+  requestGroupMan_->halt();
 }
 
 void DownloadEngine::requestForceHalt()
 {
-  _haltRequested = true;
-  _requestGroupMan->forceHalt();
+  haltRequested_ = true;
+  requestGroupMan_->forceHalt();
 }
 
 void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
 {
-  _statCalc = statCalc;
+  statCalc_ = statCalc;
 }
 
 #ifdef ENABLE_ASYNC_DNS
 bool DownloadEngine::addNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver, Command* command)
 {
-  return _eventPoll->addNameResolver(resolver, command);
+  return eventPoll_->addNameResolver(resolver, command);
 }
 
 bool DownloadEngine::deleteNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver, Command* command)
 {
-  return _eventPoll->deleteNameResolver(resolver, command);
+  return eventPoll_->deleteNameResolver(resolver, command);
 }
 #endif // ENABLE_ASYNC_DNS
 
 void DownloadEngine::setNoWait(bool b)
 {
-  _noWait = b;
+  noWait_ = b;
 }
 
 void DownloadEngine::addRoutineCommand(Command* command)
 {
-  _routineCommands.push_back(command);
+  routineCommands_.push_back(command);
 }
 
 void DownloadEngine::poolSocket(const std::string& key,
                                 const SocketPoolEntry& entry)
 {
-  _logger->info("Pool socket for %s", key.c_str());
+  logger_->info("Pool socket for %s", key.c_str());
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
-  _socketPool.insert(p);
+  socketPool_.insert(p);
 
-  if(_lastSocketPoolScan.difference(global::wallclock) >= 60) {
+  if(lastSocketPoolScan_.difference(global::wallclock) >= 60) {
     std::multimap<std::string, SocketPoolEntry> newPool;
-    if(_logger->debug()) {
-      _logger->debug("Scaning SocketPool and erasing timed out entry.");
+    if(logger_->debug()) {
+      logger_->debug("Scaning SocketPool and erasing timed out entry.");
     }
-    _lastSocketPoolScan = global::wallclock;
+    lastSocketPoolScan_ = global::wallclock;
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
-          _socketPool.begin(), eoi = _socketPool.end(); i != eoi; ++i) {
+          socketPool_.begin(), eoi = socketPool_.end(); i != eoi; ++i) {
       if(!(*i).second.isTimeout()) {
         newPool.insert(*i);
       }
     }
-    if(_logger->debug()) {
-      _logger->debug
+    if(logger_->debug()) {
+      logger_->debug
         ("%lu entries removed.",
-         static_cast<unsigned long>(_socketPool.size()-newPool.size()));
+         static_cast<unsigned long>(socketPool_.size()-newPool.size()));
     }
-    _socketPool = newPool;
+    socketPool_ = newPool;
   }
 }
 
@@ -395,16 +395,16 @@ DownloadEngine::findSocketPoolEntry(const std::string& key)
 {
   std::pair<std::multimap<std::string, SocketPoolEntry>::iterator,
     std::multimap<std::string, SocketPoolEntry>::iterator> range =
-    _socketPool.equal_range(key);
+    socketPool_.equal_range(key);
   for(std::multimap<std::string, SocketPoolEntry>::iterator i =
         range.first, eoi = range.second; i != eoi; ++i) {
     const SocketPoolEntry& e = (*i).second;
     if(!e.isTimeout()) {
-      _logger->info("Found socket for %s", key.c_str());
+      logger_->info("Found socket for %s", key.c_str());
       return i;
     }
   }
-  return _socketPool.end();
+  return socketPool_.end();
 }
 
 SharedHandle<SocketCore>
@@ -416,9 +416,9 @@ DownloadEngine::popPooledSocket
   std::multimap<std::string, SocketPoolEntry>::iterator i =
     findSocketPoolEntry
     (createSockPoolKey(ipaddr, port, A2STR::NIL, proxyhost, proxyport));
-  if(i != _socketPool.end()) {
+  if(i != socketPool_.end()) {
     s = (*i).second.getSocket();
-    _socketPool.erase(i);
+    socketPool_.erase(i);
   }
   return s;
 }
@@ -434,10 +434,10 @@ DownloadEngine::popPooledSocket
   std::multimap<std::string, SocketPoolEntry>::iterator i =
     findSocketPoolEntry
     (createSockPoolKey(ipaddr, port, username, proxyhost, proxyport));
-  if(i != _socketPool.end()) {
+  if(i != socketPool_.end()) {
     s = (*i).second.getSocket();
     options = (*i).second.getOptions();
-    _socketPool.erase(i);
+    socketPool_.erase(i);
   }
   return s;  
 }
@@ -478,60 +478,60 @@ DownloadEngine::SocketPoolEntry::SocketPoolEntry
 (const SharedHandle<SocketCore>& socket,
  const std::map<std::string, std::string>& options,
  time_t timeout):
-  _socket(socket),
-  _options(options),
-  _timeout(timeout) {}
+  socket_(socket),
+  options_(options),
+  timeout_(timeout) {}
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
 (const SharedHandle<SocketCore>& socket, time_t timeout):
-  _socket(socket),
-  _timeout(timeout) {}
+  socket_(socket),
+  timeout_(timeout) {}
 
 DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
 
 bool DownloadEngine::SocketPoolEntry::isTimeout() const
 {
-  return _registeredTime.difference(global::wallclock) >= _timeout;
+  return registeredTime_.difference(global::wallclock) >= timeout_;
 }
 
 cuid_t DownloadEngine::newCUID()
 {
-  return _cuidCounter.newID();
+  return cuidCounter_.newID();
 }
 
 const std::string& DownloadEngine::findCachedIPAddress
 (const std::string& hostname, uint16_t port) const
 {
-  return _dnsCache->find(hostname, port);
+  return dnsCache_->find(hostname, port);
 }
 
 void DownloadEngine::cacheIPAddress
 (const std::string& hostname, const std::string& ipaddr, uint16_t port)
 {
-  _dnsCache->put(hostname, ipaddr, port);
+  dnsCache_->put(hostname, ipaddr, port);
 }
 
 void DownloadEngine::markBadIPAddress
 (const std::string& hostname, const std::string& ipaddr, uint16_t port)
 {
-  _dnsCache->markBad(hostname, ipaddr, port);
+  dnsCache_->markBad(hostname, ipaddr, port);
 }
 
 void DownloadEngine::removeCachedIPAddress
 (const std::string& hostname, uint16_t port)
 {
-  _dnsCache->remove(hostname, port);
+  dnsCache_->remove(hostname, port);
 }
 
 void DownloadEngine::setAuthConfigFactory
 (const SharedHandle<AuthConfigFactory>& factory)
 {
-  _authConfigFactory = factory;
+  authConfigFactory_ = factory;
 }
 
 void DownloadEngine::setRefreshInterval(time_t interval)
 {
-  _refreshInterval = interval;
+  refreshInterval_ = interval;
 }
 
 } // namespace aria2

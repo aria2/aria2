@@ -49,10 +49,10 @@ typedef std::map<std::string, bool> FeatureMap;
 
 class FeatureConfig {
 private:
-  static SharedHandle<FeatureConfig> _featureConfig;
+  static SharedHandle<FeatureConfig> featureConfig_;
 
-  PortMap _defaultPorts;
-  FeatureMap _features;
+  PortMap defaultPorts_;
+  FeatureMap features_;
 
   FeatureConfig();
 public:
@@ -66,7 +66,7 @@ public:
 
   const FeatureMap& getFeatures() const
   {
-    return _features;
+    return features_;
   }
 
   static const std::string FEATURE_HTTPS;

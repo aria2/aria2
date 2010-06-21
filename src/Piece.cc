@@ -44,127 +44,127 @@
 
 namespace aria2 {
 
-Piece::Piece():_index(0), _length(0), _blockLength(BLOCK_LENGTH), _bitfield(0)
+Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(0)
 #ifdef ENABLE_MESSAGE_DIGEST
-              , _nextBegin(0)
+              , nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
 Piece::Piece(size_t index, size_t length, size_t blockLength):
-  _index(index), _length(length), _blockLength(blockLength),
-  _bitfield(new BitfieldMan(_blockLength, length))
+  index_(index), length_(length), blockLength_(blockLength),
+  bitfield_(new BitfieldMan(blockLength_, length))
 #ifdef ENABLE_MESSAGE_DIGEST
-                                                             , _nextBegin(0)
+                                                             , nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
 Piece::Piece(const Piece& piece) {
-  _index = piece._index;
-  _length = piece._length;
-  _blockLength = piece._blockLength;
-  if(piece._bitfield == 0) {
-    _bitfield = 0;
+  index_ = piece.index_;
+  length_ = piece.length_;
+  blockLength_ = piece.blockLength_;
+  if(piece.bitfield_ == 0) {
+    bitfield_ = 0;
   } else {
-    _bitfield = new BitfieldMan(*piece._bitfield);
+    bitfield_ = new BitfieldMan(*piece.bitfield_);
   }
 #ifdef ENABLE_MESSAGE_DIGEST
-  _nextBegin = piece._nextBegin;
+  nextBegin_ = piece.nextBegin_;
   // TODO Is this OK?
-  _mdctx = piece._mdctx;
+  mdctx_ = piece.mdctx_;
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
 Piece::~Piece()
 {
-  delete _bitfield;
+  delete bitfield_;
 }
 
 Piece& Piece::operator=(const Piece& piece)
 {
   if(this != &piece) {
-    _index = piece._index;
-    _length = piece._length;
-    delete _bitfield;
-    if(piece._bitfield) {
-      _bitfield = new BitfieldMan(*piece._bitfield);
+    index_ = piece.index_;
+    length_ = piece.length_;
+    delete bitfield_;
+    if(piece.bitfield_) {
+      bitfield_ = new BitfieldMan(*piece.bitfield_);
     } else {
-      _bitfield = 0;
+      bitfield_ = 0;
     }
   }
   return *this;
 }
 
 void Piece::completeBlock(size_t blockIndex) {
-  _bitfield->setBit(blockIndex);
-  _bitfield->unsetUseBit(blockIndex);
+  bitfield_->setBit(blockIndex);
+  bitfield_->unsetUseBit(blockIndex);
 }
 
 void Piece::clearAllBlock() {
-  _bitfield->clearAllBit();
-  _bitfield->clearAllUseBit();
+  bitfield_->clearAllBit();
+  bitfield_->clearAllUseBit();
 }
 
 void Piece::setAllBlock() {
-  _bitfield->setAllBit();
+  bitfield_->setAllBit();
 }
 
 bool Piece::pieceComplete() const {
-  return _bitfield->isAllBitSet();
+  return bitfield_->isAllBitSet();
 }
 
 size_t Piece::countBlock() const
 {
-  return _bitfield->countBlock();
+  return bitfield_->countBlock();
 }
 
 size_t Piece::getBlockLength(size_t index) const
 {
-  return _bitfield->getBlockLength(index);
+  return bitfield_->getBlockLength(index);
 }
 
 size_t Piece::getBlockLength() const
 {
-  return _bitfield->getBlockLength();
+  return bitfield_->getBlockLength();
 }
 
 const unsigned char* Piece::getBitfield() const
 {
-  return _bitfield->getBitfield();
+  return bitfield_->getBitfield();
 }
 
 size_t Piece::getBitfieldLength() const
 {
-  return _bitfield->getBitfieldLength();
+  return bitfield_->getBitfieldLength();
 }
 
 bool Piece::isBlockUsed(size_t index) const
 {
-  return _bitfield->isUseBitSet(index);
+  return bitfield_->isUseBitSet(index);
 }
 
 void Piece::cancelBlock(size_t blockIndex) {
-  _bitfield->unsetUseBit(blockIndex);
+  bitfield_->unsetUseBit(blockIndex);
 }
 
 size_t Piece::countCompleteBlock() const
 {
-  return _bitfield->countBlock()-_bitfield->countMissingBlock();
+  return bitfield_->countBlock()-bitfield_->countMissingBlock();
 }
 
 size_t Piece::countMissingBlock() const
 {
-  return _bitfield->countMissingBlock();
+  return bitfield_->countMissingBlock();
 }
 
 bool Piece::hasBlock(size_t blockIndex) const
 {
-  return _bitfield->isBitSet(blockIndex);
+  return bitfield_->isBitSet(blockIndex);
 }
 
 bool Piece::getMissingUnusedBlockIndex(size_t& index) const
 {
-  if(_bitfield->getFirstMissingUnusedIndex(index)) {
-    _bitfield->setUseBit(index);
+  if(bitfield_->getFirstMissingUnusedIndex(index)) {
+    bitfield_->setUseBit(index);
     return true;
   } else {
     return false;
@@ -174,11 +174,11 @@ bool Piece::getMissingUnusedBlockIndex(size_t& index) const
 size_t Piece::getMissingUnusedBlockIndex
 (std::vector<size_t>& indexes, size_t n) const
 {
-  size_t num = _bitfield->getFirstNMissingUnusedIndex(indexes, n);
+  size_t num = bitfield_->getFirstNMissingUnusedIndex(indexes, n);
   if(num) {
     for(std::vector<size_t>::const_iterator i = indexes.end()-num,
           eoi = indexes.end(); i != eoi; ++i) {
-      _bitfield->setUseBit(*i);
+      bitfield_->setUseBit(*i);
     }
   }
   return num;
@@ -186,60 +186,60 @@ size_t Piece::getMissingUnusedBlockIndex
 
 bool Piece::getFirstMissingBlockIndexWithoutLock(size_t& index) const
 {
-  return _bitfield->getFirstMissingIndex(index);
+  return bitfield_->getFirstMissingIndex(index);
 }
 
 bool Piece::getAllMissingBlockIndexes
 (unsigned char* misbitfield, size_t mislen) const
 {
-  return _bitfield->getAllMissingIndexes(misbitfield, mislen);
+  return bitfield_->getAllMissingIndexes(misbitfield, mislen);
 }
 
 std::string Piece::toString() const {
-  return strconcat("piece: index=", util::itos(_index),
-                   ", length=", util::itos(_length));
+  return strconcat("piece: index=", util::itos(index_),
+                   ", length=", util::itos(length_));
 }
 
 void Piece::reconfigure(size_t length)
 {
-  delete _bitfield;
-  _length = length;
-  _bitfield = new BitfieldMan(_blockLength, _length);
+  delete bitfield_;
+  length_ = length;
+  bitfield_ = new BitfieldMan(blockLength_, length_);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, size_t len)
 {
-  _bitfield->setBitfield(bitfield, len);
+  bitfield_->setBitfield(bitfield, len);
 }
 
 size_t Piece::getCompletedLength()
 {
-  return _bitfield->getCompletedLength();
+  return bitfield_->getCompletedLength();
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
 void Piece::setHashAlgo(const std::string& algo)
 {
-  _hashAlgo = algo;
+  hashAlgo_ = algo;
 }
 
 bool Piece::updateHash
 (uint32_t begin, const unsigned char* data, size_t dataLength)
 {
-  if(_hashAlgo.empty()) {
+  if(hashAlgo_.empty()) {
     return false;
   }
-  if(begin == _nextBegin && _nextBegin+dataLength <= _length) {
+  if(begin == nextBegin_ && nextBegin_+dataLength <= length_) {
 
-    if(_mdctx.isNull()) {
-      _mdctx.reset(new MessageDigestContext());      
-      _mdctx->trySetAlgo(_hashAlgo);
-      _mdctx->digestInit();
+    if(mdctx_.isNull()) {
+      mdctx_.reset(new MessageDigestContext());      
+      mdctx_->trySetAlgo(hashAlgo_);
+      mdctx_->digestInit();
     }
 
-    _mdctx->digestUpdate(data, dataLength);
-    _nextBegin += dataLength;
+    mdctx_->digestUpdate(data, dataLength);
+    nextBegin_ += dataLength;
     return true;
   } else {
     return false;
@@ -248,15 +248,15 @@ bool Piece::updateHash
 
 bool Piece::isHashCalculated() const
 {
-  return !_mdctx.isNull() && _nextBegin == _length;
+  return !mdctx_.isNull() && nextBegin_ == length_;
 }
 
 std::string Piece::getHashString()
 {
-  if(_mdctx.isNull()) {
+  if(mdctx_.isNull()) {
     return A2STR::NIL;
   } else {
-    std::string hash = util::toHex(_mdctx->digestFinal());
+    std::string hash = util::toHex(mdctx_->digestFinal());
     destroyHashContext();
     return hash;
   }
@@ -264,8 +264,8 @@ std::string Piece::getHashString()
 
 void Piece::destroyHashContext()
 {
-  _mdctx.reset();
-  _nextBegin = 0;
+  mdctx_.reset();
+  nextBegin_ = 0;
 }
 
 #endif // ENABLE_MESSAGE_DIGEST

@@ -71,7 +71,7 @@
 
 namespace aria2 {
 
-bool Platform::_initialized = false;
+bool Platform::initialized_ = false;
 
 Platform::Platform()
 {
@@ -85,10 +85,10 @@ Platform::~Platform()
 
 bool Platform::setUp()
 {
-  if (_initialized) {
+  if (initialized_) {
     return false;
   }
-  _initialized = true;
+  initialized_ = true;
 
 #ifdef ENABLE_NLS
   setlocale (LC_CTYPE, "");
@@ -132,10 +132,10 @@ bool Platform::setUp()
 
 bool Platform::tearDown()
 {
-  if (!_initialized) {
+  if (!initialized_) {
     return false;
   }
-  _initialized = false;
+  initialized_ = false;
 
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
@@ -154,7 +154,7 @@ bool Platform::tearDown()
 
 bool Platform::isInitialized()
 {
-  return _initialized;
+  return initialized_;
 }
 
 } // namespace aria2

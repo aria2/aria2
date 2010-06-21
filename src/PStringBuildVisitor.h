@@ -49,9 +49,9 @@ class PStringBuildVisitor : public PStringVisitor
 {
 private:
 
-  std::deque<std::string> _buildQueue;
+  std::deque<std::string> buildQueue_;
 
-  std::vector<std::string> _uris;
+  std::vector<std::string> uris_;
 public:
   
   virtual void visit(PStringSegment& s);

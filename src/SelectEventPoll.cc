@@ -49,39 +49,39 @@
 namespace aria2 {
 
 SelectEventPoll::CommandEvent::CommandEvent(Command* command, int events):
-  _command(command), _events(events) {}
+  command_(command), events_(events) {}
 
 void SelectEventPoll::CommandEvent::processEvents(int events)
 {
-  if((_events&events) ||
+  if((events_&events) ||
      ((EventPoll::EVENT_ERROR|EventPoll::EVENT_HUP)&events)) {
-    _command->setStatusActive();
+    command_->setStatusActive();
   }
   if(EventPoll::EVENT_READ&events) {
-    _command->readEventReceived();
+    command_->readEventReceived();
   }
   if(EventPoll::EVENT_WRITE&events) {
-    _command->writeEventReceived();
+    command_->writeEventReceived();
   }
   if(EventPoll::EVENT_ERROR&events) {
-    _command->errorEventReceived();
+    command_->errorEventReceived();
   }
   if(EventPoll::EVENT_HUP&events) {
-    _command->hupEventReceived();
+    command_->hupEventReceived();
   }
 }
 
-SelectEventPoll::SocketEntry::SocketEntry(sock_t socket):_socket(socket) {}
+SelectEventPoll::SocketEntry::SocketEntry(sock_t socket):socket_(socket) {}
 
 void SelectEventPoll::SocketEntry::addCommandEvent
 (Command* command, int events)
 {
   CommandEvent cev(command, events);
-  std::deque<CommandEvent>::iterator i = std::find(_commandEvents.begin(),
-                                                   _commandEvents.end(),
+  std::deque<CommandEvent>::iterator i = std::find(commandEvents_.begin(),
+                                                   commandEvents_.end(),
                                                    cev);
-  if(i == _commandEvents.end()) {
-    _commandEvents.push_back(cev);
+  if(i == commandEvents_.end()) {
+    commandEvents_.push_back(cev);
   } else {
     (*i).addEvents(events);
   }
@@ -90,21 +90,21 @@ void SelectEventPoll::SocketEntry::removeCommandEvent
 (Command* command, int events)
 {
   CommandEvent cev(command, events);
-  std::deque<CommandEvent>::iterator i = std::find(_commandEvents.begin(),
-                                                   _commandEvents.end(),
+  std::deque<CommandEvent>::iterator i = std::find(commandEvents_.begin(),
+                                                   commandEvents_.end(),
                                                    cev);
-  if(i == _commandEvents.end()) {
+  if(i == commandEvents_.end()) {
     // not found
   } else {
     (*i).removeEvents(events);
     if((*i).eventsEmpty()) {
-      _commandEvents.erase(i);
+      commandEvents_.erase(i);
     }
   }
 }
 void SelectEventPoll::SocketEntry::processEvents(int events)
 {
-  std::for_each(_commandEvents.begin(), _commandEvents.end(),
+  std::for_each(commandEvents_.begin(), commandEvents_.end(),
                 std::bind2nd(std::mem_fun_ref(&CommandEvent::processEvents),
                              events));
 }
@@ -117,7 +117,7 @@ int accumulateEvent(int events, const SelectEventPoll::CommandEvent& event)
 int SelectEventPoll::SocketEntry::getEvents()
 {
   return
-    std::accumulate(_commandEvents.begin(), _commandEvents.end(), 0,
+    std::accumulate(commandEvents_.begin(), commandEvents_.end(), 0,
                     accumulateEvent);
 }
 
@@ -125,22 +125,22 @@ int SelectEventPoll::SocketEntry::getEvents()
 
 SelectEventPoll::AsyncNameResolverEntry::AsyncNameResolverEntry
 (const SharedHandle<AsyncNameResolver>& nameResolver, Command* command):
-  _nameResolver(nameResolver), _command(command) {}
+  nameResolver_(nameResolver), command_(command) {}
 
 int SelectEventPoll::AsyncNameResolverEntry::getFds
 (fd_set* rfdsPtr, fd_set* wfdsPtr)
 {
-  return _nameResolver->getFds(rfdsPtr, wfdsPtr);
+  return nameResolver_->getFds(rfdsPtr, wfdsPtr);
 }
 
 void SelectEventPoll::AsyncNameResolverEntry::process
 (fd_set* rfdsPtr, fd_set* wfdsPtr)
 {
-  _nameResolver->process(rfdsPtr, wfdsPtr);
-  switch(_nameResolver->getStatus()) {
+  nameResolver_->process(rfdsPtr, wfdsPtr);
+  switch(nameResolver_->getStatus()) {
   case AsyncNameResolver::STATUS_SUCCESS:
   case AsyncNameResolver::STATUS_ERROR:
-    _command->setStatusActive();
+    command_->setStatusActive();
     break;
   default:
     break;
@@ -149,11 +149,11 @@ void SelectEventPoll::AsyncNameResolverEntry::process
 
 #endif // ENABLE_ASYNC_DNS
 
-SelectEventPoll::SelectEventPoll():_logger(LogFactory::getInstance())
+SelectEventPoll::SelectEventPoll():logger_(LogFactory::getInstance())
 {
 #ifdef __MINGW32__
-  _dummySocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  assert(_dummySocket != (sock_t)-1);
+  dummySocket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  assert(dummySocket_ != (sock_t)-1);
 #endif // __MINGW32__
   updateFdSet();
 }
@@ -161,7 +161,7 @@ SelectEventPoll::SelectEventPoll():_logger(LogFactory::getInstance())
 SelectEventPoll::~SelectEventPoll()
 {
 #ifdef __MINGW32__
-  ::closesocket(_dummySocket);
+  ::closesocket(dummySocket_);
 #endif // __MINGW32__
 }
 
@@ -170,23 +170,23 @@ void SelectEventPoll::poll(const struct timeval& tv)
   fd_set rfds;
   fd_set wfds;
   
-  memcpy(&rfds, &_rfdset, sizeof(fd_set));
-  memcpy(&wfds, &_wfdset, sizeof(fd_set));
+  memcpy(&rfds, &rfdset_, sizeof(fd_set));
+  memcpy(&wfds, &wfdset_, sizeof(fd_set));
 #ifdef __MINGW32__
   fd_set efds;
   FD_ZERO(&efds);
-  FD_SET(_dummySocket, &efds);
+  FD_SET(dummySocket_, &efds);
 #endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
   for(std::deque<SharedHandle<AsyncNameResolverEntry> >::const_iterator itr =
-        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
       itr != eoi; ++itr) {
     const SharedHandle<AsyncNameResolverEntry>& entry = *itr;
     int fd = entry->getFds(&rfds, &wfds);
     // TODO force error if fd == 0
-    if(_fdmax < fd) {
-      _fdmax = fd;
+    if(fdmax_ < fd) {
+      fdmax_ = fd;
     }
   }
 
@@ -195,14 +195,14 @@ void SelectEventPoll::poll(const struct timeval& tv)
   do {
     struct timeval ttv = tv;
 #ifdef __MINGW32__
-    retval = select(_fdmax+1, &rfds, &wfds, &efds, &ttv);
+    retval = select(fdmax_+1, &rfds, &wfds, &efds, &ttv);
 #else // !__MINGW32__
-    retval = select(_fdmax+1, &rfds, &wfds, NULL, &ttv);
+    retval = select(fdmax_+1, &rfds, &wfds, NULL, &ttv);
 #endif // !__MINGW32__
   } while(retval == -1 && errno == EINTR);
   if(retval > 0) {
     for(std::deque<SharedHandle<SocketEntry> >::const_iterator i =
-          _socketEntries.begin(), eoi = _socketEntries.end(); i != eoi; ++i) {
+          socketEntries_.begin(), eoi = socketEntries_.end(); i != eoi; ++i) {
       int events = 0;
       if(FD_ISSET((*i)->getSocket(), &rfds)) {
         events |= EventPoll::EVENT_READ;
@@ -216,7 +216,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #ifdef ENABLE_ASYNC_DNS
 
   for(std::deque<SharedHandle<AsyncNameResolverEntry> >::const_iterator i =
-        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
       i != eoi; ++i) {
     (*i)->process(&rfds, &wfds);
   }
@@ -237,18 +237,18 @@ static void checkFdCountMingw(const fd_set& fdset, Logger* logger)
 void SelectEventPoll::updateFdSet()
 {
 #ifdef __MINGW32__
-  _fdmax = _dummySocket;
+  fdmax_ = dummySocket_;
 #else // !__MINGW32__
-  _fdmax = 0;
+  fdmax_ = 0;
 #endif // !__MINGW32__
-  FD_ZERO(&_rfdset);
-  FD_ZERO(&_wfdset);
+  FD_ZERO(&rfdset_);
+  FD_ZERO(&wfdset_);
   for(std::deque<SharedHandle<SocketEntry> >::const_iterator i =
-        _socketEntries.begin(), eoi = _socketEntries.end(); i != eoi; ++i) {
+        socketEntries_.begin(), eoi = socketEntries_.end(); i != eoi; ++i) {
     sock_t fd = (*i)->getSocket();
 #ifndef __MINGW32__
     if(fd < 0 || FD_SETSIZE <= fd) {
-      _logger->warn("Detected file descriptor >= FD_SETSIZE or < 0. "
+      logger_->warn("Detected file descriptor >= FD_SETSIZE or < 0. "
                     "Download may slow down or fail.");
       continue;
     }
@@ -256,18 +256,18 @@ void SelectEventPoll::updateFdSet()
     int events = (*i)->getEvents();
     if(events&EventPoll::EVENT_READ) {
 #ifdef __MINGW32__
-      checkFdCountMingw(_rfdset, _logger);
+      checkFdCountMingw(rfdset_, logger_);
 #endif // __MINGW32__
-      FD_SET(fd, &_rfdset);
+      FD_SET(fd, &rfdset_);
     }
     if(events&EventPoll::EVENT_WRITE) {
 #ifdef __MINGW32__
-      checkFdCountMingw(_wfdset, _logger);
+      checkFdCountMingw(wfdset_, logger_);
 #endif // __MINGW32__
-      FD_SET(fd, &_wfdset);
+      FD_SET(fd, &wfdset_);
     }
-    if(_fdmax < fd) {
-      _fdmax = fd;
+    if(fdmax_ < fd) {
+      fdmax_ = fd;
     }
   }
 }
@@ -277,18 +277,18 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
   int r = 0;
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
     (*i)->addCommandEvent(command, events);
   } else {
-    _socketEntries.insert(i, socketEntry);
+    socketEntries_.insert(i, socketEntry);
     socketEntry->addCommandEvent(command, events);
   }
   updateFdSet();
   if(r == -1) {
-    if(_logger->debug()) {
-      _logger->debug("Failed to add socket event %d:%s",
+    if(logger_->debug()) {
+      logger_->debug("Failed to add socket event %d:%s",
                      socket, strerror(errno));
     }
     return false;
@@ -302,25 +302,25 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
     (*i)->removeCommandEvent(command, events);
     int r = 0;
     if((*i)->eventEmpty()) {
-      _socketEntries.erase(i);
+      socketEntries_.erase(i);
     }
     updateFdSet();
     if(r == -1) {
-      if(_logger->debug()) {
-        _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      if(logger_->debug()) {
+        logger_->debug("Failed to delete socket event:%s", strerror(errno));
       }
       return false;
     } else {
       return true;
     }
   } else {
-    if(_logger->debug()) {
-      _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    if(logger_->debug()) {
+      logger_->debug("Socket %d is not found in SocketEntries.", socket);
     }
     return false;
   }
@@ -333,9 +333,9 @@ bool SelectEventPoll::addNameResolver
   SharedHandle<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
-    _nameResolverEntries.push_back(entry);
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
+    nameResolverEntries_.push_back(entry);
     return true;
   } else {
     return false;
@@ -348,11 +348,11 @@ bool SelectEventPoll::deleteNameResolver
   SharedHandle<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
     return false;
   } else {
-    _nameResolverEntries.erase(itr);
+    nameResolverEntries_.erase(itr);
     return true;
   }
 }

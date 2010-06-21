@@ -46,16 +46,16 @@ class DHTTaskFactory;
 
 class BtPortMessage : public SimpleBtMessage {
 private:
-  uint16_t _port;
+  uint16_t port_;
   static const size_t MESSAGE_LENGTH = 7;
 
-  WeakHandle<DHTNode> _localNode;
+  WeakHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTRoutingTable> _routingTable;
+  WeakHandle<DHTRoutingTable> routingTable_;
 
-  WeakHandle<DHTTaskQueue> _taskQueue;
+  WeakHandle<DHTTaskQueue> taskQueue_;
 
-  WeakHandle<DHTTaskFactory> _taskFactory;
+  WeakHandle<DHTTaskFactory> taskFactory_;
 public:
   BtPortMessage(uint16_t port);
 
@@ -63,7 +63,7 @@ public:
 
   static const std::string NAME;
 
-  uint16_t getPort() const { return _port; }
+  uint16_t getPort() const { return port_; }
 
   static SharedHandle<BtPortMessage> create
   (const unsigned char* data, size_t dataLength);

@@ -70,10 +70,10 @@ void DHTPeerLookupTask::onReceivedInternal
 (const DHTGetPeersReplyMessage* message)
 {
   SharedHandle<DHTNode> remoteNode = message->getRemoteNode();
-  _tokenStorage[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] =
+  tokenStorage_[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] =
     message->getToken();
-  _peerStorage->addPeer(message->getValues());
-  _peers.insert(_peers.end(),
+  peerStorage_->addPeer(message->getValues());
+  peers_.insert(peers_.end(),
                 message->getValues().begin(), message->getValues().end());
   getLogger()->info("Received %u peers.", message->getValues().size());
 }
@@ -103,8 +103,8 @@ void DHTPeerLookupTask::onFinish()
         getMessageFactory()->createAnnouncePeerMessage
         (node,
          getTargetID(), // this is infoHash
-         _btRuntime->getListenPort(),
-         _tokenStorage[util::toHex(node->getID(), DHT_ID_LENGTH)]);
+         btRuntime_->getListenPort(),
+         tokenStorage_[util::toHex(node->getID(), DHT_ID_LENGTH)]);
       getMessageDispatcher()->addMessageToQueue(m);
     }
   }
@@ -112,12 +112,12 @@ void DHTPeerLookupTask::onFinish()
 
 void DHTPeerLookupTask::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
 {
-  _btRuntime = btRuntime;
+  btRuntime_ = btRuntime;
 }
 
 void DHTPeerLookupTask::setPeerStorage(const SharedHandle<PeerStorage>& ps)
 {
-  _peerStorage = ps;
+  peerStorage_ = ps;
 }
 
 } // namespace aria2

@@ -48,7 +48,7 @@ class DownloadEngine;
 
 class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry {
 private:
-  SharedHandle<FileAllocationIterator> _fileAllocationIterator;
+  SharedHandle<FileAllocationIterator> fileAllocationIterator_;
 public:
   FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 

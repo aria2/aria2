@@ -48,13 +48,13 @@ class DHTRoutingTable;
 
 class DHTAbstractMessage:public DHTMessage {
 private:
-  WeakHandle<DHTConnection> _connection;
+  WeakHandle<DHTConnection> connection_;
 
-  WeakHandle<DHTMessageDispatcher> _dispatcher;
+  WeakHandle<DHTMessageDispatcher> dispatcher_;
 
-  WeakHandle<DHTMessageFactory> _factory;
+  WeakHandle<DHTMessageFactory> factory_;
 
-  WeakHandle<DHTRoutingTable> _routingTable;
+  WeakHandle<DHTRoutingTable> routingTable_;
 public:
   DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
                      const SharedHandle<DHTNode>& remoteNode,
@@ -72,28 +72,28 @@ public:
 
   const WeakHandle<DHTConnection>& getConnection() const
   {
-    return _connection;
+    return connection_;
   }
 
   void setConnection(const WeakHandle<DHTConnection>& connection);
 
   const WeakHandle<DHTMessageDispatcher>& getMessageDispatcher() const
   {
-    return _dispatcher;
+    return dispatcher_;
   }
 
   void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher>& dispatcher);
   
   const WeakHandle<DHTMessageFactory>& getMessageFactory() const
   {
-    return _factory;
+    return factory_;
   }
 
   void setMessageFactory(const WeakHandle<DHTMessageFactory>& factory);
 
   const WeakHandle<DHTRoutingTable>& getRoutingTable() const
   {
-    return _routingTable;
+    return routingTable_;
   }
 
   void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);

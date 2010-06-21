@@ -72,17 +72,17 @@ private:
     SharedHandle<DHTMessageFactory> messageFactory;
   };
 
-  static Data _data;
+  static Data data_;
   DHTRegistry();
 public:
   static const Data& getData()
   {
-    return _data;
+    return data_;
   }
 
   static Data& getMutableData()
   {
-    return _data;
+    return data_;
   }
 
   static void clearData();

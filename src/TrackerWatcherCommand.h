@@ -51,19 +51,19 @@ class Option;
 class TrackerWatcherCommand : public Command
 {
 private:
-  RequestGroup* _requestGroup;
+  RequestGroup* requestGroup_;
 
-  DownloadEngine* _e;
+  DownloadEngine* e_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 
-  SharedHandle<BtAnnounce> _btAnnounce;
+  SharedHandle<BtAnnounce> btAnnounce_;
 
-  SharedHandle<RequestGroup> _trackerRequestGroup;
+  SharedHandle<RequestGroup> trackerRequestGroup_;
   /**
    * Returns a command for announce request. Returns 0 if no announce request
    * is needed.

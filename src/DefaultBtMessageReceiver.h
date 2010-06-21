@@ -49,11 +49,11 @@ class Logger;
 
 class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:
-  bool _handshakeSent;
-  SharedHandle<DownloadContext> _downloadContext;
-  WeakHandle<PeerConnection> _peerConnection;
-  WeakHandle<BtMessageDispatcher> _dispatcher;
-  WeakHandle<BtMessageFactory> _messageFactory;
+  bool handshakeSent_;
+  SharedHandle<DownloadContext> downloadContext_;
+  WeakHandle<PeerConnection> peerConnection_;
+  WeakHandle<BtMessageDispatcher> dispatcher_;
+  WeakHandle<BtMessageFactory> messageFactory_;
 
   void sendHandshake();
 public:

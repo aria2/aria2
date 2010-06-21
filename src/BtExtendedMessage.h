@@ -47,9 +47,9 @@ typedef SharedHandle<BtExtendedMessage> BtExtendedMessageHandle;
 class BtExtendedMessage:public SimpleBtMessage
 {
 private:
-  SharedHandle<ExtensionMessage> _extensionMessage;
+  SharedHandle<ExtensionMessage> extensionMessage_;
 
-  size_t _msgLength;
+  size_t msgLength_;
 public:
   BtExtendedMessage(const SharedHandle<ExtensionMessage>& extensionMessage =
                     SharedHandle<ExtensionMessage>());
@@ -76,7 +76,7 @@ public:
 
   const SharedHandle<ExtensionMessage>& getExtensionMessage() const
   {
-    return _extensionMessage;
+    return extensionMessage_;
   }
 
 };

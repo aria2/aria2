@@ -48,13 +48,13 @@ class DHTNode;
 
 class BNode {
 private:
-  SharedHandle<DHTBucket> _bucket;
+  SharedHandle<DHTBucket> bucket_;
 
-  BNode* _up;
+  BNode* up_;
 
-  BNode* _left;
+  BNode* left_;
   
-  BNode* _right;
+  BNode* right_;
 
 public:
   BNode(const SharedHandle<DHTBucket>& bucket = SharedHandle<DHTBucket>());
@@ -63,28 +63,28 @@ public:
 
   const SharedHandle<DHTBucket>& getBucket() const
   {
-    return _bucket;
+    return bucket_;
   }
 
   void setBucket(const SharedHandle<DHTBucket>& bucket);
 
   BNode* getLeft() const
   {
-    return _left;
+    return left_;
   }
 
   void setLeft(BNode* left);
 
   BNode* getRight() const
   {
-    return _right;
+    return right_;
   }
 
   void setRight(BNode* right);
 
   BNode* getUp() const
   {
-    return _up;
+    return up_;
   }
 
   void setUp(BNode* up);

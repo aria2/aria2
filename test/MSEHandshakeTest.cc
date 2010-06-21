@@ -22,7 +22,7 @@ class MSEHandshakeTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHandshake);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
 
   void doHandshake(const SharedHandle<MSEHandshake>& initiator,
                    const SharedHandle<MSEHandshake>& receiver);
@@ -30,12 +30,12 @@ private:
 public:
   void setUp()
   {
-    _dctx.reset(new DownloadContext());
+    dctx_.reset(new DownloadContext());
     unsigned char infoHash[20];
     memset(infoHash, 0, sizeof(infoHash));
     SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
     torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
-    _dctx->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
+    dctx_->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
   }
 
   void testHandshake();
@@ -73,12 +73,12 @@ void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, 
   receiver->sendPublicKey();
 
   while(!initiator->receivePublicKey());
-  initiator->initCipher(bittorrent::getInfoHash(_dctx));
+  initiator->initCipher(bittorrent::getInfoHash(dctx_));
   initiator->sendInitiatorStep2();
 
   while(!receiver->findReceiverHashMarker());
   std::vector<SharedHandle<DownloadContext> > contexts;
-  contexts.push_back(_dctx);
+  contexts.push_back(dctx_);
   while(!receiver->receiveReceiverHashAndPadCLength(contexts));
   while(!receiver->receivePad());
   while(!receiver->receiveReceiverIALength());

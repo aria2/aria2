@@ -42,7 +42,7 @@ namespace aria2 {
 
 class Timer {
 private:
-  timeval _tv;
+  timeval tv_;
 
   time_t difference(const struct timeval& tv) const;
 
@@ -73,14 +73,14 @@ public:
 
   time_t difference(const Timer& timer) const
   {
-    return difference(timer._tv);
+    return difference(timer.tv_);
   }
 
   int64_t differenceInMillis() const;
 
   int64_t differenceInMillis(const Timer& timer) const
   {
-    return differenceInMillis(timer._tv);
+    return differenceInMillis(timer.tv_);
   }
 
   // Returns true if this object's time value is zero.

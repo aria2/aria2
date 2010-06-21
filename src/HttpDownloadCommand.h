@@ -44,8 +44,8 @@ class HttpConnection;
 
 class HttpDownloadCommand : public DownloadCommand {
 private:
-  SharedHandle<HttpResponse> _httpResponse;
-  SharedHandle<HttpConnection> _httpConnection;
+  SharedHandle<HttpResponse> httpResponse_;
+  SharedHandle<HttpConnection> httpConnection_;
 protected:
   virtual bool prepareForNextSegment();
 public:

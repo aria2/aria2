@@ -72,30 +72,30 @@ public:
     }
   };
 
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
   SharedHandle<MockBtMessageDispatcher> btMessageDispatcher;
-  SharedHandle<MockBtMessageFactory> _btMessageFactory;
+  SharedHandle<MockBtMessageFactory> btMessageFactory_;
   SharedHandle<Peer> peer;
   SharedHandle<BtPieceMessage> msg;
 
   void setUp() {
-    _dctx.reset(new DownloadContext(16*1024, 256*1024, "/path/to/file"));
+    dctx_.reset(new DownloadContext(16*1024, 256*1024, "/path/to/file"));
 
     peer.reset(new Peer("host", 6969));
-    peer->allocateSessionResource(_dctx->getPieceLength(),
-                                  _dctx->getTotalLength());
+    peer->allocateSessionResource(dctx_->getPieceLength(),
+                                  dctx_->getTotalLength());
 
     btMessageDispatcher.reset(new MockBtMessageDispatcher());
-    _btMessageFactory.reset(new MockBtMessageFactory2());
+    btMessageFactory_.reset(new MockBtMessageFactory2());
 
     msg.reset(new BtPieceMessage());
     msg->setIndex(1);
     msg->setBegin(1024);
     msg->setBlockLength(16*1024);
-    msg->setDownloadContext(_dctx);
+    msg->setDownloadContext(dctx_);
     msg->setPeer(peer);
     msg->setBtMessageDispatcher(btMessageDispatcher);
-    msg->setBtMessageFactory(_btMessageFactory);
+    msg->setBtMessageFactory(btMessageFactory_);
   }
 };
 

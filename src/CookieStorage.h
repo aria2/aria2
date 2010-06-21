@@ -57,17 +57,17 @@ public:
 
   class DomainEntry {
   private:
-    std::string _key;
+    std::string key_;
 
-    time_t _lastAccess;
+    time_t lastAccess_;
 
-    std::deque<Cookie> _cookies;
+    std::deque<Cookie> cookies_;
   public:
     DomainEntry(const std::string& domain);
 
     const std::string& getKey() const
     {
-      return _key;
+      return key_;
     }
 
     template<typename OutputIterator>
@@ -77,8 +77,8 @@ public:
      const std::string& requestPath,
      time_t date, bool secure)
     {
-      for(std::deque<Cookie>::iterator i = _cookies.begin();
-          i != _cookies.end(); ++i) {
+      for(std::deque<Cookie>::iterator i = cookies_.begin();
+          i != cookies_.end(); ++i) {
         if((*i).match(requestHost, requestPath, date, secure)) {
           (*i).updateLastAccess();
           out++ = *i;
@@ -89,7 +89,7 @@ public:
 
     size_t countCookie() const
     {
-      return _cookies.size();
+      return cookies_.size();
     }
 
     bool addCookie(const Cookie& cookie);
@@ -98,7 +98,7 @@ public:
 
     time_t getLastAccess() const
     {
-      return _lastAccess;
+      return lastAccess_;
     }
 
     void writeCookie(std::ostream& o) const;
@@ -108,20 +108,20 @@ public:
     template<typename OutputIterator>
     OutputIterator dumpCookie(OutputIterator out) const
     {
-      return std::copy(_cookies.begin(), _cookies.end(), out);
+      return std::copy(cookies_.begin(), cookies_.end(), out);
     }
 
     bool operator<(const DomainEntry& de) const
     {
-      return _key < de._key;
+      return key_ < de.key_;
     }
   };
 private:
-  std::deque<DomainEntry> _domains;
+  std::deque<DomainEntry> domains_;
 
-  CookieParser _parser;
+  CookieParser parser_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   template<typename InputIterator>
   void storeCookies(InputIterator first, InputIterator last)
@@ -146,7 +146,7 @@ public:
                      const std::string& requestPath);
 
   // Finds cookies matched with given criteria and returns them.
-  // Matched cookies' _lastAccess property is updated.
+  // Matched cookies' lastAccess_ property is updated.
   std::vector<Cookie> criteriaFind(const std::string& requestHost,
                                    const std::string& requestPath,
                                    time_t date, bool secure);
@@ -173,8 +173,8 @@ public:
   template<typename OutputIterator>
   OutputIterator dumpCookie(OutputIterator out) const
   {
-    for(std::deque<DomainEntry>::const_iterator i = _domains.begin(),
-          eoi = _domains.end(); i != eoi; ++i) {
+    for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
+          eoi = domains_.end(); i != eoi; ++i) {
       out = (*i).dumpCookie(out);
     }
     return out;

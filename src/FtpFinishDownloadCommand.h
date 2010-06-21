@@ -43,7 +43,7 @@ class FtpConnection;
 
 class FtpFinishDownloadCommand : public AbstractCommand {
 private:
-  SharedHandle<FtpConnection> _ftpConnection;
+  SharedHandle<FtpConnection> ftpConnection_;
 protected:
   virtual bool execute();
 

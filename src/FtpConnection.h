@@ -56,20 +56,20 @@ class AuthConfig;
 
 class FtpConnection {
 private:
-  cuid_t _cuid;
-  SharedHandle<SocketCore> _socket;
-  SharedHandle<Request> _req;
+  cuid_t cuid_;
+  SharedHandle<SocketCore> socket_;
+  SharedHandle<Request> req_;
 
-  SharedHandle<AuthConfig> _authConfig;
+  SharedHandle<AuthConfig> authConfig_;
 
-  const Option* _option;
-  Logger* _logger;
+  const Option* option_;
+  Logger* logger_;
 
-  std::string _strbuf;
+  std::string strbuf_;
 
-  SocketBuffer _socketBuffer;
+  SocketBuffer socketBuffer_;
 
-  std::string _baseWorkingDir;
+  std::string baseWorkingDir_;
 
   unsigned int getStatus(const std::string& response) const;
   std::string::size_type findEndOfResponse(unsigned int status,
@@ -117,7 +117,7 @@ public:
 
   const std::string& getBaseWorkingDir() const
   {
-    return _baseWorkingDir;
+    return baseWorkingDir_;
   }
 
   const std::string& getUser() const;

@@ -44,7 +44,7 @@ class DHTTokenTracker {
 private:
   static const size_t SECRET_SIZE = 4;
 
-  unsigned char _secret[2][SECRET_SIZE];
+  unsigned char secret_[2][SECRET_SIZE];
 
   std::string generateToken(const unsigned char* infoHash,
                             const std::string& ipaddr, uint16_t port,

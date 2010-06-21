@@ -50,7 +50,7 @@ class MetalinkEntry;
 
 class Metalink2RequestGroup {
 private:
-  Logger* _logger;
+  Logger* logger_;
 
   void
   createRequestGroup(std::vector<SharedHandle<RequestGroup> >& groups,

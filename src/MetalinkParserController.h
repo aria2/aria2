@@ -58,29 +58,29 @@ class ChunkChecksum;
 
 class MetalinkParserController {
 private:
-  SharedHandle<Metalinker> _metalinker;
+  SharedHandle<Metalinker> metalinker_;
 
-  SharedHandle<MetalinkEntry> _tEntry;
+  SharedHandle<MetalinkEntry> tEntry_;
 
-  SharedHandle<MetalinkResource> _tResource;
+  SharedHandle<MetalinkResource> tResource_;
 
-  SharedHandle<MetalinkMetaurl> _tMetaurl;
+  SharedHandle<MetalinkMetaurl> tMetaurl_;
 #ifdef ENABLE_MESSAGE_DIGEST
-  SharedHandle<Checksum> _tChecksum;
+  SharedHandle<Checksum> tChecksum_;
 
-  SharedHandle<ChunkChecksum> _tChunkChecksumV4; // Metalink4Spec
+  SharedHandle<ChunkChecksum> tChunkChecksumV4_; // Metalink4Spec
 
-  std::vector<std::string> _tempChunkChecksumsV4; // Metalink4Spec
+  std::vector<std::string> tempChunkChecksumsV4_; // Metalink4Spec
 
-  SharedHandle<ChunkChecksum> _tChunkChecksum; // Metalink3Spec
+  SharedHandle<ChunkChecksum> tChunkChecksum_; // Metalink3Spec
 
-  std::vector<std::pair<size_t, std::string> > _tempChunkChecksums;//Metalink3Spec
+  std::vector<std::pair<size_t, std::string> > tempChunkChecksums_;//Metalink3Spec
 
-  std::pair<size_t, std::string> _tempHashPair; // Metalink3Spec
+  std::pair<size_t, std::string> tempHashPair_; // Metalink3Spec
 
 #endif // ENABLE_MESSAGE_DIGEST
 
-  SharedHandle<Signature> _tSignature;
+  SharedHandle<Signature> tSignature_;
 public:
   MetalinkParserController();
 
@@ -88,7 +88,7 @@ public:
 
   const SharedHandle<Metalinker>& getResult() const
   {
-    return _metalinker;
+    return metalinker_;
   }
 
   void newEntryTransaction();

@@ -43,7 +43,7 @@ class DHTNodeLookupTask;
 
 class DHTNodeLookupTaskCallback:public DHTMessageCallback {
 private:
-  DHTNodeLookupTask* _task;
+  DHTNodeLookupTask* task_;
 public:
   DHTNodeLookupTaskCallback(DHTNodeLookupTask* task);
 

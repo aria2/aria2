@@ -80,15 +80,15 @@
 namespace aria2 {
 
 // TODO DownloadEngine should hold this flag.
-bool DHTSetup::_initialized = false;
+bool DHTSetup::initialized_ = false;
 
-DHTSetup::DHTSetup():_logger(LogFactory::getInstance()) {}
+DHTSetup::DHTSetup():logger_(LogFactory::getInstance()) {}
 
 DHTSetup::~DHTSetup() {}
 
 void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
 {
-  if(_initialized) {
+  if(initialized_) {
     return;
   }
   try {
@@ -108,7 +108,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       deserializer.deserialize(in);
       localNode = deserializer.getLocalNode();
     } catch(RecoverableException& e) {
-      _logger->error("Exception caught while loading DHT routing table from %s",
+      logger_->error("Exception caught while loading DHT routing table from %s",
                      e, dhtFile.c_str());
     }
     if(localNode.isNull()) {
@@ -125,8 +125,8 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       }
       localNode->setPort(port);
     }
-    if(_logger->debug()) {
-      _logger->debug("Initialized local node ID=%s",
+    if(logger_->debug()) {
+      logger_->debug("Initialized local node ID=%s",
                      util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
     }
     SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
@@ -223,7 +223,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
         tempCommands->push_back(command);
       }
     } else {
-      _logger->info("No DHT entry point specified.");
+      logger_->info("No DHT entry point specified.");
     }
     {
       DHTInteractionCommand* command =
@@ -263,11 +263,11 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       command->setRoutingTable(routingTable);
       tempCommands->push_back(command);
     }
-    _initialized = true;
+    initialized_ = true;
     commands.insert(commands.end(), tempCommands->begin(), tempCommands->end());
     tempCommands->clear();
   } catch(RecoverableException& e) {
-    _logger->error("Exception caught while initializing DHT functionality."
+    logger_->error("Exception caught while initializing DHT functionality."
                    " DHT is disabled.", e);
     DHTRegistry::clearData();
   }
@@ -275,7 +275,7 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
 
 bool DHTSetup::initialized()
 {
-  return _initialized;
+  return initialized_;
 }
 
 } // namespace aria2

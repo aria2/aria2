@@ -7,11 +7,11 @@ namespace aria2 {
 
 class MockDHTTaskQueue:public DHTTaskQueue {
 public:
-  std::deque<SharedHandle<DHTTask> > _periodicTaskQueue1;
+  std::deque<SharedHandle<DHTTask> > periodicTaskQueue1_;
 
-  std::deque<SharedHandle<DHTTask> > _periodicTaskQueue2;
+  std::deque<SharedHandle<DHTTask> > periodicTaskQueue2_;
 
-  std::deque<SharedHandle<DHTTask> > _immediateTaskQueue;
+  std::deque<SharedHandle<DHTTask> > immediateTaskQueue_;
 
   MockDHTTaskQueue() {}
 
@@ -21,17 +21,17 @@ public:
 
   virtual void addPeriodicTask1(const SharedHandle<DHTTask>& task)
   {
-    _periodicTaskQueue1.push_back(task);
+    periodicTaskQueue1_.push_back(task);
   }
 
   virtual void addPeriodicTask2(const SharedHandle<DHTTask>& task)
   {
-    _periodicTaskQueue2.push_back(task);
+    periodicTaskQueue2_.push_back(task);
   }
 
   virtual void addImmediateTask(const SharedHandle<DHTTask>& task)
   {
-    _immediateTaskQueue.push_back(task);
+    immediateTaskQueue_.push_back(task);
   }
 };
 

@@ -52,15 +52,15 @@ class StatCalc;
 
 class MultiUrlRequestInfo {
 private:
-  std::vector<SharedHandle<RequestGroup> > _requestGroups;
+  std::vector<SharedHandle<RequestGroup> > requestGroups_;
 
-  SharedHandle<Option> _option;
+  SharedHandle<Option> option_;
 
-  SharedHandle<StatCalc> _statCalc;
+  SharedHandle<StatCalc> statCalc_;
 
-  std::ostream& _summaryOut;
+  std::ostream& summaryOut_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   void printMessageForContinue();
 

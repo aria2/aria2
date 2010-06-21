@@ -14,9 +14,9 @@ private:
   TransferStat stat;
   std::deque<SharedHandle<Peer> > peers;
   std::vector<SharedHandle<Peer> > activePeers;
-  int _numChokeExecuted;
+  int numChokeExecuted_;
 public:
-  MockPeerStorage():_numChokeExecuted(0) {}
+  MockPeerStorage():numChokeExecuted_(0) {}
   virtual ~MockPeerStorage() {}
 
   virtual bool addPeer(const SharedHandle<Peer>& peer) {
@@ -68,7 +68,7 @@ public:
 
   virtual void executeChoke()
   {
-    ++_numChokeExecuted;
+    ++numChokeExecuted_;
   }
 
   virtual void updateTransferStatFor(const SharedHandle<Peer>& peer) {}
@@ -80,7 +80,7 @@ public:
 
   int getNumChokeExecuted() const
   {
-    return _numChokeExecuted;
+    return numChokeExecuted_;
   }
 };
 

@@ -56,7 +56,7 @@ FileAllocationCommand::FileAllocationCommand
 (cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
  const SharedHandle<FileAllocationEntry>& fileAllocationEntry):
   RealtimeCommand(cuid, requestGroup, e),
-  _fileAllocationEntry(fileAllocationEntry) {}
+  fileAllocationEntry_(fileAllocationEntry) {}
 
 FileAllocationCommand::~FileAllocationCommand() {}
 
@@ -66,19 +66,19 @@ bool FileAllocationCommand::executeInternal()
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     return true;
   }
-  _fileAllocationEntry->allocateChunk();
-  if(_fileAllocationEntry->finished()) {
+  fileAllocationEntry_->allocateChunk();
+  if(fileAllocationEntry_->finished()) {
     if(getLogger()->debug()) {
       getLogger()->debug
         (MSG_ALLOCATION_COMPLETED,
-         _timer.difference(global::wallclock),
+         timer_.difference(global::wallclock),
          util::itos(getRequestGroup()->getTotalLength(), true).c_str());
     }
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     
     std::vector<Command*>* commands = new std::vector<Command*>();
     auto_delete_container<std::vector<Command*> > commandsDel(commands);
-    _fileAllocationEntry->prepareForNextAction(*commands, getDownloadEngine());
+    fileAllocationEntry_->prepareForNextAction(*commands, getDownloadEngine());
     getDownloadEngine()->addCommand(*commands);
     commands->clear();
     getDownloadEngine()->setNoWait(true);

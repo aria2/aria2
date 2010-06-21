@@ -44,14 +44,14 @@
 
 namespace aria2 {
 
-NameResolver::NameResolver():_socktype(0), _family(AF_UNSPEC) {}
+NameResolver::NameResolver():socktype_(0), family_(AF_UNSPEC) {}
 
 void NameResolver::resolve(std::vector<std::string>& resolvedAddresses,
                            const std::string& hostname)
 {
   struct addrinfo* res;
   int s;
-  s = callGetaddrinfo(&res, hostname.c_str(), 0, _family, _socktype, 0, 0);
+  s = callGetaddrinfo(&res, hostname.c_str(), 0, family_, socktype_, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
                                    hostname.c_str(), gai_strerror(s)).str());
@@ -67,7 +67,7 @@ void NameResolver::resolve(std::vector<std::string>& resolvedAddresses,
 
 void NameResolver::setSocktype(int socktype)
 {
-  _socktype = socktype;
+  socktype_ = socktype;
 }
 
 } // namespace aria2

@@ -45,52 +45,52 @@
 namespace aria2 {
 
 SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
-  _socket(socket), _offset(0) {}
+  socket_(socket), offset_(0) {}
 
 SocketBuffer::~SocketBuffer()
 {
-  std::for_each(_bufq.begin(), _bufq.end(),
+  std::for_each(bufq_.begin(), bufq_.end(),
                 std::mem_fun_ref(&BufEntry::deleteBuf));
 }
 
 void SocketBuffer::pushBytes(unsigned char* bytes, size_t len)
 {
-  _bufq.push_back(BufEntry(bytes, len));
+  bufq_.push_back(BufEntry(bytes, len));
 }
 
 void SocketBuffer::pushStr(const std::string& data)
 {
-  _bufq.push_back(BufEntry(data));
+  bufq_.push_back(BufEntry(data));
 }
 
 ssize_t SocketBuffer::send()
 {
   size_t totalslen = 0;
-  while(!_bufq.empty()) {
-    BufEntry& buf = _bufq[0];
+  while(!bufq_.empty()) {
+    BufEntry& buf = bufq_[0];
     const char* data;
     ssize_t r;
     if(buf.type == TYPE_BYTES) {
       data = reinterpret_cast<const char*>(buf.bytes);
-      r = buf.bytesLen-_offset;
+      r = buf.bytesLen-offset_;
     } else {
       const std::string& str = *buf.str;
       data = str.data();
-      r = str.size()-_offset;
+      r = str.size()-offset_;
     }
-    ssize_t slen = _socket->writeData(data+_offset, r);
-    if(slen == 0 && !_socket->wantRead() && !_socket->wantWrite()) {
+    ssize_t slen = socket_->writeData(data+offset_, r);
+    if(slen == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
       throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND,
                                      "Connection closed.").str());
     }
     totalslen += slen;
     if(slen < r) {
-      _offset += slen;
+      offset_ += slen;
       break;
     } else {
-      _offset = 0;
+      offset_ = 0;
       buf.deleteBuf();
-      _bufq.pop_front();
+      bufq_.pop_front();
     }
   }
   return totalslen;
@@ -98,7 +98,7 @@ ssize_t SocketBuffer::send()
 
 bool SocketBuffer::sendBufferIsEmpty() const
 {
-  return _bufq.empty();
+  return bufq_.empty();
 }
 
 } // namespace aria2

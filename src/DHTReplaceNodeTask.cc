@@ -46,10 +46,10 @@ namespace aria2 {
 
 DHTReplaceNodeTask::DHTReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
                                        const SharedHandle<DHTNode>& newNode):
-  _bucket(bucket),
-  _newNode(newNode),
-  _numRetry(0),
-  _timeout(DHT_MESSAGE_TIMEOUT)
+  bucket_(bucket),
+  newNode_(newNode),
+  numRetry_(0),
+  timeout_(DHT_MESSAGE_TIMEOUT)
 {}
 
 DHTReplaceNodeTask::~DHTReplaceNodeTask() {}
@@ -61,7 +61,7 @@ void DHTReplaceNodeTask::startup()
 
 void DHTReplaceNodeTask::sendMessage()
 {
-  SharedHandle<DHTNode> questionableNode = _bucket->getLRUQuestionableNode();
+  SharedHandle<DHTNode> questionableNode = bucket_->getLRUQuestionableNode();
   if(questionableNode.isNull()) {
     setFinished(true);
   } else {
@@ -69,7 +69,7 @@ void DHTReplaceNodeTask::sendMessage()
       getMessageFactory()->createPingMessage(questionableNode);
     SharedHandle<DHTMessageCallback> callback
       (new DHTPingReplyMessageCallback<DHTReplaceNodeTask>(this));
-    getMessageDispatcher()->addMessageToQueue(m, _timeout, callback);
+    getMessageDispatcher()->addMessageToQueue(m, timeout_, callback);
   }
 }
 
@@ -82,13 +82,13 @@ void DHTReplaceNodeTask::onReceived(const DHTPingReplyMessage* message)
 
 void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
-  ++_numRetry;
-  if(_numRetry >= MAX_RETRY) {
+  ++numRetry_;
+  if(numRetry_ >= MAX_RETRY) {
     getLogger()->info("ReplaceNode: Ping failed %u times. Replace %s with %s.",
-                      _numRetry, node->toString().c_str(),
-                      _newNode->toString().c_str());
+                      numRetry_, node->toString().c_str(),
+                      newNode_->toString().c_str());
     node->markBad();
-    _bucket->addNode(_newNode);
+    bucket_->addNode(newNode_);
     setFinished(true);
   } else {
     getLogger()->info("ReplaceNode: Ping reply timeout from %s. Try once more.",

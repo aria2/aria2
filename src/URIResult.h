@@ -46,20 +46,20 @@ namespace aria2 {
 // This class stores URI and its result code as a consequence of the download.
 class URIResult {
 private:
-  std::string _uri;
+  std::string uri_;
 
-  downloadresultcode::RESULT _result;
+  downloadresultcode::RESULT result_;
 public:
   URIResult(const std::string& uri, downloadresultcode::RESULT result);
 
   const std::string& getURI() const
   {
-    return _uri;
+    return uri_;
   }
 
   downloadresultcode::RESULT getResult() const
   {
-    return _result;
+    return result_;
   }
 
 };

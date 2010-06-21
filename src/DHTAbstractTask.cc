@@ -47,38 +47,38 @@
 namespace aria2 {
 
 DHTAbstractTask::DHTAbstractTask():
-  _finished(false),
-  _logger(LogFactory::getInstance())
+  finished_(false),
+  logger_(LogFactory::getInstance())
 {}
 
 bool DHTAbstractTask::finished()
 {
-  return _finished;
+  return finished_;
 }
 
 void DHTAbstractTask::setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 void DHTAbstractTask::setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
 
 void DHTAbstractTask::setMessageFactory(const WeakHandle<DHTMessageFactory> factory)
 {
-  _factory = factory;
+  factory_ = factory;
 }
 
 void DHTAbstractTask::setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 void DHTAbstractTask::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
-  _localNode = localNode;
+  localNode_ = localNode;
 }
 
 } // namespace aria2

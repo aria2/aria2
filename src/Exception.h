@@ -43,13 +43,13 @@ namespace aria2 {
 
 class Exception:public std::exception {
 private:
-  const char* _file;
+  const char* file_;
   
-  int _line;
+  int line_;
 
-  std::string _msg;
+  std::string msg_;
 
-  SharedHandle<Exception> _cause;
+  SharedHandle<Exception> cause_;
 
 protected:
   virtual SharedHandle<Exception> copy() const = 0;

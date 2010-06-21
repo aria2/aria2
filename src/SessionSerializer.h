@@ -48,10 +48,10 @@ class RequestGroupMan;
 
 class SessionSerializer {
 private:
-  SharedHandle<RequestGroupMan> _rgman;
-  bool _saveError;
-  bool _saveInProgress;
-  bool _saveWaiting;
+  SharedHandle<RequestGroupMan> rgman_;
+  bool saveError_;
+  bool saveInProgress_;
+  bool saveWaiting_;
 public:
   SessionSerializer(const SharedHandle<RequestGroupMan>& requestGroupMan);
 

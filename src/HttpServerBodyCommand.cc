@@ -64,58 +64,58 @@ HttpServerBodyCommand::HttpServerBodyCommand
  DownloadEngine* e,
  const SharedHandle<SocketCore>& socket):
   Command(cuid),
-  _e(e),
-  _socket(socket),
-  _httpServer(httpServer)
+  e_(e),
+  socket_(socket),
+  httpServer_(httpServer)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
-  _e->addSocketForReadCheck(_socket, this);
+  e_->addSocketForReadCheck(socket_, this);
 }
 
 HttpServerBodyCommand::~HttpServerBodyCommand()
 {
-  _e->deleteSocketForReadCheck(_socket, this);
+  e_->deleteSocketForReadCheck(socket_, this);
 }
 
 bool HttpServerBodyCommand::execute()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
   try {
-    if(_socket->isReadable(0) || _httpServer->getContentLength() == 0) {
-      _timeoutTimer = global::wallclock;
+    if(socket_->isReadable(0) || httpServer_->getContentLength() == 0) {
+      timeoutTimer_ = global::wallclock;
 
-      if(_httpServer->receiveBody()) {
+      if(httpServer_->receiveBody()) {
         // Do something for requestpath and body
-        if(_httpServer->getRequestPath() == "/rpc") {
+        if(httpServer_->getRequestPath() == "/rpc") {
           xmlrpc::XmlRpcRequest req =
-            xmlrpc::XmlRpcRequestProcessor().parseMemory(_httpServer->getBody());
+            xmlrpc::XmlRpcRequestProcessor().parseMemory(httpServer_->getBody());
           
           SharedHandle<xmlrpc::XmlRpcMethod> method =
             xmlrpc::XmlRpcMethodFactory::create(req.methodName);
-          xmlrpc::XmlRpcResponse res = method->execute(req, _e);
-          bool gzip = _httpServer->supportsGZip();
+          xmlrpc::XmlRpcResponse res = method->execute(req, e_);
+          bool gzip = httpServer_->supportsGZip();
           std::string responseData = res.toXml(gzip);
-          _httpServer->feedResponse(responseData, "text/xml");
+          httpServer_->feedResponse(responseData, "text/xml");
           Command* command =
-            new HttpServerResponseCommand(getCuid(), _httpServer, _e, _socket);
-          _e->addCommand(command);
-          _e->setNoWait(true);
+            new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
+          e_->addCommand(command);
+          e_->setNoWait(true);
           return true;
         } else {
           return true;
         }
       } else {
-        _e->addCommand(this);
+        e_->addCommand(this);
         return false;
       } 
     } else {
-      if(_timeoutTimer.difference(global::wallclock) >= 30) {
+      if(timeoutTimer_.difference(global::wallclock) >= 30) {
         getLogger()->info("HTTP request body timeout.");
         return true;
       } else {
-        _e->addCommand(this);
+        e_->addCommand(this);
         return false;
       }
     }

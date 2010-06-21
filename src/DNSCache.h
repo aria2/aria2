@@ -49,59 +49,59 @@ namespace aria2 {
 class DNSCache {
 private:
   struct AddrEntry {
-    std::string _addr;
-    bool _good;
+    std::string addr_;
+    bool good_;
 
-    AddrEntry(const std::string& addr):_addr(addr), _good(true) {}
+    AddrEntry(const std::string& addr):addr_(addr), good_(true) {}
   };
 
   struct CacheEntry {
-    std::string _hostname;
-    uint16_t _port;
-    std::vector<AddrEntry> _addrEntries;
+    std::string hostname_;
+    uint16_t port_;
+    std::vector<AddrEntry> addrEntries_;
 
     CacheEntry
     (const std::string& hostname, uint16_t port):
-      _hostname(hostname), _port(port) {}
+      hostname_(hostname), port_(port) {}
 
     void add(const std::string& addr)
     {
-      _addrEntries.push_back(AddrEntry(addr));
+      addrEntries_.push_back(AddrEntry(addr));
     }
 
     std::vector<AddrEntry>::iterator find(const std::string& addr)
     {
-      for(std::vector<AddrEntry>::iterator i = _addrEntries.begin(),
-            eoi = _addrEntries.end(); i != eoi; ++i) {
-        if((*i)._addr == addr) {
+      for(std::vector<AddrEntry>::iterator i = addrEntries_.begin(),
+            eoi = addrEntries_.end(); i != eoi; ++i) {
+        if((*i).addr_ == addr) {
           return i;
         }
       }
-      return _addrEntries.end();
+      return addrEntries_.end();
     }
 
     std::vector<AddrEntry>::const_iterator find(const std::string& addr) const
     {
-      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin(),
-            eoi = _addrEntries.end(); i != eoi; ++i) {
-        if((*i)._addr == addr) {
+      for(std::vector<AddrEntry>::const_iterator i = addrEntries_.begin(),
+            eoi = addrEntries_.end(); i != eoi; ++i) {
+        if((*i).addr_ == addr) {
           return i;
         }
       }
-      return _addrEntries.end();
+      return addrEntries_.end();
     }
 
     bool contains(const std::string& addr) const
     {
-      return find(addr) != _addrEntries.end();
+      return find(addr) != addrEntries_.end();
     }
 
     const std::string& getGoodAddr() const
     {
-      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin(),
-            eoi = _addrEntries.end(); i != eoi; ++i) {
-        if((*i)._good) {
-          return (*i)._addr;
+      for(std::vector<AddrEntry>::const_iterator i = addrEntries_.begin(),
+            eoi = addrEntries_.end(); i != eoi; ++i) {
+        if((*i).good_) {
+          return (*i).addr_;
         }
       }
       return A2STR::NIL;
@@ -110,10 +110,10 @@ private:
     template<typename OutputIterator>
     void getAllGoodAddrs(OutputIterator out) const
     {
-      for(std::vector<AddrEntry>::const_iterator i = _addrEntries.begin(),
-            eoi = _addrEntries.end(); i != eoi; ++i) {
-        if((*i)._good) {
-          *out++ = (*i)._addr;
+      for(std::vector<AddrEntry>::const_iterator i = addrEntries_.begin(),
+            eoi = addrEntries_.end(); i != eoi; ++i) {
+        if((*i).good_) {
+          *out++ = (*i).addr_;
         }
       }      
     }
@@ -121,35 +121,35 @@ private:
     void markBad(const std::string& addr)
     {
       std::vector<AddrEntry>::iterator i = find(addr);
-      if(i != _addrEntries.end()) {
-        (*i)._good = false;
+      if(i != addrEntries_.end()) {
+        (*i).good_ = false;
       }
     }
 
     bool operator<(const CacheEntry& e) const
     {
-      int r = _hostname.compare(e._hostname);
+      int r = hostname_.compare(e.hostname_);
       if(r != 0) {
         return r < 0;
       }
-      return _port < e._port;
+      return port_ < e.port_;
     }
 
     bool operator==(const CacheEntry& e) const
     {
-      return _hostname == e._hostname && _port == e._port;
+      return hostname_ == e.hostname_ && port_ == e.port_;
     }
   };
 
-  std::deque<CacheEntry> _entries;
+  std::deque<CacheEntry> entries_;
 
 public:
   const std::string& find(const std::string& hostname, uint16_t port) const
   {
     CacheEntry target(hostname, port);
     std::deque<CacheEntry>::const_iterator i =
-      std::lower_bound(_entries.begin(), _entries.end(), target);
-    if(i != _entries.end() && (*i) == target) {
+      std::lower_bound(entries_.begin(), entries_.end(), target);
+    if(i != entries_.end() && (*i) == target) {
       return (*i).getGoodAddr();
     }
     return A2STR::NIL;
@@ -161,8 +161,8 @@ public:
   {
     CacheEntry target(hostname, port);
     std::deque<CacheEntry>::const_iterator i =
-      std::lower_bound(_entries.begin(), _entries.end(), target);
-    if(i != _entries.end() && (*i) == target) {
+      std::lower_bound(entries_.begin(), entries_.end(), target);
+    if(i != entries_.end() && (*i) == target) {
       (*i).getAllGoodAddrs(out);
     }
   }
@@ -172,10 +172,10 @@ public:
   {
     CacheEntry target(hostname, port);
     std::deque<CacheEntry>::iterator i =
-      std::lower_bound(_entries.begin(), _entries.end(), target);
-    if(i == _entries.end() || !((*i) == target)) {
+      std::lower_bound(entries_.begin(), entries_.end(), target);
+    if(i == entries_.end() || !((*i) == target)) {
       target.add(ipaddr);
-      _entries.insert(i, target);
+      entries_.insert(i, target);
     } else {
       if(!(*i).contains(ipaddr)) {
         (*i).add(ipaddr);
@@ -188,8 +188,8 @@ public:
   {
     CacheEntry target(hostname, port);
     std::deque<CacheEntry>::iterator i =
-      std::lower_bound(_entries.begin(), _entries.end(), target);
-    if(i != _entries.end() && (*i) == target) {
+      std::lower_bound(entries_.begin(), entries_.end(), target);
+    if(i != entries_.end() && (*i) == target) {
       (*i).markBad(ipaddr);
     }
   }
@@ -198,9 +198,9 @@ public:
   {
     CacheEntry target(hostname, port);
     std::deque<CacheEntry>::iterator i =
-      std::lower_bound(_entries.begin(), _entries.end(), target);
-    if(i != _entries.end() && (*i) == target) {
-      _entries.erase(i);
+      std::lower_bound(entries_.begin(), entries_.end(), target);
+    if(i != entries_.end() && (*i) == target) {
+      entries_.erase(i);
     }
   }
 };

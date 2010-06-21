@@ -46,11 +46,11 @@ class PeerStorage;
 
 class PeerChokeCommand : public Command {
 private:
-  DownloadEngine* _e;
+  DownloadEngine* e_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 public:
   PeerChokeCommand(cuid_t cuid,
                    DownloadEngine* e);

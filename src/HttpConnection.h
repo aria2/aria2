@@ -56,8 +56,8 @@ class SocketCore;
 
 class HttpRequestEntry {
 private:
-  SharedHandle<HttpRequest> _httpRequest;
-  SharedHandle<HttpHeaderProcessor> _proc;
+  SharedHandle<HttpRequest> httpRequest_;
+  SharedHandle<HttpHeaderProcessor> proc_;
 public:
   HttpRequestEntry(const SharedHandle<HttpRequest>& httpRequest);
 
@@ -65,12 +65,12 @@ public:
 
   const SharedHandle<HttpRequest>& getHttpRequest() const
   {
-    return _httpRequest;
+    return httpRequest_;
   }
 
   const SharedHandle<HttpHeaderProcessor>& getHttpHeaderProcessor() const
   {
-    return _proc;
+    return proc_;
   }
 };
 
@@ -79,13 +79,13 @@ typedef std::deque<HttpRequestEntryHandle> HttpRequestEntries;
 
 class HttpConnection {
 private:
-  cuid_t _cuid;
-  SharedHandle<SocketCore> _socket;
-  SocketBuffer _socketBuffer;
-  const Option* _option;
-  Logger* _logger;
+  cuid_t cuid_;
+  SharedHandle<SocketCore> socket_;
+  SocketBuffer socketBuffer_;
+  const Option* option_;
+  Logger* logger_;
 
-  HttpRequestEntries _outstandingHttpRequests;
+  HttpRequestEntries outstandingHttpRequests_;
 
   std::string eraseConfidentialInfo(const std::string& request);
 public:

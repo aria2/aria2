@@ -55,36 +55,36 @@ namespace aria2 {
 IteratableChecksumValidator::IteratableChecksumValidator
 (const SharedHandle<DownloadContext>& dctx,
  const PieceStorageHandle& pieceStorage):
-  _dctx(dctx),
-  _pieceStorage(pieceStorage),
-  _currentOffset(0),
-  _logger(LogFactory::getInstance()),
-  _buffer(0) {}
+  dctx_(dctx),
+  pieceStorage_(pieceStorage),
+  currentOffset_(0),
+  logger_(LogFactory::getInstance()),
+  buffer_(0) {}
 
 IteratableChecksumValidator::~IteratableChecksumValidator()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  free(_buffer);
+  free(buffer_);
 #else // !HAVE_POSIX_MEMALIGN
-  delete [] _buffer;
+  delete [] buffer_;
 #endif // !HAVE_POSIX_MEMALIGN
 }
 
 void IteratableChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    size_t length = _pieceStorage->getDiskAdaptor()->readData(_buffer,
+    size_t length = pieceStorage_->getDiskAdaptor()->readData(buffer_,
                                                               BUFSIZE,
-                                                              _currentOffset);
-    _ctx->digestUpdate(_buffer, length);
-    _currentOffset += length;
+                                                              currentOffset_);
+    ctx_->digestUpdate(buffer_, length);
+    currentOffset_ += length;
     if(finished()) {
-      std::string actualChecksum = util::toHex(_ctx->digestFinal());
-      if(_dctx->getChecksum() == actualChecksum) {
-        _pieceStorage->markAllPiecesDone();
+      std::string actualChecksum = util::toHex(ctx_->digestFinal());
+      if(dctx_->getChecksum() == actualChecksum) {
+        pieceStorage_->markAllPiecesDone();
       } else {
-        BitfieldMan bitfield(_dctx->getPieceLength(), _dctx->getTotalLength());
-        _pieceStorage->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
+        BitfieldMan bitfield(dctx_->getPieceLength(), dctx_->getTotalLength());
+        pieceStorage_->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
       }
     }
   }
@@ -92,8 +92,8 @@ void IteratableChecksumValidator::validateChunk()
 
 bool IteratableChecksumValidator::finished() const
 {
-  if((uint64_t)_currentOffset >= _dctx->getTotalLength()) {
-    _pieceStorage->getDiskAdaptor()->disableDirectIO();
+  if((uint64_t)currentOffset_ >= dctx_->getTotalLength()) {
+    pieceStorage_->getDiskAdaptor()->disableDirectIO();
     return true;
   } else {
     return false;
@@ -102,24 +102,24 @@ bool IteratableChecksumValidator::finished() const
 
 uint64_t IteratableChecksumValidator::getTotalLength() const
 {
-  return _dctx->getTotalLength();
+  return dctx_->getTotalLength();
 }
 
 void IteratableChecksumValidator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  free(_buffer);
-  _buffer = reinterpret_cast<unsigned char*>
+  free(buffer_);
+  buffer_ = reinterpret_cast<unsigned char*>
     (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
 #else // !HAVE_POSIX_MEMALIGN
-  delete [] _buffer;
-  _buffer = new unsigned char[BUFSIZE];
+  delete [] buffer_;
+  buffer_ = new unsigned char[BUFSIZE];
 #endif // !HAVE_POSIX_MEMALIGN
-  _pieceStorage->getDiskAdaptor()->enableDirectIO();
-  _currentOffset = 0;
-  _ctx.reset(new MessageDigestContext());
-  _ctx->trySetAlgo(_dctx->getChecksumHashAlgo());
-  _ctx->digestInit();
+  pieceStorage_->getDiskAdaptor()->enableDirectIO();
+  currentOffset_ = 0;
+  ctx_.reset(new MessageDigestContext());
+  ctx_->trySetAlgo(dctx_->getChecksumHashAlgo());
+  ctx_->digestInit();
 }
 
 } // namespace aria2

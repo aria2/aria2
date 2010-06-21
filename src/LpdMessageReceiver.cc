@@ -44,33 +44,33 @@ namespace aria2 {
 
 LpdMessageReceiver::LpdMessageReceiver
 (const std::string& multicastAddress, uint16_t multicastPort):
-  _multicastAddress(multicastAddress),
-  _multicastPort(multicastPort),
-  _logger(LogFactory::getInstance()) {}
+  multicastAddress_(multicastAddress),
+  multicastPort_(multicastPort),
+  logger_(LogFactory::getInstance()) {}
 
 bool LpdMessageReceiver::init(const std::string& localAddr)
 {
   try {
-    _socket.reset(new SocketCore(SOCK_DGRAM));
+    socket_.reset(new SocketCore(SOCK_DGRAM));
 #ifdef __MINGW32__
     // Binding multicast address fails under Windows.
-    _socket->bindWithFamily(_multicastPort, AF_INET);
+    socket_->bindWithFamily(multicastPort_, AF_INET);
 #else // !__MINGW32__
-    _socket->bind(_multicastAddress, _multicastPort);
+    socket_->bind(multicastAddress_, multicastPort_);
 #endif // !__MINGW32__
-    if(_logger->debug()) {
-      _logger->debug("Joining multicast group. %s:%u, localAddr=%s",
-                     _multicastAddress.c_str(), _multicastPort,
+    if(logger_->debug()) {
+      logger_->debug("Joining multicast group. %s:%u, localAddr=%s",
+                     multicastAddress_.c_str(), multicastPort_,
                      localAddr.c_str());
     }
-    _socket->joinMulticastGroup(_multicastAddress, _multicastPort, localAddr);
-    _socket->setNonBlockingMode();
-    _localAddress = localAddr;
-    _logger->info("Listening multicast group (%s:%u) packet",
-                  _multicastAddress.c_str(), _multicastPort);
+    socket_->joinMulticastGroup(multicastAddress_, multicastPort_, localAddr);
+    socket_->setNonBlockingMode();
+    localAddress_ = localAddr;
+    logger_->info("Listening multicast group (%s:%u) packet",
+                  multicastAddress_.c_str(), multicastPort_);
     return true;
   } catch(RecoverableException& e) {
-    _logger->error("Failed to initialize LPD message receiver.", e);
+    logger_->error("Failed to initialize LPD message receiver.", e);
   }
   return false;
 }
@@ -81,7 +81,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
   try {
     unsigned char buf[200];
     std::pair<std::string, uint16_t> peerAddr;
-    ssize_t length = _socket->readDataFrom(buf, sizeof(buf), peerAddr);
+    ssize_t length = socket_->readDataFrom(buf, sizeof(buf), peerAddr);
     if(length == 0) {
       return msg;
     }
@@ -94,13 +94,13 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
     SharedHandle<HttpHeader> header = proc.getHttpRequestHeader();
     std::string infoHashString = header->getFirst("Infohash");
     uint16_t port = header->getFirstAsUInt("Port");
-    _logger->info("LPD message received infohash=%s, port=%u from %s",
+    logger_->info("LPD message received infohash=%s, port=%u from %s",
                   infoHashString.c_str(), port, peerAddr.first.c_str());
     std::string infoHash;
     if(infoHashString.size() != 40 ||
        (infoHash = util::fromHex(infoHashString)).empty() ||
        port == 0) {
-      _logger->info("LPD bad request. infohash=%s", infoHashString.c_str());
+      logger_->info("LPD bad request. infohash=%s", infoHashString.c_str());
       msg.reset(new LpdMessage());
       return msg;
     }
@@ -111,7 +111,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
     msg.reset(new LpdMessage(peer, infoHash));
     return msg;
   } catch(RecoverableException& e) {
-    _logger->info("Failed to receive LPD message.", e);
+    logger_->info("Failed to receive LPD message.", e);
     msg.reset(new LpdMessage());
     return msg;
   }

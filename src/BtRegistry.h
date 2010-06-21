@@ -52,12 +52,12 @@ class BtProgressInfoFile;
 class DownloadContext;
 
 struct BtObject {
-  SharedHandle<DownloadContext> _downloadContext;
-  SharedHandle<PieceStorage> _pieceStorage;
-  SharedHandle<PeerStorage> _peerStorage;
-  SharedHandle<BtAnnounce> _btAnnounce;
-  SharedHandle<BtRuntime> _btRuntime;
-  SharedHandle<BtProgressInfoFile> _btProgressInfoFile;
+  SharedHandle<DownloadContext> downloadContext_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  SharedHandle<PeerStorage> peerStorage_;
+  SharedHandle<BtAnnounce> btAnnounce_;
+  SharedHandle<BtRuntime> btRuntime_;
+  SharedHandle<BtProgressInfoFile> btProgressInfoFile_;
 
   BtObject(const SharedHandle<DownloadContext>& downloadContext,
            const SharedHandle<PieceStorage>& pieceStorage,
@@ -65,29 +65,29 @@ struct BtObject {
            const SharedHandle<BtAnnounce>& btAnnounce,
            const SharedHandle<BtRuntime>& btRuntime,
            const SharedHandle<BtProgressInfoFile>& btProgressInfoFile):
-    _downloadContext(downloadContext),
-    _pieceStorage(pieceStorage),
-    _peerStorage(peerStorage),
-    _btAnnounce(btAnnounce),
-    _btRuntime(btRuntime),
-    _btProgressInfoFile(btProgressInfoFile) {}
+    downloadContext_(downloadContext),
+    pieceStorage_(pieceStorage),
+    peerStorage_(peerStorage),
+    btAnnounce_(btAnnounce),
+    btRuntime_(btRuntime),
+    btProgressInfoFile_(btProgressInfoFile) {}
 
   BtObject() {}
 
   bool isNull() const
   {
-    return _downloadContext.isNull() &&
-      _pieceStorage.isNull() &&
-      _peerStorage.isNull() &&
-      _btAnnounce.isNull() &&
-      _btRuntime.isNull() &&
-      _btProgressInfoFile.isNull();
+    return downloadContext_.isNull() &&
+      pieceStorage_.isNull() &&
+      peerStorage_.isNull() &&
+      btAnnounce_.isNull() &&
+      btRuntime_.isNull() &&
+      btProgressInfoFile_.isNull();
   }
 };
 
 class BtRegistry {
 private:
-  std::map<gid_t, BtObject> _pool;
+  std::map<gid_t, BtObject> pool_;
 public:
   SharedHandle<DownloadContext>
   getDownloadContext(gid_t gid) const;
@@ -102,9 +102,9 @@ public:
   template<typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<gid_t, BtObject>::const_iterator i = _pool.begin(),
-          eoi = _pool.end(); i != eoi; ++i) {
-      *dest++ = (*i).second._downloadContext;
+    for(std::map<gid_t, BtObject>::const_iterator i = pool_.begin(),
+          eoi = pool_.end(); i != eoi; ++i) {
+      *dest++ = (*i).second.downloadContext_;
     }
     return dest;
   }

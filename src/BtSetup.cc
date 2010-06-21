@@ -77,7 +77,7 @@
 
 namespace aria2 {
 
-BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
+BtSetup::BtSetup():logger_(LogFactory::getInstance()) {}
 
 void BtSetup::setup(std::vector<Command*>& commands,
                     RequestGroup* requestGroup,
@@ -91,10 +91,10 @@ void BtSetup::setup(std::vector<Command*>& commands,
     bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
   BtObject btObject = e->getBtRegistry()->get(requestGroup->getGID());
-  SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
-  SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
-  SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
-  SharedHandle<BtAnnounce> btAnnounce = btObject._btAnnounce;
+  SharedHandle<PieceStorage> pieceStorage = btObject.pieceStorage_;
+  SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
+  SharedHandle<BtRuntime> btRuntime = btObject.btRuntime_;
+  SharedHandle<BtAnnounce> btAnnounce = btObject.btAnnounce_;
   // commands
   {
     TrackerWatcherCommand* c =
@@ -182,7 +182,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
   if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
      (metadataGetMode || !torrentAttrs->privateTorrent)) {
     if(LpdReceiveMessageCommand::getNumInstance() == 0) {
-      _logger->info("Initializing LpdMessageReceiver.");
+      logger_->info("Initializing LpdMessageReceiver.");
       SharedHandle<LpdMessageReceiver> receiver
         (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
       bool initialized = false;
@@ -206,7 +206,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
         }
       }
       if(initialized) {
-        _logger->info("LpdMessageReceiver initialized. multicastAddr=%s:%u,"
+        logger_->info("LpdMessageReceiver initialized. multicastAddr=%s:%u,"
                       " localAddr=%s",
                       LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
                       receiver->getLocalAddress().c_str());
@@ -214,7 +214,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
           LpdReceiveMessageCommand::getInstance(e, receiver);
         e->addCommand(cmd);
       } else {
-        _logger->info("LpdMessageReceiver not initialized.");
+        logger_->info("LpdMessageReceiver not initialized.");
       }
     }
     if(LpdReceiveMessageCommand::getNumInstance()) {
@@ -222,20 +222,20 @@ void BtSetup::setup(std::vector<Command*>& commands,
         bittorrent::getInfoHash(requestGroup->getDownloadContext());
       SharedHandle<LpdMessageReceiver> receiver =
         LpdReceiveMessageCommand::getInstance()->getLpdMessageReceiver();
-      _logger->info("Initializing LpdMessageDispatcher.");      
+      logger_->info("Initializing LpdMessageDispatcher.");      
       SharedHandle<LpdMessageDispatcher> dispatcher
         (new LpdMessageDispatcher
          (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
           btRuntime->getListenPort(),
           LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
       if(dispatcher->init(receiver->getLocalAddress(), /*ttl*/1, /*loop*/0)) {
-        _logger->info("LpdMessageDispatcher initialized.");      
+        logger_->info("LpdMessageDispatcher initialized.");      
         LpdDispatchMessageCommand* cmd =
           new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
         cmd->setBtRuntime(btRuntime);
         e->addCommand(cmd);
       } else {
-        _logger->info("LpdMessageDispatcher not initialized.");
+        logger_->info("LpdMessageDispatcher not initialized.");
       }
     }
   }

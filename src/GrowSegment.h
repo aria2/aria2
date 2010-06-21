@@ -41,8 +41,8 @@ namespace aria2 {
 
 class GrowSegment:public Segment {
 private:
-  SharedHandle<Piece> _piece;
-  size_t _writtenLength;
+  SharedHandle<Piece> piece_;
+  size_t writtenLength_;
 public:
   GrowSegment(const SharedHandle<Piece>& piece);
 
@@ -65,7 +65,7 @@ public:
   
   virtual off_t getPositionToWrite() const
   {
-    return _writtenLength;
+    return writtenLength_;
   }
 
   virtual size_t getLength() const
@@ -80,7 +80,7 @@ public:
 
   virtual size_t getWrittenLength() const
   {
-    return _writtenLength;
+    return writtenLength_;
   }
 
   virtual size_t getOverflowLength() const

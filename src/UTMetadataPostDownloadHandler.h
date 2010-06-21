@@ -45,7 +45,7 @@ class Logger;
 class UTMetadataPostDownloadHandler:public PostDownloadHandler
 {
 private:
-  Logger* _logger;
+  Logger* logger_;
 
   class Criteria:public RequestGroupCriteria
   {

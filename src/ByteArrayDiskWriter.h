@@ -42,7 +42,7 @@ namespace aria2 {
 
 class ByteArrayDiskWriter : public DiskWriter {
 private:
-  std::stringstream _buf;
+  std::stringstream buf_;
 
   void clear();
 public:
@@ -68,12 +68,12 @@ public:
 
   void setString(const std::string& s)
   {
-    _buf.str(s);
+    buf_.str(s);
   }
 
   std::string getString() const
   {
-    return _buf.str();
+    return buf_.str();
   }
 };
 

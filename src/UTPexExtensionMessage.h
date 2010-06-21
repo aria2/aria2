@@ -51,19 +51,19 @@ typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
 
 class UTPexExtensionMessage:public ExtensionMessage {
 private:
-  uint8_t _extensionMessageID;
+  uint8_t extensionMessageID_;
 
-  std::vector<SharedHandle<Peer> > _freshPeers;
+  std::vector<SharedHandle<Peer> > freshPeers_;
 
-  std::vector<SharedHandle<Peer> > _droppedPeers;
+  std::vector<SharedHandle<Peer> > droppedPeers_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  time_t _interval;
+  time_t interval_;
 
-  size_t _maxFreshPeer;
+  size_t maxFreshPeer_;
 
-  size_t _maxDroppedPeer;
+  size_t maxDroppedPeer_;
 
   std::pair<std::string, std::string>
   createCompactPeerListAndFlag(const std::vector<SharedHandle<Peer> >& peers);
@@ -77,7 +77,7 @@ public:
 
   virtual uint8_t getExtensionMessageID()
   {
-    return _extensionMessageID;
+    return extensionMessageID_;
   }
   
   virtual const std::string& getExtensionName() const
@@ -95,7 +95,7 @@ public:
 
   const std::vector<SharedHandle<Peer> >& getFreshPeers() const
   {
-    return _freshPeers;
+    return freshPeers_;
   }
   
   bool freshPeersAreFull() const;
@@ -104,7 +104,7 @@ public:
 
   const std::vector<SharedHandle<Peer> >& getDroppedPeers() const
   {
-    return _droppedPeers;
+    return droppedPeers_;
   }
 
   bool droppedPeersAreFull() const;
@@ -118,14 +118,14 @@ public:
 
   size_t getMaxFreshPeer() const
   {
-    return _maxFreshPeer;
+    return maxFreshPeer_;
   }
 
   void setMaxDroppedPeer(size_t maxDroppedPeer);
 
   size_t getMaxDroppedPeer() const
   {
-    return _maxDroppedPeer;
+    return maxDroppedPeer_;
   }
 
   static const time_t DEFAULT_INTERVAL = 60;

@@ -65,7 +65,7 @@
 namespace aria2 {
 
 DHTMessageFactoryImpl::DHTMessageFactoryImpl():
-  _logger(LogFactory::getInstance()) {}
+  logger_(LogFactory::getInstance()) {}
 
 DHTMessageFactoryImpl::~DHTMessageFactoryImpl() {}
 
@@ -73,7 +73,7 @@ SharedHandle<DHTNode>
 DHTMessageFactoryImpl::getRemoteNode
 (const unsigned char* id, const std::string& ipaddr, uint16_t port) const
 {
-  SharedHandle<DHTNode> node = _routingTable->getNode(id, ipaddr, port);
+  SharedHandle<DHTNode> node = routingTable_->getNode(id, ipaddr, port);
   if(node.isNull()) {
     node.reset(new DHTNode(id));
     node->setIPAddress(ipaddr);
@@ -235,14 +235,14 @@ DHTMessageFactoryImpl::createResponseMessage
     // for now, just report error message arrived and throw exception.
     const List* e = getList(dict, DHTUnknownMessage::E);
     if(e->size() == 2) {
-      if(_logger->info()) {
-        _logger->info("Received Error DHT message. code=%s, msg=%s",
+      if(logger_->info()) {
+        logger_->info("Received Error DHT message. code=%s, msg=%s",
                       util::itos(getInteger(e, 0)->i()).c_str(),
                       util::percentEncode(getString(e, 1)->s()).c_str());
       }
     } else {
-      if(_logger->debug()) {
-        _logger->debug("e doesn't have 2 elements.");
+      if(logger_->debug()) {
+        logger_->debug("e doesn't have 2 elements.");
       }
     }
     throw DL_ABORT_EX("Received Error DHT message.");
@@ -302,9 +302,9 @@ static const std::string& getDefaultVersion()
 void DHTMessageFactoryImpl::setCommonProperty
 (const SharedHandle<DHTAbstractMessage>& m)
 {
-  m->setConnection(_connection);
-  m->setMessageDispatcher(_dispatcher);
-  m->setRoutingTable(_routingTable);
+  m->setConnection(connection_);
+  m->setMessageDispatcher(dispatcher_);
+  m->setRoutingTable(routingTable_);
   WeakHandle<DHTMessageFactory> factory(this);
   m->setMessageFactory(factory);
   m->setVersion(getDefaultVersion());
@@ -314,7 +314,7 @@ SharedHandle<DHTQueryMessage> DHTMessageFactoryImpl::createPingMessage
 (const SharedHandle<DHTNode>& remoteNode, const std::string& transactionID)
 {
   SharedHandle<DHTPingMessage> m
-    (new DHTPingMessage(_localNode, remoteNode, transactionID));
+    (new DHTPingMessage(localNode_, remoteNode, transactionID));
   setCommonProperty(m);
   return m;
 }
@@ -325,7 +325,7 @@ SharedHandle<DHTResponseMessage> DHTMessageFactoryImpl::createPingReplyMessage
  const std::string& transactionID)
 {
   SharedHandle<DHTPingReplyMessage> m
-    (new DHTPingReplyMessage(_localNode, remoteNode, id, transactionID));
+    (new DHTPingReplyMessage(localNode_, remoteNode, id, transactionID));
   setCommonProperty(m);
   return m;
 }
@@ -337,7 +337,7 @@ SharedHandle<DHTQueryMessage> DHTMessageFactoryImpl::createFindNodeMessage
 {
   SharedHandle<DHTFindNodeMessage> m
     (new DHTFindNodeMessage
-     (_localNode, remoteNode, targetNodeID, transactionID));
+     (localNode_, remoteNode, targetNodeID, transactionID));
   setCommonProperty(m);
   return m;
 }
@@ -349,7 +349,7 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage
  const std::string& transactionID)
 {
   SharedHandle<DHTFindNodeReplyMessage> m
-    (new DHTFindNodeReplyMessage(_localNode, remoteNode, transactionID));
+    (new DHTFindNodeReplyMessage(localNode_, remoteNode, transactionID));
   m->setClosestKNodes(closestKNodes);
   setCommonProperty(m);
   return m;
@@ -397,9 +397,9 @@ DHTMessageFactoryImpl::createGetPeersMessage
  const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersMessage> m
-    (new DHTGetPeersMessage(_localNode, remoteNode, infoHash, transactionID));
-  m->setPeerAnnounceStorage(_peerAnnounceStorage);
-  m->setTokenTracker(_tokenTracker);
+    (new DHTGetPeersMessage(localNode_, remoteNode, infoHash, transactionID));
+  m->setPeerAnnounceStorage(peerAnnounceStorage_);
+  m->setTokenTracker(tokenTracker_);
   setCommonProperty(m);
   return m;
 }
@@ -427,7 +427,7 @@ DHTMessageFactoryImpl::createGetPeersReplyMessage
  const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersReplyMessage> m
-    (new DHTGetPeersReplyMessage(_localNode, remoteNode, token, transactionID));
+    (new DHTGetPeersReplyMessage(localNode_, remoteNode, token, transactionID));
   m->setClosestKNodes(closestKNodes);
   setCommonProperty(m);
   return m;
@@ -466,7 +466,7 @@ DHTMessageFactoryImpl::createGetPeersReplyMessage
  const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersReplyMessage> m
-    (new DHTGetPeersReplyMessage(_localNode, remoteNode, token, transactionID));
+    (new DHTGetPeersReplyMessage(localNode_, remoteNode, token, transactionID));
   m->setValues(values);
   setCommonProperty(m);
   return m;
@@ -482,9 +482,9 @@ DHTMessageFactoryImpl::createAnnouncePeerMessage
 {
   SharedHandle<DHTAnnouncePeerMessage> m
     (new DHTAnnouncePeerMessage
-     (_localNode, remoteNode, infoHash, tcpPort, token, transactionID));
-  m->setPeerAnnounceStorage(_peerAnnounceStorage);
-  m->setTokenTracker(_tokenTracker);
+     (localNode_, remoteNode, infoHash, tcpPort, token, transactionID));
+  m->setPeerAnnounceStorage(peerAnnounceStorage_);
+  m->setTokenTracker(tokenTracker_);
   setCommonProperty(m);
   return m;
 }
@@ -494,7 +494,7 @@ DHTMessageFactoryImpl::createAnnouncePeerReplyMessage
 (const SharedHandle<DHTNode>& remoteNode, const std::string& transactionID)
 {
   SharedHandle<DHTAnnouncePeerReplyMessage> m
-    (new DHTAnnouncePeerReplyMessage(_localNode, remoteNode, transactionID));
+    (new DHTAnnouncePeerReplyMessage(localNode_, remoteNode, transactionID));
   setCommonProperty(m);
   return m;
 }
@@ -506,44 +506,44 @@ DHTMessageFactoryImpl::createUnknownMessage
 
 {
   SharedHandle<DHTUnknownMessage> m
-    (new DHTUnknownMessage(_localNode, data, length, ipaddr, port));
+    (new DHTUnknownMessage(localNode_, data, length, ipaddr, port));
   return m;
 }
 
 void DHTMessageFactoryImpl::setRoutingTable
 (const WeakHandle<DHTRoutingTable>& routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 void DHTMessageFactoryImpl::setConnection
 (const WeakHandle<DHTConnection>& connection)
 {
-  _connection = connection;
+  connection_ = connection;
 }
 
 void DHTMessageFactoryImpl::setMessageDispatcher
 (const WeakHandle<DHTMessageDispatcher>& dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
   
 void DHTMessageFactoryImpl::setPeerAnnounceStorage
 (const WeakHandle<DHTPeerAnnounceStorage>& storage)
 {
-  _peerAnnounceStorage = storage;
+  peerAnnounceStorage_ = storage;
 }
 
 void DHTMessageFactoryImpl::setTokenTracker
 (const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
-  _tokenTracker = tokenTracker;
+  tokenTracker_ = tokenTracker;
 }
 
 void DHTMessageFactoryImpl::setLocalNode
 (const SharedHandle<DHTNode>& localNode)
 {
-  _localNode = localNode;
+  localNode_ = localNode;
 }
 
 } // namespace aria2

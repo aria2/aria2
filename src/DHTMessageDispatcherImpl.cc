@@ -48,9 +48,9 @@ namespace aria2 {
 
 DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
 (const SharedHandle<DHTMessageTracker>& tracker):
-  _tracker(tracker),
-  _timeout(DHT_MESSAGE_TIMEOUT),
-  _logger(LogFactory::getInstance()) {}
+  tracker_(tracker),
+  timeout_(DHT_MESSAGE_TIMEOUT),
+  logger_(LogFactory::getInstance()) {}
 
 DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
 
@@ -62,7 +62,7 @@ DHTMessageDispatcherImpl::addMessageToQueue
 {
   SharedHandle<DHTMessageEntry> e
     (new DHTMessageEntry(message, timeout, callback));
-  _messageQueue.push_back(e);
+  messageQueue_.push_back(e);
 }
 
 void
@@ -70,7 +70,7 @@ DHTMessageDispatcherImpl::addMessageToQueue
 (const SharedHandle<DHTMessage>& message,
  const SharedHandle<DHTMessageCallback>& callback)
 {
-  addMessageToQueue(message, _timeout, callback);
+  addMessageToQueue(message, timeout_, callback);
 }
 
 bool
@@ -80,23 +80,23 @@ DHTMessageDispatcherImpl::sendMessage
   try {
     if(entry->message->send()) {
       if(!entry->message->isReply()) {
-        _tracker->addMessage(entry->message, entry->timeout, entry->callback);
+        tracker_->addMessage(entry->message, entry->timeout, entry->callback);
       }
-      if(_logger->info()) {
-        _logger->info("Message sent: %s", entry->message->toString().c_str());
+      if(logger_->info()) {
+        logger_->info("Message sent: %s", entry->message->toString().c_str());
       }
     } else {
       return false;
     }
   } catch(RecoverableException& e) {
-    _logger->info("Failed to send message: %s",
+    logger_->info("Failed to send message: %s",
                   e, entry->message->toString().c_str());
     // Add message to DHTMessageTracker with timeout 0 to treat it as
     // time out. Without this, we have untracked message and some of
     // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
     // forever.
     if(!entry->message->isReply()) {
-      _tracker->addMessage(entry->message, 0, entry->callback);
+      tracker_->addMessage(entry->message, 0, entry->callback);
     }
   }
   return true;
@@ -107,22 +107,22 @@ void DHTMessageDispatcherImpl::sendMessages()
   // TODO I can't use bind1st and mem_fun here because bind1st cannot bind a
   // function which takes a reference as an argument..
   std::deque<SharedHandle<DHTMessageEntry> >::iterator itr =
-    _messageQueue.begin();
-  for(; itr != _messageQueue.end(); ++itr) {
+    messageQueue_.begin();
+  for(; itr != messageQueue_.end(); ++itr) {
     if(!sendMessage(*itr)) {
       break;
     }
   }
-  _messageQueue.erase(_messageQueue.begin(), itr);
-  if(_logger->debug()) {
-    _logger->debug("%lu dht messages remaining in the queue.",
-                   static_cast<unsigned long>(_messageQueue.size()));
+  messageQueue_.erase(messageQueue_.begin(), itr);
+  if(logger_->debug()) {
+    logger_->debug("%lu dht messages remaining in the queue.",
+                   static_cast<unsigned long>(messageQueue_.size()));
   }
 }
 
 size_t DHTMessageDispatcherImpl::countMessageInQueue() const
 {
-  return _messageQueue.size();
+  return messageQueue_.size();
 }
 
 } // namespace aria2

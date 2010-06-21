@@ -71,20 +71,20 @@ private:
   friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-  std::deque<SharedHandle<KSocketEntry> > _socketEntries;
+  std::deque<SharedHandle<KSocketEntry> > socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  std::deque<SharedHandle<KAsyncNameResolverEntry> > _nameResolverEntries;
+  std::deque<SharedHandle<KAsyncNameResolverEntry> > nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
-  // Allocated the number of struct pollfd in _pollfds.
-  int _pollfdCapacity;
+  // Allocated the number of struct pollfd in pollfds_.
+  int pollfdCapacity_;
 
-  // The number of valid struct pollfd in _pollfds.
-  int _pollfdNum;
+  // The number of valid struct pollfd in pollfds_.
+  int pollfdNum_;
 
-  struct pollfd* _pollfds;
+  struct pollfd* pollfds_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   bool addEvents(sock_t socket, const KEvent& event);
 

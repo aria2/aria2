@@ -48,7 +48,7 @@ TimedHaltCommand::TimedHaltCommand(cuid_t cuid, DownloadEngine* e,
                                    time_t secondsToHalt,
                                    bool forceHalt):
   TimeBasedCommand(cuid, e, secondsToHalt, true),
-  _forceHalt(forceHalt) {}
+  forceHalt_(forceHalt) {}
 
 TimedHaltCommand::~TimedHaltCommand() {}
 
@@ -64,7 +64,7 @@ void TimedHaltCommand::process()
 {
   if(!getDownloadEngine()->isHaltRequested()) {
     getLogger()->notice(MSG_TIME_HAS_PASSED, getInterval());
-    if(_forceHalt) {
+    if(forceHalt_) {
       getLogger()->notice("This is emergency shutdown.");
       getDownloadEngine()->requestForceHalt();
     } else {

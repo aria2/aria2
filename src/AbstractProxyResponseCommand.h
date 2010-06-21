@@ -44,13 +44,13 @@ class SocketCore;
 
 class AbstractProxyResponseCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> _httpConnection;
+  SharedHandle<HttpConnection> httpConnection_;
 protected:
   virtual bool executeInternal();
 
   const SharedHandle<HttpConnection>& getHttpConnection() const
   {
-    return _httpConnection;
+    return httpConnection_;
   }
 public:
   AbstractProxyResponseCommand

@@ -46,10 +46,10 @@ class BtRuntime;
 
 class LpdDispatchMessageCommand:public Command {
 private:
-  SharedHandle<LpdMessageDispatcher> _dispatcher;
-  DownloadEngine* _e;
-  unsigned int _tryCount;
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<LpdMessageDispatcher> dispatcher_;
+  DownloadEngine* e_;
+  unsigned int tryCount_;
+  SharedHandle<BtRuntime> btRuntime_;
 public:
   LpdDispatchMessageCommand
   (cuid_t cuid,
@@ -60,7 +60,7 @@ public:
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
   {
-    _btRuntime = btRuntime;
+    btRuntime_ = btRuntime;
   }
 };
 

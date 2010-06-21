@@ -51,7 +51,7 @@ class MetalinkParserStateMachine;
 
 class MetalinkProcessor {
 private:
-  SharedHandle<MetalinkParserStateMachine> _stm;
+  SharedHandle<MetalinkParserStateMachine> stm_;
 public:
   SharedHandle<Metalinker> parseFile(const std::string& filename);
 

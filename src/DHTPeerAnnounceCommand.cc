@@ -63,7 +63,7 @@ void DHTPeerAnnounceCommand::preProcess()
 void DHTPeerAnnounceCommand::process()
 {
   try {
-    _peerAnnounceStorage->handleTimeout();
+    peerAnnounceStorage_->handleTimeout();
   } catch(RecoverableException& e) {
     getLogger()->error(EX_EXCEPTION_CAUGHT, e);
   }
@@ -72,7 +72,7 @@ void DHTPeerAnnounceCommand::process()
 void DHTPeerAnnounceCommand::setPeerAnnounceStorage
 (const SharedHandle<DHTPeerAnnounceStorage>& storage)
 {
-  _peerAnnounceStorage = storage;
+  peerAnnounceStorage_ = storage;
 }
 
 } // namespace aria2

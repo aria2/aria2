@@ -45,14 +45,14 @@ class AlphaNumberDecorator : public NumberDecorator
 {
 private:
 
-  size_t _width;
+  size_t width_;
 
-  char _zero;
+  char zero_;
 
   std::string widen(const std::string& s, size_t width)
   {
     std::string t = s;
-    std::string zero(1, _zero);
+    std::string zero(1, zero_);
     while(t.size() < width) {
       t.insert(0, zero);
     }
@@ -61,14 +61,14 @@ private:
 
 public:
   AlphaNumberDecorator(size_t width, bool uppercase = false):
-    _width(width), _zero(uppercase?'A':'a') {}
+    width_(width), zero_(uppercase?'A':'a') {}
 
   virtual ~AlphaNumberDecorator() {}
 
   virtual std::string decorate(unsigned int number)
   {
     if(number == 0) {
-      return widen(std::string(1, _zero), _width);
+      return widen(std::string(1, zero_), width_);
     }
 
     int base = 26;
@@ -77,12 +77,12 @@ public:
     do {
       unsigned int quot = number/base;
       unsigned int rem = number%base;
-      u[index++] = _zero+rem;
+      u[index++] = zero_+rem;
       number = quot;
     } while(number);
     std::reverse(&u[0], &u[index]);
 
-    return widen(std::string(&u[0], &u[index]), _width);
+    return widen(std::string(&u[0], &u[index]), width_);
   }
 };
 

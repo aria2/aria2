@@ -30,11 +30,11 @@ class UTPexExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDroppedPeersAreFull);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<MockPeerStorage> _peerStorage;
+  SharedHandle<MockPeerStorage> peerStorage_;
 public:
   void setUp()
   {
-    _peerStorage.reset(new MockPeerStorage());
+    peerStorage_.reset(new MockPeerStorage());
     global::wallclock.reset();
   }
 
@@ -133,18 +133,18 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
   SharedHandle<Peer> p4(new Peer("10.1.1.3", 10000));
   p4->startBadCondition();
   msg.addDroppedPeer(p4);
-  msg.setPeerStorage(_peerStorage);
+  msg.setPeerStorage(peerStorage_);
 
   msg.doReceivedAction();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)2, _peerStorage->getPeers().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getPeers().size());
   {
-    SharedHandle<Peer> p = _peerStorage->getPeers()[0];
+    SharedHandle<Peer> p = peerStorage_->getPeers()[0];
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p->getIPAddress());
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p->getPort());
   }
   {
-    SharedHandle<Peer> p = _peerStorage->getPeers()[1];
+    SharedHandle<Peer> p = peerStorage_->getPeers()[1];
     CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"), p->getIPAddress());
     CPPUNIT_ASSERT_EQUAL((uint16_t)9999, p->getPort());
   }

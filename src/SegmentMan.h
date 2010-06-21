@@ -72,34 +72,34 @@ typedef std::deque<SegmentEntryHandle> SegmentEntries;
  */
 class SegmentMan {
 private:
-  const Option* _option;
+  const Option* option_;
 
-  Logger* _logger;
+  Logger* logger_;
 
-  SharedHandle<DownloadContext> _downloadContext;
+  SharedHandle<DownloadContext> downloadContext_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  SegmentEntries _usedSegmentEntries;
+  SegmentEntries usedSegmentEntries_;
 
   // Remember writtenLength for each segment. The key is an index of a
   // segment. The value is writtenLength for that segment.
-  std::map<size_t, size_t> _segmentWrittenLengthMemo;
+  std::map<size_t, size_t> segmentWrittenLengthMemo_;
 
   // Used for calculating download speed.
-  std::vector<SharedHandle<PeerStat> > _peerStats;
+  std::vector<SharedHandle<PeerStat> > peerStats_;
 
   // Keep track of fastest PeerStat for each server
-  std::vector<SharedHandle<PeerStat> > _fastestPeerStats;
+  std::vector<SharedHandle<PeerStat> > fastestPeerStats_;
 
   // key: PeerStat's cuid, value: its download speed
-  std::map<cuid_t, unsigned int> _peerStatDlspdMap;
+  std::map<cuid_t, unsigned int> peerStatDlspdMap_;
 
-  Timer _lastPeerStatDlspdMapUpdated;
+  Timer lastPeerStatDlspdMapUpdated_;
 
-  unsigned int _cachedDlspd;
+  unsigned int cachedDlspd_;
 
-  BitfieldMan _ignoreBitfield;
+  BitfieldMan ignoreBitfield_;
 
   SharedHandle<Segment> checkoutSegment(cuid_t cuid,
                                         const SharedHandle<Piece>& piece);
@@ -204,27 +204,27 @@ public:
   uint64_t getDownloadLength() const;
 
 
-  // If there is inactive PeerStat in _peerStats, it is replaced with
+  // If there is inactive PeerStat in peerStats_, it is replaced with
   // given peerStat. If no such PeerStat exist, the given peerStat is
   // inserted.
   void registerPeerStat(const SharedHandle<PeerStat>& peerStat);
 
   const std::vector<SharedHandle<PeerStat> >& getPeerStats() const
   {
-    return _peerStats;
+    return peerStats_;
   }
 
   SharedHandle<PeerStat> getPeerStat(cuid_t cuid) const;
 
   // If there is slower PeerStat than given peerStat for the same
-  // hostname and protocol in _fastestPeerStats, the former is
+  // hostname and protocol in fastestPeerStats_, the former is
   // replaced with latter. If there are no PeerStat with same hostname
   // and protocol with given peerStat, given peerStat is inserted.
   void updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat);
 
   const std::vector<SharedHandle<PeerStat> >& getFastestPeerStats() const
   {
-    return _fastestPeerStats;
+    return fastestPeerStats_;
   }
 
   /**

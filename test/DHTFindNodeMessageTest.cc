@@ -37,8 +37,8 @@ public:
     {
       SharedHandle<MockDHTResponseMessage> m
         (new MockDHTResponseMessage
-         (_localNode, remoteNode, "find_node", transactionID));
-      m->_nodes = closestKNodes;
+         (localNode_, remoteNode, "find_node", transactionID));
+      m->nodes_ = closestKNodes;
       return m;
     }
   };
@@ -99,15 +99,15 @@ void DHTFindNodeMessageTest::testDoReceivedAction()
 
   msg.doReceivedAction();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher._messageQueue.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher.messageQueue_.size());
   SharedHandle<MockDHTResponseMessage> m
     (dynamic_pointer_cast<MockDHTResponseMessage>
-     (dispatcher._messageQueue[0]._message));
+     (dispatcher.messageQueue_[0].message_));
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("find_node"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
-  CPPUNIT_ASSERT_EQUAL((size_t)1, m->_nodes.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m->nodes_.size());
 }
 
 } // namespace aria2

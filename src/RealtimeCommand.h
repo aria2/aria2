@@ -45,17 +45,17 @@ class Exception;
 
 class RealtimeCommand : public Command {
 private:
-  RequestGroup* _requestGroup;
-  DownloadEngine* _e;
+  RequestGroup* requestGroup_;
+  DownloadEngine* e_;
 protected:
   DownloadEngine* getDownloadEngine() const
   {
-    return _e;
+    return e_;
   }
 
   RequestGroup* getRequestGroup() const
   {
-    return _requestGroup;
+    return requestGroup_;
   }
 public:
   RealtimeCommand(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e);

@@ -45,10 +45,10 @@ namespace aria2 {
 
 class LogFactory {
 private:
-  static std::string _filename;
-  static Logger* _logger;
-  static bool _consoleOutput;
-  static Logger::LEVEL _logLevel;
+  static std::string filename_;
+  static Logger* logger_;
+  static bool consoleOutput_;
+  static Logger::LEVEL logLevel_;
 public:
   /**
    * Get logger instance. Returned logger is singleton.
@@ -60,7 +60,7 @@ public:
    * Set a filename to write log.
    */
   static void setLogFile(const std::string& name) {
-    _filename = name;
+    filename_ = name;
   }
 
   /**
@@ -68,7 +68,7 @@ public:
    * If f is false, log is not printed in console.
    */
   static void setConsoleOutput(bool f) {
-    _consoleOutput = f;
+    consoleOutput_ = f;
   }
 
 

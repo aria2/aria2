@@ -46,17 +46,17 @@ class Logger;
 
 class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
 private:
-  size_t _totalSize;
+  size_t totalSize_;
 
-  std::string _data;
+  std::string data_;
 
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  WeakHandle<UTMetadataRequestTracker> _tracker;
+  WeakHandle<UTMetadataRequestTracker> tracker_;
 
-  Logger* _logger;
+  Logger* logger_;
 public:
   UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
 
@@ -68,38 +68,38 @@ public:
 
   void setTotalSize(size_t totalSize)
   {
-    _totalSize = totalSize;
+    totalSize_ = totalSize;
   }
 
   size_t getTotalSize() const
   {
-    return _totalSize;
+    return totalSize_;
   }
 
   void setData(const std::string& data)
   {
-    _data = data;
+    data_ = data;
   }
 
   const std::string& getData() const
   {
-    return _data;
+    return data_;
   }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
   {
-    _pieceStorage = pieceStorage;
+    pieceStorage_ = pieceStorage;
   }
 
   void setUTMetadataRequestTracker
   (const WeakHandle<UTMetadataRequestTracker>& tracker)
   {
-    _tracker = tracker;
+    tracker_ = tracker;
   }
 
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {
-    _dctx = dctx;
+    dctx_ = dctx;
   }
 };
 

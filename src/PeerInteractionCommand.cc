@@ -90,20 +90,20 @@ PeerInteractionCommand::PeerInteractionCommand
  Seq sequence,
  const PeerConnectionHandle& passedPeerConnection)
   :PeerAbstractCommand(cuid, p, e, s),
-   _requestGroup(requestGroup),
-   _btRuntime(btRuntime),
-   _pieceStorage(pieceStorage),
-   _peerStorage(peerStorage),
-   _sequence(sequence)
+   requestGroup_(requestGroup),
+   btRuntime_(btRuntime),
+   pieceStorage_(pieceStorage),
+   peerStorage_(peerStorage),
+   sequence_(sequence)
 {
   // TODO move following bunch of processing to separate method, like init()
-  if(_sequence == INITIATOR_SEND_HANDSHAKE) {
+  if(sequence_ == INITIATOR_SEND_HANDSHAKE) {
     disableReadCheckSocket();
     setWriteCheckSocket(getSocket());
     setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
   SharedHandle<TorrentAttribute> torrentAttrs =
-    bittorrent::getTorrentAttrs(_requestGroup->getDownloadContext());
+    bittorrent::getTorrentAttrs(requestGroup_->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
 
   SharedHandle<ExtensionMessageRegistry> exMsgRegistry
@@ -120,14 +120,14 @@ PeerInteractionCommand::PeerInteractionCommand
     (new DefaultExtensionMessageFactory(getPeer(), exMsgRegistry));
   extensionMessageFactory->setPeerStorage(peerStorage);
   extensionMessageFactory->setDownloadContext
-    (_requestGroup->getDownloadContext());
+    (requestGroup_->getDownloadContext());
   extensionMessageFactory->setUTMetadataRequestTracker
     (utMetadataRequestTracker);
   // PieceStorage will be set later.
 
   SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());
   factory->setCuid(cuid);
-  factory->setDownloadContext(_requestGroup->getDownloadContext());
+  factory->setDownloadContext(requestGroup_->getDownloadContext());
   factory->setPieceStorage(pieceStorage);
   factory->setPeerStorage(peerStorage);
   factory->setExtensionMessageFactory(extensionMessageFactory);
@@ -151,7 +151,7 @@ PeerInteractionCommand::PeerInteractionCommand
     (new DefaultBtMessageDispatcher());
   dispatcher->setCuid(cuid);
   dispatcher->setPeer(getPeer());
-  dispatcher->setDownloadContext(_requestGroup->getDownloadContext());
+  dispatcher->setDownloadContext(requestGroup_->getDownloadContext());
   dispatcher->setPieceStorage(pieceStorage);
   dispatcher->setPeerStorage(peerStorage);
   dispatcher->setRequestTimeout(getOption()->getAsInt(PREF_BT_REQUEST_TIMEOUT));
@@ -159,7 +159,7 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setRequestGroupMan(getDownloadEngine()->getRequestGroupMan());
 
   DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
-  receiver->setDownloadContext(_requestGroup->getDownloadContext());
+  receiver->setDownloadContext(requestGroup_->getDownloadContext());
   receiver->setPeerConnection(peerConnection);
   receiver->setDispatcher(dispatcher);
   receiver->setBtMessageFactory(factory);
@@ -172,9 +172,9 @@ PeerInteractionCommand::PeerInteractionCommand
   reqFactory->setBtMessageFactory(factory);
 
   DefaultBtInteractiveHandle btInteractive
-    (new DefaultBtInteractive(_requestGroup->getDownloadContext(), getPeer()));
-  btInteractive->setBtRuntime(_btRuntime);
-  btInteractive->setPieceStorage(_pieceStorage);
+    (new DefaultBtInteractive(requestGroup_->getDownloadContext(), getPeer()));
+  btInteractive->setBtRuntime(btRuntime_);
+  btInteractive->setPieceStorage(pieceStorage_);
   btInteractive->setPeerStorage(peerStorage); // Note: Not a member variable.
   btInteractive->setCuid(cuid);
   btInteractive->setBtMessageReceiver(receiver);
@@ -204,7 +204,7 @@ PeerInteractionCommand::PeerInteractionCommand
     btInteractive->enableMetadataGetMode();
   }
 
-  _btInteractive = btInteractive;
+  btInteractive_ = btInteractive;
 
   // reverse depends
   factory->setBtMessageDispatcher(dispatcher);
@@ -216,7 +216,7 @@ PeerInteractionCommand::PeerInteractionCommand
 
   if(metadataGetMode) {
     utMetadataRequestFactory->setDownloadContext
-      (_requestGroup->getDownloadContext());
+      (requestGroup_->getDownloadContext());
     utMetadataRequestFactory->setBtMessageDispatcher(dispatcher);
     utMetadataRequestFactory->setBtMessageFactory(factory);
     utMetadataRequestFactory->setPeer(getPeer());
@@ -225,28 +225,28 @@ PeerInteractionCommand::PeerInteractionCommand
   }
 
   getPeer()->allocateSessionResource
-    (_requestGroup->getDownloadContext()->getPieceLength(),
-     _requestGroup->getDownloadContext()->getTotalLength());
+    (requestGroup_->getDownloadContext()->getPieceLength(),
+     requestGroup_->getDownloadContext()->getTotalLength());
   getPeer()->setBtMessageDispatcher(dispatcher);
 
-  _btRuntime->increaseConnections();
-  _requestGroup->increaseNumCommand();
+  btRuntime_->increaseConnections();
+  requestGroup_->increaseNumCommand();
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
   if(getPeer()->getCompletedLength() > 0) {
-    _pieceStorage->subtractPieceStats(getPeer()->getBitfield(),
+    pieceStorage_->subtractPieceStats(getPeer()->getBitfield(),
                                       getPeer()->getBitfieldLength());
   }
   getPeer()->releaseSessionResource();
 
-  _requestGroup->decreaseNumCommand();
-  _btRuntime->decreaseConnections();
+  requestGroup_->decreaseNumCommand();
+  btRuntime_->decreaseConnections();
 }
 
 bool PeerInteractionCommand::executeInternal() {
   setNoCheck(false);
-  switch(_sequence) {
+  switch(sequence_) {
   case INITIATOR_SEND_HANDSHAKE:
     if(!getSocket()->isWritable(0)) {
       break;
@@ -255,53 +255,53 @@ bool PeerInteractionCommand::executeInternal() {
     setReadCheckSocket(getSocket());
     //socket->setBlockingMode();
     setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
-    _btInteractive->initiateHandshake();
-    _sequence = INITIATOR_WAIT_HANDSHAKE;
+    btInteractive_->initiateHandshake();
+    sequence_ = INITIATOR_WAIT_HANDSHAKE;
     break;
   case INITIATOR_WAIT_HANDSHAKE: {
-    if(_btInteractive->countPendingMessage() > 0) {
-      _btInteractive->sendPendingMessage();
-      if(_btInteractive->countPendingMessage() > 0) {
+    if(btInteractive_->countPendingMessage() > 0) {
+      btInteractive_->sendPendingMessage();
+      if(btInteractive_->countPendingMessage() > 0) {
         break;
       }
     }
-    BtMessageHandle handshakeMessage = _btInteractive->receiveHandshake();
+    BtMessageHandle handshakeMessage = btInteractive_->receiveHandshake();
     if(handshakeMessage.isNull()) {
       break;
     }
-    _btInteractive->doPostHandshakeProcessing();
-    _sequence = WIRED;
+    btInteractive_->doPostHandshakeProcessing();
+    sequence_ = WIRED;
     break;
   }
   case RECEIVER_WAIT_HANDSHAKE: {
-    BtMessageHandle handshakeMessage =_btInteractive->receiveAndSendHandshake();
+    BtMessageHandle handshakeMessage =btInteractive_->receiveAndSendHandshake();
     if(handshakeMessage.isNull()) {
       break;
     }
-    _btInteractive->doPostHandshakeProcessing();
-    _sequence = WIRED;    
+    btInteractive_->doPostHandshakeProcessing();
+    sequence_ = WIRED;    
     break;
   }
   case WIRED:
     // See the comment for writable check below.
     disableWriteCheckSocket();
 
-    _btInteractive->doInteractionProcessing();
-    if(_btInteractive->countReceivedMessageInIteration() > 0) {
+    btInteractive_->doInteractionProcessing();
+    if(btInteractive_->countReceivedMessageInIteration() > 0) {
       updateKeepAlive();
     }
     if((getPeer()->amInterested() && !getPeer()->peerChoking()) ||
-       _btInteractive->countOutstandingRequest() ||
+       btInteractive_->countOutstandingRequest() ||
        (getPeer()->peerInterested() && !getPeer()->amChoking())) {
 
       // Writable check to avoid slow seeding
-      if(_btInteractive->isSendingMessageInProgress()) {
+      if(btInteractive_->isSendingMessageInProgress()) {
         setWriteCheckSocket(getSocket());
       }
 
       if(getDownloadEngine()->getRequestGroupMan()->
          doesOverallDownloadSpeedExceed() ||
-         _requestGroup->doesDownloadSpeedExceed()) {
+         requestGroup_->doesDownloadSpeedExceed()) {
         disableReadCheckSocket();
         setNoCheck(true);
       } else {
@@ -312,7 +312,7 @@ bool PeerInteractionCommand::executeInternal() {
     }
     break;
   }
-  if(_btInteractive->countPendingMessage() > 0) {
+  if(btInteractive_->countPendingMessage() > 0) {
     setNoCheck(true);
   }
   getDownloadEngine()->addCommand(this);
@@ -321,37 +321,37 @@ bool PeerInteractionCommand::executeInternal() {
 
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
-  if(_peerStorage->isPeerAvailable() && _btRuntime->lessThanEqMinPeers()) {
-    SharedHandle<Peer> peer = _peerStorage->getUnusedPeer();
+  if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
+    SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
     peer->usedBy(getDownloadEngine()->newCUID());
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand
-      (peer->usedBy(), _requestGroup, peer, getDownloadEngine(), _btRuntime);
-    command->setPeerStorage(_peerStorage);
-    command->setPieceStorage(_pieceStorage);
+      (peer->usedBy(), requestGroup_, peer, getDownloadEngine(), btRuntime_);
+    command->setPeerStorage(peerStorage_);
+    command->setPieceStorage(pieceStorage_);
     getDownloadEngine()->addCommand(command);
   }
   return true;
 }
 
 void PeerInteractionCommand::onAbort() {
-  _btInteractive->cancelAllPiece();
-  _peerStorage->returnPeer(getPeer());
+  btInteractive_->cancelAllPiece();
+  peerStorage_->returnPeer(getPeer());
 }
 
 void PeerInteractionCommand::onFailure()
 {
-  _requestGroup->setHaltRequested(true);
+  requestGroup_->setHaltRequested(true);
 }
 
 bool PeerInteractionCommand::exitBeforeExecute()
 {
-  return _btRuntime->isHalt();
+  return btRuntime_->isHalt();
 }
 
 const SharedHandle<Option>& PeerInteractionCommand::getOption() const
 {
-  return _requestGroup->getOption();
+  return requestGroup_->getOption();
 }
 
 } // namespace aria2

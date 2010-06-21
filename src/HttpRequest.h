@@ -59,33 +59,33 @@ private:
   
   static const std::string USER_AGENT;
 
-  SharedHandle<Request> _request;
+  SharedHandle<Request> request_;
 
-  SharedHandle<FileEntry> _fileEntry;
+  SharedHandle<FileEntry> fileEntry_;
 
-  SharedHandle<Segment> _segment;
+  SharedHandle<Segment> segment_;
 
-  bool _contentEncodingEnabled;
+  bool contentEncodingEnabled_;
 
-  std::string _userAgent;
+  std::string userAgent_;
 
-  std::vector<std::string> _headers;
+  std::vector<std::string> headers_;
 
-  std::vector<std::string> _acceptTypes;
+  std::vector<std::string> acceptTypes_;
 
-  SharedHandle<CookieStorage> _cookieStorage;
+  SharedHandle<CookieStorage> cookieStorage_;
 
-  SharedHandle<AuthConfigFactory> _authConfigFactory;
+  SharedHandle<AuthConfigFactory> authConfigFactory_;
 
-  const Option* _option;
+  const Option* option_;
 
-  SharedHandle<AuthConfig> _authConfig;
+  SharedHandle<AuthConfig> authConfig_;
 
-  SharedHandle<Request> _proxyRequest;
+  SharedHandle<Request> proxyRequest_;
 
-  bool _noCache;
+  bool noCache_;
 
-  bool _acceptGzip;
+  bool acceptGzip_;
 
   std::pair<std::string, std::string> getProxyAuthString() const;
 public:
@@ -93,7 +93,7 @@ public:
 
   const SharedHandle<Segment>& getSegment() const
   {
-    return _segment;
+    return segment_;
   }
 
   void setSegment(const SharedHandle<Segment>& segment);
@@ -102,58 +102,58 @@ public:
 
   uint64_t getEntityLength() const
   {
-    assert(!_fileEntry.isNull());
-    return _fileEntry->getLength();
+    assert(!fileEntry_.isNull());
+    return fileEntry_->getLength();
   }
 
   const std::string& getHost() const
   {
-    return _request->getHost();
+    return request_->getHost();
   }
 
   uint16_t getPort() const
   {
-    return _request->getPort();
+    return request_->getPort();
   }
 
   const std::string& getMethod() const
   {
-    return _request->getMethod();
+    return request_->getMethod();
   }
 
   const std::string& getProtocol() const
   {
-    return _request->getProtocol();
+    return request_->getProtocol();
   }
 
   const std::string& getCurrentURI() const
   {
-    return _request->getCurrentUri();
+    return request_->getCurrentUri();
   }
   
   const std::string& getDir() const
   {
-    return _request->getDir();
+    return request_->getDir();
   }
 
   const std::string& getFile() const
   {
-    return _request->getFile();
+    return request_->getFile();
   }
 
   const std::string& getQuery() const
   {
-    return _request->getQuery();
+    return request_->getQuery();
   }
 
   const std::string& getPreviousURI() const
   {
-    return _request->getPreviousUri();
+    return request_->getPreviousUri();
   }
 
   std::string getURIHost() const
   {
-    return _request->getURIHost();
+    return request_->getURIHost();
   }
 
   SharedHandle<Range> getRange() const;
@@ -166,7 +166,7 @@ public:
 
   const SharedHandle<Request>& getRequest() const
   {
-    return _request;
+    return request_;
   }
 
   off_t getStartByte() const;
@@ -176,8 +176,8 @@ public:
   /**
    * Returns string representation of http request.  It usually starts
    * with "GET ..." and ends with "\r\n".  The AuthConfig for this
-   * request is resolved using _authConfigFactory and stored in
-   * _authConfig.  getAuthConfig() returns AuthConfig used in the last
+   * request is resolved using authConfigFactory_ and stored in
+   * authConfig_.  getAuthConfig() returns AuthConfig used in the last
    * invocation of createRequest().
    */
   std::string createRequest();
@@ -194,7 +194,7 @@ public:
 
   void setUserAgent(const std::string& userAgent)
   {
-    _userAgent = userAgent;
+    userAgent_ = userAgent;
   }
   
   // accepts multiline headers, delimited by LF
@@ -205,14 +205,14 @@ public:
   template<typename InputIterator>
   void addAcceptType(InputIterator first, InputIterator last)
   {
-    _acceptTypes.insert(_acceptTypes.end(), first, last);
+    acceptTypes_.insert(acceptTypes_.end(), first, last);
   }
 
   void setCookieStorage(const SharedHandle<CookieStorage>& cookieStorage);
 
   const SharedHandle<CookieStorage>& getCookieStorage() const
   {
-    return _cookieStorage;
+    return cookieStorage_;
   }
 
   void setAuthConfigFactory
@@ -240,37 +240,37 @@ public:
 
   void setFileEntry(const SharedHandle<FileEntry>& fileEntry)
   {
-    _fileEntry = fileEntry;
+    fileEntry_ = fileEntry;
   }
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
-    return _fileEntry;
+    return fileEntry_;
   }
 
   void enableNoCache()
   {
-    _noCache = true;
+    noCache_ = true;
   }
 
   void disableNoCache()
   {
-    _noCache = false;
+    noCache_ = false;
   }
 
   void enableAcceptGZip()
   {
-    _acceptGzip = true;
+    acceptGzip_ = true;
   }
 
   void disableAcceptGZip()
   {
-    _acceptGzip = false;
+    acceptGzip_ = false;
   }
 
   bool acceptGZip() const
   {
-    return _acceptGzip;
+    return acceptGzip_;
   }
 };
 

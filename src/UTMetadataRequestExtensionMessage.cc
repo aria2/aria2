@@ -69,14 +69,14 @@ std::string UTMetadataRequestExtensionMessage::toString() const
 
 void UTMetadataRequestExtensionMessage::doReceivedAction()
 {
-  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(_dctx);
-  uint8_t id = _peer->getExtensionMessageID("ut_metadata");
+  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  uint8_t id = peer_->getExtensionMessageID("ut_metadata");
   if(attrs->metadata.empty()) {
     SharedHandle<UTMetadataRejectExtensionMessage> m
       (new UTMetadataRejectExtensionMessage(id));
     m->setIndex(getIndex());
-    SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
-    _dispatcher->addMessageToQueue(msg);
+    SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
+    dispatcher_->addMessageToQueue(msg);
   }else if(getIndex()*METADATA_PIECE_SIZE < attrs->metadataSize) {
     SharedHandle<UTMetadataDataExtensionMessage> m
       (new UTMetadataDataExtensionMessage(id));
@@ -89,8 +89,8 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
       attrs->metadata.begin()+(getIndex()+1)*METADATA_PIECE_SIZE:
       attrs->metadata.end();
     m->setData(std::string(begin, end));
-    SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
-    _dispatcher->addMessageToQueue(msg);
+    SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
+    dispatcher_->addMessageToQueue(msg);
   } else {
     throw DL_ABORT_EX
       (StringFormat

@@ -61,8 +61,8 @@ DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
 
 void DHTFindNodeReplyMessage::doReceivedAction()
 {
-  for(std::vector<SharedHandle<DHTNode> >::iterator i = _closestKNodes.begin(),
-        eoi = _closestKNodes.end(); i != eoi; ++i) {
+  for(std::vector<SharedHandle<DHTNode> >::iterator i = closestKNodes_.begin(),
+        eoi = closestKNodes_.end(); i != eoi; ++i) {
     if(memcmp((*i)->getID(), getLocalNode()->getID(), DHT_ID_LENGTH) != 0) {
       getRoutingTable()->addNode(*i);
     }
@@ -75,9 +75,9 @@ SharedHandle<Dict> DHTFindNodeReplyMessage::getResponse()
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   size_t offset = 0;
   unsigned char buffer[DHTBucket::K*26];
-  // TODO if _closestKNodes.size() > DHTBucket::K ??
+  // TODO if closestKNodes_.size() > DHTBucket::K ??
   for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
-        _closestKNodes.begin(), eoi = _closestKNodes.end();
+        closestKNodes_.begin(), eoi = closestKNodes_.end();
       i != eoi && offset < DHTBucket::K*26; ++i) {
     SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
@@ -103,12 +103,12 @@ void DHTFindNodeReplyMessage::accept(DHTMessageCallback* callback)
 void DHTFindNodeReplyMessage::setClosestKNodes
 (const std::vector<SharedHandle<DHTNode> >& closestKNodes)
 {
-  _closestKNodes = closestKNodes;
+  closestKNodes_ = closestKNodes;
 }
 
 std::string DHTFindNodeReplyMessage::toStringOptional() const
 {
-  return "nodes="+util::uitos(_closestKNodes.size());
+  return "nodes="+util::uitos(closestKNodes_.size());
 }
 
 } // namespace aria2

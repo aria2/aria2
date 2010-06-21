@@ -62,25 +62,25 @@ void DHTBucketRefreshCommand::preProcess()
 
 void DHTBucketRefreshCommand::process()
 {
-  _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
+  taskQueue_->addPeriodicTask1(taskFactory_->createBucketRefreshTask());
 }
 
 void DHTBucketRefreshCommand::setRoutingTable
 (const SharedHandle<DHTRoutingTable>& routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 void DHTBucketRefreshCommand::setTaskQueue
 (const SharedHandle<DHTTaskQueue>& taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 void DHTBucketRefreshCommand::setTaskFactory
 (const SharedHandle<DHTTaskFactory>& taskFactory)
 {
-  _taskFactory = taskFactory;
+  taskFactory_ = taskFactory;
 }
 
 } // namespace aria2

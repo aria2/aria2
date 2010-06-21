@@ -39,31 +39,31 @@ namespace aria2 {
 
 FallocFileAllocationIterator::FallocFileAllocationIterator
 (BinaryStream* stream, off_t offset, uint64_t totalLength):
-  _stream(stream), _offset(offset), _totalLength(totalLength) {}
+  stream_(stream), offset_(offset), totalLength_(totalLength) {}
 
 void FallocFileAllocationIterator::allocateChunk()
 {
-  if(static_cast<uint64_t>(_offset) > _totalLength) {
+  if(static_cast<uint64_t>(offset_) > totalLength_) {
     throw DL_ABORT_EX("FallocFileAllocationIterator: offset is larger than"
                       " totalLength");
   }
-  _stream->allocate(_offset, _totalLength-_offset);
-  _offset = _totalLength;
+  stream_->allocate(offset_, totalLength_-offset_);
+  offset_ = totalLength_;
 }
 
 bool FallocFileAllocationIterator::finished()
 {
-  return static_cast<uint64_t>(_offset) == _totalLength;
+  return static_cast<uint64_t>(offset_) == totalLength_;
 }
 
 off_t FallocFileAllocationIterator::getCurrentLength()
 {
-  return _offset;
+  return offset_;
 }
 
 uint64_t FallocFileAllocationIterator::getTotalLength()
 {
-  return _totalLength;
+  return totalLength_;
 }
 
 } // namespace aria2

@@ -43,75 +43,75 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext():_sslCtx(0),
-                         _peerVerificationEnabled(false),
-                         _logger(LogFactory::getInstance())
+TLSContext::TLSContext():sslCtx_(0),
+                         peerVerificationEnabled_(false),
+                         logger_(LogFactory::getInstance())
 {
-  _sslCtx = SSL_CTX_new(SSLv23_client_method());
-  if(_sslCtx) {
-    _good = true;
+  sslCtx_ = SSL_CTX_new(SSLv23_client_method());
+  if(sslCtx_) {
+    good_ = true;
   } else {
-    _good = false;
-    _logger->error("SSL_CTX_new() failed. Cause: %s",
+    good_ = false;
+    logger_->error("SSL_CTX_new() failed. Cause: %s",
                    ERR_error_string(ERR_get_error(), 0));
   }
-  SSL_CTX_set_mode(_sslCtx, SSL_MODE_AUTO_RETRY);
+  SSL_CTX_set_mode(sslCtx_, SSL_MODE_AUTO_RETRY);
 }
 
 TLSContext::~TLSContext()
 {
-  SSL_CTX_free(_sslCtx);
+  SSL_CTX_free(sslCtx_);
 }
 
 bool TLSContext::good() const
 {
-  return _good;
+  return good_;
 }
 
 bool TLSContext::bad() const
 {
-  return !_good;
+  return !good_;
 }
 
 bool TLSContext::addClientKeyFile(const std::string& certfile,
                                   const std::string& keyfile)
 {
-  if(SSL_CTX_use_PrivateKey_file(_sslCtx, keyfile.c_str(),
+  if(SSL_CTX_use_PrivateKey_file(sslCtx_, keyfile.c_str(),
                                  SSL_FILETYPE_PEM) != 1) {
-    _logger->error("Failed to load client private key from %s. Cause: %s",
+    logger_->error("Failed to load client private key from %s. Cause: %s",
                    keyfile.c_str(), ERR_error_string(ERR_get_error(), 0));
     return false;
   }
-  if(SSL_CTX_use_certificate_chain_file(_sslCtx, certfile.c_str()) != 1) {
-    _logger->error("Failed to load client certificate from %s. Cause: %s",
+  if(SSL_CTX_use_certificate_chain_file(sslCtx_, certfile.c_str()) != 1) {
+    logger_->error("Failed to load client certificate from %s. Cause: %s",
                    certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
     return false;
   }
-  _logger->info("Client Key File(cert=%s, key=%s) were successfully added.",
+  logger_->info("Client Key File(cert=%s, key=%s) were successfully added.",
                 certfile.c_str(), keyfile.c_str());
   return true;
 }
 
 bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
-  if(SSL_CTX_load_verify_locations(_sslCtx, certfile.c_str(), 0) != 1) {
-    _logger->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
+  if(SSL_CTX_load_verify_locations(sslCtx_, certfile.c_str(), 0) != 1) {
+    logger_->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
                    certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
     return false;
   } else {
-    _logger->info("Trusted CA certificates were successfully added.");
+    logger_->info("Trusted CA certificates were successfully added.");
     return true;
   }
 }
 
 void TLSContext::enablePeerVerification()
 {
-  _peerVerificationEnabled = true;
+  peerVerificationEnabled_ = true;
 }
 
 void TLSContext::disablePeerVerification()
 {
-  _peerVerificationEnabled = false;
+  peerVerificationEnabled_ = false;
 }
 
 } // namespace aria2

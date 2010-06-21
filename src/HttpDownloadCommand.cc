@@ -65,8 +65,8 @@ HttpDownloadCommand::HttpDownloadCommand
  DownloadEngine* e,
  const SocketHandle& socket)
   :DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket),
-   _httpResponse(httpResponse),
-   _httpConnection(httpConnection) {}
+   httpResponse_(httpResponse),
+   httpConnection_(httpConnection) {}
 
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
@@ -75,7 +75,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
   if(getRequest()->isPipeliningEnabled() && !downloadFinished) {
     HttpRequestCommand* command =
       new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
-                             getRequestGroup(), _httpConnection,
+                             getRequestGroup(), httpConnection_,
                              getDownloadEngine(), getSocket());
     // Set proxy request here. aria2 sends the HTTP request specialized for
     // proxy.
@@ -121,7 +121,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
                   getFileEntry()->getLastOffset()));
       
       if(lastOffset ==
-         _httpResponse->getHttpHeader()->getRange()->getEndByte()+1) {
+         httpResponse_->getHttpHeader()->getRange()->getEndByte()+1) {
         return prepareForRetry(0);
       }
     }

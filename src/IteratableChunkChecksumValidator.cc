@@ -60,19 +60,19 @@ namespace aria2 {
 IteratableChunkChecksumValidator::
 IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
                                  const PieceStorageHandle& pieceStorage):
-  _dctx(dctx),
-  _pieceStorage(pieceStorage),
-  _bitfield(new BitfieldMan(_dctx->getPieceLength(), _dctx->getTotalLength())),
-  _currentIndex(0),
-  _logger(LogFactory::getInstance()),
-  _buffer(0) {}
+  dctx_(dctx),
+  pieceStorage_(pieceStorage),
+  bitfield_(new BitfieldMan(dctx_->getPieceLength(), dctx_->getTotalLength())),
+  currentIndex_(0),
+  logger_(LogFactory::getInstance()),
+  buffer_(0) {}
 
 IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  free(_buffer);
+  free(buffer_);
 #else // !HAVE_POSIX_MEMALIGN
-  delete [] _buffer;
+  delete [] buffer_;
 #endif // !HAVE_POSIX_MEMALIGN
 }
 
@@ -83,30 +83,30 @@ void IteratableChunkChecksumValidator::validateChunk()
     std::string actualChecksum;
     try {
       actualChecksum = calculateActualChecksum();
-      if(actualChecksum == _dctx->getPieceHashes()[_currentIndex]) {
-        _bitfield->setBit(_currentIndex);
+      if(actualChecksum == dctx_->getPieceHashes()[currentIndex_]) {
+        bitfield_->setBit(currentIndex_);
       } else {
-        if(_logger->info()) {
-          _logger->info(EX_INVALID_CHUNK_CHECKSUM,
-                        _currentIndex,
+        if(logger_->info()) {
+          logger_->info(EX_INVALID_CHUNK_CHECKSUM,
+                        currentIndex_,
                         util::itos(getCurrentOffset(), true).c_str(),
-                        _dctx->getPieceHashes()[_currentIndex].c_str(),
+                        dctx_->getPieceHashes()[currentIndex_].c_str(),
                         actualChecksum.c_str());
         }
-        _bitfield->unsetBit(_currentIndex);
+        bitfield_->unsetBit(currentIndex_);
       }
     } catch(RecoverableException& ex) {
-      if(_logger->debug()) {
-        _logger->debug("Caught exception while validating piece index=%d."
+      if(logger_->debug()) {
+        logger_->debug("Caught exception while validating piece index=%d."
                        " Some part of file may be missing. Continue operation.",
-                       ex, _currentIndex);
+                       ex, currentIndex_);
       }
-      _bitfield->unsetBit(_currentIndex);
+      bitfield_->unsetBit(currentIndex_);
     }
 
-    ++_currentIndex;
+    ++currentIndex_;
     if(finished()) {
-      _pieceStorage->setBitfield(_bitfield->getBitfield(), _bitfield->getBitfieldLength());
+      pieceStorage_->setBitfield(bitfield_->getBitfield(), bitfield_->getBitfieldLength());
     }
   }
 }
@@ -116,10 +116,10 @@ std::string IteratableChunkChecksumValidator::calculateActualChecksum()
   off_t offset = getCurrentOffset();
   size_t length;
   // When validating last piece
-  if(_currentIndex+1 == _dctx->getNumPieces()) {
-    length = _dctx->getTotalLength()-offset;
+  if(currentIndex_+1 == dctx_->getNumPieces()) {
+    length = dctx_->getTotalLength()-offset;
   } else {
-    length = _dctx->getPieceLength();
+    length = dctx_->getPieceLength();
   }
   return digest(offset, length);
 }
@@ -127,26 +127,26 @@ std::string IteratableChunkChecksumValidator::calculateActualChecksum()
 void IteratableChunkChecksumValidator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  free(_buffer);
-  _buffer = reinterpret_cast<unsigned char*>
+  free(buffer_);
+  buffer_ = reinterpret_cast<unsigned char*>
     (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
 #else // !HAVE_POSIX_MEMALIGN
-  delete [] _buffer;
-  _buffer = new unsigned char[BUFSIZE];
+  delete [] buffer_;
+  buffer_ = new unsigned char[BUFSIZE];
 #endif // !HAVE_POSIX_MEMALIGN
-  if(_dctx->getFileEntries().size() == 1) {
-    _pieceStorage->getDiskAdaptor()->enableDirectIO();
+  if(dctx_->getFileEntries().size() == 1) {
+    pieceStorage_->getDiskAdaptor()->enableDirectIO();
   }
-  _ctx.reset(new MessageDigestContext());
-  _ctx->trySetAlgo(_dctx->getPieceHashAlgo());
-  _ctx->digestInit();
-  _bitfield->clearAllBit();
-  _currentIndex = 0;
+  ctx_.reset(new MessageDigestContext());
+  ctx_->trySetAlgo(dctx_->getPieceHashAlgo());
+  ctx_->digestInit();
+  bitfield_->clearAllBit();
+  currentIndex_ = 0;
 }
 
 std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length)
 {
-  _ctx->digestReset();
+  ctx_->digestReset();
   off_t curoffset = offset/ALIGNMENT*ALIGNMENT;
   off_t max = offset+length;
   off_t woffset;
@@ -156,11 +156,11 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     woffset = 0;
   }
   while(curoffset < max) {
-    size_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
+    size_t r = pieceStorage_->getDiskAdaptor()->readData(buffer_, BUFSIZE,
                                                          curoffset);
     if(r == 0 || r < static_cast<size_t>(woffset)) {
       throw DL_ABORT_EX
-        (StringFormat(EX_FILE_READ, _dctx->getBasePath().c_str(),
+        (StringFormat(EX_FILE_READ, dctx_->getBasePath().c_str(),
                       strerror(errno)).str());
     }
     size_t wlength;
@@ -169,18 +169,18 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     } else {
       wlength = r-woffset;
     }
-    _ctx->digestUpdate(_buffer+woffset, wlength);
+    ctx_->digestUpdate(buffer_+woffset, wlength);
     curoffset += r;
     woffset = 0;
   }
-  return util::toHex(_ctx->digestFinal());
+  return util::toHex(ctx_->digestFinal());
 }
 
 
 bool IteratableChunkChecksumValidator::finished() const
 {
-  if(_currentIndex >= _dctx->getNumPieces()) {
-    _pieceStorage->getDiskAdaptor()->disableDirectIO();
+  if(currentIndex_ >= dctx_->getNumPieces()) {
+    pieceStorage_->getDiskAdaptor()->disableDirectIO();
     return true;
   } else {
     return false;
@@ -189,12 +189,12 @@ bool IteratableChunkChecksumValidator::finished() const
 
 off_t IteratableChunkChecksumValidator::getCurrentOffset() const
 {
-  return (off_t)_currentIndex*_dctx->getPieceLength();
+  return (off_t)currentIndex_*dctx_->getPieceLength();
 }
 
 uint64_t IteratableChunkChecksumValidator::getTotalLength() const
 {
-  return _dctx->getTotalLength();
+  return dctx_->getTotalLength();
 }
 
 } // namespace aria2

@@ -70,14 +70,14 @@ public:
   static const std::string MD5;
 private:
 #ifdef HAVE_LIBSSL
-  EVP_MD_CTX _ctx;
+  EVP_MD_CTX ctx_;
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGCRYPT
-  gcry_md_hd_t _ctx;
+  gcry_md_hd_t ctx_;
 #endif // HAVE_LIBGCRYPT  
-  DigestAlgo _algo;
+  DigestAlgo algo_;
 public:
-  MessageDigestContext():_algo(getDigestAlgo(MessageDigestContext::SHA1))
+  MessageDigestContext():algo_(getDigestAlgo(MessageDigestContext::SHA1))
   {}
 
   ~MessageDigestContext()
@@ -87,7 +87,7 @@ public:
 
   void trySetAlgo(const std::string& algostring)
   {
-    _algo = getDigestAlgo(algostring);
+    algo_ = getDigestAlgo(algostring);
   }
 
   static bool supports(const std::string& algostring);
@@ -119,26 +119,26 @@ public:
 #if defined(HAVE_OLD_LIBSSL)
   void digestInit()
   {
-    EVP_DigestInit(&_ctx, _algo);
+    EVP_DigestInit(&ctx_, algo_);
   }
 
   void digestReset()
   {
-    EVP_DigestInit(&_ctx, _algo);
+    EVP_DigestInit(&ctx_, algo_);
   }
 
   void digestUpdate(const void* data, size_t length)
   {
-    EVP_DigestUpdate(&_ctx, data, length);
+    EVP_DigestUpdate(&ctx_, data, length);
   }
 
   void digestFinal(unsigned char* md) {
     unsigned int len;
-    EVP_DigestFinal(&_ctx, md, &len);
+    EVP_DigestFinal(&ctx_, md, &len);
   }
   void digestFree() {/*empty*/}
   size_t digestLength() const {
-    return digestLength(_algo);
+    return digestLength(algo_);
   }
   static size_t digestLength(DigestAlgo algo) {
     return EVP_MD_size(algo);
@@ -146,24 +146,24 @@ public:
 
 #elif defined(HAVE_LIBSSL)
   void digestInit() {
-    EVP_MD_CTX_init(&_ctx);
+    EVP_MD_CTX_init(&ctx_);
     digestReset();
   }
   void digestReset() {
-    EVP_DigestInit_ex(&_ctx, _algo, 0);
+    EVP_DigestInit_ex(&ctx_, algo_, 0);
   }
   void digestUpdate(const void* data, size_t length) {
-    EVP_DigestUpdate(&_ctx, data, length);
+    EVP_DigestUpdate(&ctx_, data, length);
   }
   void digestFinal(unsigned char* md) {
     unsigned int len;
-    EVP_DigestFinal_ex(&_ctx, md, &len);
+    EVP_DigestFinal_ex(&ctx_, md, &len);
   }
   void digestFree() {
-    EVP_MD_CTX_cleanup(&_ctx);
+    EVP_MD_CTX_cleanup(&ctx_);
   }
   size_t digestLength() const {
-    return digestLength(_algo);
+    return digestLength(algo_);
   }
   static size_t digestLength(DigestAlgo algo) {
     return EVP_MD_size(algo);
@@ -171,23 +171,23 @@ public:
 
 #elif defined(HAVE_LIBGCRYPT)
   void digestInit() {
-    gcry_md_open(&_ctx, _algo, 0);
+    gcry_md_open(&ctx_, algo_, 0);
   }
   void digestReset() {
-    gcry_md_reset(_ctx);
+    gcry_md_reset(ctx_);
   }
   void digestUpdate(const void* data, size_t length) {
-    gcry_md_write(_ctx, data, length);
+    gcry_md_write(ctx_, data, length);
   }
   void digestFinal(unsigned char* md) {
-    gcry_md_final(_ctx);
-    memcpy(md, gcry_md_read(_ctx, 0), gcry_md_get_algo_dlen(_algo));
+    gcry_md_final(ctx_);
+    memcpy(md, gcry_md_read(ctx_, 0), gcry_md_get_algo_dlen(algo_));
   }
   void digestFree() {
-    gcry_md_close(_ctx);
+    gcry_md_close(ctx_);
   }
   size_t digestLength() const {
-    return digestLength(_algo);
+    return digestLength(algo_);
   }
   static size_t digestLength(DigestAlgo algo) {
     return gcry_md_get_algo_dlen(algo);

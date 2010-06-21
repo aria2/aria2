@@ -57,21 +57,21 @@ class Logger;
 
 class FileEntry {
 private:
-  std::string _path;
-  std::deque<std::string> _uris;
-  std::deque<std::string> _spentUris;
-  uint64_t _length;
-  off_t _offset;
-  bool _requested;
-  std::deque<SharedHandle<Request> > _requestPool;
-  std::deque<SharedHandle<Request> > _inFlightRequests;
-  std::string _contentType;
+  std::string path_;
+  std::deque<std::string> uris_;
+  std::deque<std::string> spentUris_;
+  uint64_t length_;
+  off_t offset_;
+  bool requested_;
+  std::deque<SharedHandle<Request> > requestPool_;
+  std::deque<SharedHandle<Request> > inFlightRequests_;
+  std::string contentType_;
   // URIResult is stored in the ascending order of the time when its result is
   // available.
-  std::deque<URIResult> _uriResults;
-  bool _singleHostMultiConnection;
-  std::string _originalName;
-  Logger* _logger;
+  std::deque<URIResult> uriResults_;
+  bool singleHostMultiConnection_;
+  std::string originalName_;
+  Logger* logger_;
 
   void storePool(const SharedHandle<Request>& request);
 public:
@@ -88,39 +88,39 @@ public:
 
   std::string getDirname() const;
 
-  const std::string& getPath() const { return _path; }
+  const std::string& getPath() const { return path_; }
 
-  void setPath(const std::string& path) { _path = path; }
+  void setPath(const std::string& path) { path_ = path; }
 
-  uint64_t getLength() const { return _length; }
+  uint64_t getLength() const { return length_; }
 
-  void setLength(uint64_t length) { _length = length; }
+  void setLength(uint64_t length) { length_ = length; }
 
-  off_t getOffset() const { return _offset; }
+  off_t getOffset() const { return offset_; }
 
-  void setOffset(off_t offset) { _offset = offset; }
+  void setOffset(off_t offset) { offset_ = offset; }
 
-  off_t getLastOffset() { return _offset+_length; }
+  off_t getLastOffset() { return offset_+length_; }
 
-  bool isRequested() const { return _requested; }
+  bool isRequested() const { return requested_; }
 
-  void setRequested(bool flag) { _requested = flag; }
+  void setRequested(bool flag) { requested_ = flag; }
 
   void setupDir();
 
   const std::deque<std::string>& getRemainingUris() const
   {
-    return _uris;
+    return uris_;
   }
 
   std::deque<std::string>& getRemainingUris()
   {
-    return _uris;
+    return uris_;
   }
 
   const std::deque<std::string>& getSpentUris() const
   {
-    return _spentUris;
+    return spentUris_;
   }
 
   size_t setUris(const std::vector<std::string>& uris);
@@ -141,15 +141,15 @@ public:
 
   bool insertUri(const std::string& uri, size_t pos);
 
-  // Inserts _uris and _spentUris into uris.
+  // Inserts uris_ and spentUris_ into uris.
   void getUris(std::vector<std::string>& uris) const;
 
   void setContentType(const std::string& contentType)
   {
-    _contentType = contentType;
+    contentType_ = contentType;
   }
 
-  const std::string& getContentType() const { return _contentType; }
+  const std::string& getContentType() const { return contentType_; }
 
   std::string selectUri(const SharedHandle<URISelector>& uriSelector);
 
@@ -177,17 +177,17 @@ public:
 
   size_t countInFlightRequest() const
   {
-    return _inFlightRequests.size();
+    return inFlightRequests_.size();
   }
 
   size_t countPooledRequest() const
   {
-    return _requestPool.size();
+    return requestPool_.size();
   }
 
   const std::deque<SharedHandle<Request> >& getInFlightRequests() const
   {
-    return _inFlightRequests;
+    return inFlightRequests_;
   }
 
   bool operator<(const FileEntry& fileEntry) const;
@@ -205,22 +205,22 @@ public:
 
   const std::deque<URIResult>& getURIResults() const
   {
-    return _uriResults;
+    return uriResults_;
   }
 
   // Extracts URIResult whose _result is r and stores them into res.
-  // The extracted URIResults are removed from _uriResults.
+  // The extracted URIResults are removed from uriResults_.
   void extractURIResult
   (std::deque<URIResult>& res, downloadresultcode::RESULT r);
 
   void disableSingleHostMultiConnection()
   {
-    _singleHostMultiConnection = false;
+    singleHostMultiConnection_ = false;
   }
 
   bool isSingleHostMultiConnectionEnabled() const
   {
-    return _singleHostMultiConnection;
+    return singleHostMultiConnection_;
   }
 
   // Reuse URIs which have not emitted error so far.  Thie method
@@ -233,19 +233,19 @@ public:
 
   void setOriginalName(const std::string& originalName)
   {
-    _originalName = originalName;
+    originalName_ = originalName;
   }
 
   const std::string& getOriginalName() const
   {
-    return _originalName;
+    return originalName_;
   }
 
   bool removeUri(const std::string& uri);
 
   bool emptyRequestUri() const
   {
-    return _uris.empty() && _inFlightRequests.empty() && _requestPool.empty();
+    return uris_.empty() && inFlightRequests_.empty() && requestPool_.empty();
   }
 };
 

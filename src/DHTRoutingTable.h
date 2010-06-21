@@ -53,17 +53,17 @@ class Logger;
 
 class DHTRoutingTable {
 private:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  BNode* _root;
+  BNode* root_;
 
-  size_t _numBucket;
+  size_t numBucket_;
 
-  SharedHandle<DHTTaskQueue> _taskQueue;
+  SharedHandle<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> _taskFactory;
+  SharedHandle<DHTTaskFactory> taskFactory_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   bool addNode(const SharedHandle<DHTNode>& node, bool good);
 public:

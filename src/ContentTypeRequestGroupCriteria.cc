@@ -61,14 +61,14 @@ bool ContentTypeRequestGroupCriteria::match
   if(requestGroup->getDownloadContext()->getFileEntries().size() != 1) {
     return false;
   }
-  if(tailMatch(_extensions.begin(), _extensions.end(),
+  if(tailMatch(extensions_.begin(), extensions_.end(),
                requestGroup->getFirstFilePath())) {
     return true;
   } else {
     return
-      std::find(_contentTypes.begin(), _contentTypes.end(),
+      std::find(contentTypes_.begin(), contentTypes_.end(),
                 requestGroup->getDownloadContext()->getFirstFileEntry()->
-                getContentType()) != _contentTypes.end();
+                getContentType()) != contentTypes_.end();
   }
 }
 

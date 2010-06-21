@@ -57,16 +57,16 @@ class RequestGroupMan;
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
   cuid_t cuid;
-  std::deque<SharedHandle<BtMessage> > _messageQueue;
-  std::deque<RequestSlot> _requestSlots;
-  SharedHandle<DownloadContext> _downloadContext;
-  SharedHandle<PeerStorage> _peerStorage;
-  SharedHandle<PieceStorage> _pieceStorage;
-  WeakHandle<BtMessageFactory> _messageFactory;
-  SharedHandle<Peer> _peer;
-  WeakHandle<RequestGroupMan> _requestGroupMan;
-  time_t _requestTimeout;
-  Logger* _logger;
+  std::deque<SharedHandle<BtMessage> > messageQueue_;
+  std::deque<RequestSlot> requestSlots_;
+  SharedHandle<DownloadContext> downloadContext_;
+  SharedHandle<PeerStorage> peerStorage_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  WeakHandle<BtMessageFactory> messageFactory_;
+  SharedHandle<Peer> peer_;
+  WeakHandle<RequestGroupMan> requestGroupMan_;
+  time_t requestTimeout_;
+  Logger* logger_;
 public:
   DefaultBtMessageDispatcher();
 
@@ -94,12 +94,12 @@ public:
   virtual bool isSendingInProgress();
 
   virtual size_t countMessageInQueue() {
-    return _messageQueue.size();
+    return messageQueue_.size();
   }
 
   virtual size_t countOutstandingRequest()
   {
-    return _requestSlots.size();
+    return requestSlots_.size();
   }
   
   virtual bool isOutstandingRequest(size_t index, size_t blockIndex);
@@ -114,12 +114,12 @@ public:
 
   const std::deque<SharedHandle<BtMessage> >& getMessageQueue() const
   {
-    return _messageQueue;
+    return messageQueue_;
   }
 
   const std::deque<RequestSlot>& getRequestSlots() const
   {
-    return _requestSlots;
+    return requestSlots_;
   }
 
   void setPeer(const SharedHandle<Peer>& peer);
@@ -140,7 +140,7 @@ public:
   }
 
   void setRequestTimeout(time_t requestTimeout) {
-    _requestTimeout = requestTimeout;
+    requestTimeout_ = requestTimeout;
   }
 };
 

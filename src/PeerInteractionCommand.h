@@ -55,16 +55,16 @@ public:
     RECEIVER_WAIT_HANDSHAKE,
     WIRED};
 private:
-  RequestGroup* _requestGroup;
+  RequestGroup* requestGroup_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  Seq _sequence;
-  SharedHandle<BtInteractive> _btInteractive;
+  Seq sequence_;
+  SharedHandle<BtInteractive> btInteractive_;
 
   const SharedHandle<Option>& getOption() const;
 protected:

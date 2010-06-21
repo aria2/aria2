@@ -42,90 +42,90 @@ namespace aria2 {
 
 class BtRuntime {
 private:
-  uint64_t _uploadLengthAtStartup;
-  uint16_t _port;
-  bool _halt;
-  unsigned int _connections;
-  bool _ready;
+  uint64_t uploadLengthAtStartup_;
+  uint16_t port_;
+  bool halt_;
+  unsigned int connections_;
+  bool ready_;
   // Maximum number of peers to hold connections at the same time.
   // 0 means unlimited.
-  unsigned int _maxPeers;
+  unsigned int maxPeers_;
   // Minimum number of peers. This value is used for getting more peers from
   // tracker. 0 means always the number of peers is under minimum.
-  unsigned int _minPeers;
+  unsigned int minPeers_;
 
   static const unsigned int DEFAULT_MIN_PEERS = 40;
 
 public:
   BtRuntime():
-    _uploadLengthAtStartup(0),
-    _port(0),
-    _halt(false),
-    _connections(0),
-    _ready(false),
-    _maxPeers(DEFAULT_MAX_PEERS),
-    _minPeers(DEFAULT_MIN_PEERS)
+    uploadLengthAtStartup_(0),
+    port_(0),
+    halt_(false),
+    connections_(0),
+    ready_(false),
+    maxPeers_(DEFAULT_MAX_PEERS),
+    minPeers_(DEFAULT_MIN_PEERS)
   {}
 
   ~BtRuntime() {}
 
   uint64_t getUploadLengthAtStartup() const {
-    return _uploadLengthAtStartup;
+    return uploadLengthAtStartup_;
   }
 
   void setUploadLengthAtStartup(uint64_t length) {
-    _uploadLengthAtStartup = length;
+    uploadLengthAtStartup_ = length;
   }
 
   void setListenPort(uint16_t port) {
-    _port = port;
+    port_ = port;
   }
 
-  uint16_t getListenPort() const { return _port; }
+  uint16_t getListenPort() const { return port_; }
 
-  bool isHalt() const { return _halt; }
+  bool isHalt() const { return halt_; }
 
   void setHalt(bool halt) {
-    _halt = halt;
+    halt_ = halt;
   }
 
-  unsigned int getConnections() const { return _connections; }
+  unsigned int getConnections() const { return connections_; }
 
-  void increaseConnections() { ++_connections; }
+  void increaseConnections() { ++connections_; }
 
-  void decreaseConnections() { --_connections; }
+  void decreaseConnections() { --connections_; }
 
   bool lessThanMaxPeers() const
   {
-    return _maxPeers == 0 || _connections < _maxPeers;
+    return maxPeers_ == 0 || connections_ < maxPeers_;
   }
 
   bool lessThanMinPeers() const
   {
-    return _minPeers == 0 || _connections < _minPeers;
+    return minPeers_ == 0 || connections_ < minPeers_;
   }
 
   bool lessThanEqMinPeers() const
   {
-    return _minPeers == 0 || _connections <= _minPeers;
+    return minPeers_ == 0 || connections_ <= minPeers_;
   }
 
-  bool ready() { return _ready; }
+  bool ready() { return ready_; }
 
-  void setReady(bool go) { _ready = go; }
+  void setReady(bool go) { ready_ = go; }
 
   void setMaxPeers(unsigned int maxPeers)
   {
-    _maxPeers = maxPeers;
-    _minPeers = static_cast<unsigned int>(maxPeers*0.8);
-    if(_minPeers == 0 && maxPeers != 0) {
-      _minPeers = maxPeers;
+    maxPeers_ = maxPeers;
+    minPeers_ = static_cast<unsigned int>(maxPeers*0.8);
+    if(minPeers_ == 0 && maxPeers != 0) {
+      minPeers_ = maxPeers;
     }
   }
 
   unsigned int getMaxPeers() const
   {
-    return _maxPeers;
+    return maxPeers_;
   }
 
   static const unsigned int DEFAULT_MAX_PEERS = 55;

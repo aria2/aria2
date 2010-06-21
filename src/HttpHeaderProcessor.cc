@@ -47,7 +47,7 @@
 namespace aria2 {
 
 HttpHeaderProcessor::HttpHeaderProcessor():
-  _limit(21/*lines*/*8190/*per line*/) {}
+  limit_(21/*lines*/*8190/*per line*/) {}
 // The above values come from Apache's documentation
 // http://httpd.apache.org/docs/2.2/en/mod/core.html: See
 // LimitRequestFieldSize and LimitRequestLine directive.  Also the
@@ -59,26 +59,26 @@ HttpHeaderProcessor::~HttpHeaderProcessor() {}
 void HttpHeaderProcessor::update(const unsigned char* data, size_t length)
 {
   checkHeaderLimit(length);
-  _buf += std::string(&data[0], &data[length]);
+  buf_ += std::string(&data[0], &data[length]);
 }
 
 void HttpHeaderProcessor::update(const std::string& data)
 {
   checkHeaderLimit(data.size());
-  _buf += data;
+  buf_ += data;
 }
 
 void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
 {
-  if(_buf.size()+incomingLength > _limit) {
+  if(buf_.size()+incomingLength > limit_) {
     throw DL_ABORT_EX("Too large http header");
   }
 }
 
 bool HttpHeaderProcessor::eoh() const
 {
-  if(_buf.find("\r\n\r\n") == std::string::npos &&
-     _buf.find("\n\n") == std::string::npos) {
+  if(buf_.find("\r\n\r\n") == std::string::npos &&
+     buf_.find("\n\n") == std::string::npos) {
     return false;
   } else {
     return true;
@@ -88,10 +88,10 @@ bool HttpHeaderProcessor::eoh() const
 size_t HttpHeaderProcessor::getPutBackDataLength() const
 {
   std::string::size_type delimpos = std::string::npos;
-  if((delimpos = _buf.find("\r\n\r\n")) != std::string::npos) {
-    return _buf.size()-(delimpos+4);
-  } else if((delimpos = _buf.find("\n\n")) != std::string::npos) {
-    return _buf.size()-(delimpos+2);
+  if((delimpos = buf_.find("\r\n\r\n")) != std::string::npos) {
+    return buf_.size()-(delimpos+4);
+  } else if((delimpos = buf_.find("\n\n")) != std::string::npos) {
+    return buf_.size()-(delimpos+2);
   } else {
     return 0;
   }
@@ -99,21 +99,21 @@ size_t HttpHeaderProcessor::getPutBackDataLength() const
 
 void HttpHeaderProcessor::clear()
 {
-  _buf.erase();
+  buf_.erase();
 }
 
 SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
 {
   std::string::size_type delimpos = std::string::npos;
-  if(((delimpos = _buf.find("\r\n")) == std::string::npos &&
-      (delimpos = _buf.find("\n")) == std::string::npos) ||
+  if(((delimpos = buf_.find("\r\n")) == std::string::npos &&
+      (delimpos = buf_.find("\n")) == std::string::npos) ||
      delimpos < 12) {
     throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
   HttpHeaderHandle httpHeader(new HttpHeader());
-  httpHeader->setVersion(_buf.substr(0, 8));
-  httpHeader->setResponseStatus(_buf.substr(9, 3));
-  std::istringstream strm(_buf);
+  httpHeader->setVersion(buf_.substr(0, 8));
+  httpHeader->setResponseStatus(buf_.substr(9, 3));
+  std::istringstream strm(buf_);
   // TODO 1st line(HTTP/1.1 200...) is also send to HttpHeader, but it should
   // not.
   httpHeader->fill(strm);
@@ -126,13 +126,13 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
   // GET / HTTP/1.x
   // At least 14bytes before \r\n or \n.
   std::string::size_type delimpos = std::string::npos;
-  if(((delimpos = _buf.find("\r\n")) == std::string::npos &&
-      (delimpos = _buf.find("\n")) == std::string::npos) ||
+  if(((delimpos = buf_.find("\r\n")) == std::string::npos &&
+      (delimpos = buf_.find("\n")) == std::string::npos) ||
      delimpos < 14) {
     throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
   std::vector<std::string> firstLine;
-  util::split(_buf.substr(0, delimpos), std::back_inserter(firstLine)," ",true);
+  util::split(buf_.substr(0, delimpos), std::back_inserter(firstLine)," ",true);
   if(firstLine.size() != 3) {
     throw DL_ABORT_EX("Malformed HTTP request header.");    
   }
@@ -140,7 +140,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
   httpHeader->setMethod(firstLine[0]);
   httpHeader->setRequestPath(firstLine[1]);
   httpHeader->setVersion(firstLine[2]);
-  std::istringstream strm(_buf.substr(delimpos));
+  std::istringstream strm(buf_.substr(delimpos));
   httpHeader->fill(strm);
   return httpHeader;
 }
@@ -148,11 +148,11 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
 std::string HttpHeaderProcessor::getHeaderString() const
 {
   std::string::size_type delimpos = std::string::npos;
-  if((delimpos = _buf.find("\r\n\r\n")) == std::string::npos &&
-     (delimpos = _buf.find("\n\n")) == std::string::npos) {
-    return _buf;
+  if((delimpos = buf_.find("\r\n\r\n")) == std::string::npos &&
+     (delimpos = buf_.find("\n\n")) == std::string::npos) {
+    return buf_;
   } else {
-    return _buf.substr(0, delimpos);
+    return buf_.substr(0, delimpos);
   }
 }
 

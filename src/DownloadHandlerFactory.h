@@ -54,21 +54,21 @@ class DownloadHandlerFactory
 private:
 #ifdef ENABLE_METALINK
   static SharedHandle<MemoryBufferPreDownloadHandler>
-  _metalinkPreDownloadHandler;
+  metalinkPreDownloadHandler_;
 
   static SharedHandle<MetalinkPostDownloadHandler>
-  _metalinkPostDownloadHandler;
+  metalinkPostDownloadHandler_;
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
   static SharedHandle<MemoryBufferPreDownloadHandler>
-  _btPreDownloadHandler;
+  btPreDownloadHandler_;
 
   static SharedHandle<BtPostDownloadHandler>
-  _btPostDownloadHandler;
+  btPostDownloadHandler_;
 
   static SharedHandle<UTMetadataPostDownloadHandler>
-  _btMetadataPostDownloadHandler;
+  btMetadataPostDownloadHandler_;
 #endif // ENABLE_BITTORRENT
 public:
 #ifdef ENABLE_METALINK

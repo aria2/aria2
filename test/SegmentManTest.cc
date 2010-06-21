@@ -23,20 +23,20 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetCleanSegmentIfOwnerIsIdle);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> _option;
-  SharedHandle<DownloadContext> _dctx;
-  SharedHandle<DefaultPieceStorage> _pieceStorage;
-  SharedHandle<SegmentMan> _segmentMan;
+  SharedHandle<Option> option_;
+  SharedHandle<DownloadContext> dctx_;
+  SharedHandle<DefaultPieceStorage> pieceStorage_;
+  SharedHandle<SegmentMan> segmentMan_;
 public:
   void setUp()
   {
     size_t pieceLength = 1024*1024;
     uint64_t totalLength = 64*1024*1024;
-    _option.reset(new Option());
-    _dctx.reset
+    option_.reset(new Option());
+    dctx_.reset
       (new DownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
-    _pieceStorage.reset(new DefaultPieceStorage(_dctx, _option.get()));
-    _segmentMan.reset(new SegmentMan(_option.get(), _dctx, _pieceStorage));
+    pieceStorage_.reset(new DefaultPieceStorage(dctx_, option_.get()));
+    segmentMan_.reset(new SegmentMan(option_.get(), dctx_, pieceStorage_));
   }
 
   void testNullBitfield();
@@ -162,46 +162,46 @@ void SegmentManTest::testRegisterPeerStat()
 
 void SegmentManTest::testCancelAllSegments()
 {
-  _segmentMan->getSegment(1, 0);
-  _segmentMan->getSegment(2, 1);
-  CPPUNIT_ASSERT(_segmentMan->getSegment(3, 0).isNull());
-  CPPUNIT_ASSERT(_segmentMan->getSegment(4, 1).isNull());
-  _segmentMan->cancelAllSegments();
-  CPPUNIT_ASSERT(!_segmentMan->getSegment(3, 0).isNull());
-  CPPUNIT_ASSERT(!_segmentMan->getSegment(4, 1).isNull());
+  segmentMan_->getSegment(1, 0);
+  segmentMan_->getSegment(2, 1);
+  CPPUNIT_ASSERT(segmentMan_->getSegment(3, 0).isNull());
+  CPPUNIT_ASSERT(segmentMan_->getSegment(4, 1).isNull());
+  segmentMan_->cancelAllSegments();
+  CPPUNIT_ASSERT(!segmentMan_->getSegment(3, 0).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getSegment(4, 1).isNull());
 }
 
 void SegmentManTest::testGetPeerStat()
 {
   SharedHandle<PeerStat> peerStat1(new PeerStat(1));
-  _segmentMan->registerPeerStat(peerStat1);
-  CPPUNIT_ASSERT_EQUAL((cuid_t)1, _segmentMan->getPeerStat(1)->getCuid());
+  segmentMan_->registerPeerStat(peerStat1);
+  CPPUNIT_ASSERT_EQUAL((cuid_t)1, segmentMan_->getPeerStat(1)->getCuid());
 }
 
 void SegmentManTest::testGetCleanSegmentIfOwnerIsIdle()
 {
-  SharedHandle<Segment> seg1 = _segmentMan->getSegment(1, 0);
-  SharedHandle<Segment> seg2 = _segmentMan->getSegment(2, 1);
+  SharedHandle<Segment> seg1 = segmentMan_->getSegment(1, 0);
+  SharedHandle<Segment> seg2 = segmentMan_->getSegment(2, 1);
   seg2->updateWrittenLength(100);
-  CPPUNIT_ASSERT(!_segmentMan->getCleanSegmentIfOwnerIsIdle(3, 0).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(3, 0).isNull());
   SharedHandle<PeerStat> peerStat3(new PeerStat(3));
-  _segmentMan->registerPeerStat(peerStat3);
-  CPPUNIT_ASSERT(!_segmentMan->getCleanSegmentIfOwnerIsIdle(4, 0).isNull());
+  segmentMan_->registerPeerStat(peerStat3);
+  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(4, 0).isNull());
   SharedHandle<PeerStat> peerStat4(new PeerStat(4));
   peerStat4->downloadStart();
-  _segmentMan->registerPeerStat(peerStat4);
+  segmentMan_->registerPeerStat(peerStat4);
   // Owner PeerStat is not IDLE
-  CPPUNIT_ASSERT(_segmentMan->getCleanSegmentIfOwnerIsIdle(5, 0).isNull());
+  CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 0).isNull());
   // Segment::updateWrittenLength != 0
-  CPPUNIT_ASSERT(_segmentMan->getCleanSegmentIfOwnerIsIdle(5, 1).isNull());
+  CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 1).isNull());
 
   // Test with UnknownLengthPieceStorage
   SharedHandle<DownloadContext> dctx(new DownloadContext(1024, 0, "aria2"));
   SharedHandle<UnknownLengthPieceStorage> ps
-    (new UnknownLengthPieceStorage(dctx, _option.get()));
-  _segmentMan.reset(new SegmentMan(_option.get(), dctx, ps));
+    (new UnknownLengthPieceStorage(dctx, option_.get()));
+  segmentMan_.reset(new SegmentMan(option_.get(), dctx, ps));
   
-  CPPUNIT_ASSERT(!_segmentMan->getCleanSegmentIfOwnerIsIdle(1, 0).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(1, 0).isNull());
 
 }
 

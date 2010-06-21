@@ -63,7 +63,7 @@ DHTGetPeersReplyMessage::DHTGetPeersReplyMessage
  const std::string& token,
  const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID),
-  _token(token) {}
+  token_(token) {}
 
 DHTGetPeersReplyMessage::~DHTGetPeersReplyMessage() {}
 
@@ -76,12 +76,12 @@ SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
 {
   SharedHandle<Dict> rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
-  rDict->put(TOKEN, _token);
-  if(_values.empty()) {
+  rDict->put(TOKEN, token_);
+  if(values_.empty()) {
     size_t offset = 0;
     unsigned char buffer[DHTBucket::K*26];
     for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
-          _closestKNodes.begin(), eoi = _closestKNodes.end();
+          closestKNodes_.begin(), eoi = closestKNodes_.end();
         i != eoi && offset < DHTBucket::K*26; ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
@@ -113,8 +113,8 @@ SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
     // number of peer info that a message can carry.
     static const size_t MAX_VALUES_SIZE = 100;
     SharedHandle<List> valuesList = List::g();
-    for(std::vector<SharedHandle<Peer> >::const_iterator i = _values.begin(),
-          eoi = _values.end(); i != eoi && valuesList->size() < MAX_VALUES_SIZE;
+    for(std::vector<SharedHandle<Peer> >::const_iterator i = values_.begin(),
+          eoi = values_.end(); i != eoi && valuesList->size() < MAX_VALUES_SIZE;
         ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
@@ -140,9 +140,9 @@ void DHTGetPeersReplyMessage::accept(DHTMessageCallback* callback)
 
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {
-  return strconcat("token=", util::toHex(_token),
-                   ", values=", util::uitos(_values.size()),
-                   ", nodes=", util::uitos(_closestKNodes.size()));
+  return strconcat("token=", util::toHex(token_),
+                   ", values=", util::uitos(values_.size()),
+                   ", nodes=", util::uitos(closestKNodes_.size()));
 }
 
 } // namespace aria2

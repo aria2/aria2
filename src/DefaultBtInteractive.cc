@@ -80,37 +80,37 @@ DefaultBtInteractive::DefaultBtInteractive
 (const SharedHandle<DownloadContext>& downloadContext,
  const SharedHandle<Peer>& peer)
   :
-  _downloadContext(downloadContext),
-  _peer(peer),
-  _metadataGetMode(false),
-  _logger(LogFactory::getInstance()),
-  _allowedFastSetSize(10),
-  _haveTimer(global::wallclock),
-  _keepAliveTimer(global::wallclock),
-  _floodingTimer(global::wallclock),
-  _inactiveTimer(global::wallclock),
-  _pexTimer(global::wallclock),
-  _perSecTimer(global::wallclock),
-  _keepAliveInterval(120),
-  _utPexEnabled(false),
-  _dhtEnabled(false),
-  _numReceivedMessage(0),
-  _maxOutstandingRequest(DEFAULT_MAX_OUTSTANDING_REQUEST)
+  downloadContext_(downloadContext),
+  peer_(peer),
+  metadataGetMode_(false),
+  logger_(LogFactory::getInstance()),
+  allowedFastSetSize_(10),
+  haveTimer_(global::wallclock),
+  keepAliveTimer_(global::wallclock),
+  floodingTimer_(global::wallclock),
+  inactiveTimer_(global::wallclock),
+  pexTimer_(global::wallclock),
+  perSecTimer_(global::wallclock),
+  keepAliveInterval_(120),
+  utPexEnabled_(false),
+  dhtEnabled_(false),
+  numReceivedMessage_(0),
+  maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST)
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
 
 void DefaultBtInteractive::initiateHandshake() {
   SharedHandle<BtMessage> message =
-    _messageFactory->createHandshakeMessage
-    (bittorrent::getInfoHash(_downloadContext), bittorrent::getStaticPeerId());
-  _dispatcher->addMessageToQueue(message);
-  _dispatcher->sendMessages();
+    messageFactory_->createHandshakeMessage
+    (bittorrent::getInfoHash(downloadContext_), bittorrent::getStaticPeerId());
+  dispatcher_->addMessageToQueue(message);
+  dispatcher_->sendMessages();
 }
 
 BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   SharedHandle<BtHandshakeMessage> message =
-    _btMessageReceiver->receiveHandshake(quickReply);
+    btMessageReceiver_->receiveHandshake(quickReply);
   if(message.isNull()) {
     return SharedHandle<BtMessage>();
   }
@@ -119,46 +119,46 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
     throw DL_ABORT_EX
       (StringFormat
        ("CUID#%s - Drop connection from the same Peer ID",
-        util::itos(_cuid).c_str()).str());
+        util::itos(cuid_).c_str()).str());
   }
   std::vector<SharedHandle<Peer> > activePeers;
-  _peerStorage->getActivePeers(activePeers);
+  peerStorage_->getActivePeers(activePeers);
   for(std::vector<SharedHandle<Peer> >::const_iterator i = activePeers.begin(),
         eoi = activePeers.end(); i != eoi; ++i) {
     if(memcmp((*i)->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
       throw DL_ABORT_EX
         (StringFormat
          ("CUID#%s - Same Peer ID has been already seen.",
-          util::itos(_cuid).c_str()).str());
+          util::itos(cuid_).c_str()).str());
     }
   }
 
-  _peer->setPeerId(message->getPeerId());
+  peer_->setPeerId(message->getPeerId());
     
   if(message->isFastExtensionSupported()) {
-    _peer->setFastExtensionEnabled(true);
-    if(_logger->info()) {
-      _logger->info(MSG_FAST_EXTENSION_ENABLED, util::itos(_cuid).c_str());
+    peer_->setFastExtensionEnabled(true);
+    if(logger_->info()) {
+      logger_->info(MSG_FAST_EXTENSION_ENABLED, util::itos(cuid_).c_str());
     }
   }
   if(message->isExtendedMessagingEnabled()) {
-    _peer->setExtendedMessagingEnabled(true);
-    if(!_utPexEnabled) {
-      _extensionMessageRegistry->removeExtension("ut_pex");
+    peer_->setExtendedMessagingEnabled(true);
+    if(!utPexEnabled_) {
+      extensionMessageRegistry_->removeExtension("ut_pex");
     }
-    if(_logger->info()) {
-      _logger->info(MSG_EXTENDED_MESSAGING_ENABLED, util::itos(_cuid).c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_EXTENDED_MESSAGING_ENABLED, util::itos(cuid_).c_str());
     }
   }
   if(message->isDHTEnabled()) {
-    _peer->setDHTEnabled(true);
-    if(_logger->info()) {
-      _logger->info(MSG_DHT_ENABLED_PEER, util::itos(_cuid).c_str());
+    peer_->setDHTEnabled(true);
+    if(logger_->info()) {
+      logger_->info(MSG_DHT_ENABLED_PEER, util::itos(cuid_).c_str());
     }
   }
-  if(_logger->info()) {
-    _logger->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(_cuid).c_str(),
-                 _peer->getIPAddress().c_str(), _peer->getPort(),
+  if(logger_->info()) {
+    logger_->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid_).c_str(),
+                 peer_->getIPAddress().c_str(), peer_->getPort(),
                  message->toString().c_str());
   }
   return message;
@@ -170,20 +170,20 @@ BtMessageHandle DefaultBtInteractive::receiveAndSendHandshake() {
 
 void DefaultBtInteractive::doPostHandshakeProcessing() {
   // Set time 0 to haveTimer to cache http/ftp download piece completion
-  _haveTimer.reset(0);
-  _keepAliveTimer = global::wallclock;
-  _floodingTimer = global::wallclock;
-  _pexTimer.reset(0);
-  if(_peer->isExtendedMessagingEnabled()) {
+  haveTimer_.reset(0);
+  keepAliveTimer_ = global::wallclock;
+  floodingTimer_ = global::wallclock;
+  pexTimer_.reset(0);
+  if(peer_->isExtendedMessagingEnabled()) {
     addHandshakeExtendedMessageToQueue();
   }
-  if(!_metadataGetMode) {
+  if(!metadataGetMode_) {
     addBitfieldMessageToQueue();
   }
-  if(_peer->isDHTEnabled() && _dhtEnabled) {
+  if(peer_->isDHTEnabled() && dhtEnabled_) {
     addPortMessageToQueue();
   }
-  if(!_metadataGetMode) {
+  if(!metadataGetMode_) {
     addAllowedFastMessageToQueue();
   }
   sendPendingMessage();
@@ -191,8 +191,8 @@ void DefaultBtInteractive::doPostHandshakeProcessing() {
 
 void DefaultBtInteractive::addPortMessageToQueue()
 {
-  _dispatcher->addMessageToQueue
-    (_messageFactory->createPortMessage(_localNode->getPort()));
+  dispatcher_->addMessageToQueue
+    (messageFactory_->createPortMessage(localNode_->getPort()));
 }
 
 void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
@@ -200,174 +200,174 @@ void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
   static const std::string CLIENT_ARIA2("aria2/"PACKAGE_VERSION);
   HandshakeExtensionMessageHandle m(new HandshakeExtensionMessage());
   m->setClientVersion(CLIENT_ARIA2);
-  m->setTCPPort(_btRuntime->getListenPort());
-  m->setExtensions(_extensionMessageRegistry->getExtensions());
+  m->setTCPPort(btRuntime_->getListenPort());
+  m->setExtensions(extensionMessageRegistry_->getExtensions());
   SharedHandle<TorrentAttribute> attrs =
-    bittorrent::getTorrentAttrs(_downloadContext);
+    bittorrent::getTorrentAttrs(downloadContext_);
   if(!attrs->metadata.empty()) {
     m->setMetadataSize(attrs->metadataSize);
   }
-  SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
-  _dispatcher->addMessageToQueue(msg);
+  SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
+  dispatcher_->addMessageToQueue(msg);
 }
 
 void DefaultBtInteractive::addBitfieldMessageToQueue() {
-  if(_peer->isFastExtensionEnabled()) {
-    if(_pieceStorage->allDownloadFinished()) {
-      _dispatcher->addMessageToQueue(_messageFactory->createHaveAllMessage());
-    } else if(_pieceStorage->getCompletedLength() > 0) {
-      _dispatcher->addMessageToQueue(_messageFactory->createBitfieldMessage());
+  if(peer_->isFastExtensionEnabled()) {
+    if(pieceStorage_->allDownloadFinished()) {
+      dispatcher_->addMessageToQueue(messageFactory_->createHaveAllMessage());
+    } else if(pieceStorage_->getCompletedLength() > 0) {
+      dispatcher_->addMessageToQueue(messageFactory_->createBitfieldMessage());
     } else {
-      _dispatcher->addMessageToQueue(_messageFactory->createHaveNoneMessage());
+      dispatcher_->addMessageToQueue(messageFactory_->createHaveNoneMessage());
     }
   } else {
-    if(_pieceStorage->getCompletedLength() > 0) {
-      _dispatcher->addMessageToQueue(_messageFactory->createBitfieldMessage());
+    if(pieceStorage_->getCompletedLength() > 0) {
+      dispatcher_->addMessageToQueue(messageFactory_->createBitfieldMessage());
     }
   }
 }
 
 void DefaultBtInteractive::addAllowedFastMessageToQueue() {
-  if(_peer->isFastExtensionEnabled()) {
+  if(peer_->isFastExtensionEnabled()) {
     std::vector<size_t> fastSet;
-    bittorrent::computeFastSet(fastSet, _peer->getIPAddress(),
-                               _downloadContext->getNumPieces(),
-                               bittorrent::getInfoHash(_downloadContext),
-                               _allowedFastSetSize);
+    bittorrent::computeFastSet(fastSet, peer_->getIPAddress(),
+                               downloadContext_->getNumPieces(),
+                               bittorrent::getInfoHash(downloadContext_),
+                               allowedFastSetSize_);
     for(std::vector<size_t>::const_iterator itr = fastSet.begin(),
           eoi = fastSet.end(); itr != eoi; ++itr) {
-      _dispatcher->addMessageToQueue
-        (_messageFactory->createAllowedFastMessage(*itr));
+      dispatcher_->addMessageToQueue
+        (messageFactory_->createAllowedFastMessage(*itr));
     }
   }
 }
 
 void DefaultBtInteractive::decideChoking() {
-  if(_peer->shouldBeChoking()) {
-    if(!_peer->amChoking()) {
-      _dispatcher->addMessageToQueue(_messageFactory->createChokeMessage());
+  if(peer_->shouldBeChoking()) {
+    if(!peer_->amChoking()) {
+      dispatcher_->addMessageToQueue(messageFactory_->createChokeMessage());
     }
   } else {
-    if(_peer->amChoking()) {
-      _dispatcher->addMessageToQueue(_messageFactory->createUnchokeMessage());
+    if(peer_->amChoking()) {
+      dispatcher_->addMessageToQueue(messageFactory_->createUnchokeMessage());
     }
   }
 }
 
 void DefaultBtInteractive::checkHave() {
   std::vector<size_t> indexes;
-  _pieceStorage->getAdvertisedPieceIndexes(indexes, _cuid, _haveTimer);
-  _haveTimer = global::wallclock;
+  pieceStorage_->getAdvertisedPieceIndexes(indexes, cuid_, haveTimer_);
+  haveTimer_ = global::wallclock;
   if(indexes.size() >= 20) {
-    if(_peer->isFastExtensionEnabled() &&
-       _pieceStorage->allDownloadFinished()) {
-      _dispatcher->addMessageToQueue(_messageFactory->createHaveAllMessage());
+    if(peer_->isFastExtensionEnabled() &&
+       pieceStorage_->allDownloadFinished()) {
+      dispatcher_->addMessageToQueue(messageFactory_->createHaveAllMessage());
     } else {
-      _dispatcher->addMessageToQueue(_messageFactory->createBitfieldMessage());
+      dispatcher_->addMessageToQueue(messageFactory_->createBitfieldMessage());
     }
   } else {
     for(std::vector<size_t>::const_iterator itr = indexes.begin(),
           eoi = indexes.end(); itr != eoi; ++itr) {
-      _dispatcher->addMessageToQueue(_messageFactory->createHaveMessage(*itr));
+      dispatcher_->addMessageToQueue(messageFactory_->createHaveMessage(*itr));
     }
   }
 }
 
 void DefaultBtInteractive::sendKeepAlive() {
-  if(_keepAliveTimer.difference(global::wallclock) >= _keepAliveInterval) {
-    _dispatcher->addMessageToQueue(_messageFactory->createKeepAliveMessage());
-    _dispatcher->sendMessages();
-    _keepAliveTimer = global::wallclock;
+  if(keepAliveTimer_.difference(global::wallclock) >= keepAliveInterval_) {
+    dispatcher_->addMessageToQueue(messageFactory_->createKeepAliveMessage());
+    dispatcher_->sendMessages();
+    keepAliveTimer_ = global::wallclock;
   }
 }
 
 size_t DefaultBtInteractive::receiveMessages() {
-  size_t countOldOutstandingRequest = _dispatcher->countOutstandingRequest();
+  size_t countOldOutstandingRequest = dispatcher_->countOutstandingRequest();
   size_t msgcount = 0;
   for(int i = 0; i < 50; ++i) {
-    if(_requestGroupMan->doesOverallDownloadSpeedExceed() ||
-       _downloadContext->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
+    if(requestGroupMan_->doesOverallDownloadSpeedExceed() ||
+       downloadContext_->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;
     }
-    BtMessageHandle message = _btMessageReceiver->receiveMessage();
+    BtMessageHandle message = btMessageReceiver_->receiveMessage();
     if(message.isNull()) {
       break;
     }
     ++msgcount;
-    if(_logger->info()) {
-      _logger->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(_cuid).c_str(),
-                   _peer->getIPAddress().c_str(), _peer->getPort(),
+    if(logger_->info()) {
+      logger_->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid_).c_str(),
+                   peer_->getIPAddress().c_str(), peer_->getPort(),
                    message->toString().c_str());
     }
     message->doReceivedAction();
 
     switch(message->getId()) {
     case BtKeepAliveMessage::ID:
-      _floodingStat.incKeepAliveCount();
+      floodingStat_.incKeepAliveCount();
       break;
     case BtChokeMessage::ID:
-      if(!_peer->peerChoking()) {
-        _floodingStat.incChokeUnchokeCount();
+      if(!peer_->peerChoking()) {
+        floodingStat_.incChokeUnchokeCount();
       }
       break;
     case BtUnchokeMessage::ID:
-      if(_peer->peerChoking()) {
-        _floodingStat.incChokeUnchokeCount();
+      if(peer_->peerChoking()) {
+        floodingStat_.incChokeUnchokeCount();
       }
       break;
     case BtPieceMessage::ID:
-      _peerStorage->updateTransferStatFor(_peer);
+      peerStorage_->updateTransferStatFor(peer_);
       // pass through
     case BtRequestMessage::ID:
-      _inactiveTimer = global::wallclock;
+      inactiveTimer_ = global::wallclock;
       break;
     }
   }
   if(countOldOutstandingRequest > 0 &&
-     _dispatcher->countOutstandingRequest() == 0){
-    _maxOutstandingRequest = std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
-                                      _maxOutstandingRequest*2);
+     dispatcher_->countOutstandingRequest() == 0){
+    maxOutstandingRequest_ = std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
+                                      maxOutstandingRequest_*2);
   }
   return msgcount;
 }
 
 void DefaultBtInteractive::decideInterest() {
-  if(_pieceStorage->hasMissingPiece(_peer)) {
-    if(!_peer->amInterested()) {
-      if(_logger->debug()) {
-        _logger->debug(MSG_PEER_INTERESTED, util::itos(_cuid).c_str());
+  if(pieceStorage_->hasMissingPiece(peer_)) {
+    if(!peer_->amInterested()) {
+      if(logger_->debug()) {
+        logger_->debug(MSG_PEER_INTERESTED, util::itos(cuid_).c_str());
       }
-      _dispatcher->
-        addMessageToQueue(_messageFactory->createInterestedMessage());
+      dispatcher_->
+        addMessageToQueue(messageFactory_->createInterestedMessage());
     }
   } else {
-    if(_peer->amInterested()) {
-      if(_logger->debug()) {
-        _logger->debug(MSG_PEER_NOT_INTERESTED, util::itos(_cuid).c_str());
+    if(peer_->amInterested()) {
+      if(logger_->debug()) {
+        logger_->debug(MSG_PEER_NOT_INTERESTED, util::itos(cuid_).c_str());
       }
-      _dispatcher->
-        addMessageToQueue(_messageFactory->createNotInterestedMessage());
+      dispatcher_->
+        addMessageToQueue(messageFactory_->createNotInterestedMessage());
     }
   }
 }
 
 void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
-  if(_pieceStorage->hasMissingPiece(_peer)) {
+  if(pieceStorage_->hasMissingPiece(peer_)) {
 
-    size_t numMissingBlock = _btRequestFactory->countMissingBlock();
+    size_t numMissingBlock = btRequestFactory_->countMissingBlock();
 
-    if(_peer->peerChoking()) {
-      if(_peer->isFastExtensionEnabled()) {
+    if(peer_->peerChoking()) {
+      if(peer_->isFastExtensionEnabled()) {
         std::vector<size_t> excludedIndexes;
-        excludedIndexes.reserve(_btRequestFactory->countTargetPiece());
-        _btRequestFactory->getTargetPieceIndexes(excludedIndexes);
+        excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
+        btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
         while(numMissingBlock < maxMissingBlock) {
           SharedHandle<Piece> piece =
-            _pieceStorage->getMissingFastPiece(_peer, excludedIndexes);
+            pieceStorage_->getMissingFastPiece(peer_, excludedIndexes);
           if(piece.isNull()) {
             break;
           } else {
-            _btRequestFactory->addTargetPiece(piece);
+            btRequestFactory_->addTargetPiece(piece);
             numMissingBlock += piece->countMissingBlock();
             excludedIndexes.push_back(piece->getIndex());
           }
@@ -375,15 +375,15 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
       }
     } else {
       std::vector<size_t> excludedIndexes;
-      excludedIndexes.reserve(_btRequestFactory->countTargetPiece());
-      _btRequestFactory->getTargetPieceIndexes(excludedIndexes);
+      excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
+      btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
       while(numMissingBlock < maxMissingBlock) {
         SharedHandle<Piece> piece =
-          _pieceStorage->getMissingPiece(_peer, excludedIndexes);
+          pieceStorage_->getMissingPiece(peer_, excludedIndexes);
         if(piece.isNull()) {
           break;
         } else {
-          _btRequestFactory->addTargetPiece(piece);
+          btRequestFactory_->addTargetPiece(piece);
           numMissingBlock += piece->countMissingBlock();
           excludedIndexes.push_back(piece->getIndex());
         }
@@ -393,63 +393,63 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
 }
 
 void DefaultBtInteractive::addRequests() {
-  fillPiece(_maxOutstandingRequest);
+  fillPiece(maxOutstandingRequest_);
   size_t reqNumToCreate =
-    _maxOutstandingRequest <= _dispatcher->countOutstandingRequest() ?
-    0 : _maxOutstandingRequest-_dispatcher->countOutstandingRequest();
+    maxOutstandingRequest_ <= dispatcher_->countOutstandingRequest() ?
+    0 : maxOutstandingRequest_-dispatcher_->countOutstandingRequest();
   if(reqNumToCreate > 0) {
     std::vector<SharedHandle<BtMessage> > requests;
     requests.reserve(reqNumToCreate);
-    if(_pieceStorage->isEndGame()) {
-      _btRequestFactory->createRequestMessagesOnEndGame(requests,reqNumToCreate);
+    if(pieceStorage_->isEndGame()) {
+      btRequestFactory_->createRequestMessagesOnEndGame(requests,reqNumToCreate);
     } else {
-      _btRequestFactory->createRequestMessages(requests, reqNumToCreate);
+      btRequestFactory_->createRequestMessages(requests, reqNumToCreate);
     }
-    _dispatcher->addMessageToQueue(requests);
+    dispatcher_->addMessageToQueue(requests);
   }
 }
 
 void DefaultBtInteractive::cancelAllPiece() {
-  _btRequestFactory->removeAllTargetPiece();
-  if(_metadataGetMode && _downloadContext->getTotalLength() > 0) {
+  btRequestFactory_->removeAllTargetPiece();
+  if(metadataGetMode_ && downloadContext_->getTotalLength() > 0) {
     std::vector<size_t> metadataRequests =
-      _utMetadataRequestTracker->getAllTrackedIndex();
+      utMetadataRequestTracker_->getAllTrackedIndex();
     for(std::vector<size_t>::const_iterator i = metadataRequests.begin(),
           eoi = metadataRequests.end(); i != eoi; ++i) {
-      if(_logger->debug()) {
-        _logger->debug("Cancel metadata: piece=%lu",
+      if(logger_->debug()) {
+        logger_->debug("Cancel metadata: piece=%lu",
                       static_cast<unsigned long>(*i));
       }
-      _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
+      pieceStorage_->cancelPiece(pieceStorage_->getPiece(*i));
     }
   }
 }
 
 void DefaultBtInteractive::sendPendingMessage() {
-  _dispatcher->sendMessages();
+  dispatcher_->sendMessages();
 }
 
 void DefaultBtInteractive::detectMessageFlooding() {
-  if(_floodingTimer.
+  if(floodingTimer_.
      difference(global::wallclock) >= FLOODING_CHECK_INTERVAL) {
-    if(_floodingStat.getChokeUnchokeCount() >= 2 ||
-       _floodingStat.getKeepAliveCount() >= 2) {
+    if(floodingStat_.getChokeUnchokeCount() >= 2 ||
+       floodingStat_.getKeepAliveCount() >= 2) {
       throw DL_ABORT_EX(EX_FLOODING_DETECTED);
     } else {
-      _floodingStat.reset();
+      floodingStat_.reset();
     }
-    _floodingTimer = global::wallclock;
+    floodingTimer_ = global::wallclock;
   }
 }
 
 void DefaultBtInteractive::checkActiveInteraction()
 {
-  time_t inactiveTime = _inactiveTimer.difference(global::wallclock);
+  time_t inactiveTime = inactiveTimer_.difference(global::wallclock);
   // To allow aria2 to accept mutially interested peer, disconnect unintersted
   // peer.
   {
     const time_t interval = 30;
-    if(!_peer->amInterested() && !_peer->peerInterested() &&
+    if(!peer_->amInterested() && !peer_->peerInterested() &&
        inactiveTime >= interval) {
       // TODO change the message
       throw DL_ABORT_EX
@@ -471,16 +471,16 @@ void DefaultBtInteractive::checkActiveInteraction()
 
 void DefaultBtInteractive::addPeerExchangeMessage()
 {
-  if(_pexTimer.
+  if(pexTimer_.
      difference(global::wallclock) >= UTPexExtensionMessage::DEFAULT_INTERVAL) {
     UTPexExtensionMessageHandle m
-      (new UTPexExtensionMessage(_peer->getExtensionMessageID("ut_pex")));
-    const std::deque<SharedHandle<Peer> >& peers = _peerStorage->getPeers();
+      (new UTPexExtensionMessage(peer_->getExtensionMessageID("ut_pex")));
+    const std::deque<SharedHandle<Peer> >& peers = peerStorage_->getPeers();
     {
       for(std::deque<SharedHandle<Peer> >::const_iterator i =
             peers.begin(), eoi = peers.end();
           i != eoi && !m->freshPeersAreFull(); ++i) {
-        if(_peer->getIPAddress() != (*i)->getIPAddress()) {
+        if(peer_->getIPAddress() != (*i)->getIPAddress()) {
           m->addFreshPeer(*i);
         }
       }
@@ -490,46 +490,46 @@ void DefaultBtInteractive::addPeerExchangeMessage()
             peers.rbegin(), eoi = peers.rend();
           i != eoi && !m->droppedPeersAreFull();
           ++i) {
-        if(_peer->getIPAddress() != (*i)->getIPAddress()) {
+        if(peer_->getIPAddress() != (*i)->getIPAddress()) {
           m->addDroppedPeer(*i);
         }
       }
     }
-    BtMessageHandle msg = _messageFactory->createBtExtendedMessage(m);
-    _dispatcher->addMessageToQueue(msg);
-    _pexTimer = global::wallclock;
+    BtMessageHandle msg = messageFactory_->createBtExtendedMessage(m);
+    dispatcher_->addMessageToQueue(msg);
+    pexTimer_ = global::wallclock;
   }
 }
 
 void DefaultBtInteractive::doInteractionProcessing() {
-  if(_metadataGetMode) {
+  if(metadataGetMode_) {
     sendKeepAlive();
-    _numReceivedMessage = receiveMessages();
+    numReceivedMessage_ = receiveMessages();
     // PieceStorage is re-initialized with metadata_size in
     // HandshakeExtensionMessage::doReceivedAction().
-    _pieceStorage =
-      _downloadContext->getOwnerRequestGroup()->getPieceStorage();
-    if(_peer->getExtensionMessageID("ut_metadata") &&
-       _downloadContext->getTotalLength() > 0) {
-      size_t num = _utMetadataRequestTracker->avail();
+    pieceStorage_ =
+      downloadContext_->getOwnerRequestGroup()->getPieceStorage();
+    if(peer_->getExtensionMessageID("ut_metadata") &&
+       downloadContext_->getTotalLength() > 0) {
+      size_t num = utMetadataRequestTracker_->avail();
       if(num > 0) {
         std::vector<SharedHandle<BtMessage> > requests;
-        _utMetadataRequestFactory->create(requests, num, _pieceStorage);
-        _dispatcher->addMessageToQueue(requests);
+        utMetadataRequestFactory_->create(requests, num, pieceStorage_);
+        dispatcher_->addMessageToQueue(requests);
       }
-      if(_perSecTimer.difference(global::wallclock) >= 1) {
-        _perSecTimer = global::wallclock;
+      if(perSecTimer_.difference(global::wallclock) >= 1) {
+        perSecTimer_ = global::wallclock;
         // Drop timeout request after queuing message to give a chance
         // to other connection to request piece.
         std::vector<size_t> indexes =
-          _utMetadataRequestTracker->removeTimeoutEntry();
+          utMetadataRequestTracker_->removeTimeoutEntry();
         for(std::vector<size_t>::const_iterator i = indexes.begin(),
               eoi = indexes.end(); i != eoi; ++i) {
-          _pieceStorage->cancelPiece(_pieceStorage->getPiece(*i));
+          pieceStorage_->cancelPiece(pieceStorage_->getPiece(*i));
         }
       }
-      if(_pieceStorage->downloadFinished()) {
-        _downloadContext->getOwnerRequestGroup()->setForceHaltRequested
+      if(pieceStorage_->downloadFinished()) {
+        downloadContext_->getOwnerRequestGroup()->setForceHaltRequested
           (true, RequestGroup::NONE);
       }
     }
@@ -537,20 +537,20 @@ void DefaultBtInteractive::doInteractionProcessing() {
     checkActiveInteraction();
     decideChoking();
     detectMessageFlooding();
-    if(_perSecTimer.difference(global::wallclock) >= 1) {
-      _perSecTimer = global::wallclock;
-      _dispatcher->checkRequestSlotAndDoNecessaryThing();
+    if(perSecTimer_.difference(global::wallclock) >= 1) {
+      perSecTimer_ = global::wallclock;
+      dispatcher_->checkRequestSlotAndDoNecessaryThing();
     }
     checkHave();
     sendKeepAlive();
-    _numReceivedMessage = receiveMessages();
-    _btRequestFactory->removeCompletedPiece();
+    numReceivedMessage_ = receiveMessages();
+    btRequestFactory_->removeCompletedPiece();
     decideInterest();
-    if(!_pieceStorage->downloadFinished()) {
+    if(!pieceStorage_->downloadFinished()) {
       addRequests();
     }
   }
-  if(_peer->getExtensionMessageID("ut_pex") && _utPexEnabled) {
+  if(peer_->getExtensionMessageID("ut_pex") && utPexEnabled_) {
     addPeerExchangeMessage();
   }
 
@@ -559,96 +559,96 @@ void DefaultBtInteractive::doInteractionProcessing() {
 
 void DefaultBtInteractive::setLocalNode(const WeakHandle<DHTNode>& node)
 {
-  _localNode = node;
+  localNode_ = node;
 }
 
 size_t DefaultBtInteractive::countPendingMessage()
 {
-  return _dispatcher->countMessageInQueue();
+  return dispatcher_->countMessageInQueue();
 }
   
 bool DefaultBtInteractive::isSendingMessageInProgress()
 {
-  return _dispatcher->isSendingInProgress();
+  return dispatcher_->isSendingInProgress();
 }
 
 size_t DefaultBtInteractive::countReceivedMessageInIteration() const
 {
-  return _numReceivedMessage;
+  return numReceivedMessage_;
 }
 
 size_t DefaultBtInteractive::countOutstandingRequest()
 {
-  if(_metadataGetMode) {
-    return _utMetadataRequestTracker->count();
+  if(metadataGetMode_) {
+    return utMetadataRequestTracker_->count();
   } else {
-    return _dispatcher->countOutstandingRequest();
+    return dispatcher_->countOutstandingRequest();
   }
 }
 
 void DefaultBtInteractive::setBtRuntime
 (const SharedHandle<BtRuntime>& btRuntime)
 {
-  _btRuntime = btRuntime;
+  btRuntime_ = btRuntime;
 }
 
 void DefaultBtInteractive::setPieceStorage
 (const SharedHandle<PieceStorage>& pieceStorage)
 {
-  _pieceStorage = pieceStorage;
+  pieceStorage_ = pieceStorage;
 }
 
 void DefaultBtInteractive::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
-  _peerStorage = peerStorage;
+  peerStorage_ = peerStorage;
 }
 
 void DefaultBtInteractive::setPeer(const SharedHandle<Peer>& peer)
 {
-  _peer = peer;
+  peer_ = peer;
 }
 
 void DefaultBtInteractive::setBtMessageReceiver
 (const SharedHandle<BtMessageReceiver>& receiver)
 {
-  _btMessageReceiver = receiver;
+  btMessageReceiver_ = receiver;
 }
 
 void DefaultBtInteractive::setDispatcher
 (const SharedHandle<BtMessageDispatcher>& dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
 
 void DefaultBtInteractive::setBtRequestFactory
 (const SharedHandle<BtRequestFactory>& factory)
 {
-  _btRequestFactory = factory;
+  btRequestFactory_ = factory;
 }
 
 void DefaultBtInteractive::setPeerConnection
 (const SharedHandle<PeerConnection>& peerConnection)
 {
-  _peerConnection = peerConnection;
+  peerConnection_ = peerConnection;
 }
 
 void DefaultBtInteractive::setExtensionMessageFactory
 (const SharedHandle<ExtensionMessageFactory>& factory)
 {
-  _extensionMessageFactory = factory;
+  extensionMessageFactory_ = factory;
 }
 
 void DefaultBtInteractive::setBtMessageFactory
 (const SharedHandle<BtMessageFactory>& factory)
 {
-  _messageFactory = factory;
+  messageFactory_ = factory;
 }
 
 void DefaultBtInteractive::setRequestGroupMan
 (const WeakHandle<RequestGroupMan>& rgman)
 {
-  _requestGroupMan = rgman;
+  requestGroupMan_ = rgman;
 }
 
 } // namespace aria2

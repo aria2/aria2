@@ -45,8 +45,8 @@ typedef SharedHandle<BtBitfieldMessage> BtBitfieldMessageHandle;
 
 class BtBitfieldMessage : public SimpleBtMessage {
 private:
-  unsigned char* _bitfield;
-  size_t _bitfieldLength;
+  unsigned char* bitfield_;
+  size_t bitfieldLength_;
 public:
   BtBitfieldMessage();
 
@@ -60,9 +60,9 @@ public:
 
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
-  const unsigned char* getBitfield() const { return _bitfield; }
+  const unsigned char* getBitfield() const { return bitfield_; }
 
-  size_t getBitfieldLength() const { return _bitfieldLength; }
+  size_t getBitfieldLength() const { return bitfieldLength_; }
 
   static BtBitfieldMessageHandle create
   (const unsigned char* data, size_t dataLength);

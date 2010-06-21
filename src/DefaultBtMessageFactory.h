@@ -56,31 +56,31 @@ class DHTTaskFactory;
 
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
-  cuid_t _cuid;
-  SharedHandle<DownloadContext> _downloadContext;
-  SharedHandle<PieceStorage> _pieceStorage;
-  SharedHandle<PeerStorage> _peerStorage;
-  SharedHandle<Peer> _peer;
+  cuid_t cuid_;
+  SharedHandle<DownloadContext> downloadContext_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  SharedHandle<PeerStorage> peerStorage_;
+  SharedHandle<Peer> peer_;
 
-  bool _dhtEnabled;
+  bool dhtEnabled_;
 
-  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher_;
 
-  WeakHandle<BtRequestFactory> _requestFactory;
+  WeakHandle<BtRequestFactory> requestFactory_;
 
-  WeakHandle<PeerConnection> _peerConnection;
+  WeakHandle<PeerConnection> peerConnection_;
 
-  SharedHandle<ExtensionMessageFactory> _extensionMessageFactory;
+  SharedHandle<ExtensionMessageFactory> extensionMessageFactory_;
 
-  WeakHandle<DHTNode> _localNode;
+  WeakHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTRoutingTable> _routingTable;
+  WeakHandle<DHTRoutingTable> routingTable_;
 
-  WeakHandle<DHTTaskQueue> _taskQueue;
+  WeakHandle<DHTTaskQueue> taskQueue_;
 
-  WeakHandle<DHTTaskFactory> _taskFactory;
+  WeakHandle<DHTTaskFactory> taskFactory_;
 
-  bool _metadataGetMode;
+  bool metadataGetMode_;
 
   void setCommonProperty(const SharedHandle<AbstractBtMessage>& msg);
 public:
@@ -145,11 +145,11 @@ public:
 
   void setCuid(cuid_t cuid)
   {
-    _cuid = cuid;
+    cuid_ = cuid;
   }
 
   void setDHTEnabled(bool enabled) {
-    _dhtEnabled = enabled;
+    dhtEnabled_ = enabled;
   }
 
   void setBtMessageDispatcher
@@ -172,7 +172,7 @@ public:
 
   void enableMetadataGetMode()
   {
-    _metadataGetMode = true;
+    metadataGetMode_ = true;
   }
 };
 

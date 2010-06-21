@@ -48,35 +48,35 @@ class DownloadEngine;
 template<typename T>
 class SequentialDispatcherCommand : public Command {
 private:
-  SharedHandle<SequentialPicker<T> > _picker;
+  SharedHandle<SequentialPicker<T> > picker_;
 
-  DownloadEngine* _e;
+  DownloadEngine* e_;
 protected:
   DownloadEngine* getDownloadEngine() const
   {
-    return _e;
+    return e_;
   }
 public:
   SequentialDispatcherCommand(cuid_t cuid,
                               const SharedHandle<SequentialPicker<T> >& picker,
                               DownloadEngine* e):
-    Command(cuid), _picker(picker), _e(e)
+    Command(cuid), picker_(picker), e_(e)
   {
     setStatusRealtime();
   }
   
   virtual bool execute()
   {
-    if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+    if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
       return true;
     }
-    if(_picker->hasNext() && !_picker->isPicked()) {
-      _e->addCommand(createCommand(_picker->pickNext()));
+    if(picker_->hasNext() && !picker_->isPicked()) {
+      e_->addCommand(createCommand(picker_->pickNext()));
 
-      _e->setNoWait(true);
+      e_->setNoWait(true);
     }
 
-    _e->addRoutineCommand(this);
+    e_->addRoutineCommand(this);
     return false;
   }
 

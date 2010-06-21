@@ -55,16 +55,16 @@ const std::string Request::PROTO_HTTPS("https");
 const std::string Request::PROTO_FTP("ftp");
 
 Request::Request():
-  _port(0), _tryCount(0),
-  _redirectCount(0),
-  _supportsPersistentConnection(true),
-  _keepAliveHint(false),
-  _pipeliningHint(false),
-  _maxPipelinedRequest(1),
-  _method(METHOD_GET),
-  _hasPassword(false),
-  _ipv6LiteralAddress(false),
-  _removalRequested(false)
+  port_(0), tryCount_(0),
+  redirectCount_(0),
+  supportsPersistentConnection_(true),
+  keepAliveHint_(false),
+  pipeliningHint_(false),
+  maxPipelinedRequest_(1),
+  method_(METHOD_GET),
+  hasPassword_(false),
+  ipv6LiteralAddress_(false),
+  removalRequested_(false)
 {}
 
 static std::string removeFragment(const std::string& uri)
@@ -108,36 +108,36 @@ static std::string percentEncode(const std::string& src)
 }
 
 bool Request::setUri(const std::string& uri) {
-  _supportsPersistentConnection = true;
-  _uri = uri;
-  return parseUri(_uri);
+  supportsPersistentConnection_ = true;
+  uri_ = uri;
+  return parseUri(uri_);
 }
 
 bool Request::resetUri() {
-  _previousUri = _referer;
-  _supportsPersistentConnection = true;
-  return parseUri(_uri);
+  previousUri_ = referer_;
+  supportsPersistentConnection_ = true;
+  return parseUri(uri_);
 }
 
 void Request::setReferer(const std::string& uri)
 {
-  _referer = _previousUri = percentEncode(removeFragment(uri));
+  referer_ = previousUri_ = percentEncode(removeFragment(uri));
 }
 
 bool Request::redirectUri(const std::string& uri) {
-  _previousUri = A2STR::NIL;
-  _supportsPersistentConnection = true;
-  ++_redirectCount;
+  previousUri_ = A2STR::NIL;
+  supportsPersistentConnection_ = true;
+  ++redirectCount_;
   std::string redirectedUri;
   if(uri.find("://") == std::string::npos) {
     // rfc2616 requires absolute URI should be provided by Location header
     // field, but some servers don't obey this rule.
     if(util::startsWith(uri, "/")) {
       // abosulute path
-      redirectedUri = strconcat(_protocol, "://", _host, uri);
+      redirectedUri = strconcat(protocol_, "://", host_, uri);
     } else {
       // relative path
-      redirectedUri = strconcat(_protocol, "://", _host, _dir, "/", uri);
+      redirectedUri = strconcat(protocol_, "://", host_, dir_, "/", uri);
     }
   } else {
     redirectedUri = uri;
@@ -147,16 +147,16 @@ bool Request::redirectUri(const std::string& uri) {
 
 bool Request::parseUri(const std::string& srcUri) {
   const std::string uri = percentEncode(removeFragment(srcUri));
-  _currentUri = uri;
-  _host = A2STR::NIL;
-  _port = 0;
-  _dir = A2STR::NIL;
-  _file = A2STR::NIL;
-  _query = A2STR::NIL;
-  _username = A2STR::NIL;
-  _password = A2STR::NIL;
-  _hasPassword = false;
-  _ipv6LiteralAddress = false;
+  currentUri_ = uri;
+  host_ = A2STR::NIL;
+  port_ = 0;
+  dir_ = A2STR::NIL;
+  file_ = A2STR::NIL;
+  query_ = A2STR::NIL;
+  username_ = A2STR::NIL;
+  password_ = A2STR::NIL;
+  hasPassword_ = false;
+  ipv6LiteralAddress_ = false;
 
   // http://user:password@aria2.sourceforge.net:80/dir/file?query
   //        |            ||                    || |   |    |
@@ -177,13 +177,13 @@ bool Request::parseUri(const std::string& srcUri) {
   for(; queryFirst != uri.end(); ++queryFirst) {
     if(*queryFirst == '?') break;
   }
-  _query = std::string(queryFirst, uri.end());
+  query_ = std::string(queryFirst, uri.end());
   // find protocol
   std::string::size_type protocolOffset = uri.find("://");
   if(protocolOffset == std::string::npos) return false;
-  _protocol = std::string(uri.begin(), uri.begin()+protocolOffset);
+  protocol_ = std::string(uri.begin(), uri.begin()+protocolOffset);
   uint16_t defPort;
-  if((defPort = FeatureConfig::getInstance()->getDefaultPort(_protocol)) == 0) {
+  if((defPort = FeatureConfig::getInstance()->getDefaultPort(protocol_)) == 0) {
     return false;
   }
   // find authority
@@ -206,12 +206,12 @@ bool Request::parseUri(const std::string& srcUri) {
       std::string::const_iterator userLast = authorityFirst;
       for(; userLast != userInfoLast; ++userLast) {
         if(*userLast == ':') {
-          _password = util::percentDecode(std::string(userLast+1,userInfoLast));
-          _hasPassword = true;
+          password_ = util::percentDecode(std::string(userLast+1,userInfoLast));
+          hasPassword_ = true;
           break;
         }
       }
-      _username = util::percentDecode(std::string(authorityFirst, userLast));
+      username_ = util::percentDecode(std::string(authorityFirst, userLast));
       break;
     }
   }
@@ -223,18 +223,18 @@ bool Request::parseUri(const std::string& srcUri) {
       if(*hostLast == ']') {
         ++hostLast;
         if(hostLast == authorityLast) {
-          _ipv6LiteralAddress = true;
+          ipv6LiteralAddress_ = true;
         } else {
           if(*hostLast == ':') {
             portFirst = hostLast;
             ++portFirst;
-            _ipv6LiteralAddress = true;
+            ipv6LiteralAddress_ = true;
           }
         }
         break;
       }
     }
-    if(!_ipv6LiteralAddress) {
+    if(!ipv6LiteralAddress_) {
       return false;
     }
   } else {
@@ -253,22 +253,22 @@ bool Request::parseUri(const std::string& srcUri) {
   if(portFirst == authorityLast) {
     // If port is not specified, then we set it to default port of
     // its protocol..
-    _port = defPort;
+    port_ = defPort;
   } else {
     uint32_t tempPort;
     if(util::parseUIntNoThrow(tempPort, std::string(portFirst, authorityLast))){
       if(65535 < tempPort) {
         return false;
       }
-      _port = tempPort;      
+      port_ = tempPort;      
     } else {
       return false;
     }
   }
-  if(_ipv6LiteralAddress) {
-    _host = std::string(hostPortFirst+1, hostLast-1);
+  if(ipv6LiteralAddress_) {
+    host_ = std::string(hostPortFirst+1, hostLast-1);
   } else {
-    _host = std::string(hostPortFirst, hostLast);
+    host_ = std::string(hostPortFirst, hostLast);
   }
   // find directory and file part
   std::string::const_iterator dirLast = authorityLast;
@@ -279,7 +279,7 @@ bool Request::parseUri(const std::string& srcUri) {
     }
   }
   if(dirLast != queryFirst) {
-    _file = std::string(dirLast+1, queryFirst);
+    file_ = std::string(dirLast+1, queryFirst);
   }
   // Erase duplicated slashes.
   std::string::const_iterator dirFirst = authorityLast;
@@ -296,21 +296,21 @@ bool Request::parseUri(const std::string& srcUri) {
     }
   }
   if(dirFirst == dirLast) {
-    _dir = A2STR::SLASH_C;
+    dir_ = A2STR::SLASH_C;
   } else {
-    _dir = std::string(dirFirst, dirLast);
+    dir_ = std::string(dirFirst, dirLast);
   }
   return true;
 }
 
 void Request::resetRedirectCount()
 {
-  _redirectCount = 0;
+  redirectCount_ = 0;
 }
   
 void Request::setMaxPipelinedRequest(unsigned int num)
 {
-  _maxPipelinedRequest = num;
+  maxPipelinedRequest_ = num;
 }
 
 const SharedHandle<PeerStat>& Request::initPeerStat()
@@ -318,9 +318,9 @@ const SharedHandle<PeerStat>& Request::initPeerStat()
   // Use host and protocol in original URI, because URI selector
   // selects URI based on original URI, not redirected one.
   Request origReq;
-  origReq.setUri(_uri);
-  _peerStat.reset(new PeerStat(0, origReq.getHost(), origReq.getProtocol()));
-  return _peerStat;
+  origReq.setUri(uri_);
+  peerStat_.reset(new PeerStat(0, origReq.getHost(), origReq.getProtocol()));
+  return peerStat_;
 }
 
 } // namespace aria2

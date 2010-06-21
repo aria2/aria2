@@ -50,11 +50,11 @@ class Peer;
 
 class DHTPeerAnnounceEntry {
 private:
-  unsigned char _infoHash[DHT_ID_LENGTH];
+  unsigned char infoHash_[DHT_ID_LENGTH];
 
-  std::vector<PeerAddrEntry> _peerAddrEntries;
+  std::vector<PeerAddrEntry> peerAddrEntries_;
 
-  Timer _lastUpdated;
+  Timer lastUpdated_;
 public:
   DHTPeerAnnounceEntry(const unsigned char* infoHash);
 
@@ -68,7 +68,7 @@ public:
 
   const std::vector<PeerAddrEntry>& getPeerAddrEntries() const
   {
-    return _peerAddrEntries;
+    return peerAddrEntries_;
   }
 
   void removeStalePeerAddrEntry(time_t timeout);
@@ -77,14 +77,14 @@ public:
 
   const Timer& getLastUpdated() const
   {
-    return _lastUpdated;
+    return lastUpdated_;
   }
 
   void notifyUpdate();
 
   const unsigned char* getInfoHash() const
   {
-    return _infoHash;
+    return infoHash_;
   }
 
   void getPeers(std::vector<SharedHandle<Peer> >& peers) const;

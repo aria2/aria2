@@ -42,22 +42,22 @@
 namespace aria2 {
 
 RarestPieceSelector::RarestPieceSelector
-(const SharedHandle<PieceStatMan>& pieceStatMan):_pieceStatMan(pieceStatMan) {}
+(const SharedHandle<PieceStatMan>& pieceStatMan):pieceStatMan_(pieceStatMan) {}
 
 class FindRarestPiece
 {
 private:
-  const unsigned char* _misbitfield;
-  size_t _numbits;
+  const unsigned char* misbitfield_;
+  size_t numbits_;
 public:
   FindRarestPiece(const unsigned char* misbitfield, size_t numbits):
-    _misbitfield(misbitfield), _numbits(numbits) {}
+    misbitfield_(misbitfield), numbits_(numbits) {}
 
   bool operator()(const size_t& index)
   {
-    assert(index < _numbits);
+    assert(index < numbits_);
     unsigned char mask = (128 >> (index%8));
-    return _misbitfield[index/8]&mask;
+    return misbitfield_[index/8]&mask;
   }
 };
 
@@ -65,7 +65,7 @@ bool RarestPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const
 {
   const std::vector<size_t>& pieceIndexes =
-    _pieceStatMan->getRarerPieceIndexes();
+    pieceStatMan_->getRarerPieceIndexes();
   std::vector<size_t>::const_iterator i =
     std::find_if(pieceIndexes.begin(), pieceIndexes.end(),
                  FindRarestPiece(bitfield, nbits));

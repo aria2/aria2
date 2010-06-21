@@ -46,34 +46,34 @@ class PStringNumLoop : public PStringDatum
 {
 private:
   
-  unsigned int _startValue;
+  unsigned int startValue_;
 
-  unsigned int _endValue;
+  unsigned int endValue_;
 
-  unsigned int _step;
+  unsigned int step_;
 
-  SharedHandle<NumberDecorator> _numberDecorator;
+  SharedHandle<NumberDecorator> numberDecorator_;
 
-  SharedHandle<PStringDatum> _next;
+  SharedHandle<PStringDatum> next_;
 
 public:
   PStringNumLoop(unsigned int startValue, unsigned int endValue,
                  unsigned int step,
                  const SharedHandle<NumberDecorator>& nd,
                  const SharedHandle<PStringDatum>& next):
-    _startValue(startValue),
-    _endValue(endValue),
-    _step(step),
-    _numberDecorator(nd),
-    _next(next) {}
+    startValue_(startValue),
+    endValue_(endValue),
+    step_(step),
+    numberDecorator_(nd),
+    next_(next) {}
 
   PStringNumLoop(unsigned int startValue, unsigned int endValue,
                  unsigned int step,
                  const SharedHandle<NumberDecorator>& nd):
-    _startValue(startValue),
-    _endValue(endValue),
-    _step(step),
-    _numberDecorator(nd) {}
+    startValue_(startValue),
+    endValue_(endValue),
+    step_(step),
+    numberDecorator_(nd) {}
 
   virtual ~PStringNumLoop() {}
 
@@ -84,27 +84,27 @@ public:
 
   const SharedHandle<NumberDecorator>& getNumberDecorator() const
   {
-    return _numberDecorator;
+    return numberDecorator_;
   }
 
   SharedHandle<PStringDatum> getNext() const
   {
-    return _next;
+    return next_;
   }
 
   unsigned int getStartValue() const
   {
-    return _startValue;
+    return startValue_;
   }
 
   unsigned int getEndValue() const
   {
-    return _endValue;
+    return endValue_;
   }
 
   unsigned int getStep() const
   {
-    return _step;
+    return step_;
   }
 
 };

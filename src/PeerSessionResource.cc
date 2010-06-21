@@ -45,71 +45,71 @@
 namespace aria2 {
 
 PeerSessionResource::PeerSessionResource(size_t pieceLength, uint64_t totalLength):
-  _amChoking(true),
-  _amInterested(false),
-  _peerChoking(true),
-  _peerInterested(false),
-  _chokingRequired(true),
-  _optUnchoking(false),
-  _snubbing(false),
-  _bitfieldMan(new BitfieldMan(pieceLength, totalLength)),
-  _fastExtensionEnabled(false),
-  _extendedMessagingEnabled(false),
-  _dhtEnabled(false),
-  _lastDownloadUpdate(0),
-  _lastAmUnchoking(0)
+  amChoking_(true),
+  amInterested_(false),
+  peerChoking_(true),
+  peerInterested_(false),
+  chokingRequired_(true),
+  optUnchoking_(false),
+  snubbing_(false),
+  bitfieldMan_(new BitfieldMan(pieceLength, totalLength)),
+  fastExtensionEnabled_(false),
+  extendedMessagingEnabled_(false),
+  dhtEnabled_(false),
+  lastDownloadUpdate_(0),
+  lastAmUnchoking_(0)
 {}
 
 PeerSessionResource::~PeerSessionResource()
 {
-  delete _bitfieldMan;
+  delete bitfieldMan_;
 }
 
 void PeerSessionResource::amChoking(bool b)
 {
-  _amChoking = b;
+  amChoking_ = b;
   if(!b) {
-    _lastAmUnchoking = global::wallclock;
+    lastAmUnchoking_ = global::wallclock;
   }
 }
 
 void PeerSessionResource::amInterested(bool b)
 {
-  _amInterested = b;
+  amInterested_ = b;
 }
 
 void PeerSessionResource::peerChoking(bool b)
 {
-  _peerChoking = b;
+  peerChoking_ = b;
 }
 
 void PeerSessionResource::peerInterested(bool b)
 {
-  _peerInterested = b;
+  peerInterested_ = b;
 }
   
 void PeerSessionResource::chokingRequired(bool b)
 {
-  _chokingRequired = b;
+  chokingRequired_ = b;
 }
 
 void PeerSessionResource::optUnchoking(bool b)
 {
-  _optUnchoking = b;
+  optUnchoking_ = b;
 }
 
 bool PeerSessionResource::shouldBeChoking() const
 {
-  if(_optUnchoking) {
+  if(optUnchoking_) {
     return false;
   }
-  return _chokingRequired;
+  return chokingRequired_;
 }
 
 void PeerSessionResource::snubbing(bool b)
 {
-  _snubbing = b;
-  if(_snubbing) {
+  snubbing_ = b;
+  if(snubbing_) {
     chokingRequired(true);
     optUnchoking(false);
   }
@@ -117,51 +117,51 @@ void PeerSessionResource::snubbing(bool b)
 
 bool PeerSessionResource::hasAllPieces() const
 {
-  return _bitfieldMan->isAllBitSet();
+  return bitfieldMan_->isAllBitSet();
 }
 
 void PeerSessionResource::updateBitfield(size_t index, int operation)
 {
   if(operation == 1) {
-    _bitfieldMan->setBit(index);
+    bitfieldMan_->setBit(index);
   } else if(operation == 0) {
-    _bitfieldMan->unsetBit(index);
+    bitfieldMan_->unsetBit(index);
   }
 }
 
 void PeerSessionResource::setBitfield(const unsigned char* bitfield, size_t bitfieldLength)
 {
-  _bitfieldMan->setBitfield(bitfield, bitfieldLength);
+  bitfieldMan_->setBitfield(bitfield, bitfieldLength);
 }
 
 const unsigned char* PeerSessionResource::getBitfield() const
 {
-  return _bitfieldMan->getBitfield();
+  return bitfieldMan_->getBitfield();
 }
 
 size_t PeerSessionResource::getBitfieldLength() const
 {
-  return _bitfieldMan->getBitfieldLength();
+  return bitfieldMan_->getBitfieldLength();
 }
 
 bool PeerSessionResource::hasPiece(size_t index) const
 {
-  return _bitfieldMan->isBitSet(index);
+  return bitfieldMan_->isBitSet(index);
 }
 
 void PeerSessionResource::markSeeder()
 {
-  _bitfieldMan->setAllBit();
+  bitfieldMan_->setAllBit();
 }
 
 void PeerSessionResource::fastExtensionEnabled(bool b)
 {
-  _fastExtensionEnabled = b;
+  fastExtensionEnabled_ = b;
 }
 
 const std::vector<size_t>& PeerSessionResource::peerAllowedIndexSet() const
 {
-  return _peerAllowedIndexSet;
+  return peerAllowedIndexSet_;
 }
 
 static void updateIndexSet(std::vector<size_t>& c, size_t index)
@@ -174,38 +174,38 @@ static void updateIndexSet(std::vector<size_t>& c, size_t index)
 
 void PeerSessionResource::addPeerAllowedIndex(size_t index)
 {
-  updateIndexSet(_peerAllowedIndexSet, index);
+  updateIndexSet(peerAllowedIndexSet_, index);
 }
 
 bool PeerSessionResource::peerAllowedIndexSetContains(size_t index) const
 {
-  return std::binary_search(_peerAllowedIndexSet.begin(),
-                            _peerAllowedIndexSet.end(),
+  return std::binary_search(peerAllowedIndexSet_.begin(),
+                            peerAllowedIndexSet_.end(),
                             index);
 }
 
 void PeerSessionResource::addAmAllowedIndex(size_t index)
 {
-  updateIndexSet(_amAllowedIndexSet, index);
+  updateIndexSet(amAllowedIndexSet_, index);
 }
 
 bool PeerSessionResource::amAllowedIndexSetContains(size_t index) const
 {
-  return std::binary_search(_amAllowedIndexSet.begin(),
-                            _amAllowedIndexSet.end(),
+  return std::binary_search(amAllowedIndexSet_.begin(),
+                            amAllowedIndexSet_.end(),
                             index);
 }
 
 void PeerSessionResource::extendedMessagingEnabled(bool b)
 {
-  _extendedMessagingEnabled = b;
+  extendedMessagingEnabled_ = b;
 }
 
 uint8_t
 PeerSessionResource::getExtensionMessageID(const std::string& name) const
 {
-  Extensions::const_iterator itr = _extensions.find(name);
-  if(itr == _extensions.end()) {
+  Extensions::const_iterator itr = extensions_.find(name);
+  if(itr == extensions_.end()) {
     return 0;
   } else {
     return (*itr).second;
@@ -214,8 +214,8 @@ PeerSessionResource::getExtensionMessageID(const std::string& name) const
 
 std::string PeerSessionResource::getExtensionName(uint8_t id) const
 {
-  for(Extensions::const_iterator itr = _extensions.begin(),
-        eoi = _extensions.end(); itr != eoi; ++itr) {
+  for(Extensions::const_iterator itr = extensions_.begin(),
+        eoi = extensions_.end(); itr != eoi; ++itr) {
     const Extensions::value_type& p = *itr;
     if(p.second == id) {
       return p.first;
@@ -226,51 +226,51 @@ std::string PeerSessionResource::getExtensionName(uint8_t id) const
 
 void PeerSessionResource::addExtension(const std::string& name, uint8_t id)
 {
-  _extensions[name] = id;
+  extensions_[name] = id;
 }
 
 void PeerSessionResource::dhtEnabled(bool b)
 {
-  _dhtEnabled = b;
+  dhtEnabled_ = b;
 }
 
 uint64_t PeerSessionResource::uploadLength() const
 {
-  return _peerStat.getSessionUploadLength();
+  return peerStat_.getSessionUploadLength();
 }
 
 void PeerSessionResource::updateUploadLength(size_t bytes)
 {
-  _peerStat.updateUploadLength(bytes);
+  peerStat_.updateUploadLength(bytes);
 }
 
 uint64_t PeerSessionResource::downloadLength() const
 {
-  return _peerStat.getSessionDownloadLength();
+  return peerStat_.getSessionDownloadLength();
 }
 
 void PeerSessionResource::updateDownloadLength(size_t bytes)
 {
-  _peerStat.updateDownloadLength(bytes);
+  peerStat_.updateDownloadLength(bytes);
 
-  _lastDownloadUpdate = global::wallclock;
+  lastDownloadUpdate_ = global::wallclock;
 }
 
 uint64_t PeerSessionResource::getCompletedLength() const
 {
-  return _bitfieldMan->getCompletedLength();
+  return bitfieldMan_->getCompletedLength();
 }
 
 void PeerSessionResource::setBtMessageDispatcher
 (const WeakHandle<BtMessageDispatcher>& dpt)
 {
-  _dispatcher = dpt;
+  dispatcher_ = dpt;
 }
 
 size_t PeerSessionResource::countOutstandingUpload() const
 {
-  assert(!_dispatcher.isNull());
-  return _dispatcher->countOutstandingUpload();
+  assert(!dispatcher_.isNull());
+  return dispatcher_->countOutstandingUpload();
 }
 
 } // namespace aria2

@@ -53,9 +53,9 @@ namespace aria2 {
 
 BtDependency::BtDependency(const WeakHandle<RequestGroup>& dependant,
                            const SharedHandle<RequestGroup>& dependee):
-  _dependant(dependant),
-  _dependee(dependee),
-  _logger(LogFactory::getInstance()) {}
+  dependant_(dependant),
+  dependee_(dependee),
+  logger_(LogFactory::getInstance()) {}
 
 BtDependency::~BtDependency() {}
 
@@ -73,12 +73,12 @@ static void copyValues(const SharedHandle<FileEntry>& d,
 
 bool BtDependency::resolve()
 {
-  if(_dependee->getNumCommand() == 0 && _dependee->downloadFinished()) {
-    SharedHandle<RequestGroup> dependee = _dependee;
+  if(dependee_->getNumCommand() == 0 && dependee_->downloadFinished()) {
+    SharedHandle<RequestGroup> dependee = dependee_;
     // cut reference here
-    _dependee.reset();
+    dependee_.reset();
     SharedHandle<DownloadContext> context(new DownloadContext());
-    context->setDir(_dependant->getDownloadContext()->getDir());
+    context->setDir(dependant_->getDownloadContext()->getDir());
     try {
       SharedHandle<DiskAdaptor> diskAdaptor =
         dependee->getPieceStorage()->getDiskAdaptor();
@@ -96,7 +96,7 @@ bool BtDependency::resolve()
       const std::vector<SharedHandle<FileEntry> >& fileEntries =
         context->getFileEntries();
       const std::vector<SharedHandle<FileEntry> >& dependantFileEntries =
-        _dependant->getDownloadContext()->getFileEntries();
+        dependant_->getDownloadContext()->getFileEntries();
       // If dependant's FileEntry::getOriginalName() is empty, we
       // assume that torrent is single file. In Metalink3, this is
       // always assumed.
@@ -106,9 +106,9 @@ bool BtDependency::resolve()
       } else {
         std::for_each(fileEntries.begin(), fileEntries.end(),
                       std::bind2nd(mem_fun_sh(&FileEntry::setRequested),false));
-        // Copy file path in _dependant's FileEntries to newly created
+        // Copy file path in dependant_'s FileEntries to newly created
         // context's FileEntries to endorse the path structure of
-        // _dependant.  URIs and singleHostMultiConnection are also copied.
+        // dependant_.  URIs and singleHostMultiConnection are also copied.
         std::vector<SharedHandle<FileEntry> >::const_iterator ctxFilesEnd =
           fileEntries.end();
         for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
@@ -130,26 +130,26 @@ bool BtDependency::resolve()
         }
       }
     } catch(RecoverableException& e) {
-      _logger->error(EX_EXCEPTION_CAUGHT, e);
-      if(_logger->info()) {
-        _logger->info("BtDependency for GID#%s failed. Go without Bt.",
-                      util::itos(_dependant->getGID()).c_str());
+      logger_->error(EX_EXCEPTION_CAUGHT, e);
+      if(logger_->info()) {
+        logger_->info("BtDependency for GID#%s failed. Go without Bt.",
+                      util::itos(dependant_->getGID()).c_str());
       }
       return true;
     }
-    if(_logger->info()) {
-      _logger->info("Dependency resolved for GID#%s",
-                    util::itos(_dependant->getGID()).c_str());
+    if(logger_->info()) {
+      logger_->info("Dependency resolved for GID#%s",
+                    util::itos(dependant_->getGID()).c_str());
     }
-    _dependant->setDownloadContext(context);
+    dependant_->setDownloadContext(context);
     return true;
-  } else if(_dependee->getNumCommand() == 0) {
-    // _dependee's download failed.
+  } else if(dependee_->getNumCommand() == 0) {
+    // dependee_'s download failed.
     // cut reference here
-    _dependee.reset();
-    if(_logger->info()) {
-      _logger->info("BtDependency for GID#%s failed. Go without Bt.",
-                    util::itos(_dependant->getGID()).c_str());
+    dependee_.reset();
+    if(logger_->info()) {
+      logger_->info("BtDependency for GID#%s failed. Go without Bt.",
+                    util::itos(dependant_->getGID()).c_str());
     }
     return true;
   } else {

@@ -56,23 +56,23 @@ private:
 
   static const size_t MAX_RETRIES = 10;
 
-  RequestGroup* _requestGroup;
+  RequestGroup* requestGroup_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  DownloadEngine* _e;
+  DownloadEngine* e_;
 
-  SharedHandle<DHTTaskQueue> _taskQueue;
+  SharedHandle<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> _taskFactory;
+  SharedHandle<DHTTaskFactory> taskFactory_;
 
-  SharedHandle<DHTTask> _task;
+  SharedHandle<DHTTask> task_;
 
-  size_t _numRetry;
+  size_t numRetry_;
 
-  Timer _lastGetPeerTime;
+  Timer lastGetPeerTime_;
 public:
   DHTGetPeersCommand(cuid_t cuid, RequestGroup* requestGroup,
                      DownloadEngine* e);

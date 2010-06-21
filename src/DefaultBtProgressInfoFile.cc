@@ -78,24 +78,24 @@ DefaultBtProgressInfoFile::DefaultBtProgressInfoFile
 (const SharedHandle<DownloadContext>& dctx,
  const PieceStorageHandle& pieceStorage,
  const Option* option):
-  _dctx(dctx),
-  _pieceStorage(pieceStorage),
-  _option(option),
-  _logger(LogFactory::getInstance()),
-  _filename(createFilename(_dctx, getSuffix()))
+  dctx_(dctx),
+  pieceStorage_(pieceStorage),
+  option_(option),
+  logger_(LogFactory::getInstance()),
+  filename_(createFilename(dctx_, getSuffix()))
 {}
 
 DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() {}
 
 void DefaultBtProgressInfoFile::updateFilename()
 {
-  _filename = createFilename(_dctx, getSuffix());
+  filename_ = createFilename(dctx_, getSuffix());
 }
 
 bool DefaultBtProgressInfoFile::isTorrentDownload()
 {
 #ifdef ENABLE_BITTORRENT
-  return !_btRuntime.isNull();
+  return !btRuntime_.isNull();
 #else // !ENABLE_BITTORRENT
   return false;
 #endif // !ENABLE_BITTORRENT
@@ -104,13 +104,13 @@ bool DefaultBtProgressInfoFile::isTorrentDownload()
 // Since version 0001, Integers are saved in binary form, network byte order.
 void DefaultBtProgressInfoFile::save()
 {
-  _logger->info(MSG_SAVING_SEGMENT_FILE, _filename.c_str());
-  std::string filenameTemp = _filename+"__temp";
+  logger_->info(MSG_SAVING_SEGMENT_FILE, filename_.c_str());
+  std::string filenameTemp = filename_+"__temp";
   {
     std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
     if(!o) {
       throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-                                     _filename.c_str(), strerror(errno)).str());
+                                     filename_.c_str(), strerror(errno)).str());
     }
 #ifdef ENABLE_BITTORRENT
     bool torrentDownload = isTorrentDownload();
@@ -135,7 +135,7 @@ void DefaultBtProgressInfoFile::save()
 #ifdef ENABLE_BITTORRENT
       // infoHashLength:
       // length: 32 bits
-      const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
+      const unsigned char* infoHash = bittorrent::getInfoHash(dctx_);
       uint32_t infoHashLengthNL = htonl(INFO_HASH_LENGTH);
       o.write(reinterpret_cast<const char*>(&infoHashLengthNL),
               sizeof(infoHashLengthNL));
@@ -150,38 +150,38 @@ void DefaultBtProgressInfoFile::save()
               sizeof(infoHashLength));
     }
     // pieceLength: 32 bits
-    uint32_t pieceLengthNL = htonl(_dctx->getPieceLength());
+    uint32_t pieceLengthNL = htonl(dctx_->getPieceLength());
     o.write(reinterpret_cast<const char*>(&pieceLengthNL),
             sizeof(pieceLengthNL));
     // totalLength: 64 bits
-    uint64_t totalLengthNL = hton64(_dctx->getTotalLength());
+    uint64_t totalLengthNL = hton64(dctx_->getTotalLength());
     o.write(reinterpret_cast<const char*>(&totalLengthNL),
             sizeof(totalLengthNL));
     // uploadLength: 64 bits
     uint64_t uploadLengthNL = 0;
 #ifdef ENABLE_BITTORRENT
     if(torrentDownload) {
-      TransferStat stat = _peerStorage->calculateStat();
+      TransferStat stat = peerStorage_->calculateStat();
       uploadLengthNL = hton64(stat.getAllTimeUploadLength());
     }
 #endif // ENABLE_BITTORRENT
     o.write(reinterpret_cast<const char*>(&uploadLengthNL),
             sizeof(uploadLengthNL));
     // bitfieldLength: 32 bits
-    uint32_t bitfieldLengthNL = htonl(_pieceStorage->getBitfieldLength());
+    uint32_t bitfieldLengthNL = htonl(pieceStorage_->getBitfieldLength());
     o.write(reinterpret_cast<const char*>(&bitfieldLengthNL),
             sizeof(bitfieldLengthNL));
     // bitfield
-    o.write(reinterpret_cast<const char*>(_pieceStorage->getBitfield()),
-            _pieceStorage->getBitfieldLength());
+    o.write(reinterpret_cast<const char*>(pieceStorage_->getBitfield()),
+            pieceStorage_->getBitfieldLength());
     // the number of in-flight piece: 32 bits
     // TODO implement this
-    uint32_t numInFlightPieceNL = htonl(_pieceStorage->countInFlightPiece());
+    uint32_t numInFlightPieceNL = htonl(pieceStorage_->countInFlightPiece());
     o.write(reinterpret_cast<const char*>(&numInFlightPieceNL),
             sizeof(numInFlightPieceNL));
     std::vector<SharedHandle<Piece> > inFlightPieces;
-    inFlightPieces.reserve(_pieceStorage->countInFlightPiece());
-    _pieceStorage->getInFlightPieces(inFlightPieces);
+    inFlightPieces.reserve(pieceStorage_->countInFlightPiece());
+    pieceStorage_->getInFlightPieces(inFlightPieces);
     for(std::vector<SharedHandle<Piece> >::const_iterator itr =
           inFlightPieces.begin(), eoi = inFlightPieces.end();
         itr != eoi; ++itr) {
@@ -198,24 +198,24 @@ void DefaultBtProgressInfoFile::save()
     o.flush();
     if(!o) {
       throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-                                     _filename.c_str(), strerror(errno)).str());
+                                     filename_.c_str(), strerror(errno)).str());
     }
-    _logger->info(MSG_SAVED_SEGMENT_FILE);
+    logger_->info(MSG_SAVED_SEGMENT_FILE);
   }
-  if(!File(filenameTemp).renameTo(_filename)) {
+  if(!File(filenameTemp).renameTo(filename_)) {
     throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-                                   _filename.c_str(), strerror(errno)).str());
+                                   filename_.c_str(), strerror(errno)).str());
   }
 }
 
 #define CHECK_STREAM(in, length)                                        \
   if(in.gcount() != length) {                                           \
     throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
-                                   _filename.c_str(),"Unexpected EOF").str()); \
+                                   filename_.c_str(),"Unexpected EOF").str()); \
   }                                                                     \
   if(!in) {                                                             \
     throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
-                                   _filename.c_str(), strerror(errno)).str()); \
+                                   filename_.c_str(), strerror(errno)).str()); \
   }
 
 // It is assumed that integers are saved as:
@@ -223,11 +223,11 @@ void DefaultBtProgressInfoFile::save()
 // 2) network byte order if version == 0001
 void DefaultBtProgressInfoFile::load() 
 {
-  _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
-  std::ifstream in(_filename.c_str(), std::ios::in|std::ios::binary);
+  logger_->info(MSG_LOADING_SEGMENT_FILE, filename_.c_str());
+  std::ifstream in(filename_.c_str(), std::ios::in|std::ios::binary);
   if(!in) {                                                             \
     throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
-                                   _filename.c_str(), strerror(errno)).str());
+                                   filename_.c_str(), strerror(errno)).str());
   }
   unsigned char versionBuf[2];
   in.read(reinterpret_cast<char*>(versionBuf), sizeof(versionBuf));
@@ -249,8 +249,8 @@ void DefaultBtProgressInfoFile::load()
   bool infoHashCheckEnabled = false;
   if(extension[3]&1 && isTorrentDownload()) {
     infoHashCheckEnabled = true;
-    if(_logger->debug()) {
-      _logger->debug("InfoHash checking enabled.");
+    if(logger_->debug()) {
+      logger_->debug("InfoHash checking enabled.");
     }
   }
 
@@ -272,7 +272,7 @@ void DefaultBtProgressInfoFile::load()
     CHECK_STREAM(in, static_cast<int>(infoHashLength));
 #ifdef ENABLE_BITTORRENT
     if(infoHashCheckEnabled) {
-      const unsigned char* infoHash = bittorrent::getInfoHash(_dctx);
+      const unsigned char* infoHash = bittorrent::getInfoHash(dctx_);
       if(infoHashLength != INFO_HASH_LENGTH ||
          memcmp(savedInfoHash, infoHash, INFO_HASH_LENGTH) != 0) {
         throw DL_ABORT_EX
@@ -298,10 +298,10 @@ void DefaultBtProgressInfoFile::load()
   if(version >= 1) {
     totalLength = ntoh64(totalLength);
   }
-  if(totalLength != _dctx->getTotalLength()) {
+  if(totalLength != dctx_->getTotalLength()) {
     throw DL_ABORT_EX
       (StringFormat("total length mismatch. expected: %s, actual: %s",
-                    util::itos(_dctx->getTotalLength()).c_str(),
+                    util::itos(dctx_->getTotalLength()).c_str(),
                     util::itos(totalLength).c_str()).str());
   }
   uint64_t uploadLength;
@@ -312,7 +312,7 @@ void DefaultBtProgressInfoFile::load()
   }
 #ifdef ENABLE_BITTORRENT
   if(isTorrentDownload()) {
-    _btRuntime->setUploadLengthAtStartup(uploadLength);
+    btRuntime_->setUploadLengthAtStartup(uploadLength);
   }
 #endif // ENABLE_BITTORRENT
   // TODO implement the conversion mechanism between different piece length.
@@ -335,8 +335,8 @@ void DefaultBtProgressInfoFile::load()
   in.read(reinterpret_cast<char*>
           (static_cast<unsigned char*>(savedBitfield)), bitfieldLength);
   CHECK_STREAM(in, static_cast<int>(bitfieldLength));
-  if(pieceLength == _dctx->getPieceLength()) {
-    _pieceStorage->setBitfield(savedBitfield, bitfieldLength);
+  if(pieceLength == dctx_->getPieceLength()) {
+    pieceStorage_->setBitfield(savedBitfield, bitfieldLength);
 
     uint32_t numInFlightPiece;
     in.read(reinterpret_cast<char*>(&numInFlightPiece),
@@ -354,7 +354,7 @@ void DefaultBtProgressInfoFile::load()
       if(version >= 1) {
         index = ntohl(index);
       }
-      if(!(index < _dctx->getNumPieces())) {
+      if(!(index < dctx_->getNumPieces())) {
         throw DL_ABORT_EX
           (StringFormat("piece index out of range: %u", index).str());
       }
@@ -364,7 +364,7 @@ void DefaultBtProgressInfoFile::load()
       if(version >= 1) {
         length = ntohl(length);
       }
-      if(!(length <=_dctx->getPieceLength())) {
+      if(!(length <=dctx_->getPieceLength())) {
         throw DL_ABORT_EX
           (StringFormat("piece length out of range: %u", length).str());
       }
@@ -391,13 +391,13 @@ void DefaultBtProgressInfoFile::load()
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-      piece->setHashAlgo(_dctx->getPieceHashAlgo());
+      piece->setHashAlgo(dctx_->getPieceHashAlgo());
 
 #endif // ENABLE_MESSAGE_DIGEST
         
       inFlightPieces.push_back(piece);
     }
-    _pieceStorage->addInFlightPiece(inFlightPieces);
+    pieceStorage_->addInFlightPiece(inFlightPieces);
   } else {
     uint32_t numInFlightPiece;
     in.read(reinterpret_cast<char*>(&numInFlightPiece),
@@ -409,35 +409,35 @@ void DefaultBtProgressInfoFile::load()
     BitfieldMan src(pieceLength, totalLength);
     src.setBitfield(savedBitfield, bitfieldLength);
     if((src.getCompletedLength() || numInFlightPiece) &&
-       !_option->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
+       !option_->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
         ("WARNING: Detected a change in piece length. You can proceed with"
          " --allow-piece-length-change=true, but you may lose some download"
          " progress.");
     }
-    BitfieldMan dest(_dctx->getPieceLength(), totalLength);
+    BitfieldMan dest(dctx_->getPieceLength(), totalLength);
     util::convertBitfield(&dest, &src);
-    _pieceStorage->setBitfield(dest.getBitfield(), dest.getBitfieldLength());
+    pieceStorage_->setBitfield(dest.getBitfield(), dest.getBitfieldLength());
   }
-  _logger->info(MSG_LOADED_SEGMENT_FILE);
+  logger_->info(MSG_LOADED_SEGMENT_FILE);
 }
 
 void DefaultBtProgressInfoFile::removeFile()
 {
   if(exists()) {
-    File f(_filename);
+    File f(filename_);
     f.remove();
   }
 }
 
 bool DefaultBtProgressInfoFile::exists()
 {
-  File f(_filename);
+  File f(filename_);
   if(f.isFile()) {
-    _logger->info(MSG_SEGMENT_FILE_EXISTS, _filename.c_str());
+    logger_->info(MSG_SEGMENT_FILE_EXISTS, filename_.c_str());
     return true;
   } else {
-    _logger->info(MSG_SEGMENT_FILE_DOES_NOT_EXIST, _filename.c_str());
+    logger_->info(MSG_SEGMENT_FILE_DOES_NOT_EXIST, filename_.c_str());
     return false;
   }
 }
@@ -446,13 +446,13 @@ bool DefaultBtProgressInfoFile::exists()
 void DefaultBtProgressInfoFile::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
-  _peerStorage = peerStorage;
+  peerStorage_ = peerStorage;
 }
 
 void DefaultBtProgressInfoFile::setBtRuntime
 (const SharedHandle<BtRuntime>& btRuntime)
 {
-  _btRuntime = btRuntime;
+  btRuntime_ = btRuntime;
 }
 #endif // ENABLE_BITTORRENT
 

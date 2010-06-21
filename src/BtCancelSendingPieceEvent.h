@@ -41,18 +41,18 @@ namespace aria2 {
 
 class BtCancelSendingPieceEvent {
 private:
-  size_t _index;
-  uint32_t _begin;
-  size_t _length;
+  size_t index_;
+  uint32_t begin_;
+  size_t length_;
 public:
   BtCancelSendingPieceEvent(size_t index, uint32_t begin, size_t length):
-    _index(index), _begin(begin), _length(length) {}
+    index_(index), begin_(begin), length_(length) {}
 
-  size_t getIndex() const { return _index; }
+  size_t getIndex() const { return index_; }
 
-  uint32_t getBegin() const { return _begin; }
+  uint32_t getBegin() const { return begin_; }
 
-  size_t getLength() const { return _length; }
+  size_t getLength() const { return length_; }
 };
 
 } // namespace aria2

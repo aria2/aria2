@@ -50,21 +50,21 @@ class UTMetadataRequestTracker;
 
 class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  SharedHandle<Peer> _peer;
+  SharedHandle<Peer> peer_;
 
-  SharedHandle<ExtensionMessageRegistry> _registry;
+  SharedHandle<ExtensionMessageRegistry> registry_;
 
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
 
-  WeakHandle<BtMessageFactory> _messageFactory;
+  WeakHandle<BtMessageFactory> messageFactory_;
 
-  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher_;
 
-  WeakHandle<UTMetadataRequestTracker> _tracker;
+  WeakHandle<UTMetadataRequestTracker> tracker_;
 
-  Logger* _logger;
+  Logger* logger_;
 
 public:
   DefaultExtensionMessageFactory();
@@ -85,28 +85,28 @@ public:
   void setExtensionMessageRegistry
   (const SharedHandle<ExtensionMessageRegistry>& registry)
   {
-    _registry = registry;
+    registry_ = registry;
   }
 
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {
-    _dctx = dctx;
+    dctx_ = dctx;
   }
 
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
   {
-    _messageFactory = factory;
+    messageFactory_ = factory;
   }
 
   void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
   {
-    _dispatcher = disp;
+    dispatcher_ = disp;
   }
   
   void setUTMetadataRequestTracker
   (const WeakHandle<UTMetadataRequestTracker>& tracker)
   {
-    _tracker = tracker;
+    tracker_ = tracker;
   }
 };
 

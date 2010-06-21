@@ -39,47 +39,47 @@ class DefaultExtensionMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateMessage_UTMetadataReject);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<MockPeerStorage> _peerStorage;
-  SharedHandle<Peer> _peer;
-  SharedHandle<DefaultExtensionMessageFactory> _factory;
-  SharedHandle<ExtensionMessageRegistry> _registry;
-  SharedHandle<MockBtMessageDispatcher> _dispatcher;
-  SharedHandle<MockBtMessageFactory> _messageFactory;
-  SharedHandle<DownloadContext> _dctx;
-  SharedHandle<RequestGroup> _requestGroup;
+  SharedHandle<MockPeerStorage> peerStorage_;
+  SharedHandle<Peer> peer_;
+  SharedHandle<DefaultExtensionMessageFactory> factory_;
+  SharedHandle<ExtensionMessageRegistry> registry_;
+  SharedHandle<MockBtMessageDispatcher> dispatcher_;
+  SharedHandle<MockBtMessageFactory> messageFactory_;
+  SharedHandle<DownloadContext> dctx_;
+  SharedHandle<RequestGroup> requestGroup_;
 public:
   void setUp()
   {
-    _peerStorage.reset(new MockPeerStorage());
+    peerStorage_.reset(new MockPeerStorage());
 
-    _peer.reset(new Peer("192.168.0.1", 6969));
-    _peer->allocateSessionResource(1024, 1024*1024);
-    _peer->setExtension("ut_pex", 1);
+    peer_.reset(new Peer("192.168.0.1", 6969));
+    peer_->allocateSessionResource(1024, 1024*1024);
+    peer_->setExtension("ut_pex", 1);
 
-    _registry.reset(new ExtensionMessageRegistry());
+    registry_.reset(new ExtensionMessageRegistry());
 
-    _dispatcher.reset(new MockBtMessageDispatcher());
+    dispatcher_.reset(new MockBtMessageDispatcher());
 
-    _messageFactory.reset(new MockBtMessageFactory());
+    messageFactory_.reset(new MockBtMessageFactory());
 
-    _dctx.reset(new DownloadContext());
+    dctx_.reset(new DownloadContext());
 
     SharedHandle<Option> option(new Option());
-    _requestGroup.reset(new RequestGroup(option));
-    _requestGroup->setDownloadContext(_dctx);
+    requestGroup_.reset(new RequestGroup(option));
+    requestGroup_->setDownloadContext(dctx_);
 
-    _factory.reset(new DefaultExtensionMessageFactory());
-    _factory->setPeerStorage(_peerStorage);
-    _factory->setPeer(_peer);
-    _factory->setExtensionMessageRegistry(_registry);
-    _factory->setBtMessageDispatcher(_dispatcher);
-    _factory->setBtMessageFactory(_messageFactory);
-    _factory->setDownloadContext(_dctx);
+    factory_.reset(new DefaultExtensionMessageFactory());
+    factory_->setPeerStorage(peerStorage_);
+    factory_->setPeer(peer_);
+    factory_->setExtensionMessageRegistry(registry_);
+    factory_->setBtMessageDispatcher(dispatcher_);
+    factory_->setBtMessageFactory(messageFactory_);
+    factory_->setDownloadContext(dctx_);
   }
 
   std::string getExtensionMessageID(const std::string& name)
   {
-    char id[1] = { _registry->getExtensionMessageID(name) };
+    char id[1] = { registry_->getExtensionMessageID(name) };
     return std::string(&id[0], &id[1]);
   }
 
@@ -87,7 +87,7 @@ public:
   SharedHandle<T> createMessage(const std::string& data)
   {
     return dynamic_pointer_cast<T>
-      (_factory->createMessage
+      (factory_->createMessage
        (reinterpret_cast<const unsigned char*>(data.c_str()), data.size()));
   }
 
@@ -104,14 +104,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultExtensionMessageFactoryTest);
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_unknown()
 {
-  _peer->setExtension("foo", 255);
+  peer_->setExtension("foo", 255);
 
   char id[1] = { 255 };
 
   std::string data = std::string(&id[0], &id[1]);
   try {
     // this test fails because localhost doesn't have extension id = 255.
-    _factory->createMessage
+    factory_->createMessage
       (reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
@@ -148,7 +148,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
 
   SharedHandle<UTPexExtensionMessage> m =
     createMessage<UTPexExtensionMessage>(data);
-  CPPUNIT_ASSERT_EQUAL(_registry->getExtensionMessageID("ut_pex"),
+  CPPUNIT_ASSERT_EQUAL(registry_->getExtensionMessageID("ut_pex"),
                        m->getExtensionMessageID());
 }
 

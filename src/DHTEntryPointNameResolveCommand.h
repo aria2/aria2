@@ -56,25 +56,25 @@ class AsyncNameResolver;
 
 class DHTEntryPointNameResolveCommand:public Command {
 private:
-  DownloadEngine* _e;
+  DownloadEngine* e_;
 
 #ifdef ENABLE_ASYNC_DNS
-  SharedHandle<AsyncNameResolver> _resolver;
+  SharedHandle<AsyncNameResolver> resolver_;
 #endif // ENABLE_ASYNC_DNS
 
-  SharedHandle<DHTTaskQueue> _taskQueue;
+  SharedHandle<DHTTaskQueue> taskQueue_;
 
-  SharedHandle<DHTTaskFactory> _taskFactory;
+  SharedHandle<DHTTaskFactory> taskFactory_;
 
-  SharedHandle<DHTRoutingTable> _routingTable;
+  SharedHandle<DHTRoutingTable> routingTable_;
 
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  std::deque<std::pair<std::string, uint16_t> > _entryPoints;
+  std::deque<std::pair<std::string, uint16_t> > entryPoints_;
 
-  std::vector<std::pair<std::string, uint16_t> > _resolvedEntryPoints;
+  std::vector<std::pair<std::string, uint16_t> > resolvedEntryPoints_;
 
-  bool _bootstrapEnabled;
+  bool bootstrapEnabled_;
 
   void addPingTask(const std::pair<std::string, uint16_t>& addr);
 

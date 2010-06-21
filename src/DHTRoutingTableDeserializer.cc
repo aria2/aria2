@@ -127,14 +127,14 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
   if(version == 2) {
     in.read(reinterpret_cast<char*>(&temp32), sizeof(temp32));
     CHECK_STREAM(in, sizeof(temp32));
-    _serializedTime.setTimeInSec(ntohl(temp32));
+    serializedTime_.setTimeInSec(ntohl(temp32));
     // 4bytes reserved
     readBytes(buf, buf.size(), in, 4);
     CHECK_STREAM(in, 4);
   } else {
     in.read(reinterpret_cast<char*>(&temp64), sizeof(temp64));
     CHECK_STREAM(in, sizeof(temp64));
-    _serializedTime.setTimeInSec(ntoh64(temp64));
+    serializedTime_.setTimeInSec(ntoh64(temp64));
   }
   
   // localnode
@@ -208,8 +208,8 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 
     nodes.push_back(node);
   }
-  _localNode = localNode;
-  _nodes = nodes;
+  localNode_ = localNode;
+  nodes_ = nodes;
 }
 
 } // namespace aria2

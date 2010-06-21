@@ -43,7 +43,7 @@ class ServerStatMan;
 
 class FeedbackURISelector:public URISelector {
 private:
-  SharedHandle<ServerStatMan> _serverStatMan;
+  SharedHandle<ServerStatMan> serverStatMan_;
 
 public:
   FeedbackURISelector(const SharedHandle<ServerStatMan>& serverStatMan);

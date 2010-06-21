@@ -63,11 +63,11 @@ class DHTMessage;
 template<class ResponseMessage>
 class DHTAbstractNodeLookupTask:public DHTAbstractTask {
 private:
-  unsigned char _targetID[DHT_ID_LENGTH];
+  unsigned char targetID_[DHT_ID_LENGTH];
 
-  std::deque<SharedHandle<DHTNodeLookupEntry> > _entries;
+  std::deque<SharedHandle<DHTNodeLookupEntry> > entries_;
   
-  size_t _inFlightMessage;
+  size_t inFlightMessage_;
   
   template<typename Container>
   void toEntries
@@ -83,10 +83,10 @@ private:
   void sendMessage()
   {
     for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
-          _entries.begin(), eoi = _entries.end();
-        i != eoi && _inFlightMessage < ALPHA; ++i) {
+          entries_.begin(), eoi = entries_.end();
+        i != eoi && inFlightMessage_ < ALPHA; ++i) {
       if((*i)->used == false) {
-        ++_inFlightMessage;
+        ++inFlightMessage_;
         (*i)->used = true;
         SharedHandle<DHTMessage> m = createMessage((*i)->node);
         SharedHandle<DHTMessageCallback> callback(createCallback());
@@ -100,10 +100,10 @@ private:
     if(needsAdditionalOutgoingMessage()) {
       sendMessage();
     }
-    if(_inFlightMessage == 0) {
+    if(inFlightMessage_ == 0) {
       if(getLogger()->debug()) {
         getLogger()->debug("Finished node_lookup for node ID %s",
-                           util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+                           util::toHex(targetID_, DHT_ID_LENGTH).c_str());
       }
       onFinish();
       updateBucket();
@@ -111,8 +111,8 @@ private:
     } else {
       if(getLogger()->debug()) {
         getLogger()->debug("%d in flight message for node ID %s",
-                           _inFlightMessage,
-                           util::toHex(_targetID, DHT_ID_LENGTH).c_str());
+                           inFlightMessage_,
+                           util::toHex(targetID_, DHT_ID_LENGTH).c_str());
       }
     }
   }
@@ -121,12 +121,12 @@ private:
 protected:
   const unsigned char* getTargetID() const
   {
-    return _targetID;
+    return targetID_;
   }
 
   const std::deque<SharedHandle<DHTNodeLookupEntry> >& getEntries() const
   {
-    return _entries;
+    return entries_;
   }
 
   virtual void getNodesFromMessage
@@ -146,9 +146,9 @@ protected:
   virtual SharedHandle<DHTMessageCallback> createCallback() = 0;
 public:
   DHTAbstractNodeLookupTask(const unsigned char* targetID):
-    _inFlightMessage(0)
+    inFlightMessage_(0)
   {
-    memcpy(_targetID, targetID, DHT_ID_LENGTH);
+    memcpy(targetID_, targetID, DHT_ID_LENGTH);
   }
 
   static const size_t ALPHA = 3;
@@ -156,16 +156,16 @@ public:
   virtual void startup()
   {
     std::vector<SharedHandle<DHTNode> > nodes;
-    getRoutingTable()->getClosestKNodes(nodes, _targetID);
-    _entries.clear();
-    toEntries(_entries, nodes);
-    if(_entries.empty()) {
+    getRoutingTable()->getClosestKNodes(nodes, targetID_);
+    entries_.clear();
+    toEntries(entries_, nodes);
+    if(entries_.empty()) {
       setFinished(true);
     } else {
       // TODO use RTT here
-      _inFlightMessage = 0;
+      inFlightMessage_ = 0;
       sendMessage();
-      if(_inFlightMessage == 0) {
+      if(inFlightMessage_ == 0) {
         if(getLogger()->debug()) {
           getLogger()->debug("No message was sent in this lookup stage. Finished.");
         }
@@ -176,7 +176,7 @@ public:
 
   void onReceived(const ResponseMessage* message)
   {
-    --_inFlightMessage;
+    --inFlightMessage_;
     onReceivedInternal(message);
     std::vector<SharedHandle<DHTNode> > nodes;
     getNodesFromMessage(nodes, message);
@@ -188,7 +188,7 @@ public:
           newEntries.begin(), eoi = newEntries.end(); i != eoi; ++i) {
       if(memcmp(getLocalNode()->getID(), (*i)->node->getID(),
                 DHT_ID_LENGTH) != 0) {
-        _entries.push_front(*i);
+        entries_.push_front(*i);
         ++count;
         if(getLogger()->debug()) {
           getLogger()->debug("Received nodes: id=%s, ip=%s",
@@ -201,13 +201,13 @@ public:
     if(getLogger()->debug()) {
       getLogger()->debug("%u node lookup entries added.", count);
     }
-    std::stable_sort(_entries.begin(), _entries.end(), DHTIDCloser(_targetID));
-    _entries.erase(std::unique(_entries.begin(), _entries.end()), _entries.end());
+    std::stable_sort(entries_.begin(), entries_.end(), DHTIDCloser(targetID_));
+    entries_.erase(std::unique(entries_.begin(), entries_.end()), entries_.end());
     if(getLogger()->debug()) {
-      getLogger()->debug("%u node lookup entries are unique.", _entries.size());
+      getLogger()->debug("%u node lookup entries are unique.", entries_.size());
     }
-    if(_entries.size() > DHTBucket::K) {
-      _entries.erase(_entries.begin()+DHTBucket::K, _entries.end());
+    if(entries_.size() > DHTBucket::K) {
+      entries_.erase(entries_.begin()+DHTBucket::K, entries_.end());
     }
     sendMessageAndCheckFinish();
   }
@@ -218,11 +218,11 @@ public:
       getLogger()->debug("node lookup message timeout for node ID=%s",
                          util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
     }
-    --_inFlightMessage;
+    --inFlightMessage_;
     for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
-          _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
+          entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
       if((*i)->node == node) {
-        _entries.erase(i);
+        entries_.erase(i);
         break;
       }
     }

@@ -47,11 +47,11 @@ class LpdMessage;
 
 class LpdMessageReceiver {
 private:
-  SharedHandle<SocketCore> _socket;
-  std::string _multicastAddress;
-  uint16_t _multicastPort;
-  std::string _localAddress;
-  Logger* _logger;
+  SharedHandle<SocketCore> socket_;
+  std::string multicastAddress_;
+  uint16_t multicastPort_;
+  std::string localAddress_;
+  Logger* logger_;
 public:
   // Currently only IPv4 multicastAddresses are supported.
   LpdMessageReceiver
@@ -68,12 +68,12 @@ public:
 
   const SharedHandle<SocketCore>& getSocket() const
   {
-    return _socket;
+    return socket_;
   }
 
   const std::string& getLocalAddress() const
   {
-    return _localAddress;
+    return localAddress_;
   }
 };
 

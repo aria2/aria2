@@ -51,19 +51,19 @@ class DHTAbstractMessage;
 
 class DHTMessageFactoryImpl:public DHTMessageFactory {
 private:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTConnection> _connection;
+  WeakHandle<DHTConnection> connection_;
 
-  WeakHandle<DHTMessageDispatcher> _dispatcher;
+  WeakHandle<DHTMessageDispatcher> dispatcher_;
 
-  WeakHandle<DHTRoutingTable> _routingTable;
+  WeakHandle<DHTRoutingTable> routingTable_;
   
-  WeakHandle<DHTPeerAnnounceStorage> _peerAnnounceStorage;
+  WeakHandle<DHTPeerAnnounceStorage> peerAnnounceStorage_;
 
-  WeakHandle<DHTTokenTracker> _tokenTracker;
+  WeakHandle<DHTTokenTracker> tokenTracker_;
 
-  Logger* _logger;
+  Logger* logger_;
   
   // search node in routingTable. If it is not found, create new one.
   SharedHandle<DHTNode> getRemoteNode

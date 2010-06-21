@@ -44,12 +44,12 @@ namespace aria2 {
 
 class GZipEncoder {
 private:
-  z_stream* _strm;
+  z_stream* strm_;
 
-  bool _finished;
+  bool finished_;
 
   // Internal buffer for deflated data.
-  std::string _internalBuf;
+  std::string internalBuf_;
 
   std::string encode(const unsigned char* in, size_t length, int flush);
 public:

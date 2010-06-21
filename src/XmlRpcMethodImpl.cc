@@ -644,7 +644,7 @@ static void gatherProgressBitTorrent
   if(btObject.isNull()) {
     entryDict->put(KEY_NUM_SEEDERS, VLB_ZERO);
   } else {
-    SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
+    SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
     assert(!peerStorage.isNull());
     std::vector<SharedHandle<Peer> > peers;
     peerStorage->getActivePeers(peers);
@@ -805,8 +805,8 @@ SharedHandle<ValueBase> GetPeersXmlRpcMethod::process
   SharedHandle<List> peers = List::g();
   BtObject btObject = e->getBtRegistry()->get(group->getGID());
   if(!btObject.isNull()) {
-    assert(!btObject._peerStorage.isNull());
-    gatherPeer(peers, btObject._peerStorage);
+    assert(!btObject.peerStorage_.isNull());
+    gatherPeer(peers, btObject.peerStorage_);
   }
   return peers;
 }
@@ -931,7 +931,7 @@ SharedHandle<ValueBase> ChangeOptionXmlRpcMethod::process
     BtObject btObject = e->getBtRegistry()->get(group->getGID());
     if(!btObject.isNull()) {
       if(option->defined(PREF_BT_MAX_PEERS)) {
-        btObject._btRuntime->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
+        btObject.btRuntime_->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
       }
     }
 #endif // ENABLE_BITTORRENT

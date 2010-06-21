@@ -42,54 +42,54 @@ namespace xmlrpc {
 
 void XmlRpcRequestParserController::pushFrame()
 {
-  _frameStack.push(_currentFrame);
-  _currentFrame = StateFrame();
+  frameStack_.push(currentFrame_);
+  currentFrame_ = StateFrame();
 }
 
 void XmlRpcRequestParserController::popStructFrame()
 {
-  assert(!_frameStack.empty());
+  assert(!frameStack_.empty());
 
-  StateFrame parentFrame = _frameStack.top();
-  Dict* dict = asDict(parentFrame._value);
+  StateFrame parentFrame = frameStack_.top();
+  Dict* dict = asDict(parentFrame.value_);
   assert(dict);
-  _frameStack.pop();
-  if(_currentFrame.validMember()) {
-    dict->put(_currentFrame._name, _currentFrame._value);
+  frameStack_.pop();
+  if(currentFrame_.validMember()) {
+    dict->put(currentFrame_.name_, currentFrame_.value_);
   }
-  _currentFrame = parentFrame;
+  currentFrame_ = parentFrame;
 }
 
 void XmlRpcRequestParserController::popArrayFrame()
 {
-  assert(!_frameStack.empty());
+  assert(!frameStack_.empty());
 
-  StateFrame parentFrame = _frameStack.top();
-  List* list = asList(parentFrame._value);
+  StateFrame parentFrame = frameStack_.top();
+  List* list = asList(parentFrame.value_);
   assert(list);
-  _frameStack.pop();
-  if(!_currentFrame._value.isNull()) {
-    list->append(_currentFrame._value);
+  frameStack_.pop();
+  if(!currentFrame_.value_.isNull()) {
+    list->append(currentFrame_.value_);
   }
-  _currentFrame = parentFrame;
+  currentFrame_ = parentFrame;
 }
 
 void XmlRpcRequestParserController::setCurrentFrameValue
 (const SharedHandle<ValueBase>& value)
 {
-  _currentFrame._value = value;
+  currentFrame_.value_ = value;
 }
 
 void XmlRpcRequestParserController::setCurrentFrameName
 (const std::string& name)
 {
-  _currentFrame._name = name;
+  currentFrame_.name_ = name;
 }
 
 const SharedHandle<ValueBase>&
 XmlRpcRequestParserController::getCurrentFrameValue() const
 {
-  return _currentFrame._value;
+  return currentFrame_.value_;
 }
 
 } // namespace xmlrpc

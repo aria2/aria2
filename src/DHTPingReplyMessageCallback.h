@@ -46,9 +46,9 @@ namespace aria2 {
 template<class Task>
 class DHTPingReplyMessageCallback:public DHTMessageCallback {
 private:
-  Task* _task;
+  Task* task_;
 public:
-  DHTPingReplyMessageCallback(Task* task):_task(task) {}
+  DHTPingReplyMessageCallback(Task* task):task_(task) {}
 
   virtual void visit(const DHTAnnouncePeerReplyMessage* message)
   {
@@ -67,12 +67,12 @@ public:
 
   virtual void visit(const DHTPingReplyMessage* message)
   {
-    _task->onReceived(message);
+    task_->onReceived(message);
   }
 
   virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode)
   {
-    _task->onTimeout(remoteNode);
+    task_->onTimeout(remoteNode);
   }
 };
 

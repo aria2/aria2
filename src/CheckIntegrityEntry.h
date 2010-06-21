@@ -49,7 +49,7 @@ class FileAllocationEntry;
 class CheckIntegrityEntry : public RequestGroupEntry,
                             public ProgressAwareEntry {
 private:
-  SharedHandle<IteratableValidator> _validator;
+  SharedHandle<IteratableValidator> validator_;
 protected:
   void setValidator(const SharedHandle<IteratableValidator>& validator);
 

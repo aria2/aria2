@@ -41,22 +41,22 @@ namespace aria2 {
 
 RequestGroupEntry::RequestGroupEntry(RequestGroup* requestGroup,
                                      Command* nextCommand):
-  _requestGroup(requestGroup),
-  _nextCommand(nextCommand)
+  requestGroup_(requestGroup),
+  nextCommand_(nextCommand)
 {
-  _requestGroup->increaseNumCommand();
+  requestGroup_->increaseNumCommand();
 }
 
 RequestGroupEntry::~RequestGroupEntry()
 {
-  _requestGroup->decreaseNumCommand();
-  delete _nextCommand;
+  requestGroup_->decreaseNumCommand();
+  delete nextCommand_;
 }
 
 Command* RequestGroupEntry::popNextCommand()
 {
-  Command* temp = _nextCommand;
-  _nextCommand = 0;
+  Command* temp = nextCommand_;
+  nextCommand_ = 0;
   return temp;
 }
 

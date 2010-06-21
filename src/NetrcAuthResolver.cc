@@ -38,7 +38,7 @@
 
 namespace aria2 {
 
-NetrcAuthResolver::NetrcAuthResolver():_ignoreDefault(false) {}
+NetrcAuthResolver::NetrcAuthResolver():ignoreDefault_(false) {}
 
 SharedHandle<AuthConfig>
 NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
@@ -53,14 +53,14 @@ NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 SharedHandle<AuthConfig>
 NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 {
-  if(_netrc.isNull()) {
+  if(netrc_.isNull()) {
     return getDefaultAuthConfig();
   } else {
-    SharedHandle<Authenticator> auth = _netrc->findAuthenticator(hostname);
+    SharedHandle<Authenticator> auth = netrc_->findAuthenticator(hostname);
     if(auth.isNull()) {
       return getDefaultAuthConfig();
     } else {
-      if(_ignoreDefault && auth->getMachine().empty()) {
+      if(ignoreDefault_ && auth->getMachine().empty()) {
         return getDefaultAuthConfig();
       } else {
         return SharedHandle<AuthConfig>
@@ -72,17 +72,17 @@ NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 
 void NetrcAuthResolver::setNetrc(const SharedHandle<Netrc>& netrc)
 {
-  _netrc = netrc;
+  netrc_ = netrc;
 }
 
 void NetrcAuthResolver::ignoreDefault()
 {
-  _ignoreDefault = true;
+  ignoreDefault_ = true;
 }
 
 void NetrcAuthResolver::useDefault()
 {
-  _ignoreDefault = false;
+  ignoreDefault_ = false;
 }
 
 } // namespace aria2

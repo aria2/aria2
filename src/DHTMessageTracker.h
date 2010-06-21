@@ -56,13 +56,13 @@ class Logger;
 
 class DHTMessageTracker {
 private:
-  std::deque<SharedHandle<DHTMessageTrackerEntry> > _entries;
+  std::deque<SharedHandle<DHTMessageTrackerEntry> > entries_;
   
-  SharedHandle<DHTRoutingTable> _routingTable;
+  SharedHandle<DHTRoutingTable> routingTable_;
 
-  SharedHandle<DHTMessageFactory> _factory;
+  SharedHandle<DHTMessageFactory> factory_;
 
-  Logger* _logger;
+  Logger* logger_;
 public:
   DHTMessageTracker();
 

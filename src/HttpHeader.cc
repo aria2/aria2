@@ -89,17 +89,17 @@ const std::string HttpHeader::S404("404");
 void HttpHeader::put(const std::string& name, const std::string& value) {
   std::multimap<std::string, std::string>::value_type vt
     (util::toLower(name), value);
-  _table.insert(vt);
+  table_.insert(vt);
 }
 
 bool HttpHeader::defined(const std::string& name) const {
-  return _table.count(util::toLower(name)) >= 1;
+  return table_.count(util::toLower(name)) >= 1;
 }
 
 const std::string& HttpHeader::getFirst(const std::string& name) const {
   std::multimap<std::string, std::string>::const_iterator itr =
-    _table.find(util::toLower(name));
-  if(itr == _table.end()) {
+    table_.find(util::toLower(name));
+  if(itr == table_.end()) {
     return A2STR::NIL;
   } else {
     return (*itr).second;
@@ -112,7 +112,7 @@ std::vector<std::string> HttpHeader::get(const std::string& name) const
   std::string n(util::toLower(name));
   std::pair<std::multimap<std::string, std::string>::const_iterator,
     std::multimap<std::string, std::string>::const_iterator> itrpair =
-    _table.equal_range(n);
+    table_.equal_range(n);
   std::multimap<std::string, std::string>::const_iterator first = itrpair.first;
   while(first != itrpair.second) {
     v.push_back((*first).second);
@@ -180,22 +180,22 @@ RangeHandle HttpHeader::getRange() const
 
 void HttpHeader::setResponseStatus(const std::string& responseStatus)
 {
-  _responseStatus = responseStatus;
+  responseStatus_ = responseStatus;
 }
 
 void HttpHeader::setVersion(const std::string& version)
 {
-  _version = version;
+  version_ = version;
 }
 
 void HttpHeader::setMethod(const std::string& method)
 {
-  _method = method;
+  method_ = method;
 }
 
 void HttpHeader::setRequestPath(const std::string& requestPath)
 {
-  _requestPath = requestPath;
+  requestPath_ = requestPath;
 }
 
 void HttpHeader::fill(std::istream& in)
@@ -214,7 +214,7 @@ void HttpHeader::fill(std::istream& in)
 
 void HttpHeader::clearField()
 {
-  _table.clear();
+  table_.clear();
 }
 
 } // namespace aria2

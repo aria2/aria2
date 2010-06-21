@@ -13,15 +13,15 @@ class DNSCacheTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST_SUITE_END();
 
-  DNSCache _cache;
+  DNSCache cache_;
 public:
   void setUp()
   {
-    _cache = DNSCache();
-    _cache.put("www", "192.168.0.1", 80);
-    _cache.put("www", "::1", 80);
-    _cache.put("ftp", "192.168.0.1", 21);
-    _cache.put("proxy", "192.168.1.2", 8080);
+    cache_ = DNSCache();
+    cache_.put("www", "192.168.0.1", 80);
+    cache_.put("www", "::1", 80);
+    cache_.put("ftp", "192.168.0.1", 21);
+    cache_.put("proxy", "192.168.1.2", 8080);
   }
 
   void testFind();
@@ -35,30 +35,30 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DNSCacheTest);
 
 void DNSCacheTest::testFind()
 {
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), _cache.find("www", 80));
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), _cache.find("ftp", 21));
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.1.2"), _cache.find("proxy", 8080));
-  CPPUNIT_ASSERT_EQUAL(std::string(""), _cache.find("www", 8080));
-  CPPUNIT_ASSERT_EQUAL(std::string(""), _cache.find("another", 80));
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), cache_.find("www", 80));
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), cache_.find("ftp", 21));
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.1.2"), cache_.find("proxy", 8080));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), cache_.find("www", 8080));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), cache_.find("another", 80));
 }
 
 void DNSCacheTest::testMarkBad()
 {
-  _cache.markBad("www", "192.168.0.1", 80);
-  CPPUNIT_ASSERT_EQUAL(std::string("::1"), _cache.find("www", 80));
+  cache_.markBad("www", "192.168.0.1", 80);
+  CPPUNIT_ASSERT_EQUAL(std::string("::1"), cache_.find("www", 80));
 }
 
 void DNSCacheTest::testPutBadAddr()
 {
-  _cache.markBad("www", "192.168.0.1", 80);
-  _cache.put("www", "192.168.0.1", 80);
-  CPPUNIT_ASSERT_EQUAL(std::string("::1"), _cache.find("www", 80));
+  cache_.markBad("www", "192.168.0.1", 80);
+  cache_.put("www", "192.168.0.1", 80);
+  CPPUNIT_ASSERT_EQUAL(std::string("::1"), cache_.find("www", 80));
 }
 
 void DNSCacheTest::testRemove()
 {
-  _cache.remove("www", 80);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), _cache.find("www", 80));
+  cache_.remove("www", 80);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), cache_.find("www", 80));
 }
 
 } // namespace aria2

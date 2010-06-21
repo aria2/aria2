@@ -38,55 +38,55 @@
 
 namespace aria2 {
 
-Command::Command(cuid_t cuid):_status(STATUS_INACTIVE),
-                              _cuid(cuid),
-                              _logger(LogFactory::getInstance()),
-                              _readEvent(false),
-                              _writeEvent(false),
-                              _errorEvent(false),
-                              _hupEvent(false) {}
+Command::Command(cuid_t cuid):status_(STATUS_INACTIVE),
+                              cuid_(cuid),
+                              logger_(LogFactory::getInstance()),
+                              readEvent_(false),
+                              writeEvent_(false),
+                              errorEvent_(false),
+                              hupEvent_(false) {}
 
 void Command::transitStatus()
 {
-  switch(_status) {
+  switch(status_) {
   case STATUS_REALTIME:
     break;
   default:
-    _status = STATUS_INACTIVE;
+    status_ = STATUS_INACTIVE;
   }
 }
 
 void Command::setStatus(STATUS status)
 {
-  _status = status;
+  status_ = status;
 }
 
 void Command::readEventReceived()
 {
-  _readEvent = true;
+  readEvent_ = true;
 }
 
 void Command::writeEventReceived()
 {
-  _writeEvent = true;
+  writeEvent_ = true;
 }
 
 void Command::errorEventReceived()
 {
-  _errorEvent = true;
+  errorEvent_ = true;
 }
 
 void Command::hupEventReceived()
 {
-  _hupEvent = true;
+  hupEvent_ = true;
 }
 
 void Command::clearIOEvents()
 {
-  _readEvent = false;
-  _writeEvent = false;
-  _errorEvent = false;
-  _hupEvent = false;
+  readEvent_ = false;
+  writeEvent_ = false;
+  errorEvent_ = false;
+  hupEvent_ = false;
 }
 
 } // namespace aria2

@@ -47,14 +47,14 @@ namespace aria2 {
 
 DHTTokenTracker::DHTTokenTracker()
 {
-  util::generateRandomData(_secret[0], SECRET_SIZE);
-  memcpy(_secret[1], _secret[0], SECRET_SIZE);
+  util::generateRandomData(secret_[0], SECRET_SIZE);
+  memcpy(secret_[1], secret_[0], SECRET_SIZE);
 }
 
 DHTTokenTracker::DHTTokenTracker(const unsigned char* initialSecret)
 {
-  memcpy(_secret[0], initialSecret, SECRET_SIZE);
-  memcpy(_secret[1], initialSecret, SECRET_SIZE);
+  memcpy(secret_[0], initialSecret, SECRET_SIZE);
+  memcpy(secret_[1], initialSecret, SECRET_SIZE);
 }
 
 DHTTokenTracker::~DHTTokenTracker() {}
@@ -79,7 +79,7 @@ std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
 std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
                                            const std::string& ipaddr, uint16_t port) const
 {
-  return generateToken(infoHash, ipaddr, port, _secret[0]);
+  return generateToken(infoHash, ipaddr, port, secret_[0]);
 }
 
 bool DHTTokenTracker::validateToken(const std::string& token,
@@ -87,7 +87,7 @@ bool DHTTokenTracker::validateToken(const std::string& token,
                                     const std::string& ipaddr, uint16_t port) const
 {
   for(int i = 0; i < 2; ++i) {
-    if(generateToken(infoHash, ipaddr, port, _secret[i]) == token) {
+    if(generateToken(infoHash, ipaddr, port, secret_[i]) == token) {
       return true;
     }
   }
@@ -96,8 +96,8 @@ bool DHTTokenTracker::validateToken(const std::string& token,
 
 void DHTTokenTracker::updateTokenSecret()
 {
-  memcpy(_secret[1], _secret[0], SECRET_SIZE);
-  util::generateRandomData(_secret[0], SECRET_SIZE);
+  memcpy(secret_[1], secret_[0], SECRET_SIZE);
+  util::generateRandomData(secret_[0], SECRET_SIZE);
 }
 
 } // namespace aria2

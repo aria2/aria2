@@ -68,7 +68,7 @@ void Netrc::skipMacdef(std::ifstream& f) const
 
 void Netrc::parse(const std::string& path)
 {
-  _authenticators.clear();
+  authenticators_.clear();
   std::ifstream f(path.c_str(), std::ios::binary);
   
   if(!f) {
@@ -146,7 +146,7 @@ void Netrc::parse(const std::string& path)
 void Netrc::storeAuthenticator(const SharedHandle<Authenticator>& authenticator)
 {
   if(!authenticator.isNull()) {
-    _authenticators.push_back(authenticator);
+    authenticators_.push_back(authenticator);
   }
 }
 
@@ -167,9 +167,9 @@ Netrc::findAuthenticator(const std::string& hostname) const
 {
   SharedHandle<Authenticator> res;
   std::vector<SharedHandle<Authenticator> >::const_iterator itr =
-    std::find_if(_authenticators.begin(), _authenticators.end(),
+    std::find_if(authenticators_.begin(), authenticators_.end(),
                  AuthHostMatch(hostname));
-  if(itr != _authenticators.end()) {
+  if(itr != authenticators_.end()) {
     res = *itr;
   }
   return res;

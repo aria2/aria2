@@ -46,9 +46,9 @@ class DHTNode;
 class DHTAutoSaveCommand : public TimeBasedCommand
 {
 private:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
   
-  SharedHandle<DHTRoutingTable> _routingTable;
+  SharedHandle<DHTRoutingTable> routingTable_;
 
   void save();
 public:

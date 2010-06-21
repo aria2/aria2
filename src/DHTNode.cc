@@ -43,32 +43,32 @@
 
 namespace aria2 {
 
-DHTNode::DHTNode():_port(0), _rtt(0), _condition(0), _lastContact(0)
+DHTNode::DHTNode():port_(0), rtt_(0), condition_(0), lastContact_(0)
 {
   generateID();
 }
 
-DHTNode::DHTNode(const unsigned char* id):_port(0), _rtt(0), _condition(1), _lastContact(0)
+DHTNode::DHTNode(const unsigned char* id):port_(0), rtt_(0), condition_(1), lastContact_(0)
 {
-  memcpy(_id, id, DHT_ID_LENGTH);
+  memcpy(id_, id, DHT_ID_LENGTH);
 }
 
 void DHTNode::generateID()
 {
-  util::generateRandomKey(_id);
+  util::generateRandomKey(id_);
 }
 
 bool DHTNode::operator==(const DHTNode& node) const
 {
-  return memcmp(_id, node._id, DHT_ID_LENGTH) == 0;
+  return memcmp(id_, node.id_, DHT_ID_LENGTH) == 0;
 }
 
 bool DHTNode::operator<(const DHTNode& node) const
 {
   for(size_t i = 0; i < DHT_ID_LENGTH; ++i) {
-    if(_id[i] > node._id[i]) {
+    if(id_[i] > node.id_[i]) {
       return false;
-    } else if(_id[i] < node._id[i]) {
+    } else if(id_[i] < node.id_[i]) {
       return true;
     }
   }
@@ -84,46 +84,46 @@ bool DHTNode::isGood() const
 
 bool DHTNode::isBad() const
 {
-  return _condition >= BAD_CONDITION;
+  return condition_ >= BAD_CONDITION;
 }
 
 bool DHTNode::isQuestionable() const
 {
   return !isBad() &&
-    _lastContact.difference(global::wallclock) >= DHT_NODE_CONTACT_INTERVAL;
+    lastContact_.difference(global::wallclock) >= DHT_NODE_CONTACT_INTERVAL;
 }
 
 void DHTNode::markGood()
 {
-  _condition = 0;
+  condition_ = 0;
 }
 
 void DHTNode::markBad()
 {
-  _condition = BAD_CONDITION;
+  condition_ = BAD_CONDITION;
 }
 
 void DHTNode::updateLastContact()
 {
-  _lastContact = global::wallclock;
+  lastContact_ = global::wallclock;
 }
 
 void DHTNode::timeout()
 {
-  ++_condition;
+  ++condition_;
 }
 
 std::string DHTNode::toString() const
 {
-  return strconcat("DHTNode ID=", util::toHex(_id, DHT_ID_LENGTH),
-                   ", Host=", _ipaddr, ":", util::uitos(_port),
-                   ", Condition=", util::uitos(_condition),
-                   ", RTT=", util::uitos(_rtt));
+  return strconcat("DHTNode ID=", util::toHex(id_, DHT_ID_LENGTH),
+                   ", Host=", ipaddr_, ":", util::uitos(port_),
+                   ", Condition=", util::uitos(condition_),
+                   ", RTT=", util::uitos(rtt_));
 }
 
 void DHTNode::setID(const unsigned char* id)
 {
-  memcpy(_id, id, DHT_ID_LENGTH);
+  memcpy(id_, id, DHT_ID_LENGTH);
 }
 
 } // namespace aria2

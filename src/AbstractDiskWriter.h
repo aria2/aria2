@@ -44,14 +44,14 @@ class Logger;
 
 class AbstractDiskWriter : public DiskWriter {
 private:
-  std::string _filename;
-  int _fd;
+  std::string filename_;
+  int fd_;
 
-  bool _readOnly;
+  bool readOnly_;
 
-  bool _directIOAllowed;
+  bool directIOAllowed_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   ssize_t writeDataInternal(const unsigned char* data, size_t len);
   ssize_t readDataInternal(unsigned char* data, size_t len);
@@ -86,7 +86,7 @@ public:
 
   virtual void disableDirectIO();
 
-  virtual void allowDirectIO() { _directIOAllowed = true; }
+  virtual void allowDirectIO() { directIOAllowed_ = true; }
 
   virtual void enableReadOnly();
 

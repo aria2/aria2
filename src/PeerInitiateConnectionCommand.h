@@ -46,15 +46,15 @@ class PieceStorage;
 
 class PeerInitiateConnectionCommand : public PeerAbstractCommand {
 private:
-  RequestGroup* _requestGroup;
+  RequestGroup* requestGroup_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  bool _mseHandshakeEnabled;
+  bool mseHandshakeEnabled_;
 protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(time_t wait);

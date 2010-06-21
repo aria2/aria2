@@ -43,50 +43,50 @@ template<typename T>
 class Sequence
 {
 public:
-  // Generates value in [_first, _last). _last is not included.
+  // Generates value in [first_, last_). last_ is not included.
   class Value {
   private:
-    T _first;
-    T _last;
+    T first_;
+    T last_;
   public:
-    Value(const T& first, const T& last):_first(first), _last(last) {}
+    Value(const T& first, const T& last):first_(first), last_(last) {}
 
     T next()
     {
-      return _first++;
+      return first_++;
     }
     
     bool hasNext() const
     {
-      return _first != _last;
+      return first_ != last_;
     }
   };
 
   typedef std::vector<Value> Values;
 private:
-  Values _values;
-  typename Values::iterator _cur;
+  Values values_;
+  typename Values::iterator cur_;
 public:
   Sequence(const Values& values):
-    _values(values), _cur(_values.begin())  {}
+    values_(values), cur_(values_.begin())  {}
 
   Sequence() {}
 
   T next()
   {
-    if(_cur == _values.end()) {
+    if(cur_ == values_.end()) {
       return T();
     }
-    T t = (*_cur).next();
-    if(!(*_cur).hasNext()) {
-      ++_cur;
+    T t = (*cur_).next();
+    if(!(*cur_).hasNext()) {
+      ++cur_;
     }
     return t;
   }
 
   bool hasNext()
   {
-    return _cur != _values.end();
+    return cur_ != values_.end();
   }
 
   std::vector<T> flush()

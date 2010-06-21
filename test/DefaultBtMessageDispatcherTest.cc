@@ -42,15 +42,15 @@ class DefaultBtMessageDispatcherTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveOutstandingRequest);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
   SharedHandle<Peer> peer;
   SharedHandle<DefaultBtMessageDispatcher> btMessageDispatcher;
   SharedHandle<MockPeerStorage> peerStorage;
   SharedHandle<MockPieceStorage> pieceStorage;
-  SharedHandle<MockBtMessageFactory> _messageFactory;
-  SharedHandle<RequestGroupMan> _rgman;
-  SharedHandle<Option> _option;
-  SharedHandle<RequestGroup> _rg;
+  SharedHandle<MockBtMessageFactory> messageFactory_;
+  SharedHandle<RequestGroupMan> rgman_;
+  SharedHandle<Option> option_;
+  SharedHandle<RequestGroup> rg_;
 public:
   void tearDown() {}
 
@@ -135,34 +135,34 @@ public:
   };
 
   void setUp() {
-    _option.reset(new Option());
+    option_.reset(new Option());
 
-    _rg.reset(new RequestGroup(_option));
+    rg_.reset(new RequestGroup(option_));
 
-    _dctx.reset(new DownloadContext());
-    bittorrent::load("test.torrent", _dctx);
+    dctx_.reset(new DownloadContext());
+    bittorrent::load("test.torrent", dctx_);
 
-    _rg->setDownloadContext(_dctx);
+    rg_->setDownloadContext(dctx_);
 
     peer.reset(new Peer("192.168.0.1", 6969));
     peer->allocateSessionResource
-      (_dctx->getPieceLength(), _dctx->getTotalLength());
+      (dctx_->getPieceLength(), dctx_->getTotalLength());
     peerStorage.reset(new MockPeerStorage());
     pieceStorage.reset(new MockPieceStorage());
 
-    _messageFactory.reset(new MockBtMessageFactory2());
+    messageFactory_.reset(new MockBtMessageFactory2());
 
-    _rgman.reset(new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
-                                     0, _option.get()));
+    rgman_.reset(new RequestGroupMan(std::vector<SharedHandle<RequestGroup> >(),
+                                     0, option_.get()));
 
     btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
     btMessageDispatcher->setPeer(peer);
-    btMessageDispatcher->setDownloadContext(_dctx);
+    btMessageDispatcher->setDownloadContext(dctx_);
     btMessageDispatcher->setPieceStorage(pieceStorage);
     btMessageDispatcher->setPeerStorage(peerStorage);
-    btMessageDispatcher->setBtMessageFactory(_messageFactory);
+    btMessageDispatcher->setBtMessageFactory(messageFactory_);
     btMessageDispatcher->setCuid(1);
-    btMessageDispatcher->setRequestGroupMan(_rgman);
+    btMessageDispatcher->setRequestGroupMan(rgman_);
   }
 };
 

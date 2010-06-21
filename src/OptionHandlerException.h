@@ -40,7 +40,7 @@ namespace aria2 {
 
 class OptionHandlerException:public RecoverableException {
 private:
-  std::string _optName;
+  std::string optName_;
 
   static const std::string MESSAGE;
 protected:

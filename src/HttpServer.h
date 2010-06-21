@@ -54,20 +54,20 @@ class Logger;
 
 class HttpServer {
 private:
-  SharedHandle<SocketCore> _socket;
-  SocketBuffer _socketBuffer;
-  DownloadEngine* _e;
-  SharedHandle<HttpHeaderProcessor> _headerProcessor;
-  Logger* _logger;
-  SharedHandle<HttpHeader> _lastRequestHeader;
-  uint64_t _lastContentLength;
-  std::stringstream _lastBody;
-  bool _keepAlive;
-  bool _gzip;
-  std::string _username;
-  std::string _password;
-  bool _acceptsPersistentConnection;
-  bool _acceptsGZip;
+  SharedHandle<SocketCore> socket_;
+  SocketBuffer socketBuffer_;
+  DownloadEngine* e_;
+  SharedHandle<HttpHeaderProcessor> headerProcessor_;
+  Logger* logger_;
+  SharedHandle<HttpHeader> lastRequestHeader_;
+  uint64_t lastContentLength_;
+  std::stringstream lastBody_;
+  bool keepAlive_;
+  bool gzip_;
+  std::string username_;
+  std::string password_;
+  bool acceptsPersistentConnection_;
+  bool acceptsGZip_;
 public:
   HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
 
@@ -93,8 +93,8 @@ public:
   void setUsernamePassword
   (const std::string& username, const std::string& password)
   {
-    _username = username;
-    _password = password;
+    username_ = username;
+    password_ = password;
   }
 
   ssize_t sendResponse();
@@ -103,23 +103,23 @@ public:
 
   bool supportsPersistentConnection() const
   {
-    return _keepAlive && _acceptsPersistentConnection;
+    return keepAlive_ && acceptsPersistentConnection_;
   }
 
   bool supportsGZip() const
   {
-    return _gzip && _acceptsGZip;
+    return gzip_ && acceptsGZip_;
   }
 
-  void enableKeepAlive() { _keepAlive = true; }
+  void enableKeepAlive() { keepAlive_ = true; }
 
-  void disableKeepAlive() { _keepAlive = false; }
+  void disableKeepAlive() { keepAlive_ = false; }
 
-  void enableGZip() { _gzip = true; }
+  void enableGZip() { gzip_ = true; }
 
-  void disableGZip() { _gzip = false; }
+  void disableGZip() { gzip_ = false; }
 
-  uint64_t getContentLength() const { return _lastContentLength; }
+  uint64_t getContentLength() const { return lastContentLength_; }
 };
 
 } // namespace aria2

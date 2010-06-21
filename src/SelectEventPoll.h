@@ -51,39 +51,39 @@ class SelectEventPoll : public EventPoll {
 private:
   class CommandEvent {
   private:
-    Command* _command;
-    int _events;
+    Command* command_;
+    int events_;
   public:
     CommandEvent(Command* command, int events);
     
     Command* getCommand() const
     {
-      return _command;
+      return command_;
     }
     
     void addEvents(int events)
     {
-      _events |= events;
+      events_ |= events;
     }
 
     void removeEvents(int events)
     {
-      _events &= (~events); 
+      events_ &= (~events); 
     }
     
     bool eventsEmpty() const
     {
-      return _events == 0;
+      return events_ == 0;
     }
         
     bool operator==(const CommandEvent& commandEvent) const
     {
-      return _command == commandEvent._command;
+      return command_ == commandEvent.command_;
     }
 
     int getEvents() const
     {
-      return _events;
+      return events_;
     }
     
     void processEvents(int events);
@@ -94,20 +94,20 @@ private:
 
   class SocketEntry {
   private:
-    sock_t _socket;
+    sock_t socket_;
 
-    std::deque<CommandEvent> _commandEvents;
+    std::deque<CommandEvent> commandEvents_;
   public: 
     SocketEntry(sock_t socket);
 
     bool operator==(const SocketEntry& entry) const
     {
-      return _socket == entry._socket;
+      return socket_ == entry.socket_;
     }
 
     bool operator<(const SocketEntry& entry) const
     {
-      return _socket < entry._socket;
+      return socket_ < entry.socket_;
     }
     
     void addCommandEvent(Command* command, int events);
@@ -118,12 +118,12 @@ private:
 
     sock_t getSocket() const
     {
-      return _socket;
+      return socket_;
     }
     
     bool eventEmpty() const
     {
-      return _commandEvents.empty();
+      return commandEvents_.empty();
     }
     
     void processEvents(int events);
@@ -133,9 +133,9 @@ private:
 
   class AsyncNameResolverEntry {
   private:
-    SharedHandle<AsyncNameResolver> _nameResolver;
+    SharedHandle<AsyncNameResolver> nameResolver_;
     
-    Command* _command;
+    Command* command_;
     
   public:
     AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
@@ -143,8 +143,8 @@ private:
 
     bool operator==(const AsyncNameResolverEntry& entry)
     {
-      return _nameResolver == entry._nameResolver &&
-        _command == entry._command;
+      return nameResolver_ == entry.nameResolver_ &&
+        command_ == entry.command_;
     }
 
     int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr);
@@ -153,22 +153,22 @@ private:
   };
 #endif // ENABLE_ASYNC_DNS
 
-  fd_set _rfdset;
-  fd_set _wfdset;
-  sock_t _fdmax;
+  fd_set rfdset_;
+  fd_set wfdset_;
+  sock_t fdmax_;
 
-  std::deque<SharedHandle<SocketEntry> > _socketEntries;
+  std::deque<SharedHandle<SocketEntry> > socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  std::deque<SharedHandle<AsyncNameResolverEntry> > _nameResolverEntries;
+  std::deque<SharedHandle<AsyncNameResolverEntry> > nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
 #ifdef __MINGW32__
   // Winsock select() doesn't work if no socket is in FD_SET. We add
   // this dummy socket to work around this problem
-  sock_t _dummySocket;
+  sock_t dummySocket_;
 #endif // __MINGW32__
 
-  Logger* _logger;
+  Logger* logger_;
 
   void updateFdSet();
 public:

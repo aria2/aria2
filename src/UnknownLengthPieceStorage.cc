@@ -49,26 +49,26 @@ namespace aria2 {
 UnknownLengthPieceStorage::UnknownLengthPieceStorage
 (const SharedHandle<DownloadContext>& downloadContext,
  const Option* option):
-  _downloadContext(downloadContext),
-  _option(option),
-  _diskWriterFactory(new DefaultDiskWriterFactory()),
-  _totalLength(0),
-  _downloadFinished(false) {}
+  downloadContext_(downloadContext),
+  option_(option),
+  diskWriterFactory_(new DefaultDiskWriterFactory()),
+  totalLength_(0),
+  downloadFinished_(false) {}
 
 UnknownLengthPieceStorage::~UnknownLengthPieceStorage() {}
 
 void UnknownLengthPieceStorage::initStorage()
 {
   DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
-  directDiskAdaptor->setTotalLength(_downloadContext->getTotalLength());
-  directDiskAdaptor->setFileEntries(_downloadContext->getFileEntries().begin(),
-                                    _downloadContext->getFileEntries().end());
+  directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
+  directDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
+                                    downloadContext_->getFileEntries().end());
 
   DiskWriterHandle writer =
-    _diskWriterFactory->newDiskWriter(directDiskAdaptor->getFilePath());
+    diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
   directDiskAdaptor->setDiskWriter(writer);
 
-  _diskAdaptor = directDiskAdaptor;
+  diskAdaptor_ = directDiskAdaptor;
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -110,12 +110,12 @@ bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
 SharedHandle<Piece> UnknownLengthPieceStorage::getSparseMissingUnusedPiece
 (const unsigned char* ignoreBitfield, size_t length)
 {
-  if(_downloadFinished) {
+  if(downloadFinished_) {
     return SharedHandle<Piece>();
   }
-  if(_piece.isNull()) {
-    _piece.reset(new Piece());
-    return _piece;
+  if(piece_.isNull()) {
+    piece_.reset(new Piece());
+    return piece_;
   } else {
     return SharedHandle<Piece>();
   }
@@ -133,10 +133,10 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(size_t index)
 SharedHandle<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
 {
   if(index == 0) {
-    if(_piece.isNull()) {
+    if(piece_.isNull()) {
       return SharedHandle<Piece>(new Piece());
     } else {
-      return _piece;
+      return piece_;
     }
   } else {
     return SharedHandle<Piece>();
@@ -145,24 +145,24 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
 
 void UnknownLengthPieceStorage::completePiece(const SharedHandle<Piece>& piece)
 {
-  if(_piece == piece) {
-    _downloadFinished = true;
-    _totalLength = _piece->getLength();
-    _diskAdaptor->setTotalLength(_totalLength);
-    _piece.reset();
+  if(piece_ == piece) {
+    downloadFinished_ = true;
+    totalLength_ = piece_->getLength();
+    diskAdaptor_->setTotalLength(totalLength_);
+    piece_.reset();
   }
 }
 
 void UnknownLengthPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
 {
-  if(_piece == piece) {
-    _piece.reset();
+  if(piece_ == piece) {
+    piece_.reset();
   }
 }
 
 bool UnknownLengthPieceStorage::hasPiece(size_t index)
 {
-  if(index == 0 && _downloadFinished) {
+  if(index == 0 && downloadFinished_) {
     return true;
   } else {
     return false;
@@ -171,7 +171,7 @@ bool UnknownLengthPieceStorage::hasPiece(size_t index)
 
 bool UnknownLengthPieceStorage::isPieceUsed(size_t index)
 {
-  if(index == 0 && !_piece.isNull()) {
+  if(index == 0 && !piece_.isNull()) {
     return true;
   } else {
     return false;
@@ -180,13 +180,13 @@ bool UnknownLengthPieceStorage::isPieceUsed(size_t index)
 
 DiskAdaptorHandle UnknownLengthPieceStorage::getDiskAdaptor()
 {
-  return _diskAdaptor;
+  return diskAdaptor_;
 }
 
 size_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 {
   if(index == 0) {
-    return _totalLength;
+    return totalLength_;
   } else {
     return 0;
   }
@@ -194,11 +194,11 @@ size_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 
 void UnknownLengthPieceStorage::markAllPiecesDone()
 {
-  if(!_piece.isNull()) {
-    _totalLength = _piece->getLength();
-    _piece.reset();
+  if(!piece_.isNull()) {
+    totalLength_ = piece_->getLength();
+    piece_.reset();
   }
-  _downloadFinished = true;
+  downloadFinished_ = true;
 }
 
 void UnknownLengthPieceStorage::markPiecesDone(uint64_t length)
@@ -220,7 +220,7 @@ void UnknownLengthPieceStorage::getInFlightPieces
 void UnknownLengthPieceStorage::setDiskWriterFactory
 (const DiskWriterFactoryHandle& diskWriterFactory)
 {
-  _diskWriterFactory = diskWriterFactory;
+  diskWriterFactory_ = diskWriterFactory;
 }
 
 } // namespace aria2

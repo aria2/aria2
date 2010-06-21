@@ -7,52 +7,52 @@ namespace aria2 {
 
 class MockExtensionMessage:public ExtensionMessage {
 public:
-  std::string _extensionName;
-  uint8_t _extensionMessageID;
-  std::string _data;
-  bool _doReceivedActionCalled;
+  std::string extensionName_;
+  uint8_t extensionMessageID_;
+  std::string data_;
+  bool doReceivedActionCalled_;
 public:
   MockExtensionMessage(const std::string& extensionName,
                        uint8_t extensionMessageID,
                        const unsigned char* data,
-                       size_t length):_extensionName(extensionName),
-                                      _extensionMessageID(extensionMessageID),
-                                      _data(&data[0], &data[length]),
-                                      _doReceivedActionCalled(false) {}
+                       size_t length):extensionName_(extensionName),
+                                      extensionMessageID_(extensionMessageID),
+                                      data_(&data[0], &data[length]),
+                                      doReceivedActionCalled_(false) {}
 
   MockExtensionMessage(const std::string& extensionName,
                        uint8_t extensionMessageID,
                        const std::string& data):
-    _extensionName(extensionName),
-    _extensionMessageID(extensionMessageID),
-    _data(data),
-    _doReceivedActionCalled(false) {}
+    extensionName_(extensionName),
+    extensionMessageID_(extensionMessageID),
+    data_(data),
+    doReceivedActionCalled_(false) {}
 
   virtual ~MockExtensionMessage() {}
 
   virtual std::string getPayload()
   {
-    return _data;
+    return data_;
   }
 
   virtual uint8_t getExtensionMessageID()
   {
-    return _extensionMessageID;
+    return extensionMessageID_;
   }
   
   virtual const std::string& getExtensionName() const
   {
-    return _extensionName;
+    return extensionName_;
   }
 
   virtual std::string toString() const
   {
-    return _extensionName;
+    return extensionName_;
   }
 
   virtual void doReceivedAction()
   {
-    _doReceivedActionCalled = true;
+    doReceivedActionCalled_ = true;
   }
 };
 

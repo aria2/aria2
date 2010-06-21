@@ -80,7 +80,7 @@
 namespace aria2 {
 
 DownloadEngineFactory::DownloadEngineFactory():
-  _logger(LogFactory::getInstance()) {}
+  logger_(LogFactory::getInstance()) {}
 
 DownloadEngineHandle
 DownloadEngineFactory::newDownloadEngine

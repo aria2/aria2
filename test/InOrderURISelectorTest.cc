@@ -15,7 +15,7 @@ class InOrderURISelectorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSelect);
   CPPUNIT_TEST_SUITE_END();
 private:
-  FileEntry _fileEntry;
+  FileEntry fileEntry_;
 
   SharedHandle<InOrderURISelector> sel;
   
@@ -30,7 +30,7 @@ public:
     std::vector<std::string> uris;
     uris.assign(vbegin(urisSrc), vend(urisSrc));
     
-    _fileEntry.setUris(uris);
+    fileEntry_.setUris(uris);
 
     sel.reset(new InOrderURISelector());
   }
@@ -46,12 +46,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(InOrderURISelectorTest);
 void InOrderURISelectorTest::testSelect()
 {
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
-                       sel->select(&_fileEntry));
+                       sel->select(&fileEntry_));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
-                       sel->select(&_fileEntry));
+                       sel->select(&fileEntry_));
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
-                       sel->select(&_fileEntry));
-  CPPUNIT_ASSERT_EQUAL(std::string(""), sel->select(&_fileEntry));
+                       sel->select(&fileEntry_));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), sel->select(&fileEntry_));
 }
 
 } // namespace aria2

@@ -47,11 +47,11 @@ class Peer;
 
 class DHTGetPeersReplyMessage:public DHTResponseMessage {
 private:
-  std::string _token;
+  std::string token_;
 
-  std::vector<SharedHandle<DHTNode> > _closestKNodes;
+  std::vector<SharedHandle<DHTNode> > closestKNodes_;
 
-  std::vector<SharedHandle<Peer> > _values;
+  std::vector<SharedHandle<Peer> > values_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -72,28 +72,28 @@ public:
 
   const std::vector<SharedHandle<DHTNode> >& getClosestKNodes() const
   {
-    return _closestKNodes;
+    return closestKNodes_;
   }
 
   const std::vector<SharedHandle<Peer> >& getValues() const
   {
-    return _values;
+    return values_;
   }
 
   void setClosestKNodes
   (const std::vector<SharedHandle<DHTNode> >& closestKNodes)
   {
-    _closestKNodes = closestKNodes;
+    closestKNodes_ = closestKNodes;
   }
 
   void setValues(const std::vector<SharedHandle<Peer> >& peers)
   {
-    _values = peers;
+    values_ = peers;
   }
   
   const std::string& getToken() const
   {
-    return _token;
+    return token_;
   }
 
   static const std::string GET_PEERS;

@@ -1,3 +1,8 @@
+2010-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Changed naming standards for class member variable: now it looks
+	like var_ instead of _var.
+
 2010-06-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	When wrong type DHT reply message is received for a transaction

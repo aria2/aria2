@@ -45,15 +45,15 @@ class DHTPingReplyMessage;
 
 class DHTReplaceNodeTask:public DHTAbstractTask {
 private:
-  SharedHandle<DHTBucket> _bucket;
+  SharedHandle<DHTBucket> bucket_;
 
-  SharedHandle<DHTNode> _newNode;
+  SharedHandle<DHTNode> newNode_;
 
   static const size_t MAX_RETRY = 2;
 
-  size_t _numRetry;
+  size_t numRetry_;
 
-  time_t _timeout;
+  time_t timeout_;
 
   void sendMessage();
 public:
@@ -70,7 +70,7 @@ public:
 
   void setTimeout(time_t timeout)
   {
-    _timeout = timeout;
+    timeout_ = timeout;
   }
 };
 

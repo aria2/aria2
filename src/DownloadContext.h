@@ -57,33 +57,33 @@ class RequestGroup;
 class DownloadContext
 {
 private:
-  std::vector<SharedHandle<FileEntry> > _fileEntries;
+  std::vector<SharedHandle<FileEntry> > fileEntries_;
 
-  std::string _dir;
+  std::string dir_;
 
-  std::vector<std::string> _pieceHashes;
+  std::vector<std::string> pieceHashes_;
 
-  size_t _pieceLength;
+  size_t pieceLength_;
 
-  std::string _pieceHashAlgo;
+  std::string pieceHashAlgo_;
 
-  std::string _checksum;
+  std::string checksum_;
 
-  std::string _checksumHashAlgo;
+  std::string checksumHashAlgo_;
 
-  std::string _basePath;
+  std::string basePath_;
 
-  bool _knowsTotalLength;
+  bool knowsTotalLength_;
 
-  RequestGroup* _ownerRequestGroup;
+  RequestGroup* ownerRequestGroup_;
   
-  std::map<std::string, SharedHandle<ContextAttribute> > _attrs;
+  std::map<std::string, SharedHandle<ContextAttribute> > attrs_;
 
-  Timer _downloadStartTime;
+  Timer downloadStartTime_;
 
-  Timer _downloadStopTime;
+  Timer downloadStopTime_;
 
-  SharedHandle<Signature> _signature;
+  SharedHandle<Signature> signature_;
 public:
   DownloadContext();
 
@@ -95,8 +95,8 @@ public:
 
   const std::string& getPieceHash(size_t index) const
   {
-    if(index < _pieceHashes.size()) {
-      return _pieceHashes[index];
+    if(index < pieceHashes_.size()) {
+      return pieceHashes_[index];
     } else {
       return A2STR::NIL;
     }
@@ -104,91 +104,91 @@ public:
   
   const std::vector<std::string>& getPieceHashes() const
   {
-    return _pieceHashes;
+    return pieceHashes_;
   }
 
   template<typename InputIterator>
   void setPieceHashes(InputIterator first, InputIterator last)
   {
-    _pieceHashes.assign(first, last);
+    pieceHashes_.assign(first, last);
   }
 
   uint64_t getTotalLength() const;
 
-  bool knowsTotalLength() const { return _knowsTotalLength; }
+  bool knowsTotalLength() const { return knowsTotalLength_; }
 
-  void markTotalLengthIsUnknown() { _knowsTotalLength = false; }
+  void markTotalLengthIsUnknown() { knowsTotalLength_ = false; }
 
-  void markTotalLengthIsKnown() { _knowsTotalLength = true; }
+  void markTotalLengthIsKnown() { knowsTotalLength_ = true; }
 
   const std::vector<SharedHandle<FileEntry> >& getFileEntries() const
   {
-    return _fileEntries;
+    return fileEntries_;
   }
 
   const SharedHandle<FileEntry>& getFirstFileEntry() const
   {
-    assert(!_fileEntries.empty());
-    return _fileEntries[0];
+    assert(!fileEntries_.empty());
+    return fileEntries_[0];
   }
 
   template<typename InputIterator>
   void setFileEntries(InputIterator first, InputIterator last)
   {
-    _fileEntries.assign(first, last);
+    fileEntries_.assign(first, last);
   }
 
-  size_t getPieceLength() const { return _pieceLength; }
+  size_t getPieceLength() const { return pieceLength_; }
 
-  void setPieceLength(size_t length) { _pieceLength = length; }
+  void setPieceLength(size_t length) { pieceLength_ = length; }
 
   size_t getNumPieces() const;
 
-  const std::string& getPieceHashAlgo() const { return _pieceHashAlgo; }
+  const std::string& getPieceHashAlgo() const { return pieceHashAlgo_; }
 
   void setPieceHashAlgo(const std::string& algo)
   {
-    _pieceHashAlgo = algo;
+    pieceHashAlgo_ = algo;
   }
 
-  const std::string& getChecksum() const { return _checksum; }
+  const std::string& getChecksum() const { return checksum_; }
 
   void setChecksum(const std::string& checksum)
   {
-    _checksum = checksum;
+    checksum_ = checksum;
   }
 
-  const std::string& getChecksumHashAlgo() const { return _checksumHashAlgo; }
+  const std::string& getChecksumHashAlgo() const { return checksumHashAlgo_; }
 
   void setChecksumHashAlgo(const std::string& algo)
   {
-    _checksumHashAlgo = algo;
+    checksumHashAlgo_ = algo;
   }
 
   // The representative path name for this context. It is used as a
-  // part of .aria2 control file. If _basePath is set, returns
-  // _basePath. Otherwise, the first FileEntry's getFilePath() is
+  // part of .aria2 control file. If basePath_ is set, returns
+  // basePath_. Otherwise, the first FileEntry's getFilePath() is
   // returned.
   const std::string& getBasePath() const;
 
-  void setBasePath(const std::string& basePath) { _basePath = basePath; }
+  void setBasePath(const std::string& basePath) { basePath_ = basePath; }
 
-  const std::string& getDir() const { return _dir; }
+  const std::string& getDir() const { return dir_; }
 
-  void setDir(const std::string& dir) { _dir = dir; }
+  void setDir(const std::string& dir) { dir_ = dir; }
 
-  const SharedHandle<Signature>& getSignature() const { return _signature; }
+  const SharedHandle<Signature>& getSignature() const { return signature_; }
 
   void setSignature(const SharedHandle<Signature>& signature)
   {
-    _signature = signature;
+    signature_ = signature;
   }
 
-  RequestGroup* getOwnerRequestGroup() { return _ownerRequestGroup; }
+  RequestGroup* getOwnerRequestGroup() { return ownerRequestGroup_; }
 
   void setOwnerRequestGroup(RequestGroup* owner)
   {
-    _ownerRequestGroup = owner;
+    ownerRequestGroup_ = owner;
   }
 
   void setFileFilter(IntSequence seq);
@@ -213,7 +213,7 @@ public:
 
   const Timer& getDownloadStopTime() const
   {
-    return _downloadStopTime;
+    return downloadStopTime_;
   }
 
   int64_t calculateSessionTime() const;

@@ -64,7 +64,7 @@ FtpFinishDownloadCommand::FtpFinishDownloadCommand
  DownloadEngine* e,
  const SharedHandle<SocketCore>& socket)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
-   _ftpConnection(ftpConnection)
+   ftpConnection_(ftpConnection)
 {}
 
 // overrides AbstractCommand::execute().
@@ -75,7 +75,7 @@ bool FtpFinishDownloadCommand::execute()
     return true;
   }
   try {
-    unsigned int status = _ftpConnection->receiveResponse();
+    unsigned int status = ftpConnection_->receiveResponse();
     if(status == 0) {
       getDownloadEngine()->addCommand(this);
       return false;
@@ -85,9 +85,9 @@ bool FtpFinishDownloadCommand::execute()
     }
     if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
       std::map<std::string, std::string> options;
-      options["baseWorkingDir"] = _ftpConnection->getBaseWorkingDir();
+      options["baseWorkingDir"] = ftpConnection_->getBaseWorkingDir();
       getDownloadEngine()->poolSocket
-        (getRequest(), _ftpConnection->getUser(), createProxyRequest(),
+        (getRequest(), ftpConnection_->getUser(), createProxyRequest(),
          getSocket(), options);
     }
   } catch(RecoverableException& e) {

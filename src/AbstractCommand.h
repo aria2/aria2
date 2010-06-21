@@ -55,25 +55,25 @@ class AsyncNameResolver;
 
 class AbstractCommand : public Command {
 private:
-  Timer _checkPoint;
-  time_t _timeout;
+  Timer checkPoint_;
+  time_t timeout_;
 
-  RequestGroup* _requestGroup;
-  SharedHandle<Request> _req;
-  SharedHandle<FileEntry> _fileEntry;
-  DownloadEngine* _e;
-  SharedHandle<SocketCore> _socket;
-  std::vector<SharedHandle<Segment> > _segments;
+  RequestGroup* requestGroup_;
+  SharedHandle<Request> req_;
+  SharedHandle<FileEntry> fileEntry_;
+  DownloadEngine* e_;
+  SharedHandle<SocketCore> socket_;
+  std::vector<SharedHandle<Segment> > segments_;
 
 #ifdef ENABLE_ASYNC_DNS
-  SharedHandle<AsyncNameResolver> _asyncNameResolver;
+  SharedHandle<AsyncNameResolver> asyncNameResolver_;
 #endif // ENABLE_ASYNC_DNS
 
-  bool _checkSocketIsReadable;
-  bool _checkSocketIsWritable;
-  SharedHandle<SocketCore> _readCheckTarget;
-  SharedHandle<SocketCore> _writeCheckTarget;
-  bool _nameResolverCheck;
+  bool checkSocketIsReadable_;
+  bool checkSocketIsWritable_;
+  SharedHandle<SocketCore> readCheckTarget_;
+  SharedHandle<SocketCore> writeCheckTarget_;
+  bool nameResolverCheck_;
 
 #ifdef ENABLE_ASYNC_DNS
   void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
@@ -86,49 +86,49 @@ private:
 protected:
   RequestGroup* getRequestGroup() const
   {
-    return _requestGroup;
+    return requestGroup_;
   }
 
   const SharedHandle<Request>& getRequest() const
   {
-    return _req;
+    return req_;
   }
 
   void setRequest(const SharedHandle<Request>& request)
   {
-    _req = request;
+    req_ = request;
   }
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
-    return _fileEntry;
+    return fileEntry_;
   }
 
   void setFileEntry(const SharedHandle<FileEntry>& fileEntry)
   {
-    _fileEntry = fileEntry;
+    fileEntry_ = fileEntry;
   }
 
   DownloadEngine* getDownloadEngine() const
   {
-    return _e;
+    return e_;
   }
 
   const SharedHandle<SocketCore>& getSocket() const
   {
-    return _socket;
+    return socket_;
   }
 
   void setSocket(const SharedHandle<SocketCore>& s)
   {
-    _socket = s;
+    socket_ = s;
   }
 
   void createSocket();
 
   const std::vector<SharedHandle<Segment> >& getSegments() const
   {
-    return _segments;
+    return segments_;
   }
 
 #ifdef ENABLE_ASYNC_DNS
@@ -170,7 +170,7 @@ protected:
    */
   void setWriteCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
 
-  void setTimeout(time_t timeout) { _timeout = timeout; }
+  void setTimeout(time_t timeout) { timeout_ = timeout; }
 
   void prepareForNextAction(Command* nextCommand = 0);
 
@@ -205,17 +205,17 @@ protected:
 
   const SharedHandle<DownloadContext>& getDownloadContext() const
   {
-    return _requestGroup->getDownloadContext();
+    return requestGroup_->getDownloadContext();
   }
 
   const SharedHandle<SegmentMan>& getSegmentMan() const
   {
-    return _requestGroup->getSegmentMan();
+    return requestGroup_->getSegmentMan();
   }
 
   const SharedHandle<PieceStorage>& getPieceStorage() const
   {
-    return _requestGroup->getPieceStorage();
+    return requestGroup_->getPieceStorage();
   }
 public:
   AbstractCommand(cuid_t cuid, const SharedHandle<Request>& req,

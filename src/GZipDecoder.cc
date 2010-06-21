@@ -40,7 +40,7 @@ namespace aria2 {
 
 const std::string GZipDecoder::NAME("GZipDecoder");
 
-GZipDecoder::GZipDecoder():_strm(0), _finished(false) {}
+GZipDecoder::GZipDecoder():strm_(0), finished_(false) {}
 
 GZipDecoder::~GZipDecoder()
 {
@@ -49,27 +49,27 @@ GZipDecoder::~GZipDecoder()
 
 void GZipDecoder::init()
 {
-  _finished = false;
+  finished_ = false;
   release();
-  _strm = new z_stream();
-  _strm->zalloc = Z_NULL;
-  _strm->zfree = Z_NULL;
-  _strm->opaque = Z_NULL;
-  _strm->avail_in = 0;
-  _strm->next_in = Z_NULL;
+  strm_ = new z_stream();
+  strm_->zalloc = Z_NULL;
+  strm_->zfree = Z_NULL;
+  strm_->opaque = Z_NULL;
+  strm_->avail_in = 0;
+  strm_->next_in = Z_NULL;
 
   // initalize z_stream with gzip/zlib format auto detection enabled.
-  if(Z_OK != inflateInit2(_strm, 47)) {
+  if(Z_OK != inflateInit2(strm_, 47)) {
     throw DL_ABORT_EX("Initializing z_stream failed.");
   }
 }
 
 void GZipDecoder::release()
 {
-  if(_strm) {
-    inflateEnd(_strm);
-    delete _strm;
-    _strm = 0;
+  if(strm_) {
+    inflateEnd(strm_);
+    delete strm_;
+    strm_ = 0;
   }
 }
 
@@ -81,28 +81,28 @@ std::string GZipDecoder::decode(const unsigned char* in, size_t length)
     return out;
   }
 
-  _strm->avail_in = length;
-  _strm->next_in = const_cast<unsigned char*>(in);
+  strm_->avail_in = length;
+  strm_->next_in = const_cast<unsigned char*>(in);
 
   unsigned char outbuf[OUTBUF_LENGTH];
   while(1) {
-    _strm->avail_out = OUTBUF_LENGTH;
-    _strm->next_out = outbuf;
+    strm_->avail_out = OUTBUF_LENGTH;
+    strm_->next_out = outbuf;
 
-    int ret = ::inflate(_strm, Z_NO_FLUSH);
+    int ret = ::inflate(strm_, Z_NO_FLUSH);
 
     if(ret == Z_STREAM_END) {
-      _finished = true;
+      finished_ = true;
     } else if(ret != Z_OK) {
       throw DL_ABORT_EX(StringFormat("libz::inflate() failed. cause:%s",
-                                     _strm->msg).str());
+                                     strm_->msg).str());
     }
 
-    size_t produced = OUTBUF_LENGTH-_strm->avail_out;
+    size_t produced = OUTBUF_LENGTH-strm_->avail_out;
 
     out.append(&outbuf[0], &outbuf[produced]);
 
-    if(_strm->avail_out > 0) {
+    if(strm_->avail_out > 0) {
       break;
     }
   }
@@ -111,7 +111,7 @@ std::string GZipDecoder::decode(const unsigned char* in, size_t length)
 
 bool GZipDecoder::finished()
 {
-  return _finished;
+  return finished_;
 }
 
 const std::string& GZipDecoder::getName() const

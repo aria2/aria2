@@ -46,39 +46,39 @@ LpdMessageDispatcher::LpdMessageDispatcher
 (const std::string& infoHash, uint16_t port,
  const std::string& multicastAddress, uint16_t multicastPort,
  time_t interval):
-  _infoHash(infoHash),
-  _port(port),
-  _multicastAddress(multicastAddress),
-  _multicastPort(multicastPort),
-  _timer(0),
-  _interval(interval),
-  _request(bittorrent::createLpdRequest(_multicastAddress, _multicastPort,
-                                        _infoHash, _port)),
-  _logger(LogFactory::getInstance()) {}
+  infoHash_(infoHash),
+  port_(port),
+  multicastAddress_(multicastAddress),
+  multicastPort_(multicastPort),
+  timer_(0),
+  interval_(interval),
+  request_(bittorrent::createLpdRequest(multicastAddress_, multicastPort_,
+                                        infoHash_, port_)),
+  logger_(LogFactory::getInstance()) {}
 
 bool LpdMessageDispatcher::init(const std::string& localAddr,
                                 unsigned char ttl, unsigned char loop)
 {
   try {
-    _socket.reset(new SocketCore(SOCK_DGRAM));
-    _socket->create(AF_INET);
-    if(_logger->debug()) {
-      _logger->debug("Setting multicast outgoing interface=%s",
+    socket_.reset(new SocketCore(SOCK_DGRAM));
+    socket_->create(AF_INET);
+    if(logger_->debug()) {
+      logger_->debug("Setting multicast outgoing interface=%s",
                      localAddr.c_str());
     }
-    _socket->setMulticastInterface(localAddr);
-    if(_logger->debug()) {
-      _logger->debug("Setting multicast ttl=%u",static_cast<unsigned int>(ttl));
+    socket_->setMulticastInterface(localAddr);
+    if(logger_->debug()) {
+      logger_->debug("Setting multicast ttl=%u",static_cast<unsigned int>(ttl));
     }
-    _socket->setMulticastTtl(ttl);
-    if(_logger->debug()) {
-      _logger->debug("Setting multicast loop=%u",
+    socket_->setMulticastTtl(ttl);
+    if(logger_->debug()) {
+      logger_->debug("Setting multicast loop=%u",
                      static_cast<unsigned int>(loop));
     }
-    _socket->setMulticastLoop(loop);
+    socket_->setMulticastLoop(loop);
     return true;
   } catch(RecoverableException& e) {
-    _logger->error("Failed to initialize LpdMessageDispatcher.", e);
+    logger_->error("Failed to initialize LpdMessageDispatcher.", e);
   }
   return false;
 }
@@ -86,19 +86,19 @@ bool LpdMessageDispatcher::init(const std::string& localAddr,
 bool LpdMessageDispatcher::sendMessage()
 {
   return
-    _socket->writeData(_request.c_str(), _request.size(),
-                       _multicastAddress, _multicastPort)
-    == (ssize_t)_request.size();
+    socket_->writeData(request_.c_str(), request_.size(),
+                       multicastAddress_, multicastPort_)
+    == (ssize_t)request_.size();
 }
 
 bool LpdMessageDispatcher::isAnnounceReady() const
 {
-  return _timer.difference(global::wallclock) >= _interval;
+  return timer_.difference(global::wallclock) >= interval_;
 }
 
 void LpdMessageDispatcher::resetAnnounceTimer()
 {
-  _timer = global::wallclock;
+  timer_ = global::wallclock;
 }
 
 namespace bittorrent {

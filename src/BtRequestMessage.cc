@@ -46,7 +46,7 @@ const std::string BtRequestMessage::NAME("request");
 BtRequestMessage::BtRequestMessage
 (size_t index, uint32_t begin, uint32_t length, size_t blockIndex):
   RangeBtMessage(ID, NAME, index, begin, length),
-  _blockIndex(blockIndex) {}
+  blockIndex_(blockIndex) {}
 
 SharedHandle<BtRequestMessage> BtRequestMessage::create
 (const unsigned char* data, size_t dataLength)
@@ -79,7 +79,7 @@ void BtRequestMessage::doReceivedAction()
 
 void BtRequestMessage::onQueued()
 {
-  RequestSlot requestSlot(getIndex(), getBegin(), getLength(), _blockIndex,
+  RequestSlot requestSlot(getIndex(), getBegin(), getLength(), blockIndex_,
                           getPieceStorage()->getPiece(getIndex()));
   getBtMessageDispatcher()->addOutstandingRequest(requestSlot);
 }

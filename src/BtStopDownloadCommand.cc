@@ -50,28 +50,28 @@ BtStopDownloadCommand::BtStopDownloadCommand
  DownloadEngine* e,
  time_t timeout):
   TimeBasedCommand(cuid, e, 1),
-  _requestGroup(requestGroup),
-  _timeout(timeout)
+  requestGroup_(requestGroup),
+  timeout_(timeout)
 {}
 
 void BtStopDownloadCommand::preProcess()
 {
-  if(_btRuntime->isHalt() || _pieceStorage->downloadFinished()) {
+  if(btRuntime_->isHalt() || pieceStorage_->downloadFinished()) {
     enableExit();
   }
-  if(_checkPoint.difference(global::wallclock) >= _timeout) {
+  if(checkPoint_.difference(global::wallclock) >= timeout_) {
     getLogger()->notice("GID#%s Stop downloading torrent due to"
                         " --bt-stop-timeout option.",
-                        util::itos(_requestGroup->getGID()).c_str());
-    _requestGroup->setHaltRequested(true);
+                        util::itos(requestGroup_->getGID()).c_str());
+    requestGroup_->setHaltRequested(true);
     enableExit();
   }
 }
 
 void BtStopDownloadCommand::process()
 {
-  if(_requestGroup->calculateStat().getDownloadSpeed() > 0) {
-    _checkPoint = global::wallclock;
+  if(requestGroup_->calculateStat().getDownloadSpeed() > 0) {
+    checkPoint_ = global::wallclock;
   }
 }
 

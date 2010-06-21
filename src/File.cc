@@ -54,12 +54,12 @@ namespace aria2 {
 # include <windows.h>
 #endif // __MINGW32__
 
-File::File(const std::string& name):_name(name) {}
+File::File(const std::string& name):name_(name) {}
 
 File::~File() {}
 
 int File::fillStat(a2_struct_stat& fstat) {
-  return a2stat(_name.c_str(), &fstat);
+  return a2stat(name_.c_str(), &fstat);
 }
 
 bool File::exists() {
@@ -85,9 +85,9 @@ bool File::isDir() {
 
 bool File::remove() {
   if(isFile()) {
-    return unlink(_name.c_str()) == 0;
+    return unlink(name_.c_str()) == 0;
   } else if(isDir()) {
-    return rmdir(_name.c_str()) == 0;
+    return rmdir(name_.c_str()) == 0;
   } else {
     return false;
   }
@@ -106,13 +106,13 @@ bool File::mkdirs() {
     return false;
   }
   std::vector<std::string> dirs;
-  util::split(_name, std::back_inserter(dirs), "/");
+  util::split(name_, std::back_inserter(dirs), "/");
   if(!dirs.size()) {
     return true;
   }
 
   std::string accDir;
-  if(util::startsWith(_name, A2STR::SLASH_C)) {
+  if(util::startsWith(name_, A2STR::SLASH_C)) {
     accDir = A2STR::SLASH_C;
   }
   for(std::vector<std::string>::const_iterator itr = dirs.begin(),
@@ -139,19 +139,19 @@ mode_t File::mode()
 
 std::string File::getBasename() const
 {
-  std::string::size_type lastSlashIndex = _name.find_last_of(A2STR::SLASH_C);
+  std::string::size_type lastSlashIndex = name_.find_last_of(A2STR::SLASH_C);
   if(lastSlashIndex == std::string::npos) {
-    return _name;
+    return name_;
   } else {
-    return _name.substr(lastSlashIndex+1);
+    return name_.substr(lastSlashIndex+1);
   }
 }
 
 std::string File::getDirname() const
 {
-  std::string::size_type lastSlashIndex = _name.find_last_of(A2STR::SLASH_C);
+  std::string::size_type lastSlashIndex = name_.find_last_of(A2STR::SLASH_C);
   if(lastSlashIndex == std::string::npos) {
-    if(_name.empty()) {
+    if(name_.empty()) {
       return A2STR::NIL;
     } else {
       return A2STR::DOT_C;
@@ -159,7 +159,7 @@ std::string File::getDirname() const
   } else if(lastSlashIndex == 0) {
     return A2STR::SLASH_C;
   } else {
-    return _name.substr(0, lastSlashIndex);
+    return name_.substr(0, lastSlashIndex);
   }
 }
 
@@ -178,8 +178,8 @@ bool File::renameTo(const std::string& dest)
     }
   }
 #endif // __MINGW32__
-  if(rename(_name.c_str(), dest.c_str()) == 0) {
-    _name = dest;
+  if(rename(name_.c_str(), dest.c_str()) == 0) {
+    name_ = dest;
     return true;
   } else {
     return false;
@@ -191,7 +191,7 @@ bool File::utime(const Time& actime, const Time& modtime) const
   struct utimbuf ub;
   ub.actime = actime.getTime();
   ub.modtime = modtime.getTime();
-  return ::utime(_name.c_str(), &ub) == 0;
+  return ::utime(name_.c_str(), &ub) == 0;
 }
 
 Time File::getModifiedTime()

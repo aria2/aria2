@@ -119,7 +119,7 @@ static void printProgress
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
   SharedHandle<PeerStorage> ps =
-    e->getBtRegistry()->get(rg->getGID())._peerStorage;
+    e->getBtRegistry()->get(rg->getGID()).peerStorage_;
   if(!ps.isNull()) {
     std::vector<SharedHandle<Peer> > peers;
     ps->getActivePeers(peers);
@@ -150,19 +150,19 @@ static void printProgress
 class PrintSummary
 {
 private:
-  size_t _cols;
-  const DownloadEngine* _e;
-  const SizeFormatter& _sizeFormatter;
+  size_t cols_;
+  const DownloadEngine* e_;
+  const SizeFormatter& sizeFormatter_;
 public:
   PrintSummary
   (size_t cols, const DownloadEngine* e,
    const SizeFormatter& sizeFormatter):
-    _cols(cols), _e(e), _sizeFormatter(sizeFormatter) {}
+    cols_(cols), e_(e), sizeFormatter_(sizeFormatter) {}
 
   void operator()(const SharedHandle<RequestGroup>& rg)
   {
     const char SEP_CHAR = '-';
-    printProgress(std::cout, rg, _e, _sizeFormatter);
+    printProgress(std::cout, rg, e_, sizeFormatter_);
     const std::vector<SharedHandle<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
     std::cout << "\n"
@@ -170,7 +170,7 @@ public:
     writeFilePath(fileEntries.begin(), fileEntries.end(),
                   std::cout, rg->inMemoryDownload());
     std::cout << "\n"
-              << std::setfill(SEP_CHAR) << std::setw(_cols) << SEP_CHAR << "\n";
+              << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
   }
 };
 
@@ -203,23 +203,23 @@ static void printProgressSummary
 }
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
-  _summaryInterval(summaryInterval)
+  summaryInterval_(summaryInterval)
 {
   if(humanReadable) {
-    _sizeFormatter.reset(new AbbrevSizeFormatter());
+    sizeFormatter_.reset(new AbbrevSizeFormatter());
   } else {
-    _sizeFormatter.reset(new PlainSizeFormatter());
+    sizeFormatter_.reset(new PlainSizeFormatter());
   }
 }
 
 void
 ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 {
-  if(_cp.difference(global::wallclock) < 1) {
+  if(cp_.difference(global::wallclock) < 1) {
     return;
   }
-  _cp = global::wallclock;
-  const SizeFormatter& sizeFormatter = *_sizeFormatter.get();
+  cp_ = global::wallclock;
+  const SizeFormatter& sizeFormatter = *sizeFormatter_.get();
 
 #ifdef __MINGW32__
   bool isTTY = true;
@@ -243,9 +243,9 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   }
   std::ostringstream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
-    if((_summaryInterval > 0) &&
-       _lastSummaryNotified.difference(global::wallclock) >= _summaryInterval) {
-      _lastSummaryNotified = global::wallclock;
+    if((summaryInterval_ > 0) &&
+       lastSummaryNotified_.difference(global::wallclock) >= summaryInterval_) {
+      lastSummaryNotified_ = global::wallclock;
       printProgressSummary(e->getRequestGroupMan()->getRequestGroups(), cols, e,
                            sizeFormatter);
       std::cout << "\n";

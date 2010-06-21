@@ -42,25 +42,25 @@
 
 namespace aria2 {
 
-Time::Time():_good(true)
+Time::Time():good_(true)
 {
   reset();
 }
 
 Time::Time(const Time& time)
 {
-  _tv = time._tv;
-  _good = time._good;
+  tv_ = time.tv_;
+  good_ = time.good_;
 }
 
-Time::Time(time_t sec):_good(true)
+Time::Time(time_t sec):good_(true)
 {
   setTimeInSec(sec);
 }
 
-Time::Time(const struct timeval& tv):_good(true)
+Time::Time(const struct timeval& tv):good_(true)
 {
-  _tv = tv;
+  tv_ = tv;
 }
 
 Time::~Time() {}
@@ -68,19 +68,19 @@ Time::~Time() {}
 Time& Time::operator=(const Time& time)
 {
   if(this != &time) {
-    _tv = time._tv;
-    _good = time._good;
+    tv_ = time.tv_;
+    good_ = time.good_;
   }
   return *this;
 }
 
 bool Time::operator<(const Time& time) const
 {
-  return util::difftv(time._tv, _tv) > 0;
+  return util::difftv(time.tv_, tv_) > 0;
 }
 
 void Time::reset() {
-  gettimeofday(&_tv, 0);
+  gettimeofday(&tv_, 0);
 }
 
 struct timeval Time::getCurrentTime() const {
@@ -95,81 +95,81 @@ bool Time::elapsed(time_t sec) const {
   // simple test using time.
   // Then only when the further test is required, call gettimeofday.
   time_t now = time(0);
-  if(_tv.tv_sec+sec < now) {
+  if(tv_.tv_sec+sec < now) {
     return true;
-  } else if(_tv.tv_sec+sec == now) {
+  } else if(tv_.tv_sec+sec == now) {
     return
-      util::difftv(getCurrentTime(), _tv) >= static_cast<int64_t>(sec)*1000000;
+      util::difftv(getCurrentTime(), tv_) >= static_cast<int64_t>(sec)*1000000;
   } else {
     return false;
   }
 }
 
 bool Time::elapsedInMillis(int64_t millis) const {
-  return util::difftv(getCurrentTime(), _tv)/1000 >= millis;
+  return util::difftv(getCurrentTime(), tv_)/1000 >= millis;
 }
 
 bool Time::isNewer(const Time& time) const {
-  return util::difftv(_tv, time._tv) > 0;
+  return util::difftv(tv_, time.tv_) > 0;
 }
 
 time_t Time::difference() const
 {
-  return util::difftv(getCurrentTime(), _tv)/1000000;
+  return util::difftv(getCurrentTime(), tv_)/1000000;
 }
 
 time_t Time::difference(const struct timeval& now) const
 {
-  return util::difftv(now, _tv)/1000000;
+  return util::difftv(now, tv_)/1000000;
 }
 
 int64_t Time::differenceInMillis() const {
-  return util::difftv(getCurrentTime(), _tv)/1000;
+  return util::difftv(getCurrentTime(), tv_)/1000;
 }
 
 int64_t Time::differenceInMillis(const struct timeval& now) const
 {
-  return util::difftv(now, _tv)/1000;
+  return util::difftv(now, tv_)/1000;
 }
 
 bool Time::isZero() const
 {
-  return _tv.tv_sec == 0 && _tv.tv_usec == 0;
+  return tv_.tv_sec == 0 && tv_.tv_usec == 0;
 }
 
 int64_t Time::getTimeInMicros() const
 {
-  return (int64_t)_tv.tv_sec*1000*1000+_tv.tv_usec;
+  return (int64_t)tv_.tv_sec*1000*1000+tv_.tv_usec;
 }
 
 int64_t Time::getTimeInMillis() const
 {
-  return (int64_t)_tv.tv_sec*1000+_tv.tv_usec/1000;
+  return (int64_t)tv_.tv_sec*1000+tv_.tv_usec/1000;
 }
 
 time_t Time::getTime() const
 {
-  return _tv.tv_sec;
+  return tv_.tv_sec;
 }
 
 void Time::setTimeInSec(time_t sec) {
-  _tv.tv_sec = sec;
-  _tv.tv_usec = 0;
+  tv_.tv_sec = sec;
+  tv_.tv_usec = 0;
 }
 
 void Time::advance(time_t sec)
 {
-  _tv.tv_sec += sec;
+  tv_.tv_sec += sec;
 }
 
 bool Time::good() const
 {
-  return _good;
+  return good_;
 }
 
 bool Time::bad() const
 {
-  return !_good;
+  return !good_;
 }
 
 Time Time::parse(const std::string& datetime, const std::string& format)
@@ -224,7 +224,7 @@ Time Time::parseHTTPDate(const std::string& datetime)
 Time Time::null()
 {
   Time t(0);
-  t._good = false;
+  t.good_ = false;
   return t;
 }
 

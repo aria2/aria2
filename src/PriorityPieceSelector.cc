@@ -39,19 +39,19 @@ namespace aria2 {
 
 PriorityPieceSelector::PriorityPieceSelector
 (const SharedHandle<PieceSelector>& selector):
-  _selector(selector) {}
+  selector_(selector) {}
 
 bool PriorityPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const
 {
-  for(std::vector<size_t>::const_iterator i = _prioritizedPieces.begin(),
-        eoi = _prioritizedPieces.end(); i != eoi; ++i) {
+  for(std::vector<size_t>::const_iterator i = prioritizedPieces_.begin(),
+        eoi = prioritizedPieces_.end(); i != eoi; ++i) {
     if(bitfield::test(bitfield, nbits, *i)) {
       index = *i;
       return true;
     }
   }
-  return _selector->select(index, bitfield, nbits);
+  return selector_->select(index, bitfield, nbits);
 }
 
 } // namespace aria2

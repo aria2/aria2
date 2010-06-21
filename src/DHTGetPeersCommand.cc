@@ -58,68 +58,68 @@ DHTGetPeersCommand::DHTGetPeersCommand(cuid_t cuid,
                                        RequestGroup* requestGroup,
                                        DownloadEngine* e):
   Command(cuid),
-  _requestGroup(requestGroup),
-  _e(e),
-  _numRetry(0),
-  _lastGetPeerTime(0)
+  requestGroup_(requestGroup),
+  e_(e),
+  numRetry_(0),
+  lastGetPeerTime_(0)
 {
-  _requestGroup->increaseNumCommand();
+  requestGroup_->increaseNumCommand();
 }
 
 DHTGetPeersCommand::~DHTGetPeersCommand()
 {
-  _requestGroup->decreaseNumCommand();
+  requestGroup_->decreaseNumCommand();
 }
 
 bool DHTGetPeersCommand::execute()
 {
-  if(_btRuntime->isHalt()) {
+  if(btRuntime_->isHalt()) {
     return true;
   }
-  if(_task.isNull() &&
-     ((_numRetry > 0 &&
-       _lastGetPeerTime.difference(global::wallclock) >= (time_t)_numRetry*5) ||
-      _lastGetPeerTime.difference(global::wallclock) >= GET_PEER_INTERVAL)) {
+  if(task_.isNull() &&
+     ((numRetry_ > 0 &&
+       lastGetPeerTime_.difference(global::wallclock) >= (time_t)numRetry_*5) ||
+      lastGetPeerTime_.difference(global::wallclock) >= GET_PEER_INTERVAL)) {
     if(getLogger()->debug()) {
       getLogger()->debug("Issuing PeerLookup for infoHash=%s",
                          bittorrent::getInfoHashString
-                         (_requestGroup->getDownloadContext()).c_str());
+                         (requestGroup_->getDownloadContext()).c_str());
     }
-    _task = _taskFactory->createPeerLookupTask
-      (_requestGroup->getDownloadContext(), _btRuntime, _peerStorage);
-    _taskQueue->addPeriodicTask2(_task);
-  } else if(!_task.isNull() && _task->finished()) {
-    _lastGetPeerTime = global::wallclock;
-    if(_numRetry < MAX_RETRIES && _btRuntime->lessThanMinPeers()) {
-      ++_numRetry;
+    task_ = taskFactory_->createPeerLookupTask
+      (requestGroup_->getDownloadContext(), btRuntime_, peerStorage_);
+    taskQueue_->addPeriodicTask2(task_);
+  } else if(!task_.isNull() && task_->finished()) {
+    lastGetPeerTime_ = global::wallclock;
+    if(numRetry_ < MAX_RETRIES && btRuntime_->lessThanMinPeers()) {
+      ++numRetry_;
     } else {
-      _numRetry = 0;
+      numRetry_ = 0;
     }
-    _task.reset();
+    task_.reset();
   }
 
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 
 void DHTGetPeersCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 void DHTGetPeersCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
-  _taskFactory = taskFactory;
+  taskFactory_ = taskFactory;
 }
 
 void DHTGetPeersCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
 {
-  _btRuntime = btRuntime;
+  btRuntime_ = btRuntime;
 }
 
 void DHTGetPeersCommand::setPeerStorage(const SharedHandle<PeerStorage>& ps)
 {
-  _peerStorage = ps;
+  peerStorage_ = ps;
 }
 
 } // namespace aria2

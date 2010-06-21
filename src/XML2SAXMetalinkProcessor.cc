@@ -49,11 +49,11 @@ namespace aria2 {
 
 class SessionData {
 public:
-  SharedHandle<MetalinkParserStateMachine> _stm;
+  SharedHandle<MetalinkParserStateMachine> stm_;
 
-  std::deque<std::string> _charactersStack;
+  std::deque<std::string> charactersStack_;
 
-  SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):_stm(stm) {}
+  SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):stm_(stm) {}
 };
 
 static void mlStartElement
@@ -95,9 +95,9 @@ static void mlStartElement
   if(srcNsUri) {
     nsUri = reinterpret_cast<const char*>(srcNsUri);
   }
-  sd->_stm->beginElement(localname, prefix, nsUri, xmlAttrs);
-  if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.push_front(A2STR::NIL);
+  sd->stm_->beginElement(localname, prefix, nsUri, xmlAttrs);
+  if(sd->stm_->needsCharactersBuffering()) {
+    sd->charactersStack_.push_front(A2STR::NIL);
   }
 }
 
@@ -109,9 +109,9 @@ static void mlEndElement
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
-  if(sd->_stm->needsCharactersBuffering()) {
-    characters = sd->_charactersStack.front();
-    sd->_charactersStack.pop_front();
+  if(sd->stm_->needsCharactersBuffering()) {
+    characters = sd->charactersStack_.front();
+    sd->charactersStack_.pop_front();
   }
   std::string localname = reinterpret_cast<const char*>(srcLocalname);
   std::string prefix;
@@ -122,14 +122,14 @@ static void mlEndElement
   if(srcNsUri) {
     nsUri = reinterpret_cast<const char*>(srcNsUri);
   }
-  sd->_stm->endElement(localname, prefix, nsUri, characters);
+  sd->stm_->endElement(localname, prefix, nsUri, characters);
 }
 
 static void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.front() += std::string(&ch[0], &ch[len]);
+  if(sd->stm_->needsCharactersBuffering()) {
+    sd->charactersStack_.front() += std::string(&ch[0], &ch[len]);
   }
 }
 
@@ -172,8 +172,8 @@ static xmlSAXHandler mySAXHandler =
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(const std::string& filename)
 {
-  _stm.reset(new MetalinkParserStateMachine());
-  SharedHandle<SessionData> sessionData(new SessionData(_stm));
+  stm_.reset(new MetalinkParserStateMachine());
+  SharedHandle<SessionData> sessionData(new SessionData(stm_));
   // Old libxml2(at least 2.7.6, Ubuntu 10.04LTS) does not read stdin
   // when "/dev/stdin" is passed as filename while 2.7.7 does. So we
   // convert DEV_STDIN to "-" for compatibility.
@@ -188,19 +188,19 @@ MetalinkProcessor::parseFile(const std::string& filename)
   if(retval != 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
-  if(!_stm->finished()) {
+  if(!stm_->finished()) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
-  if(!_stm->getErrors().empty()) {
-    throw DL_ABORT_EX(_stm->getErrorString());
+  if(!stm_->getErrors().empty()) {
+    throw DL_ABORT_EX(stm_->getErrorString());
   }
-  return _stm->getResult();
+  return stm_->getResult();
 }
          
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
-  _stm.reset(new MetalinkParserStateMachine());
+  stm_.reset(new MetalinkParserStateMachine());
   size_t bufSize = 4096;
   unsigned char buf[bufSize];
 
@@ -209,7 +209,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
     throw DL_ABORT_EX("Too small data for parsing XML.");
   }
 
-  SharedHandle<SessionData> sessionData(new SessionData(_stm));
+  SharedHandle<SessionData> sessionData(new SessionData(stm_));
   xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt
     (&mySAXHandler, sessionData.get(),
      reinterpret_cast<const char*>(buf), res, 0);
@@ -228,13 +228,13 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
   }
   xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), 0, 1);
 
-  if(!_stm->finished()) {
+  if(!stm_->finished()) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
-  if(!_stm->getErrors().empty()) {
-    throw DL_ABORT_EX(_stm->getErrorString());
+  if(!stm_->getErrors().empty()) {
+    throw DL_ABORT_EX(stm_->getErrorString());
   }
-  return _stm->getResult();
+  return stm_->getResult();
 }
 
 } // namespace aria2

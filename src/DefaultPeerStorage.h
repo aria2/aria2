@@ -51,21 +51,21 @@ class PieceStorage;
 
 class DefaultPeerStorage : public PeerStorage {
 private:
-  SharedHandle<BtRuntime> _btRuntime;
-  SharedHandle<PieceStorage> _pieceStorage;
-  std::deque<SharedHandle<Peer> > _peers;
-  Logger* _logger;
-  uint64_t _removedPeerSessionDownloadLength;
-  uint64_t _removedPeerSessionUploadLength;
+  SharedHandle<BtRuntime> btRuntime_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  std::deque<SharedHandle<Peer> > peers_;
+  Logger* logger_;
+  uint64_t removedPeerSessionDownloadLength_;
+  uint64_t removedPeerSessionUploadLength_;
 
-  BtSeederStateChoke* _seederStateChoke;
-  BtLeecherStateChoke* _leecherStateChoke;
+  BtSeederStateChoke* seederStateChoke_;
+  BtLeecherStateChoke* leecherStateChoke_;
 
-  std::map<std::string, TransferStat> _peerTransferStatMap;
+  std::map<std::string, TransferStat> peerTransferStatMap_;
 
-  Timer _lastTransferStatMapUpdated;
+  Timer lastTransferStatMapUpdated_;
 
-  TransferStat _cachedTransferStat;
+  TransferStat cachedTransferStat_;
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:

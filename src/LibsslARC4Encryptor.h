@@ -48,7 +48,7 @@ namespace aria2 {
 
 class ARC4Encryptor {
 private:
-  LibsslARC4Context _ctx;
+  LibsslARC4Context ctx_;
 
   void handleError() const
   {
@@ -63,14 +63,14 @@ public:
 
   void init(const unsigned char* key, size_t keyLength)
   {
-    _ctx.init(key, keyLength, 1);
+    ctx_.init(key, keyLength, 1);
   }
 
   void encrypt(unsigned char* out, size_t outLength,
                const unsigned char* in, size_t inLength)
   {
     int soutLength = outLength;
-    if(!EVP_CipherUpdate(_ctx.getCipherContext(), out, &soutLength, in, inLength)) {
+    if(!EVP_CipherUpdate(ctx_.getCipherContext(), out, &soutLength, in, inLength)) {
       handleError();
     }
   }

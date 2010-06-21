@@ -45,11 +45,11 @@ namespace aria2 {
 
 class Signature {
 private:
-  std::string _type;
+  std::string type_;
 
-  std::string _file;
+  std::string file_;
 
-  std::string _body;
+  std::string body_;
 public:
   Signature();
 
@@ -59,21 +59,21 @@ public:
 
   const std::string& getType() const
   {
-    return _type;
+    return type_;
   }
 
   void setFile(const std::string& file);
 
   const std::string& getFile() const
   {
-    return _file;
+    return file_;
   }
 
   void setBody(const std::string& body);
 
   const std::string& getBody() const
   {
-    return _body;
+    return body_;
   }
 
   bool save(const std::string& filepath) const;

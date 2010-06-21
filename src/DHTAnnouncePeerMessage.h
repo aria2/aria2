@@ -46,15 +46,15 @@ class DHTTokenTracker;
 
 class DHTAnnouncePeerMessage:public DHTQueryMessage {
 private:
-  std::string _token;
+  std::string token_;
 
-  unsigned char _infoHash[DHT_ID_LENGTH];
+  unsigned char infoHash_[DHT_ID_LENGTH];
 
-  uint16_t _tcpPort;
+  uint16_t tcpPort_;
 
-  WeakHandle<DHTPeerAnnounceStorage> _peerAnnounceStorage;
+  WeakHandle<DHTPeerAnnounceStorage> peerAnnounceStorage_;
 
-  WeakHandle<DHTTokenTracker> _tokenTracker;
+  WeakHandle<DHTTokenTracker> tokenTracker_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -77,17 +77,17 @@ public:
 
   const unsigned char* getInfoHash() const
   {
-    return _infoHash;
+    return infoHash_;
   }
 
   const std::string& getToken() const
   {
-    return _token;
+    return token_;
   }
 
   uint16_t getTCPPort() const
   {
-    return _tcpPort;
+    return tcpPort_;
   }
 
   void setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage);

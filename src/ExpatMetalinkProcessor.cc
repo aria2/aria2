@@ -51,11 +51,11 @@ namespace aria2 {
 
 class SessionData {
 public:
-  SharedHandle<MetalinkParserStateMachine> _stm;
+  SharedHandle<MetalinkParserStateMachine> stm_;
 
-  std::deque<std::string> _charactersStack;
+  std::deque<std::string> charactersStack_;
 
-  SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):_stm(stm) {}
+  SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):stm_(stm) {}
 };
 
 static void splitNsName
@@ -103,9 +103,9 @@ static void mlStartElement(void* userData, const char* nsName, const char** attr
   std::string nsUri;
   splitNsName(localname, prefix, nsUri, nsName);
   
-  sd->_stm->beginElement(localname, prefix, nsUri, xmlAttrs);
-  if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.push_front(A2STR::NIL);
+  sd->stm_->beginElement(localname, prefix, nsUri, xmlAttrs);
+  if(sd->stm_->needsCharactersBuffering()) {
+    sd->charactersStack_.push_front(A2STR::NIL);
   }
 }
 
@@ -118,18 +118,18 @@ static void mlEndElement(void* userData, const char* nsName)
 
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
-  if(sd->_stm->needsCharactersBuffering()) {
-    characters = sd->_charactersStack.front();
-    sd->_charactersStack.pop_front();
+  if(sd->stm_->needsCharactersBuffering()) {
+    characters = sd->charactersStack_.front();
+    sd->charactersStack_.pop_front();
   }
-  sd->_stm->endElement(localname, prefix, nsUri, characters);
+  sd->stm_->endElement(localname, prefix, nsUri, characters);
 }
 
 static void mlCharacters(void* userData, const char* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  if(sd->_stm->needsCharactersBuffering()) {
-    sd->_charactersStack.front() += std::string(&ch[0], &ch[len]);
+  if(sd->stm_->needsCharactersBuffering()) {
+    sd->charactersStack_.front() += std::string(&ch[0], &ch[len]);
   }
 }
 
@@ -149,7 +149,7 @@ static void checkError(XML_Parser parser)
   }
   SessionData* sessionData =
     reinterpret_cast<SessionData*>(XML_GetUserData(parser));
-  const SharedHandle<MetalinkParserStateMachine>& stm = sessionData->_stm;
+  const SharedHandle<MetalinkParserStateMachine>& stm = sessionData->stm_;
   if(!stm->finished()) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
@@ -172,10 +172,10 @@ MetalinkProcessor::parseFile(const std::string& filename)
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(std::istream& stream)
 {
-  _stm.reset(new MetalinkParserStateMachine());
+  stm_.reset(new MetalinkParserStateMachine());
   char buf[4096];
 
-  SharedHandle<SessionData> sessionData(new SessionData(_stm));
+  SharedHandle<SessionData> sessionData(new SessionData(stm_));
   XML_Parser parser = createParser(sessionData);
   auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
   while(stream) {
@@ -188,17 +188,17 @@ MetalinkProcessor::parseFile(std::istream& stream)
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
   }
   checkError(parser);
-  return _stm->getResult();
+  return stm_->getResult();
 }
          
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
-  _stm.reset(new MetalinkParserStateMachine());
+  stm_.reset(new MetalinkParserStateMachine());
   ssize_t bufSize = 4096;
   unsigned char buf[bufSize];
 
-  SharedHandle<SessionData> sessionData(new SessionData(_stm));
+  SharedHandle<SessionData> sessionData(new SessionData(stm_));
   XML_Parser parser = createParser(sessionData);
   off_t readOffset = 0;
   while(1) {
@@ -213,7 +213,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
     readOffset += res;
   }
   checkError(parser);
-  return _stm->getResult();
+  return stm_->getResult();
 }
 
 } // namespace aria2

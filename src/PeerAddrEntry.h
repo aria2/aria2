@@ -45,39 +45,39 @@ namespace aria2 {
 
 class PeerAddrEntry {
 private:
-  std::string _ipaddr;
+  std::string ipaddr_;
   
-  uint16_t _port;
+  uint16_t port_;
 
-  Timer _lastUpdated;
+  Timer lastUpdated_;
 public:
   PeerAddrEntry
   (const std::string& ipaddr, uint16_t port, Timer updated = Timer()):
-    _ipaddr(ipaddr), _port(port), _lastUpdated(updated) {}
+    ipaddr_(ipaddr), port_(port), lastUpdated_(updated) {}
 
   const std::string& getIPAddress() const
   {
-    return _ipaddr;
+    return ipaddr_;
   }
 
   uint16_t getPort() const
   {
-    return _port;
+    return port_;
   }
 
   const Timer& getLastUpdated() const
   {
-    return _lastUpdated;
+    return lastUpdated_;
   }
 
   void notifyUpdate()
   {
-    _lastUpdated.reset();
+    lastUpdated_.reset();
   }
 
   bool operator==(const PeerAddrEntry& entry) const
   {
-    return _ipaddr == entry._ipaddr && _port == entry._port;
+    return ipaddr_ == entry.ipaddr_ && port_ == entry.port_;
   }
 };
 

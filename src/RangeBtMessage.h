@@ -42,9 +42,9 @@ namespace aria2 {
 
 class RangeBtMessage : public SimpleBtMessage {
 private:
-  size_t _index;
-  uint32_t _begin;
-  size_t _length;
+  size_t index_;
+  uint32_t begin_;
+  size_t length_;
 
   static const size_t MESSAGE_LENGTH = 17;
 protected:
@@ -64,17 +64,17 @@ public:
   RangeBtMessage(uint8_t id, const std::string& name,
                  size_t index, uint32_t begin, size_t length);
 
-  size_t getIndex() const { return _index; }
+  size_t getIndex() const { return index_; }
 
-  void setIndex(size_t index) { _index = index; }
+  void setIndex(size_t index) { index_ = index; }
 
-  uint32_t getBegin() const { return _begin; }
+  uint32_t getBegin() const { return begin_; }
 
-  void setBegin(uint32_t begin) { _begin = begin; }
+  void setBegin(uint32_t begin) { begin_ = begin; }
 
-  size_t getLength() const { return _length; }
+  size_t getLength() const { return length_; }
 
-  void setLength(size_t length) { _length = length; }
+  void setLength(size_t length) { length_ = length; }
 
   virtual unsigned char* createMessage();
 

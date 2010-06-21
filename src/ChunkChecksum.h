@@ -47,23 +47,23 @@ namespace aria2 {
 
 class ChunkChecksum {
 private:
-  std::string _algo;
-  std::vector<std::string> _checksums;
-  size_t _checksumLength;
+  std::string algo_;
+  std::vector<std::string> checksums_;
+  size_t checksumLength_;
 public:
-  ChunkChecksum():_checksumLength(0) {}    
+  ChunkChecksum():checksumLength_(0) {}    
 
   ChunkChecksum(const std::string& algo,
                 const std::vector<std::string>& checksums,
                 size_t checksumLength):
-    _algo(algo),
-    _checksums(checksums),
-    _checksumLength(checksumLength) {}
+    algo_(algo),
+    checksums_(checksums),
+    checksumLength_(checksumLength) {}
 
   bool validateChunk(const std::string& actualChecksum,
                      size_t checksumIndex) const
   {
-    if(checksumIndex < _checksums.size()) {
+    if(checksumIndex < checksums_.size()) {
       return actualChecksum == getChecksum(checksumIndex);
     } else {
       return false;
@@ -72,18 +72,18 @@ public:
 
   uint64_t getEstimatedDataLength() const
   {
-    return ((uint64_t)_checksumLength)*_checksums.size();
+    return ((uint64_t)checksumLength_)*checksums_.size();
   }
 
   size_t countChecksum() const
   {
-    return _checksums.size();
+    return checksums_.size();
   }
 
   const std::string& getChecksum(size_t index) const
   {
-    if(index < _checksums.size()) {
-      return _checksums[index];
+    if(index < checksums_.size()) {
+      return checksums_[index];
     } else {
       return A2STR::NIL;
     }
@@ -91,32 +91,32 @@ public:
   
   const std::vector<std::string>& getChecksums() const
   {
-    return _checksums;
+    return checksums_;
   }
 
   size_t getChecksumLength() const
   {
-    return _checksumLength;
+    return checksumLength_;
   }
 
   const std::string& getAlgo() const
   {
-    return _algo;
+    return algo_;
   }
 
   void setAlgo(const std::string& algo)
   {
-    _algo = algo;
+    algo_ = algo;
   }
 
   void setChecksumLength(size_t length)
   {
-    _checksumLength = length;
+    checksumLength_ = length;
   }
 
   void setChecksums(const std::vector<std::string>& mds)
   {
-    _checksums = mds;
+    checksums_ = mds;
   }
 };
 

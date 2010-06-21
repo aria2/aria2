@@ -44,7 +44,7 @@ ByteArrayDiskWriter::~ByteArrayDiskWriter() {}
 
 void ByteArrayDiskWriter::clear()
 {
-  _buf.str(A2STR::NIL);
+  buf_.str(A2STR::NIL);
 }
 
 void ByteArrayDiskWriter::initAndOpenFile(uint64_t totalLength)
@@ -65,29 +65,29 @@ void ByteArrayDiskWriter::writeData(const unsigned char* data, size_t dataLength
 {
   uint64_t length = size();
   if(length < (uint64_t)position) {
-    _buf.seekp(length, std::ios::beg);
+    buf_.seekp(length, std::ios::beg);
     for(uint64_t i = length; i < (uint64_t)position; ++i) {
-      _buf.put('\0');
+      buf_.put('\0');
     }
   } else {
-    _buf.seekp(position, std::ios::beg);
+    buf_.seekp(position, std::ios::beg);
   }
-  _buf.write(reinterpret_cast<const char*>(data), dataLength);
+  buf_.write(reinterpret_cast<const char*>(data), dataLength);
 }
 
 ssize_t ByteArrayDiskWriter::readData(unsigned char* data, size_t len, off_t position)
 {
-  _buf.seekg(position, std::ios::beg);
-  _buf.read(reinterpret_cast<char*>(data), len);
-  _buf.clear();
-  return _buf.gcount();
+  buf_.seekg(position, std::ios::beg);
+  buf_.read(reinterpret_cast<char*>(data), len);
+  buf_.clear();
+  return buf_.gcount();
 }
 
 uint64_t ByteArrayDiskWriter::size()
 {
-  _buf.seekg(0, std::ios::end);
-  _buf.clear();
-  return _buf.tellg();
+  buf_.seekg(0, std::ios::end);
+  buf_.clear();
+  return buf_.tellg();
 }
 
 } // namespace aria2

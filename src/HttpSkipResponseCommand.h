@@ -45,15 +45,15 @@ class Decoder;
 
 class HttpSkipResponseCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> _httpConnection;
+  SharedHandle<HttpConnection> httpConnection_;
 
-  SharedHandle<HttpResponse> _httpResponse;
+  SharedHandle<HttpResponse> httpResponse_;
 
-  SharedHandle<Decoder> _transferEncodingDecoder;
+  SharedHandle<Decoder> transferEncodingDecoder_;
 
-  uint64_t _totalLength;
+  uint64_t totalLength_;
 
-  uint64_t _receivedBytes;
+  uint64_t receivedBytes_;
 
   bool processResponse();
 

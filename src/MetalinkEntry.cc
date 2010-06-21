@@ -59,20 +59,20 @@ MetalinkEntry::~MetalinkEntry() {}
 
 class AddLocationPriority {
 private:
-  std::vector<std::string> _locations;
-  int _priorityToAdd;
+  std::vector<std::string> locations_;
+  int priorityToAdd_;
 public:
   AddLocationPriority
   (const std::vector<std::string>& locations, int priorityToAdd):
-    _locations(locations), _priorityToAdd(priorityToAdd)
+    locations_(locations), priorityToAdd_(priorityToAdd)
   {
-    std::sort(_locations.begin(), _locations.end());
+    std::sort(locations_.begin(), locations_.end());
   }
 
   void operator()(SharedHandle<MetalinkResource>& res) {
     if(std::binary_search
-       (_locations.begin(), _locations.end(), res->location)) {
-      res->priority += _priorityToAdd;
+       (locations_.begin(), locations_.end(), res->location)) {
+      res->priority += priorityToAdd_;
     }
   }
 };
@@ -89,7 +89,7 @@ MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
     this->checksum = metalinkEntry.checksum;
     this->chunkChecksum = metalinkEntry.chunkChecksum;
 #endif // ENABLE_MESSAGE_DIGEST
-    this->_signature = metalinkEntry._signature;
+    this->signature_ = metalinkEntry.signature_;
   }
   return *this;
 }
@@ -113,16 +113,16 @@ void MetalinkEntry::setLocationPriority
 
 class AddProtocolPriority {
 private:
-  std::string _protocol;
-  int _priorityToAdd;
+  std::string protocol_;
+  int priorityToAdd_;
 public:
   AddProtocolPriority(const std::string& protocol, int prefToAdd):
-    _protocol(protocol), _priorityToAdd(prefToAdd) {}
+    protocol_(protocol), priorityToAdd_(prefToAdd) {}
 
   void operator()(const SharedHandle<MetalinkResource>& res) const
   {
-    if(_protocol == MetalinkResource::getTypeString(res->type)) {
-      res->priority += _priorityToAdd;
+    if(protocol_ == MetalinkResource::getTypeString(res->type)) {
+      res->priority += priorityToAdd_;
     }
   }
 };
@@ -193,7 +193,7 @@ void MetalinkEntry::toFileEntry
 
 void MetalinkEntry::setSignature(const SharedHandle<Signature>& signature)
 {
-  _signature = signature;
+  signature_ = signature;
 }
 
 } // namespace aria2

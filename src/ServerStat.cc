@@ -49,119 +49,119 @@ const std::string ServerStat::STATUS_STRING[] = {
 
 ServerStat::ServerStat(const std::string& hostname, const std::string& protocol)
   :
-  _hostname(hostname),
-  _protocol(protocol),
-  _downloadSpeed(0),
-  _singleConnectionAvgSpeed(0),
-  _multiConnectionAvgSpeed(0),
-  _counter(0),
-  _logger(LogFactory::getInstance()),
-  _status(OK)
+  hostname_(hostname),
+  protocol_(protocol),
+  downloadSpeed_(0),
+  singleConnectionAvgSpeed_(0),
+  multiConnectionAvgSpeed_(0),
+  counter_(0),
+  logger_(LogFactory::getInstance()),
+  status_(OK)
 {}
 
 ServerStat::~ServerStat() {}
 
 void ServerStat::setLastUpdated(const Time& time)
 {
-  _lastUpdated = time;
+  lastUpdated_ = time;
 }
 
 void ServerStat::setDownloadSpeed(unsigned int downloadSpeed)
 {
-  _downloadSpeed = downloadSpeed;
+  downloadSpeed_ = downloadSpeed;
 }
 
 void ServerStat::updateDownloadSpeed(unsigned int downloadSpeed)
 {
-  _downloadSpeed = downloadSpeed;
+  downloadSpeed_ = downloadSpeed;
   if(downloadSpeed > 0) {
-    _status = OK;
+    status_ = OK;
   }
-  _lastUpdated.reset();
+  lastUpdated_.reset();
 }
 
 void ServerStat::setSingleConnectionAvgSpeed
 (unsigned int singleConnectionAvgSpeed)
 {
-  _singleConnectionAvgSpeed = singleConnectionAvgSpeed;
+  singleConnectionAvgSpeed_ = singleConnectionAvgSpeed;
 }
 
 void ServerStat::updateSingleConnectionAvgSpeed(unsigned int downloadSpeed)
 {
   float avgDownloadSpeed;
-  if(_counter == 0)
+  if(counter_ == 0)
     return;
-  if(_counter < 5) {
+  if(counter_ < 5) {
     avgDownloadSpeed =
-      ((((float)_counter-1)/(float)_counter)*(float)_singleConnectionAvgSpeed)+ 
-      ((1.0/(float)_counter)*(float)downloadSpeed);
+      ((((float)counter_-1)/(float)counter_)*(float)singleConnectionAvgSpeed_)+ 
+      ((1.0/(float)counter_)*(float)downloadSpeed);
   }
   else {
-    avgDownloadSpeed = ((4.0/5.0)*(float)_singleConnectionAvgSpeed) +
+    avgDownloadSpeed = ((4.0/5.0)*(float)singleConnectionAvgSpeed_) +
       ((1.0/5.0)*(float)downloadSpeed);
   }
-  if(avgDownloadSpeed < (int)(0.80*_singleConnectionAvgSpeed)) {
-    if(_logger->debug()) {
-      _logger->debug("ServerStat:%s: resetting counter since single connection"
+  if(avgDownloadSpeed < (int)(0.80*singleConnectionAvgSpeed_)) {
+    if(logger_->debug()) {
+      logger_->debug("ServerStat:%s: resetting counter since single connection"
                      " speed dropped", getHostname().c_str());
     }
-    _counter = 0;
+    counter_ = 0;
   }
-  if(_logger->debug()) {
-    _logger->debug("ServerStat:%s: _singleConnectionAvgSpeed old:%.2fKB/s"
+  if(logger_->debug()) {
+    logger_->debug("ServerStat:%s: singleConnectionAvgSpeed_ old:%.2fKB/s"
                    " new:%.2fKB/s last:%.2fKB/s",
                    getHostname().c_str(),
-                   (float) _singleConnectionAvgSpeed/1024,
+                   (float) singleConnectionAvgSpeed_/1024,
                    (float) avgDownloadSpeed/1024,
                    (float) downloadSpeed / 1024);
   }
-  _singleConnectionAvgSpeed = (int)avgDownloadSpeed;
+  singleConnectionAvgSpeed_ = (int)avgDownloadSpeed;
 }
 
 void ServerStat::setMultiConnectionAvgSpeed
 (unsigned int multiConnectionAvgSpeed)
 {
-  _multiConnectionAvgSpeed = multiConnectionAvgSpeed;
+  multiConnectionAvgSpeed_ = multiConnectionAvgSpeed;
 }
 
 void ServerStat::updateMultiConnectionAvgSpeed(unsigned int downloadSpeed)
 {
   float avgDownloadSpeed;
-  if(_counter == 0)
+  if(counter_ == 0)
     return;
-  if(_counter < 5) {
+  if(counter_ < 5) {
     avgDownloadSpeed =
-      ((((float)_counter-1)/(float)_counter)*(float)_multiConnectionAvgSpeed) + 
-      ((1.0/(float)_counter)*(float)downloadSpeed);
+      ((((float)counter_-1)/(float)counter_)*(float)multiConnectionAvgSpeed_) + 
+      ((1.0/(float)counter_)*(float)downloadSpeed);
   }
   else {
-    avgDownloadSpeed = ((4.0/5.0)*(float)_multiConnectionAvgSpeed) +
+    avgDownloadSpeed = ((4.0/5.0)*(float)multiConnectionAvgSpeed_) +
       ((1.0/5.0)*(float)downloadSpeed);
   }
-  if(_logger->debug()) {
-    _logger->debug("ServerStat:%s: _multiConnectionAvgSpeed old:%.2fKB/s"
+  if(logger_->debug()) {
+    logger_->debug("ServerStat:%s: multiConnectionAvgSpeed_ old:%.2fKB/s"
                    " new:%.2fKB/s last:%.2fKB/s",
                    getHostname().c_str(),
-                   (float) _multiConnectionAvgSpeed/1024,
+                   (float) multiConnectionAvgSpeed_/1024,
                    (float) avgDownloadSpeed/1024,
                    (float) downloadSpeed / 1024);
   }
-  _multiConnectionAvgSpeed = (int)avgDownloadSpeed;
+  multiConnectionAvgSpeed_ = (int)avgDownloadSpeed;
 }
 
 void ServerStat::increaseCounter()
 {
-  ++_counter;
+  ++counter_;
 }
 
 void ServerStat::setCounter(unsigned int value)
 {
-  _counter = value;
+  counter_ = value;
 }
 
 void ServerStat::setStatus(STATUS status)
 {
-  _status = status;
+  status_ = status;
 }
 
 void ServerStat::setStatus(const std::string& status)
@@ -169,20 +169,20 @@ void ServerStat::setStatus(const std::string& status)
   const std::string* p = std::find(vbegin(STATUS_STRING), vend(STATUS_STRING),
                                    status);
   if(p != vend(STATUS_STRING)) {
-    _status = static_cast<STATUS>(ServerStat::OK+
+    status_ = static_cast<STATUS>(ServerStat::OK+
                                   std::distance(vbegin(STATUS_STRING), p));
   }
 }
 
 void ServerStat::setStatusInternal(STATUS status)
 {
-  if(_logger->debug()) {
-    _logger->debug("ServerStat: set status %s for %s (%s)",
+  if(logger_->debug()) {
+    logger_->debug("ServerStat: set status %s for %s (%s)",
                    STATUS_STRING[status].c_str(),
-                   _hostname.c_str(), _protocol.c_str());
+                   hostname_.c_str(), protocol_.c_str());
   }
-  _status = status;
-  _lastUpdated.reset();
+  status_ = status;
+  lastUpdated_.reset();
 }
 
 void ServerStat::setOK()
@@ -197,9 +197,9 @@ void ServerStat::setError()
 
 bool ServerStat::operator<(const ServerStat& serverStat) const
 {
-  int c = _hostname.compare(serverStat._hostname);
+  int c = hostname_.compare(serverStat.hostname_);
   if(c == 0) {
-    return _protocol < serverStat._protocol;
+    return protocol_ < serverStat.protocol_;
   } else {
     return c < 0;
   }
@@ -207,7 +207,7 @@ bool ServerStat::operator<(const ServerStat& serverStat) const
 
 bool ServerStat::operator==(const ServerStat& serverStat) const
 {
-  return _hostname == serverStat._hostname && _protocol == serverStat._protocol;
+  return hostname_ == serverStat.hostname_ && protocol_ == serverStat.protocol_;
 }
 
 std::ostream& operator<<(std::ostream& o, const ServerStat& serverStat)

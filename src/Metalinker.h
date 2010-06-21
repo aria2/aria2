@@ -48,14 +48,14 @@ class MetalinkEntry;
 
 class Metalinker {
 private:
-  std::vector<SharedHandle<MetalinkEntry> > _entries;
+  std::vector<SharedHandle<MetalinkEntry> > entries_;
 public:
   Metalinker();
   ~Metalinker();
 
   Metalinker& operator=(const Metalinker& metalinker) {
     if(this != &metalinker) {
-      _entries = metalinker._entries;
+      entries_ = metalinker.entries_;
     }
     return *this;
   }
@@ -68,12 +68,12 @@ public:
 
   const std::vector<SharedHandle<MetalinkEntry> >& getEntries() const
   {
-    return _entries;
+    return entries_;
   }
 
   void addEntry(const SharedHandle<MetalinkEntry>& entry)
   {
-    _entries.push_back(entry);
+    entries_.push_back(entry);
   }
 };
 

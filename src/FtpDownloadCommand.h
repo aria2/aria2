@@ -43,9 +43,9 @@ class FtpConnection;
 
 class FtpDownloadCommand : public DownloadCommand {
 private:
-  SharedHandle<FtpConnection> _ftpConnection;
+  SharedHandle<FtpConnection> ftpConnection_;
 
-  SharedHandle<SocketCore> _ctrlSocket;
+  SharedHandle<SocketCore> ctrlSocket_;
 protected:
   virtual bool prepareForNextSegment();
 public:

@@ -61,16 +61,16 @@ struct epoll_event EpollEventPoll::KSocketEntry::getEvents()
 #ifdef ENABLE_ASYNC_DNS
 
   epEvent.events =
-    std::accumulate(_adnsEvents.begin(),
-                    _adnsEvents.end(),
-                    std::accumulate(_commandEvents.begin(),
-                                    _commandEvents.end(), 0, accumulateEvent),
+    std::accumulate(adnsEvents_.begin(),
+                    adnsEvents_.end(),
+                    std::accumulate(commandEvents_.begin(),
+                                    commandEvents_.end(), 0, accumulateEvent),
                     accumulateEvent);
 
 #else // !ENABLE_ASYNC_DNS
 
   epEvent.events =
-    std::accumulate(_commandEvents.begin(), _commandEvents.end(), 0,
+    std::accumulate(commandEvents_.begin(), commandEvents_.end(), 0,
                     accumulateEvent);
 
 #endif // !ENABLE_ASYNC_DNS
@@ -78,30 +78,30 @@ struct epoll_event EpollEventPoll::KSocketEntry::getEvents()
 }
 
 EpollEventPoll::EpollEventPoll():
-  _epEventsSize(EPOLL_EVENTS_MAX),
-  _epEvents(new struct epoll_event[_epEventsSize]),
-  _logger(LogFactory::getInstance())
+  epEventsSize_(EPOLL_EVENTS_MAX),
+  epEvents_(new struct epoll_event[epEventsSize_]),
+  logger_(LogFactory::getInstance())
 {
-  _epfd = epoll_create(EPOLL_EVENTS_MAX);
+  epfd_ = epoll_create(EPOLL_EVENTS_MAX);
 }
 
 EpollEventPoll::~EpollEventPoll()
 {
-  if(_epfd != -1) {
+  if(epfd_ != -1) {
     int r;
-    while((r = close(_epfd)) == -1 && errno == EINTR);
+    while((r = close(epfd_)) == -1 && errno == EINTR);
     if(r == -1) {
-      _logger->error("Error occurred while closing epoll file descriptor"
+      logger_->error("Error occurred while closing epoll file descriptor"
                      " %d: %s",
-                     _epfd, strerror(errno));
+                     epfd_, strerror(errno));
     }
   }
-  delete [] _epEvents;
+  delete [] epEvents_;
 }
 
 bool EpollEventPoll::good() const
 {
-  return _epfd != -1;
+  return epfd_ != -1;
 }
 
 void EpollEventPoll::poll(const struct timeval& tv)
@@ -110,13 +110,13 @@ void EpollEventPoll::poll(const struct timeval& tv)
   int timeout = tv.tv_sec*1000+tv.tv_usec/1000;
 
   int res;
-  while((res = epoll_wait(_epfd, _epEvents, EPOLL_EVENTS_MAX, timeout)) == -1 &&
+  while((res = epoll_wait(epfd_, epEvents_, EPOLL_EVENTS_MAX, timeout)) == -1 &&
         errno == EINTR);
 
   if(res > 0) {
     for(int i = 0; i < res; ++i) {
-      KSocketEntry* p = reinterpret_cast<KSocketEntry*>(_epEvents[i].data.ptr);
-      p->processEvents(_epEvents[i].events);
+      KSocketEntry* p = reinterpret_cast<KSocketEntry*>(epEvents_[i].data.ptr);
+      p->processEvents(epEvents_[i].events);
     }
   }
 
@@ -126,7 +126,7 @@ void EpollEventPoll::poll(const struct timeval& tv)
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
   for(std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator i =
-        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
       i != eoi; ++i) {
     (*i)->processTimeout();
     (*i)->removeSocketEvents(this);
@@ -161,38 +161,38 @@ bool EpollEventPoll::addEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
   int r = 0;
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
 
     event.addSelf(*i);
 
     struct epoll_event epEvent = (*i)->getEvents();
-    r = epoll_ctl(_epfd, EPOLL_CTL_MOD, (*i)->getSocket(), &epEvent);
+    r = epoll_ctl(epfd_, EPOLL_CTL_MOD, (*i)->getSocket(), &epEvent);
     if(r == -1) {
       // try EPOLL_CTL_ADD: There is a chance that previously socket X is
       // added to epoll, but it is closed and is not yet removed from
       // SocketEntries. In this case, EPOLL_CTL_MOD is failed with ENOENT.
 
-      r = epoll_ctl(_epfd, EPOLL_CTL_ADD, (*i)->getSocket(),
+      r = epoll_ctl(epfd_, EPOLL_CTL_ADD, (*i)->getSocket(),
                     &epEvent);
     }
   } else {
-    _socketEntries.insert(i, socketEntry);
-    if(_socketEntries.size() > _epEventsSize) {
-      _epEventsSize *= 2;
-      delete [] _epEvents;
-      _epEvents = new struct epoll_event[_epEventsSize];
+    socketEntries_.insert(i, socketEntry);
+    if(socketEntries_.size() > epEventsSize_) {
+      epEventsSize_ *= 2;
+      delete [] epEvents_;
+      epEvents_ = new struct epoll_event[epEventsSize_];
     }
 
     event.addSelf(socketEntry);
 
     struct epoll_event epEvent = socketEntry->getEvents();
-    r = epoll_ctl(_epfd, EPOLL_CTL_ADD, socketEntry->getSocket(), &epEvent);
+    r = epoll_ctl(epfd_, EPOLL_CTL_ADD, socketEntry->getSocket(), &epEvent);
   }
   if(r == -1) {
-    if(_logger->debug()) {
-      _logger->debug("Failed to add socket event %d:%s",
+    if(logger_->debug()) {
+      logger_->debug("Failed to add socket event %d:%s",
                      socket, strerror(errno));
     }
     return false;
@@ -221,8 +221,8 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
 
     event.removeSelf(*i);
 
@@ -231,31 +231,31 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
       // In kernel before 2.6.9, epoll_ctl with EPOLL_CTL_DEL requires non-null
       // pointer of epoll_event.
       struct epoll_event ev = {0,{0}};
-      r = epoll_ctl(_epfd, EPOLL_CTL_DEL, (*i)->getSocket(), &ev);
-      _socketEntries.erase(i);
+      r = epoll_ctl(epfd_, EPOLL_CTL_DEL, (*i)->getSocket(), &ev);
+      socketEntries_.erase(i);
     } else {
       // If socket is closed, then it seems it is automatically removed from
       // epoll, so following EPOLL_CTL_MOD may fail.
       struct epoll_event epEvent = (*i)->getEvents();
-      r = epoll_ctl(_epfd, EPOLL_CTL_MOD, (*i)->getSocket(), &epEvent);
+      r = epoll_ctl(epfd_, EPOLL_CTL_MOD, (*i)->getSocket(), &epEvent);
       if(r == -1) {
-        if(_logger->debug()) {
-          _logger->debug("Failed to delete socket event, but may be ignored:%s",
+        if(logger_->debug()) {
+          logger_->debug("Failed to delete socket event, but may be ignored:%s",
                          strerror(errno));
         }
       }
     }
     if(r == -1) {
-      if(_logger->debug()) {
-        _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      if(logger_->debug()) {
+        logger_->debug("Failed to delete socket event:%s", strerror(errno));
       }
       return false;
     } else {
       return true;
     }
   } else {
-    if(_logger->debug()) {
-      _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    if(logger_->debug()) {
+      logger_->debug("Socket %d is not found in SocketEntries.", socket);
     }
     return false;
   }
@@ -283,9 +283,9 @@ bool EpollEventPoll::addNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
-    _nameResolverEntries.push_back(entry);
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
+    nameResolverEntries_.push_back(entry);
     entry->addSocketEvents(this);
     return true;
   } else {
@@ -299,12 +299,12 @@ bool EpollEventPoll::deleteNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
     return false;
   } else {
     (*itr)->removeSocketEvents(this);
-    _nameResolverEntries.erase(itr);
+    nameResolverEntries_.erase(itr);
     return true;
   }
 }

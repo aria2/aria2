@@ -45,9 +45,9 @@
 
 namespace aria2 {
 
-UriListParser::UriListParser(std::istream& in):_in(in)
+UriListParser::UriListParser(std::istream& in):in_(in)
 {
-  _optparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
+  optparser_.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
 }
 
 UriListParser::~UriListParser() {}
@@ -55,38 +55,38 @@ UriListParser::~UriListParser() {}
 void UriListParser::getOptions(Option& op)
 {
   std::stringstream ss;
-  while(getline(_in, _line)) {
-    if(util::startsWith(_line, " ")) {
-      ss << _line << "\n";
-    } else if(util::startsWith(_line, A2STR::SHARP_C)) {
+  while(getline(in_, line_)) {
+    if(util::startsWith(line_, " ")) {
+      ss << line_ << "\n";
+    } else if(util::startsWith(line_, A2STR::SHARP_C)) {
       continue;
     } else {
       break;
     }
   }
-  _optparser.parse(op, ss);
+  optparser_.parse(op, ss);
 }
 
 void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 {
-  if(_line.empty()) {
-    getline(_in, _line);
+  if(line_.empty()) {
+    getline(in_, line_);
   }
-  if(!_in) {
+  if(!in_) {
     return;
   }
   do {
-    if(!util::startsWith(_line, A2STR::SHARP_C) && !util::trim(_line).empty()) {
-      util::split(_line, std::back_inserter(uris), "\t", true);
+    if(!util::startsWith(line_, A2STR::SHARP_C) && !util::trim(line_).empty()) {
+      util::split(line_, std::back_inserter(uris), "\t", true);
       getOptions(op);
       return;
     }
-  } while(getline(_in, _line));
+  } while(getline(in_, line_));
 }
 
 bool UriListParser::hasNext() const
 {
-  return _in;
+  return in_;
 }
 
 } // namespace aria2

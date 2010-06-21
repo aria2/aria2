@@ -46,7 +46,7 @@ namespace {
 const int OUTBUF_LENGTH = 4096;
 }
 
-GZipEncoder::GZipEncoder():_strm(0), _finished(false) {}
+GZipEncoder::GZipEncoder():strm_(0), finished_(false) {}
 
 GZipEncoder::~GZipEncoder()
 {
@@ -55,27 +55,27 @@ GZipEncoder::~GZipEncoder()
 
 void GZipEncoder::init()
 {
-  _finished = false;
+  finished_ = false;
   release();
-  _strm = new z_stream();
-  _strm->zalloc = Z_NULL;
-  _strm->zfree = Z_NULL;
-  _strm->opaque = Z_NULL;
-  _strm->avail_in = 0;
-  _strm->next_in = Z_NULL;
+  strm_ = new z_stream();
+  strm_->zalloc = Z_NULL;
+  strm_->zfree = Z_NULL;
+  strm_->opaque = Z_NULL;
+  strm_->avail_in = 0;
+  strm_->next_in = Z_NULL;
 
   if(Z_OK != deflateInit2
-     (_strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED, 31, 9, Z_DEFAULT_STRATEGY)) {
+     (strm_, Z_DEFAULT_COMPRESSION, Z_DEFLATED, 31, 9, Z_DEFAULT_STRATEGY)) {
     throw DL_ABORT_EX("Initializing z_stream failed.");
   }
 }
 
 void GZipEncoder::release()
 {
-  if(_strm) {
-    deflateEnd(_strm);
-    delete _strm;
-    _strm = 0;
+  if(strm_) {
+    deflateEnd(strm_);
+    delete strm_;
+    strm_ = 0;
   }
 }
 
@@ -84,28 +84,28 @@ std::string GZipEncoder::encode
 {
   std::string out;
 
-  _strm->avail_in = length;
-  _strm->next_in = const_cast<unsigned char*>(in);
+  strm_->avail_in = length;
+  strm_->next_in = const_cast<unsigned char*>(in);
 
   unsigned char outbuf[OUTBUF_LENGTH];
   while(1) {
-    _strm->avail_out = OUTBUF_LENGTH;
-    _strm->next_out = outbuf;
+    strm_->avail_out = OUTBUF_LENGTH;
+    strm_->next_out = outbuf;
 
-    int ret = ::deflate(_strm, flush);
+    int ret = ::deflate(strm_, flush);
 
     if(ret == Z_STREAM_END) {
-      _finished = true;
+      finished_ = true;
     } else if(ret != Z_OK) {
       throw DL_ABORT_EX(StringFormat("libz::deflate() failed. cause:%s",
-                                     _strm->msg).str());
+                                     strm_->msg).str());
     }
 
-    size_t produced = OUTBUF_LENGTH-_strm->avail_out;
+    size_t produced = OUTBUF_LENGTH-strm_->avail_out;
 
     out.append(&outbuf[0], &outbuf[produced]);
 
-    if(_strm->avail_out > 0) {
+    if(strm_->avail_out > 0) {
       break;
     }
   }
@@ -114,24 +114,24 @@ std::string GZipEncoder::encode
 
 bool GZipEncoder::finished()
 {
-  return _finished;
+  return finished_;
 }
 
 std::string GZipEncoder::str()
 {
-  _internalBuf += encode(0, 0, Z_FINISH);
-  return _internalBuf;
+  internalBuf_ += encode(0, 0, Z_FINISH);
+  return internalBuf_;
 }
 
 GZipEncoder& GZipEncoder::operator<<(const char* s)
 {
-  _internalBuf += encode(reinterpret_cast<const unsigned char*>(s), strlen(s));
+  internalBuf_ += encode(reinterpret_cast<const unsigned char*>(s), strlen(s));
   return *this;
 }
 
 GZipEncoder& GZipEncoder::operator<<(const std::string& s)
 {
-  _internalBuf += encode
+  internalBuf_ += encode
     (reinterpret_cast<const unsigned char*>(s.data()), s.size());
   return *this;
 }

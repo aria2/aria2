@@ -51,7 +51,7 @@
 namespace aria2 {
 
 DefaultBtMessageReceiver::DefaultBtMessageReceiver():
-  _handshakeSent(false)
+  handshakeSent_(false)
 {}
 
 SharedHandle<BtHandshakeMessage>
@@ -59,12 +59,12 @@ DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
 {
   unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
   size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
-  bool retval = _peerConnection->receiveHandshake(data, dataLength);
+  bool retval = peerConnection_->receiveHandshake(data, dataLength);
   // To handle tracker's NAT-checking feature
-  if(!_handshakeSent && quickReply && dataLength >= 48) {
-    _handshakeSent = true;
+  if(!handshakeSent_ && quickReply && dataLength >= 48) {
+    handshakeSent_ = true;
     // check info_hash
-    if(memcmp(bittorrent::getInfoHash(_downloadContext), &data[28],
+    if(memcmp(bittorrent::getInfoHash(downloadContext_), &data[28],
               INFO_HASH_LENGTH) == 0) {
       sendHandshake();
     }
@@ -73,7 +73,7 @@ DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
     return SharedHandle<BtHandshakeMessage>();
   }
   SharedHandle<BtHandshakeMessage> msg =
-    _messageFactory->createHandshakeMessage(data, dataLength);
+    messageFactory_->createHandshakeMessage(data, dataLength);
   msg->validate();
   return msg;
 }
@@ -86,25 +86,25 @@ DefaultBtMessageReceiver::receiveAndSendHandshake()
 
 void DefaultBtMessageReceiver::sendHandshake() {
   SharedHandle<BtMessage> msg =
-    _messageFactory->createHandshakeMessage
-    (bittorrent::getInfoHash(_downloadContext), bittorrent::getStaticPeerId());
-  _dispatcher->addMessageToQueue(msg);
-  _dispatcher->sendMessages();
+    messageFactory_->createHandshakeMessage
+    (bittorrent::getInfoHash(downloadContext_), bittorrent::getStaticPeerId());
+  dispatcher_->addMessageToQueue(msg);
+  dispatcher_->sendMessages();
 }
 
 BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
   size_t dataLength = 0;
   // Give 0 to PeerConnection::receiveMessage() to prevent memcpy.
-  if(!_peerConnection->receiveMessage(0, dataLength)) {
+  if(!peerConnection_->receiveMessage(0, dataLength)) {
     return SharedHandle<BtMessage>();
   }
   BtMessageHandle msg =
-    _messageFactory->createBtMessage(_peerConnection->getBuffer(), dataLength);
+    messageFactory_->createBtMessage(peerConnection_->getBuffer(), dataLength);
   msg->validate();
   if(msg->getId() == BtPieceMessage::ID) {
     SharedHandle<BtPieceMessage> piecemsg =
       static_pointer_cast<BtPieceMessage>(msg);
-    piecemsg->setRawMessage(_peerConnection->detachBuffer());
+    piecemsg->setRawMessage(peerConnection_->detachBuffer());
   }
   return msg;
 }
@@ -112,25 +112,25 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
 void DefaultBtMessageReceiver::setDownloadContext
 (const SharedHandle<DownloadContext>& downloadContext)
 {
-  _downloadContext = downloadContext;
+  downloadContext_ = downloadContext;
 }
 
 void DefaultBtMessageReceiver::setPeerConnection
 (const WeakHandle<PeerConnection>& peerConnection)
 {
-  _peerConnection = peerConnection;
+  peerConnection_ = peerConnection;
 }
 
 void DefaultBtMessageReceiver::setDispatcher
 (const WeakHandle<BtMessageDispatcher>& dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
 
 void DefaultBtMessageReceiver::setBtMessageFactory
 (const WeakHandle<BtMessageFactory>& factory)
 {
-  _messageFactory = factory;
+  messageFactory_ = factory;
 }
 
 } // namespace aria2

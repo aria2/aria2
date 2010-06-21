@@ -40,14 +40,14 @@
 
 namespace aria2 {
 
-SharedHandle<SimpleRandomizer> SimpleRandomizer::_randomizer;
+SharedHandle<SimpleRandomizer> SimpleRandomizer::randomizer_;
 
 const SharedHandle<SimpleRandomizer>& SimpleRandomizer::getInstance()
 {
-  if(_randomizer.isNull()) {
-    _randomizer.reset(new SimpleRandomizer());
+  if(randomizer_.isNull()) {
+    randomizer_.reset(new SimpleRandomizer());
   }
-  return _randomizer;
+  return randomizer_;
 }
   
 void SimpleRandomizer::init()

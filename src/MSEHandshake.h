@@ -81,28 +81,28 @@ private:
 
   static const size_t MAX_BUFFER_LENGTH = 6*1024;
 
-  cuid_t _cuid;
-  SharedHandle<SocketCore> _socket;
-  const Option* _option;
-  Logger* _logger;
+  cuid_t cuid_;
+  SharedHandle<SocketCore> socket_;
+  const Option* option_;
+  Logger* logger_;
 
-  unsigned char _rbuf[MAX_BUFFER_LENGTH];
-  size_t _rbufLength;
+  unsigned char rbuf_[MAX_BUFFER_LENGTH];
+  size_t rbufLength_;
 
-  SocketBuffer _socketBuffer;
+  SocketBuffer socketBuffer_;
 
-  CRYPTO_TYPE _negotiatedCryptoType;
-  DHKeyExchange* _dh;
-  SharedHandle<ARC4Encryptor> _encryptor;
-  SharedHandle<ARC4Decryptor> _decryptor;
-  unsigned char _infoHash[INFO_HASH_LENGTH];
-  unsigned char _secret[KEY_LENGTH];
-  bool _initiator;
-  unsigned char _initiatorVCMarker[VC_LENGTH];
-  size_t _markerIndex;
-  uint16_t _padLength;
-  uint16_t _iaLength;
-  unsigned char* _ia;
+  CRYPTO_TYPE negotiatedCryptoType_;
+  DHKeyExchange* dh_;
+  SharedHandle<ARC4Encryptor> encryptor_;
+  SharedHandle<ARC4Decryptor> decryptor_;
+  unsigned char infoHash_[INFO_HASH_LENGTH];
+  unsigned char secret_[KEY_LENGTH];
+  bool initiator_;
+  unsigned char initiatorVCMarker_[VC_LENGTH];
+  size_t markerIndex_;
+  uint16_t padLength_;
+  uint16_t iaLength_;
+  unsigned char* ia_;
 
   static const unsigned char* PRIME;
 
@@ -170,42 +170,42 @@ public:
   // returns plain text IA
   const unsigned char* getIA() const
   {
-    return _ia;
+    return ia_;
   }
 
   size_t getIALength() const
   {
-    return _iaLength;
+    return iaLength_;
   }
 
   const unsigned char* getInfoHash() const
   {
-    return _infoHash;
+    return infoHash_;
   }
 
   CRYPTO_TYPE getNegotiatedCryptoType() const
   {
-    return _negotiatedCryptoType;
+    return negotiatedCryptoType_;
   }
 
   const SharedHandle<ARC4Encryptor>& getEncryptor() const
   {
-    return _encryptor;
+    return encryptor_;
   }
 
   const SharedHandle<ARC4Decryptor>& getDecryptor() const
   {
-    return _decryptor;
+    return decryptor_;
   }
 
   const unsigned char* getBuffer() const
   {
-    return _rbuf;
+    return rbuf_;
   }
 
   size_t getBufferLength() const
   {
-    return _rbufLength;
+    return rbufLength_;
   }
 
 };

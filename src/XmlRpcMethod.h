@@ -64,9 +64,9 @@ struct XmlRpcResponse;
 // it to XmlRpcMethodFactory.
 class XmlRpcMethod {
 private:
-  SharedHandle<OptionParser> _optionParser;
+  SharedHandle<OptionParser> optionParser_;
 
-  Logger* _logger;
+  Logger* logger_;
 protected:
   // Subclass must implement this function to fulfil XmlRpcRequest
   // req.  The return value of this method is used as a return value
@@ -95,7 +95,7 @@ protected:
 
   const SharedHandle<OptionParser>& getOptionParser() const
   {
-    return _optionParser;
+    return optionParser_;
   }
 public:
   XmlRpcMethod();

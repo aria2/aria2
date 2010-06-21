@@ -53,7 +53,7 @@ CheckIntegrityCommand::CheckIntegrityCommand
 (cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e,
  const SharedHandle<CheckIntegrityEntry>& entry):
   RealtimeCommand(cuid, requestGroup, e),
-  _entry(entry)
+  entry_(entry)
 {}
 
 CheckIntegrityCommand::~CheckIntegrityCommand() {}
@@ -64,8 +64,8 @@ bool CheckIntegrityCommand::executeInternal()
     getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
     return true;
   }
-  _entry->validateChunk();
-  if(_entry->finished()) {
+  entry_->validateChunk();
+  if(entry_->finished()) {
     getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
     // Enable control file saving here. See also
     // RequestGroup::processCheckIntegrityEntry() to know why this is
@@ -77,7 +77,7 @@ bool CheckIntegrityCommand::executeInternal()
          getRequestGroup()->getDownloadContext()->getBasePath().c_str());
       std::vector<Command*>* commands = new std::vector<Command*>();
       auto_delete_container<std::vector<Command*> > commandsDel(commands);
-      _entry->onDownloadFinished(*commands, getDownloadEngine());
+      entry_->onDownloadFinished(*commands, getDownloadEngine());
       getDownloadEngine()->addCommand(*commands);
       commands->clear();
     } else {
@@ -86,7 +86,7 @@ bool CheckIntegrityCommand::executeInternal()
          getRequestGroup()->getDownloadContext()->getBasePath().c_str());
       std::vector<Command*>* commands = new std::vector<Command*>();
       auto_delete_container<std::vector<Command*> > commandsDel(commands);
-      _entry->onDownloadIncomplete(*commands, getDownloadEngine());
+      entry_->onDownloadIncomplete(*commands, getDownloadEngine());
       getDownloadEngine()->addCommand(*commands);
       commands->clear();
     }

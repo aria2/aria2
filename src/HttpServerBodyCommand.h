@@ -47,10 +47,10 @@ class HttpServer;
 
 class HttpServerBodyCommand : public Command {
 private:
-  DownloadEngine* _e;
-  SharedHandle<SocketCore> _socket;
-  SharedHandle<HttpServer> _httpServer;
-  Timer _timeoutTimer;
+  DownloadEngine* e_;
+  SharedHandle<SocketCore> socket_;
+  SharedHandle<HttpServer> httpServer_;
+  Timer timeoutTimer_;
 public:
   HttpServerBodyCommand(cuid_t cuid,
                         const SharedHandle<HttpServer>& httpServer,

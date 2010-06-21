@@ -37,6 +37,6 @@
 namespace aria2 {
 
 URIResult::URIResult(const std::string& uri, downloadresultcode::RESULT result):
-  _uri(uri), _result(result) {}
+  uri_(uri), result_(result) {}
 
 } // namespace aria2

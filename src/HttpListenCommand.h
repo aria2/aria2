@@ -45,8 +45,8 @@ class SocketCore;
 
 class HttpListenCommand : public Command {
 private:
-  DownloadEngine* _e;
-  SharedHandle<SocketCore> _serverSocket;
+  DownloadEngine* e_;
+  SharedHandle<SocketCore> serverSocket_;
 public:
   HttpListenCommand(cuid_t cuid, DownloadEngine* e);
 

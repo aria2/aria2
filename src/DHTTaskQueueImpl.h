@@ -43,17 +43,17 @@ namespace aria2 {
 class DHTTaskQueueImpl:public DHTTaskQueue {
 private:
 
-  SharedHandle<DHTTask> _periodicTask1;
+  SharedHandle<DHTTask> periodicTask1_;
 
-  SharedHandle<DHTTask> _periodicTask2;
+  SharedHandle<DHTTask> periodicTask2_;
 
-  SharedHandle<DHTTask> _immediateTask;
+  SharedHandle<DHTTask> immediateTask_;
 
-  std::deque<SharedHandle<DHTTask> > _periodicTaskQueue1;
+  std::deque<SharedHandle<DHTTask> > periodicTaskQueue1_;
 
-  std::deque<SharedHandle<DHTTask> > _periodicTaskQueue2;
+  std::deque<SharedHandle<DHTTask> > periodicTaskQueue2_;
 
-  std::deque<SharedHandle<DHTTask> > _immediateTaskQueue;
+  std::deque<SharedHandle<DHTTask> > immediateTaskQueue_;
 
   void executeTask(SharedHandle<DHTTask>& task, std::deque<SharedHandle<DHTTask> >& taskQueue);
 public:

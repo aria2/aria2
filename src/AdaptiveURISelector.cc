@@ -63,9 +63,9 @@ namespace aria2 {
 
 AdaptiveURISelector::AdaptiveURISelector
 (const SharedHandle<ServerStatMan>& serverStatMan, RequestGroup* requestGroup):
-  _serverStatMan(serverStatMan),
-  _requestGroup(requestGroup),
-  _logger(LogFactory::getInstance())
+  serverStatMan_(serverStatMan),
+  requestGroup_(requestGroup),
+  logger_(LogFactory::getInstance())
 {
   resetCounters();
 }
@@ -74,12 +74,12 @@ AdaptiveURISelector::~AdaptiveURISelector() {}
 
 std::string AdaptiveURISelector::select(FileEntry* fileEntry)
 {
-  if(_logger->debug()) {
-    _logger->debug("AdaptiveURISelector: called %d",
-                   _requestGroup->getNumConnection());
+  if(logger_->debug()) {
+    logger_->debug("AdaptiveURISelector: called %d",
+                   requestGroup_->getNumConnection());
   }
   std::deque<std::string>& uris = fileEntry->getRemainingUris();
-  if (uris.empty() && _requestGroup->getNumConnection() <= 1) {
+  if (uris.empty() && requestGroup_->getNumConnection() <= 1) {
     // here we know the download will fail, trying to find previously
     // failed uris that may succeed with more permissive values
     mayRetryWithIncreasedTimeout(fileEntry);
@@ -95,8 +95,8 @@ std::string AdaptiveURISelector::select(FileEntry* fileEntry)
 
 void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
 {
-  if (_requestGroup->getTimeout()*2 >= MAX_TIMEOUT) return;
-  _requestGroup->setTimeout(_requestGroup->getTimeout()*2);
+  if (requestGroup_->getTimeout()*2 >= MAX_TIMEOUT) return;
+  requestGroup_->setTimeout(requestGroup_->getTimeout()*2);
 
   std::deque<std::string>& uris = fileEntry->getRemainingUris();
   // looking for retries
@@ -105,12 +105,12 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
   std::transform(timeouts.begin(), timeouts.end(), std::back_inserter(uris),
                  std::mem_fun_ref(&URIResult::getURI));
 
-  if(_logger->debug()) {
+  if(logger_->debug()) {
     for(std::deque<std::string>::const_iterator i = uris.begin(),
           eoi = uris.end(); i != eoi; ++i) {
-      _logger->debug("AdaptiveURISelector: will retry server with increased"
+      logger_->debug("AdaptiveURISelector: will retry server with increased"
                      " timeout (%d s): %s",
-                     _requestGroup->getTimeout(), (*i).c_str());
+                     requestGroup_->getTimeout(), (*i).c_str());
     }
   }
 }
@@ -122,48 +122,48 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
     return A2STR::NIL;
   } else {
     const unsigned int numPieces =
-      _requestGroup->getDownloadContext()->getNumPieces();
+      requestGroup_->getDownloadContext()->getNumPieces();
 
     bool reservedContext = numPieces > 0 && 
-      _nbConnections > std::min(numPieces,
-                                _requestGroup->getNumConcurrentCommand());
+      nbConnections_ > std::min(numPieces,
+                                requestGroup_->getNumConcurrentCommand());
     bool selectBest = numPieces == 0 || reservedContext;
     
     if(numPieces > 0)
-      ++_nbConnections;
+      ++nbConnections_;
 
     /* At least, 3 mirrors must be tested */
     if(getNbTestedServers(uris) < 3) {
       std::string notTested = getFirstNotTestedUri(uris);
       if(notTested != A2STR::NIL) {
-        if(_logger->debug()) {
-          _logger->debug("AdaptiveURISelector: choosing the first non tested"
+        if(logger_->debug()) {
+          logger_->debug("AdaptiveURISelector: choosing the first non tested"
                          " mirror: %s", notTested.c_str());
         }
-        --_nbServerToEvaluate;
+        --nbServerToEvaluate_;
         return notTested;
       }
     }
     
-    if(!selectBest && _nbConnections > 1 && _nbServerToEvaluate > 0) {
-      _nbServerToEvaluate--;
+    if(!selectBest && nbConnections_ > 1 && nbServerToEvaluate_ > 0) {
+      nbServerToEvaluate_--;
       std::string notTested = getFirstNotTestedUri(uris);
       if(notTested != A2STR::NIL) {
         /* Here we return the first untested mirror */
-        if(_logger->debug()) {
-          _logger->debug("AdaptiveURISelector: choosing non tested mirror %s"
+        if(logger_->debug()) {
+          logger_->debug("AdaptiveURISelector: choosing non tested mirror %s"
                          " for connection #%d",
-                         notTested.c_str(), _nbConnections);
+                         notTested.c_str(), nbConnections_);
         }
         return notTested;
       } else {
         /* Here we return a mirror which need to be tested again */
         std::string toReTest = getFirstToTestUri(uris);
         if(toReTest != A2STR::NIL) {
-          if(_logger->debug()) {
-            _logger->debug("AdaptiveURISelector: choosing mirror %s which has"
+          if(logger_->debug()) {
+            logger_->debug("AdaptiveURISelector: choosing mirror %s which has"
                            " not been tested recently for connection #%d",
-                           toReTest.c_str(), _nbConnections);
+                           toReTest.c_str(), nbConnections_);
           }
           return toReTest;
         } else {
@@ -187,16 +187,16 @@ std::string AdaptiveURISelector::getBestMirror
   
   if (bests.size() < 2) {
     std::string uri = getMaxDownloadSpeedUri(uris);
-    if(_logger->debug()) {
-      _logger->debug("AdaptiveURISelector: choosing the best mirror :"
+    if(logger_->debug()) {
+      logger_->debug("AdaptiveURISelector: choosing the best mirror :"
                      " %.2fKB/s %s (other mirrors are at least 25%% slower)",
                      (float) max/1024, uri.c_str());
     }
     return uri;
   } else {
     std::string uri = selectRandomUri(bests);
-    if(_logger->debug()) {
-      _logger->debug("AdaptiveURISelector: choosing randomly one of the best"
+    if(logger_->debug()) {
+      logger_->debug("AdaptiveURISelector: choosing randomly one of the best"
                      " mirrors (range [%.2fKB/s, %.2fKB/s]): %s",
                      (float) min/1024, (float) max/1024, uri.c_str());
     }
@@ -206,9 +206,9 @@ std::string AdaptiveURISelector::getBestMirror
 
 void AdaptiveURISelector::resetCounters()
 {
-  _nbConnections = 1;
-  _nbServerToEvaluate =
-    _requestGroup->getOption()->getAsInt(PREF_METALINK_SERVERS) - 1;
+  nbConnections_ = 1;
+  nbServerToEvaluate_ =
+    requestGroup_->getOption()->getAsInt(PREF_METALINK_SERVERS) - 1;
 }
 
 void AdaptiveURISelector::tuneDownloadCommand
@@ -221,16 +221,16 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
 (const std::deque<std::string>& uris, DownloadCommand* command) const
 {
   unsigned int lowest =
-    _requestGroup->getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT);
+    requestGroup_->getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT);
   if (lowest > 0) {
     unsigned int low_lowest = 4 * 1024;
     unsigned int max = getMaxDownloadSpeed(uris);
     if (max > 0 && lowest > max / 4) {
-      _logger->notice("Lowering lowest-speed-limit since known max speed is too"
+      logger_->notice("Lowering lowest-speed-limit since known max speed is too"
                       " near (new:%d was:%d max:%d)", max / 4, lowest, max);
       command->setLowestDownloadSpeedLimit(max / 4);
     } else if (max == 0 && lowest > low_lowest) {
-      _logger->notice("Lowering lowest-speed-limit since we have no clue about"
+      logger_->notice("Lowering lowest-speed-limit since we have no clue about"
                       " available speed (now:%d was:%d)", low_lowest, lowest);
       command->setLowestDownloadSpeedLimit(low_lowest);
     }
@@ -341,7 +341,7 @@ SharedHandle<ServerStat> AdaptiveURISelector::getServerStats
 {
   Request r;
   r.setUri(uri);
-  return _serverStatMan->find(r.getHost(), r.getProtocol());
+  return serverStatMan_->find(r.getHost(), r.getProtocol());
 }
 
 unsigned int AdaptiveURISelector::getNbTestedServers

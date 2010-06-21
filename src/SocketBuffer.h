@@ -74,14 +74,14 @@ private:
       type(TYPE_STR), str(new std::string(str)) {}
   };
     
-  SharedHandle<SocketCore> _socket;
+  SharedHandle<SocketCore> socket_;
 
-  std::deque<BufEntry> _bufq;
+  std::deque<BufEntry> bufq_;
 
-  // Offset of data in _bufq[0]. SocketBuffer tries to send _bufq[0],
+  // Offset of data in bufq_[0]. SocketBuffer tries to send bufq_[0],
   // but it cannot always send whole data. In this case, offset points
   // to the data to be sent in the next send() call.
-  size_t _offset;
+  size_t offset_;
 public:
   SocketBuffer(const SharedHandle<SocketCore>& socket);
 

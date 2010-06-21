@@ -47,17 +47,17 @@ class MessageDigestContext;
 
 class DownloadCommand : public AbstractCommand {
 private:
-  unsigned char* _buf;
+  unsigned char* buf_;
 
-  time_t _startupIdleTime;
-  unsigned int _lowestDownloadSpeedLimit;
-  SharedHandle<PeerStat> _peerStat;
+  time_t startupIdleTime_;
+  unsigned int lowestDownloadSpeedLimit_;
+  SharedHandle<PeerStat> peerStat_;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-  bool _pieceHashValidationEnabled;
+  bool pieceHashValidationEnabled_;
 
-  SharedHandle<MessageDigestContext> _messageDigestContext;
+  SharedHandle<MessageDigestContext> messageDigestContext_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -67,9 +67,9 @@ private:
 
   void checkLowestDownloadSpeed() const;
 
-  SharedHandle<Decoder> _transferEncodingDecoder;
+  SharedHandle<Decoder> transferEncodingDecoder_;
 
-  SharedHandle<Decoder> _contentEncodingDecoder;
+  SharedHandle<Decoder> contentEncodingDecoder_;
 protected:
   virtual bool executeInternal();
 
@@ -85,26 +85,26 @@ public:
 
   const SharedHandle<Decoder>& getTransferEncodingDecoder() const
   {
-    return _transferEncodingDecoder;
+    return transferEncodingDecoder_;
   }
 
   void setTransferEncodingDecoder(const SharedHandle<Decoder>& decoder);
 
   const SharedHandle<Decoder>& getContentEncodingDecoder() const
   {
-    return _contentEncodingDecoder;
+    return contentEncodingDecoder_;
   }
 
   void setContentEncodingDecoder(const SharedHandle<Decoder>& decoder);
 
   void setStartupIdleTime(time_t startupIdleTime)
   {
-    _startupIdleTime = startupIdleTime;
+    startupIdleTime_ = startupIdleTime;
   }
 
   void setLowestDownloadSpeedLimit(unsigned int lowestDownloadSpeedLimit)
   {
-    _lowestDownloadSpeedLimit = lowestDownloadSpeedLimit;
+    lowestDownloadSpeedLimit_ = lowestDownloadSpeedLimit;
   }
 };
 

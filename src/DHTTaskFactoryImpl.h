@@ -50,19 +50,19 @@ class Logger;
 
 class DHTTaskFactoryImpl:public DHTTaskFactory {
 private:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTRoutingTable> _routingTable;
+  WeakHandle<DHTRoutingTable> routingTable_;
 
-  WeakHandle<DHTMessageDispatcher> _dispatcher;
+  WeakHandle<DHTMessageDispatcher> dispatcher_;
 
-  WeakHandle<DHTMessageFactory> _factory;
+  WeakHandle<DHTMessageFactory> factory_;
   
-  WeakHandle<DHTTaskQueue> _taskQueue;
+  WeakHandle<DHTTaskQueue> taskQueue_;
 
-  time_t _timeout;
+  time_t timeout_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   void setCommonProperty(const SharedHandle<DHTAbstractTask>& task);
 public:
@@ -103,7 +103,7 @@ public:
 
   void setTimeout(time_t timeout)
   {
-    _timeout = timeout;
+    timeout_ = timeout;
   }
 };
 

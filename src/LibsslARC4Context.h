@@ -47,7 +47,7 @@ namespace aria2 {
 
 class LibsslARC4Context {
 private:
-  EVP_CIPHER_CTX* _cipherCtx;
+  EVP_CIPHER_CTX* cipherCtx_;
 
   void handleError() const
   {
@@ -56,39 +56,39 @@ private:
                     ERR_error_string(ERR_get_error(), 0)).str());
   }
 public:
-  LibsslARC4Context():_cipherCtx(0) {}
+  LibsslARC4Context():cipherCtx_(0) {}
 
   ~LibsslARC4Context()
   {
-    if(_cipherCtx) {
-      EVP_CIPHER_CTX_cleanup(_cipherCtx);
+    if(cipherCtx_) {
+      EVP_CIPHER_CTX_cleanup(cipherCtx_);
     }
-    delete _cipherCtx;
+    delete cipherCtx_;
   }
 
   EVP_CIPHER_CTX* getCipherContext() const
   {
-    return _cipherCtx;
+    return cipherCtx_;
   }
 
   // enc == 1: encryption
   // enc == 0: decryption
   void init(const unsigned char* key, size_t keyLength, int enc)
   {
-    if(_cipherCtx) {
-      EVP_CIPHER_CTX_cleanup(_cipherCtx);
+    if(cipherCtx_) {
+      EVP_CIPHER_CTX_cleanup(cipherCtx_);
     }
-    delete _cipherCtx;
-    _cipherCtx = new EVP_CIPHER_CTX;
-    EVP_CIPHER_CTX_init(_cipherCtx);
+    delete cipherCtx_;
+    cipherCtx_ = new EVP_CIPHER_CTX;
+    EVP_CIPHER_CTX_init(cipherCtx_);
 
-    if(!EVP_CipherInit_ex(_cipherCtx, EVP_rc4(), 0, 0, 0, enc)) {
+    if(!EVP_CipherInit_ex(cipherCtx_, EVP_rc4(), 0, 0, 0, enc)) {
       handleError();
     }
-    if(!EVP_CIPHER_CTX_set_key_length(_cipherCtx, keyLength)) {
+    if(!EVP_CIPHER_CTX_set_key_length(cipherCtx_, keyLength)) {
       handleError();
     }
-    if(!EVP_CipherInit_ex(_cipherCtx, 0, 0, key, 0, -1)) {
+    if(!EVP_CipherInit_ex(cipherCtx_, 0, 0, key, 0, -1)) {
       handleError();
     }
   }

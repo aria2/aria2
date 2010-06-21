@@ -52,12 +52,12 @@ public:
   };
 
   struct LastAccess {
-    time_t _lastAccess;
-    LastAccess(time_t lastAccess):_lastAccess(lastAccess) {}
+    time_t lastAccess_;
+    LastAccess(time_t lastAccess):lastAccess_(lastAccess) {}
 
     time_t getLastAccess() const
     {
-      return _lastAccess;
+      return lastAccess_;
     }
   };
 };
@@ -120,7 +120,7 @@ void a2functionalTest::testLeastRecentAccess()
   }
   std::sort(v.begin(), v.end(), LeastRecentAccess<LastAccess>());
   for(int i = 0; i < 100; ++i) {
-    CPPUNIT_ASSERT_EQUAL((time_t)i, v[i]._lastAccess);
+    CPPUNIT_ASSERT_EQUAL((time_t)i, v[i].lastAccess_);
   }
 }
 

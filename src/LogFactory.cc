@@ -39,53 +39,53 @@
 
 namespace aria2 {
 
-std::string LogFactory::_filename = DEV_NULL;
-Logger* LogFactory::_logger = 0;
-bool LogFactory::_consoleOutput = true;
-Logger::LEVEL LogFactory::_logLevel = Logger::A2_DEBUG;
+std::string LogFactory::filename_ = DEV_NULL;
+Logger* LogFactory::logger_ = 0;
+bool LogFactory::consoleOutput_ = true;
+Logger::LEVEL LogFactory::logLevel_ = Logger::A2_DEBUG;
 
 Logger* LogFactory::getInstance() {
-  if(!_logger) {
+  if(!logger_) {
     SimpleLogger* slogger = new SimpleLogger();
-    if(_filename != DEV_NULL) {
+    if(filename_ != DEV_NULL) {
       // don't open file DEV_NULL for performance sake.
       // This avoids costly unecessary message formatting and write.
-      slogger->openFile(_filename);
+      slogger->openFile(filename_);
     }
-    slogger->setLogLevel(_logLevel);
-    if(_consoleOutput) {
+    slogger->setLogLevel(logLevel_);
+    if(consoleOutput_) {
       slogger->setStdoutLogLevel(Logger::A2_NOTICE, true);
       slogger->setStdoutLogLevel(Logger::A2_WARN, true);
       slogger->setStdoutLogLevel(Logger::A2_ERROR, true);
     }
-    _logger = slogger;
+    logger_ = slogger;
   }
-  return _logger;
+  return logger_;
 }
 
 void LogFactory::setLogLevel(Logger::LEVEL level)
 {
-  _logLevel = level;
+  logLevel_ = level;
 }
 
 void LogFactory::setLogLevel(const std::string& level)
 {
   if(level == V_DEBUG) {
-    _logLevel = Logger::A2_DEBUG;
+    logLevel_ = Logger::A2_DEBUG;
   } else if(level == V_INFO) {
-    _logLevel = Logger::A2_INFO;
+    logLevel_ = Logger::A2_INFO;
   } else if(level == V_NOTICE) {
-    _logLevel = Logger::A2_NOTICE;
+    logLevel_ = Logger::A2_NOTICE;
   } else if(level == V_WARN) {
-    _logLevel = Logger::A2_WARN;
+    logLevel_ = Logger::A2_WARN;
   } else if(level == V_ERROR) {
-    _logLevel = Logger::A2_ERROR;
+    logLevel_ = Logger::A2_ERROR;
   }
 }
 
 void LogFactory::release() {
-  delete _logger;
-  _logger = 0;
+  delete logger_;
+  logger_ = 0;
 }
 
 } // namespace aria2

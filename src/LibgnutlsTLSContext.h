@@ -49,13 +49,13 @@ class Logger;
 
 class TLSContext {
 private:
-  gnutls_certificate_credentials_t _certCred;
+  gnutls_certificate_credentials_t certCred_;
 
-  bool _good;
+  bool good_;
 
-  bool _peerVerificationEnabled;
+  bool peerVerificationEnabled_;
 
-  Logger* _logger;
+  Logger* logger_;
 public:
   TLSContext();
 

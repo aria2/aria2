@@ -62,75 +62,75 @@ DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand
 (cuid_t cuid, DownloadEngine* e,
  const std::vector<std::pair<std::string, uint16_t> >& entryPoints):
   Command(cuid),
-  _e(e),
-  _entryPoints(entryPoints.begin(), entryPoints.end()),
-  _bootstrapEnabled(false)
+  e_(e),
+  entryPoints_(entryPoints.begin(), entryPoints.end()),
+  bootstrapEnabled_(false)
 {}
 
 DHTEntryPointNameResolveCommand::~DHTEntryPointNameResolveCommand()
 {
 #ifdef ENABLE_ASYNC_DNS
-  disableNameResolverCheck(_resolver);
+  disableNameResolverCheck(resolver_);
 #endif // ENABLE_ASYNC_DNS
 }
 
 bool DHTEntryPointNameResolveCommand::execute()
 {
-  if(_e->getRequestGroupMan()->downloadFinished() || _e->isHaltRequested()) {
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
     return true;
   }
 #ifdef ENABLE_ASYNC_DNS
-  if(_resolver.isNull()) {
-    _resolver.reset(new AsyncNameResolver());
+  if(resolver_.isNull()) {
+    resolver_.reset(new AsyncNameResolver());
   }
 #endif // ENABLE_ASYNC_DNS
   try {
 #ifdef ENABLE_ASYNC_DNS
-    if(_e->getOption()->getAsBool(PREF_ASYNC_DNS)) {
-      while(!_entryPoints.empty()) {
-        std::string hostname = _entryPoints.front().first;
+    if(e_->getOption()->getAsBool(PREF_ASYNC_DNS)) {
+      while(!entryPoints_.empty()) {
+        std::string hostname = entryPoints_.front().first;
         try {
-          if(resolveHostname(hostname, _resolver)) {
-            hostname = _resolver->getResolvedAddresses().front();
+          if(resolveHostname(hostname, resolver_)) {
+            hostname = resolver_->getResolvedAddresses().front();
             std::pair<std::string, uint16_t> p(hostname,
-                                               _entryPoints.front().second);
-            _resolvedEntryPoints.push_back(p);
+                                               entryPoints_.front().second);
+            resolvedEntryPoints_.push_back(p);
             addPingTask(p);
           } else {
-            _e->addCommand(this);
+            e_->addCommand(this);
             return false;
           }
         } catch(RecoverableException& e) {
           getLogger()->error(EX_EXCEPTION_CAUGHT, e);
         }
-        _resolver->reset();
-        _entryPoints.pop_front();
+        resolver_->reset();
+        entryPoints_.pop_front();
       }
     } else
 #endif // ENABLE_ASYNC_DNS
       {
         NameResolver res;
         res.setSocktype(SOCK_DGRAM);
-        while(!_entryPoints.empty()) {
-          std::string hostname = _entryPoints.front().first;
+        while(!entryPoints_.empty()) {
+          std::string hostname = entryPoints_.front().first;
           try {
             std::vector<std::string> addrs;
             res.resolve(addrs, hostname);
           
             std::pair<std::string, uint16_t> p(addrs.front(),
-                                               _entryPoints.front().second);
-            _resolvedEntryPoints.push_back(p);
+                                               entryPoints_.front().second);
+            resolvedEntryPoints_.push_back(p);
             addPingTask(p);
           } catch(RecoverableException& e) {
             getLogger()->error(EX_EXCEPTION_CAUGHT, e);
           }
-          _entryPoints.pop_front();
+          entryPoints_.pop_front();
         }
       }
-    if(_bootstrapEnabled && _resolvedEntryPoints.size()) {
-      _taskQueue->addPeriodicTask1(_taskFactory->createNodeLookupTask
-                                   (_localNode->getID()));
-      _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
+    if(bootstrapEnabled_ && resolvedEntryPoints_.size()) {
+      taskQueue_->addPeriodicTask1(taskFactory_->createNodeLookupTask
+                                   (localNode_->getID()));
+      taskQueue_->addPeriodicTask1(taskFactory_->createBucketRefreshTask());
     }
   } catch(RecoverableException& e) {
     getLogger()->error(EX_EXCEPTION_CAUGHT, e);
@@ -145,7 +145,7 @@ void DHTEntryPointNameResolveCommand::addPingTask
   entryNode->setIPAddress(addr.first);
   entryNode->setPort(addr.second);
   
-  _taskQueue->addPeriodicTask1(_taskFactory->createPingTask(entryNode, 10));
+  taskQueue_->addPeriodicTask1(taskFactory_->createPingTask(entryNode, 10));
 }
 
 #ifdef ENABLE_ASYNC_DNS
@@ -186,43 +186,43 @@ bool DHTEntryPointNameResolveCommand::resolveHostname
 void DHTEntryPointNameResolveCommand::setNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver)
 {
-  _e->addNameResolverCheck(resolver, this);
+  e_->addNameResolverCheck(resolver, this);
 }
 
 void DHTEntryPointNameResolveCommand::disableNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver)
 {
-  _e->deleteNameResolverCheck(resolver, this);
+  e_->deleteNameResolverCheck(resolver, this);
 }
 #endif // ENABLE_ASYNC_DNS
 
 void DHTEntryPointNameResolveCommand::setBootstrapEnabled(bool f)
 {
-  _bootstrapEnabled = f;
+  bootstrapEnabled_ = f;
 }
 
 void DHTEntryPointNameResolveCommand::setTaskQueue
 (const SharedHandle<DHTTaskQueue>& taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 void DHTEntryPointNameResolveCommand::setTaskFactory
 (const SharedHandle<DHTTaskFactory>& taskFactory)
 {
-  _taskFactory = taskFactory;
+  taskFactory_ = taskFactory;
 }
 
 void DHTEntryPointNameResolveCommand::setRoutingTable
 (const SharedHandle<DHTRoutingTable>& routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 void DHTEntryPointNameResolveCommand::setLocalNode
 (const SharedHandle<DHTNode>& localNode)
 {
-  _localNode = localNode;
+  localNode_ = localNode;
 }
 
 } // namespace aria2

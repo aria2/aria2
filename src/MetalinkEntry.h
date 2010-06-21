@@ -70,7 +70,7 @@ public:
   SharedHandle<ChunkChecksum> chunkChecksum;
 #endif // ENABLE_MESSAGE_DIGEST
 private:
-  SharedHandle<Signature> _signature;
+  SharedHandle<Signature> signature_;
 public:
   MetalinkEntry();
 
@@ -117,7 +117,7 @@ public:
 
   const SharedHandle<Signature>& getSignature() const
   {
-    return _signature;
+    return signature_;
   }
 };
 

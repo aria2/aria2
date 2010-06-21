@@ -64,7 +64,7 @@ void DHTTokenUpdateCommand::preProcess()
 void DHTTokenUpdateCommand::process()
 {
   try {
-    _tokenTracker->updateTokenSecret();
+    tokenTracker_->updateTokenSecret();
   } catch(RecoverableException& e) {
     getLogger()->error(EX_EXCEPTION_CAUGHT, e);
   }
@@ -72,7 +72,7 @@ void DHTTokenUpdateCommand::process()
 
 void DHTTokenUpdateCommand::setTokenTracker(const SharedHandle<DHTTokenTracker>& tokenTracker)
 {
-  _tokenTracker = tokenTracker;
+  tokenTracker_ = tokenTracker;
 }
 
 } // namespace aria2

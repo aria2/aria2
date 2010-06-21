@@ -46,14 +46,14 @@ Timer::Timer()
   reset();
 }
 
-Timer::Timer(const Timer& timer):_tv(timer._tv) {}
+Timer::Timer(const Timer& timer):tv_(timer.tv_) {}
 
 Timer::Timer(time_t sec)
 {
   reset(sec);
 }
 
-Timer::Timer(const struct timeval& tv):_tv(tv) {}
+Timer::Timer(const struct timeval& tv):tv_(tv) {}
 
 static bool useClockGettime()
 {
@@ -65,19 +65,19 @@ static bool useClockGettime()
 Timer& Timer::operator=(const Timer& timer)
 {
   if(this != &timer) {
-    _tv = timer._tv;
+    tv_ = timer.tv_;
   }
   return *this;
 }
 
 bool Timer::operator<(const Timer& timer) const
 {
-  return util::difftv(timer._tv, _tv) > 0;
+  return util::difftv(timer.tv_, tv_) > 0;
 }
 
 bool Timer::operator>(const Timer& timer) const
 {
-  return util::difftv(_tv, timer._tv) > 0;
+  return util::difftv(tv_, timer.tv_) > 0;
 }
 
 static timeval getCurrentTime()
@@ -97,69 +97,69 @@ static timeval getCurrentTime()
 
 void Timer::reset()
 {
-  _tv = getCurrentTime();
+  tv_ = getCurrentTime();
 }
 
 void Timer::reset(time_t sec)
 {
-  _tv.tv_sec = sec;
-  _tv.tv_usec = 0;
+  tv_.tv_sec = sec;
+  tv_.tv_usec = 0;
 }
 
 bool Timer::elapsed(time_t sec) const
 {
   return
-    util::difftv(getCurrentTime(), _tv) >= static_cast<int64_t>(sec)*1000000;
+    util::difftv(getCurrentTime(), tv_) >= static_cast<int64_t>(sec)*1000000;
 }
 
 bool Timer::elapsedInMillis(int64_t millis) const
 {
-  return util::difftv(getCurrentTime(), _tv)/1000 >= millis;
+  return util::difftv(getCurrentTime(), tv_)/1000 >= millis;
 }
 
 time_t Timer::difference() const
 {
-  return util::difftv(getCurrentTime(), _tv)/1000000;
+  return util::difftv(getCurrentTime(), tv_)/1000000;
 }
 
 time_t Timer::difference(const timeval& tv) const
 {
-  return util::difftv(tv, _tv)/1000000;
+  return util::difftv(tv, tv_)/1000000;
 }
 
 int64_t Timer::differenceInMillis() const
 {
-  return util::difftv(getCurrentTime(), _tv)/1000;
+  return util::difftv(getCurrentTime(), tv_)/1000;
 }
 
 int64_t Timer::differenceInMillis(const timeval& tv) const
 {
-  return util::difftv(tv, _tv)/1000;
+  return util::difftv(tv, tv_)/1000;
 }
 
 bool Timer::isZero() const
 {
-  return _tv.tv_sec == 0 && _tv.tv_usec == 0;
+  return tv_.tv_sec == 0 && tv_.tv_usec == 0;
 }
 
 int64_t Timer::getTimeInMicros() const
 {
-  return (int64_t)_tv.tv_sec*1000*1000+_tv.tv_usec;
+  return (int64_t)tv_.tv_sec*1000*1000+tv_.tv_usec;
 }
 
 int64_t Timer::getTimeInMillis() const
 {
-  return (int64_t)_tv.tv_sec*1000+_tv.tv_usec/1000;
+  return (int64_t)tv_.tv_sec*1000+tv_.tv_usec/1000;
 }
 
 time_t Timer::getTime() const
 {
-  return _tv.tv_sec;
+  return tv_.tv_sec;
 }
 
 void Timer::advance(time_t sec)
 {
-  _tv.tv_sec += sec;
+  tv_.tv_sec += sec;
 }
 
 bool Timer::monotonicClock()

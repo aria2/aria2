@@ -48,17 +48,17 @@ namespace aria2 {
 class DHKeyExchange {
 private:
 
-  BN_CTX* _bnCtx;
+  BN_CTX* bnCtx_;
 
-  size_t _keyLength;
+  size_t keyLength_;
 
-  BIGNUM* _prime;
+  BIGNUM* prime_;
 
-  BIGNUM* _generator;
+  BIGNUM* generator_;
 
-  BIGNUM* _privateKey;
+  BIGNUM* privateKey_;
 
-  BIGNUM* _publicKey;
+  BIGNUM* publicKey_;
 
   void handleError(const std::string& funName) const
   {
@@ -67,70 +67,70 @@ private:
                     funName.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
   }
 public:
-  DHKeyExchange():_bnCtx(0),
-                  _keyLength(0),
-                  _prime(0),
-                  _generator(0),
-                  _privateKey(0),
-                  _publicKey(0) {}
+  DHKeyExchange():bnCtx_(0),
+                  keyLength_(0),
+                  prime_(0),
+                  generator_(0),
+                  privateKey_(0),
+                  publicKey_(0) {}
 
   ~DHKeyExchange()
   {
-    BN_CTX_free(_bnCtx);
-    BN_free(_prime);
-    BN_free(_generator);
-    BN_free(_privateKey);
-    BN_free(_publicKey);
+    BN_CTX_free(bnCtx_);
+    BN_free(prime_);
+    BN_free(generator_);
+    BN_free(privateKey_);
+    BN_free(publicKey_);
   }
 
   void init(const unsigned char* prime, size_t primeBits,
             const unsigned char* generator,
             size_t privateKeyBits)
   {
-    BN_CTX_free(_bnCtx);
-    _bnCtx = BN_CTX_new();
-    if(!_bnCtx) {
+    BN_CTX_free(bnCtx_);
+    bnCtx_ = BN_CTX_new();
+    if(!bnCtx_) {
       handleError("BN_CTX_new in init");
     }
 
-    BN_free(_prime);
-    _prime = 0;
-    BN_free(_generator);
-    _generator = 0;
-    BN_free(_privateKey);
-    _privateKey = 0;
+    BN_free(prime_);
+    prime_ = 0;
+    BN_free(generator_);
+    generator_ = 0;
+    BN_free(privateKey_);
+    privateKey_ = 0;
 
-    if(BN_hex2bn(&_prime, reinterpret_cast<const char*>(prime)) == 0) {
+    if(BN_hex2bn(&prime_, reinterpret_cast<const char*>(prime)) == 0) {
       handleError("BN_hex2bn in init");
     }
-    if(BN_hex2bn(&_generator, reinterpret_cast<const char*>(generator)) == 0) {
+    if(BN_hex2bn(&generator_, reinterpret_cast<const char*>(generator)) == 0) {
       handleError("BN_hex2bn in init");
     }
-    _privateKey = BN_new();
-    if(BN_rand(_privateKey, privateKeyBits, -1, false) == 0) {
+    privateKey_ = BN_new();
+    if(BN_rand(privateKey_, privateKeyBits, -1, false) == 0) {
       handleError("BN_new in init");
     }
-    _keyLength = (primeBits+7)/8;
+    keyLength_ = (primeBits+7)/8;
   }
 
   void generatePublicKey()
   {
-    BN_free(_publicKey);
-    _publicKey = BN_new();
-    BN_mod_exp(_publicKey, _generator, _privateKey, _prime, _bnCtx);
+    BN_free(publicKey_);
+    publicKey_ = BN_new();
+    BN_mod_exp(publicKey_, generator_, privateKey_, prime_, bnCtx_);
   }
 
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
-    if(outLength < _keyLength) {
+    if(outLength < keyLength_) {
       throw DL_ABORT_EX
         (StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
-                      _keyLength, outLength).str());
+                      keyLength_, outLength).str());
     }
     memset(out, 0, outLength);
-    size_t publicKeyBytes = BN_num_bytes(_publicKey);
-    size_t offset = _keyLength-publicKeyBytes;
-    size_t nwritten = BN_bn2bin(_publicKey, out+offset);
+    size_t publicKeyBytes = BN_num_bytes(publicKey_);
+    size_t offset = keyLength_-publicKeyBytes;
+    size_t nwritten = BN_bn2bin(publicKey_, out+offset);
     if(nwritten != publicKeyBytes) {
       throw DL_ABORT_EX
         (StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes).str());
@@ -149,10 +149,10 @@ public:
                        const unsigned char* peerPublicKeyData,
                        size_t peerPublicKeyLength) const
   {
-    if(outLength < _keyLength) {
+    if(outLength < keyLength_) {
       throw DL_ABORT_EX
         (StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
-                      _keyLength, outLength).str());
+                      keyLength_, outLength).str());
     }
 
 
@@ -162,12 +162,12 @@ public:
     }
 
     BIGNUM* secret = BN_new();
-    BN_mod_exp(secret, peerPublicKey, _privateKey, _prime, _bnCtx);
+    BN_mod_exp(secret, peerPublicKey, privateKey_, prime_, bnCtx_);
     BN_free(peerPublicKey);
 
     memset(out, 0, outLength);
     size_t secretBytes = BN_num_bytes(secret);
-    size_t offset = _keyLength-secretBytes;
+    size_t offset = keyLength_-secretBytes;
     size_t nwritten = BN_bn2bin(secret, out+offset);
     BN_free(secret);
     if(nwritten != secretBytes) {

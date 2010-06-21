@@ -45,10 +45,10 @@ private:
    * Piece class has length property but it is a actual length of piece.
    * The last piece likely have shorter length than the other length.
    */
-  size_t _pieceLength;
-  size_t _overflowLength;
-  SharedHandle<Piece> _piece;
-  size_t _writtenLength;
+  size_t pieceLength_;
+  size_t overflowLength_;
+  SharedHandle<Piece> piece_;
+  size_t writtenLength_;
 
 public:
   PiecedSegment(size_t pieceLength, const SharedHandle<Piece>& piece);
@@ -67,17 +67,17 @@ public:
 
   virtual size_t getSegmentLength() const
   {
-    return _pieceLength;
+    return pieceLength_;
   }
 
   virtual size_t getWrittenLength() const
   {
-    return _writtenLength;
+    return writtenLength_;
   }
 
   virtual size_t getOverflowLength() const
   {
-    return _overflowLength;
+    return overflowLength_;
   }
 
   virtual void updateWrittenLength(size_t bytes);

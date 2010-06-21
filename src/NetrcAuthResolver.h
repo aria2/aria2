@@ -43,9 +43,9 @@ class Netrc;
 
 class NetrcAuthResolver : public AbstractAuthResolver {
 private:
-  SharedHandle<Netrc> _netrc;
+  SharedHandle<Netrc> netrc_;
 
-  bool _ignoreDefault;
+  bool ignoreDefault_;
 
   SharedHandle<AuthConfig> findNetrcAuthenticator
   (const std::string& hostname) const;
@@ -59,7 +59,7 @@ public:
 
   const SharedHandle<Netrc>& getNetrc() const
   {
-    return _netrc;
+    return netrc_;
   }
 
   // Ignores default token of netrc

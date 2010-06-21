@@ -55,7 +55,7 @@ void BtNotInterestedMessage::doReceivedAction()
   }
   getPeer()->peerInterested(false);
   if(!getPeer()->amChoking()) {
-    _peerStorage->executeChoke();
+    peerStorage_->executeChoke();
   }
 }
 
@@ -71,7 +71,7 @@ void BtNotInterestedMessage::onSendComplete() {
 void BtNotInterestedMessage::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
-  _peerStorage = peerStorage;
+  peerStorage_ = peerStorage;
 }
 
 } // namespace aria2

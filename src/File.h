@@ -49,7 +49,7 @@ namespace aria2 {
  */
 class File {
 private:
-  std::string _name;
+  std::string name_;
   
   /**
    * Returns the return value of stat(...)
@@ -99,7 +99,7 @@ public:
 
   const std::string& getPath() const
   {
-    return _name;
+    return name_;
   }
 
   static bool isDir(const std::string& filename);

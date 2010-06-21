@@ -45,19 +45,19 @@ namespace aria2 {
 
 class Cookie {
 private:
-  std::string _name;
-  std::string _value;
-  time_t _expiry;
-  std::string _path;
-  std::string _domain;
-  bool _secure;
-  time_t _creationTime;
-  time_t _lastAccess;
+  std::string name_;
+  std::string value_;
+  time_t expiry_;
+  std::string path_;
+  std::string domain_;
+  bool secure_;
+  time_t creationTime_;
+  time_t lastAccess_;
 public:
   /*
    * If expires = 0 is given, then the cookie becomes session cookie.
    * domain is normalized using normalizeDomain() function and
-   * assigned to _domain.  If domain is not specified in cookie, call
+   * assigned to domain_.  If domain is not specified in cookie, call
    * markOriginServerOnly() after construction.
    */
   Cookie(const std::string& name,
@@ -70,7 +70,7 @@ public:
   /*
    * Creates session cookie. This is equivalent to Cookie(name, value,
    * 0, path, domain, secure); domain is normalized using
-   * normalizeDomain() function and assigned to _domain.  If domain is
+   * normalizeDomain() function and assigned to domain_.  If domain is
    * not specified in cookie, call markOriginServerOnly() after
    * construction.
    */
@@ -100,55 +100,55 @@ public:
 
   const std::string& getName() const
   {
-    return _name;
+    return name_;
   }
 
   const std::string& getValue() const
   {
-    return _value;
+    return value_;
   }
 
   const std::string& getPath() const
   {
-    return _path;
+    return path_;
   }
 
   const std::string& getDomain() const
   {
-    return _domain;
+    return domain_;
   }
 
   time_t getExpiry() const
   {
-    return _expiry;
+    return expiry_;
   }
 
   bool isSecureCookie() const
   {
-    return _secure;
+    return secure_;
   }
 
   bool isSessionCookie() const
   {
-    return _expiry == 0;
+    return expiry_ == 0;
   }
 
   std::string toNsCookieFormat() const;
 
   // Makes this Cookie only sent to the origin server.  This function
-  // removes first "." from _domain if _domain starts with ".".
+  // removes first "." from domain_ if domain_ starts with ".".
   void markOriginServerOnly();
 
   time_t getCreationTime() const
   {
-    return _creationTime;
+    return creationTime_;
   }
 
   void updateLastAccess();
 
   time_t getLastAccess() const
   {
-    return _lastAccess;
+    return lastAccess_;
   }
 
   static std::string normalizeDomain(const std::string& domain);

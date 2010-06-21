@@ -27,35 +27,35 @@ class OptionParserTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParse);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<OptionParser> _oparser;
+  SharedHandle<OptionParser> oparser_;
 public:
   void setUp()
   {
-    _oparser.reset(new OptionParser());
+    oparser_.reset(new OptionParser());
 
     SharedHandle<OptionHandler> alpha
       (new DefaultOptionHandler("alpha", NO_DESCRIPTION, "ALPHA", "",
                                 OptionHandler::REQ_ARG, 'A'));
     alpha->addTag("apple");
-    _oparser->addOptionHandler(alpha);
+    oparser_->addOptionHandler(alpha);
 
     SharedHandle<OptionHandler> bravo(new DefaultOptionHandler("bravo"));
     bravo->addTag("apple");
     bravo->addTag("orange");
     bravo->addTag("pineapple");
-    _oparser->addOptionHandler(bravo);
+    oparser_->addOptionHandler(bravo);
 
     SharedHandle<DefaultOptionHandler> charlie
       (new DefaultOptionHandler("charlie", NO_DESCRIPTION, "CHARLIE", "",
                                 OptionHandler::REQ_ARG, 'C'));
     charlie->hide();
     charlie->addTag("pineapple");
-    _oparser->addOptionHandler(charlie);
+    oparser_->addOptionHandler(charlie);
 
     SharedHandle<OptionHandler> delta
       (new UnitNumberOptionHandler("delta", NO_DESCRIPTION, "1M", -1, -1, 'D'));
     delta->addTag("pineapple");
-    _oparser->addOptionHandler(delta);    
+    oparser_->addOptionHandler(delta);    
   }
 
   void tearDown() {}
@@ -76,7 +76,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(OptionParserTest);
 
 void OptionParserTest::testFindAll()
 {
-  std::vector<SharedHandle<OptionHandler> > res = _oparser->findAll();
+  std::vector<SharedHandle<OptionHandler> > res = oparser_->findAll();
   CPPUNIT_ASSERT_EQUAL((size_t)3, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), res[0]->getName());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), res[1]->getName());
@@ -86,7 +86,7 @@ void OptionParserTest::testFindAll()
 void OptionParserTest::testFindByNameSubstring()
 {
   std::vector<SharedHandle<OptionHandler> > res =
-    _oparser->findByNameSubstring("l");
+    oparser_->findByNameSubstring("l");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), res[0]->getName());
   CPPUNIT_ASSERT_EQUAL(std::string("delta"), res[1]->getName());
@@ -95,7 +95,7 @@ void OptionParserTest::testFindByNameSubstring()
 void OptionParserTest::testFindByTag()
 {
   std::vector<SharedHandle<OptionHandler> > res =
-    _oparser->findByTag("pineapple");
+    oparser_->findByTag("pineapple");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), res[0]->getName());
   CPPUNIT_ASSERT_EQUAL(std::string("delta"), res[1]->getName());
@@ -103,39 +103,39 @@ void OptionParserTest::testFindByTag()
 
 void OptionParserTest::testFindByName()
 {
-  SharedHandle<OptionHandler> bravo = _oparser->findByName("bravo");
+  SharedHandle<OptionHandler> bravo = oparser_->findByName("bravo");
   CPPUNIT_ASSERT(!bravo.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), bravo->getName());
 
-  SharedHandle<OptionHandler> charlie = _oparser->findByName("charlie");
+  SharedHandle<OptionHandler> charlie = oparser_->findByName("charlie");
   CPPUNIT_ASSERT(charlie.isNull());
 
-  SharedHandle<OptionHandler> alpha2 = _oparser->findByName("alpha2");
+  SharedHandle<OptionHandler> alpha2 = oparser_->findByName("alpha2");
   CPPUNIT_ASSERT(alpha2.isNull());
 }
 
 void OptionParserTest::testFindByShortName()
 {
-  SharedHandle<OptionHandler> alpha = _oparser->findByShortName('A');
+  SharedHandle<OptionHandler> alpha = oparser_->findByShortName('A');
   CPPUNIT_ASSERT(!alpha.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), alpha->getName());
 
-  CPPUNIT_ASSERT(_oparser->findByShortName('C').isNull());
+  CPPUNIT_ASSERT(oparser_->findByShortName('C').isNull());
 }
 
 void OptionParserTest::testFindByID()
 {
-  SharedHandle<OptionHandler> alpha = _oparser->findByID(1);
+  SharedHandle<OptionHandler> alpha = oparser_->findByID(1);
   CPPUNIT_ASSERT(!alpha.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), alpha->getName());
 
-  CPPUNIT_ASSERT(_oparser->findByID(3).isNull());
+  CPPUNIT_ASSERT(oparser_->findByID(3).isNull());
 }
 
 void OptionParserTest::testParseDefaultValues()
 {
   Option option;
-  _oparser->parseDefaultValues(option);
+  oparser_->parseDefaultValues(option);
   CPPUNIT_ASSERT_EQUAL(std::string("ALPHA"), option.get("alpha"));
   CPPUNIT_ASSERT_EQUAL(std::string("1048576"), option.get("delta"));
   CPPUNIT_ASSERT_EQUAL(std::string("CHARLIE"), option.get("charlie"));
@@ -169,7 +169,7 @@ void OptionParserTest::testParseArg()
   std::stringstream s;
   std::vector<std::string> nonopts;
 
-  _oparser->parseArg(s, nonopts, argc, argv);
+  oparser_->parseArg(s, nonopts, argc, argv);
 
   CPPUNIT_ASSERT_EQUAL(std::string("alpha=ALPHA\n"
                                    "bravo=BRAVO\n"), s.str());
@@ -186,7 +186,7 @@ void OptionParserTest::testParse()
                         "UNKNOWN=x\n"
                         "\n"
                         "bravo=World");
-  _oparser->parse(option, in);
+  oparser_->parse(option, in);
   CPPUNIT_ASSERT_EQUAL
     ((ptrdiff_t)2, std::distance(option.begin(), option.end()));
   CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get("alpha"));

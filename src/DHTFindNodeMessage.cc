@@ -55,7 +55,7 @@ DHTFindNodeMessage::DHTFindNodeMessage(const SharedHandle<DHTNode>& localNode,
                                        const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID)
 {
-  memcpy(_targetNodeID, targetNodeID, DHT_ID_LENGTH);
+  memcpy(targetNodeID_, targetNodeID, DHT_ID_LENGTH);
 }
 
 DHTFindNodeMessage::~DHTFindNodeMessage() {}
@@ -63,7 +63,7 @@ DHTFindNodeMessage::~DHTFindNodeMessage() {}
 void DHTFindNodeMessage::doReceivedAction()
 {
   std::vector<SharedHandle<DHTNode> > nodes;
-  getRoutingTable()->getClosestKNodes(nodes, _targetNodeID);
+  getRoutingTable()->getClosestKNodes(nodes, targetNodeID_);
   SharedHandle<DHTMessage> reply =
     getMessageFactory()->createFindNodeReplyMessage
     (getRemoteNode(), nodes, getTransactionID());
@@ -74,7 +74,7 @@ SharedHandle<Dict> DHTFindNodeMessage::getArgument()
 {
   SharedHandle<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
-  aDict->put(TARGET_NODE, String::g(_targetNodeID, DHT_ID_LENGTH));
+  aDict->put(TARGET_NODE, String::g(targetNodeID_, DHT_ID_LENGTH));
   return aDict;
 }
 
@@ -85,7 +85,7 @@ const std::string& DHTFindNodeMessage::getMessageType() const
 
 std::string DHTFindNodeMessage::toStringOptional() const
 {
-  return "targetNodeID="+util::toHex(_targetNodeID, DHT_ID_LENGTH);
+  return "targetNodeID="+util::toHex(targetNodeID_, DHT_ID_LENGTH);
 }
 
 } // namespace aria2

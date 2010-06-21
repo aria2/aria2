@@ -41,7 +41,7 @@ namespace aria2 {
 
 class TimedHaltCommand:public TimeBasedCommand {
 private:
-  bool _forceHalt;
+  bool forceHalt_;
 public:
   TimedHaltCommand
   (cuid_t cuid, DownloadEngine* e, time_t secondsToHalt, bool forceHalt=false);

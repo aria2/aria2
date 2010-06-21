@@ -49,13 +49,13 @@ class Logger;
 
 class TLSContext {
 private:
-  SSL_CTX* _sslCtx;
+  SSL_CTX* sslCtx_;
 
-  bool _good;
+  bool good_;
 
-  bool _peerVerificationEnabled;
+  bool peerVerificationEnabled_;
 
-  Logger* _logger;
+  Logger* logger_;
 public:
   TLSContext();
 
@@ -74,7 +74,7 @@ public:
 
   SSL_CTX* getSSLCtx() const
   {
-    return _sslCtx;
+    return sslCtx_;
   }
   
   void enablePeerVerification();
@@ -83,7 +83,7 @@ public:
 
   bool peerVerificationEnabled() const
   {
-    return _peerVerificationEnabled;
+    return peerVerificationEnabled_;
   }
 
 };

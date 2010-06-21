@@ -28,12 +28,12 @@ class RequestGroupManTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testChangeReservedGroupPosition);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> _option;
+  SharedHandle<Option> option_;
 public:
   void setUp()
   {
     RequestGroup::resetGIDCounter();
-    _option.reset(new Option());
+    option_.reset(new Option());
   }
 
   void testIsSameFileBeingDownloaded();
@@ -48,8 +48,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupManTest );
 
 void RequestGroupManTest::testIsSameFileBeingDownloaded()
 {
-  SharedHandle<RequestGroup> rg1(new RequestGroup(_option));
-  SharedHandle<RequestGroup> rg2(new RequestGroup(_option));
+  SharedHandle<RequestGroup> rg1(new RequestGroup(option_));
+  SharedHandle<RequestGroup> rg2(new RequestGroup(option_));
 
   SharedHandle<DownloadContext> dctx1
     (new DownloadContext(0, 0, "aria2.tar.bz2"));
@@ -60,7 +60,7 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
   rg2->setDownloadContext(dctx2);
 
   RequestGroupMan gm(std::vector<SharedHandle<RequestGroup> >(), 1,
-                     _option.get());
+                     option_.get());
 
   gm.addRequestGroup(rg1);
   gm.addRequestGroup(rg2);
@@ -81,7 +81,7 @@ void RequestGroupManTest::testGetInitialCommands()
 void RequestGroupManTest::testSaveServerStat()
 {
   RequestGroupMan rm
-    (std::vector<SharedHandle<RequestGroup> >(),0,_option.get());
+    (std::vector<SharedHandle<RequestGroup> >(),0,option_.get());
   SharedHandle<ServerStat> ss_localhost(new ServerStat("localhost", "http"));
   rm.addServerStat(ss_localhost);
   File f("/tmp/aria2_RequestGroupManTest_testSaveServerStat");
@@ -105,7 +105,7 @@ void RequestGroupManTest::testLoadServerStat()
   o.close();
 
   RequestGroupMan rm
-    (std::vector<SharedHandle<RequestGroup> >(),0,_option.get());
+    (std::vector<SharedHandle<RequestGroup> >(),0,option_.get());
   std::cerr << "testLoadServerStat" << std::endl;
   CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
   SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",
@@ -117,13 +117,13 @@ void RequestGroupManTest::testLoadServerStat()
 void RequestGroupManTest::testChangeReservedGroupPosition()
 {
   SharedHandle<RequestGroup> gs[] = {
-    SharedHandle<RequestGroup>(new RequestGroup(_option)),
-    SharedHandle<RequestGroup>(new RequestGroup(_option)),
-    SharedHandle<RequestGroup>(new RequestGroup(_option)),
-    SharedHandle<RequestGroup>(new RequestGroup(_option))
+    SharedHandle<RequestGroup>(new RequestGroup(option_)),
+    SharedHandle<RequestGroup>(new RequestGroup(option_)),
+    SharedHandle<RequestGroup>(new RequestGroup(option_)),
+    SharedHandle<RequestGroup>(new RequestGroup(option_))
   };
   std::vector<SharedHandle<RequestGroup> > groups(vbegin(gs), vend(gs));
-  RequestGroupMan rm(groups, 0, _option.get());
+  RequestGroupMan rm(groups, 0, option_.get());
 
   CPPUNIT_ASSERT_EQUAL
     ((size_t)0, rm.changeReservedGroupPosition(1, 0, RequestGroupMan::POS_SET));

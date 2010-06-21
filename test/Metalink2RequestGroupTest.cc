@@ -21,13 +21,13 @@ class Metalink2RequestGroupTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGenerate_dosDirTraversal);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> _option;
+  SharedHandle<Option> option_;
 
 public:
   void setUp()
   {
-    _option.reset(new Option());
-    _option->put(PREF_SPLIT, "1");
+    option_.reset(new Option());
+    option_->put(PREF_SPLIT, "1");
   }
 
   void testGenerate();
@@ -41,8 +41,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Metalink2RequestGroupTest );
 void Metalink2RequestGroupTest::testGenerate()
 {
   std::vector<SharedHandle<RequestGroup> > groups;
-  _option->put(PREF_DIR, "/tmp");
-  Metalink2RequestGroup().generate(groups, "test.xml", _option);
+  option_->put(PREF_DIR, "/tmp");
+  Metalink2RequestGroup().generate(groups, "test.xml", option_);
   // first file
   {
     SharedHandle<RequestGroup> rg = groups[0];
@@ -134,7 +134,7 @@ void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
 {
   std::vector<SharedHandle<RequestGroup> > groups;
   Metalink2RequestGroup().generate(groups, "metalink4-groupbymetaurl.xml",
-                                   _option);
+                                   option_);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
 
 #ifdef ENABLE_BITTORRENT
@@ -207,9 +207,9 @@ void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
 #ifdef __MINGW32__
 #ifdef ENABLE_BITTORRENT
   std::vector<SharedHandle<RequestGroup> > groups;
-  _option->put(PREF_DIR, "/tmp");
+  option_->put(PREF_DIR, "/tmp");
   Metalink2RequestGroup().generate
-    (groups, "metalink4-dosdirtraversal.xml", _option);
+    (groups, "metalink4-dosdirtraversal.xml", option_);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
   SharedHandle<RequestGroup> rg = groups[0];
   SharedHandle<FileEntry> file = rg->getDownloadContext()->getFirstFileEntry();

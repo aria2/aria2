@@ -53,7 +53,7 @@ class AuthResolver;
 
 class AuthConfigFactory {
 private:
-  SharedHandle<Netrc> _netrc;
+  SharedHandle<Netrc> netrc_;
   
   SharedHandle<AuthConfig> createAuthConfig(const std::string& user,
                                             const std::string& password) const;
@@ -64,11 +64,11 @@ private:
 public:
   class BasicCred {
   public:
-    std::string _user;
-    std::string _password;
-    std::string _host;
-    std::string _path;
-    bool _activated;
+    std::string user_;
+    std::string password_;
+    std::string host_;
+    std::string path_;
+    bool activated_;
 
     BasicCred(const std::string& user, const std::string& password,
               const std::string& host, const std::string& path,
@@ -83,7 +83,7 @@ public:
     bool operator<(const BasicCred& cred) const;
   };
 private:
-  std::deque<BasicCred> _basicCreds;
+  std::deque<BasicCred> basicCreds_;
 public:
   
   AuthConfigFactory();
@@ -109,13 +109,13 @@ public:
   (const std::string& host, const std::string& path, const Option* op);
 
   // Find a BasicCred using host and path and return the iterator
-  // pointing to it. If not found, then return _basicCreds.end().
+  // pointing to it. If not found, then return basicCreds_.end().
   std::deque<AuthConfigFactory::BasicCred>::iterator
   findBasicCred(const std::string& host, const std::string& path);
 
   // If the same BasicCred is already added, then it is replaced with
   // given basicCred. Otherwise, insert given basicCred to
-  // _basicCreds.
+  // basicCreds_.
   void updateBasicCred(const BasicCred& basicCred);
 
   static const std::string ANONYMOUS;

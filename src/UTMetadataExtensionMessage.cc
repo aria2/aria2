@@ -40,7 +40,7 @@ const std::string UTMetadataExtensionMessage::EXTENSION_NAME = "ut_metadata";
 
 UTMetadataExtensionMessage::UTMetadataExtensionMessage
 (uint8_t extensionMessageID):
-  _extensionMessageID(extensionMessageID),
-  _index(0) {}
+  extensionMessageID_(extensionMessageID),
+  index_(0) {}
 
 } // namespace aria2

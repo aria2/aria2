@@ -64,63 +64,63 @@ size_t KqueueEventPoll::KSocketEntry::getEvents
   int events;
 #ifdef ENABLE_ASYNC_DNS
   events =
-    std::accumulate(_adnsEvents.begin(),
-                    _adnsEvents.end(),
-                    std::accumulate(_commandEvents.begin(),
-                                    _commandEvents.end(), 0, accumulateEvent),
+    std::accumulate(adnsEvents_.begin(),
+                    adnsEvents_.end(),
+                    std::accumulate(commandEvents_.begin(),
+                                    commandEvents_.end(), 0, accumulateEvent),
                     accumulateEvent);
 #else // !ENABLE_ASYNC_DNS
   events =
-    std::accumulate(_commandEvents.begin(), _commandEvents.end(), 0,
+    std::accumulate(commandEvents_.begin(), commandEvents_.end(), 0,
                     accumulateEvent);
 #endif // !ENABLE_ASYNC_DNS
-  EV_SET(&eventlist[0], _socket, EVFILT_READ,
+  EV_SET(&eventlist[0], socket_, EVFILT_READ,
          EV_ADD|((events&KqueueEventPoll::IEV_READ)?EV_ENABLE:EV_DISABLE),
          0, 0, PTR_TO_UDATA(this));
-  EV_SET(&eventlist[1], _socket, EVFILT_WRITE,
+  EV_SET(&eventlist[1], socket_, EVFILT_WRITE,
          EV_ADD|((events&KqueueEventPoll::IEV_WRITE)?EV_ENABLE:EV_DISABLE),
          0, 0, PTR_TO_UDATA(this));
   return 2;
 }
 
 KqueueEventPoll::KqueueEventPoll():
-  _kqEventsSize(KQUEUE_EVENTS_MAX),
-  _kqEvents(new struct kevent[_kqEventsSize]),
-  _logger(LogFactory::getInstance())
+  kqEventsSize_(KQUEUE_EVENTS_MAX),
+  kqEvents_(new struct kevent[kqEventsSize_]),
+  logger_(LogFactory::getInstance())
 {
-  _kqfd = kqueue();
+  kqfd_ = kqueue();
 }
 
 KqueueEventPoll::~KqueueEventPoll()
 {
-  if(_kqfd != -1) {
+  if(kqfd_ != -1) {
     int r;
-    while((r = close(_kqfd)) == -1 && errno == EINTR);
+    while((r = close(kqfd_)) == -1 && errno == EINTR);
     if(r == -1) {
-      _logger->error("Error occurred while closing kqueue file descriptor"
+      logger_->error("Error occurred while closing kqueue file descriptor"
                      " %d: %s",
-                     _kqfd, strerror(errno));
+                     kqfd_, strerror(errno));
     }
   }
-  delete [] _kqEvents;
+  delete [] kqEvents_;
 }
 
 bool KqueueEventPoll::good() const
 {
-  return _kqfd != -1;
+  return kqfd_ != -1;
 }
 
 void KqueueEventPoll::poll(const struct timeval& tv)
 {
   struct timespec timeout = { tv.tv_sec, tv.tv_usec*1000 };
   int res;
-  while((res = kevent(_kqfd, _kqEvents, 0, _kqEvents, _kqEventsSize, &timeout))
+  while((res = kevent(kqfd_, kqEvents_, 0, kqEvents_, kqEventsSize_, &timeout))
         == -1 && errno == EINTR);
   if(res > 0) {
     for(int i = 0; i < res; ++i) {
-      KSocketEntry* p = reinterpret_cast<KSocketEntry*>(_kqEvents[i].udata);
+      KSocketEntry* p = reinterpret_cast<KSocketEntry*>(kqEvents_[i].udata);
       int events = 0;
-      int filter = _kqEvents[i].filter;
+      int filter = kqEvents_[i].filter;
       if(filter == EVFILT_READ) {
         events = KqueueEventPoll::IEV_READ;
       } else if(filter == EVFILT_WRITE) {
@@ -136,7 +136,7 @@ void KqueueEventPoll::poll(const struct timeval& tv)
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
   for(std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator i =
-        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
       i != eoi; ++i) {
     (*i)->processTimeout();
     (*i)->removeSocketEvents(this);
@@ -165,28 +165,28 @@ bool KqueueEventPoll::addEvents
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
   int r = 0;
   struct timespec zeroTimeout = { 0, 0 };
   struct kevent changelist[2];
   size_t n;
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
     event.addSelf(*i);
     n = (*i)->getEvents(changelist);
   } else {
-    _socketEntries.insert(i, socketEntry);
-    if(_socketEntries.size() > _kqEventsSize) {
-      _kqEventsSize *= 2;
-      delete [] _kqEvents;
-      _kqEvents = new struct kevent[_kqEventsSize];
+    socketEntries_.insert(i, socketEntry);
+    if(socketEntries_.size() > kqEventsSize_) {
+      kqEventsSize_ *= 2;
+      delete [] kqEvents_;
+      kqEvents_ = new struct kevent[kqEventsSize_];
     }
     event.addSelf(socketEntry);
     n = socketEntry->getEvents(changelist);
   }
-  r = kevent(_kqfd, changelist, n, changelist, 0, &zeroTimeout);
+  r = kevent(kqfd_, changelist, n, changelist, 0, &zeroTimeout);
   if(r == -1) {
-    if(_logger->debug()) {
-      _logger->debug("Failed to add socket event %d:%s",
+    if(logger_->debug()) {
+      logger_->debug("Failed to add socket event %d:%s",
                      socket, strerror(errno));
     }
     return false;
@@ -215,28 +215,28 @@ bool KqueueEventPoll::deleteEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
     event.removeSelf(*i);
     int r = 0;
     struct timespec zeroTimeout = { 0, 0 };
     struct kevent changelist[2];
     size_t n = (*i)->getEvents(changelist);
-    r = kevent(_kqfd, changelist, n, changelist, 0, &zeroTimeout);
+    r = kevent(kqfd_, changelist, n, changelist, 0, &zeroTimeout);
     if((*i)->eventEmpty()) {
-      _socketEntries.erase(i);
+      socketEntries_.erase(i);
     }
     if(r == -1) {
-      if(_logger->debug()) {
-        _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      if(logger_->debug()) {
+        logger_->debug("Failed to delete socket event:%s", strerror(errno));
       }
       return false;
     } else {
       return true;
     }
   } else {
-    if(_logger->debug()) {
-      _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    if(logger_->debug()) {
+      logger_->debug("Socket %d is not found in SocketEntries.", socket);
     }
     return false;
   }
@@ -264,9 +264,9 @@ bool KqueueEventPoll::addNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
-    _nameResolverEntries.push_back(entry);
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
+    nameResolverEntries_.push_back(entry);
     entry->addSocketEvents(this);
     return true;
   } else {
@@ -280,12 +280,12 @@ bool KqueueEventPoll::deleteNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
     return false;
   } else {
     (*itr)->removeSocketEvents(this);
-    _nameResolverEntries.erase(itr);
+    nameResolverEntries_.erase(itr);
     return true;
   }
 }

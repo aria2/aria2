@@ -43,25 +43,25 @@ namespace aria2 {
 
 class RangeBtMessageValidator : public BtMessageValidator {
 private:
-  const RangeBtMessage* _message;
-  size_t _numPiece;
-  size_t _pieceLength;
+  const RangeBtMessage* message_;
+  size_t numPiece_;
+  size_t pieceLength_;
 public:
   RangeBtMessageValidator(const RangeBtMessage* message,
                           size_t numPiece,
                           size_t pieceLength):
-    _message(message),
-    _numPiece(numPiece),
-    _pieceLength(pieceLength) {}
+    message_(message),
+    numPiece_(numPiece),
+    pieceLength_(pieceLength) {}
 
   virtual void validate()
   {
-    bittorrent::checkIndex(_message->getIndex(), _numPiece);
-    bittorrent::checkBegin(_message->getBegin(), _pieceLength);
-    bittorrent::checkLength(_message->getLength());
-    bittorrent::checkRange(_message->getBegin(),
-                           _message->getLength(),
-                           _pieceLength);
+    bittorrent::checkIndex(message_->getIndex(), numPiece_);
+    bittorrent::checkBegin(message_->getBegin(), pieceLength_);
+    bittorrent::checkLength(message_->getLength());
+    bittorrent::checkRange(message_->getBegin(),
+                           message_->getLength(),
+                           pieceLength_);
   }
 };
 

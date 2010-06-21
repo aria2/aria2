@@ -69,13 +69,13 @@ const std::string METALINK3_NAMESPACE_URI("http://www.metalinker.org/");
 namespace {
 class FindAttr {
 private:
-  const std::string& _localname;
+  const std::string& localname_;
 public:
-  FindAttr(const std::string& localname):_localname(localname) {}
+  FindAttr(const std::string& localname):localname_(localname) {}
 
   bool operator()(const XmlAttr& attr) const
   {
-    return attr.localname == _localname &&
+    return attr.localname == localname_ &&
       (attr.nsUri.empty() || attr.nsUri == METALINK3_NAMESPACE_URI);
   }
 };

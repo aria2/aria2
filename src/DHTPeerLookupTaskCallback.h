@@ -43,7 +43,7 @@ class DHTPeerLookupTask;
 
 class DHTPeerLookupTaskCallback:public DHTMessageCallback {
 private:
-  DHTPeerLookupTask* _task;
+  DHTPeerLookupTask* task_;
 public:
   DHTPeerLookupTaskCallback(DHTPeerLookupTask* task);
 

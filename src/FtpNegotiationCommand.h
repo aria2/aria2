@@ -122,20 +122,20 @@ private:
 
   void onDryRunFileFound();
 
-  SharedHandle<SocketCore> _dataSocket;
-  SharedHandle<SocketCore> _serverSocket;
-  Seq _sequence;
-  SharedHandle<FtpConnection> _ftp;
+  SharedHandle<SocketCore> dataSocket_;
+  SharedHandle<SocketCore> serverSocket_;
+  Seq sequence_;
+  SharedHandle<FtpConnection> ftp_;
   // For tunneling
-  SharedHandle<HttpConnection> _http;
+  SharedHandle<HttpConnection> http_;
   // IP, Port pair in pasv response
-  std::pair<std::string, uint16_t> _dataConnAddr;
+  std::pair<std::string, uint16_t> dataConnAddr_;
   // Resolved address for proxy
-  std::string _proxyAddr;
+  std::string proxyAddr_;
 
-  std::string _connectedHostname;
-  std::string _connectedAddr;
-  uint16_t _connectedPort;
+  std::string connectedHostname_;
+  std::string connectedAddr_;
+  uint16_t connectedPort_;
 protected:
   virtual bool executeInternal();
 public:
@@ -152,9 +152,9 @@ public:
   void setConnectedAddr
   (const std::string& hostname, const std::string& addr, uint16_t port)
   {
-    _connectedHostname = hostname;
-    _connectedAddr = addr;
-    _connectedPort = port;
+    connectedHostname_ = hostname;
+    connectedAddr_ = addr;
+    connectedPort_ = port;
   }
 };
 

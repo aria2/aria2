@@ -52,10 +52,10 @@ class Decoder;
 
 class HttpResponse {
 private:
-  cuid_t _cuid;
-  SharedHandle<HttpRequest> _httpRequest;
-  SharedHandle<HttpHeader> _httpHeader;
-  Logger* _logger;
+  cuid_t cuid_;
+  SharedHandle<HttpRequest> httpRequest_;
+  SharedHandle<HttpHeader> httpHeader_;
+  Logger* logger_;
 public:
   HttpResponse();
   
@@ -105,7 +105,7 @@ public:
 
   const SharedHandle<HttpHeader>& getHttpHeader() const
   {
-    return _httpHeader;
+    return httpHeader_;
   }
 
   const std::string& getResponseStatus() const;
@@ -114,12 +114,12 @@ public:
 
   const SharedHandle<HttpRequest>& getHttpRequest() const
   {
-    return _httpRequest;
+    return httpRequest_;
   }
 
   void setCuid(cuid_t cuid)
   {
-    _cuid = cuid;
+    cuid_ = cuid;
   }
 
   bool hasRetryAfter() const;

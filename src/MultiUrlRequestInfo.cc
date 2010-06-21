@@ -100,18 +100,18 @@ MultiUrlRequestInfo::MultiUrlRequestInfo
  const SharedHandle<StatCalc>& statCalc,
  std::ostream& summaryOut)
   :
-  _requestGroups(requestGroups),
-  _option(op),
-  _statCalc(statCalc),
-  _summaryOut(summaryOut),
-  _logger(LogFactory::getInstance())
+  requestGroups_(requestGroups),
+  option_(op),
+  statCalc_(statCalc),
+  summaryOut_(summaryOut),
+  logger_(LogFactory::getInstance())
 {}
 
 MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
 
 void MultiUrlRequestInfo::printMessageForContinue()
 {
-  _summaryOut << "\n"
+  summaryOut_ << "\n"
               << _("aria2 will resume download if the transfer is restarted.")
               << "\n"
               << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
@@ -123,29 +123,29 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
   downloadresultcode::RESULT returnValue = downloadresultcode::FINISHED;
   try {
     DownloadEngineHandle e =
-      DownloadEngineFactory().newDownloadEngine(_option.get(), _requestGroups);
+      DownloadEngineFactory().newDownloadEngine(option_.get(), requestGroups_);
 
-    if(!_option->blank(PREF_LOAD_COOKIES)) {
-      File cookieFile(_option->get(PREF_LOAD_COOKIES));
+    if(!option_->blank(PREF_LOAD_COOKIES)) {
+      File cookieFile(option_->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile()) {
         e->getCookieStorage()->load(cookieFile.getPath());
-        _logger->info("Loaded cookies from '%s'.",
+        logger_->info("Loaded cookies from '%s'.",
                       cookieFile.getPath().c_str());
       } else {
-        _logger->error(MSG_LOADING_COOKIE_FAILED, cookieFile.getPath().c_str());
+        logger_->error(MSG_LOADING_COOKIE_FAILED, cookieFile.getPath().c_str());
       }
     }
 
     SharedHandle<AuthConfigFactory> authConfigFactory(new AuthConfigFactory());
-    File netrccf(_option->get(PREF_NETRC_PATH));
-    if(!_option->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
+    File netrccf(option_->get(PREF_NETRC_PATH));
+    if(!option_->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();
       if(mode&(S_IRWXG|S_IRWXO)) {
-        _logger->notice(MSG_INCORRECT_NETRC_PERMISSION,
-                        _option->get(PREF_NETRC_PATH).c_str());
+        logger_->notice(MSG_INCORRECT_NETRC_PERMISSION,
+                        option_->get(PREF_NETRC_PATH).c_str());
       } else {
         SharedHandle<Netrc> netrc(new Netrc());
-        netrc->parse(_option->get(PREF_NETRC_PATH));
+        netrc->parse(option_->get(PREF_NETRC_PATH));
         authConfigFactory->setNetrc(netrc);
       }
     }
@@ -153,36 +153,36 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
 
 #ifdef ENABLE_SSL
     SharedHandle<TLSContext> tlsContext(new TLSContext());
-    if(!_option->blank(PREF_CERTIFICATE) &&
-       !_option->blank(PREF_PRIVATE_KEY)) {
-      tlsContext->addClientKeyFile(_option->get(PREF_CERTIFICATE),
-                                   _option->get(PREF_PRIVATE_KEY));
+    if(!option_->blank(PREF_CERTIFICATE) &&
+       !option_->blank(PREF_PRIVATE_KEY)) {
+      tlsContext->addClientKeyFile(option_->get(PREF_CERTIFICATE),
+                                   option_->get(PREF_PRIVATE_KEY));
     }
-    if(!_option->blank(PREF_CA_CERTIFICATE)) {
-      if(!tlsContext->addTrustedCACertFile(_option->get(PREF_CA_CERTIFICATE))) {
-        _logger->warn(MSG_WARN_NO_CA_CERT);
+    if(!option_->blank(PREF_CA_CERTIFICATE)) {
+      if(!tlsContext->addTrustedCACertFile(option_->get(PREF_CA_CERTIFICATE))) {
+        logger_->warn(MSG_WARN_NO_CA_CERT);
       }
-    } else if(_option->getAsBool(PREF_CHECK_CERTIFICATE)) {
-      _logger->warn(MSG_WARN_NO_CA_CERT);
+    } else if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
+      logger_->warn(MSG_WARN_NO_CA_CERT);
     }
 
-    if(_option->getAsBool(PREF_CHECK_CERTIFICATE)) {
+    if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
       tlsContext->enablePeerVerification();
     }
     SocketCore::setTLSContext(tlsContext);
 #endif
     if(!Timer::monotonicClock()) {
-      _logger->warn("Don't change system time while aria2c is running."
+      logger_->warn("Don't change system time while aria2c is running."
                     " Doing this may make aria2c hang for long time.");
     }
 
-    std::string serverStatIf = _option->get(PREF_SERVER_STAT_IF);
+    std::string serverStatIf = option_->get(PREF_SERVER_STAT_IF);
     if(!serverStatIf.empty()) {
       e->getRequestGroupMan()->loadServerStat(serverStatIf);
       e->getRequestGroupMan()->removeStaleServerStat
-        (_option->getAsInt(PREF_SERVER_STAT_TIMEOUT));
+        (option_->getAsInt(PREF_SERVER_STAT_TIMEOUT));
     }
-    e->setStatCalc(_statCalc);
+    e->setStatCalc(statCalc_);
 #ifdef SIGHUP
     util::setGlobalSignalHandler(SIGHUP, handler, 0);
 #endif // SIGHUP
@@ -191,16 +191,16 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     
     e->run();
     
-    if(!_option->blank(PREF_SAVE_COOKIES)) {
-      e->getCookieStorage()->saveNsFormat(_option->get(PREF_SAVE_COOKIES));
+    if(!option_->blank(PREF_SAVE_COOKIES)) {
+      e->getCookieStorage()->saveNsFormat(option_->get(PREF_SAVE_COOKIES));
     }
 
-    std::string serverStatOf = _option->get(PREF_SERVER_STAT_OF);
+    std::string serverStatOf = option_->get(PREF_SERVER_STAT_OF);
     if(!serverStatOf.empty()) {
       e->getRequestGroupMan()->saveServerStat(serverStatOf);
     }
-    e->getRequestGroupMan()->showDownloadResults(_summaryOut);
-    _summaryOut << std::flush;
+    e->getRequestGroupMan()->showDownloadResults(summaryOut_);
+    summaryOut_ << std::flush;
 
     RequestGroupMan::DownloadStat s =
       e->getRequestGroupMan()->getDownloadStat();
@@ -215,13 +215,13 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     }
     SessionSerializer sessionSerializer(e->getRequestGroupMan());
     // TODO Add option: --save-session-status=error,inprogress,waiting
-    if(!_option->blank(PREF_SAVE_SESSION)) {
-      const std::string& filename = _option->get(PREF_SAVE_SESSION);
+    if(!option_->blank(PREF_SAVE_SESSION)) {
+      const std::string& filename = option_->get(PREF_SAVE_SESSION);
       if(sessionSerializer.save(filename)) {
-        _logger->notice("Serialized session to '%s' successfully.",
+        logger_->notice("Serialized session to '%s' successfully.",
                         filename.c_str());
       } else {
-        _logger->notice("Failed to serialize session to '%s'.",
+        logger_->notice("Failed to serialize session to '%s'.",
                         filename.c_str());
       }
     }
@@ -229,7 +229,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(returnValue == downloadresultcode::FINISHED) {
       returnValue = downloadresultcode::UNKNOWN_ERROR;
     }
-    _logger->error(EX_EXCEPTION_CAUGHT, e);
+    logger_->error(EX_EXCEPTION_CAUGHT, e);
   }
 #ifdef SIGHUP
   util::setGlobalSignalHandler(SIGHUP, SIG_DFL, 0);

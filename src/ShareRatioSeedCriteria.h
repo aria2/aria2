@@ -45,27 +45,27 @@ namespace aria2 {
 class ShareRatioSeedCriteria : public SeedCriteria {
 private:
   double ratio;
-  SharedHandle<DownloadContext> _downloadContext;
-  SharedHandle<PeerStorage> _peerStorage;
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<DownloadContext> downloadContext_;
+  SharedHandle<PeerStorage> peerStorage_;
+  SharedHandle<PieceStorage> pieceStorage_;
 public:
   ShareRatioSeedCriteria
   (double ratio, const SharedHandle<DownloadContext>& downloadContext)
     :ratio(ratio),
-     _downloadContext(downloadContext) {}
+     downloadContext_(downloadContext) {}
 
   virtual ~ShareRatioSeedCriteria() {}
 
   virtual void reset() {}
 
   virtual bool evaluate() {
-    if(_downloadContext->getTotalLength() == 0) {
+    if(downloadContext_->getTotalLength() == 0) {
       return false;
     }
-    TransferStat stat = _peerStorage->calculateStat();
+    TransferStat stat = peerStorage_->calculateStat();
     return ratio <=
       (double)stat.getAllTimeUploadLength()/
-      _pieceStorage->getCompletedLength();
+      pieceStorage_->getCompletedLength();
   }
 
   void setRatio(double ratio) {
@@ -78,12 +78,12 @@ public:
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage)
   {
-    _peerStorage = peerStorage;
+    peerStorage_ = peerStorage;
   }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
   {
-    _pieceStorage = pieceStorage;
+    pieceStorage_ = pieceStorage;
   }
 };
 

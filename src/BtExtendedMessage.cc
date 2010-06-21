@@ -54,8 +54,8 @@ const std::string BtExtendedMessage::NAME("extended");
 BtExtendedMessage::BtExtendedMessage
 (const ExtensionMessageHandle& extensionMessage):
   SimpleBtMessage(ID, NAME),
-  _extensionMessage(extensionMessage),
-  _msgLength(0)
+  extensionMessage_(extensionMessage),
+  msgLength_(0)
 {}
 
 unsigned char* BtExtendedMessage::createMessage()
@@ -67,20 +67,20 @@ unsigned char* BtExtendedMessage::createMessage()
    * extpayload --- extpayload, nbytes
    * total: 6+extpayload.length bytes
    */
-  std::string payload = _extensionMessage->getPayload();
-  _msgLength = 6+payload.size();
-  unsigned char* msg = new unsigned char[_msgLength];
-  bittorrent::createPeerMessageString(msg, _msgLength, 2+payload.size(), ID);
-  *(msg+5) = _extensionMessage->getExtensionMessageID();
+  std::string payload = extensionMessage_->getPayload();
+  msgLength_ = 6+payload.size();
+  unsigned char* msg = new unsigned char[msgLength_];
+  bittorrent::createPeerMessageString(msg, msgLength_, 2+payload.size(), ID);
+  *(msg+5) = extensionMessage_->getExtensionMessageID();
   memcpy(msg+6, payload.data(), payload.size());
   return msg;
 }
 
 size_t BtExtendedMessage::getMessageLength() {
-  if(!_msgLength) {
-    _msgLength = 6+_extensionMessage->getPayload().size();
+  if(!msgLength_) {
+    msgLength_ = 6+extensionMessage_->getPayload().size();
   }
-  return _msgLength;
+  return msgLength_;
 }
 
 bool BtExtendedMessage::sendPredicate() const
@@ -89,7 +89,7 @@ bool BtExtendedMessage::sendPredicate() const
 }
 
 std::string BtExtendedMessage::toString() const {
-  return strconcat(NAME, " ", _extensionMessage->toString());
+  return strconcat(NAME, " ", extensionMessage_->toString());
 }
 
 BtExtendedMessageHandle
@@ -108,8 +108,8 @@ BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
 
 void BtExtendedMessage::doReceivedAction()
 {
-  if(!_extensionMessage.isNull()) {
-    _extensionMessage->doReceivedAction();
+  if(!extensionMessage_.isNull()) {
+    extensionMessage_->doReceivedAction();
   }
 }
 

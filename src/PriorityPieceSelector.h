@@ -45,9 +45,9 @@ namespace aria2 {
 
 class PriorityPieceSelector:public PieceSelector {
 private:
-  std::vector<size_t> _prioritizedPieces;
+  std::vector<size_t> prioritizedPieces_;
 
-  SharedHandle<PieceSelector> _selector;
+  SharedHandle<PieceSelector> selector_;
 public:
   PriorityPieceSelector(const SharedHandle<PieceSelector>& selector);
 
@@ -58,7 +58,7 @@ public:
   void setPriorityPiece(InputIterator first, InputIterator last)
   {
     std::vector<size_t> t(first, last);
-    _prioritizedPieces.swap(t);
+    prioritizedPieces_.swap(t);
   }
 };
 

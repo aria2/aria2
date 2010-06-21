@@ -44,47 +44,47 @@ namespace aria2 {
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
 
-SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, off_t offset, uint64_t totalLength):_stream(stream), _offset(offset), _totalLength(totalLength), _buffer(0)
+SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, off_t offset, uint64_t totalLength):stream_(stream), offset_(offset), totalLength_(totalLength), buffer_(0)
 {
-  if(_offset%ALIGNMENT != 0) {
-    _stream->disableDirectIO();
+  if(offset_%ALIGNMENT != 0) {
+    stream_->disableDirectIO();
   }
 }
 
 SingleFileAllocationIterator::~SingleFileAllocationIterator()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  free(_buffer);
+  free(buffer_);
 #else
-  delete [] _buffer;
+  delete [] buffer_;
 #endif // HAVE_POSIX_MEMALIGN
 }
 
 void SingleFileAllocationIterator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  _buffer = reinterpret_cast<unsigned char*>
+  buffer_ = reinterpret_cast<unsigned char*>
     (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
 #else
-  _buffer = new unsigned char[BUFSIZE];
+  buffer_ = new unsigned char[BUFSIZE];
 #endif // HAVE_POSIX_MEMALIGN
-  memset(_buffer, 0, BUFSIZE);
+  memset(buffer_, 0, BUFSIZE);
 }
 
 void SingleFileAllocationIterator::allocateChunk()
 {
-  _stream->writeData(_buffer, BUFSIZE, _offset);
-  _offset += BUFSIZE;
+  stream_->writeData(buffer_, BUFSIZE, offset_);
+  offset_ += BUFSIZE;
 
-  if(_totalLength < (uint64_t)_offset) {
-    _stream->truncate(_totalLength);
-    _offset = _totalLength;
+  if(totalLength_ < (uint64_t)offset_) {
+    stream_->truncate(totalLength_);
+    offset_ = totalLength_;
   }
 }
 
 bool SingleFileAllocationIterator::finished()
 {
-  return (uint64_t)_offset >= _totalLength;
+  return (uint64_t)offset_ >= totalLength_;
 }
 
 } // namespace aria2

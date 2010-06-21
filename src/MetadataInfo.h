@@ -43,29 +43,29 @@ namespace aria2 {
 
 class MetadataInfo {
 private:
-  int64_t _id;
-  std::string _uri;
-  bool _dataOnly;
-  static int64_t _count;
+  int64_t id_;
+  std::string uri_;
+  bool dataOnly_;
+  static int64_t count_;
 public:
-  MetadataInfo(const std::string& uri):_id(genId()), _uri(uri), _dataOnly(false)
+  MetadataInfo(const std::string& uri):id_(genId()), uri_(uri), dataOnly_(false)
   {}
 
-  MetadataInfo():_id(genId()), _dataOnly(true) {}
+  MetadataInfo():id_(genId()), dataOnly_(true) {}
 
   bool dataOnly() const
   {
-    return _dataOnly;
+    return dataOnly_;
   }
 
   const std::string& getUri() const
   {
-    return _uri;
+    return uri_;
   }
 
   int64_t getId() const
   {
-    return _id;
+    return id_;
   }
   
   static int64_t genId();

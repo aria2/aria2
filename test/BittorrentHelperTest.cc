@@ -641,7 +641,7 @@ void BittorrentHelperTest::testEtc()
                        getTorrentAttrs(dctx)->comment);
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
                        getTorrentAttrs(dctx)->createdBy);
-  CPPUNIT_ASSERT_EQUAL((int64_t)1123456789,
+  CPPUNIT_ASSERT_EQUAL((time_t)1123456789,
                        getTorrentAttrs(dctx)->creationDate);
 }
 

@@ -50,7 +50,7 @@ class DownloadEngine;
 
 class DownloadEngineFactory {
 private:
-  Logger* _logger;
+  Logger* logger_;
 public:
   DownloadEngineFactory();
 

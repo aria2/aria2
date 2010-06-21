@@ -47,15 +47,15 @@ class Logger;
 
 class LpdMessageDispatcher {
 private:
-  SharedHandle<SocketCore> _socket;
-  std::string _infoHash;
-  uint16_t _port;
-  std::string _multicastAddress;
-  uint16_t _multicastPort;
-  Timer _timer;
-  time_t _interval;
-  std::string _request;
-  Logger* _logger;
+  SharedHandle<SocketCore> socket_;
+  std::string infoHash_;
+  uint16_t port_;
+  std::string multicastAddress_;
+  uint16_t multicastPort_;
+  Timer timer_;
+  time_t interval_;
+  std::string request_;
+  Logger* logger_;
 public:
   LpdMessageDispatcher
   (const std::string& infoHash, uint16_t port,
@@ -65,7 +65,7 @@ public:
   // No throw
   bool init(const std::string& localAddr, unsigned char ttl,unsigned char loop);
 
-  // Returns true if _timer reached announce interval, which is by
+  // Returns true if timer_ reached announce interval, which is by
   // default 5mins.
   bool isAnnounceReady() const;
 
@@ -73,17 +73,17 @@ public:
   // returns false.
   bool sendMessage();
 
-  // Reset _timer to the current time.
+  // Reset timer_ to the current time.
   void resetAnnounceTimer();
 
   const std::string& getInfoHash() const
   {
-    return _infoHash;
+    return infoHash_;
   }
 
   uint16_t getPort() const
   {
-    return _port;
+    return port_;
   }
 };
 

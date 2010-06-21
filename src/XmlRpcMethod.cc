@@ -58,8 +58,8 @@ namespace aria2 {
 namespace xmlrpc {
 
 XmlRpcMethod::XmlRpcMethod():
-  _optionParser(OptionParser::getInstance()),
-  _logger(LogFactory::getInstance()) {}
+  optionParser_(OptionParser::getInstance()),
+  logger_(LogFactory::getInstance()) {}
 
 SharedHandle<ValueBase> XmlRpcMethod::createErrorResponse
 (const Exception& e)
@@ -76,8 +76,8 @@ XmlRpcResponse XmlRpcMethod::execute
   try {
     return XmlRpcResponse(0, process(req, e));
   } catch(RecoverableException& e) {
-    if(_logger->debug()) {
-      _logger->debug(EX_EXCEPTION_CAUGHT, e);
+    if(logger_->debug()) {
+      logger_->debug(EX_EXCEPTION_CAUGHT, e);
     }
     return XmlRpcResponse(1, createErrorResponse(e));
   }
@@ -133,7 +133,7 @@ void XmlRpcMethod::gatherRequestOption
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
                  listRequestOptions(),
-                 option, _optionParser);
+                 option, optionParser_);
   }
 }
 
@@ -170,7 +170,7 @@ void XmlRpcMethod::gatherChangeableOption
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
                  listChangeableOptions(),
-                 option, _optionParser);
+                 option, optionParser_);
   }
 }
 
@@ -197,7 +197,7 @@ void XmlRpcMethod::gatherChangeableGlobalOption
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
                  listChangeableGlobalOptions(),
-                 option, _optionParser);
+                 option, optionParser_);
   }
 }
 

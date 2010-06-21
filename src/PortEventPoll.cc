@@ -58,14 +58,14 @@ PortEventPoll::A2PortEvent PortEventPoll::KSocketEntry::getEvents()
   portEvent.socketEntry = this;
 #ifdef ENABLE_ASYNC_DNS
   portEvent.events =
-    std::accumulate(_adnsEvents.begin(),
-                    _adnsEvents.end(),
-                    std::accumulate(_commandEvents.begin(),
-                                    _commandEvents.end(), 0, accumulateEvent),
+    std::accumulate(adnsEvents_.begin(),
+                    adnsEvents_.end(),
+                    std::accumulate(commandEvents_.begin(),
+                                    commandEvents_.end(), 0, accumulateEvent),
                     accumulateEvent);
 #else // !ENABLE_ASYNC_DNS
   portEvent.events =
-    std::accumulate(_commandEvents.begin(), _commandEvents.end(), 0,
+    std::accumulate(commandEvents_.begin(), commandEvents_.end(), 0,
                     accumulateEvent);
 
 #endif // !ENABLE_ASYNC_DNS
@@ -73,29 +73,29 @@ PortEventPoll::A2PortEvent PortEventPoll::KSocketEntry::getEvents()
 }
 
 PortEventPoll::PortEventPoll():
-  _portEventsSize(PORT_EVENTS_SIZE),
-  _portEvents(new port_event_t[_portEventsSize]),
-  _logger(LogFactory::getInstance())
+  portEventsSize_(PORT_EVENTS_SIZE),
+  portEvents_(new port_event_t[portEventsSize_]),
+  logger_(LogFactory::getInstance())
 {
-  _port = port_create();
+  port_ = port_create();
 }
 
 PortEventPoll::~PortEventPoll()
 {
-  if(_port != -1) {
+  if(port_ != -1) {
     int r;
-    while((r = close(_port)) == -1 && errno == EINTR);
+    while((r = close(port_)) == -1 && errno == EINTR);
     if(r == -1) {
-      _logger->error("Error occurred while closing port %d: %s",
-                     _port, strerror(errno));
+      logger_->error("Error occurred while closing port %d: %s",
+                     port_, strerror(errno));
     }
   }
-  delete [] _portEvents;
+  delete [] portEvents_;
 }
 
 bool PortEventPoll::good() const
 {
-  return _port != -1;
+  return port_ != -1;
 }
 
 void PortEventPoll::poll(const struct timeval& tv)
@@ -106,22 +106,22 @@ void PortEventPoll::poll(const struct timeval& tv)
   // If port_getn was interrupted by signal, it can consume events but
   // not updat nget!. For this very annoying bug, we have to check
   // actually event is filled or not.
-  _portEvents[0].portev_user = (void*)-1;
-  res = port_getn(_port, _portEvents, _portEventsSize, &nget, &timeout);
+  portEvents_[0].portev_user = (void*)-1;
+  res = port_getn(port_, portEvents_, portEventsSize_, &nget, &timeout);
   if(res == 0 ||
      (res == -1 && (errno == ETIME || errno == EINTR) &&
-      _portEvents[0].portev_user != (void*)-1)) {
-    if(_logger->debug()) {
-      _logger->debug("nget=%u", nget);
+      portEvents_[0].portev_user != (void*)-1)) {
+    if(logger_->debug()) {
+      logger_->debug("nget=%u", nget);
     }
     for(uint_t i = 0; i < nget; ++i) {
-      const port_event_t& pev = _portEvents[i];
+      const port_event_t& pev = portEvents_[i];
       KSocketEntry* p = reinterpret_cast<KSocketEntry*>(pev.portev_user);
       p->processEvents(pev.portev_events);
-      int r = port_associate(_port, PORT_SOURCE_FD, pev.portev_object,
+      int r = port_associate(port_, PORT_SOURCE_FD, pev.portev_object,
                              p->getEvents().events, p);
       if(r == -1) {
-        _logger->error("port_associate failed for file descriptor %d: cause %s",
+        logger_->error("port_associate failed for file descriptor %d: cause %s",
                        pev.portev_object, strerror(errno));
       }
     }
@@ -132,7 +132,7 @@ void PortEventPoll::poll(const struct timeval& tv)
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
   for(std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator i =
-        _nameResolverEntries.begin(), eoi = _nameResolverEntries.end();
+        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
       i != eoi; ++i) {
     (*i)->processTimeout();
     (*i)->removeSocketEvents(this);
@@ -167,28 +167,28 @@ bool PortEventPoll::addEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
   int r = 0;
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
     event.addSelf(*i);
     A2PortEvent pv = (*i)->getEvents();
-    r = port_associate(_port, PORT_SOURCE_FD, (*i)->getSocket(),
+    r = port_associate(port_, PORT_SOURCE_FD, (*i)->getSocket(),
                        pv.events, pv.socketEntry);
   } else {
-    _socketEntries.insert(i, socketEntry);
-    if(_socketEntries.size() > _portEventsSize) {
-      _portEventsSize *= 2;
-      delete [] _portEvents;
-      _portEvents = new port_event_t[_portEventsSize];
+    socketEntries_.insert(i, socketEntry);
+    if(socketEntries_.size() > portEventsSize_) {
+      portEventsSize_ *= 2;
+      delete [] portEvents_;
+      portEvents_ = new port_event_t[portEventsSize_];
     }
     event.addSelf(socketEntry);
     A2PortEvent pv = socketEntry->getEvents();
-    r = port_associate(_port, PORT_SOURCE_FD, socketEntry->getSocket(),
+    r = port_associate(port_, PORT_SOURCE_FD, socketEntry->getSocket(),
                        pv.events, pv.socketEntry);
   }
   if(r == -1) {
-    if(_logger->debug()) {
-      _logger->debug("Failed to add socket event %d:%s",
+    if(logger_->debug()) {
+      logger_->debug("Failed to add socket event %d:%s",
                      socket, strerror(errno));
     }
     return false;
@@ -217,29 +217,29 @@ bool PortEventPoll::deleteEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(_socketEntries.begin(), _socketEntries.end(), socketEntry);
-  if(i != _socketEntries.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
+  if(i != socketEntries_.end() && (*i) == socketEntry) {
     event.removeSelf(*i);
     int r = 0;
     if((*i)->eventEmpty()) {
-      r = port_dissociate(_port, PORT_SOURCE_FD, (*i)->getSocket());
-      _socketEntries.erase(i);
+      r = port_dissociate(port_, PORT_SOURCE_FD, (*i)->getSocket());
+      socketEntries_.erase(i);
     } else {
       A2PortEvent pv = (*i)->getEvents();
-      r = port_associate(_port, PORT_SOURCE_FD, (*i)->getSocket(),
+      r = port_associate(port_, PORT_SOURCE_FD, (*i)->getSocket(),
                          pv.events, pv.socketEntry);
     }
     if(r == -1) {
-      if(_logger->debug()) {
-        _logger->debug("Failed to delete socket event:%s", strerror(errno));
+      if(logger_->debug()) {
+        logger_->debug("Failed to delete socket event:%s", strerror(errno));
       }
       return false;
     } else {
       return true;
     }
   } else {
-    if(_logger->debug()) {
-      _logger->debug("Socket %d is not found in SocketEntries.", socket);
+    if(logger_->debug()) {
+      logger_->debug("Socket %d is not found in SocketEntries.", socket);
     }
     return false;
   }
@@ -267,9 +267,9 @@ bool PortEventPoll::addNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
-    _nameResolverEntries.push_back(entry);
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
+    nameResolverEntries_.push_back(entry);
     entry->addSocketEvents(this);
     return true;
   } else {
@@ -283,12 +283,12 @@ bool PortEventPoll::deleteNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(_nameResolverEntries.begin(), _nameResolverEntries.end(), entry);
-  if(itr == _nameResolverEntries.end()) {
+    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+  if(itr == nameResolverEntries_.end()) {
     return false;
   } else {
     (*itr)->removeSocketEvents(this);
-    _nameResolverEntries.erase(itr);
+    nameResolverEntries_.erase(itr);
     return true;
   }
 }

@@ -36,14 +36,14 @@
 
 namespace aria2 {
 
-int64_t MetadataInfo::_count = 0;
+int64_t MetadataInfo::count_ = 0;
 
 int64_t MetadataInfo::genId()
 {
-  if(_count == INT64_MAX) {
-    _count = 0;
+  if(count_ == INT64_MAX) {
+    count_ = 0;
   }
-  return ++_count;
+  return ++count_;
 }
 
 } // namespace aria2

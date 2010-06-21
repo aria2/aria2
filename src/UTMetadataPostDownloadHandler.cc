@@ -67,7 +67,7 @@ bool UTMetadataPostDownloadHandler::Criteria::match
 }
 
 UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler():
-  _logger(LogFactory::getInstance())
+  logger_(LogFactory::getInstance())
 {
   setCriteria(SharedHandle<Criteria>(new Criteria()));
 }
@@ -86,9 +86,9 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
       util::applyDir(requestGroup->getOption()->get(PREF_DIR),
                      util::toHex(attrs->infoHash)+".torrent");
     if(util::saveAs(filename, torrent)) {
-      _logger->notice(MSG_METADATA_SAVED, filename.c_str());
+      logger_->notice(MSG_METADATA_SAVED, filename.c_str());
     } else {
-      _logger->notice(MSG_METADATA_NOT_SAVED, filename.c_str());
+      logger_->notice(MSG_METADATA_NOT_SAVED, filename.c_str());
     }
   }
   if(!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {

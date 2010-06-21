@@ -44,16 +44,16 @@ namespace aria2 {
 
 class DHTIDCloser {
 private:
-  const unsigned char* _targetID;
+  const unsigned char* targetID_;
 
-  XORCloser _closer;
+  XORCloser closer_;
 public:
-  DHTIDCloser(const unsigned char* targetID):_closer(targetID, DHT_ID_LENGTH) {}
+  DHTIDCloser(const unsigned char* targetID):closer_(targetID, DHT_ID_LENGTH) {}
 
   bool operator()(const SharedHandle<DHTNodeLookupEntry>& m1,
                   const SharedHandle<DHTNodeLookupEntry>& m2) const
   {
-    return _closer(m1->node->getID(), m2->node->getID());
+    return closer_(m1->node->getID(), m2->node->getID());
   }
 };
 

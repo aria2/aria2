@@ -12,18 +12,18 @@ class MockDHTMessageDispatcher:public DHTMessageDispatcher {
 public:
   class Entry {
   public:
-    SharedHandle<DHTMessage> _message;
-    time_t _timeout;
-    SharedHandle<DHTMessageCallback> _callback;
+    SharedHandle<DHTMessage> message_;
+    time_t timeout_;
+    SharedHandle<DHTMessageCallback> callback_;
 
     Entry(const SharedHandle<DHTMessage>& message, time_t timeout,
           const SharedHandle<DHTMessageCallback>& callback):
-      _message(message),
-      _timeout(timeout),
-      _callback(callback) {}
+      message_(message),
+      timeout_(timeout),
+      callback_(callback) {}
   };
 
-  std::deque<Entry> _messageQueue;
+  std::deque<Entry> messageQueue_;
 
 public:
   MockDHTMessageDispatcher() {}
@@ -36,7 +36,7 @@ public:
                     const SharedHandle<DHTMessageCallback>& callback =
                     SharedHandle<DHTMessageCallback>())
   {
-    _messageQueue.push_back(Entry(message, timeout, callback));
+    messageQueue_.push_back(Entry(message, timeout, callback));
   }
 
   virtual void
@@ -44,14 +44,14 @@ public:
                     const SharedHandle<DHTMessageCallback>& callback =
                     SharedHandle<DHTMessageCallback>())
   {
-    _messageQueue.push_back(Entry(message, DHT_MESSAGE_TIMEOUT, callback));
+    messageQueue_.push_back(Entry(message, DHT_MESSAGE_TIMEOUT, callback));
   }
   
   virtual void sendMessages() {}
 
   virtual size_t countMessageInQueue() const
   {
-    return _messageQueue.size();
+    return messageQueue_.size();
   }
 };
 

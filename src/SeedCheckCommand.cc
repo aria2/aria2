@@ -54,58 +54,58 @@ SeedCheckCommand::SeedCheckCommand
  DownloadEngine* e,
  const SharedHandle<SeedCriteria>& seedCriteria)
   :Command(cuid),
-   _requestGroup(requestGroup),
-   _e(e),
-   _seedCriteria(seedCriteria),
-   _checkStarted(false)
+   requestGroup_(requestGroup),
+   e_(e),
+   seedCriteria_(seedCriteria),
+   checkStarted_(false)
 {
   setStatusRealtime();
-  _requestGroup->increaseNumCommand();
+  requestGroup_->increaseNumCommand();
 }
 
 SeedCheckCommand::~SeedCheckCommand()
 {
-  _requestGroup->decreaseNumCommand();
+  requestGroup_->decreaseNumCommand();
 }
 
 bool SeedCheckCommand::execute() {
-  if(_btRuntime->isHalt()) {
+  if(btRuntime_->isHalt()) {
     return true;
   }
-  if(!_seedCriteria.get()) {
+  if(!seedCriteria_.get()) {
     return false;
   }
-  if(!_checkStarted) {
-    if(_pieceStorage->downloadFinished()) {
-      _checkStarted = true;
-      _seedCriteria->reset();
+  if(!checkStarted_) {
+    if(pieceStorage_->downloadFinished()) {
+      checkStarted_ = true;
+      seedCriteria_->reset();
     }
   }
-  if(_checkStarted) {
-    if(_seedCriteria->evaluate()) {
+  if(checkStarted_) {
+    if(seedCriteria_->evaluate()) {
       getLogger()->notice(MSG_SEEDING_END);
-      _btRuntime->setHalt(true);
+      btRuntime_->setHalt(true);
     }
   }
-  _e->addCommand(this);
+  e_->addCommand(this);
   return false;
 }
 
 void SeedCheckCommand::setSeedCriteria
 (const SharedHandle<SeedCriteria>& seedCriteria)
 {
-  _seedCriteria = seedCriteria;
+  seedCriteria_ = seedCriteria;
 }
 
 void SeedCheckCommand::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
 {
-  _btRuntime = btRuntime;
+  btRuntime_ = btRuntime;
 }
 
 void SeedCheckCommand::setPieceStorage
 (const SharedHandle<PieceStorage>& pieceStorage)
 {
-  _pieceStorage = pieceStorage;
+  pieceStorage_ = pieceStorage;
 }
 
 

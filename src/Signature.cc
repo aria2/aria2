@@ -47,22 +47,22 @@ Signature::~Signature() {}
 
 void Signature::setType(const std::string& type)
 {
-  _type = type;
+  type_ = type;
 }
 
 void Signature::setFile(const std::string& file)
 {
-  _file = file;
+  file_ = file;
 }
 
 void Signature::setBody(const std::string& body)
 {
-  _body = body;
+  body_ = body;
 }
 
 bool Signature::save(const std::string& filepath) const
 {
-  return util::saveAs(filepath, _body);
+  return util::saveAs(filepath, body_);
 }
 
 } // namespace aria2

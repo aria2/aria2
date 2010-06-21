@@ -64,44 +64,44 @@ namespace aria2 {
 
 DefaultPieceStorage::DefaultPieceStorage
 (const SharedHandle<DownloadContext>& downloadContext, const Option* option):
-  _downloadContext(downloadContext),
-  _bitfieldMan(new BitfieldMan(downloadContext->getPieceLength(),
+  downloadContext_(downloadContext),
+  bitfieldMan_(new BitfieldMan(downloadContext->getPieceLength(),
                                downloadContext->getTotalLength())),
-  _diskWriterFactory(new DefaultDiskWriterFactory()),
-  _endGamePieceNum(END_GAME_PIECE_NUM),
-  _logger(LogFactory::getInstance()),
-  _option(option),
-  _pieceStatMan(new PieceStatMan(downloadContext->getNumPieces(), true)),
-  _pieceSelector(new RarestPieceSelector(_pieceStatMan))
+  diskWriterFactory_(new DefaultDiskWriterFactory()),
+  endGamePieceNum_(END_GAME_PIECE_NUM),
+  logger_(LogFactory::getInstance()),
+  option_(option),
+  pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
+  pieceSelector_(new RarestPieceSelector(pieceStatMan_))
 {}
 
 DefaultPieceStorage::~DefaultPieceStorage() {
-  delete _bitfieldMan;
+  delete bitfieldMan_;
 }
 
 bool DefaultPieceStorage::isEndGame()
 {
-  return _bitfieldMan->countMissingBlock() <= _endGamePieceNum;
+  return bitfieldMan_->countMissingBlock() <= endGamePieceNum_;
 }
 
 bool DefaultPieceStorage::getMissingPieceIndex(size_t& index,
                                                const unsigned char* bitfield,
                                                size_t length)
 {
-  const size_t mislen = _bitfieldMan->getBitfieldLength();
+  const size_t mislen = bitfieldMan_->getBitfieldLength();
   array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
   bool r;
   if(isEndGame()) {
-    r = _bitfieldMan->getAllMissingIndexes(misbitfield, mislen,
+    r = bitfieldMan_->getAllMissingIndexes(misbitfield, mislen,
                                            bitfield, length);
   } else {
-    r = _bitfieldMan->getAllMissingUnusedIndexes(misbitfield, mislen,
+    r = bitfieldMan_->getAllMissingUnusedIndexes(misbitfield, mislen,
                                                  bitfield, length);
   }
   if(r) {
     // We assume indexes is sorted using comparator less.
     return
-      _pieceSelector->select(index, misbitfield,_bitfieldMan->countBlock());
+      pieceSelector_->select(index, misbitfield,bitfieldMan_->countBlock());
   } else {
     return false;
   }
@@ -109,15 +109,15 @@ bool DefaultPieceStorage::getMissingPieceIndex(size_t& index,
 
 SharedHandle<Piece> DefaultPieceStorage::checkOutPiece(size_t index)
 {
-  _bitfieldMan->setUseBit(index);
+  bitfieldMan_->setUseBit(index);
 
   SharedHandle<Piece> piece = findUsedPiece(index);
   if(piece.isNull()) {
-    piece.reset(new Piece(index, _bitfieldMan->getBlockLength(index)));
+    piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-    piece->setHashAlgo(_downloadContext->getPieceHashAlgo());
+    piece->setHashAlgo(downloadContext_->getPieceHashAlgo());
 
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -135,10 +135,10 @@ SharedHandle<Piece> DefaultPieceStorage::checkOutPiece(size_t index)
 SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
 {
   SharedHandle<Piece> piece;
-  if(0 <= index && index <= _bitfieldMan->getMaxIndex()) {
+  if(0 <= index && index <= bitfieldMan_->getMaxIndex()) {
     piece = findUsedPiece(index);
     if(piece.isNull()) {
-      piece.reset(new Piece(index, _bitfieldMan->getBlockLength(index)));
+      piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
       if(hasPiece(index)) {
         piece->setAllBlock();
       }
@@ -150,11 +150,11 @@ SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
 void DefaultPieceStorage::addUsedPiece(const SharedHandle<Piece>& piece)
 {
   std::deque<SharedHandle<Piece> >::iterator i =
-    std::lower_bound(_usedPieces.begin(), _usedPieces.end(), piece);
-  _usedPieces.insert(i, piece);
-  if(_logger->debug()) {
-    _logger->debug("_usedPieces.size()=%lu",
-                   static_cast<unsigned long>(_usedPieces.size()));
+    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece);
+  usedPieces_.insert(i, piece);
+  if(logger_->debug()) {
+    logger_->debug("usedPieces_.size()=%lu",
+                   static_cast<unsigned long>(usedPieces_.size()));
   }
 }
 
@@ -164,8 +164,8 @@ SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
   p->setIndex(index);
 
   std::deque<SharedHandle<Piece> >::const_iterator i =
-    std::lower_bound(_usedPieces.begin(), _usedPieces.end(), p);
-  if(i != _usedPieces.end() && (*i) == p) {
+    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), p);
+  if(i != usedPieces_.end() && (*i) == p) {
     return *i;
   } else {
     p.reset(0);
@@ -194,7 +194,7 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
 
 bool DefaultPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
 {
-  return _bitfieldMan->hasMissingPiece(peer->getBitfield(),
+  return bitfieldMan_->hasMissingPiece(peer->getBitfield(),
                                        peer->getBitfieldLength());
 }
 
@@ -210,7 +210,7 @@ void DefaultPieceStorage::createFastIndexBitfield
   for(std::vector<size_t>::const_iterator itr =
         peer->getPeerAllowedIndexSet().begin(),
         eoi = peer->getPeerAllowedIndexSet().end(); itr != eoi; ++itr) {
-    if(!_bitfieldMan->isBitSet(*itr) && peer->hasPiece(*itr)) {
+    if(!bitfieldMan_->isBitSet(*itr) && peer->hasPiece(*itr)) {
       bitfield.setBit(*itr);
     }
   }
@@ -220,8 +220,8 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
 (const SharedHandle<Peer>& peer)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
-    BitfieldMan tempBitfield(_bitfieldMan->getBlockLength(),
-                             _bitfieldMan->getTotalLength());
+    BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
+                             bitfieldMan_->getTotalLength());
     createFastIndexBitfield(tempBitfield, peer);
     return getMissingPiece(tempBitfield);
   } else {
@@ -239,8 +239,8 @@ static void unsetExcludedIndexes(BitfieldMan& bitfield,
 SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
 (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
 {
-  BitfieldMan tempBitfield(_bitfieldMan->getBlockLength(),
-                           _bitfieldMan->getTotalLength());
+  BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
+                           bitfieldMan_->getTotalLength());
   tempBitfield.setBitfield(peer->getBitfield(), peer->getBitfieldLength());
   unsetExcludedIndexes(tempBitfield, excludedIndexes);
   return getMissingPiece(tempBitfield);
@@ -250,8 +250,8 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
 (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
-    BitfieldMan tempBitfield(_bitfieldMan->getBlockLength(),
-                             _bitfieldMan->getTotalLength());
+    BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
+                             bitfieldMan_->getTotalLength());
     createFastIndexBitfield(tempBitfield, peer);
     unsetExcludedIndexes(tempBitfield, excludedIndexes);
     return getMissingPiece(tempBitfield);
@@ -265,14 +265,14 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
 bool DefaultPieceStorage::hasMissingUnusedPiece()
 {
   size_t index;
-  return _bitfieldMan->getFirstMissingUnusedIndex(index);
+  return bitfieldMan_->getFirstMissingUnusedIndex(index);
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getSparseMissingUnusedPiece
 (const unsigned char* ignoreBitfield, size_t length)
 {
   size_t index;
-  if(_bitfieldMan->getSparseMissingUnusedIndex(index, ignoreBitfield, length)) {
+  if(bitfieldMan_->getSparseMissingUnusedIndex(index, ignoreBitfield, length)) {
     return checkOutPiece(index);
   } else {
     return SharedHandle<Piece>();
@@ -294,9 +294,9 @@ void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
     return;
   }
   std::deque<SharedHandle<Piece> >::iterator i = 
-    std::lower_bound(_usedPieces.begin(), _usedPieces.end(), piece);
-  if(i != _usedPieces.end() && (*i) == piece) {
-    _usedPieces.erase(i);
+    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece);
+  if(i != usedPieces_.end() && (*i) == piece) {
+    usedPieces_.erase(i);
   }
 }
 
@@ -348,25 +348,25 @@ void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
   if(allDownloadFinished()) {
     return;
   }
-  _bitfieldMan->setBit(piece->getIndex());
-  _bitfieldMan->unsetUseBit(piece->getIndex());
+  bitfieldMan_->setBit(piece->getIndex());
+  bitfieldMan_->unsetUseBit(piece->getIndex());
   addPieceStats(piece->getIndex());
   if(downloadFinished()) {
-    _downloadContext->resetDownloadStopTime();
+    downloadContext_->resetDownloadStopTime();
     if(isSelectiveDownloadingMode()) {
-      _logger->notice(MSG_SELECTIVE_DOWNLOAD_COMPLETED);
+      logger_->notice(MSG_SELECTIVE_DOWNLOAD_COMPLETED);
       // following line was commented out in order to stop sending request
       // message after user-specified files were downloaded.
       //finishSelectiveDownloadingMode();
     } else {
-      _logger->info(MSG_DOWNLOAD_COMPLETED);
+      logger_->info(MSG_DOWNLOAD_COMPLETED);
     }
   }
 }
 
 bool DefaultPieceStorage::isSelectiveDownloadingMode()
 {
-  return _bitfieldMan->isFilterEnabled();
+  return bitfieldMan_->isFilterEnabled();
 }
 
 // not unittested
@@ -375,7 +375,7 @@ void DefaultPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
   if(piece.isNull()) {
     return;
   }
-  _bitfieldMan->unsetUseBit(piece->getIndex());
+  bitfieldMan_->unsetUseBit(piece->getIndex());
   if(!isEndGame()) {
     if(piece->getCompletedLength() == 0) {
       deleteUsedPiece(piece);
@@ -385,28 +385,28 @@ void DefaultPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
 
 bool DefaultPieceStorage::hasPiece(size_t index)
 {
-  return _bitfieldMan->isBitSet(index);
+  return bitfieldMan_->isBitSet(index);
 }
 
 bool DefaultPieceStorage::isPieceUsed(size_t index)
 {
-  return _bitfieldMan->isUseBitSet(index);
+  return bitfieldMan_->isUseBitSet(index);
 }
 
 uint64_t DefaultPieceStorage::getTotalLength()
 {
-  return _bitfieldMan->getTotalLength();
+  return bitfieldMan_->getTotalLength();
 }
 
 uint64_t DefaultPieceStorage::getFilteredTotalLength()
 {
-  return _bitfieldMan->getFilteredTotalLength();
+  return bitfieldMan_->getFilteredTotalLength();
 }
 
 uint64_t DefaultPieceStorage::getCompletedLength()
 {
   uint64_t completedLength =
-    _bitfieldMan->getCompletedLength()+getInFlightPieceCompletedLength();
+    bitfieldMan_->getCompletedLength()+getInFlightPieceCompletedLength();
   uint64_t totalLength = getTotalLength();
   if(completedLength > totalLength) {
     completedLength = totalLength;
@@ -416,13 +416,13 @@ uint64_t DefaultPieceStorage::getCompletedLength()
 
 uint64_t DefaultPieceStorage::getFilteredCompletedLength()
 {
-  return _bitfieldMan->getFilteredCompletedLength()+
+  return bitfieldMan_->getFilteredCompletedLength()+
     getInFlightPieceCompletedLength();
 }
 
 size_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 {
-  return std::accumulate(_usedPieces.begin(), _usedPieces.end(),
+  return std::accumulate(usedPieces_.begin(), usedPieces_.end(),
                          0, adopt2nd(std::plus<size_t>(),
                                      mem_fun_sh(&Piece::getCompletedLength)));
 }
@@ -431,7 +431,7 @@ size_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 void DefaultPieceStorage::setupFileFilter()
 {
   const std::vector<SharedHandle<FileEntry> >& fileEntries =
-    _downloadContext->getFileEntries();
+    downloadContext_->getFileEntries();
   bool allSelected = true;
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
         fileEntries.begin(), eoi = fileEntries.end();
@@ -447,16 +447,16 @@ void DefaultPieceStorage::setupFileFilter()
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
         fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
     if((*i)->isRequested()) {
-      _bitfieldMan->addFilter((*i)->getOffset(), (*i)->getLength());
+      bitfieldMan_->addFilter((*i)->getOffset(), (*i)->getLength());
     }
   }
-  _bitfieldMan->enableFilter();
+  bitfieldMan_->enableFilter();
 }
 
 // not unittested
 void DefaultPieceStorage::clearFileFilter()
 {
-  _bitfieldMan->clearFilter();
+  bitfieldMan_->clearFilter();
 }
 
 // not unittested
@@ -464,54 +464,54 @@ bool DefaultPieceStorage::downloadFinished()
 {
   // TODO iterate all requested FileEntry and Call
   // bitfieldMan->isBitSetOffsetRange()
-  return _bitfieldMan->isFilteredAllBitSet();
+  return bitfieldMan_->isFilteredAllBitSet();
 }
 
 // not unittested
 bool DefaultPieceStorage::allDownloadFinished()
 {
-  return _bitfieldMan->isAllBitSet();
+  return bitfieldMan_->isAllBitSet();
 }
 
 // not unittested
 void DefaultPieceStorage::initStorage()
 {
-  if(_downloadContext->getFileEntries().size() == 1) {
-    if(_logger->debug()) {
-      _logger->debug("Instantiating DirectDiskAdaptor");
+  if(downloadContext_->getFileEntries().size() == 1) {
+    if(logger_->debug()) {
+      logger_->debug("Instantiating DirectDiskAdaptor");
     }
     DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
-    directDiskAdaptor->setTotalLength(_downloadContext->getTotalLength());
+    directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
     directDiskAdaptor->setFileEntries
-      (_downloadContext->getFileEntries().begin(),
-       _downloadContext->getFileEntries().end());
+      (downloadContext_->getFileEntries().begin(),
+       downloadContext_->getFileEntries().end());
 
     DiskWriterHandle writer =
-      _diskWriterFactory->newDiskWriter(directDiskAdaptor->getFilePath());
-    if(_option->getAsBool(PREF_ENABLE_DIRECT_IO)) {
+      diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
+    if(option_->getAsBool(PREF_ENABLE_DIRECT_IO)) {
       writer->allowDirectIO();
     }
 
     directDiskAdaptor->setDiskWriter(writer);
-    _diskAdaptor = directDiskAdaptor;
+    diskAdaptor_ = directDiskAdaptor;
   } else {
-    if(_logger->debug()) {
-      _logger->debug("Instantiating MultiDiskAdaptor");
+    if(logger_->debug()) {
+      logger_->debug("Instantiating MultiDiskAdaptor");
     }
     MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
-    multiDiskAdaptor->setFileEntries(_downloadContext->getFileEntries().begin(),
-                                     _downloadContext->getFileEntries().end());
-    if(_option->getAsBool(PREF_ENABLE_DIRECT_IO)) {
+    multiDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
+                                     downloadContext_->getFileEntries().end());
+    if(option_->getAsBool(PREF_ENABLE_DIRECT_IO)) {
       multiDiskAdaptor->allowDirectIO();
     }
-    multiDiskAdaptor->setPieceLength(_downloadContext->getPieceLength());
+    multiDiskAdaptor->setPieceLength(downloadContext_->getPieceLength());
     multiDiskAdaptor->setMaxOpenFiles
-      (_option->getAsInt(PREF_BT_MAX_OPEN_FILES));
-    _diskAdaptor = multiDiskAdaptor;
+      (option_->getAsInt(PREF_BT_MAX_OPEN_FILES));
+    diskAdaptor_ = multiDiskAdaptor;
   }
 #ifdef HAVE_POSIX_FALLOCATE
-  if(_option->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
-    _diskAdaptor->enableFallocate();
+  if(option_->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
+    diskAdaptor_->enableFallocate();
   }
 #endif // HAVE_POSIX_FALLOCATE
 }
@@ -519,33 +519,33 @@ void DefaultPieceStorage::initStorage()
 void DefaultPieceStorage::setBitfield(const unsigned char* bitfield,
                                       size_t bitfieldLength)
 {
-  _bitfieldMan->setBitfield(bitfield, bitfieldLength);
+  bitfieldMan_->setBitfield(bitfield, bitfieldLength);
   addPieceStats(bitfield, bitfieldLength);
 }
 
 size_t DefaultPieceStorage::getBitfieldLength()
 {
-  return _bitfieldMan->getBitfieldLength();
+  return bitfieldMan_->getBitfieldLength();
 }
 
 const unsigned char* DefaultPieceStorage::getBitfield()
 {
-  return _bitfieldMan->getBitfield();
+  return bitfieldMan_->getBitfield();
 }
 
 DiskAdaptorHandle DefaultPieceStorage::getDiskAdaptor() {
-  return _diskAdaptor;
+  return diskAdaptor_;
 }
 
 size_t DefaultPieceStorage::getPieceLength(size_t index)
 {
-  return _bitfieldMan->getBlockLength(index);
+  return bitfieldMan_->getBlockLength(index);
 }
 
 void DefaultPieceStorage::advertisePiece(cuid_t cuid, size_t index)
 {
   HaveEntry entry(cuid, index, global::wallclock);
-  _haves.push_front(entry);
+  haves_.push_front(entry);
 }
 
 void
@@ -553,8 +553,8 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
                                                cuid_t myCuid,
                                                const Timer& lastCheckTime)
 {
-  for(std::deque<HaveEntry>::const_iterator itr = _haves.begin(),
-        eoi = _haves.end(); itr != eoi; ++itr) {
+  for(std::deque<HaveEntry>::const_iterator itr = haves_.begin(),
+        eoi = haves_.end(); itr != eoi; ++itr) {
     const HaveEntry& have = *itr;
     if(have.getCuid() == myCuid) {
       continue;
@@ -585,37 +585,37 @@ public:
 void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
 {
   std::deque<HaveEntry>::iterator itr =
-    std::find_if(_haves.begin(), _haves.end(), FindElapsedHave(elapsed));
-  if(itr != _haves.end()) {
-    if(_logger->debug()) {
-      _logger->debug(MSG_REMOVED_HAVE_ENTRY, _haves.end()-itr);
+    std::find_if(haves_.begin(), haves_.end(), FindElapsedHave(elapsed));
+  if(itr != haves_.end()) {
+    if(logger_->debug()) {
+      logger_->debug(MSG_REMOVED_HAVE_ENTRY, haves_.end()-itr);
     }
-    _haves.erase(itr, _haves.end());
+    haves_.erase(itr, haves_.end());
   }
 }
 
 void DefaultPieceStorage::markAllPiecesDone()
 {
-  _bitfieldMan->setAllBit();
+  bitfieldMan_->setAllBit();
 }
 
 void DefaultPieceStorage::markPiecesDone(uint64_t length)
 {
-  if(length == _bitfieldMan->getTotalLength()) {
-    _bitfieldMan->setAllBit();
+  if(length == bitfieldMan_->getTotalLength()) {
+    bitfieldMan_->setAllBit();
   } else if(length == 0) {
     // TODO this would go to markAllPiecesUndone()
-    _bitfieldMan->clearAllBit();
-    _usedPieces.clear();
+    bitfieldMan_->clearAllBit();
+    usedPieces_.clear();
   } else {
-    size_t numPiece = length/_bitfieldMan->getBlockLength();
+    size_t numPiece = length/bitfieldMan_->getBlockLength();
     if(numPiece > 0) {
-      _bitfieldMan->setBitRange(0, numPiece-1);
+      bitfieldMan_->setBitRange(0, numPiece-1);
     }
-    size_t r = (length%_bitfieldMan->getBlockLength())/Piece::BLOCK_LENGTH;
+    size_t r = (length%bitfieldMan_->getBlockLength())/Piece::BLOCK_LENGTH;
     if(r > 0) {
       SharedHandle<Piece> p
-        (new Piece(numPiece, _bitfieldMan->getBlockLength(numPiece)));
+        (new Piece(numPiece, bitfieldMan_->getBlockLength(numPiece)));
       
       for(size_t i = 0; i < r; ++i) {
         p->completeBlock(i);
@@ -623,7 +623,7 @@ void DefaultPieceStorage::markPiecesDone(uint64_t length)
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-      p->setHashAlgo(_downloadContext->getPieceHashAlgo());
+      p->setHashAlgo(downloadContext_->getPieceHashAlgo());
 
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -634,56 +634,56 @@ void DefaultPieceStorage::markPiecesDone(uint64_t length)
 
 void DefaultPieceStorage::markPieceMissing(size_t index)
 {
-  _bitfieldMan->unsetBit(index);
+  bitfieldMan_->unsetBit(index);
 }
 
 void DefaultPieceStorage::addInFlightPiece
 (const std::vector<SharedHandle<Piece> >& pieces)
 {
-  _usedPieces.insert(_usedPieces.end(), pieces.begin(), pieces.end());
-  std::sort(_usedPieces.begin(), _usedPieces.end());
+  usedPieces_.insert(usedPieces_.end(), pieces.begin(), pieces.end());
+  std::sort(usedPieces_.begin(), usedPieces_.end());
 }
 
 size_t DefaultPieceStorage::countInFlightPiece()
 {
-  return _usedPieces.size();
+  return usedPieces_.size();
 }
 
 void DefaultPieceStorage::getInFlightPieces
 (std::vector<SharedHandle<Piece> >& pieces)
 {
-  pieces.insert(pieces.end(), _usedPieces.begin(), _usedPieces.end());
+  pieces.insert(pieces.end(), usedPieces_.begin(), usedPieces_.end());
 }
 
 void DefaultPieceStorage::setDiskWriterFactory
 (const DiskWriterFactoryHandle& diskWriterFactory)
 {
-  _diskWriterFactory = diskWriterFactory;
+  diskWriterFactory_ = diskWriterFactory;
 }
 
 void DefaultPieceStorage::addPieceStats(const unsigned char* bitfield,
                                         size_t bitfieldLength)
 {
-  _pieceStatMan->addPieceStats(bitfield, bitfieldLength);
+  pieceStatMan_->addPieceStats(bitfield, bitfieldLength);
 }
 
 void DefaultPieceStorage::subtractPieceStats(const unsigned char* bitfield,
                                              size_t bitfieldLength)
 {
-  _pieceStatMan->subtractPieceStats(bitfield, bitfieldLength);
+  pieceStatMan_->subtractPieceStats(bitfield, bitfieldLength);
 }
 
 void DefaultPieceStorage::updatePieceStats(const unsigned char* newBitfield,
                                            size_t newBitfieldLength,
                                            const unsigned char* oldBitfield)
 {
-  _pieceStatMan->updatePieceStats(newBitfield, newBitfieldLength,
+  pieceStatMan_->updatePieceStats(newBitfield, newBitfieldLength,
                                   oldBitfield);
 }
 
 void DefaultPieceStorage::addPieceStats(size_t index)
 {
-  _pieceStatMan->addPieceStats(index);
+  pieceStatMan_->addPieceStats(index);
 }
 
 } // namespace aria2

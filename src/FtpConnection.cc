@@ -66,51 +66,51 @@ FtpConnection::FtpConnection(cuid_t cuid, const SocketHandle& socket,
                              const SharedHandle<Request>& req,
                              const SharedHandle<AuthConfig>& authConfig,
                              const Option* op):
-  _cuid(cuid), _socket(socket), _req(req),
-  _authConfig(authConfig), _option(op),
-  _logger(LogFactory::getInstance()),
-  _socketBuffer(socket),
-  _baseWorkingDir("/") {}
+  cuid_(cuid), socket_(socket), req_(req),
+  authConfig_(authConfig), option_(op),
+  logger_(LogFactory::getInstance()),
+  socketBuffer_(socket),
+  baseWorkingDir_("/") {}
 
 FtpConnection::~FtpConnection() {}
 
 bool FtpConnection::sendUser()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "USER ";
-    request += _authConfig->getUser();
+    request += authConfig_->getUser();
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(),"USER ********");
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(),"USER ********");
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendPass()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "PASS ";
-    request += _authConfig->getPassword();
+    request += authConfig_->getPassword();
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(),"PASS ********");
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(),"PASS ********");
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendType()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string type;
-    if(_option->get(PREF_FTP_TYPE) == V_ASCII) {
+    if(option_->get(PREF_FTP_TYPE) == V_ASCII) {
       type = FtpConnection::A;
     } else {
       type = FtpConnection::I;
@@ -118,97 +118,97 @@ bool FtpConnection::sendType()
     std::string request = "TYPE ";
     request += type;
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(),request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(),request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendPwd()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "PWD\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(),request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(),request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendCwd()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
-    if(_logger->info()) {
-      _logger->info("CUID#%s - Using base working directory '%s'",
-                    util::itos(_cuid).c_str(), _baseWorkingDir.c_str());
+  if(socketBuffer_.sendBufferIsEmpty()) {
+    if(logger_->info()) {
+      logger_->info("CUID#%s - Using base working directory '%s'",
+                    util::itos(cuid_).c_str(), baseWorkingDir_.c_str());
     }
     std::string request = "CWD ";
-    if(_baseWorkingDir != "/") {
-      request += _baseWorkingDir;
+    if(baseWorkingDir_ != "/") {
+      request += baseWorkingDir_;
     }
-    request += util::percentDecode(_req->getDir());
+    request += util::percentDecode(req_->getDir());
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(),request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(),request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendMdtm()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "MDTM ";
-    request += util::percentDecode(_req->getFile());
+    request += util::percentDecode(req_->getFile());
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(), request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendSize()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "SIZE ";
-    request += util::percentDecode(_req->getFile());
+    request += util::percentDecode(req_->getFile());
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(), request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendPasv()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     static const std::string request("PASV\r\n");
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(), request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 SharedHandle<SocketCore> FtpConnection::createServerSocket()
@@ -222,9 +222,9 @@ SharedHandle<SocketCore> FtpConnection::createServerSocket()
 
 bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::pair<std::string, uint16_t> addrinfo;
-    _socket->getAddrInfo(addrinfo);
+    socket_->getAddrInfo(addrinfo);
     unsigned int ipaddr[4]; 
     sscanf(addrinfo.first.c_str(), "%u.%u.%u.%u",
            &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
@@ -242,19 +242,19 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
     request += ",";
     request += util::uitos(addrinfo.second%256);
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(), request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "REST ";
     if(segment.isNull()) {
       request += "0";
@@ -262,30 +262,30 @@ bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
       request += util::itos(segment->getPositionToWrite());
     }
     request += "\r\n";    
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(), request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendRetr()
 {
-  if(_socketBuffer.sendBufferIsEmpty()) {
+  if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "RETR ";
-    request += util::percentDecode(_req->getFile());
+    request += util::percentDecode(req_->getFile());
     request += "\r\n";
-    if(_logger->info()) {
-      _logger->info(MSG_SENDING_REQUEST,
-                    util::itos(_cuid).c_str(), request.c_str());
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
     }
-    _socketBuffer.pushStr(request);
+    socketBuffer_.pushStr(request);
   }
-  _socketBuffer.send();
-  return _socketBuffer.sendBufferIsEmpty();
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 unsigned int FtpConnection::getStatus(const std::string& response) const
@@ -347,25 +347,25 @@ bool FtpConnection::bulkReceiveResponse
 (std::pair<unsigned int, std::string>& response)
 {
   char buf[1024];  
-  while(_socket->isReadable(0)) {
+  while(socket_->isReadable(0)) {
     size_t size = sizeof(buf);
-    _socket->readData(buf, size);
+    socket_->readData(buf, size);
     if(size == 0) {
-      if(_socket->wantRead() || _socket->wantWrite()) {
+      if(socket_->wantRead() || socket_->wantWrite()) {
         return false;
       }
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
-    if(_strbuf.size()+size > MAX_RECV_BUFFER) {
+    if(strbuf_.size()+size > MAX_RECV_BUFFER) {
       throw DL_RETRY_EX
         (StringFormat("Max FTP recv buffer reached. length=%lu",
-                      static_cast<unsigned long>(_strbuf.size()+size)).str());
+                      static_cast<unsigned long>(strbuf_.size()+size)).str());
     }
-    _strbuf.append(&buf[0], &buf[size]);
+    strbuf_.append(&buf[0], &buf[size]);
   }
   unsigned int status;
-  if(_strbuf.size() >= 4) {
-    status = getStatus(_strbuf);
+  if(strbuf_.size() >= 4) {
+    status = getStatus(strbuf_);
     if(status == 0) {
       throw DL_ABORT_EX(EX_INVALID_RESPONSE);
     }
@@ -373,14 +373,14 @@ bool FtpConnection::bulkReceiveResponse
     return false;
   }
   std::string::size_type length;
-  if((length = findEndOfResponse(status, _strbuf)) != std::string::npos) {
+  if((length = findEndOfResponse(status, strbuf_)) != std::string::npos) {
     response.first = status;
-    response.second = _strbuf.substr(0, length);
-    if(_logger->info()) {
-      _logger->info(MSG_RECEIVE_RESPONSE,
-                    util::itos(_cuid).c_str(), response.second.c_str());
+    response.second = strbuf_.substr(0, length);
+    if(logger_->info()) {
+      logger_->info(MSG_RECEIVE_RESPONSE,
+                    util::itos(cuid_).c_str(), response.second.c_str());
     }
-    _strbuf.erase(0, length);
+    strbuf_.erase(0, length);
     return true;
   } else {
     // didn't receive response fully.
@@ -517,12 +517,12 @@ unsigned int FtpConnection::receivePwdResponse(std::string& pwd)
 
 void FtpConnection::setBaseWorkingDir(const std::string& baseWorkingDir)
 {
-  _baseWorkingDir = baseWorkingDir;
+  baseWorkingDir_ = baseWorkingDir;
 }
 
 const std::string& FtpConnection::getUser() const
 {
-  return _authConfig->getUser();
+  return authConfig_->getUser();
 }
 
 } // namespace aria2

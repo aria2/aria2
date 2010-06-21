@@ -45,16 +45,16 @@ namespace aria2 {
 class AnnounceList {
 public:
 private:
-  std::deque<SharedHandle<AnnounceTier> > _tiers;
-  std::deque<SharedHandle<AnnounceTier> >::iterator _currentTier;
-  std::deque<std::string>::iterator _currentTracker;
-  bool _currentTrackerInitialized;
+  std::deque<SharedHandle<AnnounceTier> > tiers_;
+  std::deque<SharedHandle<AnnounceTier> >::iterator currentTier_;
+  std::deque<std::string>::iterator currentTracker_;
+  bool currentTrackerInitialized_;
 
   void resetIterator();
   void setCurrentTier
   (const std::deque<SharedHandle<AnnounceTier> >::iterator& itr);
 public:
-  AnnounceList():_currentTrackerInitialized(false) {}
+  AnnounceList():currentTrackerInitialized_(false) {}
   AnnounceList(const std::vector<std::vector<std::string> >& announceList);
   AnnounceList(const std::deque<SharedHandle<AnnounceTier> >& tiers);
 
@@ -62,7 +62,7 @@ public:
   void reconfigure(const std::string& url);
 
   size_t countTier() const {
-    return _tiers.size();
+    return tiers_.size();
   }
 
   /**

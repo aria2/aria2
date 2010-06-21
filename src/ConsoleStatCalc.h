@@ -72,13 +72,13 @@ protected:
 class ConsoleStatCalc:public StatCalc
 {
 private:
-  Timer _cp;
+  Timer cp_;
 
-  Timer _lastSummaryNotified;
+  Timer lastSummaryNotified_;
 
-  time_t _summaryInterval;
+  time_t summaryInterval_;
 
-  SharedHandle<SizeFormatter> _sizeFormatter;
+  SharedHandle<SizeFormatter> sizeFormatter_;
 public:
   ConsoleStatCalc(time_t summaryInterval, bool humanReadable = true);
 

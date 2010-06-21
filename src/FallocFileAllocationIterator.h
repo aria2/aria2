@@ -43,9 +43,9 @@ namespace aria2 {
 // Allocate disk space using posix_fallocate() system call.
 class FallocFileAllocationIterator:public FileAllocationIterator {
 private:
-  BinaryStream* _stream;
-  off_t _offset;
-  uint64_t _totalLength;
+  BinaryStream* stream_;
+  off_t offset_;
+  uint64_t totalLength_;
 public:
   FallocFileAllocationIterator(BinaryStream* stream, off_t offset,
                                uint64_t totalLength);

@@ -87,15 +87,15 @@ HttpResponseCommand::HttpResponseCommand
  DownloadEngine* e,
  const SocketHandle& s)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   _httpConnection(httpConnection)
+   httpConnection_(httpConnection)
 {}
 
 HttpResponseCommand::~HttpResponseCommand() {}
 
 bool HttpResponseCommand::executeInternal()
 {
-  SharedHandle<HttpRequest> httpRequest =_httpConnection->getFirstHttpRequest();
-  SharedHandle<HttpResponse> httpResponse = _httpConnection->receiveResponse();
+  SharedHandle<HttpRequest> httpRequest =httpConnection_->getFirstHttpRequest();
+  SharedHandle<HttpResponse> httpResponse = httpConnection_->receiveResponse();
   if(httpResponse.isNull()) {
     // The server has not responded to our request yet.
     // For socket->wantRead() == true, setReadCheckSocket(socket) is already
@@ -364,7 +364,7 @@ bool HttpResponseCommand::skipResponseBody
 
   HttpSkipResponseCommand* command = new HttpSkipResponseCommand
     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
-     _httpConnection, httpResponse,
+     httpConnection_, httpResponse,
      getDownloadEngine(), getSocket());
   command->setTransferEncodingDecoder(decoder);
 
@@ -392,7 +392,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
   HttpDownloadCommand* command =
     new HttpDownloadCommand(getCuid(), getRequest(), getFileEntry(),
                             getRequestGroup(),
-                            httpResponse, _httpConnection,
+                            httpResponse, httpConnection_,
                             getDownloadEngine(), getSocket());
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit

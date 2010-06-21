@@ -66,7 +66,7 @@ std::string DHTAbstractMessage::getBencodedMessage()
 bool DHTAbstractMessage::send()
 {
   std::string message = getBencodedMessage();
-  ssize_t r = _connection->sendMessage
+  ssize_t r = connection_->sendMessage
     (reinterpret_cast<const unsigned char*>(message.c_str()),
      message.size(),
      getRemoteNode()->getIPAddress(),
@@ -78,25 +78,25 @@ bool DHTAbstractMessage::send()
 void DHTAbstractMessage::setConnection
 (const WeakHandle<DHTConnection>& connection)
 {
-  _connection = connection;
+  connection_ = connection;
 }
 
 void DHTAbstractMessage::setMessageDispatcher
 (const WeakHandle<DHTMessageDispatcher>& dispatcher)
 {
-  _dispatcher = dispatcher;
+  dispatcher_ = dispatcher;
 }
 
 void DHTAbstractMessage::setMessageFactory
 (const WeakHandle<DHTMessageFactory>& factory)
 {
-  _factory = factory;
+  factory_ = factory;
 }
 
 void DHTAbstractMessage::setRoutingTable
 (const WeakHandle<DHTRoutingTable>& routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 } // namespace aria2

@@ -46,7 +46,7 @@ class DownloadEngine;
 
 class FillRequestGroupCommand : public Command {
 private:
-  DownloadEngine* _e;
+  DownloadEngine* e_;
 public:
   FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e);
 

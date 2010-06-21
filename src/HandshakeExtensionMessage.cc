@@ -51,30 +51,30 @@ namespace aria2 {
 const std::string HandshakeExtensionMessage::EXTENSION_NAME = "handshake";
 
 HandshakeExtensionMessage::HandshakeExtensionMessage():
-  _tcpPort(0),
-  _metadataSize(0),
-  _logger(LogFactory::getInstance()) {}
+  tcpPort_(0),
+  metadataSize_(0),
+  logger_(LogFactory::getInstance()) {}
 
 HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
 std::string HandshakeExtensionMessage::getPayload()
 {
   Dict dict;
-  if(!_clientVersion.empty()) {
-    dict.put("v", _clientVersion);
+  if(!clientVersion_.empty()) {
+    dict.put("v", clientVersion_);
   }
-  if(_tcpPort > 0) {
-    dict.put("p", Integer::g(_tcpPort));
+  if(tcpPort_ > 0) {
+    dict.put("p", Integer::g(tcpPort_));
   }
   SharedHandle<Dict> extDict = Dict::g();
-  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin(),
-        eoi = _extensions.end(); itr != eoi; ++itr) {
+  for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
+        eoi = extensions_.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     extDict->put(vt.first, Integer::g(vt.second));
   }
   dict.put("m", extDict);
-  if(_metadataSize) {
-    dict.put("metadata_size", Integer::g(_metadataSize));
+  if(metadataSize_) {
+    dict.put("metadata_size", Integer::g(metadataSize_));
   }
   return bencode2::encode(&dict);
 }
@@ -82,17 +82,17 @@ std::string HandshakeExtensionMessage::getPayload()
 std::string HandshakeExtensionMessage::toString() const
 {
   std::string s = getExtensionName();
-  if(!_clientVersion.empty()) {
-    strappend(s, " client=", util::percentEncode(_clientVersion));
+  if(!clientVersion_.empty()) {
+    strappend(s, " client=", util::percentEncode(clientVersion_));
   }
-  if(_tcpPort > 0) {
-    strappend(s, ", tcpPort=", util::uitos(_tcpPort));
+  if(tcpPort_ > 0) {
+    strappend(s, ", tcpPort=", util::uitos(tcpPort_));
   }
-  if(_metadataSize) {
-    strappend(s, ", metadataSize=", util::uitos(_metadataSize));
+  if(metadataSize_) {
+    strappend(s, ", metadataSize=", util::uitos(metadataSize_));
   }
-  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin(),
-        eoi = _extensions.end(); itr != eoi; ++itr) {
+  for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
+        eoi = extensions_.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     strappend(s, ", ", vt.first, "=", util::uitos(vt.second));
   }
@@ -101,36 +101,36 @@ std::string HandshakeExtensionMessage::toString() const
 
 void HandshakeExtensionMessage::doReceivedAction()
 {
-  if(_tcpPort > 0) {
-    _peer->setPort(_tcpPort);
-    _peer->setIncomingPeer(false);
+  if(tcpPort_ > 0) {
+    peer_->setPort(tcpPort_);
+    peer_->setIncomingPeer(false);
   }
-  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin(),
-        eoi = _extensions.end(); itr != eoi; ++itr) {
+  for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
+        eoi = extensions_.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    _peer->setExtension(vt.first, vt.second);
+    peer_->setExtension(vt.first, vt.second);
   }
   SharedHandle<TorrentAttribute> attrs =
-    bittorrent::getTorrentAttrs(_dctx);
-  if(attrs->metadata.empty() && !_peer->getExtensionMessageID("ut_metadata")) {
+    bittorrent::getTorrentAttrs(dctx_);
+  if(attrs->metadata.empty() && !peer_->getExtensionMessageID("ut_metadata")) {
     // TODO In metadataGetMode, if peer don't support metadata
     // transfer, should we drop connection? There is a possibility
     // that peer can still tell us peers using PEX.
     throw DL_ABORT_EX("Peer doesn't support ut_metadata extension. Goodbye.");
   }
-  if(_metadataSize > 0) {
+  if(metadataSize_ > 0) {
     if(attrs->metadataSize) {
-      if(_metadataSize != attrs->metadataSize) {
+      if(metadataSize_ != attrs->metadataSize) {
         throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
       }
     } else {
-      attrs->metadataSize = _metadataSize;
-      _dctx->getFirstFileEntry()->setLength(_metadataSize);
-      _dctx->markTotalLengthIsKnown();
-      _dctx->getOwnerRequestGroup()->initPieceStorage();
+      attrs->metadataSize = metadataSize_;
+      dctx_->getFirstFileEntry()->setLength(metadataSize_);
+      dctx_->markTotalLengthIsKnown();
+      dctx_->getOwnerRequestGroup()->initPieceStorage();
       
       SharedHandle<PieceStorage> pieceStorage =
-        _dctx->getOwnerRequestGroup()->getPieceStorage();
+        dctx_->getOwnerRequestGroup()->getPieceStorage();
       pieceStorage->setEndGamePieceNum(0);
     }
   } else if(attrs->metadata.empty()) {
@@ -141,13 +141,13 @@ void HandshakeExtensionMessage::doReceivedAction()
 
 void HandshakeExtensionMessage::setPeer(const SharedHandle<Peer>& peer)
 {
-  _peer = peer;
+  peer_ = peer;
 }
 
 uint8_t HandshakeExtensionMessage::getExtensionMessageID(const std::string& name) const
 {
-  std::map<std::string, uint8_t>::const_iterator i = _extensions.find(name);
-  if(i == _extensions.end()) {
+  std::map<std::string, uint8_t>::const_iterator i = extensions_.find(name);
+  if(i == extensions_.end()) {
     return 0;
   } else {
     return (*i).second;
@@ -176,11 +176,11 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   }
   const Integer* port = asInteger(dict->get("p"));
   if(port && 0 < port->i() && port->i() < 65536) {
-    msg->_tcpPort = port->i();
+    msg->tcpPort_ = port->i();
   }
   const String* version = asString(dict->get("v"));
   if(version) {
-    msg->_clientVersion = version->s();
+    msg->clientVersion_ = version->s();
   }
   const Dict* extDict = asDict(dict->get("m"));
   if(extDict) {
@@ -188,14 +188,14 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
           eoi = extDict->end(); i != eoi; ++i) {
       const Integer* extId = asInteger((*i).second);
       if(extId) {
-        msg->_extensions[(*i).first] = extId->i();
+        msg->extensions_[(*i).first] = extId->i();
       }
     }
   }
   const Integer* metadataSize = asInteger(dict->get("metadata_size"));
   // Only accept metadata smaller than 1MiB
   if(metadataSize && metadataSize->i() <= 1024*1024) {
-    msg->_metadataSize = metadataSize->i();
+    msg->metadataSize_ = metadataSize->i();
   }
   return msg;
 }

@@ -50,9 +50,9 @@ class BtEvent;
 
 class BtMessage {
 private:
-  uint8_t _id;
+  uint8_t id_;
 public:
-  BtMessage(uint8_t id):_id(id) {}
+  BtMessage(uint8_t id):id_(id) {}
 
   virtual ~BtMessage() {}
 
@@ -62,7 +62,7 @@ public:
 
   virtual bool isUploading() = 0;
 
-  uint8_t getId() { return _id; }
+  uint8_t getId() { return id_; }
 
   virtual void doReceivedAction() = 0;
 

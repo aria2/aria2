@@ -44,7 +44,7 @@ class CheckIntegrityEntry;
 
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
-  SharedHandle<CheckIntegrityEntry> _entry;
+  SharedHandle<CheckIntegrityEntry> entry_;
 public:
   CheckIntegrityCommand(cuid_t cuid,
                         RequestGroup* requestGroup,

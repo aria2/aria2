@@ -44,19 +44,19 @@ class SocketCore;
 
 class AbstractProxyRequestCommand : public AbstractCommand {
 private:
-  SharedHandle<Request> _proxyRequest;
+  SharedHandle<Request> proxyRequest_;
 
-  SharedHandle<HttpConnection> _httpConnection;
+  SharedHandle<HttpConnection> httpConnection_;
 
-  std::string _connectedHostname;
-  std::string _connectedAddr;
-  uint16_t _connectedPort;
+  std::string connectedHostname_;
+  std::string connectedAddr_;
+  uint16_t connectedPort_;
 protected:
   virtual bool executeInternal();
 
   const SharedHandle<HttpConnection>& getHttpConnection() const
   {
-    return _httpConnection;
+    return httpConnection_;
   }
 public:
   AbstractProxyRequestCommand(cuid_t cuid,
@@ -74,9 +74,9 @@ public:
   void setConnectedAddr
   (const std::string& hostname, const std::string& addr, uint16_t port)
   {
-    _connectedHostname = hostname;
-    _connectedAddr = addr;
-    _connectedPort = port;
+    connectedHostname_ = hostname;
+    connectedAddr_ = addr;
+    connectedPort_ = port;
   }
 };
 

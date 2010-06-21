@@ -62,12 +62,12 @@ public:
     STATUS_ERROR,
   };
 private:
-  STATUS _status;
-  ares_channel _channel;
+  STATUS status_;
+  ares_channel channel_;
 
-  std::vector<std::string> _resolvedAddresses;
-  std::string _error;
-  std::string _hostname;
+  std::vector<std::string> resolvedAddresses_;
+  std::string error_;
+  std::string hostname_;
 public:
   AsyncNameResolver();
 
@@ -77,17 +77,17 @@ public:
 
   const std::vector<std::string>& getResolvedAddresses() const
   {
-    return _resolvedAddresses;
+    return resolvedAddresses_;
   }
 
   const std::string& getError() const
   {
-    return _error;
+    return error_;
   }
 
   STATUS getStatus() const
   {
-    return _status;
+    return status_;
   }
 
   int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const;
@@ -110,7 +110,7 @@ public:
 
   const std::string& getHostname() const
   {
-    return _hostname;
+    return hostname_;
   }
 
 };

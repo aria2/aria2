@@ -43,22 +43,22 @@ namespace aria2 {
 void PStringBuildVisitor::visit(PStringSegment& segment)
 {
   std::string uri;
-  if(_buildQueue.empty()) {
+  if(buildQueue_.empty()) {
     uri += segment.getValue();
   } else {
-    uri = _buildQueue.front();
+    uri = buildQueue_.front();
     uri += segment.getValue();
   }
-  _buildQueue.push_front(uri);
+  buildQueue_.push_front(uri);
   if(!segment.hasNext()) {
-    _uris.push_back(uri);
+    uris_.push_back(uri);
   }
 
   if(!segment.getNext().isNull()) {
     segment.getNext()->accept(*this);
   }
 
-  _buildQueue.pop_front();
+  buildQueue_.pop_front();
 }
 
 void PStringBuildVisitor::visit(PStringNumLoop& s)
@@ -83,13 +83,13 @@ void PStringBuildVisitor::visit(PStringSelect& s)
 
 const std::vector<std::string>& PStringBuildVisitor::getURIs() const
 {
-  return _uris;
+  return uris_;
 }
 
 void PStringBuildVisitor::reset()
 {
-  _buildQueue.clear();
-  _uris.clear();
+  buildQueue_.clear();
+  uris_.clear();
 }
 
 } // namespace aria2

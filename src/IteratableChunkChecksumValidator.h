@@ -48,13 +48,13 @@ class MessageDigestContext;
 class IteratableChunkChecksumValidator:public IteratableValidator
 {
 private:
-  SharedHandle<DownloadContext> _dctx;
-  SharedHandle<PieceStorage> _pieceStorage;
-  SharedHandle<BitfieldMan> _bitfield;
-  size_t _currentIndex;
-  Logger* _logger;
-  SharedHandle<MessageDigestContext> _ctx;
-  unsigned char* _buffer;
+  SharedHandle<DownloadContext> dctx_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  SharedHandle<BitfieldMan> bitfield_;
+  size_t currentIndex_;
+  Logger* logger_;
+  SharedHandle<MessageDigestContext> ctx_;
+  unsigned char* buffer_;
 
   std::string calculateActualChecksum();
 

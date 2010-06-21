@@ -58,9 +58,9 @@ public:
     RECEIVER_SEND_STEP2_PENDING,
   };
 private:
-  Seq _sequence;
+  Seq sequence_;
 
-  MSEHandshake* _mseHandshake;
+  MSEHandshake* mseHandshake_;
 
   void createCommand();
 protected:

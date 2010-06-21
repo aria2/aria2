@@ -46,19 +46,19 @@ class DirectDiskAdaptor;
 
 class UnknownLengthPieceStorage:public PieceStorage {
 private:
-  SharedHandle<DownloadContext> _downloadContext;
+  SharedHandle<DownloadContext> downloadContext_;
 
-  const Option* _option;
+  const Option* option_;
   
-  SharedHandle<DirectDiskAdaptor> _diskAdaptor;
+  SharedHandle<DirectDiskAdaptor> diskAdaptor_;
 
-  SharedHandle<DiskWriterFactory> _diskWriterFactory;
+  SharedHandle<DiskWriterFactory> diskWriterFactory_;
 
-  uint64_t _totalLength;
+  uint64_t totalLength_;
 
-  bool _downloadFinished;
+  bool downloadFinished_;
 
-  SharedHandle<Piece> _piece;
+  SharedHandle<Piece> piece_;
 public:
   UnknownLengthPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
                             const Option* option);
@@ -140,18 +140,18 @@ public:
 
   virtual uint64_t getTotalLength()
   {
-    return _totalLength;
+    return totalLength_;
   }
 
   virtual uint64_t getFilteredTotalLength()
   {
-    return _totalLength;
+    return totalLength_;
   }
 
   virtual uint64_t getCompletedLength()
   {
     // TODO we have to return actual completed length here?
-    return _totalLength;
+    return totalLength_;
   }
 
   virtual uint64_t getFilteredCompletedLength()
@@ -170,7 +170,7 @@ public:
    */
   virtual bool downloadFinished()
   {
-    return _downloadFinished;
+    return downloadFinished_;
   }
 
   /**

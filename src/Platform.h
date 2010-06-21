@@ -41,7 +41,7 @@ namespace aria2 {
 
 class Platform {
 private:
-  static bool _initialized;
+  static bool initialized_;
 
 public:
   Platform();

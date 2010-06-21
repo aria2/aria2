@@ -47,7 +47,7 @@ namespace aria2 {
 
 class ARC4Encryptor {
 private:
-  LibgcryptARC4Context _ctx;
+  LibgcryptARC4Context ctx_;
 
   void handleError(gcry_error_t err) const
   {
@@ -62,13 +62,13 @@ public:
 
   void init(const unsigned char* key, size_t keyLength)
   {
-    _ctx.init(key, keyLength);
+    ctx_.init(key, keyLength);
   }
 
   void encrypt(unsigned char* out, size_t outLength,
                const unsigned char* in, size_t inLength)
   {
-    gcry_error_t r = gcry_cipher_encrypt(_ctx.getCipherContext(),
+    gcry_error_t r = gcry_cipher_encrypt(ctx_.getCipherContext(),
                                          out, outLength, in, inLength);
     if(r) {
       handleError(r);

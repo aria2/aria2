@@ -45,43 +45,43 @@
 namespace aria2 {
 
 DownloadContext::DownloadContext():
-  _dir(A2STR::DOT_C),
-  _pieceLength(0),
-  _knowsTotalLength(true),
-  _ownerRequestGroup(0),
-  _downloadStartTime(0),
-  _downloadStopTime(_downloadStartTime) {}
+  dir_(A2STR::DOT_C),
+  pieceLength_(0),
+  knowsTotalLength_(true),
+  ownerRequestGroup_(0),
+  downloadStartTime_(0),
+  downloadStopTime_(downloadStartTime_) {}
 
 DownloadContext::DownloadContext(size_t pieceLength,
                                  uint64_t totalLength,
                                  const std::string& path):
-  _dir(A2STR::DOT_C),
-  _pieceLength(pieceLength),
-  _knowsTotalLength(true),
-  _ownerRequestGroup(0),
-  _downloadStartTime(0),
-  _downloadStopTime(0)
+  dir_(A2STR::DOT_C),
+  pieceLength_(pieceLength),
+  knowsTotalLength_(true),
+  ownerRequestGroup_(0),
+  downloadStartTime_(0),
+  downloadStopTime_(0)
 {
   SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
-  _fileEntries.push_back(fileEntry);
+  fileEntries_.push_back(fileEntry);
 }
 
 void DownloadContext::resetDownloadStartTime()
 {
-  _downloadStartTime = global::wallclock;
-  _downloadStopTime.reset(0);
+  downloadStartTime_ = global::wallclock;
+  downloadStopTime_.reset(0);
 }
 
 void DownloadContext::resetDownloadStopTime()
 {
-  _downloadStopTime = global::wallclock;
+  downloadStopTime_ = global::wallclock;
 }
 
 int64_t DownloadContext::calculateSessionTime() const
 {
-  if(_downloadStopTime > _downloadStartTime) {
+  if(downloadStopTime_ > downloadStartTime_) {
     return
-      _downloadStartTime.differenceInMillis(_downloadStopTime);
+      downloadStartTime_.differenceInMillis(downloadStopTime_);
   } else {
     return 0;
   }
@@ -90,9 +90,9 @@ int64_t DownloadContext::calculateSessionTime() const
 SharedHandle<FileEntry>
 DownloadContext::findFileEntryByOffset(off_t offset) const
 {
-  if(_fileEntries.empty() ||
+  if(fileEntries_.empty() ||
      (offset > 0 &&
-      _fileEntries.back()->getOffset()+_fileEntries.back()->getLength() <=
+      fileEntries_.back()->getOffset()+fileEntries_.back()->getLength() <=
       static_cast<uint64_t>(offset))){
     return SharedHandle<FileEntry>();
   }
@@ -100,8 +100,8 @@ DownloadContext::findFileEntryByOffset(off_t offset) const
   SharedHandle<FileEntry> obj(new FileEntry());
   obj->setOffset(offset);
   std::vector<SharedHandle<FileEntry> >::const_iterator i =
-    std::upper_bound(_fileEntries.begin(), _fileEntries.end(), obj);
-  if(i != _fileEntries.end() && (*i)->getOffset() == offset) {
+    std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj);
+  if(i != fileEntries_.end() && (*i)->getOffset() == offset) {
     return *i;
   } else {
     return *(--i);
@@ -111,9 +111,9 @@ DownloadContext::findFileEntryByOffset(off_t offset) const
 void DownloadContext::setFilePathWithIndex
 (size_t index, const std::string& path)
 {
-  if(0 < index && index <= _fileEntries.size()) {
+  if(0 < index && index <= fileEntries_.size()) {
     // We don't escape path because path may come from users.
-    _fileEntries[index-1]->setPath(path);
+    fileEntries_[index-1]->setPath(path);
   } else {
     throw DL_ABORT_EX(StringFormat("No such file with index=%u",
                                    static_cast<unsigned int>(index)).str());
@@ -127,11 +127,11 @@ void DownloadContext::setFileFilter(IntSequence seq)
   fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
                     fileIndexes.end());
 
-  bool selectAll = fileIndexes.empty() || _fileEntries.size() == 1;
+  bool selectAll = fileIndexes.empty() || fileEntries_.size() == 1;
     
   int32_t index = 1;
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-        _fileEntries.begin(), eoi = _fileEntries.end();
+        fileEntries_.begin(), eoi = fileEntries_.end();
       i != eoi; ++i, ++index) {
     (*i)->setRequested
       (selectAll ||
@@ -145,7 +145,7 @@ void DownloadContext::setAttribute
   std::map<std::string, SharedHandle<ContextAttribute> >::value_type p =
     std::make_pair(key, value);
   std::pair<std::map<std::string, SharedHandle<ContextAttribute> >::iterator,
-            bool> r = _attrs.insert(p);
+            bool> r = attrs_.insert(p);
   if(!r.second) {
     (*r.first).second = value;
   }
@@ -155,8 +155,8 @@ const SharedHandle<ContextAttribute>& DownloadContext::getAttribute
 (const std::string& key)
 {
   std::map<std::string, SharedHandle<ContextAttribute> >::const_iterator itr =
-    _attrs.find(key);
-  if(itr == _attrs.end()) {
+    attrs_.find(key);
+  if(itr == attrs_.end()) {
     throw DL_ABORT_EX(StringFormat("No attribute named %s", key.c_str()).str());
   } else {
     return (*itr).second;
@@ -165,43 +165,43 @@ const SharedHandle<ContextAttribute>& DownloadContext::getAttribute
 
 bool DownloadContext::hasAttribute(const std::string& key) const
 {
-  return _attrs.count(key) == 1;
+  return attrs_.count(key) == 1;
 }
 
 void DownloadContext::releaseRuntimeResource()
 {
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-        _fileEntries.begin(), eoi = _fileEntries.end(); i != eoi; ++i) {
+        fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
     (*i)->releaseRuntimeResource();
   }
 }
 
 size_t DownloadContext::getNumPieces() const
 {
-  if(_pieceLength == 0) {
+  if(pieceLength_ == 0) {
     return 0;
   } else {
-    assert(!_fileEntries.empty());
-    return (_fileEntries.back()->getLastOffset()+_pieceLength-1)/_pieceLength;
+    assert(!fileEntries_.empty());
+    return (fileEntries_.back()->getLastOffset()+pieceLength_-1)/pieceLength_;
   }
 }
 
 uint64_t DownloadContext::getTotalLength() const
 {
-  if(_fileEntries.empty()) {
+  if(fileEntries_.empty()) {
     return 0;
   } else {
-    return _fileEntries.back()->getLastOffset();
+    return fileEntries_.back()->getLastOffset();
   }
 }
 
 const std::string& DownloadContext::getBasePath() const
 {
-  if(_basePath.empty()) {
-    assert(!_fileEntries.empty());
+  if(basePath_.empty()) {
+    assert(!fileEntries_.empty());
     return getFirstFileEntry()->getPath();
   } else {
-    return _basePath;
+    return basePath_;
   }
 }
 

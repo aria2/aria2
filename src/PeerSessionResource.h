@@ -52,36 +52,36 @@ class BtMessageDispatcher;
 class PeerSessionResource {
 private:
   // localhost is choking this peer
-  bool _amChoking;
+  bool amChoking_;
   // localhost is interested in this peer
-  bool _amInterested;
+  bool amInterested_;
   // this peer is choking localhost
-  bool _peerChoking;
+  bool peerChoking_;
   // this peer is interested in localhost
-  bool _peerInterested;
+  bool peerInterested_;
   // choking this peer is requested
-  bool _chokingRequired;
+  bool chokingRequired_;
   // this peer is eligible for *optional* unchoking.
-  bool _optUnchoking;
+  bool optUnchoking_;
   // this peer is snubbing.
-  bool _snubbing;
+  bool snubbing_;
 
-  BitfieldMan* _bitfieldMan;
-  bool _fastExtensionEnabled;
+  BitfieldMan* bitfieldMan_;
+  bool fastExtensionEnabled_;
   // fast index set which a peer has sent to localhost.
-  std::vector<size_t> _peerAllowedIndexSet;
+  std::vector<size_t> peerAllowedIndexSet_;
   // fast index set which localhost has sent to a peer.
-  std::vector<size_t> _amAllowedIndexSet;
-  bool _extendedMessagingEnabled;
-  Extensions _extensions;
-  bool _dhtEnabled;
-  PeerStat _peerStat;
+  std::vector<size_t> amAllowedIndexSet_;
+  bool extendedMessagingEnabled_;
+  Extensions extensions_;
+  bool dhtEnabled_;
+  PeerStat peerStat_;
 
-  Timer _lastDownloadUpdate;
+  Timer lastDownloadUpdate_;
 
-  Timer _lastAmUnchoking;
+  Timer lastAmUnchoking_;
 
-  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher_;
 public:
   PeerSessionResource(size_t pieceLength, uint64_t totalLength);
 
@@ -90,7 +90,7 @@ public:
   // localhost is choking this peer
   bool amChoking() const
   {
-    return _amChoking;
+    return amChoking_;
   }
 
   void amChoking(bool b);
@@ -98,7 +98,7 @@ public:
   // localhost is interested in this peer
   bool amInterested() const
   {
-    return _amInterested;
+    return amInterested_;
   }
 
   void amInterested(bool b);
@@ -106,7 +106,7 @@ public:
   // this peer is choking localhost
   bool peerChoking() const
   {
-    return _peerChoking;
+    return peerChoking_;
   }
 
   void peerChoking(bool b);
@@ -114,7 +114,7 @@ public:
   // this peer is interested in localhost
   bool peerInterested() const
   {
-    return _peerInterested;
+    return peerInterested_;
   }
 
   void peerInterested(bool b);
@@ -122,7 +122,7 @@ public:
   // this peer should be choked
   bool chokingRequired() const
   {
-    return _chokingRequired;
+    return chokingRequired_;
   }
 
   void chokingRequired(bool b);
@@ -130,7 +130,7 @@ public:
   // this peer is eligible for unchoking optionally.
   bool optUnchoking() const
   {
-    return _optUnchoking;
+    return optUnchoking_;
   }
 
   void optUnchoking(bool b);
@@ -140,7 +140,7 @@ public:
   // this peer is snubbing.
   bool snubbing() const
   {
-    return _snubbing;
+    return snubbing_;
   }
 
   void snubbing(bool b);
@@ -161,7 +161,7 @@ public:
 
   bool fastExtensionEnabled() const
   {
-    return _fastExtensionEnabled;
+    return fastExtensionEnabled_;
   }
 
   void fastExtensionEnabled(bool b);
@@ -176,7 +176,7 @@ public:
   // fast index set which localhost has sent to a peer.
   const std::vector<size_t>& amAllowedIndexSet() const
   {
-    return _amAllowedIndexSet;
+    return amAllowedIndexSet_;
   }
 
   void addAmAllowedIndex(size_t index);
@@ -185,7 +185,7 @@ public:
 
   bool extendedMessagingEnabled() const
   {
-    return _extendedMessagingEnabled;
+    return extendedMessagingEnabled_;
   }
 
   void extendedMessagingEnabled(bool b);
@@ -198,14 +198,14 @@ public:
 
   bool dhtEnabled() const
   {
-    return _dhtEnabled;
+    return dhtEnabled_;
   }
 
   void dhtEnabled(bool b);
 
   PeerStat& getPeerStat()
   {
-    return _peerStat;
+    return peerStat_;
   }
 
   uint64_t uploadLength() const;
@@ -218,12 +218,12 @@ public:
 
   const Timer& getLastDownloadUpdate() const
   {
-    return _lastDownloadUpdate;
+    return lastDownloadUpdate_;
   }
 
   const Timer& getLastAmUnchoking() const
   {
-    return _lastAmUnchoking;
+    return lastAmUnchoking_;
   }
 
   uint64_t getCompletedLength() const;

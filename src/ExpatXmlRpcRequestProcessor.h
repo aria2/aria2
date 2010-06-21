@@ -50,7 +50,7 @@ class XmlRpcRequestParserStateMachine;
 
 class XmlRpcRequestProcessor {
 private:
-  SharedHandle<XmlRpcRequestParserStateMachine> _stm;
+  SharedHandle<XmlRpcRequestParserStateMachine> stm_;
 public:
   XmlRpcRequest parseMemory(const std::string& xml);
 };

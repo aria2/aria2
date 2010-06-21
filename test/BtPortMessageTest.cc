@@ -130,11 +130,11 @@ void BtPortMessageTest::testDoReceivedAction()
 
   msg.doReceivedAction();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)1, taskQueue._immediateTaskQueue.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, taskQueue.immediateTaskQueue_.size());
 
   SharedHandle<MockDHTTask> task
-    (dynamic_pointer_cast<MockDHTTask>(taskQueue._immediateTaskQueue[0]));
-  SharedHandle<DHTNode> node = task->_remoteNode;
+    (dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[0]));
+  SharedHandle<DHTNode> node = task->remoteNode_;
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), node->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, node->getPort());
 }
@@ -159,16 +159,16 @@ void BtPortMessageTest::testDoReceivedAction_bootstrap()
 
   msg.doReceivedAction();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)2, taskQueue._immediateTaskQueue.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, taskQueue.immediateTaskQueue_.size());
   SharedHandle<MockDHTTask> task
-    (dynamic_pointer_cast<MockDHTTask>(taskQueue._immediateTaskQueue[0]));
-  SharedHandle<DHTNode> node(task->_remoteNode);
+    (dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[0]));
+  SharedHandle<DHTNode> node(task->remoteNode_);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), node->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, node->getPort());
 
   SharedHandle<MockDHTTask> task2
-    (dynamic_pointer_cast<MockDHTTask>(taskQueue._immediateTaskQueue[1]));
-  CPPUNIT_ASSERT(memcmp(nodeID, task2->_targetID, DHT_ID_LENGTH) == 0);
+    (dynamic_pointer_cast<MockDHTTask>(taskQueue.immediateTaskQueue_[1]));
+  CPPUNIT_ASSERT(memcmp(nodeID, task2->targetID_, DHT_ID_LENGTH) == 0);
 }
 
 } // namespace aria2

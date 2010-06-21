@@ -70,10 +70,10 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
  const SharedHandle<PeerConnection>& peerConnection)
   :
   PeerAbstractCommand(cuid, peer, e, s),
-  _peerConnection(peerConnection)
+  peerConnection_(peerConnection)
 {
-  if(_peerConnection.isNull()) {
-    _peerConnection.reset(new PeerConnection(cuid, getSocket()));
+  if(peerConnection_.isNull()) {
+    peerConnection_.reset(new PeerConnection(cuid, getSocket()));
   }
 }
 
@@ -91,7 +91,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
   size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
   // ignore return value. The received data is kept in PeerConnection object
   // because of peek = true.
-  _peerConnection->receiveHandshake(data, dataLength, true);
+  peerConnection_->receiveHandshake(data, dataLength, true);
   // To handle tracker's NAT-checking feature
   if(dataLength >= 48) {
     // check info_hash
@@ -106,9 +106,9 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     }
     BtObject btObject = getDownloadEngine()->getBtRegistry()->get
       (downloadContext->getOwnerRequestGroup()->getGID());
-    SharedHandle<BtRuntime> btRuntime = btObject._btRuntime;
-    SharedHandle<PieceStorage> pieceStorage = btObject._pieceStorage;
-    SharedHandle<PeerStorage> peerStorage = btObject._peerStorage;
+    SharedHandle<BtRuntime> btRuntime = btObject.btRuntime_;
+    SharedHandle<PieceStorage> pieceStorage = btObject.pieceStorage_;
+    SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
     if(!btRuntime->ready()) {
       throw DL_ABORT_EX
         (StringFormat("Unknown info hash %s",
@@ -142,7 +142,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            peerStorage,
            getSocket(),
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-           _peerConnection);
+           peerConnection_);
         getDownloadEngine()->addCommand(command);
         if(getLogger()->debug()) {
           getLogger()->debug(MSG_INCOMING_PEER_CONNECTION,

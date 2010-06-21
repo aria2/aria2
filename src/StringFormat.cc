@@ -48,14 +48,14 @@ StringFormat::StringFormat(const char* fmt, ...)
   char buf[1024];
   int r;
   if((r = vsnprintf(buf, sizeof(buf), fmt, ap)) > 0) {
-    _msg.assign(&buf[0], &buf[r]);
+    msg_.assign(&buf[0], &buf[r]);
   }
   va_end(ap);
 }
 
 const std::string& StringFormat::str() const
 {
-  return _msg;
+  return msg_;
 }
 
 std::ostream& operator<<(std::ostream& o, const StringFormat& fmt)

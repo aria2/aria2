@@ -45,7 +45,7 @@ namespace aria2 {
 
 class StringFormat {
 private:
-  std::string _msg;
+  std::string msg_;
 public:
   StringFormat(const char* fmt, ...);
 

@@ -45,18 +45,18 @@ class PStringSelect : public PStringDatum
 {
 private:
   
-  std::vector<std::string> _values;
+  std::vector<std::string> values_;
 
-  SharedHandle<PStringDatum> _next;
+  SharedHandle<PStringDatum> next_;
 
 public:
   PStringSelect(const std::vector<std::string>& values,
                 const SharedHandle<PStringDatum>& next):
-    _values(values),
-    _next(next) {}
+    values_(values),
+    next_(next) {}
 
   PStringSelect(const std::vector<std::string>& values):
-    _values(values) {}
+    values_(values) {}
 
   virtual ~PStringSelect() {}
 
@@ -67,12 +67,12 @@ public:
 
   const std::vector<std::string>& getValues() const
   {
-    return _values;
+    return values_;
   }
 
   SharedHandle<PStringDatum> getNext() const
   {
-    return _next;
+    return next_;
   }
 };
 

@@ -42,7 +42,7 @@
 namespace aria2 {
 
 DHTNodeLookupTaskCallback::DHTNodeLookupTaskCallback(DHTNodeLookupTask* task):
-  _task(task) {}
+  task_(task) {}
 
 void DHTNodeLookupTaskCallback::visit
 (const DHTAnnouncePeerReplyMessage* message)
@@ -53,7 +53,7 @@ void DHTNodeLookupTaskCallback::visit
 
 void DHTNodeLookupTaskCallback::visit(const DHTFindNodeReplyMessage* message)
 {
-  _task->onReceived(message);
+  task_->onReceived(message);
 }
 
 void DHTNodeLookupTaskCallback::visit(const DHTGetPeersReplyMessage* message)
@@ -71,7 +71,7 @@ void DHTNodeLookupTaskCallback::visit(const DHTPingReplyMessage* message)
 void DHTNodeLookupTaskCallback::onTimeout
 (const SharedHandle<DHTNode>& remoteNode)
 {
-  _task->onTimeout(remoteNode);
+  task_->onTimeout(remoteNode);
 }
 
 

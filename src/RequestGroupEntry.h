@@ -45,8 +45,8 @@ class Command;
 
 class RequestGroupEntry {
 private:
-  RequestGroup* _requestGroup;
-  Command* _nextCommand;
+  RequestGroup* requestGroup_;
+  Command* nextCommand_;
 public:
   RequestGroupEntry(RequestGroup* requestGroup,
                     Command* nextCommand = 0);
@@ -55,12 +55,12 @@ public:
 
   RequestGroup* getRequestGroup() const
   {
-    return _requestGroup;
+    return requestGroup_;
   }
 
   Command* getNextCommand() const
   {
-    return _nextCommand;
+    return nextCommand_;
   }
 
   Command* popNextCommand();

@@ -45,27 +45,27 @@
 
 namespace aria2 {
 
-MessageDigestContext* MessageDigestHelper::_sha1Ctx = 0;
+MessageDigestContext* MessageDigestHelper::sha1Ctx_ = 0;
 
 void MessageDigestHelper::staticSHA1DigestInit()
 {
   staticSHA1DigestFree();
-  _sha1Ctx = new MessageDigestContext();
-  _sha1Ctx->trySetAlgo(MessageDigestContext::SHA1);
-  _sha1Ctx->digestInit();
+  sha1Ctx_ = new MessageDigestContext();
+  sha1Ctx_->trySetAlgo(MessageDigestContext::SHA1);
+  sha1Ctx_->digestInit();
 }
 
 void MessageDigestHelper::staticSHA1DigestFree()
 {
-  delete _sha1Ctx;
+  delete sha1Ctx_;
 }
 
 std::string MessageDigestHelper::staticSHA1Digest(const BinaryStreamHandle& bs,
                                                   off_t offset,
                                                   uint64_t length)
 {
-  _sha1Ctx->digestReset();
-  return digest(_sha1Ctx, bs, offset, length);
+  sha1Ctx_->digestReset();
+  return digest(sha1Ctx_, bs, offset, length);
 }
 
 std::string MessageDigestHelper::digest(const std::string& algo,

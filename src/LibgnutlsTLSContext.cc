@@ -45,52 +45,52 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext():_certCred(0),
-                         _peerVerificationEnabled(false),
-                         _logger(LogFactory::getInstance())
+TLSContext::TLSContext():certCred_(0),
+                         peerVerificationEnabled_(false),
+                         logger_(LogFactory::getInstance())
 {
-  int r = gnutls_certificate_allocate_credentials(&_certCred);
+  int r = gnutls_certificate_allocate_credentials(&certCred_);
   if(r == GNUTLS_E_SUCCESS) {
-    _good = true;
-    gnutls_certificate_set_verify_flags(_certCred,
+    good_ = true;
+    gnutls_certificate_set_verify_flags(certCred_,
                                         GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
   } else {
-    _good =false;
-    _logger->error("gnutls_certificate_allocate_credentials() failed."
+    good_ =false;
+    logger_->error("gnutls_certificate_allocate_credentials() failed."
                    " Cause: %s", gnutls_strerror(r));
   }
 }
 
 TLSContext::~TLSContext()
 {
-  if(_certCred) {
-    gnutls_certificate_free_credentials(_certCred);
+  if(certCred_) {
+    gnutls_certificate_free_credentials(certCred_);
   }
 }
 
 bool TLSContext::good() const
 {
-  return _good;
+  return good_;
 }
 
 bool TLSContext::bad() const
 {
-  return !_good;
+  return !good_;
 }
 
 bool TLSContext::addClientKeyFile(const std::string& certfile,
                                   const std::string& keyfile)
 {
-  int ret = gnutls_certificate_set_x509_key_file(_certCred,
+  int ret = gnutls_certificate_set_x509_key_file(certCred_,
                                                  certfile.c_str(),
                                                  keyfile.c_str(),
                                                  GNUTLS_X509_FMT_PEM);
   if(ret == GNUTLS_E_SUCCESS) {
-    _logger->info("Client Key File(cert=%s, key=%s) were successfully added.",
+    logger_->info("Client Key File(cert=%s, key=%s) were successfully added.",
                   certfile.c_str(), keyfile.c_str());
     return true;
   } else {
-    _logger->error("Failed to load client certificate from %s and"
+    logger_->error("Failed to load client certificate from %s and"
                    " private key from %s. Cause: %s",
                    certfile.c_str(), keyfile.c_str(),
                    gnutls_strerror(ret));
@@ -100,37 +100,37 @@ bool TLSContext::addClientKeyFile(const std::string& certfile,
 
 bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
-  int ret = gnutls_certificate_set_x509_trust_file(_certCred,
+  int ret = gnutls_certificate_set_x509_trust_file(certCred_,
                                                    certfile.c_str(),
                                                    GNUTLS_X509_FMT_PEM);
   if(ret < 0) {
-    _logger->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
+    logger_->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
                    certfile.c_str(), gnutls_strerror(ret));
     return false;
   } else {
-    _logger->info("%d certificate(s) were imported.", ret);
+    logger_->info("%d certificate(s) were imported.", ret);
     return true;
   }
 }
 
 gnutls_certificate_credentials_t TLSContext::getCertCred() const
 {
-  return _certCred;
+  return certCred_;
 }
 
 void TLSContext::enablePeerVerification()
 {
-  _peerVerificationEnabled = true;
+  peerVerificationEnabled_ = true;
 }
 
 void TLSContext::disablePeerVerification()
 {
-  _peerVerificationEnabled = false;
+  peerVerificationEnabled_ = false;
 }
 
 bool TLSContext::peerVerificationEnabled() const
 {
-  return _peerVerificationEnabled;
+  return peerVerificationEnabled_;
 }
 
 } // namespace aria2

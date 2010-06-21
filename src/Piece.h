@@ -55,18 +55,18 @@ class MessageDigestContext;
 
 class Piece {
 private:
-  size_t _index;
-  size_t _length;
-  size_t _blockLength;
-  BitfieldMan* _bitfield;
+  size_t index_;
+  size_t length_;
+  size_t blockLength_;
+  BitfieldMan* bitfield_;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-  size_t _nextBegin;
+  size_t nextBegin_;
 
-  std::string _hashAlgo;
+  std::string hashAlgo_;
 
-  SharedHandle<MessageDigestContext> _mdctx;
+  SharedHandle<MessageDigestContext> mdctx_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -86,12 +86,12 @@ public:
   
   bool operator==(const Piece& piece) const
   {
-    return _index == piece._index;
+    return index_ == piece.index_;
   }
 
   bool operator<(const Piece& piece) const
   {
-    return _index < piece._index;
+    return index_ < piece.index_;
   }
 
   // TODO This function only used by unit tests
@@ -128,13 +128,13 @@ public:
 
   size_t getBlockLength() const;
 
-  size_t getIndex() const { return _index; }
+  size_t getIndex() const { return index_; }
 
-  void setIndex(size_t index) { _index = index; }
+  void setIndex(size_t index) { index_ = index; }
 
-  size_t getLength() const { return _length; }
+  size_t getLength() const { return length_; }
 
-  void setLength(size_t length) { _length = length; }
+  void setLength(size_t length) { length_ = length; }
 
   const unsigned char* getBitfield() const;
 
@@ -157,7 +157,7 @@ public:
   void setHashAlgo(const std::string& algo);
 
   // Updates hash value. This function compares begin and private variable
-  // _nextBegin and only when they are equal, hash is updated eating data and
+  // nextBegin_ and only when they are equal, hash is updated eating data and
   // returns true. Otherwise returns false.
   bool updateHash(uint32_t begin, const unsigned char* data, size_t dataLength);
 

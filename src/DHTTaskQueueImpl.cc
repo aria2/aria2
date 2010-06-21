@@ -61,24 +61,24 @@ void DHTTaskQueueImpl::executeTask(SharedHandle<DHTTask>& task,
 
 void DHTTaskQueueImpl::executeTask()
 {
-  executeTask(_periodicTask1, _periodicTaskQueue1);
-  executeTask(_periodicTask2, _periodicTaskQueue2);
-  executeTask(_immediateTask, _immediateTaskQueue);
+  executeTask(periodicTask1_, periodicTaskQueue1_);
+  executeTask(periodicTask2_, periodicTaskQueue2_);
+  executeTask(immediateTask_, immediateTaskQueue_);
 }
 
 void DHTTaskQueueImpl::addPeriodicTask1(const SharedHandle<DHTTask>& task)
 {
-  _periodicTaskQueue1.push_back(task);
+  periodicTaskQueue1_.push_back(task);
 }
 
 void DHTTaskQueueImpl::addPeriodicTask2(const SharedHandle<DHTTask>& task)
 {
-  _periodicTaskQueue2.push_back(task);
+  periodicTaskQueue2_.push_back(task);
 }
 
 void DHTTaskQueueImpl::addImmediateTask(const SharedHandle<DHTTask>& task)
 {
-  _immediateTaskQueue.push_back(task);
+  immediateTaskQueue_.push_back(task);
 }
 
 } // namespace aria2

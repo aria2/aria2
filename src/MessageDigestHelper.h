@@ -46,7 +46,7 @@ class BinaryStream;
 
 class MessageDigestHelper {
 private:
-  static MessageDigestContext* _sha1Ctx;
+  static MessageDigestContext* sha1Ctx_;
 public:
   /**
    * Returns message digest in hexadecimal representation.
@@ -63,15 +63,15 @@ public:
 
   /**
    * staticSHA1DigestInit(), staticSHA1DigestFree(), staticSHA1Digest()
-   * use statically declared MessageDigestContext _sha1Ctx.
+   * use statically declared MessageDigestContext sha1Ctx_.
    */
   /**
-   * Initializes _sha1Ctx
+   * Initializes sha1Ctx_
    */
   static void staticSHA1DigestInit();
 
   /**
-   * Frees allocated resources for _sha1Ctx
+   * Frees allocated resources for sha1Ctx_
    */
   static void staticSHA1DigestFree();
 

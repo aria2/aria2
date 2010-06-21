@@ -62,12 +62,12 @@ AbstractProxyResponseCommand::AbstractProxyResponseCommand
  DownloadEngine* e,
  const SocketHandle& s)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   _httpConnection(httpConnection) {}
+   httpConnection_(httpConnection) {}
 
 AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
 
 bool AbstractProxyResponseCommand::executeInternal() {
-  SharedHandle<HttpResponse> httpResponse = _httpConnection->receiveResponse();
+  SharedHandle<HttpResponse> httpResponse = httpConnection_->receiveResponse();
   if(httpResponse.isNull()) {
     // the server has not responded our request yet.
     getDownloadEngine()->addCommand(this);

@@ -46,8 +46,8 @@ class HttpHeader;
 
 class HttpHeaderProcessor {
 private:
-  std::string _buf;
-  size_t _limit;
+  std::string buf_;
+  size_t limit_;
 
   void checkHeaderLimit(size_t incomingLength);
 
@@ -84,7 +84,7 @@ public:
 
   void setHeaderLimit(size_t limit)
   {
-    _limit = limit;
+    limit_ = limit;
   }
 };
 

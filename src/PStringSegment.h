@@ -44,9 +44,9 @@ class PStringSegment : public PStringDatum
 {
 private:
 
-  std::string _value;
+  std::string value_;
 
-  SharedHandle<PStringDatum> _next;
+  SharedHandle<PStringDatum> next_;
 
 public:
   PStringSegment(const std::string& value,

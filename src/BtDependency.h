@@ -46,9 +46,9 @@ class Logger;
 class BtDependency : public Dependency
 {
 private:
-  WeakHandle<RequestGroup> _dependant;
-  SharedHandle<RequestGroup> _dependee;
-  Logger* _logger;
+  WeakHandle<RequestGroup> dependant_;
+  SharedHandle<RequestGroup> dependee_;
+  Logger* logger_;
 public:
   BtDependency(const WeakHandle<RequestGroup>& dependant,
                const SharedHandle<RequestGroup>& dependee);

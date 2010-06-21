@@ -49,17 +49,17 @@ class Logger;
 
 class BtLeecherStateChoke {
 private:
-  int _round;
+  int round_;
 
-  Timer _lastRound;
+  Timer lastRound_;
 
-  Logger* _logger;
+  Logger* logger_;
 
   class PeerEntry {
   private:
-    SharedHandle<Peer> _peer;
-    unsigned int _downloadSpeed;
-    bool _regularUnchoker;
+    SharedHandle<Peer> peer_;
+    unsigned int downloadSpeed_;
+    bool regularUnchoker_;
   public:
     PeerEntry(const SharedHandle<Peer>& peer);
 

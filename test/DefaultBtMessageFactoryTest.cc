@@ -24,25 +24,25 @@ class DefaultBtMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreatePortMessage);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<DownloadContext> _dctx;
-  SharedHandle<Peer> _peer;
-  SharedHandle<MockExtensionMessageFactory> _exmsgFactory;
-  SharedHandle<DefaultBtMessageFactory> _factory;
+  SharedHandle<DownloadContext> dctx_;
+  SharedHandle<Peer> peer_;
+  SharedHandle<MockExtensionMessageFactory> exmsgFactory_;
+  SharedHandle<DefaultBtMessageFactory> factory_;
 public:
   void setUp()
   {
-    _dctx.reset(new DownloadContext());
+    dctx_.reset(new DownloadContext());
 
-    _peer.reset(new Peer("192.168.0.1", 6969));
-    _peer->allocateSessionResource(1024, 1024*1024);
-    _peer->setExtendedMessagingEnabled(true);
+    peer_.reset(new Peer("192.168.0.1", 6969));
+    peer_->allocateSessionResource(1024, 1024*1024);
+    peer_->setExtendedMessagingEnabled(true);
 
-    _exmsgFactory.reset(new MockExtensionMessageFactory());
+    exmsgFactory_.reset(new MockExtensionMessageFactory());
 
-    _factory.reset(new DefaultBtMessageFactory());
-    _factory->setDownloadContext(_dctx);
-    _factory->setPeer(_peer);
-    _factory->setExtensionMessageFactory(_exmsgFactory);
+    factory_.reset(new DefaultBtMessageFactory());
+    factory_->setDownloadContext(dctx_);
+    factory_->setPeer(peer_);
+    factory_->setExtensionMessageFactory(exmsgFactory_);
   }
 
   void testCreateBtMessage_BtExtendedMessage();
@@ -64,12 +64,12 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
   
   SharedHandle<BtExtendedMessage> m
     (dynamic_pointer_cast<BtExtendedMessage>
-     (_factory->createBtMessage((const unsigned char*)msg+4, sizeof(msg))));
+     (factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg))));
 
   try {
     // disable extended messaging
-    _peer->setExtendedMessagingEnabled(false);
-    _factory->createBtMessage((const unsigned char*)msg+4, sizeof(msg));
+    peer_->setExtendedMessagingEnabled(false);
+    factory_->createBtMessage((const unsigned char*)msg+4, sizeof(msg));
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -85,7 +85,7 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
     try {
       SharedHandle<BtPortMessage> m
         (dynamic_pointer_cast<BtPortMessage>
-         (_factory->createBtMessage(&data[4], sizeof(data)-4)));
+         (factory_->createBtMessage(&data[4], sizeof(data)-4)));
       CPPUNIT_ASSERT(!m.isNull());
       CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
     } catch(Exception& e) {
@@ -94,7 +94,7 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
   }
   {
     SharedHandle<BtPortMessage> m
-      (dynamic_pointer_cast<BtPortMessage>(_factory->createPortMessage(6881)));
+      (dynamic_pointer_cast<BtPortMessage>(factory_->createPortMessage(6881)));
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
   }
 }

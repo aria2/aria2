@@ -45,18 +45,18 @@ namespace aria2 {
 
 class DHTNode {
 private:
-  unsigned char _id[DHT_ID_LENGTH];
+  unsigned char id_[DHT_ID_LENGTH];
 
-  std::string _ipaddr;
+  std::string ipaddr_;
 
-  uint16_t _port;
+  uint16_t port_;
 
   // in milli sec
-  unsigned int _rtt;
+  unsigned int rtt_;
 
-  unsigned int _condition;
+  unsigned int condition_;
 
-  Timer _lastContact;
+  Timer lastContact_;
 public:
   DHTNode();
   
@@ -69,34 +69,34 @@ public:
 
   const unsigned char* getID() const
   {
-    return _id;
+    return id_;
   }
 
   void updateRTT(unsigned int millisec)
   {
-    _rtt = millisec;
+    rtt_ = millisec;
   }
 
   const std::string& getIPAddress() const
   {
-    return _ipaddr;
+    return ipaddr_;
   }
 
   void setIPAddress(const std::string& ipaddr)
   {
-    _ipaddr = ipaddr;
+    ipaddr_ = ipaddr;
   }
 
   void setID(const unsigned char* id);
 
   uint16_t getPort() const
   {
-    return _port;
+    return port_;
   }
 
   void setPort(uint16_t port)
   {
-    _port = port;
+    port_ = port;
   }
 
   bool isGood() const;

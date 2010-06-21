@@ -43,8 +43,8 @@ namespace aria2 {
 
 class NameResolver {
 private:
-  int _socktype;
-  int _family;
+  int socktype_;
+  int family_;
 public:
   NameResolver();
 
@@ -60,7 +60,7 @@ public:
   // specify protocol family
   void setFamily(int family)
   {
-    _family = family;
+    family_ = family;
   }
 };
 

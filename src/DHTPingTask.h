@@ -44,15 +44,15 @@ class DHTPingReplyMessage;
 
 class DHTPingTask:public DHTAbstractTask {
 private:
-  SharedHandle<DHTNode> _remoteNode;
+  SharedHandle<DHTNode> remoteNode_;
 
-  size_t _numMaxRetry;
+  size_t numMaxRetry_;
 
-  size_t _numRetry;
+  size_t numRetry_;
 
-  bool _pingSuccessful;
+  bool pingSuccessful_;
 
-  time_t _timeout;
+  time_t timeout_;
 
   void addMessage();
 public:
@@ -68,7 +68,7 @@ public:
 
   void setTimeout(time_t timeout)
   {
-    _timeout = timeout;
+    timeout_ = timeout;
   }
 
   bool isPingSuccessful() const;

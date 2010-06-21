@@ -17,11 +17,11 @@ class MetalinkPostDownloadHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetNextRequestGroups);
   CPPUNIT_TEST_SUITE_END();
 private:
-  SharedHandle<Option> _option;
+  SharedHandle<Option> option_;
 public:
   void setUp()
   {
-    _option.reset(new Option());
+    option_.reset(new Option());
   }
 
   void testCanHandle_extension();
@@ -36,7 +36,7 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(0, 0, "test.metalink"));
-  RequestGroup rg(_option);
+  RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
 
   MetalinkPostDownloadHandler handler;
@@ -51,7 +51,7 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test"));
   dctx->getFirstFileEntry()->setContentType("application/metalink+xml");
-  RequestGroup rg(_option);
+  RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
 
   MetalinkPostDownloadHandler handler;
@@ -66,7 +66,7 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(1024, 0, "test.xml"));
-  RequestGroup rg(_option);
+  RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
 

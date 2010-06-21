@@ -49,13 +49,13 @@ class DHTGetPeersReplyMessage;
 class DHTPeerLookupTask:
     public DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage> {
 private:
-  std::map<std::string, std::string> _tokenStorage;
+  std::map<std::string, std::string> tokenStorage_;
 
-  std::vector<SharedHandle<Peer> > _peers;
+  std::vector<SharedHandle<Peer> > peers_;
 
-  SharedHandle<PeerStorage> _peerStorage;
+  SharedHandle<PeerStorage> peerStorage_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 public:
   DHTPeerLookupTask(const SharedHandle<DownloadContext>& downloadContext);
 
@@ -74,7 +74,7 @@ public:
   
   const std::vector<SharedHandle<Peer> >& getPeers() const
   {
-    return _peers;
+    return peers_;
   }
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);

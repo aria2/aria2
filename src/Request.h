@@ -46,80 +46,80 @@ namespace aria2 {
 
 class Request {
 private:
-  std::string _uri;
-  std::string _currentUri;
+  std::string uri_;
+  std::string currentUri_;
   /**
    * URI previously requested to the server. This is used as Referer
    */
-  std::string _previousUri;
+  std::string previousUri_;
   /**
    * URI used as Referer in the initial request
    */
-  std::string _referer;
-  std::string _protocol;
-  std::string _host;
-  uint16_t _port;
-  std::string _dir;
-  std::string _file;
+  std::string referer_;
+  std::string protocol_;
+  std::string host_;
+  uint16_t port_;
+  std::string dir_;
+  std::string file_;
   /* after ? mark(includes '?' itself) */
-  std::string _query;
-  unsigned int _tryCount;
+  std::string query_;
+  unsigned int tryCount_;
 
-  unsigned int _redirectCount;
+  unsigned int redirectCount_;
 
   // whether or not the server supports persistent connection
-  bool _supportsPersistentConnection;
+  bool supportsPersistentConnection_;
   // enable keep-alive if possible.
-  bool _keepAliveHint;
+  bool keepAliveHint_;
   // enable pipelining if possible.
-  bool _pipeliningHint;
+  bool pipeliningHint_;
   // maximum number of pipelined requests
-  unsigned int _maxPipelinedRequest;
+  unsigned int maxPipelinedRequest_;
 
-  std::string _method;
+  std::string method_;
 
-  std::string _username;
+  std::string username_;
 
-  std::string _password;
+  std::string password_;
 
-  bool _hasPassword;
+  bool hasPassword_;
 
-  bool _ipv6LiteralAddress;
+  bool ipv6LiteralAddress_;
 
-  SharedHandle<PeerStat> _peerStat;
+  SharedHandle<PeerStat> peerStat_;
 
-  bool _removalRequested;
+  bool removalRequested_;
 
   bool parseUri(const std::string& uri);
 public:
   Request();
 
-  // Sets uri to _uri and parses URI.  Returns true if parsing goes
+  // Sets uri to uri_ and parses URI.  Returns true if parsing goes
   // successful, otherwise returns false.
   bool setUri(const std::string& uri);
-  // Parses URI.  _uri field are not altered by this method.  Returns
+  // Parses URI.  uri_ field are not altered by this method.  Returns
   // true if parsing goes successful, otherwise returns false.
   bool redirectUri(const std::string& uri);
   bool resetUri();
-  void resetTryCount() { _tryCount = 0; }
-  void addTryCount() { ++_tryCount; }
-  unsigned int getTryCount() const { return _tryCount; }
+  void resetTryCount() { tryCount_ = 0; }
+  void addTryCount() { ++tryCount_; }
+  unsigned int getTryCount() const { return tryCount_; }
 
   void resetRedirectCount();
   
   unsigned int getRedirectCount() const
   {
-    return _redirectCount;
+    return redirectCount_;
   }
 
   // Returns URI passed by setUri()
-  const std::string& getUri() const { return _uri; }
-  const std::string& getCurrentUri() const { return _currentUri; }
-  const std::string& getPreviousUri() const { return _previousUri; }
-  const std::string& getReferer() const { return _referer; }
+  const std::string& getUri() const { return uri_; }
+  const std::string& getCurrentUri() const { return currentUri_; }
+  const std::string& getPreviousUri() const { return previousUri_; }
+  const std::string& getReferer() const { return referer_; }
   void setReferer(const std::string& uri);
-  const std::string& getProtocol() const { return _protocol; }
-  const std::string& getHost() const { return _host; }
+  const std::string& getProtocol() const { return protocol_; }
+  const std::string& getHost() const { return host_; }
   // Same as getHost(), but for IPv6 literal addresses, enclose them
   // with square brackets and return.
   std::string getURIHost() const
@@ -130,90 +130,90 @@ public:
       return getHost();
     }
   }
-  uint16_t getPort() const { return _port; }
-  const std::string& getDir() const { return _dir; }
-  const std::string& getFile() const { return _file;}
-  const std::string& getQuery() const { return _query; }
-  bool isIPv6LiteralAddress() const { return _ipv6LiteralAddress; }
+  uint16_t getPort() const { return port_; }
+  const std::string& getDir() const { return dir_; }
+  const std::string& getFile() const { return file_;}
+  const std::string& getQuery() const { return query_; }
+  bool isIPv6LiteralAddress() const { return ipv6LiteralAddress_; }
 
   void supportsPersistentConnection(bool f)
   {
-    _supportsPersistentConnection = f;
+    supportsPersistentConnection_ = f;
   }
 
   bool supportsPersistentConnection()
   {
-    return _supportsPersistentConnection;
+    return supportsPersistentConnection_;
   }
 
   bool isKeepAliveEnabled() const
   {
-    return _supportsPersistentConnection && _keepAliveHint;
+    return supportsPersistentConnection_ && keepAliveHint_;
   }
 
   void setKeepAliveHint(bool keepAliveHint)
   {
-    _keepAliveHint = keepAliveHint;
+    keepAliveHint_ = keepAliveHint;
   }
 
   bool isPipeliningEnabled()
   {
-    return _supportsPersistentConnection && _pipeliningHint;
+    return supportsPersistentConnection_ && pipeliningHint_;
   }
 
   void setPipeliningHint(bool pipeliningHint)
   {
-    _pipeliningHint = pipeliningHint;
+    pipeliningHint_ = pipeliningHint;
   }
 
   bool isPipeliningHint() const
   {
-    return _pipeliningHint;
+    return pipeliningHint_;
   }
 
   void setMaxPipelinedRequest(unsigned int num);
 
   unsigned int getMaxPipelinedRequest() const
   {
-    return _maxPipelinedRequest;
+    return maxPipelinedRequest_;
   }
 
   void setMethod(const std::string& method) {
-    _method = method;
+    method_ = method;
   }
 
   const std::string& getUsername() const
   {
-    return _username;
+    return username_;
   }
 
   const std::string& getPassword() const
   {
-    return _password;
+    return password_;
   }
 
   // Returns true if current URI has embedded password.
   bool hasPassword() const
   {
-    return _hasPassword;
+    return hasPassword_;
   }
 
   const std::string& getMethod() const {
-    return _method;
+    return method_;
   }
 
-  const SharedHandle<PeerStat>& getPeerStat() const { return _peerStat; }
+  const SharedHandle<PeerStat>& getPeerStat() const { return peerStat_; }
 
   const SharedHandle<PeerStat>& initPeerStat();
 
   void requestRemoval()
   {
-    _removalRequested = true;
+    removalRequested_ = true;
   }
 
   bool removalRequested() const
   {
-    return _removalRequested;
+    return removalRequested_;
   }
 
   static const std::string METHOD_GET;

@@ -47,17 +47,17 @@ class MessageDigestContext;
 class IteratableChecksumValidator:public IteratableValidator
 {
 private:
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 
-  off_t _currentOffset;
+  off_t currentOffset_;
 
-  SharedHandle<MessageDigestContext> _ctx;
+  SharedHandle<MessageDigestContext> ctx_;
 
-  Logger* _logger;
+  Logger* logger_;
 
-  unsigned char* _buffer;
+  unsigned char* buffer_;
 
 public:
   IteratableChecksumValidator(const SharedHandle<DownloadContext>& dctx,
@@ -73,7 +73,7 @@ public:
 
   virtual off_t getCurrentOffset() const
   {
-    return _currentOffset;
+    return currentOffset_;
   }
 
   virtual uint64_t getTotalLength() const;

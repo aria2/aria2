@@ -45,11 +45,11 @@ class DiskWriter;
 
 class DiskWriterEntry {
 private:
-  SharedHandle<FileEntry> _fileEntry;
-  SharedHandle<DiskWriter> _diskWriter;
-  bool _open;
-  bool _directIO;
-  bool _needsFileAllocation;
+  SharedHandle<FileEntry> fileEntry_;
+  SharedHandle<DiskWriter> diskWriter_;
+  bool open_;
+  bool directIO_;
+  bool needsFileAllocation_;
 public:
   DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry);
 
@@ -65,7 +65,7 @@ public:
 
   bool isOpen() const
   {
-    return _open;
+    return open_;
   }
 
   bool fileExists();
@@ -74,36 +74,36 @@ public:
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
-    return _fileEntry;
+    return fileEntry_;
   }
 
   void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 
   const SharedHandle<DiskWriter>& getDiskWriter() const
   {
-    return _diskWriter;
+    return diskWriter_;
   }
 
   bool operator<(const DiskWriterEntry& entry) const;
 
-  // Set _directIO to true.
+  // Set directIO_ to true.
   // Additionally, if diskWriter is opened, diskWriter->enableDirectIO() is
   // called.
   void enableDirectIO();
 
-  // Set _directIO to false.
+  // Set directIO_ to false.
   // Additionally, if diskWriter is opened, diskWriter->disableDirectIO() is
   // called.
   void disableDirectIO();
 
   bool needsFileAllocation() const
   {
-    return _needsFileAllocation;
+    return needsFileAllocation_;
   }
 
   void needsFileAllocation(bool f)
   {
-    _needsFileAllocation = f;
+    needsFileAllocation_ = f;
   }
 
 };
@@ -115,16 +115,16 @@ typedef std::vector<DiskWriterEntryHandle> DiskWriterEntries;
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
 private:
-  size_t _pieceLength;
-  DiskWriterEntries _diskWriterEntries;
+  size_t pieceLength_;
+  DiskWriterEntries diskWriterEntries_;
 
-  std::vector<SharedHandle<DiskWriterEntry> > _openedDiskWriterEntries;
+  std::vector<SharedHandle<DiskWriterEntry> > openedDiskWriterEntries_;
 
-  size_t _maxOpenFiles;
+  size_t maxOpenFiles_;
 
-  bool _directIOAllowed;
+  bool directIOAllowed_;
 
-  bool _readOnly;
+  bool readOnly_;
 
   void resetDiskWriterEntries();
 
@@ -165,20 +165,20 @@ public:
 
   virtual void disableReadOnly();
 
-  virtual bool isReadOnlyEnabled() const { return _readOnly; }
+  virtual bool isReadOnlyEnabled() const { return readOnly_; }
 
   void setPieceLength(size_t pieceLength)
   {
-    _pieceLength = pieceLength;
+    pieceLength_ = pieceLength;
   }
 
   size_t getPieceLength() const {
-    return _pieceLength;
+    return pieceLength_;
   }
 
   void allowDirectIO()
   {
-    _directIOAllowed = true;
+    directIOAllowed_ = true;
   }
 
   virtual void cutTrailingGarbage();
@@ -190,7 +190,7 @@ public:
   const std::vector<SharedHandle<DiskWriterEntry> >&
   getDiskWriterEntries() const
   {
-    return _diskWriterEntries;
+    return diskWriterEntries_;
   }
 
 };

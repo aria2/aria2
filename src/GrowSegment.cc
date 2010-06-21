@@ -39,15 +39,15 @@
 namespace aria2 {
 
 GrowSegment::GrowSegment(const SharedHandle<Piece>& piece):
-  _piece(piece), _writtenLength(0) {}
+  piece_(piece), writtenLength_(0) {}
 
 GrowSegment::~GrowSegment() {}
 
 void GrowSegment::updateWrittenLength(size_t bytes)
 {
-  _writtenLength += bytes;
-  _piece->reconfigure(_writtenLength);
-  _piece->setAllBlock();
+  writtenLength_ += bytes;
+  piece_->reconfigure(writtenLength_);
+  piece_->setAllBlock();
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -61,13 +61,13 @@ std::string GrowSegment::getHashString()
 
 void GrowSegment::clear()
 {
-  _writtenLength = 0;
-  _piece->clearAllBlock();
+  writtenLength_ = 0;
+  piece_->clearAllBlock();
 }
 
 SharedHandle<Piece> GrowSegment::getPiece() const
 {
-  return _piece;
+  return piece_;
 }
 
 } // namespace aria2

@@ -24,14 +24,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SingletonHolderTest );
 
 class M {
 private:
-  std::string _greeting;
+  std::string greeting_;
 public:
-  M(const std::string& greeting):_greeting(greeting) {}
+  M(const std::string& greeting):greeting_(greeting) {}
 
-  const std::string& greeting() const { return _greeting; }
+  const std::string& greeting() const { return greeting_; }
 
   void greeting(const std::string& greeting) {
-    _greeting = greeting;
+    greeting_ = greeting;
   }
 };
 

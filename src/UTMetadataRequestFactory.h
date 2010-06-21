@@ -54,17 +54,17 @@ class Logger;
 
 class UTMetadataRequestFactory {
 private:
-  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<DownloadContext> dctx_;
 
-  SharedHandle<Peer> _peer;
+  SharedHandle<Peer> peer_;
 
-  WeakHandle<BtMessageDispatcher> _dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher_;
 
-  WeakHandle<BtMessageFactory> _messageFactory;
+  WeakHandle<BtMessageFactory> messageFactory_;
 
-  WeakHandle<UTMetadataRequestTracker> _tracker;
+  WeakHandle<UTMetadataRequestTracker> tracker_;
 
-  Logger* _logger;
+  Logger* logger_;
 public:
   UTMetadataRequestFactory();
 
@@ -75,28 +75,28 @@ public:
 
   void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
   {
-    _dctx = dctx;
+    dctx_ = dctx;
   }
 
   void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
   {
-    _dispatcher = disp;
+    dispatcher_ = disp;
   }
 
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
   {
-    _messageFactory = factory;
+    messageFactory_ = factory;
   }
 
   void setPeer(const SharedHandle<Peer>& peer)
   {
-    _peer = peer;
+    peer_ = peer;
   }
 
   void setUTMetadataRequestTracker
   (const WeakHandle<UTMetadataRequestTracker>& tracker)
   {
-    _tracker = tracker;
+    tracker_ = tracker;
   }
 };
 

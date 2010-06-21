@@ -60,13 +60,13 @@ namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
   cuid(0),
-  _requestTimeout(0),
-  _logger(LogFactory::getInstance()) {}
+  requestTimeout_(0),
+  logger_(LogFactory::getInstance()) {}
 
 DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
 {
-  if(_logger->debug()) {
-    _logger->debug("DefaultBtMessageDispatcher::deleted");
+  if(logger_->debug()) {
+    logger_->debug("DefaultBtMessageDispatcher::deleted");
   }
 }
 
@@ -74,7 +74,7 @@ void DefaultBtMessageDispatcher::addMessageToQueue
 (const BtMessageHandle& btMessage)
 {
   btMessage->onQueued();
-  _messageQueue.push_back(btMessage);
+  messageQueue_.push_back(btMessage);
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue
@@ -88,33 +88,33 @@ void DefaultBtMessageDispatcher::addMessageToQueue
 
 void DefaultBtMessageDispatcher::sendMessages() {
   std::vector<SharedHandle<BtMessage> > tempQueue;
-  while(!_messageQueue.empty()) {
-    BtMessageHandle msg = _messageQueue.front();
-    _messageQueue.pop_front();
+  while(!messageQueue_.empty()) {
+    BtMessageHandle msg = messageQueue_.front();
+    messageQueue_.pop_front();
     if(msg->isUploading() && !msg->isSendingInProgress()) {
-      if(_requestGroupMan->doesOverallUploadSpeedExceed() ||
-         _downloadContext->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
+      if(requestGroupMan_->doesOverallUploadSpeedExceed() ||
+         downloadContext_->getOwnerRequestGroup()->doesUploadSpeedExceed()) {
         tempQueue.push_back(msg);
         continue;
       }
     }
     msg->send();
     if(msg->isUploading()) {
-      _peerStorage->updateTransferStatFor(_peer);
+      peerStorage_->updateTransferStatFor(peer_);
     }
     if(msg->isSendingInProgress()) {
-      _messageQueue.push_front(msg);
+      messageQueue_.push_front(msg);
       break;
     }
   }
   if(!tempQueue.empty()) {
     // Insert pending message to the front, so that message is likely sent in
     // the same order as it is queued.
-    if(!_messageQueue.empty() && _messageQueue.front()->isSendingInProgress()) {
-      _messageQueue.insert(_messageQueue.begin()+1,
+    if(!messageQueue_.empty() && messageQueue_.front()->isSendingInProgress()) {
+      messageQueue_.insert(messageQueue_.begin()+1,
                            tempQueue.begin(), tempQueue.end());
     } else {
-      _messageQueue.insert(_messageQueue.begin(),
+      messageQueue_.insert(messageQueue_.begin(),
                            tempQueue.begin(), tempQueue.end());
     }
   }
@@ -127,7 +127,7 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
   BtCancelSendingPieceEvent event(index, begin, length);
 
   std::vector<SharedHandle<BtMessage> > tempQueue
-    (_messageQueue.begin(), _messageQueue.end());
+    (messageQueue_.begin(), messageQueue_.end());
 
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onCancelSendingPieceEvent, event);
@@ -142,25 +142,25 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 
 class AbortOutstandingRequest {
 private:
-  SharedHandle<Piece> _piece;
-  cuid_t _cuid;
-  Logger* _logger;
+  SharedHandle<Piece> piece_;
+  cuid_t cuid_;
+  Logger* logger_;
 public:
   AbortOutstandingRequest(const SharedHandle<Piece>& piece, cuid_t cuid):
-    _piece(piece),
-    _cuid(cuid),
-    _logger(LogFactory::getInstance()) {}
+    piece_(piece),
+    cuid_(cuid),
+    logger_(LogFactory::getInstance()) {}
 
   void operator()(const RequestSlot& slot) const
   {
-    if(_logger->debug()) {
-      _logger->debug(MSG_DELETING_REQUEST_SLOT,
-                     util::itos(_cuid).c_str(),
+    if(logger_->debug()) {
+      logger_->debug(MSG_DELETING_REQUEST_SLOT,
+                     util::itos(cuid_).c_str(),
                      slot.getIndex(),
                      slot.getBlockIndex());
-      _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+      logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
     }
-    _piece->cancelBlock(slot.getBlockIndex());
+    piece_->cancelBlock(slot.getBlockIndex());
   }
 };
 
@@ -169,49 +169,49 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
 (const SharedHandle<Piece>& piece) {
   RequestSlot rs(piece->getIndex(), 0, 0, 0);
   std::deque<RequestSlot>::iterator first =
-    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), rs);
+    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), rs);
 
   rs.setIndex(piece->getIndex()+1);
   std::deque<RequestSlot>::iterator last =
-    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), rs);
+    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), rs);
 
   std::for_each(first, last, AbortOutstandingRequest(piece, cuid));
-  _requestSlots.erase(first, last);
+  requestSlots_.erase(first, last);
 
   BtAbortOutstandingRequestEvent event(piece);
 
   std::vector<SharedHandle<BtMessage> > tempQueue
-    (_messageQueue.begin(), _messageQueue.end());
+    (messageQueue_.begin(), messageQueue_.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onAbortOutstandingRequestEvent, event);
 }
 
 class ProcessChokedRequestSlot {
 private:
-  cuid_t _cuid;
-  SharedHandle<Peer> _peer;
-  SharedHandle<PieceStorage> _pieceStorage;
-  Logger* _logger;
+  cuid_t cuid_;
+  SharedHandle<Peer> peer_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  Logger* logger_;
 public:
   ProcessChokedRequestSlot(cuid_t cuid,
                            const SharedHandle<Peer>& peer,
                            const SharedHandle<PieceStorage>& pieceStorage):
-    _cuid(cuid),
-    _peer(peer),
-    _pieceStorage(pieceStorage),
-    _logger(LogFactory::getInstance()) {}
+    cuid_(cuid),
+    peer_(peer),
+    pieceStorage_(pieceStorage),
+    logger_(LogFactory::getInstance()) {}
   
   void operator()(const RequestSlot& slot) const
   {
-    if(!_peer->isInPeerAllowedIndexSet(slot.getIndex())) {
-      if(_logger->debug()) {
-        _logger->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
-                       util::itos(_cuid).c_str(),
+    if(!peer_->isInPeerAllowedIndexSet(slot.getIndex())) {
+      if(logger_->debug()) {
+        logger_->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
+                       util::itos(cuid_).c_str(),
                        slot.getIndex(),
                        slot.getBlockIndex());
-        _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+        logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       }
-      SharedHandle<Piece> piece = _pieceStorage->getPiece(slot.getIndex());
+      SharedHandle<Piece> piece = pieceStorage_->getPiece(slot.getIndex());
       piece->cancelBlock(slot.getBlockIndex());
     }
   }
@@ -220,26 +220,26 @@ public:
 
 class FindChokedRequestSlot {
 private:
-  SharedHandle<Peer> _peer;
+  SharedHandle<Peer> peer_;
 public:
   FindChokedRequestSlot(const SharedHandle<Peer>& peer):
-    _peer(peer) {}
+    peer_(peer) {}
   
   bool operator()(const RequestSlot& slot) const
   {
-    return !_peer->isInPeerAllowedIndexSet(slot.getIndex());
+    return !peer_->isInPeerAllowedIndexSet(slot.getIndex());
   }
 };
 
 // localhost received choke message from the peer.
 void DefaultBtMessageDispatcher::doChokedAction()
 {
-  std::for_each(_requestSlots.begin(), _requestSlots.end(),
-                ProcessChokedRequestSlot(cuid, _peer, _pieceStorage));
+  std::for_each(requestSlots_.begin(), requestSlots_.end(),
+                ProcessChokedRequestSlot(cuid, peer_, pieceStorage_));
 
-  _requestSlots.erase(std::remove_if(_requestSlots.begin(), _requestSlots.end(),
-                                     FindChokedRequestSlot(_peer)),
-                      _requestSlots.end());
+  requestSlots_.erase(std::remove_if(requestSlots_.begin(), requestSlots_.end(),
+                                     FindChokedRequestSlot(peer_)),
+                      requestSlots_.end());
 }
 
 // localhost dispatched choke message to the peer.
@@ -248,54 +248,54 @@ void DefaultBtMessageDispatcher::doChokingAction()
   BtChokingEvent event;
 
   std::vector<SharedHandle<BtMessage> > tempQueue
-    (_messageQueue.begin(), _messageQueue.end());
+    (messageQueue_.begin(), messageQueue_.end());
   forEachMemFunSH(tempQueue.begin(), tempQueue.end(),
                   &BtMessage::onChokingEvent, event);
 }
 
 class ProcessStaleRequestSlot {
 private:
-  cuid_t _cuid;
-  SharedHandle<Peer> _peer;
-  SharedHandle<PieceStorage> _pieceStorage;
-  BtMessageDispatcher* _messageDispatcher;
-  WeakHandle<BtMessageFactory> _messageFactory;
-  time_t _requestTimeout;
-  Logger* _logger;
+  cuid_t cuid_;
+  SharedHandle<Peer> peer_;
+  SharedHandle<PieceStorage> pieceStorage_;
+  BtMessageDispatcher* messageDispatcher_;
+  WeakHandle<BtMessageFactory> messageFactory_;
+  time_t requestTimeout_;
+  Logger* logger_;
 public:
   ProcessStaleRequestSlot(cuid_t cuid, const SharedHandle<Peer>& peer,
                           const SharedHandle<PieceStorage>& pieceStorage,
                           BtMessageDispatcher* dispatcher,
                           const WeakHandle<BtMessageFactory>& factory,
                           time_t requestTimeout):
-    _cuid(cuid),
-    _peer(peer),
-    _pieceStorage(pieceStorage),
-    _messageDispatcher(dispatcher),
-    _messageFactory(factory),
-    _requestTimeout(requestTimeout),
-    _logger(LogFactory::getInstance()) {}
+    cuid_(cuid),
+    peer_(peer),
+    pieceStorage_(pieceStorage),
+    messageDispatcher_(dispatcher),
+    messageFactory_(factory),
+    requestTimeout_(requestTimeout),
+    logger_(LogFactory::getInstance()) {}
 
   void operator()(const RequestSlot& slot)
   {
-    if(slot.isTimeout(_requestTimeout)) {
-      if(_logger->debug()) {
-        _logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
-                       util::itos(_cuid).c_str(),
+    if(slot.isTimeout(requestTimeout_)) {
+      if(logger_->debug()) {
+        logger_->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
+                       util::itos(cuid_).c_str(),
                        slot.getBlockIndex());
-        _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+        logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       }
       slot.getPiece()->cancelBlock(slot.getBlockIndex());
-      _peer->snubbing(true);
+      peer_->snubbing(true);
     } else if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
-      if(_logger->debug()) {
-        _logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
-                       util::itos(_cuid).c_str(),
+      if(logger_->debug()) {
+        logger_->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
+                       util::itos(cuid_).c_str(),
                        slot.getBlockIndex());
-        _logger->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+        logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
       }
-      _messageDispatcher->addMessageToQueue
-        (_messageFactory->createCancelMessage(slot.getIndex(),
+      messageDispatcher_->addMessageToQueue
+        (messageFactory_->createCancelMessage(slot.getIndex(),
                                               slot.getBegin(),
                                               slot.getLength()));
     }
@@ -304,17 +304,17 @@ public:
 
 class FindStaleRequestSlot {
 private:
-  SharedHandle<PieceStorage> _pieceStorage;
-  time_t _requestTimeout;
+  SharedHandle<PieceStorage> pieceStorage_;
+  time_t requestTimeout_;
 public:
   FindStaleRequestSlot(const SharedHandle<PieceStorage>& pieceStorage,
                        time_t requestTimeout):
-    _pieceStorage(pieceStorage),
-    _requestTimeout(requestTimeout) {}
+    pieceStorage_(pieceStorage),
+    requestTimeout_(requestTimeout) {}
 
   bool operator()(const RequestSlot& slot)
   {
-    if(slot.isTimeout(_requestTimeout)) {
+    if(slot.isTimeout(requestTimeout_)) {
       return true;
     } else {
       if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
@@ -328,25 +328,25 @@ public:
 
 void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 {
-  std::for_each(_requestSlots.begin(), _requestSlots.end(),
+  std::for_each(requestSlots_.begin(), requestSlots_.end(),
                 ProcessStaleRequestSlot(cuid,
-                                        _peer,
-                                        _pieceStorage,
+                                        peer_,
+                                        pieceStorage_,
                                         this,
-                                        _messageFactory,
-                                        _requestTimeout));
-  _requestSlots.erase(std::remove_if(_requestSlots.begin(), _requestSlots.end(),
-                                     FindStaleRequestSlot(_pieceStorage,
-                                                          _requestTimeout)),
-                      _requestSlots.end());
+                                        messageFactory_,
+                                        requestTimeout_));
+  requestSlots_.erase(std::remove_if(requestSlots_.begin(), requestSlots_.end(),
+                                     FindStaleRequestSlot(pieceStorage_,
+                                                          requestTimeout_)),
+                      requestSlots_.end());
 }
 
 bool DefaultBtMessageDispatcher::isSendingInProgress()
 {
-  if(_messageQueue.empty()) {
+  if(messageQueue_.empty()) {
     return false;
   } else {
-    return _messageQueue.front()->isSendingInProgress();
+    return messageQueue_.front()->isSendingInProgress();
   }
 }
 
@@ -367,9 +367,9 @@ bool DefaultBtMessageDispatcher::isOutstandingRequest
   RequestSlot rs(index, 0, 0, blockIndex);
 
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(_requestSlots.begin(), _requestSlots.end(),
+    std::lower_bound(requestSlots_.begin(), requestSlots_.end(),
                      rs, BlockIndexLess());
-  return i != _requestSlots.end() &&
+  return i != requestSlots_.end() &&
     (*i).getIndex() == index && (*i).getBlockIndex() == blockIndex;
 }
 
@@ -380,8 +380,8 @@ DefaultBtMessageDispatcher::getOutstandingRequest
   RequestSlot ret;
   RequestSlot rs(index, begin, length, 0);
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), rs);
-  if(i != _requestSlots.end() && (*i) == rs) {
+    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), rs);
+  if(i != requestSlots_.end() && (*i) == rs) {
     ret = *i;
   } else {
     ret = RequestSlot::nullSlot;
@@ -393,10 +393,10 @@ void DefaultBtMessageDispatcher::removeOutstandingRequest
 (const RequestSlot& slot)
 {
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), slot);
-  if(i != _requestSlots.end() && (*i) == slot) {
+    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), slot);
+  if(i != requestSlots_.end() && (*i) == slot) {
     AbortOutstandingRequest(slot.getPiece(), cuid)(*i);
-    _requestSlots.erase(i);
+    requestSlots_.erase(i);
   }
 }
 
@@ -404,51 +404,51 @@ void DefaultBtMessageDispatcher::addOutstandingRequest
 (const RequestSlot& slot)
 {
   std::deque<RequestSlot>::iterator i =
-    std::lower_bound(_requestSlots.begin(), _requestSlots.end(), slot);
-  if(i == _requestSlots.end() || (*i) != slot) {
-    _requestSlots.insert(i, slot);
+    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), slot);
+  if(i == requestSlots_.end() || (*i) != slot) {
+    requestSlots_.insert(i, slot);
   }
 }
 
 size_t DefaultBtMessageDispatcher::countOutstandingUpload()
 {
-  return std::count_if(_messageQueue.begin(), _messageQueue.end(),
+  return std::count_if(messageQueue_.begin(), messageQueue_.end(),
                        mem_fun_sh(&BtMessage::isUploading));
 }
 
 void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)
 {
-  _peer = peer;
+  peer_ = peer;
 }
 
 void DefaultBtMessageDispatcher::setDownloadContext
 (const SharedHandle<DownloadContext>& downloadContext)
 {
-  _downloadContext = downloadContext;
+  downloadContext_ = downloadContext;
 }
 
 void DefaultBtMessageDispatcher::setPieceStorage
 (const SharedHandle<PieceStorage>& pieceStorage)
 {
-  _pieceStorage = pieceStorage;
+  pieceStorage_ = pieceStorage;
 }
 
 void DefaultBtMessageDispatcher::setPeerStorage
 (const SharedHandle<PeerStorage>& peerStorage)
 {
-  _peerStorage = peerStorage;
+  peerStorage_ = peerStorage;
 }
 
 void DefaultBtMessageDispatcher::setBtMessageFactory
 (const WeakHandle<BtMessageFactory>& factory)
 {
-  _messageFactory = factory;
+  messageFactory_ = factory;
 }
 
 void DefaultBtMessageDispatcher::setRequestGroupMan
 (const WeakHandle<RequestGroupMan>& rgman)
 {
-  _requestGroupMan = rgman;
+  requestGroupMan_ = rgman;
 }
 
 } // namespace aria2

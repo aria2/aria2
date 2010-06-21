@@ -110,15 +110,15 @@
 template<typename T>
 class wsaapi_auto_delete {
 private:
-  T _obj;
-  void (WSAAPI*_deleter)(T);
+  T obj_;
+  void (WSAAPI*deleter_)(T);
 public:
   wsaapi_auto_delete(T obj, void (WSAAPI*deleter)(T)):
-    _obj(obj), _deleter(deleter) {}
+    obj_(obj), deleter_(deleter) {}
 
   ~wsaapi_auto_delete()
   {
-    _deleter(_obj);
+    deleter_(obj_);
   }
 };
 # define WSAAPI_AUTO_DELETE wsaapi_auto_delete

@@ -44,19 +44,19 @@ class RequestGroup;
 class PieceStorage;
 class BtRuntime;
 
-// Stop downloading torrent if in consecutive _timeout seconds,
+// Stop downloading torrent if in consecutive timeout_ seconds,
 // download speed is zero and the number of seeder is 0.
 class BtStopDownloadCommand:public TimeBasedCommand {
 private:
-  RequestGroup* _requestGroup;
+  RequestGroup* requestGroup_;
   
-  time_t _timeout;
+  time_t timeout_;
 
-  Timer _checkPoint;
+  Timer checkPoint_;
 
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<BtRuntime> btRuntime_;
 
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage_;
 public:
   BtStopDownloadCommand
   (cuid_t cuid,
@@ -70,12 +70,12 @@ public:
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
   {
-    _btRuntime = btRuntime;
+    btRuntime_ = btRuntime;
   }
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
   {
-    _pieceStorage = pieceStorage;
+    pieceStorage_ = pieceStorage;
   }
 };
 

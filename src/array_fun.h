@@ -66,7 +66,7 @@ T* vend(T (&a)[N])
 template<typename T>
 class array_ptr {
 private:
-  T* _array;
+  T* array_;
 
   // Copies are not allowed. Let's make them private.
   array_ptr(const array_ptr& s);
@@ -77,41 +77,41 @@ private:
   array_ptr& operator=(const array_ptr<S>& s);
 
 public:
-  array_ptr():_array(0) {}
+  array_ptr():array_(0) {}
 
-  explicit array_ptr(T* array):_array(array) {}
+  explicit array_ptr(T* array):array_(array) {}
 
   ~array_ptr()
   {
-    delete [] _array;
+    delete [] array_;
   }
 
   operator T*()
   {
-    return _array;
+    return array_;
   }
 
   operator const T*() const
   {
-    return _array;
+    return array_;
   }
 };
 
 template<typename T, size_t N>
 class array_wrapper {
 private:
-  T _array[N];
+  T array_[N];
 public:
   array_wrapper() {}
 
   operator T*()
   {
-    return _array;
+    return array_;
   }
 
   operator const T*() const
   {
-    return _array;
+    return array_;
   }
 
   size_t size() const
@@ -126,31 +126,31 @@ namespace expr {
 
 template<typename L, typename OpTag, typename R>
 struct BinExpr {
-  BinExpr(const L& l, const R& r):_l(l), _r(r) {}
+  BinExpr(const L& l, const R& r):l_(l), r_(r) {}
 
   typedef typename OpTag::returnType returnType;
 
   returnType operator[](size_t index) const
   {
-    return OpTag::apply(_l[index], _r[index]);
+    return OpTag::apply(l_[index], r_[index]);
   }
 
-  const L& _l;
-  const R& _r;
+  const L& l_;
+  const R& r_;
 };
 
 template<typename OpTag, typename A>
 struct UnExpr {
-  UnExpr(const A& a):_a(a) {}
+  UnExpr(const A& a):a_(a) {}
 
   typedef typename OpTag::returnType returnType;
 
   returnType operator[](size_t index) const
   {
-    return OpTag::apply(_a[index]);
+    return OpTag::apply(a_[index]);
   }
 
-  const A& _a;
+  const A& a_;
 };
 
 template<typename T>
@@ -179,11 +179,11 @@ struct Array
 {
   typedef T returnType;
 
-  Array(const T* t):_t(t) {}
+  Array(const T* t):t_(t) {}
 
-  const T* _t;
+  const T* t_;
 
-  returnType operator[](size_t index) const { return _t[index]; }
+  returnType operator[](size_t index) const { return t_[index]; }
 };
 
 template<typename T>

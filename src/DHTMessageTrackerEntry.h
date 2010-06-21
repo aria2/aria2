@@ -52,17 +52,17 @@ class DHTMessageCallback;
 
 class DHTMessageTrackerEntry {
 private:
-  SharedHandle<DHTNode> _targetNode;
+  SharedHandle<DHTNode> targetNode_;
 
-  std::string _transactionID;
+  std::string transactionID_;
 
-  std::string _messageType;
+  std::string messageType_;
   
-  SharedHandle<DHTMessageCallback> _callback;
+  SharedHandle<DHTMessageCallback> callback_;
 
-  Timer _dispatchedTime;
+  Timer dispatchedTime_;
 
-  time_t _timeout;
+  time_t timeout_;
 public:
   DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
                          time_t timeout,
@@ -77,22 +77,22 @@ public:
 
   const SharedHandle<DHTNode>& getTargetNode() const
   {
-    return _targetNode;
+    return targetNode_;
   }
 
   const std::string& getMessageType() const
   {
-    return _messageType;
+    return messageType_;
   }
 
   const SharedHandle<DHTMessageCallback>& getCallback() const
   {
-    return _callback;
+    return callback_;
   }  
 
   int64_t getElapsedMillis() const
   {
-    return _dispatchedTime.differenceInMillis(global::wallclock);
+    return dispatchedTime_.differenceInMillis(global::wallclock);
   }
 };
 

@@ -64,7 +64,7 @@ public:
 
   void removeStaleServerStat(time_t timeout);
 private:
-  std::deque<SharedHandle<ServerStat> > _serverStats;
+  std::deque<SharedHandle<ServerStat> > serverStats_;
 };
 
 } // namespace aria2

@@ -42,7 +42,7 @@ namespace aria2 {
 
 class DHTFindNodeMessage:public DHTQueryMessage {
 private:
-  unsigned char _targetNodeID[DHT_ID_LENGTH];
+  unsigned char targetNodeID_[DHT_ID_LENGTH];
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -61,7 +61,7 @@ public:
 
   const unsigned char* getTargetNodeID() const
   {
-    return _targetNodeID;
+    return targetNodeID_;
   }
 
   static const std::string FIND_NODE;

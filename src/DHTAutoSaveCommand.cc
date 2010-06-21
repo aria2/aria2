@@ -107,7 +107,7 @@ void DHTAutoSaveCommand::save()
   }
   std::vector<SharedHandle<DHTNode> > nodes;
   std::vector<SharedHandle<DHTBucket> > buckets;
-  _routingTable->getBuckets(buckets);
+  routingTable_->getBuckets(buckets);
   for(std::vector<SharedHandle<DHTBucket> >::const_iterator i = buckets.begin(),
         eoi = buckets.end(); i != eoi; ++i) {
     const SharedHandle<DHTBucket>& bucket = *i;
@@ -117,7 +117,7 @@ void DHTAutoSaveCommand::save()
   }
 
   DHTRoutingTableSerializer serializer;
-  serializer.setLocalNode(_localNode);
+  serializer.setLocalNode(localNode_);
   serializer.setNodes(nodes);
 
   try {
@@ -142,13 +142,13 @@ void DHTAutoSaveCommand::save()
 
 void DHTAutoSaveCommand::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
-  _localNode = localNode;
+  localNode_ = localNode;
 }
 
 void DHTAutoSaveCommand::setRoutingTable
 (const SharedHandle<DHTRoutingTable>& routingTable)
 {
-  _routingTable = routingTable;
+  routingTable_ = routingTable;
 }
 
 } // namespace aria2

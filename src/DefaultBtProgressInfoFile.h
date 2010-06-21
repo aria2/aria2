@@ -48,15 +48,15 @@ class Option;
 
 class DefaultBtProgressInfoFile : public BtProgressInfoFile {
 private:
-  SharedHandle<DownloadContext> _dctx;
-  SharedHandle<PieceStorage> _pieceStorage;
+  SharedHandle<DownloadContext> dctx_;
+  SharedHandle<PieceStorage> pieceStorage_;
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<PeerStorage> _peerStorage;
-  SharedHandle<BtRuntime> _btRuntime;
+  SharedHandle<PeerStorage> peerStorage_;
+  SharedHandle<BtRuntime> btRuntime_;
 #endif // ENABLE_BITTORRENT
-  const Option* _option;
-  Logger* _logger;
-  std::string _filename;
+  const Option* option_;
+  Logger* logger_;
+  std::string filename_;
 
   bool isTorrentDownload();
 
@@ -69,7 +69,7 @@ public:
 
   virtual ~DefaultBtProgressInfoFile();
 
-  virtual std::string getFilename() { return _filename; }
+  virtual std::string getFilename() { return filename_; }
   
   virtual bool exists();
 
@@ -79,7 +79,7 @@ public:
 
   virtual void removeFile();
 
-  // re-set filename using current _dctx.
+  // re-set filename using current dctx_.
   virtual void updateFilename();
 
 #ifdef ENABLE_BITTORRENT

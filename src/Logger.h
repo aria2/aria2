@@ -66,15 +66,15 @@ public:
 
   static const std::string INFO_LABEL;
 private:
-  LEVEL _logLevel;
+  LEVEL logLevel_;
 
-  std::ofstream _file;
+  std::ofstream file_;
 
-  int _stdoutField;
+  int stdoutField_;
   
   bool levelEnabled(LEVEL level)
   {
-    return (level >= _logLevel && _file.is_open()) || _stdoutField&level;
+    return (level >= logLevel_ && file_.is_open()) || stdoutField_&level;
   }
 protected:
   virtual void writeLog
@@ -115,7 +115,7 @@ public:
 
   void setLogLevel(LEVEL level)
   {
-    _logLevel = level;
+    logLevel_ = level;
   }
 
   void setStdoutLogLevel(Logger::LEVEL level, bool enabled);

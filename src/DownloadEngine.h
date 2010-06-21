@@ -74,25 +74,25 @@ class DownloadEngine {
 private:
   void waitData();
 
-  std::string _sessionId;
+  std::string sessionId_;
 
-  SharedHandle<EventPoll> _eventPoll;
+  SharedHandle<EventPoll> eventPoll_;
 
-  Logger* _logger;
+  Logger* logger_;
   
-  SharedHandle<StatCalc> _statCalc;
+  SharedHandle<StatCalc> statCalc_;
 
-  bool _haltRequested;
+  bool haltRequested_;
 
   class SocketPoolEntry {
   private:
-    SharedHandle<SocketCore> _socket;
+    SharedHandle<SocketCore> socket_;
 
-    std::map<std::string, std::string> _options;
+    std::map<std::string, std::string> options_;
 
-    time_t _timeout;
+    time_t timeout_;
 
-    Timer _registeredTime;
+    Timer registeredTime_;
   public:
     SocketPoolEntry(const SharedHandle<SocketCore>& socket,
                     const std::map<std::string, std::string>& option,
@@ -107,39 +107,39 @@ private:
 
     const SharedHandle<SocketCore>& getSocket() const
     {
-      return _socket;
+      return socket_;
     }
 
     const std::map<std::string, std::string>& getOptions() const
     {
-      return _options;
+      return options_;
     }
   };
 
   // key = IP address:port, value = SocketPoolEntry
-  std::multimap<std::string, SocketPoolEntry> _socketPool;
+  std::multimap<std::string, SocketPoolEntry> socketPool_;
  
-  Timer _lastSocketPoolScan;
+  Timer lastSocketPoolScan_;
 
-  bool _noWait;
+  bool noWait_;
 
   static const time_t DEFAULT_REFRESH_INTERVAL = 1;
 
-  time_t _refreshInterval;
+  time_t refreshInterval_;
 
-  std::deque<Command*> _routineCommands;
+  std::deque<Command*> routineCommands_;
 
-  SharedHandle<CookieStorage> _cookieStorage;
+  SharedHandle<CookieStorage> cookieStorage_;
 
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<BtRegistry> _btRegistry;
+  SharedHandle<BtRegistry> btRegistry_;
 #endif // ENABLE_BITTORRENT
 
-  CUIDCounter _cuidCounter;
+  CUIDCounter cuidCounter_;
 
-  SharedHandle<DNSCache> _dnsCache;
+  SharedHandle<DNSCache> dnsCache_;
 
-  SharedHandle<AuthConfigFactory> _authConfigFactory;
+  SharedHandle<AuthConfigFactory> authConfigFactory_;
 
   /**
    * Delegates to StatCalc
@@ -155,11 +155,11 @@ private:
   std::multimap<std::string, SocketPoolEntry>::iterator
   findSocketPoolEntry(const std::string& key);
 
-  std::deque<Command*> _commands;
-  SharedHandle<RequestGroupMan> _requestGroupMan;
-  SharedHandle<FileAllocationMan> _fileAllocationMan;
-  SharedHandle<CheckIntegrityMan> _checkIntegrityMan;
-  Option* _option;
+  std::deque<Command*> commands_;
+  SharedHandle<RequestGroupMan> requestGroupMan_;
+  SharedHandle<FileAllocationMan> fileAllocationMan_;
+  SharedHandle<CheckIntegrityMan> checkIntegrityMan_;
+  Option* option_;
 public:  
   DownloadEngine(const SharedHandle<EventPoll>& eventPoll);
 
@@ -188,59 +188,59 @@ public:
 
   void addCommand(const std::vector<Command*>& commands)
   {
-    _commands.insert(_commands.end(), commands.begin(), commands.end());
+    commands_.insert(commands_.end(), commands.begin(), commands.end());
   }
 
   void addCommand(Command* command)
   {
-    _commands.push_back(command);
+    commands_.push_back(command);
   }
 
   const SharedHandle<RequestGroupMan>& getRequestGroupMan() const
   {
-    return _requestGroupMan;
+    return requestGroupMan_;
   }
 
   void setRequestGroupMan(const SharedHandle<RequestGroupMan>& rgman)
   {
-    _requestGroupMan = rgman;
+    requestGroupMan_ = rgman;
   }
 
   const SharedHandle<FileAllocationMan>& getFileAllocationMan() const
   {
-    return _fileAllocationMan;
+    return fileAllocationMan_;
   }
 
   void setFileAllocationMan(const SharedHandle<FileAllocationMan>& faman)
   {
-    _fileAllocationMan = faman;
+    fileAllocationMan_ = faman;
   }
 
   const SharedHandle<CheckIntegrityMan>& getCheckIntegrityMan() const
   {
-    return _checkIntegrityMan;
+    return checkIntegrityMan_;
   }
 
   void setCheckIntegrityMan(const SharedHandle<CheckIntegrityMan>& ciman)
   {
-    _checkIntegrityMan = ciman;
+    checkIntegrityMan_ = ciman;
   }
 
   Option* getOption() const
   {
-    return _option;
+    return option_;
   }
 
   void setOption(Option* op)
   {
-    _option = op;
+    option_ = op;
   }
 
   void setStatCalc(const SharedHandle<StatCalc>& statCalc);
 
   bool isHaltRequested() const
   {
-    return _haltRequested;
+    return haltRequested_;
   }
 
   void requestHalt();
@@ -300,13 +300,13 @@ public:
 
   const SharedHandle<CookieStorage>& getCookieStorage() const
   {
-    return _cookieStorage;
+    return cookieStorage_;
   }
 
 #ifdef ENABLE_BITTORRENT
   const SharedHandle<BtRegistry>& getBtRegistry() const
   {
-    return _btRegistry;
+    return btRegistry_;
   }
 #endif // ENABLE_BITTORRENT
 
@@ -319,7 +319,7 @@ public:
   void findAllCachedIPAddresses
   (OutputIterator out, const std::string& hostname, uint16_t port) const
   {
-    _dnsCache->findAll(out, hostname, port);
+    dnsCache_->findAll(out, hostname, port);
   }
 
   void cacheIPAddress
@@ -334,14 +334,14 @@ public:
 
   const SharedHandle<AuthConfigFactory>& getAuthConfigFactory() const
   {
-    return _authConfigFactory;
+    return authConfigFactory_;
   }
 
   void setRefreshInterval(time_t interval);
 
   const std::string getSessionId() const
   {
-    return _sessionId;
+    return sessionId_;
   }
 };
 

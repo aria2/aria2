@@ -67,18 +67,18 @@ DHTAnnouncePeerMessage::DHTAnnouncePeerMessage
  const std::string& token,
  const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID),
-  _token(token),
-  _tcpPort(tcpPort)
+  token_(token),
+  tcpPort_(tcpPort)
 {
-  memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
+  memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
 
 DHTAnnouncePeerMessage::~DHTAnnouncePeerMessage() {}
 
 void DHTAnnouncePeerMessage::doReceivedAction()
 {
-  _peerAnnounceStorage->addPeerAnnounce
-    (_infoHash, getRemoteNode()->getIPAddress(), _tcpPort);
+  peerAnnounceStorage_->addPeerAnnounce
+    (infoHash_, getRemoteNode()->getIPAddress(), tcpPort_);
 
   SharedHandle<DHTMessage> reply =
     getMessageFactory()->createAnnouncePeerReplyMessage
@@ -90,9 +90,9 @@ SharedHandle<Dict> DHTAnnouncePeerMessage::getArgument()
 {
   SharedHandle<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
-  aDict->put(INFO_HASH, String::g(_infoHash, DHT_ID_LENGTH));
-  aDict->put(PORT, Integer::g(_tcpPort));
-  aDict->put(TOKEN, _token);
+  aDict->put(INFO_HASH, String::g(infoHash_, DHT_ID_LENGTH));
+  aDict->put(PORT, Integer::g(tcpPort_));
+  aDict->put(TOKEN, token_);
   return aDict;
 }
 
@@ -103,12 +103,12 @@ const std::string& DHTAnnouncePeerMessage::getMessageType() const
 
 void DHTAnnouncePeerMessage::validate() const
 {
-  if(!_tokenTracker->validateToken(_token, _infoHash,
+  if(!tokenTracker_->validateToken(token_, infoHash_,
                                    getRemoteNode()->getIPAddress(),
                                    getRemoteNode()->getPort())) {
     throw DL_ABORT_EX
       (StringFormat("Invalid token=%s from %s:%u",
-                    util::toHex(_token).c_str(),
+                    util::toHex(token_).c_str(),
                     getRemoteNode()->getIPAddress().c_str(),
                     getRemoteNode()->getPort()).str());
   }
@@ -117,20 +117,20 @@ void DHTAnnouncePeerMessage::validate() const
 void DHTAnnouncePeerMessage::setPeerAnnounceStorage
 (const WeakHandle<DHTPeerAnnounceStorage>& storage)
 {
-  _peerAnnounceStorage = storage;
+  peerAnnounceStorage_ = storage;
 }
 
 void DHTAnnouncePeerMessage::setTokenTracker
 (const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
-  _tokenTracker = tokenTracker;
+  tokenTracker_ = tokenTracker;
 }
 
 std::string DHTAnnouncePeerMessage::toStringOptional() const
 {
-  return strconcat("token=", util::toHex(_token),
-                   ", info_hash=", util::toHex(_infoHash, INFO_HASH_LENGTH),
-                   ", tcpPort=", util::uitos(_tcpPort));
+  return strconcat("token=", util::toHex(token_),
+                   ", info_hash=", util::toHex(infoHash_, INFO_HASH_LENGTH),
+                   ", tcpPort=", util::uitos(tcpPort_));
 }
 
 } // namespace aria2

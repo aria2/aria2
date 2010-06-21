@@ -59,24 +59,24 @@ class Option;
 
 class RequestGroupMan {
 private:
-  std::deque<SharedHandle<RequestGroup> > _requestGroups;
-  std::deque<SharedHandle<RequestGroup> > _reservedGroups;
-  std::deque<SharedHandle<DownloadResult> > _downloadResults;
-  Logger* _logger;
-  unsigned int _maxSimultaneousDownloads;
+  std::deque<SharedHandle<RequestGroup> > requestGroups_;
+  std::deque<SharedHandle<RequestGroup> > reservedGroups_;
+  std::deque<SharedHandle<DownloadResult> > downloadResults_;
+  Logger* logger_;
+  unsigned int maxSimultaneousDownloads_;
 
-  const Option* _option;
+  const Option* option_;
 
-  SharedHandle<ServerStatMan> _serverStatMan;
+  SharedHandle<ServerStatMan> serverStatMan_;
 
-  unsigned int _maxOverallDownloadSpeedLimit;
+  unsigned int maxOverallDownloadSpeedLimit_;
 
-  unsigned int _maxOverallUploadSpeedLimit;
+  unsigned int maxOverallUploadSpeedLimit_;
 
   // truf if XML-RPC is enabled.
-  bool _xmlRpc;
+  bool xmlRpc_;
 
-  bool _queueCheck;
+  bool queueCheck_;
 
   std::string
   formatDownloadResult(const std::string& status,
@@ -120,14 +120,14 @@ public:
   
   const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const
   {
-    return _requestGroups;
+    return requestGroups_;
   }
 
   SharedHandle<RequestGroup> findRequestGroup(gid_t gid) const;
 
   const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const
   {
-    return _reservedGroups;
+    return reservedGroups_;
   }
 
   SharedHandle<RequestGroup> findReservedGroup(gid_t gid) const;
@@ -159,11 +159,11 @@ public:
 
   class DownloadStat {
   private:
-    size_t _completed;
-    size_t _error;
-    size_t _inProgress;
-    size_t _waiting;
-    downloadresultcode::RESULT _lastErrorResult;
+    size_t completed_;
+    size_t error_;
+    size_t inProgress_;
+    size_t waiting_;
+    downloadresultcode::RESULT lastErrorResult_;
   public:
     DownloadStat(size_t completed,
                  size_t error,
@@ -171,25 +171,25 @@ public:
                  size_t waiting,
                  downloadresultcode::RESULT lastErrorResult =
                  downloadresultcode::FINISHED):
-      _completed(completed),
-      _error(error),
-      _inProgress(inProgress),
-      _waiting(waiting),
-      _lastErrorResult(lastErrorResult) {}
+      completed_(completed),
+      error_(error),
+      inProgress_(inProgress),
+      waiting_(waiting),
+      lastErrorResult_(lastErrorResult) {}
 
     downloadresultcode::RESULT getLastErrorResult() const
     {
-      return _lastErrorResult;
+      return lastErrorResult_;
     }
 
     bool allCompleted() const
     {
-      return _error == 0 && _inProgress == 0 && _waiting == 0;
+      return error_ == 0 && inProgress_ == 0 && waiting_ == 0;
     }
 
     size_t getInProgress() const
     {
-      return _inProgress;
+      return inProgress_;
     }
   };
 
@@ -197,7 +197,7 @@ public:
 
   const std::deque<SharedHandle<DownloadResult> >& getDownloadResults() const
   {
-    return _downloadResults;
+    return downloadResults_;
   }
 
   SharedHandle<DownloadResult> findDownloadResult(gid_t gid) const;
@@ -222,56 +222,56 @@ public:
   void removeStaleServerStat(time_t timeout);
 
   // Returns true if current download speed exceeds
-  // _maxOverallDownloadSpeedLimit.  Always returns false if
-  // _maxOverallDownloadSpeedLimit == 0.  Otherwise returns false.
+  // maxOverallDownloadSpeedLimit_.  Always returns false if
+  // maxOverallDownloadSpeedLimit_ == 0.  Otherwise returns false.
   bool doesOverallDownloadSpeedExceed();
 
   void setMaxOverallDownloadSpeedLimit(unsigned int speed)
   {
-    _maxOverallDownloadSpeedLimit = speed;
+    maxOverallDownloadSpeedLimit_ = speed;
   }
 
   unsigned int getMaxOverallDownloadSpeedLimit() const
   {
-    return _maxOverallDownloadSpeedLimit;
+    return maxOverallDownloadSpeedLimit_;
   }
 
   // Returns true if current upload speed exceeds
-  // _maxOverallUploadSpeedLimit. Always returns false if
-  // _maxOverallUploadSpeedLimit == 0. Otherwise returns false.
+  // maxOverallUploadSpeedLimit_. Always returns false if
+  // maxOverallUploadSpeedLimit_ == 0. Otherwise returns false.
   bool doesOverallUploadSpeedExceed();
 
   void setMaxOverallUploadSpeedLimit(unsigned int speed)
   {
-    _maxOverallUploadSpeedLimit = speed;
+    maxOverallUploadSpeedLimit_ = speed;
   }
 
   unsigned int getMaxOverallUploadSpeedLimit() const
   {
-    return _maxOverallUploadSpeedLimit;
+    return maxOverallUploadSpeedLimit_;
   }
 
   void setMaxSimultaneousDownloads(unsigned int max)
   {
-    _maxSimultaneousDownloads = max;
+    maxSimultaneousDownloads_ = max;
   }
 
-  // Call this function if _requestGroups queue should be maintained.
+  // Call this function if requestGroups_ queue should be maintained.
   // This function is added to reduce the call of maintenance, but at
   // the same time, it provides fast maintenance reaction.
   void requestQueueCheck()
   {
-    _queueCheck = true;
+    queueCheck_ = true;
   }
 
   void clearQueueCheck()
   {
-    _queueCheck = false;
+    queueCheck_ = false;
   }
 
   bool queueCheckRequested() const
   {
-    return _queueCheck;
+    return queueCheck_;
   }
 };
 

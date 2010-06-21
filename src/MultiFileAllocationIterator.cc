@@ -44,30 +44,30 @@
 namespace aria2 {
 
 MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
-  _diskAdaptor(diskAdaptor),
-  _entries(_diskAdaptor->_diskWriterEntries.begin(),
-           _diskAdaptor->_diskWriterEntries.end()),
-  _offset(0)
+  diskAdaptor_(diskAdaptor),
+  entries_(diskAdaptor_->diskWriterEntries_.begin(),
+           diskAdaptor_->diskWriterEntries_.end()),
+  offset_(0)
 {}
 
 MultiFileAllocationIterator::~MultiFileAllocationIterator() {}
 
 void MultiFileAllocationIterator::allocateChunk()
 {
-  while(_fileAllocationIterator.isNull() || _fileAllocationIterator->finished()) {
-    if(_entries.empty()) {
+  while(fileAllocationIterator_.isNull() || fileAllocationIterator_->finished()) {
+    if(entries_.empty()) {
       break;
     }
-    SharedHandle<DiskWriterEntry> entry = _entries.front();
-    _entries.pop_front();
+    SharedHandle<DiskWriterEntry> entry = entries_.front();
+    entries_.pop_front();
     SharedHandle<FileEntry> fileEntry = entry->getFileEntry();
     // Open file before calling DiskWriterEntry::size()
-    _diskAdaptor->openIfNot(entry, &DiskWriterEntry::openFile);
+    diskAdaptor_->openIfNot(entry, &DiskWriterEntry::openFile);
     if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {
       // Calling private function of MultiDiskAdaptor.
 #ifdef HAVE_POSIX_FALLOCATE
-      if(_diskAdaptor->doesFallocate()) {
-        _fileAllocationIterator.reset
+      if(diskAdaptor_->doesFallocate()) {
+        fileAllocationIterator_.reset
           (new FallocFileAllocationIterator(entry->getDiskWriter().get(),
                                             entry->size(),
                                             fileEntry->getLength()));
@@ -79,43 +79,43 @@ void MultiFileAllocationIterator::allocateChunk()
                                               entry->size(),
                                               fileEntry->getLength()));
           fa->init();
-          _fileAllocationIterator = fa;
+          fileAllocationIterator_ = fa;
         }
     }
   }
   if(finished()) {
     return;
   }
-  _fileAllocationIterator->allocateChunk();
+  fileAllocationIterator_->allocateChunk();
 }
 
 bool MultiFileAllocationIterator::finished()
 {
-  return _entries.empty() && (_fileAllocationIterator.isNull() || _fileAllocationIterator->finished());
+  return entries_.empty() && (fileAllocationIterator_.isNull() || fileAllocationIterator_->finished());
 }
 
 off_t MultiFileAllocationIterator::getCurrentLength()
 {
-  if(_fileAllocationIterator.isNull()) {
+  if(fileAllocationIterator_.isNull()) {
     return 0;
   } else {
-    return _fileAllocationIterator->getCurrentLength();
+    return fileAllocationIterator_->getCurrentLength();
   }
 }
 
 uint64_t MultiFileAllocationIterator::getTotalLength()
 {
-  if(_fileAllocationIterator.isNull()) {
+  if(fileAllocationIterator_.isNull()) {
     return 0;
   } else {
-    return _fileAllocationIterator->getTotalLength();
+    return fileAllocationIterator_->getTotalLength();
   }
 }
 
 const std::deque<SharedHandle<DiskWriterEntry> >&
 MultiFileAllocationIterator::getDiskWriterEntries() const
 {
-  return _entries;
+  return entries_;
 }
 
 } // namespace aria2

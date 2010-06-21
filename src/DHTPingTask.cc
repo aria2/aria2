@@ -45,11 +45,11 @@ namespace aria2 {
 
 DHTPingTask::DHTPingTask
 (const SharedHandle<DHTNode>& remoteNode, size_t numMaxRetry):
-  _remoteNode(remoteNode),
-  _numMaxRetry(numMaxRetry),
-  _numRetry(0),
-  _pingSuccessful(false),
-  _timeout(DHT_MESSAGE_TIMEOUT)
+  remoteNode_(remoteNode),
+  numMaxRetry_(numMaxRetry),
+  numRetry_(0),
+  pingSuccessful_(false),
+  timeout_(DHT_MESSAGE_TIMEOUT)
 {}
 
 DHTPingTask::~DHTPingTask() {}
@@ -57,10 +57,10 @@ DHTPingTask::~DHTPingTask() {}
 void DHTPingTask::addMessage()
 {
   SharedHandle<DHTMessage> m =
-    getMessageFactory()->createPingMessage(_remoteNode);
+    getMessageFactory()->createPingMessage(remoteNode_);
   SharedHandle<DHTMessageCallback> callback
     (new DHTPingReplyMessageCallback<DHTPingTask>(this));
-  getMessageDispatcher()->addMessageToQueue(m, _timeout, callback);
+  getMessageDispatcher()->addMessageToQueue(m, timeout_, callback);
 }
 
 void DHTPingTask::startup()
@@ -70,15 +70,15 @@ void DHTPingTask::startup()
 
 void DHTPingTask::onReceived(const DHTPingReplyMessage* message)
 {
-  _pingSuccessful = true;
+  pingSuccessful_ = true;
   setFinished(true);
 }
 
 void DHTPingTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
-  ++_numRetry;
-  if(_numRetry >= _numMaxRetry) {
-    _pingSuccessful = false;
+  ++numRetry_;
+  if(numRetry_ >= numMaxRetry_) {
+    pingSuccessful_ = false;
     setFinished(true);
   } else {
     addMessage();
@@ -87,7 +87,7 @@ void DHTPingTask::onTimeout(const SharedHandle<DHTNode>& node)
 
 bool DHTPingTask::isPingSuccessful() const
 {
-  return _pingSuccessful;
+  return pingSuccessful_;
 }
 
 } // namespace aria2

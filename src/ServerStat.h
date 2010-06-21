@@ -64,17 +64,17 @@ public:
 
   const std::string& getHostname() const
   {
-    return _hostname;
+    return hostname_;
   }
 
   const std::string& getProtocol() const
   {
-    return _protocol;
+    return protocol_;
   }
 
   const Time& getLastUpdated() const
   {
-    return _lastUpdated;
+    return lastUpdated_;
   }
 
   // This method doesn't update _lastUpdate.
@@ -82,10 +82,10 @@ public:
 
   unsigned int getDownloadSpeed() const
   {
-    return _downloadSpeed;
+    return downloadSpeed_;
   }
 
-  // update download speed and update _lastUpdated
+  // update download speed and update lastUpdated_
   void updateDownloadSpeed(unsigned int downloadSpeed);
 
   // set download speed. This method doesn't update _lastUpdate.
@@ -93,7 +93,7 @@ public:
 
   unsigned int getSingleConnectionAvgSpeed() const
   {
-    return _singleConnectionAvgSpeed;
+    return singleConnectionAvgSpeed_;
   }
 
   void updateSingleConnectionAvgSpeed(unsigned int downloadSpeed);
@@ -101,7 +101,7 @@ public:
 
   unsigned int getMultiConnectionAvgSpeed() const
   {
-    return _multiConnectionAvgSpeed;
+    return multiConnectionAvgSpeed_;
   }
 
   void updateMultiConnectionAvgSpeed(unsigned int downloadSpeed);
@@ -109,7 +109,7 @@ public:
 
   unsigned int getCounter() const
   {
-    return _counter;
+    return counter_;
   }
 
   void increaseCounter();
@@ -125,46 +125,46 @@ public:
 
   STATUS getStatus() const
   {
-    return _status;
+    return status_;
   }
 
   bool isOK() const
   {
-    return _status == OK;
+    return status_ == OK;
   }
 
-  // set status OK and update _lastUpdated
+  // set status OK and update lastUpdated_
   void setOK();
 
   bool isError() const
   {
-    return _status == ERROR;
+    return status_ == ERROR;
   }
 
-  // set status ERROR and update _lastUpdated
+  // set status ERROR and update lastUpdated_
   void setError();
 
   bool operator<(const ServerStat& serverStat) const;
 
   bool operator==(const ServerStat& serverStat) const;
 private:
-  std::string _hostname;
+  std::string hostname_;
   
-  std::string _protocol;
+  std::string protocol_;
 
-  unsigned int _downloadSpeed;
+  unsigned int downloadSpeed_;
   
-  unsigned int _singleConnectionAvgSpeed;
+  unsigned int singleConnectionAvgSpeed_;
   
-  unsigned int _multiConnectionAvgSpeed;
+  unsigned int multiConnectionAvgSpeed_;
 
-  unsigned int _counter;
+  unsigned int counter_;
 
-  Logger* _logger;
+  Logger* logger_;
 
-  STATUS _status;
+  STATUS status_;
 
-  Time _lastUpdated;
+  Time lastUpdated_;
 
   void setStatusInternal(STATUS status);
 };

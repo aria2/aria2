@@ -44,13 +44,13 @@ class BinaryStream;
 class SingleFileAllocationIterator:public FileAllocationIterator
 {
 private:
-  BinaryStream* _stream;
+  BinaryStream* stream_;
 
-  off_t _offset;
+  off_t offset_;
 
-  uint64_t _totalLength;
+  uint64_t totalLength_;
 
-  unsigned char* _buffer;
+  unsigned char* buffer_;
 public:
   SingleFileAllocationIterator(BinaryStream* stream, off_t offset, uint64_t totalLength);
 
@@ -62,12 +62,12 @@ public:
 
   virtual off_t getCurrentLength()
   {
-    return _offset;
+    return offset_;
   }
 
   virtual uint64_t getTotalLength()
   {
-    return _totalLength;
+    return totalLength_;
   }
 
   /**

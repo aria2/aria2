@@ -52,7 +52,7 @@
 namespace aria2 {
 
 DHTPeerAnnounceStorage::DHTPeerAnnounceStorage():
-  _logger(LogFactory::getInstance()) {}
+  logger_(LogFactory::getInstance()) {}
 
 DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
 
@@ -72,13 +72,13 @@ DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::lower_bound(_entries.begin(), _entries.end(), entry, InfoHashLess());
+    std::lower_bound(entries_.begin(), entries_.end(), entry, InfoHashLess());
 
-  if(i != _entries.end() &&
+  if(i != entries_.end() &&
      memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0) {
     entry = *i;
   } else {
-    _entries.insert(i, entry);
+    entries_.insert(i, entry);
   }
   return entry;
 }
@@ -87,8 +87,8 @@ void
 DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
                                         const std::string& ipaddr, uint16_t port)
 {
-  if(_logger->debug()) {
-    _logger->debug("Adding %s:%u to peer announce list: infoHash=%s",
+  if(logger_->debug()) {
+    logger_->debug("Adding %s:%u to peer announce list: infoHash=%s",
                    ipaddr.c_str(), port,
                    util::toHex(infoHash, DHT_ID_LENGTH).c_str());
   }
@@ -99,7 +99,7 @@ bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
 {
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
   return 
-    std::binary_search(_entries.begin(), _entries.end(), entry, InfoHashLess());
+    std::binary_search(entries_.begin(), entries_.end(), entry, InfoHashLess());
 }
 
 void DHTPeerAnnounceStorage::getPeers(std::vector<SharedHandle<Peer> >& peers,
@@ -108,8 +108,8 @@ void DHTPeerAnnounceStorage::getPeers(std::vector<SharedHandle<Peer> >& peers,
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::lower_bound(_entries.begin(), _entries.end(), entry, InfoHashLess());
-  if(i != _entries.end() &&
+    std::lower_bound(entries_.begin(), entries_.end(), entry, InfoHashLess());
+  if(i != entries_.end() &&
      memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0 &&
      !(*i)->empty()) {
     (*i)->getPeers(peers);
@@ -127,35 +127,35 @@ public:
 
 void DHTPeerAnnounceStorage::handleTimeout()
 {
-  if(_logger->debug()) {
-    _logger->debug("Now purge peer announces(%lu entries) which are timed out.",
-                   static_cast<unsigned long>(_entries.size()));
+  if(logger_->debug()) {
+    logger_->debug("Now purge peer announces(%lu entries) which are timed out.",
+                   static_cast<unsigned long>(entries_.size()));
   }
-  std::for_each(_entries.begin(), _entries.end(), RemoveStalePeerAddrEntry());
-  _entries.erase(std::remove_if(_entries.begin(), _entries.end(),
+  std::for_each(entries_.begin(), entries_.end(), RemoveStalePeerAddrEntry());
+  entries_.erase(std::remove_if(entries_.begin(), entries_.end(),
                                 mem_fun_sh(&DHTPeerAnnounceEntry::empty)),
-                 _entries.end());
-  if(_logger->debug()) {
-    _logger->debug("Currently %lu peer announce entries",
-                   static_cast<unsigned long>(_entries.size()));
+                 entries_.end());
+  if(logger_->debug()) {
+    logger_->debug("Currently %lu peer announce entries",
+                   static_cast<unsigned long>(entries_.size()));
   }
 }
 
 void DHTPeerAnnounceStorage::announcePeer()
 {
-  if(_logger->debug()) {
-    _logger->debug("Now announcing peer.");
+  if(logger_->debug()) {
+    logger_->debug("Now announcing peer.");
   }
   for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i =
-        _entries.begin(), eoi = _entries.end(); i != eoi; ++i) {
+        entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
     if((*i)->getLastUpdated().
        difference(global::wallclock) >= DHT_PEER_ANNOUNCE_INTERVAL) {
       (*i)->notifyUpdate();
       SharedHandle<DHTTask> task =
-        _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());
-      _taskQueue->addPeriodicTask2(task);
-      if(_logger->debug()) {
-        _logger->debug("Added 1 peer announce: infoHash=%s",
+        taskFactory_->createPeerAnnounceTask((*i)->getInfoHash());
+      taskQueue_->addPeriodicTask2(task);
+      if(logger_->debug()) {
+        logger_->debug("Added 1 peer announce: infoHash=%s",
                        util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
       }
     }
@@ -164,12 +164,12 @@ void DHTPeerAnnounceStorage::announcePeer()
 
 void DHTPeerAnnounceStorage::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
-  _taskQueue = taskQueue;
+  taskQueue_ = taskQueue;
 }
 
 void DHTPeerAnnounceStorage::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
-  _taskFactory = taskFactory;
+  taskFactory_ = taskFactory;
 }
 
 } // namespace aria2

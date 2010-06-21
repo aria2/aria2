@@ -39,78 +39,78 @@ namespace aria2 {
 namespace xmlrpc {
 
 InitialXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_initialState =
+XmlRpcRequestParserStateMachine::initialState_ =
   new InitialXmlRpcRequestParserState();
 
 UnknownElementXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_unknownElementState =
+XmlRpcRequestParserStateMachine::unknownElementState_ =
   new UnknownElementXmlRpcRequestParserState();
 
 MethodCallXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_methodCallState =
+XmlRpcRequestParserStateMachine::methodCallState_ =
   new MethodCallXmlRpcRequestParserState();
 
 MethodNameXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_methodNameState =
+XmlRpcRequestParserStateMachine::methodNameState_ =
   new MethodNameXmlRpcRequestParserState();
 
 ParamsXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_paramsState =
+XmlRpcRequestParserStateMachine::paramsState_ =
   new ParamsXmlRpcRequestParserState();
 
 ParamXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_paramState =
+XmlRpcRequestParserStateMachine::paramState_ =
   new ParamXmlRpcRequestParserState();
 
 ValueXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_valueState =
+XmlRpcRequestParserStateMachine::valueState_ =
   new ValueXmlRpcRequestParserState();
 
 IntXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_intState =
+XmlRpcRequestParserStateMachine::intState_ =
   new IntXmlRpcRequestParserState();
 
 StringXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_stringState =
+XmlRpcRequestParserStateMachine::stringState_ =
   new StringXmlRpcRequestParserState();
 
 Base64XmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_base64State =
+XmlRpcRequestParserStateMachine::base64State_ =
   new Base64XmlRpcRequestParserState();
 
 StructXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_structState =
+XmlRpcRequestParserStateMachine::structState_ =
   new StructXmlRpcRequestParserState();
 
 MemberXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_memberState =
+XmlRpcRequestParserStateMachine::memberState_ =
   new MemberXmlRpcRequestParserState();
 
 NameXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_nameState =
+XmlRpcRequestParserStateMachine::nameState_ =
   new NameXmlRpcRequestParserState();
 
 ArrayXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_arrayState = 
+XmlRpcRequestParserStateMachine::arrayState_ = 
   new ArrayXmlRpcRequestParserState();
 
 DataXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_dataState =
+XmlRpcRequestParserStateMachine::dataState_ =
   new DataXmlRpcRequestParserState();
 
 ArrayValueXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::_arrayValueState =
+XmlRpcRequestParserStateMachine::arrayValueState_ =
   new ArrayValueXmlRpcRequestParserState();
 
 XmlRpcRequestParserStateMachine::XmlRpcRequestParserStateMachine():
-  _controller(new XmlRpcRequestParserController())
+  controller_(new XmlRpcRequestParserController())
 {
-  _stateStack.push(_initialState);
+  stateStack_.push(initialState_);
 }
 
 XmlRpcRequestParserStateMachine::~XmlRpcRequestParserStateMachine()
 {
-  delete _controller;
+  delete controller_;
 }
 
 } // namespace xmlrpc

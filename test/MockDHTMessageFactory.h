@@ -9,7 +9,7 @@ namespace aria2 {
 
 class MockDHTMessageFactory:public DHTMessageFactory {
 protected:
-  SharedHandle<DHTNode> _localNode;
+  SharedHandle<DHTNode> localNode_;
 public:
   MockDHTMessageFactory() {}
 
@@ -32,7 +32,7 @@ public:
     remoteNode->setIPAddress(ipaddr);
     remoteNode->setPort(port);
     SharedHandle<MockDHTResponseMessage> m
-      (new MockDHTResponseMessage(_localNode, remoteNode,
+      (new MockDHTResponseMessage(localNode_, remoteNode,
                                   asString(dict->get("t"))->s()));
     return m;
   }
@@ -123,7 +123,7 @@ public:
 
   void setLocalNode(const SharedHandle<DHTNode>& node)
   {
-    _localNode = node;
+    localNode_ = node;
   }
 };
 

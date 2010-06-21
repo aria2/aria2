@@ -39,10 +39,10 @@ namespace aria2 {
 
 PStringSegment::PStringSegment(const std::string& value,
                                const SharedHandle<PStringDatum>& next):
-  _value(value), _next(next) {}
+  value_(value), next_(next) {}
 
 PStringSegment::PStringSegment(const std::string& value):
-  _value(value) {}
+  value_(value) {}
 
 PStringSegment::~PStringSegment() {}
 
@@ -53,17 +53,17 @@ void PStringSegment::accept(PStringVisitor& visitor)
 
 const std::string& PStringSegment::getValue() const
 {
-  return _value;
+  return value_;
 }
 
 bool PStringSegment::hasNext() const
 {
-  return !_next.isNull();
+  return !next_.isNull();
 }
 
 SharedHandle<PStringDatum> PStringSegment::getNext() const
 {
-  return _next;
+  return next_;
 }
 
 } // namespace aria2

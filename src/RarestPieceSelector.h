@@ -44,7 +44,7 @@ class PieceStatMan;
 
 class RarestPieceSelector:public PieceSelector {
 private:
-  SharedHandle<PieceStatMan> _pieceStatMan;
+  SharedHandle<PieceStatMan> pieceStatMan_;
 public:
   RarestPieceSelector(const SharedHandle<PieceStatMan>& pieceStatMan);
 

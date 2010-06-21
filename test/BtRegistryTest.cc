@@ -42,7 +42,7 @@ void BtRegistryTest::testGetDownloadContext()
   CPPUNIT_ASSERT(btRegistry.getDownloadContext(1).isNull());
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   BtObject btObject;
-  btObject._downloadContext = dctx;
+  btObject.downloadContext_ = dctx;
   btRegistry.put(1, btObject);
   CPPUNIT_ASSERT_EQUAL(dctx.get(), btRegistry.getDownloadContext(1).get());
 }
@@ -52,9 +52,9 @@ static void addTwoDownloadContext(BtRegistry& btRegistry)
   SharedHandle<DownloadContext> dctx1(new DownloadContext());
   SharedHandle<DownloadContext> dctx2(new DownloadContext());
   BtObject btObject1;
-  btObject1._downloadContext = dctx1;
+  btObject1.downloadContext_ = dctx1;
   BtObject btObject2;
-  btObject2._downloadContext = dctx2;
+  btObject2.downloadContext_ = dctx2;
   btRegistry.put(1, btObject1);
   btRegistry.put(2, btObject2);
 }

@@ -42,7 +42,7 @@ namespace aria2 {
 
 class DHTFindNodeReplyMessage:public DHTResponseMessage {
 private:
-  std::vector<SharedHandle<DHTNode> > _closestKNodes;
+  std::vector<SharedHandle<DHTNode> > closestKNodes_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -62,7 +62,7 @@ public:
 
   const std::vector<SharedHandle<DHTNode> >& getClosestKNodes() const
   {
-    return _closestKNodes;
+    return closestKNodes_;
   }
 
   void setClosestKNodes

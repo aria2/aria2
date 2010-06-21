@@ -46,38 +46,38 @@
 namespace aria2 {
 
 UTMetadataRequestFactory::UTMetadataRequestFactory():
-  _logger(LogFactory::getInstance()) {}
+  logger_(LogFactory::getInstance()) {}
 
 void UTMetadataRequestFactory::create
 (std::vector<SharedHandle<BtMessage> >& msgs, size_t num,
  const SharedHandle<PieceStorage>& pieceStorage)
 {
-  for(size_t index = 0, numPieces = _dctx->getNumPieces();
+  for(size_t index = 0, numPieces = dctx_->getNumPieces();
       index < numPieces && num; ++index) {
     SharedHandle<Piece> p = pieceStorage->getMissingPiece(index);
     if(p.isNull()) {
-      if(_logger->debug()) {
-        _logger->debug("ut_metadata piece %lu is used or already acquired.");
+      if(logger_->debug()) {
+        logger_->debug("ut_metadata piece %lu is used or already acquired.");
       }
       continue;
     }
     --num;
-    if(_logger->debug()) {
-      _logger->debug("Creating ut_metadata request index=%lu",
+    if(logger_->debug()) {
+      logger_->debug("Creating ut_metadata request index=%lu",
                      static_cast<unsigned long>(index));
     }
     SharedHandle<UTMetadataRequestExtensionMessage> m
       (new UTMetadataRequestExtensionMessage
-       (_peer->getExtensionMessageID("ut_metadata")));
+       (peer_->getExtensionMessageID("ut_metadata")));
     m->setIndex(index);
-    m->setDownloadContext(_dctx);
-    m->setBtMessageDispatcher(_dispatcher);
-    m->setBtMessageFactory(_messageFactory);
-    m->setPeer(_peer);
+    m->setDownloadContext(dctx_);
+    m->setBtMessageDispatcher(dispatcher_);
+    m->setBtMessageFactory(messageFactory_);
+    m->setPeer(peer_);
     
-    SharedHandle<BtMessage> msg = _messageFactory->createBtExtendedMessage(m);
+    SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
     msgs.push_back(msg);
-    _tracker->add(index);
+    tracker_->add(index);
   }
 }
 
