@@ -82,7 +82,8 @@ void PiecedSegment::updateWrittenLength(size_t bytes)
     overflowLength_ = newWrittenLength-piece_->getLength();
     newWrittenLength = piece_->getLength();
   }
-  for(size_t i = writtenLength_/piece_->getBlockLength(); i < newWrittenLength/piece_->getBlockLength(); ++i) {
+  for(size_t i = writtenLength_/piece_->getBlockLength(),
+        end = newWrittenLength/piece_->getBlockLength(); i < end; ++i) {
     piece_->completeBlock(i);
   }
   if(newWrittenLength == piece_->getLength()) {
