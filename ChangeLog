@@ -1,5 +1,14 @@
 2010-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that corrups file if segment returned from
+	SegmetnMan::getCleanSegmentIfOwnerIsIdle() has writtenLength > 0.
+	* src/DownloadCommand.cc
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* test/SegmentManTest.cc
+
+2010-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Changed naming standards for class member variable: now it looks
 	like var_ instead of _var.
 

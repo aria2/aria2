@@ -315,10 +315,16 @@ bool DownloadCommand::prepareForNextSegment() {
       if(!tempSegment->complete()) {
         return prepareForRetry(0);
       }
-      SharedHandle<Segment> nextSegment =
-        getSegmentMan()->getCleanSegmentIfOwnerIsIdle
+      SharedHandle<Segment> nextSegment = getSegmentMan()->getSegment
         (getCuid(), tempSegment->getIndex()+1);
       if(nextSegment.isNull()) {
+        nextSegment = getSegmentMan()->getCleanSegmentIfOwnerIsIdle
+        (getCuid(), tempSegment->getIndex()+1);
+      }
+      if(nextSegment.isNull() || nextSegment->getWrittenLength() > 0) {
+        // If nextSegment->getWrittenLength() > 0, current socket must
+        // be closed because writing incoming data at
+        // nextSegment->getWrittenLength() corrupts file.
         return prepareForRetry(0);
       } else {
         getDownloadEngine()->addCommand(this);

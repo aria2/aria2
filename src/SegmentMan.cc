@@ -236,7 +236,7 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
       }
     }
   }
-  return checkoutSegment(cuid, pieceStorage_->getMissingPiece(index));
+  return SharedHandle<Segment>();
 }
 
 void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)

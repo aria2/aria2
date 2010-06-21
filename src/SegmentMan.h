@@ -155,12 +155,10 @@ public:
    */
   SharedHandle<Segment> getSegment(cuid_t cuid, size_t index);
 
-  // Returns a segment whose index is index.  If the segment whose
-  // index is index is free, it is assigned to cuid and it is
-  // returned.  If it has already be assigned to another cuid, and if
-  // it is idle state and segment's written length is 0, then cancels
-  // the assignment and re-attach the segment to given cuid and the
-  // segment is returned. Otherwise returns null.
+  // Returns a currently used segment whose index is index and written
+  // length is 0.  The current owner(in idle state) of segment cancels
+  // the segment and cuid command acquires the ownership of the
+  // segment.  If no such segment exists, returns null.
   SharedHandle<Segment> getCleanSegmentIfOwnerIsIdle(cuid_t cuid, size_t index);
 
   /**

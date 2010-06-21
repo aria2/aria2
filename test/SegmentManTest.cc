@@ -194,15 +194,6 @@ void SegmentManTest::testGetCleanSegmentIfOwnerIsIdle()
   CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 0).isNull());
   // Segment::updateWrittenLength != 0
   CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 1).isNull());
-
-  // Test with UnknownLengthPieceStorage
-  SharedHandle<DownloadContext> dctx(new DownloadContext(1024, 0, "aria2"));
-  SharedHandle<UnknownLengthPieceStorage> ps
-    (new UnknownLengthPieceStorage(dctx, option_.get()));
-  segmentMan_.reset(new SegmentMan(option_.get(), dctx, ps));
-  
-  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(1, 0).isNull());
-
 }
 
 } // namespace aria2
