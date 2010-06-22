@@ -57,7 +57,9 @@ void UTMetadataRequestFactory::create
     SharedHandle<Piece> p = pieceStorage->getMissingPiece(index);
     if(p.isNull()) {
       if(logger_->debug()) {
-        logger_->debug("ut_metadata piece %lu is used or already acquired.");
+        logger_->debug
+          ("ut_metadata piece %lu is used or already acquired.",
+           static_cast<unsigned long>(index));
       }
       continue;
     }

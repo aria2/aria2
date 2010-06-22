@@ -1,5 +1,10 @@
 2010-06-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added missing parameter to log message.
+	* src/UTMetadataRequestFactory.cc
+
+2010-06-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made test code not use /tmp
 	* test/CookieStorageTest.cc
 	* test/DirectDiskAdaptorTest.cc
