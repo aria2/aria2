@@ -24,7 +24,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SingleFileAllocationIteratorTest );
 
 void SingleFileAllocationIteratorTest::testAllocate()
 {
-  std::string dir = "/tmp";
+  std::string dir = "./";
   std::string fname = "aria2_SingleFileAllocationIteratorTest_testAllocate";
   std::string fn = dir+"/"+fname;
   std::ofstream of(fn.c_str(), std::ios::binary);

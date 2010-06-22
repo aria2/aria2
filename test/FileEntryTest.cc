@@ -50,7 +50,7 @@ static SharedHandle<FileEntry> createFileEntry()
 
 void FileEntryTest::testSetupDir()
 {
-  std::string dir = "/tmp/aria2-FileEntryTest-testSetupDir";
+  std::string dir = "./aria2-FileEntryTest-testSetupDir";
   std::string filename = "filename";
   std::string path = dir+"/"+filename;
   File d(dir);

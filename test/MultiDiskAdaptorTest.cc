@@ -365,7 +365,7 @@ void MultiDiskAdaptorTest::testReadData() {
 
 void MultiDiskAdaptorTest::testCutTrailingGarbage()
 {
-  std::string dir = "/tmp";
+  std::string dir = "./";
   std::string prefix = "aria2_MultiDiskAdaptorTest_testCutTrailingGarbage_";
   SharedHandle<FileEntry> entries[] = {
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 256, 0)),
@@ -394,7 +394,7 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
 
 void MultiDiskAdaptorTest::testSize()
 {
-  std::string dir = "/tmp";
+  std::string dir = "./";
   std::string prefix = "aria2_MultiDiskAdaptorTest_testSize_";
   SharedHandle<FileEntry> entries[] = {
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 1, 0)),
@@ -418,7 +418,7 @@ void MultiDiskAdaptorTest::testSize()
 
 void MultiDiskAdaptorTest::testUtime()
 {
-  std::string storeDir = "/tmp/aria2_MultiDiskAdaptorTest_testUtime";
+  std::string storeDir = "./aria2_MultiDiskAdaptorTest_testUtime";
   SharedHandle<FileEntry> entries[] = {
     SharedHandle<FileEntry>(new FileEntry(storeDir+"/requested", 0, 0)),
     SharedHandle<FileEntry>(new FileEntry(storeDir+"/notFound", 0, 0)),

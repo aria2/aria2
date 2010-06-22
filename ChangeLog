@@ -1,5 +1,21 @@
 2010-06-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made test code not use /tmp
+	* test/CookieStorageTest.cc
+	* test/DirectDiskAdaptorTest.cc
+	* test/FallocFileAllocationIteratorTest.cc
+	* test/FileEntryTest.cc
+	* test/FileTest.cc
+	* test/GZipDecoderTest.cc
+	* test/MultiDiskAdaptorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+	* test/RequestGroupManTest.cc
+	* test/SignatureTest.cc
+	* test/SingleFileAllocationIteratorTest.cc
+	* test/UtilTest.cc
+
+2010-06-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed that bug that when aria2 is stopped before whole hash
 	check(not piece hash check) is done, aria2 reports its file is
 	downloaded successfully. It should report the download is

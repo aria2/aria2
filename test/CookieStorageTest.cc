@@ -319,13 +319,13 @@ void CookieStorageTest::testLoad_sqlite3()
 void CookieStorageTest::testLoad_fileNotfound()
 {
   CookieStorage st;
-  CPPUNIT_ASSERT(!st.load("/tmp/aria2_CookieStorageTest_testLoad_fileNotfound"));
+  CPPUNIT_ASSERT(!st.load("./aria2_CookieStorageTest_testLoad_fileNotfound"));
 }
 
 void CookieStorageTest::testSaveNsFormat()
 {
   // TODO add cookie with default domain
-  std::string filename = "/tmp/aria2_CookieStorageTest_testSaveNsFormat";
+  std::string filename = "./aria2_CookieStorageTest_testSaveNsFormat";
   File(filename).remove();
   CookieStorage st;
   st.store(Cookie("favorite","classic","/config",".domain.org",true));
@@ -346,7 +346,7 @@ void CookieStorageTest::testSaveNsFormat()
 
 void CookieStorageTest::testSaveNsFormat_fail()
 {
-  std::string filename = "/tmp/aria2_CookieStorageTest_testSaveNsFormat_fail";
+  std::string filename = "./aria2_CookieStorageTest_testSaveNsFormat_fail";
   File f(filename);
   f.remove();
   f.mkdirs();

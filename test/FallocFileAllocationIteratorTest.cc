@@ -26,7 +26,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FallocFileAllocationIteratorTest );
 
 void FallocFileAllocationIteratorTest::testAllocate()
 {
-  std::string dir = "/tmp";
+  std::string dir = "./";
   std::string fname = "aria2_FallocFileAllocationIteratorTest_testAllocate";
   std::string fn = dir+"/"+fname;
   std::ofstream of(fn.c_str(), std::ios::binary);
