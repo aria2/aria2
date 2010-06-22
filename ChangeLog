@@ -1,3 +1,16 @@
+2010-06-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed that bug that when aria2 is stopped before whole hash
+	check(not piece hash check) is done, aria2 reports its file is
+	downloaded successfully. It should report the download is
+	in-progress and next invocation of aria2 should check hash.
+	* src/ChecksumCheckIntegrityEntry.cc
+	* src/DownloadCommand.cc
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+
 2010-06-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code cleanup

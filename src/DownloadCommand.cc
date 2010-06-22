@@ -297,7 +297,7 @@ bool DownloadCommand::prepareForNextSegment() {
         (new ChecksumCheckIntegrityEntry(getRequestGroup()));
       if(entry->isValidationReady()) {
         entry->initValidator();
-        // TODO do we need cuttrailinggarbage here?
+        entry->cutTrailingGarbage();
         getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
       }
     }

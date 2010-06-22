@@ -80,6 +80,7 @@
 #include "Segment.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
+# include "ChecksumCheckIntegrityEntry.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
@@ -173,7 +174,7 @@ bool RequestGroup::allDownloadFinished() const
 
 downloadresultcode::RESULT RequestGroup::downloadResult() const
 {
-  if (downloadFinished())
+  if(downloadFinished() && !downloadContext_->isChecksumVerificationNeeded())
     return downloadresultcode::FINISHED;
   else {
     if (lastUriResult_.isNull()) {
@@ -394,6 +395,21 @@ void RequestGroup::createInitialCommand
                         downloadContext_->getBasePath().c_str());
       } else {
         loadAndOpenFile(infoFile);
+        if(downloadFinished() &&
+           downloadContext_->isChecksumVerificationNeeded()) {
+          if(logger_->info()) {
+            logger_->info("File has already been downloaded but hash check has"
+                          " not been done yet.");
+          }
+          SharedHandle<CheckIntegrityEntry> entry
+            (new ChecksumCheckIntegrityEntry(this));
+          if(entry->isValidationReady()) {
+            entry->initValidator();
+            entry->cutTrailingGarbage();
+            e->getCheckIntegrityMan()->pushEntry(entry);
+          }
+          return;
+        }
         SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
           (new StreamCheckIntegrityEntry(this));
         processCheckIntegrityEntry(commands, checkIntegrityEntry, e);

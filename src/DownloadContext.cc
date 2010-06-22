@@ -47,6 +47,7 @@ namespace aria2 {
 DownloadContext::DownloadContext():
   dir_(A2STR::DOT_C),
   pieceLength_(0),
+  checksumVerified_(false),
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
   downloadStartTime_(0),
@@ -57,6 +58,7 @@ DownloadContext::DownloadContext(size_t pieceLength,
                                  const std::string& path):
   dir_(A2STR::DOT_C),
   pieceLength_(pieceLength),
+  checksumVerified_(false),
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
   downloadStartTime_(0),
@@ -203,6 +205,12 @@ const std::string& DownloadContext::getBasePath() const
   } else {
     return basePath_;
   }
+}
+
+bool DownloadContext::isChecksumVerificationNeeded() const
+{
+  return pieceHashAlgo_.empty() &&
+    !checksum_.empty() && !checksumHashAlgo_.empty() && !checksumVerified_;
 }
 
 } // namespace aria2

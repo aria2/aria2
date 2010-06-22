@@ -365,7 +365,8 @@ public:
       }
       try {
         group->closeFile();
-        if(group->downloadFinished()) {
+        if(group->downloadFinished() &&
+           !group->getDownloadContext()->isChecksumVerificationNeeded()) {
           group->setPauseRequested(false);
           group->applyLastModifiedTimeToLocalFiles();
           group->reportDownloadFinished();
@@ -575,7 +576,8 @@ void RequestGroupMan::save()
 {
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
         requestGroups_.begin(), eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    if((*itr)->allDownloadFinished()) {
+    if((*itr)->allDownloadFinished() && 
+       !(*itr)->getDownloadContext()->isChecksumVerificationNeeded()) {
       (*itr)->removeControlFile();
     } else {
       try {

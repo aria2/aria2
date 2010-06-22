@@ -71,6 +71,8 @@ private:
 
   std::string checksumHashAlgo_;
 
+  bool checksumVerified_;
+
   std::string basePath_;
 
   bool knowsTotalLength_;
@@ -199,6 +201,15 @@ public:
   // getDir()+"/"+path. path is not escaped by util::escapePath() in
   // this function.
   void setFilePathWithIndex(size_t index, const std::string& path);
+
+  // Returns true if hash check(whole file hash, not piece hash) is
+  // need to be done
+  bool isChecksumVerificationNeeded() const;
+
+  void setChecksumVerified(bool f)
+  {
+    checksumVerified_ = f;
+  }
 
   void setAttribute
   (const std::string& key, const SharedHandle<ContextAttribute>& value);
