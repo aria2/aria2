@@ -155,6 +155,8 @@ public:
 
   size_t getBitfieldLength() const;
 
+  void reconfigure(size_t index, uint64_t totalLength);
+
   bool hasPiece(size_t index) const;
 
   void markSeeder();

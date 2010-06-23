@@ -1,6 +1,7 @@
 #include "UTMetadataRequestFactory.h"
 
 #include <vector>
+#include <deque>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -25,14 +26,17 @@ public:
 
   class MockPieceStorage2:public MockPieceStorage {
   public:
-    std::set<size_t> missingIndexes;
+    std::deque<size_t> missingIndexes;
 
-    virtual SharedHandle<Piece> getMissingPiece(size_t index)
+    virtual SharedHandle<Piece> getMissingPiece
+    (const SharedHandle<Peer>& peer)
     {
-      if(missingIndexes.find(index) != missingIndexes.end()) {
-        return SharedHandle<Piece>(new Piece(index, 0));
-      } else {
+      if(missingIndexes.empty()) {
         return SharedHandle<Piece>();
+      } else {
+        size_t index = missingIndexes.front();
+        missingIndexes.pop_front();
+        return SharedHandle<Piece>(new Piece(index, 0));
       }
     }
   };
@@ -48,8 +52,8 @@ void UTMetadataRequestFactoryTest::testCreate()
     (new DownloadContext(METADATA_PIECE_SIZE, METADATA_PIECE_SIZE*2));
   factory.setDownloadContext(dctx);
   SharedHandle<MockPieceStorage2> ps(new MockPieceStorage2());
-  ps->missingIndexes.insert(0);
-  ps->missingIndexes.insert(1);
+  ps->missingIndexes.push_back(0);
+  ps->missingIndexes.push_back(1);
   SharedHandle<WrapExtBtMessageFactory> messageFactory
     (new WrapExtBtMessageFactory());
   factory.setBtMessageFactory(messageFactory);
@@ -65,11 +69,11 @@ void UTMetadataRequestFactoryTest::testCreate()
   factory.create(msgs, 1, ps);
   CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());
 
-  msgs.clear();
-
-  ps->missingIndexes.clear();
   factory.create(msgs, 1, ps);
-  CPPUNIT_ASSERT_EQUAL((size_t)0, msgs.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, msgs.size());
+
+  factory.create(msgs, 1, ps);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, msgs.size());
 }
 
 } // namespace aria2

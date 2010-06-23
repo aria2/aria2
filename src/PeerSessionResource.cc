@@ -273,4 +273,10 @@ size_t PeerSessionResource::countOutstandingUpload() const
   return dispatcher_->countOutstandingUpload();
 }
 
+void PeerSessionResource::reconfigure(size_t pieceLength, uint64_t totalLenth)
+{
+  delete bitfieldMan_;
+  bitfieldMan_ = new BitfieldMan(pieceLength, totalLenth);
+}
+
 } // namespace aria2

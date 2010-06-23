@@ -52,26 +52,23 @@ void UTMetadataRequestFactory::create
 (std::vector<SharedHandle<BtMessage> >& msgs, size_t num,
  const SharedHandle<PieceStorage>& pieceStorage)
 {
-  for(size_t index = 0, numPieces = dctx_->getNumPieces();
-      index < numPieces && num; ++index) {
-    SharedHandle<Piece> p = pieceStorage->getMissingPiece(index);
+  while(num) {
+    SharedHandle<Piece> p = pieceStorage->getMissingPiece(peer_);
     if(p.isNull()) {
       if(logger_->debug()) {
-        logger_->debug
-          ("ut_metadata piece %lu is used or already acquired.",
-           static_cast<unsigned long>(index));
+        logger_->debug("No ut_metadata piece is available to download.");
       }
-      continue;
+      break;
     }
     --num;
     if(logger_->debug()) {
       logger_->debug("Creating ut_metadata request index=%lu",
-                     static_cast<unsigned long>(index));
+                     static_cast<unsigned long>(p->getIndex()));
     }
     SharedHandle<UTMetadataRequestExtensionMessage> m
       (new UTMetadataRequestExtensionMessage
        (peer_->getExtensionMessageID("ut_metadata")));
-    m->setIndex(index);
+    m->setIndex(p->getIndex());
     m->setDownloadContext(dctx_);
     m->setBtMessageDispatcher(dispatcher_);
     m->setBtMessageFactory(messageFactory_);
@@ -79,7 +76,7 @@ void UTMetadataRequestFactory::create
     
     SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
     msgs.push_back(msg);
-    tracker_->add(index);
+    tracker_->add(p->getIndex());
   }
 }
 

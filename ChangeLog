@@ -1,3 +1,15 @@
+2010-06-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Request ut_metadata in end-game mode(in other words, more
+	aggresively)
+	* src/HandshakeExtensionMessage.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerSessionResource.cc
+	* src/PeerSessionResource.h
+	* src/UTMetadataRequestFactory.cc
+	* test/UTMetadataRequestFactoryTest.cc
+
 2010-06-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing parameter to log message.

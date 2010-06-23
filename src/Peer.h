@@ -159,6 +159,8 @@ public:
 
   void allocateSessionResource(size_t pieceLength, uint64_t totalLength);
 
+  void reconfigureSessionResource(size_t pieceLength, uint64_t totalLength);
+
   void releaseSessionResource();
 
   const Timer& getFirstContactTime() const

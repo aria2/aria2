@@ -80,6 +80,12 @@ void Peer::allocateSessionResource(size_t pieceLength, uint64_t totalLength)
   res_->getPeerStat().downloadStart();
 }
 
+void Peer::reconfigureSessionResource(size_t pieceLength, uint64_t totalLength)
+{
+  assert(res_);
+  res_->reconfigure(pieceLength, totalLength);
+}
+
 void Peer::releaseSessionResource()
 {
   delete res_;

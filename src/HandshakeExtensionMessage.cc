@@ -123,6 +123,11 @@ void HandshakeExtensionMessage::doReceivedAction()
       if(metadataSize_ != attrs->metadataSize) {
         throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
       }
+      if(!peer_->isSeeder()) {
+        peer_->reconfigureSessionResource(dctx_->getPieceLength(),
+                                          dctx_->getTotalLength());
+        peer_->setAllBitfield();
+      }
     } else {
       attrs->metadataSize = metadataSize_;
       dctx_->getFirstFileEntry()->setLength(metadataSize_);
@@ -131,7 +136,9 @@ void HandshakeExtensionMessage::doReceivedAction()
       
       SharedHandle<PieceStorage> pieceStorage =
         dctx_->getOwnerRequestGroup()->getPieceStorage();
-      pieceStorage->setEndGamePieceNum(0);
+      peer_->reconfigureSessionResource(dctx_->getPieceLength(),
+                                        dctx_->getTotalLength());
+      peer_->setAllBitfield();
     }
   } else if(attrs->metadata.empty()) {
     throw DL_ABORT_EX("Peer didn't provide metadata_size."
