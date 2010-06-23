@@ -395,11 +395,11 @@ void RequestGroup::createInitialCommand
                         downloadContext_->getBasePath().c_str());
       } else {
         loadAndOpenFile(infoFile);
+#ifdef ENABLE_MESSAGE_DIGEST
         if(downloadFinished() &&
            downloadContext_->isChecksumVerificationNeeded()) {
           if(logger_->info()) {
-            logger_->info("File has already been downloaded but hash check has"
-                          " not been done yet.");
+            logger_->info(MSG_HASH_CHECK_NOT_DONE);
           }
           SharedHandle<CheckIntegrityEntry> entry
             (new ChecksumCheckIntegrityEntry(this));
@@ -407,9 +407,10 @@ void RequestGroup::createInitialCommand
             entry->initValidator();
             entry->cutTrailingGarbage();
             e->getCheckIntegrityMan()->pushEntry(entry);
+            return;
           }
-          return;
         }
+#endif // ENABLE_MESSAGE_DIGEST
         SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
           (new StreamCheckIntegrityEntry(this));
         processCheckIntegrityEntry(commands, checkIntegrityEntry, e);

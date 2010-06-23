@@ -1,5 +1,14 @@
 2010-06-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Run whole checksum check when download file name and size are
+	determined and download is already completed. Related to r2221.
+	Guarded ENABLE_MESSAGE_DIGEST where necessary.
+	* src/AbstractCommand.cc
+	* src/RequestGroup.cc
+	* src/message.h
+
+2010-06-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made log and log-level option modifiable using
 	aria2.changeGlobalOption. This means you can dynamically start or
 	stop logging and change log file and log level.

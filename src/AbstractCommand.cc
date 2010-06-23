@@ -68,6 +68,9 @@
 #include "NameResolver.h"
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "ChecksumCheckIntegrityEntry.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 
@@ -719,6 +722,23 @@ std::string AbstractCommand::resolveHostname
 // function call.
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(requestGroup_->downloadFinished() &&
+     getDownloadContext()->isChecksumVerificationNeeded()) {
+    if(getLogger()->info()) {
+      getLogger()->info(MSG_HASH_CHECK_NOT_DONE);
+    }
+    SharedHandle<CheckIntegrityEntry> entry
+      (new ChecksumCheckIntegrityEntry(requestGroup_));
+    if(entry->isValidationReady()) {
+      delete nextCommand;
+      entry->initValidator();
+      entry->cutTrailingGarbage();
+      e_->getCheckIntegrityMan()->pushEntry(entry);
+      return;
+    }
+  }
+#endif // ENABLE_MESSAGE_DIGEST
   SharedHandle<CheckIntegrityEntry> entry
     (new StreamCheckIntegrityEntry(requestGroup_, nextCommand));
 
