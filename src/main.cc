@@ -175,13 +175,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 #ifdef ENABLE_BITTORRENT
   bittorrent::generateStaticPeerId(op->get(PREF_PEER_ID_PREFIX));
 #endif // ENABLE_BITTORRENT
-  if(op->get(PREF_LOG) == "-") {
-    LogFactory::setLogFile(DEV_STDOUT);
-  } else if(op->blank(PREF_LOG)) {
-    LogFactory::setLogFile(DEV_NULL);
-  } else {
-    LogFactory::setLogFile(op->get(PREF_LOG));
-  }
+  LogFactory::setLogFile(op->get(PREF_LOG));
   LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);

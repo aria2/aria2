@@ -186,6 +186,8 @@ const std::set<std::string>& listChangeableGlobalOptions()
     PREF_MAX_OVERALL_UPLOAD_LIMIT,
     PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
     PREF_MAX_CONCURRENT_DOWNLOADS,
+    PREF_LOG,
+    PREF_LOG_LEVEL
   };
   static std::set<std::string> options(vbegin(OPTIONS), vend(OPTIONS));
   return options;

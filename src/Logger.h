@@ -45,6 +45,7 @@
 namespace aria2 {
 
 class Exception;
+class LogFormatter;
 
 class Logger {
 public:
@@ -66,6 +67,8 @@ public:
 
   static const std::string INFO_LABEL;
 private:
+  LogFormatter* logFormatter_;
+
   LEVEL logLevel_;
 
   std::ofstream file_;
@@ -76,14 +79,14 @@ private:
   {
     return (level >= logLevel_ && file_.is_open()) || stdoutField_&level;
   }
-protected:
-  virtual void writeLog
-  (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
-   const char* msg, va_list ap) = 0;
 
-  virtual void writeStackTrace
+  void writeLog
   (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
-   const Exception& ex) = 0;
+   const char* msg, va_list ap);
+
+  void writeStackTrace
+  (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
+   const Exception& ex);
 public:
   Logger();
 
@@ -112,6 +115,8 @@ public:
   void openFile(const std::string& filename);
 
   void closeFile();
+
+  void setLogFormatter(LogFormatter* logFormatter);
 
   void setLogLevel(LEVEL level)
   {

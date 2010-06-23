@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,25 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_LOGGER_H_
-#define _D_SIMPLE_LOGGER_H_
+#ifndef D_LOG_FORMATTER_H
+#define D_LOG_FORMATTER_H
+
+#include "common.h"
+
+#include <cstdarg>
+#include <iosfwd>
+#include <string>
 
 #include "Logger.h"
 
 namespace aria2 {
 
-class SimpleLogger:public Logger {
-protected:
+class Exception;
+
+class LogFormatter {
+public:
+  virtual ~LogFormatter() {}
+
   virtual void writeLog
-  (std::ostream& out, Logger::LEVEL logLevel, const std::string& logLevelLabel,
-   const char* msg, va_list ap);
+  (std::ostream& o, Logger::LEVEL logLevel, const std::string& logLevelLabel,
+   const char* msg, va_list ap) = 0;
 
   virtual void writeStackTrace
-  (std::ostream& out, Logger::LEVEL logLevel, const std::string& logLevelLabel,
-   const Exception& e);
+  (std::ostream& o, Logger::LEVEL logLevel, const std::string& logLevelLabel,
+   const Exception& ex) = 0;
 };
 
 } // namespace aria2
 
-#endif // _D_SIMPLE_LOGGER_H_
-
+#endif // D_LOG_FORMATTER_H

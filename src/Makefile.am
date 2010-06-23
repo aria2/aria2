@@ -40,7 +40,8 @@ SRCS =  Socket.h\
 	DlRetryEx.cc DlRetryEx.h\
 	DownloadFailureException.cc DownloadFailureException.h\
 	Logger.cc Logger.h\
-	SimpleLogger.cc SimpleLogger.h\
+	LogFormatter.h\
+	SimpleLogFormatter.cc SimpleLogFormatter.h\
 	DiskWriter.h\
 	DiskWriterFactory.h\
 	AbstractDiskWriter.cc AbstractDiskWriter.h\

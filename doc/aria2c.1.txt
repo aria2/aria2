@@ -43,7 +43,7 @@ Basic Options
 
 *-l*, *--log*=LOG::
   The file name of the log file. If '-' is specified, log is written to
-  stdout.
+  stdout. If empty string("") is specified, log is not written to file.
 
 *-j*, *--max-concurrent-downloads*=N::
   Set maximum number of parallel downloads for every static (HTTP/FTP) URI,
@@ -1766,8 +1766,11 @@ added download, the response contains keys returned by
 
 This method changes global options dynamically.  'options' is of type
 struct and the available options are *max-concurrent-downloads*,
-*max-overall-download-limit* and *max-overall-upload-limit*.  This
-method returns "OK" for success.
+*max-overall-download-limit*, *max-overall-upload-limit*, *log-level*
+and *log*. Using *log* option, you can dynamically start logging or
+change log file. To stop logging, give empty string("") as a parameter
+value. Note that log file is always opened in append mode. This method
+returns "OK" for success.
 
 *aria2.purgeDownloadResult*
 

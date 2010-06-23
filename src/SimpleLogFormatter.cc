@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,65 +32,63 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_LOG_FACTORY_H_
-#define _D_LOG_FACTORY_H_
+#include "SimpleLogFormatter.h"
 
-#include "common.h"
+#include <cassert>
+#include <ostream>
 
-#include <string>
-
-#include "Logger.h"
+#include "util.h"
+#include "a2time.h"
+#include "A2STR.h"
+#include "StringFormat.h"
+#include "Exception.h"
 
 namespace aria2 {
 
-class LogFactory {
-private:
-  static std::string filename_;
-  static Logger* logger_;
-  static bool consoleOutput_;
-  static Logger::LEVEL logLevel_;
+SimpleLogFormatter::SimpleLogFormatter() {}
 
-  static void openLogger(Logger* logger);
-public:
-  /**
-   * Get logger instance. Returned logger is singleton.
-   * This function is not thread-safe.
-   */
-  static Logger* getInstance();
+SimpleLogFormatter::~SimpleLogFormatter() {}
 
-  /**
-   * Set a filename to write log. If name is "-", log is written to
-   * stdout. If name is "", log is not written to file.
-   */
-  static void setLogFile(const std::string& name);
+static void writeHeader
+(std::ostream& o, const std::string& date, const std::string& logLevelLabel)
+{
+  o << StringFormat("%s %s - ", date.c_str(), logLevelLabel.c_str());
+}
 
-  /**
-   * Set flag whether the log is printed in console.
-   * If f is false, log is not printed in console.
-   */
-  static void setConsoleOutput(bool f) {
-    consoleOutput_ = f;
+void SimpleLogFormatter::writeLog
+(std::ostream& o, Logger::LEVEL level, const std::string& logLevelLabel,
+ const char* msg, va_list ap)
+{
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  char datestr[27]; // 'YYYY-MM-DD hh:mm:ss.uuuuuu'+'\0' = 27 bytes
+  struct tm tm;
+  //tv.tv_sec may not be of type time_t.
+  time_t timesec = tv.tv_sec;
+  localtime_r(&timesec, &tm);
+  size_t dateLength =
+    strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
+  assert(dateLength <= (size_t)20);
+  snprintf(datestr+dateLength, sizeof(datestr)-dateLength,
+           ".%06ld", tv.tv_usec);
+  writeHeader(o, datestr, logLevelLabel);
+  {
+    char buf[1024];
+    std::string body = util::replace(msg, A2STR::CR_C, A2STR::NIL);
+    body += A2STR::LF_C;
+    if(vsnprintf(buf, sizeof(buf), body.c_str(), ap) < 0) {
+      o << "SimpleLogger error, failed to format message.\n";
+    } else {
+      o << buf;
+    }
   }
+}
 
-  /**
-   * Set log level to output.
-   */
-  static void setLogLevel(Logger::LEVEL level);
-
-  /**
-   * Set log level to output by string represention of log level.
-   * Possible values are: debug, info, notice, warn, error
-   */
-  static void setLogLevel(const std::string& level);
-
-  /**
-   * Releases used resources
-   */
-  static void release();
-
-  static void reconfigure();
-};
+void SimpleLogFormatter::writeStackTrace
+(std::ostream& o, Logger::LEVEL level, const std::string& logLevelLabel,
+ const Exception& e)
+{
+  o << e.stackTrace();
+}
 
 } // namespace aria2
-
-#endif // _D_LOG_FACTORY_H_

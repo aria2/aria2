@@ -1,5 +1,26 @@
 2010-06-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made log and log-level option modifiable using
+	aria2.changeGlobalOption. This means you can dynamically start or
+	stop logging and change log file and log level.
+	* doc/aria2c.1.txt
+	* src/LogFactory.cc
+	* src/LogFactory.h
+	* src/LogFormatter.h
+	* src/Logger.cc
+	* src/Logger.h
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/SimpleLogFormatter.cc
+	* src/SimpleLogFormatter.h
+	* src/SimpleLogger.cc: Removed
+	* src/SimpleLogger.h: Removed
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/main.cc
+
+2010-06-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Request ut_metadata in end-game mode(in other words, more
 	aggresively)
 	* src/HandshakeExtensionMessage.cc

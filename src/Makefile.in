@@ -342,9 +342,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FatalException.h RecoverableException.cc \
 	RecoverableException.h DlAbortEx.cc DlAbortEx.h DlRetryEx.cc \
 	DlRetryEx.h DownloadFailureException.cc \
-	DownloadFailureException.h Logger.cc Logger.h SimpleLogger.cc \
-	SimpleLogger.h DiskWriter.h DiskWriterFactory.h \
-	AbstractDiskWriter.cc AbstractDiskWriter.h \
+	DownloadFailureException.h Logger.cc Logger.h LogFormatter.h \
+	SimpleLogFormatter.cc SimpleLogFormatter.h DiskWriter.h \
+	DiskWriterFactory.h AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
 	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
@@ -815,7 +815,7 @@ am__objects_32 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	Request.$(OBJEXT) Exception.$(OBJEXT) FatalException.$(OBJEXT) \
 	RecoverableException.$(OBJEXT) DlAbortEx.$(OBJEXT) \
 	DlRetryEx.$(OBJEXT) DownloadFailureException.$(OBJEXT) \
-	Logger.$(OBJEXT) SimpleLogger.$(OBJEXT) \
+	Logger.$(OBJEXT) SimpleLogFormatter.$(OBJEXT) \
 	AbstractDiskWriter.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
 	DefaultDiskWriterFactory.$(OBJEXT) File.$(OBJEXT) \
 	Option.$(OBJEXT) Base64.$(OBJEXT) base32.$(OBJEXT) \
@@ -1122,9 +1122,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	FatalException.h RecoverableException.cc \
 	RecoverableException.h DlAbortEx.cc DlAbortEx.h DlRetryEx.cc \
 	DlRetryEx.h DownloadFailureException.cc \
-	DownloadFailureException.h Logger.cc Logger.h SimpleLogger.cc \
-	SimpleLogger.h DiskWriter.h DiskWriterFactory.h \
-	AbstractDiskWriter.cc AbstractDiskWriter.h \
+	DownloadFailureException.h Logger.cc Logger.h LogFormatter.h \
+	SimpleLogFormatter.cc SimpleLogFormatter.h DiskWriter.h \
+	DiskWriterFactory.h AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h \
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h File.cc \
 	File.h Option.cc Option.h Base64.cc Base64.h base32.cc \
@@ -1594,7 +1594,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SessionSerializer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Signature.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBtMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogFormatter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIterator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@

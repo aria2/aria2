@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,58 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "SimpleLogger.h"
+#ifndef D_SIMPLE_LOG_FORMATTER_H
+#define D_SIMPLE_LOG_FORMATTER_H
 
-#include <cassert>
-
-#include "util.h"
-#include "a2time.h"
-#include "A2STR.h"
-#include "StringFormat.h"
-#include "Exception.h"
+#include "LogFormatter.h"
 
 namespace aria2 {
 
-static void writeHeader
-(std::ostream& o, const std::string& date, const std::string& logLevelLabel)
-{
-  o << StringFormat("%s %s - ", date.c_str(), logLevelLabel.c_str());
-}
+class SimpleLogFormatter:public LogFormatter {
+public:
+  SimpleLogFormatter();
 
-void SimpleLogger::writeLog
-(std::ostream& o, Logger::LEVEL level, const std::string& logLevelLabel,
- const char* msg, va_list ap)
-{
-  struct timeval tv;
-  gettimeofday(&tv, 0);
-  char datestr[27]; // 'YYYY-MM-DD hh:mm:ss.uuuuuu'+'\0' = 27 bytes
-  struct tm tm;
-  //tv.tv_sec may not be of type time_t.
-  time_t timesec = tv.tv_sec;
-  localtime_r(&timesec, &tm);
-  size_t dateLength =
-    strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
-  assert(dateLength <= (size_t)20);
-  snprintf(datestr+dateLength, sizeof(datestr)-dateLength,
-           ".%06ld", tv.tv_usec);
-  writeHeader(o, datestr, logLevelLabel);
-  {
-    char buf[1024];
-    std::string body = util::replace(msg, A2STR::CR_C, A2STR::NIL);
-    body += A2STR::LF_C;
-    if(vsnprintf(buf, sizeof(buf), body.c_str(), ap) < 0) {
-      o << "SimpleLogger error, failed to format message.\n";
-    } else {
-      o << buf;
-    }
-  }
-}
+  virtual ~SimpleLogFormatter();
 
-void SimpleLogger::writeStackTrace
-(std::ostream& o, Logger::LEVEL level, const std::string& logLevelLabel,
- const Exception& e)
-{
-  o << e.stackTrace();
-}
+  virtual void writeLog
+  (std::ostream& o, Logger::LEVEL logLevel, const std::string& logLevelLabel,
+   const char* msg, va_list ap);
+
+  virtual void writeStackTrace
+  (std::ostream& o, Logger::LEVEL logLevel, const std::string& logLevelLabel,
+   const Exception& e);
+};
 
 } // namespace aria2
+
+#endif // D_SIMPLE_LOG_FORMATTER_H

@@ -40,6 +40,7 @@
 #include "DlAbortEx.h"
 #include "StringFormat.h"
 #include "message.h"
+#include "LogFormatter.h"
 
 namespace aria2 {
 
@@ -53,11 +54,13 @@ const std::string Logger::ERROR_LABEL("ERROR");
 
 const std::string Logger::INFO_LABEL("INFO");
 
-Logger::Logger():logLevel_(Logger::A2_DEBUG), stdoutField_(0) {}
+Logger::Logger():
+  logFormatter_(0), logLevel_(Logger::A2_DEBUG), stdoutField_(0) {}
 
 Logger::~Logger()
 {
   closeFile();
+  delete logFormatter_;
 }
 
 void Logger::openFile(const std::string& filename)
@@ -162,12 +165,36 @@ void Logger::error(const char* msg, const Exception& ex, ...)
   WRITE_LOG_EX(A2_ERROR, ERROR_LABEL, msg, ex);
 }
 
+void Logger::setLogFormatter(LogFormatter* logFormatter)
+{
+  delete logFormatter_;
+  logFormatter_ = logFormatter;
+}
+
 void Logger::setStdoutLogLevel(Logger::LEVEL level, bool enabled)
 {
   if(enabled) {
     stdoutField_ |= level;
   } else {
     stdoutField_ &= ~level;
+  }
+}
+
+void Logger::writeLog
+(std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
+ const char* msg, va_list ap)
+{
+  if(logFormatter_) {
+    logFormatter_->writeLog(o, logLevel, logLevelLabel, msg, ap);
+  }
+}
+
+void Logger::writeStackTrace
+(std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
+ const Exception& ex)
+{
+  if(logFormatter_) {
+    logFormatter_->writeStackTrace(o, logLevel, logLevelLabel, ex);
   }
 }
 

@@ -964,6 +964,18 @@ SharedHandle<ValueBase> ChangeGlobalOptionXmlRpcMethod::process
       (option->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
     e->getRequestGroupMan()->requestQueueCheck();
   }
+  if(option->defined(PREF_LOG_LEVEL)) {
+    LogFactory::setLogLevel(option->get(PREF_LOG_LEVEL));
+  }
+  if(option->defined(PREF_LOG)) {
+    LogFactory::setLogFile(option->get(PREF_LOG));
+    try {
+      LogFactory::reconfigure();
+    } catch(RecoverableException& e) {
+      // TODO no exception handling
+    }
+  }
+
   return VLB_OK;
 }
 

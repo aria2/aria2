@@ -33,9 +33,10 @@
  */
 /* copyright --> */
 #include "LogFactory.h"
-#include "SimpleLogger.h"
+#include "SimpleLogFormatter.h"
 #include "a2io.h"
 #include "prefs.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -44,15 +45,39 @@ Logger* LogFactory::logger_ = 0;
 bool LogFactory::consoleOutput_ = true;
 Logger::LEVEL LogFactory::logLevel_ = Logger::A2_DEBUG;
 
+void LogFactory::openLogger(Logger* logger)
+{
+  if(filename_ != DEV_NULL) {
+    // don't open file DEV_NULL for performance sake.
+    // This avoids costly unecessary message formatting and write.
+    logger->openFile(filename_);
+  }
+  logger->setLogLevel(logLevel_);
+}
+
+void LogFactory::reconfigure()
+{
+  if(logger_) {
+    logger_->closeFile();
+    try {
+      openLogger(logger_);
+    } catch(RecoverableException& e) {
+      logger_->closeFile();
+      throw;
+    }
+  }
+}
+
 Logger* LogFactory::getInstance() {
   if(!logger_) {
-    SimpleLogger* slogger = new SimpleLogger();
-    if(filename_ != DEV_NULL) {
-      // don't open file DEV_NULL for performance sake.
-      // This avoids costly unecessary message formatting and write.
-      slogger->openFile(filename_);
+    Logger* slogger = new Logger();
+    slogger->setLogFormatter(new SimpleLogFormatter());
+    try {
+      openLogger(slogger);
+    } catch(RecoverableException& e) {
+      delete slogger;
+      throw;
     }
-    slogger->setLogLevel(logLevel_);
     if(consoleOutput_) {
       slogger->setStdoutLogLevel(Logger::A2_NOTICE, true);
       slogger->setStdoutLogLevel(Logger::A2_WARN, true);
@@ -61,6 +86,17 @@ Logger* LogFactory::getInstance() {
     logger_ = slogger;
   }
   return logger_;
+}
+
+void LogFactory::setLogFile(const std::string& name)
+{
+  if(name == "-") {
+    filename_ = DEV_STDOUT;
+  } else if(name == "") {
+    filename_ = DEV_NULL;
+  } else {
+    filename_ = name;
+  }
 }
 
 void LogFactory::setLogLevel(Logger::LEVEL level)

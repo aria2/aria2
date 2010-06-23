@@ -626,7 +626,7 @@ downloading a file like BitTorrent.</p></div>
 <dd>
 <p>
   The file name of the log file. If <em>-</em> is specified, log is written to
-  stdout.
+  stdout. If empty string("") is specified, log is not written to file.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -3657,8 +3657,11 @@ added download, the response contains keys returned by
 <div class="paragraph"><p><strong>aria2.changeGlobalOption</strong> <em>options</em></p></div>
 <div class="paragraph"><p>This method changes global options dynamically.  <em>options</em> is of type
 struct and the available options are <strong>max-concurrent-downloads</strong>,
-<strong>max-overall-download-limit</strong> and <strong>max-overall-upload-limit</strong>.  This
-method returns "OK" for success.</p></div>
+<strong>max-overall-download-limit</strong>, <strong>max-overall-upload-limit</strong>, <strong>log-level</strong>
+and <strong>log</strong>. Using <strong>log</strong> option, you can dynamically start logging or
+change log file. To stop logging, give empty string("") as a parameter
+value. Note that log file is always opened in append mode. This method
+returns "OK" for success.</p></div>
 <div class="paragraph"><p><strong>aria2.purgeDownloadResult</strong></p></div>
 <div class="paragraph"><p>This method purges completed/error/removed downloads to free memory.
 This method returns "OK".</p></div>
@@ -4199,7 +4202,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-06-02 21:12:07 JST
+Last updated 2010-06-23 23:10:50 JST
 </div>
 </div>
 </body>
