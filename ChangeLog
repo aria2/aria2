@@ -1,5 +1,10 @@
 2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/util.cc
+
+2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unused getOverflow(). Added assertion in
 	PiecedSegment::updateWrittenLength() to check updated written
 	length does not exceed piece length.

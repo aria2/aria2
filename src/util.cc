@@ -396,7 +396,7 @@ std::string fromHex(const std::string& src)
   if(src.size()%2) {
     return dest;
   }
-  for(size_t i = 0; i < src.size(); i += 2) {
+  for(size_t i = 0, eoi = src.size(); i < eoi; i += 2) {
     unsigned char high = hexCharToUInt(src[i]);
     unsigned char low = hexCharToUInt(src[i+1]);
     if(high == 255 || low == 255) {
@@ -1003,7 +1003,7 @@ bool isLowercase(const std::string& what)
   if(what.empty()) {
     return false;
   }
-  for(uint32_t i = 0; i < what.size(); ++i) {
+  for(uint32_t i = 0, eoi = what.size(); i < eoi; ++i) {
     if(!('a' <= what[i] && what[i] <= 'z')) {
       return false;
     }
@@ -1016,7 +1016,7 @@ bool isUppercase(const std::string& what)
   if(what.empty()) {
     return false;
   }
-  for(uint32_t i = 0; i < what.size(); ++i) {
+  for(uint32_t i = 0, eoi = what.size(); i < eoi; ++i) {
     if(!('A' <= what[i] && what[i] <= 'Z')) {
       return false;
     }
@@ -1036,7 +1036,7 @@ unsigned int alphaToNum(const std::string& alphabets)
     base = 'A';
   }
   uint64_t num = 0;
-  for(size_t i = 0; i < alphabets.size(); ++i) {
+  for(size_t i = 0, eoi = alphabets.size(); i < eoi; ++i) {
     unsigned int v = alphabets[i]-base;
     num = num*26+v;
     if(num > UINT32_MAX) {
