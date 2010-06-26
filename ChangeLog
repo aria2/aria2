@@ -1,5 +1,11 @@
 2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Return null if written length > 0 even if SegmentEntry->cuid
+	equals given cuid.
+	* src/SegmentMan.cc
+
+2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compiler warning without bittorrent support
 	* src/RequestGroup.cc
 

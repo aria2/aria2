@@ -220,11 +220,11 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
         eoi = usedSegmentEntries_.end(); itr != eoi; ++itr) {
     const SharedHandle<SegmentEntry>& segmentEntry = *itr;
     if(segmentEntry->segment->getIndex() == index) {
-      if(segmentEntry->cuid == cuid) {
-        return segmentEntry->segment;
-      }
       if(segmentEntry->segment->getWrittenLength() > 0) {
         return SharedHandle<Segment>();
+      }
+      if(segmentEntry->cuid == cuid) {
+        return segmentEntry->segment;
       }
       cuid_t owner = segmentEntry->cuid;
       SharedHandle<PeerStat> ps = getPeerStat(owner);
