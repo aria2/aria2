@@ -65,8 +65,6 @@ public:
 
   virtual size_t getWrittenLength() const = 0;
 
-  virtual size_t getOverflowLength() const = 0;
-
   virtual void updateWrittenLength(size_t bytes) = 0;
 
 #ifdef ENABLE_MESSAGE_DIGEST

@@ -83,11 +83,6 @@ public:
     return writtenLength_;
   }
 
-  virtual size_t getOverflowLength() const
-  {
-    return 0;
-  }
-
   virtual void updateWrittenLength(size_t bytes);
 
 #ifdef ENABLE_MESSAGE_DIGEST

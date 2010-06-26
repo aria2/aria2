@@ -46,7 +46,6 @@ private:
    * The last piece likely have shorter length than the other length.
    */
   size_t pieceLength_;
-  size_t overflowLength_;
   SharedHandle<Piece> piece_;
   size_t writtenLength_;
 
@@ -73,11 +72,6 @@ public:
   virtual size_t getWrittenLength() const
   {
     return writtenLength_;
-  }
-
-  virtual size_t getOverflowLength() const
-  {
-    return overflowLength_;
   }
 
   virtual void updateWrittenLength(size_t bytes);

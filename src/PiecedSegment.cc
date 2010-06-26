@@ -40,7 +40,7 @@ namespace aria2 {
 
 PiecedSegment::PiecedSegment
 (size_t pieceLength, const SharedHandle<Piece>& piece):
-  pieceLength_(pieceLength), overflowLength_(0), piece_(piece)
+  pieceLength_(pieceLength), piece_(piece)
 {
   size_t index;
   bool t = piece_->getFirstMissingBlockIndexWithoutLock(index);
@@ -78,10 +78,7 @@ size_t PiecedSegment::getLength() const
 void PiecedSegment::updateWrittenLength(size_t bytes)
 {
   size_t newWrittenLength = writtenLength_+bytes;
-  if(newWrittenLength > piece_->getLength()) {
-    overflowLength_ = newWrittenLength-piece_->getLength();
-    newWrittenLength = piece_->getLength();
-  }
+  assert(newWrittenLength <= piece_->getLength());
   for(size_t i = writtenLength_/piece_->getBlockLength(),
         end = newWrittenLength/piece_->getBlockLength(); i < end; ++i) {
     piece_->completeBlock(i);
@@ -115,7 +112,6 @@ std::string PiecedSegment::getHashString()
 void PiecedSegment::clear()
 {
   writtenLength_ = 0;
-  overflowLength_ = 0;
   piece_->clearAllBlock();
 
 #ifdef ENABLE_MESSAGE_DIGEST

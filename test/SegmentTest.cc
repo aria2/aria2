@@ -1,6 +1,8 @@
 #include "PiecedSegment.h"
-#include "Piece.h"
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Piece.h"
 
 namespace aria2 {
 
@@ -8,7 +10,6 @@ class SegmentTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SegmentTest);
   CPPUNIT_TEST(testUpdateWrittenLength);
-  CPPUNIT_TEST(testUpdateWrittenLength_overflow);
   CPPUNIT_TEST(testUpdateWrittenLength_lastPiece);
   CPPUNIT_TEST(testUpdateWrittenLength_incompleteLastPiece);
   CPPUNIT_TEST(testClear);
@@ -19,7 +20,6 @@ public:
   void setUp() {}
 
   void testUpdateWrittenLength();
-  void testUpdateWrittenLength_overflow();
   void testUpdateWrittenLength_lastPiece();
   void testUpdateWrittenLength_incompleteLastPiece();
   void testClear();
@@ -42,22 +42,12 @@ void SegmentTest::testUpdateWrittenLength()
   CPPUNIT_ASSERT(p->pieceComplete());
 }
 
-void SegmentTest::testUpdateWrittenLength_overflow()
-{
-  SharedHandle<Piece> p(new Piece(0, 16*1024*10));
-  PiecedSegment s(16*1024*10, p);
-
-  s.updateWrittenLength(16*1024*11);
-  CPPUNIT_ASSERT(p->pieceComplete());
-  CPPUNIT_ASSERT_EQUAL((size_t)16*1024, s.getOverflowLength());
-}
-
 void SegmentTest::testUpdateWrittenLength_lastPiece()
 {
   SharedHandle<Piece> p(new Piece(0, 16*1024*9+1));
   PiecedSegment s(16*1024*10, p);
 
-  s.updateWrittenLength(16*1024*10);
+  s.updateWrittenLength(p->getLength());
   CPPUNIT_ASSERT(p->pieceComplete());
 }
 
@@ -76,12 +66,10 @@ void SegmentTest::testClear()
 {
   SharedHandle<Piece> p(new Piece(0, 16*1024*10));
   PiecedSegment s(16*1024*10, p);
-  s.updateWrittenLength(16*1024*11);
+  s.updateWrittenLength(16*1024*10);
   CPPUNIT_ASSERT_EQUAL((size_t)16*1024*10, s.getWrittenLength());
-  CPPUNIT_ASSERT_EQUAL((size_t)16*1024, s.getOverflowLength());
   s.clear();
   CPPUNIT_ASSERT_EQUAL((size_t)0, s.getWrittenLength());
-  CPPUNIT_ASSERT_EQUAL((size_t)0, s.getOverflowLength());
 }
 
 } // namespace aria2

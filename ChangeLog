@@ -1,5 +1,16 @@
 2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused getOverflow(). Added assertion in
+	PiecedSegment::updateWrittenLength() to check updated written
+	length does not exceed piece length.
+	* src/GrowSegment.h
+	* src/PiecedSegment.cc
+	* src/PiecedSegment.h
+	* src/Segment.h
+	* test/SegmentTest.cc
+
+2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Return null if written length > 0 even if SegmentEntry->cuid
 	equals given cuid.
 	* src/SegmentMan.cc
