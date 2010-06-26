@@ -1,3 +1,8 @@
+2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compiler warning without bittorrent support
+	* src/RequestGroup.cc
+
 2010-06-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Run whole checksum check when download file name and size are

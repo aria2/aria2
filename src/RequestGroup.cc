@@ -78,6 +78,7 @@
 #include "SimpleRandomizer.h"
 #include "ServerStatMan.h"
 #include "Segment.h"
+#include "FileAllocationEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 # include "ChecksumCheckIntegrityEntry.h"
@@ -90,7 +91,6 @@
 # include "DefaultBtAnnounce.h"
 # include "BtRuntime.h"
 # include "BtSetup.h"
-# include "BtFileAllocationEntry.h"
 # include "BtPostDownloadHandler.h"
 # include "DHTSetup.h"
 # include "DHTRegistry.h"
