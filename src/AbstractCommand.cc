@@ -672,6 +672,9 @@ bool AbstractCommand::nameResolveFinished() const {
 std::string AbstractCommand::resolveHostname
 (std::vector<std::string>& addrs, const std::string& hostname, uint16_t port)
 {
+  if(util::isNumericHost(hostname)) {
+    return hostname;
+  }
   e_->findAllCachedIPAddresses(std::back_inserter(addrs), hostname, port);
   std::string ipaddr;
   if(addrs.empty()) {
