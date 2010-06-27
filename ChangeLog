@@ -1,5 +1,10 @@
 2010-06-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't set previousUri_ to "" on redirect.
+	* src/Request.cc: redirectUri()
+
+2010-06-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Return given hostname if hostname is numeric host.
 	* src/AbstractCommand.cc: resolveHostname()
 

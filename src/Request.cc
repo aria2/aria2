@@ -125,7 +125,6 @@ void Request::setReferer(const std::string& uri)
 }
 
 bool Request::redirectUri(const std::string& uri) {
-  previousUri_ = A2STR::NIL;
   supportsPersistentConnection_ = true;
   ++redirectCount_;
   std::string redirectedUri;
