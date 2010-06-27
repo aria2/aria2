@@ -206,9 +206,7 @@ void Peer::updateDownloadLength(size_t bytes)
 void Peer::updateSeeder()
 {
   assert(res_);
-  if(res_->hasAllPieces()) {
-    seeder_ = true;
-  }  
+  seeder_ = res_->hasAllPieces();
 }
 
 void Peer::updateBitfield(size_t index, int operation) {
@@ -321,7 +319,7 @@ void Peer::addAmAllowedIndex(size_t index)
 void Peer::setAllBitfield() {
   assert(res_);
   res_->markSeeder();
-  seeder_ = true;
+  updateSeeder();
 }
 
 void Peer::startBadCondition()

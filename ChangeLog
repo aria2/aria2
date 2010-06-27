@@ -1,3 +1,8 @@
+2010-06-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed Peer::updateSeeder() to reflect current bitfield.
+	* src/Peer.cc
+
 2010-06-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Code cleanup
