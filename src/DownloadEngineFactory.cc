@@ -43,9 +43,9 @@
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 #include "FileAllocationMan.h"
+#include "CheckIntegrityMan.h"
+#include "CheckIntegrityEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
-# include "CheckIntegrityMan.h"
-# include "CheckIntegrityEntry.h"
 # include "CheckIntegrityDispatcherCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "prefs.h"
