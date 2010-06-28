@@ -1,3 +1,39 @@
+aria2 1.9.5
+===========
+
+Release Note
+------------
+
+This release fixes the bug that causes corrupted file.  It also fixes
+assertion error in DefaultPeerStorage class.  Now aria2 doesn't reset
+referer to "" on redirect.  log and log-level option can be used
+in aria2.changeGlobalOption XML-RPC method.  This means you can
+dynamically start or stop logging and change log file and log level.
+
+Changes
+-------
+
+ * Don't set previousUri_ to "" on redirect.
+
+ * Fixed Peer::updateSeeder() to reflect current bitfield.
+
+ * Made log and log-level option modifiable using
+   aria2.changeGlobalOption. This means you can dynamically start or
+   stop logging and change log file and log level.
+
+ * Fixed that bug that when aria2 is stopped before whole hash
+   check(not piece hash check) is done, aria2 reports its file is
+   downloaded successfully. It should report the download is
+   in-progress and next invocation of aria2 should check hash.
+
+ * Fixed the bug that corrups file if segment returned from
+   SegmetnMan::getCleanSegmentIfOwnerIsIdle() has writtenLength > 0.
+
+ * Fixed assertion error if updateTransferStatFor is called with peer
+   X before calculateStat() after peer X is added.
+
+
+
 aria2 1.9.4
 ===========
 
