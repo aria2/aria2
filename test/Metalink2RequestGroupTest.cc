@@ -9,7 +9,9 @@
 #include "Option.h"
 #include "RequestGroup.h"
 #include "FileEntry.h"
-#include "messageDigest.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "messageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 
