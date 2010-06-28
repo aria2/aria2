@@ -1,5 +1,9 @@
 2010-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release 1.9.5
+
+2010-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error without ssl library.
 	* test/Metalink2RequestGroupTest.cc
 
