@@ -1,5 +1,11 @@
 2010-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.9.5
+	* configure.ac
+	* doc/aria2c.1.txt
+
+2010-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc for aria2.addUri
 	* doc/aria2c.1.txt
 
