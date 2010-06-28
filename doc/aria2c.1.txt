@@ -1317,13 +1317,23 @@ Methods
 This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  'uris' is of
 type array and its element is URI which is of type string.  For
 BitTorrent Magnet URI, 'uris' must have only one element and it should
-be BitTorrent Magnet URI.  'options' is of type struct and its members
-are a pair of option name and value. See *Options* below for more
-details.  If 'position' is given as an integer starting from 0, the
-new download is inserted at 'position' in the waiting queue. If
-'position' is not given or 'position' is larger than the size of the
-queue, it is appended at the end of the queue.  This method returns
-GID of registered download.
+be BitTorrent Magnet URI.  URIs in 'uris' must point to the same
+file. For example, a file chunkybaconlinux.iso is hosted in 2
+locations: http://server/chunkybaconlinux.iso and
+http://mirror/chunkybaconlinux.iso.  You can download this iso image
+using 2 URIs by issuing
+aria2.addUri(['http://server/chunkybaconlinux.iso',
+'http://mirror/chunkybaconlinux.iso']).  Imagine there is an another
+file URI, say, http://mirror2/chunkydonutslinux.iso, which is
+different iso image.  You cannot mix this URI with previous URIs in
+one aria2.addUri command.  If you do, aria2 does not complain but
+download may fail.  'options' is of type struct and its members are a
+pair of option name and value. See *Options* below for more details.
+If 'position' is given as an integer starting from 0, the new download
+is inserted at 'position' in the waiting queue. If 'position' is not
+given or 'position' is larger than the size of the queue, it is
+appended at the end of the queue.  This method returns GID of
+registered download.
 
 *aria2.addTorrent* 'torrent[, uris[, options[, position]]]'
 

@@ -1,3 +1,8 @@
+2010-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Updated doc for aria2.addUri
+	* doc/aria2c.1.txt
+
 2010-06-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Don't set previousUri_ to "" on redirect.
