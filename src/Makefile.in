@@ -52,11 +52,12 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_XML_RPC_TRUE@	HttpListenCommand.cc HttpListenCommand.h\
 @ENABLE_XML_RPC_TRUE@	HttpServerCommand.cc HttpServerCommand.h\
 @ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
-@ENABLE_XML_RPC_TRUE@	HttpServer.cc HttpServer.h
+@ENABLE_XML_RPC_TRUE@	HttpServer.cc HttpServer.h\
+@ENABLE_XML_RPC_TRUE@	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h
 
 @ENABLE_XML_RPC_TRUE@@HAVE_LIBXML2_TRUE@am__append_2 = Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
 @ENABLE_XML_RPC_TRUE@@HAVE_LIBEXPAT_TRUE@am__append_3 = ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
-@HAVE_POSIX_FALLOCATE_TRUE@am__append_4 = FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
+@HAVE_SOME_FALLOCATE_TRUE@am__append_4 = FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
 @HAVE_EPOLL_TRUE@am__append_5 = EpollEventPoll.cc EpollEventPoll.h
 @ENABLE_SSL_TRUE@am__append_6 = TLSContext.h
 @HAVE_LIBGNUTLS_TRUE@am__append_7 = LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
@@ -452,13 +453,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	HttpListenCommand.cc HttpListenCommand.h HttpServerCommand.cc \
 	HttpServerCommand.h HttpServerResponseCommand.cc \
 	HttpServerResponseCommand.h HttpServer.cc HttpServer.h \
-	Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h \
-	ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h \
-	FallocFileAllocationIterator.cc FallocFileAllocationIterator.h \
-	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
-	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
-	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
-	GZipDecoder.h GZipEncoder.cc GZipEncoder.h \
+	AdaptiveFileAllocationIterator.cc \
+	AdaptiveFileAllocationIterator.h Xml2XmlRpcRequestProcessor.cc \
+	Xml2XmlRpcRequestProcessor.h ExpatXmlRpcRequestProcessor.cc \
+	ExpatXmlRpcRequestProcessor.h FallocFileAllocationIterator.cc \
+	FallocFileAllocationIterator.h EpollEventPoll.cc \
+	EpollEventPoll.h TLSContext.h LibgnutlsTLSContext.cc \
+	LibgnutlsTLSContext.h LibsslTLSContext.cc LibsslTLSContext.h \
+	GZipDecoder.cc GZipDecoder.h GZipEncoder.cc GZipEncoder.h \
 	Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h \
 	AsyncNameResolver.cc AsyncNameResolver.h \
 	IteratableChunkChecksumValidator.cc \
@@ -626,10 +628,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_XML_RPC_TRUE@	HttpListenCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpServerCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpServerResponseCommand.$(OBJEXT) \
-@ENABLE_XML_RPC_TRUE@	HttpServer.$(OBJEXT)
+@ENABLE_XML_RPC_TRUE@	HttpServer.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	AdaptiveFileAllocationIterator.$(OBJEXT)
 @ENABLE_XML_RPC_TRUE@@HAVE_LIBXML2_TRUE@am__objects_2 = Xml2XmlRpcRequestProcessor.$(OBJEXT)
 @ENABLE_XML_RPC_TRUE@@HAVE_LIBEXPAT_TRUE@am__objects_3 = ExpatXmlRpcRequestProcessor.$(OBJEXT)
-@HAVE_POSIX_FALLOCATE_TRUE@am__objects_4 = FallocFileAllocationIterator.$(OBJEXT)
+@HAVE_SOME_FALLOCATE_TRUE@am__objects_4 = FallocFileAllocationIterator.$(OBJEXT)
 @HAVE_EPOLL_TRUE@am__objects_5 = EpollEventPoll.$(OBJEXT)
 am__objects_6 =
 @HAVE_LIBGNUTLS_TRUE@am__objects_7 = LibgnutlsTLSContext.$(OBJEXT)
@@ -1343,6 +1346,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractProxyResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractSingleDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActivePeerConnectionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AdaptiveFileAllocationIterator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AdaptiveURISelector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AsyncNameResolver.Po@am__quote@

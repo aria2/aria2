@@ -630,8 +630,8 @@ HAVE_BASENAME_FALSE
 HAVE_BASENAME_TRUE
 HAVE_ASCTIME_R_FALSE
 HAVE_ASCTIME_R_TRUE
-HAVE_POSIX_FALLOCATE_FALSE
-HAVE_POSIX_FALLOCATE_TRUE
+HAVE_SOME_FALLOCATE_FALSE
+HAVE_SOME_FALLOCATE_TRUE
 HAVE_EPOLL_FALSE
 HAVE_EPOLL_TRUE
 POW_LIB
@@ -14794,13 +14794,40 @@ fi
 done
 
  if test "x$have_posix_fallocate" = "xyes"; then
-  HAVE_POSIX_FALLOCATE_TRUE=
-  HAVE_POSIX_FALLOCATE_FALSE='#'
+  HAVE_SOME_FALLOCATE_TRUE=
+  HAVE_SOME_FALLOCATE_FALSE='#'
 else
-  HAVE_POSIX_FALLOCATE_TRUE='#'
-  HAVE_POSIX_FALLOCATE_FALSE=
+  HAVE_SOME_FALLOCATE_TRUE='#'
+  HAVE_SOME_FALLOCATE_FALSE=
 fi
 
+
+for ac_func in fallocate
+do :
+  ac_fn_cxx_check_func "$LINENO" "fallocate" "ac_cv_func_fallocate"
+if test "x$ac_cv_func_fallocate" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_FALLOCATE 1
+_ACEOF
+ have_fallocate=yes
+fi
+done
+
+ if test "x$have_fallocate" = "xyes"; then
+  HAVE_SOME_FALLOCATE_TRUE=
+  HAVE_SOME_FALLOCATE_FALSE='#'
+else
+  HAVE_SOME_FALLOCATE_TRUE='#'
+  HAVE_SOME_FALLOCATE_FALSE=
+fi
+
+
+if test "x$have_posix_fallocate" = "xyes" ||
+   test "x$have_fallocate" = "xyes"; then
+
+$as_echo "#define HAVE_SOME_FALLOCATE 1" >>confdefs.h
+
+fi
 
 for ac_func in asctime_r
 do :
@@ -15481,8 +15508,12 @@ if test -z "${HAVE_EPOLL_TRUE}" && test -z "${HAVE_EPOLL_FALSE}"; then
   as_fn_error "conditional \"HAVE_EPOLL\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${HAVE_POSIX_FALLOCATE_TRUE}" && test -z "${HAVE_POSIX_FALLOCATE_FALSE}"; then
-  as_fn_error "conditional \"HAVE_POSIX_FALLOCATE\" was never defined.
+if test -z "${HAVE_SOME_FALLOCATE_TRUE}" && test -z "${HAVE_SOME_FALLOCATE_FALSE}"; then
+  as_fn_error "conditional \"HAVE_SOME_FALLOCATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_SOME_FALLOCATE_TRUE}" && test -z "${HAVE_SOME_FALLOCATE_FALSE}"; then
+  as_fn_error "conditional \"HAVE_SOME_FALLOCATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_ASCTIME_R_TRUE}" && test -z "${HAVE_ASCTIME_R_FALSE}"; then

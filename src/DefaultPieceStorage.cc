@@ -509,11 +509,9 @@ void DefaultPieceStorage::initStorage()
       (option_->getAsInt(PREF_BT_MAX_OPEN_FILES));
     diskAdaptor_ = multiDiskAdaptor;
   }
-#ifdef HAVE_POSIX_FALLOCATE
   if(option_->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
     diskAdaptor_->enableFallocate();
   }
-#endif // HAVE_POSIX_FALLOCATE
 }
 
 void DefaultPieceStorage::setBitfield(const unsigned char* bitfield,

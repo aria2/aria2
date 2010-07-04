@@ -40,7 +40,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestProcessorTest.cc\
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodTest.cc
 
-@HAVE_POSIX_FALLOCATE_TRUE@am__append_2 = FallocFileAllocationIteratorTest.cc
+@HAVE_SOME_FALLOCATE_TRUE@am__append_2 = FallocFileAllocationIteratorTest.cc
 @HAVE_LIBZ_TRUE@am__append_3 = GZipDecoderTest.cc\
 @HAVE_LIBZ_TRUE@	GZipEncoderTest.cc
 
@@ -275,7 +275,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_XML_RPC_TRUE@am__objects_1 = XmlRpcRequestParserControllerTest.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestProcessorTest.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodTest.$(OBJEXT)
-@HAVE_POSIX_FALLOCATE_TRUE@am__objects_2 = FallocFileAllocationIteratorTest.$(OBJEXT)
+@HAVE_SOME_FALLOCATE_TRUE@am__objects_2 = FallocFileAllocationIteratorTest.$(OBJEXT)
 @HAVE_LIBZ_TRUE@am__objects_3 = GZipDecoderTest.$(OBJEXT) \
 @HAVE_LIBZ_TRUE@	GZipEncoderTest.$(OBJEXT)
 @HAVE_SQLITE3_TRUE@am__objects_4 =  \

@@ -193,19 +193,31 @@ void AbstractDiskWriter::truncate(uint64_t length)
 #endif
 }
 
-#ifdef HAVE_POSIX_FALLOCATE
 void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
 {
+#ifdef  HAVE_SOME_FALLOCATE
   if(fd_ == -1) {
     throw DL_ABORT_EX("File not yet opened.");
   }
+# ifdef HAVE_FALLOCATE
+  // For linux, we use fallocate to detect file system supports
+  // fallocate or not.
+  int r = fallocate(fd_, 0, offset, length);
+  if(r == -1) {
+    throw DL_ABORT_EX(StringFormat("fallocate failed. cause: %s",
+                                   strerror(errno)).str());
+  }
+# elif HAVE_POSIX_FALLOCATE
   int r = posix_fallocate(fd_, offset, length);
   if(r != 0) {
     throw DL_ABORT_EX(StringFormat("posix_fallocate failed. cause: %s",
                                    strerror(r)).str());
   }
+# else
+#  error "no *_fallocate function available."
+# endif
+#endif // HAVE_SOME_FALLOCATE
 }
-#endif // HAVE_POSIX_FALLOCATE
 
 uint64_t AbstractDiskWriter::size()
 {

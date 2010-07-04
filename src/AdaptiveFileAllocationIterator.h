@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,39 +32,49 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FallocFileAllocationIterator.h"
-#include "DlAbortEx.h"
+#ifndef D_ADAPTIVE_FILE_ALLOCATION_ITERATOR_H
+#define D_ADAPTIVE_FILE_ALLOCATION_ITERATOR_H
+
+#include "FileAllocationIterator.h"
 
 namespace aria2 {
 
-FallocFileAllocationIterator::FallocFileAllocationIterator
-(BinaryStream* stream, off_t offset, uint64_t totalLength):
-  stream_(stream), offset_(offset), totalLength_(totalLength) {}
+class BinaryStream;
+class Logger;
 
-void FallocFileAllocationIterator::allocateChunk()
+class AdaptiveFileAllocationIterator:public FileAllocationIterator
 {
-  if(static_cast<uint64_t>(offset_) < totalLength_) {
-    stream_->allocate(offset_, totalLength_-offset_);
-    offset_ = totalLength_;
-  } else {
-    stream_->truncate(totalLength_);
-    offset_ = totalLength_;
+private:
+  SharedHandle<FileAllocationIterator> allocator_;
+
+  BinaryStream* stream_;
+
+  off_t offset_;
+
+  uint64_t totalLength_;
+
+  Logger* logger_;
+public:
+  AdaptiveFileAllocationIterator
+  (BinaryStream* stream, off_t offset, uint64_t totalLength);
+
+  virtual ~AdaptiveFileAllocationIterator();
+
+  virtual void allocateChunk();
+  
+  virtual bool finished();
+
+  virtual off_t getCurrentLength()
+  {
+    return offset_;
   }
-}
 
-bool FallocFileAllocationIterator::finished()
-{
-  return static_cast<uint64_t>(offset_) == totalLength_;
-}
-
-off_t FallocFileAllocationIterator::getCurrentLength()
-{
-  return offset_;
-}
-
-uint64_t FallocFileAllocationIterator::getTotalLength()
-{
-  return totalLength_;
-}
+  virtual uint64_t getTotalLength()
+  {
+    return totalLength_;
+  }
+};
 
 } // namespace aria2
+
+#endif // D_ADAPTIVE_FILE_ALLOCATION_ITERATOR_H

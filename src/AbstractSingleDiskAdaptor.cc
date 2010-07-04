@@ -34,10 +34,10 @@
 /* copyright --> */
 #include "AbstractSingleDiskAdaptor.h"
 #include "File.h"
-#include "SingleFileAllocationIterator.h"
-#ifdef HAVE_POSIX_FALLOCATE
+#include "AdaptiveFileAllocationIterator.h"
+#ifdef HAVE_SOME_FALLOCATE
 # include "FallocFileAllocationIterator.h"
-#endif // HAVE_POSIX_FALLOCATE
+#endif // HAVE_SOME_FALLOCATE
 #include "DiskWriter.h"
 #include "FileEntry.h"
 
@@ -95,22 +95,21 @@ void AbstractSingleDiskAdaptor::truncate(uint64_t length)
   diskWriter_->truncate(length);
 }
 
-FileAllocationIteratorHandle
+SharedHandle<FileAllocationIterator>
 AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
-#ifdef HAVE_POSIX_FALLOCATE
+#ifdef HAVE_SOME_FALLOCATE
   if(doesFallocate()) {
     SharedHandle<FallocFileAllocationIterator> h
       (new FallocFileAllocationIterator
        (diskWriter_.get(), size() ,totalLength_));
     return h;
   } else
-#endif // HAVE_POSIX_FALLOCATE
+#endif // HAVE_SOME_FALLOCATE
     {
-      SingleFileAllocationIteratorHandle h
-        (new SingleFileAllocationIterator
+      SharedHandle<AdaptiveFileAllocationIterator> h
+        (new AdaptiveFileAllocationIterator
          (diskWriter_.get(), size(), totalLength_));
-      h->init();
       return h;
     }
 }

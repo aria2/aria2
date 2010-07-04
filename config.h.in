@@ -126,6 +126,9 @@
 /* Define to 1 if you have the `EVP_sha256' function. */
 #undef HAVE_EVP_SHA256
 
+/* Define to 1 if you have the `fallocate' function. */
+#undef HAVE_FALLOCATE
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -367,6 +370,9 @@
 
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
+
+/* Define to 1 if *_fallocate is available. */
+#undef HAVE_SOME_FALLOCATE
 
 /* Define to 1 if you have sqlite3. */
 #undef HAVE_SQLITE3

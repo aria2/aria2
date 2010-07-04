@@ -1,3 +1,28 @@
+2010-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	When allocating disk space, for Linux system with fallocate()
+	system call, first check file system supports fallocate.  This
+	just run fallocate with small chunk and see it succeeds or fails.
+	If it succeeds, use fallocate() to allocate entire file otherwise
+	fall back to traditional slower method: writing zeros. This
+	behavior is enabled in --file-allocation=prealloc, so this is
+	enabled by default for most modern Linux.
+	* configure.ac
+	* src/AbstractDiskWriter.cc
+	* src/AbstractDiskWriter.h
+	* src/AbstractSingleDiskAdaptor.cc
+	* src/AdaptiveFileAllocationIterator.cc
+	* src/AdaptiveFileAllocationIterator.h
+	* src/DefaultPieceStorage.cc
+	* src/DiskAdaptor.cc
+	* src/DiskAdaptor.h
+	* src/FallocFileAllocationIterator.cc
+	* src/Makefile.am
+	* src/MultiFileAllocationIterator.cc
+	* src/OptionHandlerFactory.cc
+	* test/FallocFileAllocationIteratorTest.cc
+	* test/Makefile.am
+
 2010-06-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.9.5

@@ -80,9 +80,9 @@ aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\
 	XmlRpcMethodTest.cc
 endif # ENABLE_XML_RPC
 
-if HAVE_POSIX_FALLOCATE
+if HAVE_SOME_FALLOCATE
 aria2c_SOURCES += FallocFileAllocationIteratorTest.cc
-endif  # HAVE_POSIX_FALLOCATE
+endif  # HAVE_SOME_FALLOCATE
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc\

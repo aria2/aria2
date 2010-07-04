@@ -51,9 +51,9 @@ class FileAllocationIterator;
 class DiskAdaptor:public BinaryStream {
 private:
   std::vector<SharedHandle<FileEntry> > fileEntries_;
-#ifdef HAVE_POSIX_FALLOCATE
+
   bool fallocate_;
-#endif // HAVE_POSIX_FALLOCATE
+
   Logger* logger_;
 protected:
   Logger* getLogger() const
@@ -110,7 +110,6 @@ public:
   // successfully changed.
   virtual size_t utime(const Time& actime, const Time& modtime) = 0;
 
-#ifdef HAVE_POSIX_FALLOCATE
   void enableFallocate()
   {
     fallocate_ = true;
@@ -125,7 +124,6 @@ public:
   {
     return fallocate_;
   }
-#endif // HAVE_POSIX_FALLOCATE
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

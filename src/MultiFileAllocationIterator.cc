@@ -35,15 +35,16 @@
 #include "MultiFileAllocationIterator.h"
 #include "MultiDiskAdaptor.h"
 #include "FileEntry.h"
-#include "SingleFileAllocationIterator.h"
-#ifdef HAVE_POSIX_FALLOCATE
+#include "AdaptiveFileAllocationIterator.h"
+#ifdef HAVE_SOME_FALLOCATE
 # include "FallocFileAllocationIterator.h"
-#endif // HAVE_POSIX_FALLOCATE
+#endif // HAVE_SOME_FALLOCATE
 #include "DiskWriter.h"
 
 namespace aria2 {
 
-MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
+MultiFileAllocationIterator::MultiFileAllocationIterator
+(MultiDiskAdaptor* diskAdaptor):
   diskAdaptor_(diskAdaptor),
   entries_(diskAdaptor_->diskWriterEntries_.begin(),
            diskAdaptor_->diskWriterEntries_.end()),
@@ -54,7 +55,8 @@ MultiFileAllocationIterator::~MultiFileAllocationIterator() {}
 
 void MultiFileAllocationIterator::allocateChunk()
 {
-  while(fileAllocationIterator_.isNull() || fileAllocationIterator_->finished()) {
+  while(fileAllocationIterator_.isNull() ||
+        fileAllocationIterator_->finished()) {
     if(entries_.empty()) {
       break;
     }
@@ -65,21 +67,19 @@ void MultiFileAllocationIterator::allocateChunk()
     diskAdaptor_->openIfNot(entry, &DiskWriterEntry::openFile);
     if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {
       // Calling private function of MultiDiskAdaptor.
-#ifdef HAVE_POSIX_FALLOCATE
+#ifdef HAVE_SOME_FALLOCATE
       if(diskAdaptor_->doesFallocate()) {
         fileAllocationIterator_.reset
           (new FallocFileAllocationIterator(entry->getDiskWriter().get(),
                                             entry->size(),
                                             fileEntry->getLength()));
       } else
-#endif // HAVE_POSIX_FALLOCATE
+#endif // HAVE_SOME_FALLOCATE
         {
-          SharedHandle<SingleFileAllocationIterator> fa
-            (new SingleFileAllocationIterator(entry->getDiskWriter().get(),
-                                              entry->size(),
-                                              fileEntry->getLength()));
-          fa->init();
-          fileAllocationIterator_ = fa;
+          fileAllocationIterator_.reset
+            (new AdaptiveFileAllocationIterator(entry->getDiskWriter().get(),
+                                                entry->size(),
+                                                fileEntry->getLength()));
         }
     }
   }
@@ -91,7 +91,8 @@ void MultiFileAllocationIterator::allocateChunk()
 
 bool MultiFileAllocationIterator::finished()
 {
-  return entries_.empty() && (fileAllocationIterator_.isNull() || fileAllocationIterator_->finished());
+  return entries_.empty() &&
+    (fileAllocationIterator_.isNull() || fileAllocationIterator_->finished());
 }
 
 off_t MultiFileAllocationIterator::getCurrentLength()

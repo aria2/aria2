@@ -356,7 +356,16 @@ fi
 AM_CONDITIONAL([HAVE_EPOLL], [test "x$have_epoll" = "xyes"])
 
 AC_CHECK_FUNCS([posix_fallocate],[have_posix_fallocate=yes])
-AM_CONDITIONAL([HAVE_POSIX_FALLOCATE], [test "x$have_posix_fallocate" = "xyes"])
+AM_CONDITIONAL([HAVE_SOME_FALLOCATE], [test "x$have_posix_fallocate" = "xyes"])
+
+AC_CHECK_FUNCS([fallocate], [have_fallocate=yes])
+AM_CONDITIONAL([HAVE_SOME_FALLOCATE], [test "x$have_fallocate" = "xyes"])
+
+if test "x$have_posix_fallocate" = "xyes" ||
+   test "x$have_fallocate" = "xyes"; then
+  AC_DEFINE([HAVE_SOME_FALLOCATE], [1],
+            [Define to 1 if *_fallocate is available.])
+fi
 
 AC_CHECK_FUNCS([asctime_r],
 	[AM_CONDITIONAL([HAVE_ASCTIME_R], true)],

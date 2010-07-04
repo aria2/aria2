@@ -205,7 +205,8 @@ SRCS =  Socket.h\
 	timespec.h\
 	ValueBase.cc ValueBase.h\
 	ContextAttribute.h\
-	TorrentAttribute.h
+	TorrentAttribute.h\
+	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
@@ -235,9 +236,9 @@ endif # HAVE_LIBEXPAT
 
 endif # ENABLE_XML_RPC
 
-if HAVE_POSIX_FALLOCATE
+if HAVE_SOME_FALLOCATE
 SRCS += FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
-endif # HAVE_POSIX_FALLOCATE
+endif # HAVE_SOME_FALLOCATE
 
 if HAVE_EPOLL
 SRCS += EpollEventPoll.cc EpollEventPoll.h
