@@ -370,11 +370,11 @@ void CookieStorageTest::testDomainIsFull()
   // See DOMAIN_EVICTION_TRIGGER and DOMAIN_EVICTION_RATE in
   // CookieStorage.cc
   CookieStorage st;
-  for(size_t i = 0; i < 601; ++i) {
+  for(size_t i = 0; i < 2001; ++i) {
     Cookie c("k", "v", "/", "domain"+util::itos(i), false);
     st.store(c);
   }
-  CPPUNIT_ASSERT_EQUAL((size_t)541, st.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1801, st.size());
 }
 
 } // namespace aria2

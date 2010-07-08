@@ -1,5 +1,11 @@
 2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Increased DOMAIN_EVICTION_TRIGGER to 2000
+	* src/CookieStorage.cc
+	* test/CookieStorageTest.cc
+
+2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added Chromium/Google Chrome Cookies file support. Thanks to
 	gotrunks for original patch.
 	* src/CookieStorage.cc

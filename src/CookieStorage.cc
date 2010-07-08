@@ -110,7 +110,7 @@ CookieStorage::CookieStorage():logger_(LogFactory::getInstance()) {}
 CookieStorage::~CookieStorage() {}
 
 // See CookieStorageTest::testDomainIsFull() in CookieStorageTest.cc
-static const size_t DOMAIN_EVICTION_TRIGGER = 600;
+static const size_t DOMAIN_EVICTION_TRIGGER = 2000;
 
 static const double DOMAIN_EVICTION_RATE = 0.1;
 
