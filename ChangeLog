@@ -1,5 +1,11 @@
 2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented that aria2 supports Chromium/Google Chrom cookies file.
+	* doc/aria2c.1.txt
+	* README
+
+2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that aria2 cannot handle %2F in FTP URI properly.
 	If directory component starts with %2F which percent-encode of
 	'/', client should issue CWD to absolute path, but aria2 does not

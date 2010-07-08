@@ -1143,7 +1143,8 @@ response header.</td>
 </dt>
 <dd>
 <p>
-  Load Cookies from FILE using the Firefox3 format (SQLite3) and the
+  Load Cookies from FILE using the Firefox3 format (SQLite3),
+  Chromium/Google Chrome (SQLite3) and the
   Mozilla/Firefox(1.x/2.x)/Netscape format.
 </p>
 </dd>
@@ -1153,7 +1154,8 @@ response header.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">If aria2 is built without libsqlite3, then it doesn&#8217;t support Firefox3 cookie format.</td>
+<td class="content">If aria2 is built without libsqlite3, then it doesn&#8217;t support Firefox3
+and Chromium/Google Chrome cookie format.</td>
 </tr></table>
 </div>
 <div class="dlist"><dl>
@@ -3065,10 +3067,10 @@ GID
 type array and its element is URI which is of type string.  For
 BitTorrent Magnet URI, <em>uris</em> must have only one element and it should
 be BitTorrent Magnet URI.  URIs in <em>uris</em> must point to the same
-file. For example, a file <em>chunkybaconlinux.iso</em> is hosted in 2
+file. For example, a file chunkybaconlinux.iso is hosted in 2
 locations: <a href="http://server/chunkybaconlinux.iso">http://server/chunkybaconlinux.iso</a> and
 <a href="http://mirror/chunkybaconlinux.iso">http://mirror/chunkybaconlinux.iso</a>.  You can download this iso image
-using 2 URIs issuing
+using 2 URIs by issuing
 aria2.addUri([<em>http://server/chunkybaconlinux.iso</em>,
 <em>http://mirror/chunkybaconlinux.iso</em>]).  Imagine there is an another
 file URI, say, <a href="http://mirror2/chunkydonutslinux.iso">http://mirror2/chunkydonutslinux.iso</a>, which is
@@ -4086,7 +4088,7 @@ forwarding, it&#8217;s up to you to do it manually.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">You can use Firefox/Mozilla&#8217;s cookie file without modification.</td>
+<td class="content">You can use Firefox/Mozilla/Chromium&#8217;s cookie file without modification.</td>
 </tr></table>
 </div>
 <h4 id="_resume_download_started_by_web_browsers_or_another_programs">Resume download started by web browsers or another programs</h4>
@@ -4212,7 +4214,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-06-28 21:00:35 JST
+Last updated 2010-07-09 01:48:36 JST
 </div>
 </div>
 </body>

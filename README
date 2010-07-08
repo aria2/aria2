@@ -36,7 +36,8 @@ Here is a list of features.
 * Verify peer using given trusted CA certificate in HTTPS
 * Client certificate authentication in HTTPS
 * Chunked transfer encoding support
-* Load Cookies from file using the Firefox3 format and the Mozilla/Firefox
+* Load Cookies from file using the Firefox3 format, Chromium/Google Chrome
+  and the Mozilla/Firefox
   (1.x/2.x)/Netscape format.
 * Save Cookies in the Mozilla/Firefox (1.x/2.x)/Netscape format.
 * Custom HTTP Header support
@@ -66,17 +67,17 @@ Dependency
 
 .External Library Dependency
 [options="header"]
-|=================================================
-|features             |dependency
-|HTTPS                |GnuTLS or OpenSSL
-|BitTorrent           |GnuTLS+Libgcrypt or OpenSSL
-|Metalink             |libxml2 or Expat.
-|Checksum             |GnuTLS+Libgcrypt or OpenSSL
-|gzip, deflate in HTTP|zlib
-|Async DNS            |C-Ares
-|Firefox3 cookie      |libsqlite3
-|XML-RPC              |libxml2 or Expat.
-|=================================================
+|====================================================
+|features                |dependency
+|HTTPS                   |GnuTLS or OpenSSL
+|BitTorrent              |GnuTLS+Libgcrypt or OpenSSL
+|Metalink                |libxml2 or Expat.
+|Checksum                |GnuTLS+Libgcrypt or OpenSSL
+|gzip, deflate in HTTP   |zlib
+|Async DNS               |C-Ares
+|Firefox3/Chromium cookie|libsqlite3
+|XML-RPC                 |libxml2 or Expat.
+|====================================================
 
 Note;;
   GNU TLS has precedence over OpenSSL if both libraries are installed.
@@ -106,7 +107,7 @@ distribution you use):
 * libc-ares-dev    (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
 * zlib1g-dev       (Required for gzip, deflate decoding support in HTTP)
-* libsqlite3-dev   (Required for Firefox3 cookie support)
+* libsqlite3-dev   (Required for Firefox3/Chromium cookie support)
 
 You can use libssl-dev instead of
 libgnutls-dev,libgpg-error-dev,libgcrypt-dev:

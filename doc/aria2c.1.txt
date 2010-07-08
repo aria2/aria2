@@ -327,11 +327,14 @@ response header.
   aria2c *--header*="X-A: b78" *--header*="X-B: 9J1" "http://host/file"
 
 *--load-cookies*=FILE::
-  Load Cookies from FILE using the Firefox3 format (SQLite3) and the
+
+  Load Cookies from FILE using the Firefox3 format (SQLite3),
+  Chromium/Google Chrome (SQLite3) and the
   Mozilla/Firefox(1.x/2.x)/Netscape format.
 
 [NOTE]
-If aria2 is built without libsqlite3, then it doesn't support Firefox3 cookie format.
+If aria2 is built without libsqlite3, then it doesn't support Firefox3
+and Chromium/Google Chrome cookie format.
 
 *--save-cookies*=FILE::
 
@@ -2146,7 +2149,7 @@ Load cookies
 aria2c --load-cookies=cookies.txt "http://host/file.zip"
 --------------------------------------------------------
 [NOTE]
-You can use Firefox/Mozilla's cookie file without modification.
+You can use Firefox/Mozilla/Chromium's cookie file without modification.
 
 Resume download started by web browsers or another programs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

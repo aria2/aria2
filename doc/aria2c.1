@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 06/28/2010
+.\"      Date: 07/09/2010
 .\"    Manual: Aria2 Manual
-.\"    Source: Aria2 1.9.4
+.\"    Source: Aria2 1.9.5
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "06/28/2010" "Aria2 1\&.9\&.4" "Aria2 Manual"
+.TH "ARIA2C" "1" "07/09/2010" "Aria2 1\&.9\&.5" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -480,7 +480,7 @@ Append HEADER to HTTP request header\&. You can use this option repeatedly to sp
 .PP
 \fB\-\-load\-cookies\fR=FILE
 .RS 4
-Load Cookies from FILE using the Firefox3 format (SQLite3) and the Mozilla/Firefox(1\&.x/2\&.x)/Netscape format\&.
+Load Cookies from FILE using the Firefox3 format (SQLite3), Chromium/Google Chrome (SQLite3) and the Mozilla/Firefox(1\&.x/2\&.x)/Netscape format\&.
 .RE
 .if n \{\
 .sp
@@ -495,7 +495,7 @@ Load Cookies from FILE using the Firefox3 format (SQLite3) and the Mozilla/Firef
 .ps -1
 .br
 .sp
-If aria2 is built without libsqlite3, then it doesn\(cqt support Firefox3 cookie format\&.
+If aria2 is built without libsqlite3, then it doesn\(cqt support Firefox3 and Chromium/Google Chrome cookie format\&.
 .sp .5v
 .RE
 .PP
@@ -2623,7 +2623,7 @@ GID(or gid) is the key to manage each download\&. Each download has an unique GI
 .sp
 \fBaria2\&.addUri\fR \fIuris[, options[, position]]\fR
 .sp
-This method adds new HTTP(S)/FTP/BitTorrent Magnet URI\&. \fIuris\fR is of type array and its element is URI which is of type string\&. For BitTorrent Magnet URI, \fIuris\fR must have only one element and it should be BitTorrent Magnet URI\&. URIs in \fIuris\fR must point to the same file\&. For example, a file \fIchunkybaconlinux\&.iso\fR is hosted in 2 locations: http://server/chunkybaconlinux\&.iso and http://mirror/chunkybaconlinux\&.iso\&. You can download this iso image using 2 URIs issuing aria2\&.addUri([\fIhttp://server/chunkybaconlinux\&.iso\fR, \fIhttp://mirror/chunkybaconlinux\&.iso\fR])\&. Imagine there is an another file URI, say, http://mirror2/chunkydonutslinux\&.iso, which is different iso image\&. You cannot mix this URI with previous URIs in one aria2\&.addUri command\&. If you do, aria2 does not complain but download may fail\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
+This method adds new HTTP(S)/FTP/BitTorrent Magnet URI\&. \fIuris\fR is of type array and its element is URI which is of type string\&. For BitTorrent Magnet URI, \fIuris\fR must have only one element and it should be BitTorrent Magnet URI\&. URIs in \fIuris\fR must point to the same file\&. For example, a file chunkybaconlinux\&.iso is hosted in 2 locations: http://server/chunkybaconlinux\&.iso and http://mirror/chunkybaconlinux\&.iso\&. You can download this iso image using 2 URIs by issuing aria2\&.addUri([\fIhttp://server/chunkybaconlinux\&.iso\fR, \fIhttp://mirror/chunkybaconlinux\&.iso\fR])\&. Imagine there is an another file URI, say, http://mirror2/chunkydonutslinux\&.iso, which is different iso image\&. You cannot mix this URI with previous URIs in one aria2\&.addUri command\&. If you do, aria2 does not complain but download may fail\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
 .sp
 \fBaria2\&.addTorrent\fR \fItorrent[, uris[, options[, position]]]\fR
 .sp
@@ -3879,7 +3879,7 @@ aria2c \-\-load\-cookies=cookies\&.txt "http://host/file\&.zip"
 .ps -1
 .br
 .sp
-You can use Firefox/Mozilla\(cqs cookie file without modification\&.
+You can use Firefox/Mozilla/Chromium\(cqs cookie file without modification\&.
 .sp .5v
 .RE
 .RE
