@@ -30,6 +30,7 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReceivePwdResponse_badStatus);
   CPPUNIT_TEST(testSendCwd);
   CPPUNIT_TEST(testSendCwd_baseWorkingDir);
+  CPPUNIT_TEST(testSendCwd_absDir);
   CPPUNIT_TEST(testSendSize);
   CPPUNIT_TEST(testReceiveSizeResponse);
   CPPUNIT_TEST(testSendRetr);
@@ -41,6 +42,7 @@ private:
   SharedHandle<FtpConnection> ftp_;
   SharedHandle<Option> option_;
   SharedHandle<AuthConfigFactory> authConfigFactory_;
+  SharedHandle<Request> req_;
 public:
   void setUp()
   {
@@ -55,8 +57,8 @@ public:
     listenSocket->getAddrInfo(addrinfo);
     listenPort_ = addrinfo.second;
 
-    SharedHandle<Request> req(new Request());
-    req->setUri("ftp://localhost/dir%20sp/hello%20world.img");
+    req_.reset(new Request());
+    req_->setUri("ftp://localhost/dir%20sp/hello%20world.img");
 
     clientSocket_.reset(new SocketCore());
     clientSocket_->establishConnection("localhost", listenPort_);
@@ -65,9 +67,9 @@ public:
     clientSocket_->setBlockingMode();
 
     serverSocket_.reset(listenSocket->acceptConnection());
-    ftp_.reset(new FtpConnection(1, clientSocket_, req,
+    ftp_.reset(new FtpConnection(1, clientSocket_, req_,
                                  authConfigFactory_->createAuthConfig
-                                 (req, option_.get()),
+                                 (req_, option_.get()),
                                  option_.get()));
   }
 
@@ -83,6 +85,7 @@ public:
   void testReceivePwdResponse_badStatus();
   void testSendCwd();
   void testSendCwd_baseWorkingDir();
+  void testSendCwd_absDir();
   void testSendSize();
   void testReceiveSizeResponse();
   void testSendRetr();
@@ -280,6 +283,18 @@ void FtpConnectionTest::testSendCwd_baseWorkingDir()
   serverSocket_->readData(data, len);
   data[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("CWD /base/dir sp\r\n"), std::string(data));
+}
+
+void FtpConnectionTest::testSendCwd_absDir()
+{
+  req_->setUri("http://localhost/%2fdir/file");
+  ftp_->setBaseWorkingDir("/base");
+  ftp_->sendCwd();
+  char data[32];
+  size_t len = sizeof(data);
+  serverSocket_->readData(data, len);
+  data[len] = '\0';
+  CPPUNIT_ASSERT_EQUAL(std::string("CWD /dir\r\n"), std::string(data));
 }
 
 void FtpConnectionTest::testSendSize()

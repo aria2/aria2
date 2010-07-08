@@ -150,10 +150,14 @@ bool FtpConnection::sendCwd()
                     util::itos(cuid_).c_str(), baseWorkingDir_.c_str());
     }
     std::string request = "CWD ";
-    if(baseWorkingDir_ != "/") {
-      request += baseWorkingDir_;
+    if(util::startsWith(util::toUpper(req_->getDir()), "/%2F")) {
+      request += util::percentDecode(req_->getDir().substr(1));
+    } else {
+      if(baseWorkingDir_ != "/") {
+        request += baseWorkingDir_;
+      }
+      request += util::percentDecode(req_->getDir());
     }
-    request += util::percentDecode(req_->getDir());
     request += "\r\n";
     if(logger_->info()) {
       logger_->info(MSG_SENDING_REQUEST,
