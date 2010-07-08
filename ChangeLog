@@ -1,3 +1,20 @@
+2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added Chromium/Google Chrome Cookies file support. Thanks to
+	gotrunks for original patch.
+	* src/CookieStorage.cc
+	* src/Makefile.am
+	* src/Sqlite3CookieParser.cc
+	* src/Sqlite3CookieParser.h
+	* src/Sqlite3CookieParserImpl.cc
+	* src/Sqlite3CookieParserImpl.h
+	* src/Sqlite3MozCookieParser.cc: Removed
+	* src/Sqlite3MozCookieParser.h: Removed
+	* test/Makefile.am
+	* test/Sqlite3CookieParserTest.cc
+	* test/Sqlite3MozCookieParserTest.cc: Removed
+	* test/chromium_cookies.sqlite
+
 2010-07-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	When allocating disk space, for Linux system with fallocate()

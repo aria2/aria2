@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,27 +32,29 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SQLITE3_MOZ_COOKIE_PARSER_H_
-#define _D_SQLITE3_MOZ_COOKIE_PARSER_H_
+#ifndef D_SQLITE3_COOKIE_PARSER_IMPL_H
+#define D_SQLITE3_COOKIE_PARSER_IMPL_H
 
-#include "common.h"
-
-#include <string>
-#include <vector>
-
-#include "Cookie.h"
+#include "Sqlite3CookieParser.h"
 
 namespace aria2 {
 
-class Sqlite3MozCookieParser {
+class Sqlite3MozCookieParser:public Sqlite3CookieParser {
 public:
-  Sqlite3MozCookieParser();
+  Sqlite3MozCookieParser(const std::string& filename);
+  virtual ~Sqlite3MozCookieParser();
+protected:
+  virtual const std::string& getQuery() const;
+};
 
-  ~Sqlite3MozCookieParser();
-
-  std::vector<Cookie> parse(const std::string& filename) const;
+class Sqlite3ChromiumCookieParser:public Sqlite3CookieParser {
+public:
+  Sqlite3ChromiumCookieParser(const std::string& filename);
+  virtual ~Sqlite3ChromiumCookieParser();
+protected:
+  virtual const std::string& getQuery() const;
 };
 
 } // namespace aria2
 
-#endif // _D_SQLITE3_MOZ_COOKIE_PARSER_H_
+#endif // D_SQLITE3_COOKIE_PARSER_IMPL_H

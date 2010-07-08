@@ -44,7 +44,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @HAVE_LIBZ_TRUE@am__append_3 = GZipDecoderTest.cc\
 @HAVE_LIBZ_TRUE@	GZipEncoderTest.cc
 
-@HAVE_SQLITE3_TRUE@am__append_4 = Sqlite3MozCookieParserTest.cc
+@HAVE_SQLITE3_TRUE@am__append_4 = Sqlite3CookieParserTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_5 = MessageDigestHelperTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.cc
@@ -216,7 +216,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
-	GZipEncoderTest.cc Sqlite3MozCookieParserTest.cc \
+	GZipEncoderTest.cc Sqlite3CookieParserTest.cc \
 	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
@@ -278,8 +278,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @HAVE_SOME_FALLOCATE_TRUE@am__objects_2 = FallocFileAllocationIteratorTest.$(OBJEXT)
 @HAVE_LIBZ_TRUE@am__objects_3 = GZipDecoderTest.$(OBJEXT) \
 @HAVE_LIBZ_TRUE@	GZipEncoderTest.$(OBJEXT)
-@HAVE_SQLITE3_TRUE@am__objects_4 =  \
-@HAVE_SQLITE3_TRUE@	Sqlite3MozCookieParserTest.$(OBJEXT)
+@HAVE_SQLITE3_TRUE@am__objects_4 = Sqlite3CookieParserTest.$(OBJEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_5 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.$(OBJEXT) \
@@ -664,6 +663,7 @@ AM_CPPFLAGS = -Wall\
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
 	cookies.sqlite\
+	chromium_cookies.sqlite\
 	emptyfile\
 	file1r.txt\
 	file2r.txt\
@@ -879,7 +879,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3MozCookieParserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3CookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormatTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@

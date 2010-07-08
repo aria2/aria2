@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,9 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Sqlite3MozCookieParser.h"
+#include "Sqlite3CookieParser.h"
 
 #include <cstring>
-
-#include <sqlite3.h>
 
 #include "DlAbortEx.h"
 #include "util.h"
@@ -48,9 +46,27 @@
 
 namespace aria2 {
 
-Sqlite3MozCookieParser::Sqlite3MozCookieParser() {}
+Sqlite3CookieParser::Sqlite3CookieParser(const std::string& filename):db_(0)
+{
+  int ret;
+#ifdef HAVE_SQLITE3_OPEN_V2
+  ret = sqlite3_open_v2(filename.c_str(), &db_, SQLITE_OPEN_READONLY, 0);
+#else // !HAVE_SQLITE3_OPEN_V2
+  if(!File(filename).isFile()) {
+    return;
+  }
+  ret = sqlite3_open(filename.c_str(), &db_);
+#endif // !HAVE_SQLITE3_OPEN_V2
+  if(SQLITE_OK != ret) {
+    sqlite3_close(db_);
+    db_ = 0;
+  }
+}
 
-Sqlite3MozCookieParser::~Sqlite3MozCookieParser() {}
+Sqlite3CookieParser::~Sqlite3CookieParser()
+{
+  sqlite3_close(db_);
+}
 
 static std::string toString(const char* str)
 {
@@ -91,47 +107,25 @@ static int cookieRowMapper(void* data, int rowIndex,
   return 0;
 }
 
-std::vector<Cookie>
-Sqlite3MozCookieParser::parse(const std::string& filename) const
+void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
 {
-  sqlite3* db = 0;
-  
-  int ret;
-#ifdef HAVE_SQLITE3_OPEN_V2
-  ret = sqlite3_open_v2(filename.c_str(), &db, SQLITE_OPEN_READONLY, 0);
-#else // !HAVE_SQLITE3_OPEN_V2
-  if(!File(filename).isFile()) {
-    throw DL_ABORT_EX
-      (StringFormat("Failed to open SQLite3 database: %s",
-                    filename.c_str()).str());
+  if(!db_) {
+    throw DL_ABORT_EX(StringFormat("SQLite3 database is not opened.").str());
   }
-  ret = sqlite3_open(filename.c_str(), &db);
-#endif // !HAVE_SQLITE3_OPEN_V2
-  if(SQLITE_OK != ret) {
-    std::string errMsg = sqlite3_errmsg(db);
-    sqlite3_close(db);
-    throw DL_ABORT_EX
-      (StringFormat("Failed to open SQLite3 database: %s",
-                    errMsg.c_str()).str());
-  }
-  std::vector<Cookie> cookies;
+  std::vector<Cookie> tcookies;
   char* sqlite3ErrMsg = 0;
-  static const char* QUERY =
-    "SELECT host, path, isSecure, expiry, name, value FROM moz_cookies";
-  ret = sqlite3_exec(db, QUERY, cookieRowMapper, &cookies, &sqlite3ErrMsg);
+  int ret = sqlite3_exec(db_, getQuery().c_str(), cookieRowMapper,
+                         &tcookies, &sqlite3ErrMsg);
   std::string errMsg;
   if(sqlite3ErrMsg) {
     errMsg = sqlite3ErrMsg;
     sqlite3_free(sqlite3ErrMsg);
   }
   if(SQLITE_OK != ret) {
-    sqlite3_close(db);
-    throw DL_ABORT_EX
-      (StringFormat("Failed to read SQLite3 database: %s",
-                    errMsg.c_str()).str());
+    throw DL_ABORT_EX(StringFormat("Failed to read SQLite3 database: %s",
+                                   errMsg.c_str()).str());
   }
-  sqlite3_close(db);
-  return cookies;
+  cookies.swap(tcookies);
 }
 
 } // namespace aria2

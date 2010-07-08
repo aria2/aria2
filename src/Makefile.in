@@ -64,7 +64,9 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @HAVE_LIBZ_TRUE@am__append_9 = GZipDecoder.cc GZipDecoder.h\
 @HAVE_LIBZ_TRUE@	GZipEncoder.cc GZipEncoder.h
 
-@HAVE_SQLITE3_TRUE@am__append_10 = Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h
+@HAVE_SQLITE3_TRUE@am__append_10 = Sqlite3CookieParser.cc Sqlite3CookieParser.h\
+@HAVE_SQLITE3_TRUE@	Sqlite3CookieParserImpl.cc Sqlite3CookieParserImpl.h
+
 @ENABLE_ASYNC_DNS_TRUE@am__append_11 = AsyncNameResolver.cc AsyncNameResolver.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_12 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
@@ -461,7 +463,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
 	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
 	GZipDecoder.h GZipEncoder.cc GZipEncoder.h \
-	Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h \
+	Sqlite3CookieParser.cc Sqlite3CookieParser.h \
+	Sqlite3CookieParserImpl.cc Sqlite3CookieParserImpl.h \
 	AsyncNameResolver.cc AsyncNameResolver.h \
 	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
@@ -638,7 +641,8 @@ am__objects_6 =
 @HAVE_LIBSSL_TRUE@am__objects_8 = LibsslTLSContext.$(OBJEXT)
 @HAVE_LIBZ_TRUE@am__objects_9 = GZipDecoder.$(OBJEXT) \
 @HAVE_LIBZ_TRUE@	GZipEncoder.$(OBJEXT)
-@HAVE_SQLITE3_TRUE@am__objects_10 = Sqlite3MozCookieParser.$(OBJEXT)
+@HAVE_SQLITE3_TRUE@am__objects_10 = Sqlite3CookieParser.$(OBJEXT) \
+@HAVE_SQLITE3_TRUE@	Sqlite3CookieParserImpl.$(OBJEXT)
 @ENABLE_ASYNC_DNS_TRUE@am__objects_11 = AsyncNameResolver.$(OBJEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_12 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
@@ -1606,7 +1610,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketBuffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3MozCookieParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3CookieParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3CookieParserImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamFileAllocationEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormat.Po@am__quote@

@@ -90,7 +90,7 @@ aria2c_SOURCES += GZipDecoderTest.cc\
 endif # HAVE_LIBZ
 
 if HAVE_SQLITE3
-aria2c_SOURCES += Sqlite3MozCookieParserTest.cc
+aria2c_SOURCES += Sqlite3CookieParserTest.cc
 endif # HAVE_SQLITE3
 
 if ENABLE_MESSAGE_DIGEST
@@ -226,6 +226,7 @@ AM_CPPFLAGS =  -Wall\
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
 	cookies.sqlite\
+	chromium_cookies.sqlite\
 	emptyfile\
 	file1r.txt\
 	file2r.txt\

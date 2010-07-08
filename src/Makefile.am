@@ -262,7 +262,8 @@ SRCS += GZipDecoder.cc GZipDecoder.h\
 endif # HAVE_LIBZ
 
 if HAVE_SQLITE3
-SRCS += Sqlite3MozCookieParser.cc Sqlite3MozCookieParser.h
+SRCS += Sqlite3CookieParser.cc Sqlite3CookieParser.h\
+	Sqlite3CookieParserImpl.cc Sqlite3CookieParserImpl.h
 endif # HAVE_SQLITE3
 
 if ENABLE_ASYNC_DNS

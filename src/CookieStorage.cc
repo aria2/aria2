@@ -47,8 +47,9 @@
 #include "File.h"
 #include "a2functional.h"
 #include "A2STR.h"
+#include "message.h"
 #ifdef HAVE_SQLITE3
-# include "Sqlite3MozCookieParser.h"
+# include "Sqlite3CookieParserImpl.h"
 #endif // HAVE_SQLITE3
 
 namespace aria2 {
@@ -300,7 +301,18 @@ bool CookieStorage::load(const std::string& filename)
   try {
     if(std::string(header) == "SQLite format 3") {
 #ifdef HAVE_SQLITE3
-      std::vector<Cookie> cookies = Sqlite3MozCookieParser().parse(filename);
+      std::vector<Cookie> cookies;
+      try {
+        Sqlite3MozCookieParser(filename).parse(cookies);
+      } catch(RecoverableException& e) {
+        if(logger_->info()) {
+          logger_->info(EX_EXCEPTION_CAUGHT, e);
+          logger_->info("This does not look like Firefox3 cookie file."
+                        " Retrying, assuming it is Chromium cookie file.");
+        }
+        // Try chrome cookie format
+        Sqlite3ChromiumCookieParser(filename).parse(cookies);
+      }
       storeCookies(cookies.begin(), cookies.end());
 #else // !HAVE_SQLITE3
       throw DL_ABORT_EX
