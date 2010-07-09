@@ -93,7 +93,7 @@ void AdaptiveFileAllocationIterator::allocateChunk()
 bool AdaptiveFileAllocationIterator::finished()
 {
   if(allocator_.isNull()) {
-    return false;
+    return (uint64_t)offset_ >= totalLength_;
   } else {
     return allocator_->finished();
   }

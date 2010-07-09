@@ -1,5 +1,12 @@
 2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that AdaptiveFileAllocationIterator::finished()
+	returns false even if offset_ >= totalLength_. This causes
+	ftruncate error for seeding torrents.
+	* src/AdaptiveFileAllocationIterator.cc
+
+2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Send each CWD component of FTP URI in separate CWD command as
 	described in RFC1738.
 	* src/FtpConnection.cc
