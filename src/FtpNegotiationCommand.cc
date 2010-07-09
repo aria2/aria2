@@ -259,14 +259,24 @@ bool FtpNegotiationCommand::recvPwd()
     getLogger()->info("CUID#%s - base working directory is '%s'",
                       util::itos(getCuid()).c_str(), pwd.c_str());
   }
+  sequence_ = SEQ_SEND_CWD_PREP;
+  return true;
+}
+
+bool FtpNegotiationCommand::sendCwdPrep()
+{
+  // Calling setReadCheckSocket() is needed when the socket is reused, 
+  setReadCheckSocket(getSocket());
+  util::split(getRequest()->getDir(), std::back_inserter(cwdDirs_),
+              A2STR::SLASH_C);
+  cwdDirs_.push_front(ftp_->getBaseWorkingDir());
   sequence_ = SEQ_SEND_CWD;
   return true;
 }
 
-bool FtpNegotiationCommand::sendCwd() {
-  // Calling setReadCheckSocket() is needed when the socket is reused, 
-  setReadCheckSocket(getSocket());
-  if(ftp_->sendCwd()) {
+bool FtpNegotiationCommand::sendCwd()
+{
+  if(ftp_->sendCwd(cwdDirs_.front())) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_CWD;
   } else {
@@ -275,7 +285,8 @@ bool FtpNegotiationCommand::sendCwd() {
   return false;
 }
 
-bool FtpNegotiationCommand::recvCwd() {
+bool FtpNegotiationCommand::recvCwd()
+{
   unsigned int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
@@ -289,10 +300,15 @@ bool FtpNegotiationCommand::recvCwd() {
     else
       throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
-  if(getOption()->getAsBool(PREF_REMOTE_TIME)) {
-    sequence_ = SEQ_SEND_MDTM;
+  cwdDirs_.pop_front();
+  if(cwdDirs_.empty()) {
+    if(getOption()->getAsBool(PREF_REMOTE_TIME)) {
+      sequence_ = SEQ_SEND_MDTM;
+    } else {
+      sequence_ = SEQ_SEND_SIZE;
+    }
   } else {
-    sequence_ = SEQ_SEND_SIZE;
+    sequence_ = SEQ_SEND_CWD;
   }
   return true;
 }
@@ -773,6 +789,8 @@ bool FtpNegotiationCommand::processSequence
     return sendPwd();
   case SEQ_RECV_PWD:
     return recvPwd();
+  case SEQ_SEND_CWD_PREP:
+    return sendCwdPrep();
   case SEQ_SEND_CWD:
     return sendCwd();
   case SEQ_RECV_CWD:

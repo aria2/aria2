@@ -55,6 +55,7 @@ public:
     SEQ_RECV_TYPE,
     SEQ_SEND_PWD,
     SEQ_RECV_PWD,
+    SEQ_SEND_CWD_PREP,
     SEQ_SEND_CWD,
     SEQ_RECV_CWD,
     SEQ_SEND_MDTM,
@@ -92,6 +93,7 @@ private:
   bool recvType();
   bool sendPwd();
   bool recvPwd();
+  bool sendCwdPrep();
   bool sendCwd();
   bool recvCwd();
   bool sendMdtm();
@@ -136,6 +138,8 @@ private:
   std::string connectedHostname_;
   std::string connectedAddr_;
   uint16_t connectedPort_;
+
+  std::deque<std::string> cwdDirs_;
 protected:
   virtual bool executeInternal();
 public:

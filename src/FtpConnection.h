@@ -92,7 +92,7 @@ public:
   bool sendPass();
   bool sendType();
   bool sendPwd();
-  bool sendCwd();
+  bool sendCwd(const std::string& dir);
   bool sendMdtm();
   bool sendSize();
   bool sendPasv();

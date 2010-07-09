@@ -130,7 +130,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
           new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
                                     getRequestGroup(), getDownloadEngine(),
                                     pooledSocket,
-                                    FtpNegotiationCommand::SEQ_SEND_CWD,
+                                    FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
                                     options["baseWorkingDir"]);
       } else if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
@@ -175,7 +175,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
         new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
                                   getRequestGroup(), getDownloadEngine(),
                                   pooledSocket,
-                                  FtpNegotiationCommand::SEQ_SEND_CWD,
+                                  FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
                                   options["baseWorkingDir"]);
     }
   }

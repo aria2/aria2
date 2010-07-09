@@ -29,8 +29,6 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReceivePwdResponse_unquotedResponse);
   CPPUNIT_TEST(testReceivePwdResponse_badStatus);
   CPPUNIT_TEST(testSendCwd);
-  CPPUNIT_TEST(testSendCwd_baseWorkingDir);
-  CPPUNIT_TEST(testSendCwd_absDir);
   CPPUNIT_TEST(testSendSize);
   CPPUNIT_TEST(testReceiveSizeResponse);
   CPPUNIT_TEST(testSendRetr);
@@ -84,8 +82,6 @@ public:
   void testReceivePwdResponse_unquotedResponse();
   void testReceivePwdResponse_badStatus();
   void testSendCwd();
-  void testSendCwd_baseWorkingDir();
-  void testSendCwd_absDir();
   void testSendSize();
   void testReceiveSizeResponse();
   void testSendRetr();
@@ -266,35 +262,12 @@ void FtpConnectionTest::testReceivePwdResponse_badStatus()
 
 void FtpConnectionTest::testSendCwd()
 {
-  ftp_->sendCwd();
+  ftp_->sendCwd("%2Fdir%20sp");
   char data[32];
   size_t len = sizeof(data);
   serverSocket_->readData(data, len);
   data[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("CWD /dir sp\r\n"), std::string(data));
-}
-
-void FtpConnectionTest::testSendCwd_baseWorkingDir()
-{
-  ftp_->setBaseWorkingDir("/base");
-  ftp_->sendCwd();
-  char data[32];
-  size_t len = sizeof(data);
-  serverSocket_->readData(data, len);
-  data[len] = '\0';
-  CPPUNIT_ASSERT_EQUAL(std::string("CWD /base/dir sp\r\n"), std::string(data));
-}
-
-void FtpConnectionTest::testSendCwd_absDir()
-{
-  req_->setUri("http://localhost/%2fdir/file");
-  ftp_->setBaseWorkingDir("/base");
-  ftp_->sendCwd();
-  char data[32];
-  size_t len = sizeof(data);
-  serverSocket_->readData(data, len);
-  data[len] = '\0';
-  CPPUNIT_ASSERT_EQUAL(std::string("CWD /dir\r\n"), std::string(data));
 }
 
 void FtpConnectionTest::testSendSize()

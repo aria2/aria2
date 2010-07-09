@@ -142,22 +142,11 @@ bool FtpConnection::sendPwd()
   return socketBuffer_.sendBufferIsEmpty();
 }
 
-bool FtpConnection::sendCwd()
+bool FtpConnection::sendCwd(const std::string& dir)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
-    if(logger_->info()) {
-      logger_->info("CUID#%s - Using base working directory '%s'",
-                    util::itos(cuid_).c_str(), baseWorkingDir_.c_str());
-    }
     std::string request = "CWD ";
-    if(util::startsWith(util::toUpper(req_->getDir()), "/%2F")) {
-      request += util::percentDecode(req_->getDir().substr(1));
-    } else {
-      if(baseWorkingDir_ != "/") {
-        request += baseWorkingDir_;
-      }
-      request += util::percentDecode(req_->getDir());
-    }
+    request += util::percentDecode(dir);
     request += "\r\n";
     if(logger_->info()) {
       logger_->info(MSG_SENDING_REQUEST,
