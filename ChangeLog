@@ -1,3 +1,12 @@
+2010-07-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that DownloadContext::resetDownloadStartTime() never
+	be called in downloads whose total length is unknown.  This causes
+	avg speed in Download Results is always 0 for these downloads.
+	* src/RequestGroup.cc
+	* src/BtFileAllocationEntry.cc
+	* src/StreamFileAllocationEntry.cc
+
 2010-07-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that AdaptiveFileAllocationIterator::finished()

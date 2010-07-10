@@ -58,6 +58,8 @@ void BtFileAllocationEntry::prepareForNextAction
   BtSetup().setup(commands, getRequestGroup(), e,
                   getRequestGroup()->getOption().get());
   if(!getRequestGroup()->downloadFinished()) {
+    // For DownloadContext::resetDownloadStartTime(), see also
+    // RequestGroup::createInitialCommand()
     getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
     const std::vector<SharedHandle<FileEntry> >& fileEntries =
       getRequestGroup()->getDownloadContext()->getFileEntries();

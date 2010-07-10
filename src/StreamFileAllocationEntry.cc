@@ -59,6 +59,8 @@ void StreamFileAllocationEntry::prepareForNextAction
 (std::vector<Command*>& commands,
  DownloadEngine* e)
 {
+  // For DownloadContext::resetDownloadStartTime(), see also
+  // RequestGroup::createInitialCommand()
   getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
   if(getNextCommand()) {
     // give _nextCommand a chance to execute in the next execution loop.

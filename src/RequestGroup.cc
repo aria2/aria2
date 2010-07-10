@@ -200,6 +200,11 @@ void RequestGroup::closeFile()
 void RequestGroup::createInitialCommand
 (std::vector<Command*>& commands, DownloadEngine* e)
 {
+  // Start session timer here.  When file size becomes known, it will
+  // be reset again in *FileAllocationEntry, because hash check and
+  // file allocation takes a time.  For downloads in which file size
+  // is unknown, session timer will not be reset.
+  downloadContext_->resetDownloadStartTime();
 #ifdef ENABLE_BITTORRENT
   {
     if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
