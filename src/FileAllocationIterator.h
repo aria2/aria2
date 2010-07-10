@@ -55,8 +55,6 @@ public:
   virtual uint64_t getTotalLength() = 0;
 };
 
-typedef SharedHandle<FileAllocationIterator> FileAllocationIteratorHandle;
-
 } // namespace aria2
 
 #endif // _D_FILE_ALLOCATION_ITERATOR_H_

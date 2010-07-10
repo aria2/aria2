@@ -1,5 +1,13 @@
 2010-07-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unusable typedefs
+	* src/FileAllocationIterator.h
+	* src/MultiDiskAdaptor.cc
+	* src/MultiFileAllocationIterator.h
+	* src/SingleFileAllocationIterator.h
+
+2010-07-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that DownloadContext::resetDownloadStartTime() never
 	be called in downloads whose total length is unknown.  This causes
 	avg speed in Download Results is always 0 for these downloads.

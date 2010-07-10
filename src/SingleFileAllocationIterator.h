@@ -76,8 +76,6 @@ public:
   void init();
 };
 
-typedef SharedHandle<SingleFileAllocationIterator> SingleFileAllocationIteratorHandle;
-
 } // namespace aria2
 
 #endif // _D_SINGLE_FILE_ALLOCATION_ITERATOR_H_

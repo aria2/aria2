@@ -67,8 +67,6 @@ public:
   getDiskWriterEntries() const;
 };
 
-typedef SharedHandle<MultiFileAllocationIterator> MultiFileAllocationIteratorHandle;
-
 } // namespace aria2
 
 #endif // _D_MULTI_FILE_ALLOCATION_ITERATOR_H_

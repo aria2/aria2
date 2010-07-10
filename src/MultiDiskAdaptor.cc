@@ -461,7 +461,7 @@ uint64_t MultiDiskAdaptor::size()
   return size;
 }
 
-FileAllocationIteratorHandle MultiDiskAdaptor::fileAllocationIterator()
+SharedHandle<FileAllocationIterator> MultiDiskAdaptor::fileAllocationIterator()
 {
   return SharedHandle<FileAllocationIterator>
     (new MultiFileAllocationIterator(this));
