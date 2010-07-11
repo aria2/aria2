@@ -9,6 +9,7 @@ class ChunkedDecoderTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ChunkedDecoderTest);
   CPPUNIT_TEST(testDecode);
+  CPPUNIT_TEST(testDecode_withoutTrailer);
   CPPUNIT_TEST(testDecode_tooLargeChunkSize);
   CPPUNIT_TEST(testDecode_chunkSizeMismatch);
   CPPUNIT_TEST(testGetName);
@@ -17,6 +18,7 @@ public:
   void setUp() {}
 
   void testDecode();
+  void testDecode_withoutTrailer();
   void testDecode_tooLargeChunkSize();
   void testDecode_chunkSizeMismatch();
   void testGetName();
@@ -102,10 +104,33 @@ void ChunkedDecoderTest::testDecode()
     CPPUNIT_ASSERT_EQUAL(std::string(),
                          decoder.decode(msg.c_str(), msg.size()));
   }
+  // feed trailer
+  {
+    CPPUNIT_ASSERT_EQUAL
+      (std::string(),
+       decoder.decode
+       (reinterpret_cast<const unsigned char*>("trailer\r\n"), 9));
+  }
+  // feed final CRLF
+  {
+    CPPUNIT_ASSERT_EQUAL
+      (std::string(),
+       decoder.decode(reinterpret_cast<const unsigned char*>("\r\n"), 2));
+  }
   // input is over
   CPPUNIT_ASSERT(decoder.finished());
 
   decoder.release();
+}
+
+void ChunkedDecoderTest::testDecode_withoutTrailer()
+{
+  ChunkedDecoder decoder;
+  decoder.init();
+  CPPUNIT_ASSERT_EQUAL
+    (std::string(),
+     decoder.decode(reinterpret_cast<const unsigned char*>("0\r\n\r\n"), 5));
+  CPPUNIT_ASSERT(decoder.finished());
 }
 
 void ChunkedDecoderTest::testDecode_tooLargeChunkSize()

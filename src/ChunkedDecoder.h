@@ -44,6 +44,7 @@ private:
   enum STATE {
     READ_SIZE,
     READ_DATA,
+    READ_TRAILER,
     STREAM_END
   };
 

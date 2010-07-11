@@ -64,6 +64,27 @@ static bool readChunkSize(uint64_t& chunkSize, std::string& in)
   return true;
 }
 
+static bool readTrailer(std::string& in)
+{
+  std::string::size_type crlfPos = in.find(A2STR::CRLF);
+  if(crlfPos == std::string::npos) {
+    return false;
+  }
+  if(crlfPos == 0) {
+    return true;
+  } else {
+    if(in.size() > crlfPos+3) {
+      if(in[crlfPos+2] == '\r' && in[crlfPos+3] == '\n') {
+        return true;
+      } else {
+        throw DL_ABORT_EX("No CRLF at the end of chunk stream.");
+      }
+    } else {
+      return false;
+    }
+  }
+}
+
 static bool readData(std::string& out, uint64_t& chunkSize, std::string& in)
 {
   uint64_t readlen = std::min(chunkSize, static_cast<uint64_t>(in.size()));
@@ -91,8 +112,7 @@ std::string ChunkedDecoder::decode(const unsigned char* inbuf, size_t inlen)
     if(state_ == READ_SIZE) {
       if(readChunkSize(chunkSize_, buf_)) {
         if(chunkSize_ == 0) {
-          state_ = STREAM_END;
-          break;
+          state_ = READ_TRAILER;
         } else {
           state_ = READ_DATA;
         }
@@ -102,6 +122,13 @@ std::string ChunkedDecoder::decode(const unsigned char* inbuf, size_t inlen)
     } else if(state_ == READ_DATA) {
       if(readData(outbuf, chunkSize_, buf_)) {
         state_ = READ_SIZE;
+      } else {
+        break;
+      }
+    } else if(state_ == READ_TRAILER) {
+      if(readTrailer(buf_)) {
+        state_ = STREAM_END;
+        break;
       } else {
         break;
       }
