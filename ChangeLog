@@ -1,5 +1,11 @@
 2010-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	After change request to faster one, wait at least 10 seconds.
+	* src/FileEntry.cc
+	* src/FileEntry.h
+
+2010-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed ChunkedDecoder. It does not read trailer and final CRLF.
 	* src/ChunkedDecoder.cc
 	* src/ChunkedDecoder.h

@@ -52,6 +52,7 @@ FileEntry::FileEntry(const std::string& path,
   offset_(offset),
   requested_(true),
   singleHostMultiConnection_(true),
+  lastFasterReplace_(0),
   logger_(LogFactory::getInstance()) {}
 
 FileEntry::FileEntry():
@@ -163,7 +164,9 @@ FileEntry::getRequest
 SharedHandle<Request>
 FileEntry::findFasterRequest(const SharedHandle<Request>& base)
 {
-  if(requestPool_.empty()) {
+  const int startupIdleTime = 10;
+  if(requestPool_.empty() ||
+     lastFasterReplace_.difference(global::wallclock) < startupIdleTime) {
     return SharedHandle<Request>();
   }
   const SharedHandle<PeerStat>& fastest = requestPool_.front()->getPeerStat();
@@ -172,7 +175,6 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
   }
   const SharedHandle<PeerStat>& basestat = base->getPeerStat();
   // TODO hard coded value. See PREF_STARTUP_IDLE_TIME
-  const int startupIdleTime = 10;
   if(basestat.isNull() ||
      (basestat->getDownloadStartTime().
       difference(global::wallclock) >= startupIdleTime &&
@@ -181,6 +183,7 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
     SharedHandle<Request> fastestRequest = requestPool_.front();
     requestPool_.pop_front();
     inFlightRequests_.push_back(fastestRequest);
+    lastFasterReplace_.reset();
     return fastestRequest;
   }
   return SharedHandle<Request>();

@@ -48,6 +48,7 @@
 #include "URIResult.h"
 #include "DownloadResultCode.h"
 #include "A2STR.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -71,6 +72,7 @@ private:
   std::deque<URIResult> uriResults_;
   bool singleHostMultiConnection_;
   std::string originalName_;
+  Timer lastFasterReplace_;
   Logger* logger_;
 
   void storePool(const SharedHandle<Request>& request);
