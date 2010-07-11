@@ -160,26 +160,43 @@ bool AbstractCommand::execute() {
         segments_.clear();
         getSegmentMan()->getInFlightSegment(segments_, getCuid());
         if(!req_.isNull() && segments_.empty()) {
+          // TODO make this out side of socket check if.
+
           // This command previously has assigned segments, but it is
-          // canceled. So discard current request chain.
+          // canceled. So discard current request chain.  Plus, if no
+          // segment is available when http pipelining is used.
           if(getLogger()->debug()) {
             getLogger()->debug("CUID#%s - It seems previously assigned segments"
                                " are canceled. Restart.",
                                util::itos(getCuid()).c_str());
           }
+          // Request::isPipeliningEnabled() == true means aria2
+          // accessed the remote server and discovered that the server
+          // supports pipelining.
+          if(!req_.isNull() && req_->isPipeliningEnabled()) {
+            e_->poolSocket(req_, createProxyRequest(), socket_);
+          }
           return prepareForRetry(0);
         }
         if(req_.isNull() || req_->getMaxPipelinedRequest() == 1 ||
+           // Why the following condition is necessary? That's because
+           // For single file download, SegmentMan::getSegment(cuid)
+           // is more efficient.
            getDownloadContext()->getFileEntries().size() == 1) {
-          if(segments_.empty()) {
+          size_t maxSegments = req_.isNull()?1:req_->getMaxPipelinedRequest();
+          while(segments_.size() < maxSegments) {
             SharedHandle<Segment> segment =
               getSegmentMan()->getSegment(getCuid());
-            if(!segment.isNull()) {
+            if(segment.isNull()) {
+              break;
+            } else {
               segments_.push_back(segment);
             }
           }
           if(segments_.empty()) {
-            // TODO socket could be pooled here if pipelining is enabled...
+            // TODO socket could be pooled here if pipelining is
+            // enabled...  Hmm, I don't think if pipelining is enabled
+            // it does not go here.
             if(getLogger()->info()) {
               getLogger()->info(MSG_NO_SEGMENT_AVAILABLE,
                                 util::itos(getCuid()).c_str());

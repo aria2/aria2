@@ -135,6 +135,17 @@ bool DownloadCommand::executeInternal() {
   } else {
     bufSize = BUFSIZE;
   }
+  // It is possible that segment is completed but we have some bytes
+  // of stream to read. For example, chunked encoding has "0"+CRLF
+  // after data. After we read data(at this moment segment is
+  // completed), we need another 3bytes(or more if it has extension).
+  if(bufSize == 0 &&
+     ((!transferEncodingDecoder_.isNull() &&
+       !transferEncodingDecoder_->finished()) ||
+      (!contentEncodingDecoder_.isNull() &&
+       !contentEncodingDecoder_->finished()))) {
+    bufSize = 1;
+  }
   getSocket()->readData(buf_, bufSize);
 
   const SharedHandle<DiskAdaptor>& diskAdaptor =
@@ -187,17 +198,27 @@ bool DownloadCommand::executeInternal() {
               !getSocket()->wantRead() && !getSocket()->wantWrite()) {
       segmentPartComplete = true;
     }
-  } else if(!transferEncodingDecoder_.isNull() &&
-            (segment->complete() ||
-             segment->getPositionToWrite() == getFileEntry()->getLastOffset())){
-    // In this case, transferEncodingDecoder is used and
-    // Content-Length is known.
-    segmentPartComplete = true;
-  } else if((transferEncodingDecoder_.isNull() ||
-             transferEncodingDecoder_->finished()) &&
-            (contentEncodingDecoder_.isNull() ||
-             contentEncodingDecoder_->finished())) {
-    segmentPartComplete = true;
+  } else {
+    off_t loff = getFileEntry()->gtoloff(segment->getPositionToWrite());
+    if(!transferEncodingDecoder_.isNull() &&
+       ((loff == getRequestEndOffset() && transferEncodingDecoder_->finished())
+        || loff < getRequestEndOffset()) &&
+       (segment->complete() ||
+        segment->getPositionToWrite() == getFileEntry()->getLastOffset())) {
+      // In this case, transferEncodingDecoder is used and
+      // Content-Length is known.  We check
+      // transferEncodingDecoder_->finished() only if the requested
+      // end offset equals to written position in file local offset;
+      // in other words, data in the requested ranage is all received.
+      // If requested end offset is greater than this segment, then
+      // transferEncodingDecoder_ is not finished in this segment.
+      segmentPartComplete = true;
+    } else if((transferEncodingDecoder_.isNull() ||
+               transferEncodingDecoder_->finished()) &&
+              (contentEncodingDecoder_.isNull() ||
+               contentEncodingDecoder_->finished())) {
+      segmentPartComplete = true;
+    }
   }
 
   if(!segmentPartComplete && bufSize == 0 &&

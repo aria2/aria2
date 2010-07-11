@@ -88,4 +88,9 @@ bool FtpDownloadCommand::prepareForNextSegment()
   }
 }
 
+off_t FtpDownloadCommand::getRequestEndOffset() const
+{
+  return getFileEntry()->getLength();
+}
+
 } // namespace aria2

@@ -129,4 +129,9 @@ bool HttpDownloadCommand::prepareForNextSegment() {
   }
 }
 
+off_t HttpDownloadCommand::getRequestEndOffset() const
+{
+  return httpResponse_->getHttpHeader()->getRange()->getEndByte()+1;
+}
+
 } // namespace aria2

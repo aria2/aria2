@@ -48,6 +48,7 @@ private:
   SharedHandle<HttpConnection> httpConnection_;
 protected:
   virtual bool prepareForNextSegment();
+  virtual off_t getRequestEndOffset() const;
 public:
   HttpDownloadCommand(cuid_t cuid,
                       const SharedHandle<Request>& req,
