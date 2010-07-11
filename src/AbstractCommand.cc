@@ -125,6 +125,27 @@ bool AbstractCommand::execute() {
       }
       return prepareForRetry(0);
     }
+    if(!getPieceStorage().isNull()) {
+      segments_.clear();
+      getSegmentMan()->getInFlightSegment(segments_, getCuid());
+      if(!req_.isNull() && segments_.empty()) {
+        // This command previously has assigned segments, but it is
+        // canceled. So discard current request chain.  Plus, if no
+        // segment is available when http pipelining is used.
+        if(getLogger()->debug()) {
+          getLogger()->debug("CUID#%s - It seems previously assigned segments"
+                             " are canceled. Restart.",
+                             util::itos(getCuid()).c_str());
+        }
+        // Request::isPipeliningEnabled() == true means aria2
+        // accessed the remote server and discovered that the server
+        // supports pipelining.
+        if(!req_.isNull() && req_->isPipeliningEnabled()) {
+          e_->poolSocket(req_, createProxyRequest(), socket_);
+        }
+        return prepareForRetry(0);
+      }
+    }
     // TODO it is not needed to check other PeerStats every time.
     // Find faster Request when no segment is available.
     if(!req_.isNull() && fileEntry_->countPooledRequest() > 0 &&
@@ -157,27 +178,6 @@ bool AbstractCommand::execute() {
         !nameResolverCheck_)) {
       checkPoint_ = global::wallclock;
       if(!getPieceStorage().isNull()) {
-        segments_.clear();
-        getSegmentMan()->getInFlightSegment(segments_, getCuid());
-        if(!req_.isNull() && segments_.empty()) {
-          // TODO make this out side of socket check if.
-
-          // This command previously has assigned segments, but it is
-          // canceled. So discard current request chain.  Plus, if no
-          // segment is available when http pipelining is used.
-          if(getLogger()->debug()) {
-            getLogger()->debug("CUID#%s - It seems previously assigned segments"
-                               " are canceled. Restart.",
-                               util::itos(getCuid()).c_str());
-          }
-          // Request::isPipeliningEnabled() == true means aria2
-          // accessed the remote server and discovered that the server
-          // supports pipelining.
-          if(!req_.isNull() && req_->isPipeliningEnabled()) {
-            e_->poolSocket(req_, createProxyRequest(), socket_);
-          }
-          return prepareForRetry(0);
-        }
         if(req_.isNull() || req_->getMaxPipelinedRequest() == 1 ||
            // Why the following condition is necessary? That's because
            // For single file download, SegmentMan::getSegment(cuid)

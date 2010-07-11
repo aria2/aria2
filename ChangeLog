@@ -1,5 +1,10 @@
 2010-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved segment empty check before socket check.
+	* src/AbstractCommand.cc
+
+2010-07-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that segments are not filled to
 	Request::getMaxPipelinedRequest().
 	Make sure that trailing data of transfer encoding is read propery,
