@@ -247,6 +247,11 @@ public:
   virtual void updatePieceStats(const unsigned char* newBitfield,
                                 size_t newBitfieldLength,
                                 const unsigned char* oldBitfield) {}
+
+  virtual size_t getNextUsedIndex(size_t index)
+  {
+    return 0;
+  }
 };
 
 } // namespace aria2

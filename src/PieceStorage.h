@@ -244,6 +244,10 @@ public:
                                 size_t newBitfieldLength,
                                 const unsigned char* oldBitfield) = 0;
 
+  // Returns index x where all pieces in [index+1, x-1], inclusive,
+  // are not used and not completed. If all pieces after index+1 are
+  // used or completed, returns the number of pieces.
+  virtual size_t getNextUsedIndex(size_t index) = 0;
 };
 
 typedef SharedHandle<PieceStorage> PieceStorageHandle;

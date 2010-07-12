@@ -87,6 +87,8 @@ private:
 
   bool acceptGzip_;
 
+  off_t endOffsetOverride_;
+
   std::pair<std::string, std::string> getProxyAuthString() const;
 public:
   HttpRequest();
@@ -271,6 +273,11 @@ public:
   bool acceptGZip() const
   {
     return acceptGzip_;
+  }
+
+  void setEndOffsetOverride(off_t offset)
+  {
+    endOffsetOverride_ = offset;
   }
 };
 

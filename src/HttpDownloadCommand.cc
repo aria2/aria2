@@ -52,7 +52,7 @@
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
-
+#include "Logger.h"
 namespace aria2 {
 
 HttpDownloadCommand::HttpDownloadCommand
@@ -88,12 +88,13 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     if(getRequest()->isPipeliningEnabled() ||
        (getRequest()->isKeepAliveEnabled() &&
         (
+         // TODO make sure that all decoder is finished to pool socket
          ((!getTransferEncodingDecoder().isNull() &&
            getTransferEncodingDecoder()->finished()) ||
           (!getContentEncodingDecoder().isNull() &&
            getContentEncodingDecoder()->finished())) ||
-         getFileEntry()->getLastOffset() ==
-         getSegments().front()->getPositionToWrite()
+         getRequestEndOffset() ==
+         getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())
          )
         )
        ) {

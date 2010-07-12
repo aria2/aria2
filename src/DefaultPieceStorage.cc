@@ -684,4 +684,14 @@ void DefaultPieceStorage::addPieceStats(size_t index)
   pieceStatMan_->addPieceStats(index);
 }
 
+size_t DefaultPieceStorage::getNextUsedIndex(size_t index)
+{
+  for(size_t i = index+1; i < bitfieldMan_->countBlock(); ++i) {
+    if(bitfieldMan_->isUseBitSet(i) || bitfieldMan_->isBitSet(i)) {
+      return i;
+    }
+  }
+  return bitfieldMan_->countBlock();
+}
+
 } // namespace aria2

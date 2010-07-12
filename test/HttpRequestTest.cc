@@ -29,6 +29,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequest_query);
   CPPUNIT_TEST(testCreateRequest_head);
   CPPUNIT_TEST(testCreateRequest_ipv6LiteralAddr);
+  CPPUNIT_TEST(testCreateRequest_endOffsetOverride);
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
   CPPUNIT_TEST(testUserAgent);
@@ -55,6 +56,7 @@ public:
   void testCreateRequest_query();
   void testCreateRequest_head();
   void testCreateRequest_ipv6LiteralAddr();
+  void testCreateRequest_endOffsetOverride();
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
   void testUserAgent();
@@ -492,6 +494,50 @@ void HttpRequestTest::testCreateRequest_head()
   CPPUNIT_ASSERT(getline(result, line));
   util::trimSelf(line);
   CPPUNIT_ASSERT_EQUAL(std::string("HEAD /aria2-1.0.0.tar.bz2 HTTP/1.1"), line);
+}
+
+void HttpRequestTest::testCreateRequest_endOffsetOverride()
+{
+  SharedHandle<Request> request(new Request());
+  request->setUri("http://localhost/myfile");
+  HttpRequest httpRequest;
+  httpRequest.disableContentEncoding();
+  httpRequest.setRequest(request);
+  httpRequest.setAuthConfigFactory(authConfigFactory_, option_.get());
+  SharedHandle<Piece> p(new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
+  httpRequest.setSegment(segment);
+  httpRequest.setEndOffsetOverride(1024*1024*1024);
+  SharedHandle<FileEntry> fileEntry
+    (new FileEntry("file", 1024*1024*1024*10LL, 0));
+  httpRequest.setFileEntry(fileEntry);
+  // End byte is not passed if start byte is 0.
+  std::string expectedText =
+    "GET /myfile HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: localhost\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+  
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+
+  segment->updateWrittenLength(1);
+
+  expectedText =
+    "GET /myfile HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: localhost\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "Range: bytes=1-1073741823\r\n"
+    "\r\n";
+  
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }
 
 void HttpRequestTest::testCreateProxyRequest()

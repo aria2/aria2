@@ -227,6 +227,8 @@ public:
                                 size_t newBitfieldLength,
                                 const unsigned char* oldBitfield);
 
+  virtual size_t getNextUsedIndex(size_t index);
+
   /**
    * This method is made private for test purpose only.
    */

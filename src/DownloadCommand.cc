@@ -336,6 +336,11 @@ bool DownloadCommand::prepareForNextSegment() {
       if(!tempSegment->complete()) {
         return prepareForRetry(0);
       }
+      if(getRequestEndOffset() ==
+         getFileEntry()->gtoloff
+         (tempSegment->getPosition()+tempSegment->getLength())) {
+        return prepareForRetry(0);
+      }
       SharedHandle<Segment> nextSegment = getSegmentMan()->getSegment
         (getCuid(), tempSegment->getIndex()+1);
       if(nextSegment.isNull()) {

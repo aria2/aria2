@@ -58,7 +58,8 @@ const std::string HttpRequest::USER_AGENT("aria2");
 HttpRequest::HttpRequest():contentEncodingEnabled_(true),
                            userAgent_(USER_AGENT),
                            noCache_(true),
-                           acceptGzip_(false)
+                           acceptGzip_(false),
+                           endOffsetOverride_(false)
 {}
 
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
@@ -196,6 +197,9 @@ std::string HttpRequest::createRequest()
     rangeHeader += "-";
     if(request_->isPipeliningEnabled()) {
       rangeHeader += util::itos(getEndByte());
+    } else if(getProtocol() != Request::PROTO_FTP && endOffsetOverride_ > 0) {
+      // FTP via http proxy does not support endbytes 
+      rangeHeader += util::itos(endOffsetOverride_-1);
     }
     builtinHds.push_back(std::make_pair("Range:", rangeHeader));
   }

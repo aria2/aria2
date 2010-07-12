@@ -31,6 +31,7 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCancelPiece);
   CPPUNIT_TEST(testMarkPiecesDone);
   CPPUNIT_TEST(testGetCompletedLength);
+  CPPUNIT_TEST(testGetNextUsedIndex);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<DownloadContext> dctx_;
@@ -67,6 +68,7 @@ public:
   void testCancelPiece();
   void testMarkPiecesDone();
   void testGetCompletedLength();
+  void testGetNextUsedIndex();
 };
 
 
@@ -300,6 +302,18 @@ void DefaultPieceStorageTest::testGetCompletedLength()
   ps.markPiecesDone(256*1024*1024);
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)256*1024*1024, ps.getCompletedLength());
+}
+
+void DefaultPieceStorageTest::testGetNextUsedIndex()
+{
+  DefaultPieceStorage pss(dctx_, option);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, pss.getNextUsedIndex(0));
+  SharedHandle<Piece> piece = pss.getMissingPiece(2);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
+  pss.completePiece(piece);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
+  piece = pss.getMissingPiece(0);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
 }
 
 } // namespace aria2

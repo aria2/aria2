@@ -57,6 +57,7 @@
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
+#include "PieceStorage.h"
 
 namespace aria2 {
 
@@ -87,7 +88,8 @@ createHttpRequest(const SharedHandle<Request>& req,
                   const RequestGroup* rg,
                   const SharedHandle<CookieStorage>& cookieStorage,
                   const SharedHandle<AuthConfigFactory>& authConfigFactory,
-                  const SharedHandle<Request>& proxyRequest)
+                  const SharedHandle<Request>& proxyRequest,
+                  off_t endOffset = 0)
 {
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
@@ -110,6 +112,7 @@ createHttpRequest(const SharedHandle<Request>& req,
   } else {
     httpRequest->disableNoCache();
   }
+  httpRequest->setEndOffsetOverride(endOffset);
   return httpRequest;
 }
 
@@ -148,6 +151,15 @@ bool HttpRequestCommand::executeInternal() {
           itr != eoi; ++itr) {
         const SharedHandle<Segment>& segment = *itr;
         if(!httpConnection_->isIssued(segment)) {
+          off_t endOffset = 0;
+          if(getRequestGroup()->getTotalLength() > 0 &&
+             !getPieceStorage().isNull()) {
+            size_t nextIndex =
+              getPieceStorage()->getNextUsedIndex(segment->getIndex());
+            endOffset = std::min
+              (static_cast<off_t>(getFileEntry()->getLength()),
+               getFileEntry()->gtoloff(segment->getSegmentLength()*nextIndex));
+          }
           SharedHandle<HttpRequest> httpRequest
             (createHttpRequest(getRequest(),
                                getFileEntry(),
@@ -157,7 +169,8 @@ bool HttpRequestCommand::executeInternal() {
                                getRequestGroup(),
                                getDownloadEngine()->getCookieStorage(),
                                getDownloadEngine()->getAuthConfigFactory(),
-                               proxyRequest_));
+                               proxyRequest_,
+                               endOffset));
           httpConnection_->sendRequest(httpRequest);
         }
       }
