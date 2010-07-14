@@ -45,12 +45,16 @@ class FeedbackURISelector:public URISelector {
 private:
   SharedHandle<ServerStatMan> serverStatMan_;
 
+  std::string selectInternal
+  (const std::deque<std::string>& uris,
+   const std::vector<std::string>& usedHosts);
 public:
   FeedbackURISelector(const SharedHandle<ServerStatMan>& serverStatMan);
 
   virtual ~FeedbackURISelector();
 
-  virtual std::string select(FileEntry* fileEntry);
+  virtual std::string select
+  (FileEntry* fileEntry, const std::vector<std::string>& ignoreHosts);
 };
 
 } // namespace aria2

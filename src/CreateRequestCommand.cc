@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "CreateRequestCommand.h"
-
 #include "InitiateConnectionCommandFactory.h"
 #include "RequestGroup.h"
 #include "Segment.h"
@@ -74,9 +73,12 @@ bool CreateRequestCommand::executeInternal()
     setFileEntry(getDownloadContext()->findFileEntryByOffset
                  (getSegments().front()->getPositionToWrite()));
   }
+  std::vector<std::string> usedHosts;
+  getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
   setRequest
     (getFileEntry()->getRequest(getRequestGroup()->getURISelector(),
                                 getOption()->getAsBool(PREF_REUSE_URI),
+                                usedHosts,
                                 getOption()->get(PREF_REFERER),
                                 // Don't use HEAD request when file
                                 // size is known.

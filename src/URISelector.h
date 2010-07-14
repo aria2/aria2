@@ -35,7 +35,9 @@
 #ifndef _D_URI_SELECTOR_H_
 #define _D_URI_SELECTOR_H_
 #include "common.h"
+
 #include <string>
+#include <vector>
 #include <deque>
 
 namespace aria2 {
@@ -47,7 +49,8 @@ class URISelector {
 public:
   virtual ~URISelector() {}
 
-  virtual std::string select(FileEntry* fileEntry) = 0;
+  virtual std::string select
+  (FileEntry* fileEntry, const std::vector<std::string>& usedHosts) = 0;
 
   virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
                                    DownloadCommand* command) {};

@@ -102,11 +102,6 @@ void FileEntry::getUris(std::vector<std::string>& uris) const
   uris.insert(uris.end(), uris_.begin(), uris_.end());
 }
 
-std::string FileEntry::selectUri(const SharedHandle<URISelector>& uriSelector)
-{
-  return uriSelector->select(this);
-}
-
 template<typename InputIterator>
 static size_t countInFlightHost(InputIterator first, InputIterator last,
                                 const std::string& hostname)
@@ -126,51 +121,81 @@ SharedHandle<Request>
 FileEntry::getRequest
 (const SharedHandle<URISelector>& selector,
  bool uriReuse,
+ const std::vector<std::string>& usedHosts,
  const std::string& referer,
  const std::string& method)
 {
   SharedHandle<Request> req;
-  if(requestPool_.empty()) {
-    for(int g = 0; g < 2; ++g) {
-      std::vector<std::string> pending;
-      std::vector<std::string> ignoreHost;
-      while(1) {
-        std::string uri = selector->select(this);
-        if(uri.empty()) {
-          break;
-        }
-        req.reset(new Request());
-        if(req->setUri(uri)) {
-          if(countInFlightHost(inFlightRequests_.begin(),
-                               inFlightRequests_.end(),
-                               req->getHost()) >= maxConnectionPerServer_) {
-            pending.push_back(uri);
-            ignoreHost.push_back(req->getHost());
-            req.reset();
-            continue;
-          }
-          req->setReferer(referer);
-          req->setMethod(method);
-          spentUris_.push_back(uri);
-          inFlightRequests_.push_back(req);
-          break;
-        } else {
-          req.reset();
-        }
+  Request r;
+  if(!requestPool_.empty()) {
+    for(std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin(),
+          eoi = requestPool_.end(); i != eoi; ++i) {
+      r.setUri((*i)->getUri());
+      if(std::find(usedHosts.begin(), usedHosts.end(), r.getHost()) !=
+         usedHosts.end()) {
+        continue;
       }
-      uris_.insert(uris_.begin(), pending.begin(), pending.end());
-      // TODO UriReuse is performed only when PREF_REUSE_URI is true.
-      if(g == 0 && uriReuse && req.isNull() && uris_.size() == pending.size()) {
-        // Reuse URIs other than ones in pending
-        reuseUri(ignoreHost);
-      } else {
+      if(countInFlightHost(inFlightRequests_.begin(), inFlightRequests_.end(),
+                           r.getHost()) >= maxConnectionPerServer_) {
+        continue;
+      }
+      req = *i;
+      requestPool_.erase(i);
+      inFlightRequests_.push_back(req);
+      return req;
+    }
+  }
+
+  for(int g = 0; g < 2; ++g) {
+    std::vector<std::string> pending;
+    std::vector<std::string> ignoreHost;
+    while(1) {
+      std::string uri = selector->select(this, usedHosts);
+      if(uri.empty()) {
         break;
       }
+      req.reset(new Request());
+      if(req->setUri(uri)) {
+        if(countInFlightHost(inFlightRequests_.begin(),
+                             inFlightRequests_.end(),
+                             req->getHost()) >= maxConnectionPerServer_) {
+          pending.push_back(uri);
+          ignoreHost.push_back(req->getHost());
+          req.reset();
+          continue;
+        }
+        req->setReferer(referer);
+        req->setMethod(method);
+        spentUris_.push_back(uri);
+        inFlightRequests_.push_back(req);
+        break;
+      } else {
+        req.reset();
+      }
     }
-  } else {
-    req = requestPool_.front();
-    requestPool_.pop_front();
-    inFlightRequests_.push_back(req);
+    uris_.insert(uris_.begin(), pending.begin(), pending.end());
+    // TODO UriReuse is performed only when PREF_REUSE_URI is true.
+    if(g == 0 && uriReuse && req.isNull() && uris_.size() == pending.size()) {
+      // Reuse URIs other than ones in pending
+      reuseUri(ignoreHost);
+    } else {
+      break;
+    }
+  }
+  if(req.isNull()) {
+    Request r;
+    for(std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin(),
+          eoi = requestPool_.end(); i != eoi; ++i) {
+      r.setUri((*i)->getUri());
+      if(countInFlightHost(inFlightRequests_.begin(), inFlightRequests_.end(),
+                           r.getHost()) >= maxConnectionPerServer_) {
+        continue;
+      }
+      req = *i;
+      requestPool_.erase(i);
+      inFlightRequests_.push_back(req);
+      return req;
+    }
   }
   return req;
 }

@@ -273,6 +273,8 @@ public:
   {
     return queueCheck_;
   }
+
+  void getUsedHosts(std::vector<std::string>& usedHosts);
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

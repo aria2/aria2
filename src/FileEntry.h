@@ -154,8 +154,6 @@ public:
 
   const std::string& getContentType() const { return contentType_; }
 
-  std::string selectUri(const SharedHandle<URISelector>& uriSelector);
-
   // If pooled Request object is available, one of them is removed
   // from the pool and returned.  If pool is empty, then select URI
   // using selectUri(selector) and construct Request object using it
@@ -170,6 +168,7 @@ public:
   SharedHandle<Request> getRequest
   (const SharedHandle<URISelector>& selector,
    bool uriReuse = true,
+   const std::vector<std::string>& usedHosts = std::vector<std::string>(),
    const std::string& referer = A2STR::NIL,
    const std::string& method = Request::METHOD_GET);
 

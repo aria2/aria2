@@ -1,5 +1,24 @@
 2010-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	FeedbackURISelector now tries to chooses URI which is not used in
+	aria2 globally. If it is possible, it may return used URI.
+	* src/AdaptiveURISelector.cc
+	* src/AdaptiveURISelector.h
+	* src/CreateRequestCommand.cc
+	* src/FeedbackURISelector.cc
+	* src/FeedbackURISelector.h
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/InOrderURISelector.cc
+	* src/InOrderURISelector.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/URISelector.h
+	* test/FeedbackURISelectorTest.cc
+	* test/InOrderURISelectorTest.cc
+
+2010-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc for options.
 	* doc/aria2c.1.txt
 

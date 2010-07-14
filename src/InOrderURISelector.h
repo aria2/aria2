@@ -44,7 +44,8 @@ public:
 
   virtual ~InOrderURISelector();
 
-  virtual std::string select(FileEntry* fileEntry);
+  virtual std::string select
+  (FileEntry* fileEntry, const std::vector<std::string>& usedHosts);
 };
 
 } // namespace aria2

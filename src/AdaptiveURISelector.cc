@@ -72,7 +72,8 @@ AdaptiveURISelector::AdaptiveURISelector
 
 AdaptiveURISelector::~AdaptiveURISelector() {}
 
-std::string AdaptiveURISelector::select(FileEntry* fileEntry)
+std::string AdaptiveURISelector::select
+(FileEntry* fileEntry, const std::vector<std::string>& usedHosts)
 {
   if(logger_->debug()) {
     logger_->debug("AdaptiveURISelector: called %d",

@@ -60,52 +60,70 @@ public:
   }
 };
 
-std::string FeedbackURISelector::select(FileEntry* fileEntry)
+std::string FeedbackURISelector::select
+(FileEntry* fileEntry, const std::vector<std::string>& usedHosts)
 {
-  std::deque<std::string>& uris = fileEntry->getRemainingUris();
-  if(uris.empty()) {
+  if(fileEntry->getRemainingUris().empty()) {
     return A2STR::NIL;
   }
-  // Use first 10 URIs to introduce some randomness.
-  const int NUM_URI = 10;
+  // Select URI with usedHosts first. If no URI is selected, then do
+  // it again without usedHosts.
+  std::string uri = selectInternal(fileEntry->getRemainingUris(), usedHosts);
+  if(uri.empty()) {
+    uri = selectInternal
+      (fileEntry->getRemainingUris(), std::vector<std::string>());
+  } 
+  if(!uri.empty()) {
+    std::deque<std::string>& uris = fileEntry->getRemainingUris();
+    uris.erase(std::find(uris.begin(), uris.end(), uri));
+  }
+  return uri;
+}
+
+std::string FeedbackURISelector::selectInternal
+(const std::deque<std::string>& uris,
+ const std::vector<std::string>& usedHosts)
+{
+  // Use first 10 good URIs to introduce some randomness.
+  const size_t NUM_URI = 10;
   // Ignore low speed server
   const unsigned int SPEED_THRESHOLD = 20*1024;
-  size_t max = std::min(uris.size(), static_cast<size_t>(NUM_URI));
-  std::deque<std::string>::iterator urisLast = uris.begin()+max;
-  std::deque<std::pair<SharedHandle<ServerStat>, std::string> > cands;
-  for(std::deque<std::string>::iterator i = uris.begin(), eoi = urisLast;
-      i != eoi; ++i) {
+  std::vector<std::pair<SharedHandle<ServerStat>, std::string> > fastCands;
+  std::vector<std::string> normCands;
+  for(std::deque<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
     Request r;
     r.setUri(*i);
-    SharedHandle<ServerStat> ss = serverStatMan_->find(r.getHost(),
-                                                       r.getProtocol());
+    if(std::find(usedHosts.begin(), usedHosts.end(), r.getHost())
+       != usedHosts.end()) {
+      continue;
+    }
+    SharedHandle<ServerStat> ss =
+      serverStatMan_->find(r.getHost(), r.getProtocol());
     if(!ss.isNull() && ss->isOK() && ss->getDownloadSpeed() > SPEED_THRESHOLD) {
-      cands.push_back(std::pair<SharedHandle<ServerStat>, std::string>(ss, *i));
+      fastCands.push_back(std::make_pair(ss, *i));
+    }
+    if(ss.isNull() || ss->isOK()) {
+      normCands.push_back(*i);
     }
   }
-  if(cands.empty()) {
-    for(std::deque<std::string>::iterator i = uris.begin(), eoi = uris.end();
-        i != eoi; ++i) {
-      Request r;
-      r.setUri(*i);
-      SharedHandle<ServerStat> ss = serverStatMan_->find(r.getHost(),
-                                                         r.getProtocol());
-      // Skip ERROR state URI
-      if(ss.isNull() || ss->isOK()) {
-        std::string nextURI = *i;
-        uris.erase(uris.begin(), i+1);
-        return nextURI;
+  if(fastCands.empty()) {
+    if(normCands.empty()) {
+      if(usedHosts.empty()) {
+        // All URIs are inspected but aria2 cannot find usable one.
+        // Return first URI anyway in this case.
+        return uris.front();
+      } else {
+        // If usedHosts is not empty, there is a possibility it
+        // includes usable host.
+        return A2STR::NIL;
       }
+    } else {
+      return normCands.front();
     }
-    // All URIs are inspected but aria2 cannot find usable one.
-    // Return first URI anyway in this case.
-    std::string nextURI = uris.front();
-    uris.pop_front();
-    return nextURI;
   } else {
-    std::sort(cands.begin(), cands.end(), ServerStatFaster());
-    uris.erase(std::find(uris.begin(), uris.end(), cands.front().second));
-    return cands.front().second;
+    std::sort(fastCands.begin(), fastCands.end(), ServerStatFaster());
+    return fastCands.front().second;
   }
 }
 

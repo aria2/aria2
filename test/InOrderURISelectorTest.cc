@@ -45,13 +45,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(InOrderURISelectorTest);
 
 void InOrderURISelectorTest::testSelect()
 {
+  std::vector<std::string> usedHosts;
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
-                       sel->select(&fileEntry_));
+                       sel->select(&fileEntry_, usedHosts));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
-                       sel->select(&fileEntry_));
+                       sel->select(&fileEntry_, usedHosts));
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
-                       sel->select(&fileEntry_));
-  CPPUNIT_ASSERT_EQUAL(std::string(""), sel->select(&fileEntry_));
+                       sel->select(&fileEntry_, usedHosts));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), sel->select(&fileEntry_, usedHosts));
 }
 
 } // namespace aria2

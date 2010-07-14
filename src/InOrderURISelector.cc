@@ -42,7 +42,8 @@ InOrderURISelector::InOrderURISelector() {}
 
 InOrderURISelector::~InOrderURISelector() {}
 
-std::string InOrderURISelector::select(FileEntry* fileEntry)
+std::string InOrderURISelector::select
+(FileEntry* fileEntry, const std::vector<std::string>& usedHosts)
 {
   std::deque<std::string>& uris = fileEntry->getRemainingUris();
   if(uris.empty()) {

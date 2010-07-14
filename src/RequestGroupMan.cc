@@ -896,4 +896,20 @@ bool RequestGroupMan::doesOverallUploadSpeedExceed()
     maxOverallUploadSpeedLimit_ < calculateStat().getUploadSpeed();
 }
 
+void RequestGroupMan::getUsedHosts(std::vector<std::string>& usedHosts)
+{
+  Request r;
+  for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
+        requestGroups_.begin(), eoi = requestGroups_.end(); i != eoi; ++i) {
+    const std::deque<SharedHandle<Request> >& inFlightReqs =
+      (*i)->getDownloadContext()->getFirstFileEntry()->getInFlightRequests();
+    for(std::deque<SharedHandle<Request> >::const_iterator j =
+          inFlightReqs.begin(), eoj = inFlightReqs.end(); j != eoj; ++j) {
+      if(r.setUri((*j)->getUri())) {
+        usedHosts.push_back(r.getHost());
+      }
+    }
+  }
+}
+
 } // namespace aria2
