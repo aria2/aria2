@@ -3,6 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "InOrderURISelector.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -13,7 +14,8 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveURIWhoseHostnameIs);
   CPPUNIT_TEST(testExtractURIResult);
   CPPUNIT_TEST(testGetRequest);
-  CPPUNIT_TEST(testGetRequest_disableSingleHostMultiConnection);
+  CPPUNIT_TEST(testGetRequest_withoutUriReuse);
+  CPPUNIT_TEST(testGetRequest_withUniqueProtocol);
   CPPUNIT_TEST(testReuseUri);
   CPPUNIT_TEST(testAddUri);
   CPPUNIT_TEST(testAddUris);
@@ -27,7 +29,8 @@ public:
   void testRemoveURIWhoseHostnameIs();
   void testExtractURIResult();
   void testGetRequest();
-  void testGetRequest_disableSingleHostMultiConnection();
+  void testGetRequest_withoutUriReuse();
+  void testGetRequest_withUniqueProtocol();
   void testReuseUri();
   void testAddUri();
   void testAddUris();
@@ -109,7 +112,6 @@ void FileEntryTest::testGetRequest()
   SharedHandle<Request> req = fileEntry->getRequest(selector);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
-
   fileEntry->poolRequest(req);
 
   SharedHandle<Request> req2nd = fileEntry->getRequest(selector);
@@ -117,14 +119,51 @@ void FileEntryTest::testGetRequest()
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req2nd->getProtocol());
 
   SharedHandle<Request> req3rd = fileEntry->getRequest(selector);
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req3rd->getHost());
-  CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req3rd->getProtocol());
+  CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req3rd->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req3rd->getProtocol());
+
+  SharedHandle<Request> req4th = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT(req4th.isNull());
+
+  fileEntry->setMaxConnectionPerServer(2);
+  
+  SharedHandle<Request> req5th = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req5th->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req5th->getProtocol());
+
+  SharedHandle<Request> req6th = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req6th->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req6th->getProtocol());
+
+  SharedHandle<Request> req7th = fileEntry->getRequest(selector);
+  CPPUNIT_ASSERT(req7th.isNull());
 }
 
-void FileEntryTest::testGetRequest_disableSingleHostMultiConnection()
+void FileEntryTest::testGetRequest_withoutUriReuse()
 {
   SharedHandle<FileEntry> fileEntry = createFileEntry();
-  fileEntry->disableSingleHostMultiConnection();
+  fileEntry->setMaxConnectionPerServer(2);
+  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<Request> req = fileEntry->getRequest(selector, false);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
+
+  SharedHandle<Request> req2nd = fileEntry->getRequest(selector, false);
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req2nd->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req2nd->getProtocol());
+
+  SharedHandle<Request> req3rd = fileEntry->getRequest(selector, false);
+  CPPUNIT_ASSERT_EQUAL(std::string("mirror"), req3rd->getHost());
+  CPPUNIT_ASSERT_EQUAL(std::string("http"), req3rd->getProtocol());
+
+  SharedHandle<Request> req4th = fileEntry->getRequest(selector, false);
+  CPPUNIT_ASSERT(req4th.isNull());
+}
+
+void FileEntryTest::testGetRequest_withUniqueProtocol()
+{
+  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  fileEntry->setUniqueProtocol(true);
   SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
   SharedHandle<Request> req = fileEntry->getRequest(selector);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
@@ -136,25 +175,42 @@ void FileEntryTest::testGetRequest_disableSingleHostMultiConnection()
 
   SharedHandle<Request> req3rd = fileEntry->getRequest(selector);
   CPPUNIT_ASSERT(req3rd.isNull());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry->getRemainingUris().size());
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"),
+                       fileEntry->getRemainingUris()[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"),
+                       fileEntry->getRemainingUris()[1]);
 }
 
 void FileEntryTest::testReuseUri()
 {
   SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
   SharedHandle<FileEntry> fileEntry = createFileEntry();
+  fileEntry->setMaxConnectionPerServer(3);
   size_t numUris = fileEntry->getRemainingUris().size();
   for(size_t i = 0; i < numUris; ++i) {
-    fileEntry->getRequest(selector);
+    fileEntry->getRequest(selector, false);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry->getRemainingUris().size());
   fileEntry->addURIResult("http://localhost/aria2.zip",
                           downloadresultcode::UNKNOWN_ERROR);
-  fileEntry->reuseUri(3);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, fileEntry->getRemainingUris().size());
-  const std::deque<std::string>& uris = fileEntry->getRemainingUris();
+  std::vector<std::string> ignore;
+  fileEntry->reuseUri(ignore);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry->getRemainingUris().size());
+  std::deque<std::string> uris = fileEntry->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"), uris[1]);
-  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[2]);
+  for(size_t i = 0; i < 2; ++i) {
+    fileEntry->getRequest(selector, false);
+  }
+  CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry->getRemainingUris().size());
+  ignore.clear();
+  ignore.push_back("mirror");
+  fileEntry->reuseUri(ignore);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry->getRemainingUris().size());
+  uris = fileEntry->getRemainingUris();
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[0]);
 }
 
 void FileEntryTest::testAddUri()

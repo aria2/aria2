@@ -230,6 +230,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
       getLogger()->debug("This is single-tracker announce.");
     }
   }
+  rg->setNumConcurrentCommand(1);
   // If backup tracker is available, try 2 times for each tracker
   // and if they all fails, then try next one.
   rg->getOption()->put(PREF_MAX_TRIES, "2");

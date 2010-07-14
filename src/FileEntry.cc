@@ -51,13 +51,15 @@ FileEntry::FileEntry(const std::string& path,
   path_(path), uris_(uris.begin(), uris.end()), length_(length),
   offset_(offset),
   requested_(true),
-  singleHostMultiConnection_(true),
+  uniqueProtocol_(false),
+  maxConnectionPerServer_(1),
   lastFasterReplace_(0),
   logger_(LogFactory::getInstance()) {}
 
 FileEntry::FileEntry():
   length_(0), offset_(0), requested_(false),
-  singleHostMultiConnection_(true),
+  uniqueProtocol_(false),
+  maxConnectionPerServer_(1),
   logger_(LogFactory::getInstance()) {}
 
 FileEntry::~FileEntry() {}
@@ -106,53 +108,65 @@ std::string FileEntry::selectUri(const SharedHandle<URISelector>& uriSelector)
 }
 
 template<typename InputIterator>
-static bool inFlightHost(InputIterator first, InputIterator last,
-                         const std::string& hostname)
+static size_t countInFlightHost(InputIterator first, InputIterator last,
+                                const std::string& hostname)
 {
   // TODO redirection should be considered here. We need to parse
   // original URI to get hostname.
+  size_t count = 0;
   for(; first != last; ++first) {
     if((*first)->getHost() == hostname) {
-      return true;
+      ++count;
     }
   }
-  return false;
+  return count;
 }
 
 SharedHandle<Request>
 FileEntry::getRequest
 (const SharedHandle<URISelector>& selector,
+ bool uriReuse,
  const std::string& referer,
  const std::string& method)
 {
   SharedHandle<Request> req;
   if(requestPool_.empty()) {
-    std::vector<std::string> pending;
-    while(1) {
-      std::string uri = selector->select(this);
-      if(uri.empty()) {
-        return req;
-      }
-      req.reset(new Request());
-      if(req->setUri(uri)) {
-        if(!singleHostMultiConnection_) {
-          if(inFlightHost(inFlightRequests_.begin(), inFlightRequests_.end(),
-                          req->getHost())) {
+    for(int g = 0; g < 2; ++g) {
+      std::vector<std::string> pending;
+      std::vector<std::string> ignoreHost;
+      while(1) {
+        std::string uri = selector->select(this);
+        if(uri.empty()) {
+          break;
+        }
+        req.reset(new Request());
+        if(req->setUri(uri)) {
+          if(countInFlightHost(inFlightRequests_.begin(),
+                               inFlightRequests_.end(),
+                               req->getHost()) >= maxConnectionPerServer_) {
             pending.push_back(uri);
+            ignoreHost.push_back(req->getHost());
             req.reset();
             continue;
           }
+          req->setReferer(referer);
+          req->setMethod(method);
+          spentUris_.push_back(uri);
+          inFlightRequests_.push_back(req);
+          break;
+        } else {
+          req.reset();
         }
-        req->setReferer(referer);
-        req->setMethod(method);
-        spentUris_.push_back(uri);
-        inFlightRequests_.push_back(req);
-        break;
+      }
+      uris_.insert(uris_.begin(), pending.begin(), pending.end());
+      // TODO UriReuse is performed only when PREF_REUSE_URI is true.
+      if(g == 0 && uriReuse && req.isNull() && uris_.size() == pending.size()) {
+        // Reuse URIs other than ones in pending
+        reuseUri(ignoreHost);
       } else {
-        req.reset();
+        break;
       }
     }
-    uris_.insert(uris_.begin(), pending.begin(), pending.end());
   } else {
     req = requestPool_.front();
     requestPool_.pop_front();
@@ -290,8 +304,14 @@ void FileEntry::extractURIResult
   uriResults_.erase(uriResults_.begin(), i);
 }
 
-void FileEntry::reuseUri(size_t num)
+void FileEntry::reuseUri(const std::vector<std::string>& ignore)
 {
+  if(logger_->debug()) {
+    for(std::vector<std::string>::const_iterator i = ignore.begin(),
+          eoi = ignore.end(); i != eoi; ++i) {
+      logger_->debug("ignore host=%s", (*i).c_str());
+    }
+  }
   std::deque<std::string> uris = spentUris_;
   std::sort(uris.begin(), uris.end());
   uris.erase(std::unique(uris.begin(), uris.end()), uris.end());
@@ -302,11 +322,29 @@ void FileEntry::reuseUri(size_t num)
   std::sort(errorUris.begin(), errorUris.end());
   errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
                   errorUris.end());
-     
+  if(logger_->debug()) {
+    for(std::vector<std::string>::const_iterator i = errorUris.begin(),
+          eoi = errorUris.end(); i != eoi; ++i) {
+      logger_->debug("error URI=%s", (*i).c_str());
+    }
+  }
   std::vector<std::string> reusableURIs;
   std::set_difference(uris.begin(), uris.end(),
                       errorUris.begin(), errorUris.end(),
                       std::back_inserter(reusableURIs));
+  std::vector<std::string>::iterator insertionPoint = reusableURIs.begin();
+  Request req;
+  for(std::vector<std::string>::iterator i = reusableURIs.begin(),
+        eoi = reusableURIs.end(); i != eoi; ++i) {
+    req.setUri(*i);
+    if(std::find(ignore.begin(), ignore.end(), req.getHost()) == ignore.end()) {
+      if(i != insertionPoint) {
+        *insertionPoint = *i;
+      }
+      ++insertionPoint;
+    }
+  }
+  reusableURIs.erase(insertionPoint, reusableURIs.end());
   size_t ininum = reusableURIs.size();
   if(logger_->debug()) {
     logger_->debug("Found %u reusable URIs", static_cast<unsigned int>(ininum));
@@ -315,19 +353,7 @@ void FileEntry::reuseUri(size_t num)
       logger_->debug("URI=%s", (*i).c_str());
     }
   }
-  // Reuse at least num URIs here to avoid to
-  // run this process repeatedly.
-  if(ininum > 0) {
-    for(size_t i = 0; i < num/ininum; ++i) {
-      uris_.insert(uris_.end(), reusableURIs.begin(), reusableURIs.end());
-    }
-    uris_.insert(uris_.end(), reusableURIs.begin(),
-                 reusableURIs.begin()+(num%ininum));
-    if(logger_->debug()) {
-      logger_->debug("Duplication complete: now %u URIs for reuse",
-                     static_cast<unsigned int>(uris_.size()));
-    }
-  }
+  uris_.insert(uris_.end(), reusableURIs.begin(), reusableURIs.end());
 }
 
 void FileEntry::releaseRuntimeResource()

@@ -194,6 +194,8 @@ extern const std::string PREF_ALWAYS_RESUME;
 extern const std::string PREF_MAX_RESUME_FAILURE_TRIES;
 // value: string that your file system recognizes as a file name.
 extern const std::string PREF_SAVE_SESSION;
+// value: 1*digit
+extern const std::string PREF_MAX_CONNECTION_PER_SERVER;
 
 /**
  * FTP related preferences

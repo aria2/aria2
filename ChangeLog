@@ -1,3 +1,26 @@
+2010-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --max-connection-per-server=NUM option. The default value of
+	NUM is 1. This option limits the number of connections allowed to
+	one server for each download. This means when NUM is 2 and 1 URI
+	is provided, even if you specified -s 5, aria2 establishes 2
+	connections. Default value of -j option is changed from 5 to 2.
+	* src/BtDependency.cc
+	* src/CreateRequestCommand.cc
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/Metalink2RequestGroup.cc
+	* src/OptionHandlerFactory.cc
+	* src/TrackerWatcherCommand.cc
+	* src/download_helper.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DownloadHelperTest.cc
+	* test/FileEntryTest.cc
+
 2010-07-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Set end byte in Range header if start byte > 0 to get more chance

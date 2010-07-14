@@ -318,10 +318,19 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_MAX_CONCURRENT_DOWNLOADS,
                                     TEXT_MAX_CONCURRENT_DOWNLOADS,
-                                    "5",
+                                    "2",
                                     1, -1,
                                     'j'));
     op->addTag(TAG_BASIC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+                                   (PREF_MAX_CONNECTION_PER_SERVER,
+                                    TEXT_MAX_CONNECTION_PER_SERVER,
+                                    "1",
+                                    1, 4));
+    op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
   {

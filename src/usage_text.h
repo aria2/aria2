@@ -683,3 +683,6 @@
     "                              option on restart. Please note that downloads\n" \
     "                              added by aria2.addTorrent and aria2.addMetalink\n" \
     "                              XML-RPC method are not saved.")
+#define TEXT_MAX_CONNECTION_PER_SERVER          \
+  _(" --max-connection-per-server=NUM The maximum number of connections to one server\n"\
+    "                              for each download.")

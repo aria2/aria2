@@ -74,13 +74,9 @@ bool CreateRequestCommand::executeInternal()
     setFileEntry(getDownloadContext()->findFileEntryByOffset
                  (getSegments().front()->getPositionToWrite()));
   }
-  if(getFileEntry()->getRemainingUris().empty() &&
-     getOption()->getAsBool(PREF_REUSE_URI) &&
-     getFileEntry()->countPooledRequest() == 0) {
-    getFileEntry()->reuseUri(getRequestGroup()->getNumConcurrentCommand());
-  }
   setRequest
     (getFileEntry()->getRequest(getRequestGroup()->getURISelector(),
+                                getOption()->getAsBool(PREF_REUSE_URI),
                                 getOption()->get(PREF_REFERER),
                                 // Don't use HEAD request when file
                                 // size is known.

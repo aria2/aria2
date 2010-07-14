@@ -70,23 +70,22 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     "http://charlie/file"
   };
   std::vector<std::string> uris(vbegin(array), vend(array));
-  option_->put(PREF_SPLIT, "3");
+  option_->put(PREF_SPLIT, "7");
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "2");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
   {
     std::vector<SharedHandle<RequestGroup> > result;
-    
     createRequestGroupForUri(result, option_, uris);
-    
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
-    std::vector<std::string> uris;
-    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
-    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
+    std::vector<std::string> xuris;
+    group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
+    CPPUNIT_ASSERT_EQUAL((size_t)6, xuris.size());
+    for(size_t i = 0; i < 6; ++i) {
+      CPPUNIT_ASSERT_EQUAL(array[i%3], xuris[i]);
     }
-    CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
+    CPPUNIT_ASSERT_EQUAL((unsigned int)7, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"), ctx->getBasePath());
@@ -94,53 +93,41 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
   option_->put(PREF_SPLIT, "5");
   {
     std::vector<SharedHandle<RequestGroup> > result;
-    
     createRequestGroupForUri(result, option_, uris);
-    
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
-    std::vector<std::string> uris;
-    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    CPPUNIT_ASSERT_EQUAL((size_t)5, uris.size());
-    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
+    std::vector<std::string> xuris;
+    group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
+    CPPUNIT_ASSERT_EQUAL((size_t)5, xuris.size());
+    for(size_t i = 0; i < 5; ++i) {
+      CPPUNIT_ASSERT_EQUAL(array[i%3], xuris[i]);
     }
-    for(size_t i = 0; i < 5-A2_ARRAY_LEN(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i+A2_ARRAY_LEN(array)]);
-    }
-    CPPUNIT_ASSERT_EQUAL((unsigned int)5, group->getNumConcurrentCommand());
   }
   option_->put(PREF_SPLIT, "2");
   {
     std::vector<SharedHandle<RequestGroup> > result;
-    
     createRequestGroupForUri(result, option_, uris);
-    
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
-    std::vector<std::string> uris;
-    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
-    for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
+    std::vector<std::string> xuris;
+    group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
+    CPPUNIT_ASSERT_EQUAL((size_t)3, xuris.size());
+    for(size_t i = 0; i < 3; ++i) {
+      CPPUNIT_ASSERT_EQUAL(array[i%3], xuris[i]);
     }
-    CPPUNIT_ASSERT_EQUAL((unsigned int)2, group->getNumConcurrentCommand());
   }
   option_->put(PREF_FORCE_SEQUENTIAL, V_TRUE);
   {
     std::vector<SharedHandle<RequestGroup> > result;
-    
     createRequestGroupForUri(result, option_, uris);
-    
     CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
-
     // for alpha server
     SharedHandle<RequestGroup> alphaGroup = result[0];
     std::vector<std::string> alphaURIs;
     alphaGroup->getDownloadContext()->getFirstFileEntry()->getUris(alphaURIs);
     CPPUNIT_ASSERT_EQUAL((size_t)2, alphaURIs.size());
     for(size_t i = 0; i < 2; ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[0], uris[0]);
+      CPPUNIT_ASSERT_EQUAL(array[0], alphaURIs[i]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)2,
                          alphaGroup->getNumConcurrentCommand());
@@ -158,6 +145,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
     "http://charlie/file"
   };
   std::vector<std::string> uris(vbegin(array), vend(array));
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
   option_->put(PREF_SPLIT, "3");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
@@ -194,6 +182,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     "http://charlie/file"
   };
   std::vector<std::string> uris(vbegin(array), vend(array));
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
   option_->put(PREF_SPLIT, "3");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
@@ -204,13 +193,13 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     
     CPPUNIT_ASSERT_EQUAL((size_t)2, result.size());
     SharedHandle<RequestGroup> group = result[0];
-    std::vector<std::string> uris;
-    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
+    std::vector<std::string> xuris;
+    group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
+    CPPUNIT_ASSERT_EQUAL((size_t)3, xuris.size());
 
-    CPPUNIT_ASSERT_EQUAL(array[0], uris[0]);
-    CPPUNIT_ASSERT_EQUAL(array[2], uris[1]);
-    CPPUNIT_ASSERT_EQUAL(array[3], uris[2]);
+    CPPUNIT_ASSERT_EQUAL(array[0], xuris[0]);
+    CPPUNIT_ASSERT_EQUAL(array[2], xuris[1]);
+    CPPUNIT_ASSERT_EQUAL(array[3], xuris[2]);
 
     CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
@@ -242,6 +231,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     "test.xml"
   };
   std::vector<std::string> uris(vbegin(array), vend(array));
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
   option_->put(PREF_SPLIT, "3");
   option_->put(PREF_METALINK_SERVERS, "2");
   option_->put(PREF_DIR, "/tmp");
@@ -260,11 +250,11 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
 #endif // !ENABLE_BITTORRENT
 
     SharedHandle<RequestGroup> group = result[0];
-    std::vector<std::string> uris;
-    group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
+    std::vector<std::string> xuris;
+    group->getDownloadContext()->getFirstFileEntry()->getUris(xuris);
+    CPPUNIT_ASSERT_EQUAL((size_t)3, xuris.size());
     for(size_t i = 0; i < 3; ++i) {
-      CPPUNIT_ASSERT_EQUAL(array[i], uris[i]);
+      CPPUNIT_ASSERT_EQUAL(array[i], xuris[i]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
@@ -290,6 +280,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
 
 void DownloadHelperTest::testCreateRequestGroupForUriList()
 {
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "3");
   option_->put(PREF_SPLIT, "3");
   option_->put(PREF_INPUT_FILE, "input_uris.txt");
   option_->put(PREF_DIR, "/tmp");
@@ -330,6 +321,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
   };
 
   std::vector<std::string> auxURIs(vbegin(array), vend(array));
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "2");
   option_->put(PREF_SPLIT, "5");
   option_->put(PREF_TORRENT_FILE, "test.torrent");
   option_->put(PREF_DIR, "/tmp");
@@ -344,7 +336,8 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     SharedHandle<RequestGroup> group = result[0];
     std::vector<std::string> uris;
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
-    // See -s option is ignored
+    // See -s option is ignored. See processRootDictionary() in
+    // bittorrent_helper.cc
     CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
     for(size_t i = 0; i < A2_ARRAY_LEN(array); ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i]+"/aria2-test/aria2/src/aria2c", uris[i]);

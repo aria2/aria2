@@ -70,7 +70,8 @@ private:
   // URIResult is stored in the ascending order of the time when its result is
   // available.
   std::deque<URIResult> uriResults_;
-  bool singleHostMultiConnection_;
+  bool uniqueProtocol_;
+  size_t maxConnectionPerServer_;
   std::string originalName_;
   Timer lastFasterReplace_;
   Logger* logger_;
@@ -162,9 +163,13 @@ public:
   // newly created Request. If Request object is retrieved from the
   // pool, referer is ignored.  If method is given, it is set to newly
   // created Request. If Request object is retrieved from the pool,
-  // method is ignored.
+  // method is ignored. If uriReuse is true and selector does not
+  // returns Request object either because uris_ is empty or all URI
+  // are not be usable because maxConnectionPerServer_ limit, then
+  // reuse used URIs and do selection again.
   SharedHandle<Request> getRequest
   (const SharedHandle<URISelector>& selector,
+   bool uriReuse = true,
    const std::string& referer = A2STR::NIL,
    const std::string& method = Request::METHOD_GET);
 
@@ -215,21 +220,20 @@ public:
   void extractURIResult
   (std::deque<URIResult>& res, downloadresultcode::RESULT r);
 
-  void disableSingleHostMultiConnection()
+  void setMaxConnectionPerServer(size_t n)
   {
-    singleHostMultiConnection_ = false;
+    maxConnectionPerServer_ = n;
   }
 
-  bool isSingleHostMultiConnectionEnabled() const
+  size_t getMaxConnectionPerServer() const
   {
-    return singleHostMultiConnection_;
+    return maxConnectionPerServer_;
   }
 
-  // Reuse URIs which have not emitted error so far.  Thie method
-  // tries to reuse at least num URIs.  If less than num URIs found to
-  // reuse, those URIs are used more than once so that num URIs total
-  // are available to reuse.
-  void reuseUri(size_t num);
+  // Reuse URIs which have not emitted error so far and whose host
+  // component is not included in ignore. The reusable URIs are
+  // appended to uris_ maxConnectionPerServer_ times.
+  void reuseUri(const std::vector<std::string>& ignore);
 
   void releaseRuntimeResource();
 
@@ -248,6 +252,16 @@ public:
   bool emptyRequestUri() const
   {
     return uris_.empty() && inFlightRequests_.empty() && requestPool_.empty();
+  }
+
+  void setUniqueProtocol(bool f)
+  {
+    uniqueProtocol_ = f;
+  }
+
+  bool isUniqueProtocol() const
+  {
+    return uniqueProtocol_;
   }
 };
 

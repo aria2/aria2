@@ -114,7 +114,7 @@ bool FtpNegotiationCommand::executeInternal() {
     command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit
       (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
-    if(!getFileEntry()->isSingleHostMultiConnectionEnabled()) {
+    if(getFileEntry()->isUniqueProtocol()) {
       getFileEntry()->removeURIWhoseHostnameIs(getRequest()->getHost());
     }
     getRequestGroup()->getURISelector()->tuneDownloadCommand

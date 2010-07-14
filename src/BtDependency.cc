@@ -66,9 +66,8 @@ static void copyValues(const SharedHandle<FileEntry>& d,
   d->setPath(s->getPath());
   d->addUris(s->getRemainingUris().begin(),
              s->getRemainingUris().end());
-  if(!s->isSingleHostMultiConnectionEnabled()) {
-    d->disableSingleHostMultiConnection();
-  }
+  d->setMaxConnectionPerServer(s->getMaxConnectionPerServer());
+  d->setUniqueProtocol(s->isUniqueProtocol());
 }
 
 bool BtDependency::resolve()

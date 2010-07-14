@@ -125,7 +125,7 @@ bool HttpResponseCommand::executeInternal()
     }
     return skipResponseBody(httpResponse);
   }
-  if(!getFileEntry()->isSingleHostMultiConnectionEnabled()) {
+  if(getFileEntry()->isUniqueProtocol()) {
     // TODO redirection should be considered here. We need to parse
     // original URI to get hostname.
     getFileEntry()->removeURIWhoseHostnameIs(getRequest()->getHost());

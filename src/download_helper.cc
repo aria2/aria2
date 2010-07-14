@@ -183,16 +183,20 @@ template<typename InputIterator>
 static void splitURI(std::vector<std::string>& result,
                      InputIterator begin,
                      InputIterator end,
-                     size_t numSplit)
+                     size_t numSplit,
+                     size_t maxIter)
 {
   size_t numURIs = std::distance(begin, end);
   if(numURIs >= numSplit) {
     result.insert(result.end(), begin, end);
   } else if(numURIs > 0) {
-    for(size_t i = 0; i < numSplit/numURIs; ++i) {
+    size_t num = std::min(numSplit/numURIs, maxIter);
+    for(size_t i = 0; i < num; ++i) {
       result.insert(result.end(), begin, end);
     }
-    result.insert(result.end(), begin, begin+(numSplit%numURIs));
+    if(num < maxIter) {
+      result.insert(result.end(), begin, begin+(numSplit%numURIs));
+    }
   }
 }
 
@@ -209,6 +213,8 @@ static SharedHandle<RequestGroup> createRequestGroup
       util::applyDir(option->get(PREF_DIR), option->get(PREF_OUT)):A2STR::NIL));
   dctx->setDir(option->get(PREF_DIR));
   dctx->getFirstFileEntry()->setUris(uris);
+  dctx->getFirstFileEntry()->setMaxConnectionPerServer
+    (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
   rg->setDownloadContext(dctx);
   return rg;
 }
@@ -304,10 +310,8 @@ void createRequestGroupForBitTorrent
   }
   // we ignore -Z option here
   size_t numSplit = option->getAsInt(PREF_SPLIT);
-  std::vector<std::string> auxUris;
-  splitURI(auxUris, nargs.begin(), nargs.end(), numSplit);
   SharedHandle<RequestGroup> rg =
-    createBtRequestGroup(option->get(PREF_TORRENT_FILE), option, auxUris,
+    createBtRequestGroup(option->get(PREF_TORRENT_FILE), option, nargs,
                          torrentData);
   rg->setNumConcurrentCommand(numSplit);
   result.push_back(rg);
@@ -351,12 +355,13 @@ public:
   {
     if(detector_.isStreamProtocol(uri)) {
       std::vector<std::string> streamURIs;
+      size_t numIter = option_->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
       size_t numSplit = option_->getAsInt(PREF_SPLIT);
-      for(size_t i = 0; i < numSplit; ++i) {
+      size_t num = std::min(numIter, numSplit);
+      for(size_t i = 0; i < num; ++i) {
         streamURIs.push_back(uri);
       }
-      SharedHandle<RequestGroup> rg =
-        createRequestGroup(option_, streamURIs);
+      SharedHandle<RequestGroup> rg = createRequestGroup(option_, streamURIs);
       rg->setNumConcurrentCommand(numSplit);
       requestGroups_.push_back(rg);
     }
@@ -429,10 +434,10 @@ void createRequestGroupForUri
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
     // let's process http/ftp protocols first.
     if(nargs.begin() != strmProtoEnd) {
+      size_t numIter = option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
       size_t numSplit = option->getAsInt(PREF_SPLIT);
       std::vector<std::string> streamURIs;
-      splitURI(streamURIs, nargs.begin(), strmProtoEnd,
-               numSplit);
+      splitURI(streamURIs, nargs.begin(), strmProtoEnd, numSplit, numIter);
       SharedHandle<RequestGroup> rg =
         createRequestGroup(option, streamURIs, true);
       rg->setNumConcurrentCommand(numSplit);

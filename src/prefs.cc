@@ -190,6 +190,8 @@ const std::string PREF_ALWAYS_RESUME("always-resume");
 const std::string PREF_MAX_RESUME_FAILURE_TRIES("max-resume-failure-tries");
 // value: string that your file system recognizes as a file name.
 const std::string PREF_SAVE_SESSION("save-session");
+// value: 1*digit
+const std::string PREF_MAX_CONNECTION_PER_SERVER("max-connection-per-server");
 
 /**
  * FTP related preferences

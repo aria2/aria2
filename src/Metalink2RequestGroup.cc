@@ -252,8 +252,9 @@ Metalink2RequestGroup::createRequestGroup
                   util::applyDir(option->get(PREF_DIR),
                                  entry->file->getPath())));
       dctx->getFirstFileEntry()->setUris(uris);
+      dctx->getFirstFileEntry()->setMaxConnectionPerServer(1);
       if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
-        dctx->getFirstFileEntry()->disableSingleHostMultiConnection();
+        dctx->getFirstFileEntry()->setUniqueProtocol(true);
       }
 #ifdef ENABLE_MESSAGE_DIGEST
       if(!entry->checksum.isNull()) {
@@ -291,8 +292,9 @@ Metalink2RequestGroup::createRequestGroup
           (new FileEntry
            (util::applyDir(option->get(PREF_DIR), (*i)->file->getPath()),
             (*i)->file->getLength(), offset, uris));
+        fe->setMaxConnectionPerServer(1);
         if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
-          fe->disableSingleHostMultiConnection();
+          fe->setUniqueProtocol(true);
         }
         fe->setOriginalName((*i)->metaurls[0]->name);
         fileEntries.push_back(fe);
