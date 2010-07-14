@@ -48,7 +48,7 @@ Basic Options
 *-j*, *--max-concurrent-downloads*=N::
   Set maximum number of parallel downloads for every static (HTTP/FTP) URI,
   torrent and metalink. See also *-s* and *-C* option.
-  Default: '5'
+  Default: '2'
 
 *-V*, *--check-integrity*[='true'|'false']::
   Check file integrity by validating piece hashes.
@@ -811,7 +811,13 @@ specify IP address explicitly. See also *--disable-ipv6*.  If your
 system doesn't have getifaddrs(), this option doesn't accept interface
 name.
 
-*--max-resume-failure-tries*='N'::
+*--max-connection-per-server*=NUM::
+
+  The maximum number of connections to one server for each download.
+  Possible Values: '1'-'4'
+  Default: '1'
+
+*--max-resume-failure-tries*=N::
 
   When used with *--always-resume*='false', aria2 downloads file from
   scratch when aria2 detects 'N' number of URIs that does not support
@@ -1926,17 +1932,6 @@ Download a file
 --------------------------------
 aria2c "http://host/file.zip"
 --------------------------------
-[NOTE]
-aria2 uses 5 connections to download 1 file by default.
-
-Download a file using 1 connection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-----------------------------------
-aria2c -s1 "http://host/file.zip"
-----------------------------------
-[NOTE]
-aria2 uses 5 connections to download 1 file by default.
--s1 limits the number of connections to just 1.
 
 [NOTE]
 To stop a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URIs as long as they are pointing to the same file.

@@ -1,5 +1,10 @@
 2010-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc for options.
+	* doc/aria2c.1.txt
+
+2010-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --max-connection-per-server=NUM option. The default value of
 	NUM is 1. This option limits the number of connections allowed to
 	one server for each download. This means when NUM is 2 and 1 URI

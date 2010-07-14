@@ -636,7 +636,7 @@ downloading a file like BitTorrent.</p></div>
 <p>
   Set maximum number of parallel downloads for every static (HTTP/FTP) URI,
   torrent and metalink. See also <strong>-s</strong> and <strong>-C</strong> option.
-  Default: <em>5</em>
+  Default: <em>2</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2017,7 +2017,17 @@ name.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--max-resume-failure-tries</strong>=<em>N</em>
+<strong>--max-connection-per-server</strong>=NUM
+</dt>
+<dd>
+<p>
+  The maximum number of connections to one server for each download.
+  Possible Values: <em>1</em>-<em>4</em>
+  Default: <em>1</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--max-resume-failure-tries</strong>=N
 </dt>
 <dd>
 <p>
@@ -3811,28 +3821,6 @@ pprint(r)</tt></pre>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">aria2 uses 5 connections to download 1 file by default.</td>
-</tr></table>
-</div>
-<h4 id="_download_a_file_using_1_connection">Download a file using 1 connection</h4>
-<div class="listingblock">
-<div class="content">
-<pre><tt>aria2c -s1 "http://host/file.zip"</tt></pre>
-</div></div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">aria2 uses 5 connections to download 1 file by default.
--s1 limits the number of connections to just 1.</td>
-</tr></table>
-</div>
-<div class="admonitionblock">
-<table><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
 <td class="content">To stop a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument in the same directory. You can change URIs as long as they are pointing to the same file.</td>
 </tr></table>
 </div>
@@ -4214,7 +4202,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-07-09 01:48:36 JST
+Last updated 2010-07-14 20:42:14 JST
 </div>
 </div>
 </body>
