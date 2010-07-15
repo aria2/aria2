@@ -2039,6 +2039,19 @@ name.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--min-split-size</strong>=SIZE
+</dt>
+<dd>
+<p>
+  aria2 does not split less than 2*SIZE byte range.  For example,
+  let&#8217;s consider downloading 20MiB file. If SIZE is 10M, aria2 can
+  split file into 2 range [0-10MiB) and [10MiB-20MiB) and download it
+  using 2 sources(if <strong>--split</strong> &gt;= 2, of course).  If SIZE is 15M,
+  since 2*15M &gt; 20MiB, aria2 does not split file and download it using
+  1 source.  Possible Values: <em>1M</em>-<em>1024M</em> Default: <em>20M</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--log-level</strong>=LEVEL
 </dt>
 <dd>
@@ -4202,7 +4215,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-07-14 20:42:14 JST
+Last updated 2010-07-15 20:42:15 JST
 </div>
 </div>
 </body>

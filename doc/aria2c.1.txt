@@ -825,6 +825,15 @@ name.
   given URIs do not support resume.  See *--always-resume* option.
   Default: '0'
 
+*--min-split-size*=SIZE::
+
+  aria2 does not split less than 2*SIZE byte range.  For example,
+  let's consider downloading 20MiB file. If SIZE is 10M, aria2 can
+  split file into 2 range [0-10MiB) and [10MiB-20MiB) and download it
+  using 2 sources(if *--split* >= 2, of course).  If SIZE is 15M,
+  since 2*15M > 20MiB, aria2 does not split file and download it using
+  1 source.  Possible Values: '1M'-'1024M' Default: '20M'
+
 *--log-level*=LEVEL::
   Set log level to output.
   LEVEL is either 'debug', 'info', 'notice', 'warn' or 'error'.
