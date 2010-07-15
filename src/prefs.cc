@@ -192,6 +192,8 @@ const std::string PREF_MAX_RESUME_FAILURE_TRIES("max-resume-failure-tries");
 const std::string PREF_SAVE_SESSION("save-session");
 // value: 1*digit
 const std::string PREF_MAX_CONNECTION_PER_SERVER("max-connection-per-server");
+// value: 1*digit
+const std::string PREF_MIN_SPLIT_SIZE("min-split-size");
 
 /**
  * FTP related preferences

@@ -112,6 +112,7 @@ void SegmentManTest::testGetSegment_sameFileEntry()
   };
   dctx->setFileEntries(&fileEntries[0], &fileEntries[3]);
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
+  ps->setMinSplitSize(dctx->getPieceLength());
   SegmentMan segman(&op, dctx, ps);
 
   std::vector<SharedHandle<Segment> > segments;

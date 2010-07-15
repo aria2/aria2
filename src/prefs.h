@@ -196,6 +196,8 @@ extern const std::string PREF_MAX_RESUME_FAILURE_TRIES;
 extern const std::string PREF_SAVE_SESSION;
 // value: 1*digit
 extern const std::string PREF_MAX_CONNECTION_PER_SERVER;
+// value: 1*digit
+extern const std::string PREF_MIN_SPLIT_SIZE;
 
 /**
  * FTP related preferences

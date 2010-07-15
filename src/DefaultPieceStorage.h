@@ -87,6 +87,8 @@ private:
 
   SharedHandle<PieceSelector> pieceSelector_;
 
+  size_t minSplitSize_;
+
   bool getMissingPieceIndex(size_t& index,
                             const unsigned char* bitfield, size_t length);
 
@@ -251,7 +253,11 @@ public:
   {
     return pieceSelector_;
   }
-    
+
+  void setMinSplitSize(size_t minSplitSize)
+  {
+    minSplitSize_ = minSplitSize;
+  }
 };
 
 typedef SharedHandle<DefaultPieceStorage> DefaultPieceStorageHandle;

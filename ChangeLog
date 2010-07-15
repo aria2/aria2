@@ -1,3 +1,23 @@
+2010-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --min-split-size=SIZE option.  aria2 does not split less
+	than 2*SIZE byte range.  For example, let's consider downloading
+	20MiB file. If SIZE is 10M, aria2 can split file into 2 range
+	[0-10MiB) and [10MiB-20MiB) and download it using 2 sources(if
+	--split >= 2, of course).  If SIZE is 15M, since 2*15M > 20MiB,
+	aria2 does not split file and download it using 1 source.
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroup.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/BitfieldManTest.cc
+	* test/SegmentManTest.cc
+
 2010-07-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	FeedbackURISelector now tries to chooses URI which is not used in

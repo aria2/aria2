@@ -367,6 +367,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);    
   }
   {
+    SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
+                                   (PREF_MIN_SPLIT_SIZE,
+                                    TEXT_MIN_SPLIT_SIZE,
+                                    "20M",
+                                    1024*1024, 1024*1024*1024));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);    
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_NO_CONF,
                                     TEXT_NO_CONF,

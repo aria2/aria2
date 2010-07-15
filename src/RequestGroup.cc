@@ -534,6 +534,7 @@ void RequestGroup::initPieceStorage()
     if(!diskWriterFactory_.isNull()) {
       ps->setDiskWriterFactory(diskWriterFactory_);
     }
+    ps->setMinSplitSize(option_->getAsInt(PREF_MIN_SPLIT_SIZE));
     tempPieceStorage = ps;
   } else {
     UnknownLengthPieceStorageHandle ps

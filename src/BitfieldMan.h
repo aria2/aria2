@@ -92,6 +92,11 @@ public:
     bool operator<(const Range& range) const {
       return getSize() < range.getSize();
     }
+    
+    bool operator==(const Range& range) const
+    {
+      return getSize() == range.getSize();
+    }
   };
 public:
   BitfieldMan(size_t blockLength, uint64_t totalLength);
@@ -144,6 +149,7 @@ public:
   // affected by filter
   bool getSparseMissingUnusedIndex
   (size_t& index,
+   size_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t ignoreBitfieldLength) const;
 

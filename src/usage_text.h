@@ -686,3 +686,11 @@
 #define TEXT_MAX_CONNECTION_PER_SERVER          \
   _(" --max-connection-per-server=NUM The maximum number of connections to one server\n"\
     "                              for each download.")
+#define TEXT_MIN_SPLIT_SIZE                     \
+  _(" --min-split-size=SIZE        aria2 does not split less than 2*SIZE byte range.\n" \
+    "                              For example, let's consider downloading 20MiB\n" \
+    "                              file. If SIZE is 10M, aria2 can split file into 2\n" \
+    "                              range [0-10MiB) and [10MiB-20MiB) and download it\n" \
+    "                              using 2 sources(if --split >= 2, of course).\n" \
+    "                              If SIZE is 15M, since 2*15M > 20MiB, aria2 does\n" \
+    "                              not split file and download it using 1 source.")
