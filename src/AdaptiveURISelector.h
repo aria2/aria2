@@ -79,7 +79,8 @@ public:
   virtual ~AdaptiveURISelector();
 
   virtual std::string select
-  (FileEntry* fileEntry, const std::vector<std::string>& usedHosts);
+  (FileEntry* fileEntry,
+   const std::vector<std::pair<size_t, std::string> >& usedHosts);
 
   virtual void tuneDownloadCommand(const std::deque<std::string>& uris,
                                    DownloadCommand* command);

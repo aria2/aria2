@@ -274,7 +274,8 @@ public:
     return queueCheck_;
   }
 
-  void getUsedHosts(std::vector<std::string>& usedHosts);
+  // Returns currently used hosts and its use count.
+  void getUsedHosts(std::vector<std::pair<size_t, std::string> >& usedHosts);
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

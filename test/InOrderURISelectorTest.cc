@@ -45,7 +45,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(InOrderURISelectorTest);
 
 void InOrderURISelectorTest::testSelect()
 {
-  std::vector<std::string> usedHosts;
+  std::vector<std::pair<size_t, std::string> > usedHosts;
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
                        sel->select(&fileEntry_, usedHosts));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),

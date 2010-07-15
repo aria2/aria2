@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "FeedbackURISelector.h"
 
+#include <cassert>
 #include <algorithm>
 
 #include "ServerStatMan.h"
@@ -41,12 +42,16 @@
 #include "Request.h"
 #include "A2STR.h"
 #include "FileEntry.h"
+#include "Logger.h"
+#include "LogFactory.h"
+#include "a2algo.h"
 
 namespace aria2 {
 
 FeedbackURISelector::FeedbackURISelector
 (const SharedHandle<ServerStatMan>& serverStatMan):
-  serverStatMan_(serverStatMan) {}
+  serverStatMan_(serverStatMan),
+  logger_(LogFactory::getInstance()) {}
 
 FeedbackURISelector::~FeedbackURISelector() {}
 
@@ -61,28 +66,77 @@ public:
 };
 
 std::string FeedbackURISelector::select
-(FileEntry* fileEntry, const std::vector<std::string>& usedHosts)
+(FileEntry* fileEntry,
+ const std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
+  if(logger_->debug()) {
+    for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
+          usedHosts.begin(), eoi = usedHosts.end(); i != eoi; ++i) {
+      logger_->debug("UsedHost=%lu, %s",
+                     static_cast<unsigned long>((*i).first),
+                     (*i).second.c_str());
+    }
+  }
   if(fileEntry->getRemainingUris().empty()) {
     return A2STR::NIL;
   }
   // Select URI with usedHosts first. If no URI is selected, then do
   // it again without usedHosts.
-  std::string uri = selectInternal(fileEntry->getRemainingUris(), usedHosts);
+  std::string uri = selectFaster(fileEntry->getRemainingUris(), usedHosts);
   if(uri.empty()) {
-    uri = selectInternal
-      (fileEntry->getRemainingUris(), std::vector<std::string>());
+    if(logger_->debug()) {
+      logger_->debug("No URI returned from selectFaster()");
+    }
+    uri = selectRarer(fileEntry->getRemainingUris(), usedHosts);
   } 
   if(!uri.empty()) {
     std::deque<std::string>& uris = fileEntry->getRemainingUris();
     uris.erase(std::find(uris.begin(), uris.end(), uri));
   }
+  if(logger_->debug()) {
+    logger_->debug("FeedbackURISelector selected %s", uri.c_str());
+  }
   return uri;
 }
 
-std::string FeedbackURISelector::selectInternal
+std::string FeedbackURISelector::selectRarer
 (const std::deque<std::string>& uris,
- const std::vector<std::string>& usedHosts)
+ const std::vector<std::pair<size_t, std::string> >& usedHosts)
+{
+  // pair of host and URI
+  std::vector<std::pair<std::string, std::string> > cands;
+  for(std::deque<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
+    Request r;
+    if(!r.setUri(*i)) {
+      continue;
+    }
+    SharedHandle<ServerStat> ss =
+      serverStatMan_->find(r.getHost(), r.getProtocol());
+    if(!ss.isNull() && ss->isError()) {
+      if(logger_->debug()) {
+        logger_->debug("Error not considered: %s", (*i).c_str());
+      }
+      continue;
+    }
+    cands.push_back(std::make_pair(r.getHost(), *i));
+  }
+  for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
+        usedHosts.begin(), eoi = usedHosts.end(); i != eoi; ++i) {
+    for(std::vector<std::pair<std::string, std::string> >::const_iterator j =
+          cands.begin(), eoj = cands.end(); j != eoj; ++j) {
+      if((*i).second == (*j).first) {
+        return (*j).second;
+      }
+    }
+  }
+  assert(!uris.empty());
+  return uris.front();
+}
+
+std::string FeedbackURISelector::selectFaster
+(const std::deque<std::string>& uris,
+ const std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
   // Use first 10 good URIs to introduce some randomness.
   const size_t NUM_URI = 10;
@@ -93,18 +147,21 @@ std::string FeedbackURISelector::selectInternal
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
     Request r;
-    r.setUri(*i);
-    if(std::find(usedHosts.begin(), usedHosts.end(), r.getHost())
-       != usedHosts.end()) {
+    if(!r.setUri(*i)) {
+      continue;
+    }
+    if(findSecond(usedHosts.begin(), usedHosts.end(), r.getHost()) !=
+       usedHosts.end()) {
+      if(logger_->debug()) {
+        logger_->debug("%s is in usedHosts, not considered", (*i).c_str());
+      }
       continue;
     }
     SharedHandle<ServerStat> ss =
       serverStatMan_->find(r.getHost(), r.getProtocol());
-    // We prefer untested one.
     if(ss.isNull()) {
-      return *i;
-    }
-    if(ss->isOK()) {
+      normCands.push_back(*i);
+    } else if(ss->isOK()) {
       if(ss->getDownloadSpeed() > SPEED_THRESHOLD) {
         fastCands.push_back(std::make_pair(ss, *i));
       } else {
@@ -114,19 +171,17 @@ std::string FeedbackURISelector::selectInternal
   }
   if(fastCands.empty()) {
     if(normCands.empty()) {
-      if(usedHosts.empty()) {
-        // All URIs are inspected but aria2 cannot find usable one.
-        // Return first URI anyway in this case.
-        return uris.front();
-      } else {
-        // If usedHosts is not empty, there is a possibility it
-        // includes usable host.
-        return A2STR::NIL;
-      }
+      return A2STR::NIL;
     } else {
+      if(logger_->debug()) {
+        logger_->debug("Selected from normCands");
+      }
       return normCands.front();
     }
   } else {
+    if(logger_->debug()) {
+      logger_->debug("Selected from fastCands");
+    }
     std::sort(fastCands.begin(), fastCands.end(), ServerStatFaster());
     return fastCands.front().second;
   }

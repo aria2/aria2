@@ -1,5 +1,25 @@
 2010-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	FeedbackURISelector now tries to select URI whose host is least
+	used in aria2 globally. Reverted the previous change.
+	* src/AdaptiveURISelector.cc
+	* src/AdaptiveURISelector.h
+	* src/CreateRequestCommand.cc
+	* src/FeedbackURISelector.cc
+	* src/FeedbackURISelector.h
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* src/InOrderURISelector.cc
+	* src/InOrderURISelector.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/URISelector.h
+	* src/a2algo.h
+	* test/FeedbackURISelectorTest.cc
+	* test/InOrderURISelectorTest.cc
+
+2010-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Prefer untested server in FeedbackURISelector
 	* src/FeedbackURISelector.cc
 

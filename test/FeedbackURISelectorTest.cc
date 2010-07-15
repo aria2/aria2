@@ -59,8 +59,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FeedbackURISelectorTest);
 
 void FeedbackURISelectorTest::testSelect_withoutServerStat()
 {
-  std::vector<std::string> usedHosts;
-  // Without ServerStat, selector returns first URI
+  std::vector<std::pair<size_t, std::string> > usedHosts;
+  // Without ServerStat and usedHosts, selector returns first URI
   std::string uri = sel->select(&fileEntry_, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"), uri);
   CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry_.getRemainingUris().size());
@@ -75,7 +75,7 @@ void FeedbackURISelectorTest::testSelect()
   SharedHandle<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
   alphaHTTP->updateDownloadSpeed(180000);
   alphaHTTP->setError();
-  std::vector<std::string> usedHosts;
+  std::vector<std::pair<size_t, std::string> > usedHosts;
 
   ssm->add(bravo);
   ssm->add(alphaFTP);
@@ -92,26 +92,19 @@ void FeedbackURISelectorTest::testSelect()
 
 void FeedbackURISelectorTest::testSelect_withUsedHosts()
 {
-  SharedHandle<ServerStat> bravo(new ServerStat("bravo", "http"));
-  bravo->updateDownloadSpeed(100000);
-  SharedHandle<ServerStat> alphaHTTP(new ServerStat("alpha", "http"));
-  alphaHTTP->updateDownloadSpeed(180000);
-  alphaHTTP->setError();
-  std::vector<std::string> usedHosts;
-  usedHosts.push_back("bravo");
-
-  ssm->add(bravo);
-  ssm->add(alphaHTTP);
-
-  CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
-                       sel->select(&fileEntry_, usedHosts));
-  CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry_.getRemainingUris().size());
+  std::vector<std::pair<size_t, std::string> > usedHosts;
+  usedHosts.push_back(std::make_pair(1, "bravo"));
+  usedHosts.push_back(std::make_pair(2, "alpha"));
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://bravo/file"),
                        sel->select(&fileEntry_, usedHosts));
-  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry_.getRemainingUris().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry_.getRemainingUris().size());
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
+                       sel->select(&fileEntry_, usedHosts));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry_.getRemainingUris().size());
+
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://alpha/file"),
                        sel->select(&fileEntry_, usedHosts));
   CPPUNIT_ASSERT_EQUAL((size_t)0, fileEntry_.getRemainingUris().size());
 }
@@ -122,7 +115,7 @@ void FeedbackURISelectorTest::testSelect_skipErrorHost()
   alphaHTTP->setError();
   SharedHandle<ServerStat> alphaFTP(new ServerStat("alpha", "ftp"));
   alphaFTP->setError();
-  std::vector<std::string> usedHosts;
+  std::vector<std::pair<size_t, std::string> > usedHosts;
 
   ssm->add(alphaHTTP);
   ssm->add(alphaFTP);

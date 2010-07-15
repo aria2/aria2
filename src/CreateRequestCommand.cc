@@ -73,7 +73,7 @@ bool CreateRequestCommand::executeInternal()
     setFileEntry(getDownloadContext()->findFileEntryByOffset
                  (getSegments().front()->getPositionToWrite()));
   }
-  std::vector<std::string> usedHosts;
+  std::vector<std::pair<size_t, std::string> > usedHosts;
   getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
   setRequest
     (getFileEntry()->getRequest(getRequestGroup()->getURISelector(),

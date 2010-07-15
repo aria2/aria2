@@ -168,7 +168,8 @@ public:
   SharedHandle<Request> getRequest
   (const SharedHandle<URISelector>& selector,
    bool uriReuse = true,
-   const std::vector<std::string>& usedHosts = std::vector<std::string>(),
+   const std::vector<std::pair<size_t, std::string> >& usedHosts
+     = std::vector<std::pair<size_t, std::string> >(),
    const std::string& referer = A2STR::NIL,
    const std::string& method = Request::METHOD_GET);
 

@@ -94,6 +94,19 @@ static void forEachMemFunSH(InputIterator first, InputIterator last,
   }
 }
 
+template<typename InputIterator, typename T>
+InputIterator findSecond
+(InputIterator first, InputIterator last, const T& t)
+{
+  for(; first != last; ++first) {
+    if((*first).second == t) {
+      return first;
+    }
+  }
+  return last;
+}
+
+
 } // namespace aria2
 
 #endif // _D_A2_ALGO_H_

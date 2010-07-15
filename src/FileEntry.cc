@@ -41,6 +41,7 @@
 #include "URISelector.h"
 #include "LogFactory.h"
 #include "wallclock.h"
+#include "a2algo.h"
 
 namespace aria2 {
 
@@ -121,7 +122,7 @@ SharedHandle<Request>
 FileEntry::getRequest
 (const SharedHandle<URISelector>& selector,
  bool uriReuse,
- const std::vector<std::string>& usedHosts,
+ const std::vector<std::pair<size_t, std::string> >& usedHosts,
  const std::string& referer,
  const std::string& method)
 {
@@ -131,7 +132,7 @@ FileEntry::getRequest
     for(std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin(),
           eoi = requestPool_.end(); i != eoi; ++i) {
       r.setUri((*i)->getUri());
-      if(std::find(usedHosts.begin(), usedHosts.end(), r.getHost()) !=
+      if(findSecond(usedHosts.begin(), usedHosts.end(), r.getHost()) !=
          usedHosts.end()) {
         continue;
       }

@@ -896,7 +896,8 @@ bool RequestGroupMan::doesOverallUploadSpeedExceed()
     maxOverallUploadSpeedLimit_ < calculateStat().getUploadSpeed();
 }
 
-void RequestGroupMan::getUsedHosts(std::vector<std::string>& usedHosts)
+void RequestGroupMan::getUsedHosts
+(std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
   Request r;
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
@@ -906,10 +907,22 @@ void RequestGroupMan::getUsedHosts(std::vector<std::string>& usedHosts)
     for(std::deque<SharedHandle<Request> >::const_iterator j =
           inFlightReqs.begin(), eoj = inFlightReqs.end(); j != eoj; ++j) {
       if(r.setUri((*j)->getUri())) {
-        usedHosts.push_back(r.getHost());
+        std::vector<std::pair<size_t, std::string> >::iterator k;
+        std::vector<std::pair<size_t, std::string> >::iterator eok =
+          usedHosts.end();
+        for(k =  usedHosts.begin(); k != eok; ++k) {
+          if((*k).second == r.getHost()) {
+            ++(*k).first;
+            break;
+          }
+        }
+        if(k == eok) {
+          usedHosts.push_back(std::make_pair(1, r.getHost()));
+        }
       }
     }
   }
+  std::sort(usedHosts.begin(), usedHosts.end());
 }
 
 } // namespace aria2
