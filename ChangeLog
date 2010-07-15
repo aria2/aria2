@@ -1,5 +1,10 @@
 2010-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Prefer untested server in FeedbackURISelector
+	* src/FeedbackURISelector.cc
+
+2010-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Documented --min-split-size option in man page.
 	* doc/aria2c.1.txt
 

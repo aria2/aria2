@@ -100,11 +100,16 @@ std::string FeedbackURISelector::selectInternal
     }
     SharedHandle<ServerStat> ss =
       serverStatMan_->find(r.getHost(), r.getProtocol());
-    if(!ss.isNull() && ss->isOK() && ss->getDownloadSpeed() > SPEED_THRESHOLD) {
-      fastCands.push_back(std::make_pair(ss, *i));
+    // We prefer untested one.
+    if(ss.isNull()) {
+      return *i;
     }
-    if(ss.isNull() || ss->isOK()) {
-      normCands.push_back(*i);
+    if(ss->isOK()) {
+      if(ss->getDownloadSpeed() > SPEED_THRESHOLD) {
+        fastCands.push_back(std::make_pair(ss, *i));
+      } else {
+        normCands.push_back(*i);
+      }
     }
   }
   if(fastCands.empty()) {
