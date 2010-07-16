@@ -1,5 +1,10 @@
 2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Make sure that all decoders are finished to pool socket
+	* src/HttpDownloadCommand.cc
+
+2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed indent of --conditional-get option.
 	* src/usage_text.h
 
