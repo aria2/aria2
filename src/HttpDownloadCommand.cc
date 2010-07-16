@@ -89,9 +89,10 @@ bool HttpDownloadCommand::prepareForNextSegment() {
        (getRequest()->isKeepAliveEnabled() &&
         (
          // Make sure that all decoders are finished to pool socket
-         ((getTransferEncodingDecoder().isNull() ||
-           getTransferEncodingDecoder()->finished()) &&
-          (getContentEncodingDecoder().isNull() ||
+         ((!getTransferEncodingDecoder().isNull() &&
+           getTransferEncodingDecoder()->finished()) ||
+          (getTransferEncodingDecoder().isNull() &&
+           !getContentEncodingDecoder().isNull() &&
            getContentEncodingDecoder()->finished())) ||
          getRequestEndOffset() ==
          getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())
