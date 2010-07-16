@@ -402,6 +402,9 @@ void executeHookByOptName
 (const SharedHandle<RequestGroup>& group, const Option* option,
  const std::string& opt);
 
+void executeHookByOptName
+(const RequestGroup* group, const Option* option, const std::string& opt);
+
 } // namespace util
 
 } // namespace aria2

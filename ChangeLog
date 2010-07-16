@@ -1,5 +1,21 @@
 2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --on-bt-download-complete=COMMAND option.  For BitTorrent, a
+	command specified in --on-download-complete is called when
+	download completes and seeding is over. On the other hand, this
+	option set the command to be executed when download completes but
+	before seeding.
+	* doc/aria2c.1.txt
+	* src/DefaultPieceStorage.cc
+	* src/OptionHandlerFactory.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* src/util.cc
+	* src/util.h
+
+2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc of --split option.
 	* doc/aria2c.1.txt
 

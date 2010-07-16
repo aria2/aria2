@@ -1402,6 +1402,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_ON_BT_DOWNLOAD_COMPLETE,
+                                    TEXT_ON_BT_DOWNLOAD_COMPLETE,
+                                    NO_DEFAULT_VALUE,
+                                    "/path/to/command"));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_HOOK);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<NumberOptionHandler> op(new NumberOptionHandler
                                          (PREF_PEER_CONNECTION_TIMEOUT,
                                           NO_DESCRIPTION,

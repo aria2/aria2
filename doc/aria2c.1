@@ -1249,6 +1249,16 @@ or
 \fIdebug\fR
 .RE
 .PP
+\fB\-\-on\-bt\-download\-complete\fR=COMMAND
+.RS 4
+For BitTorrent, a command specified in
+\fB\-\-on\-download\-complete\fR
+is called when download completes and seeding is over\&. On the other hand, this option set the command to be executed when download completes but before seeding\&. See
+\fB\-\-on\-download\-start\fR
+option for the requirement of COMMAND\&. Possible Values:
+\fI/path/to/command\fR
+.RE
+.PP
 \fB\-\-on\-download\-complete\fR=COMMAND
 .RS 4
 Set the command to be executed when download completes\&. See

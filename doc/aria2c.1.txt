@@ -851,6 +851,14 @@ name.
   LEVEL is either 'debug', 'info', 'notice', 'warn' or 'error'.
   Default: 'debug'
 
+*--on-bt-download-complete*=COMMAND::
+
+  For BitTorrent, a command specified in *--on-download-complete* is
+  called when download completes and seeding is over. On the other
+  hand, this option set the command to be executed when download
+  completes but before seeding.  See *--on-download-start* option for
+  the requirement of COMMAND.  Possible Values: '/path/to/command'
+
 *--on-download-complete*=COMMAND::
 
   Set the command to be executed when download completes.  See

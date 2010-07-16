@@ -59,6 +59,9 @@
 #include "array_fun.h"
 #include "PieceStatMan.h"
 #include "wallclock.h"
+#ifdef ENABLE_BITTORRENT
+# include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -363,6 +366,16 @@ void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
     } else {
       logger_->info(MSG_DOWNLOAD_COMPLETED);
     }
+#ifdef ENABLE_BITTORRENT
+    if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
+      SharedHandle<TorrentAttribute> torrentAttrs =
+        bittorrent::getTorrentAttrs(downloadContext_);
+      if(!torrentAttrs->metadata.empty()) {
+        util::executeHookByOptName(downloadContext_->getOwnerRequestGroup(),
+                                   option_, PREF_ON_BT_DOWNLOAD_COMPLETE);
+      }
+    }
+#endif // ENABLE_BITTORRENT
   }
 }
 
