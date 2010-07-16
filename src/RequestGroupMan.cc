@@ -250,71 +250,17 @@ bool RequestGroupMan::removeReservedGroup(gid_t gid)
   }
 }
 
-static void executeHook(const std::string& command, gid_t gid)
-{
-  LogFactory::getInstance()->info("Executing user command: %s %s",
-                                  command.c_str(), util::itos(gid).c_str());
-#ifndef __MINGW32__
-  pid_t cpid = fork();
-  if(cpid == -1) {
-    LogFactory::getInstance()->error("fork() failed."
-                                     " Cannot execute user command.");
-  } else if(cpid == 0) {
-    execl(command.c_str(), command.c_str(), util::itos(gid).c_str(),
-          reinterpret_cast<char*>(0));
-    perror(("Could not execute user command: "+command).c_str());
-    exit(EXIT_FAILURE);
-  }
-#else
-  PROCESS_INFORMATION pi;
-  STARTUPINFO si;
-
-  memset(&si, 0, sizeof (si));
-  si.cb = sizeof(STARTUPINFO);
-
-  memset(&pi, 0, sizeof (pi));
-
-  std::string cmdline = command;
-  strappend(cmdline, " ", util::itos(gid));
-
-  DWORD rc = CreateProcess(
-                           NULL,
-                           (LPSTR)cmdline.c_str(),
-                           NULL,
-                           NULL,
-                           true,
-                           NULL,
-                           NULL,
-                           0,
-                           &si,
-                           &pi);
-
-  if(!rc)
-    LogFactory::getInstance()->error("CreateProcess() failed."
-                                     " Cannot execute user command.");
-#endif 
-}
-
-static void executeHookByOptName
-(const SharedHandle<RequestGroup>& group, const Option* option,
- const std::string& opt)
-{
-  if(!option->blank(opt)) {
-    executeHook(option->get(opt), group->getGID());
-  }
-}
-
 static void executeStopHook
 (const SharedHandle<DownloadResult>& result, const Option* option)
 {
   if(result->result == downloadresultcode::FINISHED &&
      !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
-    executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE), result->gid);
+    util::executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE), result->gid);
   } else if(result->result != downloadresultcode::IN_PROGRESS &&
             !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
-    executeHook(option->get(PREF_ON_DOWNLOAD_ERROR), result->gid);
+    util::executeHook(option->get(PREF_ON_DOWNLOAD_ERROR), result->gid);
   } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
-    executeHook(option->get(PREF_ON_DOWNLOAD_STOP), result->gid);
+    util::executeHook(option->get(PREF_ON_DOWNLOAD_STOP), result->gid);
   }
 }
 
@@ -400,7 +346,8 @@ public:
       group->releaseRuntimeResource(e_);
       if(group->isPauseRequested()) {
         group->setForceHaltRequested(false);
-        executeHookByOptName(group, e_->getOption(), PREF_ON_DOWNLOAD_PAUSE);
+        util::executeHookByOptName
+          (group, e_->getOption(), PREF_ON_DOWNLOAD_PAUSE);
         // TODO Should we have to prepend spend uris to remaining uris
         // in case PREF_REUSE_URI is disabed?
       } else {
@@ -546,7 +493,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       ++count;
       e->addCommand(commands);
       commands.clear();
-      executeHookByOptName(groupToAdd, e->getOption(), PREF_ON_DOWNLOAD_START);
+      util::executeHookByOptName
+        (groupToAdd, e->getOption(), PREF_ON_DOWNLOAD_START);
     } catch(RecoverableException& ex) {
       logger_->error(EX_EXCEPTION_CAUGHT, ex);
       if(logger_->debug()) {

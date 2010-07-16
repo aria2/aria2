@@ -1,5 +1,12 @@
 2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved executeHook and executeHookByOptName to util.
+	* src/RequestGroupMan.cc
+	* src/util.cc
+	* src/util.h
+
+2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --conditional-get option.  Download file only when the local
 	file is older than remote file.  This function only works with
 	HTTP(S) downloads only. It does not work if file size is specified

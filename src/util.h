@@ -63,6 +63,7 @@ class BitfieldMan;
 class BinaryStream;
 class FileEntry;
 class RequestGroup;
+class Option;
 
 #define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
 #define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)
@@ -394,6 +395,12 @@ bool getCidrPrefix(struct in_addr& in, const std::string& ip, int bits);
 bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits);
 
 void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group);
+
+void executeHook(const std::string& command, gid_t gid);
+
+void executeHookByOptName
+(const SharedHandle<RequestGroup>& group, const Option* option,
+ const std::string& opt);
 
 } // namespace util
 
