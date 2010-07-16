@@ -696,8 +696,8 @@
     "                              not split file and download it using 1 source.")
 #define TEXT_CONDITIONAL_GET                    \
   _(" --conditional-get[=true|false] Download file only when the local file is older\n" \
-    "                                than remote file. Currently, this function has\n" \
-    "                                many limitations. See man page for details.")
+    "                              than remote file. Currently, this function has\n" \
+    "                              many limitations. See man page for details.")
 #define TEXT_ON_BT_DOWNLOAD_COMPLETE            \
   _(" --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n" \
     "                              --on-download-complete is called when download\n" \

@@ -1,5 +1,10 @@
 2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed indent of --conditional-get option.
+	* src/usage_text.h
+
+2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --on-bt-download-complete=COMMAND option.  For BitTorrent, a
 	command specified in --on-download-complete is called when
 	download completes and seeding is over. On the other hand, this
