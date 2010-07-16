@@ -1,3 +1,8 @@
+2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Check status values: 200 and 206.
+	* src/HttpResponse.cc
+
 2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Reverted previous change and fixed it in a right way.

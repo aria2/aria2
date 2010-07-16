@@ -69,11 +69,11 @@ void HttpResponse::validateResponse() const
   if(status >= HttpHeader::S400) {
     return;
   }
-  if(status == HttpHeader::S304 &&
-     httpRequest_->getIfModifiedSinceHeader().empty()) {
-    throw DL_ABORT_EX("Got 304 without If-Modified-Since");
-  }
-  if(status == HttpHeader::S301 ||
+  if(status == HttpHeader::S304) {
+    if(httpRequest_->getIfModifiedSinceHeader().empty()) {
+      throw DL_ABORT_EX("Got 304 without If-Modified-Since");
+    }
+  } else if(status == HttpHeader::S301 ||
      status == HttpHeader::S302 ||
      status == HttpHeader::S303 ||
      status == HttpHeader::S307) {
@@ -82,21 +82,28 @@ void HttpResponse::validateResponse() const
         (StringFormat(EX_LOCATION_HEADER_REQUIRED,
                       util::parseUInt(status)).str());
     }
-  } else if(!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
-    // compare the received range against the requested range
-    RangeHandle responseRange = httpHeader_->getRange();
-    if(!httpRequest_->isRangeSatisfied(responseRange)) {
-      throw DL_ABORT_EX2
-        (StringFormat
-         (EX_INVALID_RANGE_HEADER,
-          util::itos(httpRequest_->getStartByte(), true).c_str(),
-          util::itos(httpRequest_->getEndByte(), true).c_str(),
-          util::uitos(httpRequest_->getEntityLength(), true).c_str(),
-          util::itos(responseRange->getStartByte(), true).c_str(),
-          util::itos(responseRange->getEndByte(), true).c_str(),
-          util::uitos(responseRange->getEntityLength(), true).c_str()).str(),
-         downloadresultcode::CANNOT_RESUME);
+    return;
+  } else if(status == HttpHeader::S200 ||
+            status == HttpHeader::S206) {
+    if(!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
+      // compare the received range against the requested range
+      RangeHandle responseRange = httpHeader_->getRange();
+      if(!httpRequest_->isRangeSatisfied(responseRange)) {
+        throw DL_ABORT_EX2
+          (StringFormat
+           (EX_INVALID_RANGE_HEADER,
+            util::itos(httpRequest_->getStartByte(), true).c_str(),
+            util::itos(httpRequest_->getEndByte(), true).c_str(),
+            util::uitos(httpRequest_->getEntityLength(), true).c_str(),
+            util::itos(responseRange->getStartByte(), true).c_str(),
+            util::itos(responseRange->getEndByte(), true).c_str(),
+            util::uitos(responseRange->getEntityLength(), true).c_str()).str(),
+           downloadresultcode::CANNOT_RESUME);
+      }
     }
+  } else {
+    throw DL_ABORT_EX
+      (StringFormat("Unexpected status %s", status.c_str()).str());
   }
 }
 
