@@ -694,3 +694,7 @@
     "                              using 2 sources(if --split >= 2, of course).\n" \
     "                              If SIZE is 15M, since 2*15M > 20MiB, aria2 does\n" \
     "                              not split file and download it using 1 source.")
+#define TEXT_CONDITIONAL_GET                    \
+  _(" --conditional-get[=true|false] Download file only when the local file is older\n" \
+    "                                than remote file. Currently, this function has\n" \
+    "                                many limitations. See man page for details.")

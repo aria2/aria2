@@ -89,6 +89,8 @@ private:
 
   off_t endOffsetOverride_;
 
+  std::string ifModSinceHeader_;
+
   std::pair<std::string, std::string> getProxyAuthString() const;
 public:
   HttpRequest();
@@ -278,6 +280,16 @@ public:
   void setEndOffsetOverride(off_t offset)
   {
     endOffsetOverride_ = offset;
+  }
+
+  void setIfModifiedSinceHeader(const std::string& hd)
+  {
+    ifModSinceHeader_ = hd;
+  }
+
+  const std::string& getIfModifiedSinceHeader() const
+  {
+    return ifModSinceHeader_;
   }
 };
 

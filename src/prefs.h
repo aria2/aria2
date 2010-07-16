@@ -198,6 +198,8 @@ extern const std::string PREF_SAVE_SESSION;
 extern const std::string PREF_MAX_CONNECTION_PER_SERVER;
 // value: 1*digit
 extern const std::string PREF_MIN_SPLIT_SIZE;
+// value: true | false
+extern const std::string PREF_CONDITIONAL_GET;
 
 /**
  * FTP related preferences

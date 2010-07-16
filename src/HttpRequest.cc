@@ -238,6 +238,10 @@ std::string HttpRequest::createRequest()
       builtinHds.push_back(std::make_pair("Cookie:", cookiesValue));
     }
   }
+  if(!ifModSinceHeader_.empty()) {
+    builtinHds.push_back
+      (std::make_pair("If-Modified-Since:", ifModSinceHeader_));
+  }
   for(std::vector<std::pair<std::string, std::string> >::const_iterator i =
         builtinHds.begin(), eoi = builtinHds.end(); i != eoi; ++i) {
     std::vector<std::string>::const_iterator j = headers_.begin();

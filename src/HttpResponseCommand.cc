@@ -119,7 +119,26 @@ bool HttpResponseCommand::executeInternal()
       (getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
   }
 
-  if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
+  if(!httpResponse->getHttpRequest()->getIfModifiedSinceHeader().empty()) {
+    if(httpResponse->getResponseStatus() == HttpHeader::S304) {
+      uint64_t totalLength = httpResponse->getEntityLength();
+      getFileEntry()->setLength(totalLength);
+      getRequestGroup()->initPieceStorage();
+      getPieceStorage()->markAllPiecesDone();
+      getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          util::itos(getRequestGroup()->getGID()).c_str(),
+                          getRequestGroup()->getFirstFilePath().c_str());
+      poolConnection();
+      getFileEntry()->poolRequest(getRequest());
+      return true;
+    } else if(httpResponse->getResponseStatus() == HttpHeader::S200 ||
+              httpResponse->getResponseStatus() == HttpHeader::S206) {
+      // Remote file is newer than local file. We allow overwrite.
+      getOption()->put(PREF_ALLOW_OVERWRITE, V_TRUE);
+    }
+  }
+  if(httpResponse->getResponseStatus() >= HttpHeader::S300 &&
+     httpResponse->getResponseStatus() != HttpHeader::S304) {
     if(httpResponse->getResponseStatus() == HttpHeader::S404) {
       getRequestGroup()->increaseAndValidateFileNotFoundCount();
     }

@@ -1,3 +1,31 @@
+2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --conditional-get option.  Download file only when the local
+	file is older than remote file.  This function only works with
+	HTTP(S) downloads only. It does not work if file size is specified
+	in Metalink. It also ignores Content-Disposition header. If a
+	control file exists, this option will be ignored. This function
+	uses If-Modified-Since header to get only newer file
+	conditionally. When getting modification time of local file, it
+	uses user supplied filename(see --out option) or filename part in
+	URI if --out is not specified.
+	* doc/aria2c.1.txt
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/HttpRequestCommand.cc
+	* src/HttpResponse.cc
+	* src/HttpResponseCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/TimeA2.cc
+	* src/TimeA2.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/HttpResponseTest.cc
+	* test/TimeTest.cc
+
 2010-07-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	FeedbackURISelector now tries to select URI whose host is least

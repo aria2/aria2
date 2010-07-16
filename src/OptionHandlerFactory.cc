@@ -123,6 +123,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
 #endif // ENABLE_MESSAGE_DIGEST
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_CONDITIONAL_GET,
+                                    TEXT_CONDITIONAL_GET,
+                                    V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_CONF_PATH,
                                     TEXT_CONF_PATH,

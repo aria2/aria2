@@ -172,6 +172,15 @@ bool Time::bad() const
   return !good_;
 }
 
+std::string Time::toHTTPDate() const
+{
+  char buf[32];
+  time_t t = getTime();
+  struct tm* tms = gmtime(&t); // returned struct is statically allocated.
+  size_t r = strftime(buf, sizeof(buf), "%a, %d %b %Y %H:%M:%S GMT", tms);
+  return std::string(&buf[0], &buf[r]);
+}
+
 Time Time::parse(const std::string& datetime, const std::string& format)
 {
   struct tm tm;

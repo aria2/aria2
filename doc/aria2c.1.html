@@ -1912,6 +1912,21 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--conditional-get</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Download file only when the local file is older than remote
+  file. This function only works with HTTP(S) downloads only.  It does
+  not work if file size is specified in Metalink. It also ignores
+  Content-Disposition header.  If a control file exists, this option
+  will be ignored.  This function uses If-Modified-Since header to get
+  only newer file conditionally. When getting modification time of
+  local file, it uses user supplied filename(see <strong>--out</strong> option) or
+  filename part in URI if <strong>--out</strong> is not specified.  Default: <em>false</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--conf-path</strong>=PATH
 </dt>
 <dd>
@@ -4215,7 +4230,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-07-15 20:42:15 JST
+Last updated 2010-07-16 22:59:29 JST
 </div>
 </div>
 </body>

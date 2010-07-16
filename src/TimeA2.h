@@ -112,6 +112,8 @@ public:
   // Returns !good()
   bool bad() const;
 
+  std::string toHTTPDate() const;
+
   // Currently timezone is assumed as GMT.
   static Time parse(const std::string& datetime, const std::string& format);
 

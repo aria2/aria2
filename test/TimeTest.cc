@@ -18,6 +18,7 @@ class TimeTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseHTTPDate);
   CPPUNIT_TEST(testOperatorLess);
   CPPUNIT_TEST(testElapsed);
+  CPPUNIT_TEST(testToHTTPDate);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -30,6 +31,7 @@ public:
   void testParseHTTPDate();
   void testOperatorLess();
   void testElapsed();
+  void testToHTTPDate();
 };
 
 
@@ -84,6 +86,13 @@ void TimeTest::testOperatorLess()
 
   tv2.tv_sec = 0;
   CPPUNIT_ASSERT(Time(tv2) < Time(tv1));
+}
+
+void TimeTest::testToHTTPDate()
+{
+  Time t(1220714793);
+  CPPUNIT_ASSERT_EQUAL(std::string("Sat, 06 Sep 2008 15:26:33 GMT"),
+                       t.toHTTPDate());
 }
 
 void TimeTest::testElapsed()

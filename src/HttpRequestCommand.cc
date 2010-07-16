@@ -58,6 +58,8 @@
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
 #include "PieceStorage.h"
+#include "DefaultBtProgressInfoFile.h"
+#include "Logger.h"
 
 namespace aria2 {
 
@@ -144,6 +146,31 @@ bool HttpRequestCommand::executeInternal() {
                            getDownloadEngine()->getCookieStorage(),
                            getDownloadEngine()->getAuthConfigFactory(),
                            proxyRequest_));
+      if(getOption()->getAsBool(PREF_CONDITIONAL_GET) &&
+         (getRequest()->getProtocol() == Request::PROTO_HTTP ||
+          getRequest()->getProtocol() == Request::PROTO_HTTPS)) {
+        if(getFileEntry()->getPath().empty() &&
+           getRequest()->getFile().empty()) {
+          if(getLogger()->debug()) {
+            getLogger()->debug("conditional-get is disabled because file name"
+                               "is not available.");
+          }
+        } else {
+          if(getFileEntry()->getPath().empty()) {
+            getFileEntry()->setPath
+              (util::applyDir
+               (getDownloadContext()->getDir(),
+                util::fixTaintedBasename(getRequest()->getFile())));
+          }
+          File ctrlfile(getFileEntry()->getPath()+
+                        DefaultBtProgressInfoFile::getSuffix());
+          File file(getFileEntry()->getPath());
+          if(!ctrlfile.exists() && file.exists()) {
+            httpRequest->setIfModifiedSinceHeader
+              (file.getModifiedTime().toHTTPDate());
+          }
+        }
+      }
       httpConnection_->sendRequest(httpRequest);
     } else {
       for(std::vector<SharedHandle<Segment> >::const_iterator itr =

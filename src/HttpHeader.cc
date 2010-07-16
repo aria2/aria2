@@ -78,7 +78,19 @@ const std::string HttpHeader::HTTP_1_1("HTTP/1.1");
 
 const std::string HttpHeader::S200("200");
 
+const std::string HttpHeader::S206("206");
+
 const std::string HttpHeader::S300("300");
+
+const std::string HttpHeader::S301("301");
+
+const std::string HttpHeader::S302("302");
+
+const std::string HttpHeader::S303("303");
+
+const std::string HttpHeader::S304("304");
+
+const std::string HttpHeader::S307("307");
 
 const std::string HttpHeader::S400("400");
 

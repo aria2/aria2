@@ -44,6 +44,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testValidateResponse_good_range);
   CPPUNIT_TEST(testValidateResponse_bad_range);
   CPPUNIT_TEST(testValidateResponse_chunked);
+  CPPUNIT_TEST(testValidateResponse_withIfModifiedSince);
   CPPUNIT_TEST(testHasRetryAfter);
   CPPUNIT_TEST(testProcessRedirect);
   CPPUNIT_TEST(testRetrieveCookie);
@@ -75,6 +76,7 @@ public:
   void testValidateResponse_good_range();
   void testValidateResponse_bad_range();
   void testValidateResponse_chunked();
+  void testValidateResponse_withIfModifiedSince();
   void testHasRetryAfter();
   void testProcessRedirect();
   void testRetrieveCookie();
@@ -217,7 +219,7 @@ void HttpResponseTest::testIsRedirect()
 
   CPPUNIT_ASSERT(!httpResponse.isRedirect());
 
-  httpHeader->setResponseStatus("304");
+  httpHeader->setResponseStatus("301");
 
   CPPUNIT_ASSERT(httpResponse.isRedirect());  
 }
@@ -333,7 +335,7 @@ void HttpResponseTest::testValidateResponse()
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  httpHeader->setResponseStatus("304");
+  httpHeader->setResponseStatus("301");
 
   try {
     httpResponse.validateResponse();
@@ -428,6 +430,23 @@ void HttpResponseTest::testValidateResponse_chunked()
   } catch(Exception& e) {
     CPPUNIT_FAIL("exception must not be thrown.");
   }
+}
+
+void HttpResponseTest::testValidateResponse_withIfModifiedSince()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+  httpHeader->setResponseStatus("304");
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  httpResponse.setHttpRequest(httpRequest);
+  try {
+    httpResponse.validateResponse();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+  }
+  httpRequest->setIfModifiedSinceHeader("Fri, 16 Jul 2010 12:56:59 GMT");
+  httpResponse.validateResponse();
 }
 
 void HttpResponseTest::testHasRetryAfter()

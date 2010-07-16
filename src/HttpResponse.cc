@@ -69,7 +69,14 @@ void HttpResponse::validateResponse() const
   if(status >= HttpHeader::S400) {
     return;
   }
-  if(status >= HttpHeader::S300) {
+  if(status == HttpHeader::S304 &&
+     httpRequest_->getIfModifiedSinceHeader().empty()) {
+    throw DL_ABORT_EX("Got 304 without If-Modified-Since");
+  }
+  if(status == HttpHeader::S301 ||
+     status == HttpHeader::S302 ||
+     status == HttpHeader::S303 ||
+     status == HttpHeader::S307) {
     if(!httpHeader_->defined(HttpHeader::LOCATION)) {
       throw DL_ABORT_EX
         (StringFormat(EX_LOCATION_HEADER_REQUIRED,
@@ -128,7 +135,10 @@ void HttpResponse::retrieveCookie()
 bool HttpResponse::isRedirect() const
 {
   const std::string& status = getResponseStatus();
-  return HttpHeader::S300 <= status && status < HttpHeader::S400 &&
+  return (HttpHeader::S301 == status ||
+          HttpHeader::S302 == status ||
+          HttpHeader::S303 == status ||
+          HttpHeader::S307 == status) &&
     httpHeader_->defined(HttpHeader::LOCATION);
 }
 

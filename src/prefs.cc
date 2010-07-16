@@ -194,6 +194,8 @@ const std::string PREF_SAVE_SESSION("save-session");
 const std::string PREF_MAX_CONNECTION_PER_SERVER("max-connection-per-server");
 // value: 1*digit
 const std::string PREF_MIN_SPLIT_SIZE("min-split-size");
+// value: true | false
+const std::string PREF_CONDITIONAL_GET("conditional-get");
 
 /**
  * FTP related preferences

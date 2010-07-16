@@ -146,7 +146,19 @@ public:
 
   static const std::string S200;
 
+  static const std::string S206;
+
   static const std::string S300;
+
+  static const std::string S301;
+
+  static const std::string S302;
+
+  static const std::string S303;
+
+  static const std::string S304;
+
+  static const std::string S307;
 
   static const std::string S400;
 
