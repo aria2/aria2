@@ -292,8 +292,12 @@ Specifies timeout in seconds to invalidate performance profile of the servers si
 .PP
 \fB\-s\fR, \fB\-\-split\fR=N
 .RS 4
-Download a file using N connections\&. If more than N URIs are given, first N URIs are used and remaining URIs are used for backup\&. If less than N URIs are given, those URIs are used more than once so that N connections total are made simultaneously\&. Please see
+Download a file using N connections\&. If more than N URIs are given, first N URIs are used and remaining URIs are used for backup\&. If less than N URIs are given, those URIs are used more than once so that N connections total are made simultaneously\&. The number of connections to the same host is restricted by
+\fB\-\-max\-connection\-per\-server\fR
+option\&. Please see
 \fB\-j\fR
+and
+\fB\-\-min\-split\-size\fR
 option too\&. Please note that in Metalink download, this option has no effect and use
 \fB\-C\fR
 option instead\&. Default:

@@ -905,14 +905,14 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </dt>
 <dd>
 <p>
-  Download a file using N connections.
-  If more than N URIs are given, first N URIs are used and remaining URIs are
-  used for backup.
-  If less than N URIs are given, those URIs are used more than once so that N
-  connections total are made simultaneously.
-  Please see <strong>-j</strong> option too.
-  Please note that in Metalink download, this option has no effect and use
-  <strong>-C</strong> option instead.
+  Download a file using N connections.  If more than N URIs are given,
+  first N URIs are used and remaining URIs are used for backup.  If
+  less than N URIs are given, those URIs are used more than once so
+  that N connections total are made simultaneously.  The number of
+  connections to the same host is restricted by
+  <strong>--max-connection-per-server</strong> option.  Please see <strong>-j</strong> and
+  <strong>--min-split-size</strong> option too.  Please note that in Metalink
+  download, this option has no effect and use <strong>-C</strong> option instead.
   Default: <em>5</em>
 </p>
 </dd>
@@ -4230,7 +4230,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-07-16 22:59:29 JST
+Last updated 2010-07-16 23:25:07 JST
 </div>
 </div>
 </body>

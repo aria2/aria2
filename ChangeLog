@@ -1,5 +1,10 @@
 2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc of --split option.
+	* doc/aria2c.1.txt
+
+2010-07-16  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Moved executeHook and executeHookByOptName to util.
 	* src/RequestGroupMan.cc
 	* src/util.cc
