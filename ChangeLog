@@ -1,5 +1,11 @@
 2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.10.0
+	* configure.ac
+	* doc/aria2c.1.txt
+
+2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Count the number of command used in HTTP(S)/FTP and the number of
 	connections in HTTP(S)/FTP independently. The former is used to
 	determin whether additional command is needed.  The latter is used
