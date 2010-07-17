@@ -46,8 +46,6 @@ public:
                        DownloadEngine* e);
 protected:
   virtual bool executeInternal();
-
-  virtual bool prepareForRetry(time_t wait);
 };
 
 } // namespace aria2

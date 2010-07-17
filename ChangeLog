@@ -1,5 +1,11 @@
 2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed prepareForRetry from CreateRequestCommand
+	* src/CreateRequestCommand.cc
+	* src/CreateRequestCommand.h
+
+2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set PREF_REUSE_URI=V_FALSE for tracker request.
 	* src/TrackerWatcherCommand.cc
 
