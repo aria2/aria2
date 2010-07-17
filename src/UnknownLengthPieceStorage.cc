@@ -108,7 +108,7 @@ bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
 }
 
 SharedHandle<Piece> UnknownLengthPieceStorage::getSparseMissingUnusedPiece
-(const unsigned char* ignoreBitfield, size_t length)
+(size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length)
 {
   if(downloadFinished_) {
     return SharedHandle<Piece>();
@@ -124,7 +124,7 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getSparseMissingUnusedPiece
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(size_t index)
 {
   if(index == 0) {
-    return getSparseMissingUnusedPiece(0, 0);
+    return getSparseMissingUnusedPiece(0, 0, 0);
   } else {
     return SharedHandle<Piece>();
   }

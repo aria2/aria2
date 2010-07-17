@@ -428,7 +428,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()
-    getSegmentMan()->getSegment(getCuid(), 0);
+    getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
     return true;
   } else {
     getRequestGroup()->adjustFilename
@@ -466,7 +466,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()
-    getSegmentMan()->getSegment(getCuid(), 0);
+    getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
     prepareForNextAction(this);
 

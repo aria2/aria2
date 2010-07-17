@@ -104,7 +104,7 @@ public:
    * Returns a missing piece if available. Otherwise returns 0;
    */
   virtual SharedHandle<Piece> getSparseMissingUnusedPiece
-  (const unsigned char* ignoreBitfield, size_t length);
+  (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length);
 
   /**
    * Returns a missing piece whose index is index.

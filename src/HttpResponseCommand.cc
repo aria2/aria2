@@ -263,7 +263,8 @@ bool HttpResponseCommand::handleDefaultEncoding
   // We have to make sure that command that has Request object must
   // have segment after PieceStorage is initialized. See
   // AbstractCommand::execute()
-  SharedHandle<Segment> segment = getSegmentMan()->getSegment(getCuid(), 0);
+  SharedHandle<Segment> segment =
+    getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
   // pipelining requires implicit range specified. But the request for
   // this response most likely dones't contains range header. This means
   // we can't continue to use this socket because server sends all entity
@@ -365,7 +366,7 @@ bool HttpResponseCommand::handleOtherEncoding
   // We have to make sure that command that has Request object must
   // have segment after PieceStorage is initialized. See
   // AbstractCommand::execute()
-  getSegmentMan()->getSegment(getCuid(), 0);
+  getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
   getDownloadEngine()->addCommand
     (createHttpDownloadCommand(httpResponse,

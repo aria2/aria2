@@ -153,27 +153,27 @@ bool AbstractCommand::execute() {
         }
         return prepareForRetry(0);
       }
-    }
-    // TODO it is not needed to check other PeerStats every time.
-    // Find faster Request when no segment is available.
-    if(!req_.isNull() && fileEntry_->countPooledRequest() > 0 &&
-       !getPieceStorage()->hasMissingUnusedPiece()) {
-      SharedHandle<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
-      if(!fasterRequest.isNull()) {
-        if(getLogger()->info()) {
-          getLogger()->info("CUID#%s - Use faster Request hostname=%s, port=%u",
-                            util::itos(getCuid()).c_str(),
-                            fasterRequest->getHost().c_str(),
-                            fasterRequest->getPort());
+      // TODO it is not needed to check other PeerStats every time.
+      // Find faster Request when no segment is available.
+      if(!req_.isNull() && fileEntry_->countPooledRequest() > 0 &&
+         !getPieceStorage()->hasMissingUnusedPiece()) {
+        SharedHandle<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
+        if(!fasterRequest.isNull()) {
+          if(getLogger()->info()) {
+            getLogger()->info("CUID#%s - Use faster Request hostname=%s, port=%u",
+                              util::itos(getCuid()).c_str(),
+                              fasterRequest->getHost().c_str(),
+                              fasterRequest->getPort());
+          }
+          // Cancel current Request object and use faster one.
+          fileEntry_->removeRequest(req_);
+          Command* command =
+            InitiateConnectionCommandFactory::createInitiateConnectionCommand
+            (getCuid(), fasterRequest, fileEntry_, requestGroup_, e_);
+          e_->setNoWait(true);
+          e_->addCommand(command);
+          return true;
         }
-        // Cancel current Request object and use faster one.
-        fileEntry_->removeRequest(req_);
-        Command* command =
-          InitiateConnectionCommandFactory::createInitiateConnectionCommand
-          (getCuid(), fasterRequest, fileEntry_, requestGroup_, e_);
-        e_->setNoWait(true);
-        e_->addCommand(command);
-        return true;
       }
     }
     if((checkSocketIsReadable_ && readEventEnabled()) ||
@@ -192,9 +192,10 @@ bool AbstractCommand::execute() {
            // is more efficient.
            getDownloadContext()->getFileEntries().size() == 1) {
           size_t maxSegments = req_.isNull()?1:req_->getMaxPipelinedRequest();
+          size_t minSplitSize = calculateMinSplitSize();
           while(segments_.size() < maxSegments) {
             SharedHandle<Segment> segment =
-              getSegmentMan()->getSegment(getCuid());
+              getSegmentMan()->getSegment(getCuid(), minSplitSize);
             if(segment.isNull()) {
               break;
             } else {
@@ -221,10 +222,12 @@ bool AbstractCommand::execute() {
             }
           }
         } else {
+          // For multi-file downloads
+          size_t minSplitSize = calculateMinSplitSize();
           size_t maxSegments = req_->getMaxPipelinedRequest();
           if(segments_.size() < maxSegments) {
             getSegmentMan()->getSegment
-              (segments_, getCuid(), fileEntry_, maxSegments);
+              (segments_, getCuid(), minSplitSize, fileEntry_, maxSegments);
           }
           if(segments_.empty()) {
             return prepareForRetry(0);
@@ -835,6 +838,15 @@ const SharedHandle<Option>& AbstractCommand::getOption() const
 void AbstractCommand::createSocket()
 {
   socket_.reset(new SocketCore());
+}
+
+size_t AbstractCommand::calculateMinSplitSize() const
+{
+  if(!req_.isNull() && req_->isPipeliningEnabled()) {
+    return getDownloadContext()->getPieceLength();
+  } else {
+    return getOption()->getAsInt(PREF_MIN_SPLIT_SIZE);
+  }
 }
 
 } // namespace aria2

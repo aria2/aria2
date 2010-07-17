@@ -108,7 +108,7 @@ public:
    * If ignoreBitfield is set, indexes of true bit are excluded.
    */
   virtual SharedHandle<Piece> getSparseMissingUnusedPiece
-  (const unsigned char* ignoreBitfield, size_t length) = 0;
+  (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length) = 0;
 
   /**
    * Returns a missing piece whose index is index.

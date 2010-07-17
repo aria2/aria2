@@ -77,6 +77,8 @@ private:
 
   bool incNumConnection_;
 
+  size_t calculateMinSplitSize() const;
+
 #ifdef ENABLE_ASYNC_DNS
   void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
 

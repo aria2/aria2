@@ -87,8 +87,6 @@ private:
 
   SharedHandle<PieceSelector> pieceSelector_;
 
-  size_t minSplitSize_;
-
   bool getMissingPieceIndex(size_t& index,
                             const unsigned char* bitfield, size_t length);
 
@@ -140,7 +138,7 @@ public:
   virtual bool hasMissingUnusedPiece();
 
   virtual SharedHandle<Piece> getSparseMissingUnusedPiece
-  (const unsigned char* ignoreBitfield, size_t length);
+  (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length);
 
   virtual SharedHandle<Piece> getMissingPiece(size_t index);
 
@@ -252,11 +250,6 @@ public:
   const SharedHandle<PieceSelector>& getPieceSelector() const
   {
     return pieceSelector_;
-  }
-
-  void setMinSplitSize(size_t minSplitSize)
-  {
-    minSplitSize_ = minSplitSize;
   }
 };
 

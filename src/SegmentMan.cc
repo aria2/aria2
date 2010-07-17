@@ -165,16 +165,19 @@ void SegmentMan::getInFlightSegment
   }
 }
 
-SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid) {
+SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid, size_t minSplitSize)
+{
   SharedHandle<Piece> piece =
     pieceStorage_->getSparseMissingUnusedPiece
-    (ignoreBitfield_.getFilterBitfield(),ignoreBitfield_.getBitfieldLength());
+    (minSplitSize,
+     ignoreBitfield_.getFilterBitfield(), ignoreBitfield_.getBitfieldLength());
   return checkoutSegment(cuid, piece);
 }
 
 void SegmentMan::getSegment
 (std::vector<SharedHandle<Segment> >& segments,
  cuid_t cuid,
+ size_t minSplitSize,
  const SharedHandle<FileEntry>& fileEntry,
  size_t maxSegments)
 {
@@ -186,7 +189,8 @@ void SegmentMan::getSegment
     SharedHandle<Segment> segment =
       checkoutSegment(cuid,
                       pieceStorage_->getSparseMissingUnusedPiece
-                      (filter.getFilterBitfield(), filter.getBitfieldLength()));
+                      (minSplitSize,
+                       filter.getFilterBitfield(), filter.getBitfieldLength()));
     if(segment.isNull()) {
       break;
     }
@@ -203,7 +207,8 @@ void SegmentMan::getSegment
   }
 }
 
-SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid, size_t index) {
+SharedHandle<Segment> SegmentMan::getSegmentWithIndex
+(cuid_t cuid, size_t index) {
   if(index > 0 && downloadContext_->getNumPieces() <= index) {
     return SharedHandle<Segment>();
   }
@@ -230,7 +235,7 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
       SharedHandle<PeerStat> ps = getPeerStat(owner);
       if(ps.isNull() || (!ps.isNull() && ps->getStatus() == PeerStat::IDLE)) {
         cancelSegment(owner);
-        return getSegment(cuid, index);
+        return getSegmentWithIndex(cuid, index);
       } else {
         return SharedHandle<Segment>();
       }

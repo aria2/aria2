@@ -138,12 +138,13 @@ public:
   void getInFlightSegment(std::vector<SharedHandle<Segment> >& segments,
                           cuid_t cuid);
 
-  SharedHandle<Segment> getSegment(cuid_t cuid);
+  SharedHandle<Segment> getSegment(cuid_t cuid, size_t minSplitSize);
 
   // Checkouts segments in the range of fileEntry and push back to
   // segments until segments.size() < maxSegments holds false
   void getSegment(std::vector<SharedHandle<Segment> >& segments,
                   cuid_t cuid,
+                  size_t minSplitSize,
                   const SharedHandle<FileEntry>& fileEntry,
                   size_t maxSegments);
 
@@ -153,7 +154,7 @@ public:
    * to another cuid or has been downloaded, then returns a segment instance
    * whose isNull call is true.
    */
-  SharedHandle<Segment> getSegment(cuid_t cuid, size_t index);
+  SharedHandle<Segment> getSegmentWithIndex(cuid_t cuid, size_t index);
 
   // Returns a currently used segment whose index is index and written
   // length is 0.  The current owner(in idle state) of segment cancels

@@ -75,8 +75,7 @@ DefaultPieceStorage::DefaultPieceStorage
   logger_(LogFactory::getInstance()),
   option_(option),
   pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
-  pieceSelector_(new RarestPieceSelector(pieceStatMan_)),
-  minSplitSize_(1024*1024)
+  pieceSelector_(new RarestPieceSelector(pieceStatMan_))
 {}
 
 DefaultPieceStorage::~DefaultPieceStorage() {
@@ -273,11 +272,11 @@ bool DefaultPieceStorage::hasMissingUnusedPiece()
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getSparseMissingUnusedPiece
-(const unsigned char* ignoreBitfield, size_t length)
+(size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length)
 {
   size_t index;
   if(bitfieldMan_->getSparseMissingUnusedIndex
-     (index, minSplitSize_, ignoreBitfield, length)) {
+     (index, minSplitSize, ignoreBitfield, length)) {
     return checkOutPiece(index);
   } else {
     return SharedHandle<Piece>();

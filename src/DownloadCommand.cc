@@ -341,7 +341,7 @@ bool DownloadCommand::prepareForNextSegment() {
          (tempSegment->getPosition()+tempSegment->getLength())) {
         return prepareForRetry(0);
       }
-      SharedHandle<Segment> nextSegment = getSegmentMan()->getSegment
+      SharedHandle<Segment> nextSegment = getSegmentMan()->getSegmentWithIndex
         (getCuid(), tempSegment->getIndex()+1);
       if(nextSegment.isNull()) {
         nextSegment = getSegmentMan()->getCleanSegmentIfOwnerIsIdle

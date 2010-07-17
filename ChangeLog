@@ -1,5 +1,26 @@
 2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Pass maxSplitSize as an argument, instead of member variable of
+	DefaultPieceStorage. SegmentMan::getSegment(cuid_t,size_t index)
+	was renamed to SegmentMan::getSegmentWithIndex(...)
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/DownloadCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/PieceStorage.h
+	* src/RequestGroup.cc
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+	* test/SegmentManTest.cc
+
+2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed prepareForRetry from CreateRequestCommand
 	* src/CreateRequestCommand.cc
 	* src/CreateRequestCommand.h

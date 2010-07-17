@@ -59,19 +59,20 @@ void SegmentManTest::testNullBitfield()
   SharedHandle<UnknownLengthPieceStorage> ps
     (new UnknownLengthPieceStorage(dctx, &op));
   SegmentMan segmentMan(&op, dctx, ps);
+  size_t minSplitSize = dctx->getPieceLength();
 
-  SharedHandle<Segment> segment = segmentMan.getSegment(1);
+  SharedHandle<Segment> segment = segmentMan.getSegment(1, minSplitSize);
   CPPUNIT_ASSERT(!segment.isNull());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getLength());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getSegmentLength());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getWrittenLength());
 
-  SharedHandle<Segment> segment2 = segmentMan.getSegment(2);
+  SharedHandle<Segment> segment2 = segmentMan.getSegment(2, minSplitSize);
   CPPUNIT_ASSERT(segment2.isNull());
 
   segmentMan.cancelSegment(1);
-  CPPUNIT_ASSERT(!segmentMan.getSegment(2).isNull());
+  CPPUNIT_ASSERT(!segmentMan.getSegment(2, minSplitSize).isNull());
 }
 
 void SegmentManTest::testCompleteSegment()
@@ -85,10 +86,10 @@ void SegmentManTest::testCompleteSegment()
 
   SegmentMan segmentMan(&op, dctx, ps);
 
-  CPPUNIT_ASSERT(!segmentMan.getSegment(1, 0).isNull());
-  SharedHandle<Segment> seg = segmentMan.getSegment(1, 1);
+  CPPUNIT_ASSERT(!segmentMan.getSegmentWithIndex(1, 0).isNull());
+  SharedHandle<Segment> seg = segmentMan.getSegmentWithIndex(1, 1);
   CPPUNIT_ASSERT(!seg.isNull());
-  CPPUNIT_ASSERT(!segmentMan.getSegment(1, 2).isNull());
+  CPPUNIT_ASSERT(!segmentMan.getSegmentWithIndex(1, 2).isNull());
 
   seg->updateWrittenLength(pieceLength);
   segmentMan.completeSegment(1, seg);
@@ -112,33 +113,32 @@ void SegmentManTest::testGetSegment_sameFileEntry()
   };
   dctx->setFileEntries(&fileEntries[0], &fileEntries[3]);
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
-  ps->setMinSplitSize(dctx->getPieceLength());
   SegmentMan segman(&op, dctx, ps);
-
+  size_t minSplitSize =dctx->getPieceLength();
   std::vector<SharedHandle<Segment> > segments;
-  segman.getSegment(segments, 1, fileEntries[1], 4);
+  segman.getSegment(segments, 1, minSplitSize, fileEntries[1], 4);
   // See 3 segments are returned, not 4 because the part of file1 is
   // not filled in segment#1
   CPPUNIT_ASSERT_EQUAL((size_t)3, segments.size());
   
-  SharedHandle<Segment> segmentNo1 = segman.getSegment(2, 1);
+  SharedHandle<Segment> segmentNo1 = segman.getSegmentWithIndex(2, 1);
   // Fill the part of file1 in segment#1
   segmentNo1->updateWrittenLength(1);
   segman.cancelSegment(2);
 
   segman.cancelSegment(1);
   segments.clear();
-  segman.getSegment(segments, 1, fileEntries[1], 4);
+  segman.getSegment(segments, 1, minSplitSize, fileEntries[1], 4);
   CPPUNIT_ASSERT_EQUAL((size_t)4, segments.size());
 
   segman.cancelSegment(1);
-  SharedHandle<Segment> segmentNo4 = segman.getSegment(1, 4);
+  SharedHandle<Segment> segmentNo4 = segman.getSegmentWithIndex(1, 4);
   // Fill the part of file2 in segment#4
   segmentNo4->updateWrittenLength(1);
   segman.cancelSegment(1);
 
   segments.clear();
-  segman.getSegment(segments, 1, fileEntries[1], 4);
+  segman.getSegment(segments, 1, minSplitSize, fileEntries[1], 4);
   // segment#4 is not returned because the part of file2 is filled.
   CPPUNIT_ASSERT_EQUAL((size_t)3, segments.size());
 }
@@ -163,13 +163,13 @@ void SegmentManTest::testRegisterPeerStat()
 
 void SegmentManTest::testCancelAllSegments()
 {
-  segmentMan_->getSegment(1, 0);
-  segmentMan_->getSegment(2, 1);
-  CPPUNIT_ASSERT(segmentMan_->getSegment(3, 0).isNull());
-  CPPUNIT_ASSERT(segmentMan_->getSegment(4, 1).isNull());
+  segmentMan_->getSegmentWithIndex(1, 0);
+  segmentMan_->getSegmentWithIndex(2, 1);
+  CPPUNIT_ASSERT(segmentMan_->getSegmentWithIndex(3, 0).isNull());
+  CPPUNIT_ASSERT(segmentMan_->getSegmentWithIndex(4, 1).isNull());
   segmentMan_->cancelAllSegments();
-  CPPUNIT_ASSERT(!segmentMan_->getSegment(3, 0).isNull());
-  CPPUNIT_ASSERT(!segmentMan_->getSegment(4, 1).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getSegmentWithIndex(3, 0).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getSegmentWithIndex(4, 1).isNull());
 }
 
 void SegmentManTest::testGetPeerStat()
@@ -181,8 +181,8 @@ void SegmentManTest::testGetPeerStat()
 
 void SegmentManTest::testGetCleanSegmentIfOwnerIsIdle()
 {
-  SharedHandle<Segment> seg1 = segmentMan_->getSegment(1, 0);
-  SharedHandle<Segment> seg2 = segmentMan_->getSegment(2, 1);
+  SharedHandle<Segment> seg1 = segmentMan_->getSegmentWithIndex(1, 0);
+  SharedHandle<Segment> seg2 = segmentMan_->getSegmentWithIndex(2, 1);
   seg2->updateWrittenLength(100);
   CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(3, 0).isNull());
   SharedHandle<PeerStat> peerStat3(new PeerStat(3));
