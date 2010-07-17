@@ -75,6 +75,8 @@ private:
   SharedHandle<SocketCore> writeCheckTarget_;
   bool nameResolverCheck_;
 
+  bool incNumConnection_;
+
 #ifdef ENABLE_ASYNC_DNS
   void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
 
@@ -218,10 +220,12 @@ protected:
     return requestGroup_->getPieceStorage();
   }
 public:
-  AbstractCommand(cuid_t cuid, const SharedHandle<Request>& req,
-                  const SharedHandle<FileEntry>& fileEntry,
-                  RequestGroup* requestGroup, DownloadEngine* e,
-                  const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>());
+  AbstractCommand
+  (cuid_t cuid, const SharedHandle<Request>& req,
+   const SharedHandle<FileEntry>& fileEntry,
+   RequestGroup* requestGroup, DownloadEngine* e,
+   const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>(),
+   bool incNumConnection = true);
 
   virtual ~AbstractCommand();
   bool execute();

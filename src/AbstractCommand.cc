@@ -79,18 +79,23 @@ AbstractCommand::AbstractCommand(cuid_t cuid,
                                  const SharedHandle<FileEntry>& fileEntry,
                                  RequestGroup* requestGroup,
                                  DownloadEngine* e,
-                                 const SocketHandle& s):
+                                 const SocketHandle& s,
+                                 bool incNumConnection):
   Command(cuid), checkPoint_(global::wallclock),
   timeout_(requestGroup->getTimeout()),
   requestGroup_(requestGroup),
   req_(req), fileEntry_(fileEntry), e_(e), socket_(s),
   checkSocketIsReadable_(false), checkSocketIsWritable_(false),
-  nameResolverCheck_(false)
+  nameResolverCheck_(false),
+  incNumConnection_(incNumConnection)
 {
   if(!socket_.isNull() && socket_->isOpen()) {
     setReadCheckSocket(socket_);
   }
-  requestGroup_->increaseStreamConnection();
+  if(incNumConnection_) {
+    requestGroup->increaseStreamConnection();
+  }
+  requestGroup_->increaseStreamCommand();
   requestGroup_->increaseNumCommand();
 }
 
@@ -101,7 +106,10 @@ AbstractCommand::~AbstractCommand() {
   disableNameResolverCheck(asyncNameResolver_);
 #endif // ENABLE_ASYNC_DNS
   requestGroup_->decreaseNumCommand();
-  requestGroup_->decreaseStreamConnection();
+  requestGroup_->decreaseStreamCommand();
+  if(incNumConnection_) {
+    requestGroup_->decreaseStreamConnection();
+  }
 }
 
 bool AbstractCommand::execute() {

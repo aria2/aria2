@@ -97,6 +97,8 @@ private:
    */
   unsigned int numStreamConnection_;
 
+  unsigned int numStreamCommand_;
+
   unsigned int numCommand_;
 
   SharedHandle<SegmentMan> segmentMan_;
@@ -278,12 +280,13 @@ public:
 
   void setProgressInfoFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 
+  void increaseStreamCommand();
+
+  void decreaseStreamCommand();
+
   void increaseStreamConnection();
 
   void decreaseStreamConnection();
-
-  // Returns the number of connections used in HTTP(S)/FTP.
-  unsigned int getNumStreamConnection() { return numStreamConnection_; }
 
   unsigned int getNumConnection() const;
 

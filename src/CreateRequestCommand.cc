@@ -57,7 +57,8 @@ CreateRequestCommand::CreateRequestCommand(cuid_t cuid,
                                            RequestGroup* requestGroup,
                                            DownloadEngine* e):
   AbstractCommand
-  (cuid, SharedHandle<Request>(), SharedHandle<FileEntry>(), requestGroup, e)
+  (cuid, SharedHandle<Request>(), SharedHandle<FileEntry>(), requestGroup, e,
+   SharedHandle<SocketCore>(), false)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();

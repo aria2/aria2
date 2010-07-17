@@ -1,5 +1,17 @@
 2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Count the number of command used in HTTP(S)/FTP and the number of
+	connections in HTTP(S)/FTP independently. The former is used to
+	determin whether additional command is needed.  The latter is used
+	to report user to how many connections are used in a download.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/CreateRequestCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+
+2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Check status values: 200 and 206.
 	* src/HttpResponse.cc
 

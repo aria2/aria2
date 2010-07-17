@@ -119,6 +119,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
   option_(new Option(*option.get())),
   numConcurrentCommand_(option->getAsInt(PREF_SPLIT)),
   numStreamConnection_(0),
+  numStreamCommand_(0),
   numCommand_(0),
   saveControlFile_(true),
   progressInfoFile_(new NullProgressInfoFile()),
@@ -726,17 +727,17 @@ void RequestGroup::createNextCommand(std::vector<Command*>& commands,
 {
   int numCommand;
   if(getTotalLength() == 0) {
-    if(numStreamConnection_ > 0) {
+    if(numStreamCommand_ > 0) {
       numCommand = 0;
     } else {
       numCommand = 1;
     }
   } else {
-    if(numStreamConnection_ >= numConcurrentCommand_) {
+    if(numStreamCommand_ >= numConcurrentCommand_) {
       numCommand = 0;
     } else {
       numCommand = std::min(downloadContext_->getNumPieces(),
-                            numConcurrentCommand_-numStreamConnection_);
+                            numConcurrentCommand_-numStreamCommand_);
     }
   }
   if(numCommand > 0) {
@@ -829,6 +830,16 @@ void RequestGroup::validateFilename(const std::string& actualFilename) const
 void RequestGroup::validateTotalLength(uint64_t actualTotalLength) const
 {
   validateTotalLength(getTotalLength(), actualTotalLength);
+}
+
+void RequestGroup::increaseStreamCommand()
+{
+  ++numStreamCommand_;
+}
+
+void RequestGroup::decreaseStreamCommand()
+{
+  --numStreamCommand_;
 }
 
 void RequestGroup::increaseStreamConnection()
