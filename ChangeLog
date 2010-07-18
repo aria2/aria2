@@ -1,5 +1,11 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error with OSX g++ 4.0.1
+	* src/FileEntry.h
+	* test/FileEntryTest.cc
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Reverted default value of -j from 2 to 5.
 	* doc/aria2c.1.txt
 	* src/OptionHandlerFactory.cc

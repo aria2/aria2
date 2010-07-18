@@ -167,9 +167,8 @@ public:
   // reuse used URIs and do selection again.
   SharedHandle<Request> getRequest
   (const SharedHandle<URISelector>& selector,
-   bool uriReuse = true,
-   const std::vector<std::pair<size_t, std::string> >& usedHosts
-     = std::vector<std::pair<size_t, std::string> >(),
+   bool uriReuse,
+   const std::vector<std::pair<size_t, std::string> >& usedHosts,
    const std::string& referer = A2STR::NIL,
    const std::string& method = Request::METHOD_GET);
 
