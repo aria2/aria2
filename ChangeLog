@@ -1,5 +1,11 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Metadata download may take very long time. If URIs are
+	available, give up metadata download in at most 30 seconds.
+	* src/Metalink2RequestGroup.cc
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Call RequestGroup::setForceHaltRequested(true) from
 	BtStopDownloadCommand to avoid long delay of tracker request.
 	* src/BtStopDownloadCommand.cc

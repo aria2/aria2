@@ -315,6 +315,25 @@ Metalink2RequestGroup::createRequestGroup
       SharedHandle<Dependency> dep(new BtDependency(rg, torrentRg));
       rg->dependsOn(dep);
       torrentRg->belongsTo(rg->getGID());
+      // metadata download may take very long time. If URIs are
+      // available, give up metadata download in at most 30 seconds.
+      const time_t btStopTimeout = 30;
+      time_t currentBtStopTimeout =
+        torrentRg->getOption()->getAsInt(PREF_BT_STOP_TIMEOUT);
+      if(currentBtStopTimeout == 0 || currentBtStopTimeout > btStopTimeout) {
+        std::vector<SharedHandle<FileEntry> >::const_iterator i;
+        std::vector<SharedHandle<FileEntry> >::const_iterator eoi
+          = dctx->getFileEntries().end();
+        for(i = dctx->getFileEntries().begin(); i != eoi; ++i) {
+          if((*i)->getRemainingUris().empty()) {
+            break;
+          }
+        }
+        if(i == dctx->getFileEntries().end()) {
+          torrentRg->getOption()->put
+            (PREF_BT_STOP_TIMEOUT, util::itos(btStopTimeout));
+        }
+      }
     }
 #endif // ENABLE_BITTORRENT
     groups.push_back(rg);
