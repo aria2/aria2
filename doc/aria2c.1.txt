@@ -48,7 +48,7 @@ Basic Options
 *-j*, *--max-concurrent-downloads*=N::
   Set maximum number of parallel downloads for every static (HTTP/FTP) URI,
   torrent and metalink. See also *-s* and *-C* option.
-  Default: '2'
+  Default: '5'
 
 *-V*, *--check-integrity*[='true'|'false']::
   Check file integrity by validating piece hashes.

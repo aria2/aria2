@@ -1,5 +1,11 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Reverted default value of -j from 2 to 5.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Metadata download may take very long time. If URIs are
 	available, give up metadata download in at most 30 seconds.
 	* src/Metalink2RequestGroup.cc

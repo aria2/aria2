@@ -328,7 +328,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_MAX_CONCURRENT_DOWNLOADS,
                                     TEXT_MAX_CONCURRENT_DOWNLOADS,
-                                    "2",
+                                    "5",
                                     1, -1,
                                     'j'));
     op->addTag(TAG_BASIC);
