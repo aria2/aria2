@@ -1,5 +1,10 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed double free bug
+	* src/Sqlite3CookieParserImpl.cc
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error with OSX g++ 4.0.1
 	* src/FileEntry.h
 	* test/FileEntryTest.cc
