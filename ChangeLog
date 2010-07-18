@@ -1,3 +1,9 @@
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Call RequestGroup::setForceHaltRequested(true) from
+	BtStopDownloadCommand to avoid long delay of tracker request.
+	* src/BtStopDownloadCommand.cc
+
 2010-07-17  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Pass maxSplitSize as an argument, instead of member variable of

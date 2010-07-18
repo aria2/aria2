@@ -63,7 +63,7 @@ void BtStopDownloadCommand::preProcess()
     getLogger()->notice("GID#%s Stop downloading torrent due to"
                         " --bt-stop-timeout option.",
                         util::itos(requestGroup_->getGID()).c_str());
-    requestGroup_->setHaltRequested(true);
+    requestGroup_->setForceHaltRequested(true);
     enableExit();
   }
 }
