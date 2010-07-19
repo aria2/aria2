@@ -1261,6 +1261,9 @@ of URIs. These optional lines must start with white space(s).
 * always-resume
 * max-resume-failure-tries
 * http-accept-gzip
+* max-connection-per-server
+* min-split-size
+* conditional-get
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

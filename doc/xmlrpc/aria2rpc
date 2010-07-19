@@ -201,6 +201,11 @@ OptionParser.new do |opt|
   opt.on("--http-accept-gzip [BOOL]",["true","false"]){|val|
     options["http-accept-gzip"]=val||"true"
   }
+  opt.on("--max-connection-per-server NUM"){|val| options["max-connection-per-server"]=val}
+  opt.on("--min-split-size SIZE"){|val| options["min-split-size"]=val}
+  opt.on("--conditional-get [BOOL]",["true","false"]){|val|
+    options["conditional-get"]=val||"true"
+  }
   opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
   opt.on("-j","--max-concurrent-downloads N"){|val| options["max-concurrent-downloads"]=val}

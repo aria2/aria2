@@ -159,7 +159,10 @@ const std::set<std::string>& listRequestOptions()
     PREF_REMOVE_CONTROL_FILE,
     PREF_ALWAYS_RESUME,
     PREF_MAX_RESUME_FAILURE_TRIES,
-    PREF_HTTP_ACCEPT_GZIP
+    PREF_HTTP_ACCEPT_GZIP,
+    PREF_MAX_CONNECTION_PER_SERVER,
+    PREF_MIN_SPLIT_SIZE,
+    PREF_CONDITIONAL_GET
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));

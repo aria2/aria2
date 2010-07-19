@@ -1,5 +1,13 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added max-connection-per-server, min-split-size and
+	conditional-get option to -i list option and aria2rpc.
+	* doc/aria2c.1.txt
+	* doc/xmlrpc/aria2rpc
+	* src/download_helper.cc
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed double free bug
 	* src/Sqlite3CookieParserImpl.cc
 
