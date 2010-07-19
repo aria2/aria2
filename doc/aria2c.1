@@ -1231,7 +1231,10 @@ option\&. Default:
 .RS 4
 aria2 does not split less than 2*SIZE byte range\&. For example, let\(cqs consider downloading 20MiB file\&. If SIZE is 10M, aria2 can split file into 2 range [0\-10MiB) and [10MiB\-20MiB) and download it using 2 sources(if
 \fB\-\-split\fR
->= 2, of course)\&. If SIZE is 15M, since 2*15M > 20MiB, aria2 does not split file and download it using 1 source\&. Possible Values:
+>= 2, of course)\&. If SIZE is 15M, since 2*15M > 20MiB, aria2 does not split file and download it using 1 source\&. You can append
+\fIK\fR
+or
+\fIM\fR(1K = 1024, 1M = 1024K)\&. Possible Values:
 \fI1M\fR\-\fI1024M\fR
 Default:
 \fI20M\fR

@@ -1,5 +1,11 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc for --min-split-size option.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added max-connection-per-server, min-split-size and
 	conditional-get option to -i list option and aria2rpc.
 	* doc/aria2c.1.txt
