@@ -52,7 +52,10 @@
     "                              remaining URLs are used for backup. If less than\n" \
     "                              N URLs are given, those URLs are used more than\n" \
     "                              once so that N connections total are made\n" \
-    "                              simultaneously. Please see -j option too.\n" \
+    "                              simultaneously. The number of connections to the\n" \
+    "                              same host is restricted by\n"        \
+    "                              --max-connection-per-server option. Please see -j\n" \
+    "                              and --min-split-size option too.\n"  \
     "                              Please note that in Metalink download, this\n" \
     "                              option has no effect and use -C option instead.")
 #define TEXT_RETRY_WAIT                                                 \
