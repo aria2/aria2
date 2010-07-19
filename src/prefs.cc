@@ -196,6 +196,8 @@ const std::string PREF_MAX_CONNECTION_PER_SERVER("max-connection-per-server");
 const std::string PREF_MIN_SPLIT_SIZE("min-split-size");
 // value: true | false
 const std::string PREF_CONDITIONAL_GET("conditional-get");
+// value: true | false
+const std::string PREF_SELECT_LEAST_USED_HOST("select-least-used-host");
 
 /**
  * FTP related preferences

@@ -1,5 +1,14 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added hidden select-least-used-host option.
+	* src/CreateRequestCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/TrackerWatcherCommand.cc
+	* src/prefs.cc
+	* src/prefs.h
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc for --split option.
 	* src/usage_text.h
 

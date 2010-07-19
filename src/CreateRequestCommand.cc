@@ -72,7 +72,9 @@ bool CreateRequestCommand::executeInternal()
                  (getSegments().front()->getPositionToWrite()));
   }
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
+  if(getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
+    getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
+  }
   setRequest
     (getFileEntry()->getRequest(getRequestGroup()->getURISelector(),
                                 getOption()->getAsBool(PREF_REUSE_URI),

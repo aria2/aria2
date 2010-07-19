@@ -242,6 +242,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->getOption()->put(PREF_CONNECT_TIMEOUT,
                        rg->getOption()->get(PREF_BT_TRACKER_CONNECT_TIMEOUT));
   rg->getOption()->put(PREF_REUSE_URI, V_FALSE);
+  rg->getOption()->put(PREF_SELECT_LEAST_USED_HOST, V_FALSE);
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(getOption()->getAsInt(PREF_SEGMENT_SIZE),

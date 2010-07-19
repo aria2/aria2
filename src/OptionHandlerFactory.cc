@@ -505,6 +505,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_SELECT_LEAST_USED_HOST,
+                                    NO_DEFAULT_VALUE,
+                                    V_TRUE));
+    op->hide();
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_STOP,
                                     TEXT_STOP,
