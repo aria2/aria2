@@ -1,5 +1,9 @@
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release 1.10.0
+
+2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added hidden select-least-used-host option.
 	* src/CreateRequestCommand.cc
 	* src/OptionHandlerFactory.cc
