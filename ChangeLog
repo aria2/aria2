@@ -1,3 +1,11 @@
+2010-07-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that HAVE_SOME_FALLOCATE gets undefined if fallocate
+	is not available even if posix_fallocate is available. This causes
+	FallocFileAllocationIterator.cc is out of compile targets and
+	linker error.
+	* configure.ac
+
 2010-07-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.10.0

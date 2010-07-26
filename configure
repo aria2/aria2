@@ -14793,15 +14793,6 @@ _ACEOF
 fi
 done
 
- if test "x$have_posix_fallocate" = "xyes"; then
-  HAVE_SOME_FALLOCATE_TRUE=
-  HAVE_SOME_FALLOCATE_FALSE='#'
-else
-  HAVE_SOME_FALLOCATE_TRUE='#'
-  HAVE_SOME_FALLOCATE_FALSE=
-fi
-
-
 for ac_func in fallocate
 do :
   ac_fn_cxx_check_func "$LINENO" "fallocate" "ac_cv_func_fallocate"
@@ -14813,7 +14804,13 @@ _ACEOF
 fi
 done
 
- if test "x$have_fallocate" = "xyes"; then
+if test "x$have_posix_fallocate" = "xyes" ||
+   test "x$have_fallocate" = "xyes"; then
+
+$as_echo "#define HAVE_SOME_FALLOCATE 1" >>confdefs.h
+
+fi
+ if test "x$have_posix_fallocate" = "xyes" || test "x$have_fallocate" = "xyes"; then
   HAVE_SOME_FALLOCATE_TRUE=
   HAVE_SOME_FALLOCATE_FALSE='#'
 else
@@ -14822,12 +14819,6 @@ else
 fi
 
 
-if test "x$have_posix_fallocate" = "xyes" ||
-   test "x$have_fallocate" = "xyes"; then
-
-$as_echo "#define HAVE_SOME_FALLOCATE 1" >>confdefs.h
-
-fi
 
 for ac_func in asctime_r
 do :
@@ -15506,10 +15497,6 @@ fi
 
 if test -z "${HAVE_EPOLL_TRUE}" && test -z "${HAVE_EPOLL_FALSE}"; then
   as_fn_error "conditional \"HAVE_EPOLL\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${HAVE_SOME_FALLOCATE_TRUE}" && test -z "${HAVE_SOME_FALLOCATE_FALSE}"; then
-  as_fn_error "conditional \"HAVE_SOME_FALLOCATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_SOME_FALLOCATE_TRUE}" && test -z "${HAVE_SOME_FALLOCATE_FALSE}"; then
