@@ -14793,16 +14793,37 @@ _ACEOF
 fi
 done
 
-for ac_func in fallocate
-do :
-  ac_fn_cxx_check_func "$LINENO" "fallocate" "ac_cv_func_fallocate"
-if test "x$ac_cv_func_fallocate" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_FALLOCATE 1
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for fallocate" >&5
+$as_echo_n "checking for fallocate... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <fcntl.h>
+
+int
+main ()
+{
+
+fallocate(2, 0, 0, 4096);
+
+  ;
+  return 0;
+}
 _ACEOF
- have_fallocate=yes
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  have_fallocate=yes
+else
+  have_fallocate=no
 fi
-done
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_fallocate" >&5
+$as_echo "$have_fallocate" >&6; }
+if test "x$have_fallocate" = "xyes"; then
+
+$as_echo "#define HAVE_FALLOCATE 1" >>confdefs.h
+
+fi
 
 if test "x$have_posix_fallocate" = "xyes" ||
    test "x$have_fallocate" = "xyes"; then

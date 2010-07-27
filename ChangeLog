@@ -1,3 +1,9 @@
+2010-07-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten check for fallocate using AC_COMPILE_IFELSE.
+	* configure.ac
+	* m4/fallocate.m4
+
 2010-07-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed the bug that HAVE_SOME_FALLOCATE gets undefined if fallocate

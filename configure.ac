@@ -356,7 +356,7 @@ fi
 AM_CONDITIONAL([HAVE_EPOLL], [test "x$have_epoll" = "xyes"])
 
 AC_CHECK_FUNCS([posix_fallocate],[have_posix_fallocate=yes])
-AC_CHECK_FUNCS([fallocate], [have_fallocate=yes])
+ARIA2_CHECK_FALLOCATE
 if test "x$have_posix_fallocate" = "xyes" ||
    test "x$have_fallocate" = "xyes"; then
   AC_DEFINE([HAVE_SOME_FALLOCATE], [1],
