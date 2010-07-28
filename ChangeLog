@@ -1,3 +1,14 @@
+2010-07-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Set milliseconds in DownloadEngine::refreshInterval_.  Because
+	there is difference in accuracy between epoll and clock_gettime(),
+	we set DEFAULT_REFRESH_INTERVAL 900ms just lower than default
+	timeout 1 sec for epoll. Also set update interval of
+	ConsoleStatCalc to 900ms by the same reason.
+	* src/ConsoleStatCalc.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+
 2010-07-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Rewritten check for fallocate using AC_COMPILE_IFELSE.

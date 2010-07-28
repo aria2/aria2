@@ -143,7 +143,7 @@ void DownloadEngine::run()
   cp.reset(0);
   while(!commands_.empty() || !routineCommands_.empty()) {
     global::wallclock.reset();
-    if(cp.difference(global::wallclock) >= refreshInterval_) {
+    if(cp.differenceInMillis(global::wallclock) >= refreshInterval_) {
       refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
       cp = global::wallclock;
       executeCommand(commands_, Command::STATUS_ALL);
@@ -529,7 +529,7 @@ void DownloadEngine::setAuthConfigFactory
   authConfigFactory_ = factory;
 }
 
-void DownloadEngine::setRefreshInterval(time_t interval)
+void DownloadEngine::setRefreshInterval(int64_t interval)
 {
   refreshInterval_ = interval;
 }

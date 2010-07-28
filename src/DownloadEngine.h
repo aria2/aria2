@@ -123,9 +123,10 @@ private:
 
   bool noWait_;
 
-  static const time_t DEFAULT_REFRESH_INTERVAL = 1;
+  static const int64_t DEFAULT_REFRESH_INTERVAL = 900;
 
-  time_t refreshInterval_;
+  // Milliseconds
+  int64_t refreshInterval_;
 
   std::deque<Command*> routineCommands_;
 
@@ -337,7 +338,7 @@ public:
     return authConfigFactory_;
   }
 
-  void setRefreshInterval(time_t interval);
+  void setRefreshInterval(int64_t interval);
 
   const std::string getSessionId() const
   {

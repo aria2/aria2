@@ -215,7 +215,7 @@ ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
 void
 ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 {
-  if(cp_.difference(global::wallclock) < 1) {
+  if(cp_.differenceInMillis(global::wallclock) < 900) {
     return;
   }
   cp_ = global::wallclock;
