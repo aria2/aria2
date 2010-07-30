@@ -160,6 +160,21 @@ public:
   void getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
 
   /**
+   * Stores address of this socket to sockaddr.  len must be
+   * initialized to the size of sockaddr.  On success, address data is
+   * stored in sockaddr and actual size of address structure is stored
+   * in len.
+   */
+  void getAddrInfo
+  (struct sockaddr_storage& sockaddr, socklen_t& len) const;
+
+  /**
+   * Returns address family of this socket.
+   * The socket must be connected or bounded to address.
+   */
+  int getAddressFamily() const;
+
+  /**
    * Stores peer's address and port to peerinfo.
    * @param peerinfo placeholder to store peer's address and port.
    */

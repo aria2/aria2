@@ -62,9 +62,16 @@ public:
     SEQ_RECV_MDTM,
     SEQ_SEND_SIZE,
     SEQ_RECV_SIZE,
+    SEQ_PREPARE_PORT,
+    SEQ_PREPARE_SERVER_SOCKET_EPRT,
+    SEQ_SEND_EPRT,
+    SEQ_RECV_EPRT,
     SEQ_PREPARE_SERVER_SOCKET,
     SEQ_SEND_PORT,
     SEQ_RECV_PORT,
+    SEQ_PREPARE_PASV,
+    SEQ_SEND_EPSV,
+    SEQ_RECV_EPSV,
     SEQ_SEND_PASV,
     SEQ_RECV_PASV,
     SEQ_RESOLVE_PROXY,
@@ -100,11 +107,19 @@ private:
   bool recvMdtm();
   bool sendSize();
   bool recvSize();
+  bool preparePort();
+  bool prepareServerSocketEprt();
+  bool sendEprt();
+  bool recvEprt();
   bool prepareServerSocket();
   bool sendPort();
   bool recvPort();
+  bool preparePasv();
+  bool sendEpsv();
+  bool recvEpsv();
   bool sendPasv();
   bool recvPasv();
+  bool preparePasvConnect();
   bool resolveProxy();
   bool sendTunnelRequest();
   bool recvTunnelResponse();

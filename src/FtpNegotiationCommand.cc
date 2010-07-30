@@ -126,9 +126,9 @@ bool FtpNegotiationCommand::executeInternal() {
     return true;
   } else if(sequence_ == SEQ_FILE_PREPARATION) {
     if(getOption()->getAsBool(PREF_FTP_PASV)) {
-      sequence_ = SEQ_SEND_PASV;
+      sequence_ = SEQ_PREPARE_PASV;
     } else {
-      sequence_ = SEQ_PREPARE_SERVER_SOCKET;
+      sequence_ = SEQ_PREPARE_PORT;
     }
     return false;
   } else if(sequence_ == SEQ_EXIT) {
@@ -391,9 +391,9 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   if(totalLength == 0) {
 
     if(getOption()->getAsBool(PREF_FTP_PASV)) {
-      sequence_ = SEQ_SEND_PASV;
+      sequence_ = SEQ_PREPARE_PASV;
     } else {
-      sequence_ = SEQ_PREPARE_SERVER_SOCKET;
+      sequence_ = SEQ_PREPARE_PORT;
     }
 
     if(getOption()->getAsBool(PREF_DRY_RUN)) {
@@ -514,9 +514,9 @@ bool FtpNegotiationCommand::recvSize() {
     // wrong file to be downloaded if user-specified URL is wrong.
   }
   if(getOption()->getAsBool(PREF_FTP_PASV)) {
-    sequence_ = SEQ_SEND_PASV;
+    sequence_ = SEQ_PREPARE_PASV;
   } else {
-    sequence_ = SEQ_PREPARE_SERVER_SOCKET;
+    sequence_ = SEQ_PREPARE_PORT;
   }
   return true;
 }
@@ -526,6 +526,22 @@ void FtpNegotiationCommand::afterFileAllocation()
   setReadCheckSocket(getSocket());
 }
 
+bool FtpNegotiationCommand::preparePort() {
+  afterFileAllocation();
+  if(getSocket()->getAddressFamily() == AF_INET6) {
+    sequence_ = SEQ_PREPARE_SERVER_SOCKET_EPRT;
+  } else {
+    sequence_ = SEQ_PREPARE_SERVER_SOCKET;
+  }
+  return true;
+}
+
+bool FtpNegotiationCommand::prepareServerSocketEprt() {
+  serverSocket_ = ftp_->createServerSocket();
+  sequence_ = SEQ_SEND_EPRT;
+  return true;
+}
+
 bool FtpNegotiationCommand::prepareServerSocket()
 {
   serverSocket_ = ftp_->createServerSocket();
@@ -533,8 +549,30 @@ bool FtpNegotiationCommand::prepareServerSocket()
   return true;
 }
 
+bool FtpNegotiationCommand::sendEprt() {
+  if(ftp_->sendEprt(serverSocket_)) {
+    disableWriteCheckSocket();
+    sequence_ = SEQ_RECV_EPRT;
+  } else {
+    setWriteCheckSocket(getSocket());
+  }
+  return false;
+}
+
+bool FtpNegotiationCommand::recvEprt() {
+  unsigned int status = ftp_->receiveResponse();
+  if(status == 0) {
+    return false;
+  }
+  if(status == 200) {
+    sequence_ = SEQ_SEND_REST;
+  } else {
+    sequence_ = SEQ_PREPARE_SERVER_SOCKET;
+  }
+  return true;
+}
+
 bool FtpNegotiationCommand::sendPort() {
-  afterFileAllocation();
   if(ftp_->sendPort(serverSocket_)) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_PORT;
@@ -556,8 +594,45 @@ bool FtpNegotiationCommand::recvPort() {
   return true;
 }
 
-bool FtpNegotiationCommand::sendPasv() {
+bool FtpNegotiationCommand::preparePasv() {
   afterFileAllocation();
+  if(getSocket()->getAddressFamily() == AF_INET6) {
+    sequence_ = SEQ_SEND_EPSV;
+  } else {
+    sequence_ = SEQ_SEND_PASV;
+  }
+  return true;
+}
+
+bool FtpNegotiationCommand::sendEpsv() {
+  if(ftp_->sendEpsv()) {
+    disableWriteCheckSocket();
+    sequence_ = SEQ_RECV_EPSV;
+  } else {
+    setWriteCheckSocket(getSocket());
+  }
+  return true;
+}
+
+bool FtpNegotiationCommand::recvEpsv() {
+  uint16_t port;
+  unsigned int status = ftp_->receiveEpsvResponse(port);
+  if(status == 0) {
+    return false;
+  }
+  if(status == 229) {
+    std::pair<std::string, uint16_t> peerInfo;
+    getSocket()->getPeerInfo(peerInfo);
+    peerInfo.second = port;
+    dataConnAddr_ = peerInfo;
+    return preparePasvConnect();
+  } else {
+    sequence_ = SEQ_SEND_PASV;
+    return true;
+  }
+}
+
+bool FtpNegotiationCommand::sendPasv() {
   if(ftp_->sendPasv()) {
     disableWriteCheckSocket();
     sequence_ = SEQ_RECV_PASV;
@@ -576,20 +651,26 @@ bool FtpNegotiationCommand::recvPasv() {
   if(status != 227) {
     throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
-  // TODO Should we check to see that dest.first is not in noProxy list?
+  dataConnAddr_ = dest;
+
+  return preparePasvConnect();
+}
+
+bool FtpNegotiationCommand::preparePasvConnect() {
+  // TODO Should we check to see that dataConnAddr_.first is not in
+  // noProxy list?
   if(isProxyDefined()) {
-    dataConnAddr_ = dest;
     sequence_ = SEQ_RESOLVE_PROXY;
     return true;
   } else {
     // make a data connection to the server.
     if(getLogger()->info()) {
       getLogger()->info(MSG_CONNECTING_TO_SERVER, util::itos(getCuid()).c_str(),
-                        dest.first.c_str(),
-                        dest.second);
+                        dataConnAddr_.first.c_str(),
+                        dataConnAddr_.second);
     }
     dataSocket_.reset(new SocketCore());
-    dataSocket_->establishConnection(dest.first, dest.second);
+    dataSocket_->establishConnection(dataConnAddr_.first, dataConnAddr_.second);
     disableReadCheckSocket();
     setWriteCheckSocket(dataSocket_);
     sequence_ = SEQ_SEND_REST_PASV;
@@ -691,6 +772,12 @@ bool FtpNegotiationCommand::recvTunnelResponse()
 
 bool FtpNegotiationCommand::sendRestPasv(const SharedHandle<Segment>& segment) {
   //dataSocket_->setBlockingMode();
+  // Check connection is made properly
+  if(dataSocket_->isReadable(0)) {
+    std::string error = dataSocket_->getSocketError();
+    throw DL_ABORT_EX
+      (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
+  }
   setReadCheckSocket(getSocket());
   disableWriteCheckSocket();
   return sendRest(segment);
@@ -803,12 +890,26 @@ bool FtpNegotiationCommand::processSequence
     return sendSize();
   case SEQ_RECV_SIZE:
     return recvSize();
+  case SEQ_PREPARE_PORT:
+    return preparePort();
+  case SEQ_PREPARE_SERVER_SOCKET_EPRT:
+    return prepareServerSocketEprt();
+  case SEQ_SEND_EPRT:
+    return sendEprt();
+  case SEQ_RECV_EPRT:
+    return recvEprt();
   case SEQ_PREPARE_SERVER_SOCKET:
     return prepareServerSocket();
   case SEQ_SEND_PORT:
     return sendPort();
   case SEQ_RECV_PORT:
     return recvPort();
+  case SEQ_PREPARE_PASV:
+    return preparePasv();
+  case SEQ_SEND_EPSV:
+    return sendEpsv();
+  case SEQ_RECV_EPSV:
+    return recvEpsv();
   case SEQ_SEND_PASV:
     return sendPasv();
   case SEQ_RECV_PASV:

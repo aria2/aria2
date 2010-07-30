@@ -95,8 +95,10 @@ public:
   bool sendCwd(const std::string& dir);
   bool sendMdtm();
   bool sendSize();
+  bool sendEpsv();
   bool sendPasv();
   SharedHandle<SocketCore> createServerSocket();
+  bool sendEprt(const SharedHandle<SocketCore>& serverSocket);
   bool sendPort(const SharedHandle<SocketCore>& serverSocket);
   bool sendRest(const SharedHandle<Segment>& segment);
   bool sendRetr();
@@ -110,6 +112,7 @@ public:
   // date cannot be parsed, then assign Time::null() to given time.
   // If reply is not received yet, returns 0.
   unsigned int receiveMdtmResponse(Time& time);
+  unsigned int receiveEpsvResponse(uint16_t& port);
   unsigned int receivePasvResponse(std::pair<std::string, uint16_t>& dest);
   unsigned int receivePwdResponse(std::string& pwd);
 

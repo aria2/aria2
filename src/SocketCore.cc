@@ -341,11 +341,26 @@ void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
 {
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
+  getAddrInfo(sockaddr, len);
+  addrinfo = util::getNumericNameInfo
+    (reinterpret_cast<const struct sockaddr*>(&sockaddr), len);
+}
+
+void SocketCore::getAddrInfo
+(struct sockaddr_storage& sockaddr, socklen_t& len) const
+{
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   if(getsockname(sockfd_, addrp, &len) == -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
-  addrinfo = util::getNumericNameInfo(addrp, len);
+}
+
+int SocketCore::getAddressFamily() const
+{
+  struct sockaddr_storage sockaddr;
+  socklen_t len = sizeof(sockaddr);
+  getAddrInfo(sockaddr, len);
+  return sockaddr.ss_family;
 }
 
 void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const

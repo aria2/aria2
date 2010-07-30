@@ -32,6 +32,7 @@ class FtpConnectionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSendSize);
   CPPUNIT_TEST(testReceiveSizeResponse);
   CPPUNIT_TEST(testSendRetr);
+  CPPUNIT_TEST(testReceiveEpsvResponse);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<SocketCore> serverSocket_;
@@ -85,6 +86,7 @@ public:
   void testSendSize();
   void testReceiveSizeResponse();
   void testSendRetr();
+  void testReceiveEpsvResponse();
 };
 
 
@@ -297,6 +299,35 @@ void FtpConnectionTest::testSendRetr()
   serverSocket_->readData(data, len);
   CPPUNIT_ASSERT_EQUAL(std::string("RETR hello world.img\r\n"),
                        std::string(&data[0], &data[len]));
+}
+
+void FtpConnectionTest::testReceiveEpsvResponse()
+{
+  serverSocket_->writeData("229 Success (|||12000|)\r\n");
+  waitRead(clientSocket_);
+  uint16_t port = 0;
+  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)12000, port);
+
+  serverSocket_->writeData("229 Success |||12000|)\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
+
+  serverSocket_->writeData("229 Success (|||12000|\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
+
+  serverSocket_->writeData("229 Success ()|||12000|\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
+
+  serverSocket_->writeData("229 Success )(|||12000|)\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
+
+  serverSocket_->writeData("229 Success )(||12000|)\r\n");
+  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 }
 
 } // namespace aria2

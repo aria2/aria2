@@ -190,6 +190,20 @@ bool FtpConnection::sendSize()
   return socketBuffer_.sendBufferIsEmpty();
 }
 
+bool FtpConnection::sendEpsv()
+{
+  if(socketBuffer_.sendBufferIsEmpty()) {
+    static const std::string request("EPSV\r\n");
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
+    }
+    socketBuffer_.pushStr(request);
+  }
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
+}
+
 bool FtpConnection::sendPasv()
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
@@ -206,11 +220,39 @@ bool FtpConnection::sendPasv()
 
 SharedHandle<SocketCore> FtpConnection::createServerSocket()
 {
+  std::pair<std::string, uint16_t> addrinfo;
+  socket_->getAddrInfo(addrinfo);
   SharedHandle<SocketCore> serverSocket(new SocketCore());
-  serverSocket->bind(0);
+  serverSocket->bind(addrinfo.first, 0);
   serverSocket->beginListen();
   serverSocket->setNonBlockingMode();
   return serverSocket;
+}
+
+bool FtpConnection::sendEprt(const SharedHandle<SocketCore>& serverSocket)
+{
+  if(socketBuffer_.sendBufferIsEmpty()) {
+    struct sockaddr_storage sockaddr;
+    socklen_t len = sizeof(sockaddr);
+    serverSocket->getAddrInfo(sockaddr, len);
+    std::pair<std::string, uint16_t> addrinfo = util::getNumericNameInfo
+      (reinterpret_cast<const struct sockaddr*>(&sockaddr), len);
+    std::string request = "EPRT ";
+    request += "|";
+    request += util::itos(sockaddr.ss_family == AF_INET?1:2);
+    request += "|";
+    request += addrinfo.first;
+    request += "|";
+    request += util::uitos(addrinfo.second);
+    request += "|\r\n";
+    if(logger_->info()) {
+      logger_->info(MSG_SENDING_REQUEST,
+                    util::itos(cuid_).c_str(), request.c_str());
+    }
+    socketBuffer_.pushStr(request);
+  }
+  socketBuffer_.send();
+  return socketBuffer_.sendBufferIsEmpty();
 }
 
 bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
@@ -445,6 +487,34 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
         time = Time(timegm(&tm));
       } else {
         time = Time::null();
+      }
+    }
+    return response.first;
+  } else {
+    return 0;
+  }
+}
+
+unsigned int FtpConnection::receiveEpsvResponse(uint16_t& port)
+{
+  std::pair<unsigned int, std::string> response;
+  if(bulkReceiveResponse(response)) {
+    if(response.first == 229) {
+      port = 0;
+      std::string::size_type leftParen = response.second.find("(");
+      std::string::size_type rightParen = response.second.find(")");
+      if(leftParen == std::string::npos || rightParen == std::string::npos ||
+         leftParen > rightParen) {
+        return response.first;
+      }
+      std::vector<std::string> rd;
+      util::split(response.second.substr(leftParen+1, rightParen-(leftParen+1)),
+                  std::back_inserter(rd), "|", true, true);
+      uint32_t portTemp = 0;
+      if(rd.size() == 5 && util::parseUIntNoThrow(portTemp, rd[3])) {
+        if(0 < portTemp  && portTemp <= UINT16_MAX) {
+          port = portTemp;
+        }
       }
     }
     return response.first;
