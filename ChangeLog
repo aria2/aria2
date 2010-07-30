@@ -1,3 +1,11 @@
+2010-07-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that if hostname is numeric,
+	AbstractCommand::resolveHostname() does not add its address to
+	given addrs. This makes pooled socket is not used for that
+	address.
+	* src/AbstractCommand.cc
+
 2010-07-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Set milliseconds in DownloadEngine::refreshInterval_.  Because
