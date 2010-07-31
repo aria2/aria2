@@ -66,7 +66,11 @@ public:
 
   virtual off_t getCurrentLength()
   {
-    return offset_;
+    if(allocator_.isNull()) {
+      return offset_;
+    } else {
+      return allocator_->getCurrentLength();
+    }
   }
 
   virtual uint64_t getTotalLength()
