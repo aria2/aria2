@@ -1,3 +1,16 @@
+2010-07-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use hostname of original URI when counting hostname in
+	inFlightRequest.
+	* src/FileEntry.cc
+
+2010-07-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that
+	AdaptiveFileAllocationIterator::getCurrentLength() does not return
+	updated allocated bytes.
+	* src/AdaptiveFileAllocationIterator.h
+
 2010-07-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added FTP EPSV and EPRT command support. aria2 issues these

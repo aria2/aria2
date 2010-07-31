@@ -103,19 +103,17 @@ void FileEntry::getUris(std::vector<std::string>& uris) const
   uris.insert(uris.end(), uris_.begin(), uris_.end());
 }
 
-template<typename InputIterator>
-static size_t countInFlightHost(InputIterator first, InputIterator last,
-                                const std::string& hostname)
+template<typename InputIterator, typename OutputIterator>
+static OutputIterator
+enumerateInFlightHosts
+(InputIterator first, InputIterator last, OutputIterator out)
 {
-  // TODO redirection should be considered here. We need to parse
-  // original URI to get hostname.
-  size_t count = 0;
+  Request r;
   for(; first != last; ++first) {
-    if((*first)->getHost() == hostname) {
-      ++count;
-    }
+    r.setUri((*first)->getUri());
+    *out++ = r.getHost();
   }
-  return count;
+  return out;
 }
 
 SharedHandle<Request>
@@ -128,6 +126,10 @@ FileEntry::getRequest
 {
   SharedHandle<Request> req;
   Request r;
+  std::vector<std::string> inFlightHosts;
+  enumerateInFlightHosts(inFlightRequests_.begin(), inFlightRequests_.end(),
+                         std::back_inserter(inFlightHosts));
+
   if(!requestPool_.empty()) {
     for(std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin(),
           eoi = requestPool_.end(); i != eoi; ++i) {
@@ -136,9 +138,9 @@ FileEntry::getRequest
          usedHosts.end()) {
         continue;
       }
-      if(countInFlightHost(inFlightRequests_.begin(), inFlightRequests_.end(),
-                           r.getHost()) >= maxConnectionPerServer_) {
-        continue;
+      if(std::count(inFlightHosts.begin(), inFlightHosts.end(), r.getHost())
+         >= static_cast<int>(maxConnectionPerServer_)) {
+      continue;
       }
       req = *i;
       requestPool_.erase(i);
@@ -157,9 +159,8 @@ FileEntry::getRequest
       }
       req.reset(new Request());
       if(req->setUri(uri)) {
-        if(countInFlightHost(inFlightRequests_.begin(),
-                             inFlightRequests_.end(),
-                             req->getHost()) >= maxConnectionPerServer_) {
+        if(std::count(inFlightHosts.begin(), inFlightHosts.end(),req->getHost())
+           >= static_cast<int>(maxConnectionPerServer_)) {
           pending.push_back(uri);
           ignoreHost.push_back(req->getHost());
           req.reset();
@@ -188,8 +189,8 @@ FileEntry::getRequest
     for(std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin(),
           eoi = requestPool_.end(); i != eoi; ++i) {
       r.setUri((*i)->getUri());
-      if(countInFlightHost(inFlightRequests_.begin(), inFlightRequests_.end(),
-                           r.getHost()) >= maxConnectionPerServer_) {
+      if(std::count(inFlightHosts.begin(), inFlightHosts.end(), r.getHost())
+         >= static_cast<int>(maxConnectionPerServer_)) {
         continue;
       }
       req = *i;
