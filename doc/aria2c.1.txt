@@ -774,6 +774,12 @@ Advanced Options
   Disable IPv6. This is useful if you have to use broken DNS and want
   to avoid terribly slow AAAA record lookup. Default: 'false'
 
+*--enable-async-dns6*[='true'|'false']::
+
+  Enable IPv6 name resolution in asynchronous DNS resolver. This
+  option will be ignored when *--async-dns*='false'.
+  Default: 'false'
+
 *--enable-direct-io*[='true'|'false']::
   Enable directI/O, which lowers cpu usage while allocating/checking files.
   Turn off if you encounter any error.
@@ -1265,6 +1271,7 @@ of URIs. These optional lines must start with white space(s).
 * max-connection-per-server
 * min-split-size
 * conditional-get
+* enable-async-dns6
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

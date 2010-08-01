@@ -198,6 +198,8 @@ const std::string PREF_MIN_SPLIT_SIZE("min-split-size");
 const std::string PREF_CONDITIONAL_GET("conditional-get");
 // value: true | false
 const std::string PREF_SELECT_LEAST_USED_HOST("select-least-used-host");
+// value: true | false
+const std::string PREF_ENABLE_ASYNC_DNS6("enable-async-dns6");
 
 /**
  * FTP related preferences

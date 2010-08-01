@@ -53,15 +53,24 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
     return;
   }
   for(char** ap = host->h_addr_list; *ap; ++ap) {
-    struct in_addr addr;
-    memcpy(&addr, *ap, sizeof(in_addr));
-    resolverPtr->resolvedAddresses_.push_back(inet_ntoa(addr));
+    char addrstring[INET6_ADDRSTRLEN];
+    const char* dst =
+      inet_ntop(host->h_addrtype, *ap, addrstring, sizeof(addrstring));
+    if(dst) {
+      resolverPtr->resolvedAddresses_.push_back(dst);
+    }
   }
-  resolverPtr->status_ = AsyncNameResolver::STATUS_SUCCESS;
+  if(resolverPtr->resolvedAddresses_.empty()) {
+    resolverPtr->error_ = "inet_ntop failed";
+    resolverPtr->status_ = AsyncNameResolver::STATUS_ERROR;
+  } else {
+    resolverPtr->status_ = AsyncNameResolver::STATUS_SUCCESS;
+  }
 }
 
-AsyncNameResolver::AsyncNameResolver():
-  status_(STATUS_READY)
+AsyncNameResolver::AsyncNameResolver(int family):
+  status_(STATUS_READY),
+  family_(family)
 {
   // TODO evaluate return value
   ares_init(&channel_);
@@ -76,7 +85,7 @@ void AsyncNameResolver::resolve(const std::string& name)
 {
   hostname_ = name;
   status_ = STATUS_QUERYING;
-  ares_gethostbyname(channel_, name.c_str(), AF_INET, callback, this);
+  ares_gethostbyname(channel_, name.c_str(), family_, callback, this);
 }
 
 int AsyncNameResolver::getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const

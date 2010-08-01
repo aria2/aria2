@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 07/19/2010
+.\"      Date: 08/01/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.10.0
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "07/19/2010" "Aria2 1\&.10\&.0" "Aria2 Manual"
+.TH "ARIA2C" "1" "08/01/2010" "Aria2 1\&.10\&.0" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -1124,6 +1124,13 @@ and standard input, standard output and standard error will be redirected to
 \fB\-\-disable\-ipv6\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Disable IPv6\&. This is useful if you have to use broken DNS and want to avoid terribly slow AAAA record lookup\&. Default:
+\fIfalse\fR
+.RE
+.PP
+\fB\-\-enable\-async\-dns6\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable IPv6 name resolution in asynchronous DNS resolver\&. This option will be ignored when
+\fB\-\-async\-dns\fR=\fIfalse\fR\&. Default:
 \fIfalse\fR
 .RE
 .PP
@@ -2610,6 +2617,17 @@ min\-split\-size
 .IP \(bu 2.3
 .\}
 conditional\-get
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+enable\-async\-dns6
 .RE
 .sp
 These options have exactly same meaning of the ones in the command\-line options, but it just applies to the URIs it belongs to\&.

@@ -63,13 +63,14 @@ public:
   };
 private:
   STATUS status_;
+  int family_;
   ares_channel channel_;
 
   std::vector<std::string> resolvedAddresses_;
   std::string error_;
   std::string hostname_;
 public:
-  AsyncNameResolver();
+  AsyncNameResolver(int family);
 
   ~AsyncNameResolver();
 

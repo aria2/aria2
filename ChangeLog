@@ -1,3 +1,19 @@
+2010-08-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added --enable-async-dns6 option. This option enables IPv6 name
+	resolution in asynchronous DNS resolver. This option will be
+	ignored when --async-dns=false.
+	* doc/aria2c.1.txt
+	* src/AbstractCommand.cc
+	* src/AsyncNameResolver.cc
+	* src/AsyncNameResolver.h
+	* src/DHTEntryPointNameResolveCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/download_helper.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2010-07-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use hostname of original URI when counting hostname in

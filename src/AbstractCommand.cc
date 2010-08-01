@@ -638,7 +638,13 @@ bool AbstractCommand::isAsyncNameResolverInitialized() const
 
 void AbstractCommand::initAsyncNameResolver(const std::string& hostname)
 {
-  asyncNameResolver_.reset(new AsyncNameResolver());
+  int family;
+  if(getOption()->getAsBool(PREF_ENABLE_ASYNC_DNS6)) {
+    family = AF_UNSPEC;
+  } else {
+    family = AF_INET;
+  }
+  asyncNameResolver_.reset(new AsyncNameResolver(family));
   if(getLogger()->info()) {
     getLogger()->info(MSG_RESOLVING_HOSTNAME,
                       util::itos(getCuid()).c_str(), hostname.c_str());

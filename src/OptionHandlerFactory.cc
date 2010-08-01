@@ -192,6 +192,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->hide();
     handlers.push_back(op);
   }
+#ifdef ENABLE_ASYNC_DNS
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_ENABLE_ASYNC_DNS6,
+                                    TEXT_ENABLE_ASYNC_DNS6,
+                                    V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+#endif // ENABLE_ASYNC_DNS
 #ifdef ENABLE_DIRECT_IO
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler

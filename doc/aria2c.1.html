@@ -1955,6 +1955,16 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--enable-async-dns6</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Enable IPv6 name resolution in asynchronous DNS resolver. This
+  option will be ignored when <strong>--async-dns</strong>=<em>false</em>.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--enable-direct-io</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
@@ -3001,6 +3011,11 @@ min-split-size
 <li>
 <p>
 conditional-get
+</p>
+</li>
+<li>
+<p>
+enable-async-dns6
 </p>
 </li>
 </ul></div>
@@ -4258,7 +4273,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-07-19 13:48:41 JST
+Last updated 2010-08-01 14:56:58 JST
 </div>
 </div>
 </body>

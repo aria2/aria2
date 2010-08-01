@@ -202,6 +202,8 @@ extern const std::string PREF_MIN_SPLIT_SIZE;
 extern const std::string PREF_CONDITIONAL_GET;
 // value: true | false
 extern const std::string PREF_SELECT_LEAST_USED_HOST;
+// value: true | false
+extern const std::string PREF_ENABLE_ASYNC_DNS6;
 
 /**
  * FTP related preferences

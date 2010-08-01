@@ -710,3 +710,7 @@
     "                              download completes but before seeding.\n" \
     "                              See --on-download-start option for the\n" \
     "                              requirement of COMMAND.")
+#define TEXT_ENABLE_ASYNC_DNS6                  \
+  _(" --enable-async-dns6[=true|false] Enable IPv6 name resolution in asynchronous\n" \
+    "                              DNS resolver. This option will be ignored when\n" \
+    "                              --async-dns=false.")
