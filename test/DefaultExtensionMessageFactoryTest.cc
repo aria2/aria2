@@ -131,14 +131,14 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_Handshake()
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
 {
-  unsigned char c1[6];
-  unsigned char c2[6];
-  unsigned char c3[6];
-  unsigned char c4[6];
-  bittorrent::createcompact(c1, "192.168.0.1", 6881);
-  bittorrent::createcompact(c2, "10.1.1.2", 9999);
-  bittorrent::createcompact(c3, "192.168.0.2", 6882);
-  bittorrent::createcompact(c4, "10.1.1.3",10000);
+  unsigned char c1[COMPACT_LEN_IPV6];
+  unsigned char c2[COMPACT_LEN_IPV6];
+  unsigned char c3[COMPACT_LEN_IPV6];
+  unsigned char c4[COMPACT_LEN_IPV6];
+  bittorrent::packcompact(c1, "192.168.0.1", 6881);
+  bittorrent::packcompact(c2, "10.1.1.2", 9999);
+  bittorrent::packcompact(c3, "192.168.0.2", 6882);
+  bittorrent::packcompact(c4, "10.1.1.3",10000);
 
   std::string data = getExtensionMessageID("ut_pex")+"d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+

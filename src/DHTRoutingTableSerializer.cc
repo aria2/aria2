@@ -105,19 +105,21 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes_.begin(),
         eoi = nodes_.end(); i != eoi; ++i) {
     const SharedHandle<DHTNode>& node = *i;
-    // Currently, only IPv4 address and IPv4-mapped address are saved.
+    // Currently, only IPv4 addresses are saved.
     // 6bytes: write IP address + port in Compact IP-address/port info form.
-    unsigned char compactPeer[6];
-    if(!bittorrent::createcompact
-       (compactPeer, node->getIPAddress(), node->getPort())) {
-      memset(compactPeer, 0, 6);
+    unsigned char compactPeer[COMPACT_LEN_IPV6];
+    int compactlen = bittorrent::packcompact
+      (compactPeer, node->getIPAddress(), node->getPort());
+    if(compactlen != COMPACT_LEN_IPV4) {
+      compactlen = COMPACT_LEN_IPV4;
+      memset(compactPeer, 0, COMPACT_LEN_IPV4);
     }
     // 1byte compact peer format length
-    o << static_cast<uint8_t>(sizeof(compactPeer));
+    o << static_cast<uint8_t>(compactlen);
     // 7bytes reserved
     o.write(zero, 7);
     // 6 bytes compact peer
-    o.write(reinterpret_cast<const char*>(compactPeer), 6);
+    o.write(reinterpret_cast<const char*>(compactPeer), compactlen);
     // 2bytes reserved
     o.write(zero, 2);
     // 16bytes reserved

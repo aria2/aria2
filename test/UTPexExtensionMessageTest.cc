@@ -81,18 +81,18 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   p4->startBadCondition();
   CPPUNIT_ASSERT(msg.addDroppedPeer(p4));
 
-  unsigned char c1[6];
-  unsigned char c2[6];
-  unsigned char c3[6];
-  unsigned char c4[6];
-  bittorrent::createcompact(c1, p1->getIPAddress(), p1->getPort());
-  bittorrent::createcompact(c2, p2->getIPAddress(), p2->getPort());
-  bittorrent::createcompact(c3, p3->getIPAddress(), p3->getPort());
-  bittorrent::createcompact(c4, p4->getIPAddress(), p4->getPort());
+  unsigned char c1[COMPACT_LEN_IPV6];
+  unsigned char c2[COMPACT_LEN_IPV6];
+  unsigned char c3[COMPACT_LEN_IPV6];
+  unsigned char c4[COMPACT_LEN_IPV6];
+  bittorrent::packcompact(c1, p1->getIPAddress(), p1->getPort());
+  bittorrent::packcompact(c2, p2->getIPAddress(), p2->getPort());
+  bittorrent::packcompact(c3, p3->getIPAddress(), p3->getPort());
+  bittorrent::packcompact(c4, p4->getIPAddress(), p4->getPort());
 
   std::string expected = "d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
-    "7:added.f2:207:dropped12:"+
+    "7:added.f2:"+util::fromHex("0200")+"7:dropped12:"+
     std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "e";
   std::string bd = msg.getPayload();
@@ -152,14 +152,14 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
 
 void UTPexExtensionMessageTest::testCreate()
 {
-  unsigned char c1[6];
-  unsigned char c2[6];
-  unsigned char c3[6];
-  unsigned char c4[6];
-  bittorrent::createcompact(c1, "192.168.0.1", 6881);
-  bittorrent::createcompact(c2, "10.1.1.2", 9999);
-  bittorrent::createcompact(c3, "192.168.0.2", 6882);
-  bittorrent::createcompact(c4, "10.1.1.3",10000);
+  unsigned char c1[COMPACT_LEN_IPV6];
+  unsigned char c2[COMPACT_LEN_IPV6];
+  unsigned char c3[COMPACT_LEN_IPV6];
+  unsigned char c4[COMPACT_LEN_IPV6];
+  bittorrent::packcompact(c1, "192.168.0.1", 6881);
+  bittorrent::packcompact(c2, "10.1.1.2", 9999);
+  bittorrent::packcompact(c3, "192.168.0.2", 6882);
+  bittorrent::packcompact(c4, "10.1.1.3",10000);
 
   char id[1] = { 1 };
 

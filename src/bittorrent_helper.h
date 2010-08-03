@@ -182,18 +182,25 @@ void createPeerMessageString
 (unsigned char* msg, size_t msgLength, size_t payloadLength, uint8_t messageId);
 
 /**
- * Creates compact tracker format(6bytes for ipv4 address and port)
- * and stores the results in compact.
- * compact must be at least 6 bytes and pre-allocated.
- * Returns true if creation is successful, otherwise returns false.
- * The example of failure reason is that addr is not numbers-and-dots
- * notation.
+ * Creates compact form(packed addresss + 2bytes port) and stores the
+ * results in compact.  This function looks addr and if it is IPv4
+ * address, it stores 6bytes in compact and if it is IPv6, it stores
+ * 18bytes in compact.  So compact must be at least 18 bytes and
+ * pre-allocated.  Returns the number of written bytes; for IPv4
+ * address, it is 6 and for IPv6, it is 18. On failure, returns 0.
  */
-bool createcompact
+int packcompact
 (unsigned char* compact, const std::string& addr, uint16_t port);
 
-// Unpack compact into pair of IPv4 address and port.
-std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact);
+/**
+ * Unpack packed address and port in compact and returns address and
+ * port pair.  family must be AF_INET or AF_INET6.  If family is
+ * AF_INET, first 6 bytes from compact is used.  If family is
+ * AF_INET6, first 18 bytes from compact is used.  On failure, returns
+ * std::pair<std::string, uint16_t>().
+ */
+std::pair<std::string, uint16_t>
+unpackcompact(const unsigned char* compact, int family);
 
 // Throws exception if threshold >= actual
 void assertPayloadLengthGreater
@@ -216,30 +223,30 @@ std::string metadata2Torrent
 std::string torrent2Magnet(const SharedHandle<TorrentAttribute>& attrs);
 
 template<typename OutputIterator>
-void extractPeer(const ValueBase* peerData, OutputIterator dest)
+void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
 {
   class PeerListValueBaseVisitor:public ValueBaseVisitor {
   private:
     OutputIterator dest_;
+    int family_;
   public:
-    PeerListValueBaseVisitor(OutputIterator dest):dest_(dest) {}
+    PeerListValueBaseVisitor(OutputIterator dest, int family):
+      dest_(dest),
+      family_(family) {}
 
     virtual ~PeerListValueBaseVisitor() {}
 
     virtual void visit(const String& peerData)
     {
+      int unit = family_ == AF_INET?6:18;
       size_t length = peerData.s().size();
-      if(length%6 == 0) {
-        const char* base = peerData.s().data();
-        for(size_t i = 0; i < length; i += 6) {
-          struct in_addr in;
-          memcpy(&in.s_addr, base+i, sizeof(uint32_t));
-          std::string ipaddr = inet_ntoa(in);
-          uint16_t port_nworder;
-          memcpy(&port_nworder, base+i+4, sizeof(uint16_t));
-          uint16_t port = ntohs(port_nworder);
-          *dest_ = SharedHandle<Peer>(new Peer(ipaddr, port));
-          ++dest_;
+      if(length%unit == 0) {
+        const unsigned char* base =
+          reinterpret_cast<const unsigned char*>(peerData.s().data());
+        const unsigned char* end = base+length;
+        for(; base != end; base += unit) {
+          std::pair<std::string, uint16_t> p = unpackcompact(base, family_);
+          *dest_++ = SharedHandle<Peer>(new Peer(p.first, p.second));
         }
       }
     }
@@ -269,15 +276,16 @@ void extractPeer(const ValueBase* peerData, OutputIterator dest)
     virtual void visit(const Dict& v) {}
   };
   if(peerData) {
-    PeerListValueBaseVisitor visitor(dest);
+    PeerListValueBaseVisitor visitor(dest, family);
     peerData->accept(visitor);
   }
 }
 
 template<typename OutputIterator>
-void extractPeer(const SharedHandle<ValueBase>& peerData, OutputIterator dest)
+void extractPeer
+(const SharedHandle<ValueBase>& peerData, int family, OutputIterator dest)
 {
-  return extractPeer(peerData.get(), dest);
+  return extractPeer(peerData.get(), family, dest);
 }
 
 } // namespace bittorrent

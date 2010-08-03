@@ -81,8 +81,11 @@ SharedHandle<Dict> DHTFindNodeReplyMessage::getResponse()
       i != eoi && offset < DHTBucket::K*26; ++i) {
     SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
-    if(bittorrent::createcompact(buffer+20+offset, node->getIPAddress(),
-                                 node->getPort())) {
+    unsigned char compact[COMPACT_LEN_IPV6];
+    int compactlen = bittorrent::packcompact
+      (compact, node->getIPAddress(), node->getPort());
+    if(compactlen == COMPACT_LEN_IPV4) {
+      memcpy(buffer+20+offset, compact, compactlen);
       offset += 26;
     }
   }

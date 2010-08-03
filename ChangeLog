@@ -1,3 +1,28 @@
+2010-08-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added bittorrent::packcompact() which replaces
+	bittorrent::createcompact() and supports IPv6 addresses. Rewritten
+	bittorrent::unpackcompact() and bittorrent::extractPeer() to
+	support IPv6 addresses. Fixed added.f flags in ut_pex.
+	* src/BtConstants.h
+	* src/DHTFindNodeReplyMessage.cc
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTRoutingTableSerializer.cc
+	* src/DHTTokenTracker.cc
+	* src/DefaultBtAnnounce.cc
+	* src/UTPexExtensionMessage.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* test/BittorrentHelperTest.cc
+	* test/DHTFindNodeReplyMessageTest.cc
+	* test/DHTGetPeersReplyMessageTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* test/UTPexExtensionMessageTest.cc
+
 2010-08-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --enable-async-dns6 option. This option enables IPv6 name

@@ -78,11 +78,12 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
   std::string flagstring;
   for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
         eoi = peers.end(); itr != eoi; ++itr) {
-    unsigned char compact[6];
-    if(bittorrent::createcompact
-       (compact, (*itr)->getIPAddress(), (*itr)->getPort())) {
-      addrstring.append(&compact[0], &compact[6]);
-      flagstring += (*itr)->isSeeder() ? "2" : "0";
+    unsigned char compact[COMPACT_LEN_IPV6];
+    int compactlen = bittorrent::packcompact
+      (compact, (*itr)->getIPAddress(), (*itr)->getPort());
+    if(compactlen == COMPACT_LEN_IPV4) {
+      addrstring.append(&compact[0], &compact[compactlen]);
+      flagstring += (*itr)->isSeeder() ? 0x02 : 0x00;
     }
   }
   return std::pair<std::string, std::string>(addrstring, flagstring);
@@ -162,11 +163,13 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   if(dict) {
     const String* added = asString(dict->get("added"));
     if(added) {
-      bittorrent::extractPeer(added, std::back_inserter(msg->freshPeers_));
+      bittorrent::extractPeer
+        (added, AF_INET,  std::back_inserter(msg->freshPeers_));
     }
     const String* dropped = asString(dict->get("dropped"));
     if(dropped) {
-      bittorrent::extractPeer(dropped, std::back_inserter(msg->droppedPeers_));
+      bittorrent::extractPeer
+        (dropped, AF_INET, std::back_inserter(msg->droppedPeers_));
     }
   }
   return msg;

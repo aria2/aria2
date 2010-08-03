@@ -276,7 +276,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   } else {
     if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
       std::vector<SharedHandle<Peer> > peers;
-      bittorrent::extractPeer(peerData, std::back_inserter(peers));
+      bittorrent::extractPeer(peerData, AF_INET, std::back_inserter(peers));
       peerStorage_->addPeer(peers);
     }
   }

@@ -45,12 +45,12 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
     nodes[i]->setIPAddress("192.168.0."+util::uitos(i+1));
     nodes[i]->setPort(6881+i);
 
-    unsigned char buf[6];
-    CPPUNIT_ASSERT(bittorrent::createcompact
-                   (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+    unsigned char buf[COMPACT_LEN_IPV6];
+    bittorrent::packcompact
+      (buf, nodes[i]->getIPAddress(), nodes[i]->getPort());
     compactNodeInfo +=
       std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-      std::string(&buf[0], &buf[sizeof(buf)]);
+      std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
   }
   msg.setClosestKNodes
     (std::vector<SharedHandle<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));

@@ -59,20 +59,24 @@ DHTTokenTracker::DHTTokenTracker(const unsigned char* initialSecret)
 
 DHTTokenTracker::~DHTTokenTracker() {}
 
-std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
-                                           const std::string& ipaddr, uint16_t port,
-                                           const unsigned char* secret) const
+std::string DHTTokenTracker::generateToken
+(const unsigned char* infoHash,
+ const std::string& ipaddr, uint16_t port,
+ const unsigned char* secret) const
 {
-  unsigned char src[DHT_ID_LENGTH+6+SECRET_SIZE];
-  if(!bittorrent::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
+  unsigned char src[DHT_ID_LENGTH+COMPACT_LEN_IPV6+SECRET_SIZE];
+  memset(src, 0, sizeof(src));
+  int compactlen = bittorrent::packcompact(src+DHT_ID_LENGTH, ipaddr, port);
+  if(compactlen == 0) {
     throw DL_ABORT_EX
       (StringFormat("Token generation failed: ipaddr=%s, port=%u",
                     ipaddr.c_str(), port).str());
   }
   memcpy(src, infoHash, DHT_ID_LENGTH);
-  memcpy(src+DHT_ID_LENGTH+6, secret, SECRET_SIZE);
+  memcpy(src+DHT_ID_LENGTH+COMPACT_LEN_IPV6, secret, SECRET_SIZE);
   unsigned char md[20];
-  MessageDigestHelper::digest(md, sizeof(md), MessageDigestContext::SHA1, src, sizeof(src));
+  MessageDigestHelper::digest(md, sizeof(md), MessageDigestContext::SHA1,
+                              src, sizeof(src));
   return std::string(&md[0], &md[sizeof(md)]);
 }
 

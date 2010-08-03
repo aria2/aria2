@@ -182,7 +182,9 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
       CHECK_STREAM(in, 42);
       continue;
     }
-    std::pair<std::string, uint16_t> peer = bittorrent::unpackcompact(buf);
+    // TODO DHT6 protocol family should be configurable.
+    std::pair<std::string, uint16_t> peer =
+      bittorrent::unpackcompact(buf, AF_INET);
     if(peer.first.empty()) {
       // skip this entry
       readBytes(buf, buf.size(), in, 42);

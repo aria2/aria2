@@ -62,4 +62,8 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define LPD_MULTICAST_PORT 6771
 
+#define COMPACT_LEN_IPV4 6
+
+#define COMPACT_LEN_IPV6 18
+
 #endif // _D_BT_CONSTANTS_

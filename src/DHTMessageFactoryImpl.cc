@@ -365,7 +365,7 @@ DHTMessageFactoryImpl::extractNodes(const unsigned char* src, size_t length)
   for(size_t offset = 0; offset < length; offset += 26) {
     SharedHandle<DHTNode> node(new DHTNode(src+offset));
     std::pair<std::string, uint16_t> addr =
-      bittorrent::unpackcompact(src+offset+DHT_ID_LENGTH);
+      bittorrent::unpackcompact(src+offset+DHT_ID_LENGTH, AF_INET);
     if(addr.first.empty()) {
       continue;
     }
@@ -448,7 +448,7 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues
     const String* data = asString(*i);
     if(data && data->s().size() == 6) {
       std::pair<std::string, uint16_t> addr =
-        bittorrent::unpackcompact(data->uc());
+        bittorrent::unpackcompact(data->uc(), AF_INET);
       SharedHandle<Peer> peer(new Peer(addr.first, addr.second));
       peers.push_back(peer);
     }

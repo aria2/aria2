@@ -56,15 +56,17 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetFileFilter_multi);
   CPPUNIT_TEST(testUTF8Torrent);
   CPPUNIT_TEST(testEtc);
-  CPPUNIT_TEST(testCreatecompact);
   CPPUNIT_TEST(testCheckBitfield);
   CPPUNIT_TEST(testMetadata);
   CPPUNIT_TEST(testParseMagnet);
   CPPUNIT_TEST(testParseMagnet_base32);
   CPPUNIT_TEST(testMetadata2Torrent);
   CPPUNIT_TEST(testTorrent2Magnet);
+  CPPUNIT_TEST(testExtractPeerFromString);
   CPPUNIT_TEST(testExtractPeerFromList);
   CPPUNIT_TEST(testExtract2PeersFromList);
+  CPPUNIT_TEST(testPackcompact);
+  CPPUNIT_TEST(testUnpackcompact);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -101,15 +103,17 @@ public:
   void testSetFileFilter_multi();
   void testUTF8Torrent();
   void testEtc();
-  void testCreatecompact();
   void testCheckBitfield();
   void testMetadata();
   void testParseMagnet();
   void testParseMagnet_base32();
   void testMetadata2Torrent();
   void testTorrent2Magnet();
+  void testExtractPeerFromString();
   void testExtractPeerFromList();
   void testExtract2PeersFromList();
+  void testPackcompact();
+  void testUnpackcompact();
 };
 
 
@@ -645,18 +649,6 @@ void BittorrentHelperTest::testEtc()
                        getTorrentAttrs(dctx)->creationDate);
 }
 
-void BittorrentHelperTest::testCreatecompact()
-{
-  unsigned char compact[6];
-  // Note: bittorrent::createcompact() on linux can handle IPv4-mapped
-  // addresses like `ffff::127.0.0.1', but on cygwin, it doesn't.
-  CPPUNIT_ASSERT(createcompact(compact, "127.0.0.1", 6881));
-
-  std::pair<std::string, uint16_t> p = unpackcompact(compact);
-  CPPUNIT_ASSERT_EQUAL(std::string("127.0.0.1"), p.first);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p.second);
-}
-
 void BittorrentHelperTest::testCheckBitfield()
 {
   unsigned char bitfield[] = { 0xff, 0xe0 };
@@ -760,6 +752,35 @@ void BittorrentHelperTest::testTorrent2Magnet()
      torrent2Magnet(getTorrentAttrs(dctx)));
 }
 
+void BittorrentHelperTest::testExtractPeerFromString()
+{
+  std::string hextext = "100210354527354678541237324732171ae1";
+  hextext += "20010db8bd0501d2288a1fc0000110ee1ae2";
+  std::string peersstr = "36:"+util::fromHex(hextext);
+  SharedHandle<ValueBase> str = bencode2::decode(peersstr);
+  std::deque<SharedHandle<Peer> > peers;
+  extractPeer(str, AF_INET6, std::back_inserter(peers));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
+                       peers[0]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->getPort());
+  CPPUNIT_ASSERT_EQUAL(std::string("2001:db8:bd05:1d2:288a:1fc0:1:10ee"),
+                       peers[1]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->getPort());
+
+  hextext = "c0a800011ae1";
+  hextext += "c0a800021ae2";
+  peersstr = "12:"+util::fromHex(hextext);
+  str = bencode2::decode(peersstr);
+  peers.clear();
+  extractPeer(str, AF_INET, std::back_inserter(peers));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->getPort());
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peers[1]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->getPort()); 
+}
+
 void BittorrentHelperTest::testExtractPeerFromList()
 {
   std::string peersString =
@@ -769,7 +790,7 @@ void BittorrentHelperTest::testExtractPeerFromList()
   SharedHandle<ValueBase> dict = bencode2::decode(peersString);
   
   std::deque<SharedHandle<Peer> > peers;
-  extractPeer(asDict(dict)->get("peers"), std::back_inserter(peers));
+  extractPeer(asDict(dict)->get("peers"), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
@@ -786,7 +807,7 @@ void BittorrentHelperTest::testExtract2PeersFromList()
   SharedHandle<ValueBase> dict = bencode2::decode(peersString);
 
   std::deque<SharedHandle<Peer> > peers;
-  extractPeer(asDict(dict)->get("peers"), std::back_inserter(peers));
+  extractPeer(asDict(dict)->get("peers"), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
@@ -795,6 +816,40 @@ void BittorrentHelperTest::testExtract2PeersFromList()
   peer = *(peers.begin()+1);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peer->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)2007, peer->getPort());
+}
+
+void BittorrentHelperTest::testPackcompact()
+{
+  unsigned char compact[COMPACT_LEN_IPV6];
+  CPPUNIT_ASSERT_EQUAL(18,
+                       packcompact(compact,
+                                   "1002:1035:4527:3546:7854:1237:3247:3217",
+                                   6881));
+  CPPUNIT_ASSERT_EQUAL(std::string("100210354527354678541237324732171ae1"),
+                       util::toHex(compact, 18));
+
+  CPPUNIT_ASSERT_EQUAL(6, packcompact(compact, "192.168.0.1", 6881));
+  CPPUNIT_ASSERT_EQUAL(std::string("c0a800011ae1"), util::toHex(compact, 6));
+
+  CPPUNIT_ASSERT_EQUAL(0, packcompact(compact, "badaddr", 6881));
+}
+
+void BittorrentHelperTest::testUnpackcompact()
+{
+  unsigned char compact6[] = {
+    0x10, 0x02, 0x10, 0x35, 0x45, 0x27, 0x35, 0x46,
+    0x78, 0x54, 0x12, 0x37, 0x32, 0x47, 0x32, 0x17,
+    0x1A, 0xE1 };
+  std::pair<std::string, uint16_t> p =
+    unpackcompact(compact6, AF_INET6);
+  CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
+                       p.first);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p.second);
+
+  unsigned char compact[] = { 0xC0, 0xa8, 0x00, 0x01, 0x1A, 0xE1 };
+  p = unpackcompact(compact, AF_INET);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p.first);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p.second);
 }
 
 } // namespace bittorrent

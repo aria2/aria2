@@ -54,6 +54,7 @@
 #include "magnet.h"
 #include "bencode2.h"
 #include "TorrentAttribute.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 
@@ -623,8 +624,9 @@ void computeFastSet
 (std::vector<size_t>& fastSet, const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize)
 {
-  unsigned char compact[6];
-  if(!createcompact(compact, ipaddr, 0)) {
+  unsigned char compact[COMPACT_LEN_IPV6];
+  int compactlen = packcompact(compact, ipaddr, 0);
+  if(compactlen != COMPACT_LEN_IPV4) {
     return;
   }
   if(numPieces < fastSetSize) {
@@ -801,50 +803,50 @@ void createPeerMessageString
   msg[4] = messageId;
 }
 
-bool createcompact
+int packcompact
 (unsigned char* compact, const std::string& addr, uint16_t port)
 {
-  struct addrinfo hints;
   struct addrinfo* res;
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_INET; // since compact peer format is ipv4 only.
-  hints.ai_flags = AI_NUMERICHOST;
-  if(getaddrinfo(addr.c_str(), 0, &hints, &res)) {
-    return false;
+  int s =
+    callGetaddrinfo(&res, addr.c_str(), 0, AF_UNSPEC, 0, AI_NUMERICHOST, 0);
+  if(s != 0) {
+    return 0;
   }
-  struct sockaddr_in* in = reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
-  memcpy(compact, &(in->sin_addr.s_addr), sizeof(uint32_t));
-  uint16_t port_nworder(htons(port));
-  memcpy(compact+4, &port_nworder, sizeof(uint16_t));
-  freeaddrinfo(res);
-  return true;
+  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
+  uint16_t portN = htons(port);
+  for(struct addrinfo* rp = res; rp; rp = rp->ai_next) {
+    if(rp->ai_family == AF_INET) {
+      struct sockaddr_in* in =
+        reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
+      memcpy(compact, &(in->sin_addr), 4);
+      memcpy(compact+4, &portN, sizeof(portN));
+      return COMPACT_LEN_IPV4;
+    } else if(rp->ai_family == AF_INET6) {
+      struct sockaddr_in6* in6 =
+        reinterpret_cast<struct sockaddr_in6*>(res->ai_addr);
+      memcpy(compact, &(in6->sin6_addr), 16);
+      memcpy(compact+16, &portN, sizeof(portN));
+      return COMPACT_LEN_IPV6;
+    }
+  }
+  return 0;
 }
 
-std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact)
+std::pair<std::string, uint16_t> unpackcompact
+(const unsigned char* compact, int family)
 {
-  struct sockaddr_in in;
-  memset(&in, 0, sizeof(in));
-#ifdef HAVE_SOCKADDR_IN_SIN_LEN
-  // For netbsd
-  in.sin_len = sizeof(in);
-#endif // HAVE_SOCKADDR_IN_SIN_LEN
-  in.sin_family = AF_INET;
-  memcpy(&(in.sin_addr.s_addr), compact, sizeof(uint32_t));
-  in.sin_port = 0;
-  char host[NI_MAXHOST];
-  int s;
-  s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&in), sizeof(in),
-                  host, NI_MAXHOST, 0, 0,
-                  NI_NUMERICHOST);
-  if(s) {
-    return std::pair<std::string, uint16_t>();
+  int portOffset = family == AF_INET?4:16;
+  std::pair<std::string, uint16_t> r;
+  char buf[INET6_ADDRSTRLEN];
+  if(!inet_ntop(family, compact, buf, sizeof(buf))) {
+    return r;
   }
-  uint16_t port_nworder;
-  memcpy(&port_nworder, compact+sizeof(uint32_t), sizeof(uint16_t));
-  uint16_t port = ntohs(port_nworder);
-  return std::make_pair(host, port);
+  r.first = buf;
+  uint16_t portN;
+  memcpy(&portN, compact+portOffset, sizeof(portN));
+  r.second = ntohs(portN);
+  return r;
 }
-
 
 void assertPayloadLengthGreater
 (size_t threshold, size_t actual, const std::string& msgName)

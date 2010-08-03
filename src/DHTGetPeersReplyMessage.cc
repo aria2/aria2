@@ -85,8 +85,11 @@ SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
         i != eoi && offset < DHTBucket::K*26; ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
-      if(bittorrent::createcompact
-         (buffer+20+offset, node->getIPAddress(), node->getPort())) {
+      unsigned char compact[COMPACT_LEN_IPV6];
+      int compactlen = bittorrent::packcompact
+        (compact, node->getIPAddress(), node->getPort());
+      if(compactlen == COMPACT_LEN_IPV4) {
+        memcpy(buffer+20+offset, compact, compactlen);
         offset += 26;
       }
     }
@@ -117,10 +120,11 @@ SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
           eoi = values_.end(); i != eoi && valuesList->size() < MAX_VALUES_SIZE;
         ++i) {
       const SharedHandle<Peer>& peer = *i;
-      unsigned char buffer[6];
-      if(bittorrent::createcompact
-         (buffer, peer->getIPAddress(), peer->getPort())) {
-        valuesList->append(String::g(buffer, sizeof(buffer)));
+      unsigned char compact[COMPACT_LEN_IPV6];
+      int compactlen = bittorrent::packcompact
+        (compact, peer->getIPAddress(), peer->getPort());
+      if(compactlen == COMPACT_LEN_IPV4) {
+        valuesList->append(String::g(compact, compactlen));
       }
     }
     rDict->put(VALUES, valuesList);
