@@ -13,6 +13,7 @@ class MockPeerStorage : public PeerStorage {
 private:
   TransferStat stat;
   std::deque<SharedHandle<Peer> > peers;
+  std::deque<SharedHandle<Peer> > droppedPeers;
   std::vector<SharedHandle<Peer> > activePeers;
   int numChokeExecuted_;
 public:
@@ -30,6 +31,14 @@ public:
 
   virtual const std::deque<SharedHandle<Peer> >& getPeers() {
     return peers;
+  }
+
+  virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers() {
+    return droppedPeers;
+  }
+
+  void addDroppedPeer(const SharedHandle<Peer>& peer) {
+    droppedPeers.push_back(peer);
   }
 
   virtual SharedHandle<Peer> getUnusedPeer() {

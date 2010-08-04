@@ -229,6 +229,8 @@ void DefaultPeerStorageTest::testReturnPeer()
   ps.returnPeer(peer1); // peer1 is removed from the container
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getPeers().size());
   CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer1) == ps.getPeers().end());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getDroppedPeers().size());
 }
 
 void DefaultPeerStorageTest::testOnErasingPeer()

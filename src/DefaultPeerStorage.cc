@@ -124,9 +124,22 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
   }  
 }
 
+void DefaultPeerStorage::addDroppedPeer(const SharedHandle<Peer>& peer)
+{
+  droppedPeers_.push_front(peer);
+  if(droppedPeers_.size() > 50) {
+    droppedPeers_.pop_back();
+  }
+}
+
 const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getPeers()
 {
   return peers_;
+}
+
+const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getDroppedPeers()
+{
+  return droppedPeers_;
 }
 
 class FindFinePeer {
@@ -295,6 +308,10 @@ void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
     removedPeerSessionUploadLength_ += removedStat.getSessionUploadLength();
     cachedTransferStat_ -= removedStat;
 
+    if(!peer->isIncomingPeer()) {
+      peer->startBadCondition();
+      addDroppedPeer(peer);
+    }
     // Execute choking algorithm if unchoked and interested peer is
     // disconnected.
     if(!peer->amChoking() && peer->peerInterested()) {

@@ -1,3 +1,15 @@
+2010-08-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten ut_pex peer selection.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/PeerStorage.h
+	* src/UTPexExtensionMessage.h
+	* test/DefaultPeerStorageTest.cc
+	* test/MockPeerStorage.h
+	* test/UTPexExtensionMessageTest.cc
+
 2010-08-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added bittorrent::packcompact() which replaces

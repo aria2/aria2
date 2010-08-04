@@ -54,6 +54,7 @@ private:
   SharedHandle<BtRuntime> btRuntime_;
   SharedHandle<PieceStorage> pieceStorage_;
   std::deque<SharedHandle<Peer> > peers_;
+  std::deque<SharedHandle<Peer> > droppedPeers_;
   Logger* logger_;
   uint64_t removedPeerSessionDownloadLength_;
   uint64_t removedPeerSessionUploadLength_;
@@ -68,6 +69,8 @@ private:
   TransferStat cachedTransferStat_;
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
+
+  void addDroppedPeer(const SharedHandle<Peer>& peer);
 public:
   DefaultPeerStorage();
 
@@ -84,6 +87,8 @@ public:
   virtual void addPeer(const std::vector<SharedHandle<Peer> >& peers);
 
   virtual const std::deque<SharedHandle<Peer> >& getPeers();
+
+  virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers();
 
   virtual bool isPeerAvailable();
 

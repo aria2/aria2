@@ -68,6 +68,11 @@ public:
   virtual const std::deque<SharedHandle<Peer> >& getPeers() = 0;
 
   /**
+   * Returns internal dropped peer list.
+   */
+  virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers() = 0;
+
+  /**
    * Returns one of the unused peers.
    */
   virtual SharedHandle<Peer> getUnusedPeer() = 0;

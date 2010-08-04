@@ -228,7 +228,7 @@ void UTPexExtensionMessageTest::testAddDroppedPeer()
 void UTPexExtensionMessageTest::testFreshPeersAreFull()
 {
   UTPexExtensionMessage msg(1);
-  CPPUNIT_ASSERT_EQUAL((size_t)30, msg.getMaxFreshPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)50, msg.getMaxFreshPeer());
   msg.setMaxFreshPeer(2);
   SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   CPPUNIT_ASSERT(msg.addFreshPeer(p1));
@@ -244,7 +244,7 @@ void UTPexExtensionMessageTest::testFreshPeersAreFull()
 void UTPexExtensionMessageTest::testDroppedPeersAreFull()
 {
   UTPexExtensionMessage msg(1);
-  CPPUNIT_ASSERT_EQUAL((size_t)10, msg.getMaxDroppedPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)50, msg.getMaxDroppedPeer());
   msg.setMaxDroppedPeer(2);
   SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   p1->startBadCondition();

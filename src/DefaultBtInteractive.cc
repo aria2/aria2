@@ -475,26 +475,27 @@ void DefaultBtInteractive::addPeerExchangeMessage()
      difference(global::wallclock) >= UTPexExtensionMessage::DEFAULT_INTERVAL) {
     UTPexExtensionMessageHandle m
       (new UTPexExtensionMessage(peer_->getExtensionMessageID("ut_pex")));
-    const std::deque<SharedHandle<Peer> >& peers = peerStorage_->getPeers();
-    {
-      for(std::deque<SharedHandle<Peer> >::const_iterator i =
-            peers.begin(), eoi = peers.end();
-          i != eoi && !m->freshPeersAreFull(); ++i) {
-        if(peer_->getIPAddress() != (*i)->getIPAddress()) {
-          m->addFreshPeer(*i);
-        }
+
+    std::vector<SharedHandle<Peer> > activePeers;
+    peerStorage_->getActivePeers(activePeers);
+    for(std::vector<SharedHandle<Peer> >::const_iterator i =
+          activePeers.begin(), eoi = activePeers.end();
+        i != eoi && !m->freshPeersAreFull(); ++i) {
+      if(peer_->getIPAddress() != (*i)->getIPAddress()) {
+        m->addFreshPeer(*i);
       }
     }
-    {
-      for(std::deque<SharedHandle<Peer> >::const_reverse_iterator i =
-            peers.rbegin(), eoi = peers.rend();
-          i != eoi && !m->droppedPeersAreFull();
-          ++i) {
-        if(peer_->getIPAddress() != (*i)->getIPAddress()) {
-          m->addDroppedPeer(*i);
-        }
+    const std::deque<SharedHandle<Peer> >& droppedPeers =
+      peerStorage_->getDroppedPeers();
+    for(std::deque<SharedHandle<Peer> >::const_iterator i =
+          droppedPeers.begin(), eoi = droppedPeers.end();
+        i != eoi && !m->droppedPeersAreFull();
+        ++i) {
+      if(peer_->getIPAddress() != (*i)->getIPAddress()) {
+        m->addDroppedPeer(*i);
       }
     }
+
     BtMessageHandle msg = messageFactory_->createBtExtendedMessage(m);
     dispatcher_->addMessageToQueue(msg);
     pexTimer_ = global::wallclock;

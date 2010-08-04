@@ -130,9 +130,9 @@ public:
 
   static const time_t DEFAULT_INTERVAL = 60;
 
-  static const size_t DEFAULT_MAX_FRESH_PEER = 30;
+  static const size_t DEFAULT_MAX_FRESH_PEER = 50;
 
-  static const size_t DEFAULT_MAX_DROPPED_PEER = 10;
+  static const size_t DEFAULT_MAX_DROPPED_PEER = 50;
 };
 
 typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
