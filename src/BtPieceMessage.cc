@@ -128,6 +128,7 @@ void BtPieceMessage::doReceivedAction()
         onNewPiece(piece);
       } else {
         onWrongPiece(piece);
+        throw DL_ABORT_EX("Bad piece hash.");
       }
     }
   } else {
@@ -221,7 +222,7 @@ std::string BtPieceMessage::toString() const
 
 bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
 {
-  if(piece->isHashCalculated()) {
+  if(!getPieceStorage()->isEndGame() && piece->isHashCalculated()) {
     if(getLogger()->debug()) {
       getLogger()->debug("Hash is available!! index=%lu",
                          static_cast<unsigned long>(piece->getIndex()));

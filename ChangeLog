@@ -1,5 +1,12 @@
 2010-08-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't use pre-calculate hash value when end-game mode.  Throw
+	exception if bad piece is received.
+	* src/BtPieceMessage.cc
+	* src/DownloadCommand.cc
+
+2010-08-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten ut_pex peer selection.
 	* src/DefaultBtInteractive.cc
 	* src/DefaultPeerStorage.cc
