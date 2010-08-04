@@ -137,7 +137,7 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
 
   msg.doReceivedAction();
 
-  CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getPeers().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)4, peerStorage_->getPeers().size());
   {
     SharedHandle<Peer> p = peerStorage_->getPeers()[0];
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p->getIPAddress());

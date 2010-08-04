@@ -451,6 +451,7 @@ void DefaultBtInteractive::checkActiveInteraction()
     const time_t interval = 30;
     if(!peer_->amInterested() && !peer_->peerInterested() &&
        inactiveTime >= interval) {
+      peer_->setDisconnectedGracefully(true);
       // TODO change the message
       throw DL_ABORT_EX
         (StringFormat("Disconnect peer because we are not interested each other"
@@ -463,6 +464,7 @@ void DefaultBtInteractive::checkActiveInteraction()
   {
     const time_t interval = 60;
     if(inactiveTime >= interval) {
+      peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX
         (StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());
     }

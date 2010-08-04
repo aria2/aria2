@@ -104,7 +104,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
            " preference.");
       }
       SharedHandle<PeerConnection> peerConnection
-        (new PeerConnection(getCuid(), getSocket()));
+        (new PeerConnection(getCuid(), getPeer(), getSocket()));
       peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                    mseHandshake_->getBufferLength());
       Command* c = new PeerReceiveHandshakeCommand(getCuid(),
@@ -191,7 +191,7 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
 void ReceiverMSEHandshakeCommand::createCommand()
 {
   SharedHandle<PeerConnection> peerConnection
-    (new PeerConnection(getCuid(), getSocket()));
+    (new PeerConnection(getCuid(), getPeer(), getSocket()));
   if(mseHandshake_->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
     peerConnection->enableEncryption(mseHandshake_->getEncryptor(),
                                      mseHandshake_->getDecryptor());

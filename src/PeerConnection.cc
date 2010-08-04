@@ -49,12 +49,15 @@
 #include "ARC4Decryptor.h"
 #include "StringFormat.h"
 #include "util.h"
+#include "Peer.h"
 
 namespace aria2 {
 
-PeerConnection::PeerConnection(cuid_t cuid, const SocketHandle& socket)
+PeerConnection::PeerConnection
+(cuid_t cuid, const SharedHandle<Peer>& peer, const SocketHandle& socket)
 
   :cuid_(cuid),
+   peer_(peer),
    socket_(socket),
    logger_(LogFactory::getInstance()),
    resbuf_(new unsigned char[MAX_PAYLOAD_LEN]),
@@ -127,6 +130,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
                        util::itos(cuid_).c_str(),
                        static_cast<unsigned long>(temp));
       }
+      peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     lenbufLength_ += remaining;
@@ -162,6 +166,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
                        static_cast<unsigned long>(currentPayloadLength_),
                        static_cast<unsigned long>(temp));
       }
+      peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
     resbufLength_ += remaining;
@@ -212,6 +217,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
             ("CUID#%s - In PeerConnection::receiveHandshake(), remain=%lu",
              util::itos(cuid_).c_str(), static_cast<unsigned long>(temp));
         }
+        peer_->setDisconnectedGracefully(true);
         throw DL_ABORT_EX(EX_EOF_FROM_PEER);
       }
       resbufLength_ += remaining;

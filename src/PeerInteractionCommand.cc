@@ -142,7 +142,7 @@ PeerInteractionCommand::PeerInteractionCommand
 
   PeerConnectionHandle peerConnection;
   if(passedPeerConnection.isNull()) {
-    peerConnection.reset(new PeerConnection(cuid, getSocket()));
+    peerConnection.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   } else {
     peerConnection = passedPeerConnection;
   }

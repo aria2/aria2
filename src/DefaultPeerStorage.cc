@@ -308,7 +308,7 @@ void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
     removedPeerSessionUploadLength_ += removedStat.getSessionUploadLength();
     cachedTransferStat_ -= removedStat;
 
-    if(!peer->isIncomingPeer()) {
+    if(peer->isDisconnectedGracefully() && !peer->isIncomingPeer()) {
       peer->startBadCondition();
       addDroppedPeer(peer);
     }

@@ -217,6 +217,7 @@ void DefaultPeerStorageTest::testReturnPeer()
   SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
   peer2->allocateSessionResource(1024*1024, 1024*1024*10);
   SharedHandle<Peer> peer3(new Peer("192.168.0.1", 6889));
+  peer2->setDisconnectedGracefully(true);
   ps.addPeer(peer1);
   ps.addPeer(peer2);
   ps.addPeer(peer3);
@@ -225,12 +226,12 @@ void DefaultPeerStorageTest::testReturnPeer()
   CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getPeers().size());
   CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer2)
                  == ps.getPeers().end());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getDroppedPeers().size());
 
   ps.returnPeer(peer1); // peer1 is removed from the container
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getPeers().size());
   CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer1) == ps.getPeers().end());
-
-  CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getDroppedPeers().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getDroppedPeers().size());
 }
 
 void DefaultPeerStorageTest::testOnErasingPeer()

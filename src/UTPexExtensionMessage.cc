@@ -98,6 +98,7 @@ std::string UTPexExtensionMessage::toString() const
 void UTPexExtensionMessage::doReceivedAction()
 {
   peerStorage_->addPeer(freshPeers_);
+  peerStorage_->addPeer(droppedPeers_);
 }
 
 bool UTPexExtensionMessage::addFreshPeer(const SharedHandle<Peer>& peer)

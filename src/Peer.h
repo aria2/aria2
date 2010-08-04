@@ -82,6 +82,9 @@ private:
   // If true, this peer is from local network.
   bool localPeer_;
 
+  // If true, this peer is disconnected gracefully.
+  bool disconnectedGracefully_;
+
   // Before calling updateSeeder(),  make sure that
   // allocateSessionResource() is called and res_ is created.
   // Otherwise assertion fails.
@@ -307,6 +310,16 @@ public:
   void setLocalPeer(bool flag)
   {
     localPeer_ = flag;
+  }
+
+  bool isDisconnectedGracefully() const
+  {
+    return disconnectedGracefully_;
+  }
+
+  void setDisconnectedGracefully(bool f)
+  {
+    disconnectedGracefully_ = f;
   }
 
   void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt);

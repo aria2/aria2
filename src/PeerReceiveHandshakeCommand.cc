@@ -73,7 +73,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
   peerConnection_(peerConnection)
 {
   if(peerConnection_.isNull()) {
-    peerConnection_.reset(new PeerConnection(cuid, getSocket()));
+    peerConnection_.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   }
 }
 

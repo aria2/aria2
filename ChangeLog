@@ -1,5 +1,23 @@
 2010-08-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Add only gracefully disconnected peer to ut_pex dropped list.  Add
+	incoming dropped list to PeerStorage.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultPeerStorage.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/Peer.cc
+	* src/Peer.h
+	* src/PeerConnection.cc
+	* src/PeerConnection.h
+	* src/PeerInteractionCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/ReceiverMSEHandshakeCommand.cc
+	* src/UTPexExtensionMessage.cc
+	* test/DefaultPeerStorageTest.cc
+	* test/UTPexExtensionMessageTest.cc
+
+2010-08-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't use pre-calculate hash value when end-game mode.  Throw
 	exception if bad piece is received.
 	* src/BtPieceMessage.cc
