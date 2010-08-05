@@ -280,6 +280,16 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
       peerStorage_->addPeer(peers);
     }
   }
+  const SharedHandle<ValueBase>& peer6Data = dict->get(BtAnnounce::PEERS6);
+  if(peer6Data.isNull()) {
+    logger_->info("No peers6 received.");
+  } else {
+    if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
+      std::vector<SharedHandle<Peer> > peers;
+      bittorrent::extractPeer(peer6Data, AF_INET6, std::back_inserter(peers));
+      peerStorage_->addPeer(peers);
+    }
+  }
 }
 
 bool DefaultBtAnnounce::noMoreAnnounce() {

@@ -52,4 +52,6 @@ const std::string BtAnnounce::INCOMPLETE("incomplete");
 
 const std::string BtAnnounce::PEERS("peers");
 
+const std::string BtAnnounce::PEERS6("peers6");
+
 } // namespace aria2

@@ -123,6 +123,8 @@ public:
 
   static const std::string PEERS;
 
+  static const std::string PEERS6;
+
   static const time_t DEFAULT_ANNOUNCE_INTERVAL = 120;
 };
 

@@ -65,7 +65,9 @@ private:
 
   size_t maxDroppedPeer_;
 
-  std::pair<std::string, std::string>
+
+  std::pair<std::pair<std::string, std::string>,
+            std::pair<std::string, std::string> >
   createCompactPeerListAndFlag(const std::vector<SharedHandle<Peer> >& peers);
 
 public:

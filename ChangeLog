@@ -1,5 +1,17 @@
 2010-08-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added support for peers6 key in tracker response.  Added added6,
+	added6.f and dropped6 in ut_pex.
+	* src/BtAnnounce.cc
+	* src/BtAnnounce.h
+	* src/DefaultBtAnnounce.cc
+	* src/UTPexExtensionMessage.cc
+	* src/UTPexExtensionMessage.h
+	* test/DefaultBtAnnounceTest.cc
+	* test/UTPexExtensionMessageTest.cc
+
+2010-08-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added AI_V4MAPPED to DEFAULT_AI_FLAGS
 	* src/a2netcompat.h
 

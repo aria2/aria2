@@ -58,24 +58,41 @@ UTPexExtensionMessage::~UTPexExtensionMessage() {}
 
 std::string UTPexExtensionMessage::getPayload()
 {
-  std::pair<std::string, std::string> freshPeerPair =
+  std::pair<std::pair<std::string, std::string>,
+            std::pair<std::string, std::string> > freshPeerPair =
     createCompactPeerListAndFlag(freshPeers_);
-  std::pair<std::string, std::string> droppedPeerPair =
+  std::pair<std::pair<std::string, std::string>,
+            std::pair<std::string, std::string> > droppedPeerPair =
     createCompactPeerListAndFlag(droppedPeers_);
 
   Dict dict;
-  dict.put("added", freshPeerPair.first);
-  dict.put("added.f", freshPeerPair.second);
-  dict.put("dropped", droppedPeerPair.first);
+  if(!freshPeerPair.first.first.empty()) {
+    dict.put("added", freshPeerPair.first.first);
+    dict.put("added.f", freshPeerPair.first.second);
+  }
+  if(!droppedPeerPair.first.first.empty()) {
+    dict.put("dropped", droppedPeerPair.first.first);
+  }
+  if(!freshPeerPair.second.first.empty()) {
+    dict.put("added6", freshPeerPair.second.first);
+    dict.put("added6.f", freshPeerPair.second.second);
+  }
+  if(!droppedPeerPair.second.first.empty()) {
+    dict.put("dropped6", droppedPeerPair.second.first);
+  }
+
   return bencode2::encode(&dict);
 }
 
-std::pair<std::string, std::string>
+std::pair<std::pair<std::string, std::string>,
+          std::pair<std::string, std::string> >
 UTPexExtensionMessage::createCompactPeerListAndFlag
 (const std::vector<SharedHandle<Peer> >& peers)
 {
   std::string addrstring;
   std::string flagstring;
+  std::string addrstring6;
+  std::string flagstring6;
   for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
         eoi = peers.end(); itr != eoi; ++itr) {
     unsigned char compact[COMPACT_LEN_IPV6];
@@ -84,9 +101,13 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
     if(compactlen == COMPACT_LEN_IPV4) {
       addrstring.append(&compact[0], &compact[compactlen]);
       flagstring += (*itr)->isSeeder() ? 0x02 : 0x00;
+    } else if(compactlen == COMPACT_LEN_IPV6) {
+      addrstring6.append(&compact[0], &compact[compactlen]);
+      flagstring6 += (*itr)->isSeeder() ? 0x02 : 0x00;
     }
   }
-  return std::pair<std::string, std::string>(addrstring, flagstring);
+  return std::make_pair(std::make_pair(addrstring, flagstring),
+                        std::make_pair(addrstring6, flagstring6));
 }
 
 std::string UTPexExtensionMessage::toString() const
@@ -171,6 +192,16 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
     if(dropped) {
       bittorrent::extractPeer
         (dropped, AF_INET, std::back_inserter(msg->droppedPeers_));
+    }
+    const String* added6 = asString(dict->get("added6"));
+    if(added6) {
+      bittorrent::extractPeer
+        (added6, AF_INET6, std::back_inserter(msg->freshPeers_));
+    }
+    const String* dropped6 = asString(dict->get("dropped6"));
+    if(dropped6) {
+      bittorrent::extractPeer
+        (dropped6, AF_INET6, std::back_inserter(msg->droppedPeers_));
     }
   }
   return msg;

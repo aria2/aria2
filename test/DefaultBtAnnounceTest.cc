@@ -377,16 +377,28 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
     "8:intervali3000e"
     "12:min intervali1800e"
     "8:completei100e"
-    "10:incompletei200e"
-    "e";
+    "10:incompletei200e";
+  res += "5:peers6:";
+  res += util::fromHex("c0a800011ae1");
+  res += "6:peers618:";
+  res += util::fromHex("100210354527354678541237324732171ae1");
+  res += "e";
   
   DefaultBtAnnounce an(dctx_, option_);
+  an.setPeerStorage(peerStorage_);
+  an.setBtRuntime(btRuntime_);
   an.processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), an.getTrackerID());
   CPPUNIT_ASSERT_EQUAL((time_t)3000, an.getInterval());
   CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getMinInterval());
   CPPUNIT_ASSERT_EQUAL((unsigned int)100, an.getComplete());
   CPPUNIT_ASSERT_EQUAL((unsigned int)200, an.getIncomplete());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getPeers().size());
+  SharedHandle<Peer> peer = peerStorage_->getPeers()[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
+  peer = peerStorage_->getPeers()[1];
+  CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
+                       peer->getIPAddress());
 }
 
 } // namespace aria2
