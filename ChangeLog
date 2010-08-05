@@ -1,3 +1,8 @@
+2010-08-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added AI_V4MAPPED to DEFAULT_AI_FLAGS
+	* src/a2netcompat.h
+
 2010-08-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Add only gracefully disconnected peer to ut_pex dropped list.  Add

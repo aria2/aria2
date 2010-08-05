@@ -100,11 +100,15 @@
 # define sock_t int
 #endif
 
-#ifdef AI_ADDRCONFIG
-# define DEFAULT_AI_FLAGS AI_ADDRCONFIG
-#else // !AI_ADDRCONFIG
-# define DEFAULT_AI_FLAGS 0
+#ifndef AI_ADDRCONFIG
+# define AI_ADDRCONFIG 0
 #endif // !AI_ADDRCONFIG
+
+#ifndef AI_V4MAPPED
+# define AI_V4MAPPED 0
+#endif // !AI_V4MAPPED
+
+#define DEFAULT_AI_FLAGS (AI_V4MAPPED|AI_ADDRCONFIG)
 
 #ifdef __MINGW32__
 template<typename T>
