@@ -1,5 +1,10 @@
 2010-08-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed AI_V4MAPPED from DEFAULT_AI_FLAGS
+	* src/a2netcompat.h
+
+2010-08-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added support for peers6 key in tracker response.  Added added6,
 	added6.f and dropped6 in ut_pex.
 	* src/BtAnnounce.cc
