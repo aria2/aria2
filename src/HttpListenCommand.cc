@@ -48,11 +48,13 @@
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
-HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e):
-  Command(cuid),e_(e) {}
+HttpListenCommand::HttpListenCommand
+(cuid_t cuid, DownloadEngine* e, int family):
+  Command(cuid), e_(e), family_(family) {}
 
 HttpListenCommand::~HttpListenCommand()
 {
@@ -98,15 +100,16 @@ bool HttpListenCommand::bindPort(uint16_t port)
   }
   serverSocket_.reset(new SocketCore());
   if(getLogger()->info()) {
-    getLogger()->info("CUID#%s - Setting up HttpListenCommand",
-                      util::itos(getCuid()).c_str());
+    getLogger()->info("CUID#%s - Setting up HttpListenCommand for IPv%d",
+                      util::itos(getCuid()).c_str(),
+                      family_ == AF_INET?4:6);
   }
   try {
     int flags = 0;
     if(e_->getOption()->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
       flags = AI_PASSIVE;
     }
-    serverSocket_->bind(port, flags);
+    serverSocket_->bind(A2STR::NIL, port, family_, flags);
     serverSocket_->beginListen();
     serverSocket_->setNonBlockingMode();
     if(getLogger()->info()) {

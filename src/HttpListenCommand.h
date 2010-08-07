@@ -46,9 +46,10 @@ class SocketCore;
 class HttpListenCommand : public Command {
 private:
   DownloadEngine* e_;
+  int family_;
   SharedHandle<SocketCore> serverSocket_;
 public:
-  HttpListenCommand(cuid_t cuid, DownloadEngine* e);
+  HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family);
 
   virtual ~HttpListenCommand();
   

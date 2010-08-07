@@ -58,6 +58,7 @@
 #include "ServerStatMan.h"
 #include "a2io.h"
 #include "DownloadContext.h"
+#include "array_fun.h"
 #ifdef HAVE_EPOLL
 # include "EpollEventPoll.h"
 #endif // HAVE_EPOLL
@@ -169,12 +170,15 @@ DownloadEngineFactory::newDownloadEngine
   }
 #ifdef ENABLE_XML_RPC
   if(op->getAsBool(PREF_ENABLE_XML_RPC)) {
-    HttpListenCommand* httpListenCommand =
-      new HttpListenCommand(e->newCUID(), e.get());
-    if(httpListenCommand->bindPort(op->getAsInt(PREF_XML_RPC_LISTEN_PORT))){
-      e->addRoutineCommand(httpListenCommand);
-    } else {
-      delete httpListenCommand;
+    static int families[] = { AF_INET, AF_INET6 };
+    for(size_t i = 0; i < A2_ARRAY_LEN(families); ++i) {
+      HttpListenCommand* httpListenCommand =
+        new HttpListenCommand(e->newCUID(), e.get(), families[i]);
+      if(httpListenCommand->bindPort(op->getAsInt(PREF_XML_RPC_LISTEN_PORT))){
+        e->addRoutineCommand(httpListenCommand);
+      } else {
+        delete httpListenCommand;
+      }
     }
   }
 #endif // ENABLE_XML_RPC
