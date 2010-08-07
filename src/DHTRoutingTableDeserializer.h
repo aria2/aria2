@@ -49,13 +49,15 @@ class DHTNode;
 
 class DHTRoutingTableDeserializer {
 private:
+  int family_;
+
   SharedHandle<DHTNode> localNode_;
 
   std::vector<SharedHandle<DHTNode> > nodes_;
 
   Time serializedTime_;
 public:
-  DHTRoutingTableDeserializer();
+  DHTRoutingTableDeserializer(int family);
 
   ~DHTRoutingTableDeserializer();
 

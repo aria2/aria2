@@ -56,7 +56,7 @@ bool LpdMessageReceiver::init(const std::string& localAddr)
     // Binding multicast address fails under Windows.
     socket_->bindWithFamily(multicastPort_, AF_INET);
 #else // !__MINGW32__
-    socket_->bind(multicastAddress_, multicastPort_);
+    socket_->bind(multicastAddress_, multicastPort_, AF_INET);
 #endif // !__MINGW32__
     if(logger_->debug()) {
       logger_->debug("Joining multicast group. %s:%u, localAddr=%s",

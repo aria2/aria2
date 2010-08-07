@@ -246,6 +246,9 @@ void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
         const unsigned char* end = base+length;
         for(; base != end; base += unit) {
           std::pair<std::string, uint16_t> p = unpackcompact(base, family_);
+          if(p.first.empty()) {
+            continue;
+          }
           *dest_++ = SharedHandle<Peer>(new Peer(p.first, p.second));
         }
       }
@@ -287,6 +290,8 @@ void extractPeer
 {
   return extractPeer(peerData.get(), family, dest);
 }
+
+int getCompactLength(int family);
 
 } // namespace bittorrent
 

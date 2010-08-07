@@ -994,6 +994,17 @@ std::string torrent2Magnet(const SharedHandle<TorrentAttribute>& attrs)
   return uri;
 }
 
+int getCompactLength(int family)
+{
+  if(family == AF_INET) {
+    return COMPACT_LEN_IPV4;
+  } else if(family == AF_INET6) {
+    return COMPACT_LEN_IPV6;
+  } else {
+    return 0;
+  }
+}
+
 } // namespace bittorrent
 
 } // namespace aria2

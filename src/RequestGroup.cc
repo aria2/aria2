@@ -94,6 +94,15 @@
 # include "BtPostDownloadHandler.h"
 # include "DHTSetup.h"
 # include "DHTRegistry.h"
+# include "DHTNode.h"
+# include "DHTRoutingTable.h"
+# include "DHTTaskQueue.h"
+# include "DHTTaskFactory.h"
+# include "DHTTokenTracker.h"
+# include "DHTMessageDispatcher.h"
+# include "DHTMessageReceiver.h"
+# include "DHTMessageFactory.h"
+# include "DHTMessageCallback.h"
 # include "BtMessageFactory.h"
 # include "BtRequestFactory.h"
 # include "BtMessageDispatcher.h"
@@ -283,10 +292,18 @@ void RequestGroup::createInitialCommand
                                 SharedHandle<BtProgressInfoFile>
                                 (progressInfoFile))));
       if(metadataGetMode) {
-        if(option_->getAsBool(PREF_ENABLE_DHT)) {
-          std::vector<Command*> dhtCommands;
-          DHTSetup().setup(dhtCommands, e);
-          e->addCommand(dhtCommands);
+        if(option_->getAsBool(PREF_ENABLE_DHT) ||
+           option_->getAsBool(PREF_ENABLE_DHT6)) {
+          if(option_->getAsBool(PREF_ENABLE_DHT)) {
+            std::vector<Command*> dhtCommands;
+            DHTSetup().setup(dhtCommands, e, AF_INET);
+            e->addCommand(dhtCommands);
+          }
+          if(option_->getAsBool(PREF_ENABLE_DHT6)) {
+            std::vector<Command*> dhtCommands;
+            DHTSetup().setup(dhtCommands, e, AF_INET6);
+            e->addCommand(dhtCommands);
+          }
         } else {
           logger_->notice("For BitTorrent Magnet URI, enabling DHT is strongly"
                           " recommended. See --enable-dht option.");
@@ -343,16 +360,25 @@ void RequestGroup::createInitialCommand
       }
       progressInfoFile_ = progressInfoFile;
 
-      if(!torrentAttrs->privateTorrent && option_->getAsBool(PREF_ENABLE_DHT)) {
-        std::vector<Command*> dhtCommands;
-        DHTSetup().setup(dhtCommands, e);
-        e->addCommand(dhtCommands);
+      if(!torrentAttrs->privateTorrent &&
+         (option_->getAsBool(PREF_ENABLE_DHT) ||
+          option_->getAsBool(PREF_ENABLE_DHT6))) {
+        if(option_->getAsBool(PREF_ENABLE_DHT)) {
+          std::vector<Command*> dhtCommands;
+          DHTSetup().setup(dhtCommands, e, AF_INET);
+          e->addCommand(dhtCommands);
+        }
+        if(option_->getAsBool(PREF_ENABLE_DHT6)) {
+          std::vector<Command*> dhtCommands;
+          DHTSetup().setup(dhtCommands, e, AF_INET6);
+          e->addCommand(dhtCommands);
+        }
         const std::vector<std::pair<std::string, uint16_t> >& nodes =
           torrentAttrs->nodes;
-        if(!nodes.empty() && DHTSetup::initialized()) {
-          std::vector<std::pair<std::string, uint16_t> > entryPoints(nodes);
+        // TODO Are nodes in torrent IPv4 only?
+        if(!nodes.empty() && DHTRegistry::isInitialized()) {
           DHTEntryPointNameResolveCommand* command =
-            new DHTEntryPointNameResolveCommand(e->newCUID(), e, entryPoints);
+            new DHTEntryPointNameResolveCommand(e->newCUID(), e, nodes);
           command->setTaskQueue(DHTRegistry::getData().taskQueue);
           command->setTaskFactory(DHTRegistry::getData().taskFactory);
           command->setRoutingTable(DHTRegistry::getData().routingTable);

@@ -45,18 +45,13 @@ class Command;
 
 class DHTSetup {
 private:
-  static bool initialized_;
-
   Logger* logger_;
-
 public:
   DHTSetup();
 
   ~DHTSetup();
 
-  void setup(std::vector<Command*>& commands, DownloadEngine* e);
-
-  static bool initialized();
+  void setup(std::vector<Command*>& commands, DownloadEngine* e, int family);
 };
 
 } // namespace aria2

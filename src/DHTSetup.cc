@@ -79,16 +79,18 @@
 
 namespace aria2 {
 
-// TODO DownloadEngine should hold this flag.
-bool DHTSetup::initialized_ = false;
-
 DHTSetup::DHTSetup():logger_(LogFactory::getInstance()) {}
 
 DHTSetup::~DHTSetup() {}
 
-void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
+void DHTSetup::setup
+(std::vector<Command*>& commands, DownloadEngine* e, int family)
 {
-  if(initialized_) {
+  if(family != AF_INET && family != AF_INET6) {
+    return;
+  }
+  if((family == AF_INET && DHTRegistry::isInitialized()) ||
+     (family == AF_INET6 && DHTRegistry::isInitialized6())) {
     return;
   }
   try {
@@ -98,8 +100,10 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
 
     SharedHandle<DHTNode> localNode;
 
-    DHTRoutingTableDeserializer deserializer;
-    std::string dhtFile = e->getOption()->get(PREF_DHT_FILE_PATH);
+    DHTRoutingTableDeserializer deserializer(family);
+    const std::string& dhtFile =
+      e->getOption()->get(family == AF_INET?PREF_DHT_FILE_PATH:
+                          PREF_DHT_FILE_PATH6);
     try {
       std::ifstream in(dhtFile.c_str(), std::ios::binary);
       if(!in) {
@@ -115,12 +119,15 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       localNode.reset(new DHTNode());
     }
 
-    SharedHandle<DHTConnectionImpl> connection(new DHTConnectionImpl());
+    SharedHandle<DHTConnectionImpl> connection(new DHTConnectionImpl(family));
     {
       IntSequence seq =
         util::parseIntRange(e->getOption()->get(PREF_DHT_LISTEN_PORT));
       uint16_t port;
-      if(!connection->bind(port, seq)) {
+      const std::string& addr =
+        e->getOption()->get(family == AF_INET?PREF_DHT_LISTEN_ADDR:
+                            PREF_DHT_LISTEN_ADDR6);
+      if(!connection->bind(port, addr, seq)) {
         throw DL_ABORT_EX("Error occurred while binding port for DHT");
       }
       localNode->setPort(port);
@@ -131,7 +138,8 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     }
     SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
 
-    SharedHandle<DHTMessageFactoryImpl> factory(new DHTMessageFactoryImpl());
+    SharedHandle<DHTMessageFactoryImpl> factory
+      (new DHTMessageFactoryImpl(family));
 
     SharedHandle<DHTMessageTracker> tracker(new DHTMessageTracker());
 
@@ -179,16 +187,27 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     factory->setLocalNode(localNode);
 
     // assign them into DHTRegistry
-    DHTRegistry::getMutableData().localNode = localNode;
-    DHTRegistry::getMutableData().routingTable = routingTable;
-    DHTRegistry::getMutableData().taskQueue = taskQueue;
-    DHTRegistry::getMutableData().taskFactory = taskFactory;
-    DHTRegistry::getMutableData().peerAnnounceStorage = peerAnnounceStorage;
-    DHTRegistry::getMutableData().tokenTracker = tokenTracker;
-    DHTRegistry::getMutableData().messageDispatcher = dispatcher;
-    DHTRegistry::getMutableData().messageReceiver = receiver;
-    DHTRegistry::getMutableData().messageFactory = factory;
-
+    if(family == AF_INET) {
+      DHTRegistry::getMutableData().localNode = localNode;
+      DHTRegistry::getMutableData().routingTable = routingTable;
+      DHTRegistry::getMutableData().taskQueue = taskQueue;
+      DHTRegistry::getMutableData().taskFactory = taskFactory;
+      DHTRegistry::getMutableData().peerAnnounceStorage = peerAnnounceStorage;
+      DHTRegistry::getMutableData().tokenTracker = tokenTracker;
+      DHTRegistry::getMutableData().messageDispatcher = dispatcher;
+      DHTRegistry::getMutableData().messageReceiver = receiver;
+      DHTRegistry::getMutableData().messageFactory = factory;
+    } else {
+      DHTRegistry::getMutableData6().localNode = localNode;
+      DHTRegistry::getMutableData6().routingTable = routingTable;
+      DHTRegistry::getMutableData6().taskQueue = taskQueue;
+      DHTRegistry::getMutableData6().taskFactory = taskFactory;
+      DHTRegistry::getMutableData6().peerAnnounceStorage = peerAnnounceStorage;
+      DHTRegistry::getMutableData6().tokenTracker = tokenTracker;
+      DHTRegistry::getMutableData6().messageDispatcher = dispatcher;
+      DHTRegistry::getMutableData6().messageReceiver = receiver;
+      DHTRegistry::getMutableData6().messageFactory = factory;
+    }
     // add deserialized nodes to routing table
     const std::vector<SharedHandle<DHTNode> >& desnodes =
       deserializer.getNodes();
@@ -206,11 +225,16 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
       taskQueue->addPeriodicTask1(task);
     }
 
-    if(!e->getOption()->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
+    const std::string& prefEntryPointHost =
+      family == AF_INET?PREF_DHT_ENTRY_POINT_HOST:PREF_DHT_ENTRY_POINT_HOST6;
+    if(!e->getOption()->get(prefEntryPointHost).empty()) {
       {
+        const std::string& prefEntryPointPort =
+          family == AF_INET?PREF_DHT_ENTRY_POINT_PORT:
+          PREF_DHT_ENTRY_POINT_PORT6;
         std::pair<std::string, uint16_t> addr
-          (e->getOption()->get(PREF_DHT_ENTRY_POINT_HOST),
-           e->getOption()->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
+          (e->getOption()->get(prefEntryPointHost),
+           e->getOption()->getAsInt(prefEntryPointPort));
         std::vector<std::pair<std::string, uint16_t> > entryPoints;
         entryPoints.push_back(addr);
         DHTEntryPointNameResolveCommand* command =
@@ -258,24 +282,27 @@ void DHTSetup::setup(std::vector<Command*>& commands, DownloadEngine* e)
     }
     {
       DHTAutoSaveCommand* command =
-        new DHTAutoSaveCommand(e->newCUID(), e, 30*60);
+        new DHTAutoSaveCommand(e->newCUID(), e, family, 30*60);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable);
       tempCommands->push_back(command);
     }
-    initialized_ = true;
+    if(family == AF_INET) {
+      DHTRegistry::setInitialized(true);
+    } else {
+      DHTRegistry::setInitialized6(true);
+    }
     commands.insert(commands.end(), tempCommands->begin(), tempCommands->end());
     tempCommands->clear();
   } catch(RecoverableException& e) {
     logger_->error("Exception caught while initializing DHT functionality."
                    " DHT is disabled.", e);
-    DHTRegistry::clearData();
+    if(family == AF_INET) {
+      DHTRegistry::clearData();
+    } else {
+      DHTRegistry::clearData6();
+    }
   }
-}
-
-bool DHTSetup::initialized()
-{
-  return initialized_;
 }
 
 } // namespace aria2

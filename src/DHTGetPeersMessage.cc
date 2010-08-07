@@ -70,18 +70,11 @@ void DHTGetPeersMessage::doReceivedAction()
   // Check to see localhost has the contents which has same infohash
   std::vector<SharedHandle<Peer> > peers;
   peerAnnounceStorage_->getPeers(peers, infoHash_);
-  SharedHandle<DHTMessage> reply;
-  if(peers.empty()) {
-    std::vector<SharedHandle<DHTNode> > nodes;
-    getRoutingTable()->getClosestKNodes(nodes, infoHash_);
-    reply =
-      getMessageFactory()->createGetPeersReplyMessage
-      (getRemoteNode(), nodes, token, getTransactionID());
-  } else {
-    reply =
-      getMessageFactory()->createGetPeersReplyMessage
-      (getRemoteNode(), peers, token, getTransactionID());
-  }
+  std::vector<SharedHandle<DHTNode> > nodes;
+  getRoutingTable()->getClosestKNodes(nodes, infoHash_);
+  SharedHandle<DHTMessage> reply =
+    getMessageFactory()->createGetPeersReplyMessage
+    (getRemoteNode(), nodes, peers, token, getTransactionID());
   getMessageDispatcher()->addMessageToQueue(reply);
 }
 

@@ -54,6 +54,7 @@
 #include "TimeA2.h"
 #include "a2functional.h"
 #include "LogFactory.h"
+#include "A2STR.h"
 #ifdef ENABLE_SSL
 # include "TLSContext.h"
 #endif // ENABLE_SSL
@@ -215,6 +216,14 @@ static sock_t bindInternal(int family, int socktype, int protocol,
     CLOSE(fd);
     return -1;
   }
+  if(family == AF_INET6) {
+    int sockopt = 1;
+    if(setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (a2_sockopt_t) &sockopt,
+                  sizeof(sockopt)) < 0) {
+      CLOSE(fd);
+      return -1;
+    }
+  }
   if(::bind(fd, addr, addrlen) == -1) {
     error = errorMsg();
     CLOSE(fd);
@@ -258,25 +267,19 @@ void SocketCore::bindWithFamily(uint16_t port, int family, int flags)
   }
 }
 
-void SocketCore::bind(const std::string& addr, uint16_t port, int flags)
+void SocketCore::bind
+(const std::string& addr, uint16_t port, int family, int flags)
 {
   closeConnection();
   std::string error;
-  sock_t fd =
-    bindTo(addr.c_str(), port, protocolFamily_, sockType_, flags, error);
-  if(fd == (sock_t)-1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
+  const char* addrp;
+  if(addr.empty()) {
+    addrp = 0;
   } else {
-    sockfd_ = fd;
+    addrp = addr.c_str();
   }
-}
-
-void SocketCore::bind(uint16_t port, int flags)
-{
-  closeConnection();
-  std::string error;
   if(!(flags&AI_PASSIVE) || bindAddrs_.empty()) {
-    sock_t fd = bindTo(0, port, protocolFamily_, sockType_, flags, error);
+    sock_t fd = bindTo(addrp, port, family, sockType_, flags, error);
     if(fd != (sock_t) -1) {
       sockfd_ = fd;
     }
@@ -294,7 +297,11 @@ void SocketCore::bind(uint16_t port, int flags)
         error = gai_strerror(s);
         continue;
       }
-      sock_t fd = bindTo(host, port, protocolFamily_, sockType_, flags, error);
+      if(addrp && strcmp(host, addrp) != 0) {
+        // TODO we should assign something to error?
+        continue;
+      }
+      sock_t fd = bindTo(addrp, port, family, sockType_, flags, error);
       if(fd != (sock_t)-1) {
         sockfd_ = fd;
         break;
@@ -304,6 +311,11 @@ void SocketCore::bind(uint16_t port, int flags)
   if(sockfd_ == (sock_t) -1) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_BIND, error.c_str()).str());
   }
+}
+
+void SocketCore::bind(uint16_t port, int flags)
+{
+  bind(A2STR::NIL, port, protocolFamily_, flags);
 }
 
 void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)

@@ -60,8 +60,13 @@
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTNode.h"
-#include "DHTSetup.h"
 #include "DHTRegistry.h"
+#include "DHTPeerAnnounceStorage.h"
+#include "DHTTokenTracker.h"
+#include "DHTMessageDispatcher.h"
+#include "DHTMessageReceiver.h"
+#include "DHTMessageFactory.h"
+#include "DHTMessageCallback.h"
 #include "PieceStorage.h"
 #include "RequestGroup.h"
 #include "BtAnnounce.h"
@@ -102,6 +107,17 @@ PeerInteractionCommand::PeerInteractionCommand
     setWriteCheckSocket(getSocket());
     setTimeout(getOption()->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
+
+  int family;
+  unsigned char compact[COMPACT_LEN_IPV6];
+  int compactlen = bittorrent::packcompact
+    (compact, getPeer()->getIPAddress(), getPeer()->getPort());
+  if(compactlen == COMPACT_LEN_IPV6) {
+    family = AF_INET6;
+  } else {
+    family = AF_INET;
+  }
+ 
   SharedHandle<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup_->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
@@ -131,11 +147,18 @@ PeerInteractionCommand::PeerInteractionCommand
   factory->setPieceStorage(pieceStorage);
   factory->setPeerStorage(peerStorage);
   factory->setExtensionMessageFactory(extensionMessageFactory);
-  factory->setPeer(getPeer());
-  factory->setLocalNode(DHTRegistry::getData().localNode);
-  factory->setRoutingTable(DHTRegistry::getData().routingTable);
-  factory->setTaskQueue(DHTRegistry::getData().taskQueue);
-  factory->setTaskFactory(DHTRegistry::getData().taskFactory);
+  factory->setPeer(getPeer());  
+  if(family == AF_INET) {
+    factory->setLocalNode(DHTRegistry::getData().localNode);
+    factory->setRoutingTable(DHTRegistry::getData().routingTable);
+    factory->setTaskQueue(DHTRegistry::getData().taskQueue);
+    factory->setTaskFactory(DHTRegistry::getData().taskFactory);
+  } else {
+    factory->setLocalNode(DHTRegistry::getData6().localNode);
+    factory->setRoutingTable(DHTRegistry::getData6().routingTable);
+    factory->setTaskQueue(DHTRegistry::getData6().taskQueue);
+    factory->setTaskFactory(DHTRegistry::getData6().taskFactory);
+  }
   if(metadataGetMode) {
     factory->enableMetadataGetMode();
   }
@@ -192,10 +215,18 @@ PeerInteractionCommand::PeerInteractionCommand
     if(getOption()->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
       btInteractive->setUTPexEnabled(true);
     }
-    if(DHTSetup::initialized()) {
-      btInteractive->setDHTEnabled(true);
-      btInteractive->setLocalNode(DHTRegistry::getData().localNode);
-      factory->setDHTEnabled(true);
+    if(family == AF_INET) {
+      if(DHTRegistry::isInitialized()) {
+        btInteractive->setDHTEnabled(true);
+        factory->setDHTEnabled(true);
+        btInteractive->setLocalNode(DHTRegistry::getData().localNode);
+      }
+    } else {
+      if(DHTRegistry::isInitialized6()) {
+        btInteractive->setDHTEnabled(true);
+        factory->setDHTEnabled(true);
+        btInteractive->setLocalNode(DHTRegistry::getData6().localNode);
+      }
     }
   }
   btInteractive->setUTMetadataRequestFactory(utMetadataRequestFactory);

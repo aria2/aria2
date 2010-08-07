@@ -522,17 +522,18 @@ public:
 
   virtual void parseArg(Option& option, const std::string& optarg)
   {
-    std::pair<std::string, std::string> proxy = util::split(optarg, ":");
-    int32_t port = util::parseInt(proxy.second);
-    if(proxy.first.empty() || proxy.second.empty() ||
-       port <= 0 || 65535 < port) {
-      throw DL_ABORT_EX(_("unrecognized proxy format"));
+    std::string uri = "http://";
+    uri += optarg;
+    Request req;
+    if(!req.setUri(uri)) {
+      throw DL_ABORT_EX(_("Unrecognized format"));
     }
     option.put(optName_, optarg);
-    setHostAndPort(option, proxy.first, port);
+    setHostAndPort(option, req.getHost(), req.getPort());
   }
 
-  void setHostAndPort(Option& option, const std::string& hostname, uint16_t port)
+  void setHostAndPort
+  (Option& option, const std::string& hostname, uint16_t port)
   {
     option.put(hostOptionName_, hostname);
     option.put(portOptionName_, util::uitos(port));

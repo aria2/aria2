@@ -137,8 +137,6 @@ public:
 
   void bindWithFamily(uint16_t port, int family, int flags = AI_PASSIVE);
 
-  void bind(const std::string& addr, uint16_t port, int flags = AI_PASSIVE);
-
   /**
    * Creates a socket and bind it with locahost's address and port.
    * flags is set to struct addrinfo's ai_flags.
@@ -146,6 +144,9 @@ public:
    * choose avaiable port.
    */
   void bind(uint16_t port, int flags = AI_PASSIVE);
+
+  void bind
+  (const std::string& addr, uint16_t port, int family, int flags = AI_PASSIVE);
 
   /**
    * Listens form connection on it.

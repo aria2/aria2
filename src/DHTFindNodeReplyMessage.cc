@@ -51,11 +51,15 @@ const std::string DHTFindNodeReplyMessage::FIND_NODE("find_node");
 
 const std::string DHTFindNodeReplyMessage::NODES("nodes");
 
+const std::string DHTFindNodeReplyMessage::NODES6("nodes6");
+
 DHTFindNodeReplyMessage::DHTFindNodeReplyMessage
-(const SharedHandle<DHTNode>& localNode,
+(int family,
+ const SharedHandle<DHTNode>& localNode,
  const SharedHandle<DHTNode>& remoteNode,
  const std::string& transactionID):
-  DHTResponseMessage(localNode, remoteNode, transactionID) {}
+  DHTResponseMessage(localNode, remoteNode, transactionID),
+  family_(family) {}
 
 DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
 
@@ -73,23 +77,27 @@ SharedHandle<Dict> DHTFindNodeReplyMessage::getResponse()
 {
   SharedHandle<Dict> aDict = Dict::g();
   aDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
+  unsigned char buffer[DHTBucket::K*38];
+  const int clen = bittorrent::getCompactLength(family_);
+  const int unit = clen+20;
+  assert(unit <= 38);
   size_t offset = 0;
-  unsigned char buffer[DHTBucket::K*26];
-  // TODO if closestKNodes_.size() > DHTBucket::K ??
+  size_t k = 0;
   for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
         closestKNodes_.begin(), eoi = closestKNodes_.end();
-      i != eoi && offset < DHTBucket::K*26; ++i) {
+      i != eoi && k < DHTBucket::K; ++i) {
     SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
     unsigned char compact[COMPACT_LEN_IPV6];
     int compactlen = bittorrent::packcompact
       (compact, node->getIPAddress(), node->getPort());
-    if(compactlen == COMPACT_LEN_IPV4) {
+    if(compactlen == clen) {
       memcpy(buffer+20+offset, compact, compactlen);
-      offset += 26;
+      offset += unit;
+      ++k;
     }
   }
-  aDict->put(NODES, String::g(buffer, offset));
+  aDict->put(family_ == AF_INET?NODES:NODES6, String::g(buffer, offset));
   return aDict;
 }
 

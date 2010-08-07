@@ -1,8 +1,11 @@
 #include "DHTConnectionImpl.h"
-#include "Exception.h"
-#include "SocketCore.h"
+
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Exception.h"
+#include "SocketCore.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -25,13 +28,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTConnectionImplTest);
 void DHTConnectionImplTest::testWriteAndReadData()
 {
   try {
-    DHTConnectionImpl con1;
+    DHTConnectionImpl con1(AF_INET);
     uint16_t con1port = 0;
-    CPPUNIT_ASSERT(con1.bind(con1port));
+    CPPUNIT_ASSERT(con1.bind(con1port, A2STR::NIL));
 
-    DHTConnectionImpl con2;
+    DHTConnectionImpl con2(AF_INET);
     uint16_t con2port = 0;
-    CPPUNIT_ASSERT(con2.bind(con2port));
+    CPPUNIT_ASSERT(con2.bind(con2port, A2STR::NIL));
 
     std::string message1 = "hello world.";
     // hostname should be "localhost", not 127.0.0.1. Test failed on Mac OSX10.5

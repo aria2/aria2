@@ -58,6 +58,15 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTSetup.h"
 #include "DHTRegistry.h"
+#include "DHTNode.h"
+#include "DHTRoutingTable.h"
+#include "DHTTaskQueue.h"
+#include "DHTTaskFactory.h"
+#include "DHTTokenTracker.h"
+#include "DHTMessageDispatcher.h"
+#include "DHTMessageReceiver.h"
+#include "DHTMessageFactory.h"
+#include "DHTMessageCallback.h"
 #include "BtProgressInfoFile.h"
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
@@ -126,15 +135,25 @@ void BtSetup::setup(std::vector<Command*>& commands,
     commands.push_back(c);
   }
 
-  if((metadataGetMode || !torrentAttrs->privateTorrent) &&
-     DHTSetup::initialized()) {
-    DHTGetPeersCommand* command =
-      new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
-    command->setTaskQueue(DHTRegistry::getData().taskQueue);
-    command->setTaskFactory(DHTRegistry::getData().taskFactory);
-    command->setBtRuntime(btRuntime);
-    command->setPeerStorage(peerStorage);
-    commands.push_back(command);
+  if(metadataGetMode || !torrentAttrs->privateTorrent) {
+    if(DHTRegistry::isInitialized()) {
+      DHTGetPeersCommand* command =
+        new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
+      command->setTaskQueue(DHTRegistry::getData().taskQueue);
+      command->setTaskFactory(DHTRegistry::getData().taskFactory);
+      command->setBtRuntime(btRuntime);
+      command->setPeerStorage(peerStorage);
+      commands.push_back(command);
+    }
+    if(DHTRegistry::isInitialized6()) {
+      DHTGetPeersCommand* command =
+        new DHTGetPeersCommand(e->newCUID(), requestGroup, e);
+      command->setTaskQueue(DHTRegistry::getData6().taskQueue);
+      command->setTaskFactory(DHTRegistry::getData6().taskFactory);
+      command->setBtRuntime(btRuntime);
+      command->setPeerStorage(peerStorage);
+      commands.push_back(command);
+    }
   }
   if(!metadataGetMode) {
     SharedHandle<UnionSeedCriteria> unionCri(new UnionSeedCriteria());

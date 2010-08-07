@@ -1,4 +1,57 @@
-2010-08-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+2010-08-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added IPv6 DHT. Added --dht-entry-porint6, --dht-file-path6,
+	--dht-listen-addr6 and --enable-dht6 option.  IPv6 DHT is disabled
+	by default. To use IPv6 DHT, you need to use --enable-dht6 and
+	specify a global unicast address to --dht-listen-addr6.  IPv6 DHT
+	is highly experimental.
+	* src/BtSetup.cc
+	* src/DHTAutoSaveCommand.cc
+	* src/DHTAutoSaveCommand.h
+	* src/DHTConnectionImpl.cc
+	* src/DHTConnectionImpl.h
+	* src/DHTEntryPointNameResolveCommand.cc
+	* src/DHTFindNodeReplyMessage.cc
+	* src/DHTFindNodeReplyMessage.h
+	* src/DHTGetPeersMessage.cc
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTGetPeersReplyMessage.h
+	* src/DHTMessageFactory.h
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTMessageFactoryImpl.h
+	* src/DHTMessageTracker.cc
+	* src/DHTRegistry.cc
+	* src/DHTRegistry.h
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTRoutingTableDeserializer.h
+	* src/DHTRoutingTableSerializer.cc
+	* src/DHTRoutingTableSerializer.h
+	* src/DHTSetup.cc
+	* src/DHTSetup.h
+	* src/FtpConnection.cc
+	* src/LpdMessageReceiver.cc
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/PeerInteractionCommand.cc
+	* src/RequestGroup.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/DHTConnectionImplTest.cc
+	* test/DHTFindNodeReplyMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/DHTGetPeersReplyMessageTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTRoutingTableDeserializerTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/LpdMessageDispatcherTest.cc
+	* test/MockDHTMessageFactory.h
+
+2010-08-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed AI_V4MAPPED from DEFAULT_AI_FLAGS
 	* src/a2netcompat.h

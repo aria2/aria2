@@ -312,6 +312,8 @@ extern const std::string PREF_PEER_ID_PREFIX;
 extern const std::string PREF_ENABLE_PEER_EXCHANGE;
 // values: true | false
 extern const std::string PREF_ENABLE_DHT;
+// values: a string
+extern const std::string PREF_DHT_LISTEN_ADDR;
 // values: 1*digit
 extern const std::string PREF_DHT_LISTEN_PORT;
 // values: a string
@@ -322,6 +324,18 @@ extern const std::string PREF_DHT_ENTRY_POINT_PORT;
 extern const std::string PREF_DHT_ENTRY_POINT;
 // values: a string
 extern const std::string PREF_DHT_FILE_PATH;
+// values: true | false
+extern const std::string PREF_ENABLE_DHT6;
+// values: a string
+extern const std::string PREF_DHT_LISTEN_ADDR6;
+// values: a string
+extern const std::string PREF_DHT_ENTRY_POINT_HOST6;
+// values: 1*digit
+extern const std::string PREF_DHT_ENTRY_POINT_PORT6;
+// values: a string (hostname:port)
+extern const std::string PREF_DHT_ENTRY_POINT6;
+// values: a string
+extern const std::string PREF_DHT_FILE_PATH6;
 // values: plain | arc4
 extern const std::string PREF_BT_MIN_CRYPTO_LEVEL;
 extern const std::string V_PLAIN;

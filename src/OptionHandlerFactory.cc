@@ -1326,11 +1326,49 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new HostPortOptionHandler
+                                   (PREF_DHT_ENTRY_POINT6,
+                                    TEXT_DHT_ENTRY_POINT6,
+                                    NO_DEFAULT_VALUE,
+                                    PREF_DHT_ENTRY_POINT_HOST6,
+                                    PREF_DHT_ENTRY_POINT_PORT6));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_DHT_FILE_PATH,
                                     TEXT_DHT_FILE_PATH,
                                     util::getHomeDir()+"/.aria2/dht.dat",
                                     "/PATH/TO/DHT_DAT"));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_DHT_FILE_PATH6,
+                                    TEXT_DHT_FILE_PATH6,
+                                    util::getHomeDir()+"/.aria2/dht6.dat",
+                                    "/PATH/TO/DHT_DAT"));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_DHT_LISTEN_ADDR,
+                                    NO_DESCRIPTION,
+                                    NO_DEFAULT_VALUE));
+    op->hide();
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_DHT_LISTEN_ADDR6,
+                                    TEXT_DHT_LISTEN_ADDR6,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
@@ -1358,6 +1396,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_ENABLE_DHT,
                                     TEXT_ENABLE_DHT,
                                     V_TRUE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_ENABLE_DHT6,
+                                    TEXT_ENABLE_DHT6,
+                                    V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);

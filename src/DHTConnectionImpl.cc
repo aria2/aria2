@@ -46,12 +46,15 @@
 
 namespace aria2 {
 
-DHTConnectionImpl::DHTConnectionImpl():socket_(new SocketCore(SOCK_DGRAM)),
-                                       logger_(LogFactory::getInstance()) {}
+DHTConnectionImpl::DHTConnectionImpl(int family):
+  socket_(new SocketCore(SOCK_DGRAM)),
+  family_(family),
+  logger_(LogFactory::getInstance()) {}
 
 DHTConnectionImpl::~DHTConnectionImpl() {}
 
-bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
+bool DHTConnectionImpl::bind
+(uint16_t& port, const std::string& addr, IntSequence& ports)
 {
   std::vector<int32_t> randPorts = ports.flush();
   std::random_shuffle(randPorts.begin(), randPorts.end(),
@@ -63,25 +66,30 @@ bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
       continue;
     }
     port = (*portItr);
-    if(bind(port)) {
+    if(bind(port, addr)) {
       return true;
     }
   }
   return false;
 }
 
-bool DHTConnectionImpl::bind(uint16_t& port)
+bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
 {
+  int ipv = family_ == AF_INET?4:6;
   try {
-    socket_->bind(port);
+    if(addr.empty()) {
+      socket_->bind(A2STR::NIL, port, family_);
+    } else {
+      socket_->bind(addr, port, family_);
+    }
     socket_->setNonBlockingMode();
     std::pair<std::string, uint16_t> svaddr;
     socket_->getAddrInfo(svaddr);
     port = svaddr.second;
-    logger_->notice("DHT: listening to port %d", port);
+    logger_->notice("IPv%d DHT: listening to port %d", ipv, port);
     return true;
   } catch(RecoverableException& e) {
-    logger_->error("Failed to bind for DHT. port=%u", e, port);
+    logger_->error("Failed to bind for IPv%d DHT. port=%u", e, ipv, port);
   }
   return false;
 }

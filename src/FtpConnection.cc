@@ -223,7 +223,7 @@ SharedHandle<SocketCore> FtpConnection::createServerSocket()
   std::pair<std::string, uint16_t> addrinfo;
   socket_->getAddrInfo(addrinfo);
   SharedHandle<SocketCore> serverSocket(new SocketCore());
-  serverSocket->bind(addrinfo.first, 0);
+  serverSocket->bind(addrinfo.first, 0, AF_UNSPEC);
   serverSocket->beginListen();
   serverSocket->setNonBlockingMode();
   return serverSocket;

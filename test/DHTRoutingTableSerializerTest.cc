@@ -20,42 +20,35 @@ class DHTRoutingTableSerializerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTRoutingTableSerializerTest);
   CPPUNIT_TEST(testSerialize);
+  CPPUNIT_TEST(testSerialize6);
   CPPUNIT_TEST_SUITE_END();
+private:
+  char zero[256];
+  char buf[20];
+
+  void checkToLocalnode
+  (std::istream& ss, const SharedHandle<DHTNode>& localNode);
+
+  void checkNumNodes(std::istream& ss, size_t expected);
 public:
-  void setUp() {}
+  void setUp()
+  {
+    memset(zero, 0, sizeof(zero));
+  }
 
   void tearDown() {}
 
   void testSerialize();
+
+  void testSerialize6();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DHTRoutingTableSerializerTest);
 
-void DHTRoutingTableSerializerTest::testSerialize()
+void DHTRoutingTableSerializerTest::checkToLocalnode
+(std::istream& ss, const SharedHandle<DHTNode>& localNode)
 {
-  SharedHandle<DHTNode> localNode(new DHTNode());
-
-  SharedHandle<DHTNode> nodesSrc[3];
-  for(size_t i = 0; i < A2_ARRAY_LEN(nodesSrc); ++i) {
-    nodesSrc[i].reset(new DHTNode());
-    nodesSrc[i]->setIPAddress("192.168.0."+util::uitos(i+1));
-    nodesSrc[i]->setPort(6881+i);
-  }
-  nodesSrc[1]->setIPAddress("non-numerical-name");
-  std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
-  
-  DHTRoutingTableSerializer s;
-  s.setLocalNode(localNode);
-  s.setNodes(nodes);
-
-  std::stringstream ss;
-  s.serialize(ss);
-
-  char zero[16];
-  memset(zero, 0, sizeof(zero));
-
-  char buf[20];
   // header
   ss.read(buf, 8);
   // magic
@@ -89,14 +82,44 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 4bytes reserved
   ss.read(buf, 4);
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
+}
 
+void DHTRoutingTableSerializerTest::checkNumNodes
+(std::istream& ss, size_t expected)
+{
   // number of nodes saved
   ss.read(buf, 4);
   uint32_t numNodes;
   memcpy(&numNodes, buf, sizeof(numNodes));
   numNodes = ntohl(numNodes);
 
-  CPPUNIT_ASSERT_EQUAL((uint32_t)3, numNodes);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)expected, numNodes);
+}
+
+void DHTRoutingTableSerializerTest::testSerialize()
+{
+  SharedHandle<DHTNode> localNode(new DHTNode());
+
+  SharedHandle<DHTNode> nodesSrc[3];
+  for(size_t i = 0; i < A2_ARRAY_LEN(nodesSrc); ++i) {
+    nodesSrc[i].reset(new DHTNode());
+    nodesSrc[i]->setIPAddress("192.168.0."+util::uitos(i+1));
+    nodesSrc[i]->setPort(6881+i);
+  }
+  nodesSrc[1]->setIPAddress("non-numerical-name");
+  std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
+  
+  DHTRoutingTableSerializer s(AF_INET);
+  s.setLocalNode(localNode);
+  s.setNodes(nodes);
+
+  std::stringstream ss;
+  s.serialize(ss);
+
+  checkToLocalnode(ss, localNode);
+  size_t numNodes = 3;
+  checkNumNodes(ss, numNodes);
+
   // 4bytes reserved
   ss.read(buf, 4);
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
@@ -189,6 +212,94 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // localnode ID
   ss.read(buf, DHT_ID_LENGTH);
   CPPUNIT_ASSERT(memcmp(nodes[2]->getID(), buf, DHT_ID_LENGTH) == 0);
+  // 4bytes reserved
+  ss.read(buf, 4);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
+
+  // check to see stream ends
+  ss.read(buf, 1);
+  CPPUNIT_ASSERT_EQUAL((std::streamsize)0, ss.gcount());
+  CPPUNIT_ASSERT(ss.eof());
+}
+
+void DHTRoutingTableSerializerTest::testSerialize6()
+{
+  SharedHandle<DHTNode> localNode(new DHTNode());
+
+  SharedHandle<DHTNode> nodesSrc[2];
+  for(size_t i = 0; i < A2_ARRAY_LEN(nodesSrc); ++i) {
+    nodesSrc[i].reset(new DHTNode());
+    nodesSrc[i]->setIPAddress("2001::100"+util::uitos(i+1));
+    nodesSrc[i]->setPort(6881+i);
+  }
+  nodesSrc[1]->setIPAddress("non-numerical-name");
+  std::vector<SharedHandle<DHTNode> > nodes(vbegin(nodesSrc), vend(nodesSrc));
+  
+  DHTRoutingTableSerializer s(AF_INET6);
+  s.setLocalNode(localNode);
+  s.setNodes(nodes);
+
+  std::stringstream ss;
+  s.serialize(ss);
+
+  checkToLocalnode(ss, localNode);
+  size_t numNodes = 2;
+  checkNumNodes(ss, numNodes);
+
+  // 4bytes reserved
+  ss.read(buf, 4);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
+
+  // node[0]
+  // 1byte compatc peer format length
+  {
+    uint8_t len;
+    ss >> len;
+    CPPUNIT_ASSERT_EQUAL((uint8_t)18, len);
+  }
+  // 7bytes reserved
+  ss.read(buf, 7);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 7) == 0);
+  // 18 bytes compact peer info
+  ss.read(buf, 18);
+  {
+    std::pair<std::string, uint16_t> peer =
+      bittorrent::unpackcompact(reinterpret_cast<const unsigned char*>(buf),
+                                AF_INET6);
+    CPPUNIT_ASSERT_EQUAL(std::string("2001::1001"), peer.first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peer.second);
+  }
+  // 6bytes reserved
+  ss.read(buf, 6);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 6) == 0);
+  // localnode ID
+  ss.read(buf, DHT_ID_LENGTH);
+  CPPUNIT_ASSERT(memcmp(nodes[0]->getID(), buf, DHT_ID_LENGTH) == 0);
+  // 4bytes reserved
+  ss.read(buf, 4);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
+
+  // node[1]
+  // 1byte compatc peer format length
+  {
+    uint8_t len;
+    ss >> len;
+    CPPUNIT_ASSERT_EQUAL((uint8_t)18, len);
+  }
+  // 7bytes reserved
+  ss.read(buf, 7);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 7) == 0);
+  // 18bytes compact peer info
+  ss.read(buf, 18);
+  // zero filled because node[1]'s hostname is not numerical form
+  // deserializer should skip this entry
+  CPPUNIT_ASSERT(memcmp(zero, buf, 18) == 0);
+  // 6bytes reserved
+  ss.read(buf, 6);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 6) == 0);
+  // localnode ID
+  ss.read(buf, DHT_ID_LENGTH);
+  CPPUNIT_ASSERT(memcmp(nodes[1]->getID(), buf, DHT_ID_LENGTH) == 0);
   // 4bytes reserved
   ss.read(buf, 4);
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);

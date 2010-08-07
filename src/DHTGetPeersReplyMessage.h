@@ -47,6 +47,8 @@ class Peer;
 
 class DHTGetPeersReplyMessage:public DHTResponseMessage {
 private:
+  int family_;
+
   std::string token_;
 
   std::vector<SharedHandle<DHTNode> > closestKNodes_;
@@ -55,7 +57,8 @@ private:
 protected:
   virtual std::string toStringOptional() const;
 public:
-  DHTGetPeersReplyMessage(const SharedHandle<DHTNode>& localNode,
+  DHTGetPeersReplyMessage(int family,
+                          const SharedHandle<DHTNode>& localNode,
                           const SharedHandle<DHTNode>& remoteNode,
                           const std::string& token,
                           const std::string& transactionID);
@@ -103,6 +106,8 @@ public:
   static const std::string VALUES;
 
   static const std::string NODES;
+
+  static const std::string NODES6;
 };
 
 } // namespace aria2

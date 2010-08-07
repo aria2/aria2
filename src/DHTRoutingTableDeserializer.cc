@@ -52,7 +52,8 @@
 
 namespace aria2 {
 
-DHTRoutingTableDeserializer::DHTRoutingTableDeserializer() {}
+DHTRoutingTableDeserializer::DHTRoutingTableDeserializer(int family):
+  family_(family) {}
 
 DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() {}
 
@@ -99,7 +100,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
   headerCompat[6] = 0;
   headerCompat[7] = 0x02;
 
-  char zero[8];
+  char zero[18];
   memset(zero, 0, sizeof(zero));
 
   int version;
@@ -159,44 +160,39 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 
   std::vector<SharedHandle<DHTNode> > nodes;
   // nodes
+  const int compactlen = bittorrent::getCompactLength(family_);
   for(size_t i = 0; i < numNodes; ++i) {
-    // Currently, only IPv4 addresses are supported.
     // 1byte compact peer info length
     uint8_t peerInfoLen;
     in >> peerInfoLen;
-    if(peerInfoLen != 6) {
+    if(peerInfoLen != compactlen) {
       // skip this entry
-      readBytes(buf, buf.size(), in, 42+7+6);
-      CHECK_STREAM(in, 42+7+6);
+      readBytes(buf, buf.size(), in, 7+48);
+      CHECK_STREAM(in, 7+48);
       continue;
     }
     // 7bytes reserved
     readBytes(buf, buf.size(), in, 7);
     CHECK_STREAM(in, 7);
-    // 6bytes compact peer info
-    readBytes(buf, buf.size(), in, 6);
-    CHECK_STREAM(in, 6);
-    if(memcmp(zero, buf, 6) == 0) {
+    // compactlen bytes compact peer info
+    readBytes(buf, buf.size(), in, compactlen);
+    CHECK_STREAM(in, compactlen);
+    if(memcmp(zero, buf, compactlen) == 0) {
       // skip this entry
-      readBytes(buf, buf.size(), in, 42);
-      CHECK_STREAM(in, 42);
+      readBytes(buf, buf.size(), in, 48-compactlen);
+      CHECK_STREAM(in, 48-compactlen);
       continue;
     }
-    // TODO DHT6 protocol family should be configurable.
     std::pair<std::string, uint16_t> peer =
-      bittorrent::unpackcompact(buf, AF_INET);
+      bittorrent::unpackcompact(buf, family_);
     if(peer.first.empty()) {
       // skip this entry
-      readBytes(buf, buf.size(), in, 42);
-      CHECK_STREAM(in, 42);
+      readBytes(buf, buf.size(), in, 48-compactlen);
+      CHECK_STREAM(in, 48-compactlen);
       continue;
     }
-    // 2bytes reserved
-    readBytes(buf, buf.size(), in, 2);
-    CHECK_STREAM(in, 2);
-    // 16byte reserved
-    readBytes(buf, buf.size(), in, 16);
-    CHECK_STREAM(in, 16);
+    // 24-compactlen bytes reserved
+    readBytes(buf, buf.size(), in, 24-compactlen);
     // node ID
     readBytes(buf, buf.size(), in, DHT_ID_LENGTH);
     CHECK_STREAM(in, DHT_ID_LENGTH);

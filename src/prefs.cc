@@ -308,6 +308,8 @@ const std::string PREF_PEER_ID_PREFIX("peer-id-prefix");
 const std::string PREF_ENABLE_PEER_EXCHANGE("enable-peer-exchange");
 // values: true | false
 const std::string PREF_ENABLE_DHT("enable-dht");
+// values: a string
+const std::string PREF_DHT_LISTEN_ADDR("dht-listen-addr");
 // values: 1*digit
 const std::string PREF_DHT_LISTEN_PORT("dht-listen-port");
 // values: a string
@@ -318,6 +320,18 @@ const std::string PREF_DHT_ENTRY_POINT_PORT("dht-entry-point-port");
 const std::string PREF_DHT_ENTRY_POINT("dht-entry-point");
 // values: a string
 const std::string PREF_DHT_FILE_PATH("dht-file-path");
+// values: true | false
+const std::string PREF_ENABLE_DHT6("enable-dht6");
+// values: a string
+const std::string PREF_DHT_LISTEN_ADDR6("dht-listen-addr6");
+// values: a string
+const std::string PREF_DHT_ENTRY_POINT_HOST6("dht-entry-point-host6");
+// values: 1*digit
+const std::string PREF_DHT_ENTRY_POINT_PORT6("dht-entry-point-port6");
+// values: a string (hostname:port)
+const std::string PREF_DHT_ENTRY_POINT6("dht-entry-point6");
+// values: a string
+const std::string PREF_DHT_FILE_PATH6("dht-file-path6");
 // values: plain | arc4
 const std::string PREF_BT_MIN_CRYPTO_LEVEL("bt-min-crypto-level");
 const std::string V_PLAIN("plain");

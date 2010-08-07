@@ -81,18 +81,9 @@ public:
   createGetPeersReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<DHTNode> >& closestKNodes,
-                             const std::string& token,
-                             const std::string& transactionID)
-  {
-    return SharedHandle<DHTResponseMessage>();
-  }
-
-
-  virtual SharedHandle<DHTResponseMessage>
-  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                             const std::vector<SharedHandle<Peer> >& peers,
-                             const std::string& token,
-                             const std::string& transactionID)
+   const std::vector<SharedHandle<Peer> >& peers,
+   const std::string& token,
+   const std::string& transactionID)
   {
     return SharedHandle<DHTResponseMessage>();
   }

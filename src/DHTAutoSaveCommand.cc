@@ -62,8 +62,9 @@
 namespace aria2 {
 
 DHTAutoSaveCommand::DHTAutoSaveCommand
-(cuid_t cuid, DownloadEngine* e, time_t interval):
-  TimeBasedCommand(cuid, e, interval) {}
+(cuid_t cuid, DownloadEngine* e, int family, time_t interval):
+  TimeBasedCommand(cuid, e, interval),
+  family_(family) {}
 
 DHTAutoSaveCommand::~DHTAutoSaveCommand() {}
 
@@ -84,7 +85,8 @@ void DHTAutoSaveCommand::process()
 void DHTAutoSaveCommand::save()
 {
   std::string dhtFile =
-    getDownloadEngine()->getOption()->get(PREF_DHT_FILE_PATH);
+    getDownloadEngine()->getOption()->
+    get(family_ == AF_INET? PREF_DHT_FILE_PATH : PREF_DHT_FILE_PATH6);
   getLogger()->info("Saving DHT routing table to %s.", dhtFile.c_str());
 
   std::string tempFile = dhtFile;
@@ -116,7 +118,7 @@ void DHTAutoSaveCommand::save()
     nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
   }
 
-  DHTRoutingTableSerializer serializer;
+  DHTRoutingTableSerializer serializer(family_);
   serializer.setLocalNode(localNode_);
   serializer.setNodes(nodes);
 

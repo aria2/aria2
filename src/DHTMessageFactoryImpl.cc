@@ -64,7 +64,8 @@
 
 namespace aria2 {
 
-DHTMessageFactoryImpl::DHTMessageFactoryImpl():
+DHTMessageFactoryImpl::DHTMessageFactoryImpl(int family):
+  family_(family),
   logger_(LogFactory::getInstance()) {}
 
 DHTMessageFactoryImpl::~DHTMessageFactoryImpl() {}
@@ -261,21 +262,7 @@ DHTMessageFactoryImpl::createResponseMessage
   } else if(messageType == DHTFindNodeReplyMessage::FIND_NODE) {
     msg = createFindNodeReplyMessage(remoteNode, dict, transactionID->s());
   } else if(messageType == DHTGetPeersReplyMessage::GET_PEERS) {
-    const List* valuesList =
-      asList(rDict->get(DHTGetPeersReplyMessage::VALUES));
-    if(valuesList) {
-      msg = createGetPeersReplyMessageWithValues
-        (remoteNode, dict, transactionID->s());
-    } else {
-      const String* nodes = asString
-        (rDict->get(DHTGetPeersReplyMessage::NODES));
-      if(nodes) {
-        msg = createGetPeersReplyMessageWithNodes
-          (remoteNode, dict, transactionID->s());
-      } else {
-        throw DL_ABORT_EX("Malformed DHT message: missing nodes/values");
-      }
-    }
+    msg = createGetPeersReplyMessage(remoteNode, dict, transactionID->s());
   } else if(messageType == DHTAnnouncePeerReplyMessage::ANNOUNCE_PEER) {
     msg = createAnnouncePeerReplyMessage(remoteNode, transactionID->s());
   } else {
@@ -349,23 +336,26 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage
  const std::string& transactionID)
 {
   SharedHandle<DHTFindNodeReplyMessage> m
-    (new DHTFindNodeReplyMessage(localNode_, remoteNode, transactionID));
+    (new DHTFindNodeReplyMessage
+     (family_, localNode_, remoteNode, transactionID));
   m->setClosestKNodes(closestKNodes);
   setCommonProperty(m);
   return m;
 }
 
-std::vector<SharedHandle<DHTNode> >
-DHTMessageFactoryImpl::extractNodes(const unsigned char* src, size_t length)
+void DHTMessageFactoryImpl::extractNodes
+(std::vector<SharedHandle<DHTNode> >& nodes,
+ const unsigned char* src, size_t length)
 {
-  if(length%26 != 0) {
-    throw DL_ABORT_EX("Nodes length is not multiple of 26");
+  int unit = bittorrent::getCompactLength(family_)+20;
+  if(length%unit != 0) {
+    throw DL_ABORT_EX
+      (StringFormat("Nodes length is not multiple of %d", unit).str());
   }
-  std::vector<SharedHandle<DHTNode> > nodes;
-  for(size_t offset = 0; offset < length; offset += 26) {
+  for(size_t offset = 0; offset < length; offset += unit) {
     SharedHandle<DHTNode> node(new DHTNode(src+offset));
     std::pair<std::string, uint16_t> addr =
-      bittorrent::unpackcompact(src+offset+DHT_ID_LENGTH, AF_INET);
+      bittorrent::unpackcompact(src+offset+DHT_ID_LENGTH, family_);
     if(addr.first.empty()) {
       continue;
     }
@@ -373,7 +363,6 @@ DHTMessageFactoryImpl::extractNodes(const unsigned char* src, size_t length)
     node->setPort(addr.second);
     nodes.push_back(node);
   }
-  return nodes;
 }
 
 SharedHandle<DHTResponseMessage>
@@ -383,10 +372,13 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage
  const std::string& transactionID)
 {
   const String* nodesData =
-    getString(getDictionary(dict, DHTResponseMessage::R),
-              DHTFindNodeReplyMessage::NODES);
-  std::vector<SharedHandle<DHTNode> > nodes =
-    extractNodes(nodesData->uc(), nodesData->s().size());
+    asString(getDictionary(dict, DHTResponseMessage::R)->
+             get(family_ == AF_INET?DHTFindNodeReplyMessage::NODES:
+                 DHTFindNodeReplyMessage::NODES6));
+  std::vector<SharedHandle<DHTNode> > nodes;
+  if(nodesData) {
+    extractNodes(nodes, nodesData->uc(), nodesData->s().size());
+  }
   return createFindNodeReplyMessage(remoteNode, nodes, transactionID);
 }
 
@@ -405,68 +397,55 @@ DHTMessageFactoryImpl::createGetPeersMessage
 }
 
 SharedHandle<DHTResponseMessage>
-DHTMessageFactoryImpl::createGetPeersReplyMessageWithNodes
+DHTMessageFactoryImpl::createGetPeersReplyMessage
 (const SharedHandle<DHTNode>& remoteNode,
  const Dict* dict,
  const std::string& transactionID)
 {
   const Dict* rDict = getDictionary(dict, DHTResponseMessage::R);
-  const String* nodesData = getString(rDict, DHTGetPeersReplyMessage::NODES);
-  std::vector<SharedHandle<DHTNode> > nodes = extractNodes
-    (nodesData->uc(), nodesData->s().size());
+  const String* nodesData =
+    asString(rDict->get(family_ == AF_INET?DHTGetPeersReplyMessage::NODES:
+                        DHTGetPeersReplyMessage::NODES6));
+  std::vector<SharedHandle<DHTNode> > nodes;
+  if(nodesData) {
+    extractNodes(nodes, nodesData->uc(), nodesData->s().size());
+  }
+  const List* valuesList =
+    asList(rDict->get(DHTGetPeersReplyMessage::VALUES));
+  std::vector<SharedHandle<Peer> > peers;
+  size_t clen = bittorrent::getCompactLength(family_);
+  if(valuesList) {
+    for(List::ValueType::const_iterator i = valuesList->begin(),
+          eoi = valuesList->end(); i != eoi; ++i) {
+      const String* data = asString(*i);
+      if(data && data->s().size() == clen) {
+        std::pair<std::string, uint16_t> addr =
+          bittorrent::unpackcompact(data->uc(), family_);
+        if(addr.first.empty()) {
+          continue;
+        }
+        SharedHandle<Peer> peer(new Peer(addr.first, addr.second));
+        peers.push_back(peer);
+      }
+    }
+  }  
   const String* token = getString(rDict, DHTGetPeersReplyMessage::TOKEN);
   return createGetPeersReplyMessage
-    (remoteNode, nodes, token->s(), transactionID);
+    (remoteNode, nodes, peers, token->s(), transactionID);
 }
 
 SharedHandle<DHTResponseMessage>
 DHTMessageFactoryImpl::createGetPeersReplyMessage
 (const SharedHandle<DHTNode>& remoteNode,
  const std::vector<SharedHandle<DHTNode> >& closestKNodes,
- const std::string& token,
- const std::string& transactionID)
-{
-  SharedHandle<DHTGetPeersReplyMessage> m
-    (new DHTGetPeersReplyMessage(localNode_, remoteNode, token, transactionID));
-  m->setClosestKNodes(closestKNodes);
-  setCommonProperty(m);
-  return m;
-}
-
-SharedHandle<DHTResponseMessage>
-DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues
-(const SharedHandle<DHTNode>& remoteNode,
- const Dict* dict,
- const std::string& transactionID)
-{
-  const Dict* rDict = getDictionary(dict, DHTResponseMessage::R);
-  const List* valuesList = getList(rDict,
-                                  DHTGetPeersReplyMessage::VALUES);
-  std::vector<SharedHandle<Peer> > peers;
-  for(List::ValueType::const_iterator i = valuesList->begin(),
-        eoi = valuesList->end(); i != eoi; ++i) {
-    const String* data = asString(*i);
-    if(data && data->s().size() == 6) {
-      std::pair<std::string, uint16_t> addr =
-        bittorrent::unpackcompact(data->uc(), AF_INET);
-      SharedHandle<Peer> peer(new Peer(addr.first, addr.second));
-      peers.push_back(peer);
-    }
-  }
-  const String* token = getString(rDict, DHTGetPeersReplyMessage::TOKEN);
-  return createGetPeersReplyMessage
-    (remoteNode, peers, token->s(), transactionID);
-}
-
-SharedHandle<DHTResponseMessage>
-DHTMessageFactoryImpl::createGetPeersReplyMessage
-(const SharedHandle<DHTNode>& remoteNode,
  const std::vector<SharedHandle<Peer> >& values,
  const std::string& token,
  const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersReplyMessage> m
-    (new DHTGetPeersReplyMessage(localNode_, remoteNode, token, transactionID));
+    (new DHTGetPeersReplyMessage
+     (family_, localNode_, remoteNode, token, transactionID));
+  m->setClosestKNodes(closestKNodes);
   m->setValues(values);
   setCommonProperty(m);
   return m;

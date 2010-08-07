@@ -51,6 +51,8 @@ class DHTAbstractMessage;
 
 class DHTMessageFactoryImpl:public DHTMessageFactory {
 private:
+  int family_;
+
   SharedHandle<DHTNode> localNode_;
 
   WeakHandle<DHTConnection> connection_;
@@ -73,13 +75,14 @@ private:
 
   void validatePort(const Integer* i) const;
 
-  std::vector<SharedHandle<DHTNode> >
-  extractNodes(const unsigned char* src, size_t length);
+  void extractNodes
+  (std::vector<SharedHandle<DHTNode> >& nodes,
+   const unsigned char* src, size_t length);
 
   void setCommonProperty(const SharedHandle<DHTAbstractMessage>& m);
 
 public:
-  DHTMessageFactoryImpl();
+  DHTMessageFactoryImpl(int family);
 
   virtual ~DHTMessageFactoryImpl();
 
@@ -127,25 +130,15 @@ public:
   createGetPeersReplyMessage
   (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<DHTNode> >& closestKNodes,
-   const std::string& token,
-   const std::string& transactionID);
-
-  SharedHandle<DHTResponseMessage>
-  createGetPeersReplyMessageWithNodes(const SharedHandle<DHTNode>& remoteNode,
-                                      const Dict* dict,
-                                      const std::string& transactionID);
-
-  virtual SharedHandle<DHTResponseMessage>
-  createGetPeersReplyMessage
-  (const SharedHandle<DHTNode>& remoteNode,
    const std::vector<SharedHandle<Peer> >& peers,
    const std::string& token,
    const std::string& transactionID);
 
   SharedHandle<DHTResponseMessage>
-  createGetPeersReplyMessageWithValues(const SharedHandle<DHTNode>& remoteNode,
-                                       const Dict* dict,
-                                       const std::string& transactionID);
+  createGetPeersReplyMessage
+  (const SharedHandle<DHTNode>& remoteNode,
+   const Dict* dict,
+   const std::string& transactionID);
 
   virtual SharedHandle<DHTQueryMessage>
   createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,

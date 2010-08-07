@@ -57,12 +57,16 @@ const std::string DHTGetPeersReplyMessage::VALUES("values");
 
 const std::string DHTGetPeersReplyMessage::NODES("nodes");
 
+const std::string DHTGetPeersReplyMessage::NODES6("nodes6");
+
 DHTGetPeersReplyMessage::DHTGetPeersReplyMessage
-(const SharedHandle<DHTNode>& localNode,
+(int family,
+ const SharedHandle<DHTNode>& localNode,
  const SharedHandle<DHTNode>& remoteNode,
  const std::string& token,
  const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID),
+  family_(family),
   token_(token) {}
 
 DHTGetPeersReplyMessage::~DHTGetPeersReplyMessage() {}
@@ -77,59 +81,69 @@ SharedHandle<Dict> DHTGetPeersReplyMessage::getResponse()
   SharedHandle<Dict> rDict = Dict::g();
   rDict->put(DHTMessage::ID, String::g(getLocalNode()->getID(), DHT_ID_LENGTH));
   rDict->put(TOKEN, token_);
-  if(values_.empty()) {
+  // TODO want parameter
+  if(!closestKNodes_.empty()) {
+    unsigned char buffer[DHTBucket::K*38];
+    const int clen = bittorrent::getCompactLength(family_);
+    const int unit = clen+20;
     size_t offset = 0;
-    unsigned char buffer[DHTBucket::K*26];
+    size_t k = 0;
     for(std::vector<SharedHandle<DHTNode> >::const_iterator i =
           closestKNodes_.begin(), eoi = closestKNodes_.end();
-        i != eoi && offset < DHTBucket::K*26; ++i) {
+        i != eoi && k < DHTBucket::K; ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
       unsigned char compact[COMPACT_LEN_IPV6];
       int compactlen = bittorrent::packcompact
         (compact, node->getIPAddress(), node->getPort());
-      if(compactlen == COMPACT_LEN_IPV4) {
+      if(compactlen == clen) {
         memcpy(buffer+20+offset, compact, compactlen);
-        offset += 26;
+        offset += unit;
+        ++k;
       }
     }
-    rDict->put(NODES, String::g(buffer, offset));
-  } else {
+    rDict->put(family_ == AF_INET?NODES:NODES6, String::g(buffer, offset));
+  }
+  if(!values_.empty()) {
     // Limit the size of values list.  The maxmum size of UDP datagram
     // is limited to 65535 bytes. aria2 uses 20bytes token and 2byte
     // transaction ID. The size of get_peers reply message without
-    // values list is 87bytes:
+    // values list and nodes is 87bytes:
     //
     // d1:rd2:id20:aaaaaaaaaaaaaaaaaaaa5:token20:aaaaaaaaaaaaaaaaaaaa
     // 6:valueslee1:t2:bb1:y1:re
+    //
+    // nodes are 38 bytes per host for IPv6 and the number of hosts is
+    // K(=8) max. So without values list, we already 87+38*8+4 = 395.
     //
     // Because of Path MTU Discovery, UDP packet size which need not
     // to be fragmented is much smaller. Since Linux uses Path MTU
     // Dicoverry by default and returning ICMP message might be
     // filtered, we should avoid fragmentation.  MTU of pppoe is 1492
     // max according to RFC2516.  We use maximum packet size to be
-    // 1000. Since it contains 20 bytes IP header and 8 bytes UDP
-    // header and 87 bytes reply message template described above, We
-    // can carry (1000-28-87)/8 = 110 peer info. Since DHT spec
+    // 1024. Since it contains 20 bytes IP header and 8 bytes UDP
+    // header and 395 bytes reply message template described above, We
+    // can carry (1024-28-395)/(18+3) = 28 peer info. Since DHT spec
     // doesn't specify the maximum size of token, reply message
-    // template may get bigger than 87 bytes. So we use 100 as maximum
+    // template may get bigger than 395 bytes. So we use 25 as maximum
     // number of peer info that a message can carry.
-    static const size_t MAX_VALUES_SIZE = 100;
+    static const size_t MAX_VALUES_SIZE = 25;
     SharedHandle<List> valuesList = List::g();
     for(std::vector<SharedHandle<Peer> >::const_iterator i = values_.begin(),
           eoi = values_.end(); i != eoi && valuesList->size() < MAX_VALUES_SIZE;
         ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char compact[COMPACT_LEN_IPV6];
+      const int clen = bittorrent::getCompactLength(family_);
       int compactlen = bittorrent::packcompact
         (compact, peer->getIPAddress(), peer->getPort());
-      if(compactlen == COMPACT_LEN_IPV4) {
+      if(compactlen == clen) {
         valuesList->append(String::g(compact, compactlen));
       }
     }
     rDict->put(VALUES, valuesList);
   }
-  return rDict;  
+  return rDict;
 }
 
 const std::string& DHTGetPeersReplyMessage::getMessageType() const

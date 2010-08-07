@@ -48,28 +48,33 @@ class DHTConnectionImpl:public DHTConnection {
 private:
   SharedHandle<SocketCore> socket_;
 
+  int family_;
+
   Logger* logger_;
 public:
-  DHTConnectionImpl();
+  DHTConnectionImpl(int family);
 
   virtual ~DHTConnectionImpl();
 
   /**
-   * Binds port. All number in ports are tried.
-   * If successful, the binded port is assigned to port and returns true.
-   * Otherwise return false and port is undefined in this case.
+   * Binds port. All number in ports are tried.  If successful, the
+   * binded port is assigned to port and returns true.  Otherwise
+   * return false and port is undefined in this case.  If non-empty
+   * string addr is given, the socket is associated to the address.
    */
-  bool bind(uint16_t& port, IntSequence& ports);
+  bool bind(uint16_t& port, const std::string& addr, IntSequence& ports);
   
   /**
    * Binds port. The port number specified by port is used to bind.
-   * If successful, the binded port is assigned to port and returns true.
-   * Otherwise return false and port is undefined in this case.
+   * If successful, the binded port is assigned to port and returns
+   * true.  Otherwise return false and port is undefined in this case.
+   * If non-empty string addr is given, the socket is associated to
+   * the address.
    *
    * If you want to bind arbitrary port, give 0 as port and if successful,
    * the binded port is assigned to port.
    */
-  bool bind(uint16_t& port);
+  bool bind(uint16_t& port, const std::string& addr);
 
   virtual ssize_t receiveMessage(unsigned char* data, size_t len,
                                  std::string& host, uint16_t& port);

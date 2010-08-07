@@ -96,7 +96,12 @@ bool DHTEntryPointNameResolveCommand::execute()
       while(!entryPoints_.empty()) {
         std::string hostname = entryPoints_.front().first;
         try {
-          if(resolveHostname(hostname, resolver_)) {
+          if(util::isNumericHost(hostname)) {
+            std::pair<std::string, uint16_t> p
+              (hostname, entryPoints_.front().second);
+            resolvedEntryPoints_.push_back(p);
+            addPingTask(p);
+          } else if(resolveHostname(hostname, resolver_)) {
             hostname = resolver_->getResolvedAddresses().front();
             std::pair<std::string, uint16_t> p(hostname,
                                                entryPoints_.front().second);

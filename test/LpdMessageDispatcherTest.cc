@@ -46,7 +46,7 @@ void LpdMessageDispatcherTest::testSendMessage()
 #ifdef __MINGW32__
   recvsock->bindWithFamily(LPD_MULTICAST_PORT, AF_INET);
 #else // !__MINGW32__
-  recvsock->bind(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);
+  recvsock->bind(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT, AF_INET);
 #endif // !__MINGW32__
   recvsock->joinMulticastGroup(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT, "");
   

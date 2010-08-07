@@ -50,7 +50,8 @@
 
 namespace aria2 {
 
-DHTRoutingTableSerializer::DHTRoutingTableSerializer() {}
+DHTRoutingTableSerializer::DHTRoutingTableSerializer(int family):
+  family_(family) {}
 
 DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
 
@@ -79,7 +80,7 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   header[6] = 0;
   header[7] = 0x03;
   
-  char zero[16];
+  char zero[18];
   memset(zero, 0, sizeof(zero));
 
   o.write(header, 8);
@@ -101,29 +102,26 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   // 4bytes reserved
   o.write(zero, 4);
 
+  const int clen = bittorrent::getCompactLength(family_);
   // nodes
   for(std::vector<SharedHandle<DHTNode> >::const_iterator i = nodes_.begin(),
         eoi = nodes_.end(); i != eoi; ++i) {
     const SharedHandle<DHTNode>& node = *i;
-    // Currently, only IPv4 addresses are saved.
-    // 6bytes: write IP address + port in Compact IP-address/port info form.
+    // Write IP address + port in Compact IP-address/port info form.
     unsigned char compactPeer[COMPACT_LEN_IPV6];
     int compactlen = bittorrent::packcompact
       (compactPeer, node->getIPAddress(), node->getPort());
-    if(compactlen != COMPACT_LEN_IPV4) {
-      compactlen = COMPACT_LEN_IPV4;
-      memset(compactPeer, 0, COMPACT_LEN_IPV4);
+    if(compactlen != clen) {
+      memset(compactPeer, 0, clen);
     }
     // 1byte compact peer format length
-    o << static_cast<uint8_t>(compactlen);
+    o << static_cast<uint8_t>(clen);
     // 7bytes reserved
     o.write(zero, 7);
-    // 6 bytes compact peer
-    o.write(reinterpret_cast<const char*>(compactPeer), compactlen);
-    // 2bytes reserved
-    o.write(zero, 2);
-    // 16bytes reserved
-    o.write(zero, 16);
+    // clen bytes compact peer
+    o.write(reinterpret_cast<const char*>(compactPeer), clen);
+    // 24-clen bytes reserved
+    o.write(zero, 24-clen);
     // 20bytes: node ID
     o.write(reinterpret_cast<const char*>(node->getID()), DHT_ID_LENGTH);
     // 4bytes reserved

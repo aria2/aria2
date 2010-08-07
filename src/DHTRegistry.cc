@@ -49,17 +49,30 @@ namespace aria2 {
 
 DHTRegistry::Data DHTRegistry::data_;
 
+DHTRegistry::Data DHTRegistry::data6_;
+
+void DHTRegistry::clear(DHTRegistry::Data& data)
+{
+  data.initialized = false;
+  data.localNode.reset();
+  data.routingTable.reset();
+  data.taskQueue.reset();
+  data.taskFactory.reset();
+  data.peerAnnounceStorage.reset();
+  data.tokenTracker.reset();
+  data.messageDispatcher.reset();
+  data.messageReceiver.reset();
+  data.messageFactory.reset();
+}
+
 void DHTRegistry::clearData()
 {
-  data_.localNode.reset();
-  data_.routingTable.reset();
-  data_.taskQueue.reset();
-  data_.taskFactory.reset();
-  data_.peerAnnounceStorage.reset();
-  data_.tokenTracker.reset();
-  data_.messageDispatcher.reset();
-  data_.messageReceiver.reset();
-  data_.messageFactory.reset();
+  clear(data_);
+}
+
+void DHTRegistry::clearData6()
+{
+  clear(data6_);
 }
 
 } // namespace aria2

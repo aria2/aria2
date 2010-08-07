@@ -84,19 +84,24 @@ DHTMessageTracker::messageArrived
         logger_->debug("Tracker entry found.");
       }
       SharedHandle<DHTNode> targetNode = entry->getTargetNode();
+      try {
+        SharedHandle<DHTResponseMessage> message =
+          factory_->createResponseMessage(entry->getMessageType(), dict,
+                                          targetNode->getIPAddress(),
+                                          targetNode->getPort());
 
-      SharedHandle<DHTResponseMessage> message =
-        factory_->createResponseMessage(entry->getMessageType(), dict,
-                                        targetNode->getIPAddress(),
-                                        targetNode->getPort());
-
-      int64_t rtt = entry->getElapsedMillis();
-      if(logger_->debug()) {
-        logger_->debug("RTT is %s", util::itos(rtt).c_str());
+        int64_t rtt = entry->getElapsedMillis();
+        if(logger_->debug()) {
+          logger_->debug("RTT is %s", util::itos(rtt).c_str());
+        }
+        message->getRemoteNode()->updateRTT(rtt);
+        SharedHandle<DHTMessageCallback> callback = entry->getCallback();
+        return std::make_pair(message, callback);
+      } catch(RecoverableException& e) {
+        entry->getCallback()->onTimeout(targetNode);
+        return std::pair<SharedHandle<DHTResponseMessage>,
+                         SharedHandle<DHTMessageCallback> >();
       }
-      message->getRemoteNode()->updateRTT(rtt);
-      SharedHandle<DHTMessageCallback> callback = entry->getCallback();
-      return std::make_pair(message, callback);
     }
   }
   if(logger_->debug()) {

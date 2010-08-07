@@ -42,11 +42,14 @@ namespace aria2 {
 
 class DHTFindNodeReplyMessage:public DHTResponseMessage {
 private:
+  int family_;
+
   std::vector<SharedHandle<DHTNode> > closestKNodes_;
 protected:
   virtual std::string toStringOptional() const;
 public:
-  DHTFindNodeReplyMessage(const SharedHandle<DHTNode>& localNode,
+  DHTFindNodeReplyMessage(int family,
+                          const SharedHandle<DHTNode>& localNode,
                           const SharedHandle<DHTNode>& remoteNode,
                           const std::string& transactionID);
 
@@ -71,6 +74,8 @@ public:
   static const std::string FIND_NODE;
   
   static const std::string NODES;
+  
+  static const std::string NODES6;
 };
 
 } // namespace aria2

@@ -53,6 +53,8 @@ class DHTMessageFactory;
 class DHTRegistry {
 private:
   struct Data {
+    bool initialized;
+
     SharedHandle<DHTNode> localNode;
 
     SharedHandle<DHTRoutingTable> routingTable;
@@ -70,9 +72,15 @@ private:
     SharedHandle<DHTMessageReceiver> messageReceiver;
 
     SharedHandle<DHTMessageFactory> messageFactory;
+
+    Data():initialized(false) {}
   };
 
   static Data data_;
+  static Data data6_;
+
+  static void clear(Data& data);
+
   DHTRegistry();
 public:
   static const Data& getData()
@@ -86,6 +94,38 @@ public:
   }
 
   static void clearData();
+
+  static bool isInitialized()
+  {
+    return data_.initialized;
+  }
+
+  static void setInitialized(bool f)
+  {
+    data_.initialized = f;
+  }
+
+  static const Data& getData6()
+  {
+    return data6_;
+  }
+
+  static Data& getMutableData6()
+  {
+    return data6_;
+  }
+
+  static void clearData6();
+
+  static bool isInitialized6()
+  {
+    return data6_.initialized;
+  }
+
+  static void setInitialized6(bool f)
+  {
+    data6_.initialized = f;
+  }
 };
 
 } // namespace aria2

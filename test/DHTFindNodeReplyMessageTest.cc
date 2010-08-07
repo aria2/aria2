@@ -15,6 +15,7 @@ class DHTFindNodeReplyMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTFindNodeReplyMessageTest);
   CPPUNIT_TEST(testGetBencodedMessage);
+  CPPUNIT_TEST(testGetBencodedMessage6);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -22,6 +23,8 @@ public:
   void tearDown() {}
 
   void testGetBencodedMessage();
+
+  void testGetBencodedMessage6();
 };
 
 
@@ -36,7 +39,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  DHTFindNodeReplyMessage msg(localNode, remoteNode, transactionID);
+  DHTFindNodeReplyMessage msg(AF_INET, localNode, remoteNode, transactionID);
   msg.setVersion("A200");
   std::string compactNodeInfo;
   SharedHandle<DHTNode> nodes[8];
@@ -46,8 +49,8 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
     nodes[i]->setPort(6881+i);
 
     unsigned char buf[COMPACT_LEN_IPV6];
-    bittorrent::packcompact
-      (buf, nodes[i]->getIPAddress(), nodes[i]->getPort());
+    CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV4, bittorrent::packcompact
+                         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
     compactNodeInfo +=
       std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
       std::string(&buf[0], &buf[COMPACT_LEN_IPV4]);
@@ -64,6 +67,48 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   SharedHandle<Dict> rDict = Dict::g();
   rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
   rDict->put("nodes", compactNodeInfo);
+  dict.put("r", rDict);
+
+  CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);
+}
+
+void DHTFindNodeReplyMessageTest::testGetBencodedMessage6()
+{
+  SharedHandle<DHTNode> localNode(new DHTNode());
+  SharedHandle<DHTNode> remoteNode(new DHTNode());
+
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
+  util::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
+  std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
+
+  DHTFindNodeReplyMessage msg(AF_INET6, localNode, remoteNode, transactionID);
+  msg.setVersion("A200");
+  std::string compactNodeInfo;
+  SharedHandle<DHTNode> nodes[8];
+  for(size_t i = 0; i < DHTBucket::K; ++i) {
+    nodes[i].reset(new DHTNode());
+    nodes[i]->setIPAddress("2001::000"+util::uitos(i+1));
+    nodes[i]->setPort(6881+i);
+
+    unsigned char buf[COMPACT_LEN_IPV6];
+    CPPUNIT_ASSERT_EQUAL(COMPACT_LEN_IPV6, bittorrent::packcompact
+                         (buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
+    compactNodeInfo +=
+      std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
+      std::string(&buf[0], &buf[COMPACT_LEN_IPV6]);
+  }
+  msg.setClosestKNodes
+    (std::vector<SharedHandle<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
+
+  std::string msgbody = msg.getBencodedMessage();
+
+  Dict dict;
+  dict.put("t", transactionID);
+  dict.put("v", "A200");
+  dict.put("y", "r");
+  SharedHandle<Dict> rDict = Dict::g();
+  rDict->put("id", String::g(localNode->getID(), DHT_ID_LENGTH));
+  rDict->put("nodes6", compactNodeInfo);
   dict.put("r", rDict);
 
   CPPUNIT_ASSERT_EQUAL(bencode2::encode(&dict), msgbody);

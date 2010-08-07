@@ -297,18 +297,18 @@
 #define TEXT_ENABLE_PEER_EXCHANGE                                       \
   _(" --enable-peer-exchange[=true|false] Enable Peer Exchange extension.")
 #define TEXT_ENABLE_DHT                                         \
-  _(" --enable-dht[=true|false]    Enable DHT functionality.")
+  _(" --enable-dht[=true|false]    Enable IPv4 DHT functionality.")
 #define TEXT_DHT_LISTEN_PORT                                            \
-  _(" --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"   \
-    "                              Multiple ports can be specified by using ',',\n" \
-    "                              for example: \"6881,6885\". You can also use '-'\n" \
-    "                              to specify a range: \"6881-6999\". ',' and '-' can\n" \
-    "                              be used together.")
+  _(" --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"   \
+    "                              DHT. Multiple ports can be specified by using\n" \
+    "                              ',', for example: \"6881,6885\". You can also\n" \
+    "                              use '-' to specify a range: \"6881-6999\". ','\n" \
+    "                              and '-' can be used together.")
 #define TEXT_DHT_ENTRY_POINT                                            \
-  _(" --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n" \
+  _(" --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 DHT\n" \
     "                              network.")
 #define TEXT_DHT_FILE_PATH                                              \
-  _(" --dht-file-path=PATH         Change the DHT routing table file to PATH.")
+  _(" --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH.")
 #define TEXT_BT_MIN_CRYPTO_LEVEL                                        \
   _(" --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n" \
     "                              If several encryption methods are provided by a\n" \
@@ -714,3 +714,15 @@
   _(" --enable-async-dns6[=true|false] Enable IPv6 name resolution in asynchronous\n" \
     "                              DNS resolver. This option will be ignored when\n" \
     "                              --async-dns=false.")
+#define TEXT_ENABLE_DHT6                        \
+  _(" --enable-dht6[=true|false]   Enable IPv6 DHT functionality. See also\n" \
+    "                              --dht-listen-addr6 option.")
+#define TEXT_DHT_LISTEN_ADDR6                   \
+  _(" --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n" \
+    "                              It should be a global unicast IPv6 address of the\n" \
+    "                              host.")
+#define TEXT_DHT_ENTRY_POINT6                   \
+  _(" --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 DHT\n" \
+    "                              network.")
+#define TEXT_DHT_FILE_PATH6                     \
+  _(" --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH.")

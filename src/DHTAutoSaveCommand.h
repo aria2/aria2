@@ -46,13 +46,16 @@ class DHTNode;
 class DHTAutoSaveCommand : public TimeBasedCommand
 {
 private:
+  int family_;
+
   SharedHandle<DHTNode> localNode_;
   
   SharedHandle<DHTRoutingTable> routingTable_;
 
   void save();
 public:
-  DHTAutoSaveCommand(cuid_t cuid, DownloadEngine* e, time_t interval);
+  DHTAutoSaveCommand
+  (cuid_t cuid, DownloadEngine* e, int family, time_t interval);
 
   virtual ~DHTAutoSaveCommand();
 

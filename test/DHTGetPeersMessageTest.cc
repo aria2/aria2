@@ -32,23 +32,10 @@ public:
   class MockDHTMessageFactory2:public MockDHTMessageFactory {
   public:
     virtual SharedHandle<DHTResponseMessage>
-    createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
-                               const std::vector<SharedHandle<Peer> >& peers,
-                               const std::string& token,
-                               const std::string& transactionID)
-    {
-      SharedHandle<MockDHTResponseMessage> m
-        (new MockDHTResponseMessage
-         (localNode_, remoteNode, "get_peers", transactionID));
-      m->peers_ = peers;
-      m->token_ = token;
-      return m;
-    }
-
-    virtual SharedHandle<DHTResponseMessage>
     createGetPeersReplyMessage
     (const SharedHandle<DHTNode>& remoteNode,
      const std::vector<SharedHandle<DHTNode> >& closestKNodes,
+     const std::vector<SharedHandle<Peer> >& peers,
      const std::string& token,
      const std::string& transactionID)
     {
@@ -56,10 +43,10 @@ public:
         (new MockDHTResponseMessage
          (localNode_, remoteNode, "get_peers", transactionID));
       m->nodes_ = closestKNodes;
+      m->peers_ = peers;
       m->token_ = token;
       return m;
     }
-
   };
 };
 
@@ -115,14 +102,13 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
   MockDHTMessageDispatcher dispatcher;
   MockDHTMessageFactory2 factory;
   factory.setLocalNode(localNode);
+  DHTRoutingTable routingTable(localNode);
 
   DHTGetPeersMessage msg(localNode, remoteNode, infoHash, transactionID);
-  msg.setTokenTracker(WeakHandle<DHTTokenTracker>
-                      (&tokenTracker));
-  msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>
-                           (&dispatcher));
-  msg.setMessageFactory(WeakHandle<DHTMessageFactory>
-                        (&factory));
+  msg.setRoutingTable(WeakHandle<DHTRoutingTable>(&routingTable));
+  msg.setTokenTracker(WeakHandle<DHTTokenTracker>(&tokenTracker));
+  msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>(&dispatcher));
+  msg.setMessageFactory(WeakHandle<DHTMessageFactory>(&factory));
   {
     // localhost has peer contact information for that infohash.
     DHTPeerAnnounceStorage peerAnnounceStorage;
