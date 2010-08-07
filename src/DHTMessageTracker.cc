@@ -98,7 +98,9 @@ DHTMessageTracker::messageArrived
         SharedHandle<DHTMessageCallback> callback = entry->getCallback();
         return std::make_pair(message, callback);
       } catch(RecoverableException& e) {
-        entry->getCallback()->onTimeout(targetNode);
+        if(!entry->getCallback().isNull()) {
+          entry->getCallback()->onTimeout(targetNode);
+        }
         return std::pair<SharedHandle<DHTResponseMessage>,
                          SharedHandle<DHTMessageCallback> >();
       }

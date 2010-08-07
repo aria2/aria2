@@ -1,5 +1,10 @@
 2010-08-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Evaluate callback is non-null.
+	* src/DHTMessageTracker.cc
+
+2010-08-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added IPv6 DHT. Added --dht-entry-porint6, --dht-file-path6,
 	--dht-listen-addr6 and --enable-dht6 option.  IPv6 DHT is disabled
 	by default. To use IPv6 DHT, you need to use --enable-dht6 and
