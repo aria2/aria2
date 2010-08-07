@@ -63,6 +63,8 @@ private:
   SharedHandle<DHTMessageFactory> factory_;
 
   Logger* logger_;
+
+  void handleTimeoutEntry(const SharedHandle<DHTMessageTrackerEntry>& entry);
 public:
   DHTMessageTracker();
 

@@ -1,5 +1,11 @@
 2010-08-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated malformed message handling.
+	* src/DHTMessageTracker.cc
+	* src/DHTMessageTracker.h
+
+2010-08-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Evaluate callback is non-null.
 	* src/DHTMessageTracker.cc
 

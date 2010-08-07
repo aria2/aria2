@@ -98,11 +98,8 @@ DHTMessageTracker::messageArrived
         SharedHandle<DHTMessageCallback> callback = entry->getCallback();
         return std::make_pair(message, callback);
       } catch(RecoverableException& e) {
-        if(!entry->getCallback().isNull()) {
-          entry->getCallback()->onTimeout(targetNode);
-        }
-        return std::pair<SharedHandle<DHTResponseMessage>,
-                         SharedHandle<DHTMessageCallback> >();
+        handleTimeoutEntry(entry);
+        throw;
       }
     }
   }
@@ -113,36 +110,42 @@ DHTMessageTracker::messageArrived
                    SharedHandle<DHTMessageCallback> >();
 }
 
+void DHTMessageTracker::handleTimeoutEntry
+(const SharedHandle<DHTMessageTrackerEntry>& entry)
+{
+  try {
+    SharedHandle<DHTNode> node = entry->getTargetNode();
+    if(logger_->debug()) {
+      logger_->debug("Message timeout: To:%s:%u",
+                     node->getIPAddress().c_str(), node->getPort());
+    }
+    node->updateRTT(entry->getElapsedMillis());
+    node->timeout();
+    if(node->isBad()) {
+      if(logger_->debug()) {
+        logger_->debug("Marked bad: %s:%u",
+                       node->getIPAddress().c_str(), node->getPort());
+      }
+      routingTable_->dropNode(node);
+    }
+    SharedHandle<DHTMessageCallback> callback = entry->getCallback();
+    if(!callback.isNull()) {
+      callback->onTimeout(node);
+    }
+  } catch(RecoverableException& e) {
+    logger_->info("Exception thrown while handling timeouts.", e);
+  }
+}
+
 void DHTMessageTracker::handleTimeout()
 {
   for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
         entries_.begin(), eoi = entries_.end(); i != eoi;) {
     if((*i)->isTimeout()) {
-      try {
         SharedHandle<DHTMessageTrackerEntry> entry = *i;
         i = entries_.erase(i);
         eoi = entries_.end();
-        SharedHandle<DHTNode> node = entry->getTargetNode();
-        if(logger_->debug()) {
-          logger_->debug("Message timeout: To:%s:%u",
-                         node->getIPAddress().c_str(), node->getPort());
-        }
-        node->updateRTT(entry->getElapsedMillis());
-        node->timeout();
-        if(node->isBad()) {
-          if(logger_->debug()) {
-            logger_->debug("Marked bad: %s:%u",
-                           node->getIPAddress().c_str(), node->getPort());
-          }
-          routingTable_->dropNode(node);
-        }
-        SharedHandle<DHTMessageCallback> callback = entry->getCallback();
-        if(!callback.isNull()) {
-          callback->onTimeout(node);
-        }
-      } catch(RecoverableException& e) {
-        logger_->info("Exception thrown while handling timeouts.", e);
-      }
+        handleTimeoutEntry(entry);
     } else {
       ++i;
     }
