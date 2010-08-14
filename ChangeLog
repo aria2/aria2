@@ -1,3 +1,8 @@
+2010-08-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Initialized cur_ with values_.end()
+	* src/Sequence.h
+
 2010-08-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Listen both IPv4 and IPv6 for xml-rpc request.

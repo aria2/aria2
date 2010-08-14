@@ -70,7 +70,7 @@ public:
   Sequence(const Values& values):
     values_(values), cur_(values_.begin())  {}
 
-  Sequence() {}
+  Sequence():cur_(values_.end()) {}
 
   T next()
   {
