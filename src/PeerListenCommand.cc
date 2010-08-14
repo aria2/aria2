@@ -58,9 +58,13 @@ unsigned int PeerListenCommand::numInstance_ = 0;
 
 PeerListenCommand* PeerListenCommand::instance_ = 0;
 
-PeerListenCommand::PeerListenCommand(cuid_t cuid, DownloadEngine* e):
+PeerListenCommand* PeerListenCommand::instance6_ = 0;
+
+PeerListenCommand::PeerListenCommand
+(cuid_t cuid, DownloadEngine* e, int family):
   Command(cuid),
   e_(e),
+  family_(family),
   lowestSpeedLimit_(20*1024)
 {
   ++numInstance_;
@@ -86,10 +90,11 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
     }
     port = (*portItr);
     try {
-      socket_->bind(port);
+      socket_->bind(A2STR::NIL, port, family_);
       socket_->beginListen();
       socket_->setNonBlockingMode();
-      getLogger()->notice("BitTorrent: listening to port %d", port);
+      getLogger()->notice("IPv%d BitTorrent: listening to port %d",
+                          family_ == AF_INET?4:6, port);
       return true;
     } catch(RecoverableException& ex) {
       getLogger()->error(MSG_BIND_FAILURE, ex,
@@ -144,12 +149,21 @@ bool PeerListenCommand::execute() {
   return false;
 }
 
-PeerListenCommand* PeerListenCommand::getInstance(DownloadEngine* e)
+PeerListenCommand* PeerListenCommand::getInstance(DownloadEngine* e, int family)
 {
-  if(numInstance_ == 0) {
-    instance_ = new PeerListenCommand(e->newCUID(), e);
+  if(family == AF_INET) {
+    if(!instance_) {
+      instance_ = new PeerListenCommand(e->newCUID(), e, family);
+    }
+    return instance_;
+  } else if(family == AF_INET6) {
+    if(!instance6_) {
+      instance6_ = new PeerListenCommand(e->newCUID(), e, family);
+    }
+    return instance6_;
+  } else {
+    return 0;
   }
-  return instance_;
 }
 
 } // namespace aria2

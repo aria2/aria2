@@ -1,5 +1,12 @@
 2010-08-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Listen both IPv4 and IPv6 for BitTorrent protocol.
+	* src/BtSetup.cc
+	* src/PeerListenCommand.cc
+	* src/PeerListenCommand.h
+
+2010-08-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added debug log
 	* src/DHTPeerLookupTask.cc
 

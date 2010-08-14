@@ -47,6 +47,7 @@ class SocketCore;
 class PeerListenCommand : public Command {
 private:
   DownloadEngine* e_;
+  int family_;
   SharedHandle<SocketCore> socket_;
   unsigned int lowestSpeedLimit_;
 
@@ -54,8 +55,9 @@ private:
 
   static PeerListenCommand* instance_;
 
+  static PeerListenCommand* instance6_;
 public:
-  PeerListenCommand(cuid_t cuid, DownloadEngine* e);
+  PeerListenCommand(cuid_t cuid, DownloadEngine* e, int family);
 
   virtual ~PeerListenCommand();
   
@@ -75,7 +77,7 @@ public:
     lowestSpeedLimit_ = speed;
   }
 
-  static PeerListenCommand* getInstance(DownloadEngine* e);
+  static PeerListenCommand* getInstance(DownloadEngine* e, int family);
 
   static unsigned int getNumInstance()
   {

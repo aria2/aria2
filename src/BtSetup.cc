@@ -83,6 +83,7 @@
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
 #include "DlAbortEx.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -183,19 +184,38 @@ void BtSetup::setup(std::vector<Command*>& commands,
     }
   }
   if(PeerListenCommand::getNumInstance() == 0) {
-    PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
-    IntSequence seq =util::parseIntRange(e->getOption()->get(PREF_LISTEN_PORT));
-    uint16_t port;
-    if(listenCommand->bindPort(port, seq)) {
-      btRuntime->setListenPort(port);
-      // Add command to DownloadEngine directly.
-      e->addCommand(listenCommand);
-    } else {
-      delete listenCommand;
+    static int families[] = { AF_INET, AF_INET6 };
+    for(size_t i = 0; i < A2_ARRAY_LEN(families); ++i) {
+      PeerListenCommand* listenCommand =
+        PeerListenCommand::getInstance(e, families[i]);
+      bool ret;
+      uint16_t port;
+      if(btRuntime->getListenPort()) {
+        IntSequence seq =
+          util::parseIntRange(util::uitos(btRuntime->getListenPort()));
+        ret = listenCommand->bindPort(port, seq);
+      } else {
+        IntSequence seq =
+          util::parseIntRange(e->getOption()->get(PREF_LISTEN_PORT));
+        ret = listenCommand->bindPort(port, seq);
+      }
+      if(ret) {
+        btRuntime->setListenPort(port);
+        // Add command to DownloadEngine directly.
+        e->addCommand(listenCommand);
+      } else {
+        delete listenCommand;
+      }
+    }
+    if(PeerListenCommand::getNumInstance() == 0) {
       throw DL_ABORT_EX(_("Errors occurred while binding port.\n"));
     }
   } else {
-    PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
+    PeerListenCommand* listenCommand =
+      PeerListenCommand::getInstance(e, AF_INET);
+    if(!listenCommand) {
+      listenCommand = PeerListenCommand::getInstance(e, AF_INET6);
+    }
     btRuntime->setListenPort(listenCommand->getPort());
   }
   if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
