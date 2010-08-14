@@ -92,6 +92,10 @@ SharedHandle<DHTMessageCallback> DHTPeerLookupTask::createCallback()
 
 void DHTPeerLookupTask::onFinish()
 {
+  if(getLogger()->debug()) {
+    getLogger()->debug("Peer lookup for %s finished",
+                       util::toHex(getTargetID(), DHT_ID_LENGTH).c_str());
+  }
   // send announce_peer message to K closest nodes
   size_t num = DHTBucket::K;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =

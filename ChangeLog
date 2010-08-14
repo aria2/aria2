@@ -1,5 +1,10 @@
 2010-08-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added debug log
+	* src/DHTPeerLookupTask.cc
+
+2010-08-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Initialized cur_ with values_.end()
 	* src/Sequence.h
 
