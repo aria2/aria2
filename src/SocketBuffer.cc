@@ -68,6 +68,11 @@ ssize_t SocketBuffer::send()
   size_t totalslen = 0;
   while(!bufq_.empty()) {
     BufEntry& buf = bufq_[0];
+    if(buf.size() == 0) {
+      buf.deleteBuf();
+      bufq_.pop_front();
+      continue;
+    }
     const char* data;
     ssize_t r;
     if(buf.type == TYPE_BYTES) {

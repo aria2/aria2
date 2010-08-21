@@ -1,3 +1,9 @@
+2010-08-21  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Don't try to send empty string.
+	* src/SocketBuffer.cc
+	* src/SocketBuffer.h
+
 2010-08-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Listen both IPv4 and IPv6 for BitTorrent protocol.

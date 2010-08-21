@@ -66,7 +66,16 @@ private:
         delete str;
       }
     }
-      
+    
+    size_t size() const
+    {
+      if(type == TYPE_BYTES) {
+        return bytesLen;
+      } else {
+        return str->size();
+      }
+    }
+
     BufEntry(unsigned char* bytes, size_t len):
       type(TYPE_BYTES), bytes(bytes), bytesLen(len) {}
 
