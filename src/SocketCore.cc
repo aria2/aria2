@@ -168,22 +168,6 @@ SocketCore::~SocketCore() {
 #endif // HAVE_LIBGNUTLS
 }
 
-template<typename T>
-std::string uitos(T value)
-{
-  std::string str;
-  if(value == 0) {
-    str = "0";
-    return str;
-  }
-  while(value) {
-    char digit = value%10+'0';
-    str.insert(str.begin(), digit);
-    value /= 10;
-  }
-  return str;
-}
-
 void SocketCore::create(int family, int protocol)
 {
   closeConnection();
@@ -237,8 +221,8 @@ static sock_t bindTo
  int getaddrinfoFlags, std::string& error)
 {
   struct addrinfo* res;
-  int s = callGetaddrinfo(&res, host, uitos(port).c_str(), family, sockType,
-                          getaddrinfoFlags, 0);  
+  int s = callGetaddrinfo(&res, host, util::uitos(port).c_str(),
+                          family, sockType, getaddrinfoFlags, 0);  
   if(s) {
     error = gai_strerror(s);
     return -1;
@@ -392,8 +376,8 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   std::string error;
   struct addrinfo* res;
   int s;
-  s = callGetaddrinfo(&res, host.c_str(), uitos(port).c_str(), protocolFamily_,
-                      sockType_, 0, 0);
+  s = callGetaddrinfo(&res, host.c_str(), util::uitos(port).c_str(),
+                      protocolFamily_, sockType_, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
                                    host.c_str(), gai_strerror(s)).str());
@@ -1139,8 +1123,8 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
 
   struct addrinfo* res;
   int s;
-  s = callGetaddrinfo(&res, host.c_str(), uitos(port).c_str(), protocolFamily_,
-                      sockType_, 0, 0);
+  s = callGetaddrinfo(&res, host.c_str(), util::uitos(port).c_str(),
+                      protocolFamily_, sockType_, 0, 0);
   if(s) {
     throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, gai_strerror(s)).str());
   }
