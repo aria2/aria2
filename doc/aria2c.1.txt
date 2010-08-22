@@ -527,14 +527,28 @@ BitTorrent Specific Options
   Set timeout in seconds. Default: '60'
 
 *--dht-entry-point*=HOST:PORT::
-  Set host and port as an entry point to DHT network.
+  Set host and port as an entry point to IPv4 DHT network.
+
+*--dht-entry-point6*=HOST:PORT::
+
+  Set host and port as an entry point to IPv6 DHT network.
 
 *--dht-file-path*=PATH::
-  Change the DHT routing table file to PATH.
+  Change the IPv4 DHT routing table file to PATH.
   Default: '$HOME/.aria2/dht.dat'
 
+*--dht-file-path6*=PATH::
+
+  Change the IPv6 DHT routing table file to PATH.
+  Default: '$HOME/.aria2/dht6.dat'
+
+*--dht-listen-addr6*=ADDR::
+
+  Specify address to bind socket for IPv6 DHT.  It should be a global
+  unicast IPv6 address of the host.
+
 *--dht-listen-port*=PORT...::
-  Set UDP listening port for DHT.
+  Set UDP listening port for both IPv4 and IPv6 DHT.
   Multiple ports can be specified by using ",", for example: '6881,6885'.
   You can also use "-" to specify a range: '6881-6999'. "," and "-" can be used
   together.
@@ -548,9 +562,17 @@ Make sure that the specified ports are open for incoming UDP traffic.
   Set timeout in seconds. Default: '10'
 
 *--enable-dht*[='true'|'false']::
-  Enable DHT functionality. If a private flag is set in a torrent, aria2
-  doesn't use DHT for that download even if 'true' is given.
-  Default: 'true'
+
+  Enable IPv4 DHT functionality. If a private flag is set in a
+  torrent, aria2 doesn't use DHT for that download even if 'true' is
+  given.  Default: 'true'
+
+*--enable-dht6*[='true'|'false']::
+
+   Enable IPv6 DHT functionality. If a private flag is set in a
+   torrent, aria2 doesn't use DHT for that download even if 'true' is
+   given. Use *--dht-listen-port* option to specify port number to
+   listen on. See also *--dht-listen-addr6* option.
 
 *--enable-peer-exchange*[='true'|'false']::
   Enable Peer Exchange extension. If a private flag is set in a torrent, this
@@ -2167,14 +2189,23 @@ Throttle upload speed
 aria2c --max-upload-limit=100K file.torrent
 ---------------------------------------------- 
 
-Enable DHT
-^^^^^^^^^^
+Enable IPv4 DHT
+^^^^^^^^^^^^^^^
 ---------------------------------------------------------
 aria2c --enable-dht --dht-listen-port=6881 file.torrent
 ---------------------------------------------------------
 [NOTE]
 DHT uses udp port. Since aria2 doesn't configure firewall or router for port
 forwarding, it's up to you to do it manually.
+
+Enable IPv6 DHT
+^^^^^^^^^^^^^^^
+-----------------------------------------------------------------------------------------------------------
+aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICAST_ADDR --enable-async-dns6
+-----------------------------------------------------------------------------------------------------------
+[NOTE]
+If aria2c is not built with c-ares, *--enable-async-dns6* is
+unnecessary. aria2 shares same port between IPv4 and IPv6 DHT.
 
 More advanced HTTP features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2271,7 +2302,7 @@ aria2 Wiki: http://sourceforge.net/apps/trac/aria2/wiki
 
 Metalink Homepage: http://www.metalinker.org/
 
-The Metalink Download Description Format: http://www.rfc-editor.org/rfc/rfc5854.txt
+The Metalink Download Description Format: http://tools.ietf.org/html/rfc5854
 
 COPYRIGHT
 ---------

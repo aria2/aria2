@@ -1499,7 +1499,15 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Set host and port as an entry point to DHT network.
+  Set host and port as an entry point to IPv4 DHT network.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--dht-entry-point6</strong>=HOST:PORT
+</dt>
+<dd>
+<p>
+  Set host and port as an entry point to IPv6 DHT network.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1507,8 +1515,26 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Change the DHT routing table file to PATH.
+  Change the IPv4 DHT routing table file to PATH.
   Default: <em>$HOME/.aria2/dht.dat</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--dht-file-path6</strong>=PATH
+</dt>
+<dd>
+<p>
+  Change the IPv6 DHT routing table file to PATH.
+  Default: <em>$HOME/.aria2/dht6.dat</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--dht-listen-addr6</strong>=ADDR
+</dt>
+<dd>
+<p>
+  Specify address to bind socket for IPv6 DHT.  It should be a global
+  unicast IPv6 address of the host.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1516,7 +1542,7 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Set UDP listening port for DHT.
+  Set UDP listening port for both IPv4 and IPv6 DHT.
   Multiple ports can be specified by using ",", for example: <em>6881,6885</em>.
   You can also use "-" to specify a range: <em>6881-6999</em>. "," and "-" can be used
   together.
@@ -1546,9 +1572,20 @@ writes the piece to the appropriate files.</td>
 </dt>
 <dd>
 <p>
-  Enable DHT functionality. If a private flag is set in a torrent, aria2
-  doesn&#8217;t use DHT for that download even if <em>true</em> is given.
-  Default: <em>true</em>
+  Enable IPv4 DHT functionality. If a private flag is set in a
+  torrent, aria2 doesn&#8217;t use DHT for that download even if <em>true</em> is
+  given.  Default: <em>true</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--enable-dht6</strong>[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+   Enable IPv6 DHT functionality. If a private flag is set in a
+   torrent, aria2 doesn&#8217;t use DHT for that download even if <em>true</em> is
+   given. Use <strong>--dht-listen-port</strong> option to specify port number to
+   listen on. See also <strong>--dht-listen-addr6</strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -4122,7 +4159,7 @@ to you to do it manually.</td>
 <div class="content">
 <pre><tt>aria2c --max-upload-limit=100K file.torrent</tt></pre>
 </div></div>
-<h4 id="_enable_dht">Enable DHT</h4>
+<h4 id="_enable_ipv4_dht">Enable IPv4 DHT</h4>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c --enable-dht --dht-listen-port=6881 file.torrent</tt></pre>
@@ -4134,6 +4171,20 @@ to you to do it manually.</td>
 </td>
 <td class="content">DHT uses udp port. Since aria2 doesn&#8217;t configure firewall or router for port
 forwarding, it&#8217;s up to you to do it manually.</td>
+</tr></table>
+</div>
+<h4 id="_enable_ipv6_dht">Enable IPv6 DHT</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICAST_ADDR --enable-async-dns6</tt></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">If aria2c is not built with c-ares, <strong>--enable-async-dns6</strong> is
+unnecessary. aria2 shares same port between IPv4 and IPv6 DHT.</td>
 </tr></table>
 </div>
 <h3 id="_more_advanced_http_features">More advanced HTTP features</h3><div style="clear:left"></div>
@@ -4240,7 +4291,7 @@ checksums.</td>
 <div class="paragraph"><p>Project Web Site: <a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a></p></div>
 <div class="paragraph"><p>aria2 Wiki: <a href="http://sourceforge.net/apps/trac/aria2/wiki">http://sourceforge.net/apps/trac/aria2/wiki</a></p></div>
 <div class="paragraph"><p>Metalink Homepage: <a href="http://www.metalinker.org/">http://www.metalinker.org/</a></p></div>
-<div class="paragraph"><p>The Metalink Download Description Format: <a href="http://www.rfc-editor.org/rfc/rfc5854.txt">http://www.rfc-editor.org/rfc/rfc5854.txt</a></p></div>
+<div class="paragraph"><p>The Metalink Download Description Format: <a href="http://tools.ietf.org/html/rfc5854">http://tools.ietf.org/html/rfc5854</a></p></div>
 </div>
 <h2 id="_copyright">COPYRIGHT</h2>
 <div class="sectionbody">
@@ -4273,7 +4324,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-08-01 14:56:58 JST
+Last updated 2010-08-22 20:52:39 JST
 </div>
 </div>
 </body>

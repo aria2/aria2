@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 08/01/2010
+.\"      Date: 08/22/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.10.0
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "08/01/2010" "Aria2 1\&.10\&.0" "Aria2 Manual"
+.TH "ARIA2C" "1" "08/22/2010" "Aria2 1\&.10\&.0" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -745,18 +745,34 @@ Set timeout in seconds\&. Default:
 .PP
 \fB\-\-dht\-entry\-point\fR=HOST:PORT
 .RS 4
-Set host and port as an entry point to DHT network\&.
+Set host and port as an entry point to IPv4 DHT network\&.
+.RE
+.PP
+\fB\-\-dht\-entry\-point6\fR=HOST:PORT
+.RS 4
+Set host and port as an entry point to IPv6 DHT network\&.
 .RE
 .PP
 \fB\-\-dht\-file\-path\fR=PATH
 .RS 4
-Change the DHT routing table file to PATH\&. Default:
+Change the IPv4 DHT routing table file to PATH\&. Default:
 \fI$HOME/\&.aria2/dht\&.dat\fR
+.RE
+.PP
+\fB\-\-dht\-file\-path6\fR=PATH
+.RS 4
+Change the IPv6 DHT routing table file to PATH\&. Default:
+\fI$HOME/\&.aria2/dht6\&.dat\fR
+.RE
+.PP
+\fB\-\-dht\-listen\-addr6\fR=ADDR
+.RS 4
+Specify address to bind socket for IPv6 DHT\&. It should be a global unicast IPv6 address of the host\&.
 .RE
 .PP
 \fB\-\-dht\-listen\-port\fR=PORT\&...
 .RS 4
-Set UDP listening port for DHT\&. Multiple ports can be specified by using ",", for example:
+Set UDP listening port for both IPv4 and IPv6 DHT\&. Multiple ports can be specified by using ",", for example:
 \fI6881,6885\fR\&. You can also use "\-" to specify a range:
 \fI6881\-6999\fR\&. "," and "\-" can be used together\&. Default:
 \fI6881\-6999\fR
@@ -786,10 +802,21 @@ Set timeout in seconds\&. Default:
 .PP
 \fB\-\-enable\-dht\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
-Enable DHT functionality\&. If a private flag is set in a torrent, aria2 doesn\(cqt use DHT for that download even if
+Enable IPv4 DHT functionality\&. If a private flag is set in a torrent, aria2 doesn\(cqt use DHT for that download even if
 \fItrue\fR
 is given\&. Default:
 \fItrue\fR
+.RE
+.PP
+\fB\-\-enable\-dht6\fR[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable IPv6 DHT functionality\&. If a private flag is set in a torrent, aria2 doesn\(cqt use DHT for that download even if
+\fItrue\fR
+is given\&. Use
+\fB\-\-dht\-listen\-port\fR
+option to specify port number to listen on\&. See also
+\fB\-\-dht\-listen\-addr6\fR
+option\&.
 .RE
 .PP
 \fB\-\-enable\-peer\-exchange\fR[=\fItrue\fR|\fIfalse\fR]
@@ -3863,7 +3890,7 @@ aria2c \-\-max\-upload\-limit=100K file\&.torrent
 .nr an-break-flag 1
 .br
 .ps +1
-\fBEnable DHT\fR
+\fBEnable IPv4 DHT\fR
 .RS 4
 .sp
 .if n \{\
@@ -3889,6 +3916,41 @@ aria2c \-\-enable\-dht \-\-dht\-listen\-port=6881 file\&.torrent
 .br
 .sp
 DHT uses udp port\&. Since aria2 doesn\(cqt configure firewall or router for port forwarding, it\(cqs up to you to do it manually\&.
+.sp .5v
+.RE
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBEnable IPv6 DHT\fR
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+aria2c \-\-enable\-dht6 \-\-dht\-listen\-port=6881 \-\-dht\-listen\-addr6=YOUR_GLOBAL_UNICAST_ADDR \-\-enable\-async\-dns6
+.fi
+.if n \{\
+.RE
+.\}
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+If aria2c is not built with c\-ares, \fB\-\-enable\-async\-dns6\fR is unnecessary\&. aria2 shares same port between IPv4 and IPv6 DHT\&.
 .sp .5v
 .RE
 .RE
@@ -4185,7 +4247,7 @@ aria2 Wiki: http://sourceforge\&.net/apps/trac/aria2/wiki
 .sp
 Metalink Homepage: http://www\&.metalinker\&.org/
 .sp
-The Metalink Download Description Format: http://www\&.rfc\-editor\&.org/rfc/rfc5854\&.txt
+The Metalink Download Description Format: http://tools\&.ietf\&.org/html/rfc5854
 .SH "COPYRIGHT"
 .sp
 Copyright \(co 2006, 2010 Tatsuhiro Tsujikawa

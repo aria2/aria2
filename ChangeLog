@@ -1,5 +1,12 @@
 2010-08-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --dht-entry-porint6, --dht-file-path6,
+	--dht-listen-addr6 and --enable-dht6 option. Updated other things
+	too.
+	* doc/aria2c.1.txt
+
+2010-08-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated README
 	* README
 
