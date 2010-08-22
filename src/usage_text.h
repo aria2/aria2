@@ -715,8 +715,10 @@
     "                              DNS resolver. This option will be ignored when\n" \
     "                              --async-dns=false.")
 #define TEXT_ENABLE_DHT6                        \
-  _(" --enable-dht6[=true|false]   Enable IPv6 DHT functionality. See also\n" \
-    "                              --dht-listen-addr6 option.")
+  _(" --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n" \
+    "                              Use --dht-listen-port option to specify port\n" \
+    "                              number to listen on. See also --dht-listen-addr6\n" \
+    "                              option.")
 #define TEXT_DHT_LISTEN_ADDR6                   \
   _(" --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n" \
     "                              It should be a global unicast IPv6 address of the\n" \
