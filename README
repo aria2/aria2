@@ -24,7 +24,7 @@ Here is a list of features.
 * Command-line interface
 * Download files through HTTP(S)/FTP/BitTorrent
 * Segmented downloading
-* Metalink version 4 http://www.ietf.org/id/draft-bryan-metalink-28.txt
+* Metalink version 4 (RFC5854) support(HTTP/FTP/BitTorrent)
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent)
 * HTTP/1.1 implementation
 * HTTP Proxy support
@@ -61,6 +61,7 @@ Here is a list of features.
 * Download URIs found in a text file or stdin and the destination directory and
   output filename can be specified optionally
 * Parameterized URI support
+* IPv6 support
 
 Dependency
 ----------
@@ -184,8 +185,10 @@ The number of files to open simultaneously can be controlled by
 
 DHT
 ~~~
-As of release 0.13.0, aria2 supports DHT. By default, the routing
-table is saved to $HOME/.aria2/dht.dat.
+
+aria2 supports mainline compatible DHT. By default, the routing table
+for IPv4 DHT is saved to $HOME/.aria2/dht.dat and the routing table
+for IPv6 DHT is saved to $HOME/.aria2/dht6.dat
 
 Other things should be noted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -246,4 +249,4 @@ References
  * man aria2c
  * http://aria2.sourceforge.net/
  * http://sourceforge.net/apps/trac/aria2/wiki
- * http://www.rfc-editor.org/rfc/rfc5854.txt
+ * http://tools.ietf.org/html/rfc5854

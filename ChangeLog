@@ -1,5 +1,10 @@
 2010-08-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated README
+	* README
+
+2010-08-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed uitos(). Use util::uitos() instead.
 	* src/SocketCore.cc
 

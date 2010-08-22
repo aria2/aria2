@@ -590,7 +590,7 @@ Segmented downloading
 </li>
 <li>
 <p>
-Metalink version 4 <a href="http://www.ietf.org/id/draft-bryan-metalink-28.txt">http://www.ietf.org/id/draft-bryan-metalink-28.txt</a>
+Metalink version 4 (RFC5854) support(HTTP/FTP/BitTorrent)
 </p>
 </li>
 <li>
@@ -743,6 +743,11 @@ Download URIs found in a text file or stdin and the destination directory and
 <li>
 <p>
 Parameterized URI support
+</p>
+</li>
+<li>
+<p>
+IPv6 support
 </p>
 </li>
 </ul></div>
@@ -958,8 +963,9 @@ needed. By default, aria2 opens at most 100 files mentioned in
 The number of files to open simultaneously can be controlled by
 --bt-max-open-files option.</p></div>
 <h3 id="_dht">5.2. DHT</h3><div style="clear:left"></div>
-<div class="paragraph"><p>As of release 0.13.0, aria2 supports DHT. By default, the routing
-table is saved to $HOME/.aria2/dht.dat.</p></div>
+<div class="paragraph"><p>aria2 supports mainline compatible DHT. By default, the routing table
+for IPv4 DHT is saved to $HOME/.aria2/dht.dat and the routing table
+for IPv6 DHT is saved to $HOME/.aria2/dht6.dat</p></div>
 <h3 id="_other_things_should_be_noted">5.3. Other things should be noted</h3><div style="clear:left"></div>
 <div class="ulist"><ul>
 <li>
@@ -1048,7 +1054,7 @@ man aria2c
 </li>
 <li>
 <p>
-<a href="http://www.rfc-editor.org/rfc/rfc5854.txt">http://www.rfc-editor.org/rfc/rfc5854.txt</a>
+<a href="http://tools.ietf.org/html/rfc5854">http://tools.ietf.org/html/rfc5854</a>
 </p>
 </li>
 </ul></div>
@@ -1057,7 +1063,7 @@ man aria2c
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-07-09 01:48:09 JST
+Last updated 2010-08-22 20:18:06 JST
 </div>
 </div>
 </body>
