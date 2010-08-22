@@ -1,5 +1,10 @@
 2010-08-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated README
+	* README
+
+2010-08-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated usage.
 	* src/usage_text.h
 
