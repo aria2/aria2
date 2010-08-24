@@ -240,7 +240,8 @@ SharedHandle<RequestGroup>
 createBtRequestGroup(const std::string& torrentFilePath,
                      const SharedHandle<Option>& option,
                      const std::vector<std::string>& auxUris,
-                     const std::string& torrentData = "")
+                     const std::string& torrentData = "",
+                     bool adjustAnnounceUri = true)
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
@@ -253,6 +254,9 @@ createBtRequestGroup(const std::string& torrentFilePath,
     // throw
     // exception
     rg->setMetadataInfo(createMetadataInfoDataOnly());
+  }
+  if(adjustAnnounceUri) {
+    bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(dctx), option);
   }
   dctx->setFileFilter(util::parseIntRange(option->get(PREF_SELECT_FILE)));
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
@@ -288,6 +292,7 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   bittorrent::loadMagnet(magnetLink, dctx);
   SharedHandle<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(dctx);
+  bittorrent::adjustAnnounceUri(torrentAttrs, rg->getOption());
   dctx->getFirstFileEntry()->setPath(torrentAttrs->name);
   rg->setDownloadContext(dctx);
   rg->clearPostDownloadHandler();
@@ -304,7 +309,8 @@ void createRequestGroupForBitTorrent
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::vector<std::string>& uris,
- const std::string& torrentData)
+ const std::string& torrentData,
+ bool adjustAnnounceUri)
 {
   std::vector<std::string> nargs;
   if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
@@ -316,7 +322,7 @@ void createRequestGroupForBitTorrent
   size_t numSplit = option->getAsInt(PREF_SPLIT);
   SharedHandle<RequestGroup> rg =
     createBtRequestGroup(option->get(PREF_TORRENT_FILE), option, nargs,
-                         torrentData);
+                         torrentData, adjustAnnounceUri);
   rg->setNumConcurrentCommand(numSplit);
   result.push_back(rg);
 }

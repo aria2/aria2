@@ -55,6 +55,8 @@
 #include "bencode2.h"
 #include "TorrentAttribute.h"
 #include "SocketCore.h"
+#include "Option.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -1003,6 +1005,60 @@ int getCompactLength(int family)
   } else {
     return 0;
   }
+}
+
+void removeAnnounceUri
+(const SharedHandle<TorrentAttribute>& attrs,
+ const std::vector<std::string>& uris)
+{
+  if(uris.empty()) {
+    return;
+  }
+  if(std::find(uris.begin(), uris.end(), "*") == uris.end()) {
+    for(std::vector<std::vector<std::string> >::iterator i =
+          attrs->announceList.begin(); i != attrs->announceList.end();) {
+      for(std::vector<std::string>::iterator j =(*i).begin();j != (*i).end();) {
+        if(std::find(uris.begin(), uris.end(), *j) == uris.end()) {
+          ++j;
+        } else {
+          j = (*i).erase(j);
+        }
+      }
+      if((*i).empty()) {
+        i = attrs->announceList.erase(i);
+      } else {
+        ++i;
+      }
+    }
+  } else {
+    attrs->announceList.clear();
+  }
+}
+
+void addAnnounceUri
+(const SharedHandle<TorrentAttribute>& attrs,
+ const std::vector<std::string>& uris)
+{
+  for(std::vector<std::string>::const_iterator i = uris.begin(),
+        eoi = uris.end(); i != eoi; ++i) {
+    std::vector<std::string> tier;
+    tier.push_back(*i);
+    attrs->announceList.push_back(tier);
+  }
+}
+
+void adjustAnnounceUri
+(const SharedHandle<TorrentAttribute>& attrs,
+ const SharedHandle<Option>& option)
+{
+  std::vector<std::string> excludeUris;
+  std::vector<std::string> addUris;
+  util::split(option->get(PREF_BT_EXCLUDE_TRACKER),
+              std::back_inserter(excludeUris), A2STR::COMMA_C, true);
+  util::split(option->get(PREF_BT_TRACKER),
+              std::back_inserter(addUris), A2STR::COMMA_C, true);
+  removeAnnounceUri(attrs, excludeUris);
+  addAnnounceUri(attrs, addUris);
 }
 
 } // namespace bittorrent

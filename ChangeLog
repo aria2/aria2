@@ -1,5 +1,30 @@
 2010-08-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --bt-tracker and --bt-exclude-tracker option.  In
+	--bt-tracker option, you can specify comma separated list of
+	additional BitTorrent tracker's announce URI. These URIs are not
+	affected by --bt-exclude-tracker option because they are added
+	after URIs in --bt-exclude-tracker option are removed.  In
+	--bt-exclude-tracker option, you can specify comma separated list
+	of BitTorrent tracker's announce URI to remove. You can use
+	special value '*' which matches all URIs, thus removes all
+	announce URIs. When specifying '*' in shell command-line, don't
+	forget to escape or quote it.
+	* src/BtDependency.cc
+	* src/OptionHandlerFactory.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/bittorrent_helper.cc
+	* src/bittorrent_helper.h
+	* src/download_helper.cc
+	* src/download_helper.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/BittorrentHelperTest.cc
+	* test/DownloadHelperTest.cc
+
+2010-08-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/DefaultPeerStorage.cc
 

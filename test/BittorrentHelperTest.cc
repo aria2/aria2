@@ -17,6 +17,8 @@
 #include "bencode2.h"
 #include "TestUtil.h"
 #include "base32.h"
+#include "Option.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -67,6 +69,9 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testExtract2PeersFromList);
   CPPUNIT_TEST(testPackcompact);
   CPPUNIT_TEST(testUnpackcompact);
+  CPPUNIT_TEST(testRemoveAnnounceUri);
+  CPPUNIT_TEST(testAddAnnounceUri);
+  CPPUNIT_TEST(testAdjustAnnounceUri);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -114,6 +119,9 @@ public:
   void testExtract2PeersFromList();
   void testPackcompact();
   void testUnpackcompact();
+  void testRemoveAnnounceUri();
+  void testAddAnnounceUri();
+  void testAdjustAnnounceUri();
 };
 
 
@@ -850,6 +858,82 @@ void BittorrentHelperTest::testUnpackcompact()
   p = unpackcompact(compact, AF_INET);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p.first);
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p.second);
+}
+
+void BittorrentHelperTest::testRemoveAnnounceUri()
+{
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::vector<std::string> tier1;
+  tier1.push_back("http://host1/announce");
+  std::vector<std::string> tier2;
+  tier2.push_back("http://host2/announce");
+  tier2.push_back("http://host3/announce");
+  attrs->announceList.push_back(tier1);
+  attrs->announceList.push_back(tier2);
+  
+  std::vector<std::string> removeUris;
+  removeUris.push_back(tier1[0]);
+  removeUris.push_back(tier2[0]);
+  removeAnnounceUri(attrs, removeUris);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host3/announce"),
+                       attrs->announceList[0][0]);
+
+  removeUris.clear();
+  removeUris.push_back("*");
+
+  removeAnnounceUri(attrs, removeUris);
+  CPPUNIT_ASSERT(attrs->announceList.empty());
+}
+
+void BittorrentHelperTest::testAddAnnounceUri()
+{
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::vector<std::string> addUris;
+  addUris.push_back("http://host1/announce");
+  addUris.push_back("http://host2/announce");
+  addAnnounceUri(attrs, addUris);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, attrs->announceList.size());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[0].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host1/announce"),
+                       attrs->announceList[0][0]);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[1].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host2/announce"),
+                       attrs->announceList[1][0]);
+}
+
+void BittorrentHelperTest::testAdjustAnnounceUri()
+{
+  SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
+  std::vector<std::string> tier1;
+  tier1.push_back("http://host1/announce");
+  std::vector<std::string> tier2;
+  tier2.push_back("http://host2/announce");
+  tier2.push_back("http://host3/announce");
+  attrs->announceList.push_back(tier1);
+  attrs->announceList.push_back(tier2);
+
+  SharedHandle<Option> option(new Option());
+  option->put(PREF_BT_TRACKER, "http://host1/announce,http://host4/announce");
+  option->put(PREF_BT_EXCLUDE_TRACKER,
+              "http://host1/announce,http://host2/announce");
+  adjustAnnounceUri(attrs, option);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)3, attrs->announceList.size());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[0].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host3/announce"),
+                       attrs->announceList[0][0]);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[1].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host1/announce"),
+                       attrs->announceList[1][0]);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, attrs->announceList[2].size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host4/announce"),
+                       attrs->announceList[2][0]);
 }
 
 } // namespace bittorrent

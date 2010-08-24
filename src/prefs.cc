@@ -374,6 +374,10 @@ const std::string PREF_BT_TRACKER_CONNECT_TIMEOUT("bt-tracker-connect-timeout");
 const std::string PREF_DHT_MESSAGE_TIMEOUT("dht-message-timeout");
 // values: string
 const std::string PREF_ON_BT_DOWNLOAD_COMPLETE("on-bt-download-complete");
+// values: string
+const std::string PREF_BT_TRACKER("bt-tracker");
+// values: string
+const std::string PREF_BT_EXCLUDE_TRACKER("bt-exclude-tracker");
 
 /**
  * Metalink related preferences

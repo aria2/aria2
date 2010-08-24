@@ -55,13 +55,16 @@ const std::set<std::string>& listRequestOptions();
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by
 // torrent-file option.  If non-empty torrentData is specified, then
-// it is used as a content of torrent file instead. In this function,
+// it is used as a content of torrent file instead. If
+// adjustAnnounceUri is true, announce URIs are adjusted using
+// bittorrent::adjustAnnounceUri().  In this function,
 // force-sequential is ignored.
 void createRequestGroupForBitTorrent
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::vector<std::string>& uris,
- const std::string& torrentData = "");
+ const std::string& torrentData = "",
+ bool adjustAnnounceUri = true);
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK

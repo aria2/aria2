@@ -1146,6 +1146,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<DefaultOptionHandler> op(new DefaultOptionHandler
+                                          (PREF_BT_EXCLUDE_TRACKER,
+                                           TEXT_BT_EXCLUDE_TRACKER,
+                                           NO_DESCRIPTION,
+                                           "URI,... "
+                                           "or *"));
+    op->addTag(TAG_BITTORRENT);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_BT_EXTERNAL_IP,
                                     TEXT_BT_EXTERNAL_IP,
@@ -1286,6 +1296,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                           "180",
                                           1, 600));
     op->hide();
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<DefaultOptionHandler> op(new DefaultOptionHandler
+                                          (PREF_BT_TRACKER,
+                                           TEXT_BT_TRACKER,
+                                           NO_DESCRIPTION,
+                                           "URI,..."));
+    op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
   {

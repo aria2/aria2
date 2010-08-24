@@ -728,3 +728,16 @@
     "                              network.")
 #define TEXT_DHT_FILE_PATH6                     \
   _(" --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH.")
+#define TEXT_BT_TRACKER                                                 \
+  _(" --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n" \
+    "                              tracker's announce URI. These URIs are not\n" \
+    "                              affected by --bt-exclude-tracker option because\n" \
+    "                              they are added after URIs in --bt-exclude-tracker\n" \
+    "                              option are removed.")
+#define TEXT_BT_EXCLUDE_TRACKER                                         \
+  _(" --bt-exclude-tracker=URI[,...] Comma separated list of BitTorrent tracker's\n" \
+    "                              announce URI to remove. You can use special value\n" \
+    "                              '*' which matches all URIs, thus removes all\n" \
+    "                              announce URIs. When specifying '*' in shell\n" \
+    "                              command-line, don't forget to escape or quote it.\n" \
+    "                              See also --bt-tracker option.")

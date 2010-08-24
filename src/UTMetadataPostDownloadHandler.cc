@@ -93,8 +93,10 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
   }
   if(!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {
     std::vector<SharedHandle<RequestGroup> > newRgs;
+    // Don't adjust announce URI because it has been done when
+    // RequestGroup is created with magnet URI.
     createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
-                                    std::vector<std::string>(), torrent);
+                                    std::vector<std::string>(), torrent, false);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
     if(!requestGroup->getMetadataInfo().isNull()) {
       setMetadataInfo(newRgs.begin(), newRgs.end(),

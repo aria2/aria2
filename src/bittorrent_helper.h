@@ -52,6 +52,7 @@ namespace aria2 {
 
 class DownloadContext;
 class Randomizer;
+class Option;
 
 namespace bittorrent {
 
@@ -221,6 +222,27 @@ std::string metadata2Torrent
 
 // Constructs BitTorrent Magnet URI using attrs.
 std::string torrent2Magnet(const SharedHandle<TorrentAttribute>& attrs);
+
+// Removes announce URI in uris from attrs.  If uris contains '*', all
+// announce URIs are removed.
+void removeAnnounceUri
+(const SharedHandle<TorrentAttribute>& attrs,
+ const std::vector<std::string>& uris);
+
+// Adds announce URI in uris to attrs. Each URI in uris creates its
+// own tier.
+void addAnnounceUri
+(const SharedHandle<TorrentAttribute>& attrs,
+ const std::vector<std::string>& uris);
+
+// This helper function uses 2 option values: PREF_BT_TRACKER and
+// PREF_BT_EXCLUDE_TRACKER. First, the value of
+// PREF_BT_EXCLUDE_TRACKER is converted to std::vector<std::string>
+// and call removeAnnounceUri(). Then the value of PREF_BT_TRACKER is
+// converted to std::vector<std::string> and call addAnnounceUri().
+void adjustAnnounceUri
+(const SharedHandle<TorrentAttribute>& attrs,
+ const SharedHandle<Option>& option);
 
 template<typename OutputIterator>
 void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)

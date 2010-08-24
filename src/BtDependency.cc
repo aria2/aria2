@@ -88,9 +88,13 @@ bool BtDependency::resolve()
           bittorrent::getTorrentAttrs(dependee->getDownloadContext());
         bittorrent::loadFromMemory
           (bittorrent::metadata2Torrent(content, attrs), context, "default");
+        // We don't call bittorrent::adjustAnnounceUri() because it
+        // has already been called with attrs.
       } else {
         bittorrent::loadFromMemory
           (content, context, File(dependee->getFirstFilePath()).getBasename());
+        bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(context),
+                                      dependant_->getOption());
       }
       const std::vector<SharedHandle<FileEntry> >& fileEntries =
         context->getFileEntries();

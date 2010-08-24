@@ -13,6 +13,9 @@
 #include "prefs.h"
 #include "Exception.h"
 #include "util.h"
+#ifdef ENABLE_BITTORRENT
+# include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -326,6 +329,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
   option_->put(PREF_TORRENT_FILE, "test.torrent");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
+  option_->put(PREF_BT_EXCLUDE_TRACKER, "http://tracker1");
   {
     std::vector<SharedHandle<RequestGroup> > result;
   
@@ -343,6 +347,10 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
       CPPUNIT_ASSERT_EQUAL(array[i]+"/aria2-test/aria2/src/aria2c", uris[i]);
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)5, group->getNumConcurrentCommand());
+    SharedHandle<TorrentAttribute> attrs =
+      bittorrent::getTorrentAttrs(group->getDownloadContext());
+    // http://tracker1 was deleted.
+    CPPUNIT_ASSERT_EQUAL((size_t)2, attrs->announceList.size());
   }
   {
     // no URIs are given

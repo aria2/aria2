@@ -378,6 +378,10 @@ extern const std::string PREF_BT_TRACKER_CONNECT_TIMEOUT;
 extern const std::string PREF_DHT_MESSAGE_TIMEOUT;
 // values: string
 extern const std::string PREF_ON_BT_DOWNLOAD_COMPLETE;
+// values: string
+extern const std::string PREF_BT_TRACKER;
+// values: string
+extern const std::string PREF_BT_EXCLUDE_TRACKER;
 
 /**
  * Metalink related preferences
