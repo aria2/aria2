@@ -1,3 +1,8 @@
+2010-08-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Code cleanup
+	* src/DefaultPeerStorage.cc
+
 2010-08-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Documented --dht-entry-porint6, --dht-file-path6,

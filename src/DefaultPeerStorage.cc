@@ -290,7 +290,7 @@ void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {
     const SharedHandle<Peer>& p = *itr;
     if(p->unused() && delSize > 0) {
       onErasingPeer(p);
-      delSize--;
+      --delSize;
     } else {
       temp.push_front(p);
     }
