@@ -1,3 +1,9 @@
+2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added error message when given address and resolved address do not
+	match in SocketCore::bind().
+	* src/SocketCore.cc
+
 2010-08-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added --bt-tracker and --bt-exclude-tracker option.  In

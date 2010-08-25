@@ -282,7 +282,7 @@ void SocketCore::bind
         continue;
       }
       if(addrp && strcmp(host, addrp) != 0) {
-        // TODO we should assign something to error?
+        error = "Given address and resolved address do not match.";
         continue;
       }
       sock_t fd = bindTo(addrp, port, family, sockType_, flags, error);
