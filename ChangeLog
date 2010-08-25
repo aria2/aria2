@@ -1,5 +1,10 @@
 2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up DHT version to 2.
+	* src/DHTConstants.h
+
+2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added error message when given address and resolved address do not
 	match in SocketCore::bind().
 	* src/SocketCore.cc

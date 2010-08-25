@@ -36,8 +36,8 @@
 #define _D_DHT_CONSTANTS_H_
 
 // Increment this if major improvements or bug fixes are made in DHT
-// code.
-#define DHT_VERSION 1
+// code. This is 2 bytes unsigned integer.
+#define DHT_VERSION 2
 
 #define DHT_ID_LENGTH 20
 
