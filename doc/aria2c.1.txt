@@ -2216,7 +2216,7 @@ forwarding, it's up to you to do it manually.
 Enable IPv6 DHT
 ^^^^^^^^^^^^^^^
 -----------------------------------------------------------------------------------------------------------
-aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICAST_ADDR --enable-async-dns6
+aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICAST_IPV6_ADDR --enable-async-dns6
 -----------------------------------------------------------------------------------------------------------
 [NOTE]
 If aria2c is not built with c-ares, *--enable-async-dns6* is
