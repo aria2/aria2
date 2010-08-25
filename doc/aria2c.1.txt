@@ -2226,7 +2226,7 @@ Add and remove tracker URI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Removes all tracker announce URIs described in file.torrent and use
-http://tracker1/announce and http://tracker2/announce instead.
+"http://tracker1/announce" and "http://tracker2/announce" instead.
 
 ---------------------------------------------------------------------------------------------------------
 aria2c --bt-exclude-tracker="*" --bt-tracker="http://tracker1/announce,http://tracker2/announce" file.torrent
