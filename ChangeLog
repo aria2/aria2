@@ -1,5 +1,11 @@
 2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Set max outstanding request size to 100. Set stepping to 6.
+	* src/BtConstants.h
+	* src/DefaultBtInteractive.cc
+
+2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number 1.10.1
 	* configure.ac
 	* doc/aria2c.1.txt

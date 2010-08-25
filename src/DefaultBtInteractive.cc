@@ -284,7 +284,7 @@ void DefaultBtInteractive::sendKeepAlive() {
 size_t DefaultBtInteractive::receiveMessages() {
   size_t countOldOutstandingRequest = dispatcher_->countOutstandingRequest();
   size_t msgcount = 0;
-  for(int i = 0; i < 50; ++i) {
+  for(int i = 0; i < UB_MAX_OUTSTANDING_REQUEST+50; ++i) {
     if(requestGroupMan_->doesOverallDownloadSpeedExceed() ||
        downloadContext_->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;
@@ -323,10 +323,11 @@ size_t DefaultBtInteractive::receiveMessages() {
       break;
     }
   }
-  if(countOldOutstandingRequest > 0 &&
+  if(countOldOutstandingRequest >= maxOutstandingRequest_ &&
      dispatcher_->countOutstandingRequest() == 0){
-    maxOutstandingRequest_ = std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
-                                      maxOutstandingRequest_*2);
+    maxOutstandingRequest_ =
+      std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
+               maxOutstandingRequest_+OUTSTANDING_REQUEST_STEP);
   }
   return msgcount;
 }

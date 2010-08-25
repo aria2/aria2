@@ -53,8 +53,10 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define DEFAULT_MAX_OUTSTANDING_REQUEST 6
 
+#define OUTSTANDING_REQUEST_STEP 6
+
 // Upper Bound of the number of outstanding request
-#define UB_MAX_OUTSTANDING_REQUEST 24
+#define UB_MAX_OUTSTANDING_REQUEST 100
 
 #define METADATA_PIECE_SIZE (16*1024)
 
