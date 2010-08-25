@@ -1,5 +1,11 @@
 2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Documented --bt-tracker and --bt-exclude-tracker option in man
+	page.
+	* doc/aria2c.1.txt
+
+2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Set max outstanding request size to 100. Set stepping to 6.
 	* src/BtConstants.h
 	* src/DefaultBtInteractive.cc

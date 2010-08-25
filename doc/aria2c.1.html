@@ -1321,6 +1321,18 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--bt-exclude-tracker</strong>=URI[,&#8230;]
+</dt>
+<dd>
+<p>
+  Comma separated list of BitTorrent tracker&#8217;s announce URI to
+  remove. You can use special value "*" which matches all URIs, thus
+  removes all announce URIs. When specifying "*" in shell
+  command-line, don&#8217;t forget to escape or quote it.  See also
+  <strong>--bt-tracker</strong> option.
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--bt-external-ip</strong>=IPADDRESS
 </dt>
 <dd>
@@ -1461,6 +1473,17 @@ writes the piece to the appropriate files.</td>
 <p>
   Stop BitTorrent download if download speed is 0 in consecutive SEC
   seconds. If <em>0</em> is given, this feature is disabled.  Default: <em>0</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--bt-tracker</strong>=URI[,&#8230;]
+</dt>
+<dd>
+<p>
+  Comma separated list of additional BitTorrent tracker&#8217;s announce
+  URI. These URIs are not affected by <strong>--bt-exclude-tracker</strong> option
+  because they are added after URIs in <strong>--bt-exclude-tracker</strong> option are
+  removed.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -4187,6 +4210,13 @@ forwarding, it&#8217;s up to you to do it manually.</td>
 unnecessary. aria2 shares same port between IPv4 and IPv6 DHT.</td>
 </tr></table>
 </div>
+<h4 id="_add_and_remove_tracker_uri">Add and remove tracker URI</h4>
+<div class="paragraph"><p>Removes all tracker announce URIs described in file.torrent and use
+<a href="http://tracker1/announce">http://tracker1/announce</a> and <a href="http://tracker2/announce">http://tracker2/announce</a> instead.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c --bt-exclude-tracker="*" --bt-tracker="http://tracker1/announce,http://tracker2/announce" file.torrent</tt></pre>
+</div></div>
 <h3 id="_more_advanced_http_features">More advanced HTTP features</h3><div style="clear:left"></div>
 <h4 id="_load_cookies">Load cookies</h4>
 <div class="listingblock">
@@ -4324,7 +4354,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-08-25 21:36:04 JST
+Last updated 2010-08-25 23:19:41 JST
 </div>
 </div>
 </body>

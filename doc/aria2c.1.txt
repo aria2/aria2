@@ -425,6 +425,14 @@ BitTorrent Specific Options
   aria2 doesn't use this feature for that download even if 'true' is
   given.  Default: 'false'
 
+*--bt-exclude-tracker*=URI[,...]::
+
+  Comma separated list of BitTorrent tracker's announce URI to
+  remove. You can use special value "\*" which matches all URIs, thus
+  removes all announce URIs. When specifying "\*" in shell
+  command-line, don't forget to escape or quote it.  See also
+  *--bt-tracker* option.
+
 *--bt-external-ip*=IPADDRESS::
   Specify the external IP address to report to a BitTorrent
   tracker. Although this function is named "external", it can accept
@@ -507,6 +515,13 @@ BitTorrent Specific Options
 
   Stop BitTorrent download if download speed is 0 in consecutive SEC
   seconds. If '0' is given, this feature is disabled.  Default: '0'
+
+*--bt-tracker*=URI[,...]::
+
+  Comma separated list of additional BitTorrent tracker's announce
+  URI. These URIs are not affected by *--bt-exclude-tracker* option
+  because they are added after URIs in *--bt-exclude-tracker* option are
+  removed.
 
 *--bt-tracker-connect-timeout*=SEC::
 
@@ -2206,6 +2221,16 @@ aria2c --enable-dht6 --dht-listen-port=6881 --dht-listen-addr6=YOUR_GLOBAL_UNICA
 [NOTE]
 If aria2c is not built with c-ares, *--enable-async-dns6* is
 unnecessary. aria2 shares same port between IPv4 and IPv6 DHT.
+
+Add and remove tracker URI
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Removes all tracker announce URIs described in file.torrent and use
+http://tracker1/announce and http://tracker2/announce instead.
+
+---------------------------------------------------------------------------------------------------------
+aria2c --bt-exclude-tracker="*" --bt-tracker="http://tracker1/announce,http://tracker2/announce" file.torrent
+---------------------------------------------------------------------------------------------------------
 
 More advanced HTTP features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

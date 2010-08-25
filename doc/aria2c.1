@@ -620,6 +620,13 @@ is given\&. Default:
 \fIfalse\fR
 .RE
 .PP
+\fB\-\-bt\-exclude\-tracker\fR=URI[,\&...]
+.RS 4
+Comma separated list of BitTorrent tracker\(cqs announce URI to remove\&. You can use special value "*" which matches all URIs, thus removes all announce URIs\&. When specifying "*" in shell command\-line, don\(cqt forget to escape or quote it\&. See also
+\fB\-\-bt\-tracker\fR
+option\&.
+.RE
+.PP
 \fB\-\-bt\-external\-ip\fR=IPADDRESS
 .RS 4
 Specify the external IP address to report to a BitTorrent tracker\&. Although this function is named "external", it can accept any kind of IP addresses\&. IPADDRESS must be a numeric IP address\&.
@@ -719,6 +726,15 @@ Stop BitTorrent download if download speed is 0 in consecutive SEC seconds\&. If
 \fI0\fR
 is given, this feature is disabled\&. Default:
 \fI0\fR
+.RE
+.PP
+\fB\-\-bt\-tracker\fR=URI[,\&...]
+.RS 4
+Comma separated list of additional BitTorrent tracker\(cqs announce URI\&. These URIs are not affected by
+\fB\-\-bt\-exclude\-tracker\fR
+option because they are added after URIs in
+\fB\-\-bt\-exclude\-tracker\fR
+option are removed\&.
 .RE
 .PP
 \fB\-\-bt\-tracker\-connect\-timeout\fR=SEC
@@ -3953,6 +3969,27 @@ aria2c \-\-enable\-dht6 \-\-dht\-listen\-port=6881 \-\-dht\-listen\-addr6=YOUR_G
 If aria2c is not built with c\-ares, \fB\-\-enable\-async\-dns6\fR is unnecessary\&. aria2 shares same port between IPv4 and IPv6 DHT\&.
 .sp .5v
 .RE
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBAdd and remove tracker URI\fR
+.RS 4
+.sp
+Removes all tracker announce URIs described in file\&.torrent and use http://tracker1/announce and http://tracker2/announce instead\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+aria2c \-\-bt\-exclude\-tracker="*" \-\-bt\-tracker="http://tracker1/announce,http://tracker2/announce" file\&.torrent
+.fi
+.if n \{\
+.RE
+.\}
 .RE
 .SS "More advanced HTTP features"
 .sp
