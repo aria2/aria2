@@ -1,5 +1,11 @@
 2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number 1.10.1
+	* configure.ac
+	* doc/aria2c.1.txt
+
+2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up DHT version to 2.
 	* src/DHTConstants.h
 
