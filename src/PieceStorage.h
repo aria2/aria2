@@ -189,6 +189,9 @@ public:
 
   virtual bool isEndGame() = 0;
 
+  virtual void enterEndGame() = 0;
+
+  // TODO We can remove this.
   virtual void setEndGamePieceNum(size_t num) = 0;
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor() = 0;

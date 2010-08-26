@@ -78,6 +78,7 @@ private:
   SharedHandle<DiskWriterFactory> diskWriterFactory_;
   std::deque<SharedHandle<Piece> > usedPieces_;
 
+  bool endGame_;
   size_t endGamePieceNum_;
   Logger* logger_;
   const Option* option_;
@@ -187,8 +188,16 @@ public:
 
   virtual bool isSelectiveDownloadingMode();
 
-  virtual bool isEndGame();
+  virtual bool isEndGame()
+  {
+    return endGame_;
+  }
   
+  virtual void enterEndGame()
+  {
+    endGame_ = true;
+  }
+
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
 
   virtual size_t getPieceLength(size_t index);

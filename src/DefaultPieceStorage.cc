@@ -71,6 +71,7 @@ DefaultPieceStorage::DefaultPieceStorage
   bitfieldMan_(new BitfieldMan(downloadContext->getPieceLength(),
                                downloadContext->getTotalLength())),
   diskWriterFactory_(new DefaultDiskWriterFactory()),
+  endGame_(false),
   endGamePieceNum_(END_GAME_PIECE_NUM),
   logger_(LogFactory::getInstance()),
   option_(option),
@@ -80,11 +81,6 @@ DefaultPieceStorage::DefaultPieceStorage
 
 DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan_;
-}
-
-bool DefaultPieceStorage::isEndGame()
-{
-  return bitfieldMan_->countMissingBlock() <= endGamePieceNum_;
 }
 
 bool DefaultPieceStorage::getMissingPieceIndex(size_t& index,

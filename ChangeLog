@@ -1,3 +1,14 @@
+2010-08-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Enter end game mode as soon as all pieces are assigned to peer to
+	avoid substantial slow down at the very last stage of download.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+
 2010-08-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Updated IPv6 DHT usage.

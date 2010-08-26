@@ -323,7 +323,8 @@ size_t DefaultBtInteractive::receiveMessages() {
       break;
     }
   }
-  if(countOldOutstandingRequest >= maxOutstandingRequest_ &&
+  if(!pieceStorage_->isEndGame() &&
+     countOldOutstandingRequest >= maxOutstandingRequest_ &&
      dispatcher_->countOutstandingRequest() == 0){
     maxOutstandingRequest_ =
       std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
@@ -394,6 +395,12 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
 }
 
 void DefaultBtInteractive::addRequests() {
+  if(!pieceStorage_->isEndGame() && !pieceStorage_->hasMissingUnusedPiece()) {
+    pieceStorage_->enterEndGame();
+  }
+  if(pieceStorage_->isEndGame()) {
+    maxOutstandingRequest_ = 2;
+  }
   fillPiece(maxOutstandingRequest_);
   size_t reqNumToCreate =
     maxOutstandingRequest_ <= dispatcher_->countOutstandingRequest() ?
@@ -402,6 +409,7 @@ void DefaultBtInteractive::addRequests() {
     std::vector<SharedHandle<BtMessage> > requests;
     requests.reserve(reqNumToCreate);
     if(pieceStorage_->isEndGame()) {
+      logger_->debug("ENDGAME");
       btRequestFactory_->createRequestMessagesOnEndGame(requests,reqNumToCreate);
     } else {
       btRequestFactory_->createRequestMessages(requests, reqNumToCreate);

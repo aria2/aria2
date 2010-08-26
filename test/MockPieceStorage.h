@@ -190,8 +190,8 @@ public:
 
   virtual void setEndGamePieceNum(size_t num) {}
 
-  void setEndGame(bool flag) {
-    this->endGame = flag;
+  virtual void enterEndGame() {
+    this->endGame = true;
   }
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor() {
