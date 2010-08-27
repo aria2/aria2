@@ -1,5 +1,12 @@
 2010-08-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added bt-tracker and bt-exclude-tracker to -i list option.
+	* doc/aria2c.1.txt
+	* doc/xmlrpc/aria2rpc
+	* src/download_helper.cc
+
+2010-08-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't listen on IPv6 socket for BitTorrent, DHT, XML-RPC if
 	--disable-ipv6 is true.
 	* src/BtSetup.cc

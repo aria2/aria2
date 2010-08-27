@@ -1309,6 +1309,8 @@ of URIs. These optional lines must start with white space(s).
 * min-split-size
 * conditional-get
 * enable-async-dns6
+* bt-tracker
+* bt-exclude-tracker
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

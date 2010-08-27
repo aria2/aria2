@@ -163,7 +163,9 @@ const std::set<std::string>& listRequestOptions()
     PREF_MAX_CONNECTION_PER_SERVER,
     PREF_MIN_SPLIT_SIZE,
     PREF_CONDITIONAL_GET,
-    PREF_ENABLE_ASYNC_DNS6
+    PREF_ENABLE_ASYNC_DNS6,
+    PREF_BT_TRACKER,
+    PREF_BT_EXCLUDE_TRACKER
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
