@@ -185,7 +185,8 @@ void BtSetup::setup(std::vector<Command*>& commands,
   }
   if(PeerListenCommand::getNumInstance() == 0) {
     static int families[] = { AF_INET, AF_INET6 };
-    for(size_t i = 0; i < A2_ARRAY_LEN(families); ++i) {
+    size_t familiesLength = e->getOption()->getAsBool(PREF_DISABLE_IPV6)?1:2;
+    for(size_t i = 0; i < familiesLength; ++i) {
       PeerListenCommand* listenCommand =
         PeerListenCommand::getInstance(e, families[i]);
       bool ret;

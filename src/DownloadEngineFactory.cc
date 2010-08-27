@@ -171,7 +171,8 @@ DownloadEngineFactory::newDownloadEngine
 #ifdef ENABLE_XML_RPC
   if(op->getAsBool(PREF_ENABLE_XML_RPC)) {
     static int families[] = { AF_INET, AF_INET6 };
-    for(size_t i = 0; i < A2_ARRAY_LEN(families); ++i) {
+    size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6)?1:2;
+    for(size_t i = 0; i < familiesLength; ++i) {
       HttpListenCommand* httpListenCommand =
         new HttpListenCommand(e->newCUID(), e.get(), families[i]);
       if(httpListenCommand->bindPort(op->getAsInt(PREF_XML_RPC_LISTEN_PORT))){

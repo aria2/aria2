@@ -293,13 +293,15 @@ void RequestGroup::createInitialCommand
                                 (progressInfoFile))));
       if(metadataGetMode) {
         if(option_->getAsBool(PREF_ENABLE_DHT) ||
-           option_->getAsBool(PREF_ENABLE_DHT6)) {
+           (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
+            option_->getAsBool(PREF_ENABLE_DHT6))) {
           if(option_->getAsBool(PREF_ENABLE_DHT)) {
             std::vector<Command*> dhtCommands;
             DHTSetup().setup(dhtCommands, e, AF_INET);
             e->addCommand(dhtCommands);
           }
-          if(option_->getAsBool(PREF_ENABLE_DHT6)) {
+          if(!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
+             option_->getAsBool(PREF_ENABLE_DHT6)) {
             std::vector<Command*> dhtCommands;
             DHTSetup().setup(dhtCommands, e, AF_INET6);
             e->addCommand(dhtCommands);
@@ -362,13 +364,15 @@ void RequestGroup::createInitialCommand
 
       if(!torrentAttrs->privateTorrent &&
          (option_->getAsBool(PREF_ENABLE_DHT) ||
-          option_->getAsBool(PREF_ENABLE_DHT6))) {
+          (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
+           option_->getAsBool(PREF_ENABLE_DHT6)))) {
         if(option_->getAsBool(PREF_ENABLE_DHT)) {
           std::vector<Command*> dhtCommands;
           DHTSetup().setup(dhtCommands, e, AF_INET);
           e->addCommand(dhtCommands);
         }
-        if(option_->getAsBool(PREF_ENABLE_DHT6)) {
+        if(!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
+           option_->getAsBool(PREF_ENABLE_DHT6)) {
           std::vector<Command*> dhtCommands;
           DHTSetup().setup(dhtCommands, e, AF_INET6);
           e->addCommand(dhtCommands);
