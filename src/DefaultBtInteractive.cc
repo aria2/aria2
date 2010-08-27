@@ -409,7 +409,6 @@ void DefaultBtInteractive::addRequests() {
     std::vector<SharedHandle<BtMessage> > requests;
     requests.reserve(reqNumToCreate);
     if(pieceStorage_->isEndGame()) {
-      logger_->debug("ENDGAME");
       btRequestFactory_->createRequestMessagesOnEndGame(requests,reqNumToCreate);
     } else {
       btRequestFactory_->createRequestMessages(requests, reqNumToCreate);

@@ -1,3 +1,8 @@
+2010-08-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed unused debug log.
+	* src/DefaultBtInteractive.cc
+
 2010-08-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Enter end game mode as soon as all pieces are assigned to peer to
