@@ -1,3 +1,95 @@
+aria2 1.10.1
+============
+
+Release Note
+------------
+
+This release adds IPv6 support for FTP, BitTorrent and BitTorrent DHT.
+For FTP, EPSV and EPRT command support was added.  Enabling IPv6 DHT
+requires several options, so please check out the usage example in man
+page or wiki usage example page. By default, the asynchronous DNS
+resolver does not handle IPv6 address. To work with IPv6 address, use
+--enable-async-dns6 option.  aria2 now listens on both IPv4 and IPv6
+socket for BitTorrent, its DHT and XML-RPC. aria2 uses same port for
+both IPv4 and IPv6. The ability to add/remove BitTorrent tracker
+announce URI was added.  The link error for
+FallocFileAllocationIterator was fixed.
+
+Please note that since 1.10.0 release, aria2 uses 1 connection per
+host by default and has 20MiB segment size restriction. So whatever
+value you specify using -s option, it uses 1 connection per host. To
+make it behave like 1.9.x, use --max-connection-per-server=4
+--min-split-size=1M. If you specify multiple hosts, aria2 will use
+all of them and open multiple connections.
+
+Changes
+-------
+
+ * Enter end game mode as soon as all pieces are assigned to peers to
+   avoid substantial slow down at the very last stage of download.
+
+ * Set max outstanding request size of BitTorrent download to 100. Set
+   stepping to 6.
+
+ * Added --bt-tracker and --bt-exclude-tracker option.  In
+   --bt-tracker option, you can specify comma separated list of
+   additional BitTorrent tracker's announce URI. These URIs are not
+   affected by --bt-exclude-tracker option because they are added
+   after URIs in --bt-exclude-tracker option are removed.  In
+   --bt-exclude-tracker option, you can specify comma separated list
+   of BitTorrent tracker's announce URI to remove. You can use special
+   value '*' which matches all URIs, thus removes all announce
+   URIs. When specifying '*' in shell command-line, don't forget to
+   escape or quote it. Added bt-tracker and bt-exclude-tracker to -i
+   list option.
+
+ * Listen both IPv4 and IPv6 for BitTorrent protocol.
+
+ * Listen both IPv4 and IPv6 for xml-rpc request.
+
+ * Added IPv6 DHT. Added --dht-entry-porint6, --dht-file-path6,
+   --dht-listen-addr6 and --enable-dht6 option.  IPv6 DHT is disabled
+   by default. To use IPv6 DHT, you need to use --enable-dht6 and
+   specify a global unicast address to --dht-listen-addr6.  IPv6 DHT
+   is highly experimental.
+
+ * Added support for peers6 key in tracker response.  Added added6,
+   added6.f and dropped6 in ut_pex.
+
+ * Add only gracefully disconnected peer to ut_pex dropped list.  Add
+   incoming dropped list to PeerStorage.
+
+ * Don't use pre-calculate hash value when end-game mode.  Throw
+   exception if bad piece is received.
+
+ * Added bittorrent::packcompact() which replaces
+   bittorrent::createcompact() and supports IPv6 addresses. Rewritten
+   bittorrent::unpackcompact() and bittorrent::extractPeer() to
+   support IPv6 addresses. Fixed added.f flags in ut_pex.
+
+ * Added --enable-async-dns6 option. This option enables IPv6 name
+   resolution in asynchronous DNS resolver. This option will be
+   ignored when --async-dns=false.
+
+ * Use hostname of original URI when counting hostname in
+   inFlightRequest.
+
+ * Fixed the bug that
+   AdaptiveFileAllocationIterator::getCurrentLength() does not return
+   updated allocated bytes.
+
+ * Added FTP EPSV and EPRT command support. aria2 issues these
+   commands when address family of local socket is AF_INET6.
+
+ * Rewritten check for fallocate using AC_COMPILE_IFELSE.
+
+ * Fixed the bug that HAVE_SOME_FALLOCATE gets undefined if fallocate
+   is not available even if posix_fallocate is available. This causes
+   FallocFileAllocationIterator.cc is out of compile targets and
+   linker error.
+
+
+
 aria2 1.10.0
 ============
 
