@@ -1,3 +1,9 @@
+2010-08-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Wait data arrives at clientSocket_ in
+	FtpConnectionTest::testReceiveEpsvResponse().
+	* test/FtpConnectionTest.cc
+
 2010-08-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added bt-tracker and bt-exclude-tracker to -i list option.

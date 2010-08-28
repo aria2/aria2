@@ -310,22 +310,27 @@ void FtpConnectionTest::testReceiveEpsvResponse()
   CPPUNIT_ASSERT_EQUAL((uint16_t)12000, port);
 
   serverSocket_->writeData("229 Success |||12000|)\r\n");
+  waitRead(clientSocket_);
   CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success (|||12000|\r\n");
+  waitRead(clientSocket_);
   CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success ()|||12000|\r\n");
+  waitRead(clientSocket_);
   CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success )(|||12000|)\r\n");
+  waitRead(clientSocket_);
   CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success )(||12000|)\r\n");
+  waitRead(clientSocket_);
   CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 }
