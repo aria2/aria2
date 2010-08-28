@@ -1,5 +1,12 @@
 2010-08-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Changed signature of util::executeHook().
+	* src/RequestGroupMan.cc
+	* src/util.cc
+	* src/util.h
+
+2010-08-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Wait data arrives at clientSocket_ in
 	FtpConnectionTest::testReceiveEpsvResponse().
 	* test/FtpConnectionTest.cc

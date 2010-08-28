@@ -396,7 +396,7 @@ bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits);
 
 void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group);
 
-void executeHook(const std::string& command, gid_t gid);
+void executeHook(const std::string& command, const std::string& arg);
 
 void executeHookByOptName
 (const SharedHandle<RequestGroup>& group, const Option* option,

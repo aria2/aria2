@@ -1346,17 +1346,17 @@ void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
   }
 }
 
-void executeHook(const std::string& command, gid_t gid)
+void executeHook(const std::string& command, const std::string& arg)
 {
   LogFactory::getInstance()->info("Executing user command: %s %s",
-                                  command.c_str(), util::itos(gid).c_str());
+                                  command.c_str(), arg.c_str());
 #ifndef __MINGW32__
   pid_t cpid = fork();
   if(cpid == -1) {
     LogFactory::getInstance()->error("fork() failed."
                                      " Cannot execute user command.");
   } else if(cpid == 0) {
-    execl(command.c_str(), command.c_str(), util::itos(gid).c_str(),
+    execl(command.c_str(), command.c_str(), arg.c_str(),
           reinterpret_cast<char*>(0));
     perror(("Could not execute user command: "+command).c_str());
     exit(EXIT_FAILURE);
@@ -1371,7 +1371,7 @@ void executeHook(const std::string& command, gid_t gid)
   memset(&pi, 0, sizeof (pi));
 
   std::string cmdline = command;
-  strappend(cmdline, " ", util::itos(gid));
+  strappend(cmdline, " ", arg);
 
   DWORD rc = CreateProcess(
                            NULL,
@@ -1402,7 +1402,7 @@ void executeHookByOptName
 (const RequestGroup* group, const Option* option, const std::string& opt)
 {
   if(!option->blank(opt)) {
-    executeHook(option->get(opt), group->getGID());
+    executeHook(option->get(opt), util::itos(group->getGID()));
   }
 }
 

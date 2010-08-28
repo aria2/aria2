@@ -255,12 +255,15 @@ static void executeStopHook
 {
   if(result->result == downloadresultcode::FINISHED &&
      !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
-    util::executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE), result->gid);
+    util::executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE),
+                      util::itos(result->gid));
   } else if(result->result != downloadresultcode::IN_PROGRESS &&
             !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
-    util::executeHook(option->get(PREF_ON_DOWNLOAD_ERROR), result->gid);
+    util::executeHook(option->get(PREF_ON_DOWNLOAD_ERROR),
+                      util::itos(result->gid));
   } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
-    util::executeHook(option->get(PREF_ON_DOWNLOAD_STOP), result->gid);
+    util::executeHook(option->get(PREF_ON_DOWNLOAD_STOP),
+                      util::itos(result->gid));
   }
 }
 
