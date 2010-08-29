@@ -1,5 +1,15 @@
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed getMissingFastPiece(piece) and getMissingFastPiece(piece,
+	excludedIndexes) from PieceStorage. Done some code cleanup.
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Pass excludedIndexes when getting metadata piece.
 	* src/UTMetadataRequestFactory.cc
 	* test/UTMetadataRequestFactoryTest.cc

@@ -63,27 +63,48 @@ public:
    */
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer) = 0;
 
-  virtual void getMissingPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes) = 0;
-
+   // Stores pieces that the peer has but localhost doesn't.  Those
+   // pieces will be marked "used" status in order to prevent other
+   // command from get the same piece. But in end game mode, same
+   // piece may be got by several commands. This function stores N
+   // pieces where the sum of missing block of first N-1 pieces is
+   // less than minMissingBlocks and the sum of missing block of N
+   // pieces is greater than or equal to minMissingBlocks. If there is
+   // M missing pieces left where M < N, M pieces are stored.
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer) = 0;
 
+  // Same as getMissingPiece(pieces, minMissingBlocks, peer), but the
+  // indexes in excludedIndexes are excluded.
+  virtual void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes) = 0;
+  
+  // Stores pieces that the peer has but localhost doesn't.  Only
+  // pieces that declared as "fast" are stored.  Those pieces stored
+  // will be marked "used" status in order to prevent other command
+  // from get the same piece. But in end game mode, same piece may be
+  // got by several commands. This function stores N pieces where the
+  // sum of missing block of first N-1 pieces is less than
+  // minMissingBlocks and the sum of missing block of N pieces is
+  // greater than or equal to minMissingBlocks. If there is M missing
+  // pieces left where M < N, M pieces are stored.
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer) = 0;
+
+  // Same as getMissingFastPiece(pieces, minMissingBlocks, peer), but
+  // the indexes in excludedIndexes are excluded.
   virtual void getMissingFastPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
    const std::vector<size_t>& excludedIndexes) = 0;
-
-  virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer) = 0;
 
   /**
    * Returns a piece that the peer has but localhost doesn't.
@@ -101,25 +122,6 @@ public:
   virtual SharedHandle<Piece> getMissingPiece
   (const SharedHandle<Peer>& peer,
    const std::vector<size_t>& excludedIndexes) = 0;
-
-  /**
-   * Returns a piece that the peer has but localhost doesn't.
-   * Only pieces that declared as "fast" are returned.
-   * The piece will be marked "used" status in order to prevent other command
-   * from get the same piece. But in end game mode, same piece may be returned
-   * to several commands.
-   */
-  virtual SharedHandle<Piece>
-  getMissingFastPiece(const SharedHandle<Peer>& peer) = 0;
-  
-  /**
-   * Same as getMissingFastPiece(const SharedHandle<Peer>& peer), but the
-   * indexes in excludedIndexes are excluded.
-   */
-  virtual SharedHandle<Piece> getMissingFastPiece
-  (const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes) = 0;
-
 #endif // ENABLE_BITTORRENT
 
   // Returns true if there is at least one missing and unused piece.

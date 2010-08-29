@@ -76,17 +76,11 @@ public:
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes);
+   const SharedHandle<Peer>& peer);
 
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer);
-
-  virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
    const std::vector<size_t>& excludedIndexes);
 
@@ -95,29 +89,16 @@ public:
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer);
 
-  /**
-   * Returns a piece that the peer has but localhost doesn't.
-   * The piece will be marked "used" status in order to prevent other command
-   * from get the same piece. But in end game mode, same piece may be returned
-   * to several commands.
-   */
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes);
+
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingPiece
   (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
-
-  /**
-   * Returns a piece that the peer has but localhost doesn't.
-   * Only pieces that declared as "fast" are returned.
-   * The piece will be marked "used" status in order to prevent other command
-   * from get the same piece. But in end game mode, same piece may be returned
-   * to several commands.
-   */
-  virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
-
-  virtual SharedHandle<Piece> getMissingFastPiece
-  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
-
 #endif // ENABLE_BITTORRENT
 
   virtual bool hasMissingUnusedPiece();

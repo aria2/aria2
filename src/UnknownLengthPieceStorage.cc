@@ -81,8 +81,7 @@ bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
 void UnknownLengthPieceStorage::getMissingPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes)
+ const SharedHandle<Peer>& peer)
 {
   abort();
 }
@@ -90,14 +89,6 @@ void UnknownLengthPieceStorage::getMissingPiece
 void UnknownLengthPieceStorage::getMissingPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer)
-{
-  abort();
-}
-
-void UnknownLengthPieceStorage::getMissingFastPiece
-(std::vector<SharedHandle<Piece> >& pieces,
- size_t minMissingBlocks,
  const SharedHandle<Peer>& peer,
  const std::vector<size_t>& excludedIndexes)
 {
@@ -108,6 +99,15 @@ void UnknownLengthPieceStorage::getMissingFastPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
  const SharedHandle<Peer>& peer)
+{
+  abort();
+}
+
+void UnknownLengthPieceStorage::getMissingFastPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes)
 {
   abort();
 }
@@ -122,18 +122,6 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
 {
   abort();
 }
-
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece(const SharedHandle<Peer>& peer)
-{
-  abort();
-}
-
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
-{
-  abort();
-}
-
 #endif // ENABLE_BITTORRENT
 
 bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
