@@ -1,5 +1,11 @@
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Run PeerLookupTask more frequently when the number of peer is low.
+	* src/DHTGetPeersCommand.cc
+	* src/DHTGetPeersCommand.h
+
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Drop connection when bad ut_metadata is received..
 	* src/UTMetadataDataExtensionMessage.cc
 
