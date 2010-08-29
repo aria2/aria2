@@ -1,5 +1,12 @@
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Polish and Turkish translations. Thanks to all
+	translators.
+	* po/pl.po
+	* po/tr.po
+
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated po templates.
 	* po/aria2.pot
 

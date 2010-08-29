@@ -8,20 +8,21 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-08-29 22:47+0900\n"
-"PO-Revision-Date: 2008-09-17 19:59+0900\n"
-"Last-Translator: wyginwys <Unknown>\n"
+"PO-Revision-Date: 2010-07-19 18:10+0000\n"
+"Last-Translator: Fatih Aşıcı <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-09-17 10:24+0000\n"
+"X-Launchpad-Export-Date: 2010-08-29 13:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr "Kapanma başlıyor...Acil kapanış için Ctrl-C ye tekrar basın."
+msgstr ""
+"Kapanış işlemleri başlıyor... Acil kapanış için Ctrl-C'ye tekrar basın."
 
 #: src/DownloadEngine.cc:229
 msgid "Emergency shutdown sequence commencing..."
@@ -36,48 +37,47 @@ msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
-"Bir hatayla karşılaşırsanız log dosyasına bakın. Detay için yardım ve man "
-"sayfalarındaki -l opsiyonuna bakın."
+"Bir hatayla karşılaşırsanız log dosyasına bakın. Detaylar için yardım ve man "
+"sayfalarındaki '-l' seçeneğine bakın."
 
 #: src/RequestGroupMan.cc:590
 msgid "Download Results:"
-msgstr "Download Sonuçları:"
+msgstr "İndirme Sonuçları:"
 
 #: src/RequestGroupMan.cc:650
 msgid "Status Legend:"
-msgstr "Durum Haritası:"
+msgstr "Durum Kısaltmaları:"
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
-msgstr "                              Varsayılan: "
+msgstr "                              Öntanımlı: "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
 msgstr "                              Etiketler: "
 
 #: src/OptionHandler.cc:40
-#, fuzzy
 msgid "                              Possible Values: "
-msgstr "                              Kullanılabilen Değerler: "
+msgstr "                              Alabileceği Değerler: "
 
 #: src/OptionHandlerImpl.h:137
 msgid "must be either 'true' or 'false'."
-msgstr "ya 'doğru' ya da 'yanlış' olmalı"
+msgstr "ya 'true' ya da 'false' olmalı."
 
 #: src/OptionHandlerImpl.h:171 src/OptionHandlerImpl.h:220
 #, c-format
 msgid "must be between %s and %s."
-msgstr "%s ya da %s arasında olmalı"
+msgstr "%s ve %s arasında olmalı."
 
 #: src/OptionHandlerImpl.h:217
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "%s den küçük ya da ona eşit olmalı"
+msgstr "en fazla %s değerini almalı."
 
 #: src/OptionHandlerImpl.h:223
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "%s den büyük ya da ona eşit olmalı"
+msgstr "en az %s değerini almalı."
 
 #: src/OptionHandlerImpl.h:226 src/OptionHandlerImpl.h:304
 msgid "must be a number."
@@ -86,17 +86,17 @@ msgstr "bir sayı olmalı."
 #: src/OptionHandlerImpl.h:295
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "%.1f den küçük ya da ona eşit olmalı."
+msgstr "en fazla %.1f değerini almalı."
 
 #: src/OptionHandlerImpl.h:298
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "%.1f ya da %.1f arasında olmalı."
+msgstr "%.1f ve %.1f arasında olmalı."
 
 #: src/OptionHandlerImpl.h:301
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "%.1f den büyük ya da ona eşit olmalı"
+msgstr "en az %.1f değerini almalı."
 
 #: src/OptionHandlerImpl.h:479
 msgid "must be one of the following:"
@@ -105,33 +105,32 @@ msgstr "şunlardan biri olmalı:"
 #: src/OptionHandlerImpl.h:529
 #, fuzzy
 msgid "Unrecognized format"
-msgstr "bilinmeyen proxy biçimi"
+msgstr "tanınmayan proxy biçimi"
 
 #: src/OptionHandlerImpl.h:665
 msgid "unrecognized proxy format"
-msgstr "bilinmeyen proxy biçimi"
+msgstr "tanınmayan proxy biçimi"
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=KLASÖR İndirilen dosyanın saklanacağı klasör."
+msgstr " -d, --dir=DIZIN              İndirilen dosyanın saklanacağı dizin."
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG Log dosyasının adı. Eğer '-' kullanılırsa\n"
-"                              log stdout a yazılır."
+" -o, --out=DOSYA              İndirilen dosyanın adı. -Z seçeneği\n"
+"                              kullanıldığında bu seçenek yok sayılır."
 
 #: src/usage_text.h:42
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG Log dosyasının adı. Eğer '-' kullanılırsa\n"
-"                              log stdout a yazılır."
+" -l, --log=LOG                Log dosyasının adı. Eğer '-' kullanılırsa,\n"
+"                              standart çıktıya yazılır."
 
 #: src/usage_text.h:45
 msgid ""
@@ -143,9 +142,14 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
+" -D, --daemon                 Arkaplanda çalıştır. Geçerli çalışma dizini \"/"
+"\"\n"
+"                              olarak değiştirilip standart çıktı ve "
+"standart\n"
+"                              hata \"/dev/null\" dosyasına "
+"yönlendirilecektir."
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -164,67 +168,51 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N N adet bağlantı kullanarak dosya indir.Eğer N den fazla URL "
-"verilirse,\n"
-"                              ilkönce N adet URL kullanılır ve\n"
-"                              kalanlar yedekleme için ayrılır.\n"
-"                              Eğer N den az URL verilirse,\n"
-"                              N adet bağlantı yapılacak şekilde\n"
-"                              verilen URLler birden fazla kullanılır.\n"
-"                              Lütfen -j opsiyonuna da bakın."
 
 #: src/usage_text.h:62
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
 msgstr ""
-" --retry-wait=SAN Bir hata olduğunda tekrar denemek\n"
-"                              için geçmesi geçen saniye. 0-60\n"
-"                              arasında bir değer veriniz.\n"
-"                              Varsayılan: 5"
+" --retry-wait=SAN             Bir hata olduğunda tekrar denemeden önce\n"
+"                              beklenecek süreyi saniye cinsinden belirle."
 
 #: src/usage_text.h:65
-#, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr " -t, --timeout=SAN Saniye olarak zamanaşımı süresi.Varsayılan:60"
+msgstr " -t, --timeout=SAN            Saniye olarak zaman aşımını belirle."
 
 #: src/usage_text.h:67
-#, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
-" -m, --max-tries=N Deneme sayısı. 0 girilirse sınırsız olarak denenir.\n"
-"                              Varsayılan: 5"
+" -m, --max-tries=N            Deneme sayısını belirle. 0 sınırsız "
+"anlamındadır."
 
 #: src/usage_text.h:69
-#, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy-method=METOD Proxy isteği için metodu belirle.\n"
-"                              Metod 'get' ya da 'tunnel' den biri "
-"olmalıdır.\n"
-"                              Varsayılan: tunnel"
+" --http-proxy=VEKİL           HTTP için bu vekil sunucusunu kullan. Daha\n"
+"                              önce verilmiş bir vekili silmek için \"\"\n"
+"                              kullanın. Ayrıca --all-proxy seçeneğine\n"
+"                              bakın. Bu, tüm URL'leri etkiler."
 
 #: src/usage_text.h:74
-#, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
 "                              previously defined proxy, use \"\".\n"
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy-method=METOD Proxy isteği için metodu belirle.\n"
-"                              Metod 'get' ya da 'tunnel' den biri "
-"olmalıdır.\n"
-"                              Varsayılan: tunnel"
+" --https-proxy=VEKİL          HTTPS için bu vekil sunucusunu kullan. Daha\n"
+"                              önce verilmiş bir vekili silmek için \"\"\n"
+"                              kullanın. Ayrıca --all-proxy seçeneğine\n"
+"                              bakın. Bu, tüm URL'leri etkiler."
 
 #: src/usage_text.h:79
-#, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
 "previously\n"
@@ -232,12 +220,12 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-type=TİP FTP transfer tipini belirle. TİP 'binary' veya 'ascii' den "
-"biri olabilir.\n"
-"                              Varsayılan: binary"
+" --ftp-proxy=VEKİL            FTP için bu vekil sunucusunu kullan. Daha\n"
+"                              önce verilmiş bir vekili silmek için \"\"\n"
+"                              kullanın. Ayrıca --all-proxy seçeneğine\n"
+"                              bakın. Bu, tüm URL'leri etkiler."
 
 #: src/usage_text.h:84
-#, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
 "erase\n"
@@ -248,14 +236,6 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" -c, --continue Daha önce bir kısmı indirilmiş dosyayı indirmeye devam et.\n"
-"                              Bu seçenek dosya baştan başlanarak "
-"indirildiği \n"
-"                              durumlarda (bir web tarayıcısı veya başka bir "
-"program)\n"
-"                              indirmeye devam etmek için kullanılır.Şimdilik "
-"sadece\n"
-"                              http(s) ve ftp için geçerlidir."
 
 #: src/usage_text.h:92
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -275,15 +255,12 @@ msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr " --referer=REFERER Referer i belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:100
-#, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
-" --http-user=KULLANICI HTTP kullanıcısını belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:102
-#, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
-msgstr " --http-passwd=SIFRE HTTP şifresini belirle.Bu bütün URLleri etkiler."
+msgstr ""
 
 #: src/usage_text.h:104
 msgid " --ftp-type=TYPE              Set FTP transfer type."
@@ -297,7 +274,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:109
-#, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -308,17 +284,8 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=HIZ Download hızı bu değerden düşük veya eşitse "
-"bağlantıyı\n"
-"                              kapat.Bu değer 0 olursa böyle bir limit "
-"olmaz.\n"
-"                              Değerin yanına K veya M (1K=1024, 1M=1024K) \n"
-"                              ekleyebilirsiniz.Bu değer BitTorrent "
-"downloadlarını\n"
-"                              etkilemez.Varsayılan:0"
 
 #: src/usage_text.h:115
-#, fuzzy
 msgid ""
 " --max-overall-download-limit=SPEED Set max overall download speed in bytes/"
 "sec.\n"
@@ -327,13 +294,8 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
-" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
-"                              0 yapılırsa bir sınırlama olmaz.\n"
-"                              Değere K ve M (1K=1024, 1M=1024K)\n"
-"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:121
-#, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed per each download in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -341,10 +303,6 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
-" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
-"                              0 yapılırsa bir sınırlama olmaz.\n"
-"                              Değere K ve M (1K=1024, 1M=1024K)\n"
-"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:127
 msgid ""
@@ -396,20 +354,12 @@ msgstr ""
 "                              gücü kullanılır.Eğer bir hata olursa kapatın."
 
 #: src/usage_text.h:150
-#, fuzzy
 msgid ""
 " --allow-overwrite=true|false Restart download from scratch if the\n"
 "                              corresponding control file doesn't exist.  "
 "See\n"
 "                              also --auto-file-renaming option."
 msgstr ""
-" --allow-piece-length-change=true|false False seçilirse, aria2 parça "
-"uzunluğunun\n"
-"                              kontrol dosyasındakinden farklı olduğu durumda "
-"indirmeyi\n"
-"                              bitirir.Eğer true seçilirse, devam "
-"edebilirsiniz ama indirmenizin\n"
-"                              bir kısmı kaybolur."
 
 #: src/usage_text.h:154
 msgid ""
@@ -429,7 +379,6 @@ msgstr ""
 "                              bir kısmı kaybolur."
 
 #: src/usage_text.h:159
-#, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -437,13 +386,8 @@ msgid ""
 "like\n"
 "                              the usual command-line download utilities."
 msgstr ""
-" -Z, --force-sequential=true|false Komut satırındaki URIleri sırayla getir\n"
-"                              ve her URI yi ayrı bir oturumda indir (diğer "
-"komut satırı indirme\n"
-"                              programlarının yaptığı gibi).Varsayılan:false"
 
 #: src/usage_text.h:163
-#, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -453,16 +397,8 @@ msgid ""
 "(1..9999)\n"
 "                              appended."
 msgstr ""
-" --auto-file-renaming=true|false Aynı isimli dosya varsa dosya ismini "
-"değiştir.\n"
-"                              Bu seçenek sadece http(s) ve ftp "
-"indirmelerinde geçerlidir.\n"
-"                              Yeni dosya adı . ve 1-9999 arasında bir sayı "
-"eklenerek oluşturulur.\n"
-"                              Varsayılan: true"
 
 #: src/usage_text.h:169
-#, fuzzy
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -477,15 +413,6 @@ msgid ""
 "                              as the second example above, -Z option is\n"
 "                              required."
 msgstr ""
-" -P, --parametrized-uri=true|false Parametreli URI desteğini aç.\n"
-"                              Bir küme tanımlayabilirsiniz: \n"
-"                              http://{sv1,sv2,sv3}/foo.iso\n"
-"                              Bir dizi ve artış tanımlayabilirsiniz:\n"
-"                              http://host/image[000-100:2].img\n"
-"                              Artış atlanabilir.Eğer URIlerin hepsi\n"
-"                              aynı dosyaya işaret etmiyorsa(2.örnekte olduğu "
-"gibi)\n"
-"                              o zaman -Z eklenmelidir.Varsayılan: false"
 
 #: src/usage_text.h:180
 msgid ""
@@ -493,12 +420,10 @@ msgid ""
 msgstr " --enable-http-keep-alive=true|false HTTP/1.1devamlı bağlantıyı aç."
 
 #: src/usage_text.h:182
-#, fuzzy
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
-msgstr " --enable-http-keep-alive=true|false HTTP/1.1devamlı bağlantıyı aç."
+msgstr ""
 
 #: src/usage_text.h:184
-#, fuzzy
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -510,17 +435,8 @@ msgid ""
 "                              of a file. See also --bt-hash-check-seed "
 "option."
 msgstr ""
-" --check-integrity=true|false Parça hashine bakarak dosya bütünlüğünü "
-"kontrol et.\n"
-"                              Bu seçenek sadece BitTorrent downloadlarında "
-"ve chunck checksum \n"
-"                              içeren Metalink downloadlarında geçerlidir. Bu "
-"seçenek kullanılarak\n"
-"                              bozuk parçalı bir dosya tekrar indirilebilir."
-"Varsayılan: false"
 
 #: src/usage_text.h:190
-#, fuzzy
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -531,21 +447,15 @@ msgid ""
 "                              incomplete, set this option to false.\n"
 "                              This option has effect only on BitTorrent\n"
 "                              download."
-msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
+msgstr ""
 
 #: src/usage_text.h:198
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
-" --realtime-chunck-checksum=true|false Metalink modunda dosya indirirken \n"
-"                              chunkc checksumını doğrula.Bu seçenek sadece "
-"Metalink\n"
-"                              modunda ve chuck checksum olunca geçerlidir."
-"Varsayılan: true"
 
 #: src/usage_text.h:202
 msgid ""
@@ -575,7 +485,6 @@ msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc netrc desteğini kapatır."
 
 #: src/usage_text.h:213
-#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -589,15 +498,8 @@ msgid ""
 "INPUT\n"
 "                              FILE section of man page for details."
 msgstr ""
-" -i, --input-file=DOSYA DOSYAda bulunan URIleri indirir.Bir dosya için "
-"değişik \n"
-"                              URIler tanımlamak istiyorsanız tek satıra TAB "
-"ile ayırarak\n"
-"                              yazın.Eğer '-' olarak belirtilirse stdin den "
-"okur."
 
 #: src/usage_text.h:222
-#, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
@@ -605,19 +507,13 @@ msgid ""
 "metalink.\n"
 "                              See also -s and -C options."
 msgstr ""
-" -i, --max-concurrent-downloads=N Her statik HTTP/FTP URL, torrent ve "
-"metalink için maksimum \n"
-"                              paralel indirme sayısını belirler."
 
 #: src/usage_text.h:226
-#, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
-" --load-cookies=DOSYA Mozilla/Firefox (1.x/2.x) ve Netscape biçimlerini \n"
-"                              kullanarak DOSYAdaki çerezleri yükler."
 
 #: src/usage_text.h:229
 msgid ""
@@ -643,7 +539,6 @@ msgstr ""
 "                              daha detaylı bilgi gösterilir."
 
 #: src/usage_text.h:238
-#, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -656,19 +551,6 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
-" --select-file=INDEKS... Indeksini belirlenen dosyayı indir.Dosyanın \n"
-"                              indeksini --show-files seçeneğini kullanarak "
-"bulabilirsiniz.\n"
-"                              ',' kullanarak birden fazla indeks "
-"belirtilebilir,örnek: \"3,6\".\n"
-"                              '-' kullanarak bir aralık belirtebilirsiniz: "
-"\"1-5\".\n"
-"                              '-' ve ',' bir arada kullanılabilir. -M "
-"seçeneğiyle birlikte\n"
-"                              kullanıldığında sorguya bağlı olarak indeks "
-"değişebilir\n"
-"                              (Daha fazla bilgi için --metalink* "
-"seçeneklerine bakın)."
 
 #: src/usage_text.h:247
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
@@ -701,14 +583,10 @@ msgstr ""
 "anlatılan işler yapılmaz."
 
 #: src/usage_text.h:259
-#, fuzzy
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file."
 msgstr ""
-" --direct-file-mapping=true|false Bahsedilen .torrent dosyasındaki "
-"dosyalardan\n"
-"                              direkt oku ve hepsine yaz.Varsayılan: true."
 
 #: src/usage_text.h:262
 msgid ""
@@ -729,7 +607,6 @@ msgstr ""
 "kullanılabilir."
 
 #: src/usage_text.h:268
-#, fuzzy
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
@@ -738,13 +615,8 @@ msgid ""
 "                              To limit the upload speed per torrent, use\n"
 "                              --max-upload-limit option."
 msgstr ""
-" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
-"                              0 yapılırsa bir sınırlama olmaz.\n"
-"                              Değere K ve M (1K=1024, 1M=1024K)\n"
-"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:274
-#, fuzzy
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -752,10 +624,6 @@ msgid ""
 "                              To limit the overall upload speed, use\n"
 "                              --max-overall-upload-limit option."
 msgstr ""
-" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
-"                              0 yapılırsa bir sınırlama olmaz.\n"
-"                              Değere K ve M (1K=1024, 1M=1024K)\n"
-"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:280
 msgid ""
@@ -766,7 +634,6 @@ msgstr ""
 "                              --seed-ratio seçeneğine de bakınız."
 
 #: src/usage_text.h:283
-#, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -780,18 +647,8 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
-" --seed-ratio=ORAN Paylaşma oranını  belirler. Paylaşma oranı ORAN olana "
-"kadar\n"
-"                              biten torrentleri tohumlar. 1.0 değeri tavsiye "
-"edilir. Paylaşma \n"
-"                              oranı ne olursa olsun tohumlama yapmak "
-"isterseniz bu değeri 0.0 \n"
-"                              yapın. --seed-time seçeneği de belirlenmişse, "
-"tohumlama işi bu iki\n"
-"                              şarttan biri sağlanınca biter."
 
 #: src/usage_text.h:292
-#, fuzzy
 msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -802,15 +659,6 @@ msgid ""
 "                              byte data are added to make its length 20 "
 "bytes."
 msgstr ""
-" --peer-id-prefix=PEER_ID_ÖNEK Peer ID ön ekini belirler.BitTorrent de peer "
-"ID 20byte\n"
-"                              uzunluğundadır.20Byte dan daha fazla bir değer "
-"verilirse, sadece\n"
-"                              ilk 20 byte kullanılır.20Byte dan daha az bir "
-"değer verilirse, uzunluk\n"
-"                              20Byte olacak şekilde rastgele alfabetik "
-"karakterler eklenir.\n"
-"                              Varsayılan: -aria2-"
 
 #: src/usage_text.h:298
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
@@ -849,7 +697,6 @@ msgid ""
 msgstr " --conf-path=YOL Konfigürasyon dosyasının yerini belirle."
 
 #: src/usage_text.h:313
-#, fuzzy
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -858,11 +705,6 @@ msgid ""
 "satisfies\n"
 "                              the given level."
 msgstr ""
-" --bt-min-crypto-level=plain|arc4 Minimum şifreleme düzeyini belirle.\n"
-"                              Birden fazla şifreleme metodu peer tarafından\n"
-"                              sağlanıyorsa, aria2 bu düzeyi sağlayan en "
-"küçük\n"
-"                              olanın seçer."
 
 #: src/usage_text.h:318
 msgid ""
@@ -878,7 +720,6 @@ msgstr ""
 "                              her zaman obfuskasyon tokalaşmasını kullanır."
 
 #: src/usage_text.h:323
-#, fuzzy
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
 "                              torrent is lower than SPEED, aria2 "
@@ -890,12 +731,6 @@ msgid ""
 "                              download speed in some cases.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --bt-request-peer-speed-limit=HIZ BitTorrent downloadlarında download hızı\n"
-"                              HIZ dan düşükse, aria2 maksimum peer "
-"kapasitesini\n"
-"                              gözönüne almadan bağlantıları başlatır.Değerin "
-"yanına\n"
-"                              K ve M (1K=1024, 1M=1024K) ekleyebilirsiniz."
 
 #: src/usage_text.h:331
 msgid ""
@@ -915,29 +750,21 @@ msgstr ""
 "                              parça hashlerini kontrol etmeden tohumla."
 
 #: src/usage_text.h:337
-#, fuzzy
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
-" --retry-wait=SAN Bir hata olduğunda tekrar denemek\n"
-"                              için geçmesi geçen saniye. 0-60\n"
-"                              arasında bir değer veriniz.\n"
-"                              Varsayılan: 5"
 
 #: src/usage_text.h:341
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .metalink file. "
 "Reads\n"
 "                              input from stdin when '-' is specified."
 msgstr ""
-" -M, --metalink-file=METALINK_FILE .metalink dosyasının yolunu belirle."
 
 #: src/usage_text.h:344
-#, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -950,17 +777,6 @@ msgid ""
 "NUM_SERVERS.\n"
 "                              See also -s and -j options."
 msgstr ""
-" --follow-metalink=true|false|mem True veya mem seçilirse, sonu .metalink "
-"olan veya\n"
-"                              içerik tipi application/metalink+xml olan bir "
-"dosya indirildiğinde,\n"
-"                              aria2 onu bir metalink dosyası olarak süzer ve "
-"onda belirtilen \n"
-"                              dosyaları indirir.\n"
-"                              Mem seçilirse metalink dosyası diske yazılmaz "
-"sadece hafızada \n"
-"                              tutulur. False seçilirse yukarıda bahsedilen "
-"işlem yapılmaz."
 
 #: src/usage_text.h:353
 msgid " --metalink-version=VERSION   The version of the file to download."
@@ -976,25 +792,20 @@ msgid ""
 msgstr " --metalink-os=OS İndirilecek dosyanın işletim sistemi."
 
 #: src/usage_text.h:359
-#, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
-" --metalink-location=YER[,...] Tercih edilen sunucunun yeri.\n"
-"                              Virgülle ayrılmış liste de yazabilirsiniz."
 
 #: src/usage_text.h:363
-#, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
 "                              if you don't have any preferred protocol."
-msgstr " --metalink-preferred-protocol=PROTO Tercih edilen prokolü belirle."
+msgstr ""
 
 #: src/usage_text.h:366
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metalink or content type of\n"
@@ -1009,17 +820,6 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --follow-metalink=true|false|mem True veya mem seçilirse, sonu .metalink "
-"olan veya\n"
-"                              içerik tipi application/metalink+xml olan bir "
-"dosya indirildiğinde,\n"
-"                              aria2 onu bir metalink dosyası olarak süzer ve "
-"onda belirtilen \n"
-"                              dosyaları indirir.\n"
-"                              Mem seçilirse metalink dosyası diske yazılmaz "
-"sadece hafızada \n"
-"                              tutulur. False seçilirse yukarıda bahsedilen "
-"işlem yapılmaz."
 
 #: src/usage_text.h:376
 msgid ""
@@ -1043,7 +843,6 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Sürüm numarasını göster ve çık."
 
 #: src/usage_text.h:384
-#, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -1054,7 +853,7 @@ msgid ""
 "                              \"#http\". If non-tag word is given, print the "
 "usage\n"
 "                              for the options whose name includes that word."
-msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
+msgstr ""
 
 #: src/usage_text.h:391
 msgid " --no-conf                    Disable loading aria2.conf file."
@@ -1093,10 +892,8 @@ msgstr ""
 "                              http://host/file"
 
 #: src/usage_text.h:404
-#, fuzzy
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
-" -q, --quiet=true|false aria2 yi sessiz (konsola çıktı gönderilmez) yapar."
 
 #: src/usage_text.h:406
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
@@ -1121,7 +918,6 @@ msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=SEVİYE Çıktı için log seviyesini belirler."
 
 #: src/usage_text.h:415
-#, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1129,9 +925,6 @@ msgid ""
 "available,\n"
 "                              apply it to the local file."
 msgstr ""
-" --direct-file-mapping=true|false Bahsedilen .torrent dosyasındaki "
-"dosyalardan\n"
-"                              direkt oku ve hepsine yaz.Varsayılan: true."
 
 #: src/usage_text.h:419
 msgid ""
@@ -1145,7 +938,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:424
-#, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1157,17 +949,8 @@ msgid ""
 "                              This options is effective only when using\n"
 "                              HTTP/FTP servers."
 msgstr ""
-" --file-allocation=METOD Dosya dağılım metodu. Metod 'none' veya\n"
-"                              'prealloc' değerlerini alabilir.'none' "
-"seçilirse bir dağılım\n"
-"                              yapılmaz.'prealloc' seçilirse download "
-"başlamadan önce\n"
-"                              yer tahsis edilir.Bu işlem dosyanın "
-"bütüklüğüne göre belli\n"
-"                              bir süre alabilir.Varsayılan: prealloc"
 
 #: src/usage_text.h:431
-#, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1196,19 +979,8 @@ msgid ""
 "                              anymore mirrors. Like 'feedback', it uses a\n"
 "                              performance profile of servers."
 msgstr ""
-" --follow-torrent=true|false|mem  True veya mem seçilirse, .torrent uzantılı "
-"bir dosya ya da \n"
-"                              içerik tipi application/x-bittorrent olan bir "
-"dosya indirildiğinde, aria2\n"
-"                              onu bir torrent dosyası olarak okur ve "
-"içindeki dosyaları indirir.\n"
-"                              Eğer mem seçilirse, torrent dosyası diske "
-"yazılmaz sadece hafızada\n"
-"                              tutulur.Eğer false seçilirse, yukarıda "
-"anlatılan işler yapılmaz."
 
 #: src/usage_text.h:450
-#, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1216,10 +988,6 @@ msgid ""
 "data\n"
 "                              using --server-stat-if option."
 msgstr ""
-" --retry-wait=SAN Bir hata olduğunda tekrar denemek\n"
-"                              için geçmesi geçen saniye. 0-60\n"
-"                              arasında bir değer veriniz.\n"
-"                              Varsayılan: 5"
 
 #: src/usage_text.h:454
 msgid ""
@@ -1232,20 +1000,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:459
-#, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
 "last\n"
 "                              contact to them."
 msgstr ""
-" --retry-wait=SAN Bir hata olduğunda tekrar denemek\n"
-"                              için geçmesi geçen saniye. 0-60\n"
-"                              arasında bir değer veriniz.\n"
-"                              Varsayılan: 5"
 
 #: src/usage_text.h:463
-#, fuzzy
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1255,11 +1017,6 @@ msgid ""
 "stops\n"
 "                              regardless of the value."
 msgstr ""
-" --bt-min-crypto-level=plain|arc4 Minimum şifreleme düzeyini belirle.\n"
-"                              Birden fazla şifreleme metodu peer tarafından\n"
-"                              sağlanıyorsa, aria2 bu düzeyi sağlayan en "
-"küçük\n"
-"                              olanın seçer."
 
 #: src/usage_text.h:468
 msgid ""
@@ -1271,19 +1028,13 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:473
-#, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
-" --retry-wait=SAN Bir hata olduğunda tekrar denemek\n"
-"                              için geçmesi geçen saniye. 0-60\n"
-"                              arasında bir değer veriniz.\n"
-"                              Varsayılan: 5"
 
 #: src/usage_text.h:477
-#, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1294,35 +1045,21 @@ msgid ""
 "                              Use --check-certificate option to enable\n"
 "                              verification."
 msgstr ""
-" --file-allocation=METOD Dosya dağılım metodu. Metod 'none' veya\n"
-"                              'prealloc' değerlerini alabilir.'none' "
-"seçilirse bir dağılım\n"
-"                              yapılmaz.'prealloc' seçilirse download "
-"başlamadan önce\n"
-"                              yer tahsis edilir.Bu işlem dosyanın "
-"bütüklüğüne göre belli\n"
-"                              bir süre alabilir.Varsayılan: prealloc"
 
 #: src/usage_text.h:483
-#, fuzzy
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
-" --bt-seed-unverified=true|false Daha önce indirilmiş dosyaları \n"
-"                              parça hashlerini kontrol etmeden tohumla."
 
 #: src/usage_text.h:486
-#, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n"
 "                              network address with or without CIDR block "
 "where\n"
 "                              proxy should not be used."
 msgstr ""
-" --speed-time=DAKİKA Tohumlama(seed) zamanını belirler. \n"
-"                              --seed-ratio seçeneğine de bakınız."
 
 #: src/usage_text.h:490
 msgid ""
@@ -1336,14 +1073,11 @@ msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
 #: src/usage_text.h:495
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to "
 "listen\n"
 "                              to."
 msgstr ""
-" --dht-entry-point=MAKİNE:PORT Makine ve portu DHT ağına giriş noktası "
-"olarak belirle."
 
 #: src/usage_text.h:498
 msgid ""
@@ -1364,15 +1098,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:507
-#, fuzzy
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
 msgstr ""
-" --http-user=KULLANICI HTTP kullanıcısını belirle.Bu bütün URLleri etkiler."
 
 #: src/usage_text.h:509
-#, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
-msgstr " --http-passwd=SIFRE HTTP şifresini belirle.Bu bütün URLleri etkiler."
+msgstr ""
 
 #: src/usage_text.h:511
 msgid ""
@@ -1385,7 +1116,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:516
-#, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1398,10 +1128,9 @@ msgid ""
 "                              are embedded in URI, authorization header is\n"
 "                              always sent to the server regardless of this\n"
 "                              option."
-msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
+msgstr ""
 
 #: src/usage_text.h:524
-#, fuzzy
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1413,17 +1142,8 @@ msgid ""
 "multiple\n"
 "                              times."
 msgstr ""
-" --file-allocation=METOD Dosya dağılım metodu. Metod 'none' veya\n"
-"                              'prealloc' değerlerini alabilir.'none' "
-"seçilirse bir dağılım\n"
-"                              yapılmaz.'prealloc' seçilirse download "
-"başlamadan önce\n"
-"                              yer tahsis edilir.Bu işlem dosyanın "
-"bütüklüğüne göre belli\n"
-"                              bir süre alabilir.Varsayılan: prealloc"
 
 #: src/usage_text.h:530
-#, fuzzy
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1433,16 +1153,8 @@ msgid ""
 "                              BitTorrent downloads are canceled if true is\n"
 "                              specified."
 msgstr ""
-" --auto-file-renaming=true|false Aynı isimli dosya varsa dosya ismini "
-"değiştir.\n"
-"                              Bu seçenek sadece http(s) ve ftp "
-"indirmelerinde geçerlidir.\n"
-"                              Yeni dosya adı . ve 1-9999 arasında bir sayı "
-"eklenerek oluşturulur.\n"
-"                              Varsayılan: true"
 
 #: src/usage_text.h:536
-#, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1456,10 +1168,9 @@ msgid ""
 "                              based on the response of tracker and the "
 "download\n"
 "                              progress."
-msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
+msgstr ""
 
 #: src/usage_text.h:544
-#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed when "
 "download\n"
@@ -1468,10 +1179,6 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
-"                              0 yapılırsa bir sınırlama olmaz.\n"
-"                              Değere K ve M (1K=1024, 1M=1024K)\n"
-"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:550
 msgid ""
@@ -1482,20 +1189,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:554
-#, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed when download\n"
 "                              is paused.\n"
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
-"                              0 yapılırsa bir sınırlama olmaz.\n"
-"                              Değere K ve M (1K=1024, 1M=1024K)\n"
-"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:559
-#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed when download\n"
 "                              aborts due to error.\n"
@@ -1503,13 +1204,8 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-upload-limit=HIZ Maksimum upload hızını belirler(bytes/saniye)\n"
-"                              0 yapılırsa bir sınırlama olmaz.\n"
-"                              Değere K ve M (1K=1024, 1M=1024K)\n"
-"                              ekleyebilirsiniz.Varsayılan: 0"
 
 #: src/usage_text.h:565
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed when download\n"
 "                              stops. You can override the command to be "
@@ -1522,40 +1218,22 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --follow-torrent=true|false|mem  True veya mem seçilirse, .torrent uzantılı "
-"bir dosya ya da \n"
-"                              içerik tipi application/x-bittorrent olan bir "
-"dosya indirildiğinde, aria2\n"
-"                              onu bir torrent dosyası olarak okur ve "
-"içindeki dosyaları indirir.\n"
-"                              Eğer mem seçilirse, torrent dosyası diske "
-"yazılmaz sadece hafızada\n"
-"                              tutulur.Eğer false seçilirse, yukarıda "
-"anlatılan işler yapılmaz."
 
 #: src/usage_text.h:574
-#, fuzzy
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
 "                              consecutive SEC seconds. If 0 is given, this\n"
 "                              feature is disabled."
 msgstr ""
-" --stop=SANİYE SANİYE geçtiğinde uygulamayı durdur. 0 girilirse\n"
-"                              bu özellik kapatılır."
 
 #: src/usage_text.h:578
-#, fuzzy
 msgid ""
 " --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n"
 "                              network interfaces. If false is given, listen "
 "only\n"
 "                              on local loopback interface."
 msgstr ""
-" -Z, --force-sequential=true|false Komut satırındaki URIleri sırayla getir\n"
-"                              ve her URI yi ayrı bir oturumda indir (diğer "
-"komut satırı indirme\n"
-"                              programlarının yaptığı gibi).Varsayılan:false"
 
 #: src/usage_text.h:582
 msgid ""
@@ -1591,7 +1269,6 @@ msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
 #: src/usage_text.h:599
-#, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
 "has\n"
@@ -1606,7 +1283,7 @@ msgid ""
 "                              same file already exists, metadata is not "
 "saved.\n"
 "                              See also --bt-metadata-only option."
-msgstr " -h, --help=KATEGORİ Kullanımı göster ve çık."
+msgstr ""
 
 #: src/usage_text.h:607
 msgid ""
@@ -1621,7 +1298,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:613
-#, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
 "described\n"
@@ -1630,13 +1306,6 @@ msgid ""
 "                              has effect only when BitTorrent Magnet URI is\n"
 "                              used. See also --bt-save-metadata option."
 msgstr ""
-" --allow-piece-length-change=true|false False seçilirse, aria2 parça "
-"uzunluğunun\n"
-"                              kontrol dosyasındakinden farklı olduğu durumda "
-"indirmeyi\n"
-"                              bitirir.Eğer true seçilirse, devam "
-"edebilirsiniz ama indirmenizin\n"
-"                              bir kısmı kaybolur."
 
 #: src/usage_text.h:618
 msgid ""
@@ -1646,12 +1315,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:621
-#, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr " --enable-dht=true|false DHT özelliklerini aç."
+msgstr ""
 
 #: src/usage_text.h:623
-#, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
 "If\n"
@@ -1660,79 +1327,46 @@ msgid ""
 "interface\n"
 "                              name and IP address."
 msgstr ""
-" --bt-min-crypto-level=plain|arc4 Minimum şifreleme düzeyini belirle.\n"
-"                              Birden fazla şifreleme metodu peer tarafından\n"
-"                              sağlanıyorsa, aria2 bu düzeyi sağlayan en "
-"küçük\n"
-"                              olanın seçer."
 
 #: src/usage_text.h:628
-#, fuzzy
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 msgstr ""
-" --bt-seed-unverified=true|false Daha önce indirilmiş dosyaları \n"
-"                              parça hashlerini kontrol etmeden tohumla."
 
 #: src/usage_text.h:631
-#, fuzzy
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
-" --http-proxy-user=KULLANICI HTTP proxy kullanıcısını belirle. Bu bütün "
-"URLleri etkiler."
 
 #: src/usage_text.h:633
-#, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr ""
-" --http-proxy-passwd=SIFRE HTTP proxy şifresini belirle.Bu bütün URLleri "
-"etkiler."
 
 #: src/usage_text.h:635
-#, fuzzy
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
-" --http-proxy-user=KULLANICI HTTP proxy kullanıcısını belirle. Bu bütün "
-"URLleri etkiler."
 
 #: src/usage_text.h:637
-#, fuzzy
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr ""
-" --http-proxy-passwd=SIFRE HTTP proxy şifresini belirle.Bu bütün URLleri "
-"etkiler."
 
 #: src/usage_text.h:639
-#, fuzzy
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
-" --http-proxy-user=KULLANICI HTTP proxy kullanıcısını belirle. Bu bütün "
-"URLleri etkiler."
 
 #: src/usage_text.h:641
-#, fuzzy
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
-" --http-proxy-passwd=SIFRE HTTP proxy şifresini belirle.Bu bütün URLleri "
-"etkiler."
 
 #: src/usage_text.h:643
-#, fuzzy
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
-" --http-proxy-user=KULLANICI HTTP proxy kullanıcısını belirle. Bu bütün "
-"URLleri etkiler."
 
 #: src/usage_text.h:645
-#, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr ""
-" --http-proxy-passwd=SIFRE HTTP proxy şifresini belirle.Bu bütün URLleri "
-"etkiler."
 
 #: src/usage_text.h:647
-#, fuzzy
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
 "Using\n"
@@ -1741,16 +1375,8 @@ msgid ""
 "                              users behind proxy server which disables "
 "resume."
 msgstr ""
-" --allow-piece-length-change=true|false False seçilirse, aria2 parça "
-"uzunluğunun\n"
-"                              kontrol dosyasındakinden farklı olduğu durumda "
-"indirmeyi\n"
-"                              bitirir.Eğer true seçilirse, devam "
-"edebilirsiniz ama indirmenizin\n"
-"                              bir kısmı kaybolur."
 
 #: src/usage_text.h:652
-#, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
 "aria2\n"
@@ -1766,16 +1392,6 @@ msgid ""
 "                              downloads file from scratch.\n"
 "                              See --max-resume-failure-tries option."
 msgstr ""
-" --follow-torrent=true|false|mem  True veya mem seçilirse, .torrent uzantılı "
-"bir dosya ya da \n"
-"                              içerik tipi application/x-bittorrent olan bir "
-"dosya indirildiğinde, aria2\n"
-"                              onu bir torrent dosyası olarak okur ve "
-"içindeki dosyaları indirir.\n"
-"                              Eğer mem seçilirse, torrent dosyası diske "
-"yazılmaz sadece hafızada\n"
-"                              tutulur.Eğer false seçilirse, yukarıda "
-"anlatılan işler yapılmaz."
 
 #: src/usage_text.h:662
 msgid ""
@@ -1791,12 +1407,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:669
-#, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
-msgstr " -t, --timeout=SAN Saniye olarak zamanaşımı süresi.Varsayılan:60"
+msgstr ""
 
 #: src/usage_text.h:671
-#, fuzzy
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
 "                              establish connection to tracker. After the\n"
@@ -1806,19 +1420,10 @@ msgid ""
 "used\n"
 "                              instead."
 msgstr ""
-" --file-allocation=METOD Dosya dağılım metodu. Metod 'none' veya\n"
-"                              'prealloc' değerlerini alabilir.'none' "
-"seçilirse bir dağılım\n"
-"                              yapılmaz.'prealloc' seçilirse download "
-"başlamadan önce\n"
-"                              yer tahsis edilir.Bu işlem dosyanın "
-"bütüklüğüne göre belli\n"
-"                              bir süre alabilir.Varsayılan: prealloc"
 
 #: src/usage_text.h:677
-#, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
-msgstr " -t, --timeout=SAN Saniye olarak zamanaşımı süresi.Varsayılan:60"
+msgstr ""
 
 #: src/usage_text.h:679
 msgid ""
@@ -1831,7 +1436,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:684
-#, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
 "exit.\n"
@@ -1842,14 +1446,6 @@ msgid ""
 "addMetalink\n"
 "                              XML-RPC method are not saved."
 msgstr ""
-" --file-allocation=METOD Dosya dağılım metodu. Metod 'none' veya\n"
-"                              'prealloc' değerlerini alabilir.'none' "
-"seçilirse bir dağılım\n"
-"                              yapılmaz.'prealloc' seçilirse download "
-"başlamadan önce\n"
-"                              yer tahsis edilir.Bu işlem dosyanın "
-"bütüklüğüne göre belli\n"
-"                              bir süre alabilir.Varsayılan: prealloc"
 
 #: src/usage_text.h:690
 #, fuzzy
@@ -1862,7 +1458,6 @@ msgstr ""
 "                              dosya sayısını belirle."
 
 #: src/usage_text.h:693
-#, fuzzy
 msgid ""
 " --min-split-size=SIZE        aria2 does not split less than 2*SIZE byte "
 "range.\n"
@@ -1878,12 +1473,6 @@ msgid ""
 "source.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --bt-request-peer-speed-limit=HIZ BitTorrent downloadlarında download hızı\n"
-"                              HIZ dan düşükse, aria2 maksimum peer "
-"kapasitesini\n"
-"                              gözönüne almadan bağlantıları başlatır.Değerin "
-"yanına\n"
-"                              K ve M (1K=1024, 1M=1024K) ekleyebilirsiniz."
 
 #: src/usage_text.h:702
 #, fuzzy
@@ -1894,12 +1483,11 @@ msgid ""
 "has\n"
 "                              many limitations. See man page for details."
 msgstr ""
-" --direct-file-mapping=true|false Bahsedilen .torrent dosyasındaki "
-"dosyalardan\n"
-"                              direkt oku ve hepsine yaz.Varsayılan: true."
+" --enable-direct-io=true|false Direk G/Ç belirle.True yapılırsa\n"
+"                              dosya yer ayrımlarında düşük işlemci\n"
+"                              gücü kullanılır.Eğer bir hata olursa kapatın."
 
 #: src/usage_text.h:706
-#, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
 "                              --on-download-complete is called when "
@@ -1912,16 +1500,6 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --follow-torrent=true|false|mem  True veya mem seçilirse, .torrent uzantılı "
-"bir dosya ya da \n"
-"                              içerik tipi application/x-bittorrent olan bir "
-"dosya indirildiğinde, aria2\n"
-"                              onu bir torrent dosyası olarak okur ve "
-"içindeki dosyaları indirir.\n"
-"                              Eğer mem seçilirse, torrent dosyası diske "
-"yazılmaz sadece hafızada\n"
-"                              tutulur.Eğer false seçilirse, yukarıda "
-"anlatılan işler yapılmaz."
 
 #: src/usage_text.h:714
 #, fuzzy
@@ -1976,7 +1554,6 @@ msgid ""
 msgstr " --conf-path=YOL Konfigürasyon dosyasının yerini belirle."
 
 #: src/usage_text.h:732
-#, fuzzy
 msgid ""
 " --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n"
 "                              tracker's announce URI. These URIs are not\n"
@@ -1986,14 +1563,6 @@ msgid ""
 "tracker\n"
 "                              option are removed."
 msgstr ""
-" --file-allocation=METOD Dosya dağılım metodu. Metod 'none' veya\n"
-"                              'prealloc' değerlerini alabilir.'none' "
-"seçilirse bir dağılım\n"
-"                              yapılmaz.'prealloc' seçilirse download "
-"başlamadan önce\n"
-"                              yer tahsis edilir.Bu işlem dosyanın "
-"bütüklüğüne göre belli\n"
-"                              bir süre alabilir.Varsayılan: prealloc"
 
 #: src/usage_text.h:738
 msgid ""
@@ -2018,11 +1587,9 @@ msgid "Report bugs to %s"
 msgstr "Hataları %s ye raporla"
 
 #: src/version_usage.cc:85
-#, fuzzy
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
-"Kullanım: %s [SEÇENEKLER ] [URL | TORRENT_DOSYASI | METALINK_DOSYASI]..."
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
@@ -2044,38 +1611,30 @@ msgid "Options:"
 msgstr "Seçenekler:"
 
 #: src/version_usage.cc:112
-#, fuzzy, c-format
+#, c-format
 msgid "Printing options whose name includes '%s'."
-msgstr "'%s' ile başlayan seçenekler gösteriliyor."
+msgstr ""
 
 #: src/version_usage.cc:120
-#, fuzzy, c-format
+#, c-format
 msgid "No option matching with '%s'."
-msgstr "'%s' ile eşlenen bir seçenek ya da yardım kategorisi bulunamadı."
+msgstr ""
 
 #: src/version_usage.cc:128
-#, fuzzy
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
 " URIs must point to the same file or downloading will fail."
 msgstr ""
-" Birde fazla URL belirleyebilirsiniz. -Z seçeneğini kullanmadığınız sürece,\n"
-"tüm URLler aynı dosyayı göstermek zorundadır aksi halde download başlamaz."
 
 #: src/version_usage.cc:130
-#, fuzzy
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
 " treated as a separate download."
 msgstr ""
-" Bir diskte depolanmış istediğiniz sayıda torrent ya da metalink dosyası\n"
-"belirleyebilirsiniz.Bunların farklı downloadlar olarak değerlendirileceğini\n"
-"unutmayınız."
 
 #: src/version_usage.cc:135
-#, fuzzy
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
 " download a file from both torrent swarm and HTTP/FTP server at the same "
@@ -2088,30 +1647,21 @@ msgid ""
 "and\n"
 " 'path' in torrent are added to form a URI for each file."
 msgstr ""
-" -T seçeneğiyle torrent dosyasını ve URLleri belirleyebilirsiniz.Bu şekilde\n"
-"bir dosyayı, http/ftp deki verinin torrent yığınına upload edildiği sırada,\n"
-"hem torrent yığınından hem de http/ftp sunuculardan aynı anda "
-"indirebilirsiniz.\n"
-"Sadece bir dosyanın http/ftp ile entegre edileceğini unutmayın."
 
 #: src/version_usage.cc:142
-#, fuzzy
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
-" Yazdığınız URL içinde, kabukta özel anlama sahip karakterler veya \"&\" "
-"geçiyorsa\n"
-"URLyi (') veya (\") içinde yazınız."
 
 #: src/version_usage.cc:152
 msgid "Refer to man page for more information."
 msgstr "Detaylı bilgi için man sayfasına bakınız."
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - İndirme zaten bitmişti : %s"
+msgstr ""
 
 #: src/message.h:102
 #, c-format
@@ -2211,7 +1761,7 @@ msgstr "Seçilen dosya indirildi."
 
 #: src/message.h:121
 msgid "The download was complete."
-msgstr "İndirme tamamnlandı."
+msgstr "İndirme tamamlandı."
 
 #: src/message.h:122
 #, c-format
@@ -2236,7 +1786,7 @@ msgstr "Metalink: %s indirme sırasına alınıyor."
 #: src/message.h:128
 #, c-format
 msgid "Download complete: %s"
-msgstr "İndirme tamamnlandı: %s"
+msgstr "İndirme tamamlandı: %s"
 
 #: src/message.h:129
 msgid "Seeding is over."
@@ -2280,17 +1830,17 @@ msgstr "daemon başarısız."
 #: src/message.h:137
 #, c-format
 msgid "Verification finished successfully. file=%s"
-msgstr "Doğrulama başarıyla tamamlandı.Dosya=%s"
+msgstr "Doğrulama başarıyla tamamlandı. dosya=%s"
 
 #: src/message.h:138
 #, c-format
 msgid "Checksum error detected. file=%s"
-msgstr "Checksumda hata bulundu. Dosya=%s"
+msgstr "Checksumda hata bulundu. dosya=%s"
 
 #: src/message.h:139
 #, c-format
 msgid "Incomplete range specified. %s"
-msgstr "Eksik aralık belirtildi.%s"
+msgstr "Eksik aralık belirtildi. %s"
 
 #: src/message.h:140
 #, c-format
@@ -2358,39 +1908,39 @@ msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr "İmza %s olarak kayededilemiyor.Böyle bir dosya var olabilir."
 
 #: src/message.h:156
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for read."
-msgstr "%s dosyası %s sebebinden açılamadı"
+msgstr ""
 
 #: src/message.h:157
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s loaded successfully."
-msgstr "Dosya parçası başarıyla yüklendi."
+msgstr ""
 
 #: src/message.h:158
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to read ServerStat from %s."
-msgstr "Diskten veri okunamadı."
+msgstr ""
 
 #: src/message.h:161
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open ServerStat file %s for write."
-msgstr "%s dosyası %s sebebinden açılamadı"
+msgstr ""
 
 #: src/message.h:162
-#, fuzzy, c-format
+#, c-format
 msgid "ServerStat file %s saved successfully."
-msgstr "Dosya parçası başarıyla kaydedildi."
+msgstr ""
 
 #: src/message.h:163
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to write ServerStat to %s."
-msgstr "%s sebebinden dolayı veri alınamıyor"
+msgstr ""
 
 #: src/message.h:166
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to establish connection, cause: %s"
-msgstr "%s sebebiyle peer bağlantısı kabul edilmedi"
+msgstr ""
 
 #: src/message.h:167
 #, c-format
@@ -2398,9 +1948,9 @@ msgid "Network problem has occurred. cause:%s"
 msgstr ""
 
 #: src/message.h:169
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
-msgstr "%s dosyasından %s sebebiyle okunamadı"
+msgstr ""
 
 #: src/message.h:171
 #, c-format
@@ -2408,9 +1958,8 @@ msgid "Certificate verification failed. Cause: %s"
 msgstr ""
 
 #: src/message.h:172
-#, fuzzy
 msgid "No certificate found."
-msgstr "Hiç başlık bulunamadı."
+msgstr ""
 
 #: src/message.h:173
 msgid "Hostname not match."
@@ -2427,9 +1976,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:178
-#, fuzzy, c-format
+#, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr "'%s' ile başlayan seçenekler gösteriliyor."
+msgstr ""
 
 #: src/message.h:179
 msgid "This file is neither Torrent nor Metalink file. Skipping."
@@ -2441,9 +1990,9 @@ msgid "Is '%s' a file?"
 msgstr ""
 
 #: src/message.h:185
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find given interface %s, cause: %s"
-msgstr "%s dosyası %s sebebinden açılamadı"
+msgstr ""
 
 #: src/message.h:187
 #, c-format
@@ -2451,9 +2000,9 @@ msgid "Saved metadata as %s."
 msgstr ""
 
 #: src/message.h:188
-#, fuzzy, c-format
+#, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
-msgstr "İmza %s olarak kayededilemiyor.Böyle bir dosya var olabilir."
+msgstr ""
 
 #: src/message.h:190
 #, c-format
@@ -2815,272 +2364,3 @@ msgstr ""
 #: src/BtSetup.cc:212
 msgid "Errors occurred while binding port.\n"
 msgstr "Port bağlanırken hata oldu.\n"
-
-#~ msgid "CUID#%d - The download for one segment completed successfully."
-#~ msgstr "CUID#%d - Bir parça başarıyla indirildi."
-
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - Kullanılabilir parça yok."
-
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - %s:%d ye bağlanıyor."
-
-#~ msgid ""
-#~ "CUID#%d - The segment changed. We send the request again with new Range "
-#~ "header."
-#~ msgstr "CUID#%d - Parça değişti.Yeni aralık başlıklı isteği gönderdik."
-
-#~ msgid "CUID#%d - Redirecting to %s"
-#~ msgstr "CUID#%d - %s'a yönlendiriliyor"
-
-#~ msgid ""
-#~ "CUID#%d - Requesting:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - İsteniyor:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "CUID#%d - Response received:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - Cevap alındı:\n"
-#~ "%s"
-
-#~ msgid "CUID#%d - Download aborted. URI=%s"
-#~ msgstr "CUID#%d - indirme iptal edildi. URI=%s"
-
-#~ msgid "CUID#%d - Restarting the download. URI=%s"
-#~ msgstr "CUID#%d - İndirmeye yeniden başlanıyor. URI=%s"
-
-#~ msgid "CUID#%d - Download aborted."
-#~ msgstr "CUID#%d - İndirme iptal edildi."
-
-#~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-#~ msgstr ""
-#~ "CUID#%d - %d kere denendi, ama sonuç başarısız. İndirme iptal edildi."
-
-#~ msgid "CUID#%d - we got new piece. index=%d"
-#~ msgstr "CUID#%d - yeni parça aldık. indeks=%d"
-
-#~ msgid "CUID#%d - we got wrong piece. index=%d"
-#~ msgstr "CUID#%d - yanlış parça aldık. indeks=%d"
-
-#~ msgid "CUID#%d - Download not complete: %s"
-#~ msgstr "CUID#%d - İndirme tamamlanmadı: %s"
-
-#~ msgid "CUID#%d - Good checksum: %s"
-#~ msgstr "CUID#%d - Checksum doğru: %s"
-
-#~ msgid "CUID#%d - Bad checksum: %s"
-#~ msgstr "CUID#%d - Checksum yanlış: %s"
-
-#~ msgid "CUID#%d - Resolving hostname %s"
-#~ msgstr "CUID#%d - Makine adı çözülüyor %s"
-
-#~ msgid "CUID#%d - Name resolution complete: %s -> %s"
-#~ msgstr "CUID#%d - Makine adı çözüldü : %s -> %s"
-
-#~ msgid "CUID#%d - Name resolution for %s failed:%s"
-#~ msgstr "CUID#%d - %s için makine adı çözülemedi. %s"
-
-#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
-#~ msgstr "CUID%d - DNS kaşesi bulundu: %s -> %s"
-
-#~ msgid "CUID#%d - Abort requested."
-#~ msgstr "CUID#%d - İşlem iptal edildi."
-
-#~ msgid "CUID#%d - Connecting to the peer %s"
-#~ msgstr "CUID#%d - %s peer ine bağlanıyor"
-
-#~ msgid ""
-#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-#~ "blockIndex=%d"
-#~ msgstr ""
-#~ "CUID#%d - Parça alındı. indeks=%d, başlangıç=%d, uzunluk=%d, artış=%llu, "
-#~ "blokindeksi=%d"
-
-#~ msgid "CUID#%d - Piece bitfield %s"
-#~ msgstr "CUID#%d - bitfield parçası %s"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - peer tıkandığı için sıradaki mesaj parçasını kabul etme. indeks="
-#~ "%d, başlangıç=%d, uzunluk=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because cancel message received. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - İptal mesajı alındığı için sıradaki mesaj parçasını kabul etme. "
-#~ "indeks=%d, başlangıç=%d, uzunluk=%d"
-
-#~ msgid "CUID#%d - Exception caught while validating file integrity."
-#~ msgstr ""
-#~ "CUID#%d - Dosya bütünlüğü doğrulanırken öngörülmeyen bir hata oluştu."
-
-#~ msgid "CUID#%d - Interested in the peer"
-#~ msgstr "CUID#%d - peer ile ilgileniyor"
-
-#~ msgid "CUID#%d - Not interested in the peer"
-#~ msgstr "CUID#%d - peer ile ilgilenmiyor"
-
-#~ msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-#~ msgstr "CUID#%d - İstek yuvası siliniyor indeks=%d, blokindeksi=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
-#~ "got choked."
-#~ msgstr ""
-#~ "CUID#%d - Bu makine tıkandığı için istek yuvası siliniyor indeks=%d, "
-#~ "blokindeksi=%d"
-
-#~ msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-#~ msgstr ""
-#~ "CUID#%d - Zamanaşımından dolayı istek yuvası siliniyor blokindeksi=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
-#~ "acquired."
-#~ msgstr ""
-#~ "CUID#%d - Blok elde edildiği için blok yuvası siliniyor blokindeksi=%d"
-
-#~ msgid "CUID#%d - Fast extension enabled."
-#~ msgstr "CUID#%d - Hızlı eklenti açıldı."
-
-#~ msgid "CUID#%d - Extended Messaging enabled."
-#~ msgstr "CUID#%d - İlave mesajlaşma açıldı."
-
-#~ msgid "CUID#%d - Exception caught while allocating file space."
-#~ msgstr "CUID#%d - Dosya alanı ayrılırken öngörülmeyen bir hata oluştu."
-
-#~ msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-#~ msgstr ""
-#~ "CUID#%d - Content-Disposition algılandı. Dosya adı olarak %s kullanınız."
-
-#~ msgid "CUID#%d - Peer %s:%d banned."
-#~ msgstr "CUID#%d - Peer %s:%d yasaklandı."
-
-#~ msgid "CUID#%d - Using port %d for accepting new connections"
-#~ msgstr "CUID#%d - Yeni bağlantılar için %d portu kullanılıyor."
-
-#~ msgid "CUID#%d - An error occurred while binding port=%d"
-#~ msgstr "CUID#%d - %d portu bağlanırken bir hata oluştu."
-
-#~ msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-#~ msgstr "CUID#%d - Yeni bağlantı geliyor,  CUID#%d komutu ekleniyor"
-
-#~ msgid "CUID#%d - Error in accepting connection"
-#~ msgstr "CUID#%d - Bağlantı kabulünde hata"
-
-#~ msgid "CUID#%d - Error occurred while processing tracker response."
-#~ msgstr "CUID#%d - İzleyenin cevabını işlerken bir hata oluştu."
-
-#~ msgid "CUID#%d - Cannot create tracker request."
-#~ msgstr "CUID#%d - İzleyici isteği oluşturulamıyor."
-
-#~ msgid "CUID#%d - Creating new tracker request command #%d"
-#~ msgstr "CUID#%d - #%d yeni izleyici istek komutu oluşturuluyor"
-
-#~ msgid "CUID#%d - The peer is DHT-enabled."
-#~ msgstr "CUID#%d - Peer de DHT mevcut."
-
-#~ msgid "Dispatching FileAllocationCommand for CUID#%d."
-#~ msgstr "CUID#%d için FileAllocationCommand gönderiliyor"
-
-#~ msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-#~ msgstr "CUID#%d indeks=%d segmenti iptal etti.CUID#%d onunla ilgileniyor."
-
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=DOSYA İndirilen dosyanın adı."
-
-#, fuzzy
-#~ msgid ""
-#~ " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
-#~ "basic\n"
-#~ "                              is the only supported scheme."
-#~ msgstr ""
-#~ " --http-auth-scheme=ŞEMA HTTP kimlik onaylama şeması.Şu anda\n"
-#~ "                              sadece 'basic' destekleniyor.Varsayılan: "
-#~ "basic"
-
-#~ msgid " -D, --daemon                 Run as daemon."
-#~ msgstr " -D, --daemon Daemon olarak çalıştır."
-
-#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
-#~ msgstr "CUID#%d - segmentManager daki cuid kaydı siliniyor."
-
-#~ msgid "Files:"
-#~ msgstr "Dosyalar:"
-
-#, fuzzy
-#~ msgid ""
-#~ " --allow-overwrite=true|false If false, aria2 doesn't download a file "
-#~ "which\n"
-#~ "                              already exists but the corresponding .aria2 "
-#~ "file\n"
-#~ "                              doesn't exist."
-#~ msgstr ""
-#~ " --allow-owerwrite=true|false False seçilirse aria2, .aria2 dosyası "
-#~ "olmayan\n"
-#~ "                              ama kendisi olan dosyayı indirmez."
-#~ "Varsayılan: false"
-
-#, fuzzy
-#~ msgid ""
-#~ " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
-#~ "                              0 means unrestricted.\n"
-#~ "                              You can append K or M(1K = 1024, 1M = "
-#~ "1024K)."
-#~ msgstr ""
-#~ " --max-download-limit=HIZ Maksimum download hızı(Bytes/saniye).\n"
-#~ "                              0 olursa sınırlama olmaz.Değerin yanına K "
-#~ "veya M\n"
-#~ "                              (1K=1024, 1M=1024K) ekleyebilirsiniz.\n"
-#~ "                              Varsayılan:0"
-
-#~ msgid ""
-#~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all "
-#~ "URLs."
-#~ msgstr ""
-#~ " --http-proxy=MAKİNE:PORT HTTP Proxy sunucusu kullan. Bu bütün URLleri "
-#~ "etkiler."
-
-#~ msgid " -p, --ftp-pasv               Use passive mode in FTP."
-#~ msgstr " -p, --ftp-pasv Pasif mod FTP kullan."
-
-#~ msgid ""
-#~ " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-#~ "                              simultaneously."
-#~ msgstr ""
-#~ " -C, --metalink-servers=SUNUCU_SAYISI Aynı anda bağlanılacak sunucu "
-#~ "sayısı."
-
-#~ msgid ""
-#~ " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
-#~ "                              Default: anonymous"
-#~ msgstr ""
-#~ " --ftp-user=KULLANICI FTP kullanıcısını belirle.Bu bütün URLleri etkiler."
-
-#~ msgid ""
-#~ " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
-#~ "                              Default: ARIA2USER@"
-#~ msgstr ""
-#~ " --ftp-passwd=PASSWD FTP şifresini belirle.Bu bütün URLleri etkiler."
-
-#~ msgid ""
-#~ " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either "
-#~ "'get' or\n"
-#~ "                              'tunnel'.\n"
-#~ "                              Default: tunnel"
-#~ msgstr ""
-#~ " --ftp-via-http-proxy=METOD HTTP proxy üzerinden FTP kullan.Metod 'get' "
-#~ "ya da \n"
-#~ "                              'tunnel' den biri olabilir.Varsayılan:tunnel"
-
-#~ msgid ""
-#~ " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
-#~ "                              Default: false"
-#~ msgstr " --enable-http-pipelining=true|false HTTP/1.1 pipelining aç."
