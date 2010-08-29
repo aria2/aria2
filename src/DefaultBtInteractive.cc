@@ -355,41 +355,40 @@ void DefaultBtInteractive::decideInterest() {
 
 void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
   if(pieceStorage_->hasMissingPiece(peer_)) {
-
     size_t numMissingBlock = btRequestFactory_->countMissingBlock();
-
+    if(numMissingBlock >= maxMissingBlock) {
+      return;
+    }
+    size_t diffMissingBlock = maxMissingBlock-numMissingBlock;
+    std::vector<SharedHandle<Piece> > pieces;
     if(peer_->peerChoking()) {
       if(peer_->isFastExtensionEnabled()) {
-        std::vector<size_t> excludedIndexes;
-        excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
-        btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
-        while(numMissingBlock < maxMissingBlock) {
-          SharedHandle<Piece> piece =
-            pieceStorage_->getMissingFastPiece(peer_, excludedIndexes);
-          if(piece.isNull()) {
-            break;
-          } else {
-            btRequestFactory_->addTargetPiece(piece);
-            numMissingBlock += piece->countMissingBlock();
-            excludedIndexes.push_back(piece->getIndex());
-          }
+        if(pieceStorage_->isEndGame()) {
+          std::vector<size_t> excludedIndexes;
+          excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
+          btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
+          pieceStorage_->getMissingFastPiece
+            (pieces, diffMissingBlock, peer_, excludedIndexes);
+        } else {
+          pieces.reserve(diffMissingBlock);
+          pieceStorage_->getMissingFastPiece(pieces, diffMissingBlock, peer_);
         }
       }
     } else {
-      std::vector<size_t> excludedIndexes;
-      excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
-      btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
-      while(numMissingBlock < maxMissingBlock) {
-        SharedHandle<Piece> piece =
-          pieceStorage_->getMissingPiece(peer_, excludedIndexes);
-        if(piece.isNull()) {
-          break;
-        } else {
-          btRequestFactory_->addTargetPiece(piece);
-          numMissingBlock += piece->countMissingBlock();
-          excludedIndexes.push_back(piece->getIndex());
-        }
+      if(pieceStorage_->isEndGame()) {
+        std::vector<size_t> excludedIndexes;
+        excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
+        btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
+        pieceStorage_->getMissingPiece
+          (pieces, diffMissingBlock, peer_, excludedIndexes);
+      } else {        
+        pieces.reserve(diffMissingBlock);
+        pieceStorage_->getMissingPiece(pieces, diffMissingBlock, peer_);
       }
+    }
+    for(std::vector<SharedHandle<Piece> >::const_iterator i =
+          pieces.begin(), eoi = pieces.end(); i != eoi; ++i) {
+      btRequestFactory_->addTargetPiece(*i);
     }
   }
 }

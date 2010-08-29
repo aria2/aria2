@@ -12,6 +12,9 @@
 #include "InOrderPieceSelector.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
+#include "DiskAdaptor.h"
+#include "DiskWriterFactory.h"
+#include "PieceStatMan.h"
 
 namespace aria2 {
 
@@ -20,7 +23,9 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(DefaultPieceStorageTest);
   CPPUNIT_TEST(testGetTotalLength);
   CPPUNIT_TEST(testGetMissingPiece);
+  CPPUNIT_TEST(testGetMissingPiece_many);
   CPPUNIT_TEST(testGetMissingPiece_excludedIndexes);
+  CPPUNIT_TEST(testGetMissingPiece_manyWithExcludedIndexes);
   CPPUNIT_TEST(testGetMissingFastPiece);
   CPPUNIT_TEST(testGetMissingFastPiece_excludedIndexes);
   CPPUNIT_TEST(testHasMissingPiece);
@@ -57,7 +62,9 @@ public:
 
   void testGetTotalLength();
   void testGetMissingPiece();
+  void testGetMissingPiece_many();
   void testGetMissingPiece_excludedIndexes();
+  void testGetMissingPiece_manyWithExcludedIndexes();
   void testGetMissingFastPiece();
   void testGetMissingFastPiece_excludedIndexes();
   void testHasMissingPiece();
@@ -83,8 +90,6 @@ void DefaultPieceStorageTest::testGetTotalLength() {
 void DefaultPieceStorageTest::testGetMissingPiece() {
   DefaultPieceStorage pss(dctx_, option);
   pss.setPieceSelector(pieceSelector_);
-  pss.setEndGamePieceNum(0);
-
   peer->setAllBitfield();
 
   SharedHandle<Piece> piece = pss.getMissingPiece(peer);
@@ -98,6 +103,24 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
                        piece->toString());
   piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT(piece.isNull());
+}
+
+void DefaultPieceStorageTest::testGetMissingPiece_many() {
+  DefaultPieceStorage pss(dctx_, option);
+  pss.setPieceSelector(pieceSelector_);
+  peer->setAllBitfield();
+  std::vector<SharedHandle<Piece> > pieces;
+  pss.getMissingPiece(pieces, 2, peer);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, pieces.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
+                       pieces[0]->toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
+                       pieces[1]->toString());
+  pieces.clear();
+  pss.getMissingPiece(pieces, 2, peer);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, pieces.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
+                       pieces[0]->toString());
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
@@ -121,6 +144,24 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 
   piece = pss.getMissingPiece(peer, excludedIndexes);
   CPPUNIT_ASSERT(piece.isNull());
+}
+
+void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes() {
+  DefaultPieceStorage pss(dctx_, option);
+  pss.setPieceSelector(pieceSelector_);
+  peer->setAllBitfield();
+  std::vector<size_t> excludedIndexes;
+  excludedIndexes.push_back(1);
+  std::vector<SharedHandle<Piece> > pieces;
+  pss.getMissingPiece(pieces, 2, peer, excludedIndexes);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, pieces.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
+                       pieces[0]->toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
+                       pieces[1]->toString());
+  pieces.clear();
+  pss.getMissingPiece(pieces, 2, peer, excludedIndexes);
+  CPPUNIT_ASSERT(pieces.empty());
 }
 
 void DefaultPieceStorageTest::testGetMissingFastPiece() {

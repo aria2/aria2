@@ -63,6 +63,28 @@ public:
    */
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer) = 0;
 
+  virtual void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes) = 0;
+
+  virtual void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer) = 0;
+
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes) = 0;
+
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer) = 0;
+
   /**
    * Returns a piece that the peer has but localhost doesn't.
    * The piece will be marked "used" status in order to prevent other command

@@ -88,15 +88,13 @@ private:
 
   SharedHandle<PieceSelector> pieceSelector_;
 
-  bool getMissingPieceIndex(size_t& index,
-                            const unsigned char* bitfield, size_t length);
-
-  SharedHandle<Piece> getMissingPiece(const unsigned char* bitfield,
-                                      size_t length);
-
-  SharedHandle<Piece> getMissingPiece(const BitfieldMan& bitfield);
-
 #ifdef ENABLE_BITTORRENT
+  void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const unsigned char* bitfield,
+   size_t length);
+
   void createFastIndexBitfield(BitfieldMan& bitfield,
                                const SharedHandle<Peer>& peer);
 #endif // ENABLE_BITTORRENT
@@ -122,6 +120,28 @@ public:
 #ifdef ENABLE_BITTORRENT
 
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
+
+  virtual void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes);
+
+  virtual void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer);
+
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes);
+
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 

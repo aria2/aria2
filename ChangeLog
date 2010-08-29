@@ -1,3 +1,17 @@
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added a sets of overloaded functions for
+	PieceStorage::getMissingPiece() and getMissingFastPiece() to get
+	multiple pieces more efficiently.
+	* src/DefaultBtInteractive.cc
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* test/DefaultPieceStorageTest.cc
+	* test/MockPieceStorage.h
+
 2010-08-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Changed signature of util::executeHook().

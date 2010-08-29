@@ -78,6 +78,40 @@ bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
   abort();
 }
 
+void UnknownLengthPieceStorage::getMissingPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes)
+{
+  abort();
+}
+
+void UnknownLengthPieceStorage::getMissingPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer)
+{
+  abort();
+}
+
+void UnknownLengthPieceStorage::getMissingFastPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes)
+{
+  abort();
+}
+
+void UnknownLengthPieceStorage::getMissingFastPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer)
+{
+  abort();
+}
+
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 {
   abort();

@@ -59,6 +59,7 @@
 #include "array_fun.h"
 #include "PieceStatMan.h"
 #include "wallclock.h"
+#include "bitfield.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -81,29 +82,6 @@ DefaultPieceStorage::DefaultPieceStorage
 
 DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan_;
-}
-
-bool DefaultPieceStorage::getMissingPieceIndex(size_t& index,
-                                               const unsigned char* bitfield,
-                                               size_t length)
-{
-  const size_t mislen = bitfieldMan_->getBitfieldLength();
-  array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
-  bool r;
-  if(isEndGame()) {
-    r = bitfieldMan_->getAllMissingIndexes(misbitfield, mislen,
-                                           bitfield, length);
-  } else {
-    r = bitfieldMan_->getAllMissingUnusedIndexes(misbitfield, mislen,
-                                                 bitfield, length);
-  }
-  if(r) {
-    // We assume indexes is sorted using comparator less.
-    return
-      pieceSelector_->select(index, misbitfield,bitfieldMan_->countBlock());
-  } else {
-    return false;
-  }
 }
 
 SharedHandle<Piece> DefaultPieceStorage::checkOutPiece(size_t index)
@@ -172,23 +150,6 @@ SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
   }
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
-(const unsigned char* bitfield, size_t length)
-{
-  size_t index;
-  if(getMissingPieceIndex(index, bitfield, length)) {
-    return checkOutPiece(index);
-  } else {
-    return SharedHandle<Piece>();
-  }
-}
-
-SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
-(const BitfieldMan& bitfield)
-{
-  return getMissingPiece(bitfield.getBitfield(), bitfield.getBitfieldLength());
-}
-
 #ifdef ENABLE_BITTORRENT
 
 bool DefaultPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
@@ -197,10 +158,58 @@ bool DefaultPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
                                        peer->getBitfieldLength());
 }
 
-SharedHandle<Piece>
-DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
+void DefaultPieceStorage::getMissingPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const unsigned char* bitfield,
+ size_t length)
 {
-  return getMissingPiece(peer->getBitfield(), peer->getBitfieldLength());
+  const size_t mislen = bitfieldMan_->getBitfieldLength();
+  array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
+  size_t blocks = bitfieldMan_->countBlock();
+  size_t misBlock = 0;
+  if(isEndGame()) {
+    bool r = bitfieldMan_->getAllMissingIndexes
+      (misbitfield, mislen, bitfield, length);
+    if(!r) {
+      return;
+    }
+    std::vector<size_t> indexes;
+    for(size_t i = 0; i < blocks; ++i) {
+      if(bitfield::test(misbitfield, blocks, i)) {
+        indexes.push_back(i);
+      }
+    }
+    std::random_shuffle(indexes.begin(), indexes.end());
+    for(std::vector<size_t>::const_iterator i = indexes.begin(),
+          eoi = indexes.end(); i != eoi && misBlock < minMissingBlocks; ++i) {
+      pieces.push_back(checkOutPiece(*i));
+      misBlock += pieces.back()->countMissingBlock();
+    }
+  } else {
+    bool r = bitfieldMan_->getAllMissingUnusedIndexes
+      (misbitfield, mislen, bitfield, length);
+    if(!r) {
+      return;
+    }
+    while(misBlock < minMissingBlocks) {
+      size_t index;
+      if(pieceSelector_->select(index, misbitfield, blocks)) {
+        pieces.push_back(checkOutPiece(index));
+        bitfield::flipBit(misbitfield, blocks, index);
+        misBlock += pieces.back()->countMissingBlock();
+      } else {
+        break;
+      }
+    }
+  }
+}
+
+static void unsetExcludedIndexes(BitfieldMan& bitfield,
+                                 const std::vector<size_t>& excludedIndexes)
+{
+  std::for_each(excludedIndexes.begin(), excludedIndexes.end(),
+                std::bind1st(std::mem_fun(&BitfieldMan::unsetBit), &bitfield));
 }
 
 void DefaultPieceStorage::createFastIndexBitfield
@@ -215,47 +224,107 @@ void DefaultPieceStorage::createFastIndexBitfield
   }
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer)
+void DefaultPieceStorage::getMissingPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer)
 {
-  if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
-    BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
-                             bitfieldMan_->getTotalLength());
-    createFastIndexBitfield(tempBitfield, peer);
-    return getMissingPiece(tempBitfield);
-  } else {
-    return SharedHandle<Piece>();
-  }
+  getMissingPiece(pieces, minMissingBlocks,
+                  peer->getBitfield(), peer->getBitfieldLength());
 }
 
-static void unsetExcludedIndexes(BitfieldMan& bitfield,
-                                 const std::vector<size_t>& excludedIndexes)
-{
-  std::for_each(excludedIndexes.begin(), excludedIndexes.end(),
-                std::bind1st(std::mem_fun(&BitfieldMan::unsetBit), &bitfield));
-}
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+void DefaultPieceStorage::getMissingPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes)
 {
   BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
                            bitfieldMan_->getTotalLength());
   tempBitfield.setBitfield(peer->getBitfield(), peer->getBitfieldLength());
   unsetExcludedIndexes(tempBitfield, excludedIndexes);
-  return getMissingPiece(tempBitfield);
+  getMissingPiece(pieces, minMissingBlocks,
+                  tempBitfield.getBitfield(), tempBitfield.getBitfieldLength());
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+void DefaultPieceStorage::getMissingFastPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer)
+{
+  if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
+    BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
+                             bitfieldMan_->getTotalLength());
+    createFastIndexBitfield(tempBitfield, peer);
+    getMissingPiece(pieces, minMissingBlocks,
+                    tempBitfield.getBitfield(),
+                    tempBitfield.getBitfieldLength());
+  }
+}
+
+void DefaultPieceStorage::getMissingFastPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
                              bitfieldMan_->getTotalLength());
     createFastIndexBitfield(tempBitfield, peer);
     unsetExcludedIndexes(tempBitfield, excludedIndexes);
-    return getMissingPiece(tempBitfield);
-  } else {
+    getMissingPiece(pieces, minMissingBlocks,
+                    tempBitfield.getBitfield(),
+                    tempBitfield.getBitfieldLength());
+  }
+}
+
+SharedHandle<Piece>
+DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
+{
+  std::vector<SharedHandle<Piece> > pieces;
+  getMissingPiece(pieces, 1, peer);
+  if(pieces.empty()) {
     return SharedHandle<Piece>();
+  } else {
+    return pieces.front();
+  }
+}
+
+SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
+(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+{
+  std::vector<SharedHandle<Piece> > pieces;
+  getMissingPiece(pieces, 1, peer, excludedIndexes);
+  if(pieces.empty()) {
+    return SharedHandle<Piece>();
+  } else {
+    return pieces.front();
+  }
+}
+
+SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
+(const SharedHandle<Peer>& peer)
+{
+  std::vector<SharedHandle<Piece> > pieces;
+  getMissingFastPiece(pieces, 1, peer);
+  if(pieces.empty()) {
+    return SharedHandle<Piece>();
+  } else {
+    return pieces.front();
+  }
+}
+
+SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
+(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+{
+  std::vector<SharedHandle<Piece> > pieces;
+  getMissingFastPiece(pieces, 1, peer, excludedIndexes);
+  if(pieces.empty()) {
+    return SharedHandle<Piece>();
+  } else {
+    return pieces.front();
   }
 }
 

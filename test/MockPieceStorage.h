@@ -48,6 +48,32 @@ public:
     return SharedHandle<Piece>(new Piece());
   }
 
+  virtual void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes)
+  {}
+
+  virtual void getMissingPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer)
+  {}
+
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes)
+  {}
+
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer)
+  {}
+
   virtual SharedHandle<Piece> getMissingPiece
   (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
   {
