@@ -1,5 +1,11 @@
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Pass excludedIndexes when getting metadata piece.
+	* src/UTMetadataRequestFactory.cc
+	* test/UTMetadataRequestFactoryTest.cc
+
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added a sets of overloaded functions for
 	PieceStorage::getMissingPiece() and getMissingFastPiece() to get
 	multiple pieces more efficiently.

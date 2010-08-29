@@ -53,7 +53,9 @@ void UTMetadataRequestFactory::create
  const SharedHandle<PieceStorage>& pieceStorage)
 {
   while(num) {
-    SharedHandle<Piece> p = pieceStorage->getMissingPiece(peer_);
+    std::vector<size_t> metadataRequests = tracker_->getAllTrackedIndex();
+    SharedHandle<Piece> p =
+      pieceStorage->getMissingPiece(peer_, metadataRequests);
     if(p.isNull()) {
       if(logger_->debug()) {
         logger_->debug("No ut_metadata piece is available to download.");

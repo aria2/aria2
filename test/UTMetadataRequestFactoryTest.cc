@@ -29,7 +29,8 @@ public:
     std::deque<size_t> missingIndexes;
 
     virtual SharedHandle<Piece> getMissingPiece
-    (const SharedHandle<Peer>& peer)
+    (const SharedHandle<Peer>& peer,
+     const std::vector<size_t>& exlucdedIndexes)
     {
       if(missingIndexes.empty()) {
         return SharedHandle<Piece>();
