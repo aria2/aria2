@@ -1,5 +1,9 @@
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release 1.10.1
+
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed getMissingFastPiece(piece) and getMissingFastPiece(piece,
 	excludedIndexes) from PieceStorage. Done some code cleanup.
 	* src/DefaultPieceStorage.h
