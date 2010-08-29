@@ -1,5 +1,10 @@
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added a note about the number of connections to help message.
+	* src/version_usage.cc
+
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Run PeerLookupTask more frequently when the number of peer is low.
 	* src/DHTGetPeersCommand.cc
 	* src/DHTGetPeersCommand.h
