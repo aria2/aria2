@@ -114,7 +114,11 @@ bool PeerReceiveHandshakeCommand::executeInternal()
         (StringFormat("Unknown info hash %s",
                       util::toHex(infoHash).c_str()).str());
     }
-
+    if(btRuntime->isHalt()) {
+      getLogger()->debug("Info hash found but the download is over."
+                         " Dropping connection.");
+      return true;
+    }
     TransferStat tstat =
       downloadContext->getOwnerRequestGroup()->calculateStat();
     const unsigned int maxDownloadLimit =
