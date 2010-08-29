@@ -92,6 +92,7 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
         for(size_t i = 0; i < dctx_->getNumPieces(); ++i) {
           pieceStorage_->markPieceMissing(i);
         }
+        throw DL_ABORT_EX("Got wrong ut_metadata");
       }
     }
   } else {

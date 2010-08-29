@@ -1,5 +1,10 @@
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Drop connection when bad ut_metadata is received..
+	* src/UTMetadataDataExtensionMessage.cc
+
+2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Drop connection when BtRuntime::isHalt() is true.
 	* src/PeerReceiveHandshakeCommand.cc
 
