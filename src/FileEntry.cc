@@ -125,78 +125,51 @@ FileEntry::getRequest
  const std::string& method)
 {
   SharedHandle<Request> req;
-  Request r;
-  std::vector<std::string> inFlightHosts;
-  enumerateInFlightHosts(inFlightRequests_.begin(), inFlightRequests_.end(),
-                         std::back_inserter(inFlightHosts));
-
-  if(!requestPool_.empty()) {
-    for(std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin(),
-          eoi = requestPool_.end(); i != eoi; ++i) {
-      r.setUri((*i)->getUri());
-      if(findSecond(usedHosts.begin(), usedHosts.end(), r.getHost()) !=
-         usedHosts.end()) {
-        continue;
-      }
-      if(std::count(inFlightHosts.begin(), inFlightHosts.end(), r.getHost())
-         >= static_cast<int>(maxConnectionPerServer_)) {
-      continue;
-      }
-      req = *i;
-      requestPool_.erase(i);
-      inFlightRequests_.push_back(req);
-      return req;
-    }
-  }
-
-  for(int g = 0; g < 2; ++g) {
-    std::vector<std::string> pending;
-    std::vector<std::string> ignoreHost;
-    while(1) {
-      std::string uri = selector->select(this, usedHosts);
-      if(uri.empty()) {
-        break;
-      }
-      req.reset(new Request());
-      if(req->setUri(uri)) {
-        if(std::count(inFlightHosts.begin(), inFlightHosts.end(),req->getHost())
-           >= static_cast<int>(maxConnectionPerServer_)) {
-          pending.push_back(uri);
-          ignoreHost.push_back(req->getHost());
-          req.reset();
-          continue;
+  if(requestPool_.empty()) {
+    std::vector<std::string> inFlightHosts;
+    enumerateInFlightHosts(inFlightRequests_.begin(), inFlightRequests_.end(),
+                           std::back_inserter(inFlightHosts));
+    for(int g = 0; g < 2; ++g) {
+      std::vector<std::string> pending;
+      std::vector<std::string> ignoreHost;
+      while(1) {
+        std::string uri = selector->select(this, usedHosts);
+        if(uri.empty()) {
+          break;
         }
-        req->setReferer(referer);
-        req->setMethod(method);
-        spentUris_.push_back(uri);
-        inFlightRequests_.push_back(req);
-        break;
+        req.reset(new Request());
+        if(req->setUri(uri)) {
+          if(std::count(inFlightHosts.begin(),
+                        inFlightHosts.end(),req->getHost())
+             >= static_cast<int>(maxConnectionPerServer_)) {
+            pending.push_back(uri);
+            ignoreHost.push_back(req->getHost());
+            req.reset();
+            continue;
+          }
+          req->setReferer(referer);
+          req->setMethod(method);
+          spentUris_.push_back(uri);
+          inFlightRequests_.push_back(req);
+          break;
+        } else {
+          req.reset();
+        }
+      }
+      uris_.insert(uris_.begin(), pending.begin(), pending.end());
+      if(g == 0 && uriReuse && req.isNull() && uris_.size() == pending.size()) {
+        // Reuse URIs other than ones in pending
+        reuseUri(ignoreHost);
       } else {
-        req.reset();
+        break;
       }
     }
-    uris_.insert(uris_.begin(), pending.begin(), pending.end());
-    // TODO UriReuse is performed only when PREF_REUSE_URI is true.
-    if(g == 0 && uriReuse && req.isNull() && uris_.size() == pending.size()) {
-      // Reuse URIs other than ones in pending
-      reuseUri(ignoreHost);
-    } else {
-      break;
-    }
-  }
-  if(req.isNull()) {
-    Request r;
-    for(std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin(),
-          eoi = requestPool_.end(); i != eoi; ++i) {
-      r.setUri((*i)->getUri());
-      if(std::count(inFlightHosts.begin(), inFlightHosts.end(), r.getHost())
-         >= static_cast<int>(maxConnectionPerServer_)) {
-        continue;
-      }
-      req = *i;
-      requestPool_.erase(i);
-      inFlightRequests_.push_back(req);
-      return req;
+  } else {    
+    req = requestPool_.front();
+    requestPool_.pop_front();
+    inFlightRequests_.push_back(req);
+    if(logger_->debug()) {
+      logger_->debug("Picked up from pool: %s", req->getUri().c_str());
     }
   }
   return req;

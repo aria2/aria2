@@ -285,6 +285,7 @@ bool AbstractCommand::execute() {
     }
     req_->addTryCount();
     req_->resetRedirectCount();
+    req_->resetUri();
     const unsigned int maxTries = getOption()->getAsInt(PREF_MAX_TRIES);
     bool isAbort = maxTries != 0 && req_->getTryCount() >= maxTries;
     if(isAbort) {

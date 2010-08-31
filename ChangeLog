@@ -1,3 +1,10 @@
+2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug which prevents HTTP redirection from working when
+	downloading multiple files from same host.
+	* src/AbstractCommand.cc
+	* src/FileEntry.cc
+
 2010-08-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.10.1
