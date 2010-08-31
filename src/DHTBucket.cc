@@ -258,6 +258,7 @@ void DHTBucket::notifyUpdate()
   lastUpdated_ = global::wallclock;
 }
 
+namespace {
 class FindQuestionableNode {
 public:
   bool operator()(const SharedHandle<DHTNode>& node) const
@@ -265,6 +266,7 @@ public:
     return node->isQuestionable();
   }
 };
+}
 
 bool DHTBucket::containsQuestionableNode() const
 {

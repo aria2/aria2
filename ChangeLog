@@ -1,5 +1,47 @@
 2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Enclosed classes and structs declared in *.cc files unnamed
+	namespace. Added static keyword for function template in *.cc
+	files(TODO we should use unnamed namespace instead of static).
+	* src/AbstractCommand.cc
+	* src/AnnounceList.cc
+	* src/BtLeecherStateChoke.cc
+	* src/BtLeecherStateChoke.h
+	* src/BtSeederStateChoke.cc
+	* src/BtSeederStateChoke.h
+	* src/ConsoleStatCalc.cc
+	* src/ContentTypeRequestGroupCriteria.cc
+	* src/CookieStorage.cc
+	* src/DHTBucket.cc
+	* src/DHTPeerAnnounceEntry.cc
+	* src/DHTPeerAnnounceStorage.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPieceStorage.cc
+	* src/ExpatMetalinkProcessor.cc
+	* src/ExpatXmlRpcRequestProcessor.cc
+	* src/FeedbackURISelector.cc
+	* src/FileEntry.cc
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkEntry.cc
+	* src/Metalinker.cc
+	* src/MultiDiskAdaptor.cc
+	* src/Netrc.cc
+	* src/OptionParser.cc
+	* src/PieceStatMan.cc
+	* src/RarestPieceSelector.cc
+	* src/RequestGroupMan.cc
+	* src/SegmentMan.cc
+	* src/ServerStatMan.cc
+	* src/XML2SAXMetalinkProcessor.cc
+	* src/Xml2XmlRpcRequestProcessor.cc
+	* src/XmlRpcResponse.cc
+	* src/a2algo.h
+	* src/download_helper.cc
+
+2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc
 	* doc/aria2c.1.txt
 

@@ -301,6 +301,7 @@ void SegmentMan::eraseSegmentWrittenLengthMemo()
   segmentWrittenLengthMemo_.clear();
 }
 
+namespace {
 class FindSegmentEntry {
 private:
   SharedHandle<Segment> segment_;
@@ -312,6 +313,7 @@ public:
     return segmentEntry->segment->getIndex() == segment_->getIndex();
   }
 };
+}
 
 bool SegmentMan::completeSegment
 (cuid_t cuid, const SharedHandle<Segment>& segment) {
@@ -363,7 +365,7 @@ SharedHandle<PeerStat> SegmentMan::getPeerStat(cuid_t cuid) const
   return SharedHandle<PeerStat>();
 }
 
-
+namespace {
 class PeerStatHostProtoEqual {
 private:
   const SharedHandle<PeerStat>& peerStat_;
@@ -377,6 +379,7 @@ public:
       peerStat_->getProtocol() == p->getProtocol();
   }
 };
+}
 
 void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
@@ -429,6 +432,7 @@ void SegmentMan::updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat)
   peerStatDlspdMap_[pstat->getCuid()] = newspd;
 }
 
+namespace {
 class PeerStatDownloadLengthOperator {
 public:
   uint64_t operator()(uint64_t total, const SharedHandle<PeerStat>& ps)
@@ -436,6 +440,7 @@ public:
     return ps->getSessionDownloadLength()+total;
   }
 };
+}
 
 uint64_t SegmentMan::calculateSessionDownloadLength() const
 {

@@ -349,6 +349,7 @@ void createRequestGroupForMetalink
 }
 #endif // ENABLE_METALINK
 
+namespace {
 class AccRequestGroup {
 private:
   std::vector<SharedHandle<RequestGroup> >& requestGroups_;
@@ -415,7 +416,9 @@ public:
     }
   }
 };
+}
 
+namespace {
 class StreamProtocolFilter {
 private:
   ProtocolDetector detector_;
@@ -424,6 +427,7 @@ public:
     return detector_.isStreamProtocol(uri);
   }
 };
+}
 
 void createRequestGroupForUri
 (std::vector<SharedHandle<RequestGroup> >& result,

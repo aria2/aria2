@@ -65,6 +65,7 @@ DefaultPeerStorage::~DefaultPeerStorage()
   delete leecherStateChoke_;
 }
 
+namespace {
 class FindIdenticalPeer {
 private:
   SharedHandle<Peer> peer_;
@@ -77,6 +78,7 @@ public:
        (peer_->getPort() == peer->getPort()));
   }
 };
+}
 
 bool DefaultPeerStorage::isPeerAlreadyAdded(const SharedHandle<Peer>& peer)
 {
@@ -142,12 +144,14 @@ const std::deque<SharedHandle<Peer> >& DefaultPeerStorage::getDroppedPeers()
   return droppedPeers_;
 }
 
+namespace {
 class FindFinePeer {
 public:
   bool operator()(const SharedHandle<Peer>& peer) const {
     return peer->unused() && peer->isGood();
   }
 };
+}
 
 SharedHandle<Peer> DefaultPeerStorage::getUnusedPeer() {
   std::deque<SharedHandle<Peer> >::const_iterator itr =
@@ -159,6 +163,7 @@ SharedHandle<Peer> DefaultPeerStorage::getUnusedPeer() {
   }
 }
 
+namespace {
 class FindPeer {
 private:
   std::string ipaddr;
@@ -171,6 +176,7 @@ public:
     return ipaddr == peer->getIPAddress() && port == peer->getPort();
   }
 };
+}
 
 SharedHandle<Peer> DefaultPeerStorage::getPeer(const std::string& ipaddr,
                                                uint16_t port) const {
@@ -191,6 +197,7 @@ bool DefaultPeerStorage::isPeerAvailable() {
   return !getUnusedPeer().isNull();
 }
 
+namespace {
 class CollectActivePeer {
 private:
   std::vector<SharedHandle<Peer> >& activePeers_;
@@ -205,6 +212,7 @@ public:
     }
   }
 };
+}
 
 void DefaultPeerStorage::getActivePeers
 (std::vector<SharedHandle<Peer> >& activePeers)

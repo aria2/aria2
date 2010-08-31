@@ -178,6 +178,7 @@ void OptionParser::parse(Option& option, std::istream& is)
   }
 }
 
+namespace {
 class DummyOptionHandler:public NameMatchOptionHandler {
 protected:
   virtual void parseArg(Option& option, const std::string& arg) {}
@@ -189,6 +190,7 @@ public:
     return A2STR::NIL;
   }
 };
+}
 
 OptionHandlerHandle OptionParser::getOptionHandlerByName
 (const std::string& optName)
@@ -239,6 +241,7 @@ void OptionParser::parseDefaultValues(Option& option) const
   }
 }
 
+namespace {
 class FindOptionHandlerByTag :
     public std::unary_function<SharedHandle<OptionHandler>, bool> {
 private:
@@ -251,6 +254,7 @@ public:
     return !optionHandler->isHidden() && optionHandler->hasTag(tag_);
   }
 };
+}
 
 std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByTag(const std::string& tag) const
@@ -263,6 +267,7 @@ OptionParser::findByTag(const std::string& tag) const
   return result;
 }
 
+namespace {
 class FindOptionHandlerByNameSubstring :
     public std::unary_function<SharedHandle<OptionHandler> , bool> {
 private:
@@ -277,6 +282,7 @@ public:
       optionHandler->getName().find(substring_) != std::string::npos;
   }
 };
+}
 
 std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByNameSubstring(const std::string& substring) const
@@ -327,6 +333,7 @@ OptionParser::findByName(const std::string& name) const
   return handler;
 }
 
+namespace {
 class FindOptionHandlerByID:public std::unary_function
 <SharedHandle<OptionHandler>, bool> {
 private:
@@ -339,6 +346,7 @@ public:
     return !optionHandler->isHidden() && optionHandler->getOptionID() == id_;
   }
 };
+}
 
 SharedHandle<OptionHandler> OptionParser::findByID(int id) const
 {
@@ -346,6 +354,7 @@ SharedHandle<OptionHandler> OptionParser::findByID(int id) const
                            FindOptionHandlerByID(id));
 }
 
+namespace {
 class FindOptionHandlerByShortName:
     public std::unary_function<SharedHandle<OptionHandler>, bool> {
 private:
@@ -359,6 +368,7 @@ public:
       optionHandler->getShortName() == shortName_;
   }
 };
+}
 
 SharedHandle<OptionHandler> OptionParser::findByShortName(char shortName) const
 {

@@ -267,6 +267,7 @@ static void executeStopHook
   }
 }
 
+namespace {
 class ProcessStoppedRequestGroup {
 private:
   DownloadEngine* e_;
@@ -359,7 +360,9 @@ public:
     }
   }
 };
+}
 
+namespace {
 class CollectServerStat {
 private:
   RequestGroupMan* requestGroupMan_;
@@ -401,13 +404,16 @@ public:
     }    
   }
 };
+}
 
+namespace {
 class FindStoppedRequestGroup {
 public:
   bool operator()(const SharedHandle<RequestGroup>& group) {
     return group->getNumCommand() == 0;
   }
 };
+}
 
 void RequestGroupMan::updateServerStat()
 {

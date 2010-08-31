@@ -164,6 +164,7 @@ struct CookiePathDivider {
   }
 };
 
+namespace {
 class CookiePathDividerConverter {
 public:
   CookiePathDivider operator()(const Cookie& cookie) const
@@ -176,7 +177,9 @@ public:
     return cookiePathDivider.cookie_;
   }
 };
+}
 
+namespace {
 class OrderByPathDepthDesc:public std::binary_function<Cookie, Cookie, bool> {
 public:
   bool operator()
@@ -203,6 +206,7 @@ public:
     }
   }
 };
+}
 
 template<typename DomainInputIterator, typename CookieOutputIterator>
 static void searchCookieByDomainSuffix

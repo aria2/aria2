@@ -70,6 +70,7 @@ void DefaultBtRequestFactory::addTargetPiece(const SharedHandle<Piece>& piece)
   pieces_.push_back(piece);
 }
 
+namespace {
 class AbortCompletedPieceRequest
 {
 private:
@@ -85,6 +86,7 @@ public:
     }
   }
 };
+}
 
 void DefaultBtRequestFactory::removeCompletedPiece() {
   std::for_each(pieces_.begin(), pieces_.end(),
@@ -103,6 +105,7 @@ void DefaultBtRequestFactory::removeTargetPiece
   pieceStorage_->cancelPiece(piece);
 }
 
+namespace {
 class ProcessChokedPiece {
 private:
   SharedHandle<Peer> peer_;
@@ -120,7 +123,9 @@ public:
     }
   }
 };
+}
 
+namespace {
 class FindChokedPiece {
 private:
   SharedHandle<Peer> peer_;
@@ -132,6 +137,7 @@ public:
     return !peer_->isInPeerAllowedIndexSet(piece->getIndex());
   }
 };
+}
 
 void DefaultBtRequestFactory::doChokedAction()
 {
@@ -226,6 +232,7 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
   }
 }
 
+namespace {
 class CountMissingBlock
 {
 private:
@@ -243,6 +250,7 @@ public:
     numMissingBlock_ += piece->countMissingBlock();
   }
 };
+}
 
 size_t DefaultBtRequestFactory::countMissingBlock()
 {

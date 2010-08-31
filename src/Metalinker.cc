@@ -42,6 +42,7 @@ Metalinker::Metalinker() {}
 
 Metalinker::~Metalinker() {}
 
+namespace {
 class EntryQuery:
     public std::unary_function<SharedHandle<MetalinkEntry>, bool> {
 private:
@@ -75,6 +76,7 @@ public:
     return true;
   }
 };
+}
 
 void Metalinker::queryEntry
 (std::vector<SharedHandle<MetalinkEntry> >& queryResult,

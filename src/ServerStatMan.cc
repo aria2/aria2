@@ -140,6 +140,7 @@ bool ServerStatMan::load(std::istream& in)
   return !in.bad();
 }
 
+namespace {
 class FindStaleServerStat {
 private:
   time_t timeout_;
@@ -152,6 +153,7 @@ public:
     return ss->getLastUpdated().difference(time_) >= timeout_;
   }
 };
+}
 
 void ServerStatMan::removeStaleServerStat(time_t timeout)
 {

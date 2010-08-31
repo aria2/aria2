@@ -542,6 +542,7 @@ static bool isProxyRequest
   return !proxyUri.empty() && Request().setUri(proxyUri);
 }
 
+namespace {
 class DomainMatch {
 private:
   std::string hostname_;
@@ -557,6 +558,7 @@ public:
     }
   }
 };
+}
 
 static bool inNoProxy(const SharedHandle<Request>& req,
                       const std::string& noProxy)

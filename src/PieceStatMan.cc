@@ -57,6 +57,7 @@ void PieceStat::subCount()
   }
 }
 
+namespace {
 class GenPieceStat {
 private:
   size_t index_;
@@ -68,6 +69,7 @@ public:
     return SharedHandle<PieceStat>(new PieceStat(index_++));
   }
 };
+}
 
 PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
   pieceStats_(pieceNum),
@@ -91,6 +93,7 @@ PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
   }  
 }
 
+namespace {
 class PieceStatRarer {
 private:
   const std::vector<SharedHandle<PieceStat> >& pieceStats_;
@@ -103,6 +106,7 @@ public:
     return pieceStats_[lhs] < pieceStats_[rhs];
   }
 };
+}
 
 void PieceStatMan::addPieceStats(const unsigned char* bitfield,
                                  size_t bitfieldLength)

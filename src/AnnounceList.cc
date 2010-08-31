@@ -39,6 +39,7 @@
 #include "A2STR.h"
 #include "SimpleRandomizer.h"
 #include "util.h"
+#include "a2algo.h"
 
 namespace aria2 {
 
@@ -159,6 +160,7 @@ std::string AnnounceList::getEventString() const {
   }
 }
 
+namespace {
 class FindStoppedAllowedTier {
 public:
   bool operator()(const SharedHandle<AnnounceTier>& tier) const {
@@ -173,7 +175,9 @@ public:
     }
   }
 };
+}
 
+namespace {
 class FindCompletedAllowedTier {
 public:
   bool operator()(const SharedHandle<AnnounceTier>& tier) const {
@@ -186,6 +190,7 @@ public:
     }
   }
 };
+}
 
 size_t AnnounceList::countStoppedAllowedTier() const {
   return count_if(tiers_.begin(), tiers_.end(), FindStoppedAllowedTier());
@@ -201,17 +206,6 @@ void AnnounceList::setCurrentTier
     currentTier_ = itr;
     currentTracker_ = (*currentTier_)->urls.begin();
   }
-}
-
-template<class InputIterator, class Predicate>
-InputIterator
-find_wrap_if(InputIterator first, InputIterator last,
-             InputIterator current, Predicate pred) {
-  InputIterator itr = std::find_if(current, last, pred);
-  if(itr == last) {
-    itr = std::find_if(first, current, pred);
-  }
-  return itr;
 }
 
 void AnnounceList::moveToStoppedAllowedTier() {

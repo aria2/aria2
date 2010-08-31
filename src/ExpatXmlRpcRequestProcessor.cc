@@ -47,6 +47,7 @@ namespace aria2 {
 
 namespace xmlrpc {
 
+namespace {
 struct SessionData {
   XmlRpcRequestParserStateMachine* stm_;
 
@@ -54,6 +55,7 @@ struct SessionData {
 
   SessionData(XmlRpcRequestParserStateMachine* stm):stm_(stm) {}
 };
+}
 
 static void mlStartElement(void* userData, const char* name, const char** attrs)
 {

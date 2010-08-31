@@ -44,7 +44,7 @@
 namespace aria2 {
 
 template<typename InputIterator>
-bool tailMatch
+static bool tailMatch
 (InputIterator first, InputIterator last, const std::string& target)
 {
   for(; first != last; ++first) {

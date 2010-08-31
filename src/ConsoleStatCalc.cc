@@ -147,6 +147,7 @@ static void printProgress
   o << "]";
 }
 
+namespace {
 class PrintSummary
 {
 private:
@@ -173,6 +174,7 @@ public:
               << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
   }
 };
+}
 
 static void printProgressSummary
 (const std::deque<SharedHandle<RequestGroup> >& groups, size_t cols,

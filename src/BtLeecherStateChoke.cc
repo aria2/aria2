@@ -103,21 +103,12 @@ bool BtLeecherStateChoke::PeerEntry::operator<(const PeerEntry& peerEntry) const
   return downloadSpeed_ > peerEntry.downloadSpeed_;
 }
 
-class PeerFilter {
-private:
-  bool amChoking_;
-  bool peerInterested_;
-public:
-  PeerFilter(bool amChoking, bool peerInterested):
-    amChoking_(amChoking),
-    peerInterested_(peerInterested) {}
-
-  bool operator()(const BtLeecherStateChoke::PeerEntry& peerEntry) const
-  {
-    return peerEntry.getPeer()->amChoking() == amChoking_ &&
-      peerEntry.getPeer()->peerInterested() == peerInterested_;
-  }
-};
+bool BtLeecherStateChoke::PeerFilter::operator()
+  (const PeerEntry& peerEntry) const
+{
+  return peerEntry.getPeer()->amChoking() == amChoking_ &&
+    peerEntry.getPeer()->peerInterested() == peerInterested_;
+}
 
 void BtLeecherStateChoke::plannedOptimisticUnchoke
 (std::vector<PeerEntry>& peerEntries)
@@ -176,15 +167,6 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
     }
   }
 }
-
-class BtLeecherStateChokeGenPeerEntry {
-public:
-  BtLeecherStateChoke::PeerEntry operator()
-  (const SharedHandle<Peer>& peer) const
-  {
-    return BtLeecherStateChoke::PeerEntry(peer);
-  }
-};
 
 void
 BtLeecherStateChoke::executeChoke

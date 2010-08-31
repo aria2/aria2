@@ -57,6 +57,7 @@ MetalinkEntry::MetalinkEntry():
 
 MetalinkEntry::~MetalinkEntry() {}
 
+namespace {
 class AddLocationPriority {
 private:
   std::vector<std::string> locations_;
@@ -76,6 +77,7 @@ public:
     }
   }
 };
+}
 
 MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
 {
@@ -111,6 +113,7 @@ void MetalinkEntry::setLocationPriority
                 AddLocationPriority(locations, priorityToAdd));
 }
 
+namespace {
 class AddProtocolPriority {
 private:
   std::string protocol_;
@@ -126,6 +129,7 @@ public:
     }
   }
 };
+}
 
 void MetalinkEntry::setProtocolPriority(const std::string& protocol,
                                           int priorityToAdd)
@@ -134,6 +138,7 @@ void MetalinkEntry::setProtocolPriority(const std::string& protocol,
                 AddProtocolPriority(protocol, priorityToAdd));
 }
 
+namespace {
 template<typename T>
 class PriorityHigher {
 public:
@@ -143,6 +148,7 @@ public:
     return res1->priority < res2->priority;
   }
 };
+}
 
 void MetalinkEntry::reorderResourcesByPriority() {
   std::random_shuffle(resources.begin(), resources.end(),
@@ -156,6 +162,7 @@ void MetalinkEntry::reorderMetaurlsByPriority()
   std::sort(metaurls.begin(), metaurls.end(),PriorityHigher<MetalinkMetaurl>());
 }
 
+namespace {
 class Supported:public std::unary_function<SharedHandle<MetalinkResource>, bool> {
 public:
   bool operator()(const SharedHandle<MetalinkResource>& res) const
@@ -175,6 +182,7 @@ public:
     }
   }
 };
+}
 
 void MetalinkEntry::dropUnsupportedResource() {
   resources.erase(std::remove_if(resources.begin(), resources.end(),

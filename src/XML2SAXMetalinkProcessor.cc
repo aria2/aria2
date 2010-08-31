@@ -47,6 +47,7 @@
 
 namespace aria2 {
 
+namespace {
 class SessionData {
 public:
   SharedHandle<MetalinkParserStateMachine> stm_;
@@ -55,6 +56,7 @@ public:
 
   SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):stm_(stm) {}
 };
+}
 
 static void mlStartElement
 (void* userData,

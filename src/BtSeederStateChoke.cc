@@ -83,6 +83,12 @@ void BtSeederStateChoke::PeerEntry::disableOptUnchoking()
   peer_->optUnchoking(false);
 }
 
+bool BtSeederStateChoke::NotInterestedPeer::operator()
+  (const PeerEntry& peerEntry) const
+{
+  return !peerEntry.getPeer()->peerInterested();
+}
+
 void BtSeederStateChoke::unchoke
 (std::vector<BtSeederStateChoke::PeerEntry>& peers)
 {
@@ -110,6 +116,7 @@ void BtSeederStateChoke::unchoke
   }
 }
 
+namespace {
 class ChokingRequired {
 public:
   void operator()(const SharedHandle<Peer>& peer) const
@@ -117,22 +124,7 @@ public:
     peer->chokingRequired(true);
   }
 };
-
-class GenPeerEntry {
-public:
-  BtSeederStateChoke::PeerEntry operator()(const SharedHandle<Peer>& peer) const
-  {
-    return BtSeederStateChoke::PeerEntry(peer);
-  }
-};
-
-class NotInterestedPeer {
-public:
-  bool operator()(const BtSeederStateChoke::PeerEntry& peerEntry) const
-  {
-    return !peerEntry.getPeer()->peerInterested();
-  }
-};
+}
 
 void
 BtSeederStateChoke::executeChoke

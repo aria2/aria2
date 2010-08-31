@@ -351,6 +351,7 @@ static size_t calculateLength(const DiskWriterEntryHandle entry,
   return length;
 }
 
+namespace {
 class OffsetCompare {
 public:
   bool operator()(off_t offset, const SharedHandle<DiskWriterEntry>& dwe)
@@ -358,6 +359,7 @@ public:
     return offset < dwe->getFileEntry()->getOffset();
   }
 };
+}
 
 static DiskWriterEntries::const_iterator
 findFirstDiskWriterEntry

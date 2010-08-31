@@ -55,6 +55,7 @@ FeedbackURISelector::FeedbackURISelector
 
 FeedbackURISelector::~FeedbackURISelector() {}
 
+namespace {
 class ServerStatFaster {
 public:
   bool operator()(const std::pair<SharedHandle<ServerStat>, std::string> lhs,
@@ -64,6 +65,7 @@ public:
     return lhs.first->getDownloadSpeed() > rhs.first->getDownloadSpeed();
   }
 };
+}
 
 std::string FeedbackURISelector::select
 (FileEntry* fileEntry,

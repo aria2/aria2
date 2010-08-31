@@ -49,6 +49,7 @@
 
 namespace aria2 {
 
+namespace {
 class SessionData {
 public:
   SharedHandle<MetalinkParserStateMachine> stm_;
@@ -57,6 +58,7 @@ public:
 
   SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):stm_(stm) {}
 };
+}
 
 static void splitNsName
 (std::string& localname, std::string& prefix, std::string& nsUri,

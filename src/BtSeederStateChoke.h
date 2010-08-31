@@ -78,8 +78,18 @@ private:
 
   void unchoke(std::vector<PeerEntry>& peers);
 
-  friend class GenPeerEntry;
-  friend class NotInterestedPeer;
+  class GenPeerEntry {
+  public:
+    PeerEntry operator()(const SharedHandle<Peer>& peer) const
+    {
+      return PeerEntry(peer);
+    }
+  };
+
+  class NotInterestedPeer {
+  public:
+    bool operator()(const PeerEntry& peerEntry) const;
+  };
 public:
   BtSeederStateChoke();
 

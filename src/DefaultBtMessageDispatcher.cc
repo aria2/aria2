@@ -140,6 +140,7 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 {
 }
 
+namespace {
 class AbortOutstandingRequest {
 private:
   SharedHandle<Piece> piece_;
@@ -163,6 +164,7 @@ public:
     piece_->cancelBlock(slot.getBlockIndex());
   }
 };
+}
 
 // localhost cancels outstanding download requests to the peer.
 void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
@@ -186,6 +188,7 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
                   &BtMessage::onAbortOutstandingRequestEvent, event);
 }
 
+namespace {
 class ProcessChokedRequestSlot {
 private:
   cuid_t cuid_;
@@ -217,7 +220,9 @@ public:
   }
 
 };
+}
 
+namespace {
 class FindChokedRequestSlot {
 private:
   SharedHandle<Peer> peer_;
@@ -230,6 +235,7 @@ public:
     return !peer_->isInPeerAllowedIndexSet(slot.getIndex());
   }
 };
+}
 
 // localhost received choke message from the peer.
 void DefaultBtMessageDispatcher::doChokedAction()
@@ -253,6 +259,7 @@ void DefaultBtMessageDispatcher::doChokingAction()
                   &BtMessage::onChokingEvent, event);
 }
 
+namespace {
 class ProcessStaleRequestSlot {
 private:
   cuid_t cuid_;
@@ -301,7 +308,9 @@ public:
     }
   }
 };
+}
 
+namespace {
 class FindStaleRequestSlot {
 private:
   SharedHandle<PieceStorage> pieceStorage_;
@@ -325,6 +334,7 @@ public:
     }
   }
 };
+}
 
 void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 {
@@ -350,6 +360,7 @@ bool DefaultBtMessageDispatcher::isSendingInProgress()
   }
 }
 
+namespace {
 class BlockIndexLess {
 public:
   bool operator()(const RequestSlot& lhs, const RequestSlot& rhs) const
@@ -361,6 +372,7 @@ public:
     }
   }
 };
+}
 
 bool DefaultBtMessageDispatcher::isOutstandingRequest
 (size_t index, size_t blockIndex) {

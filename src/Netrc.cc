@@ -150,6 +150,7 @@ void Netrc::storeAuthenticator(const SharedHandle<Authenticator>& authenticator)
   }
 }
 
+namespace {
 class AuthHostMatch {
 private:
   std::string hostname;
@@ -161,6 +162,7 @@ public:
     return authenticator->match(hostname);
   }
 };
+}
 
 SharedHandle<Authenticator>
 Netrc::findAuthenticator(const std::string& hostname) const

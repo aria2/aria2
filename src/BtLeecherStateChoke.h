@@ -86,8 +86,25 @@ private:
 
   void regularUnchoke(std::vector<PeerEntry>& peerEntries);
 
-  friend class PeerFilter;
-  friend class BtLeecherStateChokeGenPeerEntry;
+  class PeerFilter {
+  private:
+    bool amChoking_;
+    bool peerInterested_;
+  public:
+    PeerFilter(bool amChoking, bool peerInterested):
+      amChoking_(amChoking),
+      peerInterested_(peerInterested) {}
+
+    bool operator()(const PeerEntry& peerEntry) const;
+  };
+
+  class BtLeecherStateChokeGenPeerEntry {
+  public:
+    PeerEntry operator()(const SharedHandle<Peer>& peer) const
+    {
+      return PeerEntry(peer);
+    }
+  };
 public:
   BtLeecherStateChoke();
 

@@ -56,6 +56,7 @@ DHTPeerAnnounceStorage::DHTPeerAnnounceStorage():
 
 DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
 
+namespace {
 class InfoHashLess
 {
 public:
@@ -65,6 +66,7 @@ public:
     return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
   }
 };
+}
 
 SharedHandle<DHTPeerAnnounceEntry>
 DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
@@ -116,6 +118,7 @@ void DHTPeerAnnounceStorage::getPeers(std::vector<SharedHandle<Peer> >& peers,
   }
 }
 
+namespace {
 class RemoveStalePeerAddrEntry
 {
 public:
@@ -124,6 +127,7 @@ public:
     e->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
   }
 };
+}
 
 void DHTPeerAnnounceStorage::handleTimeout()
 {

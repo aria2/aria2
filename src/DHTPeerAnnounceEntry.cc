@@ -66,6 +66,7 @@ size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
   return peerAddrEntries_.size();
 }
 
+namespace {
 class FindStaleEntry {
 private:
   time_t timeout_;
@@ -81,6 +82,7 @@ public:
     }
   }
 };
+}
 
 void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
 {

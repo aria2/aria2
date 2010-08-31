@@ -44,6 +44,7 @@ namespace aria2 {
 RarestPieceSelector::RarestPieceSelector
 (const SharedHandle<PieceStatMan>& pieceStatMan):pieceStatMan_(pieceStatMan) {}
 
+namespace {
 class FindRarestPiece
 {
 private:
@@ -60,6 +61,7 @@ public:
     return misbitfield_[index/8]&mask;
   }
 };
+}
 
 bool RarestPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const

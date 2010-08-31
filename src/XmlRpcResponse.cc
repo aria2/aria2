@@ -95,7 +95,7 @@ static void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
 }
 
 template<typename OutputStream>
-std::string encodeAll
+static std::string encodeAll
 (OutputStream& o, int code, const SharedHandle<ValueBase>& param)
 {
   o << "<?xml version=\"1.0\"?>" << "<methodResponse>";

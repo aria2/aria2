@@ -203,6 +203,7 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
   return SharedHandle<Request>();
 }
 
+namespace {
 class RequestFaster {
 public:
   bool operator()(const SharedHandle<Request>& lhs,
@@ -218,6 +219,7 @@ public:
       lhs->getPeerStat()->getAvgDownloadSpeed() > rhs->getPeerStat()->getAvgDownloadSpeed();
   }
 };
+}
 
 void FileEntry::storePool(const SharedHandle<Request>& request)
 {
@@ -282,6 +284,7 @@ void FileEntry::addURIResult(std::string uri, downloadresultcode::RESULT result)
   uriResults_.push_back(URIResult(uri, result));
 }
 
+namespace {
 class FindURIResultByResult {
 private:
   downloadresultcode::RESULT r_;
@@ -293,6 +296,7 @@ public:
     return uriResult.getResult() == r_;
   }
 };
+}
 
 void FileEntry::extractURIResult
 (std::deque<URIResult>& res, downloadresultcode::RESULT r)

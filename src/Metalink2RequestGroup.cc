@@ -69,6 +69,7 @@ namespace aria2 {
 Metalink2RequestGroup::Metalink2RequestGroup():
   logger_(LogFactory::getInstance()) {}
 
+namespace {
 class AccumulateNonP2PUri {
 private:
   std::vector<std::string>& urisPtr;
@@ -88,7 +89,9 @@ public:
     }
   }
 };
+}
 
+namespace {
 class FindBitTorrentUri {
 public:
   FindBitTorrentUri() {}
@@ -101,6 +104,7 @@ public:
     }
   }
 };
+}
 
 void
 Metalink2RequestGroup::generate

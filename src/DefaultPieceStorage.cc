@@ -643,6 +643,7 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(std::vector<size_t>& indexes,
   }
 }
 
+namespace {
 class FindElapsedHave
 {
 private:
@@ -658,7 +659,8 @@ public:
     }
   }
 };
-  
+}
+
 void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
 {
   std::deque<HaveEntry>::iterator itr =
