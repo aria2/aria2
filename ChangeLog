@@ -1,5 +1,11 @@
 2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.10.2
+	* configure.ac
+	* doc/aria2c.1.txt
+
+2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Enclosed classes and structs declared in *.cc files unnamed
 	namespace. Added static keyword for function template in *.cc
 	files(TODO we should use unnamed namespace instead of static).
