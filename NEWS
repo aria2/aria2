@@ -1,3 +1,25 @@
+aria2 1.10.2
+============
+
+Release Note
+------------
+
+This release fixes the bug that prevents HTTP redirect from working
+when multiple files are downloaded from same host at the same time.
+For netrc, aria2 now performs domain match if machine name defined in
+.netrc starts with ".".
+
+Changes
+-------
+
+ * In .netrc file, if machine name starts ".", aria2 performs domain
+   match instead of exact match.
+
+ * Fixed the bug which prevents HTTP redirection from working when
+   downloading multiple files from same host at the same time.
+
+
+
 aria2 1.10.1
 ============
 
