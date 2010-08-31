@@ -43,6 +43,7 @@
 
 #include "SharedHandle.h"
 #include "A2STR.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -75,7 +76,15 @@ public:
 
   virtual bool match(const std::string& hostname) const
   {
-    return hostname == machine_;
+    if(util::isNumericHost(hostname)) {
+      return hostname == machine_;
+    } else {
+      if(util::startsWith(machine_, A2STR::DOT_C)) {
+        return util::endsWith(A2STR::DOT_C+hostname, machine_);
+      } else {
+        return hostname == machine_;
+      }
+    }
   }
 
   const std::string& getMachine() const
