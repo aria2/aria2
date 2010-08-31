@@ -1,5 +1,10 @@
 2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* doc/aria2c.1.txt
+
+2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added test for previous change
 	* test/NetrcTest.cc
 

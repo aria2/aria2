@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 08/27/2010
+.\"      Date: 08/31/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.10.1
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "08/27/2010" "Aria2 1\&.10\&.1" "Aria2 Manual"
+.TH "ARIA2C" "1" "08/31/2010" "Aria2 1\&.10\&.1" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -1654,7 +1654,24 @@ ftp\-pasv=true
 .\}
 .SS "dht\&.dat"
 .sp
-By default, the routing table of DHT is saved to the path $HOME/\&.aria2/dht\&.dat\&.
+By default, the routing table of IPv4 DHT is saved to the path $HOME/\&.aria2/dht\&.dat and the routing table of IPv6 DHT is saved to the path $HOME/\&.aria2/dht6\&.dat\&.
+.SS "Netrc"
+.sp
+Netrc support is enabled by default for HTTP(S)/FTP\&. To disable netrc support, specify \fB\-n\fR option\&. Your \&.netrc file should have correct permissions(600)\&.
+.sp
+If machine name starts "\&.", aria2 performs domain match instead of exact match\&. This is an extension of aria2\&. For example of domain match, imagine the following \&.netrc entry:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+machine \&.example\&.org login myid password mypasswd
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+In domain match, aria2\&.example\&.org matches \&.example\&.org and uses myid and mypasswd\&. example\&.org also matches \&.example\&.org\&. But example\&.net does not match \&.example\&.org\&.
 .SS "Control File"
 .sp
 aria2 uses a control file to track the progress of a download\&. A control file is placed in the same directory as the downloading file and its filename is the filename of downloading file with "\&.aria2" appended\&. For example, if you are downloading file\&.zip, then the control file should be file\&.zip\&.aria2\&. (There is a exception for this naming convention\&. If you are downloading a multi torrent, its control file is the "top directory" name of the torrent with "\&.aria2" appended\&. The "top directory" name is a value of "name" key in "info" directory in a torrent file\&.)

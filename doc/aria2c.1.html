@@ -2594,7 +2594,23 @@ max-upload-limit=50K
 ftp-pasv=true</tt></pre>
 </div></div>
 <h3 id="_dht_dat">dht.dat</h3><div style="clear:left"></div>
-<div class="paragraph"><p>By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.</p></div>
+<div class="paragraph"><p>By default, the routing table of IPv4 DHT is saved to the path
+$HOME/.aria2/dht.dat and the routing table of IPv6 DHT is saved to the
+path $HOME/.aria2/dht6.dat.</p></div>
+<h3 id="_netrc">Netrc</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
+support, specify <strong>-n</strong> option.  Your .netrc file should have correct
+permissions(600).</p></div>
+<div class="paragraph"><p>If machine name starts ".", aria2 performs domain match instead of
+exact match. This is an extension of aria2. For example of domain
+match, imagine the following .netrc entry:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>machine .example.org login myid password mypasswd</tt></pre>
+</div></div>
+<div class="paragraph"><p>In domain match, aria2.example.org matches .example.org and uses myid
+and mypasswd. example.org also matches .example.org.  But example.net
+does not match .example.org.</p></div>
 <h3 id="_control_file">Control File</h3><div style="clear:left"></div>
 <div class="paragraph"><p>aria2 uses a control file to track the progress of a download.  A
 control file is placed in the same directory as the downloading file
@@ -4364,7 +4380,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-08-27 20:49:24 JST
+Last updated 2010-08-31 20:49:59 JST
 </div>
 </div>
 </body>

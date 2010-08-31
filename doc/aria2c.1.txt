@@ -1178,7 +1178,29 @@ ftp-pasv=true
 
 dht.dat
 ~~~~~~~~
-By default, the routing table of DHT is saved to the path $HOME/.aria2/dht.dat.
+
+By default, the routing table of IPv4 DHT is saved to the path
+$HOME/.aria2/dht.dat and the routing table of IPv6 DHT is saved to the
+path $HOME/.aria2/dht6.dat.
+
+Netrc
+~~~~~
+
+Netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
+support, specify *-n* option.  Your .netrc file should have correct
+permissions(600).
+
+If machine name starts ".", aria2 performs domain match instead of
+exact match. This is an extension of aria2. For example of domain
+match, imagine the following .netrc entry:
+
+-------------------------------------------------
+machine .example.org login myid password mypasswd
+-------------------------------------------------
+
+In domain match, aria2.example.org matches .example.org and uses myid
+and mypasswd. example.org also matches .example.org.  But example.net
+does not match .example.org.
 
 Control File
 ~~~~~~~~~~~~
