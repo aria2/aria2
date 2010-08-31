@@ -40,6 +40,8 @@ void NetrcTest::testFindAuthenticator()
   netrc.addAuthenticator
     (SharedHandle<Authenticator>(new Authenticator("host2", "aria2", "aria2password", "aria2account")));
   netrc.addAuthenticator
+    (SharedHandle<Authenticator>(new Authenticator(".my.domain", "dmname", "dmpass", "dmaccount")));
+  netrc.addAuthenticator
     (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
 
   SharedHandle<Authenticator> aria2auth = netrc.findAuthenticator("host2");
@@ -53,6 +55,16 @@ void NetrcTest::testFindAuthenticator()
   CPPUNIT_ASSERT_EQUAL(std::string("default"), defaultauth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("defaultpassword"), defaultauth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("defaultaccount"), defaultauth->getAccount());
+
+  SharedHandle<Authenticator> domainMatchAuth =
+    netrc.findAuthenticator("host3.my.domain");
+  CPPUNIT_ASSERT(!domainMatchAuth.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("dmname"), domainMatchAuth->getLogin());
+
+  SharedHandle<Authenticator> domainMatchAuth2 =
+    netrc.findAuthenticator("my.domain");
+  CPPUNIT_ASSERT(!domainMatchAuth2.isNull());
+  CPPUNIT_ASSERT_EQUAL(std::string("dmname"), domainMatchAuth2->getLogin());
 }
 
 void NetrcTest::testParse()

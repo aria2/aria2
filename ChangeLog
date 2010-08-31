@@ -1,5 +1,10 @@
 2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added test for previous change
+	* test/NetrcTest.cc
+
+2010-08-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	In .netrc file, if machine name starts ".", aria2 performs domain
 	match instead of exact match. This is an extension of aria2.
 	* src/Netrc.h
