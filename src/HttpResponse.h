@@ -48,7 +48,7 @@ namespace aria2 {
 class HttpRequest;
 class HttpHeader;
 class Logger;
-class Decoder;
+class StreamFilter;
 
 class HttpResponse {
 private:
@@ -86,13 +86,13 @@ public:
 
   std::string getTransferEncoding() const;
 
-  SharedHandle<Decoder> getTransferEncodingDecoder() const;
+  SharedHandle<StreamFilter> getTransferEncodingStreamFilter() const;
 
   bool isContentEncodingSpecified() const;
 
   const std::string& getContentEncoding() const;
 
-  SharedHandle<Decoder> getContentEncodingDecoder() const;
+  SharedHandle<StreamFilter> getContentEncodingStreamFilter() const;
 
   uint64_t getContentLength() const;
 

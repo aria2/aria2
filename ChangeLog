@@ -1,3 +1,37 @@
+2010-09-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Data from remote server in HTTP/FTP download are now written to
+	the disk(or memory) through StreamFilter. Decoding chunked and
+	gziped streams are done cascading StreamFilter.
+	Removed inefficient 1byte read code.
+	* src/ChunkedDecodingStreamFilter.cc
+	* src/ChunkedDecodingStreamFilter.h
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/GZipDecodingStreamFilter.cc
+	* src/GZipDecodingStreamFilter.h
+	* src/HttpConnection.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	* src/HttpSkipResponseCommand.cc
+	* src/HttpSkipResponseCommand.h
+	* src/Makefile.am
+	* src/NullSinkStreamFilter.cc
+	* src/NullSinkStreamFilter.h
+	* src/RequestGroup.cc
+	* src/SinkStreamFilter.cc
+	* src/SinkStreamFilter.h
+	* src/StreamFilter.cc
+	* src/StreamFilter.h
+	* test/ChunkedDecodingStreamFilterTest.cc
+	* test/GZipDecodingStreamFilterTest.cc
+	* test/HttpResponseTest.cc
+	* test/Makefile.am
+	* test/MockSegment.h
+
 2010-09-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.10.2

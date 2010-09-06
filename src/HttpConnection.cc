@@ -134,7 +134,7 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
     if(socket_->wantRead() || socket_->wantWrite()) {
       return SharedHandle<HttpResponse>();
     } else {
-      throw DL_RETRY_EX(EX_INVALID_RESPONSE);
+      throw DL_RETRY_EX(EX_GOT_EOF);
     }
   }
   proc->update(buf, size);

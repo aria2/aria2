@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,53 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_SKIP_RESPONSE_COMMAND_H_
-#define _D_HTTP_SKIP_RESPONSE_COMMAND_H_
+#ifndef D_STREAM_FILTER_H
+#define D_STREAM_FILTER_H
 
-#include "AbstractCommand.h"
+#include "common.h"
+#include <string>
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-class HttpConnection;
-class HttpResponse;
-class StreamFilter;
+class BinaryStream;
+class Segment;
 
-class HttpSkipResponseCommand : public AbstractCommand {
+// Interface for basic decoding functionality.
+class StreamFilter {
 private:
-  SharedHandle<HttpConnection> httpConnection_;
-
-  SharedHandle<HttpResponse> httpResponse_;
-
-  SharedHandle<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
-
-  uint64_t totalLength_;
-
-  uint64_t receivedBytes_;
-
-  bool processResponse();
-
-  void poolConnection() const;
-protected:
-  virtual bool executeInternal();
+  SharedHandle<StreamFilter> delegate_;
 public:
-  HttpSkipResponseCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
-                          RequestGroup* requestGroup,
-                          const SharedHandle<HttpConnection>& httpConnection,
-                          const SharedHandle<HttpResponse>& httpResponse,
-                          DownloadEngine* e,
-                          const SharedHandle<SocketCore>& s);
+  StreamFilter
+  (const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
 
-  virtual ~HttpSkipResponseCommand();
+  virtual ~StreamFilter() {}
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  // init() must be called before calling decode().
+  virtual void init() = 0;
 
-  void disableSocketCheck();
+  virtual ssize_t transform(const SharedHandle<BinaryStream>& out,
+                            const SharedHandle<Segment>& segment,
+                            const unsigned char* inbuf, size_t inlen) = 0;
+
+  virtual bool finished() = 0;
+
+  // The call of release() will free allocated resources.
+  // After calling release(), the object can be reused by calling init().
+  virtual void release() = 0;
+
+  virtual const std::string& getName() const = 0;
+
+  virtual size_t getBytesProcessed() const = 0;
+
+  virtual bool installDelegate(const SharedHandle<StreamFilter>& filter);
+
+  SharedHandle<StreamFilter> getDelegate() const
+  {
+    return delegate_;
+  }
 };
 
 } // namespace aria2
 
-#endif // _D_HTTP_SKIP_RESPONSE_COMMAND_H_
+#endif // D_STREAM_FILTER_H

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,55 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_SKIP_RESPONSE_COMMAND_H_
-#define _D_HTTP_SKIP_RESPONSE_COMMAND_H_
+#ifndef D_NULL_SINK_STREAM_FILTER_H
+#define D_NULL_SINK_STREAM_FILTER_H
 
-#include "AbstractCommand.h"
+#include "StreamFilter.h"
 
 namespace aria2 {
 
-class HttpConnection;
-class HttpResponse;
-class StreamFilter;
-
-class HttpSkipResponseCommand : public AbstractCommand {
+class NullSinkStreamFilter:public StreamFilter {
 private:
-  SharedHandle<HttpConnection> httpConnection_;
-
-  SharedHandle<HttpResponse> httpResponse_;
-
-  SharedHandle<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
-
-  uint64_t totalLength_;
-
-  uint64_t receivedBytes_;
-
-  bool processResponse();
-
-  void poolConnection() const;
-protected:
-  virtual bool executeInternal();
+  size_t bytesProcessed_;
 public:
-  HttpSkipResponseCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
-                          RequestGroup* requestGroup,
-                          const SharedHandle<HttpConnection>& httpConnection,
-                          const SharedHandle<HttpResponse>& httpResponse,
-                          DownloadEngine* e,
-                          const SharedHandle<SocketCore>& s);
+  NullSinkStreamFilter():bytesProcessed_(0) {}
 
-  virtual ~HttpSkipResponseCommand();
+  virtual void init() {}
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  virtual ssize_t transform
+  (const SharedHandle<BinaryStream>& out,
+   const SharedHandle<Segment>& segment,
+   const unsigned char* inbuf, size_t inlen)
+  {
+    bytesProcessed_ = inlen;
+    return bytesProcessed_;
+  }
 
-  void disableSocketCheck();
+  virtual bool finished()
+  {
+    return true;
+  }
+
+  virtual void release() {}
+
+  virtual const std::string& getName() const
+  {
+    return NAME;
+  }
+
+  static const std::string NAME;
+
+  virtual size_t getBytesProcessed() const
+  {
+    return bytesProcessed_;
+  }
+
+  virtual bool installDelegate(const SharedHandle<StreamFilter>& filter)
+  {
+    return false;
+  }
 };
 
 } // namespace aria2
 
-#endif // _D_HTTP_SKIP_RESPONSE_COMMAND_H_
+#endif // D_NULL_SINK_STREAM_FILTER_H

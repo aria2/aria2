@@ -36,7 +36,6 @@
 #define _D_HTTP_RESPONSE_COMMAND_H_
 
 #include "AbstractCommand.h"
-#include "Decoder.h"
 #include "TimeA2.h"
 
 namespace aria2 {
@@ -45,6 +44,7 @@ class HttpConnection;
 class HttpDownloadCommand;
 class HttpResponse;
 class SocketCore;
+class StreamFilter;
 
 class HttpResponseCommand : public AbstractCommand {
 private:
@@ -55,11 +55,9 @@ private:
   bool skipResponseBody(const SharedHandle<HttpResponse>& httpResponse);
 
   HttpDownloadCommand*
-  createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse,
-                            const SharedHandle<Decoder>& transferEncodingDecoder
-                            = SharedHandle<Decoder>(),
-                            const SharedHandle<Decoder>& contentEncodingDecoder
-                            = SharedHandle<Decoder>());
+  createHttpDownloadCommand
+  (const SharedHandle<HttpResponse>& httpResponse,
+   const SharedHandle<StreamFilter>& streamFilter);
 
   void updateLastModifiedTime(const Time& lastModified);
 

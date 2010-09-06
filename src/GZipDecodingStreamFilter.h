@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,50 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_SKIP_RESPONSE_COMMAND_H_
-#define _D_HTTP_SKIP_RESPONSE_COMMAND_H_
+#ifndef D_GZIP_STREAM_FILTER_H
+#define D_GZIP_STREAM_FILTER_H
 
-#include "AbstractCommand.h"
+#include "StreamFilter.h"
+#include <zlib.h>
 
 namespace aria2 {
 
-class HttpConnection;
-class HttpResponse;
-class StreamFilter;
-
-class HttpSkipResponseCommand : public AbstractCommand {
+// GZipDecodingStreamFilter can decode both gzip and deflate format.
+class GZipDecodingStreamFilter : public StreamFilter {
 private:
-  SharedHandle<HttpConnection> httpConnection_;
+  z_stream* strm_;
 
-  SharedHandle<HttpResponse> httpResponse_;
+  bool finished_;
 
-  SharedHandle<StreamFilter> streamFilter_;
+  size_t bytesProcessed_;
 
-  bool sinkFilterOnly_;
-
-  uint64_t totalLength_;
-
-  uint64_t receivedBytes_;
-
-  bool processResponse();
-
-  void poolConnection() const;
-protected:
-  virtual bool executeInternal();
+  static const size_t OUTBUF_LENGTH = 16*1024;
 public:
-  HttpSkipResponseCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
-                          RequestGroup* requestGroup,
-                          const SharedHandle<HttpConnection>& httpConnection,
-                          const SharedHandle<HttpResponse>& httpResponse,
-                          DownloadEngine* e,
-                          const SharedHandle<SocketCore>& s);
+  GZipDecodingStreamFilter
+  (const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
 
-  virtual ~HttpSkipResponseCommand();
+  virtual ~GZipDecodingStreamFilter();
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  virtual void init();
 
-  void disableSocketCheck();
+  virtual ssize_t transform(const SharedHandle<BinaryStream>& out,
+                            const SharedHandle<Segment>& segment,
+                            const unsigned char* inbuf, size_t inlen);
+
+  virtual bool finished();
+
+  virtual void release();
+
+  virtual const std::string& getName() const;
+
+  virtual size_t getBytesProcessed() const
+  {
+    return bytesProcessed_;
+  }
+  
+  static const std::string NAME;
 };
 
 } // namespace aria2
 
-#endif // _D_HTTP_SKIP_RESPONSE_COMMAND_H_
+#endif // D_GZIP_STREAM_FILTER_H

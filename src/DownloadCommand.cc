@@ -56,11 +56,11 @@
 #include "message.h"
 #include "prefs.h"
 #include "StringFormat.h"
-#include "Decoder.h"
 #include "RequestGroupMan.h"
 #include "wallclock.h"
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
+#include "SinkStreamFilter.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -104,6 +104,10 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
   peerStat_ = req->initPeerStat();
   peerStat_->downloadStart();
   getSegmentMan()->registerPeerStat(peerStat_);
+
+  streamFilter_.reset(new SinkStreamFilter(pieceHashValidationEnabled_));
+  streamFilter_->init();
+  sinkFilterOnly_ = true;
 }
 
 DownloadCommand::~DownloadCommand() {
@@ -120,80 +124,45 @@ bool DownloadCommand::executeInternal() {
     return false;
   }
   setReadCheckSocket(getSocket());
-  SharedHandle<Segment> segment = getSegments().front();
-
-  size_t bufSize;
-  if(segment->getLength() > 0) {
-    if(static_cast<uint64_t>(segment->getPosition()+segment->getLength()) <=
-       static_cast<uint64_t>(getFileEntry()->getLastOffset())) {
-      bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
-                         BUFSIZE);
-    } else {
-      bufSize =
-        std::min
-        (static_cast<size_t>
-         (getFileEntry()->getLastOffset()-segment->getPositionToWrite()),
-         BUFSIZE);
-    }
-  } else {
-    bufSize = BUFSIZE;
-  }
-  // It is possible that segment is completed but we have some bytes
-  // of stream to read. For example, chunked encoding has "0"+CRLF
-  // after data. After we read data(at this moment segment is
-  // completed), we need another 3bytes(or more if it has extension).
-  if(bufSize == 0 &&
-     ((!transferEncodingDecoder_.isNull() &&
-       !transferEncodingDecoder_->finished()) ||
-      (!contentEncodingDecoder_.isNull() &&
-       !contentEncodingDecoder_->finished()))) {
-    bufSize = 1;
-  }
-  getSocket()->readData(buf_, bufSize);
 
   const SharedHandle<DiskAdaptor>& diskAdaptor =
     getPieceStorage()->getDiskAdaptor();
-
-  const unsigned char* bufFinal;
-  size_t bufSizeFinal;
-
-  std::string decoded;
-  if(transferEncodingDecoder_.isNull()) {
-    bufFinal = buf_;
-    bufSizeFinal = bufSize;
+  SharedHandle<Segment> segment = getSegments().front();
+  size_t bufSize;
+  if(sinkFilterOnly_) {
+    if(segment->getLength() > 0 ) {
+      if(static_cast<uint64_t>(segment->getPosition()+segment->getLength()) <=
+         static_cast<uint64_t>(getFileEntry()->getLastOffset())) {
+        bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
+                           BUFSIZE);
+      } else {
+        bufSize =
+          std::min
+          (static_cast<size_t>
+           (getFileEntry()->getLastOffset()-segment->getPositionToWrite()),
+           BUFSIZE);
+      }
+    } else {
+      bufSize = BUFSIZE;
+    }
+    getSocket()->readData(buf_, bufSize);
+    streamFilter_->transform(diskAdaptor, segment, buf_, bufSize);
   } else {
-    decoded = transferEncodingDecoder_->decode(buf_, bufSize);
-
-    bufFinal = reinterpret_cast<const unsigned char*>(decoded.c_str());
-    bufSizeFinal = decoded.size();
-  }
-
-  if(contentEncodingDecoder_.isNull()) {
-    diskAdaptor->writeData(bufFinal, bufSizeFinal,
-                           segment->getPositionToWrite());
-  } else {
-    std::string out = contentEncodingDecoder_->decode(bufFinal, bufSizeFinal);
-    diskAdaptor->writeData(reinterpret_cast<const unsigned char*>(out.data()),
-                           out.size(),
-                           segment->getPositionToWrite());
-    bufSizeFinal = out.size();
-  }
-
-#ifdef ENABLE_MESSAGE_DIGEST
-
-  if(pieceHashValidationEnabled_) {
-    segment->updateHash(segment->getWrittenLength(), bufFinal, bufSizeFinal);
-  }
-
-#endif // ENABLE_MESSAGE_DIGEST
-  if(bufSizeFinal > 0) {
-    segment->updateWrittenLength(bufSizeFinal);
+    // It is possible that segment is completed but we have some bytes
+    // of stream to read. For example, chunked encoding has "0"+CRLF
+    // after data. After we read data(at this moment segment is
+    // completed), we need another 3bytes(or more if it has trailers).
+    bufSize = BUFSIZE;
+    getSocket()->peekData(buf_, bufSize);
+    streamFilter_->transform(diskAdaptor, segment, buf_, bufSize);
+    bufSize = streamFilter_->getBytesProcessed();
+    getSocket()->readData(buf_, bufSize);
   }
   peerStat_->updateDownloadLength(bufSize);
   getSegmentMan()->updateDownloadSpeedFor(peerStat_);
   bool segmentPartComplete = false;
   // Note that GrowSegment::complete() always returns false.
-  if(transferEncodingDecoder_.isNull() && contentEncodingDecoder_.isNull()) {
+  if(sinkFilterOnly_) {
     if(segment->complete() ||
        segment->getPositionToWrite() == getFileEntry()->getLastOffset()) {
       segmentPartComplete = true;
@@ -203,23 +172,20 @@ bool DownloadCommand::executeInternal() {
     }
   } else {
     off_t loff = getFileEntry()->gtoloff(segment->getPositionToWrite());
-    if(!transferEncodingDecoder_.isNull() &&
-       ((loff == getRequestEndOffset() && transferEncodingDecoder_->finished())
+    if(getFileEntry()->getLength() > 0 && !sinkFilterOnly_ &&
+       ((loff == getRequestEndOffset() && streamFilter_->finished())
         || loff < getRequestEndOffset()) &&
        (segment->complete() ||
         segment->getPositionToWrite() == getFileEntry()->getLastOffset())) {
-      // In this case, transferEncodingDecoder is used and
-      // Content-Length is known.  We check
-      // transferEncodingDecoder_->finished() only if the requested
-      // end offset equals to written position in file local offset;
-      // in other words, data in the requested ranage is all received.
-      // If requested end offset is greater than this segment, then
-      // transferEncodingDecoder_ is not finished in this segment.
+      // In this case, StreamFilter other than *SinkStreamFilter is
+      // used and Content-Length is known.  We check
+      // streamFilter_->finished() only if the requested end offset
+      // equals to written position in file local offset; in other
+      // words, data in the requested ranage is all received.  If
+      // requested end offset is greater than this segment, then
+      // streamFilter_ is not finished in this segment.
       segmentPartComplete = true;
-    } else if((transferEncodingDecoder_.isNull() ||
-               transferEncodingDecoder_->finished()) &&
-              (contentEncodingDecoder_.isNull() ||
-               contentEncodingDecoder_->finished())) {
+    } else if(streamFilter_->finished()) {
       segmentPartComplete = true;
     }
   }
@@ -392,18 +358,18 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
   }
 }
 
+void DownloadCommand::installStreamFilter
+(const SharedHandle<StreamFilter>& streamFilter)
+{
+  if(streamFilter.isNull()) {
+    return;
+  }
+  streamFilter->installDelegate(streamFilter_);
+  streamFilter_ = streamFilter;
+  sinkFilterOnly_ =
+    util::endsWith(streamFilter_->getName(), SinkStreamFilter::NAME);
+}
+
 #endif // ENABLE_MESSAGE_DIGEST
-
-void DownloadCommand::setTransferEncodingDecoder
-(const SharedHandle<Decoder>& decoder)
-{
-  this->transferEncodingDecoder_ = decoder;
-}
-
-void DownloadCommand::setContentEncodingDecoder
-(const SharedHandle<Decoder>& decoder)
-{
-  contentEncodingDecoder_ = decoder;
-}
 
 } // namespace aria2

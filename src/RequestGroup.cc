@@ -525,7 +525,9 @@ void RequestGroup::processCheckIntegrityEntry
 void RequestGroup::initPieceStorage()
 {
   SharedHandle<PieceStorage> tempPieceStorage;
-  if(downloadContext_->knowsTotalLength()) {
+  if(downloadContext_->knowsTotalLength() &&
+     (downloadContext_->getTotalLength() > 0 ||
+      downloadContext_->hasAttribute(bittorrent::BITTORRENT))) {
 #ifdef ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps
       (new DefaultPieceStorage(downloadContext_, option_.get()));

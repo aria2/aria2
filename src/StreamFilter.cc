@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_SKIP_RESPONSE_COMMAND_H_
-#define _D_HTTP_SKIP_RESPONSE_COMMAND_H_
-
-#include "AbstractCommand.h"
+#include "StreamFilter.h"
 
 namespace aria2 {
 
-class HttpConnection;
-class HttpResponse;
-class StreamFilter;
+StreamFilter::StreamFilter
+(const SharedHandle<StreamFilter>& delegate):
+  delegate_(delegate) {}
 
-class HttpSkipResponseCommand : public AbstractCommand {
-private:
-  SharedHandle<HttpConnection> httpConnection_;
-
-  SharedHandle<HttpResponse> httpResponse_;
-
-  SharedHandle<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
-
-  uint64_t totalLength_;
-
-  uint64_t receivedBytes_;
-
-  bool processResponse();
-
-  void poolConnection() const;
-protected:
-  virtual bool executeInternal();
-public:
-  HttpSkipResponseCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
-                          RequestGroup* requestGroup,
-                          const SharedHandle<HttpConnection>& httpConnection,
-                          const SharedHandle<HttpResponse>& httpResponse,
-                          DownloadEngine* e,
-                          const SharedHandle<SocketCore>& s);
-
-  virtual ~HttpSkipResponseCommand();
-
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
-
-  void disableSocketCheck();
-};
+bool StreamFilter::installDelegate(const SharedHandle<StreamFilter>& filter)
+{
+  if(delegate_.isNull()) {
+    delegate_ = filter;
+    return true;
+  } else {
+    return delegate_->installDelegate(filter);
+  }
+}
 
 } // namespace aria2
-
-#endif // _D_HTTP_SKIP_RESPONSE_COMMAND_H_

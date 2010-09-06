@@ -47,12 +47,15 @@
 #include "HttpHeader.h"
 #include "Range.h"
 #include "DownloadContext.h"
-#include "Decoder.h"
 #include "RequestGroupMan.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
 #include "Logger.h"
+#include "StreamFilter.h"
+#include "SinkStreamFilter.h"
+#include "util.h"
+
 namespace aria2 {
 
 HttpDownloadCommand::HttpDownloadCommand
@@ -88,18 +91,16 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     if(getRequest()->isPipeliningEnabled() ||
        (getRequest()->isKeepAliveEnabled() &&
         (
-         // Make sure that all decoders are finished to pool socket
-         ((!getTransferEncodingDecoder().isNull() &&
-           getTransferEncodingDecoder()->finished()) ||
-          (getTransferEncodingDecoder().isNull() &&
-           !getContentEncodingDecoder().isNull() &&
-           getContentEncodingDecoder()->finished())) ||
+         // Make sure that all filters are finished to pool socket
+         (!util::endsWith(getStreamFilter()->getName(),
+                          SinkStreamFilter::NAME) &&
+          getStreamFilter()->finished()) ||
          getRequestEndOffset() ==
          getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())
          )
         )
        ) {
-      // TODO What if server sends EOF when _contentEncodingDecoder is
+      // TODO What if server sends EOF when non-SinkStreamFilter is
       // used and server didn't send Connection: close? We end up to
       // pool terminated socket.  In HTTP/1.1, keep-alive is default,
       // so closing connection without Connection: close header means
@@ -133,7 +134,12 @@ bool HttpDownloadCommand::prepareForNextSegment() {
 
 off_t HttpDownloadCommand::getRequestEndOffset() const
 {
-  return httpResponse_->getHttpHeader()->getRange()->getEndByte()+1;
+  off_t endByte = httpResponse_->getHttpHeader()->getRange()->getEndByte();
+  if(endByte > 0) {
+    return endByte+1;
+  } else {
+    return endByte;
+  }
 }
 
 } // namespace aria2

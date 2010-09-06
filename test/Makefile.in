@@ -213,6 +213,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
 	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
+	ChunkedDecodingStreamFilterTest.cc \
+	GZipDecodingStreamFilterTest.cc \
 	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
@@ -404,9 +406,11 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	LongestSequencePieceSelectorTest.$(OBJEXT) \
 	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) \
 	DownloadContextTest.$(OBJEXT) SessionSerializerTest.$(OBJEXT) \
-	ValueBaseTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7)
+	ValueBaseTest.$(OBJEXT) \
+	ChunkedDecodingStreamFilterTest.$(OBJEXT) \
+	GZipDecodingStreamFilterTest.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -639,7 +643,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	RarestPieceSelectorTest.cc PieceStatManTest.cc \
 	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
 	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
-	SessionSerializerTest.cc ValueBaseTest.cc $(am__append_1) \
+	SessionSerializerTest.cc ValueBaseTest.cc \
+	ChunkedDecodingStreamFilterTest.cc \
+	GZipDecodingStreamFilterTest.cc $(am__append_1) \
 	$(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7)
 
@@ -773,6 +779,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoderTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecodingStreamFilterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieTest.Po@am__quote@
@@ -822,6 +829,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnectionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoderTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecodingStreamFilterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipEncoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@

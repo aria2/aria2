@@ -12,11 +12,11 @@
 #include "HttpRequest.h"
 #include "Exception.h"
 #include "A2STR.h"
-#include "Decoder.h"
 #include "DlRetryEx.h"
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "StreamFilter.h"
 
 namespace aria2 {
 
@@ -36,10 +36,10 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsRedirect);
   CPPUNIT_TEST(testIsTransferEncodingSpecified);
   CPPUNIT_TEST(testGetTransferEncoding);
-  CPPUNIT_TEST(testGetTransferEncodingDecoder);
+  CPPUNIT_TEST(testGetTransferEncodingStreamFilter);
   CPPUNIT_TEST(testIsContentEncodingSpecified);
   CPPUNIT_TEST(testGetContentEncoding);
-  CPPUNIT_TEST(testGetContentEncodingDecoder);
+  CPPUNIT_TEST(testGetContentEncodingStreamFilter);
   CPPUNIT_TEST(testValidateResponse);
   CPPUNIT_TEST(testValidateResponse_good_range);
   CPPUNIT_TEST(testValidateResponse_bad_range);
@@ -68,10 +68,10 @@ public:
   void testIsRedirect();
   void testIsTransferEncodingSpecified();
   void testGetTransferEncoding();
-  void testGetTransferEncodingDecoder();
+  void testGetTransferEncodingStreamFilter();
   void testIsContentEncodingSpecified();
   void testGetContentEncoding();
-  void testGetContentEncodingDecoder();
+  void testGetContentEncodingStreamFilter();
   void testValidateResponse();
   void testValidateResponse_good_range();
   void testValidateResponse_bad_range();
@@ -253,18 +253,18 @@ void HttpResponseTest::testGetTransferEncoding()
                        httpResponse.getTransferEncoding());
 }
 
-void HttpResponseTest::testGetTransferEncodingDecoder()
+void HttpResponseTest::testGetTransferEncodingStreamFilter()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT(httpResponse.getTransferEncodingDecoder().isNull());  
+  CPPUNIT_ASSERT(httpResponse.getTransferEncodingStreamFilter().isNull());  
 
   httpHeader->put("Transfer-Encoding", "chunked");
 
-  CPPUNIT_ASSERT(!httpResponse.getTransferEncodingDecoder().isNull());
+  CPPUNIT_ASSERT(!httpResponse.getTransferEncodingStreamFilter().isNull());
 }
 
 void HttpResponseTest::testIsContentEncodingSpecified()
@@ -295,37 +295,42 @@ void HttpResponseTest::testGetContentEncoding()
   CPPUNIT_ASSERT_EQUAL(std::string("gzip"), httpResponse.getContentEncoding());
 }
 
-void HttpResponseTest::testGetContentEncodingDecoder()
+void HttpResponseTest::testGetContentEncodingStreamFilter()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT(httpResponse.getContentEncodingDecoder().isNull());
+  CPPUNIT_ASSERT(httpResponse.getContentEncodingStreamFilter().isNull());
 
 #ifdef HAVE_LIBZ
   httpHeader->put("Content-Encoding", "gzip");
   {
-    SharedHandle<Decoder> decoder = httpResponse.getContentEncodingDecoder();
-    CPPUNIT_ASSERT(!decoder.isNull());
-    CPPUNIT_ASSERT_EQUAL(std::string("GZipDecoder"), decoder->getName());
+    SharedHandle<StreamFilter> filter =
+      httpResponse.getContentEncodingStreamFilter();
+    CPPUNIT_ASSERT(!filter.isNull());
+    CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
+                         filter->getName());
   }
   httpHeader.reset(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
   httpHeader->put("Content-Encoding", "deflate");
   {
-    SharedHandle<Decoder> decoder = httpResponse.getContentEncodingDecoder();
-    CPPUNIT_ASSERT(!decoder.isNull());
-    CPPUNIT_ASSERT_EQUAL(std::string("GZipDecoder"), decoder->getName());
+    SharedHandle<StreamFilter> filter =
+      httpResponse.getContentEncodingStreamFilter();
+    CPPUNIT_ASSERT(!filter.isNull());
+    CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
+                         filter->getName());
   }
 #endif // HAVE_LIBZ
   httpHeader.reset(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
   httpHeader->put("Content-Encoding", "bzip2");
   {
-    SharedHandle<Decoder> decoder = httpResponse.getContentEncodingDecoder();
-    CPPUNIT_ASSERT(decoder.isNull());
+    SharedHandle<StreamFilter> filter =
+      httpResponse.getContentEncodingStreamFilter();
+    CPPUNIT_ASSERT(filter.isNull());
   }
 }
 

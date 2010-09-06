@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_SKIP_RESPONSE_COMMAND_H_
-#define _D_HTTP_SKIP_RESPONSE_COMMAND_H_
-
-#include "AbstractCommand.h"
+#include "SinkStreamFilter.h"
+#include "BinaryStream.h"
+#include "Segment.h"
 
 namespace aria2 {
 
-class HttpConnection;
-class HttpResponse;
-class StreamFilter;
+const std::string SinkStreamFilter::NAME("SinkStreamFilter");
 
-class HttpSkipResponseCommand : public AbstractCommand {
-private:
-  SharedHandle<HttpConnection> httpConnection_;
+SinkStreamFilter::SinkStreamFilter(bool hashUpdate):
+  hashUpdate_(hashUpdate),
+  bytesProcessed_(0) {}
 
-  SharedHandle<HttpResponse> httpResponse_;
-
-  SharedHandle<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
-
-  uint64_t totalLength_;
-
-  uint64_t receivedBytes_;
-
-  bool processResponse();
-
-  void poolConnection() const;
-protected:
-  virtual bool executeInternal();
-public:
-  HttpSkipResponseCommand(cuid_t cuid,
-                          const SharedHandle<Request>& req,
-                          const SharedHandle<FileEntry>& fileEntry,
-                          RequestGroup* requestGroup,
-                          const SharedHandle<HttpConnection>& httpConnection,
-                          const SharedHandle<HttpResponse>& httpResponse,
-                          DownloadEngine* e,
-                          const SharedHandle<SocketCore>& s);
-
-  virtual ~HttpSkipResponseCommand();
-
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
-
-  void disableSocketCheck();
-};
+ssize_t SinkStreamFilter::transform
+(const SharedHandle<BinaryStream>& out,
+ const SharedHandle<Segment>& segment,
+ const unsigned char* inbuf, size_t inlen)
+{
+  if(inlen > 0) {
+    out->writeData(inbuf, inlen, segment->getPositionToWrite());
+#ifdef ENABLE_MESSAGE_DIGEST
+    if(hashUpdate_) {
+      segment->updateHash(segment->getWrittenLength(), inbuf, inlen);
+    }
+#endif // ENABLE_MESSAGE_DIGEST
+    segment->updateWrittenLength(inlen);
+  }
+  bytesProcessed_ = inlen;
+  return bytesProcessed_;
+}
 
 } // namespace aria2
-
-#endif // _D_HTTP_SKIP_RESPONSE_COMMAND_H_

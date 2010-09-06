@@ -46,14 +46,13 @@
 #include "DlRetryEx.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include "Decoder.h"
-#include "ChunkedDecoder.h"
-#ifdef HAVE_LIBZ
-# include "GZipDecoder.h"
-#endif // HAVE_LIBZ
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "ChunkedDecodingStreamFilter.h"
+#ifdef HAVE_LIBZ
+# include "GZipDecodingStreamFilter.h"
+#endif // HAVE_LIBZ
 
 namespace aria2 {
 
@@ -177,20 +176,21 @@ bool HttpResponse::isTransferEncodingSpecified() const
 
 std::string HttpResponse::getTransferEncoding() const
 {
-  // TODO See TODO in getTransferEncodingDecoder()
+  // TODO See TODO in getTransferEncodingStreamFilter()
   return httpHeader_->getFirst(HttpHeader::TRANSFER_ENCODING);
 }
 
-SharedHandle<Decoder> HttpResponse::getTransferEncodingDecoder() const
+SharedHandle<StreamFilter> HttpResponse::getTransferEncodingStreamFilter() const
 {
+  SharedHandle<StreamFilter> filter;
   // TODO Transfer-Encoding header field can contains multiple tokens. We should
   // parse the field and retrieve each token.
   if(isTransferEncodingSpecified()) {
     if(getTransferEncoding() == HttpHeader::CHUNKED) {
-      return SharedHandle<Decoder>(new ChunkedDecoder());
+      filter.reset(new ChunkedDecodingStreamFilter());
     }
   }
-  return SharedHandle<Decoder>();
+  return filter;
 }
 
 bool HttpResponse::isContentEncodingSpecified() const
@@ -203,15 +203,16 @@ const std::string& HttpResponse::getContentEncoding() const
   return httpHeader_->getFirst(HttpHeader::CONTENT_ENCODING);
 }
 
-SharedHandle<Decoder> HttpResponse::getContentEncodingDecoder() const
+SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
 {
+  SharedHandle<StreamFilter> filter;
 #ifdef HAVE_LIBZ
   if(getContentEncoding() == HttpHeader::GZIP ||
      getContentEncoding() == HttpHeader::DEFLATE) {
-    return SharedHandle<Decoder>(new GZipDecoder());
+    filter.reset(new GZipDecodingStreamFilter());
   }
 #endif // HAVE_LIBZ
-  return SharedHandle<Decoder>();
+  return filter;
 }
 
 uint64_t HttpResponse::getContentLength() const

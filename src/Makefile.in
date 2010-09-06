@@ -442,7 +442,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MetadataInfo.h SessionSerializer.cc SessionSerializer.h \
 	Event.h timespec.h ValueBase.cc ValueBase.h ContextAttribute.h \
 	TorrentAttribute.h AdaptiveFileAllocationIterator.cc \
-	AdaptiveFileAllocationIterator.h \
+	AdaptiveFileAllocationIterator.h StreamFilter.cc \
+	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
+	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
+	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
+	NullSinkStreamFilter.cc NullSinkStreamFilter.h \
 	XmlRpcRequestParserController.cc \
 	XmlRpcRequestParserController.h \
 	XmlRpcRequestParserStateMachine.cc \
@@ -883,17 +887,20 @@ am__objects_32 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	CreateRequestCommand.$(OBJEXT) download_helper.$(OBJEXT) \
 	MetadataInfo.$(OBJEXT) SessionSerializer.$(OBJEXT) \
 	ValueBase.$(OBJEXT) AdaptiveFileAllocationIterator.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
-	$(am__objects_16) $(am__objects_17) $(am__objects_18) \
-	$(am__objects_19) $(am__objects_20) $(am__objects_21) \
-	$(am__objects_22) $(am__objects_23) $(am__objects_24) \
-	$(am__objects_25) $(am__objects_26) $(am__objects_27) \
-	$(am__objects_28) $(am__objects_29) $(am__objects_30) \
-	$(am__objects_31)
+	StreamFilter.$(OBJEXT) SinkStreamFilter.$(OBJEXT) \
+	GZipDecodingStreamFilter.$(OBJEXT) \
+	ChunkedDecodingStreamFilter.$(OBJEXT) \
+	NullSinkStreamFilter.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
+	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
+	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
+	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
+	$(am__objects_20) $(am__objects_21) $(am__objects_22) \
+	$(am__objects_23) $(am__objects_24) $(am__objects_25) \
+	$(am__objects_26) $(am__objects_27) $(am__objects_28) \
+	$(am__objects_29) $(am__objects_30) $(am__objects_31)
 am_libaria2c_a_OBJECTS = $(am__objects_32)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1227,7 +1234,11 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	MetadataInfo.h SessionSerializer.cc SessionSerializer.h \
 	Event.h timespec.h ValueBase.cc ValueBase.h ContextAttribute.h \
 	TorrentAttribute.h AdaptiveFileAllocationIterator.cc \
-	AdaptiveFileAllocationIterator.h $(am__append_1) \
+	AdaptiveFileAllocationIterator.h StreamFilter.cc \
+	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
+	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
+	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
+	NullSinkStreamFilter.cc NullSinkStreamFilter.h $(am__append_1) \
 	$(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
@@ -1396,6 +1407,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecodingStreamFilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleStatCalc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ContentTypeRequestGroupCriteria.Po@am__quote@
@@ -1498,6 +1510,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecodingStreamFilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipEncoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessage.Po@am__quote@
@@ -1559,6 +1572,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Netrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NsCookieParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NullSinkStreamFilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerException.Po@am__quote@
@@ -1606,6 +1620,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogFormatter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIterator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SinkStreamFilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketBuffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
@@ -1614,6 +1629,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3CookieParserImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamFileAllocationEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamFilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeBasedCommand.Po@am__quote@

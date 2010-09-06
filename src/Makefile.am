@@ -206,7 +206,12 @@ SRCS =  Socket.h\
 	ValueBase.cc ValueBase.h\
 	ContextAttribute.h\
 	TorrentAttribute.h\
-	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h
+	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h\
+	StreamFilter.cc StreamFilter.h\
+	SinkStreamFilter.cc SinkStreamFilter.h\
+	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h\
+	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h\
+	NullSinkStreamFilter.cc NullSinkStreamFilter.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

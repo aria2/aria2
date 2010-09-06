@@ -69,14 +69,20 @@
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "StreamFilter.h"
+#include "SinkStreamFilter.h"
+#include "ChunkedDecodingStreamFilter.h"
+#include "GZipDecodingStreamFilter.h"
 
 namespace aria2 {
 
-static SharedHandle<Decoder> getTransferEncodingDecoder
-(const SharedHandle<HttpResponse>& httpResponse);
+static SharedHandle<StreamFilter> getTransferEncodingStreamFilter
+(const SharedHandle<HttpResponse>& httpResponse,
+ const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
 
-static SharedHandle<Decoder> getContentEncodingDecoder
-(const SharedHandle<HttpResponse>& httpResponse);
+static SharedHandle<StreamFilter> getContentEncodingStreamFilter
+(const SharedHandle<HttpResponse>& httpResponse,
+ const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
 
 HttpResponseCommand::HttpResponseCommand
 (cuid_t cuid,
@@ -198,12 +204,16 @@ bool HttpResponseCommand::executeInternal()
       // anyway.
       getPieceStorage()->getDiskAdaptor()->truncate(0);
       getDownloadEngine()->addCommand
-        (createHttpDownloadCommand(httpResponse,
-                                   getTransferEncodingDecoder(httpResponse),
-                                   getContentEncodingDecoder(httpResponse)));
+        (createHttpDownloadCommand
+         (httpResponse,
+          getTransferEncodingStreamFilter
+          (httpResponse,
+           getContentEncodingStreamFilter(httpResponse))));
     } else {
-      getDownloadEngine()->addCommand(createHttpDownloadCommand
-                    (httpResponse, getTransferEncodingDecoder(httpResponse)));
+      getDownloadEngine()->addCommand
+        (createHttpDownloadCommand
+         (httpResponse,
+          getTransferEncodingStreamFilter(httpResponse)));
     }
     return true;
   }
@@ -275,7 +285,8 @@ bool HttpResponseCommand::handleDefaultEncoding
      !segment.isNull() && segment->getPositionToWrite() == 0 &&
      !getRequest()->isPipeliningEnabled()) {
     command = createHttpDownloadCommand
-      (httpResponse, getTransferEncodingDecoder(httpResponse));
+      (httpResponse,
+       getTransferEncodingStreamFilter(httpResponse));
   } else {
     getSegmentMan()->cancelSegment(getCuid());
     getFileEntry()->poolRequest(getRequest());
@@ -291,39 +302,49 @@ bool HttpResponseCommand::handleDefaultEncoding
   return true;
 }
 
-static SharedHandle<Decoder> getTransferEncodingDecoder
-(const SharedHandle<HttpResponse>& httpResponse)
+static SharedHandle<StreamFilter> getTransferEncodingStreamFilter
+(const SharedHandle<HttpResponse>& httpResponse,
+ const SharedHandle<StreamFilter>& delegate)
 {
-  SharedHandle<Decoder> decoder;
+  SharedHandle<StreamFilter> filter;
   if(httpResponse->isTransferEncodingSpecified()) {
-    decoder = httpResponse->getTransferEncodingDecoder();
-    if(decoder.isNull()) {
+    filter = httpResponse->getTransferEncodingStreamFilter();
+    if(filter.isNull()) {
       throw DL_ABORT_EX
         (StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
                       httpResponse->getTransferEncoding().c_str()).str());
     }
-    decoder->init();
+    filter->init();
+    filter->installDelegate(delegate);
   }
-  return decoder;
+  if(filter.isNull()) {
+    filter = delegate;
+  }
+  return filter;
 }
 
-static SharedHandle<Decoder> getContentEncodingDecoder
-(const SharedHandle<HttpResponse>& httpResponse)
+static SharedHandle<StreamFilter> getContentEncodingStreamFilter
+(const SharedHandle<HttpResponse>& httpResponse,
+ const SharedHandle<StreamFilter>& delegate)
 {
-  SharedHandle<Decoder> decoder;
+  SharedHandle<StreamFilter> filter;
   if(httpResponse->isContentEncodingSpecified()) {
-    decoder = httpResponse->getContentEncodingDecoder();
-    if(decoder.isNull()) {
+    filter = httpResponse->getContentEncodingStreamFilter();
+    if(filter.isNull()) {
       LogFactory::getInstance()->info
         ("Content-Encoding %s is specified, but the current implementation"
          "doesn't support it. The decoding process is skipped and the"
          "downloaded content will be still encoded.",
          httpResponse->getContentEncoding().c_str());
     } else {
-      decoder->init();
+      filter->init();
+      filter->installDelegate(delegate);
     }
   }
-  return decoder;
+  if(filter.isNull()) {
+    filter = delegate;
+  }
+  return filter;
 }
 
 bool HttpResponseCommand::handleOtherEncoding
@@ -357,9 +378,20 @@ bool HttpResponseCommand::handleOtherEncoding
   getRequestGroup()->shouldCancelDownloadForSafety();
   getRequestGroup()->initPieceStorage();
   getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+
+  SharedHandle<StreamFilter> streamFilter =
+    getTransferEncodingStreamFilter
+    (httpResponse,
+     getContentEncodingStreamFilter(httpResponse));
+  
   // In this context, knowsTotalLength() is true only when the file is
   // really zero-length.
-  if(getDownloadContext()->knowsTotalLength()) {
+  if(getDownloadContext()->knowsTotalLength() &&
+     (streamFilter.isNull() ||
+      streamFilter->getName() != ChunkedDecodingStreamFilter::NAME)) {
+    // If chunked transfer-encoding is specified, we have to read end
+    // of chunk markers(0\r\n\r\n, for example), so cannot pool
+    // connection here.
     poolConnection();
     return true;
   }
@@ -369,16 +401,15 @@ bool HttpResponseCommand::handleOtherEncoding
   getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
   getDownloadEngine()->addCommand
-    (createHttpDownloadCommand(httpResponse,
-                               getTransferEncodingDecoder(httpResponse),
-                               getContentEncodingDecoder(httpResponse)));
+    (createHttpDownloadCommand(httpResponse, streamFilter));
   return true;
 }
 
 bool HttpResponseCommand::skipResponseBody
 (const SharedHandle<HttpResponse>& httpResponse)
 {
-  SharedHandle<Decoder> decoder = getTransferEncodingDecoder(httpResponse);
+  SharedHandle<StreamFilter> filter =
+    getTransferEncodingStreamFilter(httpResponse);
   // We don't use Content-Encoding here because this response body is just
   // thrown away.
 
@@ -386,7 +417,7 @@ bool HttpResponseCommand::skipResponseBody
     (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),
      httpConnection_, httpResponse,
      getDownloadEngine(), getSocket());
-  command->setTransferEncodingDecoder(decoder);
+  command->installStreamFilter(filter);
 
   // If request method is HEAD or the response body is zero-length,
   // set command's status to real time so that avoid read check blocking
@@ -403,10 +434,23 @@ bool HttpResponseCommand::skipResponseBody
   return true;
 }
 
+static bool decideFileAllocation
+(const SharedHandle<StreamFilter>& filter)
+{
+  for(SharedHandle<StreamFilter> f = filter; !f.isNull(); f = f->getDelegate()){
+    // Since the compressed file's length are returned in the response header
+    // and the decompressed file size is unknown at this point, disable file
+    // allocation here.
+    if(f->getName() == GZipDecodingStreamFilter::NAME) {
+      return false;
+    }
+  }
+  return true;
+}
+
 HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 (const SharedHandle<HttpResponse>& httpResponse,
- const SharedHandle<Decoder>& transferEncodingDecoder,
- const SharedHandle<Decoder>& contentEncodingDecoder)
+ const SharedHandle<StreamFilter>& filter)
 {
 
   HttpDownloadCommand* command =
@@ -417,16 +461,8 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
   command->setStartupIdleTime(getOption()->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit
     (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
-  command->setTransferEncodingDecoder(transferEncodingDecoder);
-
-  if(!contentEncodingDecoder.isNull()) {
-    command->setContentEncodingDecoder(contentEncodingDecoder);
-    // Since the compressed file's length are returned in the response header
-    // and the decompressed file size is unknown at this point, disable file
-    // allocation here.
-    getRequestGroup()->setFileAllocationEnabled(false);
-  }
-
+  command->installStreamFilter(filter);
+  getRequestGroup()->setFileAllocationEnabled(decideFileAllocation(filter));    
   getRequestGroup()->getURISelector()->tuneDownloadCommand
     (getFileEntry()->getRemainingUris(), command);
 

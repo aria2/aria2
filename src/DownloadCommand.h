@@ -39,8 +39,8 @@
 
 namespace aria2 {
 
-class Decoder;
 class PeerStat;
+class StreamFilter;
 #ifdef ENABLE_MESSAGE_DIGEST
 class MessageDigestContext;
 #endif // ENABLE_MESSAGE_DIGEST
@@ -67,9 +67,9 @@ private:
 
   void checkLowestDownloadSpeed() const;
 
-  SharedHandle<Decoder> transferEncodingDecoder_;
+  SharedHandle<StreamFilter> streamFilter_;
 
-  SharedHandle<Decoder> contentEncodingDecoder_;
+  bool sinkFilterOnly_;
 protected:
   virtual bool executeInternal();
 
@@ -86,19 +86,12 @@ public:
                   const SharedHandle<SocketCore>& s);
   virtual ~DownloadCommand();
 
-  const SharedHandle<Decoder>& getTransferEncodingDecoder() const
+  const SharedHandle<StreamFilter>& getStreamFilter() const
   {
-    return transferEncodingDecoder_;
+    return streamFilter_;
   }
 
-  void setTransferEncodingDecoder(const SharedHandle<Decoder>& decoder);
-
-  const SharedHandle<Decoder>& getContentEncodingDecoder() const
-  {
-    return contentEncodingDecoder_;
-  }
-
-  void setContentEncodingDecoder(const SharedHandle<Decoder>& decoder);
+  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
 
   void setStartupIdleTime(time_t startupIdleTime)
   {

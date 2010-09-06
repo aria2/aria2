@@ -37,7 +37,6 @@
 #include "HttpResponse.h"
 #include "message.h"
 #include "SocketCore.h"
-#include "Decoder.h"
 #include "DlRetryEx.h"
 #include "Request.h"
 #include "DownloadEngine.h"
@@ -58,6 +57,10 @@
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
+#include "StreamFilter.h"
+#include "BinaryStream.h"
+#include "NullSinkStreamFilter.h"
+#include "SinkStreamFilter.h"
 
 namespace aria2 {
 
@@ -73,22 +76,30 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   httpConnection_(httpConnection),
   httpResponse_(httpResponse),
+  streamFilter_(new NullSinkStreamFilter()),
+  sinkFilterOnly_(true),
   totalLength_(httpResponse_->getEntityLength()),
   receivedBytes_(0)
 {}
 
 HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 
-void HttpSkipResponseCommand::setTransferEncodingDecoder
-(const SharedHandle<Decoder>& decoder)
+void HttpSkipResponseCommand::installStreamFilter
+(const SharedHandle<StreamFilter>& streamFilter)
 {
-  transferEncodingDecoder_ = decoder;
+  if(streamFilter.isNull()) {
+    return;
+  }
+  streamFilter->installDelegate(streamFilter_);
+  streamFilter_ = streamFilter;
+  sinkFilterOnly_ =
+    util::endsWith(streamFilter_->getName(), SinkStreamFilter::NAME);
 }
 
 bool HttpSkipResponseCommand::executeInternal()
 {
   if(getRequest()->getMethod() == Request::METHOD_HEAD ||
-     (totalLength_ == 0 && transferEncodingDecoder_.isNull())) {
+     (totalLength_ == 0 && sinkFilterOnly_)) {
     // If request method is HEAD or content-length header is present and
     // it's value is 0, then pool socket for reuse.
     // If content-length header is not present, then EOF is expected in the end.
@@ -101,17 +112,25 @@ bool HttpSkipResponseCommand::executeInternal()
   }
   const size_t BUFSIZE = 16*1024;
   unsigned char buf[BUFSIZE];
-  size_t bufSize = BUFSIZE;
-
+  size_t bufSize;
+  if(sinkFilterOnly_ && totalLength_ > 0) {
+    bufSize = totalLength_-receivedBytes_;
+  } else {
+    bufSize = BUFSIZE;
+  }
   try {
-    getSocket()->readData(buf, bufSize);
-
-    if(transferEncodingDecoder_.isNull()) {
+    if(sinkFilterOnly_) {
+      getSocket()->readData(buf, bufSize);
       receivedBytes_ += bufSize;
     } else {
+      getSocket()->peekData(buf, bufSize);
       // receivedBytes_ is not updated if transferEncoding is set.
       // The return value is safely ignored here.
-      transferEncodingDecoder_->decode(buf, bufSize);
+      streamFilter_->transform(SharedHandle<BinaryStream>(),
+                               SharedHandle<Segment>(),
+                               buf, bufSize);
+      bufSize = streamFilter_->getBytesProcessed();
+      getSocket()->readData(buf, bufSize);
     }
     if(totalLength_ != 0 && bufSize == 0 &&
        !getSocket()->wantRead() && !getSocket()->wantWrite()) {
@@ -125,7 +144,7 @@ bool HttpSkipResponseCommand::executeInternal()
   }
 
   bool finished = false;
-  if(transferEncodingDecoder_.isNull()) {
+  if(sinkFilterOnly_) {
     if(bufSize == 0) {
       if(!getSocket()->wantRead() && !getSocket()->wantWrite()) {
         return processResponse();
@@ -134,7 +153,7 @@ bool HttpSkipResponseCommand::executeInternal()
       finished = (totalLength_ == receivedBytes_);
     }
   } else {
-    finished = transferEncodingDecoder_->finished();
+    finished = streamFilter_->finished();
   }
   if(finished) {
     poolConnection();
