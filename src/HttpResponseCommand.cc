@@ -151,9 +151,11 @@ bool HttpResponseCommand::executeInternal()
     return skipResponseBody(httpResponse);
   }
   if(getFileEntry()->isUniqueProtocol()) {
-    // TODO redirection should be considered here. We need to parse
+    // Redirection should be considered here. We need to parse
     // original URI to get hostname.
-    getFileEntry()->removeURIWhoseHostnameIs(getRequest()->getHost());
+    Request req;
+    req.setUri(getRequest()->getUri());
+    getFileEntry()->removeURIWhoseHostnameIs(req.getHost());
   }
   if(getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();
