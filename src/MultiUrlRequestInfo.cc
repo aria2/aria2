@@ -195,7 +195,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
       e->getCookieStorage()->saveNsFormat(option_->get(PREF_SAVE_COOKIES));
     }
 
-    std::string serverStatOf = option_->get(PREF_SERVER_STAT_OF);
+    const std::string& serverStatOf = option_->get(PREF_SERVER_STAT_OF);
     if(!serverStatOf.empty()) {
       e->getRequestGroupMan()->saveServerStat(serverStatOf);
     }

@@ -1,5 +1,10 @@
 2010-09-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use const ref
+	* src/MultiUrlRequestInfo.cc
+
+2010-09-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that aria2 reports error and exits with non-zero
 	status when file is already downloaded.
 	* src/FtpNegotiationCommand.cc
