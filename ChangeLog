@@ -1,5 +1,13 @@
 2010-09-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that aria2 reports error and exits with non-zero
+	status when file is already downloaded.
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/RequestGroup.cc
+
+2010-09-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Allow '@' in username and password embedded in URI. It should be
 	percent-encoded but many people use their mail address as an
 	username and forget about PE.

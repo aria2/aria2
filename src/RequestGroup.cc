@@ -426,6 +426,9 @@ void RequestGroup::createInitialCommand
                                        option_.get()));
       if(!infoFile->exists() && downloadFinishedByFileLength()) {
         pieceStorage_->markAllPiecesDone();
+        // TODO It would be good to issue ChecksumCheckIntegrity here
+        // instead of just pretending checksum verification is done.
+        downloadContext_->setChecksumVerified(true);
         logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
                         util::itos(gid_).c_str(),
                         downloadContext_->getBasePath().c_str());

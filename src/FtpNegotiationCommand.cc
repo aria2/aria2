@@ -405,8 +405,10 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     if(getRequestGroup()->downloadFinishedByFileLength()) {
       getRequestGroup()->initPieceStorage();
       getPieceStorage()->markAllPiecesDone();
+      // TODO It would be good to issue ChecksumCheckIntegrity here
+      // instead of just pretending checksum verification is done.
+      getDownloadContext()->setChecksumVerified(true);
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-
       getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
                           util::itos(getRequestGroup()->getGID()).c_str(),
                           getRequestGroup()->getFirstFilePath().c_str());
@@ -451,6 +453,9 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     if(!infoFile->exists() &&
        getRequestGroup()->downloadFinishedByFileLength()) {
       getPieceStorage()->markAllPiecesDone();
+      // TODO It would be good to issue ChecksumCheckIntegrity here
+      // instead of just pretending checksum verification is done.
+      getDownloadContext()->setChecksumVerified(true);
 
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       
