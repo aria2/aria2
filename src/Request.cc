@@ -196,9 +196,9 @@ bool Request::parseUri(const std::string& srcUri) {
     return false;
   }
   // find userinfo(username and password) in authority if they exist
-  std::string::const_iterator userInfoLast = authorityFirst;
+  std::string::const_iterator userInfoLast = authorityLast;
   std::string::const_iterator hostPortFirst = authorityFirst;
-  for(; userInfoLast != authorityLast; ++userInfoLast) {
+  for(; userInfoLast != authorityFirst-1; --userInfoLast) {
     if(*userInfoLast == '@') {
       hostPortFirst = userInfoLast;
       ++hostPortFirst;

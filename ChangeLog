@@ -1,3 +1,11 @@
+2010-09-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Allow '@' in username and password embedded in URI. It should be
+	percent-encoded but many people use their mail address as an
+	username and forget about PE.
+	* src/Request.cc
+	* test/RequestTest.cc
+
 2010-09-06  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Parse original URI when removing same host.

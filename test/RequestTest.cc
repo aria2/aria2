@@ -471,33 +471,32 @@ void RequestTest::testSetUri_zeroUsername()
 void RequestTest::testSetUri_username()
 {
   Request req;
-  CPPUNIT_ASSERT(req.setUri("ftp://aria2user@localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT(req.setUri("ftp://aria2@user@localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL((uint16_t)21, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2user"), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2@user"), req.getUsername());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPassword());
 }
 
 void RequestTest::testSetUri_usernamePassword()
 {
   Request req;
-  CPPUNIT_ASSERT(req.setUri("ftp://aria2user%40:aria2pass%40@localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT(req.setUri("ftp://aria2@user%40:aria2@pass%40@localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL((uint16_t)21, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2user@"), req.getUsername());
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2pass@"), req.getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2@user@"), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2@pass@"), req.getPassword());
 
   // make sure that after new uri is set, username and password are updated.
   CPPUNIT_ASSERT(req.setUri("ftp://localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getUsername());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPassword());
-
 }
 
 void RequestTest::testSetUri_supportsPersistentConnection()
