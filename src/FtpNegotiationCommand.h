@@ -150,10 +150,6 @@ private:
   // Resolved address for proxy
   std::string proxyAddr_;
 
-  std::string connectedHostname_;
-  std::string connectedAddr_;
-  uint16_t connectedPort_;
-
   std::deque<std::string> cwdDirs_;
 protected:
   virtual bool executeInternal();
@@ -167,14 +163,6 @@ public:
                         Seq seq = SEQ_RECV_GREETING,
                         const std::string& baseWorkingDir = "/");
   virtual ~FtpNegotiationCommand();
-
-  void setConnectedAddr
-  (const std::string& hostname, const std::string& addr, uint16_t port)
-  {
-    connectedHostname_ = hostname;
-    connectedAddr_ = addr;
-    connectedPort_ = port;
-  }
 };
 
 } // namespace aria2

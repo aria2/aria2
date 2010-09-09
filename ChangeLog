@@ -1,3 +1,22 @@
+2010-09-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Moved connectedHostname, connectedAddr and connectedPort to
+	Request object. Mark cached IP address bad on timeout to allow
+	aria2 to renew IP address cache.
+	* src/AbstractCommand.cc
+	* src/AbstractProxyRequestCommand.cc
+	* src/AbstractProxyRequestCommand.h
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/FtpNegotiationCommand.h
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpRequestCommand.cc
+	* src/HttpRequestCommand.h
+	* src/InitiateConnectionCommand.cc
+	* src/InitiateConnectionCommand.h
+	* src/Request.cc
+	* src/Request.h
+
 2010-09-08  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Call RequestGroupMan::fillRequestGroupFromReserver() repeatedly

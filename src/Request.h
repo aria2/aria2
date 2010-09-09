@@ -90,6 +90,12 @@ private:
 
   bool removalRequested_;
 
+  std::string connectedHostname_;
+
+  std::string connectedAddr_;
+
+  uint16_t connectedPort_;
+
   bool parseUri(const std::string& uri);
 public:
   Request();
@@ -214,6 +220,29 @@ public:
   bool removalRequested() const
   {
     return removalRequested_;
+  }
+
+  void setConnectedAddrInfo
+  (const std::string& hostname, const std::string& addr, uint16_t port)
+  {
+    connectedHostname_ = hostname;
+    connectedAddr_ = addr;
+    connectedPort_ = port;
+  }
+
+  const std::string& getConnectedHostname() const
+  {
+    return connectedHostname_;
+  }
+
+  const std::string& getConnectedAddr() const
+  {
+    return connectedAddr_;
+  }
+
+  uint16_t getConnectedPort() const
+  {
+    return connectedPort_;
   }
 
   static const std::string METHOD_GET;

@@ -85,6 +85,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       createSocket();
       getSocket()->establishConnection(addr, port);
 
+      getRequest()->setConnectedAddrInfo(hostname, addr, port);
       if(proxyMethod == V_TUNNEL) {
         HttpProxyRequestCommand* c =
           new HttpProxyRequestCommand(getCuid(),
@@ -94,7 +95,6 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                                       getDownloadEngine(),
                                       proxyRequest,
                                       getSocket());
-        c->setConnectedAddr(hostname, addr, port);
         command = c;
       } else if(proxyMethod == V_GET) {
         SharedHandle<HttpConnection> httpConnection
@@ -106,7 +106,6 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                                                        httpConnection,
                                                        getDownloadEngine(),
                                                        getSocket());
-        c->setConnectedAddr(hostname, addr, port);
         c->setProxyRequest(proxyRequest);
         command = c;
       } else {
@@ -114,6 +113,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
         throw DL_ABORT_EX("ERROR");
       }
     } else {
+      setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
       SharedHandle<HttpConnection> httpConnection
         (new HttpConnection(getCuid(), pooledSocket));
       HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
@@ -139,8 +139,10 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       }
       createSocket();
       getSocket()->establishConnection(addr, port);
+      getRequest()->setConnectedAddrInfo(hostname, addr, port);
     } else {
       setSocket(pooledSocket);
+      setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
     }
     SharedHandle<HttpConnection> httpConnection
       (new HttpConnection(getCuid(), getSocket()));
@@ -150,9 +152,6 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                              httpConnection,
                              getDownloadEngine(),
                              getSocket());
-    if(pooledSocket.isNull()) {
-      c->setConnectedAddr(hostname, addr, port);
-    }
     command = c;
   }
   return command;

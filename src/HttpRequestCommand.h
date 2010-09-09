@@ -47,10 +47,6 @@ private:
   SharedHandle<Request> proxyRequest_;
 
   SharedHandle<HttpConnection> httpConnection_;
-
-  std::string connectedHostname_;
-  std::string connectedAddr_;
-  uint16_t connectedPort_;
 protected:
   virtual bool executeInternal();
 public:
@@ -64,14 +60,6 @@ public:
   virtual ~HttpRequestCommand();
 
   void setProxyRequest(const SharedHandle<Request>& proxyRequest);
-
-  void setConnectedAddr
-  (const std::string& hostname, const std::string& addr, uint16_t port)
-  {
-    connectedHostname_ = hostname;
-    connectedAddr_ = addr;
-    connectedPort_ = port;
-  }
 };
 
 } // namespace aria2

@@ -141,7 +141,8 @@ bool FtpNegotiationCommand::executeInternal() {
 
 bool FtpNegotiationCommand::recvGreeting() {
   if(!checkIfConnectionEstablished
-     (getSocket(), connectedHostname_, connectedAddr_, connectedPort_)) {
+     (getSocket(), getRequest()->getConnectedHostname(),
+      getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
     sequence_ = SEQ_EXIT;
     return false;
   }

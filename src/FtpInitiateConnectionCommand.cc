@@ -100,6 +100,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       createSocket();
       getSocket()->establishConnection(addr, port);
       
+      getRequest()->setConnectedAddrInfo(hostname, addr, port);
       if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
         getRequest()->setMethod(Request::METHOD_GET);
@@ -110,7 +111,6 @@ Command* FtpInitiateConnectionCommand::createNextCommand
           new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
                                  getRequestGroup(), hc, getDownloadEngine(),
                                  getSocket());
-        c->setConnectedAddr(hostname, addr, port);
         c->setProxyRequest(proxyRequest);
         command = c;
       } else if(proxyMethod == V_TUNNEL) {
@@ -118,13 +118,13 @@ Command* FtpInitiateConnectionCommand::createNextCommand
           new FtpTunnelRequestCommand(getCuid(), getRequest(), getFileEntry(),
                                       getRequestGroup(), getDownloadEngine(),
                                       proxyRequest, getSocket());
-        c->setConnectedAddr(hostname, addr, port);
         command = c;
       } else {
         // TODO
         throw DL_ABORT_EX("ERROR");
       }
     } else {
+      setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
       if(proxyMethod == V_TUNNEL) {
         command =
           new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
@@ -168,7 +168,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
         new FtpNegotiationCommand(getCuid(), getRequest(), getFileEntry(),
                                   getRequestGroup(), getDownloadEngine(),
                                   getSocket());
-      c->setConnectedAddr(hostname, addr, port);
+      getRequest()->setConnectedAddrInfo(hostname, addr, port);
       command = c;
     } else {
       command =
@@ -177,6 +177,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
                                   pooledSocket,
                                   FtpNegotiationCommand::SEQ_SEND_CWD_PREP,
                                   options["baseWorkingDir"]);
+      setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
     }
   }
   return command;

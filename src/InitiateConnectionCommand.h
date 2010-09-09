@@ -59,6 +59,11 @@ protected:
   (const std::string& hostname, const std::string& addr, uint16_t port,
    const std::vector<std::string>& resolvedAddresses,
    const SharedHandle<Request>& proxyRequest) = 0;
+
+  void setConnectedAddrInfo
+  (const SharedHandle<Request>& req,
+   const std::string& hostname,
+   const SharedHandle<SocketCore>& socket);
 public:
   InitiateConnectionCommand(cuid_t cuid, const SharedHandle<Request>& req,
                             const SharedHandle<FileEntry>& fileEntry,

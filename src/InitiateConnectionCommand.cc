@@ -120,4 +120,14 @@ bool InitiateConnectionCommand::executeInternal() {
   }
 }
 
+void InitiateConnectionCommand::setConnectedAddrInfo
+(const SharedHandle<Request>& req,
+ const std::string& hostname,
+ const SharedHandle<SocketCore>& socket)
+{
+  std::pair<std::string, uint16_t> peerAddr;
+  socket->getPeerInfo(peerAddr);
+  req->setConnectedAddrInfo(hostname, peerAddr.first, peerAddr.second);
+}
+
 } // namespace aria2

@@ -64,7 +64,8 @@ Request::Request():
   method_(METHOD_GET),
   hasPassword_(false),
   ipv6LiteralAddress_(false),
-  removalRequested_(false)
+  removalRequested_(false),
+  connectedPort_(0)
 {}
 
 static std::string removeFragment(const std::string& uri)
@@ -116,6 +117,7 @@ bool Request::setUri(const std::string& uri) {
 bool Request::resetUri() {
   previousUri_ = referer_;
   supportsPersistentConnection_ = true;
+  setConnectedAddrInfo(A2STR::NIL, A2STR::NIL, 0);
   return parseUri(uri_);
 }
 

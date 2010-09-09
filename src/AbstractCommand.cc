@@ -242,12 +242,29 @@ bool AbstractCommand::execute() {
     } else {
       if(checkPoint_.difference(global::wallclock) >= timeout_) {
         // timeout triggers ServerStat error state.
-
         SharedHandle<ServerStat> ss =
           e_->getRequestGroupMan()->getOrCreateServerStat(req_->getHost(),
                                                           req_->getProtocol());
         ss->setError();
-
+        // Purging IP address cache to renew IP address.
+        if(getLogger()->debug()) {
+          getLogger()->debug("CUID#%s - Marking IP address %s as bad",
+                             util::itos(getCuid()).c_str(),
+                             req_->getConnectedAddr().c_str());
+        }
+        e_->markBadIPAddress(req_->getConnectedHostname(),
+                             req_->getConnectedAddr(),
+                             req_->getConnectedPort());
+        if(e_->findCachedIPAddress
+           (req_->getConnectedHostname(), req_->getConnectedPort()).empty()) {
+          if(getLogger()->debug()) {
+            getLogger()->debug("CUID#%s - All IP addresses were marked bad."
+                               " Removing Entry.",
+                               util::itos(getCuid()).c_str());
+          }
+          e_->removeCachedIPAddress
+            (req_->getConnectedHostname(), req_->getConnectedPort());
+        }
         throw DL_RETRY_EX2(EX_TIME_OUT, downloadresultcode::TIME_OUT);
       }
       e_->addCommand(this);

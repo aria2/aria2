@@ -77,7 +77,8 @@ bool AbstractProxyRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(httpConnection_->sendBufferIsEmpty()) {
     if(!checkIfConnectionEstablished
-       (getSocket(), connectedHostname_, connectedAddr_, connectedPort_)) {
+       (getSocket(), getRequest()->getConnectedHostname(),
+        getRequest()->getConnectedAddr(), getRequest()->getConnectedPort())) {
       return true;
     }
     SharedHandle<HttpRequest> httpRequest(new HttpRequest());
