@@ -424,34 +424,43 @@ void RequestGroup::createInitialCommand
       BtProgressInfoFileHandle infoFile
         (new DefaultBtProgressInfoFile(downloadContext_, pieceStorage_,
                                        option_.get()));
-      if(!infoFile->exists() && downloadFinishedByFileLength()) {
+      bool finishedBySize =
+        !infoFile->exists() && downloadFinishedByFileLength();
+      if(finishedBySize) {
         pieceStorage_->markAllPiecesDone();
-        // TODO It would be good to issue ChecksumCheckIntegrity here
-        // instead of just pretending checksum verification is done.
-        downloadContext_->setChecksumVerified(true);
-        logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(gid_).c_str(),
-                        downloadContext_->getBasePath().c_str());
-      } else {
+        if(!option_->getAsBool(PREF_CHECK_INTEGRITY) ||
+           !downloadContext_->isChecksumVerificationNeeded()) {
+          // If --check-integrity=false and no checksum is provided,
+          // and .aria2 file does not exist, we just report download
+          // finished. We need
+          // DownloadContext::setChecksumVerified(true): without this,
+          // aria2 reports error for this download.
+          downloadContext_->setChecksumVerified(true);
+          logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          util::itos(gid_).c_str(),
+                          downloadContext_->getBasePath().c_str());
+        } else {
+          finishedBySize = false;
+        }
+      }
+      if(!finishedBySize) {
         loadAndOpenFile(infoFile);
+        SharedHandle<CheckIntegrityEntry> checkIntegrityEntry;
 #ifdef ENABLE_MESSAGE_DIGEST
         if(downloadFinished() &&
            downloadContext_->isChecksumVerificationNeeded()) {
           if(logger_->info()) {
             logger_->info(MSG_HASH_CHECK_NOT_DONE);
           }
-          SharedHandle<CheckIntegrityEntry> entry
+          SharedHandle<ChecksumCheckIntegrityEntry> entry
             (new ChecksumCheckIntegrityEntry(this));
-          if(entry->isValidationReady()) {
-            entry->initValidator();
-            entry->cutTrailingGarbage();
-            e->getCheckIntegrityMan()->pushEntry(entry);
-            return;
-          }
-        }
+          entry->setRedownload(true);
+          checkIntegrityEntry = entry;
+        } else
 #endif // ENABLE_MESSAGE_DIGEST
-        SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
-          (new StreamCheckIntegrityEntry(this));
+          {
+            checkIntegrityEntry.reset(new StreamCheckIntegrityEntry(this));
+          }
         processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
       }
     }
@@ -505,11 +514,15 @@ void RequestGroup::processCheckIntegrityEntry
  const SharedHandle<CheckIntegrityEntry>& entry,
  DownloadEngine* e)
 {
+  uint64_t actualFileSize = pieceStorage_->getDiskAdaptor()->size();
+  if(actualFileSize > downloadContext_->getTotalLength()) {
+    entry->cutTrailingGarbage();
+  }
 #ifdef ENABLE_MESSAGE_DIGEST
-  if(option_->getAsBool(PREF_CHECK_INTEGRITY) &&
+  if((option_->getAsBool(PREF_CHECK_INTEGRITY) ||
+      downloadContext_->isChecksumVerificationNeeded()) &&
      entry->isValidationReady()) {
     entry->initValidator();
-    entry->cutTrailingGarbage();
     // Don't save control file(.aria2 file) when user presses
     // control-c key while aria2 is checking hashes. If control file
     // doesn't exist when aria2 launched, the completed length in

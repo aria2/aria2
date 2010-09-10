@@ -780,29 +780,26 @@ std::string AbstractCommand::resolveHostname
 // function call.
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
+  SharedHandle<CheckIntegrityEntry> checkEntry;
 #ifdef ENABLE_MESSAGE_DIGEST
   if(requestGroup_->downloadFinished() &&
      getDownloadContext()->isChecksumVerificationNeeded()) {
     if(getLogger()->info()) {
       getLogger()->info(MSG_HASH_CHECK_NOT_DONE);
     }
-    SharedHandle<CheckIntegrityEntry> entry
-      (new ChecksumCheckIntegrityEntry(requestGroup_));
-    if(entry->isValidationReady()) {
-      delete nextCommand;
-      entry->initValidator();
-      entry->cutTrailingGarbage();
-      e_->getCheckIntegrityMan()->pushEntry(entry);
-      return;
-    }
-  }
+    SharedHandle<ChecksumCheckIntegrityEntry> entry
+      (new ChecksumCheckIntegrityEntry(requestGroup_, nextCommand));
+    entry->setRedownload(true);
+    checkEntry = entry;
+  } else
 #endif // ENABLE_MESSAGE_DIGEST
-  SharedHandle<CheckIntegrityEntry> entry
-    (new StreamCheckIntegrityEntry(requestGroup_, nextCommand));
-
+    {
+      checkEntry.reset
+        (new StreamCheckIntegrityEntry(requestGroup_, nextCommand));
+    }
   std::vector<Command*>* commands = new std::vector<Command*>();
   auto_delete_container<std::vector<Command*> > commandsDel(commands);
-  requestGroup_->processCheckIntegrityEntry(*commands, entry, e_);
+  requestGroup_->processCheckIntegrityEntry(*commands, checkEntry, e_);
   e_->addCommand(*commands);
   commands->clear();
   e_->setNoWait(true);

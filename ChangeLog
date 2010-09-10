@@ -1,5 +1,18 @@
 2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Check hash(hash for entire file, not piece hash) if
+	--check-integrity option is given and file is
+	downloaded(determined by file length). If it fails, re-download
+	file.
+	* src/AbstractCommand.cc
+	* src/ChecksumCheckIntegrityEntry.cc
+	* src/ChecksumCheckIntegrityEntry.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/RequestGroup.cc
+
+2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Make finished() return true only when offset == totalLength.
 	* src/AdaptiveFileAllocationIterator.cc
 	* src/SingleFileAllocationIterator.cc

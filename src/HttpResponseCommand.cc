@@ -131,8 +131,7 @@ bool HttpResponseCommand::executeInternal()
       getFileEntry()->setLength(totalLength);
       getRequestGroup()->initPieceStorage();
       getPieceStorage()->markAllPiecesDone();
-      // TODO It would be good to issue ChecksumCheckIntegrity here
-      // instead of just pretending checksum verification is done.
+      // Just set checksum verification done.
       getDownloadContext()->setChecksumVerified(true);
       getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
                           util::itos(getRequestGroup()->getGID()).c_str(),
@@ -268,13 +267,15 @@ bool HttpResponseCommand::handleDefaultEncoding
                                    getOption().get()));
   if(!infoFile->exists() && getRequestGroup()->downloadFinishedByFileLength()) {
     getPieceStorage()->markAllPiecesDone();
-    // TODO It would be good to issue ChecksumCheckIntegrity here
-    // instead of just pretending checksum verification is done.
-    getDownloadContext()->setChecksumVerified(true);
-    getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(getRequestGroup()->getGID()).c_str(),
-                        getRequestGroup()->getFirstFilePath().c_str());
-    return true;
+    // See also RequestGroup::createInitialCommand()
+    if(!getOption()->getAsBool(PREF_CHECK_INTEGRITY) ||
+       !getDownloadContext()->isChecksumVerificationNeeded()) {
+      getDownloadContext()->setChecksumVerified(true);
+      getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          util::itos(getRequestGroup()->getGID()).c_str(),
+                          getRequestGroup()->getFirstFilePath().c_str());
+      return true;
+    }
   }
   getRequestGroup()->loadAndOpenFile(infoFile);
   File file(getRequestGroup()->getFirstFilePath());
@@ -376,8 +377,7 @@ bool HttpResponseCommand::handleOtherEncoding
   if(getRequestGroup()->downloadFinishedByFileLength()) {
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->markAllPiecesDone();
-    // TODO It would be good to issue ChecksumCheckIntegrity here
-    // instead of just pretending checksum verification is done.
+    // This is zero-size file, so hash check is no use.
     getDownloadContext()->setChecksumVerified(true);
     getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
                         util::itos(getRequestGroup()->getGID()).c_str(),

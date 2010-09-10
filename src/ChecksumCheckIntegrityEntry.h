@@ -41,6 +41,8 @@ namespace aria2 {
 
 class ChecksumCheckIntegrityEntry:public CheckIntegrityEntry
 {
+private:
+  bool redownload_;
 public:
   ChecksumCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
@@ -55,6 +57,11 @@ public:
 
   virtual void onDownloadIncomplete(std::vector<Command*>& commands,
                                     DownloadEngine* e);
+
+  void setRedownload(bool redownload)
+  {
+    redownload_ = redownload;
+  }
 };
 
 } // namespace aria2

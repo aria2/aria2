@@ -42,11 +42,13 @@
 #include "RequestGroupMan.h"
 #include "FileAllocationEntry.h"
 #include "ServerStatMan.h"
+#include "StreamFileAllocationEntry.h"
 
 namespace aria2 {
 
 ChecksumCheckIntegrityEntry::ChecksumCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand):
-  CheckIntegrityEntry(requestGroup, nextCommand) {}
+  CheckIntegrityEntry(requestGroup, nextCommand),
+  redownload_(false) {}
 
 ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
 
@@ -75,6 +77,12 @@ ChecksumCheckIntegrityEntry::onDownloadFinished
 void
 ChecksumCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<Command*>& commands, DownloadEngine* e)
-{}
+{
+  if(redownload_) {
+    SharedHandle<FileAllocationEntry> entry
+      (new StreamFileAllocationEntry(getRequestGroup(), popNextCommand()));
+    proceedFileAllocation(commands, entry, e);
+  }
+}
 
 } // namespace aria2
