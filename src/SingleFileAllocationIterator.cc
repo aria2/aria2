@@ -84,7 +84,7 @@ void SingleFileAllocationIterator::allocateChunk()
 
 bool SingleFileAllocationIterator::finished()
 {
-  return (uint64_t)offset_ >= totalLength_;
+  return (uint64_t)offset_ == totalLength_;
 }
 
 } // namespace aria2

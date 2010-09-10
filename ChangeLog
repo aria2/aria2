@@ -1,3 +1,9 @@
+2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Make finished() return true only when offset == totalLength.
+	* src/AdaptiveFileAllocationIterator.cc
+	* src/SingleFileAllocationIterator.cc
+
 2010-09-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Moved connectedHostname, connectedAddr and connectedPort to
