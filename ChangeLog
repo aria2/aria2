@@ -1,5 +1,11 @@
 2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Store last error of removed download result so that it can be used
+	as exit status.
+	* src/RequestGroupMan.cc
+
+2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added --max-download-result=NUM option. This option sets maximum
 	number of download result kept in memory. The download results are
 	completed/error/ removed downloads. The download results are

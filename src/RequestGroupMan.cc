@@ -517,7 +517,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
         logger_->debug("Commands deleted");
       }
       groupToAdd->releaseRuntimeResource(e);
-      downloadResults_.push_back(groupToAdd->createDownloadResult());
+      addDownloadResult(groupToAdd->createDownloadResult());
     }
   }
   if(!temp.empty()) {
@@ -559,9 +559,9 @@ void RequestGroupMan::closeFile()
 RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
 {
   size_t finished = 0;
-  size_t error = 0;
+  size_t error = removedErrorResult_;
   size_t inprogress = 0;
-  downloadresultcode::RESULT lastError = downloadresultcode::FINISHED;
+  downloadresultcode::RESULT lastError = removedLastErrorResult_;
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end();
       itr != eoi; ++itr) {
@@ -772,14 +772,33 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
 {
   if(maxDownloadResult_ == 0) {
     if(!downloadResults_.empty()) {
+      for(std::deque<SharedHandle<DownloadResult> >::iterator i =
+            downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi;
+          ++i) {
+        if((*i)->result != downloadresultcode::FINISHED) {
+          removedLastErrorResult_ = (*i)->result;
+          ++removedErrorResult_;
+        }
+      }
       downloadResults_.clear();
+    }
+    if(dr->result != downloadresultcode::FINISHED) {
+      removedLastErrorResult_ = dr->result;
+      ++removedErrorResult_;
     }
   } else {
     size_t curSize = downloadResults_.size();
     if(curSize >= maxDownloadResult_) {
-      downloadResults_.erase
-        (downloadResults_.begin(),
-         downloadResults_.begin()+curSize-maxDownloadResult_+1);
+      std::deque<SharedHandle<DownloadResult> >::iterator last =
+        downloadResults_.begin()+curSize-maxDownloadResult_+1;
+      for(std::deque<SharedHandle<DownloadResult> >::iterator i =
+            downloadResults_.begin(); i != last; ++i) {
+        if((*i)->result != downloadresultcode::FINISHED) {
+          removedLastErrorResult_ = (*i)->result;
+          ++removedErrorResult_;
+        }
+      }        
+      downloadResults_.erase(downloadResults_.begin(), last);
     }
     downloadResults_.push_back(dr);
   }
