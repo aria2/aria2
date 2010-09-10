@@ -1,5 +1,24 @@
 2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added --max-download-result=NUM option. This option sets maximum
+	number of download result kept in memory. The download results are
+	completed/error/ removed downloads. The download results are
+	stored in FIFO queue and it can store at most NUM download
+	results. When queue is full and new download result is created,
+	oldest download result is removed from the front of the queue and
+	new one is pushed to the back. Setting big number in this option
+	may result high memory consumption after thousands of
+	downloads. Specifying 0 means no download result is kept.  Default
+	value is 1000.
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/prefs.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Check hash(hash for entire file, not piece hash) if
 	--check-integrity option is given and file is
 	downloaded(determined by file length). If it fails, re-download

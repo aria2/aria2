@@ -204,6 +204,8 @@ extern const std::string PREF_CONDITIONAL_GET;
 extern const std::string PREF_SELECT_LEAST_USED_HOST;
 // value: true | false
 extern const std::string PREF_ENABLE_ASYNC_DNS6;
+// value: 1*digit
+extern const std::string PREF_MAX_DOWNLOAD_RESULT;
 
 /**
  * FTP related preferences

@@ -87,7 +87,10 @@ RequestGroupMan::RequestGroupMan
   (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
   maxOverallUploadSpeedLimit_(option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT)),
   xmlRpc_(option->getAsBool(PREF_ENABLE_XML_RPC)),
-  queueCheck_(true)
+  queueCheck_(true),
+  removedErrorResult_(0),
+  removedLastErrorResult_(downloadresultcode::FINISHED),
+  maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT))
 {}
 
 bool RequestGroupMan::downloadFinished()
@@ -344,18 +347,17 @@ public:
       }
       if(group->isPauseRequested()) {
         reservedGroups_.push_front(group);
-      } else {
-        downloadResults_.push_back(group->createDownloadResult());
-      }
-      group->releaseRuntimeResource(e_);
-      if(group->isPauseRequested()) {
+        group->releaseRuntimeResource(e_);
         group->setForceHaltRequested(false);
         util::executeHookByOptName
           (group, e_->getOption(), PREF_ON_DOWNLOAD_PAUSE);
         // TODO Should we have to prepend spend uris to remaining uris
         // in case PREF_REUSE_URI is disabed?
       } else {
-        executeStopHook(downloadResults_.back(), e_->getOption());
+        SharedHandle<DownloadResult> dr = group->createDownloadResult();
+        e_->getRequestGroupMan()->addDownloadResult(dr);
+        group->releaseRuntimeResource(e_);
+        executeStopHook(dr, e_->getOption());
       }
     }
   }
@@ -764,6 +766,23 @@ RequestGroupMan::findDownloadResult(gid_t gid) const
     }
   }
   return SharedHandle<DownloadResult>();
+}
+
+void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
+{
+  if(maxDownloadResult_ == 0) {
+    if(!downloadResults_.empty()) {
+      downloadResults_.clear();
+    }
+  } else {
+    size_t curSize = downloadResults_.size();
+    if(curSize >= maxDownloadResult_) {
+      downloadResults_.erase
+        (downloadResults_.begin(),
+         downloadResults_.begin()+curSize-maxDownloadResult_+1);
+    }
+    downloadResults_.push_back(dr);
+  }
 }
 
 void RequestGroupMan::purgeDownloadResult()

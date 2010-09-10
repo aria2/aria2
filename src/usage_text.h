@@ -741,3 +741,15 @@
     "                              announce URIs. When specifying '*' in shell\n" \
     "                              command-line, don't forget to escape or quote it.\n" \
     "                              See also --bt-tracker option.")
+#define TEXT_MAX_DOWNLOAD_RESULT                \
+  _(" --max-download-result=NUM    Set maximum number of download result kept in\n" \
+    "                              memory. The download results are completed/error/\n" \
+    "                              removed downloads. The download results are stored\n" \
+    "                              in FIFO queue and it can store at most NUM\n" \
+    "                              download results. When queue is full and new\n" \
+    "                              download result is created, oldest download result\n" \
+    "                              is removed from the front of the queue and new one\n" \
+    "                              is pushed to the back. Setting big number in this\n" \
+    "                              option may result high memory consumption after\n" \
+    "                              thousands of downloads. Specifying 0 means no\n" \
+    "                              download result is kept.")

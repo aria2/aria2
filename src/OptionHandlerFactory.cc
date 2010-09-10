@@ -366,6 +366,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+                                   (PREF_MAX_DOWNLOAD_RESULT,
+                                    TEXT_MAX_DOWNLOAD_RESULT,
+                                    "1000",
+                                    0));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
                                    (PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
                                     TEXT_MAX_OVERALL_DOWNLOAD_LIMIT,

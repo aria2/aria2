@@ -78,6 +78,15 @@ private:
 
   bool queueCheck_;
 
+  // The number of error DownloadResult removed because of upper limit
+  // of the queue
+  size_t removedErrorResult_;
+
+  // The last error of removed DownloadResult
+  downloadresultcode::RESULT removedLastErrorResult_;
+
+  size_t maxDownloadResult_;
+
   std::string
   formatDownloadResult(const std::string& status,
                        const SharedHandle<DownloadResult>& downloadResult) const;
@@ -204,6 +213,8 @@ public:
 
   // Removes all download results.
   void purgeDownloadResult();
+
+  void addDownloadResult(const SharedHandle<DownloadResult>& downloadResult);
 
   SharedHandle<ServerStat> findServerStat(const std::string& hostname,
                                           const std::string& protocol) const;
