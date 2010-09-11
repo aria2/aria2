@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Request.h"
 
+#include <cassert>
 #include <utility>
 
 #include "util.h"
@@ -181,9 +182,10 @@ const SharedHandle<PeerStat>& Request::initPeerStat()
 {
   // Use host and protocol in original URI, because URI selector
   // selects URI based on original URI, not redirected one.
-  Request origReq;
-  origReq.setUri(uri_);
-  peerStat_.reset(new PeerStat(0, origReq.getHost(), origReq.getProtocol()));
+  uri::UriStruct us;
+  bool v = uri::parse(us, uri_);
+  assert(v);
+  peerStat_.reset(new PeerStat(0, us.host, us.protocol));
   return peerStat_;
 }
 

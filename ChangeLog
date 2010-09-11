@@ -1,5 +1,19 @@
 2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use uri::parse instead of Request::setUri() where just URI parser
+	is needed.
+	* src/AbstractCommand.cc
+	* src/AdaptiveURISelector.cc
+	* src/DefaultBtAnnounce.cc
+	* src/FeedbackURISelector.cc
+	* src/FileEntry.cc
+	* src/HttpResponseCommand.cc
+	* src/ProtocolDetector.cc
+	* src/Request.cc
+	* src/RequestGroupMan.cc
+
+2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Moved URI parser code to uri.h, uri.cc to provide fast URI parser
 	without Request object initialization.
 	* src/Makefile.am

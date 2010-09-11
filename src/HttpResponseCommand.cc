@@ -73,6 +73,7 @@
 #include "SinkStreamFilter.h"
 #include "ChunkedDecodingStreamFilter.h"
 #include "GZipDecodingStreamFilter.h"
+#include "uri.h"
 
 namespace aria2 {
 
@@ -155,9 +156,10 @@ bool HttpResponseCommand::executeInternal()
   if(getFileEntry()->isUniqueProtocol()) {
     // Redirection should be considered here. We need to parse
     // original URI to get hostname.
-    Request req;
-    req.setUri(getRequest()->getUri());
-    getFileEntry()->removeURIWhoseHostnameIs(req.getHost());
+    uri::UriStruct us;
+    if(uri::parse(us, getRequest()->getUri())) {
+      getFileEntry()->removeURIWhoseHostnameIs(us.host);
+    }
   }
   if(getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();

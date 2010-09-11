@@ -71,6 +71,7 @@
 #include "CheckIntegrityEntry.h"
 #include "Segment.h"
 #include "DlAbortEx.h"
+#include "uri.h"
 
 namespace aria2 {
 
@@ -894,25 +895,25 @@ bool RequestGroupMan::doesOverallUploadSpeedExceed()
 void RequestGroupMan::getUsedHosts
 (std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
-  Request r;
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
         requestGroups_.begin(), eoi = requestGroups_.end(); i != eoi; ++i) {
     const std::deque<SharedHandle<Request> >& inFlightReqs =
       (*i)->getDownloadContext()->getFirstFileEntry()->getInFlightRequests();
     for(std::deque<SharedHandle<Request> >::const_iterator j =
           inFlightReqs.begin(), eoj = inFlightReqs.end(); j != eoj; ++j) {
-      if(r.setUri((*j)->getUri())) {
+      uri::UriStruct us;
+      if(uri::parse(us, (*j)->getUri())) {
         std::vector<std::pair<size_t, std::string> >::iterator k;
         std::vector<std::pair<size_t, std::string> >::iterator eok =
           usedHosts.end();
         for(k =  usedHosts.begin(); k != eok; ++k) {
-          if((*k).second == r.getHost()) {
+          if((*k).second == us.host) {
             ++(*k).first;
             break;
           }
         }
         if(k == eok) {
-          usedHosts.push_back(std::make_pair(1, r.getHost()));
+          usedHosts.push_back(std::make_pair(1, us.host));
         }
       }
     }

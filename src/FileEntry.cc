@@ -42,6 +42,7 @@
 #include "LogFactory.h"
 #include "wallclock.h"
 #include "a2algo.h"
+#include "uri.h"
 
 namespace aria2 {
 
@@ -108,10 +109,11 @@ static OutputIterator
 enumerateInFlightHosts
 (InputIterator first, InputIterator last, OutputIterator out)
 {
-  Request r;
   for(; first != last; ++first) {
-    r.setUri((*first)->getUri());
-    *out++ = r.getHost();
+    uri::UriStruct us;
+    if(uri::parse(us, (*first)->getUri())) {
+      *out++ = us.host;
+    }
   }
   return out;
 }
@@ -259,11 +261,13 @@ bool FileEntry::removeRequest(const SharedHandle<Request>& request)
 void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
 {
   std::deque<std::string> newURIs;
-  Request req;
   for(std::deque<std::string>::const_iterator itr = uris_.begin(),
         eoi = uris_.end(); itr != eoi; ++itr) {
-    if(((*itr).find(hostname) == std::string::npos) ||
-       (req.setUri(*itr) && (req.getHost() != hostname))) {
+    uri::UriStruct us;
+    if(!uri::parse(us, *itr)) {
+      continue;
+    }
+    if(us.host != hostname) {
       newURIs.push_back(*itr);
     }
   }
@@ -271,7 +275,7 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
     logger_->debug("Removed %d duplicate hostname URIs for path=%s",
                    uris_.size()-newURIs.size(), getPath().c_str());
   }
-  uris_ = newURIs;
+  uris_.swap(newURIs);
 }
 
 void FileEntry::removeIdenticalURI(const std::string& uri)
@@ -337,11 +341,11 @@ void FileEntry::reuseUri(const std::vector<std::string>& ignore)
                       errorUris.begin(), errorUris.end(),
                       std::back_inserter(reusableURIs));
   std::vector<std::string>::iterator insertionPoint = reusableURIs.begin();
-  Request req;
   for(std::vector<std::string>::iterator i = reusableURIs.begin(),
         eoi = reusableURIs.end(); i != eoi; ++i) {
-    req.setUri(*i);
-    if(std::find(ignore.begin(), ignore.end(), req.getHost()) == ignore.end()) {
+    uri::UriStruct us;
+    if(uri::parse(us, *i) &&
+       std::find(ignore.begin(), ignore.end(), us.host) == ignore.end()) {
       if(i != insertionPoint) {
         *insertionPoint = *i;
       }
@@ -429,7 +433,8 @@ size_t FileEntry::setUris(const std::vector<std::string>& uris)
 
 bool FileEntry::addUri(const std::string& uri)
 {
-  if(Request().setUri(uri)) {
+  uri::UriStruct us;
+  if(uri::parse(us, uri)) {
     uris_.push_back(uri);
     return true;
   } else {
@@ -439,7 +444,8 @@ bool FileEntry::addUri(const std::string& uri)
 
 bool FileEntry::insertUri(const std::string& uri, size_t pos)
 {
-  if(Request().setUri(uri)) {
+  uri::UriStruct us;
+  if(uri::parse(us, uri)) {
     pos = std::min(pos, uris_.size());
     uris_.insert(uris_.begin()+pos, uri);
     return true;

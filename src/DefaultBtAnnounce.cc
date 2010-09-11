@@ -48,10 +48,10 @@
 #include "Option.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include "Request.h"
 #include "bencode2.h"
 #include "bittorrent_helper.h"
 #include "wallclock.h"
+#include "uri.h"
 
 namespace aria2 {
 
@@ -105,9 +105,12 @@ bool DefaultBtAnnounce::isAnnounceReady() {
 
 static bool uriHasQuery(const std::string& uri)
 {
-  Request req;
-  req.setUri(uri);
-  return !req.getQuery().empty();
+  uri::UriStruct us;
+  if(uri::parse(us, uri)) {
+    return !us.query.empty();
+  } else {
+    return false;
+  }
 }
 
 std::string DefaultBtAnnounce::getAnnounceUrl() {

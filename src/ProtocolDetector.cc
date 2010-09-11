@@ -42,6 +42,7 @@
 #include "File.h"
 #include "util.h"
 #include "RecoverableException.h"
+#include "uri.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -54,7 +55,8 @@ ProtocolDetector::~ProtocolDetector() {}
 
 bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
 {
-  return Request().setUri(uri);
+  uri::UriStruct us;
+  return uri::parse(us, uri);
 }
 
 bool ProtocolDetector::guessTorrentFile(const std::string& uri) const

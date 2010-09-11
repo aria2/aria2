@@ -39,12 +39,12 @@
 
 #include "ServerStatMan.h"
 #include "ServerStat.h"
-#include "Request.h"
 #include "A2STR.h"
 #include "FileEntry.h"
 #include "Logger.h"
 #include "LogFactory.h"
 #include "a2algo.h"
+#include "uri.h"
 
 namespace aria2 {
 
@@ -109,19 +109,19 @@ std::string FeedbackURISelector::selectRarer
   std::vector<std::pair<std::string, std::string> > cands;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
-    Request r;
-    if(!r.setUri(*i)) {
+    uri::UriStruct us;
+    if(!uri::parse(us, *i)) {
       continue;
     }
     SharedHandle<ServerStat> ss =
-      serverStatMan_->find(r.getHost(), r.getProtocol());
+      serverStatMan_->find(us.host, us.protocol);
     if(!ss.isNull() && ss->isError()) {
       if(logger_->debug()) {
         logger_->debug("Error not considered: %s", (*i).c_str());
       }
       continue;
     }
-    cands.push_back(std::make_pair(r.getHost(), *i));
+    cands.push_back(std::make_pair(us.host, *i));
   }
   for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
         usedHosts.begin(), eoi = usedHosts.end(); i != eoi; ++i) {
@@ -148,11 +148,11 @@ std::string FeedbackURISelector::selectFaster
   std::vector<std::string> normCands;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
-    Request r;
-    if(!r.setUri(*i)) {
+    uri::UriStruct us;
+    if(!uri::parse(us, *i)) {
       continue;
     }
-    if(findSecond(usedHosts.begin(), usedHosts.end(), r.getHost()) !=
+    if(findSecond(usedHosts.begin(), usedHosts.end(), us.host) !=
        usedHosts.end()) {
       if(logger_->debug()) {
         logger_->debug("%s is in usedHosts, not considered", (*i).c_str());
@@ -160,7 +160,7 @@ std::string FeedbackURISelector::selectFaster
       continue;
     }
     SharedHandle<ServerStat> ss =
-      serverStatMan_->find(r.getHost(), r.getProtocol());
+      serverStatMan_->find(us.host, us.protocol);
     if(ss.isNull()) {
       normCands.push_back(*i);
     } else if(ss->isOK()) {

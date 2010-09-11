@@ -51,6 +51,7 @@
 #include "SimpleRandomizer.h"
 #include "SocketCore.h"
 #include "FileEntry.h"
+#include "uri.h"
 
 namespace aria2 {
 
@@ -341,9 +342,12 @@ std::string AdaptiveURISelector::getFirstToTestUri
 SharedHandle<ServerStat> AdaptiveURISelector::getServerStats
 (const std::string& uri) const
 {
-  Request r;
-  r.setUri(uri);
-  return serverStatMan_->find(r.getHost(), r.getProtocol());
+  uri::UriStruct us;
+  if(uri::parse(us, uri)) {
+    return serverStatMan_->find(us.host, us.protocol);
+  } else {
+    return SharedHandle<ServerStat>();
+  }
 }
 
 unsigned int AdaptiveURISelector::getNbTestedServers

@@ -68,6 +68,7 @@
 #include "NameResolver.h"
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
+#include "uri.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "ChecksumCheckIntegrityEntry.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -556,7 +557,8 @@ static bool isProxyRequest
 (const std::string& protocol, const SharedHandle<Option>& option)
 {
   const std::string& proxyUri = getProxyUri(protocol, option);
-  return !proxyUri.empty() && Request().setUri(proxyUri);
+  uri::UriStruct us;
+  return !proxyUri.empty() && uri::parse(us, proxyUri);
 }
 
 namespace {
