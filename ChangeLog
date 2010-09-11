@@ -1,3 +1,15 @@
+2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Moved URI parser code to uri.h, uri.cc to provide fast URI parser
+	without Request object initialization.
+	* src/Makefile.am
+	* src/Request.cc
+	* src/uri.cc
+	* src/uri.h
+	* test/Makefile.am
+	* test/RequestTest.cc
+	* test/UriTest.cc
+
 2010-09-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Store last error of removed download result so that it can be used

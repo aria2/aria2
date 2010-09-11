@@ -74,7 +74,8 @@ aria2c_SOURCES = AllTest.cc\
 	SessionSerializerTest.cc\
 	ValueBaseTest.cc\
 	ChunkedDecodingStreamFilterTest.cc\
-	GZipDecodingStreamFilterTest.cc
+	GZipDecodingStreamFilterTest.cc\
+	UriTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\

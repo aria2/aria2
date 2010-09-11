@@ -446,7 +446,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
 	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
-	NullSinkStreamFilter.cc NullSinkStreamFilter.h \
+	NullSinkStreamFilter.cc NullSinkStreamFilter.h uri.cc uri.h \
 	XmlRpcRequestParserController.cc \
 	XmlRpcRequestParserController.h \
 	XmlRpcRequestParserStateMachine.cc \
@@ -890,7 +890,7 @@ am__objects_32 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	StreamFilter.$(OBJEXT) SinkStreamFilter.$(OBJEXT) \
 	GZipDecodingStreamFilter.$(OBJEXT) \
 	ChunkedDecodingStreamFilter.$(OBJEXT) \
-	NullSinkStreamFilter.$(OBJEXT) $(am__objects_1) \
+	NullSinkStreamFilter.$(OBJEXT) uri.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
@@ -1238,17 +1238,18 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
 	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
-	NullSinkStreamFilter.cc NullSinkStreamFilter.h $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_15) $(am__append_16) \
-	$(am__append_17) $(am__append_18) $(am__append_19) \
-	$(am__append_20) $(am__append_21) $(am__append_22) \
-	$(am__append_23) $(am__append_24) $(am__append_25) \
-	$(am__append_26) $(am__append_27) $(am__append_28) \
-	$(am__append_29) $(am__append_30) $(am__append_31)
+	NullSinkStreamFilter.cc NullSinkStreamFilter.h uri.cc uri.h \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(am__append_14) $(am__append_15) \
+	$(am__append_16) $(am__append_17) $(am__append_18) \
+	$(am__append_19) $(am__append_20) $(am__append_21) \
+	$(am__append_22) $(am__append_23) $(am__append_24) \
+	$(am__append_25) $(am__append_26) $(am__append_27) \
+	$(am__append_28) $(am__append_29) $(am__append_30) \
+	$(am__append_31)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1682,6 +1683,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strptime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timegm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uri.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version_usage.Po@am__quote@
 
