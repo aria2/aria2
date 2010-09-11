@@ -356,6 +356,8 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
   }
 }
 
+#endif // ENABLE_MESSAGE_DIGEST
+
 void DownloadCommand::installStreamFilter
 (const SharedHandle<StreamFilter>& streamFilter)
 {
@@ -367,7 +369,5 @@ void DownloadCommand::installStreamFilter
   sinkFilterOnly_ =
     util::endsWith(streamFilter_->getName(), SinkStreamFilter::NAME);
 }
-
-#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

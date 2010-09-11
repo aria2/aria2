@@ -1,5 +1,10 @@
 2010-09-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error without OpenSSL/GnuTLS.
+	* src/DownloadCommand.cc
+
+2010-09-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error without BitTorrent support and OpenSSL/GnuTLS.
 	* src/DownloadCommand.cc
 	* src/DownloadCommand.h
