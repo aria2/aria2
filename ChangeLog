@@ -1,5 +1,10 @@
 2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated autoconf 2.67
+	* configure.ac
+
+2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.10.3
 	* configure.ac
 	* doc/aria2c.1.txt
