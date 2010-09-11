@@ -53,7 +53,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ALLOW_OVERWRITE,
                                     TEXT_ALLOW_OVERWRITE,
-                                    V_FALSE));
+                                    A2_V_FALSE));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
     handlers.push_back(op);
@@ -62,7 +62,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ALLOW_PIECE_LENGTH_CHANGE,
                                     TEXT_ALLOW_PIECE_LENGTH_CHANGE,
-                                    V_FALSE));
+                                    A2_V_FALSE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -70,7 +70,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ALWAYS_RESUME,
                                     TEXT_ALWAYS_RESUME,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FTP);
@@ -82,7 +82,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ASYNC_DNS,
                                     TEXT_ASYNC_DNS,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -92,7 +92,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_AUTO_FILE_RENAMING,
                                     TEXT_AUTO_FILE_RENAMING,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
@@ -112,7 +112,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_CHECK_INTEGRITY,
                                     TEXT_CHECK_INTEGRITY,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG,
                                     'V'));
     op->addTag(TAG_BASIC);
@@ -126,7 +126,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_CONDITIONAL_GET,
                                     TEXT_CONDITIONAL_GET,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HTTP);
@@ -144,7 +144,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_CONTINUE,
                                     TEXT_CONTINUE,
-                                    V_FALSE, // TODO ommit?
+                                    A2_V_FALSE, // TODO ommit?
                                     OptionHandler::NO_ARG,
                                     'c'));
     op->addTag(TAG_BASIC);
@@ -156,7 +156,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_DAEMON,
                                     TEXT_DAEMON,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::NO_ARG,
                                     'D')); // TODO ommit?
     op->addTag(TAG_ADVANCED);
@@ -178,7 +178,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_DISABLE_IPV6,
                                     TEXT_DISABLE_IPV6,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -197,7 +197,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_ASYNC_DNS6,
                                     TEXT_ENABLE_ASYNC_DNS6,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -208,7 +208,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_DIRECT_IO,
                                     TEXT_ENABLE_DIRECT_IO,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
@@ -220,7 +220,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_XML_RPC,
                                     TEXT_ENABLE_XML_RPC,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
@@ -277,7 +277,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_FORCE_SEQUENTIAL,
                                     TEXT_FORCE_SEQUENTIAL,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG,
                                     'Z'));
     op->addTag(TAG_BASIC);
@@ -287,7 +287,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_HUMAN_READABLE,
                                     TEXT_HUMAN_READABLE,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -413,7 +413,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_NO_CONF,
                                     TEXT_NO_CONF,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::NO_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -482,7 +482,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_PARAMETERIZED_URI,
                                     TEXT_PARAMETERIZED_URI,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG,
                                     'P'));  
     op->addTag(TAG_ADVANCED);
@@ -492,7 +492,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_QUIET,
                                     TEXT_QUIET,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG,
                                     'q'));
     op->addTag(TAG_ADVANCED);
@@ -503,7 +503,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REALTIME_CHUNK_CHECKSUM,
                                     TEXT_REALTIME_CHUNK_CHECKSUM,
-                                    V_TRUE));
+                                    A2_V_TRUE));
     op->addTag(TAG_METALINK);
     handlers.push_back(op);
   }
@@ -512,7 +512,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REMOVE_CONTROL_FILE,
                                     TEXT_REMOVE_CONTROL_FILE,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
@@ -530,7 +530,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_SELECT_LEAST_USED_HOST,
                                     NO_DEFAULT_VALUE,
-                                    V_TRUE));
+                                    A2_V_TRUE));
     op->hide();
     handlers.push_back(op);
   }
@@ -557,7 +557,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_XML_RPC_LISTEN_ALL,
                                     TEXT_XML_RPC_LISTEN_ALL,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
@@ -610,7 +610,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_DRY_RUN,
                                     TEXT_DRY_RUN,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
@@ -651,7 +651,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_NO_NETRC,
                                     TEXT_NO_NETRC,
-                                    V_FALSE, // TODO ommit?
+                                    A2_V_FALSE, // TODO ommit?
                                     OptionHandler::NO_ARG,
                                     'n'));
     op->addTag(TAG_FTP);
@@ -676,7 +676,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REMOTE_TIME,
                                     TEXT_REMOTE_TIME,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG,
                                     'R'));
     op->addTag(TAG_FTP);
@@ -687,7 +687,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REUSE_URI,
                                     TEXT_REUSE_URI,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
@@ -798,7 +798,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_CHECK_CERTIFICATE,
                                     TEXT_CHECK_CERTIFICATE,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
@@ -808,7 +808,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_HTTP_KEEP_ALIVE,
                                     TEXT_ENABLE_HTTP_KEEP_ALIVE,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -817,7 +817,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_HTTP_PIPELINING,
                                     TEXT_ENABLE_HTTP_PIPELINING,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -835,7 +835,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_HTTP_ACCEPT_GZIP,
                                     TEXT_HTTP_ACCEPT_GZIP,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -844,7 +844,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_HTTP_AUTH_CHALLENGE,
                                     TEXT_HTTP_AUTH_CHALLENGE,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -853,7 +853,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_HTTP_NO_CACHE,
                                     TEXT_HTTP_NO_CACHE,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -923,7 +923,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_USE_HEAD,
                                     TEXT_USE_HEAD,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -952,7 +952,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_FTP_PASV,
                                     TEXT_FTP_PASV,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG,
                                     'p'));
     op->addTag(TAG_FTP);
@@ -962,7 +962,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_FTP_REUSE_CONNECTION,
                                     TEXT_FTP_REUSE_CONNECTION,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_FTP);
     handlers.push_back(op);
@@ -1136,7 +1136,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_SHOW_FILES,
                                     TEXT_SHOW_FILES,
-                                    V_FALSE, // TODO ommit?
+                                    A2_V_FALSE, // TODO ommit?
                                     OptionHandler::NO_ARG,
                                     'S'));
     op->addTag(TAG_BASIC);
@@ -1151,7 +1151,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_BT_ENABLE_LPD,
                                     TEXT_BT_ENABLE_LPD,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -1188,7 +1188,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_BT_HASH_CHECK_SEED,
                                     TEXT_BT_HASH_CHECK_SEED,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -1226,7 +1226,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_BT_METADATA_ONLY,
                                     TEXT_BT_METADATA_ONLY,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -1260,7 +1260,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_BT_REQUIRE_CRYPTO,
                                     TEXT_BT_REQUIRE_CRYPTO,
-                                    V_FALSE));
+                                    A2_V_FALSE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
@@ -1277,7 +1277,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_BT_SEED_UNVERIFIED,
                                     TEXT_BT_SEED_UNVERIFIED,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -1286,7 +1286,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_BT_SAVE_METADATA,
                                     TEXT_BT_SAVE_METADATA,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -1425,7 +1425,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_DHT,
                                     TEXT_ENABLE_DHT,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
@@ -1435,7 +1435,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_DHT6,
                                     TEXT_ENABLE_DHT6,
-                                    V_FALSE,
+                                    A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
@@ -1445,7 +1445,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_PEER_EXCHANGE,
                                     TEXT_ENABLE_PEER_EXCHANGE,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
@@ -1454,8 +1454,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
                                    (PREF_FOLLOW_TORRENT,
                                     TEXT_FOLLOW_TORRENT,
-                                    V_TRUE,
-                                    V_TRUE, V_MEM, V_FALSE));
+                                    A2_V_TRUE,
+                                    A2_V_TRUE, V_MEM, A2_V_FALSE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
@@ -1561,8 +1561,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
                                    (PREF_FOLLOW_METALINK,
                                     TEXT_FOLLOW_METALINK,
-                                    V_TRUE,
-                                    V_TRUE, V_MEM, V_FALSE));
+                                    A2_V_TRUE,
+                                    A2_V_TRUE, V_MEM, A2_V_FALSE));
     op->addTag(TAG_METALINK);
     handlers.push_back(op);
   }
@@ -1570,7 +1570,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_METALINK_ENABLE_UNIQUE_PROTOCOL,
                                     TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL,
-                                    V_TRUE,
+                                    A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_METALINK);
     handlers.push_back(op);

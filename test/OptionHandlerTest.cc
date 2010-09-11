@@ -69,10 +69,10 @@ void OptionHandlerTest::testBooleanOptionHandler()
   CPPUNIT_ASSERT(handler.canHandle("foo"));
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
-  handler.parse(option, V_TRUE);
-  CPPUNIT_ASSERT_EQUAL(std::string(V_TRUE), option.get("foo"));
-  handler.parse(option, V_FALSE);
-  CPPUNIT_ASSERT_EQUAL(std::string(V_FALSE), option.get("foo"));
+  handler.parse(option, A2_V_TRUE);
+  CPPUNIT_ASSERT_EQUAL(std::string(A2_V_TRUE), option.get("foo"));
+  handler.parse(option, A2_V_FALSE);
+  CPPUNIT_ASSERT_EQUAL(std::string(A2_V_FALSE), option.get("foo"));
   try {
     handler.parse(option, "hello");
     CPPUNIT_FAIL("exception must be thrown.");

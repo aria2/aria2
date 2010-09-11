@@ -116,7 +116,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
 
   results.clear();
 
-  requestGroup_->getOption()->put(PREF_BT_SAVE_METADATA, V_TRUE);
+  requestGroup_->getOption()->put(PREF_BT_SAVE_METADATA, A2_V_TRUE);
   handler.getNextRequestGroups(results, requestGroup_.get());
   CPPUNIT_ASSERT(trfile.exists());
 

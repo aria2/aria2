@@ -87,7 +87,7 @@ int64_t Option::getAsLLInt(const std::string& name) const {
 }
 
 bool Option::getAsBool(const std::string& name) const {
-  return get(name) == V_TRUE;
+  return get(name) == A2_V_TRUE;
 }
 
 double Option::getAsDouble(const std::string& name) const {

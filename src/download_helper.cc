@@ -315,7 +315,7 @@ void createRequestGroupForBitTorrent
  bool adjustAnnounceUri)
 {
   std::vector<std::string> nargs;
-  if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+  if(option->get(PREF_PARAMETERIZED_URI) == A2_V_TRUE) {
     unfoldURI(nargs, uris);
   } else {
     nargs = uris;
@@ -437,12 +437,12 @@ void createRequestGroupForUri
  bool ignoreLocalPath)
 {
   std::vector<std::string> nargs;
-  if(option->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+  if(option->get(PREF_PARAMETERIZED_URI) == A2_V_TRUE) {
     unfoldURI(nargs, uris);
   } else {
     nargs = uris;
   }
-  if(!ignoreForceSequential && option->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
+  if(!ignoreForceSequential && option->get(PREF_FORCE_SEQUENTIAL) == A2_V_TRUE) {
     std::for_each(nargs.begin(), nargs.end(),
                   AccRequestGroup(result, option, ignoreLocalPath));
   } else {

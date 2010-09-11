@@ -39,8 +39,8 @@ namespace aria2 {
 /**
  * Constants
  */
-const std::string V_TRUE("true");
-const std::string V_FALSE("false");
+const std::string A2_V_TRUE("true");
+const std::string A2_V_FALSE("false");
 const std::string V_NONE("none");
 const std::string V_MEM("mem");
 const std::string V_ALL("all");

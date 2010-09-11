@@ -43,8 +43,8 @@ namespace aria2 {
 /**
  * Constants
  */
-extern const std::string V_TRUE;
-extern const std::string V_FALSE;
+extern const std::string A2_V_TRUE;
+extern const std::string A2_V_FALSE;
 extern const std::string V_NONE;
 extern const std::string V_MEM;
 extern const std::string V_ALL;

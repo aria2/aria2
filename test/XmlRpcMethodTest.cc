@@ -995,7 +995,7 @@ void XmlRpcMethodTest::testPause()
     "http://url3",
   };
   std::vector<std::string> uris(vbegin(URIS), vend(URIS));
-  option_->put(PREF_FORCE_SEQUENTIAL, V_TRUE);
+  option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
   std::vector<SharedHandle<RequestGroup> > groups;
   createRequestGroupForUri(groups, option_, uris);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());  

@@ -44,7 +44,7 @@ public:
   void setUp()
   {
     option_.reset(new Option());
-    option_->put(PREF_HTTP_AUTH_CHALLENGE, V_TRUE);
+    option_->put(PREF_HTTP_AUTH_CHALLENGE, A2_V_TRUE);
     authConfigFactory_.reset(new AuthConfigFactory());
   }
 

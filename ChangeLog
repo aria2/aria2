@@ -1,5 +1,26 @@
 2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced V_TRUE with A2_V_TRUE. Replaced V_FALSE with A2_V_FALSE.
+	* src/AbstractCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/Option.cc
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/TrackerWatcherCommand.cc
+	* src/download_helper.cc
+	* src/main.cc
+	* src/prefs.cc
+	* src/prefs.h
+	* test/AuthConfigFactoryTest.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/DownloadHelperTest.cc
+	* test/HttpRequestTest.cc
+	* test/OptionHandlerTest.cc
+	* test/UTMetadataPostDownloadHandlerTest.cc
+	* test/XmlRpcMethodTest.cc
+
+2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated autoconf 2.67
 	* configure.ac
 

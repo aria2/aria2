@@ -143,7 +143,7 @@ bool HttpResponseCommand::executeInternal()
     } else if(httpResponse->getResponseStatus() == HttpHeader::S200 ||
               httpResponse->getResponseStatus() == HttpHeader::S206) {
       // Remote file is newer than local file. We allow overwrite.
-      getOption()->put(PREF_ALLOW_OVERWRITE, V_TRUE);
+      getOption()->put(PREF_ALLOW_OVERWRITE, A2_V_TRUE);
     }
   }
   if(httpResponse->getResponseStatus() >= HttpHeader::S300 &&

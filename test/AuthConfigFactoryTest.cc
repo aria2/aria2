@@ -35,8 +35,8 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   req->setUri("http://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
-  option.put(PREF_NO_NETRC, V_FALSE);
-  option.put(PREF_HTTP_AUTH_CHALLENGE, V_TRUE);
+  option.put(PREF_NO_NETRC, A2_V_FALSE);
+  option.put(PREF_HTTP_AUTH_CHALLENGE, A2_V_TRUE);
 
   AuthConfigFactory factory;
 
@@ -92,7 +92,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
   req->setUri("http://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
-  option.put(PREF_NO_NETRC, V_FALSE);
+  option.put(PREF_NO_NETRC, A2_V_FALSE);
 
   AuthConfigFactory factory;
 
@@ -138,7 +138,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
   req->setUri("ftp://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
-  option.put(PREF_NO_NETRC, V_FALSE);
+  option.put(PREF_NO_NETRC, A2_V_FALSE);
 
   AuthConfigFactory factory;
 
@@ -155,12 +155,12 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // disable Netrc
-  option.put(PREF_NO_NETRC, V_TRUE);
+  option.put(PREF_NO_NETRC, A2_V_TRUE);
   CPPUNIT_ASSERT_EQUAL(std::string("anonymous:ARIA2USER@"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   // with Netrc + user defined
-  option.put(PREF_NO_NETRC, V_FALSE);
+  option.put(PREF_NO_NETRC, A2_V_FALSE);
   option.put(PREF_FTP_USER, "userDefinedUser");
   option.put(PREF_FTP_PASSWD, "userDefinedPassword");
   CPPUNIT_ASSERT_EQUAL(std::string("userDefinedUser:userDefinedPassword"),
@@ -198,8 +198,8 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
 void AuthConfigFactoryTest::testUpdateBasicCred()
 {
   Option option;
-  option.put(PREF_NO_NETRC, V_FALSE);
-  option.put(PREF_HTTP_AUTH_CHALLENGE, V_TRUE);
+  option.put(PREF_NO_NETRC, A2_V_FALSE);
+  option.put(PREF_HTTP_AUTH_CHALLENGE, A2_V_TRUE);
 
   AuthConfigFactory factory;
 

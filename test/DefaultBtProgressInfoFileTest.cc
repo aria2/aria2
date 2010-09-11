@@ -419,7 +419,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
 {
   initializeMembers(512, 81920);
-  option_->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_TRUE);
+  option_->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, A2_V_TRUE);
 
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(512, 81920, "load-nonBt-v0001"));

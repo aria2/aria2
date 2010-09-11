@@ -215,7 +215,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
   std::vector<SharedHandle<RequestGroup> > requestGroups;
 #ifdef ENABLE_BITTORRENT
   if(!op->blank(PREF_TORRENT_FILE)) {
-    if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+    if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
       showTorrentFile(op->get(PREF_TORRENT_FILE));
       return exitStatus;
     } else {
@@ -226,7 +226,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
     if(!op->blank(PREF_METALINK_FILE)) {
-      if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+      if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
         showMetalinkFile(op->get(PREF_METALINK_FILE), op);
         return exitStatus;
       } else {
@@ -238,7 +238,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
       if(!op->blank(PREF_INPUT_FILE)) {
         createRequestGroupForUriList(requestGroups, op);
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
-      } else if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+      } else if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
         showFiles(args, op);
         return exitStatus;
 #endif // ENABLE_METALINK || ENABLE_METALINK

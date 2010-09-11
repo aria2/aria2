@@ -426,9 +426,9 @@ void AbstractCommand::onAbort() {
             ("CUID#%s - Gathering URIs that has CANNOT_RESUME error",
              util::itos(getCuid()).c_str());
         }
-        // Set PREF_ALWAYS_RESUME to V_TRUE to avoid repeating this
+        // Set PREF_ALWAYS_RESUME to A2_V_TRUE to avoid repeating this
         // process.
-        getOption()->put(PREF_ALWAYS_RESUME, V_TRUE);
+        getOption()->put(PREF_ALWAYS_RESUME, A2_V_TRUE);
         std::deque<URIResult> res;
         fileEntry_->extractURIResult(res, downloadresultcode::CANNOT_RESUME);
         if(!res.empty()) {

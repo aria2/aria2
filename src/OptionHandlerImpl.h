@@ -129,9 +129,9 @@ public:
        ((argType_ == OptionHandler::OPT_ARG ||
          argType_ == OptionHandler::NO_ARG)
         && optarg.empty())) {
-      option.put(optName_, V_TRUE);
+      option.put(optName_, A2_V_TRUE);
     } else if(optarg == "false") {
-      option.put(optName_, V_FALSE);
+      option.put(optName_, A2_V_FALSE);
     } else {
       std::string msg = optName_;
       strappend(msg, " ", _("must be either 'true' or 'false'."));

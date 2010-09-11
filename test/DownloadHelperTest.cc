@@ -119,7 +119,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
       CPPUNIT_ASSERT_EQUAL(array[i%3], xuris[i]);
     }
   }
-  option_->put(PREF_FORCE_SEQUENTIAL, V_TRUE);
+  option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
   {
     std::vector<SharedHandle<RequestGroup> > result;
     createRequestGroupForUri(result, option_, uris);
@@ -152,7 +152,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
   option_->put(PREF_SPLIT, "3");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
-  option_->put(PREF_PARAMETERIZED_URI, V_TRUE);
+  option_->put(PREF_PARAMETERIZED_URI, A2_V_TRUE);
   {
     std::vector<SharedHandle<RequestGroup> > result;
     
@@ -364,7 +364,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     group->getDownloadContext()->getFirstFileEntry()->getUris(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)0, uris.size());
   }
-  option_->put(PREF_FORCE_SEQUENTIAL, V_TRUE);
+  option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
   {
     std::vector<SharedHandle<RequestGroup> > result;
   
