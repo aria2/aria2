@@ -75,7 +75,8 @@ aria2c_SOURCES = AllTest.cc\
 	ValueBaseTest.cc\
 	ChunkedDecodingStreamFilterTest.cc\
 	GZipDecodingStreamFilterTest.cc\
-	UriTest.cc
+	UriTest.cc\
+	MockSegment.h
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\

@@ -1,5 +1,10 @@
 2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added missing MockSegment.h to test/Makefile.am
+	* test/Makefile.am
+
+2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced V_TRUE with A2_V_TRUE. Replaced V_FALSE with A2_V_FALSE.
 	* src/AbstractCommand.cc
 	* src/HttpResponseCommand.cc

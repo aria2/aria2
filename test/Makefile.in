@@ -214,7 +214,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
 	ChunkedDecodingStreamFilterTest.cc \
-	GZipDecodingStreamFilterTest.cc UriTest.cc \
+	GZipDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
 	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
@@ -646,9 +646,10 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
 	ChunkedDecodingStreamFilterTest.cc \
-	GZipDecodingStreamFilterTest.cc UriTest.cc $(am__append_1) \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7)
+	GZipDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
