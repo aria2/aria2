@@ -51,11 +51,16 @@ Basic Options
   Default: '5'
 
 *-V*, *--check-integrity*[='true'|'false']::
-  Check file integrity by validating piece hashes.
-  This option has effect only in BitTorrent and Metalink downloads with
-  chunk checksums.
-  Use this option to re-download a damaged portion of a file.
-  Default: 'false'
+
+  Check file integrity by validating piece hashes or a hash of entire
+  file.  This option has effect only in BitTorrent and Metalink
+  downloads with checksums.  If piece hashes are provided, this option
+  can detect damaged portions of a file and re-download them.  If a
+  hash of entire file is provided, hash check is only done when file
+  has benn already download. This is determined by file length. If
+  hash check fails, file is re-downloaded from scratch.  If both piece
+  hashes and a hash of entire file are provided, only piece hashes are
+  used. Default: 'false'
 
 *-c*, *--continue*::
    Continue downloading a partially downloaded file.
@@ -866,11 +871,23 @@ specify IP address explicitly. See also *--disable-ipv6*.  If your
 system doesn't have getifaddrs(), this option doesn't accept interface
 name.
 
-*--max-connection-per-server*=NUM::
+*-x*, *--max-connection-per-server*=NUM::
 
   The maximum number of connections to one server for each download.
-  Possible Values: '1'-'4'
   Default: '1'
+
+
+*--max-download-result*=NUM::
+
+  Set maximum number of download result kept in memory. The download
+  results are completed/error/removed downloads. The download results
+  are stored in FIFO queue and it can store at most NUM download
+  results. When queue is full and new download result is created,
+  oldest download result is removed from the front of the queue and
+  new one is pushed to the back. Setting big number in this option may
+  result high memory consumption after thousands of
+  downloads. Specifying 0 means no download result is kept. Default:
+  '1000'
 
 *--max-resume-failure-tries*=N::
 
@@ -880,7 +897,7 @@ name.
   given URIs do not support resume.  See *--always-resume* option.
   Default: '0'
 
-*--min-split-size*=SIZE::
+*-k*, *--min-split-size*=SIZE::
 
   aria2 does not split less than 2*SIZE byte range.  For example,
   let's consider downloading 20MiB file. If SIZE is 10M, aria2 can

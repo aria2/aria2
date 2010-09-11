@@ -1,5 +1,10 @@
 2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated man page according to changes in options.
+	* doc/aria2c.1.txt
+
+2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added short option -k for --min-split-size option and -x for
 	--max-connection-per-server option. Raised maximum value of
 	--max-connection-per-server up to 16.

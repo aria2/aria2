@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 08/31/2010
+.\"      Date: 09/11/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.10.2
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "08/31/2010" "Aria2 1\&.10\&.2" "Aria2 Manual"
+.TH "ARIA2C" "1" "09/11/2010" "Aria2 1\&.10\&.2" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -75,7 +75,7 @@ option\&. Default:
 .PP
 \fB\-V\fR, \fB\-\-check\-integrity\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
-Check file integrity by validating piece hashes\&. This option has effect only in BitTorrent and Metalink downloads with chunk checksums\&. Use this option to re\-download a damaged portion of a file\&. Default:
+Check file integrity by validating piece hashes or a hash of entire file\&. This option has effect only in BitTorrent and Metalink downloads with checksums\&. If piece hashes are provided, this option can detect damaged portions of a file and re\-download them\&. If a hash of entire file is provided, hash check is only done when file has benn already download\&. This is determined by file length\&. If hash check fails, file is re\-downloaded from scratch\&. If both piece hashes and a hash of entire file are provided, only piece hashes are used\&. Default:
 \fIfalse\fR
 .RE
 .PP
@@ -1255,12 +1255,16 @@ If an interface has multiple addresses, it is highly recommended to specify IP a
 .sp .5v
 .RE
 .PP
-\fB\-\-max\-connection\-per\-server\fR=NUM
+\fB\-x\fR, \fB\-\-max\-connection\-per\-server\fR=NUM
 .RS 4
-The maximum number of connections to one server for each download\&. Possible Values:
-\fI1\fR\-\fI4\fR
-Default:
+The maximum number of connections to one server for each download\&. Default:
 \fI1\fR
+.RE
+.PP
+\fB\-\-max\-download\-result\fR=NUM
+.RS 4
+Set maximum number of download result kept in memory\&. The download results are completed/error/removed downloads\&. The download results are stored in FIFO queue and it can store at most NUM download results\&. When queue is full and new download result is created, oldest download result is removed from the front of the queue and new one is pushed to the back\&. Setting big number in this option may result high memory consumption after thousands of downloads\&. Specifying 0 means no download result is kept\&. Default:
+\fI1000\fR
 .RE
 .PP
 \fB\-\-max\-resume\-failure\-tries\fR=N
@@ -1277,7 +1281,7 @@ option\&. Default:
 \fI0\fR
 .RE
 .PP
-\fB\-\-min\-split\-size\fR=SIZE
+\fB\-k\fR, \fB\-\-min\-split\-size\fR=SIZE
 .RS 4
 aria2 does not split less than 2*SIZE byte range\&. For example, let\(cqs consider downloading 20MiB file\&. If SIZE is 10M, aria2 can split file into 2 range [0\-10MiB) and [10MiB\-20MiB) and download it using 2 sources(if
 \fB\-\-split\fR

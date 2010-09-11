@@ -644,11 +644,15 @@ downloading a file like BitTorrent.</p></div>
 </dt>
 <dd>
 <p>
-  Check file integrity by validating piece hashes.
-  This option has effect only in BitTorrent and Metalink downloads with
-  chunk checksums.
-  Use this option to re-download a damaged portion of a file.
-  Default: <em>false</em>
+  Check file integrity by validating piece hashes or a hash of entire
+  file.  This option has effect only in BitTorrent and Metalink
+  downloads with checksums.  If piece hashes are provided, this option
+  can detect damaged portions of a file and re-download them.  If a
+  hash of entire file is provided, hash check is only done when file
+  has benn already download. This is determined by file length. If
+  hash check fails, file is re-downloaded from scratch.  If both piece
+  hashes and a hash of entire file are provided, only piece hashes are
+  used. Default: <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2102,13 +2106,28 @@ name.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--max-connection-per-server</strong>=NUM
+<strong>-x</strong>, <strong>--max-connection-per-server</strong>=NUM
 </dt>
 <dd>
 <p>
   The maximum number of connections to one server for each download.
-  Possible Values: <em>1</em>-<em>4</em>
   Default: <em>1</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--max-download-result</strong>=NUM
+</dt>
+<dd>
+<p>
+  Set maximum number of download result kept in memory. The download
+  results are completed/error/removed downloads. The download results
+  are stored in FIFO queue and it can store at most NUM download
+  results. When queue is full and new download result is created,
+  oldest download result is removed from the front of the queue and
+  new one is pushed to the back. Setting big number in this option may
+  result high memory consumption after thousands of
+  downloads. Specifying 0 means no download result is kept. Default:
+  <em>1000</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2124,7 +2143,7 @@ name.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--min-split-size</strong>=SIZE
+<strong>-k</strong>, <strong>--min-split-size</strong>=SIZE
 </dt>
 <dd>
 <p>
@@ -4380,7 +4399,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-08-31 22:43:01 JST
+Last updated 2010-09-11 21:18:28 JST
 </div>
 </div>
 </body>
