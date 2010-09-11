@@ -687,10 +687,10 @@
     "                              added by aria2.addTorrent and aria2.addMetalink\n" \
     "                              XML-RPC method are not saved.")
 #define TEXT_MAX_CONNECTION_PER_SERVER          \
-  _(" --max-connection-per-server=NUM The maximum number of connections to one server\n"\
-    "                              for each download.")
+  _(" -x, --max-connection-per-server=NUM The maximum number of connections to one\n" \
+    "                              server for each download.")
 #define TEXT_MIN_SPLIT_SIZE                     \
-  _(" --min-split-size=SIZE        aria2 does not split less than 2*SIZE byte range.\n" \
+  _(" -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte range.\n" \
     "                              For example, let's consider downloading 20MiB\n" \
     "                              file. If SIZE is 10M, aria2 can split file into 2\n" \
     "                              range [0-10MiB) and [10MiB-20MiB) and download it\n" \

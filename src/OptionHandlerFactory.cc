@@ -350,7 +350,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_MAX_CONNECTION_PER_SERVER,
                                     TEXT_MAX_CONNECTION_PER_SERVER,
                                     "1",
-                                    1, 4));
+                                    1, 16,
+                                    'x'));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -401,7 +402,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_MIN_SPLIT_SIZE,
                                     TEXT_MIN_SPLIT_SIZE,
                                     "20M",
-                                    1024*1024, 1024*1024*1024));
+                                    1024*1024, 1024*1024*1024,
+                                    'k'));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
