@@ -1,3 +1,10 @@
+2010-09-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error without BitTorrent support and OpenSSL/GnuTLS.
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/RequestGroup.cc
+
 2010-09-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added missing MockSegment.h to test/Makefile.am

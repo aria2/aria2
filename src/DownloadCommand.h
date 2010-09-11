@@ -53,9 +53,9 @@ private:
   unsigned int lowestDownloadSpeedLimit_;
   SharedHandle<PeerStat> peerStat_;
 
-#ifdef ENABLE_MESSAGE_DIGEST
-
   bool pieceHashValidationEnabled_;
+
+#ifdef ENABLE_MESSAGE_DIGEST
 
   SharedHandle<MessageDigestContext> messageDigestContext_;
 

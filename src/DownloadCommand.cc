@@ -81,10 +81,8 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   buf_(new unsigned char[BUFSIZE]),
   startupIdleTime_(10),
-  lowestDownloadSpeedLimit_(0)
-#ifdef ENABLE_MESSAGE_DIGEST
-  , pieceHashValidationEnabled_(false)
-#endif // ENABLE_MESSAGE_DIGEST
+  lowestDownloadSpeedLimit_(0),
+  pieceHashValidationEnabled_(false)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   {

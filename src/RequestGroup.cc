@@ -542,8 +542,11 @@ void RequestGroup::initPieceStorage()
 {
   SharedHandle<PieceStorage> tempPieceStorage;
   if(downloadContext_->knowsTotalLength() &&
-     (downloadContext_->getTotalLength() > 0 ||
-      downloadContext_->hasAttribute(bittorrent::BITTORRENT))) {
+     (downloadContext_->getTotalLength() > 0
+#ifdef ENABLE_BITTORRENT
+      || downloadContext_->hasAttribute(bittorrent::BITTORRENT)
+#endif // ENABLE_BITTORRENT
+      )) {
 #ifdef ENABLE_BITTORRENT
     SharedHandle<DefaultPieceStorage> ps
       (new DefaultPieceStorage(downloadContext_, option_.get()));
