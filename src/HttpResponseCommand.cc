@@ -390,9 +390,13 @@ bool HttpResponseCommand::handleOtherEncoding
   // For zero-length file, check existing file comparing its size
   if(!chunkedUsed && getDownloadContext()->knowsTotalLength() &&
      getRequestGroup()->downloadFinishedByFileLength()) {
+    // TODO If metalink file does not contain size and it contains
+    // hash and file is not zero length, but remote server says the
+    // file size is 0, no hash check is performed in the current
+    // implementation. See also
+    // FtpNegotiationCommand::onFileSizeDetermined()
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->markAllPiecesDone();
-    // This is zero-size file, so hash check is no use.
     getDownloadContext()->setChecksumVerified(true);
     getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
                         util::itos(getRequestGroup()->getGID()).c_str(),

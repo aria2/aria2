@@ -542,6 +542,8 @@ void RequestGroup::initPieceStorage()
 {
   SharedHandle<PieceStorage> tempPieceStorage;
   if(downloadContext_->knowsTotalLength() &&
+     // Following conditions are needed for chunked encoding with
+     // content-length = 0. Google's dl server used this before.
      (downloadContext_->getTotalLength() > 0
 #ifdef ENABLE_BITTORRENT
       || downloadContext_->hasAttribute(bittorrent::BITTORRENT)

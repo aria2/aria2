@@ -1,5 +1,12 @@
 2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/RequestGroup.cc
+
+2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that error occurs when downloading zero-length file.
 	* src/FtpNegotiationCommand.cc
 	* src/HttpResponseCommand.cc

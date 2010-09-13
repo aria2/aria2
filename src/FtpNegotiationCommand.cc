@@ -405,10 +405,13 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 
     if(getDownloadContext()->knowsTotalLength() &&
        getRequestGroup()->downloadFinishedByFileLength()) {
+      // TODO If metalink file does not contain size and it contains
+      // hash and file is not zero length, but remote server says the
+      // file size is 0, no hash check is performed in the current
+      // implementation. See also
+      // HttpResponseCommand::handleOtherEncoding()
       getRequestGroup()->initPieceStorage();
       getPieceStorage()->markAllPiecesDone();
-      // TODO It would be good to issue ChecksumCheckIntegrity here
-      // instead of just pretending checksum verification is done.
       getDownloadContext()->setChecksumVerified(true);
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
