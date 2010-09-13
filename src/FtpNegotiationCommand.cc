@@ -403,7 +403,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       return false;
     }
 
-    if(getRequestGroup()->downloadFinishedByFileLength()) {
+    if(getDownloadContext()->knowsTotalLength() &&
+       getRequestGroup()->downloadFinishedByFileLength()) {
       getRequestGroup()->initPieceStorage();
       getPieceStorage()->markAllPiecesDone();
       // TODO It would be good to issue ChecksumCheckIntegrity here
@@ -425,6 +426,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 
     if(getDownloadContext()->knowsTotalLength()) {
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+      getPieceStorage()->markAllPiecesDone();
       poolConnection();
       return false;
     }

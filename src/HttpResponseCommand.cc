@@ -375,8 +375,21 @@ bool HttpResponseCommand::handleOtherEncoding
     return prepareForRetry(0);
   }
 
+  // In this context, knowsTotalLength() is true only when the file is
+  // really zero-length.
+
+  SharedHandle<StreamFilter> streamFilter =
+    getTransferEncodingStreamFilter
+    (httpResponse,
+     getContentEncodingStreamFilter(httpResponse));
+  // If chunked transfer-encoding is specified, we have to read end of
+  // chunk markers(0\r\n\r\n, for example).
+  bool chunkedUsed = !streamFilter.isNull() &&
+    streamFilter->getName() == ChunkedDecodingStreamFilter::NAME;
+
   // For zero-length file, check existing file comparing its size
-  if(getRequestGroup()->downloadFinishedByFileLength()) {
+  if(!chunkedUsed && getDownloadContext()->knowsTotalLength() &&
+     getRequestGroup()->downloadFinishedByFileLength()) {
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->markAllPiecesDone();
     // This is zero-size file, so hash check is no use.
@@ -392,19 +405,11 @@ bool HttpResponseCommand::handleOtherEncoding
   getRequestGroup()->initPieceStorage();
   getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
-  SharedHandle<StreamFilter> streamFilter =
-    getTransferEncodingStreamFilter
-    (httpResponse,
-     getContentEncodingStreamFilter(httpResponse));
-  
-  // In this context, knowsTotalLength() is true only when the file is
-  // really zero-length.
-  if(getDownloadContext()->knowsTotalLength() &&
-     (streamFilter.isNull() ||
-      streamFilter->getName() != ChunkedDecodingStreamFilter::NAME)) {
-    // If chunked transfer-encoding is specified, we have to read end
-    // of chunk markers(0\r\n\r\n, for example), so cannot pool
-    // connection here.
+  // Local file size becomes zero when DiskAdaptor::initAndOpenFile()
+  // is called. So zero-length file is complete if chunked encoding is
+  // not used.
+  if(!chunkedUsed && getDownloadContext()->knowsTotalLength()) {
+    getRequestGroup()->getPieceStorage()->markAllPiecesDone();
     poolConnection();
     return true;
   }
