@@ -42,7 +42,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 
 @HAVE_SOME_FALLOCATE_TRUE@am__append_2 = FallocFileAllocationIteratorTest.cc
 @HAVE_LIBZ_TRUE@am__append_3 = GZipDecoderTest.cc\
-@HAVE_LIBZ_TRUE@	GZipEncoderTest.cc
+@HAVE_LIBZ_TRUE@	GZipEncoderTest.cc\
+@HAVE_LIBZ_TRUE@	GZipDecodingStreamFilterTest.cc
 
 @HAVE_SQLITE3_TRUE@am__append_4 = Sqlite3CookieParserTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_5 = MessageDigestHelperTest.cc\
@@ -213,13 +214,12 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
 	bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
-	ChunkedDecodingStreamFilterTest.cc \
-	GZipDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
+	ChunkedDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
 	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
-	GZipEncoderTest.cc Sqlite3CookieParserTest.cc \
-	MessageDigestHelperTest.cc \
+	GZipEncoderTest.cc GZipDecodingStreamFilterTest.cc \
+	Sqlite3CookieParserTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -279,7 +279,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodTest.$(OBJEXT)
 @HAVE_SOME_FALLOCATE_TRUE@am__objects_2 = FallocFileAllocationIteratorTest.$(OBJEXT)
 @HAVE_LIBZ_TRUE@am__objects_3 = GZipDecoderTest.$(OBJEXT) \
-@HAVE_LIBZ_TRUE@	GZipEncoderTest.$(OBJEXT)
+@HAVE_LIBZ_TRUE@	GZipEncoderTest.$(OBJEXT) \
+@HAVE_LIBZ_TRUE@	GZipDecodingStreamFilterTest.$(OBJEXT)
 @HAVE_SQLITE3_TRUE@am__objects_4 = Sqlite3CookieParserTest.$(OBJEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_5 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
@@ -407,8 +408,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	a2algoTest.$(OBJEXT) bitfieldTest.$(OBJEXT) \
 	DownloadContextTest.$(OBJEXT) SessionSerializerTest.$(OBJEXT) \
 	ValueBaseTest.$(OBJEXT) \
-	ChunkedDecodingStreamFilterTest.$(OBJEXT) \
-	GZipDecodingStreamFilterTest.$(OBJEXT) UriTest.$(OBJEXT) \
+	ChunkedDecodingStreamFilterTest.$(OBJEXT) UriTest.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
 	$(am__objects_7)
@@ -645,8 +645,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
 	bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
-	ChunkedDecodingStreamFilterTest.cc \
-	GZipDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
+	ChunkedDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7)

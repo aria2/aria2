@@ -1,6 +1,11 @@
 2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compile error without zlib
+	* test/Makefile.am
+
+2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compile error without zlib
 	* src/HttpResponseCommand.cc
 
 2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>

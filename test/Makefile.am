@@ -73,7 +73,6 @@ aria2c_SOURCES = AllTest.cc\
 	SessionSerializerTest.cc\
 	ValueBaseTest.cc\
 	ChunkedDecodingStreamFilterTest.cc\
-	GZipDecodingStreamFilterTest.cc\
 	UriTest.cc\
 	MockSegment.h
 
@@ -89,7 +88,8 @@ endif  # HAVE_SOME_FALLOCATE
 
 if HAVE_LIBZ
 aria2c_SOURCES += GZipDecoderTest.cc\
-	GZipEncoderTest.cc
+	GZipEncoderTest.cc\
+	GZipDecodingStreamFilterTest.cc
 endif # HAVE_LIBZ
 
 if HAVE_SQLITE3
