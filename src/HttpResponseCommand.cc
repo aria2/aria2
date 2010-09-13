@@ -72,8 +72,10 @@
 #include "StreamFilter.h"
 #include "SinkStreamFilter.h"
 #include "ChunkedDecodingStreamFilter.h"
-#include "GZipDecodingStreamFilter.h"
 #include "uri.h"
+#ifdef HAVE_LIBZ
+# include "GZipDecodingStreamFilter.h"
+#endif // HAVE_LIBZ
 
 namespace aria2 {
 
@@ -459,6 +461,7 @@ bool HttpResponseCommand::skipResponseBody
 static bool decideFileAllocation
 (const SharedHandle<StreamFilter>& filter)
 {
+#ifdef HAVE_LIBZ
   for(SharedHandle<StreamFilter> f = filter; !f.isNull(); f = f->getDelegate()){
     // Since the compressed file's length are returned in the response header
     // and the decompressed file size is unknown at this point, disable file
@@ -467,6 +470,7 @@ static bool decideFileAllocation
       return false;
     }
   }
+#endif // HAVE_LIBZ
   return true;
 }
 

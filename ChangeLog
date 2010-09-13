@@ -1,5 +1,10 @@
 2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error without zlib
+	* src/HttpResponseCommand.cc
+
+2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed ChunkedDecoder. Moved GZipDecodingStreamFilter to under
 	'if HAVE_LIBZ'.
 	* src/ChunkedDecoder.cc
