@@ -202,16 +202,16 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
 	FixedNumberRandomizer.h ProtocolDetectorTest.cc \
 	StringFormatTest.cc ExceptionTest.cc \
-	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
-	SignatureTest.cc ServerStatManTest.cc \
-	FeedbackURISelectorTest.cc InOrderURISelectorTest.cc \
-	ServerStatTest.cc NsCookieParserTest.cc \
-	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
-	TimeTest.cc FtpConnectionTest.cc OptionParserTest.cc \
-	DNSCacheTest.cc DownloadHelperTest.cc SequentialPickerTest.cc \
-	RarestPieceSelectorTest.cc PieceStatManTest.cc \
-	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
-	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
+	DownloadHandlerFactoryTest.cc SignatureTest.cc \
+	ServerStatManTest.cc FeedbackURISelectorTest.cc \
+	InOrderURISelectorTest.cc ServerStatTest.cc \
+	NsCookieParserTest.cc DirectDiskAdaptorTest.cc CookieTest.cc \
+	CookieStorageTest.cc TimeTest.cc FtpConnectionTest.cc \
+	OptionParserTest.cc DNSCacheTest.cc DownloadHelperTest.cc \
+	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
+	PieceStatManTest.cc InOrderPieceSelector.h \
+	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
+	bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
 	ChunkedDecodingStreamFilterTest.cc \
 	GZipDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
@@ -394,8 +394,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	MultiFileAllocationIteratorTest.$(OBJEXT) \
 	ProtocolDetectorTest.$(OBJEXT) StringFormatTest.$(OBJEXT) \
 	ExceptionTest.$(OBJEXT) DownloadHandlerFactoryTest.$(OBJEXT) \
-	ChunkedDecoderTest.$(OBJEXT) SignatureTest.$(OBJEXT) \
-	ServerStatManTest.$(OBJEXT) FeedbackURISelectorTest.$(OBJEXT) \
+	SignatureTest.$(OBJEXT) ServerStatManTest.$(OBJEXT) \
+	FeedbackURISelectorTest.$(OBJEXT) \
 	InOrderURISelectorTest.$(OBJEXT) ServerStatTest.$(OBJEXT) \
 	NsCookieParserTest.$(OBJEXT) DirectDiskAdaptorTest.$(OBJEXT) \
 	CookieTest.$(OBJEXT) CookieStorageTest.$(OBJEXT) \
@@ -634,16 +634,16 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
 	FixedNumberRandomizer.h ProtocolDetectorTest.cc \
 	StringFormatTest.cc ExceptionTest.cc \
-	DownloadHandlerFactoryTest.cc ChunkedDecoderTest.cc \
-	SignatureTest.cc ServerStatManTest.cc \
-	FeedbackURISelectorTest.cc InOrderURISelectorTest.cc \
-	ServerStatTest.cc NsCookieParserTest.cc \
-	DirectDiskAdaptorTest.cc CookieTest.cc CookieStorageTest.cc \
-	TimeTest.cc FtpConnectionTest.cc OptionParserTest.cc \
-	DNSCacheTest.cc DownloadHelperTest.cc SequentialPickerTest.cc \
-	RarestPieceSelectorTest.cc PieceStatManTest.cc \
-	InOrderPieceSelector.h LongestSequencePieceSelectorTest.cc \
-	a2algoTest.cc bitfieldTest.cc DownloadContextTest.cc \
+	DownloadHandlerFactoryTest.cc SignatureTest.cc \
+	ServerStatManTest.cc FeedbackURISelectorTest.cc \
+	InOrderURISelectorTest.cc ServerStatTest.cc \
+	NsCookieParserTest.cc DirectDiskAdaptorTest.cc CookieTest.cc \
+	CookieStorageTest.cc TimeTest.cc FtpConnectionTest.cc \
+	OptionParserTest.cc DNSCacheTest.cc DownloadHelperTest.cc \
+	SequentialPickerTest.cc RarestPieceSelectorTest.cc \
+	PieceStatManTest.cc InOrderPieceSelector.h \
+	LongestSequencePieceSelectorTest.cc a2algoTest.cc \
+	bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
 	ChunkedDecodingStreamFilterTest.cc \
 	GZipDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
@@ -780,7 +780,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriterTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecodingStreamFilterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorageTest.Po@am__quote@

@@ -175,7 +175,6 @@ SRCS =  Socket.h\
 	A2STR.cc A2STR.h\
 	RarestPieceSelector.cc RarestPieceSelector.h\
 	Decoder.h\
-	ChunkedDecoder.cc ChunkedDecoder.h\
 	Signature.cc Signature.h\
 	ServerStat.cc ServerStat.h\
 	ServerStatMan.cc ServerStatMan.h\
@@ -209,7 +208,6 @@ SRCS =  Socket.h\
 	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h\
 	StreamFilter.cc StreamFilter.h\
 	SinkStreamFilter.cc SinkStreamFilter.h\
-	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h\
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h\
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h\
 	uri.cc uri.h
@@ -264,7 +262,8 @@ endif # HAVE_LIBSSL
 
 if HAVE_LIBZ
 SRCS += GZipDecoder.cc GZipDecoder.h\
-	GZipEncoder.cc GZipEncoder.h
+	GZipEncoder.cc GZipEncoder.h\
+	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h
 endif # HAVE_LIBZ
 
 if HAVE_SQLITE3

@@ -1,5 +1,15 @@
 2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed ChunkedDecoder. Moved GZipDecodingStreamFilter to under
+	'if HAVE_LIBZ'.
+	* src/ChunkedDecoder.cc
+	* src/ChunkedDecoder.h
+	* src/Makefile.am
+	* test/ChunkedDecoderTest.cc
+	* test/Makefile.am
+
+2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated doc
 	* src/FtpNegotiationCommand.cc
 	* src/HttpResponseCommand.cc

@@ -48,7 +48,6 @@ aria2c_SOURCES = AllTest.cc\
 	StringFormatTest.cc\
 	ExceptionTest.cc\
 	DownloadHandlerFactoryTest.cc\
-	ChunkedDecoderTest.cc\
 	SignatureTest.cc\
 	ServerStatManTest.cc\
 	FeedbackURISelectorTest.cc\

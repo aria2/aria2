@@ -62,7 +62,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @HAVE_LIBGNUTLS_TRUE@am__append_7 = LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
 @HAVE_LIBSSL_TRUE@am__append_8 = LibsslTLSContext.cc LibsslTLSContext.h
 @HAVE_LIBZ_TRUE@am__append_9 = GZipDecoder.cc GZipDecoder.h\
-@HAVE_LIBZ_TRUE@	GZipEncoder.cc GZipEncoder.h
+@HAVE_LIBZ_TRUE@	GZipEncoder.cc GZipEncoder.h\
+@HAVE_LIBZ_TRUE@	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h
 
 @HAVE_SQLITE3_TRUE@am__append_10 = Sqlite3CookieParser.cc Sqlite3CookieParser.h\
 @HAVE_SQLITE3_TRUE@	Sqlite3CookieParserImpl.cc Sqlite3CookieParserImpl.h
@@ -425,9 +426,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	InitiateConnectionCommand.h FtpFinishDownloadCommand.cc \
 	FtpFinishDownloadCommand.h A2STR.cc A2STR.h \
 	RarestPieceSelector.cc RarestPieceSelector.h Decoder.h \
-	ChunkedDecoder.cc ChunkedDecoder.h Signature.cc Signature.h \
-	ServerStat.cc ServerStat.h ServerStatMan.cc ServerStatMan.h \
-	URISelector.h AdaptiveURISelector.cc AdaptiveURISelector.h \
+	Signature.cc Signature.h ServerStat.cc ServerStat.h \
+	ServerStatMan.cc ServerStatMan.h URISelector.h \
+	AdaptiveURISelector.cc AdaptiveURISelector.h \
 	InOrderURISelector.cc InOrderURISelector.h \
 	FeedbackURISelector.cc FeedbackURISelector.h NsCookieParser.cc \
 	NsCookieParser.h CookieStorage.cc CookieStorage.h \
@@ -444,7 +445,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	TorrentAttribute.h AdaptiveFileAllocationIterator.cc \
 	AdaptiveFileAllocationIterator.h StreamFilter.cc \
 	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
-	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h uri.cc uri.h \
 	XmlRpcRequestParserController.cc \
@@ -467,6 +467,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
 	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
 	GZipDecoder.h GZipEncoder.cc GZipEncoder.h \
+	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
 	Sqlite3CookieParser.cc Sqlite3CookieParser.h \
 	Sqlite3CookieParserImpl.cc Sqlite3CookieParserImpl.h \
 	AsyncNameResolver.cc AsyncNameResolver.h \
@@ -644,7 +645,8 @@ am__objects_6 =
 @HAVE_LIBGNUTLS_TRUE@am__objects_7 = LibgnutlsTLSContext.$(OBJEXT)
 @HAVE_LIBSSL_TRUE@am__objects_8 = LibsslTLSContext.$(OBJEXT)
 @HAVE_LIBZ_TRUE@am__objects_9 = GZipDecoder.$(OBJEXT) \
-@HAVE_LIBZ_TRUE@	GZipEncoder.$(OBJEXT)
+@HAVE_LIBZ_TRUE@	GZipEncoder.$(OBJEXT) \
+@HAVE_LIBZ_TRUE@	GZipDecodingStreamFilter.$(OBJEXT)
 @HAVE_SQLITE3_TRUE@am__objects_10 = Sqlite3CookieParser.$(OBJEXT) \
 @HAVE_SQLITE3_TRUE@	Sqlite3CookieParserImpl.$(OBJEXT)
 @ENABLE_ASYNC_DNS_TRUE@am__objects_11 = AsyncNameResolver.$(OBJEXT)
@@ -876,19 +878,18 @@ am__objects_32 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	HttpSkipResponseCommand.$(OBJEXT) \
 	InitiateConnectionCommand.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) A2STR.$(OBJEXT) \
-	RarestPieceSelector.$(OBJEXT) ChunkedDecoder.$(OBJEXT) \
-	Signature.$(OBJEXT) ServerStat.$(OBJEXT) \
-	ServerStatMan.$(OBJEXT) AdaptiveURISelector.$(OBJEXT) \
-	InOrderURISelector.$(OBJEXT) FeedbackURISelector.$(OBJEXT) \
-	NsCookieParser.$(OBJEXT) CookieStorage.$(OBJEXT) \
-	SocketBuffer.$(OBJEXT) OptionHandlerException.$(OBJEXT) \
-	URIResult.$(OBJEXT) SelectEventPoll.$(OBJEXT) \
+	RarestPieceSelector.$(OBJEXT) Signature.$(OBJEXT) \
+	ServerStat.$(OBJEXT) ServerStatMan.$(OBJEXT) \
+	AdaptiveURISelector.$(OBJEXT) InOrderURISelector.$(OBJEXT) \
+	FeedbackURISelector.$(OBJEXT) NsCookieParser.$(OBJEXT) \
+	CookieStorage.$(OBJEXT) SocketBuffer.$(OBJEXT) \
+	OptionHandlerException.$(OBJEXT) URIResult.$(OBJEXT) \
+	SelectEventPoll.$(OBJEXT) \
 	LongestSequencePieceSelector.$(OBJEXT) bitfield.$(OBJEXT) \
 	CreateRequestCommand.$(OBJEXT) download_helper.$(OBJEXT) \
 	MetadataInfo.$(OBJEXT) SessionSerializer.$(OBJEXT) \
 	ValueBase.$(OBJEXT) AdaptiveFileAllocationIterator.$(OBJEXT) \
 	StreamFilter.$(OBJEXT) SinkStreamFilter.$(OBJEXT) \
-	GZipDecodingStreamFilter.$(OBJEXT) \
 	ChunkedDecodingStreamFilter.$(OBJEXT) \
 	NullSinkStreamFilter.$(OBJEXT) uri.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
@@ -1217,9 +1218,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	InitiateConnectionCommand.h FtpFinishDownloadCommand.cc \
 	FtpFinishDownloadCommand.h A2STR.cc A2STR.h \
 	RarestPieceSelector.cc RarestPieceSelector.h Decoder.h \
-	ChunkedDecoder.cc ChunkedDecoder.h Signature.cc Signature.h \
-	ServerStat.cc ServerStat.h ServerStatMan.cc ServerStatMan.h \
-	URISelector.h AdaptiveURISelector.cc AdaptiveURISelector.h \
+	Signature.cc Signature.h ServerStat.cc ServerStat.h \
+	ServerStatMan.cc ServerStatMan.h URISelector.h \
+	AdaptiveURISelector.cc AdaptiveURISelector.h \
 	InOrderURISelector.cc InOrderURISelector.h \
 	FeedbackURISelector.cc FeedbackURISelector.h NsCookieParser.cc \
 	NsCookieParser.h CookieStorage.cc CookieStorage.h \
@@ -1236,7 +1237,6 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	TorrentAttribute.h AdaptiveFileAllocationIterator.cc \
 	AdaptiveFileAllocationIterator.h StreamFilter.cc \
 	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
-	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h uri.cc uri.h \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
@@ -1407,7 +1407,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityDispatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCheckIntegrityEntry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecodingStreamFilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleStatCalc.Po@am__quote@
