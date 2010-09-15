@@ -1,5 +1,10 @@
 2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated po templates.
+	* po/aria2.pot
+
+2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added note to --enable-http-pipelining option.
 	* doc/aria2c.1.txt
 

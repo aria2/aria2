@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-08-29 22:47+0900\n"
+"POT-Creation-Date: 2010-09-15 21:50+0900\n"
 "PO-Revision-Date: 2008-02-13 11:01+0000\n"
 "Last-Translator: Yaron <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -37,11 +37,11 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:590
+#: src/RequestGroupMan.cc:602
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:662
 msgid "Status Legend:"
 msgstr ""
 
@@ -1341,14 +1341,14 @@ msgstr ""
 
 #: src/usage_text.h:690
 msgid ""
-" --max-connection-per-server=NUM The maximum number of connections to one "
-"server\n"
-"                              for each download."
+" -x, --max-connection-per-server=NUM The maximum number of connections to "
+"one\n"
+"                              server for each download."
 msgstr ""
 
 #: src/usage_text.h:693
 msgid ""
-" --min-split-size=SIZE        aria2 does not split less than 2*SIZE byte "
+" -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
 "range.\n"
 "                              For example, let's consider downloading 20MiB\n"
 "                              file. If SIZE is 10M, aria2 can split file "
@@ -1446,6 +1446,27 @@ msgid ""
 "                              command-line, don't forget to escape or quote "
 "it.\n"
 "                              See also --bt-tracker option."
+msgstr ""
+
+#: src/usage_text.h:745
+msgid ""
+" --max-download-result=NUM    Set maximum number of download result kept in\n"
+"                              memory. The download results are completed/"
+"error/\n"
+"                              removed downloads. The download results are "
+"stored\n"
+"                              in FIFO queue and it can store at most NUM\n"
+"                              download results. When queue is full and new\n"
+"                              download result is created, oldest download "
+"result\n"
+"                              is removed from the front of the queue and new "
+"one\n"
+"                              is pushed to the back. Setting big number in "
+"this\n"
+"                              option may result high memory consumption "
+"after\n"
+"                              thousands of downloads. Specifying 0 means no\n"
+"                              download result is kept."
 msgstr ""
 
 #: src/version_usage.cc:57
