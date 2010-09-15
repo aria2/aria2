@@ -1,5 +1,10 @@
 2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added note to --enable-http-pipelining option.
+	* doc/aria2c.1.txt
+
+2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Print a message in console when download is not complete.
 	* src/RequestGroupMan.cc
 

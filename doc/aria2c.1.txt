@@ -327,6 +327,9 @@ response header.
   Enable HTTP/1.1 pipelining.
   Default: 'false'
 
+  In performance perspective, there is no advantage to enable this
+  option for normal case.
+
 *--header*=HEADER::
   Append HEADER to HTTP request header.
   You can use this option repeatedly to specify more than one header:
