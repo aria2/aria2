@@ -1,3 +1,66 @@
+aria2 1.10.3
+============
+
+Release Note
+------------
+
+This release adds short option -x for --max-connection-per-server
+option and -k for --min-split-size option.  It also adds
+--max-download-result=NUM option.  This option sets maximum number of
+download result kept in memory and the default value is 1000.
+--max-connection-per-server now accepts up to 16.  '@' character is
+now allowed in username embedded in URI.  This release fixes the bug
+that aria2 reports error and exits with non-zero status when file is
+already downloaded.
+
+Please note that since 1.10.0 release, aria2 uses 1 connection per
+host by default and has 20MiB segment size restriction. So whatever
+value you specify using -s option, it uses 1 connection per host. To
+make it behave like 1.9.x, use -x16 -k1M (see
+--max-connection-per-server and --min-split-size option in man
+page). If you specify multiple hosts, aria2 will use all of them and
+open multiple connections.
+
+Changes
+-------
+
+ * Replaced V_TRUE with A2_V_TRUE. Replaced V_FALSE with A2_V_FALSE.
+
+ * Added short option -k for --min-split-size option and -x for
+   --max-connection-per-server option. Raised maximum value of
+   --max-connection-per-server up to 16.
+
+ * Added --max-download-result=NUM option. This option sets maximum
+   number of download result kept in memory. The download results are
+   completed/error/ removed downloads. The download results are stored
+   in FIFO queue and it can store at most NUM download results. When
+   queue is full and new download result is created, oldest download
+   result is removed from the front of the queue and new one is pushed
+   to the back. Setting big number in this option may result high
+   memory consumption after thousands of downloads. Specifying 0 means
+   no download result is kept.  Default value is 1000.
+
+ * Check hash(hash for entire file, not piece hash) if
+   --check-integrity option is given and file is downloaded(determined
+   by file length). If it fails, re-download file.
+
+ * Mark cached IP address bad on timeout to allow
+   aria2 to renew IP address cache.
+
+ * Fixed the bug that aria2 reports error and exits with non-zero
+   status when file is already downloaded.
+
+ * Allow '@' in username and password embedded in URI. It should be
+   percent-encoded but many people use their mail address as an
+   username and forget about PE.
+
+ * Data from remote server in HTTP/FTP download are now written to the
+   disk(or memory) through StreamFilter. Decoding chunked and gziped
+   streams are done cascading StreamFilter.  Removed inefficient 1byte
+   read code.
+
+
+
 aria2 1.10.2
 ============
 
