@@ -452,32 +452,20 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       return false;
     }
 
-    BtProgressInfoFileHandle infoFile
-      (new DefaultBtProgressInfoFile(getDownloadContext(),
-                                     getPieceStorage(),
-                                     getOption().get()));
-    if(!infoFile->exists() &&
-       getRequestGroup()->downloadFinishedByFileLength()) {
-      getPieceStorage()->markAllPiecesDone();
-      // See also RequestGroup::createInitialCommand()
-      if(!getOption()->getAsBool(PREF_CHECK_INTEGRITY) ||
-         !getDownloadContext()->isChecksumVerificationNeeded()) {
-        getDownloadContext()->setChecksumVerified(true);
-        sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-        getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                            util::itos(getRequestGroup()->getGID()).c_str(),
-                            getRequestGroup()->getFirstFilePath().c_str());
-        poolConnection();
-        return false;
-      }
+    SharedHandle<CheckIntegrityEntry> checkIntegrityEntry =
+      getRequestGroup()->createCheckIntegrityEntry();
+    if(checkIntegrityEntry.isNull()) {
+      sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+      poolConnection();
+      return false;
     }
-    getRequestGroup()->loadAndOpenFile(infoFile);
+    checkIntegrityEntry->pushNextCommand(this);
     // We have to make sure that command that has Request object must
     // have segment after PieceStorage is initialized. See
     // AbstractCommand::execute()
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
 
-    prepareForNextAction(this);
+    prepareForNextAction(checkIntegrityEntry);
 
     disableReadCheckSocket();
   }
@@ -960,6 +948,7 @@ void FtpNegotiationCommand::poolConnection() const
 void FtpNegotiationCommand::onDryRunFileFound()
 {
   getPieceStorage()->markAllPiecesDone();
+  getDownloadContext()->setChecksumVerified(true);
   poolConnection();
   sequence_ = SEQ_HEAD_OK;
 }

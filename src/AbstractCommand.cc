@@ -777,28 +777,9 @@ std::string AbstractCommand::resolveHostname
   return ipaddr;
 }
 
-// nextCommand is going to be managed by CheckIntegrityEntry which is
-// created in side this function. Don't release nextCommand after this
-// function call.
-void AbstractCommand::prepareForNextAction(Command* nextCommand)
+void AbstractCommand::prepareForNextAction
+(const SharedHandle<CheckIntegrityEntry>& checkEntry)
 {
-  SharedHandle<CheckIntegrityEntry> checkEntry;
-#ifdef ENABLE_MESSAGE_DIGEST
-  if(requestGroup_->downloadFinished() &&
-     getDownloadContext()->isChecksumVerificationNeeded()) {
-    if(getLogger()->info()) {
-      getLogger()->info(MSG_HASH_CHECK_NOT_DONE);
-    }
-    SharedHandle<ChecksumCheckIntegrityEntry> entry
-      (new ChecksumCheckIntegrityEntry(requestGroup_, nextCommand));
-    entry->setRedownload(true);
-    checkEntry = entry;
-  } else
-#endif // ENABLE_MESSAGE_DIGEST
-    {
-      checkEntry.reset
-        (new StreamCheckIntegrityEntry(requestGroup_, nextCommand));
-    }
   std::vector<Command*>* commands = new std::vector<Command*>();
   auto_delete_container<std::vector<Command*> > commandsDel(commands);
   requestGroup_->processCheckIntegrityEntry(*commands, checkEntry, e_);

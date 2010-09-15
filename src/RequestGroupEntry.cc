@@ -60,4 +60,10 @@ Command* RequestGroupEntry::popNextCommand()
   return temp;
 }
 
+void RequestGroupEntry::pushNextCommand(Command* nextCommand)
+{
+  delete nextCommand_;
+  nextCommand_ = nextCommand;
+}
+
 } // namespace aria2

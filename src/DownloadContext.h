@@ -206,6 +206,12 @@ public:
   // need to be done
   bool isChecksumVerificationNeeded() const;
 
+  // Returns true if whole hash(not piece hash) is available.
+  bool isChecksumVerificationAvailable() const;
+
+  // Returns true if piece hash(not whole file hash) is available.
+  bool isPieceHashVerificationAvailable() const;
+
   void setChecksumVerified(bool f)
   {
     checksumVerified_ = f;

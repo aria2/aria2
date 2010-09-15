@@ -196,6 +196,8 @@ private:
 
   void removeDefunctControlFile
   (const SharedHandle<BtProgressInfoFile>& progressInfoFile);
+
+  bool isCheckIntegrityReady() const;
 public:
   // The copy of option is stored in RequestGroup object.
   RequestGroup(const SharedHandle<Option>& option);
@@ -206,6 +208,8 @@ public:
   {
     return segmentMan_;
   }
+
+  SharedHandle<CheckIntegrityEntry> createCheckIntegrityEntry();
 
   // Returns first bootstrap commands to initiate a download.
   // If this is HTTP/FTP download and file size is unknown, only 1 command

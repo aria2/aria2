@@ -164,6 +164,13 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option):
 
 RequestGroup::~RequestGroup() {}
 
+bool RequestGroup::isCheckIntegrityReady() const
+{
+  return option_->getAsBool(PREF_CHECK_INTEGRITY) &&
+    (downloadContext_->isChecksumVerificationAvailable() ||
+     downloadContext_->isPieceHashVerificationAvailable());
+}
+
 bool RequestGroup::downloadFinished() const
 {
   if(pieceStorage_.isNull()) {
@@ -205,6 +212,68 @@ void RequestGroup::closeFile()
   if(!pieceStorage_.isNull()) {
     pieceStorage_->getDiskAdaptor()->closeFile();
   }
+}
+
+// TODO The function name is not intuitive at all.. it does not convey
+// that this function open file.
+SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
+{
+  BtProgressInfoFileHandle infoFile
+    (new DefaultBtProgressInfoFile(downloadContext_, pieceStorage_,
+                                   option_.get()));
+  SharedHandle<CheckIntegrityEntry> checkEntry;
+  if(option_->getAsBool(PREF_CHECK_INTEGRITY) &&
+     downloadContext_->isPieceHashVerificationAvailable()) {
+    // When checking piece hash, we don't care file is downloaded and
+    // infoFile exists.
+    loadAndOpenFile(infoFile);
+    checkEntry.reset(new StreamCheckIntegrityEntry(this));
+  } else if(infoFile->exists()) {
+    loadAndOpenFile(infoFile);
+    if(downloadFinished()) {
+#ifdef ENABLE_MESSAGE_DIGEST
+      if(downloadContext_->isChecksumVerificationNeeded()) {
+        if(logger_->info()) {
+          logger_->info(MSG_HASH_CHECK_NOT_DONE);
+        }
+        SharedHandle<ChecksumCheckIntegrityEntry> tempEntry
+          (new ChecksumCheckIntegrityEntry(this));
+        tempEntry->setRedownload(true);
+        checkEntry = tempEntry;
+      } else
+#endif // ENABLE_MESSAGE_DIGEST
+        {
+          downloadContext_->setChecksumVerified(true);
+          logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          util::itos(gid_).c_str(),
+                          downloadContext_->getBasePath().c_str());
+        }
+    } else {
+      checkEntry.reset(new StreamCheckIntegrityEntry(this));
+    }
+  } else if(downloadFinishedByFileLength()) {
+    pieceStorage_->markAllPiecesDone();
+#ifdef ENABLE_MESSAGE_DIGEST
+    if(option_->getAsBool(PREF_CHECK_INTEGRITY) &&
+       downloadContext_->isChecksumVerificationAvailable()) {
+      loadAndOpenFile(infoFile);
+      SharedHandle<ChecksumCheckIntegrityEntry> tempEntry
+        (new ChecksumCheckIntegrityEntry(this));
+      tempEntry->setRedownload(true);
+      checkEntry = tempEntry;
+    } else
+#endif // ENABLE_MESSAGE_DIGEST
+      {
+        downloadContext_->setChecksumVerified(true);
+        logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                        util::itos(gid_).c_str(),
+                        downloadContext_->getBasePath().c_str());
+      }
+  } else {
+    loadAndOpenFile(infoFile);
+    checkEntry.reset(new StreamCheckIntegrityEntry(this));
+  }
+  return checkEntry;
 }
 
 void RequestGroup::createInitialCommand
@@ -409,7 +478,7 @@ void RequestGroup::createInitialCommand
     if(option_->getAsBool(PREF_DRY_RUN) ||
        downloadContext_->getTotalLength() == 0) {
       createNextCommand(commands, e, 1);
-    }else {
+    } else {
       if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
         throw DOWNLOAD_FAILURE_EXCEPTION
           (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
@@ -421,50 +490,16 @@ void RequestGroup::createInitialCommand
                                            SharedHandle<PieceStorage>(),
                                            option_.get())));
       initPieceStorage();
-      BtProgressInfoFileHandle infoFile
-        (new DefaultBtProgressInfoFile(downloadContext_, pieceStorage_,
-                                       option_.get()));
-      bool finishedBySize =
-        !infoFile->exists() && downloadFinishedByFileLength();
-      if(finishedBySize) {
-        pieceStorage_->markAllPiecesDone();
-        if(!option_->getAsBool(PREF_CHECK_INTEGRITY) ||
-           !downloadContext_->isChecksumVerificationNeeded()) {
-          // If --check-integrity=false and no checksum is provided,
-          // and .aria2 file does not exist, we just report download
-          // finished. We need
-          // DownloadContext::setChecksumVerified(true): without this,
-          // aria2 reports error for this download.
-          downloadContext_->setChecksumVerified(true);
-          logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                          util::itos(gid_).c_str(),
-                          downloadContext_->getBasePath().c_str());
-        } else {
-          finishedBySize = false;
-        }
-      }
-      if(!finishedBySize) {
-        loadAndOpenFile(infoFile);
-        SharedHandle<CheckIntegrityEntry> checkIntegrityEntry;
-#ifdef ENABLE_MESSAGE_DIGEST
-        if(downloadFinished() &&
-           downloadContext_->isChecksumVerificationNeeded()) {
-          if(logger_->info()) {
-            logger_->info(MSG_HASH_CHECK_NOT_DONE);
-          }
-          SharedHandle<ChecksumCheckIntegrityEntry> entry
-            (new ChecksumCheckIntegrityEntry(this));
-          entry->setRedownload(true);
-          checkIntegrityEntry = entry;
-        } else
-#endif // ENABLE_MESSAGE_DIGEST
-          {
-            checkIntegrityEntry.reset(new StreamCheckIntegrityEntry(this));
-          }
-        processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
+      SharedHandle<CheckIntegrityEntry> checkEntry =
+        createCheckIntegrityEntry();
+      if(!checkEntry.isNull()) {
+        processCheckIntegrityEntry(commands, checkEntry, e);
       }
     }
   } else {
+    // TODO dry-run mode?
+    // TODO file size is known in this context?
+
     // In this context, multiple FileEntry objects are in
     // DownloadContext.
     if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
@@ -488,7 +523,7 @@ void RequestGroup::createInitialCommand
       pieceStorage_->getDiskAdaptor()->openFile();
     } else {
       if(pieceStorage_->getDiskAdaptor()->fileExists()) {
-        if(!option_->getAsBool(PREF_CHECK_INTEGRITY) &&
+        if(!isCheckIntegrityReady() &&
            !option_->getAsBool(PREF_ALLOW_OVERWRITE)) {
           // TODO we need this->haltRequested = true?
           throw DOWNLOAD_FAILURE_EXCEPTION
@@ -615,9 +650,7 @@ bool RequestGroup::downloadFinishedByFileLength()
 {
   // assuming that a control file doesn't exist.
   if(!isPreLocalFileCheckEnabled() ||
-     option_->getAsBool(PREF_ALLOW_OVERWRITE) ||
-     (option_->getAsBool(PREF_CHECK_INTEGRITY) &&
-      !downloadContext_->getPieceHashes().empty())) {
+     option_->getAsBool(PREF_ALLOW_OVERWRITE)) {
     return false;
   }
   if(!downloadContext_->knowsTotalLength()) {
@@ -656,7 +689,7 @@ void RequestGroup::adjustFilename
       // File exists but user decided to resume it.
     } else {
 #ifdef ENABLE_MESSAGE_DIGEST
-      if(outfile.exists() && option_->getAsBool(PREF_CHECK_INTEGRITY)) {
+      if(outfile.exists() && isCheckIntegrityReady()) {
         // check-integrity existing file
       } else {
 #endif // ENABLE_MESSAGE_DIGEST
@@ -700,7 +733,7 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
         pieceStorage_->markPiecesDone(outfile.size());
       } else {
 #ifdef ENABLE_MESSAGE_DIGEST
-        if(outfile.exists() && option_->getAsBool(PREF_CHECK_INTEGRITY)) {
+        if(outfile.exists() && isCheckIntegrityReady()) {
           pieceStorage_->getDiskAdaptor()->openExistingFile();
         } else {
 #endif // ENABLE_MESSAGE_DIGEST

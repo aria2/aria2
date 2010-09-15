@@ -213,4 +213,15 @@ bool DownloadContext::isChecksumVerificationNeeded() const
     !checksum_.empty() && !checksumHashAlgo_.empty() && !checksumVerified_;
 }
 
+bool DownloadContext::isChecksumVerificationAvailable() const
+{
+  return !checksum_.empty() && !checksumHashAlgo_.empty();
+}
+
+bool DownloadContext::isPieceHashVerificationAvailable() const
+{
+  return !pieceHashAlgo_.empty() &&
+    pieceHashes_.size() > 0 && pieceHashes_.size() == getNumPieces();
+}
+
 } // namespace aria2

@@ -54,8 +54,9 @@ ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
 
 bool ChecksumCheckIntegrityEntry::isValidationReady()
 {
-  return !getRequestGroup()->getDownloadContext()->getChecksum().empty() &&
-    !getRequestGroup()->getDownloadContext()->getChecksumHashAlgo().empty();
+  const SharedHandle<DownloadContext>& dctx =
+    getRequestGroup()->getDownloadContext();
+  return dctx->isChecksumVerificationAvailable();
 }
 
 void ChecksumCheckIntegrityEntry::initValidator()

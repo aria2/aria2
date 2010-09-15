@@ -64,6 +64,8 @@ public:
   }
 
   Command* popNextCommand();
+
+  void pushNextCommand(Command* nextCommand);
   
   bool operator==(const RequestGroupEntry& entry) const
   {

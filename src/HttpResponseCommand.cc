@@ -265,23 +265,11 @@ bool HttpResponseCommand::handleDefaultEncoding
     return true;
   }
 
-  BtProgressInfoFileHandle infoFile
-    (new DefaultBtProgressInfoFile(getDownloadContext(),
-                                   getPieceStorage(),
-                                   getOption().get()));
-  if(!infoFile->exists() && getRequestGroup()->downloadFinishedByFileLength()) {
-    getPieceStorage()->markAllPiecesDone();
-    // See also RequestGroup::createInitialCommand()
-    if(!getOption()->getAsBool(PREF_CHECK_INTEGRITY) ||
-       !getDownloadContext()->isChecksumVerificationNeeded()) {
-      getDownloadContext()->setChecksumVerified(true);
-      getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                          util::itos(getRequestGroup()->getGID()).c_str(),
-                          getRequestGroup()->getFirstFilePath().c_str());
-      return true;
-    }
+  SharedHandle<CheckIntegrityEntry> checkEntry =
+    getRequestGroup()->createCheckIntegrityEntry();
+  if(checkEntry.isNull()) {
+    return true;
   }
-  getRequestGroup()->loadAndOpenFile(infoFile);
   File file(getRequestGroup()->getFirstFilePath());
   // We have to make sure that command that has Request object must
   // have segment after PieceStorage is initialized. See
@@ -306,8 +294,11 @@ bool HttpResponseCommand::handleDefaultEncoding
   }
   // After command is passed to prepareForNextAction(), it is managed
   // by CheckIntegrityEntry.
-  prepareForNextAction(command);
+  checkEntry->pushNextCommand(command);
   command = 0;
+
+  prepareForNextAction(checkEntry);
+
   if(getRequest()->getMethod() == Request::METHOD_HEAD) {
     poolConnection();
     getRequest()->setMethod(Request::METHOD_GET);
@@ -506,6 +497,7 @@ void HttpResponseCommand::poolConnection()
 void HttpResponseCommand::onDryRunFileFound()
 {
   getPieceStorage()->markAllPiecesDone();
+  getDownloadContext()->setChecksumVerified(true);
   poolConnection();
 }
 

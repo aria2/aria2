@@ -1,3 +1,23 @@
+2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that a file gets overwritten if -V is given and no
+	hash is provided. Fixed the bug that --dry-run leads download
+	error. Added RequestGroup::createCheckIntegrityEntry() which
+	correctly creates CheckIntegrityEntry objects and open files based
+	on -V option and the existence of control file.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/ChecksumCheckIntegrityEntry.cc
+	* src/DownloadContext.cc
+	* src/DownloadContext.h
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/PieceHashCheckIntegrityEntry.cc
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupEntry.cc
+	* src/RequestGroupEntry.h
+
 2010-09-13  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compile error without zlib

@@ -51,9 +51,7 @@ bool PieceHashCheckIntegrityEntry::isValidationReady()
 {
   const SharedHandle<DownloadContext>& dctx =
     getRequestGroup()->getDownloadContext();
-  return !dctx->getPieceHashAlgo().empty() &&
-    dctx->getPieceHashes().size() > 0 &&
-    dctx->getPieceHashes().size() == dctx->getNumPieces();
+  return dctx->isPieceHashVerificationAvailable();
 }
 
 void PieceHashCheckIntegrityEntry::initValidator()

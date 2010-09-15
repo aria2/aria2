@@ -176,7 +176,8 @@ protected:
 
   void setTimeout(time_t timeout) { timeout_ = timeout; }
 
-  void prepareForNextAction(Command* nextCommand = 0);
+  void prepareForNextAction
+  (const SharedHandle<CheckIntegrityEntry>& checkEntry);
 
   // Check if socket is connected. If socket is not connected and
   // there are other addresses to try, command is created using
