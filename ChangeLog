@@ -1,5 +1,11 @@
 2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't set error in ServerStat just because resource is not
+	there. We can still use the server for other resources.
+	* src/AbstractCommand.cc
+
+2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Disabled --dry-run in multi-file download for now.
 	* src/RequestGroup.cc
 

@@ -392,9 +392,6 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
 
 void AbstractCommand::onAbort() {
   if(!req_.isNull()) {
-    // TODO This might be a problem if the failure is caused by proxy.
-    e_->getRequestGroupMan()->getOrCreateServerStat
-      (req_->getHost(), req_->getProtocol())->setError();
     fileEntry_->removeIdenticalURI(req_->getUri());
     fileEntry_->removeRequest(req_);
   }
