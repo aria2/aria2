@@ -1,5 +1,10 @@
 2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Disabled --dry-run in multi-file download for now.
+	* src/RequestGroup.cc
+
+2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that a file gets overwritten if -V is given and no
 	hash is provided. Fixed the bug that --dry-run leads download
 	error. Added RequestGroup::createCheckIntegrityEntry() which

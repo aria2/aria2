@@ -497,7 +497,11 @@ void RequestGroup::createInitialCommand
       }
     }
   } else {
-    // TODO dry-run mode?
+    // TODO --dry-run is not supported for multifile download for now.
+    if(option_->getAsBool(PREF_DRY_RUN)) {
+      throw DOWNLOAD_FAILURE_EXCEPTION
+        ("--dry-run in multi-file download is not supported yet.");
+    }
     // TODO file size is known in this context?
 
     // In this context, multiple FileEntry objects are in
