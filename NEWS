@@ -11,7 +11,7 @@ download result kept in memory and the default value is 1000.
 --max-connection-per-server now accepts up to 16.  '@' character is
 now allowed in username embedded in URI.  This release fixes the bug
 that aria2 reports error and exits with non-zero status when file is
-already downloaded.
+already downloaded and checksum is available.
 
 Please note that since 1.10.0 release, aria2 uses 1 connection per
 host by default and has 20MiB segment size restriction. So whatever
