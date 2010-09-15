@@ -1,5 +1,10 @@
 2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Print a message in console when download is not complete.
+	* src/RequestGroupMan.cc
+
+2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't set error in ServerStat just because resource is not
 	there. We can still use the server for other resources.
 	* src/AbstractCommand.cc

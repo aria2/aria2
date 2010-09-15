@@ -341,6 +341,9 @@ public:
             e_->getRequestGroupMan()->insertReservedGroup(0, nextGroups);
           }
         } else {
+          logger_->notice("Download GID#%s not complete: %s",
+                          util::itos(group->getGID()).c_str(),
+                          group->getDownloadContext()->getBasePath().c_str());
           group->saveControlFile();
         }
       } catch(RecoverableException& ex) {
