@@ -1,3 +1,23 @@
+2010-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added keys parameter to aria2.tellStatus, aria2.tellActive,
+	aria2.tellWaiting and aria2.tellStopped XML-RPC method.  'keys' is
+	array of string. If it is specified, the response contains only
+	keys in 'keys' array. If 'keys' is empty or not specified, the
+	response contains all keys.  This is useful when you just want
+	specific keys and avoid unnecessary transfers. For example,
+	*aria2.tellStatus*("1", ["gid", "status"]) returns 'gid' and
+	'status' key. Made get*Param() functions XmlRpcRequest's
+	methods and changed portions of the code that were affected by
+	this change.
+	* doc/aria2c.1.txt
+	* src/Makefile.am
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcMethodImpl.h
+	* src/XmlRpcRequest.cc
+	* src/XmlRpcRequest.h
+	* test/XmlRpcMethodTest.cc
+
 2010-09-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.10.3

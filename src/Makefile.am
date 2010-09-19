@@ -218,7 +218,7 @@ SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserState.h\
 	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
 	XmlRpcElements.cc XmlRpcElements.h\
-	XmlRpcRequest.h\
+	XmlRpcRequest.cc XmlRpcRequest.h\
 	XmlRpcRequestProcessor.h\
 	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
 	XmlRpcMethod.cc XmlRpcMethod.h\

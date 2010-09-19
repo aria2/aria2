@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,38 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML_RPC_REQUEST_H_
-#define _D_XML_RPC_REQUEST_H_
-
-#include "common.h"
-
-#include <string>
-
-#include "ValueBase.h"
+#include "XmlRpcRequest.h"
 
 namespace aria2 {
 
 namespace xmlrpc {
 
-struct XmlRpcRequest {
-  std::string methodName;
-  SharedHandle<List> params;
+const String* XmlRpcRequest::getStringParam(size_t index) const
+{
+  const String* stringParam = 0;
+  if(params->size() > index) {
+    stringParam = asString(params->get(index));
+  }
+  return stringParam;
+}
 
-  XmlRpcRequest(const std::string& methodName,
-                const SharedHandle<List>& params):
-    methodName(methodName), params(params) {}
+const Integer* XmlRpcRequest::getIntegerParam(size_t index) const
+{
+  const Integer* integerParam = 0;
+  if(params->size() > index) {
+    integerParam = asInteger(params->get(index));
+  }
+  return integerParam;
+}
 
-  const String* getStringParam(size_t index) const;
+const List* XmlRpcRequest::getListParam(size_t index) const
+{
+  const List* listParam = 0;
+  if(params->size() > index) {
+    listParam = asList(params->get(index));
+  }
+  return listParam;
+}
 
-  const Integer* getIntegerParam(size_t index) const;
-
-  const List* getListParam(size_t index) const;
-  
-  const Dict* getDictParam(size_t index) const;
-};
+const Dict* XmlRpcRequest::getDictParam(size_t index) const
+{
+  const Dict* dictParam = 0;
+  if(params->size() > index) {
+    dictParam = asDict(params->get(index));
+  }
+  return dictParam;
+}
 
 } // namespace xmlrpc
 
 } // namespace aria2
-
-#endif // _D_XML_RPC_REQUEST_H_

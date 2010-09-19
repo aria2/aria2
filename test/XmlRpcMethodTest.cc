@@ -728,13 +728,21 @@ void XmlRpcMethodTest::testGatherStoppedDownload()
   d->followedBy = followedBy;
   d->belongsTo = 2;
   SharedHandle<Dict> entry = Dict::g();
-  gatherStoppedDownload(entry, d);
+  std::vector<std::string> keys;
+  gatherStoppedDownload(entry, d, keys);
 
   const List* followedByRes = asList(entry->get("followedBy"));
   CPPUNIT_ASSERT_EQUAL(std::string("3"), asString(followedByRes->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("4"), asString(followedByRes->get(1))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("2"),
                        asString(entry->get("belongsTo"))->s());
+
+  keys.push_back("gid");
+
+  entry = Dict::g();
+  gatherStoppedDownload(entry, d, keys);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, entry->size());
+  CPPUNIT_ASSERT(entry->containsKey("gid"));
 }
 
 void XmlRpcMethodTest::testGatherProgressCommon()
@@ -754,7 +762,8 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   group->belongsTo(2);
 
   SharedHandle<Dict> entry = Dict::g();
-  gatherProgressCommon(entry, group);
+  std::vector<std::string> keys;
+  gatherProgressCommon(entry, group, keys);
   
   const List* followedByRes = asList(entry->get("followedBy"));
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[0]->getGID()),
@@ -775,6 +784,14 @@ void XmlRpcMethodTest::testGatherProgressCommon()
                         ->get("uri"))
                        ->s());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), asString(entry->get("dir"))->s());
+
+  keys.push_back("gid");
+  entry = Dict::g();
+  gatherProgressCommon(entry, group, keys);
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, entry->size());
+  CPPUNIT_ASSERT(entry->containsKey("gid"));
+  
 }
 
 #ifdef ENABLE_BITTORRENT

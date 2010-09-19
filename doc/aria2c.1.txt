@@ -1549,10 +1549,15 @@ download.
 This method is equal to calling *aria2.unpause* for every active/waiting
 download. This methods returns "OK" for success.
 
-*aria2.tellStatus* 'gid'
+*aria2.tellStatus* 'gid[, keys]'
 
 This method returns download progress of the download denoted by
-'gid'. 'gid' is of type string. The response is of type struct and it
+'gid'. 'gid' is of type string. 'keys' is array of string. If it is
+specified, the response contains only keys in 'keys' array. If 'keys'
+is empty or not specified, the response contains all keys.  This is
+useful when you just want specific keys and avoid unnecessary
+transfers. For example, *aria2.tellStatus*("1", ["gid", "status"])
+returns 'gid' and 'status' key.  The response is of type struct and it
 contains following keys. The value type is string.
 
 gid::
@@ -1801,18 +1806,20 @@ servers::
 
     Download speed (byte/sec)
 
-*aria2.tellActive*
+*aria2.tellActive* '[keys]'
 
 This method returns the list of active downloads.  The response is of
 type array and its element is the same struct returned by
+*aria2.tellStatus* method. For 'keys' parameter, please refer to
 *aria2.tellStatus* method.
 
-*aria2.tellWaiting* 'offset, num'
+*aria2.tellWaiting* 'offset, num, [keys]'
 
 This method returns the list of waiting download, including paused
 downloads. 'offset' is of type integer and specifies the offset from
 the download waiting at the front. 'num' is of type integer and
-specifies the number of downloads to be returned.
+specifies the number of downloads to be returned.  For 'keys'
+parameter, please refer to *aria2.tellStatus* method.
 
 If offset is a positive integer, this method returns downloads in the
 range of ['offset', 'offset'+'num').
@@ -1830,11 +1837,12 @@ aria2.tellWaiting(-1, 2) returns ["C", "B"].
 The response is of type array and its element is the same struct
 returned by *aria2.tellStatus* method.
 
-*aria2.tellStopped* 'offset, num'
+*aria2.tellStopped* 'offset, num, [keys]'
 
 This method returns the list of stopped download.  'offset' is of type
 integer and specifies the offset from the oldest download. 'num' is of
 type integer and specifies the number of downloads to be returned.
+For 'keys' parameter, please refer to *aria2.tellStatus* method.
 
 'offset' and 'num' have the same semantics as *aria2.tellWaiting*
 method.

@@ -42,7 +42,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserState.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcElements.cc XmlRpcElements.h\
-@ENABLE_XML_RPC_TRUE@	XmlRpcRequest.h\
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequest.cc XmlRpcRequest.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestProcessor.h\
 @ENABLE_XML_RPC_TRUE@	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethod.cc XmlRpcMethod.h\
@@ -452,10 +452,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	XmlRpcRequestParserStateMachine.cc \
 	XmlRpcRequestParserStateMachine.h XmlRpcRequestParserState.h \
 	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h \
-	XmlRpcElements.cc XmlRpcElements.h XmlRpcRequest.h \
-	XmlRpcRequestProcessor.h HttpServerBodyCommand.cc \
-	HttpServerBodyCommand.h XmlRpcMethod.cc XmlRpcMethod.h \
-	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h XmlRpcMethodFactory.cc \
+	XmlRpcElements.cc XmlRpcElements.h XmlRpcRequest.cc \
+	XmlRpcRequest.h XmlRpcRequestProcessor.h \
+	HttpServerBodyCommand.cc HttpServerBodyCommand.h \
+	XmlRpcMethod.cc XmlRpcMethod.h XmlRpcMethodImpl.cc \
+	XmlRpcMethodImpl.h XmlRpcMethodFactory.cc \
 	XmlRpcMethodFactory.h XmlRpcResponse.cc XmlRpcResponse.h \
 	HttpListenCommand.cc HttpListenCommand.h HttpServerCommand.cc \
 	HttpServerCommand.h HttpServerResponseCommand.cc \
@@ -628,6 +629,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserStateMachine.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcRequestParserStateImpl.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcElements.$(OBJEXT) \
+@ENABLE_XML_RPC_TRUE@	XmlRpcRequest.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	HttpServerBodyCommand.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethod.$(OBJEXT) \
 @ENABLE_XML_RPC_TRUE@	XmlRpcMethodImpl.$(OBJEXT) \
@@ -1655,6 +1657,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcMethod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcMethodFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcMethodImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserController.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserStateImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XmlRpcRequestParserStateMachine.Po@am__quote@

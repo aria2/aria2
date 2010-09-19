@@ -53,6 +53,21 @@ class RequestGroup;
 
 namespace xmlrpc {
 
+template<typename OutputIterator>
+void toStringList(OutputIterator out, const List* src)
+{
+  if(!src) {
+    return;
+  }
+  for(List::ValueType::const_iterator i = src->begin(), eoi = src->end();
+      i != eoi; ++i) {
+    const String* s = asString(*i);
+    if(s) {
+      *out++ = s->s();
+    }
+  }
+}
+
 class AddUriXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
@@ -311,7 +326,7 @@ private:
 
   void checkPaginationParams(const SharedHandle<List>& params) const
   {
-    if(params->size() != 2) {
+    if(params->size() < 2) {
       throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
     }
     const Integer* p1 = asInteger(params->get(0));
@@ -326,8 +341,11 @@ protected:
   {
     const SharedHandle<List>& params = req.params;
     checkPaginationParams(params);
-    ssize_t offset = asInteger(params->get(0))->i();
-    size_t num = asInteger(params->get(1))->i();
+    ssize_t offset = req.getIntegerParam(0)->i();
+    size_t num = req.getIntegerParam(1)->i();
+    const List* keysParam = req.getListParam(2);
+    std::vector<std::string> keys;
+    toStringList(std::back_inserter(keys), keysParam);
     const std::deque<SharedHandle<T> >& items = getItems(e);
     std::pair<typename std::deque<SharedHandle<T> >::const_iterator,
       typename std::deque<SharedHandle<T> >::const_iterator> range =
@@ -335,7 +353,7 @@ protected:
     SharedHandle<List> list = List::g();
     for(; range.first != range.second; ++range.first) {
       SharedHandle<Dict> entryDict = Dict::g();
-      createEntry(entryDict, *range.first, e);
+      createEntry(entryDict, *range.first, e, keys);
       list->append(entryDict);
     }
     if(offset < 0) {
@@ -350,7 +368,8 @@ protected:
   virtual void createEntry
   (const SharedHandle<Dict>& entryDict,
    const SharedHandle<T>& item,
-   DownloadEngine* e) const = 0;
+   DownloadEngine* e,
+   const std::vector<std::string>& keys) const = 0;
 };
 
 class TellWaitingXmlRpcMethod:
@@ -362,7 +381,8 @@ protected:
   virtual void createEntry
   (const SharedHandle<Dict>& entryDict,
    const SharedHandle<RequestGroup>& item,
-   DownloadEngine* e) const;
+   DownloadEngine* e,
+   const std::vector<std::string>& keys) const;
 public:
   static const std::string& getMethodName()
   {
@@ -380,7 +400,8 @@ protected:
   virtual void createEntry
   (const SharedHandle<Dict>& entryDict,
    const SharedHandle<DownloadResult>& item,
-   DownloadEngine* e) const;
+   DownloadEngine* e,
+   const std::vector<std::string>& keys) const;
 public:
   static const std::string& getMethodName()
   {
@@ -530,12 +551,14 @@ protected:
 // Helper function to store data to entryDict from ds. This function
 // is used by tellStatus method.
 void gatherStoppedDownload
-(const SharedHandle<Dict>& entryDict, const SharedHandle<DownloadResult>& ds);
+(const SharedHandle<Dict>& entryDict, const SharedHandle<DownloadResult>& ds,
+ const std::vector<std::string>& keys);
 
 // Helper function to store data to entryDict from group. This
 // function is used by tellStatus/tellActive/tellWaiting method
 void gatherProgressCommon
-(const SharedHandle<Dict>& entryDict, const SharedHandle<RequestGroup>& group);
+(const SharedHandle<Dict>& entryDict, const SharedHandle<RequestGroup>& group,
+ const std::vector<std::string>& keys);
 
 #ifdef ENABLE_BITTORRENT
 // Helper function to store BitTorrent metadata from torrentAttrs.
