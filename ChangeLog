@@ -1,3 +1,11 @@
+2010-09-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Reset download start time of PeerStat because it is started before
+	file allocation begins. Without reset, we have incorrect download
+	time and aria2 wrongly determines that download speed is too low
+	if --lowest-speed-limit is used.
+	* src/StreamFileAllocationEntry.cc
+
 2010-09-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added keys parameter to aria2.tellStatus, aria2.tellActive,

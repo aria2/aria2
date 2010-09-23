@@ -63,6 +63,24 @@ void StreamFileAllocationEntry::prepareForNextAction
   // RequestGroup::createInitialCommand()
   getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
   if(getNextCommand()) {
+    // Reset download start time of PeerStat because it is started
+    // before file allocation begins.
+    const SharedHandle<DownloadContext>& dctx =
+      getRequestGroup()->getDownloadContext();
+    const std::vector<SharedHandle<FileEntry> >& fileEntries =
+      dctx->getFileEntries();
+    for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+          fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
+      const std::deque<SharedHandle<Request> >& reqs =
+        (*i)->getInFlightRequests();
+      for(std::deque<SharedHandle<Request> >::const_iterator j =
+            reqs.begin(), eoj = reqs.end(); j != eoj; ++j) {
+        const SharedHandle<PeerStat>& peerStat = (*j)->getPeerStat();
+        if(!peerStat.isNull()) {
+          peerStat->downloadStart();
+        }
+      }
+    }
     // give _nextCommand a chance to execute in the next execution loop.
     getNextCommand()->setStatus(Command::STATUS_ONESHOT_REALTIME);
     e->setNoWait(true);
