@@ -1,5 +1,10 @@
 2010-09-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use class instead of typename for Triplet template parameter.
+	* src/Triplet.h
+
+2010-09-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten TripletGet.
 	* src/Triplet.h
 

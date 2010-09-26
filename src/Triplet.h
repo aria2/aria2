@@ -84,20 +84,20 @@ Triplet<T1, T2, T3> makeTriplet(const T1& t1, const T2& t2, const T3& t3)
   return Triplet<T1, T2, T3>(t1, t2, t3);
 }
 
-template<typename Triplet, size_t N>
+template<class Triplet, size_t N>
 struct TripletNthType;
 
-template<typename Triplet>
+template<class Triplet>
 struct TripletNthType<Triplet, 1> {
   typedef typename Triplet::first_type type;
 };
 
-template<typename Triplet>
+template<class Triplet>
 struct TripletNthType<Triplet, 2> {
   typedef typename Triplet::second_type type;
 };
 
-template<typename Triplet>
+template<class Triplet>
 struct TripletNthType<Triplet, 3> {
   typedef typename Triplet::third_type type;
 };
@@ -135,7 +135,7 @@ struct TripletGet<3> {
 template<size_t N1, size_t N2>
 class Triplet2Pair {
 public:
-  template<typename Triplet>
+  template<class Triplet>
   std::pair<typename TripletNthType<Triplet, N1>::type,
             typename TripletNthType<Triplet, N2>::type>
   operator()(const Triplet& tri) const
