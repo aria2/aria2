@@ -447,7 +447,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h uri.cc uri.h \
-	XmlRpcRequestParserController.cc \
+	Triplet.h XmlRpcRequestParserController.cc \
 	XmlRpcRequestParserController.h \
 	XmlRpcRequestParserStateMachine.cc \
 	XmlRpcRequestParserStateMachine.h XmlRpcRequestParserState.h \
@@ -1241,7 +1241,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	StreamFilter.h SinkStreamFilter.cc SinkStreamFilter.h \
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h \
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h uri.cc uri.h \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
+	Triplet.h $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \

@@ -210,7 +210,8 @@ SRCS =  Socket.h\
 	SinkStreamFilter.cc SinkStreamFilter.h\
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h\
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h\
-	uri.cc uri.h
+	uri.cc uri.h\
+	Triplet.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

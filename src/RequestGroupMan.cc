@@ -72,6 +72,7 @@
 #include "Segment.h"
 #include "DlAbortEx.h"
 #include "uri.h"
+#include "Triplet.h"
 
 namespace aria2 {
 
@@ -898,6 +899,11 @@ bool RequestGroupMan::doesOverallUploadSpeedExceed()
 void RequestGroupMan::getUsedHosts
 (std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
+  // vector of triplet which consists of use count, -download speed,
+  // hostname. We want to sort by least used and faster download
+  // speed. We use -download speed so that we can sort them using
+  // operator<().
+  std::vector<Triplet<size_t, int, std::string> > tempHosts;
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
         requestGroups_.begin(), eoi = requestGroups_.end(); i != eoi; ++i) {
     const std::deque<SharedHandle<Request> >& inFlightReqs =
@@ -906,22 +912,27 @@ void RequestGroupMan::getUsedHosts
           inFlightReqs.begin(), eoj = inFlightReqs.end(); j != eoj; ++j) {
       uri::UriStruct us;
       if(uri::parse(us, (*j)->getUri())) {
-        std::vector<std::pair<size_t, std::string> >::iterator k;
-        std::vector<std::pair<size_t, std::string> >::iterator eok =
-          usedHosts.end();
-        for(k =  usedHosts.begin(); k != eok; ++k) {
-          if((*k).second == us.host) {
+        std::vector<Triplet<size_t, int, std::string> >::iterator k;
+        std::vector<Triplet<size_t, int, std::string> >::iterator eok =
+          tempHosts.end();
+        for(k =  tempHosts.begin(); k != eok; ++k) {
+          if((*k).third == us.host) {
             ++(*k).first;
             break;
           }
         }
         if(k == eok) {
-          usedHosts.push_back(std::make_pair(1, us.host));
+          SharedHandle<ServerStat> ss = findServerStat(us.host, us.protocol);
+          int invDlSpeed = !ss.isNull() && ss->isOK()?
+            -(static_cast<int>(ss->getDownloadSpeed())):0;
+          tempHosts.push_back(makeTriplet(1, invDlSpeed, us.host));
         }
       }
     }
   }
-  std::sort(usedHosts.begin(), usedHosts.end());
+  std::sort(tempHosts.begin(), tempHosts.end());
+  std::transform(tempHosts.begin(), tempHosts.end(),
+                 std::back_inserter(usedHosts), Triplet2Pair<1, 3>());
 }
 
 } // namespace aria2
