@@ -54,11 +54,11 @@ void TripletTest::testTripletGet()
 
 void TripletTest::testTripletNthType()
 {
-  TripletNthType<int, double, std::string, 1>::type x = 1;
+  TripletNthType<Triplet<int, double, std::string>, 1>::type x = 1;
   CPPUNIT_ASSERT_EQUAL(1, x);
-  TripletNthType<int, double, std::string, 2>::type y = 3.14;
+  TripletNthType<Triplet<int, double, std::string>, 2>::type y = 3.14;
   CPPUNIT_ASSERT_EQUAL((double)3.14, y);
-  TripletNthType<int, double, std::string, 3>::type z = "foo";
+  TripletNthType<Triplet<int, double, std::string>, 3>::type z = "foo";
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), z);
 }
 

@@ -1,5 +1,11 @@
 2010-09-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten TripletNthType.
+	* src/Triplet.h
+	* test/TripletTest.cc
+
+2010-09-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Sort usedHosts by least used and faster download speed.
 	* src/Makefile.am
 	* src/RequestGroupMan.cc
