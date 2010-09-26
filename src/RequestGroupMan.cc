@@ -932,7 +932,7 @@ void RequestGroupMan::getUsedHosts
   }
   std::sort(tempHosts.begin(), tempHosts.end());
   std::transform(tempHosts.begin(), tempHosts.end(),
-                 std::back_inserter(usedHosts), Triplet2Pair<1, 3>());
+                 std::back_inserter(usedHosts), Tuple2Pair<1, 3>());
 }
 
 } // namespace aria2

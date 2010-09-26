@@ -1,5 +1,13 @@
 2010-09-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed TripletGet as TupleGet. Renamed TripletNthType as
+	TupleNthType. Renamed Triplet2Pair as Tuple2Pair.
+	* src/RequestGroupMan.cc
+	* src/Triplet.h
+	* test/TripletTest.cc
+
+2010-09-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use class instead of typename for Triplet template parameter.
 	* src/Triplet.h
 

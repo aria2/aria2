@@ -84,65 +84,65 @@ Triplet<T1, T2, T3> makeTriplet(const T1& t1, const T2& t2, const T3& t3)
   return Triplet<T1, T2, T3>(t1, t2, t3);
 }
 
-template<class Triplet, size_t N>
-struct TripletNthType;
+template<class Tuple, size_t N>
+struct TupleNthType;
 
-template<class Triplet>
-struct TripletNthType<Triplet, 1> {
-  typedef typename Triplet::first_type type;
+template<class Tuple>
+struct TupleNthType<Tuple, 1> {
+  typedef typename Tuple::first_type type;
 };
 
-template<class Triplet>
-struct TripletNthType<Triplet, 2> {
-  typedef typename Triplet::second_type type;
+template<class Tuple>
+struct TupleNthType<Tuple, 2> {
+  typedef typename Tuple::second_type type;
 };
 
-template<class Triplet>
-struct TripletNthType<Triplet, 3> {
-  typedef typename Triplet::third_type type;
+template<class Tuple>
+struct TupleNthType<Tuple, 3> {
+  typedef typename Tuple::third_type type;
 };
 
 template<size_t N>
-struct TripletGet;
+struct TupleGet;
 
 template<>
-struct TripletGet<1> {
-  template<class Triplet>
-  static typename TripletNthType<Triplet, 1>::type get(const Triplet& tri)
+struct TupleGet<1> {
+  template<class Tuple>
+  static typename TupleNthType<Tuple, 1>::type get(const Tuple& tri)
   {
     return tri.first;
   }
 };
 
 template<>
-struct TripletGet<2> {
-  template<class Triplet>
-  static typename TripletNthType<Triplet, 2>::type get(const Triplet& tri)
+struct TupleGet<2> {
+  template<class Tuple>
+  static typename TupleNthType<Tuple, 2>::type get(const Tuple& tri)
   {
     return tri.second;
   }
 };
 
 template<>
-struct TripletGet<3> {
-  template<class Triplet>
-  static typename TripletNthType<Triplet, 3>::type get(const Triplet& tri)
+struct TupleGet<3> {
+  template<class Tuple>
+  static typename TupleNthType<Tuple, 3>::type get(const Tuple& tri)
   {
     return tri.third;
   }
 };
 
 template<size_t N1, size_t N2>
-class Triplet2Pair {
+class Tuple2Pair {
 public:
-  template<class Triplet>
-  std::pair<typename TripletNthType<Triplet, N1>::type,
-            typename TripletNthType<Triplet, N2>::type>
-  operator()(const Triplet& tri) const
+  template<class Tuple>
+  std::pair<typename TupleNthType<Tuple, N1>::type,
+            typename TupleNthType<Tuple, N2>::type>
+  operator()(const Tuple& tri) const
   {
-    return std::make_pair<typename TripletNthType<Triplet, N1>::type,
-                          typename TripletNthType<Triplet, N2>::type>
-      (TripletGet<N1>::get(tri), TripletGet<N2>::get(tri));
+    return std::make_pair<typename TupleNthType<Tuple, N1>::type,
+                          typename TupleNthType<Tuple, N2>::type>
+      (TupleGet<N1>::get(tri), TupleGet<N2>::get(tri));
   }
 };
 

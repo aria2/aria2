@@ -8,9 +8,9 @@ class TripletTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(TripletTest);
   CPPUNIT_TEST(testLess);
-  CPPUNIT_TEST(testTripletGet);
-  CPPUNIT_TEST(testTripletNthType);
-  CPPUNIT_TEST(testTriplet2Pair);
+  CPPUNIT_TEST(testTupleGet);
+  CPPUNIT_TEST(testTupleNthType);
+  CPPUNIT_TEST(testTuple2Pair);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -18,9 +18,9 @@ public:
   void tearDown() {}
 
   void testLess();
-  void testTripletGet();
-  void testTripletNthType();
-  void testTriplet2Pair();
+  void testTupleGet();
+  void testTupleNthType();
+  void testTuple2Pair();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TripletTest);
@@ -44,32 +44,32 @@ void TripletTest::testLess()
   CPPUNIT_ASSERT(!(tri6 < tri5));
 }
 
-void TripletTest::testTripletGet()
+void TripletTest::testTupleGet()
 {
   Triplet<int, double, std::string> x(1, 3.14, "foo");
-  CPPUNIT_ASSERT_EQUAL(1, (TripletGet<1>::get(x)));
-  CPPUNIT_ASSERT_EQUAL((double)3.14, (TripletGet<2>::get(x)));
-  CPPUNIT_ASSERT_EQUAL(std::string("foo"), (TripletGet<3>::get(x)));
+  CPPUNIT_ASSERT_EQUAL(1, (TupleGet<1>::get(x)));
+  CPPUNIT_ASSERT_EQUAL((double)3.14, (TupleGet<2>::get(x)));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), (TupleGet<3>::get(x)));
 }
 
-void TripletTest::testTripletNthType()
+void TripletTest::testTupleNthType()
 {
-  TripletNthType<Triplet<int, double, std::string>, 1>::type x = 1;
+  TupleNthType<Triplet<int, double, std::string>, 1>::type x = 1;
   CPPUNIT_ASSERT_EQUAL(1, x);
-  TripletNthType<Triplet<int, double, std::string>, 2>::type y = 3.14;
+  TupleNthType<Triplet<int, double, std::string>, 2>::type y = 3.14;
   CPPUNIT_ASSERT_EQUAL((double)3.14, y);
-  TripletNthType<Triplet<int, double, std::string>, 3>::type z = "foo";
+  TupleNthType<Triplet<int, double, std::string>, 3>::type z = "foo";
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), z);
 }
 
-void TripletTest::testTriplet2Pair()
+void TripletTest::testTuple2Pair()
 {
   Triplet<int, double, std::string> x(1, 3.14, "foo");
-  std::pair<int, double> p1 = Triplet2Pair<1, 2>()(x);
+  std::pair<int, double> p1 = Tuple2Pair<1, 2>()(x);
   CPPUNIT_ASSERT_EQUAL(1, p1.first);
   CPPUNIT_ASSERT_EQUAL((double)3.14, p1.second);
 
-  std::pair<double, std::string> p2 = Triplet2Pair<2, 3>()(x);
+  std::pair<double, std::string> p2 = Tuple2Pair<2, 3>()(x);
   CPPUNIT_ASSERT_EQUAL((double)3.14, p2.first);
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), p2.second);
 }
