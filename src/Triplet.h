@@ -107,8 +107,8 @@ struct TripletGet;
 
 template<>
 struct TripletGet<1> {
-  template<typename T1, typename T2, typename T3>
-  static T1 get(const Triplet<T1, T2, T3>& tri)
+  template<class Triplet>
+  static typename TripletNthType<Triplet, 1>::type get(const Triplet& tri)
   {
     return tri.first;
   }
@@ -116,8 +116,8 @@ struct TripletGet<1> {
 
 template<>
 struct TripletGet<2> {
-  template<typename T1, typename T2, typename T3>
-  static T2 get(const Triplet<T1, T2, T3>& tri)
+  template<class Triplet>
+  static typename TripletNthType<Triplet, 2>::type get(const Triplet& tri)
   {
     return tri.second;
   }
@@ -125,8 +125,8 @@ struct TripletGet<2> {
 
 template<>
 struct TripletGet<3> {
-  template<typename T1, typename T2, typename T3>
-  static T3 get(const Triplet<T1, T2, T3>& tri)
+  template<class Triplet>
+  static typename TripletNthType<Triplet, 3>::type get(const Triplet& tri)
   {
     return tri.third;
   }
