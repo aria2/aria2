@@ -1,5 +1,10 @@
 2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup util::percentEncode()
+	* src/util.cc
+
+2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made string literal static std::string in
 	util::detectDirTraversal().
 	* src/util.cc

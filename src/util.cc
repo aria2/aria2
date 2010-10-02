@@ -365,13 +365,14 @@ bool isUtf8(const std::string& str)
   return true;
 }
 
-std::string percentEncode(const unsigned char* target, size_t len) {
+std::string percentEncode(const unsigned char* target, size_t len)
+{
   std::string dest;
   for(size_t i = 0; i < len; ++i) {
-    if(!inRFC3986UnreservedChars(target[i])) {
-      dest.append(StringFormat("%%%02X", target[i]).str());
-    } else {
+    if(inRFC3986UnreservedChars(target[i])) {
       dest += target[i];
+    } else {
+      dest.append(StringFormat("%%%02X", target[i]).str());
     }
   }
   return dest;
@@ -380,7 +381,7 @@ std::string percentEncode(const unsigned char* target, size_t len) {
 std::string percentEncode(const std::string& target)
 {
   return percentEncode(reinterpret_cast<const unsigned char*>(target.c_str()),
-                   target.size());
+                       target.size());
 }
 
 std::string torrentPercentEncode(const unsigned char* target, size_t len) {
