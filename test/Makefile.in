@@ -121,6 +121,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTTaskExecutorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.cc\
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.cc\
@@ -260,18 +261,19 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DHTPeerAnnounceEntryTest.cc DHTPeerAnnounceStorageTest.cc \
 	DHTTokenTrackerTest.cc XORCloserTest.cc DHTIDCloserTest.cc \
 	DHTRoutingTableSerializerTest.cc \
-	DHTRoutingTableDeserializerTest.cc DHKeyExchangeTest.cc \
-	ARC4Test.cc MSEHandshakeTest.cc MockBtAnnounce.h \
-	MockBtProgressInfoFile.h MockBtRequestFactory.h \
-	MockDHTMessage.h MockDHTMessageCallback.h \
-	MockDHTMessageDispatcher.h MockDHTMessageFactory.h \
-	MockDHTTask.h MockDHTTaskFactory.h MockDHTTaskQueue.h \
-	MockExtensionMessage.h MockExtensionMessageFactory.h \
-	MockPieceStorage.h BittorrentHelperTest.cc \
-	PriorityPieceSelectorTest.cc MockPieceSelector.h \
-	extension_message_test_helper.h LpdMessageDispatcherTest.cc \
-	LpdMessageReceiverTest.cc Bencode2Test.cc MetalinkerTest.cc \
-	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
+	DHTRoutingTableDeserializerTest.cc DHTTaskExecutorTest.cc \
+	DHKeyExchangeTest.cc ARC4Test.cc MSEHandshakeTest.cc \
+	MockBtAnnounce.h MockBtProgressInfoFile.h \
+	MockBtRequestFactory.h MockDHTMessage.h \
+	MockDHTMessageCallback.h MockDHTMessageDispatcher.h \
+	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
+	MockDHTTaskQueue.h MockExtensionMessage.h \
+	MockExtensionMessageFactory.h MockPieceStorage.h \
+	BittorrentHelperTest.cc PriorityPieceSelectorTest.cc \
+	MockPieceSelector.h extension_message_test_helper.h \
+	LpdMessageDispatcherTest.cc LpdMessageReceiverTest.cc \
+	Bencode2Test.cc MetalinkerTest.cc MetalinkEntryTest.cc \
+	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_XML_RPC_TRUE@am__objects_1 = XmlRpcRequestParserControllerTest.$(OBJEXT) \
@@ -354,6 +356,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTTaskExecutorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
@@ -804,6 +807,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableDeserializerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableSerializerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTaskExecutorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTrackerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUnknownMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DNSCacheTest.Po@am__quote@

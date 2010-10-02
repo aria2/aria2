@@ -2,9 +2,11 @@
 #define _D_MOCK_DHT_TASK_H_
 
 #include "DHTTask.h"
+
+#include <cstring>
+
 #include "DHTNode.h"
 #include "DHTConstants.h"
-#include <cstring>
 
 namespace aria2 {
 
@@ -14,7 +16,11 @@ public:
 
   unsigned char targetID_[DHT_ID_LENGTH];
 
-  MockDHTTask(const SharedHandle<DHTNode>& remoteNode):remoteNode_(remoteNode) {}
+  bool finished_;
+
+  MockDHTTask(const SharedHandle<DHTNode>& remoteNode):
+    remoteNode_(remoteNode),
+    finished_(false) {}
 
   virtual ~MockDHTTask() {}
 
@@ -22,7 +28,7 @@ public:
 
   virtual bool finished()
   {
-    return false;
+    return finished_;
   }
 
   void setTargetID(const unsigned char* targetID)

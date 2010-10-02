@@ -196,6 +196,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DHTPingTask.cc DHTPingTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTTaskQueue.h\
 @ENABLE_BITTORRENT_TRUE@	DHTTaskQueueImpl.cc DHTTaskQueueImpl.h\
+@ENABLE_BITTORRENT_TRUE@	DHTTaskExecutor.cc DHTTaskExecutor.h\
 @ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshTask.cc DHTBucketRefreshTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTAbstractNodeLookupTask.h\
 @ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTask.cc DHTPeerLookupTask.h\
@@ -565,19 +566,20 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DHTPeerLookupTaskCallback.h DHTAbstractTask.cc \
 	DHTAbstractTask.h DHTTask.h DHTPingTask.cc DHTPingTask.h \
 	DHTTaskQueue.h DHTTaskQueueImpl.cc DHTTaskQueueImpl.h \
-	DHTBucketRefreshTask.cc DHTBucketRefreshTask.h \
-	DHTAbstractNodeLookupTask.h DHTPeerLookupTask.cc \
-	DHTPeerLookupTask.h DHTSetup.cc DHTSetup.h DHTTaskFactory.h \
-	DHTTaskFactoryImpl.cc DHTTaskFactoryImpl.h \
-	DHTInteractionCommand.cc DHTInteractionCommand.h \
-	DHTPeerAnnounceEntry.cc DHTPeerAnnounceEntry.h \
-	DHTPeerAnnounceStorage.cc DHTPeerAnnounceStorage.h \
-	DHTTokenTracker.cc DHTTokenTracker.h DHTGetPeersCommand.cc \
-	DHTGetPeersCommand.h DHTTokenUpdateCommand.cc \
-	DHTTokenUpdateCommand.h DHTBucketRefreshCommand.cc \
-	DHTBucketRefreshCommand.h DHTPeerAnnounceCommand.cc \
-	DHTPeerAnnounceCommand.h DHTReplaceNodeTask.cc \
-	DHTReplaceNodeTask.h DHTEntryPointNameResolveCommand.cc \
+	DHTTaskExecutor.cc DHTTaskExecutor.h DHTBucketRefreshTask.cc \
+	DHTBucketRefreshTask.h DHTAbstractNodeLookupTask.h \
+	DHTPeerLookupTask.cc DHTPeerLookupTask.h DHTSetup.cc \
+	DHTSetup.h DHTTaskFactory.h DHTTaskFactoryImpl.cc \
+	DHTTaskFactoryImpl.h DHTInteractionCommand.cc \
+	DHTInteractionCommand.h DHTPeerAnnounceEntry.cc \
+	DHTPeerAnnounceEntry.h DHTPeerAnnounceStorage.cc \
+	DHTPeerAnnounceStorage.h DHTTokenTracker.cc DHTTokenTracker.h \
+	DHTGetPeersCommand.cc DHTGetPeersCommand.h \
+	DHTTokenUpdateCommand.cc DHTTokenUpdateCommand.h \
+	DHTBucketRefreshCommand.cc DHTBucketRefreshCommand.h \
+	DHTPeerAnnounceCommand.cc DHTPeerAnnounceCommand.h \
+	DHTReplaceNodeTask.cc DHTReplaceNodeTask.h \
+	DHTEntryPointNameResolveCommand.cc \
 	DHTEntryPointNameResolveCommand.h DHTRoutingTableSerializer.cc \
 	DHTRoutingTableSerializer.h DHTRoutingTableDeserializer.cc \
 	DHTRoutingTableDeserializer.h DHTAutoSaveCommand.cc \
@@ -746,6 +748,7 @@ am__objects_6 =
 @ENABLE_BITTORRENT_TRUE@	DHTAbstractTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTPingTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTTaskQueueImpl.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTTaskExecutor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTSetup.$(OBJEXT) \
@@ -1460,6 +1463,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableDeserializer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableSerializer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTSetup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTaskExecutor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTaskFactoryImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTaskQueueImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTracker.Po@am__quote@

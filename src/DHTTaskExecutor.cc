@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,54 +32,43 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DHTTaskQueueImpl.h"
+#include "DHTTaskExecutor.h"
+
+#include <algorithm>
+
 #include "DHTTask.h"
 #include "Logger.h"
 #include "LogFactory.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-namespace {
-const size_t NUM_CONCURRENT_TASK = 5;
-}
-
-DHTTaskQueueImpl::DHTTaskQueueImpl():
-  periodicTaskQueue1_(NUM_CONCURRENT_TASK),
-  periodicTaskQueue2_(NUM_CONCURRENT_TASK),
-  immediateTaskQueue_(NUM_CONCURRENT_TASK),
+DHTTaskExecutor::DHTTaskExecutor(size_t numConcurrent):
+  numConcurrent_(numConcurrent),
   logger_(LogFactory::getInstance()) {}
 
-DHTTaskQueueImpl::~DHTTaskQueueImpl() {}
+DHTTaskExecutor::~DHTTaskExecutor() {}
 
-void DHTTaskQueueImpl::executeTask()
+void DHTTaskExecutor::update()
 {
-  if(logger_->debug()) {
-    logger_->debug("Updating periodicTaskQueue1");
+  execTasks_.erase(std::remove_if(execTasks_.begin(), execTasks_.end(),
+                                  mem_fun_sh(&DHTTask::finished)),
+                   execTasks_.end());
+  size_t r = numConcurrent_-execTasks_.size();
+  while(r && !queue_.empty()) {
+    SharedHandle<DHTTask> task = queue_.front();
+    queue_.pop_front();
+    task->startup();
+    if(!task->finished()) {
+      execTasks_.push_back(task);
+      --r;
+    }
   }
-  periodicTaskQueue1_.update();
   if(logger_->debug()) {
-    logger_->debug("Updating periodicTaskQueue2");
+    logger_->debug("Executing %u Task(s). Queue has %u task(s).",
+                   static_cast<unsigned int>(getExecutingTaskSize()),
+                   static_cast<unsigned int>(getQueueSize()));
   }
-  periodicTaskQueue2_.update();
-  if(logger_->debug()) {
-    logger_->debug("Updating immediateTaskQueue");
-  }
-  immediateTaskQueue_.update();
-}
-
-void DHTTaskQueueImpl::addPeriodicTask1(const SharedHandle<DHTTask>& task)
-{
-  periodicTaskQueue1_.addTask(task);
-}
-
-void DHTTaskQueueImpl::addPeriodicTask2(const SharedHandle<DHTTask>& task)
-{
-  periodicTaskQueue2_.addTask(task);
-}
-
-void DHTTaskQueueImpl::addImmediateTask(const SharedHandle<DHTTask>& task)
-{
-  immediateTaskQueue_.addTask(task);
 }
 
 } // namespace aria2

@@ -36,26 +36,21 @@
 #define _D_DHT_TASK_QUEUE_IMPL_H_
 
 #include "DHTTaskQueue.h"
-#include <deque>
+#include "DHTTaskExecutor.h"
 
 namespace aria2 {
 
+class Logger;
+
 class DHTTaskQueueImpl:public DHTTaskQueue {
 private:
+  DHTTaskExecutor periodicTaskQueue1_;
 
-  SharedHandle<DHTTask> periodicTask1_;
+  DHTTaskExecutor periodicTaskQueue2_;
 
-  SharedHandle<DHTTask> periodicTask2_;
+  DHTTaskExecutor immediateTaskQueue_;
 
-  SharedHandle<DHTTask> immediateTask_;
-
-  std::deque<SharedHandle<DHTTask> > periodicTaskQueue1_;
-
-  std::deque<SharedHandle<DHTTask> > periodicTaskQueue2_;
-
-  std::deque<SharedHandle<DHTTask> > immediateTaskQueue_;
-
-  void executeTask(SharedHandle<DHTTask>& task, std::deque<SharedHandle<DHTTask> >& taskQueue);
+  Logger* logger_;
 public:
   DHTTaskQueueImpl();
 

@@ -1,5 +1,17 @@
 2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Execute 5 DHT tasks concurrently in each task queue.
+	* src/DHTTaskExecutor.cc
+	* src/DHTTaskExecutor.h
+	* src/DHTTaskQueueImpl.cc
+	* src/DHTTaskQueueImpl.h
+	* src/Makefile.am
+	* test/DHTTaskExecutorTest.cc
+	* test/Makefile.am
+	* test/MockDHTTask.h
+
+2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that FtpFinishDownloadCommand does not handle
 	timeout. This means it waits for the remote server to send "226
 	Transfer Complete" message *without* its own timeout until the

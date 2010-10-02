@@ -406,6 +406,7 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	DHTPingTask.cc DHTPingTask.h\
 	DHTTaskQueue.h\
 	DHTTaskQueueImpl.cc DHTTaskQueueImpl.h\
+	DHTTaskExecutor.cc DHTTaskExecutor.h\
 	DHTBucketRefreshTask.cc DHTBucketRefreshTask.h\
 	DHTAbstractNodeLookupTask.h\
 	DHTPeerLookupTask.cc DHTPeerLookupTask.h\
