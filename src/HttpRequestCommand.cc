@@ -159,9 +159,9 @@ bool HttpRequestCommand::executeInternal() {
         } else {
           if(getFileEntry()->getPath().empty()) {
             getFileEntry()->setPath
-              (util::applyDir
+              (util::createSafePath
                (getDownloadContext()->getDir(),
-                util::fixTaintedBasename(getRequest()->getFile())));
+                util::percentDecode(getRequest()->getFile())));
           }
           File ctrlfile(getFileEntry()->getPath()+
                         DefaultBtProgressInfoFile::getSuffix());

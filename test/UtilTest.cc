@@ -65,6 +65,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testEscapePath);
   CPPUNIT_TEST(testGetCidrPrefix);
   CPPUNIT_TEST(testInSameCidrBlock);
+  CPPUNIT_TEST(testIsUtf8String);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -118,6 +119,7 @@ public:
   void testEscapePath();
   void testGetCidrPrefix();
   void testInSameCidrBlock();
+  void testIsUtf8String();
 };
 
 
@@ -1096,6 +1098,38 @@ void UtilTest::testInSameCidrBlock()
 {
   CPPUNIT_ASSERT(util::inSameCidrBlock("192.168.128.1", "192.168.0.1", 16));
   CPPUNIT_ASSERT(!util::inSameCidrBlock("192.168.128.1", "192.168.0.1", 17));
+}
+
+void UtilTest::testIsUtf8String()
+{
+  CPPUNIT_ASSERT(util::isUtf8("ascii"));
+  // "Hello World" in Japanese UTF-8
+  CPPUNIT_ASSERT(util::isUtf8
+                 (util::fromHex("e38193e38293e381abe381a1e381afe4b896e7958c")));
+  // "World" in Shift_JIS
+  CPPUNIT_ASSERT(!util::isUtf8(util::fromHex("90a28a")+"E"));
+  // UTF8-2
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("c280")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("dfbf")));
+  // UTF8-3
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("e0a080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("e0bf80")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("e18080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ec8080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ed8080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ed9f80")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ee8080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ef8080")));
+  // UTF8-4
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f0908080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f0bf8080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f1808080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f3808080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f4808080")));
+  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f48f8080")));
+
+  CPPUNIT_ASSERT(util::isUtf8(""));
+  CPPUNIT_ASSERT(!util::isUtf8(util::fromHex("00")));
 }
 
 } // namespace aria2

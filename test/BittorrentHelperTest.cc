@@ -52,6 +52,8 @@ class BittorrentHelperTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoadFromMemory_overrideName);
   CPPUNIT_TEST(testLoadFromMemory_multiFileDirTraversal);
   CPPUNIT_TEST(testLoadFromMemory_singleFileDirTraversal);
+  CPPUNIT_TEST(testLoadFromMemory_multiFileNonUtf8Path);
+  CPPUNIT_TEST(testLoadFromMemory_singleFileNonUtf8Path);
   CPPUNIT_TEST(testGetNodes);
   CPPUNIT_TEST(testGetBasePath);
   CPPUNIT_TEST(testSetFileFilter_single);
@@ -102,6 +104,8 @@ public:
   void testLoadFromMemory_overrideName();
   void testLoadFromMemory_multiFileDirTraversal();
   void testLoadFromMemory_singleFileDirTraversal();
+  void testLoadFromMemory_multiFileNonUtf8Path();
+  void testLoadFromMemory_singleFileNonUtf8Path();
   void testGetNodes();
   void testGetBasePath();
   void testSetFileFilter_single();
@@ -398,6 +402,50 @@ void BittorrentHelperTest::testGetFileEntries_singleFileUrlListEndsWithSlash() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, uris1.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/dist/aria2%40.tar.bz2"),
                        uris1[0]);
+}
+
+void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
+{
+  SharedHandle<List> path = List::g();
+  path->append("path");
+  path->append(util::fromHex("90a28a")+"E");
+  SharedHandle<Dict> file = Dict::g();
+  file->put("length", Integer::g(1024));
+  file->put("path", path);
+  SharedHandle<List> files = List::g();
+  files->append(file);
+  SharedHandle<Dict> info = Dict::g();
+  info->put("files", files);
+  info->put("piece length", Integer::g(1024));
+  info->put("pieces", "01234567890123456789");
+  info->put("name", util::fromHex("1b")+"$B%O%m!<"+util::fromHex("1b")+"(B");
+  Dict dict;
+  dict.put("info", info);
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  loadFromMemory(bencode2::encode(&dict), dctx, "default");
+
+  const SharedHandle<FileEntry>& fe = dctx->getFirstFileEntry();
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("./%1B%24B%25O%25m%21%3C%1B%28B/path/%90%A2%8AE"),
+     fe->getPath());
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("./%1B%24B%25O%25m%21%3C%1B%28B"), dctx->getBasePath());
+}
+
+void BittorrentHelperTest::testLoadFromMemory_singleFileNonUtf8Path()
+{
+  SharedHandle<Dict> info = Dict::g();
+  info->put("piece length", Integer::g(1024));
+  info->put("pieces", "01234567890123456789");
+  info->put("name", util::fromHex("90a28a")+"E");
+  info->put("length", Integer::g(1024));
+  Dict dict;
+  dict.put("info", info);
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  loadFromMemory(bencode2::encode(&dict), dctx, "default");
+
+  const SharedHandle<FileEntry>& fe = dctx->getFirstFileEntry();
+  CPPUNIT_ASSERT_EQUAL(std::string("./%90%A2%8AE"), fe->getPath());
 }
 
 void BittorrentHelperTest::testLoadFromMemory()

@@ -187,6 +187,7 @@ static void extractFileEntries
  const std::vector<std::string>& urlList)
 {
   std::string name;
+  std::string utf8Name;
   if(overrideName.empty()) {
     std::string nameKey;
     if(infoDict->containsKey(C_NAME_UTF8)) {
@@ -196,17 +197,18 @@ static void extractFileEntries
     }
     const String* nameData = asString(infoDict->get(nameKey));
     if(nameData) {
-      if(util::detectDirTraversal(nameData->s())) {
+      utf8Name = util::encodeNonUtf8(nameData->s());
+      if(util::detectDirTraversal(utf8Name)) {
         throw DL_ABORT_EX
           (StringFormat
            (MSG_DIR_TRAVERSAL_DETECTED,nameData->s().c_str()).str());
       }
       name = nameData->s();
     } else {
-      name = strconcat(File(defaultName).getBasename(), ".file");
+      name = utf8Name = strconcat(File(defaultName).getBasename(), ".file");
     }
   } else {
-    name = overrideName;
+    name = utf8Name = overrideName;
   }
   torrent->name = name;
   std::vector<SharedHandle<FileEntry> > fileEntries;
@@ -255,9 +257,11 @@ static void extractFileEntries
         }
       }
       std::string path = strjoin(pathelem.begin(), pathelem.end(), '/');
-      if(util::detectDirTraversal(path)) {
+      std::string utf8Path = strjoin(pathelem.begin(), pathelem.end(), '/',
+                                     std::ptr_fun(util::encodeNonUtf8));
+      if(util::detectDirTraversal(utf8Path)) {
         throw DL_ABORT_EX
-          (StringFormat(MSG_DIR_TRAVERSAL_DETECTED, path.c_str()).str());
+          (StringFormat(MSG_DIR_TRAVERSAL_DETECTED, utf8Path.c_str()).str());
       }
       std::string pePath =
         strjoin(pathelem.begin(), pathelem.end(), '/',
@@ -266,9 +270,8 @@ static void extractFileEntries
       std::vector<std::string> uris;
       createUri(urlList.begin(), urlList.end(),std::back_inserter(uris),pePath);
       SharedHandle<FileEntry> fileEntry
-        (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(path)),
-                       fileLengthData->i(),
-                       offset, uris));
+        (new FileEntry(util::applyDir(ctx->getDir(),util::escapePath(utf8Path)),
+                       fileLengthData->i(), offset, uris));
       fileEntry->setOriginalName(path);
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
@@ -294,17 +297,15 @@ static void extractFileEntries
         uris.push_back(*i);
       }
     }
-
     SharedHandle<FileEntry> fileEntry
-      (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(name)),
-                     totalLength, 0,
-                     uris));
+      (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(utf8Name)),
+                     totalLength, 0, uris));
     fileEntry->setOriginalName(name);
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());
   if(torrent->mode == MULTI) {
-    ctx->setBasePath(util::applyDir(ctx->getDir(), name));
+    ctx->setBasePath(util::applyDir(ctx->getDir(), utf8Name));
   }
 }
 

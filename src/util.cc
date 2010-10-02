@@ -291,6 +291,80 @@ bool inRFC2616HttpToken(const char c)
     std::find(vbegin(chars), vend(chars), c) != vend(chars);
 }
 
+namespace {
+bool in(unsigned char ch, unsigned char s, unsigned char t)
+{
+  return s <= ch && ch <= t;
+}
+}
+
+namespace {
+bool isUtf8Tail(unsigned char ch)
+{
+  return in(ch, 0x80, 0xbf);
+}
+}
+
+bool isUtf8(const std::string& str)
+{
+  for(std::string::const_iterator s = str.begin(), eos = str.end(); s != eos;
+      ++s) {
+    unsigned char firstChar = *s;
+    // See ABNF in http://tools.ietf.org/search/rfc3629#section-4
+    if(in(firstChar, 0x20, 0x7e) ||
+       firstChar == 0x09 || firstChar == 0x0a ||firstChar == 0x0d) {
+      // UTF8-1 (without ctrl chars)
+    } else if(in(firstChar, 0xc2, 0xdf)) {
+       // UTF8-2
+      if(++s == eos || !isUtf8Tail(*s)) {
+        return false;
+      }
+    } else if(0xe0 == firstChar) {
+      // UTF8-3
+      if(++s == eos || !in(*s, 0xa0, 0xbf) ||
+         ++s == eos || !isUtf8Tail(*s)) {
+        return false;
+      }
+    } else if(in(firstChar, 0xe1, 0xec) || in(firstChar, 0xee, 0xef)) {
+      // UTF8-3
+      if(++s == eos || !isUtf8Tail(*s) ||
+         ++s == eos || !isUtf8Tail(*s)) {
+        return false;
+      }
+    } else if(0xed == firstChar) {
+      // UTF8-3
+      if(++s == eos || !in(*s, 0x80, 0x9f) ||
+         ++s == eos || !isUtf8Tail(*s)) {
+        return false;
+      } 
+    } else if(0xf0 == firstChar) {
+      // UTF8-4
+      if(++s == eos || !in(*s, 0x90, 0xbf) ||
+         ++s == eos || !isUtf8Tail(*s) ||
+         ++s == eos || !isUtf8Tail(*s)) {
+        return false;
+      }
+    } else if(in(firstChar, 0xf1, 0xf3)) {
+      // UTF8-4
+      if(++s == eos || !isUtf8Tail(*s) ||
+         ++s == eos || !isUtf8Tail(*s) ||
+         ++s == eos || !isUtf8Tail(*s)) {
+        return false;
+      }
+    } else if(0xf4 == firstChar) {
+      // UTF8-4
+      if(++s == eos || !in(*s, 0x80, 0x8f) ||
+         ++s == eos || !isUtf8Tail(*s) ||
+         ++s == eos || !isUtf8Tail(*s)) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
 std::string percentEncode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; ++i) {
@@ -1404,6 +1478,21 @@ void executeHookByOptName
   if(!option->blank(opt)) {
     executeHook(option->get(opt), util::itos(group->getGID()));
   }
+}
+
+std::string createSafePath
+(const std::string& dir, const std::string& filename)
+{
+  return util::applyDir
+    (dir,
+     util::isUtf8(filename)?
+     util::fixTaintedBasename(filename):
+     util::escapePath(util::percentEncode(filename)));
+}
+
+std::string encodeNonUtf8(const std::string& s)
+{
+  return util::isUtf8(s)?s:util::percentEncode(s);
 }
 
 } // namespace util

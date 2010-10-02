@@ -1,3 +1,19 @@
+2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Non-UTF8 filenames are now percent-encoded.  For example, filename
+	for http://example.org/%90%A2%8AE will be %90%A2%8AE because it is
+	Shift_JIS. The comments and name in .torrent file in XML-RPC
+	response are percent-encoded if they are not UTF-8.
+	* src/FtpNegotiationCommand.cc
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/bittorrent_helper.cc
+	* src/util.cc
+	* src/util.h
+	* test/BittorrentHelperTest.cc
+	* test/UtilTest.cc
+
 2010-09-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Renamed TripletGet as TupleGet. Renamed TripletNthType as

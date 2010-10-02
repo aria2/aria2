@@ -168,9 +168,8 @@ bool HttpResponseCommand::executeInternal()
     getFileEntry()->setLength(totalLength);
     if(getFileEntry()->getPath().empty()) {
       getFileEntry()->setPath
-        (util::applyDir
-         (getDownloadContext()->getDir(),
-          util::fixTaintedBasename(httpResponse->determinFilename())));
+        (util::createSafePath
+         (getDownloadContext()->getDir(), httpResponse->determinFilename()));
     }
     getFileEntry()->setContentType(httpResponse->getContentType());
     getRequestGroup()->preDownloadProcessing();

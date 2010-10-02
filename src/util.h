@@ -148,6 +148,8 @@ bool inRFC3986ReservedChars(const char c);
 
 bool inRFC3986UnreservedChars(const char c);
 
+bool isUtf8(const std::string& str);
+
 std::string percentDecode(const std::string& target);
 
 std::string torrentPercentEncode(const unsigned char* target, size_t len);
@@ -404,6 +406,10 @@ void executeHookByOptName
 
 void executeHookByOptName
 (const RequestGroup* group, const Option* option, const std::string& opt);
+
+std::string createSafePath(const std::string& dir, const std::string& filename);
+
+std::string encodeNonUtf8(const std::string& s);
 
 } // namespace util
 
