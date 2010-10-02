@@ -1,5 +1,11 @@
 2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made string literal static std::string in
+	util::detectDirTraversal().
+	* src/util.cc
+
+2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten util::escapePath(). Now it does not replace bad chars:it
 	performs percent-encode against them.  util::fixTaintedBasename()
 	now replaces "/" with "%2F".  Added 0x7f as bad chars in

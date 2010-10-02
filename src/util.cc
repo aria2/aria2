@@ -1335,16 +1335,25 @@ bool detectDirTraversal(const std::string& s)
       return true;
     }
   }
+
+  static std::string DS = "./";
+  static std::string DDS = "../";
+  static std::string SD = "/.";
+  static std::string SDD = "/..";
+  static std::string SDDS = "/../";
+  static std::string SDS = "/./";
+  static std::string DD = "..";
+
   return s == A2STR::DOT_C ||
-    s == ".." ||
+    s == DD ||
     util::startsWith(s, A2STR::SLASH_C) ||
-    util::startsWith(s, "./") ||
-    util::startsWith(s, "../") ||
-    s.find("/../") != std::string::npos ||
-    s.find("/./") != std::string::npos ||
-    util::endsWith(s, "/") ||
-    util::endsWith(s, "/.") ||
-    util::endsWith(s, "/..");
+    util::startsWith(s, DS) ||
+    util::startsWith(s, DDS) ||
+    s.find(SDDS) != std::string::npos ||
+    s.find(SDS) != std::string::npos ||
+    util::endsWith(s, A2STR::SLASH_C) ||
+    util::endsWith(s, SD) ||
+    util::endsWith(s, SDD);
 }
 
 std::string escapePath(const std::string& s)
