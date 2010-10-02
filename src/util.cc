@@ -1289,7 +1289,8 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
 
 std::string fixTaintedBasename(const std::string& src)
 {
-  return escapePath(replace(src, A2STR::SLASH_C, A2STR::UNDERSCORE_C));
+  static std::string SLASH_REP = "%2F";
+  return escapePath(replace(src, A2STR::SLASH_C, SLASH_REP));
 }
 
 void generateRandomKey(unsigned char* key)
@@ -1329,7 +1330,8 @@ bool inPrivateAddress(const std::string& ipv4addr)
 bool detectDirTraversal(const std::string& s)
 {
   for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
-    if(0x00 <= (*i) && (*i) <= 0x1f) {
+    unsigned char c = *i;
+    if(in(c, 0x00, 0x1f) || c == 0x7f) {
       return true;
     }
   }
@@ -1345,35 +1347,29 @@ bool detectDirTraversal(const std::string& s)
     util::endsWith(s, "/..");
 }
 
-namespace {
-class EscapePath {
-private:
-  char repChar_;
-public:
-  EscapePath(const char& repChar):repChar_(repChar) {}
-
-  char operator()(const char& c) {
-    if(0x00 <= c && c <=0x1f) {
-      return repChar_;
-    }
-#ifdef __MINGW32__
-    // We don't escape '/' because we use it as a path separator.
-    static const char WIN_INVALID_PATH_CHARS[] =
-      { '"', '*', ':', '<', '>', '?', '\\', '|' };
-    if(std::find(vbegin(WIN_INVALID_PATH_CHARS), vend(WIN_INVALID_PATH_CHARS),
-                 c) != vend(WIN_INVALID_PATH_CHARS)) {
-      return repChar_;
-    }
-#endif // __MINGW32__
-    return c;
-  }
-};
-}
-
 std::string escapePath(const std::string& s)
 {
-  std::string d = s;
-  std::transform(d.begin(), d.end(), d.begin(), EscapePath('_'));
+  // We don't escape '/' because we use it as a path separator.
+#ifdef __MINGW32__
+  static const char WIN_INVALID_PATH_CHARS[] =
+    { '"', '*', ':', '<', '>', '?', '\\', '|' };
+#endif // __MINGW32__
+  std::string d;
+  for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
+    unsigned char c = *i;
+    if(in(c, 0x00, 0x1f) || c == 0x7f
+#ifdef __MINGW32__
+       || std::find(vbegin(WIN_INVALID_PATH_CHARS),
+                    vend(WIN_INVALID_PATH_CHARS),
+                    c) != vend(WIN_INVALID_PATH_CHARS)
+
+#endif // __MINGW32__
+       ){
+      d += StringFormat("%%%02X", c).str();
+    } else {
+      d += *i;
+    }
+  }
   return d;
 }
 
