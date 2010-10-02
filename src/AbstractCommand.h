@@ -174,6 +174,11 @@ protected:
    */
   void setWriteCheckSocketIf(const SharedHandle<SocketCore>& socket, bool pred);
 
+  time_t getTimeout() const
+  {
+    return timeout_;
+  }
+
   void setTimeout(time_t timeout) { timeout_ = timeout; }
 
   void prepareForNextAction
@@ -221,6 +226,11 @@ protected:
   const SharedHandle<PieceStorage>& getPieceStorage() const
   {
     return requestGroup_->getPieceStorage();
+  }
+
+  Timer& getCheckPoint()
+  {
+    return checkPoint_;
   }
 public:
   AbstractCommand

@@ -1,5 +1,15 @@
 2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed the bug that FtpFinishDownloadCommand does not handle
+	timeout. This means it waits for the remote server to send "226
+	Transfer Complete" message *without* its own timeout until the
+	remote server shutdowns connection(we can detect EOF in this
+	case).
+	* src/AbstractCommand.h
+	* src/FtpFinishDownloadCommand.cc
+
+2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup util::percentEncode()
 	* src/util.cc
 

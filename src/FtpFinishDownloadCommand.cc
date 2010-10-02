@@ -52,6 +52,7 @@
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -75,23 +76,36 @@ bool FtpFinishDownloadCommand::execute()
     return true;
   }
   try {
-    unsigned int status = ftpConnection_->receiveResponse();
-    if(status == 0) {
+    if(readEventEnabled() || hupEventEnabled()) {
+      getCheckPoint().reset();
+      unsigned int status = ftpConnection_->receiveResponse();
+      if(status == 0) {
+        getDownloadEngine()->addCommand(this);
+        return false;
+      }
+      if(status == 226) {
+        if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+          std::map<std::string, std::string> options;
+          options["baseWorkingDir"] = ftpConnection_->getBaseWorkingDir();
+          getDownloadEngine()->poolSocket
+            (getRequest(), ftpConnection_->getUser(), createProxyRequest(),
+             getSocket(), options);
+        }
+      } else {
+        getLogger()->info("CUID#%s - Bad status for transfer complete.",
+                          util::itos(getCuid()).c_str());
+      }
+    } else if(getCheckPoint().difference(global::wallclock) >= getTimeout()) {
+      getLogger()->info("CUID#%s - Timeout before receiving transfer complete.",
+                        util::itos(getCuid()).c_str());
+    } else {
       getDownloadEngine()->addCommand(this);
       return false;
     }
-    if(status != 226) {
-      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
-    }
-    if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
-      std::map<std::string, std::string> options;
-      options["baseWorkingDir"] = ftpConnection_->getBaseWorkingDir();
-      getDownloadEngine()->poolSocket
-        (getRequest(), ftpConnection_->getUser(), createProxyRequest(),
-         getSocket(), options);
-    }
   } catch(RecoverableException& e) {
-    getLogger()->info(EX_EXCEPTION_CAUGHT, e);
+    getLogger()->info("CUID#%s - Exception was thrown, but download was"
+                      " finished, so we can ignore the exception.",
+                      e, util::itos(getCuid()).c_str());
   }
   if(getRequestGroup()->downloadFinished()) {
     return true;
