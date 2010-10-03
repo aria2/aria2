@@ -1,5 +1,13 @@
 2010-10-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed warning message when CA certificates are not imported.
+	--ca-certificate and --check-certificate option were added to the
+	error message displayed when certificate verification failed.
+	* src/MultiUrlRequestInfo.cc
+	* src/message.h
+
+2010-10-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Print message when performing slow file allocation at first time.
 	* src/SingleFileAllocationIterator.cc
 	* src/SingleFileAllocationIterator.h

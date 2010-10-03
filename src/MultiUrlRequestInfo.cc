@@ -159,13 +159,8 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
                                    option_->get(PREF_PRIVATE_KEY));
     }
     if(!option_->blank(PREF_CA_CERTIFICATE)) {
-      if(!tlsContext->addTrustedCACertFile(option_->get(PREF_CA_CERTIFICATE))) {
-        logger_->warn(MSG_WARN_NO_CA_CERT);
-      }
-    } else if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
-      logger_->warn(MSG_WARN_NO_CA_CERT);
+      tlsContext->addTrustedCACertFile(option_->get(PREF_CA_CERTIFICATE));
     }
-
     if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
       tlsContext->enablePeerVerification();
     }
