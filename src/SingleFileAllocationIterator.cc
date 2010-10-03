@@ -33,18 +33,28 @@
  */
 /* copyright --> */
 #include "SingleFileAllocationIterator.h"
+
+#include <cstring>
+#include <cstdlib>
+
 #include "BinaryStream.h"
 #include "util.h"
 #include "a2io.h"
-#include <cstring>
-#include <cstdlib>
+#include "Logger.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
 
-SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, off_t offset, uint64_t totalLength):stream_(stream), offset_(offset), totalLength_(totalLength), buffer_(0)
+SingleFileAllocationIterator::SingleFileAllocationIterator
+(BinaryStream* stream, off_t offset, uint64_t totalLength):
+  stream_(stream),
+  offset_(offset),
+  totalLength_(totalLength),
+  buffer_(0),
+  logger_(LogFactory::getInstance())
 {
   if(offset_%ALIGNMENT != 0) {
     stream_->disableDirectIO();
@@ -62,6 +72,13 @@ SingleFileAllocationIterator::~SingleFileAllocationIterator()
 
 void SingleFileAllocationIterator::init()
 {
+  static bool noticeDone = false;
+  if(!noticeDone) {
+    noticeDone = true;
+    logger_->notice("Allocating disk space. Use --file-allocation=none to"
+                    " disable it. See --file-allocation option in man page for"
+                    " more details.");
+  }
 #ifdef HAVE_POSIX_MEMALIGN
   buffer_ = reinterpret_cast<unsigned char*>
     (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));

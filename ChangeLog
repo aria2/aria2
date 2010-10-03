@@ -1,3 +1,9 @@
+2010-10-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Print message when performing slow file allocation at first time.
+	* src/SingleFileAllocationIterator.cc
+	* src/SingleFileAllocationIterator.h
+
 2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compile error on OpenBSD4.7(i386). In openssl.m4, we first
