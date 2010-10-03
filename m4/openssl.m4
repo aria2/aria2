@@ -36,10 +36,11 @@ if test "x$have_openssl" != "xyes"; then
   LIBS="-L$openssl_prefix_lib $LIBS"
   CPPFLAGS="-I$openssl_prefix_include $CPPFLAGS"
 
-  AC_CHECK_LIB([ssl], [SSL_library_init], [have_openssl=yes LIBS="-lssl $LIBS"])
+  # First check libcrypto, because libssl may depend on it
+  AC_CHECK_LIB([crypto], [main], [have_openssl=yes; LIBS="-lcrypto $LIBS"])
   if test "x$have_openssl" = "xyes"; then
     have_openssl=no
-    AC_CHECK_LIB([crypto], [main], [have_openssl=yes; LIBS="-lcrypto $LIBS"])
+    AC_CHECK_LIB([ssl], [SSL_library_init], [have_openssl=yes LIBS="-lssl $LIBS"])
     if test "x$have_openssl" = "xyes"; then
       OPENSSL_LIBS="-L$openssl_prefix_lib -lssl -lcrypto"
       OPENSSL_CFLAGS="-I$openssl_prefix_include"

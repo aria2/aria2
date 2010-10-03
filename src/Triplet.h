@@ -35,6 +35,7 @@
 #ifndef D_TRIPLET_H
 #define D_TRIPLET_H
 
+#include <cstdlib>
 #include <utility>
 
 namespace aria2 {

@@ -1,5 +1,15 @@
 2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error on OpenBSD4.7(i386). In openssl.m4, we first
+	search libcrypto and then libssl because libssl depends on
+	libcrypto on OpenBSD.
+	* src/Netrc.cc
+	* src/Netrc.h
+	* src/Triplet.h
+	* src/openssl.m4
+
+2010-10-02  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Execute 5 DHT tasks concurrently in each task queue.
 	* src/DHTTaskExecutor.cc
 	* src/DHTTaskExecutor.h

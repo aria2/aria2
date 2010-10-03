@@ -44,17 +44,17 @@
 
 namespace aria2 {
 
-const std::string Netrc::MACHINE("machine");
+const std::string Netrc::A2_MACHINE("machine");
 
-const std::string Netrc::DEFAULT("default");
+const std::string Netrc::A2_DEFAULT("default");
 
-const std::string Netrc::LOGIN("login");
+const std::string Netrc::A2_LOGIN("login");
 
-const std::string Netrc::PASSWORD("password");
+const std::string Netrc::A2_PASSWORD("password");
 
-const std::string Netrc::ACCOUNT("account");
+const std::string Netrc::A2_ACCOUNT("account");
 
-const std::string Netrc::MACDEF("macdef");
+const std::string Netrc::A2_MACDEF("macdef");
 
 void Netrc::skipMacdef(std::ifstream& f) const
 {
@@ -97,11 +97,11 @@ void Netrc::parse(const std::string& path)
           eoi = tokens.end(); iter != eoi; ++iter) {
       const std::string& token = *iter;
       if(state == GET_TOKEN) {
-        if(token == Netrc::MACHINE) {
+        if(token == Netrc::A2_MACHINE) {
           storeAuthenticator(authenticator);
           authenticator.reset(new Authenticator());
           state = SET_MACHINE;
-        } else if(token == Netrc::DEFAULT) {
+        } else if(token == Netrc::A2_DEFAULT) {
           storeAuthenticator(authenticator);
           authenticator.reset(new DefaultAuthenticator());
         } else {
@@ -110,13 +110,13 @@ void Netrc::parse(const std::string& path)
               (StringFormat("Netrc:parse error. %s encounterd where 'machine'"
                             " or 'default' expected.", token.c_str()).str());
           }
-          if(token == Netrc::LOGIN) {
+          if(token == Netrc::A2_LOGIN) {
             state = SET_LOGIN;
-          } else if(token == Netrc::PASSWORD) {
+          } else if(token == Netrc::A2_PASSWORD) {
             state = SET_PASSWORD;
-          } else if(token == Netrc::ACCOUNT) {
+          } else if(token == Netrc::A2_ACCOUNT) {
             state = SET_ACCOUNT;
-          } else if(token == Netrc::MACDEF) {
+          } else if(token == Netrc::A2_MACDEF) {
             state = SET_MACDEF;
           }
         }

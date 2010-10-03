@@ -160,17 +160,17 @@ public:
     authenticators_.push_back(authenticator);
   }
 
-  static const std::string MACHINE;
+  static const std::string A2_MACHINE;
 
-  static const std::string DEFAULT;
+  static const std::string A2_DEFAULT;
 
-  static const std::string LOGIN;
+  static const std::string A2_LOGIN;
 
-  static const std::string PASSWORD;
+  static const std::string A2_PASSWORD;
 
-  static const std::string ACCOUNT;
+  static const std::string A2_ACCOUNT;
 
-  static const std::string MACDEF;
+  static const std::string A2_MACDEF;
 };
 
 } // namespace aria2
