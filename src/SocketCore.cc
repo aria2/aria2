@@ -200,6 +200,7 @@ static sock_t bindInternal(int family, int socktype, int protocol,
     CLOSE(fd);
     return -1;
   }
+#ifdef IPV6_V6ONLY
   if(family == AF_INET6) {
     int sockopt = 1;
     if(setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (a2_sockopt_t) &sockopt,
@@ -208,6 +209,7 @@ static sock_t bindInternal(int family, int socktype, int protocol,
       return -1;
     }
   }
+#endif // IPV6_V6ONLY
   if(::bind(fd, addr, addrlen) == -1) {
     error = errorMsg();
     CLOSE(fd);

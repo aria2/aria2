@@ -20,7 +20,9 @@ class DHTRoutingTableDeserializerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTRoutingTableDeserializerTest);
   CPPUNIT_TEST(testDeserialize);
+#ifdef HAVE_INET_NTOP
   CPPUNIT_TEST(testDeserialize6);
+#endif // HAVE_INET_NTOP
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -73,6 +75,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   CPPUNIT_ASSERT(memcmp(nodes[2]->getID(), dsnodes[1]->getID(), DHT_ID_LENGTH) == 0);
 }
 
+#ifdef HAVE_INET_NTOP
 void DHTRoutingTableDeserializerTest::testDeserialize6()
 {
   SharedHandle<DHTNode> localNode(new DHTNode());
@@ -112,5 +115,6 @@ void DHTRoutingTableDeserializerTest::testDeserialize6()
   CPPUNIT_ASSERT(memcmp(nodes[2]->getID(), dsnodes[1]->getID(),
                         DHT_ID_LENGTH) == 0);
 }
+#endif // HAVE_INET_NTOP
 
 } // namespace aria2

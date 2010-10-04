@@ -14701,6 +14701,7 @@ for ac_func in __argz_count \
 		getifaddrs \
                 getpagesize \
                 inet_ntoa \
+                inet_ntop \
                 memchr \
                 memmove \
                 mempcpy \

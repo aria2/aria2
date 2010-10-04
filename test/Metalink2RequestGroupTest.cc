@@ -215,15 +215,15 @@ void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
   SharedHandle<RequestGroup> rg = groups[0];
   SharedHandle<FileEntry> file = rg->getDownloadContext()->getFirstFileEntry();
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/.._.._example.ext"),
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/..%5C..%5Cexample.ext"),
                        file->getPath());
   
   rg = groups[2];
   file = rg->getDownloadContext()->getFileEntries()[0];
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/.._.._file1.ext"),
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/..%5C..%5Cfile1.ext"),
                        file->getPath());
   file = rg->getDownloadContext()->getFileEntries()[1];
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/.._.._file2.ext"),
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/..%5C..%5Cfile2.ext"),
                        file->getPath());
 #endif // ENABLE_BITTORRENT
 #endif // __MINGW32__

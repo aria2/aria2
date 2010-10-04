@@ -1,3 +1,20 @@
+2010-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use inet_ntoa if inet_ntop is not available. Since inet_ntoa does
+	not handle IPv6 address, IPv6 support is limited in this
+	case. Fixed unit test error under mingw32.
+	* configure.ac
+	* src/AsyncNameResolver.cc
+	* src/SocketCore.cc
+	* src/bittorrent_helper.cc
+	* test/BittorrentHelperTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTRoutingTableDeserializerTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DefaultBtAnnounceTest.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/UTPexExtensionMessageTest.cc
+
 2010-10-03  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Reverted the previous change in src/MultiUrlRequestInfo.cc.

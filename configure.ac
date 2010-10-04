@@ -316,6 +316,7 @@ AC_CHECK_FUNCS([__argz_count \
 		getifaddrs \
                 getpagesize \
                 inet_ntoa \
+                inet_ntop \
                 memchr \
                 memmove \
                 mempcpy \

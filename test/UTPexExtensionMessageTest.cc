@@ -204,8 +204,8 @@ void UTPexExtensionMessageTest::testCreate()
   SharedHandle<UTPexExtensionMessage> msg =
     UTPexExtensionMessage::create
     (reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
-
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
+#ifdef HAVE_INET_NTOP
   CPPUNIT_ASSERT_EQUAL((size_t)3, msg->getFreshPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
                        msg->getFreshPeers()[0]->getIPAddress());
@@ -229,7 +229,24 @@ void UTPexExtensionMessageTest::testCreate()
                        msg->getDroppedPeers()[2]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6998,
                        msg->getDroppedPeers()[2]->getPort());
+#else // !HAVE_INET_NTOP
+  CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getFreshPeers().size());
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
+                       msg->getFreshPeers()[0]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, msg->getFreshPeers()[0]->getPort());
+  CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"),
+                       msg->getFreshPeers()[1]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)9999, msg->getFreshPeers()[1]->getPort());
 
+  CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getDroppedPeers().size());
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"),
+                       msg->getDroppedPeers()[0]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6882, msg->getDroppedPeers()[0]->getPort());
+  CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.3"),
+                       msg->getDroppedPeers()[1]->getIPAddress());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)10000,
+                       msg->getDroppedPeers()[1]->getPort());
+#endif // !HAVE_INET_NTOP
   try {
     // 0 length data
     std::string in = "";

@@ -53,15 +53,24 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
     return;
   }
   for(char** ap = host->h_addr_list; *ap; ++ap) {
+#ifdef HAVE_INET_NTOP
     char addrstring[INET6_ADDRSTRLEN];
     const char* dst =
       inet_ntop(host->h_addrtype, *ap, addrstring, sizeof(addrstring));
     if(dst) {
       resolverPtr->resolvedAddresses_.push_back(dst);
     }
+#else // !HAVE_INET_NTOP
+    if(host->h_addrtype != AF_INET) {
+      continue;
+    }
+    struct in_addr addr;
+    memcpy(&addr, *ap, sizeof(in_addr));
+    resolverPtr->resolvedAddresses_.push_back(inet_ntoa(addr));
+#endif // !HAVE_INET_NTOP
   }
   if(resolverPtr->resolvedAddresses_.empty()) {
-    resolverPtr->error_ = "inet_ntop failed";
+    resolverPtr->error_ = "address conversion failed";
     resolverPtr->status_ = AsyncNameResolver::STATUS_ERROR;
   } else {
     resolverPtr->status_ = AsyncNameResolver::STATUS_SUCCESS;

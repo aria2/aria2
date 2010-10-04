@@ -195,6 +195,9 @@
 /* Define to 1 if you have the `inet_ntoa' function. */
 #undef HAVE_INET_NTOA
 
+/* Define to 1 if you have the `inet_ntop' function. */
+#undef HAVE_INET_NTOP
+
 /* Define if you have the 'intmax_t' type in <stdint.h> or <inttypes.h>. */
 #undef HAVE_INTMAX_T
 

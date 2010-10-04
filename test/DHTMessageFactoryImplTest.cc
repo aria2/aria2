@@ -31,10 +31,14 @@ class DHTMessageFactoryImplTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreatePingReplyMessage);
   CPPUNIT_TEST(testCreateFindNodeMessage);
   CPPUNIT_TEST(testCreateFindNodeReplyMessage);
+#ifdef HAVE_INET_NTOP
   CPPUNIT_TEST(testCreateFindNodeReplyMessage6);
+#endif // HAVE_INET_NTOP
   CPPUNIT_TEST(testCreateGetPeersMessage);
   CPPUNIT_TEST(testCreateGetPeersReplyMessage);
+#ifdef HAVE_INET_NTOP
   CPPUNIT_TEST(testCreateGetPeersReplyMessage6);
+#endif // HAVE_INET_NTOP
   CPPUNIT_TEST(testCreateAnnouncePeerMessage);
   CPPUNIT_TEST(testCreateAnnouncePeerReplyMessage);
   CPPUNIT_TEST(testReceivedErrorMessage);
@@ -204,6 +208,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
   }
 }
 
+#ifdef HAVE_INET_NTOP
 void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
 {
   factory.reset(new DHTMessageFactoryImpl(AF_INET6));
@@ -255,6 +260,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
+#endif // HAVE_INET_NTOP
 
 void DHTMessageFactoryImplTest::testCreateGetPeersMessage()
 {
@@ -353,6 +359,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
   }
 }
 
+#ifdef HAVE_INET_NTOP
 void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
 {
   factory.reset(new DHTMessageFactoryImpl(AF_INET6));
@@ -424,6 +431,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
     CPPUNIT_FAIL(e.stackTrace());
   }
 }
+#endif // HAVE_INET_NTOP
 
 void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
 {
