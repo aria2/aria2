@@ -1,3 +1,12 @@
+2010-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Supported ANSI C's asctime() format in Time::parseHTTPDate().
+	Added Time::parseAsctime(). Changed order of application of parse
+	functions. I could not remember why parseRFC850() was tried first.
+	* src/TimeA2.cc
+	* src/TimeA2.h
+	* test/TimeTest.cc
+
 2010-10-04  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use inet_ntoa if inet_ntop is not available. Since inet_ntoa does

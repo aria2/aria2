@@ -15,6 +15,7 @@ class TimeTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseRFC1123);
   CPPUNIT_TEST(testParseRFC850);
   CPPUNIT_TEST(testParseRFC850Ext);
+  CPPUNIT_TEST(testParseAsctime);
   CPPUNIT_TEST(testParseHTTPDate);
   CPPUNIT_TEST(testOperatorLess);
   CPPUNIT_TEST(testElapsed);
@@ -28,6 +29,7 @@ public:
   void testParseRFC1123();
   void testParseRFC850();
   void testParseRFC850Ext();
+  void testParseAsctime();
   void testParseHTTPDate();
   void testOperatorLess();
   void testElapsed();
@@ -55,6 +57,12 @@ void TimeTest::testParseRFC850Ext()
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793, t1.getTime());
 }
 
+void TimeTest::testParseAsctime()
+{
+  Time t1 = Time::parseAsctime("Sun Sep  6 15:26:33 2008");
+  CPPUNIT_ASSERT_EQUAL((time_t)1220714793, t1.getTime());
+}
+
 void TimeTest::testParseHTTPDate()
 {
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
@@ -66,6 +74,9 @@ void TimeTest::testParseHTTPDate()
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
                        Time::parseHTTPDate
                        ("Sat, 06-Sep-08 15:26:33 GMT").getTime());
+  CPPUNIT_ASSERT_EQUAL((time_t)1220714793,
+                       Time::parseHTTPDate
+                       ("Sun Sep  6 15:26:33 2008").getTime());
   CPPUNIT_ASSERT(Time::parseHTTPDate
                  ("Sat, 2008-09-06 15:26:33 GMT").bad());
 }

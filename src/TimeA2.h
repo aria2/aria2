@@ -123,12 +123,19 @@ public:
   // Currently timezone is assumed to GMT.
   static Time parseRFC850(const std::string& datetime);
 
-  // Currently timezone is assumed to GMT.
-  // Basically the format is RFC850, but year part is 4digit, eg 2008
+  // Currently timezone is assumed to GMT.  Basically the format is
+  // RFC850, but year part is 4digit, eg 2008 This format appears in
+  // original Netscape's PERSISTENT CLIENT STATE HTTP COOKIES
+  // Specification. http://curl.haxx.se/rfc/cookie_spec.html
   static Time parseRFC850Ext(const std::string& datetime);
 
-  // Try parseRFC1123, parseRFC850Ex, parseRFC850 in that order and returns
-  // the first "good" Time object returned by these functions.
+  // Currently timezone is assumed to GMT.
+  // ANSI C's asctime() format
+  static Time parseAsctime(const std::string& datetime);
+
+  // Try parseRFC1123, parseRFC850, parseAsctime, parseRFC850Ext in
+  // that order and returns the first "good" Time object returned by
+  // these functions.
   static Time parseHTTPDate(const std::string& datetime);
 
   static Time null();

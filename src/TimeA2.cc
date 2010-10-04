@@ -213,11 +213,17 @@ Time Time::parseRFC850Ext(const std::string& datetime)
   return parse(datetime, "%a, %d-%b-%Y %H:%M:%S GMT");
 }
 
+Time Time::parseAsctime(const std::string& datetime)
+{
+  return parse(datetime, "%a %b %d %H:%M:%S %Y");
+}
+
 Time Time::parseHTTPDate(const std::string& datetime)
 {
   Time (*funcs[])(const std::string&) = {
-    &parseRFC850,
     &parseRFC1123,
+    &parseRFC850,
+    &parseAsctime,
     &parseRFC850Ext,
   };
   for(Time (**funcsp)(const std::string&) = &funcs[0];
