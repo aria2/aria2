@@ -12,6 +12,7 @@
 #include "File.h"
 #include "StringFormat.h"
 #include "FatalException.h"
+#include "Cookie.h"
 
 namespace aria2 {
 
@@ -45,4 +46,29 @@ std::string readFile(const std::string& path)
   return ss.str();
 }
 
-};
+Cookie createCookie
+(const std::string& name,
+ const std::string& value,
+ const std::string& domain,
+ bool hostOnly,
+ const std::string& path,
+ bool secure)
+{
+  return Cookie
+    (name, value, 0, false, domain, hostOnly, path, secure, false, 0);
+}
+
+Cookie createCookie
+(const std::string& name,
+ const std::string& value,
+ time_t expiryTime,
+ const std::string& domain,
+ bool hostOnly,
+ const std::string& path,
+ bool secure)
+{
+  return Cookie
+    (name, value, expiryTime, true, domain, hostOnly, path, secure, false, 0);
+}
+
+} // namespace aria2

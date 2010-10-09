@@ -48,6 +48,7 @@
 #include "a2functional.h"
 #include "A2STR.h"
 #include "message.h"
+#include "cookie_helper.h"
 #ifdef HAVE_SQLITE3
 # include "Sqlite3CookieParserImpl.h"
 #endif // HAVE_SQLITE3
@@ -55,26 +56,21 @@
 namespace aria2 {
 
 CookieStorage::DomainEntry::DomainEntry
-(const std::string& domain):key_(domain)
-{
-  std::reverse(key_.begin(), key_.end());
-}
+(const std::string& domain):
+  key_(util::isNumericHost(domain)?domain:cookie::reverseDomainLevel(domain))
+{}
 
-void CookieStorage::DomainEntry::updateLastAccess()
+bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie, time_t now)
 {
-  lastAccess_ = time(0);
-}
-
-bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie)
-{
-  updateLastAccess();
-  std::deque<Cookie>::iterator i = std::find(cookies_.begin(), cookies_.end(),
-                                             cookie);
+  setLastAccessTime(now);
+  std::deque<Cookie>::iterator i =
+    std::find(cookies_.begin(), cookies_.end(), cookie);
   if(i == cookies_.end()) {
-    if(cookie.isExpired()) {
+    if(cookie.isExpired(now)) {
       return false;
     } else {
       if(cookies_.size() >= CookieStorage::MAX_COOKIE_PER_DOMAIN) {
+        // TODO First remove expired cookie
         std::deque<Cookie>::iterator m = std::min_element
           (cookies_.begin(), cookies_.end(), LeastRecentAccess<Cookie>());
         *m = cookie;
@@ -83,7 +79,7 @@ bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie)
       }
       return true;
     }
-  } else if(cookie.isExpired()) {
+  } else if(cookie.isExpired(now)) {
     cookies_.erase(i);
     return false;
   } else {
@@ -114,12 +110,11 @@ static const size_t DOMAIN_EVICTION_TRIGGER = 2000;
 
 static const double DOMAIN_EVICTION_RATE = 0.1;
 
-bool CookieStorage::store(const Cookie& cookie)
+bool CookieStorage::store(const Cookie& cookie, time_t now)
 {
-  if(!cookie.good()) {
-    return false;
-  }
   if(domains_.size() >= DOMAIN_EVICTION_TRIGGER) {
+    // TODO Do this in a separete Command.
+    // TODO Erase expired cookie first
     std::sort(domains_.begin(), domains_.end(),
               LeastRecentAccess<DomainEntry>());
     size_t delnum = (size_t)(domains_.size()*DOMAIN_EVICTION_RATE);
@@ -131,9 +126,9 @@ bool CookieStorage::store(const Cookie& cookie)
     std::lower_bound(domains_.begin(), domains_.end(), v);
   bool added = false;
   if(i != domains_.end() && (*i).getKey() == v.getKey()) {
-    added = (*i).addCookie(cookie);
+    added = (*i).addCookie(cookie, now);
   } else {
-    added = v.addCookie(cookie);
+    added = v.addCookie(cookie, now);
     if(added) {
       domains_.insert(i, v);
     }
@@ -141,13 +136,15 @@ bool CookieStorage::store(const Cookie& cookie)
   return added;
 }
 
-bool CookieStorage::parseAndStore(const std::string& setCookieString,
-                                  const std::string& requestHost,
-                                  const std::string& requestPath)
+bool CookieStorage::parseAndStore
+(const std::string& setCookieString,
+ const std::string& requestHost,
+ const std::string& defaultPath,
+ time_t now)
 {
-  Cookie cookie = parser_.parse(setCookieString, requestHost, requestPath);
-  if(cookie.validate(requestHost, requestPath)) {
-    return store(cookie);
+  Cookie cookie;
+  if(cookie::parse(cookie, setCookieString, requestHost, defaultPath, now)) {
+    return store(cookie, now);
   } else {
     return false;
   }
@@ -198,31 +195,33 @@ public:
     // "name1=foo" with a path mapping of "/" should be sent after a
     // cookie "name1=foo2" with a path mapping of "/bar" if they are
     // both to be sent.
-    int comp = lhs.pathDepth_-rhs.pathDepth_;
-    if(comp == 0) {
-      return lhs.cookie_.getCreationTime() < rhs.cookie_.getCreationTime();
-    } else {
-      return comp > 0;
-    }
+    //
+    // See also http://tools.ietf.org/html/draft-ietf-httpstate-cookie-14
+    // section5.4
+    return lhs.pathDepth_ > rhs.pathDepth_ ||
+      (!(rhs.pathDepth_ > lhs.pathDepth_) &&
+       lhs.cookie_.getCreationTime() < rhs.cookie_.getCreationTime());
   }
 };
 }
 
+namespace {
 template<typename DomainInputIterator, typename CookieOutputIterator>
-static void searchCookieByDomainSuffix
+void searchCookieByDomainSuffix
 (const std::string& domain,
  DomainInputIterator first, DomainInputIterator last, CookieOutputIterator out,
  const std::string& requestHost,
  const std::string& requestPath,
- time_t date, bool secure)
+ time_t now, bool secure)
 {
   CookieStorage::DomainEntry v(domain);
   std::deque<CookieStorage::DomainEntry>::iterator i =
     std::lower_bound(first, last, v);
   if(i != last && (*i).getKey() == v.getKey()) {
-    (*i).updateLastAccess();
-    (*i).findCookie(out, requestHost, requestPath, date, secure);
+    (*i).setLastAccessTime(now);
+    (*i).findCookie(out, requestHost, requestPath, now, secure);
   }
+}
 }
 
 bool CookieStorage::contains(const Cookie& cookie) const
@@ -237,36 +236,34 @@ bool CookieStorage::contains(const Cookie& cookie) const
   }
 }
 
-std::vector<Cookie> CookieStorage::criteriaFind(const std::string& requestHost,
-                                               const std::string& requestPath,
-                                               time_t date, bool secure)
+std::vector<Cookie> CookieStorage::criteriaFind
+(const std::string& requestHost,
+ const std::string& requestPath,
+ time_t now,
+ bool secure)
 {
   std::vector<Cookie> res;
-  bool numericHost = util::isNumericHost(requestHost);
-  searchCookieByDomainSuffix
-    ((!numericHost && requestHost.find(A2STR::DOT_C) == std::string::npos)?
-     requestHost+".local":requestHost,
-     domains_.begin(), domains_.end(),
-     std::back_inserter(res),
-     requestHost, requestPath, date, secure);
-  if(!numericHost) {
-    std::string normRequestHost = Cookie::normalizeDomain(requestHost);
-    std::vector<std::string> domainComponents;
-    util::split(normRequestHost, std::back_inserter(domainComponents),
-                A2STR::DOT_C);
-    if(domainComponents.size() <= 1) {
-      return res;
-    }
-    std::reverse(domainComponents.begin(), domainComponents.end());
-    std::string domain = A2STR::DOT_C;
-    domain += domainComponents[0];
-    for(std::vector<std::string>::const_iterator di =
-          domainComponents.begin()+1, eoi = domainComponents.end();
-        di != eoi; ++di) {
-      domain = strconcat(A2STR::DOT_C, *di, domain);
-      searchCookieByDomainSuffix(domain, domains_.begin(), domains_.end(),
-                                 std::back_inserter(res),
-                                 normRequestHost, requestPath, date, secure);
+  if(requestPath.empty()) {
+    return res;
+  }
+  std::string normRequestPath =
+    requestPath == A2STR::SLASH_C?requestPath:requestPath+A2STR::SLASH_C;
+  if(util::isNumericHost(requestHost)) {
+    searchCookieByDomainSuffix
+      (requestHost, domains_.begin(), domains_.end(), std::back_inserter(res),
+       requestHost, normRequestPath, now, secure);
+  } else {
+    std::vector<std::string> levels;
+    util::split(requestHost, std::back_inserter(levels),A2STR::DOT_C);
+    std::reverse(levels.begin(), levels.end());
+    std::string domain;
+    for(std::vector<std::string>::const_iterator i =
+          levels.begin(), eoi = levels.end();
+        i != eoi; ++i, domain.insert(domain.begin(), '.')) {
+      domain.insert(domain.begin(), (*i).begin(), (*i).end());
+      searchCookieByDomainSuffix
+        (domain, domains_.begin(), domains_.end(),
+         std::back_inserter(res), requestHost, normRequestPath, now, secure);
     }
   }
   std::vector<CookiePathDivider> divs;
@@ -288,7 +285,7 @@ size_t CookieStorage::size() const
   return numCookie;
 }
 
-bool CookieStorage::load(const std::string& filename)
+bool CookieStorage::load(const std::string& filename, time_t now)
 {
   char header[16]; // "SQLite format 3" plus \0
   std::ifstream s(filename.c_str(), std::ios::binary);
@@ -307,7 +304,7 @@ bool CookieStorage::load(const std::string& filename)
 #ifdef HAVE_SQLITE3
       std::vector<Cookie> cookies;
       try {
-        Sqlite3MozCookieParser(filename).parse(cookies);
+        Sqlite3MozCookieParser(filename).parse(cookies, now);
       } catch(RecoverableException& e) {
         if(logger_->info()) {
           logger_->info(EX_EXCEPTION_CAUGHT, e);
@@ -315,17 +312,17 @@ bool CookieStorage::load(const std::string& filename)
                         " Retrying, assuming it is Chromium cookie file.");
         }
         // Try chrome cookie format
-        Sqlite3ChromiumCookieParser(filename).parse(cookies);
+        Sqlite3ChromiumCookieParser(filename).parse(cookies, now);
       }
-      storeCookies(cookies.begin(), cookies.end());
+      storeCookies(cookies.begin(), cookies.end(), now);
 #else // !HAVE_SQLITE3
       throw DL_ABORT_EX
         ("Cannot read SQLite3 database because SQLite3 support is disabled by"
          " configuration.");
 #endif // !HAVE_SQLITE3
     } else {
-      std::vector<Cookie> cookies = NsCookieParser().parse(filename);
-      storeCookies(cookies.begin(), cookies.end());
+      std::vector<Cookie> cookies = NsCookieParser().parse(filename, now);
+      storeCookies(cookies.begin(), cookies.end(), now);
     }
     return true;
   } catch(RecoverableException& e) {

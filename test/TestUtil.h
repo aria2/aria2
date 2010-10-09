@@ -22,4 +22,21 @@ public:
   }
 };
 
+Cookie createCookie
+(const std::string& name,
+ const std::string& value,
+ const std::string& domain,
+ bool hostOnly,
+ const std::string& path,
+ bool secure);
+
+Cookie createCookie
+(const std::string& name,
+ const std::string& value,
+ time_t expiryTime,
+ const std::string& domain,
+ bool hostOnly,
+ const std::string& path,
+ bool secure);
+
 } // namespace aria2

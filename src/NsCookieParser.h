@@ -40,9 +40,9 @@
 #include <string>
 #include <vector>
 
-#include "Cookie.h"
-
 namespace aria2 {
+
+class Cookie;
 
 class NsCookieParser {
 public:
@@ -50,7 +50,7 @@ public:
 
   ~NsCookieParser();
 
-  std::vector<Cookie> parse(const std::string& filename);
+  std::vector<Cookie> parse(const std::string& filename, time_t creationTime);
 };
 
 } // namespace aria2

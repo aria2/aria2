@@ -59,6 +59,7 @@
 #include "ServerStatMan.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
+#include "TimeA2.h"
 #ifdef ENABLE_SSL
 # include "SocketCore.h"
 # include "TLSContext.h"
@@ -128,7 +129,7 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!option_->blank(PREF_LOAD_COOKIES)) {
       File cookieFile(option_->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile()) {
-        e->getCookieStorage()->load(cookieFile.getPath());
+        e->getCookieStorage()->load(cookieFile.getPath(), Time().getTime());
         logger_->info("Loaded cookies from '%s'.",
                       cookieFile.getPath().c_str());
       } else {

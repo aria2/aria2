@@ -40,6 +40,8 @@
 #include "A2STR.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "Cookie.h"
+#include "cookie_helper.h"
 
 namespace aria2 {
 
@@ -47,35 +49,46 @@ NsCookieParser::NsCookieParser() {}
 
 NsCookieParser::~NsCookieParser() {}
 
-static const std::string C_TRUE("TRUE");
+namespace {
+const std::string C_TRUE("TRUE");
+}
 
-static Cookie parseNsCookie(const std::string& nsCookieStr)
+namespace {
+bool parseNsCookie
+(Cookie& cookie, const std::string& nsCookieStr, time_t creationTime)
 {
   std::vector<std::string> vs;
   util::split(nsCookieStr, std::back_inserter(vs), "\t", true);
-  if(vs.size() < 6 ) {
-    return Cookie();
+  if(vs.size() < 6) {
+    return false;
   }
-
-  int64_t expireDate = util::parseLLInt(vs[4]);
-  // TODO assuming time_t is int32_t...
-  if(expireDate > INT32_MAX) {
-    expireDate = INT32_MAX;
+  std::string cookieDomain = cookie::removePrecedingDots(vs[0]);
+  if(vs[5].empty() || cookieDomain.empty() || !cookie::goodPath(vs[2])) {
+    return false;
   }
-
-  Cookie c(vs[5], // name
-           vs.size() >= 7? vs[6]:A2STR::NIL, // value
-           expireDate, // expires
-           vs[2], // path
-           vs[0], // domain
-           vs[3] == C_TRUE ? true : false);
-  if(!util::startsWith(vs[0], A2STR::DOT_C)) {
-    c.markOriginServerOnly();
+  int64_t expiryTime;
+  if(!util::parseLLIntNoThrow(expiryTime, vs[4])) {
+    return false;
   }
-  return c;
+  if(sizeof(time_t) == 4 && expiryTime > INT32_MAX) {
+    expiryTime = INT32_MAX;
+  }
+  cookie.setName(vs[5]);
+  cookie.setValue(vs.size() >= 7? vs[6]:A2STR::NIL);
+  cookie.setExpiryTime(expiryTime == 0?INT32_MAX:expiryTime);
+  // aria2 treats expiryTime == 0 means session cookie.
+  cookie.setPersistent(expiryTime != 0);
+  cookie.setDomain(cookieDomain);
+  cookie.setHostOnly(util::isNumericHost(cookieDomain) || vs[1] != C_TRUE);
+  cookie.setPath(vs[2]);
+  cookie.setSecure(vs[3] == C_TRUE);
+  cookie.setCreationTime(creationTime);
+  return true;
+}
 }
 
-std::vector<Cookie> NsCookieParser::parse(const std::string& filename)
+std::vector<Cookie> NsCookieParser::parse
+(const std::string& filename, time_t creationTime)
 {
   std::ifstream s(filename.c_str(), std::ios::binary);
   if(!s) {
@@ -88,14 +101,9 @@ std::vector<Cookie> NsCookieParser::parse(const std::string& filename)
     if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
-    try {
-      Cookie c = parseNsCookie(line);
-      if(c.good()) {
-        cookies.push_back(c);
-      }
-    } catch(RecoverableException& e) {
-      // ignore malformed cookie entry
-      // TODO better to log it
+    Cookie c;
+    if(parseNsCookie(c, line, creationTime)) {
+      cookies.push_back(c);
     }
   }
   return cookies;

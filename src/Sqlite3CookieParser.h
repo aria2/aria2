@@ -55,7 +55,7 @@ public:
   // Loads cookies from sqlite3 database and stores them in cookies.
   // When loading is successful, cookies stored in cookies initially
   // are removed. Otherwise, the content of cookies is unchanged.
-  void parse(std::vector<Cookie>& cookies);
+  void parse(std::vector<Cookie>& cookies, time_t creationTime);
 protected:
   // Returns SQL select statement to get 1 record of cookie.  The sql
   // must return 6 columns in the following order: host, path,

@@ -44,7 +44,6 @@
 
 #include "a2time.h"
 #include "Cookie.h"
-#include "CookieParser.h"
 
 namespace aria2 {
 
@@ -57,9 +56,12 @@ public:
 
   class DomainEntry {
   private:
+    // This is reversed domain level string.
+    // e.g. net.sourceforge.aria2
+    // e.g. 192.168.0.1
     std::string key_;
 
-    time_t lastAccess_;
+    time_t lastAccessTime_;
 
     std::deque<Cookie> cookies_;
   public:
@@ -75,12 +77,12 @@ public:
     (OutputIterator out,
      const std::string& requestHost,
      const std::string& requestPath,
-     time_t date, bool secure)
+     time_t now, bool secure)
     {
-      for(std::deque<Cookie>::iterator i = cookies_.begin();
-          i != cookies_.end(); ++i) {
-        if((*i).match(requestHost, requestPath, date, secure)) {
-          (*i).updateLastAccess();
+      for(std::deque<Cookie>::iterator i = cookies_.begin(),
+            eoi = cookies_.end(); i != eoi; ++i) {
+        if((*i).match(requestHost, requestPath, now, secure)) {
+          (*i).setLastAccessTime(now);
           out++ = *i;
         }
       }
@@ -92,13 +94,16 @@ public:
       return cookies_.size();
     }
 
-    bool addCookie(const Cookie& cookie);
+    bool addCookie(const Cookie& cookie, time_t now);
 
-    void updateLastAccess();
-
-    time_t getLastAccess() const
+    void setLastAccessTime(time_t lastAccessTime)
     {
-      return lastAccess_;
+      lastAccessTime_ = lastAccessTime;
+    }
+
+    time_t getLastAccessTime() const
+    {
+      return lastAccessTime_;
     }
 
     void writeCookie(std::ostream& o) const;
@@ -119,15 +124,13 @@ public:
 private:
   std::deque<DomainEntry> domains_;
 
-  CookieParser parser_;
-
   Logger* logger_;
 
   template<typename InputIterator>
-  void storeCookies(InputIterator first, InputIterator last)
+  void storeCookies(InputIterator first, InputIterator last, time_t now)
   {
     for(; first != last; ++first) {
-      store(*first);
+      store(*first, now);
     }
   }
 public:
@@ -136,27 +139,32 @@ public:
   ~CookieStorage();
 
   // Returns true if cookie is stored or updated existing cookie.
-  // Returns false if cookie is expired.
-  bool store(const Cookie& cookie);
+  // Returns false if cookie is expired. now is used as last access
+  // time.
+  bool store(const Cookie& cookie, time_t now);
 
   // Returns true if cookie is stored or updated existing cookie.
-  // Otherwise, returns false.
-  bool parseAndStore(const std::string& setCookieString,
-                     const std::string& requestHost,
-                     const std::string& requestPath);
+  // Otherwise, returns false. now is used as creation time and last
+  // access time.
+  bool parseAndStore
+  (const std::string& setCookieString,
+   const std::string& requestHost,
+   const std::string& requestPath,
+   time_t now);
 
   // Finds cookies matched with given criteria and returns them.
   // Matched cookies' lastAccess_ property is updated.
   std::vector<Cookie> criteriaFind(const std::string& requestHost,
                                    const std::string& requestPath,
-                                   time_t date, bool secure);
+                                   time_t now, bool secure);
 
   // Loads Cookies from file denoted by filename.  If compiled with
   // libsqlite3, this method automatically detects the specified file
   // is sqlite3 or just plain text file and calls appropriate parser
   // implementation class.  If Cookies are successfully loaded, this
-  // method returns true.  Otherwise, this method returns false.
-  bool load(const std::string& filename);
+  // method returns true.  Otherwise, this method returns false.  now
+  // is used as creation time and last access time.
+  bool load(const std::string& filename, time_t now);
   
   // Saves Cookies in Netspace format which is used in
   // Firefox1.2/Netscape/Mozilla.  If Cookies are successfully saved,

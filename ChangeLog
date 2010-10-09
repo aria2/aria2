@@ -1,3 +1,47 @@
+2010-10-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten Cookie class and Cookie parser based on
+	http://tools.ietf.org/html/draft-ietf-httpstate-cookie-14 with
+	some modifications. When parsing cookie date, match time first so
+	that it parses asctime() format. The request-path must be ends
+	with '/' so that request-path '/foo/' path-matches cookie-path
+	'/foo' and '/foo/' in the proposed algorithm.
+	* src/Cookie.cc
+	* src/Cookie.h
+	* src/CookieParser.cc: Removed
+	* src/CookieParser.h: Removed
+	* src/CookieStorage.cc
+	* src/CookieStorage.h
+	* src/HttpResponse.cc
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/MultiUrlRequestInfo.cc
+	* src/NsCookieParser.cc
+	* src/NsCookieParser.h
+	* src/Sqlite3CookieParser.cc
+	* src/Sqlite3CookieParser.h
+	* src/a2functional.h
+	* src/cookie_helper.cc
+	* src/cookie_helper.h
+	* src/util.cc
+	* src/util.h
+	* test/CookieBoxFactoryTest.cc: Removed
+	* test/CookieHelperTest.cc
+	* test/CookieParserTest.cc: Removed
+	* test/CookieStorageTest.cc
+	* test/CookieTest.cc
+	* test/HttpRequestTest.cc
+	* test/Makefile.am
+	* test/Makefile.in
+	* test/NsCookieParserTest.cc
+	* test/Sqlite3CookieParserTest.cc
+	* test/TestUtil.cc
+	* test/TestUtil.h
+	* test/a2functionalTest.cc
+	* test/chromium_cookies.sqlite
+	* test/cookies.sqlite
+	* test/nscookietest.txt
+
 2010-10-05  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Supported ANSI C's asctime() format in Time::parseHTTPDate().

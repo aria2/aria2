@@ -94,7 +94,6 @@ SRCS =  Socket.h\
 	ProgressAwareEntry.h\
 	RequestGroupEntry.cc RequestGroupEntry.h\
 	Cookie.cc Cookie.h\
-	CookieParser.cc CookieParser.h\
 	HttpHeaderProcessor.cc HttpHeaderProcessor.h\
 	FileEntry.cc FileEntry.h\
 	Platform.cc Platform.h\
@@ -211,7 +210,8 @@ SRCS =  Socket.h\
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h\
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h\
 	uri.cc uri.h\
-	Triplet.h
+	Triplet.h\
+	cookie_helper.cc cookie_helper.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

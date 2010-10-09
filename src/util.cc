@@ -74,7 +74,6 @@
 #include "StringFormat.h"
 #include "A2STR.h"
 #include "array_fun.h"
-#include "a2functional.h"
 #include "bitfield.h"
 #include "DownloadHandlerConstants.h"
 #include "RequestGroup.h"
@@ -292,16 +291,9 @@ bool inRFC2616HttpToken(const char c)
 }
 
 namespace {
-bool in(unsigned char ch, unsigned char s, unsigned char t)
-{
-  return s <= ch && ch <= t;
-}
-}
-
-namespace {
 bool isUtf8Tail(unsigned char ch)
 {
-  return in(ch, 0x80, 0xbf);
+  return in(ch, 0x80u, 0xbfu);
 }
 }
 
@@ -311,49 +303,49 @@ bool isUtf8(const std::string& str)
       ++s) {
     unsigned char firstChar = *s;
     // See ABNF in http://tools.ietf.org/search/rfc3629#section-4
-    if(in(firstChar, 0x20, 0x7e) ||
-       firstChar == 0x09 || firstChar == 0x0a ||firstChar == 0x0d) {
+    if(in(firstChar, 0x20u, 0x7eu) ||
+       firstChar == 0x09u || firstChar == 0x0au ||firstChar == 0x0du) {
       // UTF8-1 (without ctrl chars)
-    } else if(in(firstChar, 0xc2, 0xdf)) {
+    } else if(in(firstChar, 0xc2u, 0xdfu)) {
        // UTF8-2
       if(++s == eos || !isUtf8Tail(*s)) {
         return false;
       }
-    } else if(0xe0 == firstChar) {
+    } else if(0xe0u == firstChar) {
       // UTF8-3
-      if(++s == eos || !in(*s, 0xa0, 0xbf) ||
+      if(++s == eos || !in(static_cast<unsigned char>(*s), 0xa0u, 0xbfu) ||
          ++s == eos || !isUtf8Tail(*s)) {
         return false;
       }
-    } else if(in(firstChar, 0xe1, 0xec) || in(firstChar, 0xee, 0xef)) {
+    } else if(in(firstChar, 0xe1u, 0xecu) || in(firstChar, 0xeeu, 0xefu)) {
       // UTF8-3
       if(++s == eos || !isUtf8Tail(*s) ||
          ++s == eos || !isUtf8Tail(*s)) {
         return false;
       }
-    } else if(0xed == firstChar) {
+    } else if(0xedu == firstChar) {
       // UTF8-3
-      if(++s == eos || !in(*s, 0x80, 0x9f) ||
+      if(++s == eos || !in(static_cast<unsigned char>(*s), 0x80u, 0x9fu) ||
          ++s == eos || !isUtf8Tail(*s)) {
         return false;
       } 
-    } else if(0xf0 == firstChar) {
+    } else if(0xf0u == firstChar) {
       // UTF8-4
-      if(++s == eos || !in(*s, 0x90, 0xbf) ||
+      if(++s == eos || !in(static_cast<unsigned char>(*s), 0x90u, 0xbfu) ||
          ++s == eos || !isUtf8Tail(*s) ||
          ++s == eos || !isUtf8Tail(*s)) {
         return false;
       }
-    } else if(in(firstChar, 0xf1, 0xf3)) {
+    } else if(in(firstChar, 0xf1u, 0xf3u)) {
       // UTF8-4
       if(++s == eos || !isUtf8Tail(*s) ||
          ++s == eos || !isUtf8Tail(*s) ||
          ++s == eos || !isUtf8Tail(*s)) {
         return false;
       }
-    } else if(0xf4 == firstChar) {
+    } else if(0xf4u == firstChar) {
       // UTF8-4
-      if(++s == eos || !in(*s, 0x80, 0x8f) ||
+      if(++s == eos || !in(static_cast<unsigned char>(*s), 0x80u, 0x8fu) ||
          ++s == eos || !isUtf8Tail(*s) ||
          ++s == eos || !isUtf8Tail(*s)) {
         return false;
@@ -427,7 +419,7 @@ std::string toHex(const unsigned char* src, size_t len) {
   const unsigned char* last = src+len;
   for(const unsigned char* i = src; i != last; ++i) {
     *o = (*i >> 4);
-    *(o+1) = (*i)&0x0f;
+    *(o+1) = (*i)&0x0fu;
     for(int j = 0; j < 2; ++j) {
       if(*o < 10) {
         *o += '0';
@@ -598,6 +590,24 @@ int64_t parseLLInt(const std::string& s, int32_t base)
   return v;
 }
 
+bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base)
+{
+  std::string trimed = trim(s);
+  if(trimed.empty()) {
+    return false;
+  }
+  char* stop;
+  errno = 0;
+  int64_t v = strtoll(trimed.c_str(), &stop, base);
+  if(*stop != '\0') {
+    return false;
+  } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
+    return false;
+  }
+  result = v;
+  return true;
+}
+
 uint64_t parseULLInt(const std::string& s, int base)
 {
   std::string trimed = trim(s);
@@ -740,14 +750,14 @@ std::string iso8859ToUtf8(const std::string& src)
   for(std::string::const_iterator itr = src.begin(), eoi = src.end();
       itr != eoi; ++itr) {
     unsigned char c = *itr;
-    if(0xa0 <= c) {
-      if(c <= 0xbf) {
-        dest += 0xc2;
+    if(0xa0u <= c) {
+      if(c <= 0xbfu) {
+        dest += 0xc2u;
       } else {
-        dest += 0xc3;
+        dest += 0xc3u;
       }
-      dest += c&(~0x40);
-    } else if(0x80 <= c && c <= 0x9f) {
+      dest += c&(~0x40u);
+    } else if(0x80u <= c && c <= 0x9fu) {
       return A2STR::NIL;
     } else {
       dest += c;
@@ -1000,10 +1010,10 @@ std::string abbrevSize(int64_t size)
   char units[] = { 'K', 'M' };
   size_t numUnit = sizeof(units)/sizeof(char);
   size_t i = 0;
-  int r = size&0x3ff;
+  int r = size&0x3ffu;
   size >>= 10;
   for(; i < numUnit-1 && size >= 1024; ++i) {
-    r = size&0x3ff;
+    r = size&0x3ffu;
     size >>= 10;
   }
   std::string result = itos(size, true);
@@ -1332,7 +1342,7 @@ bool detectDirTraversal(const std::string& s)
 {
   for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
     unsigned char c = *i;
-    if(in(c, 0x00, 0x1f) || c == 0x7f) {
+    if(in(c, 0x00u, 0x1fu) || c == 0x7fu) {
       return true;
     }
   }
@@ -1367,7 +1377,7 @@ std::string escapePath(const std::string& s)
   std::string d;
   for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
     unsigned char c = *i;
-    if(in(c, 0x00, 0x1f) || c == 0x7f
+    if(in(c, 0x00u, 0x1fu) || c == 0x7fu
 #ifdef __MINGW32__
        || std::find(vbegin(WIN_INVALID_PATH_CHARS),
                     vend(WIN_INVALID_PATH_CHARS),

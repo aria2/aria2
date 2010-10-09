@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,34 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COOKIE_PARSER_H_
-#define _D_COOKIE_PARSER_H_
+#ifndef D_COOKIE_HELPER_H
+#define D_COOKIE_HELPER_H
 
 #include "common.h"
 
 #include <string>
 
-#include "SharedHandle.h"
-#include "Cookie.h"
+#include "a2time.h"
 
 namespace aria2 {
 
-class CookieParser {
-public:
-  Cookie parse(const std::string& cookieStr, const std::string& defaultDomain,
-               const std::string& defaultPath) const;
-private:
-  static const std::string C_SECURE;
-  
-  static const std::string C_DOMAIN;
-  
-  static const std::string C_PATH;
-  
-  static const std::string C_EXPIRES;
-};
+class Cookie;
 
-typedef SharedHandle<CookieParser> CookieParserHandle;
+namespace cookie {
+
+bool parseDate(time_t& time, const std::string& cookieDate);
+
+bool parse
+(Cookie& cookie,
+ const std::string& cookieStr,
+ const std::string& requestHost,
+ const std::string& defaultPath,
+ time_t creationTime);
+
+std::string removePrecedingDots(const std::string& host);
+
+bool goodPath(const std::string& cookiePath);
+
+std::string canonicalizeHost(const std::string& host);
+
+bool domainMatch(const std::string& requestHost, const std::string& domain);
+
+bool pathMatch(const std::string& requestPath, const std::string& path);
+
+std::string reverseDomainLevel(const std::string& domain);
+
+} // namespace cookie
 
 } // namespace aria2
 
-#endif // _D_COOKIE_PARSER_H_
+#endif // D_COOKIE_HELPER_H

@@ -22,7 +22,6 @@ aria2c_SOURCES = AllTest.cc\
 	UriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
 	RequestTest.cc\
-	CookieParserTest.cc\
 	HttpRequestTest.cc\
 	RequestGroupManTest.cc\
 	AuthConfigFactoryTest.cc\
@@ -75,7 +74,8 @@ aria2c_SOURCES = AllTest.cc\
 	ChunkedDecodingStreamFilterTest.cc\
 	UriTest.cc\
 	MockSegment.h\
-	TripletTest.cc
+	TripletTest.cc\
+	CookieHelperTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\

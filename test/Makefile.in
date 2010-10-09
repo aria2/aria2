@@ -193,17 +193,16 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DefaultBtProgressInfoFileTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
 	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
-	HttpHeaderProcessorTest.cc RequestTest.cc CookieParserTest.cc \
-	HttpRequestTest.cc RequestGroupManTest.cc \
-	AuthConfigFactoryTest.cc NetrcAuthResolverTest.cc \
-	DefaultAuthResolverTest.cc OptionHandlerTest.cc \
-	SegmentManTest.cc BitfieldManTest.cc NetrcTest.cc \
-	SingletonHolderTest.cc HttpHeaderTest.cc HttpResponseTest.cc \
-	SharedHandleTest.cc FileTest.cc OptionTest.cc \
-	DefaultDiskWriterTest.cc FeatureConfigTest.cc SpeedCalcTest.cc \
-	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
-	FixedNumberRandomizer.h ProtocolDetectorTest.cc \
-	StringFormatTest.cc ExceptionTest.cc \
+	HttpHeaderProcessorTest.cc RequestTest.cc HttpRequestTest.cc \
+	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
+	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
+	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
+	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
+	HttpResponseTest.cc SharedHandleTest.cc FileTest.cc \
+	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
+	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
+	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
+	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
 	DownloadHandlerFactoryTest.cc SignatureTest.cc \
 	ServerStatManTest.cc FeedbackURISelectorTest.cc \
 	InOrderURISelectorTest.cc ServerStatTest.cc \
@@ -216,7 +215,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
 	ChunkedDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
-	TripletTest.cc XmlRpcRequestParserControllerTest.cc \
+	TripletTest.cc CookieHelperTest.cc \
+	XmlRpcRequestParserControllerTest.cc \
 	XmlRpcRequestProcessorTest.cc XmlRpcMethodTest.cc \
 	FallocFileAllocationIteratorTest.cc GZipDecoderTest.cc \
 	GZipEncoderTest.cc GZipDecodingStreamFilterTest.cc \
@@ -384,8 +384,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	ParameterizedStringParserTest.$(OBJEXT) UtilTest.$(OBJEXT) \
 	AlphaNumberDecoratorTest.$(OBJEXT) UriListParserTest.$(OBJEXT) \
 	HttpHeaderProcessorTest.$(OBJEXT) RequestTest.$(OBJEXT) \
-	CookieParserTest.$(OBJEXT) HttpRequestTest.$(OBJEXT) \
-	RequestGroupManTest.$(OBJEXT) AuthConfigFactoryTest.$(OBJEXT) \
+	HttpRequestTest.$(OBJEXT) RequestGroupManTest.$(OBJEXT) \
+	AuthConfigFactoryTest.$(OBJEXT) \
 	NetrcAuthResolverTest.$(OBJEXT) \
 	DefaultAuthResolverTest.$(OBJEXT) OptionHandlerTest.$(OBJEXT) \
 	SegmentManTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
@@ -412,9 +412,10 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	DownloadContextTest.$(OBJEXT) SessionSerializerTest.$(OBJEXT) \
 	ValueBaseTest.$(OBJEXT) \
 	ChunkedDecodingStreamFilterTest.$(OBJEXT) UriTest.$(OBJEXT) \
-	TripletTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7)
+	TripletTest.$(OBJEXT) CookieHelperTest.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -626,17 +627,16 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	DefaultBtProgressInfoFileTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
 	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
-	HttpHeaderProcessorTest.cc RequestTest.cc CookieParserTest.cc \
-	HttpRequestTest.cc RequestGroupManTest.cc \
-	AuthConfigFactoryTest.cc NetrcAuthResolverTest.cc \
-	DefaultAuthResolverTest.cc OptionHandlerTest.cc \
-	SegmentManTest.cc BitfieldManTest.cc NetrcTest.cc \
-	SingletonHolderTest.cc HttpHeaderTest.cc HttpResponseTest.cc \
-	SharedHandleTest.cc FileTest.cc OptionTest.cc \
-	DefaultDiskWriterTest.cc FeatureConfigTest.cc SpeedCalcTest.cc \
-	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
-	FixedNumberRandomizer.h ProtocolDetectorTest.cc \
-	StringFormatTest.cc ExceptionTest.cc \
+	HttpHeaderProcessorTest.cc RequestTest.cc HttpRequestTest.cc \
+	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
+	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
+	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
+	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
+	HttpResponseTest.cc SharedHandleTest.cc FileTest.cc \
+	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
+	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
+	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
+	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
 	DownloadHandlerFactoryTest.cc SignatureTest.cc \
 	ServerStatManTest.cc FeedbackURISelectorTest.cc \
 	InOrderURISelectorTest.cc ServerStatTest.cc \
@@ -649,9 +649,9 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	bitfieldTest.cc DownloadContextTest.cc \
 	SessionSerializerTest.cc ValueBaseTest.cc \
 	ChunkedDecodingStreamFilterTest.cc UriTest.cc MockSegment.h \
-	TripletTest.cc $(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7)
+	TripletTest.cc CookieHelperTest.cc $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5) $(am__append_6) $(am__append_7)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -783,7 +783,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedDecodingStreamFilterTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHKeyExchangeTest.Po@am__quote@

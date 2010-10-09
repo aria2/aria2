@@ -129,12 +129,12 @@ std::string HttpResponse::determinFilename() const
 
 void HttpResponse::retrieveCookie()
 {
+  Time now;
   std::vector<std::string> v = httpHeader_->get(HttpHeader::SET_COOKIE);
   for(std::vector<std::string>::const_iterator itr = v.begin(), eoi = v.end();
       itr != eoi; ++itr) {
-    httpRequest_->getCookieStorage()->parseAndStore(*itr,
-                                                    httpRequest_->getHost(),
-                                                    httpRequest_->getDir());
+    httpRequest_->getCookieStorage()->parseAndStore
+      (*itr, httpRequest_->getHost(), httpRequest_->getDir(), now.getTime());
   }
 }
 

@@ -55,7 +55,7 @@ public:
     time_t lastAccess_;
     LastAccess(time_t lastAccess):lastAccess_(lastAccess) {}
 
-    time_t getLastAccess() const
+    time_t getLastAccessTime() const
     {
       return lastAccess_;
     }

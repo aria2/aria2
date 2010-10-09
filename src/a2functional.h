@@ -421,9 +421,17 @@ class LeastRecentAccess:public std::binary_function<T, T, bool> {
 public:
   bool operator()(const T& lhs, const T& rhs) const
   {
-    return lhs.getLastAccess() < rhs.getLastAccess();
+    return lhs.getLastAccessTime() < rhs.getLastAccessTime();
   }
 };
+
+namespace {
+template<typename T, typename S>
+bool in(T x, S s, S t)
+{
+  return s <= x && x <= t;
+}
+}
 
 } // namespace aria2
 

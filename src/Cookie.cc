@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,173 +34,67 @@
 /* copyright --> */
 #include "Cookie.h"
 
-#include <algorithm>
 #include <sstream>
 
-#include "util.h"
 #include "A2STR.h"
-#include "TimeA2.h"
 #include "a2functional.h"
+#include "cookie_helper.h"
 
 namespace aria2 {
 
-static std::string prependDotIfNotExists(const std::string& domain)
-{
-  // From RFC2965:
-  // * Domain=value
-  //   OPTIONAL.  The value of the Domain attribute specifies the domain
-  //   for which the cookie is valid.  If an explicitly specified value
-  //   does not start with a dot, the user agent supplies a leading dot.
-  return (!domain.empty() && domain[0] != '.') ? A2STR::DOT_C+domain : domain;
-}
-
-std::string Cookie::normalizeDomain(const std::string& domain)
-{
-  if(domain.empty() || util::isNumericHost(domain)) {
-    return domain;
-  }
-  std::string md = prependDotIfNotExists(domain);
-  // TODO use util::split to strict verification
-  std::string::size_type p = md.find_last_of(A2STR::DOT_C);
-  if(p == 0 || p == std::string::npos) {
-    md += ".local";
-  }
-  return util::toLower(prependDotIfNotExists(md));
-}
-
-Cookie::Cookie(const std::string& name,
-               const std::string& value,
-               time_t  expiry,
-               const std::string& path,
-               const std::string& domain,
-               bool secure):
+Cookie::Cookie
+(const std::string& name,
+ const std::string& value,
+ time_t  expiryTime,
+ bool persistent,
+ const std::string& domain,
+ bool hostOnly,
+ const std::string& path,
+ bool secure,
+ bool httpOnly,
+ time_t creationTime):
   name_(name),
   value_(value),
-  expiry_(expiry),
+  expiryTime_(expiryTime),
+  persistent_(persistent),
+  domain_(domain),
+  hostOnly_(hostOnly),
   path_(path),
-  domain_(normalizeDomain(domain)),
   secure_(secure),
-  creationTime_(time(0)),
-  lastAccess_(creationTime_) {}
+  httpOnly_(httpOnly),
+  creationTime_(creationTime),
+  lastAccessTime_(creationTime) {}
 
-Cookie::Cookie(const std::string& name,
-               const std::string& value,
-               const std::string& path,
-               const std::string& domain,
-               bool secure):
-  name_(name),
-  value_(value),
-  expiry_(0),
-  path_(path),
-  domain_(normalizeDomain(domain)),
-  secure_(secure),
-  creationTime_(time(0)),
-  lastAccess_(creationTime_) {}
-
-Cookie::Cookie():expiry_(0), secure_(false), lastAccess_(time(0)) {}
+Cookie::Cookie():
+  expiryTime_(0),
+  persistent_(false),
+  hostOnly_(false),
+  secure_(false),
+  httpOnly_(false),
+  creationTime_(0),
+  lastAccessTime_(0) {}
 
 Cookie::~Cookie() {}
 
 std::string Cookie::toString() const
 {
-  return strconcat(name_, "=", value_);
+  return strconcat(name_, '=', value_);
 }
 
-bool Cookie::good() const
+bool Cookie::match
+(const std::string& requestHost,
+ const std::string& requestPath,
+ time_t date, bool secure) const
 {
-  return !name_.empty();
-}
-
-static bool pathInclude(const std::string& requestPath, const std::string& path)
-{
-  if(requestPath == path) {
-    return true;
-  }
-  if(util::startsWith(requestPath, path)) {
-    if(*path.rbegin() != '/' && requestPath[path.size()] != '/') {
-      return false;
-    }
-  } else if(*path.rbegin() != '/' || *requestPath.rbegin() == '/' ||
-            !util::startsWith(requestPath+"/", path)) {
+  if((secure_ && !secure) || isExpired(date) ||
+     !cookie::pathMatch(requestPath, path_)) {
     return false;
   }
-  return true;
-}
-
-static bool domainMatch(const std::string& normReqHost,
-                        const std::string& domain)
-{
-  // RFC2965 stated that:
-  //
-  // A Set-Cookie2 with Domain=ajax.com will be accepted, and the
-  // value for Domain will be taken to be .ajax.com, because a dot
-  // gets prepended to the value.
-  //
-  // Also original Netscape implementation behaves exactly the same.
-
-  // domain_ always starts ".". See Cookie::Cookie().
-  return util::endsWith(normReqHost, domain);
-}
-
-bool Cookie::match(const std::string& requestHost,
-                   const std::string& requestPath,
-                   time_t date, bool secure) const
-{
-  if((secure || (!secure_ && !secure)) &&
-     (requestHost == domain_ || // For default domain or IP address
-      domainMatch(normalizeDomain(requestHost), domain_)) &&
-     pathInclude(requestPath, path_) &&
-     (isSessionCookie() || (date < expiry_))) {
-    return true;
+  if(hostOnly_) {
+    return requestHost == domain_ ;
   } else {
-    return false;
+    return cookie::domainMatch(requestHost, domain_);
   }
-}
-
-bool Cookie::validate(const std::string& requestHost,
-                      const std::string& requestPath) const
-{
-  // If domain_ doesn't start with "." or it is IP address, then it
-  // must equal to requestHost. Otherwise, do domain tail match.
-  if(requestHost != domain_) {
-    std::string normReqHost = normalizeDomain(requestHost);
-    if(normReqHost != domain_) {
-      // domain must start with '.'
-      if(*domain_.begin() != '.') {
-        return false;
-      }
-      // domain must not end with '.'
-      if(*domain_.rbegin() == '.') {
-        return false;
-      }
-      // domain must include at least one embeded '.'
-      if(domain_.size() < 4 ||
-         domain_.find(A2STR::DOT_C, 1) == std::string::npos) {
-        return false;
-      }
-      if(!util::endsWith(normReqHost, domain_)) {
-        return false;
-      }
-      // From RFC2965 3.3.2 Rejecting Cookies
-      // * The request-host is a HDN (not IP address) and has the form HD,
-      //   where D is the value of the Domain attribute, and H is a string
-      //   that contains one or more dots.
-      size_t dotCount = std::count(normReqHost.begin(),
-                                   normReqHost.begin()+
-                                   (normReqHost.size()-domain_.size()), '.');
-      if(dotCount > 1 || (dotCount == 1 && normReqHost[0] != '.')) {
-        return false;
-      } 
-    }
-  }
-  if(requestPath != path_) {
-    // From RFC2965 3.3.2 Rejecting Cookies
-    // * The value for the Path attribute is not a prefix of the request-URI.
-    if(!pathInclude(requestPath, path_)) {
-      return false;
-    }
-  }
-  return good();
 }
 
 bool Cookie::operator==(const Cookie& cookie) const
@@ -209,19 +103,22 @@ bool Cookie::operator==(const Cookie& cookie) const
     name_ == cookie.name_;
 }
 
-bool Cookie::isExpired() const
+bool Cookie::isExpired(time_t base) const
 {
-  return !expiry_ == 0 && Time().getTime() >= expiry_;
+  return persistent_ && base > expiryTime_;
 }
 
 std::string Cookie::toNsCookieFormat() const
 {
   std::stringstream ss;
+  if(!hostOnly_) {
+    ss << A2STR::DOT_C;
+  }
   ss << domain_ << "\t";
-  if(util::startsWith(domain_, A2STR::DOT_C)) {
-    ss << "TRUE";
-  } else {
+  if(hostOnly_) {
     ss << "FALSE";
+  } else {
+    ss << "TRUE";
   }
   ss << "\t";
   ss << path_ << "\t";
@@ -231,22 +128,15 @@ std::string Cookie::toNsCookieFormat() const
     ss << "FALSE";
   }
   ss << "\t";
-  ss << expiry_ << "\t";
+  if(persistent_) {
+    ss << expiryTime_;
+  } else {
+    ss << 0;
+  }
+  ss << "\t";
   ss << name_ << "\t";
   ss << value_;
   return ss.str();
-}
-
-void Cookie::markOriginServerOnly()
-{
-  if(util::startsWith(domain_, A2STR::DOT_C)) {
-    domain_.erase(domain_.begin(), domain_.begin()+1);
-  }
-}
-
-void Cookie::updateLastAccess()
-{
-  lastAccess_ = time(0);
 }
 
 } // namespace aria2

@@ -181,6 +181,8 @@ bool parseUIntNoThrow(uint32_t& result, const std::string& s, int base = 10);
 
 int64_t parseLLInt(const std::string& s, int32_t base = 10);
 
+bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base = 10);
+
 uint64_t parseULLInt(const std::string& s, int base = 10);
 
 IntSequence parseIntRange(const std::string& src);

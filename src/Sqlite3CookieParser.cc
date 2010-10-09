@@ -40,6 +40,7 @@
 #include "util.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include "cookie_helper.h"
 #ifndef HAVE_SQLITE3_OPEN_V2
 # include "File.h"
 #endif // !HAVE_SQLITE3_OPEN_V2
@@ -80,34 +81,40 @@ static std::string toString(const char* str)
 static int cookieRowMapper(void* data, int rowIndex,
                            char** values, char** names)
 {
-  try {
-    std::vector<Cookie>& cookies =
-      *reinterpret_cast<std::vector<Cookie>*>(data);
-    int64_t expireDate = util::parseLLInt(toString(values[3]));
-    // TODO assuming time_t is int32_t...
-    if(expireDate > INT32_MAX) {
-      expireDate = INT32_MAX;
-    }
-    Cookie c(toString(values[4]), // name
-             toString(values[5]), // value
-             expireDate, // expires
-             toString(values[1]), // path
-             toString(values[0]), // domain
-             strcmp(toString(values[2]).c_str(), "1") == 0 ? true:false //secure
-             );
-    if(!util::startsWith(values[0], A2STR::DOT_C)) {
-      c.markOriginServerOnly();
-    }
-    if(c.good()) {
-      cookies.push_back(c);
-    }
-  } catch(RecoverableException& e) {
-    //failed to parse expiry.
+  std::vector<Cookie>& cookies =
+    *reinterpret_cast<std::vector<Cookie>*>(data);
+  std::string cookieDomain = cookie::removePrecedingDots(toString(values[0]));
+  std::string cookieName = toString(values[4]);
+  std::string cookiePath = toString(values[1]);
+  if(cookieName.empty() || cookieDomain.empty() ||
+     !cookie::goodPath(cookiePath)) {
+    return 0;
   }
+  int64_t expiryTime;
+  if(!util::parseLLIntNoThrow(expiryTime, toString(values[3]))) {
+    return 0;
+  }
+  if(sizeof(time_t) == 4 && expiryTime > INT32_MAX) {
+    expiryTime = INT32_MAX;
+  }
+  // TODO get last access, creation date(chrome only)
+  Cookie c(cookieName,
+           toString(values[5]), // value
+           expiryTime,
+           true, // persistent
+           cookieDomain,
+           util::isNumericHost(cookieDomain) || values[0][0] != '.', // hostOnly
+           cookiePath,
+           strcmp(toString(values[2]).c_str(), "1") == 0, //secure
+           false,
+           0 // creation time. Set this later.
+           );
+  cookies.push_back(c);
   return 0;
 }
 
-void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
+void Sqlite3CookieParser::parse
+(std::vector<Cookie>& cookies, time_t creationTime)
 {
   if(!db_) {
     throw DL_ABORT_EX(StringFormat("SQLite3 database is not opened.").str());
@@ -116,6 +123,13 @@ void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
   char* sqlite3ErrMsg = 0;
   int ret = sqlite3_exec(db_, getQuery().c_str(), cookieRowMapper,
                          &tcookies, &sqlite3ErrMsg);
+  // TODO If last access, creation date are retrieved from database,
+  // following for loop must be removed.
+  for(std::vector<Cookie>::iterator i = tcookies.begin(), eoi = tcookies.end();
+      i != eoi; ++i) {
+    (*i).setCreationTime(creationTime);
+    (*i).setLastAccessTime(creationTime);
+  }
   std::string errMsg;
   if(sqlite3ErrMsg) {
     errMsg = sqlite3ErrMsg;

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COOKIE_H_
-#define _D_COOKIE_H_
+#ifndef D_COOKIE_H
+#define D_COOKIE_H
 
 #include "common.h"
 
@@ -47,60 +47,53 @@ class Cookie {
 private:
   std::string name_;
   std::string value_;
-  time_t expiry_;
-  std::string path_;
+  time_t expiryTime_;
+  // If persistent_ is false, this is a session scope cookie and it is
+  // never expired during session. So isExpired() always returns
+  // false.
+  bool persistent_;
   std::string domain_;
+  bool hostOnly_;
+  std::string path_;
   bool secure_;
+  bool httpOnly_;
   time_t creationTime_;
-  time_t lastAccess_;
+  time_t lastAccessTime_;
 public:
-  /*
-   * If expires = 0 is given, then the cookie becomes session cookie.
-   * domain is normalized using normalizeDomain() function and
-   * assigned to domain_.  If domain is not specified in cookie, call
-   * markOriginServerOnly() after construction.
-   */
-  Cookie(const std::string& name,
-         const std::string& value,
-         time_t  expires,
-         const std::string& path,
-         const std::string& domain,
-         bool secure);
-
-  /*
-   * Creates session cookie. This is equivalent to Cookie(name, value,
-   * 0, path, domain, secure); domain is normalized using
-   * normalizeDomain() function and assigned to domain_.  If domain is
-   * not specified in cookie, call markOriginServerOnly() after
-   * construction.
-   */
-  Cookie(const std::string& name,
-         const std::string& value,
-         const std::string& path,
-         const std::string& domain,
-         bool secure);
-
   Cookie();
+
+  Cookie
+  (const std::string& name,
+   const std::string& value,
+   time_t  expiryTime,
+   bool persistent,
+   const std::string& domain,
+   bool hostOnly,
+   const std::string& path,
+   bool secure,
+   bool httpOnly,
+   time_t creationTime);
 
   ~Cookie();
 
   std::string toString() const;
 
-  bool good() const;
-
-  bool match(const std::string& requestHost, const std::string& requestPath,
-             time_t date, bool secure) const;
-
-  bool validate(const std::string& requestHost,
-                const std::string& requestPath) const;
+  bool match
+  (const std::string& requestHost, const std::string& requestPath,
+   time_t date, bool secure) const;
 
   bool operator==(const Cookie& cookie) const;
 
-  bool isExpired() const;
+  bool isExpired(time_t base) const;
 
   const std::string& getName() const
   {
     return name_;
+  }
+
+  void setName(const std::string& name)
+  {
+    name_ = name;
   }
 
   const std::string& getValue() const
@@ -108,9 +101,29 @@ public:
     return value_;
   }
 
-  const std::string& getPath() const
+  void setValue(const std::string& value)
   {
-    return path_;
+    value_ = value;
+  }
+
+  time_t getExpiryTime() const
+  {
+    return expiryTime_;
+  }
+
+  void setExpiryTime(time_t expiryTime)
+  {
+    expiryTime_ = expiryTime;
+  }
+
+  bool getPersistent() const
+  {
+    return persistent_;
+  }
+
+  void setPersistent(bool persistent)
+  {
+    persistent_ = persistent;
   }
 
   const std::string& getDomain() const
@@ -118,42 +131,74 @@ public:
     return domain_;
   }
 
-  time_t getExpiry() const
+  void setDomain(const std::string& domain)
   {
-    return expiry_;
+    domain_ = domain;
   }
 
-  bool isSecureCookie() const
+  bool getHostOnly() const
+  {
+    return hostOnly_;
+  }
+
+  void setHostOnly(bool hostOnly)
+  {
+    hostOnly_ = hostOnly;
+  }
+
+  const std::string& getPath() const
+  {
+    return path_;
+  }
+
+  void setPath(const std::string& path)
+  {
+    path_ = path;
+  }
+
+  bool getSecure() const
   {
     return secure_;
   }
 
-  bool isSessionCookie() const
+  void setSecure(bool secure)
   {
-    return expiry_ == 0;
+    secure_ = secure;
   }
 
-  std::string toNsCookieFormat() const;
+  bool getHttpOnly() const
+  {
+    return httpOnly_;
+  }
 
-  // Makes this Cookie only sent to the origin server.  This function
-  // removes first "." from domain_ if domain_ starts with ".".
-  void markOriginServerOnly();
+  void setHttpOnly(bool httpOnly)
+  {
+    httpOnly_ = httpOnly;
+  }
 
   time_t getCreationTime() const
   {
     return creationTime_;
   }
 
-  void updateLastAccess();
-
-  time_t getLastAccess() const
+  void setCreationTime(time_t creationTime)
   {
-    return lastAccess_;
+    creationTime_ = creationTime;
   }
 
-  static std::string normalizeDomain(const std::string& domain);
+  time_t getLastAccessTime() const
+  {
+    return lastAccessTime_;
+  }
+
+  void setLastAccessTime(time_t lastAccessTime)
+  {
+    lastAccessTime_ = lastAccessTime;
+  }
+
+  std::string toNsCookieFormat() const;
 };
 
 } // namespace aria2
 
-#endif // _D_COOKIE_H_
+#endif // D_COOKIE_H

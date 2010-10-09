@@ -15,6 +15,7 @@
 #include "CookieStorage.h"
 #include "util.h"
 #include "AuthConfig.h"
+#include "TestUtil.h"
 
 namespace aria2 {
 
@@ -380,16 +381,21 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     (new PiecedSegment(1024*1024, p));
   SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
 
-  Cookie cookie1("name1", "value1", "/archives", "localhost", false);
-  Cookie cookie2("name2", "value2", "/archives/download", "localhost", false);
-  Cookie cookie3("name3", "value3", "/archives/download", ".aria2.org", false);
-  Cookie cookie4("name4", "value4", "/archives/", ".aria2.org", true);
+  Cookie cookie1(createCookie("name1", "value1", "localhost", true,
+                              "/archives", false));
+  Cookie cookie2(createCookie("name2", "value2", "localhost", true,
+                              "/archives/download",  false));
+  Cookie cookie3(createCookie("name3", "value3", "aria2.org", false,
+                              "/archives/download",  false));
+  Cookie cookie4(createCookie("name4", "value4", "aria2.org", false,
+                              "/archives/", true));
 
+  time_t now = time(0);
   SharedHandle<CookieStorage> st(new CookieStorage());
-  CPPUNIT_ASSERT(st->store(cookie1));
-  CPPUNIT_ASSERT(st->store(cookie2));
-  CPPUNIT_ASSERT(st->store(cookie3));
-  CPPUNIT_ASSERT(st->store(cookie4));
+  CPPUNIT_ASSERT(st->store(cookie1, now));
+  CPPUNIT_ASSERT(st->store(cookie2, now));
+  CPPUNIT_ASSERT(st->store(cookie3, now));
+  CPPUNIT_ASSERT(st->store(cookie4, now));
 
   HttpRequest httpRequest;
 
