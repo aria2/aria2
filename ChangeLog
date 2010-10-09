@@ -1,5 +1,11 @@
 2010-10-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added tests to HttpRequestTest about trailing slash of cookie
+	path.
+	* test/HttpRequestTest.cc
+
+2010-10-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't append slash in CookieStorage::criteriaFind().  Append file
 	part of URI to request-uri in HttpRequest::createRequest().  This
 	change reverts the part of the previous change:"The

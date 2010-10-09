@@ -381,21 +381,19 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     (new PiecedSegment(1024*1024, p));
   SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*1024*10, 0));
 
-  Cookie cookie1(createCookie("name1", "value1", "localhost", true,
-                              "/archives", false));
-  Cookie cookie2(createCookie("name2", "value2", "localhost", true,
-                              "/archives/download",  false));
-  Cookie cookie3(createCookie("name3", "value3", "aria2.org", false,
-                              "/archives/download",  false));
-  Cookie cookie4(createCookie("name4", "value4", "aria2.org", false,
-                              "/archives/", true));
-
-  time_t now = time(0);
+  Cookie cookies[] = {
+    createCookie("name1", "value1", "localhost", true, "/archives", false),
+    createCookie("name2", "value2", "localhost", true,
+                 "/archives/download",  false),
+    createCookie("name3", "value3", "aria2.org", false,
+                 "/archives/download",  false),
+    createCookie("name4", "value4", "aria2.org", false, "/archives/", true),
+    createCookie("name5", "value5", "example.org", false, "/", false)
+  };
   SharedHandle<CookieStorage> st(new CookieStorage());
-  CPPUNIT_ASSERT(st->store(cookie1, now));
-  CPPUNIT_ASSERT(st->store(cookie2, now));
-  CPPUNIT_ASSERT(st->store(cookie3, now));
-  CPPUNIT_ASSERT(st->store(cookie4, now));
+  for(size_t i = 0; i < A2_ARRAY_LEN(cookies); ++i) {
+    CPPUNIT_ASSERT(st->store(cookies[i], 0));
+  }
 
   HttpRequest httpRequest;
 
@@ -460,7 +458,35 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
-  
+
+  // The path of cookie4 ends with '/'
+  request->setUri("https://www.aria2.org/archives/aria2-1.0.0.tar.bz2");
+
+  expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: www.aria2.org\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "Cookie: name4=value4;\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());  
+
+  request->setUri("http://example.org/aria2-1.0.0.tar.bz2");
+
+  expectedText = "GET /aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: example.org\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "Cookie: name5=value5;\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }
 
 void HttpRequestTest::testCreateRequest_query()
