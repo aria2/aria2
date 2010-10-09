@@ -20,6 +20,7 @@ class UtilTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UtilTest);
   CPPUNIT_TEST(testTrim);
+  CPPUNIT_TEST(testStrip);
   CPPUNIT_TEST(testSplit);
   CPPUNIT_TEST(testSplit_many);
   CPPUNIT_TEST(testEndsWith);
@@ -74,6 +75,7 @@ public:
   }
 
   void testTrim();
+  void testStrip();
   void testSplit();
   void testSplit_many();
   void testEndsWith();
@@ -142,6 +144,27 @@ void UtilTest::testTrim() {
   CPPUNIT_ASSERT_EQUAL(str4, util::trim("A"));
   CPPUNIT_ASSERT_EQUAL(str4, util::trim(" A "));
   CPPUNIT_ASSERT_EQUAL(str4, util::trim("  A  "));
+}
+
+void UtilTest::testStrip()
+{
+  std::string str1 = "aria2";
+  CPPUNIT_ASSERT_EQUAL(str1, util::strip("aria2"));
+  CPPUNIT_ASSERT_EQUAL(str1, util::strip(" aria2"));
+  CPPUNIT_ASSERT_EQUAL(str1, util::strip("aria2 "));
+  CPPUNIT_ASSERT_EQUAL(str1, util::strip(" aria2 "));
+  CPPUNIT_ASSERT_EQUAL(str1, util::strip("  aria2  "));
+  std::string str2 = "aria2 debut";
+  CPPUNIT_ASSERT_EQUAL(str2, util::strip("aria2 debut"));
+  CPPUNIT_ASSERT_EQUAL(str2, util::strip(" aria2 debut "));
+  std::string str3 = "";
+  CPPUNIT_ASSERT_EQUAL(str3, util::strip(""));
+  CPPUNIT_ASSERT_EQUAL(str3, util::strip(" "));
+  CPPUNIT_ASSERT_EQUAL(str3, util::strip("  "));
+  std::string str4 = "A";
+  CPPUNIT_ASSERT_EQUAL(str4, util::strip("A"));
+  CPPUNIT_ASSERT_EQUAL(str4, util::strip(" A "));
+  CPPUNIT_ASSERT_EQUAL(str4, util::strip("  A  "));
 }
 
 void UtilTest::testSplit() {

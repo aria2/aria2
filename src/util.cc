@@ -113,6 +113,11 @@ void trimSelf(std::string& str, const std::string& trimCharset)
   }
 }
 
+std::string strip(const std::string& str, const std::string& chars)
+{
+  return stripIter(str.begin(), str.end(), chars);
+}
+
 void split(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
 {
   hp.first = A2STR::NIL;

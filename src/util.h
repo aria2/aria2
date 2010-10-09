@@ -134,6 +134,28 @@ std::string trim(const std::string& src,
 void trimSelf(std::string& str,
               const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
 
+template<typename InputIterator>
+std::string stripIter
+(InputIterator first, InputIterator last,
+ const std::string& chars = DEFAULT_TRIM_CHARSET)
+{
+  if(std::distance(first, last) == 0) {
+    return A2STR::NIL;
+  }
+  for(; first != last &&
+        std::find(chars.begin(), chars.end(), *first) != chars.end(); ++first);
+  if(first == last) {
+    return A2STR::NIL;
+  }
+  InputIterator left = last-1;
+  for(; left != first &&
+        std::find(chars.begin(), chars.end(), *left) != chars.end(); --left);
+  return std::string(first, left+1);
+}
+
+std::string strip
+(const std::string& str, const std::string& chars = DEFAULT_TRIM_CHARSET);
+
 bool startsWith(const std::string& target, const std::string& part);
 
 bool endsWith(const std::string& target, const std::string& part);

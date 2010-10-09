@@ -1,3 +1,10 @@
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added util::strip()
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
 2010-10-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added tests to HttpRequestTest about trailing slash of cookie
