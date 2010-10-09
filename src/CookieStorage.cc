@@ -246,12 +246,10 @@ std::vector<Cookie> CookieStorage::criteriaFind
   if(requestPath.empty()) {
     return res;
   }
-  std::string normRequestPath =
-    requestPath == A2STR::SLASH_C?requestPath:requestPath+A2STR::SLASH_C;
   if(util::isNumericHost(requestHost)) {
     searchCookieByDomainSuffix
       (requestHost, domains_.begin(), domains_.end(), std::back_inserter(res),
-       requestHost, normRequestPath, now, secure);
+       requestHost, requestPath, now, secure);
   } else {
     std::vector<std::string> levels;
     util::split(requestHost, std::back_inserter(levels),A2STR::DOT_C);
@@ -263,7 +261,7 @@ std::vector<Cookie> CookieStorage::criteriaFind
       domain.insert(domain.begin(), (*i).begin(), (*i).end());
       searchCookieByDomainSuffix
         (domain, domains_.begin(), domains_.end(),
-         std::back_inserter(res), requestHost, normRequestPath, now, secure);
+         std::back_inserter(res), requestHost, requestPath, now, secure);
     }
   }
   std::vector<CookiePathDivider> divs;

@@ -1,5 +1,16 @@
 2010-10-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Don't append slash in CookieStorage::criteriaFind().  Append file
+	part of URI to request-uri in HttpRequest::createRequest().  This
+	change reverts the part of the previous change:"The
+	request-path must be ends with '/' so that request-path '/foo/'
+	path-matches cookie-path '/foo' and '/foo/' in the proposed
+	algorithm."
+	* src/CookieStorage.cc
+	* src/HttpRequest.cc
+
+2010-10-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten Cookie class and Cookie parser based on
 	http://tools.ietf.org/html/draft-ietf-httpstate-cookie-14 with
 	some modifications. When parsing cookie date, match time first so
