@@ -1,5 +1,26 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use util::strip() instead of util::trim()
+	* src/ExpatXmlRpcRequestProcessor.cc
+	* src/FeatureConfig.cc
+	* src/HttpHeader.cc
+	* src/MetalinkParserStateV3Impl.cc
+	* src/OptionHandlerImpl.h
+	* src/ServerStatMan.cc
+	* src/UriListParser.cc
+	* src/Xml2XmlRpcRequestProcessor.cc
+	* src/bittorrent_helper.cc
+	* src/cookie_helper.cc
+	* src/messageDigest.cc
+	* src/util.cc
+	* src/util.h
+	* test/FeatureConfigTest.cc
+	* test/HttpRequestTest.cc
+	* test/UriListParserTest.cc
+	* test/UtilTest.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added util::strip()
 	* src/util.cc
 	* src/util.h

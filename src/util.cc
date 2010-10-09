@@ -92,26 +92,7 @@ namespace aria2 {
 
 namespace util {
 
-const std::string DEFAULT_TRIM_CHARSET("\r\n\t ");
-
-std::string trim(const std::string& src, const std::string& trimCharset)
-{
-  std::string temp(src);
-  trimSelf(temp, trimCharset);
-  return temp;
-}
-
-void trimSelf(std::string& str, const std::string& trimCharset)
-{
-  std::string::size_type first = str.find_first_not_of(trimCharset);
-  if(first == std::string::npos) {
-    str.clear();
-  } else {
-    std::string::size_type last = str.find_last_not_of(trimCharset)+1;
-    str.erase(last);
-    str.erase(0, first);
-  }
-}
+const std::string DEFAULT_STRIP_CHARSET("\r\n\t ");
 
 std::string strip(const std::string& str, const std::string& chars)
 {
@@ -124,11 +105,11 @@ void split(std::pair<std::string, std::string>& hp, const std::string& src, char
   hp.second = A2STR::NIL;
   std::string::size_type p = src.find(delim);
   if(p == std::string::npos) {
-    hp.first = trim(src);
+    hp.first = strip(src);
     hp.second = A2STR::NIL;
   } else {
-    hp.first = trim(src.substr(0, p));
-    hp.second = trim(src.substr(p+1));
+    hp.first = strip(src.substr(0, p));
+    hp.second = strip(src.substr(p+1));
   }
 }
 
@@ -139,11 +120,11 @@ std::pair<std::string, std::string> split(const std::string& src, const std::str
   hp.second = A2STR::NIL;
   std::string::size_type p = src.find_first_of(delims);
   if(p == std::string::npos) {
-    hp.first = trim(src);
+    hp.first = strip(src);
     hp.second = A2STR::NIL;
   } else {
-    hp.first = trim(src.substr(0, p));
-    hp.second = trim(src.substr(p+1));
+    hp.first = strip(src.substr(0, p));
+    hp.second = strip(src.substr(p+1));
   }
   return hp;
 }
@@ -555,7 +536,8 @@ uint32_t parseUInt(const std::string& s, int base)
 
 bool parseUIntNoThrow(uint32_t& result, const std::string& s, int base)
 {
-  std::string trimed = trim(s);
+  // TODO what happens when we don't trim s?
+  std::string trimed = strip(s);
   if(trimed.empty()) {
     return false;
   }
@@ -577,7 +559,7 @@ bool parseUIntNoThrow(uint32_t& result, const std::string& s, int base)
 
 int64_t parseLLInt(const std::string& s, int32_t base)
 {
-  std::string trimed = trim(s);
+  std::string trimed = strip(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
                                    "empty string").str());
@@ -597,7 +579,7 @@ int64_t parseLLInt(const std::string& s, int32_t base)
 
 bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base)
 {
-  std::string trimed = trim(s);
+  std::string trimed = strip(s);
   if(trimed.empty()) {
     return false;
   }
@@ -615,7 +597,7 @@ bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base)
 
 uint64_t parseULLInt(const std::string& s, int base)
 {
-  std::string trimed = trim(s);
+  std::string trimed = strip(s);
   if(trimed.empty()) {
     throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
                                    "empty string").str());
@@ -800,7 +782,7 @@ static void parseParam(OutputIterator out, const std::string& header)
         param = std::string(paramFirst, paramLast);
       }
     }
-    trimSelf(param);
+    param = strip(param);
     *out++ = param;
     if(paramLast == eoi) {
       break;
@@ -910,7 +892,7 @@ std::string getContentDispositionFilename(const std::string& header)
       }
       static const std::string TRIMMED("\r\n\t '\"");
       value = percentDecode(std::string(value.begin(), filenameLast));
-      trimSelf(value, TRIMMED);
+      value = strip(value, TRIMMED);
       value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
       if(!detectDirTraversal(value) &&
          value.find(A2STR::SLASH_C) == std::string::npos) {

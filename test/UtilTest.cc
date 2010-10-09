@@ -19,7 +19,6 @@ namespace aria2 {
 class UtilTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UtilTest);
-  CPPUNIT_TEST(testTrim);
   CPPUNIT_TEST(testStrip);
   CPPUNIT_TEST(testSplit);
   CPPUNIT_TEST(testSplit_many);
@@ -74,7 +73,6 @@ public:
   void setUp() {
   }
 
-  void testTrim();
   void testStrip();
   void testSplit();
   void testSplit_many();
@@ -126,25 +124,6 @@ public:
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( UtilTest );
-
-void UtilTest::testTrim() {
-  std::string str1 = "aria2";
-  CPPUNIT_ASSERT_EQUAL(str1, util::trim("aria2"));
-  CPPUNIT_ASSERT_EQUAL(str1, util::trim(" aria2"));
-  CPPUNIT_ASSERT_EQUAL(str1, util::trim(" aria2 "));
-  CPPUNIT_ASSERT_EQUAL(str1, util::trim("  aria2  "));
-  std::string str2 = "aria2 debut";
-  CPPUNIT_ASSERT_EQUAL(str2, util::trim("aria2 debut"));
-  CPPUNIT_ASSERT_EQUAL(str2, util::trim(" aria2 debut "));
-  std::string str3 = "";
-  CPPUNIT_ASSERT_EQUAL(str3, util::trim(""));
-  CPPUNIT_ASSERT_EQUAL(str3, util::trim(" "));
-  CPPUNIT_ASSERT_EQUAL(str3, util::trim("  "));
-  std::string str4 = "A";
-  CPPUNIT_ASSERT_EQUAL(str4, util::trim("A"));
-  CPPUNIT_ASSERT_EQUAL(str4, util::trim(" A "));
-  CPPUNIT_ASSERT_EQUAL(str4, util::trim("  A  "));
-}
 
 void UtilTest::testStrip()
 {

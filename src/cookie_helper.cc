@@ -204,11 +204,11 @@ bool parse
   if(eq == nvEnd) {
     return false;
   }
-  std::string cookieName = util::trim(std::string(cookieStr.begin(), eq));
+  std::string cookieName = util::stripIter(cookieStr.begin(), eq);
   if(cookieName.empty()) {
     return false;
   }
-  std::string cookieValue = util::trim(std::string(eq+1, nvEnd));
+  std::string cookieValue = util::stripIter(eq+1, nvEnd);
   time_t expiryTime = 0;
   bool foundExpires = false;
   bool persistent = false;
@@ -225,10 +225,10 @@ bool parse
     for(; j != end && *j != ';'; ++j);
     std::string::const_iterator eq = i;
     for(; eq != j && *eq != '='; ++eq);
-    std::string attrName = util::toLower(util::trim(std::string(i, eq)));
+    std::string attrName = util::toLower(util::stripIter(i, eq));
     std::string attrValue;
     if(eq != j) {
-      attrValue = util::trim(std::string(eq+1, j));
+      attrValue = util::stripIter(eq+1, j);
     }
     i = j;
     if(j != end) {

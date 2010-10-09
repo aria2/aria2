@@ -76,7 +76,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
     return;
   }
   do {
-    if(!util::startsWith(line_, A2STR::SHARP_C) && !util::trim(line_).empty()) {
+    if(!util::startsWith(line_, A2STR::SHARP_C) && !util::strip(line_).empty()){
       util::split(line_, std::back_inserter(uris), "\t", true);
       getOptions(op);
       return;

@@ -325,7 +325,7 @@ static void extractAnnounce
             eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
         const String* uri = asString(*uriIter);
         if(uri) {
-          ntier.push_back(util::trim(uri->s()));
+          ntier.push_back(util::strip(uri->s()));
         }
       }
       if(!ntier.empty()) {
@@ -336,7 +336,7 @@ static void extractAnnounce
     const String* announce = asString(rootDict->get(C_ANNOUNCE));
     if(announce) {
       std::vector<std::string> tier;
-      tier.push_back(util::trim(announce->s()));
+      tier.push_back(util::strip(announce->s()));
       torrent->announceList.push_back(tier);
     }
   }
@@ -357,7 +357,7 @@ static void extractNodes
       if(!hostname) {
         continue;
       }
-      if(util::trim(hostname->s()).empty()) {
+      if(util::strip(hostname->s()).empty()) {
         continue;
       }
       const Integer* port = asInteger(addrPairList->get(1));

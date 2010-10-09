@@ -113,7 +113,7 @@ void FilesMetalinkParserState::beginElement
     stm->setFileState();
     std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
     if(itr != attrs.end()) {
-      std::string name = util::trim((*itr).value);
+      std::string name = util::strip((*itr).value);
       if(name.empty() || util::detectDirTraversal(name)) {
         return;
       }
@@ -196,7 +196,7 @@ void VersionMetalinkParserState::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->setVersionOfEntry(util::trim(characters));
+  stm->setVersionOfEntry(util::strip(characters));
 }
 
 void LanguageMetalinkParserState::endElement
@@ -206,7 +206,7 @@ void LanguageMetalinkParserState::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->setLanguageOfEntry(util::trim(characters));
+  stm->setLanguageOfEntry(util::strip(characters));
 }
 
 void OSMetalinkParserState::endElement
@@ -216,7 +216,7 @@ void OSMetalinkParserState::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->setOSOfEntry(util::trim(characters));
+  stm->setOSOfEntry(util::strip(characters));
 }
 
 void VerificationMetalinkParserState::beginElement
@@ -236,7 +236,7 @@ void VerificationMetalinkParserState::beginElement
     if(itr == attrs.end()) {
       return;
     } else {
-      std::string type = util::trim((*itr).value);
+      std::string type = util::strip((*itr).value);
       stm->newChecksumTransaction();
       stm->setTypeOfChecksum(type);
     }
@@ -258,7 +258,7 @@ void VerificationMetalinkParserState::beginElement
         if(itr == attrs.end()) {
           return;
         } else {
-          type = util::trim((*itr).value);
+          type = util::strip((*itr).value);
         }
       }
       stm->newChunkChecksumTransaction();
@@ -276,10 +276,10 @@ void VerificationMetalinkParserState::beginElement
         return;
       } else {
         stm->newSignatureTransaction();
-        stm->setTypeOfSignature(util::trim((*itr).value));
+        stm->setTypeOfSignature(util::strip((*itr).value));
         std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, FILE);
         if(itr != attrs.end()) {
-          std::string file = util::trim((*itr).value);
+          std::string file = util::strip((*itr).value);
           if(!util::detectDirTraversal(file)) {
             stm->setFileOfSignature(file);
           }
@@ -297,7 +297,7 @@ void HashMetalinkParserState::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->setHashOfChecksum(util::trim(characters));
+  stm->setHashOfChecksum(util::strip(characters));
   stm->commitChecksumTransaction();
 }
 
@@ -342,7 +342,7 @@ void PieceHashMetalinkParserState::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->setMessageDigestOfChunkChecksum(util::trim(characters));
+  stm->setMessageDigestOfChunkChecksum(util::strip(characters));
   stm->addHashOfChunkChecksum();
 }
 
@@ -353,7 +353,7 @@ void SignatureMetalinkParserState::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->setBodyOfSignature(util::trim(characters));
+  stm->setBodyOfSignature(util::strip(characters));
   stm->commitSignatureTransaction();
 }
 
@@ -374,14 +374,14 @@ void ResourcesMetalinkParserState::beginElement
       if(itr == attrs.end()) {
         return;
       } else {
-        type = util::trim((*itr).value);
+        type = util::strip((*itr).value);
       }
     }
     std::string location;
     {
       std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, LOCATION);
       if(itr != attrs.end()) {
-        location = util::trim((*itr).value);
+        location = util::strip((*itr).value);
       }
     }
     int preference;
@@ -430,7 +430,7 @@ void URLMetalinkParserState::endElement
  const std::string& nsUri,
  const std::string& characters)
 {
-  stm->setURLOfResource(util::trim(characters));
+  stm->setURLOfResource(util::strip(characters));
   stm->commitResourceTransaction();
 }
 

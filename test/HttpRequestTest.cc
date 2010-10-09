@@ -524,7 +524,7 @@ void HttpRequestTest::testCreateRequest_head()
   std::stringstream result(httpRequest.createRequest());
   std::string line;
   CPPUNIT_ASSERT(getline(result, line));
-  util::trimSelf(line);
+  line = util::strip(line);
   CPPUNIT_ASSERT_EQUAL(std::string("HEAD /aria2-1.0.0.tar.bz2 HTTP/1.1"), line);
 }
 

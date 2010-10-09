@@ -158,7 +158,7 @@ std::string FeatureConfig::featureSummary() const
       s += ", ";
     }
   }
-  return util::trim(s, ", ");
+  return util::strip(s, ", ");
 }
 
 } // namespace aria2

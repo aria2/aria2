@@ -70,7 +70,7 @@ static void mlStartElement(void* userData, const xmlChar* name,
       if(*p == 0) {
         break;
       }
-      std::string value = util::trim(reinterpret_cast<const char*>(*p));
+      std::string value = util::strip(reinterpret_cast<const char*>(*p));
       ++p;
       attrmap[name] = value;
     }
@@ -86,7 +86,7 @@ static void mlEndElement(void* userData, const xmlChar* name)
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
   if(sd->stm_->needsCharactersBuffering()) {
-    characters = util::trim(sd->charactersStack_.top());
+    characters = util::strip(sd->charactersStack_.top());
     sd->charactersStack_.pop();
   }
   sd->stm_->endElement(reinterpret_cast<const char*>(name), characters);

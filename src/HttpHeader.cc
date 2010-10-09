@@ -214,7 +214,7 @@ void HttpHeader::fill(std::istream& in)
 {
   std::string line;
   while(std::getline(in, line)) {
-    line = util::trim(line);
+    line = util::strip(line);
     if(line.empty()) {
       continue;
     }

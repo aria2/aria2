@@ -126,18 +126,12 @@ std::string itos(int64_t value, bool comma = false);
 int64_t difftv(struct timeval tv1, struct timeval tv2);
 int32_t difftvsec(struct timeval tv1, struct timeval tv2);
 
-extern const std::string DEFAULT_TRIM_CHARSET;
-
-std::string trim(const std::string& src,
-                 const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
-
-void trimSelf(std::string& str,
-              const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
+extern const std::string DEFAULT_STRIP_CHARSET;
 
 template<typename InputIterator>
 std::string stripIter
 (InputIterator first, InputIterator last,
- const std::string& chars = DEFAULT_TRIM_CHARSET)
+ const std::string& chars = DEFAULT_STRIP_CHARSET)
 {
   if(std::distance(first, last) == 0) {
     return A2STR::NIL;
@@ -154,7 +148,7 @@ std::string stripIter
 }
 
 std::string strip
-(const std::string& str, const std::string& chars = DEFAULT_TRIM_CHARSET);
+(const std::string& str, const std::string& chars = DEFAULT_STRIP_CHARSET);
 
 bool startsWith(const std::string& target, const std::string& part);
 
@@ -340,7 +334,7 @@ std::map<size_t, std::string> createIndexPathMap(std::istream& i);
  */
 template<typename OutputIterator>
 OutputIterator split(const std::string& src, OutputIterator out,
-                     const std::string& delims, bool doTrim = false,
+                     const std::string& delims, bool doStrip = false,
                      bool allowEmpty = false)
 {
   std::string::size_type p = 0;
@@ -348,8 +342,8 @@ OutputIterator split(const std::string& src, OutputIterator out,
     std::string::size_type np = src.find_first_of(delims, p);
     if(np == std::string::npos) {
       std::string term = src.substr(p);
-      if(doTrim) {
-        term = util::trim(term);
+      if(doStrip) {
+        term = util::strip(term);
       }
       if(allowEmpty || !term.empty()) {
         *out = term;
@@ -358,8 +352,8 @@ OutputIterator split(const std::string& src, OutputIterator out,
       break;
     }
     std::string term = src.substr(p, np-p);
-    if(doTrim) {
-      term = util::trim(term);
+    if(doStrip) {
+      term = util::strip(term);
     }
     p = np+1;
     if(allowEmpty || !term.empty()) {

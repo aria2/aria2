@@ -91,8 +91,7 @@ void FeatureConfigTest::testFeatureSummary() {
   const std::string delim(", ");
   std::for_each(vbegin(features), vend(features),
                 StringAppend(featuresString, delim));
-  // USE util::trimSelf(featureString);
-  featuresString = util::trim(featuresString, delim);
+  featuresString = util::strip(featuresString, delim);
   
   CPPUNIT_ASSERT_EQUAL(featuresString,
                        FeatureConfig::getInstance()->featureSummary());

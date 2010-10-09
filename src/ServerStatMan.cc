@@ -98,7 +98,7 @@ bool ServerStatMan::load(std::istream& in)
 
   std::string line;
   while(getline(in, line)) {
-    util::trimSelf(line);
+    line = util::strip(line);
     if(line.empty()) {
       continue;
     }
@@ -108,8 +108,8 @@ bool ServerStatMan::load(std::istream& in)
     for(std::vector<std::string>::const_iterator i = items.begin(),
           eoi = items.end(); i != eoi; ++i) {
       std::pair<std::string, std::string> p = util::split(*i, "=");
-      util::trimSelf(p.first);
-      util::trimSelf(p.second);
+      p.first = util::strip(p.first);
+      p.second = util::strip(p.second);
       m[p.first] = p.second;
     }
     if(m[S_HOST].empty() || m[S_PROTOCOL].empty()) {

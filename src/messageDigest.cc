@@ -144,7 +144,7 @@ std::string MessageDigestContext::getSupportedAlgoString()
     algos += (*itr).first;
     algos += ", ";
   }
-  return util::trim(algos, ", ");
+  return util::strip(algos, ", ");
 }
 
 bool MessageDigestContext::isStronger
