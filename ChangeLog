@@ -1,5 +1,11 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added test cases for util::parseUIntNoThrow() and
+	util::parseLLIntNoThrow().
+	* test/UtilTest.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use util::strip() instead of util::trim()
 	* src/ExpatXmlRpcRequestProcessor.cc
 	* src/FeatureConfig.cc

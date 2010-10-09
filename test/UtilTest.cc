@@ -46,6 +46,8 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseUInt);
   CPPUNIT_TEST(testParseLLInt);
   CPPUNIT_TEST(testParseULLInt);
+  CPPUNIT_TEST(testParseUIntNoThrow);
+  CPPUNIT_TEST(testParseLLIntNoThrow);
   CPPUNIT_TEST(testToString_binaryStream);
   CPPUNIT_TEST(testItos);
   CPPUNIT_TEST(testUitos);
@@ -100,6 +102,8 @@ public:
   void testParseUInt();
   void testParseLLInt();
   void testParseULLInt();
+  void testParseUIntNoThrow();
+  void testParseLLIntNoThrow();
   void testToString_binaryStream();
   void testItos();
   void testUitos();
@@ -751,6 +755,26 @@ void UtilTest::testParseULLInt()
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
+}
+
+void UtilTest::testParseUIntNoThrow()
+{
+  uint32_t n;
+  CPPUNIT_ASSERT(util::parseUIntNoThrow(n, " 4294967295 "));
+  CPPUNIT_ASSERT_EQUAL((uint32_t)UINT32_MAX, n);
+  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, "4294967296"));
+  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, "-1"));
+}
+
+void UtilTest::testParseLLIntNoThrow()
+{
+  int64_t n;
+  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, " 9223372036854775807 "));
+  CPPUNIT_ASSERT_EQUAL((int64_t)INT64_MAX, n);
+  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, "9223372036854775808"));
+  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, "-9223372036854775808"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)INT64_MIN, n);
+  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, "-9223372036854775809"));
 }
 
 void UtilTest::testToString_binaryStream()
