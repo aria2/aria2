@@ -334,7 +334,7 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT(!c.getSecure());
     
 #else // !HAVE_SQLITE3
-  CPPUNIT_ASSERT(!st.load("cookies.sqlite"));
+  CPPUNIT_ASSERT(!st.load("cookies.sqlite", 1000));
 #endif // !HAVE_SQLITE3
 }
 

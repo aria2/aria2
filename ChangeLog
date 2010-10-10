@@ -1,5 +1,10 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error without sqlite3
+	* test/CookieStorageTest.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Retrieve last access time from sqlite3 cookie database.
 	* src/CookieStorage.cc
 	* src/Sqlite3CookieParser.cc
