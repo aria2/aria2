@@ -30,6 +30,8 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRandomAlpha);
   CPPUNIT_TEST(testToUpper);
   CPPUNIT_TEST(testToLower);
+  CPPUNIT_TEST(testUppercase);
+  CPPUNIT_TEST(testLowercase);
   CPPUNIT_TEST(testPercentDecode);
   CPPUNIT_TEST(testGetRealSize);
   CPPUNIT_TEST(testAbbrevSize);
@@ -86,6 +88,8 @@ public:
   void testRandomAlpha();
   void testToUpper();
   void testToLower();
+  void testUppercase();
+  void testLowercase();
   void testPercentDecode();
   void testGetRealSize();
   void testAbbrevSize();
@@ -436,6 +440,20 @@ void UtilTest::testToLower() {
   std::string upp = "608cabc0f2fa18c260cafd974516865c772363d5";
 
   CPPUNIT_ASSERT_EQUAL(upp, util::toLower(src));
+}
+
+void UtilTest::testUppercase() {
+  std::string src = "608cabc0f2fa18c260cafd974516865c772363d5";
+  std::string ans = "608CABC0F2FA18C260CAFD974516865C772363D5";
+  util::uppercase(src);
+  CPPUNIT_ASSERT_EQUAL(ans, src);
+}
+
+void UtilTest::testLowercase() {
+  std::string src = "608CABC0F2FA18C260CAFD974516865C772363D5";
+  std::string ans = "608cabc0f2fa18c260cafd974516865c772363d5";
+  util::lowercase(src);
+  CPPUNIT_ASSERT_EQUAL(ans, src);
 }
 
 void UtilTest::testPercentDecode() {

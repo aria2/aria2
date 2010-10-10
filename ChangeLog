@@ -1,5 +1,13 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added util::lowercase() and util::uppercase().
+	* src/cookie_helper.cc
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added test cases for util::parseUIntNoThrow() and
 	util::parseLLIntNoThrow().
 	* test/UtilTest.cc

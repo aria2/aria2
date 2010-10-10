@@ -926,6 +926,16 @@ std::string toLower(const std::string& src) {
   return temp;
 }
 
+void uppercase(std::string& s)
+{
+  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+}
+
+void lowercase(std::string& s)
+{
+  std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
+
 bool isNumericHost(const std::string& name)
 {
   struct addrinfo hints;

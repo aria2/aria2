@@ -133,7 +133,8 @@ bool parseDate(time_t& time, const std::string& cookieDate)
         "may", "jun", "jul", "aug",
         "sep", "oct", "nov", "dec" };
       if((*i).size() >= 3) {
-        std::string head = util::toLower((*i).substr(0, 3));
+        std::string head = (*i).substr(0, 3);
+        util::lowercase(head);
         std::string* mptr = std::find(vbegin(MONTH), vend(MONTH), head);
         if(mptr != vend(MONTH)) {
           foundMonth = true;
@@ -225,7 +226,8 @@ bool parse
     for(; j != end && *j != ';'; ++j);
     std::string::const_iterator eq = i;
     for(; eq != j && *eq != '='; ++eq);
-    std::string attrName = util::toLower(util::stripIter(i, eq));
+    std::string attrName = util::stripIter(i, eq);
+    util::lowercase(attrName);
     std::string attrValue;
     if(eq != j) {
       attrValue = util::stripIter(eq+1, j);

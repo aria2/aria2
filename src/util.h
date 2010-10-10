@@ -233,6 +233,10 @@ std::string toUpper(const std::string& src);
 
 std::string toLower(const std::string& src);
 
+void uppercase(std::string& s);
+
+void lowercase(std::string& s);
+
 bool isNumericHost(const std::string& name);
 
 void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);
