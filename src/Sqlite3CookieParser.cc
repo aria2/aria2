@@ -78,9 +78,23 @@ static std::string toString(const char* str)
   }
 }
 
-static int cookieRowMapper(void* data, int rowIndex,
+static bool parseTime(int64_t& time, const std::string& s)
+{
+  if(!util::parseLLIntNoThrow(time, s)) {
+    return false;
+  }
+  if(sizeof(time_t) == 4 && time > INT32_MAX) {
+    time = INT32_MAX;
+  }
+  return true;
+}
+
+static int cookieRowMapper(void* data, int columns,
                            char** values, char** names)
 {
+  if(columns != 7) {
+    return 0;
+  }
   std::vector<Cookie>& cookies =
     *reinterpret_cast<std::vector<Cookie>*>(data);
   std::string cookieDomain = cookie::removePrecedingDots(toString(values[0]));
@@ -91,13 +105,13 @@ static int cookieRowMapper(void* data, int rowIndex,
     return 0;
   }
   int64_t expiryTime;
-  if(!util::parseLLIntNoThrow(expiryTime, toString(values[3]))) {
+  if(!parseTime(expiryTime, toString(values[3]))) {
     return 0;
   }
-  if(sizeof(time_t) == 4 && expiryTime > INT32_MAX) {
-    expiryTime = INT32_MAX;
+  int64_t lastAccessTime;
+  if(!parseTime(lastAccessTime, toString(values[6]))) {
+    return 0;
   }
-  // TODO get last access, creation date(chrome only)
   Cookie c(cookieName,
            toString(values[5]), // value
            expiryTime,
@@ -107,14 +121,13 @@ static int cookieRowMapper(void* data, int rowIndex,
            cookiePath,
            strcmp(toString(values[2]).c_str(), "1") == 0, //secure
            false,
-           0 // creation time. Set this later.
+           lastAccessTime // creation time. Set this later.
            );
   cookies.push_back(c);
   return 0;
 }
 
-void Sqlite3CookieParser::parse
-(std::vector<Cookie>& cookies, time_t creationTime)
+void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
 {
   if(!db_) {
     throw DL_ABORT_EX(StringFormat("SQLite3 database is not opened.").str());
@@ -123,13 +136,6 @@ void Sqlite3CookieParser::parse
   char* sqlite3ErrMsg = 0;
   int ret = sqlite3_exec(db_, getQuery().c_str(), cookieRowMapper,
                          &tcookies, &sqlite3ErrMsg);
-  // TODO If last access, creation date are retrieved from database,
-  // following for loop must be removed.
-  for(std::vector<Cookie>::iterator i = tcookies.begin(), eoi = tcookies.end();
-      i != eoi; ++i) {
-    (*i).setCreationTime(creationTime);
-    (*i).setLastAccessTime(creationTime);
-  }
   std::string errMsg;
   if(sqlite3ErrMsg) {
     errMsg = sqlite3ErrMsg;

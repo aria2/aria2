@@ -35,7 +35,7 @@ void Sqlite3CookieParserTest::testMozParse()
 {
   Sqlite3MozCookieParser parser("cookies.sqlite");
   std::vector<Cookie> cookies;
-  parser.parse(cookies, 0);
+  parser.parse(cookies);
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
 
   const Cookie& localhost = cookies[0];
@@ -47,6 +47,8 @@ void Sqlite3CookieParserTest::testMozParse()
   CPPUNIT_ASSERT(localhost.getHostOnly());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), localhost.getPath());
   CPPUNIT_ASSERT(localhost.getSecure());
+  CPPUNIT_ASSERT_EQUAL((time_t)3000, localhost.getLastAccessTime());
+  CPPUNIT_ASSERT_EQUAL((time_t)3000, localhost.getCreationTime());
 
   const Cookie& nullValue = cookies[1];
   CPPUNIT_ASSERT_EQUAL(std::string("uid"), nullValue.getName());
@@ -79,7 +81,7 @@ void Sqlite3CookieParserTest::testMozParse_fileNotFound()
   Sqlite3MozCookieParser parser("fileNotFound");
   try {
     std::vector<Cookie> cookies;
-    parser.parse(cookies, 0);
+    parser.parse(cookies);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // SUCCESS
@@ -93,7 +95,7 @@ void Sqlite3CookieParserTest::testMozParse_badfile()
   Sqlite3MozCookieParser parser("badcookies.sqlite");
   try {
     std::vector<Cookie> cookies;
-    parser.parse(cookies, 0);
+    parser.parse(cookies);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // SUCCESS
@@ -104,7 +106,7 @@ void Sqlite3CookieParserTest::testChromumParse()
 {
   Sqlite3ChromiumCookieParser parser("chromium_cookies.sqlite");
   std::vector<Cookie> cookies;
-  parser.parse(cookies, 0);
+  parser.parse(cookies);
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
 
   const Cookie& sfnet = cookies[0];
@@ -130,7 +132,9 @@ void Sqlite3CookieParserTest::testChromumParse()
 
   const Cookie& localnet = cookies[2];
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), localnet.getDomain());
-  CPPUNIT_ASSERT(sfjp.getHostOnly());  
+  CPPUNIT_ASSERT(sfjp.getHostOnly());
+  CPPUNIT_ASSERT_EQUAL((time_t)3000, localnet.getLastAccessTime());
+  CPPUNIT_ASSERT_EQUAL((time_t)3000, localnet.getCreationTime());
 }
 
 } // namespace aria2

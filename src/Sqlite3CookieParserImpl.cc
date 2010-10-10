@@ -44,7 +44,8 @@ Sqlite3MozCookieParser::~Sqlite3MozCookieParser() {}
 const std::string& Sqlite3MozCookieParser::getQuery() const
 {
   static const std::string sql =
-    "SELECT host, path, isSecure, expiry, name, value FROM moz_cookies";
+    "SELECT host, path, isSecure, expiry, name, value, lastAccessed"
+    " FROM moz_cookies";
   return sql;
 }
 
@@ -56,7 +57,8 @@ Sqlite3ChromiumCookieParser::~Sqlite3ChromiumCookieParser() {}
 const std::string& Sqlite3ChromiumCookieParser::getQuery() const
 {
   static const std::string sql =
-    "SELECT host_key, path, secure, expires_utc, name, value FROM cookies";
+    "SELECT host_key, path, secure, expires_utc, name, value, last_access_utc"
+    " FROM cookies";
   return sql;
 }
 

@@ -308,7 +308,7 @@ bool CookieStorage::load(const std::string& filename, time_t now)
 #ifdef HAVE_SQLITE3
       std::vector<Cookie> cookies;
       try {
-        Sqlite3MozCookieParser(filename).parse(cookies, now);
+        Sqlite3MozCookieParser(filename).parse(cookies);
       } catch(RecoverableException& e) {
         if(logger_->info()) {
           logger_->info(EX_EXCEPTION_CAUGHT, e);
@@ -316,7 +316,7 @@ bool CookieStorage::load(const std::string& filename, time_t now)
                         " Retrying, assuming it is Chromium cookie file.");
         }
         // Try chrome cookie format
-        Sqlite3ChromiumCookieParser(filename).parse(cookies, now);
+        Sqlite3ChromiumCookieParser(filename).parse(cookies);
       }
       storeCookies(cookies.begin(), cookies.end(), now);
 #else // !HAVE_SQLITE3

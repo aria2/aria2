@@ -1,5 +1,16 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Retrieve last access time from sqlite3 cookie database.
+	* src/CookieStorage.cc
+	* src/Sqlite3CookieParser.cc
+	* src/Sqlite3CookieParser.h
+	* src/Sqlite3CookieParserImpl.cc
+	* test/Sqlite3CookieParserTest.cc
+	* test/chromium_cookies.sqlite
+	* test/cookies.sqlite
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Remove expired cookies first when cookies_ is full.
 	* src/CookieStorage.cc
 
