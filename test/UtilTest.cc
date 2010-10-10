@@ -20,8 +20,8 @@ class UtilTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UtilTest);
   CPPUNIT_TEST(testStrip);
+  CPPUNIT_TEST(testDivide);
   CPPUNIT_TEST(testSplit);
-  CPPUNIT_TEST(testSplit_many);
   CPPUNIT_TEST(testEndsWith);
   CPPUNIT_TEST(testReplace);
   CPPUNIT_TEST(testStartsWith);
@@ -78,8 +78,8 @@ public:
   }
 
   void testStrip();
+  void testDivide();
   void testSplit();
-  void testSplit_many();
   void testEndsWith();
   void testReplace();
   void testStartsWith();
@@ -154,26 +154,26 @@ void UtilTest::testStrip()
   CPPUNIT_ASSERT_EQUAL(str4, util::strip("  A  "));
 }
 
-void UtilTest::testSplit() {
+void UtilTest::testDivide() {
   std::pair<std::string, std::string> p1;
-  util::split(p1, "name=value", '=');
+  util::divide(p1, "name=value", '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
   CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
-  util::split(p1, " name = value ", '=');
+  util::divide(p1, " name = value ", '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
   CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
-  util::split(p1, "=value", '=');
+  util::divide(p1, "=value", '=');
   CPPUNIT_ASSERT_EQUAL(std::string(""), p1.first);
   CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
-  util::split(p1, "name=", '=');
+  util::divide(p1, "name=", '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
   CPPUNIT_ASSERT_EQUAL(std::string(""), p1.second);
-  util::split(p1, "name", '=');
+  util::divide(p1, "name", '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
   CPPUNIT_ASSERT_EQUAL(std::string(""), p1.second);
 }
 
-void UtilTest::testSplit_many() {
+void UtilTest::testSplit() {
   std::vector<std::string> v1;
   util::split("name1=value1; name2=value2; name3=value3",std::back_inserter(v1),
               ";", true);

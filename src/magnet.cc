@@ -52,7 +52,7 @@ SharedHandle<Dict> parse(const std::string& magnet)
   for(std::vector<std::string>::const_iterator i = queries.begin(),
         eoi = queries.end(); i != eoi; ++i) {
     std::pair<std::string, std::string> kv;
-    util::split(kv, *i, '=');
+    util::divide(kv, *i, '=');
     std::string value = util::percentDecode(kv.second);
     List* l = asList(dict->get(kv.first));
     if(l) {

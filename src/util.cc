@@ -99,34 +99,19 @@ std::string strip(const std::string& str, const std::string& chars)
   return stripIter(str.begin(), str.end(), chars);
 }
 
-void split(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
+void divide
+(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
 {
-  hp.first = A2STR::NIL;
-  hp.second = A2STR::NIL;
-  std::string::size_type p = src.find(delim);
-  if(p == std::string::npos) {
+  std::string::const_iterator first = src.begin();
+  std::string::const_iterator last = src.end();
+  std::string::const_iterator dpos = std::find(first, last, delim);
+  if(dpos == last) {
     hp.first = strip(src);
     hp.second = A2STR::NIL;
   } else {
-    hp.first = strip(src.substr(0, p));
-    hp.second = strip(src.substr(p+1));
+    hp.first = stripIter(first, dpos);
+    hp.second = stripIter(dpos+1, last);
   }
-}
-
-std::pair<std::string, std::string> split(const std::string& src, const std::string& delims)
-{
-  std::pair<std::string, std::string> hp;
-  hp.first = A2STR::NIL;
-  hp.second = A2STR::NIL;
-  std::string::size_type p = src.find_first_of(delims);
-  if(p == std::string::npos) {
-    hp.first = strip(src);
-    hp.second = A2STR::NIL;
-  } else {
-    hp.first = strip(src.substr(0, p));
-    hp.second = strip(src.substr(p+1));
-  }
-  return hp;
 }
 
 std::string itos(int64_t value, bool comma)
@@ -625,7 +610,8 @@ IntSequence parseIntRange(const std::string& src)
   IntSequence::Values values;
   std::string temp = src;
   while(temp.size()) {
-    std::pair<std::string, std::string> p = split(temp, ",");
+    std::pair<std::string, std::string> p;
+    divide(p, temp, ',');
     temp = p.second;
     if(p.first.empty()) {
       continue;
@@ -634,7 +620,8 @@ IntSequence parseIntRange(const std::string& src)
       int32_t v = parseInt(p.first.c_str());
       values.push_back(IntSequence::Value(v, v+1));
     } else {
-      std::pair<std::string, std::string> vp = split(p.first.c_str(), "-");
+      std::pair<std::string, std::string> vp;
+      divide(vp, p.first.c_str(), '-');
       if(vp.first.empty() || vp.second.empty()) {
         throw DL_ABORT_EX
           (StringFormat(MSG_INCOMPLETE_RANGE, p.first.c_str()).str());
@@ -816,7 +803,7 @@ std::string getContentDispositionFilename(const std::string& header)
         continue;
       }
       std::pair<std::string, std::string> paramPair;
-      split(paramPair, param, '=');
+      divide(paramPair, param, '=');
       std::string value = paramPair.second;
       std::vector<std::string> extValues;
       split(value, std::back_inserter(extValues), "'", false, true);
@@ -876,7 +863,7 @@ std::string getContentDispositionFilename(const std::string& header)
         continue;
       }
       std::pair<std::string, std::string> paramPair;
-      split(paramPair, param, '=');
+      divide(paramPair, param, '=');
       std::string value = paramPair.second;
       if(value.empty()) {
         continue;
@@ -1228,7 +1215,8 @@ std::string htmlEscape(const std::string& src)
 std::map<size_t, std::string>::value_type
 parseIndexPath(const std::string& line)
 {
-  std::pair<std::string, std::string> p = split(line, "=");
+  std::pair<std::string, std::string> p;
+  divide(p, line, '=');
   size_t index = parseUInt(p.first);
   if(p.second.empty()) {
     throw DL_ABORT_EX(StringFormat("Path with index=%u is empty.",

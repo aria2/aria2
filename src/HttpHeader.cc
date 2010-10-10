@@ -169,7 +169,7 @@ RangeHandle HttpHeader::getRange() const
     // but some server returns '100-199/100', omitting bytes-unit sepcifier
     // 'bytes'.
     std::pair<std::string, std::string> splist;
-    util::split(splist, rangeStr, ' ');
+    util::divide(splist, rangeStr, ' ');
     if(splist.second.empty()) {
       // we assume bytes-unit specifier omitted.
       byteRangeSpec = splist.first;
@@ -178,10 +178,10 @@ RangeHandle HttpHeader::getRange() const
     }
   }
   std::pair<std::string, std::string> byteRangeSpecPair;
-  util::split(byteRangeSpecPair, byteRangeSpec, '/');
+  util::divide(byteRangeSpecPair, byteRangeSpec, '/');
 
   std::pair<std::string, std::string> byteRangeRespSpecPair;
-  util::split(byteRangeRespSpecPair, byteRangeSpecPair.first, '-');
+  util::divide(byteRangeRespSpecPair, byteRangeSpecPair.first, '-');
 
   off_t startByte = util::parseLLInt(byteRangeRespSpecPair.first);
   off_t endByte = util::parseLLInt(byteRangeRespSpecPair.second);
@@ -219,7 +219,7 @@ void HttpHeader::fill(std::istream& in)
       continue;
     }
     std::pair<std::string, std::string> hp;
-    util::split(hp, line, ':');
+    util::divide(hp, line, ':');
     put(hp.first, hp.second);
   }
 }

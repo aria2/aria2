@@ -192,12 +192,14 @@ bool HttpServer::authenticate()
   if(authHeader.empty()) {
     return false;
   }
-  std::pair<std::string, std::string> p = util::split(authHeader, " ");
+  std::pair<std::string, std::string> p;
+  util::divide(p, authHeader, ' ');
   if(p.first != "Basic") {
     return false;
   }
   std::string userpass = Base64::decode(p.second);
-  std::pair<std::string, std::string> userpassPair = util::split(userpass, ":");
+  std::pair<std::string, std::string> userpassPair;
+  util::divide(userpassPair, userpass, ':');
   return username_ == userpassPair.first && password_ == userpassPair.second;
 }
 

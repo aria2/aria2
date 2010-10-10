@@ -1,5 +1,22 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced util::split(a,b,c) and util::split(a,b) with
+	util::divide()
+	* src/ExpatMetalinkProcessor.cc
+	* src/FtpConnection.cc
+	* src/HttpHeader.cc
+	* src/HttpResponse.cc
+	* src/HttpServer.cc
+	* src/OptionParser.cc
+	* src/ParameterizedStringParser.cc
+	* src/ServerStatMan.cc
+	* src/magnet.cc
+	* src/util.cc
+	* src/util.h
+	* test/UtilTest.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Append 'u' to hex mask.
 	* src/Base64.cc
 	* src/BitfieldMan.cc

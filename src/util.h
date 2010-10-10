@@ -88,11 +88,8 @@ inline uint64_t hton64(uint64_t x) { return byteswap64(x); }
 
 namespace util {
 
-void split(std::pair<std::string, std::string>& hp,
-           const std::string& src, char delim);
-
-std::pair<std::string, std::string>
-split(const std::string& src, const std::string& delims);
+void divide
+(std::pair<std::string, std::string>& hp, const std::string& src, char delim);
 
 template<typename T>
 std::string uitos(T value, bool comma = false)

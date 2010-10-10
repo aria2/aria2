@@ -124,7 +124,8 @@ ParameterizedStringParser::createLoop(const std::string& src, int& offset)
     }
     loopStr.erase(colonIndex);
   }
-  std::pair<std::string, std::string> range = util::split(loopStr, "-");
+  std::pair<std::string, std::string> range;
+  util::divide(range, loopStr, '-');
   if(range.first.empty() || range.second.empty()) {
     throw DL_ABORT_EX("Loop range missing.");
   }

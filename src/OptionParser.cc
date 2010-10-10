@@ -169,7 +169,8 @@ void OptionParser::parse(Option& option, std::istream& is)
     if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
-    std::pair<std::string, std::string> nv = util::split(line, A2STR::EQUAL_C);
+    std::pair<std::string, std::string> nv;
+    util::divide(nv, line, '=');
     if(nv.first.empty()) {
       continue;
     }

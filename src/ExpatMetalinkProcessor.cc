@@ -65,7 +65,7 @@ static void splitNsName
  const std::string& nsName)
 {
   std::pair<std::string, std::string> nsNamePair;
-  util::split(nsNamePair, nsName, '\t');
+  util::divide(nsNamePair, nsName, '\t');
   if(nsNamePair.second.empty()) {
     localname = nsNamePair.first;
   } else {
@@ -88,7 +88,7 @@ static void mlStartElement(void* userData, const char* nsName, const char** attr
       }
       std::string value = *p++;
       std::pair<std::string, std::string> nsNamePair;
-      util::split(nsNamePair, attrNsName, '\t');
+      util::divide(nsNamePair, attrNsName, '\t');
       XmlAttr xa;
       if(nsNamePair.second.empty()) {
         xa.localname = nsNamePair.first;
