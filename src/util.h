@@ -338,29 +338,26 @@ OutputIterator split(const std::string& src, OutputIterator out,
                      const std::string& delims, bool doStrip = false,
                      bool allowEmpty = false)
 {
-  std::string::size_type p = 0;
-  while(1) {
-    std::string::size_type np = src.find_first_of(delims, p);
-    if(np == std::string::npos) {
-      std::string term = src.substr(p);
-      if(doStrip) {
-        term = util::strip(term);
-      }
-      if(allowEmpty || !term.empty()) {
-        *out = term;
-        ++out;
-      }
-      break;
+  std::string::const_iterator first = src.begin();
+  std::string::const_iterator last = src.end();
+  for(std::string::const_iterator i = first; i != last;) {
+    std::string::const_iterator j = i;
+    for(; j != last &&
+          std::find(delims.begin(), delims.end(), *j) == delims.end(); ++j);
+    std::string t = doStrip?util::stripIter(i, j):std::string(i, j);
+    if(allowEmpty || !t.empty()) {
+      *out++ = t;
     }
-    std::string term = src.substr(p, np-p);
-    if(doStrip) {
-      term = util::strip(term);
+    i = j;
+    if(j != last) {
+      ++i;
     }
-    p = np+1;
-    if(allowEmpty || !term.empty()) {
-      *out = term;
-      ++out;
-    }
+  }
+  if(allowEmpty &&
+     (src.empty() ||
+      std::find(delims.begin(), delims.end(),
+                src[src.size()-1]) != delims.end())) {
+    *out++ = A2STR::NIL;
   }
   return out;
 }

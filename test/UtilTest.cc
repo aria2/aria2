@@ -174,41 +174,94 @@ void UtilTest::testDivide() {
 }
 
 void UtilTest::testSplit() {
-  std::vector<std::string> v1;
-  util::split("name1=value1; name2=value2; name3=value3",std::back_inserter(v1),
-              ";", true);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, v1.size());
-  std::vector<std::string>::iterator itr = v1.begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(std::string("name2=value2"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(std::string("name3=value3"), *itr++);
+  std::vector<std::string> v;
+  util::split("k1; k2;; k3", std::back_inserter(v), ";", true);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
+  std::vector<std::string>::iterator itr = v.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("k3"), *itr++);
 
-  v1.clear();
+  v.clear();
 
-  util::split("name1=value1; name2=value2; name3=value3",std::back_inserter(v1),
-              ";", false);
-  CPPUNIT_ASSERT_EQUAL((size_t)3, v1.size());
-  itr = v1.begin();
-  CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(std::string(" name2=value2"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(std::string(" name3=value3"), *itr++);
+  util::split("k1; k2; k3",
+              std::back_inserter(v), ";");
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
+  itr = v.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(" k2"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(" k3"), *itr++);
 
-  v1.clear();
+  v.clear();
 
-  util::split("k=v", std::back_inserter(v1), ";", false, true);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, v1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("k=v"), v1[0]);
+  util::split("k=v", std::back_inserter(v), ";", false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  itr = v.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("k=v"), *itr++);
 
-  v1.clear();
+  v.clear();
 
-  util::split(" ", std::back_inserter(v1), ";", true, true);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, v1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string(""), v1[0]);
+  util::split(";;k1;;k2;", std::back_inserter(v), ";", false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, v.size());
+  itr = v.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
 
-  v1.clear();
+  v.clear();
 
-  util::split(" ", std::back_inserter(v1), ";", true);
-  CPPUNIT_ASSERT_EQUAL((size_t)0, v1.size());
+  util::split(";;k1;;k2;", std::back_inserter(v), ";");
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  itr = v.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), *itr++);
+
+  v.clear();
+
+  util::split("k; ", std::back_inserter(v), ";");
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  itr = v.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("k"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(" "), *itr++);
+
+  v.clear();
+
+  util::split(" ", std::back_inserter(v), ";", true, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), v[0]);
+
+  v.clear();
+
+  util::split(" ", std::back_inserter(v), ";", true);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
+
+  v.clear();
+
+  util::split(" ", std::back_inserter(v), ";");
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(" "), v[0]);
+
+  v.clear();
+
+  util::split(";", std::back_inserter(v), ";");
+  CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
+
+  v.clear();
+
+  util::split(";", std::back_inserter(v), ";", false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  itr = v.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
+
+  v.clear();
+
+  util::split("", std::back_inserter(v), ";", false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), v[0]);
 }
 
 void UtilTest::testEndsWith() {

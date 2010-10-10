@@ -1,5 +1,11 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten util::split()
+	* src/util.h
+	* test/UtilTest.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Code cleanup
 	* src/cookie_helper.cc
 
