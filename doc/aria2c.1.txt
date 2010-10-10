@@ -3,7 +3,7 @@ ARIA2C(1)
 Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
 :man source: Aria2
 :man manual: Aria2 Manual
-:man version: 1.10.3
+:man version: 1.10.4
 
 NAME
 ----

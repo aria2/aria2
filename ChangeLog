@@ -1,3 +1,9 @@
+2010-10-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Bump up version number to 1.10.4
+	* configure.ac
+	* doc/aria2c.1.txt
+
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compile error without sqlite3
