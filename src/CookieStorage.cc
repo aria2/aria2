@@ -70,10 +70,18 @@ bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie, time_t now)
       return false;
     } else {
       if(cookies_.size() >= CookieStorage::MAX_COOKIE_PER_DOMAIN) {
-        // TODO First remove expired cookie
-        std::deque<Cookie>::iterator m = std::min_element
-          (cookies_.begin(), cookies_.end(), LeastRecentAccess<Cookie>());
-        *m = cookie;
+        cookies_.erase
+          (std::remove_if(cookies_.begin(), cookies_.end(),
+                          std::bind2nd
+                          (std::mem_fun_ref(&Cookie::isExpired), now)),
+           cookies_.end());
+        if(cookies_.size() >= CookieStorage::MAX_COOKIE_PER_DOMAIN) {
+          std::deque<Cookie>::iterator m = std::min_element
+            (cookies_.begin(), cookies_.end(), LeastRecentAccess<Cookie>());
+          *m = cookie;
+        } else {
+          cookies_.push_back(cookie);
+        }
       } else {
         cookies_.push_back(cookie);
       }
@@ -113,8 +121,6 @@ static const double DOMAIN_EVICTION_RATE = 0.1;
 bool CookieStorage::store(const Cookie& cookie, time_t now)
 {
   if(domains_.size() >= DOMAIN_EVICTION_TRIGGER) {
-    // TODO Do this in a separete Command.
-    // TODO Erase expired cookie first
     std::sort(domains_.begin(), domains_.end(),
               LeastRecentAccess<DomainEntry>());
     size_t delnum = (size_t)(domains_.size()*DOMAIN_EVICTION_RATE);

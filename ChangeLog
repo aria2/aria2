@@ -1,5 +1,10 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Remove expired cookies first when cookies_ is full.
+	* src/CookieStorage.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten util::split()
 	* src/util.h
 	* test/UtilTest.cc
