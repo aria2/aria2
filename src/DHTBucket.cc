@@ -68,7 +68,7 @@ DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode):
   lastUpdated_(global::wallclock),
   logger_(LogFactory::getInstance())
 {
-  memset(max_, 0xff, DHT_ID_LENGTH);
+  memset(max_, 0xffu, DHT_ID_LENGTH);
   memset(min_, 0, DHT_ID_LENGTH);
 }
 

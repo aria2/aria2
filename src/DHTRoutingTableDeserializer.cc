@@ -81,24 +81,24 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
   char header[8];
   memset(header, 0, sizeof(header));
   // magic
-  header[0] = 0xa1;
-  header[1] = 0xa2;
+  header[0] = 0xa1u;
+  header[1] = 0xa2u;
   // format ID
-  header[2] = 0x02;
+  header[2] = 0x02u;
   // version
   header[6] = 0;
-  header[7] = 0x03;
+  header[7] = 0x03u;
 
   char headerCompat[8];
   memset(headerCompat, 0, sizeof(headerCompat));
   // magic
-  headerCompat[0] = 0xa1;
-  headerCompat[1] = 0xa2;
+  headerCompat[0] = 0xa1u;
+  headerCompat[1] = 0xa2u;
   // format ID
-  headerCompat[2] = 0x02;
+  headerCompat[2] = 0x02u;
   // version
   headerCompat[6] = 0;
-  headerCompat[7] = 0x02;
+  headerCompat[7] = 0x02u;
 
   char zero[18];
   memset(zero, 0, sizeof(zero));

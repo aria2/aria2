@@ -97,7 +97,7 @@ bool SpeedCalc::isIntervalOver(int64_t milliElapsed) const
 void SpeedCalc::changeSw() {
   lengthArray_[sw_] = 0;
   cpArray_[sw_] = global::wallclock;
-  sw_ ^= 0x01;
+  sw_ ^= 0x01u;
   nextInterval_ =
     cpArray_[sw_].difference(global::wallclock)+CHANGE_INTERVAL_SEC;
 }

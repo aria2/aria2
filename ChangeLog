@@ -1,5 +1,28 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Append 'u' to hex mask.
+	* src/Base64.cc
+	* src/BitfieldMan.cc
+	* src/BtHandshakeMessage.cc
+	* src/BtHandshakeMessage.h
+	* src/DHTBucket.cc
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTRoutingTableSerializer.cc
+	* src/DefaultBtProgressInfoFile.cc
+	* src/MSEHandshake.h
+	* src/MultiUrlRequestInfo.cc
+	* src/Platform.cc
+	* src/SpeedCalc.cc
+	* src/UTPexExtensionMessage.cc
+	* src/a2netcompat.h
+	* src/base32.cc
+	* src/bitfield.h
+	* src/bittorrent_helper.cc
+	* src/cookie_helper.cc
+	* src/util.h
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added util::lowercase() and util::uppercase().
 	* src/cookie_helper.cc
 	* src/util.cc

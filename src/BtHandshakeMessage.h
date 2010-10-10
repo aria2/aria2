@@ -91,9 +91,9 @@ public:
   void setDHTEnabled(bool enabled)
   {
     if(enabled) {
-      reserved_[7] |= 0x01;
+      reserved_[7] |= 0x01u;
     } else {
-      reserved_[7] &= ~0x01;
+      reserved_[7] &= ~0x01u;
     }
   }
 

@@ -70,9 +70,9 @@ void BtHandshakeMessage::init() {
   memcpy(pstr_, BT_PSTR, PSTR_LENGTH);
   memset(reserved_, 0, RESERVED_LENGTH);
   // fast extension
-  reserved_[7] |= 0x04;
+  reserved_[7] |= 0x04u;
   // extended messaging
-  reserved_[5] |= 0x10;
+  reserved_[5] |= 0x10u;
 }
 
 SharedHandle<BtHandshakeMessage>
@@ -110,17 +110,17 @@ std::string BtHandshakeMessage::toString() const {
 }
 
 bool BtHandshakeMessage::isFastExtensionSupported() const {
-  return reserved_[7]&0x04;
+  return reserved_[7]&0x04u;
 }
 
 bool BtHandshakeMessage::isExtendedMessagingEnabled() const
 {
-  return reserved_[5]&0x10;
+  return reserved_[5]&0x10u;
 }
 
 bool BtHandshakeMessage::isDHTEnabled() const
 {
-  return reserved_[7]&0x01;
+  return reserved_[7]&0x01u;
 }
 
 void BtHandshakeMessage::setInfoHash(const unsigned char* infoHash)

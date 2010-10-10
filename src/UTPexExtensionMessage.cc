@@ -100,10 +100,10 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
       (compact, (*itr)->getIPAddress(), (*itr)->getPort());
     if(compactlen == COMPACT_LEN_IPV4) {
       addrstring.append(&compact[0], &compact[compactlen]);
-      flagstring += (*itr)->isSeeder() ? 0x02 : 0x00;
+      flagstring += (*itr)->isSeeder() ? 0x02u : 0x00u;
     } else if(compactlen == COMPACT_LEN_IPV6) {
       addrstring6.append(&compact[0], &compact[compactlen]);
-      flagstring6 += (*itr)->isSeeder() ? 0x02 : 0x00;
+      flagstring6 += (*itr)->isSeeder() ? 0x02u : 0x00u;
     }
   }
   return std::make_pair(std::make_pair(addrstring, flagstring),

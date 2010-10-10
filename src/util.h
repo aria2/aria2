@@ -78,7 +78,7 @@ inline uint64_t ntoh64(uint64_t x) { return x; }
 inline uint64_t hton64(uint64_t x) { return x; }
 #else // !WORDS_BIGENDIAN
 inline uint64_t byteswap64(uint64_t x) {
-  uint64_t v1 = ntohl(x & 0x00000000ffffffff);
+  uint64_t v1 = ntohl(x & 0x00000000ffffffffllu);
   uint64_t v2 = ntohl(x >> 32);
   return (v1 << 32)|v2;
 }

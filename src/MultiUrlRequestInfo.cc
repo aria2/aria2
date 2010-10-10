@@ -67,10 +67,6 @@
 
 namespace aria2 {
 
-#ifndef SA_RESETHAND
-# define SA_RESETHAND 0x80000000
-#endif // SA_RESETHAND
-
 namespace global {
 
 extern volatile sig_atomic_t globalHaltRequested;

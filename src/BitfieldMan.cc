@@ -154,7 +154,7 @@ bool BitfieldMan::hasMissingPiece
     if(filterEnabled_) {
       temp &= filterBitfield_[i];
     }
-    if(temp&0xff) {
+    if(temp&0xffu) {
       retval = true;
       break;
     }
@@ -445,7 +445,7 @@ static bool testAllBitSet
     return true;
   }
   for(size_t i = 0; i < length-1; ++i) {
-    if(bitfield[i] != 0xff) {
+    if(bitfield[i] != 0xffu) {
       return false;
     }
   }

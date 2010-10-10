@@ -44,7 +44,7 @@
 #ifdef HAVE_WINSOCK2_H
 
 #ifndef _WIN32_WINNT
-# define _WIN32_WINNT 0x501
+# define _WIN32_WINNT 0x501u
 #endif // _WIN32_WINNT
 #include <winsock2.h>
 #undef ERROR

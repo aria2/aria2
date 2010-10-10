@@ -38,7 +38,7 @@
 
 #ifdef __MINGW32__
 # ifndef WINVER
-#  define WINVER 0x501
+#  define WINVER 0x501u
 # endif // !WINVER
 # ifdef HAVE_WINSOCK2_H
 #  ifndef FD_SETSIZE

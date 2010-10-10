@@ -637,11 +637,11 @@ void computeFastSet
   }
   unsigned char tx[24];
   memcpy(tx, compact, 4);
-  if((tx[0] & 0x80) == 0 || (tx[0] & 0x40) == 0) {
-    tx[2] = 0x00;
-    tx[3] = 0x00;
+  if((tx[0] & 0x80u) == 0 || (tx[0] & 0x40u) == 0) {
+    tx[2] = 0x00u;
+    tx[3] = 0x00u;
   } else {
-    tx[3] = 0x00;
+    tx[3] = 0x00u;
   }
   memcpy(tx+4, infoHash, 20);
   unsigned char x[20];

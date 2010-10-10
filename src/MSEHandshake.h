@@ -64,8 +64,8 @@ public:
 
   enum CRYPTO_TYPE {
     CRYPTO_NONE = 0,
-    CRYPTO_PLAIN_TEXT = 0x01,
-    CRYPTO_ARC4 = 0x02
+    CRYPTO_PLAIN_TEXT = 0x01u,
+    CRYPTO_ARC4 = 0x02u
   };
 
 private:

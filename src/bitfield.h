@@ -48,7 +48,7 @@ namespace aria2 {
 namespace bitfield {
 
 // Returns the bit mask for the last byte. For example, nbits = 9,
-// then 0x80 is returned. nbits = 12, then 0xf0 is returned.
+// then 0x80u is returned. nbits = 12, then 0xf0u is returned.
 inline unsigned char lastByteMask(size_t nbits)
 {
   if(nbits == 0) {
@@ -56,7 +56,7 @@ inline unsigned char lastByteMask(size_t nbits)
   } else {
     int s = nbits%8;
     if(s == 0) {
-      return 0xff;
+      return 0xffu;
     } else {
       return -256 >> s;
     }

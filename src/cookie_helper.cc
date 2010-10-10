@@ -49,8 +49,8 @@ namespace cookie {
 namespace {
 bool isDelimiter(unsigned char c)
 {
-  return c == 0x09U || in(c, 0x20U, 0x2fU) || in(c, 0x3bU, 0x40U) ||
-    in(c, 0x5bU, 0x60U) || in(c, 0x7bU, 0x7eU);
+  return c == 0x09u || in(c, 0x20u, 0x2fu) || in(c, 0x3bu, 0x40u) ||
+    in(c, 0x5bu, 0x60u) || in(c, 0x7bu, 0x7eu);
 }
 } // namespace
 
@@ -58,7 +58,7 @@ namespace {
 std::string::const_iterator getNextDigit
 (std::string::const_iterator first, std::string::const_iterator last)
 {
-  for(; first != last && in(static_cast<unsigned char>(*first), 0x30U, 0x39U);
+  for(; first != last && in(static_cast<unsigned char>(*first), 0x30u, 0x39u);
       ++first);
   return first;
 }

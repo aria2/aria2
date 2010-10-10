@@ -120,7 +120,7 @@ void DefaultBtProgressInfoFile::save()
 
     // file version: 16 bits
     // values: '1'
-    char version[] = { 0x00, 0x01 };
+    char version[] = { 0x00u, 0x01u };
     o.write(version, sizeof(version));
     // extension: 32 bits
     // If this is BitTorrent download, then 0x00000001

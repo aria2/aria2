@@ -72,13 +72,13 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   char header[8];
   memset(header, 0, sizeof(header));
   // magic
-  header[0] = 0xa1;
-  header[1] = 0xa2;
+  header[0] = 0xa1u;
+  header[1] = 0xa2u;
   // format ID
-  header[2] = 0x02;
+  header[2] = 0x02u;
   // version
   header[6] = 0;
-  header[7] = 0x03;
+  header[7] = 0x03u;
   
   char zero[18];
   memset(zero, 0, sizeof(zero));

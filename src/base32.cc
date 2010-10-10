@@ -53,12 +53,12 @@ std::string encode(const std::string& src)
   uint64_t buf = 0;
   for(size_t i = 0; i < src.size(); ++i) {
     buf <<= 8;
-    buf += src[i]&0xff;
+    buf += src[i]&0xffu;
     ++count;
     if(count == 5) {
       char temp[8];
       for(size_t j = 0; j < 8; ++j) {
-        temp[7-j] = B32TABLE[buf&0x1f];
+        temp[7-j] = B32TABLE[buf&0x1fu];
         buf >>= 5;
       }
       ret += std::string(&temp[0], &temp[8]);
@@ -82,7 +82,7 @@ std::string encode(const std::string& src)
   }
   char temp[7];
   for(size_t j = 0; j < r; ++j) {
-    temp[r-1-j] = B32TABLE[buf&0x1f];
+    temp[r-1-j] = B32TABLE[buf&0x1fu];
     buf >>= 5;
   }
   ret += std::string(&temp[0], &temp[r]);

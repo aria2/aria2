@@ -86,21 +86,21 @@ void Base64::encode(unsigned char*& result, size_t& rlength,
     n += *s++ << 8;
     n += *s++;
     *p++ = CHAR_TABLE[n >> 18];
-    *p++ = CHAR_TABLE[n >> 12&0x3f];
-    *p++ = CHAR_TABLE[n >> 6&0x3f];
-    *p++ = CHAR_TABLE[n&0x3f];
+    *p++ = CHAR_TABLE[n >> 12&0x3fu];
+    *p++ = CHAR_TABLE[n >> 6&0x3fu];
+    *p++ = CHAR_TABLE[n&0x3fu];
   }
   if(r == 2) {
     int n = *s++ << 16;
     n += *s++ << 8;
     *p++ = CHAR_TABLE[n >> 18];
-    *p++ = CHAR_TABLE[n >> 12&0x3f];
-    *p++ = CHAR_TABLE[n >> 6&0x3f];
+    *p++ = CHAR_TABLE[n >> 12&0x3fu];
+    *p++ = CHAR_TABLE[n >> 6&0x3fu];
     *p++ = '=';
   } else if(r == 1) {
     int n = *s++ << 16;
     *p++ = CHAR_TABLE[n >> 18];
-    *p++ = CHAR_TABLE[n >> 12&0x3f];
+    *p++ = CHAR_TABLE[n >> 12&0x3fu];
     *p++ = '=';
     *p++ = '=';
   }
@@ -164,8 +164,8 @@ void Base64::decode(unsigned char*& result, size_t& rlength,
     n += INDEX_TABLE[*s++] << 6;
     n += INDEX_TABLE[*s++];
     *p++ = n >> 16;
-    *p++ = n >> 8&0xff;
-    *p++ = n&0xff;
+    *p++ = n >> 8&0xffu;
+    *p++ = n&0xffu;
   }
   if(r == 2) {
     int n = INDEX_TABLE[*s++] << 18;
@@ -176,7 +176,7 @@ void Base64::decode(unsigned char*& result, size_t& rlength,
     n += INDEX_TABLE[*s++] << 12;
     n += INDEX_TABLE[*s++] << 6;
     *p++ = n >> 16;
-    *p++ = n >> 8&0xff;
+    *p++ = n >> 8&0xffu;
   }
   delete [] nsrc;
 }
