@@ -1,5 +1,10 @@
 2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Code cleanup
+	* src/cookie_helper.cc
+
+2010-10-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced util::split(a,b,c) and util::split(a,b) with
 	util::divide()
 	* src/ExpatMetalinkProcessor.cc

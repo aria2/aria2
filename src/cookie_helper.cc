@@ -222,10 +222,8 @@ bool parse
   bool httpOnly = false;
 
   for(std::string::const_iterator i = nvEnd; i != end;) {
-    std::string::const_iterator j = i;
-    for(; j != end && *j != ';'; ++j);
-    std::string::const_iterator eq = i;
-    for(; eq != j && *eq != '='; ++eq);
+    std::string::const_iterator j = std::find(i, end, ';');
+    std::string::const_iterator eq = std::find(i, j, '=');
     std::string attrName = util::stripIter(i, eq);
     util::lowercase(attrName);
     std::string attrValue;
@@ -373,8 +371,7 @@ std::string reverseDomainLevel(const std::string& domain)
   std::string r;
   for(std::string::const_iterator i = domain.begin(), eoi = domain.end();
       i != eoi;) {
-    std::string::const_iterator j = i;
-    for(; j != eoi && *j != '.'; ++j);
+    std::string::const_iterator j = std::find(i, eoi, '.');
     r.insert(r.begin(), '.');
     r.insert(r.begin(), i, j);
     i = j;
