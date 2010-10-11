@@ -1,3 +1,8 @@
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten File::mkdirs()
+	* src/File.cc
+
 2010-10-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use RFC1123 date format in debug log of MDTM response and

@@ -105,23 +105,22 @@ bool File::mkdirs() {
   if(isDir()) {
     return false;
   }
-  std::vector<std::string> dirs;
-  util::split(name_, std::back_inserter(dirs), "/");
-  if(!dirs.size()) {
-    return true;
-  }
-
-  std::string accDir;
-  if(util::startsWith(name_, A2STR::SLASH_C)) {
-    accDir = A2STR::SLASH_C;
-  }
-  for(std::vector<std::string>::const_iterator itr = dirs.begin(),
-        eoi = dirs.end(); itr != eoi; ++itr, accDir += A2STR::SLASH_C) {
-    accDir += *itr;
-    if(File(accDir).isDir()) {
+  for(std::string::iterator i = name_.begin(), eoi = name_.end();
+      i != eoi;) {
+    std::string::iterator j = std::find(i, eoi, '/');
+    if(std::distance(i, j) == 0) {
+      ++i;
       continue;
     }
-    if(a2mkdir(accDir.c_str(), DIR_OPEN_MODE) == -1) {
+    i = j;
+    if(j != eoi) {
+      ++i;
+    }
+    std::string dir = std::string(name_.begin(), j);
+    if(File(dir).isDir()) {
+      continue;
+    }
+    if(a2mkdir(dir.c_str(), DIR_OPEN_MODE) == -1) {
       return false;
     }
   }
