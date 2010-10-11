@@ -221,6 +221,9 @@ bool parse
   bool secure = false;
   bool httpOnly = false;
 
+  if(nvEnd != end) {
+    ++nvEnd;
+  }
   for(std::string::const_iterator i = nvEnd; i != end;) {
     std::string::const_iterator j = std::find(i, end, ';');
     std::string::const_iterator eq = std::find(i, j, '=');
