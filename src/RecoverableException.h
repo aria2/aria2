@@ -53,6 +53,9 @@ public:
 
   RecoverableException(const char* file, int line,
                        const RecoverableException& e);
+
+  RecoverableException
+  (const char* file, int line, int errnoArg, const std::string& msg);
   
   RecoverableException(const char* file, int line, const std::string& msg,
                        downloadresultcode::RESULT result);

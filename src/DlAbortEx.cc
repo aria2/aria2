@@ -52,6 +52,10 @@ DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
 DlAbortEx::DlAbortEx(const char* file, int line, const RecoverableException& e):
   RecoverableException(file, line, e) {}
 
+DlAbortEx::DlAbortEx
+(const char* file, int line, int errnoArg, const std::string& msg):
+  RecoverableException(file, line, errnoArg, msg) {}
+
 DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
                      downloadresultcode::RESULT code):
   RecoverableException(file, line, msg, code) {}

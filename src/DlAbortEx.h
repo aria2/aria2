@@ -49,6 +49,8 @@ public:
 
   DlAbortEx(const char* file, int line, const RecoverableException& e);
 
+  DlAbortEx(const char* file, int line, int errnoArg, const std::string& msg);
+
   DlAbortEx(const char* file, int line, const std::string& msg,
             downloadresultcode::RESULT code);
 };

@@ -1,5 +1,15 @@
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added errno member variable to Exception.
+	* src/DlAbortEx.cc
+	* src/DlAbortEx.h
+	* src/Exception.cc
+	* src/Exception.h
+	* src/RecoverableException.cc
+	* src/RecoverableException.h
+
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Simplified directory creation.
 	* src/DHTAutoSaveCommand.cc
 

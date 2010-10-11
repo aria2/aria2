@@ -36,8 +36,11 @@
 #define _D_EXCEPTION_H_
 
 #include "common.h"
-#include "SharedHandle.h"
+
+#include <cerrno>
 #include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -46,6 +49,8 @@ private:
   const char* file_;
   
   int line_;
+
+  int errno_;
 
   std::string msg_;
 
@@ -62,11 +67,21 @@ public:
 
   Exception(const char* file, int line, const Exception& e);
 
+  Exception(const char* file, int line, int errnoArg, const std::string& msg);
+
   virtual ~Exception() throw();
 
-  virtual const char* what() const throw();
+  virtual const char* what() const throw()
+  {
+    return msg_.c_str();
+  }
 
-  std::string stackTrace() const throw();
+  std::string stackTrace() const;
+
+  int getErrno() const
+  {
+    return errno_;
+  }
 };
 
 } // namespace aria2

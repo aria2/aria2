@@ -60,6 +60,11 @@ RecoverableException::RecoverableException
   code_(downloadresultcode::UNKNOWN_ERROR) {}
   
 RecoverableException::RecoverableException
+(const char* file, int line, int errnoArg, const std::string& msg):
+  Exception(file, line, errnoArg, msg),
+  code_(downloadresultcode::UNKNOWN_ERROR) {}
+
+RecoverableException::RecoverableException
 (const char* file, int line, const std::string& msg,
  downloadresultcode::RESULT result):
   Exception(file, line, msg), code_(result) {}
