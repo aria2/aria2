@@ -1,5 +1,10 @@
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten AbstractDiskWriter::openFile() without File::exists().
+	* src/AbstractCommand.cc
+
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added errno member variable to Exception.
 	* src/DlAbortEx.cc
 	* src/DlAbortEx.h

@@ -70,10 +70,14 @@ AbstractDiskWriter::~AbstractDiskWriter()
 
 void AbstractDiskWriter::openFile(uint64_t totalLength)
 {
-  if(File(filename_).exists()) {
+  try {
     openExistingFile(totalLength);
-  } else {
-    initAndOpenFile(totalLength);
+  } catch(RecoverableException& e) {
+    if(e.getErrno() == ENOENT) {
+      initAndOpenFile(totalLength);
+    } else {
+      throw;
+    }
   }
 }
 
@@ -87,11 +91,6 @@ void AbstractDiskWriter::closeFile()
 
 void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
 {
-  if(!File(filename_).exists()) {
-    throw DL_ABORT_EX
-      (StringFormat(EX_FILE_OPEN, filename_.c_str(), MSG_FILE_NOT_FOUND).str());
-  }
-
   int flags = O_BINARY;
   if(readOnly_) {
     flags |= O_RDONLY;
@@ -100,8 +99,10 @@ void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
   }
 
   if((fd_ = open(filename_.c_str(), flags, OPEN_MODE)) < 0) {
-    throw DL_ABORT_EX
-      (StringFormat(EX_FILE_OPEN, filename_.c_str(), strerror(errno)).str());
+    throw DL_ABORT_EX2
+      (errno,
+       StringFormat
+       (EX_FILE_OPEN, filename_.c_str(), strerror(errno)).str());
   }
 }
 
@@ -111,8 +112,9 @@ void AbstractDiskWriter::createFile(int addFlags)
   util::mkdirs(File(filename_).getDirname());
   if((fd_ = open(filename_.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
                 OPEN_MODE)) < 0) {
-    throw DL_ABORT_EX(StringFormat(EX_FILE_OPEN,
-                                   filename_.c_str(), strerror(errno)).str());
+    throw DL_ABORT_EX2
+      (errno,
+       StringFormat(EX_FILE_OPEN, filename_.c_str(), strerror(errno)).str());
   }  
 }
 
