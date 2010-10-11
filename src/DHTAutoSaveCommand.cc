@@ -91,22 +91,7 @@ void DHTAutoSaveCommand::save()
 
   std::string tempFile = dhtFile;
   tempFile += "__temp";
-  {
-    File f(tempFile);
-    if(!f.isFile()) {
-      File dir(f.getDirname());
-      if(!dir.exists()) {
-        if(!dir.mkdirs()) {
-          getLogger()->info(EX_MAKE_DIR,
-                            dir.getPath().c_str(), strerror(errno));
-          return;
-        }
-      } else if(!dir.isDir()) {
-        getLogger()->info(EX_NOT_DIRECTORY, dir.getPath().c_str());
-        return;
-      }
-    }
-  }
+  File(tempFile).mkdirs();
   std::vector<SharedHandle<DHTNode> > nodes;
   std::vector<SharedHandle<DHTBucket> > buckets;
   routingTable_->getBuckets(buckets);

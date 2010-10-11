@@ -1,5 +1,10 @@
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Simplified directory creation.
+	* src/DHTAutoSaveCommand.cc
+
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Skip ";" after name value pair.
 	* src/cookie_helper.cc
 
