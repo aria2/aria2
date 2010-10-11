@@ -1,5 +1,10 @@
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Rewritten util::mkdirs()
+	* src/util.cc
+
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten File::mkdirs()
 	* src/File.cc
 

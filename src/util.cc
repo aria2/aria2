@@ -1120,13 +1120,7 @@ unsigned int alphaToNum(const std::string& alphabets)
 void mkdirs(const std::string& dirpath)
 {
   File dir(dirpath);
-  if(dir.isDir()) {
-    // do nothing
-  } else if(dir.exists()) {
-    throw DL_ABORT_EX
-      (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
-                    "File already exists.").str());
-  } else if(!dir.mkdirs()) {
+  if(!dir.mkdirs() &&!dir.isDir()) {
     throw DL_ABORT_EX
       (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
                     strerror(errno)).str());
