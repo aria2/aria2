@@ -577,14 +577,8 @@ void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
     o << "Comment: " << torrentAttrs->comment << "\n";
   }
   if(torrentAttrs->creationDate) {
-    struct tm* staticNowtmPtr;
-    char buf[26];
-    time_t t = torrentAttrs->creationDate;
-    if((staticNowtmPtr = localtime(&t)) != 0 &&
-       asctime_r(staticNowtmPtr, buf) != 0) {
-      // buf includes "\n"
-      o << "Creation Date: " << buf;
-    }
+    o << "Creation Date: " << Time(torrentAttrs->creationDate).toHTTPDate()
+      << std::endl;
   }
   if(!torrentAttrs->createdBy.empty()) {
     o << "Created By: " << torrentAttrs->createdBy << "\n";

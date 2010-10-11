@@ -1,5 +1,14 @@
 2010-10-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use RFC1123 date format in debug log of MDTM response and
+	last-modified time and creation date of .torrent file printed
+	using -S.
+	* src/FtpNegotiationCommand.cc
+	* src/RequestGroup.cc
+	* src/bittorrent_helper.cc
+
+2010-10-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.10.4
 	* configure.ac
 	* doc/aria2c.1.txt

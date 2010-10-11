@@ -1243,9 +1243,8 @@ void RequestGroup::setURISelector(const SharedHandle<URISelector>& uriSelector)
 void RequestGroup::applyLastModifiedTimeToLocalFiles()
 {
   if(!pieceStorage_.isNull() && lastModifiedTime_.good()) {
-    time_t t = lastModifiedTime_.getTime();
-    logger_->info("Applying Last-Modified time: %s in local time zone",
-                  ctime(&t));
+    logger_->info("Applying Last-Modified time: %s",
+                  lastModifiedTime_.toHTTPDate().c_str());
     size_t n =
       pieceStorage_->getDiskAdaptor()->utime(Time(), lastModifiedTime_);
     logger_->info("Last-Modified attrs of %lu files were updated.",

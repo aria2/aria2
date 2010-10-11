@@ -335,16 +335,9 @@ bool FtpNegotiationCommand::recvMdtm()
   if(status == 213) {
     if(lastModifiedTime.good()) {
       getRequestGroup()->updateLastModifiedTime(lastModifiedTime);
-      time_t t = lastModifiedTime.getTime();
-      struct tm* tms = gmtime(&t); // returned struct is statically allocated.
-      if(tms) {
-        if(getLogger()->debug()) {
-          getLogger()->debug("MDTM result was parsed as: %s GMT", asctime(tms));
-        }
-      } else {
-        if(getLogger()->debug()) {
-          getLogger()->debug("gmtime() failed for MDTM result.");
-        }
+      if(getLogger()->debug()) {
+        getLogger()->debug("MDTM result was parsed as: %s",
+                           lastModifiedTime.toHTTPDate().c_str());
       }
     } else {
       if(getLogger()->debug()) {
