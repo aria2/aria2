@@ -112,19 +112,38 @@ void FileTest::testSize() {
 }
 
 void FileTest::testMkdir() {
-  std::string dir = "./aria2_FileTest_testMkdir/test";
-  File d(dir);
-  if(d.exists()) {
-    CPPUNIT_ASSERT(d.remove());
+  {
+    std::string dir = "./aria2_FileTest_testMkdir/test";
+    File d(dir);
+    if(d.exists()) {
+      CPPUNIT_ASSERT(d.remove());
+    }
+    CPPUNIT_ASSERT(!d.exists());
+
+    CPPUNIT_ASSERT(d.mkdirs());
+
+    CPPUNIT_ASSERT(d.exists());
+    // this test failes because d.mkdir returns false when the directory is
+    // already exists.
+    CPPUNIT_ASSERT(!d.mkdirs());
   }
-  CPPUNIT_ASSERT(!d.exists());
+  {
+    std::string dir = ".////aria2_FileTest_testMkdir////test2///";
+    std::string nDir = "./aria2_FileTest_testMkdir/test2";
+    File d(dir);
+    File nd(nDir);
+    if(d.exists()) {
+      CPPUNIT_ASSERT(d.remove());
+    }
+    CPPUNIT_ASSERT(!nd.exists());
 
-  CPPUNIT_ASSERT(d.mkdirs());
+    CPPUNIT_ASSERT(d.mkdirs());
 
-  CPPUNIT_ASSERT(d.exists());
-  // this test failes because d.mkdir returns false when the directory is
-  // already exists.
-  CPPUNIT_ASSERT(!d.mkdirs());
+    CPPUNIT_ASSERT(nd.exists());
+    // this test failes because d.mkdir returns false when the directory is
+    // already exists.
+    CPPUNIT_ASSERT(!d.mkdirs());
+  }  
 }
 
 void FileTest::testGetDirname()
