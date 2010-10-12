@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-10-12 20:34+0900\n"
-"PO-Revision-Date: 2010-03-23 10:37+0000\n"
-"Last-Translator: Tony Ren <aus.dem.Mars@gmail.com>\n"
+"PO-Revision-Date: 2010-09-21 11:03+0000\n"
+"Last-Translator: Iven Day <Unknown>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
+"X-Launchpad-Export-Date: 2010-10-12 11:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
@@ -102,9 +102,8 @@ msgid "must be one of the following:"
 msgstr "必须是下列取值之一："
 
 #: src/OptionHandlerImpl.h:529
-#, fuzzy
 msgid "Unrecognized format"
-msgstr "无法识别的代理格式"
+msgstr ""
 
 #: src/OptionHandlerImpl.h:665
 msgid "unrecognized proxy format"
@@ -120,6 +119,8 @@ msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
+" -o, --out=FILE 下载文件的文件名。当使用 -Z\n"
+"                              选项时，此选项被忽略。"
 
 #: src/usage_text.h:42
 msgid ""
@@ -139,9 +140,12 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
+" -D, --daemon 作为守护进程运行。当前工作目录将\n"
+"                              被设定为\"/\"，而标准输入、标准\n"
+"                              输出、标准错误输出将被重定向到\n"
+"                              \"/dev/null\"。"
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -160,23 +164,22 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N 使用N个链接下载同一个文件。如果给定的链接多于\n"
-"                              N个，前N个链接将被使用，剩余\n"
-"                              的链接将被用作备份。如果给定\n"
-"                              的链接小于N个，这些链接将被\n"
-"                              使用不只一次，因此同时会有总\n"
-"                              计N个链接。也请参阅-j选项。\n"
-"                              请注意，在Metalink下载中，这个\n"
-"                              选项无效，可以使用-C选项替换。"
+" -s, --split=N 使用N个连接下载文件。如果给定\n"
+"                              多于N个URL，将使用前N个，而其他URL\n"
+"                              备用。如果给定少于N个URL，这些URL\n"
+"                              将被重复使用，以保证N个连接同时进\n"
+"                              行。至同一主机的连接数被\n"
+"                              --max-connection-per-server 选项所\n"
+"                              限制。请同时参阅-j和--min-split-size\n"
+"                              选项。请注意，对于Metalink下载，此\n"
+"                              选项不起作用，请使用-C选项。"
 
 #: src/usage_text.h:62
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
 "                              has occured."
-msgstr ""
-" --retry-wait=SEC 设置第二个等待以便在发生错误时重试\n"
-"                              已经存在。"
+msgstr " --retry-wait=SEC 设置出错后等待的秒数。"
 
 #: src/usage_text.h:65
 msgid " -t, --timeout=SEC            Set timeout in seconds."
@@ -193,6 +196,9 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --http-proxy=PROXY 设置HTTP代理服务器。要覆盖\n"
+"                              之前设置的代理，请使用\"\"。也请\n"
+"                              参阅影响全部URL的--all-proxy选项。"
 
 #: src/usage_text.h:74
 msgid ""
@@ -201,6 +207,9 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --https-proxy=PROXY 设置HTTPS代理服务器。要覆盖\n"
+"                              之前设置的代理，请使用\"\"。也请\n"
+"                              参阅影响全部URL的--all-proxy选项。"
 
 #: src/usage_text.h:79
 msgid ""
@@ -210,6 +219,9 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --ftp-proxy=PROXY 设置FTP代理服务器。要覆盖\n"
+"                              之前设置的代理，请使用\"\"。也请\n"
+"                              参阅影响全部URL的--all-proxy选项。"
 
 #: src/usage_text.h:84
 msgid ""
@@ -222,6 +234,12 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
+" --all-proxy=PROXY 设置所有协议的代理服务器。要覆盖\n"
+"                              之前设置的代理，请使用\"\"。想覆盖此选项，\n"
+"                              并设置指定协议的代理服务器，请使用\n"
+"                              --http-proxy，--https-proxy和--ftp-proxy\n"
+"                              选项。\n"
+"                              此设置对所有链接有效。"
 
 #: src/usage_text.h:92
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -237,7 +255,7 @@ msgstr " --proxy-method=METHOD 设置使用在代理请求中的方法。"
 
 #: src/usage_text.h:98
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr " --referer=REFERER Set 设置Referer。此设置对所有链接有效。"
+msgstr " --referer=REFERER 设置引用页，此设置对所有链接有效。"
 
 #: src/usage_text.h:100
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
@@ -271,10 +289,10 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
-" --lowest-speed-limit=SPEED 如果下载速度低于或等于此值，则\n"
-"                              关闭链接（b/s）。\n"
-"                              0意味着aria2没有最低速度限制。\n"
-"                              您可以附加K或M（1K=1024，1M=1024K）。\n"
+" --lowest-speed-limit=SPEED 如果下载速度低于或等于此值（字节/秒），\n"
+"                              则断开连接。0意味着aria2没有最\n"
+"                              低速度限制。你可以使用K或M作为\n"
+"                              后缀（1K=1024，1M=1024K）。\n"
 "                              此选项对BT下载无效。"
 
 #: src/usage_text.h:115
@@ -719,12 +737,10 @@ msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr " --enable-peer-exchange[=true|false] 启用Peer交换扩展。"
 
 #: src/usage_text.h:300
-#, fuzzy
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
-msgstr " --enable-dht[=true|false] 启用DHT功能。"
+msgstr ""
 
 #: src/usage_text.h:302
-#, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"
 "                              DHT. Multiple ports can be specified by using\n"
@@ -733,27 +749,18 @@ msgid ""
 "','\n"
 "                              and '-' can be used together."
 msgstr ""
-" --dht-listen-port=PORT... 为DHT设置UDP侦听端口。\n"
-"                              使用','可以指定多个端口，例\n"
-"                              如：\"6881,6885\"。您也可以使\n"
-"                              用'-'指定一个范围：\"6881-6999\"。\n"
-"                              ','和'-'可以一起使用。"
 
 #: src/usage_text.h:308
-#, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT 设置主机和端口作为进入DHT网络的进入点。\n"
-"                              网络的进入点。"
 
 #: src/usage_text.h:311
-#, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
-msgstr " --dht-file-path=PATH 修改DHT路由表文件，保存到PATH。"
+msgstr ""
 
 #: src/usage_text.h:313
 msgid ""
@@ -1607,7 +1614,6 @@ msgstr ""
 "                              您可以附加K或M（1K=1024，1M=1024K）。"
 
 #: src/usage_text.h:702
-#, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
 "older\n"
@@ -1615,12 +1621,8 @@ msgid ""
 "has\n"
 "                              many limitations. See man page for details."
 msgstr ""
-" -R, --remote-time[=true|false] 从远程HTTP/FTP服务器检索远程\n"
-"                              文件的时间戳以及其是否有效，将\n"
-"                              之应用到本地文件。"
 
 #: src/usage_text.h:706
-#, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
 "                              --on-download-complete is called when "
@@ -1633,15 +1635,8 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --bt-hash-check-seed[=true|false] 如果选择true，在使用--check-integrityer\n"
-"                              选项进行哈希检查后，且文件完整时，\n"
-"                              继续提供文件种子。如果您仅仅想检查并下\n"
-"                              载文件，当文件被损坏或不完整时，\n"
-"                              请设置此选项为false。\n"
-"                              此设置仅对BT下载有效。"
 
 #: src/usage_text.h:714
-#, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
 "asynchronous\n"
@@ -1649,12 +1644,8 @@ msgid ""
 "when\n"
 "                              --async-dns=false."
 msgstr ""
-" --enable-direct-io[=true|false] 启用直接I/O，在分配文件空间时，\n"
-"                              这可以降低CPU负载。\n"
-"                              如果遇到任何错误，请关闭。"
 
 #: src/usage_text.h:718
-#, fuzzy
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
 "                              Use --dht-listen-port option to specify port\n"
@@ -1662,10 +1653,6 @@ msgid ""
 "addr6\n"
 "                              option."
 msgstr ""
-" --bt-require-crypto=true|false 如果选择true，aria2将不会\n"
-"                              和遗留的握手接受并建立\n"
-"                              连接。因此aria2问题使用\n"
-"                              模糊握手。"
 
 #: src/usage_text.h:723
 msgid ""
@@ -1676,20 +1663,16 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:727
-#, fuzzy
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT 设置主机和端口作为进入DHT网络的进入点。\n"
-"                              网络的进入点。"
 
 #: src/usage_text.h:730
-#, fuzzy
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
-msgstr " --dht-file-path=PATH 修改DHT路由表文件，保存到PATH。"
+msgstr ""
 
 #: src/usage_text.h:732
 msgid ""
@@ -2494,7 +2477,7 @@ msgstr ""
 
 #: src/message.h:266
 msgid "Exception caught"
-msgstr ""
+msgstr "捕捉到异常"
 
 #: src/message.h:267
 #, c-format

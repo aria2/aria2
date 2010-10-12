@@ -11,14 +11,14 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-10-12 20:34+0900\n"
-"PO-Revision-Date: 2010-04-16 06:55+0000\n"
-"Last-Translator: Max Belozerov <Unknown>\n"
+"PO-Revision-Date: 2010-09-17 04:25+0000\n"
+"Last-Translator: Andrew Zhuravlev <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-26 12:52+0000\n"
+"X-Launchpad-Export-Date: 2010-10-12 11:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:222
@@ -106,9 +106,8 @@ msgid "must be one of the following:"
 msgstr "должно быть одним из следующих:"
 
 #: src/OptionHandlerImpl.h:529
-#, fuzzy
 msgid "Unrecognized format"
-msgstr "неизвестный формат прокси"
+msgstr "Неизвестный формат"
 
 #: src/OptionHandlerImpl.h:665
 msgid "unrecognized proxy format"
@@ -155,7 +154,6 @@ msgstr ""
 "                              \"/dev/null\"."
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -174,20 +172,6 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N Загрузить файл, используя N подключений. Если задано\n"
-"                              больше N URL, тогда первые N URL будут "
-"использоваться, а\n"
-"                              другие URL будут оставлены для резерва. Если "
-"задано меньше\n"
-"                              чем N URL, то эти URL будут использоваться "
-"больше одного\n"
-"                              раза, значит всего N соединений будет создано\n"
-"                              одновременно. Пожалуйста, смотрите также "
-"параметр -j.\n"
-"                              Пожалуйста обратите внимание на то, что в "
-"Metalink загрузках этот\n"
-"                              параметр не имеет влияния и используйте вместо "
-"него параметр -C."
 
 #: src/usage_text.h:62
 msgid ""
@@ -817,14 +801,6 @@ msgid ""
 "                              To limit the overall upload speed, use\n"
 "                              --max-overall-upload-limit option."
 msgstr ""
-" -u, --max-upload-limit=SPEED Указать максимальную скорость отдачи узла "
-"каждого торента в\n"
-"                              байтах в секунду. 0 значит неограниченно\n"
-"                              Вы можете добавить K или M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Чтобы ограничить общую скорость отдачи, "
-"используйте\n"
-"                              параметр --max-overall-upload-limit."
 
 #: src/usage_text.h:280
 msgid ""
@@ -886,12 +862,10 @@ msgstr ""
 " --enable-peer-exchange[=true|false] Разрешить расширение прямого обмена."
 
 #: src/usage_text.h:300
-#, fuzzy
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
-msgstr " --enable-dht[=true|false] Включить поддержку DHT."
+msgstr " --enable-dht[=true|false] Использовать IPv4 DHT."
 
 #: src/usage_text.h:302
-#, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"
 "                              DHT. Multiple ports can be specified by using\n"
@@ -900,29 +874,27 @@ msgid ""
 "','\n"
 "                              and '-' can be used together."
 msgstr ""
-" --dht-listen-port=PORT... Указать порт прослушивания UDP для DHT.\n"
-"                              Несколько портов можно указать используя ',',\n"
-"                              например: \"6881,6885\". Вы также можете "
-"использовать '-',\n"
-"                              чтоб указать диапазон: \"6881-6999\". ',' и "
-"'-' могут\n"
-"                              быть использованы вместе."
+" --dht-listen-port=PORT... Установить UDP порт для соединений DHT (как IPv4, "
+"так и IPv6).\n"
+"                              Можно указать несколько портов через запятую, "
+"например: \"6881,6885\".\n"
+"                              Также можно указать диапазон портов: "
+"\"6881-6885\".\n"
+"                              \".\" и \"-\" можно использовать одновременно."
 
 #: src/usage_text.h:308
-#, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT Установить хост и порт, как точку входа к DHT\n"
-"                              сети."
+" --dht-entry-point=HOST:PORT Установить адрес и порт для входа в сеть DHT."
 
 #: src/usage_text.h:311
-#, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
-msgstr " --dht-file-path=PATH Заменить файл таблицы роутинга DHT на PATH."
+msgstr ""
+" --dht-file-path=PATH Изменить файл таблицы маршрутов для IPv4 DHT на PATH."
 
 #: src/usage_text.h:313
 msgid ""
@@ -1657,6 +1629,12 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
+" --on-download-pause=COMMAND Указать команду, которая будет выполнена тогда, "
+"когда загрузка\n"
+"                              будет приостановлена.\n"
+"                              Смотрите параметр --on-download-start, чтоб\n"
+"                              прояснить требования к COMMAND.\n"
+"                              Смотрите также параметр --on-download-stop"
 
 #: src/usage_text.h:559
 msgid ""
@@ -2019,7 +1997,6 @@ msgstr ""
 "1024K)."
 
 #: src/usage_text.h:702
-#, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
 "older\n"
@@ -2027,13 +2004,8 @@ msgid ""
 "has\n"
 "                              many limitations. See man page for details."
 msgstr ""
-" -R, --remote-time[=true|false] Ищет метку времени файла на\n"
-"                              удаленном HTTP/FTP сервере и, если это "
-"доступно,\n"
-"                              применяет ее к локальному файлу."
 
 #: src/usage_text.h:706
-#, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
 "                              --on-download-complete is called when "
@@ -2046,21 +2018,8 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --on-download-stop=COMMAND Указать команду, которая будет выполняться при "
-"остановке загрузки.\n"
-"                              Вы можете переопределить команду для "
-"конкретных причин остановки\n"
-"                              используя опции --on-download-complete (по "
-"завершении загрузки) и --on-download-error\n"
-"                              (остановка по ошибке). Если эти опции заданы, "
-"то команда, указанная в этой опции,\n"
-"                              не выполняется.\n"
-"                              Смотрите справку по опции --on-download-start, "
-"чтобы узнать требования\n"
-"                              к команде COMMAND"
 
 #: src/usage_text.h:714
-#, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
 "asynchronous\n"
@@ -2068,13 +2027,8 @@ msgid ""
 "when\n"
 "                              --async-dns=false."
 msgstr ""
-" --enable-direct-io[=true|false] Разрешить прямое I/O (чтение/запись), "
-"которое уменьшает использование cpu (процессора) во\n"
-"                              время резервирования места для файла.\n"
-"                              Выключите, если произошла какая-либо ошибка"
 
 #: src/usage_text.h:718
-#, fuzzy
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
 "                              Use --dht-listen-port option to specify port\n"
@@ -2082,12 +2036,6 @@ msgid ""
 "addr6\n"
 "                              option."
 msgstr ""
-" --bt-require-crypto=true|false Если указано true, aria2 не принимает и не\n"
-"                              устанавливает соединение с наследованием "
-"начального обмена BitTorrent.\n"
-"                              Таким образом aria2 всегда использует "
-"обфускацию\n"
-"                              начального обмена."
 
 #: src/usage_text.h:723
 msgid ""
@@ -2098,20 +2046,16 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:727
-#, fuzzy
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT Установить хост и порт, как точку входа к DHT\n"
-"                              сети."
 
 #: src/usage_text.h:730
-#, fuzzy
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
-msgstr " --dht-file-path=PATH Заменить файл таблицы роутинга DHT на PATH."
+msgstr ""
 
 #: src/usage_text.h:732
 msgid ""

@@ -1,5 +1,13 @@
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Russian, Simplified Chinese and French translation. Thanks
+	to all translators.
+	* po/fr.po
+	* po/ru.po
+	* po/zh_CN.po
+
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added keys parameter to tellStatus, tellActive, tellStopped and
 	tellWaiting.
 	* doc/xmlrpc/aria2rpc
