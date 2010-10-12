@@ -1,5 +1,11 @@
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added keys parameter to tellStatus, tellActive, tellStopped and
+	tellWaiting.
+	* doc/xmlrpc/aria2rpc
+
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated po templates.
 	* po/aria2.pot
 

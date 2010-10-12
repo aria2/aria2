@@ -234,10 +234,10 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} unpause GID [options]
        #{program_name} unpauseAll [options]
        #{program_name} changePosition GID pos how [options]
-       #{program_name} tellStatus GID [options]
-       #{program_name} tellActive [options]
-       #{program_name} tellWaiting offset num [options]
-       #{program_name} tellStopped offset num [options]
+       #{program_name} tellStatus GID [keys] [options]
+       #{program_name} tellActive [keys] [options]
+       #{program_name} tellWaiting offset num [keys] [options]
+       #{program_name} tellStopped offset num [keys] [options]
        #{program_name} getOption GID [options]
        #{program_name} getGlobalOption [options]
        #{program_name} getFiles   GID [options]
@@ -299,13 +299,15 @@ elsif command == "addMetalink" then
   result=client.call("aria2."+command,
                      XMLRPC::Base64.new(metalinkData), options)
 elsif command == "tellStatus" then
-  result=client.call("aria2."+command, resources[0])
+  result=client.call("aria2."+command, resources[0], resources[1..-1])
 elsif command == "tellActive" then
-  result=client.call("aria2."+command)
+  result=client.call("aria2."+command, resources[0..-1])
 elsif command == "tellWaiting" then
-  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i())
+  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i(),
+                     resources[2..-1])
 elsif command == "tellStopped" then
-  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i())
+  result=client.call("aria2."+command, resources[0].to_i(), resources[1].to_i(),
+                     resources[2..-1])
 elsif command == "getOption" then
   result=client.call("aria2."+command, resources[0])
 elsif command == "getGlobalOption" then
