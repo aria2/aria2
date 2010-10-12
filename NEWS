@@ -1,3 +1,85 @@
+aria2 1.10.4
+============
+
+Release Note
+------------
+
+This release fixes the bug that aria2 hangs when FTP server does not
+send '226 Transfer Complete' message and the bug that the time used in
+file allocation is taken into account when calculating download speed.
+Non UTF-8 filenames are now percent-encoded.  The comments and name in
+.torrent file in XML-RPC response are also percent-encoded if they are
+not UTF-8.  Compile error on OpenBSD4.7(i386) was fixed.  A warning
+message when CA certificates are not imported is not printed in
+console. It is shown when certificate verification error is actually
+occurred.
+
+Please note that since 1.10.0 release, aria2 uses 1 connection per
+host by default and has 20MiB segment size restriction. So whatever
+value you specify using -s option, it uses 1 connection per host. To
+make it behave like 1.9.x, use -x16 -k1M (see
+--max-connection-per-server and --min-split-size option in man
+page). If you specify multiple hosts, aria2 will use all of them and
+open multiple connections.
+
+Changes
+-------
+ 
+ * Updated Russian, Simplified Chinese and French translation. Thanks
+   to all translators.
+
+ * Use RFC1123 date format for creation date of .torrent file printed
+   using -S.
+
+ * Rewritten Cookie class and Cookie parser based on
+   http://tools.ietf.org/html/draft-ietf-httpstate-cookie-15
+
+ * Use inet_ntoa if inet_ntop is not available. Since inet_ntoa does
+   not handle IPv6 address, IPv6 support is limited in this
+   case. Fixed unit test error under mingw32.
+
+ * Don't show warning message in console when CA certificates are not
+   imported.  --ca-certificate and --check-certificate option were
+   mentioned in the error message displayed when certificate
+   verification failed.
+
+ * Print message when performing slow file allocation at first time.
+
+ * Fixed compile error on OpenBSD4.7(i386).
+
+ * Execute 5 DHT tasks concurrently in each task queue.
+
+ * Fixed the bug that FtpFinishDownloadCommand does not handle
+   timeout. This means it waits for the remote server to send "226
+   Transfer Complete" message *without* its own timeout until the
+   remote server shutdowns connection(we can detect EOF in this case).
+
+ * Rewritten util::escapePath(). Now it does not replace bad chars
+   with '_':it performs percent-encoding against them.
+   util::fixTaintedBasename() now replaces "/" with "%2F".  Added 0x7f
+   as bad chars in util::detectDirTraversal().
+
+ * Non-UTF8 filenames are now percent-encoded.  For example, filename
+   for http://example.org/%90%A2%8AE will be %90%A2%8AE because it is
+   Shift_JIS. The comments and name in .torrent file in XML-RPC
+   response are percent-encoded if they are not UTF-8.
+
+ * Reset download start time of PeerStat because it is started before
+  file allocation begins. Without reset, we have incorrect download
+  time and aria2 wrongly determines that download speed is too low if
+  --lowest-speed-limit is used.
+
+ * Added keys parameter to aria2.tellStatus, aria2.tellActive,
+   aria2.tellWaiting and aria2.tellStopped XML-RPC method.  'keys' is
+   array of string. If it is specified, the response contains only
+   keys in 'keys' array. If 'keys' is empty or not specified, the
+   response contains all keys.  This is useful when you just want
+   specific keys and avoid unnecessary transfers. For example,
+   aria2.tellStatus("1", ["gid", "status"]) returns 'gid' and
+   'status' key.
+
+
+
 aria2 1.10.3
 ============
 
