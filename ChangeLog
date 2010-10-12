@@ -1,5 +1,10 @@
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated po templates.
+	* po/aria2.pot
+
+2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added testcase for File::mkdirs().
 	* test/FileTest.cc
 
