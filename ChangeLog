@@ -1,3 +1,9 @@
+2010-10-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed the bug that file allocation is enabled in HTTP even if
+	--file-allocation=none is specified.
+	* src/HttpResponseCommand.cc
+
 2010-10-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.10.4

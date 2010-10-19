@@ -478,7 +478,10 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
   command->setLowestDownloadSpeedLimit
     (getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   command->installStreamFilter(filter);
-  getRequestGroup()->setFileAllocationEnabled(decideFileAllocation(filter));    
+  if(getRequestGroup()->isFileAllocationEnabled() &&
+     !decideFileAllocation(filter)) {
+    getRequestGroup()->setFileAllocationEnabled(false);    
+  }
   getRequestGroup()->getURISelector()->tuneDownloadCommand
     (getFileEntry()->getRemainingUris(), command);
 
