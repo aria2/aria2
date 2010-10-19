@@ -399,7 +399,9 @@ DownloadEngine::findSocketPoolEntry(const std::string& key)
   for(std::multimap<std::string, SocketPoolEntry>::iterator i =
         range.first, eoi = range.second; i != eoi; ++i) {
     const SocketPoolEntry& e = (*i).second;
-    if(!e.isTimeout()) {
+    // We assume that if socket is readable it means peer shutdowns
+    // connection and the socket will receive EOF. So skip it.
+    if(!e.isTimeout() && !e.getSocket()->isReadable(0)) {
       logger_->info("Found socket for %s", key.c_str());
       return i;
     }

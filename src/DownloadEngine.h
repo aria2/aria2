@@ -257,7 +257,7 @@ public:
                   const std::string& proxyhost, uint16_t proxyport,
                   const SharedHandle<SocketCore>& sock,
                   const std::map<std::string, std::string>& options,
-                  time_t timeout);
+                  time_t timeout = 15);
 
   void poolSocket(const SharedHandle<Request>& request,
                   const std::string& username,
@@ -269,7 +269,7 @@ public:
   void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& proxyhost, uint16_t proxyport,
                   const SharedHandle<SocketCore>& sock,
-                  time_t timeout);
+                  time_t timeout = 15);
 
   void poolSocket(const SharedHandle<Request>& request,
                   const SharedHandle<Request>& proxyRequest,
