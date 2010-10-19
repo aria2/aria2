@@ -1,9 +1,5 @@
 2010-10-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
-	Release 1.10.5
-
-2010-10-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
-
 	Don't reuse socket which is readable because we assume that if
 	socket is readable it means peer shutdowns connection and the
 	socket will receive EOF. Added default timeout value to
