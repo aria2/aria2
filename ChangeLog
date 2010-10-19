@@ -1,5 +1,9 @@
 2010-10-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Release 1.10.5
+
+2010-10-19  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Bump up version number to 1.10.5
 	* configure.ac
 	* doc/aria2c.1.txt
