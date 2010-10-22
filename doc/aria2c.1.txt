@@ -87,7 +87,7 @@ HTTP/FTP Options
   defined proxy, use "".  You can override this setting and specify a
   proxy server for a particular protocol using *--http-proxy*,
   *--https-proxy* and *--ftp-proxy* options.  This affects all URIs.
-  The format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
 
 [NOTE]
 
@@ -286,13 +286,13 @@ response header.
 
   Use this proxy server for HTTP.  To erase previously defined proxy,
   use "".  See also *--all-proxy* option.  This affects all URIs.  The
-  format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
 
 *--http-proxy-passwd*=PASSWD::
 
   Set password for *--http-proxy* option.
 
-*--http-proxy-user*=USER:
+*--http-proxy-user*=USER::
 
   Set user for *--http-proxy* option.
 
@@ -300,7 +300,7 @@ response header.
 
   Use this proxy server for HTTPS. To erase previously defined proxy,
   use "". See also *--all-proxy* option.  This affects all URIs.  The
-  format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
 
 *--https-proxy-passwd*=PASSWD::
 
@@ -327,8 +327,10 @@ response header.
   Enable HTTP/1.1 pipelining.
   Default: 'false'
 
-  In performance perspective, there is no advantage to enable this
-  option for normal case.
+[NOTE]
+
+In performance perspective, there is usually no advantage to enable
+this option.
 
 *--header*=HEADER::
   Append HEADER to HTTP request header.
@@ -384,7 +386,7 @@ FTP Specific Options
 
   Use this proxy server for FTP.  To erase previously defined proxy,
   use "".  See also *--all-proxy* option.  This affects all URIs.  The
-  format of PROXY is [\http://][USER:PASSWORD@]HOST[:PORT]
+  format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
 
 *--ftp-proxy-passwd*=PASSWD::
 
@@ -1144,22 +1146,22 @@ ENVIRONMENT
 -----------
 aria2 recognizes the following environment variables.
 
-http_proxy [\http://][USER:PASSWORD@]HOST[:PORT]::
+http_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
   Specify proxy server for use in HTTP.
   Overrides http-proxy value in configuration file.
   The command-line option *--http-proxy* overrides this value.
 
-https_proxy [\http://][USER:PASSWORD@]HOST[:PORT]::
+https_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
   Specify proxy server for use in HTTPS.
   Overrides https-proxy value in configuration file.
   The command-line option *--https-proxy* overrides this value.
 
-ftp_proxy [\http://][USER:PASSWORD@]HOST[:PORT]::
+ftp_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
   Specify proxy server for use in FTP.
   Overrides ftp-proxy value in configuration file.
   The command-line option *--ftp-proxy* overrides this value.
 
-all_proxy [\http://][USER:PASSWORD@]HOST[:PORT]::
+all_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
   Specify proxy server for use if no protocol-specific proxy is specified.
   Overrides all-proxy value in configuration file.
   The command-line option *--all-proxy* overrides this value.
@@ -1449,12 +1451,12 @@ type array and its element is URI which is of type string.  For
 BitTorrent Magnet URI, 'uris' must have only one element and it should
 be BitTorrent Magnet URI.  URIs in 'uris' must point to the same
 file. For example, a file chunkybaconlinux.iso is hosted in 2
-locations: http://server/chunkybaconlinux.iso and
-http://mirror/chunkybaconlinux.iso.  You can download this iso image
+locations: \http://server/chunkybaconlinux.iso and
+\http://mirror/chunkybaconlinux.iso.  You can download this iso image
 using 2 URIs by issuing
-aria2.addUri(['http://server/chunkybaconlinux.iso',
-'http://mirror/chunkybaconlinux.iso']).  Imagine there is an another
-file URI, say, http://mirror2/chunkydonutslinux.iso, which is
+aria2.addUri(["http://server/chunkybaconlinux.iso",
+"http://mirror/chunkybaconlinux.iso"]).  Imagine there is an another
+file URI, say, \http://mirror2/chunkydonutslinux.iso, which is
 different iso image.  You cannot mix this URI with previous URIs in
 one aria2.addUri command.  If you do, aria2 does not complain but
 download may fail.  'options' is of type struct and its members are a

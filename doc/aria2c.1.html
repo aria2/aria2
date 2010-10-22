@@ -435,7 +435,7 @@ div#toc a:visited { color: blue; }
 </style>
 <script type="text/javascript">
 /*<![CDATA[*/
-window.onload = function(){asciidoc.footnotes();}
+window.onload = function(){asciidoc.footnotes(); asciidoc.toc(2);}
 var asciidoc = {  // Namespace.
 
 /////////////////////////////////////////////////////////////////////
@@ -567,11 +567,15 @@ footnotes: function () {
 /*]]>*/
 </script>
 </head>
-<body>
+<body style="max-width:55em">
 <div id="header">
 <h1>
 ARIA2C(1) Manual Page
 </h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
 <h2>NAME</h2>
 <div class="sectionbody">
 <p>aria2c -
@@ -693,7 +697,7 @@ downloading a file like BitTorrent.</p></div>
   defined proxy, use "".  You can override this setting and specify a
   proxy server for a particular protocol using <strong>--http-proxy</strong>,
   <strong>--https-proxy</strong> and <strong>--ftp-proxy</strong> options.  This affects all URIs.
-  The format of PROXY is [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+  The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 </dl></div>
@@ -1051,7 +1055,7 @@ response header.</td>
 <p>
   Use this proxy server for HTTP.  To erase previously defined proxy,
   use "".  See also <strong>--all-proxy</strong> option.  This affects all URIs.  The
-  format of PROXY is [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+  format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1062,13 +1066,14 @@ response header.</td>
   Set password for <strong>--http-proxy</strong> option.
 </p>
 </dd>
-</dl></div>
-<div class="paragraph"><p><strong>--http-proxy-user</strong>=USER:</p></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>Set user for *--http-proxy* option.</tt></pre>
-</div></div>
-<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>--http-proxy-user</strong>=USER
+</dt>
+<dd>
+<p>
+  Set user for <strong>--http-proxy</strong> option.
+</p>
+</dd>
 <dt class="hdlist1">
 <strong>--https-proxy</strong>=PROXY
 </dt>
@@ -1076,7 +1081,7 @@ response header.</td>
 <p>
   Use this proxy server for HTTPS. To erase previously defined proxy,
   use "". See also <strong>--all-proxy</strong> option.  This affects all URIs.  The
-  format of PROXY is [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+  format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1131,12 +1136,18 @@ response header.</td>
   Enable HTTP/1.1 pipelining.
   Default: <em>false</em>
 </p>
-<div class="literalblock">
-<div class="content">
-<pre><tt>In performance perspective, there is no advantage to enable this
-option for normal case.</tt></pre>
-</div></div>
 </dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">In performance perspective, there is usually no advantage to enable
+this option.</td>
+</tr></table>
+</div>
+<div class="dlist"><dl>
 <dt class="hdlist1">
 <strong>--header</strong>=HEADER
 </dt>
@@ -1239,7 +1250,7 @@ and Chromium/Google Chrome cookie format.</td>
 <p>
   Use this proxy server for FTP.  To erase previously defined proxy,
   use "".  See also <strong>--all-proxy</strong> option.  This affects all URIs.  The
-  format of PROXY is [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+  format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2544,7 +2555,7 @@ as exit status.</td>
 <div class="paragraph"><p>aria2 recognizes the following environment variables.</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-http_proxy [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -2554,7 +2565,7 @@ http_proxy [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@
 </p>
 </dd>
 <dt class="hdlist1">
-https_proxy [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -2564,7 +2575,7 @@ https_proxy [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD
 </p>
 </dd>
 <dt class="hdlist1">
-ftp_proxy [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -2574,7 +2585,7 @@ ftp_proxy [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]
 </p>
 </dd>
 <dt class="hdlist1">
-all_proxy [<a href="http://][USER:PASSWORD@]HOST[:PORT">http://][USER:PASSWORD@]HOST[:PORT</a>]
+all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 </dt>
 <dd>
 <p>
@@ -3259,12 +3270,12 @@ type array and its element is URI which is of type string.  For
 BitTorrent Magnet URI, <em>uris</em> must have only one element and it should
 be BitTorrent Magnet URI.  URIs in <em>uris</em> must point to the same
 file. For example, a file chunkybaconlinux.iso is hosted in 2
-locations: <a href="http://server/chunkybaconlinux.iso">http://server/chunkybaconlinux.iso</a> and
-<a href="http://mirror/chunkybaconlinux.iso">http://mirror/chunkybaconlinux.iso</a>.  You can download this iso image
+locations: http://server/chunkybaconlinux.iso and
+http://mirror/chunkybaconlinux.iso.  You can download this iso image
 using 2 URIs by issuing
-aria2.addUri([<em>http://server/chunkybaconlinux.iso</em>,
-<em>http://mirror/chunkybaconlinux.iso</em>]).  Imagine there is an another
-file URI, say, <a href="http://mirror2/chunkydonutslinux.iso">http://mirror2/chunkydonutslinux.iso</a>, which is
+aria2.addUri(["http://server/chunkybaconlinux.iso",
+"http://mirror/chunkybaconlinux.iso"]).  Imagine there is an another
+file URI, say, http://mirror2/chunkydonutslinux.iso, which is
 different iso image.  You cannot mix this URI with previous URIs in
 one aria2.addUri command.  If you do, aria2 does not complain but
 download may fail.  <em>options</em> is of type struct and its members are a
@@ -4412,7 +4423,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-10-19 23:39:58 JST
+Last updated 2010-10-22 22:40:56 JST
 </div>
 </div>
 </body>
