@@ -1,5 +1,10 @@
 2010-10-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Enclosed dht.dat path with single quote.
+	* doc/aria2c.1.txt
+
+2010-10-22  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed formatting errors. Added toc list to aria2c.1.html.  Escaped
 	URI properly.
 	* doc/aria2c.1.txt

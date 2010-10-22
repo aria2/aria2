@@ -1202,8 +1202,8 @@ dht.dat
 ~~~~~~~~
 
 By default, the routing table of IPv4 DHT is saved to the path
-$HOME/.aria2/dht.dat and the routing table of IPv6 DHT is saved to the
-path $HOME/.aria2/dht6.dat.
+'$HOME/.aria2/dht.dat' and the routing table of IPv6 DHT is saved to
+the path '$HOME/.aria2/dht6.dat'.
 
 Netrc
 ~~~~~
