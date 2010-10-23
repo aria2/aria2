@@ -89,9 +89,13 @@ void DHTAutoSaveCommand::save()
     get(family_ == AF_INET? PREF_DHT_FILE_PATH : PREF_DHT_FILE_PATH6);
   getLogger()->info("Saving DHT routing table to %s.", dhtFile.c_str());
 
-  std::string tempFile = dhtFile;
-  tempFile += "__temp";
-  File(tempFile).mkdirs();
+  File tempFile(dhtFile+"__temp");
+  // Removing tempFile is unnecessary because the file is truncated on
+  // open.  But the bug in 1.10.4 creates directory for this path.
+  // Because it is directory, opening directory as file fails.  So we
+  // first remove it here.
+  tempFile.remove();
+  File(tempFile.getDirname()).mkdirs();
   std::vector<SharedHandle<DHTNode> > nodes;
   std::vector<SharedHandle<DHTBucket> > buckets;
   routingTable_->getBuckets(buckets);
@@ -109,7 +113,8 @@ void DHTAutoSaveCommand::save()
 
   try {
     {
-      std::ofstream o(tempFile.c_str(), std::ios::out|std::ios::binary);
+      std::ofstream o(tempFile.getPath().c_str(),
+                      std::ios::out|std::ios::binary);
       if(!o) {
         throw DL_ABORT_EX
           (StringFormat("Failed to save DHT routing table to %s. cause:%s",
@@ -117,9 +122,9 @@ void DHTAutoSaveCommand::save()
       }
       serializer.serialize(o);
     }
-    if(!File(tempFile).renameTo(dhtFile)) {
+    if(!tempFile.renameTo(dhtFile)) {
       getLogger()->error("Cannot move file from %s to %s.",
-                         tempFile.c_str(), dhtFile.c_str());
+                         tempFile.getPath().c_str(), dhtFile.c_str());
     }
   } catch(RecoverableException& e) {
     getLogger()->error("Exception caught while saving DHT routing table to %s",
