@@ -48,7 +48,7 @@ StringFormat::StringFormat(const char* fmt, ...)
   char buf[1024];
   int r;
   if((r = vsnprintf(buf, sizeof(buf), fmt, ap)) > 0) {
-    msg_.assign(&buf[0], &buf[r]);
+    msg_ = buf;
   }
   va_end(ap);
 }
