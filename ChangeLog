@@ -1,5 +1,10 @@
 2010-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused variable r.
+	* src/StringFormat.cc
+
+2010-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added printf format check attribute.
 	* src/Logger.h
 	* src/StringFormat.h
