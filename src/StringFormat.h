@@ -47,7 +47,8 @@ class StringFormat {
 private:
   std::string msg_;
 public:
-  StringFormat(const char* fmt, ...);
+  StringFormat(const char* fmt, ...)
+    __attribute__ ((format (printf, 2, 3)));
 
   const std::string& str() const;
 };

@@ -1,5 +1,11 @@
 2010-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added printf format check attribute.
+	* src/Logger.h
+	* src/StringFormat.h
+
+2010-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use std::numeric_limits<time_t> instead of checking of
 	sizeof(time_t).
 	* src/NsCookieParser.cc

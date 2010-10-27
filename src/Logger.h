@@ -92,25 +92,35 @@ public:
 
   virtual ~Logger();
 
-  void debug(const char* msg, ...);
+  void debug(const char* msg, ...)
+    __attribute__ ((format (printf, 2, 3)));
 
-  void debug(const char* msg, const Exception& ex, ...);
+  void debug(const char* msg, const Exception& ex, ...)
+    __attribute__ ((format (printf, 2, 4)));
 
-  void info(const char* msg, ...);
+  void info(const char* msg, ...)
+    __attribute__ ((format (printf, 2, 3)));
 
-  void info(const char* msg, const Exception& ex, ...);
+  void info(const char* msg, const Exception& ex, ...)
+    __attribute__ ((format (printf, 2, 4)));
 
-  void notice(const char* msg, ...);
+  void notice(const char* msg, ...)
+    __attribute__ ((format (printf, 2, 3)));
 
-  void notice(const char* msg, const Exception& ex, ...);
+  void notice(const char* msg, const Exception& ex, ...)
+    __attribute__ ((format (printf, 2, 4)));
 
-  void warn(const char* msg, ...);
+  void warn(const char* msg, ...)
+    __attribute__ ((format (printf, 2, 3)));
 
-  void warn(const char* msg, const Exception& ex, ...);
+  void warn(const char* msg, const Exception& ex, ...)
+    __attribute__ ((format (printf, 2, 4)));
 
-  void error(const char*  msg, ...);
+  void error(const char*  msg, ...)
+    __attribute__ ((format (printf, 2, 3)));
 
-  void error(const char* msg, const Exception& ex, ...);
+  void error(const char* msg, const Exception& ex, ...)
+    __attribute__ ((format (printf, 2, 4)));
 
   void openFile(const std::string& filename);
 
