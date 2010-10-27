@@ -35,6 +35,7 @@
 #include "Sqlite3CookieParser.h"
 
 #include <cstring>
+#include <limits>
 
 #include "DlAbortEx.h"
 #include "util.h"
@@ -83,8 +84,10 @@ static bool parseTime(int64_t& time, const std::string& s)
   if(!util::parseLLIntNoThrow(time, s)) {
     return false;
   }
-  if(sizeof(time_t) == 4 && time > INT32_MAX) {
-    time = INT32_MAX;
+  if(std::numeric_limits<time_t>::max() < time) {
+    time = std::numeric_limits<time_t>::max();
+  } else if(std::numeric_limits<time_t>::min() > time) {
+    time = std::numeric_limits<time_t>::min();
   }
   return true;
 }

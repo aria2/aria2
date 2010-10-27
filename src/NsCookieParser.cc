@@ -35,6 +35,7 @@
 #include "NsCookieParser.h"
 
 #include <fstream>
+#include <limits>
 
 #include "util.h"
 #include "A2STR.h"
@@ -70,12 +71,15 @@ bool parseNsCookie
   if(!util::parseLLIntNoThrow(expiryTime, vs[4])) {
     return false;
   }
-  if(sizeof(time_t) == 4 && expiryTime > INT32_MAX) {
-    expiryTime = INT32_MAX;
+  if(std::numeric_limits<time_t>::max() < expiryTime) {
+    expiryTime = std::numeric_limits<time_t>::max();
+  } else if(std::numeric_limits<time_t>::min() > expiryTime) {
+    expiryTime = std::numeric_limits<time_t>::min();
   }
   cookie.setName(vs[5]);
   cookie.setValue(vs.size() >= 7? vs[6]:A2STR::NIL);
-  cookie.setExpiryTime(expiryTime == 0?INT32_MAX:expiryTime);
+  cookie.setExpiryTime(expiryTime == 0?
+                       std::numeric_limits<time_t>::max():expiryTime);
   // aria2 treats expiryTime == 0 means session cookie.
   cookie.setPersistent(expiryTime != 0);
   cookie.setDomain(cookieDomain);

@@ -36,6 +36,7 @@
 
 #include <cstring>
 #include <vector>
+#include <limits>
 
 #include "util.h"
 #include "array_fun.h"
@@ -263,8 +264,8 @@ bool parse
         } else {
           int64_t n = creationTime;
           n += delta;
-          if(n < 0 || (sizeof(time_t) < 8 && n > INT32_MAX)) {
-            maxAge = INT32_MAX;
+          if(n < 0 || std::numeric_limits<time_t>::max() < n) {
+            maxAge = std::numeric_limits<time_t>::max();
           } else {
             maxAge = n;
           }
@@ -302,7 +303,7 @@ bool parse
   } else if(foundExpires) {
     persistent = true;
   } else {
-    expiryTime = INT32_MAX;
+    expiryTime = std::numeric_limits<time_t>::max();
     persistent = false;
   }
 

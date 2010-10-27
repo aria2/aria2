@@ -1,5 +1,16 @@
 2010-10-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use std::numeric_limits<time_t> instead of checking of
+	sizeof(time_t).
+	* src/NsCookieParser.cc
+	* src/Sqlite3CookieParser.cc
+	* src/cookie_helper.cc
+	* test/CookieHelperTest.cc
+	* test/CookieStorageTest.cc
+	* test/NsCookieParserTest.cc
+
+2010-10-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed improper use of vsnprintf
 	* src/StringFormat.cc
 

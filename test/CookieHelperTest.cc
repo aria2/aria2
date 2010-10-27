@@ -1,5 +1,7 @@
 #include "cookie_helper.h"
 
+#include <limits>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Exception.h"
@@ -123,7 +125,7 @@ void CookieHelperTest::testParse()
     std::string str = "id=; Max-Age=9223372036854775807;";
     Cookie c;
     CPPUNIT_ASSERT(cookie::parse(c, str, "localhost", "/", creationDate));
-    CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, c.getExpiryTime());
+    CPPUNIT_ASSERT_EQUAL(std::numeric_limits<time_t>::max(), c.getExpiryTime());
     CPPUNIT_ASSERT(c.getPersistent());
   }
   {

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <limits>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -269,7 +270,7 @@ void CookieStorageTest::testLoad()
   Cookie c = cookies[0];
   CPPUNIT_ASSERT_EQUAL(std::string("passwd"), c.getName());
   CPPUNIT_ASSERT_EQUAL(std::string("secret"), c.getValue());
-  CPPUNIT_ASSERT_EQUAL((time_t)INT32_MAX, c.getExpiryTime());
+  CPPUNIT_ASSERT_EQUAL(std::numeric_limits<time_t>::max(), c.getExpiryTime());
   CPPUNIT_ASSERT(!c.getPersistent());
   CPPUNIT_ASSERT_EQUAL(std::string("/cgi-bin"), c.getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), c.getDomain());
