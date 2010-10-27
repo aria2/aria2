@@ -1,4 +1,4 @@
-2010-10-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+2010-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use std::numeric_limits<time_t> instead of checking of
 	sizeof(time_t).
