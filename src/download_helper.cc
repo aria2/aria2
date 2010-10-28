@@ -225,6 +225,7 @@ static SharedHandle<RequestGroup> createRequestGroup
   return rg;
 }
 
+#if defined ENABLE_BITTORRENT || ENABLE_METALINK
 static SharedHandle<MetadataInfo> createMetadataInfo(const std::string& uri)
 {
   return SharedHandle<MetadataInfo>(new MetadataInfo(uri));
@@ -234,6 +235,7 @@ static SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
 {
   return SharedHandle<MetadataInfo>(new MetadataInfo());
 }
+#endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
 

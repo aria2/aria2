@@ -1,3 +1,9 @@
+2010-10-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compiler warning with --disable-bittorrent and
+	--disable-metalink.
+	* src/download_helper.cc
+
 2010-10-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compiler warning about printf format.
