@@ -34,8 +34,7 @@ if test "x$have_libcares" = "xyes"; then
     void callback(void* arg, int status, int timeouts, struct hostent* host);
     ]],
     [[
-    ares_channel channel;
-    ares_gethostbyname(channel, "foo", 0, callback, 0);
+    ares_gethostbyname((ares_channel)0, "foo", 0, callback, 0);
     ]])],
     [have_libcares1_5=yes],
     [have_libcares1_5=no])

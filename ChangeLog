@@ -1,3 +1,8 @@
+2010-10-28  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Fixed compiler warning when checking c-ares version.
+	* m4/libcares.m4
+
 2010-10-27  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused variable r.
