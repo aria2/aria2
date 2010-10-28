@@ -84,8 +84,9 @@ void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   ++numRetry_;
   if(numRetry_ >= MAX_RETRY) {
-    getLogger()->info("ReplaceNode: Ping failed %u times. Replace %s with %s.",
-                      numRetry_, node->toString().c_str(),
+    getLogger()->info("ReplaceNode: Ping failed %lu times. Replace %s with %s.",
+                      static_cast<unsigned long>(numRetry_),
+                      node->toString().c_str(),
                       newNode_->toString().c_str());
     node->markBad();
     bucket_->addNode(newNode_);

@@ -379,8 +379,9 @@ void DefaultBtProgressInfoFile::load()
       if(piece->getBitfieldLength() != bitfieldLength) {
         throw DL_ABORT_EX
           (StringFormat("piece bitfield length mismatch."
-                        " expected: %u actual: %u",
-                        piece->getBitfieldLength(), bitfieldLength).str());
+                        " expected: %lu actual: %u",
+                        static_cast<unsigned long>(piece->getBitfieldLength()),
+                        bitfieldLength).str());
       }
       array_ptr<unsigned char> pieceBitfield
         (new unsigned char[bitfieldLength]);

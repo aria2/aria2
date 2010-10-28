@@ -114,8 +114,9 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
     return SharedHandle<Segment>();
   }
   if(logger_->debug()) {
-    logger_->debug("Attach segment#%d to CUID#%s.",
-                   piece->getIndex(), util::itos(cuid).c_str());
+    logger_->debug("Attach segment#%lu to CUID#%s.",
+                   static_cast<unsigned long>(piece->getIndex()),
+                   util::itos(cuid).c_str());
   }
   SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {
@@ -126,11 +127,12 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   SegmentEntryHandle entry(new SegmentEntry(cuid, segment));
   usedSegmentEntries_.push_back(entry);
   if(logger_->debug()) {
-    logger_->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
-                   segment->getIndex(),
-                   segment->getLength(),
-                   segment->getSegmentLength(),
-                   segment->getWrittenLength());
+    logger_->debug("index=%lu, length=%lu, segmentLength=%lu,"
+                   " writtenLength=%lu",
+                   static_cast<unsigned long>(segment->getIndex()),
+                   static_cast<unsigned long>(segment->getLength()),
+                   static_cast<unsigned long>(segment->getSegmentLength()),
+                   static_cast<unsigned long>(segment->getWrittenLength()));
   }
   if(piece->getLength() > 0) {
     std::map<size_t, size_t>::iterator positr =
@@ -138,8 +140,9 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
     if(positr != segmentWrittenLengthMemo_.end()) {
       const size_t writtenLength = (*positr).second;
       if(logger_->debug()) {
-        logger_->debug("writtenLength(in memo)=%d, writtenLength=%d",
-                       writtenLength, segment->getWrittenLength());
+        logger_->debug("writtenLength(in memo)=%lu, writtenLength=%lu",
+                       static_cast<unsigned long>(writtenLength),
+                       static_cast<unsigned long>(segment->getWrittenLength()));
       }
       //  If the difference between cached writtenLength and segment's
       //  writtenLength is less than one block, we assume that these
@@ -247,13 +250,15 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
 void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
 {
   if(logger_->debug()) {
-    logger_->debug("Canceling segment#%d", segment->getIndex());
+    logger_->debug("Canceling segment#%lu",
+                   static_cast<unsigned long>(segment->getIndex()));
   }
   pieceStorage_->cancelPiece(segment->getPiece());
   segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
   if(logger_->debug()) {
-    logger_->debug("Memorized segment index=%u, writtenLength=%u",
-                   segment->getIndex(), segment->getWrittenLength());
+    logger_->debug("Memorized segment index=%lu, writtenLength=%lu",
+                   static_cast<unsigned long>(segment->getIndex()),
+                   static_cast<unsigned long>(segment->getWrittenLength()));
   }
 }
 

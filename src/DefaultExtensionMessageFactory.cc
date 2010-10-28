@@ -94,8 +94,10 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       return m;
     } else if(extensionName == "ut_metadata") {
       if(length == 0) {
-        throw DL_ABORT_EX(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-                                       "ut_metadata", length).str());
+        throw DL_ABORT_EX
+          (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
+                        "ut_metadata",
+                        static_cast<unsigned long>(length)).str());
       }
       size_t end;
       SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length-1, end);
@@ -148,8 +150,9 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         return m;
       }
       default:
-        throw DL_ABORT_EX(StringFormat("Bad ut_metadata: unknown msg_type=%u",
-                                       msgType->i()).str());
+        throw DL_ABORT_EX
+          (StringFormat("Bad ut_metadata: unknown msg_type=%u",
+                        static_cast<unsigned int>(msgType->i())).str());
       }
     } else {
       throw DL_ABORT_EX

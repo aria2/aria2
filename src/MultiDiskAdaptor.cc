@@ -207,7 +207,8 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
           getLogger()->debug("Checking adjacent backward file to %s"
                              " whose lastPieceStartOffset+pieceLength_=%lld",
                              fileEntry->getPath().c_str(),
-                             lastPieceStartOffset+pieceLength_);
+                             static_cast<long long int>
+                             (lastPieceStartOffset+pieceLength_));
         }
         ++itr;
         // adjacent backward files are not needed to be allocated. They
@@ -218,7 +219,8 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
           if(getLogger()->debug()) {
             getLogger()->debug("file=%s, offset=%lld",
                                (*itr)->getFileEntry()->getPath().c_str(),
-                               (*itr)->getFileEntry()->getOffset());
+                               static_cast<long long int>
+                               ((*itr)->getFileEntry()->getOffset()));
           }
           if((*itr)->getFileEntry()->getOffset() <
              static_cast<off_t>(lastPieceStartOffset+pieceLength_)) {

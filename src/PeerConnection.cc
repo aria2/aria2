@@ -274,7 +274,7 @@ ssize_t PeerConnection::sendPendingData()
 {
   ssize_t writtenLength = socketBuffer_.send();
   if(logger_->debug()) {
-    logger_->debug("sent %d byte(s).", writtenLength);
+    logger_->debug("sent %ld byte(s).", static_cast<long int>(writtenLength));
   }
   return writtenLength;
 }

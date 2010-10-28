@@ -345,14 +345,15 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
     getSegmentMan()->completeSegment(getCuid(), segment);
   } else {
     getLogger()->info(EX_INVALID_CHUNK_CHECKSUM,
-                      segment->getIndex(),
+                      static_cast<unsigned long>(segment->getIndex()),
                       util::itos(segment->getPosition(), true).c_str(),
                       expectedPieceHash.c_str(),
                       actualPieceHash.c_str());
     segment->clear();
     getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX
-      (StringFormat("Invalid checksum index=%d", segment->getIndex()).str());
+      (StringFormat("Invalid checksum index=%lu",
+                    static_cast<unsigned long>(segment->getIndex())).str());
   }
 }
 

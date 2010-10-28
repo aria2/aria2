@@ -88,7 +88,7 @@ void IteratableChunkChecksumValidator::validateChunk()
       } else {
         if(logger_->info()) {
           logger_->info(EX_INVALID_CHUNK_CHECKSUM,
-                        currentIndex_,
+                        static_cast<unsigned long>(currentIndex_),
                         util::itos(getCurrentOffset(), true).c_str(),
                         dctx_->getPieceHashes()[currentIndex_].c_str(),
                         actualChecksum.c_str());
@@ -97,9 +97,9 @@ void IteratableChunkChecksumValidator::validateChunk()
       }
     } catch(RecoverableException& ex) {
       if(logger_->debug()) {
-        logger_->debug("Caught exception while validating piece index=%d."
+        logger_->debug("Caught exception while validating piece index=%lu."
                        " Some part of file may be missing. Continue operation.",
-                       ex, currentIndex_);
+                       ex, static_cast<unsigned long>(currentIndex_));
       }
       bitfield_->unsetBit(currentIndex_);
     }

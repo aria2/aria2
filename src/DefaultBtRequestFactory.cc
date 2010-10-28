@@ -174,11 +174,12 @@ void DefaultBtRequestFactory::createRequestMessages
       for(std::vector<size_t>::const_iterator i = blockIndexes.begin(),
             eoi2 = blockIndexes.end(); i != eoi2; ++i) {
         if(logger_->debug()) {
-          logger_->debug("Creating RequestMessage index=%u, begin=%u,"
-                         " blockIndex=%u",
-                         piece->getIndex(),
-                         (*i)*piece->getBlockLength(),
-                         (*i));
+          logger_->debug
+            ("Creating RequestMessage index=%lu, begin=%u,"
+             " blockIndex=%lu",
+             static_cast<unsigned long>(piece->getIndex()),
+             static_cast<unsigned int>((*i)*piece->getBlockLength()),
+             static_cast<unsigned long>(*i));
         }
         requests.push_back
           (messageFactory_->createRequestMessage(piece, *i));
@@ -219,11 +220,12 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
       if(!dispatcher_->isOutstandingRequest(piece->getIndex(),
                                            blockIndex)) {
         if(logger_->debug()) {
-          logger_->debug("Creating RequestMessage index=%u, begin=%u,"
-                         " blockIndex=%u",
-                         piece->getIndex(),
-                         blockIndex*piece->getBlockLength(),
-                         blockIndex);
+          logger_->debug
+            ("Creating RequestMessage index=%lu, begin=%u,"
+             " blockIndex=%lu",
+             static_cast<unsigned long>(piece->getIndex()),
+             static_cast<unsigned int>(blockIndex*piece->getBlockLength()),
+             static_cast<unsigned long>(blockIndex));
         }
         requests.push_back(messageFactory_->createRequestMessage
                            (piece, blockIndex));

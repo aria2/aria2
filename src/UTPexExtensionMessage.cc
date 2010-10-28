@@ -176,7 +176,8 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
     throw DL_ABORT_EX(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-                                   EXTENSION_NAME.c_str(), len).str());
+                                   EXTENSION_NAME.c_str(),
+                                   static_cast<unsigned long>(len)).str());
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
 

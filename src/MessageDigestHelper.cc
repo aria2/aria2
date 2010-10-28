@@ -131,8 +131,11 @@ void MessageDigestHelper::digest(unsigned char* md, size_t mdLength,
 {
   if(mdLength < MessageDigestContext::digestLength(algo)) {
     throw DL_ABORT_EX
-      (StringFormat("Insufficient space for storing message digest: %d required, but only %d is allocated",
-                    MessageDigestContext::digestLength(algo), mdLength).str());
+      (StringFormat
+       ("Insufficient space for storing message digest:"
+        " %lu required, but only %lu is allocated",
+        static_cast<unsigned long>(MessageDigestContext::digestLength(algo)),
+        static_cast<unsigned long>(mdLength)).str());
   }
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);

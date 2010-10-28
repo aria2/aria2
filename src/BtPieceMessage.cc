@@ -110,8 +110,10 @@ void BtPieceMessage::doReceivedAction()
     if(getLogger()->debug()) {
       getLogger()->debug(MSG_PIECE_RECEIVED,
                          util::itos(getCuid()).c_str(),
-                         index_, begin_, blockLength_, offset,
-                         slot.getBlockIndex());
+                         static_cast<unsigned long>(index_),
+                         begin_, blockLength_,
+                         static_cast<long long int>(offset),
+                         static_cast<unsigned long>(slot.getBlockIndex()));
     }
     getPieceStorage()->getDiskAdaptor()->writeData
       (block_, blockLength_, offset);
@@ -133,8 +135,9 @@ void BtPieceMessage::doReceivedAction()
     }
   } else {
     if(getLogger()->debug()) {
-      getLogger()->debug("CUID#%s - RequestSlot not found, index=%d, begin=%d",
-                         util::itos(getCuid()).c_str(), index_, begin_);
+      getLogger()->debug("CUID#%s - RequestSlot not found, index=%lu, begin=%u",
+                         util::itos(getCuid()).c_str(),
+                         static_cast<unsigned long>(index_), begin_);
     }
   }
 }
@@ -242,7 +245,8 @@ void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
 {
   if(getLogger()->info()) {
     getLogger()->info(MSG_GOT_NEW_PIECE,
-                      util::itos(getCuid()).c_str(), piece->getIndex());
+                      util::itos(getCuid()).c_str(),
+                      static_cast<unsigned long>(piece->getIndex()));
   }
   getPieceStorage()->completePiece(piece);
   getPieceStorage()->advertisePiece(getCuid(), piece->getIndex());
@@ -252,7 +256,8 @@ void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece)
 {
   if(getLogger()->info()) {
     getLogger()->info(MSG_GOT_WRONG_PIECE,
-                      util::itos(getCuid()).c_str(), piece->getIndex());
+                      util::itos(getCuid()).c_str(),
+                      static_cast<unsigned long>(piece->getIndex()));
   }
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
@@ -284,7 +289,8 @@ void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
     if(getLogger()->debug()) {
       getLogger()->debug(MSG_REJECT_PIECE_CHOKED,
                          util::itos(getCuid()).c_str(),
-                         index_, begin_, blockLength_);
+                         static_cast<unsigned long>(index_),
+                         begin_, blockLength_);
     }
     if(getPeer()->isFastExtensionEnabled()) {
       BtMessageHandle rej =
@@ -307,7 +313,8 @@ void BtPieceMessage::onCancelSendingPieceEvent
     if(getLogger()->debug()) {
       getLogger()->debug(MSG_REJECT_PIECE_CANCEL,
                          util::itos(getCuid()).c_str(),
-                         index_, begin_, blockLength_);
+                         static_cast<unsigned long>(index_),
+                         begin_, blockLength_);
     }
     if(getPeer()->isFastExtensionEnabled()) {
       BtMessageHandle rej =

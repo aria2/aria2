@@ -272,8 +272,9 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
     }
   }
   if(logger_->debug()) {
-    logger_->debug("Removed %d duplicate hostname URIs for path=%s",
-                   uris_.size()-newURIs.size(), getPath().c_str());
+    logger_->debug("Removed %lu duplicate hostname URIs for path=%s",
+                   static_cast<unsigned long>(uris_.size()-newURIs.size()),
+                   getPath().c_str());
   }
   uris_.swap(newURIs);
 }

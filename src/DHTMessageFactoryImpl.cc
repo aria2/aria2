@@ -123,8 +123,8 @@ static const String* getString(const List* list, size_t index)
     return c;
   } else {
     throw DL_ABORT_EX
-      (StringFormat("Malformed DHT message. element[%u] is not String.",
-                    index).str());
+      (StringFormat("Malformed DHT message. element[%lu] is not String.",
+                    static_cast<unsigned long>(index)).str());
   }
 }
 
@@ -135,8 +135,8 @@ static const Integer* getInteger(const List* list, size_t index)
     return c;
   } else {
     throw DL_ABORT_EX
-      (StringFormat("Malformed DHT message. element[%u] is not Integer.",
-                    index).str());
+      (StringFormat("Malformed DHT message. element[%lu] is not Integer.",
+                    static_cast<unsigned long>(index)).str());
   }
 }
 
@@ -156,8 +156,9 @@ void DHTMessageFactoryImpl::validateID(const String* id) const
   if(id->s().size() != DHT_ID_LENGTH) {
     throw DL_ABORT_EX
       (StringFormat("Malformed DHT message. Invalid ID length."
-                    " Expected:%d, Actual:%d",
-                    DHT_ID_LENGTH, id->s().size()).str());
+                    " Expected:%lu, Actual:%lu",
+                    static_cast<unsigned long>(DHT_ID_LENGTH),
+                    static_cast<unsigned long>(id->s().size())).str());
   }
 }
 

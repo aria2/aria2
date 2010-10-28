@@ -75,7 +75,8 @@ void DHTPeerLookupTask::onReceivedInternal
   peerStorage_->addPeer(message->getValues());
   peers_.insert(peers_.end(),
                 message->getValues().begin(), message->getValues().end());
-  getLogger()->info("Received %u peers.", message->getValues().size());
+  getLogger()->info("Received %lu peers.",
+                    static_cast<unsigned long>(message->getValues().size()));
 }
   
 SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage

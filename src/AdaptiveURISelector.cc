@@ -112,8 +112,9 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
     for(std::deque<std::string>::const_iterator i = uris.begin(),
           eoi = uris.end(); i != eoi; ++i) {
       logger_->debug("AdaptiveURISelector: will retry server with increased"
-                     " timeout (%d s): %s",
-                     requestGroup_->getTimeout(), (*i).c_str());
+                     " timeout (%ld s): %s",
+                     static_cast<long int>(requestGroup_->getTimeout()),
+                     (*i).c_str());
     }
   }
 }

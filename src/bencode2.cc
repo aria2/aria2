@@ -73,8 +73,9 @@ static std::string decoderawstring(std::istream& ss)
   if(ss.gcount() != static_cast<int>(length)) {
     throw DL_ABORT_EX
       (StringFormat("Bencode decoding failed:"
-                    " Expected %lu bytes of data, but only %d read.",
-                    static_cast<unsigned long>(length), ss.gcount()).str());
+                    " Expected %lu bytes of data, but only %ld read.",
+                    static_cast<unsigned long>(length),
+                    static_cast<long int>(ss.gcount())).str());
   }
   return str;
 }

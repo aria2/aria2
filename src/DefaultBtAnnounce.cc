@@ -245,14 +245,14 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   if(ival && ival->i() > 0) {
     interval_ = ival->i();
     if(logger_->debug()) {
-      logger_->debug("Interval:%d", interval_);
+      logger_->debug("Interval:%ld", static_cast<long int>(interval_));
     }
   }
   const Integer* mival = asInteger(dict->get(BtAnnounce::MIN_INTERVAL));
   if(mival && mival->i() > 0) {
     minInterval_ = mival->i();
     if(logger_->debug()) {
-      logger_->debug("Min interval:%d", minInterval_);
+      logger_->debug("Min interval:%ld", static_cast<long int>(minInterval_));
     }
     minInterval_ = std::min(minInterval_, interval_);
   } else {

@@ -94,7 +94,8 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
   } else {
     throw DL_ABORT_EX
       (StringFormat
-       ("Metadata piece index is too big. piece=%d", getIndex()).str());
+       ("Metadata piece index is too big. piece=%lu",
+        static_cast<unsigned long>(getIndex())).str());
   }
 }
 

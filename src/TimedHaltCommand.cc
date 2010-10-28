@@ -63,7 +63,8 @@ void TimedHaltCommand::preProcess()
 void TimedHaltCommand::process()
 {
   if(!getDownloadEngine()->isHaltRequested()) {
-    getLogger()->notice(MSG_TIME_HAS_PASSED, getInterval());
+    getLogger()->notice(MSG_TIME_HAS_PASSED,
+                        static_cast<long int>(getInterval()));
     if(forceHalt_) {
       getLogger()->notice("This is emergency shutdown.");
       getDownloadEngine()->requestForceHalt();

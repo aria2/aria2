@@ -71,7 +71,7 @@ bool FileAllocationCommand::executeInternal()
     if(getLogger()->debug()) {
       getLogger()->debug
         (MSG_ALLOCATION_COMPLETED,
-         timer_.difference(global::wallclock),
+         static_cast<long int>(timer_.difference(global::wallclock)),
          util::itos(getRequestGroup()->getTotalLength(), true).c_str());
     }
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();

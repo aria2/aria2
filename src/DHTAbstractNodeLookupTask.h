@@ -110,8 +110,8 @@ private:
       setFinished(true);
     } else {
       if(getLogger()->debug()) {
-        getLogger()->debug("%d in flight message for node ID %s",
-                           inFlightMessage_,
+        getLogger()->debug("%lu in flight message for node ID %s",
+                           static_cast<unsigned long>(inFlightMessage_),
                            util::toHex(targetID_, DHT_ID_LENGTH).c_str());
       }
     }
@@ -199,12 +199,14 @@ public:
       }
     }
     if(getLogger()->debug()) {
-      getLogger()->debug("%u node lookup entries added.", count);
+      getLogger()->debug("%lu node lookup entries added.",
+                         static_cast<unsigned long>(count));
     }
     std::stable_sort(entries_.begin(), entries_.end(), DHTIDCloser(targetID_));
     entries_.erase(std::unique(entries_.begin(), entries_.end()), entries_.end());
     if(getLogger()->debug()) {
-      getLogger()->debug("%u node lookup entries are unique.", entries_.size());
+      getLogger()->debug("%lu node lookup entries are unique.",
+                         static_cast<unsigned long>(entries_.size()));
     }
     if(entries_.size() > DHTBucket::K) {
       entries_.erase(entries_.begin()+DHTBucket::K, entries_.end());

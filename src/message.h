@@ -51,8 +51,8 @@
   "CUID#%s - %d times attempted, but no success. Download aborted."
 #define MSG_SEND_PEER_MESSAGE "CUID#%s - To: %s:%d %s"
 #define MSG_RECEIVE_PEER_MESSAGE "CUID#%s - From: %s:%d %s"
-#define MSG_GOT_NEW_PIECE "CUID#%s - we got new piece. index=%d"
-#define MSG_GOT_WRONG_PIECE "CUID#%s - we got wrong piece. index=%d"
+#define MSG_GOT_NEW_PIECE "CUID#%s - we got new piece. index=%lu"
+#define MSG_GOT_WRONG_PIECE "CUID#%s - we got wrong piece. index=%lu"
 #define MSG_DOWNLOAD_NOT_COMPLETE "CUID#%s - Download not complete: %s"
 #define MSG_DOWNLOAD_ALREADY_COMPLETED _("GID#%s - Download has already completed: %s")
 #define MSG_RESOLVING_HOSTNAME "CUID#%s - Resolving hostname %s"
@@ -63,23 +63,27 @@
 #define MSG_DNS_CACHE_HIT "CUID#%s - DNS cache hit: %s -> %s"
 #define MSG_CONNECTING_TO_PEER "CUID#%s - Connecting to the peer %s"
 #define MSG_PIECE_RECEIVED                                              \
-  "CUID#%s - Piece received. index=%d, begin=%d, length=%d, offset=%llu," \
-  " blockIndex=%d"
+  "CUID#%s - Piece received. index=%lu, begin=%u, length=%u, offset=%lld," \
+  " blockIndex=%lu"
 #define MSG_PIECE_BITFIELD "CUID#%s - Piece bitfield %s"
 #define MSG_REJECT_PIECE_CHOKED                                         \
   "CUID#%s - Reject piece message in queue because the peer has been choked." \
-  " index=%d, begin=%d, length=%d"
+  " index=%lu, begin=%u, length=%u"
 #define MSG_REJECT_PIECE_CANCEL                                         \
   "CUID#%s - Reject piece message in queue because cancel message received." \
-  " index=%d, begin=%d, length=%d"
+  " index=%lu, begin=%u, length=%u"
 #define MSG_FILE_VALIDATION_FAILURE                             \
   "CUID#%s - Exception caught while validating file integrity."
 #define MSG_PEER_INTERESTED "CUID#%s - Interested in the peer"
 #define MSG_PEER_NOT_INTERESTED "CUID#%s - Not interested in the peer"
-#define MSG_DELETING_REQUEST_SLOT "CUID#%s - Deleting request slot index=%d, blockIndex=%d"
-#define MSG_DELETING_REQUEST_SLOT_CHOKED "CUID#%s - Deleting request slot index=%d, blockIndex=%d because localhost got choked."
-#define MSG_DELETING_REQUEST_SLOT_TIMEOUT "CUID#%s - Deleting request slot blockIndex=%d because of time out"
-#define MSG_DELETING_REQUEST_SLOT_ACQUIRED "CUID#%s - Deleting request slot blockIndex=%d because the block has been acquired."
+#define MSG_DELETING_REQUEST_SLOT "CUID#%s - Deleting request slot index=%lu," \
+  " begin=%u, blockIndex=%lu"
+#define MSG_DELETING_REQUEST_SLOT_CHOKED "CUID#%s - Deleting request slot" \
+  " index=%lu, begin=%u, blockIndex=%lu because localhost got choked."
+#define MSG_DELETING_REQUEST_SLOT_TIMEOUT "CUID#%s - Deleting request slot" \
+  " index=%lu, begin=%u, blockIndex=%lu because of time out"
+#define MSG_DELETING_REQUEST_SLOT_ACQUIRED "CUID#%s - Deleting request slot" \
+  " index=%lu, begin=%u, blockIndex=%lu because the block has been acquired."
 #define MSG_FAST_EXTENSION_ENABLED "CUID#%s - Fast extension enabled."
 #define MSG_EXTENDED_MESSAGING_ENABLED "CUID#%s - Extended Messaging enabled."
 #define MSG_FILE_ALLOCATION_FAILURE                             \
@@ -119,9 +123,9 @@
 #define MSG_DELETING_USED_PIECE _("Deleting used piece index=%d, fillRate(%%)=%d<=%d")
 #define MSG_SELECTIVE_DOWNLOAD_COMPLETED _("Download of selected files was complete.")
 #define MSG_DOWNLOAD_COMPLETED _("The download was complete.")
-#define MSG_REMOVED_HAVE_ENTRY _("Removed %d have entries.")
+#define MSG_REMOVED_HAVE_ENTRY _("Removed %lu have entries.")
 #define MSG_VALIDATING_FILE _("Validating file %s")
-#define MSG_ALLOCATION_COMPLETED _("%d seconds to allocate %s byte(s)")
+#define MSG_ALLOCATION_COMPLETED _("%ld seconds to allocate %s byte(s)")
 #define MSG_FILE_ALLOCATION_DISPATCH                    \
   "Dispatching FileAllocationCommand for CUID#%s."
 #define MSG_METALINK_QUEUEING _("Metalink: Queueing %s for download.")
@@ -141,13 +145,13 @@
 #define MSG_RESOURCE_NOT_FOUND _("Resource not found")
 #define MSG_FILE_RENAMED _("File already exists. Renamed to %s.")
 #define MSG_CANNOT_PARSE_METALINK _("Cannot parse metalink XML file. XML may be malformed.")
-#define MSG_TOO_SMALL_PAYLOAD_SIZE _("Too small payload size for %s, size=%d.")
+#define MSG_TOO_SMALL_PAYLOAD_SIZE _("Too small payload size for %s, size=%lu.")
 #define MSG_REMOVED_DEFUNCT_CONTROL_FILE _("Removed the defunct control file %s because the download file %s doesn't exist.")
 #define MSG_SHARE_RATIO_REPORT _("Your share ratio was %.1f, uploaded/downloaded=%sB/%sB")
 #define MSG_MISSING_BT_INFO _("Missing %s in torrent metainfo.")
 #define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
 #define MSG_WINSOCK_INIT_FAILD _("Windows socket library initialization failed")
-#define MSG_TIME_HAS_PASSED _("%d second(s) has passed. Stopping application.")
+#define MSG_TIME_HAS_PASSED _("%ld second(s) has passed. Stopping application.")
 #define MSG_SIGNATURE_SAVED _("Saved signature as %s. Please note that aria2" \
                               " doesn't verify signatures.")
 #define MSG_SIGNATURE_NOT_SAVED _("Saving signature as %s failed. Maybe file" \
@@ -247,15 +251,18 @@
 #define EX_SOCKET_PEEK _("Failed to peek data, cause: %s")
 #define EX_SOCKET_UNKNOWN_ERROR _("Unknown socket error %d (0x%x)")
 #define EX_FILE_ALREADY_EXISTS _("File %s exists, but %s does not exist.")
-#define EX_INVALID_PAYLOAD_SIZE _("Invalid payload size for %s, size=%d. It should be %d.")
+#define EX_INVALID_PAYLOAD_SIZE                                 \
+  _("Invalid payload size for %s, size=%lu. It should be %lu.")
 #define EX_INVALID_BT_MESSAGE_ID _("Invalid ID=%d for %s. It should be %d.")
-#define EX_INVALID_CHUNK_CHECKSUM _("Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%s, actualHash=%s")
+#define EX_INVALID_CHUNK_CHECKSUM _("Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash=%s, actualHash=%s")
 #define EX_DOWNLOAD_ABORTED _("Download aborted.")
 #define EX_DUPLICATE_FILE_DOWNLOAD _("File %s is being downloaded by other command.")
 #define EX_INSUFFICIENT_CHECKSUM _("Insufficient checksums.")
 #define EX_TRACKER_FAILURE _("Tracker returned failure reason: %s")
 #define EX_FLOODING_DETECTED _("Flooding detected.")
-#define EX_DROP_INACTIVE_CONNECTION _("Drop connection because no request/piece messages were exchanged in a certain period(%d seconds).")
+#define EX_DROP_INACTIVE_CONNECTION \
+  _("Drop connection because no request/piece messages were exchanged in a" \
+    " certain period(%ld seconds).")
 #define EX_INFOHASH_MISMATCH_IN_SEGFILE _("The infoHash in torrent file doesn't match to one in .aria2 file.")
 #define EX_NO_SUCH_FILE_ENTRY _("No such file entry %s")
 #define EX_TOO_SLOW_DOWNLOAD_SPEED _("Too slow Downloading speed: %d <= %d(B/s), host:%s")

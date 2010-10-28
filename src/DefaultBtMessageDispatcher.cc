@@ -157,9 +157,9 @@ public:
     if(logger_->debug()) {
       logger_->debug(MSG_DELETING_REQUEST_SLOT,
                      util::itos(cuid_).c_str(),
-                     slot.getIndex(),
-                     slot.getBlockIndex());
-      logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+                     static_cast<unsigned long>(slot.getIndex()),
+                     slot.getBegin(),
+                     static_cast<unsigned long>(slot.getBlockIndex()));
     }
     piece_->cancelBlock(slot.getBlockIndex());
   }
@@ -210,9 +210,9 @@ public:
       if(logger_->debug()) {
         logger_->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
                        util::itos(cuid_).c_str(),
-                       slot.getIndex(),
-                       slot.getBlockIndex());
-        logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+                       static_cast<unsigned long>(slot.getIndex()),
+                       slot.getBegin(),
+                       static_cast<unsigned long>(slot.getBlockIndex()));
       }
       SharedHandle<Piece> piece = pieceStorage_->getPiece(slot.getIndex());
       piece->cancelBlock(slot.getBlockIndex());
@@ -289,8 +289,9 @@ public:
       if(logger_->debug()) {
         logger_->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
                        util::itos(cuid_).c_str(),
-                       slot.getBlockIndex());
-        logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+                       static_cast<unsigned long>(slot.getIndex()),
+                       slot.getBegin(),
+                       static_cast<unsigned long>(slot.getBlockIndex()));
       }
       slot.getPiece()->cancelBlock(slot.getBlockIndex());
       peer_->snubbing(true);
@@ -298,8 +299,9 @@ public:
       if(logger_->debug()) {
         logger_->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
                        util::itos(cuid_).c_str(),
-                       slot.getBlockIndex());
-        logger_->debug("index=%d, begin=%d", slot.getIndex(), slot.getBegin());
+                       static_cast<unsigned long>(slot.getIndex()),
+                       slot.getBegin(),
+                       static_cast<unsigned long>(slot.getBlockIndex()));
       }
       messageDispatcher_->addMessageToQueue
         (messageFactory_->createCancelMessage(slot.getIndex(),

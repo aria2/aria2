@@ -667,7 +667,8 @@ void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
     std::find_if(haves_.begin(), haves_.end(), FindElapsedHave(elapsed));
   if(itr != haves_.end()) {
     if(logger_->debug()) {
-      logger_->debug(MSG_REMOVED_HAVE_ENTRY, haves_.end()-itr);
+      logger_->debug(MSG_REMOVED_HAVE_ENTRY,
+                     static_cast<unsigned long>(haves_.end()-itr));
     }
     haves_.erase(itr, haves_.end());
   }

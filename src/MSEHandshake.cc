@@ -351,8 +351,9 @@ bool MSEHandshake::findInitiatorVCMarker()
   socket_->readData(rbuf_+rbufLength_, toRead);
   rbufLength_ += toRead;
   if(logger_->debug()) {
-    logger_->debug("CUID#%s - VC marker found at %u",
-                   util::itos(cuid_).c_str(), markerIndex_);
+    logger_->debug("CUID#%s - VC marker found at %lu",
+                   util::itos(cuid_).c_str(),
+                   static_cast<unsigned long>(markerIndex_));
   }
   verifyVC(rbuf_+markerIndex_);
   // reset rbufLength_
@@ -452,8 +453,9 @@ bool MSEHandshake::findReceiverHashMarker()
   socket_->readData(rbuf_+rbufLength_, toRead);
   rbufLength_ += toRead;
   if(logger_->debug()) {
-    logger_->debug("CUID#%s - Hash marker found at %u.",
-                   util::itos(cuid_).c_str(), markerIndex_);
+    logger_->debug("CUID#%s - Hash marker found at %lu.",
+                   util::itos(cuid_).c_str(),
+                   static_cast<unsigned long>(markerIndex_));
   }
   verifyReq1Hash(rbuf_+markerIndex_);
   // reset rbufLength_

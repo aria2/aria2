@@ -862,7 +862,8 @@ void assertPayloadLengthGreater
 {
   if(actual <= threshold) {
     throw DL_ABORT_EX
-      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(), actual).str());
+      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(),
+                    static_cast<unsigned long>(actual)).str());
   }
 }
 
@@ -872,7 +873,8 @@ void assertPayloadLengthEqual
   if(expected != actual) {
     throw DL_ABORT_EX
       (StringFormat(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
-                    actual, expected).str());
+                    static_cast<unsigned long>(actual),
+                    static_cast<unsigned long>(expected)).str());
   }
 }
 

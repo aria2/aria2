@@ -124,8 +124,10 @@ public:
   {
     if(outLength < keyLength_) {
       throw DL_ABORT_EX
-        (StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
-                      keyLength_, outLength).str());
+        (StringFormat
+         ("Insufficient buffer for public key. expect:%lu, actual:%lu",
+          static_cast<unsigned long>(keyLength_),
+          static_cast<unsigned long>(outLength)).str());
     }
     memset(out, 0, outLength);
     size_t publicKeyBytes = BN_num_bytes(publicKey_);
@@ -133,7 +135,11 @@ public:
     size_t nwritten = BN_bn2bin(publicKey_, out+offset);
     if(nwritten != publicKeyBytes) {
       throw DL_ABORT_EX
-        (StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes).str());
+        (StringFormat
+         ("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
+          " but %lu bytes expected.",
+          static_cast<unsigned long>(nwritten),
+          static_cast<unsigned long>(publicKeyBytes)).str());
     }
     return nwritten;
   }
@@ -151,8 +157,9 @@ public:
   {
     if(outLength < keyLength_) {
       throw DL_ABORT_EX
-        (StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
-                      keyLength_, outLength).str());
+        (StringFormat("Insufficient buffer for secret. expect:%lu, actual:%lu",
+                      static_cast<unsigned long>(keyLength_),
+                      static_cast<unsigned long>(outLength)).str());
     }
 
 
@@ -172,7 +179,11 @@ public:
     BN_free(secret);
     if(nwritten != secretBytes) {
       throw DL_ABORT_EX
-        (StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, secretBytes).str());
+        (StringFormat
+         ("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
+          " but %lu bytes expected.",
+          static_cast<unsigned long>(nwritten),
+          static_cast<unsigned long>(secretBytes)).str());
     }
     return nwritten;
   }

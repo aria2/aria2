@@ -113,8 +113,10 @@ public:
   {
     if(outLength < keyLength_) {
       throw DL_ABORT_EX
-        (StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
-                      keyLength_, outLength).str());
+        (StringFormat
+         ("Insufficient buffer for public key. expect:%lu, actual:%lu",
+          static_cast<unsigned long>(keyLength_),
+          static_cast<unsigned long>(outLength)).str());
     }
     memset(out, 0, outLength);
     size_t publicKeyBytes = (gcry_mpi_get_nbits(publicKey_)+7)/8;
@@ -139,8 +141,9 @@ public:
   {
     if(outLength < keyLength_) {
       throw DL_ABORT_EX
-        (StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
-                      keyLength_, outLength).str());
+        (StringFormat("Insufficient buffer for secret. expect:%lu, actual:%lu",
+                      static_cast<unsigned long>(keyLength_),
+                      static_cast<unsigned long>(outLength)).str());
     }
     gcry_mpi_t peerPublicKey;
     {

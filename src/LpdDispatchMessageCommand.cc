@@ -73,7 +73,8 @@ bool LpdDispatchMessageCommand::execute()
       } else {
         ++tryCount_;
         if(tryCount_ >= 5) {
-          getLogger()->info("Sending LPD message %u times but all failed.");
+          getLogger()->info("Sending LPD message %u times but all failed.",
+                            tryCount_);
           dispatcher_->resetAnnounceTimer();
           tryCount_ = 0;
         } else {

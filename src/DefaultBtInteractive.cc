@@ -462,7 +462,8 @@ void DefaultBtInteractive::checkActiveInteraction()
       // TODO change the message
       throw DL_ABORT_EX
         (StringFormat("Disconnect peer because we are not interested each other"
-                      " after %u second(s).", interval).str());
+                      " after %ld second(s).",
+                      static_cast<long int>(interval)).str());
     }
   }
   // Since the peers which are *just* connected and do nothing to improve
@@ -473,7 +474,8 @@ void DefaultBtInteractive::checkActiveInteraction()
     if(inactiveTime >= interval) {
       peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX
-        (StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());
+        (StringFormat(EX_DROP_INACTIVE_CONNECTION,
+                      static_cast<long int>(interval)).str());
     }
   }
 }

@@ -167,7 +167,8 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   if(length < 1) {
     throw DL_ABORT_EX
       (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-                    EXTENSION_NAME.c_str(), length).str());
+                    EXTENSION_NAME.c_str(),
+                    static_cast<unsigned long>(length)).str());
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   if(LogFactory::getInstance()->debug()) {
