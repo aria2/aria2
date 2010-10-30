@@ -1444,30 +1444,44 @@ GID::
 Methods
 ~~~~~~~
 
-*aria2.addUri* 'uris[, options[, position]]'
+All code examples come from Python2.7 interpreter.
+
+*aria2.addUri* ('uris[, options[, position]]')
 
 This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  'uris' is of
 type array and its element is URI which is of type string.  For
 BitTorrent Magnet URI, 'uris' must have only one element and it should
-be BitTorrent Magnet URI.  URIs in 'uris' must point to the same
-file. For example, a file chunkybaconlinux.iso is hosted in 2
-locations: \http://server/chunkybaconlinux.iso and
-\http://mirror/chunkybaconlinux.iso.  You can download this iso image
-using 2 URIs by issuing
-aria2.addUri(["http://server/chunkybaconlinux.iso",
-"http://mirror/chunkybaconlinux.iso"]).  Imagine there is an another
-file URI, say, \http://mirror2/chunkydonutslinux.iso, which is
-different iso image.  You cannot mix this URI with previous URIs in
-one aria2.addUri command.  If you do, aria2 does not complain but
-download may fail.  'options' is of type struct and its members are a
-pair of option name and value. See *Options* below for more details.
-If 'position' is given as an integer starting from 0, the new download
-is inserted at 'position' in the waiting queue. If 'position' is not
-given or 'position' is larger than the size of the queue, it is
-appended at the end of the queue.  This method returns GID of
-registered download.
+be BitTorrent Magnet URI.  URIs in 'uris' must point to the same file.
+If you mix other URIs which point to another file, aria2 does not
+complain but download may fail.  'options' is of type struct and its
+members are a pair of option name and value. See *Options* below for
+more details.  If 'position' is given as an integer starting from 0,
+the new download is inserted at 'position' in the waiting queue. If
+'position' is not given or 'position' is larger than the size of the
+queue, it is appended at the end of the queue.  This method returns
+GID of registered download.
 
-*aria2.addTorrent* 'torrent[, uris[, options[, position]]]'
+Adding \http://example.org/file to aria2:
+----------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.addUri(['http://example.org/file'])
+'1'
+----------------------------------------------------------
+
+Adding 2 sources and some options:
+--------------------------------------------------------------------------
+>>> s.aria2.addUri(['http://example.org/file'], dict(dir="/tmp"))
+'2'
+--------------------------------------------------------------------------
+
+Adding a download and insert it to the front of waiting downloads:
+---------------------------------------------------------------
+>>> s.aria2.addUri(['http://example.org/file'], {}, 0)
+'3'
+---------------------------------------------------------------
+
+*aria2.addTorrent* ('torrent[, uris[, options[, position]]]')
 
 This method adds BitTorrent download by uploading .torrent file.  If
 you want to add BitTorrent Magnet URI, use *aria2.addUri* method
@@ -1486,7 +1500,15 @@ end of the queue.  This method returns GID of registered download.
 Please note that the downloads added by this method are not saved by
 *--save-session*.
 
-*aria2.addMetalink* 'metalink[, options[, position]]'
+Adding local file file.torrent to aria2:
+---------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+'6'
+---------------------------------------------------------------------
+
+*aria2.addMetalink* ('metalink[, options[, position]]')
 
 This method adds Metalink download by uploading .metalink file.
 'metalink' is of type base64 which contains Base64-encoded .metalink
@@ -1499,21 +1521,37 @@ appended at the end of the queue.  This method returns array of GID of
 registered download.  Please note that the downloads added by this
 method are not saved by *--save-session*.
 
-*aria2.remove* 'gid'
+Adding local file file.meta4 to aria2:
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4').read()))
+['8']
+--------------------------------------------------------------------
+
+*aria2.remove* ('gid')
 
 This method removes the download denoted by 'gid'. 'gid' is of type
 string. If specified download is in progress, it is stopped at
 first. The status of removed download becomes "removed".  This method
 returns GID of removed download.
 
-*aria2.forceRemove* 'gid'
+Removing download whose GID is '3':
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.remove('3')
+'3'
+--------------------------------------------------------------------
+
+*aria2.forceRemove* ('gid')
 
 This method removes the download denoted by 'gid'.  This method
 behaves just like *aria2.remove* except that this method removes
 download without any action which takes time such as contacting
 BitTorrent tracker.
 
-*aria2.pause* 'gid'
+*aria2.pause* ('gid')
 
 This method pauses the download denoted by 'gid'. 'gid' is of type
 string. The status of paused download becomes "paused".  If the
@@ -1522,36 +1560,36 @@ waiting queue.  As long as the status is "paused", the download is not
 started.  To change status to "waiting", use *aria2.unpause* method.
 This method returns GID of paused download.
 
-*aria2.pauseAll*
+*aria2.pauseAll* ()
 
 This method is equal to calling *aria2.pause* for every active/waiting
 download. This methods returns "OK" for success.
 
-*aria2.forcePause* 'pid'
+*aria2.forcePause* ('pid')
 
 This method pauses the download denoted by 'gid'.  This method
 behaves just like *aria2.pause* except that this method pauses
 download without any action which takes time such as contacting
 BitTorrent tracker.
 
-*aria2.forcePauseAll*
+*aria2.forcePauseAll* ()
 
 This method is equal to calling *aria2.forcePause* for every
 active/waiting download. This methods returns "OK" for success.
 
-*aria2.unpause* 'gid'
+*aria2.unpause* ('gid')
 
 This method changes the status of the download denoted by 'gid' from
 "paused" to "waiting". This makes the download eligible to restart.
 'gid' is of type string.  This method returns GID of unpaused
 download.
 
-*aria2.unpauseAll*
+*aria2.unpauseAll* ()
 
 This method is equal to calling *aria2.unpause* for every active/waiting
 download. This methods returns "OK" for success.
 
-*aria2.tellStatus* 'gid[, keys]'
+*aria2.tellStatus* ('gid[, keys]')
 
 This method returns download progress of the download denoted by
 'gid'. 'gid' is of type string. 'keys' is array of string. If it is
@@ -1689,7 +1727,42 @@ bittorrent::
 
       name in info dictionary. name.utf-8 is used if available.
 
-*aria2.getUris* 'gid'
+Get information about download whose GID is '1':
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> r = s.aria2.tellStatus('1')
+>>> pprint(r)
+{'bitfield': 'ffff80',
+ 'completedLength': '34896138',
+ 'connections': '0',
+ 'dir': '/downloads',
+ 'downloadSpeed': '0',
+ 'errorCode': '0',
+ 'files': [{'index': '1',
+            'length': '34896138',
+            'path': '/downloads/file',
+            'selected': 'true',
+            'uris': [{'status': 'used',
+                      'uri': 'http://example.org/file'}]}],
+ 'gid': '1',
+ 'numPieces': '17',
+ 'pieceLength': '2097152',
+ 'status': 'complete',
+ 'totalLength': '34896138',
+ 'uploadLength': '0',
+ 'uploadSpeed': '0'}
+--------------------------------------------------------------------
+
+Get information specifying keys you are interested in:
+--------------------------------------------------------------------------
+>>> r = s.aria2.tellStatus('1', ['gid', 'totalLength', 'completedLength'])
+>>> pprint(r)
+{'completedLength': '34896138', 'gid': '1', 'totalLength': '34896138'}
+--------------------------------------------------------------------------
+
+*aria2.getUris* ('gid')
 
 This method returns URIs used in the download denoted by 'gid'.  'gid'
 is of type string. The response is of type array and its element is of
@@ -1704,7 +1777,7 @@ status::
   'used' if the URI is already used. 'waiting' if the URI is waiting
   in the queue.
 
-*aria2.getFiles* 'gid'
+*aria2.getFiles* ('gid')
 
 This method returns file list of the download denoted by 'gid'. 'gid'
 is of type string. The response is of type array and its element is of
@@ -1734,7 +1807,7 @@ uris::
   Returns the list of URI for this file. The element of list is the
   same struct used in *aria2.getUris* method.
 
-*aria2.getPeers* 'gid'
+*aria2.getPeers* ('gid')
 
 This method returns peer list of the download denoted by 'gid'. 'gid'
 is of type string. This method is for BitTorrent only.  The response
@@ -1780,7 +1853,7 @@ seeder::
 
   "true" is this client is a seeder. Otherwise "false".
 
-*aria2.getServers* 'gid'
+*aria2.getServers* ('gid')
 
 This method returns currently connected HTTP(S)/FTP servers of the download denoted by 'gid'. 'gid' is of type string. The response
 is of type array and its element is of type struct and it contains
@@ -1808,14 +1881,14 @@ servers::
 
     Download speed (byte/sec)
 
-*aria2.tellActive* '[keys]'
+*aria2.tellActive* ('[keys]')
 
 This method returns the list of active downloads.  The response is of
 type array and its element is the same struct returned by
 *aria2.tellStatus* method. For 'keys' parameter, please refer to
 *aria2.tellStatus* method.
 
-*aria2.tellWaiting* 'offset, num, [keys]'
+*aria2.tellWaiting* ('offset, num, [keys]')
 
 This method returns the list of waiting download, including paused
 downloads. 'offset' is of type integer and specifies the offset from
@@ -1839,7 +1912,7 @@ aria2.tellWaiting(-1, 2) returns ["C", "B"].
 The response is of type array and its element is the same struct
 returned by *aria2.tellStatus* method.
 
-*aria2.tellStopped* 'offset, num, [keys]'
+*aria2.tellStopped* ('offset, num, [keys]')
 
 This method returns the list of stopped download.  'offset' is of type
 integer and specifies the offset from the oldest download. 'num' is of
@@ -1852,7 +1925,7 @@ method.
 The response is of type array and its element is the same struct
 returned by *aria2.tellStatus* method.
 
-*aria2.changePosition* 'gid, pos, how'
+*aria2.changePosition* ('gid, pos, how')
 
 This method changes the position of the download denoted by
 'gid'. 'pos' is of type integer. 'how' is of type string. If 'how' is
@@ -1870,7 +1943,7 @@ For example, if GID#1 is placed in position 3, aria2.changePosition(1,
 aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
 beginning of the queue).
 
-*aria2.changeUri* 'gid, fileIndex, delUris, addUris[, position]'
+*aria2.changeUri* ('gid, fileIndex, delUris, addUris[, position]')
 
 This method removes URIs in 'delUris' from and appends URIs in
 'addUris' to download denoted by 'gid'. 'delUris' and 'addUris' are
@@ -1890,13 +1963,13 @@ method returns a list which contains 2 integers. The first integer is
 the number of URIs deleted. The second integer is the number of URIs
 added.
 
-*aria2.getOption* 'gid'
+*aria2.getOption* ('gid')
 
 This method returns options of the download denoted by 'gid'.  The
 response is of type struct. Its key is the name of option.  The value type
 is string.
 
-*aria2.changeOption* 'gid, options'
+*aria2.changeOption* ('gid, options')
 
 This method changes options of the download denoted by 'gid'
 dynamically.  'gid' is of type string.  'options' is of type struct
@@ -1904,7 +1977,7 @@ and the available options are: *bt-max-peers*,
 *bt-request-peer-speed-limit*, *max-download-limit* and
 *max-upload-limit*.  This method returns "OK" for success.
 
-*aria2.getGlobalOption*
+*aria2.getGlobalOption* ()
 
 This method returns global options.  The response is of type
 struct. Its key is the name of option.  The value type is string.
@@ -1912,7 +1985,7 @@ Because global options are used as a template for the options of newly
 added download, the response contains keys returned by
 *aria2.getOption* method.
 
-*aria2.changeGlobalOption* 'options'
+*aria2.changeGlobalOption* ('options')
 
 This method changes global options dynamically.  'options' is of type
 struct and the available options are *max-concurrent-downloads*,
@@ -1922,12 +1995,12 @@ change log file. To stop logging, give empty string("") as a parameter
 value. Note that log file is always opened in append mode. This method
 returns "OK" for success.
 
-*aria2.purgeDownloadResult*
+*aria2.purgeDownloadResult* ()
 
 This method purges completed/error/removed downloads to free memory.
 This method returns "OK".
 
-*aria2.getVersion*
+*aria2.getVersion* ()
 
 This method returns version of the program and the list of enabled
 features. The response is of type struct and contains following keys.
@@ -1940,7 +2013,24 @@ enabledFeatures::
 
   List of enabled features. Each feature name is of type string.
 
-*aria2.getSessionInfo*
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> r = s.aria2.getVersion()
+>>> pprint(r)
+{'enabledFeatures': ['Async DNS',
+                     'BitTorrent',
+                     'Firefox3 Cookie',
+                     'GZip',
+                     'HTTPS',
+                     'Message Digest',
+                     'Metalink',
+                     'XML-RPC'],
+ 'version': '1.10.5'}
+--------------------------------------------------------------------
+
+*aria2.getSessionInfo* ()
 
 This method returns session information.
 The response is of type struct and contains following key.
@@ -1949,17 +2039,24 @@ sessionId::
 
   Session ID, which is generated each time when aria2 is invoked.
 
-*aria2.shutdown*
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.getSessionInfo()
+{'sessionId': 'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}
+--------------------------------------------------------------------
+
+*aria2.shutdown* ()
 
 This method shutdowns aria2.  This method returns "OK".
 
-*aria2.forceShutdown*
+*aria2.forceShutdown* ()
 
 This method shutdowns aria2. This method behaves like *aria2.shutdown*
 except that any actions which takes time such as contacting BitTorrent
 tracker are skipped. This method returns "OK".
 
-*system.multicall* 'methods'
+*system.multicall* ('methods')
 
 This methods encapsulates multiple method calls in a single request.
 'methods' is of type array and its element is struct.  The struct
@@ -1969,6 +2066,20 @@ method.  This method returns array of responses.  The element of array
 will either be a one-item array containing the return value of each
 method call or struct of fault element if an encapsulated method call
 fails.
+
+In the following example, we add 2 downloads. First one is
+\http://example.org/file and second one is file.torrent:
+
+----------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> mc = xmlrpclib.MultiCall(s)
+>>> mc.aria2.addUri(['http://example.org/file'])
+>>> mc.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+>>> r = mc()
+>>> tuple(r)
+('2', '3')
+----------------------------------------------------------------------
 
 Error Handling
 ~~~~~~~~~~~~~~
@@ -2071,6 +2182,12 @@ Download a file from 2 different HTTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------------------
 aria2c "http://host/file.zip" "http://mirror/file.zip"
+------------------------------------------------------
+
+Download a file from 1 host using 2 connections
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------------
+aria2c -x2 -k1M "http://host/file.zip"
 ------------------------------------------------------
 
 Download a file from HTTP and FTP servers

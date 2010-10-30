@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 10/22/2010
+.\"      Date: 10/30/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.10.5
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "10/22/2010" "Aria2 1\&.10\&.5" "Aria2 Manual"
+.TH "ARIA2C" "1" "10/30/2010" "Aria2 1\&.10\&.5" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -2814,51 +2814,139 @@ GID(or gid) is the key to manage each download\&. Each download has an unique GI
 .RE
 .SS "Methods"
 .sp
-\fBaria2\&.addUri\fR \fIuris[, options[, position]]\fR
+All code examples come from Python2\&.7 interpreter\&.
 .sp
-This method adds new HTTP(S)/FTP/BitTorrent Magnet URI\&. \fIuris\fR is of type array and its element is URI which is of type string\&. For BitTorrent Magnet URI, \fIuris\fR must have only one element and it should be BitTorrent Magnet URI\&. URIs in \fIuris\fR must point to the same file\&. For example, a file chunkybaconlinux\&.iso is hosted in 2 locations: http://server/chunkybaconlinux\&.iso and http://mirror/chunkybaconlinux\&.iso\&. You can download this iso image using 2 URIs by issuing aria2\&.addUri(["http://server/chunkybaconlinux\&.iso", "http://mirror/chunkybaconlinux\&.iso"])\&. Imagine there is an another file URI, say, http://mirror2/chunkydonutslinux\&.iso, which is different iso image\&. You cannot mix this URI with previous URIs in one aria2\&.addUri command\&. If you do, aria2 does not complain but download may fail\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
+\fBaria2\&.addUri\fR (\fIuris[, options[, position]]\fR)
 .sp
-\fBaria2\&.addTorrent\fR \fItorrent[, uris[, options[, position]]]\fR
+This method adds new HTTP(S)/FTP/BitTorrent Magnet URI\&. \fIuris\fR is of type array and its element is URI which is of type string\&. For BitTorrent Magnet URI, \fIuris\fR must have only one element and it should be BitTorrent Magnet URI\&. URIs in \fIuris\fR must point to the same file\&. If you mix other URIs which point to another file, aria2 does not complain but download may fail\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&.
+.sp
+Adding http://example\&.org/file to aria2:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> s\&.aria2\&.addUri([\*(Aqhttp://example\&.org/file\*(Aq])
+\*(Aq1\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Adding 2 sources and some options:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> s\&.aria2\&.addUri([\*(Aqhttp://example\&.org/file\*(Aq], dict(dir="/tmp"))
+\*(Aq2\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Adding a download and insert it to the front of waiting downloads:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> s\&.aria2\&.addUri([\*(Aqhttp://example\&.org/file\*(Aq], {}, 0)
+\*(Aq3\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBaria2\&.addTorrent\fR (\fItorrent[, uris[, options[, position]]]\fR)
 .sp
 This method adds BitTorrent download by uploading \&.torrent file\&. If you want to add BitTorrent Magnet URI, use \fBaria2\&.addUri\fR method instead\&. \fItorrent\fR is of type base64 which contains Base64\-encoded \&.torrent file\&. \fIuris\fR is of type array and its element is URI which is of type string\&. \fIuris\fR is used for Web\-seeding\&. For single file torrents, URI can be a complete URI pointing to the resource or if URI ends with /, name in torrent file is added\&. For multi\-file torrents, name and path in torrent are added to form a URI for each file\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns GID of registered download\&. Please note that the downloads added by this method are not saved by \fB\-\-save\-session\fR\&.
 .sp
-\fBaria2\&.addMetalink\fR \fImetalink[, options[, position]]\fR
+Adding local file file\&.torrent to aria2:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> s\&.aria2\&.addTorrent(xmlrpclib\&.Binary(open(\*(Aqfile\&.torrent\*(Aq)\&.read()))
+\*(Aq6\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBaria2\&.addMetalink\fR (\fImetalink[, options[, position]]\fR)
 .sp
 This method adds Metalink download by uploading \&.metalink file\&. \fImetalink\fR is of type base64 which contains Base64\-encoded \&.metalink file\&. \fIoptions\fR is of type struct and its members are a pair of option name and value\&. See \fBOptions\fR below for more details\&. If \fIposition\fR is given as an integer starting from 0, the new download is inserted at \fIposition\fR in the waiting queue\&. If \fIposition\fR is not given or \fIposition\fR is larger than the size of the queue, it is appended at the end of the queue\&. This method returns array of GID of registered download\&. Please note that the downloads added by this method are not saved by \fB\-\-save\-session\fR\&.
 .sp
-\fBaria2\&.remove\fR \fIgid\fR
+Adding local file file\&.meta4 to aria2:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> s\&.aria2\&.addMetalink(xmlrpclib\&.Binary(open(\*(Aqfile\&.meta4\*(Aq)\&.read()))
+[\*(Aq8\*(Aq]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBaria2\&.remove\fR (\fIgid\fR)
 .sp
 This method removes the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. If specified download is in progress, it is stopped at first\&. The status of removed download becomes "removed"\&. This method returns GID of removed download\&.
 .sp
-\fBaria2\&.forceRemove\fR \fIgid\fR
+Removing download whose GID is \fI3\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> s\&.aria2\&.remove(\*(Aq3\*(Aq)
+\*(Aq3\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBaria2\&.forceRemove\fR (\fIgid\fR)
 .sp
 This method removes the download denoted by \fIgid\fR\&. This method behaves just like \fBaria2\&.remove\fR except that this method removes download without any action which takes time such as contacting BitTorrent tracker\&.
 .sp
-\fBaria2\&.pause\fR \fIgid\fR
+\fBaria2\&.pause\fR (\fIgid\fR)
 .sp
 This method pauses the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The status of paused download becomes "paused"\&. If the download is active, the download is placed on the first position of waiting queue\&. As long as the status is "paused", the download is not started\&. To change status to "waiting", use \fBaria2\&.unpause\fR method\&. This method returns GID of paused download\&.
 .sp
-\fBaria2\&.pauseAll\fR
+\fBaria2\&.pauseAll\fR ()
 .sp
 This method is equal to calling \fBaria2\&.pause\fR for every active/waiting download\&. This methods returns "OK" for success\&.
 .sp
-\fBaria2\&.forcePause\fR \fIpid\fR
+\fBaria2\&.forcePause\fR (\fIpid\fR)
 .sp
 This method pauses the download denoted by \fIgid\fR\&. This method behaves just like \fBaria2\&.pause\fR except that this method pauses download without any action which takes time such as contacting BitTorrent tracker\&.
 .sp
-\fBaria2\&.forcePauseAll\fR
+\fBaria2\&.forcePauseAll\fR ()
 .sp
 This method is equal to calling \fBaria2\&.forcePause\fR for every active/waiting download\&. This methods returns "OK" for success\&.
 .sp
-\fBaria2\&.unpause\fR \fIgid\fR
+\fBaria2\&.unpause\fR (\fIgid\fR)
 .sp
 This method changes the status of the download denoted by \fIgid\fR from "paused" to "waiting"\&. This makes the download eligible to restart\&. \fIgid\fR is of type string\&. This method returns GID of unpaused download\&.
 .sp
-\fBaria2\&.unpauseAll\fR
+\fBaria2\&.unpauseAll\fR ()
 .sp
 This method is equal to calling \fBaria2\&.unpause\fR for every active/waiting download\&. This methods returns "OK" for success\&.
 .sp
-\fBaria2\&.tellStatus\fR \fIgid[, keys]\fR
+\fBaria2\&.tellStatus\fR (\fIgid[, keys]\fR)
 .sp
 This method returns download progress of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. \fIkeys\fR is array of string\&. If it is specified, the response contains only keys in \fIkeys\fR array\&. If \fIkeys\fR is empty or not specified, the response contains all keys\&. This is useful when you just want specific keys and avoid unnecessary transfers\&. For example, \fBaria2\&.tellStatus\fR("1", ["gid", "status"]) returns \fIgid\fR and \fIstatus\fR key\&. The response is of type struct and it contains following keys\&. The value type is string\&.
 .PP
@@ -2994,7 +3082,56 @@ name in info dictionary\&. name\&.utf\-8 is used if available\&.
 .RE
 .RE
 .sp
-\fBaria2\&.getUris\fR \fIgid\fR
+Get information about download whose GID is \fI1\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> r = s\&.aria2\&.tellStatus(\*(Aq1\*(Aq)
+>>> pprint(r)
+{\*(Aqbitfield\*(Aq: \*(Aqffff80\*(Aq,
+ \*(AqcompletedLength\*(Aq: \*(Aq34896138\*(Aq,
+ \*(Aqconnections\*(Aq: \*(Aq0\*(Aq,
+ \*(Aqdir\*(Aq: \*(Aq/downloads\*(Aq,
+ \*(AqdownloadSpeed\*(Aq: \*(Aq0\*(Aq,
+ \*(AqerrorCode\*(Aq: \*(Aq0\*(Aq,
+ \*(Aqfiles\*(Aq: [{\*(Aqindex\*(Aq: \*(Aq1\*(Aq,
+            \*(Aqlength\*(Aq: \*(Aq34896138\*(Aq,
+            \*(Aqpath\*(Aq: \*(Aq/downloads/file\*(Aq,
+            \*(Aqselected\*(Aq: \*(Aqtrue\*(Aq,
+            \*(Aquris\*(Aq: [{\*(Aqstatus\*(Aq: \*(Aqused\*(Aq,
+                      \*(Aquri\*(Aq: \*(Aqhttp://example\&.org/file\*(Aq}]}],
+ \*(Aqgid\*(Aq: \*(Aq1\*(Aq,
+ \*(AqnumPieces\*(Aq: \*(Aq17\*(Aq,
+ \*(AqpieceLength\*(Aq: \*(Aq2097152\*(Aq,
+ \*(Aqstatus\*(Aq: \*(Aqcomplete\*(Aq,
+ \*(AqtotalLength\*(Aq: \*(Aq34896138\*(Aq,
+ \*(AquploadLength\*(Aq: \*(Aq0\*(Aq,
+ \*(AquploadSpeed\*(Aq: \*(Aq0\*(Aq}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Get information specifying keys you are interested in:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> r = s\&.aria2\&.tellStatus(\*(Aq1\*(Aq, [\*(Aqgid\*(Aq, \*(AqtotalLength\*(Aq, \*(AqcompletedLength\*(Aq])
+>>> pprint(r)
+{\*(AqcompletedLength\*(Aq: \*(Aq34896138\*(Aq, \*(Aqgid\*(Aq: \*(Aq1\*(Aq, \*(AqtotalLength\*(Aq: \*(Aq34896138\*(Aq}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBaria2\&.getUris\fR (\fIgid\fR)
 .sp
 This method returns URIs used in the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
 .PP
@@ -3012,7 +3149,7 @@ if the URI is already used\&.
 if the URI is waiting in the queue\&.
 .RE
 .sp
-\fBaria2\&.getFiles\fR \fIgid\fR
+\fBaria2\&.getFiles\fR (\fIgid\fR)
 .sp
 This method returns file list of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
 .PP
@@ -3047,7 +3184,7 @@ Returns the list of URI for this file\&. The element of list is the same struct 
 method\&.
 .RE
 .sp
-\fBaria2\&.getPeers\fR \fIgid\fR
+\fBaria2\&.getPeers\fR (\fIgid\fR)
 .sp
 This method returns peer list of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. This method is for BitTorrent only\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
 .PP
@@ -3096,7 +3233,7 @@ seeder
 "true" is this client is a seeder\&. Otherwise "false"\&.
 .RE
 .sp
-\fBaria2\&.getServers\fR \fIgid\fR
+\fBaria2\&.getServers\fR (\fIgid\fR)
 .sp
 This method returns currently connected HTTP(S)/FTP servers of the download denoted by \fIgid\fR\&. \fIgid\fR is of type string\&. The response is of type array and its element is of type struct and it contains following keys\&. The value type is string\&.
 .PP
@@ -3125,11 +3262,11 @@ Download speed (byte/sec)
 .RE
 .RE
 .sp
-\fBaria2\&.tellActive\fR \fI[keys]\fR
+\fBaria2\&.tellActive\fR (\fI[keys]\fR)
 .sp
 This method returns the list of active downloads\&. The response is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&. For \fIkeys\fR parameter, please refer to \fBaria2\&.tellStatus\fR method\&.
 .sp
-\fBaria2\&.tellWaiting\fR \fIoffset, num, [keys]\fR
+\fBaria2\&.tellWaiting\fR (\fIoffset, num, [keys]\fR)
 .sp
 This method returns the list of waiting download, including paused downloads\&. \fIoffset\fR is of type integer and specifies the offset from the download waiting at the front\&. \fInum\fR is of type integer and specifies the number of downloads to be returned\&. For \fIkeys\fR parameter, please refer to \fBaria2\&.tellStatus\fR method\&.
 .sp
@@ -3141,7 +3278,7 @@ For example, imagine that three downloads "A","B" and "C" are waiting in this or
 .sp
 The response is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&.
 .sp
-\fBaria2\&.tellStopped\fR \fIoffset, num, [keys]\fR
+\fBaria2\&.tellStopped\fR (\fIoffset, num, [keys]\fR)
 .sp
 This method returns the list of stopped download\&. \fIoffset\fR is of type integer and specifies the offset from the oldest download\&. \fInum\fR is of type integer and specifies the number of downloads to be returned\&. For \fIkeys\fR parameter, please refer to \fBaria2\&.tellStatus\fR method\&.
 .sp
@@ -3149,37 +3286,37 @@ This method returns the list of stopped download\&. \fIoffset\fR is of type inte
 .sp
 The response is of type array and its element is the same struct returned by \fBaria2\&.tellStatus\fR method\&.
 .sp
-\fBaria2\&.changePosition\fR \fIgid, pos, how\fR
+\fBaria2\&.changePosition\fR (\fIgid, pos, how\fR)
 .sp
 This method changes the position of the download denoted by \fIgid\fR\&. \fIpos\fR is of type integer\&. \fIhow\fR is of type string\&. If \fIhow\fR is "POS_SET", it moves the download to a position relative to the beginning of the queue\&. If \fIhow\fR is "POS_CUR", it moves the download to a position relative to the current position\&. If \fIhow\fR is "POS_END", it moves the download to a position relative to the end of the queue\&. If the destination position is less than 0 or beyond the end of the queue, it moves the download to the beginning or the end of the queue respectively\&. The response is of type integer and it is the destination position\&.
 .sp
 For example, if GID#1 is placed in position 3, aria2\&.changePosition(1, \-1, POS_CUR) will change its position to 2\&. Additional aria2\&.changePosition(1, 0, POS_SET) will change its position to 0(the beginning of the queue)\&.
 .sp
-\fBaria2\&.changeUri\fR \fIgid, fileIndex, delUris, addUris[, position]\fR
+\fBaria2\&.changeUri\fR (\fIgid, fileIndex, delUris, addUris[, position]\fR)
 .sp
 This method removes URIs in \fIdelUris\fR from and appends URIs in \fIaddUris\fR to download denoted by \fIgid\fR\&. \fIdelUris\fR and \fIaddUris\fR are list of string\&. A download can contain multiple files and URIs are attached to each file\&. \fIfileIndex\fR is used to select which file to remove/attach given URIs\&. \fIfileIndex\fR is 1\-based\&. \fIposition\fR is used to specify where URIs are inserted in the existing waiting URI list\&. \fIposition\fR is 0\-based\&. When \fIposition\fR is omitted, URIs are appended to the back of the list\&. This method first execute removal and then addition\&. \fIposition\fR is the position after URIs are removed, not the position when this method is called\&. When removing URI, if same URIs exist in download, only one of them is removed for each URI in \fIdelUris\fR\&. In other words, there are three URIs "http://example\&.org/aria2" and you want remove them all, you have to specify (at least) 3 "http://example\&.org/aria2" in \fIdelUris\fR\&. This method returns a list which contains 2 integers\&. The first integer is the number of URIs deleted\&. The second integer is the number of URIs added\&.
 .sp
-\fBaria2\&.getOption\fR \fIgid\fR
+\fBaria2\&.getOption\fR (\fIgid\fR)
 .sp
 This method returns options of the download denoted by \fIgid\fR\&. The response is of type struct\&. Its key is the name of option\&. The value type is string\&.
 .sp
-\fBaria2\&.changeOption\fR \fIgid, options\fR
+\fBaria2\&.changeOption\fR (\fIgid, options\fR)
 .sp
 This method changes options of the download denoted by \fIgid\fR dynamically\&. \fIgid\fR is of type string\&. \fIoptions\fR is of type struct and the available options are: \fBbt\-max\-peers\fR, \fBbt\-request\-peer\-speed\-limit\fR, \fBmax\-download\-limit\fR and \fBmax\-upload\-limit\fR\&. This method returns "OK" for success\&.
 .sp
-\fBaria2\&.getGlobalOption\fR
+\fBaria2\&.getGlobalOption\fR ()
 .sp
 This method returns global options\&. The response is of type struct\&. Its key is the name of option\&. The value type is string\&. Because global options are used as a template for the options of newly added download, the response contains keys returned by \fBaria2\&.getOption\fR method\&.
 .sp
-\fBaria2\&.changeGlobalOption\fR \fIoptions\fR
+\fBaria2\&.changeGlobalOption\fR (\fIoptions\fR)
 .sp
 This method changes global options dynamically\&. \fIoptions\fR is of type struct and the available options are \fBmax\-concurrent\-downloads\fR, \fBmax\-overall\-download\-limit\fR, \fBmax\-overall\-upload\-limit\fR, \fBlog\-level\fR and \fBlog\fR\&. Using \fBlog\fR option, you can dynamically start logging or change log file\&. To stop logging, give empty string("") as a parameter value\&. Note that log file is always opened in append mode\&. This method returns "OK" for success\&.
 .sp
-\fBaria2\&.purgeDownloadResult\fR
+\fBaria2\&.purgeDownloadResult\fR ()
 .sp
 This method purges completed/error/removed downloads to free memory\&. This method returns "OK"\&.
 .sp
-\fBaria2\&.getVersion\fR
+\fBaria2\&.getVersion\fR ()
 .sp
 This method returns version of the program and the list of enabled features\&. The response is of type struct and contains following keys\&.
 .PP
@@ -3193,7 +3330,30 @@ enabledFeatures
 List of enabled features\&. Each feature name is of type string\&.
 .RE
 .sp
-\fBaria2\&.getSessionInfo\fR
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> r = s\&.aria2\&.getVersion()
+>>> pprint(r)
+{\*(AqenabledFeatures\*(Aq: [\*(AqAsync DNS\*(Aq,
+                     \*(AqBitTorrent\*(Aq,
+                     \*(AqFirefox3 Cookie\*(Aq,
+                     \*(AqGZip\*(Aq,
+                     \*(AqHTTPS\*(Aq,
+                     \*(AqMessage Digest\*(Aq,
+                     \*(AqMetalink\*(Aq,
+                     \*(AqXML\-RPC\*(Aq],
+ \*(Aqversion\*(Aq: \*(Aq1\&.10\&.5\*(Aq}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBaria2\&.getSessionInfo\fR ()
 .sp
 This method returns session information\&. The response is of type struct and contains following key\&.
 .PP
@@ -3202,17 +3362,49 @@ sessionId
 Session ID, which is generated each time when aria2 is invoked\&.
 .RE
 .sp
-\fBaria2\&.shutdown\fR
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> s\&.aria2\&.getSessionInfo()
+{\*(AqsessionId\*(Aq: \*(Aqcd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9\*(Aq}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+\fBaria2\&.shutdown\fR ()
 .sp
 This method shutdowns aria2\&. This method returns "OK"\&.
 .sp
-\fBaria2\&.forceShutdown\fR
+\fBaria2\&.forceShutdown\fR ()
 .sp
 This method shutdowns aria2\&. This method behaves like \fBaria2\&.shutdown\fR except that any actions which takes time such as contacting BitTorrent tracker are skipped\&. This method returns "OK"\&.
 .sp
-\fBsystem\&.multicall\fR \fImethods\fR
+\fBsystem\&.multicall\fR (\fImethods\fR)
 .sp
 This methods encapsulates multiple method calls in a single request\&. \fImethods\fR is of type array and its element is struct\&. The struct contains two keys: "methodName" and "params"\&. "methodName" is the method name to call and "params" is array containing parameters to the method\&. This method returns array of responses\&. The element of array will either be a one\-item array containing the return value of each method call or struct of fault element if an encapsulated method call fails\&.
+.sp
+In the following example, we add 2 downloads\&. First one is http://example\&.org/file and second one is file\&.torrent:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> mc = xmlrpclib\&.MultiCall(s)
+>>> mc\&.aria2\&.addUri([\*(Aqhttp://example\&.org/file\*(Aq])
+>>> mc\&.aria2\&.addTorrent(xmlrpclib\&.Binary(open(\*(Aqfile\&.torrent\*(Aq)\&.read()))
+>>> r = mc()
+>>> tuple(r)
+(\*(Aq2\*(Aq, \*(Aq3\*(Aq)
+.fi
+.if n \{\
+.RE
+.\}
 .SS "Error Handling"
 .sp
 In case of error, aria2 returns faultCode=1 and the error message in faultString\&.
@@ -3355,6 +3547,25 @@ To stop a download, press Ctrl\-C\&. You can resume the transfer by running aria
 .\}
 .nf
 aria2c "http://host/file\&.zip" "http://mirror/file\&.zip"
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBDownload a file from 1 host using 2 connections\fR
+.RS 4
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+aria2c \-x2 \-k1M "http://host/file\&.zip"
 .fi
 .if n \{\
 .RE

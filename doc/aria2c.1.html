@@ -3264,28 +3264,41 @@ GID
 </dd>
 </dl></div>
 <h3 id="_methods">Methods</h3><div style="clear:left"></div>
-<div class="paragraph"><p><strong>aria2.addUri</strong> <em>uris[, options[, position]]</em></p></div>
+<div class="paragraph"><p>All code examples come from Python2.7 interpreter.</p></div>
+<div class="paragraph"><p><strong>aria2.addUri</strong> (<em>uris[, options[, position]]</em>)</p></div>
 <div class="paragraph"><p>This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  <em>uris</em> is of
 type array and its element is URI which is of type string.  For
 BitTorrent Magnet URI, <em>uris</em> must have only one element and it should
-be BitTorrent Magnet URI.  URIs in <em>uris</em> must point to the same
-file. For example, a file chunkybaconlinux.iso is hosted in 2
-locations: http://server/chunkybaconlinux.iso and
-http://mirror/chunkybaconlinux.iso.  You can download this iso image
-using 2 URIs by issuing
-aria2.addUri(["http://server/chunkybaconlinux.iso",
-"http://mirror/chunkybaconlinux.iso"]).  Imagine there is an another
-file URI, say, http://mirror2/chunkydonutslinux.iso, which is
-different iso image.  You cannot mix this URI with previous URIs in
-one aria2.addUri command.  If you do, aria2 does not complain but
-download may fail.  <em>options</em> is of type struct and its members are a
-pair of option name and value. See <strong>Options</strong> below for more details.
-If <em>position</em> is given as an integer starting from 0, the new download
-is inserted at <em>position</em> in the waiting queue. If <em>position</em> is not
-given or <em>position</em> is larger than the size of the queue, it is
-appended at the end of the queue.  This method returns GID of
-registered download.</p></div>
-<div class="paragraph"><p><strong>aria2.addTorrent</strong> <em>torrent[, uris[, options[, position]]]</em></p></div>
+be BitTorrent Magnet URI.  URIs in <em>uris</em> must point to the same file.
+If you mix other URIs which point to another file, aria2 does not
+complain but download may fail.  <em>options</em> is of type struct and its
+members are a pair of option name and value. See <strong>Options</strong> below for
+more details.  If <em>position</em> is given as an integer starting from 0,
+the new download is inserted at <em>position</em> in the waiting queue. If
+<em>position</em> is not given or <em>position</em> is larger than the size of the
+queue, it is appended at the end of the queue.  This method returns
+GID of registered download.</p></div>
+<div class="paragraph"><p>Adding http://example.org/file to aria2:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'])
+'1'</tt></pre>
+</div></div>
+<div class="paragraph"><p>Adding 2 sources and some options:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'], dict(dir="/tmp"))
+'2'</tt></pre>
+</div></div>
+<div class="paragraph"><p>Adding a download and insert it to the front of waiting downloads:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'], {}, 0)
+'3'</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>aria2.addTorrent</strong> (<em>torrent[, uris[, options[, position]]]</em>)</p></div>
 <div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.  If
 you want to add BitTorrent Magnet URI, use <strong>aria2.addUri</strong> method
 instead.  <em>torrent</em> is of type base64 which contains Base64-encoded
@@ -3302,7 +3315,15 @@ given as an integer starting from 0, the new download is inserted at
 end of the queue.  This method returns GID of registered download.
 Please note that the downloads added by this method are not saved by
 <strong>--save-session</strong>.</p></div>
-<div class="paragraph"><p><strong>aria2.addMetalink</strong> <em>metalink[, options[, position]]</em></p></div>
+<div class="paragraph"><p>Adding local file file.torrent to aria2:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+'6'</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>aria2.addMetalink</strong> (<em>metalink[, options[, position]]</em>)</p></div>
 <div class="paragraph"><p>This method adds Metalink download by uploading .metalink file.
 <em>metalink</em> is of type base64 which contains Base64-encoded .metalink
 file.  <em>options</em> is of type struct and its members are a pair of
@@ -3313,43 +3334,59 @@ given or <em>position</em> is larger than the size of the queue, it is
 appended at the end of the queue.  This method returns array of GID of
 registered download.  Please note that the downloads added by this
 method are not saved by <strong>--save-session</strong>.</p></div>
-<div class="paragraph"><p><strong>aria2.remove</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>Adding local file file.meta4 to aria2:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4').read()))
+['8']</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>aria2.remove</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method removes the download denoted by <em>gid</em>. <em>gid</em> is of type
 string. If specified download is in progress, it is stopped at
 first. The status of removed download becomes "removed".  This method
 returns GID of removed download.</p></div>
-<div class="paragraph"><p><strong>aria2.forceRemove</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>Removing download whose GID is <em>3</em>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.remove('3')
+'3'</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>aria2.forceRemove</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method removes the download denoted by <em>gid</em>.  This method
 behaves just like <strong>aria2.remove</strong> except that this method removes
 download without any action which takes time such as contacting
 BitTorrent tracker.</p></div>
-<div class="paragraph"><p><strong>aria2.pause</strong> <em>gid</em></p></div>
+<div class="paragraph"><p><strong>aria2.pause</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method pauses the download denoted by <em>gid</em>. <em>gid</em> is of type
 string. The status of paused download becomes "paused".  If the
 download is active, the download is placed on the first position of
 waiting queue.  As long as the status is "paused", the download is not
 started.  To change status to "waiting", use <strong>aria2.unpause</strong> method.
 This method returns GID of paused download.</p></div>
-<div class="paragraph"><p><strong>aria2.pauseAll</strong></p></div>
+<div class="paragraph"><p><strong>aria2.pauseAll</strong> ()</p></div>
 <div class="paragraph"><p>This method is equal to calling <strong>aria2.pause</strong> for every active/waiting
 download. This methods returns "OK" for success.</p></div>
-<div class="paragraph"><p><strong>aria2.forcePause</strong> <em>pid</em></p></div>
+<div class="paragraph"><p><strong>aria2.forcePause</strong> (<em>pid</em>)</p></div>
 <div class="paragraph"><p>This method pauses the download denoted by <em>gid</em>.  This method
 behaves just like <strong>aria2.pause</strong> except that this method pauses
 download without any action which takes time such as contacting
 BitTorrent tracker.</p></div>
-<div class="paragraph"><p><strong>aria2.forcePauseAll</strong></p></div>
+<div class="paragraph"><p><strong>aria2.forcePauseAll</strong> ()</p></div>
 <div class="paragraph"><p>This method is equal to calling <strong>aria2.forcePause</strong> for every
 active/waiting download. This methods returns "OK" for success.</p></div>
-<div class="paragraph"><p><strong>aria2.unpause</strong> <em>gid</em></p></div>
+<div class="paragraph"><p><strong>aria2.unpause</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method changes the status of the download denoted by <em>gid</em> from
 "paused" to "waiting". This makes the download eligible to restart.
 <em>gid</em> is of type string.  This method returns GID of unpaused
 download.</p></div>
-<div class="paragraph"><p><strong>aria2.unpauseAll</strong></p></div>
+<div class="paragraph"><p><strong>aria2.unpauseAll</strong> ()</p></div>
 <div class="paragraph"><p>This method is equal to calling <strong>aria2.unpause</strong> for every active/waiting
 download. This methods returns "OK" for success.</p></div>
-<div class="paragraph"><p><strong>aria2.tellStatus</strong> <em>gid[, keys]</em></p></div>
+<div class="paragraph"><p><strong>aria2.tellStatus</strong> (<em>gid[, keys]</em>)</p></div>
 <div class="paragraph"><p>This method returns download progress of the download denoted by
 <em>gid</em>. <em>gid</em> is of type string. <em>keys</em> is array of string. If it is
 specified, the response contains only keys in <em>keys</em> array. If <em>keys</em>
@@ -3590,7 +3627,42 @@ name
 </dl></div>
 </dd>
 </dl></div>
-<div class="paragraph"><p><strong>aria2.getUris</strong> <em>gid</em></p></div>
+<div class="paragraph"><p>Get information about download whose GID is <em>1</em>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; r = s.aria2.tellStatus('1')
+&gt;&gt;&gt; pprint(r)
+{'bitfield': 'ffff80',
+ 'completedLength': '34896138',
+ 'connections': '0',
+ 'dir': '/downloads',
+ 'downloadSpeed': '0',
+ 'errorCode': '0',
+ 'files': [{'index': '1',
+            'length': '34896138',
+            'path': '/downloads/file',
+            'selected': 'true',
+            'uris': [{'status': 'used',
+                      'uri': 'http://example.org/file'}]}],
+ 'gid': '1',
+ 'numPieces': '17',
+ 'pieceLength': '2097152',
+ 'status': 'complete',
+ 'totalLength': '34896138',
+ 'uploadLength': '0',
+ 'uploadSpeed': '0'}</tt></pre>
+</div></div>
+<div class="paragraph"><p>Get information specifying keys you are interested in:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; r = s.aria2.tellStatus('1', ['gid', 'totalLength', 'completedLength'])
+&gt;&gt;&gt; pprint(r)
+{'completedLength': '34896138', 'gid': '1', 'totalLength': '34896138'}</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>aria2.getUris</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method returns URIs used in the download denoted by <em>gid</em>.  <em>gid</em>
 is of type string. The response is of type array and its element is of
 type struct and it contains following keys. The value type is string.</p></div>
@@ -3613,7 +3685,7 @@ status
 </p>
 </dd>
 </dl></div>
-<div class="paragraph"><p><strong>aria2.getFiles</strong> <em>gid</em></p></div>
+<div class="paragraph"><p><strong>aria2.getFiles</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method returns file list of the download denoted by <em>gid</em>. <em>gid</em>
 is of type string. The response is of type array and its element is of
 type struct and it contains following keys. The value type is string.</p></div>
@@ -3663,7 +3735,7 @@ uris
 </p>
 </dd>
 </dl></div>
-<div class="paragraph"><p><strong>aria2.getPeers</strong> <em>gid</em></p></div>
+<div class="paragraph"><p><strong>aria2.getPeers</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method returns peer list of the download denoted by <em>gid</em>. <em>gid</em>
 is of type string. This method is for BitTorrent only.  The response
 is of type array and its element is of type struct and it contains
@@ -3745,7 +3817,7 @@ seeder
 </p>
 </dd>
 </dl></div>
-<div class="paragraph"><p><strong>aria2.getServers</strong> <em>gid</em></p></div>
+<div class="paragraph"><p><strong>aria2.getServers</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method returns currently connected HTTP(S)/FTP servers of the download denoted by <em>gid</em>. <em>gid</em> is of type string. The response
 is of type array and its element is of type struct and it contains
 following keys. The value type is string.</p></div>
@@ -3795,12 +3867,12 @@ downloadSpeed
 </dl></div>
 </dd>
 </dl></div>
-<div class="paragraph"><p><strong>aria2.tellActive</strong> <em>[keys]</em></p></div>
+<div class="paragraph"><p><strong>aria2.tellActive</strong> (<em>[keys]</em>)</p></div>
 <div class="paragraph"><p>This method returns the list of active downloads.  The response is of
 type array and its element is the same struct returned by
 <strong>aria2.tellStatus</strong> method. For <em>keys</em> parameter, please refer to
 <strong>aria2.tellStatus</strong> method.</p></div>
-<div class="paragraph"><p><strong>aria2.tellWaiting</strong> <em>offset, num, [keys]</em></p></div>
+<div class="paragraph"><p><strong>aria2.tellWaiting</strong> (<em>offset, num, [keys]</em>)</p></div>
 <div class="paragraph"><p>This method returns the list of waiting download, including paused
 downloads. <em>offset</em> is of type integer and specifies the offset from
 the download waiting at the front. <em>num</em> is of type integer and
@@ -3818,7 +3890,7 @@ in this order. aria2.tellWaiting(0, 1) returns
 aria2.tellWaiting(-1, 2) returns ["C", "B"].</p></div>
 <div class="paragraph"><p>The response is of type array and its element is the same struct
 returned by <strong>aria2.tellStatus</strong> method.</p></div>
-<div class="paragraph"><p><strong>aria2.tellStopped</strong> <em>offset, num, [keys]</em></p></div>
+<div class="paragraph"><p><strong>aria2.tellStopped</strong> (<em>offset, num, [keys]</em>)</p></div>
 <div class="paragraph"><p>This method returns the list of stopped download.  <em>offset</em> is of type
 integer and specifies the offset from the oldest download. <em>num</em> is of
 type integer and specifies the number of downloads to be returned.
@@ -3827,7 +3899,7 @@ For <em>keys</em> parameter, please refer to <strong>aria2.tellStatus</strong> m
 method.</p></div>
 <div class="paragraph"><p>The response is of type array and its element is the same struct
 returned by <strong>aria2.tellStatus</strong> method.</p></div>
-<div class="paragraph"><p><strong>aria2.changePosition</strong> <em>gid, pos, how</em></p></div>
+<div class="paragraph"><p><strong>aria2.changePosition</strong> (<em>gid, pos, how</em>)</p></div>
 <div class="paragraph"><p>This method changes the position of the download denoted by
 <em>gid</em>. <em>pos</em> is of type integer. <em>how</em> is of type string. If <em>how</em> is
 "POS_SET", it moves the download to a position relative to the
@@ -3842,7 +3914,7 @@ destination position.</p></div>
 -1, POS_CUR) will change its position to 2. Additional
 aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
 beginning of the queue).</p></div>
-<div class="paragraph"><p><strong>aria2.changeUri</strong> <em>gid, fileIndex, delUris, addUris[, position]</em></p></div>
+<div class="paragraph"><p><strong>aria2.changeUri</strong> (<em>gid, fileIndex, delUris, addUris[, position]</em>)</p></div>
 <div class="paragraph"><p>This method removes URIs in <em>delUris</em> from and appends URIs in
 <em>addUris</em> to download denoted by <em>gid</em>. <em>delUris</em> and <em>addUris</em> are
 list of string. A download can contain multiple files and URIs are
@@ -3860,23 +3932,23 @@ specify (at least) 3 "http://example.org/aria2" in <em>delUris</em>.  This
 method returns a list which contains 2 integers. The first integer is
 the number of URIs deleted. The second integer is the number of URIs
 added.</p></div>
-<div class="paragraph"><p><strong>aria2.getOption</strong> <em>gid</em></p></div>
+<div class="paragraph"><p><strong>aria2.getOption</strong> (<em>gid</em>)</p></div>
 <div class="paragraph"><p>This method returns options of the download denoted by <em>gid</em>.  The
 response is of type struct. Its key is the name of option.  The value type
 is string.</p></div>
-<div class="paragraph"><p><strong>aria2.changeOption</strong> <em>gid, options</em></p></div>
+<div class="paragraph"><p><strong>aria2.changeOption</strong> (<em>gid, options</em>)</p></div>
 <div class="paragraph"><p>This method changes options of the download denoted by <em>gid</em>
 dynamically.  <em>gid</em> is of type string.  <em>options</em> is of type struct
 and the available options are: <strong>bt-max-peers</strong>,
 <strong>bt-request-peer-speed-limit</strong>, <strong>max-download-limit</strong> and
 <strong>max-upload-limit</strong>.  This method returns "OK" for success.</p></div>
-<div class="paragraph"><p><strong>aria2.getGlobalOption</strong></p></div>
+<div class="paragraph"><p><strong>aria2.getGlobalOption</strong> ()</p></div>
 <div class="paragraph"><p>This method returns global options.  The response is of type
 struct. Its key is the name of option.  The value type is string.
 Because global options are used as a template for the options of newly
 added download, the response contains keys returned by
 <strong>aria2.getOption</strong> method.</p></div>
-<div class="paragraph"><p><strong>aria2.changeGlobalOption</strong> <em>options</em></p></div>
+<div class="paragraph"><p><strong>aria2.changeGlobalOption</strong> (<em>options</em>)</p></div>
 <div class="paragraph"><p>This method changes global options dynamically.  <em>options</em> is of type
 struct and the available options are <strong>max-concurrent-downloads</strong>,
 <strong>max-overall-download-limit</strong>, <strong>max-overall-upload-limit</strong>, <strong>log-level</strong>
@@ -3884,10 +3956,10 @@ and <strong>log</strong>. Using <strong>log</strong> option, you can dynamically
 change log file. To stop logging, give empty string("") as a parameter
 value. Note that log file is always opened in append mode. This method
 returns "OK" for success.</p></div>
-<div class="paragraph"><p><strong>aria2.purgeDownloadResult</strong></p></div>
+<div class="paragraph"><p><strong>aria2.purgeDownloadResult</strong> ()</p></div>
 <div class="paragraph"><p>This method purges completed/error/removed downloads to free memory.
 This method returns "OK".</p></div>
-<div class="paragraph"><p><strong>aria2.getVersion</strong></p></div>
+<div class="paragraph"><p><strong>aria2.getVersion</strong> ()</p></div>
 <div class="paragraph"><p>This method returns version of the program and the list of enabled
 features. The response is of type struct and contains following keys.</p></div>
 <div class="dlist"><dl>
@@ -3908,7 +3980,24 @@ enabledFeatures
 </p>
 </dd>
 </dl></div>
-<div class="paragraph"><p><strong>aria2.getSessionInfo</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; r = s.aria2.getVersion()
+&gt;&gt;&gt; pprint(r)
+{'enabledFeatures': ['Async DNS',
+                     'BitTorrent',
+                     'Firefox3 Cookie',
+                     'GZip',
+                     'HTTPS',
+                     'Message Digest',
+                     'Metalink',
+                     'XML-RPC'],
+ 'version': '1.10.5'}</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>aria2.getSessionInfo</strong> ()</p></div>
 <div class="paragraph"><p>This method returns session information.
 The response is of type struct and contains following key.</p></div>
 <div class="dlist"><dl>
@@ -3921,13 +4010,20 @@ sessionId
 </p>
 </dd>
 </dl></div>
-<div class="paragraph"><p><strong>aria2.shutdown</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.getSessionInfo()
+{'sessionId': 'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}</tt></pre>
+</div></div>
+<div class="paragraph"><p><strong>aria2.shutdown</strong> ()</p></div>
 <div class="paragraph"><p>This method shutdowns aria2.  This method returns "OK".</p></div>
-<div class="paragraph"><p><strong>aria2.forceShutdown</strong></p></div>
+<div class="paragraph"><p><strong>aria2.forceShutdown</strong> ()</p></div>
 <div class="paragraph"><p>This method shutdowns aria2. This method behaves like <strong>aria2.shutdown</strong>
 except that any actions which takes time such as contacting BitTorrent
 tracker are skipped. This method returns "OK".</p></div>
-<div class="paragraph"><p><strong>system.multicall</strong> <em>methods</em></p></div>
+<div class="paragraph"><p><strong>system.multicall</strong> (<em>methods</em>)</p></div>
 <div class="paragraph"><p>This methods encapsulates multiple method calls in a single request.
 <em>methods</em> is of type array and its element is struct.  The struct
 contains two keys: "methodName" and "params".  "methodName" is the
@@ -3936,6 +4032,19 @@ method.  This method returns array of responses.  The element of array
 will either be a one-item array containing the return value of each
 method call or struct of fault element if an encapsulated method call
 fails.</p></div>
+<div class="paragraph"><p>In the following example, we add 2 downloads. First one is
+http://example.org/file and second one is file.torrent:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; mc = xmlrpclib.MultiCall(s)
+&gt;&gt;&gt; mc.aria2.addUri(['http://example.org/file'])
+&gt;&gt;&gt; mc.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
+&gt;&gt;&gt; r = mc()
+&gt;&gt;&gt; tuple(r)
+('2', '3')</tt></pre>
+</div></div>
 <h3 id="_error_handling">Error Handling</h3><div style="clear:left"></div>
 <div class="paragraph"><p>In case of error, aria2 returns faultCode=1 and the error message in
 faultString.</p></div>
@@ -4028,6 +4137,11 @@ pprint(r)</tt></pre>
 <div class="listingblock">
 <div class="content">
 <pre><tt>aria2c "http://host/file.zip" "http://mirror/file.zip"</tt></pre>
+</div></div>
+<h4 id="_download_a_file_from_1_host_using_2_connections">Download a file from 1 host using 2 connections</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c -x2 -k1M "http://host/file.zip"</tt></pre>
 </div></div>
 <h4 id="_download_a_file_from_http_and_ftp_servers">Download a file from HTTP and FTP servers</h4>
 <div class="listingblock">
@@ -4423,7 +4537,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-10-22 22:58:37 JST
+Last updated 2010-10-30 00:55:55 JST
 </div>
 </div>
 </body>

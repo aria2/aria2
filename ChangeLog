@@ -1,3 +1,9 @@
+2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added XML-RPC client code example using Python(I have not added
+	them for every methods yet). Added -x and -k example.
+	* doc/aria2c.1.txt
+
 2010-10-29  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed compiler warning with --disable-bittorrent and
