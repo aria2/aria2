@@ -1,5 +1,10 @@
 2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Moved -x and -k option to HTTP/FTP option.
+	* doc/aria2c.1.txt
+
+2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Tagged -x and -k option as #basic
 	* src/OptionHandlerFactory.cc
 

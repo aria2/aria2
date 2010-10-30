@@ -775,6 +775,15 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>-x</strong>, <strong>--max-connection-per-server</strong>=NUM
+</dt>
+<dd>
+<p>
+  The maximum number of connections to one server for each download.
+  Default: <em>1</em>
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--max-file-not-found</strong>=NUM
 </dt>
 <dd>
@@ -793,6 +802,20 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 <p>
   Set number of tries. <em>0</em> means unlimited.
   Default: <em>5</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-k</strong>, <strong>--min-split-size</strong>=SIZE
+</dt>
+<dd>
+<p>
+  aria2 does not split less than 2*SIZE byte range.  For example,
+  let&#8217;s consider downloading 20MiB file. If SIZE is 10M, aria2 can
+  split file into 2 range [0-10MiB) and [10MiB-20MiB) and download it
+  using 2 sources(if <strong>--split</strong> &gt;= 2, of course).  If SIZE is 15M,
+  since 2*15M &gt; 20MiB, aria2 does not split file and download it using
+  1 source.  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+  Possible Values: <em>1M</em>-<em>1024M</em> Default: <em>20M</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2124,15 +2147,6 @@ name.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>-x</strong>, <strong>--max-connection-per-server</strong>=NUM
-</dt>
-<dd>
-<p>
-  The maximum number of connections to one server for each download.
-  Default: <em>1</em>
-</p>
-</dd>
-<dt class="hdlist1">
 <strong>--max-download-result</strong>=NUM
 </dt>
 <dd>
@@ -2158,20 +2172,6 @@ name.</td>
   resume. If <em>N</em> is <em>0</em>, aria2 downloads file from scratch when all
   given URIs do not support resume.  See <strong>--always-resume</strong> option.
   Default: <em>0</em>
-</p>
-</dd>
-<dt class="hdlist1">
-<strong>-k</strong>, <strong>--min-split-size</strong>=SIZE
-</dt>
-<dd>
-<p>
-  aria2 does not split less than 2*SIZE byte range.  For example,
-  let&#8217;s consider downloading 20MiB file. If SIZE is 10M, aria2 can
-  split file into 2 range [0-10MiB) and [10MiB-20MiB) and download it
-  using 2 sources(if <strong>--split</strong> &gt;= 2, of course).  If SIZE is 15M,
-  since 2*15M &gt; 20MiB, aria2 does not split file and download it using
-  1 source.  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-  Possible Values: <em>1M</em>-<em>1024M</em> Default: <em>20M</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -4550,7 +4550,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-10-30 13:13:28 JST
+Last updated 2010-10-30 13:18:27 JST
 </div>
 </div>
 </body>

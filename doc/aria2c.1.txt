@@ -134,6 +134,11 @@ then you get HTTP proxy "http://proxy" with user "user" and password
   This option does not affect BitTorrent downloads.
   Default: '0'
 
+*-x*, *--max-connection-per-server*=NUM::
+
+  The maximum number of connections to one server for each download.
+  Default: '1'
+
 *--max-file-not-found*=NUM::
   If aria2 receives `file not found' status from the remote HTTP/FTP
   servers NUM times without getting a single byte, then force the
@@ -144,6 +149,16 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 *-m*, *--max-tries*=N::
   Set number of tries. '0' means unlimited.
   Default: '5'
+
+*-k*, *--min-split-size*=SIZE::
+
+  aria2 does not split less than 2*SIZE byte range.  For example,
+  let's consider downloading 20MiB file. If SIZE is 10M, aria2 can
+  split file into 2 range [0-10MiB) and [10MiB-20MiB) and download it
+  using 2 sources(if *--split* >= 2, of course).  If SIZE is 15M,
+  since 2*15M > 20MiB, aria2 does not split file and download it using
+  1 source.  You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
+  Possible Values: '1M'-'1024M' Default: '20M'
 
 *-n*, *--no-netrc*::
   Disables netrc support. netrc support is enabled by default.
@@ -880,12 +895,6 @@ specify IP address explicitly. See also *--disable-ipv6*.  If your
 system doesn't have getifaddrs(), this option doesn't accept interface
 name.
 
-*-x*, *--max-connection-per-server*=NUM::
-
-  The maximum number of connections to one server for each download.
-  Default: '1'
-
-
 *--max-download-result*=NUM::
 
   Set maximum number of download result kept in memory. The download
@@ -905,16 +914,6 @@ name.
   resume. If 'N' is '0', aria2 downloads file from scratch when all
   given URIs do not support resume.  See *--always-resume* option.
   Default: '0'
-
-*-k*, *--min-split-size*=SIZE::
-
-  aria2 does not split less than 2*SIZE byte range.  For example,
-  let's consider downloading 20MiB file. If SIZE is 10M, aria2 can
-  split file into 2 range [0-10MiB) and [10MiB-20MiB) and download it
-  using 2 sources(if *--split* >= 2, of course).  If SIZE is 15M,
-  since 2*15M > 20MiB, aria2 does not split file and download it using
-  1 source.  You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
-  Possible Values: '1M'-'1024M' Default: '20M'
 
 *--log-level*=LEVEL::
   Set log level to output.
