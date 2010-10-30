@@ -352,7 +352,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "1",
                                     1, 16,
                                     'x'));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_BASIC);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
   {
@@ -404,7 +406,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "20M",
                                     1024*1024, 1024*1024*1024,
                                     'k'));
-    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);    
