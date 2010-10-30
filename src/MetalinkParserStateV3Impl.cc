@@ -62,7 +62,7 @@ const std::string SIZE("size");
 const std::string TYPE("type");
 const std::string URL("url");
 const std::string VERIFICATION("verification");
-}
+} // namespace
 
 const std::string METALINK3_NAMESPACE_URI("http://www.metalinker.org/");
 
@@ -79,7 +79,7 @@ public:
       (attr.nsUri.empty() || attr.nsUri == METALINK3_NAMESPACE_URI);
   }
 };
-}
+} // namespace
 
 template<typename Container>
 static typename Container::const_iterator findAttr

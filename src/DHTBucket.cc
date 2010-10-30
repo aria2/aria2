@@ -266,7 +266,7 @@ public:
     return node->isQuestionable();
   }
 };
-}
+} // namespace
 
 bool DHTBucket::containsQuestionableNode() const
 {

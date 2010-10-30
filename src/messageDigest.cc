@@ -51,7 +51,7 @@ struct DigestAlgoEntry {
   DigestAlgoEntry(const MessageDigestContext::DigestAlgo& algo, int strength):
     algo(algo), strength(strength) {}
 };
-}
+} // namespace
 
 typedef std::map<std::string, DigestAlgoEntry>
 DigestAlgoMap;

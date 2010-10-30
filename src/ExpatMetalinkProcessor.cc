@@ -58,7 +58,7 @@ public:
 
   SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):stm_(stm) {}
 };
-}
+} // namespace
 
 static void splitNsName
 (std::string& localname, std::string& prefix, std::string& nsUri,

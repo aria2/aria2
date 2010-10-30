@@ -361,7 +361,7 @@ public:
     return offset < dwe->getFileEntry()->getOffset();
   }
 };
-}
+} // namespace
 
 static DiskWriterEntries::const_iterator
 findFirstDiskWriterEntry

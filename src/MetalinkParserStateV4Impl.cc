@@ -61,7 +61,7 @@ const std::string SIZE("size");
 const std::string TYPE("type");
 const std::string MEDIATYPE("mediatype");
 const std::string URL("url");
-}
+} // namespace
 
 const std::string METALINK4_NAMESPACE_URI("urn:ietf:params:xml:ns:metalink");
 
@@ -78,7 +78,7 @@ public:
       (attr.nsUri.empty() || attr.nsUri == METALINK4_NAMESPACE_URI);
   }
 };
-}
+} // namespace
 
 template<typename Container>
 static typename Container::const_iterator findAttr

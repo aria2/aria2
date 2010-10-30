@@ -659,7 +659,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
 {

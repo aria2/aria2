@@ -52,7 +52,7 @@ NsCookieParser::~NsCookieParser() {}
 
 namespace {
 const std::string C_TRUE("TRUE");
-}
+} // namespace
 
 namespace {
 bool parseNsCookie
@@ -89,7 +89,7 @@ bool parseNsCookie
   cookie.setCreationTime(creationTime);
   return true;
 }
-}
+} // namespace
 
 std::vector<Cookie> NsCookieParser::parse
 (const std::string& filename, time_t creationTime)

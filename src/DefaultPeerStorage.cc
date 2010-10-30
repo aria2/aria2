@@ -78,7 +78,7 @@ public:
        (peer_->getPort() == peer->getPort()));
   }
 };
-}
+} // namespace
 
 bool DefaultPeerStorage::isPeerAlreadyAdded(const SharedHandle<Peer>& peer)
 {
@@ -151,7 +151,7 @@ public:
     return peer->unused() && peer->isGood();
   }
 };
-}
+} // namespace
 
 SharedHandle<Peer> DefaultPeerStorage::getUnusedPeer() {
   std::deque<SharedHandle<Peer> >::const_iterator itr =
@@ -176,7 +176,7 @@ public:
     return ipaddr == peer->getIPAddress() && port == peer->getPort();
   }
 };
-}
+} // namespace
 
 SharedHandle<Peer> DefaultPeerStorage::getPeer(const std::string& ipaddr,
                                                uint16_t port) const {
@@ -212,7 +212,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void DefaultPeerStorage::getActivePeers
 (std::vector<SharedHandle<Peer> >& activePeers)

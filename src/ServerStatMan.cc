@@ -154,7 +154,7 @@ public:
     return ss->getLastUpdated().difference(time_) >= timeout_;
   }
 };
-}
+} // namespace
 
 void ServerStatMan::removeStaleServerStat(time_t timeout)
 {

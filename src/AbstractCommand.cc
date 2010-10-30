@@ -574,7 +574,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 static bool inNoProxy(const SharedHandle<Request>& req,
                       const std::string& noProxy)

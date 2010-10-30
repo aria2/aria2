@@ -137,7 +137,7 @@ const std::string KEY_COMMENT = "comment";
 const std::string KEY_CREATION_DATE = "creationDate";
 const std::string KEY_MODE = "mode";
 const std::string KEY_SERVERS = "servers";
-}
+} // namespace
 
 static SharedHandle<ValueBase> createGIDResponse(gid_t gid)
 {

@@ -61,7 +61,7 @@ public:
     return misbitfield_[index/8]&mask;
   }
 };
-}
+} // namespace
 
 bool RarestPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const

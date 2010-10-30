@@ -418,7 +418,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 namespace {
 class StreamProtocolFilter {
@@ -429,7 +429,7 @@ public:
     return detector_.isStreamProtocol(uri);
   }
 };
-}
+} // namespace
 
 void createRequestGroupForUri
 (std::vector<SharedHandle<RequestGroup> >& result,

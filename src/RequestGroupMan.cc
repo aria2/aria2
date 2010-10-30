@@ -367,7 +367,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 namespace {
 class CollectServerStat {
@@ -411,7 +411,7 @@ public:
     }    
   }
 };
-}
+} // namespace
 
 namespace {
 class FindStoppedRequestGroup {
@@ -420,7 +420,7 @@ public:
     return group->getNumCommand() == 0;
   }
 };
-}
+} // namespace
 
 void RequestGroupMan::updateServerStat()
 {

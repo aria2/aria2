@@ -266,7 +266,7 @@ bool isUtf8Tail(unsigned char ch)
 {
   return in(ch, 0x80u, 0xbfu);
 }
-}
+} // namespace
 
 bool isUtf8(const std::string& str)
 {

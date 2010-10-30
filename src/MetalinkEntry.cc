@@ -77,7 +77,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
 {
@@ -129,7 +129,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void MetalinkEntry::setProtocolPriority(const std::string& protocol,
                                           int priorityToAdd)
@@ -148,7 +148,7 @@ public:
     return res1->priority < res2->priority;
   }
 };
-}
+} // namespace
 
 void MetalinkEntry::reorderResourcesByPriority() {
   std::random_shuffle(resources.begin(), resources.end(),
@@ -182,7 +182,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void MetalinkEntry::dropUnsupportedResource() {
   resources.erase(std::remove_if(resources.begin(), resources.end(),

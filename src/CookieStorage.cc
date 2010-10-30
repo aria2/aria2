@@ -180,7 +180,7 @@ public:
     return cookiePathDivider.cookie_;
   }
 };
-}
+} // namespace
 
 namespace {
 class OrderByPathDepthDesc:public std::binary_function<Cookie, Cookie, bool> {
@@ -209,7 +209,7 @@ public:
        lhs.cookie_.getCreationTime() < rhs.cookie_.getCreationTime());
   }
 };
-}
+} // namespace
 
 namespace {
 template<typename DomainInputIterator, typename CookieOutputIterator>
@@ -228,7 +228,7 @@ void searchCookieByDomainSuffix
     (*i).findCookie(out, requestHost, requestPath, now, secure);
   }
 }
-}
+} // namespace
 
 bool CookieStorage::contains(const Cookie& cookie) const
 {

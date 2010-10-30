@@ -76,7 +76,7 @@ public:
     return true;
   }
 };
-}
+} // namespace
 
 void Metalinker::queryEntry
 (std::vector<SharedHandle<MetalinkEntry> >& queryResult,

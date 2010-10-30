@@ -175,7 +175,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 namespace {
 class FindCompletedAllowedTier {
@@ -190,7 +190,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 size_t AnnounceList::countStoppedAllowedTier() const {
   return count_if(tiers_.begin(), tiers_.end(), FindStoppedAllowedTier());

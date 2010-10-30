@@ -65,7 +65,7 @@ public:
     return lhs.first->getDownloadSpeed() > rhs.first->getDownloadSpeed();
   }
 };
-}
+} // namespace
 
 std::string FeedbackURISelector::select
 (FileEntry* fileEntry,

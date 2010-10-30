@@ -191,7 +191,7 @@ public:
     return A2STR::NIL;
   }
 };
-}
+} // namespace
 
 OptionHandlerHandle OptionParser::getOptionHandlerByName
 (const std::string& optName)
@@ -255,7 +255,7 @@ public:
     return !optionHandler->isHidden() && optionHandler->hasTag(tag_);
   }
 };
-}
+} // namespace
 
 std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByTag(const std::string& tag) const
@@ -283,7 +283,7 @@ public:
       optionHandler->getName().find(substring_) != std::string::npos;
   }
 };
-}
+} // namespace
 
 std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByNameSubstring(const std::string& substring) const
@@ -347,7 +347,7 @@ public:
     return !optionHandler->isHidden() && optionHandler->getOptionID() == id_;
   }
 };
-}
+} // namespace
 
 SharedHandle<OptionHandler> OptionParser::findByID(int id) const
 {
@@ -369,7 +369,7 @@ public:
       optionHandler->getShortName() == shortName_;
   }
 };
-}
+} // namespace
 
 SharedHandle<OptionHandler> OptionParser::findByShortName(char shortName) const
 {

@@ -174,7 +174,7 @@ public:
               << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
   }
 };
-}
+} // namespace
 
 static void printProgressSummary
 (const std::deque<SharedHandle<RequestGroup> >& groups, size_t cols,

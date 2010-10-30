@@ -164,7 +164,7 @@ public:
     piece_->cancelBlock(slot.getBlockIndex());
   }
 };
-}
+} // namespace
 
 // localhost cancels outstanding download requests to the peer.
 void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
@@ -220,7 +220,7 @@ public:
   }
 
 };
-}
+} // namespace
 
 namespace {
 class FindChokedRequestSlot {
@@ -235,7 +235,7 @@ public:
     return !peer_->isInPeerAllowedIndexSet(slot.getIndex());
   }
 };
-}
+} // namespace
 
 // localhost received choke message from the peer.
 void DefaultBtMessageDispatcher::doChokedAction()
@@ -310,7 +310,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 namespace {
 class FindStaleRequestSlot {
@@ -336,7 +336,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 {
@@ -374,7 +374,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 bool DefaultBtMessageDispatcher::isOutstandingRequest
 (size_t index, size_t blockIndex) {

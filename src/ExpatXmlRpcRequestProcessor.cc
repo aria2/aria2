@@ -55,7 +55,7 @@ struct SessionData {
 
   SessionData(XmlRpcRequestParserStateMachine* stm):stm_(stm) {}
 };
-}
+} // namespace
 
 static void mlStartElement(void* userData, const char* name, const char** attrs)
 {

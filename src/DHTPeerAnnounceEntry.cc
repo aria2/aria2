@@ -82,7 +82,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
 {

@@ -63,7 +63,7 @@ std::string::const_iterator getNextDigit
       ++first);
   return first;
 }
-}
+} // namespace
 
 bool parseDate(time_t& time, const std::string& cookieDate)
 {

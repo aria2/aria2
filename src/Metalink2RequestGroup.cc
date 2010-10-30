@@ -89,7 +89,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 namespace {
 class FindBitTorrentUri {
@@ -104,7 +104,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void
 Metalink2RequestGroup::generate

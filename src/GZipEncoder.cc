@@ -44,7 +44,7 @@ namespace aria2 {
 
 namespace {
 const int OUTBUF_LENGTH = 4096;
-}
+} // namespace
 
 GZipEncoder::GZipEncoder():strm_(0), finished_(false) {}
 

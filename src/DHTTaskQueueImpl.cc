@@ -41,7 +41,7 @@ namespace aria2 {
 
 namespace {
 const size_t NUM_CONCURRENT_TASK = 5;
-}
+} // namespace
 
 DHTTaskQueueImpl::DHTTaskQueueImpl():
   periodicTaskQueue1_(NUM_CONCURRENT_TASK),

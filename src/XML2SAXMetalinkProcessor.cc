@@ -56,7 +56,7 @@ public:
 
   SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):stm_(stm) {}
 };
-}
+} // namespace
 
 static void mlStartElement
 (void* userData,

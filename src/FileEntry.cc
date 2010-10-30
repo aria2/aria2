@@ -221,7 +221,7 @@ public:
       lhs->getPeerStat()->getAvgDownloadSpeed() > rhs->getPeerStat()->getAvgDownloadSpeed();
   }
 };
-}
+} // namespace
 
 void FileEntry::storePool(const SharedHandle<Request>& request)
 {
@@ -301,7 +301,7 @@ public:
     return uriResult.getResult() == r_;
   }
 };
-}
+} // namespace
 
 void FileEntry::extractURIResult
 (std::deque<URIResult>& res, downloadresultcode::RESULT r)

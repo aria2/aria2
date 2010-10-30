@@ -124,7 +124,7 @@ public:
     peer->chokingRequired(true);
   }
 };
-}
+} // namespace
 
 void
 BtSeederStateChoke::executeChoke

@@ -69,7 +69,7 @@ public:
     return SharedHandle<PieceStat>(new PieceStat(index_++));
   }
 };
-}
+} // namespace
 
 PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
   pieceStats_(pieceNum),
@@ -106,7 +106,7 @@ public:
     return pieceStats_[lhs] < pieceStats_[rhs];
   }
 };
-}
+} // namespace
 
 void PieceStatMan::addPieceStats(const unsigned char* bitfield,
                                  size_t bitfieldLength)

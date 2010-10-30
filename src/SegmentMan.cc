@@ -318,7 +318,7 @@ public:
     return segmentEntry->segment->getIndex() == segment_->getIndex();
   }
 };
-}
+} // namespace
 
 bool SegmentMan::completeSegment
 (cuid_t cuid, const SharedHandle<Segment>& segment) {
@@ -384,7 +384,7 @@ public:
       peerStat_->getProtocol() == p->getProtocol();
   }
 };
-}
+} // namespace
 
 void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
 {
@@ -445,7 +445,7 @@ public:
     return ps->getSessionDownloadLength()+total;
   }
 };
-}
+} // namespace
 
 uint64_t SegmentMan::calculateSessionDownloadLength() const
 {

@@ -1315,7 +1315,7 @@ int getDefaultAIFlags()
   return defaultAIFlags;
 }
 
-}
+} // namespace
 
 void setDefaultAIFlags(int flags)
 {

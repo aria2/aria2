@@ -1,5 +1,49 @@
 2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added '// namespace' after end of unnamed namespace.
+	* src/AbstractCommand.cc
+	* src/AnnounceList.cc
+	* src/BtSeederStateChoke.cc
+	* src/ConsoleStatCalc.cc
+	* src/CookieStorage.cc
+	* src/DHTBucket.cc
+	* src/DHTPeerAnnounceEntry.cc
+	* src/DHTPeerAnnounceStorage.cc
+	* src/DHTTaskQueueImpl.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPieceStorage.cc
+	* src/ExpatMetalinkProcessor.cc
+	* src/ExpatXmlRpcRequestProcessor.cc
+	* src/FeedbackURISelector.cc
+	* src/FileEntry.cc
+	* src/GZipEncoder.cc
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkEntry.cc
+	* src/MetalinkParserStateV3Impl.cc
+	* src/MetalinkParserStateV4Impl.cc
+	* src/Metalinker.cc
+	* src/MultiDiskAdaptor.cc
+	* src/Netrc.cc
+	* src/NsCookieParser.cc
+	* src/OptionParser.cc
+	* src/PieceStatMan.cc
+	* src/RarestPieceSelector.cc
+	* src/RequestGroupMan.cc
+	* src/SegmentMan.cc
+	* src/ServerStatMan.cc
+	* src/SocketCore.cc
+	* src/XML2SAXMetalinkProcessor.cc
+	* src/Xml2XmlRpcRequestProcessor.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/cookie_helper.cc
+	* src/download_helper.cc
+	* src/messageDigest.cc
+	* src/util.cc
+
+2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed unnecessary unnamed namespace
 	* src/a2functional.h
 

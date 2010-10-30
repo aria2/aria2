@@ -66,7 +66,7 @@ public:
     return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
   }
 };
-}
+} // namespace
 
 SharedHandle<DHTPeerAnnounceEntry>
 DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
@@ -127,7 +127,7 @@ public:
     e->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
   }
 };
-}
+} // namespace
 
 void DHTPeerAnnounceStorage::handleTimeout()
 {

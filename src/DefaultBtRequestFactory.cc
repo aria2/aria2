@@ -86,7 +86,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 void DefaultBtRequestFactory::removeCompletedPiece() {
   std::for_each(pieces_.begin(), pieces_.end(),
@@ -123,7 +123,7 @@ public:
     }
   }
 };
-}
+} // namespace
 
 namespace {
 class FindChokedPiece {
@@ -137,7 +137,7 @@ public:
     return !peer_->isInPeerAllowedIndexSet(piece->getIndex());
   }
 };
-}
+} // namespace
 
 void DefaultBtRequestFactory::doChokedAction()
 {
@@ -252,7 +252,7 @@ public:
     numMissingBlock_ += piece->countMissingBlock();
   }
 };
-}
+} // namespace
 
 size_t DefaultBtRequestFactory::countMissingBlock()
 {

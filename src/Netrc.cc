@@ -162,7 +162,7 @@ public:
     return authenticator->match(hostname);
   }
 };
-}
+} // namespace
 
 SharedHandle<Authenticator>
 Netrc::findAuthenticator(const std::string& hostname) const
