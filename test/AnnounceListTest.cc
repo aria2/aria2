@@ -42,7 +42,8 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( AnnounceListTest );
 
-static std::vector<std::vector<std::string> > toVector
+namespace {
+std::vector<std::vector<std::string> > toVector
 (const List* announceList)
 {
   std::vector<std::vector<std::string> > dest;
@@ -59,6 +60,7 @@ static std::vector<std::vector<std::string> > toVector
   }
   return dest;
 }
+} // namespace
 
 void AnnounceListTest::testSingleElementList() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";

@@ -81,12 +81,14 @@ public:
 };
 } // namespace
 
+namespace {
 template<typename Container>
-static typename Container::const_iterator findAttr
+typename Container::const_iterator findAttr
 (const Container& attrs, const std::string& localname)
 {
   return std::find_if(attrs.begin(), attrs.end(), FindAttr(localname));
 }
+} // namespace
 
 void MetalinkMetalinkParserState::beginElement
 (MetalinkParserStateMachine* stm,

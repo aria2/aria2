@@ -36,7 +36,8 @@
 
 namespace aria2 {
 
-static const char CHAR_TABLE[] = {
+namespace {
+const char CHAR_TABLE[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
   'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
@@ -46,8 +47,10 @@ static const char CHAR_TABLE[] = {
   'w', 'x', 'y', 'z', '0', '1', '2', '3',
   '4', '5', '6', '7', '8', '9', '+', '/',
 };
+} // namespace
 
-static const int INDEX_TABLE[] = {
+namespace {
+const int INDEX_TABLE[] = {
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 
@@ -65,6 +68,7 @@ static const int INDEX_TABLE[] = {
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
 };
+} // namespace
 
 void Base64::encode(unsigned char*& result, size_t& rlength,
                     const unsigned char* src, size_t slength)

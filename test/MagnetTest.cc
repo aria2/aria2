@@ -20,10 +20,12 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MagnetTest);
 
-static const std::string& nthStr(const SharedHandle<ValueBase>& v, size_t index)
+namespace {
+const std::string& nthStr(const SharedHandle<ValueBase>& v, size_t index)
 {
   return asString(asList(v)->get(index))->s();
 }
+} // namespace
 
 void MagnetTest::testParse()
 {

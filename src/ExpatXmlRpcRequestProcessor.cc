@@ -57,7 +57,8 @@ struct SessionData {
 };
 } // namespace
 
-static void mlStartElement(void* userData, const char* name, const char** attrs)
+namespace {
+void mlStartElement(void* userData, const char* name, const char** attrs)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
 
@@ -78,8 +79,10 @@ static void mlStartElement(void* userData, const char* name, const char** attrs)
     sd->charactersStack_.push(std::string());
   }
 }
+} // namespace
 
-static void mlEndElement(void* userData, const char* name)
+namespace {
+void mlEndElement(void* userData, const char* name)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
@@ -89,14 +92,17 @@ static void mlEndElement(void* userData, const char* name)
   }
   sd->stm_->endElement(name, characters);
 }
+} // namespace
 
-static void mlCharacters(void* userData, const char* ch, int len)
+namespace {
+void mlCharacters(void* userData, const char* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   if(sd->stm_->needsCharactersBuffering()) {
     sd->charactersStack_.top() += std::string(&ch[0], &ch[len]);
   }
 }
+} // namespace
 
 XmlRpcRequest
 XmlRpcRequestProcessor::parseMemory(const std::string& xml)

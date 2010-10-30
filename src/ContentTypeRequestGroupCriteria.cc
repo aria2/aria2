@@ -43,8 +43,9 @@
 
 namespace aria2 {
 
+namespace {
 template<typename InputIterator>
-static bool tailMatch
+bool tailMatch
 (InputIterator first, InputIterator last, const std::string& target)
 {
   for(; first != last; ++first) {
@@ -54,6 +55,7 @@ static bool tailMatch
   }
   return false;
 }
+} // namespace
 
 bool ContentTypeRequestGroupCriteria::match
 (const RequestGroup* requestGroup) const

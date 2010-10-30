@@ -81,7 +81,8 @@ HttpRequestCommand::HttpRequestCommand
 
 HttpRequestCommand::~HttpRequestCommand() {}
 
-static SharedHandle<HttpRequest>
+namespace {
+SharedHandle<HttpRequest>
 createHttpRequest(const SharedHandle<Request>& req,
                   const SharedHandle<FileEntry>& fileEntry,
                   const SharedHandle<Segment>& segment,
@@ -117,6 +118,7 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setEndOffsetOverride(endOffset);
   return httpRequest;
 }
+} // namespace
 
 bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();

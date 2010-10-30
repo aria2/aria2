@@ -198,8 +198,9 @@ bool BitfieldMan::getFirstMissingIndex(size_t& index) const
   }
 }
 
+namespace {
 template<typename Array>
-static size_t getStartIndex(size_t index, const Array& bitfield, size_t blocks) {
+size_t getStartIndex(size_t index, const Array& bitfield, size_t blocks) {
   while(index < blocks && bitfield::test(bitfield, blocks, index)) {
     ++index;
   }
@@ -209,17 +210,21 @@ static size_t getStartIndex(size_t index, const Array& bitfield, size_t blocks) 
     return index;
   }
 }
+} // namespace
 
+namespace {
 template<typename Array>
-static size_t getEndIndex(size_t index, const Array& bitfield, size_t blocks) {
+size_t getEndIndex(size_t index, const Array& bitfield, size_t blocks) {
   while(index < blocks && !bitfield::test(bitfield, blocks, index)) {
     ++index;
   }
   return index;
 }
+} // namespace
 
+namespace {
 template<typename Array>
-static bool getSparseMissingUnusedIndex
+bool getSparseMissingUnusedIndex
 (size_t& index,
  size_t minSplitSize,
  const Array& bitfield,
@@ -278,6 +283,7 @@ static bool getSparseMissingUnusedIndex
     return false;
   }
 }
+} // namespace
 
 bool BitfieldMan::getSparseMissingUnusedIndex
 (size_t& index,
@@ -299,8 +305,9 @@ bool BitfieldMan::getSparseMissingUnusedIndex
   }
 }
 
+namespace {
 template<typename Array>
-static bool copyBitfield(unsigned char* dst, const Array& src, size_t blocks)
+bool copyBitfield(unsigned char* dst, const Array& src, size_t blocks)
 {
   unsigned char bits = 0;
   size_t len = (blocks+7)/8;
@@ -312,6 +319,7 @@ static bool copyBitfield(unsigned char* dst, const Array& src, size_t blocks)
   bits |= dst[len-1];
   return bits != 0;
 }
+} // namespace
 
 bool BitfieldMan::getAllMissingIndexes(unsigned char* misbitfield, size_t len)
   const
@@ -438,7 +446,8 @@ bool BitfieldMan::isFilteredAllBitSet() const {
   }
 }
 
-static bool testAllBitSet
+namespace {
+bool testAllBitSet
 (const unsigned char* bitfield, size_t length, size_t blocks)
 {
   if(length == 0) {
@@ -451,6 +460,7 @@ static bool testAllBitSet
   }
   return bitfield[length-1] == bitfield::lastByteMask(blocks);
 }
+} // namespace
 
 bool BitfieldMan::isAllBitSet() const
 {

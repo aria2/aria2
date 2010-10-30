@@ -70,7 +70,8 @@ Request::Request():
   connectedPort_(0)
 {}
 
-static std::string removeFragment(const std::string& uri)
+namespace {
+std::string removeFragment(const std::string& uri)
 {
   std::string::size_type sharpIndex = uri.find("#");
   if(sharpIndex == std::string::npos) {
@@ -79,14 +80,10 @@ static std::string removeFragment(const std::string& uri)
     return uri.substr(0, sharpIndex);
   }
 }
+} // namespace
 
-static bool isHexNumber(const char c)
-{
-  return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F') ||
-    ('a' <= c && c <= 'f');
-}
-
-static std::string percentEncode(const std::string& src)
+namespace {
+std::string percentEncode(const std::string& src)
 {
   std::string result = src;
   if(src.empty()) {
@@ -98,7 +95,8 @@ static std::string percentEncode(const std::string& src)
     // '/' is not percent encoded because src is expected to be a path.
     if(!util::inRFC3986ReservedChars(c) && !util::inRFC3986UnreservedChars(c)) {
       if(c == '%') {
-        if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
+        if(!util::isHexDigit(result[index+1]) ||
+           !util::isHexDigit(result[index+2])) {
           result.replace(index, 1, "%25");
         }
       } else {
@@ -109,6 +107,7 @@ static std::string percentEncode(const std::string& src)
   result.erase(result.size()-2);
   return result;
 }
+} // namespace
 
 bool Request::setUri(const std::string& uri) {
   supportsPersistentConnection_ = true;

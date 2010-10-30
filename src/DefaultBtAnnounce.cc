@@ -103,7 +103,8 @@ bool DefaultBtAnnounce::isAnnounceReady() {
     isDefaultAnnounceReady();
 }
 
-static bool uriHasQuery(const std::string& uri)
+namespace {
+bool uriHasQuery(const std::string& uri)
 {
   uri::UriStruct us;
   if(uri::parse(us, uri)) {
@@ -112,6 +113,7 @@ static bool uriHasQuery(const std::string& uri)
     return false;
   }
 }
+} // namespace
 
 std::string DefaultBtAnnounce::getAnnounceUrl() {
   if(isStoppedAnnounceReady()) {

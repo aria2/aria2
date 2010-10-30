@@ -64,12 +64,14 @@ void DHTRoutingTableTest::testAddNode_localNode()
   CPPUNIT_ASSERT(!table.addNode(newNode));
 }
 
-static void createID(unsigned char* id, unsigned char firstChar, unsigned char lastChar)
+namespace {
+void createID(unsigned char* id, unsigned char firstChar, unsigned char lastChar)
 {
   memset(id, 0, DHT_ID_LENGTH);
   id[0] = firstChar;
   id[DHT_ID_LENGTH-1] = lastChar;
 }
+} // namespace
 
 void DHTRoutingTableTest::testGetClosestKNodes()
 {

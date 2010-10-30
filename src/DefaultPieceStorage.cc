@@ -205,12 +205,14 @@ void DefaultPieceStorage::getMissingPiece
   }
 }
 
-static void unsetExcludedIndexes(BitfieldMan& bitfield,
-                                 const std::vector<size_t>& excludedIndexes)
+namespace {
+void unsetExcludedIndexes(BitfieldMan& bitfield,
+                          const std::vector<size_t>& excludedIndexes)
 {
   std::for_each(excludedIndexes.begin(), excludedIndexes.end(),
                 std::bind1st(std::mem_fun(&BitfieldMan::unsetBit), &bitfield));
 }
+} // namespace
 
 void DefaultPieceStorage::createFastIndexBitfield
 (BitfieldMan& bitfield, const SharedHandle<Peer>& peer)

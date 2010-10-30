@@ -164,13 +164,15 @@ const std::vector<size_t>& PeerSessionResource::peerAllowedIndexSet() const
   return peerAllowedIndexSet_;
 }
 
-static void updateIndexSet(std::vector<size_t>& c, size_t index)
+namespace {
+void updateIndexSet(std::vector<size_t>& c, size_t index)
 {
   std::vector<size_t>::iterator i = std::lower_bound(c.begin(), c.end(), index);
   if(i == c.end() || (*i) != index) {
     c.insert(i, index);
   } 
 }
+} // namespace
 
 void PeerSessionResource::addPeerAllowedIndex(size_t index)
 {

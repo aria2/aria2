@@ -57,12 +57,14 @@ DHTRoutingTableDeserializer::DHTRoutingTableDeserializer(int family):
 
 DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() {}
 
-static void readBytes(unsigned char* buf, size_t buflen,
-                      std::istream& in, size_t readlen)
+namespace {
+void readBytes(unsigned char* buf, size_t buflen,
+               std::istream& in, size_t readlen)
 {
   assert(readlen <= buflen);
   in.read(reinterpret_cast<char*>(buf), readlen);
 }
+} // namespace
 
 #define CHECK_STREAM(in, length)                                        \
   if(in.gcount() != length) {                                           \

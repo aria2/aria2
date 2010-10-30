@@ -44,8 +44,9 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MSEHandshakeTest);
 
-static std::pair<SharedHandle<SocketCore>,
-                 SharedHandle<SocketCore> > createSocketPair()
+namespace {
+std::pair<SharedHandle<SocketCore>, SharedHandle<SocketCore> >
+createSocketPair()
 {
   SharedHandle<SocketCore> initiatorSock(new SocketCore());
 
@@ -64,6 +65,7 @@ static std::pair<SharedHandle<SocketCore>,
   return std::pair<SharedHandle<SocketCore>,
     SharedHandle<SocketCore> >(initiatorSock, receiverSock);
 }
+} // namespace
 
 void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, const SharedHandle<MSEHandshake>& receiver)
 {
@@ -90,7 +92,8 @@ void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, 
   while(!initiator->receivePad());
 }
 
-static SharedHandle<MSEHandshake>
+namespace {
+SharedHandle<MSEHandshake>
 createMSEHandshake(SharedHandle<SocketCore> socket, bool initiator,
                    const Option* option)
 {
@@ -98,6 +101,7 @@ createMSEHandshake(SharedHandle<SocketCore> socket, bool initiator,
   h->initEncryptionFacility(initiator);
   return h;
 }
+} // namespace
 
 void MSEHandshakeTest::testHandshake()
 {

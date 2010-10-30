@@ -413,7 +413,8 @@ std::string toHex(const std::string& src)
   return toHex(reinterpret_cast<const unsigned char*>(src.c_str()), src.size());
 }
 
-static unsigned int hexCharToUInt(unsigned char ch)
+namespace {
+unsigned int hexCharToUInt(unsigned char ch)
 {
 
   if('a' <= ch && ch <= 'f') {
@@ -429,6 +430,7 @@ static unsigned int hexCharToUInt(unsigned char ch)
   }
   return ch;
 }
+} // namespace
 
 std::string fromHex(const std::string& src)
 {
@@ -634,7 +636,8 @@ IntSequence parseIntRange(const std::string& src)
   return values;
 }
 
-static void computeHeadPieces
+namespace {
+void computeHeadPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
@@ -656,8 +659,10 @@ static void computeHeadPieces
     }
   }
 }
+} // namespace
 
-static void computeTailPieces
+namespace {
+void computeTailPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
@@ -680,6 +685,7 @@ static void computeTailPieces
     }
   }
 }
+} // namespace
 
 void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
@@ -740,8 +746,9 @@ std::string iso8859ToUtf8(const std::string& src)
   return dest;
 }
 
+namespace {
 template<typename OutputIterator>
-static void parseParam(OutputIterator out, const std::string& header)
+void parseParam(OutputIterator out, const std::string& header)
 {
   for(std::string::const_iterator i = header.begin(), eoi = header.end();
       i != eoi;) {
@@ -778,6 +785,7 @@ static void parseParam(OutputIterator out, const std::string& header)
     ++i;
   }
 }
+} // namespace
 
 std::string getContentDispositionFilename(const std::string& header)
 {

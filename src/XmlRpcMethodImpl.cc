@@ -139,12 +139,15 @@ const std::string KEY_MODE = "mode";
 const std::string KEY_SERVERS = "servers";
 } // namespace
 
-static SharedHandle<ValueBase> createGIDResponse(gid_t gid)
+namespace {
+SharedHandle<ValueBase> createGIDResponse(gid_t gid)
 {
   return String::g(util::itos(gid));
 }
+} // namespace
 
-static SharedHandle<ValueBase>
+namespace {
+SharedHandle<ValueBase>
 addRequestGroup(const SharedHandle<RequestGroup>& group,
                 DownloadEngine* e,
                 bool posGiven, int pos)
@@ -156,8 +159,9 @@ addRequestGroup(const SharedHandle<RequestGroup>& group,
   }
   return createGIDResponse(group->getGID());
 }
+} // namespace
 
-static
+namespace {
 SharedHandle<RequestGroup>
 findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
 {
@@ -167,8 +171,10 @@ findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
   }
   return group;
 }
+} // namespace
 
-static void getPosParam(const XmlRpcRequest& req, size_t posParamIndex,
+namespace {
+void getPosParam(const XmlRpcRequest& req, size_t posParamIndex,
                         bool& posGiven, size_t& pos)
 {
   const Integer* p = req.getIntegerParam(posParamIndex);
@@ -183,8 +189,10 @@ static void getPosParam(const XmlRpcRequest& req, size_t posParamIndex,
   }
   posGiven = false;
 } 
+} // namespace
 
-static gid_t getRequiredGidParam
+namespace {
+gid_t getRequiredGidParam
 (const XmlRpcRequest& req, size_t posParamIndex)
 {
   const String* gidParam = req.getStringParam(posParamIndex);
@@ -194,9 +202,11 @@ static gid_t getRequiredGidParam
     throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
   }
 }
+} // namespace
 
+namespace {
 template<typename OutputIterator>
-static void extractUris(OutputIterator out, const List* src)
+void extractUris(OutputIterator out, const List* src)
 {
   if(src) {
     for(List::ValueType::const_iterator i = src->begin(), eoi = src->end();
@@ -208,6 +218,7 @@ static void extractUris(OutputIterator out, const List* src)
     }
   }
 }
+} // namespace
 
 SharedHandle<ValueBase> AddUriXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
@@ -302,7 +313,8 @@ SharedHandle<ValueBase> AddMetalinkXmlRpcMethod::process
 } 
 #endif // ENABLE_METALINK
 
-static SharedHandle<ValueBase> removeDownload
+namespace {
+SharedHandle<ValueBase> removeDownload
 (const XmlRpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
   gid_t gid = getRequiredGidParam(req, 0);
@@ -332,6 +344,7 @@ static SharedHandle<ValueBase> removeDownload
   }
   return createGIDResponse(gid);
 }
+} // namespace
 
 SharedHandle<ValueBase> RemoveXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
@@ -345,7 +358,8 @@ SharedHandle<ValueBase> ForceRemoveXmlRpcMethod::process
   return removeDownload(req, e, true);
 }
 
-static bool pauseRequestGroup
+namespace {
+bool pauseRequestGroup
 (const SharedHandle<RequestGroup>& group, bool reserved,  bool forcePause)
 {
   if((reserved && !group->isPauseRequested()) ||
@@ -368,8 +382,10 @@ static bool pauseRequestGroup
     return false;
   }
 }
+} // namespace
 
-static SharedHandle<ValueBase> pauseDownload
+namespace {
+SharedHandle<ValueBase> pauseDownload
 (const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   gid_t gid = getRequiredGidParam(req, 0);
@@ -389,6 +405,7 @@ static SharedHandle<ValueBase> pauseDownload
                     util::itos(gid).c_str()).str());
   }
 }
+} // namespace
 
 SharedHandle<ValueBase> PauseXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
@@ -402,16 +419,19 @@ SharedHandle<ValueBase> ForcePauseXmlRpcMethod::process
   return pauseDownload(req, e, true);
 }
 
+namespace {
 template<typename InputIterator>
-static void pauseRequestGroups
+void pauseRequestGroups
 (InputIterator first, InputIterator last, bool reserved, bool forcePause)
 {
   for(; first != last; ++first) {
     pauseRequestGroup(*first, reserved, forcePause);
   }
 }
+} // namespace
 
-static SharedHandle<ValueBase> pauseAllDownloads
+namespace {
+SharedHandle<ValueBase> pauseAllDownloads
 (const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   const std::deque<SharedHandle<RequestGroup> >& groups =
@@ -423,6 +443,7 @@ static SharedHandle<ValueBase> pauseAllDownloads
                      true, forcePause);
   return VLB_OK;
 }
+} // namespace
 
 SharedHandle<ValueBase> PauseAllXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
@@ -465,8 +486,9 @@ SharedHandle<ValueBase> UnpauseAllXmlRpcMethod::process
   return VLB_OK;
 }
 
+namespace {
 template<typename InputIterator>
-static void createUriEntry
+void createUriEntry
 (const SharedHandle<List>& uriList,
  InputIterator first, InputIterator last,
  const SharedHandle<String>& status)
@@ -478,8 +500,10 @@ static void createUriEntry
     uriList->append(entry);
   }
 }
+} // namespace
 
-static void createUriEntry
+namespace {
+void createUriEntry
 (const SharedHandle<List>& uriList, const SharedHandle<FileEntry>& file)
 {
   createUriEntry(uriList,
@@ -491,9 +515,11 @@ static void createUriEntry
                  file->getRemainingUris().end(),
                  VLB_WAITING);
 }
+} // namespace
 
+namespace {
 template<typename InputIterator>
-static void createFileEntry
+void createFileEntry
 (const SharedHandle<List>& files, InputIterator first, InputIterator last)
 {
   size_t index = 1;
@@ -510,12 +536,15 @@ static void createFileEntry
     files->append(entry);
   }
 }
+} // namespace
 
-static bool requested_key
+namespace {
+bool requested_key
 (const std::vector<std::string>& keys, const std::string& k)
 {
   return keys.empty() || std::find(keys.begin(), keys.end(), k) != keys.end();
 }
+} // namespace
 
 void gatherProgressCommon
 (const SharedHandle<Dict>& entryDict,
@@ -624,7 +653,8 @@ void gatherBitTorrentMetadata
   }
 }
 
-static void gatherProgressBitTorrent
+namespace {
+void gatherProgressBitTorrent
 (const SharedHandle<Dict>& entryDict,
  const SharedHandle<TorrentAttribute>& torrentAttrs,
  const BtObject& btObject,
@@ -651,8 +681,10 @@ static void gatherProgressBitTorrent
     }
   }
 }
+} // namespace
 
-static void gatherPeer
+namespace {
+void gatherPeer
 (const SharedHandle<List>& peers, const SharedHandle<PeerStorage>& ps)
 {
   std::vector<SharedHandle<Peer> > activePeers;
@@ -679,9 +711,11 @@ static void gatherPeer
     peers->append(peerEntry);
   }
 }
+} // namespace
 #endif // ENABLE_BITTORRENT
 
-static void gatherProgress
+namespace {
+void gatherProgress
 (const SharedHandle<Dict>& entryDict,
  const SharedHandle<RequestGroup>& group,
  DownloadEngine* e,
@@ -697,6 +731,7 @@ static void gatherProgress
   }
 #endif // ENABLE_BITTORRENT
 }
+} // namespace
 
 void gatherStoppedDownload
 (const SharedHandle<Dict>& entryDict, const SharedHandle<DownloadResult>& ds,
@@ -1047,8 +1082,9 @@ SharedHandle<ValueBase> GetVersionXmlRpcMethod::process
   return result;
 }
 
+namespace {
 template<typename InputIterator>
-static void pushRequestOption
+void pushRequestOption
 (const SharedHandle<Dict>& dict,
  InputIterator optionFirst, InputIterator optionLast)
 {
@@ -1059,6 +1095,7 @@ static void pushRequestOption
     }
   }
 }
+} // namespace
 
 SharedHandle<ValueBase> GetOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
@@ -1234,7 +1271,8 @@ SharedHandle<ValueBase> ChangeUriXmlRpcMethod::process
   return res;
 }
 
-static SharedHandle<ValueBase> goingShutdown
+namespace {
+SharedHandle<ValueBase> goingShutdown
 (const XmlRpcRequest& req, DownloadEngine* e, bool forceHalt)
 {
   // Schedule shutdown after 3seconds to give time to client to
@@ -1243,6 +1281,7 @@ static SharedHandle<ValueBase> goingShutdown
   LogFactory::getInstance()->info("Scheduled shutdown in 3 seconds.");
   return VLB_OK;
 }
+} // namespace
 
 SharedHandle<ValueBase> ShutdownXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)

@@ -104,9 +104,9 @@ void FileEntry::getUris(std::vector<std::string>& uris) const
   uris.insert(uris.end(), uris_.begin(), uris_.end());
 }
 
+namespace {
 template<typename InputIterator, typename OutputIterator>
-static OutputIterator
-enumerateInFlightHosts
+OutputIterator enumerateInFlightHosts
 (InputIterator first, InputIterator last, OutputIterator out)
 {
   for(; first != last; ++first) {
@@ -117,6 +117,7 @@ enumerateInFlightHosts
   }
   return out;
 }
+} // namespace
 
 SharedHandle<Request>
 FileEntry::getRequest
@@ -371,8 +372,9 @@ void FileEntry::releaseRuntimeResource()
   inFlightRequests_.clear();
 }
 
+namespace {
 template<typename InputIterator, typename T>
-static InputIterator findRequestByUri
+InputIterator findRequestByUri
 (InputIterator first, InputIterator last, const T& uri)
 {
   for(; first != last; ++first) {
@@ -382,6 +384,7 @@ static InputIterator findRequestByUri
   }
   return last;
 }
+} // namespace
 
 bool FileEntry::removeUri(const std::string& uri)
 {

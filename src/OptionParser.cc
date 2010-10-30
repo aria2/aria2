@@ -55,8 +55,9 @@ OptionParser::OptionParser():
   idCounter_(0)
 {}
 
+namespace {
 template<typename InputIterator>
-static size_t countPublicOption(InputIterator first, InputIterator last)
+size_t countPublicOption(InputIterator first, InputIterator last)
 {
   size_t count = 0;
   for(; first != last; ++first) {
@@ -66,10 +67,12 @@ static size_t countPublicOption(InputIterator first, InputIterator last)
   }
   return count;
 }
+} // namespace
 
+namespace {
 template<typename InputIterator>
-static void putOptions(struct option* longOpts, int* plopt,
-                       InputIterator first, InputIterator last)
+void putOptions(struct option* longOpts, int* plopt,
+                InputIterator first, InputIterator last)
 {
   for(; first != last; ++first) {
     if(!(*first)->isHidden()) {
@@ -106,9 +109,11 @@ static void putOptions(struct option* longOpts, int* plopt,
   (*longOpts).flag = 0;
   (*longOpts).val = 0;
 }
+} // namespace
 
+namespace {
 template<typename InputIterator>
-static std::string createOptstring(InputIterator first, InputIterator last)
+std::string createOptstring(InputIterator first, InputIterator last)
 {
   std::string str = "";
   for(; first != last; ++first) {
@@ -125,6 +130,7 @@ static std::string createOptstring(InputIterator first, InputIterator last)
   }
   return str;
 }
+} // namespace
 
 void OptionParser::parseArg
 (std::ostream& out, std::vector<std::string>& nonopts,
@@ -306,8 +312,9 @@ std::vector<SharedHandle<OptionHandler> > OptionParser::findAll() const
   return result;
 }
 
+namespace {
 template<typename InputIterator, typename Predicate>
-static SharedHandle<OptionHandler> findOptionHandler
+SharedHandle<OptionHandler> findOptionHandler
 (InputIterator first, InputIterator last, Predicate pred)
 {
   SharedHandle<OptionHandler> handler;
@@ -317,6 +324,7 @@ static SharedHandle<OptionHandler> findOptionHandler
   }
   return handler;
 }
+} // namespace
 
 SharedHandle<OptionHandler>
 OptionParser::findByName(const std::string& name) const

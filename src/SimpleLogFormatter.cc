@@ -49,11 +49,13 @@ SimpleLogFormatter::SimpleLogFormatter() {}
 
 SimpleLogFormatter::~SimpleLogFormatter() {}
 
-static void writeHeader
+namespace {
+void writeHeader
 (std::ostream& o, const std::string& date, const std::string& logLevelLabel)
 {
   o << StringFormat("%s %s - ", date.c_str(), logLevelLabel.c_str());
 }
+} // namespace
 
 void SimpleLogFormatter::writeLog
 (std::ostream& o, Logger::LEVEL level, const std::string& logLevelLabel,

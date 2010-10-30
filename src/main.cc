@@ -109,16 +109,19 @@ std::ostream& getSummaryOut(const SharedHandle<Option>& op)
 }
 
 #ifdef ENABLE_BITTORRENT
-static void showTorrentFile(const std::string& uri)
+namespace {
+void showTorrentFile(const std::string& uri)
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   bittorrent::load(uri, dctx);
   bittorrent::print(std::cout, dctx);
 }
+} // namespace
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-static void showMetalinkFile
+namespace {
+void showMetalinkFile
 (const std::string& uri, const SharedHandle<Option>& op)
 {
   std::vector<SharedHandle<MetalinkEntry> > metalinkEntries;
@@ -128,10 +131,12 @@ static void showMetalinkFile
   util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);
   std::cout << std::endl;
 }
+} // namespace
 #endif // ENABLE_METALINK
 
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
-static void showFiles
+namespace {
+void showFiles
 (const std::vector<std::string>& uris, const SharedHandle<Option>& op)
 {
   ProtocolDetector dt;
@@ -160,6 +165,7 @@ static void showFiles
     }
   }
 }
+} // namespace
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
 extern void option_processing(Option& option, std::vector<std::string>& uris,

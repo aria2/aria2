@@ -144,7 +144,8 @@ MultiDiskAdaptor::MultiDiskAdaptor():
   directIOAllowed_(false),
   readOnly_(false) {}
 
-static SharedHandle<DiskWriterEntry> createDiskWriterEntry
+namespace {
+SharedHandle<DiskWriterEntry> createDiskWriterEntry
 (const SharedHandle<FileEntry>& fileEntry,
  bool needsFileAllocation)
 {
@@ -152,6 +153,7 @@ static SharedHandle<DiskWriterEntry> createDiskWriterEntry
   entry->needsFileAllocation(needsFileAllocation);
   return entry;
 } 
+} // namespace
 
 void MultiDiskAdaptor::resetDiskWriterEntries()
 {
@@ -334,15 +336,18 @@ void MultiDiskAdaptor::closeFile()
                 mem_fun_sh(&DiskWriterEntry::closeFile));
 }
 
-static bool isInRange(const DiskWriterEntryHandle entry, off_t offset)
+namespace {
+bool isInRange(const DiskWriterEntryHandle entry, off_t offset)
 {
   return entry->getFileEntry()->getOffset() <= offset &&
     (uint64_t)offset <
     entry->getFileEntry()->getOffset()+entry->getFileEntry()->getLength();
 }
+} // namespace
 
-static size_t calculateLength(const DiskWriterEntryHandle entry,
-                              off_t fileOffset, size_t rem)
+namespace {
+size_t calculateLength(const DiskWriterEntryHandle entry,
+                       off_t fileOffset, size_t rem)
 {
   size_t length;
   if(entry->getFileEntry()->getLength() < (uint64_t)fileOffset+rem) {
@@ -352,6 +357,7 @@ static size_t calculateLength(const DiskWriterEntryHandle entry,
   }
   return length;
 }
+} // namespace
 
 namespace {
 class OffsetCompare {
@@ -363,8 +369,8 @@ public:
 };
 } // namespace
 
-static DiskWriterEntries::const_iterator
-findFirstDiskWriterEntry
+namespace {
+DiskWriterEntries::const_iterator findFirstDiskWriterEntry
 (const DiskWriterEntries& diskWriterEntries, off_t offset)
 {
   DiskWriterEntries::const_iterator first =
@@ -381,15 +387,18 @@ findFirstDiskWriterEntry
   }
   return first;
 }
+} // namespace
 
-static void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
-                                       off_t offset)
+namespace {
+void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
+                                off_t offset)
 {
   throw DL_ABORT_EX
     (StringFormat("DiskWriter for offset=%s, filename=%s is not opened.",
                   util::itos(offset).c_str(),
                   e->getFilePath().c_str()).str());  
 }
+} // namespace
 
 void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
                                  off_t offset)

@@ -37,7 +37,8 @@
 
 namespace aria2 {
 
-static size_t getStartIndex
+namespace {
+size_t getStartIndex
 (size_t from, const unsigned char* bitfield, size_t nbits)
 {
   while(from < nbits && !bitfield::test(bitfield, nbits, from)) {
@@ -49,8 +50,10 @@ static size_t getStartIndex
     return from;
   }
 }
+} // namespace
 
-static size_t getEndIndex
+namespace {
+size_t getEndIndex
 (size_t from, const unsigned char* bitfield, size_t nbits)
 {
   while(from < nbits && bitfield::test(bitfield, nbits, from)) {
@@ -58,6 +61,7 @@ static size_t getEndIndex
   }
   return from;
 }
+} // namespace
 
 bool LongestSequencePieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const

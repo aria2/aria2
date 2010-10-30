@@ -73,7 +73,8 @@ extern volatile sig_atomic_t globalHaltRequested;
 
 } // namespace global
 
-static void handler(int signal) {
+namespace {
+void handler(int signal) {
   if(
 #ifdef SIGHUP
      signal == SIGHUP ||
@@ -90,6 +91,7 @@ static void handler(int signal) {
     }
   }
 }
+} // namespace
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,

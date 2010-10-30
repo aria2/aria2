@@ -57,8 +57,9 @@ struct SessionData {
 };
 } // namespace
 
-static void mlStartElement(void* userData, const xmlChar* name,
-                           const xmlChar** attrs)
+namespace {
+void mlStartElement(void* userData, const xmlChar* name,
+                    const xmlChar** attrs)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::map<std::string, std::string> attrmap;
@@ -80,8 +81,10 @@ static void mlStartElement(void* userData, const xmlChar* name,
     sd->charactersStack_.push(std::string());
   }
 }
+} // namespace
 
-static void mlEndElement(void* userData, const xmlChar* name)
+namespace {
+void mlEndElement(void* userData, const xmlChar* name)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
@@ -91,16 +94,20 @@ static void mlEndElement(void* userData, const xmlChar* name)
   }
   sd->stm_->endElement(reinterpret_cast<const char*>(name), characters);
 }
+} // namespace
 
-static void mlCharacters(void* userData, const xmlChar* ch, int len)
+namespace {
+void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   if(sd->stm_->needsCharactersBuffering()) {
     sd->charactersStack_.top() += std::string(&ch[0], &ch[len]);
   }
 }
+} // namespace
 
-static xmlSAXHandler mySAXHandler =
+namespace {
+xmlSAXHandler mySAXHandler =
   {
     0, // internalSubsetSAXFunc
     0, // isStandaloneSAXFunc
@@ -135,6 +142,7 @@ static xmlSAXHandler mySAXHandler =
     0, //   endElementNsSAX2Func
     0, //   xmlStructuredErrorFunc
   };
+} // namespace
 
 XmlRpcRequest
 XmlRpcRequestProcessor::parseMemory(const std::string& xml)

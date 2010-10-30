@@ -113,10 +113,12 @@ CookieStorage::CookieStorage():logger_(LogFactory::getInstance()) {}
 
 CookieStorage::~CookieStorage() {}
 
+namespace {
 // See CookieStorageTest::testDomainIsFull() in CookieStorageTest.cc
-static const size_t DOMAIN_EVICTION_TRIGGER = 2000;
+const size_t DOMAIN_EVICTION_TRIGGER = 2000;
 
-static const double DOMAIN_EVICTION_RATE = 0.1;
+const double DOMAIN_EVICTION_RATE = 0.1;
+} // namespace
 
 bool CookieStorage::store(const Cookie& cookie, time_t now)
 {

@@ -164,8 +164,9 @@ SharedHandle<RequestGroup> RequestGroupMan::getRequestGroup(size_t index) const
   }
 }
 
+namespace {
 template<typename Iterator>
-static Iterator findByGID(Iterator first, Iterator last, gid_t gid)
+Iterator findByGID(Iterator first, Iterator last, gid_t gid)
 {
   for(; first != last; ++first) {
     if((*first)->getGID() == gid) {
@@ -174,6 +175,7 @@ static Iterator findByGID(Iterator first, Iterator last, gid_t gid)
   }
   return first;
 }
+} // namespace
 
 SharedHandle<RequestGroup>
 RequestGroupMan::findRequestGroup(gid_t gid) const
@@ -255,7 +257,8 @@ bool RequestGroupMan::removeReservedGroup(gid_t gid)
   }
 }
 
-static void executeStopHook
+namespace {
+void executeStopHook
 (const SharedHandle<DownloadResult>& result, const Option* option)
 {
   if(result->result == downloadresultcode::FINISHED &&
@@ -271,6 +274,7 @@ static void executeStopHook
                       util::itos(result->gid));
   }
 }
+} // namespace
 
 namespace {
 class ProcessStoppedRequestGroup {
@@ -471,12 +475,14 @@ void RequestGroupMan::configureRequestGroup
   }
 }
 
-static void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
-                                 std::vector<Command*>& commands,
+namespace {
+void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
+                          std::vector<Command*>& commands,
                                  DownloadEngine* e)
 {
   requestGroup->createInitialCommand(commands, e);
 }
+} // namespace
 
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
@@ -696,11 +702,12 @@ std::string RequestGroupMan::formatDownloadResult(const std::string& status, con
   return o.str();
 }
 
+namespace {
 template<typename StringInputIterator, typename FileEntryInputIterator>
-static bool sameFilePathExists(StringInputIterator sfirst,
-                               StringInputIterator slast,
-                               FileEntryInputIterator ffirst,
-                               FileEntryInputIterator flast)
+bool sameFilePathExists(StringInputIterator sfirst,
+                        StringInputIterator slast,
+                        FileEntryInputIterator ffirst,
+                        FileEntryInputIterator flast)
 {
   for(; ffirst != flast; ++ffirst) {
     if(std::binary_search(sfirst, slast, (*ffirst)->getPath())) {
@@ -709,6 +716,7 @@ static bool sameFilePathExists(StringInputIterator sfirst,
   }
   return false;
 }
+} // namespace
 
 bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) const
 {

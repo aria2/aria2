@@ -77,15 +77,18 @@ bool SessionSerializer::save(const std::string& filename) const
 }
 
 
-static const std::vector<std::string>& getCumulativeOpts()
+namespace {
+const std::vector<std::string>& getCumulativeOpts()
 {
   static std::string cumulativeOpts[] = { PREF_INDEX_OUT, PREF_HEADER };
   static std::vector<std::string> opts
     (vbegin(cumulativeOpts), vend(cumulativeOpts));
   return opts;
 }
+} // namespace
 
-static bool inCumulativeOpts(const std::string& opt)
+namespace {
+bool inCumulativeOpts(const std::string& opt)
 {
   const std::vector<std::string>& cumopts = getCumulativeOpts();
   for(std::vector<std::string>::const_iterator itr = cumopts.begin(),
@@ -96,8 +99,10 @@ static bool inCumulativeOpts(const std::string& opt)
   }
   return false;
 }
+} // namespace
 
-static void writeOption(std::ostream& out, const SharedHandle<Option>& op)
+namespace {
+void writeOption(std::ostream& out, const SharedHandle<Option>& op)
 {
   const std::set<std::string>& requestOptions = listRequestOptions();
   for(std::set<std::string>::const_iterator itr = requestOptions.begin(),
@@ -123,8 +128,10 @@ static void writeOption(std::ostream& out, const SharedHandle<Option>& op)
     }
   }
 }
+} // namespace
 
-static void writeDownloadResult
+namespace {
+void writeDownloadResult
 (std::ostream& out, std::set<int64_t>& metainfoCache,
  const SharedHandle<DownloadResult>& dr)
 {
@@ -156,6 +163,7 @@ static void writeDownloadResult
   }
   writeOption(out, dr->option);
 }
+} // namespace
 
 void SessionSerializer::save(std::ostream& out) const
 {

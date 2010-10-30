@@ -150,10 +150,12 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XmlRpcMethodTest);
 
-static std::string getString(const Dict* dict, const std::string& key)
+namespace {
+std::string getString(const Dict* dict, const std::string& key)
 {
   return asString(dict->get(key))->s();
 }
+} // namespace
 
 void XmlRpcMethodTest::testAddUri()
 {
@@ -587,8 +589,8 @@ void XmlRpcMethodTest::testTellStatus_withoutGid()
   CPPUNIT_ASSERT_EQUAL(1, res.code);
 }
 
-static void addUri(const std::string& uri,
-                   const SharedHandle<DownloadEngine>& e)
+namespace {
+void addUri(const std::string& uri, const SharedHandle<DownloadEngine>& e)
 {
   AddUriXmlRpcMethod m;
   XmlRpcRequest req(AddUriXmlRpcMethod::getMethodName(), List::g());
@@ -597,10 +599,11 @@ static void addUri(const std::string& uri,
   req.params->append(urisParam);
   CPPUNIT_ASSERT_EQUAL(0, m.execute(req, e.get()).code);
 }
+} // namespace
 
 #ifdef ENABLE_BITTORRENT
-
-static void addTorrent
+namespace {
+void addTorrent
 (const std::string& torrentFile, const SharedHandle<DownloadEngine>& e)
 {
   AddTorrentXmlRpcMethod m;
@@ -608,7 +611,7 @@ static void addTorrent
   req.params->append(readFile(torrentFile));
   XmlRpcResponse res = m.execute(req, e.get());
 }
-
+} // namespace
 #endif // ENABLE_BITTORRENT
 
 void XmlRpcMethodTest::testTellWaiting()

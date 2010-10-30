@@ -148,7 +148,8 @@ void KqueueEventPoll::poll(const struct timeval& tv)
   // DHTEntryPoint...Command)
 }
 
-static int translateEvents(EventPoll::EventType events)
+namespace {
+int translateEvents(EventPoll::EventType events)
 {
   int newEvents = 0;
   if(EventPoll::EVENT_READ&events) {
@@ -159,6 +160,7 @@ static int translateEvents(EventPoll::EventType events)
   }
   return newEvents;
 }
+} // namespace
 
 bool KqueueEventPoll::addEvents
 (sock_t socket, const KqueueEventPoll::KEvent& event)

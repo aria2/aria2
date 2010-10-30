@@ -79,13 +79,54 @@
 
 namespace aria2 {
 
-static SharedHandle<StreamFilter> getTransferEncodingStreamFilter
+namespace {
+SharedHandle<StreamFilter> getTransferEncodingStreamFilter
 (const SharedHandle<HttpResponse>& httpResponse,
- const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
+ const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>())
+{
+  SharedHandle<StreamFilter> filter;
+  if(httpResponse->isTransferEncodingSpecified()) {
+    filter = httpResponse->getTransferEncodingStreamFilter();
+    if(filter.isNull()) {
+      throw DL_ABORT_EX
+        (StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
+                      httpResponse->getTransferEncoding().c_str()).str());
+    }
+    filter->init();
+    filter->installDelegate(delegate);
+  }
+  if(filter.isNull()) {
+    filter = delegate;
+  }
+  return filter;
+}
+} // namespace
 
-static SharedHandle<StreamFilter> getContentEncodingStreamFilter
+namespace {
+SharedHandle<StreamFilter> getContentEncodingStreamFilter
 (const SharedHandle<HttpResponse>& httpResponse,
- const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
+ const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>())
+{
+  SharedHandle<StreamFilter> filter;
+  if(httpResponse->isContentEncodingSpecified()) {
+    filter = httpResponse->getContentEncodingStreamFilter();
+    if(filter.isNull()) {
+      LogFactory::getInstance()->info
+        ("Content-Encoding %s is specified, but the current implementation"
+         "doesn't support it. The decoding process is skipped and the"
+         "downloaded content will be still encoded.",
+         httpResponse->getContentEncoding().c_str());
+    } else {
+      filter->init();
+      filter->installDelegate(delegate);
+    }
+  }
+  if(filter.isNull()) {
+    filter = delegate;
+  }
+  return filter;
+}
+} // namespace
 
 HttpResponseCommand::HttpResponseCommand
 (cuid_t cuid,
@@ -305,51 +346,6 @@ bool HttpResponseCommand::handleDefaultEncoding
   return true;
 }
 
-static SharedHandle<StreamFilter> getTransferEncodingStreamFilter
-(const SharedHandle<HttpResponse>& httpResponse,
- const SharedHandle<StreamFilter>& delegate)
-{
-  SharedHandle<StreamFilter> filter;
-  if(httpResponse->isTransferEncodingSpecified()) {
-    filter = httpResponse->getTransferEncodingStreamFilter();
-    if(filter.isNull()) {
-      throw DL_ABORT_EX
-        (StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
-                      httpResponse->getTransferEncoding().c_str()).str());
-    }
-    filter->init();
-    filter->installDelegate(delegate);
-  }
-  if(filter.isNull()) {
-    filter = delegate;
-  }
-  return filter;
-}
-
-static SharedHandle<StreamFilter> getContentEncodingStreamFilter
-(const SharedHandle<HttpResponse>& httpResponse,
- const SharedHandle<StreamFilter>& delegate)
-{
-  SharedHandle<StreamFilter> filter;
-  if(httpResponse->isContentEncodingSpecified()) {
-    filter = httpResponse->getContentEncodingStreamFilter();
-    if(filter.isNull()) {
-      LogFactory::getInstance()->info
-        ("Content-Encoding %s is specified, but the current implementation"
-         "doesn't support it. The decoding process is skipped and the"
-         "downloaded content will be still encoded.",
-         httpResponse->getContentEncoding().c_str());
-    } else {
-      filter->init();
-      filter->installDelegate(delegate);
-    }
-  }
-  if(filter.isNull()) {
-    filter = delegate;
-  }
-  return filter;
-}
-
 bool HttpResponseCommand::handleOtherEncoding
 (const SharedHandle<HttpResponse>& httpResponse) {
   // We assume that RequestGroup::getTotalLength() == 0 here
@@ -448,7 +444,8 @@ bool HttpResponseCommand::skipResponseBody
   return true;
 }
 
-static bool decideFileAllocation
+namespace {
+bool decideFileAllocation
 (const SharedHandle<StreamFilter>& filter)
 {
 #ifdef HAVE_LIBZ
@@ -463,6 +460,7 @@ static bool decideFileAllocation
 #endif // HAVE_LIBZ
   return true;
 }
+} // namespace
 
 HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand
 (const SharedHandle<HttpResponse>& httpResponse,

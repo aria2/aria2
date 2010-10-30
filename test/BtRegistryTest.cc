@@ -47,7 +47,8 @@ void BtRegistryTest::testGetDownloadContext()
   CPPUNIT_ASSERT_EQUAL(dctx.get(), btRegistry.getDownloadContext(1).get());
 }
 
-static void addTwoDownloadContext(BtRegistry& btRegistry)
+namespace {
+void addTwoDownloadContext(BtRegistry& btRegistry)
 {
   SharedHandle<DownloadContext> dctx1(new DownloadContext());
   SharedHandle<DownloadContext> dctx2(new DownloadContext());
@@ -58,6 +59,7 @@ static void addTwoDownloadContext(BtRegistry& btRegistry)
   btRegistry.put(1, btObject1);
   btRegistry.put(2, btObject2);
 }
+} // namespace
 
 void BtRegistryTest::testGetDownloadContext_infoHash()
 {

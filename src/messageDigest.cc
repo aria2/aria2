@@ -56,7 +56,8 @@ struct DigestAlgoEntry {
 typedef std::map<std::string, DigestAlgoEntry>
 DigestAlgoMap;
 
-static const DigestAlgoMap& getDigestAlgos()
+namespace {
+const DigestAlgoMap& getDigestAlgos()
 {
   enum AlgoStrength {
     STRENGTH_MD5 = 0,
@@ -84,6 +85,7 @@ static const DigestAlgoMap& getDigestAlgos()
   static const DigestAlgoMap algomap(vbegin(digests), vend(digests));
   return algomap;
 }
+} // namespace
 
 std::string MessageDigestContext::getCanonicalAlgo
 (const std::string& algostring)

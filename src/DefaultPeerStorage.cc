@@ -48,7 +48,9 @@
 
 namespace aria2 {
 
-static const int MAX_PEER_LIST_SIZE = 1024;
+namespace {
+const int MAX_PEER_LIST_SIZE = 1024;
+} // namespace
 
 DefaultPeerStorage::DefaultPeerStorage():
   logger_(LogFactory::getInstance()),
@@ -86,7 +88,8 @@ bool DefaultPeerStorage::isPeerAlreadyAdded(const SharedHandle<Peer>& peer)
                       FindIdenticalPeer(peer)) != peers_.end();
 }
 
-static size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
+namespace {
+size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
 {
   if(btRuntime.isNull()) {
     return MAX_PEER_LIST_SIZE;
@@ -95,6 +98,7 @@ static size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
     MAX_PEER_LIST_SIZE :
     btRuntime->getMaxPeers()+(btRuntime->getMaxPeers() >> 2);
 }
+} // namespace
 
 bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
   if(isPeerAlreadyAdded(peer)) {
@@ -220,7 +224,8 @@ void DefaultPeerStorage::getActivePeers
   std::for_each(peers_.begin(), peers_.end(), CollectActivePeer(activePeers));
 }
 
-static TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
+namespace {
+TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
 {
   TransferStat s;
   s.downloadSpeed = peer->calculateDownloadSpeed();
@@ -229,6 +234,7 @@ static TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
   s.sessionUploadLength = peer->getSessionUploadLength();
   return s;
 }
+} // namespace
 
 TransferStat DefaultPeerStorage::calculateStat()
 {

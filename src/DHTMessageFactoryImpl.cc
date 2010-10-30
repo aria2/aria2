@@ -83,7 +83,8 @@ DHTMessageFactoryImpl::getRemoteNode
   return node;
 }
 
-static const Dict* getDictionary(const Dict* dict, const std::string& key)
+namespace {
+const Dict* getDictionary(const Dict* dict, const std::string& key)
 {
   const Dict* d = asDict(dict->get(key));
   if(d) {
@@ -93,8 +94,10 @@ static const Dict* getDictionary(const Dict* dict, const std::string& key)
       (StringFormat("Malformed DHT message. Missing %s", key.c_str()).str());
   }
 }
+} // namespace
 
-static const String* getString(const Dict* dict, const std::string& key)
+namespace {
+const String* getString(const Dict* dict, const std::string& key)
 {
   const String* c = asString(dict->get(key));
   if(c) {
@@ -104,8 +107,10 @@ static const String* getString(const Dict* dict, const std::string& key)
       (StringFormat("Malformed DHT message. Missing %s", key.c_str()).str());
   }
 }
+} // namespace
 
-static const Integer* getInteger(const Dict* dict, const std::string& key)
+namespace {
+const Integer* getInteger(const Dict* dict, const std::string& key)
 {
   const Integer* c = asInteger(dict->get(key));
   if(c) {
@@ -115,8 +120,10 @@ static const Integer* getInteger(const Dict* dict, const std::string& key)
       (StringFormat("Malformed DHT message. Missing %s", key.c_str()).str());
   }
 }
+} // namespace
 
-static const String* getString(const List* list, size_t index)
+namespace {
+const String* getString(const List* list, size_t index)
 {
   const String* c = asString(list->get(index));
   if(c) {
@@ -127,8 +134,10 @@ static const String* getString(const List* list, size_t index)
                     static_cast<unsigned long>(index)).str());
   }
 }
+} // namespace
 
-static const Integer* getInteger(const List* list, size_t index)
+namespace {
+const Integer* getInteger(const List* list, size_t index)
 {
   const Integer* c = asInteger(list->get(index));
   if(c) {
@@ -139,8 +148,10 @@ static const Integer* getInteger(const List* list, size_t index)
                     static_cast<unsigned long>(index)).str());
   }
 }
+} // namespace
 
-static const List* getList(const Dict* dict, const std::string& key)
+namespace {
+const List* getList(const Dict* dict, const std::string& key)
 {
   const List* l = asList(dict->get(key));
   if(l) {
@@ -150,6 +161,7 @@ static const List* getList(const Dict* dict, const std::string& key)
       (StringFormat("Malformed DHT message. Missing %s", key.c_str()).str());
   }
 }
+} // namespace
 
 void DHTMessageFactoryImpl::validateID(const String* id) const
 {
@@ -171,7 +183,8 @@ void DHTMessageFactoryImpl::validatePort(const Integer* port) const
   }
 }
 
-static void setVersion(const SharedHandle<DHTMessage>& msg, const Dict* dict)
+namespace {
+void setVersion(const SharedHandle<DHTMessage>& msg, const Dict* dict)
 {
   const String* v = asString(dict->get(DHTMessage::V));
   if(v) {
@@ -180,6 +193,7 @@ static void setVersion(const SharedHandle<DHTMessage>& msg, const Dict* dict)
     msg->setVersion(A2STR::NIL);
   }
 }
+} // namespace
 
 SharedHandle<DHTQueryMessage> DHTMessageFactoryImpl::createQueryMessage
 (const Dict* dict, const std::string& ipaddr, uint16_t port)
@@ -274,7 +288,8 @@ DHTMessageFactoryImpl::createResponseMessage
   return msg;
 }
 
-static const std::string& getDefaultVersion()
+namespace {
+const std::string& getDefaultVersion()
 {
   static std::string version;
   if(version.empty()) {
@@ -286,6 +301,7 @@ static const std::string& getDefaultVersion()
   }
   return version;
 }
+} // namespace
 
 void DHTMessageFactoryImpl::setCommonProperty
 (const SharedHandle<DHTAbstractMessage>& m)

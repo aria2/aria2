@@ -41,7 +41,8 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FileEntryTest );
 
-static SharedHandle<FileEntry> createFileEntry()
+namespace {
+SharedHandle<FileEntry> createFileEntry()
 {
   const char* uris[] = { "http://localhost/aria2.zip",
                          "ftp://localhost/aria2.zip",
@@ -50,6 +51,7 @@ static SharedHandle<FileEntry> createFileEntry()
   fileEntry->setUris(std::vector<std::string>(&uris[0], &uris[3]));
   return fileEntry;
 }
+} // namespace
 
 void FileEntryTest::testSetupDir()
 {

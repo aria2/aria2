@@ -83,8 +83,9 @@ XmlRpcResponse XmlRpcMethod::execute
   }
 }
 
+namespace {
 template<typename InputIterator>
-static void gatherOption
+void gatherOption
 (InputIterator first, InputIterator last,
  const std::set<std::string>& allowedOptions,
  const SharedHandle<Option>& option,
@@ -126,6 +127,7 @@ static void gatherOption
     }
   }  
 }
+} // namespace
 
 void XmlRpcMethod::gatherRequestOption
 (const SharedHandle<Option>& option, const Dict* optionsDict)
@@ -137,13 +139,14 @@ void XmlRpcMethod::gatherRequestOption
   }
 }
 
+namespace {
 // Copy option in the range [optNameFirst, optNameLast) from src to
 // dest.
 template<typename InputIterator>
-static void applyOption(InputIterator optNameFirst,
-                        InputIterator optNameLast,
-                        Option* dest,
-                        Option* src)
+void applyOption(InputIterator optNameFirst,
+                 InputIterator optNameLast,
+                 Option* dest,
+                 Option* src)
 {
   for(; optNameFirst != optNameLast; ++optNameFirst) {
     if(src->defined(*optNameFirst)) {
@@ -151,6 +154,7 @@ static void applyOption(InputIterator optNameFirst,
     }
   }
 }
+} // namespace
 
 const std::set<std::string>& listChangeableOptions()
 {

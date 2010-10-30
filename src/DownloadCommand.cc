@@ -70,7 +70,9 @@
 
 namespace aria2 {
 
-static const size_t BUFSIZE = 16*1024;
+namespace {
+const size_t BUFSIZE = 16*1024;
+} // namespace
 
 DownloadCommand::DownloadCommand(cuid_t cuid,
                                  const SharedHandle<Request>& req,

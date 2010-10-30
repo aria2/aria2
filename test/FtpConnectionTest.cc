@@ -92,10 +92,12 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FtpConnectionTest);
 
-static void waitRead(const SharedHandle<SocketCore>& socket)
+namespace {
+void waitRead(const SharedHandle<SocketCore>& socket)
 {
   while(!socket->isReadable(0));
 }
+} // namespace
 
 void FtpConnectionTest::testReceiveResponse()
 {

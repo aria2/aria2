@@ -60,7 +60,8 @@ public:
 };
 } // namespace
 
-static void splitNsName
+namespace {
+void splitNsName
 (std::string& localname, std::string& prefix, std::string& nsUri,
  const std::string& nsName)
 {
@@ -73,8 +74,10 @@ static void splitNsName
     localname = nsNamePair.second;
   }
 }
+} // namespace
 
-static void mlStartElement(void* userData, const char* nsName, const char** attrs)
+namespace {
+void mlStartElement(void* userData, const char* nsName, const char** attrs)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
 
@@ -110,8 +113,10 @@ static void mlStartElement(void* userData, const char* nsName, const char** attr
     sd->charactersStack_.push_front(A2STR::NIL);
   }
 }
+} // namespace
 
-static void mlEndElement(void* userData, const char* nsName)
+namespace {
+void mlEndElement(void* userData, const char* nsName)
 {
   std::string localname;
   std::string prefix;
@@ -126,16 +131,20 @@ static void mlEndElement(void* userData, const char* nsName)
   }
   sd->stm_->endElement(localname, prefix, nsUri, characters);
 }
+} // namespace
 
-static void mlCharacters(void* userData, const char* ch, int len)
+namespace {
+void mlCharacters(void* userData, const char* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   if(sd->stm_->needsCharactersBuffering()) {
     sd->charactersStack_.front() += std::string(&ch[0], &ch[len]);
   }
 }
+} // namespace
 
-static XML_Parser createParser(const SharedHandle<SessionData>& sessionData)
+namespace {
+XML_Parser createParser(const SharedHandle<SessionData>& sessionData)
 {
   XML_Parser parser = XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'));
   XML_SetUserData(parser, sessionData.get());
@@ -143,8 +152,10 @@ static XML_Parser createParser(const SharedHandle<SessionData>& sessionData)
   XML_SetCharacterDataHandler(parser, &mlCharacters);
   return parser;
 }
+} // namespace
 
-static void checkError(XML_Parser parser)
+namespace {
+void checkError(XML_Parser parser)
 {
   if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
@@ -159,6 +170,7 @@ static void checkError(XML_Parser parser)
     throw DL_ABORT_EX(stm->getErrorString());
   }
 }
+} // namespace
 
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(const std::string& filename)

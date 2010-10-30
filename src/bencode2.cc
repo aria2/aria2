@@ -44,9 +44,12 @@ namespace aria2 {
 
 namespace bencode2 {
 
-static SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth);
+namespace {
+SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth);
+} // namespace
 
-static void checkdelim(std::istream& ss, const char delim = ':')
+namespace {
+void checkdelim(std::istream& ss, const char delim = ':')
 {
   char d;
   if(!(ss.get(d) && d == delim)) {
@@ -55,8 +58,10 @@ static void checkdelim(std::istream& ss, const char delim = ':')
                     delim).str());
   }
 }
+} // namespace
 
-static std::string decoderawstring(std::istream& ss)
+namespace {
+std::string decoderawstring(std::istream& ss)
 {
   int length;
   ss >> length;
@@ -79,13 +84,17 @@ static std::string decoderawstring(std::istream& ss)
   }
   return str;
 }
+} // namespace
 
-static SharedHandle<ValueBase> decodestring(std::istream& ss)
+namespace {
+SharedHandle<ValueBase> decodestring(std::istream& ss)
 {
   return String::g(decoderawstring(ss));
 }
+} // namespace
 
-static SharedHandle<ValueBase> decodeinteger(std::istream& ss)
+namespace {
+SharedHandle<ValueBase> decodeinteger(std::istream& ss)
 {
   Integer::ValueType iv;
   ss >> iv;
@@ -96,8 +105,10 @@ static SharedHandle<ValueBase> decodeinteger(std::istream& ss)
   checkdelim(ss, 'e');
   return Integer::g(iv);
 }
+} // namespace
 
-static SharedHandle<ValueBase> decodedict(std::istream& ss, size_t depth)
+namespace {
+SharedHandle<ValueBase> decodedict(std::istream& ss, size_t depth)
 {
   SharedHandle<Dict> dict = Dict::g();
   char c;
@@ -113,8 +124,10 @@ static SharedHandle<ValueBase> decodedict(std::istream& ss, size_t depth)
   throw DL_ABORT_EX("Bencode decoding failed:"
                     " Unexpected EOF in dict context. 'e' expected.");
 }
+} // namespace
 
-static SharedHandle<ValueBase> decodelist(std::istream& ss, size_t depth)
+namespace {
+SharedHandle<ValueBase> decodelist(std::istream& ss, size_t depth)
 {
   SharedHandle<List> list = List::g();
   char c;
@@ -129,15 +142,19 @@ static SharedHandle<ValueBase> decodelist(std::istream& ss, size_t depth)
   throw DL_ABORT_EX("Bencode decoding failed:"
                     " Unexpected EOF in list context. 'e' expected.");
 }
+} // namespace
 
-static void checkDepth(size_t depth)
+namespace {
+void checkDepth(size_t depth)
 {
   if(depth >= MAX_STRUCTURE_DEPTH) {
     throw DL_ABORT_EX("Bencode decoding failed: Structure is too deep.");
   }
 }
+} // namespace
 
-static SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth)
+namespace {
+SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth)
 {
   checkDepth(depth);
   char c;
@@ -157,6 +174,7 @@ static SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth)
     return decodestring(ss);
   }
 }
+} // namespace
 
 SharedHandle<ValueBase> decode(std::istream& in)
 {

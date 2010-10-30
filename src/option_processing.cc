@@ -65,9 +65,10 @@ namespace aria2 {
 extern void showVersion();
 extern void showUsage(const std::string& keyword, const OptionParser& oparser);
 
-static void overrideWithEnv(Option& op, const OptionParser& optionParser,
-                            const std::string& pref,
-                            const std::string& envName)
+namespace {
+void overrideWithEnv(Option& op, const OptionParser& optionParser,
+                     const std::string& pref,
+                     const std::string& envName)
 {
   char* value = getenv(envName.c_str());
   if(value) {
@@ -81,6 +82,7 @@ static void overrideWithEnv(Option& op, const OptionParser& optionParser,
     }
   }
 }
+} // namespace
 
 void option_processing(Option& op, std::vector<std::string>& uris,
                        int argc, char* const argv[])

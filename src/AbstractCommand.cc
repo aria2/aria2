@@ -521,8 +521,9 @@ void AbstractCommand::setWriteCheckSocketIf
   }
 }
 
+namespace {
 // Returns proxy option value for the given protocol.
-static const std::string& getProxyOptionFor
+const std::string& getProxyOptionFor
 (const std::string& proxyPref, const SharedHandle<Option>& option)
 {
   if(option->defined(proxyPref)) {
@@ -531,10 +532,12 @@ static const std::string& getProxyOptionFor
     return option->get(PREF_ALL_PROXY);
   }
 }
+} // namespace
 
+namespace {
 // Returns proxy URI for given protocol.  If no proxy URI is defined,
 // then returns an empty string.
-static const std::string& getProxyUri
+const std::string& getProxyUri
 (const std::string& protocol, const SharedHandle<Option>& option)
 {
   if(protocol == Request::PROTO_HTTP) {
@@ -547,16 +550,19 @@ static const std::string& getProxyUri
     return A2STR::NIL;
   }
 }
+} // namespace
 
+namespace {
 // Returns true if proxy is defined for the given protocol. Otherwise
 // returns false.
-static bool isProxyRequest
+bool isProxyRequest
 (const std::string& protocol, const SharedHandle<Option>& option)
 {
   const std::string& proxyUri = getProxyUri(protocol, option);
   uri::UriStruct us;
   return !proxyUri.empty() && uri::parse(us, proxyUri);
 }
+} // namespace
 
 namespace {
 class DomainMatch {
@@ -576,8 +582,9 @@ public:
 };
 } // namespace
 
-static bool inNoProxy(const SharedHandle<Request>& req,
-                      const std::string& noProxy)
+namespace {
+bool inNoProxy(const SharedHandle<Request>& req,
+               const std::string& noProxy)
 {
   std::vector<std::string> entries;
   util::split(noProxy, std::back_inserter(entries), ",", true);
@@ -616,6 +623,7 @@ static bool inNoProxy(const SharedHandle<Request>& req,
   }
   return false;
 }
+} // namespace
 
 bool AbstractCommand::isProxyDefined() const
 {

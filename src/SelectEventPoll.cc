@@ -225,13 +225,15 @@ void SelectEventPoll::poll(const struct timeval& tv)
 }
 
 #ifdef __MINGW32__
-static void checkFdCountMingw(const fd_set& fdset, Logger* logger)
+namespace {
+void checkFdCountMingw(const fd_set& fdset, Logger* logger)
 {
   if(fdset.fd_count >= FD_SETSIZE) {
     logger->warn("The number of file descriptor exceeded FD_SETSIZE. "
                  "Download may slow down or fail.");
   }
 }
+} // namespace
 #endif // __MINGW32__
 
 void SelectEventPoll::updateFdSet()

@@ -172,7 +172,8 @@ const std::set<std::string>& listRequestOptions()
   return requestOptions;
 }
 
-static void unfoldURI
+namespace {
+void unfoldURI
 (std::vector<std::string>& result, const std::vector<std::string>& args)
 {
   ParameterizedStringParser p;
@@ -184,13 +185,15 @@ static void unfoldURI
     result.insert(result.end(), v.getURIs().begin(), v.getURIs().end()); 
   }
 }
+} // namespace
 
+namespace {
 template<typename InputIterator>
-static void splitURI(std::vector<std::string>& result,
-                     InputIterator begin,
-                     InputIterator end,
-                     size_t numSplit,
-                     size_t maxIter)
+void splitURI(std::vector<std::string>& result,
+              InputIterator begin,
+              InputIterator end,
+              size_t numSplit,
+              size_t maxIter)
 {
   size_t numURIs = std::distance(begin, end);
   if(numURIs >= numSplit) {
@@ -205,8 +208,10 @@ static void splitURI(std::vector<std::string>& result,
     }
   }
 }
+} // namespace
 
-static SharedHandle<RequestGroup> createRequestGroup
+namespace {
+SharedHandle<RequestGroup> createRequestGroup
 (const SharedHandle<Option>& option, const std::vector<std::string>& uris,
  bool useOutOption = false)
 {
@@ -224,22 +229,27 @@ static SharedHandle<RequestGroup> createRequestGroup
   rg->setDownloadContext(dctx);
   return rg;
 }
+} // namespace
 
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
-static SharedHandle<MetadataInfo> createMetadataInfo(const std::string& uri)
+namespace {
+SharedHandle<MetadataInfo> createMetadataInfo(const std::string& uri)
 {
   return SharedHandle<MetadataInfo>(new MetadataInfo(uri));
 }
+} // namespace
 
-static SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
+namespace {
+SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
 {
   return SharedHandle<MetadataInfo>(new MetadataInfo());
 }
+} // namespace
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
 
-static
+namespace {
 SharedHandle<RequestGroup>
 createBtRequestGroup(const std::string& torrentFilePath,
                      const SharedHandle<Option>& option,
@@ -277,8 +287,9 @@ createBtRequestGroup(const std::string& torrentFilePath,
   util::removeMetalinkContentTypes(rg);
   return rg;
 }
+} // namespace
 
-static
+namespace {
 SharedHandle<RequestGroup>
 createBtMagnetRequestGroup(const std::string& magnetLink,
                            const SharedHandle<Option>& option,
@@ -308,6 +319,7 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   rg->setMetadataInfo(createMetadataInfo(magnetLink));
   return rg;
 }
+} // namespace
 
 void createRequestGroupForBitTorrent
 (std::vector<SharedHandle<RequestGroup> >& result,
@@ -467,7 +479,8 @@ void createRequestGroupForUri
   }
 }
 
-static void createRequestGroupForUriList
+namespace {
+void createRequestGroupForUriList
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  std::istream& in)
@@ -493,6 +506,7 @@ static void createRequestGroupForUriList
     createRequestGroupForUri(result, requestOption, uris);
   }
 }
+} // namespace
 
 void createRequestGroupForUriList
 (std::vector<SharedHandle<RequestGroup> >& result,

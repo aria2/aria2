@@ -241,11 +241,13 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
   }
 }
 
-static unsigned int getUriMaxSpeed(SharedHandle<ServerStat> ss)
+namespace {
+unsigned int getUriMaxSpeed(SharedHandle<ServerStat> ss)
 {
   return std::max(ss->getSingleConnectionAvgSpeed(),
                   ss->getMultiConnectionAvgSpeed());
 }
+} // namespace
 
 unsigned int AdaptiveURISelector::getMaxDownloadSpeed
 (const std::deque<std::string>& uris) const

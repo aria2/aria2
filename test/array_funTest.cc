@@ -72,16 +72,22 @@ void array_funTest::testArrayLength()
   CPPUNIT_ASSERT_EQUAL((size_t)0, A2_ARRAY_LEN(zeroLengthArray));
 }
 
+namespace {
 // Check operator[] in const context.
-static void arrayPtrConst(const array_ptr<struct array_funTest::X>& ax)
+void arrayPtrConst(const array_ptr<struct array_funTest::X>& ax)
 {
   CPPUNIT_ASSERT_EQUAL(100, ax[3].m);
   CPPUNIT_ASSERT_EQUAL(99, ax[2].m);
 }
+} // namespace
 
-static void arrayPtrCast(struct array_funTest::X* x) {}
+namespace {
+void arrayPtrCast(struct array_funTest::X* x) {}
+} // namespace
 
-static void arrayPtrConstCast(const struct array_funTest::X* x) {}
+namespace {
+void arrayPtrConstCast(const struct array_funTest::X* x) {}
+} // namespace
 
 void array_funTest::testArrayPtr()
 {
@@ -96,10 +102,12 @@ void array_funTest::testArrayPtr()
   arrayPtrConstCast(ax);
 }
 
-static void arrayWrapperConst(const array_wrapper<int, 10>& array)
+namespace {
+void arrayWrapperConst(const array_wrapper<int, 10>& array)
 {
   CPPUNIT_ASSERT_EQUAL(9, array[9]);
 }
+} // namespace
 
 void array_funTest::testArrayWrapper()
 {

@@ -115,8 +115,9 @@ void DownloadEngine::cleanQueue() {
   commands_.clear();
 }
 
-static void executeCommand(std::deque<Command*>& commands,
-                           Command::STATUS statusFilter)
+namespace {
+void executeCommand(std::deque<Command*>& commands,
+                    Command::STATUS statusFilter)
 {
   size_t max = commands.size();
   for(size_t i = 0; i < max; ++i) {
@@ -136,6 +137,7 @@ static void executeCommand(std::deque<Command*>& commands,
     }
   }
 }
+} // namespace
 
 void DownloadEngine::run()
 {
@@ -303,7 +305,8 @@ void DownloadEngine::poolSocket(const std::string& key,
   }
 }
 
-static std::string createSockPoolKey
+namespace {
+std::string createSockPoolKey
 (const std::string& host, uint16_t port,
  const std::string& username,
  const std::string& proxyhost, uint16_t proxyport)
@@ -324,6 +327,7 @@ static std::string createSockPoolKey
   }
   return key;
 }
+} // namespace
 
 void DownloadEngine::poolSocket
 (const std::string& ipaddr,

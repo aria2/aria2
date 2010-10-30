@@ -95,8 +95,9 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtAnnounceTest);
 
+namespace {
 template<typename InputIterator>
-static SharedHandle<List> createAnnounceTier
+SharedHandle<List> createAnnounceTier
 (InputIterator first, InputIterator last)
 {
   SharedHandle<List> announceTier = List::g();
@@ -105,16 +106,20 @@ static SharedHandle<List> createAnnounceTier
   }
   return announceTier;
 }
+} // namespace
 
-static SharedHandle<List> createAnnounceTier(const std::string& uri)
+namespace {
+SharedHandle<List> createAnnounceTier(const std::string& uri)
 {
   SharedHandle<List> announceTier = List::g();
   announceTier->append(String::g(uri));
   return announceTier;
 }
+} // namespace
 
-static void setAnnounceList(const SharedHandle<DownloadContext>& dctx,
-                            const SharedHandle<List>& announceList)
+namespace {
+void setAnnounceList(const SharedHandle<DownloadContext>& dctx,
+                     const SharedHandle<List>& announceList)
 {
   std::vector<std::vector<std::string> > dest;
   for(List::ValueType::const_iterator tierIter = announceList->begin(),
@@ -130,6 +135,7 @@ static void setAnnounceList(const SharedHandle<DownloadContext>& dctx,
   }
   bittorrent::getTorrentAttrs(dctx)->announceList.swap(dest);
 }
+} // namespace
 
 void DefaultBtAnnounceTest::testNoMoreAnnounce()
 {

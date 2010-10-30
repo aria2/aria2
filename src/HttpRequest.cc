@@ -123,7 +123,8 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
   }  
 }
 
-static std::string getHostText(const std::string& host, uint16_t port)
+namespace {
+std::string getHostText(const std::string& host, uint16_t port)
 {
   std::string hosttext = host;
   if(!(port == 80 || port == 443)) {
@@ -131,6 +132,7 @@ static std::string getHostText(const std::string& host, uint16_t port)
   }
   return hosttext;
 }
+} // namespace
 
 std::string HttpRequest::createRequest()
 {

@@ -62,43 +62,45 @@ namespace aria2 {
 
 namespace bittorrent {
 
-static const std::string C_NAME("name");
+namespace {
+const std::string C_NAME("name");
 
-static const std::string C_NAME_UTF8("name.utf-8");
+const std::string C_NAME_UTF8("name.utf-8");
 
-static const std::string C_FILES("files");
+const std::string C_FILES("files");
 
-static const std::string C_LENGTH("length");
+const std::string C_LENGTH("length");
 
-static const std::string C_PATH("path");
+const std::string C_PATH("path");
 
-static const std::string C_PATH_UTF8("path.utf-8");
+const std::string C_PATH_UTF8("path.utf-8");
 
-static const std::string C_INFO("info");
+const std::string C_INFO("info");
 
-static const std::string C_PIECES("pieces");
+const std::string C_PIECES("pieces");
 
-static const std::string C_PIECE_LENGTH("piece length");
+const std::string C_PIECE_LENGTH("piece length");
 
-static const std::string C_PRIVATE("private");
+const std::string C_PRIVATE("private");
 
-static const std::string C_URL_LIST("url-list");
+const std::string C_URL_LIST("url-list");
 
-static const std::string C_ANNOUNCE("announce");
+const std::string C_ANNOUNCE("announce");
 
-static const std::string C_ANNOUNCE_LIST("announce-list");
+const std::string C_ANNOUNCE_LIST("announce-list");
 
-static const std::string C_NODES("nodes");
+const std::string C_NODES("nodes");
 
-static const std::string C_CREATION_DATE("creation date");
+const std::string C_CREATION_DATE("creation date");
 
-static const std::string C_COMMENT("comment");
+const std::string C_COMMENT("comment");
 
-static const std::string C_COMMENT_UTF8("comment.utf-8");
+const std::string C_COMMENT_UTF8("comment.utf-8");
 
-static const std::string C_CREATED_BY("created by");
+const std::string C_CREATED_BY("created by");
 
-static const std::string DEFAULT_PEER_ID_PREFIX("aria2-");
+const std::string DEFAULT_PEER_ID_PREFIX("aria2-");
+} // namespace
 
 const std::string BITTORRENT("bittorrent");
 
@@ -106,10 +108,11 @@ const std::string MULTI("multi");
 
 const std::string SINGLE("single");
 
-static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
-                             const std::string& hashData,
-                             size_t hashLength,
-                             size_t numPieces)
+namespace {
+void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
+                      const std::string& hashData,
+                      size_t hashLength,
+                      size_t numPieces)
 {
   std::vector<std::string> pieceHashes;
   pieceHashes.reserve(numPieces);
@@ -120,8 +123,10 @@ static void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
   ctx->setPieceHashes(pieceHashes.begin(), pieceHashes.end());
   ctx->setPieceHashAlgo(MessageDigestContext::SHA1);
 }
+} // namespace
 
-static void extractUrlList
+namespace {
+void extractUrlList
 (const SharedHandle<TorrentAttribute>& torrent, std::vector<std::string>& uris,
  const ValueBase* v)
 {
@@ -162,9 +167,11 @@ static void extractUrlList
     v->accept(visitor);
   }
 }
+} // namespace
 
+namespace {
 template<typename InputIterator, typename OutputIterator>
-static OutputIterator createUri
+OutputIterator createUri
 (InputIterator first, InputIterator last, OutputIterator out,
  const std::string& filePath)
 {
@@ -177,8 +184,10 @@ static OutputIterator createUri
   }
   return out;
 }
+} // namespace
 
-static void extractFileEntries
+namespace {
+void extractFileEntries
 (const SharedHandle<DownloadContext>& ctx,
  const SharedHandle<TorrentAttribute>& torrent,
  const Dict* infoDict,
@@ -308,8 +317,10 @@ static void extractFileEntries
     ctx->setBasePath(util::applyDir(ctx->getDir(), utf8Name));
   }
 }
+} // namespace
 
-static void extractAnnounce
+namespace {
+void extractAnnounce
 (const SharedHandle<TorrentAttribute>& torrent, const Dict* rootDict)
 {
   const List* announceList = asList(rootDict->get(C_ANNOUNCE_LIST));
@@ -341,8 +352,10 @@ static void extractAnnounce
     }
   }
 }
+} // namespace
 
-static void extractNodes
+namespace {
+void extractNodes
 (const SharedHandle<TorrentAttribute>& torrent, const ValueBase* nodesListSrc)
 {
   const List* nodesList = asList(nodesListSrc);
@@ -368,8 +381,10 @@ static void extractNodes
     }
   }
 }
+} // namespace
 
-static void processRootDictionary
+namespace {
+void processRootDictionary
 (const SharedHandle<DownloadContext>& ctx,
  const SharedHandle<ValueBase>& root,
  const std::string& defaultName,
@@ -474,6 +489,7 @@ static void processRootDictionary
 
   ctx->setAttribute(BITTORRENT, torrent);
 }
+} // namespace
 
 void load(const std::string& torrentFile,
           const SharedHandle<DownloadContext>& ctx,
@@ -671,7 +687,9 @@ std::string generatePeerId(const std::string& peerIdPrefix)
   return peerId;
 }
 
-static std::string peerId;
+namespace {
+std::string peerId;
+} // namespace
 
 const std::string& generateStaticPeerId(const std::string& peerIdPrefix)
 {

@@ -46,8 +46,9 @@ namespace aria2 {
 
 namespace xmlrpc {
 
+namespace {
 template<typename OutputStream>
-static void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
+void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
 {
   class XmlValueBaseVisitor:public ValueBaseVisitor {
   private:
@@ -93,9 +94,11 @@ static void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
   XmlValueBaseVisitor visitor(o);
   value->accept(visitor);
 }
+} // namespace
 
+namespace {
 template<typename OutputStream>
-static std::string encodeAll
+std::string encodeAll
 (OutputStream& o, int code, const SharedHandle<ValueBase>& param)
 {
   o << "<?xml version=\"1.0\"?>" << "<methodResponse>";
@@ -111,6 +114,7 @@ static std::string encodeAll
   o << "</methodResponse>";
   return o.str();
 }
+} // namespace
 
 std::string XmlRpcResponse::toXml(bool gzip) const
 {

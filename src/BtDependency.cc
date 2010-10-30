@@ -59,8 +59,9 @@ BtDependency::BtDependency(const WeakHandle<RequestGroup>& dependant,
 
 BtDependency::~BtDependency() {}
 
-static void copyValues(const SharedHandle<FileEntry>& d,
-                       const SharedHandle<FileEntry>& s)
+namespace {
+void copyValues(const SharedHandle<FileEntry>& d,
+                const SharedHandle<FileEntry>& s)
 {
   d->setRequested(true);
   d->setPath(s->getPath());
@@ -69,6 +70,7 @@ static void copyValues(const SharedHandle<FileEntry>& d,
   d->setMaxConnectionPerServer(s->getMaxConnectionPerServer());
   d->setUniqueProtocol(s->isUniqueProtocol());
 }
+} // namespace
 
 bool BtDependency::resolve()
 {

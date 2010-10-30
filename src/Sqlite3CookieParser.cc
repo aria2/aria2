@@ -70,7 +70,8 @@ Sqlite3CookieParser::~Sqlite3CookieParser()
   sqlite3_close(db_);
 }
 
-static std::string toString(const char* str)
+namespace {
+std::string toString(const char* str)
 {
   if(str) {
     return str;
@@ -78,8 +79,10 @@ static std::string toString(const char* str)
     return A2STR::NIL;
   }
 }
+} // namespace
 
-static bool parseTime(int64_t& time, const std::string& s)
+namespace {
+bool parseTime(int64_t& time, const std::string& s)
 {
   if(!util::parseLLIntNoThrow(time, s)) {
     return false;
@@ -91,9 +94,10 @@ static bool parseTime(int64_t& time, const std::string& s)
   }
   return true;
 }
+} // namespace
 
-static int cookieRowMapper(void* data, int columns,
-                           char** values, char** names)
+namespace {
+int cookieRowMapper(void* data, int columns, char** values, char** names)
 {
   if(columns != 7) {
     return 0;
@@ -129,6 +133,7 @@ static int cookieRowMapper(void* data, int columns,
   cookies.push_back(c);
   return 0;
 }
+} // namespace
 
 void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
 {

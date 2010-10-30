@@ -58,7 +58,8 @@ public:
 };
 } // namespace
 
-static void mlStartElement
+namespace {
+void mlStartElement
 (void* userData,
  const xmlChar* srcLocalname,
  const xmlChar* srcPrefix,
@@ -102,8 +103,10 @@ static void mlStartElement
     sd->charactersStack_.push_front(A2STR::NIL);
   }
 }
+} // namespace
 
-static void mlEndElement
+namespace {
+void mlEndElement
 (void* userData,
  const xmlChar* srcLocalname,
  const xmlChar* srcPrefix,
@@ -126,16 +129,20 @@ static void mlEndElement
   }
   sd->stm_->endElement(localname, prefix, nsUri, characters);
 }
+} // namespace
 
-static void mlCharacters(void* userData, const xmlChar* ch, int len)
+namespace {
+void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   if(sd->stm_->needsCharactersBuffering()) {
     sd->charactersStack_.front() += std::string(&ch[0], &ch[len]);
   }
 }
+} // namespace
 
-static xmlSAXHandler mySAXHandler =
+namespace {
+xmlSAXHandler mySAXHandler =
   {
     0, // internalSubsetSAXFunc
     0, // isStandaloneSAXFunc
@@ -170,6 +177,7 @@ static xmlSAXHandler mySAXHandler =
     &mlEndElement, //   endElementNsSAX2Func
     0, //   xmlStructuredErrorFunc
   };
+} // namespace
 
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(const std::string& filename)

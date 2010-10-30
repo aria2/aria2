@@ -1,5 +1,72 @@
 2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use unnamed namespace instead of static keyword.
+	* src/AbstractCommand.cc
+	* src/AdaptiveURISelector.cc
+	* src/Base64.cc
+	* src/BitfieldMan.cc
+	* src/BtDependency.cc
+	* src/ConsoleStatCalc.cc
+	* src/ContentTypeRequestGroupCriteria.cc
+	* src/CookieStorage.cc
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadCommand.cc
+	* src/DownloadEngine.cc
+	* src/EpollEventPoll.cc
+	* src/ExpatMetalinkProcessor.cc
+	* src/ExpatXmlRpcRequestProcessor.cc
+	* src/FileEntry.cc
+	* src/HttpRequest.cc
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/KqueueEventPoll.cc
+	* src/LongestSequencePieceSelector.cc
+	* src/MetalinkParserStateV3Impl.cc
+	* src/MetalinkParserStateV4Impl.cc
+	* src/MultiDiskAdaptor.cc
+	* src/MultiUrlRequestInfo.cc
+	* src/OptionParser.cc
+	* src/PeerSessionResource.cc
+	* src/PortEventPoll.cc
+	* src/Request.cc
+	* src/RequestGroupMan.cc
+	* src/SelectEventPoll.cc
+	* src/SessionSerializer.cc
+	* src/SimpleLogFormatter.cc
+	* src/Sqlite3CookieParser.cc
+	* src/TrackerWatcherCommand.cc
+	* src/XML2SAXMetalinkProcessor.cc
+	* src/Xml2XmlRpcRequestProcessor.cc
+	* src/XmlRpcMethod.cc
+	* src/XmlRpcMethodImpl.cc
+	* src/XmlRpcResponse.cc
+	* src/base32.cc
+	* src/bencode2.cc
+	* src/bittorrent_helper.cc
+	* src/download_helper.cc
+	* src/main.cc
+	* src/messageDigest.cc
+	* src/option_processing.cc
+	* src/util.cc
+	* test/AnnounceListTest.cc
+	* test/BtRegistryTest.cc
+	* test/DHTBucketTest.cc
+	* test/DHTRoutingTableTest.cc
+	* test/DefaultBtAnnounceTest.cc
+	* test/FileEntryTest.cc
+	* test/FtpConnectionTest.cc
+	* test/MSEHandshakeTest.cc
+	* test/MagnetTest.cc
+	* test/XmlRpcMethodTest.cc
+	* test/array_funTest.cc
+
+2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added '// namespace' after end of unnamed namespace.
 	* src/AbstractCommand.cc
 	* src/AnnounceList.cc

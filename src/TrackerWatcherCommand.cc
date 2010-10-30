@@ -197,7 +197,8 @@ SharedHandle<RequestGroup> TrackerWatcherCommand::createAnnounce() {
   return rg;
 }
 
-static bool backupTrackerIsAvailable
+namespace {
+bool backupTrackerIsAvailable
 (const SharedHandle<DownloadContext>& context)
 {
   SharedHandle<TorrentAttribute> torrentAttrs =
@@ -214,6 +215,7 @@ static bool backupTrackerIsAvailable
     return false;
   }
 }
+} // namespace
 
 SharedHandle<RequestGroup>
 TrackerWatcherCommand::createRequestGroup(const std::string& uri)

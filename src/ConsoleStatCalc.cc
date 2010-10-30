@@ -74,7 +74,8 @@
 
 namespace aria2 {
 
-static void printProgress
+namespace {
+void printProgress
 (std::ostream& o, const SharedHandle<RequestGroup>& rg, const DownloadEngine* e,
  const SizeFormatter& sizeFormatter)
 {
@@ -146,6 +147,7 @@ static void printProgress
   }
   o << "]";
 }
+} // namespace
 
 namespace {
 class PrintSummary
@@ -176,7 +178,8 @@ public:
 };
 } // namespace
 
-static void printProgressSummary
+namespace {
+void printProgressSummary
 (const std::deque<SharedHandle<RequestGroup> >& groups, size_t cols,
  const DownloadEngine* e,
  const SizeFormatter& sizeFormatter)
@@ -203,6 +206,7 @@ static void printProgressSummary
   std::for_each(groups.begin(), groups.end(),
                 PrintSummary(cols, e, sizeFormatter));
 }
+} // namespace
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
   summaryInterval_(summaryInterval)
