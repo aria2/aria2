@@ -1,5 +1,10 @@
 2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated doc
+	* doc/aria2c.1.txt
+
+2010-10-30  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added cross reference in Input File section.
 	* doc/aria2c.1.txt
 

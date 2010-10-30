@@ -1361,6 +1361,8 @@ of URIs. These optional lines must start with white space(s).
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
+Please note that for options in input file "--" prefix must be
+stripped.
 
 For example, the content of uri.txt is
 
