@@ -1450,6 +1450,10 @@ Methods
 All code examples come from Python2.7 interpreter.
 
 *aria2.addUri* ('uris[, options[, position]]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  'uris' is of
 type array and its element is URI which is of type string.  For
@@ -1485,6 +1489,10 @@ Adding a download and insert it to the front of waiting downloads:
 ---------------------------------------------------------------
 
 *aria2.addTorrent* ('torrent[, uris[, options[, position]]]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method adds BitTorrent download by uploading .torrent file.  If
 you want to add BitTorrent Magnet URI, use *aria2.addUri* method
@@ -1512,6 +1520,10 @@ Adding local file file.torrent to aria2:
 ---------------------------------------------------------------------
 
 *aria2.addMetalink* ('metalink[, options[, position]]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method adds Metalink download by uploading .metalink file.
 'metalink' is of type base64 which contains Base64-encoded .metalink
@@ -1533,6 +1545,10 @@ Adding local file file.meta4 to aria2:
 --------------------------------------------------------------------
 
 *aria2.remove* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method removes the download denoted by 'gid'. 'gid' is of type
 string. If specified download is in progress, it is stopped at
@@ -1548,6 +1564,10 @@ Removing download whose GID is '3':
 --------------------------------------------------------------------
 
 *aria2.forceRemove* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method removes the download denoted by 'gid'.  This method
 behaves just like *aria2.remove* except that this method removes
@@ -1555,6 +1575,10 @@ download without any action which takes time such as contacting
 BitTorrent tracker.
 
 *aria2.pause* ('gid')
+^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method pauses the download denoted by 'gid'. 'gid' is of type
 string. The status of paused download becomes "paused".  If the
@@ -1564,11 +1588,19 @@ started.  To change status to "waiting", use *aria2.unpause* method.
 This method returns GID of paused download.
 
 *aria2.pauseAll* ()
+^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method is equal to calling *aria2.pause* for every active/waiting
 download. This methods returns "OK" for success.
 
 *aria2.forcePause* ('pid')
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method pauses the download denoted by 'gid'.  This method
 behaves just like *aria2.pause* except that this method pauses
@@ -1576,11 +1608,19 @@ download without any action which takes time such as contacting
 BitTorrent tracker.
 
 *aria2.forcePauseAll* ()
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method is equal to calling *aria2.forcePause* for every
 active/waiting download. This methods returns "OK" for success.
 
 *aria2.unpause* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method changes the status of the download denoted by 'gid' from
 "paused" to "waiting". This makes the download eligible to restart.
@@ -1588,11 +1628,19 @@ This method changes the status of the download denoted by 'gid' from
 download.
 
 *aria2.unpauseAll* ()
+^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method is equal to calling *aria2.unpause* for every active/waiting
 download. This methods returns "OK" for success.
 
 *aria2.tellStatus* ('gid[, keys]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns download progress of the download denoted by
 'gid'. 'gid' is of type string. 'keys' is array of string. If it is
@@ -1767,6 +1815,10 @@ Get information specifying keys you are interested in:
 --------------------------------------------------------------------------
 
 *aria2.getUris* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns URIs used in the download denoted by 'gid'.  'gid'
 is of type string. The response is of type array and its element is of
@@ -1782,6 +1834,10 @@ status::
   in the queue.
 
 *aria2.getFiles* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns file list of the download denoted by 'gid'. 'gid'
 is of type string. The response is of type array and its element is of
@@ -1812,6 +1868,10 @@ uris::
   same struct used in *aria2.getUris* method.
 
 *aria2.getPeers* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns peer list of the download denoted by 'gid'. 'gid'
 is of type string. This method is for BitTorrent only.  The response
@@ -1858,6 +1918,10 @@ seeder::
   "true" is this client is a seeder. Otherwise "false".
 
 *aria2.getServers* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns currently connected HTTP(S)/FTP servers of the download denoted by 'gid'. 'gid' is of type string. The response
 is of type array and its element is of type struct and it contains
@@ -1886,6 +1950,10 @@ servers::
     Download speed (byte/sec)
 
 *aria2.tellActive* ('[keys]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns the list of active downloads.  The response is of
 type array and its element is the same struct returned by
@@ -1893,6 +1961,10 @@ type array and its element is the same struct returned by
 *aria2.tellStatus* method.
 
 *aria2.tellWaiting* ('offset, num, [keys]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns the list of waiting download, including paused
 downloads. 'offset' is of type integer and specifies the offset from
@@ -1917,6 +1989,10 @@ The response is of type array and its element is the same struct
 returned by *aria2.tellStatus* method.
 
 *aria2.tellStopped* ('offset, num, [keys]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns the list of stopped download.  'offset' is of type
 integer and specifies the offset from the oldest download. 'num' is of
@@ -1930,6 +2006,10 @@ The response is of type array and its element is the same struct
 returned by *aria2.tellStatus* method.
 
 *aria2.changePosition* ('gid, pos, how')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method changes the position of the download denoted by
 'gid'. 'pos' is of type integer. 'how' is of type string. If 'how' is
@@ -1948,6 +2028,10 @@ aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
 beginning of the queue).
 
 *aria2.changeUri* ('gid, fileIndex, delUris, addUris[, position]')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method removes URIs in 'delUris' from and appends URIs in
 'addUris' to download denoted by 'gid'. 'delUris' and 'addUris' are
@@ -1968,12 +2052,20 @@ the number of URIs deleted. The second integer is the number of URIs
 added.
 
 *aria2.getOption* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns options of the download denoted by 'gid'.  The
 response is of type struct. Its key is the name of option.  The value type
 is string.
 
 *aria2.changeOption* ('gid, options')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method changes options of the download denoted by 'gid'
 dynamically.  'gid' is of type string.  'options' is of type struct
@@ -1982,6 +2074,10 @@ and the available options are: *bt-max-peers*,
 *max-upload-limit*.  This method returns "OK" for success.
 
 *aria2.getGlobalOption* ()
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns global options.  The response is of type
 struct. Its key is the name of option.  The value type is string.
@@ -1990,6 +2086,10 @@ added download, the response contains keys returned by
 *aria2.getOption* method.
 
 *aria2.changeGlobalOption* ('options')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method changes global options dynamically.  'options' is of type
 struct and the available options are *max-concurrent-downloads*,
@@ -2000,11 +2100,19 @@ value. Note that log file is always opened in append mode. This method
 returns "OK" for success.
 
 *aria2.purgeDownloadResult* ()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method purges completed/error/removed downloads to free memory.
 This method returns "OK".
 
 *aria2.getVersion* ()
+^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns version of the program and the list of enabled
 features. The response is of type struct and contains following keys.
@@ -2035,6 +2143,10 @@ enabledFeatures::
 --------------------------------------------------------------------
 
 *aria2.getSessionInfo* ()
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method returns session information.
 The response is of type struct and contains following key.
@@ -2051,16 +2163,28 @@ sessionId::
 --------------------------------------------------------------------
 
 *aria2.shutdown* ()
+^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method shutdowns aria2.  This method returns "OK".
 
 *aria2.forceShutdown* ()
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This method shutdowns aria2. This method behaves like *aria2.shutdown*
 except that any actions which takes time such as contacting BitTorrent
 tracker are skipped. This method returns "OK".
 
 *system.multicall* ('methods')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
 
 This methods encapsulates multiple method calls in a single request.
 'methods' is of type array and its element is struct.  The struct
