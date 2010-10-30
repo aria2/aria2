@@ -425,12 +425,10 @@ public:
   }
 };
 
-namespace {
 template<typename T, typename S>
 bool in(T x, S s, S t)
 {
   return s <= x && x <= t;
-}
 }
 
 } // namespace aria2
