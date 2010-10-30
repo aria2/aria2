@@ -195,7 +195,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
   server and if it is available, apply it to the local file.
   Default: 'false'
 
-*--reuse-uri[='true'|'false']::
+[[aria2_optref_reuse_uri]]*--reuse-uri*[='true'|'false']::
 
   Reuse already used URIs if no unused URIs are left.
   Default: 'true'
@@ -1265,99 +1265,99 @@ Lines starting with "#" are treated as comments and skipped.
 Additionally, the following options can be specified after each line
 of URIs. These optional lines must start with white space(s).
 
-* dir
-* check-integrity
-* continue
-* all-proxy
-* all-proxy-user
-* all-proxy-passwd
-* connect-timeout
-* dry-run
-* lowest-speed-limit
-* max-file-not-found
-* max-tries
-* no-proxy
-* out
-* proxy-method
-* remote-time
-* split
-* timeout
-* http-auth-challenge
-* http-no-cache
-* http-user
-* http-passwd
-* http-proxy
-* http-proxy-user
-* http-proxy-passwd
-* https-proxy
-* https-proxy-user
-* https-proxy-passwd
-* referer
-* enable-http-keep-alive
-* enable-http-pipelining
-* header
-* use-head
-* user-agent
-* ftp-user
-* ftp-passwd
-* ftp-pasv
-* ftp-proxy
-* ftp-proxy-user
-* ftp-proxy-passwd
-* ftp-type
-* ftp-reuse-connection
-* no-netrc
-* reuse-uri
-* select-file
-* bt-enable-lpd
-* bt-external-ip
-* bt-hash-check-seed
-* bt-max-open-files
-* bt-max-peers
-* bt-metadata-only
-* bt-min-crypto-level
-* bt-prioritize-piece
-* bt-require-crypto
-* bt-request-peer-speed-limit
-* bt-save-metadata
-* bt-seed-unverified
-* bt-stop-timeout
-* bt-tracker-interval
-* bt-tracker-timeout
-* bt-tracker-connect-timeout
-* enable-peer-exchange
-* follow-torrent
-* index-out
-* max-upload-limit
-* seed-ratio
-* seed-time
-* follow-metalink
-* metalink-servers
-* metalink-language
-* metalink-location
-* metalink-os
-* metalink-version
-* metalink-preferred-protocol
-* metalink-enable-unique-protocol
-* allow-overwrite
-* allow-piece-length-change
-* async-dns
-* auto-file-renaming
-* file-allocation
-* max-download-limit
-* no-file-allocation-limit
-* parameterized-uri
-* realtime-chunk-checksum
-* remove-control-file
-* always-resume
-* max-resume-failure-tries
-* http-accept-gzip
-* max-connection-per-server
-* min-split-size
-* conditional-get
-* enable-async-dns6
-* bt-tracker
-* bt-exclude-tracker
+* *<<aria2_optref_all_proxy, all-proxy>>*
+* *<<aria2_optref_all_proxy_passwd, all-proxy-passwd>>*
+* *<<aria2_optref_all_proxy_user, all-proxy-user>>*
+* *<<aria2_optref_allow_overwrite, allow-overwrite>>*
+* *<<aria2_optref_allow_piece_length_change, allow-piece-length-change>>*
+* *<<aria2_optref_always_resume, always-resume>>*
+* *<<aria2_optref_async_dns, async-dns>>*
+* *<<aria2_optref_auto_file_renaming, auto-file-renaming>>*
+* *<<aria2_optref_bt_enable_lpd, bt-enable-lpd>>*
+* *<<aria2_optref_bt_exclude_tracker, bt-exclude-tracker>>*
+* *<<aria2_optref_bt_external_ip, bt-external-ip>>*
+* *<<aria2_optref_bt_hash_check_seed, bt-hash-check-seed>>*
+* *<<aria2_optref_bt_max_open_files, bt-max-open-files>>*
+* *<<aria2_optref_bt_max_peers, bt-max-peers>>*
+* *<<aria2_optref_bt_metadata_only, bt-metadata-only>>*
+* *<<aria2_optref_bt_min_crypto_level, bt-min-crypto-level>>*
+* *<<aria2_optref_bt_prioritize_piece, bt-prioritize-piece>>*
+* *<<aria2_optref_bt_request_peer_speed_limit, bt-request-peer-speed-limit>>*
+* *<<aria2_optref_bt_require_crypto, bt-require-crypto>>*
+* *<<aria2_optref_bt_save_metadata, bt-save-metadata>>*
+* *<<aria2_optref_bt_seed_unverified, bt-seed-unverified>>*
+* *<<aria2_optref_bt_stop_timeout, bt-stop-timeout>>*
+* *<<aria2_optref_bt_tracker, bt-tracker>>*
+* *<<aria2_optref_bt_tracker_connect_timeout, bt-tracker-connect-timeout>>*
+* *<<aria2_optref_bt_tracker_interval, bt-tracker-interval>>*
+* *<<aria2_optref_bt_tracker_timeout, bt-tracker-timeout>>*
+* *<<aria2_optref_check_integrity, check-integrity>>*
+* *<<aria2_optref_conditional_get, conditional-get>>*
+* *<<aria2_optref_connect_timeout, connect-timeout>>*
+* *<<aria2_optref_continue, continue>>*
+* *<<aria2_optref_dir, dir>>*
+* *<<aria2_optref_dry_run, dry-run>>*
+* *<<aria2_optref_enable_async_dns6, enable-async-dns6>>*
+* *<<aria2_optref_enable_http_keep_alive, enable-http-keep-alive>>*
+* *<<aria2_optref_enable_http_pipelining, enable-http-pipelining>>*
+* *<<aria2_optref_enable_peer_exchange, enable-peer-exchange>>*
+* *<<aria2_optref_file_allocation, file-allocation>>*
+* *<<aria2_optref_follow_metalink, follow-metalink>>*
+* *<<aria2_optref_follow_torrent, follow-torrent>>*
+* *<<aria2_optref_ftp_passwd, ftp-passwd>>*
+* *<<aria2_optref_ftp_pasv, ftp-pasv>>*
+* *<<aria2_optref_ftp_proxy, ftp-proxy>>*
+* *<<aria2_optref_ftp_proxy_passwd, ftp-proxy-passwd>>*
+* *<<aria2_optref_ftp_proxy_user, ftp-proxy-user>>*
+* *<<aria2_optref_ftp_reuse_connection, ftp-reuse-connection>>*
+* *<<aria2_optref_ftp_type, ftp-type>>*
+* *<<aria2_optref_ftp_user, ftp-user>>*
+* *<<aria2_optref_header, header>>*
+* *<<aria2_optref_http_accept_gzip, http-accept-gzip>>*
+* *<<aria2_optref_http_auth_challenge, http-auth-challenge>>*
+* *<<aria2_optref_http_no_cache, http-no-cache>>*
+* *<<aria2_optref_http_passwd, http-passwd>>*
+* *<<aria2_optref_http_proxy, http-proxy>>*
+* *<<aria2_optref_http_proxy_passwd, http-proxy-passwd>>*
+* *<<aria2_optref_http_proxy_user, http-proxy-user>>*
+* *<<aria2_optref_http_user, http-user>>*
+* *<<aria2_optref_https_proxy, https-proxy>>*
+* *<<aria2_optref_https_proxy_passwd, https-proxy-passwd>>*
+* *<<aria2_optref_https_proxy_user, https-proxy-user>>*
+* *<<aria2_optref_index_out, index-out>>*
+* *<<aria2_optref_lowest_speed_limit, lowest-speed-limit>>*
+* *<<aria2_optref_max_connection_per_server, max-connection-per-server>>*
+* *<<aria2_optref_max_download_limit, max-download-limit>>*
+* *<<aria2_optref_max_file_not_found, max-file-not-found>>*
+* *<<aria2_optref_max_resume_failure_tries, max-resume-failure-tries>>*
+* *<<aria2_optref_max_tries, max-tries>>*
+* *<<aria2_optref_max_upload_limit, max-upload-limit>>*
+* *<<aria2_optref_metalink_enable_unique_protocol, metalink-enable-unique-protocol>>*
+* *<<aria2_optref_metalink_language, metalink-language>>*
+* *<<aria2_optref_metalink_location, metalink-location>>*
+* *<<aria2_optref_metalink_os, metalink-os>>*
+* *<<aria2_optref_metalink_preferred_protocol, metalink-preferred-protocol>>*
+* *<<aria2_optref_metalink_servers, metalink-servers>>*
+* *<<aria2_optref_metalink_version, metalink-version>>*
+* *<<aria2_optref_min_split_size, min-split-size>>*
+* *<<aria2_optref_no_file_allocation_limit, no-file-allocation-limit>>*
+* *<<aria2_optref_no_netrc, no-netrc>>*
+* *<<aria2_optref_no_proxy, no-proxy>>*
+* *<<aria2_optref_out, out>>*
+* *<<aria2_optref_parameterized_uri, parameterized-uri>>*
+* *<<aria2_optref_proxy_method, proxy-method>>*
+* *<<aria2_optref_realtime_chunk_checksum, realtime-chunk-checksum>>*
+* *<<aria2_optref_referer, referer>>*
+* *<<aria2_optref_remote_time, remote-time>>*
+* *<<aria2_optref_remove_control_file, remove-control-file>>*
+* *<<aria2_optref_reuse_uri, reuse-uri>>*
+* *<<aria2_optref_seed_ratio, seed-ratio>>*
+* *<<aria2_optref_seed_time, seed-time>>*
+* *<<aria2_optref_select_file, select-file>>*
+* *<<aria2_optref_split, split>>*
+* *<<aria2_optref_timeout, timeout>>*
+* *<<aria2_optref_use_head, use-head>>*
+* *<<aria2_optref_user_agent, user-agent>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

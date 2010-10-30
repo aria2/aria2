@@ -277,7 +277,7 @@ Retrieve timestamp of the remote file from the remote HTTP/FTP server and if it 
 \fIfalse\fR
 .RE
 .PP
-*\-\-reuse\-uri[=\fItrue\fR|\fIfalse\fR]
+\fB\-\-reuse\-uri\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Reuse already used URIs if no unused URIs are left\&. Default:
 \fItrue\fR
@@ -1712,7 +1712,8 @@ Additionally, the following options can be specified after each line of URIs\&. 
 .sp -1
 .IP \(bu 2.3
 .\}
-dir
+
+\fBall\-proxy\fR
 .RE
 .sp
 .RS 4
@@ -1723,7 +1724,8 @@ dir
 .sp -1
 .IP \(bu 2.3
 .\}
-check\-integrity
+
+\fBall\-proxy\-passwd\fR
 .RE
 .sp
 .RS 4
@@ -1734,7 +1736,8 @@ check\-integrity
 .sp -1
 .IP \(bu 2.3
 .\}
-continue
+
+\fBall\-proxy\-user\fR
 .RE
 .sp
 .RS 4
@@ -1745,7 +1748,8 @@ continue
 .sp -1
 .IP \(bu 2.3
 .\}
-all\-proxy
+
+\fBallow\-overwrite\fR
 .RE
 .sp
 .RS 4
@@ -1756,7 +1760,8 @@ all\-proxy
 .sp -1
 .IP \(bu 2.3
 .\}
-all\-proxy\-user
+
+\fBallow\-piece\-length\-change\fR
 .RE
 .sp
 .RS 4
@@ -1767,7 +1772,8 @@ all\-proxy\-user
 .sp -1
 .IP \(bu 2.3
 .\}
-all\-proxy\-passwd
+
+\fBalways\-resume\fR
 .RE
 .sp
 .RS 4
@@ -1778,7 +1784,8 @@ all\-proxy\-passwd
 .sp -1
 .IP \(bu 2.3
 .\}
-connect\-timeout
+
+\fBasync\-dns\fR
 .RE
 .sp
 .RS 4
@@ -1789,7 +1796,8 @@ connect\-timeout
 .sp -1
 .IP \(bu 2.3
 .\}
-dry\-run
+
+\fBauto\-file\-renaming\fR
 .RE
 .sp
 .RS 4
@@ -1800,7 +1808,8 @@ dry\-run
 .sp -1
 .IP \(bu 2.3
 .\}
-lowest\-speed\-limit
+
+\fBbt\-enable\-lpd\fR
 .RE
 .sp
 .RS 4
@@ -1811,7 +1820,8 @@ lowest\-speed\-limit
 .sp -1
 .IP \(bu 2.3
 .\}
-max\-file\-not\-found
+
+\fBbt\-exclude\-tracker\fR
 .RE
 .sp
 .RS 4
@@ -1822,7 +1832,8 @@ max\-file\-not\-found
 .sp -1
 .IP \(bu 2.3
 .\}
-max\-tries
+
+\fBbt\-external\-ip\fR
 .RE
 .sp
 .RS 4
@@ -1833,7 +1844,8 @@ max\-tries
 .sp -1
 .IP \(bu 2.3
 .\}
-no\-proxy
+
+\fBbt\-hash\-check\-seed\fR
 .RE
 .sp
 .RS 4
@@ -1844,7 +1856,8 @@ no\-proxy
 .sp -1
 .IP \(bu 2.3
 .\}
-out
+
+\fBbt\-max\-open\-files\fR
 .RE
 .sp
 .RS 4
@@ -1855,7 +1868,8 @@ out
 .sp -1
 .IP \(bu 2.3
 .\}
-proxy\-method
+
+\fBbt\-max\-peers\fR
 .RE
 .sp
 .RS 4
@@ -1866,7 +1880,8 @@ proxy\-method
 .sp -1
 .IP \(bu 2.3
 .\}
-remote\-time
+
+\fBbt\-metadata\-only\fR
 .RE
 .sp
 .RS 4
@@ -1877,7 +1892,8 @@ remote\-time
 .sp -1
 .IP \(bu 2.3
 .\}
-split
+
+\fBbt\-min\-crypto\-level\fR
 .RE
 .sp
 .RS 4
@@ -1888,7 +1904,8 @@ split
 .sp -1
 .IP \(bu 2.3
 .\}
-timeout
+
+\fBbt\-prioritize\-piece\fR
 .RE
 .sp
 .RS 4
@@ -1899,7 +1916,8 @@ timeout
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-auth\-challenge
+
+\fBbt\-request\-peer\-speed\-limit\fR
 .RE
 .sp
 .RS 4
@@ -1910,7 +1928,8 @@ http\-auth\-challenge
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-no\-cache
+
+\fBbt\-require\-crypto\fR
 .RE
 .sp
 .RS 4
@@ -1921,7 +1940,8 @@ http\-no\-cache
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-user
+
+\fBbt\-save\-metadata\fR
 .RE
 .sp
 .RS 4
@@ -1932,7 +1952,8 @@ http\-user
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-passwd
+
+\fBbt\-seed\-unverified\fR
 .RE
 .sp
 .RS 4
@@ -1943,7 +1964,8 @@ http\-passwd
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-proxy
+
+\fBbt\-stop\-timeout\fR
 .RE
 .sp
 .RS 4
@@ -1954,7 +1976,8 @@ http\-proxy
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-proxy\-user
+
+\fBbt\-tracker\fR
 .RE
 .sp
 .RS 4
@@ -1965,7 +1988,8 @@ http\-proxy\-user
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-proxy\-passwd
+
+\fBbt\-tracker\-connect\-timeout\fR
 .RE
 .sp
 .RS 4
@@ -1976,7 +2000,8 @@ http\-proxy\-passwd
 .sp -1
 .IP \(bu 2.3
 .\}
-https\-proxy
+
+\fBbt\-tracker\-interval\fR
 .RE
 .sp
 .RS 4
@@ -1987,7 +2012,8 @@ https\-proxy
 .sp -1
 .IP \(bu 2.3
 .\}
-https\-proxy\-user
+
+\fBbt\-tracker\-timeout\fR
 .RE
 .sp
 .RS 4
@@ -1998,7 +2024,8 @@ https\-proxy\-user
 .sp -1
 .IP \(bu 2.3
 .\}
-https\-proxy\-passwd
+
+\fBcheck\-integrity\fR
 .RE
 .sp
 .RS 4
@@ -2009,7 +2036,8 @@ https\-proxy\-passwd
 .sp -1
 .IP \(bu 2.3
 .\}
-referer
+
+\fBconditional\-get\fR
 .RE
 .sp
 .RS 4
@@ -2020,7 +2048,8 @@ referer
 .sp -1
 .IP \(bu 2.3
 .\}
-enable\-http\-keep\-alive
+
+\fBconnect\-timeout\fR
 .RE
 .sp
 .RS 4
@@ -2031,7 +2060,8 @@ enable\-http\-keep\-alive
 .sp -1
 .IP \(bu 2.3
 .\}
-enable\-http\-pipelining
+
+\fBcontinue\fR
 .RE
 .sp
 .RS 4
@@ -2042,7 +2072,8 @@ enable\-http\-pipelining
 .sp -1
 .IP \(bu 2.3
 .\}
-header
+
+\fBdir\fR
 .RE
 .sp
 .RS 4
@@ -2053,7 +2084,8 @@ header
 .sp -1
 .IP \(bu 2.3
 .\}
-use\-head
+
+\fBdry\-run\fR
 .RE
 .sp
 .RS 4
@@ -2064,7 +2096,8 @@ use\-head
 .sp -1
 .IP \(bu 2.3
 .\}
-user\-agent
+
+\fBenable\-async\-dns6\fR
 .RE
 .sp
 .RS 4
@@ -2075,7 +2108,8 @@ user\-agent
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-user
+
+\fBenable\-http\-keep\-alive\fR
 .RE
 .sp
 .RS 4
@@ -2086,7 +2120,8 @@ ftp\-user
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-passwd
+
+\fBenable\-http\-pipelining\fR
 .RE
 .sp
 .RS 4
@@ -2097,7 +2132,8 @@ ftp\-passwd
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-pasv
+
+\fBenable\-peer\-exchange\fR
 .RE
 .sp
 .RS 4
@@ -2108,7 +2144,8 @@ ftp\-pasv
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-proxy
+
+\fBfile\-allocation\fR
 .RE
 .sp
 .RS 4
@@ -2119,7 +2156,8 @@ ftp\-proxy
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-proxy\-user
+
+\fBfollow\-metalink\fR
 .RE
 .sp
 .RS 4
@@ -2130,7 +2168,8 @@ ftp\-proxy\-user
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-proxy\-passwd
+
+\fBfollow\-torrent\fR
 .RE
 .sp
 .RS 4
@@ -2141,7 +2180,8 @@ ftp\-proxy\-passwd
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-type
+
+\fBftp\-passwd\fR
 .RE
 .sp
 .RS 4
@@ -2152,7 +2192,8 @@ ftp\-type
 .sp -1
 .IP \(bu 2.3
 .\}
-ftp\-reuse\-connection
+
+\fBftp\-pasv\fR
 .RE
 .sp
 .RS 4
@@ -2163,7 +2204,8 @@ ftp\-reuse\-connection
 .sp -1
 .IP \(bu 2.3
 .\}
-no\-netrc
+
+\fBftp\-proxy\fR
 .RE
 .sp
 .RS 4
@@ -2174,7 +2216,8 @@ no\-netrc
 .sp -1
 .IP \(bu 2.3
 .\}
-reuse\-uri
+
+\fBftp\-proxy\-passwd\fR
 .RE
 .sp
 .RS 4
@@ -2185,7 +2228,8 @@ reuse\-uri
 .sp -1
 .IP \(bu 2.3
 .\}
-select\-file
+
+\fBftp\-proxy\-user\fR
 .RE
 .sp
 .RS 4
@@ -2196,7 +2240,8 @@ select\-file
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-enable\-lpd
+
+\fBftp\-reuse\-connection\fR
 .RE
 .sp
 .RS 4
@@ -2207,7 +2252,8 @@ bt\-enable\-lpd
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-external\-ip
+
+\fBftp\-type\fR
 .RE
 .sp
 .RS 4
@@ -2218,7 +2264,8 @@ bt\-external\-ip
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-hash\-check\-seed
+
+\fBftp\-user\fR
 .RE
 .sp
 .RS 4
@@ -2229,7 +2276,8 @@ bt\-hash\-check\-seed
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-max\-open\-files
+
+\fBheader\fR
 .RE
 .sp
 .RS 4
@@ -2240,7 +2288,8 @@ bt\-max\-open\-files
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-max\-peers
+
+\fBhttp\-accept\-gzip\fR
 .RE
 .sp
 .RS 4
@@ -2251,7 +2300,8 @@ bt\-max\-peers
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-metadata\-only
+
+\fBhttp\-auth\-challenge\fR
 .RE
 .sp
 .RS 4
@@ -2262,7 +2312,8 @@ bt\-metadata\-only
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-min\-crypto\-level
+
+\fBhttp\-no\-cache\fR
 .RE
 .sp
 .RS 4
@@ -2273,7 +2324,8 @@ bt\-min\-crypto\-level
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-prioritize\-piece
+
+\fBhttp\-passwd\fR
 .RE
 .sp
 .RS 4
@@ -2284,7 +2336,8 @@ bt\-prioritize\-piece
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-require\-crypto
+
+\fBhttp\-proxy\fR
 .RE
 .sp
 .RS 4
@@ -2295,7 +2348,8 @@ bt\-require\-crypto
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-request\-peer\-speed\-limit
+
+\fBhttp\-proxy\-passwd\fR
 .RE
 .sp
 .RS 4
@@ -2306,7 +2360,8 @@ bt\-request\-peer\-speed\-limit
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-save\-metadata
+
+\fBhttp\-proxy\-user\fR
 .RE
 .sp
 .RS 4
@@ -2317,7 +2372,8 @@ bt\-save\-metadata
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-seed\-unverified
+
+\fBhttp\-user\fR
 .RE
 .sp
 .RS 4
@@ -2328,7 +2384,8 @@ bt\-seed\-unverified
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-stop\-timeout
+
+\fBhttps\-proxy\fR
 .RE
 .sp
 .RS 4
@@ -2339,7 +2396,8 @@ bt\-stop\-timeout
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-tracker\-interval
+
+\fBhttps\-proxy\-passwd\fR
 .RE
 .sp
 .RS 4
@@ -2350,7 +2408,8 @@ bt\-tracker\-interval
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-tracker\-timeout
+
+\fBhttps\-proxy\-user\fR
 .RE
 .sp
 .RS 4
@@ -2361,7 +2420,8 @@ bt\-tracker\-timeout
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-tracker\-connect\-timeout
+
+\fBindex\-out\fR
 .RE
 .sp
 .RS 4
@@ -2372,7 +2432,8 @@ bt\-tracker\-connect\-timeout
 .sp -1
 .IP \(bu 2.3
 .\}
-enable\-peer\-exchange
+
+\fBlowest\-speed\-limit\fR
 .RE
 .sp
 .RS 4
@@ -2383,7 +2444,8 @@ enable\-peer\-exchange
 .sp -1
 .IP \(bu 2.3
 .\}
-follow\-torrent
+
+\fBmax\-connection\-per\-server\fR
 .RE
 .sp
 .RS 4
@@ -2394,7 +2456,8 @@ follow\-torrent
 .sp -1
 .IP \(bu 2.3
 .\}
-index\-out
+
+\fBmax\-download\-limit\fR
 .RE
 .sp
 .RS 4
@@ -2405,7 +2468,8 @@ index\-out
 .sp -1
 .IP \(bu 2.3
 .\}
-max\-upload\-limit
+
+\fBmax\-file\-not\-found\fR
 .RE
 .sp
 .RS 4
@@ -2416,7 +2480,8 @@ max\-upload\-limit
 .sp -1
 .IP \(bu 2.3
 .\}
-seed\-ratio
+
+\fBmax\-resume\-failure\-tries\fR
 .RE
 .sp
 .RS 4
@@ -2427,7 +2492,8 @@ seed\-ratio
 .sp -1
 .IP \(bu 2.3
 .\}
-seed\-time
+
+\fBmax\-tries\fR
 .RE
 .sp
 .RS 4
@@ -2438,7 +2504,8 @@ seed\-time
 .sp -1
 .IP \(bu 2.3
 .\}
-follow\-metalink
+
+\fBmax\-upload\-limit\fR
 .RE
 .sp
 .RS 4
@@ -2449,7 +2516,8 @@ follow\-metalink
 .sp -1
 .IP \(bu 2.3
 .\}
-metalink\-servers
+
+\fBmetalink\-enable\-unique\-protocol\fR
 .RE
 .sp
 .RS 4
@@ -2460,7 +2528,8 @@ metalink\-servers
 .sp -1
 .IP \(bu 2.3
 .\}
-metalink\-language
+
+\fBmetalink\-language\fR
 .RE
 .sp
 .RS 4
@@ -2471,7 +2540,8 @@ metalink\-language
 .sp -1
 .IP \(bu 2.3
 .\}
-metalink\-location
+
+\fBmetalink\-location\fR
 .RE
 .sp
 .RS 4
@@ -2482,7 +2552,8 @@ metalink\-location
 .sp -1
 .IP \(bu 2.3
 .\}
-metalink\-os
+
+\fBmetalink\-os\fR
 .RE
 .sp
 .RS 4
@@ -2493,7 +2564,8 @@ metalink\-os
 .sp -1
 .IP \(bu 2.3
 .\}
-metalink\-version
+
+\fBmetalink\-preferred\-protocol\fR
 .RE
 .sp
 .RS 4
@@ -2504,7 +2576,8 @@ metalink\-version
 .sp -1
 .IP \(bu 2.3
 .\}
-metalink\-preferred\-protocol
+
+\fBmetalink\-servers\fR
 .RE
 .sp
 .RS 4
@@ -2515,7 +2588,8 @@ metalink\-preferred\-protocol
 .sp -1
 .IP \(bu 2.3
 .\}
-metalink\-enable\-unique\-protocol
+
+\fBmetalink\-version\fR
 .RE
 .sp
 .RS 4
@@ -2526,7 +2600,8 @@ metalink\-enable\-unique\-protocol
 .sp -1
 .IP \(bu 2.3
 .\}
-allow\-overwrite
+
+\fBmin\-split\-size\fR
 .RE
 .sp
 .RS 4
@@ -2537,7 +2612,8 @@ allow\-overwrite
 .sp -1
 .IP \(bu 2.3
 .\}
-allow\-piece\-length\-change
+
+\fBno\-file\-allocation\-limit\fR
 .RE
 .sp
 .RS 4
@@ -2548,7 +2624,8 @@ allow\-piece\-length\-change
 .sp -1
 .IP \(bu 2.3
 .\}
-async\-dns
+
+\fBno\-netrc\fR
 .RE
 .sp
 .RS 4
@@ -2559,7 +2636,8 @@ async\-dns
 .sp -1
 .IP \(bu 2.3
 .\}
-auto\-file\-renaming
+
+\fBno\-proxy\fR
 .RE
 .sp
 .RS 4
@@ -2570,7 +2648,8 @@ auto\-file\-renaming
 .sp -1
 .IP \(bu 2.3
 .\}
-file\-allocation
+
+\fBout\fR
 .RE
 .sp
 .RS 4
@@ -2581,7 +2660,8 @@ file\-allocation
 .sp -1
 .IP \(bu 2.3
 .\}
-max\-download\-limit
+
+\fBparameterized\-uri\fR
 .RE
 .sp
 .RS 4
@@ -2592,7 +2672,8 @@ max\-download\-limit
 .sp -1
 .IP \(bu 2.3
 .\}
-no\-file\-allocation\-limit
+
+\fBproxy\-method\fR
 .RE
 .sp
 .RS 4
@@ -2603,7 +2684,8 @@ no\-file\-allocation\-limit
 .sp -1
 .IP \(bu 2.3
 .\}
-parameterized\-uri
+
+\fBrealtime\-chunk\-checksum\fR
 .RE
 .sp
 .RS 4
@@ -2614,7 +2696,8 @@ parameterized\-uri
 .sp -1
 .IP \(bu 2.3
 .\}
-realtime\-chunk\-checksum
+
+\fBreferer\fR
 .RE
 .sp
 .RS 4
@@ -2625,7 +2708,8 @@ realtime\-chunk\-checksum
 .sp -1
 .IP \(bu 2.3
 .\}
-remove\-control\-file
+
+\fBremote\-time\fR
 .RE
 .sp
 .RS 4
@@ -2636,7 +2720,8 @@ remove\-control\-file
 .sp -1
 .IP \(bu 2.3
 .\}
-always\-resume
+
+\fBremove\-control\-file\fR
 .RE
 .sp
 .RS 4
@@ -2647,7 +2732,8 @@ always\-resume
 .sp -1
 .IP \(bu 2.3
 .\}
-max\-resume\-failure\-tries
+
+\fBreuse\-uri\fR
 .RE
 .sp
 .RS 4
@@ -2658,7 +2744,8 @@ max\-resume\-failure\-tries
 .sp -1
 .IP \(bu 2.3
 .\}
-http\-accept\-gzip
+
+\fBseed\-ratio\fR
 .RE
 .sp
 .RS 4
@@ -2669,7 +2756,8 @@ http\-accept\-gzip
 .sp -1
 .IP \(bu 2.3
 .\}
-max\-connection\-per\-server
+
+\fBseed\-time\fR
 .RE
 .sp
 .RS 4
@@ -2680,7 +2768,8 @@ max\-connection\-per\-server
 .sp -1
 .IP \(bu 2.3
 .\}
-min\-split\-size
+
+\fBselect\-file\fR
 .RE
 .sp
 .RS 4
@@ -2691,7 +2780,8 @@ min\-split\-size
 .sp -1
 .IP \(bu 2.3
 .\}
-conditional\-get
+
+\fBsplit\fR
 .RE
 .sp
 .RS 4
@@ -2702,7 +2792,8 @@ conditional\-get
 .sp -1
 .IP \(bu 2.3
 .\}
-enable\-async\-dns6
+
+\fBtimeout\fR
 .RE
 .sp
 .RS 4
@@ -2713,7 +2804,8 @@ enable\-async\-dns6
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-tracker
+
+\fBuse\-head\fR
 .RE
 .sp
 .RS 4
@@ -2724,7 +2816,8 @@ bt\-tracker
 .sp -1
 .IP \(bu 2.3
 .\}
-bt\-exclude\-tracker
+
+\fBuser\-agent\fR
 .RE
 .sp
 These options have exactly same meaning of the ones in the command\-line options, but it just applies to the URIs it belongs to\&.
