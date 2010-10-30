@@ -604,7 +604,7 @@ downloading a file like BitTorrent.</p></div>
 <h3 id="_basic_options">Basic Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>-d</strong>, <strong>--dir</strong>=DIR
+<a id="aria2_optref_dir"></a><strong>-d</strong>, <strong>--dir</strong>=DIR
 </dt>
 <dd>
 <p>
@@ -612,7 +612,7 @@ downloading a file like BitTorrent.</p></div>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-i</strong>, <strong>--input-file</strong>=FILE
+<a id="aria2_optref_input_file"></a><strong>-i</strong>, <strong>--input-file</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -625,7 +625,7 @@ downloading a file like BitTorrent.</p></div>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-l</strong>, <strong>--log</strong>=LOG
+<a id="aria2_optref_log"></a><strong>-l</strong>, <strong>--log</strong>=LOG
 </dt>
 <dd>
 <p>
@@ -634,17 +634,17 @@ downloading a file like BitTorrent.</p></div>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-j</strong>, <strong>--max-concurrent-downloads</strong>=N
+<a id="aria2_optref_max_concurrent_downloads"></a><strong>-j</strong>, <strong>--max-concurrent-downloads</strong>=N
 </dt>
 <dd>
 <p>
   Set maximum number of parallel downloads for every static (HTTP/FTP) URI,
-  torrent and metalink. See also <strong>-s</strong> and <strong>-C</strong> option.
+  torrent and metalink. See also <strong><a href="#aria2_optref_split">-s</a></strong> and <strong><a href="#aria2_optref_metalink_servers">-C</a></strong> option.
   Default: <em>5</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-V</strong>, <strong>--check-integrity</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_check_integrity"></a><strong>-V</strong>, <strong>--check-integrity</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -660,7 +660,7 @@ downloading a file like BitTorrent.</p></div>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-c</strong>, <strong>--continue</strong>
+<a id="aria2_optref_continue"></a><strong>-c</strong>, <strong>--continue</strong>
 </dt>
 <dd>
 <p>
@@ -671,7 +671,7 @@ downloading a file like BitTorrent.</p></div>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-h</strong>, <strong>--help</strong>[=TAG|KEYWORD]
+<a id="aria2_optref_help"></a><strong>-h</strong>, <strong>--help</strong>[=TAG|KEYWORD]
 </dt>
 <dd>
 <p>
@@ -689,14 +689,14 @@ downloading a file like BitTorrent.</p></div>
 <h3 id="_http_ftp_options">HTTP/FTP Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--all-proxy</strong>=PROXY
+<a id="aria2_optref_all_proxy"></a><strong>--all-proxy</strong>=PROXY
 </dt>
 <dd>
 <p>
   Use this proxy server for all protocols.  To erase previously
   defined proxy, use "".  You can override this setting and specify a
-  proxy server for a particular protocol using <strong>--http-proxy</strong>,
-  <strong>--https-proxy</strong> and <strong>--ftp-proxy</strong> options.  This affects all URIs.
+  proxy server for a particular protocol using <strong><a href="#aria2_optref_http_proxy">--http-proxy</a></strong>,
+  <strong><a href="#aria2_optref_https_proxy">--https-proxy</a></strong> and <strong><a href="#aria2_optref_ftp_proxy">--ftp-proxy</a></strong> options.  This affects all URIs.
   The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
@@ -724,34 +724,34 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--all-proxy-passwd</strong>=PASSWD
+<a id="aria2_optref_all_proxy_passwd"></a><strong>--all-proxy-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
-  Set password for <strong>--all-proxy</strong> option.
+  Set password for <strong><a href="#aria2_optref_all_proxy">--all-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--all-proxy-user</strong>=USER
+<a id="aria2_optref_all_proxy_user"></a><strong>--all-proxy-user</strong>=USER
 </dt>
 <dd>
 <p>
-  Set user for <strong>--all-proxy</strong> option.
+  Set user for <strong><a href="#aria2_optref_all_proxy">--all-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--connect-timeout</strong>=SEC
+<a id="aria2_optref_connect_timeout"></a><strong>--connect-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
   Set the connect timeout in seconds to establish connection to
   HTTP/FTP/proxy server. After the connection is established, this
-  option makes no effect and <strong>--timeout</strong> option is used instead.
+  option makes no effect and <strong><a href="#aria2_optref_timeout">--timeout</a></strong> option is used instead.
   Default: <em>60</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--dry-run</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_dry_run"></a><strong>--dry-run</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -762,7 +762,7 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--lowest-speed-limit</strong>=SPEED
+<a id="aria2_optref_lowest_speed_limit"></a><strong>--lowest-speed-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -775,7 +775,7 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-x</strong>, <strong>--max-connection-per-server</strong>=NUM
+<a id="aria2_optref_max_connection_per_server"></a><strong>-x</strong>, <strong>--max-connection-per-server</strong>=NUM
 </dt>
 <dd>
 <p>
@@ -784,7 +784,7 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--max-file-not-found</strong>=NUM
+<a id="aria2_optref_max_file_not_found"></a><strong>--max-file-not-found</strong>=NUM
 </dt>
 <dd>
 <p>
@@ -796,7 +796,7 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-m</strong>, <strong>--max-tries</strong>=N
+<a id="aria2_optref_max_tries"></a><strong>-m</strong>, <strong>--max-tries</strong>=N
 </dt>
 <dd>
 <p>
@@ -805,21 +805,21 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-k</strong>, <strong>--min-split-size</strong>=SIZE
+<a id="aria2_optref_min_split_size"></a><strong>-k</strong>, <strong>--min-split-size</strong>=SIZE
 </dt>
 <dd>
 <p>
   aria2 does not split less than 2*SIZE byte range.  For example,
   let&#8217;s consider downloading 20MiB file. If SIZE is 10M, aria2 can
   split file into 2 range [0-10MiB) and [10MiB-20MiB) and download it
-  using 2 sources(if <strong>--split</strong> &gt;= 2, of course).  If SIZE is 15M,
+  using 2 sources(if <strong><a href="#aria2_optref_split">--split</a></strong> &gt;= 2, of course).  If SIZE is 15M,
   since 2*15M &gt; 20MiB, aria2 does not split file and download it using
   1 source.  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
   Possible Values: <em>1M</em>-<em>1024M</em> Default: <em>20M</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-n</strong>, <strong>--no-netrc</strong>
+<a id="aria2_optref_no_netrc"></a><strong>-n</strong>, <strong>--no-netrc</strong>
 </dt>
 <dd>
 <p>
@@ -827,7 +827,7 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--no-proxy</strong>=DOMAINS
+<a id="aria2_optref_no_proxy"></a><strong>--no-proxy</strong>=DOMAINS
 </dt>
 <dd>
 <p>
@@ -843,17 +843,17 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 </td>
 <td class="content">For network address with CIDR block, only IPv4 address works.  Current
 implementation does not resolve hostname in URI to compare network
-address specified in <strong>--no-proxy</strong>. So it is only effecive if URI has
+address specified in <strong><a href="#aria2_optref_no_proxy">--no-proxy</a></strong>. So it is only effecive if URI has
 numeric IP addresses.</td>
 </tr></table>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>-o</strong>, <strong>--out</strong>=FILE
+<a id="aria2_optref_out"></a><strong>-o</strong>, <strong>--out</strong>=FILE
 </dt>
 <dd>
 <p>
-  The file name of the downloaded file. When <strong>-Z</strong> option is used, this
+  The file name of the downloaded file. When <strong><a href="#aria2_optref_force_sequential">-Z</a></strong> option is used, this
   option is ignored.
 </p>
 </dd>
@@ -865,13 +865,13 @@ numeric IP addresses.</td>
 </td>
 <td class="content">In Metalink or BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URIs fed to aria2
-are done by command line without <strong>-i</strong>, <strong>-Z</strong> option. For example:
+are done by command line without <strong><a href="#aria2_optref_input_file">-i</a></strong>, <strong><a href="#aria2_optref_force_sequential">-Z</a></strong> option. For example:
 aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </tr></table>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--proxy-method</strong>=METHOD
+<a id="aria2_optref_proxy_method"></a><strong>--proxy-method</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -882,7 +882,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-R</strong>, <strong>--remote-time</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_remote_time"></a><strong>-R</strong>, <strong>--remote-time</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -901,30 +901,30 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--server-stat-of</strong>=FILE
+<a id="aria2_optref_server_stat_of"></a><strong>--server-stat-of</strong>=FILE
 </dt>
 <dd>
 <p>
   Specify the filename to which performance profile of the servers is
-  saved. You can load saved data using <strong>--server-stat-if</strong> option. See
+  saved. You can load saved data using <strong><a href="#aria2_optref_server_stat_if">--server-stat-if</a></strong> option. See
   <strong><a href="#_server_performance_profile">Server Performance Profile</a></strong>
   subsection below for file format.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--server-stat-if</strong>=FILE
+<a id="aria2_optref_server_stat_if"></a><strong>--server-stat-if</strong>=FILE
 </dt>
 <dd>
 <p>
   Specify the filename to load performance profile of the servers. The
   loaded data will be used in some URI selector such as <em>feedback</em>.
-  See also <strong>--uri-selector</strong> option. See
+  See also <strong><a href="#aria2_optref_uri_selector">--uri-selector</a></strong> option. See
   <strong><a href="#_server_performance_profile">Server Performance Profile</a></strong>
   subsection below for file format.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--server-stat-timeout</strong>=SEC
+<a id="aria2_optref_server_stat_timeout"></a><strong>--server-stat-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -934,7 +934,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-s</strong>, <strong>--split</strong>=N
+<a id="aria2_optref_split"></a><strong>-s</strong>, <strong>--split</strong>=N
 </dt>
 <dd>
 <p>
@@ -943,14 +943,14 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
   less than N URIs are given, those URIs are used more than once so
   that N connections total are made simultaneously.  The number of
   connections to the same host is restricted by
-  <strong>--max-connection-per-server</strong> option.  Please see <strong>-j</strong> and
-  <strong>--min-split-size</strong> option too.  Please note that in Metalink
-  download, this option has no effect and use <strong>-C</strong> option instead.
+  <strong><a href="#aria2_optref_max_connection_per_server">--max-connection-per-server</a></strong> option.  Please see <strong><a href="#aria2_optref_max_concurrent_downloads">-j</a></strong> and
+  <strong><a href="#aria2_optref_min_split_size">--min-split-size</a></strong> option too.  Please note that in Metalink
+  download, this option has no effect and use <strong><a href="#aria2_optref_metalink_servers">-C</a></strong> option instead.
   Default: <em>5</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-t</strong>, <strong>--timeout</strong>=SEC
+<a id="aria2_optref_timeout"></a><strong>-t</strong>, <strong>--timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -959,7 +959,7 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--uri-selector</strong>=SELECTOR
+<a id="aria2_optref_uri_selector"></a><strong>--uri-selector</strong>=SELECTOR
 </dt>
 <dd>
 <p>
@@ -969,8 +969,8 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
   uses download speed observed in the previous downloads and choose
   fastest server in the URI list. This also effectively skips dead
   mirrors. The observed download speed is a part of performance
-  profile of servers mentioned in <strong>--server-stat-of</strong> and
-  <strong>--server-stat-if</strong> options.  If <em>adaptive</em> is given, selects one of
+  profile of servers mentioned in <strong><a href="#aria2_optref_server_stat_of">--server-stat-of</a></strong> and
+  <strong><a href="#aria2_optref_server_stat_if">--server-stat-if</a></strong> options.  If <em>adaptive</em> is given, selects one of
   the best mirrors for the first and reserved connections.  For
   supplementary ones, it returns mirrors which has not been tested
   yet, and if each of them has already been tested, returns mirrors
@@ -983,37 +983,37 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"</td>
 <h3 id="_http_specific_options">HTTP Specific Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--ca-certificate</strong>=FILE
+<a id="aria2_optref_ca_certificate"></a><strong>--ca-certificate</strong>=FILE
 </dt>
 <dd>
 <p>
   Use the certificate authorities in FILE to verify the peers.
   The certificate file must be in PEM format and can contain multiple CA
   certificates.
-  Use <strong>--check-certificate</strong> option to enable verification.
+  Use <strong><a href="#aria2_optref_check_certificate">--check-certificate</a></strong> option to enable verification.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--certificate</strong>=FILE
+<a id="aria2_optref_certificate"></a><strong>--certificate</strong>=FILE
 </dt>
 <dd>
 <p>
   Use the client certificate in FILE.
   The certificate must be in PEM format.
-  You may use <strong>--private-key</strong> option to specify the private key.
+  You may use <strong><a href="#aria2_optref_private_key">--private-key</a></strong> option to specify the private key.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--check-certificate</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_check_certificate"></a><strong>--check-certificate</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
-  Verify the peer using certificates specified in <strong>--ca-certificate</strong> option.
+  Verify the peer using certificates specified in <strong><a href="#aria2_optref_ca_certificate">--ca-certificate</a></strong> option.
   Default: <em>true</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--http-accept-gzip</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_http_accept_gzip"></a><strong>--http-accept-gzip</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1035,7 +1035,7 @@ response header.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--http-auth-challenge</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_http_auth_challenge"></a><strong>--http-auth-challenge</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1047,18 +1047,18 @@ response header.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--http-no-cache</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_http_no_cache"></a><strong>--http-no-cache</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
    Send Cache-Control: no-cache and Pragma: no-cache header to avoid
    cached content.  If <em>false</em> is given, these headers are not sent
    and you can add Cache-Control header with a directive you like
-   using <strong>--header</strong> option. Default: <em>true</em>
+   using <strong><a href="#aria2_optref_header">--header</a></strong> option. Default: <em>true</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--http-user</strong>=USER
+<a id="aria2_optref_http_user"></a><strong>--http-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -1066,7 +1066,7 @@ response header.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--http-passwd</strong>=PASSWD
+<a id="aria2_optref_http_passwd"></a><strong>--http-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -1074,70 +1074,70 @@ response header.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--http-proxy</strong>=PROXY
+<a id="aria2_optref_http_proxy"></a><strong>--http-proxy</strong>=PROXY
 </dt>
 <dd>
 <p>
   Use this proxy server for HTTP.  To erase previously defined proxy,
-  use "".  See also <strong>--all-proxy</strong> option.  This affects all URIs.  The
+  use "".  See also <strong><a href="#aria2_optref_all_proxy">--all-proxy</a></strong> option.  This affects all URIs.  The
   format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--http-proxy-passwd</strong>=PASSWD
+<a id="aria2_optref_http_proxy_passwd"></a><strong>--http-proxy-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
-  Set password for <strong>--http-proxy</strong> option.
+  Set password for <strong><a href="#aria2_optref_http_proxy">--http-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--http-proxy-user</strong>=USER
+<a id="aria2_optref_http_proxy_user"></a><strong>--http-proxy-user</strong>=USER
 </dt>
 <dd>
 <p>
-  Set user for <strong>--http-proxy</strong> option.
+  Set user for <strong><a href="#aria2_optref_http_proxy">--http-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--https-proxy</strong>=PROXY
+<a id="aria2_optref_https_proxy"></a><strong>--https-proxy</strong>=PROXY
 </dt>
 <dd>
 <p>
   Use this proxy server for HTTPS. To erase previously defined proxy,
-  use "". See also <strong>--all-proxy</strong> option.  This affects all URIs.  The
+  use "". See also <strong><a href="#aria2_optref_all_proxy">--all-proxy</a></strong> option.  This affects all URIs.  The
   format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--https-proxy-passwd</strong>=PASSWD
+<a id="aria2_optref_https_proxy_passwd"></a><strong>--https-proxy-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
-  Set password for <strong>--https-proxy</strong> option.
+  Set password for <strong><a href="#aria2_optref_https_proxy">--https-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--https-proxy-user</strong>=USER
+<a id="aria2_optref_https_proxy_user"></a><strong>--https-proxy-user</strong>=USER
 </dt>
 <dd>
 <p>
-  Set user for <strong>--https-proxy</strong> option.
+  Set user for <strong><a href="#aria2_optref_https_proxy">--https-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--private-key</strong>=FILE
+<a id="aria2_optref_private_key"></a><strong>--private-key</strong>=FILE
 </dt>
 <dd>
 <p>
   Use the private key in FILE.
   The private key must be decrypted and in PEM format.
   The behavior when encrypted one is given is undefined.
-  See also <strong>--certificate</strong> option.
+  See also <strong><a href="#aria2_optref_certificate">--certificate</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--referer</strong>=REFERER
+<a id="aria2_optref_referer"></a><strong>--referer</strong>=REFERER
 </dt>
 <dd>
 <p>
@@ -1145,7 +1145,7 @@ response header.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--enable-http-keep-alive</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_http_keep_alive"></a><strong>--enable-http-keep-alive</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1154,7 +1154,7 @@ response header.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--enable-http-pipelining</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_http_pipelining"></a><strong>--enable-http-pipelining</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1174,17 +1174,17 @@ this option.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--header</strong>=HEADER
+<a id="aria2_optref_header"></a><strong>--header</strong>=HEADER
 </dt>
 <dd>
 <p>
   Append HEADER to HTTP request header.
   You can use this option repeatedly to specify more than one header:
-  aria2c <strong>--header</strong>="X-A: b78" <strong>--header</strong>="X-B: 9J1" "http://host/file"
+  aria2c <strong><a href="#aria2_optref_header">--header</a></strong>="X-A: b78" <strong><a href="#aria2_optref_header">--header</a></strong>="X-B: 9J1" "http://host/file"
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--load-cookies</strong>=FILE
+<a id="aria2_optref_load_cookies"></a><strong>--load-cookies</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -1205,7 +1205,7 @@ and Chromium/Google Chrome cookie format.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--save-cookies</strong>=FILE
+<a id="aria2_optref_save_cookies"></a><strong>--save-cookies</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -1216,7 +1216,7 @@ and Chromium/Google Chrome cookie format.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--use-head</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_use_head"></a><strong>--use-head</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1225,7 +1225,7 @@ and Chromium/Google Chrome cookie format.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-U</strong>, <strong>--user-agent</strong>=USER_AGENT
+<a id="aria2_optref_user_agent"></a><strong>-U</strong>, <strong>--user-agent</strong>=USER_AGENT
 </dt>
 <dd>
 <p>
@@ -1237,7 +1237,7 @@ and Chromium/Google Chrome cookie format.</td>
 <h3 id="_ftp_specific_options">FTP Specific Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--ftp-user</strong>=USER
+<a id="aria2_optref_ftp_user"></a><strong>--ftp-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -1246,7 +1246,7 @@ and Chromium/Google Chrome cookie format.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--ftp-passwd</strong>=PASSWD
+<a id="aria2_optref_ftp_passwd"></a><strong>--ftp-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -1259,7 +1259,7 @@ and Chromium/Google Chrome cookie format.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-p</strong>, <strong>--ftp-pasv</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_ftp_pasv"></a><strong>-p</strong>, <strong>--ftp-pasv</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1269,33 +1269,33 @@ and Chromium/Google Chrome cookie format.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--ftp-proxy</strong>=PROXY
+<a id="aria2_optref_ftp_proxy"></a><strong>--ftp-proxy</strong>=PROXY
 </dt>
 <dd>
 <p>
   Use this proxy server for FTP.  To erase previously defined proxy,
-  use "".  See also <strong>--all-proxy</strong> option.  This affects all URIs.  The
+  use "".  See also <strong><a href="#aria2_optref_all_proxy">--all-proxy</a></strong> option.  This affects all URIs.  The
   format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--ftp-proxy-passwd</strong>=PASSWD
+<a id="aria2_optref_ftp_proxy_passwd"></a><strong>--ftp-proxy-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
-  Set password for <strong>--ftp-proxy</strong> option.
+  Set password for <strong><a href="#aria2_optref_ftp_proxy">--ftp-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--ftp-proxy-user</strong>=USER
+<a id="aria2_optref_ftp_proxy_user"></a><strong>--ftp-proxy-user</strong>=USER
 </dt>
 <dd>
 <p>
-  Set user for <strong>--ftp-proxy</strong> option.
+  Set user for <strong><a href="#aria2_optref_ftp_proxy">--ftp-proxy</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--ftp-type</strong>=TYPE
+<a id="aria2_optref_ftp_type"></a><strong>--ftp-type</strong>=TYPE
 </dt>
 <dd>
 <p>
@@ -1304,7 +1304,7 @@ and Chromium/Google Chrome cookie format.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--ftp-reuse-connection</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_ftp_reuse_connection"></a><strong>--ftp-reuse-connection</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1316,12 +1316,12 @@ and Chromium/Google Chrome cookie format.</td>
 <h3 id="_bittorrent_metalink_options">BitTorrent/Metalink Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--select-file</strong>=INDEX&#8230;
+<a id="aria2_optref_select_file"></a><strong>--select-file</strong>=INDEX&#8230;
 </dt>
 <dd>
 <p>
   Set file to download by specifying its index.
-  You can find the file index using the <strong>--show-files</strong> option.
+  You can find the file index using the <strong><a href="#aria2_optref_show_files">--show-files</a></strong> option.
   Multiple indexes can be specified by using ",", for example: <em>3,6</em>.
   You can also use "-" to specify a range: <em>1-5</em>.
   "," and "-" can be used together: <em>1-5,8,9</em>.
@@ -1343,7 +1343,7 @@ writes the piece to the appropriate files.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>-S</strong>, <strong>--show-files</strong>
+<a id="aria2_optref_show_files"></a><strong>-S</strong>, <strong>--show-files</strong>
 </dt>
 <dd>
 <p>
@@ -1356,7 +1356,7 @@ writes the piece to the appropriate files.</td>
 <h3 id="_bittorrent_specific_options">BitTorrent Specific Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--bt-enable-lpd</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_bt_enable_lpd"></a><strong>--bt-enable-lpd</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1366,7 +1366,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-exclude-tracker</strong>=URI[,&#8230;]
+<a id="aria2_optref_bt_exclude_tracker"></a><strong>--bt-exclude-tracker</strong>=URI[,&#8230;]
 </dt>
 <dd>
 <p>
@@ -1374,11 +1374,11 @@ writes the piece to the appropriate files.</td>
   remove. You can use special value "*" which matches all URIs, thus
   removes all announce URIs. When specifying "*" in shell
   command-line, don&#8217;t forget to escape or quote it.  See also
-  <strong>--bt-tracker</strong> option.
+  <strong><a href="#aria2_optref_bt_tracker">--bt-tracker</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-external-ip</strong>=IPADDRESS
+<a id="aria2_optref_bt_external_ip"></a><strong>--bt-external-ip</strong>=IPADDRESS
 </dt>
 <dd>
 <p>
@@ -1388,11 +1388,11 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-hash-check-seed</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_bt_hash_check_seed"></a><strong>--bt-hash-check-seed</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
- If <em>true</em> is given, after hash check using <strong>--check-integrity</strong> option and
+ If <em>true</em> is given, after hash check using <strong><a href="#aria2_optref_check_integrity">--check-integrity</a></strong> option and
  file is complete, continue to seed file. If you want to check file
  and download it only when it is damaged or incomplete, set this
  option to <em>false</em>.  This option has effect only on BitTorrent download.
@@ -1400,7 +1400,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-lpd-interface</strong>=INTERFACE
+<a id="aria2_optref_bt_lpd_interface"></a><strong>--bt-lpd-interface</strong>=INTERFACE
 </dt>
 <dd>
 <p>
@@ -1411,7 +1411,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-max-open-files</strong>=NUM
+<a id="aria2_optref_bt_max_open_files"></a><strong>--bt-max-open-files</strong>=NUM
 </dt>
 <dd>
 <p>
@@ -1420,27 +1420,27 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-max-peers</strong>=NUM
+<a id="aria2_optref_bt_max_peers"></a><strong>--bt-max-peers</strong>=NUM
 </dt>
 <dd>
 <p>
   Specify the maximum number of peers per torrent.  <em>0</em> means
-  unlimited.  See also <strong>--bt-request-peer-speed-limit</strong> option.
+  unlimited.  See also <strong><a href="#aria2_optref_bt_request_peer_speed_limit">--bt-request-peer-speed-limit</a></strong> option.
   Default: <em>55</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-metadata-only</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_bt_metadata_only"></a><strong>--bt-metadata-only</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
   Download metadata only. The file(s) described in metadata will not
   be downloaded. This option has effect only when BitTorrent Magnet
-  URI is used. See also <strong>--bt-save-metadata</strong> option.  Default: <em>false</em>
+  URI is used. See also <strong><a href="#aria2_optref_bt_save_metadata">--bt-save-metadata</a></strong> option.  Default: <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-min-crypto-level</strong>=<em>plain</em>|<em>arc4</em>
+<a id="aria2_optref_bt_min_crypto_level"></a><strong>--bt-min-crypto-level</strong>=<em>plain</em>|<em>arc4</em>
 </dt>
 <dd>
 <p>
@@ -1451,7 +1451,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-prioritize-piece</strong>=<em>head</em>[=SIZE],<em>tail</em>[=SIZE]
+<a id="aria2_optref_bt_prioritize_piece"></a><strong>--bt-prioritize-piece</strong>=<em>head</em>[=SIZE],<em>tail</em>[=SIZE]
 </dt>
 <dd>
 <p>
@@ -1466,7 +1466,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-require-crypto</strong>=<em>true</em>|<em>false</em>
+<a id="aria2_optref_bt_require_crypto"></a><strong>--bt-require-crypto</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -1477,7 +1477,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-request-peer-speed-limit</strong>=SPEED
+<a id="aria2_optref_bt_request_peer_speed_limit"></a><strong>--bt-request-peer-speed-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -1490,7 +1490,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-save-metadata</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_bt_save_metadata"></a><strong>--bt-save-metadata</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1498,12 +1498,12 @@ writes the piece to the appropriate files.</td>
   BitTorrent Magnet URI is used.  The filename is hex encoded info
   hash with suffix .torrent. The directory to be saved is the same
   directory where download file is saved. If the same file already
-  exists, metadata is not saved. See also <strong>--bt-metadata-only</strong>
+  exists, metadata is not saved. See also <strong><a href="#aria2_optref_bt_metadata_only">--bt-metadata-only</a></strong>
   option. Default: <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-seed-unverified</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_bt_seed_unverified"></a><strong>--bt-seed-unverified</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1512,7 +1512,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-stop-timeout</strong>=SEC
+<a id="aria2_optref_bt_stop_timeout"></a><strong>--bt-stop-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1521,29 +1521,29 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-tracker</strong>=URI[,&#8230;]
+<a id="aria2_optref_bt_tracker"></a><strong>--bt-tracker</strong>=URI[,&#8230;]
 </dt>
 <dd>
 <p>
   Comma separated list of additional BitTorrent tracker&#8217;s announce
-  URI. These URIs are not affected by <strong>--bt-exclude-tracker</strong> option
-  because they are added after URIs in <strong>--bt-exclude-tracker</strong> option are
+  URI. These URIs are not affected by <strong><a href="#aria2_optref_bt_exclude_tracker">--bt-exclude-tracker</a></strong> option
+  because they are added after URIs in <strong><a href="#aria2_optref_bt_exclude_tracker">--bt-exclude-tracker</a></strong> option are
   removed.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-tracker-connect-timeout</strong>=SEC
+<a id="aria2_optref_bt_tracker_connect_timeout"></a><strong>--bt-tracker-connect-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
   Set the connect timeout in seconds to establish connection to
   tracker. After the connection is established, this option makes no
-  effect and <strong>--bt-tracker-timeout</strong> option is used instead.  Default:
+  effect and <strong><a href="#aria2_optref_bt_tracker_timeout">--bt-tracker-timeout</a></strong> option is used instead.  Default:
   <em>60</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-tracker-interval</strong>=SEC
+<a id="aria2_optref_bt_tracker_interval"></a><strong>--bt-tracker-interval</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1555,7 +1555,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--bt-tracker-timeout</strong>=SEC
+<a id="aria2_optref_bt_tracker_timeout"></a><strong>--bt-tracker-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1563,7 +1563,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--dht-entry-point</strong>=HOST:PORT
+<a id="aria2_optref_dht_entry_point"></a><strong>--dht-entry-point</strong>=HOST:PORT
 </dt>
 <dd>
 <p>
@@ -1571,7 +1571,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--dht-entry-point6</strong>=HOST:PORT
+<a id="aria2_optref_dht_entry_point6"></a><strong>--dht-entry-point6</strong>=HOST:PORT
 </dt>
 <dd>
 <p>
@@ -1579,7 +1579,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--dht-file-path</strong>=PATH
+<a id="aria2_optref_dht_file_path"></a><strong>--dht-file-path</strong>=PATH
 </dt>
 <dd>
 <p>
@@ -1588,7 +1588,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--dht-file-path6</strong>=PATH
+<a id="aria2_optref_dht_file_path6"></a><strong>--dht-file-path6</strong>=PATH
 </dt>
 <dd>
 <p>
@@ -1597,7 +1597,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--dht-listen-addr6</strong>=ADDR
+<a id="aria2_optref_dht_listen_addr6"></a><strong>--dht-listen-addr6</strong>=ADDR
 </dt>
 <dd>
 <p>
@@ -1606,7 +1606,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--dht-listen-port</strong>=PORT&#8230;
+<a id="aria2_optref_dht_listen_port"></a><strong>--dht-listen-port</strong>=PORT&#8230;
 </dt>
 <dd>
 <p>
@@ -1628,7 +1628,7 @@ writes the piece to the appropriate files.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--dht-message-timeout</strong>=SEC
+<a id="aria2_optref_dht_message_timeout"></a><strong>--dht-message-timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1636,7 +1636,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--enable-dht</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_dht"></a><strong>--enable-dht</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1646,18 +1646,18 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--enable-dht6</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_dht6"></a><strong>--enable-dht6</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
    Enable IPv6 DHT functionality. If a private flag is set in a
    torrent, aria2 doesn&#8217;t use DHT for that download even if <em>true</em> is
-   given. Use <strong>--dht-listen-port</strong> option to specify port number to
-   listen on. See also <strong>--dht-listen-addr6</strong> option.
+   given. Use <strong><a href="#aria2_optref_dht_listen_port">--dht-listen-port</a></strong> option to specify port number to
+   listen on. See also <strong><a href="#aria2_optref_dht_listen_addr6">--dht-listen-addr6</a></strong> option.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--enable-peer-exchange</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_peer_exchange"></a><strong>--enable-peer-exchange</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1667,7 +1667,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--follow-torrent</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
+<a id="aria2_optref_follow_torrent"></a><strong>--follow-torrent</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
 <dd>
 <p>
@@ -1681,19 +1681,19 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-O</strong>, <strong>--index-out</strong>=INDEX=PATH
+<a id="aria2_optref_index_out"></a><strong>-O</strong>, <strong>--index-out</strong>=INDEX=PATH
 </dt>
 <dd>
 <p>
   Set file path for file with index=INDEX. You can find the file index
-  using the <strong>--show-files</strong> option.  PATH is a relative path to the
-  path specified in <strong>--dir</strong> option. You can use this option multiple
+  using the <strong><a href="#aria2_optref_show_files">--show-files</a></strong> option.  PATH is a relative path to the
+  path specified in <strong><a href="#aria2_optref_dir">--dir</a></strong> option. You can use this option multiple
   times. Using this option, you can specify the output filenames of
   BitTorrent downloads.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--listen-port</strong>=PORT&#8230;
+<a id="aria2_optref_listen_port"></a><strong>--listen-port</strong>=PORT&#8230;
 </dt>
 <dd>
 <p>
@@ -1715,31 +1715,31 @@ writes the piece to the appropriate files.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--max-overall-upload-limit</strong>=SPEED
+<a id="aria2_optref_max_overall_upload_limit"></a><strong>--max-overall-upload-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
   Set max overall upload speed in bytes/sec.
   <em>0</em> means unrestricted.
   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-  To limit the upload speed per torrent, use <strong>--max-upload-limit</strong> option.
+  To limit the upload speed per torrent, use <strong><a href="#aria2_optref_max_upload_limit">--max-upload-limit</a></strong> option.
   Default: <em>0</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-u</strong>, <strong>--max-upload-limit</strong>=SPEED
+<a id="aria2_optref_max_upload_limit"></a><strong>-u</strong>, <strong>--max-upload-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
   Set max upload speed per each torrent in bytes/sec.
   <em>0</em> means unrestricted.
   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-  To limit the overall upload speed, use <strong>--max-overall-upload-limit</strong> option.
+  To limit the overall upload speed, use <strong><a href="#aria2_optref_max_overall_upload_limit">--max-overall-upload-limit</a></strong> option.
   Default: <em>0</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--peer-id-prefix</strong>=PEER_ID_PREFIX
+<a id="aria2_optref_peer_id_prefix"></a><strong>--peer-id-prefix</strong>=PEER_ID_PREFIX
 </dt>
 <dd>
 <p>
@@ -1752,7 +1752,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--seed-ratio</strong>=RATIO
+<a id="aria2_optref_seed_ratio"></a><strong>--seed-ratio</strong>=RATIO
 </dt>
 <dd>
 <p>
@@ -1760,17 +1760,17 @@ writes the piece to the appropriate files.</td>
   RATIO.
   You are strongly encouraged to specify equals or more than <em>1.0</em> here.
   Specify <em>0.0</em> if you intend to do seeding regardless of share ratio.
-  If <strong>--seed-time</strong> option is specified along with this option, seeding ends when
+  If <strong><a href="#aria2_optref_seed_time">--seed-time</a></strong> option is specified along with this option, seeding ends when
   at least one of the conditions is satisfied.
   Default: <em>1.0</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--seed-time</strong>=MINUTES
+<a id="aria2_optref_seed_time"></a><strong>--seed-time</strong>=MINUTES
 </dt>
 <dd>
 <p>
-  Specify seeding time in minutes. Also see the <strong>--seed-ratio</strong> option.
+  Specify seeding time in minutes. Also see the <strong><a href="#aria2_optref_seed_ratio">--seed-ratio</a></strong> option.
 </p>
 </dd>
 </dl></div>
@@ -1779,24 +1779,24 @@ writes the piece to the appropriate files.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">Specifying <strong>--seed-time</strong>=<em>0</em> disables seeding after download completed.</td>
+<td class="content">Specifying <strong><a href="#aria2_optref_seed_time">--seed-time</a></strong>=<em>0</em> disables seeding after download completed.</td>
 </tr></table>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>-T</strong>, <strong>--torrent-file</strong>=TORRENT_FILE
+<a id="aria2_optref_torrent_file"></a><strong>-T</strong>, <strong>--torrent-file</strong>=TORRENT_FILE
 </dt>
 <dd>
 <p>
   The path to the .torrent file.  You are not required to use this
-  option because you can specify .torrent files without <strong>-T</strong>.
+  option because you can specify .torrent files without <strong><a href="#aria2_optref_torrent_file">-T</a></strong>.
 </p>
 </dd>
 </dl></div>
 <h3 id="_metalink_specific_options">Metalink Specific Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--follow-metalink</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
+<a id="aria2_optref_follow_metalink"></a><strong>--follow-metalink</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
 <dd>
 <p>
@@ -1810,17 +1810,17 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-M</strong>, <strong>--metalink-file</strong>=METALINK_FILE
+<a id="aria2_optref_metalink_file"></a><strong>-M</strong>, <strong>--metalink-file</strong>=METALINK_FILE
 </dt>
 <dd>
 <p>
   The file path to .metalink file. Reads input from stdin when <em>-</em> is
   specified.  You are not required to use this option because you can
-  specify .metalink files without <strong>-M</strong>.
+  specify .metalink files without <strong><a href="#aria2_optref_metalink_file">-M</a></strong>.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-C</strong>, <strong>--metalink-servers</strong>=NUM_SERVERS
+<a id="aria2_optref_metalink_servers"></a><strong>-C</strong>, <strong>--metalink-servers</strong>=NUM_SERVERS
 </dt>
 <dd>
 <p>
@@ -1830,12 +1830,12 @@ writes the piece to the appropriate files.</td>
   This means that if Metalink defines the maxconnections attribute lower
   than NUM_SERVERS, then aria2 uses the value of maxconnections attribute
   instead of NUM_SERVERS.
-  See also <strong>-s</strong> and <strong>-j</strong> options.
+  See also <strong><a href="#aria2_optref_split">-s</a></strong> and <strong><a href="#aria2_optref_max_concurrent_downloads">-j</a></strong> options.
   Default: <em>5</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--metalink-language</strong>=LANGUAGE
+<a id="aria2_optref_metalink_language"></a><strong>--metalink-language</strong>=LANGUAGE
 </dt>
 <dd>
 <p>
@@ -1843,7 +1843,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--metalink-location</strong>=LOCATION[,&#8230;]
+<a id="aria2_optref_metalink_location"></a><strong>--metalink-location</strong>=LOCATION[,&#8230;]
 </dt>
 <dd>
 <p>
@@ -1852,7 +1852,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--metalink-os</strong>=OS
+<a id="aria2_optref_metalink_os"></a><strong>--metalink-os</strong>=OS
 </dt>
 <dd>
 <p>
@@ -1860,7 +1860,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--metalink-version</strong>=VERSION
+<a id="aria2_optref_metalink_version"></a><strong>--metalink-version</strong>=VERSION
 </dt>
 <dd>
 <p>
@@ -1868,7 +1868,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--metalink-preferred-protocol</strong>=PROTO
+<a id="aria2_optref_metalink_preferred_protocol"></a><strong>--metalink-preferred-protocol</strong>=PROTO
 </dt>
 <dd>
 <p>
@@ -1879,13 +1879,13 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--metalink-enable-unique-protocol</strong>=<em>true</em>|<em>false</em>
+<a id="aria2_optref_metalink_enable_unique_protocol"></a><strong>--metalink-enable-unique-protocol</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
   If <em>true</em> is given and several protocols are available for a mirror in a
   metalink file, aria2 uses one of them.
-  Use <strong>--metalink-preferred-protocol</strong> option to specify the preference of
+  Use <strong><a href="#aria2_optref_metalink_preferred_protocol">--metalink-preferred-protocol</a></strong> option to specify the preference of
   protocol.
   Default: <em>true</em>
 </p>
@@ -1894,17 +1894,17 @@ writes the piece to the appropriate files.</td>
 <h3 id="_xml_rpc_options">XML-RPC Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--enable-xml-rpc</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_xml_rpc"></a><strong>--enable-xml-rpc</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
   Enable XML-RPC server.  It is strongly recommended to set username
-  and password using <strong>--xml-rpc-user</strong> and <strong>--xml-rpc-passwd</strong>
-  option. See also <strong>--xml-rpc-listen-port</strong> option.  Default: <em>false</em>
+  and password using <strong><a href="#aria2_optref_xml_rpc_user">--xml-rpc-user</a></strong> and <strong><a href="#aria2_optref_xml_rpc_passwd">--xml-rpc-passwd</a></strong>
+  option. See also <strong><a href="#aria2_optref_xml_rpc_listen_port">--xml-rpc-listen-port</a></strong> option.  Default: <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--xml-rpc-listen-all</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_xml_rpc_listen_all"></a><strong>--xml-rpc-listen-all</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1913,7 +1913,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--xml-rpc-listen-port</strong>=PORT
+<a id="aria2_optref_xml_rpc_listen_port"></a><strong>--xml-rpc-listen-port</strong>=PORT
 </dt>
 <dd>
 <p>
@@ -1922,7 +1922,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--xml-rpc-max-request-size</strong>=SIZE
+<a id="aria2_optref_xml_rpc_max_request_size"></a><strong>--xml-rpc-max-request-size</strong>=SIZE
 </dt>
 <dd>
 <p>
@@ -1931,7 +1931,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--xml-rpc-passwd</strong>=PASSWD
+<a id="aria2_optref_xml_rpc_passwd"></a><strong>--xml-rpc-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -1939,7 +1939,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--xml-rpc-user</strong>=USER
+<a id="aria2_optref_xml_rpc_user"></a><strong>--xml-rpc-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -1950,17 +1950,17 @@ writes the piece to the appropriate files.</td>
 <h3 id="_advanced_options">Advanced Options</h3><div style="clear:left"></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--allow-overwrite</strong>=<em>true</em>|<em>false</em>
+<a id="aria2_optref_allow_overwrite"></a><strong>--allow-overwrite</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
   Restart download from scratch if the corresponding control file
-  doesn&#8217;t exist.  See also <strong>--auto-file-renaming</strong> option.  Default:
+  doesn&#8217;t exist.  See also <strong><a href="#aria2_optref_auto_file_renaming">--auto-file-renaming</a></strong> option.  Default:
   <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--allow-piece-length-change</strong>=<em>true</em>|<em>false</em>
+<a id="aria2_optref_allow_piece_length_change"></a><strong>--allow-piece-length-change</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -1971,7 +1971,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--always-resume</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_always_resume"></a><strong>--always-resume</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1979,13 +1979,13 @@ writes the piece to the appropriate files.</td>
   resume download and if resume is not possible, aborts download.  If
   <em>false</em> is given, when all given URIs do not support resume or aria2
   encounters <em>N</em> URIs which does not support resume (<em>N</em> is the value
-  specified using <strong>--max-resume-failure-tries</strong> option), aria2
-  downloads file from scratch.  See <strong>--max-resume-failure-tries</strong>
+  specified using <strong><a href="#aria2_optref_max_resume_failure_tries">--max-resume-failure-tries</a></strong> option), aria2
+  downloads file from scratch.  See <strong><a href="#aria2_optref_max_resume_failure_tries">--max-resume-failure-tries</a></strong>
   option. Default: <em>true</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--async-dns</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_async_dns"></a><strong>--async-dns</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1994,7 +1994,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--auto-file-renaming</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_auto_file_renaming"></a><strong>--auto-file-renaming</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2005,7 +2005,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--auto-save-interval</strong>=SEC
+<a id="aria2_optref_auto_save_interval"></a><strong>--auto-save-interval</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -2017,7 +2017,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--conditional-get</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_conditional_get"></a><strong>--conditional-get</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2027,12 +2027,12 @@ writes the piece to the appropriate files.</td>
   Content-Disposition header.  If a control file exists, this option
   will be ignored.  This function uses If-Modified-Since header to get
   only newer file conditionally. When getting modification time of
-  local file, it uses user supplied filename(see <strong>--out</strong> option) or
-  filename part in URI if <strong>--out</strong> is not specified.  Default: <em>false</em>
+  local file, it uses user supplied filename(see <strong><a href="#aria2_optref_out">--out</a></strong> option) or
+  filename part in URI if <strong><a href="#aria2_optref_out">--out</a></strong> is not specified.  Default: <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--conf-path</strong>=PATH
+<a id="aria2_optref_conf_path"></a><strong>--conf-path</strong>=PATH
 </dt>
 <dd>
 <p>
@@ -2041,7 +2041,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-D</strong>, <strong>--daemon</strong>
+<a id="aria2_optref_daemon"></a><strong>-D</strong>, <strong>--daemon</strong>
 </dt>
 <dd>
 <p>
@@ -2051,7 +2051,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--disable-ipv6</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_disable_ipv6"></a><strong>--disable-ipv6</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2060,17 +2060,17 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--enable-async-dns6</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_async_dns6"></a><strong>--enable-async-dns6</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
   Enable IPv6 name resolution in asynchronous DNS resolver. This
-  option will be ignored when <strong>--async-dns</strong>=<em>false</em>.
+  option will be ignored when <strong><a href="#aria2_optref_async_dns">--async-dns</a></strong>=<em>false</em>.
   Default: <em>false</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--enable-direct-io</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_enable_direct_io"></a><strong>--enable-direct-io</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2080,7 +2080,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--event-poll</strong>=POLL
+<a id="aria2_optref_event_poll"></a><strong>--event-poll</strong>=POLL
 </dt>
 <dd>
 <p>
@@ -2093,7 +2093,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--file-allocation</strong>=METHOD
+<a id="aria2_optref_file_allocation"></a><strong>--file-allocation</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -2115,7 +2115,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--human-readable</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_human_readable"></a><strong>--human-readable</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2124,7 +2124,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--interface</strong>=INTERFACE
+<a id="aria2_optref_interface"></a><strong>--interface</strong>=INTERFACE
 </dt>
 <dd>
 <p>
@@ -2140,14 +2140,14 @@ writes the piece to the appropriate files.</td>
 <div class="title">Note</div>
 </td>
 <td class="content">If an interface has multiple addresses, it is highly recommended to
-specify IP address explicitly. See also <strong>--disable-ipv6</strong>.  If your
+specify IP address explicitly. See also <strong><a href="#aria2_optref_disable_ipv6">--disable-ipv6</a></strong>.  If your
 system doesn&#8217;t have getifaddrs(), this option doesn&#8217;t accept interface
 name.</td>
 </tr></table>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--max-download-result</strong>=NUM
+<a id="aria2_optref_max_download_result"></a><strong>--max-download-result</strong>=NUM
 </dt>
 <dd>
 <p>
@@ -2163,19 +2163,19 @@ name.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--max-resume-failure-tries</strong>=N
+<a id="aria2_optref_max_resume_failure_tries"></a><strong>--max-resume-failure-tries</strong>=N
 </dt>
 <dd>
 <p>
-  When used with <strong>--always-resume</strong>=<em>false</em>, aria2 downloads file from
+  When used with <strong><a href="#aria2_optref_always_resume">--always-resume</a></strong>=<em>false</em>, aria2 downloads file from
   scratch when aria2 detects <em>N</em> number of URIs that does not support
   resume. If <em>N</em> is <em>0</em>, aria2 downloads file from scratch when all
-  given URIs do not support resume.  See <strong>--always-resume</strong> option.
+  given URIs do not support resume.  See <strong><a href="#aria2_optref_always_resume">--always-resume</a></strong> option.
   Default: <em>0</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--log-level</strong>=LEVEL
+<a id="aria2_optref_log_level"></a><strong>--log-level</strong>=LEVEL
 </dt>
 <dd>
 <p>
@@ -2185,51 +2185,51 @@ name.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--on-bt-download-complete</strong>=COMMAND
+<a id="aria2_optref_on_bt_download_complete"></a><strong>--on-bt-download-complete</strong>=COMMAND
 </dt>
 <dd>
 <p>
-  For BitTorrent, a command specified in <strong>--on-download-complete</strong> is
+  For BitTorrent, a command specified in <strong><a href="#aria2_optref_on_download_complete">--on-download-complete</a></strong> is
   called when download completes and seeding is over. On the other
   hand, this option set the command to be executed when download
-  completes but before seeding.  See <strong>--on-download-start</strong> option for
+  completes but before seeding.  See <strong><a href="#aria2_optref_on_download_start">--on-download-start</a></strong> option for
   the requirement of COMMAND.  Possible Values: <em>/path/to/command</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--on-download-complete</strong>=COMMAND
+<a id="aria2_optref_on_download_complete"></a><strong>--on-download-complete</strong>=COMMAND
 </dt>
 <dd>
 <p>
   Set the command to be executed when download completes.  See
-  <strong>--on-download-start</strong> option for the requirement of COMMAND.  See
-  also <strong>--on-download-stop</strong> option.  Possible Values:
+  <strong><a href="#aria2_optref_on_download_start">--on-download-start</a></strong> option for the requirement of COMMAND.  See
+  also <strong><a href="#aria2_optref_on_download_stop">--on-download-stop</a></strong> option.  Possible Values:
   <em>/path/to/command</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--on-download-error</strong>=COMMAND
+<a id="aria2_optref_on_download_error"></a><strong>--on-download-error</strong>=COMMAND
 </dt>
 <dd>
 <p>
   Set the command to be executed when download aborts due to error.
-  See <strong>--on-download-start</strong> option for the requirement of COMMAND.
-  See also <strong>--on-download-stop</strong> option.  Possible Values:
+  See <strong><a href="#aria2_optref_on_download_start">--on-download-start</a></strong> option for the requirement of COMMAND.
+  See also <strong><a href="#aria2_optref_on_download_stop">--on-download-stop</a></strong> option.  Possible Values:
   <em>/path/to/command</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--on-download-pause</strong>=COMMAND
+<a id="aria2_optref_on_download_pause"></a><strong>--on-download-pause</strong>=COMMAND
 </dt>
 <dd>
 <p>
   Set the command to be executed when download is paused.  See
-  <strong>--on-download-start</strong> option for the requirement of COMMAND.
+  <strong><a href="#aria2_optref_on_download_start">--on-download-start</a></strong> option for the requirement of COMMAND.
   Possible Values: <em>/path/to/command</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--on-download-start</strong>=COMMAND
+<a id="aria2_optref_on_download_start"></a><strong>--on-download-start</strong>=COMMAND
 </dt>
 <dd>
 <p>
@@ -2239,20 +2239,20 @@ name.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--on-download-stop</strong>=COMMAND
+<a id="aria2_optref_on_download_stop"></a><strong>--on-download-stop</strong>=COMMAND
 </dt>
 <dd>
 <p>
   Set the command to be executed when download stops. You can override
   the command to be executed for particular download result using
-  <strong>--on-download-complete</strong> and <strong>--on-download-error</strong>. If they are
+  <strong><a href="#aria2_optref_on_download_complete">--on-download-complete</a></strong> and <strong><a href="#aria2_optref_on_download_error">--on-download-error</a></strong>. If they are
   specified, command specified in this option is not executed.  See
-  <strong>--on-download-start</strong> option for the requirement of COMMAND.
+  <strong><a href="#aria2_optref_on_download_start">--on-download-start</a></strong> option for the requirement of COMMAND.
   Possible Values: <em>/path/to/command</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--summary-interval</strong>=SEC
+<a id="aria2_optref_summary_interval"></a><strong>--summary-interval</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -2273,7 +2273,7 @@ are also allocated if they share the same piece.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>-Z</strong>, <strong>--force-sequential</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_force_sequential"></a><strong>-Z</strong>, <strong>--force-sequential</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2283,29 +2283,29 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--max-overall-download-limit</strong>=SPEED
+<a id="aria2_optref_max_overall_download_limit"></a><strong>--max-overall-download-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
   Set max overall download speed in bytes/sec.  <em>0</em> means
   unrestricted.  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).  To
-  limit the download speed per download, use <strong>--max-download-limit</strong>
+  limit the download speed per download, use <strong><a href="#aria2_optref_max_download_limit">--max-download-limit</a></strong>
   option.  Default: <em>0</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--max-download-limit</strong>=SPEED
+<a id="aria2_optref_max_download_limit"></a><strong>--max-download-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
   Set max download speed per each download in bytes/sec. <em>0</em> means
   unrestricted.  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).  To
-  limit the overall download speed, use <strong>--max-overall-download-limit</strong>
+  limit the overall download speed, use <strong><a href="#aria2_optref_max_overall_download_limit">--max-overall-download-limit</a></strong>
   option.  Default: <em>0</em>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--no-conf</strong>
+<a id="aria2_optref_no_conf"></a><strong>--no-conf</strong>
 </dt>
 <dd>
 <p>
@@ -2313,7 +2313,7 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--no-file-allocation-limit</strong>=SIZE
+<a id="aria2_optref_no_file_allocation_limit"></a><strong>--no-file-allocation-limit</strong>=SIZE
 </dt>
 <dd>
 <p>
@@ -2323,7 +2323,7 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-P</strong>, <strong>--parameterized-uri</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_parameterized_uri"></a><strong>-P</strong>, <strong>--parameterized-uri</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2338,7 +2338,7 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-q</strong>, <strong>--quiet</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_quiet"></a><strong>-q</strong>, <strong>--quiet</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -2347,7 +2347,7 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--realtime-chunk-checksum</strong>=<em>true</em>|<em>false</em>
+<a id="aria2_optref_realtime_chunk_checksum"></a><strong>--realtime-chunk-checksum</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -2357,12 +2357,12 @@ are also allocated if they share the same piece.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--remove-control-file</strong>[=<em>true</em>|<em>false</em>]
+<a id="aria2_optref_remove_control_file"></a><strong>--remove-control-file</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
    Remove control file before download. Using with
-   <strong>--allow-overwrite</strong>=<em>true</em>, download always starts from
+   <strong><a href="#aria2_optref_allow_overwrite">--allow-overwrite</a></strong>=<em>true</em>, download always starts from
    scratch. This will be useful for users behind proxy server which
    disables resume.
 </p>
@@ -2380,18 +2380,18 @@ connections.</td>
 </div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
-<strong>--save-session</strong>=FILE
+<a id="aria2_optref_save_session"></a><strong>--save-session</strong>=FILE
 </dt>
 <dd>
 <p>
   Save error/unfinished downloads to FILE on exit.  You can pass this
-  output file to aria2c with <strong>-i</strong> option on restart. Please note that
+  output file to aria2c with <strong><a href="#aria2_optref_input_file">-i</a></strong> option on restart. Please note that
   downloads added by <strong>aria2.addTorrent</strong> and <strong>aria2.addMetalink</strong>
   XML-RPC method are not saved.
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>--stop</strong>=SEC
+<a id="aria2_optref_stop"></a><strong>--stop</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -2401,7 +2401,7 @@ connections.</td>
 </p>
 </dd>
 <dt class="hdlist1">
-<strong>-v</strong>, <strong>--version</strong>
+<a id="aria2_optref_version"></a><strong>-v</strong>, <strong>--version</strong>
 </dt>
 <dd>
 <p>
@@ -2419,7 +2419,7 @@ an argument, then the option name and its argument should be concatenated(e.g.
 the argument will be treated as URI and usually this is not what you expect.</p></div>
 <h3 id="_uri_magnet_torrent_file_metalink_file">URI, MAGNET, TORRENT_FILE, METALINK_FILE</h3><div style="clear:left"></div>
 <div class="paragraph"><p>You can specify multiple URIs in command-line.  Unless you specify
-<strong>-Z</strong> option, all URIs must point to the same file or downloading will
+<strong><a href="#aria2_optref_force_sequential">-Z</a></strong> option, all URIs must point to the same file or downloading will
 fail.</p></div>
 <div class="paragraph"><p>You can specify arbitrary number of BitTorrent Magnet URI. Please note
 that they are always treated as a separate download.  Both hex encoded
@@ -2455,7 +2455,7 @@ contains "&amp;" or any characters that have special meaning in shell.</td>
 URI) if the previous transfer is made by aria2.</p></div>
 <div class="paragraph"><p>If the previous transfer is made by a browser or wget like sequential
 download manager, then use -c option to continue the transfer(aria2c
-<strong>-c</strong> URI).</p></div>
+<strong><a href="#aria2_optref_continue">-c</a></strong> URI).</p></div>
 </div>
 <h2 id="_exit_status">EXIT STATUS</h2>
 <div class="sectionbody">
@@ -2501,7 +2501,7 @@ based on the last error encountered.</p></div>
 <dd>
 <p>
   If aria2 sees the specfied number of "resource not found" error.
-  See <strong>--max-file-not-found</strong> option).
+  See <strong><a href="#aria2_optref_max_file_not_found">--max-file-not-found</a></strong> option).
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2510,7 +2510,7 @@ based on the last error encountered.</p></div>
 <dd>
 <p>
   If a download aborts because download speed is too slow.
-  See <strong>--lowest-speed-limit</strong> option)
+  See <strong><a href="#aria2_optref_lowest_speed_limit">--lowest-speed-limit</a></strong> option)
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2563,7 +2563,7 @@ http_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 <p>
   Specify proxy server for use in HTTP.
   Overrides http-proxy value in configuration file.
-  The command-line option <strong>--http-proxy</strong> overrides this value.
+  The command-line option <strong><a href="#aria2_optref_http_proxy">--http-proxy</a></strong> overrides this value.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2573,7 +2573,7 @@ https_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 <p>
   Specify proxy server for use in HTTPS.
   Overrides https-proxy value in configuration file.
-  The command-line option <strong>--https-proxy</strong> overrides this value.
+  The command-line option <strong><a href="#aria2_optref_https_proxy">--https-proxy</a></strong> overrides this value.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2583,7 +2583,7 @@ ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 <p>
   Specify proxy server for use in FTP.
   Overrides ftp-proxy value in configuration file.
-  The command-line option <strong>--ftp-proxy</strong> overrides this value.
+  The command-line option <strong><a href="#aria2_optref_ftp_proxy">--ftp-proxy</a></strong> overrides this value.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2593,7 +2593,7 @@ all_proxy [http://][USER:PASSWORD@]HOST[:PORT]
 <p>
   Specify proxy server for use if no protocol-specific proxy is specified.
   Overrides all-proxy value in configuration file.
-  The command-line option <strong>--all-proxy</strong> overrides this value.
+  The command-line option <strong><a href="#aria2_optref_all_proxy">--all-proxy</a></strong> overrides this value.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2604,7 +2604,7 @@ no_proxy [DOMAIN,&#8230;]
   Specify comma-separated hostname, domains and network address with
   or without CIDR block to which proxy should not be used.  Overrides
   no-proxy value in configuration file.  The command-line option
-  <strong>--no-proxy</strong> overrides this value.
+  <strong><a href="#aria2_optref_no_proxy">--no-proxy</a></strong> overrides this value.
 </p>
 </dd>
 </dl></div>
@@ -2614,8 +2614,8 @@ no_proxy [DOMAIN,&#8230;]
 <h3 id="_aria2_conf">aria2.conf</h3><div style="clear:left"></div>
 <div class="paragraph"><p>By default, aria2 parses <em>$HOME/.aria2/aria2.conf</em> as a configuraiton
 file. You can specify the path to configuration file using
-<strong>--conf-path</strong> option.  If you don&#8217;t want to use the configuraitonf
-file, use <strong>--no-conf</strong> option.</p></div>
+<strong><a href="#aria2_optref_conf_path">--conf-path</a></strong> option.  If you don&#8217;t want to use the configuraitonf
+file, use <strong><a href="#aria2_optref_no_conf">--no-conf</a></strong> option.</p></div>
 <div class="paragraph"><p>The configuration file is a text file and has 1 option per each
 line. In each line, you can specify name-value pair in the format:
 NAME=VALUE, where name is the long command-line option name without
@@ -2636,7 +2636,7 @@ ftp-pasv=true</tt></pre>
 the path <em>$HOME/.aria2/dht6.dat</em>.</p></div>
 <h3 id="_netrc">Netrc</h3><div style="clear:left"></div>
 <div class="paragraph"><p>Netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
-support, specify <strong>-n</strong> option.  Your .netrc file should have correct
+support, specify <strong><a href="#aria2_optref_no_netrc">-n</a></strong> option.  Your .netrc file should have correct
 permissions(600).</p></div>
 <div class="paragraph"><p>If machine name starts ".", aria2 performs domain match instead of
 exact match. This is an extension of aria2. For example of domain
@@ -2671,7 +2671,7 @@ to aria2c in command-line.</p></div>
 can specify multiple URIs for a single entity: separate URIs on a
 single line using the TAB character.</p></div>
 <div class="paragraph"><p>Each line is treated as if it is provided in command-line argument.
-Therefore they are affected by <strong>-Z</strong> and <strong>-P</strong> options.</p></div>
+Therefore they are affected by <strong><a href="#aria2_optref_force_sequential">-Z</a></strong> and <strong><a href="#aria2_optref_parameterized_uri">-P</a></strong> options.</p></div>
 <div class="paragraph"><p>Lines starting with "#" are treated as comments and skipped.</p></div>
 <div class="paragraph"><p>Additionally, the following options can be specified after each line
 of URIs. These optional lines must start with white space(s).</p></div>
@@ -3152,11 +3152,11 @@ command-line options, but it just applies to the URIs it belongs to.</p></div>
   out=file.img
 http://foo/bar</tt></pre>
 </div></div>
-<div class="paragraph"><p>If aria2 is executed with <strong>-i</strong> uri.txt <strong>-d</strong> /tmp options, then
+<div class="paragraph"><p>If aria2 is executed with <strong><a href="#aria2_optref_input_file">-i</a></strong> uri.txt <strong><a href="#aria2_optref_dir">-d</a></strong> /tmp options, then
 <em>file.iso</em> is saved as <em>/iso_images/file.img</em> and it is downloaded
 from http://server/file.iso and http://mirror/file.iso.  The file
 <em>bar</em> is downloaded from http://foo/bar and saved as <em>/tmp/bar</em>.</p></div>
-<div class="paragraph"><p>In some cases, <strong>out</strong> parameter has no effect.  See note of <strong>--out</strong>
+<div class="paragraph"><p>In some cases, <strong>out</strong> parameter has no effect.  See note of <strong><a href="#aria2_optref_out">--out</a></strong>
 option for the restrictions.</p></div>
 <h3 id="_server_performance_profile">Server Performance Profile</h3><div style="clear:left"></div>
 <div class="paragraph"><p>This section describes the format of server performance profile.  The
@@ -3316,7 +3316,7 @@ given as an integer starting from 0, the new download is inserted at
 <em>position</em> is larger than the size of the queue, it is appended at the
 end of the queue.  This method returns GID of registered download.
 Please note that the downloads added by this method are not saved by
-<strong>--save-session</strong>.</p></div>
+<strong><a href="#aria2_optref_save_session">--save-session</a></strong>.</p></div>
 <div class="paragraph"><p>Adding local file file.torrent to aria2:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -3335,7 +3335,7 @@ inserted at <em>position</em> in the waiting queue. If <em>position</em> is not
 given or <em>position</em> is larger than the size of the queue, it is
 appended at the end of the queue.  This method returns array of GID of
 registered download.  Please note that the downloads added by this
-method are not saved by <strong>--save-session</strong>.</p></div>
+method are not saved by <strong><a href="#aria2_optref_save_session">--save-session</a></strong>.</p></div>
 <div class="paragraph"><p>Adding local file file.meta4 to aria2:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -3527,7 +3527,7 @@ followedBy
 <p>
   List of GIDs which are generated by the consequence of this
   download. For example, when aria2 downloaded Metalink file, it
-  generates downloads described in it(see <strong>--follow-metalink</strong>
+  generates downloads described in it(see <strong><a href="#aria2_optref_follow_metalink">--follow-metalink</a></strong>
   option). This value is useful to track these auto generated
   downloads. If there is no such downloads, this key will not
   be included in the response.
@@ -3722,8 +3722,8 @@ selected
 </dt>
 <dd>
 <p>
-  "true" if this file is selected by <strong>--select-file</strong> option. If
-  <strong>--select-file</strong> is not specified or this is single torrent or no
+  "true" if this file is selected by <strong><a href="#aria2_optref_select_file">--select-file</a></strong> option. If
+  <strong><a href="#aria2_optref_select_file">--select-file</a></strong> is not specified or this is single torrent or no
   torrent download, this value is always "true". Otherwise "false".
 </p>
 </dd>
@@ -4051,7 +4051,7 @@ http://example.org/file and second one is file.torrent:</p></div>
 <div class="paragraph"><p>In case of error, aria2 returns faultCode=1 and the error message in
 faultString.</p></div>
 <h3 id="_options_2">Options</h3><div style="clear:left"></div>
-<div class="paragraph"><p>Same options for <strong>-i</strong> list are available. See <strong><a href="#_input_file">Input File</a></strong> subsection for complete list of options.</p></div>
+<div class="paragraph"><p>Same options for <strong><a href="#aria2_optref_input_file">-i</a></strong> list are available. See <strong><a href="#_input_file">Input File</a></strong> subsection for complete list of options.</p></div>
 <div class="paragraph"><p>In the option struct, name element is option name(without preceding
 "--") and value element is argument as string.</p></div>
 <div class="listingblock">
@@ -4102,7 +4102,7 @@ header option has 2 values, so it uses a list:</p></div>
 </div></div>
 <h3 id="_sample_xml_rpc_client_code">Sample XML-RPC Client Code</h3><div style="clear:left"></div>
 <div class="paragraph"><p>The following Ruby script adds <em>http://localhost/aria2.tar.bz2</em> to
-aria2c operated on localhost with option <strong>--dir</strong>=<em>/downloads</em> and
+aria2c operated on localhost with option <strong><a href="#aria2_optref_dir">--dir</a></strong>=<em>/downloads</em> and
 prints its reponse.</p></div>
 <div class="listingblock">
 <div class="content">
@@ -4194,8 +4194,8 @@ pprint(r)</tt></pre>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">See <strong>--http-proxy</strong>, <strong>--https-proxy</strong>, <strong>--ftp-proxy</strong>, <strong>--all-proxy</strong> and
-<strong>--no-proxy</strong> for details.  You can specify proxy in the environment
+<td class="content">See <strong><a href="#aria2_optref_http_proxy">--http-proxy</a></strong>, <strong><a href="#aria2_optref_https_proxy">--https-proxy</a></strong>, <strong><a href="#aria2_optref_ftp_proxy">--ftp-proxy</a></strong>, <strong><a href="#aria2_optref_all_proxy">--all-proxy</a></strong> and
+<strong><a href="#aria2_optref_no_proxy">--no-proxy</a></strong> for details.  You can specify proxy in the environment
 variables. See <strong><a href="#_environment">ENVIRONMENT</a></strong> section.</td>
 </tr></table>
 </div>
@@ -4326,7 +4326,7 @@ character with single(') or double(") quotation.</td>
 </div>
 <h4 id="_specify_output_filename">Specify output filename</h4>
 <div class="paragraph"><p>To specify output filename for BitTorrent downloads, you need to know
-the index of file in torrent file using <strong>-S</strong> option. For example, the
+the index of file in torrent file using <strong><a href="#aria2_optref_show_files">-S</a></strong> option. For example, the
 output looks like this:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -4402,7 +4402,7 @@ forwarding, it&#8217;s up to you to do it manually.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">If aria2c is not built with c-ares, <strong>--enable-async-dns6</strong> is
+<td class="content">If aria2c is not built with c-ares, <strong><a href="#aria2_optref_enable_async_dns6">--enable-async-dns6</a></strong> is
 unnecessary. aria2 shares same port between IPv4 and IPv6 DHT.</td>
 </tr></table>
 </div>
@@ -4442,7 +4442,7 @@ unnecessary. aria2 shares same port between IPv4 and IPv6 DHT.</td>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">The file specified in <strong>--private-key</strong> must be decrypted. The behavior when
+<td class="content">The file specified in <strong><a href="#aria2_optref_private_key">--private-key</a></strong> must be decrypted. The behavior when
 encrypted one is given is undefined.</td>
 </tr></table>
 </div>
@@ -4550,7 +4550,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-10-30 13:18:27 JST
+Last updated 2010-10-30 18:35:50 JST
 </div>
 </div>
 </body>
