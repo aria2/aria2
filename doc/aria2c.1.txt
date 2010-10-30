@@ -39,7 +39,7 @@ Basic Options
   Reads input from stdin when '-' is specified.
   The additional *out* and *dir* options can be specified after each line of
   URIs. This optional line must start with white space(s).
-  See *Input File* subsection for details.
+  See *<<_input_file, Input File>>* subsection for details.
 
 *-l*, *--log*=LOG::
   The file name of the log file. If '-' is specified, log is written to
@@ -186,14 +186,18 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
   Default: 'true'
 
 *--server-stat-of*=FILE::
+
   Specify the filename to which performance profile of the servers is
   saved. You can load saved data using *--server-stat-if* option. See
-  *Server Performance Profile* subsection below for file format.
+  *<<_server_performance_profile, Server Performance Profile>>*
+  subsection below for file format.
 
 *--server-stat-if*=FILE::
+
   Specify the filename to load performance profile of the servers. The
   loaded data will be used in some URI selector such as 'feedback'.
-  See also *--uri-selector* option. See *Server Performance Profile*
+  See also *--uri-selector* option. See
+  *<<_server_performance_profile, Server Performance Profile>>*
   subsection below for file format.
 
 *--server-stat-timeout*=SEC::
@@ -1663,8 +1667,9 @@ connections::
 errorCode::
 
   The last error code occurred in this download. The value is of type
-  string. The error codes are defined in EXIT STATUS section. This
-  value is only available for stopped/completed downloads.
+  string. The error codes are defined in *<<_exit_status, EXIT
+  STATUS>>* section. This value is only available for
+  stopped/completed downloads.
 
 followedBy::
 
@@ -2090,8 +2095,8 @@ faultString.
 Options
 ~~~~~~~
 
-Same options for *-i* list are available. See *Input File* subsection
-for complete list of options.
+Same options for *-i* list are available. See *<<_input_file, Input
+File>>* subsection for complete list of options.
 
 In the option struct, name element is option name(without preceding
 "--") and value element is argument as string.
@@ -2223,7 +2228,7 @@ aria2c --ftp-proxy="http://proxy:8080" "ftp://host/file"
 
 See *--http-proxy*, *--https-proxy*, *--ftp-proxy*, *--all-proxy* and
 *--no-proxy* for details.  You can specify proxy in the environment
-variables. See *ENVIRONMENT* section.
+variables. See *<<_environment, ENVIRONMENT>>* section.
 
 Proxy with authorization
 ^^^^^^^^^^^^^^^^^^^^^^^^
