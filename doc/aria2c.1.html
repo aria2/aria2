@@ -4088,6 +4088,18 @@ as well as string.</p></div>
   &lt;/member&gt;
 &lt;/struct&gt;</tt></pre>
 </div></div>
+<div class="paragraph"><p>Following example adds a download with 2 options: dir and header.
+header option has 2 values, so it uses a list:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; opts = dict(dir='/tmp',
+...             header=['Accept-Language: ja',
+...                     'Accept-Charset: utf-8'])
+&gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'], opts)
+'1'</tt></pre>
+</div></div>
 <h3 id="_sample_xml_rpc_client_code">Sample XML-RPC Client Code</h3><div style="clear:left"></div>
 <div class="paragraph"><p>The following Ruby script adds <em>http://localhost/aria2.tar.bz2</em> to
 aria2c operated on localhost with option <strong>--dir</strong>=<em>/downloads</em> and
@@ -4538,7 +4550,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-10-30 13:03:13 JST
+Last updated 2010-10-30 13:13:28 JST
 </div>
 </div>
 </body>

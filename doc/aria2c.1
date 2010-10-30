@@ -3458,6 +3458,24 @@ In the option struct, name element is option name(without preceding "\-\-") and 
 .if n \{\
 .RE
 .\}
+.sp
+Following example adds a download with 2 options: dir and header\&. header option has 2 values, so it uses a list:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>>> import xmlrpclib
+>>> s = xmlrpclib\&.ServerProxy(\*(Aqhttp://localhost:6800/rpc\*(Aq)
+>>> opts = dict(dir=\*(Aq/tmp\*(Aq,
+\&.\&.\&.             header=[\*(AqAccept\-Language: ja\*(Aq,
+\&.\&.\&.                     \*(AqAccept\-Charset: utf\-8\*(Aq])
+>>> s\&.aria2\&.addUri([\*(Aqhttp://example\&.org/file\*(Aq], opts)
+\*(Aq1\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
 .SS "Sample XML\-RPC Client Code"
 .sp
 The following Ruby script adds \fIhttp://localhost/aria2\&.tar\&.bz2\fR to aria2c operated on localhost with option \fB\-\-dir\fR=\fI/downloads\fR and prints its reponse\&.

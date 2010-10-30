@@ -2136,6 +2136,18 @@ as well as string.
 </struct>
 ---------------------------------------------------------------
 
+Following example adds a download with 2 options: dir and header.
+header option has 2 values, so it uses a list:
+-------------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> opts = dict(dir='/tmp',
+...             header=['Accept-Language: ja',
+...                     'Accept-Charset: utf-8'])
+>>> s.aria2.addUri(['http://example.org/file'], opts)
+'1'
+--------------------------------------------------------------------------
+
 Sample XML-RPC Client Code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
