@@ -619,7 +619,8 @@ downloading a file like BitTorrent.</p></div>
   Downloads URIs found in FILE. You can specify multiple URIs for a single
   entity: separate URIs on a single line using the TAB character.
   Reads input from stdin when <em>-</em> is specified.
-  The additional <strong>out</strong> and <strong>dir</strong> options can be specified after each line of
+  The additional <strong><a href="#aria2_optref_out">out</a></strong> and <strong><a href="#aria2_optref_dir">dir</a></strong>
+  options can be specified after each line of
   URIs. This optional line must start with white space(s).
   See <strong><a href="#_input_file">Input File</a></strong> subsection for details.
 </p>
@@ -3158,7 +3159,8 @@ http://foo/bar</tt></pre>
 <em>file.iso</em> is saved as <em>/iso_images/file.img</em> and it is downloaded
 from http://server/file.iso and http://mirror/file.iso.  The file
 <em>bar</em> is downloaded from http://foo/bar and saved as <em>/tmp/bar</em>.</p></div>
-<div class="paragraph"><p>In some cases, <strong>out</strong> parameter has no effect.  See note of <strong><a href="#aria2_optref_out">--out</a></strong>
+<div class="paragraph"><p>In some cases, <strong><a href="#aria2_optref_out">out</a></strong> parameter has no effect.
+See note of <strong><a href="#aria2_optref_out">--out</a></strong>
 option for the restrictions.</p></div>
 <h3 id="_server_performance_profile">Server Performance Profile</h3><div style="clear:left"></div>
 <div class="paragraph"><p>This section describes the format of server performance profile.  The
@@ -3269,7 +3271,7 @@ GID
 </dl></div>
 <h3 id="_methods">Methods</h3><div style="clear:left"></div>
 <div class="paragraph"><p>All code examples come from Python2.7 interpreter.</p></div>
-<h4 id="_strong_aria2_adduri_strong_em_uris_options_position_em"><strong>aria2.addUri</strong> (<em>uris[, options[, position]]</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_addUri"><strong>aria2.addUri</strong> (<em>uris[, options[, position]]</em>)</h4>
 <h5 id="_description_2">Description</h5>
 <div class="paragraph"><p>This method adds new HTTP(S)/FTP/BitTorrent Magnet URI.  <em>uris</em> is of
 type array and its element is URI which is of type string.  For
@@ -3277,7 +3279,7 @@ BitTorrent Magnet URI, <em>uris</em> must have only one element and it should
 be BitTorrent Magnet URI.  URIs in <em>uris</em> must point to the same file.
 If you mix other URIs which point to another file, aria2 does not
 complain but download may fail.  <em>options</em> is of type struct and its
-members are a pair of option name and value. See <strong>Options</strong> below for
+members are a pair of option name and value. See <strong><a href="#aria2_xmlrpc_options">Options</a></strong> below for
 more details.  If <em>position</em> is given as an integer starting from 0,
 the new download is inserted at <em>position</em> in the waiting queue. If
 <em>position</em> is not given or <em>position</em> is larger than the size of the
@@ -3303,10 +3305,10 @@ GID of registered download.</p></div>
 <pre><tt>&gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'], {}, 0)
 '3'</tt></pre>
 </div></div>
-<h4 id="_strong_aria2_addtorrent_strong_em_torrent_uris_options_position_em"><strong>aria2.addTorrent</strong> (<em>torrent[, uris[, options[, position]]]</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_addTorrent"><strong>aria2.addTorrent</strong> (<em>torrent[, uris[, options[, position]]]</em>)</h4>
 <h5 id="_description_3">Description</h5>
 <div class="paragraph"><p>This method adds BitTorrent download by uploading .torrent file.  If
-you want to add BitTorrent Magnet URI, use <strong>aria2.addUri</strong> method
+you want to add BitTorrent Magnet URI, use <strong><a href="#aria2_xmlrpc_aria2_addUri">aria2.addUri</a></strong> method
 instead.  <em>torrent</em> is of type base64 which contains Base64-encoded
 .torrent file.  <em>uris</em> is of type array and its element is URI which
 is of type string. <em>uris</em> is used for Web-seeding.  For single file
@@ -3314,7 +3316,7 @@ torrents, URI can be a complete URI pointing to the resource or if URI
 ends with /, name in torrent file is added. For multi-file torrents,
 name and path in torrent are added to form a URI for each file.
 <em>options</em> is of type struct and its members are a pair of option name
-and value. See <strong>Options</strong> below for more details.  If <em>position</em> is
+and value. See <strong><a href="#aria2_xmlrpc_options">Options</a></strong> below for more details.  If <em>position</em> is
 given as an integer starting from 0, the new download is inserted at
 <em>position</em> in the waiting queue. If <em>position</em> is not given or
 <em>position</em> is larger than the size of the queue, it is appended at the
@@ -3329,12 +3331,12 @@ Please note that the downloads added by this method are not saved by
 &gt;&gt;&gt; s.aria2.addTorrent(xmlrpclib.Binary(open('file.torrent').read()))
 '6'</tt></pre>
 </div></div>
-<h4 id="_strong_aria2_addmetalink_strong_em_metalink_options_position_em"><strong>aria2.addMetalink</strong> (<em>metalink[, options[, position]]</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_addMetalink"><strong>aria2.addMetalink</strong> (<em>metalink[, options[, position]]</em>)</h4>
 <h5 id="_description_4">Description</h5>
 <div class="paragraph"><p>This method adds Metalink download by uploading .metalink file.
 <em>metalink</em> is of type base64 which contains Base64-encoded .metalink
 file.  <em>options</em> is of type struct and its members are a pair of
-option name and value. See <strong>Options</strong> below for more details.  If
+option name and value. See <strong><a href="#aria2_xmlrpc_options">Options</a></strong> below for more details.  If
 <em>position</em> is given as an integer starting from 0, the new download is
 inserted at <em>position</em> in the waiting queue. If <em>position</em> is not
 given or <em>position</em> is larger than the size of the queue, it is
@@ -3349,7 +3351,7 @@ method are not saved by <strong><a href="#aria2_optref_save_session">--save-sess
 &gt;&gt;&gt; s.aria2.addMetalink(xmlrpclib.Binary(open('file.meta4').read()))
 ['8']</tt></pre>
 </div></div>
-<h4 id="_strong_aria2_remove_strong_em_gid_em"><strong>aria2.remove</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_remove"><strong>aria2.remove</strong> (<em>gid</em>)</h4>
 <h5 id="_description_5">Description</h5>
 <div class="paragraph"><p>This method removes the download denoted by <em>gid</em>. <em>gid</em> is of type
 string. If specified download is in progress, it is stopped at
@@ -3363,52 +3365,52 @@ returns GID of removed download.</p></div>
 &gt;&gt;&gt; s.aria2.remove('3')
 '3'</tt></pre>
 </div></div>
-<h4 id="_strong_aria2_forceremove_strong_em_gid_em"><strong>aria2.forceRemove</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_forceRemove"><strong>aria2.forceRemove</strong> (<em>gid</em>)</h4>
 <h5 id="_description_6">Description</h5>
 <div class="paragraph"><p>This method removes the download denoted by <em>gid</em>.  This method
-behaves just like <strong>aria2.remove</strong> except that this method removes
+behaves just like <strong><a href="#aria2_xmlrpc_aria2_remove">aria2.remove</a></strong> except that this method removes
 download without any action which takes time such as contacting
 BitTorrent tracker.</p></div>
-<h4 id="_strong_aria2_pause_strong_em_gid_em"><strong>aria2.pause</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_pause"><strong>aria2.pause</strong> (<em>gid</em>)</h4>
 <h5 id="_description_7">Description</h5>
 <div class="paragraph"><p>This method pauses the download denoted by <em>gid</em>. <em>gid</em> is of type
 string. The status of paused download becomes "paused".  If the
 download is active, the download is placed on the first position of
 waiting queue.  As long as the status is "paused", the download is not
-started.  To change status to "waiting", use <strong>aria2.unpause</strong> method.
+started.  To change status to "waiting", use <strong><a href="#aria2_xmlrpc_aria2_unpause">aria2.unpause</a></strong> method.
 This method returns GID of paused download.</p></div>
-<h4 id="_strong_aria2_pauseall_strong"><strong>aria2.pauseAll</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_pauseAll"><strong>aria2.pauseAll</strong> ()</h4>
 <h5 id="_description_8">Description</h5>
-<div class="paragraph"><p>This method is equal to calling <strong>aria2.pause</strong> for every active/waiting
+<div class="paragraph"><p>This method is equal to calling <strong><a href="#aria2_xmlrpc_aria2_pause">aria2.pause</a></strong> for every active/waiting
 download. This methods returns "OK" for success.</p></div>
-<h4 id="_strong_aria2_forcepause_strong_em_pid_em"><strong>aria2.forcePause</strong> (<em>pid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_forcePause"><strong>aria2.forcePause</strong> (<em>pid</em>)</h4>
 <h5 id="_description_9">Description</h5>
 <div class="paragraph"><p>This method pauses the download denoted by <em>gid</em>.  This method
-behaves just like <strong>aria2.pause</strong> except that this method pauses
+behaves just like <strong><a href="#aria2_xmlrpc_aria2_pause">aria2.pause</a></strong> except that this method pauses
 download without any action which takes time such as contacting
 BitTorrent tracker.</p></div>
-<h4 id="_strong_aria2_forcepauseall_strong"><strong>aria2.forcePauseAll</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_forcePauseAll"><strong>aria2.forcePauseAll</strong> ()</h4>
 <h5 id="_description_10">Description</h5>
-<div class="paragraph"><p>This method is equal to calling <strong>aria2.forcePause</strong> for every
+<div class="paragraph"><p>This method is equal to calling <strong><a href="#aria2_xmlrpc_aria2_forcePause">aria2.forcePause</a></strong> for every
 active/waiting download. This methods returns "OK" for success.</p></div>
-<h4 id="_strong_aria2_unpause_strong_em_gid_em"><strong>aria2.unpause</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_unpause"><strong>aria2.unpause</strong> (<em>gid</em>)</h4>
 <h5 id="_description_11">Description</h5>
 <div class="paragraph"><p>This method changes the status of the download denoted by <em>gid</em> from
 "paused" to "waiting". This makes the download eligible to restart.
 <em>gid</em> is of type string.  This method returns GID of unpaused
 download.</p></div>
-<h4 id="_strong_aria2_unpauseall_strong"><strong>aria2.unpauseAll</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_unpauseAll"><strong>aria2.unpauseAll</strong> ()</h4>
 <h5 id="_description_12">Description</h5>
-<div class="paragraph"><p>This method is equal to calling <strong>aria2.unpause</strong> for every active/waiting
+<div class="paragraph"><p>This method is equal to calling <strong><a href="#aria2_xmlrpc_aria2_unpause">aria2.unpause</a></strong> for every active/waiting
 download. This methods returns "OK" for success.</p></div>
-<h4 id="_strong_aria2_tellstatus_strong_em_gid_keys_em"><strong>aria2.tellStatus</strong> (<em>gid[, keys]</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_tellStatus"><strong>aria2.tellStatus</strong> (<em>gid[, keys]</em>)</h4>
 <h5 id="_description_13">Description</h5>
 <div class="paragraph"><p>This method returns download progress of the download denoted by
 <em>gid</em>. <em>gid</em> is of type string. <em>keys</em> is array of string. If it is
 specified, the response contains only keys in <em>keys</em> array. If <em>keys</em>
 is empty or not specified, the response contains all keys.  This is
 useful when you just want specific keys and avoid unnecessary
-transfers. For example, <strong>aria2.tellStatus</strong>("1", ["gid", "status"])
+transfers. For example, <strong><a href="#aria2_xmlrpc_aria2_tellStatus">aria2.tellStatus</a></strong>("1", ["gid", "status"])
 returns <em>gid</em> and <em>status</em> key.  The response is of type struct and it
 contains following keys. The value type is string.</p></div>
 <div class="dlist"><dl>
@@ -3574,7 +3576,7 @@ files
 <dd>
 <p>
   Returns the list of files. The element of list is the same struct
-  used in <strong>aria2.getFiles</strong> method.
+  used in <strong><a href="#aria2_xmlrpc_aria2_getFiles">aria2.getFiles</a></strong> method.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -3678,7 +3680,7 @@ name
 &gt;&gt;&gt; pprint(r)
 {'completedLength': '34896138', 'gid': '1', 'totalLength': '34896138'}</tt></pre>
 </div></div>
-<h4 id="_strong_aria2_geturis_strong_em_gid_em"><strong>aria2.getUris</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_getUris"><strong>aria2.getUris</strong> (<em>gid</em>)</h4>
 <h5 id="_description_14">Description</h5>
 <div class="paragraph"><p>This method returns URIs used in the download denoted by <em>gid</em>.  <em>gid</em>
 is of type string. The response is of type array and its element is of
@@ -3702,7 +3704,7 @@ status
 </p>
 </dd>
 </dl></div>
-<h4 id="_strong_aria2_getfiles_strong_em_gid_em"><strong>aria2.getFiles</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_getFiles"><strong>aria2.getFiles</strong> (<em>gid</em>)</h4>
 <h5 id="_description_15">Description</h5>
 <div class="paragraph"><p>This method returns file list of the download denoted by <em>gid</em>. <em>gid</em>
 is of type string. The response is of type array and its element is of
@@ -3749,11 +3751,11 @@ uris
 <dd>
 <p>
   Returns the list of URI for this file. The element of list is the
-  same struct used in <strong>aria2.getUris</strong> method.
+  same struct used in <strong><a href="#aria2_xmlrpc_aria2_getUris">aria2.getUris</a></strong> method.
 </p>
 </dd>
 </dl></div>
-<h4 id="_strong_aria2_getpeers_strong_em_gid_em"><strong>aria2.getPeers</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_getPeers"><strong>aria2.getPeers</strong> (<em>gid</em>)</h4>
 <h5 id="_description_16">Description</h5>
 <div class="paragraph"><p>This method returns peer list of the download denoted by <em>gid</em>. <em>gid</em>
 is of type string. This method is for BitTorrent only.  The response
@@ -3836,7 +3838,7 @@ seeder
 </p>
 </dd>
 </dl></div>
-<h4 id="_strong_aria2_getservers_strong_em_gid_em"><strong>aria2.getServers</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_getServers"><strong>aria2.getServers</strong> (<em>gid</em>)</h4>
 <h5 id="_description_17">Description</h5>
 <div class="paragraph"><p>This method returns currently connected HTTP(S)/FTP servers of the download denoted by <em>gid</em>. <em>gid</em> is of type string. The response
 is of type array and its element is of type struct and it contains
@@ -3887,19 +3889,19 @@ downloadSpeed
 </dl></div>
 </dd>
 </dl></div>
-<h4 id="_strong_aria2_tellactive_strong_em_keys_em"><strong>aria2.tellActive</strong> (<em>[keys]</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_tellActive"><strong>aria2.tellActive</strong> (<em>[keys]</em>)</h4>
 <h5 id="_description_18">Description</h5>
 <div class="paragraph"><p>This method returns the list of active downloads.  The response is of
 type array and its element is the same struct returned by
-<strong>aria2.tellStatus</strong> method. For <em>keys</em> parameter, please refer to
-<strong>aria2.tellStatus</strong> method.</p></div>
-<h4 id="_strong_aria2_tellwaiting_strong_em_offset_num_keys_em"><strong>aria2.tellWaiting</strong> (<em>offset, num, [keys]</em>)</h4>
+<strong><a href="#aria2_xmlrpc_aria2_tellStatus">aria2.tellStatus</a></strong> method. For <em>keys</em> parameter, please refer to
+<strong><a href="#aria2_xmlrpc_aria2_tellStatus">aria2.tellStatus</a></strong> method.</p></div>
+<h4 id="aria2_xmlrpc_aria2_tellWaiting"><strong>aria2.tellWaiting</strong> (<em>offset, num, [keys]</em>)</h4>
 <h5 id="_description_19">Description</h5>
 <div class="paragraph"><p>This method returns the list of waiting download, including paused
 downloads. <em>offset</em> is of type integer and specifies the offset from
 the download waiting at the front. <em>num</em> is of type integer and
 specifies the number of downloads to be returned.  For <em>keys</em>
-parameter, please refer to <strong>aria2.tellStatus</strong> method.</p></div>
+parameter, please refer to <strong><a href="#aria2_xmlrpc_aria2_tellStatus">aria2.tellStatus</a></strong> method.</p></div>
 <div class="paragraph"><p>If offset is a positive integer, this method returns downloads in the
 range of [<em>offset</em>, <em>offset</em>+<em>num</em>).</p></div>
 <div class="paragraph"><p><em>offset</em> can be a negative integer. <em>offset</em> == -1 points last
@@ -3911,18 +3913,18 @@ in this order. aria2.tellWaiting(0, 1) returns
 ["A"]. aria2.tellWaiting(1, 2) returns ["B", "C"].
 aria2.tellWaiting(-1, 2) returns ["C", "B"].</p></div>
 <div class="paragraph"><p>The response is of type array and its element is the same struct
-returned by <strong>aria2.tellStatus</strong> method.</p></div>
-<h4 id="_strong_aria2_tellstopped_strong_em_offset_num_keys_em"><strong>aria2.tellStopped</strong> (<em>offset, num, [keys]</em>)</h4>
+returned by <strong><a href="#aria2_xmlrpc_aria2_tellStatus">aria2.tellStatus</a></strong> method.</p></div>
+<h4 id="aria2_xmlrpc_aria2_tellStopped"><strong>aria2.tellStopped</strong> (<em>offset, num, [keys]</em>)</h4>
 <h5 id="_description_20">Description</h5>
 <div class="paragraph"><p>This method returns the list of stopped download.  <em>offset</em> is of type
 integer and specifies the offset from the oldest download. <em>num</em> is of
 type integer and specifies the number of downloads to be returned.
-For <em>keys</em> parameter, please refer to <strong>aria2.tellStatus</strong> method.</p></div>
-<div class="paragraph"><p><em>offset</em> and <em>num</em> have the same semantics as <strong>aria2.tellWaiting</strong>
+For <em>keys</em> parameter, please refer to <strong><a href="#aria2_xmlrpc_aria2_tellStatus">aria2.tellStatus</a></strong> method.</p></div>
+<div class="paragraph"><p><em>offset</em> and <em>num</em> have the same semantics as <strong><a href="#aria2_xmlrpc_aria2_tellWaiting">aria2.tellWaiting</a></strong>
 method.</p></div>
 <div class="paragraph"><p>The response is of type array and its element is the same struct
-returned by <strong>aria2.tellStatus</strong> method.</p></div>
-<h4 id="_strong_aria2_changeposition_strong_em_gid_pos_how_em"><strong>aria2.changePosition</strong> (<em>gid, pos, how</em>)</h4>
+returned by <strong><a href="#aria2_xmlrpc_aria2_tellStatus">aria2.tellStatus</a></strong> method.</p></div>
+<h4 id="aria2_xmlrpc_aria2_changePosition"><strong>aria2.changePosition</strong> (<em>gid, pos, how</em>)</h4>
 <h5 id="_description_21">Description</h5>
 <div class="paragraph"><p>This method changes the position of the download denoted by
 <em>gid</em>. <em>pos</em> is of type integer. <em>how</em> is of type string. If <em>how</em> is
@@ -3938,7 +3940,7 @@ destination position.</p></div>
 -1, POS_CUR) will change its position to 2. Additional
 aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
 beginning of the queue).</p></div>
-<h4 id="_strong_aria2_changeuri_strong_em_gid_fileindex_deluris_adduris_position_em"><strong>aria2.changeUri</strong> (<em>gid, fileIndex, delUris, addUris[, position]</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_changeUri"><strong>aria2.changeUri</strong> (<em>gid, fileIndex, delUris, addUris[, position]</em>)</h4>
 <h5 id="_description_22">Description</h5>
 <div class="paragraph"><p>This method removes URIs in <em>delUris</em> from and appends URIs in
 <em>addUris</em> to download denoted by <em>gid</em>. <em>delUris</em> and <em>addUris</em> are
@@ -3957,39 +3959,39 @@ specify (at least) 3 "http://example.org/aria2" in <em>delUris</em>.  This
 method returns a list which contains 2 integers. The first integer is
 the number of URIs deleted. The second integer is the number of URIs
 added.</p></div>
-<h4 id="_strong_aria2_getoption_strong_em_gid_em"><strong>aria2.getOption</strong> (<em>gid</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_getOption"><strong>aria2.getOption</strong> (<em>gid</em>)</h4>
 <h5 id="_description_23">Description</h5>
 <div class="paragraph"><p>This method returns options of the download denoted by <em>gid</em>.  The
 response is of type struct. Its key is the name of option.  The value type
 is string.</p></div>
-<h4 id="_strong_aria2_changeoption_strong_em_gid_options_em"><strong>aria2.changeOption</strong> (<em>gid, options</em>)</h4>
+<h4 id="aria2_xmlrpc_aria2_changeOption"><strong>aria2.changeOption</strong> (<em>gid, options</em>)</h4>
 <h5 id="_description_24">Description</h5>
 <div class="paragraph"><p>This method changes options of the download denoted by <em>gid</em>
 dynamically.  <em>gid</em> is of type string.  <em>options</em> is of type struct
-and the available options are: <strong>bt-max-peers</strong>,
-<strong>bt-request-peer-speed-limit</strong>, <strong>max-download-limit</strong> and
-<strong>max-upload-limit</strong>.  This method returns "OK" for success.</p></div>
-<h4 id="_strong_aria2_getglobaloption_strong"><strong>aria2.getGlobalOption</strong> ()</h4>
+and the available options are: <strong><a href="#aria2_optref_bt_max_peers">bt-max-peers</a></strong>,
+<strong><a href="#aria2_optref_bt_request_peer_speed_limit">bt-request-peer-speed-limit</a></strong>, <strong><a href="#aria2_optref_max_download_limit">max-download-limit</a></strong> and
+<strong><a href="#aria2_optref_max_upload_limit">max-upload-limit</a></strong>.  This method returns "OK" for success.</p></div>
+<h4 id="aria2_xmlrpc_aria2_getGlobalOption"><strong>aria2.getGlobalOption</strong> ()</h4>
 <h5 id="_description_25">Description</h5>
 <div class="paragraph"><p>This method returns global options.  The response is of type
 struct. Its key is the name of option.  The value type is string.
 Because global options are used as a template for the options of newly
 added download, the response contains keys returned by
-<strong>aria2.getOption</strong> method.</p></div>
-<h4 id="_strong_aria2_changeglobaloption_strong_em_options_em"><strong>aria2.changeGlobalOption</strong> (<em>options</em>)</h4>
+<strong><a href="#aria2_xmlrpc_aria2_getOption">aria2.getOption</a></strong> method.</p></div>
+<h4 id="aria2_xmlrpc_aria2_changeGlobalOption"><strong>aria2.changeGlobalOption</strong> (<em>options</em>)</h4>
 <h5 id="_description_26">Description</h5>
 <div class="paragraph"><p>This method changes global options dynamically.  <em>options</em> is of type
-struct and the available options are <strong>max-concurrent-downloads</strong>,
-<strong>max-overall-download-limit</strong>, <strong>max-overall-upload-limit</strong>, <strong>log-level</strong>
-and <strong>log</strong>. Using <strong>log</strong> option, you can dynamically start logging or
+struct and the available options are <strong><a href="#aria2_optref_max_concurrent_downloads">max-concurrent-downloads</a></strong>,
+<strong><a href="#aria2_optref_max_overall_download_limit">max-overall-download-limit</a></strong>, <strong><a href="#aria2_optref_max_overall_upload_limit">max-overall-upload-limit</a></strong>, <strong><a href="#aria2_optref_log_level">log-level</a></strong>
+and <strong><a href="#aria2_optref_log">log</a></strong>. Using <strong><a href="#aria2_optref_log">log</a></strong> option, you can dynamically start logging or
 change log file. To stop logging, give empty string("") as a parameter
 value. Note that log file is always opened in append mode. This method
 returns "OK" for success.</p></div>
-<h4 id="_strong_aria2_purgedownloadresult_strong"><strong>aria2.purgeDownloadResult</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_purgeDownloadResult"><strong>aria2.purgeDownloadResult</strong> ()</h4>
 <h5 id="_description_27">Description</h5>
 <div class="paragraph"><p>This method purges completed/error/removed downloads to free memory.
 This method returns "OK".</p></div>
-<h4 id="_strong_aria2_getversion_strong"><strong>aria2.getVersion</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_getVersion"><strong>aria2.getVersion</strong> ()</h4>
 <h5 id="_description_28">Description</h5>
 <div class="paragraph"><p>This method returns version of the program and the list of enabled
 features. The response is of type struct and contains following keys.</p></div>
@@ -4028,7 +4030,7 @@ enabledFeatures
                      'XML-RPC'],
  'version': '1.10.5'}</tt></pre>
 </div></div>
-<h4 id="_strong_aria2_getsessioninfo_strong"><strong>aria2.getSessionInfo</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_getSessionInfo"><strong>aria2.getSessionInfo</strong> ()</h4>
 <h5 id="_description_29">Description</h5>
 <div class="paragraph"><p>This method returns session information.
 The response is of type struct and contains following key.</p></div>
@@ -4049,15 +4051,15 @@ sessionId
 &gt;&gt;&gt; s.aria2.getSessionInfo()
 {'sessionId': 'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}</tt></pre>
 </div></div>
-<h4 id="_strong_aria2_shutdown_strong"><strong>aria2.shutdown</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_shutdown"><strong>aria2.shutdown</strong> ()</h4>
 <h5 id="_description_30">Description</h5>
 <div class="paragraph"><p>This method shutdowns aria2.  This method returns "OK".</p></div>
-<h4 id="_strong_aria2_forceshutdown_strong"><strong>aria2.forceShutdown</strong> ()</h4>
+<h4 id="aria2_xmlrpc_aria2_forceShutdown"><strong>aria2.forceShutdown</strong> ()</h4>
 <h5 id="_description_31">Description</h5>
-<div class="paragraph"><p>This method shutdowns aria2. This method behaves like <strong>aria2.shutdown</strong>
+<div class="paragraph"><p>This method shutdowns aria2. This method behaves like <strong><a href="#aria2_xmlrpc_aria2_shutdown">aria2.shutdown</a></strong>
 except that any actions which takes time such as contacting BitTorrent
 tracker are skipped. This method returns "OK".</p></div>
-<h4 id="_strong_system_multicall_strong_em_methods_em"><strong>system.multicall</strong> (<em>methods</em>)</h4>
+<h4 id="aria2_xmlrpc_system_multicall"><strong>system.multicall</strong> (<em>methods</em>)</h4>
 <h5 id="_description_32">Description</h5>
 <div class="paragraph"><p>This methods encapsulates multiple method calls in a single request.
 <em>methods</em> is of type array and its element is struct.  The struct
@@ -4083,7 +4085,7 @@ http://example.org/file and second one is file.torrent:</p></div>
 <h3 id="_error_handling">Error Handling</h3><div style="clear:left"></div>
 <div class="paragraph"><p>In case of error, aria2 returns faultCode=1 and the error message in
 faultString.</p></div>
-<h3 id="_options_2">Options</h3><div style="clear:left"></div>
+<h3 id="aria2_xmlrpc_options">Options</h3><div style="clear:left"></div>
 <div class="paragraph"><p>Same options for <strong><a href="#aria2_optref_input_file">-i</a></strong> list are available. See <strong><a href="#_input_file">Input File</a></strong> subsection for complete list of options.</p></div>
 <div class="paragraph"><p>In the option struct, name element is option name(without preceding
 "--") and value element is argument as string.</p></div>
@@ -4100,7 +4102,8 @@ faultString.</p></div>
   &lt;/member&gt;
 &lt;/struct&gt;</tt></pre>
 </div></div>
-<div class="paragraph"><p><strong>header</strong> and <strong>index-out</strong> option are allowed multiple times in
+<div class="paragraph"><p><strong><a href="#aria2_optref_header">header</a></strong> and <strong><a href="#aria2_optref_index_out">index-out</a></strong>
+option are allowed multiple times in
 command-line. Since name should be unique in struct(many XML-RPC
 library implementation uses hash or dict for struct), single string is
 not enough. To overcome this situation, they can take array as value
@@ -4583,7 +4586,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-10-30 20:41:46 JST
+Last updated 2010-10-30 21:20:38 JST
 </div>
 </div>
 </body>

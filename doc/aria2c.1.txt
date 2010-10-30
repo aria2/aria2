@@ -37,7 +37,8 @@ Basic Options
   Downloads URIs found in FILE. You can specify multiple URIs for a single
   entity: separate URIs on a single line using the TAB character.
   Reads input from stdin when '-' is specified.
-  The additional *out* and *dir* options can be specified after each line of
+  The additional *<<aria2_optref_out, out>>* and *<<aria2_optref_dir, dir>>*
+  options can be specified after each line of
   URIs. This optional line must start with white space(s).
   See *<<_input_file, Input File>>* subsection for details.
 
@@ -1378,7 +1379,8 @@ If aria2 is executed with *<<aria2_optref_input_file, -i>>* uri.txt *<<aria2_opt
 from \http://server/file.iso and \http://mirror/file.iso.  The file
 'bar' is downloaded from \http://foo/bar and saved as '/tmp/bar'.
 
-In some cases, *out* parameter has no effect.  See note of *<<aria2_optref_out, --out>>*
+In some cases, *<<aria2_optref_out, out>>* parameter has no effect.
+See note of *<<aria2_optref_out, --out>>*
 option for the restrictions.
 
 Server Performance Profile
@@ -1451,6 +1453,7 @@ Methods
 
 All code examples come from Python2.7 interpreter.
 
+[[aria2_xmlrpc_aria2_addUri]]
 *aria2.addUri* ('uris[, options[, position]]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1463,7 +1466,7 @@ BitTorrent Magnet URI, 'uris' must have only one element and it should
 be BitTorrent Magnet URI.  URIs in 'uris' must point to the same file.
 If you mix other URIs which point to another file, aria2 does not
 complain but download may fail.  'options' is of type struct and its
-members are a pair of option name and value. See *Options* below for
+members are a pair of option name and value. See *<<aria2_xmlrpc_options, Options>>* below for
 more details.  If 'position' is given as an integer starting from 0,
 the new download is inserted at 'position' in the waiting queue. If
 'position' is not given or 'position' is larger than the size of the
@@ -1490,6 +1493,7 @@ Adding a download and insert it to the front of waiting downloads:
 '3'
 ---------------------------------------------------------------
 
+[[aria2_xmlrpc_aria2_addTorrent]]
 *aria2.addTorrent* ('torrent[, uris[, options[, position]]]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1497,7 +1501,7 @@ Description
 +++++++++++
 
 This method adds BitTorrent download by uploading .torrent file.  If
-you want to add BitTorrent Magnet URI, use *aria2.addUri* method
+you want to add BitTorrent Magnet URI, use *<<aria2_xmlrpc_aria2_addUri, aria2.addUri>>* method
 instead.  'torrent' is of type base64 which contains Base64-encoded
 .torrent file.  'uris' is of type array and its element is URI which
 is of type string. 'uris' is used for Web-seeding.  For single file
@@ -1505,7 +1509,7 @@ torrents, URI can be a complete URI pointing to the resource or if URI
 ends with /, name in torrent file is added. For multi-file torrents,
 name and path in torrent are added to form a URI for each file.
 'options' is of type struct and its members are a pair of option name
-and value. See *Options* below for more details.  If 'position' is
+and value. See *<<aria2_xmlrpc_options, Options>>* below for more details.  If 'position' is
 given as an integer starting from 0, the new download is inserted at
 'position' in the waiting queue. If 'position' is not given or
 'position' is larger than the size of the queue, it is appended at the
@@ -1521,6 +1525,7 @@ Adding local file file.torrent to aria2:
 '6'
 ---------------------------------------------------------------------
 
+[[aria2_xmlrpc_aria2_addMetalink]]
 *aria2.addMetalink* ('metalink[, options[, position]]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1530,7 +1535,7 @@ Description
 This method adds Metalink download by uploading .metalink file.
 'metalink' is of type base64 which contains Base64-encoded .metalink
 file.  'options' is of type struct and its members are a pair of
-option name and value. See *Options* below for more details.  If
+option name and value. See *<<aria2_xmlrpc_options, Options>>* below for more details.  If
 'position' is given as an integer starting from 0, the new download is
 inserted at 'position' in the waiting queue. If 'position' is not
 given or 'position' is larger than the size of the queue, it is
@@ -1546,6 +1551,7 @@ Adding local file file.meta4 to aria2:
 ['8']
 --------------------------------------------------------------------
 
+[[aria2_xmlrpc_aria2_remove]]
 *aria2.remove* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1565,6 +1571,7 @@ Removing download whose GID is '3':
 '3'
 --------------------------------------------------------------------
 
+[[aria2_xmlrpc_aria2_forceRemove]]
 *aria2.forceRemove* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1572,10 +1579,11 @@ Description
 +++++++++++
 
 This method removes the download denoted by 'gid'.  This method
-behaves just like *aria2.remove* except that this method removes
+behaves just like *<<aria2_xmlrpc_aria2_remove, aria2.remove>>* except that this method removes
 download without any action which takes time such as contacting
 BitTorrent tracker.
 
+[[aria2_xmlrpc_aria2_pause]]
 *aria2.pause* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -1586,18 +1594,20 @@ This method pauses the download denoted by 'gid'. 'gid' is of type
 string. The status of paused download becomes "paused".  If the
 download is active, the download is placed on the first position of
 waiting queue.  As long as the status is "paused", the download is not
-started.  To change status to "waiting", use *aria2.unpause* method.
+started.  To change status to "waiting", use *<<aria2_xmlrpc_aria2_unpause, aria2.unpause>>* method.
 This method returns GID of paused download.
 
+[[aria2_xmlrpc_aria2_pauseAll]]
 *aria2.pauseAll* ()
 ^^^^^^^^^^^^^^^^^^^
 
 Description
 +++++++++++
 
-This method is equal to calling *aria2.pause* for every active/waiting
+This method is equal to calling *<<aria2_xmlrpc_aria2_pause, aria2.pause>>* for every active/waiting
 download. This methods returns "OK" for success.
 
+[[aria2_xmlrpc_aria2_forcePause]]
 *aria2.forcePause* ('pid')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1605,19 +1615,21 @@ Description
 +++++++++++
 
 This method pauses the download denoted by 'gid'.  This method
-behaves just like *aria2.pause* except that this method pauses
+behaves just like *<<aria2_xmlrpc_aria2_pause, aria2.pause>>* except that this method pauses
 download without any action which takes time such as contacting
 BitTorrent tracker.
 
+[[aria2_xmlrpc_aria2_forcePauseAll]]
 *aria2.forcePauseAll* ()
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Description
 +++++++++++
 
-This method is equal to calling *aria2.forcePause* for every
+This method is equal to calling *<<aria2_xmlrpc_aria2_forcePause, aria2.forcePause>>* for every
 active/waiting download. This methods returns "OK" for success.
 
+[[aria2_xmlrpc_aria2_unpause]]
 *aria2.unpause* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1629,15 +1641,17 @@ This method changes the status of the download denoted by 'gid' from
 'gid' is of type string.  This method returns GID of unpaused
 download.
 
+[[aria2_xmlrpc_aria2_unpauseAll]]
 *aria2.unpauseAll* ()
 ^^^^^^^^^^^^^^^^^^^^^
 
 Description
 +++++++++++
 
-This method is equal to calling *aria2.unpause* for every active/waiting
+This method is equal to calling *<<aria2_xmlrpc_aria2_unpause, aria2.unpause>>* for every active/waiting
 download. This methods returns "OK" for success.
 
+[[aria2_xmlrpc_aria2_tellStatus]]
 *aria2.tellStatus* ('gid[, keys]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1649,7 +1663,7 @@ This method returns download progress of the download denoted by
 specified, the response contains only keys in 'keys' array. If 'keys'
 is empty or not specified, the response contains all keys.  This is
 useful when you just want specific keys and avoid unnecessary
-transfers. For example, *aria2.tellStatus*("1", ["gid", "status"])
+transfers. For example, *<<aria2_xmlrpc_aria2_tellStatus, aria2.tellStatus>>*("1", ["gid", "status"])
 returns 'gid' and 'status' key.  The response is of type struct and it
 contains following keys. The value type is string.
 
@@ -1745,7 +1759,7 @@ dir::
 files::
 
   Returns the list of files. The element of list is the same struct
-  used in *aria2.getFiles* method.
+  used in *<<aria2_xmlrpc_aria2_getFiles, aria2.getFiles>>* method.
 
 
 bittorrent::
@@ -1816,6 +1830,7 @@ Get information specifying keys you are interested in:
 {'completedLength': '34896138', 'gid': '1', 'totalLength': '34896138'}
 --------------------------------------------------------------------------
 
+[[aria2_xmlrpc_aria2_getUris]]
 *aria2.getUris* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1835,6 +1850,7 @@ status::
   'used' if the URI is already used. 'waiting' if the URI is waiting
   in the queue.
 
+[[aria2_xmlrpc_aria2_getFiles]]
 *aria2.getFiles* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1867,8 +1883,9 @@ selected::
 uris::
 
   Returns the list of URI for this file. The element of list is the
-  same struct used in *aria2.getUris* method.
+  same struct used in *<<aria2_xmlrpc_aria2_getUris, aria2.getUris>>* method.
 
+[[aria2_xmlrpc_aria2_getPeers]]
 *aria2.getPeers* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1919,6 +1936,7 @@ seeder::
 
   "true" is this client is a seeder. Otherwise "false".
 
+[[aria2_xmlrpc_aria2_getServers]]
 *aria2.getServers* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1951,6 +1969,7 @@ servers::
 
     Download speed (byte/sec)
 
+[[aria2_xmlrpc_aria2_tellActive]]
 *aria2.tellActive* ('[keys]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1959,9 +1978,10 @@ Description
 
 This method returns the list of active downloads.  The response is of
 type array and its element is the same struct returned by
-*aria2.tellStatus* method. For 'keys' parameter, please refer to
-*aria2.tellStatus* method.
+*<<aria2_xmlrpc_aria2_tellStatus, aria2.tellStatus>>* method. For 'keys' parameter, please refer to
+*<<aria2_xmlrpc_aria2_tellStatus, aria2.tellStatus>>* method.
 
+[[aria2_xmlrpc_aria2_tellWaiting]]
 *aria2.tellWaiting* ('offset, num, [keys]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1972,7 +1992,7 @@ This method returns the list of waiting download, including paused
 downloads. 'offset' is of type integer and specifies the offset from
 the download waiting at the front. 'num' is of type integer and
 specifies the number of downloads to be returned.  For 'keys'
-parameter, please refer to *aria2.tellStatus* method.
+parameter, please refer to *<<aria2_xmlrpc_aria2_tellStatus, aria2.tellStatus>>* method.
 
 If offset is a positive integer, this method returns downloads in the
 range of ['offset', 'offset'+'num').
@@ -1988,8 +2008,9 @@ in this order. aria2.tellWaiting(0, 1) returns
 aria2.tellWaiting(-1, 2) returns ["C", "B"].
 
 The response is of type array and its element is the same struct
-returned by *aria2.tellStatus* method.
+returned by *<<aria2_xmlrpc_aria2_tellStatus, aria2.tellStatus>>* method.
 
+[[aria2_xmlrpc_aria2_tellStopped]]
 *aria2.tellStopped* ('offset, num, [keys]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1999,14 +2020,15 @@ Description
 This method returns the list of stopped download.  'offset' is of type
 integer and specifies the offset from the oldest download. 'num' is of
 type integer and specifies the number of downloads to be returned.
-For 'keys' parameter, please refer to *aria2.tellStatus* method.
+For 'keys' parameter, please refer to *<<aria2_xmlrpc_aria2_tellStatus, aria2.tellStatus>>* method.
 
-'offset' and 'num' have the same semantics as *aria2.tellWaiting*
+'offset' and 'num' have the same semantics as *<<aria2_xmlrpc_aria2_tellWaiting, aria2.tellWaiting>>*
 method.
 
 The response is of type array and its element is the same struct
-returned by *aria2.tellStatus* method.
+returned by *<<aria2_xmlrpc_aria2_tellStatus, aria2.tellStatus>>* method.
 
+[[aria2_xmlrpc_aria2_changePosition]]
 *aria2.changePosition* ('gid, pos, how')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2029,6 +2051,7 @@ For example, if GID#1 is placed in position 3, aria2.changePosition(1,
 aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
 beginning of the queue).
 
+[[aria2_xmlrpc_aria2_changeUri]]
 *aria2.changeUri* ('gid, fileIndex, delUris, addUris[, position]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2053,6 +2076,7 @@ method returns a list which contains 2 integers. The first integer is
 the number of URIs deleted. The second integer is the number of URIs
 added.
 
+[[aria2_xmlrpc_aria2_getOption]]
 *aria2.getOption* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2063,6 +2087,7 @@ This method returns options of the download denoted by 'gid'.  The
 response is of type struct. Its key is the name of option.  The value type
 is string.
 
+[[aria2_xmlrpc_aria2_changeOption]]
 *aria2.changeOption* ('gid, options')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2071,10 +2096,11 @@ Description
 
 This method changes options of the download denoted by 'gid'
 dynamically.  'gid' is of type string.  'options' is of type struct
-and the available options are: *bt-max-peers*,
-*bt-request-peer-speed-limit*, *max-download-limit* and
-*max-upload-limit*.  This method returns "OK" for success.
+and the available options are: *<<aria2_optref_bt_max_peers, bt-max-peers>>*,
+*<<aria2_optref_bt_request_peer_speed_limit, bt-request-peer-speed-limit>>*, *<<aria2_optref_max_download_limit, max-download-limit>>* and
+*<<aria2_optref_max_upload_limit, max-upload-limit>>*.  This method returns "OK" for success.
 
+[[aria2_xmlrpc_aria2_getGlobalOption]]
 *aria2.getGlobalOption* ()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2085,8 +2111,9 @@ This method returns global options.  The response is of type
 struct. Its key is the name of option.  The value type is string.
 Because global options are used as a template for the options of newly
 added download, the response contains keys returned by
-*aria2.getOption* method.
+*<<aria2_xmlrpc_aria2_getOption, aria2.getOption>>* method.
 
+[[aria2_xmlrpc_aria2_changeGlobalOption]]
 *aria2.changeGlobalOption* ('options')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2094,13 +2121,14 @@ Description
 +++++++++++
 
 This method changes global options dynamically.  'options' is of type
-struct and the available options are *max-concurrent-downloads*,
-*max-overall-download-limit*, *max-overall-upload-limit*, *log-level*
-and *log*. Using *log* option, you can dynamically start logging or
+struct and the available options are *<<aria2_optref_max_concurrent_downloads, max-concurrent-downloads>>*,
+*<<aria2_optref_max_overall_download_limit, max-overall-download-limit>>*, *<<aria2_optref_max_overall_upload_limit, max-overall-upload-limit>>*, *<<aria2_optref_log_level, log-level>>*
+and *<<aria2_optref_log, log>>*. Using *<<aria2_optref_log, log>>* option, you can dynamically start logging or
 change log file. To stop logging, give empty string("") as a parameter
 value. Note that log file is always opened in append mode. This method
 returns "OK" for success.
 
+[[aria2_xmlrpc_aria2_purgeDownloadResult]]
 *aria2.purgeDownloadResult* ()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2110,6 +2138,7 @@ Description
 This method purges completed/error/removed downloads to free memory.
 This method returns "OK".
 
+[[aria2_xmlrpc_aria2_getVersion]]
 *aria2.getVersion* ()
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -2144,6 +2173,7 @@ enabledFeatures::
  'version': '1.10.5'}
 --------------------------------------------------------------------
 
+[[aria2_xmlrpc_aria2_getSessionInfo]]
 *aria2.getSessionInfo* ()
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2164,6 +2194,7 @@ sessionId::
 {'sessionId': 'cd6a3bc6a1de28eb5bfa181e5f6b916d44af31a9'}
 --------------------------------------------------------------------
 
+[[aria2_xmlrpc_aria2_shutdown]]
 *aria2.shutdown* ()
 ^^^^^^^^^^^^^^^^^^^
 
@@ -2172,16 +2203,18 @@ Description
 
 This method shutdowns aria2.  This method returns "OK".
 
+[[aria2_xmlrpc_aria2_forceShutdown]]
 *aria2.forceShutdown* ()
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Description
 +++++++++++
 
-This method shutdowns aria2. This method behaves like *aria2.shutdown*
+This method shutdowns aria2. This method behaves like *<<aria2_xmlrpc_aria2_shutdown, aria2.shutdown>>*
 except that any actions which takes time such as contacting BitTorrent
 tracker are skipped. This method returns "OK".
 
+[[aria2_xmlrpc_system_multicall]]
 *system.multicall* ('methods')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -2217,6 +2250,7 @@ Error Handling
 In case of error, aria2 returns faultCode=1 and the error message in
 faultString.
 
+[[aria2_xmlrpc_options]]
 Options
 ~~~~~~~
 
@@ -2239,7 +2273,8 @@ In the option struct, name element is option name(without preceding
 </struct>
 -------------------------------------------------
 
-*header* and *index-out* option are allowed multiple times in
+*<<aria2_optref_header, header>>* and *<<aria2_optref_index_out, index-out>>*
+option are allowed multiple times in
 command-line. Since name should be unique in struct(many XML-RPC
 library implementation uses hash or dict for struct), single string is
 not enough. To overcome this situation, they can take array as value
