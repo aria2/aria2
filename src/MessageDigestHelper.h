@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MESSAGE_DIGEST_HELPER_H_
-#define _D_MESSAGE_DIGEST_HELPER_H_
+#ifndef D_MESSAGE_DIGEST_HELPER_H
+#define D_MESSAGE_DIGEST_HELPER_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -102,4 +102,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_MESSAGE_DIGEST_HELPER_H_
+#endif // D_MESSAGE_DIGEST_HELPER_H

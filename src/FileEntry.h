@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ENTRY_H_
-#define _D_FILE_ENTRY_H_
+#ifndef D_FILE_ENTRY_H
+#define D_FILE_ENTRY_H
 
 #include "common.h"
 
@@ -342,4 +342,4 @@ void writeFilePath
 
 }
 
-#endif // _D_FILE_ENTRY_H_
+#endif // D_FILE_ENTRY_H

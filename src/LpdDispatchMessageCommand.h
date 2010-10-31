@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_LPD_DISPATCH_MESSAGE_COMMAND_H_
-#define _D_LPD_DISPATCH_MESSAGE_COMMAND_H_
+#ifndef D_LPD_DISPATCH_MESSAGE_COMMAND_H
+#define D_LPD_DISPATCH_MESSAGE_COMMAND_H
 
 #include "Command.h"
 #include "SharedHandle.h"
@@ -66,4 +66,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_LPD_DISPATCH_MESSAGE_COMMAND_H_
+#endif // D_LPD_DISPATCH_MESSAGE_COMMAND_H

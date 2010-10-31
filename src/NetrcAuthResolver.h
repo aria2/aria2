@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_NETRC_AUTH_RESOLVER_H_
-#define _D_NETRC_AUTH_RESOLVER_H_
+#ifndef D_NETRC_AUTH_RESOLVER_H
+#define D_NETRC_AUTH_RESOLVER_H
 
 #include "AbstractAuthResolver.h"
 
@@ -73,4 +73,4 @@ typedef SharedHandle<NetrcAuthResolver> NetrcAuthResolverHandle;
 
 } // namespace aria2
 
-#endif // _D_NETRC_AUTH_RESOLVER_H_
+#endif // D_NETRC_AUTH_RESOLVER_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXTENSION_MESSAGE_REGISTRY_H_
-#define _D_EXTENSION_MESSAGE_REGISTRY_H_
+#ifndef D_EXTENSION_MESSAGE_REGISTRY_H
+#define D_EXTENSION_MESSAGE_REGISTRY_H
 
 #include "common.h"
 
@@ -90,4 +90,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_EXTENSION_MESSAGE_REGISTRY_H_
+#endif // D_EXTENSION_MESSAGE_REGISTRY_H

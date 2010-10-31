@@ -1,5 +1,5 @@
-#ifndef _D_IN_ORDER_PIECE_SELECTOR_H_
-#define _D_IN_ORDER_PIECE_SELECTOR_H_
+#ifndef D_IN_ORDER_PIECE_SELECTOR_H
+#define D_IN_ORDER_PIECE_SELECTOR_H
 
 #include "PieceSelector.h"
 #include "bitfield.h"
@@ -23,4 +23,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_IN_ORDER_PIECE_SELECTOR_H_
+#endif // D_IN_ORDER_PIECE_SELECTOR_H

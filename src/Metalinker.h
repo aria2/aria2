@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINKER_H_
-#define _D_METALINKER_H_
+#ifndef D_METALINKER_H
+#define D_METALINKER_H
 
 #include "common.h"
 
@@ -79,4 +79,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_METALINKER_H_
+#endif // D_METALINKER_H

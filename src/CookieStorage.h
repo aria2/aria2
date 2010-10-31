@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COOKIE_STORAGE_H_
-#define _D_COOKIE_STORAGE_H_
+#ifndef D_COOKIE_STORAGE_H
+#define D_COOKIE_STORAGE_H
 
 #include "common.h"
 
@@ -191,4 +191,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_COOKIE_STORAGE_H_
+#endif // D_COOKIE_STORAGE_H

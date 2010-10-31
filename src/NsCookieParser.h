@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_NS_COOKIE_PARSER_H_
-#define _D_NS_COOKIE_PARSER_H_
+#ifndef D_NS_COOKIE_PARSER_H
+#define D_NS_COOKIE_PARSER_H
 
 #include "common.h"
 
@@ -55,4 +55,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_NS_COOKIE_PARSER_H_
+#endif // D_NS_COOKIE_PARSER_H

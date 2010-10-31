@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_EXTENDED_MESSAGE_H_
-#define _D_BT_EXTENDED_MESSAGE_H_
+#ifndef D_BT_EXTENDED_MESSAGE_H
+#define D_BT_EXTENDED_MESSAGE_H
 #include "SimpleBtMessage.h"
 
 namespace aria2 {
@@ -83,4 +83,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_BT_EXTENDED_MESSAGE_H_
+#endif // D_BT_EXTENDED_MESSAGE_H

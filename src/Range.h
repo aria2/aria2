@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RANGE_H_
-#define _D_RANGE_H_
+#ifndef D_RANGE_H
+#define D_RANGE_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -92,4 +92,4 @@ typedef SharedHandle<Range> RangeHandle;
 
 } // namespace aria2
 
-#endif // _D_RANGE_H_
+#endif // D_RANGE_H

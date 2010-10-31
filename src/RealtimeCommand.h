@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REALTIME_COMMAND_H_
-#define _D_REALTIME_COMMAND_H_
+#ifndef D_REALTIME_COMMAND_H
+#define D_REALTIME_COMMAND_H
 
 #include "Command.h"
 
@@ -71,4 +71,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_REALTIME_COMMAND_H_
+#endif // D_REALTIME_COMMAND_H

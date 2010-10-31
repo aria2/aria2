@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SERVER_STAT_MAN_H_
-#define _D_SERVER_STAT_MAN_H_
+#ifndef D_SERVER_STAT_MAN_H
+#define D_SERVER_STAT_MAN_H
 #include "common.h"
 
 #include <string>
@@ -69,4 +69,4 @@ private:
 
 } // namespace aria2
 
-#endif // _D_SERVER_STAT_MAN_H_
+#endif // D_SERVER_STAT_MAN_H

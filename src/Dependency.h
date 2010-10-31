@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEPENDENCY_H_
-#define _D_DEPENDENCY_H_
+#ifndef D_DEPENDENCY_H
+#define D_DEPENDENCY_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -51,4 +51,4 @@ typedef SharedHandle<Dependency> DependencyHandle;
 
 } // namespace aria2
 
-#endif // _D_DEPENDENCY_H_
+#endif // D_DEPENDENCY_H

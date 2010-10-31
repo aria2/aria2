@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RANDOMIZER_H_
-#define _D_RANDOMIZER_H_
+#ifndef D_RANDOMIZER_H
+#define D_RANDOMIZER_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -58,4 +58,4 @@ typedef SharedHandle<Randomizer> RandomizerHandle;
 
 } // namespace aria2
 
-#endif // _D_RANDOMIZER_H_
+#endif // D_RANDOMIZER_H

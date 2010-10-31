@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_ABSTRACT_TASK_H_
-#define _D_DHT_ABSTRACT_TASK_H_
+#ifndef D_DHT_ABSTRACT_TASK_H
+#define D_DHT_ABSTRACT_TASK_H
 
 #include "DHTTask.h"
 #include "SharedHandle.h"
@@ -118,4 +118,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DHT_ABSTRACT_TASK_H_
+#endif // D_DHT_ABSTRACT_TASK_H

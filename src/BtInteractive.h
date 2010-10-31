@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_INTERACTIVE_H_
-#define _D_BT_INTERACTIVE_H_
+#ifndef D_BT_INTERACTIVE_H
+#define D_BT_INTERACTIVE_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -73,4 +73,4 @@ typedef SharedHandle<BtInteractive> BtInteractiveHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_INTERACTIVE_H_
+#endif // D_BT_INTERACTIVE_H

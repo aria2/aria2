@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_NODE_LOOKUP_TASK_CALLBACK_H_
-#define _D_DHT_NODE_LOOKUP_TASK_CALLBACK_H_
+#ifndef D_DHT_NODE_LOOKUP_TASK_CALLBACK_H
+#define D_DHT_NODE_LOOKUP_TASK_CALLBACK_H
 
 #include "DHTMessageCallback.h"
 
@@ -60,4 +60,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DHT_NODE_LOOKUP_TASK_CALLBACK_H_
+#endif // D_DHT_NODE_LOOKUP_TASK_CALLBACK_H

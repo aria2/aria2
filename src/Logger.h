@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_LOGGER_H_
-#define _D_LOGGER_H_
+#ifndef D_LOGGER_H
+#define D_LOGGER_H
 
 #include "common.h"
 
@@ -150,4 +150,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_LOGGER_H_
+#endif // D_LOGGER_H

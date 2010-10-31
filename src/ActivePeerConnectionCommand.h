@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ACTIVE_PEER_CONNECTION_COMMAND_H_
-#define _D_ACTIVE_PEER_CONNECTION_COMMAND_H_
+#ifndef D_ACTIVE_PEER_CONNECTION_COMMAND_H
+#define D_ACTIVE_PEER_CONNECTION_COMMAND_H
 
 #include "Command.h"
 #include "SharedHandle.h"
@@ -89,4 +89,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_ACTIVE_PEER_CONNECTION_COMMAND_H_
+#endif // D_ACTIVE_PEER_CONNECTION_COMMAND_H

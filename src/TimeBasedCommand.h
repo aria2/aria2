@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TIME_BASED_COMMAND_H_
-#define _D_TIME_BASED_COMMAND_H_
+#ifndef D_TIME_BASED_COMMAND_H
+#define D_TIME_BASED_COMMAND_H
 
 #include "Command.h"
 #include "TimerA2.h"
@@ -104,4 +104,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_TIME_BASED_COMMAND_H_
+#endif // D_TIME_BASED_COMMAND_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PIECE_STAT_MAN_H_
-#define _D_PIECE_STAT_MAN_H_
+#ifndef D_PIECE_STAT_MAN_H
+#define D_PIECE_STAT_MAN_H
 
 #include "common.h"
 
@@ -120,4 +120,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PIECE_STAT_MAN_H_
+#endif // D_PIECE_STAT_MAN_H

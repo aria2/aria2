@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DIRECT_DISK_ADAPTOR_H_
-#define _D_DIRECT_DISK_ADAPTOR_H_
+#ifndef D_DIRECT_DISK_ADAPTOR_H
+#define D_DIRECT_DISK_ADAPTOR_H
 
 #include "AbstractSingleDiskAdaptor.h"
 
@@ -50,4 +50,4 @@ typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;
 
 } // namespace aria2
 
-#endif // _D_DIRECT_DISK_ADAPTOR_H_
+#endif // D_DIRECT_DISK_ADAPTOR_H

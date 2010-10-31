@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_MESSAGE_VALIDATOR_H_
-#define _D_BT_MESSAGE_VALIDATOR_H_
+#ifndef D_BT_MESSAGE_VALIDATOR_H
+#define D_BT_MESSAGE_VALIDATOR_H
 
 #include "common.h"
 
@@ -55,4 +55,4 @@ typedef SharedHandle<BtMessageValidator> BtMessageValidatorHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_MESSAGE_VALIDATOR_H_
+#endif // D_BT_MESSAGE_VALIDATOR_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_STREAM_CHECK_INTEGRITY_ENTRY_H_
-#define _D_STREAM_CHECK_INTEGRITY_ENTRY_H_
+#ifndef D_STREAM_CHECK_INTEGRITY_ENTRY_H
+#define D_STREAM_CHECK_INTEGRITY_ENTRY_H
 
 #include "PieceHashCheckIntegrityEntry.h"
 
@@ -58,4 +58,4 @@ typedef SharedHandle<StreamCheckIntegrityEntry> StreamCheckIntegrityEntryHandle;
 
 } // namespace aria2
 
-#endif // _D_STREAM_CHECK_INTEGRITY_ENTRY_H_
+#endif // D_STREAM_CHECK_INTEGRITY_ENTRY_H

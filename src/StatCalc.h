@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_STAT_CALC_H_
-#define _D_STAT_CALC_H_
+#ifndef D_STAT_CALC_H
+#define D_STAT_CALC_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -53,4 +53,4 @@ typedef SharedHandle<StatCalc> StatCalcHandle;
 
 } // namespace aria2
 
-#endif // _D_STAT_CALC_H_
+#endif // D_STAT_CALC_H

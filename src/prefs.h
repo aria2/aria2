@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PREFS_H_
-#define _D_PREFS_H_
+#ifndef D_PREFS_H
+#define D_PREFS_H
 
 #include "common.h"
 #include <string>
@@ -412,4 +412,4 @@ extern const std::string PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
 
 } // namespace aria2
 
-#endif // _D_PREFS_H_
+#endif // D_PREFS_H

@@ -31,11 +31,11 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CLOCK_GETTIME_OSX_H_
-#define _D_CLOCK_GETTIME_OSX_H_
+#ifndef D_CLOCK_GETTIME_OSX_H
+#define D_CLOCK_GETTIME_OSX_H
 
 #include "timespec.h"
 
 int clock_gettime(int dummyid, struct timespec* tp);
 
-#endif // _D_CLOCK_GETTIME_OSX_H_
+#endif // D_CLOCK_GETTIME_OSX_H

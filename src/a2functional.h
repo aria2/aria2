@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_A2_FUNCTIONAL_H_
-#define _D_A2_FUNCTIONAL_H_
+#ifndef D_A2_FUNCTIONAL_H
+#define D_A2_FUNCTIONAL_H
 
 #include <functional>
 #include <string>
@@ -433,4 +433,4 @@ bool in(T x, S s, S t)
 
 } // namespace aria2
 
-#endif // _D_A2_FUNCTIONAL_H_
+#endif // D_A2_FUNCTIONAL_H

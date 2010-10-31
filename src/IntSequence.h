@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_INT_SEQUENCE_H_
-#define _D_INT_SEQUENCE_H_
+#ifndef D_INT_SEQUENCE_H
+#define D_INT_SEQUENCE_H
 
 #include "Sequence.h"
 
@@ -43,4 +43,4 @@ typedef Sequence<int32_t> IntSequence;
 
 } // namespace aria2
 
-#endif // _D_INT_SEQUENCE_H_
+#endif // D_INT_SEQUENCE_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_ANNOUNCE_H_
-#define _D_BT_ANNOUNCE_H_
+#ifndef D_BT_ANNOUNCE_H
+#define D_BT_ANNOUNCE_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -132,4 +132,4 @@ typedef SharedHandle<BtAnnounce> BtAnnounceHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_ANNOUNCE_H_
+#endif // D_BT_ANNOUNCE_H

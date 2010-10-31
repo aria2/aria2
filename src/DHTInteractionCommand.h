@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_INTERACTION_COMMAND_H_
-#define _D_DHT_INTERACTION_COMMAND_H_
+#ifndef D_DHT_INTERACTION_COMMAND_H
+#define D_DHT_INTERACTION_COMMAND_H
 
 #include "Command.h"
 #include "SharedHandle.h"
@@ -73,4 +73,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DHT_INTERACTION_COMMAND_H_
+#endif // D_DHT_INTERACTION_COMMAND_H

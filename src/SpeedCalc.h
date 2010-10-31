@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SPEED_CALC_H_
-#define _D_SPEED_CALC_H_
+#ifndef D_SPEED_CALC_H
+#define D_SPEED_CALC_H
 
 #include "common.h"
 #include "TimerA2.h"
@@ -77,4 +77,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SPEED_CALC_H_
+#endif // D_SPEED_CALC_H

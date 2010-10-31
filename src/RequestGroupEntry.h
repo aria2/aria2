@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_GROUP_ENTRY_H_
-#define _D_REQUEST_GROUP_ENTRY_H_
+#ifndef D_REQUEST_GROUP_ENTRY_H
+#define D_REQUEST_GROUP_ENTRY_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -77,4 +77,4 @@ typedef SharedHandle<RequestGroupEntry> RequestGroupEntryHandle;
 
 } // namespace aria2
 
-#endif // _D_REQUEST_GROUP_ENTRY_H_
+#endif // D_REQUEST_GROUP_ENTRY_H

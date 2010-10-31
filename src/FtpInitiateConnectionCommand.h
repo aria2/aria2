@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
-#define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#ifndef D_FTP_INITIATE_CONNECTION_COMMAND_H
+#define D_FTP_INITIATE_CONNECTION_COMMAND_H
 
 #include "InitiateConnectionCommand.h"
 
@@ -55,4 +55,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#endif // D_FTP_INITIATE_CONNECTION_COMMAND_H

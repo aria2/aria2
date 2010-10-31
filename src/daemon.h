@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DAEMON_H_
-#define _D_DAEMON_H_
+#ifndef D_DAEMON_H
+#define D_DAEMON_H
 
 #include "common.h"
 
@@ -47,4 +47,4 @@ int daemon(int nochdir, int noclose);
 
 } // namespace aria2
 
-#endif // _D_DAEMON_H_
+#endif // D_DAEMON_H

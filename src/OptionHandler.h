@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_OPTION_HANDLER_H_
-#define _D_OPTION_HANDLER_H_
+#ifndef D_OPTION_HANDLER_H
+#define D_OPTION_HANDLER_H
 
 #include "common.h"
 
@@ -116,4 +116,4 @@ std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler);
 
 } // namespace aria2
 
-#endif // _D_OPTION_HANDLER_H_
+#endif // D_OPTION_HANDLER_H

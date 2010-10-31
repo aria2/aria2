@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CONSTANTS_
-#define _D_BT_CONSTANTS_
+#ifndef D_BT_CONSTANTS_H
+#define D_BT_CONSTANTS_H
 
 #include "common.h"
 #include <map>
@@ -68,4 +68,4 @@ typedef std::map<std::string, uint8_t> Extensions;
 
 #define COMPACT_LEN_IPV6 18
 
-#endif // _D_BT_CONSTANTS_
+#endif // D_BT_CONSTANTS_H

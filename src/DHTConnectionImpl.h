@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_CONNECTION_IMPL_H_
-#define _D_DHT_CONNECTION_IMPL_H_
+#ifndef D_DHT_CONNECTION_IMPL_H
+#define D_DHT_CONNECTION_IMPL_H
 
 #include "DHTConnection.h"
 #include "SharedHandle.h"
@@ -90,4 +90,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DHT_CONNECTION_IMPL_H_
+#endif // D_DHT_CONNECTION_IMPL_H

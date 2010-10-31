@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SEQUENTIAL_PICKER_H_
-#define _D_SEQUENTIAL_PICKER_H_
+#ifndef D_SEQUENTIAL_PICKER_H
+#define D_SEQUENTIAL_PICKER_H
 
 #include "common.h"
 
@@ -93,4 +93,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SEQUENTIAL_PICKER_H_
+#endif // D_SEQUENTIAL_PICKER_H

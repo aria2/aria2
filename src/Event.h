@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EVENT_H_
-#define _D_EVENT_H_
+#ifndef D_EVENT_H
+#define D_EVENT_H
 
 #include "common.h"
 
@@ -373,4 +373,4 @@ class AsyncNameResolverEntry {};
 
 } // namespace aria2
 
-#endif // _D_EVENT_H_
+#endif // D_EVENT_H

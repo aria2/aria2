@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_ITERATOR_H_
-#define _D_FILE_ALLOCATION_ITERATOR_H_
+#ifndef D_FILE_ALLOCATION_ITERATOR_H
+#define D_FILE_ALLOCATION_ITERATOR_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -57,4 +57,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_FILE_ALLOCATION_ITERATOR_H_
+#endif // D_FILE_ALLOCATION_ITERATOR_H

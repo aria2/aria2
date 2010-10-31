@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_PROGRESS_INFO_FILE_H_
-#define _D_BT_PROGRESS_INFO_FILE_H_
+#ifndef D_BT_PROGRESS_INFO_FILE_H
+#define D_BT_PROGRESS_INFO_FILE_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -63,4 +63,4 @@ typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_PROGRESS_INFO_FILE_H_
+#endif // D_BT_PROGRESS_INFO_FILE_H

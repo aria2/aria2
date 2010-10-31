@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_BT_PROGRESS_INFO_FILE_H_
-#define _D_DEFAULT_BT_PROGRESS_INFO_FILE_H_
+#ifndef D_DEFAULT_BT_PROGRESS_INFO_FILE_H
+#define D_DEFAULT_BT_PROGRESS_INFO_FILE_H
 
 #include "BtProgressInfoFile.h"
 
@@ -98,4 +98,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DEFAULT_BT_PROGRESS_INFO_FILE_H_
+#endif // D_DEFAULT_BT_PROGRESS_INFO_FILE_H

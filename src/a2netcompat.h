@@ -31,8 +31,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_A2NETCOMPAT_H_
-#define _D_A2NETCOMPAT_H_
+#ifndef D_A2NETCOMPAT_H
+#define D_A2NETCOMPAT_H
 
 #include "a2io.h"
 
@@ -126,4 +126,4 @@ public:
 # define WSAAPI_AUTO_DELETE auto_delete
 #endif // !__MINGW32__
 
-#endif // _D_A2NETCOMPAT_H_
+#endif // D_A2NETCOMPAT_H

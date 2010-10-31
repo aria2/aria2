@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DECODER_H_
-#define _D_DECODER_H_
+#ifndef D_DECODER_H
+#define D_DECODER_H
 
 #include "common.h"
 #include <string>
@@ -61,4 +61,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DECODER_H_
+#endif // D_DECODER_H

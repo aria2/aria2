@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_DISK_WRITER_H_
-#define _D_DEFAULT_DISK_WRITER_H_
+#ifndef D_DEFAULT_DISK_WRITER_H
+#define D_DEFAULT_DISK_WRITER_H
 
 #include "AbstractDiskWriter.h"
 
@@ -52,4 +52,4 @@ typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;
 
 } // namespace aria2
 
-#endif // _D_DEFAULT_DISK_WRITER_H_
+#endif // D_DEFAULT_DISK_WRITER_H

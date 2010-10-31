@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CUID_COUNTER_H_
-#define _D_CUID_COUNTER_H_
+#ifndef D_CUID_COUNTER_H
+#define D_CUID_COUNTER_H
 
 #include "common.h"
 #include "Command.h"
@@ -59,4 +59,4 @@ public:
 
 }
 
-#endif // _D_CUID_COUNTER_H_
+#endif // D_CUID_COUNTER_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_FILE_ALLOCATION_ENTRY_H_
-#define _D_BT_FILE_ALLOCATION_ENTRY_H_
+#ifndef D_BT_FILE_ALLOCATION_ENTRY_H
+#define D_BT_FILE_ALLOCATION_ENTRY_H
 
 #include "FileAllocationEntry.h"
 
@@ -53,4 +53,4 @@ typedef SharedHandle<BtFileAllocationEntry> BtFileAllocationEntryHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_FILE_ALLOCATION_ENTRY_H_
+#endif // D_BT_FILE_ALLOCATION_ENTRY_H

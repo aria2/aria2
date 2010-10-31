@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FIXED_WIDTH_NUMBER_DECORATOR_H_
-#define _D_FIXED_WIDTH_NUMBER_DECORATOR_H_
+#ifndef D_FIXED_WIDTH_NUMBER_DECORATOR_H
+#define D_FIXED_WIDTH_NUMBER_DECORATOR_H
 
 #include "NumberDecorator.h"
 #include "util.h"
@@ -61,4 +61,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_FIXED_WIDTH_NUMBER_DECORATOR_H_
+#endif // D_FIXED_WIDTH_NUMBER_DECORATOR_H

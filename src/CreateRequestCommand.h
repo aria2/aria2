@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CREATE_REQUEST_COMMAND_H_
-#define _D_CREATE_REQUEST_COMMAND_H_
+#ifndef D_CREATE_REQUEST_COMMAND_H
+#define D_CREATE_REQUEST_COMMAND_H
 
 #include "AbstractCommand.h"
 
@@ -50,4 +50,4 @@ protected:
 
 } // namespace aria2
 
-#endif // _D_CREATE_REQUEST_COMMAND_H_
+#endif // D_CREATE_REQUEST_COMMAND_H

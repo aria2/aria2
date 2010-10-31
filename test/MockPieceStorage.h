@@ -1,5 +1,5 @@
-#ifndef _D_MOCK_PIECE_STORAGE_H_
-#define _D_MOCK_PIECE_STORAGE_H_
+#ifndef D_MOCK_PIECE_STORAGE_H
+#define D_MOCK_PIECE_STORAGE_H
 
 #include "PieceStorage.h"
 
@@ -272,4 +272,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_MOCK_PIECE_STORAGE_H_
+#endif // D_MOCK_PIECE_STORAGE_H

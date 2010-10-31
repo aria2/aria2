@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHECK_INTEGRITY_ENTRY_H_
-#define _D_CHECK_INTEGRITY_ENTRY_H_
+#ifndef D_CHECK_INTEGRITY_ENTRY_H
+#define D_CHECK_INTEGRITY_ENTRY_H
 
 #include "RequestGroupEntry.h"
 #include "ProgressAwareEntry.h"
@@ -84,4 +84,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_CHECK_INTEGRITY_ENTRY_H_
+#endif // D_CHECK_INTEGRITY_ENTRY_H

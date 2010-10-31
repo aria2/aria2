@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_CONSTANTS_H_
-#define _D_DHT_CONSTANTS_H_
+#ifndef D_DHT_CONSTANTS_H
+#define D_DHT_CONSTANTS_H
 
 // Increment this if major improvements or bug fixes are made in DHT
 // code. This is 2 bytes unsigned integer.
@@ -62,4 +62,4 @@
 
 #define DHT_TOKEN_UPDATE_INTERVAL (10*60)
 
-#endif // _D_DHT_CONSTANTS_H_
+#endif // D_DHT_CONSTANTS_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COMMON_H_
-#define _D_COMMON_H_
+#ifndef D_COMMON_H
+#define D_COMMON_H
 
 #ifdef __MINGW32__
 # undef SIZE_MAX
@@ -71,4 +71,4 @@ typedef _off_t off_t;
 // included here for compatibility issues with old compiler/libraries.
 #include <stdint.h>
 
-#endif // _D_COMMON_H_
+#endif // D_COMMON_H

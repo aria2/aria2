@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
-#define _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
+#ifndef D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H
+#define D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H
 
 #include "ExtensionMessageFactory.h"
 
@@ -114,4 +114,4 @@ typedef SharedHandle<DefaultExtensionMessageFactory> DefaultExtensionMessageFact
 
 } // namespace aria2
 
-#endif // _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
+#endif // D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H

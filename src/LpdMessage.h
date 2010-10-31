@@ -30,8 +30,8 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
-#ifndef _D_LPD_MESSAGE_H_
-#define _D_LPD_MESSAGE_H_
+#ifndef D_LPD_MESSAGE_H
+#define D_LPD_MESSAGE_H
 
 #include "common.h"
 
@@ -64,4 +64,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_LPD_MESSAGE_H_
+#endif // D_LPD_MESSAGE_H

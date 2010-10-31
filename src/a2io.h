@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_A2IO_H_
-#define _D_A2IO_H_
+#ifndef D_A2IO_H
+#define D_A2IO_H
 #include "common.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -144,4 +144,4 @@
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
 
-#endif // _D_A2IO_H_
+#endif // D_A2IO_H

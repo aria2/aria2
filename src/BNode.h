@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BNODE_H_
-#define _D_BNODE_H_
+#ifndef D_BNODE_H
+#define D_BNODE_H
 
 #include "common.h"
 
@@ -104,4 +104,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_BNODE_H_
+#endif // D_BNODE_H

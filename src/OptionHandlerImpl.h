@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_OPTION_HANDLER_IMPL_H_
-#define _D_OPTION_HANDLER_IMPL_H_
+#ifndef D_OPTION_HANDLER_IMPL_H
+#define D_OPTION_HANDLER_IMPL_H
 
 #include "OptionHandler.h"
 
@@ -758,4 +758,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_OPTION_HANDLER_IMPL_H_
+#endif // D_OPTION_HANDLER_IMPL_H

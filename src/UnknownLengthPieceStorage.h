@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_UNKNOWN_LENGTH_PIECE_STORAGE_H_
-#define _D_UNKNOWN_LENGTH_PIECE_STORAGE_H_
+#ifndef D_UNKNOWN_LENGTH_PIECE_STORAGE_H
+#define D_UNKNOWN_LENGTH_PIECE_STORAGE_H
 
 #include "PieceStorage.h"
 
@@ -287,4 +287,4 @@ typedef SharedHandle<UnknownLengthPieceStorage> UnknownLengthPieceStorageHandle;
 
 } // namespace aria2
 
-#endif // _D_UNKNOWN_LENGTH_PIECE_STORAGE_H_
+#endif // D_UNKNOWN_LENGTH_PIECE_STORAGE_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML2_SAX_METALINK_PROCESSOR_H_
-#define _D_XML2_SAX_METALINK_PROCESSOR_H_
+#ifndef D_XML2_SAX_METALINK_PROCESSOR_H
+#define D_XML2_SAX_METALINK_PROCESSOR_H
 
 #include "common.h"
 
@@ -62,4 +62,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_XML2_SAX_METALINK_PROCESSOR_H_
+#endif // D_XML2_SAX_METALINK_PROCESSOR_H

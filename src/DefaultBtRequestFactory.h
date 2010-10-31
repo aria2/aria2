@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_BT_REQUEST_FACTORY_H_
-#define _D_DEFAULT_BT_REQUEST_FACTORY_H_
+#ifndef D_DEFAULT_BT_REQUEST_FACTORY_H
+#define D_DEFAULT_BT_REQUEST_FACTORY_H
 
 #include "BtRequestFactory.h"
 
@@ -106,4 +106,4 @@ typedef SharedHandle<DefaultBtRequestFactory> DefaultBtRequestFactoryHandle;
 
 } // namespace aria2
 
-#endif // _D_DEFAULT_BT_REQUEST_FACTORY_H_
+#endif // D_DEFAULT_BT_REQUEST_FACTORY_H

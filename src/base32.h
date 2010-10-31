@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BASE32_H_
-#define _D_BASE32_H_
+#ifndef D_BASE32_H
+#define D_BASE32_H
 
 #include "common.h"
 
@@ -51,4 +51,4 @@ std::string decode(const std::string& src);
 
 } // namespace aria2
 
-#endif // _D_BASE32_H_
+#endif // D_BASE32_H

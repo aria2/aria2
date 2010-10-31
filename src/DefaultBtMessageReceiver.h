@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_BT_MESSAGE_RECEIVER_H_
-#define _D_DEFAULT_BT_MESSAGE_RECEIVER_H_
+#ifndef D_DEFAULT_BT_MESSAGE_RECEIVER_H
+#define D_DEFAULT_BT_MESSAGE_RECEIVER_H
 
 #include "BtMessageReceiver.h"
 #include "Command.h"
@@ -79,4 +79,4 @@ typedef SharedHandle<DefaultBtMessageReceiver> DefaultBtMessageReceiverHandle;
 
 } // namespace aria2
 
-#endif // _D_DEFAULT_BT_MESSAGE_RECEIVER_H_
+#endif // D_DEFAULT_BT_MESSAGE_RECEIVER_H

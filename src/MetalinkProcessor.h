@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINK_PROCESSOR_H_
-#define _D_METALINK_PROCESSOR_H_
+#ifndef D_METALINK_PROCESSOR_H
+#define D_METALINK_PROCESSOR_H
 
 #include "common.h"
 
@@ -43,4 +43,4 @@
 # include "ExpatMetalinkProcessor.h"
 #endif
 
-#endif // _D_METALINK_PROCESSOR_H_
+#endif // D_METALINK_PROCESSOR_H

@@ -1,5 +1,5 @@
-#ifndef _D_MOCK_DHT_TASK_FACTORY_H_
-#define _D_MOCK_DHT_TASK_FACTORY_H_
+#ifndef D_MOCK_DHT_TASK_FACTORY_H
+#define D_MOCK_DHT_TASK_FACTORY_H
 
 #include "DHTTaskFactory.h"
 
@@ -58,4 +58,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_MOCK_DHT_TASK_FACTORY_H_
+#endif // D_MOCK_DHT_TASK_FACTORY_H

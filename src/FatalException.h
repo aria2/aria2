@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FATAL_EXCEPTION_H_
-#define _D_FATAL_EXCEPTION_H_
+#ifndef D_FATAL_EXCEPTION_H
+#define D_FATAL_EXCEPTION_H
 #include "Exception.h"
 
 namespace aria2 {
@@ -57,4 +57,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_FATAL_EXCEPTION_EX_H_
+#endif // D_FATAL_EXCEPTION_EX_H

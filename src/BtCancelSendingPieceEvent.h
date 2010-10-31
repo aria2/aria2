@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CANCEL_SENDING_PIECE_EVENT_H_
-#define _D_BT_CANCEL_SENDING_PIECE_EVENT_H_
+#ifndef D_BT_CANCEL_SENDING_PIECE_EVENT_H
+#define D_BT_CANCEL_SENDING_PIECE_EVENT_H
 
 #include "common.h"
 
@@ -57,4 +57,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_BT_CANCEL_SENDING_PIECE_EVENT_H_
+#endif // D_BT_CANCEL_SENDING_PIECE_EVENT_H

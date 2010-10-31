@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_UTIL_H_
-#define _D_UTIL_H_
+#ifndef D_UTIL_H
+#define D_UTIL_H
 
 #include "common.h"
 
@@ -431,4 +431,4 @@ std::string encodeNonUtf8(const std::string& s);
 
 } // namespace aria2
 
-#endif // _D_UTIL_H_
+#endif // D_UTIL_H

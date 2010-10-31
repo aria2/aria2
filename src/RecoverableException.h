@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RECOVERABLE_EXCEPTION_H_
-#define _D_RECOVERABLE_EXCEPTION_H_
+#ifndef D_RECOVERABLE_EXCEPTION_H
+#define D_RECOVERABLE_EXCEPTION_H
 #include "Exception.h"
 #include "DownloadResultCode.h"
 
@@ -65,4 +65,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_RECOVERABLE_EXCEPTION_EX_H_
+#endif // D_RECOVERABLE_EXCEPTION_EX_H

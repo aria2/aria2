@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BINARY_STREAM_H_
-#define _D_BINARY_STREAM_H_
+#ifndef D_BINARY_STREAM_H
+#define D_BINARY_STREAM_H
 
 #include "common.h"
 
@@ -68,4 +68,4 @@ typedef SharedHandle<BinaryStream> BinaryStreamHandle;
 
 } // namespace aria2
 
-#endif // _D_BINARY_STREAM_H_
+#endif // D_BINARY_STREAM_H

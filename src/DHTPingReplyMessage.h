@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_PING_REPLY_MESSAGE_H_
-#define _D_DHT_PING_REPLY_MESSAGE_H_
+#ifndef D_DHT_PING_REPLY_MESSAGE_H
+#define D_DHT_PING_REPLY_MESSAGE_H
 
 #include "DHTResponseMessage.h"
 #include "DHTConstants.h"
@@ -69,4 +69,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DHT_PING_REPLY_MESSAGE_H_
+#endif // D_DHT_PING_REPLY_MESSAGE_H

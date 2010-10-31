@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_URI_SELECTOR_H_
-#define _D_URI_SELECTOR_H_
+#ifndef D_URI_SELECTOR_H
+#define D_URI_SELECTOR_H
 #include "common.h"
 
 #include <string>
@@ -61,4 +61,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_URI_SELECTOR_H_
+#endif // D_URI_SELECTOR_H

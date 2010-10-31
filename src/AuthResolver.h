@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_AUTH_RESOLVER_H_
-#define _D_AUTH_RESOLVER_H_
+#ifndef D_AUTH_RESOLVER_H
+#define D_AUTH_RESOLVER_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -54,4 +54,4 @@ typedef SharedHandle<AuthResolver> AuthResolverHandle;
 
 } // namespace aria2
 
-#endif // _D_AUTH_RESOLVER_H_
+#endif // D_AUTH_RESOLVER_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PRE_DOWNLOAD_HANDLER_H_
-#define _D_PRE_DOWNLOAD_HANDLER_H_
+#ifndef D_PRE_DOWNLOAD_HANDLER_H
+#define D_PRE_DOWNLOAD_HANDLER_H
 
 #include "DownloadHandler.h"
 
@@ -51,4 +51,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PRE_DOWNLOAD_HANDLER_H_
+#endif // D_PRE_DOWNLOAD_HANDLER_H

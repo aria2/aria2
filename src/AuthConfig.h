@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_AUTH_CONFIG_H_
-#define _D_AUTH_CONFIG_H_
+#ifndef D_AUTH_CONFIG_H
+#define D_AUTH_CONFIG_H
 
 #include "common.h"
 
@@ -78,4 +78,4 @@ std::ostream& operator<<(std::ostream& o, const AuthConfigHandle& authConfig);
 
 } // namespace aria2
 
-#endif // _D_AUTH_CONFIG_H_
+#endif // D_AUTH_CONFIG_H

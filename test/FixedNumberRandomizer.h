@@ -1,5 +1,5 @@
-#ifndef _D_FIXED_NUMBER_RANDOMIZER_H_
-#define _D_FIXED_NUMBER_RANDOMIZER_H_
+#ifndef D_FIXED_NUMBER_RANDOMIZER_H
+#define D_FIXED_NUMBER_RANDOMIZER_H
 
 #include "Randomizer.h"
 #include <cstdlib>
@@ -38,4 +38,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_FIXED_NUMBER_RANDOMIZER_H_
+#endif // D_FIXED_NUMBER_RANDOMIZER_H

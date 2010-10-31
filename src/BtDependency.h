@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_DEPENDENCY_H_
-#define _D_BT_DEPENDENCY_H_
+#ifndef D_BT_DEPENDENCY_H
+#define D_BT_DEPENDENCY_H
 
 #include "Dependency.h"
 
@@ -62,4 +62,4 @@ typedef SharedHandle<BtDependency> BtDependencyHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_DEPENDENCY_H_
+#endif // D_BT_DEPENDENCY_H

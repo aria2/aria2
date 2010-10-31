@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SOCKET_H_
-#define _D_SOCKET_H_
+#ifndef D_SOCKET_H
+#define D_SOCKET_H
 
 #include "SocketCore.h"
 #include "SharedHandle.h"
@@ -44,4 +44,4 @@ typedef SharedHandle<SocketCore> SocketHandle;
 
 } // namespace aria2
 
-#endif // _D_SOCKET_H_
+#endif // D_SOCKET_H

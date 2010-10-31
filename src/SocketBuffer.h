@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SOCKET_BUFFER_H_
-#define _D_SOCKET_BUFFER_H_
+#ifndef D_SOCKET_BUFFER_H
+#define D_SOCKET_BUFFER_H
 
 #include "common.h"
 
@@ -114,4 +114,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SOCKET_BUFFER_H_
+#endif // D_SOCKET_BUFFER_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_HEADER_H_
-#define _D_HTTP_HEADER_H_
+#ifndef D_HTTP_HEADER_H
+#define D_HTTP_HEADER_H
 
 #include "common.h"
 
@@ -171,4 +171,4 @@ typedef SharedHandle<HttpHeader> HttpHeaderHandle;
 
 } // namespace std;
 
-#endif // _D_HTTP_HEADER_H_
+#endif // D_HTTP_HEADER_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BENCODE2_H_
-#define _D_BENCODE2_H_
+#ifndef D_BENCODE2_H
+#define D_BENCODE2_H
 
 #include "common.h"
 
@@ -72,4 +72,4 @@ std::string encode(const SharedHandle<ValueBase>& vlb);
 
 } // namespace aria2
 
-#endif // _D_BENCODE2_H_
+#endif // D_BENCODE2_H

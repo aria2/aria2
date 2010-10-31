@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TRANSFER_STAT_H_
-#define _D_TRANSFER_STAT_H_
+#ifndef D_TRANSFER_STAT_H
+#define D_TRANSFER_STAT_H
 
 #include "common.h"
 #include <stdint.h>
@@ -131,4 +131,4 @@ TransferStat operator-(const TransferStat& a, const TransferStat& b);
 
 } // namespace aria2
 
-#endif // _D_TRANSFER_STAT_H_
+#endif // D_TRANSFER_STAT_H

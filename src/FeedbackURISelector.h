@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FEEDBACK_URI_SELECTOR_H_
-#define _D_FEEDBACK_URI_SELECTOR_H_
+#ifndef D_FEEDBACK_URI_SELECTOR_H
+#define D_FEEDBACK_URI_SELECTOR_H
 #include "URISelector.h"
 #include "SharedHandle.h"
 
@@ -68,4 +68,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_FEEDBACK_URI_SELECTOR_H_
+#endif // D_FEEDBACK_URI_SELECTOR_H

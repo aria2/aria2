@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_
-#define _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_
+#ifndef D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H
+#define D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H
 
 #include "RequestGroupCriteria.h"
 #include <string>
@@ -60,4 +60,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_
+#endif // D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H

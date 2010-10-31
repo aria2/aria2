@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_CONNECTION_H_
-#define _D_PEER_CONNECTION_H_
+#ifndef D_PEER_CONNECTION_H
+#define D_PEER_CONNECTION_H
 
 #include "common.h"
 
@@ -132,4 +132,4 @@ typedef WeakHandle<PeerConnection> PeerConnectionWeakHandle;
 
 } // namespace aria2
 
-#endif // _D_PEER_CONNECTION_H_
+#endif // D_PEER_CONNECTION_H

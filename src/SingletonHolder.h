@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SINGLETON_HOLDER_H_
-#define _D_SINGLETON_HOLDER_H_
+#ifndef D_SINGLETON_HOLDER_H
+#define D_SINGLETON_HOLDER_H
 
 namespace aria2 {
 
@@ -62,4 +62,4 @@ T SingletonHolder<T>::instance_;
 
 } // namespace aria2
 
-#endif // _D_SINGLETON_HOLDER_H_
+#endif // D_SINGLETON_HOLDER_H

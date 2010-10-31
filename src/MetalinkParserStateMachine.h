@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINK_PARSER_STATE_MACHINE_H_
-#define _D_METALINK_PARSER_STATE_MACHINE_H_
+#ifndef D_METALINK_PARSER_STATE_MACHINE_H
+#define D_METALINK_PARSER_STATE_MACHINE_H
 
 #include "common.h"
 #include <string>
@@ -268,4 +268,4 @@ public:
 
 } //  namespace aria2
 
-#endif // _D_METALINK_PARSER_STATE_MACHINE_H_
+#endif // D_METALINK_PARSER_STATE_MACHINE_H

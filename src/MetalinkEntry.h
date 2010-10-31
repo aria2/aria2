@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINK_ENTRY_H_
-#define _D_METALINK_ENTRY_H_
+#ifndef D_METALINK_ENTRY_H
+#define D_METALINK_ENTRY_H
 
 #include "common.h"
 
@@ -123,4 +123,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_METALINK_ENTRY_H_
+#endif // D_METALINK_ENTRY_H

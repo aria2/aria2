@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_P_STRING_BUILD_VISITOR_H_
-#define _D_P_STRING_BUILD_VISITOR_H_
+#ifndef D_P_STRING_BUILD_VISITOR_H
+#define D_P_STRING_BUILD_VISITOR_H
 
 #include "PStringVisitor.h"
 
@@ -69,4 +69,4 @@ typedef SharedHandle<PStringBuildVisitor> PStringBuildVisitorHandle;
 
 } // namespace aria2
 
-#endif // _D_P_STRING_BUILD_VISITOR_H_
+#endif // D_P_STRING_BUILD_VISITOR_H

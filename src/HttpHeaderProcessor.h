@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_HEADER_PROCESSOR_H_
-#define _D_HTTP_HEADER_PROCESSOR_H_
+#ifndef D_HTTP_HEADER_PROCESSOR_H
+#define D_HTTP_HEADER_PROCESSOR_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -92,4 +92,4 @@ typedef SharedHandle<HttpHeaderProcessor> HttpHeaderProcessorHandle;
 
 } // namespace aria2
 
-#endif // _D_HTTP_HEADER_PROCESSOR_H_
+#endif // D_HTTP_HEADER_PROCESSOR_H

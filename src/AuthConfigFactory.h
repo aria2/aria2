@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_AUTH_CONFIG_FACTORY_H_
-#define _D_AUTH_CONFIG_FACTORY_H_
+#ifndef D_AUTH_CONFIG_FACTORY_H
+#define D_AUTH_CONFIG_FACTORY_H
 
 #include "common.h"
 
@@ -127,4 +127,4 @@ typedef SharedHandle<AuthConfigFactory> AuthConfigFactoryHandle;
 
 } // namespace aria2
 
-#endif // _D_AUTH_CONFIG_FACTORY_H_
+#endif // D_AUTH_CONFIG_FACTORY_H

@@ -1,5 +1,9 @@
 2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made #include guard consistent for c++ header files.
+
+2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed the bug that downloading > 4GB file fails on 32bit systems.
 	* src/HttpRequest.cc
 	* src/HttpRequestCommand.cc

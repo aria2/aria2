@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML_RPC_METHOD_IMPL_H_
-#define _D_XML_RPC_METHOD_IMPL_H_
+#ifndef D_XML_RPC_METHOD_IMPL_H
+#define D_XML_RPC_METHOD_IMPL_H
 
 #include "XmlRpcMethod.h"
 
@@ -571,4 +571,4 @@ void gatherBitTorrentMetadata
 
 } // namespace aria2
 
-#endif // _D_XML_RPC_METHOD_IMPL_H_
+#endif // D_XML_RPC_METHOD_IMPL_H

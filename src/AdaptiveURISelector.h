@@ -33,8 +33,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ADAPTIVE_URI_SELECTOR_H_
-#define _D_ADAPTIVE_URI_SELECTOR_H_
+#ifndef D_ADAPTIVE_URI_SELECTOR_H
+#define D_ADAPTIVE_URI_SELECTOR_H
 #include "URISelector.h"
 #include "SharedHandle.h"
 
@@ -89,4 +89,4 @@ public:
 };
 
 } // namespace aria2
-#endif // _D_ADAPTIVE_URI_SELECTOR_H_
+#endif // D_ADAPTIVE_URI_SELECTOR_H

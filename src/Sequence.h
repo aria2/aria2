@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SEQUENCE_H_
-#define _D_SEQUENCE_H_
+#ifndef D_SEQUENCE_H
+#define D_SEQUENCE_H
 
 #include <vector>
 
@@ -101,4 +101,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SEQUENCE_H_
+#endif // D_SEQUENCE_H

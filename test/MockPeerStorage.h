@@ -1,5 +1,5 @@
-#ifndef _D_MOCK_PEER_STORAGE_H_
-#define _D_MOCK_PEER_STORAGE_H_
+#ifndef D_MOCK_PEER_STORAGE_H
+#define D_MOCK_PEER_STORAGE_H
 
 #include "PeerStorage.h"
 
@@ -93,6 +93,6 @@ public:
   }
 };
 
-#endif // _D_MOCK_PEER_STORAGE_H_
+#endif // D_MOCK_PEER_STORAGE_H
 
 } // namespace aria2

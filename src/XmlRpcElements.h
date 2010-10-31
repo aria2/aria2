@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML_RPC_ELEMENTS_H_
-#define _D_XML_RPC_ELEMENTS_H_
+#ifndef D_XML_RPC_ELEMENTS_H
+#define D_XML_RPC_ELEMENTS_H
 
 #include "common.h"
 
@@ -65,4 +65,4 @@ extern const std::string DATA;
 } // namespace xmlrpc
 } // namespace aria2
 
-#endif // _D_XML_RPC_ELEMENTS_H_
+#endif // D_XML_RPC_ELEMENTS_H

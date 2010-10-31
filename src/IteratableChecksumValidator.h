@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
-#define _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
+#ifndef D_ITERATABLE_CHECKSUM_VALIDATOR_H
+#define D_ITERATABLE_CHECKSUM_VALIDATOR_H
 
 #include "IteratableValidator.h"
 
@@ -83,4 +83,4 @@ typedef SharedHandle<IteratableChecksumValidator> IteratableChecksumValidatorHan
 
 } // namespace aria2
 
-#endif // _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
+#endif // D_ITERATABLE_CHECKSUM_VALIDATOR_H

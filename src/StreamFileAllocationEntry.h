@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_STREAM_FILE_ALLOCATION_ENTRY_H_
-#define _D_STREAM_FILE_ALLOCATION_ENTRY_H_
+#ifndef D_STREAM_FILE_ALLOCATION_ENTRY_H
+#define D_STREAM_FILE_ALLOCATION_ENTRY_H
 
 #include "FileAllocationEntry.h"
 
@@ -52,4 +52,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_STREAM_FILE_ALLOCATION_ENTRY_H_
+#endif // D_STREAM_FILE_ALLOCATION_ENTRY_H

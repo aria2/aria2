@@ -1,5 +1,5 @@
-#ifndef _D_MOCK_DHT_MESSAGE_DISPATCHER_H_
-#define _D_MOCK_DHT_MESSAGE_DISPATCHER_H_
+#ifndef D_MOCK_DHT_MESSAGE_DISPATCHER_H
+#define D_MOCK_DHT_MESSAGE_DISPATCHER_H
 
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
@@ -57,4 +57,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_MOCK_DHT_MESSAGE_DISPATCHER_H_
+#endif // D_MOCK_DHT_MESSAGE_DISPATCHER_H

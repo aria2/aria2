@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COMMAND_H_
-#define _D_COMMAND_H_
+#ifndef D_COMMAND_H
+#define D_COMMAND_H
 
 #include "common.h"
 #include <stdint.h>
@@ -125,4 +125,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_COMMAND_H_
+#endif // D_COMMAND_H

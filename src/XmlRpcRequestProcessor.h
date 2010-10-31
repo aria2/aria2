@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML_RPC_REQUEST_PROCESSOR_H_
-#define _D_XML_RPC_REQUEST_PROCESSOR_H_
+#ifndef D_XML_RPC_REQUEST_PROCESSOR_H
+#define D_XML_RPC_REQUEST_PROCESSOR_H
 
 #include "common.h"
 
@@ -43,4 +43,4 @@
 # include "ExpatXmlRpcRequestProcessor.h"
 #endif // HAVE_LIBEXPAT
 
-#endif // _D_XML_RPC_REQUEST_PROCESSOR_H_
+#endif // D_XML_RPC_REQUEST_PROCESSOR_H

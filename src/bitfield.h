@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BITFIELD_H_
-#define _D_BITFIELD_H_
+#ifndef D_BITFIELD_H
+#define D_BITFIELD_H
 
 #include "common.h"
 
@@ -178,4 +178,4 @@ size_t getFirstNMissingIndex
 
 } // namespace aria2
 
-#endif // _D_BITFIELD_H_
+#endif // D_BITFIELD_H

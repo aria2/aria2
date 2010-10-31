@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HANDSHAKE_EXTENSION_MESSAGE_H_
-#define _D_HANDSHAKE_EXTENSION_MESSAGE_H_
+#ifndef D_HANDSHAKE_EXTENSION_MESSAGE_H
+#define D_HANDSHAKE_EXTENSION_MESSAGE_H
 
 #include "ExtensionMessage.h"
 
@@ -143,4 +143,4 @@ typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;
 
 } // namespace aria2
 
-#endif // _D_HANDSHAKE_EXTENSION_MESSAGE_H_
+#endif // D_HANDSHAKE_EXTENSION_MESSAGE_H

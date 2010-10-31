@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ANNOUNCE_TIER_H_
-#define _D_ANNOUNCE_TIER_H_
+#ifndef D_ANNOUNCE_TIER_H
+#define D_ANNOUNCE_TIER_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -95,4 +95,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_ANNOUNCE_TIER_H_
+#endif // D_ANNOUNCE_TIER_H

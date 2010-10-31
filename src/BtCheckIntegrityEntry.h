@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CHECK_INTEGRITY_ENTRY_H_
-#define _D_BT_CHECK_INTEGRITY_ENTRY_H_
+#ifndef D_BT_CHECK_INTEGRITY_ENTRY_H
+#define D_BT_CHECK_INTEGRITY_ENTRY_H
 
 #include "PieceHashCheckIntegrityEntry.h"
 
@@ -56,4 +56,4 @@ typedef SharedHandle<BtCheckIntegrityEntry> BtCheckIntegrityEntryHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_FILE_ALLOCATION_ENTRY_H_
+#endif // D_BT_FILE_ALLOCATION_ENTRY_H

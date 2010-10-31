@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DNS_CACHE_H_
-#define _D_DNS_CACHE_H_
+#ifndef D_DNS_CACHE_H
+#define D_DNS_CACHE_H
 
 #include "common.h"
 
@@ -207,4 +207,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DNS_CACHE_H_
+#endif // D_DNS_CACHE_H

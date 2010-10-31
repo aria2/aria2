@@ -1,5 +1,5 @@
-#ifndef _D_EXTENSION_MESSAGE_TEST_HELPER_H_
-#define _D_EXTENSION_MESSAGE_TEST_HELPER_H_
+#ifndef D_EXTENSION_MESSAGE_TEST_HELPER_H
+#define D_EXTENSION_MESSAGE_TEST_HELPER_H
 
 #include "MockBtMessage.h"
 #include "MockBtMessageFactory.h"
@@ -19,4 +19,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_EXTENSION_MESSAGE_TEST_HELPER_H_
+#endif // D_EXTENSION_MESSAGE_TEST_HELPER_H

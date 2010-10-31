@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHECK_INTEGRITY_MAN_H_
-#define _D_CHECK_INTEGRITY_MAN_H_
+#ifndef D_CHECK_INTEGRITY_MAN_H
+#define D_CHECK_INTEGRITY_MAN_H
 
 #include "common.h"
 #include "SequentialPicker.h"
@@ -46,4 +46,4 @@ typedef SequentialPicker<CheckIntegrityEntry> CheckIntegrityMan;
 
 } // namespace aria2
 
-#endif // _D_CHECK_INTEGRITY_MAN_H_
+#endif // D_CHECK_INTEGRITY_MAN_H

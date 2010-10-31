@@ -31,8 +31,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TIMEGM_H_
-#define _D_TIMEGM_H_
+#ifndef D_TIMEGM_H
+#define D_TIMEGM_H
 
 #ifdef __MINGW32__
 # undef SIZE_MAX
@@ -58,4 +58,4 @@ time_t timegm(struct tm *tm);
 }
 #endif /* __cplusplus */
 
-#endif // _D_TIMEGM_H_
+#endif // D_TIMEGM_H

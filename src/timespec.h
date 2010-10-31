@@ -31,8 +31,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TIMESPEC_H_
-#define _D_TIMESPEC_H_
+#ifndef D_TIMESPEC_H
+#define D_TIMESPEC_H
 
 #include "common.h"
 
@@ -42,4 +42,4 @@
 struct timespec { time_t tv_sec; long tv_nsec; };
 #endif // !HAVE_STRUCT_TIMESPEC
 
-#endif // _D_TIMESPEC_H_
+#endif // D_TIMESPEC_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HELP_TAGS_H_
-#define _D_HELP_TAGS_H_
+#ifndef D_HELP_TAGS_H
+#define D_HELP_TAGS_H
 
 #define TAG_BASIC "#basic"
 #define TAG_ADVANCED "#advanced"
@@ -50,4 +50,4 @@
 #define TAG_HELP "#help"
 #define TAG_ALL "#all"
 
-#endif // _D_HELP_TAGS_H_
+#endif // D_HELP_TAGS_H

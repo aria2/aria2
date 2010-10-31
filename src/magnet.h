@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MAGNET_H_
-#define _D_MAGNET_H_
+#ifndef D_MAGNET_H
+#define D_MAGNET_H
 
 #include "common.h"
 #include "ValueBase.h"
@@ -54,4 +54,4 @@ SharedHandle<Dict> parse(const std::string& magnet);
 } // namespace aria2
 
 
-#endif // _D_MAGNET_H_
+#endif // D_MAGNET_H

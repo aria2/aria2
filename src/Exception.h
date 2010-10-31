@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXCEPTION_H_
-#define _D_EXCEPTION_H_
+#ifndef D_EXCEPTION_H
+#define D_EXCEPTION_H
 
 #include "common.h"
 
@@ -86,4 +86,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_EXCEPTION_H_
+#endif // D_EXCEPTION_H

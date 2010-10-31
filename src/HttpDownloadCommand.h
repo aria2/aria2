@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_DOWNLOAD_COMMAND_H_
-#define _D_HTTP_DOWNLOAD_COMMAND_H_
+#ifndef D_HTTP_DOWNLOAD_COMMAND_H
+#define D_HTTP_DOWNLOAD_COMMAND_H
 
 #include "DownloadCommand.h"
 
@@ -63,4 +63,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_HTTP_DOWNLOAD_COMMAND_H_
+#endif // D_HTTP_DOWNLOAD_COMMAND_H

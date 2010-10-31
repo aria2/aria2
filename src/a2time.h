@@ -31,8 +31,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_A2TIME_H_
-#define _D_A2TIME_H_
+#ifndef D_A2TIME_H
+#define D_A2TIME_H
 
 #include <time.h>
 #include <sys/time.h>
@@ -75,4 +75,4 @@
 # endif // !__MINGW32__
 #endif // !HAVE_CLOCK_GETTIME
 
-#endif // _D_A2TIME_H_
+#endif // D_A2TIME_H

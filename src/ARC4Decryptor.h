@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ARC4_DECRYPTOR_H_
-#define _D_ARC4_DECRYPTOR_H_
+#ifndef D_ARC4_DECRYPTOR_H
+#define D_ARC4_DECRYPTOR_H
 
 #include "common.h"
 #ifdef HAVE_LIBGCRYPT
@@ -62,4 +62,4 @@ public:
 
 #endif
 
-#endif // _D_ARC4_DECRYPTOR_H_
+#endif // D_ARC4_DECRYPTOR_H

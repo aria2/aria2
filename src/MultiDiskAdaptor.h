@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MULTI_DISK_ADAPTOR_H_
-#define _D_MULTI_DISK_ADAPTOR_H_
+#ifndef D_MULTI_DISK_ADAPTOR_H
+#define D_MULTI_DISK_ADAPTOR_H
 
 #include "DiskAdaptor.h"
 
@@ -199,4 +199,4 @@ typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;
 
 } // namespace aria2
 
-#endif // _D_MULTI_DISK_ADAPTOR_H_
+#endif // D_MULTI_DISK_ADAPTOR_H

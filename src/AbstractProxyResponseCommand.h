@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ABSTRACT_PROXY_RESPONSE_COMMAND_H_
-#define _D_ABSTRACT_PROXY_RESPONSE_COMMAND_H_
+#ifndef D_ABSTRACT_PROXY_RESPONSE_COMMAND_H
+#define D_ABSTRACT_PROXY_RESPONSE_COMMAND_H
 
 #include "AbstractCommand.h"
 
@@ -69,4 +69,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_ABSTRACT_PROXY_RESPONSE_COMMAND_H_
+#endif // D_ABSTRACT_PROXY_RESPONSE_COMMAND_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_AUTO_SAVE_COMMAND_H_
-#define _D_AUTO_SAVE_COMMAND_H_
+#ifndef D_AUTO_SAVE_COMMAND_H
+#define D_AUTO_SAVE_COMMAND_H
 
 #include "TimeBasedCommand.h"
 
@@ -53,4 +53,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_AUTO_SAVE_COMMAND_H_
+#endif // D_AUTO_SAVE_COMMAND_H

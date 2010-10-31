@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TLS_CONTEXT_H_
-#define _D_TLS_CONTEXT_H_
+#ifndef D_TLS_CONTEXT_H
+#define D_TLS_CONTEXT_H
 
 #include "common.h"
 
@@ -43,4 +43,4 @@
 # include "LibgnutlsTLSContext.h"
 #endif // HAVE_LIBGNUTLS
 
-#endif // _D_TLS_CONTEXT_H_
+#endif // D_TLS_CONTEXT_H

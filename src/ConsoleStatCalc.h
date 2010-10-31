@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CONSOLE_STAT_CALC_H_
-#define _D_CONSOLE_STAT_CALC_H_
+#ifndef D_CONSOLE_STAT_CALC_H
+#define D_CONSOLE_STAT_CALC_H
 
 #include "StatCalc.h"
 #include "TimerA2.h"
@@ -91,4 +91,4 @@ typedef SharedHandle<ConsoleStatCalc> ConsoleStatCalcHandle;
 
 } // namespace aria2
 
-#endif // _D_CONSOLE_STAT_CALC_H_
+#endif // D_CONSOLE_STAT_CALC_H

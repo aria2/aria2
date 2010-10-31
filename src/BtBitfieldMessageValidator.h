@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_BITFIELD_MESSAGE_VALIDATOR_H_
-#define _D_BT_BITFIELD_MESSAGE_VALIDATOR_H_
+#ifndef D_BT_BITFIELD_MESSAGE_VALIDATOR_H
+#define D_BT_BITFIELD_MESSAGE_VALIDATOR_H
 
 #include "BtMessageValidator.h"
 #include "BtBitfieldMessage.h"
@@ -63,4 +63,4 @@ typedef SharedHandle<BtBitfieldMessageValidator> BtBitfieldMessageValidatorHandl
 
 } // namespace aria2
 
-#endif // _D_BT_BITFIELD_MESSAGE_VALIDATOR_H_
+#endif // D_BT_BITFIELD_MESSAGE_VALIDATOR_H

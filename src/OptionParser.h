@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_OPTION_PARSER_H_
-#define _D_OPTION_PARSER_H_
+#ifndef D_OPTION_PARSER_H
+#define D_OPTION_PARSER_H
 
 #include "common.h"
 
@@ -108,4 +108,4 @@ typedef SharedHandle<OptionParser> OptionParserHandle;
 
 } // namespace aria2
 
-#endif // _D_OPTION_PARSER_H_
+#endif // D_OPTION_PARSER_H

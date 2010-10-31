@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ABSTRACT_DISK_WRITER_H_
-#define _D_ABSTRACT_DISK_WRITER_H_
+#ifndef D_ABSTRACT_DISK_WRITER_H
+#define D_ABSTRACT_DISK_WRITER_H
 
 #include "DiskWriter.h"
 #include <string>
@@ -93,4 +93,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_ABSTRACT_DISK_WRITER_H_
+#endif // D_ABSTRACT_DISK_WRITER_H

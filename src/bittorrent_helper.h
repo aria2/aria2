@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BITTORRENT_HELPER_H_
-#define _D_BITTORRENT_HELPER_H_
+#ifndef D_BITTORRENT_HELPER_H
+#define D_BITTORRENT_HELPER_H
 
 #include "common.h"
 
@@ -319,4 +319,4 @@ int getCompactLength(int family);
 
 } // namespace aria2
 
-#endif // _D_BITTORRENT_HELPER_H_
+#endif // D_BITTORRENT_HELPER_H

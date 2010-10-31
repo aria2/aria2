@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_RECEIVE_HANDSHAKE_COMMAND_H_
-#define _D_PEER_RECEIVE_HANDSHAKE_COMMAND_H_
+#ifndef D_PEER_RECEIVE_HANDSHAKE_COMMAND_H
+#define D_PEER_RECEIVE_HANDSHAKE_COMMAND_H
 
 #include "PeerAbstractCommand.h"
 
@@ -64,4 +64,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PEER_RECEIVE_HANDSHAKE_COMMAND_H_
+#endif // D_PEER_RECEIVE_HANDSHAKE_COMMAND_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BYTE_ARRAY_DISK_WRITER_FACTORY_H_
-#define _D_BYTE_ARRAY_DISK_WRITER_FACTORY_H_
+#ifndef D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
+#define D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
 
 #include "DiskWriterFactory.h"
 
@@ -51,4 +51,4 @@ typedef SharedHandle<ByteArrayDiskWriterFactory> ByteArrayDiskWriterFactoryHandl
 
 } // namespace aria2
 
-#endif // _D_BYTE_ARRAY_DISK_WRITER_FACTORY_H_
+#endif // D_BYTE_ARRAY_DISK_WRITER_FACTORY_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EPOLL_EVENT_POLL_H_
-#define _D_EPOLL_EVENT_POLL_H_
+#ifndef D_EPOLL_EVENT_POLL_H
+#define D_EPOLL_EVENT_POLL_H
 
 #include "EventPoll.h"
 
@@ -126,4 +126,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_EPOLL_EVENT_POLL_H_
+#endif // D_EPOLL_EVENT_POLL_H

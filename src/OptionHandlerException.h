@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_OPTION_HANDLER_EXCEPTION_H_
-#define _D_OPTION_HANDLER_EXCEPTION_H_
+#ifndef D_OPTION_HANDLER_EXCEPTION_H
+#define D_OPTION_HANDLER_EXCEPTION_H
 #include "RecoverableException.h"
 
 namespace aria2 {
@@ -67,4 +67,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_OPTION_HANDLER_EXCEPTION_EX_H_
+#endif // D_OPTION_HANDLER_EXCEPTION_EX_H

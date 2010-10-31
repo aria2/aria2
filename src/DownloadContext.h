@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DOWNLOAD_CONTEXT_H_
-#define _D_DOWNLOAD_CONTEXT_H_
+#ifndef D_DOWNLOAD_CONTEXT_H
+#define D_DOWNLOAD_CONTEXT_H
 
 #include "common.h"
 
@@ -244,4 +244,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DOWNLOAD_CONTEXT_H_
+#endif // D_DOWNLOAD_CONTEXT_H

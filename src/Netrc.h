@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_NETRC_H_
-#define _D_NETRC_H_
+#ifndef D_NETRC_H
+#define D_NETRC_H
 
 #include "common.h"
 
@@ -175,4 +175,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_NETRC_H_
+#endif // D_NETRC_H

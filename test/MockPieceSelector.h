@@ -1,5 +1,5 @@
-#ifndef _D_MOCK_PIECE_SELECTOR_H_
-#define _D_MOCK_PIECE_SELECTOR_H_
+#ifndef D_MOCK_PIECE_SELECTOR_H
+#define D_MOCK_PIECE_SELECTOR_H
 
 #include "PieceSelector.h"
 
@@ -16,4 +16,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_MOCK_PIECE_SELECTOR_H_
+#endif // D_MOCK_PIECE_SELECTOR_H

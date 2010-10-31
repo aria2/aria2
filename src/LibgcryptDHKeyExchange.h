@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_LIBGCRYPT_DH_KEY_EXCHANGE_H_
-#define _D_LIBGCRYPT_DH_KEY_EXCHANGE_H_
+#ifndef D_LIBGCRYPT_DH_KEY_EXCHANGE_H
+#define D_LIBGCRYPT_DH_KEY_EXCHANGE_H
 
 #include "common.h"
 #include "DlAbortEx.h"
@@ -175,4 +175,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_LIBGCRYPT_DH_KEY_EXCHANGE_H_
+#endif // D_LIBGCRYPT_DH_KEY_EXCHANGE_H

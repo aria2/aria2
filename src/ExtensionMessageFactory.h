@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXTENSION_MESSAGE_FACTORY_H_
-#define _D_EXTENSION_MESSAGE_FACTORY_H_
+#ifndef D_EXTENSION_MESSAGE_FACTORY_H
+#define D_EXTENSION_MESSAGE_FACTORY_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -54,4 +54,4 @@ typedef SharedHandle<ExtensionMessageFactory> ExtensionMessageFactoryHandle;
 
 } // namespace aria2
 
-#endif // _D_EXTENSION_MESSAGE_FACTORY_H_
+#endif // D_EXTENSION_MESSAGE_FACTORY_H

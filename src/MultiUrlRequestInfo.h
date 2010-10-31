@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MULTI_URL_REQUEST_INFO_H_
-#define _D_MULTI_URL_REQUEST_INFO_H_
+#ifndef D_MULTI_URL_REQUEST_INFO_H
+#define D_MULTI_URL_REQUEST_INFO_H
 
 #include "common.h"
 
@@ -84,4 +84,4 @@ typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;
 
 } // namespace aria2
 
-#endif // _D_MULTI_URL_REQUEST_INFO_H_
+#endif // D_MULTI_URL_REQUEST_INFO_H

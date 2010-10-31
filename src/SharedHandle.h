@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SHARED_HANDLE_H_
-#define _D_SHARED_HANDLE_H_
+#ifndef D_SHARED_HANDLE_H
+#define D_SHARED_HANDLE_H
 
 #include <iosfwd>
 
@@ -411,4 +411,4 @@ dynamic_pointer_cast(const WeakHandle<S>& t) {
 
 } // namespace aria2
 
-#endif // _D_SHARED_HANDLE_H_
+#endif // D_SHARED_HANDLE_H

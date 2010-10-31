@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_H_
-#define _D_PEER_H_
+#ifndef D_PEER_H
+#define D_PEER_H
 
 #include "common.h"
 
@@ -335,4 +335,4 @@ size_t countSeeder(InputIterator first, InputIterator last)
 
 } // namespace aria2
 
-#endif // _D_PEER_H_
+#endif // D_PEER_H

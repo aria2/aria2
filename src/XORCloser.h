@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XOR_CLOSER_H_
-#define _D_XOR_CLOSER_H_
+#ifndef D_XOR_CLOSER_H
+#define D_XOR_CLOSER_H
 
 #include "common.h"
 
@@ -67,4 +67,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_XOR_CLOSER_H_
+#endif // D_XOR_CLOSER_H

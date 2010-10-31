@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MESSAGE_H_
-#define _D_MESSAGE_H_
+#ifndef D_MESSAGE_H
+#define D_MESSAGE_H
 
 #include "common.h"
 
@@ -273,4 +273,4 @@
 #define EX_EXCEPTION_CAUGHT _("Exception caught")
 #define EX_TOO_LONG_PAYLOAD _("Max payload length exceeded or invalid. length = %u")
 #define EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE _("Invalid file length. Cannot continue download %s: local %s, remote %s")
-#endif // _D_MESSAGE_H_
+#endif // D_MESSAGE_H

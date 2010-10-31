@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PROGRESS_AWARE_ENTRY_H_
-#define _D_PROGRESS_AWARE_ENTRY_H_
+#ifndef D_PROGRESS_AWARE_ENTRY_H
+#define D_PROGRESS_AWARE_ENTRY_H
 
 #include "common.h"
 #include "SharedHandle.h"
@@ -57,4 +57,4 @@ typedef SharedHandle<ProgressAwareEntry> ProgressAwareEntryHandle;
 
 } // namespace aria2
 
-#endif // _D_PROGRESS_AWARE_ENTRY_H_
+#endif // D_PROGRESS_AWARE_ENTRY_H

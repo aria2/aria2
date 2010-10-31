@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PARAMETERIZED_STRING_PARSER_H_
-#define _D_PARAMETERIZED_STRING_PARSER_H_
+#ifndef D_PARAMETERIZED_STRING_PARSER_H
+#define D_PARAMETERIZED_STRING_PARSER_H
 
 #include "common.h"
 #include "PStringDatum.h"
@@ -57,4 +57,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PARAMETERIZED_STRING_PARSER_H_
+#endif // D_PARAMETERIZED_STRING_PARSER_H

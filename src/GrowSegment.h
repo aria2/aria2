@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_GROW_SEGMENT_H_
-#define _D_GROW_SEGMENT_H_
+#ifndef D_GROW_SEGMENT_H
+#define D_GROW_SEGMENT_H
 
 #include "Segment.h"
 
@@ -109,5 +109,5 @@ public:
 
 } // namespace aria2
 
-#endif // _D_GROW_SEGMENT_H_
+#endif // D_GROW_SEGMENT_H
 

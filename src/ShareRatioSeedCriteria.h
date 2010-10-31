@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SHARE_RATIO_SEED_CRITERIA_H_
-#define _D_SHARE_RATIO_SEED_CRITERIA_H_
+#ifndef D_SHARE_RATIO_SEED_CRITERIA_H
+#define D_SHARE_RATIO_SEED_CRITERIA_H
 
 #include "SeedCriteria.h"
 #include "DownloadContext.h"
@@ -89,4 +89,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SHARE_RATIO_SEED_CRITERIA_H_
+#endif // D_SHARE_RATIO_SEED_CRITERIA_H

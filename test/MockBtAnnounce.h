@@ -1,5 +1,5 @@
-#ifndef _D_MOCK_BT_ANNOUNCE_H_
-#define _D_MOCK_BT_ANNOUNCE_H_
+#ifndef D_MOCK_BT_ANNOUNCE_H
+#define D_MOCK_BT_ANNOUNCE_H
 
 #include "BtAnnounce.h"
 
@@ -65,4 +65,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_MOCK_BT_ANNOUNCE_H_
+#endif // D_MOCK_BT_ANNOUNCE_H

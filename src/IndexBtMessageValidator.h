@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_INDEX_BT_VALIDATOR_H_
-#define _D_INDEX_BT_VALIDATOR_H_
+#ifndef D_INDEX_BT_VALIDATOR_H
+#define D_INDEX_BT_VALIDATOR_H
 
 #include "BtMessageValidator.h"
 #include "IndexBtMessage.h"
@@ -60,4 +60,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_INDEX_BT_MESSAGE_VALIDATOR_H_
+#endif // D_INDEX_BT_MESSAGE_VALIDATOR_H

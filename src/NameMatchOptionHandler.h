@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_NAME_MATCH_OPTION_HANDLER_H_
-#define _D_NAME_MATCH_OPTION_HANDLER_H_
+#ifndef D_NAME_MATCH_OPTION_HANDLER_H
+#define D_NAME_MATCH_OPTION_HANDLER_H
 
 #include "OptionHandler.h"
 
@@ -170,4 +170,4 @@ typedef SharedHandle<NameMatchOptionHandler> NameMatchOptionHandlerHandle;
 
 } // namespace aria2
 
-#endif // _D_NAME_MATCH_OPTION_HANDLER_H_
+#endif // D_NAME_MATCH_OPTION_HANDLER_H

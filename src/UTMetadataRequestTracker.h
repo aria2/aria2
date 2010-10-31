@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _UT_METADATA_REQUEST_TRACKER_H_
-#define _UT_METADATA_REQUEST_TRACKER_H_
+#ifndef D_UT_METADATA_REQUEST_TRACKER_H
+#define D_UT_METADATA_REQUEST_TRACKER_H
 
 #include "common.h"
 
@@ -98,4 +98,4 @@ public:
 
 } // namespace aria2
 
-#endif // _UT_METADATA_REQUEST_TRACKER_H_
+#endif // D_UT_METADATA_REQUEST_TRACKER_H

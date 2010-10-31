@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
+#ifndef D_SIMPLE_RANDOMIZER_H
+#define D_SIMPLE_RANDOMIZER_H
 
 #include "Randomizer.h"
 
@@ -66,4 +66,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SIMPLE_RANDOMIZER_H_
+#endif // D_SIMPLE_RANDOMIZER_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_RAREST_PIECE_SELECTOR_H_
-#define _D_RAREST_PIECE_SELECTOR_H_
+#ifndef D_RAREST_PIECE_SELECTOR_H
+#define D_RAREST_PIECE_SELECTOR_H
 
 #include "PieceSelector.h"
 #include "SharedHandle.h"
@@ -54,5 +54,5 @@ public:
 
 } // namespace aria2
 
-#endif // _D_RAREST_PIECE_SELECTOR_H_
+#endif // D_RAREST_PIECE_SELECTOR_H
 

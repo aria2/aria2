@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DEFAULT_BT_ANNOUNCE_H_
-#define _D_DEFAULT_BT_ANNOUNCE_H_
+#ifndef D_DEFAULT_BT_ANNOUNCE_H
+#define D_DEFAULT_BT_ANNOUNCE_H
 
 #include "BtAnnounce.h"
 #include "TimerA2.h"
@@ -158,4 +158,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DEFAULT_BT_ANNOUNCE_H_
+#endif // D_DEFAULT_BT_ANNOUNCE_H

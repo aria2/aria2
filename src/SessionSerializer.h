@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SESSION_SERIALIZER_H_
-#define _D_SESSION_SERIALIZER_H_
+#ifndef D_SESSION_SERIALIZER_H
+#define D_SESSION_SERIALIZER_H
 
 #include "common.h"
 
@@ -62,4 +62,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SESSION_SERIALIZER_H_
+#endif // D_SESSION_SERIALIZER_H

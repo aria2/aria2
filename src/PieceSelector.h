@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PIECE_SELECTOR_H_
-#define _D_PIECE_SELECTOR_H_
+#ifndef D_PIECE_SELECTOR_H
+#define D_PIECE_SELECTOR_H
 
 #include "common.h"
 
@@ -51,4 +51,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PIECE_SELECTOR_H_
+#endif // D_PIECE_SELECTOR_H

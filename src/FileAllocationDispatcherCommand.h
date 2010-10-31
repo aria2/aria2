@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_DISPATCHER_COMMAND_H_
-#define _D_FILE_ALLOCATION_DISPATCHER_COMMAND_H_
+#ifndef D_FILE_ALLOCATION_DISPATCHER_COMMAND_H
+#define D_FILE_ALLOCATION_DISPATCHER_COMMAND_H
 
 #include "SequentialDispatcherCommand.h"
 #include "FileAllocationMan.h"
@@ -56,4 +56,4 @@ protected:
 
 } // namespace aria2
 
-#endif // _D_FILE_ALLOCATION_DISPATCHER_COMMAND_H_
+#endif // D_FILE_ALLOCATION_DISPATCHER_COMMAND_H

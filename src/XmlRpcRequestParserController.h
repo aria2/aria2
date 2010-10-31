@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML_RPC_REQUEST_PARSER_CONTROLLER_H_
-#define _D_XML_RPC_REQUEST_PARSER_CONTROLLER_H_
+#ifndef D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
+#define D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
 
 #include "common.h"
 
@@ -93,4 +93,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_XML_RPC_REQUEST_PARSER_CONTROLLER_H_
+#endif // D_XML_RPC_REQUEST_PARSER_CONTROLLER_H

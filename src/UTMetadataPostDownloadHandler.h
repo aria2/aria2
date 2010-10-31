@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_UT_METADATA_POST_DOWNLOAD_HANDLER_H_
-#define _D_UT_METADATA_POST_DOWNLOAD_HANDLER_H_
+#ifndef D_UT_METADATA_POST_DOWNLOAD_HANDLER_H
+#define D_UT_METADATA_POST_DOWNLOAD_HANDLER_H
 
 #include "PostDownloadHandler.h"
 #include "RequestGroupCriteria.h"
@@ -62,4 +62,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_UT_METADATA_POST_DOWNLOAD_HANDLER_H_
+#endif // D_UT_METADATA_POST_DOWNLOAD_HANDLER_H

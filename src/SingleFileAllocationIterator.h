@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SINGLE_FILE_ALLOCATION_ITERATOR_H_
-#define _D_SINGLE_FILE_ALLOCATION_ITERATOR_H_
+#ifndef D_SINGLE_FILE_ALLOCATION_ITERATOR_H
+#define D_SINGLE_FILE_ALLOCATION_ITERATOR_H
 
 #include "FileAllocationIterator.h"
 
@@ -81,4 +81,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_SINGLE_FILE_ALLOCATION_ITERATOR_H_
+#endif // D_SINGLE_FILE_ALLOCATION_ITERATOR_H

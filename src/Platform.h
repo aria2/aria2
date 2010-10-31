@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PLATFORM_H_
-#define _D_PLATFORM_H_
+#ifndef D_PLATFORM_H
+#define D_PLATFORM_H
 
 #include "common.h"
 
@@ -57,4 +57,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PLATFORM_H_
+#endif // D_PLATFORM_H

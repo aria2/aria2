@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_SESSION_RESOURCE_H_
-#define _D_PEER_SESSION_RESOURCE_H_
+#ifndef D_PEER_SESSION_RESOURCE_H
+#define D_PEER_SESSION_RESOURCE_H
 
 #include "common.h"
 
@@ -237,4 +237,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PEER_SESSION_RESOURCE_H_
+#endif // D_PEER_SESSION_RESOURCE_H

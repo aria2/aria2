@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BASE64_H_
-#define _D_BASE64_H_
+#ifndef D_BASE64_H
+#define D_BASE64_H
 #include <string>
 
 namespace aria2 {
@@ -94,4 +94,4 @@ public:
 
 } // namespace aria2
 
-#endif // _BASE64_H_
+#endif // D_BASE64_H

@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_LIBSSL_TLS_CONTEXT_H_
-#define _D_LIBSSL_TLS_CONTEXT_H_
+#ifndef D_LIBSSL_TLS_CONTEXT_H
+#define D_LIBSSL_TLS_CONTEXT_H
 
 #include "common.h"
 
@@ -90,4 +90,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_LIBSSL_TLS_CONTEXT_H_
+#endif // D_LIBSSL_TLS_CONTEXT_H

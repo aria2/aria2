@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PROTOCOL_DETECTOR_H_
-#define _D_PROTOCOL_DETECTOR_H_
+#ifndef D_PROTOCOL_DETECTOR_H
+#define D_PROTOCOL_DETECTOR_H
 
 #include "common.h"
 #include <string>
@@ -64,4 +64,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_PROTOCOL_DETECTOR_H_
+#endif // D_PROTOCOL_DETECTOR_H

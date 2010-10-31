@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_UT_PEX_EXTENSION_MESSAGE_H_
-#define _D_UT_PEX_EXTENSION_MESSAGE_H_
+#ifndef D_UT_PEX_EXTENSION_MESSAGE_H
+#define D_UT_PEX_EXTENSION_MESSAGE_H
 
 #include "ExtensionMessage.h"
 
@@ -141,4 +141,4 @@ typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
 
 } // namespace aria2
 
-#endif // _D_UT_PEX_EXTENSION_MESSAGE_H_
+#endif // D_UT_PEX_EXTENSION_MESSAGE_H

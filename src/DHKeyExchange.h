@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DH_KEY_EXCHANGE_H_
-#define _D_DH_KEY_EXCHANGE_H_
+#ifndef D_DH_KEY_EXCHANGE_H
+#define D_DH_KEY_EXCHANGE_H
 
 #include "common.h"
 #ifdef HAVE_LIBGCRYPT
@@ -42,4 +42,4 @@
 # include "LibsslDHKeyExchange.h"
 #endif // HAVE_LIBSSL
 
-#endif // _D_DH_KEY_EXCHANGE_H_
+#endif // D_DH_KEY_EXCHANGE_H

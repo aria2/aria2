@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_TIMER_A2_H_
-#define _D_TIMER_A2_H_
+#ifndef D_TIMER_A2_H
+#define D_TIMER_A2_H
 
 #include "common.h"
 #include "a2time.h"
@@ -102,4 +102,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_TIMER_A2_H_
+#endif // D_TIMER_A2_H

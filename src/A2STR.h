@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_A2_STR_H_
-#define _D_A2_STR_H_
+#ifndef D_A2_STR_H
+#define D_A2_STR_H
 
 #include <string>
 
@@ -71,4 +71,4 @@ public:
 };
 } // namespace aria2
 
-#endif // _D_A2_STR_H_
+#endif // D_A2_STR_H

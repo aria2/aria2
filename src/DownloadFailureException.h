@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DOWNLOAD_FAILURE_EXCEPTION_H_
-#define _D_DOWNLOAD_FAILURE_EXCEPTION_H_
+#ifndef D_DOWNLOAD_FAILURE_EXCEPTION_H
+#define D_DOWNLOAD_FAILURE_EXCEPTION_H
 #include "RecoverableException.h"
 
 namespace aria2 {
@@ -66,4 +66,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_DOWNLOAD_FAILURE_EXCEPTION_H_
+#endif // D_DOWNLOAD_FAILURE_EXCEPTION_H

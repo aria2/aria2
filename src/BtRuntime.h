@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_RUNTIME_H_
-#define _D_BT_RUNTIME_H_
+#ifndef D_BT_RUNTIME_H
+#define D_BT_RUNTIME_H
 
 #include "common.h"
 #include "BtConstants.h"
@@ -135,4 +135,4 @@ typedef SharedHandle<BtRuntime> BtRuntimeHandle;
 
 } // namespace aria2
 
-#endif // _D_BT_RUNTIME_H_
+#endif // D_BT_RUNTIME_H

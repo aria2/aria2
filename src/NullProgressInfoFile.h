@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_NULL_PROGRESS_INFO_FILE_H_
-#define _D_NULL_PROGRESS_INFO_FILE_H_
+#ifndef D_NULL_PROGRESS_INFO_FILE_H
+#define D_NULL_PROGRESS_INFO_FILE_H
 
 #include "BtProgressInfoFile.h"
 #include "A2STR.h"
@@ -64,4 +64,4 @@ typedef SharedHandle<NullProgressInfoFile> NullProgressInfoFileHandle;
 
 } // namespace aria2
 
-#endif // _D_NULL_PROGRESS_INFO_FILE_H_
+#endif // D_NULL_PROGRESS_INFO_FILE_H

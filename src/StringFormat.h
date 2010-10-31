@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_STRING_FORMAT_H_
-#define _D_STRING_FORMAT_H_
+#ifndef D_STRING_FORMAT_H
+#define D_STRING_FORMAT_H
 
 #include "common.h"
 
@@ -57,4 +57,4 @@ std::ostream& operator<<(std::ostream& o, const StringFormat& fmt);
 
 } // namespace aria2
 
-#endif // _D_STRING_FORMAT_H_
+#endif // D_STRING_FORMAT_H

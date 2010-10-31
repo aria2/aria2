@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_OPTION_H_
-#define _D_OPTION_H_
+#ifndef D_OPTION_H
+#define D_OPTION_H
 
 #include "common.h"
 #include <string>
@@ -78,4 +78,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_OPTION_H_
+#endif // D_OPTION_H

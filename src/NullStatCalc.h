@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_NULL_STAT_CALC_H_
-#define _D_NULL_STAT_CALC_H_
+#ifndef D_NULL_STAT_CALC_H
+#define D_NULL_STAT_CALC_H
 
 #include "StatCalc.h"
 
@@ -48,4 +48,4 @@ public:
 
 } // namespace aria2
 
-#endif // _D_NULL_STAT_CALC_H_
+#endif // D_NULL_STAT_CALC_H

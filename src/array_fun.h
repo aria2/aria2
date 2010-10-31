@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_ARRAY_FUN_H_
-#define _D_ARRAY_FUN_H_
+#ifndef D_ARRAY_FUN_H
+#define D_ARRAY_FUN_H
 
 #include <cstdlib>
 #include <functional>
@@ -215,4 +215,4 @@ operator~(const A& a)
 
 } // namespace aria2
 
-#endif // _D_ARRAY_FUN_H_
+#endif // D_ARRAY_FUN_H
