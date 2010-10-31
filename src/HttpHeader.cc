@@ -180,6 +180,14 @@ RangeHandle HttpHeader::getRange() const
   std::pair<std::string, std::string> byteRangeSpecPair;
   util::divide(byteRangeSpecPair, byteRangeSpec, '/');
 
+  if(util::strip(byteRangeSpecPair.first) == "*" ||
+     util::strip(byteRangeSpecPair.second) == "*") {
+    // If byte-range-resp-spec or instance-length is "*", we returns
+    // empty Range. The former is usually sent with 416 (Request range
+    // not satisfiable) status.
+    return SharedHandle<Range>(new Range());
+  }
+
   std::pair<std::string, std::string> byteRangeRespSpecPair;
   util::divide(byteRangeRespSpecPair, byteRangeSpecPair.first, '-');
 

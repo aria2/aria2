@@ -1,5 +1,13 @@
 2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Return empty range if byte-range-resp-spec or instance-length is
+	"*" in Content-Range header to prevent aria2 from emitting error
+	failing to convert "*" to a integer.
+	* src/HttpHeader.cc
+	* test/HttpHeaderTest.cc
+
+2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made #include guard consistent for c++ header files.
 
 2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
