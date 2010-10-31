@@ -188,7 +188,8 @@ bool HttpRequestCommand::executeInternal() {
               getPieceStorage()->getNextUsedIndex(segment->getIndex());
             endOffset = std::min
               (static_cast<off_t>(getFileEntry()->getLength()),
-               getFileEntry()->gtoloff(segment->getSegmentLength()*nextIndex));
+               getFileEntry()->gtoloff
+               (static_cast<off_t>(segment->getSegmentLength())*nextIndex));
           }
           SharedHandle<HttpRequest> httpRequest
             (createHttpRequest(getRequest(),

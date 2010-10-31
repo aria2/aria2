@@ -59,7 +59,7 @@ HttpRequest::HttpRequest():contentEncodingEnabled_(true),
                            userAgent_(USER_AGENT),
                            noCache_(true),
                            acceptGzip_(false),
-                           endOffsetOverride_(false)
+                           endOffsetOverride_(0)
 {}
 
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
