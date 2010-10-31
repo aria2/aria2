@@ -1,5 +1,10 @@
 2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added XML-RPC examples.
+	* doc/aria2c.1.txt
+
+2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Return empty range if byte-range-resp-spec or instance-length is
 	"*" in Content-Range header to prevent aria2 from emitting error
 	failing to convert "*" to a integer.

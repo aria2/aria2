@@ -3285,7 +3285,8 @@ the new download is inserted at <em>position</em> in the waiting queue. If
 <em>position</em> is not given or <em>position</em> is larger than the size of the
 queue, it is appended at the end of the queue.  This method returns
 GID of registered download.</p></div>
-<div class="paragraph"><p>Adding http://example.org/file to aria2:</p></div>
+<h5 id="_example">Example</h5>
+<div class="paragraph"><p>The following example adds http://example.org/file to aria2:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; import xmlrpclib
@@ -3293,13 +3294,14 @@ GID of registered download.</p></div>
 &gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'])
 '1'</tt></pre>
 </div></div>
-<div class="paragraph"><p>Adding 2 sources and some options:</p></div>
+<div class="paragraph"><p>The following example adds 2 sources and some options:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'], dict(dir="/tmp"))
 '2'</tt></pre>
 </div></div>
-<div class="paragraph"><p>Adding a download and insert it to the front of waiting downloads:</p></div>
+<div class="paragraph"><p>The following example adds a download and insert it to the front of
+waiting downloads:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; s.aria2.addUri(['http://example.org/file'], {}, 0)
@@ -3323,7 +3325,8 @@ given as an integer starting from 0, the new download is inserted at
 end of the queue.  This method returns GID of registered download.
 Please note that the downloads added by this method are not saved by
 <strong><a href="#aria2_optref_save_session">--save-session</a></strong>.</p></div>
-<div class="paragraph"><p>Adding local file file.torrent to aria2:</p></div>
+<h5 id="_example_2">Example</h5>
+<div class="paragraph"><p>The following example adds local file file.torrent to aria2:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; import xmlrpclib
@@ -3343,7 +3346,8 @@ given or <em>position</em> is larger than the size of the queue, it is
 appended at the end of the queue.  This method returns array of GID of
 registered download.  Please note that the downloads added by this
 method are not saved by <strong><a href="#aria2_optref_save_session">--save-session</a></strong>.</p></div>
-<div class="paragraph"><p>Adding local file file.meta4 to aria2:</p></div>
+<h5 id="_example_3">Example</h5>
+<div class="paragraph"><p>The following example adds local file file.meta4 to aria2:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; import xmlrpclib
@@ -3357,7 +3361,8 @@ method are not saved by <strong><a href="#aria2_optref_save_session">--save-sess
 string. If specified download is in progress, it is stopped at
 first. The status of removed download becomes "removed".  This method
 returns GID of removed download.</p></div>
-<div class="paragraph"><p>Removing download whose GID is <em>3</em>:</p></div>
+<h5 id="_example_4">Example</h5>
+<div class="paragraph"><p>The following example removes download whose GID is "3":</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; import xmlrpclib
@@ -3645,7 +3650,9 @@ name
 </dl></div>
 </dd>
 </dl></div>
-<div class="paragraph"><p>Get information about download whose GID is <em>1</em>:</p></div>
+<h5 id="_example_5">Example</h5>
+<div class="paragraph"><p>The following example gets information about download whose GID is
+"1":</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; import xmlrpclib
@@ -3673,7 +3680,8 @@ name
  'uploadLength': '0',
  'uploadSpeed': '0'}</tt></pre>
 </div></div>
-<div class="paragraph"><p>Get information specifying keys you are interested in:</p></div>
+<div class="paragraph"><p>The following example gets information specifying keys you are
+interested in:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; r = s.aria2.tellStatus('1', ['gid', 'totalLength', 'completedLength'])
@@ -3704,6 +3712,16 @@ status
 </p>
 </dd>
 </dl></div>
+<h5 id="_example_6">Example</h5>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; r = s.aria2.getUris('1')
+&gt;&gt;&gt; pprint(r)
+[{'status': 'used', 'uri': 'http://example.org/file'}]</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_getFiles"><strong>aria2.getFiles</strong> (<em>gid</em>)</h4>
 <h5 id="_description_15">Description</h5>
 <div class="paragraph"><p>This method returns file list of the download denoted by <em>gid</em>. <em>gid</em>
@@ -3755,6 +3773,21 @@ uris
 </p>
 </dd>
 </dl></div>
+<h5 id="_example_7">Example</h5>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; r = s.aria2.getFiles('1')
+&gt;&gt;&gt; pprint(r)
+[{'index': '1',
+  'length': '34896138',
+  'path': '/downloads/file',
+  'selected': 'true',
+  'uris': [{'status': 'used',
+            'uri': 'http://example.org/file'}]}]</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_getPeers"><strong>aria2.getPeers</strong> (<em>gid</em>)</h4>
 <h5 id="_description_16">Description</h5>
 <div class="paragraph"><p>This method returns peer list of the download denoted by <em>gid</em>. <em>gid</em>
@@ -3838,6 +3871,33 @@ seeder
 </p>
 </dd>
 </dl></div>
+<h5 id="_example_8">Example</h5>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; r = s.aria2.getPeers('1')
+&gt;&gt;&gt; pprint(r)
+[{'amChoking': 'true',
+  'bitfield': 'ffffffffffffffffffffffffffffffffffffffff',
+  'downloadSpeed': '10602',
+  'ip': '10.0.0.9',
+  'peerChoking': 'false',
+  'peerId': 'aria2%2F1%2E10%2E5%2D%87%2A%EDz%2F%F7%E6',
+  'port': '6881',
+  'seeder': 'true',
+  'uploadSpeed': '0'},
+ {'amChoking': 'false',
+  'bitfield': 'ffffeff0fffffffbfffffff9fffffcfff7f4ffff',
+  'downloadSpeed': '8654',
+  'ip': '10.0.0.30',
+  'peerChoking': 'false',
+  'peerId': 'bittorrent client758',
+  'port': '37842',
+  'seeder': 'false,
+  'uploadSpeed': '6890'}]</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_getServers"><strong>aria2.getServers</strong> (<em>gid</em>)</h4>
 <h5 id="_description_17">Description</h5>
 <div class="paragraph"><p>This method returns currently connected HTTP(S)/FTP servers of the download denoted by <em>gid</em>. <em>gid</em> is of type string. The response
@@ -3889,6 +3949,19 @@ downloadSpeed
 </dl></div>
 </dd>
 </dl></div>
+<h5 id="_example_9">Example</h5>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; r = s.aria2.getServers('1')
+&gt;&gt;&gt; pprint(r)
+[{'index': '1',
+  'servers': [{'currentUri': 'http://example.org/dl/file',
+               'downloadSpeed': '20285',
+               'uri': 'http://example.org/file'}]}]</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_tellActive"><strong>aria2.tellActive</strong> (<em>[keys]</em>)</h4>
 <h5 id="_description_18">Description</h5>
 <div class="paragraph"><p>This method returns the list of active downloads.  The response is of
@@ -3940,6 +4013,16 @@ destination position.</p></div>
 -1, POS_CUR) will change its position to 2. Additional
 aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
 beginning of the queue).</p></div>
+<h5 id="_example_10">Example</h5>
+<div class="paragraph"><p>The following example moves the download whose GID is "3" to the
+front of the waiting queue:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.changePosition('3', 0, 'POS_SET')
+0</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_changeUri"><strong>aria2.changeUri</strong> (<em>gid, fileIndex, delUris, addUris[, position]</em>)</h4>
 <h5 id="_description_22">Description</h5>
 <div class="paragraph"><p>This method removes URIs in <em>delUris</em> from and appends URIs in
@@ -3959,11 +4042,36 @@ specify (at least) 3 "http://example.org/aria2" in <em>delUris</em>.  This
 method returns a list which contains 2 integers. The first integer is
 the number of URIs deleted. The second integer is the number of URIs
 added.</p></div>
+<h5 id="_example_11">Example</h5>
+<div class="paragraph"><p>The following example adds 1 URI http://example.org/file to the file
+whose index is "1" and belongs to the download whose GID is "2":</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.changeUri('2', 1, [], ['http://example.org/file'])
+[0, 1]</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_getOption"><strong>aria2.getOption</strong> (<em>gid</em>)</h4>
 <h5 id="_description_23">Description</h5>
 <div class="paragraph"><p>This method returns options of the download denoted by <em>gid</em>.  The
 response is of type struct. Its key is the name of option.  The value type
 is string.</p></div>
+<h5 id="_example_12">Example</h5>
+<div class="paragraph"><p>The following example gets options of the download whose GID is "1":</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; from pprint import pprint
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; r = s.aria2.getOption('1')
+&gt;&gt;&gt; pprint(r)
+{'allow-overwrite': 'false',
+ 'allow-piece-length-change': 'false',
+ 'always-resume': 'true',
+ 'async-dns': 'true',
+ ....</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_changeOption"><strong>aria2.changeOption</strong> (<em>gid, options</em>)</h4>
 <h5 id="_description_24">Description</h5>
 <div class="paragraph"><p>This method changes options of the download denoted by <em>gid</em>
@@ -3971,6 +4079,17 @@ dynamically.  <em>gid</em> is of type string.  <em>options</em> is of type struc
 and the available options are: <strong><a href="#aria2_optref_bt_max_peers">bt-max-peers</a></strong>,
 <strong><a href="#aria2_optref_bt_request_peer_speed_limit">bt-request-peer-speed-limit</a></strong>, <strong><a href="#aria2_optref_max_download_limit">max-download-limit</a></strong> and
 <strong><a href="#aria2_optref_max_upload_limit">max-upload-limit</a></strong>.  This method returns "OK" for success.</p></div>
+<h5 id="_example_13">Example</h5>
+<div class="paragraph"><p>The following example sets
+<strong><a href="#aria2_optref_max_download_limit">max-download-limit</a></strong> option to "20K" for
+the download whose GID is "1".</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&gt;&gt;&gt; import xmlrpclib
+&gt;&gt;&gt; s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+&gt;&gt;&gt; s.aria2.changeOption('1', {'max-download-limit':'20K'})
+'OK'</tt></pre>
+</div></div>
 <h4 id="aria2_xmlrpc_aria2_getGlobalOption"><strong>aria2.getGlobalOption</strong> ()</h4>
 <h5 id="_description_25">Description</h5>
 <div class="paragraph"><p>This method returns global options.  The response is of type
@@ -4013,6 +4132,7 @@ enabledFeatures
 </p>
 </dd>
 </dl></div>
+<h5 id="_example_14">Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; import xmlrpclib
@@ -4044,6 +4164,7 @@ sessionId
 </p>
 </dd>
 </dl></div>
+<h5 id="_example_15">Example</h5>
 <div class="listingblock">
 <div class="content">
 <pre><tt>&gt;&gt;&gt; import xmlrpclib
@@ -4069,6 +4190,7 @@ method.  This method returns array of responses.  The element of array
 will either be a one-item array containing the return value of each
 method call or struct of fault element if an encapsulated method call
 fails.</p></div>
+<h5 id="_example_16">Example</h5>
 <div class="paragraph"><p>In the following example, we add 2 downloads. First one is
 http://example.org/file and second one is file.torrent:</p></div>
 <div class="listingblock">
@@ -4166,7 +4288,7 @@ r = s.aria2.addUri(["http://localhost/aria2.tar.bz2"], {"dir":"/downloads"})
 pprint(r)</tt></pre>
 </div></div>
 </div>
-<h2 id="_example">EXAMPLE</h2>
+<h2 id="_example_17">EXAMPLE</h2>
 <div class="sectionbody">
 <h3 id="_http_ftp_segmented_download">HTTP/FTP Segmented Download</h3><div style="clear:left"></div>
 <h4 id="_download_a_file">Download a file</h4>
@@ -4586,7 +4708,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-10-30 21:20:38 JST
+Last updated 2010-10-31 17:50:07 JST
 </div>
 </div>
 </body>

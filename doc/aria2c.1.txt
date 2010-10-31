@@ -1473,7 +1473,11 @@ the new download is inserted at 'position' in the waiting queue. If
 queue, it is appended at the end of the queue.  This method returns
 GID of registered download.
 
-Adding \http://example.org/file to aria2:
+Example
++++++++
+
+The following example adds \http://example.org/file to aria2:
+
 ----------------------------------------------------------
 >>> import xmlrpclib
 >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
@@ -1481,13 +1485,16 @@ Adding \http://example.org/file to aria2:
 '1'
 ----------------------------------------------------------
 
-Adding 2 sources and some options:
+The following example adds 2 sources and some options:
+
 --------------------------------------------------------------------------
 >>> s.aria2.addUri(['http://example.org/file'], dict(dir="/tmp"))
 '2'
 --------------------------------------------------------------------------
 
-Adding a download and insert it to the front of waiting downloads:
+The following example adds a download and insert it to the front of
+waiting downloads:
+
 ---------------------------------------------------------------
 >>> s.aria2.addUri(['http://example.org/file'], {}, 0)
 '3'
@@ -1517,7 +1524,11 @@ end of the queue.  This method returns GID of registered download.
 Please note that the downloads added by this method are not saved by
 *<<aria2_optref_save_session, --save-session>>*.
 
-Adding local file file.torrent to aria2:
+Example
++++++++
+
+The following example adds local file file.torrent to aria2:
+
 ---------------------------------------------------------------------
 >>> import xmlrpclib
 >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
@@ -1543,7 +1554,11 @@ appended at the end of the queue.  This method returns array of GID of
 registered download.  Please note that the downloads added by this
 method are not saved by *<<aria2_optref_save_session, --save-session>>*.
 
-Adding local file file.meta4 to aria2:
+Example
++++++++
+
+The following example adds local file file.meta4 to aria2:
+
 --------------------------------------------------------------------
 >>> import xmlrpclib
 >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
@@ -1563,7 +1578,11 @@ string. If specified download is in progress, it is stopped at
 first. The status of removed download becomes "removed".  This method
 returns GID of removed download.
 
-Removing download whose GID is '3':
+Example
++++++++
+
+The following example removes download whose GID is "3":
+
 --------------------------------------------------------------------
 >>> import xmlrpclib
 >>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
@@ -1795,7 +1814,12 @@ bittorrent::
 
       name in info dictionary. name.utf-8 is used if available.
 
-Get information about download whose GID is '1':
+Example
++++++++
+
+The following example gets information about download whose GID is
+"1":
+
 --------------------------------------------------------------------
 >>> import xmlrpclib
 >>> from pprint import pprint
@@ -1823,7 +1847,9 @@ Get information about download whose GID is '1':
  'uploadSpeed': '0'}
 --------------------------------------------------------------------
 
-Get information specifying keys you are interested in:
+The following example gets information specifying keys you are
+interested in:
+
 --------------------------------------------------------------------------
 >>> r = s.aria2.tellStatus('1', ['gid', 'totalLength', 'completedLength'])
 >>> pprint(r)
@@ -1849,6 +1875,18 @@ status::
 
   'used' if the URI is already used. 'waiting' if the URI is waiting
   in the queue.
+
+Example
++++++++
+
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> r = s.aria2.getUris('1')
+>>> pprint(r)
+[{'status': 'used', 'uri': 'http://example.org/file'}]
+--------------------------------------------------------------------
 
 [[aria2_xmlrpc_aria2_getFiles]]
 *aria2.getFiles* ('gid')
@@ -1884,6 +1922,23 @@ uris::
 
   Returns the list of URI for this file. The element of list is the
   same struct used in *<<aria2_xmlrpc_aria2_getUris, aria2.getUris>>* method.
+
+Example
++++++++
+
+--------------------------------------------------------------------------
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> r = s.aria2.getFiles('1')
+>>> pprint(r)
+[{'index': '1',
+  'length': '34896138',
+  'path': '/downloads/file',
+  'selected': 'true',
+  'uris': [{'status': 'used',
+            'uri': 'http://example.org/file'}]}]
+--------------------------------------------------------------------------
 
 [[aria2_xmlrpc_aria2_getPeers]]
 *aria2.getPeers* ('gid')
@@ -1936,6 +1991,35 @@ seeder::
 
   "true" is this client is a seeder. Otherwise "false".
 
+Example
++++++++
+
+--------------------------------------------------------------------------
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> r = s.aria2.getPeers('1')
+>>> pprint(r)
+[{'amChoking': 'true',
+  'bitfield': 'ffffffffffffffffffffffffffffffffffffffff',
+  'downloadSpeed': '10602',
+  'ip': '10.0.0.9',
+  'peerChoking': 'false',
+  'peerId': 'aria2%2F1%2E10%2E5%2D%87%2A%EDz%2F%F7%E6',
+  'port': '6881',
+  'seeder': 'true',
+  'uploadSpeed': '0'},
+ {'amChoking': 'false',
+  'bitfield': 'ffffeff0fffffffbfffffff9fffffcfff7f4ffff',
+  'downloadSpeed': '8654',
+  'ip': '10.0.0.30',
+  'peerChoking': 'false',
+  'peerId': 'bittorrent client758',
+  'port': '37842',
+  'seeder': 'false,
+  'uploadSpeed': '6890'}]
+--------------------------------------------------------------------------
+
 [[aria2_xmlrpc_aria2_getServers]]
 *aria2.getServers* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1968,6 +2052,21 @@ servers::
   downloadSpeed;;
 
     Download speed (byte/sec)
+
+Example
++++++++
+
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> r = s.aria2.getServers('1')
+>>> pprint(r)
+[{'index': '1',
+  'servers': [{'currentUri': 'http://example.org/dl/file',
+               'downloadSpeed': '20285',
+               'uri': 'http://example.org/file'}]}]
+--------------------------------------------------------------------
 
 [[aria2_xmlrpc_aria2_tellActive]]
 *aria2.tellActive* ('[keys]')
@@ -2051,6 +2150,19 @@ For example, if GID#1 is placed in position 3, aria2.changePosition(1,
 aria2.changePosition(1, 0, POS_SET) will change its position to 0(the
 beginning of the queue).
 
+Example
++++++++
+
+The following example moves the download whose GID is "3" to the
+front of the waiting queue:
+
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.changePosition('3', 0, 'POS_SET')
+0
+--------------------------------------------------------------------
+
 [[aria2_xmlrpc_aria2_changeUri]]
 *aria2.changeUri* ('gid, fileIndex, delUris, addUris[, position]')
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2076,6 +2188,19 @@ method returns a list which contains 2 integers. The first integer is
 the number of URIs deleted. The second integer is the number of URIs
 added.
 
+Example
++++++++
+
+The following example adds 1 URI \http://example.org/file to the file
+whose index is "1" and belongs to the download whose GID is "2":
+
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.changeUri('2', 1, [], ['http://example.org/file'])
+[0, 1]
+--------------------------------------------------------------------
+
 [[aria2_xmlrpc_aria2_getOption]]
 *aria2.getOption* ('gid')
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2086,6 +2211,24 @@ Description
 This method returns options of the download denoted by 'gid'.  The
 response is of type struct. Its key is the name of option.  The value type
 is string.
+
+Example
++++++++
+
+The following example gets options of the download whose GID is "1":
+
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> from pprint import pprint
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> r = s.aria2.getOption('1')
+>>> pprint(r)
+{'allow-overwrite': 'false',
+ 'allow-piece-length-change': 'false',
+ 'always-resume': 'true',
+ 'async-dns': 'true',
+ ....
+--------------------------------------------------------------------
 
 [[aria2_xmlrpc_aria2_changeOption]]
 *aria2.changeOption* ('gid, options')
@@ -2099,6 +2242,20 @@ dynamically.  'gid' is of type string.  'options' is of type struct
 and the available options are: *<<aria2_optref_bt_max_peers, bt-max-peers>>*,
 *<<aria2_optref_bt_request_peer_speed_limit, bt-request-peer-speed-limit>>*, *<<aria2_optref_max_download_limit, max-download-limit>>* and
 *<<aria2_optref_max_upload_limit, max-upload-limit>>*.  This method returns "OK" for success.
+
+Example
++++++++
+
+The following example sets
+*<<aria2_optref_max_download_limit, max-download-limit>>* option to "20K" for
+the download whose GID is "1".
+
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.changeOption('1', {'max-download-limit':'20K'})
+'OK'
+--------------------------------------------------------------------
 
 [[aria2_xmlrpc_aria2_getGlobalOption]]
 *aria2.getGlobalOption* ()
@@ -2156,6 +2313,9 @@ enabledFeatures::
 
   List of enabled features. Each feature name is of type string.
 
+Example
++++++++
+
 --------------------------------------------------------------------
 >>> import xmlrpclib
 >>> from pprint import pprint
@@ -2186,6 +2346,9 @@ The response is of type struct and contains following key.
 sessionId::
 
   Session ID, which is generated each time when aria2 is invoked.
+
+Example
++++++++
 
 --------------------------------------------------------------------
 >>> import xmlrpclib
@@ -2229,6 +2392,9 @@ method.  This method returns array of responses.  The element of array
 will either be a one-item array containing the return value of each
 method call or struct of fault element if an encapsulated method call
 fails.
+
+Example
++++++++
 
 In the following example, we add 2 downloads. First one is
 \http://example.org/file and second one is file.torrent:
