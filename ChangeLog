@@ -1,5 +1,11 @@
 2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Bump up version number to 1.10.6
+	* configure.ac
+	* doc/aria2c.1.txt
+
+2010-10-31  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added XML-RPC examples.
 	* doc/aria2c.1.txt
 
