@@ -1,3 +1,39 @@
+aria2 1.10.6
+============
+
+Release Note
+------------
+
+This release fixes the bug that downloading files larger than 4GB
+fails on 32 bit systems. It also fixes the bug that dht.dat file is
+not saved.  The improper use of return value of vsnprintf was fixed,
+which caused segmentation fault when formatting strings more than 1024
+characters long.
+
+Please note that since 1.10.0 release, aria2 uses 1 connection per
+host by default and has 20MiB segment size restriction. So whatever
+value you specify using -s option, it uses 1 connection per host. To
+make it behave like 1.9.x, use -x16 -k1M (see
+--max-connection-per-server and --min-split-size option in man
+page). If you specify multiple hosts, aria2 will use all of them and
+open multiple connections.
+
+Changes
+-------
+
+ * Fixed the bug that downloading > 4GB file fails on 32bit systems.
+
+ * Fixed improper use of vsnprintf in StringFormat which is mainly
+   used for formatting strings of exception message. The actual bug
+   reported by the user was that aria2 emitted segmentation fault
+   error when very long URI(few thousands characters long) was given.
+
+ * Fixed the bug that dht.dat file could not be saved. This is because
+   a directory denoting temporary file path is wrongly created and
+   thus aria2 fails to open the file as regular file.
+
+
+
 aria2 1.10.5
 ============
 
