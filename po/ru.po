@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-10-12 20:34+0900\n"
+"POT-Creation-Date: 2010-11-01 20:48+0900\n"
 "PO-Revision-Date: 2010-09-17 04:25+0000\n"
 "Last-Translator: Andrew Zhuravlev <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
@@ -21,21 +21,21 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-10-12 11:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:222
+#: src/DownloadEngine.cc:224
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Завершаем выполнение программы... Нажмите Ctrl-C для экстренного завершения."
 
-#: src/DownloadEngine.cc:229
+#: src/DownloadEngine.cc:231
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Экстренное завершение..."
 
-#: src/MultiUrlRequestInfo.cc:112
+#: src/MultiUrlRequestInfo.cc:114
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 продолжит загрузку, если передача будет перезапущена."
 
-#: src/MultiUrlRequestInfo.cc:114
+#: src/MultiUrlRequestInfo.cc:116
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -43,11 +43,11 @@ msgstr ""
 "Если возникли какие-либо ошибки, проверьте log-файл. Для более подробной "
 "информации смотрите описание опции '-l'."
 
-#: src/RequestGroupMan.cc:603
+#: src/RequestGroupMan.cc:609
 msgid "Download Results:"
 msgstr "Результат загрузки:"
 
-#: src/RequestGroupMan.cc:663
+#: src/RequestGroupMan.cc:669
 msgid "Status Legend:"
 msgstr "Использованные обозначения:"
 
@@ -2200,49 +2200,49 @@ msgstr "Обратитесь к странице man для более подр�
 msgid "GID#%s - Download has already completed: %s"
 msgstr "GID#%s - Загрузка уже завершена: %s"
 
-#: src/message.h:102
+#: src/message.h:106
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr "Нераспознанный URI или неподдерживаемый протокол: %s"
 
-#: src/message.h:103
+#: src/message.h:107
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr "Трекер вернул предупреждение: %s"
 
-#: src/message.h:104
+#: src/message.h:108
 #, c-format
 msgid "The segment file %s exists."
 msgstr "Сегмент файла %s существует."
 
-#: src/message.h:105
+#: src/message.h:109
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr "Сегмент файла %s не существует."
 
-#: src/message.h:106
+#: src/message.h:110
 #, c-format
 msgid "Saving the segment file %s"
 msgstr "Сохранение сегмента файла %s"
 
-#: src/message.h:107
+#: src/message.h:111
 msgid "The segment file was saved successfully."
 msgstr "Сегмент файла успешно сохранен."
 
-#: src/message.h:108
+#: src/message.h:112
 #, c-format
 msgid "Loading the segment file %s."
 msgstr "Загрузка сегмента файл %sа"
 
-#: src/message.h:109
+#: src/message.h:113
 msgid "The segment file was loaded successfully."
 msgstr "Сегмент файла успешно загружен."
 
-#: src/message.h:110
+#: src/message.h:114
 msgid "No URI to download. Download aborted."
 msgstr "URI для загрузки не найден. Загрузка прервана."
 
-#: src/message.h:111
+#: src/message.h:115
 #, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
@@ -2255,95 +2255,95 @@ msgstr ""
 "файл, то удалите его или добавьте опцию --allow-overwrite=true и "
 "перезапустите aria2."
 
-#: src/message.h:112
+#: src/message.h:116
 #, c-format
 msgid "Allocating file %s, %s bytes"
 msgstr "Для файла %s резервируем %s байт"
 
-#: src/message.h:113
+#: src/message.h:117
 msgid "File not found"
 msgstr "Файл не найден"
 
-#: src/message.h:114
+#: src/message.h:118
 msgid "Not a directory"
 msgstr "Это не каталог."
 
-#: src/message.h:115
+#: src/message.h:119
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 msgstr "Несовпадение контрольных сумм. checksumLength=%d, numChecksum=%d"
 
-#: src/message.h:116
+#: src/message.h:120
 #, c-format
 msgid "Writing file %s"
 msgstr "Пишется файл %s"
 
-#: src/message.h:117
+#: src/message.h:121
 msgid "No peer list received."
 msgstr "Список узлов отсутствует."
 
-#: src/message.h:118
+#: src/message.h:122
 #, c-format
 msgid "Adding peer %s:%d"
 msgstr "Добавляется узел %s:%d"
 
-#: src/message.h:119
+#: src/message.h:123
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr "Удаляется используемая часть index=%d, fillRate(%%)=%d<=%d"
 
-#: src/message.h:120
+#: src/message.h:124
 msgid "Download of selected files was complete."
 msgstr "Закачка выбранных фалов завершена."
 
-#: src/message.h:121
+#: src/message.h:125
 msgid "The download was complete."
 msgstr "Закачка завершена."
 
-#: src/message.h:122
-#, c-format
-msgid "Removed %d have entries."
+#: src/message.h:126
+#, fuzzy, c-format
+msgid "Removed %lu have entries."
 msgstr "Удаленный %d имеет вхождения"
 
-#: src/message.h:123
+#: src/message.h:127
 #, c-format
 msgid "Validating file %s"
 msgstr "Проверяется файл %s"
 
-#: src/message.h:124
-#, c-format
-msgid "%d seconds to allocate %s byte(s)"
+#: src/message.h:128
+#, fuzzy, c-format
+msgid "%ld seconds to allocate %s byte(s)"
 msgstr "%d секунд для размещения %s байт"
 
-#: src/message.h:127
+#: src/message.h:131
 #, c-format
 msgid "Metalink: Queueing %s for download."
 msgstr "Metalink: Постановка в очередь %s."
 
-#: src/message.h:128
+#: src/message.h:132
 #, c-format
 msgid "Download complete: %s"
 msgstr "Закачка завершена: %s"
 
-#: src/message.h:129
+#: src/message.h:133
 msgid "Seeding is over."
 msgstr "Рздача закончена."
 
-#: src/message.h:130
+#: src/message.h:134
 msgid "No chunk to verify."
 msgstr "Нет частей для проверки."
 
-#: src/message.h:131
+#: src/message.h:135
 #, c-format
 msgid "Good chunk checksum. hash=%s"
 msgstr "Верная контрольная сумма. hash=%s"
 
-#: src/message.h:132
+#: src/message.h:136
 #, c-format
 msgid "Failed to load cookies from %s"
 msgstr "Ошибка загрузки куков с %s"
 
-#: src/message.h:133
+#: src/message.h:137
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
@@ -2352,87 +2352,87 @@ msgstr ""
 "Файл .netrc  %s не имеет правильных полномочий. Он должен быть 600. "
 "Поддержка netrc отключена."
 
-#: src/message.h:134
+#: src/message.h:138
 msgid "Logging started."
 msgstr "Логирование начато."
 
-#: src/message.h:135
+#: src/message.h:139
 msgid "Specify at least one URL."
 msgstr "Укажите как минимум один URL."
 
-#: src/message.h:136
+#: src/message.h:140
 msgid "daemon failed."
 msgstr "служба остановлена."
 
-#: src/message.h:137
+#: src/message.h:141
 #, c-format
 msgid "Verification finished successfully. file=%s"
 msgstr "Проверка закончена успешно. file=%s"
 
-#: src/message.h:138
+#: src/message.h:142
 #, c-format
 msgid "Checksum error detected. file=%s"
 msgstr "Ошибка в контрольноый сумме . file=%s"
 
-#: src/message.h:139
+#: src/message.h:143
 #, c-format
 msgid "Incomplete range specified. %s"
 msgstr "Указан неполный диапазон. %s"
 
-#: src/message.h:140
+#: src/message.h:144
 #, c-format
 msgid "Failed to convert string into value: %s"
 msgstr "Ошибка при конвертировании строки в переменную: %s"
 
-#: src/message.h:141
+#: src/message.h:145
 msgid "Resource not found"
 msgstr "Ресурс не найден"
 
-#: src/message.h:142
+#: src/message.h:146
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr "Файл уже существует. Переименован в %s"
 
-#: src/message.h:143
+#: src/message.h:147
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr "Невозможно разобрать XML файл металинка. XML файл может быть испорчен."
 
-#: src/message.h:144
-#, c-format
-msgid "Too small payload size for %s, size=%d."
+#: src/message.h:148
+#, fuzzy, c-format
+msgid "Too small payload size for %s, size=%lu."
 msgstr "Слишком маленький полезный размер для %s, размер=%d."
 
-#: src/message.h:145
+#: src/message.h:149
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
 msgstr "Бесполезный контрольный файл %s удалён потому что %s не существует."
 
-#: src/message.h:146
+#: src/message.h:150
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr "Ваш рейтинг раздачи %.1f, роздано/загружено=%sB/%sB"
 
-#: src/message.h:147
+#: src/message.h:151
 #, c-format
 msgid "Missing %s in torrent metainfo."
 msgstr "Пропущен %s в metainfo торренте"
 
-#: src/message.h:148
+#: src/message.h:152
 msgid "Tracker returned null data."
 msgstr "Трэкер вернул нулевые данные"
 
-#: src/message.h:149
+#: src/message.h:153
 msgid "Windows socket library initialization failed"
 msgstr "Ошибка инициализации Windows socket библиотеки"
 
-#: src/message.h:150
-#, c-format
-msgid "%d second(s) has passed. Stopping application."
+#: src/message.h:154
+#, fuzzy, c-format
+msgid "%ld second(s) has passed. Stopping application."
 msgstr "прошло %d секунд(ы). Выполнение программы завершается."
 
-#: src/message.h:151
+#: src/message.h:155
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
@@ -2440,57 +2440,57 @@ msgstr ""
 "Сигнатура сохранена как %s. Пожалуйста заметьте, что aria2 не проверяет "
 "сигнатури."
 
-#: src/message.h:153
+#: src/message.h:157
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr "Сохраниение подписи как %s не удалось. Может быть файл уже существует."
 
-#: src/message.h:156
+#: src/message.h:160
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
 msgstr "Не удалось открить файл ServerStat %s для чтения."
 
-#: src/message.h:157
+#: src/message.h:161
 #, c-format
 msgid "ServerStat file %s loaded successfully."
 msgstr "Файл ServerStat %s успешно загружен."
 
-#: src/message.h:158
+#: src/message.h:162
 #, c-format
 msgid "Failed to read ServerStat from %s."
 msgstr "Не удалось прочитать ServerStat из %s."
 
-#: src/message.h:161
+#: src/message.h:165
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
 msgstr "Не удалось открыть файл ServerStat %s для записи."
 
-#: src/message.h:162
+#: src/message.h:166
 #, c-format
 msgid "ServerStat file %s saved successfully."
 msgstr "Файл ServerStat %s был успешно сохранен."
 
-#: src/message.h:163
+#: src/message.h:167
 #, c-format
 msgid "Failed to write ServerStat to %s."
 msgstr "Не удалось записать ServerStat в %s."
 
-#: src/message.h:166
+#: src/message.h:170
 #, c-format
 msgid "Failed to establish connection, cause: %s"
 msgstr "Не удалось установить соединение, причина: %s"
 
-#: src/message.h:167
+#: src/message.h:171
 #, c-format
 msgid "Network problem has occurred. cause:%s"
 msgstr "Ошибка сети, причина: %s"
 
-#: src/message.h:169
+#: src/message.h:173
 #, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "Ошибка во время загрузки CA сертификата %s. Причина: %s"
 
-#: src/message.h:171
+#: src/message.h:175
 #, fuzzy, c-format
 msgid ""
 "Certificate verification failed. Cause: %s See --ca-certificate and --check-"
@@ -2499,19 +2499,19 @@ msgstr ""
 "Вы можете столкнуться с ошибкой проверки сертификата с HTTPS сервера. "
 "Смотрите параметры --ca-certificate и --check-certificate."
 
-#: src/message.h:173
+#: src/message.h:177
 msgid "No certificate found."
 msgstr "Не найдено сертификат"
 
-#: src/message.h:174
+#: src/message.h:178
 msgid "Hostname not match."
 msgstr "Не соответствующее имя хоста."
 
-#: src/message.h:175
+#: src/message.h:179
 msgid "No files to download."
 msgstr "Нет файлов для загрузки."
 
-#: src/message.h:177
+#: src/message.h:181
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
@@ -2519,79 +2519,79 @@ msgstr ""
 "Вы можете столкнуться с ошибкой проверки сертификата с HTTPS сервера. "
 "Смотрите параметры --ca-certificate и --check-certificate."
 
-#: src/message.h:179
+#: src/message.h:183
 #, c-format
 msgid "Printing the contents of file '%s'..."
 msgstr "Печать содержимого файла '%s'..."
 
-#: src/message.h:180
+#: src/message.h:184
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr "Этот файл не является файлом торента или Metalink. Пропущено."
 
-#: src/message.h:185
+#: src/message.h:189
 #, c-format
 msgid "Is '%s' a file?"
 msgstr "'%s' является файлом?"
 
-#: src/message.h:186
+#: src/message.h:190
 #, c-format
 msgid "Failed to find given interface %s, cause: %s"
 msgstr "Поиск  интерфейса %s не удался по следующей причине: %s"
 
-#: src/message.h:188
+#: src/message.h:192
 #, c-format
 msgid "Saved metadata as %s."
 msgstr "Метаданные сохранены как %s."
 
-#: src/message.h:189
+#: src/message.h:193
 #, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr ""
 "Сохранение метаданных как %s не удалось. Вероятно, файл уже существует."
 
-#: src/message.h:191
+#: src/message.h:195
 #, c-format
 msgid "Detected directory traversal directive in %s"
 msgstr ""
 
-#: src/message.h:195
+#: src/message.h:199
 msgid "Timeout."
 msgstr "Время ожидания вышло."
 
-#: src/message.h:196
+#: src/message.h:200
 msgid "Invalid chunk size."
 msgstr "Неверный размер блока"
 
-#: src/message.h:197
+#: src/message.h:201
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Блок слишком большой. Размер=%d"
 
-#: src/message.h:198
+#: src/message.h:202
 msgid "Invalid header."
 msgstr "Неверный заголовок."
 
-#: src/message.h:199
+#: src/message.h:203
 msgid "Invalid response."
 msgstr "Неверный ответ."
 
-#: src/message.h:200
+#: src/message.h:204
 msgid "No header found."
 msgstr "Заголовок не найден"
 
-#: src/message.h:201
+#: src/message.h:205
 msgid "No status header."
 msgstr "Нет заголовка status"
 
-#: src/message.h:202
+#: src/message.h:206
 msgid "Proxy connection failed."
 msgstr "Ошибка подключения к proxy-серверу"
 
-#: src/message.h:203
+#: src/message.h:207
 msgid "Connection failed."
 msgstr "Не удалось установить соединение."
 
-#: src/message.h:204
+#: src/message.h:208
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2600,309 +2600,309 @@ msgstr ""
 "Запрошенное имя файла и зарегистрированное до этого не совпадают. Ожидалось:"
 "%s, фактическое:%s"
 
-#: src/message.h:205
+#: src/message.h:209
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Ошибочный статус ответа. Статус=%d"
 
-#: src/message.h:206
+#: src/message.h:210
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Слишком большой размер файла. Размер=%s"
 
-#: src/message.h:207
+#: src/message.h:211
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Кодировка передачи %s не поддерживается."
 
-#: src/message.h:208
+#: src/message.h:212
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Ошибка инициализации SSL: %s"
 
-#: src/message.h:209
+#: src/message.h:213
 msgid "SSL I/O error"
 msgstr "Ошибка ввода/вывода SSL"
 
-#: src/message.h:210
+#: src/message.h:214
 msgid "SSL protocol error"
 msgstr "Ошибка SSL протокола"
 
-#: src/message.h:211
+#: src/message.h:215
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Неизвестная SSL ошибка %d"
 
-#: src/message.h:212
+#: src/message.h:216
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "инициализация SSL не удалась: ошибка номер %d соединения OpenSSL"
 
-#: src/message.h:213
+#: src/message.h:217
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "Размер не совпадает. Ожидаемый:%s, фактический:%s"
 
-#: src/message.h:214
+#: src/message.h:218
 msgid "Authorization failed."
 msgstr "Ошибка авторизации."
 
-#: src/message.h:215
+#: src/message.h:219
 msgid "Got EOF from the server."
 msgstr "От сервера получен EOF."
 
-#: src/message.h:216
+#: src/message.h:220
 msgid "Got EOF from peer."
 msgstr "От узла получен EOF"
 
-#: src/message.h:217
+#: src/message.h:221
 msgid "Malformed meta info."
 msgstr "Неверные метаданные."
 
-#: src/message.h:219
+#: src/message.h:223
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Ошибка открытия файл %s: %s"
 
-#: src/message.h:220
+#: src/message.h:224
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Ошибка записи в файл %s: %s"
 
-#: src/message.h:221
+#: src/message.h:225
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Ошибка чтения файла %s: %s"
 
-#: src/message.h:222
+#: src/message.h:226
 msgid "Failed to read data from disk."
 msgstr "Ошибка чтения диска."
 
-#: src/message.h:223
+#: src/message.h:227
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "Ошибка подсчета дайджеста SHA1 файла %s, причина: %s"
 
-#: src/message.h:224
+#: src/message.h:228
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Ошибка позиционирования файла %s: %s"
 
-#: src/message.h:225
+#: src/message.h:229
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Смещение вне диапозона. Смещение=%s"
 
-#: src/message.h:226
+#: src/message.h:230
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s не является каталогом."
 
-#: src/message.h:227
+#: src/message.h:231
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Ошибка создания каталога %s: %s"
 
-#: src/message.h:228
+#: src/message.h:232
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Ошибка открытия сегмента файла %s: %s"
 
-#: src/message.h:229
+#: src/message.h:233
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Ошибка записи сегмента файла %s: %s"
 
-#: src/message.h:230
+#: src/message.h:234
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Ошибка чтения сегмента файла %s: %s"
 
-#: src/message.h:232
+#: src/message.h:236
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Ошибка открытия сокета: %s"
 
-#: src/message.h:233
+#: src/message.h:237
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Ошибка установки настроек для сокета: %s"
 
-#: src/message.h:234
+#: src/message.h:238
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Ошибка в установлении блокируещего сокета: %s"
 
-#: src/message.h:235
+#: src/message.h:239
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Ошибка в установлении неблокируещего сокета: %s"
 
-#: src/message.h:236
+#: src/message.h:240
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Ошибка инициализации сокета: %s"
 
-#: src/message.h:237
+#: src/message.h:241
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Ошибка прослушивания сокета: %s"
 
-#: src/message.h:238
+#: src/message.h:242
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Ошибка принятия подлючения от узла: %s"
 
-#: src/message.h:239
+#: src/message.h:243
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Ошибка получения имени сокета: %s"
 
-#: src/message.h:240
+#: src/message.h:244
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Ошибка получения имени подключенного узла: %s"
 
-#: src/message.h:241
+#: src/message.h:245
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Ошибка преобразования имени узла %s, причина: %s"
 
-#: src/message.h:242
+#: src/message.h:246
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Ошибка подключения к хосту %s: %s"
 
-#: src/message.h:243
+#: src/message.h:247
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Ошибка проверки сокета на запись: %s"
 
-#: src/message.h:244
+#: src/message.h:248
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Ошибка проверки сокета на чтение: %s"
 
-#: src/message.h:245
+#: src/message.h:249
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Ошибка отправки данных: %s"
 
-#: src/message.h:246
+#: src/message.h:250
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Ошибка получения данных: %s"
 
-#: src/message.h:247
+#: src/message.h:251
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Ошибка запроса данных: %s"
 
-#: src/message.h:248
+#: src/message.h:252
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Неизвестная ошибка сокета %d (0x%x)"
 
-#: src/message.h:249
+#: src/message.h:253
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Файл %s существует, а %s - нет."
 
-#: src/message.h:250
-#, c-format
-msgid "Invalid payload size for %s, size=%d. It should be %d."
+#: src/message.h:255
+#, fuzzy, c-format
+msgid "Invalid payload size for %s, size=%lu. It should be %lu."
 msgstr "Не действительный размер загрузки для %s,  розмер=%d. Должен быть %d."
 
-#: src/message.h:251
+#: src/message.h:256
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Неправильный ID=%d для %s. Должен быть %d."
 
-#: src/message.h:252
-#, c-format
+#: src/message.h:257
+#, fuzzy, c-format
 msgid ""
-"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash="
+"Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash="
 "%s, actualHash=%s"
 msgstr ""
 "Контрольная сумма блока не прошла подтверждения. checksumIndex=%d, offset="
 "%s, expectedHash=%s, actualHash=%s"
 
-#: src/message.h:253
+#: src/message.h:258
 msgid "Download aborted."
 msgstr "Загрузка отменена."
 
-#: src/message.h:254
+#: src/message.h:259
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Файл %s загружается другой программой."
 
-#: src/message.h:255
+#: src/message.h:260
 msgid "Insufficient checksums."
 msgstr "Нехватает контрольных сумм."
 
-#: src/message.h:256
+#: src/message.h:261
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Трекер вернул информацию про сбой, причина: %s"
 
-#: src/message.h:257
+#: src/message.h:262
 msgid "Flooding detected."
 msgstr "Обнаружен флудинг."
 
-#: src/message.h:258
-#, c-format
+#: src/message.h:264
+#, fuzzy, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
-"certain period(%d seconds)."
+"certain period(%ld seconds)."
 msgstr ""
 "Потеряно соединение из-за отсутствия запросов/частей сообщений, которыми "
 "обменивались бы за определённый период (%d секунд)."
 
-#: src/message.h:259
+#: src/message.h:266
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "infoHash в файле торента не идентичный тому, который находится в файле ."
 "aria2."
 
-#: src/message.h:260
+#: src/message.h:267
 #, c-format
 msgid "No such file entry %s"
 msgstr "Нет такого файла %s"
 
-#: src/message.h:261
+#: src/message.h:268
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Слишком медленная скорость скачивания: %d <= %d(B/s), хост:%s"
 
-#: src/message.h:262
+#: src/message.h:269
 msgid "No HttpRequestEntry found."
 msgstr "Не найдено HttpRequestEntry"
 
-#: src/message.h:263
+#: src/message.h:270
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Получен статус %d, но не обеспечено местонахождение заголовка."
 
-#: src/message.h:264
+#: src/message.h:271
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr "Неправильный диапазон в заголовке. Запрос: %s-%s/%s, Ответ: %s-%s/%s"
 
-#: src/message.h:265
+#: src/message.h:272
 msgid "No file matched with your preference."
 msgstr "Нет файла соответствующего Вашим настройкам."
 
-#: src/message.h:266
+#: src/message.h:273
 msgid "Exception caught"
 msgstr "Обнаружено исключение"
 
-#: src/message.h:267
+#: src/message.h:274
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "Максимальная длина полезной загрузки превышена или неправильная. длина = %u"
 
-#: src/message.h:268
+#: src/message.h:275
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2010-10-12 20:34+0900\n"
+"POT-Creation-Date: 2010-11-01 20:48+0900\n"
 "PO-Revision-Date: 2008-10-08 08:24+0000\n"
 "Last-Translator: snufkinto <Unknown>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -18,31 +18,31 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-10-14 11:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:222
+#: src/DownloadEngine.cc:224
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "關閉序列開始...如要緊急關閉，請再次按Ctrl-C。"
 
-#: src/DownloadEngine.cc:229
+#: src/DownloadEngine.cc:231
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急關閉序列開始..."
 
-#: src/MultiUrlRequestInfo.cc:112
+#: src/MultiUrlRequestInfo.cc:114
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2將於傳輸重新開始後恢復下載。"
 
-#: src/MultiUrlRequestInfo.cc:114
+#: src/MultiUrlRequestInfo.cc:116
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
 "如有錯誤，請查看日誌記錄檔案。詳細資訊請參考幫助/man page內的 '-l' 選項。"
 
-#: src/RequestGroupMan.cc:603
+#: src/RequestGroupMan.cc:609
 msgid "Download Results:"
 msgstr "下載結果："
 
-#: src/RequestGroupMan.cc:663
+#: src/RequestGroupMan.cc:669
 msgid "Status Legend:"
 msgstr "狀態說明："
 
@@ -1580,49 +1580,49 @@ msgstr "參考man page以獲取更多資訊。"
 msgid "GID#%s - Download has already completed: %s"
 msgstr "#%d - 下載已完成：%s"
 
-#: src/message.h:102
+#: src/message.h:106
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr "未知的URI或不支援的通訊協定：%s"
 
-#: src/message.h:103
+#: src/message.h:107
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr "Tracker返回警告訊息：%s"
 
-#: src/message.h:104
+#: src/message.h:108
 #, c-format
 msgid "The segment file %s exists."
 msgstr "存在檔案分塊 %s 。"
 
-#: src/message.h:105
+#: src/message.h:109
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr "不存在檔案分塊 %s 。"
 
-#: src/message.h:106
+#: src/message.h:110
 #, c-format
 msgid "Saving the segment file %s"
 msgstr "正在儲存檔案分塊 %s"
 
-#: src/message.h:107
+#: src/message.h:111
 msgid "The segment file was saved successfully."
 msgstr "已成功儲存檔案分塊 。"
 
-#: src/message.h:108
+#: src/message.h:112
 #, c-format
 msgid "Loading the segment file %s."
 msgstr "正在載入檔案分塊 %s 。"
 
-#: src/message.h:109
+#: src/message.h:113
 msgid "The segment file was loaded successfully."
 msgstr "已成功載入檔案分塊 。"
 
-#: src/message.h:110
+#: src/message.h:114
 msgid "No URI to download. Download aborted."
 msgstr "沒有 URI 下載，下載中止。"
 
-#: src/message.h:111
+#: src/message.h:115
 #, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
@@ -1634,639 +1634,639 @@ msgstr ""
 "定重新下載檔案，請先刪除該檔案，或加入選項 --allow-overwrite=true，再執行"
 "aria2。"
 
-#: src/message.h:112
+#: src/message.h:116
 #, c-format
 msgid "Allocating file %s, %s bytes"
 msgstr "正在分配檔案 %s， %s bytes"
 
-#: src/message.h:113
+#: src/message.h:117
 msgid "File not found"
 msgstr "找不到檔案"
 
-#: src/message.h:114
+#: src/message.h:118
 msgid "Not a directory"
 msgstr "並不是一個目錄"
 
-#: src/message.h:115
+#: src/message.h:119
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
 msgstr ""
 
-#: src/message.h:116
+#: src/message.h:120
 #, c-format
 msgid "Writing file %s"
 msgstr "正寫入檔案 %s"
 
-#: src/message.h:117
+#: src/message.h:121
 msgid "No peer list received."
 msgstr "找不到使用者列表。"
 
-#: src/message.h:118
+#: src/message.h:122
 #, c-format
 msgid "Adding peer %s:%d"
 msgstr "加入使用者 %s:%d"
 
-#: src/message.h:119
+#: src/message.h:123
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr "刪除已用分片 index=%d, fillRate(%%)=%d<=%d"
 
-#: src/message.h:120
+#: src/message.h:124
 msgid "Download of selected files was complete."
 msgstr "所選檔案已下載完畢。"
 
-#: src/message.h:121
+#: src/message.h:125
 msgid "The download was complete."
 msgstr "下載完畢。"
 
-#: src/message.h:122
+#: src/message.h:126
 #, c-format
-msgid "Removed %d have entries."
-msgstr ""
-
-#: src/message.h:123
-#, c-format
-msgid "Validating file %s"
-msgstr "正驗證檔案 %s"
-
-#: src/message.h:124
-#, c-format
-msgid "%d seconds to allocate %s byte(s)"
+msgid "Removed %lu have entries."
 msgstr ""
 
 #: src/message.h:127
 #, c-format
+msgid "Validating file %s"
+msgstr "正驗證檔案 %s"
+
+#: src/message.h:128
+#, c-format
+msgid "%ld seconds to allocate %s byte(s)"
+msgstr ""
+
+#: src/message.h:131
+#, c-format
 msgid "Metalink: Queueing %s for download."
 msgstr ""
 
-#: src/message.h:128
+#: src/message.h:132
 #, c-format
 msgid "Download complete: %s"
 msgstr "下載完畢：%s"
 
-#: src/message.h:129
+#: src/message.h:133
 msgid "Seeding is over."
 msgstr "作種完畢。"
 
-#: src/message.h:130
+#: src/message.h:134
 msgid "No chunk to verify."
 msgstr "沒有區塊要驗證。"
 
-#: src/message.h:131
+#: src/message.h:135
 #, c-format
 msgid "Good chunk checksum. hash=%s"
 msgstr "正確的區塊checksum。 hash=%s"
 
-#: src/message.h:132
+#: src/message.h:136
 #, c-format
 msgid "Failed to load cookies from %s"
 msgstr "從%s載入cookies失敗"
 
-#: src/message.h:133
+#: src/message.h:137
 #, c-format
 msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ".netrc 檔案 %s 權限設置不正確，.netrc支援已停止。正確的權限應為600。"
 
-#: src/message.h:134
+#: src/message.h:138
 msgid "Logging started."
 msgstr "已開始日誌記錄。"
 
-#: src/message.h:135
+#: src/message.h:139
 msgid "Specify at least one URL."
 msgstr "須指定最少一個URL。"
 
-#: src/message.h:136
+#: src/message.h:140
 msgid "daemon failed."
 msgstr "背景運行失敗。"
 
-#: src/message.h:137
+#: src/message.h:141
 #, c-format
 msgid "Verification finished successfully. file=%s"
 msgstr "驗證已成功完成。 file=%s"
 
-#: src/message.h:138
+#: src/message.h:142
 #, c-format
 msgid "Checksum error detected. file=%s"
 msgstr "發現錯誤Checksum。 file=%s"
 
-#: src/message.h:139
+#: src/message.h:143
 #, c-format
 msgid "Incomplete range specified. %s"
 msgstr "所指定的範圍不完整。 %s"
 
-#: src/message.h:140
+#: src/message.h:144
 #, c-format
 msgid "Failed to convert string into value: %s"
 msgstr "數值轉換失敗： %s"
 
-#: src/message.h:141
+#: src/message.h:145
 msgid "Resource not found"
 msgstr "找不到資源"
 
-#: src/message.h:142
+#: src/message.h:146
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr "檔案已存在。更名為 %s 。"
 
-#: src/message.h:143
+#: src/message.h:147
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr "解析metalink XML檔案失敗，XML格式可能有錯誤。"
 
-#: src/message.h:144
+#: src/message.h:148
 #, c-format
-msgid "Too small payload size for %s, size=%d."
+msgid "Too small payload size for %s, size=%lu."
 msgstr ""
 
-#: src/message.h:145
+#: src/message.h:149
 #, c-format
 msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
 msgstr ""
 
-#: src/message.h:146
+#: src/message.h:150
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
 msgstr "分享率 %.1f, 已上載/已下載=%sB/%sB"
 
-#: src/message.h:147
+#: src/message.h:151
 #, c-format
 msgid "Missing %s in torrent metainfo."
 msgstr ""
 
-#: src/message.h:148
+#: src/message.h:152
 msgid "Tracker returned null data."
 msgstr ""
 
-#: src/message.h:149
+#: src/message.h:153
 msgid "Windows socket library initialization failed"
 msgstr "Windows socket library初始化失敗"
 
-#: src/message.h:150
-#, c-format
-msgid "%d second(s) has passed. Stopping application."
+#: src/message.h:154
+#, fuzzy, c-format
+msgid "%ld second(s) has passed. Stopping application."
 msgstr "已過%d 秒，正在終止程式。"
 
-#: src/message.h:151
+#: src/message.h:155
 #, c-format
 msgid ""
 "Saved signature as %s. Please note that aria2 doesn't verify signatures."
 msgstr "已儲存簽名 %s。請注意aria2不驗證簽加。"
 
-#: src/message.h:153
+#: src/message.h:157
 #, c-format
 msgid "Saving signature as %s failed. Maybe file already exists."
 msgstr "儲存簽名 %s 失敗，檔案可能已存在。"
 
-#: src/message.h:156
+#: src/message.h:160
 #, c-format
 msgid "Failed to open ServerStat file %s for read."
 msgstr "開啟ServerStat檔案 %s 失敗。"
 
-#: src/message.h:157
+#: src/message.h:161
 #, c-format
 msgid "ServerStat file %s loaded successfully."
 msgstr "已成功載入ServerStat檔案 %s 。"
 
-#: src/message.h:158
+#: src/message.h:162
 #, c-format
 msgid "Failed to read ServerStat from %s."
 msgstr "從%s載入ServerStat失敗。"
 
-#: src/message.h:161
+#: src/message.h:165
 #, c-format
 msgid "Failed to open ServerStat file %s for write."
 msgstr "寫入ServerStat檔案 %s 失敗。"
 
-#: src/message.h:162
+#: src/message.h:166
 #, c-format
 msgid "ServerStat file %s saved successfully."
 msgstr "ServerStat檔案 %s 儲存成功。"
 
-#: src/message.h:163
+#: src/message.h:167
 #, c-format
 msgid "Failed to write ServerStat to %s."
 msgstr "寫入ServerStat至 %s 失敗。"
 
-#: src/message.h:166
+#: src/message.h:170
 #, c-format
 msgid "Failed to establish connection, cause: %s"
 msgstr "建立連接失敗，原因： %s"
 
-#: src/message.h:167
+#: src/message.h:171
 #, c-format
 msgid "Network problem has occurred. cause:%s"
 msgstr "發生網絡問題，原因： %s"
 
-#: src/message.h:169
+#: src/message.h:173
 #, fuzzy, c-format
 msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "讀取檔案 %s 失敗，原因：%s"
 
-#: src/message.h:171
+#: src/message.h:175
 #, c-format
 msgid ""
 "Certificate verification failed. Cause: %s See --ca-certificate and --check-"
 "certificate option."
 msgstr ""
 
-#: src/message.h:173
+#: src/message.h:177
 #, fuzzy
 msgid "No certificate found."
 msgstr "找不到header。"
 
-#: src/message.h:174
+#: src/message.h:178
 msgid "Hostname not match."
 msgstr ""
 
-#: src/message.h:175
+#: src/message.h:179
 msgid "No files to download."
 msgstr ""
 
-#: src/message.h:177
+#: src/message.h:181
 msgid ""
 "You may encounter the certificate verification error with HTTPS server. See "
 "--ca-certificate and --check-certificate option."
 msgstr ""
 
-#: src/message.h:179
+#: src/message.h:183
 #, fuzzy, c-format
 msgid "Printing the contents of file '%s'..."
 msgstr "列出包含'%s'的選項。"
 
-#: src/message.h:180
+#: src/message.h:184
 msgid "This file is neither Torrent nor Metalink file. Skipping."
 msgstr ""
 
-#: src/message.h:185
+#: src/message.h:189
 #, c-format
 msgid "Is '%s' a file?"
 msgstr ""
 
-#: src/message.h:186
+#: src/message.h:190
 #, fuzzy, c-format
 msgid "Failed to find given interface %s, cause: %s"
 msgstr "開啟檔案 %s 失敗，原因：%s"
 
-#: src/message.h:188
+#: src/message.h:192
 #, c-format
 msgid "Saved metadata as %s."
 msgstr ""
 
-#: src/message.h:189
+#: src/message.h:193
 #, fuzzy, c-format
 msgid "Saving metadata as %s failed. Maybe file already exists."
 msgstr "儲存簽名 %s 失敗，檔案可能已存在。"
 
-#: src/message.h:191
+#: src/message.h:195
 #, c-format
 msgid "Detected directory traversal directive in %s"
 msgstr ""
 
-#: src/message.h:195
+#: src/message.h:199
 msgid "Timeout."
 msgstr "連線逾時。"
 
-#: src/message.h:196
+#: src/message.h:200
 msgid "Invalid chunk size."
 msgstr "無效的區塊大小。"
 
-#: src/message.h:197
+#: src/message.h:201
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "區塊大小太大。 size=%d"
 
-#: src/message.h:198
+#: src/message.h:202
 msgid "Invalid header."
 msgstr "無效的header。"
 
-#: src/message.h:199
+#: src/message.h:203
 msgid "Invalid response."
 msgstr "無效的回應。"
 
-#: src/message.h:200
+#: src/message.h:204
 msgid "No header found."
 msgstr "找不到header。"
 
-#: src/message.h:201
+#: src/message.h:205
 msgid "No status header."
 msgstr "找不到狀態header。"
 
-#: src/message.h:202
+#: src/message.h:206
 msgid "Proxy connection failed."
 msgstr "代理伺服器連接失敗。"
 
-#: src/message.h:203
+#: src/message.h:207
 msgid "Connection failed."
 msgstr "連線失敗。"
 
-#: src/message.h:204
+#: src/message.h:208
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr "所請求的檔案名稱與已登記的名稱不相符。 期望：%s  真實：%s"
 
-#: src/message.h:205
+#: src/message.h:209
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "回覆狀態不成功。 狀態=%d"
 
-#: src/message.h:206
+#: src/message.h:210
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "檔案大小太大。size=%s"
 
-#: src/message.h:207
+#: src/message.h:211
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "不支援傳輸編碼 %s 。"
 
-#: src/message.h:208
+#: src/message.h:212
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "SSL初始化失敗：%s"
 
-#: src/message.h:209
+#: src/message.h:213
 msgid "SSL I/O error"
 msgstr "SSL I/O錯誤"
 
-#: src/message.h:210
+#: src/message.h:214
 msgid "SSL protocol error"
 msgstr "SSL協議錯誤"
 
-#: src/message.h:211
+#: src/message.h:215
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "SSL不明錯誤 %d"
 
-#: src/message.h:212
+#: src/message.h:216
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "SSL初始化失敗：OpenSSL連接錯誤 %d"
 
-#: src/message.h:213
+#: src/message.h:217
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "大小不相符 期望：%s 真實：%s"
 
-#: src/message.h:214
+#: src/message.h:218
 msgid "Authorization failed."
 msgstr "認證失敗"
 
-#: src/message.h:215
+#: src/message.h:219
 msgid "Got EOF from the server."
 msgstr "伺服器傳回EOF"
 
-#: src/message.h:216
+#: src/message.h:220
 msgid "Got EOF from peer."
 msgstr "使用者傳回EOF"
 
-#: src/message.h:217
+#: src/message.h:221
 msgid "Malformed meta info."
 msgstr "meta訊息格式錯誤。"
 
-#: src/message.h:219
+#: src/message.h:223
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "開啟檔案 %s 失敗，原因：%s"
 
-#: src/message.h:220
+#: src/message.h:224
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "寫入檔案 %s 失敗，原因：%s"
 
-#: src/message.h:221
+#: src/message.h:225
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "讀取檔案 %s 失敗，原因：%s"
 
-#: src/message.h:222
+#: src/message.h:226
 msgid "Failed to read data from disk."
 msgstr "從磁碟讀取資料失敗。"
 
-#: src/message.h:223
+#: src/message.h:227
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "計算檔案 %s 的SHA1值失敗，原因：%s"
 
-#: src/message.h:224
+#: src/message.h:228
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "找尋檔案 %s 失敗，原因：%s"
 
-#: src/message.h:225
+#: src/message.h:229
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr ""
 
-#: src/message.h:226
+#: src/message.h:230
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s 不是一個目錄。"
 
-#: src/message.h:227
+#: src/message.h:231
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "建立目錄 %s 失敗，原因：%s"
 
-#: src/message.h:228
+#: src/message.h:232
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "開啟分塊檔案 %s 失敗，原因：%s"
 
-#: src/message.h:229
+#: src/message.h:233
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "寫入分塊檔案 %s 失敗，原因：%s"
 
-#: src/message.h:230
+#: src/message.h:234
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "讀取分塊檔案 %s 失敗，原因：%s"
 
-#: src/message.h:232
+#: src/message.h:236
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "開啟通訊連接失敗，原因：%s"
 
-#: src/message.h:233
+#: src/message.h:237
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "設定通訊連接選項失敗，原因：%s"
 
-#: src/message.h:234
+#: src/message.h:238
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr ""
 
-#: src/message.h:235
+#: src/message.h:239
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr ""
 
-#: src/message.h:236
+#: src/message.h:240
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr ""
 
-#: src/message.h:237
+#: src/message.h:241
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr ""
 
-#: src/message.h:238
+#: src/message.h:242
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "接受使用者連接失敗，原因：%s"
 
-#: src/message.h:239
+#: src/message.h:243
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "取得通訊連接名稱失敗，原因：%s"
 
-#: src/message.h:240
+#: src/message.h:244
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "取得已連接使用者名稱失敗，原因：%s"
 
-#: src/message.h:241
+#: src/message.h:245
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "解析主機名稱 %s 失敗，原因：%s"
 
-#: src/message.h:242
+#: src/message.h:246
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "連接主機 %s 失敗，原因：%s"
 
-#: src/message.h:243
+#: src/message.h:247
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "檢查通訊連接是否可寫時失敗，原因：%s"
 
-#: src/message.h:244
+#: src/message.h:248
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "檢查通訊連接是否可讀時失敗，原因：%s"
 
-#: src/message.h:245
+#: src/message.h:249
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "傳送資料失敗，原因：%s"
 
-#: src/message.h:246
+#: src/message.h:250
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "接受資料失敗，原因：%s"
 
-#: src/message.h:247
+#: src/message.h:251
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr ""
 
-#: src/message.h:248
+#: src/message.h:252
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "未知的通訊連接錯誤 %d (0x%x)"
 
-#: src/message.h:249
+#: src/message.h:253
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "找到檔案 %s ，但找不到 %s 。"
 
-#: src/message.h:250
+#: src/message.h:255
 #, c-format
-msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgid "Invalid payload size for %s, size=%lu. It should be %lu."
 msgstr ""
 
-#: src/message.h:251
+#: src/message.h:256
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr ""
 
-#: src/message.h:252
-#, c-format
+#: src/message.h:257
+#, fuzzy, c-format
 msgid ""
-"Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash="
+"Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash="
 "%s, actualHash=%s"
 msgstr ""
 "區塊checksum驗證失敗。checksumIndex=%d, offset=%s, expectedHash=%s, "
 "actualHash=%s"
 
-#: src/message.h:253
+#: src/message.h:258
 msgid "Download aborted."
 msgstr "下載已中斷。"
 
-#: src/message.h:254
+#: src/message.h:259
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "檔案 %s 正被其他命令下載中。"
 
-#: src/message.h:255
+#: src/message.h:260
 msgid "Insufficient checksums."
 msgstr ""
 
-#: src/message.h:256
+#: src/message.h:261
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Tracker返回錯誤原因：%s"
 
-#: src/message.h:257
-msgid "Flooding detected."
-msgstr ""
-
-#: src/message.h:258
-#, c-format
-msgid ""
-"Drop connection because no request/piece messages were exchanged in a "
-"certain period(%d seconds)."
-msgstr ""
-
-#: src/message.h:259
-msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr "torrent檔案中的infoHash與.aria2檔案內的不相符。"
-
-#: src/message.h:260
-#, c-format
-msgid "No such file entry %s"
-msgstr "無相關檔案項目 %s"
-
-#: src/message.h:261
-#, c-format
-msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr "下載速度太慢：%d <= %d(B/s), host:%s"
-
 #: src/message.h:262
-msgid "No HttpRequestEntry found."
-msgstr "找不到HttpRequestEntry。"
-
-#: src/message.h:263
-#, c-format
-msgid "Got %d status, but no location header provided."
+msgid "Flooding detected."
 msgstr ""
 
 #: src/message.h:264
 #, c-format
+msgid ""
+"Drop connection because no request/piece messages were exchanged in a "
+"certain period(%ld seconds)."
+msgstr ""
+
+#: src/message.h:266
+msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
+msgstr "torrent檔案中的infoHash與.aria2檔案內的不相符。"
+
+#: src/message.h:267
+#, c-format
+msgid "No such file entry %s"
+msgstr "無相關檔案項目 %s"
+
+#: src/message.h:268
+#, c-format
+msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
+msgstr "下載速度太慢：%d <= %d(B/s), host:%s"
+
+#: src/message.h:269
+msgid "No HttpRequestEntry found."
+msgstr "找不到HttpRequestEntry。"
+
+#: src/message.h:270
+#, c-format
+msgid "Got %d status, but no location header provided."
+msgstr ""
+
+#: src/message.h:271
+#, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr ""
 
-#: src/message.h:265
+#: src/message.h:272
 msgid "No file matched with your preference."
 msgstr "沒有符合的檔案。"
 
-#: src/message.h:266
+#: src/message.h:273
 msgid "Exception caught"
 msgstr ""
 
-#: src/message.h:267
+#: src/message.h:274
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 
-#: src/message.h:268
+#: src/message.h:275
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr "無效的檔案長度，無法繼續下載 %s: local %s, remote %s"
