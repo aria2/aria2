@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-11-01 20:48+0900\n"
-"PO-Revision-Date: 2010-04-14 23:11+0900\n"
-"Last-Translator: Kostas Milonas <grimmoner@hotmail.com>\n"
+"PO-Revision-Date: 2010-11-01 20:51+0900\n"
+"Last-Translator: Kostas Milonas <milonas.ko@gmail.com>\n"
 "Language-Team: Greek <el@li.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
+"X-Launchpad-Export-Date: 2010-11-01 11:41+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:224
@@ -103,9 +103,8 @@ msgid "must be one of the following:"
 msgstr "πρέπει να είναι ένα από τα ακόλουθα:"
 
 #: src/OptionHandlerImpl.h:529
-#, fuzzy
 msgid "Unrecognized format"
-msgstr "Μη αναγνωρίσιμο φορμά proxy."
+msgstr "Μη αναγνωρίσιμος τύπος"
 
 #: src/OptionHandlerImpl.h:665
 msgid "unrecognized proxy format"
@@ -150,7 +149,6 @@ msgstr ""
 "                              \"/dev/null\"."
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -169,19 +167,6 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N                Κατεβάστε ένα αρχείο χρησιμοποιώντας N\n"
-"                              συνδέσεις. Αν δοθούν παραπάνω URL από N,\n"
-"                              θα χρησιμοποιηθούν τα πρώτα N και τα υπόλοιπα\n"
-"                              θα χρησιμοποιηθούν σαν εφεδρικά. Αν δοθούν\n"
-"                              λιγότερα URL από N, τότε αυτά θα "
-"χρησιμοποιηθούν\n"
-"                              παραπάνω από μια φορά για να δημιουργηθούν\n"
-"                              συνολικά N παράλληλες συνδέσεις. Παρακαλούμε,\n"
-"                               δείτε και την επιλογή -j. Έχετε υπόψη ότι "
-"στο\n"
-"                               κατέβασμα Metalink, αυτή η επιλογή δεν έχει\n"
-"                               κανένα αποτέλεσμα. Αντί αυτής χρησιμοποιήστε\n"
-"                               την επιλογή -C."
 
 #: src/usage_text.h:62
 msgid ""
@@ -669,15 +654,11 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:308
-#, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --retry-wait=ΔΤΠ             Ορίστε δευτερόλεπτα αναμονής μετά από σφάλμα, "
-"πριν \n"
-"                              επανάλφθεί η προσπάθεια."
 
 #: src/usage_text.h:311
 msgid ""
@@ -1150,18 +1131,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:554
-#, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed when download\n"
 "                              is paused.\n"
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --ftp-proxy=PROXY           Χρήση αυτού του διακομιστή proxy για το FTP.\n"
-"                              Για να σβήσετε έναν proxy που ορίσατε\n"
-"                              προηγουμένως, χρησιμοποιήστε \"\".\n"
-"                              Ακόμη, δείτε την επιλογή --all-proxy.\n"
-"                              Αυτή η επιλογή επηρεάζει όλα τα URL."
 
 #: src/usage_text.h:559
 msgid ""
@@ -1448,7 +1423,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:706
-#, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
 "                              --on-download-complete is called when "
@@ -1461,11 +1435,6 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --ftp-proxy=PROXY           Χρήση αυτού του διακομιστή proxy για το FTP.\n"
-"                              Για να σβήσετε έναν proxy που ορίσατε\n"
-"                              προηγουμένως, χρησιμοποιήστε \"\".\n"
-"                              Ακόμη, δείτε την επιλογή --all-proxy.\n"
-"                              Αυτή η επιλογή επηρεάζει όλα τα URL."
 
 #: src/usage_text.h:714
 msgid ""

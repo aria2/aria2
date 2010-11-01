@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-11-01 20:48+0900\n"
-"PO-Revision-Date: 2010-04-02 14:30+0000\n"
-"Last-Translator: Alexander10 <desyatnichenko@gmail.com>\n"
+"PO-Revision-Date: 2010-10-20 11:34+0000\n"
+"Last-Translator: Localizator <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
+"X-Launchpad-Export-Date: 2010-11-01 11:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:224
@@ -104,9 +104,8 @@ msgid "must be one of the following:"
 msgstr "має бути одним із наступних:"
 
 #: src/OptionHandlerImpl.h:529
-#, fuzzy
 msgid "Unrecognized format"
-msgstr "невідомий формат проксі"
+msgstr "Невідомий формат"
 
 #: src/OptionHandlerImpl.h:665
 msgid "unrecognized proxy format"
@@ -151,7 +150,6 @@ msgstr ""
 "                              \"/dev/null\"."
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -170,20 +168,6 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N Завантажити файл, використовуючи N підключень. Якщо надано\n"
-"                              більше ніж N URL, тоді перші N URL "
-"використовуватимуться, а\n"
-"                              залишок URL будуть використані для резерву. "
-"Якщо надано менше\n"
-"                              за N URL, то ті URL використовуватимуться "
-"більше одного\n"
-"                              разу, отже разом N з'єднань буде створено\n"
-"                              одночасно. Будь ласка дивіться також параметр -"
-"j.\n"
-"                              Будь ласка зауважте, що у Metalink "
-"завантаженні цей\n"
-"                              пареметр не має впливу та використовуйте "
-"натомість параметр -C."
 
 #: src/usage_text.h:62
 msgid ""
@@ -862,12 +846,10 @@ msgstr ""
 " --enable-peer-exchange[=true|false] Дозволити розширення прямого обміну."
 
 #: src/usage_text.h:300
-#, fuzzy
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
-msgstr " --enable-dht[=true|false] Ввімкнути підтримку DHT."
+msgstr " --enable-dht[=true|false]    Включити DHT IPv4 функціональність."
 
 #: src/usage_text.h:302
-#, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"
 "                              DHT. Multiple ports can be specified by using\n"
@@ -876,31 +858,22 @@ msgid ""
 "','\n"
 "                              and '-' can be used together."
 msgstr ""
-" --dht-listen-port=PORT... Вказати порт прослуховування UDP для DHT.\n"
-"                              Декілька потів можна вказати із використанням "
-"',',\n"
-"                              наприклад: \"6881,6885\". Ви також можете "
-"використати '-',\n"
-"                              щоб вказати діапазон: \"6881-6999\". ',' та "
-"'-' можуть\n"
-"                              бути використані разом."
 
 #: src/usage_text.h:308
-#, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT Вказати хост та порт, як точку входження до "
-"DHT\n"
+" --dht-entry-point=Хост: порт Встановіть вузол і порт в якості відправної "
+"точки для IPv4 DHT\n"
 "                              мережі."
 
 #: src/usage_text.h:311
-#, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
-msgstr " --dht-file-path=PATH Змінити файл таблиці роутінгу DHT на PATH."
+msgstr ""
+" --dht-file-path=PATH         Зміна IPv4 DHT таблиці маршрутизації шляху."
 
 #: src/usage_text.h:313
 msgid ""
@@ -1616,19 +1589,12 @@ msgstr ""
 "аргументу."
 
 #: src/usage_text.h:554
-#, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed when download\n"
 "                              is paused.\n"
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --on-download-complete=COMMAND Вказати команду, яку буде виконано тоді, "
-"коли завантаження\n"
-"                              закінчиться.\n"
-"                              Дивіться параметр --on-download-start аби\n"
-"                              з'ясувати вимоги до COMMAND.\n"
-"                              Дивіться також параметр --on-download-stop."
 
 #: src/usage_text.h:559
 msgid ""
@@ -1927,7 +1893,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:684
-#, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
 "exit.\n"
@@ -1938,28 +1903,15 @@ msgid ""
 "addMetalink\n"
 "                              XML-RPC method are not saved."
 msgstr ""
-" --ca-certificate=FILE Використовувати сертифікат авторизації в FILE задля "
-"перевірки\n"
-"                              вузлів. Сертифікат має бути у PEM\n"
-"                              форматі та може вміщувати багаторазові CA "
-"сертифікати.\n"
-"                              Використовуйте параметр --check-certificate "
-"аби дозволити\n"
-"                              перевірку."
 
 #: src/usage_text.h:690
-#, fuzzy
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
 "one\n"
 "                              server for each download."
 msgstr ""
-" --bt-max-open-files=NUM Вказує максимальну кількість файлів для відкриття в "
-"кожному\n"
-"                              BitTorrent завантаженні."
 
 #: src/usage_text.h:693
-#, fuzzy
 msgid ""
 " -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
 "range.\n"
@@ -1975,21 +1927,8 @@ msgid ""
 "source.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --bt-request-peer-speed-limit=SPEED Якщо вся швидкість завантаження "
-"кожного\n"
-"                              торенту нижча за SPEED, aria2 тимчасово\n"
-"                              підвищує кількість вузлів, аби спробувати "
-"збільшити\n"
-"                              швидкість завантаження. Налаштування цього "
-"параметру із обраною\n"
-"                              Вами швидкістю завантаження може, в деяких "
-"випадках,\n"
-"                              збільшити Вашу швидкість завантаження.\n"
-"                              Ви можете додати K або M(1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:702
-#, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
 "older\n"
@@ -1997,13 +1936,8 @@ msgid ""
 "has\n"
 "                              many limitations. See man page for details."
 msgstr ""
-" -R, --remote-time[=true|false] Шукає хронометраж віддаленого файлу з\n"
-"                              віддаленого HTTP/FTP серверу та, якщо це "
-"доступно,\n"
-"                              застосовує його на локальному файлі."
 
 #: src/usage_text.h:706
-#, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
 "                              --on-download-complete is called when "
@@ -2016,22 +1950,8 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --on-download-stop=COMMAND Встановити команду, яку буде виконано тоді, коли "
-"завантаження\n"
-"                              зупиниться. Ви можете відмінити команду для "
-"виконання\n"
-"                              цодо особливих результатів завантаження за "
-"допомогою\n"
-"                              --on-download-complete та --on-download-error. "
-"Якщо\n"
-"                              вони вказані, то команда, що задана у цьому \n"
-"                              параметрі не виконується.\n"
-"                              Дивіться параметр --on-download-start для "
-"того, щоб з'ясувати\n"
-"                              вимоги до COMMAND."
 
 #: src/usage_text.h:714
-#, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
 "asynchronous\n"
@@ -2039,14 +1959,8 @@ msgid ""
 "when\n"
 "                              --async-dns=false."
 msgstr ""
-" --enable-direct-io[=true|false] Дозволити пряме I/O (зчитування/запис), яке "
-"зменшує використання cpu (процесору) під час\n"
-"                              попереднього резервування розміщення файлу.\n"
-"                              Вимкніть (оберіть false), якщо Вам трапиться "
-"якась помилка"
 
 #: src/usage_text.h:718
-#, fuzzy
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
 "                              Use --dht-listen-port option to specify port\n"
@@ -2054,11 +1968,6 @@ msgid ""
 "addr6\n"
 "                              option."
 msgstr ""
-" --bt-require-crypto=true|false Якщо вказано true, aria2 не приймає та не\n"
-"                              встановлює з'єднання з успадкуванням "
-"початкового обміну BitTorrent.\n"
-"                              Бо aria2 завжди використовує обфускацію\n"
-"                              початкового обміну."
 
 #: src/usage_text.h:723
 msgid ""
@@ -2069,21 +1978,16 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:727
-#, fuzzy
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT Вказати хост та порт, як точку входження до "
-"DHT\n"
-"                              мережі."
 
 #: src/usage_text.h:730
-#, fuzzy
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
-msgstr " --dht-file-path=PATH Змінити файл таблиці роутінгу DHT на PATH."
+msgstr ""
 
 #: src/usage_text.h:732
 msgid ""
@@ -2509,13 +2413,11 @@ msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "Помилка під час завантаження CA сертифікату %s. Причина: %s"
 
 #: src/message.h:175
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Certificate verification failed. Cause: %s See --ca-certificate and --check-"
 "certificate option."
 msgstr ""
-"Ви можете натрапити на помилку перевірки сертифікату з HTTPS серверу. "
-"Дивіться параметри --ca-certificate та --check-certificate."
 
 #: src/message.h:177
 msgid "No certificate found."
@@ -2929,6 +2831,3 @@ msgstr ""
 #: src/BtSetup.cc:212
 msgid "Errors occurred while binding port.\n"
 msgstr "Помилка при відкритті порту.\n"
-
-#~ msgid "Certificate verification failed. Cause: %s"
-#~ msgstr "Невдала перевірка сертифікату. Причина: %s"

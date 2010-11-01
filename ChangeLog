@@ -1,5 +1,12 @@
 2010-11-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated Ukrainian and Greek translation. Thanks to all
+	translators.
+	* po/el.po
+	* po/uk.po
+
+2010-11-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated translation template.
 	* po
 
