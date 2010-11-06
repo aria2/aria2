@@ -47,7 +47,7 @@ private:
 
   class Reset {
   public:
-    void operator()(SharedHandle<SeedCriteria> cri)
+    void operator()(const SharedHandle<SeedCriteria>& cri)
     {
       cri->reset();
     }
@@ -55,7 +55,7 @@ private:
 
   class Eval {
   public:
-    bool operator()(SharedHandle<SeedCriteria> cri)
+    bool operator()(const SharedHandle<SeedCriteria>& cri)
     {
       return cri->evaluate();
     }

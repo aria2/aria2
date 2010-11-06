@@ -1,3 +1,8 @@
+2010-11-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Use const reference
+	* src/UnionSeedCriteria.h
+
 2010-11-01  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Release 1.10.6
