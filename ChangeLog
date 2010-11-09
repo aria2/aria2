@@ -1,3 +1,9 @@
+2010-11-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Retry open(2) and fallocate(2) when they are interrupted by
+	signal.
+	* src/AbstractDiskWriter.cc
+
 2010-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Capture errno right after system/library call to avoid it to get

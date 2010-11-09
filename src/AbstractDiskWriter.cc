@@ -98,7 +98,9 @@ void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
     flags |= O_RDWR;
   }
 
-  if((fd_ = open(filename_.c_str(), flags, OPEN_MODE)) < 0) {
+  while((fd_ = open(filename_.c_str(), flags, OPEN_MODE)) == -1 &&
+        errno == EINTR);
+  if(fd_ < 0) {
     int errNum = errno;
     throw DL_ABORT_EX2
       (errNum,
@@ -112,8 +114,10 @@ void AbstractDiskWriter::createFile(int addFlags)
 {
   assert(!filename_.empty());
   util::mkdirs(File(filename_).getDirname());
-  if((fd_ = open(filename_.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
-                OPEN_MODE)) < 0) {
+
+  while((fd_ = open(filename_.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
+                    OPEN_MODE)) == -1 && errno == EINTR);
+  if(fd_ < 0) {
     int errNum = errno;
     throw DL_ABORT_EX2
       (errNum,
@@ -222,7 +226,8 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
 # ifdef HAVE_FALLOCATE
   // For linux, we use fallocate to detect file system supports
   // fallocate or not.
-  int r = fallocate(fd_, 0, offset, length);
+  int r;
+  while((r = fallocate(fd_, 0, offset, length)) == -1 && errno == EINTR);
   int errNum = errno;
   if(r == -1) {
     throw DL_ABORT_EX(StringFormat("fallocate failed. cause: %s",
