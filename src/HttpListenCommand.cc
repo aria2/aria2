@@ -119,6 +119,8 @@ bool HttpListenCommand::bindPort(uint16_t port)
     e_->addSocketForReadCheck(serverSocket_, this);
     return true;
   } catch(RecoverableException& e) {
+    getLogger()->error("Failed to setup XML-RPC server for IPv%d",
+                       family_ == AF_INET?4:6);
     getLogger()->error(MSG_BIND_FAILURE, e,
                        util::itos(getCuid()).c_str(), port);
     if(!serverSocket_.isNull()) {

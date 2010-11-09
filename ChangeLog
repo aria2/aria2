@@ -1,5 +1,10 @@
 2010-11-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Print IP protocol version when setting up XML-RPC server failed.
+	* src/HttpListenCommand.cc
+
+2010-11-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Retry open(2) and fallocate(2) when they are interrupted by
 	signal.
 	* src/AbstractDiskWriter.cc
