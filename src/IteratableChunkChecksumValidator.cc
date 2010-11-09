@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "IteratableChunkChecksumValidator.h"
 
-#include <cerrno>
 #include <cstring>
 #include <cstdlib>
 
@@ -161,7 +160,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     if(r == 0 || r < static_cast<size_t>(woffset)) {
       throw DL_ABORT_EX
         (StringFormat(EX_FILE_READ, dctx_->getBasePath().c_str(),
-                      strerror(errno)).str());
+                      "data is too short").str());
     }
     size_t wlength;
     if(max < static_cast<off_t>(curoffset+r)) {

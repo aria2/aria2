@@ -40,7 +40,6 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
-#include <iostream>
 
 #include "Command.h"
 #include "LogFactory.h"
@@ -280,7 +279,6 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
     std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  int r = 0;
   if(i != socketEntries_.end() && (*i) == socketEntry) {
     (*i)->addCommandEvent(command, events);
   } else {
@@ -288,15 +286,7 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
     socketEntry->addCommandEvent(command, events);
   }
   updateFdSet();
-  if(r == -1) {
-    if(logger_->debug()) {
-      logger_->debug("Failed to add socket event %d:%s",
-                     socket, strerror(errno));
-    }
-    return false;
-  } else {
-    return true;
-  }
+  return true;
 }
 
 bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
@@ -307,19 +297,11 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
     std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
   if(i != socketEntries_.end() && (*i) == socketEntry) {
     (*i)->removeCommandEvent(command, events);
-    int r = 0;
     if((*i)->eventEmpty()) {
       socketEntries_.erase(i);
     }
     updateFdSet();
-    if(r == -1) {
-      if(logger_->debug()) {
-        logger_->debug("Failed to delete socket event:%s", strerror(errno));
-      }
-      return false;
-    } else {
-      return true;
-    }
+    return true;
   } else {
     if(logger_->debug()) {
       logger_->debug("Socket %d is not found in SocketEntries.", socket);

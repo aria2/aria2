@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "DHTAutoSaveCommand.h"
 
-#include <cerrno>
 #include <cstring>
 #include <fstream>
 
@@ -117,8 +116,8 @@ void DHTAutoSaveCommand::save()
                       std::ios::out|std::ios::binary);
       if(!o) {
         throw DL_ABORT_EX
-          (StringFormat("Failed to save DHT routing table to %s. cause:%s",
-                        dhtFile.c_str(), strerror(errno)).str());
+          (StringFormat("Failed to save DHT routing table to %s.",
+                        dhtFile.c_str()).str());
       }
       serializer.serialize(o);
     }

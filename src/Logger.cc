@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "Logger.h"
 
-#include <cerrno>
 #include <cstring>
 
 #include "DlAbortEx.h"
@@ -68,7 +67,7 @@ void Logger::openFile(const std::string& filename)
   file_.open(filename.c_str(), std::ios::app|std::ios::binary);
   if(!file_) {
     throw DL_ABORT_EX
-      (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
+      (StringFormat(EX_FILE_OPEN, filename.c_str(), "n/a").str());
   }
 }
 

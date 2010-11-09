@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "EpollEventPoll.h"
 
+#include <cerrno>
 #include <cstring>
 #include <algorithm>
 #include <numeric>
@@ -41,6 +42,7 @@
 #include "Command.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -90,10 +92,11 @@ EpollEventPoll::~EpollEventPoll()
   if(epfd_ != -1) {
     int r;
     while((r = close(epfd_)) == -1 && errno == EINTR);
+    int errNum = errno;
     if(r == -1) {
       logger_->error("Error occurred while closing epoll file descriptor"
                      " %d: %s",
-                     epfd_, strerror(errno));
+                     epfd_, util::safeStrerror(errNum).c_str());
     }
   }
   delete [] epEvents_;
@@ -165,6 +168,7 @@ bool EpollEventPoll::addEvents(sock_t socket,
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
     std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
   int r = 0;
+  int errNum = 0;
   if(i != socketEntries_.end() && (*i) == socketEntry) {
 
     event.addSelf(*i);
@@ -178,6 +182,7 @@ bool EpollEventPoll::addEvents(sock_t socket,
 
       r = epoll_ctl(epfd_, EPOLL_CTL_ADD, (*i)->getSocket(),
                     &epEvent);
+      errNum = errno;
     }
   } else {
     socketEntries_.insert(i, socketEntry);
@@ -191,11 +196,12 @@ bool EpollEventPoll::addEvents(sock_t socket,
 
     struct epoll_event epEvent = socketEntry->getEvents();
     r = epoll_ctl(epfd_, EPOLL_CTL_ADD, socketEntry->getSocket(), &epEvent);
+    errNum = errno;
   }
   if(r == -1) {
     if(logger_->debug()) {
       logger_->debug("Failed to add socket event %d:%s",
-                     socket, strerror(errno));
+                     socket, util::safeStrerror(errNum).c_str());
     }
     return false;
   } else {
@@ -229,27 +235,31 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
     event.removeSelf(*i);
 
     int r = 0;
+    int errNum = 0;
     if((*i)->eventEmpty()) {
       // In kernel before 2.6.9, epoll_ctl with EPOLL_CTL_DEL requires non-null
       // pointer of epoll_event.
       struct epoll_event ev = {0,{0}};
       r = epoll_ctl(epfd_, EPOLL_CTL_DEL, (*i)->getSocket(), &ev);
+      errNum = r;
       socketEntries_.erase(i);
     } else {
       // If socket is closed, then it seems it is automatically removed from
       // epoll, so following EPOLL_CTL_MOD may fail.
       struct epoll_event epEvent = (*i)->getEvents();
       r = epoll_ctl(epfd_, EPOLL_CTL_MOD, (*i)->getSocket(), &epEvent);
+      errNum = r;
       if(r == -1) {
         if(logger_->debug()) {
           logger_->debug("Failed to delete socket event, but may be ignored:%s",
-                         strerror(errno));
+                         util::safeStrerror(errNum).c_str());
         }
       }
     }
     if(r == -1) {
       if(logger_->debug()) {
-        logger_->debug("Failed to delete socket event:%s", strerror(errno));
+        logger_->debug("Failed to delete socket event:%s",
+                       util::safeStrerror(errNum).c_str());
       }
       return false;
     } else {

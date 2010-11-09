@@ -427,6 +427,14 @@ std::string createSafePath(const std::string& dir, const std::string& filename);
 
 std::string encodeNonUtf8(const std::string& s);
 
+// Create string safely. If str is NULL, returns empty string.
+// Otherwise, returns std::string(str).
+std::string makeString(const char* str);
+
+// This function is basically the same with strerror(errNum) but when
+// strerror returns NULL, this function returns empty string.
+std::string safeStrerror(int errNum);
+
 } // namespace util
 
 } // namespace aria2

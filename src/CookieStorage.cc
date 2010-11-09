@@ -343,8 +343,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
   {
     std::ofstream o(tempfilename.c_str(), std::ios::binary);
     if(!o) {
-      logger_->error("Cannot create cookie file %s, cause %s",
-                     filename.c_str(), strerror(errno));
+      logger_->error("Cannot create cookie file %s", filename.c_str());
       return false;
     }
     for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
@@ -353,8 +352,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     }
     o.flush();
     if(!o) {
-      logger_->error("Failed to save cookies to %s, cause %s",
-                     filename.c_str(), strerror(errno));
+      logger_->error("Failed to save cookies to %s", filename.c_str());
       return false;
     }  
   }

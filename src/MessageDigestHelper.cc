@@ -33,15 +33,16 @@
  */
 /* copyright --> */
 #include "MessageDigestHelper.h"
+
+#include <cstring>
+#include <cstdlib>
+
 #include "messageDigest.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "DefaultDiskWriter.h"
 #include "util.h"
 #include "StringFormat.h"
-#include <cerrno>
-#include <cstring>
-#include <cstdlib>
 
 namespace aria2 {
 
@@ -92,7 +93,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
     ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
     if((size_t)readLength != BUFSIZE) {
       throw DL_ABORT_EX
-        (StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
+        (StringFormat(EX_FILE_READ, "n/a", "data is too short").str());
     }
     ctx->digestUpdate(BUF, readLength);
     offset += readLength;
@@ -101,7 +102,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
     ssize_t readLength = bs->readData(BUF, tail, offset);
     if((size_t)readLength != tail) {
       throw DL_ABORT_EX
-        (StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
+        (StringFormat(EX_FILE_READ, "n/a", "data is too short").str());
     }
     ctx->digestUpdate(BUF, readLength);
   }

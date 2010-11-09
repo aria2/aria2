@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "DefaultBtProgressInfoFile.h"
 
-#include <cerrno>
 #include <cstring>
 #include <fstream>
 
@@ -111,8 +110,8 @@ void DefaultBtProgressInfoFile::save()
   {
     std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
     if(!o) {
-      throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-                                     filename_.c_str(), strerror(errno)).str());
+      throw DL_ABORT_EX
+        (StringFormat(EX_SEGMENT_FILE_WRITE, filename_.c_str()).str());
     }
 #ifdef ENABLE_BITTORRENT
     bool torrentDownload = isTorrentDownload();
@@ -199,25 +198,26 @@ void DefaultBtProgressInfoFile::save()
     }
     o.flush();
     if(!o) {
-      throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-                                     filename_.c_str(), strerror(errno)).str());
+      throw DL_ABORT_EX
+        (StringFormat(EX_SEGMENT_FILE_WRITE, filename_.c_str()).str());
     }
     logger_->info(MSG_SAVED_SEGMENT_FILE);
   }
   if(!File(filenameTemp).renameTo(filename_)) {
-    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_WRITE,
-                                   filename_.c_str(), strerror(errno)).str());
+    throw DL_ABORT_EX
+      (StringFormat(EX_SEGMENT_FILE_WRITE, filename_.c_str()).str());
   }
 }
 
 #define CHECK_STREAM(in, length)                                        \
   if(in.gcount() != length) {                                           \
-    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
-                                   filename_.c_str(),"Unexpected EOF").str()); \
+  throw DL_ABORT_EX(StringFormat("Failed to read segment file %s."      \
+                                 " Unexpected EOF.",                    \
+                                 filename_.c_str()).str());             \
   }                                                                     \
   if(!in) {                                                             \
-    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
-                                   filename_.c_str(), strerror(errno)).str()); \
+    throw DL_ABORT_EX                                                   \
+      (StringFormat(EX_SEGMENT_FILE_READ, filename_.c_str()).str());    \
   }
 
 // It is assumed that integers are saved as:
@@ -227,9 +227,9 @@ void DefaultBtProgressInfoFile::load()
 {
   logger_->info(MSG_LOADING_SEGMENT_FILE, filename_.c_str());
   std::ifstream in(filename_.c_str(), std::ios::in|std::ios::binary);
-  if(!in) {                                                             \
-    throw DL_ABORT_EX(StringFormat(EX_SEGMENT_FILE_READ,                \
-                                   filename_.c_str(), strerror(errno)).str());
+  if(!in) {
+    throw DL_ABORT_EX
+      (StringFormat(EX_SEGMENT_FILE_READ, filename_.c_str()).str());
   }
   unsigned char versionBuf[2];
   in.read(reinterpret_cast<char*>(versionBuf), sizeof(versionBuf));

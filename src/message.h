@@ -229,9 +229,8 @@
 #define EX_FILE_OFFSET_OUT_OF_RANGE _("The offset is out of range, offset=%s")
 #define EX_NOT_DIRECTORY _("%s is not a directory.")
 #define EX_MAKE_DIR _("Failed to make the directory %s, cause: %s")
-#define EX_SEGMENT_FILE_OPEN _("Failed to open the segment file %s, cause: %s")
-#define EX_SEGMENT_FILE_WRITE _("Failed to write into the segment file %s, cause: %s")
-#define EX_SEGMENT_FILE_READ _("Failed to read from the segment file %s, cause: %s")
+#define EX_SEGMENT_FILE_WRITE "Failed to write into the segment file %s"
+#define EX_SEGMENT_FILE_READ "Failed to read from the segment file %s"
 
 #define EX_SOCKET_OPEN _("Failed to open a socket, cause: %s")
 #define EX_SOCKET_SET_OPT _("Failed to set a socket option, cause: %s")

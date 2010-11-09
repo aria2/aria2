@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "KqueueEventPoll.h"
 
+#include <cerrno>
 #include <cstring>
 #include <algorithm>
 #include <numeric>
@@ -41,6 +42,7 @@
 #include "Command.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "util.h"
 
 #ifdef KEVENT_UDATA_INTPTR_T
 # define PTR_TO_UDATA(X) (reinterpret_cast<intptr_t>(X))
@@ -96,10 +98,11 @@ KqueueEventPoll::~KqueueEventPoll()
   if(kqfd_ != -1) {
     int r;
     while((r = close(kqfd_)) == -1 && errno == EINTR);
+    int errNum = errno;
     if(r == -1) {
       logger_->error("Error occurred while closing kqueue file descriptor"
                      " %d: %s",
-                     kqfd_, strerror(errno));
+                     kqfd_, util::safeStrerror(errNum).c_str());
     }
   }
   delete [] kqEvents_;
@@ -186,10 +189,11 @@ bool KqueueEventPoll::addEvents
     n = socketEntry->getEvents(changelist);
   }
   r = kevent(kqfd_, changelist, n, changelist, 0, &zeroTimeout);
+  int errNum = errno;
   if(r == -1) {
     if(logger_->debug()) {
       logger_->debug("Failed to add socket event %d:%s",
-                     socket, strerror(errno));
+                     socket, util::safeStrerror(errNum).c_str());
     }
     return false;
   } else {
@@ -225,12 +229,14 @@ bool KqueueEventPoll::deleteEvents(sock_t socket,
     struct kevent changelist[2];
     size_t n = (*i)->getEvents(changelist);
     r = kevent(kqfd_, changelist, n, changelist, 0, &zeroTimeout);
+    int errNum = errno;
     if((*i)->eventEmpty()) {
       socketEntries_.erase(i);
     }
     if(r == -1) {
       if(logger_->debug()) {
-        logger_->debug("Failed to delete socket event:%s", strerror(errno));
+        logger_->debug("Failed to delete socket event:%s",
+                       util::safeStrerror(errNum).c_str());
       }
       return false;
     } else {

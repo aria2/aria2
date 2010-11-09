@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "DHTRoutingTableDeserializer.h"
 
-#include <cerrno>
 #include <cstring>
 #include <cassert>
 #include <istream>
@@ -73,9 +72,7 @@ void readBytes(unsigned char* buf, size_t buflen,
                     "Unexpected EOF").str());                           \
   }                                                                     \
   if(!in) {                                                             \
-    throw DL_ABORT_EX                                                   \
-      (StringFormat("Failed to load DHT routing table. cause:%s",       \
-                    strerror(errno)).str());                            \
+    throw DL_ABORT_EX("Failed to load DHT routing table.");             \
   }
 
 void DHTRoutingTableDeserializer::deserialize(std::istream& in)

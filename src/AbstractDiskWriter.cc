@@ -99,10 +99,12 @@ void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
   }
 
   if((fd_ = open(filename_.c_str(), flags, OPEN_MODE)) < 0) {
+    int errNum = errno;
     throw DL_ABORT_EX2
-      (errno,
-       StringFormat
-       (EX_FILE_OPEN, filename_.c_str(), strerror(errno)).str());
+      (errNum,
+       StringFormat(EX_FILE_OPEN,
+                    filename_.c_str(),
+                    util::safeStrerror(errNum).c_str()).str());
   }
 }
 
@@ -112,9 +114,12 @@ void AbstractDiskWriter::createFile(int addFlags)
   util::mkdirs(File(filename_).getDirname());
   if((fd_ = open(filename_.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
                 OPEN_MODE)) < 0) {
+    int errNum = errno;
     throw DL_ABORT_EX2
-      (errno,
-       StringFormat(EX_FILE_OPEN, filename_.c_str(), strerror(errno)).str());
+      (errNum,
+       StringFormat(EX_FILE_OPEN,
+                    filename_.c_str(),
+                    util::safeStrerror(errNum).c_str()).str());
   }  
 }
 
@@ -142,8 +147,11 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len)
 void AbstractDiskWriter::seek(off_t offset)
 {
   if(a2lseek(fd_, offset, SEEK_SET) == (off_t)-1) {
+    int errNum = errno;
     throw DL_ABORT_EX
-      (StringFormat(EX_FILE_SEEK, filename_.c_str(), strerror(errno)).str());
+      (StringFormat(EX_FILE_SEEK,
+                    filename_.c_str(),
+                    util::safeStrerror(errNum).c_str()).str());
   }
 }
 
@@ -151,14 +159,20 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
 {
   seek(offset);
   if(writeDataInternal(data, len) < 0) {
+    int errNum = errno;
     // If errno is ENOSPC(not enough space in device), throw
     // DownloadFailureException and abort download instantly.
-    if(errno == ENOSPC) {
+    if(errNum == ENOSPC) {
       throw DOWNLOAD_FAILURE_EXCEPTION
-        (StringFormat(EX_FILE_WRITE, filename_.c_str(), strerror(errno)).str());
+        (StringFormat(EX_FILE_WRITE,
+                      filename_.c_str(),
+                      util::safeStrerror(errNum).c_str()).str());
+    } else {
+      throw DL_ABORT_EX
+        (StringFormat(EX_FILE_WRITE,
+                      filename_.c_str(),
+                      util::safeStrerror(errNum).c_str()).str());
     }
-    throw DL_ABORT_EX(StringFormat(EX_FILE_WRITE,
-                                   filename_.c_str(), strerror(errno)).str());
   }
 }
 
@@ -167,8 +181,11 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
   ssize_t ret;
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {
-    throw DL_ABORT_EX(StringFormat(EX_FILE_READ,
-                                   filename_.c_str(), strerror(errno)).str());
+    int errNum = errno;
+    throw DL_ABORT_EX
+      (StringFormat(EX_FILE_READ,
+                    filename_.c_str(),
+                    util::safeStrerror(errNum).c_str()).str());
   }
   return ret;
 }
@@ -189,8 +206,9 @@ void AbstractDiskWriter::truncate(uint64_t length)
   }
 #else
   if(ftruncate(fd_, length) == -1) {
+    int errNum = errno;
     throw DL_ABORT_EX(StringFormat("ftruncate failed. cause: %s",
-                                   strerror(errno)).str());
+                                   util::safeStrerror(errNum).c_str()).str());
   }
 #endif
 }
@@ -205,15 +223,16 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
   // For linux, we use fallocate to detect file system supports
   // fallocate or not.
   int r = fallocate(fd_, 0, offset, length);
+  int errNum = errno;
   if(r == -1) {
     throw DL_ABORT_EX(StringFormat("fallocate failed. cause: %s",
-                                   strerror(errno)).str());
+                                   util::safeStrerror(errNum).c_str()).str());
   }
 # elif HAVE_POSIX_FALLOCATE
   int r = posix_fallocate(fd_, offset, length);
   if(r != 0) {
     throw DL_ABORT_EX(StringFormat("posix_fallocate failed. cause: %s",
-                                   strerror(r)).str());
+                                   util::safeStrerror(r).c_str()).str());
   }
 # else
 #  error "no *_fallocate function available."

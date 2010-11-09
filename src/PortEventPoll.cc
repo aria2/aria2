@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "PortEventPoll.h"
 
+#include <cerrno>
 #include <cstring>
 #include <algorithm>
 #include <numeric>
@@ -41,6 +42,7 @@
 #include "Command.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -85,9 +87,10 @@ PortEventPoll::~PortEventPoll()
   if(port_ != -1) {
     int r;
     while((r = close(port_)) == -1 && errno == EINTR);
+    int errNum = errno;
     if(r == -1) {
       logger_->error("Error occurred while closing port %d: %s",
-                     port_, strerror(errno));
+                     port_, util::safeStrerror(errNum).c_str());
     }
   }
   delete [] portEvents_;
@@ -120,9 +123,10 @@ void PortEventPoll::poll(const struct timeval& tv)
       p->processEvents(pev.portev_events);
       int r = port_associate(port_, PORT_SOURCE_FD, pev.portev_object,
                              p->getEvents().events, p);
+      int errNum = errno;
       if(r == -1) {
         logger_->error("port_associate failed for file descriptor %d: cause %s",
-                       pev.portev_object, strerror(errno));
+                       pev.portev_object, util::safeStrerror(errNum).c_str());
       }
     }
   }
@@ -171,11 +175,13 @@ bool PortEventPoll::addEvents(sock_t socket,
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
     std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
   int r = 0;
+  int errNum = 0;
   if(i != socketEntries_.end() && (*i) == socketEntry) {
     event.addSelf(*i);
     A2PortEvent pv = (*i)->getEvents();
     r = port_associate(port_, PORT_SOURCE_FD, (*i)->getSocket(),
                        pv.events, pv.socketEntry);
+    errNum = r;
   } else {
     socketEntries_.insert(i, socketEntry);
     if(socketEntries_.size() > portEventsSize_) {
@@ -187,11 +193,12 @@ bool PortEventPoll::addEvents(sock_t socket,
     A2PortEvent pv = socketEntry->getEvents();
     r = port_associate(port_, PORT_SOURCE_FD, socketEntry->getSocket(),
                        pv.events, pv.socketEntry);
+    errNum = r;
   }
   if(r == -1) {
     if(logger_->debug()) {
       logger_->debug("Failed to add socket event %d:%s",
-                     socket, strerror(errno));
+                     socket, util::safeStrerror(errNum).c_str());
     }
     return false;
   } else {
@@ -223,17 +230,21 @@ bool PortEventPoll::deleteEvents(sock_t socket,
   if(i != socketEntries_.end() && (*i) == socketEntry) {
     event.removeSelf(*i);
     int r = 0;
+    int errNum = 0;
     if((*i)->eventEmpty()) {
       r = port_dissociate(port_, PORT_SOURCE_FD, (*i)->getSocket());
+      errNum = errno;
       socketEntries_.erase(i);
     } else {
       A2PortEvent pv = (*i)->getEvents();
       r = port_associate(port_, PORT_SOURCE_FD, (*i)->getSocket(),
                          pv.events, pv.socketEntry);
+      errNum = errno;
     }
     if(r == -1) {
       if(logger_->debug()) {
-        logger_->debug("Failed to delete socket event:%s", strerror(errno));
+        logger_->debug("Failed to delete socket event:%s",
+                       util::safeStrerror(errNum).c_str());
       }
       return false;
     } else {

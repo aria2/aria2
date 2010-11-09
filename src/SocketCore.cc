@@ -92,32 +92,29 @@ namespace aria2 {
 # define CLOSE(X) while(close(X) == -1 && errno == EINTR)
 #endif // __MINGW32__
 
-static const char *errorMsg(const int err)
+namespace {
+std::string errorMsg(int errNum)
 {
 #ifndef __MINGW32__
-  return strerror(err);
+  return util::safeStrerror(errNum);
 #else
   static char buf[256];
   if (FormatMessage(
                     FORMAT_MESSAGE_FROM_SYSTEM |
                     FORMAT_MESSAGE_IGNORE_INSERTS,
                     NULL,
-                    err,
+                    errNum,
                     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
                     (LPTSTR) &buf,
                     sizeof(buf),
                     NULL
                     ) == 0) {
-    snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, err, err);
+    snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, errNum, errNum);
   }
   return buf;
 #endif // __MINGW32__
 }
-
-static const char *errorMsg()
-{
-  return errorMsg(SOCKET_ERRNO);
-}
+} // namespace
 
 int SocketCore::protocolFamily_ = AF_UNSPEC;
 
@@ -170,18 +167,23 @@ SocketCore::~SocketCore() {
 
 void SocketCore::create(int family, int protocol)
 {
+  int errNum;
   closeConnection();
   sock_t fd = socket(family, sockType_, protocol);
+  errNum = SOCKET_ERRNO;
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX
-      (StringFormat("Failed to create socket. Cause:%s", errorMsg()).str());
+      (StringFormat
+       ("Failed to create socket. Cause:%s", errorMsg(errNum).c_str()).str());
   }
   int sockopt = 1;
   if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR,
                 (a2_sockopt_t) &sockopt, sizeof(sockopt)) < 0) {
+    errNum = SOCKET_ERRNO;
     CLOSE(fd);
     throw DL_ABORT_EX
-      (StringFormat("Failed to create socket. Cause:%s", errorMsg()).str());
+      (StringFormat
+       ("Failed to create socket. Cause:%s", errorMsg(errNum).c_str()).str());
   }
   sockfd_ = fd;
 }
@@ -190,13 +192,18 @@ static sock_t bindInternal(int family, int socktype, int protocol,
                            const struct sockaddr* addr, socklen_t addrlen,
                            std::string& error)
 {
+  int errNum;
   sock_t fd = socket(family, socktype, protocol);
+  errNum = SOCKET_ERRNO;
   if(fd == (sock_t) -1) {
+    error = errorMsg(errNum);
     return -1;
   }
   int sockopt = 1;
   if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt,
                 sizeof(sockopt)) < 0) {
+    errNum = SOCKET_ERRNO;
+    error = errorMsg(errNum);
     CLOSE(fd);
     return -1;
   }
@@ -205,13 +212,16 @@ static sock_t bindInternal(int family, int socktype, int protocol,
     int sockopt = 1;
     if(setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (a2_sockopt_t) &sockopt,
                   sizeof(sockopt)) < 0) {
+      errNum = SOCKET_ERRNO;
+      error = errorMsg(errNum);
       CLOSE(fd);
       return -1;
     }
   }
 #endif // IPV6_V6ONLY
   if(::bind(fd, addr, addrlen) == -1) {
-    error = errorMsg();
+    errNum = SOCKET_ERRNO;
+    error = errorMsg(errNum);
     CLOSE(fd);
     return -1;
   }
@@ -319,7 +329,9 @@ void SocketCore::bind(const struct sockaddr* addr, socklen_t addrlen)
 void SocketCore::beginListen()
 {
   if(listen(sockfd_, 1) == -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_LISTEN, errorMsg()).str());
+    int errNum = SOCKET_ERRNO;
+    throw DL_ABORT_EX(StringFormat
+                      (EX_SOCKET_LISTEN, errorMsg(errNum).c_str()).str());
   }
 }
 
@@ -328,9 +340,13 @@ SocketCore* SocketCore::acceptConnection() const
   struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
   sock_t fd;
-  while((fd = accept(sockfd_, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == (sock_t) -1 && SOCKET_ERRNO == A2_EINTR);
+  while((fd = accept(sockfd_, reinterpret_cast<struct sockaddr*>(&sockaddr),
+                     &len)) == (sock_t) -1 &&
+        SOCKET_ERRNO == A2_EINTR);
+  int errNum = SOCKET_ERRNO;
   if(fd == (sock_t) -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_ACCEPT, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat
+                      (EX_SOCKET_ACCEPT, errorMsg(errNum).c_str()).str());
   }
   return new SocketCore(fd, sockType_);
 }
@@ -349,7 +365,9 @@ void SocketCore::getAddrInfo
 {
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   if(getsockname(sockfd_, addrp, &len) == -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
+    int errNum = SOCKET_ERRNO;
+    throw DL_ABORT_EX(StringFormat
+                      (EX_SOCKET_GET_NAME, errorMsg(errNum).c_str()).str());
   }
 }
 
@@ -367,7 +385,9 @@ void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
   socklen_t len = sizeof(sockaddr);
   struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
   if(getpeername(sockfd_, addrp, &len) == -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
+    int errNum = SOCKET_ERRNO;
+    throw DL_ABORT_EX(StringFormat
+                      (EX_SOCKET_GET_NAME, errorMsg(errNum).c_str()).str());
   }
   peerinfo = util::getNumericNameInfo(addrp, len);
 }
@@ -386,15 +406,19 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   }
   WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
+  int errNum;
   for(rp = res; rp; rp = rp->ai_next) {
     sock_t fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+    errNum = SOCKET_ERRNO;
     if(fd == (sock_t) -1) {
-      error = errorMsg();
+      error = errorMsg(errNum);
       continue;
     }
     int sockopt = 1;
-    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt, sizeof(sockopt)) < 0) {
-      error = errorMsg();
+    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (a2_sockopt_t) &sockopt,
+                  sizeof(sockopt)) < 0) {
+      errNum = SOCKET_ERRNO;
+      error = errorMsg(errNum);
       CLOSE(fd);
       continue;
     }
@@ -405,7 +429,8 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
           i != eoi; ++i) {
         if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
                   (*i).second) == -1) {
-          error = errorMsg();
+          errNum = SOCKET_ERRNO;
+          error = errorMsg(errNum);
           if(LogFactory::getInstance()->debug()) {
             LogFactory::getInstance()->debug(EX_SOCKET_BIND, error.c_str());
           }
@@ -425,7 +450,8 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     setNonBlockingMode();
     if(connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
        SOCKET_ERRNO != A2_EINPROGRESS) {
-      error = errorMsg();
+      errNum = SOCKET_ERRNO;
+      error = errorMsg(errNum);
       CLOSE(sockfd_);
       sockfd_ = (sock_t) -1;
       continue;
@@ -444,7 +470,9 @@ void SocketCore::setSockOpt
 (int level, int optname, void* optval, socklen_t optlen)
 {
   if(setsockopt(sockfd_, level, optname, (a2_sockopt_t)optval, optlen) < 0) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SET_OPT, errorMsg()).str());
+    int errNum = SOCKET_ERRNO;
+    throw DL_ABORT_EX(StringFormat
+                      (EX_SOCKET_SET_OPT, errorMsg(errNum).c_str()).str());
   }
 }   
 
@@ -502,7 +530,9 @@ void SocketCore::setNonBlockingMode()
 #ifdef __MINGW32__
   static u_long flag = 1;
   if (::ioctlsocket(sockfd_, FIONBIO, &flag) == -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_NONBLOCKING, errorMsg()).str());
+    int errNum = SOCKET_ERRNO;
+    throw DL_ABORT_EX(StringFormat
+                      (EX_SOCKET_NONBLOCKING, errorMsg(errNum).c_str()).str());
   }
 #else
   int flags;
@@ -518,7 +548,9 @@ void SocketCore::setBlockingMode()
 #ifdef __MINGW32__
   static u_long flag = 0;
   if (::ioctlsocket(sockfd_, FIONBIO, &flag) == -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_BLOCKING, errorMsg()).str());
+    int errNum = SOCKET_ERRNO;
+    throw DL_ABORT_EX(StringFormat
+                      (EX_SOCKET_BLOCKING, errorMsg(errNum).c_str()).str());
   }
 #else
   int flags;
@@ -576,13 +608,14 @@ bool SocketCore::isWritable(time_t timeout)
   p.events = POLLOUT;
   int r;
   while((r = poll(&p, 1, timeout*1000)) == -1 && errno == EINTR);
+  int errNum = SOCKET_ERRNO;
   if(r > 0) {
     return p.revents&(POLLOUT|POLLHUP|POLLERR);
   } else if(r == 0) {
     return false;
   } else {
     throw DL_RETRY_EX
-      (StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+      (StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg(errNum).c_str()).str());
   }
 #else // !HAVE_POLL
 # ifndef __MINGW32__
@@ -597,17 +630,19 @@ bool SocketCore::isWritable(time_t timeout)
   tv.tv_usec = 0;
 
   int r = select(sockfd_+1, NULL, &fds, NULL, &tv);
+  int errNum = SOCKET_ERRNO;
   if(r == 1) {
     return true;
   } else if(r == 0) {
     // time out
     return false;
   } else {
-    if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
+    if(errNum == A2_EINPROGRESS || errNum == A2_EINTR) {
       return false;
     } else {
       throw DL_RETRY_EX
-        (StringFormat(EX_SOCKET_CHECK_WRITABLE, errorMsg()).str());
+        (StringFormat(EX_SOCKET_CHECK_WRITABLE,
+                      errorMsg(errNum).c_str()).str());
     }
   }
 #endif // !HAVE_POLL
@@ -626,13 +661,14 @@ bool SocketCore::isReadable(time_t timeout)
   p.events = POLLIN;
   int r;
   while((r = poll(&p, 1, timeout*1000)) == -1 && errno == EINTR);
+  int errNum = SOCKET_ERRNO;
   if(r > 0) {
     return p.revents&(POLLIN|POLLHUP|POLLERR);
   } else if(r == 0) {
     return false;
   } else {
     throw DL_RETRY_EX
-      (StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+      (StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg(errNum).c_str()).str());
   }
 #else // !HAVE_POLL
 # ifndef __MINGW32__
@@ -647,17 +683,19 @@ bool SocketCore::isReadable(time_t timeout)
   tv.tv_usec = 0;
 
   int r = select(sockfd_+1, &fds, NULL, NULL, &tv);
+  int errNum = SOCKET_ERRNO;
   if(r == 1) {
     return true;
   } else if(r == 0) {
     // time out
     return false;
   } else {
-    if(SOCKET_ERRNO == A2_EINPROGRESS || SOCKET_ERRNO == A2_EINTR) {
+    if(errNum == A2_EINPROGRESS || errNum == A2_EINTR) {
       return false;
     } else {
       throw DL_RETRY_EX
-        (StringFormat(EX_SOCKET_CHECK_READABLE, errorMsg()).str());
+        (StringFormat(EX_SOCKET_CHECK_READABLE,
+                      errorMsg(errNum).c_str()).str());
     }
   }
 #endif // !HAVE_POLL
@@ -699,12 +737,14 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
 
   if(!secure_) {
     while((ret = send(sockfd_, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
+    int errNum = SOCKET_ERRNO;
     if(ret == -1) {
-      if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
+      if(A2_WOULDBLOCK(errNum)) {
         wantWrite_ = true;
         ret = 0;
       } else {
-        throw DL_RETRY_EX(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
+        throw DL_RETRY_EX(StringFormat(EX_SOCKET_SEND,
+                                       errorMsg(errNum).c_str()).str());
       }
     }
   } else {
@@ -743,12 +783,14 @@ void SocketCore::readData(char* data, size_t& len)
   if(!secure_) {    
     while((ret = recv(sockfd_, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
     
+    int errNum = SOCKET_ERRNO;
     if(ret == -1) {
-      if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
+      if(A2_WOULDBLOCK(errNum)) {
         wantRead_ = true;
         ret = 0;
       } else {
-        throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
+        throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV,
+                                       errorMsg(errNum).c_str()).str());
       }
     }
   } else {
@@ -789,12 +831,14 @@ void SocketCore::peekData(char* data, size_t& len)
   if(!secure_) {
     while((ret = recv(sockfd_, data, len, MSG_PEEK)) == -1 &&
           SOCKET_ERRNO == A2_EINTR);
+    int errNum = SOCKET_ERRNO;
     if(ret == -1) {
-      if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
+      if(A2_WOULDBLOCK(errNum)) {
         wantRead_ = true;
         ret = 0;
       } else {
-        throw DL_RETRY_EX(StringFormat(EX_SOCKET_PEEK, errorMsg()).str());
+        throw DL_RETRY_EX(StringFormat(EX_SOCKET_PEEK,
+                                       errorMsg(errNum).c_str()).str());
       }
     }
   } else {
@@ -1133,20 +1177,23 @@ ssize_t SocketCore::writeData(const char* data, size_t len,
   WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
   ssize_t r = -1;
+  int errNum = 0;
   for(rp = res; rp; rp = rp->ai_next) {
     while((r = sendto(sockfd_, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1
           && A2_EINTR == SOCKET_ERRNO);
+    errNum = SOCKET_ERRNO;
     if(r == static_cast<ssize_t>(len)) {
       break;
     }
-    if(r == -1 && A2_WOULDBLOCK(SOCKET_ERRNO)) {
+    if(r == -1 && A2_WOULDBLOCK(errNum)) {
       wantWrite_ = true;
       r = 0;
       break;
     }
   }
   if(r == -1) {
-    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND, errorMsg()).str());
+    throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND,
+                                   errorMsg(errNum).c_str()).str());
   }
   return r;
 }
@@ -1163,12 +1210,14 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   ssize_t r;
   while((r = recvfrom(sockfd_, data, len, 0, addrp, &sockaddrlen)) == -1 &&
         A2_EINTR == SOCKET_ERRNO);
+  int errNum = SOCKET_ERRNO;
   if(r == -1) {
-    if(A2_WOULDBLOCK(SOCKET_ERRNO)) {
+    if(A2_WOULDBLOCK(errNum)) {
       wantRead_ = true;
       r = 0;
     } else {
-      throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
+      throw DL_RETRY_EX(StringFormat(EX_SOCKET_RECV,
+                                     errorMsg(errNum).c_str()).str());
     }
   } else {
     sender = util::getNumericNameInfo(addrp, sockaddrlen);
@@ -1182,9 +1231,11 @@ std::string SocketCore::getSocketError() const
   int error;
   socklen_t optlen = sizeof(error);
 
-  if(getsockopt(sockfd_, SOL_SOCKET, SO_ERROR, (a2_sockopt_t) &error, &optlen) == -1) {
+  if(getsockopt(sockfd_, SOL_SOCKET, SO_ERROR,
+                (a2_sockopt_t) &error, &optlen) == -1) {
+    int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX(StringFormat("Failed to get socket error: %s",
-                                   errorMsg()).str());
+                                   errorMsg(errNum).c_str()).str());
   }
   if(error != 0) {
     return errorMsg(error);
@@ -1243,7 +1294,9 @@ void getInterfaceAddress
   // First find interface in interface addresses
   struct ifaddrs* ifaddr = 0;
   if(getifaddrs(&ifaddr) == -1) {
-    logger->info(MSG_INTERFACE_NOT_FOUND, iface.c_str(), errorMsg());
+    int errNum = SOCKET_ERRNO;
+    logger->info(MSG_INTERFACE_NOT_FOUND,
+                 iface.c_str(), errorMsg(errNum).c_str());
   } else {
     auto_delete<struct ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
     for(struct ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {

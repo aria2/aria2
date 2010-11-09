@@ -1128,10 +1128,13 @@ unsigned int alphaToNum(const std::string& alphabets)
 void mkdirs(const std::string& dirpath)
 {
   File dir(dirpath);
-  if(!dir.mkdirs() &&!dir.isDir()) {
-    throw DL_ABORT_EX
-      (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
-                    strerror(errno)).str());
+  if(!dir.mkdirs()) {
+    int errNum = errno;
+    if(!dir.isDir()) {
+      throw DL_ABORT_EX
+        (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
+                      safeStrerror(errNum).c_str()).str());
+    }
   }
 }
 
@@ -1171,7 +1174,8 @@ void* allocateAlignedMemory(size_t alignment, size_t size)
   int res;
   if((res = posix_memalign(&buffer, alignment, size)) != 0) {
     throw FATAL_EXCEPTION
-      (StringFormat("Error in posix_memalign: %s", strerror(res)).str());
+      (StringFormat("Error in posix_memalign: %s",
+                    util::safeStrerror(res).c_str()).str());
   }
   return buffer;
 }
@@ -1496,6 +1500,20 @@ std::string createSafePath
 std::string encodeNonUtf8(const std::string& s)
 {
   return util::isUtf8(s)?s:util::percentEncode(s);
+}
+
+std::string makeString(const char* str)
+{
+  if(str) {
+    return str;
+  } else {
+    return A2STR::NIL;
+  }
+}
+
+std::string safeStrerror(int errNum)
+{
+  return makeString(strerror(errNum));
 }
 
 } // namespace util

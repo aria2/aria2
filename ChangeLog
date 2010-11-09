@@ -1,3 +1,27 @@
+2010-11-09  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Capture errno right after system/library call to avoid it to get
+	overwritten. Use util::safeStrerror instead of strerror directly
+	because strerror might return NULL. We don't check errno for
+	std::fstream anymore.
+	* src/AbstractDiskWriter.cc
+	* src/CookieStorage.cc
+	* src/DHTAutoSaveCommand.cc
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTRoutingTableSerializer.cc
+	* src/DefaultBtProgressInfoFile.cc
+	* src/EpollEventPoll.cc
+	* src/IteratableChunkChecksumValidator.cc
+	* src/KqueueEventPoll.cc
+	* src/Logger.cc
+	* src/MessageDigestHelper.cc
+	* src/PortEventPoll.cc
+	* src/SelectEventPoll.cc
+	* src/SocketCore.cc
+	* src/message.h
+	* src/util.cc
+	* src/util.h
+
 2010-11-07  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use const reference

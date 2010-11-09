@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "DHTRoutingTableSerializer.h"
 
-#include <cerrno>
 #include <cstring>
 #include <ostream>
 
@@ -130,9 +129,7 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
 
   o.flush();
   if(!o) {
-    throw DL_ABORT_EX
-      (StringFormat("Failed to save DHT routing table. cause:%s",
-                    strerror(errno)).str());
+    throw DL_ABORT_EX("Failed to save DHT routing table.");
   }
 }
 
