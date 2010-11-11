@@ -210,16 +210,16 @@ void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {
 
   requestFactory_->addTargetPiece(piece1);
 
-  CPPUNIT_ASSERT(std::find(requestFactory_->getTargetPieces().begin(),
-                           requestFactory_->getTargetPieces().end(),
-                           piece1) !=
+  CPPUNIT_ASSERT(std::find_if(requestFactory_->getTargetPieces().begin(),
+                              requestFactory_->getTargetPieces().end(),
+                              derefEqual(piece1)) !=
                  requestFactory_->getTargetPieces().end());
 
   requestFactory_->removeTargetPiece(piece1);
 
-  CPPUNIT_ASSERT(std::find(requestFactory_->getTargetPieces().begin(),
-                           requestFactory_->getTargetPieces().end(),
-                           piece1) ==
+  CPPUNIT_ASSERT(std::find_if(requestFactory_->getTargetPieces().begin(),
+                              requestFactory_->getTargetPieces().end(),
+                              derefEqual(piece1)) ==
                  requestFactory_->getTargetPieces().end());
 }
 

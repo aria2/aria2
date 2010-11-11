@@ -41,6 +41,7 @@
 #include "util.h"
 #include "wallclock.h"
 #include "DlAbortEx.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -102,7 +103,8 @@ DownloadContext::findFileEntryByOffset(off_t offset) const
   SharedHandle<FileEntry> obj(new FileEntry());
   obj->setOffset(offset);
   std::vector<SharedHandle<FileEntry> >::const_iterator i =
-    std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj);
+    std::upper_bound(fileEntries_.begin(), fileEntries_.end(), obj,
+                     DerefLess<SharedHandle<FileEntry> >());
   if(i != fileEntries_.end() && (*i)->getOffset() == offset) {
     return *i;
   } else {

@@ -280,7 +280,7 @@ void SegmentMan::cancelSegment
 {
   for(SegmentEntries::iterator itr = usedSegmentEntries_.begin(),
         eoi = usedSegmentEntries_.end(); itr != eoi;) {
-    if((*itr)->cuid == cuid && (*itr)->segment == segment) {
+    if((*itr)->cuid == cuid && *(*itr)->segment == *segment) {
       cancelSegment((*itr)->segment);
       itr = usedSegmentEntries_.erase(itr);
       //eoi = usedSegmentEntries_.end();

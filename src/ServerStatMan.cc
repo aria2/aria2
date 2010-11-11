@@ -43,6 +43,7 @@
 #include "ServerStat.h"
 #include "util.h"
 #include "RecoverableException.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -55,7 +56,8 @@ SharedHandle<ServerStat> ServerStatMan::find(const std::string& hostname,
 {
   SharedHandle<ServerStat> ss(new ServerStat(hostname, protocol));
   std::deque<SharedHandle<ServerStat> >::const_iterator i =
-    std::lower_bound(serverStats_.begin(), serverStats_.end(), ss);
+    std::lower_bound(serverStats_.begin(), serverStats_.end(), ss,
+                     DerefLess<SharedHandle<ServerStat> >());
   if(i != serverStats_.end() &&
      (*i)->getHostname() == hostname && (*i)->getProtocol() == protocol) {
     return *i;
@@ -67,9 +69,10 @@ SharedHandle<ServerStat> ServerStatMan::find(const std::string& hostname,
 bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
 {
   std::deque<SharedHandle<ServerStat> >::iterator i =
-    std::lower_bound(serverStats_.begin(), serverStats_.end(), serverStat);
+    std::lower_bound(serverStats_.begin(), serverStats_.end(), serverStat,
+                     DerefLess<SharedHandle<ServerStat> >());
 
-  if(i != serverStats_.end() && (*i) == serverStat) {
+  if(i != serverStats_.end() && *(*i) == *serverStat) {
     return false;
   } else {
     serverStats_.insert(i, serverStat);
@@ -79,8 +82,10 @@ bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
 
 bool ServerStatMan::save(std::ostream& out) const
 {
-  std::copy(serverStats_.begin(), serverStats_.end(),
-            std::ostream_iterator<SharedHandle<ServerStat> >(out, "\n"));
+  for(std::deque<SharedHandle<ServerStat> >::const_iterator i =
+        serverStats_.begin(), eoi = serverStats_.end(); i != eoi; ++i) {
+    out << *(*i) << "\n";
+  }
   out.flush();
   return !out.bad();
 }

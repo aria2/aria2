@@ -41,6 +41,7 @@
 #include "Command.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -97,8 +98,9 @@ void PollEventPoll::poll(const struct timeval& tv)
       if(first->revents) {
         se->setSocket(first->fd);
         std::deque<SharedHandle<KSocketEntry> >::iterator itr =
-          std::lower_bound(socketEntries_.begin(), socketEntries_.end(), se);
-        if(itr != socketEntries_.end() && (*itr) == se) {
+          std::lower_bound(socketEntries_.begin(), socketEntries_.end(), se,
+                           DerefLess<SharedHandle<KSocketEntry> >());
+        if(itr != socketEntries_.end() && *(*itr) == *se) {
           (*itr)->processEvents(first->revents);
         } else {
           if(logger_->debug()) {
@@ -150,8 +152,9 @@ bool PollEventPoll::addEvents
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.addSelf(*i);
     for(struct pollfd* first = pollfds_, *last = pollfds_+pollfdNum_;
         first != last; ++first) {
@@ -197,8 +200,9 @@ bool PollEventPoll::deleteEvents
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.removeSelf(*i);
     for(struct pollfd* first = pollfds_, *last = pollfds_+pollfdNum_;
         first != last; ++first) {
@@ -246,7 +250,8 @@ bool PollEventPoll::addNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     nameResolverEntries_.push_back(entry);
     entry->addSocketEvents(this);
@@ -262,7 +267,8 @@ bool PollEventPoll::deleteNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

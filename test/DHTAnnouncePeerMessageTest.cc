@@ -111,8 +111,8 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
   SharedHandle<MockDHTResponseMessage> m
     (dynamic_pointer_cast<MockDHTResponseMessage>
      (dispatcher.messageQueue_[0].message_));
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("announce_peer"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(transactionID, m->getTransactionID());
   std::vector<SharedHandle<Peer> > peers;

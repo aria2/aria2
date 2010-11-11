@@ -127,7 +127,8 @@ SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
 void DefaultPieceStorage::addUsedPiece(const SharedHandle<Piece>& piece)
 {
   std::deque<SharedHandle<Piece> >::iterator i =
-    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece);
+    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece,
+                     DerefLess<SharedHandle<Piece> >());
   usedPieces_.insert(i, piece);
   if(logger_->debug()) {
     logger_->debug("usedPieces_.size()=%lu",
@@ -141,8 +142,9 @@ SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
   p->setIndex(index);
 
   std::deque<SharedHandle<Piece> >::const_iterator i =
-    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), p);
-  if(i != usedPieces_.end() && (*i) == p) {
+    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), p,
+                     DerefLess<SharedHandle<Piece> >());
+  if(i != usedPieces_.end() && *(*i) == *p) {
     return *i;
   } else {
     p.reset(0);
@@ -365,8 +367,9 @@ void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
     return;
   }
   std::deque<SharedHandle<Piece> >::iterator i = 
-    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece);
-  if(i != usedPieces_.end() && (*i) == piece) {
+    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece,
+                     DerefLess<SharedHandle<Piece> >());
+  if(i != usedPieces_.end() && *(*i) == *piece) {
     usedPieces_.erase(i);
   }
 }
@@ -723,7 +726,8 @@ void DefaultPieceStorage::addInFlightPiece
 (const std::vector<SharedHandle<Piece> >& pieces)
 {
   usedPieces_.insert(usedPieces_.end(), pieces.begin(), pieces.end());
-  std::sort(usedPieces_.begin(), usedPieces_.end());
+  std::sort(usedPieces_.begin(), usedPieces_.end(),
+            DerefLess<SharedHandle<Piece> >());
 }
 
 size_t DefaultPieceStorage::countInFlightPiece()

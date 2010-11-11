@@ -165,7 +165,7 @@ bool HttpConnection::isIssued(const SharedHandle<Segment>& segment) const
   for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests_.begin(),
         eoi = outstandingHttpRequests_.end(); itr != eoi; ++itr) {
     SharedHandle<HttpRequest> httpRequest = (*itr)->getHttpRequest();
-    if(httpRequest->getSegment() == segment) {
+    if(*httpRequest->getSegment() == *segment) {
       return true;
     }
   }

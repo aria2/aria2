@@ -170,12 +170,13 @@ bool KqueueEventPoll::addEvents
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
   int r = 0;
   struct timespec zeroTimeout = { 0, 0 };
   struct kevent changelist[2];
   size_t n;
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.addSelf(*i);
     n = (*i)->getEvents(changelist);
   } else {
@@ -221,8 +222,9 @@ bool KqueueEventPoll::deleteEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.removeSelf(*i);
     int r = 0;
     struct timespec zeroTimeout = { 0, 0 };
@@ -272,7 +274,8 @@ bool KqueueEventPoll::addNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     nameResolverEntries_.push_back(entry);
     entry->addSocketEvents(this);
@@ -288,7 +291,8 @@ bool KqueueEventPoll::deleteNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

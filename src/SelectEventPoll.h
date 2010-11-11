@@ -143,7 +143,7 @@ private:
 
     bool operator==(const AsyncNameResolverEntry& entry)
     {
-      return nameResolver_ == entry.nameResolver_ &&
+      return *nameResolver_ == *entry.nameResolver_ &&
         command_ == entry.command_;
     }
 

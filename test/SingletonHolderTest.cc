@@ -51,7 +51,7 @@ void SingletonHolderTest::testInstance()
 
   IntHandle i(new int(100));
   SingletonHolder<IntHandle>::instance(i);
-  std::cerr << SingletonHolder<IntHandle>::instance() << std::endl;
+  std::cerr << *SingletonHolder<IntHandle>::instance() << std::endl;
 
   std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
 

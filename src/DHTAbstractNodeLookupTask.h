@@ -54,6 +54,7 @@
 #include "Logger.h"
 #include "util.h"
 #include "DHTIDCloser.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -203,7 +204,10 @@ public:
                          static_cast<unsigned long>(count));
     }
     std::stable_sort(entries_.begin(), entries_.end(), DHTIDCloser(targetID_));
-    entries_.erase(std::unique(entries_.begin(), entries_.end()), entries_.end());
+    entries_.erase
+      (std::unique(entries_.begin(), entries_.end(),
+                   DerefEqualTo<SharedHandle<DHTNodeLookupEntry> >()),
+       entries_.end());
     if(getLogger()->debug()) {
       getLogger()->debug("%lu node lookup entries are unique.",
                          static_cast<unsigned long>(entries_.size()));
@@ -223,7 +227,7 @@ public:
     --inFlightMessage_;
     for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
           entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
-      if((*i)->node == node) {
+      if(*(*i)->node == *node) {
         entries_.erase(i);
         break;
       }

@@ -68,7 +68,7 @@ void BNodeTest::testFindBucketFor()
 
   {
     BNode b(bucket5);
-    CPPUNIT_ASSERT(bucket5 == BNode::findBucketFor(&b, localNodeID));
+    CPPUNIT_ASSERT(*bucket5 == *BNode::findBucketFor(&b, localNodeID));
   }
   {
     BNode b(bucket1);
@@ -97,7 +97,7 @@ void BNodeTest::testFindBucketFor()
     bp4->setLeft(bp3);
     bp4->setRight(b2);
 
-    CPPUNIT_ASSERT(bucket5 == BNode::findBucketFor(bp4, localNode->getID()));
+    CPPUNIT_ASSERT(*bucket5 == *BNode::findBucketFor(bp4, localNode->getID()));
 
     delete bp4;
   }
@@ -220,7 +220,7 @@ void BNodeTest::testEnumerateBucket()
     std::vector<SharedHandle<DHTBucket> > buckets;
     BNode::enumerateBucket(buckets, &b);
     CPPUNIT_ASSERT_EQUAL((size_t)1, buckets.size());
-    CPPUNIT_ASSERT(bucket1 == buckets[0]);
+    CPPUNIT_ASSERT(*bucket1 == *buckets[0]);
   }
   {
     BNode* b1 = new BNode(bucket1);
@@ -248,11 +248,11 @@ void BNodeTest::testEnumerateBucket()
     std::vector<SharedHandle<DHTBucket> > buckets;
     BNode::enumerateBucket(buckets, bp4);
     CPPUNIT_ASSERT_EQUAL((size_t)5, buckets.size());
-    CPPUNIT_ASSERT(bucket1 == buckets[0]);
-    CPPUNIT_ASSERT(bucket3 == buckets[1]);
-    CPPUNIT_ASSERT(bucket5 == buckets[2]);
-    CPPUNIT_ASSERT(bucket4 == buckets[3]);
-    CPPUNIT_ASSERT(bucket2 == buckets[4]);
+    CPPUNIT_ASSERT(*bucket1 == *buckets[0]);
+    CPPUNIT_ASSERT(*bucket3 == *buckets[1]);
+    CPPUNIT_ASSERT(*bucket5 == *buckets[2]);
+    CPPUNIT_ASSERT(*bucket4 == *buckets[3]);
+    CPPUNIT_ASSERT(*bucket2 == *buckets[4]);
 
     delete bp4;
   }

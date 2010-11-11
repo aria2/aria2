@@ -58,11 +58,11 @@ void DHTIDCloserTest::testOperator()
 
   std::sort(entries.begin(), entries.end(), DHTIDCloser(e3->node->getID()));
 
-  CPPUNIT_ASSERT(e3 == entries[0]);
-  CPPUNIT_ASSERT(e2 == entries[1]);
-  CPPUNIT_ASSERT(e4 == entries[2]);
-  CPPUNIT_ASSERT(e1 == entries[3]);
-  CPPUNIT_ASSERT(e5 == entries[4]);
+  CPPUNIT_ASSERT(*e3 == *entries[0]);
+  CPPUNIT_ASSERT(*e2 == *entries[1]);
+  CPPUNIT_ASSERT(*e4 == *entries[2]);
+  CPPUNIT_ASSERT(*e1 == *entries[3]);
+  CPPUNIT_ASSERT(*e5 == *entries[4]);
 }
 
 } // namespace aria2

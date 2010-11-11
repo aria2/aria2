@@ -45,6 +45,7 @@
 #include "BtLeecherStateChoke.h"
 #include "PieceStorage.h"
 #include "wallclock.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -75,7 +76,7 @@ public:
   FindIdenticalPeer(const SharedHandle<Peer>& peer):peer_(peer) {}
 
   bool operator()(const SharedHandle<Peer>& peer) const {
-    return (peer_ == peer) ||
+    return (*peer_ == *peer) ||
       ((peer_->getIPAddress() == peer->getIPAddress()) &&
        (peer_->getPort() == peer->getPort()));
   }
@@ -337,7 +338,7 @@ void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
 void DefaultPeerStorage::returnPeer(const SharedHandle<Peer>& peer)
 {
   std::deque<SharedHandle<Peer> >::iterator itr =
-    std::find(peers_.begin(), peers_.end(), peer);
+    std::find_if(peers_.begin(), peers_.end(), derefEqual(peer));
   if(itr == peers_.end()) {
     if(logger_->debug()) {
       logger_->debug("Cannot find peer %s:%u in PeerStorage.",

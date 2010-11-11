@@ -121,7 +121,8 @@ void DefaultPeerStorageTest::testAddPeer() {
   CPPUNIT_ASSERT(ps.addPeer(peer4));
   // peer2 was deleted. While peer1 is oldest, its cuid is not 0.
   CPPUNIT_ASSERT_EQUAL((size_t)3, ps.countPeer());
-  CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer2) == ps.getPeers().end());
+  CPPUNIT_ASSERT(std::find_if(ps.getPeers().begin(), ps.getPeers().end(),
+                              derefEqual(peer2)) == ps.getPeers().end());
 
   SharedHandle<Peer> peer5(new Peer("192.168.0.4", 0));
 
@@ -224,13 +225,14 @@ void DefaultPeerStorageTest::testReturnPeer()
 
   ps.returnPeer(peer2); // peer2 removed from the container
   CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getPeers().size());
-  CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer2)
-                 == ps.getPeers().end());
+  CPPUNIT_ASSERT(std::find_if(ps.getPeers().begin(), ps.getPeers().end(),
+                              derefEqual(peer2)) == ps.getPeers().end());
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getDroppedPeers().size());
 
   ps.returnPeer(peer1); // peer1 is removed from the container
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getPeers().size());
-  CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer1) == ps.getPeers().end());
+  CPPUNIT_ASSERT(std::find_if(ps.getPeers().begin(), ps.getPeers().end(),
+                              derefEqual(peer1)) == ps.getPeers().end());
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getDroppedPeers().size());
 }
 

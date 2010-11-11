@@ -431,6 +431,39 @@ bool in(T x, S s, S t)
   return s <= x && x <= t;
 }
 
+template<typename T>
+struct DerefLess {
+  bool operator()(const T& lhs, const T& rhs) const
+  {
+    return *lhs < *rhs;
+  }
+};
+
+template<typename T>
+struct DerefEqualTo {
+  bool operator()(const T& lhs, const T& rhs) const
+  {
+    return *lhs == *rhs;
+  }
+};
+
+template<typename T>
+struct DerefEqual {
+  T target;
+
+  DerefEqual(const T& t):target(t) {}
+  bool operator()(const T& other) const
+  {
+    return *target == *other;
+  }
+};
+
+template<typename T>
+struct DerefEqual<T> derefEqual(const T& t)
+{
+  return DerefEqual<T>(t);
+}
+
 } // namespace aria2
 
 #endif // D_A2_FUNCTIONAL_H

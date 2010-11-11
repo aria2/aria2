@@ -44,6 +44,7 @@
 #include "Command.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -278,8 +279,9 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<SocketEntry> >());
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     (*i)->addCommandEvent(command, events);
   } else {
     socketEntries_.insert(i, socketEntry);
@@ -294,8 +296,9 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
   std::deque<SharedHandle<SocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<SocketEntry> >());
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     (*i)->removeCommandEvent(command, events);
     if((*i)->eventEmpty()) {
       socketEntries_.erase(i);
@@ -317,7 +320,8 @@ bool SelectEventPoll::addNameResolver
   SharedHandle<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     nameResolverEntries_.push_back(entry);
     return true;
@@ -332,7 +336,8 @@ bool SelectEventPoll::deleteNameResolver
   SharedHandle<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

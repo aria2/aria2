@@ -148,7 +148,7 @@ void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket)
     disableReadCheckSocket();
   } else {
     if(checkSocketIsReadable_) {
-      if(readCheckTarget_ != socket) {
+      if(*readCheckTarget_ != *socket) {
         e_->deleteSocketForReadCheck(readCheckTarget_, this);
         e_->addSocketForReadCheck(socket, this);
         readCheckTarget_ = socket;
@@ -176,7 +176,7 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket)
     disableWriteCheckSocket();
   } else {
     if(checkSocketIsWritable_) {
-      if(writeCheckTarget_ != socket) {
+      if(*writeCheckTarget_ != *socket) {
         e_->deleteSocketForWriteCheck(writeCheckTarget_, this);
         e_->addSocketForWriteCheck(socket, this);
         writeCheckTarget_ = socket;

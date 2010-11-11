@@ -103,7 +103,7 @@ public:
 
   bool operator()(size_t lhs, size_t rhs) const
   {
-    return pieceStats_[lhs] < pieceStats_[rhs];
+    return *pieceStats_[lhs] < *pieceStats_[rhs];
   }
 };
 } // namespace

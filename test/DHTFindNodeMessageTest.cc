@@ -103,8 +103,8 @@ void DHTFindNodeMessageTest::testDoReceivedAction()
   SharedHandle<MockDHTResponseMessage> m
     (dynamic_pointer_cast<MockDHTResponseMessage>
      (dispatcher.messageQueue_[0].message_));
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("find_node"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->nodes_.size());

@@ -319,7 +319,7 @@ void DHTBucketTest::testAddNode()
   // nodes[0] is located at the tail of the bucket(least recent seen)
   nodes[0]->markBad();
   CPPUNIT_ASSERT(bucket.addNode(newNode));
-  CPPUNIT_ASSERT(bucket.getNodes().back() == newNode);
+  CPPUNIT_ASSERT(*bucket.getNodes().back() == *newNode);
 }
 
 void DHTBucketTest::testMoveToHead()
@@ -337,7 +337,7 @@ void DHTBucketTest::testMoveToHead()
     CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
   }
   bucket.moveToHead(nodes[DHTBucket::K-1]);
-  CPPUNIT_ASSERT(bucket.getNodes().front() == nodes[DHTBucket::K-1]);
+  CPPUNIT_ASSERT(*bucket.getNodes().front() == *nodes[DHTBucket::K-1]);
 }
 
 void DHTBucketTest::testMoveToTail()
@@ -355,7 +355,7 @@ void DHTBucketTest::testMoveToTail()
     CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
   }
   bucket.moveToTail(nodes[0]);
-  CPPUNIT_ASSERT(bucket.getNodes().back() == nodes[0]);
+  CPPUNIT_ASSERT(*bucket.getNodes().back() == *nodes[0]);
 }
 
 void DHTBucketTest::testGetGoodNodes()
@@ -400,12 +400,12 @@ void DHTBucketTest::testCacheNode()
   bucket.cacheNode(n1);
   bucket.cacheNode(n2);
   CPPUNIT_ASSERT_EQUAL((size_t)2, bucket.getCachedNodes().size());
-  CPPUNIT_ASSERT(n2 == bucket.getCachedNodes()[0]);
+  CPPUNIT_ASSERT(*n2 == *bucket.getCachedNodes()[0]);
 
   bucket.cacheNode(n3);
   CPPUNIT_ASSERT_EQUAL((size_t)2, bucket.getCachedNodes().size());
-  CPPUNIT_ASSERT(n3 == bucket.getCachedNodes()[0]);
-  CPPUNIT_ASSERT(n2 == bucket.getCachedNodes()[1]);
+  CPPUNIT_ASSERT(*n3 == *bucket.getCachedNodes()[0]);
+  CPPUNIT_ASSERT(*n2 == *bucket.getCachedNodes()[1]);
 }
 
 void DHTBucketTest::testDropNode()
@@ -432,7 +432,7 @@ void DHTBucketTest::testDropNode()
   {
     std::deque<SharedHandle<DHTNode> > tnodes = bucket.getNodes();
     CPPUNIT_ASSERT_EQUAL((size_t)8, tnodes.size());
-    CPPUNIT_ASSERT(nodes[3] == tnodes[3]);
+    CPPUNIT_ASSERT(*nodes[3] == *tnodes[3]);
   }
 
   bucket.cacheNode(cachedNode1);
@@ -442,11 +442,13 @@ void DHTBucketTest::testDropNode()
   {
     std::deque<SharedHandle<DHTNode> > tnodes = bucket.getNodes();
     CPPUNIT_ASSERT_EQUAL((size_t)8, tnodes.size());
-    CPPUNIT_ASSERT(tnodes.end() == std::find(tnodes.begin(), tnodes.end(), nodes[3]));
-    CPPUNIT_ASSERT(cachedNode2 == tnodes[7]);
+    CPPUNIT_ASSERT(tnodes.end() ==
+                   std::find_if(tnodes.begin(), tnodes.end(),
+                                derefEqual(nodes[3])));
+    CPPUNIT_ASSERT(*cachedNode2 == *tnodes[7]);
   }
   CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getCachedNodes().size());
-  CPPUNIT_ASSERT(cachedNode1 == bucket.getCachedNodes()[0]);
+  CPPUNIT_ASSERT(*cachedNode1 == *bucket.getCachedNodes()[0]);
 }
 
 } // namespace aria2

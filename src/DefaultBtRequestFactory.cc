@@ -99,8 +99,9 @@ void DefaultBtRequestFactory::removeCompletedPiece() {
 void DefaultBtRequestFactory::removeTargetPiece
 (const SharedHandle<Piece>& piece)
 {
-  pieces_.erase(std::remove(pieces_.begin(), pieces_.end(), piece),
-               pieces_.end());
+  pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
+                               derefEqual(piece)),
+                pieces_.end());
   dispatcher_->doAbortOutstandingRequestAction(piece);
   pieceStorage_->cancelPiece(piece);
 }

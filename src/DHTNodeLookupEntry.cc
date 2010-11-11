@@ -45,7 +45,7 @@ DHTNodeLookupEntry::DHTNodeLookupEntry():
 
 bool DHTNodeLookupEntry::operator==(const DHTNodeLookupEntry& entry) const
 {
-  return node == entry.node;
+  return *node == *entry.node;
 }
 
 } // namespace aria2

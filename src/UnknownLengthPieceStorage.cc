@@ -167,7 +167,7 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
 
 void UnknownLengthPieceStorage::completePiece(const SharedHandle<Piece>& piece)
 {
-  if(piece_ == piece) {
+  if(*piece_ == *piece) {
     downloadFinished_ = true;
     totalLength_ = piece_->getLength();
     diskAdaptor_->setTotalLength(totalLength_);
@@ -177,7 +177,7 @@ void UnknownLengthPieceStorage::completePiece(const SharedHandle<Piece>& piece)
 
 void UnknownLengthPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
 {
-  if(piece_ == piece) {
+  if(*piece_ == *piece) {
     piece_.reset();
   }
 }

@@ -35,7 +35,7 @@ void SequentialPickerTest::testPick()
   picker.pickNext();
 
   CPPUNIT_ASSERT(picker.isPicked());
-  CPPUNIT_ASSERT_EQUAL(Integer(new int(1)), picker.getPickedEntry());
+  CPPUNIT_ASSERT_EQUAL(*Integer(new int(1)), *picker.getPickedEntry());
 
   picker.dropPickedEntry();
 
@@ -44,7 +44,7 @@ void SequentialPickerTest::testPick()
 
   picker.pickNext();
 
-  CPPUNIT_ASSERT_EQUAL(Integer(new int(2)), picker.getPickedEntry());
+  CPPUNIT_ASSERT_EQUAL(*Integer(new int(2)), *picker.getPickedEntry());
   CPPUNIT_ASSERT(!picker.hasNext());
 }
 

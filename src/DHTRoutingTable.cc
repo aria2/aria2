@@ -77,7 +77,7 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
   if(logger_->debug()) {
     logger_->debug("Trying to add node:%s", node->toString().c_str());
   }
-  if(localNode_ == node) {
+  if(*localNode_ == *node) {
     if(logger_->debug()) {
       logger_->debug("Adding node with the same ID with localnode is not"
                      " allowed.");

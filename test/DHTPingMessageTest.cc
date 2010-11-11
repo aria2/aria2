@@ -92,8 +92,8 @@ void DHTPingMessageTest::testDoReceivedAction()
   SharedHandle<MockDHTResponseMessage> m
     (dynamic_pointer_cast<MockDHTResponseMessage>
      (dispatcher.messageQueue_[0].message_));
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("ping_reply"), m->getMessageType());
   CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
 }

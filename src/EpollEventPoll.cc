@@ -43,6 +43,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "util.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -166,10 +167,11 @@ bool EpollEventPoll::addEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
   int r = 0;
   int errNum = 0;
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
 
     event.addSelf(*i);
 
@@ -229,8 +231,9 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
 
     event.removeSelf(*i);
 
@@ -295,7 +298,8 @@ bool EpollEventPoll::addNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     nameResolverEntries_.push_back(entry);
     entry->addSocketEvents(this);
@@ -311,7 +315,8 @@ bool EpollEventPoll::deleteNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

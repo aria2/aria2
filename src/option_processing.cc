@@ -174,7 +174,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
   } catch(OptionHandlerException& e) {
     std::cerr << e.stackTrace() << "\n"
               << "Usage:" << "\n"
-              << oparser.findByName(e.getOptionName())
+              << *oparser.findByName(e.getOptionName())
               << std::endl;
     exit(downloadresultcode::UNKNOWN_ERROR);
   } catch(Exception& e) {

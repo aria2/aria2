@@ -100,8 +100,8 @@ void DHTMessageFactoryImplTest::testCreatePingMessage()
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
 }
@@ -125,8 +125,8 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
                                      remoteNode->getIPAddress(),
                                      remoteNode->getPort())));
 
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
 }
@@ -151,8 +151,8 @@ void DHTMessageFactoryImplTest::testCreateFindNodeMessage()
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
   CPPUNIT_ASSERT_EQUAL(util::toHex(targetNodeID, DHT_ID_LENGTH),
@@ -196,11 +196,11 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
                                        remoteNode->getIPAddress(),
                                        remoteNode->getPort())));
 
-    CPPUNIT_ASSERT(localNode == m->getLocalNode());
-    CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+    CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
-    CPPUNIT_ASSERT(nodes[0] == m->getClosestKNodes()[0]);
-    CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
+    CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
+    CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
@@ -249,11 +249,11 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
                                        remoteNode->getIPAddress(),
                                        remoteNode->getPort())));
 
-    CPPUNIT_ASSERT(localNode == m->getLocalNode());
-    CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+    CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
-    CPPUNIT_ASSERT(nodes[0] == m->getClosestKNodes()[0]);
-    CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
+    CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
+    CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
@@ -282,8 +282,8 @@ void DHTMessageFactoryImplTest::testCreateGetPeersMessage()
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
   CPPUNIT_ASSERT_EQUAL(util::toHex(infoHash, DHT_ID_LENGTH),
@@ -343,15 +343,15 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage()
                                        remoteNode->getIPAddress(),
                                        remoteNode->getPort())));
 
-    CPPUNIT_ASSERT(localNode == m->getLocalNode());
-    CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+    CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("token"), m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
-    CPPUNIT_ASSERT(nodes[0] == m->getClosestKNodes()[0]);
-    CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
+    CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
+    CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL((size_t)4, m->getValues().size());
-    CPPUNIT_ASSERT(peers[0] == m->getValues()[0]);
-    CPPUNIT_ASSERT(peers[3] == m->getValues()[3]);
+    CPPUNIT_ASSERT(*peers[0] == *m->getValues()[0]);
+    CPPUNIT_ASSERT(*peers[3] == *m->getValues()[3]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
@@ -416,15 +416,15 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
                                        remoteNode->getIPAddress(),
                                        remoteNode->getPort())));
 
-    CPPUNIT_ASSERT(localNode == m->getLocalNode());
-    CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+    CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("token"), m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
-    CPPUNIT_ASSERT(nodes[0] == m->getClosestKNodes()[0]);
-    CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
+    CPPUNIT_ASSERT(*nodes[0] == *m->getClosestKNodes()[0]);
+    CPPUNIT_ASSERT(*nodes[7] == *m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL((size_t)4, m->getValues().size());
-    CPPUNIT_ASSERT(peers[0] == m->getValues()[0]);
-    CPPUNIT_ASSERT(peers[3] == m->getValues()[3]);
+    CPPUNIT_ASSERT(*peers[0] == *m->getValues()[0]);
+    CPPUNIT_ASSERT(*peers[3] == *m->getValues()[3]);
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
   } catch(Exception& e) {
@@ -458,8 +458,8 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     remoteNode->setIPAddress("192.168.0.1");
     remoteNode->setPort(6882);
 
-    CPPUNIT_ASSERT(localNode == m->getLocalNode());
-    CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+    CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(token, m->getToken());
     CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                          util::toHex(m->getTransactionID()));
@@ -490,8 +490,8 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
                                      remoteNode->getIPAddress(),
                                      remoteNode->getPort())));
 
-  CPPUNIT_ASSERT(localNode == m->getLocalNode());
-  CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+  CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+  CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
                        util::toHex(m->getTransactionID()));
 }

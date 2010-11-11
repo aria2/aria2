@@ -173,10 +173,11 @@ bool PortEventPoll::addEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
   int r = 0;
   int errNum = 0;
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.addSelf(*i);
     A2PortEvent pv = (*i)->getEvents();
     r = port_associate(port_, PORT_SOURCE_FD, (*i)->getSocket(),
@@ -226,8 +227,9 @@ bool PortEventPoll::deleteEvents(sock_t socket,
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
   std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry);
-  if(i != socketEntries_.end() && (*i) == socketEntry) {
+    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
+                     DerefLess<SharedHandle<KSocketEntry> >());
+  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.removeSelf(*i);
     int r = 0;
     int errNum = 0;
@@ -280,7 +282,8 @@ bool PortEventPoll::addNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     nameResolverEntries_.push_back(entry);
     entry->addSocketEvents(this);
@@ -296,7 +299,8 @@ bool PortEventPoll::deleteNameResolver
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
   std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find(nameResolverEntries_.begin(), nameResolverEntries_.end(), entry);
+    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
+                 derefEqual(entry));
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

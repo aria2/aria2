@@ -119,7 +119,7 @@ void DiskWriterEntry::setDiskWriter(const SharedHandle<DiskWriter>& diskWriter)
 
 bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
 {
-  return fileEntry_ < entry.fileEntry_;
+  return *fileEntry_ < *entry.fileEntry_;
 }
 
 void DiskWriterEntry::enableDirectIO()

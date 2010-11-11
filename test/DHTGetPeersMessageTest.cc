@@ -124,8 +124,8 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     SharedHandle<MockDHTResponseMessage> m
       (dynamic_pointer_cast<MockDHTResponseMessage>
        (dispatcher.messageQueue_[0].message_));
-    CPPUNIT_ASSERT(localNode == m->getLocalNode());
-    CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+    CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("get_peers"), m->getMessageType());
     CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
     CPPUNIT_ASSERT_EQUAL(tokenTracker.generateToken(infoHash, remoteNode->getIPAddress(), remoteNode->getPort()), m->token_);
@@ -161,13 +161,13 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     SharedHandle<MockDHTResponseMessage> m
       (dynamic_pointer_cast<MockDHTResponseMessage>
        (dispatcher.messageQueue_[0].message_));
-    CPPUNIT_ASSERT(localNode == m->getLocalNode());
-    CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
+    CPPUNIT_ASSERT(*localNode == *m->getLocalNode());
+    CPPUNIT_ASSERT(*remoteNode == *m->getRemoteNode());
     CPPUNIT_ASSERT_EQUAL(std::string("get_peers"), m->getMessageType());
     CPPUNIT_ASSERT_EQUAL(msg.getTransactionID(), m->getTransactionID());
     CPPUNIT_ASSERT_EQUAL(tokenTracker.generateToken(infoHash, remoteNode->getIPAddress(), remoteNode->getPort()), m->token_);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->nodes_.size());
-    CPPUNIT_ASSERT(returnNode1 == m->nodes_[0]);
+    CPPUNIT_ASSERT(*returnNode1 == *m->nodes_[0]);
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->peers_.size());
   }
 }

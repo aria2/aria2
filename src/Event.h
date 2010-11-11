@@ -151,7 +151,7 @@ public:
 
   bool operator==(const ADNSEvent& event) const
   {
-    return resolver_ == event.resolver_;
+    return *resolver_ == *event.resolver_;
   }
     
   virtual int getEvents() const
@@ -323,7 +323,7 @@ public:
 
   bool operator==(const AsyncNameResolverEntry& entry)
   {
-    return nameResolver_ == entry.nameResolver_ &&
+    return *nameResolver_ == *entry.nameResolver_ &&
       command_ == entry.command_;
   }
 

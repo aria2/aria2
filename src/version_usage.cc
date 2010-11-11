@@ -101,10 +101,10 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
     }
     std::cout << "\n"
               << _("Options:") << "\n";
-
-    std::copy(handlers.begin(), handlers.end(),
-              std::ostream_iterator<SharedHandle<OptionHandler> >
-              (std::cout, "\n\n"));
+    for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+          handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
+      std::cout << *(*i) << "\n\n";
+    }
   } else {    
     std::vector<SharedHandle<OptionHandler> > handlers =
       oparser.findByNameSubstring(keyword);
@@ -113,13 +113,14 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
                                   " '%s'."), keyword.c_str())
                 << "\n"
                 << _("Options:") << "\n";
-      std::copy(handlers.begin(), handlers.end(),
-                std::ostream_iterator<SharedHandle<OptionHandler> >
-                (std::cout, "\n\n"));
+      for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+            handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
+        std::cout << *(*i) << "\n\n";
+      }
     } else {
       std::cout << StringFormat(_("No option matching with '%s'."),
                                 keyword.c_str())
-                << "\n" << oparser.findByName("help") << "\n";
+                << "\n" << *oparser.findByName("help") << "\n";
     }
   }
 

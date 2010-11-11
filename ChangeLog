@@ -1,5 +1,52 @@
 2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	To match the behavior of friend operator functions in
+	SharedHandle.h to std::tr1::shared_ptr, we intentionally broke
+	these functions and modified code so that our code does not depend
+	on old behavior.
+	* src/AbstractCommand.cc
+	* src/DHTAbstractNodeLookupTask.h
+	* src/DHTBucket.cc
+	* src/DHTMessageReceiver.cc
+	* src/DHTNodeLookupEntry.cc
+	* src/DHTRoutingTable.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPieceStorage.cc
+	* src/DownloadContext.cc
+	* src/EpollEventPoll.cc
+	* src/Event.h
+	* src/HttpConnection.cc
+	* src/KqueueEventPoll.cc
+	* src/MultiDiskAdaptor.cc
+	* src/PeerAbstractCommand.cc
+	* src/PieceStatMan.cc
+	* src/PollEventPoll.cc
+	* src/PortEventPoll.cc
+	* src/SegmentMan.cc
+	* src/SelectEventPoll.cc
+	* src/SelectEventPoll.h
+	* src/ServerStatMan.cc
+	* src/SharedHandle.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/a2functional.h
+	* src/option_processing.cc
+	* src/version_usage.cc
+	* test/BNodeTest.cc
+	* test/DHTAnnouncePeerMessageTest.cc
+	* test/DHTBucketTest.cc
+	* test/DHTFindNodeMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/DHTIDCloserTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTPingMessageTest.cc
+	* test/DefaultBtRequestFactoryTest.cc
+	* test/DefaultPeerStorageTest.cc
+	* test/SequentialPickerTest.cc
+	* test/SingletonHolderTest.cc
+
+2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Create SharedHandle outside of function call to avoid unexpected
 	memory leak.
 	* src/AnnounceList.cc

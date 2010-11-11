@@ -111,7 +111,7 @@ bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
 {
   notifyUpdate();
   std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find(nodes_.begin(), nodes_.end(), node);
+    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr == nodes_.end()) {
     if(nodes_.size() < K) {
       nodes_.push_back(node);
@@ -145,7 +145,7 @@ void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 {
   if(cachedNodes_.size()) {
     std::deque<SharedHandle<DHTNode> >::iterator itr =
-      find(nodes_.begin(), nodes_.end(), node);
+      std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
     if(itr != nodes_.end()) {
       nodes_.erase(itr);
       nodes_.push_back(cachedNodes_.front());
@@ -157,7 +157,7 @@ void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 void DHTBucket::moveToHead(const SharedHandle<DHTNode>& node)
 {
   std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find(nodes_.begin(), nodes_.end(), node);
+    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr != nodes_.end()) {
     nodes_.erase(itr);
     nodes_.push_front(node);
@@ -167,7 +167,7 @@ void DHTBucket::moveToHead(const SharedHandle<DHTNode>& node)
 void DHTBucket::moveToTail(const SharedHandle<DHTNode>& node)
 {
   std::deque<SharedHandle<DHTNode> >::iterator itr =
-    std::find(nodes_.begin(), nodes_.end(), node);
+    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr != nodes_.end()) {
     nodes_.erase(itr);
     nodes_.push_back(node);
@@ -233,7 +233,7 @@ SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std:
   node->setIPAddress(ipaddr);
   node->setPort(port);
   std::deque<SharedHandle<DHTNode> >::const_iterator itr =
-    std::find(nodes_.begin(), nodes_.end(), node);
+    std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
   if(itr == nodes_.end()) {
     return SharedHandle<DHTNode>();
   } else {

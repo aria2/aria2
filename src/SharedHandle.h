@@ -35,6 +35,7 @@
 #ifndef D_SHARED_HANDLE_H
 #define D_SHARED_HANDLE_H
 
+#include <cassert>
 #include <iosfwd>
 
 namespace aria2 {
@@ -236,6 +237,11 @@ public:
 
   T* operator->() const { return obj_; }
 
+  T& operator*() const {
+    assert(obj_);
+    return *obj_;
+  }
+
   T* get() const {
     return obj_;
   }
@@ -273,25 +279,26 @@ static_pointer_cast(const SharedHandle<S>& t) {
   return SharedHandle<T>(t, static_cast<T*>(t.get()));
 }
 
+// Intentionally renamed obj_ as obj_x to cause error
 template<typename T>
 std::ostream& operator<<(std::ostream& o, const SharedHandle<T>& sp) {
-  o << *sp.obj_;
+  o << *sp.obj_x;
   return o;
 }
 
 template<typename T1, typename T2>
 bool operator==(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
-  return *t1.obj_ == *t2.obj_;
+  return *t1.obj_x == *t2.obj_;
 }
 
 template<typename T1, typename T2>
 bool operator!=(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
-  return *t1.obj_ != *t2.obj_;
+  return *t1.obj_x != *t2.obj_;
 }
 
 template<typename T1, typename T2>
 bool operator<(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
-  return *t1.obj_ < *t2.obj_;
+  return *t1.obj_x < *t2.obj_;
 }
 
 template<typename T>
@@ -357,6 +364,11 @@ public:
 
   T* operator->() const { return obj_; }
 
+  T& operator*() const {
+    assert(obj_);
+    return *obj_;
+  }
+
   T* get() const {
     if(isNull()) {
       return 0;
@@ -378,25 +390,26 @@ public:
   }
 };
 
+// Intentionally renamed obj_ as obj_x to cause error
 template<typename T>
 std::ostream& operator<<(std::ostream& o, const WeakHandle<T>& sp) {
-  o << *sp.obj_;
+  o << *sp.obj_x;
   return o;
 }
 
 template<typename T1, typename T2>
 bool operator==(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
-  return *t1.obj_ == *t2.obj_;
+  return *t1.obj_x == *t2.obj_;
 }
 
 template<typename T1, typename T2>
 bool operator!=(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
-  return *t1.obj_ != *t2.obj_;
+  return *t1.obj_x != *t2.obj_;
 }
 
 template<typename T1, typename T2>
 bool operator<(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
-  return *t1.obj_ < *t2.obj_;
+  return *t1.obj_x < *t2.obj_;
 }
 
 template<typename T, typename S>
