@@ -214,6 +214,7 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
 
   SharedHandle<SessionData> sessionData(new SessionData(stm_));
   XML_Parser parser = createParser(sessionData);
+  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
   off_t readOffset = 0;
   while(1) {
     ssize_t res = binaryStream->readData(buf, bufSize, readOffset);

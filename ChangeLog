@@ -1,5 +1,10 @@
 2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed memory leak
+	* src/ExpatMetalinkProcessor.cc
+
+2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	To match the behavior of friend operator functions in
 	SharedHandle.h to std::tr1::shared_ptr, we intentionally broke
 	these functions and modified code so that our code does not depend
