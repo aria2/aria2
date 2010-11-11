@@ -431,12 +431,10 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     getSegmentMan()->getSegmentWithIndex(getCuid(), 0);
     return true;
   } else {
-    getRequestGroup()->adjustFilename
-      (SharedHandle<BtProgressInfoFile>
-       (new DefaultBtProgressInfoFile
-        (getDownloadContext(),
-         SharedHandle<PieceStorage>(),
-         getOption().get())));
+    SharedHandle<BtProgressInfoFile> progressInfoFile
+      (new DefaultBtProgressInfoFile
+       (getDownloadContext(), SharedHandle<PieceStorage>(), getOption().get()));
+    getRequestGroup()->adjustFilename(progressInfoFile);
     getRequestGroup()->initPieceStorage();
 
     if(getOption()->getAsBool(PREF_DRY_RUN)) {

@@ -79,7 +79,8 @@ void AnnounceList::reconfigure
 void AnnounceList::reconfigure(const std::string& url) {
   std::deque<std::string> urls;
   urls.push_back(url);
-  tiers_.push_back(SharedHandle<AnnounceTier>(new AnnounceTier(urls)));
+  SharedHandle<AnnounceTier> tier(new AnnounceTier(urls));
+  tiers_.push_back(tier);
   resetIterator();
 }
 

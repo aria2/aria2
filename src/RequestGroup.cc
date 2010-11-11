@@ -484,11 +484,10 @@ void RequestGroup::createInitialCommand
           (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
                         downloadContext_->getBasePath().c_str()).str());
       }
-      adjustFilename
-        (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
-                                          (downloadContext_,
-                                           SharedHandle<PieceStorage>(),
-                                           option_.get())));
+      SharedHandle<BtProgressInfoFile> progressInfoFile
+        (new DefaultBtProgressInfoFile
+         (downloadContext_, SharedHandle<PieceStorage>(), option_.get()));
+      adjustFilename(progressInfoFile);
       initPieceStorage();
       SharedHandle<CheckIntegrityEntry> checkEntry =
         createCheckIntegrityEntry();
@@ -601,8 +600,9 @@ void RequestGroup::initPieceStorage()
         if(logger_->debug()) {
           logger_->debug("Using LongestSequencePieceSelector");
         }
-        ps->setPieceSelector
-          (SharedHandle<PieceSelector>(new LongestSequencePieceSelector()));
+        SharedHandle<PieceSelector> longestPieceSelector
+          (new LongestSequencePieceSelector());
+        ps->setPieceSelector(longestPieceSelector);
       }
       if(option_->defined(PREF_BT_PRIORITIZE_PIECE)) {
         std::vector<size_t> result;

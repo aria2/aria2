@@ -69,7 +69,8 @@ bool UTMetadataPostDownloadHandler::Criteria::match
 UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler():
   logger_(LogFactory::getInstance())
 {
-  setCriteria(SharedHandle<Criteria>(new Criteria()));
+  SharedHandle<Criteria> cri(new Criteria());
+  setCriteria(cri);
 }
 
 void UTMetadataPostDownloadHandler::getNextRequestGroups

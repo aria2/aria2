@@ -463,22 +463,22 @@ void RequestGroupMan::configureRequestGroup
 {
   const std::string& uriSelectorValue = option_->get(PREF_URI_SELECTOR);
   if(uriSelectorValue == V_FEEDBACK) {
-    requestGroup->setURISelector
-      (SharedHandle<URISelector>(new FeedbackURISelector(serverStatMan_)));
+    SharedHandle<URISelector> sel(new FeedbackURISelector(serverStatMan_));
+    requestGroup->setURISelector(sel);
   } else if(uriSelectorValue == V_INORDER) {
-    requestGroup->setURISelector
-      (SharedHandle<URISelector>(new InOrderURISelector()));
+    SharedHandle<URISelector> sel(new InOrderURISelector());
+    requestGroup->setURISelector(sel);
   } else if(uriSelectorValue == V_ADAPTIVE) {
-    requestGroup->setURISelector
-      (SharedHandle<URISelector>(new AdaptiveURISelector(serverStatMan_,
-                                                         requestGroup.get())));
+    SharedHandle<URISelector> sel(new AdaptiveURISelector(serverStatMan_,
+                                                          requestGroup.get()));
+    requestGroup->setURISelector(sel);
   }
 }
 
 namespace {
 void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
                           std::vector<Command*>& commands,
-                                 DownloadEngine* e)
+                          DownloadEngine* e)
 {
   requestGroup->createInitialCommand(commands, e);
 }

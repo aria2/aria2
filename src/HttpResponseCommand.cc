@@ -293,11 +293,10 @@ bool HttpResponseCommand::handleDefaultEncoding
 (const SharedHandle<HttpResponse>& httpResponse)
 {
   SharedHandle<HttpRequest> httpRequest = httpResponse->getHttpRequest();
-  getRequestGroup()->adjustFilename
-    (SharedHandle<BtProgressInfoFile>(new DefaultBtProgressInfoFile
-                                      (getDownloadContext(),
-                                       SharedHandle<PieceStorage>(),
-                                       getOption().get())));
+  SharedHandle<BtProgressInfoFile> progressInfoFile
+    (new DefaultBtProgressInfoFile
+     (getDownloadContext(), SharedHandle<PieceStorage>(), getOption().get()));
+  getRequestGroup()->adjustFilename(progressInfoFile);
   getRequestGroup()->initPieceStorage();
 
   if(getOption()->getAsBool(PREF_DRY_RUN)) {

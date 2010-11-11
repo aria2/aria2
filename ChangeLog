@@ -1,5 +1,17 @@
 2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Create SharedHandle outside of function call to avoid unexpected
+	memory leak.
+	* src/AnnounceList.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/UTMetadataPostDownloadHandler.cc
+	* src/download_helper.cc
+
+2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Updated supported hash functions.
 	* README
 

@@ -311,9 +311,9 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   dctx->getFirstFileEntry()->setPath(torrentAttrs->name);
   rg->setDownloadContext(dctx);
   rg->clearPostDownloadHandler();
-  rg->addPostDownloadHandler
-    (SharedHandle<UTMetadataPostDownloadHandler>
-     (new UTMetadataPostDownloadHandler()));
+  SharedHandle<UTMetadataPostDownloadHandler> utMetadataPostHandler
+    (new UTMetadataPostDownloadHandler());
+  rg->addPostDownloadHandler(utMetadataPostHandler);
   rg->setDiskWriterFactory
     (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
   rg->setMetadataInfo(createMetadataInfo(magnetLink));
