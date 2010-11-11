@@ -12,8 +12,10 @@
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
 #include "util.h"
+#include "MessageDigest.h"
 #include "MessageDigestHelper.h"
 #include "prefs.h"
+#include "RecoverableException.h"
 
 namespace aria2 {
 
@@ -73,7 +75,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCe";
   unsigned char infoHash[20];
   MessageDigestHelper::digest
-    (infoHash, sizeof(infoHash), MessageDigestContext::SHA1,
+    (infoHash, sizeof(infoHash), MessageDigest::sha1(),
      reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size());
   dctx_->getFirstFileEntry()->setLength(metadata.size());
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());

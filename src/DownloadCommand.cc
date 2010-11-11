@@ -62,6 +62,7 @@
 #include "FileAllocationEntry.h"
 #include "SinkStreamFilter.h"
 #ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigest.h"
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #ifdef ENABLE_BITTORRENT
@@ -90,11 +91,8 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
   {
     if(getOption()->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
       const std::string& algo = getDownloadContext()->getPieceHashAlgo();
-      if(MessageDigestContext::supports(algo)) {
-        messageDigestContext_.reset(new MessageDigestContext());
-        messageDigestContext_->trySetAlgo(algo);
-        messageDigestContext_->digestInit();
-        
+      if(MessageDigest::supports(algo)) {
+        messageDigest_ = MessageDigest::create(algo);
         pieceHashValidationEnabled_ = true;
       }
     }
@@ -224,11 +222,11 @@ bool DownloadCommand::executeInternal() {
             validatePieceHash
               (segment, expectedPieceHash, segment->getHashString());
           } else {
-            messageDigestContext_->digestReset();
+            messageDigest_->reset();
             validatePieceHash
               (segment, expectedPieceHash,
-               MessageDigestHelper::digest
-               (messageDigestContext_.get(),
+               MessageDigestHelper::hexDigest
+               (messageDigest_,
                 getPieceStorage()->getDiskAdaptor(),
                 segment->getPosition(),
                 segment->getLength()));

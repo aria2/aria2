@@ -39,9 +39,6 @@
 
 #include <string>
 
-#include "SharedHandle.h"
-#include "messageDigest.h"
-
 namespace aria2 {
 
 class Checksum {
@@ -53,7 +50,7 @@ public:
   Checksum(const std::string& algo, const std::string& messageDigest):
     algo_(algo), messageDigest_(messageDigest) {}
   Checksum():
-    algo_(MessageDigestContext::SHA1) {}
+    algo_("sha-1") {}
 
   ~Checksum() {}
 

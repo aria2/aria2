@@ -48,7 +48,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @HAVE_SQLITE3_TRUE@am__append_4 = Sqlite3CookieParserTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_5 = MessageDigestHelperTest.cc\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.cc\
-@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.cc
+@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.cc\
+@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestTest.cc
 
 @ENABLE_BITTORRENT_TRUE@am__append_6 = BtAllowedFastMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.cc\
@@ -222,17 +223,17 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	GZipEncoderTest.cc GZipDecodingStreamFilterTest.cc \
 	Sqlite3CookieParserTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
-	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
-	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
-	BtChokeMessageTest.cc BtHandshakeMessageTest.cc \
-	BtHaveAllMessageTest.cc BtHaveMessageTest.cc \
-	BtHaveNoneMessageTest.cc BtInterestedMessageTest.cc \
-	BtKeepAliveMessageTest.cc BtNotInterestedMessageTest.cc \
-	BtPieceMessageTest.cc BtPortMessageTest.cc \
-	BtRejectMessageTest.cc BtRequestMessageTest.cc \
-	BtSuggestPieceMessageTest.cc BtUnchokeMessageTest.cc \
-	DefaultPieceStorageTest.cc DefaultBtAnnounceTest.cc \
-	DefaultBtMessageDispatcherTest.cc \
+	IteratableChecksumValidatorTest.cc MessageDigestTest.cc \
+	BtAllowedFastMessageTest.cc BtBitfieldMessageTest.cc \
+	BtCancelMessageTest.cc BtChokeMessageTest.cc \
+	BtHandshakeMessageTest.cc BtHaveAllMessageTest.cc \
+	BtHaveMessageTest.cc BtHaveNoneMessageTest.cc \
+	BtInterestedMessageTest.cc BtKeepAliveMessageTest.cc \
+	BtNotInterestedMessageTest.cc BtPieceMessageTest.cc \
+	BtPortMessageTest.cc BtRejectMessageTest.cc \
+	BtRequestMessageTest.cc BtSuggestPieceMessageTest.cc \
+	BtUnchokeMessageTest.cc DefaultPieceStorageTest.cc \
+	DefaultBtAnnounceTest.cc DefaultBtMessageDispatcherTest.cc \
 	DefaultBtRequestFactoryTest.cc MockBtMessage.h \
 	MockBtMessageDispatcher.h MockBtMessageFactory.h \
 	AnnounceListTest.cc DefaultPeerStorageTest.cc \
@@ -287,7 +288,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_5 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidatorTest.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestTest.$(OBJEXT)
 @ENABLE_BITTORRENT_TRUE@am__objects_6 =  \
 @ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.$(OBJEXT) \
@@ -850,6 +852,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshakeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MagnetTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelperTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroupTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkHelperTest.Po@am__quote@

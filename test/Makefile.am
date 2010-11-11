@@ -100,7 +100,8 @@ endif # HAVE_SQLITE3
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
 	IteratableChunkChecksumValidatorTest.cc\
-	IteratableChecksumValidatorTest.cc
+	IteratableChecksumValidatorTest.cc\
+	MessageDigestTest.cc
 endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT

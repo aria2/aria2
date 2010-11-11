@@ -13,6 +13,7 @@
 #include "MockPieceStorage.h"
 #include "UTMetadataRequestTracker.h"
 #include "bittorrent_helper.h"
+#include "MessageDigest.h"
 #include "MessageDigestHelper.h"
 
 namespace aria2 {
@@ -80,7 +81,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 
   unsigned char infoHash[INFO_HASH_LENGTH];
   MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
-                              MessageDigestContext::SHA1,
+                              MessageDigest::sha1(),
                               metadata.data(), metadata.size());
   attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
   dctx->setAttribute(bittorrent::BITTORRENT, attrs);

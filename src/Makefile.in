@@ -59,8 +59,12 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @HAVE_SOME_FALLOCATE_TRUE@am__append_4 = FallocFileAllocationIterator.cc FallocFileAllocationIterator.h
 @HAVE_EPOLL_TRUE@am__append_5 = EpollEventPoll.cc EpollEventPoll.h
 @ENABLE_SSL_TRUE@am__append_6 = TLSContext.h
-@HAVE_LIBGNUTLS_TRUE@am__append_7 = LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
-@HAVE_LIBSSL_TRUE@am__append_8 = LibsslTLSContext.cc LibsslTLSContext.h
+@HAVE_LIBGNUTLS_TRUE@am__append_7 = LibgnutlsTLSContext.cc LibgnutlsTLSContext.h\
+@HAVE_LIBGNUTLS_TRUE@	LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h
+
+@HAVE_LIBSSL_TRUE@am__append_8 = LibsslTLSContext.cc LibsslTLSContext.h\
+@HAVE_LIBSSL_TRUE@	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h
+
 @HAVE_LIBZ_TRUE@am__append_9 = GZipDecoder.cc GZipDecoder.h\
 @HAVE_LIBZ_TRUE@	GZipEncoder.cc GZipEncoder.h\
 @HAVE_LIBZ_TRUE@	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h
@@ -74,10 +78,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.cc messageDigest.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.cc MessageDigestHelper.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	Checksum.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksum.h
+@ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksum.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigest.cc MessageDigest.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	HashFuncEntry.h
 
 @ENABLE_BITTORRENT_TRUE@am__append_13 = PeerAbstractCommand.cc PeerAbstractCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
@@ -467,8 +472,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FallocFileAllocationIterator.cc FallocFileAllocationIterator.h \
 	EpollEventPoll.cc EpollEventPoll.h TLSContext.h \
 	LibgnutlsTLSContext.cc LibgnutlsTLSContext.h \
-	LibsslTLSContext.cc LibsslTLSContext.h GZipDecoder.cc \
-	GZipDecoder.h GZipEncoder.cc GZipEncoder.h \
+	LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h \
+	LibsslTLSContext.cc LibsslTLSContext.h \
+	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h \
+	GZipDecoder.cc GZipDecoder.h GZipEncoder.cc GZipEncoder.h \
 	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h \
 	Sqlite3CookieParser.cc Sqlite3CookieParser.h \
 	Sqlite3CookieParserImpl.cc Sqlite3CookieParserImpl.h \
@@ -479,9 +486,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	CheckIntegrityDispatcherCommand.cc \
 	CheckIntegrityDispatcherCommand.h CheckIntegrityCommand.cc \
 	CheckIntegrityCommand.h ChecksumCheckIntegrityEntry.cc \
-	ChecksumCheckIntegrityEntry.h messageDigest.cc messageDigest.h \
-	MessageDigestHelper.cc MessageDigestHelper.h Checksum.h \
-	ChunkChecksum.h PeerAbstractCommand.cc PeerAbstractCommand.h \
+	ChecksumCheckIntegrityEntry.h MessageDigestHelper.cc \
+	MessageDigestHelper.h Checksum.h ChunkChecksum.h \
+	MessageDigest.cc MessageDigest.h HashFuncEntry.h \
+	PeerAbstractCommand.cc PeerAbstractCommand.h \
 	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h PeerListenCommand.cc \
@@ -646,8 +654,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @HAVE_SOME_FALLOCATE_TRUE@am__objects_4 = FallocFileAllocationIterator.$(OBJEXT)
 @HAVE_EPOLL_TRUE@am__objects_5 = EpollEventPoll.$(OBJEXT)
 am__objects_6 =
-@HAVE_LIBGNUTLS_TRUE@am__objects_7 = LibgnutlsTLSContext.$(OBJEXT)
-@HAVE_LIBSSL_TRUE@am__objects_8 = LibsslTLSContext.$(OBJEXT)
+@HAVE_LIBGNUTLS_TRUE@am__objects_7 = LibgnutlsTLSContext.$(OBJEXT) \
+@HAVE_LIBGNUTLS_TRUE@	LibgcryptMessageDigestImpl.$(OBJEXT)
+@HAVE_LIBSSL_TRUE@am__objects_8 = LibsslTLSContext.$(OBJEXT) \
+@HAVE_LIBSSL_TRUE@	LibsslMessageDigestImpl.$(OBJEXT)
 @HAVE_LIBZ_TRUE@am__objects_9 = GZipDecoder.$(OBJEXT) \
 @HAVE_LIBZ_TRUE@	GZipEncoder.$(OBJEXT) \
 @HAVE_LIBZ_TRUE@	GZipDecodingStreamFilter.$(OBJEXT)
@@ -659,8 +669,8 @@ am__objects_6 =
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityDispatcherCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigest.$(OBJEXT)
 @ENABLE_BITTORRENT_TRUE@am__objects_13 =  \
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.$(OBJEXT) \
@@ -1544,7 +1554,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/KqueueEventPoll.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibgcryptMessageDigestImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibgnutlsTLSContext.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibsslMessageDigestImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibsslTLSContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Logger.Po@am__quote@
@@ -1555,6 +1567,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LpdReceiveMessageCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSEHandshake.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MemoryBufferPreDownloadHandler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetadataInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroup.Po@am__quote@
@@ -1683,7 +1696,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localtime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magnet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messageDigest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/option_processing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prefs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strptime.Po@am__quote@

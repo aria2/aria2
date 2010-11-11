@@ -80,6 +80,7 @@
 #include "LogFactory.h"
 #include "Option.h"
 #ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigest.h"
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -1301,7 +1302,7 @@ void generateRandomKey(unsigned char* key)
   unsigned char bytes[40];
   generateRandomData(bytes, sizeof(bytes));
   MessageDigestHelper::digest
-    (key, 20, MessageDigestContext::SHA1, bytes, sizeof(bytes));
+    (key, 20, MessageDigest::sha1(), bytes, sizeof(bytes));
 #else // !ENABLE_MESSAGE_DIGEST
   generateRandomData(key, 20);
 #endif // !ENABLE_MESSAGE_DIGEST

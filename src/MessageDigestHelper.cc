@@ -37,7 +37,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "messageDigest.h"
+#include "MessageDigest.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "DefaultDiskWriter.h"
@@ -46,43 +46,30 @@
 
 namespace aria2 {
 
-MessageDigestContext* MessageDigestHelper::sha1Ctx_ = 0;
+SharedHandle<MessageDigest> MessageDigestHelper::sha1Ctx_;
 
 void MessageDigestHelper::staticSHA1DigestInit()
 {
   staticSHA1DigestFree();
-  sha1Ctx_ = new MessageDigestContext();
-  sha1Ctx_->trySetAlgo(MessageDigestContext::SHA1);
-  sha1Ctx_->digestInit();
+  sha1Ctx_ = MessageDigest::sha1();
 }
 
 void MessageDigestHelper::staticSHA1DigestFree()
 {
-  delete sha1Ctx_;
+  sha1Ctx_.reset();
 }
 
-std::string MessageDigestHelper::staticSHA1Digest(const BinaryStreamHandle& bs,
-                                                  off_t offset,
-                                                  uint64_t length)
+std::string MessageDigestHelper::staticSHA1DigestHexDigest
+(const BinaryStreamHandle& bs, off_t offset, uint64_t length)
 {
-  sha1Ctx_->digestReset();
-  return digest(sha1Ctx_, bs, offset, length);
+  sha1Ctx_->reset();
+  return hexDigest(sha1Ctx_, bs, offset, length);
 }
 
-std::string MessageDigestHelper::digest(const std::string& algo,
-                                        const BinaryStreamHandle& bs,
-                                        off_t offset,
-                                        uint64_t length)
-{
-  MessageDigestContext ctx;
-  ctx.trySetAlgo(algo);
-  ctx.digestInit();
-  return digest(&ctx, bs, offset, length);
-}
-
-std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
-                                        const SharedHandle<BinaryStream>& bs,
-                                        off_t offset, uint64_t length)
+std::string MessageDigestHelper::hexDigest
+(const SharedHandle<MessageDigest>& ctx,
+ const SharedHandle<BinaryStream>& bs,
+ off_t offset, uint64_t length)
 {
   size_t BUFSIZE = 4096;
   unsigned char BUF[BUFSIZE];
@@ -95,7 +82,7 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
       throw DL_ABORT_EX
         (StringFormat(EX_FILE_READ, "n/a", "data is too short").str());
     }
-    ctx->digestUpdate(BUF, readLength);
+    ctx->update(BUF, readLength);
     offset += readLength;
   }
   if(tail) {
@@ -104,45 +91,26 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
       throw DL_ABORT_EX
         (StringFormat(EX_FILE_READ, "n/a", "data is too short").str());
     }
-    ctx->digestUpdate(BUF, readLength);
+    ctx->update(BUF, readLength);
   }
-  std::string rawMD = ctx->digestFinal();
-  return util::toHex(rawMD);
+  return ctx->hexDigest();
 }
 
-std::string MessageDigestHelper::digest(const std::string& algo, const std::string& filename)
+void MessageDigestHelper::digest
+(unsigned char* md, size_t mdLength,
+ const SharedHandle<MessageDigest>& ctx, const void* data, size_t length)
 {
-  DiskWriterHandle writer(new DefaultDiskWriter(filename));
-  writer->openExistingFile();
-  return digest(algo, writer, 0, writer->size());
-}
-
-std::string MessageDigestHelper::digest(const std::string& algo, const void* data, size_t length)
-{
-  MessageDigestContext ctx;
-  ctx.trySetAlgo(algo);
-  ctx.digestInit();
-  ctx.digestUpdate(data, length);
-  std::string rawMD = ctx.digestFinal();
-  return util::toHex(rawMD);
-}
-
-void MessageDigestHelper::digest(unsigned char* md, size_t mdLength,
-                                 const std::string& algo, const void* data, size_t length)
-{
-  if(mdLength < MessageDigestContext::digestLength(algo)) {
+  size_t reqLength = ctx->getDigestLength();
+  if(mdLength < reqLength) {
     throw DL_ABORT_EX
       (StringFormat
        ("Insufficient space for storing message digest:"
         " %lu required, but only %lu is allocated",
-        static_cast<unsigned long>(MessageDigestContext::digestLength(algo)),
+        static_cast<unsigned long>(reqLength),
         static_cast<unsigned long>(mdLength)).str());
   }
-  MessageDigestContext ctx;
-  ctx.trySetAlgo(algo);
-  ctx.digestInit();
-  ctx.digestUpdate(data, length);
-  ctx.digestFinal(md);
+  ctx->update(data, length);
+  ctx->digest(md);
 }
 
 } // namespace aria2

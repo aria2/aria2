@@ -47,6 +47,7 @@
 #include "DHKeyExchange.h"
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
+#include "MessageDigest.h"
 #include "MessageDigestHelper.h"
 #include "SimpleRandomizer.h"
 #include "util.h"
@@ -79,7 +80,8 @@ MSEHandshake::MSEHandshake(cuid_t cuid,
   markerIndex_(0),
   padLength_(0),
   iaLength_(0),
-  ia_(0)
+  ia_(0),
+  sha1_(MessageDigest::sha1())
 {}
 
 MSEHandshake::~MSEHandshake()
@@ -175,17 +177,17 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   memcpy(s+4+KEY_LENGTH, infoHash, INFO_HASH_LENGTH);
   
   unsigned char localCipherKey[20];
+  sha1_->reset();
   MessageDigestHelper::digest(localCipherKey, sizeof(localCipherKey),
-                              MessageDigestContext::SHA1,
-                              s, sizeof(s));
+                              sha1_, s, sizeof(s));
   encryptor_.reset(new ARC4Encryptor());
   encryptor_->init(localCipherKey, sizeof(localCipherKey));
 
   unsigned char peerCipherKey[20];
   memcpy(s, initiator_?"keyB":"keyA", 4);
+  sha1_->reset();
   MessageDigestHelper::digest(peerCipherKey, sizeof(peerCipherKey),
-                              MessageDigestContext::SHA1,
-                              s, sizeof(s));
+                              sha1_, s, sizeof(s));
   decryptor_.reset(new ARC4Decryptor());
   decryptor_->init(peerCipherKey, sizeof(peerCipherKey));
 
@@ -224,8 +226,8 @@ void MSEHandshake::createReq1Hash(unsigned char* md) const
   unsigned char buffer[100];
   memcpy(buffer, "req1", 4);
   memcpy(buffer+4, secret_, KEY_LENGTH);
-  MessageDigestHelper::digest(md, 20, MessageDigestContext::SHA1,
-                              buffer, 4+KEY_LENGTH);
+  sha1_->reset();
+  MessageDigestHelper::digest(md, 20, sha1_, buffer, 4+KEY_LENGTH);
 }
 
 void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoHash) const
@@ -234,15 +236,15 @@ void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoH
   memcpy(x, "req2", 4);
   memcpy(x+4, infoHash, INFO_HASH_LENGTH);
   unsigned char xh[20];
-  MessageDigestHelper::digest(xh, sizeof(xh), MessageDigestContext::SHA1,
-                              x, sizeof(x));
+  sha1_->reset();
+  MessageDigestHelper::digest(xh, sizeof(xh), sha1_, x, sizeof(x));
 
   unsigned char y[4+96];
   memcpy(y, "req3", 4);
   memcpy(y+4, secret_, KEY_LENGTH);
   unsigned char yh[20];
-  MessageDigestHelper::digest(yh, sizeof(yh), MessageDigestContext::SHA1,
-                              y, sizeof(y));
+  sha1_->reset();
+  MessageDigestHelper::digest(yh, sizeof(yh), sha1_, y, sizeof(y));
   
   for(size_t i = 0; i < 20; ++i) {
     md[i] = xh[i]^yh[i];

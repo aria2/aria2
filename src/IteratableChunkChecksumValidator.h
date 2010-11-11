@@ -43,7 +43,7 @@ class DownloadContext;
 class PieceStorage;
 class BitfieldMan;
 class Logger;
-class MessageDigestContext;
+class MessageDigest;
 
 class IteratableChunkChecksumValidator:public IteratableValidator
 {
@@ -53,7 +53,7 @@ private:
   SharedHandle<BitfieldMan> bitfield_;
   size_t currentIndex_;
   Logger* logger_;
-  SharedHandle<MessageDigestContext> ctx_;
+  SharedHandle<MessageDigest> ctx_;
   unsigned char* buffer_;
 
   std::string calculateActualChecksum();

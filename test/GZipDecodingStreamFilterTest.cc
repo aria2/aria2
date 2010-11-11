@@ -13,6 +13,7 @@
 #include "SinkStreamFilter.h"
 #include "MockSegment.h"
 #ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigest.h"
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -72,9 +73,11 @@ void GZipDecodingStreamFilterTest::testTransform()
   }
   CPPUNIT_ASSERT(filter_->finished());
 #ifdef ENABLE_MESSAGE_DIGEST
+  std::string data = writer_->getString();
+  SharedHandle<MessageDigest> sha1(MessageDigest::sha1());
+  sha1->update(data.data(), data.size());
   CPPUNIT_ASSERT_EQUAL(std::string("8b577b33c0411b2be9d4fa74c7402d54a8d21f96"),
-                       MessageDigestHelper::digestString
-                       (MessageDigestContext::SHA1, writer_->getString()));
+                       sha1->hexDigest());
 #endif // ENABLE_MESSAGE_DIGEST
 }
 

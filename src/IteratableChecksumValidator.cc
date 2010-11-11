@@ -39,7 +39,7 @@
 #include "util.h"
 #include "message.h"
 #include "PieceStorage.h"
-#include "messageDigest.h"
+#include "MessageDigest.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "DiskAdaptor.h"
@@ -76,10 +76,10 @@ void IteratableChecksumValidator::validateChunk()
     size_t length = pieceStorage_->getDiskAdaptor()->readData(buffer_,
                                                               BUFSIZE,
                                                               currentOffset_);
-    ctx_->digestUpdate(buffer_, length);
+    ctx_->update(buffer_, length);
     currentOffset_ += length;
     if(finished()) {
-      std::string actualChecksum = util::toHex(ctx_->digestFinal());
+      std::string actualChecksum = ctx_->hexDigest();
       if(dctx_->getChecksum() == actualChecksum) {
         pieceStorage_->markAllPiecesDone();
       } else {
@@ -117,9 +117,7 @@ void IteratableChecksumValidator::init()
 #endif // !HAVE_POSIX_MEMALIGN
   pieceStorage_->getDiskAdaptor()->enableDirectIO();
   currentOffset_ = 0;
-  ctx_.reset(new MessageDigestContext());
-  ctx_->trySetAlgo(dctx_->getChecksumHashAlgo());
-  ctx_->digestInit();
+  ctx_ = MessageDigest::create(dctx_->getChecksumHashAlgo());
 }
 
 } // namespace aria2

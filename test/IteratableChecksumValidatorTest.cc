@@ -8,7 +8,6 @@
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
 #include "PieceSelector.h"
-#include "messageDigest.h"
 
 namespace aria2 {
 
@@ -36,7 +35,7 @@ void IteratableChecksumValidatorTest::testValidate() {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
   dctx->setChecksum("898a81b8e0181280ae2ee1b81e269196d91e869a");
-  dctx->setChecksumHashAlgo(MessageDigestContext::SHA1);
+  dctx->setChecksumHashAlgo("sha-1");
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->openFile();
@@ -55,7 +54,7 @@ void IteratableChecksumValidatorTest::testValidate_fail() {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
   dctx->setChecksum(std::string(40, '0')); // set wrong checksum
-  dctx->setChecksumHashAlgo(MessageDigestContext::SHA1);
+  dctx->setChecksumHashAlgo("sha-1");
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->openFile();

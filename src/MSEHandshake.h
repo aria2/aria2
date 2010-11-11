@@ -53,6 +53,7 @@ class DHKeyExchange;
 class ARC4Encryptor;
 class ARC4Decryptor;
 class DownloadContext;
+class MessageDigest;
 
 class MSEHandshake {
 public:
@@ -103,6 +104,7 @@ private:
   uint16_t padLength_;
   uint16_t iaLength_;
   unsigned char* ia_;
+  SharedHandle<MessageDigest> sha1_;
 
   static const unsigned char* PRIME;
 

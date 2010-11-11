@@ -2,9 +2,12 @@
 
 #include <string>
 
+#include "SharedHandle.h"
 #include "Cookie.h"
 
 namespace aria2 {
+
+class MessageDigest;
 
 void createFile(const std::string& filename, size_t length);
 
@@ -38,5 +41,11 @@ Cookie createCookie
  bool hostOnly,
  const std::string& path,
  bool secure);
+
+#ifdef ENABLE_MESSAGE_DIGEST
+// Returns hex digest of contents of file denoted by filename.
+std::string fileHexDigest
+(const SharedHandle<MessageDigest>& ctx, const std::string& filename);
+#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

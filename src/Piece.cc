@@ -39,7 +39,7 @@
 #include "util.h"
 #include "a2functional.h"
 #ifdef ENABLE_MESSAGE_DIGEST
-# include "messageDigest.h"
+# include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
@@ -58,40 +58,9 @@ Piece::Piece(size_t index, size_t length, size_t blockLength):
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
-Piece::Piece(const Piece& piece) {
-  index_ = piece.index_;
-  length_ = piece.length_;
-  blockLength_ = piece.blockLength_;
-  if(piece.bitfield_ == 0) {
-    bitfield_ = 0;
-  } else {
-    bitfield_ = new BitfieldMan(*piece.bitfield_);
-  }
-#ifdef ENABLE_MESSAGE_DIGEST
-  nextBegin_ = piece.nextBegin_;
-  // TODO Is this OK?
-  mdctx_ = piece.mdctx_;
-#endif // ENABLE_MESSAGE_DIGEST
-}
-
 Piece::~Piece()
 {
   delete bitfield_;
-}
-
-Piece& Piece::operator=(const Piece& piece)
-{
-  if(this != &piece) {
-    index_ = piece.index_;
-    length_ = piece.length_;
-    delete bitfield_;
-    if(piece.bitfield_) {
-      bitfield_ = new BitfieldMan(*piece.bitfield_);
-    } else {
-      bitfield_ = 0;
-    }
-  }
-  return *this;
 }
 
 void Piece::completeBlock(size_t blockIndex) {
@@ -231,14 +200,10 @@ bool Piece::updateHash
     return false;
   }
   if(begin == nextBegin_ && nextBegin_+dataLength <= length_) {
-
     if(mdctx_.isNull()) {
-      mdctx_.reset(new MessageDigestContext());      
-      mdctx_->trySetAlgo(hashAlgo_);
-      mdctx_->digestInit();
+      mdctx_ = MessageDigest::create(hashAlgo_);
     }
-
-    mdctx_->digestUpdate(data, dataLength);
+    mdctx_->update(data, dataLength);
     nextBegin_ += dataLength;
     return true;
   } else {
@@ -256,7 +221,7 @@ std::string Piece::getHashString()
   if(mdctx_.isNull()) {
     return A2STR::NIL;
   } else {
-    std::string hash = util::toHex(mdctx_->digestFinal());
+    std::string hash = mdctx_->hexDigest();
     destroyHashContext();
     return hash;
   }

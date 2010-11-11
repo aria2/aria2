@@ -13,6 +13,10 @@
 #include "StringFormat.h"
 #include "FatalException.h"
 #include "Cookie.h"
+#include "DefaultDiskWriter.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigestHelper.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 
@@ -70,5 +74,15 @@ Cookie createCookie
   return Cookie
     (name, value, expiryTime, true, domain, hostOnly, path, secure, false, 0);
 }
+
+#ifdef ENABLE_MESSAGE_DIGEST
+std::string fileHexDigest
+(const SharedHandle<MessageDigest>& ctx, const std::string& filename)
+{
+  SharedHandle<DiskWriter> writer(new DefaultDiskWriter(filename));
+  writer->openExistingFile();
+  return MessageDigestHelper::hexDigest(ctx, writer, 0, writer->size());
+}
+#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

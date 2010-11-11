@@ -254,11 +254,13 @@ SRCS += TLSContext.h
 endif # ENABLE_SSL
 
 if HAVE_LIBGNUTLS
-SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
+SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h\
+	LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h
 endif # HAVE_LIBGNUTLS
 
 if HAVE_LIBSSL
-SRCS += LibsslTLSContext.cc LibsslTLSContext.h
+SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
+	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h
 endif # HAVE_LIBSSL
 
 if HAVE_LIBZ
@@ -282,10 +284,11 @@ SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
-	messageDigest.cc messageDigest.h\
 	MessageDigestHelper.cc MessageDigestHelper.h\
 	Checksum.h\
-	ChunkChecksum.h
+	ChunkChecksum.h\
+	MessageDigest.cc MessageDigest.h\
+	HashFuncEntry.h
 endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,62 +32,58 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MESSAGE_DIGEST_HELPER_H
-#define D_MESSAGE_DIGEST_HELPER_H
+#ifndef D_HASH_FUNC_ENTRY_H
+#define D_HASH_FUNC_ENTRY_H
 
 #include "common.h"
 
 #include <string>
+#include <algorithm>
 
-#include "SharedHandle.h"
+#include "DlAbortEx.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
-class BinaryStream;
-class MessageDigest;
-
-class MessageDigestHelper {
-private:
-  static SharedHandle<MessageDigest> sha1Ctx_;
-
-  MessageDigestHelper();
-public:
-  /**
-   * staticSHA1DigestInit(), staticSHA1DigestFree(), staticSHA1Digest()
-   * use statically declared MessageDigest sha1Ctx_.
-   */
-  /**
-   * Initializes sha1Ctx_
-   */
-  static void staticSHA1DigestInit();
-
-  /**
-   * Frees allocated resources for sha1Ctx_
-   */
-  static void staticSHA1DigestFree();
-
-  static std::string staticSHA1DigestHexDigest
-  (const SharedHandle<BinaryStream>& bs, off_t offset, uint64_t length);
-
-  /**
-   * ctx must be initialized or reseted before calling this function.
-   * Returns hex digest string, not *raw* digest
-   */
-  static std::string hexDigest
-  (const SharedHandle<MessageDigest>& ctx,
-   const SharedHandle<BinaryStream>& bs,
-   off_t offset, uint64_t length);
-
-  /**
-   * Stores *raw* message digest into md.
-   * Throws exception when mdLength is less than the size of message digest.
-   */
-  static void digest
-  (unsigned char* md, size_t mdLength,
-   const SharedHandle<MessageDigest>& ctx,
-   const void* data, size_t length);
+template<typename HashFunc>
+struct HashFuncEntry {
+  typedef HashFunc HashFuncType;
+  std::string hashType;
+  HashFunc hashFunc;
+  HashFuncEntry(const std::string& hashType, const HashFunc& hashFunc):
+    hashType(hashType), hashFunc(hashFunc)
+  {}
 };
+
+template<typename HashFunc>
+class FindHashFunc {
+private:
+  const std::string& hashType_;
+public:
+  FindHashFunc(const std::string& hashType):hashType_(hashType)
+  {}
+
+  bool operator()(const HashFuncEntry<HashFunc>& entry) const
+  {
+    return entry.hashType == hashType_;
+  }
+};
+
+template<class HashFuncEntry>
+const typename HashFuncEntry::HashFuncType& getHashFunc
+(HashFuncEntry* first, HashFuncEntry* last, const std::string& hashType)
+{
+  HashFuncEntry* e =
+    std::find_if(first, last,
+                 FindHashFunc<typename HashFuncEntry::HashFuncType>
+                 (hashType));
+  if(e == last) {
+    throw DL_ABORT_EX
+      (StringFormat("Hash type %s is not supported.", hashType.c_str()).str());
+  }
+  return e->hashFunc;
+}
 
 } // namespace aria2
 
-#endif // D_MESSAGE_DIGEST_HELPER_H
+#endif // D_HASH_FUNC_ENTRY_H

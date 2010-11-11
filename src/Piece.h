@@ -49,7 +49,7 @@ class BitfieldMan;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-class MessageDigestContext;
+class MessageDigest;
 
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -66,10 +66,13 @@ private:
 
   std::string hashAlgo_;
 
-  SharedHandle<MessageDigestContext> mdctx_;
+  SharedHandle<MessageDigest> mdctx_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 
+  Piece(const Piece& piece);
+
+  Piece& operator=(const Piece& piece);  
 public:
 
   static const size_t BLOCK_LENGTH  = 16*1024;
@@ -78,12 +81,8 @@ public:
 
   Piece(size_t index, size_t length, size_t blockLength = BLOCK_LENGTH);
 
-  Piece(const Piece& piece);
-
   ~Piece();
 
-  Piece& operator=(const Piece& piece);
-  
   bool operator==(const Piece& piece) const
   {
     return index_ == piece.index_;

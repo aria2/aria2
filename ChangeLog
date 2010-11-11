@@ -1,3 +1,54 @@
+2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Replaced MessageDigestContext with MessageDigest.  Cleaned up
+	unnecessary functions in MessageDigestHelper.
+	* src/BtPieceMessage.cc
+	* src/Checksum.h
+	* src/DHTTokenTracker.cc
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+	* src/HashFuncEntry.h
+	* src/IteratableChecksumValidator.cc
+	* src/IteratableChecksumValidator.h
+	* src/IteratableChunkChecksumValidator.cc
+	* src/IteratableChunkChecksumValidator.h
+	* src/LibgcryptMessageDigestImpl.cc
+	* src/LibgcryptMessageDigestImpl.h
+	* src/LibsslMessageDigestImpl.cc
+	* src/LibsslMessageDigestImpl.h
+	* src/MSEHandshake.cc
+	* src/MSEHandshake.h
+	* src/Makefile.am
+	* src/MessageDigest.cc
+	* src/MessageDigest.h
+	* src/MessageDigestHelper.cc
+	* src/MessageDigestHelper.h
+	* src/MessageDigestImpl.h
+	* src/MetalinkParserController.cc
+	* src/Piece.cc
+	* src/Piece.h
+	* src/UTMetadataDataExtensionMessage.cc
+	* src/bittorrent_helper.cc
+	* src/messageDigest.cc: Removed
+	* src/messageDigest.h: Removed
+	* src/util.cc
+	* src/version_usage.cc
+	* test/BittorrentHelperTest.cc
+	* test/GZipDecoderTest.cc
+	* test/GZipDecodingStreamFilterTest.cc
+	* test/IteratableChecksumValidatorTest.cc
+	* test/IteratableChunkChecksumValidatorTest.cc
+	* test/Makefile.am
+	* test/MessageDigestHelperTest.cc
+	* test/MessageDigestTest.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/PieceTest.cc
+	* test/TestUtil.cc
+	* test/TestUtil.h
+	* test/UTMetadataDataExtensionMessageTest.cc
+	* test/UTMetadataPostDownloadHandlerTest.cc
+
 2010-11-10  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Print IP protocol version when setting up XML-RPC server failed.

@@ -12,7 +12,6 @@
 #include "FixedNumberRandomizer.h"
 #include "FileEntry.h"
 #include "array_fun.h"
-#include "messageDigest.h"
 #include "a2netcompat.h"
 #include "bencode2.h"
 #include "TestUtil.h"
@@ -153,7 +152,7 @@ void BittorrentHelperTest::testGetPieceHash() {
   CPPUNIT_ASSERT_EQUAL(std::string(""),
                        dctx->getPieceHash(3));
 
-  CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, dctx->getPieceHashAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getPieceHashAlgo());
 }
 
 void BittorrentHelperTest::testGetFileEntries() {

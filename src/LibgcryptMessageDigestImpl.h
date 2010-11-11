@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,62 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MESSAGE_DIGEST_HELPER_H
-#define D_MESSAGE_DIGEST_HELPER_H
+#ifndef D_LIBGCRYPT_MESSAGE_DIGEST_IMPL_H
+#define D_LIBGCRYPT_MESSAGE_DIGEST_IMPL_H
 
 #include "common.h"
 
 #include <string>
 
+#include <gcrypt.h>
+
 #include "SharedHandle.h"
 
 namespace aria2 {
 
-class BinaryStream;
-class MessageDigest;
-
-class MessageDigestHelper {
+class MessageDigestImpl {
 private:
-  static SharedHandle<MessageDigest> sha1Ctx_;
+  int hashFunc_;
+  gcry_md_hd_t ctx_;
 
-  MessageDigestHelper();
+  MessageDigestImpl(int hashFunc);
+  // We don't implement copy ctor.
+  MessageDigestImpl(const MessageDigestImpl&);
+  // We don't implement assignment operator.
+  MessageDigestImpl& operator==(const MessageDigestImpl&);
 public:
-  /**
-   * staticSHA1DigestInit(), staticSHA1DigestFree(), staticSHA1Digest()
-   * use statically declared MessageDigest sha1Ctx_.
-   */
-  /**
-   * Initializes sha1Ctx_
-   */
-  static void staticSHA1DigestInit();
+  ~MessageDigestImpl();
 
-  /**
-   * Frees allocated resources for sha1Ctx_
-   */
-  static void staticSHA1DigestFree();
+  static SharedHandle<MessageDigestImpl> sha1();
+  static SharedHandle<MessageDigestImpl> create(const std::string& hashType);
 
-  static std::string staticSHA1DigestHexDigest
-  (const SharedHandle<BinaryStream>& bs, off_t offset, uint64_t length);
-
-  /**
-   * ctx must be initialized or reseted before calling this function.
-   * Returns hex digest string, not *raw* digest
-   */
-  static std::string hexDigest
-  (const SharedHandle<MessageDigest>& ctx,
-   const SharedHandle<BinaryStream>& bs,
-   off_t offset, uint64_t length);
-
-  /**
-   * Stores *raw* message digest into md.
-   * Throws exception when mdLength is less than the size of message digest.
-   */
-  static void digest
-  (unsigned char* md, size_t mdLength,
-   const SharedHandle<MessageDigest>& ctx,
-   const void* data, size_t length);
+  static bool supports(const std::string& hashType);
+  static size_t getDigestLength(const std::string& hashType);
+  
+  size_t getDigestLength() const;
+  void reset();
+  void update(const void* data, size_t length);
+  void digest(unsigned char* md);
 };
 
 } // namespace aria2
 
-#endif // D_MESSAGE_DIGEST_HELPER_H
+#endif // D_LIBGCRYPT_MESSAGE_DIGEST_IMPL_H

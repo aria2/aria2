@@ -40,11 +40,13 @@
 #include "UTMetadataRequestTracker.h"
 #include "PieceStorage.h"
 #include "BtConstants.h"
+#include "MessageDigest.h"
 #include "MessageDigestHelper.h"
 #include "bittorrent_helper.h"
 #include "DiskAdaptor.h"
 #include "Piece.h"
 #include "LogFactory.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -82,7 +84,7 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
       std::string metadata = util::toString(pieceStorage_->getDiskAdaptor());
       unsigned char infoHash[INFO_HASH_LENGTH];
       MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
-                                  MessageDigestContext::SHA1,
+                                  MessageDigest::sha1(),
                                   metadata.data(), metadata.size());
       if(memcmp(infoHash, bittorrent::getInfoHash(dctx_),
                 INFO_HASH_LENGTH) == 0) {

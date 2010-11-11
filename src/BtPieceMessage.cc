@@ -235,7 +235,7 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
   } else {
     off_t offset = (off_t)piece->getIndex()*downloadContext_->getPieceLength();
     
-    return MessageDigestHelper::staticSHA1Digest
+    return MessageDigestHelper::staticSHA1DigestHexDigest
       (getPieceStorage()->getDiskAdaptor(), offset, piece->getLength())
       == downloadContext_->getPieceHash(piece->getIndex());
   }

@@ -13,7 +13,7 @@
 #include "MetalinkResource.h"
 #include "MetalinkMetaurl.h"
 #ifdef ENABLE_MESSAGE_DIGEST
-# include "messageDigest.h"
+# include "MessageDigest.h"
 # include "ChunkChecksum.h"
 # include "Checksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -95,11 +95,10 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL(std::string("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
 		       e->checksum->getMessageDigest());
   CPPUNIT_ASSERT(!e->checksum.isNull());
-  CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, e->checksum->getAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getAlgo());
   CPPUNIT_ASSERT(!e->chunkChecksum.isNull());
-  if(MessageDigestContext::supports(MessageDigestContext::SHA256)) {
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA256,
-                         e->chunkChecksum->getAlgo());
+  if(MessageDigest::supports("sha-256")) {
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), e->chunkChecksum->getAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
     CPPUNIT_ASSERT_EQUAL(std::string("0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5"),
@@ -109,8 +108,7 @@ void MetalinkProcessorTest::testParseFileV4()
     CPPUNIT_ASSERT_EQUAL(std::string("37290d74ac4d186e3a8e5785d259d2ec04fac91ae28092e7620ec8bc99e830aa"),
                          e->chunkChecksum->getChecksum(2));
   } else {
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
-                         e->chunkChecksum->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->chunkChecksum->getAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countChecksum());
     CPPUNIT_ASSERT_EQUAL
@@ -511,8 +509,7 @@ void MetalinkProcessorTest::testParseFile()
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
                          entry1->checksum->getMessageDigest());
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
-                         entry1->checksum->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry1->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(!entry1->getSignature().isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("pgp"), entry1->getSignature()->getType());
@@ -567,8 +564,7 @@ void MetalinkProcessorTest::testParseFile()
                          entry2->chunkChecksum->getChecksum(0));
     CPPUNIT_ASSERT_EQUAL(std::string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),
                          entry2->chunkChecksum->getChecksum(1));
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
-                         entry2->checksum->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry2->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
     // See that signature is null
     CPPUNIT_ASSERT(entry2->getSignature().isNull());
@@ -589,12 +585,10 @@ void MetalinkProcessorTest::testParseFile()
     SharedHandle<MetalinkEntry> entry4 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("UnsupportedVerificationHashTypeIncluded"), entry4->getPath());
 #ifdef ENABLE_MESSAGE_DIGEST
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
-                         entry4->checksum->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry4->checksum->getAlgo());
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
                          entry4->checksum->getMessageDigest());
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
-                         entry4->chunkChecksum->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"),entry4->chunkChecksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
 
 
@@ -903,7 +897,7 @@ void MetalinkProcessorTest::testMultiplePieces()
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, c->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -938,7 +932,7 @@ void MetalinkProcessorTest::testBadPieceNo()
 
     CPPUNIT_ASSERT(!c.isNull());
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, c->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getAlgo());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -971,7 +965,7 @@ void MetalinkProcessorTest::testBadPieceLength()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
     CPPUNIT_ASSERT(!c.isNull());
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, c->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getAlgo());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -1004,7 +998,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
  
     CPPUNIT_ASSERT(!c.isNull());
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, c->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getAlgo());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }

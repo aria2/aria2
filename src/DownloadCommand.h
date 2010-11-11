@@ -42,7 +42,7 @@ namespace aria2 {
 class PeerStat;
 class StreamFilter;
 #ifdef ENABLE_MESSAGE_DIGEST
-class MessageDigestContext;
+class MessageDigest;
 #endif // ENABLE_MESSAGE_DIGEST
 
 class DownloadCommand : public AbstractCommand {
@@ -57,7 +57,7 @@ private:
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-  SharedHandle<MessageDigestContext> messageDigestContext_;
+  SharedHandle<MessageDigest> messageDigest_;
 
 #endif // ENABLE_MESSAGE_DIGEST
 

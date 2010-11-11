@@ -46,7 +46,7 @@
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"
 # include "ChunkChecksum.h"
-# include "messageDigest.h"
+# include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
 #include "util.h"
@@ -263,8 +263,8 @@ void MetalinkParserController::setTypeOfChecksum(const std::string& type)
   if(tChecksum_.isNull()) {
     return;
   }
-  std::string calgo = MessageDigestContext::getCanonicalAlgo(type);
-  if(MessageDigestContext::supports(calgo)) {
+  std::string calgo = MessageDigest::getCanonicalHashType(type);
+  if(MessageDigest::supports(calgo)) {
     tChecksum_->setAlgo(calgo);
   } else {
     cancelChecksumTransaction();
@@ -278,7 +278,7 @@ void MetalinkParserController::setHashOfChecksum(const std::string& md)
   if(tChecksum_.isNull()) {
     return;
   }
-  if(MessageDigestContext::isValidHash(tChecksum_->getAlgo(), md)) {
+  if(MessageDigest::isValidHash(tChecksum_->getAlgo(), md)) {
     tChecksum_->setMessageDigest(md);
   } else {
     cancelChecksumTransaction();
@@ -293,8 +293,8 @@ void MetalinkParserController::commitChecksumTransaction()
     return;
   }
   if(tEntry_->checksum.isNull() ||
-     MessageDigestContext::isStronger(tChecksum_->getAlgo(),
-                                      tEntry_->checksum->getAlgo())) {
+     MessageDigest::isStronger(tChecksum_->getAlgo(),
+                               tEntry_->checksum->getAlgo())) {
     tEntry_->checksum = tChecksum_;
   }
   tChecksum_.reset();
@@ -325,8 +325,8 @@ void MetalinkParserController::setTypeOfChunkChecksumV4(const std::string& type)
   if(tChunkChecksumV4_.isNull()) {
     return;
   }
-  std::string calgo = MessageDigestContext::getCanonicalAlgo(type);
-  if(MessageDigestContext::supports(calgo)) {
+  std::string calgo = MessageDigest::getCanonicalHashType(type);
+  if(MessageDigest::supports(calgo)) {
     tChunkChecksumV4_->setAlgo(calgo);
   } else {
     cancelChunkChecksumTransactionV4();
@@ -354,7 +354,7 @@ void MetalinkParserController::addHashOfChunkChecksumV4(const std::string& md)
   if(tChunkChecksumV4_.isNull()) {
     return;
   }
-  if(MessageDigestContext::isValidHash(tChunkChecksumV4_->getAlgo(), md)) {
+  if(MessageDigest::isValidHash(tChunkChecksumV4_->getAlgo(), md)) {
     tempChunkChecksumsV4_.push_back(md);
   } else {
     cancelChunkChecksumTransactionV4();
@@ -369,8 +369,8 @@ void MetalinkParserController::commitChunkChecksumTransactionV4()
     return;
   }
   if(tEntry_->chunkChecksum.isNull() ||
-     MessageDigestContext::isStronger(tChunkChecksumV4_->getAlgo(),
-                                      tEntry_->chunkChecksum->getAlgo())) {
+     MessageDigest::isStronger(tChunkChecksumV4_->getAlgo(),
+                               tEntry_->chunkChecksum->getAlgo())) {
     std::vector<std::string> checksums(tempChunkChecksumsV4_.begin(),
 				      tempChunkChecksumsV4_.end());
     tChunkChecksumV4_->setChecksums(checksums);
@@ -404,8 +404,8 @@ void MetalinkParserController::setTypeOfChunkChecksum(const std::string& type)
   if(tChunkChecksum_.isNull()) {
     return;
   }
-  std::string calgo = MessageDigestContext::getCanonicalAlgo(type);
-  if(MessageDigestContext::supports(calgo)) {
+  std::string calgo = MessageDigest::getCanonicalHashType(type);
+  if(MessageDigest::supports(calgo)) {
     tChunkChecksum_->setAlgo(calgo);
   } else {
     cancelChunkChecksumTransaction();
@@ -433,7 +433,7 @@ void MetalinkParserController::addHashOfChunkChecksum(size_t order, const std::s
   if(tChunkChecksum_.isNull()) {
     return;
   }
-  if(MessageDigestContext::isValidHash(tChunkChecksum_->getAlgo(), md)) {
+  if(MessageDigest::isValidHash(tChunkChecksum_->getAlgo(), md)) {
     tempChunkChecksums_.push_back(std::make_pair(order, md));
   } else {
     cancelChunkChecksumTransaction();
@@ -457,7 +457,7 @@ void MetalinkParserController::setMessageDigestOfChunkChecksum(const std::string
   if(tChunkChecksum_.isNull()) {
     return;
   }
-  if(MessageDigestContext::isValidHash(tChunkChecksum_->getAlgo(), md)) {
+  if(MessageDigest::isValidHash(tChunkChecksum_->getAlgo(), md)) {
     tempHashPair_.second = md;
   } else {
     cancelChunkChecksumTransaction();
@@ -482,8 +482,8 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     return;
   }
   if(tEntry_->chunkChecksum.isNull() ||
-     MessageDigestContext::isStronger(tChunkChecksum_->getAlgo(),
-                                      tEntry_->chunkChecksum->getAlgo())) {
+     MessageDigest::isStronger(tChunkChecksum_->getAlgo(),
+                               tEntry_->chunkChecksum->getAlgo())) {
     std::sort(tempChunkChecksums_.begin(), tempChunkChecksums_.end(),
               Ascend1st<std::pair<size_t, std::string> >());
     std::vector<std::string> checksums;

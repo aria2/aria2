@@ -45,7 +45,7 @@
 #include "message.h"
 #include "StringFormat.h"
 #include "BtConstants.h"
-#include "messageDigest.h"
+#include "MessageDigest.h"
 #include "MessageDigestHelper.h"
 #include "a2netcompat.h"
 #include "BtConstants.h"
@@ -121,7 +121,7 @@ void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
                                       hashLength));
   }
   ctx->setPieceHashes(pieceHashes.begin(), pieceHashes.end());
-  ctx->setPieceHashAlgo(MessageDigestContext::SHA1);
+  ctx->setPieceHashAlgo("sha-1");
 }
 } // namespace
 
@@ -406,7 +406,7 @@ void processRootDictionary
   std::string encodedInfoDict = bencode2::encode(infoDict);
   unsigned char infoHash[INFO_HASH_LENGTH];
   MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
-                              MessageDigestContext::SHA1,
+                              MessageDigest::sha1(),
                               encodedInfoDict.data(),
                               encodedInfoDict.size());
   torrent->infoHash = std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]);
@@ -655,7 +655,8 @@ void computeFastSet
   }
   memcpy(tx+4, infoHash, 20);
   unsigned char x[20];
-  MessageDigestHelper::digest(x, sizeof(x), MessageDigestContext::SHA1, tx, 24);
+  SharedHandle<MessageDigest> sha1 = MessageDigest::sha1();
+  MessageDigestHelper::digest(x, sizeof(x), sha1, tx, 24);
   while(fastSet.size() < fastSetSize) {
     for(size_t i = 0; i < 5 && fastSet.size() < fastSetSize; ++i) {
       size_t j = i*4;
@@ -668,7 +669,8 @@ void computeFastSet
       }
     }
     unsigned char temp[20];
-    MessageDigestHelper::digest(temp, sizeof(temp), MessageDigestContext::SHA1, x, sizeof(x));
+    sha1->reset();
+    MessageDigestHelper::digest(temp, sizeof(temp), sha1, x, sizeof(x));
     memcpy(x, temp, sizeof(x));
   }
 }

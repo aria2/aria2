@@ -48,8 +48,9 @@
 #include "BitfieldMan.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "messageDigest.h"
+#include "MessageDigest.h"
 #include "StringFormat.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -136,16 +137,14 @@ void IteratableChunkChecksumValidator::init()
   if(dctx_->getFileEntries().size() == 1) {
     pieceStorage_->getDiskAdaptor()->enableDirectIO();
   }
-  ctx_.reset(new MessageDigestContext());
-  ctx_->trySetAlgo(dctx_->getPieceHashAlgo());
-  ctx_->digestInit();
+  ctx_ = MessageDigest::create(dctx_->getPieceHashAlgo());
   bitfield_->clearAllBit();
   currentIndex_ = 0;
 }
 
 std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length)
 {
-  ctx_->digestReset();
+  ctx_->reset();
   off_t curoffset = offset/ALIGNMENT*ALIGNMENT;
   off_t max = offset+length;
   off_t woffset;
@@ -168,11 +167,11 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     } else {
       wlength = r-woffset;
     }
-    ctx_->digestUpdate(buffer_+woffset, wlength);
+    ctx_->update(buffer_+woffset, wlength);
     curoffset += r;
     woffset = 0;
   }
-  return util::toHex(ctx_->digestFinal());
+  return ctx_->hexDigest();
 }
 
 

@@ -1,12 +1,17 @@
 #include "GZipDecoder.h"
+
+#include <iostream>
+#include <fstream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include "TestUtil.h"
 #include "Exception.h"
 #include "util.h"
 #ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigest.h"
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <iostream>
-#include <fstream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -51,8 +56,7 @@ void GZipDecoderTest::testDecode()
 
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(std::string("8b577b33c0411b2be9d4fa74c7402d54a8d21f96"),
-                       MessageDigestHelper::digest(MessageDigestContext::SHA1,
-                                                   outfile));
+                       fileHexDigest(MessageDigest::sha1(), outfile));
 #endif // ENABLE_MESSAGE_DIGEST
 }
 

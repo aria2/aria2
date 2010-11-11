@@ -42,7 +42,7 @@ namespace aria2 {
 class DownloadContext;
 class PieceStorage;
 class Logger;
-class MessageDigestContext;
+class MessageDigest;
 
 class IteratableChecksumValidator:public IteratableValidator
 {
@@ -53,7 +53,7 @@ private:
 
   off_t currentOffset_;
 
-  SharedHandle<MessageDigestContext> ctx_;
+  SharedHandle<MessageDigest> ctx_;
 
   Logger* logger_;
 

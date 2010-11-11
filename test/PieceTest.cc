@@ -1,8 +1,7 @@
 #include "Piece.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "messageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
+
 #include <string>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -66,7 +65,7 @@ void PieceTest::testGetCompletedLength()
 void PieceTest::testUpdateHash()
 {
   Piece p(0, 16, 2*1024*1024);
-  p.setHashAlgo(MessageDigestContext::SHA1);
+  p.setHashAlgo("sha-1");
   
   std::string spam("SPAM!");
   CPPUNIT_ASSERT(p.updateHash

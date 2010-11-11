@@ -9,9 +9,6 @@
 #include "Option.h"
 #include "RequestGroup.h"
 #include "FileEntry.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "messageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 
@@ -63,8 +60,7 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, dctx->getTotalLength());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
 #ifdef ENABLE_MESSAGE_DIGEST
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
-                         dctx->getChecksumHashAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getChecksumHashAlgo());
     CPPUNIT_ASSERT_EQUAL
       (std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
        dctx->getChecksum());
@@ -84,11 +80,10 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
 #ifdef ENABLE_MESSAGE_DIGEST
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1, dctx->getPieceHashAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getPieceHashAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)2, dctx->getPieceHashes().size());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, dctx->getPieceLength());
-    CPPUNIT_ASSERT_EQUAL(MessageDigestContext::SHA1,
-                         dctx->getChecksumHashAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getChecksumHashAlgo());
     CPPUNIT_ASSERT_EQUAL
       (std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
        dctx->getChecksum());

@@ -42,7 +42,7 @@
 #include "a2io.h"
 #include "FeatureConfig.h"
 #ifdef ENABLE_MESSAGE_DIGEST
-# include "messageDigest.h"
+# include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "help_tags.h"
 #include "prefs.h"
@@ -74,7 +74,7 @@ void showVersion() {
             << FeatureConfig::getInstance()->featureSummary() << "\n"
 #ifdef ENABLE_MESSAGE_DIGEST
             << "Hash Algorithms: "
-            << MessageDigestContext::getSupportedAlgoString() << "\n"
+            << MessageDigest::getSupportedHashTypeString() << "\n"
 #endif // ENABLE_MESSAGE_DIGEST
             << "\n"
             << StringFormat(_("Report bugs to %s"), PACKAGE_BUGREPORT) << "\n"
