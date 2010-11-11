@@ -1,5 +1,10 @@
 2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Updated supported hash functions.
+	* README
+
+2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added sha-224, sha-384, sha-512 hash function support.
 	* m4/openssl.m4
 	* src/MessageDigest.cc

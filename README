@@ -214,10 +214,10 @@ The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
 P2P protocols are ignored. Both Metalink4 and Metalink version 3.0
 documents are supported.
 
-For checksum verification, MD5, SHA1, and SHA256 are supported. If
-multiple hash algorithms are provided, aria2 uses stronger one. If
-whole file checksum verification fails, aria2 doesn't retry the
-download and just exits with non-zero return code.
+For checksum verification, md5, sha-1, sha-224, sha-256, sha-384 and
+sha-512 are supported. If multiple hash algorithms are provided, aria2
+uses stronger one. If whole file checksum verification fails, aria2
+doesn't retry the download and just exits with non-zero return code.
 
 The supported user preferences are version, language, location,
 protocol and os.
