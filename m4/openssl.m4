@@ -57,8 +57,14 @@ if test "x$have_openssl" = "xyes"; then
   fi
   AC_SUBST(OPENSSL_LIBS)
   AC_SUBST(OPENSSL_CFLAGS)
+  # search for sha224 support
+  AC_CHECK_FUNCS([EVP_sha224])
   # search for sha256 support
   AC_CHECK_FUNCS([EVP_sha256])
+  # search for sha384 support
+  AC_CHECK_FUNCS([EVP_sha384])
+  # search for sha512 support
+  AC_CHECK_FUNCS([EVP_sha512])
 fi
 
 LIBS=$LIBS_save

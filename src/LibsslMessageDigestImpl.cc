@@ -64,9 +64,18 @@ typedef FindHashFunc<const EVP_MD*> CFindHashFunc;
 namespace {
 CHashFuncEntry hashFuncs[] = {
   CHashFuncEntry("sha-1", EVP_sha1()),
+#ifdef HAVE_EVP_SHA224
+  CHashFuncEntry("sha-224", EVP_sha224()),
+#endif // HAVE_EVP_SHA224
 #ifdef HAVE_EVP_SHA256
   CHashFuncEntry("sha-256", EVP_sha256()),
 #endif // HAVE_EVP_SHA256
+#ifdef HAVE_EVP_SHA384
+  CHashFuncEntry("sha-384", EVP_sha384()),
+#endif // HAVE_EVP_SHA384
+#ifdef HAVE_EVP_SHA512
+  CHashFuncEntry("sha-512", EVP_sha512()),
+#endif // HAVE_EVP_SHA512
   CHashFuncEntry("md5", EVP_md5())
 };
 } // namespace

@@ -123,8 +123,17 @@
 /* Define to 1 if you have the `EVP_DigestInit_ex' function. */
 #undef HAVE_EVP_DIGESTINIT_EX
 
+/* Define to 1 if you have the `EVP_sha224' function. */
+#undef HAVE_EVP_SHA224
+
 /* Define to 1 if you have the `EVP_sha256' function. */
 #undef HAVE_EVP_SHA256
+
+/* Define to 1 if you have the `EVP_sha384' function. */
+#undef HAVE_EVP_SHA384
+
+/* Define to 1 if you have the `EVP_sha512' function. */
+#undef HAVE_EVP_SHA512
 
 /* Define to 1 if you have the `fallocate' function. */
 #undef HAVE_FALLOCATE

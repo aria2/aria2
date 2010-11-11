@@ -62,7 +62,10 @@ typedef FindHashFunc<int> CFindHashFunc;
 namespace {
 CHashFuncEntry hashFuncs[] = {
   CHashFuncEntry("sha-1", GCRY_MD_SHA1),
+  CHashFuncEntry("sha-224", GCRY_MD_SHA224),
   CHashFuncEntry("sha-256", GCRY_MD_SHA256),
+  CHashFuncEntry("sha-384", GCRY_MD_SHA384),
+  CHashFuncEntry("sha-512", GCRY_MD_SHA512),
   CHashFuncEntry("md5", GCRY_MD_MD5)
 };
 } // namespace

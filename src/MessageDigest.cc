@@ -51,7 +51,10 @@ struct HashTypeEntry {
 namespace {
 HashTypeEntry hashTypes[] = {
   HashTypeEntry("sha-1", 1),
-  HashTypeEntry("sha-256", 2),
+  HashTypeEntry("sha-224", 2),
+  HashTypeEntry("sha-256", 3),
+  HashTypeEntry("sha-384", 4),
+  HashTypeEntry("sha-512", 5),
   HashTypeEntry("md5", 0)
 };
 } // namespace aria2
@@ -137,6 +140,9 @@ bool MessageDigest::isValidHash
 
 std::string MessageDigest::getCanonicalHashType(const std::string& hashType)
 {
+  // This is really backward compatibility for Metalink3.  aria2 only
+  // supported sha-1, sha-256 and md5 at Metalink3 era.  So we don't
+  // add alias for sha-224, sha-384 and sha-512.
   if("sha1" == hashType) {
     return "sha-1";
   } else if("sha256" == hashType) {

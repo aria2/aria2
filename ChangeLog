@@ -1,5 +1,13 @@
 2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added sha-224, sha-384, sha-512 hash function support.
+	* m4/openssl.m4
+	* src/MessageDigest.cc
+	* src/LibgcryptMessageDigestImpl.cc
+	* src/LibsslMessageDigestImpl.cc
+
+2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced MessageDigestContext with MessageDigest.  Cleaned up
 	unnecessary functions in MessageDigestHelper.
 	* src/BtPieceMessage.cc

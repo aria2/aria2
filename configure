@@ -6940,6 +6940,18 @@ $as_echo "#define HAVE_OLD_LIBSSL 1" >>confdefs.h
   fi
 
 
+  # search for sha224 support
+  for ac_func in EVP_sha224
+do :
+  ac_fn_cxx_check_func "$LINENO" "EVP_sha224" "ac_cv_func_EVP_sha224"
+if test "x$ac_cv_func_EVP_sha224" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_EVP_SHA224 1
+_ACEOF
+
+fi
+done
+
   # search for sha256 support
   for ac_func in EVP_sha256
 do :
@@ -6947,6 +6959,30 @@ do :
 if test "x$ac_cv_func_EVP_sha256" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_EVP_SHA256 1
+_ACEOF
+
+fi
+done
+
+  # search for sha384 support
+  for ac_func in EVP_sha384
+do :
+  ac_fn_cxx_check_func "$LINENO" "EVP_sha384" "ac_cv_func_EVP_sha384"
+if test "x$ac_cv_func_EVP_sha384" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_EVP_SHA384 1
+_ACEOF
+
+fi
+done
+
+  # search for sha512 support
+  for ac_func in EVP_sha512
+do :
+  ac_fn_cxx_check_func "$LINENO" "EVP_sha512" "ac_cv_func_EVP_sha512"
+if test "x$ac_cv_func_EVP_sha512" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_EVP_SHA512 1
 _ACEOF
 
 fi
