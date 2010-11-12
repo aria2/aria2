@@ -52,13 +52,13 @@ class DHTTaskFactoryImpl:public DHTTaskFactory {
 private:
   SharedHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
-  WeakHandle<DHTMessageDispatcher> dispatcher_;
+  DHTMessageDispatcher* dispatcher_;
 
-  WeakHandle<DHTMessageFactory> factory_;
+  DHTMessageFactory* factory_;
   
-  WeakHandle<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
   time_t timeout_;
 
@@ -91,13 +91,13 @@ public:
   createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
                         const SharedHandle<DHTNode>& newNode);
 
-  void setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
-  void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher);
+  void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
 
-  void setMessageFactory(const WeakHandle<DHTMessageFactory> factory);
+  void setMessageFactory(DHTMessageFactory* factory);
 
-  void setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
   void setLocalNode(const SharedHandle<DHTNode>& localNode);
 

@@ -66,7 +66,7 @@ public:
 
   virtual off_t getCurrentLength()
   {
-    if(allocator_.isNull()) {
+    if(!allocator_) {
       return offset_;
     } else {
       return allocator_->getCurrentLength();

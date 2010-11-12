@@ -102,7 +102,7 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
                        piece->toString());
   piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT(piece.isNull());
+  CPPUNIT_ASSERT(!piece);
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece_many() {
@@ -143,7 +143,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
                        piece->toString());
 
   piece = pss.getMissingPiece(peer, excludedIndexes);
-  CPPUNIT_ASSERT(piece.isNull());
+  CPPUNIT_ASSERT(!piece);
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes() {
@@ -177,7 +177,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
                        piece->toString());
 
-  CPPUNIT_ASSERT(pss.getMissingFastPiece(peer).isNull());
+  CPPUNIT_ASSERT(!pss.getMissingFastPiece(peer));
 }
 
 void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
@@ -198,7 +198,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
                        piece->toString());
   
-  CPPUNIT_ASSERT(pss.getMissingFastPiece(peer, excludedIndexes).isNull());
+  CPPUNIT_ASSERT(!pss.getMissingFastPiece(peer, excludedIndexes));
 }
 
 void DefaultPieceStorageTest::testHasMissingPiece() {

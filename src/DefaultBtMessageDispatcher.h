@@ -62,9 +62,9 @@ private:
   SharedHandle<DownloadContext> downloadContext_;
   SharedHandle<PeerStorage> peerStorage_;
   SharedHandle<PieceStorage> pieceStorage_;
-  WeakHandle<BtMessageFactory> messageFactory_;
+  BtMessageFactory* messageFactory_;
   SharedHandle<Peer> peer_;
-  WeakHandle<RequestGroupMan> requestGroupMan_;
+  RequestGroupMan* requestGroupMan_;
   time_t requestTimeout_;
   Logger* logger_;
 public:
@@ -130,9 +130,9 @@ public:
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
+  void setBtMessageFactory(BtMessageFactory* factory);
 
-  void setRequestGroupMan(const WeakHandle<RequestGroupMan>& rgman);
+  void setRequestGroupMan(RequestGroupMan* rgman);
 
   void setCuid(cuid_t cuid)
   {

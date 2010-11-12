@@ -315,7 +315,7 @@ void writeFilePath
 (InputIterator first, InputIterator last, std::ostream& o, bool memory)
 {
   SharedHandle<FileEntry> e = getFirstRequestedFileEntry(first, last);
-  if(e.isNull()) {
+  if(!e) {
     o << "n/a";
   } else {
     if(e->getPath().empty()) {

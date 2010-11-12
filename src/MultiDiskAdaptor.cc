@@ -63,7 +63,7 @@ const std::string& DiskWriterEntry::getFilePath() const
 
 void DiskWriterEntry::initAndOpenFile()
 {
-  if(!diskWriter_.isNull()) {
+  if(diskWriter_) {
     diskWriter_->initAndOpenFile(fileEntry_->getLength());
     if(directIO_) {
       diskWriter_->enableDirectIO();
@@ -74,7 +74,7 @@ void DiskWriterEntry::initAndOpenFile()
 
 void DiskWriterEntry::openFile()
 {
-  if(!diskWriter_.isNull()) {
+  if(diskWriter_) {
     diskWriter_->openFile(fileEntry_->getLength());
     if(directIO_) {
       diskWriter_->enableDirectIO();
@@ -85,7 +85,7 @@ void DiskWriterEntry::openFile()
 
 void DiskWriterEntry::openExistingFile()
 {
-  if(!diskWriter_.isNull()) {
+  if(diskWriter_) {
     diskWriter_->openExistingFile(fileEntry_->getLength());
     if(directIO_) {
       diskWriter_->enableDirectIO();

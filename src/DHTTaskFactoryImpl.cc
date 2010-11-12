@@ -54,6 +54,10 @@
 namespace aria2 {
 
 DHTTaskFactoryImpl::DHTTaskFactoryImpl():
+  routingTable_(0),
+  dispatcher_(0),
+  factory_(0),
+  taskQueue_(0),
   timeout_(DHT_MESSAGE_TIMEOUT),
   logger_(LogFactory::getInstance()) {}
 
@@ -125,22 +129,22 @@ void DHTTaskFactoryImpl::setCommonProperty(const SharedHandle<DHTAbstractTask>& 
   task->setLocalNode(localNode_);
 }
 
-void DHTTaskFactoryImpl::setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable)
+void DHTTaskFactoryImpl::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }
 
-void DHTTaskFactoryImpl::setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher)
+void DHTTaskFactoryImpl::setMessageDispatcher(DHTMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DHTTaskFactoryImpl::setMessageFactory(const WeakHandle<DHTMessageFactory> factory)
+void DHTTaskFactoryImpl::setMessageFactory(DHTMessageFactory* factory)
 {
   factory_ = factory;
 }
 
-void DHTTaskFactoryImpl::setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue)
+void DHTTaskFactoryImpl::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }

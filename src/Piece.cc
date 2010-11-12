@@ -200,7 +200,7 @@ bool Piece::updateHash
     return false;
   }
   if(begin == nextBegin_ && nextBegin_+dataLength <= length_) {
-    if(mdctx_.isNull()) {
+    if(!mdctx_) {
       mdctx_ = MessageDigest::create(hashAlgo_);
     }
     mdctx_->update(data, dataLength);
@@ -213,12 +213,12 @@ bool Piece::updateHash
 
 bool Piece::isHashCalculated() const
 {
-  return !mdctx_.isNull() && nextBegin_ == length_;
+  return mdctx_ && nextBegin_ == length_;
 }
 
 std::string Piece::getHashString()
 {
-  if(mdctx_.isNull()) {
+  if(!mdctx_) {
     return A2STR::NIL;
   } else {
     std::string hash = mdctx_->hexDigest();

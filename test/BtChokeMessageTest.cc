@@ -24,8 +24,6 @@ class BtChokeMessageTest:public CppUnit::TestFixture {
 private:
 
 public:
-  BtChokeMessageTest():peer(0) {}
-
   SharedHandle<Peer> peer;
 
   void setUp() {
@@ -108,9 +106,9 @@ void BtChokeMessageTest::testDoReceivedAction() {
   msg.setPeer(peer);
 
   SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
-  msg.setBtMessageDispatcher(dispatcher);
+  msg.setBtMessageDispatcher(dispatcher.get());
   SharedHandle<MockBtRequestFactory2> requestFactory(new MockBtRequestFactory2());
-  msg.setBtRequestFactory(requestFactory);
+  msg.setBtRequestFactory(requestFactory.get());
 
   msg.doReceivedAction();
 
@@ -123,7 +121,7 @@ void BtChokeMessageTest::testOnSendComplete() {
   msg.setPeer(peer);
 
   SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
-  msg.setBtMessageDispatcher(dispatcher);
+  msg.setBtMessageDispatcher(dispatcher.get());
 
   msg.onSendComplete();
 

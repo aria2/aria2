@@ -68,7 +68,7 @@ PeerAbstractCommand::PeerAbstractCommand(cuid_t cuid,
   checkSocketIsWritable_(false),
   noCheck_(false)
 {
-  if(!socket_.isNull() && socket_->isOpen()) {
+  if(socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);
   }
 }

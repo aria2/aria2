@@ -81,57 +81,57 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file1"),
                        entries[0]->getFilePath());
   CPPUNIT_ASSERT(entries[0]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[0]->getDiskWriter());
   // file2
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file2"),
                        entries[1]->getFilePath());
   CPPUNIT_ASSERT(entries[1]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[1]->getDiskWriter());
   // file3
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file3"),
                        entries[2]->getFilePath());
   CPPUNIT_ASSERT(entries[2]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[2]->getDiskWriter());
   // file4, diskWriter is not null, because file exists.
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file4"),
                        entries[3]->getFilePath());
   CPPUNIT_ASSERT(!entries[3]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[3]->getDiskWriter());
   // file5
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file5"),
                        entries[4]->getFilePath());
   CPPUNIT_ASSERT(!entries[4]->needsFileAllocation());
-  CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(!entries[4]->getDiskWriter());
   // file6
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file6"),
                        entries[5]->getFilePath());
   CPPUNIT_ASSERT(entries[5]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[5]->getDiskWriter());
   // file7
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file7"),
                        entries[6]->getFilePath());
   CPPUNIT_ASSERT(entries[6]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[6]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[6]->getDiskWriter());
   // file8
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file8"),
                        entries[7]->getFilePath());
   CPPUNIT_ASSERT(entries[7]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[7]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[7]->getDiskWriter());
   // file9
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file9"),
                        entries[8]->getFilePath());
   CPPUNIT_ASSERT(!entries[8]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[8]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[8]->getDiskWriter());
   // fileA
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/fileA"),
                        entries[9]->getFilePath());
   CPPUNIT_ASSERT(!entries[9]->needsFileAllocation());
-  CPPUNIT_ASSERT(entries[9]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(!entries[9]->getDiskWriter());
   // fileB
   CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/fileB"),
                        entries[10]->getFilePath());
   CPPUNIT_ASSERT(entries[10]->needsFileAllocation());
-  CPPUNIT_ASSERT(!entries[10]->getDiskWriter().isNull());
+  CPPUNIT_ASSERT(entries[10]->getDiskWriter());
 }
 
 void MultiFileAllocationIteratorTest::testAllocate()

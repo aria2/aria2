@@ -52,6 +52,7 @@ namespace aria2 {
 
 UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
 (uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID),
+                             tracker_(0),
                              logger_(LogFactory::getInstance()) {}
 
 std::string UTMetadataDataExtensionMessage::getPayload()

@@ -130,7 +130,7 @@ void FileEntryTest::testGetRequest()
 
   SharedHandle<Request> req4th =
     fileEntry->getRequest(selector, true, usedHosts);
-  CPPUNIT_ASSERT(req4th.isNull());
+  CPPUNIT_ASSERT(!req4th);
 
   fileEntry->setMaxConnectionPerServer(2);
   
@@ -146,7 +146,7 @@ void FileEntryTest::testGetRequest()
 
   SharedHandle<Request> req7th =
     fileEntry->getRequest(selector, true, usedHosts);
-  CPPUNIT_ASSERT(req7th.isNull());
+  CPPUNIT_ASSERT(!req7th);
 }
 
 void FileEntryTest::testGetRequest_withoutUriReuse()
@@ -171,7 +171,7 @@ void FileEntryTest::testGetRequest_withoutUriReuse()
 
   SharedHandle<Request> req4th =
     fileEntry->getRequest(selector, false, usedHosts);
-  CPPUNIT_ASSERT(req4th.isNull());
+  CPPUNIT_ASSERT(!req4th);
 }
 
 void FileEntryTest::testGetRequest_withUniqueProtocol()
@@ -192,7 +192,7 @@ void FileEntryTest::testGetRequest_withUniqueProtocol()
 
   SharedHandle<Request> req3rd =
     fileEntry->getRequest(selector, true, usedHosts);
-  CPPUNIT_ASSERT(req3rd.isNull());
+  CPPUNIT_ASSERT(!req3rd);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntry->getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"),

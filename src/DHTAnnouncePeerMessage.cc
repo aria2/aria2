@@ -68,7 +68,9 @@ DHTAnnouncePeerMessage::DHTAnnouncePeerMessage
  const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID),
   token_(token),
-  tcpPort_(tcpPort)
+  tcpPort_(tcpPort),
+  peerAnnounceStorage_(0),
+  tokenTracker_(0)
 {
   memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
@@ -115,13 +117,12 @@ void DHTAnnouncePeerMessage::validate() const
 }
 
 void DHTAnnouncePeerMessage::setPeerAnnounceStorage
-(const WeakHandle<DHTPeerAnnounceStorage>& storage)
+(DHTPeerAnnounceStorage* storage)
 {
   peerAnnounceStorage_ = storage;
 }
 
-void DHTAnnouncePeerMessage::setTokenTracker
-(const WeakHandle<DHTTokenTracker>& tokenTracker)
+void DHTAnnouncePeerMessage::setTokenTracker(DHTTokenTracker* tokenTracker)
 {
   tokenTracker_ = tokenTracker;
 }

@@ -91,7 +91,7 @@ void BtDependencyTest::testResolve()
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->markAllPiecesDone();
   
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
 
   CPPUNIT_ASSERT_EQUAL
@@ -115,7 +115,7 @@ void BtDependencyTest::testResolve_originalNameNoMatch()
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->markAllPiecesDone();
   
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
 
   CPPUNIT_ASSERT(!dependant->getDownloadContext()->hasAttribute
@@ -130,7 +130,7 @@ void BtDependencyTest::testResolve_singleFileWithoutOriginalName()
   SharedHandle<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->markAllPiecesDone();
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
   CPPUNIT_ASSERT(dependant->getDownloadContext()->hasAttribute
                  (bittorrent::BITTORRENT));
@@ -146,7 +146,7 @@ void BtDependencyTest::testResolve_multiFile()
     createDependee(option_, filename, File(filename).size());
   dependee->getPieceStorage()->markAllPiecesDone();
   
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
 
   CPPUNIT_ASSERT(dependant->getDownloadContext()->hasAttribute
@@ -182,7 +182,7 @@ void BtDependencyTest::testResolve_metadata()
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   dependee->getDownloadContext()->setAttribute(bittorrent::BITTORRENT, attrs);
 
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
 
   CPPUNIT_ASSERT_EQUAL
@@ -199,7 +199,7 @@ void BtDependencyTest::testResolve_loadError()
     createDependee(option_, "notExist", 40);
   dependee->getPieceStorage()->markAllPiecesDone();
     
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
     
   CPPUNIT_ASSERT
@@ -213,7 +213,7 @@ void BtDependencyTest::testResolve_dependeeFailure()
   SharedHandle<RequestGroup> dependant = createDependant(option_);
   SharedHandle<RequestGroup> dependee = createDependee(option_, "notExist", 40);
     
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
   
   CPPUNIT_ASSERT
@@ -230,7 +230,7 @@ void BtDependencyTest::testResolve_dependeeInProgress()
     createDependee(option_, filename, File(filename).size());
   dependee->increaseNumCommand();
 
-  BtDependency dep(dependant, dependee);
+  BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(!dep.resolve());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/outfile.path"),
                        dependant->getFirstFilePath());

@@ -404,7 +404,7 @@ void Peer::setFirstContactTime(const Timer& time)
   firstContactTime_ = time;
 }
 
-void Peer::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt)
+void Peer::setBtMessageDispatcher(BtMessageDispatcher* dpt)
 {
   assert(res_);
   res_->setBtMessageDispatcher(dpt);

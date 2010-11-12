@@ -106,7 +106,7 @@ public:
 
   uint64_t getEntityLength() const
   {
-    assert(!fileEntry_.isNull());
+    assert(fileEntry_);
     return fileEntry_->getLength();
   }
 

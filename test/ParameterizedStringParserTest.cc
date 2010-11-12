@@ -58,7 +58,7 @@ void ParameterizedStringParserTest::testParse_select()
 {
   SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("{alpha, bravo, charlie}");
   SharedHandle<PStringSelect> select(dynamic_pointer_cast<PStringSelect>(ls));
-  CPPUNIT_ASSERT(!select.isNull());
+  CPPUNIT_ASSERT(select);
 
   std::vector<std::string> values = select->getValues();
   CPPUNIT_ASSERT_EQUAL((size_t)3, values.size());
@@ -96,7 +96,7 @@ void ParameterizedStringParserTest::testParse_segment()
 {
   SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("hello world");
   SharedHandle<PStringSegment> segment(dynamic_pointer_cast<PStringSegment>(ls));
-  CPPUNIT_ASSERT(!segment.isNull());
+  CPPUNIT_ASSERT(segment);
   CPPUNIT_ASSERT_EQUAL(std::string("hello world"), segment->getValue());
 }
 
@@ -106,12 +106,12 @@ void ParameterizedStringParserTest::testParse_segment_select()
 
   SharedHandle<PStringSegment> segment1
     (dynamic_pointer_cast<PStringSegment>(ls));
-  CPPUNIT_ASSERT(!segment1.isNull());
+  CPPUNIT_ASSERT(segment1);
   CPPUNIT_ASSERT_EQUAL(std::string("file:///"), segment1->getValue());
 
   SharedHandle<PStringSelect> select1
     (dynamic_pointer_cast<PStringSelect>(segment1->getNext()));
-  CPPUNIT_ASSERT(!select1.isNull());
+  CPPUNIT_ASSERT(select1);
   std::vector<std::string> selectValues = select1->getValues();
   CPPUNIT_ASSERT_EQUAL((size_t)3, selectValues.size());
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), selectValues[0]);
@@ -120,7 +120,7 @@ void ParameterizedStringParserTest::testParse_segment_select()
   
   SharedHandle<PStringSegment> segment2
     (dynamic_pointer_cast<PStringSegment>(select1->getNext()));
-  CPPUNIT_ASSERT(!segment2.isNull());
+  CPPUNIT_ASSERT(segment2);
   CPPUNIT_ASSERT_EQUAL(std::string("/tango"), segment2->getValue());
 }
 
@@ -129,7 +129,7 @@ void ParameterizedStringParserTest::testParse_loop()
   SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("[1-10:2]");
 
   SharedHandle<PStringNumLoop> loop1(dynamic_pointer_cast<PStringNumLoop>(ls));
-  CPPUNIT_ASSERT(!loop1.isNull());
+  CPPUNIT_ASSERT(loop1);
   CPPUNIT_ASSERT_EQUAL(1U, loop1->getStartValue());
   CPPUNIT_ASSERT_EQUAL(10U, loop1->getEndValue());
   CPPUNIT_ASSERT_EQUAL(2U, loop1->getStep());
@@ -188,7 +188,7 @@ void ParameterizedStringParserTest::testParse_alphaLoop()
   SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("[a-z:2]");
 
   SharedHandle<PStringNumLoop> loop1(dynamic_pointer_cast<PStringNumLoop>(ls));
-  CPPUNIT_ASSERT(!loop1.isNull());
+  CPPUNIT_ASSERT(loop1);
   CPPUNIT_ASSERT_EQUAL(0U, loop1->getStartValue());
   CPPUNIT_ASSERT_EQUAL(25U, loop1->getEndValue());
   CPPUNIT_ASSERT_EQUAL(2U, loop1->getStep());
@@ -223,17 +223,17 @@ void ParameterizedStringParserTest::testParse_segment_loop()
   SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("http://server[1-3]/file");
 
   SharedHandle<PStringSegment> segment1(dynamic_pointer_cast<PStringSegment>(ls));
-  CPPUNIT_ASSERT(!segment1.isNull());
+  CPPUNIT_ASSERT(segment1);
   CPPUNIT_ASSERT_EQUAL(std::string("http://server"), segment1->getValue());
 
   SharedHandle<PStringNumLoop> loop1(dynamic_pointer_cast<PStringNumLoop>(segment1->getNext()));
-  CPPUNIT_ASSERT(!loop1.isNull());
+  CPPUNIT_ASSERT(loop1);
   CPPUNIT_ASSERT_EQUAL(1U, loop1->getStartValue());
   CPPUNIT_ASSERT_EQUAL(3U, loop1->getEndValue());
   CPPUNIT_ASSERT_EQUAL(1U, loop1->getStep());
 
   SharedHandle<PStringSegment> segment2(dynamic_pointer_cast<PStringSegment>(loop1->getNext()));
-  CPPUNIT_ASSERT(!segment2.isNull());
+  CPPUNIT_ASSERT(segment2);
   CPPUNIT_ASSERT_EQUAL(std::string("/file"), segment2->getValue());
 }
 

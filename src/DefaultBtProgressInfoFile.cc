@@ -96,7 +96,7 @@ void DefaultBtProgressInfoFile::updateFilename()
 bool DefaultBtProgressInfoFile::isTorrentDownload()
 {
 #ifdef ENABLE_BITTORRENT
-  return !btRuntime_.isNull();
+  return btRuntime_;
 #else // !ENABLE_BITTORRENT
   return false;
 #endif // !ENABLE_BITTORRENT

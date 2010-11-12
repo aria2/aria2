@@ -62,7 +62,7 @@ void DHTReplaceNodeTask::startup()
 void DHTReplaceNodeTask::sendMessage()
 {
   SharedHandle<DHTNode> questionableNode = bucket_->getLRUQuestionableNode();
-  if(questionableNode.isNull()) {
+  if(!questionableNode) {
     setFinished(true);
   } else {
     SharedHandle<DHTMessage> m =

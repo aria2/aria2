@@ -101,7 +101,7 @@ void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()
                      "    <params>"
                      "    </params>"
                        "</methodCall>");
-    CPPUNIT_ASSERT(!req.params.isNull());
+    CPPUNIT_ASSERT(req.params);
   }
   try {
     XmlRpcRequest req =

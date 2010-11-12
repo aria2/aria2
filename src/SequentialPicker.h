@@ -51,7 +51,7 @@ private:
 public:
   bool isPicked() const
   {
-    return !pickedEntry_.isNull();
+    return pickedEntry_;
   }
 
   SharedHandle<T> getPickedEntry() const

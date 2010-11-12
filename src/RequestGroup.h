@@ -143,9 +143,9 @@ private:
   time_t timeout_;
 
 #ifdef ENABLE_BITTORRENT
-  WeakHandle<BtRuntime> btRuntime_;
+  BtRuntime* btRuntime_;
 
-  WeakHandle<PeerStorage> peerStorage_;
+  PeerStorage* peerStorage_;
 #endif // ENABLE_BITTORRENT
 
   // This flag just indicates that the downloaded file is not saved disk but

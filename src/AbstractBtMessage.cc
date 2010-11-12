@@ -48,6 +48,10 @@ AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name):
   uploading_(false),
   cuid_(0),
   name_(name),
+  dispatcher_(0),
+  messageFactory_(0),
+  requestFactory_(0),
+  peerConnection_(0),
   metadataGetMode_(false),
   logger_(LogFactory::getInstance())
 {}
@@ -61,7 +65,7 @@ void AbstractBtMessage::setPeer(const SharedHandle<Peer>& peer)
 
 void AbstractBtMessage::validate()
 {
-  if(!validator_.isNull()) {
+  if(validator_) {
     validator_->validate();
   }
 }
@@ -77,23 +81,22 @@ void AbstractBtMessage::setPieceStorage
   pieceStorage_ = pieceStorage;
 }
 
-void AbstractBtMessage::setBtMessageDispatcher
-(const WeakHandle<BtMessageDispatcher>& dispatcher)
+void AbstractBtMessage::setBtMessageDispatcher(BtMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void AbstractBtMessage::setPeerConnection(const WeakHandle<PeerConnection>& peerConnection)
+void AbstractBtMessage::setPeerConnection(PeerConnection* peerConnection)
 {
   peerConnection_ = peerConnection;
 }
 
-void AbstractBtMessage::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+void AbstractBtMessage::setBtMessageFactory(BtMessageFactory* factory)
 {
   messageFactory_ = factory;
 }
 
-void AbstractBtMessage::setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory)
+void AbstractBtMessage::setBtRequestFactory(BtRequestFactory* factory)
 {
   requestFactory_ = factory;
 }

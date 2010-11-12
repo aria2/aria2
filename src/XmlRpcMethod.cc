@@ -101,7 +101,7 @@ void gatherOption
     } else {
       SharedHandle<OptionHandler> optionHandler =
         optionParser->findByName(optionName);
-      if(optionHandler.isNull()) {
+      if(!optionHandler) {
         throw DL_ABORT_EX
           (StringFormat
            ("We don't know how to deal with %s option",

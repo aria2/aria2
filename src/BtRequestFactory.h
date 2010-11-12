@@ -88,7 +88,6 @@ public:
 };
 
 typedef SharedHandle<BtRequestFactory> BtRequestFactoryHandle;
-typedef WeakHandle<BtRequestFactory> BtRequestFactoryWeakHandle;
 
 } // namespace aria2
 

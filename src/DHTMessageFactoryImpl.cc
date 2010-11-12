@@ -66,6 +66,11 @@ namespace aria2 {
 
 DHTMessageFactoryImpl::DHTMessageFactoryImpl(int family):
   family_(family),
+  connection_(0),
+  dispatcher_(0),
+  routingTable_(0),
+  peerAnnounceStorage_(0),
+  tokenTracker_(0),
   logger_(LogFactory::getInstance()) {}
 
 DHTMessageFactoryImpl::~DHTMessageFactoryImpl() {}
@@ -75,7 +80,7 @@ DHTMessageFactoryImpl::getRemoteNode
 (const unsigned char* id, const std::string& ipaddr, uint16_t port) const
 {
   SharedHandle<DHTNode> node = routingTable_->getNode(id, ipaddr, port);
-  if(node.isNull()) {
+  if(!node) {
     node.reset(new DHTNode(id));
     node->setIPAddress(ipaddr);
     node->setPort(port);
@@ -309,8 +314,7 @@ void DHTMessageFactoryImpl::setCommonProperty
   m->setConnection(connection_);
   m->setMessageDispatcher(dispatcher_);
   m->setRoutingTable(routingTable_);
-  WeakHandle<DHTMessageFactory> factory(this);
-  m->setMessageFactory(factory);
+  m->setMessageFactory(this);
   m->setVersion(getDefaultVersion());
 }
 
@@ -506,32 +510,29 @@ DHTMessageFactoryImpl::createUnknownMessage
   return m;
 }
 
-void DHTMessageFactoryImpl::setRoutingTable
-(const WeakHandle<DHTRoutingTable>& routingTable)
+void DHTMessageFactoryImpl::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }
 
-void DHTMessageFactoryImpl::setConnection
-(const WeakHandle<DHTConnection>& connection)
+void DHTMessageFactoryImpl::setConnection(DHTConnection* connection)
 {
   connection_ = connection;
 }
 
 void DHTMessageFactoryImpl::setMessageDispatcher
-(const WeakHandle<DHTMessageDispatcher>& dispatcher)
+(DHTMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
   
 void DHTMessageFactoryImpl::setPeerAnnounceStorage
-(const WeakHandle<DHTPeerAnnounceStorage>& storage)
+(DHTPeerAnnounceStorage* storage)
 {
   peerAnnounceStorage_ = storage;
 }
 
-void DHTMessageFactoryImpl::setTokenTracker
-(const WeakHandle<DHTTokenTracker>& tokenTracker)
+void DHTMessageFactoryImpl::setTokenTracker(DHTTokenTracker* tokenTracker)
 {
   tokenTracker_ = tokenTracker;
 }

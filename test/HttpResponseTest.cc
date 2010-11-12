@@ -260,11 +260,11 @@ void HttpResponseTest::testGetTransferEncodingStreamFilter()
 
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT(httpResponse.getTransferEncodingStreamFilter().isNull());  
+  CPPUNIT_ASSERT(!httpResponse.getTransferEncodingStreamFilter());
 
   httpHeader->put("Transfer-Encoding", "chunked");
 
-  CPPUNIT_ASSERT(!httpResponse.getTransferEncodingStreamFilter().isNull());
+  CPPUNIT_ASSERT(httpResponse.getTransferEncodingStreamFilter());
 }
 
 void HttpResponseTest::testIsContentEncodingSpecified()
@@ -302,14 +302,14 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT(httpResponse.getContentEncodingStreamFilter().isNull());
+  CPPUNIT_ASSERT(!httpResponse.getContentEncodingStreamFilter());
 
 #ifdef HAVE_LIBZ
   httpHeader->put("Content-Encoding", "gzip");
   {
     SharedHandle<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
-    CPPUNIT_ASSERT(!filter.isNull());
+    CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
                          filter->getName());
   }
@@ -319,7 +319,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   {
     SharedHandle<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
-    CPPUNIT_ASSERT(!filter.isNull());
+    CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
                          filter->getName());
   }
@@ -330,7 +330,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   {
     SharedHandle<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
-    CPPUNIT_ASSERT(filter.isNull());
+    CPPUNIT_ASSERT(!filter);
   }
 }
 

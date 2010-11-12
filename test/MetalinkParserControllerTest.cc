@@ -172,13 +172,13 @@ void MetalinkParserControllerTest::testChecksumTransaction()
   ctrl.setTypeOfChecksum("md5");
   ctrl.setHashOfChecksum("badhash");
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->getEntries()[1]->checksum.isNull());
+  CPPUNIT_ASSERT(!ctrl.getResult()->getEntries()[1]->checksum);
 
   ctrl.newEntryTransaction();
   ctrl.newChecksumTransaction();
   ctrl.cancelChecksumTransaction();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->getEntries()[2]->checksum.isNull());
+  CPPUNIT_ASSERT(!ctrl.getResult()->getEntries()[2]->checksum);
 }
 
 void MetalinkParserControllerTest::testChunkChecksumTransaction()
@@ -217,13 +217,13 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   ctrl.setLengthOfChunkChecksum(256*1024);
   ctrl.addHashOfChunkChecksum(1, "badhash");
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->getEntries()[1]->chunkChecksum.isNull());
+  CPPUNIT_ASSERT(!ctrl.getResult()->getEntries()[1]->chunkChecksum);
 
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransaction();
   ctrl.cancelChunkChecksumTransaction();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->getEntries()[2]->chunkChecksum.isNull());
+  CPPUNIT_ASSERT(!ctrl.getResult()->getEntries()[2]->chunkChecksum);
 }
 
 void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
@@ -261,13 +261,13 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
   ctrl.addHashOfChunkChecksumV4("5bd9f7248df0f3a6a86ab6c95f48787d546efa14");
   ctrl.addHashOfChunkChecksumV4("badhash");
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->getEntries()[1]->chunkChecksum.isNull());
+  CPPUNIT_ASSERT(!ctrl.getResult()->getEntries()[1]->chunkChecksum);
 
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransactionV4();
   ctrl.cancelChunkChecksumTransactionV4();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->getEntries()[2]->chunkChecksum.isNull());
+  CPPUNIT_ASSERT(!ctrl.getResult()->getEntries()[2]->chunkChecksum);
 }
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -304,7 +304,7 @@ void MetalinkParserControllerTest::testSignatureTransaction()
   ctrl.newSignatureTransaction();
   ctrl.cancelSignatureTransaction();
   ctrl.commitEntryTransaction();
-  CPPUNIT_ASSERT(ctrl.getResult()->getEntries()[1]->getSignature().isNull());
+  CPPUNIT_ASSERT(!ctrl.getResult()->getEntries()[1]->getSignature());
 }
 
 } // namespace aria2

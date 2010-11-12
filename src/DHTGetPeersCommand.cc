@@ -76,7 +76,7 @@ bool DHTGetPeersCommand::execute()
   if(btRuntime_->isHalt()) {
     return true;
   }
-  if(task_.isNull() &&
+  if(!task_ &&
      ((numRetry_ > 0 &&
        lastGetPeerTime_.difference(global::wallclock) >= (time_t)numRetry_*5) ||
       lastGetPeerTime_.difference(global::wallclock) >= GET_PEER_INTERVAL ||
@@ -91,7 +91,7 @@ bool DHTGetPeersCommand::execute()
     task_ = taskFactory_->createPeerLookupTask
       (requestGroup_->getDownloadContext(), btRuntime_, peerStorage_);
     taskQueue_->addPeriodicTask2(task_);
-  } else if(!task_.isNull() && task_->finished()) {
+  } else if(task_ && task_->finished()) {
     lastGetPeerTime_ = global::wallclock;
     if(numRetry_ < MAX_RETRIES && btRuntime_->lessThanMinPeers()) {
       ++numRetry_;

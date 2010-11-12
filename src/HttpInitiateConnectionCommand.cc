@@ -71,13 +71,13 @@ Command* HttpInitiateConnectionCommand::createNextCommand
  const SharedHandle<Request>& proxyRequest)
 {
   Command* command;
-  if(!proxyRequest.isNull()) {
+  if(proxyRequest) {
     SharedHandle<SocketCore> pooledSocket =
       getDownloadEngine()->popPooledSocket
       (getRequest()->getHost(), getRequest()->getPort(),
        proxyRequest->getHost(), proxyRequest->getPort());
     std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
-    if(pooledSocket.isNull()) {
+    if(!pooledSocket) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);
@@ -132,7 +132,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     SharedHandle<SocketCore> pooledSocket =
       getDownloadEngine()->popPooledSocket
       (resolvedAddresses, getRequest()->getPort());
-    if(pooledSocket.isNull()) {
+    if(!pooledSocket) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);

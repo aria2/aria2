@@ -47,7 +47,7 @@ DownloadHandler::~DownloadHandler() {}
 
 bool DownloadHandler::canHandle(const RequestGroup* requestGroup) const
 {
-  return !criteria_.isNull() && criteria_->match(requestGroup);
+  return criteria_ && criteria_->match(requestGroup);
 }
 
 void DownloadHandler::setCriteria(const RequestGroupCriteriaHandle& criteria)

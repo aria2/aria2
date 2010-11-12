@@ -93,9 +93,9 @@ void DHTFindNodeMessageTest::testDoReceivedAction()
   routingTable.addNode(targetNode);
 
   DHTFindNodeMessage msg(localNode, remoteNode, targetNode->getID(), transactionID);
-  msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>(&dispatcher));
-  msg.setMessageFactory(WeakHandle<DHTMessageFactory>(&factory));
-  msg.setRoutingTable(WeakHandle<DHTRoutingTable>(&routingTable));
+  msg.setMessageDispatcher(&dispatcher);
+  msg.setMessageFactory(&factory);
+  msg.setRoutingTable(&routingTable);
 
   msg.doReceivedAction();
 

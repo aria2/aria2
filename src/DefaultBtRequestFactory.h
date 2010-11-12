@@ -54,8 +54,8 @@ class DefaultBtRequestFactory : public BtRequestFactory {
 private:
   SharedHandle<PieceStorage> pieceStorage_;
   SharedHandle<Peer> peer_;
-  WeakHandle<BtMessageDispatcher> dispatcher_;
-  WeakHandle<BtMessageFactory> messageFactory_;
+  BtMessageDispatcher* dispatcher_;
+  BtMessageFactory* messageFactory_;
   std::deque<SharedHandle<Piece> > pieces_;
   Logger* logger_;
 public:
@@ -96,10 +96,9 @@ public:
 
   void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtMessageDispatcher
-  (const WeakHandle<BtMessageDispatcher>& dispatcher);
+  void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
+  void setBtMessageFactory(BtMessageFactory* factory);
 };
 
 typedef SharedHandle<DefaultBtRequestFactory> DefaultBtRequestFactoryHandle;

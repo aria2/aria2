@@ -46,6 +46,9 @@
 namespace aria2 {
 
 UTMetadataRequestFactory::UTMetadataRequestFactory():
+  dispatcher_(0),
+  messageFactory_(0),
+  tracker_(0),
   logger_(LogFactory::getInstance()) {}
 
 void UTMetadataRequestFactory::create
@@ -56,7 +59,7 @@ void UTMetadataRequestFactory::create
     std::vector<size_t> metadataRequests = tracker_->getAllTrackedIndex();
     SharedHandle<Piece> p =
       pieceStorage->getMissingPiece(peer_, metadataRequests);
-    if(p.isNull()) {
+    if(!p) {
       if(logger_->debug()) {
         logger_->debug("No ut_metadata piece is available to download.");
       }

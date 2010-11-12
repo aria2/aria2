@@ -58,11 +58,11 @@ private:
 
   SharedHandle<Peer> peer_;
 
-  WeakHandle<BtMessageDispatcher> dispatcher_;
+  BtMessageDispatcher* dispatcher_;
 
-  WeakHandle<BtMessageFactory> messageFactory_;
+  BtMessageFactory* messageFactory_;
 
-  WeakHandle<UTMetadataRequestTracker> tracker_;
+  UTMetadataRequestTracker* tracker_;
 
   Logger* logger_;
 public:
@@ -78,12 +78,12 @@ public:
     dctx_ = dctx;
   }
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
+  void setBtMessageDispatcher(BtMessageDispatcher* disp)
   {
     dispatcher_ = disp;
   }
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+  void setBtMessageFactory(BtMessageFactory* factory)
   {
     messageFactory_ = factory;
   }
@@ -93,8 +93,7 @@ public:
     peer_ = peer;
   }
 
-  void setUTMetadataRequestTracker
-  (const WeakHandle<UTMetadataRequestTracker>& tracker)
+  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
   {
     tracker_ = tracker;
   }

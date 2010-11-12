@@ -65,7 +65,7 @@ void HaveEraseCommand::process()
     PieceStorageHandle ps =
       getDownloadEngine()->getRequestGroupMan()->getRequestGroup(i)->
       getPieceStorage();
-    if(!ps.isNull()) {
+    if(ps) {
       ps->removeAdvertisedPiece(5);
     }
   }

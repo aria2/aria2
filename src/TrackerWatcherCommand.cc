@@ -84,7 +84,7 @@ TrackerWatcherCommand::~TrackerWatcherCommand()
 
 bool TrackerWatcherCommand::execute() {
   if(requestGroup_->isForceHaltRequested()) {
-    if(trackerRequestGroup_.isNull()) {
+    if(!trackerRequestGroup_) {
       return true;
     } else if(trackerRequestGroup_->getNumCommand() == 0 ||
               trackerRequestGroup_->downloadFinished()) {
@@ -101,9 +101,9 @@ bool TrackerWatcherCommand::execute() {
     }
     return true;
   }
-  if(trackerRequestGroup_.isNull()) {
+  if(!trackerRequestGroup_) {
     trackerRequestGroup_ = createAnnounce();
-    if(!trackerRequestGroup_.isNull()) {
+    if(trackerRequestGroup_) {
       try {
         std::vector<Command*>* commands = new std::vector<Command*>();
         auto_delete_container<std::vector<Command*> > commandsDel(commands);
@@ -170,7 +170,7 @@ void TrackerWatcherCommand::processTrackerResponse
      trackerResponse.size());
   while(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
     SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
-    if(peer.isNull()) {
+    if(!peer) {
       break;
     }
     peer->usedBy(e_->newCUID());

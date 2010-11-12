@@ -92,7 +92,7 @@ bool DefaultPeerStorage::isPeerAlreadyAdded(const SharedHandle<Peer>& peer)
 namespace {
 size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
 {
-  if(btRuntime.isNull()) {
+  if(!btRuntime) {
     return MAX_PEER_LIST_SIZE;
   }
   return btRuntime->getMaxPeers() == 0 ?
@@ -199,7 +199,7 @@ size_t DefaultPeerStorage::countPeer() const {
 }
 
 bool DefaultPeerStorage::isPeerAvailable() {
-  return !getUnusedPeer().isNull();
+  return getUnusedPeer();
 }
 
 namespace {

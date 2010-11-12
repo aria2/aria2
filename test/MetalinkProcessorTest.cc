@@ -94,9 +94,9 @@ void MetalinkProcessorTest::testParseFileV4()
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(std::string("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
 		       e->checksum->getMessageDigest());
-  CPPUNIT_ASSERT(!e->checksum.isNull());
+  CPPUNIT_ASSERT(e->checksum);
   CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getAlgo());
-  CPPUNIT_ASSERT(!e->chunkChecksum.isNull());
+  CPPUNIT_ASSERT(e->chunkChecksum);
   if(MessageDigest::supports("sha-256")) {
     CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), e->chunkChecksum->getAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getChecksumLength());
@@ -122,7 +122,7 @@ void MetalinkProcessorTest::testParseFileV4()
        e->chunkChecksum->getChecksum(2));    
   }
 #endif // ENABLE_MESSAGE_DIGEST
-  CPPUNIT_ASSERT(!e->getSignature().isNull());
+  CPPUNIT_ASSERT(e->getSignature());
   CPPUNIT_ASSERT_EQUAL(std::string("application/pgp-signature"),
                        e->getSignature()->getType());
   CPPUNIT_ASSERT_EQUAL(std::string("a signature"),
@@ -511,7 +511,7 @@ void MetalinkProcessorTest::testParseFile()
                          entry1->checksum->getMessageDigest());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry1->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
-    CPPUNIT_ASSERT(!entry1->getSignature().isNull());
+    CPPUNIT_ASSERT(entry1->getSignature());
     CPPUNIT_ASSERT_EQUAL(std::string("pgp"), entry1->getSignature()->getType());
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2.sig"),
                          entry1->getSignature()->getFile());
@@ -567,7 +567,7 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry2->checksum->getAlgo());
 #endif // ENABLE_MESSAGE_DIGEST
     // See that signature is null
-    CPPUNIT_ASSERT(entry2->getSignature().isNull());
+    CPPUNIT_ASSERT(!entry2->getSignature());
 
     entryItr++;
 
@@ -575,8 +575,8 @@ void MetalinkProcessorTest::testParseFile()
     SharedHandle<MetalinkEntry> entry3 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("NoVerificationHash"), entry3->getPath());
 #ifdef ENABLE_MESSAGE_DIGEST
-    CPPUNIT_ASSERT(entry3->checksum.isNull());
-    CPPUNIT_ASSERT(entry3->chunkChecksum.isNull());
+    CPPUNIT_ASSERT(!entry3->checksum);
+    CPPUNIT_ASSERT(!entry3->chunkChecksum);
 #endif // ENABLE_MESSAGE_DIGEST
 
     entryItr++;
@@ -605,7 +605,7 @@ void MetalinkProcessorTest::testParseFile_dirtraversal()
   CPPUNIT_ASSERT_EQUAL((size_t)1, metalinker->getEntries().size());
   SharedHandle<MetalinkEntry> e = metalinker->getEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.3.tar.bz2"), e->getPath());
-  CPPUNIT_ASSERT(!e->getSignature().isNull());
+  CPPUNIT_ASSERT(e->getSignature());
   CPPUNIT_ASSERT_EQUAL(std::string(""), e->getSignature()->getFile());
 }
 
@@ -930,7 +930,7 @@ void MetalinkProcessorTest::testBadPieceNo()
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
 
-    CPPUNIT_ASSERT(!c.isNull());
+    CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getAlgo());
   } catch(Exception& e) {
@@ -963,7 +963,7 @@ void MetalinkProcessorTest::testBadPieceLength()
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
-    CPPUNIT_ASSERT(!c.isNull());
+    CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getAlgo());
   } catch(Exception& e) {
@@ -996,7 +996,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
-    CPPUNIT_ASSERT(!c.isNull());
+    CPPUNIT_ASSERT(c);
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getAlgo());
   } catch(Exception& e) {

@@ -48,13 +48,13 @@ class DHTRoutingTable;
 
 class DHTAbstractMessage:public DHTMessage {
 private:
-  WeakHandle<DHTConnection> connection_;
+  DHTConnection* connection_;
 
-  WeakHandle<DHTMessageDispatcher> dispatcher_;
+  DHTMessageDispatcher* dispatcher_;
 
-  WeakHandle<DHTMessageFactory> factory_;
+  DHTMessageFactory* factory_;
 
-  WeakHandle<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 public:
   DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
                      const SharedHandle<DHTNode>& remoteNode,
@@ -70,33 +70,33 @@ public:
 
   std::string getBencodedMessage();
 
-  const WeakHandle<DHTConnection>& getConnection() const
+  DHTConnection* getConnection() const
   {
     return connection_;
   }
 
-  void setConnection(const WeakHandle<DHTConnection>& connection);
+  void setConnection(DHTConnection* connection);
 
-  const WeakHandle<DHTMessageDispatcher>& getMessageDispatcher() const
+  DHTMessageDispatcher* getMessageDispatcher() const
   {
     return dispatcher_;
   }
 
-  void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher>& dispatcher);
+  void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
   
-  const WeakHandle<DHTMessageFactory>& getMessageFactory() const
+  DHTMessageFactory* getMessageFactory() const
   {
     return factory_;
   }
 
-  void setMessageFactory(const WeakHandle<DHTMessageFactory>& factory);
+  void setMessageFactory(DHTMessageFactory* factory);
 
-  const WeakHandle<DHTRoutingTable>& getRoutingTable() const
+  DHTRoutingTable* getRoutingTable() const
   {
     return routingTable_;
   }
 
-  void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 };
 
 } // namespace aria2

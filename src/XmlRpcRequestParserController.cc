@@ -68,7 +68,7 @@ void XmlRpcRequestParserController::popArrayFrame()
   List* list = asList(parentFrame.value_);
   assert(list);
   frameStack_.pop();
-  if(!currentFrame_.value_.isNull()) {
+  if(currentFrame_.value_) {
     list->append(currentFrame_.value_);
   }
   currentFrame_ = parentFrame;

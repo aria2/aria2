@@ -76,7 +76,7 @@ void StreamFileAllocationEntry::prepareForNextAction
       for(std::deque<SharedHandle<Request> >::const_iterator j =
             reqs.begin(), eoj = reqs.end(); j != eoj; ++j) {
         const SharedHandle<PeerStat>& peerStat = (*j)->getPeerStat();
-        if(!peerStat.isNull()) {
+        if(peerStat) {
           peerStat->downloadStart();
         }
       }

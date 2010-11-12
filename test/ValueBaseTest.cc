@@ -97,7 +97,7 @@ void ValueBaseTest::testDict()
   CPPUNIT_ASSERT_EQUAL(std::string("abc"),
                        asString(dict["ks"])->s());
 
-  CPPUNIT_ASSERT(dict["kn"].isNull()); // This adds kn key with default value.
+  CPPUNIT_ASSERT(!dict["kn"]); // This adds kn key with default value.
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), dict.size());
   CPPUNIT_ASSERT(dict.containsKey("kn"));
 

@@ -912,7 +912,7 @@ void assertID
 SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
 {
   SharedHandle<Dict> r = magnet::parse(magnet);
-  if(r.isNull()) {
+  if(!r) {
     throw DL_ABORT_EX("Bad BitTorrent Magnet URI.");
   }
   const List* xts = asList(r->get("xt"));

@@ -87,8 +87,8 @@ bool CreateRequestCommand::executeInternal()
                                  getOption()->getAsBool(PREF_USE_HEAD)) ||
                                 getOption()->getAsBool(PREF_DRY_RUN)?
                                 Request::METHOD_HEAD:Request::METHOD_GET));
-  if(getRequest().isNull()) {
-    if(!getSegmentMan().isNull()) {
+  if(!getRequest()) {
+    if(getSegmentMan()) {
       getSegmentMan()->ignoreSegmentFor(getFileEntry());
     }
     throw DL_ABORT_EX("No URI available.");

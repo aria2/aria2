@@ -61,7 +61,7 @@ void CheckIntegrityEntry::validateChunk()
 
 uint64_t CheckIntegrityEntry::getTotalLength()
 {
-  if(validator_.isNull()) {
+  if(!validator_) {
     return 0;
   } else {
     return validator_->getTotalLength();
@@ -70,7 +70,7 @@ uint64_t CheckIntegrityEntry::getTotalLength()
 
 off_t CheckIntegrityEntry::getCurrentLength()
 {
-  if(validator_.isNull()) {
+  if(!validator_) {
     return 0;
   } else {
     return validator_->getCurrentOffset();

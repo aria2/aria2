@@ -42,7 +42,7 @@ StreamFilter::StreamFilter
 
 bool StreamFilter::installDelegate(const SharedHandle<StreamFilter>& filter)
 {
-  if(delegate_.isNull()) {
+  if(!delegate_) {
     delegate_ = filter;
     return true;
   } else {

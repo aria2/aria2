@@ -54,7 +54,7 @@ void PStringBuildVisitor::visit(PStringSegment& segment)
     uris_.push_back(uri);
   }
 
-  if(!segment.getNext().isNull()) {
+  if(segment.getNext()) {
     segment.getNext()->accept(*this);
   }
 

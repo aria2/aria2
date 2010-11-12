@@ -77,7 +77,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
  const SharedHandle<Request>& proxyRequest)
 {
   Command* command;
-  if(!proxyRequest.isNull()) {
+  if(proxyRequest) {
     std::map<std::string, std::string> options;
     SharedHandle<SocketCore> pooledSocket;
     std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
@@ -92,7 +92,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
          (getRequest(), getOption().get())->getUser(),
          proxyRequest->getHost(), proxyRequest->getPort());
     }
-    if(pooledSocket.isNull()) {
+    if(!pooledSocket) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);
@@ -157,7 +157,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
        getRequest()->getPort(),
        getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
        (getRequest(), getOption().get())->getUser());
-    if(pooledSocket.isNull()) {
+    if(!pooledSocket) {
       if(getLogger()->info()) {
         getLogger()->info(MSG_CONNECTING_TO_SERVER,
                           util::itos(getCuid()).c_str(), addr.c_str(), port);

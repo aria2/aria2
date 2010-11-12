@@ -56,7 +56,9 @@ DHTGetPeersMessage::DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
                                        const SharedHandle<DHTNode>& remoteNode,
                                        const unsigned char* infoHash,
                                        const std::string& transactionID):
-  DHTQueryMessage(localNode, remoteNode, transactionID)
+  DHTQueryMessage(localNode, remoteNode, transactionID),
+  peerAnnounceStorage_(0),
+  tokenTracker_(0)
 {
   memcpy(infoHash_, infoHash, DHT_ID_LENGTH);
 }
@@ -91,14 +93,12 @@ const std::string& DHTGetPeersMessage::getMessageType() const
   return GET_PEERS;
 }
 
-void DHTGetPeersMessage::setPeerAnnounceStorage
-(const WeakHandle<DHTPeerAnnounceStorage>& storage)
+void DHTGetPeersMessage::setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage)
 {
   peerAnnounceStorage_ = storage;
 }
 
-void DHTGetPeersMessage::setTokenTracker
-(const WeakHandle<DHTTokenTracker>& tokenTracker)
+void DHTGetPeersMessage::setTokenTracker(DHTTokenTracker* tokenTracker)
 {
   tokenTracker_ = tokenTracker;
 }

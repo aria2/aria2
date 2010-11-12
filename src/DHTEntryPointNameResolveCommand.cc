@@ -80,7 +80,7 @@ bool DHTEntryPointNameResolveCommand::execute()
     return true;
   }
 #ifdef ENABLE_ASYNC_DNS
-  if(resolver_.isNull()) {
+  if(!resolver_) {
     int family;
     if(e_->getOption()->getAsBool(PREF_ENABLE_ASYNC_DNS6)) {
       family = AF_UNSPEC;

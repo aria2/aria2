@@ -69,8 +69,8 @@ void DHTMessageTrackerTest::testMessageArrived()
                              m2->getRemoteNode()->getPort());
     SharedHandle<DHTMessage> reply = p.first;
 
-    CPPUNIT_ASSERT(!reply.isNull());
-    CPPUNIT_ASSERT(tracker.getEntryFor(m2).isNull());
+    CPPUNIT_ASSERT(reply);
+    CPPUNIT_ASSERT(!tracker.getEntryFor(m2));
     CPPUNIT_ASSERT_EQUAL((size_t)2, tracker.countEntry());
   }
   {
@@ -82,8 +82,8 @@ void DHTMessageTrackerTest::testMessageArrived()
                              m3->getRemoteNode()->getPort());
     SharedHandle<DHTMessage> reply = p.first;
 
-    CPPUNIT_ASSERT(!reply.isNull());
-    CPPUNIT_ASSERT(tracker.getEntryFor(m3).isNull());
+    CPPUNIT_ASSERT(reply);
+    CPPUNIT_ASSERT(!tracker.getEntryFor(m3));
     CPPUNIT_ASSERT_EQUAL((size_t)1, tracker.countEntry());
   }
   {
@@ -94,7 +94,7 @@ void DHTMessageTrackerTest::testMessageArrived()
       tracker.messageArrived(&resDict, "192.168.1.100", 6889);
     SharedHandle<DHTMessage> reply = p.first;
 
-    CPPUNIT_ASSERT(reply.isNull());
+    CPPUNIT_ASSERT(!reply);
   }
 }
 

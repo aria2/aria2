@@ -276,7 +276,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     }
   }
   const SharedHandle<ValueBase>& peerData = dict->get(BtAnnounce::PEERS);
-  if(peerData.isNull()) {
+  if(!peerData) {
     logger_->info(MSG_NO_PEER_LIST_RECEIVED);
   } else {
     if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
@@ -286,7 +286,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     }
   }
   const SharedHandle<ValueBase>& peer6Data = dict->get(BtAnnounce::PEERS6);
-  if(peer6Data.isNull()) {
+  if(!peer6Data) {
     logger_->info("No peers6 received.");
   } else {
     if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {

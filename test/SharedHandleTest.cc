@@ -19,7 +19,7 @@ public:
   }
 
   static SharedHandle<int> getInstance() {
-    if(staticHandle.isNull()) {
+    if(!staticHandle) {
       staticHandle.reset(new int(1));
     }
     return staticHandle;
@@ -76,7 +76,6 @@ void SharedHandleTest::testWeakHandle()
 
   std::cout << "w.getRefCount() = " << w.getRefCount() << std::endl;
   std::cout << "x.getRefCount() = " << x.getRefCount() << std::endl;
-
 }
 
 } // namespace aria2

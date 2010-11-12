@@ -64,21 +64,21 @@ private:
 
   bool dhtEnabled_;
 
-  WeakHandle<BtMessageDispatcher> dispatcher_;
+  BtMessageDispatcher* dispatcher_;
 
-  WeakHandle<BtRequestFactory> requestFactory_;
+  BtRequestFactory* requestFactory_;
 
-  WeakHandle<PeerConnection> peerConnection_;
+  PeerConnection* peerConnection_;
 
   SharedHandle<ExtensionMessageFactory> extensionMessageFactory_;
+  
+  DHTNode* localNode_;
 
-  WeakHandle<DHTNode> localNode_;
+  DHTRoutingTable* routingTable_;
 
-  WeakHandle<DHTRoutingTable> routingTable_;
+  DHTTaskQueue* taskQueue_;
 
-  WeakHandle<DHTTaskQueue> taskQueue_;
-
-  WeakHandle<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 
   bool metadataGetMode_;
 
@@ -153,22 +153,22 @@ public:
   }
 
   void setBtMessageDispatcher
-  (const WeakHandle<BtMessageDispatcher>& dispatcher);
+  (BtMessageDispatcher* dispatcher);
   
-  void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
+  void setBtRequestFactory(BtRequestFactory* factory);
 
-  void setPeerConnection(const WeakHandle<PeerConnection>& connection);
+  void setPeerConnection(PeerConnection* connection);
 
   void setExtensionMessageFactory
   (const SharedHandle<ExtensionMessageFactory>& factory);
 
-  void setLocalNode(const WeakHandle<DHTNode>& localNode);
+  void setLocalNode(DHTNode* localNode);
 
-  void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
   
-  void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 
   void enableMetadataGetMode()
   {

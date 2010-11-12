@@ -154,7 +154,7 @@ void OptionParser::parseArg
     } else {
       op = findByShortName(c);
     }
-    if(op.isNull()) {
+    if(!op) {
       throw DL_ABORT_EX("Failed to parse command-line options.");
     }
     out << op->getName() << "=";
@@ -390,7 +390,7 @@ SharedHandle<OptionParser> OptionParser::optionParser_;
 
 const SharedHandle<OptionParser>& OptionParser::getInstance()
 {
-  if(optionParser_.isNull()) {
+  if(!optionParser_) {
     optionParser_.reset(new OptionParser());
     optionParser_->setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
   }

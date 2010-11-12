@@ -82,7 +82,7 @@ bool DHTInteractionCommand::execute()
 
   for(size_t i = 0; i < 20; ++i) {
     SharedHandle<DHTMessage> m = receiver_->receiveMessage();
-    if(m.isNull()) {
+    if(!m) {
       break;
     }
   }

@@ -160,9 +160,9 @@ public:
     btMessageDispatcher->setDownloadContext(dctx_);
     btMessageDispatcher->setPieceStorage(pieceStorage);
     btMessageDispatcher->setPeerStorage(peerStorage);
-    btMessageDispatcher->setBtMessageFactory(messageFactory_);
+    btMessageDispatcher->setBtMessageFactory(messageFactory_.get());
     btMessageDispatcher->setCuid(1);
-    btMessageDispatcher->setRequestGroupMan(rgman_);
+    btMessageDispatcher->setRequestGroupMan(rgman_.get());
   }
 };
 

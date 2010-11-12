@@ -87,7 +87,7 @@ SharedHandle<StreamFilter> getTransferEncodingStreamFilter
   SharedHandle<StreamFilter> filter;
   if(httpResponse->isTransferEncodingSpecified()) {
     filter = httpResponse->getTransferEncodingStreamFilter();
-    if(filter.isNull()) {
+    if(!filter) {
       throw DL_ABORT_EX
         (StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
                       httpResponse->getTransferEncoding().c_str()).str());
@@ -95,7 +95,7 @@ SharedHandle<StreamFilter> getTransferEncodingStreamFilter
     filter->init();
     filter->installDelegate(delegate);
   }
-  if(filter.isNull()) {
+  if(!filter) {
     filter = delegate;
   }
   return filter;
@@ -110,7 +110,7 @@ SharedHandle<StreamFilter> getContentEncodingStreamFilter
   SharedHandle<StreamFilter> filter;
   if(httpResponse->isContentEncodingSpecified()) {
     filter = httpResponse->getContentEncodingStreamFilter();
-    if(filter.isNull()) {
+    if(!filter) {
       LogFactory::getInstance()->info
         ("Content-Encoding %s is specified, but the current implementation"
          "doesn't support it. The decoding process is skipped and the"
@@ -121,7 +121,7 @@ SharedHandle<StreamFilter> getContentEncodingStreamFilter
       filter->installDelegate(delegate);
     }
   }
-  if(filter.isNull()) {
+  if(!filter) {
     filter = delegate;
   }
   return filter;
@@ -146,7 +146,7 @@ bool HttpResponseCommand::executeInternal()
 {
   SharedHandle<HttpRequest> httpRequest =httpConnection_->getFirstHttpRequest();
   SharedHandle<HttpResponse> httpResponse = httpConnection_->receiveResponse();
-  if(httpResponse.isNull()) {
+  if(!httpResponse) {
     // The server has not responded to our request yet.
     // For socket->wantRead() == true, setReadCheckSocket(socket) is already
     // done in the constructor.
@@ -204,7 +204,7 @@ bool HttpResponseCommand::executeInternal()
       getFileEntry()->removeURIWhoseHostnameIs(us.host);
     }
   }
-  if(getPieceStorage().isNull()) {
+  if(!getPieceStorage()) {
     uint64_t totalLength = httpResponse->getEntityLength();
     getFileEntry()->setLength(totalLength);
     if(getFileEntry()->getPath().empty()) {
@@ -306,7 +306,7 @@ bool HttpResponseCommand::handleDefaultEncoding
 
   SharedHandle<CheckIntegrityEntry> checkEntry =
     getRequestGroup()->createCheckIntegrityEntry();
-  if(checkEntry.isNull()) {
+  if(!checkEntry) {
     return true;
   }
   File file(getRequestGroup()->getFirstFilePath());
@@ -322,7 +322,7 @@ bool HttpResponseCommand::handleDefaultEncoding
   // Therefore, we shutdown the socket here if pipelining is enabled.
   DownloadCommand* command = 0;
   if(getRequest()->getMethod() == Request::METHOD_GET &&
-     !segment.isNull() && segment->getPositionToWrite() == 0 &&
+     segment && segment->getPositionToWrite() == 0 &&
      !getRequest()->isPipeliningEnabled()) {
     command = createHttpDownloadCommand
       (httpResponse,
@@ -371,7 +371,7 @@ bool HttpResponseCommand::handleOtherEncoding
      getContentEncodingStreamFilter(httpResponse));
   // If chunked transfer-encoding is specified, we have to read end of
   // chunk markers(0\r\n\r\n, for example).
-  bool chunkedUsed = !streamFilter.isNull() &&
+  bool chunkedUsed = streamFilter &&
     streamFilter->getName() == ChunkedDecodingStreamFilter::NAME;
 
   // For zero-length file, check existing file comparing its size
@@ -448,7 +448,7 @@ bool decideFileAllocation
 (const SharedHandle<StreamFilter>& filter)
 {
 #ifdef HAVE_LIBZ
-  for(SharedHandle<StreamFilter> f = filter; !f.isNull(); f = f->getDelegate()){
+  for(SharedHandle<StreamFilter> f = filter; f; f = f->getDelegate()){
     // Since the compressed file's length are returned in the response header
     // and the decompressed file size is unknown at this point, disable file
     // allocation here.

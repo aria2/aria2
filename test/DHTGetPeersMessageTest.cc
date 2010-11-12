@@ -105,18 +105,17 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
   DHTRoutingTable routingTable(localNode);
 
   DHTGetPeersMessage msg(localNode, remoteNode, infoHash, transactionID);
-  msg.setRoutingTable(WeakHandle<DHTRoutingTable>(&routingTable));
-  msg.setTokenTracker(WeakHandle<DHTTokenTracker>(&tokenTracker));
-  msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>(&dispatcher));
-  msg.setMessageFactory(WeakHandle<DHTMessageFactory>(&factory));
+  msg.setRoutingTable(&routingTable);
+  msg.setTokenTracker(&tokenTracker);
+  msg.setMessageDispatcher(&dispatcher);
+  msg.setMessageFactory(&factory);
   {
     // localhost has peer contact information for that infohash.
     DHTPeerAnnounceStorage peerAnnounceStorage;
     peerAnnounceStorage.addPeerAnnounce(infoHash, "192.168.0.100", 6888);
     peerAnnounceStorage.addPeerAnnounce(infoHash, "192.168.0.101", 6889);
 
-    msg.setPeerAnnounceStorage(WeakHandle<DHTPeerAnnounceStorage>
-                               (&peerAnnounceStorage));
+    msg.setPeerAnnounceStorage(&peerAnnounceStorage);
   
     msg.doReceivedAction();
 
@@ -150,10 +149,8 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
     SharedHandle<DHTNode> returnNode1(new DHTNode());
     routingTable.addNode(returnNode1);
 
-    msg.setPeerAnnounceStorage(WeakHandle<DHTPeerAnnounceStorage>
-                               (&peerAnnounceStorage));
-    msg.setRoutingTable(WeakHandle<DHTRoutingTable>
-                        (&routingTable));
+    msg.setPeerAnnounceStorage(&peerAnnounceStorage);
+    msg.setRoutingTable(&routingTable);
 
     msg.doReceivedAction();
 

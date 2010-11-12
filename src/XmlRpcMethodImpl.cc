@@ -166,7 +166,7 @@ SharedHandle<RequestGroup>
 findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
 {
   SharedHandle<RequestGroup> group = rgman->findRequestGroup(gid);
-  if(group.isNull()) {
+  if(!group) {
     group = rgman->findReservedGroup(gid);
   }
   return group;
@@ -321,9 +321,9 @@ SharedHandle<ValueBase> removeDownload
 
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
-  if(group.isNull()) {
+  if(!group) {
     group = e->getRequestGroupMan()->findReservedGroup(gid);
-    if(group.isNull()) {
+    if(!group) {
       throw DL_ABORT_EX
         (StringFormat("Active Download not found for GID#%s",
                       util::itos(gid).c_str()).str());
@@ -393,11 +393,11 @@ SharedHandle<ValueBase> pauseDownload
   bool reserved = false;
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
-  if(group.isNull()) {
+  if(!group) {
     reserved = true;
     group = e->getRequestGroupMan()->findReservedGroup(gid);
   }
-  if(!group.isNull() && pauseRequestGroup(group, reserved, forcePause)) {
+  if(group && pauseRequestGroup(group, reserved, forcePause)) {
     return createGIDResponse(gid);
   } else {
     throw DL_ABORT_EX
@@ -463,7 +463,7 @@ SharedHandle<ValueBase> UnpauseXmlRpcMethod::process
   gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findReservedGroup(gid);
-  if(group.isNull() || !group->isPauseRequested()) {
+  if(!group || !group->isPauseRequested()) {
     throw DL_ABORT_EX
       (StringFormat("GID#%s cannot be unpaused now",
                     util::itos(gid).c_str()).str());
@@ -579,7 +579,7 @@ void gatherProgressCommon
   }
   if(requested_key(keys, KEY_BITFIELD)) {
     SharedHandle<PieceStorage> ps = group->getPieceStorage();
-    if(!ps.isNull()) {
+    if(ps) {
       if(ps->getBitfieldLength() > 0) {
         entryDict->put(KEY_BITFIELD,
                        util::toHex(ps->getBitfield(), ps->getBitfieldLength()));
@@ -673,7 +673,7 @@ void gatherProgressBitTorrent
       entryDict->put(KEY_NUM_SEEDERS, VLB_ZERO);
     } else {
       SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
-      assert(!peerStorage.isNull());
+      assert(peerStorage);
       std::vector<SharedHandle<Peer> > peers;
       peerStorage->getActivePeers(peers);
       entryDict->put(KEY_NUM_SEEDERS,
@@ -822,10 +822,10 @@ SharedHandle<ValueBase> GetFilesXmlRpcMethod::process
   SharedHandle<List> files = List::g();
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
-  if(group.isNull()) {
+  if(!group) {
     SharedHandle<DownloadResult> dr =
       e->getRequestGroupMan()->findDownloadResult(gid);
-    if(dr.isNull()) {
+    if(!dr) {
       throw DL_ABORT_EX
         (StringFormat("No file data is available for GID#%s",
                       util::itos(gid).c_str()).str());
@@ -846,7 +846,7 @@ SharedHandle<ValueBase> GetUrisXmlRpcMethod::process
   gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
-  if(group.isNull()) {
+  if(!group) {
     throw DL_ABORT_EX
       (StringFormat("No URI data is available for GID#%s",
                     util::itos(gid).c_str()).str());
@@ -867,7 +867,7 @@ SharedHandle<ValueBase> GetPeersXmlRpcMethod::process
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
-  if(group.isNull()) {
+  if(!group) {
     throw DL_ABORT_EX
       (StringFormat("No peer data is available for GID#%s",
                     util::itos(gid).c_str()).str());
@@ -875,7 +875,7 @@ SharedHandle<ValueBase> GetPeersXmlRpcMethod::process
   SharedHandle<List> peers = List::g();
   BtObject btObject = e->getBtRegistry()->get(group->getGID());
   if(!btObject.isNull()) {
-    assert(!btObject.peerStorage_.isNull());
+    assert(btObject.peerStorage_);
     gatherPeer(peers, btObject.peerStorage_);
   }
   return peers;
@@ -895,12 +895,12 @@ SharedHandle<ValueBase> TellStatusXmlRpcMethod::process
     e->getRequestGroupMan()->findRequestGroup(gid);
 
   SharedHandle<Dict> entryDict = Dict::g();
-  if(group.isNull()) {
+  if(!group) {
     group = e->getRequestGroupMan()->findReservedGroup(gid);
-    if(group.isNull()) {
+    if(!group) {
       SharedHandle<DownloadResult> ds =
         e->getRequestGroupMan()->findDownloadResult(gid);
-      if(ds.isNull()) {
+      if(!ds) {
         throw DL_ABORT_EX
           (StringFormat("No such download for GID#%s",
                         util::itos(gid).c_str()).str());
@@ -997,7 +997,7 @@ SharedHandle<ValueBase> ChangeOptionXmlRpcMethod::process
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
-  if(group.isNull()) {
+  if(!group) {
     throw DL_ABORT_EX
       (StringFormat("Cannot change option for GID#%s",
                     util::itos(gid).c_str()).str());
@@ -1104,7 +1104,7 @@ SharedHandle<ValueBase> GetOptionXmlRpcMethod::process
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
-  if(group.isNull()) {
+  if(!group) {
     throw DL_ABORT_EX
       (StringFormat("Cannot get option for GID#%s",
                     util::itos(gid).c_str()).str());
@@ -1122,7 +1122,7 @@ SharedHandle<ValueBase> GetGlobalOptionXmlRpcMethod::process
   for(std::map<std::string, std::string>::const_iterator i =
         e->getOption()->begin(), eoi = e->getOption()->end(); i != eoi; ++i) {
     SharedHandle<OptionHandler> h = getOptionParser()->findByName((*i).first);
-    if(!h.isNull() && !h->isHidden()) {
+    if(h && !h->isHidden()) {
       result->put((*i).first, (*i).second);
     }
   }
@@ -1171,7 +1171,7 @@ SharedHandle<ValueBase> GetServersXmlRpcMethod::process
   gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
-  if(group.isNull()) {
+  if(!group) {
     throw DL_ABORT_EX(StringFormat("No active download for GID#%s",
                                    util::itos(gid).c_str()).str());
   }
@@ -1189,7 +1189,7 @@ SharedHandle<ValueBase> GetServersXmlRpcMethod::process
     for(std::deque<SharedHandle<Request> >::const_iterator ri =requests.begin(),
           eoi = requests.end(); ri != eoi; ++ri) {
       SharedHandle<PeerStat> ps = (*ri)->getPeerStat();
-      if(!ps.isNull()) {
+      if(ps) {
         SharedHandle<Dict> serverEntry = Dict::g();
         serverEntry->put(KEY_URI, (*ri)->getUri());
         serverEntry->put(KEY_CURRENT_URI, (*ri)->getCurrentUri());
@@ -1221,7 +1221,7 @@ SharedHandle<ValueBase> ChangeUriXmlRpcMethod::process
   size_t index = indexParam->i()-1;
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
-  if(group.isNull()) {
+  if(!group) {
     throw DL_ABORT_EX
       (StringFormat("Cannot remove URIs from GID#%s",
                     util::itos(gid).c_str()).str());
@@ -1259,7 +1259,7 @@ SharedHandle<ValueBase> ChangeUriXmlRpcMethod::process
       }
     }
   }
-  if(addcount && !group->getPieceStorage().isNull()) {
+  if(addcount && group->getPieceStorage()) {
     std::vector<Command*> commands;
     group->createNextCommand(commands, e);
     e->addCommand(commands);

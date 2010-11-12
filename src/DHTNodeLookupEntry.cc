@@ -41,7 +41,7 @@ DHTNodeLookupEntry::DHTNodeLookupEntry(const SharedHandle<DHTNode>& node):
   node(node), used(false) {}
 
 DHTNodeLookupEntry::DHTNodeLookupEntry():
-  node(0), used(false) {}
+  used(false) {}
 
 bool DHTNodeLookupEntry::operator==(const DHTNodeLookupEntry& entry) const
 {

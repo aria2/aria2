@@ -98,7 +98,6 @@ public:
 };
 
 typedef SharedHandle<BtMessageFactory> BtMessageFactoryHandle;
-typedef WeakHandle<BtMessageFactory> BtMessageFactoryWeakHandle;
 
 } // namespace aria2
 

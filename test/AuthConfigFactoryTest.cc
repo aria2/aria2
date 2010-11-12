@@ -41,7 +41,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   AuthConfigFactory factory;
 
   // without auth info
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc
   SharedHandle<Netrc> netrc(new Netrc());
@@ -55,7 +55,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   factory.setNetrc(netrc);
 
   // not activated
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   CPPUNIT_ASSERT(factory.activateBasicCred("localhost", "/", &option));
 
@@ -67,13 +67,13 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
 
   CPPUNIT_ASSERT(!factory.activateBasicCred("mirror", "/", &option));
 
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc + user defined
   option.put(PREF_HTTP_USER, "userDefinedUser");
   option.put(PREF_HTTP_PASSWD, "userDefinedPassword");
 
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   CPPUNIT_ASSERT(factory.activateBasicCred("mirror", "/", &option));
 
@@ -97,7 +97,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
   AuthConfigFactory factory;
 
   // without auth info
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc
   SharedHandle<Netrc> netrc(new Netrc());
@@ -117,7 +117,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_httpNoChallenge()
   // See default token in netrc is ignored.
   req->setUri("http://mirror/");
 
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   // with Netrc + user defined
   option.put(PREF_HTTP_USER, "userDefinedUser");
@@ -231,10 +231,10 @@ void AuthConfigFactoryTest::testUpdateBasicCred()
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   req->setUri("http://local/");
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   req->setUri("http://mirror/");
-  CPPUNIT_ASSERT(factory.createAuthConfig(req, &option).isNull());
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 }
 
 } // namespace aria2

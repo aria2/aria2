@@ -97,7 +97,7 @@ AuthConfigFactory::createAuthConfig
 
           SharedHandle<AuthConfig> ac =
             authResolver.resolveAuthConfig(request->getHost());
-          if(!ac.isNull() && ac->getUser() == request->getUsername()) {
+          if(ac && ac->getUser() == request->getUsername()) {
             return ac;
           }
         }
@@ -187,7 +187,7 @@ bool AuthConfigFactory::activateBasicCred
   if(i == basicCreds_.end()) {
     SharedHandle<AuthConfig> authConfig =
       createHttpAuthResolver(op)->resolveAuthConfig(host);
-    if(authConfig.isNull()) {
+    if(!authConfig) {
       return false;
     } else {
       BasicCred bc(authConfig->getUser(), authConfig->getPassword(),

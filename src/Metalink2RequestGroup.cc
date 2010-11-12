@@ -212,7 +212,7 @@ Metalink2RequestGroup::createRequestGroup
           torrentRg = result[0];
         }
       }
-      if(!torrentRg.isNull()) {
+      if(torrentRg) {
         torrentRg->setNumConcurrentCommand(1);
         torrentRg->clearPreDownloadHandler();
         torrentRg->clearPostDownloadHandler();
@@ -242,7 +242,7 @@ Metalink2RequestGroup::createRequestGroup
       // make segment size equal to piece hash size.
       size_t pieceLength;
 #ifdef ENABLE_MESSAGE_DIGEST
-      if(entry->chunkChecksum.isNull()) {
+      if(!entry->chunkChecksum) {
         pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
       } else {
         pieceLength = entry->chunkChecksum->getChecksumLength();
@@ -261,11 +261,11 @@ Metalink2RequestGroup::createRequestGroup
         dctx->getFirstFileEntry()->setUniqueProtocol(true);
       }
 #ifdef ENABLE_MESSAGE_DIGEST
-      if(!entry->checksum.isNull()) {
+      if(entry->checksum) {
         dctx->setChecksum(entry->checksum->getMessageDigest());
         dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
       }
-      if(!entry->chunkChecksum.isNull()) {
+      if(entry->chunkChecksum) {
         dctx->setPieceHashes(entry->chunkChecksum->getChecksums().begin(),
                              entry->chunkChecksum->getChecksums().end());
         dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
@@ -314,9 +314,9 @@ Metalink2RequestGroup::createRequestGroup
     util::removeMetalinkContentTypes(rg);
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if
-    // torrentRg.isNull() == false
-    if(!torrentRg.isNull()) {
-      SharedHandle<Dependency> dep(new BtDependency(rg, torrentRg));
+    // torrentRg is true
+    if(torrentRg) {
+      SharedHandle<Dependency> dep(new BtDependency(rg.get(), torrentRg));
       rg->dependsOn(dep);
       torrentRg->belongsTo(rg->getGID());
       // metadata download may take very long time. If URIs are

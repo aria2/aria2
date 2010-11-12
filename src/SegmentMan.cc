@@ -74,7 +74,7 @@ SegmentMan::~SegmentMan() {}
 
 bool SegmentMan::downloadFinished() const
 {
-  if(pieceStorage_.isNull()) {
+  if(!pieceStorage_) {
     return false;
   } else {
     return pieceStorage_->downloadFinished();
@@ -89,7 +89,7 @@ void SegmentMan::init()
 
 uint64_t SegmentMan::getTotalLength() const
 {
-  if(pieceStorage_.isNull()) {
+  if(!pieceStorage_) {
     return 0;
   } else {
     return pieceStorage_->getTotalLength();
@@ -110,7 +110,7 @@ void SegmentMan::setDownloadContext
 SharedHandle<Segment> SegmentMan::checkoutSegment
 (cuid_t cuid, const SharedHandle<Piece>& piece)
 {
-  if(piece.isNull()) {
+  if(!piece) {
     return SharedHandle<Segment>();
   }
   if(logger_->debug()) {
@@ -194,7 +194,7 @@ void SegmentMan::getSegment
                       pieceStorage_->getSparseMissingUnusedPiece
                       (minSplitSize,
                        filter.getFilterBitfield(), filter.getBitfieldLength()));
-    if(segment.isNull()) {
+    if(!segment) {
       break;
     }
     if(segment->getPositionToWrite() < fileEntry->getOffset() ||
@@ -236,7 +236,7 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
       }
       cuid_t owner = segmentEntry->cuid;
       SharedHandle<PeerStat> ps = getPeerStat(owner);
-      if(ps.isNull() || (!ps.isNull() && ps->getStatus() == PeerStat::IDLE)) {
+      if(!ps || ps->getStatus() == PeerStat::IDLE) {
         cancelSegment(owner);
         return getSegmentWithIndex(cuid, index);
       } else {
@@ -340,7 +340,7 @@ bool SegmentMan::hasSegment(size_t index) const {
 }
 
 uint64_t SegmentMan::getDownloadLength() const {
-  if(pieceStorage_.isNull()) {
+  if(!pieceStorage_) {
     return 0;
   } else {
     return pieceStorage_->getCompletedLength();

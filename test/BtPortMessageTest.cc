@@ -122,10 +122,10 @@ void BtPortMessageTest::testDoReceivedAction()
   BtPortMessage msg(6881);
   MockDHTTaskQueue taskQueue;
   MockDHTTaskFactory2 taskFactory;
-  msg.setLocalNode(localNode);
-  msg.setRoutingTable(WeakHandle<DHTRoutingTable>(&routingTable));
-  msg.setTaskQueue(WeakHandle<DHTTaskQueue>(&taskQueue));
-  msg.setTaskFactory(WeakHandle<DHTTaskFactory>(&taskFactory));
+  msg.setLocalNode(localNode.get());
+  msg.setRoutingTable(&routingTable);
+  msg.setTaskQueue(&taskQueue);
+  msg.setTaskFactory(&taskFactory);
   msg.setPeer(peer);
 
   msg.doReceivedAction();
@@ -151,10 +151,10 @@ void BtPortMessageTest::testDoReceivedAction_bootstrap()
   BtPortMessage msg(6881);
   MockDHTTaskQueue taskQueue;
   MockDHTTaskFactory2 taskFactory;
-  msg.setLocalNode(localNode);
-  msg.setRoutingTable(WeakHandle<DHTRoutingTable>(&routingTable));
-  msg.setTaskQueue(WeakHandle<DHTTaskQueue>(&taskQueue));
-  msg.setTaskFactory(WeakHandle<DHTTaskFactory>(&taskFactory));
+  msg.setLocalNode(localNode.get());
+  msg.setRoutingTable(&routingTable);
+  msg.setTaskQueue(&taskQueue);
+  msg.setTaskFactory(&taskFactory);
   msg.setPeer(peer);
 
   msg.doReceivedAction();

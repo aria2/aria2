@@ -291,7 +291,7 @@ bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "REST ";
-    if(segment.isNull()) {
+    if(!segment) {
       request += "0";
     } else {
       request += util::itos(segment->getPositionToWrite());

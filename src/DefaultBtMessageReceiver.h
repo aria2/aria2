@@ -51,9 +51,9 @@ class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:
   bool handshakeSent_;
   SharedHandle<DownloadContext> downloadContext_;
-  WeakHandle<PeerConnection> peerConnection_;
-  WeakHandle<BtMessageDispatcher> dispatcher_;
-  WeakHandle<BtMessageFactory> messageFactory_;
+  PeerConnection* peerConnection_;
+  BtMessageDispatcher* dispatcher_;
+  BtMessageFactory* messageFactory_;
 
   void sendHandshake();
 public:
@@ -68,11 +68,11 @@ public:
 
   void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
-  void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
+  void setPeerConnection(PeerConnection* peerConnection);
 
-  void setDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
+  void setDispatcher(BtMessageDispatcher* dispatcher);
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
+  void setBtMessageFactory(BtMessageFactory* factory);
 };
 
 typedef SharedHandle<DefaultBtMessageReceiver> DefaultBtMessageReceiverHandle;

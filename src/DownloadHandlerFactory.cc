@@ -69,7 +69,7 @@ DownloadHandlerFactory::btMetadataPostDownloadHandler_;
 SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 {
-  if(metalinkPreDownloadHandler_.isNull()) {
+  if(!metalinkPreDownloadHandler_) {
     metalinkPreDownloadHandler_.reset(new MemoryBufferPreDownloadHandler());
 
     RequestGroupCriteriaHandle criteria
@@ -86,7 +86,7 @@ DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 SharedHandle<MetalinkPostDownloadHandler>
 DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 {
-  if(metalinkPostDownloadHandler_.isNull()) {
+  if(!metalinkPostDownloadHandler_) {
     metalinkPostDownloadHandler_.reset(new MetalinkPostDownloadHandler());
   }
   return metalinkPostDownloadHandler_;
@@ -99,7 +99,7 @@ DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 SharedHandle<MemoryBufferPreDownloadHandler>
 DownloadHandlerFactory::getBtPreDownloadHandler()
 {
-  if(btPreDownloadHandler_.isNull()) {
+  if(!btPreDownloadHandler_) {
     btPreDownloadHandler_.reset(new MemoryBufferPreDownloadHandler());
 
     RequestGroupCriteriaHandle criteria
@@ -116,7 +116,7 @@ DownloadHandlerFactory::getBtPreDownloadHandler()
 SharedHandle<BtPostDownloadHandler>
 DownloadHandlerFactory::getBtPostDownloadHandler()
 {
-  if(btPostDownloadHandler_.isNull()) {
+  if(!btPostDownloadHandler_) {
     btPostDownloadHandler_.reset(new BtPostDownloadHandler());
   }
   return btPostDownloadHandler_;
@@ -125,7 +125,7 @@ DownloadHandlerFactory::getBtPostDownloadHandler()
 SharedHandle<UTMetadataPostDownloadHandler>
 DownloadHandlerFactory::getUTMetadataPostDownloadHandler()
 {
-  if(btMetadataPostDownloadHandler_.isNull()) {
+  if(!btMetadataPostDownloadHandler_) {
     btMetadataPostDownloadHandler_.reset(new UTMetadataPostDownloadHandler());
   }
   return btMetadataPostDownloadHandler_;

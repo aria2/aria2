@@ -55,7 +55,7 @@ MultiFileAllocationIterator::~MultiFileAllocationIterator() {}
 
 void MultiFileAllocationIterator::allocateChunk()
 {
-  while(fileAllocationIterator_.isNull() ||
+  while(!fileAllocationIterator_ ||
         fileAllocationIterator_->finished()) {
     if(entries_.empty()) {
       break;
@@ -92,12 +92,12 @@ void MultiFileAllocationIterator::allocateChunk()
 bool MultiFileAllocationIterator::finished()
 {
   return entries_.empty() &&
-    (fileAllocationIterator_.isNull() || fileAllocationIterator_->finished());
+    (!fileAllocationIterator_ || fileAllocationIterator_->finished());
 }
 
 off_t MultiFileAllocationIterator::getCurrentLength()
 {
-  if(fileAllocationIterator_.isNull()) {
+  if(!fileAllocationIterator_) {
     return 0;
   } else {
     return fileAllocationIterator_->getCurrentLength();
@@ -106,7 +106,7 @@ off_t MultiFileAllocationIterator::getCurrentLength()
 
 uint64_t MultiFileAllocationIterator::getTotalLength()
 {
-  if(fileAllocationIterator_.isNull()) {
+  if(!fileAllocationIterator_) {
     return 0;
   } else {
     return fileAllocationIterator_->getTotalLength();

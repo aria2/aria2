@@ -74,7 +74,7 @@ void HttpRequest::setRequest(const SharedHandle<Request>& request)
 
 off_t HttpRequest::getStartByte() const
 {
-  if(segment_.isNull()) {
+  if(!segment_) {
     return 0;
   } else {
     return fileEntry_->gtoloff(segment_->getPositionToWrite());
@@ -83,7 +83,7 @@ off_t HttpRequest::getStartByte() const
 
 off_t HttpRequest::getEndByte() const
 {
-  if(segment_.isNull() || request_.isNull()) {
+  if(!segment_ || !request_) {
     return 0;
   } else {
     if(request_->isPipeliningEnabled()) {
@@ -99,7 +99,7 @@ off_t HttpRequest::getEndByte() const
 RangeHandle HttpRequest::getRange() const
 {
   // content-length is always 0
-  if(segment_.isNull()) {
+  if(!segment_) {
     return SharedHandle<Range>(new Range());
   } else {
     return SharedHandle<Range>(new Range(getStartByte(), getEndByte(),
@@ -109,7 +109,7 @@ RangeHandle HttpRequest::getRange() const
 
 bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
 {
-  if(segment_.isNull()) {
+  if(!segment_) {
     return true;
   }
   if((getStartByte() == range->getStartByte()) &&
@@ -139,9 +139,9 @@ std::string HttpRequest::createRequest()
   authConfig_ = authConfigFactory_->createAuthConfig(request_, option_);
   std::string requestLine = request_->getMethod();
   requestLine += " ";
-  if(!proxyRequest_.isNull()) {
+  if(proxyRequest_) {
     if(getProtocol() == Request::PROTO_FTP &&
-       request_->getUsername().empty() && !authConfig_.isNull()) {
+       request_->getUsername().empty() && authConfig_) {
       // Insert user into URI, like ftp://USER@host/
       std::string uri = getCurrentURI();
       assert(uri.size() >= 6);
@@ -192,7 +192,7 @@ std::string HttpRequest::createRequest()
   if(!request_->isKeepAliveEnabled() && !request_->isPipeliningEnabled()) {
     builtinHds.push_back(std::make_pair("Connection:", "close"));
   }
-  if(!segment_.isNull() && segment_->getLength() > 0 && 
+  if(segment_ && segment_->getLength() > 0 && 
      (request_->isPipeliningEnabled() || getStartByte() > 0)) {
     std::string rangeHeader = "bytes=";
     rangeHeader += util::itos(getStartByte());
@@ -205,17 +205,17 @@ std::string HttpRequest::createRequest()
     }
     builtinHds.push_back(std::make_pair("Range:", rangeHeader));
   }
-  if(!proxyRequest_.isNull()) {
+  if(proxyRequest_) {
     if(request_->isKeepAliveEnabled() || request_->isPipeliningEnabled()) {
       builtinHds.push_back(std::make_pair("Proxy-Connection:", "Keep-Alive"));
     } else {
       builtinHds.push_back(std::make_pair("Proxy-Connection:", "close"));
     }
   }
-  if(!proxyRequest_.isNull() && !proxyRequest_->getUsername().empty()) {
+  if(proxyRequest_ && !proxyRequest_->getUsername().empty()) {
     builtinHds.push_back(getProxyAuthString());
   }
-  if(!authConfig_.isNull()) {
+  if(authConfig_) {
     builtinHds.push_back
       (std::make_pair("Authorization:",
                       strconcat("Basic ",
@@ -224,7 +224,7 @@ std::string HttpRequest::createRequest()
   if(getPreviousURI().size()) {
     builtinHds.push_back(std::make_pair("Referer:", getPreviousURI()));
   }
-  if(!cookieStorage_.isNull()) {
+  if(cookieStorage_) {
     std::string cookiesValue;
     std::vector<Cookie> cookies =
       cookieStorage_->criteriaFind
@@ -270,7 +270,7 @@ std::string HttpRequest::createRequest()
 
 std::string HttpRequest::createProxyRequest() const
 {
-  assert(!proxyRequest_.isNull());
+  assert(proxyRequest_);
   std::string hostport = getURIHost();
   strappend(hostport, ":", util::uitos(getPort()));
 
@@ -344,12 +344,12 @@ void HttpRequest::setProxyRequest(const SharedHandle<Request>& proxyRequest)
 
 bool HttpRequest::isProxyRequestSet() const
 {
-  return !proxyRequest_.isNull();
+  return proxyRequest_;
 }
 
 bool HttpRequest::authenticationUsed() const
 {
-  return !authConfig_.isNull();
+  return authConfig_;
 }
 
 const SharedHandle<AuthConfig>& HttpRequest::getAuthConfig() const

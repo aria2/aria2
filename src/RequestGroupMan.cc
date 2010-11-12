@@ -288,7 +288,7 @@ private:
   {
     SharedHandle<Signature> sig =
       group->getDownloadContext()->getSignature();
-    if(!sig.isNull() && !sig->getBody().empty()) {
+    if(sig && !sig->getBody().empty()) {
       // filename of signature file is the path to download file followed by
       // ".sig".
       std::string signatureFile = group->getFirstFilePath()+".sig";
@@ -386,7 +386,7 @@ public:
     if(group->getNumCommand() == 0) {
       // Collect statistics during download in PeerStats and update/register
       // ServerStatMan
-      if(!group->getSegmentMan().isNull()) {
+      if(group->getSegmentMan()) {
         bool singleConnection =
           group->getSegmentMan()->getPeerStats().size() == 1;
         const std::vector<SharedHandle<PeerStat> >& peerStats =
@@ -834,7 +834,7 @@ RequestGroupMan::getOrCreateServerStat(const std::string& hostname,
                                        const std::string& protocol)
 {
   SharedHandle<ServerStat> ss = findServerStat(hostname, protocol);
-  if(ss.isNull()) {
+  if(!ss) {
     ss.reset(new ServerStat(hostname, protocol));
     addServerStat(ss);
   }
@@ -931,8 +931,8 @@ void RequestGroupMan::getUsedHosts
         }
         if(k == eok) {
           SharedHandle<ServerStat> ss = findServerStat(us.host, us.protocol);
-          int invDlSpeed = !ss.isNull() && ss->isOK()?
-            -(static_cast<int>(ss->getDownloadSpeed())):0;
+          int invDlSpeed = (ss && ss->isOK()) ?
+            -(static_cast<int>(ss->getDownloadSpeed())) : 0;
           tempHosts.push_back(makeTriplet(1, invDlSpeed, us.host));
         }
       }

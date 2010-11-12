@@ -89,7 +89,7 @@ SharedHandle<Piece> DefaultPieceStorage::checkOutPiece(size_t index)
   bitfieldMan_->setUseBit(index);
 
   SharedHandle<Piece> piece = findUsedPiece(index);
-  if(piece.isNull()) {
+  if(!piece) {
     piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
 
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -114,7 +114,7 @@ SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
   SharedHandle<Piece> piece;
   if(0 <= index && index <= bitfieldMan_->getMaxIndex()) {
     piece = findUsedPiece(index);
-    if(piece.isNull()) {
+    if(!piece) {
       piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
       if(hasPiece(index)) {
         piece->setAllBlock();
@@ -147,7 +147,7 @@ SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
   if(i != usedPieces_.end() && *(*i) == *p) {
     return *i;
   } else {
-    p.reset(0);
+    p.reset();
     return p;
   }
 }
@@ -363,7 +363,7 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingPiece(size_t index)
 
 void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
 {
-  if(piece.isNull()) {
+  if(!piece) {
     return;
   }
   std::deque<SharedHandle<Piece> >::iterator i = 
@@ -412,7 +412,7 @@ void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
 
 void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
 {
-  if(piece.isNull()) {
+  if(!piece) {
     return;
   }
   deleteUsedPiece(piece);
@@ -456,7 +456,7 @@ bool DefaultPieceStorage::isSelectiveDownloadingMode()
 // not unittested
 void DefaultPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
 {
-  if(piece.isNull()) {
+  if(!piece) {
     return;
   }
   bitfieldMan_->unsetUseBit(piece->getIndex());

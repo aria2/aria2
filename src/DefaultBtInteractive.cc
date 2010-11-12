@@ -83,6 +83,7 @@ DefaultBtInteractive::DefaultBtInteractive
   downloadContext_(downloadContext),
   peer_(peer),
   metadataGetMode_(false),
+  localNode_(0),
   logger_(LogFactory::getInstance()),
   allowedFastSetSize_(10),
   haveTimer_(global::wallclock),
@@ -95,7 +96,8 @@ DefaultBtInteractive::DefaultBtInteractive
   utPexEnabled_(false),
   dhtEnabled_(false),
   numReceivedMessage_(0),
-  maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST)
+  maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
+  requestGroupMan_(0)
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
@@ -111,7 +113,7 @@ void DefaultBtInteractive::initiateHandshake() {
 BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   SharedHandle<BtHandshakeMessage> message =
     btMessageReceiver_->receiveHandshake(quickReply);
-  if(message.isNull()) {
+  if(!message) {
     return SharedHandle<BtMessage>();
   }
   if(memcmp(message->getPeerId(), bittorrent::getStaticPeerId(),
@@ -290,7 +292,7 @@ size_t DefaultBtInteractive::receiveMessages() {
       break;
     }
     BtMessageHandle message = btMessageReceiver_->receiveMessage();
-    if(message.isNull()) {
+    if(!message) {
       break;
     }
     ++msgcount;
@@ -569,7 +571,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
   sendPendingMessage();
 }
 
-void DefaultBtInteractive::setLocalNode(const WeakHandle<DHTNode>& node)
+void DefaultBtInteractive::setLocalNode(DHTNode* node)
 {
   localNode_ = node;
 }
@@ -657,8 +659,7 @@ void DefaultBtInteractive::setBtMessageFactory
   messageFactory_ = factory;
 }
 
-void DefaultBtInteractive::setRequestGroupMan
-(const WeakHandle<RequestGroupMan>& rgman)
+void DefaultBtInteractive::setRequestGroupMan(RequestGroupMan* rgman)
 {
   requestGroupMan_ = rgman;
 }

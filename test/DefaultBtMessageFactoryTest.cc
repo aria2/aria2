@@ -86,7 +86,7 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
       SharedHandle<BtPortMessage> m
         (dynamic_pointer_cast<BtPortMessage>
          (factory_->createBtMessage(&data[4], sizeof(data)-4)));
-      CPPUNIT_ASSERT(!m.isNull());
+      CPPUNIT_ASSERT(m);
       CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
     } catch(Exception& e) {
       CPPUNIT_FAIL(e.stackTrace());

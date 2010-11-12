@@ -58,13 +58,13 @@ private:
   
   SharedHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
-  WeakHandle<DHTMessageDispatcher> dispatcher_;
+  DHTMessageDispatcher* dispatcher_;
 
-  WeakHandle<DHTMessageFactory> factory_;
+  DHTMessageFactory* factory_;
   
-  WeakHandle<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 protected:
   void setFinished(bool f)
   {
@@ -80,33 +80,33 @@ public:
 
   virtual bool finished();
 
-  const WeakHandle<DHTRoutingTable>& getRoutingTable() const
+  DHTRoutingTable* getRoutingTable() const
   {
     return routingTable_;
   }
 
-  void setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
-  const WeakHandle<DHTMessageDispatcher>& getMessageDispatcher() const
+  DHTMessageDispatcher* getMessageDispatcher() const
   {
     return dispatcher_;
   }
 
-  void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher);
+  void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
 
-  const WeakHandle<DHTMessageFactory>& getMessageFactory() const
+  DHTMessageFactory* getMessageFactory() const
   {
     return factory_;
   }
 
-  void setMessageFactory(const WeakHandle<DHTMessageFactory> factory);
+  void setMessageFactory(DHTMessageFactory* factory);
 
-  const WeakHandle<DHTTaskQueue>& getTaskQueue() const
+  DHTTaskQueue* getTaskQueue() const
   {
     return taskQueue_;
   }
 
-  void setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
   const SharedHandle<DHTNode>& getLocalNode() const
   {

@@ -124,7 +124,7 @@ private:
 
   bool metadataGetMode_;
 
-  WeakHandle<DHTNode> localNode_;
+  DHTNode* localNode_;
 
   Logger* logger_;
   size_t allowedFastSetSize_;
@@ -143,7 +143,7 @@ private:
 
   size_t maxOutstandingRequest_;
 
-  WeakHandle<RequestGroupMan> requestGroupMan_;
+  RequestGroupMan* requestGroupMan_;
 
   static const time_t FLOODING_CHECK_INTERVAL = 5;
 
@@ -232,14 +232,14 @@ public:
     utPexEnabled_ = f;
   }
 
-  void setLocalNode(const WeakHandle<DHTNode>& node);
+  void setLocalNode(DHTNode* node);
 
   void setDHTEnabled(bool f)
   {
     dhtEnabled_ = f;
   }
 
-  void setRequestGroupMan(const WeakHandle<RequestGroupMan>& rgman);
+  void setRequestGroupMan(RequestGroupMan* rgman);
 
   void setUTMetadataRequestTracker
   (const SharedHandle<UTMetadataRequestTracker>& tracker)

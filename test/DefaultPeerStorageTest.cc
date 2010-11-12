@@ -146,12 +146,12 @@ void DefaultPeerStorageTest::testGetUnusedPeer() {
 
   peer1->usedBy(1);
 
-  CPPUNIT_ASSERT(ps.getUnusedPeer().isNull());
+  CPPUNIT_ASSERT(!ps.getUnusedPeer());
 
   peer1->resetStatus();
   peer1->startBadCondition();
 
-  CPPUNIT_ASSERT(ps.getUnusedPeer().isNull());
+  CPPUNIT_ASSERT(!ps.getUnusedPeer());
 }
 
 void DefaultPeerStorageTest::testIsPeerAvailable() {

@@ -72,7 +72,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
   PeerAbstractCommand(cuid, peer, e, s),
   peerConnection_(peerConnection)
 {
-  if(peerConnection_.isNull()) {
+  if(!peerConnection_) {
     peerConnection_.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   }
 }
@@ -99,7 +99,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
 
     SharedHandle<DownloadContext> downloadContext =
       getDownloadEngine()->getBtRegistry()->getDownloadContext(infoHash);
-    if(downloadContext.isNull()) {
+    if(!downloadContext) {
       throw DL_ABORT_EX
         (StringFormat("Unknown info hash %s",
                       util::toHex(infoHash).c_str()).str());

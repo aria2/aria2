@@ -101,7 +101,7 @@ bool HttpServerCommand::execute()
 
       header = httpServer_->receiveRequest();
 
-      if(header.isNull()) {
+      if(!header) {
         e_->addCommand(this);
         return false;
       }

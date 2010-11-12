@@ -99,8 +99,8 @@ public:
     requestFactory_.reset(new DefaultBtRequestFactory());
     requestFactory_->setPieceStorage(pieceStorage_);
     requestFactory_->setPeer(peer_);
-    requestFactory_->setBtMessageDispatcher(dispatcher_);
-    requestFactory_->setBtMessageFactory(messageFactory_);
+    requestFactory_->setBtMessageDispatcher(dispatcher_.get());
+    requestFactory_->setBtMessageFactory(messageFactory_.get());
   }
 };
 
@@ -171,7 +171,7 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
   SharedHandle<MockBtMessageDispatcher2> dispatcher
     (new MockBtMessageDispatcher2());
 
-  requestFactory_->setBtMessageDispatcher(dispatcher);
+  requestFactory_->setBtMessageDispatcher(dispatcher.get());
 
   int PIECE_LENGTH = 16*1024*2;
   SharedHandle<Piece> piece1(new Piece(0, PIECE_LENGTH));

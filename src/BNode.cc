@@ -78,7 +78,7 @@ void BNode::setBucket(const SharedHandle<DHTBucket>& bucket)
 
 bool BNode::isInRange(const unsigned char* key) const
 {
-  if(bucket_.isNull()) {
+  if(!bucket_) {
     return left_->isInRange(key) || right_->isInRange(key);
   } else {
     return bucket_->isInRange(key);
@@ -91,7 +91,7 @@ BNode* BNode::findBNodeFor(BNode* b, const unsigned char* key)
     return 0;
   }
   while(1) {
-    if(!b->getBucket().isNull()) {
+    if(b->getBucket()) {
       return b;
     }
     // we assume key fits in either left or right bucket range.
@@ -164,7 +164,7 @@ void BNode::findClosestKNodes(std::vector<SharedHandle<DHTNode> >& nodes,
     visited.push_back(bnode);
     {
       SharedHandle<DHTBucket> bucket = bnode->getBucket();
-      if(!bucket.isNull()) {
+      if(bucket) {
         std::vector<SharedHandle<DHTNode> > goodNodes;
         bucket->getGoodNodes(goodNodes);
         size_t r = DHTBucket::K-nodes.size();
@@ -187,7 +187,7 @@ void BNode::enumerateBucket(std::vector<SharedHandle<DHTBucket> >& buckets,
     if(!b) {
       break;
     }
-    if(!b->getBucket().isNull()) {
+    if(b->getBucket()) {
       buckets.push_back(b->getBucket());
       b = b->getUp();
     } else if(std::find(visited.begin(), visited.end(), b->getLeft()) == visited.end()) {

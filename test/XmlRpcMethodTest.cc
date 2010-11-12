@@ -274,7 +274,7 @@ void XmlRpcMethodTest::testAddTorrent()
 
     SharedHandle<RequestGroup> group =
       e_->getRequestGroupMan()->findReservedGroup(1);
-    CPPUNIT_ASSERT(!group.isNull());
+    CPPUNIT_ASSERT(group);
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.8.2.tar.bz2"),
                          group->getFirstFilePath());
     CPPUNIT_ASSERT_EQUAL((size_t)1,
@@ -354,12 +354,12 @@ void XmlRpcMethodTest::testAddMetalink()
 
     SharedHandle<RequestGroup> tar =
       e_->getRequestGroupMan()->findReservedGroup(1);
-    CPPUNIT_ASSERT(!tar.isNull());
+    CPPUNIT_ASSERT(tar);
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
                          tar->getFirstFilePath());
     SharedHandle<RequestGroup> deb =
       e_->getRequestGroupMan()->findReservedGroup(2);
-    CPPUNIT_ASSERT(!deb.isNull());
+    CPPUNIT_ASSERT(deb);
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.deb"),
                          deb->getFirstFilePath());
   }

@@ -57,13 +57,13 @@ void UTMetadataRequestFactoryTest::testCreate()
   ps->missingIndexes.push_back(1);
   SharedHandle<WrapExtBtMessageFactory> messageFactory
     (new WrapExtBtMessageFactory());
-  factory.setBtMessageFactory(messageFactory);
+  factory.setBtMessageFactory(messageFactory.get());
   SharedHandle<Peer> peer(new Peer("peer", 6880));
   peer->allocateSessionResource(0, 0);
   factory.setPeer(peer);
   SharedHandle<UTMetadataRequestTracker> tracker
     (new UTMetadataRequestTracker());
-  factory.setUTMetadataRequestTracker(tracker);
+  factory.setUTMetadataRequestTracker(tracker.get());
 
   std::vector<SharedHandle<BtMessage> > msgs;
 

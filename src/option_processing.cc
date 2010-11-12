@@ -140,7 +140,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           std::cerr << "Parse error in " << cfname << "\n"
                     << e.stackTrace() << std::endl;
           SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());
-          if(!h.isNull()) {
+          if(h) {
             std::cerr << "Usage:" << "\n"
                       << oparser.findByName(e.getOptionName())->getDescription()
                       << std::endl;

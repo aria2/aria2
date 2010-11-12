@@ -72,8 +72,8 @@ public:
     factory_->setPeerStorage(peerStorage_);
     factory_->setPeer(peer_);
     factory_->setExtensionMessageRegistry(registry_);
-    factory_->setBtMessageDispatcher(dispatcher_);
-    factory_->setBtMessageFactory(messageFactory_);
+    factory_->setBtMessageDispatcher(dispatcher_.get());
+    factory_->setBtMessageFactory(messageFactory_.get());
     factory_->setDownloadContext(dctx_);
   }
 

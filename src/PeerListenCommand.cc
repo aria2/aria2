@@ -107,7 +107,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 
 uint16_t PeerListenCommand::getPort() const
 {
-  if(socket_.isNull()) {
+  if(!socket_) {
     return 0;
   } else {
     std::pair<std::string, uint16_t> addr;

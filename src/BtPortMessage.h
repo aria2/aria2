@@ -49,13 +49,13 @@ private:
   uint16_t port_;
   static const size_t MESSAGE_LENGTH = 7;
 
-  WeakHandle<DHTNode> localNode_;
+  DHTNode* localNode_;
 
-  WeakHandle<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
 
-  WeakHandle<DHTTaskQueue> taskQueue_;
+  DHTTaskQueue* taskQueue_;
 
-  WeakHandle<DHTTaskFactory> taskFactory_;
+  DHTTaskFactory* taskFactory_;
 public:
   BtPortMessage(uint16_t port);
 
@@ -76,13 +76,13 @@ public:
 
   virtual std::string toString() const;
 
-  void setLocalNode(const WeakHandle<DHTNode>& localNode);
+  void setLocalNode(DHTNode* localNode);
 
-  void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
-  void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
+  void setTaskQueue(DHTTaskQueue* taskQueue);
 
-  void setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory);
+  void setTaskFactory(DHTTaskFactory* taskFactory);
 };
 
 } // namespace aria2

@@ -47,13 +47,13 @@ void ServerStatManTest::testAddAndFind()
 
   {
     SharedHandle<ServerStat> r = ssm.find("localhost", "http");
-    CPPUNIT_ASSERT(!r.isNull());
+    CPPUNIT_ASSERT(r);
     CPPUNIT_ASSERT_EQUAL(std::string("localhost"), r->getHostname());
     CPPUNIT_ASSERT_EQUAL(std::string("http"), r->getProtocol());
   }
   {
     SharedHandle<ServerStat> r = ssm.find("mirror", "ftp");
-    CPPUNIT_ASSERT(r.isNull());
+    CPPUNIT_ASSERT(!r);
   }
 }
 
@@ -122,7 +122,7 @@ void ServerStatManTest::testLoad()
   CPPUNIT_ASSERT(ssm.load(ss));
 
   SharedHandle<ServerStat> localhost_http = ssm.find("localhost", "http");
-  CPPUNIT_ASSERT(!localhost_http.isNull());
+  CPPUNIT_ASSERT(localhost_http);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), localhost_http->getHostname());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), localhost_http->getProtocol());
   CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(25000),
@@ -138,7 +138,7 @@ void ServerStatManTest::testLoad()
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, localhost_http->getStatus());
 
   SharedHandle<ServerStat> mirror = ssm.find("mirror", "http");
-  CPPUNIT_ASSERT(!mirror.isNull());
+  CPPUNIT_ASSERT(mirror);
   CPPUNIT_ASSERT_EQUAL(ServerStat::ERROR, mirror->getStatus());
 }
 
@@ -163,9 +163,9 @@ void ServerStatManTest::testRemoveStaleServerStat()
 
   ssm.removeStaleServerStat(24*60*60);
 
-  CPPUNIT_ASSERT(!ssm.find("localhost", "http").isNull());
-  CPPUNIT_ASSERT(ssm.find("localhost", "ftp").isNull());
-  CPPUNIT_ASSERT(ssm.find("mirror", "http").isNull());
+  CPPUNIT_ASSERT(ssm.find("localhost", "http"));
+  CPPUNIT_ASSERT(!ssm.find("localhost", "ftp"));
+  CPPUNIT_ASSERT(!ssm.find("mirror", "http"));
 }
 
 } // namespace aria2

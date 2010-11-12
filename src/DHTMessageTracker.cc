@@ -129,7 +129,7 @@ void DHTMessageTracker::handleTimeoutEntry
       routingTable_->dropNode(node);
     }
     SharedHandle<DHTMessageCallback> callback = entry->getCallback();
-    if(!callback.isNull()) {
+    if(callback) {
       callback->onTimeout(node);
     }
   } catch(RecoverableException& e) {

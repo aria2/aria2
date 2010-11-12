@@ -51,7 +51,10 @@
 namespace aria2 {
 
 DefaultBtMessageReceiver::DefaultBtMessageReceiver():
-  handshakeSent_(false)
+  handshakeSent_(false),
+  peerConnection_(0),
+  dispatcher_(0),
+  messageFactory_(0)
 {}
 
 SharedHandle<BtHandshakeMessage>
@@ -115,20 +118,17 @@ void DefaultBtMessageReceiver::setDownloadContext
   downloadContext_ = downloadContext;
 }
 
-void DefaultBtMessageReceiver::setPeerConnection
-(const WeakHandle<PeerConnection>& peerConnection)
+void DefaultBtMessageReceiver::setPeerConnection(PeerConnection* peerConnection)
 {
   peerConnection_ = peerConnection;
 }
 
-void DefaultBtMessageReceiver::setDispatcher
-(const WeakHandle<BtMessageDispatcher>& dispatcher)
+void DefaultBtMessageReceiver::setDispatcher(BtMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DefaultBtMessageReceiver::setBtMessageFactory
-(const WeakHandle<BtMessageFactory>& factory)
+void DefaultBtMessageReceiver::setBtMessageFactory(BtMessageFactory* factory)
 {
   messageFactory_ = factory;
 }

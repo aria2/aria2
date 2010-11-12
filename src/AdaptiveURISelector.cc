@@ -266,7 +266,7 @@ std::string AdaptiveURISelector::getMaxDownloadSpeedUri
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
-    if(ss.isNull())
+    if(!ss)
       continue;
 
     if((int)ss->getSingleConnectionAvgSpeed() > max) {
@@ -288,7 +288,7 @@ std::deque<std::string> AdaptiveURISelector::getUrisBySpeed
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
-    if(ss.isNull())
+    if(!ss)
       continue;
     if(ss->getSingleConnectionAvgSpeed() > min ||
        ss->getMultiConnectionAvgSpeed() > min) {
@@ -313,7 +313,7 @@ std::string AdaptiveURISelector::getFirstNotTestedUri
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
-    if(ss.isNull())
+    if(!ss)
       return *i;
   }
   return A2STR::NIL;
@@ -327,7 +327,7 @@ std::string AdaptiveURISelector::getFirstToTestUri
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
-    if(ss.isNull())
+    if(!ss)
       continue;
     counter = ss->getCounter();
     if(counter > 8)
@@ -360,7 +360,7 @@ unsigned int AdaptiveURISelector::getNbTestedServers
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);
-    if(ss.isNull())
+    if(!ss)
       ++counter;
   }
   return uris.size() - counter;

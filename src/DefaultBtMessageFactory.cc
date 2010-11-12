@@ -70,9 +70,17 @@
 
 namespace aria2 {
 
-DefaultBtMessageFactory::DefaultBtMessageFactory():cuid_(0),
-                                                   dhtEnabled_(false),
-                                                   metadataGetMode_(false)
+DefaultBtMessageFactory::DefaultBtMessageFactory():
+  cuid_(0),
+  dhtEnabled_(false),
+  dispatcher_(0),
+  requestFactory_(0),
+  peerConnection_(0),
+  localNode_(0),
+  routingTable_(0),
+  taskQueue_(0),
+  taskFactory_(0),
+  metadataGetMode_(false)
 {}
 
 DefaultBtMessageFactory::~DefaultBtMessageFactory() {}
@@ -251,7 +259,7 @@ void DefaultBtMessageFactory::setCommonProperty
   msg->setPieceStorage(pieceStorage_);
   msg->setBtMessageDispatcher(dispatcher_);
   msg->setBtRequestFactory(requestFactory_);
-  msg->setBtMessageFactory(WeakHandle<BtMessageFactory>(this));
+  msg->setBtMessageFactory(this);
   msg->setPeerConnection(peerConnection_);
   if(metadataGetMode_) {
     msg->enableMetadataGetMode();
@@ -460,14 +468,12 @@ DefaultBtMessageFactory::createBtExtendedMessage
   return m;
 }
 
-void DefaultBtMessageFactory::setTaskQueue
-(const WeakHandle<DHTTaskQueue>& taskQueue)
+void DefaultBtMessageFactory::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void DefaultBtMessageFactory::setTaskFactory
-(const WeakHandle<DHTTaskFactory>& taskFactory)
+void DefaultBtMessageFactory::setTaskFactory(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }
@@ -496,7 +502,7 @@ void DefaultBtMessageFactory::setPeerStorage
 }
 
 void DefaultBtMessageFactory::setBtMessageDispatcher
-(const WeakHandle<BtMessageDispatcher>& dispatcher)
+(BtMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
@@ -507,25 +513,22 @@ void DefaultBtMessageFactory::setExtensionMessageFactory
   extensionMessageFactory_ = factory;
 }
 
-void DefaultBtMessageFactory::setLocalNode(const WeakHandle<DHTNode>& localNode)
+void DefaultBtMessageFactory::setLocalNode(DHTNode* localNode)
 {
   localNode_ = localNode;
 }
 
-void DefaultBtMessageFactory::setRoutingTable
-(const WeakHandle<DHTRoutingTable>& routingTable)
+void DefaultBtMessageFactory::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }
 
-void DefaultBtMessageFactory::setBtRequestFactory
-(const WeakHandle<BtRequestFactory>& factory)
+void DefaultBtMessageFactory::setBtRequestFactory(BtRequestFactory* factory)
 {
   requestFactory_ = factory;
 }
 
-void DefaultBtMessageFactory::setPeerConnection
-(const WeakHandle<PeerConnection>& connection)
+void DefaultBtMessageFactory::setPeerConnection(PeerConnection* connection)
 {
   peerConnection_ = connection;
 }

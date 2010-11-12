@@ -44,7 +44,7 @@ SharedHandle<SimpleRandomizer> SimpleRandomizer::randomizer_;
 
 const SharedHandle<SimpleRandomizer>& SimpleRandomizer::getInstance()
 {
-  if(randomizer_.isNull()) {
+  if(!randomizer_) {
     randomizer_.reset(new SimpleRandomizer());
   }
   return randomizer_;

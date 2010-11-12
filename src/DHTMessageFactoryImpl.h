@@ -55,15 +55,15 @@ private:
 
   SharedHandle<DHTNode> localNode_;
 
-  WeakHandle<DHTConnection> connection_;
+  DHTConnection* connection_;
 
-  WeakHandle<DHTMessageDispatcher> dispatcher_;
+  DHTMessageDispatcher* dispatcher_;
 
-  WeakHandle<DHTRoutingTable> routingTable_;
+  DHTRoutingTable* routingTable_;
   
-  WeakHandle<DHTPeerAnnounceStorage> peerAnnounceStorage_;
+  DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
-  WeakHandle<DHTTokenTracker> tokenTracker_;
+  DHTTokenTracker* tokenTracker_;
 
   Logger* logger_;
   
@@ -155,16 +155,15 @@ public:
   createUnknownMessage(const unsigned char* data, size_t length,
                        const std::string& ipaddr, uint16_t port);
 
-  void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
+  void setRoutingTable(DHTRoutingTable* routingTable);
 
-  void setConnection(const WeakHandle<DHTConnection>& connection);
+  void setConnection(DHTConnection* connection);
 
-  void setMessageDispatcher(const WeakHandle<DHTMessageDispatcher>& dispatcher);
+  void setMessageDispatcher(DHTMessageDispatcher* dispatcher);
   
-  void setPeerAnnounceStorage
-  (const WeakHandle<DHTPeerAnnounceStorage>& storage);
+  void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 
-  void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
+  void setTokenTracker(DHTTokenTracker* tokenTracker);
 
   void setLocalNode(const SharedHandle<DHTNode>& localNode);
 };

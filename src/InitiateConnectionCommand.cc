@@ -77,7 +77,7 @@ bool InitiateConnectionCommand::executeInternal() {
   std::string hostname;
   uint16_t port;
   SharedHandle<Request> proxyRequest = createProxyRequest();
-  if(proxyRequest.isNull()) {
+  if(!proxyRequest) {
     hostname = getRequest()->getHost();
     port = getRequest()->getPort();
   } else {

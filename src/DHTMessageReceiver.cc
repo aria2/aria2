@@ -97,12 +97,12 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       std::pair<SharedHandle<DHTResponseMessage>,
                 SharedHandle<DHTMessageCallback> > p =
         tracker_->messageArrived(dict, remoteAddr, remotePort);
-      if(p.first.isNull()) {
+      if(!p.first) {
         // timeout or malicious? message
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
       onMessageReceived(p.first);
-      if(!p.second.isNull()) {
+      if(p.second) {
         p.second->onReceived(p.first);
       }
       return p.first;

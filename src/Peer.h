@@ -322,7 +322,7 @@ public:
     disconnectedGracefully_ = f;
   }
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt);
+  void setBtMessageDispatcher(BtMessageDispatcher* dpt);
 
   size_t countOutstandingUpload() const;
 };

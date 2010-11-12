@@ -217,7 +217,7 @@ SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
 
 uint64_t HttpResponse::getContentLength() const
 {
-  if(httpHeader_.isNull()) {
+  if(!httpHeader_) {
     return 0;
   } else {
     return httpHeader_->getRange()->getContentLength();
@@ -226,7 +226,7 @@ uint64_t HttpResponse::getContentLength() const
 
 uint64_t HttpResponse::getEntityLength() const
 {
-  if(httpHeader_.isNull()) {
+  if(!httpHeader_) {
     return 0;
   } else {
     return httpHeader_->getRange()->getEntityLength();
@@ -235,7 +235,7 @@ uint64_t HttpResponse::getEntityLength() const
 
 std::string HttpResponse::getContentType() const
 {
-  if(httpHeader_.isNull()) {
+  if(!httpHeader_) {
     return A2STR::NIL;
   } else {
     std::pair<std::string, std::string> p;

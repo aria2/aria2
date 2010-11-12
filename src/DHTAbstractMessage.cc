@@ -49,7 +49,12 @@ namespace aria2 {
 DHTAbstractMessage::DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
                                        const SharedHandle<DHTNode>& remoteNode,
                                        const std::string& transactionID):
-  DHTMessage(localNode, remoteNode, transactionID) {}
+  DHTMessage(localNode, remoteNode, transactionID),
+  connection_(0),
+  dispatcher_(0),
+  factory_(0),
+  routingTable_(0)
+ {}
 
 DHTAbstractMessage::~DHTAbstractMessage() {}
 
@@ -75,26 +80,22 @@ bool DHTAbstractMessage::send()
   return r == static_cast<ssize_t>(message.size());
 }
 
-void DHTAbstractMessage::setConnection
-(const WeakHandle<DHTConnection>& connection)
+void DHTAbstractMessage::setConnection(DHTConnection* connection)
 {
   connection_ = connection;
 }
 
-void DHTAbstractMessage::setMessageDispatcher
-(const WeakHandle<DHTMessageDispatcher>& dispatcher)
+void DHTAbstractMessage::setMessageDispatcher(DHTMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DHTAbstractMessage::setMessageFactory
-(const WeakHandle<DHTMessageFactory>& factory)
+void DHTAbstractMessage::setMessageFactory(DHTMessageFactory* factory)
 {
   factory_ = factory;
 }
 
-void DHTAbstractMessage::setRoutingTable
-(const WeakHandle<DHTRoutingTable>& routingTable)
+void DHTAbstractMessage::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }

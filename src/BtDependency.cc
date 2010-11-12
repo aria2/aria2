@@ -51,7 +51,7 @@
 
 namespace aria2 {
 
-BtDependency::BtDependency(const WeakHandle<RequestGroup>& dependant,
+BtDependency::BtDependency(RequestGroup* dependant,
                            const SharedHandle<RequestGroup>& dependee):
   dependant_(dependant),
   dependee_(dependee),

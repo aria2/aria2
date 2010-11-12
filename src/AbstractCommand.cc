@@ -90,7 +90,7 @@ AbstractCommand::AbstractCommand(cuid_t cuid,
   nameResolverCheck_(false),
   incNumConnection_(incNumConnection)
 {
-  if(!socket_.isNull() && socket_->isOpen()) {
+  if(socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);
   }
   if(incNumConnection_) {
@@ -126,7 +126,7 @@ bool AbstractCommand::execute() {
     if(requestGroup_->downloadFinished() || requestGroup_->isHaltRequested()) {
       return true;
     }
-    if(!req_.isNull() && req_->removalRequested()) {
+    if(req_ && req_->removalRequested()) {
       if(getLogger()->debug()) {
         getLogger()->debug
           ("CUID#%s - Discard original URI=%s because it is requested.",
@@ -134,10 +134,10 @@ bool AbstractCommand::execute() {
       }
       return prepareForRetry(0);
     }
-    if(!getPieceStorage().isNull()) {
+    if(getPieceStorage()) {
       segments_.clear();
       getSegmentMan()->getInFlightSegment(segments_, getCuid());
-      if(!req_.isNull() && segments_.empty()) {
+      if(req_ && segments_.empty()) {
         // This command previously has assigned segments, but it is
         // canceled. So discard current request chain.  Plus, if no
         // segment is available when http pipelining is used.
@@ -149,17 +149,17 @@ bool AbstractCommand::execute() {
         // Request::isPipeliningEnabled() == true means aria2
         // accessed the remote server and discovered that the server
         // supports pipelining.
-        if(!req_.isNull() && req_->isPipeliningEnabled()) {
+        if(req_ && req_->isPipeliningEnabled()) {
           e_->poolSocket(req_, createProxyRequest(), socket_);
         }
         return prepareForRetry(0);
       }
       // TODO it is not needed to check other PeerStats every time.
       // Find faster Request when no segment is available.
-      if(!req_.isNull() && fileEntry_->countPooledRequest() > 0 &&
+      if(req_ && fileEntry_->countPooledRequest() > 0 &&
          !getPieceStorage()->hasMissingUnusedPiece()) {
         SharedHandle<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
-        if(!fasterRequest.isNull()) {
+        if(fasterRequest) {
           if(getLogger()->info()) {
             getLogger()->info("CUID#%s - Use faster Request hostname=%s, port=%u",
                               util::itos(getCuid()).c_str(),
@@ -186,18 +186,18 @@ bool AbstractCommand::execute() {
        (!checkSocketIsReadable_ && !checkSocketIsWritable_ &&
         !nameResolverCheck_)) {
       checkPoint_ = global::wallclock;
-      if(!getPieceStorage().isNull()) {
-        if(req_.isNull() || req_->getMaxPipelinedRequest() == 1 ||
+      if(getPieceStorage()) {
+        if(!req_ || req_->getMaxPipelinedRequest() == 1 ||
            // Why the following condition is necessary? That's because
            // For single file download, SegmentMan::getSegment(cuid)
            // is more efficient.
            getDownloadContext()->getFileEntries().size() == 1) {
-          size_t maxSegments = req_.isNull()?1:req_->getMaxPipelinedRequest();
+          size_t maxSegments = req_?req_->getMaxPipelinedRequest():1;
           size_t minSplitSize = calculateMinSplitSize();
           while(segments_.size() < maxSegments) {
             SharedHandle<Segment> segment =
               getSegmentMan()->getSegment(getCuid(), minSplitSize);
-            if(segment.isNull()) {
+            if(!segment) {
               break;
             } else {
               segments_.push_back(segment);
@@ -272,7 +272,7 @@ bool AbstractCommand::execute() {
       return false;
     }
   } catch(DlAbortEx& err) {
-    if(req_.isNull()) {
+    if(!req_) {
       if(getLogger()->debug()) {
         getLogger()->debug(EX_EXCEPTION_CAUGHT, err);
       }
@@ -292,7 +292,7 @@ bool AbstractCommand::execute() {
     tryReserved();
     return true;
   } catch(DlRetryEx& err) {
-    assert(!req_.isNull());
+    assert(req_);
     if(getLogger()->info()) {
       getLogger()->info
         (MSG_RESTARTING_DOWNLOAD,
@@ -327,7 +327,7 @@ bool AbstractCommand::execute() {
     }
   } catch(DownloadFailureException& err) {
     getLogger()->error(EX_EXCEPTION_CAUGHT, err);
-    if(!req_.isNull()) {
+    if(req_) {
       fileEntry_->addURIResult(req_->getUri(), err.getCode());
       requestGroup_->setLastUriResult(req_->getUri(), err.getCode());
     }
@@ -364,16 +364,16 @@ void AbstractCommand::tryReserved() {
 }
 
 bool AbstractCommand::prepareForRetry(time_t wait) {
-  if(!getPieceStorage().isNull()) {
+  if(getPieceStorage()) {
     getSegmentMan()->cancelSegment(getCuid());
   }
-  if(!req_.isNull()) {
+  if(req_) {
     fileEntry_->poolRequest(req_);
     if(getLogger()->debug()) {
       getLogger()->debug("CUID#%s - Pooling request URI=%s",
                          util::itos(getCuid()).c_str(), req_->getUri().c_str());
     }
-    if(!getSegmentMan().isNull()) {
+    if(getSegmentMan()) {
       getSegmentMan()->recognizeSegmentFor(fileEntry_);
     }
   }
@@ -391,7 +391,7 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
 }
 
 void AbstractCommand::onAbort() {
-  if(!req_.isNull()) {
+  if(req_) {
     fileEntry_->removeIdenticalURI(req_->getUri());
     fileEntry_->removeRequest(req_);
   }
@@ -399,13 +399,13 @@ void AbstractCommand::onAbort() {
     getLogger()->debug("CUID#%s - Aborting download",
                        util::itos(getCuid()).c_str());
   }
-  if(!getPieceStorage().isNull()) {
+  if(getPieceStorage()) {
     getSegmentMan()->cancelSegment(getCuid());
     // Don't do following process if BitTorrent is involved or files
     // in DownloadContext is more than 1. The latter condition is
     // limitation of current implementation.
     if(!getOption()->getAsBool(PREF_ALWAYS_RESUME) &&
-       !fileEntry_.isNull() &&
+       fileEntry_ &&
        getSegmentMan()->calculateSessionDownloadLength() == 0 &&
        !requestGroup_->p2pInvolved() &&
        getDownloadContext()->getFileEntries().size() == 1) {
@@ -660,7 +660,7 @@ SharedHandle<Request> AbstractCommand::createProxyRequest() const
 
 bool AbstractCommand::isAsyncNameResolverInitialized() const
 {
-  return !asyncNameResolver_.isNull();
+  return asyncNameResolver_;
 }
 
 void AbstractCommand::initAsyncNameResolver(const std::string& hostname)
@@ -709,7 +709,7 @@ const std::vector<std::string>& AbstractCommand::getResolvedAddresses()
 
 void AbstractCommand::setNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver) {
-  if(!resolver.isNull()) {
+  if(resolver) {
     nameResolverCheck_ = true;
     e_->addNameResolverCheck(resolver, this);
   }
@@ -717,7 +717,7 @@ void AbstractCommand::setNameResolverCheck
 
 void AbstractCommand::disableNameResolverCheck
 (const SharedHandle<AsyncNameResolver>& resolver) {
-  if(!resolver.isNull()) {
+  if(resolver) {
     nameResolverCheck_ = false;
     e_->deleteNameResolverCheck(resolver, this);
   }
@@ -854,7 +854,7 @@ void AbstractCommand::createSocket()
 
 size_t AbstractCommand::calculateMinSplitSize() const
 {
-  if(!req_.isNull() && req_->isPipeliningEnabled()) {
+  if(req_ && req_->isPipeliningEnabled()) {
     return getDownloadContext()->getPieceLength();
   } else {
     return getOption()->getAsInt(PREF_MIN_SPLIT_SIZE);

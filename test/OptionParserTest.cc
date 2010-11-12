@@ -104,32 +104,32 @@ void OptionParserTest::testFindByTag()
 void OptionParserTest::testFindByName()
 {
   SharedHandle<OptionHandler> bravo = oparser_->findByName("bravo");
-  CPPUNIT_ASSERT(!bravo.isNull());
+  CPPUNIT_ASSERT(bravo);
   CPPUNIT_ASSERT_EQUAL(std::string("bravo"), bravo->getName());
 
   SharedHandle<OptionHandler> charlie = oparser_->findByName("charlie");
-  CPPUNIT_ASSERT(charlie.isNull());
+  CPPUNIT_ASSERT(!charlie);
 
   SharedHandle<OptionHandler> alpha2 = oparser_->findByName("alpha2");
-  CPPUNIT_ASSERT(alpha2.isNull());
+  CPPUNIT_ASSERT(!alpha2);
 }
 
 void OptionParserTest::testFindByShortName()
 {
   SharedHandle<OptionHandler> alpha = oparser_->findByShortName('A');
-  CPPUNIT_ASSERT(!alpha.isNull());
+  CPPUNIT_ASSERT(alpha);
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), alpha->getName());
 
-  CPPUNIT_ASSERT(oparser_->findByShortName('C').isNull());
+  CPPUNIT_ASSERT(!oparser_->findByShortName('C'));
 }
 
 void OptionParserTest::testFindByID()
 {
   SharedHandle<OptionHandler> alpha = oparser_->findByID(1);
-  CPPUNIT_ASSERT(!alpha.isNull());
+  CPPUNIT_ASSERT(alpha);
   CPPUNIT_ASSERT_EQUAL(std::string("alpha"), alpha->getName());
 
-  CPPUNIT_ASSERT(oparser_->findByID(3).isNull());
+  CPPUNIT_ASSERT(!oparser_->findByID(3));
 }
 
 void OptionParserTest::testParseDefaultValues()

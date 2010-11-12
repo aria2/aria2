@@ -115,7 +115,7 @@ void DHTSetup::setup
       logger_->error("Exception caught while loading DHT routing table from %s",
                      e, dhtFile.c_str());
     }
-    if(localNode.isNull()) {
+    if(!localNode) {
       localNode.reset(new DHTNode());
     }
 
@@ -167,10 +167,10 @@ void DHTSetup::setup
     receiver->setRoutingTable(routingTable);
 
     taskFactory->setLocalNode(localNode);
-    taskFactory->setRoutingTable(routingTable);
-    taskFactory->setMessageDispatcher(dispatcher);
-    taskFactory->setMessageFactory(factory);
-    taskFactory->setTaskQueue(taskQueue);
+    taskFactory->setRoutingTable(routingTable.get());
+    taskFactory->setMessageDispatcher(dispatcher.get());
+    taskFactory->setMessageFactory(factory.get());
+    taskFactory->setTaskQueue(taskQueue.get());
     taskFactory->setTimeout(messageTimeout);
 
     routingTable->setTaskQueue(taskQueue);
@@ -179,11 +179,11 @@ void DHTSetup::setup
     peerAnnounceStorage->setTaskQueue(taskQueue);
     peerAnnounceStorage->setTaskFactory(taskFactory);
 
-    factory->setRoutingTable(routingTable);
-    factory->setConnection(connection);
-    factory->setMessageDispatcher(dispatcher);
-    factory->setPeerAnnounceStorage(peerAnnounceStorage);
-    factory->setTokenTracker(tokenTracker);
+    factory->setRoutingTable(routingTable.get());
+    factory->setConnection(connection.get());
+    factory->setMessageDispatcher(dispatcher.get());
+    factory->setPeerAnnounceStorage(peerAnnounceStorage.get());
+    factory->setTokenTracker(tokenTracker.get());
     factory->setLocalNode(localNode);
 
     // assign them into DHTRegistry

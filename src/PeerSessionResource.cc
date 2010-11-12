@@ -57,7 +57,8 @@ PeerSessionResource::PeerSessionResource(size_t pieceLength, uint64_t totalLengt
   extendedMessagingEnabled_(false),
   dhtEnabled_(false),
   lastDownloadUpdate_(0),
-  lastAmUnchoking_(0)
+  lastAmUnchoking_(0),
+  dispatcher_(0)
 {}
 
 PeerSessionResource::~PeerSessionResource()
@@ -263,15 +264,14 @@ uint64_t PeerSessionResource::getCompletedLength() const
   return bitfieldMan_->getCompletedLength();
 }
 
-void PeerSessionResource::setBtMessageDispatcher
-(const WeakHandle<BtMessageDispatcher>& dpt)
+void PeerSessionResource::setBtMessageDispatcher(BtMessageDispatcher* dpt)
 {
   dispatcher_ = dpt;
 }
 
 size_t PeerSessionResource::countOutstandingUpload() const
 {
-  assert(!dispatcher_.isNull());
+  assert(dispatcher_);
   return dispatcher_->countOutstandingUpload();
 }
 

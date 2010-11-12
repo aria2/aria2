@@ -84,17 +84,17 @@ bool LpdReceiveMessageCommand::execute()
   }
   for(size_t i = 0; i < 20; ++i) {
     SharedHandle<LpdMessage> m = receiver_->receiveMessage();
-    if(m.isNull()) {
+    if(!m) {
       break;
     }
-    if(m->getPeer().isNull()) {
+    if(!m->getPeer()) {
       // bad message
       continue;
     }
     SharedHandle<BtRegistry> reg = e_->getBtRegistry();
     SharedHandle<DownloadContext> dctx =
       reg->getDownloadContext(m->getInfoHash());
-    if(dctx.isNull()) {
+    if(!dctx) {
       if(getLogger()->debug()) {
         getLogger()->debug("Download Context is null for infohash=%s.",
                            util::toHex(m->getInfoHash()).c_str());
@@ -113,7 +113,7 @@ bool LpdReceiveMessageCommand::execute()
     BtObject btobj = reg->get(group->getGID());
     assert(!btobj.isNull());
     SharedHandle<PeerStorage> peerStorage = btobj.peerStorage_;
-    assert(!peerStorage.isNull());
+    assert(peerStorage);
     SharedHandle<Peer> peer = m->getPeer();
     if(peerStorage->addPeer(peer)) {
       if(getLogger()->debug()) {

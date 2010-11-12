@@ -48,7 +48,11 @@ namespace aria2 {
 
 DHTAbstractTask::DHTAbstractTask():
   finished_(false),
-  logger_(LogFactory::getInstance())
+  logger_(LogFactory::getInstance()),
+  routingTable_(0),
+  dispatcher_(0),
+  factory_(0),
+  taskQueue_(0)
 {}
 
 bool DHTAbstractTask::finished()
@@ -56,22 +60,22 @@ bool DHTAbstractTask::finished()
   return finished_;
 }
 
-void DHTAbstractTask::setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable)
+void DHTAbstractTask::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }
 
-void DHTAbstractTask::setMessageDispatcher(const WeakHandle<DHTMessageDispatcher> dispatcher)
+void DHTAbstractTask::setMessageDispatcher(DHTMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DHTAbstractTask::setMessageFactory(const WeakHandle<DHTMessageFactory> factory)
+void DHTAbstractTask::setMessageFactory(DHTMessageFactory* factory)
 {
   factory_ = factory;
 }
 
-void DHTAbstractTask::setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue)
+void DHTAbstractTask::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }

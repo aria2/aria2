@@ -183,7 +183,7 @@ bool HttpRequestCommand::executeInternal() {
         if(!httpConnection_->isIssued(segment)) {
           off_t endOffset = 0;
           if(getRequestGroup()->getTotalLength() > 0 &&
-             !getPieceStorage().isNull()) {
+             getPieceStorage()) {
             size_t nextIndex =
               getPieceStorage()->getNextUsedIndex(segment->getIndex());
             endOffset = std::min

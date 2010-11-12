@@ -83,8 +83,8 @@ void DHTPingMessageTest::testDoReceivedAction()
   factory.setLocalNode(localNode);
 
   DHTPingMessage msg(localNode, remoteNode, transactionID);
-  msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>(&dispatcher));
-  msg.setMessageFactory(WeakHandle<DHTMessageFactory>(&factory));
+  msg.setMessageDispatcher(&dispatcher);
+  msg.setMessageFactory(&factory);
 
   msg.doReceivedAction();
 

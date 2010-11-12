@@ -60,6 +60,8 @@ namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
   cuid(0),
+  messageFactory_(0),
+  requestGroupMan_(0),
   requestTimeout_(0),
   logger_(LogFactory::getInstance()) {}
 
@@ -266,14 +268,14 @@ private:
   SharedHandle<Peer> peer_;
   SharedHandle<PieceStorage> pieceStorage_;
   BtMessageDispatcher* messageDispatcher_;
-  WeakHandle<BtMessageFactory> messageFactory_;
+  BtMessageFactory* messageFactory_;
   time_t requestTimeout_;
   Logger* logger_;
 public:
   ProcessStaleRequestSlot(cuid_t cuid, const SharedHandle<Peer>& peer,
                           const SharedHandle<PieceStorage>& pieceStorage,
                           BtMessageDispatcher* dispatcher,
-                          const WeakHandle<BtMessageFactory>& factory,
+                          BtMessageFactory* factory,
                           time_t requestTimeout):
     cuid_(cuid),
     peer_(peer),
@@ -453,14 +455,12 @@ void DefaultBtMessageDispatcher::setPeerStorage
   peerStorage_ = peerStorage;
 }
 
-void DefaultBtMessageDispatcher::setBtMessageFactory
-(const WeakHandle<BtMessageFactory>& factory)
+void DefaultBtMessageDispatcher::setBtMessageFactory(BtMessageFactory* factory)
 {
   messageFactory_ = factory;
 }
 
-void DefaultBtMessageDispatcher::setRequestGroupMan
-(const WeakHandle<RequestGroupMan>& rgman)
+void DefaultBtMessageDispatcher::setRequestGroupMan(RequestGroupMan* rgman)
 {
   requestGroupMan_ = rgman;
 }

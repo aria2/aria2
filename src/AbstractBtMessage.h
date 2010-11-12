@@ -62,13 +62,13 @@ private:
 
   SharedHandle<Peer> peer_;
 
-  WeakHandle<BtMessageDispatcher> dispatcher_;
+  BtMessageDispatcher* dispatcher_;
 
-  WeakHandle<BtMessageFactory> messageFactory_;
+  BtMessageFactory* messageFactory_;
 
-  WeakHandle<BtRequestFactory> requestFactory_;
+  BtRequestFactory* requestFactory_;
 
-  WeakHandle<PeerConnection> peerConnection_;
+  PeerConnection* peerConnection_;
 
   SharedHandle<BtMessageValidator> validator_;
 
@@ -86,22 +86,22 @@ protected:
     return pieceStorage_;
   }
 
-  const WeakHandle<PeerConnection>& getPeerConnection() const
+  PeerConnection* getPeerConnection() const
   {
     return peerConnection_;
   }
 
-  const WeakHandle<BtMessageDispatcher>& getBtMessageDispatcher() const
+  BtMessageDispatcher* getBtMessageDispatcher() const
   {
     return dispatcher_;
   }
 
-  const WeakHandle<BtRequestFactory>& getBtRequestFactory() const
+  BtRequestFactory* getBtRequestFactory() const
   {
     return requestFactory_;
   }
 
-  const WeakHandle<BtMessageFactory>& getBtMessageFactory() const
+  BtMessageFactory* getBtMessageFactory() const
   {
     return messageFactory_;
   }
@@ -172,14 +172,13 @@ public:
 
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
-  void setBtMessageDispatcher
-  (const WeakHandle<BtMessageDispatcher>& dispatcher);
+  void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 
-  void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
+  void setPeerConnection(PeerConnection* peerConnection);
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
+  void setBtMessageFactory(BtMessageFactory* factory);
 
-  void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
+  void setBtRequestFactory(BtRequestFactory* factory);
 
   const std::string& getName() const
   {

@@ -160,7 +160,7 @@ FileEntry::getRequest
         }
       }
       uris_.insert(uris_.begin(), pending.begin(), pending.end());
-      if(g == 0 && uriReuse && req.isNull() && uris_.size() == pending.size()) {
+      if(g == 0 && uriReuse && !req && uris_.size() == pending.size()) {
         // Reuse URIs other than ones in pending
         reuseUri(ignoreHost);
       } else {
@@ -187,12 +187,12 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
     return SharedHandle<Request>();
   }
   const SharedHandle<PeerStat>& fastest = requestPool_.front()->getPeerStat();
-  if(fastest.isNull()) {
+  if(!fastest) {
     return SharedHandle<Request>();
   }
   const SharedHandle<PeerStat>& basestat = base->getPeerStat();
   // TODO hard coded value. See PREF_STARTUP_IDLE_TIME
-  if(basestat.isNull() ||
+  if(!basestat ||
      (basestat->getDownloadStartTime().
       difference(global::wallclock) >= startupIdleTime &&
       fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
@@ -212,10 +212,10 @@ public:
   bool operator()(const SharedHandle<Request>& lhs,
                   const SharedHandle<Request>& rhs) const
   {
-    if(lhs->getPeerStat().isNull()) {
+    if(!lhs->getPeerStat()) {
       return false;
     }
-    if(rhs->getPeerStat().isNull()) {
+    if(!rhs->getPeerStat()) {
       return true;
     }
     return
@@ -227,7 +227,7 @@ public:
 void FileEntry::storePool(const SharedHandle<Request>& request)
 {
   const SharedHandle<PeerStat>& peerStat = request->getPeerStat();
-  if(!peerStat.isNull()) {
+  if(peerStat) {
     // We need to calculate average download speed here in order to
     // store Request in the right position in the pool.
     peerStat->calculateAvgDownloadSpeed();

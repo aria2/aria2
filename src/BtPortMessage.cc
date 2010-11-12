@@ -52,7 +52,12 @@ namespace aria2 {
 const std::string BtPortMessage::NAME("port");
 
 BtPortMessage::BtPortMessage(uint16_t port):
-  SimpleBtMessage(ID, NAME), port_(port) {}
+  SimpleBtMessage(ID, NAME), port_(port),
+  localNode_(0),
+  routingTable_(0),
+  taskQueue_(0),
+  taskFactory_(0)
+ {}
 
 SharedHandle<BtPortMessage> BtPortMessage::create
 (const unsigned char* data, size_t dataLength)
@@ -66,7 +71,7 @@ SharedHandle<BtPortMessage> BtPortMessage::create
 
 void BtPortMessage::doReceivedAction()
 {
-  if(!taskFactory_.isNull() && !taskQueue_.isNull()) {
+  if(taskFactory_ && taskQueue_) {
     if(port_ == 0) {
       if(getLogger()->debug()) {
         getLogger()->debug("Ignored port 0.");
@@ -116,22 +121,22 @@ std::string BtPortMessage::toString() const {
   return strconcat(NAME, " port=", util::uitos(port_));
 }
 
-void BtPortMessage::setLocalNode(const WeakHandle<DHTNode>& localNode)
+void BtPortMessage::setLocalNode(DHTNode* localNode)
 {
   localNode_ = localNode;
 }
 
-void BtPortMessage::setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable)
+void BtPortMessage::setRoutingTable(DHTRoutingTable* routingTable)
 {
   routingTable_ = routingTable;
 }
 
-void BtPortMessage::setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue)
+void BtPortMessage::setTaskQueue(DHTTaskQueue* taskQueue)
 {
   taskQueue_ = taskQueue;
 }
 
-void BtPortMessage::setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory)
+void BtPortMessage::setTaskFactory(DHTTaskFactory* taskFactory)
 {
   taskFactory_ = taskFactory;
 }

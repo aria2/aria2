@@ -48,9 +48,9 @@ class DHTGetPeersMessage:public DHTQueryMessage {
 private:
   unsigned char infoHash_[DHT_ID_LENGTH];
 
-  WeakHandle<DHTPeerAnnounceStorage> peerAnnounceStorage_;
+  DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
-  WeakHandle<DHTTokenTracker> tokenTracker_;
+  DHTTokenTracker* tokenTracker_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -72,10 +72,9 @@ public:
     return infoHash_;
   }
 
-  void setPeerAnnounceStorage
-  (const WeakHandle<DHTPeerAnnounceStorage>& storage);
+  void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 
-  void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
+  void setTokenTracker(DHTTokenTracker* tokenTracker);
 
   static const std::string GET_PEERS;
 

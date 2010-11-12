@@ -52,7 +52,10 @@
 namespace aria2 {
 
 UTMetadataRequestExtensionMessage::UTMetadataRequestExtensionMessage
-(uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID) {}
+(uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID),
+                             dispatcher_(0),
+                             messageFactory_(0)
+{}
 
 std::string UTMetadataRequestExtensionMessage::getPayload()
 {

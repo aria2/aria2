@@ -38,6 +38,15 @@
 #include <cassert>
 #include <iosfwd>
 
+// To Use std::tr1::shared_ptr uncomment following few lines and
+// comment out SharedHandle stuff.
+// 
+// #include <tr1/memory>
+// #define SharedHandle std::tr1::shared_ptr
+// #define WeakHandle std::tr1::weak_ptr
+// using std::tr1::static_pointer_cast;
+// using std::tr1::dynamic_pointer_cast;
+
 namespace aria2 {
 
 typedef struct StrongRef {} StrongRef;
@@ -235,6 +244,13 @@ public:
     return *this;
   }
 
+private:
+  typedef T* SharedHandle::*unspecified_bool_type;
+public:
+  operator unspecified_bool_type() const {
+    return obj_ == 0 ? 0 : &SharedHandle::obj_;
+  }
+
   T* operator->() const { return obj_; }
 
   T& operator*() const {
@@ -256,10 +272,6 @@ public:
 
   void reset(T* t) {
     *this = SharedHandle(t);
-  }
-
-  bool isNull() const {
-    return obj_ == 0;
   }
 };
 
@@ -370,7 +382,7 @@ public:
   }
 
   T* get() const {
-    if(isNull()) {
+    if(ucount_.getRefCount() == 0 || obj_ == 0) {
       return 0;
     } else {
       return obj_;
@@ -383,10 +395,6 @@ public:
 
   void reset() {
     *this = WeakHandle();
-  }
-
-  bool isNull() const {
-    return ucount_.getRefCount() == 0 || obj_ == 0;
   }
 };
 

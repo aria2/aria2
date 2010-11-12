@@ -51,6 +51,8 @@
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory():
+  dispatcher_(0),
+  messageFactory_(0),
   logger_(LogFactory::getInstance())
 {
   if(logger_->debug()) {
@@ -74,9 +76,9 @@ namespace {
 class AbortCompletedPieceRequest
 {
 private:
-  WeakHandle<BtMessageDispatcher> dispatcher_;
+  BtMessageDispatcher* dispatcher_;
 public:
-  AbortCompletedPieceRequest(const WeakHandle<BtMessageDispatcher>& dispatcher):
+  AbortCompletedPieceRequest(BtMessageDispatcher* dispatcher):
     dispatcher_(dispatcher) {}
 
   void operator()(const SharedHandle<Piece>& piece)
@@ -110,10 +112,10 @@ namespace {
 class ProcessChokedPiece {
 private:
   SharedHandle<Peer> peer_;
-  WeakHandle<PieceStorage> pieceStorage_;
+  SharedHandle<PieceStorage> pieceStorage_;
 public:
   ProcessChokedPiece(const SharedHandle<Peer>& peer,
-                     const WeakHandle<PieceStorage>& pieceStorage):
+                     const SharedHandle<PieceStorage>& pieceStorage):
     peer_(peer),
     pieceStorage_(pieceStorage) {}
 
@@ -280,13 +282,12 @@ void DefaultBtRequestFactory::setPeer(const SharedHandle<Peer>& peer)
 }
 
 void DefaultBtRequestFactory::setBtMessageDispatcher
-(const WeakHandle<BtMessageDispatcher>& dispatcher)
+(BtMessageDispatcher* dispatcher)
 {
   dispatcher_ = dispatcher;
 }
 
-void DefaultBtRequestFactory::setBtMessageFactory
-(const WeakHandle<BtMessageFactory>& factory)
+void DefaultBtRequestFactory::setBtMessageFactory(BtMessageFactory* factory)
 {
   messageFactory_ = factory;
 }

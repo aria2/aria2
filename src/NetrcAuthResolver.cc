@@ -43,7 +43,7 @@ NetrcAuthResolver::NetrcAuthResolver():ignoreDefault_(false) {}
 SharedHandle<AuthConfig>
 NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
-  if(getUserDefinedAuthConfig().isNull()) {
+  if(!getUserDefinedAuthConfig()) {
     return findNetrcAuthenticator(hostname);
   } else {
     return getUserDefinedAuthConfig();
@@ -53,11 +53,11 @@ NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 SharedHandle<AuthConfig>
 NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 {
-  if(netrc_.isNull()) {
+  if(!netrc_) {
     return getDefaultAuthConfig();
   } else {
     SharedHandle<Authenticator> auth = netrc_->findAuthenticator(hostname);
-    if(auth.isNull()) {
+    if(!auth) {
       return getDefaultAuthConfig();
     } else {
       if(ignoreDefault_ && auth->getMachine().empty()) {

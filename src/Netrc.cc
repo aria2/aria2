@@ -105,7 +105,7 @@ void Netrc::parse(const std::string& path)
           storeAuthenticator(authenticator);
           authenticator.reset(new DefaultAuthenticator());
         } else {
-          if(authenticator.isNull()) {
+          if(!authenticator) {
             throw DL_ABORT_EX
               (StringFormat("Netrc:parse error. %s encounterd where 'machine'"
                             " or 'default' expected.", token.c_str()).str());
@@ -145,7 +145,7 @@ void Netrc::parse(const std::string& path)
 
 void Netrc::storeAuthenticator(const SharedHandle<Authenticator>& authenticator)
 {
-  if(!authenticator.isNull()) {
+  if(authenticator) {
     authenticators_.push_back(authenticator);
   }
 }

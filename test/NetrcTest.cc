@@ -45,25 +45,25 @@ void NetrcTest::testFindAuthenticator()
     (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
 
   SharedHandle<Authenticator> aria2auth = netrc.findAuthenticator("host2");
-  CPPUNIT_ASSERT(!aria2auth.isNull());
+  CPPUNIT_ASSERT(aria2auth);
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
 
   SharedHandle<Authenticator> defaultauth = netrc.findAuthenticator("host3");
-  CPPUNIT_ASSERT(!defaultauth.isNull());
+  CPPUNIT_ASSERT(defaultauth);
   CPPUNIT_ASSERT_EQUAL(std::string("default"), defaultauth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("defaultpassword"), defaultauth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("defaultaccount"), defaultauth->getAccount());
 
   SharedHandle<Authenticator> domainMatchAuth =
     netrc.findAuthenticator("host3.my.domain");
-  CPPUNIT_ASSERT(!domainMatchAuth.isNull());
+  CPPUNIT_ASSERT(domainMatchAuth);
   CPPUNIT_ASSERT_EQUAL(std::string("dmname"), domainMatchAuth->getLogin());
 
   SharedHandle<Authenticator> domainMatchAuth2 =
     netrc.findAuthenticator("my.domain");
-  CPPUNIT_ASSERT(!domainMatchAuth2.isNull());
+  CPPUNIT_ASSERT(domainMatchAuth2);
   CPPUNIT_ASSERT_EQUAL(std::string("dmname"), domainMatchAuth2->getLogin());
 }
 
@@ -75,21 +75,21 @@ void NetrcTest::testParse()
     netrc.getAuthenticators().begin();
 
   SharedHandle<Authenticator> tujikawaauth = *itr;
-  CPPUNIT_ASSERT(!tujikawaauth.isNull());
+  CPPUNIT_ASSERT(tujikawaauth);
   CPPUNIT_ASSERT_EQUAL(std::string("host1"), tujikawaauth->getMachine());
   CPPUNIT_ASSERT_EQUAL(std::string("tujikawa"), tujikawaauth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("tujikawapassword"), tujikawaauth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("tujikawaaccount"), tujikawaauth->getAccount());
   ++itr;
   SharedHandle<Authenticator> aria2auth = *itr;
-  CPPUNIT_ASSERT(!aria2auth.isNull());
+  CPPUNIT_ASSERT(aria2auth);
   CPPUNIT_ASSERT_EQUAL(std::string("host2"), aria2auth->getMachine());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
   ++itr;
   SharedHandle<Authenticator> defaultauth = *itr;
-  CPPUNIT_ASSERT(!defaultauth.isNull());
+  CPPUNIT_ASSERT(defaultauth);
   CPPUNIT_ASSERT_EQUAL(std::string("anonymous"), defaultauth->getLogin());
   CPPUNIT_ASSERT_EQUAL(std::string("ARIA2@USER"), defaultauth->getPassword());
   CPPUNIT_ASSERT_EQUAL(std::string("ARIA2@ACCT"), defaultauth->getAccount());

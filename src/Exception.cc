@@ -64,7 +64,7 @@ std::string Exception::stackTrace() const
   }
   s  << what() << "\n";
   SharedHandle<Exception> e = cause_;
-  while(!e.isNull()) {
+  while(e) {
     s << "  -> " << "[" << e->file_ << ":" << e->line_ << "] "
       << e->what() << "\n";
     e = e->cause_;

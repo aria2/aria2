@@ -99,7 +99,7 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
     createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
                                     std::vector<std::string>(), torrent, false);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
-    if(!requestGroup->getMetadataInfo().isNull()) {
+    if(requestGroup->getMetadataInfo()) {
       setMetadataInfo(newRgs.begin(), newRgs.end(),
                       requestGroup->getMetadataInfo());
     }

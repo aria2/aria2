@@ -146,7 +146,7 @@ void Bencode2Test::testDecode()
   }
   {
     // empty encoded data
-    CPPUNIT_ASSERT(bencode2::decode("").isNull());
+    CPPUNIT_ASSERT(!bencode2::decode(""));
   }
   {
     // ignore trailing garbage at the end of the input.

@@ -103,14 +103,14 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_reject()
   msg.setIndex(10);
   msg.setDownloadContext(dctx_);
   msg.setPeer(peer_);
-  msg.setBtMessageFactory(messageFactory_);
-  msg.setBtMessageDispatcher(dispatcher_);
+  msg.setBtMessageFactory(messageFactory_.get());
+  msg.setBtMessageDispatcher(dispatcher_.get());
   msg.doReceivedAction();
 
   SharedHandle<UTMetadataRejectExtensionMessage> m =
     getFirstDispatchedMessage<UTMetadataRejectExtensionMessage>();
 
-  CPPUNIT_ASSERT(!m.isNull());
+  CPPUNIT_ASSERT(m);
   CPPUNIT_ASSERT_EQUAL((size_t)10, m->getIndex());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, m->getExtensionMessageID());
 }
@@ -121,8 +121,8 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
   msg.setIndex(1);
   msg.setDownloadContext(dctx_);
   msg.setPeer(peer_);
-  msg.setBtMessageFactory(messageFactory_);
-  msg.setBtMessageDispatcher(dispatcher_);
+  msg.setBtMessageFactory(messageFactory_.get());
+  msg.setBtMessageDispatcher(dispatcher_.get());
 
   size_t metadataSize = METADATA_PIECE_SIZE*2;
   SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
@@ -136,7 +136,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
   SharedHandle<UTMetadataDataExtensionMessage> m =
     getFirstDispatchedMessage<UTMetadataDataExtensionMessage>();
 
-  CPPUNIT_ASSERT(!m.isNull());
+  CPPUNIT_ASSERT(m);
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getIndex());
   CPPUNIT_ASSERT_EQUAL(second, m->getData());
   CPPUNIT_ASSERT_EQUAL(metadataSize, m->getTotalSize());
@@ -155,7 +155,7 @@ void UTMetadataRequestExtensionMessageTest::testDoReceivedAction_data()
 
   m = getFirstDispatchedMessage<UTMetadataDataExtensionMessage>();
 
-  CPPUNIT_ASSERT(!m.isNull());
+  CPPUNIT_ASSERT(m);
   CPPUNIT_ASSERT_EQUAL((size_t)2, m->getIndex());
   CPPUNIT_ASSERT_EQUAL(third, m->getData());
   CPPUNIT_ASSERT_EQUAL(metadataSize, m->getTotalSize());

@@ -52,9 +52,9 @@ private:
 
   uint16_t tcpPort_;
 
-  WeakHandle<DHTPeerAnnounceStorage> peerAnnounceStorage_;
+  DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
-  WeakHandle<DHTTokenTracker> tokenTracker_;
+  DHTTokenTracker* tokenTracker_;
 protected:
   virtual std::string toStringOptional() const;
 public:
@@ -90,9 +90,9 @@ public:
     return tcpPort_;
   }
 
-  void setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage);
+  void setPeerAnnounceStorage(DHTPeerAnnounceStorage* storage);
 
-  void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
+  void setTokenTracker(DHTTokenTracker* tokenTracker);
 
   static const std::string ANNOUNCE_PEER;
 

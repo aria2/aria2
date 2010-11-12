@@ -87,7 +87,7 @@ HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 void HttpSkipResponseCommand::installStreamFilter
 (const SharedHandle<StreamFilter>& streamFilter)
 {
-  if(streamFilter.isNull()) {
+  if(!streamFilter) {
     return;
   }
   streamFilter->installDelegate(streamFilter_);

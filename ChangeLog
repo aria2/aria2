@@ -1,3 +1,9 @@
+2010-11-12  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Removed SharedHandle::isNull(). Instead we added operator* and
+	operator unspecified_bool_type. Removed use of WeakHandle and
+	replaced with raw pointer.
+
 2010-11-11  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Fixed memory leak

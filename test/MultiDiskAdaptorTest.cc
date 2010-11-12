@@ -86,12 +86,12 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -105,12 +105,12 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
     // Because entries[1] spans entries[0]
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -124,14 +124,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(entries[0]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(!entries[0]->getDiskWriter());
     // Because entries[2] spans entries[1]
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     CPPUNIT_ASSERT(entries[1]->needsFileAllocation());
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -144,14 +144,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
     // Because entries[4] spans entries[3]
-    CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter());
     CPPUNIT_ASSERT(entries[3]->needsFileAllocation());
-    CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -164,13 +164,13 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter());
     // entries[3] is 0 length. No overrap with entries[4]
-    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(!entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -184,12 +184,12 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -204,12 +204,12 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -222,12 +222,12 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->openFile();
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -240,14 +240,14 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->openFile();
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(!entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[1]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[1]->getDiskWriter());
     // entries[1] spans entries[2]
-    CPPUNIT_ASSERT(!entries[2]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[2]->getDiskWriter());
     CPPUNIT_ASSERT(!entries[2]->needsFileAllocation());
-    CPPUNIT_ASSERT(entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[5]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(!entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[4]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[5]->getDiskWriter());
 
     adaptor->closeFile();
   }
@@ -261,17 +261,17 @@ void MultiDiskAdaptorTest::testResetDiskWriterEntries()
     adaptor->openFile();
     std::vector<SharedHandle<DiskWriterEntry> > entries =
       adaptor->getDiskWriterEntries();
-    CPPUNIT_ASSERT(entries[0]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[1]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[2]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[3]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(entries[4]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(!entries[0]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[1]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[2]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[3]->getDiskWriter());
+    CPPUNIT_ASSERT(!entries[4]->getDiskWriter());
     // entries[6] spans entries[5] in the current implementation.
-    CPPUNIT_ASSERT(!entries[5]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[6]->getDiskWriter().isNull());
-    CPPUNIT_ASSERT(!entries[7]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[5]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[6]->getDiskWriter());
+    CPPUNIT_ASSERT(entries[7]->getDiskWriter());
     // entries[6] spans entries[8]
-    CPPUNIT_ASSERT(!entries[8]->getDiskWriter().isNull());
+    CPPUNIT_ASSERT(entries[8]->getDiskWriter());
     adaptor->closeFile();
   }
 }

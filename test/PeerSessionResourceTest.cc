@@ -250,7 +250,7 @@ void PeerSessionResourceTest::testCountOutstandingRequest()
   PeerSessionResource res(1024, 1024*1024);
   SharedHandle<MockBtMessageDispatcher> dispatcher
     (new MockBtMessageDispatcher());
-  res.setBtMessageDispatcher(dispatcher);
+  res.setBtMessageDispatcher(dispatcher.get());
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, res.countOutstandingUpload());
 }

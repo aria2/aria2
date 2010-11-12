@@ -128,7 +128,6 @@ public:
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;
-typedef WeakHandle<PeerConnection> PeerConnectionWeakHandle;
 
 } // namespace aria2
 

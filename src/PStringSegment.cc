@@ -58,7 +58,7 @@ const std::string& PStringSegment::getValue() const
 
 bool PStringSegment::hasNext() const
 {
-  return !next_.isNull();
+  return next_;
 }
 
 SharedHandle<PStringDatum> PStringSegment::getNext() const

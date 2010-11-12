@@ -110,7 +110,7 @@ void RequestGroupManTest::testLoadServerStat()
   CPPUNIT_ASSERT(rm.loadServerStat(f.getPath()));
   SharedHandle<ServerStat> ss_localhost = rm.findServerStat("localhost",
                                                             "http");
-  CPPUNIT_ASSERT(!ss_localhost.isNull());
+  CPPUNIT_ASSERT(ss_localhost);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), ss_localhost->getHostname());
 }
 

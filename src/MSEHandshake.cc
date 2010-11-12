@@ -492,7 +492,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
       break;
     }
   }
-  if(downloadContext.isNull()) {
+  if(!downloadContext) {
     throw DL_ABORT_EX("Unknown info hash.");
   }
   initCipher(bittorrent::getInfoHash(downloadContext));

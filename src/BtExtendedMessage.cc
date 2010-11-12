@@ -99,7 +99,7 @@ BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
 {
   bittorrent::assertPayloadLengthGreater(1, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
-  assert(!factory.isNull());
+  assert(factory);
   ExtensionMessageHandle extmsg = factory->createMessage(data+1,
                                                          dataLength-1);
   BtExtendedMessageHandle message(new BtExtendedMessage(extmsg));
@@ -108,7 +108,7 @@ BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
 
 void BtExtendedMessage::doReceivedAction()
 {
-  if(!extensionMessage_.isNull()) {
+  if(extensionMessage_) {
     extensionMessage_->doReceivedAction();
   }
 }

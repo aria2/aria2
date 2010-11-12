@@ -135,7 +135,7 @@ bool ActivePeerConnectionCommand::execute() {
 
 void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
 {
-  if(peer.isNull()) {
+  if(!peer) {
     return;
   }
   peer->usedBy(e_->newCUID());

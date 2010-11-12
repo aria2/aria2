@@ -121,7 +121,7 @@ void printProgress
 #ifdef ENABLE_BITTORRENT
   SharedHandle<PeerStorage> ps =
     e->getBtRegistry()->get(rg->getGID()).peerStorage_;
-  if(!ps.isNull()) {
+  if(ps) {
     std::vector<SharedHandle<Peer> > peers;
     ps->getActivePeers(peers);
     o << " " << "SEED:"
@@ -280,7 +280,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   {
     SharedHandle<FileAllocationEntry> entry =
       e->getFileAllocationMan()->getPickedEntry();
-    if(!entry.isNull()) {
+    if(entry) {
       o << " "
         << "[FileAlloc:"
         << "#" << entry->getRequestGroup()->getGID() << " "
@@ -308,7 +308,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   {
     SharedHandle<CheckIntegrityEntry> entry =
       e->getCheckIntegrityMan()->getPickedEntry();
-    if(!entry.isNull()) {
+    if(entry) {
       o << " "
         << "[Checksum:"
         << "#" << entry->getRequestGroup()->getGID() << " "

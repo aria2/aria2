@@ -68,7 +68,7 @@ AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
 
 bool AbstractProxyResponseCommand::executeInternal() {
   SharedHandle<HttpResponse> httpResponse = httpConnection_->receiveResponse();
-  if(httpResponse.isNull()) {
+  if(!httpResponse) {
     // the server has not responded our request yet.
     getDownloadEngine()->addCommand(this);
     return false;

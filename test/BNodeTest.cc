@@ -72,7 +72,7 @@ void BNodeTest::testFindBucketFor()
   }
   {
     BNode b(bucket1);
-    CPPUNIT_ASSERT(BNode::findBucketFor(&b, localNodeID).isNull());
+    CPPUNIT_ASSERT(!BNode::findBucketFor(&b, localNodeID));
   }
   {
     BNode* b1 = new BNode(bucket1);

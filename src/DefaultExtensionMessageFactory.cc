@@ -57,6 +57,9 @@
 namespace aria2 {
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
+  messageFactory_(0),
+  dispatcher_(0),
+  tracker_(0),
   logger_(LogFactory::getInstance()) {}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory

@@ -76,12 +76,12 @@ struct BtObject {
 
   bool isNull() const
   {
-    return downloadContext_.isNull() &&
-      pieceStorage_.isNull() &&
-      peerStorage_.isNull() &&
-      btAnnounce_.isNull() &&
-      btRuntime_.isNull() &&
-      btProgressInfoFile_.isNull();
+    return !downloadContext_ &&
+      !pieceStorage_ &&
+      !peerStorage_ &&
+      !btAnnounce_ &&
+      !btRuntime_ &&
+      !btProgressInfoFile_;
   }
 };
 

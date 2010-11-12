@@ -115,7 +115,7 @@ std::string FeedbackURISelector::selectRarer
     }
     SharedHandle<ServerStat> ss =
       serverStatMan_->find(us.host, us.protocol);
-    if(!ss.isNull() && ss->isError()) {
+    if(ss && ss->isError()) {
       if(logger_->debug()) {
         logger_->debug("Error not considered: %s", (*i).c_str());
       }
@@ -161,7 +161,7 @@ std::string FeedbackURISelector::selectFaster
     }
     SharedHandle<ServerStat> ss =
       serverStatMan_->find(us.host, us.protocol);
-    if(ss.isNull()) {
+    if(!ss) {
       normCands.push_back(*i);
     } else if(ss->isOK()) {
       if(ss->getDownloadSpeed() > SPEED_THRESHOLD) {

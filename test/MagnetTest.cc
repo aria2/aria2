@@ -38,7 +38,7 @@ void MagnetTest::testParse()
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), nthStr(r->get("dn"), 0));
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"), nthStr(r->get("tr"), 0));
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"), nthStr(r->get("tr"), 1));
-  CPPUNIT_ASSERT(parse("http://localhost").isNull());
+  CPPUNIT_ASSERT(!parse("http://localhost"));
 }
 
 } // namespace magnet

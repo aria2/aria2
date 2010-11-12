@@ -58,7 +58,7 @@ HttpListenCommand::HttpListenCommand
 
 HttpListenCommand::~HttpListenCommand()
 {
-  if(!serverSocket_.isNull()) {
+  if(serverSocket_) {
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
 }
@@ -95,7 +95,7 @@ bool HttpListenCommand::execute()
 
 bool HttpListenCommand::bindPort(uint16_t port)
 {
-  if(!serverSocket_.isNull()) {
+  if(serverSocket_) {
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
   serverSocket_.reset(new SocketCore());
@@ -123,7 +123,7 @@ bool HttpListenCommand::bindPort(uint16_t port)
                        family_ == AF_INET?4:6);
     getLogger()->error(MSG_BIND_FAILURE, e,
                        util::itos(getCuid()).c_str(), port);
-    if(!serverSocket_.isNull()) {
+    if(serverSocket_) {
       e_->deleteSocketForReadCheck(serverSocket_, this);
     }
     serverSocket_->closeConnection();

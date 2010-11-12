@@ -444,7 +444,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 
     SharedHandle<CheckIntegrityEntry> checkIntegrityEntry =
       getRequestGroup()->createCheckIntegrityEntry();
-    if(checkIntegrityEntry.isNull()) {
+    if(!checkIntegrityEntry) {
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       poolConnection();
       return false;
@@ -475,7 +475,7 @@ bool FtpNegotiationCommand::recvSize() {
         (StringFormat(EX_TOO_LARGE_FILE,
                       util::uitos(size, true).c_str()).str());
     }
-    if(getPieceStorage().isNull()) {
+    if(!getPieceStorage()) {
 
       sequence_ = SEQ_FILE_PREPARATION;
       return onFileSizeDetermined(size);
@@ -492,7 +492,7 @@ bool FtpNegotiationCommand::recvSize() {
     // Even if one of the other servers waiting in the queue supports SIZE
     // command, resuming and segmented downloading are disabled when the first
     // contacted FTP server doesn't support it.
-    if(getPieceStorage().isNull()) {
+    if(!getPieceStorage()) {
       getDownloadContext()->markTotalLengthIsUnknown();
       return onFileSizeDetermined(0);
 
@@ -747,7 +747,7 @@ bool FtpNegotiationCommand::sendTunnelRequest()
 bool FtpNegotiationCommand::recvTunnelResponse()
 {
   SharedHandle<HttpResponse> httpResponse = http_->receiveResponse();
-  if(httpResponse.isNull()) {
+  if(!httpResponse) {
     return false;
   }
   if(httpResponse->getResponseStatus() != HttpHeader::S200) {
@@ -788,7 +788,7 @@ bool FtpNegotiationCommand::recvRest(const SharedHandle<Segment>& segment) {
   // If we recieve negative response and requested file position is not 0,
   // then throw exception here.
   if(status != 350) {
-    if(!segment.isNull() && segment->getPositionToWrite() != 0) {
+    if(segment && segment->getPositionToWrite() != 0) {
       throw DL_ABORT_EX2("FTP server doesn't support resuming.",
                          downloadresultcode::CANNOT_RESUME);
     }

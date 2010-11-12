@@ -100,10 +100,9 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
   MockDHTMessageDispatcher dispatcher;
 
   DHTAnnouncePeerMessage msg(localNode, remoteNode, infoHash, port, token, transactionID);
-  msg.setPeerAnnounceStorage(WeakHandle<DHTPeerAnnounceStorage>
-                             (&peerAnnounceStorage));
-  msg.setMessageFactory(WeakHandle<DHTMessageFactory>(&factory));
-  msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>(&dispatcher));
+  msg.setPeerAnnounceStorage(&peerAnnounceStorage);
+  msg.setMessageFactory(&factory);
+  msg.setMessageDispatcher(&dispatcher);
 
   msg.doReceivedAction();
 

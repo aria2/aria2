@@ -122,7 +122,7 @@ FeatureConfig::FeatureConfig() {
 
 const SharedHandle<FeatureConfig>& FeatureConfig::getInstance()
 {
-  if(featureConfig_.isNull()) {
+  if(!featureConfig_) {
     featureConfig_.reset(new FeatureConfig());
   }
   return featureConfig_;

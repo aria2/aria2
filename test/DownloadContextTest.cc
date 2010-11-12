@@ -29,7 +29,7 @@ void DownloadContextTest::testFindFileEntryByOffset()
 {
   DownloadContext ctx;
 
-  CPPUNIT_ASSERT(ctx.findFileEntryByOffset(0).isNull());
+  CPPUNIT_ASSERT(!ctx.findFileEntryByOffset(0));
   
   const SharedHandle<FileEntry> fileEntries[] = 
     { SharedHandle<FileEntry>(new FileEntry("file1",1000,0)),
@@ -47,7 +47,7 @@ void DownloadContextTest::testFindFileEntryByOffset()
                        ctx.findFileEntryByOffset(1500)->getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("file5"),
                        ctx.findFileEntryByOffset(5999)->getPath());
-  CPPUNIT_ASSERT(ctx.findFileEntryByOffset(6000).isNull());
+  CPPUNIT_ASSERT(!ctx.findFileEntryByOffset(6000));
 }
 
 void DownloadContextTest::testGetPieceHash()

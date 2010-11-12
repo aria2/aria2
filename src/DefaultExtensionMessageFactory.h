@@ -58,11 +58,11 @@ private:
 
   SharedHandle<DownloadContext> dctx_;
 
-  WeakHandle<BtMessageFactory> messageFactory_;
+  BtMessageFactory* messageFactory_;
 
-  WeakHandle<BtMessageDispatcher> dispatcher_;
+  BtMessageDispatcher* dispatcher_;
 
-  WeakHandle<UTMetadataRequestTracker> tracker_;
+  UTMetadataRequestTracker* tracker_;
 
   Logger* logger_;
 
@@ -93,18 +93,17 @@ public:
     dctx_ = dctx;
   }
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+  void setBtMessageFactory(BtMessageFactory* factory)
   {
     messageFactory_ = factory;
   }
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
+  void setBtMessageDispatcher(BtMessageDispatcher* disp)
   {
     dispatcher_ = disp;
   }
   
-  void setUTMetadataRequestTracker
-  (const WeakHandle<UTMetadataRequestTracker>& tracker)
+  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
   {
     tracker_ = tracker;
   }

@@ -136,10 +136,10 @@ void writeDownloadResult
  const SharedHandle<DownloadResult>& dr)
 {
   const SharedHandle<MetadataInfo>& mi = dr->metadataInfo;
-  if(dr->belongsTo != 0 || (!mi.isNull() && mi->dataOnly())) {
+  if(dr->belongsTo != 0 || (mi && mi->dataOnly())) {
     return;
   }
-  if(mi.isNull()) {
+  if(!mi) {
     // only save first file entry
     if(dr->fileEntries.empty()) {
       return;

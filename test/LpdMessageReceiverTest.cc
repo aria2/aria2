@@ -49,7 +49,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
 
   rcv.getSocket()->isReadable(5);
   SharedHandle<LpdMessage> msg = rcv.receiveMessage();
-  CPPUNIT_ASSERT(!msg.isNull());
+  CPPUNIT_ASSERT(msg);
   CPPUNIT_ASSERT_EQUAL(std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
                        util::toHex(msg->getInfoHash()));
   CPPUNIT_ASSERT_EQUAL((uint16_t)6000, msg->getPeer()->getPort());
@@ -65,8 +65,8 @@ void LpdMessageReceiverTest::testReceiveMessage()
 
   rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
-  CPPUNIT_ASSERT(!msg.isNull());
-  CPPUNIT_ASSERT(msg->getPeer().isNull());
+  CPPUNIT_ASSERT(msg);
+  CPPUNIT_ASSERT(!msg->getPeer());
   CPPUNIT_ASSERT(msg->getInfoHash().empty());
 
   // Bad port
@@ -79,13 +79,13 @@ void LpdMessageReceiverTest::testReceiveMessage()
 
   rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
-  CPPUNIT_ASSERT(!msg.isNull());
-  CPPUNIT_ASSERT(msg->getPeer().isNull());
+  CPPUNIT_ASSERT(msg);
+  CPPUNIT_ASSERT(!msg->getPeer());
   CPPUNIT_ASSERT(msg->getInfoHash().empty());
 
   // No data available
   msg = rcv.receiveMessage();
-  CPPUNIT_ASSERT(msg.isNull());
+  CPPUNIT_ASSERT(!msg);
 }
 
 } // namespace aria2

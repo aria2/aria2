@@ -205,7 +205,7 @@ bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
 
 void DownloadEngine::calculateStatistics()
 {
-  if(!statCalc_.isNull()) {
+  if(statCalc_) {
     statCalc_->calculateStat(this);
   }
 }
@@ -360,7 +360,7 @@ void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
                                 const SharedHandle<SocketCore>& socket,
                                 time_t timeout)
 {
-  if(proxyRequest.isNull()) {
+  if(!proxyRequest) {
     std::pair<std::string, uint16_t> peerInfo;
     socket->getPeerInfo(peerInfo);
     poolSocket(peerInfo.first, peerInfo.second,
@@ -381,7 +381,7 @@ void DownloadEngine::poolSocket
  const std::map<std::string, std::string>& options,                             
  time_t timeout)
 {
-  if(proxyRequest.isNull()) {
+  if(!proxyRequest) {
     std::pair<std::string, uint16_t> peerInfo;
     socket->getPeerInfo(peerInfo);
     poolSocket(peerInfo.first, peerInfo.second, username,
@@ -456,7 +456,7 @@ DownloadEngine::popPooledSocket
   for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
         eoi = ipaddrs.end(); i != eoi; ++i) {
     s = popPooledSocket(*i, port, A2STR::NIL, 0);
-    if(!s.isNull()) {
+    if(s) {
       break;
     }
   }
@@ -473,7 +473,7 @@ DownloadEngine::popPooledSocket
   for(std::vector<std::string>::const_iterator i = ipaddrs.begin(),
         eoi = ipaddrs.end(); i != eoi; ++i) {
     s = popPooledSocket(options, *i, port, username, A2STR::NIL, 0);
-    if(!s.isNull()) {
+    if(s) {
       break;
     }
   }

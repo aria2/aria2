@@ -50,9 +50,9 @@ private:
 
   SharedHandle<Peer> peer_;
 
-  WeakHandle<BtMessageDispatcher> dispatcher_;
+  BtMessageDispatcher* dispatcher_;
 
-  WeakHandle<BtMessageFactory> messageFactory_;
+  BtMessageFactory* messageFactory_;
 public:
   UTMetadataRequestExtensionMessage(uint8_t extensionMessageID);
 
@@ -67,12 +67,12 @@ public:
     dctx_ = dctx;
   }
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& disp)
+  void setBtMessageDispatcher(BtMessageDispatcher* disp)
   {
     dispatcher_ = disp;
   }
 
-  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+  void setBtMessageFactory(BtMessageFactory* factory)
   {
     messageFactory_ = factory;
   }

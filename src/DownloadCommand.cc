@@ -315,11 +315,11 @@ bool DownloadCommand::prepareForNextSegment() {
       }
       SharedHandle<Segment> nextSegment = getSegmentMan()->getSegmentWithIndex
         (getCuid(), tempSegment->getIndex()+1);
-      if(nextSegment.isNull()) {
+      if(!nextSegment) {
         nextSegment = getSegmentMan()->getCleanSegmentIfOwnerIsIdle
         (getCuid(), tempSegment->getIndex()+1);
       }
-      if(nextSegment.isNull() || nextSegment->getWrittenLength() > 0) {
+      if(!nextSegment || nextSegment->getWrittenLength() > 0) {
         // If nextSegment->getWrittenLength() > 0, current socket must
         // be closed because writing incoming data at
         // nextSegment->getWrittenLength() corrupts file.
@@ -362,7 +362,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
 void DownloadCommand::installStreamFilter
 (const SharedHandle<StreamFilter>& streamFilter)
 {
-  if(streamFilter.isNull()) {
+  if(!streamFilter) {
     return;
   }
   streamFilter->installDelegate(streamFilter_);

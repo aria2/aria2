@@ -82,7 +82,7 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
   socket_->readData(buf, size);
 
   SharedHandle<HttpHeader> header = headerProcessor_->getHttpRequestHeader();
-  if(!header.isNull()) {
+  if(header) {
     logger_->info("HTTP Server received request\n%s",
                   headerProcessor_->getHeaderString().c_str());
     lastRequestHeader_ = header;

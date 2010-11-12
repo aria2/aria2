@@ -117,8 +117,8 @@ public:
     msg->setBegin(16);
     msg->setLength(32);
     msg->setBlockIndex(2);
-    msg->setBtMessageDispatcher(dispatcher_);
-    msg->setBtMessageFactory(messageFactory_);
+    msg->setBtMessageDispatcher(dispatcher_.get());
+    msg->setBtMessageFactory(messageFactory_.get());
     msg->setPieceStorage(pieceStorage_);
   }
 };

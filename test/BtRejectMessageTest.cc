@@ -77,7 +77,7 @@ public:
     msg->setIndex(1);
     msg->setBegin(16);
     msg->setLength(32);
-    msg->setBtMessageDispatcher(dispatcher);
+    msg->setBtMessageDispatcher(dispatcher.get());
   }
 };
 

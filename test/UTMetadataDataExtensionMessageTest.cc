@@ -88,7 +88,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
 
   UTMetadataDataExtensionMessage m(1);
   m.setPieceStorage(pieceStorage);
-  m.setUTMetadataRequestTracker(tracker);
+  m.setUTMetadataRequestTracker(tracker.get());
   m.setDownloadContext(dctx);
 
   m.setIndex(1);

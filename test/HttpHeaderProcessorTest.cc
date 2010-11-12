@@ -213,7 +213,7 @@ void HttpHeaderProcessorTest::testGetHttpRequestHeader()
   proc.update(request);
 
   SharedHandle<HttpHeader> httpHeader = proc.getHttpRequestHeader();
-  CPPUNIT_ASSERT(!httpHeader.isNull());
+  CPPUNIT_ASSERT(httpHeader);
   CPPUNIT_ASSERT_EQUAL(std::string("GET"), httpHeader->getMethod());
   CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());

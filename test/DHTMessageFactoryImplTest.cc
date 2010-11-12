@@ -62,7 +62,7 @@ public:
     memset(transactionID, 0xff, DHT_TRANSACTION_ID_LENGTH);
     memset(remoteNodeID, 0x0f, DHT_ID_LENGTH);
     routingTable.reset(new DHTRoutingTable(localNode));
-    factory->setRoutingTable(routingTable);
+    factory->setRoutingTable(routingTable.get());
   }
 
   void tearDown() {}
@@ -213,7 +213,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage6()
 {
   factory.reset(new DHTMessageFactoryImpl(AF_INET6));
   factory->setLocalNode(localNode);
-  factory->setRoutingTable(routingTable);
+  factory->setRoutingTable(routingTable.get());
   try {
     Dict dict;
     dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));
@@ -364,7 +364,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage6()
 {
   factory.reset(new DHTMessageFactoryImpl(AF_INET6));
   factory->setLocalNode(localNode);
-  factory->setRoutingTable(routingTable);
+  factory->setRoutingTable(routingTable.get());
   try {
     Dict dict;
     dict.put("t", String::g(transactionID, DHT_TRANSACTION_ID_LENGTH));

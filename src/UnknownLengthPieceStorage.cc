@@ -135,7 +135,7 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getSparseMissingUnusedPiece
   if(downloadFinished_) {
     return SharedHandle<Piece>();
   }
-  if(piece_.isNull()) {
+  if(!piece_) {
     piece_.reset(new Piece());
     return piece_;
   } else {
@@ -155,7 +155,7 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(size_t index)
 SharedHandle<Piece> UnknownLengthPieceStorage::getPiece(size_t index)
 {
   if(index == 0) {
-    if(piece_.isNull()) {
+    if(!piece_) {
       return SharedHandle<Piece>(new Piece());
     } else {
       return piece_;
@@ -193,7 +193,7 @@ bool UnknownLengthPieceStorage::hasPiece(size_t index)
 
 bool UnknownLengthPieceStorage::isPieceUsed(size_t index)
 {
-  if(index == 0 && !piece_.isNull()) {
+  if(index == 0 && piece_) {
     return true;
   } else {
     return false;
@@ -216,7 +216,7 @@ size_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 
 void UnknownLengthPieceStorage::markAllPiecesDone()
 {
-  if(!piece_.isNull()) {
+  if(piece_) {
     totalLength_ = piece_->getLength();
     piece_.reset();
   }

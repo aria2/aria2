@@ -39,7 +39,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtRegistryTest );
 void BtRegistryTest::testGetDownloadContext()
 {
   BtRegistry btRegistry;
-  CPPUNIT_ASSERT(btRegistry.getDownloadContext(1).isNull());
+  CPPUNIT_ASSERT(!btRegistry.getDownloadContext(1));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   BtObject btObject;
   btObject.downloadContext_ = dctx;
@@ -74,10 +74,10 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
   btRegistry.getDownloadContext(2)->setAttribute
     (bittorrent::BITTORRENT, attrs2);
 
-  CPPUNIT_ASSERT(!btRegistry.getDownloadContext("hash1").isNull());
+  CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1"));
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1").get() ==
                  btRegistry.getDownloadContext(1).get());
-  CPPUNIT_ASSERT(btRegistry.getDownloadContext("not exists").isNull());
+  CPPUNIT_ASSERT(!btRegistry.getDownloadContext("not exists"));
 }
 
 void BtRegistryTest::testGetAllDownloadContext()

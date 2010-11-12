@@ -55,7 +55,7 @@ private:
 
     bool validMember() const
     {
-      return !value_.isNull() && !name_.empty();
+      return value_ && !name_.empty();
     }
   };
 

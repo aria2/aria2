@@ -54,7 +54,7 @@ private:
 
   SharedHandle<PieceStorage> pieceStorage_;
 
-  WeakHandle<UTMetadataRequestTracker> tracker_;
+  UTMetadataRequestTracker* tracker_;
 
   Logger* logger_;
 public:
@@ -91,8 +91,7 @@ public:
     pieceStorage_ = pieceStorage;
   }
 
-  void setUTMetadataRequestTracker
-  (const WeakHandle<UTMetadataRequestTracker>& tracker)
+  void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
   {
     tracker_ = tracker;
   }

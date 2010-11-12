@@ -62,17 +62,17 @@ void SegmentManTest::testNullBitfield()
   size_t minSplitSize = dctx->getPieceLength();
 
   SharedHandle<Segment> segment = segmentMan.getSegment(1, minSplitSize);
-  CPPUNIT_ASSERT(!segment.isNull());
+  CPPUNIT_ASSERT(segment);
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getLength());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getSegmentLength());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getWrittenLength());
 
   SharedHandle<Segment> segment2 = segmentMan.getSegment(2, minSplitSize);
-  CPPUNIT_ASSERT(segment2.isNull());
+  CPPUNIT_ASSERT(!segment2);
 
   segmentMan.cancelSegment(1);
-  CPPUNIT_ASSERT(!segmentMan.getSegment(2, minSplitSize).isNull());
+  CPPUNIT_ASSERT(segmentMan.getSegment(2, minSplitSize));
 }
 
 void SegmentManTest::testCompleteSegment()
@@ -86,10 +86,10 @@ void SegmentManTest::testCompleteSegment()
 
   SegmentMan segmentMan(&op, dctx, ps);
 
-  CPPUNIT_ASSERT(!segmentMan.getSegmentWithIndex(1, 0).isNull());
+  CPPUNIT_ASSERT(segmentMan.getSegmentWithIndex(1, 0));
   SharedHandle<Segment> seg = segmentMan.getSegmentWithIndex(1, 1);
-  CPPUNIT_ASSERT(!seg.isNull());
-  CPPUNIT_ASSERT(!segmentMan.getSegmentWithIndex(1, 2).isNull());
+  CPPUNIT_ASSERT(seg);
+  CPPUNIT_ASSERT(segmentMan.getSegmentWithIndex(1, 2));
 
   seg->updateWrittenLength(pieceLength);
   segmentMan.completeSegment(1, seg);
@@ -165,11 +165,11 @@ void SegmentManTest::testCancelAllSegments()
 {
   segmentMan_->getSegmentWithIndex(1, 0);
   segmentMan_->getSegmentWithIndex(2, 1);
-  CPPUNIT_ASSERT(segmentMan_->getSegmentWithIndex(3, 0).isNull());
-  CPPUNIT_ASSERT(segmentMan_->getSegmentWithIndex(4, 1).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getSegmentWithIndex(3, 0));
+  CPPUNIT_ASSERT(!segmentMan_->getSegmentWithIndex(4, 1));
   segmentMan_->cancelAllSegments();
-  CPPUNIT_ASSERT(!segmentMan_->getSegmentWithIndex(3, 0).isNull());
-  CPPUNIT_ASSERT(!segmentMan_->getSegmentWithIndex(4, 1).isNull());
+  CPPUNIT_ASSERT(segmentMan_->getSegmentWithIndex(3, 0));
+  CPPUNIT_ASSERT(segmentMan_->getSegmentWithIndex(4, 1));
 }
 
 void SegmentManTest::testGetPeerStat()
@@ -184,17 +184,17 @@ void SegmentManTest::testGetCleanSegmentIfOwnerIsIdle()
   SharedHandle<Segment> seg1 = segmentMan_->getSegmentWithIndex(1, 0);
   SharedHandle<Segment> seg2 = segmentMan_->getSegmentWithIndex(2, 1);
   seg2->updateWrittenLength(100);
-  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(3, 0).isNull());
+  CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(3, 0));
   SharedHandle<PeerStat> peerStat3(new PeerStat(3));
   segmentMan_->registerPeerStat(peerStat3);
-  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(4, 0).isNull());
+  CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(4, 0));
   SharedHandle<PeerStat> peerStat4(new PeerStat(4));
   peerStat4->downloadStart();
   segmentMan_->registerPeerStat(peerStat4);
   // Owner PeerStat is not IDLE
-  CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 0).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 0));
   // Segment::updateWrittenLength != 0
-  CPPUNIT_ASSERT(segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 1).isNull());
+  CPPUNIT_ASSERT(!segmentMan_->getCleanSegmentIfOwnerIsIdle(5, 1));
 }
 
 } // namespace aria2

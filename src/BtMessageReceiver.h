@@ -55,7 +55,6 @@ public:
 };
 
 typedef SharedHandle<BtMessageReceiver> BtMessageReceiverHandle;
-typedef WeakHandle<BtMessageReceiver> BtMessageReceiverWeakHandle;
 
 } // namespace aria2
 

@@ -53,7 +53,7 @@ AdaptiveFileAllocationIterator::~AdaptiveFileAllocationIterator() {}
 
 void AdaptiveFileAllocationIterator::allocateChunk()
 {
-  if(allocator_.isNull()) {
+  if(!allocator_) {
 #ifdef HAVE_FALLOCATE
     try {
       if(logger_->debug()) {
@@ -92,7 +92,7 @@ void AdaptiveFileAllocationIterator::allocateChunk()
   
 bool AdaptiveFileAllocationIterator::finished()
 {
-  if(allocator_.isNull()) {
+  if(!allocator_) {
     return (uint64_t)offset_ == totalLength_;
   } else {
     return allocator_->finished();

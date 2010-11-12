@@ -81,7 +81,7 @@ private:
 
   Timer lastAmUnchoking_;
 
-  WeakHandle<BtMessageDispatcher> dispatcher_;
+  BtMessageDispatcher* dispatcher_;
 public:
   PeerSessionResource(size_t pieceLength, uint64_t totalLength);
 
@@ -230,7 +230,7 @@ public:
 
   uint64_t getCompletedLength() const;
 
-  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dpt);
+  void setBtMessageDispatcher(BtMessageDispatcher* dpt);
 
   size_t countOutstandingUpload() const;
 };

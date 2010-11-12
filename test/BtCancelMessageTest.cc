@@ -104,7 +104,7 @@ void BtCancelMessageTest::testDoReceivedAction() {
   msg.setPeer(peer);
   SharedHandle<MockBtMessageDispatcher2> dispatcher
     (new MockBtMessageDispatcher2());
-  msg.setBtMessageDispatcher(dispatcher);
+  msg.setBtMessageDispatcher(dispatcher.get());
 
   msg.doReceivedAction();
   CPPUNIT_ASSERT_EQUAL(msg.getIndex(), dispatcher->index);

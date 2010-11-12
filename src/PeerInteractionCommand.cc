@@ -138,7 +138,7 @@ PeerInteractionCommand::PeerInteractionCommand
   extensionMessageFactory->setDownloadContext
     (requestGroup_->getDownloadContext());
   extensionMessageFactory->setUTMetadataRequestTracker
-    (utMetadataRequestTracker);
+    (utMetadataRequestTracker.get());
   // PieceStorage will be set later.
 
   SharedHandle<DefaultBtMessageFactory> factory(new DefaultBtMessageFactory());
@@ -149,22 +149,22 @@ PeerInteractionCommand::PeerInteractionCommand
   factory->setExtensionMessageFactory(extensionMessageFactory);
   factory->setPeer(getPeer());  
   if(family == AF_INET) {
-    factory->setLocalNode(DHTRegistry::getData().localNode);
-    factory->setRoutingTable(DHTRegistry::getData().routingTable);
-    factory->setTaskQueue(DHTRegistry::getData().taskQueue);
-    factory->setTaskFactory(DHTRegistry::getData().taskFactory);
+    factory->setLocalNode(DHTRegistry::getData().localNode.get());
+    factory->setRoutingTable(DHTRegistry::getData().routingTable.get());
+    factory->setTaskQueue(DHTRegistry::getData().taskQueue.get());
+    factory->setTaskFactory(DHTRegistry::getData().taskFactory.get());
   } else {
-    factory->setLocalNode(DHTRegistry::getData6().localNode);
-    factory->setRoutingTable(DHTRegistry::getData6().routingTable);
-    factory->setTaskQueue(DHTRegistry::getData6().taskQueue);
-    factory->setTaskFactory(DHTRegistry::getData6().taskFactory);
+    factory->setLocalNode(DHTRegistry::getData6().localNode.get());
+    factory->setRoutingTable(DHTRegistry::getData6().routingTable.get());
+    factory->setTaskQueue(DHTRegistry::getData6().taskQueue.get());
+    factory->setTaskFactory(DHTRegistry::getData6().taskFactory.get());
   }
   if(metadataGetMode) {
     factory->enableMetadataGetMode();
   }
 
   PeerConnectionHandle peerConnection;
-  if(passedPeerConnection.isNull()) {
+  if(!passedPeerConnection) {
     peerConnection.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   } else {
     peerConnection = passedPeerConnection;
@@ -178,21 +178,22 @@ PeerInteractionCommand::PeerInteractionCommand
   dispatcher->setPieceStorage(pieceStorage);
   dispatcher->setPeerStorage(peerStorage);
   dispatcher->setRequestTimeout(getOption()->getAsInt(PREF_BT_REQUEST_TIMEOUT));
-  dispatcher->setBtMessageFactory(factory);
-  dispatcher->setRequestGroupMan(getDownloadEngine()->getRequestGroupMan());
+  dispatcher->setBtMessageFactory(factory.get());
+  dispatcher->setRequestGroupMan
+    (getDownloadEngine()->getRequestGroupMan().get());
 
   DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
   receiver->setDownloadContext(requestGroup_->getDownloadContext());
-  receiver->setPeerConnection(peerConnection);
-  receiver->setDispatcher(dispatcher);
-  receiver->setBtMessageFactory(factory);
+  receiver->setPeerConnection(peerConnection.get());
+  receiver->setDispatcher(dispatcher.get());
+  receiver->setBtMessageFactory(factory.get());
 
   SharedHandle<DefaultBtRequestFactory> reqFactory
     (new DefaultBtRequestFactory());
   reqFactory->setPeer(getPeer());
   reqFactory->setPieceStorage(pieceStorage);
-  reqFactory->setBtMessageDispatcher(dispatcher);
-  reqFactory->setBtMessageFactory(factory);
+  reqFactory->setBtMessageDispatcher(dispatcher.get());
+  reqFactory->setBtMessageFactory(factory.get());
 
   DefaultBtInteractiveHandle btInteractive
     (new DefaultBtInteractive(requestGroup_->getDownloadContext(), getPeer()));
@@ -208,7 +209,8 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractive->setExtensionMessageRegistry(exMsgRegistry);
   btInteractive->setKeepAliveInterval
     (getOption()->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
-  btInteractive->setRequestGroupMan(getDownloadEngine()->getRequestGroupMan());
+  btInteractive->setRequestGroupMan
+    (getDownloadEngine()->getRequestGroupMan().get());
   btInteractive->setBtMessageFactory(factory);
   if((metadataGetMode || !torrentAttrs->privateTorrent) &&
      !getPeer()->isLocalPeer()) {
@@ -219,13 +221,13 @@ PeerInteractionCommand::PeerInteractionCommand
       if(DHTRegistry::isInitialized()) {
         btInteractive->setDHTEnabled(true);
         factory->setDHTEnabled(true);
-        btInteractive->setLocalNode(DHTRegistry::getData().localNode);
+        btInteractive->setLocalNode(DHTRegistry::getData().localNode.get());
       }
     } else {
       if(DHTRegistry::isInitialized6()) {
         btInteractive->setDHTEnabled(true);
         factory->setDHTEnabled(true);
-        btInteractive->setLocalNode(DHTRegistry::getData6().localNode);
+        btInteractive->setLocalNode(DHTRegistry::getData6().localNode.get());
       }
     }
   }
@@ -238,27 +240,27 @@ PeerInteractionCommand::PeerInteractionCommand
   btInteractive_ = btInteractive;
 
   // reverse depends
-  factory->setBtMessageDispatcher(dispatcher);
-  factory->setBtRequestFactory(reqFactory);
-  factory->setPeerConnection(peerConnection);
+  factory->setBtMessageDispatcher(dispatcher.get());
+  factory->setBtRequestFactory(reqFactory.get());
+  factory->setPeerConnection(peerConnection.get());
 
-  extensionMessageFactory->setBtMessageDispatcher(dispatcher);
-  extensionMessageFactory->setBtMessageFactory(factory);
+  extensionMessageFactory->setBtMessageDispatcher(dispatcher.get());
+  extensionMessageFactory->setBtMessageFactory(factory.get());
 
   if(metadataGetMode) {
     utMetadataRequestFactory->setDownloadContext
       (requestGroup_->getDownloadContext());
-    utMetadataRequestFactory->setBtMessageDispatcher(dispatcher);
-    utMetadataRequestFactory->setBtMessageFactory(factory);
+    utMetadataRequestFactory->setBtMessageDispatcher(dispatcher.get());
+    utMetadataRequestFactory->setBtMessageFactory(factory.get());
     utMetadataRequestFactory->setPeer(getPeer());
     utMetadataRequestFactory->setUTMetadataRequestTracker
-      (utMetadataRequestTracker);
+      (utMetadataRequestTracker.get());
   }
 
   getPeer()->allocateSessionResource
     (requestGroup_->getDownloadContext()->getPieceLength(),
      requestGroup_->getDownloadContext()->getTotalLength());
-  getPeer()->setBtMessageDispatcher(dispatcher);
+  getPeer()->setBtMessageDispatcher(dispatcher.get());
 
   btRuntime_->increaseConnections();
   requestGroup_->increaseNumCommand();
@@ -297,7 +299,7 @@ bool PeerInteractionCommand::executeInternal() {
       }
     }
     BtMessageHandle handshakeMessage = btInteractive_->receiveHandshake();
-    if(handshakeMessage.isNull()) {
+    if(!handshakeMessage) {
       break;
     }
     btInteractive_->doPostHandshakeProcessing();
@@ -306,7 +308,7 @@ bool PeerInteractionCommand::executeInternal() {
   }
   case RECEIVER_WAIT_HANDSHAKE: {
     BtMessageHandle handshakeMessage =btInteractive_->receiveAndSendHandshake();
-    if(handshakeMessage.isNull()) {
+    if(!handshakeMessage) {
       break;
     }
     btInteractive_->doPostHandshakeProcessing();
