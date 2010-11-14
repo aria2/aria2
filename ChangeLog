@@ -1,5 +1,10 @@
 2010-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed compile error on opensolaris
+	* src/util.cc
+
+2010-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Don't catch Exception.
 	* src/RealtimeCommand.cc
 

@@ -1339,24 +1339,24 @@ bool detectDirTraversal(const std::string& s)
     }
   }
 
-  static std::string DS = "./";
-  static std::string DDS = "../";
-  static std::string SD = "/.";
-  static std::string SDD = "/..";
-  static std::string SDDS = "/../";
-  static std::string SDS = "/./";
-  static std::string DD = "..";
+  static std::string A2_DS = "./";
+  static std::string A2_DDS = "../";
+  static std::string A2_SD = "/.";
+  static std::string A2_SDD = "/..";
+  static std::string A2_SDDS = "/../";
+  static std::string A2_SDS = "/./";
+  static std::string A2_DD = "..";
 
   return s == A2STR::DOT_C ||
-    s == DD ||
+    s == A2_DD ||
     util::startsWith(s, A2STR::SLASH_C) ||
-    util::startsWith(s, DS) ||
-    util::startsWith(s, DDS) ||
-    s.find(SDDS) != std::string::npos ||
-    s.find(SDS) != std::string::npos ||
+    util::startsWith(s, A2_DS) ||
+    util::startsWith(s, A2_DDS) ||
+    s.find(A2_SDDS) != std::string::npos ||
+    s.find(A2_SDS) != std::string::npos ||
     util::endsWith(s, A2STR::SLASH_C) ||
-    util::endsWith(s, SD) ||
-    util::endsWith(s, SDD);
+    util::endsWith(s, A2_SD) ||
+    util::endsWith(s, A2_SDD);
 }
 
 std::string escapePath(const std::string& s)
