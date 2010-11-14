@@ -43,11 +43,6 @@
 #include "Option.h"
 #include "prefs.h"
 #include "SocketCore.h"
-#include "DownloadContext.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

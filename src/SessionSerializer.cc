@@ -38,7 +38,6 @@
 #include <iterator>
 
 #include "RequestGroupMan.h"
-#include "ServerStatMan.h"
 #include "a2functional.h"
 #include "File.h"
 #include "A2STR.h"

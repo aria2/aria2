@@ -1,5 +1,9 @@
 2010-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused includes.
+
+2010-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added .cc file for classes/structs that only provided by header
 	file. Defined non-POD classes' ctor, dtor in .cc file.  Moved
 	implementation code in header file to .cc file for major

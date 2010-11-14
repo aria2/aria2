@@ -54,11 +54,7 @@
 #include "File.h"
 #include "Netrc.h"
 #include "AuthConfigFactory.h"
-#include "DownloadContext.h"
 #include "SessionSerializer.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 #include "TimeA2.h"
 #ifdef ENABLE_SSL
 # include "SocketCore.h"

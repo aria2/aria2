@@ -45,7 +45,6 @@
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtRuntime.h"
-#include "BtAnnounce.h"
 #include "BtConstants.h"
 #include "message.h"
 #include "Socket.h"

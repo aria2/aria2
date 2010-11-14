@@ -35,12 +35,7 @@
 #include "SleepCommand.h"
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
-#include "DownloadContext.h"
 #include "wallclock.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

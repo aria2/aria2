@@ -76,9 +76,7 @@
 #include "a2functional.h"
 #include "SocketCore.h"
 #include "SimpleRandomizer.h"
-#include "ServerStatMan.h"
 #include "Segment.h"
-#include "FileAllocationEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 # include "ChecksumCheckIntegrityEntry.h"

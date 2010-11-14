@@ -69,8 +69,6 @@
 #include "DHTMessageCallback.h"
 #include "PieceStorage.h"
 #include "RequestGroup.h"
-#include "BtAnnounce.h"
-#include "BtProgressInfoFile.h"
 #include "DefaultExtensionMessageFactory.h"
 #include "RequestGroupMan.h"
 #include "ExtensionMessageRegistry.h"

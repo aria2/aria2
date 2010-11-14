@@ -54,7 +54,6 @@
 #include "DownloadContext.h"
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
-#include "BtProgressInfoFile.h"
 #include "prefs.h"
 #include "message.h"
 #include "FeatureConfig.h"
@@ -63,10 +62,6 @@
 #include "XmlRpcResponse.h"
 #include "SegmentMan.h"
 #include "TimedHaltCommand.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "Segment.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"

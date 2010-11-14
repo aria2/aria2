@@ -45,11 +45,6 @@
 #include "StringFormat.h"
 #include "wallclock.h"
 #include "util.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
-#include "FileEntry.h"
 
 namespace aria2 {
 

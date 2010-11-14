@@ -46,11 +46,6 @@
 #include "XmlRpcResponse.h"
 #include "prefs.h"
 #include "StringFormat.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
-#include "FileEntry.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {

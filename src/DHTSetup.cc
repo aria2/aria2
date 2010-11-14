@@ -40,7 +40,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "util.h"
-#include "File.h"
 #include "DHTNode.h"
 #include "DHTConnectionImpl.h"
 #include "DHTRoutingTable.h"
@@ -70,12 +69,6 @@
 #include "RecoverableException.h"
 #include "a2functional.h"
 #include "DownloadEngine.h"
-#include "wallclock.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
-#include "FileEntry.h"
 
 namespace aria2 {
 
