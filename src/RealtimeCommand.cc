@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "RealtimeCommand.h"
 #include "DownloadEngine.h"
-#include "Exception.h"
+#include "RecoverableException.h"
 #include "RequestGroup.h"
 
 namespace aria2 {
@@ -61,7 +61,7 @@ bool RealtimeCommand::execute()
   e_->setNoWait(true);
   try {
     return executeInternal();
-  } catch(Exception& e) {
+  } catch(RecoverableException& e) {
     bool r =  handleException(e);
     return r;
   }
