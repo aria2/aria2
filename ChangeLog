@@ -1,5 +1,10 @@
 2010-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use --max-connection-per-server option value for Metalink.
+	* src/Metalink2RequestGroup.cc
+
+2010-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed compile error on opensolaris
 	* src/util.cc
 

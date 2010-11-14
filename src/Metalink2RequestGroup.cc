@@ -256,7 +256,8 @@ Metalink2RequestGroup::createRequestGroup
                   util::applyDir(option->get(PREF_DIR),
                                  entry->file->getPath())));
       dctx->getFirstFileEntry()->setUris(uris);
-      dctx->getFirstFileEntry()->setMaxConnectionPerServer(1);
+      dctx->getFirstFileEntry()->setMaxConnectionPerServer
+        (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
       if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
         dctx->getFirstFileEntry()->setUniqueProtocol(true);
       }
@@ -296,7 +297,8 @@ Metalink2RequestGroup::createRequestGroup
           (new FileEntry
            (util::applyDir(option->get(PREF_DIR), (*i)->file->getPath()),
             (*i)->file->getLength(), offset, uris));
-        fe->setMaxConnectionPerServer(1);
+        fe->setMaxConnectionPerServer
+          (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
         if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
           fe->setUniqueProtocol(true);
         }
