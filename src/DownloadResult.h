@@ -45,12 +45,12 @@
 #include "SharedHandle.h"
 #include "DownloadResultCode.h"
 #include "RequestGroup.h"
-#include "Option.h"
-#include "MetadataInfo.h"
 
 namespace aria2 {
 
+class Option;
 class FileEntry;
+class MetadataInfo;
 
 struct DownloadResult
 {
@@ -94,6 +94,13 @@ struct DownloadResult
   size_t numPieces;
 
   std::string dir;
+
+  DownloadResult();
+  ~DownloadResult();
+
+  // Don't allow copying
+  DownloadResult(const DownloadResult& c);
+  DownloadResult& operator=(const DownloadResult& c);
 };
 
 typedef SharedHandle<DownloadResult> DownloadResultHandle;

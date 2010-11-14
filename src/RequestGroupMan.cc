@@ -73,6 +73,7 @@
 #include "DlAbortEx.h"
 #include "uri.h"
 #include "Triplet.h"
+#include "Signature.h"
 
 namespace aria2 {
 
@@ -94,6 +95,8 @@ RequestGroupMan::RequestGroupMan
   removedLastErrorResult_(downloadresultcode::FINISHED),
   maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT))
 {}
+
+RequestGroupMan::~RequestGroupMan() {}
 
 bool RequestGroupMan::downloadFinished()
 {

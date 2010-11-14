@@ -54,6 +54,10 @@ class MetalinkProcessor {
 private:
   SharedHandle<MetalinkParserStateMachine> stm_;
 public:
+  MetalinkProcessor();
+
+  ~MetalinkProcessor();
+
   SharedHandle<Metalinker> parseFile(const std::string& filename);
 
   SharedHandle<Metalinker> parseFromBinaryStream

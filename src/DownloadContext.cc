@@ -42,6 +42,8 @@
 #include "wallclock.h"
 #include "DlAbortEx.h"
 #include "a2functional.h"
+#include "Signature.h"
+#include "ContextAttribute.h"
 
 namespace aria2 {
 
@@ -68,6 +70,8 @@ DownloadContext::DownloadContext(size_t pieceLength,
   SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
   fileEntries_.push_back(fileEntry);
 }
+
+DownloadContext::~DownloadContext() {}
 
 void DownloadContext::resetDownloadStartTime()
 {
@@ -224,6 +228,45 @@ bool DownloadContext::isPieceHashVerificationAvailable() const
 {
   return !pieceHashAlgo_.empty() &&
     pieceHashes_.size() > 0 && pieceHashes_.size() == getNumPieces();
+}
+
+const std::string& DownloadContext::getPieceHash(size_t index) const
+{
+  if(index < pieceHashes_.size()) {
+    return pieceHashes_[index];
+  } else {
+    return A2STR::NIL;
+  }
+}
+
+void DownloadContext::setPieceHashAlgo(const std::string& algo)
+{
+  pieceHashAlgo_ = algo;
+}
+
+void DownloadContext::setChecksum(const std::string& checksum)
+{
+  checksum_ = checksum;
+}
+
+void DownloadContext::setChecksumHashAlgo(const std::string& algo)
+{
+  checksumHashAlgo_ = algo;
+}
+
+void DownloadContext::setBasePath(const std::string& basePath)
+{
+  basePath_ = basePath;
+}
+
+void DownloadContext::setDir(const std::string& dir)
+{
+  dir_ = dir;
+}
+
+void DownloadContext::setSignature(const SharedHandle<Signature>& signature)
+{
+  signature_ = signature;
 }
 
 } // namespace aria2

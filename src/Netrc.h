@@ -42,8 +42,6 @@
 #include <iosfwd>
 
 #include "SharedHandle.h"
-#include "A2STR.h"
-#include "util.h"
 
 namespace aria2 {
 
@@ -61,76 +59,57 @@ private:
   std::string password_;
   std::string account_;
 public:
-  Authenticator() {}
+  Authenticator();
 
   Authenticator(const std::string& machine,
                 const std::string& login,
                 const std::string& password,
-                const std::string& account)
-    :machine_(machine),
-     login_(login),
-     password_(password),
-     account_(account) {}
+                const std::string& account);
 
-  virtual ~Authenticator() {}
+  virtual ~Authenticator();
 
-  virtual bool match(const std::string& hostname) const
-  {
-    if(util::isNumericHost(hostname)) {
-      return hostname == machine_;
-    } else {
-      if(util::startsWith(machine_, A2STR::DOT_C)) {
-        return util::endsWith(A2STR::DOT_C+hostname, machine_);
-      } else {
-        return hostname == machine_;
-      }
-    }
-  }
+  virtual bool match(const std::string& hostname) const;
 
   const std::string& getMachine() const
   {
     return machine_;
   }
 
-  void setMachine(const std::string& machine) { machine_ = machine; }
+  void setMachine(const std::string& machine);
 
   const std::string& getLogin() const
   {
     return login_;
   }
 
-  void setLogin(const std::string& login) { login_ = login; }
+  void setLogin(const std::string& login);
 
   const std::string& getPassword() const
   {
     return password_;
   }
 
-  void setPassword(const std::string& password) { password_ = password; }
+  void setPassword(const std::string& password);
 
   const std::string& getAccount() const
   {
     return account_;
   }
 
-  void setAccount(const std::string& account) { account_ = account; }
+  void setAccount(const std::string& account);
 };
 
 class DefaultAuthenticator : public Authenticator {
 public:
-  DefaultAuthenticator() {}
+  DefaultAuthenticator();
 
   DefaultAuthenticator(const std::string& login,
                        const std::string& password,
-                       const std::string& account)
-    :Authenticator(A2STR::NIL, login, password, account) {}
+                       const std::string& account);
 
-  virtual ~DefaultAuthenticator() {}
+  virtual ~DefaultAuthenticator();
 
-  virtual bool match(const std::string& hostname) const
-  {
-    return true;
-  }
+  virtual bool match(const std::string& hostname) const;
 };
 
 class Netrc {
@@ -143,7 +122,9 @@ private:
   
   void skipMacdef(std::ifstream& f) const;
 public:
-  Netrc() {}
+  Netrc();
+
+  ~Netrc();
 
   void parse(const std::string& path);
 
@@ -155,10 +136,7 @@ public:
     return authenticators_;
   }
 
-  void addAuthenticator(const SharedHandle<Authenticator>& authenticator)
-  {
-    authenticators_.push_back(authenticator);
-  }
+  void addAuthenticator(const SharedHandle<Authenticator>& authenticator);
 
   static const std::string A2_MACHINE;
 

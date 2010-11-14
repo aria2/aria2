@@ -49,9 +49,6 @@
 #include "CreateRequestCommand.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "SleepCommand.h"
-#ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolver.h"
-#endif // ENABLE_ASYNC_DNS
 #include "StreamCheckIntegrityEntry.h"
 #include "PieceStorage.h"
 #include "Socket.h"
@@ -66,9 +63,11 @@
 #include "DownloadContext.h"
 #include "wallclock.h"
 #include "NameResolver.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
 #include "uri.h"
+#include "FileEntry.h"
+#ifdef ENABLE_ASYNC_DNS
+#include "AsyncNameResolver.h"
+#endif // ENABLE_ASYNC_DNS
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "ChecksumCheckIntegrityEntry.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -859,6 +858,36 @@ size_t AbstractCommand::calculateMinSplitSize() const
   } else {
     return getOption()->getAsInt(PREF_MIN_SPLIT_SIZE);
   }
+}
+
+void AbstractCommand::setRequest(const SharedHandle<Request>& request)
+{
+  req_ = request;
+}
+
+void AbstractCommand::setFileEntry(const SharedHandle<FileEntry>& fileEntry)
+{
+  fileEntry_ = fileEntry;
+}
+
+void AbstractCommand::setSocket(const SharedHandle<SocketCore>& s)
+{
+  socket_ = s;
+}
+
+const SharedHandle<DownloadContext>& AbstractCommand::getDownloadContext() const
+{
+  return requestGroup_->getDownloadContext();
+}
+
+const SharedHandle<SegmentMan>& AbstractCommand::getSegmentMan() const
+{
+  return requestGroup_->getSegmentMan();
+}
+
+const SharedHandle<PieceStorage>& AbstractCommand::getPieceStorage() const
+{
+  return requestGroup_->getPieceStorage();
 }
 
 } // namespace aria2

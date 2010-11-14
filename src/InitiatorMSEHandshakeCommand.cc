@@ -54,10 +54,6 @@
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
 #include "util.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

@@ -55,6 +55,12 @@
 
 namespace aria2 {
 
+SegmentEntry::SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment)
+  : cuid(cuid), segment(segment)
+{}
+
+SegmentEntry::~SegmentEntry() {}
+
 SegmentMan::SegmentMan(const Option* option,
                        const SharedHandle<DownloadContext>& downloadContext,
                        const PieceStorageHandle& pieceStorage):

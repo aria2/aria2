@@ -43,7 +43,6 @@
 #include "DHTRoutingTableSerializer.h"
 #include "RecoverableException.h"
 #include "DownloadEngine.h"
-#include "util.h"
 #include "DHTBucket.h"
 #include "RequestGroupMan.h"
 #include "prefs.h"
@@ -54,9 +53,6 @@
 #include "FileEntry.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

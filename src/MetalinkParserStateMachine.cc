@@ -110,6 +110,8 @@ MetalinkParserStateMachine::MetalinkParserStateMachine():
   stateStack_.push(initialState_);
 }
 
+MetalinkParserStateMachine::~MetalinkParserStateMachine() {}
+
 void MetalinkParserStateMachine::setMetalinkState()
 {
   stateStack_.push(metalinkState_);

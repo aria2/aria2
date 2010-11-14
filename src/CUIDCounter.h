@@ -44,19 +44,11 @@ class CUIDCounter {
 private:
   cuid_t count_;
 public:
-  CUIDCounter():count_(0) {}
-
-  ~CUIDCounter() {}
-
-  cuid_t newID()
-  {
-    if(count_ == INT64_MAX) {
-      count_ = 0;
-    }
-    return ++count_;
-  }
+  CUIDCounter();
+  ~CUIDCounter();
+  cuid_t newID();
 };
 
-}
+} // namespace aria2
 
 #endif // D_CUID_COUNTER_H

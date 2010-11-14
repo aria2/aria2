@@ -52,7 +52,7 @@ public:
   StreamFilter
   (const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
 
-  virtual ~StreamFilter() {}
+  virtual ~StreamFilter();
 
   // init() must be called before calling decode().
   virtual void init() = 0;

@@ -36,9 +36,14 @@
 #include "PStringSegment.h"
 #include "PStringNumLoop.h"
 #include "PStringSelect.h"
+#include "NumberDecorator.h"
 #include "a2functional.h"
 
 namespace aria2 {
+
+PStringBuildVisitor::PStringBuildVisitor() {}
+
+PStringBuildVisitor::~PStringBuildVisitor() {}
 
 void PStringBuildVisitor::visit(PStringSegment& segment)
 {

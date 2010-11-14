@@ -72,4 +72,9 @@ std::string Exception::stackTrace() const
   return s.str();
 }
 
+const char* Exception::what() const throw()
+{
+  return msg_.c_str();
+}
+
 } // namespace aria2

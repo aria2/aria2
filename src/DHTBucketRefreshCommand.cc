@@ -39,10 +39,6 @@
 #include "DHTTask.h"
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
-#include "FileEntry.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

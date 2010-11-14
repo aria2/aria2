@@ -42,6 +42,8 @@
 
 #include "a2time.h"
 
+namespace aria2 {
+
 struct TorrentAttribute:public ContextAttribute {
   std::string name;
   std::string mode;
@@ -57,10 +59,15 @@ struct TorrentAttribute:public ContextAttribute {
   std::string createdBy;
   std::vector<std::string> urlList;
 
-  TorrentAttribute():metadataSize(0),
-                     privateTorrent(false),
-                     creationDate(0) {}
+  TorrentAttribute();
+  ~TorrentAttribute();
+
+  // Don't allow copying
+  TorrentAttribute(const TorrentAttribute&);
+  TorrentAttribute& operator=(const TorrentAttribute&);
 };
+
+} // namespace aria2
 
 #endif // D_TORRENT_ATTRIBUTE_H
 

@@ -66,15 +66,9 @@ public:
 
   virtual void disableDirectIO() {}
 
-  void setString(const std::string& s)
-  {
-    buf_.str(s);
-  }
+  void setString(const std::string& s);
 
-  std::string getString() const
-  {
-    return buf_.str();
-  }
+  std::string getString() const;
 };
 
 typedef SharedHandle<ByteArrayDiskWriter> ByteArrayDiskWriterHandle;

@@ -93,6 +93,8 @@ private:
 public:
   PieceStatMan(size_t pieceNum, bool randomShuffle);
 
+  ~PieceStatMan();
+
   void addPieceStats(size_t index);
 
   void addPieceStats(const unsigned char* bitfield,

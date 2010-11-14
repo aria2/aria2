@@ -74,7 +74,11 @@ public:
    bool httpOnly,
    time_t creationTime);
 
+  Cookie(const Cookie& c);
+
   ~Cookie();
+
+  Cookie& operator=(const Cookie& c);
 
   std::string toString() const;
 
@@ -91,20 +95,14 @@ public:
     return name_;
   }
 
-  void setName(const std::string& name)
-  {
-    name_ = name;
-  }
+  void setName(const std::string& name);
 
   const std::string& getValue() const
   {
     return value_;
   }
 
-  void setValue(const std::string& value)
-  {
-    value_ = value;
-  }
+  void setValue(const std::string& value);
 
   time_t getExpiryTime() const
   {
@@ -131,10 +129,7 @@ public:
     return domain_;
   }
 
-  void setDomain(const std::string& domain)
-  {
-    domain_ = domain;
-  }
+  void setDomain(const std::string& domain);
 
   bool getHostOnly() const
   {
@@ -151,10 +146,7 @@ public:
     return path_;
   }
 
-  void setPath(const std::string& path)
-  {
-    path_ = path;
-  }
+  void setPath(const std::string& path);
 
   bool getSecure() const
   {

@@ -45,6 +45,8 @@
 #include "RequestGroupMan.h"
 #include "CheckIntegrityEntry.h"
 #include "ServerStatMan.h"
+#include "PeerStat.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

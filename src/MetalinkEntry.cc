@@ -204,4 +204,14 @@ void MetalinkEntry::setSignature(const SharedHandle<Signature>& signature)
   signature_ = signature;
 }
 
+bool MetalinkEntry::containsLanguage(const std::string& lang) const
+{
+  return std::find(languages.begin(), languages.end(), lang) != languages.end();
+}
+
+bool MetalinkEntry::containsOS(const std::string& os) const
+{
+  return std::find(oses.begin(), oses.end(), os) != oses.end();
+}
+
 } // namespace aria2

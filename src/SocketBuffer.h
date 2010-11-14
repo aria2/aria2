@@ -96,6 +96,10 @@ public:
 
   ~SocketBuffer();
 
+  // Don't allow copying
+  SocketBuffer(const SocketBuffer&);
+  SocketBuffer& operator=(const SocketBuffer&);
+
   // Feeds data pointered by bytes with length len. into queue.  This
   // object gets ownership of bytes, so caller must not delete or
   // later bytes after this call. This function doesn't send data.

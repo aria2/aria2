@@ -93,7 +93,7 @@ public:
 
   const std::string& getPath() const { return path_; }
 
-  void setPath(const std::string& path) { path_ = path; }
+  void setPath(const std::string& path);
 
   uint64_t getLength() const { return length_; }
 
@@ -147,10 +147,7 @@ public:
   // Inserts uris_ and spentUris_ into uris.
   void getUris(std::vector<std::string>& uris) const;
 
-  void setContentType(const std::string& contentType)
-  {
-    contentType_ = contentType;
-  }
+  void setContentType(const std::string& contentType);
 
   const std::string& getContentType() const { return contentType_; }
 
@@ -181,15 +178,9 @@ public:
 
   bool removeRequest(const SharedHandle<Request>& request);
 
-  size_t countInFlightRequest() const
-  {
-    return inFlightRequests_.size();
-  }
+  size_t countInFlightRequest() const;
 
-  size_t countPooledRequest() const
-  {
-    return requestPool_.size();
-  }
+  size_t countPooledRequest() const;
 
   const std::deque<SharedHandle<Request> >& getInFlightRequests() const
   {
@@ -236,10 +227,7 @@ public:
 
   void releaseRuntimeResource();
 
-  void setOriginalName(const std::string& originalName)
-  {
-    originalName_ = originalName;
-  }
+  void setOriginalName(const std::string& originalName);
 
   const std::string& getOriginalName() const
   {
@@ -248,10 +236,7 @@ public:
 
   bool removeUri(const std::string& uri);
 
-  bool emptyRequestUri() const
-  {
-    return uris_.empty() && inFlightRequests_.empty() && requestPool_.empty();
-  }
+  bool emptyRequestUri() const;
 
   void setUniqueProtocol(bool f)
   {
@@ -340,6 +325,6 @@ void writeFilePath
   }
 }
 
-}
+} // namespace aria2
 
 #endif // D_FILE_ENTRY_H

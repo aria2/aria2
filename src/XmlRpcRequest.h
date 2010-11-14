@@ -50,8 +50,13 @@ struct XmlRpcRequest {
   SharedHandle<List> params;
 
   XmlRpcRequest(const std::string& methodName,
-                const SharedHandle<List>& params):
-    methodName(methodName), params(params) {}
+                const SharedHandle<List>& params);
+
+  ~XmlRpcRequest();
+
+  XmlRpcRequest(const XmlRpcRequest& c);
+
+  XmlRpcRequest& operator=(const XmlRpcRequest& c);
 
   const String* getStringParam(size_t index) const;
 

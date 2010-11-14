@@ -62,7 +62,7 @@ protected:
   }
 public:
   DiskAdaptor();
-  virtual ~DiskAdaptor() {}
+  virtual ~DiskAdaptor();
 
   virtual void openFile() = 0;
 

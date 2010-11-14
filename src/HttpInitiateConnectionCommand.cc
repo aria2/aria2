@@ -47,12 +47,8 @@
 #include "message.h"
 #include "prefs.h"
 #include "A2STR.h"
-#include "DownloadContext.h"
 #include "util.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
+
 namespace aria2 {
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand

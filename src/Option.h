@@ -65,15 +65,9 @@ public:
 
   void clear();
 
-  std::map<std::string, std::string>::const_iterator begin() const
-  {
-    return table_.begin();
-  }
+  std::map<std::string, std::string>::const_iterator begin() const;
 
-  std::map<std::string, std::string>::const_iterator end() const
-  {
-    return table_.end();
-  }
+  std::map<std::string, std::string>::const_iterator end() const;
 };
 
 } // namespace aria2

@@ -9,6 +9,7 @@
 #include "Option.h"
 #include "RequestGroup.h"
 #include "FileEntry.h"
+#include "Signature.h"
 
 namespace aria2 {
 

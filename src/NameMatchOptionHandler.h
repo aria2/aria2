@@ -37,17 +37,9 @@
 
 #include "OptionHandler.h"
 
-#include <strings.h>
-
-#include <algorithm>
-#include <sstream>
-#include <iterator>
 #include <vector>
 
 #include "A2STR.h"
-#include "util.h"
-#include "OptionHandlerException.h"
-#include "a2functional.h"
 
 #define NO_DESCRIPTION A2STR::NIL
 #define NO_DEFAULT_VALUE A2STR::NIL
@@ -80,45 +72,19 @@ public:
                          const std::string& description = NO_DESCRIPTION,
                          const std::string& defaultValue = NO_DEFAULT_VALUE,
                          ARG_TYPE argType = REQ_ARG,
-                         char shortName = 0):
-    optName_(optName),
-    description_(description),
-    defaultValue_(defaultValue),
-    id_(0),
-    argType_(argType),
-    shortName_(shortName),
-    hidden_(false) {}
+                         char shortName = 0);
 
-  virtual ~NameMatchOptionHandler() {}
+  virtual ~NameMatchOptionHandler();
   
-  virtual bool canHandle(const std::string& optName)
-  {
-    return strcasecmp(optName_.c_str(), optName.c_str()) == 0;
-  }
+  virtual bool canHandle(const std::string& optName);
 
-  virtual void parse(Option& option, const std::string& arg)
-  {
-    try {
-      parseArg(option, arg);
-    } catch(Exception& e) {
-      throw OPTION_HANDLER_EXCEPTION2(optName_, e);
-    }
-  }
+  virtual void parse(Option& option, const std::string& arg);
 
-  virtual bool hasTag(const std::string& tag) const
-  {
-    return std::find(tags_.begin(), tags_.end(), tag) != tags_.end();
-  }
+  virtual bool hasTag(const std::string& tag) const;
 
-  virtual void addTag(const std::string& tag)
-  {
-    tags_.push_back(tag);
-  }
+  virtual void addTag(const std::string& tag);
 
-  virtual std::string toTagString() const
-  {
-    return strjoin(tags_.begin(), tags_.end(), ", ");
-  }
+  virtual std::string toTagString() const;
 
   virtual const std::string& getName() const
   {

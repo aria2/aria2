@@ -53,12 +53,9 @@ public:
   Metalinker();
   ~Metalinker();
 
-  Metalinker& operator=(const Metalinker& metalinker) {
-    if(this != &metalinker) {
-      entries_ = metalinker.entries_;
-    }
-    return *this;
-  }
+  // Don't allow copying
+  Metalinker(const Metalinker&);
+  Metalinker& operator=(const Metalinker&);
 
   void queryEntry
   (std::vector<SharedHandle<MetalinkEntry> >& queryResult,
@@ -71,10 +68,7 @@ public:
     return entries_;
   }
 
-  void addEntry(const SharedHandle<MetalinkEntry>& entry)
-  {
-    entries_.push_back(entry);
-  }
+  void addEntry(const SharedHandle<MetalinkEntry>& entry);
 };
 
 } // namespace aria2

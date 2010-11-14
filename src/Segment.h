@@ -37,7 +37,6 @@
 
 #include "common.h"
 
-#include <unistd.h>
 #include <stdint.h>
 #include <string>
 

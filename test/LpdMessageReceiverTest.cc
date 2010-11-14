@@ -11,6 +11,7 @@
 #include "BtConstants.h"
 #include "LpdMessage.h"
 #include "LpdMessageDispatcher.h"
+#include "Peer.h"
 
 namespace aria2 {
 

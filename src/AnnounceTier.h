@@ -36,9 +36,11 @@
 #define D_ANNOUNCE_TIER_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 #include <deque>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -57,40 +59,17 @@ public:
   AnnounceEvent event;
   std::deque<std::string> urls;
 
-  AnnounceTier(const std::deque<std::string>& urls):event(STARTED), urls(urls) {}
+  AnnounceTier(const std::deque<std::string>& urls);
 
-  void nextEvent() {
-    switch(event) {
-    case STARTED:
-      event = DOWNLOADING;
-      break;
-    case STARTED_AFTER_COMPLETION:
-      event = SEEDING;
-      break;
-    case STOPPED:
-      event = HALTED;
-      break;
-    case COMPLETED:
-      event = SEEDING;
-      break;
-    default:
-      break;
-    }
-  }
+  ~AnnounceTier();
 
-  void nextEventIfAfterStarted()
-  {
-    switch(event) {
-    case STOPPED:
-      event = HALTED;
-      break;
-    case COMPLETED:
-      event = SEEDING;
-      break;
-    default:
-      break;
-    }
-  }
+  // Don't allow copying
+  AnnounceTier(const AnnounceTier&);
+  AnnounceTier& operator=(const AnnounceTier&);
+
+  void nextEvent();
+
+  void nextEventIfAfterStarted();
 };
 
 } // namespace aria2

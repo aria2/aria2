@@ -36,8 +36,7 @@
 #define D_LIBGCRYPT_DH_KEY_EXCHANGE_H
 
 #include "common.h"
-#include "DlAbortEx.h"
-#include "StringFormat.h"
+
 #include <gcrypt.h>
 
 namespace aria2 {
@@ -53,124 +52,24 @@ private:
   gcry_mpi_t privateKey_;
 
   gcry_mpi_t publicKey_;
-
-  void handleError(gcry_error_t err) const
-  {
-    throw DL_ABORT_EX
-      (StringFormat("Exception in libgcrypt routine(DHKeyExchange class): %s",
-                    gcry_strerror(err)).str());
-  }
 public:
-  DHKeyExchange():
-    keyLength_(0),
-    prime_(0),
-    generator_(0),
-    privateKey_(0),
-    publicKey_(0) {}
+  DHKeyExchange();
 
-  ~DHKeyExchange()
-  {
-    gcry_mpi_release(prime_);
-    gcry_mpi_release(generator_);
-    gcry_mpi_release(privateKey_);
-    gcry_mpi_release(publicKey_);
-  }
+  ~DHKeyExchange();
 
   void init(const unsigned char* prime, size_t primeBits,
             const unsigned char* generator,
-            size_t privateKeyBits)
-  {
-    gcry_mpi_release(prime_);
-    gcry_mpi_release(generator_);
-    gcry_mpi_release(privateKey_);
-    {
-      gcry_error_t r = gcry_mpi_scan(&prime_, GCRYMPI_FMT_HEX,
-                                     prime, 0, 0);
-      if(r) {
-        handleError(r);
-      }
-    }
-    {
-      gcry_error_t r = gcry_mpi_scan(&generator_, GCRYMPI_FMT_HEX,
-                                     generator, 0, 0);
-      if(r) {
-        handleError(r);
-      }
-    }
-    privateKey_ = gcry_mpi_new(0);
-    gcry_mpi_randomize(privateKey_, privateKeyBits, GCRY_STRONG_RANDOM);
-    keyLength_ = (primeBits+7)/8;
-  }
+            size_t privateKeyBits);
 
-  void generatePublicKey()
-  {
-    gcry_mpi_release(publicKey_);
-    publicKey_ = gcry_mpi_new(0);
-    gcry_mpi_powm(publicKey_, generator_, privateKey_, prime_);
-  }
+  void generatePublicKey();
 
-  size_t getPublicKey(unsigned char* out, size_t outLength) const
-  {
-    if(outLength < keyLength_) {
-      throw DL_ABORT_EX
-        (StringFormat
-         ("Insufficient buffer for public key. expect:%lu, actual:%lu",
-          static_cast<unsigned long>(keyLength_),
-          static_cast<unsigned long>(outLength)).str());
-    }
-    memset(out, 0, outLength);
-    size_t publicKeyBytes = (gcry_mpi_get_nbits(publicKey_)+7)/8;
-    size_t offset = keyLength_-publicKeyBytes;
-    size_t nwritten;
-    gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
-                                    outLength-offset, &nwritten, publicKey_);
-    if(r) {
-      handleError(r);
-    }
-    return nwritten;
-  }
+  size_t getPublicKey(unsigned char* out, size_t outLength) const;
 
-  void generateNonce(unsigned char* out, size_t outLength) const
-  {
-    gcry_create_nonce(out, outLength);
-  }
+  void generateNonce(unsigned char* out, size_t outLength) const;
 
   size_t computeSecret(unsigned char* out, size_t outLength,
                        const unsigned char* peerPublicKeyData,
-                       size_t peerPublicKeyLength) const
-  {
-    if(outLength < keyLength_) {
-      throw DL_ABORT_EX
-        (StringFormat("Insufficient buffer for secret. expect:%lu, actual:%lu",
-                      static_cast<unsigned long>(keyLength_),
-                      static_cast<unsigned long>(outLength)).str());
-    }
-    gcry_mpi_t peerPublicKey;
-    {
-      gcry_error_t r = gcry_mpi_scan(&peerPublicKey, GCRYMPI_FMT_USG, peerPublicKeyData,
-                                     peerPublicKeyLength, 0);
-      if(r) {
-        handleError(r);
-      }
-    }
-    gcry_mpi_t secret = gcry_mpi_new(0);
-    gcry_mpi_powm(secret, peerPublicKey, privateKey_, prime_);
-    gcry_mpi_release(peerPublicKey);
-
-    memset(out, 0, outLength);
-    size_t secretBytes = (gcry_mpi_get_nbits(secret)+7)/8;
-    size_t offset = keyLength_-secretBytes;
-    size_t nwritten;
-    {
-      gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
-                                      outLength-offset, &nwritten, secret);
-      gcry_mpi_release(secret);
-      if(r) {
-        handleError(r);
-      }
-    }
-    return nwritten;
-  }
+                       size_t peerPublicKeyLength) const;
 };
 
 } // namespace aria2

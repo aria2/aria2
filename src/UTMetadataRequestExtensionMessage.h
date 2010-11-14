@@ -56,16 +56,15 @@ private:
 public:
   UTMetadataRequestExtensionMessage(uint8_t extensionMessageID);
 
+  ~UTMetadataRequestExtensionMessage();
+
   virtual std::string getPayload();
 
   virtual std::string toString() const;
 
   virtual void doReceivedAction();
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    dctx_ = dctx;
-  }
+  void setDownloadContext(const SharedHandle<DownloadContext>& dctx);
 
   void setBtMessageDispatcher(BtMessageDispatcher* disp)
   {
@@ -77,10 +76,7 @@ public:
     messageFactory_ = factory;
   }
 
-  void setPeer(const SharedHandle<Peer>& peer)
-  {
-    peer_ = peer;
-  }
+  void setPeer(const SharedHandle<Peer>& peer);
 };
 
 } // namespace aria2

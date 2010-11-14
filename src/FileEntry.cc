@@ -43,6 +43,7 @@
 #include "wallclock.h"
 #include "a2algo.h"
 #include "uri.h"
+#include "PeerStat.h"
 
 namespace aria2 {
 
@@ -456,6 +457,36 @@ bool FileEntry::insertUri(const std::string& uri, size_t pos)
   } else {
     return false;
   }
+}
+
+void FileEntry::setPath(const std::string& path)
+{
+  path_ = path;
+}
+
+void FileEntry::setContentType(const std::string& contentType)
+{
+  contentType_ = contentType;
+}
+
+size_t FileEntry::countInFlightRequest() const
+{
+  return inFlightRequests_.size();
+}
+
+size_t FileEntry::countPooledRequest() const
+{
+  return requestPool_.size();
+}
+
+void FileEntry::setOriginalName(const std::string& originalName)
+{
+  originalName_ = originalName;
+}
+
+bool FileEntry::emptyRequestUri() const
+{
+  return uris_.empty() && inFlightRequests_.empty() && requestPool_.empty();
 }
 
 } // namespace aria2

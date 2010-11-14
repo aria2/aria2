@@ -47,29 +47,21 @@ private:
   std::string messageDigest_;
 public:
   // messageDigest_ is ascii hexadecimal notation.
-  Checksum(const std::string& algo, const std::string& messageDigest):
-    algo_(algo), messageDigest_(messageDigest) {}
-  Checksum():
-    algo_("sha-1") {}
+  Checksum(const std::string& algo, const std::string& messageDigest);
+  Checksum();
+  ~Checksum();
 
-  ~Checksum() {}
+  bool isEmpty() const;
 
-  bool isEmpty() const {
-    return messageDigest_.empty();
-  }
-
-  void setMessageDigest(const std::string& md) {
-    this->messageDigest_ = md;
-  }
-  const std::string& getMessageDigest() const {
+  void setMessageDigest(const std::string& md);
+  const std::string& getMessageDigest() const
+  {
     return messageDigest_;
   }
   
-  void setAlgo(const std::string& algo) {
-    this->algo_ = algo;
-  }
-
-  const std::string& getAlgo() const {
+  void setAlgo(const std::string& algo);
+  const std::string& getAlgo() const
+  {
     return algo_;
   }
 };

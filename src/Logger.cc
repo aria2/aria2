@@ -197,4 +197,14 @@ void Logger::writeStackTrace
   }
 }
 
+bool Logger::debug()
+{
+  return levelEnabled(A2_DEBUG);
+}
+
+bool Logger::info()
+{
+  return levelEnabled(A2_INFO);
+}
+
 } // namespace aria2

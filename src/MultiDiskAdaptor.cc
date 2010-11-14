@@ -144,6 +144,8 @@ MultiDiskAdaptor::MultiDiskAdaptor():
   directIOAllowed_(false),
   readOnly_(false) {}
 
+MultiDiskAdaptor::~MultiDiskAdaptor() {}
+
 namespace {
 SharedHandle<DiskWriterEntry> createDiskWriterEntry
 (const SharedHandle<FileEntry>& fileEntry,

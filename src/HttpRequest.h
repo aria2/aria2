@@ -42,11 +42,11 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "Request.h"
 #include "FileEntry.h"
 
 namespace aria2 {
 
+class Request;
 class Segment;
 class Range;
 class Option;
@@ -94,6 +94,7 @@ private:
   std::pair<std::string, std::string> getProxyAuthString() const;
 public:
   HttpRequest();
+  ~HttpRequest();
 
   const SharedHandle<Segment>& getSegment() const
   {
@@ -104,61 +105,27 @@ public:
 
   void setRequest(const SharedHandle<Request>& request);
 
-  uint64_t getEntityLength() const
-  {
-    assert(fileEntry_);
-    return fileEntry_->getLength();
-  }
+  uint64_t getEntityLength() const;
 
-  const std::string& getHost() const
-  {
-    return request_->getHost();
-  }
+  const std::string& getHost() const;
 
-  uint16_t getPort() const
-  {
-    return request_->getPort();
-  }
+  uint16_t getPort() const;
 
-  const std::string& getMethod() const
-  {
-    return request_->getMethod();
-  }
+  const std::string& getMethod() const;
 
-  const std::string& getProtocol() const
-  {
-    return request_->getProtocol();
-  }
+  const std::string& getProtocol() const;
 
-  const std::string& getCurrentURI() const
-  {
-    return request_->getCurrentUri();
-  }
+  const std::string& getCurrentURI() const;
   
-  const std::string& getDir() const
-  {
-    return request_->getDir();
-  }
+  const std::string& getDir() const;
 
-  const std::string& getFile() const
-  {
-    return request_->getFile();
-  }
+  const std::string& getFile() const;
 
-  const std::string& getQuery() const
-  {
-    return request_->getQuery();
-  }
+  const std::string& getQuery() const;
 
-  const std::string& getPreviousURI() const
-  {
-    return request_->getPreviousUri();
-  }
+  const std::string& getPreviousURI() const;
 
-  std::string getURIHost() const
-  {
-    return request_->getURIHost();
-  }
+  std::string getURIHost() const;
 
   SharedHandle<Range> getRange() const;
 
@@ -196,10 +163,7 @@ public:
 
   void disableContentEncoding();
 
-  void setUserAgent(const std::string& userAgent)
-  {
-    userAgent_ = userAgent;
-  }
+  void setUserAgent(const std::string& userAgent);
   
   // accepts multiline headers, delimited by LF
   void addHeader(const std::string& headers);
@@ -242,10 +206,7 @@ public:
   // createRequest().
   const SharedHandle<AuthConfig>& getAuthConfig() const;
 
-  void setFileEntry(const SharedHandle<FileEntry>& fileEntry)
-  {
-    fileEntry_ = fileEntry;
-  }
+  void setFileEntry(const SharedHandle<FileEntry>& fileEntry);
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
@@ -282,10 +243,7 @@ public:
     endOffsetOverride_ = offset;
   }
 
-  void setIfModifiedSinceHeader(const std::string& hd)
-  {
-    ifModSinceHeader_ = hd;
-  }
+  void setIfModifiedSinceHeader(const std::string& hd);
 
   const std::string& getIfModifiedSinceHeader() const
   {

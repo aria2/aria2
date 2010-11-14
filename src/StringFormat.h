@@ -49,6 +49,7 @@ private:
 public:
   StringFormat(const char* fmt, ...)
     __attribute__ ((format (printf, 2, 3)));
+  ~StringFormat();
 
   const std::string& str() const;
 };

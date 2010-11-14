@@ -60,6 +60,29 @@ BtSeederStateChoke::PeerEntry::PeerEntry
   uploadSpeed_(peer->calculateUploadSpeed())
 {}
 
+BtSeederStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
+  : peer_(c.peer_),
+    outstandingUpload_(c.outstandingUpload_),
+    lastAmUnchoking_(c.lastAmUnchoking_),
+    recentUnchoking_(c.recentUnchoking_),
+    uploadSpeed_(c.uploadSpeed_)
+{}
+
+BtSeederStateChoke::PeerEntry::~PeerEntry() {}
+
+BtSeederStateChoke::PeerEntry& BtSeederStateChoke::PeerEntry::operator=
+(const PeerEntry& c)
+{
+  if(this != &c) {
+    peer_ = c.peer_;
+    outstandingUpload_ = c.outstandingUpload_;
+    lastAmUnchoking_ = c.lastAmUnchoking_;
+    recentUnchoking_ = c.recentUnchoking_;
+    uploadSpeed_ = c.uploadSpeed_;
+  }
+  return *this;
+}
+
 bool
 BtSeederStateChoke::PeerEntry::operator<(const PeerEntry& rhs) const
 {

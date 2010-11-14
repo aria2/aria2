@@ -65,8 +65,8 @@ private:
   // Request Path
   std::string requestPath_;
 public:
-  HttpHeader() {}
-  ~HttpHeader() {}
+  HttpHeader();
+  ~HttpHeader();
 
   void put(const std::string& name, const std::string& value);
   bool defined(const std::string& name) const;

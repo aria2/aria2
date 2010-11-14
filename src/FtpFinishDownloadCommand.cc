@@ -47,12 +47,8 @@
 #include "SocketCore.h"
 #include "RequestGroup.h"
 #include "Logger.h"
-#include "DownloadContext.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 #include "util.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -67,6 +63,8 @@ FtpFinishDownloadCommand::FtpFinishDownloadCommand
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
    ftpConnection_(ftpConnection)
 {}
+
+FtpFinishDownloadCommand::~FtpFinishDownloadCommand() {}
 
 // overrides AbstractCommand::execute().
 // AbstractCommand::_segments is empty.

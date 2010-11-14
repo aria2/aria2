@@ -36,26 +36,21 @@
 #define D_INDEX_BT_VALIDATOR_H
 
 #include "BtMessageValidator.h"
-#include "IndexBtMessage.h"
-#include "bittorrent_helper.h"
 
 namespace aria2 {
+
+class IndexBtMessage;
 
 class IndexBtMessageValidator : public BtMessageValidator {
 private:
   const IndexBtMessage* message_;
   size_t numPiece_;
 public:
-  IndexBtMessageValidator(const IndexBtMessage* message,
-                          size_t numPiece):
-    message_(message),
-    numPiece_(numPiece) {}
+  IndexBtMessageValidator(const IndexBtMessage* message, size_t numPiece);
 
-  virtual void validate()
-  {
-    bittorrent::checkIndex(message_->getIndex(), numPiece_);
-  }
+  ~IndexBtMessageValidator();
 
+  virtual void validate();
 };
 
 } // namespace aria2

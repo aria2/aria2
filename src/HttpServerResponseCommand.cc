@@ -40,12 +40,8 @@
 #include "HttpServerCommand.h"
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
-#include "FileEntry.h"
 #include "wallclock.h"
 #include "util.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

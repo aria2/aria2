@@ -40,9 +40,6 @@
 #include "message.h"
 #include "Logger.h"
 #include "DownloadContext.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

@@ -49,6 +49,11 @@ struct XmlAttr {
   std::string prefix;
   std::string nsUri;
   std::string value;
+
+  XmlAttr();
+  XmlAttr(const XmlAttr& attr);
+  ~XmlAttr();
+  XmlAttr& operator=(const XmlAttr&);
 };
 
 class MetalinkParserState

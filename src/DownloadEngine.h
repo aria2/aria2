@@ -46,13 +46,13 @@
 #include "a2netcompat.h"
 #include "TimerA2.h"
 #include "a2io.h"
-#ifdef ENABLE_ASYNC_DNS
-# include "AsyncNameResolver.h"
-#endif // ENABLE_ASYNC_DNS
 #include "CUIDCounter.h"
 #include "FileAllocationMan.h"
 #include "CheckIntegrityMan.h"
 #include "DNSCache.h"
+#ifdef ENABLE_ASYNC_DNS
+# include "AsyncNameResolver.h"
+#endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
 
@@ -187,45 +187,30 @@ public:
                                Command* command);
 #endif // ENABLE_ASYNC_DNS
 
-  void addCommand(const std::vector<Command*>& commands)
-  {
-    commands_.insert(commands_.end(), commands.begin(), commands.end());
-  }
+  void addCommand(const std::vector<Command*>& commands);
 
-  void addCommand(Command* command)
-  {
-    commands_.push_back(command);
-  }
+  void addCommand(Command* command);
 
   const SharedHandle<RequestGroupMan>& getRequestGroupMan() const
   {
     return requestGroupMan_;
   }
 
-  void setRequestGroupMan(const SharedHandle<RequestGroupMan>& rgman)
-  {
-    requestGroupMan_ = rgman;
-  }
+  void setRequestGroupMan(const SharedHandle<RequestGroupMan>& rgman);
 
   const SharedHandle<FileAllocationMan>& getFileAllocationMan() const
   {
     return fileAllocationMan_;
   }
 
-  void setFileAllocationMan(const SharedHandle<FileAllocationMan>& faman)
-  {
-    fileAllocationMan_ = faman;
-  }
+  void setFileAllocationMan(const SharedHandle<FileAllocationMan>& faman);
 
   const SharedHandle<CheckIntegrityMan>& getCheckIntegrityMan() const
   {
     return checkIntegrityMan_;
   }
 
-  void setCheckIntegrityMan(const SharedHandle<CheckIntegrityMan>& ciman)
-  {
-    checkIntegrityMan_ = ciman;
-  }
+  void setCheckIntegrityMan(const SharedHandle<CheckIntegrityMan>& ciman);
 
   Option* getOption() const
   {

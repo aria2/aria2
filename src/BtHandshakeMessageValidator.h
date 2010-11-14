@@ -39,12 +39,11 @@
 
 #include <cstring>
 
-#include "BtHandshakeMessage.h"
-#include "util.h"
-#include "StringFormat.h"
 #include "BtConstants.h"
 
 namespace aria2 {
+
+class BtHandshakeMessage;
 
 class BtHandshakeMessageValidator : public BtMessageValidator {
 private:
@@ -52,32 +51,11 @@ private:
   unsigned char infoHash_[INFO_HASH_LENGTH];
 public:
   BtHandshakeMessageValidator(const BtHandshakeMessage* message,
-                              const unsigned char* infoHash):
-    message_(message)
-  {
-    memcpy(infoHash_, infoHash, sizeof(infoHash_));
-  }
+                              const unsigned char* infoHash);
 
-  virtual void validate()
-  {
-    if(message_->getPstrlen() != 19) {
-      throw DL_ABORT_EX(StringFormat("invalid handshake pstrlen=%u",
-                                     message_->getPstrlen()).str());
-    }
-    if(memcmp(BtHandshakeMessage::BT_PSTR, message_->getPstr(), 19) != 0) {
-      throw DL_ABORT_EX
-        (StringFormat("invalid handshake pstr=%s",
-                      util::percentEncode
-                      (message_->getPstr(), 19).c_str()).str());
-    }
-    if(memcmp(infoHash_, message_->getInfoHash(), sizeof(infoHash_)) != 0) {
-      throw DL_ABORT_EX
-        (StringFormat("invalid handshake info hash: expected:%s, actual:%s",
-                      util::toHex(infoHash_, sizeof(infoHash_)).c_str(),
-                      util::toHex(message_->getInfoHash(),
-                                  INFO_HASH_LENGTH).c_str()).str());
-    }
-  }
+  ~BtHandshakeMessageValidator();
+
+  virtual void validate();
 };
 
 typedef SharedHandle<BtHandshakeMessageValidator> BtHandshakeMessageValidatorHandle;

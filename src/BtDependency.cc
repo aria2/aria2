@@ -48,6 +48,7 @@
 #include "bittorrent_helper.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

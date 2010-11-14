@@ -57,7 +57,12 @@ private:
   int fillStat(a2_struct_stat& fstat);
 public:
   File(const std::string& name);
+
+  File(const File& c);
+
   ~File();
+
+  File& operator=(const File& c);
 
   /**
    * Tests whether the file or directory denoted by name exists.

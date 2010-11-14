@@ -50,10 +50,10 @@ const std::string MetalinkResource::BITTORRENT("bittorrent");
 
 const std::string MetalinkResource::TORRENT("torrent");
 
-MetalinkResource::MetalinkResource():
-  type(TYPE_UNKNOWN),
-  priority(getLowestPriority()),
-  maxConnections(-1)
+MetalinkResource::MetalinkResource()
+  : type(TYPE_UNKNOWN),
+    priority(getLowestPriority()),
+    maxConnections(-1)
 {}
 
 MetalinkResource::~MetalinkResource() {}

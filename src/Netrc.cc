@@ -44,6 +44,70 @@
 
 namespace aria2 {
 
+Authenticator::Authenticator() {}
+
+Authenticator::Authenticator
+(const std::string& machine,
+ const std::string& login,
+ const std::string& password,
+ const std::string& account)
+  : machine_(machine),
+    login_(login),
+    password_(password),
+    account_(account)
+{}
+
+Authenticator::~Authenticator() {}
+
+bool Authenticator::match(const std::string& hostname) const
+{
+  if(util::isNumericHost(hostname)) {
+    return hostname == machine_;
+  } else {
+    if(util::startsWith(machine_, A2STR::DOT_C)) {
+      return util::endsWith(A2STR::DOT_C+hostname, machine_);
+    } else {
+      return hostname == machine_;
+    }
+  }
+}
+
+void Authenticator::setMachine(const std::string& machine)
+{
+  machine_ = machine;
+}
+
+void Authenticator::setLogin(const std::string& login)
+{
+  login_ = login;
+}
+
+void Authenticator::setPassword(const std::string& password)
+{
+  password_ = password;
+}
+
+void Authenticator::setAccount(const std::string& account)
+{
+  account_ = account;
+}
+
+DefaultAuthenticator::DefaultAuthenticator() {}
+
+DefaultAuthenticator::DefaultAuthenticator
+(const std::string& login,
+ const std::string& password,
+ const std::string& account)
+  : Authenticator(A2STR::NIL, login, password, account)
+{}
+
+DefaultAuthenticator::~DefaultAuthenticator() {}
+
+bool DefaultAuthenticator::match(const std::string& hostname) const
+{
+  return true;
+}
+
 const std::string Netrc::A2_MACHINE("machine");
 
 const std::string Netrc::A2_DEFAULT("default");
@@ -55,6 +119,15 @@ const std::string Netrc::A2_PASSWORD("password");
 const std::string Netrc::A2_ACCOUNT("account");
 
 const std::string Netrc::A2_MACDEF("macdef");
+
+Netrc::Netrc() {}
+
+Netrc::~Netrc() {}
+
+void Netrc::addAuthenticator(const SharedHandle<Authenticator>& authenticator)
+{
+  authenticators_.push_back(authenticator);
+}
 
 void Netrc::skipMacdef(std::ifstream& f) const
 {

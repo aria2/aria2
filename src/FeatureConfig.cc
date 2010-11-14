@@ -120,6 +120,8 @@ FeatureConfig::FeatureConfig() {
   features_.insert(vbegin(featureArray), vend(featureArray));
 }
 
+FeatureConfig::~FeatureConfig() {}
+
 const SharedHandle<FeatureConfig>& FeatureConfig::getInstance()
 {
   if(!featureConfig_) {

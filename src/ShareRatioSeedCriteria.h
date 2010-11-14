@@ -36,55 +36,40 @@
 #define D_SHARE_RATIO_SEED_CRITERIA_H
 
 #include "SeedCriteria.h"
-#include "DownloadContext.h"
-#include "PeerStorage.h"
-#include "PieceStorage.h"
 
 namespace aria2 {
 
+class DownloadContext;
+class PeerStorage;
+class PieceStorage;
+
 class ShareRatioSeedCriteria : public SeedCriteria {
 private:
-  double ratio;
+  double ratio_;
   SharedHandle<DownloadContext> downloadContext_;
   SharedHandle<PeerStorage> peerStorage_;
   SharedHandle<PieceStorage> pieceStorage_;
 public:
   ShareRatioSeedCriteria
-  (double ratio, const SharedHandle<DownloadContext>& downloadContext)
-    :ratio(ratio),
-     downloadContext_(downloadContext) {}
+  (double ratio, const SharedHandle<DownloadContext>& downloadContext);
 
-  virtual ~ShareRatioSeedCriteria() {}
+  virtual ~ShareRatioSeedCriteria();
 
-  virtual void reset() {}
+  virtual void reset();
 
-  virtual bool evaluate() {
-    if(downloadContext_->getTotalLength() == 0) {
-      return false;
-    }
-    TransferStat stat = peerStorage_->calculateStat();
-    return ratio <=
-      (double)stat.getAllTimeUploadLength()/
-      pieceStorage_->getCompletedLength();
-  }
+  virtual bool evaluate();
 
   void setRatio(double ratio) {
-    this->ratio = ratio;
+    ratio_ = ratio;
   }
 
   double getRatio() const {
-    return ratio;
+    return ratio_;
   }
 
-  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage)
-  {
-    peerStorage_ = peerStorage;
-  }
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
-  {
-    pieceStorage_ = pieceStorage;
-  }
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 };
 
 } // namespace aria2

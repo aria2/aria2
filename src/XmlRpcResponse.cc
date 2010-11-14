@@ -116,6 +116,27 @@ std::string encodeAll
 }
 } // namespace
 
+XmlRpcResponse::XmlRpcResponse
+(int code, const SharedHandle<ValueBase>& param)
+  : code(code), param(param)
+{}
+
+XmlRpcResponse::XmlRpcResponse(const XmlRpcResponse& c)
+  : code(c.code),
+    param(c.param)
+{}
+
+XmlRpcResponse::~XmlRpcResponse() {}
+
+XmlRpcResponse& XmlRpcResponse::operator=(const XmlRpcResponse& c)
+{
+  if(this != &c) {
+    code = c.code;
+    param = c.param;
+  }
+  return *this;
+}
+
 std::string XmlRpcResponse::toXml(bool gzip) const
 {
   if(gzip) {

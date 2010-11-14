@@ -42,7 +42,6 @@
 #include "SpeedCalc.h"
 #include "SharedHandle.h"
 #include "Command.h"
-#include "wallclock.h"
 
 namespace aria2 {
 
@@ -65,101 +64,64 @@ private:
   uint64_t sessionDownloadLength_;
   uint64_t sessionUploadLength_;
 public:
+  PeerStat
+  (cuid_t cuid, const std::string& hostname, const::std::string& protocol);
 
-  PeerStat(cuid_t cuid, const std::string& hostname,
-           const::std::string& protocol):
-    cuid_(cuid),
-    hostname_(hostname),
-    protocol_(protocol),
-    downloadStartTime_(global::wallclock),
-    status_(PeerStat::IDLE),
-    avgDownloadSpeed_(0),
-    avgUploadSpeed_(0),
-    sessionDownloadLength_(0),
-    sessionUploadLength_(0) {}
+  PeerStat(cuid_t cuid = 0);
 
-  PeerStat(cuid_t cuid = 0):
-    cuid_(cuid),
-    status_(PeerStat::IDLE),
-    avgDownloadSpeed_(0),
-    avgUploadSpeed_(0),
-    sessionDownloadLength_(0),
-    sessionUploadLength_(0) {}
+  ~PeerStat();
+
+  // Don't allow copying
+  PeerStat(const PeerStat&);
+  PeerStat& operator=(const PeerStat&);
 
   /**
    * Returns current download speed in byte per sec.
    */
-  unsigned int calculateDownloadSpeed() {
-    return downloadSpeed_.calculateSpeed();
-  }
+  unsigned int calculateDownloadSpeed();
 
-  unsigned int calculateAvgDownloadSpeed() {
-    avgDownloadSpeed_ = downloadSpeed_.calculateAvgSpeed();
+  unsigned int calculateAvgDownloadSpeed();
+
+  unsigned int calculateUploadSpeed();
+
+  unsigned int calculateAvgUploadSpeed();
+
+  void updateDownloadLength(size_t bytes);
+
+  void updateUploadLength(size_t bytes);
+
+  unsigned int getMaxDownloadSpeed() const;
+
+  unsigned int getMaxUploadSpeed() const;
+
+  unsigned int getAvgDownloadSpeed() const
+  {
     return avgDownloadSpeed_;
   }
 
-  unsigned int calculateUploadSpeed() {
-    return uploadSpeed_.calculateSpeed();
-  }
-
-  unsigned int calculateAvgUploadSpeed() {
-    avgUploadSpeed_ = uploadSpeed_.calculateAvgSpeed();
+  unsigned int getAvgUploadSpeed() const
+  {
     return avgUploadSpeed_;
   }
 
-  void updateDownloadLength(size_t bytes) {
-    downloadSpeed_.update(bytes);
-    sessionDownloadLength_ += bytes;
-  }
+  void reset();
 
-  void updateUploadLength(size_t bytes) {
-    uploadSpeed_.update(bytes);
-    sessionUploadLength_ += bytes;
-  }
+  void downloadStart();
 
-  unsigned int getMaxDownloadSpeed() const {
-    return downloadSpeed_.getMaxSpeed();
-  }
+  void downloadStop();
 
-  unsigned int getMaxUploadSpeed() const {
-    return uploadSpeed_.getMaxSpeed();
-  }
-
-  unsigned int getAvgDownloadSpeed() const {
-    return avgDownloadSpeed_;
-  }
-
-  unsigned int getAvgUploadSpeed() const {
-    return avgUploadSpeed_;
-  }
-
-  void reset() {
-    downloadSpeed_.reset();
-    uploadSpeed_.reset();
-    downloadStartTime_ = global::wallclock;
-    status_ = PeerStat::IDLE;
-  }
-
-  void downloadStart() {
-    reset();
-    status_ = PeerStat::ACTIVE;
-  }
-
-  void downloadStop() {
-    calculateAvgDownloadSpeed();
-    calculateAvgUploadSpeed();
-    status_ = PeerStat::IDLE;
-  }
-
-  const Timer& getDownloadStartTime() const {
+  const Timer& getDownloadStartTime() const
+  {
     return downloadStartTime_;
   }
 
-  PeerStat::STATUS getStatus() const {
+  PeerStat::STATUS getStatus() const
+  {
     return status_;
   }
 
-  cuid_t getCuid() const {
+  cuid_t getCuid() const
+  {
     return cuid_;
   }
 

@@ -52,6 +52,10 @@ class XmlRpcRequestProcessor {
 private:
   SharedHandle<XmlRpcRequestParserStateMachine> stm_;
 public:
+  XmlRpcRequestProcessor();
+
+  ~XmlRpcRequestProcessor();
+
   XmlRpcRequest parseMemory(const std::string& xml);
 };
 

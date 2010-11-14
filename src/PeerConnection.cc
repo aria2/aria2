@@ -279,4 +279,11 @@ ssize_t PeerConnection::sendPendingData()
   return writtenLength;
 }
 
+unsigned char* PeerConnection::detachBuffer()
+{
+  unsigned char* detachbuf = resbuf_;
+  resbuf_ = new unsigned char[MAX_PAYLOAD_LEN];
+  return detachbuf;
+}
+
 } // namespace aria2

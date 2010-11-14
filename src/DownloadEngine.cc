@@ -66,10 +66,6 @@
 #include "DownloadContext.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
-# include "PeerStorage.h"
-# include "PieceStorage.h"
-# include "BtAnnounce.h"
-# include "BtRuntime.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -538,6 +534,34 @@ void DownloadEngine::setAuthConfigFactory
 void DownloadEngine::setRefreshInterval(int64_t interval)
 {
   refreshInterval_ = interval;
+}
+
+void DownloadEngine::addCommand(const std::vector<Command*>& commands)
+{
+  commands_.insert(commands_.end(), commands.begin(), commands.end());
+}
+
+void DownloadEngine::addCommand(Command* command)
+{
+  commands_.push_back(command);
+}
+
+void DownloadEngine::setRequestGroupMan
+(const SharedHandle<RequestGroupMan>& rgman)
+{
+  requestGroupMan_ = rgman;
+}
+
+void DownloadEngine::setFileAllocationMan
+(const SharedHandle<FileAllocationMan>& faman)
+{
+  fileAllocationMan_ = faman;
+}
+
+void DownloadEngine::setCheckIntegrityMan
+(const SharedHandle<CheckIntegrityMan>& ciman)
+{
+  checkIntegrityMan_ = ciman;
 }
 
 } // namespace aria2

@@ -41,7 +41,6 @@
 #include <iosfwd>
 
 #include "SharedHandle.h"
-#include "a2functional.h"
 
 namespace aria2 {
 
@@ -51,15 +50,15 @@ private:
   std::string user_;
   std::string password_;
 public:
+  AuthConfig();
+  AuthConfig(const std::string& user, const std::string& password);
+  ~AuthConfig();
 
-  AuthConfig() {}
-  AuthConfig(const std::string& user, const std::string& password):
-    user_(user), password_(password) {}
+  // Don't allow copying
+  AuthConfig(const AuthConfig&);
+  AuthConfig& operator=(const AuthConfig&);
 
-  std::string getAuthText() const
-  {
-    return strconcat(user_, ":", password_);
-  }
+  std::string getAuthText() const;
 
   const std::string& getUser() const
   {

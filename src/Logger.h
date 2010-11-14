@@ -137,15 +137,9 @@ public:
 
   // Returns true if this logger actually writes debug log message to
   // either file or stdout.
-  bool debug()
-  {
-    return levelEnabled(A2_DEBUG);
-  }
+  bool debug();
 
-  bool info()
-  {
-    return levelEnabled(A2_INFO);
-  }
+  bool info();
 };
 
 } // namespace aria2

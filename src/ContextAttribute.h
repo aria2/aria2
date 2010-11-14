@@ -37,8 +37,12 @@
 
 #include "common.h"
 
+namespace aria2 {
+
 struct ContextAttribute {
   virtual ~ContextAttribute() {}
 };
+
+} // namespace aria2
 
 #endif // D_CONTEXT_ATTRIBUTE_H

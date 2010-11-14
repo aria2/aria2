@@ -89,4 +89,9 @@ void Metalinker::queryEntry
                       std::not1(EntryQuery(version, language, os)));
 }
 
+void Metalinker::addEntry(const SharedHandle<MetalinkEntry>& entry)
+{
+  entries_.push_back(entry);
+}
+
 } // namespace aria2

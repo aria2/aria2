@@ -41,6 +41,42 @@ namespace aria2 {
 
 namespace uri {
 
+UriStruct::UriStruct()
+  : port(0), hasPassword(false), ipv6LiteralAddress(false)
+{}
+
+UriStruct::UriStruct(const UriStruct& c)
+  : protocol(c.protocol),
+    host(c.host),
+    port(c.port),
+    dir(c.dir),
+    file(c.file),
+    query(c.query),
+    username(c.username),
+    password(c.password),
+    hasPassword(c.hasPassword),
+    ipv6LiteralAddress(c.ipv6LiteralAddress)
+{}
+
+UriStruct::~UriStruct() {}
+
+UriStruct& UriStruct::operator=(const UriStruct& c)
+{
+  if(this != &c) {
+    protocol = c.protocol;
+    host = c.host;
+    port = c.port;
+    dir = c.dir;
+    file = c.file;
+    query = c.query;
+    username = c.username;
+    password = c.password;
+    hasPassword = c.hasPassword;
+    ipv6LiteralAddress = c.ipv6LiteralAddress;
+  }
+  return *this;
+}
+
 bool parse(UriStruct& result, const std::string& uri)
 {
   // http://user:password@aria2.sourceforge.net:80/dir/file?query#fragment

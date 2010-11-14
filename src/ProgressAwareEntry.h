@@ -36,9 +36,11 @@
 #define D_PROGRESS_AWARE_ENTRY_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <stdint.h>
 #include <unistd.h>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 

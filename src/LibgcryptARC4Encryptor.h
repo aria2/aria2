@@ -39,41 +39,22 @@
 
 #include <gcrypt.h>
 
-#include "DlAbortEx.h"
 #include "LibgcryptARC4Context.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
 class ARC4Encryptor {
 private:
   LibgcryptARC4Context ctx_;
-
-  void handleError(gcry_error_t err) const
-  {
-    throw DL_ABORT_EX
-      (StringFormat("Exception in libgcrypt routine(ARC4Encryptor class): %s",
-                    gcry_strerror(err)).str());
-  }
 public:
-  ARC4Encryptor() {}
+  ARC4Encryptor();
 
-  ~ARC4Encryptor() {}
+  ~ARC4Encryptor();
 
-  void init(const unsigned char* key, size_t keyLength)
-  {
-    ctx_.init(key, keyLength);
-  }
+  void init(const unsigned char* key, size_t keyLength);
 
   void encrypt(unsigned char* out, size_t outLength,
-               const unsigned char* in, size_t inLength)
-  {
-    gcry_error_t r = gcry_cipher_encrypt(ctx_.getCipherContext(),
-                                         out, outLength, in, inLength);
-    if(r) {
-      handleError(r);
-    }
-  }
+               const unsigned char* in, size_t inLength);
 };
 
 } // namespace aria2

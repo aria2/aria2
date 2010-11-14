@@ -38,11 +38,10 @@
 #include <utility>
 
 #include "util.h"
-#include "FeatureConfig.h"
 #include "StringFormat.h"
 #include "A2STR.h"
-#include "a2functional.h"
 #include "uri.h"
+#include "PeerStat.h"
 
 namespace aria2 {
 
@@ -69,6 +68,8 @@ Request::Request():
   removalRequested_(false),
   connectedPort_(0)
 {}
+
+Request::~Request() {}
 
 namespace {
 std::string removeFragment(const std::string& uri)
@@ -186,6 +187,28 @@ const SharedHandle<PeerStat>& Request::initPeerStat()
   assert(v);
   peerStat_.reset(new PeerStat(0, us.host, us.protocol));
   return peerStat_;
+}
+
+std::string Request::getURIHost() const
+{
+  if(isIPv6LiteralAddress()) {
+    return strconcat("[", getHost(), "]");
+  } else {
+    return getHost();
+  }
+}
+
+void Request::setMethod(const std::string& method)
+{
+  method_ = method;
+}
+
+void Request::setConnectedAddrInfo
+(const std::string& hostname, const std::string& addr, uint16_t port)
+{
+  connectedHostname_ = hostname;
+  connectedAddr_ = addr;
+  connectedPort_ = port;
 }
 
 } // namespace aria2

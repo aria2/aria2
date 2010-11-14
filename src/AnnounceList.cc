@@ -38,7 +38,6 @@
 
 #include "A2STR.h"
 #include "SimpleRandomizer.h"
-#include "util.h"
 #include "a2algo.h"
 
 namespace aria2 {
@@ -48,6 +47,8 @@ const std::string AnnounceList::STARTED("started");
 const std::string AnnounceList::STOPPED("stopped");
 
 const std::string AnnounceList::COMPLETED("completed");
+
+AnnounceList::AnnounceList():currentTrackerInitialized_(false) {}
 
 AnnounceList::AnnounceList
 (const std::vector<std::vector<std::string> >& announceList):
@@ -60,6 +61,8 @@ AnnounceList::AnnounceList
   tiers_(announceTiers), currentTrackerInitialized_(false)  {
   resetIterator();
 }
+
+AnnounceList::~AnnounceList() {}
 
 void AnnounceList::reconfigure
 (const std::vector<std::vector<std::string> >& announceList)
@@ -260,6 +263,11 @@ bool AnnounceList::currentTierAcceptsCompletedEvent() const
   } else {
     return false;
   }
+}
+
+size_t AnnounceList::countTier() const
+{
+  return tiers_.size();
 }
 
 } // namespace aria2

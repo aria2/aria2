@@ -33,9 +33,26 @@
  */
 /* copyright --> */
 #include "AuthConfig.h"
+
 #include <ostream>
 
+#include "a2functional.h"
+
 namespace aria2 {
+
+AuthConfig::AuthConfig() {}
+
+AuthConfig::AuthConfig(const std::string& user, const std::string& password)
+    : user_(user),
+      password_(password)
+{}
+
+AuthConfig::~AuthConfig() {}
+
+std::string AuthConfig::getAuthText() const
+{
+  return strconcat(user_, ":", password_);
+}
 
 std::ostream& operator<<(std::ostream& o, const AuthConfigHandle& authConfig)
 {

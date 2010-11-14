@@ -63,7 +63,7 @@ private:
 public:
   OptionParser();
 
-  ~OptionParser() {}
+  ~OptionParser();
 
   // Parses options in argv and writes option name and value to out in
   // NAME=VALUE format. Non-option strings are stored in nonopts.

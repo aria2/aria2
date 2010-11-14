@@ -49,6 +49,8 @@ String::String(const unsigned char* data, size_t length):
 
 String::String() {}
 
+String::~String() {}
+
 const String::ValueType& String::s() const
 {
   return str_;
@@ -78,6 +80,8 @@ Integer::Integer(ValueType integer):integer_(integer) {}
 
 Integer::Integer():integer_(0) {}
 
+Integer::~Integer() {}
+
 Integer::ValueType Integer::i() const
 {
   return integer_;
@@ -94,6 +98,8 @@ void Integer::accept(ValueBaseVisitor& v) const
 }
 
 List::List() {}
+
+List::~List() {}
 
 const SharedHandle<ValueBase>& List::get(size_t index) const
 {
@@ -167,6 +173,8 @@ void List::accept(ValueBaseVisitor& v) const
 }
 
 Dict::Dict() {}
+
+Dict::~Dict() {}
 
 void Dict::put(const std::string& key, const SharedHandle<ValueBase>& vlb)
 {

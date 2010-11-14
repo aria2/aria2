@@ -43,4 +43,6 @@ DiskAdaptor::DiskAdaptor():
   fallocate_(false),
   logger_(LogFactory::getInstance()) {}
 
+DiskAdaptor::~DiskAdaptor() {}
+
 } // namespace aria2

@@ -66,6 +66,10 @@ public:
     std::deque<Cookie> cookies_;
   public:
     DomainEntry(const std::string& domain);
+    DomainEntry(const DomainEntry& c);
+    ~DomainEntry();
+
+    DomainEntry& operator=(const DomainEntry& c);
 
     const std::string& getKey() const
     {
@@ -89,10 +93,7 @@ public:
       return out;
     }
 
-    size_t countCookie() const
-    {
-      return cookies_.size();
-    }
+    size_t countCookie() const;
 
     bool addCookie(const Cookie& cookie, time_t now);
 
@@ -116,10 +117,7 @@ public:
       return std::copy(cookies_.begin(), cookies_.end(), out);
     }
 
-    bool operator<(const DomainEntry& de) const
-    {
-      return key_ < de.key_;
-    }
+    bool operator<(const DomainEntry& de) const;
   };
 private:
   std::deque<DomainEntry> domains_;

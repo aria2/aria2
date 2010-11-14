@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "ByteArrayDiskWriter.h"
-#include "util.h"
 #include "A2STR.h"
 
 namespace aria2 {
@@ -88,6 +87,16 @@ uint64_t ByteArrayDiskWriter::size()
   buf_.seekg(0, std::ios::end);
   buf_.clear();
   return buf_.tellg();
+}
+
+void ByteArrayDiskWriter::setString(const std::string& s)
+{
+  buf_.str(s);
+}
+
+std::string ByteArrayDiskWriter::getString() const
+{
+  return buf_.str();
 }
 
 } // namespace aria2

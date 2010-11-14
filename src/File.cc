@@ -54,9 +54,19 @@ namespace aria2 {
 # include <windows.h>
 #endif // __MINGW32__
 
-File::File(const std::string& name):name_(name) {}
+File::File(const std::string& name) : name_(name) {}
+
+File::File(const File& c) : name_(c.name_) {}
 
 File::~File() {}
+
+File& File::operator=(const File& c)
+{
+  if(this != &c) {
+    name_ = c.name_;
+  }
+  return *this;
+}
 
 int File::fillStat(a2_struct_stat& fstat) {
   return a2stat(name_.c_str(), &fstat);

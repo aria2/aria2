@@ -36,44 +36,22 @@
 #define D_LIBGCRYPT_ARC4_DECRYPTOR_H
 
 #include "common.h"
-
-#include <gcrypt.h>
-
-#include "DlAbortEx.h"
 #include "LibgcryptARC4Context.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
 class ARC4Decryptor {
 private:
   LibgcryptARC4Context ctx_;
-
-  void handleError(gcry_error_t err) const
-  {
-    throw DL_ABORT_EX
-      (StringFormat("Exception in libgcrypt routine(ARC4Decryptor class): %s",
-                    gcry_strerror(err)).str());
-  }
 public:
-  ARC4Decryptor() {}
+  ARC4Decryptor();
 
-  ~ARC4Decryptor() {}
+  ~ARC4Decryptor();
 
-  void init(const unsigned char* key, size_t keyLength)
-  {
-    ctx_.init(key, keyLength);
-  }
+  void init(const unsigned char* key, size_t keyLength);
 
   void decrypt(unsigned char* out, size_t outLength,
-               const unsigned char* in, size_t inLength)
-  {
-    gcry_error_t r = gcry_cipher_decrypt(ctx_.getCipherContext(),
-                                         out, outLength, in, inLength);
-    if(r) {
-      handleError(r);
-    }
-  }
+               const unsigned char* in, size_t inLength);
 };
 
 } // namespace aria2

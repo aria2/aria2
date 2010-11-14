@@ -37,7 +37,6 @@
 
 #include "SeedCriteria.h"
 #include "TimerA2.h"
-#include "wallclock.h"
 
 namespace aria2 {
 
@@ -47,22 +46,20 @@ private:
   time_t duration_;
   Timer watch_;
 public:
-  TimeSeedCriteria(time_t duration):duration_(duration) {}
-  virtual ~TimeSeedCriteria() {}
+  TimeSeedCriteria(time_t duration);
+  virtual ~TimeSeedCriteria();
 
-  virtual void reset() {
-    watch_ = global::wallclock;
-  }
+  virtual void reset();
 
-  virtual bool evaluate() {
-    return watch_.difference(global::wallclock) >= duration_;
-  }
+  virtual bool evaluate();
 
-  void setDuration(time_t duration) {
+  void setDuration(time_t duration)
+  {
     duration_ = duration;
   }
 
-  time_t getDuration() const {
+  time_t getDuration() const
+  {
     return duration_;
   }
 };

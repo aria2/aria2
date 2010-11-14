@@ -36,17 +36,24 @@
 #define D_ABSTRACT_COMMAND_H
 
 #include "Command.h"
+
+#include <vector>
+#include <string>
+
 #include "SharedHandle.h"
 #include "TimerA2.h"
-#include "FileEntry.h"
-#include "RequestGroup.h"
 
 namespace aria2 {
 
+class FileEntry;
+class RequestGroup;
+class CheckIntegrityEntry;
+class DownloadContext;
+class SegmentMan;
+class PieceStorage;
 class Request;
 class DownloadEngine;
 class Segment;
-class Exception;
 class SocketCore;
 class Option;
 #ifdef ENABLE_ASYNC_DNS
@@ -98,20 +105,14 @@ protected:
     return req_;
   }
 
-  void setRequest(const SharedHandle<Request>& request)
-  {
-    req_ = request;
-  }
+  void setRequest(const SharedHandle<Request>& request);
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
     return fileEntry_;
   }
 
-  void setFileEntry(const SharedHandle<FileEntry>& fileEntry)
-  {
-    fileEntry_ = fileEntry;
-  }
+  void setFileEntry(const SharedHandle<FileEntry>& fileEntry);
 
   DownloadEngine* getDownloadEngine() const
   {
@@ -123,10 +124,7 @@ protected:
     return socket_;
   }
 
-  void setSocket(const SharedHandle<SocketCore>& s)
-  {
-    socket_ = s;
-  }
+  void setSocket(const SharedHandle<SocketCore>& s);
 
   void createSocket();
 
@@ -213,20 +211,9 @@ protected:
 
   const SharedHandle<Option>& getOption() const;
 
-  const SharedHandle<DownloadContext>& getDownloadContext() const
-  {
-    return requestGroup_->getDownloadContext();
-  }
-
-  const SharedHandle<SegmentMan>& getSegmentMan() const
-  {
-    return requestGroup_->getSegmentMan();
-  }
-
-  const SharedHandle<PieceStorage>& getPieceStorage() const
-  {
-    return requestGroup_->getPieceStorage();
-  }
+  const SharedHandle<DownloadContext>& getDownloadContext() const;
+  const SharedHandle<SegmentMan>& getSegmentMan() const;
+  const SharedHandle<PieceStorage>& getPieceStorage() const;
 
   Timer& getCheckPoint()
   {

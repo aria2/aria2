@@ -47,4 +47,6 @@ MetalinkMetaurl::MetalinkMetaurl
  const std::string& name, int priority):
   url(url), mediatype(mediatype), name(name), priority(priority) {}
 
+MetalinkMetaurl::~MetalinkMetaurl() {}
+
 } // namespace aria2

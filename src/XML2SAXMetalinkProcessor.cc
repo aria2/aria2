@@ -179,6 +179,10 @@ xmlSAXHandler mySAXHandler =
   };
 } // namespace
 
+MetalinkProcessor::MetalinkProcessor() {}
+
+MetalinkProcessor::~MetalinkProcessor() {}
+
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile(const std::string& filename)
 {

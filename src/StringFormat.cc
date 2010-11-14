@@ -52,6 +52,8 @@ StringFormat::StringFormat(const char* fmt, ...)
   va_end(ap);
 }
 
+StringFormat::~StringFormat() {}
+
 const std::string& StringFormat::str() const
 {
   return msg_;

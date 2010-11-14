@@ -60,8 +60,13 @@ class FileEntry;
 struct SegmentEntry {
   cuid_t cuid;
   SharedHandle<Segment> segment;
-  SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment):
-    cuid(cuid), segment(segment) {}
+
+  SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment);
+  ~SegmentEntry();
+
+  // Don't allow copying
+  SegmentEntry(const SegmentEntry&);
+  SegmentEntry& operator=(const SegmentEntry&);
 };
 
 typedef SharedHandle<SegmentEntry> SegmentEntryHandle;

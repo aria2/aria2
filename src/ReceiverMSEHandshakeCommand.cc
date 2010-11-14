@@ -50,14 +50,6 @@
 #include "RequestGroupMan.h"
 #include "BtRegistry.h"
 #include "DownloadContext.h"
-#include "PeerStorage.h"
-#include "PieceStorage.h"
-#include "BtAnnounce.h"
-#include "BtRuntime.h"
-#include "BtProgressInfoFile.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

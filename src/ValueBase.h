@@ -87,7 +87,13 @@ public:
   String(const unsigned char* data, size_t length);
 
   String();
-  
+
+  ~String();
+
+  // Don't allow copying
+  String(const String&);
+  String& operator=(const String&);
+
   const ValueType& s() const;
 
   // Returns std::string.data() casted to unsigned char*.
@@ -111,6 +117,12 @@ public:
 
   Integer();
 
+  ~Integer();
+
+  // Don't allow copying
+  Integer(const Integer&);
+  Integer& operator=(const Integer&);
+
   // Returns Integer.
   ValueType i() const;
 
@@ -126,6 +138,12 @@ public:
   typedef std::vector<SharedHandle<ValueBase> > ValueType;
 
   List();
+
+  ~List();
+
+  // Don't allow copying
+  List(const List&);
+  List& operator=(const List&);
 
   // Appends given v to list.
   void append(const SharedHandle<ValueBase>& v);
@@ -179,6 +197,12 @@ public:
   typedef std::map<std::string, SharedHandle<ValueBase> > ValueType;
 
   Dict();
+
+  ~Dict();
+
+  // Don't allow copying
+  Dict(const Dict&);
+  Dict& operator=(const Dict&);
 
   void put(const std::string& key, const SharedHandle<ValueBase>& vlb);
 

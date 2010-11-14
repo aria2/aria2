@@ -74,29 +74,14 @@ private:
   void ensureFilterBitfield();
 public:
   // [startIndex, endIndex)
-  class Range {
-  public:
+  struct Range {
     size_t startIndex;
     size_t endIndex;
-    Range(size_t startIndex = 0, size_t endIndex = 0):startIndex(startIndex),
-                                                      endIndex(endIndex) {}
-  
-    size_t getSize() const {
-      return endIndex-startIndex;
-    }
-
-    size_t getMidIndex() const {
-      return (endIndex-startIndex)/2+startIndex;
-    }
-
-    bool operator<(const Range& range) const {
-      return getSize() < range.getSize();
-    }
-    
-    bool operator==(const Range& range) const
-    {
-      return getSize() == range.getSize();
-    }
+    Range(size_t startIndex = 0, size_t endIndex = 0);
+    size_t getSize() const;
+    size_t getMidIndex() const;
+    bool operator<(const Range& range) const;    
+    bool operator==(const Range& range) const;
   };
 public:
   BitfieldMan(size_t blockLength, uint64_t totalLength);
@@ -110,10 +95,7 @@ public:
     return blockLength_;
   }
 
-  size_t getLastBlockLength() const
-  {
-    return totalLength_-blockLength_*(blocks_-1);
-  }
+  size_t getLastBlockLength() const;
 
   size_t getBlockLength(size_t index) const;
 

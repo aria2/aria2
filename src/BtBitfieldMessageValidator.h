@@ -36,10 +36,10 @@
 #define D_BT_BITFIELD_MESSAGE_VALIDATOR_H
 
 #include "BtMessageValidator.h"
-#include "BtBitfieldMessage.h"
-#include "bittorrent_helper.h"
 
 namespace aria2 {
+
+class BtBitfieldMessage;
 
 class BtBitfieldMessageValidator : public BtMessageValidator {
 private:
@@ -47,16 +47,10 @@ private:
   size_t numPiece_;
 public:
   BtBitfieldMessageValidator(const BtBitfieldMessage* message,
-                             size_t numPiece):
-    message_(message),
-    numPiece_(numPiece) {}
+                             size_t numPiece);
+  ~BtBitfieldMessageValidator();
 
-  virtual void validate()
-  {
-    bittorrent::checkBitfield(message_->getBitfield(),
-                              message_->getBitfieldLength(),
-                              numPiece_);
-  }
+  virtual void validate();
 };
 
 typedef SharedHandle<BtBitfieldMessageValidator> BtBitfieldMessageValidatorHandle;

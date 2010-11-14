@@ -60,6 +60,8 @@ private:
 public:
   UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
 
+  ~UTMetadataDataExtensionMessage();
+
   virtual std::string getPayload();
 
   virtual std::string toString() const;
@@ -76,30 +78,21 @@ public:
     return totalSize_;
   }
 
-  void setData(const std::string& data)
-  {
-    data_ = data;
-  }
+  void setData(const std::string& data);
 
   const std::string& getData() const
   {
     return data_;
   }
 
-  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
-  {
-    pieceStorage_ = pieceStorage;
-  }
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
   void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
   {
     tracker_ = tracker;
   }
 
-  void setDownloadContext(const SharedHandle<DownloadContext>& dctx)
-  {
-    dctx_ = dctx;
-  }
+  void setDownloadContext(const SharedHandle<DownloadContext>& dctx);
 };
 
 } // namespace aria2

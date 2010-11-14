@@ -71,6 +71,8 @@ HttpConnection::HttpConnection(cuid_t cuid, const SocketHandle& socket):
   logger_(LogFactory::getInstance())
 {}
 
+HttpConnection::~HttpConnection() {}
+
 std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 {
   std::istringstream istr(request);

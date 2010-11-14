@@ -41,7 +41,6 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "A2STR.h"
 
 namespace aria2 {
 
@@ -51,44 +50,22 @@ private:
   std::vector<std::string> checksums_;
   size_t checksumLength_;
 public:
-  ChunkChecksum():checksumLength_(0) {}    
+  ChunkChecksum();
 
   ChunkChecksum(const std::string& algo,
                 const std::vector<std::string>& checksums,
-                size_t checksumLength):
-    algo_(algo),
-    checksums_(checksums),
-    checksumLength_(checksumLength) {}
+                size_t checksumLength);
 
   bool validateChunk(const std::string& actualChecksum,
-                     size_t checksumIndex) const
-  {
-    if(checksumIndex < checksums_.size()) {
-      return actualChecksum == getChecksum(checksumIndex);
-    } else {
-      return false;
-    }
-  }
+                     size_t checksumIndex) const;
 
-  uint64_t getEstimatedDataLength() const
-  {
-    return ((uint64_t)checksumLength_)*checksums_.size();
-  }
+  uint64_t getEstimatedDataLength() const;
 
-  size_t countChecksum() const
-  {
-    return checksums_.size();
-  }
+  size_t countChecksum() const;
 
-  const std::string& getChecksum(size_t index) const
-  {
-    if(index < checksums_.size()) {
-      return checksums_[index];
-    } else {
-      return A2STR::NIL;
-    }
-  }
+  const std::string& getChecksum(size_t index) const;
   
+  void setChecksums(const std::vector<std::string>& mds);
   const std::vector<std::string>& getChecksums() const
   {
     return checksums_;
@@ -99,24 +76,15 @@ public:
     return checksumLength_;
   }
 
+  void setAlgo(const std::string& algo);
   const std::string& getAlgo() const
   {
     return algo_;
   }
 
-  void setAlgo(const std::string& algo)
-  {
-    algo_ = algo;
-  }
-
   void setChecksumLength(size_t length)
   {
     checksumLength_ = length;
-  }
-
-  void setChecksums(const std::vector<std::string>& mds)
-  {
-    checksums_ = mds;
   }
 };
 

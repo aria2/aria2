@@ -52,8 +52,11 @@ private:
   Timer lastUpdated_;
 public:
   PeerAddrEntry
-  (const std::string& ipaddr, uint16_t port, Timer updated = Timer()):
-    ipaddr_(ipaddr), port_(port), lastUpdated_(updated) {}
+  (const std::string& ipaddr, uint16_t port, Timer updated = Timer());
+  PeerAddrEntry(const PeerAddrEntry& c);
+  ~PeerAddrEntry();
+
+  PeerAddrEntry& operator=(const PeerAddrEntry& c);
 
   const std::string& getIPAddress() const
   {
@@ -70,15 +73,9 @@ public:
     return lastUpdated_;
   }
 
-  void notifyUpdate()
-  {
-    lastUpdated_.reset();
-  }
+  void notifyUpdate();
 
-  bool operator==(const PeerAddrEntry& entry) const
-  {
-    return ipaddr_ == entry.ipaddr_ && port_ == entry.port_;
-  }
+  bool operator==(const PeerAddrEntry& entry) const;
 };
 
 } // namespace aria2

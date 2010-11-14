@@ -38,61 +38,22 @@
 #include "common.h"
 
 #include <openssl/evp.h>
-#include <openssl/err.h>
-
-#include "DlAbortEx.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
 class LibsslARC4Context {
 private:
   EVP_CIPHER_CTX* cipherCtx_;
-
-  void handleError() const
-  {
-    throw DL_ABORT_EX
-      (StringFormat("Exception in libssl routine(ARC4Context class): %s",
-                    ERR_error_string(ERR_get_error(), 0)).str());
-  }
 public:
-  LibsslARC4Context():cipherCtx_(0) {}
+  LibsslARC4Context();
 
-  ~LibsslARC4Context()
-  {
-    if(cipherCtx_) {
-      EVP_CIPHER_CTX_cleanup(cipherCtx_);
-    }
-    delete cipherCtx_;
-  }
+  ~LibsslARC4Context();
 
-  EVP_CIPHER_CTX* getCipherContext() const
-  {
-    return cipherCtx_;
-  }
+  EVP_CIPHER_CTX* getCipherContext() const;
 
   // enc == 1: encryption
   // enc == 0: decryption
-  void init(const unsigned char* key, size_t keyLength, int enc)
-  {
-    if(cipherCtx_) {
-      EVP_CIPHER_CTX_cleanup(cipherCtx_);
-    }
-    delete cipherCtx_;
-    cipherCtx_ = new EVP_CIPHER_CTX;
-    EVP_CIPHER_CTX_init(cipherCtx_);
-
-    if(!EVP_CipherInit_ex(cipherCtx_, EVP_rc4(), 0, 0, 0, enc)) {
-      handleError();
-    }
-    if(!EVP_CIPHER_CTX_set_key_length(cipherCtx_, keyLength)) {
-      handleError();
-    }
-    if(!EVP_CipherInit_ex(cipherCtx_, 0, 0, key, 0, -1)) {
-      handleError();
-    }
-  }
-  
+  void init(const unsigned char* key, size_t keyLength, int enc);  
 };
 
 } // namespace aria2

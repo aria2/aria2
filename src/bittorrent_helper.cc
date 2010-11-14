@@ -57,6 +57,7 @@
 #include "SocketCore.h"
 #include "Option.h"
 #include "prefs.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

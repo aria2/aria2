@@ -42,6 +42,8 @@ const std::string BtNotInterestedMessage::NAME("not interested");
 
 BtNotInterestedMessage::BtNotInterestedMessage():ZeroBtMessage(ID, NAME) {}
 
+BtNotInterestedMessage::~BtNotInterestedMessage() {}
+
 SharedHandle<BtNotInterestedMessage> BtNotInterestedMessage::create
 (const unsigned char* data, size_t dataLength)
 {

@@ -51,8 +51,13 @@ struct XmlRpcResponse {
   
   SharedHandle<ValueBase> param;
 
-  XmlRpcResponse
-  (int code, const SharedHandle<ValueBase>& param):code(code), param(param) {}
+  XmlRpcResponse(int code, const SharedHandle<ValueBase>& param);
+
+  XmlRpcResponse(const XmlRpcResponse& c);
+
+  ~XmlRpcResponse();
+
+  XmlRpcResponse& operator=(const XmlRpcResponse& c);
 
   std::string toXml(bool gzip = false) const;
 };

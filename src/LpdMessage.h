@@ -37,19 +37,22 @@
 
 #include <string>
 
-#include "Peer.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
+
+class Peer;
 
 class LpdMessage {
 private:
   SharedHandle<Peer> peer_;
   std::string infoHash_;
 public:
-  LpdMessage() {}
+  LpdMessage();
 
-  LpdMessage(const SharedHandle<Peer>& peer, const std::string& infoHash):
-    peer_(peer), infoHash_(infoHash) {}
+  LpdMessage(const SharedHandle<Peer>& peer, const std::string& infoHash);
+
+  ~LpdMessage();
 
   const SharedHandle<Peer>& getPeer() const
   {

@@ -38,42 +38,23 @@
 #include "common.h"
 
 #include <openssl/evp.h>
-#include <openssl/err.h>
 
-#include "DlAbortEx.h"
 #include "LibsslARC4Context.h"
-#include "StringFormat.h"
 
 namespace aria2 {
 
 class ARC4Decryptor {
 private:
   LibsslARC4Context ctx_;
-
-  void handleError() const
-  {
-    throw DL_ABORT_EX
-      (StringFormat("Exception in libssl routine(ARC4Decryptor class): %s",
-                    ERR_error_string(ERR_get_error(), 0)).str());
-  }
 public:
-  ARC4Decryptor() {}
+  ARC4Decryptor();
 
-  ~ARC4Decryptor() {}
+  ~ARC4Decryptor();
 
-  void init(const unsigned char* key, size_t keyLength)
-  {
-    ctx_.init(key, keyLength, 0);
-  }
+  void init(const unsigned char* key, size_t keyLength);
 
   void decrypt(unsigned char* out, size_t outLength,
-               const unsigned char* in, size_t inLength)
-  {
-    int soutLength = outLength;
-    if(!EVP_CipherUpdate(ctx_.getCipherContext(), out, &soutLength, in, inLength)) {
-      handleError();
-    }
-  }
+               const unsigned char* in, size_t inLength);
 };
 
 } // namespace aria2

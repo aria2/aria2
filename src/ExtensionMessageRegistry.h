@@ -40,7 +40,6 @@
 #include <string>
 
 #include "BtConstants.h"
-#include "A2STR.h"
 
 namespace aria2 {
 
@@ -48,44 +47,20 @@ class ExtensionMessageRegistry {
 private:
   Extensions extensions_;
 public:
-  ExtensionMessageRegistry()
-  {
-    extensions_["ut_pex"] = 8;
-    // http://www.bittorrent.org/beps/bep_0009.html
-    extensions_["ut_metadata"] = 9;
-  }
+  ExtensionMessageRegistry();
+
+  ~ExtensionMessageRegistry();
 
   const Extensions& getExtensions() const
   {
     return extensions_;
   }
 
-  uint8_t getExtensionMessageID(const std::string& name) const
-  {
-    Extensions::const_iterator itr = extensions_.find(name);
-    if(itr == extensions_.end()) {
-      return 0;
-    } else {
-      return (*itr).second;
-    }
-  }
+  uint8_t getExtensionMessageID(const std::string& name) const;
 
-  const std::string& getExtensionName(uint8_t id) const
-  {
-    for(Extensions::const_iterator itr = extensions_.begin(),
-          eoi = extensions_.end(); itr != eoi; ++itr) {
-      const Extensions::value_type& p = *itr;
-      if(p.second == id) {
-        return p.first;
-      }
-    }
-    return A2STR::NIL;
-  }
+  const std::string& getExtensionName(uint8_t id) const;
 
-  void removeExtension(const std::string& name)
-  {
-    extensions_.erase(name);
-  }
+  void removeExtension(const std::string& name);
 };
 
 } // namespace aria2

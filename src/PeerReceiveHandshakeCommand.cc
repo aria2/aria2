@@ -46,7 +46,6 @@
 #include "PieceStorage.h"
 #include "BtRuntime.h"
 #include "BtAnnounce.h"
-#include "BtProgressInfoFile.h"
 #include "BtConstants.h"
 #include "message.h"
 #include "Socket.h"
@@ -56,9 +55,6 @@
 #include "RequestGroupMan.h"
 #include "StringFormat.h"
 #include "RequestGroup.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

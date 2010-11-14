@@ -53,6 +53,8 @@ DHTNode::DHTNode(const unsigned char* id):port_(0), rtt_(0), condition_(1), last
   memcpy(id_, id, DHT_ID_LENGTH);
 }
 
+DHTNode::~DHTNode() {}
+
 void DHTNode::generateID()
 {
   util::generateRandomKey(id_);
@@ -124,6 +126,11 @@ std::string DHTNode::toString() const
 void DHTNode::setID(const unsigned char* id)
 {
   memcpy(id_, id, DHT_ID_LENGTH);
+}
+
+void DHTNode::setIPAddress(const std::string& ipaddr)
+{
+  ipaddr_ = ipaddr;
 }
 
 } // namespace aria2

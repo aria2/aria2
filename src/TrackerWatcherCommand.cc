@@ -61,10 +61,6 @@
 #include "bittorrent_helper.h"
 #include "a2functional.h"
 #include "util.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

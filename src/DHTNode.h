@@ -36,10 +36,12 @@
 #define D_DHT_NODE_H
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "TimerA2.h"
-#include <string>
 
 namespace aria2 {
 
@@ -65,6 +67,8 @@ public:
    */
   DHTNode(const unsigned char* id);
 
+  ~DHTNode();
+  
   void generateID();
 
   const unsigned char* getID() const
@@ -82,10 +86,7 @@ public:
     return ipaddr_;
   }
 
-  void setIPAddress(const std::string& ipaddr)
-  {
-    ipaddr_ = ipaddr;
-  }
+  void setIPAddress(const std::string& ipaddr);
 
   void setID(const unsigned char* id);
 

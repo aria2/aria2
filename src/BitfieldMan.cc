@@ -37,7 +37,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "util.h"
 #include "array_fun.h"
 #include "bitfield.h"
 
@@ -129,6 +128,11 @@ BitfieldMan::~BitfieldMan() {
   delete [] bitfield_;
   delete [] useBitfield_;
   delete [] filterBitfield_;
+}
+
+size_t BitfieldMan::getLastBlockLength() const
+{
+  return totalLength_-blockLength_*(blocks_-1);
 }
 
 size_t BitfieldMan::getBlockLength(size_t index) const
@@ -714,6 +718,32 @@ uint64_t BitfieldMan::getMissingUnusedLength(size_t startingIndex) const
     length += getBlockLength(i);
   }
   return length;
+}
+
+BitfieldMan::Range::Range(size_t startIndex, size_t endIndex)
+ :
+  startIndex(startIndex),
+  endIndex(endIndex)
+{}
+  
+size_t BitfieldMan::Range::getSize() const
+{
+  return endIndex-startIndex;
+}
+
+size_t BitfieldMan::Range::getMidIndex() const
+{
+  return (endIndex-startIndex)/2+startIndex;
+}
+
+bool BitfieldMan::Range::operator<(const Range& range) const
+{
+  return getSize() < range.getSize();
+}
+    
+bool BitfieldMan::Range::operator==(const Range& range) const
+{
+  return getSize() == range.getSize();
 }
 
 } // namespace aria2

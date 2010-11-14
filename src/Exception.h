@@ -71,10 +71,7 @@ public:
 
   virtual ~Exception() throw();
 
-  virtual const char* what() const throw()
-  {
-    return msg_.c_str();
-  }
+  virtual const char* what() const throw();
 
   std::string stackTrace() const;
 

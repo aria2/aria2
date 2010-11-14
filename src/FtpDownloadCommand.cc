@@ -43,11 +43,7 @@
 #include "FtpFinishDownloadCommand.h"
 #include "FtpConnection.h"
 #include "Logger.h"
-#include "DownloadContext.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

@@ -93,6 +93,8 @@ PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
   }  
 }
 
+PieceStatMan::~PieceStatMan() {}
+
 namespace {
 class PieceStatRarer {
 private:

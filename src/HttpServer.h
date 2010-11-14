@@ -91,11 +91,7 @@ public:
   bool authenticate();
 
   void setUsernamePassword
-  (const std::string& username, const std::string& password)
-  {
-    username_ = username;
-    password_ = password;
-  }
+  (const std::string& username, const std::string& password);
 
   ssize_t sendResponse();
 

@@ -69,6 +69,8 @@ public:
                          const SharedHandle<DHTMessageCallback>& callback =
                          SharedHandle<DHTMessageCallback>());
 
+  ~DHTMessageTrackerEntry();
+
   bool isTimeout() const;
 
   void extendTimeout();
@@ -90,10 +92,7 @@ public:
     return callback_;
   }  
 
-  int64_t getElapsedMillis() const
-  {
-    return dispatchedTime_.differenceInMillis(global::wallclock);
-  }
+  int64_t getElapsedMillis() const;
 };
 
 } // namespace aria2

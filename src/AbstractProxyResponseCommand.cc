@@ -46,10 +46,6 @@
 #include "message.h"
 #include "HttpHeader.h"
 #include "DownloadContext.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

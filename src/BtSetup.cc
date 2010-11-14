@@ -78,12 +78,11 @@
 #include "LpdMessageDispatcher.h"
 #include "message.h"
 #include "SocketCore.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 #include "DlAbortEx.h"
 #include "array_fun.h"
+#include "DownloadContext.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
 
 namespace aria2 {
 

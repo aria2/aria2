@@ -53,6 +53,8 @@ DHTMessageTrackerEntry::DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& s
   timeout_(timeout)
 {}
 
+DHTMessageTrackerEntry::~DHTMessageTrackerEntry() {}
+
 bool DHTMessageTrackerEntry::isTimeout() const
 {
   return dispatchedTime_.difference(global::wallclock) >= timeout_;
@@ -75,6 +77,11 @@ bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::
     return ipaddr == "::ffff:"+targetNode_->getIPAddress();
   }
   return false;
+}
+
+int64_t DHTMessageTrackerEntry::getElapsedMillis() const
+{
+  return dispatchedTime_.differenceInMillis(global::wallclock);
 }
 
 } // namespace aria2

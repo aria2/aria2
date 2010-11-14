@@ -56,6 +56,8 @@ public:
    const SharedHandle<LpdMessageDispatcher>& dispatcher,
    DownloadEngine* e);
 
+  ~LpdDispatchMessageCommand();
+
   virtual bool execute();
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)

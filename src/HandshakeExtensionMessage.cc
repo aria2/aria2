@@ -45,6 +45,7 @@
 #include "bittorrent_helper.h"
 #include "RequestGroup.h"
 #include "PieceStorage.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 

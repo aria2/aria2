@@ -39,7 +39,6 @@
 
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #include "SharedHandle.h"
 
@@ -93,16 +92,9 @@ public:
 
   void reorderMetaurlsByPriority();
   
-  bool containsLanguage(const std::string& lang) const
-  {
-    return
-      std::find(languages.begin(), languages.end(), lang) != languages.end();
-  }
+  bool containsLanguage(const std::string& lang) const;
 
-  bool containsOS(const std::string& os) const
-  {
-    return std::find(oses.begin(), oses.end(), os) != oses.end();
-  }
+  bool containsOS(const std::string& os) const;
 
   void setLocationPriority
   (const std::vector<std::string>& locations, int priorityToAdd);

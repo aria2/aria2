@@ -62,6 +62,10 @@ private:
     bool regularUnchoker_;
   public:
     PeerEntry(const SharedHandle<Peer>& peer);
+    PeerEntry(const PeerEntry& c);
+    ~PeerEntry();
+
+    PeerEntry& operator=(const PeerEntry& c);
 
     bool operator<(const PeerEntry& rhs) const;
 

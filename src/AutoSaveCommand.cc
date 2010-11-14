@@ -35,15 +35,13 @@
 #include "AutoSaveCommand.h"
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
-#include "FileEntry.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 
-AutoSaveCommand::AutoSaveCommand(cuid_t cuid, DownloadEngine* e, time_t interval):
-  TimeBasedCommand(cuid, e, interval, true) {}
+AutoSaveCommand::AutoSaveCommand
+(cuid_t cuid, DownloadEngine* e, time_t interval)
+  : TimeBasedCommand(cuid, e, interval, true)
+{}
 
 AutoSaveCommand::~AutoSaveCommand() {}
 

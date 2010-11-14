@@ -98,6 +98,8 @@ public:
                   unsigned int maxSimultaneousDownloads,
                   const Option* option);
 
+  ~RequestGroupMan();
+
   bool downloadFinished();
 
   void save();

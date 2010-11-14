@@ -42,6 +42,8 @@ const std::string BtInterestedMessage::NAME("interested");
 
 BtInterestedMessage::BtInterestedMessage():ZeroBtMessage(ID, NAME) {}
 
+BtInterestedMessage::~BtInterestedMessage() {}
+
 SharedHandle<BtInterestedMessage> BtInterestedMessage::create
 (const unsigned char* data, size_t dataLength)
 {

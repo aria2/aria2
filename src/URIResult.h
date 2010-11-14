@@ -52,6 +52,8 @@ private:
 public:
   URIResult(const std::string& uri, downloadresultcode::RESULT result);
 
+  ~URIResult();
+
   const std::string& getURI() const
   {
     return uri_;

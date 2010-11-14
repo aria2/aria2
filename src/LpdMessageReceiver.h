@@ -57,6 +57,8 @@ public:
   LpdMessageReceiver
   (const std::string& multicastAddress, uint16_t multicastPort);
 
+  ~LpdMessageReceiver();
+
   // No throw.
   bool init(const std::string& localAddr);
 

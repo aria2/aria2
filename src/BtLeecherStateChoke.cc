@@ -58,6 +58,25 @@ BtLeecherStateChoke::PeerEntry::PeerEntry(const SharedHandle<Peer>& peer):
   (peer->peerInterested() &&
    peer->getLastDownloadUpdate().difference(global::wallclock) < 30) {}
 
+BtLeecherStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
+  : peer_(c.peer_),
+    downloadSpeed_(c.downloadSpeed_),
+    regularUnchoker_(c.regularUnchoker_)
+{}
+
+BtLeecherStateChoke::PeerEntry& BtLeecherStateChoke::PeerEntry::operator=
+(const PeerEntry& c)
+{
+  if(this != &c) {
+    peer_ = c.peer_;
+    downloadSpeed_ = c.downloadSpeed_;
+    regularUnchoker_ = c.regularUnchoker_;
+  }
+  return *this;
+}
+
+BtLeecherStateChoke::PeerEntry::~PeerEntry() {}
+
 const SharedHandle<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
 {
   return peer_;

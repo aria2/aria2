@@ -42,8 +42,6 @@
 #include <algorithm>
 #include <vector>
 
-#include "A2STR.h"
-
 namespace aria2 {
 
 class DNSCache {
@@ -52,7 +50,11 @@ private:
     std::string addr_;
     bool good_;
 
-    AddrEntry(const std::string& addr):addr_(addr), good_(true) {}
+    AddrEntry(const std::string& addr);
+    AddrEntry(const AddrEntry& c);
+    ~AddrEntry();
+
+    AddrEntry& operator=(const AddrEntry& c);
   };
 
   struct CacheEntry {
@@ -60,52 +62,21 @@ private:
     uint16_t port_;
     std::vector<AddrEntry> addrEntries_;
 
-    CacheEntry
-    (const std::string& hostname, uint16_t port):
-      hostname_(hostname), port_(port) {}
+    CacheEntry(const std::string& hostname, uint16_t port);
+    CacheEntry(const CacheEntry& c);
+    ~CacheEntry();
 
-    void add(const std::string& addr)
-    {
-      addrEntries_.push_back(AddrEntry(addr));
-    }
+    CacheEntry& operator=(const CacheEntry& c);
 
-    std::vector<AddrEntry>::iterator find(const std::string& addr)
-    {
-      for(std::vector<AddrEntry>::iterator i = addrEntries_.begin(),
-            eoi = addrEntries_.end(); i != eoi; ++i) {
-        if((*i).addr_ == addr) {
-          return i;
-        }
-      }
-      return addrEntries_.end();
-    }
+    void add(const std::string& addr);
 
-    std::vector<AddrEntry>::const_iterator find(const std::string& addr) const
-    {
-      for(std::vector<AddrEntry>::const_iterator i = addrEntries_.begin(),
-            eoi = addrEntries_.end(); i != eoi; ++i) {
-        if((*i).addr_ == addr) {
-          return i;
-        }
-      }
-      return addrEntries_.end();
-    }
+    std::vector<AddrEntry>::iterator find(const std::string& addr);
 
-    bool contains(const std::string& addr) const
-    {
-      return find(addr) != addrEntries_.end();
-    }
+    std::vector<AddrEntry>::const_iterator find(const std::string& addr) const;
 
-    const std::string& getGoodAddr() const
-    {
-      for(std::vector<AddrEntry>::const_iterator i = addrEntries_.begin(),
-            eoi = addrEntries_.end(); i != eoi; ++i) {
-        if((*i).good_) {
-          return (*i).addr_;
-        }
-      }
-      return A2STR::NIL;
-    }
+    bool contains(const std::string& addr) const;
+
+    const std::string& getGoodAddr() const;
 
     template<typename OutputIterator>
     void getAllGoodAddrs(OutputIterator out) const
@@ -118,42 +89,23 @@ private:
       }      
     }
 
-    void markBad(const std::string& addr)
-    {
-      std::vector<AddrEntry>::iterator i = find(addr);
-      if(i != addrEntries_.end()) {
-        (*i).good_ = false;
-      }
-    }
+    void markBad(const std::string& addr);
 
-    bool operator<(const CacheEntry& e) const
-    {
-      int r = hostname_.compare(e.hostname_);
-      if(r != 0) {
-        return r < 0;
-      }
-      return port_ < e.port_;
-    }
+    bool operator<(const CacheEntry& e) const;
 
-    bool operator==(const CacheEntry& e) const
-    {
-      return hostname_ == e.hostname_ && port_ == e.port_;
-    }
+    bool operator==(const CacheEntry& e) const;
   };
 
   std::deque<CacheEntry> entries_;
 
 public:
-  const std::string& find(const std::string& hostname, uint16_t port) const
-  {
-    CacheEntry target(hostname, port);
-    std::deque<CacheEntry>::const_iterator i =
-      std::lower_bound(entries_.begin(), entries_.end(), target);
-    if(i != entries_.end() && (*i) == target) {
-      return (*i).getGoodAddr();
-    }
-    return A2STR::NIL;
-  }
+  DNSCache();
+  DNSCache(const DNSCache& c);
+  ~DNSCache();
+
+  DNSCache& operator=(const DNSCache& c);
+
+  const std::string& find(const std::string& hostname, uint16_t port) const;
   
   template<typename OutputIterator>
   void findAll
@@ -168,41 +120,12 @@ public:
   }
 
   void put
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port)
-  {
-    CacheEntry target(hostname, port);
-    std::deque<CacheEntry>::iterator i =
-      std::lower_bound(entries_.begin(), entries_.end(), target);
-    if(i == entries_.end() || !((*i) == target)) {
-      target.add(ipaddr);
-      entries_.insert(i, target);
-    } else {
-      if(!(*i).contains(ipaddr)) {
-        (*i).add(ipaddr);
-      }
-    }
-  }
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
 
   void markBad
-  (const std::string& hostname, const std::string& ipaddr, uint16_t port)
-  {
-    CacheEntry target(hostname, port);
-    std::deque<CacheEntry>::iterator i =
-      std::lower_bound(entries_.begin(), entries_.end(), target);
-    if(i != entries_.end() && (*i) == target) {
-      (*i).markBad(ipaddr);
-    }
-  }
+  (const std::string& hostname, const std::string& ipaddr, uint16_t port);
 
-  void remove(const std::string& hostname, uint16_t port)
-  {
-    CacheEntry target(hostname, port);
-    std::deque<CacheEntry>::iterator i =
-      std::lower_bound(entries_.begin(), entries_.end(), target);
-    if(i != entries_.end() && (*i) == target) {
-      entries_.erase(i);
-    }
-  }
+  void remove(const std::string& hostname, uint16_t port);
 };
 
 } // namespace aria2

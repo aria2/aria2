@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include "A2STR.h"
 
 namespace aria2 {
 
@@ -56,7 +55,11 @@ struct UriStruct {
   bool hasPassword;
   bool ipv6LiteralAddress;
 
-  UriStruct():port(0), hasPassword(false), ipv6LiteralAddress(false) {}
+  UriStruct();
+  UriStruct(const UriStruct& c);
+  ~UriStruct();
+
+  UriStruct& operator=(const UriStruct& c);
 };
 
 // Splits URI uri into components and stores them into result.  On

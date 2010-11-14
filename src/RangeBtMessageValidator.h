@@ -36,10 +36,10 @@
 #define D_RANGE_BT_MESSAGE_VALIDATOR_H
 
 #include "BtMessageValidator.h"
-#include "RangeBtMessage.h"
-#include "bittorrent_helper.h"
 
 namespace aria2 {
+
+class RangeBtMessage;
 
 class RangeBtMessageValidator : public BtMessageValidator {
 private:
@@ -49,20 +49,11 @@ private:
 public:
   RangeBtMessageValidator(const RangeBtMessage* message,
                           size_t numPiece,
-                          size_t pieceLength):
-    message_(message),
-    numPiece_(numPiece),
-    pieceLength_(pieceLength) {}
+                          size_t pieceLength);
 
-  virtual void validate()
-  {
-    bittorrent::checkIndex(message_->getIndex(), numPiece_);
-    bittorrent::checkBegin(message_->getBegin(), pieceLength_);
-    bittorrent::checkLength(message_->getLength());
-    bittorrent::checkRange(message_->getBegin(),
-                           message_->getLength(),
-                           pieceLength_);
-  }
+  ~RangeBtMessageValidator();
+
+  virtual void validate();
 };
 
 } // namespace aria2

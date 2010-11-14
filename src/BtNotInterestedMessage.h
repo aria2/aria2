@@ -49,6 +49,7 @@ private:
   SharedHandle<PeerStorage> peerStorage_;
 public:
   BtNotInterestedMessage();
+  virtual ~BtNotInterestedMessage();
 
   static const uint8_t ID = 3;
 

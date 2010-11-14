@@ -56,6 +56,7 @@ public:
                            const SharedHandle<FtpConnection>& ftpConnection,
                            DownloadEngine* e,
                            const SharedHandle<SocketCore>& socket);
+  virtual ~FtpFinishDownloadCommand();
 };
 
 } // namespace aria2

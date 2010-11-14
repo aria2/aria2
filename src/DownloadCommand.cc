@@ -58,9 +58,8 @@
 #include "StringFormat.h"
 #include "RequestGroupMan.h"
 #include "wallclock.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
 #include "SinkStreamFilter.h"
+#include "FileEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 # include "MessageDigestHelper.h"

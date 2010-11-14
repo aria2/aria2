@@ -60,19 +60,39 @@
 #include "util.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
-#include "ServerStatMan.h"
+#include "FileEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
-# include "Peer.h"
 # include "PeerStorage.h"
 # include "BtRegistry.h"
-# include "BtProgressInfoFile.h"
-# include "BtRuntime.h"
-# include "BtAnnounce.h"
-# include "PieceStorage.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
+
+std::string SizeFormatter::operator()(int64_t size) const
+{
+  return format(size);
+}
+
+namespace {
+class AbbrevSizeFormatter:public SizeFormatter {
+protected:
+  virtual std::string format(int64_t size) const
+  {
+    return util::abbrevSize(size);
+  }
+};
+} // namespace
+
+namespace {
+class PlainSizeFormatter:public SizeFormatter {
+protected:
+  virtual std::string format(int64_t size) const
+  {
+    return util::itos(size);
+  }
+};
+} // namespace
 
 namespace {
 void printProgress

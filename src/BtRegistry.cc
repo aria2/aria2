@@ -89,4 +89,55 @@ void BtRegistry::removeAll() {
   pool_.clear();
 }
 
+BtObject::BtObject
+(const SharedHandle<DownloadContext>& downloadContext,
+ const SharedHandle<PieceStorage>& pieceStorage,
+ const SharedHandle<PeerStorage>& peerStorage,
+ const SharedHandle<BtAnnounce>& btAnnounce,
+ const SharedHandle<BtRuntime>& btRuntime,
+ const SharedHandle<BtProgressInfoFile>& btProgressInfoFile)
+  : downloadContext_(downloadContext),
+    pieceStorage_(pieceStorage),
+    peerStorage_(peerStorage),
+    btAnnounce_(btAnnounce),
+    btRuntime_(btRuntime),
+    btProgressInfoFile_(btProgressInfoFile)
+{}
+
+BtObject::BtObject() {}
+
+BtObject::BtObject(const BtObject& c)
+  : downloadContext_(c.downloadContext_),
+    pieceStorage_(c.pieceStorage_),
+    peerStorage_(c.peerStorage_),
+    btAnnounce_(c.btAnnounce_),
+    btRuntime_(c.btRuntime_),
+    btProgressInfoFile_(c.btProgressInfoFile_)
+{}
+
+BtObject::~BtObject() {}
+
+BtObject& BtObject::operator=(const BtObject& c)
+{
+  if(this != &c) {
+    downloadContext_ = c.downloadContext_;
+    pieceStorage_ = c.pieceStorage_;
+    peerStorage_ = c.peerStorage_;
+    btAnnounce_ = c.btAnnounce_;
+    btRuntime_ = c.btRuntime_;
+    btProgressInfoFile_ = c.btProgressInfoFile_;
+  }
+  return *this;
+}
+
+bool BtObject::isNull() const
+{
+  return !downloadContext_ &&
+    !pieceStorage_ &&
+    !peerStorage_ &&
+    !btAnnounce_ &&
+    !btRuntime_ &&
+    !btProgressInfoFile_;
+}
+
 } // namespace aria2

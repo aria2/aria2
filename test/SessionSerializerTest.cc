@@ -6,11 +6,11 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "RequestGroupMan.h"
-#include "ServerStatMan.h"
 #include "array_fun.h"
 #include "download_helper.h"
-#include "FileEntry.h"
 #include "prefs.h"
+#include "Option.h"
+#include "a2functional.h"
 
 namespace aria2 {
 

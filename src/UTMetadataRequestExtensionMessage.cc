@@ -57,6 +57,8 @@ UTMetadataRequestExtensionMessage::UTMetadataRequestExtensionMessage
                              messageFactory_(0)
 {}
 
+UTMetadataRequestExtensionMessage::~UTMetadataRequestExtensionMessage() {}
+
 std::string UTMetadataRequestExtensionMessage::getPayload()
 {
   Dict dict;
@@ -100,6 +102,17 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
        ("Metadata piece index is too big. piece=%lu",
         static_cast<unsigned long>(getIndex())).str());
   }
+}
+
+void UTMetadataRequestExtensionMessage::setDownloadContext
+(const SharedHandle<DownloadContext>& dctx)
+{
+  dctx_ = dctx;
+}
+
+void UTMetadataRequestExtensionMessage::setPeer(const SharedHandle<Peer>& peer)
+{
+  peer_ = peer;
 }
 
 } // namespace aria2

@@ -100,7 +100,7 @@ protected:
 public:
   XmlRpcMethod();
 
-  virtual ~XmlRpcMethod() {}
+  virtual ~XmlRpcMethod();
 
   // Do work to fulfill XmlRpcRequest req and returns its result as
   // XmlRpcResponse. This method delegates to process() method.

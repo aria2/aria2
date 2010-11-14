@@ -36,7 +36,7 @@
 #define D_BT_RUNTIME_H
 
 #include "common.h"
-#include "BtConstants.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -57,17 +57,9 @@ private:
   static const unsigned int DEFAULT_MIN_PEERS = 40;
 
 public:
-  BtRuntime():
-    uploadLengthAtStartup_(0),
-    port_(0),
-    halt_(false),
-    connections_(0),
-    ready_(false),
-    maxPeers_(DEFAULT_MAX_PEERS),
-    minPeers_(DEFAULT_MIN_PEERS)
-  {}
+  BtRuntime();
 
-  ~BtRuntime() {}
+  ~BtRuntime();
 
   uint64_t getUploadLengthAtStartup() const {
     return uploadLengthAtStartup_;
@@ -114,14 +106,7 @@ public:
 
   void setReady(bool go) { ready_ = go; }
 
-  void setMaxPeers(unsigned int maxPeers)
-  {
-    maxPeers_ = maxPeers;
-    minPeers_ = static_cast<unsigned int>(maxPeers*0.8);
-    if(minPeers_ == 0 && maxPeers != 0) {
-      minPeers_ = maxPeers;
-    }
-  }
+  void setMaxPeers(unsigned int maxPeers);
 
   unsigned int getMaxPeers() const
   {

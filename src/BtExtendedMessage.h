@@ -53,6 +53,7 @@ private:
 public:
   BtExtendedMessage(const SharedHandle<ExtensionMessage>& extensionMessage =
                     SharedHandle<ExtensionMessage>());
+  virtual ~BtExtendedMessage();
 
   static const uint8_t ID = 20;
 

@@ -36,10 +36,13 @@
 #define D_P_STRING_SELECT_H
 
 #include "PStringDatum.h"
-#include "PStringSegment.h"
-#include "PStringVisitor.h"
+
+#include <vector>
+#include <string>
 
 namespace aria2 {
+
+class PStringVisitor;
 
 class PStringSelect : public PStringDatum
 {
@@ -51,29 +54,17 @@ private:
 
 public:
   PStringSelect(const std::vector<std::string>& values,
-                const SharedHandle<PStringDatum>& next):
-    values_(values),
-    next_(next) {}
+                const SharedHandle<PStringDatum>& next);
 
-  PStringSelect(const std::vector<std::string>& values):
-    values_(values) {}
+  PStringSelect(const std::vector<std::string>& values);
 
-  virtual ~PStringSelect() {}
+  virtual ~PStringSelect();
 
-  virtual void accept(PStringVisitor& visitor)
-  {
-    visitor.visit(*this);
-  }
+  virtual void accept(PStringVisitor& visitor);
 
-  const std::vector<std::string>& getValues() const
-  {
-    return values_;
-  }
+  const std::vector<std::string>& getValues() const;
 
-  SharedHandle<PStringDatum> getNext() const
-  {
-    return next_;
-  }
+  const SharedHandle<PStringDatum>& getNext() const;
 };
 
 } // namespace aria2

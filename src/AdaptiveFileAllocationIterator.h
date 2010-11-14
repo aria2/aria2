@@ -64,19 +64,9 @@ public:
   
   virtual bool finished();
 
-  virtual off_t getCurrentLength()
-  {
-    if(!allocator_) {
-      return offset_;
-    } else {
-      return allocator_->getCurrentLength();
-    }
-  }
+  virtual off_t getCurrentLength();
 
-  virtual uint64_t getTotalLength()
-  {
-    return totalLength_;
-  }
+  virtual uint64_t getTotalLength();
 };
 
 } // namespace aria2

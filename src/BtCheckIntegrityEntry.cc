@@ -40,9 +40,6 @@
 #include "DiskAdaptor.h"
 #include "prefs.h"
 #include "Option.h"
-#include "DownloadContext.h"
-#include "RequestGroupMan.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

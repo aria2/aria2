@@ -36,7 +36,6 @@
 #define D_FIXED_WIDTH_NUMBER_DECORATOR_H
 
 #include "NumberDecorator.h"
-#include "util.h"
 
 namespace aria2 {
 
@@ -45,18 +44,11 @@ class FixedWidthNumberDecorator : public NumberDecorator
 private:
   size_t width_;
 public:
-  FixedWidthNumberDecorator(size_t width):width_(width) {}
+  FixedWidthNumberDecorator(size_t width);
 
-  virtual ~FixedWidthNumberDecorator() {}
+  virtual ~FixedWidthNumberDecorator();
 
-  virtual std::string decorate(unsigned int number)
-  {
-    std::string s = util::uitos(number);
-    while(s.size() < width_) {
-      s.insert(0, "0");
-    }
-    return s;
-  }
+  virtual std::string decorate(unsigned int number);
 };
 
 } // namespace aria2

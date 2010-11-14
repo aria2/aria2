@@ -36,11 +36,11 @@
 #define D_P_STRING_NUM_LOOP_H
 
 #include "PStringDatum.h"
-#include "PStringSegment.h"
-#include "NumberDecorator.h"
-#include "PStringVisitor.h"
 
 namespace aria2 {
+
+class NumberDecorator;
+class PStringVisitor;
 
 class PStringNumLoop : public PStringDatum
 {
@@ -60,27 +60,15 @@ public:
   PStringNumLoop(unsigned int startValue, unsigned int endValue,
                  unsigned int step,
                  const SharedHandle<NumberDecorator>& nd,
-                 const SharedHandle<PStringDatum>& next):
-    startValue_(startValue),
-    endValue_(endValue),
-    step_(step),
-    numberDecorator_(nd),
-    next_(next) {}
+                 const SharedHandle<PStringDatum>& next);
 
   PStringNumLoop(unsigned int startValue, unsigned int endValue,
                  unsigned int step,
-                 const SharedHandle<NumberDecorator>& nd):
-    startValue_(startValue),
-    endValue_(endValue),
-    step_(step),
-    numberDecorator_(nd) {}
+                 const SharedHandle<NumberDecorator>& nd);
 
-  virtual ~PStringNumLoop() {}
+  virtual ~PStringNumLoop();
 
-  virtual void accept(PStringVisitor& visitor)
-  {
-    visitor.visit(*this);
-  }
+  virtual void accept(PStringVisitor& visitor);
 
   const SharedHandle<NumberDecorator>& getNumberDecorator() const
   {

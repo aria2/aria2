@@ -48,10 +48,11 @@ private:
   bool dataOnly_;
   static int64_t count_;
 public:
-  MetadataInfo(const std::string& uri):id_(genId()), uri_(uri), dataOnly_(false)
-  {}
+  MetadataInfo(const std::string& uri);
 
-  MetadataInfo():id_(genId()), dataOnly_(true) {}
+  MetadataInfo();
+
+  ~MetadataInfo();
 
   bool dataOnly() const
   {

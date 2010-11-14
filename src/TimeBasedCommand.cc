@@ -35,11 +35,6 @@
 #include "TimeBasedCommand.h"
 #include "DownloadEngine.h"
 #include "wallclock.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
-#include "FileEntry.h"
 
 namespace aria2 {
 

@@ -50,6 +50,7 @@
 #include "a2functional.h"
 #include "TimeA2.h"
 #include "array_fun.h"
+#include "Request.h"
 
 namespace aria2 {
 
@@ -61,6 +62,8 @@ HttpRequest::HttpRequest():contentEncodingEnabled_(true),
                            acceptGzip_(false),
                            endOffsetOverride_(0)
 {}
+
+HttpRequest::~HttpRequest() {}
 
 void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
 {
@@ -355,6 +358,77 @@ bool HttpRequest::authenticationUsed() const
 const SharedHandle<AuthConfig>& HttpRequest::getAuthConfig() const
 {
   return authConfig_;
+}
+
+uint64_t HttpRequest::getEntityLength() const
+{
+  assert(fileEntry_);
+  return fileEntry_->getLength();
+}
+
+const std::string& HttpRequest::getHost() const
+{
+  return request_->getHost();
+}
+
+uint16_t HttpRequest::getPort() const
+{
+  return request_->getPort();
+}
+
+const std::string& HttpRequest::getMethod() const
+{
+  return request_->getMethod();
+}
+
+const std::string& HttpRequest::getProtocol() const
+{
+  return request_->getProtocol();
+}
+
+const std::string& HttpRequest::getCurrentURI() const
+{
+  return request_->getCurrentUri();
+}
+  
+const std::string& HttpRequest::getDir() const
+{
+  return request_->getDir();
+}
+
+const std::string& HttpRequest::getFile() const
+{
+  return request_->getFile();
+}
+
+const std::string& HttpRequest::getQuery() const
+{
+  return request_->getQuery();
+}
+
+const std::string& HttpRequest::getPreviousURI() const
+{
+  return request_->getPreviousUri();
+}
+
+std::string HttpRequest::getURIHost() const
+{
+  return request_->getURIHost();
+}
+
+void HttpRequest::setUserAgent(const std::string& userAgent)
+{
+  userAgent_ = userAgent;
+}
+
+void HttpRequest::setFileEntry(const SharedHandle<FileEntry>& fileEntry)
+{
+  fileEntry_ = fileEntry;
+}
+
+void HttpRequest::setIfModifiedSinceHeader(const std::string& hd)
+{
+  ifModSinceHeader_ = hd;
 }
 
 } // namespace aria2

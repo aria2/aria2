@@ -61,6 +61,8 @@ XmlRpcMethod::XmlRpcMethod():
   optionParser_(OptionParser::getInstance()),
   logger_(LogFactory::getInstance()) {}
 
+XmlRpcMethod::~XmlRpcMethod() {}
+
 SharedHandle<ValueBase> XmlRpcMethod::createErrorResponse
 (const Exception& e)
 {

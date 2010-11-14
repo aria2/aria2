@@ -47,12 +47,7 @@
 #include "PieceStorage.h"
 #include "PeerConnection.h"
 #include "RequestGroup.h"
-#include "DownloadContext.h"
 #include "util.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "RequestGroupMan.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

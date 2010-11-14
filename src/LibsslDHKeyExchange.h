@@ -36,18 +36,13 @@
 #define D_LIBSSL_DH_KEY_EXCHANGE_H
 
 #include "common.h"
-#include "DlAbortEx.h"
-#include "StringFormat.h"
-#include <cstring>
-#include <openssl/dh.h>
-#include <openssl/rand.h>
-#include <openssl/err.h>
+
+#include <openssl/bn.h>
 
 namespace aria2 {
 
 class DHKeyExchange {
 private:
-
   BN_CTX* bnCtx_;
 
   size_t keyLength_;
@@ -59,134 +54,24 @@ private:
   BIGNUM* privateKey_;
 
   BIGNUM* publicKey_;
-
-  void handleError(const std::string& funName) const
-  {
-    throw DL_ABORT_EX
-      (StringFormat("Exception in libssl routine %s(DHKeyExchange class): %s",
-                    funName.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
-  }
 public:
-  DHKeyExchange():bnCtx_(0),
-                  keyLength_(0),
-                  prime_(0),
-                  generator_(0),
-                  privateKey_(0),
-                  publicKey_(0) {}
+  DHKeyExchange();
 
-  ~DHKeyExchange()
-  {
-    BN_CTX_free(bnCtx_);
-    BN_free(prime_);
-    BN_free(generator_);
-    BN_free(privateKey_);
-    BN_free(publicKey_);
-  }
+  ~DHKeyExchange();
 
   void init(const unsigned char* prime, size_t primeBits,
             const unsigned char* generator,
-            size_t privateKeyBits)
-  {
-    BN_CTX_free(bnCtx_);
-    bnCtx_ = BN_CTX_new();
-    if(!bnCtx_) {
-      handleError("BN_CTX_new in init");
-    }
+            size_t privateKeyBits);
 
-    BN_free(prime_);
-    prime_ = 0;
-    BN_free(generator_);
-    generator_ = 0;
-    BN_free(privateKey_);
-    privateKey_ = 0;
+  void generatePublicKey();
 
-    if(BN_hex2bn(&prime_, reinterpret_cast<const char*>(prime)) == 0) {
-      handleError("BN_hex2bn in init");
-    }
-    if(BN_hex2bn(&generator_, reinterpret_cast<const char*>(generator)) == 0) {
-      handleError("BN_hex2bn in init");
-    }
-    privateKey_ = BN_new();
-    if(BN_rand(privateKey_, privateKeyBits, -1, false) == 0) {
-      handleError("BN_new in init");
-    }
-    keyLength_ = (primeBits+7)/8;
-  }
+  size_t getPublicKey(unsigned char* out, size_t outLength) const;
 
-  void generatePublicKey()
-  {
-    BN_free(publicKey_);
-    publicKey_ = BN_new();
-    BN_mod_exp(publicKey_, generator_, privateKey_, prime_, bnCtx_);
-  }
-
-  size_t getPublicKey(unsigned char* out, size_t outLength) const
-  {
-    if(outLength < keyLength_) {
-      throw DL_ABORT_EX
-        (StringFormat
-         ("Insufficient buffer for public key. expect:%lu, actual:%lu",
-          static_cast<unsigned long>(keyLength_),
-          static_cast<unsigned long>(outLength)).str());
-    }
-    memset(out, 0, outLength);
-    size_t publicKeyBytes = BN_num_bytes(publicKey_);
-    size_t offset = keyLength_-publicKeyBytes;
-    size_t nwritten = BN_bn2bin(publicKey_, out+offset);
-    if(nwritten != publicKeyBytes) {
-      throw DL_ABORT_EX
-        (StringFormat
-         ("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
-          " but %lu bytes expected.",
-          static_cast<unsigned long>(nwritten),
-          static_cast<unsigned long>(publicKeyBytes)).str());
-    }
-    return nwritten;
-  }
-
-  void generateNonce(unsigned char* out, size_t outLength) const
-  {
-    if(RAND_bytes(out, outLength) != 1) {
-      handleError("RAND_bytes in generateNonce");
-    }
-  }
+  void generateNonce(unsigned char* out, size_t outLength) const;
 
   size_t computeSecret(unsigned char* out, size_t outLength,
                        const unsigned char* peerPublicKeyData,
-                       size_t peerPublicKeyLength) const
-  {
-    if(outLength < keyLength_) {
-      throw DL_ABORT_EX
-        (StringFormat("Insufficient buffer for secret. expect:%lu, actual:%lu",
-                      static_cast<unsigned long>(keyLength_),
-                      static_cast<unsigned long>(outLength)).str());
-    }
-
-
-    BIGNUM* peerPublicKey = BN_bin2bn(peerPublicKeyData, peerPublicKeyLength, 0);
-    if(!peerPublicKey) {
-      handleError("BN_bin2bn in computeSecret");
-    }
-
-    BIGNUM* secret = BN_new();
-    BN_mod_exp(secret, peerPublicKey, privateKey_, prime_, bnCtx_);
-    BN_free(peerPublicKey);
-
-    memset(out, 0, outLength);
-    size_t secretBytes = BN_num_bytes(secret);
-    size_t offset = keyLength_-secretBytes;
-    size_t nwritten = BN_bn2bin(secret, out+offset);
-    BN_free(secret);
-    if(nwritten != secretBytes) {
-      throw DL_ABORT_EX
-        (StringFormat
-         ("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
-          " but %lu bytes expected.",
-          static_cast<unsigned long>(nwritten),
-          static_cast<unsigned long>(secretBytes)).str());
-    }
-    return nwritten;
-  }
+                       size_t peerPublicKeyLength) const;
 };
 
 } // namespace aria2

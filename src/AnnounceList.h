@@ -54,16 +54,19 @@ private:
   void setCurrentTier
   (const std::deque<SharedHandle<AnnounceTier> >::iterator& itr);
 public:
-  AnnounceList():currentTrackerInitialized_(false) {}
+  AnnounceList();
   AnnounceList(const std::vector<std::vector<std::string> >& announceList);
   AnnounceList(const std::deque<SharedHandle<AnnounceTier> >& tiers);
+  ~AnnounceList();
+
+  // Don't allow copying
+  AnnounceList(const AnnounceList&);
+  AnnounceList& operator=(const AnnounceList&);
 
   void reconfigure(const std::vector<std::vector<std::string> >& announceList);
   void reconfigure(const std::string& url);
 
-  size_t countTier() const {
-    return tiers_.size();
-  }
+  size_t countTier() const;
 
   /**
    * Shuffles all the URLs in each group.

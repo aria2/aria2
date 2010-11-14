@@ -50,14 +50,9 @@
 #include "prefs.h"
 #include "HttpConnection.h"
 #include "Socket.h"
-#include "DownloadContext.h"
 #include "util.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

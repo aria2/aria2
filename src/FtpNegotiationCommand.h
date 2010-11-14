@@ -37,6 +37,8 @@
 
 #include "AbstractCommand.h"
 
+#include <deque>
+
 namespace aria2 {
 
 class FtpConnection;

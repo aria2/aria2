@@ -39,10 +39,10 @@
 #include <string>
 
 #include "SharedHandle.h"
-#include "PeerStat.h"
-#include "a2functional.h"
 
 namespace aria2 {
+
+class PeerStat;
 
 class Request {
 private:
@@ -99,7 +99,7 @@ private:
   bool parseUri(const std::string& uri);
 public:
   Request();
-
+  ~Request();
   // Sets uri to uri_ and parses URI.  Returns true if parsing goes
   // successful, otherwise returns false.
   bool setUri(const std::string& uri);
@@ -110,14 +110,8 @@ public:
   void resetTryCount() { tryCount_ = 0; }
   void addTryCount() { ++tryCount_; }
   unsigned int getTryCount() const { return tryCount_; }
-
   void resetRedirectCount();
-  
-  unsigned int getRedirectCount() const
-  {
-    return redirectCount_;
-  }
-
+  unsigned int getRedirectCount() const { return redirectCount_; }
   // Returns URI passed by setUri()
   const std::string& getUri() const { return uri_; }
   const std::string& getCurrentUri() const { return currentUri_; }
@@ -128,14 +122,7 @@ public:
   const std::string& getHost() const { return host_; }
   // Same as getHost(), but for IPv6 literal addresses, enclose them
   // with square brackets and return.
-  std::string getURIHost() const
-  {
-    if(isIPv6LiteralAddress()) {
-      return strconcat("[", getHost(), "]");
-    } else {
-      return getHost();
-    }
-  }
+  std::string getURIHost() const;
   uint16_t getPort() const { return port_; }
   const std::string& getDir() const { return dir_; }
   const std::string& getFile() const { return file_;}
@@ -184,9 +171,7 @@ public:
     return maxPipelinedRequest_;
   }
 
-  void setMethod(const std::string& method) {
-    method_ = method;
-  }
+  void setMethod(const std::string& method);
 
   const std::string& getUsername() const
   {
@@ -204,11 +189,15 @@ public:
     return hasPassword_;
   }
 
-  const std::string& getMethod() const {
+  const std::string& getMethod() const
+  {
     return method_;
   }
 
-  const SharedHandle<PeerStat>& getPeerStat() const { return peerStat_; }
+  const SharedHandle<PeerStat>& getPeerStat() const
+  {
+    return peerStat_;
+  }
 
   const SharedHandle<PeerStat>& initPeerStat();
 
@@ -223,12 +212,7 @@ public:
   }
 
   void setConnectedAddrInfo
-  (const std::string& hostname, const std::string& addr, uint16_t port)
-  {
-    connectedHostname_ = hostname;
-    connectedAddr_ = addr;
-    connectedPort_ = port;
-  }
+  (const std::string& hostname, const std::string& addr, uint16_t port);
 
   const std::string& getConnectedHostname() const
   {

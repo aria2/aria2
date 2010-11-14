@@ -8,6 +8,8 @@
 #include "Segment.h"
 #include "Option.h"
 #include "PieceSelector.h"
+#include "FileEntry.h"
+#include "PeerStat.h"
 
 namespace aria2 {
 

@@ -203,4 +203,11 @@ bool HttpServer::authenticate()
   return username_ == userpassPair.first && password_ == userpassPair.second;
 }
 
+void HttpServer::setUsernamePassword
+(const std::string& username, const std::string& password)
+{
+  username_ = username;
+  password_ = password;
+}
+
 } // namespace aria2

@@ -36,8 +36,6 @@
 #include "PieceStorage.h"
 #include "RequestGroup.h"
 #include "BtRuntime.h"
-#include "Peer.h"
-#include "DownloadContext.h"
 #include "Logger.h"
 #include "wallclock.h"
 #include "util.h"

@@ -34,13 +34,13 @@
 /* copyright --> */
 #include "AdaptiveFileAllocationIterator.h"
 #include "BinaryStream.h"
-#ifdef HAVE_FALLOCATE
-# include "FallocFileAllocationIterator.h"
-#endif // HAVE_FALLOCATE
 #include "SingleFileAllocationIterator.h"
 #include "RecoverableException.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#ifdef HAVE_FALLOCATE
+# include "FallocFileAllocationIterator.h"
+#endif // HAVE_FALLOCATE
 
 namespace aria2 {
 
@@ -97,6 +97,20 @@ bool AdaptiveFileAllocationIterator::finished()
   } else {
     return allocator_->finished();
   }
+}
+
+off_t AdaptiveFileAllocationIterator::getCurrentLength()
+{
+  if(!allocator_) {
+    return offset_;
+  } else {
+    return allocator_->getCurrentLength();
+  }
+}
+
+uint64_t AdaptiveFileAllocationIterator::getTotalLength()
+{
+  return totalLength_;
 }
 
 } // namespace aria2

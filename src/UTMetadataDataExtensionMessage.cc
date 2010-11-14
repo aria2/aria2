@@ -55,6 +55,8 @@ UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
                              tracker_(0),
                              logger_(LogFactory::getInstance()) {}
 
+UTMetadataDataExtensionMessage::~UTMetadataDataExtensionMessage() {}
+
 std::string UTMetadataDataExtensionMessage::getPayload()
 {
   Dict dict;
@@ -104,6 +106,23 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
                      static_cast<unsigned long>(getIndex()));
     }
   }
+}
+
+void UTMetadataDataExtensionMessage::setData(const std::string& data)
+{
+  data_ = data;
+}
+
+void UTMetadataDataExtensionMessage::setPieceStorage
+(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  pieceStorage_ = pieceStorage;
+}
+
+void UTMetadataDataExtensionMessage::setDownloadContext
+(const SharedHandle<DownloadContext>& dctx)
+{
+  dctx_ = dctx;
 }
 
 } // namespace aria2

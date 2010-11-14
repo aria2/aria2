@@ -36,9 +36,11 @@
 #define D_BT_ANNOUNCE_H
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 #include "a2time.h"
-#include <string>
 
 namespace aria2 {
 

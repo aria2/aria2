@@ -39,6 +39,7 @@
 #include "util.h"
 #include "LpdMessage.h"
 #include "RecoverableException.h"
+#include "Peer.h"
 
 namespace aria2 {
 
@@ -47,6 +48,8 @@ LpdMessageReceiver::LpdMessageReceiver
   multicastAddress_(multicastAddress),
   multicastPort_(multicastPort),
   logger_(LogFactory::getInstance()) {}
+
+LpdMessageReceiver::~LpdMessageReceiver() {}
 
 bool LpdMessageReceiver::init(const std::string& localAddr)
 {

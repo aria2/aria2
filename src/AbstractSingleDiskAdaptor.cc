@@ -35,11 +35,11 @@
 #include "AbstractSingleDiskAdaptor.h"
 #include "File.h"
 #include "AdaptiveFileAllocationIterator.h"
+#include "DiskWriter.h"
+#include "FileEntry.h"
 #ifdef HAVE_SOME_FALLOCATE
 # include "FallocFileAllocationIterator.h"
 #endif // HAVE_SOME_FALLOCATE
-#include "DiskWriter.h"
-#include "FileEntry.h"
 
 namespace aria2 {
 

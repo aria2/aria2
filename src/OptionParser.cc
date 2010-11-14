@@ -48,12 +48,15 @@
 #include "a2functional.h"
 #include "array_fun.h"
 #include "OptionHandlerFactory.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
 OptionParser::OptionParser():
   idCounter_(0)
 {}
+
+OptionParser::~OptionParser() {}
 
 namespace {
 template<typename InputIterator>

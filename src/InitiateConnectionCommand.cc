@@ -43,15 +43,10 @@
 #include "SocketCore.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
-#include "DownloadContext.h"
 #include "Segment.h"
 #include "a2functional.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "util.h"
-#include "RequestGroupMan.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 #include "RecoverableException.h"
 
 namespace aria2 {

@@ -37,6 +37,8 @@
 
 #include "AbstractCommand.h"
 
+#include <unistd.h>
+
 namespace aria2 {
 
 class PeerStat;

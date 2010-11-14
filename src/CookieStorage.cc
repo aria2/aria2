@@ -55,10 +55,29 @@
 
 namespace aria2 {
 
-CookieStorage::DomainEntry::DomainEntry
-(const std::string& domain):
-  key_(util::isNumericHost(domain)?domain:cookie::reverseDomainLevel(domain))
+CookieStorage::DomainEntry::DomainEntry(const std::string& domain)
+ : key_(util::isNumericHost(domain)?domain:cookie::reverseDomainLevel(domain))
 {}
+
+CookieStorage::DomainEntry::DomainEntry
+(const DomainEntry& c)
+  : key_(c.key_),
+    lastAccessTime_(c.lastAccessTime_),
+    cookies_(c.cookies_)
+{}
+
+CookieStorage::DomainEntry::~DomainEntry() {}
+
+CookieStorage::DomainEntry& CookieStorage::DomainEntry::operator=
+(const DomainEntry& c)
+{
+  if(this != &c) {
+    key_ = c.key_;
+    lastAccessTime_ = c.lastAccessTime_;
+    cookies_ = c.cookies_;
+  }
+  return *this;
+}
 
 bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie, time_t now)
 {
@@ -107,6 +126,17 @@ void CookieStorage::DomainEntry::writeCookie(std::ostream& o) const
         eoi = cookies_.end(); i != eoi; ++i) {
     o << (*i).toNsCookieFormat() << "\n";
   }
+}
+
+size_t CookieStorage::DomainEntry::countCookie() const
+{
+  return cookies_.size();
+}
+
+
+bool CookieStorage::DomainEntry::operator<(const DomainEntry& de) const
+{
+  return key_ < de.key_;
 }
 
 CookieStorage::CookieStorage():logger_(LogFactory::getInstance()) {}

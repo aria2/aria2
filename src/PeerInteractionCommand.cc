@@ -77,9 +77,6 @@
 #include "bittorrent_helper.h"
 #include "UTMetadataRequestFactory.h"
 #include "UTMetadataRequestTracker.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

@@ -39,60 +39,22 @@
 
 #include <gcrypt.h>
 
-#include "DlAbortEx.h"
-#include "StringFormat.h"
-
 namespace aria2 {
 
 class LibgcryptARC4Context {
 private:
   gcry_cipher_hd_t cipherCtx_;
-
-  void handleError(gcry_error_t err) const
-  {
-    throw DL_ABORT_EX
-      (StringFormat("Exception in libgcrypt routine(ARC4Context class): %s",
-                    gcry_strerror(err)).str());
-  }
 public:
-  LibgcryptARC4Context():cipherCtx_(0) {}
+  LibgcryptARC4Context();
 
-  ~LibgcryptARC4Context()
-  {
-    gcry_cipher_close(cipherCtx_);
-  }
+  ~LibgcryptARC4Context();
 
   gcry_cipher_hd_t getCipherContext() const
   {
     return cipherCtx_;
   }
 
-  void init(const unsigned char* key, size_t keyLength)
-  {
-    gcry_cipher_close(cipherCtx_);
-
-    int algo = GCRY_CIPHER_ARCFOUR;
-    int mode = GCRY_CIPHER_MODE_STREAM;
-    unsigned int flags = 0;
-    {
-      gcry_error_t r = gcry_cipher_open(&cipherCtx_, algo, mode, flags);
-      if(r) {
-        handleError(r);
-      }
-    }
-    {
-      gcry_error_t r = gcry_cipher_setkey(cipherCtx_, key, keyLength);
-      if(r) {
-        handleError(r);
-      }
-    }
-    {
-      gcry_error_t r = gcry_cipher_setiv(cipherCtx_, 0, 0);
-      if(r) {
-        handleError(r);
-      }
-    }
-  }
+  void init(const unsigned char* key, size_t keyLength);
 };
 
 } // namespace aria2

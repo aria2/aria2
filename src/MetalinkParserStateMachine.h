@@ -92,6 +92,8 @@ private:
 public:
   MetalinkParserStateMachine();
 
+  ~MetalinkParserStateMachine();
+
   void setSkipTagState();
 
   void setMetalinkState();

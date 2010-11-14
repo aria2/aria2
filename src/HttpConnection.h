@@ -90,6 +90,7 @@ private:
   std::string eraseConfidentialInfo(const std::string& request);
 public:
   HttpConnection(cuid_t cuid, const SharedHandle<SocketCore>& socket);
+  ~HttpConnection();
 
   /**
    * Sends Http request.

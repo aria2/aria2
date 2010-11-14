@@ -37,10 +37,6 @@
 #include "RequestGroupMan.h"
 #include "PieceStorage.h"
 #include "RequestGroup.h"
-#include "DownloadContext.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

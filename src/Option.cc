@@ -112,4 +112,14 @@ void Option::clear()
   table_.clear();
 }
 
+std::map<std::string, std::string>::const_iterator Option::begin() const
+{
+  return table_.begin();
+}
+
+std::map<std::string, std::string>::const_iterator Option::end() const
+{
+  return table_.end();
+}
+
 } // namespace aria2

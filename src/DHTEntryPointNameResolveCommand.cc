@@ -34,9 +34,6 @@
 /* copyright --> */
 #include "DHTEntryPointNameResolveCommand.h"
 #include "DownloadEngine.h"
-#ifdef ENABLE_ASYNC_DNS
-#include "AsyncNameResolver.h"
-#endif // ENABLE_ASYNC_DNS
 #include "NameResolver.h"
 #include "DlAbortEx.h"
 #include "prefs.h"
@@ -51,10 +48,9 @@
 #include "RequestGroupMan.h"
 #include "Logger.h"
 #include "StringFormat.h"
-#include "FileEntry.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
+#ifdef ENABLE_ASYNC_DNS
+#include "AsyncNameResolver.h"
+#endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
 

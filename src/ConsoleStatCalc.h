@@ -36,8 +36,10 @@
 #define D_CONSOLE_STAT_CALC_H
 
 #include "StatCalc.h"
+
+#include <string>
+
 #include "TimerA2.h"
-#include "util.h"
 
 namespace aria2 {
 
@@ -47,26 +49,7 @@ protected:
 public:
   virtual ~SizeFormatter() {}
 
-  std::string operator()(int64_t size) const
-  {
-    return format(size);
-  }
-};
-
-class AbbrevSizeFormatter:public SizeFormatter {
-protected:
-  virtual std::string format(int64_t size) const
-  {
-    return util::abbrevSize(size);
-  }
-};
-
-class PlainSizeFormatter:public SizeFormatter {
-protected:
-  virtual std::string format(int64_t size) const
-  {
-    return util::itos(size);
-  }
+  std::string operator()(int64_t size) const;
 };
 
 class ConsoleStatCalc:public StatCalc

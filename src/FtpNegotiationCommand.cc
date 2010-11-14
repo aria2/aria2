@@ -70,9 +70,6 @@
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "DlRetryEx.h"
-#include "CookieStorage.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 
 namespace aria2 {

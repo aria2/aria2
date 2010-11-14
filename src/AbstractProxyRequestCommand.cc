@@ -42,14 +42,7 @@
 #include "Option.h"
 #include "prefs.h"
 #include "Socket.h"
-#include "CookieStorage.h"
-#include "AuthConfigFactory.h"
-#include "AuthConfig.h"
 #include "DownloadContext.h"
-#include "RequestGroupMan.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

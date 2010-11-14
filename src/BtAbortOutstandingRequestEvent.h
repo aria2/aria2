@@ -37,16 +37,17 @@
 
 #include "common.h"
 #include "SharedHandle.h"
-#include "Piece.h"
 
 namespace aria2 {
+
+class Piece;
 
 class BtAbortOutstandingRequestEvent {
 private:
   SharedHandle<Piece> piece_;
 public:
-  BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece):
-    piece_(piece) {}
+  BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece);
+  ~BtAbortOutstandingRequestEvent();
 
   const SharedHandle<Piece>& getPiece() const { return piece_; }
 };

@@ -66,6 +66,10 @@ private:
     const static time_t TIME_FRAME = 20;
   public:
     PeerEntry(const SharedHandle<Peer>& peer);
+    PeerEntry(const PeerEntry& c);
+    ~PeerEntry();
+
+    PeerEntry& operator=(const PeerEntry& c);
 
     bool operator<(const PeerEntry& rhs) const;
 

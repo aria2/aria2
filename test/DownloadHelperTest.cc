@@ -13,6 +13,7 @@
 #include "prefs.h"
 #include "Exception.h"
 #include "util.h"
+#include "FileEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT

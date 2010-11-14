@@ -64,25 +64,17 @@ struct BtObject {
            const SharedHandle<PeerStorage>& peerStorage,
            const SharedHandle<BtAnnounce>& btAnnounce,
            const SharedHandle<BtRuntime>& btRuntime,
-           const SharedHandle<BtProgressInfoFile>& btProgressInfoFile):
-    downloadContext_(downloadContext),
-    pieceStorage_(pieceStorage),
-    peerStorage_(peerStorage),
-    btAnnounce_(btAnnounce),
-    btRuntime_(btRuntime),
-    btProgressInfoFile_(btProgressInfoFile) {}
+           const SharedHandle<BtProgressInfoFile>& btProgressInfoFile);
 
-  BtObject() {}
+  BtObject();
 
-  bool isNull() const
-  {
-    return !downloadContext_ &&
-      !pieceStorage_ &&
-      !peerStorage_ &&
-      !btAnnounce_ &&
-      !btRuntime_ &&
-      !btProgressInfoFile_;
-  }
+  BtObject(const BtObject& c);
+
+  ~BtObject();
+
+  BtObject& operator=(const BtObject& c);
+
+  bool isNull() const;
 };
 
 class BtRegistry {

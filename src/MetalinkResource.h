@@ -73,16 +73,9 @@ public:
   MetalinkResource();
   ~MetalinkResource();
 
-  MetalinkResource& operator=(const MetalinkResource& metalinkResource) {
-    if(this != &metalinkResource) {
-      this->url = metalinkResource.url;
-      this->type = metalinkResource.type;
-      this->location = metalinkResource.location;
-      this->priority = metalinkResource.priority;
-      this->maxConnections = metalinkResource.maxConnections;
-    }
-    return *this;
-  }
+  // Don't allow copying
+  MetalinkResource(const MetalinkResource&);
+  MetalinkResource& operator=(const MetalinkResource&);
 
   static const std::string& getTypeString(TYPE type)
   {

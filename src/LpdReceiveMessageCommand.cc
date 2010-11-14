@@ -49,9 +49,6 @@
 #include "BtAnnounce.h"
 #include "LpdMessage.h"
 #include "bittorrent_helper.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 #include "util.h"
 
 namespace aria2 {

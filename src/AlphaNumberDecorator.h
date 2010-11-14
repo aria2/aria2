@@ -36,54 +36,23 @@
 #define D_ALPHA_NUMBER_DECORATOR_H
 
 #include "NumberDecorator.h"
-#include "DlAbortEx.h"
-#include <algorithm>
 
 namespace aria2 {
 
 class AlphaNumberDecorator : public NumberDecorator
 {
 private:
-
   size_t width_;
-
   char zero_;
-
-  std::string widen(const std::string& s, size_t width)
-  {
-    std::string t = s;
-    std::string zero(1, zero_);
-    while(t.size() < width) {
-      t.insert(0, zero);
-    }
-    return t;
-  }
-
 public:
-  AlphaNumberDecorator(size_t width, bool uppercase = false):
-    width_(width), zero_(uppercase?'A':'a') {}
+  AlphaNumberDecorator(size_t width, bool uppercase = false);
+  virtual ~AlphaNumberDecorator();
 
-  virtual ~AlphaNumberDecorator() {}
+  // Don't allow copying
+  AlphaNumberDecorator(const AlphaNumberDecorator& c);
+  AlphaNumberDecorator& operator=(const AlphaNumberDecorator& c);
 
-  virtual std::string decorate(unsigned int number)
-  {
-    if(number == 0) {
-      return widen(std::string(1, zero_), width_);
-    }
-
-    int base = 26;
-    char u[14]; // because if unsigned int is 64bit, which is the biggest integer for the time being and number is UINT64_MAX, you get "HLHXCZMXSYUMQP"
-    size_t index = 0;
-    do {
-      unsigned int quot = number/base;
-      unsigned int rem = number%base;
-      u[index++] = zero_+rem;
-      number = quot;
-    } while(number);
-    std::reverse(&u[0], &u[index]);
-
-    return widen(std::string(&u[0], &u[index]), width_);
-  }
+  virtual std::string decorate(unsigned int number);
 };
 
 } // namespace aria2

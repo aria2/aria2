@@ -66,8 +66,6 @@
 #include "AuthConfig.h"
 #include "a2functional.h"
 #include "URISelector.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "StreamFilter.h"
 #include "SinkStreamFilter.h"

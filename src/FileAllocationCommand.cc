@@ -47,8 +47,6 @@
 #include "RecoverableException.h"
 #include "wallclock.h"
 #include "RequestGroupMan.h"
-#include "CheckIntegrityEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

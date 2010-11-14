@@ -42,17 +42,17 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "Signature.h"
 #include "TimerA2.h"
 #include "A2STR.h"
 #include "ValueBase.h"
 #include "IntSequence.h"
-#include "FileEntry.h"
-#include "TorrentAttribute.h"
 
 namespace aria2 {
 
 class RequestGroup;
+class Signature;
+class FileEntry;
+class ContextAttribute;
 
 class DownloadContext
 {
@@ -95,14 +95,9 @@ public:
                   uint64_t totalLength,
                   const std::string& path = A2STR::NIL);
 
-  const std::string& getPieceHash(size_t index) const
-  {
-    if(index < pieceHashes_.size()) {
-      return pieceHashes_[index];
-    } else {
-      return A2STR::NIL;
-    }
-  }
+  ~DownloadContext();
+
+  const std::string& getPieceHash(size_t index) const;
   
   const std::vector<std::string>& getPieceHashes() const
   {
@@ -148,24 +143,15 @@ public:
 
   const std::string& getPieceHashAlgo() const { return pieceHashAlgo_; }
 
-  void setPieceHashAlgo(const std::string& algo)
-  {
-    pieceHashAlgo_ = algo;
-  }
+  void setPieceHashAlgo(const std::string& algo);
 
   const std::string& getChecksum() const { return checksum_; }
 
-  void setChecksum(const std::string& checksum)
-  {
-    checksum_ = checksum;
-  }
+  void setChecksum(const std::string& checksum);
 
   const std::string& getChecksumHashAlgo() const { return checksumHashAlgo_; }
 
-  void setChecksumHashAlgo(const std::string& algo)
-  {
-    checksumHashAlgo_ = algo;
-  }
+  void setChecksumHashAlgo(const std::string& algo);
 
   // The representative path name for this context. It is used as a
   // part of .aria2 control file. If basePath_ is set, returns
@@ -173,18 +159,15 @@ public:
   // returned.
   const std::string& getBasePath() const;
 
-  void setBasePath(const std::string& basePath) { basePath_ = basePath; }
+  void setBasePath(const std::string& basePath);
 
   const std::string& getDir() const { return dir_; }
 
-  void setDir(const std::string& dir) { dir_ = dir; }
+  void setDir(const std::string& dir);
 
   const SharedHandle<Signature>& getSignature() const { return signature_; }
 
-  void setSignature(const SharedHandle<Signature>& signature)
-  {
-    signature_ = signature;
-  }
+  void setSignature(const SharedHandle<Signature>& signature);
 
   RequestGroup* getOwnerRequestGroup() { return ownerRequestGroup_; }
 

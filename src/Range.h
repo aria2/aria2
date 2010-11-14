@@ -36,6 +36,9 @@
 #define D_RANGE_H
 
 #include "common.h"
+
+#include <unistd.h>
+
 #include "SharedHandle.h"
 
 namespace aria2 {
@@ -46,22 +49,19 @@ private:
   off_t endByte_;
   uint64_t entityLength_;
 public:
-  Range():startByte_(0), endByte_(0), entityLength_(0) {}
+  Range();
 
-  Range(off_t startByte, off_t endByte, uint64_t entityLength):
-    startByte_(startByte), endByte_(endByte), entityLength_(entityLength) {}
+  Range(off_t startByte, off_t endByte, uint64_t entityLength);
 
-  bool operator==(const Range& range) const
-  {
-    return startByte_ == range.startByte_ &&
-      endByte_ == range.endByte_ &&
-      entityLength_ == range.entityLength_;
-  }
+  Range(const Range& c);
 
-  bool operator!=(const Range& range) const
-  {
-    return !(*this == range);
-  }
+  ~Range();
+
+  Range& operator=(const Range& c);
+
+  bool operator==(const Range& range) const;
+
+  bool operator!=(const Range& range) const;
 
   off_t getStartByte() const
   {
@@ -78,14 +78,7 @@ public:
     return entityLength_;
   }
 
-  uint64_t getContentLength() const
-  {
-    if(endByte_ >= startByte_) {
-      return endByte_-startByte_+1;
-    } else {
-      return 0;
-    }
-  }
+  uint64_t getContentLength() const;
 };
 
 typedef SharedHandle<Range> RangeHandle;

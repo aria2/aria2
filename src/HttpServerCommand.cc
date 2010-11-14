@@ -46,11 +46,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "util.h"
-#include "DownloadContext.h"
 #include "wallclock.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

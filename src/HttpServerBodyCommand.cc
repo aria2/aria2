@@ -49,12 +49,8 @@
 #include "XmlRpcMethod.h"
 #include "XmlRpcMethodFactory.h"
 #include "XmlRpcResponse.h"
-#include "DownloadContext.h"
 #include "wallclock.h"
 #include "util.h"
-#include "ServerStatMan.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
 
 namespace aria2 {
 

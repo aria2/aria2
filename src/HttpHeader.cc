@@ -98,6 +98,9 @@ const std::string HttpHeader::S401("401");
   
 const std::string HttpHeader::S404("404");
 
+HttpHeader::HttpHeader() {}
+HttpHeader::~HttpHeader() {}
+
 void HttpHeader::put(const std::string& name, const std::string& value) {
   std::multimap<std::string, std::string>::value_type vt
     (util::toLower(name), value);

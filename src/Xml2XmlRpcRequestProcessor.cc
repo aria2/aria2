@@ -144,6 +144,10 @@ xmlSAXHandler mySAXHandler =
   };
 } // namespace
 
+XmlRpcRequestProcessor::XmlRpcRequestProcessor() {}
+
+XmlRpcRequestProcessor::~XmlRpcRequestProcessor() {}
+
 XmlRpcRequest
 XmlRpcRequestProcessor::parseMemory(const std::string& xml)
 {

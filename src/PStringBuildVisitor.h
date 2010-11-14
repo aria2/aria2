@@ -53,6 +53,8 @@ private:
 
   std::vector<std::string> uris_;
 public:
+  PStringBuildVisitor();
+  ~PStringBuildVisitor();
   
   virtual void visit(PStringSegment& s);
 

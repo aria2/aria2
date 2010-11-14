@@ -137,6 +137,7 @@ private:
 
 public:
   MultiDiskAdaptor();
+  ~MultiDiskAdaptor();
 
   virtual void initAndOpenFile();
 

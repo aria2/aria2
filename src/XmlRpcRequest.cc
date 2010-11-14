@@ -38,6 +38,26 @@ namespace aria2 {
 
 namespace xmlrpc {
 
+XmlRpcRequest::XmlRpcRequest(const std::string& methodName,
+                             const SharedHandle<List>& params)
+  : methodName(methodName), params(params)
+{}
+
+XmlRpcRequest::XmlRpcRequest(const XmlRpcRequest& c)
+  : methodName(c.methodName), params(c.params)
+{}
+
+XmlRpcRequest::~XmlRpcRequest() {}
+
+XmlRpcRequest& XmlRpcRequest::operator=(const XmlRpcRequest& c)
+{
+  if(this != &c) {
+    methodName = c.methodName;
+    params = c.params;
+  }
+  return *this;
+}
+
 const String* XmlRpcRequest::getStringParam(size_t index) const
 {
   const String* stringParam = 0;

@@ -36,7 +36,7 @@
 #define D_UNION_SEED_CRITERIA_H
 
 #include "SeedCriteria.h"
-#include <algorithm>
+
 #include <vector>
 
 namespace aria2 {
@@ -44,43 +44,15 @@ namespace aria2 {
 class UnionSeedCriteria : public SeedCriteria {
 private:
   std::vector<SharedHandle<SeedCriteria> > criterion_;
-
-  class Reset {
-  public:
-    void operator()(const SharedHandle<SeedCriteria>& cri)
-    {
-      cri->reset();
-    }
-  };
-
-  class Eval {
-  public:
-    bool operator()(const SharedHandle<SeedCriteria>& cri)
-    {
-      return cri->evaluate();
-    }
-  };
 public:
-  UnionSeedCriteria() {}
-  virtual ~UnionSeedCriteria() {}
-
+  UnionSeedCriteria();
+  virtual ~UnionSeedCriteria();
     
-  virtual void reset()
-  {
-    std::for_each(criterion_.begin(), criterion_.end(), Reset());
-  }
+  virtual void reset();
 
-  virtual bool evaluate()
-  {
-    std::vector<SharedHandle<SeedCriteria> >::iterator itr =
-      std::find_if(criterion_.begin(), criterion_.end(), Eval());
-    return itr != criterion_.end();
-  }
+  virtual bool evaluate();
 
-  void addSeedCriteria(const SharedHandle<SeedCriteria>& cri)
-  {
-    criterion_.push_back(cri);
-  }
+  void addSeedCriteria(const SharedHandle<SeedCriteria>& cri);
 
   const std::vector<SharedHandle<SeedCriteria> >& getSeedCriterion() const
   {

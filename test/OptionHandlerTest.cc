@@ -2,6 +2,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "Option.h"
 #include "prefs.h"
 #include "Exception.h"
 

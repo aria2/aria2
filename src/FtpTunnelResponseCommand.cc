@@ -39,7 +39,6 @@
 #include "HttpRequest.h"
 #include "Segment.h"
 #include "Socket.h"
-#include "DownloadContext.h"
 
 namespace aria2 {
 

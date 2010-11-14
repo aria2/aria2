@@ -40,6 +40,8 @@ StreamFilter::StreamFilter
 (const SharedHandle<StreamFilter>& delegate):
   delegate_(delegate) {}
 
+StreamFilter::~StreamFilter() {}
+
 bool StreamFilter::installDelegate(const SharedHandle<StreamFilter>& filter)
 {
   if(!delegate_) {

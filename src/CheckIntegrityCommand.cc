@@ -43,9 +43,6 @@
 #include "a2functional.h"
 #include "RecoverableException.h"
 #include "util.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationEntry.h"
-#include "ServerStatMan.h"
 
 namespace aria2 {
 

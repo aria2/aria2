@@ -58,6 +58,8 @@ BtExtendedMessage::BtExtendedMessage
   msgLength_(0)
 {}
 
+BtExtendedMessage::~BtExtendedMessage() {}
+
 unsigned char* BtExtendedMessage::createMessage()
 {
   /**

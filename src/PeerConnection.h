@@ -119,12 +119,7 @@ public:
     return resbuf_;
   }
 
-  unsigned char* detachBuffer()
-  {
-    unsigned char* detachbuf = resbuf_;
-    resbuf_ = new unsigned char[MAX_PAYLOAD_LEN];
-    return detachbuf;
-  }
+  unsigned char* detachBuffer();
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;

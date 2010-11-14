@@ -56,6 +56,8 @@ LpdMessageDispatcher::LpdMessageDispatcher
                                         infoHash_, port_)),
   logger_(LogFactory::getInstance()) {}
 
+LpdMessageDispatcher::~LpdMessageDispatcher() {}
+
 bool LpdMessageDispatcher::init(const std::string& localAddr,
                                 unsigned char ttl, unsigned char loop)
 {

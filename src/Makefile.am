@@ -58,13 +58,13 @@ SRCS =  Socket.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
 	SpeedCalc.cc SpeedCalc.h\
-	PeerStat.h\
+	PeerStat.cc PeerStat.h\
 	BitfieldMan.cc BitfieldMan.h\
 	Randomizer.h\
 	SimpleRandomizer.cc SimpleRandomizer.h\
 	HttpResponse.cc HttpResponse.h\
 	HttpRequest.cc HttpRequest.h\
-	Range.h\
+	Range.cc Range.h\
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h\
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h\
 	Netrc.cc Netrc.h\
@@ -77,8 +77,8 @@ SRCS =  Socket.h\
 	OptionParser.cc OptionParser.h\
 	OptionHandlerFactory.cc OptionHandlerFactory.h\
 	OptionHandler.cc OptionHandler.h\
-	OptionHandlerImpl.h\
-	NameMatchOptionHandler.h\
+	OptionHandlerImpl.cc OptionHandlerImpl.h\
+	NameMatchOptionHandler.cc NameMatchOptionHandler.h\
 	NameResolver.cc NameResolver.h\
 	RequestGroup.cc RequestGroup.h\
 	RequestGroupMan.cc RequestGroupMan.h\
@@ -99,14 +99,14 @@ SRCS =  Socket.h\
 	Platform.cc Platform.h\
 	PStringDatum.h\
 	PStringSegment.cc PStringSegment.h\
-	PStringNumLoop.h\
-	PStringSelect.h\
+	PStringNumLoop.cc PStringNumLoop.h\
+	PStringSelect.cc PStringSelect.h\
 	PStringVisitor.h\
 	PStringBuildVisitor.cc PStringBuildVisitor.h\
 	ParameterizedStringParser.cc ParameterizedStringParser.h\
-	FixedWidthNumberDecorator.h\
+	FixedWidthNumberDecorator.cc FixedWidthNumberDecorator.h\
 	NumberDecorator.h\
-	AlphaNumberDecorator.h\
+	AlphaNumberDecorator.cc AlphaNumberDecorator.h\
 	TimeBasedCommand.cc TimeBasedCommand.h\
 	AutoSaveCommand.cc AutoSaveCommand.h\
 	PieceStorage.h\
@@ -147,9 +147,9 @@ SRCS =  Socket.h\
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h\
 	DownloadContext.cc DownloadContext.h\
 	TimedHaltCommand.cc TimedHaltCommand.h\
-	CUIDCounter.h\
-	DNSCache.h\
-	DownloadResult.h\
+	CUIDCounter.cc CUIDCounter.h\
+	DNSCache.cc DNSCache.h\
+	DownloadResult.cc DownloadResult.h\
 	Sequence.h\
 	IntSequence.h\
 	PostDownloadHandler.h\
@@ -203,7 +203,7 @@ SRCS =  Socket.h\
 	timespec.h\
 	ValueBase.cc ValueBase.h\
 	ContextAttribute.h\
-	TorrentAttribute.h\
+	TorrentAttribute.cc TorrentAttribute.h\
 	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h\
 	StreamFilter.cc StreamFilter.h\
 	SinkStreamFilter.cc SinkStreamFilter.h\
@@ -255,12 +255,20 @@ endif # ENABLE_SSL
 
 if HAVE_LIBGNUTLS
 SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h\
-	LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h
+	LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h\
+	LibgcryptARC4Context.cc LibgcryptARC4Context.h\
+	LibgcryptARC4Decryptor.cc LibgcryptARC4Decryptor.h\
+	LibgcryptARC4Encryptor.cc LibgcryptARC4Encryptor.h\
+	LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
 endif # HAVE_LIBGNUTLS
 
 if HAVE_LIBSSL
 SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
-	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h
+	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h\
+	LibsslARC4Context.cc LibsslARC4Context.h\
+	LibsslARC4Decryptor.cc LibsslARC4Decryptor.h\
+	LibsslARC4Encryptor.cc LibsslARC4Encryptor.h\
+	LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
 endif # HAVE_LIBSSL
 
 if HAVE_LIBZ
@@ -285,8 +293,8 @@ SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
 	MessageDigestHelper.cc MessageDigestHelper.h\
-	Checksum.h\
-	ChunkChecksum.h\
+	Checksum.cc Checksum.h\
+	ChunkChecksum.cc ChunkChecksum.h\
 	MessageDigest.cc MessageDigest.h\
 	HashFuncEntry.h
 endif # ENABLE_MESSAGE_DIGEST
@@ -301,17 +309,17 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
 	SeedCriteria.h\
-	TimeSeedCriteria.h\
-	ShareRatioSeedCriteria.h\
-	UnionSeedCriteria.h\
+	TimeSeedCriteria.cc TimeSeedCriteria.h\
+	ShareRatioSeedCriteria.cc ShareRatioSeedCriteria.h\
+	UnionSeedCriteria.cc UnionSeedCriteria.h\
 	SeedCheckCommand.cc SeedCheckCommand.h\
-	AnnounceTier.h\
+	AnnounceTier.cc AnnounceTier.h\
 	AnnounceList.h AnnounceList.cc\
 	PeerStorage.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
 	BtAnnounce.cc BtAnnounce.h\
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
-	BtRuntime.h\
+	BtRuntime.cc BtRuntime.h\
 	BtMessage.h\
 	AbstractBtMessage.cc AbstractBtMessage.h\
 	SimpleBtMessage.cc SimpleBtMessage.h\
@@ -333,9 +341,9 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	BtUnchokeMessage.cc BtUnchokeMessage.h\
 	BtHandshakeMessage.cc BtHandshakeMessage.h\
 	BtMessageValidator.h\
-	BtBitfieldMessageValidator.h\
-	BtPieceMessageValidator.h\
-	BtHandshakeMessageValidator.h\
+	BtBitfieldMessageValidator.cc BtBitfieldMessageValidator.h\
+	BtPieceMessageValidator.cc BtPieceMessageValidator.h\
+	BtHandshakeMessageValidator.cc BtHandshakeMessageValidator.h\
 	BtMessageFactory.h\
 	DefaultBtMessageFactory.cc DefaultBtMessageFactory.h\
 	BtMessageDispatcher.h\
@@ -345,7 +353,7 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	BtRequestFactory.h\
 	DefaultBtRequestFactory.cc DefaultBtRequestFactory.h\
 	BtCancelSendingPieceEvent.h\
-	BtAbortOutstandingRequestEvent.h\
+	BtAbortOutstandingRequestEvent.cc BtAbortOutstandingRequestEvent.h\
 	BtChokingEvent.h\
 	BtInteractive.h\
 	DefaultBtInteractive.cc DefaultBtInteractive.h\
@@ -433,36 +441,28 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	DHTIDCloser.h\
 	DHTConstants.h\
 	XORCloser.h\
-	PeerAddrEntry.h\
+	PeerAddrEntry.cc PeerAddrEntry.h\
 	InitiatorMSEHandshakeCommand.cc InitiatorMSEHandshakeCommand.h\
 	ReceiverMSEHandshakeCommand.cc ReceiverMSEHandshakeCommand.h\
 	MSEHandshake.cc MSEHandshake.h\
 	ARC4Decryptor.h\
 	ARC4Encryptor.h\
 	DHKeyExchange.h\
-	LibgcryptARC4Context.h\
-	LibgcryptARC4Decryptor.h\
-	LibgcryptARC4Encryptor.h\
-	LibgcryptDHKeyExchange.h\
-	LibsslARC4Context.h\
-	LibsslARC4Decryptor.h\
-	LibsslARC4Encryptor.h\
-	LibsslDHKeyExchange.h\
 	BtConstants.h\
 	BtLeecherStateChoke.cc BtLeecherStateChoke.h\
 	BtSeederStateChoke.cc BtSeederStateChoke.h\
 	RangeBtMessage.cc RangeBtMessage.h\
 	IndexBtMessage.cc IndexBtMessage.h\
 	ZeroBtMessage.cc ZeroBtMessage.h\
-	RangeBtMessageValidator.h\
-	IndexBtMessageValidator.h\
-	ExtensionMessageRegistry.h\
+	RangeBtMessageValidator.cc RangeBtMessageValidator.h\
+	IndexBtMessageValidator.cc IndexBtMessageValidator.h\
+	ExtensionMessageRegistry.cc ExtensionMessageRegistry.h\
 	bittorrent_helper.cc bittorrent_helper.h\
 	BtStopDownloadCommand.cc BtStopDownloadCommand.h\
 	PriorityPieceSelector.cc PriorityPieceSelector.h\
 	LpdMessageDispatcher.cc LpdMessageDispatcher.h\
 	LpdMessageReceiver.cc LpdMessageReceiver.h\
-	LpdMessage.h\
+	LpdMessage.cc LpdMessage.h\
 	LpdReceiveMessageCommand.cc LpdReceiveMessageCommand.h\
 	LpdDispatchMessageCommand.cc LpdDispatchMessageCommand.h\
 	bencode2.cc bencode2.h
@@ -476,7 +476,7 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkProcessor.h\
 	MetalinkParserController.cc MetalinkParserController.h\
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
-	MetalinkParserState.h\
+	MetalinkParserState.cc MetalinkParserState.h\
 	MetalinkParserStateImpl.cc MetalinkParserStateImpl.h\
 	MetalinkParserStateV3Impl.cc MetalinkParserStateV3Impl.h\
 	MetalinkParserStateV4Impl.cc MetalinkParserStateV4Impl.h\

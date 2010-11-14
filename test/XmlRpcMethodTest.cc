@@ -6,7 +6,6 @@
 #include "SelectEventPoll.h"
 #include "Option.h"
 #include "RequestGroupMan.h"
-#include "ServerStatMan.h"
 #include "RequestGroup.h"
 #include "XmlRpcMethodImpl.h"
 #include "OptionParser.h"
@@ -20,15 +19,10 @@
 #include "util.h"
 #include "array_fun.h"
 #include "download_helper.h"
-#include "FileAllocationEntry.h"
-#include "CheckIntegrityEntry.h"
+#include "FileEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 # include "BtRuntime.h"
-# include "PieceStorage.h"
-# include "PeerStorage.h"
-# include "BtProgressInfoFile.h"
-# include "BtAnnounce.h"
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 
