@@ -287,6 +287,12 @@ public:
   }
 };
 
+template<typename T>
+void swap(SharedHandle<T>& a, SharedHandle<T>& b)
+{
+  a.swap(b);
+}
+
 template<typename T, typename S>
 SharedHandle<T>
 dynamic_pointer_cast(const SharedHandle<S>& t) {

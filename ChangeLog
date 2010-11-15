@@ -1,5 +1,10 @@
 2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added non-member swap() for SharedHandle.
+	* src/SharedHandle.h
+
+2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced HttpHeader::responseStatus_ with HttpHeader::statusCode_.
 	statusCode_ is of type int.
 	* src/AbstractProxyResponseCommand.cc
