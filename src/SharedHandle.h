@@ -37,6 +37,7 @@
 
 #include <cassert>
 #include <iosfwd>
+#include <algorithm>
 
 // To Use std::tr1::shared_ptr uncomment following few lines and
 // comment out SharedHandle stuff.
@@ -120,6 +121,11 @@ public:
   }
 
   inline size_t getRefCount() const { return refCount_->getStrongRefCount(); }
+
+  void swap(SharedCount& r)
+  {
+    std::swap(refCount_, r.refCount_);
+  }
 };
 
 class WeakCount {
@@ -272,6 +278,12 @@ public:
 
   void reset(T* t) {
     *this = SharedHandle(t);
+  }
+
+  void swap(SharedHandle& other)
+  {
+    std::swap(obj_, other.obj_);
+    ucount_.swap(other.ucount_);
   }
 };
 

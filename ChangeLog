@@ -1,3 +1,8 @@
+2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added SharedHandle::swap
+	* src/SharedHandle.h
+
 2010-11-14  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Use --max-connection-per-server option value for Metalink.
