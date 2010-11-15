@@ -238,10 +238,10 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
         if(logger_->info()) {
           logger_->info(MSG_HASH_CHECK_NOT_DONE);
         }
-        SharedHandle<ChecksumCheckIntegrityEntry> tempEntry
-          (new ChecksumCheckIntegrityEntry(this));
+        ChecksumCheckIntegrityEntry* tempEntry =
+          new ChecksumCheckIntegrityEntry(this);
         tempEntry->setRedownload(true);
-        checkEntry = tempEntry;
+        checkEntry.reset(tempEntry);
       } else
 #endif // ENABLE_MESSAGE_DIGEST
         {
@@ -259,10 +259,10 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     if(option_->getAsBool(PREF_CHECK_INTEGRITY) &&
        downloadContext_->isChecksumVerificationAvailable()) {
       loadAndOpenFile(infoFile);
-      SharedHandle<ChecksumCheckIntegrityEntry> tempEntry
-        (new ChecksumCheckIntegrityEntry(this));
+      ChecksumCheckIntegrityEntry* tempEntry =
+        new ChecksumCheckIntegrityEntry(this);
       tempEntry->setRedownload(true);
-      checkEntry = tempEntry;
+      checkEntry.reset(tempEntry);
     } else
 #endif // ENABLE_MESSAGE_DIGEST
       {
@@ -590,8 +590,9 @@ void RequestGroup::initPieceStorage()
 #endif // ENABLE_BITTORRENT
       )) {
 #ifdef ENABLE_BITTORRENT
-    SharedHandle<DefaultPieceStorage> ps
-      (new DefaultPieceStorage(downloadContext_, option_.get()));
+    DefaultPieceStorage* ps =
+      new DefaultPieceStorage(downloadContext_, option_.get());
+    SharedHandle<PieceStorage> psHolder(ps);
     if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
       if(isUriSuppliedForRequsetFileEntry
          (downloadContext_->getFileEntries().begin(),
@@ -623,27 +624,29 @@ void RequestGroup::initPieceStorage()
       }
     }
 #else // !ENABLE_BITTORRENT
-    SharedHandle<DefaultPieceStorage> ps
-      (new DefaultPieceStorage(downloadContext_, option_.get()));
+    DefaultPieceStorage* ps =
+      new DefaultPieceStorage(downloadContext_, option_.get());
+    SharedHandle<PieceStorage> psHolder(ps);
 #endif // !ENABLE_BITTORRENT
     if(diskWriterFactory_) {
       ps->setDiskWriterFactory(diskWriterFactory_);
     }
-    tempPieceStorage = ps;
+    tempPieceStorage.swap(psHolder);
   } else {
-    UnknownLengthPieceStorageHandle ps
-      (new UnknownLengthPieceStorage(downloadContext_, option_.get()));
+    UnknownLengthPieceStorage* ps =
+      new UnknownLengthPieceStorage(downloadContext_, option_.get());
+    SharedHandle<PieceStorage> psHolder(ps);
     if(diskWriterFactory_) {
       ps->setDiskWriterFactory(diskWriterFactory_);
     }
-    tempPieceStorage = ps;
+    tempPieceStorage.swap(psHolder);
   }
   tempPieceStorage->initStorage();
   SharedHandle<SegmentMan> tempSegmentMan
     (new SegmentMan(option_.get(), downloadContext_, tempPieceStorage));
 
-  pieceStorage_ = tempPieceStorage;
-  segmentMan_ = tempSegmentMan;
+  pieceStorage_.swap(tempPieceStorage);
+  segmentMan_.swap(tempSegmentMan);
 }
 
 void RequestGroup::dropPieceStorage()

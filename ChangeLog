@@ -1,5 +1,10 @@
 2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Use SharedHandle::swap() in some places.
+	* src/RequestGroup.cc
+
+2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added SharedHandle::swap
 	* src/SharedHandle.h
 
