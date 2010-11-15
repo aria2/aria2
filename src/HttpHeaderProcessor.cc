@@ -110,9 +110,13 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
      delimpos < 12) {
     throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
+  int32_t statusCode;
+  if(!util::parseIntNoThrow(statusCode, buf_.substr(9, 3))) {
+    throw DL_RETRY_EX("Status code could not be parsed as integer.");
+  }
   HttpHeaderHandle httpHeader(new HttpHeader());
   httpHeader->setVersion(buf_.substr(0, 8));
-  httpHeader->setResponseStatus(buf_.substr(9, 3));
+  httpHeader->setStatusCode(statusCode);
   std::istringstream strm(buf_);
   // TODO 1st line(HTTP/1.1 200...) is also send to HttpHeader, but it should
   // not.

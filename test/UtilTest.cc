@@ -48,6 +48,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseUInt);
   CPPUNIT_TEST(testParseLLInt);
   CPPUNIT_TEST(testParseULLInt);
+  CPPUNIT_TEST(testParseIntNoThrow);
   CPPUNIT_TEST(testParseUIntNoThrow);
   CPPUNIT_TEST(testParseLLIntNoThrow);
   CPPUNIT_TEST(testToString_binaryStream);
@@ -106,6 +107,7 @@ public:
   void testParseUInt();
   void testParseLLInt();
   void testParseULLInt();
+  void testParseIntNoThrow();
   void testParseUIntNoThrow();
   void testParseLLIntNoThrow();
   void testToString_binaryStream();
@@ -826,6 +828,22 @@ void UtilTest::testParseULLInt()
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
+}
+
+void UtilTest::testParseIntNoThrow()
+{
+  int32_t n;
+  CPPUNIT_ASSERT(util::parseIntNoThrow(n, " -1 "));
+  CPPUNIT_ASSERT_EQUAL((int32_t)-1, n);
+
+  CPPUNIT_ASSERT(util::parseIntNoThrow(n, "2147483647"));
+  CPPUNIT_ASSERT_EQUAL((int32_t)2147483647, n);
+
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, "2147483648"));
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, "-2147483649"));
+
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, "12x"));
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, ""));
 }
 
 void UtilTest::testParseUIntNoThrow()

@@ -188,6 +188,8 @@ std::string secfmt(time_t sec);
 
 int32_t parseInt(const std::string& s, int32_t base = 10);
 
+bool parseIntNoThrow(int32_t& result, const std::string& s, int base = 10);
+
 uint32_t parseUInt(const std::string& s, int base = 10);
   
 bool parseUIntNoThrow(uint32_t& result, const std::string& s, int base = 10);

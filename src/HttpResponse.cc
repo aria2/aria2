@@ -64,26 +64,24 @@ HttpResponse::~HttpResponse() {}
 
 void HttpResponse::validateResponse() const
 {
-  const std::string& status = getResponseStatus();
-  if(status >= HttpHeader::S400) {
+  int statusCode = getStatusCode();
+  if(statusCode >= 400) {
     return;
   }
-  if(status == HttpHeader::S304) {
+  if(statusCode == 304) {
     if(httpRequest_->getIfModifiedSinceHeader().empty()) {
       throw DL_ABORT_EX("Got 304 without If-Modified-Since");
     }
-  } else if(status == HttpHeader::S301 ||
-     status == HttpHeader::S302 ||
-     status == HttpHeader::S303 ||
-     status == HttpHeader::S307) {
+  } else if(statusCode == 301 ||
+            statusCode == 302 ||
+            statusCode == 303 ||
+            statusCode == 307) {
     if(!httpHeader_->defined(HttpHeader::LOCATION)) {
       throw DL_ABORT_EX
-        (StringFormat(EX_LOCATION_HEADER_REQUIRED,
-                      util::parseUInt(status)).str());
+        (StringFormat(EX_LOCATION_HEADER_REQUIRED, statusCode).str());
     }
     return;
-  } else if(status == HttpHeader::S200 ||
-            status == HttpHeader::S206) {
+  } else if(statusCode == 200 || statusCode == 206) {
     if(!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
       // compare the received range against the requested range
       RangeHandle responseRange = httpHeader_->getRange();
@@ -102,7 +100,7 @@ void HttpResponse::validateResponse() const
     }
   } else {
     throw DL_ABORT_EX
-      (StringFormat("Unexpected status %s", status.c_str()).str());
+      (StringFormat("Unexpected status %d", statusCode).str());
   }
 }
 
@@ -140,11 +138,11 @@ void HttpResponse::retrieveCookie()
 
 bool HttpResponse::isRedirect() const
 {
-  const std::string& status = getResponseStatus();
-  return (HttpHeader::S301 == status ||
-          HttpHeader::S302 == status ||
-          HttpHeader::S303 == status ||
-          HttpHeader::S307 == status) &&
+  int statusCode = getStatusCode();
+  return (301 == statusCode ||
+          302 == statusCode ||
+          303 == statusCode ||
+          307 == statusCode) &&
     httpHeader_->defined(HttpHeader::LOCATION);
 }
 
@@ -254,10 +252,9 @@ void HttpResponse::setHttpRequest(const SharedHandle<HttpRequest>& httpRequest)
   httpRequest_ = httpRequest;
 }
 
-// TODO return std::string
-const std::string& HttpResponse::getResponseStatus() const
+int HttpResponse::getStatusCode() const
 {
-  return httpHeader_->getResponseStatus();
+  return httpHeader_->getStatusCode();
 }
 
 bool HttpResponse::hasRetryAfter() const

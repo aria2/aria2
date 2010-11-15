@@ -1,5 +1,25 @@
 2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced HttpHeader::responseStatus_ with HttpHeader::statusCode_.
+	statusCode_ is of type int.
+	* src/AbstractProxyResponseCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpHeaderProcessor.cc
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/util.cc
+	* src/util.h
+	* test/HttpHeaderProcessorTest.cc
+	* test/HttpHeaderTest.cc
+	* test/HttpResponseTest.cc
+	* test/UtilTest.cc
+
+2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use SharedHandle::swap() in some places.
 	* src/RequestGroup.cc
 

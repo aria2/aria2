@@ -171,6 +171,7 @@ void HttpSkipResponseCommand::poolConnection() const
 
 bool HttpSkipResponseCommand::processResponse()
 {
+  int statusCode;
   if(httpResponse_->isRedirect()) {
     unsigned int rnum =
       httpResponse_->getHttpRequest()->getRequest()->getRedirectCount();
@@ -180,8 +181,8 @@ bool HttpSkipResponseCommand::processResponse()
     }
     httpResponse_->processRedirect();
     return prepareForRetry(0);
-  } else if(httpResponse_->getResponseStatus() >= HttpHeader::S400) {
-    if(httpResponse_->getResponseStatus() == HttpHeader::S401) {
+  } else if((statusCode = httpResponse_->getStatusCode()) >= 400) {
+    if(statusCode == 401) {
       if(getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
          !httpResponse_->getHttpRequest()->authenticationUsed() &&
          getDownloadEngine()->getAuthConfigFactory()->activateBasicCred
@@ -190,14 +191,11 @@ bool HttpSkipResponseCommand::processResponse()
       } else {
         throw DL_ABORT_EX(EX_AUTH_FAILED);
       }
-    }else if(httpResponse_->getResponseStatus() == HttpHeader::S404) {
+    } else if(statusCode == 404) {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          downloadresultcode::RESOURCE_NOT_FOUND);
     } else {
-      throw DL_ABORT_EX
-        (StringFormat
-         (EX_BAD_STATUS,
-          util::parseUInt(httpResponse_->getResponseStatus())).str());
+      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, statusCode).str());
     }
   } else {
     return prepareForRetry(0);

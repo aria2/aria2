@@ -107,7 +107,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
   proc.update(hd);
 
   SharedHandle<HttpHeader> header = proc.getHttpResponseHeader();
-  CPPUNIT_ASSERT_EQUAL(std::string("200"), header->getResponseStatus());
+  CPPUNIT_ASSERT_EQUAL(200, header->getStatusCode());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
   CPPUNIT_ASSERT_EQUAL(std::string("Mon, 25 Jun 2007 16:04:59 GMT"),
                        header->getFirst("Date"));
@@ -138,7 +138,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_statusOnly()
   std::string hd = "HTTP/1.1 200\r\n\r\n";
   proc.update(hd);
   SharedHandle<HttpHeader> header = proc.getHttpResponseHeader();
-  CPPUNIT_ASSERT_EQUAL(std::string("200"), header->getResponseStatus());
+  CPPUNIT_ASSERT_EQUAL(200, header->getStatusCode());
 }
 
 void HttpHeaderProcessorTest::testGetHttpResponseHeader_insufficientStatusLength()

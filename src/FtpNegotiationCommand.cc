@@ -747,7 +747,7 @@ bool FtpNegotiationCommand::recvTunnelResponse()
   if(!httpResponse) {
     return false;
   }
-  if(httpResponse->getResponseStatus() != HttpHeader::S200) {
+  if(httpResponse->getStatusCode() != 200) {
     throw DL_RETRY_EX(EX_PROXY_CONNECTION_FAILED);
   }
   sequence_ = SEQ_SEND_REST_PASV;

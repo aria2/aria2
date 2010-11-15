@@ -167,8 +167,9 @@ bool HttpResponseCommand::executeInternal()
       (getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
   }
 
+  int statusCode = httpResponse->getStatusCode();
   if(!httpResponse->getHttpRequest()->getIfModifiedSinceHeader().empty()) {
-    if(httpResponse->getResponseStatus() == HttpHeader::S304) {
+    if(statusCode == 304) {
       uint64_t totalLength = httpResponse->getEntityLength();
       getFileEntry()->setLength(totalLength);
       getRequestGroup()->initPieceStorage();
@@ -181,15 +182,13 @@ bool HttpResponseCommand::executeInternal()
       poolConnection();
       getFileEntry()->poolRequest(getRequest());
       return true;
-    } else if(httpResponse->getResponseStatus() == HttpHeader::S200 ||
-              httpResponse->getResponseStatus() == HttpHeader::S206) {
+    } else if(statusCode == 200 || statusCode == 206) {
       // Remote file is newer than local file. We allow overwrite.
       getOption()->put(PREF_ALLOW_OVERWRITE, A2_V_TRUE);
     }
   }
-  if(httpResponse->getResponseStatus() >= HttpHeader::S300 &&
-     httpResponse->getResponseStatus() != HttpHeader::S304) {
-    if(httpResponse->getResponseStatus() == HttpHeader::S404) {
+  if(statusCode != 304 && statusCode >= 300) {
+    if(statusCode == 404) {
       getRequestGroup()->increaseAndValidateFileNotFoundCount();
     }
     return skipResponseBody(httpResponse);

@@ -52,9 +52,8 @@ class HttpHeader {
 private:
   std::multimap<std::string, std::string> table_;
 
-  // for HTTP response header only
-  // response status, e.g. "200"
-  std::string responseStatus_;
+  // HTTP status code, e.g. 200
+  int statusCode_;
 
   // HTTP version, e.g. HTTP/1.1
   std::string version_;
@@ -77,12 +76,15 @@ public:
 
   SharedHandle<Range> getRange() const;
 
-  const std::string& getResponseStatus() const
+  int getStatusCode() const
   {
-    return responseStatus_;
+    return statusCode_;
   }
 
-  void setResponseStatus(const std::string& responseStatus);
+  void setStatusCode(int code)
+  {
+    statusCode_ = code;
+  }
 
   const std::string& getVersion() const
   {
@@ -143,28 +145,6 @@ public:
   static const std::string ACCEPT_ENCODING;
 
   static const std::string HTTP_1_1;
-
-  static const std::string S200;
-
-  static const std::string S206;
-
-  static const std::string S300;
-
-  static const std::string S301;
-
-  static const std::string S302;
-
-  static const std::string S303;
-
-  static const std::string S304;
-
-  static const std::string S307;
-
-  static const std::string S400;
-
-  static const std::string S401;
-  
-  static const std::string S404;
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;

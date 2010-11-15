@@ -512,6 +512,26 @@ int32_t parseInt(const std::string& s, int32_t base)
   return v;
 }
 
+bool parseIntNoThrow(int32_t& result, const std::string& s, int base)
+{
+  // Without trim, strtol("  -1  ",..) emits error.
+  std::string trimed = strip(s);
+  if(trimed.empty()) {
+    return false;
+  }
+  char* stop;
+  errno = 0;
+  long int v = strtol(trimed.c_str(), &stop, base);
+  if(*stop != '\0') {
+    return false;
+  } else if(((v == LONG_MAX || v == LONG_MIN) && (errno == ERANGE)) ||
+            v < INT32_MIN || INT32_MAX < v) {
+    return false;
+  }
+  result = v;
+  return true;
+}
+
 uint32_t parseUInt(const std::string& s, int base)
 {
   uint64_t v = parseULLInt(s, base);
@@ -524,7 +544,7 @@ uint32_t parseUInt(const std::string& s, int base)
 
 bool parseUIntNoThrow(uint32_t& result, const std::string& s, int base)
 {
-  // TODO what happens when we don't trim s?
+  // Without trim, strtol("  -1  ",..) emits error.
   std::string trimed = strip(s);
   if(trimed.empty()) {
     return false;
@@ -567,6 +587,7 @@ int64_t parseLLInt(const std::string& s, int32_t base)
 
 bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base)
 {
+  // Without trim, strtol("  -1  ",..) emits error.
   std::string trimed = strip(s);
   if(trimed.empty()) {
     return false;

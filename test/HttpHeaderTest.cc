@@ -83,7 +83,7 @@ void HttpHeaderTest::testGet()
 void HttpHeaderTest::testClearField()
 {
   HttpHeader h;
-  h.setResponseStatus(HttpHeader::S200);
+  h.setStatusCode(200);
   h.setVersion(HttpHeader::HTTP_1_1);
   h.put("Foo", "Bar");
   
@@ -92,7 +92,7 @@ void HttpHeaderTest::testClearField()
   h.clearField();
 
   CPPUNIT_ASSERT_EQUAL(std::string(""), h.getFirst("Foo"));
-  CPPUNIT_ASSERT_EQUAL(HttpHeader::S200, h.getResponseStatus());
+  CPPUNIT_ASSERT_EQUAL(200, h.getStatusCode());
   CPPUNIT_ASSERT_EQUAL(HttpHeader::HTTP_1_1, h.getVersion());
 }
 

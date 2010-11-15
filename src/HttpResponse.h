@@ -108,7 +108,7 @@ public:
     return httpHeader_;
   }
 
-  const std::string& getResponseStatus() const;
+  int getStatusCode() const;
 
   void setHttpRequest(const SharedHandle<HttpRequest>& httpRequest);
 

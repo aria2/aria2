@@ -212,14 +212,14 @@ void HttpResponseTest::testIsRedirect()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->setResponseStatus("200");
+  httpHeader->setStatusCode(200);
   httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
 
   httpResponse.setHttpHeader(httpHeader);
 
   CPPUNIT_ASSERT(!httpResponse.isRedirect());
 
-  httpHeader->setResponseStatus("301");
+  httpHeader->setStatusCode(301);
 
   CPPUNIT_ASSERT(httpResponse.isRedirect());  
 }
@@ -340,7 +340,7 @@ void HttpResponseTest::testValidateResponse()
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  httpHeader->setResponseStatus("301");
+  httpHeader->setStatusCode(301);
 
   try {
     httpResponse.validateResponse();
@@ -372,7 +372,7 @@ void HttpResponseTest::testValidateResponse_good_range()
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
-  httpHeader->setResponseStatus("206");
+  httpHeader->setStatusCode(206);
   httpHeader->put("Content-Range", "bytes 1048576-10485760/10485760");
   
   try {
@@ -399,7 +399,7 @@ void HttpResponseTest::testValidateResponse_bad_range()
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
-  httpHeader->setResponseStatus("206");
+  httpHeader->setStatusCode(206);
   httpHeader->put("Content-Range", "bytes 0-10485760/10485761");
 
   try {
@@ -425,7 +425,7 @@ void HttpResponseTest::testValidateResponse_chunked()
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
-  httpHeader->setResponseStatus("206");
+  httpHeader->setStatusCode(206);
   httpHeader->put("Content-Range", "bytes 0-10485760/10485761");
   httpHeader->put("Transfer-Encoding", "chunked");
 
@@ -442,7 +442,7 @@ void HttpResponseTest::testValidateResponse_withIfModifiedSince()
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
-  httpHeader->setResponseStatus("304");
+  httpHeader->setStatusCode(304);
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   httpResponse.setHttpRequest(httpRequest);
   try {
