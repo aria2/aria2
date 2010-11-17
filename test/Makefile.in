@@ -114,7 +114,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTUnknownMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImplTest.cc\
-@ENABLE_BITTORRENT_TRUE@	BNodeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTBucketTreeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTTokenTrackerTest.cc\
@@ -258,7 +258,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	DHTFindNodeReplyMessageTest.cc DHTGetPeersMessageTest.cc \
 	DHTGetPeersReplyMessageTest.cc DHTAnnouncePeerMessageTest.cc \
 	DHTAnnouncePeerReplyMessageTest.cc DHTUnknownMessageTest.cc \
-	DHTMessageFactoryImplTest.cc BNodeTest.cc \
+	DHTMessageFactoryImplTest.cc DHTBucketTreeTest.cc \
 	DHTPeerAnnounceEntryTest.cc DHTPeerAnnounceStorageTest.cc \
 	DHTTokenTrackerTest.cc XORCloserTest.cc DHTIDCloserTest.cc \
 	DHTRoutingTableSerializerTest.cc \
@@ -350,7 +350,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTUnknownMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImplTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BNodeTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTBucketTreeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTTokenTrackerTest.$(OBJEXT) \
@@ -756,7 +756,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlphaNumberDecoratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactoryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNodeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base32Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bencode2Test.Po@am__quote@
@@ -792,6 +791,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerReplyMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTBucketTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTBucketTreeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTConnectionImplTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTFindNodeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTFindNodeReplyMessageTest.Po@am__quote@

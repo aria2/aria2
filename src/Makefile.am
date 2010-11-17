@@ -407,7 +407,7 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	DHTMessageFactoryImpl.cc DHTMessageFactoryImpl.h\
 	DHTNodeLookupTask.cc DHTNodeLookupTask.h\
 	DHTNodeLookupEntry.cc DHTNodeLookupEntry.h\
-	BNode.cc BNode.h\
+	DHTBucketTree.cc DHTBucketTree.h\
 	DHTMessageCallback.h\
 	DHTNodeLookupTaskCallback.cc DHTNodeLookupTaskCallback.h\
 	DHTPingReplyMessageCallback.h\

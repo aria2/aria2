@@ -48,14 +48,14 @@ class DHTNode;
 class DHTBucket;
 class DHTTaskQueue;
 class DHTTaskFactory;
-class BNode;
+class DHTBucketTreeNode;
 class Logger;
 
 class DHTRoutingTable {
 private:
   SharedHandle<DHTNode> localNode_;
 
-  BNode* root_;
+  DHTBucketTreeNode* root_;
 
   size_t numBucket_;
 

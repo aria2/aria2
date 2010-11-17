@@ -38,7 +38,7 @@
 
 #include "DHTNode.h"
 #include "DHTBucket.h"
-#include "BNode.h"
+#include "DHTBucketTree.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
@@ -48,14 +48,13 @@
 
 namespace aria2 {
 
-DHTRoutingTable::DHTRoutingTable(const SharedHandle<DHTNode>& localNode):
-  localNode_(localNode),
-  numBucket_(1),
-  logger_(LogFactory::getInstance())
-{
-  SharedHandle<DHTBucket> bucket(new DHTBucket(localNode_));
-  root_ = new BNode(bucket);
-}
+DHTRoutingTable::DHTRoutingTable(const SharedHandle<DHTNode>& localNode)
+  : localNode_(localNode),
+    root_(new DHTBucketTreeNode
+          (SharedHandle<DHTBucket>(new DHTBucket(localNode_)))),
+    numBucket_(1),
+    logger_(LogFactory::getInstance())
+{}
 
 DHTRoutingTable::~DHTRoutingTable()
 {
@@ -84,9 +83,9 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
     }
     return false;
   }
-  BNode* bnode = BNode::findBNodeFor(root_, node->getID());
-  SharedHandle<DHTBucket> bucket = bnode->getBucket();
+  DHTBucketTreeNode* treeNode = dht::findTreeNodeFor(root_, node->getID());
   while(1) {
+    const SharedHandle<DHTBucket>& bucket = treeNode->getBucket();
     if(bucket->addNode(node)) {
       if(logger_->debug()) {
         logger_->debug("Added DHTNode.");
@@ -98,20 +97,12 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
                        util::toHex(bucket->getMinID(), DHT_ID_LENGTH).c_str(),
                        util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
       }
-      SharedHandle<DHTBucket> r = bucket->split();
-
-      bnode->setBucket(SharedHandle<DHTBucket>());
-      BNode* lbnode = new BNode(bucket);
-      BNode* rbnode = new BNode(r);
-      bnode->setLeft(lbnode);
-      bnode->setRight(rbnode);
+      treeNode->split();
       ++numBucket_;
-
-      if(r->isInRange(node)) {
-        bucket = r;
-        bnode = rbnode;
+      if(treeNode->getLeft()->isInRange(node->getID())) {
+        treeNode = treeNode->getLeft();
       } else {
-        bnode = lbnode;
+        treeNode = treeNode->getRight();
       }
     } else {
       if(good) {
@@ -130,7 +121,7 @@ void DHTRoutingTable::getClosestKNodes
 (std::vector<SharedHandle<DHTNode> >& nodes,
  const unsigned char* key) const
 {
-  BNode::findClosestKNodes(nodes, root_, key);
+  dht::findClosestKNodes(nodes, root_, key);
 }
 
 size_t DHTRoutingTable::countBucket() const
@@ -149,7 +140,7 @@ void DHTRoutingTable::showBuckets() const
 
 SharedHandle<DHTBucket> DHTRoutingTable::getBucketFor(const unsigned char* nodeID) const
 {
-  return BNode::findBucketFor(root_, nodeID);
+  return dht::findBucketFor(root_, nodeID);
 }
 
 SharedHandle<DHTBucket> DHTRoutingTable::getBucketFor(const SharedHandle<DHTNode>& node) const
@@ -181,7 +172,7 @@ void DHTRoutingTable::moveBucketTail(const SharedHandle<DHTNode>& node)
 void DHTRoutingTable::getBuckets
 (std::vector<SharedHandle<DHTBucket> >& buckets) const
 {
-  BNode::enumerateBucket(buckets, root_);
+  dht::enumerateBucket(buckets, root_);
 }
 
 void DHTRoutingTable::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)

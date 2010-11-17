@@ -1,4 +1,4 @@
-#include "BNode.h"
+#include "DHTBucketTree.h"
 
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
@@ -10,29 +10,25 @@
 
 namespace aria2 {
 
-class BNodeTest:public CppUnit::TestFixture {
+class DHTBucketTreeTest:public CppUnit::TestFixture {
 
-  CPPUNIT_TEST_SUITE(BNodeTest);
-  CPPUNIT_TEST(testIsInRange);
+  CPPUNIT_TEST_SUITE(DHTBucketTreeTest);
+  CPPUNIT_TEST(testDig);
   CPPUNIT_TEST(testFindBucketFor);
   CPPUNIT_TEST(testFindClosestKNodes);
   CPPUNIT_TEST(testEnumerateBucket);
   CPPUNIT_TEST_SUITE_END();
 public:
-  void setUp() {}
-
-  void tearDown() {}
-
-  void testIsInRange();
+  void testDig();
   void testFindBucketFor();
   void testFindClosestKNodes();
   void testEnumerateBucket();
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(BNodeTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(DHTBucketTreeTest);
 
-void BNodeTest::testIsInRange()
+void DHTBucketTreeTest::testDig()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xff, DHT_ID_LENGTH);
@@ -42,18 +38,29 @@ void BNodeTest::testIsInRange()
   SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
   SharedHandle<DHTBucket> bucket2 = bucket1->split();
   SharedHandle<DHTBucket> bucket3 = bucket1->split();
-
+  // Tree: number is prefix
+  //
+  //           +
+  //    +------+------+
+  //   b2             |
+  //   0       +------+------+
+  //          b3             b1
+  //          10             11
+  //                         |
+  //                     localNode is here
   {
-    BNode b(bucket1);
-    CPPUNIT_ASSERT(b.isInRange(localNode->getID()));
+    DHTBucketTreeNode b(bucket1);
+    CPPUNIT_ASSERT(!b.dig(localNode->getID()));
   }
   {
-    BNode b(bucket2);
-    CPPUNIT_ASSERT(!b.isInRange(localNode->getID()));
+    DHTBucketTreeNode* left = new DHTBucketTreeNode(bucket3);
+    DHTBucketTreeNode* right = new DHTBucketTreeNode(bucket1);
+    DHTBucketTreeNode b(left, right);
+    CPPUNIT_ASSERT(b.dig(localNode->getID()) == right);
   }
 }
 
-void BNodeTest::testFindBucketFor()
+void DHTBucketTreeTest::testFindBucketFor()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
@@ -67,43 +74,40 @@ void BNodeTest::testFindBucketFor()
   SharedHandle<DHTBucket> bucket5 = bucket3->split();
 
   {
-    BNode b(bucket5);
-    CPPUNIT_ASSERT(*bucket5 == *BNode::findBucketFor(&b, localNodeID));
+    DHTBucketTreeNode b(bucket5);
+    CPPUNIT_ASSERT(*bucket5 == *dht::findBucketFor(&b, localNodeID));
   }
   {
-    BNode b(bucket1);
-    CPPUNIT_ASSERT(!BNode::findBucketFor(&b, localNodeID));
-  }
-  {
-    BNode* b1 = new BNode(bucket1);
-    BNode* b2 = new BNode(bucket2);
-    BNode* b3 = new BNode(bucket3);
-    BNode* b4 = new BNode(bucket4);
-    BNode* b5 = new BNode(bucket5);
+    // Tree: number is prefix
+    //
+    //           +
+    //    +------+------+
+    //   b2             |
+    //   0       +------+------+
+    //           |             b1
+    //     +-----+-----+      11
+    //    b4           |
+    //   100     +-----+-----+
+    //          b5           b3
+    //          1010         1011
+    //           |
+    //    localNode is here
+    DHTBucketTreeNode* b1 = new DHTBucketTreeNode(bucket1);
+    DHTBucketTreeNode* b2 = new DHTBucketTreeNode(bucket2);
+    DHTBucketTreeNode* b3 = new DHTBucketTreeNode(bucket3);
+    DHTBucketTreeNode* b4 = new DHTBucketTreeNode(bucket4);
+    DHTBucketTreeNode* b5 = new DHTBucketTreeNode(bucket5);
 
-    BNode* bp1 = new BNode();
-    bp1->setLeft(b3);
-    bp1->setRight(b5);
+    DHTBucketTreeNode* bp1 = new DHTBucketTreeNode(b5, b3);
+    DHTBucketTreeNode* bp2 = new DHTBucketTreeNode(b4, bp1);
+    DHTBucketTreeNode* bp3 = new DHTBucketTreeNode(bp2, b1);
+    DHTBucketTreeNode bp4(b2, bp3);
 
-    BNode* bp2 = new BNode();
-    bp2->setLeft(bp1);
-    bp2->setRight(b4);
-
-    BNode* bp3 = new BNode();
-    bp3->setLeft(b1);
-    bp3->setRight(bp2);
-
-    BNode* bp4 = new BNode();
-    bp4->setLeft(bp3);
-    bp4->setRight(b2);
-
-    CPPUNIT_ASSERT(*bucket5 == *BNode::findBucketFor(bp4, localNode->getID()));
-
-    delete bp4;
+    CPPUNIT_ASSERT(*bucket5 == *dht::findBucketFor(&bp4, localNode->getID()));
   }
 }
 
-void BNodeTest::testFindClosestKNodes()
+void DHTBucketTreeTest::testFindClosestKNodes()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
@@ -118,28 +122,16 @@ void BNodeTest::testFindClosestKNodes()
 
   unsigned char id[DHT_ID_LENGTH];
   {
-    BNode* b1 = new BNode(bucket1);
-    BNode* b2 = new BNode(bucket2);
-    BNode* b3 = new BNode(bucket3);
-    BNode* b4 = new BNode(bucket4);
-    BNode* b5 = new BNode(bucket5);
+    DHTBucketTreeNode* b1 = new DHTBucketTreeNode(bucket1);
+    DHTBucketTreeNode* b2 = new DHTBucketTreeNode(bucket2);
+    DHTBucketTreeNode* b3 = new DHTBucketTreeNode(bucket3);
+    DHTBucketTreeNode* b4 = new DHTBucketTreeNode(bucket4);
+    DHTBucketTreeNode* b5 = new DHTBucketTreeNode(bucket5);
 
-    BNode* bp1 = new BNode();
-    bp1->setLeft(b3);
-    bp1->setRight(b5);
-
-    BNode* bp2 = new BNode();
-    bp2->setLeft(bp1);
-    bp2->setRight(b4);
-
-    BNode* bp3 = new BNode();
-    bp3->setLeft(b1);
-    bp3->setRight(bp2);
-
-    BNode* bp4 = new BNode();
-    bp4->setLeft(bp3);
-    bp4->setRight(b2);
-
+    DHTBucketTreeNode* bp1 = new DHTBucketTreeNode(b5, b3);
+    DHTBucketTreeNode* bp2 = new DHTBucketTreeNode(b4, bp1);
+    DHTBucketTreeNode* bp3 = new DHTBucketTreeNode(bp2, b1);
+    DHTBucketTreeNode bp4(b2, bp3);
 
     for(size_t i = 0; i < 2; ++i) {
       bucket1->getRandomNodeID(id);
@@ -157,7 +149,7 @@ void BNodeTest::testFindClosestKNodes()
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
       std::vector<SharedHandle<DHTNode> > nodes;
-      BNode::findClosestKNodes(nodes, bp4, targetID);
+      dht::findClosestKNodes(nodes, &bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket4->isInRange(nodes[0]));
       CPPUNIT_ASSERT(bucket4->isInRange(nodes[1]));
@@ -172,7 +164,7 @@ void BNodeTest::testFindClosestKNodes()
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0xf0, DHT_ID_LENGTH);
       std::vector<SharedHandle<DHTNode> > nodes;
-      BNode::findClosestKNodes(nodes, bp4, targetID);
+      dht::findClosestKNodes(nodes, &bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket1->isInRange(nodes[0]));
       CPPUNIT_ASSERT(bucket1->isInRange(nodes[1]));
@@ -191,18 +183,17 @@ void BNodeTest::testFindClosestKNodes()
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
       std::vector<SharedHandle<DHTNode> > nodes;
-      BNode::findClosestKNodes(nodes, bp4, targetID);
+      dht::findClosestKNodes(nodes, &bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       for(size_t i = 0; i < DHTBucket::K; ++i) {
         CPPUNIT_ASSERT(bucket4->isInRange(nodes[i]));
       }
     }
-    delete bp4;
   }
 }
 
 
-void BNodeTest::testEnumerateBucket()
+void DHTBucketTreeTest::testEnumerateBucket()
 {
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
@@ -216,45 +207,32 @@ void BNodeTest::testEnumerateBucket()
   SharedHandle<DHTBucket> bucket5 = bucket3->split();
 
   {
-    BNode b(bucket1);
+    DHTBucketTreeNode b(bucket1);
     std::vector<SharedHandle<DHTBucket> > buckets;
-    BNode::enumerateBucket(buckets, &b);
+    dht::enumerateBucket(buckets, &b);
     CPPUNIT_ASSERT_EQUAL((size_t)1, buckets.size());
     CPPUNIT_ASSERT(*bucket1 == *buckets[0]);
   }
   {
-    BNode* b1 = new BNode(bucket1);
-    BNode* b2 = new BNode(bucket2);
-    BNode* b3 = new BNode(bucket3);
-    BNode* b4 = new BNode(bucket4);
-    BNode* b5 = new BNode(bucket5);
+    DHTBucketTreeNode* b1 = new DHTBucketTreeNode(bucket1);
+    DHTBucketTreeNode* b2 = new DHTBucketTreeNode(bucket2);
+    DHTBucketTreeNode* b3 = new DHTBucketTreeNode(bucket3);
+    DHTBucketTreeNode* b4 = new DHTBucketTreeNode(bucket4);
+    DHTBucketTreeNode* b5 = new DHTBucketTreeNode(bucket5);
 
-    BNode* bp1 = new BNode();
-    bp1->setLeft(b3);
-    bp1->setRight(b5);
-
-    BNode* bp2 = new BNode();
-    bp2->setLeft(bp1);
-    bp2->setRight(b4);
-
-    BNode* bp3 = new BNode();
-    bp3->setLeft(b1);
-    bp3->setRight(bp2);
-
-    BNode* bp4 = new BNode();
-    bp4->setLeft(bp3);
-    bp4->setRight(b2);
+    DHTBucketTreeNode* bp1 = new DHTBucketTreeNode(b5, b3);
+    DHTBucketTreeNode* bp2 = new DHTBucketTreeNode(b4, bp1);
+    DHTBucketTreeNode* bp3 = new DHTBucketTreeNode(bp2, b1);
+    DHTBucketTreeNode bp4(b2, bp3);
 
     std::vector<SharedHandle<DHTBucket> > buckets;
-    BNode::enumerateBucket(buckets, bp4);
+    dht::enumerateBucket(buckets, &bp4);
     CPPUNIT_ASSERT_EQUAL((size_t)5, buckets.size());
-    CPPUNIT_ASSERT(*bucket1 == *buckets[0]);
-    CPPUNIT_ASSERT(*bucket3 == *buckets[1]);
+    CPPUNIT_ASSERT(*bucket2 == *buckets[0]);
+    CPPUNIT_ASSERT(*bucket4 == *buckets[1]);
     CPPUNIT_ASSERT(*bucket5 == *buckets[2]);
-    CPPUNIT_ASSERT(*bucket4 == *buckets[3]);
-    CPPUNIT_ASSERT(*bucket2 == *buckets[4]);
-
-    delete bp4;
+    CPPUNIT_ASSERT(*bucket3 == *buckets[3]);
+    CPPUNIT_ASSERT(*bucket1 == *buckets[4]);
   }
 }
 

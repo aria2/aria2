@@ -1,3 +1,17 @@
+2010-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Replaced BNode with DHTBucketTreeNode which is 2 times efficient.
+	* src/BNode.cc: Removed
+	* src/BNode.h: Removed
+	* src/DHTBucketTree.cc
+	* src/DHTBucketTree.h
+	* src/DHTRoutingTable.cc
+	* src/DHTRoutingTable.h
+	* src/Makefile.am
+	* test/BNodeTest.cc: Removed
+	* test/DHTBucketTreeTest.cc
+	* test/Makefile.am
+
 2010-11-15  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added non-member swap() for SharedHandle.
