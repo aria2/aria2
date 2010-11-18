@@ -75,6 +75,10 @@ public:
   // call.
   void split();
 private:
+  // Do not allow copying
+  DHTBucketTreeNode(const DHTBucketTreeNode&);
+  DHTBucketTreeNode& operator=(const DHTBucketTreeNode&);
+
   // Reset relation of children and minId_ and maxId_.
   void resetRelation();
   void setParent(DHTBucketTreeNode* parent) { parent_ = parent; }

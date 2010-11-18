@@ -1,5 +1,10 @@
 2010-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made DHTBucketTreeNode non-copyable.
+	* src/DHTBucketTree.h
+
+2010-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Enter 'end game' mode from the beginning when getting torrent
 	metadata for quick data retrieval.
 	* src/HandshakeExtensionMessage.cc
