@@ -137,6 +137,9 @@ void HandshakeExtensionMessage::doReceivedAction()
       
       SharedHandle<PieceStorage> pieceStorage =
         dctx_->getOwnerRequestGroup()->getPieceStorage();
+      // We enter 'end game' mode from the start to get metadata
+      // quickly.
+      pieceStorage->enterEndGame();
       peer_->reconfigureSessionResource(dctx_->getPieceLength(),
                                         dctx_->getTotalLength());
       peer_->setAllBitfield();

@@ -1,5 +1,11 @@
 2010-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Enter 'end game' mode from the beginning when getting torrent
+	metadata for quick data retrieval.
+	* src/HandshakeExtensionMessage.cc
+
+2010-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Replaced BNode with DHTBucketTreeNode which is 2 times efficient.
 	* src/BNode.cc: Removed
 	* src/BNode.h: Removed
