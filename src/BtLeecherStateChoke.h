@@ -66,6 +66,8 @@ private:
 
     bool operator<(const PeerEntry& rhs) const;
 
+    void swap(PeerEntry& c);
+
     const SharedHandle<Peer>& getPeer() const;
 
     unsigned int getDownloadSpeed() const;
@@ -114,8 +116,22 @@ public:
   void executeChoke(const std::vector<SharedHandle<Peer> >& peerSet);
 
   const Timer& getLastRound() const;
+
+  friend void swap(PeerEntry& a, PeerEntry& b);
+  friend void std::swap<PeerEntry>(PeerEntry& a, PeerEntry& b);
 };
 
+void swap
+(BtLeecherStateChoke::PeerEntry& a,
+ BtLeecherStateChoke::PeerEntry& b);
+
 } // namespace aria2
+
+namespace std {
+template<>
+void swap<aria2::BtLeecherStateChoke::PeerEntry>
+(aria2::BtLeecherStateChoke::PeerEntry& a,
+ aria2::BtLeecherStateChoke::PeerEntry& b);
+} // namespace std
 
 #endif // D_BT_LEECHER_STATE_CHOKE_H

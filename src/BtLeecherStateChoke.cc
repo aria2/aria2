@@ -65,6 +65,14 @@ BtLeecherStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
     regularUnchoker_(c.regularUnchoker_)
 {}
 
+void BtLeecherStateChoke::PeerEntry::swap(PeerEntry& c)
+{
+  using std::swap;
+  swap(peer_, c.peer_);
+  swap(downloadSpeed_, c.downloadSpeed_);
+  swap(regularUnchoker_, c.regularUnchoker_);
+}
+
 BtLeecherStateChoke::PeerEntry& BtLeecherStateChoke::PeerEntry::operator=
 (const PeerEntry& c)
 {
@@ -121,6 +129,13 @@ bool BtLeecherStateChoke::PeerEntry::isSnubbing() const
 bool BtLeecherStateChoke::PeerEntry::operator<(const PeerEntry& peerEntry) const
 {
   return downloadSpeed_ > peerEntry.downloadSpeed_;
+}
+
+void swap
+(BtLeecherStateChoke::PeerEntry& a,
+ BtLeecherStateChoke::PeerEntry& b)
+{
+  a.swap(b);
 }
 
 bool BtLeecherStateChoke::PeerFilter::operator()
@@ -224,3 +239,13 @@ const Timer& BtLeecherStateChoke::getLastRound() const
 }
 
 } // namespace aria2
+
+namespace std {
+template<>
+void swap<aria2::BtLeecherStateChoke::PeerEntry>
+(aria2::BtLeecherStateChoke::PeerEntry& a,
+ aria2::BtLeecherStateChoke::PeerEntry& b)
+{
+  a.swap(b);
+}
+} // namespace std;
