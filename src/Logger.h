@@ -56,7 +56,10 @@ public:
 private:
   LEVEL logLevel_;
   std::ofstream file_;
-  int stdoutField_;  
+  int stdoutField_;
+  // Don't allow copying
+  Logger(const Logger&);
+  Logger& operator=(const Logger&);
 public:
   Logger();
 
@@ -103,70 +106,6 @@ public:
   // either file or stdout.
   bool levelEnabled(LEVEL level);
 };
-
-#define A2_LOG_DEBUG_ENABLED                                            \
-  aria2::LogFactory::getInstance()->levelEnabled(Logger::A2_DEBUG)
-
-#define A2_LOG_DEBUG(msg)                                               \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_DEBUG))                          \
-      logger->log(Logger::A2_DEBUG, __FILE__, __LINE__, msg);           \
-  }
-#define A2_LOG_DEBUG_EX(msg, ex)                                        \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_DEBUG))                          \
-      logger->log(Logger::A2_DEBUG, __FILE__, __LINE__, msg, ex);      \
-  }
-#define A2_LOG_INFO(msg)                                                \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_INFO))                           \
-      logger->log(Logger::A2_INFO, __FILE__, __LINE__, msg);            \
-  }
-#define A2_LOG_INFO_EX(msg, ex)                                         \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_INFO))                           \
-      logger->log(Logger::A2_INFO, __FILE__, __LINE__, msg, ex);       \
-  }
-#define A2_LOG_NOTICE(msg)                                              \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_NOTICE))                         \
-      logger->log(Logger::A2_NOTICE, __FILE__, __LINE__, msg);          \
-  }
-#define A2_LOG_NOTICE_EX(msg, ex)                                       \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_NOTICE))                         \
-      logger->log(Logger::A2_NOTICE, __FILE__, __LINE__, msg, ex);     \
-  }
-#define A2_LOG_WARN(msg)                                                \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_WARN))                           \
-      logger->log(Logger::A2_WARN, __FILE__, __LINE__, msg);            \
-  }
-#define A2_LOG_WARN_EX(msg, ex)                                         \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_WARN))                           \
-      logger->log(Logger::A2_WARN, __FILE__, __LINE__, msg, ex);        \
-  }
-#define A2_LOG_ERROR(msg)                                               \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_ERROR))                          \
-      logger->log(Logger::A2_ERROR, __FILE__, __LINE__, msg);           \
-  }
-#define A2_LOG_ERROR_EX(msg, ex)                                        \
-  {                                                                     \
-    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
-    if(logger->levelEnabled(Logger::A2_ERROR))                          \
-      logger->log(Logger::A2_ERROR, __FILE__, __LINE__, msg, ex);      \
-  }
 
 } // namespace aria2
 

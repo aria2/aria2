@@ -1,5 +1,15 @@
 2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made LogFactory::logger_ as SharedHandle<Logger> to make dtor of
+	Logger called at the program exit.  Rewritten A2_LOG_* macro and
+	moved them to LogFactory.h
+	* src/LogFactory.cc
+	* src/LogFactory.h
+	* src/Logger.cc
+	* src/Logger.h
+
+2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Renamed cuid as cuid_t in DefaultBtMessageDispatcher.
 	* src/DefaultBtMessageDispatcher.cc
 	* src/DefaultBtMessageDispatcher.h

@@ -40,24 +40,26 @@
 #include <string>
 
 #include "Logger.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
 class LogFactory {
 private:
   static std::string filename_;
-  // TODO consider SharedHandle
-  static Logger* logger_;
+  static SharedHandle<Logger> logger_;
   static bool consoleOutput_;
   static Logger::LEVEL logLevel_;
 
-  static void openLogger(Logger* logger);
+  static void openLogger(const SharedHandle<Logger>& logger);
+
+  LogFactory();
 public:
   /**
    * Get logger instance. Returned logger is singleton.
    * This function is not thread-safe.
    */
-  static Logger* getInstance();
+  static const SharedHandle<Logger>& getInstance();
 
   /**
    * Set a filename to write log. If name is "-", log is written to
@@ -69,7 +71,8 @@ public:
    * Set flag whether the log is printed in console.
    * If f is false, log is not printed in console.
    */
-  static void setConsoleOutput(bool f) {
+  static void setConsoleOutput(bool f)
+  {
     consoleOutput_ = f;
   }
 
@@ -91,6 +94,39 @@ public:
 
   static void reconfigure();
 };
+
+#define A2_LOG_DEBUG_ENABLED                                            \
+  aria2::LogFactory::getInstance()->levelEnabled(Logger::A2_DEBUG)
+
+#define A2_LOG(level, msg)                                              \
+  {                                                                     \
+    const aria2::SharedHandle<aria2::Logger>& logger =                  \
+      aria2::LogFactory::getInstance();                                 \
+    if(logger->levelEnabled(level))                                     \
+      logger->log(level, __FILE__, __LINE__, msg);                      \
+  }
+#define A2_LOG_EX(level, msg, ex)                                       \
+  {                                                                     \
+    const aria2::SharedHandle<aria2::Logger>& logger =                  \
+      aria2::LogFactory::getInstance();                                 \
+    if(logger->levelEnabled(level))                                     \
+      logger->log(level, __FILE__, __LINE__, msg, ex);                  \
+  }
+
+#define A2_LOG_DEBUG(msg) A2_LOG(Logger::A2_DEBUG, msg)
+#define A2_LOG_DEBUG_EX(msg, ex) A2_LOG_EX(Logger::A2_DEBUG, msg, ex)
+
+#define A2_LOG_INFO(msg) A2_LOG(Logger::A2_INFO, msg)
+#define A2_LOG_INFO_EX(msg, ex) A2_LOG_EX(Logger::A2_INFO, msg, ex)
+
+#define A2_LOG_NOTICE(msg) A2_LOG(Logger::A2_NOTICE, msg)
+#define A2_LOG_NOTICE_EX(msg, ex) A2_LOG_EX(Logger::A2_NOTICE, msg, ex)
+
+#define A2_LOG_WARN(msg) A2_LOG(Logger::A2_WARN, msg)
+#define A2_LOG_WARN_EX(msg, ex) A2_LOG_EX(Logger::A2_WARN, msg, ex)
+
+#define A2_LOG_ERROR(msg) A2_LOG(Logger::A2_ERROR, msg)
+#define A2_LOG_ERROR_EX(msg, ex) A2_LOG_EX(Logger::A2_ERROR, msg, ex)
 
 } // namespace aria2
 

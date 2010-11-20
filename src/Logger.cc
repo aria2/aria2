@@ -62,10 +62,7 @@ Logger::Logger()
     stdoutField_(0)
 {}
 
-Logger::~Logger()
-{
-  closeFile();
-}
+Logger::~Logger() {}
 
 void Logger::openFile(const std::string& filename)
 {
@@ -77,8 +74,6 @@ void Logger::openFile(const std::string& filename)
 
 void Logger::closeFile()
 {
-  std::cerr << "Closing log file" << std::endl;
-  // TODO Do we need file_.is_open()?
   if(file_.is_open()) {
     file_.close();
   }
