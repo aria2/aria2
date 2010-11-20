@@ -60,7 +60,7 @@
 namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher()
-  : cuid(0),
+  : cuid_(0),
     messageFactory_(0),
     requestGroupMan_(0),
     requestTimeout_(0)
@@ -175,7 +175,7 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
   std::deque<RequestSlot>::iterator last =
     std::lower_bound(requestSlots_.begin(), requestSlots_.end(), rs);
 
-  std::for_each(first, last, AbortOutstandingRequest(piece, cuid));
+  std::for_each(first, last, AbortOutstandingRequest(piece, cuid_));
   requestSlots_.erase(first, last);
 
   BtAbortOutstandingRequestEvent event(piece);
@@ -237,7 +237,7 @@ public:
 void DefaultBtMessageDispatcher::doChokedAction()
 {
   std::for_each(requestSlots_.begin(), requestSlots_.end(),
-                ProcessChokedRequestSlot(cuid, peer_, pieceStorage_));
+                ProcessChokedRequestSlot(cuid_, peer_, pieceStorage_));
 
   requestSlots_.erase(std::remove_if(requestSlots_.begin(), requestSlots_.end(),
                                      FindChokedRequestSlot(peer_)),
@@ -333,7 +333,7 @@ public:
 void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 {
   std::for_each(requestSlots_.begin(), requestSlots_.end(),
-                ProcessStaleRequestSlot(cuid,
+                ProcessStaleRequestSlot(cuid_,
                                         peer_,
                                         pieceStorage_,
                                         this,
@@ -401,7 +401,7 @@ void DefaultBtMessageDispatcher::removeOutstandingRequest
   std::deque<RequestSlot>::iterator i =
     std::lower_bound(requestSlots_.begin(), requestSlots_.end(), slot);
   if(i != requestSlots_.end() && (*i) == slot) {
-    AbortOutstandingRequest(slot.getPiece(), cuid)(*i);
+    AbortOutstandingRequest(slot.getPiece(), cuid_)(*i);
     requestSlots_.erase(i);
   }
 }

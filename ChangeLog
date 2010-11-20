@@ -1,5 +1,11 @@
 2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Renamed cuid as cuid_t in DefaultBtMessageDispatcher.
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtMessageDispatcher.h
+
+2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Use format specifier %lld for cuid_t. Defined cuid_t as long long
 	int instead of int64_t, since g++ complains int64_t is not
 	suitable for %lld.

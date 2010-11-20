@@ -55,7 +55,7 @@ class RequestGroupMan;
 
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
-  cuid_t cuid;
+  cuid_t cuid_;
   std::deque<SharedHandle<BtMessage> > messageQueue_;
   std::deque<RequestSlot> requestSlots_;
   SharedHandle<DownloadContext> downloadContext_;
@@ -134,10 +134,11 @@ public:
 
   void setCuid(cuid_t cuid)
   {
-    this->cuid = cuid;
+    cuid_ = cuid;
   }
 
-  void setRequestTimeout(time_t requestTimeout) {
+  void setRequestTimeout(time_t requestTimeout)
+  {
     requestTimeout_ = requestTimeout;
   }
 };
