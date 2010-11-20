@@ -1,5 +1,12 @@
 2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added CookieStorage::DomainEntry::swap(). Also added non-member
+	swap for it.
+	* src/CookieStorage.cc
+	* src/CookieStorage.h
+
+2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made LogFactory::logger_ as SharedHandle<Logger> to make dtor of
 	Logger called at the program exit.  Rewritten A2_LOG_* macro and
 	moved them to LogFactory.h

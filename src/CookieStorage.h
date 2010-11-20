@@ -67,6 +67,8 @@ public:
     DomainEntry(const DomainEntry& c);
     ~DomainEntry();
 
+    void swap(DomainEntry& c);
+
     DomainEntry& operator=(const DomainEntry& c);
 
     const std::string& getKey() const
@@ -183,6 +185,15 @@ public:
   }
 };
 
+void swap(CookieStorage::DomainEntry& a, CookieStorage::DomainEntry& b);
+
 } // namespace aria2
+
+namespace std {
+template<>
+void swap<aria2::CookieStorage::DomainEntry>
+(aria2::CookieStorage::DomainEntry& a,
+ aria2::CookieStorage::DomainEntry& b);
+} // namespace std
 
 #endif // D_COOKIE_STORAGE_H

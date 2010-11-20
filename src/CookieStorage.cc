@@ -79,6 +79,19 @@ CookieStorage::DomainEntry& CookieStorage::DomainEntry::operator=
   return *this;
 }
 
+void CookieStorage::DomainEntry::swap(CookieStorage::DomainEntry& c)
+{
+  using std::swap;
+  swap(key_, c.key_);
+  swap(lastAccessTime_, c.lastAccessTime_);
+  swap(cookies_, c.cookies_);
+}
+
+void swap(CookieStorage::DomainEntry& a, CookieStorage::DomainEntry& b)
+{
+  a.swap(b);
+}
+
 bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie, time_t now)
 {
   setLastAccessTime(now);
@@ -395,3 +408,14 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
 }
 
 } // namespace aria2
+
+namespace std {
+template<>
+void swap<aria2::CookieStorage::DomainEntry>
+(aria2::CookieStorage::DomainEntry& a,
+ aria2::CookieStorage::DomainEntry& b)
+{
+  a.swap(b);
+}
+} // namespace std
+
