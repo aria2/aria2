@@ -43,7 +43,6 @@ namespace aria2 {
 
 class DownloadContext;
 class Option;
-class Logger;
 class BtRuntime;
 class PieceStorage;
 class PeerStorage;
@@ -62,7 +61,6 @@ private:
   AnnounceList announceList_;
   std::string trackerId_;
   const Option* option_;
-  Logger* logger_;
   SharedHandle<Randomizer> randomizer_;
   SharedHandle<BtRuntime> btRuntime_;
   SharedHandle<PieceStorage> pieceStorage_;

@@ -50,7 +50,6 @@ class BtMessageDispatcher;
 class BtMessageFactory;
 class UTMetadataRequestTracker;
 class BtMessage;
-class Logger;
 
 class UTMetadataRequestFactory {
 private:
@@ -63,8 +62,6 @@ private:
   BtMessageFactory* messageFactory_;
 
   UTMetadataRequestTracker* tracker_;
-
-  Logger* logger_;
 public:
   UTMetadataRequestFactory();
 

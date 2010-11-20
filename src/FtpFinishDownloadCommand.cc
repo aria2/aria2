@@ -43,10 +43,12 @@
 #include "FtpConnection.h"
 #include "message.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
 #include "SocketCore.h"
 #include "RequestGroup.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "util.h"
 #include "wallclock.h"
 
@@ -90,20 +92,21 @@ bool FtpFinishDownloadCommand::execute()
              getSocket(), options);
         }
       } else {
-        getLogger()->info("CUID#%s - Bad status for transfer complete.",
-                          util::itos(getCuid()).c_str());
+        A2_LOG_INFO(fmt("CUID#%s - Bad status for transfer complete.",
+                        util::itos(getCuid()).c_str()));
       }
     } else if(getCheckPoint().difference(global::wallclock) >= getTimeout()) {
-      getLogger()->info("CUID#%s - Timeout before receiving transfer complete.",
-                        util::itos(getCuid()).c_str());
+      A2_LOG_INFO(fmt("CUID#%s - Timeout before receiving transfer complete.",
+                      util::itos(getCuid()).c_str()));
     } else {
       getDownloadEngine()->addCommand(this);
       return false;
     }
   } catch(RecoverableException& e) {
-    getLogger()->info("CUID#%s - Exception was thrown, but download was"
-                      " finished, so we can ignore the exception.",
-                      e, util::itos(getCuid()).c_str());
+    A2_LOG_INFO_EX(fmt("CUID#%s - Exception was thrown, but download was"
+                       " finished, so we can ignore the exception.",
+                       util::itos(getCuid()).c_str()),
+                   e);
   }
   if(getRequestGroup()->downloadFinished()) {
     return true;

@@ -50,8 +50,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class PortEventPoll : public EventPoll {
 private:
   class KSocketEntry;
@@ -90,8 +88,6 @@ private:
   port_event_t* portEvents_;
 
   static const size_t PORT_EVENTS_SIZE = 1024;
-
-  Logger* logger_;
 
   bool addEvents(sock_t socket, const KEvent& event);
 

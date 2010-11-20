@@ -44,6 +44,7 @@
 #include "ServerStatMan.h"
 #include "ServerStat.h"
 #include "RequestGroup.h"
+#include "Logger.h"
 #include "LogFactory.h"
 #include "A2STR.h"
 #include "prefs.h"
@@ -52,6 +53,7 @@
 #include "SocketCore.h"
 #include "FileEntry.h"
 #include "uri.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -63,10 +65,9 @@ namespace aria2 {
  */
 
 AdaptiveURISelector::AdaptiveURISelector
-(const SharedHandle<ServerStatMan>& serverStatMan, RequestGroup* requestGroup):
-  serverStatMan_(serverStatMan),
-  requestGroup_(requestGroup),
-  logger_(LogFactory::getInstance())
+(const SharedHandle<ServerStatMan>& serverStatMan, RequestGroup* requestGroup)
+  : serverStatMan_(serverStatMan),
+    requestGroup_(requestGroup)
 {
   resetCounters();
 }
@@ -77,10 +78,8 @@ std::string AdaptiveURISelector::select
 (FileEntry* fileEntry,
  const std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
-  if(logger_->debug()) {
-    logger_->debug("AdaptiveURISelector: called %d",
-                   requestGroup_->getNumConnection());
-  }
+  A2_LOG_DEBUG(fmt("AdaptiveURISelector: called %d",
+                   requestGroup_->getNumConnection()));
   std::deque<std::string>& uris = fileEntry->getRemainingUris();
   if (uris.empty() && requestGroup_->getNumConnection() <= 1) {
     // here we know the download will fail, trying to find previously
@@ -108,13 +107,13 @@ void AdaptiveURISelector::mayRetryWithIncreasedTimeout(FileEntry* fileEntry)
   std::transform(timeouts.begin(), timeouts.end(), std::back_inserter(uris),
                  std::mem_fun_ref(&URIResult::getURI));
 
-  if(logger_->debug()) {
+  if(A2_LOG_DEBUG_ENABLED) {
     for(std::deque<std::string>::const_iterator i = uris.begin(),
           eoi = uris.end(); i != eoi; ++i) {
-      logger_->debug("AdaptiveURISelector: will retry server with increased"
-                     " timeout (%ld s): %s",
-                     static_cast<long int>(requestGroup_->getTimeout()),
-                     (*i).c_str());
+      A2_LOG_DEBUG(fmt("AdaptiveURISelector: will retry server with increased"
+                       " timeout (%ld s): %s",
+                       static_cast<long int>(requestGroup_->getTimeout()),
+                       (*i).c_str()));
     }
   }
 }
@@ -140,10 +139,9 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
     if(getNbTestedServers(uris) < 3) {
       std::string notTested = getFirstNotTestedUri(uris);
       if(notTested != A2STR::NIL) {
-        if(logger_->debug()) {
-          logger_->debug("AdaptiveURISelector: choosing the first non tested"
-                         " mirror: %s", notTested.c_str());
-        }
+        A2_LOG_DEBUG(fmt("AdaptiveURISelector: choosing the first non tested"
+                         " mirror: %s",
+                         notTested.c_str()));
         --nbServerToEvaluate_;
         return notTested;
       }
@@ -154,21 +152,17 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
       std::string notTested = getFirstNotTestedUri(uris);
       if(notTested != A2STR::NIL) {
         /* Here we return the first untested mirror */
-        if(logger_->debug()) {
-          logger_->debug("AdaptiveURISelector: choosing non tested mirror %s"
+        A2_LOG_DEBUG(fmt("AdaptiveURISelector: choosing non tested mirror %s"
                          " for connection #%d",
-                         notTested.c_str(), nbConnections_);
-        }
+                         notTested.c_str(), nbConnections_));
         return notTested;
       } else {
         /* Here we return a mirror which need to be tested again */
         std::string toReTest = getFirstToTestUri(uris);
         if(toReTest != A2STR::NIL) {
-          if(logger_->debug()) {
-            logger_->debug("AdaptiveURISelector: choosing mirror %s which has"
+          A2_LOG_DEBUG(fmt("AdaptiveURISelector: choosing mirror %s which has"
                            " not been tested recently for connection #%d",
-                           toReTest.c_str(), nbConnections_);
-          }
+                           toReTest.c_str(), nbConnections_));
           return toReTest;
         } else {
           return getBestMirror(uris);
@@ -191,19 +185,18 @@ std::string AdaptiveURISelector::getBestMirror
   
   if (bests.size() < 2) {
     std::string uri = getMaxDownloadSpeedUri(uris);
-    if(logger_->debug()) {
-      logger_->debug("AdaptiveURISelector: choosing the best mirror :"
+    A2_LOG_DEBUG(fmt("AdaptiveURISelector: choosing the best mirror :"
                      " %.2fKB/s %s (other mirrors are at least 25%% slower)",
-                     (float) max/1024, uri.c_str());
-    }
+                     (float) max/1024,
+                     uri.c_str()));
     return uri;
   } else {
     std::string uri = selectRandomUri(bests);
-    if(logger_->debug()) {
-      logger_->debug("AdaptiveURISelector: choosing randomly one of the best"
+    A2_LOG_DEBUG(fmt("AdaptiveURISelector: choosing randomly one of the best"
                      " mirrors (range [%.2fKB/s, %.2fKB/s]): %s",
-                     (float) min/1024, (float) max/1024, uri.c_str());
-    }
+                     (float) min/1024,
+                     (float) max/1024,
+                     uri.c_str()));
     return uri;
   }
 }
@@ -230,12 +223,17 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
     unsigned int low_lowest = 4 * 1024;
     unsigned int max = getMaxDownloadSpeed(uris);
     if (max > 0 && lowest > max / 4) {
-      logger_->notice("Lowering lowest-speed-limit since known max speed is too"
-                      " near (new:%d was:%d max:%d)", max / 4, lowest, max);
+      A2_LOG_NOTICE(fmt("Lowering lowest-speed-limit since known max speed is"
+                        " too near (new:%d was:%d max:%d)",
+                        max / 4,
+                        lowest,
+                        max));
       command->setLowestDownloadSpeedLimit(max / 4);
     } else if (max == 0 && lowest > low_lowest) {
-      logger_->notice("Lowering lowest-speed-limit since we have no clue about"
-                      " available speed (now:%d was:%d)", low_lowest, lowest);
+      A2_LOG_NOTICE(fmt("Lowering lowest-speed-limit since we have no clue"
+                        " about available speed (now:%d was:%d)",
+                        low_lowest,
+                        lowest));
       command->setLowestDownloadSpeedLimit(low_lowest);
     }
   }

@@ -40,7 +40,6 @@
 namespace aria2 {
 
 class BinaryStream;
-class Logger;
 
 class AdaptiveFileAllocationIterator:public FileAllocationIterator
 {
@@ -52,8 +51,6 @@ private:
   off_t offset_;
 
   uint64_t totalLength_;
-
-  Logger* logger_;
 public:
   AdaptiveFileAllocationIterator
   (BinaryStream* stream, off_t offset, uint64_t totalLength);

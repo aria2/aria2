@@ -52,6 +52,7 @@
 #include "util.h"
 #include "Option.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "Segment.h"
 #include "DownloadContext.h"
 #include "DefaultBtProgressInfoFile.h"
@@ -59,6 +60,7 @@
 #include "DownloadFailureException.h"
 #include "Socket.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "DiskAdaptor.h"
 #include "SegmentMan.h"
 #include "AuthConfigFactory.h"
@@ -253,10 +255,8 @@ bool FtpNegotiationCommand::recvPwd()
     throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
   }
   ftp_->setBaseWorkingDir(pwd);
-  if(getLogger()->info()) {
-    getLogger()->info("CUID#%s - base working directory is '%s'",
-                      util::itos(getCuid()).c_str(), pwd.c_str());
-  }
+  A2_LOG_INFO(fmt("CUID#%s - base working directory is '%s'",
+                  util::itos(getCuid()).c_str(), pwd.c_str()));
   sequence_ = SEQ_SEND_CWD_PREP;
   return true;
 }
@@ -332,21 +332,15 @@ bool FtpNegotiationCommand::recvMdtm()
   if(status == 213) {
     if(lastModifiedTime.good()) {
       getRequestGroup()->updateLastModifiedTime(lastModifiedTime);
-      if(getLogger()->debug()) {
-        getLogger()->debug("MDTM result was parsed as: %s",
-                           lastModifiedTime.toHTTPDate().c_str());
-      }
+      A2_LOG_DEBUG(fmt("MDTM result was parsed as: %s",
+                       lastModifiedTime.toHTTPDate().c_str()));
     } else {
-      if(getLogger()->debug()) {
-        getLogger()->debug("MDTM response was returned, but it seems not to be"
-                           " a time value as in specified in RFC3659.");
-      }
+      A2_LOG_DEBUG("MDTM response was returned, but it seems not to be"
+                   " a time value as in specified in RFC3659.");
     }
   } else {
-    if(getLogger()->info()) {
-      getLogger()->info("CUID#%s - MDTM command failed.",
-                        util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO(fmt("CUID#%s - MDTM command failed.",
+                    util::itos(getCuid()).c_str()));
   }
   sequence_ = SEQ_SEND_SIZE;
   return true;  
@@ -403,10 +397,9 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       getPieceStorage()->markAllPiecesDone();
       getDownloadContext()->setChecksumVerified(true);
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-      getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                          util::itos(getRequestGroup()->getGID()).c_str(),
-                          getRequestGroup()->getFirstFilePath().c_str());
-
+      A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                        util::itos(getRequestGroup()->getGID()).c_str(),
+                        getRequestGroup()->getFirstFilePath().c_str()));
       poolConnection();
 
       return false;
@@ -482,10 +475,8 @@ bool FtpNegotiationCommand::recvSize() {
     }
 
   } else {
-    if(getLogger()->info()) {
-      getLogger()->info("CUID#%s - The remote FTP Server doesn't recognize SIZE"
-                        " command. Continue.", util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO(fmt("CUID#%s - The remote FTP Server doesn't recognize SIZE"
+                    " command. Continue.", util::itos(getCuid()).c_str()));
     // Even if one of the other servers waiting in the queue supports SIZE
     // command, resuming and segmented downloading are disabled when the first
     // contacted FTP server doesn't support it.
@@ -648,11 +639,10 @@ bool FtpNegotiationCommand::preparePasvConnect() {
     return true;
   } else {
     // make a data connection to the server.
-    if(getLogger()->info()) {
-      getLogger()->info(MSG_CONNECTING_TO_SERVER, util::itos(getCuid()).c_str(),
-                        dataConnAddr_.first.c_str(),
-                        dataConnAddr_.second);
-    }
+    A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                    util::itos(getCuid()).c_str(),
+                    dataConnAddr_.first.c_str(),
+                    dataConnAddr_.second));
     dataSocket_.reset(new SocketCore());
     dataSocket_->establishConnection(dataConnAddr_.first, dataConnAddr_.second);
     disableReadCheckSocket();
@@ -671,10 +661,9 @@ bool FtpNegotiationCommand::resolveProxy()
   if(proxyAddr_.empty()) {
     return false;
   }
-  if(getLogger()->info()) {
-    getLogger()->info(MSG_CONNECTING_TO_SERVER, util::itos(getCuid()).c_str(),
-                      proxyAddr_.c_str(), proxyReq->getPort());
-  }
+  A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                  util::itos(getCuid()).c_str(),
+                  proxyAddr_.c_str(), proxyReq->getPort()));
   dataSocket_.reset(new SocketCore());                  
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
   disableReadCheckSocket();
@@ -702,17 +691,13 @@ bool FtpNegotiationCommand::sendTunnelRequest()
             (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED,
                           error.c_str()).str());
         } else {
-          if(getLogger()->info()) {
-            getLogger()->info(MSG_CONNECT_FAILED_AND_RETRY,
-                              util::itos(getCuid()).c_str(),
-                              proxyAddr_.c_str(), proxyReq->getPort());
-          }
+          A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
+                          util::itos(getCuid()).c_str(),
+                          proxyAddr_.c_str(), proxyReq->getPort()));
           proxyAddr_ = nextProxyAddr;
-          if(getLogger()->info()) {
-            getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                              util::itos(getCuid()).c_str(),
-                              proxyAddr_.c_str(), proxyReq->getPort());
-          }
+          A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                          util::itos(getCuid()).c_str(),
+                          proxyAddr_.c_str(), proxyReq->getPort()));
           dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
           return false;
         }

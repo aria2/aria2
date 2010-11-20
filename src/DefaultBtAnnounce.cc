@@ -47,6 +47,7 @@
 #include "Peer.h"
 #include "Option.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "bencode2.h"
 #include "bittorrent_helper.h"
@@ -57,19 +58,18 @@ namespace aria2 {
 
 DefaultBtAnnounce::DefaultBtAnnounce
 (const SharedHandle<DownloadContext>& downloadContext,
- const Option* option):
-  downloadContext_(downloadContext),
-  trackers_(0),
-  prevAnnounceTimer_(0),
-  interval_(DEFAULT_ANNOUNCE_INTERVAL),
-  minInterval_(DEFAULT_ANNOUNCE_INTERVAL),
-  userDefinedInterval_(0),
-  complete_(0),
-  incomplete_(0),
-  announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),
-  option_(option),
-  logger_(LogFactory::getInstance()),
-  randomizer_(SimpleRandomizer::getInstance())
+ const Option* option)
+  : downloadContext_(downloadContext),
+    trackers_(0),
+    prevAnnounceTimer_(0),
+    interval_(DEFAULT_ANNOUNCE_INTERVAL),
+    minInterval_(DEFAULT_ANNOUNCE_INTERVAL),
+    userDefinedInterval_(0),
+    complete_(0),
+    incomplete_(0),
+    announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),
+    option_(option),
+    randomizer_(SimpleRandomizer::getInstance())
 {}
 
 DefaultBtAnnounce::~DefaultBtAnnounce() {
@@ -218,9 +218,7 @@ void
 DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
                                            size_t trackerResponseLength)
 {
-  if(logger_->debug()) {
-    logger_->debug("Now processing tracker response.");
-  }
+  A2_LOG_DEBUG("Now processing tracker response.");
   SharedHandle<ValueBase> decodedValue =
     bencode2::decode(trackerResponse, trackerResponseLength);
   const Dict* dict = asDict(decodedValue);
@@ -234,28 +232,22 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   }
   const String* warn = asString(dict->get(BtAnnounce::WARNING_MESSAGE));
   if(warn) {
-    logger_->warn(MSG_TRACKER_WARNING_MESSAGE, warn->s().c_str());
+    A2_LOG_WARN(fmt(MSG_TRACKER_WARNING_MESSAGE, warn->s().c_str()));
   }
   const String* tid = asString(dict->get(BtAnnounce::TRACKER_ID));
   if(tid) {
     trackerId_ = tid->s();
-    if(logger_->debug()) {
-      logger_->debug("Tracker ID:%s", trackerId_.c_str());
-    }
+    A2_LOG_DEBUG(fmt("Tracker ID:%s", trackerId_.c_str()));
   }
   const Integer* ival = asInteger(dict->get(BtAnnounce::INTERVAL));
   if(ival && ival->i() > 0) {
     interval_ = ival->i();
-    if(logger_->debug()) {
-      logger_->debug("Interval:%ld", static_cast<long int>(interval_));
-    }
+    A2_LOG_DEBUG(fmt("Interval:%ld", static_cast<long int>(interval_)));
   }
   const Integer* mival = asInteger(dict->get(BtAnnounce::MIN_INTERVAL));
   if(mival && mival->i() > 0) {
     minInterval_ = mival->i();
-    if(logger_->debug()) {
-      logger_->debug("Min interval:%ld", static_cast<long int>(minInterval_));
-    }
+    A2_LOG_DEBUG(fmt("Min interval:%ld", static_cast<long int>(minInterval_)));
     minInterval_ = std::min(minInterval_, interval_);
   } else {
     // Use interval as a minInterval if minInterval is not supplied.
@@ -264,20 +256,16 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   const Integer* comp = asInteger(dict->get(BtAnnounce::COMPLETE));
   if(comp) {
     complete_ = comp->i();
-    if(logger_->debug()) {
-      logger_->debug("Complete:%d", complete_);
-    }
+    A2_LOG_DEBUG(fmt("Complete:%d", complete_));
   }
   const Integer* incomp = asInteger(dict->get(BtAnnounce::INCOMPLETE));
   if(incomp) {
     incomplete_ = incomp->i();
-    if(logger_->debug()) {
-      logger_->debug("Incomplete:%d", incomplete_);
-    }
+    A2_LOG_DEBUG(fmt("Incomplete:%d", incomplete_));
   }
   const SharedHandle<ValueBase>& peerData = dict->get(BtAnnounce::PEERS);
   if(!peerData) {
-    logger_->info(MSG_NO_PEER_LIST_RECEIVED);
+    A2_LOG_INFO(MSG_NO_PEER_LIST_RECEIVED);
   } else {
     if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
       std::vector<SharedHandle<Peer> > peers;
@@ -287,7 +275,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   }
   const SharedHandle<ValueBase>& peer6Data = dict->get(BtAnnounce::PEERS6);
   if(!peer6Data) {
-    logger_->info("No peers6 received.");
+    A2_LOG_INFO("No peers6 received.");
   } else {
     if(!btRuntime_->isHalt() && btRuntime_->lessThanMinPeers()) {
       std::vector<SharedHandle<Peer> > peers;

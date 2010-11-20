@@ -45,13 +45,14 @@
 #include "LogFactory.h"
 #include "a2algo.h"
 #include "uri.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 FeedbackURISelector::FeedbackURISelector
-(const SharedHandle<ServerStatMan>& serverStatMan):
-  serverStatMan_(serverStatMan),
-  logger_(LogFactory::getInstance()) {}
+(const SharedHandle<ServerStatMan>& serverStatMan)
+  : serverStatMan_(serverStatMan)
+{}
 
 FeedbackURISelector::~FeedbackURISelector() {}
 
@@ -71,12 +72,12 @@ std::string FeedbackURISelector::select
 (FileEntry* fileEntry,
  const std::vector<std::pair<size_t, std::string> >& usedHosts)
 {
-  if(logger_->debug()) {
+  if(A2_LOG_DEBUG_ENABLED) {
     for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
           usedHosts.begin(), eoi = usedHosts.end(); i != eoi; ++i) {
-      logger_->debug("UsedHost=%lu, %s",
-                     static_cast<unsigned long>((*i).first),
-                     (*i).second.c_str());
+      A2_LOG_DEBUG(fmt("UsedHost=%lu, %s",
+                       static_cast<unsigned long>((*i).first),
+                       (*i).second.c_str()));
     }
   }
   if(fileEntry->getRemainingUris().empty()) {
@@ -86,18 +87,14 @@ std::string FeedbackURISelector::select
   // it again without usedHosts.
   std::string uri = selectFaster(fileEntry->getRemainingUris(), usedHosts);
   if(uri.empty()) {
-    if(logger_->debug()) {
-      logger_->debug("No URI returned from selectFaster()");
-    }
+    A2_LOG_DEBUG("No URI returned from selectFaster()");
     uri = selectRarer(fileEntry->getRemainingUris(), usedHosts);
   } 
   if(!uri.empty()) {
     std::deque<std::string>& uris = fileEntry->getRemainingUris();
     uris.erase(std::find(uris.begin(), uris.end(), uri));
   }
-  if(logger_->debug()) {
-    logger_->debug("FeedbackURISelector selected %s", uri.c_str());
-  }
+  A2_LOG_DEBUG(fmt("FeedbackURISelector selected %s", uri.c_str()));
   return uri;
 }
 
@@ -116,9 +113,7 @@ std::string FeedbackURISelector::selectRarer
     SharedHandle<ServerStat> ss =
       serverStatMan_->find(us.host, us.protocol);
     if(ss && ss->isError()) {
-      if(logger_->debug()) {
-        logger_->debug("Error not considered: %s", (*i).c_str());
-      }
+      A2_LOG_DEBUG(fmt("Error not considered: %s", (*i).c_str()));
       continue;
     }
     cands.push_back(std::make_pair(us.host, *i));
@@ -154,9 +149,7 @@ std::string FeedbackURISelector::selectFaster
     }
     if(findSecond(usedHosts.begin(), usedHosts.end(), us.host) !=
        usedHosts.end()) {
-      if(logger_->debug()) {
-        logger_->debug("%s is in usedHosts, not considered", (*i).c_str());
-      }
+      A2_LOG_DEBUG(fmt("%s is in usedHosts, not considered", (*i).c_str()));
       continue;
     }
     SharedHandle<ServerStat> ss =
@@ -175,15 +168,11 @@ std::string FeedbackURISelector::selectFaster
     if(normCands.empty()) {
       return A2STR::NIL;
     } else {
-      if(logger_->debug()) {
-        logger_->debug("Selected from normCands");
-      }
+      A2_LOG_DEBUG("Selected from normCands");
       return normCands.front();
     }
   } else {
-    if(logger_->debug()) {
-      logger_->debug("Selected from fastCands");
-    }
+    A2_LOG_DEBUG("Selected from fastCands");
     std::sort(fastCands.begin(), fastCands.end(), ServerStatFaster());
     return fastCands.front().second;
   }

@@ -41,13 +41,14 @@
 #include "LogFactory.h"
 #include "SimpleRandomizer.h"
 #include "wallclock.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-BtLeecherStateChoke::BtLeecherStateChoke():
-  round_(0),
-  lastRound_(0),
-  logger_(LogFactory::getInstance()) {}
+BtLeecherStateChoke::BtLeecherStateChoke()
+  : round_(0),
+    lastRound_(0)
+{}
 
 BtLeecherStateChoke::~BtLeecherStateChoke() {}
 
@@ -142,8 +143,8 @@ void BtLeecherStateChoke::plannedOptimisticUnchoke
     std::random_shuffle(peerEntries.begin(), i,
                         *(SimpleRandomizer::getInstance().get()));
     (*peerEntries.begin()).enableOptUnchoking();
-    logger_->info
-      ("POU: %s", (*peerEntries.begin()).getPeer()->getIPAddress().c_str());
+    A2_LOG_INFO(fmt("POU: %s",
+                    (*peerEntries.begin()).getPeer()->getIPAddress().c_str()));
   }
 }
 
@@ -162,9 +163,9 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
   std::vector<PeerEntry>::iterator peerIter = peerEntries.begin();
   for(;peerIter != rest && count; ++peerIter, --count) {
     (*peerIter).disableChokingRequired();
-    logger_->info("RU: %s, dlspd=%u",
-                  (*peerIter).getPeer()->getIPAddress().c_str(),
-                  (*peerIter).getDownloadSpeed());
+    A2_LOG_INFO(fmt("RU: %s, dlspd=%u",
+                    (*peerIter).getPeer()->getIPAddress().c_str(),
+                    (*peerIter).getDownloadSpeed()));
     if((*peerIter).getPeer()->optUnchoking()) {
       fastOptUnchoker = true;
       (*peerIter).disableOptUnchoking();
@@ -177,11 +178,11 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
           eoi = peerEntries.end(); i != eoi; ++i) {
       if((*i).getPeer()->peerInterested()) {
         (*i).enableOptUnchoking();
-        logger_->info("OU: %s", (*i).getPeer()->getIPAddress().c_str());
+        A2_LOG_INFO(fmt("OU: %s", (*i).getPeer()->getIPAddress().c_str()));
         break;
       } else {
         (*i).disableChokingRequired();
-        logger_->info("OU: %s", (*i).getPeer()->getIPAddress().c_str());
+        A2_LOG_INFO(fmt("OU: %s", (*i).getPeer()->getIPAddress().c_str()));
       }
     }
   }
@@ -191,7 +192,7 @@ void
 BtLeecherStateChoke::executeChoke
 (const std::vector<SharedHandle<Peer> >& peerSet)
 {
-  logger_->info("Leecher state, %d choke round started", round_);
+  A2_LOG_INFO(fmt("Leecher state, %d choke round started", round_));
   lastRound_ = global::wallclock;
 
   std::vector<PeerEntry> peerEntries;

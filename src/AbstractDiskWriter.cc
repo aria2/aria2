@@ -47,8 +47,6 @@
 #include "File.h"
 #include "util.h"
 #include "message.h"
-#include "LogFactory.h"
-#include "Logger.h"
 #include "DlAbortEx.h"
 #include "a2io.h"
 #include "StringFormat.h"
@@ -56,12 +54,12 @@
 
 namespace aria2 {
 
-AbstractDiskWriter::AbstractDiskWriter(const std::string& filename):
-  filename_(filename),
-  fd_(-1),
-  readOnly_(false),
-  directIOAllowed_(false),
-  logger_(LogFactory::getInstance()) {}
+AbstractDiskWriter::AbstractDiskWriter(const std::string& filename)
+  : filename_(filename),
+    fd_(-1),
+    readOnly_(false),
+    directIOAllowed_(false)
+{}
 
 AbstractDiskWriter::~AbstractDiskWriter()
 {

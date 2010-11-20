@@ -48,7 +48,6 @@ class Peer;
 class BtMessageDispatcher;
 class BtMessageFactory;
 class Piece;
-class Logger;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
@@ -57,7 +56,6 @@ private:
   BtMessageDispatcher* dispatcher_;
   BtMessageFactory* messageFactory_;
   std::deque<SharedHandle<Piece> > pieces_;
-  Logger* logger_;
 public:
   DefaultBtRequestFactory();
 

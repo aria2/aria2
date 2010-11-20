@@ -37,12 +37,14 @@
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "message.h"
 #include "prefs.h"
 #include "DownloadContext.h"
 #include "a2functional.h"
 #include "RecoverableException.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -69,18 +71,18 @@ bool CheckIntegrityCommand::executeInternal()
     // needed.
     getRequestGroup()->enableSaveControlFile();
     if(getRequestGroup()->downloadFinished()) {
-      getLogger()->notice
-        (MSG_VERIFICATION_SUCCESSFUL,
-         getRequestGroup()->getDownloadContext()->getBasePath().c_str());
+      A2_LOG_NOTICE
+        (fmt(MSG_VERIFICATION_SUCCESSFUL,
+             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
       std::vector<Command*>* commands = new std::vector<Command*>();
       auto_delete_container<std::vector<Command*> > commandsDel(commands);
       entry_->onDownloadFinished(*commands, getDownloadEngine());
       getDownloadEngine()->addCommand(*commands);
       commands->clear();
     } else {
-      getLogger()->error
-        (MSG_VERIFICATION_FAILED,
-         getRequestGroup()->getDownloadContext()->getBasePath().c_str());
+      A2_LOG_ERROR
+        (fmt(MSG_VERIFICATION_FAILED,
+             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
       std::vector<Command*>* commands = new std::vector<Command*>();
       auto_delete_container<std::vector<Command*> > commandsDel(commands);
       entry_->onDownloadIncomplete(*commands, getDownloadEngine());
@@ -98,12 +100,13 @@ bool CheckIntegrityCommand::executeInternal()
 bool CheckIntegrityCommand::handleException(Exception& e)
 {
   getDownloadEngine()->getCheckIntegrityMan()->dropPickedEntry();
-  getLogger()->error(MSG_FILE_VALIDATION_FAILURE, e,
-                     util::itos(getCuid()).c_str());
-  getLogger()->error
-    (MSG_DOWNLOAD_NOT_COMPLETE,
-     util::itos(getCuid()).c_str(),
-     getRequestGroup()->getDownloadContext()->getBasePath().c_str());
+  A2_LOG_ERROR_EX(fmt(MSG_FILE_VALIDATION_FAILURE,
+                   util::itos(getCuid()).c_str()),
+                  e);
+  A2_LOG_ERROR
+    (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
+         util::itos(getCuid()).c_str(),
+         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }
 

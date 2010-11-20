@@ -45,7 +45,6 @@
 
 namespace aria2 {
 
-class Logger;
 class Peer;
 class SocketCore;
 class ARC4Encryptor;
@@ -60,7 +59,6 @@ private:
   cuid_t cuid_;
   SharedHandle<Peer> peer_;
   SharedHandle<SocketCore> socket_;
-  Logger* logger_;
 
   unsigned char* resbuf_;
   size_t resbufLength_;

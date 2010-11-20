@@ -56,6 +56,7 @@
 #include "AuthConfigFactory.h"
 #include "SessionSerializer.h"
 #include "TimeA2.h"
+#include "fmt.h"
 #ifdef ENABLE_SSL
 # include "SocketCore.h"
 # include "TLSContext.h"
@@ -94,12 +95,10 @@ MultiUrlRequestInfo::MultiUrlRequestInfo
  const SharedHandle<Option>& op,
  const SharedHandle<StatCalc>& statCalc,
  std::ostream& summaryOut)
-  :
-  requestGroups_(requestGroups),
-  option_(op),
-  statCalc_(statCalc),
-  summaryOut_(summaryOut),
-  logger_(LogFactory::getInstance())
+  : requestGroups_(requestGroups),
+    option_(op),
+    statCalc_(statCalc),
+    summaryOut_(summaryOut)
 {}
 
 MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
@@ -124,10 +123,11 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
       File cookieFile(option_->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile()) {
         e->getCookieStorage()->load(cookieFile.getPath(), Time().getTime());
-        logger_->info("Loaded cookies from '%s'.",
-                      cookieFile.getPath().c_str());
+        A2_LOG_INFO(fmt("Loaded cookies from '%s'.",
+                        cookieFile.getPath().c_str()));
       } else {
-        logger_->error(MSG_LOADING_COOKIE_FAILED, cookieFile.getPath().c_str());
+        A2_LOG_ERROR(fmt(MSG_LOADING_COOKIE_FAILED,
+                         cookieFile.getPath().c_str()));
       }
     }
 
@@ -136,8 +136,8 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!option_->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();
       if(mode&(S_IRWXG|S_IRWXO)) {
-        logger_->notice(MSG_INCORRECT_NETRC_PERMISSION,
-                        option_->get(PREF_NETRC_PATH).c_str());
+        A2_LOG_NOTICE(fmt(MSG_INCORRECT_NETRC_PERMISSION,
+                          option_->get(PREF_NETRC_PATH).c_str()));
       } else {
         SharedHandle<Netrc> netrc(new Netrc());
         netrc->parse(option_->get(PREF_NETRC_PATH));
@@ -155,10 +155,10 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     }
     if(!option_->blank(PREF_CA_CERTIFICATE)) {
       if(!tlsContext->addTrustedCACertFile(option_->get(PREF_CA_CERTIFICATE))) {
-        logger_->info(MSG_WARN_NO_CA_CERT);
+        A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
       }
     } else if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
-      logger_->info(MSG_WARN_NO_CA_CERT);
+      A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
     }
     if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
       tlsContext->enablePeerVerification();
@@ -166,8 +166,8 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     SocketCore::setTLSContext(tlsContext);
 #endif
     if(!Timer::monotonicClock()) {
-      logger_->warn("Don't change system time while aria2c is running."
-                    " Doing this may make aria2c hang for long time.");
+      A2_LOG_WARN("Don't change system time while aria2c is running."
+                  " Doing this may make aria2c hang for long time.");
     }
 
     std::string serverStatIf = option_->get(PREF_SERVER_STAT_IF);
@@ -212,18 +212,18 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
     if(!option_->blank(PREF_SAVE_SESSION)) {
       const std::string& filename = option_->get(PREF_SAVE_SESSION);
       if(sessionSerializer.save(filename)) {
-        logger_->notice("Serialized session to '%s' successfully.",
-                        filename.c_str());
+        A2_LOG_NOTICE(fmt("Serialized session to '%s' successfully.",
+                          filename.c_str()));
       } else {
-        logger_->notice("Failed to serialize session to '%s'.",
-                        filename.c_str());
+        A2_LOG_NOTICE(fmt("Failed to serialize session to '%s'.",
+                          filename.c_str()));
       }
     }
   } catch(RecoverableException& e) {
     if(returnValue == downloadresultcode::FINISHED) {
       returnValue = downloadresultcode::UNKNOWN_ERROR;
     }
-    logger_->error(EX_EXCEPTION_CAUGHT, e);
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
 #ifdef SIGHUP
   util::setGlobalSignalHandler(SIGHUP, SIG_DFL, 0);

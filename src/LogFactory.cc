@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "LogFactory.h"
-#include "SimpleLogFormatter.h"
 #include "a2io.h"
 #include "prefs.h"
 #include "RecoverableException.h"
@@ -71,7 +70,6 @@ void LogFactory::reconfigure()
 Logger* LogFactory::getInstance() {
   if(!logger_) {
     Logger* slogger = new Logger();
-    slogger->setLogFormatter(new SimpleLogFormatter());
     try {
       openLogger(slogger);
     } catch(RecoverableException& e) {

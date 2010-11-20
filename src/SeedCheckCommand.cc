@@ -37,9 +37,11 @@
 #include "BtRuntime.h"
 #include "PieceStorage.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "SeedCriteria.h"
 #include "message.h"
 #include "RequestGroup.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -48,11 +50,11 @@ SeedCheckCommand::SeedCheckCommand
  RequestGroup* requestGroup,
  DownloadEngine* e,
  const SharedHandle<SeedCriteria>& seedCriteria)
-  :Command(cuid),
-   requestGroup_(requestGroup),
-   e_(e),
-   seedCriteria_(seedCriteria),
-   checkStarted_(false)
+  : Command(cuid),
+    requestGroup_(requestGroup),
+    e_(e),
+    seedCriteria_(seedCriteria),
+    checkStarted_(false)
 {
   setStatusRealtime();
   requestGroup_->increaseNumCommand();
@@ -78,7 +80,7 @@ bool SeedCheckCommand::execute() {
   }
   if(checkStarted_) {
     if(seedCriteria_->evaluate()) {
-      getLogger()->notice(MSG_SEEDING_END);
+      A2_LOG_NOTICE(MSG_SEEDING_END);
       btRuntime_->setHalt(true);
     }
   }

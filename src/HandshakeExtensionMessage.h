@@ -44,7 +44,6 @@
 namespace aria2 {
 
 class Peer;
-class Logger;
 class DownloadContext;
 
 class HandshakeExtensionMessage:public ExtensionMessage {
@@ -60,9 +59,6 @@ private:
   SharedHandle<DownloadContext> dctx_;
 
   SharedHandle<Peer> peer_;
-
-  Logger* logger_;
-
 public:
   HandshakeExtensionMessage();
 

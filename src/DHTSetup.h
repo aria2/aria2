@@ -39,13 +39,11 @@
 #include <vector>
 
 namespace aria2 {
-class Logger;
+
 class DownloadEngine;
 class Command;
 
 class DHTSetup {
-private:
-  Logger* logger_;
 public:
   DHTSetup();
 

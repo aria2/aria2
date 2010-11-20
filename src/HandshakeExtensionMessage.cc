@@ -40,6 +40,7 @@
 #include "Logger.h"
 #include "message.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "bencode2.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
@@ -51,10 +52,10 @@ namespace aria2 {
 
 const std::string HandshakeExtensionMessage::EXTENSION_NAME = "handshake";
 
-HandshakeExtensionMessage::HandshakeExtensionMessage():
-  tcpPort_(0),
-  metadataSize_(0),
-  logger_(LogFactory::getInstance()) {}
+HandshakeExtensionMessage::HandshakeExtensionMessage()
+  : tcpPort_(0),
+    metadataSize_(0)
+{}
 
 HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
@@ -175,11 +176,8 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
                     static_cast<unsigned long>(length)).str());
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
-  if(LogFactory::getInstance()->debug()) {
-    LogFactory::getInstance()->debug
-      ("Creating HandshakeExtensionMessage from %s",
-       util::percentEncode(data, length).c_str());
-  }
+  A2_LOG_DEBUG(fmt("Creating HandshakeExtensionMessage from %s",
+                   util::percentEncode(data, length).c_str()));
   SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length-1);
   const Dict* dict = asDict(decoded);
   if(!dict) {

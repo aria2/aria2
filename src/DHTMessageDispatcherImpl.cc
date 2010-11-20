@@ -42,15 +42,16 @@
 #include "Logger.h"
 #include "DHTConstants.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "DHTNode.h"
 
 namespace aria2 {
 
 DHTMessageDispatcherImpl::DHTMessageDispatcherImpl
-(const SharedHandle<DHTMessageTracker>& tracker):
-  tracker_(tracker),
-  timeout_(DHT_MESSAGE_TIMEOUT),
-  logger_(LogFactory::getInstance()) {}
+(const SharedHandle<DHTMessageTracker>& tracker)
+  : tracker_(tracker),
+    timeout_(DHT_MESSAGE_TIMEOUT)
+{}
 
 DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
 
@@ -82,15 +83,14 @@ DHTMessageDispatcherImpl::sendMessage
       if(!entry->message->isReply()) {
         tracker_->addMessage(entry->message, entry->timeout, entry->callback);
       }
-      if(logger_->info()) {
-        logger_->info("Message sent: %s", entry->message->toString().c_str());
-      }
+      A2_LOG_INFO(fmt("Message sent: %s", entry->message->toString().c_str()));
     } else {
       return false;
     }
   } catch(RecoverableException& e) {
-    logger_->info("Failed to send message: %s",
-                  e, entry->message->toString().c_str());
+    A2_LOG_INFO_EX(fmt("Failed to send message: %s",
+                       entry->message->toString().c_str()),
+                   e);
     // Add message to DHTMessageTracker with timeout 0 to treat it as
     // time out. Without this, we have untracked message and some of
     // DHTTask(such as DHTAbstractNodeLookupTask) don't finish
@@ -114,10 +114,8 @@ void DHTMessageDispatcherImpl::sendMessages()
     }
   }
   messageQueue_.erase(messageQueue_.begin(), itr);
-  if(logger_->debug()) {
-    logger_->debug("%lu dht messages remaining in the queue.",
-                   static_cast<unsigned long>(messageQueue_.size()));
-  }
+  A2_LOG_DEBUG(fmt("%lu dht messages remaining in the queue.",
+                   static_cast<unsigned long>(messageQueue_.size())));
 }
 
 size_t DHTMessageDispatcherImpl::countMessageInQueue() const

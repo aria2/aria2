@@ -39,7 +39,9 @@
 #include "RecoverableException.h"
 #include "message.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "DownloadContext.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -68,7 +70,7 @@ bool FillRequestGroupCommand::execute()
         rgman->clearQueueCheck();
         rgman->fillRequestGroupFromReserver(e_);
       } catch(RecoverableException& ex) {
-        getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
         // Re-request queue check to fulfill the requests of all
         // downloads, some might come after this exception.
         rgman->requestQueueCheck();

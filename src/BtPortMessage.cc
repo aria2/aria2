@@ -38,6 +38,7 @@
 #include "util.h"
 #include "message.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "Peer.h"
 #include "DHTNode.h"
 #include "DHTRoutingTable.h"
@@ -45,19 +46,21 @@
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "a2functional.h"
 
 namespace aria2 {
 
 const std::string BtPortMessage::NAME("port");
 
-BtPortMessage::BtPortMessage(uint16_t port):
-  SimpleBtMessage(ID, NAME), port_(port),
-  localNode_(0),
-  routingTable_(0),
-  taskQueue_(0),
-  taskFactory_(0)
- {}
+BtPortMessage::BtPortMessage(uint16_t port)
+  : SimpleBtMessage(ID, NAME),
+    port_(port),
+    localNode_(0),
+    routingTable_(0),
+    taskQueue_(0),
+    taskFactory_(0)
+{}
 
 SharedHandle<BtPortMessage> BtPortMessage::create
 (const unsigned char* data, size_t dataLength)
@@ -73,9 +76,7 @@ void BtPortMessage::doReceivedAction()
 {
   if(taskFactory_ && taskQueue_) {
     if(port_ == 0) {
-      if(getLogger()->debug()) {
-        getLogger()->debug("Ignored port 0.");
-      }
+      A2_LOG_DEBUG("Ignored port 0.");
       return;
     }
     // node id is random at this point. When ping reply received, new DHTNode
@@ -89,12 +90,12 @@ void BtPortMessage::doReceivedAction()
     }
     if(routingTable_->countBucket() == 1) {
       // initiate bootstrap
-      getLogger()->info("Dispatch node_lookup since too few buckets.");
+      A2_LOG_INFO("Dispatch node_lookup since too few buckets.");
       taskQueue_->addImmediateTask
         (taskFactory_->createNodeLookupTask(localNode_->getID()));
     }
   } else {
-    getLogger()->info
+    A2_LOG_INFO
       ("DHT port message received while localhost didn't declare support it.");
   }
 }

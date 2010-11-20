@@ -41,6 +41,7 @@
 #include "BtRuntime.h"
 #include "Peer.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "prefs.h"
 #include "Option.h"
 #include "BtConstants.h"
@@ -51,6 +52,7 @@
 #include "bittorrent_helper.h"
 #include "wallclock.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -59,12 +61,11 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand
  RequestGroup* requestGroup,
  DownloadEngine* e,
  time_t interval)
-  :
-  Command(cuid),
-  requestGroup_(requestGroup),
-  interval_(interval),
-  e_(e),
-  numNewConnection_(5)
+  : Command(cuid),
+    requestGroup_(requestGroup),
+    interval_(interval),
+    e_(e),
+    numNewConnection_(5)
 {
   requestGroup_->increaseNumCommand();
 }
@@ -141,11 +142,9 @@ void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
   command->setPeerStorage(peerStorage_);
   command->setPieceStorage(pieceStorage_);
   e_->addCommand(command);
-  if(getLogger()->info()) {
-    getLogger()->info(MSG_CONNECTING_TO_PEER,
-                      util::itos(getCuid()).c_str(),
-                      peer->getIPAddress().c_str());
-  }
+  A2_LOG_INFO(fmt(MSG_CONNECTING_TO_PEER,
+                  util::itos(getCuid()).c_str(),
+                  peer->getIPAddress().c_str()));
 }
 
 void ActivePeerConnectionCommand::setBtRuntime

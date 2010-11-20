@@ -46,8 +46,6 @@ class DHTConnection;
 class DHTMessageFactory;
 class DHTRoutingTable;
 
-class Logger;
-
 class DHTMessageReceiver {
 private:
   SharedHandle<DHTMessageTracker> tracker_;
@@ -57,8 +55,6 @@ private:
   SharedHandle<DHTMessageFactory> factory_;
 
   SharedHandle<DHTRoutingTable> routingTable_;
-
-  Logger* logger_;
 
   SharedHandle<DHTMessage>
   handleUnknownMessage(const unsigned char* data, size_t length,

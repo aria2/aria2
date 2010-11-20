@@ -43,7 +43,6 @@ namespace aria2 {
 class ServerStatMan;
 class RequestGroup;
 class ServerStat;
-class Logger;
 
 class AdaptiveURISelector:public URISelector {
 private:
@@ -54,8 +53,6 @@ private:
   unsigned int nbConnections_;
 
   static const time_t MAX_TIMEOUT = 60;
-
-  Logger* logger_;
 
   void mayRetryWithIncreasedTimeout(FileEntry* fileEntry);
 

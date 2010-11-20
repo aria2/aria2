@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,139 +35,53 @@
 #include "Logger.h"
 
 #include <cstring>
+#include <iostream>
 
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "message.h"
-#include "LogFormatter.h"
+#include "A2STR.h"
+#include "a2time.h"
 
 namespace aria2 {
 
-const std::string Logger::DEBUG_LABEL("DEBUG");
+namespace {
+static const std::string DEBUG_LABEL("DEBUG");
 
-const std::string Logger::NOTICE_LABEL("NOTICE");
+static const std::string INFO_LABEL("INFO");
 
-const std::string Logger::WARN_LABEL("WARN");
+static const std::string NOTICE_LABEL("NOTICE");
 
-const std::string Logger::ERROR_LABEL("ERROR");
+static const std::string WARN_LABEL("WARN");
 
-const std::string Logger::INFO_LABEL("INFO");
+static const std::string ERROR_LABEL("ERROR");
+} // namespace
 
-Logger::Logger():
-  logFormatter_(0), logLevel_(Logger::A2_DEBUG), stdoutField_(0) {}
+Logger::Logger()
+  : logLevel_(Logger::A2_DEBUG),
+    stdoutField_(0)
+{}
 
 Logger::~Logger()
 {
   closeFile();
-  delete logFormatter_;
 }
 
 void Logger::openFile(const std::string& filename)
 {
   file_.open(filename.c_str(), std::ios::app|std::ios::binary);
   if(!file_) {
-    throw DL_ABORT_EX
-      (StringFormat(EX_FILE_OPEN, filename.c_str(), "n/a").str());
+    throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "n/a"));
   }
 }
 
 void Logger::closeFile()
 {
+  std::cerr << "Closing log file" << std::endl;
+  // TODO Do we need file_.is_open()?
   if(file_.is_open()) {
     file_.close();
   }
-}
-
-#define WRITE_LOG(LEVEL, LEVEL_LABEL, MSG)              \
-  if(LEVEL >= logLevel_ && file_.is_open()) {           \
-    va_list ap;                                         \
-    va_start(ap, MSG);                                  \
-    writeLog(file_, LEVEL, LEVEL_LABEL, MSG, ap);       \
-    va_end(ap);                                         \
-    file_ << std::flush;                                \
-  }                                                     \
-  if(stdoutField_&LEVEL) {                              \
-    std::cout << "\n";                                  \
-    va_list ap;                                         \
-    va_start(ap, MSG);                                  \
-    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
-    va_end(ap);                                         \
-    std::cout << std::flush;                            \
-  }                                                     \
-
-#define WRITE_LOG_EX(LEVEL, LEVEL_LABEL, MSG, EX)       \
-  if(LEVEL >= logLevel_ && file_.is_open()) {           \
-    va_list ap;                                         \
-    va_start(ap, EX);                                   \
-    writeLog(file_, LEVEL, LEVEL_LABEL, MSG, ap);       \
-    va_end(ap);                                         \
-    writeStackTrace(file_, LEVEL, LEVEL_LABEL, EX);     \
-    file_ << std::flush;                                \
-  }                                                     \
-  if(stdoutField_&LEVEL) {                              \
-    std::cout << "\n";                                  \
-    va_list ap;                                         \
-    va_start(ap, EX);                                   \
-    writeLog(std::cout, LEVEL, LEVEL_LABEL, MSG, ap);   \
-    va_end(ap);                                         \
-    writeStackTrace(std::cout, LEVEL, LEVEL_LABEL, EX); \
-    std::cout << std::flush;                            \
-  }                                                     \
-
-void Logger::debug(const char* msg, ...)
-{
-  WRITE_LOG(A2_DEBUG, DEBUG_LABEL, msg);
-}
-
-void Logger::debug(const char* msg, const Exception& ex, ...)
-{
-  WRITE_LOG_EX(A2_DEBUG, DEBUG_LABEL, msg, ex);
-}
-
-void Logger::info(const char* msg, ...)
-{
-  WRITE_LOG(A2_INFO, INFO_LABEL, msg);
-}
-
-void Logger::info(const char* msg, const Exception& ex, ...)
-{
-  WRITE_LOG_EX(A2_INFO, INFO_LABEL, msg, ex);
-}
-
-void Logger::notice(const char* msg, ...)
-{
-  WRITE_LOG(A2_NOTICE, NOTICE_LABEL, msg);
-}
-
-void Logger::notice(const char* msg, const Exception& ex, ...)
-{
-  WRITE_LOG_EX(A2_NOTICE, NOTICE_LABEL, msg, ex);
-}
-
-void Logger::warn(const char* msg, ...)
-{
-  WRITE_LOG(A2_WARN, WARN_LABEL, msg);
-}
-
-void Logger::warn(const char* msg, const Exception& ex, ...)
-{
-  WRITE_LOG_EX(A2_WARN, WARN_LABEL, msg, ex);
-}
-
-void Logger::error(const char*  msg, ...)
-{
-  WRITE_LOG(A2_ERROR, ERROR_LABEL, msg);
-}
-
-void Logger::error(const char* msg, const Exception& ex, ...)
-{
-  WRITE_LOG_EX(A2_ERROR, ERROR_LABEL, msg, ex);
-}
-
-void Logger::setLogFormatter(LogFormatter* logFormatter)
-{
-  delete logFormatter_;
-  logFormatter_ = logFormatter;
 }
 
 void Logger::setStdoutLogLevel(Logger::LEVEL level, bool enabled)
@@ -179,32 +93,129 @@ void Logger::setStdoutLogLevel(Logger::LEVEL level, bool enabled)
   }
 }
 
-void Logger::writeLog
-(std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
- const char* msg, va_list ap)
+bool Logger::levelEnabled(LEVEL level)
 {
-  if(logFormatter_) {
-    logFormatter_->writeLog(o, logLevel, logLevelLabel, msg, ap);
-  }
+  return (level >= logLevel_ && file_.is_open()) || stdoutField_&level;
 }
 
-void Logger::writeStackTrace
-(std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
+namespace {
+const std::string& levelToString(Logger::LEVEL level)
+{
+  switch(level) {
+  case Logger::A2_DEBUG:
+    return DEBUG_LABEL;
+  case Logger::A2_INFO:
+    return INFO_LABEL;
+  case Logger::A2_NOTICE:
+    return NOTICE_LABEL;
+  case Logger::A2_WARN:
+    return WARN_LABEL;
+  case Logger::A2_ERROR:
+    return ERROR_LABEL;
+  default:
+    return A2STR::NIL;
+  }
+}
+} // namespace
+
+namespace {
+void writeHeader
+(std::ostream& o, Logger::LEVEL level, const char* sourceFile, int lineNum)
+{
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  char datestr[27]; // 'YYYY-MM-DD hh:mm:ss.uuuuuu'+'\0' = 27 bytes
+  struct tm tm;
+  //tv.tv_sec may not be of type time_t.
+  time_t timesec = tv.tv_sec;
+  localtime_r(&timesec, &tm);
+  size_t dateLength =
+    strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
+  assert(dateLength <= (size_t)20);
+  snprintf(datestr+dateLength,
+           sizeof(datestr)-dateLength,
+           ".%06ld", tv.tv_usec);
+  o << datestr << " " << levelToString(level) << " - ";
+  if(sourceFile) {
+    o << "[" << sourceFile << ":" << lineNum << "] ";
+  }
+}
+} // namespace
+
+namespace {
+void writeStackTrace(std::ostream& o, const std::string& stackTrace)
+{
+  o << stackTrace;
+}
+} // namespace
+
+namespace {
+void writeLog
+(std::ostream& o,
+ Logger::LEVEL level,
+ const char* sourceFile,
+ int lineNum,
+ const char* msg,
+ const std::string& trace,
+ bool toStream,
+ bool toConsole)
+{
+  if(toStream) {
+    writeHeader(o, level, sourceFile, lineNum);
+    o << msg << "\n";
+    writeStackTrace(o, trace);
+    o << std::flush;
+  }
+  if(toConsole) {
+    std::cout << "\n";
+    writeHeader(std::cout, level, 0, 0);
+    std::cout << msg << "\n";
+    writeStackTrace(std::cout, trace);
+    std::cout << std::flush;
+  }
+}
+} // namespace
+
+void Logger::log
+(LEVEL level,
+ const char* sourceFile,
+ int lineNum,
+ const char* msg)
+{
+  writeLog(file_, level, sourceFile, lineNum, msg, A2STR::NIL,
+           level >= logLevel_ && file_.is_open(),
+           stdoutField_&level);
+}
+
+void Logger::log
+(LEVEL level,
+ const char* sourceFile,
+ int lineNum,
+ const std::string& msg)
+{
+  log(level, sourceFile, lineNum, msg.c_str());
+}
+
+void Logger::log
+(LEVEL level,
+ const char* sourceFile,
+ int lineNum,
+ const char* msg,
  const Exception& ex)
 {
-  if(logFormatter_) {
-    logFormatter_->writeStackTrace(o, logLevel, logLevelLabel, ex);
-  }
+  writeLog(file_, level, sourceFile, lineNum, msg, ex.stackTrace(),
+           level >= logLevel_ && file_.is_open(),
+           stdoutField_&level);
 }
 
-bool Logger::debug()
+void Logger::log
+(LEVEL level,
+ const char* sourceFile,
+ int lineNum,
+ const std::string& msg,
+ const Exception& ex)
 {
-  return levelEnabled(A2_DEBUG);
-}
-
-bool Logger::info()
-{
-  return levelEnabled(A2_INFO);
+  log(level, sourceFile, lineNum, msg.c_str(), ex);
 }
 
 } // namespace aria2

@@ -49,6 +49,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "Option.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -66,8 +67,7 @@ bool UTMetadataPostDownloadHandler::Criteria::match
   return false;
 }
 
-UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler():
-  logger_(LogFactory::getInstance())
+UTMetadataPostDownloadHandler::UTMetadataPostDownloadHandler()
 {
   SharedHandle<Criteria> cri(new Criteria());
   setCriteria(cri);
@@ -87,9 +87,9 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups
       util::applyDir(requestGroup->getOption()->get(PREF_DIR),
                      util::toHex(attrs->infoHash)+".torrent");
     if(util::saveAs(filename, torrent)) {
-      logger_->notice(MSG_METADATA_SAVED, filename.c_str());
+      A2_LOG_NOTICE(fmt(MSG_METADATA_SAVED, filename.c_str()));
     } else {
-      logger_->notice(MSG_METADATA_NOT_SAVED, filename.c_str());
+      A2_LOG_NOTICE(fmt(MSG_METADATA_NOT_SAVED, filename.c_str()));
     }
   }
   if(!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {

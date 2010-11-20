@@ -45,15 +45,12 @@
 namespace aria2 {
 
 class Peer;
-class Logger;
 
 class BtLeecherStateChoke {
 private:
   int round_;
 
   Timer lastRound_;
-
-  Logger* logger_;
 
   class PeerEntry {
   private:

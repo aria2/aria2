@@ -40,14 +40,15 @@
 #include "LpdMessage.h"
 #include "RecoverableException.h"
 #include "Peer.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 LpdMessageReceiver::LpdMessageReceiver
-(const std::string& multicastAddress, uint16_t multicastPort):
-  multicastAddress_(multicastAddress),
-  multicastPort_(multicastPort),
-  logger_(LogFactory::getInstance()) {}
+(const std::string& multicastAddress, uint16_t multicastPort)
+  : multicastAddress_(multicastAddress),
+    multicastPort_(multicastPort)
+{}
 
 LpdMessageReceiver::~LpdMessageReceiver() {}
 
@@ -61,19 +62,17 @@ bool LpdMessageReceiver::init(const std::string& localAddr)
 #else // !__MINGW32__
     socket_->bind(multicastAddress_, multicastPort_, AF_INET);
 #endif // !__MINGW32__
-    if(logger_->debug()) {
-      logger_->debug("Joining multicast group. %s:%u, localAddr=%s",
+    A2_LOG_DEBUG(fmt("Joining multicast group. %s:%u, localAddr=%s",
                      multicastAddress_.c_str(), multicastPort_,
-                     localAddr.c_str());
-    }
+                     localAddr.c_str()));
     socket_->joinMulticastGroup(multicastAddress_, multicastPort_, localAddr);
     socket_->setNonBlockingMode();
     localAddress_ = localAddr;
-    logger_->info("Listening multicast group (%s:%u) packet",
-                  multicastAddress_.c_str(), multicastPort_);
+    A2_LOG_INFO(fmt("Listening multicast group (%s:%u) packet",
+                    multicastAddress_.c_str(), multicastPort_));
     return true;
   } catch(RecoverableException& e) {
-    logger_->error("Failed to initialize LPD message receiver.", e);
+    A2_LOG_ERROR_EX("Failed to initialize LPD message receiver.", e);
   }
   return false;
 }
@@ -97,13 +96,15 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
     SharedHandle<HttpHeader> header = proc.getHttpRequestHeader();
     std::string infoHashString = header->getFirst("Infohash");
     uint16_t port = header->getFirstAsUInt("Port");
-    logger_->info("LPD message received infohash=%s, port=%u from %s",
-                  infoHashString.c_str(), port, peerAddr.first.c_str());
+    A2_LOG_INFO(fmt("LPD message received infohash=%s, port=%u from %s",
+                    infoHashString.c_str(),
+                    port,
+                    peerAddr.first.c_str()));
     std::string infoHash;
     if(infoHashString.size() != 40 ||
        (infoHash = util::fromHex(infoHashString)).empty() ||
        port == 0) {
-      logger_->info("LPD bad request. infohash=%s", infoHashString.c_str());
+      A2_LOG_INFO(fmt("LPD bad request. infohash=%s", infoHashString.c_str()));
       msg.reset(new LpdMessage());
       return msg;
     }
@@ -114,7 +115,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
     msg.reset(new LpdMessage(peer, infoHash));
     return msg;
   } catch(RecoverableException& e) {
-    logger_->info("Failed to receive LPD message.", e);
+    A2_LOG_INFO_EX("Failed to receive LPD message.", e);
     msg.reset(new LpdMessage());
     return msg;
   }

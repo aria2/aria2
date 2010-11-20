@@ -49,12 +49,13 @@ namespace aria2 {
 #define ALIGNMENT 512
 
 SingleFileAllocationIterator::SingleFileAllocationIterator
-(BinaryStream* stream, off_t offset, uint64_t totalLength):
-  stream_(stream),
-  offset_(offset),
-  totalLength_(totalLength),
-  buffer_(0),
-  logger_(LogFactory::getInstance())
+(BinaryStream* stream,
+ off_t offset,
+ uint64_t totalLength)
+  : stream_(stream),
+    offset_(offset),
+    totalLength_(totalLength),
+    buffer_(0)
 {
   if(offset_%ALIGNMENT != 0) {
     stream_->disableDirectIO();
@@ -75,9 +76,9 @@ void SingleFileAllocationIterator::init()
   static bool noticeDone = false;
   if(!noticeDone) {
     noticeDone = true;
-    logger_->notice("Allocating disk space. Use --file-allocation=none to"
-                    " disable it. See --file-allocation option in man page for"
-                    " more details.");
+    A2_LOG_NOTICE("Allocating disk space. Use --file-allocation=none to"
+                  " disable it. See --file-allocation option in man page for"
+                  " more details.");
   }
 #ifdef HAVE_POSIX_MEMALIGN
   buffer_ = reinterpret_cast<unsigned char*>

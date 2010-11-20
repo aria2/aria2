@@ -39,17 +39,19 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "DHTPingReplyMessageCallback.h"
 #include "DHTQueryMessage.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTReplaceNodeTask::DHTReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
-                                       const SharedHandle<DHTNode>& newNode):
-  bucket_(bucket),
-  newNode_(newNode),
-  numRetry_(0),
-  timeout_(DHT_MESSAGE_TIMEOUT)
+DHTReplaceNodeTask::DHTReplaceNodeTask
+(const SharedHandle<DHTBucket>& bucket, const SharedHandle<DHTNode>& newNode)
+  : bucket_(bucket),
+    newNode_(newNode),
+    numRetry_(0),
+    timeout_(DHT_MESSAGE_TIMEOUT)
 {}
 
 DHTReplaceNodeTask::~DHTReplaceNodeTask() {}
@@ -75,8 +77,8 @@ void DHTReplaceNodeTask::sendMessage()
 
 void DHTReplaceNodeTask::onReceived(const DHTPingReplyMessage* message)
 {
-  getLogger()->info("ReplaceNode: Ping reply received from %s.",
-                    message->getRemoteNode()->toString().c_str());
+  A2_LOG_INFO(fmt("ReplaceNode: Ping reply received from %s.",
+                  message->getRemoteNode()->toString().c_str()));
   setFinished(true);
 }
 
@@ -84,16 +86,16 @@ void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   ++numRetry_;
   if(numRetry_ >= MAX_RETRY) {
-    getLogger()->info("ReplaceNode: Ping failed %lu times. Replace %s with %s.",
-                      static_cast<unsigned long>(numRetry_),
-                      node->toString().c_str(),
-                      newNode_->toString().c_str());
+    A2_LOG_INFO(fmt("ReplaceNode: Ping failed %lu times. Replace %s with %s.",
+                    static_cast<unsigned long>(numRetry_),
+                    node->toString().c_str(),
+                    newNode_->toString().c_str()));
     node->markBad();
     bucket_->addNode(newNode_);
     setFinished(true);
   } else {
-    getLogger()->info("ReplaceNode: Ping reply timeout from %s. Try once more.",
-                      node->toString().c_str());
+    A2_LOG_INFO(fmt("ReplaceNode: Ping reply timeout from %s. Try once more.",
+                    node->toString().c_str()));
     sendMessage();
   }
 }

@@ -50,7 +50,6 @@ class HttpRequest;
 class HttpResponse;
 class HttpHeaderProcessor;
 class Option;
-class Logger;
 class Segment;
 class SocketCore;
 
@@ -83,7 +82,6 @@ private:
   SharedHandle<SocketCore> socket_;
   SocketBuffer socketBuffer_;
   const Option* option_;
-  Logger* logger_;
 
   HttpRequestEntries outstandingHttpRequests_;
 

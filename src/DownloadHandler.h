@@ -44,20 +44,12 @@
 namespace aria2 {
 
 class RequestGroup;
-class Logger;
 class RequestGroupCriteria;
 
 class DownloadHandler
 {
 private:
   SharedHandle<RequestGroupCriteria> criteria_;
-
-  Logger* logger_;
-protected:
-  Logger* getLogger() const
-  {
-    return logger_;
-  }
 public:
   DownloadHandler();
 

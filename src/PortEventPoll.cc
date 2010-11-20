@@ -43,11 +43,13 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-PortEventPoll::KSocketEntry::KSocketEntry(sock_t s):
-  SocketEntry<KCommandEvent, KADNSEvent>(s) {}
+PortEventPoll::KSocketEntry::KSocketEntry(sock_t s)
+  : SocketEntry<KCommandEvent, KADNSEvent>(s)
+{}
 
 int accumulateEvent(int events, const PortEventPoll::KEvent& event)
 {
@@ -74,10 +76,9 @@ PortEventPoll::A2PortEvent PortEventPoll::KSocketEntry::getEvents()
   return portEvent;
 }
 
-PortEventPoll::PortEventPoll():
-  portEventsSize_(PORT_EVENTS_SIZE),
-  portEvents_(new port_event_t[portEventsSize_]),
-  logger_(LogFactory::getInstance())
+PortEventPoll::PortEventPoll()
+  : portEventsSize_(PORT_EVENTS_SIZE),
+    portEvents_(new port_event_t[portEventsSize_])
 {
   port_ = port_create();
 }
@@ -89,8 +90,9 @@ PortEventPoll::~PortEventPoll()
     while((r = close(port_)) == -1 && errno == EINTR);
     int errNum = errno;
     if(r == -1) {
-      logger_->error("Error occurred while closing port %d: %s",
-                     port_, util::safeStrerror(errNum).c_str());
+      A2_LOG_ERROR(fmt("Error occurred while closing port %d: %s",
+                       port_,
+                       util::safeStrerror(errNum).c_str()));
     }
   }
   delete [] portEvents_;
@@ -114,9 +116,7 @@ void PortEventPoll::poll(const struct timeval& tv)
   if(res == 0 ||
      (res == -1 && (errno == ETIME || errno == EINTR) &&
       portEvents_[0].portev_user != (void*)-1)) {
-    if(logger_->debug()) {
-      logger_->debug("nget=%u", nget);
-    }
+    A2_LOG_DEBUG(fmt("nget=%u", nget));
     for(uint_t i = 0; i < nget; ++i) {
       const port_event_t& pev = portEvents_[i];
       KSocketEntry* p = reinterpret_cast<KSocketEntry*>(pev.portev_user);
@@ -125,8 +125,10 @@ void PortEventPoll::poll(const struct timeval& tv)
                              p->getEvents().events, p);
       int errNum = errno;
       if(r == -1) {
-        logger_->error("port_associate failed for file descriptor %d: cause %s",
-                       pev.portev_object, util::safeStrerror(errNum).c_str());
+        A2_LOG_ERROR(fmt("port_associate failed for file descriptor %d:"
+                         " cause %s",
+                         pev.portev_object,
+                         util::safeStrerror(errNum).c_str()));
       }
     }
   }
@@ -197,10 +199,8 @@ bool PortEventPoll::addEvents(sock_t socket,
     errNum = r;
   }
   if(r == -1) {
-    if(logger_->debug()) {
-      logger_->debug("Failed to add socket event %d:%s",
-                     socket, util::safeStrerror(errNum).c_str());
-    }
+    A2_LOG_DEBUG(fmt("Failed to add socket event %d:%s",
+                     socket, util::safeStrerror(errNum).c_str()));
     return false;
   } else {
     return true;
@@ -244,18 +244,14 @@ bool PortEventPoll::deleteEvents(sock_t socket,
       errNum = errno;
     }
     if(r == -1) {
-      if(logger_->debug()) {
-        logger_->debug("Failed to delete socket event:%s",
-                       util::safeStrerror(errNum).c_str());
-      }
+      A2_LOG_DEBUG(fmt("Failed to delete socket event:%s",
+                       util::safeStrerror(errNum).c_str()));
       return false;
     } else {
       return true;
     }
   } else {
-    if(logger_->debug()) {
-      logger_->debug("Socket %d is not found in SocketEntries.", socket);
-    }
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
   }
 }

@@ -45,9 +45,11 @@
 namespace aria2 {
 
 AdaptiveFileAllocationIterator::AdaptiveFileAllocationIterator
-(BinaryStream* stream, off_t offset, uint64_t totalLength):
-  stream_(stream), offset_(offset), totalLength_(totalLength),
-  logger_(LogFactory::getInstance()) {}
+(BinaryStream* stream, off_t offset, uint64_t totalLength)
+ : stream_(stream),
+   offset_(offset),
+   totalLength_(totalLength)
+{}
 
 AdaptiveFileAllocationIterator::~AdaptiveFileAllocationIterator() {}
 
@@ -56,23 +58,17 @@ void AdaptiveFileAllocationIterator::allocateChunk()
   if(!allocator_) {
 #ifdef HAVE_FALLOCATE
     try {
-      if(logger_->debug()) {
-        logger_->debug("Testing file system supports fallocate.");
-      }
+      A2_LOG_DEBUG("Testing file system supports fallocate.");
       if(static_cast<uint64_t>(offset_) < totalLength_) {
         off_t len = std::min(totalLength_-offset_, static_cast<uint64_t>(4096));
         stream_->allocate(offset_, len);
         offset_ += len;
       }
-      if(logger_->debug()) {
-        logger_->debug("File system supports fallocate.");
-      }
+      A2_LOG_DEBUG("File system supports fallocate.");
       allocator_.reset
         (new FallocFileAllocationIterator(stream_, offset_, totalLength_));
     } catch(RecoverableException& e) {
-      if(logger_->debug()) {
-        logger_->debug("File system does not support fallocate.");
-      }
+      A2_LOG_DEBUG("File system does not support fallocate.");
       SharedHandle<SingleFileAllocationIterator> salloc
         (new SingleFileAllocationIterator(stream_, offset_, totalLength_));
       salloc->init();

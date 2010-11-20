@@ -45,15 +45,18 @@
 #include "bittorrent_helper.h"
 #include "DiskAdaptor.h"
 #include "Piece.h"
+#include "Logger.h"
 #include "LogFactory.h"
 #include "DlAbortEx.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 UTMetadataDataExtensionMessage::UTMetadataDataExtensionMessage
-(uint8_t extensionMessageID):UTMetadataExtensionMessage(extensionMessageID),
-                             tracker_(0),
-                             logger_(LogFactory::getInstance()) {}
+(uint8_t extensionMessageID)
+  : UTMetadataExtensionMessage(extensionMessageID),
+    tracker_(0)
+{}
 
 UTMetadataDataExtensionMessage::~UTMetadataDataExtensionMessage() {}
 
@@ -74,10 +77,8 @@ std::string UTMetadataDataExtensionMessage::toString() const
 void UTMetadataDataExtensionMessage::doReceivedAction()
 {
   if(tracker_->tracks(getIndex())) {
-    if(logger_->debug()) {
-      logger_->debug("ut_metadata index=%lu found in tracking list",
-                     static_cast<unsigned long>(getIndex()));
-    }
+    A2_LOG_DEBUG(fmt("ut_metadata index=%lu found in tracking list",
+                     static_cast<unsigned long>(getIndex())));
     tracker_->remove(getIndex());
     pieceStorage_->getDiskAdaptor()->writeData
       (reinterpret_cast<const unsigned char*>(data_.c_str()), data_.size(),
@@ -91,9 +92,9 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
                                   metadata.data(), metadata.size());
       if(memcmp(infoHash, bittorrent::getInfoHash(dctx_),
                 INFO_HASH_LENGTH) == 0) {
-        logger_->info("Got ut_metadata");
+        A2_LOG_INFO("Got ut_metadata");
       } else {
-        logger_->info("Got wrong ut_metadata");
+        A2_LOG_INFO("Got wrong ut_metadata");
         for(size_t i = 0; i < dctx_->getNumPieces(); ++i) {
           pieceStorage_->markPieceMissing(i);
         }
@@ -101,10 +102,8 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
       }
     }
   } else {
-    if(logger_->debug()) {
-      logger_->debug("ut_metadata index=%lu is not tracked",
-                     static_cast<unsigned long>(getIndex()));
-    }
+    A2_LOG_DEBUG(fmt("ut_metadata index=%lu is not tracked",
+                     static_cast<unsigned long>(getIndex())));
   }
 }
 

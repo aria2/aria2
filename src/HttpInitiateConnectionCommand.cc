@@ -43,11 +43,13 @@
 #include "DlAbortEx.h"
 #include "Option.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
 #include "A2STR.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -56,8 +58,9 @@ HttpInitiateConnectionCommand::HttpInitiateConnectionCommand
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- DownloadEngine* e):
-  InitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e) {}
+ DownloadEngine* e)
+  : InitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e)
+{}
 
 HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
 
@@ -74,10 +77,8 @@ Command* HttpInitiateConnectionCommand::createNextCommand
        proxyRequest->getHost(), proxyRequest->getPort());
     std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
     if(!pooledSocket) {
-      if(getLogger()->info()) {
-        getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                          util::itos(getCuid()).c_str(), addr.c_str(), port);
-      }
+      A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                      util::itos(getCuid()).c_str(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
 
@@ -129,10 +130,8 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       getDownloadEngine()->popPooledSocket
       (resolvedAddresses, getRequest()->getPort());
     if(!pooledSocket) {
-      if(getLogger()->info()) {
-        getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                          util::itos(getCuid()).c_str(), addr.c_str(), port);
-      }
+      A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                      util::itos(getCuid()).c_str(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
       getRequest()->setConnectedAddrInfo(hostname, addr, port);

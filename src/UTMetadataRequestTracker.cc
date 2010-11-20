@@ -36,12 +36,13 @@
 
 #include <algorithm>
 
+#include "Logger.h"
 #include "LogFactory.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-UTMetadataRequestTracker::UTMetadataRequestTracker():
-  logger_(LogFactory::getInstance()) {}
+UTMetadataRequestTracker::UTMetadataRequestTracker() {}
 
 void UTMetadataRequestTracker::add(size_t index)
 {
@@ -71,10 +72,8 @@ std::vector<size_t> UTMetadataRequestTracker::removeTimeoutEntry()
   for(std::vector<RequestEntry>::iterator i = trackedRequests_.begin(),
         eoi = trackedRequests_.end(); i != eoi;) {
     if((*i).elapsed(TIMEOUT)) {
-      if(logger_->debug()) {
-        logger_->debug("ut_metadata request timeout. index=%lu",
-                       static_cast<unsigned long>((*i).index_));
-      }
+      A2_LOG_DEBUG(fmt("ut_metadata request timeout. index=%lu",
+                       static_cast<unsigned long>((*i).index_)));
       indexes.push_back((*i).index_);
       i = trackedRequests_.erase(i);
       eoi = trackedRequests_.end();

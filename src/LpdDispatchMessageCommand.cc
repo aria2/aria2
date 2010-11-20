@@ -37,20 +37,23 @@
 #include "DownloadEngine.h"
 #include "BtRuntime.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "RecoverableException.h"
 #include "SocketCore.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 LpdDispatchMessageCommand::LpdDispatchMessageCommand
 (cuid_t cuid,
  const SharedHandle<LpdMessageDispatcher>& dispatcher,
- DownloadEngine* e):
-  Command(cuid),
-  dispatcher_(dispatcher),
-  e_(e),
-  tryCount_(0) {}
+ DownloadEngine* e)
+  : Command(cuid),
+    dispatcher_(dispatcher),
+    e_(e),
+    tryCount_(0)
+{}
 
 LpdDispatchMessageCommand::~LpdDispatchMessageCommand() {}
 
@@ -61,25 +64,25 @@ bool LpdDispatchMessageCommand::execute()
   }
   if(dispatcher_->isAnnounceReady()) {
     try {
-      getLogger()->info("Dispatching LPD message for infohash=%s",
-                   util::toHex(dispatcher_->getInfoHash()).c_str());
+      A2_LOG_INFO(fmt("Dispatching LPD message for infohash=%s",
+                      util::toHex(dispatcher_->getInfoHash()).c_str()));
       if(dispatcher_->sendMessage()) {
-        getLogger()->info("Sending LPD message is complete.");
+        A2_LOG_INFO("Sending LPD message is complete.");
         dispatcher_->resetAnnounceTimer();
         tryCount_ = 0;
       } else {
         ++tryCount_;
         if(tryCount_ >= 5) {
-          getLogger()->info("Sending LPD message %u times but all failed.",
-                            tryCount_);
+          A2_LOG_INFO(fmt("Sending LPD message %u times but all failed.",
+                          tryCount_));
           dispatcher_->resetAnnounceTimer();
           tryCount_ = 0;
         } else {
-          getLogger()->info("Could not send LPD message, retry shortly.");
+          A2_LOG_INFO("Could not send LPD message, retry shortly.");
         }
       }
     } catch(RecoverableException& e) {
-      getLogger()->info("Failed to send LPD message.", e);
+      A2_LOG_INFO_EX("Failed to send LPD message.", e);
       dispatcher_->resetAnnounceTimer();
       tryCount_ = 0;
     }

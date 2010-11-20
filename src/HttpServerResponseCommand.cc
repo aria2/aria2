@@ -37,11 +37,13 @@
 #include "DownloadEngine.h"
 #include "HttpServer.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "HttpServerCommand.h"
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
 #include "wallclock.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -49,11 +51,11 @@ HttpServerResponseCommand::HttpServerResponseCommand
 (cuid_t cuid,
  const SharedHandle<HttpServer>& httpServer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket):
-  Command(cuid),
-  e_(e),
-  socket_(socket),
-  httpServer_(httpServer)
+ const SharedHandle<SocketCore>& socket)
+ : Command(cuid),
+   e_(e),
+   socket_(socket),
+   httpServer_(httpServer)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME); 
   e_->addSocketForWriteCheck(socket_, this);
@@ -72,33 +74,27 @@ bool HttpServerResponseCommand::execute()
   try {
     httpServer_->sendResponse();
   } catch(RecoverableException& e) {
-    if(getLogger()->info()) {
-      getLogger()->info
-        ("CUID#%s - Error occurred while transmitting response body.",
-         e, util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO_EX
+      (fmt("CUID#%s - Error occurred while transmitting response body.",
+           util::itos(getCuid()).c_str()),
+       e);
     return true;
   }
   if(httpServer_->sendBufferIsEmpty()) {
-    if(getLogger()->info()) {
-      getLogger()->info("CUID#%s - HttpServer: all response transmitted.",
-                        util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO(fmt("CUID#%s - HttpServer: all response transmitted.",
+                    util::itos(getCuid()).c_str()));
     if(httpServer_->supportsPersistentConnection()) {
-      if(getLogger()->info()) {
-        getLogger()->info("CUID#%s - Persist connection.",
-                          util::itos(getCuid()).c_str());
-      }
+      A2_LOG_INFO(fmt("CUID#%s - Persist connection.",
+                      util::itos(getCuid()).c_str()));
       e_->addCommand
         (new HttpServerCommand(getCuid(), httpServer_, e_, socket_));
     }
     return true;
   } else {
     if(timeoutTimer_.difference(global::wallclock) >= 10) {
-      if(getLogger()->info()) {
-        getLogger()->info("CUID#%s - HttpServer: Timeout while trasmitting"
-                          " response.", util::itos(getCuid()).c_str());
-      }
+      A2_LOG_INFO(fmt("CUID#%s - HttpServer: Timeout while trasmitting"
+                      " response.",
+                      util::itos(getCuid()).c_str()));
       return true;
     } else {
       e_->addCommand(this);

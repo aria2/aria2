@@ -37,12 +37,15 @@
 #include "Peer.h"
 #include "PeerConnection.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-SimpleBtMessage::SimpleBtMessage(uint8_t id, const std::string& name):
-  AbstractBtMessage(id, name) {}
+SimpleBtMessage::SimpleBtMessage(uint8_t id, const std::string& name)
+  : AbstractBtMessage(id, name)
+{}
 
 void SimpleBtMessage::send() {
   if(isInvalidate()) {
@@ -52,19 +55,15 @@ void SimpleBtMessage::send() {
     return;
   }
   if(!isSendingInProgress()) {
-    if(getLogger()->info()) {
-      getLogger()->info(MSG_SEND_PEER_MESSAGE,
-                        util::itos(getCuid()).c_str(),
-                        getPeer()->getIPAddress().c_str(),
-                        getPeer()->getPort(),
-                        toString().c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_SEND_PEER_MESSAGE,
+                    util::itos(getCuid()).c_str(),
+                    getPeer()->getIPAddress().c_str(),
+                    getPeer()->getPort(),
+                    toString().c_str()));
     unsigned char* msg = createMessage();
     size_t msgLength = getMessageLength();
-    if(getLogger()->debug()) {
-      getLogger()->debug("msglength = %lu bytes",
-                         static_cast<unsigned long>(msgLength));
-    }
+    A2_LOG_DEBUG(fmt("msglength = %lu bytes",
+                     static_cast<unsigned long>(msgLength)));
     getPeerConnection()->pushBytes(msg, msgLength);
   }
   getPeerConnection()->sendPendingData();

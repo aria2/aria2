@@ -54,8 +54,6 @@ namespace aria2 {
 
 class URISelector;
 
-class Logger;
-
 class FileEntry {
 private:
   std::string path_;
@@ -74,7 +72,6 @@ private:
   size_t maxConnectionPerServer_;
   std::string originalName_;
   Timer lastFasterReplace_;
-  Logger* logger_;
 
   void storePool(const SharedHandle<Request>& request);
 public:

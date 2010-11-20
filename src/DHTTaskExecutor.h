@@ -45,14 +45,12 @@
 namespace aria2 {
 
 class DHTTask;
-class Logger;
 
 class DHTTaskExecutor {
 private:
   size_t numConcurrent_;
   std::vector<SharedHandle<DHTTask> > execTasks_;
   std::deque<SharedHandle<DHTTask> > queue_;
-  Logger* logger_;
 public:
   DHTTaskExecutor(size_t numConcurrent);
 

@@ -41,6 +41,7 @@
 #include "prefs.h"
 #include "Socket.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "Peer.h"
 #include "PeerConnection.h"
 #include "BtRuntime.h"
@@ -54,6 +55,7 @@
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -63,13 +65,12 @@ InitiatorMSEHandshakeCommand::InitiatorMSEHandshakeCommand
  const SharedHandle<Peer>& p,
  DownloadEngine* e,
  const SharedHandle<BtRuntime>& btRuntime,
- const SharedHandle<SocketCore>& s):
-
-  PeerAbstractCommand(cuid, p, e, s),
-  requestGroup_(requestGroup),
-  btRuntime_(btRuntime),
-  sequence_(INITIATOR_SEND_KEY),
-  mseHandshake_(new MSEHandshake(cuid, s, getOption().get()))
+ const SharedHandle<SocketCore>& s)
+  : PeerAbstractCommand(cuid, p, e, s),
+    requestGroup_(requestGroup),
+    btRuntime_(btRuntime),
+    sequence_(INITIATOR_SEND_KEY),
+    mseHandshake_(new MSEHandshake(cuid, s, getOption().get()))
 {
   disableReadCheckSocket();
   setWriteCheckSocket(getSocket());
@@ -172,12 +173,9 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
 bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
   if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    if(getLogger()->info()) {
-      getLogger()->info
-        ("CUID#%s - Establishing connection using legacy BitTorrent"
-         " handshake is disabled by preference.",
-         util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO(fmt("CUID#%s - Establishing connection using legacy BitTorrent"
+                    " handshake is disabled by preference.",
+                    util::itos(getCuid()).c_str()));
     if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
       SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
       peer->usedBy(getDownloadEngine()->newCUID());
@@ -191,10 +189,8 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     return true;
   } else {
     // try legacy BitTorrent handshake
-    if(getLogger()->info()) {
-      getLogger()->info("CUID#%s - Retry using legacy BitTorrent handshake.",
-                        util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO(fmt("CUID#%s - Retry using legacy BitTorrent handshake.",
+                    util::itos(getCuid()).c_str()));
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(getCuid(), requestGroup_, getPeer(),
                                         getDownloadEngine(), btRuntime_, false);

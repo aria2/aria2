@@ -43,7 +43,6 @@
 namespace aria2 {
 
 class SocketCore;
-class Logger;
 
 class LpdMessageDispatcher {
 private:
@@ -55,7 +54,6 @@ private:
   Timer timer_;
   time_t interval_;
   std::string request_;
-  Logger* logger_;
 public:
   LpdMessageDispatcher
   (const std::string& infoHash, uint16_t port,

@@ -47,7 +47,6 @@
 namespace aria2 {
 
 class Option;
-class Logger;
 class SocketCore;
 class DHKeyExchange;
 class ARC4Encryptor;
@@ -85,7 +84,6 @@ private:
   cuid_t cuid_;
   SharedHandle<SocketCore> socket_;
   const Option* option_;
-  Logger* logger_;
 
   unsigned char rbuf_[MAX_BUFFER_LENGTH];
   size_t rbufLength_;

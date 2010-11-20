@@ -38,8 +38,6 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTTaskQueue.h"
-#include "LogFactory.h"
-#include "Logger.h"
 #include "DHTPingTask.h"
 #include "DHTNodeLookupTask.h"
 #include "DHTBucketRefreshTask.h"
@@ -53,13 +51,13 @@
 
 namespace aria2 {
 
-DHTTaskFactoryImpl::DHTTaskFactoryImpl():
-  routingTable_(0),
-  dispatcher_(0),
-  factory_(0),
-  taskQueue_(0),
-  timeout_(DHT_MESSAGE_TIMEOUT),
-  logger_(LogFactory::getInstance()) {}
+DHTTaskFactoryImpl::DHTTaskFactoryImpl()
+  : routingTable_(0),
+    dispatcher_(0),
+    factory_(0),
+    taskQueue_(0),
+    timeout_(DHT_MESSAGE_TIMEOUT)
+{}
 
 DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 

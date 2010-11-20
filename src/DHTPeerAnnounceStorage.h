@@ -48,7 +48,6 @@ class Peer;
 class DHTPeerAnnounceEntry;
 class DHTTaskQueue;
 class DHTTaskFactory;
-class Logger;
 
 class DHTPeerAnnounceStorage {
 private:
@@ -59,8 +58,6 @@ private:
   SharedHandle<DHTTaskQueue> taskQueue_;
 
   SharedHandle<DHTTaskFactory> taskFactory_;
-
-  Logger* logger_;
 public:
   DHTPeerAnnounceStorage();
 

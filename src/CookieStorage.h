@@ -47,8 +47,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class CookieStorage {
 public:
 
@@ -121,8 +119,6 @@ public:
   };
 private:
   std::deque<DomainEntry> domains_;
-
-  Logger* logger_;
 
   template<typename InputIterator>
   void storeCookies(InputIterator first, InputIterator last, time_t now)

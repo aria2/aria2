@@ -50,6 +50,7 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "util.h"
 #include "TimeA2.h"
 #include "a2functional.h"
@@ -130,11 +131,17 @@ void SocketCore::setTLSContext(const SharedHandle<TLSContext>& tlsContext)
 }
 #endif // ENABLE_SSL
 
-SocketCore::SocketCore(int sockType):sockType_(sockType), sockfd_(-1)  {
+SocketCore::SocketCore(int sockType)
+  : sockType_(sockType),
+    sockfd_(-1)
+{
   init();
 }
 
-SocketCore::SocketCore(sock_t sockfd, int sockType):sockType_(sockType), sockfd_(sockfd) {
+SocketCore::SocketCore(sock_t sockfd, int sockType)
+  : sockType_(sockType),
+    sockfd_(sockfd)
+{
   init();
 }
 
@@ -431,9 +438,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
                   (*i).second) == -1) {
           errNum = SOCKET_ERRNO;
           error = errorMsg(errNum);
-          if(LogFactory::getInstance()->debug()) {
-            LogFactory::getInstance()->debug(EX_SOCKET_BIND, error.c_str());
-          }
+          A2_LOG_DEBUG(fmt(EX_SOCKET_BIND, error.c_str()));
         } else {
           bindSuccess = true;
           break;
@@ -1274,9 +1279,7 @@ void SocketCore::bindAddress(const std::string& iface)
                       host, NI_MAXHOST, 0, 0,
                       NI_NUMERICHOST);
       if(s == 0) {
-        if(LogFactory::getInstance()->debug()) {
-          LogFactory::getInstance()->debug("Sockets will bind to %s", host);
-        }
+        A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
       }
     }
   }
@@ -1286,17 +1289,14 @@ void getInterfaceAddress
 (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
  const std::string& iface, int family, int aiFlags)
 {
-  Logger* logger = LogFactory::getInstance();
-  if(logger->debug()) {
-    logger->debug("Finding interface %s", iface.c_str());
-  }
+  A2_LOG_DEBUG(fmt("Finding interface %s", iface.c_str()));
 #ifdef HAVE_GETIFADDRS
   // First find interface in interface addresses
   struct ifaddrs* ifaddr = 0;
   if(getifaddrs(&ifaddr) == -1) {
     int errNum = SOCKET_ERRNO;
-    logger->info(MSG_INTERFACE_NOT_FOUND,
-                 iface.c_str(), errorMsg(errNum).c_str());
+    A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND,
+                    iface.c_str(), errorMsg(errNum).c_str()));
   } else {
     auto_delete<struct ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
     for(struct ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
@@ -1335,7 +1335,7 @@ void getInterfaceAddress
     int s;
     s = callGetaddrinfo(&res, iface.c_str(), 0, family, SOCK_STREAM, aiFlags,0);
     if(s) {
-      logger->info(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerror(s));
+      A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerror(s)));
     } else {
       WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
       struct addrinfo* rp;

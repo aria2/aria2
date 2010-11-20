@@ -40,8 +40,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class AbstractDiskWriter : public DiskWriter {
 private:
   std::string filename_;
@@ -50,8 +48,6 @@ private:
   bool readOnly_;
 
   bool directIOAllowed_;
-
-  Logger* logger_;
 
   ssize_t writeDataInternal(const unsigned char* data, size_t len);
   ssize_t readDataInternal(unsigned char* data, size_t len);

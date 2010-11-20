@@ -36,24 +36,21 @@
 #include "Peer.h"
 #include "PieceStorage.h"
 #include "BtMessageValidator.h"
-#include "LogFactory.h"
-#include "Logger.h"
 
 namespace aria2 {
 
-AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name):
-  BtMessage(id),
-  sendingInProgress_(false),
-  invalidate_(false),
-  uploading_(false),
-  cuid_(0),
-  name_(name),
-  dispatcher_(0),
-  messageFactory_(0),
-  requestFactory_(0),
-  peerConnection_(0),
-  metadataGetMode_(false),
-  logger_(LogFactory::getInstance())
+AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name)
+  : BtMessage(id),
+    sendingInProgress_(false),
+    invalidate_(false),
+    uploading_(false),
+    cuid_(0),
+    name_(name),
+    dispatcher_(0),
+    messageFactory_(0),
+    requestFactory_(0),
+    peerConnection_(0),
+    metadataGetMode_(false)
 {}
 
 AbstractBtMessage::~AbstractBtMessage() {}

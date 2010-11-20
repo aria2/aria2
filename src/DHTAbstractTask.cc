@@ -41,14 +41,12 @@
 #include "DHTMessageCallback.h"
 #include "DHTBucket.h"
 #include "DHTTaskQueue.h"
-#include "LogFactory.h"
 #include "util.h"
 
 namespace aria2 {
 
 DHTAbstractTask::DHTAbstractTask():
   finished_(false),
-  logger_(LogFactory::getInstance()),
   routingTable_(0),
   dispatcher_(0),
   factory_(0),

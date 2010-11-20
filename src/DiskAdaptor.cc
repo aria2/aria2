@@ -34,14 +34,12 @@
 /* copyright --> */
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
-#include "LogFactory.h"
-#include "Logger.h"
 
 namespace aria2 {
 
-DiskAdaptor::DiskAdaptor():
-  fallocate_(false),
-  logger_(LogFactory::getInstance()) {}
+DiskAdaptor::DiskAdaptor()
+  : fallocate_(false)
+{}
 
 DiskAdaptor::~DiskAdaptor() {}
 

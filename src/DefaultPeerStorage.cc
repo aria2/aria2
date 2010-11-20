@@ -46,6 +46,7 @@
 #include "PieceStorage.h"
 #include "wallclock.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -53,13 +54,12 @@ namespace {
 const int MAX_PEER_LIST_SIZE = 1024;
 } // namespace
 
-DefaultPeerStorage::DefaultPeerStorage():
-  logger_(LogFactory::getInstance()),
-  removedPeerSessionDownloadLength_(0),
-  removedPeerSessionUploadLength_(0),
-  seederStateChoke_(new BtSeederStateChoke()),
-  leecherStateChoke_(new BtLeecherStateChoke()),
-  lastTransferStatMapUpdated_(0)
+DefaultPeerStorage::DefaultPeerStorage()
+  : removedPeerSessionDownloadLength_(0),
+    removedPeerSessionUploadLength_(0),
+    seederStateChoke_(new BtSeederStateChoke()),
+    leecherStateChoke_(new BtLeecherStateChoke()),
+    lastTransferStatMapUpdated_(0)
 {}
 
 DefaultPeerStorage::~DefaultPeerStorage()
@@ -103,10 +103,9 @@ size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
 
 bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
   if(isPeerAlreadyAdded(peer)) {
-    if(logger_->debug()) {
-      logger_->debug("Adding %s:%u is rejected because it has been already"
-                    " added.", peer->getIPAddress().c_str(), peer->getPort());
-    }
+    A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
+                     " added.",
+                     peer->getIPAddress().c_str(), peer->getPort()));
     return false;
   }
   size_t maxPeerListSize = calculateMaxPeerListSize(btRuntime_);
@@ -123,10 +122,8 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
         eoi = peers.end(); itr != eoi; ++itr) {
     const SharedHandle<Peer>& peer = *itr;
     if(addPeer(peer)) {
-      if(logger_->debug()) {
-        logger_->debug(MSG_ADDING_PEER,
-                       peer->getIPAddress().c_str(), peer->getPort());
-      }
+      A2_LOG_DEBUG(fmt(MSG_ADDING_PEER,
+                       peer->getIPAddress().c_str(), peer->getPort()));
     }
   }  
 }
@@ -241,9 +238,7 @@ TransferStat DefaultPeerStorage::calculateStat()
 {
   TransferStat stat;
   if(lastTransferStatMapUpdated_.differenceInMillis(global::wallclock) >= 250) {
-    if(logger_->debug()) {
-      logger_->debug("Updating TransferStat of PeerStorage");
-    }
+    A2_LOG_DEBUG("Updating TransferStat of PeerStorage");
     lastTransferStatMapUpdated_ = global::wallclock;
     peerTransferStatMap_.clear();
     std::vector<SharedHandle<Peer> > activePeers;
@@ -272,9 +267,7 @@ TransferStat DefaultPeerStorage::calculateStat()
 
 void DefaultPeerStorage::updateTransferStatFor(const SharedHandle<Peer>& peer)
 {
-  if(logger_->debug()) {
-    logger_->debug("Updating TransferStat for peer %s", peer->getID().c_str());
-  }
+  A2_LOG_DEBUG(fmt("Updating TransferStat for peer %s", peer->getID().c_str()));
   std::map<std::string, TransferStat>::iterator itr =
     peerTransferStatMap_.find(peer->getID());
   if(itr == peerTransferStatMap_.end()) {
@@ -340,10 +333,8 @@ void DefaultPeerStorage::returnPeer(const SharedHandle<Peer>& peer)
   std::deque<SharedHandle<Peer> >::iterator itr =
     std::find_if(peers_.begin(), peers_.end(), derefEqual(peer));
   if(itr == peers_.end()) {
-    if(logger_->debug()) {
-      logger_->debug("Cannot find peer %s:%u in PeerStorage.",
-                    peer->getIPAddress().c_str(), peer->getPort());
-    }
+    A2_LOG_DEBUG(fmt("Cannot find peer %s:%u in PeerStorage.",
+                     peer->getIPAddress().c_str(), peer->getPort()));
   } else {
     peers_.erase(itr);
 

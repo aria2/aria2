@@ -41,7 +41,9 @@
 #include "DHTNodeLookupEntry.h"
 #include "util.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "DHTMessageCallback.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -67,8 +69,8 @@ void DHTBucketRefreshTask::startup()
       task->setTaskQueue(getTaskQueue());
       task->setLocalNode(getLocalNode());
 
-      getLogger()->info("Dispating bucket refresh. targetID=%s",
-                        util::toHex(targetID, DHT_ID_LENGTH).c_str());
+      A2_LOG_INFO(fmt("Dispating bucket refresh. targetID=%s",
+                      util::toHex(targetID, DHT_ID_LENGTH).c_str()));
       getTaskQueue()->addPeriodicTask1(task);
     }
   }

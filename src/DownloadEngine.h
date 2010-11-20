@@ -56,7 +56,6 @@
 
 namespace aria2 {
 
-class Logger;
 class Option;
 class RequestGroupMan;
 class StatCalc;
@@ -78,8 +77,6 @@ private:
 
   SharedHandle<EventPoll> eventPoll_;
 
-  Logger* logger_;
-  
   SharedHandle<StatCalc> statCalc_;
 
   bool haltRequested_;

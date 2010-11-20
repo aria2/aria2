@@ -33,15 +33,13 @@
  */
 /* copyright --> */
 #include "DownloadHandler.h"
-#include "LogFactory.h"
-#include "Logger.h"
 #include "RequestGroup.h"
 #include "RequestGroupCriteria.h"
 #include "DownloadContext.h"
 
 namespace aria2 {
 
-DownloadHandler::DownloadHandler():logger_(LogFactory::getInstance()) {}
+DownloadHandler::DownloadHandler() {}
 
 DownloadHandler::~DownloadHandler() {}
 

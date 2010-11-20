@@ -36,6 +36,7 @@
 #include "Peer.h"
 #include "DHTGetPeersReplyMessage.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "DHTMessageFactory.h"
 #include "DHTNode.h"
 #include "DHTNodeLookupEntry.h"
@@ -48,13 +49,15 @@
 #include "bittorrent_helper.h"
 #include "DHTPeerLookupTaskCallback.h"
 #include "DHTQueryMessage.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 DHTPeerLookupTask::DHTPeerLookupTask
-(const SharedHandle<DownloadContext>& downloadContext):
-  DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>
-  (bittorrent::getInfoHash(downloadContext)) {}
+(const SharedHandle<DownloadContext>& downloadContext)
+  : DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>
+    (bittorrent::getInfoHash(downloadContext))
+{}
 
 void
 DHTPeerLookupTask::getNodesFromMessage
@@ -75,8 +78,8 @@ void DHTPeerLookupTask::onReceivedInternal
   peerStorage_->addPeer(message->getValues());
   peers_.insert(peers_.end(),
                 message->getValues().begin(), message->getValues().end());
-  getLogger()->info("Received %lu peers.",
-                    static_cast<unsigned long>(message->getValues().size()));
+  A2_LOG_INFO(fmt("Received %lu peers.",
+                  static_cast<unsigned long>(message->getValues().size())));
 }
   
 SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage
@@ -93,10 +96,8 @@ SharedHandle<DHTMessageCallback> DHTPeerLookupTask::createCallback()
 
 void DHTPeerLookupTask::onFinish()
 {
-  if(getLogger()->debug()) {
-    getLogger()->debug("Peer lookup for %s finished",
-                       util::toHex(getTargetID(), DHT_ID_LENGTH).c_str());
-  }
+  A2_LOG_DEBUG(fmt("Peer lookup for %s finished",
+                   util::toHex(getTargetID(), DHT_ID_LENGTH).c_str()));
   // send announce_peer message to K closest nodes
   size_t num = DHTBucket::K;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =

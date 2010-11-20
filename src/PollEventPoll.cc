@@ -42,11 +42,13 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-PollEventPoll::KSocketEntry::KSocketEntry(sock_t s):
-  SocketEntry<KCommandEvent, KADNSEvent>(s) {}
+PollEventPoll::KSocketEntry::KSocketEntry(sock_t s)
+  : SocketEntry<KCommandEvent, KADNSEvent>(s)
+{}
 
 int accumulateEvent(int events, const PollEventPoll::KEvent& event)
 {
@@ -73,8 +75,9 @@ struct pollfd PollEventPoll::KSocketEntry::getEvents()
   return pollEvent;
 }
 
-PollEventPoll::PollEventPoll():
-  pollfdCapacity_(1024), pollfdNum_(0), logger_(LogFactory::getInstance())
+PollEventPoll::PollEventPoll()
+  : pollfdCapacity_(1024),
+    pollfdNum_(0)
 {
   pollfds_ = new struct pollfd[pollfdCapacity_];
 }
@@ -103,10 +106,8 @@ void PollEventPoll::poll(const struct timeval& tv)
         if(itr != socketEntries_.end() && *(*itr) == *se) {
           (*itr)->processEvents(first->revents);
         } else {
-          if(logger_->debug()) {
-            logger_->debug("Socket %d is not found in SocketEntries.",
-                           first->fd);
-          }
+          A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.",
+                           first->fd));
         }
       }
     }
@@ -221,9 +222,7 @@ bool PollEventPoll::deleteEvents
     }
     return true;
   } else {
-    if(logger_->debug()) {
-      logger_->debug("Socket %d is not found in SocketEntries.", socket);
-    }
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
   }
 }

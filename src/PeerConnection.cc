@@ -48,6 +48,7 @@
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "util.h"
 #include "Peer.h"
 
@@ -55,18 +56,16 @@ namespace aria2 {
 
 PeerConnection::PeerConnection
 (cuid_t cuid, const SharedHandle<Peer>& peer, const SocketHandle& socket)
-
-  :cuid_(cuid),
-   peer_(peer),
-   socket_(socket),
-   logger_(LogFactory::getInstance()),
-   resbuf_(new unsigned char[MAX_PAYLOAD_LEN]),
-   resbufLength_(0),
-   currentPayloadLength_(0),
-   lenbufLength_(0),
-   socketBuffer_(socket),
-   encryptionEnabled_(false),
-   prevPeek_(false)
+  : cuid_(cuid),
+    peer_(peer),
+    socket_(socket),
+    resbuf_(new unsigned char[MAX_PAYLOAD_LEN]),
+    resbufLength_(0),
+    currentPayloadLength_(0),
+    lenbufLength_(0),
+    socketBuffer_(socket),
+    encryptionEnabled_(false),
+    prevPeek_(false)
 {}
 
 PeerConnection::~PeerConnection()
@@ -124,12 +123,10 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
         return false;
       }
       // we got EOF
-      if(logger_->debug()) {
-        logger_->debug("CUID#%s - In PeerConnection::receiveMessage(),"
+      A2_LOG_DEBUG(fmt("CUID#%s - In PeerConnection::receiveMessage(),"
                        " remain=%lu",
                        util::itos(cuid_).c_str(),
-                       static_cast<unsigned long>(temp));
-      }
+                       static_cast<unsigned long>(temp)));
       peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
@@ -159,13 +156,11 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
         return false;
       }
       // we got EOF
-      if(logger_->debug()) {
-        logger_->debug("CUID#%s - In PeerConnection::receiveMessage(),"
+      A2_LOG_DEBUG(fmt("CUID#%s - In PeerConnection::receiveMessage(),"
                        " payloadlen=%lu, remaining=%lu",
                        util::itos(cuid_).c_str(),
                        static_cast<unsigned long>(currentPayloadLength_),
-                       static_cast<unsigned long>(temp));
-      }
+                       static_cast<unsigned long>(temp)));
       peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
@@ -212,11 +207,10 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
           return false;
         }
         // we got EOF
-        if(logger_->debug()) {
-          logger_->debug
-            ("CUID#%s - In PeerConnection::receiveHandshake(), remain=%lu",
-             util::itos(cuid_).c_str(), static_cast<unsigned long>(temp));
-        }
+        A2_LOG_DEBUG
+          (fmt("CUID#%s - In PeerConnection::receiveHandshake(), remain=%lu",
+               util::itos(cuid_).c_str(),
+               static_cast<unsigned long>(temp)));
         peer_->setDisconnectedGracefully(true);
         throw DL_ABORT_EX(EX_EOF_FROM_PEER);
       }
@@ -273,9 +267,7 @@ bool PeerConnection::sendBufferIsEmpty() const
 ssize_t PeerConnection::sendPendingData()
 {
   ssize_t writtenLength = socketBuffer_.send();
-  if(logger_->debug()) {
-    logger_->debug("sent %ld byte(s).", static_cast<long int>(writtenLength));
-  }
+  A2_LOG_DEBUG(fmt("sent %ld byte(s).", static_cast<long int>(writtenLength)));
   return writtenLength;
 }
 

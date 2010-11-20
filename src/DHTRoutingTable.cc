@@ -45,6 +45,7 @@
 #include "util.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -52,8 +53,7 @@ DHTRoutingTable::DHTRoutingTable(const SharedHandle<DHTNode>& localNode)
   : localNode_(localNode),
     root_(new DHTBucketTreeNode
           (SharedHandle<DHTBucket>(new DHTBucket(localNode_)))),
-    numBucket_(1),
-    logger_(LogFactory::getInstance())
+    numBucket_(1)
 {}
 
 DHTRoutingTable::~DHTRoutingTable()
@@ -73,30 +73,21 @@ bool DHTRoutingTable::addGoodNode(const SharedHandle<DHTNode>& node)
 
 bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
 {
-  if(logger_->debug()) {
-    logger_->debug("Trying to add node:%s", node->toString().c_str());
-  }
+  A2_LOG_DEBUG(fmt("Trying to add node:%s", node->toString().c_str()));
   if(*localNode_ == *node) {
-    if(logger_->debug()) {
-      logger_->debug("Adding node with the same ID with localnode is not"
-                     " allowed.");
-    }
+    A2_LOG_DEBUG("Adding node with the same ID with localnode is not allowed.");
     return false;
   }
   DHTBucketTreeNode* treeNode = dht::findTreeNodeFor(root_, node->getID());
   while(1) {
     const SharedHandle<DHTBucket>& bucket = treeNode->getBucket();
     if(bucket->addNode(node)) {
-      if(logger_->debug()) {
-        logger_->debug("Added DHTNode.");
-      }
+      A2_LOG_DEBUG("Added DHTNode.");
       return true;
     } else if(bucket->splitAllowed()) {
-      if(logger_->debug()) {
-        logger_->debug("Splitting bucket. Range:%s-%s",
+      A2_LOG_DEBUG(fmt("Splitting bucket. Range:%s-%s",
                        util::toHex(bucket->getMinID(), DHT_ID_LENGTH).c_str(),
-                       util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
-      }
+                       util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str()));
       treeNode->split();
       ++numBucket_;
       if(treeNode->getLeft()->isInRange(node->getID())) {
@@ -107,9 +98,7 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
     } else {
       if(good) {
         bucket->cacheNode(node);
-        if(logger_->debug()) {
-          logger_->debug("Cached node=%s", node->toString().c_str());
-        }
+        A2_LOG_DEBUG(fmt("Cached node=%s", node->toString().c_str()));
       }
       return false;
     }

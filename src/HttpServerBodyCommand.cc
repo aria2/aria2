@@ -38,6 +38,7 @@
 #include "HttpServer.h"
 #include "HttpHeader.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
@@ -51,6 +52,7 @@
 #include "XmlRpcResponse.h"
 #include "wallclock.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -58,11 +60,11 @@ HttpServerBodyCommand::HttpServerBodyCommand
 (cuid_t cuid,
  const SharedHandle<HttpServer>& httpServer,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& socket):
-  Command(cuid),
-  e_(e),
-  socket_(socket),
-  httpServer_(httpServer)
+ const SharedHandle<SocketCore>& socket)
+  : Command(cuid),
+    e_(e),
+    socket_(socket),
+    httpServer_(httpServer)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   e_->addSocketForReadCheck(socket_, this);
@@ -108,7 +110,7 @@ bool HttpServerBodyCommand::execute()
       } 
     } else {
       if(timeoutTimer_.difference(global::wallclock) >= 30) {
-        getLogger()->info("HTTP request body timeout.");
+        A2_LOG_INFO("HTTP request body timeout.");
         return true;
       } else {
         e_->addCommand(this);
@@ -116,11 +118,10 @@ bool HttpServerBodyCommand::execute()
       }
     }
   } catch(RecoverableException& e) {
-    if(getLogger()->info()) {
-      getLogger()->info
-        ("CUID#%s - Error occurred while reading HTTP request body",
-         e, util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO_EX
+      (fmt("CUID#%s - Error occurred while reading HTTP request body",
+           util::itos(getCuid()).c_str()),
+       e);
     return true;
   }
 

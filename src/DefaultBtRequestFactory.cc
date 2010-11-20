@@ -47,25 +47,16 @@
 #include "a2functional.h"
 #include "SimpleRandomizer.h"
 #include "array_fun.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DefaultBtRequestFactory::DefaultBtRequestFactory():
-  dispatcher_(0),
-  messageFactory_(0),
-  logger_(LogFactory::getInstance())
-{
-  if(logger_->debug()) {
-    logger_->debug("DefaultBtRequestFactory::instantiated");
-  }
-}
+DefaultBtRequestFactory::DefaultBtRequestFactory()
+  : dispatcher_(0),
+    messageFactory_(0)
+{}
 
-DefaultBtRequestFactory::~DefaultBtRequestFactory()
-{
-  if(logger_->debug()) {
-    logger_->debug("DefaultBtRequestFactory::deleted");
-  }
-}
+DefaultBtRequestFactory::~DefaultBtRequestFactory() {}
 
 void DefaultBtRequestFactory::addTargetPiece(const SharedHandle<Piece>& piece)
 {
@@ -176,14 +167,12 @@ void DefaultBtRequestFactory::createRequestMessages
       getnum -= blockIndexes.size();
       for(std::vector<size_t>::const_iterator i = blockIndexes.begin(),
             eoi2 = blockIndexes.end(); i != eoi2; ++i) {
-        if(logger_->debug()) {
-          logger_->debug
-            ("Creating RequestMessage index=%lu, begin=%u,"
-             " blockIndex=%lu",
-             static_cast<unsigned long>(piece->getIndex()),
-             static_cast<unsigned int>((*i)*piece->getBlockLength()),
-             static_cast<unsigned long>(*i));
-        }
+        A2_LOG_DEBUG
+          (fmt("Creating RequestMessage index=%lu, begin=%u,"
+               " blockIndex=%lu",
+               static_cast<unsigned long>(piece->getIndex()),
+               static_cast<unsigned int>((*i)*piece->getBlockLength()),
+               static_cast<unsigned long>(*i)));
         requests.push_back
           (messageFactory_->createRequestMessage(piece, *i));
       }
@@ -222,14 +211,12 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
       const size_t& blockIndex = *bitr;
       if(!dispatcher_->isOutstandingRequest(piece->getIndex(),
                                            blockIndex)) {
-        if(logger_->debug()) {
-          logger_->debug
-            ("Creating RequestMessage index=%lu, begin=%u,"
-             " blockIndex=%lu",
-             static_cast<unsigned long>(piece->getIndex()),
-             static_cast<unsigned int>(blockIndex*piece->getBlockLength()),
-             static_cast<unsigned long>(blockIndex));
-        }
+        A2_LOG_DEBUG
+          (fmt("Creating RequestMessage index=%lu, begin=%u,"
+               " blockIndex=%lu",
+               static_cast<unsigned long>(piece->getIndex()),
+               static_cast<unsigned int>(blockIndex*piece->getBlockLength()),
+               static_cast<unsigned long>(blockIndex)));
         requests.push_back(messageFactory_->createRequestMessage
                            (piece, blockIndex));
       }

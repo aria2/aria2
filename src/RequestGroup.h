@@ -62,7 +62,6 @@ class PreDownloadHandler;
 class PostDownloadHandler;
 class DiskWriterFactory;
 class Option;
-class Logger;
 class RequestGroup;
 class CheckIntegrityEntry;
 struct DownloadResult;
@@ -175,8 +174,6 @@ private:
   RequestGroupMan* requestGroupMan_;
 
   int resumeFailureCount_;
-
-  Logger* logger_;
 
   void validateFilename(const std::string& expectedFilename,
                         const std::string& actualFilename) const;

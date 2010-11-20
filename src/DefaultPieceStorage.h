@@ -43,7 +43,6 @@ namespace aria2 {
 
 class DownloadContext;
 class BitfieldMan;
-class Logger;
 class Option;
 class DiskWriterFactory;
 class FileEntry;
@@ -80,7 +79,6 @@ private:
 
   bool endGame_;
   size_t endGamePieceNum_;
-  Logger* logger_;
   const Option* option_;
   std::deque<HaveEntry> haves_;
 

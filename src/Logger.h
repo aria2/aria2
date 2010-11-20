@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2010 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,15 +37,12 @@
 
 #include "common.h"
 
-#include <cstdarg>
 #include <string>
 #include <fstream>
-#include <iostream>
 
 namespace aria2 {
 
 class Exception;
-class LogFormatter;
 
 class Logger {
 public:
@@ -56,77 +53,44 @@ public:
     A2_WARN   = 1 << 3,
     A2_ERROR  = 1 << 4,
   };
-
-  static const std::string DEBUG_LABEL;
-
-  static const std::string NOTICE_LABEL;
-
-  static const std::string WARN_LABEL;
-
-  static const std::string ERROR_LABEL;
-
-  static const std::string INFO_LABEL;
 private:
-  LogFormatter* logFormatter_;
-
   LEVEL logLevel_;
-
   std::ofstream file_;
-
-  int stdoutField_;
-  
-  bool levelEnabled(LEVEL level)
-  {
-    return (level >= logLevel_ && file_.is_open()) || stdoutField_&level;
-  }
-
-  void writeLog
-  (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
-   const char* msg, va_list ap);
-
-  void writeStackTrace
-  (std::ostream& o, LEVEL logLevel, const std::string& logLevelLabel,
-   const Exception& ex);
+  int stdoutField_;  
 public:
   Logger();
 
-  virtual ~Logger();
+  ~Logger();
 
-  void debug(const char* msg, ...)
-    __attribute__ ((format (printf, 2, 3)));
+  void log
+  (LEVEL level,
+   const char* sourceFile,
+   int lineNum,
+   const char* msg);
 
-  void debug(const char* msg, const Exception& ex, ...)
-    __attribute__ ((format (printf, 2, 4)));
+  void log
+  (LEVEL level,
+   const char* sourceFile,
+   int lineNum,
+   const std::string& msg);
 
-  void info(const char* msg, ...)
-    __attribute__ ((format (printf, 2, 3)));
+  void log
+  (LEVEL level,
+   const char* sourceFile,
+   int lineNum,
+   const char* msg,
+   const Exception& ex);
 
-  void info(const char* msg, const Exception& ex, ...)
-    __attribute__ ((format (printf, 2, 4)));
-
-  void notice(const char* msg, ...)
-    __attribute__ ((format (printf, 2, 3)));
-
-  void notice(const char* msg, const Exception& ex, ...)
-    __attribute__ ((format (printf, 2, 4)));
-
-  void warn(const char* msg, ...)
-    __attribute__ ((format (printf, 2, 3)));
-
-  void warn(const char* msg, const Exception& ex, ...)
-    __attribute__ ((format (printf, 2, 4)));
-
-  void error(const char*  msg, ...)
-    __attribute__ ((format (printf, 2, 3)));
-
-  void error(const char* msg, const Exception& ex, ...)
-    __attribute__ ((format (printf, 2, 4)));
+  void log
+  (LEVEL level,
+   const char* sourceFile,
+   int lineNum,
+   const std::string& msg,
+   const Exception& ex);
 
   void openFile(const std::string& filename);
 
   void closeFile();
-
-  void setLogFormatter(LogFormatter* logFormatter);
 
   void setLogLevel(LEVEL level)
   {
@@ -137,10 +101,72 @@ public:
 
   // Returns true if this logger actually writes debug log message to
   // either file or stdout.
-  bool debug();
-
-  bool info();
+  bool levelEnabled(LEVEL level);
 };
+
+#define A2_LOG_DEBUG_ENABLED                                            \
+  aria2::LogFactory::getInstance()->levelEnabled(Logger::A2_DEBUG)
+
+#define A2_LOG_DEBUG(msg)                                               \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_DEBUG))                          \
+      logger->log(Logger::A2_DEBUG, __FILE__, __LINE__, msg);           \
+  }
+#define A2_LOG_DEBUG_EX(msg, ex)                                        \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_DEBUG))                          \
+      logger->log(Logger::A2_DEBUG, __FILE__, __LINE__, msg, ex);      \
+  }
+#define A2_LOG_INFO(msg)                                                \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_INFO))                           \
+      logger->log(Logger::A2_INFO, __FILE__, __LINE__, msg);            \
+  }
+#define A2_LOG_INFO_EX(msg, ex)                                         \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_INFO))                           \
+      logger->log(Logger::A2_INFO, __FILE__, __LINE__, msg, ex);       \
+  }
+#define A2_LOG_NOTICE(msg)                                              \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_NOTICE))                         \
+      logger->log(Logger::A2_NOTICE, __FILE__, __LINE__, msg);          \
+  }
+#define A2_LOG_NOTICE_EX(msg, ex)                                       \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_NOTICE))                         \
+      logger->log(Logger::A2_NOTICE, __FILE__, __LINE__, msg, ex);     \
+  }
+#define A2_LOG_WARN(msg)                                                \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_WARN))                           \
+      logger->log(Logger::A2_WARN, __FILE__, __LINE__, msg);            \
+  }
+#define A2_LOG_WARN_EX(msg, ex)                                         \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_WARN))                           \
+      logger->log(Logger::A2_WARN, __FILE__, __LINE__, msg, ex);        \
+  }
+#define A2_LOG_ERROR(msg)                                               \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_ERROR))                          \
+      logger->log(Logger::A2_ERROR, __FILE__, __LINE__, msg);           \
+  }
+#define A2_LOG_ERROR_EX(msg, ex)                                        \
+  {                                                                     \
+    aria2::Logger* logger = aria2::LogFactory::getInstance();           \
+    if(logger->levelEnabled(Logger::A2_ERROR))                          \
+      logger->log(Logger::A2_ERROR, __FILE__, __LINE__, msg, ex);      \
+  }
 
 } // namespace aria2
 

@@ -39,12 +39,14 @@
 #include "RecoverableException.h"
 #include "message.h"
 #include "Logger.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
 DHTPeerAnnounceCommand::DHTPeerAnnounceCommand
-(cuid_t cuid, DownloadEngine* e, time_t interval):
-  TimeBasedCommand(cuid, e, interval) {}
+(cuid_t cuid, DownloadEngine* e, time_t interval)
+  : TimeBasedCommand(cuid, e, interval)
+{}
 
 DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() {}
 
@@ -61,7 +63,7 @@ void DHTPeerAnnounceCommand::process()
   try {
     peerAnnounceStorage_->handleTimeout();
   } catch(RecoverableException& e) {
-    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
 }
 

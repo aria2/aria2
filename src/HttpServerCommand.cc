@@ -38,6 +38,7 @@
 #include "HttpServer.h"
 #include "HttpHeader.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "HttpServerBodyCommand.h"
@@ -47,15 +48,18 @@
 #include "Option.h"
 #include "util.h"
 #include "wallclock.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-HttpServerCommand::HttpServerCommand(cuid_t cuid, DownloadEngine* e,
-                                     const SharedHandle<SocketCore>& socket):
-  Command(cuid),
-  e_(e),
-  socket_(socket),
-  httpServer_(new HttpServer(socket, e))
+HttpServerCommand::HttpServerCommand
+(cuid_t cuid,
+ DownloadEngine* e,
+ const SharedHandle<SocketCore>& socket)
+  : Command(cuid),
+    e_(e),
+    socket_(socket),
+    httpServer_(new HttpServer(socket, e))
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   e_->addSocketForReadCheck(socket_, this);
@@ -68,14 +72,15 @@ HttpServerCommand::HttpServerCommand(cuid_t cuid, DownloadEngine* e,
 #endif // !HAVE_LIBZ
 }
 
-HttpServerCommand::HttpServerCommand(cuid_t cuid,
-                                     const SharedHandle<HttpServer>& httpServer,
-                                     DownloadEngine* e,
-                                     const SharedHandle<SocketCore>& socket):
-  Command(cuid),
-  e_(e),
-  socket_(socket),
-  httpServer_(httpServer)
+HttpServerCommand::HttpServerCommand
+(cuid_t cuid,
+ const SharedHandle<HttpServer>& httpServer,
+ DownloadEngine* e,
+ const SharedHandle<SocketCore>& socket)
+  : Command(cuid),
+    e_(e),
+    socket_(socket),
+    httpServer_(httpServer)
 {
   e_->addSocketForReadCheck(socket_, this);
 }
@@ -115,10 +120,10 @@ bool HttpServerCommand::execute()
       if(static_cast<uint64_t>
          (e_->getOption()->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
          httpServer_->getContentLength()) {
-        getLogger()->info("Request too long. ContentLength=%s."
-                          " See --xml-rpc-max-request-size option to loose"
-                          " this limitation.",
-                          util::uitos(httpServer_->getContentLength()).c_str());
+        A2_LOG_INFO(fmt("Request too long. ContentLength=%s."
+                        " See --xml-rpc-max-request-size option to loose"
+                        " this limitation.",
+                        util::uitos(httpServer_->getContentLength()).c_str()));
         return true;
       }
       Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,
@@ -128,7 +133,7 @@ bool HttpServerCommand::execute()
       return true;
     } else {
       if(timeoutTimer_.difference(global::wallclock) >= 30) {
-        getLogger()->info("HTTP request timeout.");
+        A2_LOG_INFO("HTTP request timeout.");
         return true;
       } else {
         e_->addCommand(this);
@@ -136,10 +141,9 @@ bool HttpServerCommand::execute()
       }
     }
   } catch(RecoverableException& e) {
-    if(getLogger()->info()) {
-      getLogger()->info("CUID#%s - Error occurred while reading HTTP request",
-                        e, util::itos(getCuid()).c_str());
-    }
+    A2_LOG_INFO_EX(fmt("CUID#%s - Error occurred while reading HTTP request",
+                       util::itos(getCuid()).c_str()),
+                   e);
     return true;
   }
 

@@ -37,8 +37,6 @@
 #include "DlAbortEx.h"
 #include "HandshakeExtensionMessage.h"
 #include "UTPexExtensionMessage.h"
-#include "LogFactory.h"
-#include "Logger.h"
 #include "StringFormat.h"
 #include "PeerStorage.h"
 #include "ExtensionMessageRegistry.h"
@@ -56,18 +54,18 @@
 
 namespace aria2 {
 
-DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
-  messageFactory_(0),
-  dispatcher_(0),
-  tracker_(0),
-  logger_(LogFactory::getInstance()) {}
+DefaultExtensionMessageFactory::DefaultExtensionMessageFactory()
+  : messageFactory_(0),
+    dispatcher_(0),
+    tracker_(0)
+{}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
 (const SharedHandle<Peer>& peer,
- const SharedHandle<ExtensionMessageRegistry>& registry):
-  peer_(peer),
-  registry_(registry),
-  logger_(LogFactory::getInstance()) {}
+ const SharedHandle<ExtensionMessageRegistry>& registry)
+  : peer_(peer),
+    registry_(registry)
+{}
 
 DefaultExtensionMessageFactory::~DefaultExtensionMessageFactory() {}
 

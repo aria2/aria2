@@ -67,6 +67,7 @@
 #include "Command.h"
 #include "FileEntry.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
 #include "Segment.h"
@@ -80,20 +81,20 @@ namespace aria2 {
 RequestGroupMan::RequestGroupMan
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
  unsigned int maxSimultaneousDownloads,
- const Option* option):
-  reservedGroups_(requestGroups.begin(), requestGroups.end()),
-  logger_(LogFactory::getInstance()),
-  maxSimultaneousDownloads_(maxSimultaneousDownloads),
-  option_(option),
-  serverStatMan_(new ServerStatMan()),
-  maxOverallDownloadSpeedLimit_
-  (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
-  maxOverallUploadSpeedLimit_(option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT)),
-  xmlRpc_(option->getAsBool(PREF_ENABLE_XML_RPC)),
-  queueCheck_(true),
-  removedErrorResult_(0),
-  removedLastErrorResult_(downloadresultcode::FINISHED),
-  maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT))
+ const Option* option)
+  : reservedGroups_(requestGroups.begin(), requestGroups.end()),
+    maxSimultaneousDownloads_(maxSimultaneousDownloads),
+    option_(option),
+    serverStatMan_(new ServerStatMan()),
+    maxOverallDownloadSpeedLimit_
+    (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
+    maxOverallUploadSpeedLimit_(option->getAsInt
+                                (PREF_MAX_OVERALL_UPLOAD_LIMIT)),
+    xmlRpc_(option->getAsBool(PREF_ENABLE_XML_RPC)),
+    queueCheck_(true),
+    removedErrorResult_(0),
+    removedLastErrorResult_(downloadresultcode::FINISHED),
+    maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT))
 {}
 
 RequestGroupMan::~RequestGroupMan() {}
@@ -296,9 +297,9 @@ private:
       // ".sig".
       std::string signatureFile = group->getFirstFilePath()+".sig";
       if(sig->save(signatureFile)) {
-        logger_->notice(MSG_SIGNATURE_SAVED, signatureFile.c_str());
+        A2_LOG_NOTICE(fmt(MSG_SIGNATURE_SAVED, signatureFile.c_str()));
       } else {
-        logger_->notice(MSG_SIGNATURE_NOT_SAVED, signatureFile.c_str());
+        A2_LOG_NOTICE(fmt(MSG_SIGNATURE_NOT_SAVED, signatureFile.c_str()));
       }
     }
   }
@@ -306,11 +307,11 @@ public:
   ProcessStoppedRequestGroup
   (DownloadEngine* e,
    std::deque<SharedHandle<DownloadResult> >& downloadResults,
-   std::deque<SharedHandle<RequestGroup> >& reservedGroups):
-    e_(e),
-    downloadResults_(downloadResults),
-    reservedGroups_(reservedGroups),
-    logger_(LogFactory::getInstance()) {}
+   std::deque<SharedHandle<RequestGroup> >& reservedGroups)
+    : e_(e),
+      downloadResults_(downloadResults),
+      reservedGroups_(reservedGroups)
+  {}
 
   void operator()(const SharedHandle<RequestGroup>& group)
   {
@@ -341,21 +342,21 @@ public:
           std::vector<SharedHandle<RequestGroup> > nextGroups;
           group->postDownloadProcessing(nextGroups);
           if(!nextGroups.empty()) {
-            if(logger_->debug()) {
-              logger_->debug
-                ("Adding %lu RequestGroups as a result of PostDownloadHandler.",
-                 static_cast<unsigned long>(nextGroups.size()));
-            }
+            A2_LOG_DEBUG
+              (fmt("Adding %lu RequestGroups as a result of"
+                   " PostDownloadHandler.",
+                   static_cast<unsigned long>(nextGroups.size())));
             e_->getRequestGroupMan()->insertReservedGroup(0, nextGroups);
           }
         } else {
-          logger_->notice("Download GID#%s not complete: %s",
-                          util::itos(group->getGID()).c_str(),
-                          group->getDownloadContext()->getBasePath().c_str());
+          A2_LOG_NOTICE
+            (fmt("Download GID#%s not complete: %s",
+                 util::itos(group->getGID()).c_str(),
+                 group->getDownloadContext()->getBasePath().c_str()));
           group->saveControlFile();
         }
       } catch(RecoverableException& ex) {
-        logger_->error(EX_EXCEPTION_CAUGHT, ex);
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       }
       if(group->isPauseRequested()) {
         reservedGroups_.push_front(group);
@@ -454,10 +455,8 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 
   size_t numRemoved = numPrev-requestGroups_.size();
   if(numRemoved > 0) {
-    if(logger_->debug()) {
-      logger_->debug("%lu RequestGroup(s) deleted.",
-                     static_cast<unsigned long>(numRemoved));
-    }
+    A2_LOG_DEBUG(fmt("%lu RequestGroup(s) deleted.",
+                     static_cast<unsigned long>(numRemoved)));
   }
 }
 
@@ -521,15 +520,11 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       util::executeHookByOptName
         (groupToAdd, e->getOption(), PREF_ON_DOWNLOAD_START);
     } catch(RecoverableException& ex) {
-      logger_->error(EX_EXCEPTION_CAUGHT, ex);
-      if(logger_->debug()) {
-        logger_->debug("Deleting temporal commands.");
-      }
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
+      A2_LOG_DEBUG("Deleting temporal commands.");
       std::for_each(commands.begin(), commands.end(), Deleter());
       commands.clear();
-      if(logger_->debug()) {
-        logger_->debug("Commands deleted");
-      }
+      A2_LOG_DEBUG("Commands deleted");
       groupToAdd->releaseRuntimeResource(e);
       addDownloadResult(groupToAdd->createDownloadResult());
     }
@@ -539,9 +534,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
   if(count > 0) {
     e->setNoWait(true);
-    if(logger_->debug()) {
-      logger_->debug("%d RequestGroup(s) added.", count);
-    }
+    A2_LOG_DEBUG(fmt("%d RequestGroup(s) added.", count));
   }
 }
 
@@ -556,7 +549,7 @@ void RequestGroupMan::save()
       try {
         (*itr)->saveControlFile();
       } catch(RecoverableException& e) {
-        logger_->error(EX_EXCEPTION_CAUGHT, e);
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
       }
     }
   }
@@ -853,14 +846,15 @@ bool RequestGroupMan::loadServerStat(const std::string& filename)
 {
   std::ifstream in(filename.c_str(), std::ios::binary);
   if(!in) {
-    logger_->error(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED, filename.c_str());
+    A2_LOG_ERROR(fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED,
+                     filename.c_str()));
     return false;
   }
   if(serverStatMan_->load(in)) {
-    logger_->notice(MSG_SERVER_STAT_LOADED, filename.c_str());
+    A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_LOADED, filename.c_str()));
     return true;
   } else {
-    logger_->error(MSG_READING_SERVER_STAT_FILE_FAILED, filename.c_str());
+    A2_LOG_ERROR(fmt(MSG_READING_SERVER_STAT_FILE_FAILED, filename.c_str()));
     return false;
   }
 }
@@ -872,20 +866,20 @@ bool RequestGroupMan::saveServerStat(const std::string& filename) const
   {
     std::ofstream out(tempfile.c_str(), std::ios::binary);
     if(!out) {
-      logger_->error(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
-                     filename.c_str());
+      A2_LOG_ERROR(fmt(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
+                       filename.c_str()));
       return false;
     }
     if(!serverStatMan_->save(out)) {
-      logger_->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
+      A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
       return false;
     }
   }
   if(File(tempfile).renameTo(filename)) {
-    logger_->notice(MSG_SERVER_STAT_SAVED, filename.c_str());
+    A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_SAVED, filename.c_str()));
     return true;
   } else {
-    logger_->error(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str());
+    A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
     return false;
   }
 }

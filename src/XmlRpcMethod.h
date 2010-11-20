@@ -46,7 +46,6 @@ namespace aria2 {
 
 class DownloadEngine;
 class OptionParser;
-class Logger;
 class Option;
 class Exception;
 
@@ -65,8 +64,6 @@ struct XmlRpcResponse;
 class XmlRpcMethod {
 private:
   SharedHandle<OptionParser> optionParser_;
-
-  Logger* logger_;
 protected:
   // Subclass must implement this function to fulfil XmlRpcRequest
   // req.  The return value of this method is used as a return value

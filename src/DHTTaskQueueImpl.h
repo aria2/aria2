@@ -40,8 +40,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class DHTTaskQueueImpl:public DHTTaskQueue {
 private:
   DHTTaskExecutor periodicTaskQueue1_;
@@ -49,8 +47,6 @@ private:
   DHTTaskExecutor periodicTaskQueue2_;
 
   DHTTaskExecutor immediateTaskQueue_;
-
-  Logger* logger_;
 public:
   DHTTaskQueueImpl();
 

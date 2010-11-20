@@ -41,6 +41,7 @@
 #include "prefs.h"
 #include "Socket.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "Peer.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
@@ -48,6 +49,7 @@
 #include "PeerConnection.h"
 #include "RequestGroup.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -58,11 +60,10 @@ PeerInitiateConnectionCommand::PeerInitiateConnectionCommand
  DownloadEngine* e,
  const SharedHandle<BtRuntime>& btRuntime,
  bool mseHandshakeEnabled)
-  :
-  PeerAbstractCommand(cuid, peer, e),
-  requestGroup_(requestGroup),
-  btRuntime_(btRuntime),
-  mseHandshakeEnabled_(mseHandshakeEnabled)
+  : PeerAbstractCommand(cuid, peer, e),
+    requestGroup_(requestGroup),
+    btRuntime_(btRuntime),
+    mseHandshakeEnabled_(mseHandshakeEnabled)
 {
   btRuntime_->increaseConnections();
   requestGroup_->increaseNumCommand();
@@ -75,12 +76,10 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 }
 
 bool PeerInitiateConnectionCommand::executeInternal() {
-  if(getLogger()->info()) {
-    getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                      util::itos(getCuid()).c_str(),
-                      getPeer()->getIPAddress().c_str(),
-                      getPeer()->getPort());
-  }
+  A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                  util::itos(getCuid()).c_str(),
+                  getPeer()->getIPAddress().c_str(),
+                  getPeer()->getPort()));
   createSocket();
   getSocket()->establishConnection(getPeer()->getIPAddress(),
                                    getPeer()->getPort());

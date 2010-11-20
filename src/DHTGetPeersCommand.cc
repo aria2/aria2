@@ -44,20 +44,23 @@
 #include "PeerStorage.h"
 #include "Peer.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "bittorrent_helper.h"
 #include "DownloadContext.h"
 #include "wallclock.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTGetPeersCommand::DHTGetPeersCommand(cuid_t cuid,
-                                       RequestGroup* requestGroup,
-                                       DownloadEngine* e):
-  Command(cuid),
-  requestGroup_(requestGroup),
-  e_(e),
-  numRetry_(0),
-  lastGetPeerTime_(0)
+DHTGetPeersCommand::DHTGetPeersCommand
+(cuid_t cuid,
+ RequestGroup* requestGroup,
+ DownloadEngine* e)
+  : Command(cuid),
+    requestGroup_(requestGroup),
+    e_(e),
+    numRetry_(0),
+    lastGetPeerTime_(0)
 {
   requestGroup_->increaseNumCommand();
 }
@@ -79,11 +82,9 @@ bool DHTGetPeersCommand::execute()
       (btRuntime_->lessThanMinPeers() &&
        lastGetPeerTime_.difference(global::wallclock) >= GET_PEER_MIN_INTERVAL
        && !requestGroup_->downloadFinished()))) {
-    if(getLogger()->debug()) {
-      getLogger()->debug("Issuing PeerLookup for infoHash=%s",
-                         bittorrent::getInfoHashString
-                         (requestGroup_->getDownloadContext()).c_str());
-    }
+    A2_LOG_DEBUG(fmt("Issuing PeerLookup for infoHash=%s",
+                     bittorrent::getInfoHashString
+                     (requestGroup_->getDownloadContext()).c_str()));
     task_ = taskFactory_->createPeerLookupTask
       (requestGroup_->getDownloadContext(), btRuntime_, peerStorage_);
     taskQueue_->addPeriodicTask2(task_);

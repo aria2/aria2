@@ -38,6 +38,7 @@
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "message.h"
 #include "prefs.h"
 #include "util.h"
@@ -47,6 +48,7 @@
 #include "RecoverableException.h"
 #include "wallclock.h"
 #include "RequestGroupMan.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -66,12 +68,10 @@ bool FileAllocationCommand::executeInternal()
   }
   fileAllocationEntry_->allocateChunk();
   if(fileAllocationEntry_->finished()) {
-    if(getLogger()->debug()) {
-      getLogger()->debug
-        (MSG_ALLOCATION_COMPLETED,
-         static_cast<long int>(timer_.difference(global::wallclock)),
-         util::itos(getRequestGroup()->getTotalLength(), true).c_str());
-    }
+    A2_LOG_DEBUG
+      (fmt(MSG_ALLOCATION_COMPLETED,
+           static_cast<long int>(timer_.difference(global::wallclock)),
+           util::itos(getRequestGroup()->getTotalLength(), true).c_str()));
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     
     std::vector<Command*>* commands = new std::vector<Command*>();
@@ -90,11 +90,13 @@ bool FileAllocationCommand::executeInternal()
 bool FileAllocationCommand::handleException(Exception& e)
 {
   getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
-  getLogger()->error
-    (MSG_FILE_ALLOCATION_FAILURE, e, util::itos(getCuid()).c_str());
-  getLogger()->error
-    (MSG_DOWNLOAD_NOT_COMPLETE, util::itos(getCuid()).c_str(),
-     getRequestGroup()->getDownloadContext()->getBasePath().c_str());
+  A2_LOG_ERROR_EX(fmt(MSG_FILE_ALLOCATION_FAILURE,
+                      util::itos(getCuid()).c_str()),
+                  e);
+  A2_LOG_ERROR
+    (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
+         util::itos(getCuid()).c_str(),
+         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }
 

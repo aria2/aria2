@@ -68,6 +68,7 @@
 #include "RecoverableException.h"
 #include "SocketCore.h"
 #include "DownloadContext.h"
+#include "fmt.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -187,12 +188,11 @@ downloadresultcode::RESULT main(int argc, char* argv[])
     LogFactory::setConsoleOutput(false);
   }
   downloadresultcode::RESULT exitStatus = downloadresultcode::FINISHED;
-  Logger* logger = LogFactory::getInstance();
-  logger->info("<<--- --- --- ---");
-  logger->info("  --- --- --- ---");
-  logger->info("  --- --- --- --->>");
-  logger->info("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET);
-  logger->info(MSG_LOGGING_STARTED);
+  A2_LOG_INFO("<<--- --- --- ---");
+  A2_LOG_INFO("  --- --- --- ---");
+  A2_LOG_INFO("  --- --- --- --->>");
+  A2_LOG_INFO(fmt("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET));
+  A2_LOG_INFO(MSG_LOGGING_STARTED);
 
 #ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestHelper::staticSHA1DigestInit();

@@ -46,6 +46,7 @@ namespace aria2 {
 class LogFactory {
 private:
   static std::string filename_;
+  // TODO consider SharedHandle
   static Logger* logger_;
   static bool consoleOutput_;
   static Logger::LEVEL logLevel_;

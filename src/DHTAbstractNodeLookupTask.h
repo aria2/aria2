@@ -55,6 +55,7 @@
 #include "util.h"
 #include "DHTIDCloser.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -102,19 +103,15 @@ private:
       sendMessage();
     }
     if(inFlightMessage_ == 0) {
-      if(getLogger()->debug()) {
-        getLogger()->debug("Finished node_lookup for node ID %s",
-                           util::toHex(targetID_, DHT_ID_LENGTH).c_str());
-      }
+      A2_LOG_DEBUG(fmt("Finished node_lookup for node ID %s",
+                       util::toHex(targetID_, DHT_ID_LENGTH).c_str()));
       onFinish();
       updateBucket();
       setFinished(true);
     } else {
-      if(getLogger()->debug()) {
-        getLogger()->debug("%lu in flight message for node ID %s",
-                           static_cast<unsigned long>(inFlightMessage_),
-                           util::toHex(targetID_, DHT_ID_LENGTH).c_str());
-      }
+      A2_LOG_DEBUG(fmt("%lu in flight message for node ID %s",
+                       static_cast<unsigned long>(inFlightMessage_),
+                       util::toHex(targetID_, DHT_ID_LENGTH).c_str()));
     }
   }
 
@@ -167,9 +164,7 @@ public:
       inFlightMessage_ = 0;
       sendMessage();
       if(inFlightMessage_ == 0) {
-        if(getLogger()->debug()) {
-          getLogger()->debug("No message was sent in this lookup stage. Finished.");
-        }
+        A2_LOG_DEBUG("No message was sent in this lookup stage. Finished.");
         setFinished(true);
       }
     }
@@ -191,27 +186,21 @@ public:
                 DHT_ID_LENGTH) != 0) {
         entries_.push_front(*i);
         ++count;
-        if(getLogger()->debug()) {
-          getLogger()->debug("Received nodes: id=%s, ip=%s",
-                             util::toHex((*i)->node->getID(),
-                                         DHT_ID_LENGTH).c_str(),
-                             (*i)->node->getIPAddress().c_str());
-        }
+        A2_LOG_DEBUG(fmt("Received nodes: id=%s, ip=%s",
+                         util::toHex((*i)->node->getID(),
+                                     DHT_ID_LENGTH).c_str(),
+                         (*i)->node->getIPAddress().c_str()));
       }
     }
-    if(getLogger()->debug()) {
-      getLogger()->debug("%lu node lookup entries added.",
-                         static_cast<unsigned long>(count));
-    }
+    A2_LOG_DEBUG(fmt("%lu node lookup entries added.",
+                     static_cast<unsigned long>(count)));
     std::stable_sort(entries_.begin(), entries_.end(), DHTIDCloser(targetID_));
     entries_.erase
       (std::unique(entries_.begin(), entries_.end(),
                    DerefEqualTo<SharedHandle<DHTNodeLookupEntry> >()),
        entries_.end());
-    if(getLogger()->debug()) {
-      getLogger()->debug("%lu node lookup entries are unique.",
-                         static_cast<unsigned long>(entries_.size()));
-    }
+    A2_LOG_DEBUG(fmt("%lu node lookup entries are unique.",
+                     static_cast<unsigned long>(entries_.size())));
     if(entries_.size() > DHTBucket::K) {
       entries_.erase(entries_.begin()+DHTBucket::K, entries_.end());
     }
@@ -220,10 +209,8 @@ public:
 
   void onTimeout(const SharedHandle<DHTNode>& node)
   {
-    if(getLogger()->debug()) {
-      getLogger()->debug("node lookup message timeout for node ID=%s",
-                         util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
-    }
+    A2_LOG_DEBUG(fmt("node lookup message timeout for node ID=%s",
+                     util::toHex(node->getID(), DHT_ID_LENGTH).c_str()));
     --inFlightMessage_;
     for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
           entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {

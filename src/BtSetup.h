@@ -40,15 +40,12 @@
 
 namespace aria2 {
 
-class Logger;
 class RequestGroup;
 class DownloadEngine;
 class Option;
 class Command;
 
 class BtSetup {
-private:
-  Logger* logger_;
 public:
   BtSetup();
 

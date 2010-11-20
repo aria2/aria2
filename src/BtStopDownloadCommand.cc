@@ -37,8 +37,10 @@
 #include "RequestGroup.h"
 #include "BtRuntime.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "wallclock.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -46,10 +48,10 @@ BtStopDownloadCommand::BtStopDownloadCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- time_t timeout):
-  TimeBasedCommand(cuid, e, 1),
-  requestGroup_(requestGroup),
-  timeout_(timeout)
+ time_t timeout)
+  : TimeBasedCommand(cuid, e, 1),
+    requestGroup_(requestGroup),
+    timeout_(timeout)
 {}
 
 void BtStopDownloadCommand::preProcess()
@@ -58,9 +60,9 @@ void BtStopDownloadCommand::preProcess()
     enableExit();
   }
   if(checkPoint_.difference(global::wallclock) >= timeout_) {
-    getLogger()->notice("GID#%s Stop downloading torrent due to"
-                        " --bt-stop-timeout option.",
-                        util::itos(requestGroup_->getGID()).c_str());
+    A2_LOG_NOTICE(fmt("GID#%s Stop downloading torrent due to"
+                      " --bt-stop-timeout option.",
+                      util::itos(requestGroup_->getGID()).c_str()));
     requestGroup_->setForceHaltRequested(true);
     enableExit();
   }

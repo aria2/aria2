@@ -45,6 +45,7 @@
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
@@ -56,8 +57,8 @@
 
 namespace aria2 {
 
-HttpResponse::HttpResponse():cuid_(0),
-                             logger_(LogFactory::getInstance())
+HttpResponse::HttpResponse()
+  : cuid_(0)
 {}
 
 HttpResponse::~HttpResponse() {}
@@ -117,10 +118,9 @@ std::string HttpResponse::determinFilename() const
       return file;
     }
   } else {
-    if(logger_->info()) {
-      logger_->info(MSG_CONTENT_DISPOSITION_DETECTED,
-                    util::itos(cuid_).c_str(), contentDisposition.c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_CONTENT_DISPOSITION_DETECTED,
+                    util::itos(cuid_).c_str(),
+                    contentDisposition.c_str()));
     return contentDisposition;
   }
 }
@@ -150,10 +150,9 @@ void HttpResponse::processRedirect()
 {
   
   if(httpRequest_->getRequest()->redirectUri(getRedirectURI())) {
-    if(logger_->info()) {
-      logger_->info(MSG_REDIRECT, util::itos(cuid_).c_str(),
-                    httpRequest_->getRequest()->getCurrentUri().c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_REDIRECT,
+                    util::itos(cuid_).c_str(),
+                    httpRequest_->getRequest()->getCurrentUri().c_str()));
   } else {
     throw DL_RETRY_EX
       (StringFormat("CUID#%s - Redirect to %s failed. It may not be a valid"

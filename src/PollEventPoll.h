@@ -48,8 +48,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class PollEventPoll : public EventPoll {
 private:
   class KSocketEntry;
@@ -83,8 +81,6 @@ private:
   int pollfdNum_;
 
   struct pollfd* pollfds_;
-
-  Logger* logger_;
 
   bool addEvents(sock_t socket, const KEvent& event);
 

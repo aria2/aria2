@@ -47,7 +47,6 @@ class BtMessageFactory;
 class BtRequestFactory;
 class PeerConnection;
 class BtMessageValidator;
-class Logger;
 
 class AbstractBtMessage : public BtMessage {
 private:
@@ -73,14 +72,7 @@ private:
   SharedHandle<BtMessageValidator> validator_;
 
   bool metadataGetMode_;
-
-  Logger* logger_;
 protected:
-  Logger* getLogger() const
-  {
-    return logger_;
-  }
-
   const SharedHandle<PieceStorage>& getPieceStorage() const
   {
     return pieceStorage_;

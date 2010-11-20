@@ -41,13 +41,14 @@
 #include "LogFactory.h"
 #include "SimpleRandomizer.h"
 #include "wallclock.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-BtSeederStateChoke::BtSeederStateChoke():
-  round_(0),
-  lastRound_(0),
-  logger_(LogFactory::getInstance()) {}
+BtSeederStateChoke::BtSeederStateChoke()
+  : round_(0),
+    lastRound_(0)
+{}
 
 BtSeederStateChoke::~BtSeederStateChoke() {}
 
@@ -123,8 +124,9 @@ void BtSeederStateChoke::unchoke
   for(std::vector<PeerEntry>::iterator eoi = peers.end();
       r != eoi && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
-    logger_->info("RU: %s, ulspd=%u", (*r).getPeer()->getIPAddress().c_str(),
-                  (*r).getUploadSpeed());
+    A2_LOG_INFO(fmt("RU: %s, ulspd=%u",
+                    (*r).getPeer()->getIPAddress().c_str(),
+                    (*r).getUploadSpeed()));
   }
 
   if(round_ < 2) {
@@ -134,7 +136,7 @@ void BtSeederStateChoke::unchoke
       std::random_shuffle(r, peers.end(),
                           *(SimpleRandomizer::getInstance().get()));
       (*r).getPeer()->optUnchoking(true);
-      logger_->info("POU: %s", (*r).getPeer()->getIPAddress().c_str());
+      A2_LOG_INFO(fmt("POU: %s", (*r).getPeer()->getIPAddress().c_str()));
     }
   }
 }
@@ -153,7 +155,7 @@ void
 BtSeederStateChoke::executeChoke
 (const std::vector<SharedHandle<Peer> >& peerSet)
 {
-  logger_->info("Seeder state, %d choke round started", round_);
+  A2_LOG_INFO(fmt("Seeder state, %d choke round started", round_));
   lastRound_ = global::wallclock;
 
   std::vector<PeerEntry> peerEntries;

@@ -47,14 +47,19 @@
 #include "DlAbortEx.h"
 #include "File.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "SimpleRandomizer.h"
 
 namespace aria2 {
 
-DiskWriterEntry::DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry):
-  fileEntry_(fileEntry), open_(false), directIO_(false),
-  needsFileAllocation_(false) {}
+DiskWriterEntry::DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry)
+  : fileEntry_(fileEntry),
+    open_(false),
+    directIO_(false),
+    needsFileAllocation_(false)
+{}
 
 const std::string& DiskWriterEntry::getFilePath() const
 {
@@ -138,11 +143,12 @@ void DiskWriterEntry::disableDirectIO()
   directIO_ = false;
 }
 
-MultiDiskAdaptor::MultiDiskAdaptor():
-  pieceLength_(0),
-  maxOpenFiles_(DEFAULT_MAX_OPEN_FILES),
-  directIOAllowed_(false),
-  readOnly_(false) {}
+MultiDiskAdaptor::MultiDiskAdaptor()
+  : pieceLength_(0),
+    maxOpenFiles_(DEFAULT_MAX_OPEN_FILES),
+    directIOAllowed_(false),
+    readOnly_(false)
+{}
 
 MultiDiskAdaptor::~MultiDiskAdaptor() {}
 
@@ -207,31 +213,25 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
         off_t lastPieceStartOffset =
           (fileEntry->getOffset()+fileEntry->getLength()-1)/
           pieceLength_*pieceLength_;
-        if(getLogger()->debug()) {
-          getLogger()->debug("Checking adjacent backward file to %s"
-                             " whose lastPieceStartOffset+pieceLength_=%lld",
-                             fileEntry->getPath().c_str(),
-                             static_cast<long long int>
-                             (lastPieceStartOffset+pieceLength_));
-        }
+        A2_LOG_DEBUG(fmt("Checking adjacent backward file to %s"
+                         " whose lastPieceStartOffset+pieceLength_=%lld",
+                         fileEntry->getPath().c_str(),
+                         static_cast<long long int>
+                         (lastPieceStartOffset+pieceLength_)));
         ++itr;
         // adjacent backward files are not needed to be allocated. They
         // just requre DiskWriter
         for(; itr != eoi &&
               (!(*itr)->getFileEntry()->isRequested() ||
                (*itr)->getFileEntry()->getLength() == 0); ++itr) {
-          if(getLogger()->debug()) {
-            getLogger()->debug("file=%s, offset=%lld",
-                               (*itr)->getFileEntry()->getPath().c_str(),
-                               static_cast<long long int>
-                               ((*itr)->getFileEntry()->getOffset()));
-          }
+          A2_LOG_DEBUG(fmt("file=%s, offset=%lld",
+                           (*itr)->getFileEntry()->getPath().c_str(),
+                           static_cast<long long int>
+                           ((*itr)->getFileEntry()->getOffset())));
           if((*itr)->getFileEntry()->getOffset() <
              static_cast<off_t>(lastPieceStartOffset+pieceLength_)) {
-            if(getLogger()->debug()) {
-              getLogger()->debug("%s needs diskwriter",
-                                 (*itr)->getFileEntry()->getPath().c_str());
-            }
+            A2_LOG_DEBUG(fmt("%s needs diskwriter",
+                             (*itr)->getFileEntry()->getPath().c_str()));
             dwreq[(*itr)->getFileEntry()->getPath()] = true;
           } else {
             break;
@@ -251,10 +251,8 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
     if((*i)->needsFileAllocation() ||
        dwreq.find((*i)->getFileEntry()->getPath()) != dwreq.end() ||
        (*i)->fileExists()) {
-      if(getLogger()->debug()) {
-        getLogger()->debug("Creating DiskWriter for filename=%s",
-                           (*i)->getFilePath().c_str());
-      }
+      A2_LOG_DEBUG(fmt("Creating DiskWriter for filename=%s",
+                       (*i)->getFilePath().c_str()));
       (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
       if(directIOAllowed_) {
         (*i)->getDiskWriter()->allowDirectIO();
@@ -279,8 +277,8 @@ void MultiDiskAdaptor::openIfNot
 (const SharedHandle<DiskWriterEntry>& entry, void (DiskWriterEntry::*open)())
 {
   if(!entry->isOpen()) {
-    //     getLogger()->debug("DiskWriterEntry: Cache MISS. offset=%s",
-    //            util::itos(entry->getFileEntry()->getOffset()).c_str());
+    //     A2_LOG_DEBUG(fmt("DiskWriterEntry: Cache MISS. offset=%s",
+    //            util::itos(entry->getFileEntry()->getOffset()).c_str()));
  
     size_t numOpened = openedDiskWriterEntries_.size();
     (entry.get()->*open)();
@@ -298,8 +296,8 @@ void MultiDiskAdaptor::openIfNot
       openedDiskWriterEntries_.push_back(entry);
     } 
   } else {
-    //     getLogger()->debug("DiskWriterEntry: Cache HIT. offset=%s",
-    //            util::itos(entry->getFileEntry()->getOffset()).c_str());
+    //     A2_LOG_DEBUG(fmt("DiskWriterEntry: Cache HIT. offset=%s",
+    //            util::itos(entry->getFileEntry()->getOffset()).c_str()));
   }
 }
 

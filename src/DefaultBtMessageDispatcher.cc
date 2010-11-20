@@ -55,21 +55,20 @@
 #include "RequestGroupMan.h"
 #include "RequestGroup.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
-  cuid(0),
-  messageFactory_(0),
-  requestGroupMan_(0),
-  requestTimeout_(0),
-  logger_(LogFactory::getInstance()) {}
+DefaultBtMessageDispatcher::DefaultBtMessageDispatcher()
+  : cuid(0),
+    messageFactory_(0),
+    requestGroupMan_(0),
+    requestTimeout_(0)
+{}
 
 DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
 {
-  if(logger_->debug()) {
-    logger_->debug("DefaultBtMessageDispatcher::deleted");
-  }
+  A2_LOG_DEBUG("DefaultBtMessageDispatcher::deleted");
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue
@@ -147,22 +146,19 @@ class AbortOutstandingRequest {
 private:
   SharedHandle<Piece> piece_;
   cuid_t cuid_;
-  Logger* logger_;
 public:
-  AbortOutstandingRequest(const SharedHandle<Piece>& piece, cuid_t cuid):
-    piece_(piece),
-    cuid_(cuid),
-    logger_(LogFactory::getInstance()) {}
+  AbortOutstandingRequest(const SharedHandle<Piece>& piece, cuid_t cuid)
+    : piece_(piece),
+      cuid_(cuid)
+  {}
 
   void operator()(const RequestSlot& slot) const
   {
-    if(logger_->debug()) {
-      logger_->debug(MSG_DELETING_REQUEST_SLOT,
+    A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT,
                      util::itos(cuid_).c_str(),
                      static_cast<unsigned long>(slot.getIndex()),
                      slot.getBegin(),
-                     static_cast<unsigned long>(slot.getBlockIndex()));
-    }
+                     static_cast<unsigned long>(slot.getBlockIndex())));
     piece_->cancelBlock(slot.getBlockIndex());
   }
 };
@@ -196,26 +192,24 @@ private:
   cuid_t cuid_;
   SharedHandle<Peer> peer_;
   SharedHandle<PieceStorage> pieceStorage_;
-  Logger* logger_;
 public:
-  ProcessChokedRequestSlot(cuid_t cuid,
-                           const SharedHandle<Peer>& peer,
-                           const SharedHandle<PieceStorage>& pieceStorage):
-    cuid_(cuid),
-    peer_(peer),
-    pieceStorage_(pieceStorage),
-    logger_(LogFactory::getInstance()) {}
+  ProcessChokedRequestSlot
+  (cuid_t cuid,
+   const SharedHandle<Peer>& peer,
+   const SharedHandle<PieceStorage>& pieceStorage)
+    : cuid_(cuid),
+      peer_(peer),
+      pieceStorage_(pieceStorage)
+  {}
   
   void operator()(const RequestSlot& slot) const
   {
     if(!peer_->isInPeerAllowedIndexSet(slot.getIndex())) {
-      if(logger_->debug()) {
-        logger_->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
+      A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT_CHOKED,
                        util::itos(cuid_).c_str(),
                        static_cast<unsigned long>(slot.getIndex()),
                        slot.getBegin(),
-                       static_cast<unsigned long>(slot.getBlockIndex()));
-      }
+                       static_cast<unsigned long>(slot.getBlockIndex())));
       SharedHandle<Piece> piece = pieceStorage_->getPiece(slot.getIndex());
       piece->cancelBlock(slot.getBlockIndex());
     }
@@ -270,41 +264,37 @@ private:
   BtMessageDispatcher* messageDispatcher_;
   BtMessageFactory* messageFactory_;
   time_t requestTimeout_;
-  Logger* logger_;
 public:
-  ProcessStaleRequestSlot(cuid_t cuid, const SharedHandle<Peer>& peer,
-                          const SharedHandle<PieceStorage>& pieceStorage,
-                          BtMessageDispatcher* dispatcher,
-                          BtMessageFactory* factory,
-                          time_t requestTimeout):
-    cuid_(cuid),
-    peer_(peer),
-    pieceStorage_(pieceStorage),
-    messageDispatcher_(dispatcher),
-    messageFactory_(factory),
-    requestTimeout_(requestTimeout),
-    logger_(LogFactory::getInstance()) {}
+  ProcessStaleRequestSlot
+  (cuid_t cuid, const SharedHandle<Peer>& peer,
+   const SharedHandle<PieceStorage>& pieceStorage,
+   BtMessageDispatcher* dispatcher,
+   BtMessageFactory* factory,
+   time_t requestTimeout)
+    : cuid_(cuid),
+      peer_(peer),
+      pieceStorage_(pieceStorage),
+      messageDispatcher_(dispatcher),
+      messageFactory_(factory),
+      requestTimeout_(requestTimeout)
+  {}
 
   void operator()(const RequestSlot& slot)
   {
     if(slot.isTimeout(requestTimeout_)) {
-      if(logger_->debug()) {
-        logger_->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
+      A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
                        util::itos(cuid_).c_str(),
                        static_cast<unsigned long>(slot.getIndex()),
                        slot.getBegin(),
-                       static_cast<unsigned long>(slot.getBlockIndex()));
-      }
+                       static_cast<unsigned long>(slot.getBlockIndex())));
       slot.getPiece()->cancelBlock(slot.getBlockIndex());
       peer_->snubbing(true);
     } else if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
-      if(logger_->debug()) {
-        logger_->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
+      A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
                        util::itos(cuid_).c_str(),
                        static_cast<unsigned long>(slot.getIndex()),
                        slot.getBegin(),
-                       static_cast<unsigned long>(slot.getBlockIndex()));
-      }
+                       static_cast<unsigned long>(slot.getBlockIndex())));
       messageDispatcher_->addMessageToQueue
         (messageFactory_->createCancelMessage(slot.getIndex(),
                                               slot.getBegin(),

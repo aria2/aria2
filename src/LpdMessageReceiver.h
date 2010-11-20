@@ -42,7 +42,6 @@
 namespace aria2 {
 
 class SocketCore;
-class Logger;
 class LpdMessage;
 
 class LpdMessageReceiver {
@@ -51,7 +50,6 @@ private:
   std::string multicastAddress_;
   uint16_t multicastPort_;
   std::string localAddress_;
-  Logger* logger_;
 public:
   // Currently only IPv4 multicastAddresses are supported.
   LpdMessageReceiver

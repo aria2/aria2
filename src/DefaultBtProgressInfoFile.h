@@ -43,7 +43,6 @@ class DownloadContext;
 class PieceStorage;
 class PeerStorage;
 class BtRuntime;
-class Logger;
 class Option;
 
 class DefaultBtProgressInfoFile : public BtProgressInfoFile {
@@ -55,7 +54,6 @@ private:
   SharedHandle<BtRuntime> btRuntime_;
 #endif // ENABLE_BITTORRENT
   const Option* option_;
-  Logger* logger_;
   std::string filename_;
 
   bool isTorrentDownload();

@@ -46,20 +46,21 @@
 #include "Logger.h"
 #include "Base64.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-HttpServer::HttpServer(const SharedHandle<SocketCore>& socket,
-                       DownloadEngine* e):
-  socket_(socket),
-  socketBuffer_(socket),
-  e_(e),
-  headerProcessor_(new HttpHeaderProcessor()),
-  logger_(LogFactory::getInstance()),
-  keepAlive_(true),
-  gzip_(false),
-  acceptsPersistentConnection_(true),
-  acceptsGZip_(false)
+HttpServer::HttpServer
+(const SharedHandle<SocketCore>& socket,
+ DownloadEngine* e)
+ : socket_(socket),
+   socketBuffer_(socket),
+   e_(e),
+   headerProcessor_(new HttpHeaderProcessor()),
+   keepAlive_(true),
+   gzip_(false),
+   acceptsPersistentConnection_(true),
+   acceptsGZip_(false)
 {}
 
 HttpServer::~HttpServer() {}
@@ -83,8 +84,8 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
 
   SharedHandle<HttpHeader> header = headerProcessor_->getHttpRequestHeader();
   if(header) {
-    logger_->info("HTTP Server received request\n%s",
-                  headerProcessor_->getHeaderString().c_str());
+    A2_LOG_INFO(fmt("HTTP Server received request\n%s",
+                    headerProcessor_->getHeaderString().c_str()));
     lastRequestHeader_ = header;
     lastBody_.clear();
     lastBody_.str("");
@@ -165,9 +166,7 @@ void HttpServer::feedResponse(const std::string& status,
   }
 
   header += "\r\n";
-  if(logger_->debug()) {
-    logger_->debug("HTTP Server sends response:\n%s", header.c_str());
-  }
+  A2_LOG_DEBUG(fmt("HTTP Server sends response:\n%s", header.c_str()));
   socketBuffer_.pushStr(header);
   socketBuffer_.pushStr(text);
 }

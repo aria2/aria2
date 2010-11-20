@@ -40,13 +40,9 @@
 
 namespace aria2 {
 
-class Logger;
-
 class UTMetadataPostDownloadHandler:public PostDownloadHandler
 {
 private:
-  Logger* logger_;
-
   class Criteria:public RequestGroupCriteria
   {
   public:

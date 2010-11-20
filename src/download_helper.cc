@@ -52,6 +52,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "FileEntry.h"
 #include "LogFactory.h"
 #include "File.h"
@@ -401,7 +402,7 @@ public:
       } catch(RecoverableException& e) {
         // error occurred while parsing torrent file.
         // We simply ignore it. 
-        LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
       }
     } else if(!ignoreLocalPath_ && detector_.guessTorrentFile(uri)) {
       try {
@@ -410,7 +411,7 @@ public:
       } catch(RecoverableException& e) {
         // error occurred while parsing torrent file.
         // We simply ignore it. 
-        LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
       }
     } 
 #endif // ENABLE_BITTORRENT
@@ -421,12 +422,12 @@ public:
       } catch(RecoverableException& e) {
         // error occurred while parsing metalink file.
         // We simply ignore it.
-        LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
       }
     }
 #endif // ENABLE_METALINK
     else {
-      LogFactory::getInstance()->error(MSG_UNRECOGNIZED_URI, (uri).c_str());
+      A2_LOG_ERROR(fmt(MSG_UNRECOGNIZED_URI, (uri).c_str()));
     }
   }
 };

@@ -45,7 +45,6 @@ class DHTMessageDispatcher;
 class DHTRoutingTable;
 class DHTPeerAnnounceStorage;
 class DHTTokenTracker;
-class Logger;
 class DHTMessage;
 class DHTAbstractMessage;
 
@@ -64,8 +63,6 @@ private:
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
   DHTTokenTracker* tokenTracker_;
-
-  Logger* logger_;
   
   // search node in routingTable. If it is not found, create new one.
   SharedHandle<DHTNode> getRemoteNode

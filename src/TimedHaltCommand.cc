@@ -36,15 +36,19 @@
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "message.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-TimedHaltCommand::TimedHaltCommand(cuid_t cuid, DownloadEngine* e,
-                                   time_t secondsToHalt,
-                                   bool forceHalt):
-  TimeBasedCommand(cuid, e, secondsToHalt, true),
-  forceHalt_(forceHalt) {}
+TimedHaltCommand::TimedHaltCommand
+(cuid_t cuid, DownloadEngine* e,
+ time_t secondsToHalt,
+ bool forceHalt)
+  : TimeBasedCommand(cuid, e, secondsToHalt, true),
+    forceHalt_(forceHalt)
+{}
 
 TimedHaltCommand::~TimedHaltCommand() {}
 
@@ -59,10 +63,10 @@ void TimedHaltCommand::preProcess()
 void TimedHaltCommand::process()
 {
   if(!getDownloadEngine()->isHaltRequested()) {
-    getLogger()->notice(MSG_TIME_HAS_PASSED,
-                        static_cast<long int>(getInterval()));
+    A2_LOG_NOTICE(fmt(MSG_TIME_HAS_PASSED,
+                      static_cast<long int>(getInterval())));
     if(forceHalt_) {
-      getLogger()->notice("This is emergency shutdown.");
+      A2_LOG_NOTICE("This is emergency shutdown.");
       getDownloadEngine()->requestForceHalt();
     } else {
       getDownloadEngine()->requestHalt();

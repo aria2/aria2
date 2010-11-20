@@ -48,13 +48,9 @@ class DHTMessageFactory;
 class DHTMessage;
 class DHTTaskQueue;
 
-class Logger;
-
 class DHTAbstractTask:public DHTTask {
 private:
   bool finished_;
-  
-  Logger* logger_;
   
   SharedHandle<DHTNode> localNode_;
 
@@ -69,11 +65,6 @@ protected:
   void setFinished(bool f)
   {
     finished_ = f;
-  }
-
-  Logger* getLogger() const
-  {
-    return logger_;
   }
 public:
   DHTAbstractTask();

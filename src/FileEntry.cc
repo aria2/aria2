@@ -39,31 +39,38 @@
 
 #include "util.h"
 #include "URISelector.h"
+#include "Logger.h"
 #include "LogFactory.h"
 #include "wallclock.h"
 #include "a2algo.h"
 #include "uri.h"
 #include "PeerStat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-FileEntry::FileEntry(const std::string& path,
-                     uint64_t length,
-                     off_t offset,
-                     const std::vector<std::string>& uris):
-  path_(path), uris_(uris.begin(), uris.end()), length_(length),
-  offset_(offset),
-  requested_(true),
-  uniqueProtocol_(false),
-  maxConnectionPerServer_(1),
-  lastFasterReplace_(0),
-  logger_(LogFactory::getInstance()) {}
+FileEntry::FileEntry
+(const std::string& path,
+ uint64_t length,
+ off_t offset,
+ const std::vector<std::string>& uris)
+  : path_(path),
+    uris_(uris.begin(), uris.end()),
+    length_(length),
+    offset_(offset),
+    requested_(true),
+    uniqueProtocol_(false),
+    maxConnectionPerServer_(1),
+    lastFasterReplace_(0)
+{}
 
-FileEntry::FileEntry():
-  length_(0), offset_(0), requested_(false),
-  uniqueProtocol_(false),
-  maxConnectionPerServer_(1),
-  logger_(LogFactory::getInstance()) {}
+FileEntry::FileEntry()
+ : length_(0),
+   offset_(0),
+   requested_(false),
+   uniqueProtocol_(false),
+   maxConnectionPerServer_(1)
+{}
 
 FileEntry::~FileEntry() {}
 
@@ -172,9 +179,7 @@ FileEntry::getRequest
     req = requestPool_.front();
     requestPool_.pop_front();
     inFlightRequests_.push_back(req);
-    if(logger_->debug()) {
-      logger_->debug("Picked up from pool: %s", req->getUri().c_str());
-    }
+    A2_LOG_DEBUG(fmt("Picked up from pool: %s", req->getUri().c_str()));
   }
   return req;
 }
@@ -273,11 +278,9 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
       newURIs.push_back(*itr);
     }
   }
-  if(logger_->debug()) {
-    logger_->debug("Removed %lu duplicate hostname URIs for path=%s",
+  A2_LOG_DEBUG(fmt("Removed %lu duplicate hostname URIs for path=%s",
                    static_cast<unsigned long>(uris_.size()-newURIs.size()),
-                   getPath().c_str());
-  }
+                   getPath().c_str()));
   uris_.swap(newURIs);
 }
 
@@ -317,10 +320,10 @@ void FileEntry::extractURIResult
 
 void FileEntry::reuseUri(const std::vector<std::string>& ignore)
 {
-  if(logger_->debug()) {
+  if(A2_LOG_DEBUG_ENABLED) {
     for(std::vector<std::string>::const_iterator i = ignore.begin(),
           eoi = ignore.end(); i != eoi; ++i) {
-      logger_->debug("ignore host=%s", (*i).c_str());
+      A2_LOG_DEBUG(fmt("ignore host=%s", (*i).c_str()));
     }
   }
   std::deque<std::string> uris = spentUris_;
@@ -333,10 +336,10 @@ void FileEntry::reuseUri(const std::vector<std::string>& ignore)
   std::sort(errorUris.begin(), errorUris.end());
   errorUris.erase(std::unique(errorUris.begin(), errorUris.end()),
                   errorUris.end());
-  if(logger_->debug()) {
+  if(A2_LOG_DEBUG_ENABLED) {
     for(std::vector<std::string>::const_iterator i = errorUris.begin(),
           eoi = errorUris.end(); i != eoi; ++i) {
-      logger_->debug("error URI=%s", (*i).c_str());
+      A2_LOG_DEBUG(fmt("error URI=%s", (*i).c_str()));
     }
   }
   std::vector<std::string> reusableURIs;
@@ -357,11 +360,12 @@ void FileEntry::reuseUri(const std::vector<std::string>& ignore)
   }
   reusableURIs.erase(insertionPoint, reusableURIs.end());
   size_t ininum = reusableURIs.size();
-  if(logger_->debug()) {
-    logger_->debug("Found %u reusable URIs", static_cast<unsigned int>(ininum));
+  if(A2_LOG_DEBUG_ENABLED) {
+    A2_LOG_DEBUG(fmt("Found %u reusable URIs",
+                     static_cast<unsigned int>(ininum)));
     for(std::vector<std::string>::const_iterator i = reusableURIs.begin(),
           eoi = reusableURIs.end(); i != eoi; ++i) {
-      logger_->debug("URI=%s", (*i).c_str());
+      A2_LOG_DEBUG(fmt("URI=%s", (*i).c_str()));
     }
   }
   uris_.insert(uris_.end(), reusableURIs.begin(), reusableURIs.end());

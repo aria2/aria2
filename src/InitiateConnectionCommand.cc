@@ -37,6 +37,7 @@
 #include "DownloadEngine.h"
 #include "Option.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "message.h"
 #include "prefs.h"
 #include "NameResolver.h"
@@ -48,6 +49,7 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "util.h"
 #include "RecoverableException.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -56,8 +58,8 @@ InitiateConnectionCommand::InitiateConnectionCommand
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- DownloadEngine* e):
-  AbstractCommand(cuid, req, fileEntry, requestGroup, e)
+ DownloadEngine* e)
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e)
 {
   setTimeout(getOption()->getAsInt(PREF_DNS_TIMEOUT));
   // give a chance to be executed in the next loop in DownloadEngine
@@ -97,11 +99,10 @@ bool InitiateConnectionCommand::executeInternal() {
     // TODO ipaddr might not be used if pooled sockt was found.
     getDownloadEngine()->markBadIPAddress(hostname, ipaddr, port);
     if(!getDownloadEngine()->findCachedIPAddress(hostname, port).empty()) {
-      if(getLogger()->info()) {
-        getLogger()->info(EX_EXCEPTION_CAUGHT, ex);
-        getLogger()->info(MSG_CONNECT_FAILED_AND_RETRY,
-                          util::itos(getCuid()).c_str(), ipaddr.c_str(), port);
-      }
+      A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, ex);
+      A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
+                      util::itos(getCuid()).c_str(),
+                      ipaddr.c_str(), port));
       Command* command =
         InitiateConnectionCommandFactory::createInitiateConnectionCommand
         (getCuid(), getRequest(), getFileEntry(), getRequestGroup(),

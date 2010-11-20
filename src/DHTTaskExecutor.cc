@@ -40,12 +40,13 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTTaskExecutor::DHTTaskExecutor(size_t numConcurrent):
-  numConcurrent_(numConcurrent),
-  logger_(LogFactory::getInstance()) {}
+DHTTaskExecutor::DHTTaskExecutor(size_t numConcurrent)
+  : numConcurrent_(numConcurrent)
+{}
 
 DHTTaskExecutor::~DHTTaskExecutor() {}
 
@@ -64,11 +65,9 @@ void DHTTaskExecutor::update()
       --r;
     }
   }
-  if(logger_->debug()) {
-    logger_->debug("Executing %u Task(s). Queue has %u task(s).",
+  A2_LOG_DEBUG(fmt("Executing %u Task(s). Queue has %u task(s).",
                    static_cast<unsigned int>(getExecutingTaskSize()),
-                   static_cast<unsigned int>(getQueueSize()));
-  }
+                   static_cast<unsigned int>(getQueueSize())));
 }
 
 } // namespace aria2

@@ -37,15 +37,17 @@
 #include "CheckIntegrityCommand.h"
 #include "message.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 CheckIntegrityDispatcherCommand::CheckIntegrityDispatcherCommand
 (cuid_t cuid,
  const SharedHandle<CheckIntegrityMan>& fileAllocMan,
- DownloadEngine* e):SequentialDispatcherCommand<CheckIntegrityEntry>
-                    (cuid, fileAllocMan, e)
+ DownloadEngine* e)
+  : SequentialDispatcherCommand<CheckIntegrityEntry>(cuid, fileAllocMan, e)
 {
   setStatusRealtime();
 }
@@ -54,11 +56,9 @@ Command* CheckIntegrityDispatcherCommand::createCommand
 (const SharedHandle<CheckIntegrityEntry>& entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
-  if(getLogger()->info()) {
-    getLogger()->info("CUID#%s - Dispatching CheckIntegrityCommand CUID#%s.",
-                      util::itos(getCuid()).c_str(),
-                      util::itos(newCUID).c_str());
-  }
+  A2_LOG_INFO(fmt("CUID#%s - Dispatching CheckIntegrityCommand CUID#%s.",
+                  util::itos(getCuid()).c_str(),
+                  util::itos(newCUID).c_str()));
   return new CheckIntegrityCommand
     (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);
 }

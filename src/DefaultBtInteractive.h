@@ -58,7 +58,6 @@ class PeerConnection;
 class ExtensionMessageFactory;
 class ExtensionMessageRegistry;
 class DHTNode;
-class Logger;
 class RequestGroupMan;
 class UTMetadataRequestFactory;
 class UTMetadataRequestTracker;
@@ -126,7 +125,6 @@ private:
 
   DHTNode* localNode_;
 
-  Logger* logger_;
   size_t allowedFastSetSize_;
   Timer haveTimer_;
   Timer keepAliveTimer_;

@@ -44,8 +44,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class UTMetadataRequestTracker {
 private:
   struct RequestEntry {
@@ -66,8 +64,6 @@ private:
   };
 
   std::vector<RequestEntry> trackedRequests_;
-
-  Logger* logger_;
 public:
   UTMetadataRequestTracker();
 

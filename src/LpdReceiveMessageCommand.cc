@@ -43,9 +43,11 @@
 #include "RequestGroup.h"
 #include "BtRegistry.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "LpdMessage.h"
 #include "bittorrent_helper.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -54,8 +56,12 @@ unsigned int LpdReceiveMessageCommand::numInstance_ = 0;
 LpdReceiveMessageCommand* LpdReceiveMessageCommand::instance_ = 0;
 
 LpdReceiveMessageCommand::LpdReceiveMessageCommand
-(cuid_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
- DownloadEngine* e):Command(cuid), receiver_(receiver), e_(e)
+(cuid_t cuid,
+ const SharedHandle<LpdMessageReceiver>& receiver,
+ DownloadEngine* e)
+  : Command(cuid),
+    receiver_(receiver),
+    e_(e)
 {
   e_->addSocketForReadCheck(receiver_->getSocket(), this);
   ++numInstance_;
@@ -88,17 +94,12 @@ bool LpdReceiveMessageCommand::execute()
     SharedHandle<DownloadContext> dctx =
       reg->getDownloadContext(m->getInfoHash());
     if(!dctx) {
-      if(getLogger()->debug()) {
-        getLogger()->debug("Download Context is null for infohash=%s.",
-                           util::toHex(m->getInfoHash()).c_str());
-      }
+      A2_LOG_DEBUG(fmt("Download Context is null for infohash=%s.",
+                       util::toHex(m->getInfoHash()).c_str()));
       continue;
     }
     if(bittorrent::getTorrentAttrs(dctx)->privateTorrent) {
-      if(getLogger()->debug()) {
-        getLogger()->debug
-          ("Ignore LPD message because the torrent is private.");
-      }
+      A2_LOG_DEBUG("Ignore LPD message because the torrent is private.");
       continue;
     }
     RequestGroup* group = dctx->getOwnerRequestGroup();
@@ -109,17 +110,13 @@ bool LpdReceiveMessageCommand::execute()
     assert(peerStorage);
     SharedHandle<Peer> peer = m->getPeer();
     if(peerStorage->addPeer(peer)) {
-      if(getLogger()->debug()) {
-        getLogger()->debug("LPD peer %s:%u local=%d added.",
-                           peer->getIPAddress().c_str(), peer->getPort(),
-                           peer->isLocalPeer()?1:0);
-      }
+      A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d added.",
+                       peer->getIPAddress().c_str(), peer->getPort(),
+                       peer->isLocalPeer()?1:0));
     } else {
-      if(getLogger()->debug()) {
-        getLogger()->debug("LPD peer %s:%u local=%d not added.",
-                           peer->getIPAddress().c_str(), peer->getPort(),
-                           peer->isLocalPeer()?1:0);
-      }
+      A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d not added.",
+                       peer->getIPAddress().c_str(), peer->getPort(),
+                       peer->isLocalPeer()?1:0));
     }
   }
   e_->addCommand(this);

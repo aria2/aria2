@@ -34,17 +34,17 @@
 /* copyright --> */
 #include "Command.h"
 #include "LogFactory.h"
-#include "Logger.h"
 
 namespace aria2 {
 
-Command::Command(cuid_t cuid):status_(STATUS_INACTIVE),
-                              cuid_(cuid),
-                              logger_(LogFactory::getInstance()),
-                              readEvent_(false),
-                              writeEvent_(false),
-                              errorEvent_(false),
-                              hupEvent_(false) {}
+Command::Command(cuid_t cuid)
+  : status_(STATUS_INACTIVE),
+    cuid_(cuid),
+    readEvent_(false),
+    writeEvent_(false),
+    errorEvent_(false),
+    hupEvent_(false)
+{}
 
 void Command::transitStatus()
 {

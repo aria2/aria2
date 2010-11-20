@@ -72,12 +72,14 @@
 #include "FatalException.h"
 #include "FileEntry.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "array_fun.h"
 #include "bitfield.h"
 #include "DownloadHandlerConstants.h"
 #include "RequestGroup.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "Option.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
@@ -1451,13 +1453,13 @@ void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
 
 void executeHook(const std::string& command, const std::string& arg)
 {
-  LogFactory::getInstance()->info("Executing user command: %s %s",
-                                  command.c_str(), arg.c_str());
+  A2_LOG_INFO(fmt("Executing user command: %s %s",
+                  command.c_str(),
+                  arg.c_str()));
 #ifndef __MINGW32__
   pid_t cpid = fork();
   if(cpid == -1) {
-    LogFactory::getInstance()->error("fork() failed."
-                                     " Cannot execute user command.");
+    A2_LOG_ERROR("fork() failed. Cannot execute user command.");
   } else if(cpid == 0) {
     execl(command.c_str(), command.c_str(), arg.c_str(),
           reinterpret_cast<char*>(0));
@@ -1488,9 +1490,9 @@ void executeHook(const std::string& command, const std::string& arg)
                            &si,
                            &pi);
 
-  if(!rc)
-    LogFactory::getInstance()->error("CreateProcess() failed."
-                                     " Cannot execute user command.");
+  if(!rc) {
+    A2_LOG_ERROR("CreateProcess() failed. Cannot execute user command.");
+  }
 #endif 
 }
 

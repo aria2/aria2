@@ -45,8 +45,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class SelectEventPoll : public EventPoll {
 private:
   class CommandEvent {
@@ -167,8 +165,6 @@ private:
   // this dummy socket to work around this problem
   sock_t dummySocket_;
 #endif // __MINGW32__
-
-  Logger* logger_;
 
   void updateFdSet();
 public:

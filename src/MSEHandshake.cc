@@ -55,6 +55,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "bittorrent_helper.h"
 
 namespace aria2 {
@@ -65,23 +66,23 @@ const unsigned char* MSEHandshake::GENERATOR = reinterpret_cast<const unsigned c
 
 const unsigned char MSEHandshake::VC[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-MSEHandshake::MSEHandshake(cuid_t cuid,
-                           const SocketHandle& socket,
-                           const Option* op):
-  cuid_(cuid),
-  socket_(socket),
-  option_(op),
-  logger_(LogFactory::getInstance()),
-  rbufLength_(0),
-  socketBuffer_(socket),
-  negotiatedCryptoType_(CRYPTO_NONE),
-  dh_(0),
-  initiator_(true),
-  markerIndex_(0),
-  padLength_(0),
-  iaLength_(0),
-  ia_(0),
-  sha1_(MessageDigest::sha1())
+MSEHandshake::MSEHandshake
+(cuid_t cuid,
+ const SocketHandle& socket,
+ const Option* op)
+  : cuid_(cuid),
+    socket_(socket),
+    option_(op),
+    rbufLength_(0),
+    socketBuffer_(socket),
+    negotiatedCryptoType_(CRYPTO_NONE),
+    dh_(0),
+    initiator_(true),
+    markerIndex_(0),
+    padLength_(0),
+    iaLength_(0),
+    ia_(0),
+    sha1_(MessageDigest::sha1())
 {}
 
 MSEHandshake::~MSEHandshake()
@@ -106,16 +107,12 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
   }
   if(rbuf_[0] == BtHandshakeMessage::PSTR_LENGTH &&
      memcmp(BtHandshakeMessage::BT_PSTR, rbuf_+1, 19) == 0) {
-    if(logger_->debug()) {
-      logger_->debug("CUID#%s - This is legacy BitTorrent handshake.",
-                     util::itos(cuid_).c_str());
-    }
+    A2_LOG_DEBUG(fmt("CUID#%s - This is legacy BitTorrent handshake.",
+                     util::itos(cuid_).c_str()));
     return HANDSHAKE_LEGACY;
   } else {
-    if(logger_->debug()) {
-      logger_->debug("CUID#%s - This may be encrypted BitTorrent handshake.",
-                     util::itos(cuid_).c_str());
-    }
+    A2_LOG_DEBUG(fmt("CUID#%s - This may be encrypted BitTorrent handshake.",
+                     util::itos(cuid_).c_str()));
     return HANDSHAKE_ENCRYPTED;
   }
 }
@@ -126,19 +123,15 @@ void MSEHandshake::initEncryptionFacility(bool initiator)
   dh_ = new DHKeyExchange();
   dh_->init(PRIME, PRIME_BITS, GENERATOR, 160);
   dh_->generatePublicKey();
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - DH initialized.", util::itos(cuid_).c_str());
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - DH initialized.", util::itos(cuid_).c_str()));
   initiator_ = initiator;
 }
 
 bool MSEHandshake::sendPublicKey()
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
-    if(logger_->debug()) {
-      logger_->debug("CUID#%s - Sending public key.",
-                     util::itos(cuid_).c_str());
-    }
+    A2_LOG_DEBUG(fmt("CUID#%s - Sending public key.",
+                     util::itos(cuid_).c_str()));
     unsigned char buffer[KEY_LENGTH+MAX_PAD_LENGTH];
     dh_->getPublicKey(buffer, KEY_LENGTH);
 
@@ -157,9 +150,8 @@ bool MSEHandshake::receivePublicKey()
   if(r > receiveNBytes(r)) {
     return false;
   }
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - public key received.", util::itos(cuid_).c_str());
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - public key received.",
+                   util::itos(cuid_).c_str()));
   // TODO handle exception. in catch, resbufLength = 0;
   dh_->computeSecret(secret_, sizeof(secret_), rbuf_, rbufLength_);
   // reset rbufLength_
@@ -263,10 +255,8 @@ uint16_t MSEHandshake::decodeLength16(const unsigned char* buffer)
 bool MSEHandshake::sendInitiatorStep2()
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
-    if(logger_->debug()) {
-      logger_->debug("CUID#%s - Sending negotiation step2.",
-                     util::itos(cuid_).c_str());
-    }
+    A2_LOG_DEBUG(fmt("CUID#%s - Sending negotiation step2.",
+                     util::itos(cuid_).c_str()));
     unsigned char md[20];
     createReq1Hash(md);
     socketBuffer_.pushStr(std::string(&md[0], &md[sizeof(md)]));
@@ -352,11 +342,9 @@ bool MSEHandshake::findInitiatorVCMarker()
   size_t toRead = markerIndex_+VC_LENGTH-rbufLength_;
   socket_->readData(rbuf_+rbufLength_, toRead);
   rbufLength_ += toRead;
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - VC marker found at %lu",
+  A2_LOG_DEBUG(fmt("CUID#%s - VC marker found at %lu",
                    util::itos(cuid_).c_str(),
-                   static_cast<unsigned long>(markerIndex_));
-  }
+                   static_cast<unsigned long>(markerIndex_)));
   verifyVC(rbuf_+markerIndex_);
   // reset rbufLength_
   rbufLength_ = 0;
@@ -377,17 +365,13 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
                         rbufptr, sizeof(cryptoSelect));
     if(cryptoSelect[3]&CRYPTO_PLAIN_TEXT &&
        option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-      if(logger_->debug()) {
-        logger_->debug("CUID#%s - peer prefers plaintext.",
-                       util::itos(cuid_).c_str());
-      }
+      A2_LOG_DEBUG(fmt("CUID#%s - peer prefers plaintext.",
+                       util::itos(cuid_).c_str()));
       negotiatedCryptoType_ = CRYPTO_PLAIN_TEXT;
     }
     if(cryptoSelect[3]&CRYPTO_ARC4) {
-      if(logger_->debug()) {
-        logger_->debug("CUID#%s - peer prefers ARC4",
-                       util::itos(cuid_).c_str());
-      }
+      A2_LOG_DEBUG(fmt("CUID#%s - peer prefers ARC4",
+                       util::itos(cuid_).c_str()));
       negotiatedCryptoType_ = CRYPTO_ARC4;
     }
     if(negotiatedCryptoType_ == CRYPTO_NONE) {
@@ -454,11 +438,9 @@ bool MSEHandshake::findReceiverHashMarker()
   size_t toRead = markerIndex_+20-rbufLength_;
   socket_->readData(rbuf_+rbufLength_, toRead);
   rbufLength_ += toRead;
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - Hash marker found at %lu.",
+  A2_LOG_DEBUG(fmt("CUID#%s - Hash marker found at %lu.",
                    util::itos(cuid_).c_str(),
-                   static_cast<unsigned long>(markerIndex_));
-  }
+                   static_cast<unsigned long>(markerIndex_)));
   verifyReq1Hash(rbuf_+markerIndex_);
   // reset rbufLength_
   rbufLength_ = 0;
@@ -483,11 +465,9 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
     const unsigned char* infohash = bittorrent::getInfoHash(*i);
     createReq23Hash(md, infohash);
     if(memcmp(md, rbufptr, sizeof(md)) == 0) {
-      if(logger_->debug()) {
-        logger_->debug("CUID#%s - info hash found: %s",
+      A2_LOG_DEBUG(fmt("CUID#%s - info hash found: %s",
                        util::itos(cuid_).c_str(),
-                       util::toHex(infohash, INFO_HASH_LENGTH).c_str());
-      }
+                       util::toHex(infohash, INFO_HASH_LENGTH).c_str()));
       downloadContext = *i;
       break;
     }
@@ -509,16 +489,12 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
     // For now, choose ARC4.
     if(cryptoProvide[3]&CRYPTO_PLAIN_TEXT &&
        option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-      if(logger_->debug()) {
-        logger_->debug("CUID#%s - peer provides plaintext.",
-                       util::itos(cuid_).c_str());
-      }
+      A2_LOG_DEBUG(fmt("CUID#%s - peer provides plaintext.",
+                       util::itos(cuid_).c_str()));
       negotiatedCryptoType_ = CRYPTO_PLAIN_TEXT;
     } else if(cryptoProvide[3]&CRYPTO_ARC4) {
-      if(logger_->debug()) {
-        logger_->debug("CUID#%s - peer provides ARC4.",
-                       util::itos(cuid_).c_str());
-      }
+      A2_LOG_DEBUG(fmt("CUID#%s - peer provides ARC4.",
+                       util::itos(cuid_).c_str()));
       negotiatedCryptoType_ = CRYPTO_ARC4;
     }
     if(negotiatedCryptoType_ == CRYPTO_NONE) {
@@ -543,10 +519,8 @@ bool MSEHandshake::receiveReceiverIALength()
     return false;
   }
   iaLength_ = decodeLength16(rbuf_);
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - len(IA)=%u.",
-                   util::itos(cuid_).c_str(), iaLength_);
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - len(IA)=%u.",
+                   util::itos(cuid_).c_str(), iaLength_));
   // reset rbufLength_
   rbufLength_ = 0;
   return true;
@@ -564,9 +538,7 @@ bool MSEHandshake::receiveReceiverIA()
   delete [] ia_;
   ia_ = new unsigned char[iaLength_];
   decryptor_->decrypt(ia_, iaLength_, rbuf_, iaLength_);
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - IA received.", util::itos(cuid_).c_str());
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - IA received.", util::itos(cuid_).c_str()));
   // reset rbufLength_
   rbufLength_ = 0;
   return true;
@@ -605,15 +577,11 @@ bool MSEHandshake::sendReceiverStep2()
 
 uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const char* padName)
 {
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - Verifying Pad length for %s",
-                   util::itos(cuid_).c_str(), padName);
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - Verifying Pad length for %s",
+                   util::itos(cuid_).c_str(), padName));
   uint16_t padLength = decodeLength16(padlenbuf);
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - len(%s)=%u",
-                   util::itos(cuid_).c_str(), padName, padLength);
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - len(%s)=%u",
+                   util::itos(cuid_).c_str(), padName, padLength));
   if(padLength > 512) {
     throw DL_ABORT_EX
       (StringFormat("Too large %s length: %u", padName, padLength).str());
@@ -623,9 +591,7 @@ uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const cha
 
 void MSEHandshake::verifyVC(const unsigned char* vcbuf)
 {
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - Verifying VC.", util::itos(cuid_).c_str());
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - Verifying VC.", util::itos(cuid_).c_str()));
   unsigned char vc[VC_LENGTH];
   decryptor_->decrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
   if(memcmp(VC, vc, sizeof(VC)) != 0) {
@@ -636,9 +602,7 @@ void MSEHandshake::verifyVC(const unsigned char* vcbuf)
 
 void MSEHandshake::verifyReq1Hash(const unsigned char* req1buf)
 {
-  if(logger_->debug()) {
-    logger_->debug("CUID#%s - Verifying req hash.", util::itos(cuid_).c_str());
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s - Verifying req hash.", util::itos(cuid_).c_str()));
   unsigned char md[20];
   createReq1Hash(md);
   if(memcmp(md, req1buf, sizeof(md)) != 0) {

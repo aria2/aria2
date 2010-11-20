@@ -51,7 +51,6 @@ class BtMessage;
 class BtMessageFactory;
 class Peer;
 class Piece;
-class Logger;
 class RequestGroupMan;
 
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
@@ -66,7 +65,6 @@ private:
   SharedHandle<Peer> peer_;
   RequestGroupMan* requestGroupMan_;
   time_t requestTimeout_;
-  Logger* logger_;
 public:
   DefaultBtMessageDispatcher();
 

@@ -58,6 +58,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "HttpSkipResponseCommand.h"
 #include "HttpHeader.h"
 #include "LogFactory.h"
@@ -109,11 +110,11 @@ SharedHandle<StreamFilter> getContentEncodingStreamFilter
   if(httpResponse->isContentEncodingSpecified()) {
     filter = httpResponse->getContentEncodingStreamFilter();
     if(!filter) {
-      LogFactory::getInstance()->info
-        ("Content-Encoding %s is specified, but the current implementation"
-         "doesn't support it. The decoding process is skipped and the"
-         "downloaded content will be still encoded.",
-         httpResponse->getContentEncoding().c_str());
+      A2_LOG_INFO
+        (fmt("Content-Encoding %s is specified, but the current implementation"
+             "doesn't support it. The decoding process is skipped and the"
+             "downloaded content will be still encoded.",
+             httpResponse->getContentEncoding().c_str()));
     } else {
       filter->init();
       filter->installDelegate(delegate);
@@ -134,8 +135,8 @@ HttpResponseCommand::HttpResponseCommand
  const HttpConnectionHandle& httpConnection,
  DownloadEngine* e,
  const SocketHandle& s)
-  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   httpConnection_(httpConnection)
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+    httpConnection_(httpConnection)
 {}
 
 HttpResponseCommand::~HttpResponseCommand() {}
@@ -176,9 +177,9 @@ bool HttpResponseCommand::executeInternal()
       getPieceStorage()->markAllPiecesDone();
       // Just set checksum verification done.
       getDownloadContext()->setChecksumVerified(true);
-      getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                          util::itos(getRequestGroup()->getGID()).c_str(),
-                          getRequestGroup()->getFirstFilePath().c_str());
+      A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                        util::itos(getRequestGroup()->getGID()).c_str(),
+                        getRequestGroup()->getFirstFilePath().c_str()));
       poolConnection();
       getFileEntry()->poolRequest(getRequest());
       return true;
@@ -382,9 +383,9 @@ bool HttpResponseCommand::handleOtherEncoding
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->markAllPiecesDone();
     getDownloadContext()->setChecksumVerified(true);
-    getLogger()->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(getRequestGroup()->getGID()).c_str(),
-                        getRequestGroup()->getFirstFilePath().c_str());
+    A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                      util::itos(getRequestGroup()->getGID()).c_str(),
+                      getRequestGroup()->getFirstFilePath().c_str()));
     poolConnection();
     return true;
   }

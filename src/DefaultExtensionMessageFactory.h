@@ -41,7 +41,6 @@ namespace aria2 {
 
 class PeerStorage;
 class Peer;
-class Logger;
 class ExtensionMessageRegistry;
 class DownloadContext;
 class BtMessageFactory;
@@ -63,9 +62,6 @@ private:
   BtMessageDispatcher* dispatcher_;
 
   UTMetadataRequestTracker* tracker_;
-
-  Logger* logger_;
-
 public:
   DefaultExtensionMessageFactory();
 

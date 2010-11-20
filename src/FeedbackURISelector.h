@@ -40,13 +40,10 @@
 namespace aria2 {
 
 class ServerStatMan;
-class Logger;
 
 class FeedbackURISelector:public URISelector {
 private:
   SharedHandle<ServerStatMan> serverStatMan_;
-
-  Logger* logger_;
 
   std::string selectRarer
   (const std::deque<std::string>& uris,

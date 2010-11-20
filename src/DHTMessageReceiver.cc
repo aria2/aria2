@@ -52,12 +52,13 @@
 #include "Logger.h"
 #include "util.h"
 #include "bencode2.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTMessageReceiver::DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker):
-  tracker_(tracker),
-  logger_(LogFactory::getInstance())
+DHTMessageReceiver::DHTMessageReceiver
+(const SharedHandle<DHTMessageTracker>& tracker)
+  : tracker_(tracker)
 {}
 
 DHTMessageReceiver::~DHTMessageReceiver() {}
@@ -84,13 +85,14 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
           isReply = true;
         }
       } else {
-        logger_->info("Malformed DHT message. Missing 'y' key. From:%s:%u",
-                      remoteAddr.c_str(), remotePort);
+        A2_LOG_INFO(fmt("Malformed DHT message. Missing 'y' key. From:%s:%u",
+                        remoteAddr.c_str(), remotePort));
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     } else {
-      logger_->info("Malformed DHT message. This is not a bencoded directory."
-                    " From:%s:%u", remoteAddr.c_str(), remotePort);
+      A2_LOG_INFO(fmt("Malformed DHT message. This is not a bencoded directory."
+                      " From:%s:%u",
+                      remoteAddr.c_str(), remotePort));
       return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
     if(isReply) {
@@ -111,14 +113,14 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
         factory_->createQueryMessage(dict, remoteAddr, remotePort);
       if(*message->getLocalNode() == *message->getRemoteNode()) {
         // drop message from localnode
-        logger_->info("Received DHT message from localnode.");
+        A2_LOG_INFO("Received DHT message from localnode.");
         return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
       onMessageReceived(message);
       return message;
     }
   } catch(RecoverableException& e) {
-    logger_->info("Exception thrown while receiving DHT message.", e);
+    A2_LOG_INFO_EX("Exception thrown while receiving DHT message.", e);
     return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
   }
 }
@@ -126,9 +128,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
 void DHTMessageReceiver::onMessageReceived
 (const SharedHandle<DHTMessage>& message)
 {
-  if(logger_->info()) {
-    logger_->info("Message received: %s", message->toString().c_str());
-  }
+  A2_LOG_INFO(fmt("Message received: %s", message->toString().c_str()));
   message->validate();
   message->doReceivedAction();
   message->getRemoteNode()->markGood();
@@ -149,9 +149,7 @@ DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
 {
   SharedHandle<DHTMessage> m =
     factory_->createUnknownMessage(data, length, remoteAddr, remotePort);
-  if(logger_->info()) {
-    logger_->info("Message received: %s", m->toString().c_str());
-  }
+  A2_LOG_INFO(fmt("Message received: %s", m->toString().c_str()));
   return m;
 }
 

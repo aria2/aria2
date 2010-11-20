@@ -36,6 +36,7 @@
 #include "RequestGroup.h"
 #include "Metalink2RequestGroup.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "DiskAdaptor.h"
 #include "PieceStorage.h"
 #include "DownloadHandlerConstants.h"
@@ -45,6 +46,7 @@
 #include "Option.h"
 #include "DownloadContext.h"
 #include "download_helper.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -65,10 +67,8 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
 (std::vector<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
-  if(getLogger()->debug()) {
-    getLogger()->debug("Generating RequestGroups for Metalink file %s",
-                       requestGroup->getFirstFilePath().c_str());
-  }
+  A2_LOG_DEBUG(fmt("Generating RequestGroups for Metalink file %s",
+                   requestGroup->getFirstFilePath().c_str()));
   SharedHandle<DiskAdaptor> diskAdaptor =
     requestGroup->getPieceStorage()->getDiskAdaptor();
   try {

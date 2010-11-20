@@ -50,8 +50,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class KqueueEventPoll : public EventPoll {
 private:
   class KSocketEntry;
@@ -88,8 +86,6 @@ private:
   struct kevent* kqEvents_;
 
   static const size_t KQUEUE_EVENTS_MAX = 1024;
-
-  Logger* logger_;
 
   bool addEvents(sock_t socket, const KEvent& event);
 

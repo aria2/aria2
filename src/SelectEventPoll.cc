@@ -45,6 +45,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -149,7 +150,7 @@ void SelectEventPoll::AsyncNameResolverEntry::process
 
 #endif // ENABLE_ASYNC_DNS
 
-SelectEventPoll::SelectEventPoll():logger_(LogFactory::getInstance())
+SelectEventPoll::SelectEventPoll()
 {
 #ifdef __MINGW32__
   dummySocket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -226,11 +227,11 @@ void SelectEventPoll::poll(const struct timeval& tv)
 
 #ifdef __MINGW32__
 namespace {
-void checkFdCountMingw(const fd_set& fdset, Logger* logger)
+void checkFdCountMingw(const fd_set& fdset)
 {
   if(fdset.fd_count >= FD_SETSIZE) {
-    logger->warn("The number of file descriptor exceeded FD_SETSIZE. "
-                 "Download may slow down or fail.");
+    A2_LOG_WARN("The number of file descriptor exceeded FD_SETSIZE. "
+                "Download may slow down or fail.");
   }
 }
 } // namespace
@@ -250,21 +251,21 @@ void SelectEventPoll::updateFdSet()
     sock_t fd = (*i)->getSocket();
 #ifndef __MINGW32__
     if(fd < 0 || FD_SETSIZE <= fd) {
-      logger_->warn("Detected file descriptor >= FD_SETSIZE or < 0. "
-                    "Download may slow down or fail.");
+      A2_LOG_WARN("Detected file descriptor >= FD_SETSIZE or < 0. "
+                  "Download may slow down or fail.");
       continue;
     }
 #endif // !__MINGW32__
     int events = (*i)->getEvents();
     if(events&EventPoll::EVENT_READ) {
 #ifdef __MINGW32__
-      checkFdCountMingw(rfdset_, logger_);
+      checkFdCountMingw(rfdset_);
 #endif // __MINGW32__
       FD_SET(fd, &rfdset_);
     }
     if(events&EventPoll::EVENT_WRITE) {
 #ifdef __MINGW32__
-      checkFdCountMingw(wfdset_, logger_);
+      checkFdCountMingw(wfdset_);
 #endif // __MINGW32__
       FD_SET(fd, &wfdset_);
     }
@@ -306,9 +307,7 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
     updateFdSet();
     return true;
   } else {
-    if(logger_->debug()) {
-      logger_->debug("Socket %d is not found in SocketEntries.", socket);
-    }
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
   }
 }

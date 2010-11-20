@@ -51,7 +51,6 @@ namespace aria2 {
 
 class DownloadEngine;
 class Command;
-class Logger;
 struct DownloadResult;
 class ServerStatMan;
 class ServerStat;
@@ -62,7 +61,6 @@ private:
   std::deque<SharedHandle<RequestGroup> > requestGroups_;
   std::deque<SharedHandle<RequestGroup> > reservedGroups_;
   std::deque<SharedHandle<DownloadResult> > downloadResults_;
-  Logger* logger_;
   unsigned int maxSimultaneousDownloads_;
 
   const Option* option_;

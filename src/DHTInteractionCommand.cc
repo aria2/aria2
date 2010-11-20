@@ -43,14 +43,17 @@
 #include "message.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "DHTMessageCallback.h"
 #include "DHTNode.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTInteractionCommand::DHTInteractionCommand(cuid_t cuid, DownloadEngine* e):
-  Command(cuid),
-  e_(e) {}
+DHTInteractionCommand::DHTInteractionCommand(cuid_t cuid, DownloadEngine* e)
+  : Command(cuid),
+    e_(e)
+{}
 
 DHTInteractionCommand::~DHTInteractionCommand()
 {
@@ -86,7 +89,7 @@ bool DHTInteractionCommand::execute()
   try {
     dispatcher_->sendMessages();
   } catch(RecoverableException& e) {
-    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
   e_->addCommand(this);
   return false;

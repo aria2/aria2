@@ -69,10 +69,11 @@
 #include "RecoverableException.h"
 #include "a2functional.h"
 #include "DownloadEngine.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTSetup::DHTSetup():logger_(LogFactory::getInstance()) {}
+DHTSetup::DHTSetup() {}
 
 DHTSetup::~DHTSetup() {}
 
@@ -105,8 +106,10 @@ void DHTSetup::setup
       deserializer.deserialize(in);
       localNode = deserializer.getLocalNode();
     } catch(RecoverableException& e) {
-      logger_->error("Exception caught while loading DHT routing table from %s",
-                     e, dhtFile.c_str());
+      A2_LOG_ERROR_EX
+        (fmt("Exception caught while loading DHT routing table from %s",
+             dhtFile.c_str()),
+         e);
     }
     if(!localNode) {
       localNode.reset(new DHTNode());
@@ -125,10 +128,8 @@ void DHTSetup::setup
       }
       localNode->setPort(port);
     }
-    if(logger_->debug()) {
-      logger_->debug("Initialized local node ID=%s",
-                     util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
-    }
+    A2_LOG_DEBUG(fmt("Initialized local node ID=%s",
+                     util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str()));
     SharedHandle<DHTRoutingTable> routingTable(new DHTRoutingTable(localNode));
 
     SharedHandle<DHTMessageFactoryImpl> factory
@@ -240,7 +241,7 @@ void DHTSetup::setup
         tempCommands->push_back(command);
       }
     } else {
-      logger_->info("No DHT entry point specified.");
+      A2_LOG_INFO("No DHT entry point specified.");
     }
     {
       DHTInteractionCommand* command =
@@ -288,8 +289,9 @@ void DHTSetup::setup
     commands.insert(commands.end(), tempCommands->begin(), tempCommands->end());
     tempCommands->clear();
   } catch(RecoverableException& e) {
-    logger_->error("Exception caught while initializing DHT functionality."
-                   " DHT is disabled.", e);
+    A2_LOG_ERROR_EX(fmt("Exception caught while initializing DHT functionality."
+                        " DHT is disabled."),
+                    e);
     if(family == AF_INET) {
       DHTRegistry::clearData();
     } else {

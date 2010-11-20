@@ -47,7 +47,9 @@
 #include "DHTTask.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -108,7 +110,7 @@ bool DHTEntryPointNameResolveCommand::execute()
             return false;
           }
         } catch(RecoverableException& e) {
-          getLogger()->error(EX_EXCEPTION_CAUGHT, e);
+          A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
         }
         resolver_->reset();
         entryPoints_.pop_front();
@@ -129,7 +131,7 @@ bool DHTEntryPointNameResolveCommand::execute()
             resolvedEntryPoints_.push_back(p);
             addPingTask(p);
           } catch(RecoverableException& e) {
-            getLogger()->error(EX_EXCEPTION_CAUGHT, e);
+            A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
           }
           entryPoints_.pop_front();
         }
@@ -140,7 +142,7 @@ bool DHTEntryPointNameResolveCommand::execute()
       taskQueue_->addPeriodicTask1(taskFactory_->createBucketRefreshTask());
     }
   } catch(RecoverableException& e) {
-    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
   return true;
 }
@@ -163,20 +165,17 @@ bool DHTEntryPointNameResolveCommand::resolveHostname
 {
   switch(resolver->getStatus()) {
   case AsyncNameResolver::STATUS_READY:
-    if(getLogger()->info()) {
-      getLogger()->info(MSG_RESOLVING_HOSTNAME,
-                        util::itos(getCuid()).c_str(), hostname.c_str());
-    }
+      A2_LOG_INFO(fmt(MSG_RESOLVING_HOSTNAME,
+                      util::itos(getCuid()).c_str(),
+                      hostname.c_str()));
     resolver->resolve(hostname);
     setNameResolverCheck(resolver);
     return false;
   case AsyncNameResolver::STATUS_SUCCESS:
-    if(getLogger()->info()) {
-      getLogger()->info(MSG_NAME_RESOLUTION_COMPLETE,
-                        util::itos(getCuid()).c_str(),
-                        resolver->getHostname().c_str(),
-                        resolver->getResolvedAddresses().front().c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
+                    util::itos(getCuid()).c_str(),
+                    resolver->getHostname().c_str(),
+                    resolver->getResolvedAddresses().front().c_str()));
     return true;
     break;
   case AsyncNameResolver::STATUS_ERROR:

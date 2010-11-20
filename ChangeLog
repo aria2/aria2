@@ -1,3 +1,8 @@
+2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Rewritten Logger interface. Logger now writes source file name and
+	line number in log file.
+
 2010-11-18  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Made DHTBucketTreeNode non-copyable.

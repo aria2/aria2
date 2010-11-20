@@ -42,7 +42,6 @@ namespace aria2 {
 class DownloadContext;
 class PieceStorage;
 class BitfieldMan;
-class Logger;
 class MessageDigest;
 
 class IteratableChunkChecksumValidator:public IteratableValidator
@@ -52,7 +51,6 @@ private:
   SharedHandle<PieceStorage> pieceStorage_;
   SharedHandle<BitfieldMan> bitfield_;
   size_t currentIndex_;
-  Logger* logger_;
   SharedHandle<MessageDigest> ctx_;
   unsigned char* buffer_;
 

@@ -55,6 +55,7 @@
 #include "a2functional.h"
 #include "Option.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "RarestPieceSelector.h"
 #include "array_fun.h"
 #include "PieceStatMan.h"
@@ -67,20 +68,20 @@
 namespace aria2 {
 
 DefaultPieceStorage::DefaultPieceStorage
-(const SharedHandle<DownloadContext>& downloadContext, const Option* option):
-  downloadContext_(downloadContext),
-  bitfieldMan_(new BitfieldMan(downloadContext->getPieceLength(),
-                               downloadContext->getTotalLength())),
-  diskWriterFactory_(new DefaultDiskWriterFactory()),
-  endGame_(false),
-  endGamePieceNum_(END_GAME_PIECE_NUM),
-  logger_(LogFactory::getInstance()),
-  option_(option),
-  pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
-  pieceSelector_(new RarestPieceSelector(pieceStatMan_))
+(const SharedHandle<DownloadContext>& downloadContext, const Option* option)
+ : downloadContext_(downloadContext),
+   bitfieldMan_(new BitfieldMan(downloadContext->getPieceLength(),
+                                downloadContext->getTotalLength())),
+   diskWriterFactory_(new DefaultDiskWriterFactory()),
+   endGame_(false),
+   endGamePieceNum_(END_GAME_PIECE_NUM),
+   option_(option),
+   pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
+   pieceSelector_(new RarestPieceSelector(pieceStatMan_))
 {}
 
-DefaultPieceStorage::~DefaultPieceStorage() {
+DefaultPieceStorage::~DefaultPieceStorage()
+{
   delete bitfieldMan_;
 }
 
@@ -130,10 +131,8 @@ void DefaultPieceStorage::addUsedPiece(const SharedHandle<Piece>& piece)
     std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece,
                      DerefLess<SharedHandle<Piece> >());
   usedPieces_.insert(i, piece);
-  if(logger_->debug()) {
-    logger_->debug("usedPieces_.size()=%lu",
-                   static_cast<unsigned long>(usedPieces_.size()));
-  }
+  A2_LOG_DEBUG(fmt("usedPieces_.size()=%lu",
+                   static_cast<unsigned long>(usedPieces_.size())));
 }
 
 SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
@@ -428,12 +427,12 @@ void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
   if(downloadFinished()) {
     downloadContext_->resetDownloadStopTime();
     if(isSelectiveDownloadingMode()) {
-      logger_->notice(MSG_SELECTIVE_DOWNLOAD_COMPLETED);
+      A2_LOG_NOTICE(MSG_SELECTIVE_DOWNLOAD_COMPLETED);
       // following line was commented out in order to stop sending request
       // message after user-specified files were downloaded.
       //finishSelectiveDownloadingMode();
     } else {
-      logger_->info(MSG_DOWNLOAD_COMPLETED);
+      A2_LOG_INFO(MSG_DOWNLOAD_COMPLETED);
     }
 #ifdef ENABLE_BITTORRENT
     if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
@@ -561,9 +560,7 @@ bool DefaultPieceStorage::allDownloadFinished()
 void DefaultPieceStorage::initStorage()
 {
   if(downloadContext_->getFileEntries().size() == 1) {
-    if(logger_->debug()) {
-      logger_->debug("Instantiating DirectDiskAdaptor");
-    }
+    A2_LOG_DEBUG("Instantiating DirectDiskAdaptor");
     DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
     directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
     directDiskAdaptor->setFileEntries
@@ -579,9 +576,7 @@ void DefaultPieceStorage::initStorage()
     directDiskAdaptor->setDiskWriter(writer);
     diskAdaptor_ = directDiskAdaptor;
   } else {
-    if(logger_->debug()) {
-      logger_->debug("Instantiating MultiDiskAdaptor");
-    }
+    A2_LOG_DEBUG("Instantiating MultiDiskAdaptor");
     MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
     multiDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                      downloadContext_->getFileEntries().end());
@@ -671,10 +666,8 @@ void DefaultPieceStorage::removeAdvertisedPiece(time_t elapsed)
   std::deque<HaveEntry>::iterator itr =
     std::find_if(haves_.begin(), haves_.end(), FindElapsedHave(elapsed));
   if(itr != haves_.end()) {
-    if(logger_->debug()) {
-      logger_->debug(MSG_REMOVED_HAVE_ENTRY,
-                     static_cast<unsigned long>(haves_.end()-itr));
-    }
+    A2_LOG_DEBUG(fmt(MSG_REMOVED_HAVE_ENTRY,
+                     static_cast<unsigned long>(haves_.end()-itr)));
     haves_.erase(itr, haves_.end());
   }
 }

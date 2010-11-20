@@ -52,6 +52,7 @@
 #include "Piece.h"
 #include "FileEntry.h"
 #include "wallclock.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -61,17 +62,17 @@ SegmentEntry::SegmentEntry(cuid_t cuid, const SharedHandle<Segment>& segment)
 
 SegmentEntry::~SegmentEntry() {}
 
-SegmentMan::SegmentMan(const Option* option,
-                       const SharedHandle<DownloadContext>& downloadContext,
-                       const PieceStorageHandle& pieceStorage):
-  option_(option),
-  logger_(LogFactory::getInstance()),
-  downloadContext_(downloadContext),
-  pieceStorage_(pieceStorage),
-  lastPeerStatDlspdMapUpdated_(0),
-  cachedDlspd_(0),
-  ignoreBitfield_(downloadContext->getPieceLength(),
-                  downloadContext->getTotalLength())
+SegmentMan::SegmentMan
+(const Option* option,
+ const SharedHandle<DownloadContext>& downloadContext,
+ const PieceStorageHandle& pieceStorage)
+  : option_(option),
+    downloadContext_(downloadContext),
+    pieceStorage_(pieceStorage),
+    lastPeerStatDlspdMapUpdated_(0),
+    cachedDlspd_(0),
+    ignoreBitfield_(downloadContext->getPieceLength(),
+                    downloadContext->getTotalLength())
 {
   ignoreBitfield_.enableFilter();
 }
@@ -119,11 +120,9 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   if(!piece) {
     return SharedHandle<Segment>();
   }
-  if(logger_->debug()) {
-    logger_->debug("Attach segment#%lu to CUID#%s.",
+  A2_LOG_DEBUG(fmt("Attach segment#%lu to CUID#%s.",
                    static_cast<unsigned long>(piece->getIndex()),
-                   util::itos(cuid).c_str());
-  }
+                   util::itos(cuid).c_str()));
   SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {
     segment.reset(new GrowSegment(piece));
@@ -132,24 +131,21 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   }
   SegmentEntryHandle entry(new SegmentEntry(cuid, segment));
   usedSegmentEntries_.push_back(entry);
-  if(logger_->debug()) {
-    logger_->debug("index=%lu, length=%lu, segmentLength=%lu,"
+  A2_LOG_DEBUG(fmt("index=%lu, length=%lu, segmentLength=%lu,"
                    " writtenLength=%lu",
                    static_cast<unsigned long>(segment->getIndex()),
                    static_cast<unsigned long>(segment->getLength()),
                    static_cast<unsigned long>(segment->getSegmentLength()),
-                   static_cast<unsigned long>(segment->getWrittenLength()));
-  }
+                   static_cast<unsigned long>(segment->getWrittenLength())));
   if(piece->getLength() > 0) {
     std::map<size_t, size_t>::iterator positr =
       segmentWrittenLengthMemo_.find(segment->getIndex());
     if(positr != segmentWrittenLengthMemo_.end()) {
       const size_t writtenLength = (*positr).second;
-      if(logger_->debug()) {
-        logger_->debug("writtenLength(in memo)=%lu, writtenLength=%lu",
+      A2_LOG_DEBUG(fmt("writtenLength(in memo)=%lu, writtenLength=%lu",
                        static_cast<unsigned long>(writtenLength),
-                       static_cast<unsigned long>(segment->getWrittenLength()));
-      }
+                       static_cast<unsigned long>(segment->getWrittenLength()))
+                   );
       //  If the difference between cached writtenLength and segment's
       //  writtenLength is less than one block, we assume that these
       //  missing bytes are already downloaded.
@@ -255,17 +251,13 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
 
 void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
 {
-  if(logger_->debug()) {
-    logger_->debug("Canceling segment#%lu",
-                   static_cast<unsigned long>(segment->getIndex()));
-  }
+  A2_LOG_DEBUG(fmt("Canceling segment#%lu",
+                   static_cast<unsigned long>(segment->getIndex())));
   pieceStorage_->cancelPiece(segment->getPiece());
   segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
-  if(logger_->debug()) {
-    logger_->debug("Memorized segment index=%lu, writtenLength=%lu",
+  A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%lu",
                    static_cast<unsigned long>(segment->getIndex()),
-                   static_cast<unsigned long>(segment->getWrittenLength()));
-  }
+                   static_cast<unsigned long>(segment->getWrittenLength())));
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {
@@ -472,12 +464,10 @@ size_t SegmentMan::countFreePieceFrom(size_t index) const
 
 void SegmentMan::ignoreSegmentFor(const SharedHandle<FileEntry>& fileEntry)
 {
-  if(logger_->debug()) {
-    logger_->debug("ignoring segment for path=%s, offset=%s, length=%s",
+  A2_LOG_DEBUG(fmt("ignoring segment for path=%s, offset=%s, length=%s",
                    fileEntry->getPath().c_str(),
                    util::itos(fileEntry->getOffset()).c_str(),
-                   util::uitos(fileEntry->getLength()).c_str());
-  }
+                   util::uitos(fileEntry->getLength()).c_str()));
   ignoreBitfield_.addFilter(fileEntry->getOffset(), fileEntry->getLength());
 }
 

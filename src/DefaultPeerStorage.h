@@ -43,7 +43,6 @@
 
 namespace aria2 {
 
-class Logger;
 class BtRuntime;
 class BtSeederStateChoke;
 class BtLeecherStateChoke;
@@ -55,7 +54,6 @@ private:
   SharedHandle<PieceStorage> pieceStorage_;
   std::deque<SharedHandle<Peer> > peers_;
   std::deque<SharedHandle<Peer> > droppedPeers_;
-  Logger* logger_;
   uint64_t removedPeerSessionDownloadLength_;
   uint64_t removedPeerSessionUploadLength_;
 

@@ -41,10 +41,12 @@
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "HttpRequest.h"
 #include "Segment.h"
 #include "util.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
 #include "HttpHeader.h"
 #include "prefs.h"
@@ -68,14 +70,14 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
  const SharedHandle<HttpConnection>& httpConnection,
  const SharedHandle<HttpResponse>& httpResponse,
  DownloadEngine* e,
- const SharedHandle<SocketCore>& s):
-  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-  httpConnection_(httpConnection),
-  httpResponse_(httpResponse),
-  streamFilter_(new NullSinkStreamFilter()),
-  sinkFilterOnly_(true),
-  totalLength_(httpResponse_->getEntityLength()),
-  receivedBytes_(0)
+ const SharedHandle<SocketCore>& s)
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+    httpConnection_(httpConnection),
+    httpResponse_(httpResponse),
+    streamFilter_(new NullSinkStreamFilter()),
+    sinkFilterOnly_(true),
+    totalLength_(httpResponse_->getEntityLength()),
+    receivedBytes_(0)
 {}
 
 HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
@@ -133,9 +135,7 @@ bool HttpSkipResponseCommand::executeInternal()
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   } catch(RecoverableException& e) {
-    if(getLogger()->debug()) {
-      getLogger()->debug(EX_EXCEPTION_CAUGHT, e);
-    }
+    A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, e)
     return processResponse();
   }
 

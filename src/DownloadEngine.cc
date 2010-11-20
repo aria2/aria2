@@ -64,6 +64,7 @@
 #include "CheckIntegrityEntry.h"
 #include "BtProgressInfoFile.h"
 #include "DownloadContext.h"
+#include "fmt.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 #endif // ENABLE_BITTORRENT
@@ -85,17 +86,16 @@ volatile sig_atomic_t globalHaltRequested = 0;
 
 } // namespace global
 
-DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll):
-  eventPoll_(eventPoll),
-  logger_(LogFactory::getInstance()),
-  haltRequested_(false),
-  noWait_(false),
-  refreshInterval_(DEFAULT_REFRESH_INTERVAL),
-  cookieStorage_(new CookieStorage()),
+DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
+  : eventPoll_(eventPoll),
+    haltRequested_(false),
+    noWait_(false),
+    refreshInterval_(DEFAULT_REFRESH_INTERVAL),
+    cookieStorage_(new CookieStorage()),
 #ifdef ENABLE_BITTORRENT
-  btRegistry_(new BtRegistry()),
+    btRegistry_(new BtRegistry()),
 #endif // ENABLE_BITTORRENT
-  dnsCache_(new DNSCache())
+    dnsCache_(new DNSCache())
 {
   unsigned char sessionId[20];
   util::generateRandomKey(sessionId);
@@ -217,14 +217,14 @@ void DownloadEngine::afterEachIteration()
 {
   requestGroupMan_->calculateStat();
   if(global::globalHaltRequested == 1) {
-    logger_->notice(_("Shutdown sequence commencing..."
-                      " Press Ctrl-C again for emergency shutdown."));
+    A2_LOG_NOTICE(_("Shutdown sequence commencing..."
+                    " Press Ctrl-C again for emergency shutdown."));
     requestHalt();
     global::globalHaltRequested = 2;
     setNoWait(true);
     setRefreshInterval(0);
   } else if(global::globalHaltRequested == 3) {
-    logger_->notice(_("Emergency shutdown sequence commencing..."));
+    A2_LOG_NOTICE(_("Emergency shutdown sequence commencing..."));
     requestForceHalt();
     global::globalHaltRequested = 4;
     setNoWait(true);
@@ -276,15 +276,13 @@ void DownloadEngine::addRoutineCommand(Command* command)
 void DownloadEngine::poolSocket(const std::string& key,
                                 const SocketPoolEntry& entry)
 {
-  logger_->info("Pool socket for %s", key.c_str());
+  A2_LOG_INFO(fmt("Pool socket for %s", key.c_str()));
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   socketPool_.insert(p);
 
   if(lastSocketPoolScan_.difference(global::wallclock) >= 60) {
     std::multimap<std::string, SocketPoolEntry> newPool;
-    if(logger_->debug()) {
-      logger_->debug("Scaning SocketPool and erasing timed out entry.");
-    }
+    A2_LOG_DEBUG("Scaning SocketPool and erasing timed out entry.");
     lastSocketPoolScan_ = global::wallclock;
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
           socketPool_.begin(), eoi = socketPool_.end(); i != eoi; ++i) {
@@ -292,11 +290,9 @@ void DownloadEngine::poolSocket(const std::string& key,
         newPool.insert(*i);
       }
     }
-    if(logger_->debug()) {
-      logger_->debug
-        ("%lu entries removed.",
-         static_cast<unsigned long>(socketPool_.size()-newPool.size()));
-    }
+    A2_LOG_DEBUG(fmt("%lu entries removed.",
+                     static_cast<unsigned long>
+                     (socketPool_.size()-newPool.size())));
     socketPool_ = newPool;
   }
 }
@@ -402,7 +398,7 @@ DownloadEngine::findSocketPoolEntry(const std::string& key)
     // We assume that if socket is readable it means peer shutdowns
     // connection and the socket will receive EOF. So skip it.
     if(!e.isTimeout() && !e.getSocket()->isReadable(0)) {
-      logger_->info("Found socket for %s", key.c_str());
+      A2_LOG_INFO(fmt("Found socket for %s", key.c_str()));
       return i;
     }
   }

@@ -53,6 +53,7 @@
 #include "Option.h"
 #include "DlAbortEx.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "A2STR.h"
 #include "SocketCore.h"
 #include "Request.h"
@@ -61,14 +62,15 @@
 #include "bittorrent_helper.h"
 #include "a2functional.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 TrackerWatcherCommand::TrackerWatcherCommand
-(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e):
-  Command(cuid),
-  requestGroup_(requestGroup),
-  e_(e)
+(cuid_t cuid, RequestGroup* requestGroup, DownloadEngine* e)
+  : Command(cuid),
+    requestGroup_(requestGroup),
+    e_(e)
 {
   requestGroup_->increaseNumCommand();
 }
@@ -92,9 +94,7 @@ bool TrackerWatcherCommand::execute() {
     }
   }
   if(btAnnounce_->noMoreAnnounce()) {
-    if(getLogger()->debug()) {
-      getLogger()->debug("no more announce");
-    }
+    A2_LOG_DEBUG("no more announce");
     return true;
   }
   if(!trackerRequestGroup_) {
@@ -106,11 +106,9 @@ bool TrackerWatcherCommand::execute() {
         trackerRequestGroup_->createInitialCommand(*commands, e_);
         e_->addCommand(*commands);
         commands->clear();
-        if(getLogger()->debug()) {
-          getLogger()->debug("added tracker request command");
-        }
+        A2_LOG_DEBUG("added tracker request command");
       } catch(RecoverableException& ex) {
-        getLogger()->error(EX_EXCEPTION_CAUGHT, ex);
+        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       }
     }
   } else if(trackerRequestGroup_->downloadFinished()){
@@ -121,7 +119,7 @@ bool TrackerWatcherCommand::execute() {
       btAnnounce_->announceSuccess();
       btAnnounce_->resetAnnounce();
     } catch(RecoverableException& ex) {
-      getLogger()->error(EX_EXCEPTION_CAUGHT, ex);      
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);      
       btAnnounce_->announceFailure();
       if(btAnnounce_->isAllAnnounceFailed()) {
         btAnnounce_->resetAnnounce();
@@ -176,11 +174,9 @@ void TrackerWatcherCommand::processTrackerResponse
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
     e_->addCommand(command);
-    if(getLogger()->debug()) {
-      getLogger()->debug("CUID#%s - Adding new command CUID#%s",
-                         util::itos(getCuid()).c_str(),
-                         util::itos(peer->usedBy()).c_str());
-    }
+    A2_LOG_DEBUG(fmt("CUID#%s - Adding new command CUID#%s",
+                     util::itos(getCuid()).c_str(),
+                     util::itos(peer->usedBy()).c_str()));
   }
 }
 
@@ -220,13 +216,9 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   uris.push_back(uri);
   SharedHandle<RequestGroup> rg(new RequestGroup(getOption()));
   if(backupTrackerIsAvailable(requestGroup_->getDownloadContext())) {
-    if(getLogger()->debug()) {
-      getLogger()->debug("This is multi-tracker announce.");
-    }
+    A2_LOG_DEBUG("This is multi-tracker announce.");
   } else {
-    if(getLogger()->debug()) {
-      getLogger()->debug("This is single-tracker announce.");
-    }
+    A2_LOG_DEBUG("This is single-tracker announce.");
   }
   rg->setNumConcurrentCommand(1);
   // If backup tracker is available, try 2 times for each tracker
@@ -254,10 +246,8 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
   util::removeMetalinkContentTypes(rg);
-  if(getLogger()->info()) {
-    getLogger()->info("Creating tracker request group GID#%s",
-                      util::itos(rg->getGID()).c_str());
-  }
+  A2_LOG_INFO(fmt("Creating tracker request group GID#%s",
+                  util::itos(rg->getGID()).c_str()));
   return rg;
 }
 

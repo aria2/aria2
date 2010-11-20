@@ -50,7 +50,6 @@ class SocketCore;
 class HttpHeader;
 class HttpHeaderProcessor;
 class DownloadEngine;
-class Logger;
 
 class HttpServer {
 private:
@@ -58,7 +57,6 @@ private:
   SocketBuffer socketBuffer_;
   DownloadEngine* e_;
   SharedHandle<HttpHeaderProcessor> headerProcessor_;
-  Logger* logger_;
   SharedHandle<HttpHeader> lastRequestHeader_;
   uint64_t lastContentLength_;
   std::stringstream lastBody_;

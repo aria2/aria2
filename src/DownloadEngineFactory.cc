@@ -36,8 +36,6 @@
 
 #include <algorithm>
 
-#include "LogFactory.h"
-#include "Logger.h"
 #include "Option.h"
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
@@ -80,8 +78,7 @@
 
 namespace aria2 {
 
-DownloadEngineFactory::DownloadEngineFactory():
-  logger_(LogFactory::getInstance()) {}
+DownloadEngineFactory::DownloadEngineFactory() {}
 
 DownloadEngineHandle
 DownloadEngineFactory::newDownloadEngine

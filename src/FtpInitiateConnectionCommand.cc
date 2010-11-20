@@ -46,6 +46,7 @@
 #include "FtpTunnelRequestCommand.h"
 #include "DlAbortEx.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "message.h"
 #include "prefs.h"
 #include "HttpConnection.h"
@@ -53,6 +54,7 @@
 #include "util.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -88,10 +90,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
          proxyRequest->getHost(), proxyRequest->getPort());
     }
     if(!pooledSocket) {
-      if(getLogger()->info()) {
-        getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                          util::itos(getCuid()).c_str(), addr.c_str(), port);
-      }
+      A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                      util::itos(getCuid()).c_str(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
       
@@ -153,10 +153,8 @@ Command* FtpInitiateConnectionCommand::createNextCommand
        getDownloadEngine()->getAuthConfigFactory()->createAuthConfig
        (getRequest(), getOption().get())->getUser());
     if(!pooledSocket) {
-      if(getLogger()->info()) {
-        getLogger()->info(MSG_CONNECTING_TO_SERVER,
-                          util::itos(getCuid()).c_str(), addr.c_str(), port);
-      }
+      A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
+                      util::itos(getCuid()).c_str(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
       FtpNegotiationCommand* c =

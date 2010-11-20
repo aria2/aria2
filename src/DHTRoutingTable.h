@@ -49,7 +49,6 @@ class DHTBucket;
 class DHTTaskQueue;
 class DHTTaskFactory;
 class DHTBucketTreeNode;
-class Logger;
 
 class DHTRoutingTable {
 private:
@@ -62,8 +61,6 @@ private:
   SharedHandle<DHTTaskQueue> taskQueue_;
 
   SharedHandle<DHTTaskFactory> taskFactory_;
-
-  Logger* logger_;
 
   bool addNode(const SharedHandle<DHTNode>& node, bool good);
 public:

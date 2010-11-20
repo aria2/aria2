@@ -47,7 +47,6 @@ namespace aria2 {
 
 class HttpRequest;
 class HttpHeader;
-class Logger;
 class StreamFilter;
 
 class HttpResponse {
@@ -55,7 +54,6 @@ private:
   cuid_t cuid_;
   SharedHandle<HttpRequest> httpRequest_;
   SharedHandle<HttpHeader> httpHeader_;
-  Logger* logger_;
 public:
   HttpResponse();
   

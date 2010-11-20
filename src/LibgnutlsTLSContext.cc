@@ -41,13 +41,14 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "message.h"
 
 namespace aria2 {
 
-TLSContext::TLSContext():certCred_(0),
-                         peerVerificationEnabled_(false),
-                         logger_(LogFactory::getInstance())
+TLSContext::TLSContext()
+  : certCred_(0),
+    peerVerificationEnabled_(false)
 {
   int r = gnutls_certificate_allocate_credentials(&certCred_);
   if(r == GNUTLS_E_SUCCESS) {
@@ -56,8 +57,9 @@ TLSContext::TLSContext():certCred_(0),
                                         GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
   } else {
     good_ =false;
-    logger_->error("gnutls_certificate_allocate_credentials() failed."
-                   " Cause: %s", gnutls_strerror(r));
+    A2_LOG_ERROR(fmt("gnutls_certificate_allocate_credentials() failed."
+                     " Cause: %s",
+                     gnutls_strerror(r)));
   }
 }
 
@@ -86,14 +88,14 @@ bool TLSContext::addClientKeyFile(const std::string& certfile,
                                                  keyfile.c_str(),
                                                  GNUTLS_X509_FMT_PEM);
   if(ret == GNUTLS_E_SUCCESS) {
-    logger_->info("Client Key File(cert=%s, key=%s) were successfully added.",
-                  certfile.c_str(), keyfile.c_str());
+    A2_LOG_INFO(fmt("Client Key File(cert=%s, key=%s) were successfully added.",
+                    certfile.c_str(), keyfile.c_str()));
     return true;
   } else {
-    logger_->error("Failed to load client certificate from %s and"
-                   " private key from %s. Cause: %s",
-                   certfile.c_str(), keyfile.c_str(),
-                   gnutls_strerror(ret));
+    A2_LOG_ERROR(fmt("Failed to load client certificate from %s and"
+                     " private key from %s. Cause: %s",
+                     certfile.c_str(), keyfile.c_str(),
+                     gnutls_strerror(ret)));
     return false;
   }
 }
@@ -104,11 +106,11 @@ bool TLSContext::addTrustedCACertFile(const std::string& certfile)
                                                    certfile.c_str(),
                                                    GNUTLS_X509_FMT_PEM);
   if(ret < 0) {
-    logger_->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
-                   certfile.c_str(), gnutls_strerror(ret));
+    A2_LOG_ERROR(fmt(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
+                     certfile.c_str(), gnutls_strerror(ret)));
     return false;
   } else {
-    logger_->info("%d certificate(s) were imported.", ret);
+    A2_LOG_INFO(fmt("%d certificate(s) were imported.", ret));
     return true;
   }
 }

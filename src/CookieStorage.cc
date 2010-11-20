@@ -43,6 +43,7 @@
 #include "Logger.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "NsCookieParser.h"
 #include "File.h"
 #include "a2functional.h"
@@ -139,7 +140,7 @@ bool CookieStorage::DomainEntry::operator<(const DomainEntry& de) const
   return key_ < de.key_;
 }
 
-CookieStorage::CookieStorage():logger_(LogFactory::getInstance()) {}
+CookieStorage::CookieStorage() {}
 
 CookieStorage::~CookieStorage() {}
 
@@ -326,13 +327,13 @@ bool CookieStorage::load(const std::string& filename, time_t now)
   char header[16]; // "SQLite format 3" plus \0
   std::ifstream s(filename.c_str(), std::ios::binary);
   if(!s) {
-    logger_->error("Failed to open cookie file %s", filename.c_str());
+    A2_LOG_ERROR(fmt("Failed to open cookie file %s", filename.c_str()));
     return false;
   }
   s.get(header, sizeof(header));
   if(!s) {
-    logger_->error("Failed to read header of cookie file %s",
-                   filename.c_str());
+    A2_LOG_ERROR(fmt("Failed to read header of cookie file %s",
+                     filename.c_str()));
     return false;
   }
   try {
@@ -342,11 +343,9 @@ bool CookieStorage::load(const std::string& filename, time_t now)
       try {
         Sqlite3MozCookieParser(filename).parse(cookies);
       } catch(RecoverableException& e) {
-        if(logger_->info()) {
-          logger_->info(EX_EXCEPTION_CAUGHT, e);
-          logger_->info("This does not look like Firefox3 cookie file."
-                        " Retrying, assuming it is Chromium cookie file.");
-        }
+        A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+        A2_LOG_INFO("This does not look like Firefox3 cookie file."
+                    " Retrying, assuming it is Chromium cookie file.");
         // Try chrome cookie format
         Sqlite3ChromiumCookieParser(filename).parse(cookies);
       }
@@ -362,7 +361,7 @@ bool CookieStorage::load(const std::string& filename, time_t now)
     }
     return true;
   } catch(RecoverableException& e) {
-    logger_->error("Failed to load cookies from %s", filename.c_str());
+    A2_LOG_ERROR(fmt("Failed to load cookies from %s", filename.c_str()));
     return false;
   }
 }
@@ -373,7 +372,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
   {
     std::ofstream o(tempfilename.c_str(), std::ios::binary);
     if(!o) {
-      logger_->error("Cannot create cookie file %s", filename.c_str());
+      A2_LOG_ERROR(fmt("Cannot create cookie file %s", filename.c_str()));
       return false;
     }
     for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
@@ -382,15 +381,16 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     }
     o.flush();
     if(!o) {
-      logger_->error("Failed to save cookies to %s", filename.c_str());
+      A2_LOG_ERROR(fmt("Failed to save cookies to %s", filename.c_str()));
       return false;
     }  
   }
   if(File(tempfilename).renameTo(filename)) {
     return true;
   } else {
-    logger_->error("Could not rename file %s as %s",
-                   tempfilename.c_str(), filename.c_str());
+    A2_LOG_ERROR(fmt("Could not rename file %s as %s",
+                     tempfilename.c_str(),
+                     filename.c_str()));
     return false;
   }
 }

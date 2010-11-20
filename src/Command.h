@@ -39,8 +39,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 typedef int64_t cuid_t;
 
 class Command {
@@ -56,18 +54,12 @@ private:
   STATUS status_;
 
   cuid_t cuid_;
-  Logger* logger_;
 
   bool readEvent_;
   bool writeEvent_;
   bool errorEvent_;
   bool hupEvent_;
 protected:
-  Logger* getLogger() const
-  {
-    return logger_;
-  }
-
   bool readEventEnabled() const
   {
     return readEvent_;

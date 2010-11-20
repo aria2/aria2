@@ -41,15 +41,17 @@
 #include "UTMetadataRequestExtensionMessage.h"
 #include "UTMetadataRequestTracker.h"
 #include "BtMessage.h"
+#include "Logger.h"
 #include "LogFactory.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-UTMetadataRequestFactory::UTMetadataRequestFactory():
-  dispatcher_(0),
-  messageFactory_(0),
-  tracker_(0),
-  logger_(LogFactory::getInstance()) {}
+UTMetadataRequestFactory::UTMetadataRequestFactory()
+  : dispatcher_(0),
+    messageFactory_(0),
+    tracker_(0)
+{}
 
 void UTMetadataRequestFactory::create
 (std::vector<SharedHandle<BtMessage> >& msgs, size_t num,
@@ -60,16 +62,12 @@ void UTMetadataRequestFactory::create
     SharedHandle<Piece> p =
       pieceStorage->getMissingPiece(peer_, metadataRequests);
     if(!p) {
-      if(logger_->debug()) {
-        logger_->debug("No ut_metadata piece is available to download.");
-      }
+      A2_LOG_DEBUG("No ut_metadata piece is available to download.");
       break;
     }
     --num;
-    if(logger_->debug()) {
-      logger_->debug("Creating ut_metadata request index=%lu",
-                     static_cast<unsigned long>(p->getIndex()));
-    }
+    A2_LOG_DEBUG(fmt("Creating ut_metadata request index=%lu",
+                     static_cast<unsigned long>(p->getIndex())));
     SharedHandle<UTMetadataRequestExtensionMessage> m
       (new UTMetadataRequestExtensionMessage
        (peer_->getExtensionMessageID("ut_metadata")));

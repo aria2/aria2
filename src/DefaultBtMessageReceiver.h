@@ -45,7 +45,6 @@ class Peer;
 class PeerConnection;
 class BtMessageDispatcher;
 class BtMessageFactory;
-class Logger;
 
 class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:

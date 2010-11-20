@@ -43,15 +43,12 @@
 namespace aria2 {
 
 class Option;
-class Logger;
 class RequestGroup;
 class BinaryStream;
 class MetalinkEntry;
 
 class Metalink2RequestGroup {
 private:
-  Logger* logger_;
-
   void
   createRequestGroup(std::vector<SharedHandle<RequestGroup> >& groups,
                      const std::vector<SharedHandle<MetalinkEntry> >& entries,

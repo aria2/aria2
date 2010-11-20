@@ -40,8 +40,6 @@
 #include "message.h"
 #include "PieceStorage.h"
 #include "MessageDigest.h"
-#include "LogFactory.h"
-#include "Logger.h"
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
 #include "BitfieldMan.h"
@@ -54,12 +52,12 @@ namespace aria2 {
 
 IteratableChecksumValidator::IteratableChecksumValidator
 (const SharedHandle<DownloadContext>& dctx,
- const PieceStorageHandle& pieceStorage):
-  dctx_(dctx),
-  pieceStorage_(pieceStorage),
-  currentOffset_(0),
-  logger_(LogFactory::getInstance()),
-  buffer_(0) {}
+ const PieceStorageHandle& pieceStorage)
+  : dctx_(dctx),
+    pieceStorage_(pieceStorage),
+    currentOffset_(0),
+    buffer_(0)
+{}
 
 IteratableChecksumValidator::~IteratableChecksumValidator()
 {

@@ -43,14 +43,11 @@
 
 namespace aria2 {
 
-class Logger;
 class Option;
 class RequestGroup;
 class DownloadEngine;
 
 class DownloadEngineFactory {
-private:
-  Logger* logger_;
 public:
   DownloadEngineFactory();
 

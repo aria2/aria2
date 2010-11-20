@@ -39,21 +39,22 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "message.h"
 
 namespace aria2 {
 
-TLSContext::TLSContext():sslCtx_(0),
-                         peerVerificationEnabled_(false),
-                         logger_(LogFactory::getInstance())
+TLSContext::TLSContext()
+  : sslCtx_(0),
+    peerVerificationEnabled_(false)
 {
   sslCtx_ = SSL_CTX_new(SSLv23_client_method());
   if(sslCtx_) {
     good_ = true;
   } else {
     good_ = false;
-    logger_->error("SSL_CTX_new() failed. Cause: %s",
-                   ERR_error_string(ERR_get_error(), 0));
+    A2_LOG_ERROR(fmt("SSL_CTX_new() failed. Cause: %s",
+                     ERR_error_string(ERR_get_error(), 0)));
   }
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_AUTO_RETRY);
 }
@@ -78,28 +79,32 @@ bool TLSContext::addClientKeyFile(const std::string& certfile,
 {
   if(SSL_CTX_use_PrivateKey_file(sslCtx_, keyfile.c_str(),
                                  SSL_FILETYPE_PEM) != 1) {
-    logger_->error("Failed to load client private key from %s. Cause: %s",
-                   keyfile.c_str(), ERR_error_string(ERR_get_error(), 0));
+    A2_LOG_ERROR(fmt("Failed to load client private key from %s. Cause: %s",
+                     keyfile.c_str(),
+                     ERR_error_string(ERR_get_error(), 0)));
     return false;
   }
   if(SSL_CTX_use_certificate_chain_file(sslCtx_, certfile.c_str()) != 1) {
-    logger_->error("Failed to load client certificate from %s. Cause: %s",
-                   certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
+    A2_LOG_ERROR(fmt("Failed to load client certificate from %s. Cause: %s",
+                     certfile.c_str(),
+                     ERR_error_string(ERR_get_error(), 0)));
     return false;
   }
-  logger_->info("Client Key File(cert=%s, key=%s) were successfully added.",
-                certfile.c_str(), keyfile.c_str());
+  A2_LOG_INFO(fmt("Client Key File(cert=%s, key=%s) were successfully added.",
+                  certfile.c_str(),
+                  keyfile.c_str()));
   return true;
 }
 
 bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   if(SSL_CTX_load_verify_locations(sslCtx_, certfile.c_str(), 0) != 1) {
-    logger_->error(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
-                   certfile.c_str(), ERR_error_string(ERR_get_error(), 0));
+    A2_LOG_ERROR(fmt(MSG_LOADING_TRUSTED_CA_CERT_FAILED,
+                     certfile.c_str(),
+                     ERR_error_string(ERR_get_error(), 0)));
     return false;
   } else {
-    logger_->info("Trusted CA certificates were successfully added.");
+    A2_LOG_INFO("Trusted CA certificates were successfully added.");
     return true;
   }
 }

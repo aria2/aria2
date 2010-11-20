@@ -43,8 +43,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 // ServerStatMan: has many ServerStat
 // URISelector: interface
 // ServerStatURISelector: Has a reference of ServerStatMan
@@ -159,8 +157,6 @@ private:
   unsigned int multiConnectionAvgSpeed_;
 
   unsigned int counter_;
-
-  Logger* logger_;
 
   STATUS status_;
 

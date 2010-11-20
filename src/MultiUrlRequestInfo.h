@@ -47,7 +47,6 @@ namespace aria2 {
 
 class RequestGroup;
 class Option;
-class Logger;
 class StatCalc;
 
 class MultiUrlRequestInfo {
@@ -60,10 +59,7 @@ private:
 
   std::ostream& summaryOut_;
 
-  Logger* logger_;
-
   void printMessageForContinue();
-
 public:
   MultiUrlRequestInfo
   (const std::vector<SharedHandle<RequestGroup> >& requestGroups,

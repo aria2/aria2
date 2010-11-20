@@ -45,6 +45,7 @@
 #include "SegmentMan.h"
 #include "Segment.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "ChecksumCheckIntegrityEntry.h"
 #include "PieceStorage.h"
 #include "CheckIntegrityCommand.h"
@@ -56,6 +57,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "RequestGroupMan.h"
 #include "wallclock.h"
 #include "SinkStreamFilter.h"
@@ -197,10 +199,8 @@ bool DownloadCommand::executeInternal() {
       // If segment->getLength() == 0, the server doesn't provide
       // content length, but the client detected that download
       // completed.
-      if(getLogger()->info()) {
-        getLogger()->info(MSG_SEGMENT_DOWNLOAD_COMPLETED,
-                          util::itos(getCuid()).c_str());
-      }
+      A2_LOG_INFO(fmt(MSG_SEGMENT_DOWNLOAD_COMPLETED,
+                      util::itos(getCuid()).c_str()));
 #ifdef ENABLE_MESSAGE_DIGEST
 
       {
@@ -213,11 +213,8 @@ bool DownloadCommand::executeInternal() {
               !getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) &&
 #endif // ENABLE_BITTORRENT
              segment->isHashCalculated()) {
-            if(getLogger()->debug()) {
-              getLogger()->debug
-                ("Hash is available! index=%lu",
-                 static_cast<unsigned long>(segment->getIndex()));
-            }
+            A2_LOG_DEBUG(fmt("Hash is available! index=%lu",
+                             static_cast<unsigned long>(segment->getIndex())));
             validatePieceHash
               (segment, expectedPieceHash, segment->getHashString());
           } else {
@@ -340,14 +337,14 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
                                         const std::string& actualPieceHash)
 {
   if(actualPieceHash == expectedPieceHash) {
-    getLogger()->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
+    A2_LOG_INFO(fmt(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str()));
     getSegmentMan()->completeSegment(getCuid(), segment);
   } else {
-    getLogger()->info(EX_INVALID_CHUNK_CHECKSUM,
-                      static_cast<unsigned long>(segment->getIndex()),
-                      util::itos(segment->getPosition(), true).c_str(),
-                      expectedPieceHash.c_str(),
-                      actualPieceHash.c_str());
+    A2_LOG_INFO(fmt(EX_INVALID_CHUNK_CHECKSUM,
+                    static_cast<unsigned long>(segment->getIndex()),
+                    util::itos(segment->getPosition(), true).c_str(),
+                    expectedPieceHash.c_str(),
+                    actualPieceHash.c_str()));
     segment->clear();
     getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX

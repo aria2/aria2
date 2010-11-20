@@ -43,27 +43,21 @@ namespace {
 const size_t NUM_CONCURRENT_TASK = 5;
 } // namespace
 
-DHTTaskQueueImpl::DHTTaskQueueImpl():
-  periodicTaskQueue1_(NUM_CONCURRENT_TASK),
-  periodicTaskQueue2_(NUM_CONCURRENT_TASK),
-  immediateTaskQueue_(NUM_CONCURRENT_TASK),
-  logger_(LogFactory::getInstance()) {}
+DHTTaskQueueImpl::DHTTaskQueueImpl()
+  : periodicTaskQueue1_(NUM_CONCURRENT_TASK),
+    periodicTaskQueue2_(NUM_CONCURRENT_TASK),
+    immediateTaskQueue_(NUM_CONCURRENT_TASK)
+{}
 
 DHTTaskQueueImpl::~DHTTaskQueueImpl() {}
 
 void DHTTaskQueueImpl::executeTask()
 {
-  if(logger_->debug()) {
-    logger_->debug("Updating periodicTaskQueue1");
-  }
+  A2_LOG_DEBUG("Updating periodicTaskQueue1");
   periodicTaskQueue1_.update();
-  if(logger_->debug()) {
-    logger_->debug("Updating periodicTaskQueue2");
-  }
+  A2_LOG_DEBUG("Updating periodicTaskQueue2");
   periodicTaskQueue2_.update();
-  if(logger_->debug()) {
-    logger_->debug("Updating immediateTaskQueue");
-  }
+  A2_LOG_DEBUG("Updating immediateTaskQueue");
   immediateTaskQueue_.update();
 }
 

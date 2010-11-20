@@ -42,7 +42,6 @@ namespace aria2 {
 class DownloadContext;
 class PieceStorage;
 class UTMetadataRequestTracker;
-class Logger;
 
 class UTMetadataDataExtensionMessage:public UTMetadataExtensionMessage {
 private:
@@ -55,8 +54,6 @@ private:
   SharedHandle<PieceStorage> pieceStorage_;
 
   UTMetadataRequestTracker* tracker_;
-
-  Logger* logger_;
 public:
   UTMetadataDataExtensionMessage(uint8_t extensionMessageID);
 

@@ -49,17 +49,20 @@
 #include "Option.h"
 #include "message.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "a2functional.h"
 #include "FileEntry.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 DHTAutoSaveCommand::DHTAutoSaveCommand
-(cuid_t cuid, DownloadEngine* e, int family, time_t interval):
-  TimeBasedCommand(cuid, e, interval),
-  family_(family) {}
+(cuid_t cuid, DownloadEngine* e, int family, time_t interval)
+ : TimeBasedCommand(cuid, e, interval),
+   family_(family)
+{}
 
 DHTAutoSaveCommand::~DHTAutoSaveCommand() {}
 
@@ -82,7 +85,7 @@ void DHTAutoSaveCommand::save()
   std::string dhtFile =
     getDownloadEngine()->getOption()->
     get(family_ == AF_INET? PREF_DHT_FILE_PATH : PREF_DHT_FILE_PATH6);
-  getLogger()->info("Saving DHT routing table to %s.", dhtFile.c_str());
+  A2_LOG_INFO(fmt("Saving DHT routing table to %s.", dhtFile.c_str()));
 
   File tempFile(dhtFile+"__temp");
   // Removing tempFile is unnecessary because the file is truncated on
@@ -118,12 +121,13 @@ void DHTAutoSaveCommand::save()
       serializer.serialize(o);
     }
     if(!tempFile.renameTo(dhtFile)) {
-      getLogger()->error("Cannot move file from %s to %s.",
-                         tempFile.getPath().c_str(), dhtFile.c_str());
+      A2_LOG_ERROR(fmt("Cannot move file from %s to %s.",
+                       tempFile.getPath().c_str(), dhtFile.c_str()));
     }
   } catch(RecoverableException& e) {
-    getLogger()->error("Exception caught while saving DHT routing table to %s",
-                       e, dhtFile.c_str());
+    A2_LOG_ERROR_EX(fmt("Exception caught while saving DHT routing table to %s",
+                        dhtFile.c_str()),
+                    e);
   }
 }
 

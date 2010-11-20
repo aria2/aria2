@@ -47,26 +47,26 @@
 #include "bittorrent_helper.h"
 #include "bitfield.h"
 #include "wallclock.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTBucket::DHTBucket(size_t prefixLength,
-                     const unsigned char* max, const unsigned char* min,
-                     const SharedHandle<DHTNode>& localNode):
-  prefixLength_(prefixLength),
-  localNode_(localNode),
-  lastUpdated_(global::wallclock),
-  logger_(LogFactory::getInstance())
+DHTBucket::DHTBucket
+(size_t prefixLength,
+ const unsigned char* max, const unsigned char* min,
+ const SharedHandle<DHTNode>& localNode)
+  : prefixLength_(prefixLength),
+    localNode_(localNode),
+    lastUpdated_(global::wallclock)
 {
   memcpy(max_, max, DHT_ID_LENGTH);
   memcpy(min_, min, DHT_ID_LENGTH);
 }
 
-DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode):
-  prefixLength_(0),
-  localNode_(localNode),
-  lastUpdated_(global::wallclock),
-  logger_(LogFactory::getInstance())
+DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode)
+  : prefixLength_(0),
+    localNode_(localNode),
+    lastUpdated_(global::wallclock)
 {
   memset(max_, 0xffu, DHT_ID_LENGTH);
   memset(min_, 0, DHT_ID_LENGTH);
@@ -206,16 +206,14 @@ SharedHandle<DHTBucket> DHTBucket::split()
   }
   nodes_ = lNodes;
   // TODO create toString() and use it.
-  if(logger_->debug()) {
-    logger_->debug("New bucket. prefixLength=%u, Range:%s-%s",
+  A2_LOG_DEBUG(fmt("New bucket. prefixLength=%u, Range:%s-%s",
                    static_cast<unsigned int>(rBucket->getPrefixLength()),
                    util::toHex(rBucket->getMinID(), DHT_ID_LENGTH).c_str(),
-                   util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str());
-    logger_->debug("Existing bucket. prefixLength=%u, Range:%s-%s",
+                   util::toHex(rBucket->getMaxID(), DHT_ID_LENGTH).c_str()));
+  A2_LOG_DEBUG(fmt("Existing bucket. prefixLength=%u, Range:%s-%s",
                    static_cast<unsigned int>(prefixLength_),
                    util::toHex(getMinID(), DHT_ID_LENGTH).c_str(),
-                   util::toHex(getMaxID(), DHT_ID_LENGTH).c_str());
-  }
+                   util::toHex(getMaxID(), DHT_ID_LENGTH).c_str()));
   return rBucket;
 }
 

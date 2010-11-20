@@ -43,13 +43,14 @@
 #include "util.h"
 #include "Socket.h"
 #include "SimpleRandomizer.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTConnectionImpl::DHTConnectionImpl(int family):
-  socket_(new SocketCore(SOCK_DGRAM)),
-  family_(family),
-  logger_(LogFactory::getInstance()) {}
+DHTConnectionImpl::DHTConnectionImpl(int family)
+  : socket_(new SocketCore(SOCK_DGRAM)),
+    family_(family)
+{}
 
 DHTConnectionImpl::~DHTConnectionImpl() {}
 
@@ -86,10 +87,11 @@ bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
     std::pair<std::string, uint16_t> svaddr;
     socket_->getAddrInfo(svaddr);
     port = svaddr.second;
-    logger_->notice("IPv%d DHT: listening to port %d", ipv, port);
+    A2_LOG_NOTICE(fmt("IPv%d DHT: listening to port %d", ipv, port));
     return true;
   } catch(RecoverableException& e) {
-    logger_->error("Failed to bind for IPv%d DHT. port=%u", e, ipv, port);
+    A2_LOG_ERROR_EX(fmt("Failed to bind for IPv%d DHT. port=%u", ipv, port),
+                    e);
   }
   return false;
 }

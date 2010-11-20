@@ -39,29 +39,32 @@
 #include "DlAbortEx.h"
 #include "Socket.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "message.h"
 #include "prefs.h"
 #include "DownloadFailureException.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "wallclock.h"
 #include "util.h"
 
 namespace aria2 {
 
-PeerAbstractCommand::PeerAbstractCommand(cuid_t cuid,
-                                         const SharedHandle<Peer>& peer,
-                                         DownloadEngine* e,
-                                         const SocketHandle& s):
-  Command(cuid),
-  checkPoint_(global::wallclock),
-  // TODO referring global option
-  timeout_(e->getOption()->getAsInt(PREF_BT_TIMEOUT)),
-  e_(e),
-  socket_(s),
-  peer_(peer),
-  checkSocketIsReadable_(false),
-  checkSocketIsWritable_(false),
-  noCheck_(false)
+PeerAbstractCommand::PeerAbstractCommand
+(cuid_t cuid,
+ const SharedHandle<Peer>& peer,
+ DownloadEngine* e,
+ const SocketHandle& s)
+ : Command(cuid),
+   checkPoint_(global::wallclock),
+   // TODO referring global option
+   timeout_(e->getOption()->getAsInt(PREF_BT_TIMEOUT)),
+   e_(e),
+   socket_(s),
+   peer_(peer),
+   checkSocketIsReadable_(false),
+   checkSocketIsWritable_(false),
+   noCheck_(false)
 {
   if(socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);
@@ -76,14 +79,12 @@ PeerAbstractCommand::~PeerAbstractCommand()
 
 bool PeerAbstractCommand::execute()
 {
-  if(getLogger()->debug()) {
-    getLogger()->debug("CUID#%s -"
-                       " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
-                       util::itos(getCuid()).c_str(),
-                       readEventEnabled(), writeEventEnabled(),
-                       hupEventEnabled(), errorEventEnabled(),
-                       noCheck_);
-  }
+  A2_LOG_DEBUG(fmt("CUID#%s -"
+                   " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
+                   util::itos(getCuid()).c_str(),
+                   readEventEnabled(), writeEventEnabled(),
+                   hupEventEnabled(), errorEventEnabled(),
+                   noCheck_));
   if(exitBeforeExecute()) {
     onAbort();
     return true;
@@ -104,19 +105,18 @@ bool PeerAbstractCommand::execute()
     }
     return executeInternal();
   } catch(DownloadFailureException& err) {
-    getLogger()->error(EX_DOWNLOAD_ABORTED, err);
+    A2_LOG_ERROR_EX(EX_DOWNLOAD_ABORTED, err);
     onAbort();
     onFailure();
     return true;
   } catch(RecoverableException& err) {
-    if(getLogger()->debug()) {
-      getLogger()->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err,
-                         util::itos(getCuid()).c_str());
-      getLogger()->debug(MSG_PEER_BANNED,
-                         util::itos(getCuid()).c_str(),
-                         peer_->getIPAddress().c_str(),
-                         peer_->getPort());
-    }
+    A2_LOG_DEBUG_EX(fmt(MSG_TORRENT_DOWNLOAD_ABORTED,
+                        util::itos(getCuid()).c_str()),
+                    err);
+    A2_LOG_DEBUG(fmt(MSG_PEER_BANNED,
+                     util::itos(getCuid()).c_str(),
+                     peer_->getIPAddress().c_str(),
+                     peer_->getPort()));
     onAbort();
     return prepareForNextPeer(0);
   }

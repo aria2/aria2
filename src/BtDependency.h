@@ -41,14 +41,12 @@ namespace aria2 {
 
 class RequestGroup;
 class Option;
-class Logger;
 
 class BtDependency : public Dependency
 {
 private:
   RequestGroup* dependant_;
   SharedHandle<RequestGroup> dependee_;
-  Logger* logger_;
 public:
   BtDependency(RequestGroup* dependant,
                const SharedHandle<RequestGroup>& dependee);

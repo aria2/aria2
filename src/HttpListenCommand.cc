@@ -37,6 +37,7 @@
 #include "RecoverableException.h"
 #include "message.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "SocketCore.h"
 #include "HttpServerCommand.h"
 #include "CUIDCounter.h"
@@ -45,12 +46,15 @@
 #include "Option.h"
 #include "util.h"
 #include "A2STR.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-HttpListenCommand::HttpListenCommand
-(cuid_t cuid, DownloadEngine* e, int family):
-  Command(cuid), e_(e), family_(family) {}
+HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family)
+  : Command(cuid),
+    e_(e),
+    family_(family)
+{}
 
 HttpListenCommand::~HttpListenCommand()
 {
@@ -72,8 +76,8 @@ bool HttpListenCommand::execute()
       std::pair<std::string, uint16_t> peerInfo;
       socket->getPeerInfo(peerInfo);
 
-      getLogger()->info("XML-RPC: Accepted the connection from %s:%u.",
-                        peerInfo.first.c_str(), peerInfo.second);
+      A2_LOG_INFO(fmt("XML-RPC: Accepted the connection from %s:%u.",
+                      peerInfo.first.c_str(), peerInfo.second));
 
       HttpServerCommand* c =
         new HttpServerCommand(e_->newCUID(), e_, socket);
@@ -81,9 +85,7 @@ bool HttpListenCommand::execute()
       e_->addCommand(c);
     }
   } catch(RecoverableException& e) {
-    if(getLogger()->debug()) {
-      getLogger()->debug(MSG_ACCEPT_FAILURE, e, util::itos(getCuid()).c_str());
-    }
+    A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE, util::itos(getCuid()).c_str()), e);
   }
   e_->addCommand(this);
   return false;
@@ -95,11 +97,9 @@ bool HttpListenCommand::bindPort(uint16_t port)
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
   serverSocket_.reset(new SocketCore());
-  if(getLogger()->info()) {
-    getLogger()->info("CUID#%s - Setting up HttpListenCommand for IPv%d",
-                      util::itos(getCuid()).c_str(),
-                      family_ == AF_INET?4:6);
-  }
+  A2_LOG_INFO(fmt("CUID#%s - Setting up HttpListenCommand for IPv%d",
+                  util::itos(getCuid()).c_str(),
+                  family_ == AF_INET?4:6));
   try {
     int flags = 0;
     if(e_->getOption()->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
@@ -108,17 +108,16 @@ bool HttpListenCommand::bindPort(uint16_t port)
     serverSocket_->bind(A2STR::NIL, port, family_, flags);
     serverSocket_->beginListen();
     serverSocket_->setNonBlockingMode();
-    if(getLogger()->info()) {
-      getLogger()->info(MSG_LISTENING_PORT,
-                        util::itos(getCuid()).c_str(), port);
-    }
+    A2_LOG_INFO(fmt(MSG_LISTENING_PORT,
+                    util::itos(getCuid()).c_str(), port));
     e_->addSocketForReadCheck(serverSocket_, this);
     return true;
   } catch(RecoverableException& e) {
-    getLogger()->error("Failed to setup XML-RPC server for IPv%d",
-                       family_ == AF_INET?4:6);
-    getLogger()->error(MSG_BIND_FAILURE, e,
-                       util::itos(getCuid()).c_str(), port);
+    A2_LOG_ERROR(fmt("Failed to setup XML-RPC server for IPv%d",
+                     family_ == AF_INET?4:6));
+    A2_LOG_ERROR_EX(fmt(MSG_BIND_FAILURE,
+                        util::itos(getCuid()).c_str(), port),
+                    e);
     if(serverSocket_) {
       e_->deleteSocketForReadCheck(serverSocket_, this);
     }

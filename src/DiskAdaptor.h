@@ -45,7 +45,6 @@
 namespace aria2 {
 
 class FileEntry;
-class Logger;
 class FileAllocationIterator;
 
 class DiskAdaptor:public BinaryStream {
@@ -53,13 +52,6 @@ private:
   std::vector<SharedHandle<FileEntry> > fileEntries_;
 
   bool fallocate_;
-
-  Logger* logger_;
-protected:
-  Logger* getLogger() const
-  {
-    return logger_;
-  }
 public:
   DiskAdaptor();
   virtual ~DiskAdaptor();

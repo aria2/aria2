@@ -69,6 +69,7 @@
 #include "Request.h"
 #include "FileAllocationIterator.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "URISelector.h"
 #include "InOrderURISelector.h"
@@ -121,35 +122,34 @@ namespace aria2 {
 
 gid_t RequestGroup::gidCounter_ = 0;
 
-RequestGroup::RequestGroup(const SharedHandle<Option>& option):
-  gid_(newGID()),
-  option_(new Option(*option.get())),
-  numConcurrentCommand_(option->getAsInt(PREF_SPLIT)),
-  numStreamConnection_(0),
-  numStreamCommand_(0),
-  numCommand_(0),
-  saveControlFile_(true),
-  progressInfoFile_(new NullProgressInfoFile()),
-  preLocalFileCheckEnabled_(true),
-  haltRequested_(false),
-  forceHaltRequested_(false),
-  haltReason_(RequestGroup::NONE),
-  pauseRequested_(false),
-  uriSelector_(new InOrderURISelector()),
-  lastModifiedTime_(Time::null()),
-  fileNotFoundCount_(0),
-  timeout_(option->getAsInt(PREF_TIMEOUT)),
+RequestGroup::RequestGroup(const SharedHandle<Option>& option)
+  : gid_(newGID()),
+    option_(new Option(*option.get())),
+    numConcurrentCommand_(option->getAsInt(PREF_SPLIT)),
+    numStreamConnection_(0),
+    numStreamCommand_(0),
+    numCommand_(0),
+    saveControlFile_(true),
+    progressInfoFile_(new NullProgressInfoFile()),
+    preLocalFileCheckEnabled_(true),
+    haltRequested_(false),
+    forceHaltRequested_(false),
+    haltReason_(RequestGroup::NONE),
+    pauseRequested_(false),
+    uriSelector_(new InOrderURISelector()),
+    lastModifiedTime_(Time::null()),
+    fileNotFoundCount_(0),
+    timeout_(option->getAsInt(PREF_TIMEOUT)),
 #ifdef ENABLE_BITTORRENT
-  btRuntime_(0),
-  peerStorage_(0),
+    btRuntime_(0),
+    peerStorage_(0),
 #endif // ENABLE_BITTORRENT
-  inMemoryDownload_(false),
-  maxDownloadSpeedLimit_(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT)),
-  maxUploadSpeedLimit_(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
-  belongsToGID_(0),
-  requestGroupMan_(0),
-  resumeFailureCount_(0),
-  logger_(LogFactory::getInstance())
+    inMemoryDownload_(false),
+    maxDownloadSpeedLimit_(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT)),
+    maxUploadSpeedLimit_(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
+    belongsToGID_(0),
+    requestGroupMan_(0),
+    resumeFailureCount_(0)
 {
   fileAllocationEnabled_ = option_->get(PREF_FILE_ALLOCATION) != V_NONE;
   // Add types to be sent as a Accept header value here.
@@ -235,9 +235,7 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     if(downloadFinished()) {
 #ifdef ENABLE_MESSAGE_DIGEST
       if(downloadContext_->isChecksumVerificationNeeded()) {
-        if(logger_->info()) {
-          logger_->info(MSG_HASH_CHECK_NOT_DONE);
-        }
+        A2_LOG_INFO(MSG_HASH_CHECK_NOT_DONE);
         ChecksumCheckIntegrityEntry* tempEntry =
           new ChecksumCheckIntegrityEntry(this);
         tempEntry->setRedownload(true);
@@ -246,9 +244,9 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 #endif // ENABLE_MESSAGE_DIGEST
         {
           downloadContext_->setChecksumVerified(true);
-          logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                          util::itos(gid_).c_str(),
-                          downloadContext_->getBasePath().c_str());
+          A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                            util::itos(gid_).c_str(),
+                            downloadContext_->getBasePath().c_str()));
         }
     } else {
       checkEntry.reset(new StreamCheckIntegrityEntry(this));
@@ -267,9 +265,9 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 #endif // ENABLE_MESSAGE_DIGEST
       {
         downloadContext_->setChecksumVerified(true);
-        logger_->notice(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(gid_).c_str(),
-                        downloadContext_->getBasePath().c_str());
+        A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          util::itos(gid_).c_str(),
+                          downloadContext_->getBasePath().c_str()));
       }
   } else {
     loadAndOpenFile(infoFile);
@@ -378,8 +376,8 @@ void RequestGroup::createInitialCommand
             e->addCommand(dhtCommands);
           }
         } else {
-          logger_->notice("For BitTorrent Magnet URI, enabling DHT is strongly"
-                          " recommended. See --enable-dht option.");
+          A2_LOG_NOTICE("For BitTorrent Magnet URI, enabling DHT is strongly"
+                        " recommended. See --enable-dht option.");
         }
 
         SharedHandle<CheckIntegrityEntry> entry
@@ -398,12 +396,11 @@ void RequestGroup::createInitialCommand
         } else {
           // Open file in writable mode to allow the program
           // truncate the file to downloadContext_->getTotalLength()
-          if(logger_->debug()) {
-            logger_->debug("File size not match. File is opened in writable"
-                           " mode. Expected:%s Actual:%s",
-                           util::uitos(downloadContext_->getTotalLength()).c_str(),
-                           util::uitos(actualFileSize).c_str());
-          }
+          A2_LOG_DEBUG
+            (fmt("File size not match. File is opened in writable"
+                 " mode. Expected:%s Actual:%s",
+                 util::uitos(downloadContext_->getTotalLength()).c_str(),
+                 util::uitos(actualFileSize).c_str()));
         }
       }
       // Call Load, Save and file allocation command here
@@ -600,9 +597,7 @@ void RequestGroup::initPieceStorage()
         // Use LongestSequencePieceSelector when HTTP/FTP/BitTorrent
         // integrated downloads. Currently multi-file integrated
         // download is not supported.
-        if(logger_->debug()) {
-          logger_->debug("Using LongestSequencePieceSelector");
-        }
+        A2_LOG_DEBUG("Using LongestSequencePieceSelector");
         SharedHandle<PieceSelector> longestPieceSelector
           (new LongestSequencePieceSelector());
         ps->setPieceSelector(longestPieceSelector);
@@ -684,8 +679,9 @@ void RequestGroup::adjustFilename
      option_->getAsBool(PREF_REMOVE_CONTROL_FILE) &&
      infoFile->exists()) {
     infoFile->removeFile();
-    logger_->notice("Removed control file for %s because it is requested by"
-                    " user.", infoFile->getFilename().c_str());
+    A2_LOG_NOTICE(fmt("Removed control file for %s because it is requested by"
+                      " user.",
+                      infoFile->getFilename().c_str()));
   }
   if(infoFile->exists()) {
     // Use current filename
@@ -717,9 +713,9 @@ void RequestGroup::removeDefunctControlFile
   if(progressInfoFile->exists() &&
      !pieceStorage_->getDiskAdaptor()->fileExists()) {
     progressInfoFile->removeFile();
-    logger_->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
-                    progressInfoFile->getFilename().c_str(),
-                    downloadContext_->getBasePath().c_str());
+    A2_LOG_NOTICE(fmt(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
+                      progressInfoFile->getFilename().c_str(),
+                      downloadContext_->getBasePath().c_str()));
   }
 }
 
@@ -769,7 +765,7 @@ void RequestGroup::shouldCancelDownloadForSafety()
   if(outfile.exists()) {
     if(option_->getAsBool(PREF_AUTO_FILE_RENAMING)) {
       if(tryAutoFileRenaming()) {
-        logger_->notice(MSG_FILE_RENAMED, getFirstFilePath().c_str());
+        A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED, getFirstFilePath().c_str()));
       } else {
         throw DOWNLOAD_FAILURE_EXCEPTION
           (StringFormat("File renaming failed: %s",
@@ -966,9 +962,7 @@ void RequestGroup::decreaseNumCommand()
 {
   --numCommand_;
   if(!numCommand_ && requestGroupMan_) {
-    if(logger_->debug()) {
-      logger_->debug("GID#%s - Request queue check", util::itos(gid_).c_str());
-    }
+    A2_LOG_DEBUG(fmt("GID#%s - Request queue check", util::itos(gid_).c_str()));
     requestGroupMan_->requestQueueCheck();
   }
 }
@@ -1033,10 +1027,8 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 
 void RequestGroup::preDownloadProcessing()
 {
-  if(logger_->debug()) {
-    logger_->debug("Finding PreDownloadHandler for path %s.",
-                   getFirstFilePath().c_str());
-  }
+  A2_LOG_DEBUG(fmt("Finding PreDownloadHandler for path %s.",
+                   getFirstFilePath().c_str()));
   try {
     for(std::vector<SharedHandle<PreDownloadHandler> >::const_iterator itr =
           preDownloadHandlers_.begin(), eoi = preDownloadHandlers_.end();
@@ -1047,22 +1039,18 @@ void RequestGroup::preDownloadProcessing()
       }
     }
   } catch(RecoverableException& ex) {
-    logger_->error(EX_EXCEPTION_CAUGHT, ex);
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
     return;
   }
-  if(logger_->debug()) {
-    logger_->debug("No PreDownloadHandler found.");
-  }
+  A2_LOG_DEBUG("No PreDownloadHandler found.");
   return;
 }
 
 void RequestGroup::postDownloadProcessing
 (std::vector<SharedHandle<RequestGroup> >& groups)
 {
-  if(logger_->debug()) {
-    logger_->debug("Finding PostDownloadHandler for path %s.",
-                   getFirstFilePath().c_str());
-  }
+  A2_LOG_DEBUG(fmt("Finding PostDownloadHandler for path %s.",
+                   getFirstFilePath().c_str()));
   try {
     for(std::vector<SharedHandle<PostDownloadHandler> >::const_iterator itr =
           postDownloadHandlers_.begin(), eoi = postDownloadHandlers_.end();
@@ -1073,11 +1061,9 @@ void RequestGroup::postDownloadProcessing
       }
     }
   } catch(RecoverableException& ex) {
-    logger_->error(EX_EXCEPTION_CAUGHT, ex);
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
   }
-  if(logger_->debug()) {
-    logger_->debug("No PostDownloadHandler found.");
-  }
+  A2_LOG_DEBUG("No PostDownloadHandler found.");
 }
 
 void RequestGroup::initializePreDownloadHandler()
@@ -1169,10 +1155,8 @@ bool RequestGroup::needsFileAllocation() const
 
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
-  if(logger_->debug()) {
-    logger_->debug("GID#%s - Creating DownloadResult.",
-                   util::itos(gid_).c_str());
-  }
+  A2_LOG_DEBUG(fmt("GID#%s - Creating DownloadResult.",
+                   util::itos(gid_).c_str()));
   TransferStat st = calculateStat();
   SharedHandle<DownloadResult> res(new DownloadResult());
   res->gid = gid_;
@@ -1207,8 +1191,8 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
   
 void RequestGroup::reportDownloadFinished()
 {
-  logger_->notice(MSG_FILE_DOWNLOAD_COMPLETED,
-                  downloadContext_->getBasePath().c_str());
+  A2_LOG_NOTICE(fmt(MSG_FILE_DOWNLOAD_COMPLETED,
+                    downloadContext_->getBasePath().c_str()));
   uriSelector_->resetCounters();
 #ifdef ENABLE_BITTORRENT
   if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
@@ -1218,10 +1202,10 @@ void RequestGroup::reportDownloadFinished()
     SharedHandle<TorrentAttribute> attrs =
       bittorrent::getTorrentAttrs(downloadContext_);
     if(!attrs->metadata.empty()) {
-      logger_->notice(MSG_SHARE_RATIO_REPORT,
-                      shareRatio,
-                      util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
-                      util::abbrevSize(getCompletedLength()).c_str());
+      A2_LOG_NOTICE(fmt(MSG_SHARE_RATIO_REPORT,
+                        shareRatio,
+                        util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
+                        util::abbrevSize(getCompletedLength()).c_str()));
     }
   }
 #endif // ENABLE_BITTORRENT
@@ -1248,12 +1232,12 @@ void RequestGroup::setURISelector(const SharedHandle<URISelector>& uriSelector)
 void RequestGroup::applyLastModifiedTimeToLocalFiles()
 {
   if(pieceStorage_ && lastModifiedTime_.good()) {
-    logger_->info("Applying Last-Modified time: %s",
-                  lastModifiedTime_.toHTTPDate().c_str());
+    A2_LOG_INFO(fmt("Applying Last-Modified time: %s",
+                    lastModifiedTime_.toHTTPDate().c_str()));
     size_t n =
       pieceStorage_->getDiskAdaptor()->utime(Time(), lastModifiedTime_);
-    logger_->info("Last-Modified attrs of %lu files were updated.",
-                  static_cast<unsigned long>(n));
+    A2_LOG_INFO(fmt("Last-Modified attrs of %lu files were updated.",
+                    static_cast<unsigned long>(n)));
   }
 }
 

@@ -44,6 +44,7 @@
 #include "Logger.h"
 #include "util.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -80,10 +81,9 @@ struct epoll_event EpollEventPoll::KSocketEntry::getEvents()
   return epEvent;
 }
 
-EpollEventPoll::EpollEventPoll():
-  epEventsSize_(EPOLL_EVENTS_MAX),
-  epEvents_(new struct epoll_event[epEventsSize_]),
-  logger_(LogFactory::getInstance())
+EpollEventPoll::EpollEventPoll()
+  : epEventsSize_(EPOLL_EVENTS_MAX),
+    epEvents_(new struct epoll_event[epEventsSize_])
 {
   epfd_ = epoll_create(EPOLL_EVENTS_MAX);
 }
@@ -95,9 +95,10 @@ EpollEventPoll::~EpollEventPoll()
     while((r = close(epfd_)) == -1 && errno == EINTR);
     int errNum = errno;
     if(r == -1) {
-      logger_->error("Error occurred while closing epoll file descriptor"
-                     " %d: %s",
-                     epfd_, util::safeStrerror(errNum).c_str());
+      A2_LOG_ERROR(fmt("Error occurred while closing epoll file descriptor"
+                       " %d: %s",
+                       epfd_,
+                       util::safeStrerror(errNum).c_str()));
     }
   }
   delete [] epEvents_;
@@ -201,10 +202,9 @@ bool EpollEventPoll::addEvents(sock_t socket,
     errNum = errno;
   }
   if(r == -1) {
-    if(logger_->debug()) {
-      logger_->debug("Failed to add socket event %d:%s",
-                     socket, util::safeStrerror(errNum).c_str());
-    }
+    A2_LOG_DEBUG(fmt("Failed to add socket event %d:%s",
+                     socket,
+                     util::safeStrerror(errNum).c_str()));
     return false;
   } else {
     return true;
@@ -253,25 +253,19 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
       r = epoll_ctl(epfd_, EPOLL_CTL_MOD, (*i)->getSocket(), &epEvent);
       errNum = r;
       if(r == -1) {
-        if(logger_->debug()) {
-          logger_->debug("Failed to delete socket event, but may be ignored:%s",
-                         util::safeStrerror(errNum).c_str());
-        }
+        A2_LOG_DEBUG(fmt("Failed to delete socket event, but may be ignored:%s",
+                         util::safeStrerror(errNum).c_str()));
       }
     }
     if(r == -1) {
-      if(logger_->debug()) {
-        logger_->debug("Failed to delete socket event:%s",
-                       util::safeStrerror(errNum).c_str());
-      }
+      A2_LOG_DEBUG(fmt("Failed to delete socket event:%s",
+                       util::safeStrerror(errNum).c_str()));
       return false;
     } else {
       return true;
     }
   } else {
-    if(logger_->debug()) {
-      logger_->debug("Socket %d is not found in SocketEntries.", socket);
-    }
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
     return false;
   }
 }

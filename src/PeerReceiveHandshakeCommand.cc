@@ -49,10 +49,12 @@
 #include "message.h"
 #include "Socket.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "prefs.h"
 #include "Option.h"
 #include "RequestGroupMan.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "RequestGroup.h"
 
 namespace aria2 {
@@ -63,9 +65,8 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
  DownloadEngine* e,
  const SocketHandle& s,
  const SharedHandle<PeerConnection>& peerConnection)
-  :
-  PeerAbstractCommand(cuid, peer, e, s),
-  peerConnection_(peerConnection)
+  : PeerAbstractCommand(cuid, peer, e, s),
+    peerConnection_(peerConnection)
 {
   if(!peerConnection_) {
     peerConnection_.reset(new PeerConnection(cuid, getPeer(), getSocket()));
@@ -110,8 +111,8 @@ bool PeerReceiveHandshakeCommand::executeInternal()
                       util::toHex(infoHash).c_str()).str());
     }
     if(btRuntime->isHalt()) {
-      getLogger()->debug("Info hash found but the download is over."
-                         " Dropping connection.");
+      A2_LOG_DEBUG("Info hash found but the download is over."
+                   " Dropping connection.");
       return true;
     }
     TransferStat tstat =
@@ -143,11 +144,9 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
            peerConnection_);
         getDownloadEngine()->addCommand(command);
-        if(getLogger()->debug()) {
-          getLogger()->debug(MSG_INCOMING_PEER_CONNECTION,
-                             util::itos(getCuid()).c_str(),
-                             util::itos(getPeer()->usedBy()).c_str());
-        }
+        A2_LOG_DEBUG(fmt(MSG_INCOMING_PEER_CONNECTION,
+                         util::itos(getCuid()).c_str(),
+                         util::itos(getPeer()->usedBy()).c_str()));
       }
     }
     return true;

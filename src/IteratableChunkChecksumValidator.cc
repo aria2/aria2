@@ -50,6 +50,7 @@
 #include "Logger.h"
 #include "MessageDigest.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
@@ -57,15 +58,16 @@ namespace aria2 {
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
 
-IteratableChunkChecksumValidator::
-IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
-                                 const PieceStorageHandle& pieceStorage):
-  dctx_(dctx),
-  pieceStorage_(pieceStorage),
-  bitfield_(new BitfieldMan(dctx_->getPieceLength(), dctx_->getTotalLength())),
-  currentIndex_(0),
-  logger_(LogFactory::getInstance()),
-  buffer_(0) {}
+IteratableChunkChecksumValidator::IteratableChunkChecksumValidator
+(const SharedHandle<DownloadContext>& dctx,
+ const PieceStorageHandle& pieceStorage)
+  : dctx_(dctx),
+    pieceStorage_(pieceStorage),
+    bitfield_(new BitfieldMan(dctx_->getPieceLength(),
+                              dctx_->getTotalLength())),
+    currentIndex_(0),
+    buffer_(0)
+{}
 
 IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
 {
@@ -86,21 +88,19 @@ void IteratableChunkChecksumValidator::validateChunk()
       if(actualChecksum == dctx_->getPieceHashes()[currentIndex_]) {
         bitfield_->setBit(currentIndex_);
       } else {
-        if(logger_->info()) {
-          logger_->info(EX_INVALID_CHUNK_CHECKSUM,
+        A2_LOG_INFO(fmt(EX_INVALID_CHUNK_CHECKSUM,
                         static_cast<unsigned long>(currentIndex_),
                         util::itos(getCurrentOffset(), true).c_str(),
                         dctx_->getPieceHashes()[currentIndex_].c_str(),
-                        actualChecksum.c_str());
-        }
+                        actualChecksum.c_str()));
         bitfield_->unsetBit(currentIndex_);
       }
     } catch(RecoverableException& ex) {
-      if(logger_->debug()) {
-        logger_->debug("Caught exception while validating piece index=%lu."
-                       " Some part of file may be missing. Continue operation.",
-                       ex, static_cast<unsigned long>(currentIndex_));
-      }
+      A2_LOG_DEBUG_EX(fmt("Caught exception while validating piece index=%lu."
+                          " Some part of file may be missing."
+                          " Continue operation.",
+                          static_cast<unsigned long>(currentIndex_)),
+                      ex);
       bitfield_->unsetBit(currentIndex_);
     }
 

@@ -48,7 +48,6 @@
 namespace aria2 {
 
 class Option;
-class Logger;
 class Segment;
 class Request;
 class SocketCore;
@@ -63,7 +62,6 @@ private:
   SharedHandle<AuthConfig> authConfig_;
 
   const Option* option_;
-  Logger* logger_;
 
   std::string strbuf_;
 

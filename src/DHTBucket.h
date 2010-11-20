@@ -48,7 +48,6 @@
 namespace aria2 {
 
 class DHTNode;
-class Logger;
 
 class DHTBucket {
 private:
@@ -69,8 +68,6 @@ private:
   std::deque<SharedHandle<DHTNode> > cachedNodes_;
 
   Timer lastUpdated_;
-
-  Logger* logger_;
 
   bool isInRange(const unsigned char* nodeID,
                  const unsigned char* max, const unsigned char* min) const;

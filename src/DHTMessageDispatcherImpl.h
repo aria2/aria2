@@ -42,7 +42,6 @@ namespace aria2 {
 
 class DHTMessageTracker;
 struct DHTMessageEntry;
-class Logger;
 
 class DHTMessageDispatcherImpl:public DHTMessageDispatcher {
 private:
@@ -51,8 +50,6 @@ private:
   std::deque<SharedHandle<DHTMessageEntry> > messageQueue_;
 
   time_t timeout_;
-
-  Logger* logger_;
 
   bool sendMessage(const SharedHandle<DHTMessageEntry>& msg);
 public:

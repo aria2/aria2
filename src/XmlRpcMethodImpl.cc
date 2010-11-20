@@ -49,6 +49,7 @@
 #include "util.h"
 #include "RequestGroupMan.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "XmlRpcRequest.h"
 #include "PieceStorage.h"
 #include "DownloadContext.h"
@@ -1273,7 +1274,7 @@ SharedHandle<ValueBase> goingShutdown
   // Schedule shutdown after 3seconds to give time to client to
   // receive XML-RPC response.
   e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e, 3, forceHalt));
-  LogFactory::getInstance()->info("Scheduled shutdown in 3 seconds.");
+  A2_LOG_INFO("Scheduled shutdown in 3 seconds.");
   return VLB_OK;
 }
 } // namespace

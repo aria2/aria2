@@ -32,34 +32,18 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_LOG_FORMATTER_H
-#define D_LOG_FORMATTER_H
+#ifndef D_FMT_H
+#define D_FMT_H
 
 #include "common.h"
 
-#include <cstdarg>
-#include <iosfwd>
 #include <string>
-
-#include "Logger.h"
+#include <cstdarg>
 
 namespace aria2 {
 
-class Exception;
-
-class LogFormatter {
-public:
-  virtual ~LogFormatter() {}
-
-  virtual void writeLog
-  (std::ostream& o, Logger::LEVEL logLevel, const std::string& logLevelLabel,
-   const char* msg, va_list ap) = 0;
-
-  virtual void writeStackTrace
-  (std::ostream& o, Logger::LEVEL logLevel, const std::string& logLevelLabel,
-   const Exception& ex) = 0;
-};
+std::string fmt(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 } // namespace aria2
 
-#endif // D_LOG_FORMATTER_H
+#endif // D_FMT_H

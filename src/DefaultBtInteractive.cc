@@ -67,6 +67,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "bittorrent_helper.h"
@@ -79,25 +80,23 @@ namespace aria2 {
 DefaultBtInteractive::DefaultBtInteractive
 (const SharedHandle<DownloadContext>& downloadContext,
  const SharedHandle<Peer>& peer)
-  :
-  downloadContext_(downloadContext),
-  peer_(peer),
-  metadataGetMode_(false),
-  localNode_(0),
-  logger_(LogFactory::getInstance()),
-  allowedFastSetSize_(10),
-  haveTimer_(global::wallclock),
-  keepAliveTimer_(global::wallclock),
-  floodingTimer_(global::wallclock),
-  inactiveTimer_(global::wallclock),
-  pexTimer_(global::wallclock),
-  perSecTimer_(global::wallclock),
-  keepAliveInterval_(120),
-  utPexEnabled_(false),
-  dhtEnabled_(false),
-  numReceivedMessage_(0),
-  maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
-  requestGroupMan_(0)
+  : downloadContext_(downloadContext),
+    peer_(peer),
+    metadataGetMode_(false),
+    localNode_(0),
+    allowedFastSetSize_(10),
+    haveTimer_(global::wallclock),
+    keepAliveTimer_(global::wallclock),
+    floodingTimer_(global::wallclock),
+    inactiveTimer_(global::wallclock),
+    pexTimer_(global::wallclock),
+    perSecTimer_(global::wallclock),
+    keepAliveInterval_(120),
+    utPexEnabled_(false),
+    dhtEnabled_(false),
+    numReceivedMessage_(0),
+    maxOutstandingRequest_(DEFAULT_MAX_OUTSTANDING_REQUEST),
+    requestGroupMan_(0)
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
@@ -139,30 +138,22 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
     
   if(message->isFastExtensionSupported()) {
     peer_->setFastExtensionEnabled(true);
-    if(logger_->info()) {
-      logger_->info(MSG_FAST_EXTENSION_ENABLED, util::itos(cuid_).c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_FAST_EXTENSION_ENABLED, util::itos(cuid_).c_str()));
   }
   if(message->isExtendedMessagingEnabled()) {
     peer_->setExtendedMessagingEnabled(true);
     if(!utPexEnabled_) {
       extensionMessageRegistry_->removeExtension("ut_pex");
     }
-    if(logger_->info()) {
-      logger_->info(MSG_EXTENDED_MESSAGING_ENABLED, util::itos(cuid_).c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_EXTENDED_MESSAGING_ENABLED, util::itos(cuid_).c_str()));
   }
   if(message->isDHTEnabled()) {
     peer_->setDHTEnabled(true);
-    if(logger_->info()) {
-      logger_->info(MSG_DHT_ENABLED_PEER, util::itos(cuid_).c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_DHT_ENABLED_PEER, util::itos(cuid_).c_str()));
   }
-  if(logger_->info()) {
-    logger_->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid_).c_str(),
-                 peer_->getIPAddress().c_str(), peer_->getPort(),
-                 message->toString().c_str());
-  }
+  A2_LOG_INFO(fmt(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid_).c_str(),
+                  peer_->getIPAddress().c_str(), peer_->getPort(),
+                  message->toString().c_str()));
   return message;
 }
 
@@ -296,11 +287,10 @@ size_t DefaultBtInteractive::receiveMessages() {
       break;
     }
     ++msgcount;
-    if(logger_->info()) {
-      logger_->info(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid_).c_str(),
-                   peer_->getIPAddress().c_str(), peer_->getPort(),
-                   message->toString().c_str());
-    }
+    A2_LOG_INFO(fmt(MSG_RECEIVE_PEER_MESSAGE,
+                    util::itos(cuid_).c_str(),
+                    peer_->getIPAddress().c_str(), peer_->getPort(),
+                    message->toString().c_str()));
     message->doReceivedAction();
 
     switch(message->getId()) {
@@ -338,17 +328,13 @@ size_t DefaultBtInteractive::receiveMessages() {
 void DefaultBtInteractive::decideInterest() {
   if(pieceStorage_->hasMissingPiece(peer_)) {
     if(!peer_->amInterested()) {
-      if(logger_->debug()) {
-        logger_->debug(MSG_PEER_INTERESTED, util::itos(cuid_).c_str());
-      }
+      A2_LOG_DEBUG(fmt(MSG_PEER_INTERESTED, util::itos(cuid_).c_str()));
       dispatcher_->
         addMessageToQueue(messageFactory_->createInterestedMessage());
     }
   } else {
     if(peer_->amInterested()) {
-      if(logger_->debug()) {
-        logger_->debug(MSG_PEER_NOT_INTERESTED, util::itos(cuid_).c_str());
-      }
+      A2_LOG_DEBUG(fmt(MSG_PEER_NOT_INTERESTED, util::itos(cuid_).c_str()));
       dispatcher_->
         addMessageToQueue(messageFactory_->createNotInterestedMessage());
     }
@@ -425,10 +411,8 @@ void DefaultBtInteractive::cancelAllPiece() {
       utMetadataRequestTracker_->getAllTrackedIndex();
     for(std::vector<size_t>::const_iterator i = metadataRequests.begin(),
           eoi = metadataRequests.end(); i != eoi; ++i) {
-      if(logger_->debug()) {
-        logger_->debug("Cancel metadata: piece=%lu",
-                      static_cast<unsigned long>(*i));
-      }
+      A2_LOG_DEBUG(fmt("Cancel metadata: piece=%lu",
+                       static_cast<unsigned long>(*i)));
       pieceStorage_->cancelPiece(pieceStorage_->getPiece(*i));
     }
   }

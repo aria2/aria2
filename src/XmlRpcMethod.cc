@@ -46,15 +46,16 @@
 #include "XmlRpcResponse.h"
 #include "prefs.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
 
 namespace xmlrpc {
 
-XmlRpcMethod::XmlRpcMethod():
-  optionParser_(OptionParser::getInstance()),
-  logger_(LogFactory::getInstance()) {}
+XmlRpcMethod::XmlRpcMethod()
+  : optionParser_(OptionParser::getInstance())
+{}
 
 XmlRpcMethod::~XmlRpcMethod() {}
 
@@ -73,9 +74,7 @@ XmlRpcResponse XmlRpcMethod::execute
   try {
     return XmlRpcResponse(0, process(req, e));
   } catch(RecoverableException& e) {
-    if(logger_->debug()) {
-      logger_->debug(EX_EXCEPTION_CAUGHT, e);
-    }
+    A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, e);
     return XmlRpcResponse(1, createErrorResponse(e));
   }
 }

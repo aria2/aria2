@@ -44,9 +44,11 @@
 #include "message.h"
 #include "ReceiverMSEHandshakeCommand.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "Socket.h"
 #include "SimpleRandomizer.h"
 #include "util.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -57,11 +59,13 @@ PeerListenCommand* PeerListenCommand::instance_ = 0;
 PeerListenCommand* PeerListenCommand::instance6_ = 0;
 
 PeerListenCommand::PeerListenCommand
-(cuid_t cuid, DownloadEngine* e, int family):
-  Command(cuid),
-  e_(e),
-  family_(family),
-  lowestSpeedLimit_(20*1024)
+(cuid_t cuid,
+ DownloadEngine* e,
+ int family)
+  : Command(cuid),
+    e_(e),
+    family_(family),
+    lowestSpeedLimit_(20*1024)
 {
   ++numInstance_;
 }
@@ -89,12 +93,13 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       socket_->bind(A2STR::NIL, port, family_);
       socket_->beginListen();
       socket_->setNonBlockingMode();
-      getLogger()->notice("IPv%d BitTorrent: listening to port %d",
-                          family_ == AF_INET?4:6, port);
+      A2_LOG_NOTICE(fmt("IPv%d BitTorrent: listening to port %d",
+                        family_ == AF_INET?4:6, port));
       return true;
     } catch(RecoverableException& ex) {
-      getLogger()->error(MSG_BIND_FAILURE, ex,
-                         util::itos(getCuid()).c_str(), port);
+      A2_LOG_ERROR_EX(fmt(MSG_BIND_FAILURE,
+                          util::itos(getCuid()).c_str(), port),
+                      ex);
       socket_->closeConnection();
     }
   }
@@ -130,16 +135,16 @@ bool PeerListenCommand::execute() {
       Command* command =
         new ReceiverMSEHandshakeCommand(cuid, peer, e_, peerSocket);
       e_->addCommand(command);
-      if(getLogger()->debug()) {
-        getLogger()->debug("Accepted the connection from %s:%u.",
-                           peer->getIPAddress().c_str(),
-                           peer->getPort());
-        getLogger()->debug("Added CUID#%s to receive BitTorrent/MSE handshake.",
-                           util::itos(cuid).c_str());
-      }
+      A2_LOG_DEBUG(fmt("Accepted the connection from %s:%u.",
+                       peer->getIPAddress().c_str(),
+                       peer->getPort()));
+      A2_LOG_DEBUG(fmt("Added CUID#%s to receive BitTorrent/MSE handshake.",
+                       util::itos(cuid).c_str()));
     } catch(RecoverableException& ex) {
-      getLogger()->debug(MSG_ACCEPT_FAILURE, ex, util::itos(getCuid()).c_str());
-    }               
+      A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE,
+                          util::itos(getCuid()).c_str()),
+                      ex);
+    }
   }
   e_->addCommand(this);
   return false;

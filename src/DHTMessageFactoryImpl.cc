@@ -61,17 +61,18 @@
 #include "Peer.h"
 #include "Logger.h"
 #include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTMessageFactoryImpl::DHTMessageFactoryImpl(int family):
-  family_(family),
-  connection_(0),
-  dispatcher_(0),
-  routingTable_(0),
-  peerAnnounceStorage_(0),
-  tokenTracker_(0),
-  logger_(LogFactory::getInstance()) {}
+DHTMessageFactoryImpl::DHTMessageFactoryImpl(int family)
+  : family_(family),
+    connection_(0),
+    dispatcher_(0),
+    routingTable_(0),
+    peerAnnounceStorage_(0),
+    tokenTracker_(0)
+{}
 
 DHTMessageFactoryImpl::~DHTMessageFactoryImpl() {}
 
@@ -256,15 +257,11 @@ DHTMessageFactoryImpl::createResponseMessage
     // for now, just report error message arrived and throw exception.
     const List* e = getList(dict, DHTUnknownMessage::E);
     if(e->size() == 2) {
-      if(logger_->info()) {
-        logger_->info("Received Error DHT message. code=%s, msg=%s",
+      A2_LOG_INFO(fmt("Received Error DHT message. code=%s, msg=%s",
                       util::itos(getInteger(e, 0)->i()).c_str(),
-                      util::percentEncode(getString(e, 1)->s()).c_str());
-      }
+                      util::percentEncode(getString(e, 1)->s()).c_str()));
     } else {
-      if(logger_->debug()) {
-        logger_->debug("e doesn't have 2 elements.");
-      }
+      A2_LOG_DEBUG("e doesn't have 2 elements.");
     }
     throw DL_ABORT_EX("Received Error DHT message.");
   } else if(y->s() != DHTResponseMessage::R) {

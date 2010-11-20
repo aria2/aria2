@@ -55,6 +55,7 @@
 #include "A2STR.h"
 #include "a2functional.h"
 #include "download_helper.h"
+#include "fmt.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 # include "download_helper.h"
@@ -66,8 +67,7 @@
 
 namespace aria2 {
 
-Metalink2RequestGroup::Metalink2RequestGroup():
-  logger_(LogFactory::getInstance()) {}
+Metalink2RequestGroup::Metalink2RequestGroup() {}
 
 namespace {
 class AccumulateNonP2PUri {
@@ -148,7 +148,7 @@ Metalink2RequestGroup::createRequestGroup
  const SharedHandle<Option>& option)
 {
   if(entries.empty()) {
-    logger_->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
+    A2_LOG_NOTICE(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
   std::vector<int32_t> selectIndexes =
@@ -197,7 +197,7 @@ Metalink2RequestGroup::createRequestGroup
         entryGroups.begin(), eoi = entryGroups.end(); itr != eoi; ++itr) {
     const std::string& metaurl = (*itr).first;
     const std::vector<SharedHandle<MetalinkEntry> >& mes = (*itr).second;
-    logger_->info("Processing metaurl group metaurl=%s", metaurl.c_str());
+    A2_LOG_INFO(fmt("Processing metaurl group metaurl=%s", metaurl.c_str()));
 #ifdef ENABLE_BITTORRENT
     SharedHandle<RequestGroup> torrentRg;
     if(!metaurl.empty()) {
@@ -233,7 +233,7 @@ Metalink2RequestGroup::createRequestGroup
     SharedHandle<DownloadContext> dctx;
     if(mes.size() == 1) {
       SharedHandle<MetalinkEntry> entry = mes[0];
-      logger_->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
+      A2_LOG_INFO(fmt(MSG_METALINK_QUEUEING, entry->getPath().c_str()));
       entry->reorderResourcesByPriority();
       std::vector<std::string> uris;
       std::for_each(entry->resources.begin(), entry->resources.end(),
@@ -286,9 +286,9 @@ Metalink2RequestGroup::createRequestGroup
       off_t offset = 0;
       for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
             mes.begin(), eoi = mes.end(); i != eoi; ++i) {
-        logger_->info("Metalink: Queueing %s for download as a member.",
-                      (*i)->getPath().c_str());
-        logger_->debug("originalName = %s", (*i)->metaurls[0]->name.c_str());
+        A2_LOG_INFO(fmt("Metalink: Queueing %s for download as a member.",
+                        (*i)->getPath().c_str()));
+        A2_LOG_DEBUG(fmt("originalName = %s", (*i)->metaurls[0]->name.c_str()));
         (*i)->reorderResourcesByPriority();
         std::vector<std::string> uris;
         std::for_each((*i)->resources.begin(), (*i)->resources.end(),

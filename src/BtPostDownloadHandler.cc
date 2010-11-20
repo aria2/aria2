@@ -37,6 +37,7 @@
 #include "RequestGroup.h"
 #include "Option.h"
 #include "Logger.h"
+#include "LogFactory.h"
 #include "DownloadHandlerConstants.h"
 #include "File.h"
 #include "PieceStorage.h"
@@ -46,6 +47,7 @@
 #include "Exception.h"
 #include "DownloadContext.h"
 #include "download_helper.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -66,8 +68,8 @@ void BtPostDownloadHandler::getNextRequestGroups
 (std::vector<SharedHandle<RequestGroup> >& groups,
  RequestGroup* requestGroup)
 {
-  getLogger()->info("Generating RequestGroups for Torrent file %s",
-                    requestGroup->getFirstFilePath().c_str());
+  A2_LOG_INFO(fmt("Generating RequestGroups for Torrent file %s",
+                  requestGroup->getFirstFilePath().c_str()));
   std::string content;
   try {
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();

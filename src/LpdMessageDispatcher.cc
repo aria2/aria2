@@ -39,22 +39,25 @@
 #include "BtConstants.h"
 #include "RecoverableException.h"
 #include "wallclock.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 LpdMessageDispatcher::LpdMessageDispatcher
-(const std::string& infoHash, uint16_t port,
- const std::string& multicastAddress, uint16_t multicastPort,
- time_t interval):
-  infoHash_(infoHash),
-  port_(port),
-  multicastAddress_(multicastAddress),
-  multicastPort_(multicastPort),
-  timer_(0),
-  interval_(interval),
-  request_(bittorrent::createLpdRequest(multicastAddress_, multicastPort_,
-                                        infoHash_, port_)),
-  logger_(LogFactory::getInstance()) {}
+(const std::string& infoHash,
+ uint16_t port,
+ const std::string& multicastAddress,
+ uint16_t multicastPort,
+ time_t interval)
+  : infoHash_(infoHash),
+    port_(port),
+    multicastAddress_(multicastAddress),
+    multicastPort_(multicastPort),
+    timer_(0),
+    interval_(interval),
+    request_(bittorrent::createLpdRequest(multicastAddress_, multicastPort_,
+                                          infoHash_, port_))
+{}
 
 LpdMessageDispatcher::~LpdMessageDispatcher() {}
 
@@ -64,23 +67,18 @@ bool LpdMessageDispatcher::init(const std::string& localAddr,
   try {
     socket_.reset(new SocketCore(SOCK_DGRAM));
     socket_->create(AF_INET);
-    if(logger_->debug()) {
-      logger_->debug("Setting multicast outgoing interface=%s",
-                     localAddr.c_str());
-    }
+    A2_LOG_DEBUG(fmt("Setting multicast outgoing interface=%s",
+                     localAddr.c_str()));
     socket_->setMulticastInterface(localAddr);
-    if(logger_->debug()) {
-      logger_->debug("Setting multicast ttl=%u",static_cast<unsigned int>(ttl));
-    }
+    A2_LOG_DEBUG(fmt("Setting multicast ttl=%u",
+                     static_cast<unsigned int>(ttl)));
     socket_->setMulticastTtl(ttl);
-    if(logger_->debug()) {
-      logger_->debug("Setting multicast loop=%u",
-                     static_cast<unsigned int>(loop));
-    }
+    A2_LOG_DEBUG(fmt("Setting multicast loop=%u",
+                     static_cast<unsigned int>(loop)));
     socket_->setMulticastLoop(loop);
     return true;
   } catch(RecoverableException& e) {
-    logger_->error("Failed to initialize LpdMessageDispatcher.", e);
+    A2_LOG_ERROR_EX("Failed to initialize LpdMessageDispatcher.", e);
   }
   return false;
 }

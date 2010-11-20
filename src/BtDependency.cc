@@ -48,15 +48,17 @@
 #include "bittorrent_helper.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "FileEntry.h"
 
 namespace aria2 {
 
-BtDependency::BtDependency(RequestGroup* dependant,
-                           const SharedHandle<RequestGroup>& dependee):
-  dependant_(dependant),
-  dependee_(dependee),
-  logger_(LogFactory::getInstance()) {}
+BtDependency::BtDependency
+(RequestGroup* dependant,
+ const SharedHandle<RequestGroup>& dependee)
+  : dependant_(dependant),
+    dependee_(dependee)
+{}
 
 BtDependency::~BtDependency() {}
 
@@ -136,27 +138,21 @@ bool BtDependency::resolve()
         }
       }
     } catch(RecoverableException& e) {
-      logger_->error(EX_EXCEPTION_CAUGHT, e);
-      if(logger_->info()) {
-        logger_->info("BtDependency for GID#%s failed. Go without Bt.",
-                      util::itos(dependant_->getGID()).c_str());
-      }
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+      A2_LOG_INFO(fmt("BtDependency for GID#%s failed. Go without Bt.",
+                      util::itos(dependant_->getGID()).c_str()));
       return true;
     }
-    if(logger_->info()) {
-      logger_->info("Dependency resolved for GID#%s",
-                    util::itos(dependant_->getGID()).c_str());
-    }
+    A2_LOG_INFO(fmt("Dependency resolved for GID#%s",
+                    util::itos(dependant_->getGID()).c_str()));
     dependant_->setDownloadContext(context);
     return true;
   } else if(dependee_->getNumCommand() == 0) {
     // dependee_'s download failed.
     // cut reference here
     dependee_.reset();
-    if(logger_->info()) {
-      logger_->info("BtDependency for GID#%s failed. Go without Bt.",
-                    util::itos(dependant_->getGID()).c_str());
-    }
+    A2_LOG_INFO(fmt("BtDependency for GID#%s failed. Go without Bt.",
+                    util::itos(dependant_->getGID()).c_str()));
     return true;
   } else {
     return false;

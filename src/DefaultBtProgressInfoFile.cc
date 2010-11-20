@@ -52,6 +52,7 @@
 #include "a2io.h"
 #include "DownloadFailureException.h"
 #include "StringFormat.h"
+#include "fmt.h"
 #include "array_fun.h"
 #include "DownloadContext.h"
 #ifdef ENABLE_BITTORRENT
@@ -78,12 +79,11 @@ std::string createFilename
 DefaultBtProgressInfoFile::DefaultBtProgressInfoFile
 (const SharedHandle<DownloadContext>& dctx,
  const PieceStorageHandle& pieceStorage,
- const Option* option):
-  dctx_(dctx),
-  pieceStorage_(pieceStorage),
-  option_(option),
-  logger_(LogFactory::getInstance()),
-  filename_(createFilename(dctx_, getSuffix()))
+ const Option* option)
+  : dctx_(dctx),
+    pieceStorage_(pieceStorage),
+    option_(option),
+    filename_(createFilename(dctx_, getSuffix()))
 {}
 
 DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() {}
@@ -105,7 +105,7 @@ bool DefaultBtProgressInfoFile::isTorrentDownload()
 // Since version 0001, Integers are saved in binary form, network byte order.
 void DefaultBtProgressInfoFile::save()
 {
-  logger_->info(MSG_SAVING_SEGMENT_FILE, filename_.c_str());
+  A2_LOG_INFO(fmt(MSG_SAVING_SEGMENT_FILE, filename_.c_str()));
   std::string filenameTemp = filename_+"__temp";
   {
     std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
@@ -201,7 +201,7 @@ void DefaultBtProgressInfoFile::save()
       throw DL_ABORT_EX
         (StringFormat(EX_SEGMENT_FILE_WRITE, filename_.c_str()).str());
     }
-    logger_->info(MSG_SAVED_SEGMENT_FILE);
+    A2_LOG_INFO(MSG_SAVED_SEGMENT_FILE);
   }
   if(!File(filenameTemp).renameTo(filename_)) {
     throw DL_ABORT_EX
@@ -225,7 +225,7 @@ void DefaultBtProgressInfoFile::save()
 // 2) network byte order if version == 0001
 void DefaultBtProgressInfoFile::load() 
 {
-  logger_->info(MSG_LOADING_SEGMENT_FILE, filename_.c_str());
+  A2_LOG_INFO(fmt(MSG_LOADING_SEGMENT_FILE, filename_.c_str()));
   std::ifstream in(filename_.c_str(), std::ios::in|std::ios::binary);
   if(!in) {
     throw DL_ABORT_EX
@@ -251,9 +251,7 @@ void DefaultBtProgressInfoFile::load()
   bool infoHashCheckEnabled = false;
   if(extension[3]&1 && isTorrentDownload()) {
     infoHashCheckEnabled = true;
-    if(logger_->debug()) {
-      logger_->debug("InfoHash checking enabled.");
-    }
+    A2_LOG_DEBUG("InfoHash checking enabled.");
   }
 
   uint32_t infoHashLength;
@@ -422,7 +420,7 @@ void DefaultBtProgressInfoFile::load()
     util::convertBitfield(&dest, &src);
     pieceStorage_->setBitfield(dest.getBitfield(), dest.getBitfieldLength());
   }
-  logger_->info(MSG_LOADED_SEGMENT_FILE);
+  A2_LOG_INFO(MSG_LOADED_SEGMENT_FILE);
 }
 
 void DefaultBtProgressInfoFile::removeFile()
@@ -437,10 +435,10 @@ bool DefaultBtProgressInfoFile::exists()
 {
   File f(filename_);
   if(f.isFile()) {
-    logger_->info(MSG_SEGMENT_FILE_EXISTS, filename_.c_str());
+    A2_LOG_INFO(fmt(MSG_SEGMENT_FILE_EXISTS, filename_.c_str()));
     return true;
   } else {
-    logger_->info(MSG_SEGMENT_FILE_DOES_NOT_EXIST, filename_.c_str());
+    A2_LOG_INFO(fmt(MSG_SEGMENT_FILE_DOES_NOT_EXIST, filename_.c_str()));
     return false;
   }
 }

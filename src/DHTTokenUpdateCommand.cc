@@ -39,13 +39,14 @@
 #include "RecoverableException.h"
 #include "message.h"
 #include "Logger.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
-DHTTokenUpdateCommand::DHTTokenUpdateCommand(cuid_t cuid,
-                                             DownloadEngine* e,
-                                             time_t interval):
-  TimeBasedCommand(cuid, e, interval) {}
+DHTTokenUpdateCommand::DHTTokenUpdateCommand
+(cuid_t cuid, DownloadEngine* e, time_t interval)
+  : TimeBasedCommand(cuid, e, interval)
+{}
 
 DHTTokenUpdateCommand::~DHTTokenUpdateCommand() {}
 
@@ -62,7 +63,7 @@ void DHTTokenUpdateCommand::process()
   try {
     tokenTracker_->updateTokenSecret();
   } catch(RecoverableException& e) {
-    getLogger()->error(EX_EXCEPTION_CAUGHT, e);
+    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }
 }
 

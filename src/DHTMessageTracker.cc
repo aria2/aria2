@@ -48,11 +48,11 @@
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-DHTMessageTracker::DHTMessageTracker():
-  logger_(LogFactory::getInstance()) {}
+DHTMessageTracker::DHTMessageTracker() {}
 
 DHTMessageTracker::~DHTMessageTracker() {}
 
@@ -71,18 +71,15 @@ DHTMessageTracker::messageArrived
     throw DL_ABORT_EX(StringFormat("Malformed DHT message. From:%s:%u",
                                    ipaddr.c_str(), port).str());
   }
-  if(logger_->debug()) {
-    logger_->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
-                   util::toHex(tid->s()).c_str(), ipaddr.c_str(), port);
-  }
+  A2_LOG_DEBUG(fmt("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
+                   util::toHex(tid->s()).c_str(),
+                   ipaddr.c_str(), port));
   for(std::deque<SharedHandle<DHTMessageTrackerEntry> >::iterator i =
         entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
     if((*i)->match(tid->s(), ipaddr, port)) {
       SharedHandle<DHTMessageTrackerEntry> entry = *i;
       entries_.erase(i);
-      if(logger_->debug()) {
-        logger_->debug("Tracker entry found.");
-      }
+      A2_LOG_DEBUG("Tracker entry found.");
       SharedHandle<DHTNode> targetNode = entry->getTargetNode();
       try {
         SharedHandle<DHTResponseMessage> message =
@@ -91,9 +88,7 @@ DHTMessageTracker::messageArrived
                                           targetNode->getPort());
 
         int64_t rtt = entry->getElapsedMillis();
-        if(logger_->debug()) {
-          logger_->debug("RTT is %s", util::itos(rtt).c_str());
-        }
+        A2_LOG_DEBUG(fmt("RTT is %s", util::itos(rtt).c_str()));
         message->getRemoteNode()->updateRTT(rtt);
         SharedHandle<DHTMessageCallback> callback = entry->getCallback();
         return std::make_pair(message, callback);
@@ -103,9 +98,7 @@ DHTMessageTracker::messageArrived
       }
     }
   }
-  if(logger_->debug()) {
-    logger_->debug("Tracker entry not found.");
-  }
+  A2_LOG_DEBUG("Tracker entry not found.");
   return std::pair<SharedHandle<DHTResponseMessage>,
                    SharedHandle<DHTMessageCallback> >();
 }
@@ -115,17 +108,13 @@ void DHTMessageTracker::handleTimeoutEntry
 {
   try {
     SharedHandle<DHTNode> node = entry->getTargetNode();
-    if(logger_->debug()) {
-      logger_->debug("Message timeout: To:%s:%u",
-                     node->getIPAddress().c_str(), node->getPort());
-    }
+    A2_LOG_DEBUG(fmt("Message timeout: To:%s:%u",
+                     node->getIPAddress().c_str(), node->getPort()));
     node->updateRTT(entry->getElapsedMillis());
     node->timeout();
     if(node->isBad()) {
-      if(logger_->debug()) {
-        logger_->debug("Marked bad: %s:%u",
-                       node->getIPAddress().c_str(), node->getPort());
-      }
+      A2_LOG_DEBUG(fmt("Marked bad: %s:%u",
+                       node->getIPAddress().c_str(), node->getPort()));
       routingTable_->dropNode(node);
     }
     SharedHandle<DHTMessageCallback> callback = entry->getCallback();
@@ -133,7 +122,7 @@ void DHTMessageTracker::handleTimeoutEntry
       callback->onTimeout(node);
     }
   } catch(RecoverableException& e) {
-    logger_->info("Exception thrown while handling timeouts.", e);
+    A2_LOG_INFO_EX("Exception thrown while handling timeouts.", e);
   }
 }
 

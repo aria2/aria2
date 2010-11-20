@@ -49,7 +49,6 @@
 namespace aria2 {
 
 class Segment;
-class Logger;
 class Option;
 class PeerStat;
 class DownloadContext;
@@ -78,8 +77,6 @@ typedef std::deque<SegmentEntryHandle> SegmentEntries;
 class SegmentMan {
 private:
   const Option* option_;
-
-  Logger* logger_;
 
   SharedHandle<DownloadContext> downloadContext_;
 

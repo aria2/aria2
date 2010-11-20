@@ -45,8 +45,6 @@
 
 namespace aria2 {
 
-class Logger;
-
 class TLSContext {
 private:
   SSL_CTX* sslCtx_;
@@ -54,8 +52,6 @@ private:
   bool good_;
 
   bool peerVerificationEnabled_;
-
-  Logger* logger_;
 public:
   TLSContext();
 

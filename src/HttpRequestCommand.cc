@@ -56,6 +56,8 @@
 #include "PieceStorage.h"
 #include "DefaultBtProgressInfoFile.h"
 #include "Logger.h"
+#include "LogFactory.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -67,8 +69,8 @@ HttpRequestCommand::HttpRequestCommand
  const HttpConnectionHandle& httpConnection,
  DownloadEngine* e,
  const SocketHandle& s)
-  :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-   httpConnection_(httpConnection)
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+    httpConnection_(httpConnection)
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();
@@ -150,10 +152,8 @@ bool HttpRequestCommand::executeInternal() {
           getRequest()->getProtocol() == Request::PROTO_HTTPS)) {
         if(getFileEntry()->getPath().empty() &&
            getRequest()->getFile().empty()) {
-          if(getLogger()->debug()) {
-            getLogger()->debug("conditional-get is disabled because file name"
-                               "is not available.");
-          }
+          A2_LOG_DEBUG("Conditional-Get is disabled because file name"
+                       " is not available.");
         } else {
           if(getFileEntry()->getPath().empty()) {
             getFileEntry()->setPath

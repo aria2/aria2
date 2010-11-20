@@ -42,15 +42,12 @@
 namespace aria2 {
 
 class SocketCore;
-class Logger;
 
 class DHTConnectionImpl:public DHTConnection {
 private:
   SharedHandle<SocketCore> socket_;
 
   int family_;
-
-  Logger* logger_;
 public:
   DHTConnectionImpl(int family);
 

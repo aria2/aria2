@@ -55,20 +55,22 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "a2functional.h"
+#include "fmt.h"
 
 namespace aria2 {
 
 HttpRequestEntry::HttpRequestEntry
-(const SharedHandle<HttpRequest>& httpRequest):
-  httpRequest_(httpRequest),
-  proc_(new HttpHeaderProcessor()) {}
+(const SharedHandle<HttpRequest>& httpRequest)
+  : httpRequest_(httpRequest),
+    proc_(new HttpHeaderProcessor())
+{}
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
-HttpConnection::HttpConnection(cuid_t cuid, const SocketHandle& socket):
-  cuid_(cuid), socket_(socket),
-  socketBuffer_(socket),
-  logger_(LogFactory::getInstance())
+HttpConnection::HttpConnection(cuid_t cuid, const SocketHandle& socket)
+  : cuid_(cuid),
+    socket_(socket),
+    socketBuffer_(socket)
 {}
 
 HttpConnection::~HttpConnection() {}
@@ -95,11 +97,9 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createRequest();
-  if(logger_->info()) {
-    logger_->info(MSG_SENDING_REQUEST,
+  A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                   util::itos(cuid_).c_str(),
-                  eraseConfidentialInfo(request).c_str());
-  }
+                  eraseConfidentialInfo(request).c_str()));
   socketBuffer_.pushStr(request);
   socketBuffer_.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
@@ -110,11 +110,9 @@ void HttpConnection::sendProxyRequest
 (const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createProxyRequest();
-  if(logger_->info()) {
-    logger_->info(MSG_SENDING_REQUEST,
+  A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                   util::itos(cuid_).c_str(),
-                  eraseConfidentialInfo(request).c_str());
-  }
+                  eraseConfidentialInfo(request).c_str()));
   socketBuffer_.pushStr(request);
   socketBuffer_.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
@@ -147,10 +145,9 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
   size_t putbackDataLength = proc->getPutBackDataLength();
   size -= putbackDataLength;
   socket_->readData(buf, size);
-  if(logger_->info()) {
-    logger_->info(MSG_RECEIVE_RESPONSE,
-                  util::itos(cuid_).c_str(), proc->getHeaderString().c_str());
-  }
+  A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
+                  util::itos(cuid_).c_str(),
+                  proc->getHeaderString().c_str()));
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
   SharedHandle<HttpResponse> httpResponse(new HttpResponse());
   httpResponse->setCuid(cuid_);

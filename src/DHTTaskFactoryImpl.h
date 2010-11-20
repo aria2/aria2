@@ -46,7 +46,6 @@ class DHTMessageDispatcher;
 class DHTMessageFactory;
 class DHTTaskQueue;
 class DHTAbstractTask;
-class Logger;
 
 class DHTTaskFactoryImpl:public DHTTaskFactory {
 private:
@@ -61,8 +60,6 @@ private:
   DHTTaskQueue* taskQueue_;
 
   time_t timeout_;
-
-  Logger* logger_;
 
   void setCommonProperty(const SharedHandle<DHTAbstractTask>& task);
 public:
