@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "LibgcryptDHKeyExchange.h"
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -42,8 +42,8 @@ namespace {
 void handleError(gcry_error_t err)
 {
   throw DL_ABORT_EX
-    (StringFormat("Exception in libgcrypt routine(DHKeyExchange class): %s",
-                  gcry_strerror(err)).str());
+    (fmt("Exception in libgcrypt routine(DHKeyExchange class): %s",
+         gcry_strerror(err)));
 }
 } // namespace
 
@@ -100,10 +100,9 @@ size_t DHKeyExchange::getPublicKey(unsigned char* out, size_t outLength) const
 {
   if(outLength < keyLength_) {
     throw DL_ABORT_EX
-      (StringFormat
-       ("Insufficient buffer for public key. expect:%lu, actual:%lu",
-        static_cast<unsigned long>(keyLength_),
-        static_cast<unsigned long>(outLength)).str());
+      (fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
+           static_cast<unsigned long>(keyLength_),
+           static_cast<unsigned long>(outLength)));
   }
   memset(out, 0, outLength);
   size_t publicKeyBytes = (gcry_mpi_get_nbits(publicKey_)+7)/8;
@@ -128,9 +127,9 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
 {
   if(outLength < keyLength_) {
     throw DL_ABORT_EX
-      (StringFormat("Insufficient buffer for secret. expect:%lu, actual:%lu",
-                    static_cast<unsigned long>(keyLength_),
-                    static_cast<unsigned long>(outLength)).str());
+      (fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
+           static_cast<unsigned long>(keyLength_),
+           static_cast<unsigned long>(outLength)));
   }
   gcry_mpi_t peerPublicKey;
   {

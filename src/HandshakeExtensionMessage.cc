@@ -39,7 +39,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "message.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "bencode2.h"
 #include "DownloadContext.h"
@@ -171,9 +170,9 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 {
   if(length < 1) {
     throw DL_ABORT_EX
-      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-                    EXTENSION_NAME.c_str(),
-                    static_cast<unsigned long>(length)).str());
+      (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE,
+           EXTENSION_NAME.c_str(),
+           static_cast<unsigned long>(length)));
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   A2_LOG_DEBUG(fmt("Creating HandshakeExtensionMessage from %s",

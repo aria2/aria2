@@ -51,7 +51,6 @@
 #include "util.h"
 #include "a2io.h"
 #include "DownloadFailureException.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "array_fun.h"
 #include "DownloadContext.h"
@@ -111,7 +110,7 @@ void DefaultBtProgressInfoFile::save()
     std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
     if(!o) {
       throw DL_ABORT_EX
-        (StringFormat(EX_SEGMENT_FILE_WRITE, filename_.c_str()).str());
+        (fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
     }
 #ifdef ENABLE_BITTORRENT
     bool torrentDownload = isTorrentDownload();
@@ -199,25 +198,24 @@ void DefaultBtProgressInfoFile::save()
     o.flush();
     if(!o) {
       throw DL_ABORT_EX
-        (StringFormat(EX_SEGMENT_FILE_WRITE, filename_.c_str()).str());
+        (fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
     }
     A2_LOG_INFO(MSG_SAVED_SEGMENT_FILE);
   }
   if(!File(filenameTemp).renameTo(filename_)) {
     throw DL_ABORT_EX
-      (StringFormat(EX_SEGMENT_FILE_WRITE, filename_.c_str()).str());
+      (fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
   }
 }
 
 #define CHECK_STREAM(in, length)                                        \
   if(in.gcount() != length) {                                           \
-  throw DL_ABORT_EX(StringFormat("Failed to read segment file %s."      \
-                                 " Unexpected EOF.",                    \
-                                 filename_.c_str()).str());             \
+    throw DL_ABORT_EX(fmt("Failed to read segment file %s."             \
+                          " Unexpected EOF.",                           \
+                          filename_.c_str()));                          \
   }                                                                     \
   if(!in) {                                                             \
-    throw DL_ABORT_EX                                                   \
-      (StringFormat(EX_SEGMENT_FILE_READ, filename_.c_str()).str());    \
+    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ, filename_.c_str()));    \
   }
 
 // It is assumed that integers are saved as:
@@ -229,7 +227,7 @@ void DefaultBtProgressInfoFile::load()
   std::ifstream in(filename_.c_str(), std::ios::in|std::ios::binary);
   if(!in) {
     throw DL_ABORT_EX
-      (StringFormat(EX_SEGMENT_FILE_READ, filename_.c_str()).str());
+      (fmt(EX_SEGMENT_FILE_READ, filename_.c_str()));
   }
   unsigned char versionBuf[2];
   in.read(reinterpret_cast<char*>(versionBuf), sizeof(versionBuf));
@@ -242,8 +240,8 @@ void DefaultBtProgressInfoFile::load()
     version = 1;
   } else {
     throw DL_ABORT_EX
-      (StringFormat("Unsupported ctrl file version: %s",
-                    versionHex.c_str()).str());
+      (fmt("Unsupported ctrl file version: %s",
+           versionHex.c_str()));
   }
   unsigned char extension[4];
   in.read(reinterpret_cast<char*>(extension), sizeof(extension));
@@ -263,7 +261,7 @@ void DefaultBtProgressInfoFile::load()
   if((infoHashLength < 0) ||
      ((infoHashLength == 0) && infoHashCheckEnabled)) {
     throw DL_ABORT_EX
-      (StringFormat("Invalid info hash length: %d", infoHashLength).str());
+      (fmt("Invalid info hash length: %d", infoHashLength));
   }
   if(infoHashLength > 0) {
     array_ptr<unsigned char> savedInfoHash(new unsigned char[infoHashLength]);
@@ -276,10 +274,10 @@ void DefaultBtProgressInfoFile::load()
       if(infoHashLength != INFO_HASH_LENGTH ||
          memcmp(savedInfoHash, infoHash, INFO_HASH_LENGTH) != 0) {
         throw DL_ABORT_EX
-          (StringFormat("info hash mismatch. expected: %s, actual: %s",
-                        util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
-                        util::toHex(savedInfoHash, infoHashLength).c_str()
-                        ).str());
+          (fmt("info hash mismatch. expected: %s, actual: %s",
+               util::toHex(infoHash, INFO_HASH_LENGTH).c_str(),
+               util::toHex(savedInfoHash, infoHashLength).c_str()
+               ));
       }
     }
 #endif // ENABLE_BITTORRENT
@@ -300,9 +298,9 @@ void DefaultBtProgressInfoFile::load()
   }
   if(totalLength != dctx_->getTotalLength()) {
     throw DL_ABORT_EX
-      (StringFormat("total length mismatch. expected: %s, actual: %s",
-                    util::itos(dctx_->getTotalLength()).c_str(),
-                    util::itos(totalLength).c_str()).str());
+      (fmt("total length mismatch. expected: %s, actual: %s",
+           util::itos(dctx_->getTotalLength()).c_str(),
+           util::itos(totalLength).c_str()));
   }
   uint64_t uploadLength;
   in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
@@ -326,9 +324,9 @@ void DefaultBtProgressInfoFile::load()
     ((totalLength+pieceLength-1)/pieceLength+7)/8;
   if(expectedBitfieldLength != bitfieldLength) {
     throw DL_ABORT_EX
-      (StringFormat("bitfield length mismatch. expected: %d, actual: %d",
-                    expectedBitfieldLength,
-                    bitfieldLength).str());
+      (fmt("bitfield length mismatch. expected: %d, actual: %d",
+           expectedBitfieldLength,
+           bitfieldLength));
   }
 
   array_ptr<unsigned char> savedBitfield(new unsigned char[bitfieldLength]);
@@ -356,7 +354,7 @@ void DefaultBtProgressInfoFile::load()
       }
       if(!(index < dctx_->getNumPieces())) {
         throw DL_ABORT_EX
-          (StringFormat("piece index out of range: %u", index).str());
+          (fmt("piece index out of range: %u", index));
       }
       uint32_t length;
       in.read(reinterpret_cast<char*>(&length), sizeof(length));
@@ -366,7 +364,7 @@ void DefaultBtProgressInfoFile::load()
       }
       if(!(length <=dctx_->getPieceLength())) {
         throw DL_ABORT_EX
-          (StringFormat("piece length out of range: %u", length).str());
+          (fmt("piece length out of range: %u", length));
       }
       SharedHandle<Piece> piece(new Piece(index, length));
       uint32_t bitfieldLength;
@@ -378,10 +376,10 @@ void DefaultBtProgressInfoFile::load()
       }
       if(piece->getBitfieldLength() != bitfieldLength) {
         throw DL_ABORT_EX
-          (StringFormat("piece bitfield length mismatch."
-                        " expected: %lu actual: %u",
-                        static_cast<unsigned long>(piece->getBitfieldLength()),
-                        bitfieldLength).str());
+          (fmt("piece bitfield length mismatch."
+               " expected: %lu actual: %u",
+               static_cast<unsigned long>(piece->getBitfieldLength()),
+               bitfieldLength));
       }
       array_ptr<unsigned char> pieceBitfield
         (new unsigned char[bitfieldLength]);

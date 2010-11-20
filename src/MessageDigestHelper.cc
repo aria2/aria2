@@ -42,7 +42,7 @@
 #include "message.h"
 #include "DefaultDiskWriter.h"
 #include "util.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -79,8 +79,7 @@ std::string MessageDigestHelper::hexDigest
   for(uint64_t i = 0; i < iteration; ++i) {
     ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
     if((size_t)readLength != BUFSIZE) {
-      throw DL_ABORT_EX
-        (StringFormat(EX_FILE_READ, "n/a", "data is too short").str());
+      throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     ctx->update(BUF, readLength);
     offset += readLength;
@@ -88,8 +87,7 @@ std::string MessageDigestHelper::hexDigest
   if(tail) {
     ssize_t readLength = bs->readData(BUF, tail, offset);
     if((size_t)readLength != tail) {
-      throw DL_ABORT_EX
-        (StringFormat(EX_FILE_READ, "n/a", "data is too short").str());
+      throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));
     }
     ctx->update(BUF, readLength);
   }
@@ -103,11 +101,10 @@ void MessageDigestHelper::digest
   size_t reqLength = ctx->getDigestLength();
   if(mdLength < reqLength) {
     throw DL_ABORT_EX
-      (StringFormat
-       ("Insufficient space for storing message digest:"
-        " %lu required, but only %lu is allocated",
-        static_cast<unsigned long>(reqLength),
-        static_cast<unsigned long>(mdLength)).str());
+      (fmt("Insufficient space for storing message digest:"
+           " %lu required, but only %lu is allocated",
+           static_cast<unsigned long>(reqLength),
+           static_cast<unsigned long>(mdLength)));
   }
   ctx->update(data, length);
   ctx->digest(md);

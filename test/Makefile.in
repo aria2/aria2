@@ -203,7 +203,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc TestUtil.cc TestUtil.h \
 	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
 	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
+	ProtocolDetectorTest.cc ExceptionTest.cc FmtTest.cc \
 	DownloadHandlerFactoryTest.cc SignatureTest.cc \
 	ServerStatManTest.cc FeedbackURISelectorTest.cc \
 	InOrderURISelectorTest.cc ServerStatTest.cc \
@@ -398,8 +398,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) TestUtil.$(OBJEXT) \
 	FeatureConfigTest.$(OBJEXT) SpeedCalcTest.$(OBJEXT) \
 	MultiDiskAdaptorTest.$(OBJEXT) \
 	MultiFileAllocationIteratorTest.$(OBJEXT) \
-	ProtocolDetectorTest.$(OBJEXT) StringFormatTest.$(OBJEXT) \
-	ExceptionTest.$(OBJEXT) DownloadHandlerFactoryTest.$(OBJEXT) \
+	ProtocolDetectorTest.$(OBJEXT) ExceptionTest.$(OBJEXT) \
+	FmtTest.$(OBJEXT) DownloadHandlerFactoryTest.$(OBJEXT) \
 	SignatureTest.$(OBJEXT) ServerStatManTest.$(OBJEXT) \
 	FeedbackURISelectorTest.$(OBJEXT) \
 	InOrderURISelectorTest.$(OBJEXT) ServerStatTest.$(OBJEXT) \
@@ -638,7 +638,7 @@ aria2c_SOURCES = AllTest.cc TestUtil.cc TestUtil.h SocketCoreTest.cc \
 	OptionTest.cc DefaultDiskWriterTest.cc FeatureConfigTest.cc \
 	SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
+	ProtocolDetectorTest.cc ExceptionTest.cc FmtTest.cc \
 	DownloadHandlerFactoryTest.cc SignatureTest.cc \
 	ServerStatManTest.cc FeedbackURISelectorTest.cc \
 	InOrderURISelectorTest.cc ServerStatTest.cc \
@@ -833,6 +833,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeedbackURISelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FmtTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnectionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecoderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GZipDecodingStreamFilterTest.Po@am__quote@
@@ -895,7 +896,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sqlite3CookieParserTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormatTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeTest.Po@am__quote@

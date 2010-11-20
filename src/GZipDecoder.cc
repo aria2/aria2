@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #include "GZipDecoder.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
@@ -94,8 +94,8 @@ std::string GZipDecoder::decode(const unsigned char* in, size_t length)
     if(ret == Z_STREAM_END) {
       finished_ = true;
     } else if(ret != Z_OK) {
-      throw DL_ABORT_EX(StringFormat("libz::inflate() failed. cause:%s",
-                                     strm_->msg).str());
+      throw DL_ABORT_EX(fmt("libz::inflate() failed. cause:%s",
+                            strm_->msg));
     }
 
     size_t produced = OUTBUF_LENGTH-strm_->avail_out;

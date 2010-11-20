@@ -68,7 +68,6 @@
 #include "FileEntry.h"
 #include "Request.h"
 #include "FileAllocationIterator.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "A2STR.h"
 #include "URISelector.h"
@@ -299,9 +298,8 @@ void RequestGroup::createInitialCommand
         // TODO If metadataGetMode == false and each FileEntry has
         // URI, then go without BT.
         throw DOWNLOAD_FAILURE_EXCEPTION
-          (StringFormat
-           ("InfoHash %s is already registered.",
-            bittorrent::getInfoHashString(downloadContext_).c_str()).str());
+          (fmt("InfoHash %s is already registered.",
+               bittorrent::getInfoHashString(downloadContext_).c_str()));
       }
       if(metadataGetMode) {
         // Use UnknownLengthPieceStorage.
@@ -309,8 +307,8 @@ void RequestGroup::createInitialCommand
       } else {
         if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
           throw DOWNLOAD_FAILURE_EXCEPTION
-            (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-                          downloadContext_->getBasePath().c_str()).str());
+            (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
+                 downloadContext_->getBasePath().c_str()));
         }
         initPieceStorage();
         if(downloadContext_->getFileEntries().size() > 1) {
@@ -415,9 +413,8 @@ void RequestGroup::createInitialCommand
              !option_->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
             // TODO we need this->haltRequested = true?
             throw DOWNLOAD_FAILURE_EXCEPTION
-              (StringFormat
-               (MSG_FILE_ALREADY_EXISTS,
-                downloadContext_->getBasePath().c_str()).str());
+              (fmt(MSG_FILE_ALREADY_EXISTS,
+                   downloadContext_->getBasePath().c_str()));
           } else {
             pieceStorage_->getDiskAdaptor()->openFile();
           }
@@ -480,8 +477,8 @@ void RequestGroup::createInitialCommand
     } else {
       if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
         throw DOWNLOAD_FAILURE_EXCEPTION
-          (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-                        downloadContext_->getBasePath().c_str()).str());
+          (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
+               downloadContext_->getBasePath().c_str()));
       }
       SharedHandle<BtProgressInfoFile> progressInfoFile
         (new DefaultBtProgressInfoFile
@@ -506,8 +503,8 @@ void RequestGroup::createInitialCommand
     // DownloadContext.
     if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
       throw DOWNLOAD_FAILURE_EXCEPTION
-        (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-                      downloadContext_->getBasePath().c_str()).str());
+        (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
+             downloadContext_->getBasePath().c_str()));
     }
     initPieceStorage();
     if(downloadContext_->getFileEntries().size() > 1) {
@@ -529,9 +526,8 @@ void RequestGroup::createInitialCommand
            !option_->getAsBool(PREF_ALLOW_OVERWRITE)) {
           // TODO we need this->haltRequested = true?
           throw DOWNLOAD_FAILURE_EXCEPTION
-            (StringFormat
-             (MSG_FILE_ALREADY_EXISTS,
-              downloadContext_->getBasePath().c_str()).str());
+            (fmt(MSG_FILE_ALREADY_EXISTS,
+                 downloadContext_->getBasePath().c_str()));
         } else {
           pieceStorage_->getDiskAdaptor()->openFile();
         }
@@ -750,8 +746,7 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
     }
     setProgressInfoFile(progressInfoFile);
   } catch(RecoverableException& e) {
-    throw DOWNLOAD_FAILURE_EXCEPTION2
-      (StringFormat(EX_DOWNLOAD_ABORTED).str(), e);
+    throw DOWNLOAD_FAILURE_EXCEPTION2(fmt(EX_DOWNLOAD_ABORTED), e);
   }
 }
 
@@ -768,13 +763,13 @@ void RequestGroup::shouldCancelDownloadForSafety()
         A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED, getFirstFilePath().c_str()));
       } else {
         throw DOWNLOAD_FAILURE_EXCEPTION
-          (StringFormat("File renaming failed: %s",
-                        getFirstFilePath().c_str()).str());
+          (fmt("File renaming failed: %s",
+               getFirstFilePath().c_str()));
       }
     } else {
       throw DOWNLOAD_FAILURE_EXCEPTION
-        (StringFormat(MSG_FILE_ALREADY_EXISTS,
-                      getFirstFilePath().c_str()).str());
+        (fmt(MSG_FILE_ALREADY_EXISTS,
+             getFirstFilePath().c_str()));
     }
   }
 }
@@ -892,9 +887,9 @@ void RequestGroup::validateFilename(const std::string& expectedFilename,
     return;
   }
   if(expectedFilename != actualFilename) {
-    throw DL_ABORT_EX(StringFormat(EX_FILENAME_MISMATCH,
-                                   expectedFilename.c_str(),
-                                   actualFilename.c_str()).str());
+    throw DL_ABORT_EX(fmt(EX_FILENAME_MISMATCH,
+                          expectedFilename.c_str(),
+                          actualFilename.c_str()));
   }
 }
 
@@ -906,9 +901,9 @@ void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
   }
   if(expectedTotalLength != actualTotalLength) {
     throw DL_ABORT_EX
-      (StringFormat(EX_SIZE_MISMATCH,
-                    util::itos(expectedTotalLength, true).c_str(),
-                    util::itos(actualTotalLength, true).c_str()).str());
+      (fmt(EX_SIZE_MISMATCH,
+           util::itos(expectedTotalLength, true).c_str(),
+           util::itos(actualTotalLength, true).c_str()));
   }
 }
 
@@ -1256,7 +1251,7 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
      (!segmentMan_ ||
       segmentMan_->calculateSessionDownloadLength() == 0)) {
     throw DOWNLOAD_FAILURE_EXCEPTION2
-      (StringFormat("Reached max-file-not-found count=%u", maxCount).str(),
+      (fmt("Reached max-file-not-found count=%u", maxCount),
        downloadresultcode::MAX_FILE_NOT_FOUND);
   }
 }

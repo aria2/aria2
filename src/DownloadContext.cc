@@ -37,7 +37,7 @@
 #include <algorithm>
 
 #include "FileEntry.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "util.h"
 #include "wallclock.h"
 #include "DlAbortEx.h"
@@ -123,8 +123,8 @@ void DownloadContext::setFilePathWithIndex
     // We don't escape path because path may come from users.
     fileEntries_[index-1]->setPath(path);
   } else {
-    throw DL_ABORT_EX(StringFormat("No such file with index=%u",
-                                   static_cast<unsigned int>(index)).str());
+    throw DL_ABORT_EX(fmt("No such file with index=%u",
+                          static_cast<unsigned int>(index)));
   }
 }
 
@@ -165,7 +165,7 @@ const SharedHandle<ContextAttribute>& DownloadContext::getAttribute
   std::map<std::string, SharedHandle<ContextAttribute> >::const_iterator itr =
     attrs_.find(key);
   if(itr == attrs_.end()) {
-    throw DL_ABORT_EX(StringFormat("No attribute named %s", key.c_str()).str());
+    throw DL_ABORT_EX(fmt("No attribute named %s", key.c_str()));
   } else {
     return (*itr).second;
   }

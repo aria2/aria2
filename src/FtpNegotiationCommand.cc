@@ -59,7 +59,6 @@
 #include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
 #include "Socket.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "DiskAdaptor.h"
 #include "SegmentMan.h"
@@ -184,7 +183,7 @@ bool FtpNegotiationCommand::recvUser() {
     sequence_ = SEQ_SEND_PASS;
     break;
   default:
-    throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   return true;
 }
@@ -205,7 +204,7 @@ bool FtpNegotiationCommand::recvPass() {
     return false;
   }
   if(status != 230) {
-    throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   sequence_ = SEQ_SEND_TYPE;
   return true;
@@ -227,7 +226,7 @@ bool FtpNegotiationCommand::recvType() {
     return false;
   }
   if(status != 200) {
-    throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   sequence_ = SEQ_SEND_PWD;
   return true;
@@ -252,7 +251,7 @@ bool FtpNegotiationCommand::recvPwd()
     return false;
   }
   if(status != 257) {
-    throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   ftp_->setBaseWorkingDir(pwd);
   A2_LOG_INFO(fmt("CUID#%s - base working directory is '%s'",
@@ -296,7 +295,7 @@ bool FtpNegotiationCommand::recvCwd()
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          downloadresultcode::RESOURCE_NOT_FOUND);
     else
-      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+      throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   cwdDirs_.pop_front();
   if(cwdDirs_.empty()) {
@@ -369,8 +368,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
   if(getDownloadEngine()->getRequestGroupMan()->
      isSameFileBeingDownloaded(getRequestGroup())) {
     throw DOWNLOAD_FAILURE_EXCEPTION
-      (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-                    getRequestGroup()->getFirstFilePath().c_str()).str());
+      (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
+           getRequestGroup()->getFirstFilePath().c_str()));
   }
   if(totalLength == 0) {
 
@@ -462,8 +461,8 @@ bool FtpNegotiationCommand::recvSize() {
 
     if(size > INT64_MAX) {
       throw DL_ABORT_EX
-        (StringFormat(EX_TOO_LARGE_FILE,
-                      util::uitos(size, true).c_str()).str());
+        (fmt(EX_TOO_LARGE_FILE,
+             util::uitos(size, true).c_str()));
     }
     if(!getPieceStorage()) {
 
@@ -563,7 +562,7 @@ bool FtpNegotiationCommand::recvPort() {
     return false;
   }
   if(status != 200) {
-    throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   sequence_ = SEQ_SEND_REST;
   return true;
@@ -624,7 +623,7 @@ bool FtpNegotiationCommand::recvPasv() {
     return false;
   }
   if(status != 227) {
-    throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   dataConnAddr_ = dest;
 
@@ -688,8 +687,8 @@ bool FtpNegotiationCommand::sendTunnelRequest()
           getDownloadEngine()->removeCachedIPAddress(proxyReq->getHost(),
                                                      proxyReq->getPort());
           throw DL_RETRY_EX
-            (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED,
-                          error.c_str()).str());
+            (fmt(MSG_ESTABLISHING_CONNECTION_FAILED,
+                 error.c_str()));
         } else {
           A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
                           util::itos(getCuid()).c_str(),
@@ -745,7 +744,7 @@ bool FtpNegotiationCommand::sendRestPasv(const SharedHandle<Segment>& segment) {
   if(dataSocket_->isReadable(0)) {
     std::string error = dataSocket_->getSocketError();
     throw DL_ABORT_EX
-      (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
+      (fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()));
   }
   setReadCheckSocket(getSocket());
   disableWriteCheckSocket();
@@ -800,7 +799,7 @@ bool FtpNegotiationCommand::recvRetr() {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          downloadresultcode::RESOURCE_NOT_FOUND);
     else
-      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, status).str());
+      throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   if(getOption()->getAsBool(PREF_FTP_PASV)) {
     sequence_ = SEQ_NEGOTIATION_COMPLETED;

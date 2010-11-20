@@ -48,7 +48,6 @@
 #include "download_helper.h"
 #include "util.h"
 #include "RequestGroupMan.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "XmlRpcRequest.h"
 #include "PieceStorage.h"
@@ -321,15 +320,15 @@ SharedHandle<ValueBase> removeDownload
     group = e->getRequestGroupMan()->findReservedGroup(gid);
     if(!group) {
       throw DL_ABORT_EX
-        (StringFormat("Active Download not found for GID#%s",
-                      util::itos(gid).c_str()).str());
+        (fmt("Active Download not found for GID#%s",
+             util::itos(gid).c_str()));
     }
     if(group->isDependencyResolved()) {
       e->getRequestGroupMan()->removeReservedGroup(gid);
     } else {
       throw DL_ABORT_EX
-        (StringFormat("GID#%s cannot be removed now",
-                      util::itos(gid).c_str()).str());
+        (fmt("GID#%s cannot be removed now",
+             util::itos(gid).c_str()));
     }
   } else {
     if(forceRemove) {
@@ -397,8 +396,8 @@ SharedHandle<ValueBase> pauseDownload
     return createGIDResponse(gid);
   } else {
     throw DL_ABORT_EX
-      (StringFormat("GID#%s cannot be paused now",
-                    util::itos(gid).c_str()).str());
+      (fmt("GID#%s cannot be paused now",
+           util::itos(gid).c_str()));
   }
 }
 } // namespace
@@ -461,8 +460,8 @@ SharedHandle<ValueBase> UnpauseXmlRpcMethod::process
     e->getRequestGroupMan()->findReservedGroup(gid);
   if(!group || !group->isPauseRequested()) {
     throw DL_ABORT_EX
-      (StringFormat("GID#%s cannot be unpaused now",
-                    util::itos(gid).c_str()).str());
+      (fmt("GID#%s cannot be unpaused now",
+           util::itos(gid).c_str()));
   } else {
     group->setPauseRequested(false);
     e->getRequestGroupMan()->requestQueueCheck();    
@@ -823,8 +822,8 @@ SharedHandle<ValueBase> GetFilesXmlRpcMethod::process
       e->getRequestGroupMan()->findDownloadResult(gid);
     if(!dr) {
       throw DL_ABORT_EX
-        (StringFormat("No file data is available for GID#%s",
-                      util::itos(gid).c_str()).str());
+        (fmt("No file data is available for GID#%s",
+             util::itos(gid).c_str()));
     } else {
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
     }
@@ -844,8 +843,8 @@ SharedHandle<ValueBase> GetUrisXmlRpcMethod::process
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
     throw DL_ABORT_EX
-      (StringFormat("No URI data is available for GID#%s",
-                    util::itos(gid).c_str()).str());
+      (fmt("No URI data is available for GID#%s",
+           util::itos(gid).c_str()));
   }
   SharedHandle<List> uriList = List::g();
   // TODO Current implementation just returns first FileEntry's URIs.
@@ -865,8 +864,8 @@ SharedHandle<ValueBase> GetPeersXmlRpcMethod::process
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
     throw DL_ABORT_EX
-      (StringFormat("No peer data is available for GID#%s",
-                    util::itos(gid).c_str()).str());
+      (fmt("No peer data is available for GID#%s",
+           util::itos(gid).c_str()));
   }
   SharedHandle<List> peers = List::g();
   BtObject btObject = e->getBtRegistry()->get(group->getGID());
@@ -898,8 +897,8 @@ SharedHandle<ValueBase> TellStatusXmlRpcMethod::process
         e->getRequestGroupMan()->findDownloadResult(gid);
       if(!ds) {
         throw DL_ABORT_EX
-          (StringFormat("No such download for GID#%s",
-                        util::itos(gid).c_str()).str());
+          (fmt("No such download for GID#%s",
+               util::itos(gid).c_str()));
       }
       gatherStoppedDownload(entryDict, ds, keys);
     } else {
@@ -995,8 +994,8 @@ SharedHandle<ValueBase> ChangeOptionXmlRpcMethod::process
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
     throw DL_ABORT_EX
-      (StringFormat("Cannot change option for GID#%s",
-                    util::itos(gid).c_str()).str());
+      (fmt("Cannot change option for GID#%s",
+           util::itos(gid).c_str()));
   }
   SharedHandle<Option> option(new Option());
   const Dict* optionsParam = req.getDictParam(1);
@@ -1102,8 +1101,8 @@ SharedHandle<ValueBase> GetOptionXmlRpcMethod::process
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
     throw DL_ABORT_EX
-      (StringFormat("Cannot get option for GID#%s",
-                    util::itos(gid).c_str()).str());
+      (fmt("Cannot get option for GID#%s",
+           util::itos(gid).c_str()));
   }
   SharedHandle<Dict> result = Dict::g();
   SharedHandle<Option> option = group->getOption();
@@ -1168,8 +1167,8 @@ SharedHandle<ValueBase> GetServersXmlRpcMethod::process
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
   if(!group) {
-    throw DL_ABORT_EX(StringFormat("No active download for GID#%s",
-                                   util::itos(gid).c_str()).str());
+    throw DL_ABORT_EX(fmt("No active download for GID#%s",
+                          util::itos(gid).c_str()));
   }
   const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
@@ -1219,13 +1218,13 @@ SharedHandle<ValueBase> ChangeUriXmlRpcMethod::process
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
     throw DL_ABORT_EX
-      (StringFormat("Cannot remove URIs from GID#%s",
-                    util::itos(gid).c_str()).str());
+      (fmt("Cannot remove URIs from GID#%s",
+           util::itos(gid).c_str()));
   }
   const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
   if(files.size() <= index) {
-    throw DL_ABORT_EX(StringFormat("fileIndex is out of range").str());
+    throw DL_ABORT_EX(fmt("fileIndex is out of range"));
   }
   SharedHandle<FileEntry> s = files[index];
   size_t delcount = 0;
@@ -1339,8 +1338,7 @@ SharedHandle<ValueBase> SystemMulticallXmlRpcMethod::process
 SharedHandle<ValueBase> NoSuchMethodXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
-  throw DL_ABORT_EX
-    (StringFormat("No such method: %s", req.methodName.c_str()).str());
+  throw DL_ABORT_EX(fmt("No such method: %s", req.methodName.c_str()));
 }
 
 } // namespace xmlrpc

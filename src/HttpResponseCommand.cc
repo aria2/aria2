@@ -57,7 +57,6 @@
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "HttpSkipResponseCommand.h"
 #include "HttpHeader.h"
@@ -88,8 +87,8 @@ SharedHandle<StreamFilter> getTransferEncodingStreamFilter
     filter = httpResponse->getTransferEncodingStreamFilter();
     if(!filter) {
       throw DL_ABORT_EX
-        (StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
-                      httpResponse->getTransferEncoding().c_str()).str());
+        (fmt(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
+             httpResponse->getTransferEncoding().c_str()));
     }
     filter->init();
     filter->installDelegate(delegate);
@@ -215,8 +214,8 @@ bool HttpResponseCommand::executeInternal()
     if(getDownloadEngine()->getRequestGroupMan()->
        isSameFileBeingDownloaded(getRequestGroup())) {
       throw DOWNLOAD_FAILURE_EXCEPTION
-        (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
-                      getRequestGroup()->getFirstFilePath().c_str()).str());
+        (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
+             getRequestGroup()->getFirstFilePath().c_str()));
     }
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());

@@ -36,7 +36,7 @@
 
 #include <cassert>
 
-#include "StringFormat.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
@@ -102,8 +102,8 @@ ssize_t GZipDecodingStreamFilter::transform
     if(ret == Z_STREAM_END) {
       finished_ = true;
     } else if(ret != Z_OK) {
-      throw DL_ABORT_EX(StringFormat("libz::inflate() failed. cause:%s",
-                                     strm_->msg).str());
+      throw DL_ABORT_EX(fmt("libz::inflate() failed. cause:%s",
+                            strm_->msg));
     }
 
     size_t produced = OUTBUF_LENGTH-strm_->avail_out;

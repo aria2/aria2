@@ -38,7 +38,7 @@
 #include <algorithm>
 
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "util.h"
 
@@ -145,8 +145,7 @@ void Netrc::parse(const std::string& path)
   std::ifstream f(path.c_str(), std::ios::binary);
   
   if(!f) {
-    throw DL_ABORT_EX
-      (StringFormat("File not found: %s", path.c_str()).str());
+    throw DL_ABORT_EX(fmt("File not found: %s", path.c_str()));
   }
 
   enum STATE {
@@ -180,8 +179,8 @@ void Netrc::parse(const std::string& path)
         } else {
           if(!authenticator) {
             throw DL_ABORT_EX
-              (StringFormat("Netrc:parse error. %s encounterd where 'machine'"
-                            " or 'default' expected.", token.c_str()).str());
+              (fmt("Netrc:parse error. %s encounterd where 'machine'"
+                   " or 'default' expected.", token.c_str()));
           }
           if(token == Netrc::A2_LOGIN) {
             state = SET_LOGIN;

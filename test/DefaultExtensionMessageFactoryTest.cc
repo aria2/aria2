@@ -17,7 +17,6 @@
 #include "MockBtMessageFactory.h"
 #include "DownloadContext.h"
 #include "BtHandshakeMessage.h"
-#include "StringFormat.h"
 #include "UTMetadataRequestExtensionMessage.h"
 #include "UTMetadataDataExtensionMessage.h"
 #include "UTMetadataRejectExtensionMessage.h"

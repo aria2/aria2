@@ -41,7 +41,6 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Peer.h"
-#include "StringFormat.h"
 #include "PieceStorage.h"
 #include "a2functional.h"
 

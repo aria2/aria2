@@ -37,7 +37,7 @@
 #include "Peer.h"
 #include "RequestSlot.h"
 #include "BtMessageDispatcher.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -57,8 +57,8 @@ void BtRejectMessage::doReceivedAction()
 {
   if(!getPeer()->isFastExtensionEnabled()) {
     throw DL_ABORT_EX
-      (StringFormat("%s received while fast extension is disabled.",
-                    toString().c_str()).str());
+      (fmt("%s received while fast extension is disabled.",
+           toString().c_str()));
   }
   if(isMetadataGetMode()) {
     return;

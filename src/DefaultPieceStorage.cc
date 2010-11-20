@@ -54,7 +54,6 @@
 #include "util.h"
 #include "a2functional.h"
 #include "Option.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "RarestPieceSelector.h"
 #include "array_fun.h"

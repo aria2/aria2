@@ -49,7 +49,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "MessageDigest.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "DlAbortEx.h"
 
@@ -158,8 +157,8 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
                                                          curoffset);
     if(r == 0 || r < static_cast<size_t>(woffset)) {
       throw DL_ABORT_EX
-        (StringFormat(EX_FILE_READ, dctx_->getBasePath().c_str(),
-                      "data is too short").str());
+        (fmt(EX_FILE_READ, dctx_->getBasePath().c_str(),
+             "data is too short"));
     }
     size_t wlength;
     if(max < static_cast<off_t>(curoffset+r)) {

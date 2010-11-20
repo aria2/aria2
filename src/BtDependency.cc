@@ -47,7 +47,6 @@
 #include "File.h"
 #include "bittorrent_helper.h"
 #include "DlAbortEx.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "FileEntry.h"
 
@@ -131,8 +130,8 @@ bool BtDependency::resolve()
           }
           if(d == ctxFilesEnd) {
             throw DL_ABORT_EX
-              (StringFormat("No entry %s in torrent file",
-                            (*s)->getOriginalName().c_str()).str());
+              (fmt("No entry %s in torrent file",
+                   (*s)->getOriginalName().c_str()));
           }
           copyValues(*d, *s);
         }

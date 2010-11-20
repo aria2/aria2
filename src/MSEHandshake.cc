@@ -54,7 +54,6 @@
 #include "DownloadContext.h"
 #include "prefs.h"
 #include "Option.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "bittorrent_helper.h"
 
@@ -376,8 +375,8 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
     }
     if(negotiatedCryptoType_ == CRYPTO_NONE) {
       throw DL_ABORT_EX
-        (StringFormat("CUID#%s - No supported crypto type selected.",
-                      util::itos(cuid_).c_str()).str());
+        (fmt("CUID#%s - No supported crypto type selected.",
+             util::itos(cuid_).c_str()));
     }
   }
   // padD length
@@ -499,8 +498,8 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
     }
     if(negotiatedCryptoType_ == CRYPTO_NONE) {
       throw DL_ABORT_EX
-        (StringFormat("CUID#%s - No supported crypto type provided.",
-                      util::itos(cuid_).c_str()).str());
+        (fmt("CUID#%s - No supported crypto type provided.",
+             util::itos(cuid_).c_str()));
     }
   }
   // decrypt PadC length
@@ -584,7 +583,7 @@ uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const cha
                    util::itos(cuid_).c_str(), padName, padLength));
   if(padLength > 512) {
     throw DL_ABORT_EX
-      (StringFormat("Too large %s length: %u", padName, padLength).str());
+      (fmt("Too large %s length: %u", padName, padLength));
   }
   return padLength;
 }
@@ -596,7 +595,7 @@ void MSEHandshake::verifyVC(const unsigned char* vcbuf)
   decryptor_->decrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
   if(memcmp(VC, vc, sizeof(VC)) != 0) {
     throw DL_ABORT_EX
-      (StringFormat("Invalid VC: %s", util::toHex(vc, VC_LENGTH).c_str()).str());
+      (fmt("Invalid VC: %s", util::toHex(vc, VC_LENGTH).c_str()));
   }
 }
 

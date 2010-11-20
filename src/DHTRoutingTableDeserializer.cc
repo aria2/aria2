@@ -45,7 +45,7 @@
 #include "DlAbortEx.h"
 #include "Logger.h"
 #include "a2netcompat.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "util.h"
 #include "array_fun.h"
 
@@ -68,8 +68,8 @@ void readBytes(unsigned char* buf, size_t buflen,
 #define CHECK_STREAM(in, length)                                        \
   if(in.gcount() != length) {                                           \
     throw DL_ABORT_EX                                                   \
-      (StringFormat("Failed to load DHT routing table. cause:%s",       \
-                    "Unexpected EOF").str());                           \
+      (fmt("Failed to load DHT routing table. cause:%s",                \
+           "Unexpected EOF"));                                          \
   }                                                                     \
   if(!in) {                                                             \
     throw DL_ABORT_EX("Failed to load DHT routing table.");             \
@@ -117,10 +117,10 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     version = 2;
   } else {
     throw DL_ABORT_EX
-      (StringFormat("Failed to load DHT routing table. cause:%s",
-                    "bad header").str());
+      (fmt("Failed to load DHT routing table. cause:%s",
+           "bad header"));
   }
-
+  
   uint32_t temp32;
   uint64_t temp64;
   // time

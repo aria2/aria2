@@ -39,7 +39,7 @@
 #include "PeerStorage.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "bencode2.h"
 #include "a2functional.h"
 #include "wallclock.h"
@@ -175,9 +175,9 @@ UTPexExtensionMessageHandle
 UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
-    throw DL_ABORT_EX(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-                                   EXTENSION_NAME.c_str(),
-                                   static_cast<unsigned long>(len)).str());
+    throw DL_ABORT_EX(fmt(MSG_TOO_SMALL_PAYLOAD_SIZE,
+                          EXTENSION_NAME.c_str(),
+                          static_cast<unsigned long>(len)));
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
 

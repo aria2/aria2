@@ -47,7 +47,7 @@
 #include "DlAbortEx.h"
 #include "prefs.h"
 #include "Option.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "Request.h"
 #include "a2functional.h"
@@ -171,8 +171,8 @@ void IntegerRangeOptionHandler::parseArg
       std::string msg = optName_;
       strappend(msg, " ", _("must be between %s and %s."));
       throw DL_ABORT_EX
-        (StringFormat(msg.c_str(), util::itos(min_).c_str(),
-                      util::itos(max_).c_str()).str());
+        (fmt(msg.c_str(), util::itos(min_).c_str(),
+             util::itos(max_).c_str()));
     }
     option.put(optName_, optarg);
   }
@@ -212,15 +212,15 @@ void NumberOptionHandler::parseArg(Option& option, int64_t number)
     std::string msg = optName_;
     msg += " ";
     if(min_ == -1 && max_ != -1) {
-      msg += StringFormat(_("must be smaller than or equal to %s."),
-                          util::itos(max_).c_str()).str();
+      msg += fmt(_("must be smaller than or equal to %s."),
+                 util::itos(max_).c_str());
     } else if(min_ != -1 && max_ != -1) {
-      msg += StringFormat(_("must be between %s and %s."),
-                          util::itos(min_).c_str(),
-                          util::itos(max_).c_str()).str();
+      msg += fmt(_("must be between %s and %s."),
+                 util::itos(min_).c_str(),
+                 util::itos(max_).c_str());
     } else if(min_ != -1 && max_ == -1) {
-      msg += StringFormat(_("must be greater than or equal to %s."),
-                          util::itos(min_).c_str()).str();
+      msg += fmt(_("must be greater than or equal to %s."),
+                 util::itos(min_).c_str());
     } else {
       msg += _("must be a number.");
     }
@@ -290,14 +290,11 @@ void FloatNumberOptionHandler::parseArg
     std::string msg = optName_;
     msg += " ";
     if(min_ < 0 && max_ >= 0) {
-      msg += StringFormat(_("must be smaller than or equal to %.1f."),
-                          max_).str();
+      msg += fmt(_("must be smaller than or equal to %.1f."), max_);
     } else if(min_ >= 0 && max_ >= 0) {
-      msg += StringFormat(_("must be between %.1f and %.1f."),
-                          min_, max_).str();
+      msg += fmt(_("must be between %.1f and %.1f."), min_, max_);
     } else if(min_ >= 0 && max_ < 0) {
-      msg += StringFormat(_("must be greater than or equal to %.1f."),
-                          min_).str();
+      msg += fmt(_("must be greater than or equal to %.1f."), min_);
     } else {
       msg += _("must be a number.");
     }
@@ -688,8 +685,7 @@ void LocalFilePathOptionHandler::parseArg
   } else {
     File f(optarg);
     if(!f.exists() || f.isDir()) {
-      throw DL_ABORT_EX
-        (StringFormat(MSG_NOT_FILE, optarg.c_str()).str());
+      throw DL_ABORT_EX(fmt(MSG_NOT_FILE, optarg.c_str()));
     }
     option.put(optName_, optarg);
   }

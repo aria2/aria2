@@ -41,7 +41,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "DHTConstants.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "DHTNode.h"
 

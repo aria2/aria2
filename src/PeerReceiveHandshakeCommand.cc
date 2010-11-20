@@ -53,7 +53,6 @@
 #include "prefs.h"
 #include "Option.h"
 #include "RequestGroupMan.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "RequestGroup.h"
 
@@ -97,8 +96,8 @@ bool PeerReceiveHandshakeCommand::executeInternal()
       getDownloadEngine()->getBtRegistry()->getDownloadContext(infoHash);
     if(!downloadContext) {
       throw DL_ABORT_EX
-        (StringFormat("Unknown info hash %s",
-                      util::toHex(infoHash).c_str()).str());
+        (fmt("Unknown info hash %s",
+             util::toHex(infoHash).c_str()));
     }
     BtObject btObject = getDownloadEngine()->getBtRegistry()->get
       (downloadContext->getOwnerRequestGroup()->getGID());
@@ -107,8 +106,8 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
     if(!btRuntime->ready()) {
       throw DL_ABORT_EX
-        (StringFormat("Unknown info hash %s",
-                      util::toHex(infoHash).c_str()).str());
+        (fmt("Unknown info hash %s",
+             util::toHex(infoHash).c_str()));
     }
     if(btRuntime->isHalt()) {
       A2_LOG_DEBUG("Info hash found but the download is over."

@@ -43,7 +43,7 @@
 #include "util.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "BtConstants.h"
 #include "MessageDigest.h"
 #include "MessageDigestHelper.h"
@@ -210,8 +210,8 @@ void extractFileEntries
       utf8Name = util::encodeNonUtf8(nameData->s());
       if(util::detectDirTraversal(utf8Name)) {
         throw DL_ABORT_EX
-          (StringFormat
-           (MSG_DIR_TRAVERSAL_DETECTED,nameData->s().c_str()).str());
+          (fmt(MSG_DIR_TRAVERSAL_DETECTED,
+               nameData->s().c_str()));
       }
       name = nameData->s();
     } else {
@@ -237,8 +237,7 @@ void extractFileEntries
       }
       const Integer* fileLengthData = asInteger(fileDict->get(C_LENGTH));
       if(!fileLengthData) {
-        throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-                                       C_LENGTH.c_str()).str());
+        throw DL_ABORT_EX(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()));
       }
       length += fileLengthData->i();
 
@@ -270,8 +269,7 @@ void extractFileEntries
       std::string utf8Path = strjoin(pathelem.begin(), pathelem.end(), '/',
                                      std::ptr_fun(util::encodeNonUtf8));
       if(util::detectDirTraversal(utf8Path)) {
-        throw DL_ABORT_EX
-          (StringFormat(MSG_DIR_TRAVERSAL_DETECTED, utf8Path.c_str()).str());
+        throw DL_ABORT_EX(fmt(MSG_DIR_TRAVERSAL_DETECTED, utf8Path.c_str()));
       }
       std::string pePath =
         strjoin(pathelem.begin(), pathelem.end(), '/',
@@ -291,8 +289,7 @@ void extractFileEntries
     torrent->mode = SINGLE;
     const Integer* lengthData = asInteger(infoDict->get(C_LENGTH));
     if(!lengthData) {
-      throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-                                     C_LENGTH.c_str()).str());      
+      throw DL_ABORT_EX(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()));      
     }
     uint64_t totalLength = lengthData->i();
 
@@ -398,8 +395,7 @@ void processRootDictionary
   }
   const Dict* infoDict = asDict(rootDict->get(C_INFO));
   if(!infoDict) {
-    throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-                                   C_INFO.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_MISSING_BT_INFO, C_INFO.c_str()));
   }
   SharedHandle<TorrentAttribute> torrent(new TorrentAttribute());
 
@@ -417,8 +413,7 @@ void processRootDictionary
   // calculate the number of pieces
   const String* piecesData = asString(infoDict->get(C_PIECES));
   if(!piecesData) {
-    throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-                                   C_PIECES.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_MISSING_BT_INFO, C_PIECES.c_str()));
   }
   // Commented out To download 0 length torrent.
   //   if(piecesData.s().empty()) {
@@ -432,8 +427,7 @@ void processRootDictionary
   // retrieve piece length
   const Integer* pieceLengthData = asInteger(infoDict->get(C_PIECE_LENGTH));
   if(!pieceLengthData) {
-    throw DL_ABORT_EX(StringFormat(MSG_MISSING_BT_INFO,
-                                   C_PIECE_LENGTH.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_MISSING_BT_INFO, C_PIECE_LENGTH.c_str()));
   }
   size_t pieceLength = pieceLengthData->i();
   ctx->setPieceLength(pieceLength);
@@ -742,15 +736,15 @@ uint16_t getShortIntParam(const unsigned char* msg, size_t pos)
 void checkIndex(size_t index, size_t pieces)
 {
   if(!(index < pieces)) {
-    throw DL_ABORT_EX(StringFormat("Invalid index: %lu",
-                                   static_cast<unsigned long>(index)).str());
+    throw DL_ABORT_EX(fmt("Invalid index: %lu",
+                          static_cast<unsigned long>(index)));
   }
 }
 
 void checkBegin(uint32_t begin, size_t pieceLength)
 {
   if(!(begin < pieceLength)) {
-    throw DL_ABORT_EX(StringFormat("Invalid begin: %u", begin).str());
+    throw DL_ABORT_EX(fmt("Invalid begin: %u", begin));
   }  
 }
 
@@ -758,14 +752,14 @@ void checkLength(size_t length)
 {
   if(length > MAX_BLOCK_LENGTH) {
     throw DL_ABORT_EX
-      (StringFormat("Length too long: %lu > %uKB",
-                    static_cast<unsigned long>(length),
-                    MAX_BLOCK_LENGTH/1024).str());
+      (fmt("Length too long: %lu > %uKB",
+           static_cast<unsigned long>(length),
+           MAX_BLOCK_LENGTH/1024));
   }
   if(length == 0) {
     throw DL_ABORT_EX
-      (StringFormat("Invalid length: %lu",
-                    static_cast<unsigned long>(length)).str());
+      (fmt("Invalid length: %lu",
+           static_cast<unsigned long>(length)));
   }
 }
 
@@ -773,16 +767,16 @@ void checkRange(uint32_t begin, size_t length, size_t pieceLength)
 {
   if(!(0 < length)) {
     throw DL_ABORT_EX
-      (StringFormat("Invalid range: begin=%u, length=%lu",
-                    begin,
-                    static_cast<unsigned long>(length)).str());
+      (fmt("Invalid range: begin=%u, length=%lu",
+           begin,
+           static_cast<unsigned long>(length)));
   }
   uint32_t end = begin+length;
   if(!(end <= pieceLength)) {
     throw DL_ABORT_EX
-      (StringFormat("Invalid range: begin=%u, length=%lu",
-                    begin,
-                    static_cast<unsigned long>(length)).str());
+      (fmt("Invalid range: begin=%u, length=%lu",
+           begin,
+           static_cast<unsigned long>(length)));
   }
 }
 
@@ -791,8 +785,8 @@ void checkBitfield
 {
   if(!(bitfieldLength == (pieces+7)/8)) {
     throw DL_ABORT_EX
-      (StringFormat("Invalid bitfield length: %lu",
-                    static_cast<unsigned long>(bitfieldLength)).str());
+      (fmt("Invalid bitfield length: %lu",
+           static_cast<unsigned long>(bitfieldLength)));
   }
   // Check if last byte contains garbage set bit.
   if(bitfield[bitfieldLength-1]&~bitfield::lastByteMask(pieces)) {
@@ -883,8 +877,8 @@ void assertPayloadLengthGreater
 {
   if(actual <= threshold) {
     throw DL_ABORT_EX
-      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(),
-                    static_cast<unsigned long>(actual)).str());
+      (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(),
+           static_cast<unsigned long>(actual)));
   }
 }
 
@@ -893,9 +887,9 @@ void assertPayloadLengthEqual
 {
   if(expected != actual) {
     throw DL_ABORT_EX
-      (StringFormat(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
-                    static_cast<unsigned long>(actual),
-                    static_cast<unsigned long>(expected)).str());
+      (fmt(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
+           static_cast<unsigned long>(actual),
+           static_cast<unsigned long>(expected)));
   }
 }
 
@@ -905,8 +899,8 @@ void assertID
   uint8_t id = getId(data);
   if(expected != id) {
     throw DL_ABORT_EX
-      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
-                    expected).str());
+      (fmt(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
+           expected));
   }
 }
 

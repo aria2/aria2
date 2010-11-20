@@ -51,7 +51,7 @@
 #include "a2io.h"
 #include "help_tags.h"
 #include "File.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "OptionHandlerException.h"
 #include "DownloadResultCode.h"
 #include "SimpleRandomizer.h"
@@ -152,8 +152,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           exit(downloadresultcode::UNKNOWN_ERROR);
         }
       } else if(!ucfname.empty()) {
-        std::cerr << StringFormat("Configuration file %s is not found.",
-                                  cfname.c_str())
+        std::cerr << fmt("Configuration file %s is not found.", cfname.c_str())
                   << "\n";
         showUsage(TAG_HELP, oparser);
         exit(downloadresultcode::UNKNOWN_ERROR);

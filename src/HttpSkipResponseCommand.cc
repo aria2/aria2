@@ -45,7 +45,6 @@
 #include "HttpRequest.h"
 #include "Segment.h"
 #include "util.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "DlAbortEx.h"
 #include "HttpHeader.h"
@@ -176,8 +175,7 @@ bool HttpSkipResponseCommand::processResponse()
     unsigned int rnum =
       httpResponse_->getHttpRequest()->getRequest()->getRedirectCount();
     if(rnum >= Request::MAX_REDIRECT) {
-      throw DL_ABORT_EX
-        (StringFormat("Too many redirects: count=%u", rnum).str());
+      throw DL_ABORT_EX(fmt("Too many redirects: count=%u", rnum));
     }
     httpResponse_->processRedirect();
     return prepareForRetry(0);
@@ -195,7 +193,7 @@ bool HttpSkipResponseCommand::processResponse()
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          downloadresultcode::RESOURCE_NOT_FOUND);
     } else {
-      throw DL_ABORT_EX(StringFormat(EX_BAD_STATUS, statusCode).str());
+      throw DL_ABORT_EX(fmt(EX_BAD_STATUS, statusCode));
     }
   } else {
     return prepareForRetry(0);

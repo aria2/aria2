@@ -47,7 +47,6 @@
 #include "a2netcompat.h"
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "util.h"
 #include "Peer.h"
@@ -139,7 +138,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
     memcpy(&payloadLength, lenbuf_, sizeof(payloadLength));
     payloadLength = ntohl(payloadLength);
     if(payloadLength > MAX_PAYLOAD_LEN) {
-      throw DL_ABORT_EX(StringFormat(EX_TOO_LONG_PAYLOAD, payloadLength).str());
+      throw DL_ABORT_EX(fmt(EX_TOO_LONG_PAYLOAD, payloadLength));
     }
     currentPayloadLength_ = payloadLength;
   }

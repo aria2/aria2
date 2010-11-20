@@ -41,7 +41,7 @@
 #include <algorithm>
 
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -79,7 +79,7 @@ const typename HashFuncEntry::HashFuncType& getHashFunc
                  (hashType));
   if(e == last) {
     throw DL_ABORT_EX
-      (StringFormat("Hash type %s is not supported.", hashType.c_str()).str());
+      (fmt("Hash type %s is not supported.", hashType.c_str()));
   }
   return e->hashFunc;
 }

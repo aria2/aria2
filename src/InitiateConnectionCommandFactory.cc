@@ -39,7 +39,7 @@
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "Option.h"
 #include "prefs.h"
 #include "SocketCore.h"
@@ -73,16 +73,16 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand
   } else if(req->getProtocol() == Request::PROTO_FTP) {
     if(req->getFile().empty()) {
       throw DL_ABORT_EX
-        (StringFormat("FTP URI %s doesn't contain file path.",
-                      req->getUri().c_str()).str());
+        (fmt("FTP URI %s doesn't contain file path.",
+             req->getUri().c_str()));
     }
     return
       new FtpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
   } else {
     // these protocols are not supported yet
     throw DL_ABORT_EX
-      (StringFormat("%s is not supported yet.",
-                    req->getProtocol().c_str()).str());
+      (fmt("%s is not supported yet.",
+           req->getProtocol().c_str()));
   }
 }
 

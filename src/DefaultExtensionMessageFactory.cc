@@ -37,7 +37,7 @@
 #include "DlAbortEx.h"
 #include "HandshakeExtensionMessage.h"
 #include "UTPexExtensionMessage.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "PeerStorage.h"
 #include "ExtensionMessageRegistry.h"
 #include "DownloadContext.h"
@@ -84,8 +84,8 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     std::string extensionName = registry_->getExtensionName(extensionMessageID);
     if(extensionName.empty()) {
       throw DL_ABORT_EX
-        (StringFormat("No extension registered for extended message ID %u",
-                      extensionMessageID).str());
+        (fmt("No extension registered for extended message ID %u",
+             extensionMessageID));
     }
     if(extensionName == "ut_pex") {
       // uTorrent compatible Peer-Exchange
@@ -96,9 +96,9 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     } else if(extensionName == "ut_metadata") {
       if(length == 0) {
         throw DL_ABORT_EX
-          (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
-                        "ut_metadata",
-                        static_cast<unsigned long>(length)).str());
+          (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE,
+               "ut_metadata",
+               static_cast<unsigned long>(length)));
       }
       size_t end;
       SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length-1, end);
@@ -152,14 +152,14 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       }
       default:
         throw DL_ABORT_EX
-          (StringFormat("Bad ut_metadata: unknown msg_type=%u",
-                        static_cast<unsigned int>(msgType->i())).str());
+          (fmt("Bad ut_metadata: unknown msg_type=%u",
+               static_cast<unsigned int>(msgType->i())));
       }
     } else {
       throw DL_ABORT_EX
-        (StringFormat("Unsupported extension message received."
-                      " extensionMessageID=%u, extensionName=%s",
-                      extensionMessageID, extensionName.c_str()).str());
+        (fmt("Unsupported extension message received."
+             " extensionMessageID=%u, extensionName=%s",
+             extensionMessageID, extensionName.c_str()));
     }
   }
 }

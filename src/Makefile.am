@@ -166,7 +166,6 @@ SRCS =  Socket.h\
 	usage_text.h\
 	ProtocolDetector.cc ProtocolDetector.h\
 	NullStatCalc.h\
-	StringFormat.cc StringFormat.h\
 	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h\
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h\
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h\

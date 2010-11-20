@@ -37,7 +37,7 @@
 #include <gcrypt.h>
 
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -45,8 +45,8 @@ namespace {
 void handleError(gcry_error_t err)
 {
   throw DL_ABORT_EX
-    (StringFormat("Exception in libgcrypt routine(ARC4Encryptor class): %s",
-                  gcry_strerror(err)).str());
+    (fmt("Exception in libgcrypt routine(ARC4Encryptor class): %s",
+         gcry_strerror(err)));
 }
 } // namespace
 

@@ -48,7 +48,6 @@
 #include "RequestGroupMan.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
@@ -180,10 +179,10 @@ bool DHTEntryPointNameResolveCommand::resolveHostname
     break;
   case AsyncNameResolver::STATUS_ERROR:
     throw DL_ABORT_EX
-      (StringFormat(MSG_NAME_RESOLUTION_FAILED,
-                    util::itos(getCuid()).c_str(),
-                    hostname.c_str(),
-                    resolver->getError().c_str()).str());
+      (fmt(MSG_NAME_RESOLUTION_FAILED,
+           util::itos(getCuid()).c_str(),
+           hostname.c_str(),
+           resolver->getError().c_str()));
   default:
     return false;
   }

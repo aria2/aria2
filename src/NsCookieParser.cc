@@ -40,7 +40,7 @@
 #include "util.h"
 #include "A2STR.h"
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "Cookie.h"
 #include "cookie_helper.h"
 
@@ -96,8 +96,7 @@ std::vector<Cookie> NsCookieParser::parse
 {
   std::ifstream s(filename.c_str(), std::ios::binary);
   if(!s) {
-    throw DL_ABORT_EX
-      (StringFormat("Failed to open file %s", filename.c_str()).str());
+    throw DL_ABORT_EX(fmt("Failed to open file %s", filename.c_str()));
   }
   std::string line;
   std::vector<Cookie> cookies;

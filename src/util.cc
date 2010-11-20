@@ -71,7 +71,6 @@
 #include "DefaultDiskWriter.h"
 #include "FatalException.h"
 #include "FileEntry.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "A2STR.h"
 #include "array_fun.h"
@@ -338,7 +337,7 @@ std::string percentEncode(const unsigned char* target, size_t len)
     if(inRFC3986UnreservedChars(target[i])) {
       dest += target[i];
     } else {
-      dest.append(StringFormat("%%%02X", target[i]).str());
+      dest.append(fmt("%%%02X", target[i]));
     }
   }
   return dest;
@@ -356,7 +355,7 @@ std::string torrentPercentEncode(const unsigned char* target, size_t len) {
     if(isAlpha(target[i]) || isDigit(target[i])) {
       dest += target[i];
     } else {
-      dest.append(StringFormat("%%%02X", target[i]).str());
+      dest.append(fmt("%%%02X", target[i]));
     }
   }
   return dest;
@@ -508,8 +507,8 @@ int32_t parseInt(const std::string& s, int32_t base)
 {
   int64_t v = parseLLInt(s, base);
   if(v < INT32_MIN || INT32_MAX < v) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   s.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          s.c_str()));
   }
   return v;
 }
@@ -538,8 +537,8 @@ uint32_t parseUInt(const std::string& s, int base)
 {
   uint64_t v = parseULLInt(s, base);
   if(UINT32_MAX < v) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   s.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          s.c_str()));
   }
   return v;
 }
@@ -571,18 +570,18 @@ int64_t parseLLInt(const std::string& s, int32_t base)
 {
   std::string trimed = strip(s);
   if(trimed.empty()) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   "empty string").str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          "empty string"));
   }
   char* stop;
   errno = 0;
   int64_t v = strtoll(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          trimed.c_str()));
   } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          trimed.c_str()));
   }
   return v;
 }
@@ -610,23 +609,23 @@ uint64_t parseULLInt(const std::string& s, int base)
 {
   std::string trimed = strip(s);
   if(trimed.empty()) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   "empty string").str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          "empty string"));
   }
   // We don't allow negative number.
   if(trimed[0] == '-') {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          trimed.c_str()));
   }
   char* stop;
   errno = 0;
   uint64_t v = strtoull(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          trimed.c_str()));
   } else if((v == ULLONG_MAX) && (errno == ERANGE)) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   trimed.c_str()).str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          trimed.c_str()));
   }
   return v;
 }
@@ -649,8 +648,7 @@ IntSequence parseIntRange(const std::string& src)
       std::pair<std::string, std::string> vp;
       divide(vp, p.first.c_str(), '-');
       if(vp.first.empty() || vp.second.empty()) {
-        throw DL_ABORT_EX
-          (StringFormat(MSG_INCOMPLETE_RANGE, p.first.c_str()).str());
+        throw DL_ABORT_EX(fmt(MSG_INCOMPLETE_RANGE, p.first.c_str()));
       }
       int32_t v1 = parseInt(vp.first.c_str());
       int32_t v2 = parseInt(vp.second.c_str());
@@ -737,8 +735,7 @@ void parsePrioritizePieceRange
       computeTailPieces(indexes, fileEntries, pieceLength,
                         std::max((int64_t)0, getRealSize(sizestr)));
     } else {
-      throw DL_ABORT_EX
-        (StringFormat("Unrecognized token %s", (*i).c_str()).str());
+      throw DL_ABORT_EX(fmt("Unrecognized token %s", (*i).c_str()));
     }
   }
   std::sort(indexes.begin(), indexes.end());
@@ -1009,11 +1006,10 @@ int64_t getRealSize(const std::string& sizeWithUnit)
   int64_t v = parseLLInt(size);
 
   if(v < 0) {
-    throw DL_ABORT_EX
-      (StringFormat("Negative value detected: %s", sizeWithUnit.c_str()).str());
+    throw DL_ABORT_EX(fmt("Negative value detected: %s", sizeWithUnit.c_str()));
   } else if(INT64_MAX/mult < v) {
-    throw DL_ABORT_EX(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                                   "overflow/underflow").str());
+    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+                          "overflow/underflow"));
   }
   return v*mult;
 }
@@ -1156,8 +1152,8 @@ void mkdirs(const std::string& dirpath)
     int errNum = errno;
     if(!dir.isDir()) {
       throw DL_ABORT_EX
-        (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
-                      safeStrerror(errNum).c_str()).str());
+        (fmt(EX_MAKE_DIR, dir.getPath().c_str(),
+             safeStrerror(errNum).c_str()));
     }
   }
 }
@@ -1198,8 +1194,8 @@ void* allocateAlignedMemory(size_t alignment, size_t size)
   int res;
   if((res = posix_memalign(&buffer, alignment, size)) != 0) {
     throw FATAL_EXCEPTION
-      (StringFormat("Error in posix_memalign: %s",
-                    util::safeStrerror(res).c_str()).str());
+      (fmt("Error in posix_memalign: %s",
+           util::safeStrerror(res).c_str()));
   }
   return buffer;
 }
@@ -1213,8 +1209,8 @@ getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
   int s = getnameinfo(sockaddr, len, host, NI_MAXHOST, service, NI_MAXSERV,
                       NI_NUMERICHOST|NI_NUMERICSERV);
   if(s != 0) {
-    throw DL_ABORT_EX(StringFormat("Failed to get hostname and port. cause: %s",
-                                   gai_strerror(s)).str());
+    throw DL_ABORT_EX(fmt("Failed to get hostname and port. cause: %s",
+                          gai_strerror(s)));
   }
   return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
 }
@@ -1249,8 +1245,8 @@ parseIndexPath(const std::string& line)
   divide(p, line, '=');
   size_t index = parseUInt(p.first);
   if(p.second.empty()) {
-    throw DL_ABORT_EX(StringFormat("Path with index=%u is empty.",
-                                   static_cast<unsigned int>(index)).str());
+    throw DL_ABORT_EX(fmt("Path with index=%u is empty.",
+                          static_cast<unsigned int>(index)));
   }
   return std::map<size_t, std::string>::value_type(index, p.second);
 }
@@ -1400,7 +1396,7 @@ std::string escapePath(const std::string& s)
 
 #endif // __MINGW32__
        ){
-      d += StringFormat("%%%02X", c).str();
+      d += fmt("%%%02X", c);
     } else {
       d += *i;
     }

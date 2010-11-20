@@ -56,7 +56,6 @@
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "RequestGroupMan.h"
 #include "wallclock.h"
@@ -259,10 +258,10 @@ void DownloadCommand::checkLowestDownloadSpeed() const
      startupIdleTime_) {
     unsigned int nowSpeed = peerStat_->calculateDownloadSpeed();
     if(nowSpeed <= lowestDownloadSpeedLimit_) {
-      throw DL_ABORT_EX2(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,
-                                      nowSpeed,
-                                      lowestDownloadSpeedLimit_,
-                                      getRequest()->getHost().c_str()).str(),
+      throw DL_ABORT_EX2(fmt(EX_TOO_SLOW_DOWNLOAD_SPEED,
+                             nowSpeed,
+                             lowestDownloadSpeedLimit_,
+                             getRequest()->getHost().c_str()),
                          downloadresultcode::TOO_SLOW_DOWNLOAD_SPEED);
     }
   }
@@ -348,8 +347,8 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
     segment->clear();
     getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX
-      (StringFormat("Invalid checksum index=%lu",
-                    static_cast<unsigned long>(segment->getIndex())).str());
+      (fmt("Invalid checksum index=%lu",
+           static_cast<unsigned long>(segment->getIndex())));
   }
 }
 

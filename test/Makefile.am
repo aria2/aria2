@@ -44,8 +44,8 @@ aria2c_SOURCES = AllTest.cc\
 	MultiFileAllocationIteratorTest.cc\
 	FixedNumberRandomizer.h\
 	ProtocolDetectorTest.cc\
-	StringFormatTest.cc\
 	ExceptionTest.cc\
+	FmtTest.cc\
 	DownloadHandlerFactoryTest.cc\
 	SignatureTest.cc\
 	ServerStatManTest.cc\

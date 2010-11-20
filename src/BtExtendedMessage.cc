@@ -44,7 +44,6 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "util.h"
-#include "StringFormat.h"
 #include "a2functional.h"
 
 namespace aria2 {

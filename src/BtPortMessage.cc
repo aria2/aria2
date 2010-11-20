@@ -45,7 +45,6 @@
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "a2functional.h"
 

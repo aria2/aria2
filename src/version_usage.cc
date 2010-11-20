@@ -46,7 +46,7 @@
 #endif // ENABLE_MESSAGE_DIGEST
 #include "help_tags.h"
 #include "prefs.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "OptionParser.h"
 #include "OptionHandler.h"
 #include "util.h"
@@ -77,7 +77,7 @@ void showVersion() {
             << MessageDigest::getSupportedHashTypeString() << "\n"
 #endif // ENABLE_MESSAGE_DIGEST
             << "\n"
-            << StringFormat(_("Report bugs to %s"), PACKAGE_BUGREPORT) << "\n"
+            << fmt(_("Report bugs to %s"), PACKAGE_BUGREPORT) << "\n"
             << "Visit " << PACKAGE_URL << std::endl;
 }
 
@@ -91,13 +91,13 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
     if(keyword == TAG_ALL) {
       std::cout << _("Printing all options.");
     } else {
-      std::cout << StringFormat(_("Printing options tagged with '%s'."),
-                                keyword.c_str());
+      std::cout << fmt(_("Printing options tagged with '%s'."),
+                       keyword.c_str());
       std::cout << "\n";
       SharedHandle<OptionHandler> help = oparser.findByName("help");
-      std::cout << StringFormat(_("See -h option to know other command-line"
-                                  " options(%s)."),
-                                help->createPossibleValuesString().c_str());
+      std::cout << fmt(_("See -h option to know other command-line"
+                         " options(%s)."),
+                       help->createPossibleValuesString().c_str());
     }
     std::cout << "\n"
               << _("Options:") << "\n";
@@ -109,8 +109,8 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
     std::vector<SharedHandle<OptionHandler> > handlers =
       oparser.findByNameSubstring(keyword);
     if(!handlers.empty()) {
-      std::cout << StringFormat(_("Printing options whose name includes"
-                                  " '%s'."), keyword.c_str())
+      std::cout << fmt(_("Printing options whose name includes '%s'."),
+                       keyword.c_str())
                 << "\n"
                 << _("Options:") << "\n";
       for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
@@ -118,8 +118,8 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
         std::cout << *(*i) << "\n\n";
       }
     } else {
-      std::cout << StringFormat(_("No option matching with '%s'."),
-                                keyword.c_str())
+      std::cout << fmt(_("No option matching with '%s'."),
+                       keyword.c_str())
                 << "\n" << *oparser.findByName("help") << "\n";
     }
   }

@@ -42,7 +42,6 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "DlAbortEx.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "NsCookieParser.h"
 #include "File.h"

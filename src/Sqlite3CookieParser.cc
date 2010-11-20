@@ -39,7 +39,7 @@
 
 #include "DlAbortEx.h"
 #include "util.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "cookie_helper.h"
 #ifndef HAVE_SQLITE3_OPEN_V2
@@ -138,7 +138,7 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
 void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
 {
   if(!db_) {
-    throw DL_ABORT_EX(StringFormat("SQLite3 database is not opened.").str());
+    throw DL_ABORT_EX(fmt("SQLite3 database is not opened."));
   }
   std::vector<Cookie> tcookies;
   char* sqlite3ErrMsg = 0;
@@ -150,8 +150,9 @@ void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
     sqlite3_free(sqlite3ErrMsg);
   }
   if(SQLITE_OK != ret) {
-    throw DL_ABORT_EX(StringFormat("Failed to read SQLite3 database: %s",
-                                   errMsg.c_str()).str());
+    throw DL_ABORT_EX
+      (fmt("Failed to read SQLite3 database: %s",
+           errMsg.c_str()));
   }
   cookies.swap(tcookies);
 }

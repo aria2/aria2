@@ -37,7 +37,7 @@
 #include <openssl/err.h>
 
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -45,8 +45,8 @@ namespace {
 void handleError()
 {
   throw DL_ABORT_EX
-    (StringFormat("Exception in libssl routine(ARC4Decryptor class): %s",
-                  ERR_error_string(ERR_get_error(), 0)).str());
+    (fmt("Exception in libssl routine(ARC4Decryptor class): %s",
+         ERR_error_string(ERR_get_error(), 0)));
 }
 } // namespace
 

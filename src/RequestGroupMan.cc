@@ -66,7 +66,6 @@
 #include "util.h"
 #include "Command.h"
 #include "FileEntry.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "FileAllocationEntry.h"
 #include "CheckIntegrityEntry.h"
@@ -212,8 +211,8 @@ size_t RequestGroupMan::changeReservedGroupPosition
     findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
   if(i == reservedGroups_.end()) {
     throw DL_ABORT_EX
-      (StringFormat("GID#%s not found in the waiting queue.",
-                    util::itos(gid).c_str()).str());
+      (fmt("GID#%s not found in the waiting queue.",
+           util::itos(gid).c_str()));
   }
   SharedHandle<RequestGroup> rg = *i;
   const size_t maxPos = reservedGroups_.size()-1;

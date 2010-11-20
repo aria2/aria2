@@ -46,7 +46,6 @@
 #include "PeerStorage.h"
 #include "Peer.h"
 #include "Option.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "A2STR.h"
 #include "bencode2.h"
@@ -228,7 +227,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   const String* failure = asString(dict->get(BtAnnounce::FAILURE_REASON));
   if(failure) {
     throw DL_ABORT_EX
-      (StringFormat(EX_TRACKER_FAILURE, failure->s().c_str()).str());
+      (fmt(EX_TRACKER_FAILURE, failure->s().c_str()));
   }
   const String* warn = asString(dict->get(BtAnnounce::WARNING_MESSAGE));
   if(warn) {

@@ -428,12 +428,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
-	NullStatCalc.h StringFormat.cc StringFormat.h \
-	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h \
-	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
-	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
-	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
-	Decoder.h Signature.cc Signature.h ServerStat.cc ServerStat.h \
+	NullStatCalc.h HttpSkipResponseCommand.cc \
+	HttpSkipResponseCommand.h InitiateConnectionCommand.cc \
+	InitiateConnectionCommand.h FtpFinishDownloadCommand.cc \
+	FtpFinishDownloadCommand.h A2STR.cc A2STR.h \
+	RarestPieceSelector.cc RarestPieceSelector.h Decoder.h \
+	Signature.cc Signature.h ServerStat.cc ServerStat.h \
 	ServerStatMan.cc ServerStatMan.h URISelector.h \
 	AdaptiveURISelector.cc AdaptiveURISelector.h \
 	InOrderURISelector.cc InOrderURISelector.h \
@@ -933,8 +933,7 @@ am__objects_32 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) DownloadContext.$(OBJEXT) \
 	TimedHaltCommand.$(OBJEXT) CUIDCounter.$(OBJEXT) \
 	DNSCache.$(OBJEXT) DownloadResult.$(OBJEXT) prefs.$(OBJEXT) \
-	ProtocolDetector.$(OBJEXT) StringFormat.$(OBJEXT) \
-	HttpSkipResponseCommand.$(OBJEXT) \
+	ProtocolDetector.$(OBJEXT) HttpSkipResponseCommand.$(OBJEXT) \
 	InitiateConnectionCommand.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) A2STR.$(OBJEXT) \
 	RarestPieceSelector.$(OBJEXT) Signature.$(OBJEXT) \
@@ -1275,12 +1274,12 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.cc \
 	prefs.h usage_text.h ProtocolDetector.cc ProtocolDetector.h \
-	NullStatCalc.h StringFormat.cc StringFormat.h \
-	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h \
-	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
-	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
-	A2STR.cc A2STR.h RarestPieceSelector.cc RarestPieceSelector.h \
-	Decoder.h Signature.cc Signature.h ServerStat.cc ServerStat.h \
+	NullStatCalc.h HttpSkipResponseCommand.cc \
+	HttpSkipResponseCommand.h InitiateConnectionCommand.cc \
+	InitiateConnectionCommand.h FtpFinishDownloadCommand.cc \
+	FtpFinishDownloadCommand.h A2STR.cc A2STR.h \
+	RarestPieceSelector.cc RarestPieceSelector.h Decoder.h \
+	Signature.cc Signature.h ServerStat.cc ServerStat.h \
 	ServerStatMan.cc ServerStatMan.h URISelector.h \
 	AdaptiveURISelector.cc AdaptiveURISelector.h \
 	InOrderURISelector.cc InOrderURISelector.h \
@@ -1729,7 +1728,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamFileAllocationEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamFilter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StringFormat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeBasedCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteria.Po@am__quote@

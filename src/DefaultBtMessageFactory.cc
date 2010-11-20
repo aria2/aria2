@@ -64,7 +64,7 @@
 #include "DownloadContext.h"
 #include "PieceStorage.h"
 #include "PeerStorage.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "ExtensionMessageFactory.h"
 #include "bittorrent_helper.h"
 
@@ -245,7 +245,7 @@ DefaultBtMessageFactory::createBtMessage
       break;
     }
     default:
-      throw DL_ABORT_EX(StringFormat("Invalid message ID. id=%u", id).str());
+      throw DL_ABORT_EX(fmt("Invalid message ID. id=%u", id));
     }
   }
   setCommonProperty(msg);

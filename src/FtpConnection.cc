@@ -52,7 +52,6 @@
 #include "DlAbortEx.h"
 #include "Socket.h"
 #include "A2STR.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "AuthConfig.h"
 #include "a2functional.h"
@@ -374,8 +373,8 @@ bool FtpConnection::bulkReceiveResponse
     }
     if(strbuf_.size()+size > MAX_RECV_BUFFER) {
       throw DL_RETRY_EX
-        (StringFormat("Max FTP recv buffer reached. length=%lu",
-                      static_cast<unsigned long>(strbuf_.size()+size)).str());
+        (fmt("Max FTP recv buffer reached. length=%lu",
+             static_cast<unsigned long>(strbuf_.size()+size)));
     }
     strbuf_.append(&buf[0], &buf[size]);
   }

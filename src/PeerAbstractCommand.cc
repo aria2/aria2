@@ -43,7 +43,6 @@
 #include "message.h"
 #include "prefs.h"
 #include "DownloadFailureException.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "wallclock.h"
 #include "util.h"
@@ -97,8 +96,8 @@ bool PeerAbstractCommand::execute()
       checkPoint_ = global::wallclock;
     } else if(errorEventEnabled()) {
       throw DL_ABORT_EX
-        (StringFormat(MSG_NETWORK_PROBLEM,
-                      socket_->getSocketError().c_str()).str());
+        (fmt(MSG_NETWORK_PROBLEM,
+             socket_->getSocketError().c_str()));
     }
     if(checkPoint_.difference(global::wallclock) >= timeout_) {
       throw DL_ABORT_EX(EX_TIME_OUT);

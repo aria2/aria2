@@ -1,5 +1,9 @@
 2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Replaced StringFormat with fmt
+
+2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Rewritten Logger interface. Logger now writes source file name and
 	line number in log file.
 

@@ -33,7 +33,7 @@
  */
 /* copyright --> */
 #include "OptionHandlerException.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -43,14 +43,14 @@ const std::string OptionHandlerException::MESSAGE
 OptionHandlerException::OptionHandlerException(const char* file, int line,
                                                const std::string& optName):
   RecoverableException
-  (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str()),
+  (file, line, fmt(MESSAGE.c_str(), optName.c_str())),
   optName_(optName) {}
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
                                                const std::string& optName,
                                                const Exception& cause):
   RecoverableException
-  (file, line, StringFormat(MESSAGE.c_str(), optName.c_str()).str(), cause),
+  (file, line, fmt(MESSAGE.c_str(), optName.c_str()), cause),
   optName_(optName) {}
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,

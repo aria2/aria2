@@ -18,7 +18,7 @@
 # include "Checksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "Signature.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "RecoverableException.h"
 
 namespace aria2 {
@@ -162,12 +162,12 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "<url>http://example.org</url>"
       "</file>"
       "</metalink>";
-    dw->setString(StringFormat(tmpl, "foo").str());
+    dw->setString(fmt(tmpl, "foo"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
     // empty name
-    dw->setString(StringFormat(tmpl, "").str());
+    dw->setString(fmt(tmpl, ""));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -176,7 +176,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
     }
 
     // dir traversing
-    dw->setString(StringFormat(tmpl, "../doughnuts").str());
+    dw->setString(fmt(tmpl, "../doughnuts"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -192,7 +192,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "<url priority=\"%s\">http://example.org</url>"
       "</file>"
       "</metalink>";
-    dw->setString(StringFormat(tmpl, "0").str());
+    dw->setString(fmt(tmpl, "0"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -200,26 +200,26 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       // success
     }
 
-    dw->setString(StringFormat(tmpl, "1").str());
+    dw->setString(fmt(tmpl, "1"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(StringFormat(tmpl, "100").str());
+    dw->setString(fmt(tmpl, "100"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(StringFormat(tmpl, "999999").str());
+    dw->setString(fmt(tmpl, "999999"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(StringFormat(tmpl, "1000000").str());
+    dw->setString(fmt(tmpl, "1000000"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
-    dw->setString(StringFormat(tmpl, "A").str());
+    dw->setString(fmt(tmpl, "A"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -234,7 +234,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "<metaurl priority=\"%s\" mediatype=\"torrent\">http://example.org</metaurl>"
       "</file>"
       "</metalink>";
-    dw->setString(StringFormat(tmpl, "0").str());
+    dw->setString(fmt(tmpl, "0"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -242,26 +242,26 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       // success
     }
 
-    dw->setString(StringFormat(tmpl, "1").str());
+    dw->setString(fmt(tmpl, "1"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(StringFormat(tmpl, "100").str());
+    dw->setString(fmt(tmpl, "100"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(StringFormat(tmpl, "999999").str());
+    dw->setString(fmt(tmpl, "999999"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(StringFormat(tmpl, "1000000").str());
+    dw->setString(fmt(tmpl, "1000000"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
-    dw->setString(StringFormat(tmpl, "A").str());
+    dw->setString(fmt(tmpl, "A"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -292,12 +292,12 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(StringFormat(tmpl, "torrent").str());
+    dw->setString(fmt(tmpl, "torrent"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
     // empty mediatype
-    dw->setString(StringFormat(tmpl, "").str());
+    dw->setString(fmt(tmpl, ""));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -315,12 +315,12 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(StringFormat(tmpl, "foo").str());
+    dw->setString(fmt(tmpl, "foo"));
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
     // dir traversing
-    dw->setString(StringFormat(tmpl, "../doughnuts").str());
+    dw->setString(fmt(tmpl, "../doughnuts"));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -328,7 +328,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       // success
     }
     // empty name
-    dw->setString(StringFormat(tmpl, "").str());
+    dw->setString(fmt(tmpl, ""));
     try {
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
@@ -366,17 +366,17 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(StringFormat(tmpl, "262144").str());
+    dw->setString(fmt(tmpl, "262144"));
     m = proc.parseFromBinaryStream(dw);
     // empty
     try {
-      dw->setString(StringFormat(tmpl, "").str());
+      dw->setString(fmt(tmpl, ""));
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
     // not a number
     try {
-      dw->setString(StringFormat(tmpl, "A").str());
+      dw->setString(fmt(tmpl, "A"));
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
@@ -410,11 +410,11 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(StringFormat(tmpl, "sha-1").str());
+    dw->setString(fmt(tmpl, "sha-1"));
     m = proc.parseFromBinaryStream(dw);
     // empty
     try {
-      dw->setString(StringFormat(tmpl, "").str());
+      dw->setString(fmt(tmpl, ""));
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
@@ -444,11 +444,11 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(StringFormat(tmpl, "sha-1").str());
+    dw->setString(fmt(tmpl, "sha-1"));
     m = proc.parseFromBinaryStream(dw);
     // empty
     try {
-      dw->setString(StringFormat(tmpl, "").str());
+      dw->setString(fmt(tmpl, ""));
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
@@ -479,11 +479,11 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(StringFormat(tmpl, "application/pgp-signature").str());
+    dw->setString(fmt(tmpl, "application/pgp-signature"));
     m = proc.parseFromBinaryStream(dw);
     // empty
     try {
-      dw->setString(StringFormat(tmpl, "").str());
+      dw->setString(fmt(tmpl, ""));
       m = proc.parseFromBinaryStream(dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
@@ -670,10 +670,10 @@ void MetalinkProcessorTest::testBadSizeV4()
      "</file>"
     "</metalink>";
 
-  dw->setString(StringFormat(tmpl, "9223372036854775807").str());
+  dw->setString(fmt(tmpl, "9223372036854775807"));
   m = proc.parseFromBinaryStream(dw);
 
-  dw->setString(StringFormat(tmpl, "-1").str());
+  dw->setString(fmt(tmpl, "-1"));
   try {
     m = proc.parseFromBinaryStream(dw);
     CPPUNIT_FAIL("exception must be thrown.");

@@ -42,7 +42,7 @@
 #include "DHTConstants.h"
 #include "MessageDigest.h"
 #include "MessageDigestHelper.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -70,8 +70,8 @@ std::string DHTTokenTracker::generateToken
   int compactlen = bittorrent::packcompact(src+DHT_ID_LENGTH, ipaddr, port);
   if(compactlen == 0) {
     throw DL_ABORT_EX
-      (StringFormat("Token generation failed: ipaddr=%s, port=%u",
-                    ipaddr.c_str(), port).str());
+      (fmt("Token generation failed: ipaddr=%s, port=%u",
+           ipaddr.c_str(), port));
   }
   memcpy(src, infoHash, DHT_ID_LENGTH);
   memcpy(src+DHT_ID_LENGTH+COMPACT_LEN_IPV6, secret, SECRET_SIZE);

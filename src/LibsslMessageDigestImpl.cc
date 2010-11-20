@@ -36,7 +36,6 @@
 
 #include <algorithm>
 
-#include "StringFormat.h"
 #include "array_fun.h"
 #include "HashFuncEntry.h"
 

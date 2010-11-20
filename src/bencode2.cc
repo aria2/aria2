@@ -37,7 +37,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "StringFormat.h"
+#include "fmt.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
@@ -54,8 +54,8 @@ void checkdelim(std::istream& ss, const char delim = ':')
   char d;
   if(!(ss.get(d) && d == delim)) {
     throw DL_ABORT_EX
-      (StringFormat("Bencode decoding failed: Delimiter '%c' not found.",
-                    delim).str());
+      (fmt("Bencode decoding failed: Delimiter '%c' not found.",
+           delim));
   }
 }
 } // namespace
@@ -77,10 +77,10 @@ std::string decoderawstring(std::istream& ss)
   delete [] buf;
   if(ss.gcount() != static_cast<int>(length)) {
     throw DL_ABORT_EX
-      (StringFormat("Bencode decoding failed:"
-                    " Expected %lu bytes of data, but only %ld read.",
-                    static_cast<unsigned long>(length),
-                    static_cast<long int>(ss.gcount())).str());
+      (fmt("Bencode decoding failed:"
+           " Expected %lu bytes of data, but only %ld read.",
+           static_cast<unsigned long>(length),
+           static_cast<long int>(ss.gcount())));
   }
   return str;
 }
@@ -216,8 +216,8 @@ SharedHandle<ValueBase> decodeFromFile(const std::string& filename)
     return decode(f);
   } else {
     throw DL_ABORT_EX
-      (StringFormat("Bencode decoding failed:"
-                    " Cannot open file '%s'.", filename.c_str()).str());
+      (fmt("Bencode decoding failed: Cannot open file '%s'.",
+           filename.c_str()));
   }
 }
 

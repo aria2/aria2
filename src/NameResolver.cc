@@ -38,7 +38,7 @@
 
 #include "DlAbortEx.h"
 #include "message.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "util.h"
 #include "SocketCore.h"
 
@@ -53,8 +53,8 @@ void NameResolver::resolve(std::vector<std::string>& resolvedAddresses,
   int s;
   s = callGetaddrinfo(&res, hostname.c_str(), 0, family_, socktype_, 0, 0);
   if(s) {
-    throw DL_ABORT_EX(StringFormat(EX_RESOLVE_HOSTNAME,
-                                   hostname.c_str(), gai_strerror(s)).str());
+    throw DL_ABORT_EX(fmt(EX_RESOLVE_HOSTNAME,
+                          hostname.c_str(), gai_strerror(s)));
   }
   WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;

@@ -47,7 +47,6 @@
 #include "Logger.h"
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
-#include "StringFormat.h"
 #include "fmt.h"
 
 namespace aria2 {
@@ -68,8 +67,8 @@ DHTMessageTracker::messageArrived
 {
   const String* tid = asString(dict->get(DHTMessage::T));
   if(!tid) {
-    throw DL_ABORT_EX(StringFormat("Malformed DHT message. From:%s:%u",
-                                   ipaddr.c_str(), port).str());
+    throw DL_ABORT_EX(fmt("Malformed DHT message. From:%s:%u",
+                          ipaddr.c_str(), port));
   }
   A2_LOG_DEBUG(fmt("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
                    util::toHex(tid->s()).c_str(),

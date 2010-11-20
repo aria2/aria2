@@ -40,7 +40,7 @@
 #include "A2STR.h"
 #include "util.h"
 #include "help_tags.h"
-#include "StringFormat.h"
+#include "a2functional.h"
 #include "File.h"
 
 namespace aria2 {
@@ -1652,27 +1652,28 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   // Help Option
   {
+    static std::string tags[] = {
+      TAG_BASIC,
+      TAG_ADVANCED,
+      TAG_HTTP,
+      TAG_HTTPS,
+      TAG_FTP,
+      TAG_METALINK,
+      TAG_BITTORRENT,
+      TAG_COOKIE,
+      TAG_HOOK,
+      TAG_FILE,
+      TAG_XML_RPC,
+      TAG_EXPERIMENTAL,
+      TAG_HELP,
+      TAG_ALL
+    };
+    static std::string tagsStr = strjoin(vbegin(tags), vend(tags), ", ");
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    ("help",
                                     TEXT_HELP,
                                     TAG_BASIC,
-                                    StringFormat
-                                    ("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "
-                                     "%s, %s, %s, %s",
-                                     TAG_BASIC,
-                                     TAG_ADVANCED,
-                                     TAG_HTTP,
-                                     TAG_HTTPS,
-                                     TAG_FTP,
-                                     TAG_METALINK,
-                                     TAG_BITTORRENT,
-                                     TAG_COOKIE,
-                                     TAG_HOOK,
-                                     TAG_FILE,
-                                     TAG_XML_RPC,
-                                     TAG_EXPERIMENTAL,
-                                     TAG_HELP,
-                                     TAG_ALL).str(),
+                                    tagsStr,
                                     OptionHandler::OPT_ARG,
                                     'h'));
     op->addTag(TAG_BASIC);

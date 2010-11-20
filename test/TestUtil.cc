@@ -10,10 +10,10 @@
 
 #include "a2io.h"
 #include "File.h"
-#include "StringFormat.h"
 #include "FatalException.h"
 #include "Cookie.h"
 #include "DefaultDiskWriter.h"
+#include "fmt.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -25,12 +25,12 @@ void createFile(const std::string& path, size_t length)
   File(File(path).getDirname()).mkdirs();
   int fd = creat(path.c_str(), OPEN_MODE);
   if(fd == -1) {
-    throw FATAL_EXCEPTION(StringFormat("Could not create file=%s. cause:%s",
-                                       path.c_str(), strerror(errno)).str());
+    throw FATAL_EXCEPTION(fmt("Could not create file=%s. cause:%s",
+                              path.c_str(),
+                              strerror(errno)));
   }
   if(-1 == ftruncate(fd, length)) {
-    throw FATAL_EXCEPTION(StringFormat("ftruncate failed. cause:%s",
-                                       strerror(errno)).str());
+    throw FATAL_EXCEPTION(fmt("ftruncate failed. cause:%s", strerror(errno)));
   }
   close(fd);
 }

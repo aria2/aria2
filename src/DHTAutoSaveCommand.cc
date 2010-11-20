@@ -53,7 +53,6 @@
 #include "a2functional.h"
 #include "FileEntry.h"
 #include "DlAbortEx.h"
-#include "StringFormat.h"
 #include "fmt.h"
 
 namespace aria2 {
@@ -115,8 +114,8 @@ void DHTAutoSaveCommand::save()
                       std::ios::out|std::ios::binary);
       if(!o) {
         throw DL_ABORT_EX
-          (StringFormat("Failed to save DHT routing table to %s.",
-                        dhtFile.c_str()).str());
+          (fmt("Failed to save DHT routing table to %s.",
+               dhtFile.c_str()));
       }
       serializer.serialize(o);
     }

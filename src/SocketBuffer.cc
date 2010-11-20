@@ -40,7 +40,7 @@
 #include "SocketCore.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -85,8 +85,7 @@ ssize_t SocketBuffer::send()
     }
     ssize_t slen = socket_->writeData(data+offset_, r);
     if(slen == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
-      throw DL_ABORT_EX(StringFormat(EX_SOCKET_SEND,
-                                     "Connection closed.").str());
+      throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, "Connection closed."));
     }
     totalslen += slen;
     if(slen < r) {

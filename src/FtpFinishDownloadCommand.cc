@@ -42,7 +42,6 @@
 #include "Option.h"
 #include "FtpConnection.h"
 #include "message.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "DlAbortEx.h"
 #include "SocketCore.h"

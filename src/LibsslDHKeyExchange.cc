@@ -40,7 +40,7 @@
 #include <openssl/err.h>
 
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -48,8 +48,8 @@ namespace {
 void handleError(const std::string& funName)
 {
   throw DL_ABORT_EX
-    (StringFormat("Exception in libssl routine %s(DHKeyExchange class): %s",
-                  funName.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
+    (fmt("Exception in libssl routine %s(DHKeyExchange class): %s",
+         funName.c_str(), ERR_error_string(ERR_get_error(), 0)));
 }
 } // namespace
 
@@ -113,10 +113,9 @@ size_t DHKeyExchange::getPublicKey
 {
   if(outLength < keyLength_) {
     throw DL_ABORT_EX
-      (StringFormat
-       ("Insufficient buffer for public key. expect:%lu, actual:%lu",
-        static_cast<unsigned long>(keyLength_),
-        static_cast<unsigned long>(outLength)).str());
+      (fmt("Insufficient buffer for public key. expect:%lu, actual:%lu",
+           static_cast<unsigned long>(keyLength_),
+           static_cast<unsigned long>(outLength)));
   }
   memset(out, 0, outLength);
   size_t publicKeyBytes = BN_num_bytes(publicKey_);
@@ -124,11 +123,10 @@ size_t DHKeyExchange::getPublicKey
   size_t nwritten = BN_bn2bin(publicKey_, out+offset);
   if(nwritten != publicKeyBytes) {
     throw DL_ABORT_EX
-      (StringFormat
-       ("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
-        " but %lu bytes expected.",
-        static_cast<unsigned long>(nwritten),
-        static_cast<unsigned long>(publicKeyBytes)).str());
+      (fmt("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
+           " but %lu bytes expected.",
+           static_cast<unsigned long>(nwritten),
+           static_cast<unsigned long>(publicKeyBytes)));
   }
   return nwritten;
 }
@@ -146,9 +144,9 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
 {
   if(outLength < keyLength_) {
     throw DL_ABORT_EX
-      (StringFormat("Insufficient buffer for secret. expect:%lu, actual:%lu",
-                    static_cast<unsigned long>(keyLength_),
-                    static_cast<unsigned long>(outLength)).str());
+      (fmt("Insufficient buffer for secret. expect:%lu, actual:%lu",
+           static_cast<unsigned long>(keyLength_),
+           static_cast<unsigned long>(outLength)));
   }
 
 
@@ -168,11 +166,10 @@ size_t DHKeyExchange::computeSecret(unsigned char* out, size_t outLength,
   BN_free(secret);
   if(nwritten != secretBytes) {
     throw DL_ABORT_EX
-      (StringFormat
-       ("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
-        " but %lu bytes expected.",
-        static_cast<unsigned long>(nwritten),
-        static_cast<unsigned long>(secretBytes)).str());
+      (fmt("BN_bn2bin in DHKeyExchange::getPublicKey, %lu bytes written,"
+           " but %lu bytes expected.",
+           static_cast<unsigned long>(nwritten),
+           static_cast<unsigned long>(secretBytes)));
   }
   return nwritten;
 }

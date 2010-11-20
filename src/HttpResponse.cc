@@ -44,7 +44,6 @@
 #include "message.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "A2STR.h"
 #include "CookieStorage.h"
@@ -78,8 +77,7 @@ void HttpResponse::validateResponse() const
             statusCode == 303 ||
             statusCode == 307) {
     if(!httpHeader_->defined(HttpHeader::LOCATION)) {
-      throw DL_ABORT_EX
-        (StringFormat(EX_LOCATION_HEADER_REQUIRED, statusCode).str());
+      throw DL_ABORT_EX(fmt(EX_LOCATION_HEADER_REQUIRED, statusCode));
     }
     return;
   } else if(statusCode == 200 || statusCode == 206) {
@@ -88,20 +86,18 @@ void HttpResponse::validateResponse() const
       RangeHandle responseRange = httpHeader_->getRange();
       if(!httpRequest_->isRangeSatisfied(responseRange)) {
         throw DL_ABORT_EX2
-          (StringFormat
-           (EX_INVALID_RANGE_HEADER,
-            util::itos(httpRequest_->getStartByte(), true).c_str(),
-            util::itos(httpRequest_->getEndByte(), true).c_str(),
-            util::uitos(httpRequest_->getEntityLength(), true).c_str(),
-            util::itos(responseRange->getStartByte(), true).c_str(),
-            util::itos(responseRange->getEndByte(), true).c_str(),
-            util::uitos(responseRange->getEntityLength(), true).c_str()).str(),
+          (fmt(EX_INVALID_RANGE_HEADER,
+               util::itos(httpRequest_->getStartByte(), true).c_str(),
+               util::itos(httpRequest_->getEndByte(), true).c_str(),
+               util::uitos(httpRequest_->getEntityLength(), true).c_str(),
+               util::itos(responseRange->getStartByte(), true).c_str(),
+               util::itos(responseRange->getEndByte(), true).c_str(),
+               util::uitos(responseRange->getEntityLength(), true).c_str()),
            downloadresultcode::CANNOT_RESUME);
       }
     }
   } else {
-    throw DL_ABORT_EX
-      (StringFormat("Unexpected status %d", statusCode).str());
+    throw DL_ABORT_EX(fmt("Unexpected status %d", statusCode));
   }
 }
 
@@ -155,9 +151,9 @@ void HttpResponse::processRedirect()
                     httpRequest_->getRequest()->getCurrentUri().c_str()));
   } else {
     throw DL_RETRY_EX
-      (StringFormat("CUID#%s - Redirect to %s failed. It may not be a valid"
-                    " URI.", util::itos(cuid_).c_str(),
-                    httpRequest_->getRequest()->getCurrentUri().c_str()).str());
+      (fmt("CUID#%s - Redirect to %s failed. It may not be a valid URI.",
+           util::itos(cuid_).c_str(),
+           httpRequest_->getRequest()->getCurrentUri().c_str()));
   }
 }
 

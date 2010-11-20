@@ -53,7 +53,6 @@
 #include "BtMessageFactory.h"
 #include "BtRequestFactory.h"
 #include "PeerConnection.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "DownloadContext.h"
 

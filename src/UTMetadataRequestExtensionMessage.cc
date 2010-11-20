@@ -38,7 +38,7 @@
 #include "a2functional.h"
 #include "bittorrent_helper.h"
 #include "DlAbortEx.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "BtMessageFactory.h"
 #include "BtMessageDispatcher.h"
 #include "Peer.h"
@@ -98,9 +98,8 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
     dispatcher_->addMessageToQueue(msg);
   } else {
     throw DL_ABORT_EX
-      (StringFormat
-       ("Metadata piece index is too big. piece=%lu",
-        static_cast<unsigned long>(getIndex())).str());
+      (fmt("Metadata piece index is too big. piece=%lu",
+           static_cast<unsigned long>(getIndex())));
   }
 }
 

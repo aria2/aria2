@@ -38,7 +38,7 @@
 #include <utility>
 
 #include "util.h"
-#include "StringFormat.h"
+#include "fmt.h"
 #include "A2STR.h"
 #include "uri.h"
 #include "PeerStat.h"
@@ -101,7 +101,7 @@ std::string percentEncode(const std::string& src)
           result.replace(index, 1, "%25");
         }
       } else {
-        result.replace(index, 1, StringFormat("%%%02X", c).str());
+        result.replace(index, 1, fmt("%%%02X", c));
       }
     }
   }

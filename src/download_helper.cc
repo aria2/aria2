@@ -51,7 +51,6 @@
 #include "RecoverableException.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "FileEntry.h"
 #include "LogFactory.h"
@@ -518,8 +517,8 @@ void createRequestGroupForUriList
   } else {
     if(!File(option->get(PREF_INPUT_FILE)).isFile()) {
       throw DL_ABORT_EX
-        (StringFormat(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
-                      "No such file").str());
+        (fmt(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
+             "No such file"));
     }
     std::ifstream f(option->get(PREF_INPUT_FILE).c_str(), std::ios::binary);
     createRequestGroupForUriList(result, option, f);

@@ -66,7 +66,6 @@
 #include "PeerConnection.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
@@ -118,9 +117,8 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   if(memcmp(message->getPeerId(), bittorrent::getStaticPeerId(),
             PEER_ID_LENGTH) == 0) {
     throw DL_ABORT_EX
-      (StringFormat
-       ("CUID#%s - Drop connection from the same Peer ID",
-        util::itos(cuid_).c_str()).str());
+      (fmt("CUID#%s - Drop connection from the same Peer ID",
+           util::itos(cuid_).c_str()));
   }
   std::vector<SharedHandle<Peer> > activePeers;
   peerStorage_->getActivePeers(activePeers);
@@ -128,9 +126,8 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
         eoi = activePeers.end(); i != eoi; ++i) {
     if(memcmp((*i)->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
       throw DL_ABORT_EX
-        (StringFormat
-         ("CUID#%s - Same Peer ID has been already seen.",
-          util::itos(cuid_).c_str()).str());
+        (fmt("CUID#%s - Same Peer ID has been already seen.",
+             util::itos(cuid_).c_str()));
     }
   }
 
@@ -447,9 +444,9 @@ void DefaultBtInteractive::checkActiveInteraction()
       peer_->setDisconnectedGracefully(true);
       // TODO change the message
       throw DL_ABORT_EX
-        (StringFormat("Disconnect peer because we are not interested each other"
-                      " after %ld second(s).",
-                      static_cast<long int>(interval)).str());
+        (fmt("Disconnect peer because we are not interested each other"
+             " after %ld second(s).",
+             static_cast<long int>(interval)));
     }
   }
   // Since the peers which are *just* connected and do nothing to improve
@@ -460,8 +457,8 @@ void DefaultBtInteractive::checkActiveInteraction()
     if(inactiveTime >= interval) {
       peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX
-        (StringFormat(EX_DROP_INACTIVE_CONNECTION,
-                      static_cast<long int>(interval)).str());
+        (fmt(EX_DROP_INACTIVE_CONNECTION,
+             static_cast<long int>(interval)));
     }
   }
 }

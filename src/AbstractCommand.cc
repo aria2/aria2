@@ -54,7 +54,6 @@
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "ServerStat.h"
 #include "RequestGroupMan.h"
@@ -225,9 +224,8 @@ bool AbstractCommand::execute() {
       }
       return executeInternal();
     } else if(errorEventEnabled()) {
-      throw DL_RETRY_EX
-        (StringFormat(MSG_NETWORK_PROBLEM,
-                      socket_->getSocketError().c_str()).str());
+      throw DL_RETRY_EX(fmt(MSG_NETWORK_PROBLEM,
+                            socket_->getSocketError().c_str()));
     } else {
       if(checkPoint_.difference(global::wallclock) >= timeout_) {
         // timeout triggers ServerStat error state.
@@ -653,10 +651,10 @@ bool AbstractCommand::asyncResolveHostname()
         (req_->getHost(), req_->getProtocol())->setError();
     }
     throw DL_ABORT_EX
-      (StringFormat(MSG_NAME_RESOLUTION_FAILED,
+      (fmt(MSG_NAME_RESOLUTION_FAILED,
                     util::itos(getCuid()).c_str(),
                     asyncNameResolver_->getHostname().c_str(),
-                    asyncNameResolver_->getError().c_str()).str());
+                    asyncNameResolver_->getError().c_str()));
   default:
     return false;
   }
@@ -780,7 +778,7 @@ bool AbstractCommand::checkIfConnectionEstablished
           (req_->getHost(), req_->getProtocol())->setError();
       }
       throw DL_RETRY_EX
-        (StringFormat(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()).str());
+        (fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()));
     }
   }
   return true;

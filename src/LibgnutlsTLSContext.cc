@@ -40,7 +40,6 @@
 
 #include "LogFactory.h"
 #include "Logger.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "message.h"
 

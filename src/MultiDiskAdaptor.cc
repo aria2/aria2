@@ -46,7 +46,6 @@
 #include "DefaultDiskWriterFactory.h"
 #include "DlAbortEx.h"
 #include "File.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "Logger.h"
 #include "LogFactory.h"
@@ -382,8 +381,8 @@ DiskWriterEntries::const_iterator findFirstDiskWriterEntry
   // In case when offset is out-of-range
   if(!isInRange(*first, offset)) {
     throw DL_ABORT_EX
-      (StringFormat(EX_FILE_OFFSET_OUT_OF_RANGE,
-                    util::itos(offset, true).c_str()).str());
+      (fmt(EX_FILE_OFFSET_OUT_OF_RANGE,
+           util::itos(offset, true).c_str()));
   }
   return first;
 }
@@ -394,9 +393,9 @@ void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
                                 off_t offset)
 {
   throw DL_ABORT_EX
-    (StringFormat("DiskWriter for offset=%s, filename=%s is not opened.",
-                  util::itos(offset).c_str(),
-                  e->getFilePath().c_str()).str());  
+    (fmt("DiskWriter for offset=%s, filename=%s is not opened.",
+         util::itos(offset).c_str(),
+         e->getFilePath().c_str()));  
 }
 } // namespace
 

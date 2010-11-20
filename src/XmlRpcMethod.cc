@@ -45,7 +45,6 @@
 #include "XmlRpcRequest.h"
 #include "XmlRpcResponse.h"
 #include "prefs.h"
-#include "StringFormat.h"
 #include "fmt.h"
 #include "DlAbortEx.h"
 
@@ -91,17 +90,15 @@ void gatherOption
     const std::string& optionName = (*first).first;
     if(allowedOptions.count(optionName) == 0) {
       throw DL_ABORT_EX
-        (StringFormat
-         ("%s option cannot be used in this context.",
-          optionName.c_str()).str());
+        (fmt("%s option cannot be used in this context.",
+             optionName.c_str()));
     } else {
       SharedHandle<OptionHandler> optionHandler =
         optionParser->findByName(optionName);
       if(!optionHandler) {
         throw DL_ABORT_EX
-          (StringFormat
-           ("We don't know how to deal with %s option",
-            optionName.c_str()).str());
+          (fmt("We don't know how to deal with %s option",
+               optionName.c_str()));
       }
       const String* opval = asString((*first).second);
       if(opval) {
