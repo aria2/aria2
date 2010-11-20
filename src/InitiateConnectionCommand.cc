@@ -101,7 +101,7 @@ bool InitiateConnectionCommand::executeInternal() {
     if(!getDownloadEngine()->findCachedIPAddress(hostname, port).empty()) {
       A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, ex);
       A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
-                      util::itos(getCuid()).c_str(),
+                      getCuid(),
                       ipaddr.c_str(), port));
       Command* command =
         InitiateConnectionCommandFactory::createInitiateConnectionCommand

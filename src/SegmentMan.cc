@@ -120,9 +120,9 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   if(!piece) {
     return SharedHandle<Segment>();
   }
-  A2_LOG_DEBUG(fmt("Attach segment#%lu to CUID#%s.",
+  A2_LOG_DEBUG(fmt("Attach segment#%lu to CUID#%lld.",
                    static_cast<unsigned long>(piece->getIndex()),
-                   util::itos(cuid).c_str()));
+                   cuid));
   SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {
     segment.reset(new GrowSegment(piece));

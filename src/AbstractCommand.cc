@@ -113,8 +113,8 @@ AbstractCommand::~AbstractCommand() {
 }
 
 bool AbstractCommand::execute() {
-  A2_LOG_DEBUG(fmt("CUID#%s - socket: read:%d, write:%d, hup:%d, err:%d",
-                   util::itos(getCuid()).c_str(),
+  A2_LOG_DEBUG(fmt("CUID#%lld - socket: read:%d, write:%d, hup:%d, err:%d",
+                   getCuid(),
                    readEventEnabled(),
                    writeEventEnabled(),
                    hupEventEnabled(),
@@ -124,9 +124,9 @@ bool AbstractCommand::execute() {
       return true;
     }
     if(req_ && req_->removalRequested()) {
-      A2_LOG_DEBUG(fmt("CUID#%s - Discard original URI=%s because it is"
+      A2_LOG_DEBUG(fmt("CUID#%lld - Discard original URI=%s because it is"
                        " requested.",
-                       util::itos(getCuid()).c_str(), req_->getUri().c_str()));
+                       getCuid(), req_->getUri().c_str()));
       return prepareForRetry(0);
     }
     if(getPieceStorage()) {
@@ -136,9 +136,9 @@ bool AbstractCommand::execute() {
         // This command previously has assigned segments, but it is
         // canceled. So discard current request chain.  Plus, if no
         // segment is available when http pipelining is used.
-        A2_LOG_DEBUG(fmt("CUID#%s - It seems previously assigned segments"
+        A2_LOG_DEBUG(fmt("CUID#%lld - It seems previously assigned segments"
                          " are canceled. Restart.",
-                         util::itos(getCuid()).c_str()));
+                         getCuid()));
         // Request::isPipeliningEnabled() == true means aria2
         // accessed the remote server and discovered that the server
         // supports pipelining.
@@ -153,8 +153,8 @@ bool AbstractCommand::execute() {
          !getPieceStorage()->hasMissingUnusedPiece()) {
         SharedHandle<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
         if(fasterRequest) {
-          A2_LOG_INFO(fmt("CUID#%s - Use faster Request hostname=%s, port=%u",
-                          util::itos(getCuid()).c_str(),
+          A2_LOG_INFO(fmt("CUID#%lld - Use faster Request hostname=%s, port=%u",
+                          getCuid(),
                           fasterRequest->getHost().c_str(),
                           fasterRequest->getPort()));
           // Cancel current Request object and use faster one.
@@ -199,7 +199,7 @@ bool AbstractCommand::execute() {
             // enabled...  Hmm, I don't think if pipelining is enabled
             // it does not go here.
             A2_LOG_INFO(fmt(MSG_NO_SEGMENT_AVAILABLE,
-                            util::itos(getCuid()).c_str()));
+                            getCuid()));
             // When all segments are ignored in SegmentMan, there are
             // no URIs available, so don't retry.
             if(getSegmentMan()->allSegmentsIgnored()) {
@@ -234,17 +234,17 @@ bool AbstractCommand::execute() {
                                                           req_->getProtocol());
         ss->setError();
         // Purging IP address cache to renew IP address.
-        A2_LOG_DEBUG(fmt("CUID#%s - Marking IP address %s as bad",
-                         util::itos(getCuid()).c_str(),
+        A2_LOG_DEBUG(fmt("CUID#%lld - Marking IP address %s as bad",
+                         getCuid(),
                          req_->getConnectedAddr().c_str()));
         e_->markBadIPAddress(req_->getConnectedHostname(),
                              req_->getConnectedAddr(),
                              req_->getConnectedPort());
         if(e_->findCachedIPAddress
            (req_->getConnectedHostname(), req_->getConnectedPort()).empty()) {
-          A2_LOG_DEBUG(fmt("CUID#%s - All IP addresses were marked bad."
+          A2_LOG_DEBUG(fmt("CUID#%lld - All IP addresses were marked bad."
                            " Removing Entry.",
-                           util::itos(getCuid()).c_str()));
+                           getCuid()));
           e_->removeCachedIPAddress
             (req_->getConnectedHostname(), req_->getConnectedPort());
         }
@@ -258,7 +258,7 @@ bool AbstractCommand::execute() {
       A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, err);
     } else {
       A2_LOG_ERROR_EX(fmt(MSG_DOWNLOAD_ABORTED,
-                          util::itos(getCuid()).c_str(),
+                          getCuid(),
                           req_->getUri().c_str()),
                       DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()),
                                    err));
@@ -274,7 +274,7 @@ bool AbstractCommand::execute() {
   } catch(DlRetryEx& err) {
     assert(req_);
     A2_LOG_INFO_EX(fmt(MSG_RESTARTING_DOWNLOAD,
-                       util::itos(getCuid()).c_str(), req_->getUri().c_str()),
+                       getCuid(), req_->getUri().c_str()),
                    DL_RETRY_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()),
                                 err));
     req_->addTryCount();
@@ -284,10 +284,10 @@ bool AbstractCommand::execute() {
     bool isAbort = maxTries != 0 && req_->getTryCount() >= maxTries;
     if(isAbort) {
       A2_LOG_INFO(fmt(MSG_MAX_TRY,
-                      util::itos(getCuid()).c_str(),
+                      getCuid(),
                       req_->getTryCount()));
       A2_LOG_ERROR_EX(fmt(MSG_DOWNLOAD_ABORTED,
-                          util::itos(getCuid()).c_str(),
+                          getCuid(),
                           req_->getUri().c_str()),
                       err);
       fileEntry_->addURIResult(req_->getUri(), err.getCode());
@@ -320,15 +320,15 @@ void AbstractCommand::tryReserved() {
     // and there are no URI left. Because file length is unknown, we
     // can assume that there are no in-flight request object.
     if(entry->getLength() == 0 && entry->getRemainingUris().empty()) {
-      A2_LOG_DEBUG(fmt("CUID#%s - Not trying next request."
+      A2_LOG_DEBUG(fmt("CUID#%lld - Not trying next request."
                        " No reserved/pooled request is remaining and"
                        " total length is still unknown.",
-                       util::itos(getCuid()).c_str()));
+                       getCuid()));
       return;
     }
   }
-  A2_LOG_DEBUG(fmt("CUID#%s - Trying reserved/pooled request.",
-                   util::itos(getCuid()).c_str()));
+  A2_LOG_DEBUG(fmt("CUID#%lld - Trying reserved/pooled request.",
+                   getCuid()));
   std::vector<Command*> commands;
   requestGroup_->createNextCommand(commands, e_, 1);
   e_->setNoWait(true);
@@ -341,8 +341,8 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
   }
   if(req_) {
     fileEntry_->poolRequest(req_);
-    A2_LOG_DEBUG(fmt("CUID#%s - Pooling request URI=%s",
-                     util::itos(getCuid()).c_str(), req_->getUri().c_str()));
+    A2_LOG_DEBUG(fmt("CUID#%lld - Pooling request URI=%s",
+                     getCuid(), req_->getUri().c_str()));
     if(getSegmentMan()) {
       getSegmentMan()->recognizeSegmentFor(fileEntry_);
     }
@@ -365,8 +365,8 @@ void AbstractCommand::onAbort() {
     fileEntry_->removeIdenticalURI(req_->getUri());
     fileEntry_->removeRequest(req_);
   }
-  A2_LOG_DEBUG(fmt("CUID#%s - Aborting download",
-                   util::itos(getCuid()).c_str()));
+  A2_LOG_DEBUG(fmt("CUID#%lld - Aborting download",
+                   getCuid()));
   if(getPieceStorage()) {
     getSegmentMan()->cancelSegment(getCuid());
     // Don't do following process if BitTorrent is involved or files
@@ -383,12 +383,12 @@ void AbstractCommand::onAbort() {
         // Local file exists, but given servers(or at least contacted
         // ones) doesn't support resume. Let's restart download from
         // scratch.
-        A2_LOG_NOTICE(fmt("CUID#%s - Failed to resume download."
+        A2_LOG_NOTICE(fmt("CUID#%lld - Failed to resume download."
                           " Download from scratch.",
-                          util::itos(getCuid()).c_str()));
-        A2_LOG_DEBUG(fmt("CUID#%s - Gathering URIs that has CANNOT_RESUME"
+                          getCuid()));
+        A2_LOG_DEBUG(fmt("CUID#%lld - Gathering URIs that has CANNOT_RESUME"
                          " error",
-                         util::itos(getCuid()).c_str()));
+                         getCuid()));
         // Set PREF_ALWAYS_RESUME to A2_V_TRUE to avoid repeating this
         // process.
         getOption()->put(PREF_ALWAYS_RESUME, A2_V_TRUE);
@@ -402,8 +402,8 @@ void AbstractCommand::onAbort() {
           uris.reserve(res.size());
           std::transform(res.begin(), res.end(), std::back_inserter(uris),
                          std::mem_fun_ref(&URIResult::getURI));
-          A2_LOG_DEBUG(fmt("CUID#%s - %lu URIs found.",
-                           util::itos(getCuid()).c_str(),
+          A2_LOG_DEBUG(fmt("CUID#%lld - %lu URIs found.",
+                           getCuid(),
                            static_cast<unsigned long int>(uris.size())));
           fileEntry_->addUris(uris.begin(), uris.end());
           getSegmentMan()->recognizeSegmentFor(fileEntry_);
@@ -605,10 +605,10 @@ SharedHandle<Request> AbstractCommand::createProxyRequest() const
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
     if(proxyRequest->setUri(proxy)) {
-      A2_LOG_DEBUG(fmt("CUID#%s - Using proxy", util::itos(getCuid()).c_str()));
+      A2_LOG_DEBUG(fmt("CUID#%lld - Using proxy", getCuid()));
     } else {
-      A2_LOG_DEBUG(fmt("CUID#%s - Failed to parse proxy string",
-                       util::itos(getCuid()).c_str()));
+      A2_LOG_DEBUG(fmt("CUID#%lld - Failed to parse proxy string",
+                       getCuid()));
       proxyRequest.reset();
     }
   }
@@ -632,7 +632,7 @@ void AbstractCommand::initAsyncNameResolver(const std::string& hostname)
   }
   asyncNameResolver_.reset(new AsyncNameResolver(family));
   A2_LOG_INFO(fmt(MSG_RESOLVING_HOSTNAME,
-                  util::itos(getCuid()).c_str(),
+                  getCuid(),
                   hostname.c_str()));
   asyncNameResolver_->resolve(hostname);
   setNameResolverCheck(asyncNameResolver_);
@@ -652,7 +652,7 @@ bool AbstractCommand::asyncResolveHostname()
     }
     throw DL_ABORT_EX
       (fmt(MSG_NAME_RESOLUTION_FAILED,
-                    util::itos(getCuid()).c_str(),
+                    getCuid(),
                     asyncNameResolver_->getHostname().c_str(),
                     asyncNameResolver_->getError().c_str()));
   default:
@@ -719,7 +719,7 @@ std::string AbstractCommand::resolveHostname
         res.resolve(addrs, hostname);
       }
     A2_LOG_INFO(fmt(MSG_NAME_RESOLUTION_COMPLETE,
-                    util::itos(getCuid()).c_str(),
+                    getCuid(),
                     hostname.c_str(),
                     strjoin(addrs.begin(), addrs.end(), ", ").c_str()));
     for(std::vector<std::string>::const_iterator i = addrs.begin(),
@@ -730,7 +730,7 @@ std::string AbstractCommand::resolveHostname
   } else {
     ipaddr = addrs.front();
     A2_LOG_INFO(fmt(MSG_DNS_CACHE_HIT,
-                    util::itos(getCuid()).c_str(),
+                    getCuid(),
                     hostname.c_str(),
                     strjoin(addrs.begin(), addrs.end(), ", ").c_str()));
   }
@@ -761,7 +761,7 @@ bool AbstractCommand::checkIfConnectionEstablished
       e_->markBadIPAddress(connectedHostname, connectedAddr, connectedPort);
       if(!e_->findCachedIPAddress(connectedHostname, connectedPort).empty()) {
         A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
-                        util::itos(getCuid()).c_str(),
+                        getCuid(),
                         connectedAddr.c_str(), connectedPort));
         Command* command =
           InitiateConnectionCommandFactory::createInitiateConnectionCommand

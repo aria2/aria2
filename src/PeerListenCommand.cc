@@ -98,7 +98,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       return true;
     } catch(RecoverableException& ex) {
       A2_LOG_ERROR_EX(fmt(MSG_BIND_FAILURE,
-                          util::itos(getCuid()).c_str(), port),
+                          getCuid(), port),
                       ex);
       socket_->closeConnection();
     }
@@ -138,11 +138,11 @@ bool PeerListenCommand::execute() {
       A2_LOG_DEBUG(fmt("Accepted the connection from %s:%u.",
                        peer->getIPAddress().c_str(),
                        peer->getPort()));
-      A2_LOG_DEBUG(fmt("Added CUID#%s to receive BitTorrent/MSE handshake.",
-                       util::itos(cuid).c_str()));
+      A2_LOG_DEBUG(fmt("Added CUID#%lld to receive BitTorrent/MSE handshake.",
+                       cuid));
     } catch(RecoverableException& ex) {
       A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE,
-                          util::itos(getCuid()).c_str()),
+                          getCuid()),
                       ex);
     }
   }

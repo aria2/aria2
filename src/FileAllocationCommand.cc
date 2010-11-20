@@ -91,11 +91,11 @@ bool FileAllocationCommand::handleException(Exception& e)
 {
   getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
   A2_LOG_ERROR_EX(fmt(MSG_FILE_ALLOCATION_FAILURE,
-                      util::itos(getCuid()).c_str()),
+                      getCuid()),
                   e);
   A2_LOG_ERROR
     (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
-         util::itos(getCuid()).c_str(),
+         getCuid(),
          getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }

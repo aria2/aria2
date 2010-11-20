@@ -119,8 +119,8 @@ bool HttpServerBodyCommand::execute()
     }
   } catch(RecoverableException& e) {
     A2_LOG_INFO_EX
-      (fmt("CUID#%s - Error occurred while reading HTTP request body",
-           util::itos(getCuid()).c_str()),
+      (fmt("CUID#%lld - Error occurred while reading HTTP request body",
+           getCuid()),
        e);
     return true;
   }

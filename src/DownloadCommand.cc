@@ -199,7 +199,7 @@ bool DownloadCommand::executeInternal() {
       // content length, but the client detected that download
       // completed.
       A2_LOG_INFO(fmt(MSG_SEGMENT_DOWNLOAD_COMPLETED,
-                      util::itos(getCuid()).c_str()));
+                      getCuid()));
 #ifdef ENABLE_MESSAGE_DIGEST
 
       {

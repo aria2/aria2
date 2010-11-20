@@ -122,9 +122,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
         return false;
       }
       // we got EOF
-      A2_LOG_DEBUG(fmt("CUID#%s - In PeerConnection::receiveMessage(),"
+      A2_LOG_DEBUG(fmt("CUID#%lld - In PeerConnection::receiveMessage(),"
                        " remain=%lu",
-                       util::itos(cuid_).c_str(),
+                       cuid_,
                        static_cast<unsigned long>(temp)));
       peer_->setDisconnectedGracefully(true);
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
@@ -155,9 +155,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
         return false;
       }
       // we got EOF
-      A2_LOG_DEBUG(fmt("CUID#%s - In PeerConnection::receiveMessage(),"
+      A2_LOG_DEBUG(fmt("CUID#%lld - In PeerConnection::receiveMessage(),"
                        " payloadlen=%lu, remaining=%lu",
-                       util::itos(cuid_).c_str(),
+                       cuid_,
                        static_cast<unsigned long>(currentPayloadLength_),
                        static_cast<unsigned long>(temp)));
       peer_->setDisconnectedGracefully(true);
@@ -207,8 +207,8 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
         }
         // we got EOF
         A2_LOG_DEBUG
-          (fmt("CUID#%s - In PeerConnection::receiveHandshake(), remain=%lu",
-               util::itos(cuid_).c_str(),
+          (fmt("CUID#%lld - In PeerConnection::receiveHandshake(), remain=%lu",
+               cuid_,
                static_cast<unsigned long>(temp)));
         peer_->setDisconnectedGracefully(true);
         throw DL_ABORT_EX(EX_EOF_FROM_PEER);

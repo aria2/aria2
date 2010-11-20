@@ -117,8 +117,8 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   if(memcmp(message->getPeerId(), bittorrent::getStaticPeerId(),
             PEER_ID_LENGTH) == 0) {
     throw DL_ABORT_EX
-      (fmt("CUID#%s - Drop connection from the same Peer ID",
-           util::itos(cuid_).c_str()));
+      (fmt("CUID#%lld - Drop connection from the same Peer ID",
+           cuid_));
   }
   std::vector<SharedHandle<Peer> > activePeers;
   peerStorage_->getActivePeers(activePeers);
@@ -126,8 +126,8 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
         eoi = activePeers.end(); i != eoi; ++i) {
     if(memcmp((*i)->getPeerId(), message->getPeerId(), PEER_ID_LENGTH) == 0) {
       throw DL_ABORT_EX
-        (fmt("CUID#%s - Same Peer ID has been already seen.",
-             util::itos(cuid_).c_str()));
+        (fmt("CUID#%lld - Same Peer ID has been already seen.",
+             cuid_));
     }
   }
 
@@ -135,20 +135,20 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
     
   if(message->isFastExtensionSupported()) {
     peer_->setFastExtensionEnabled(true);
-    A2_LOG_INFO(fmt(MSG_FAST_EXTENSION_ENABLED, util::itos(cuid_).c_str()));
+    A2_LOG_INFO(fmt(MSG_FAST_EXTENSION_ENABLED, cuid_));
   }
   if(message->isExtendedMessagingEnabled()) {
     peer_->setExtendedMessagingEnabled(true);
     if(!utPexEnabled_) {
       extensionMessageRegistry_->removeExtension("ut_pex");
     }
-    A2_LOG_INFO(fmt(MSG_EXTENDED_MESSAGING_ENABLED, util::itos(cuid_).c_str()));
+    A2_LOG_INFO(fmt(MSG_EXTENDED_MESSAGING_ENABLED, cuid_));
   }
   if(message->isDHTEnabled()) {
     peer_->setDHTEnabled(true);
-    A2_LOG_INFO(fmt(MSG_DHT_ENABLED_PEER, util::itos(cuid_).c_str()));
+    A2_LOG_INFO(fmt(MSG_DHT_ENABLED_PEER, cuid_));
   }
-  A2_LOG_INFO(fmt(MSG_RECEIVE_PEER_MESSAGE, util::itos(cuid_).c_str(),
+  A2_LOG_INFO(fmt(MSG_RECEIVE_PEER_MESSAGE, cuid_,
                   peer_->getIPAddress().c_str(), peer_->getPort(),
                   message->toString().c_str()));
   return message;
@@ -285,7 +285,7 @@ size_t DefaultBtInteractive::receiveMessages() {
     }
     ++msgcount;
     A2_LOG_INFO(fmt(MSG_RECEIVE_PEER_MESSAGE,
-                    util::itos(cuid_).c_str(),
+                    cuid_,
                     peer_->getIPAddress().c_str(), peer_->getPort(),
                     message->toString().c_str()));
     message->doReceivedAction();
@@ -325,13 +325,13 @@ size_t DefaultBtInteractive::receiveMessages() {
 void DefaultBtInteractive::decideInterest() {
   if(pieceStorage_->hasMissingPiece(peer_)) {
     if(!peer_->amInterested()) {
-      A2_LOG_DEBUG(fmt(MSG_PEER_INTERESTED, util::itos(cuid_).c_str()));
+      A2_LOG_DEBUG(fmt(MSG_PEER_INTERESTED, cuid_));
       dispatcher_->
         addMessageToQueue(messageFactory_->createInterestedMessage());
     }
   } else {
     if(peer_->amInterested()) {
-      A2_LOG_DEBUG(fmt(MSG_PEER_NOT_INTERESTED, util::itos(cuid_).c_str()));
+      A2_LOG_DEBUG(fmt(MSG_PEER_NOT_INTERESTED, cuid_));
       dispatcher_->
         addMessageToQueue(messageFactory_->createNotInterestedMessage());
     }

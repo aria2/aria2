@@ -143,7 +143,7 @@ void ActivePeerConnectionCommand::connectToPeer(const SharedHandle<Peer>& peer)
   command->setPieceStorage(pieceStorage_);
   e_->addCommand(command);
   A2_LOG_INFO(fmt(MSG_CONNECTING_TO_PEER,
-                  util::itos(getCuid()).c_str(),
+                  getCuid(),
                   peer->getIPAddress().c_str()));
 }
 

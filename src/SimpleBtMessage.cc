@@ -56,7 +56,7 @@ void SimpleBtMessage::send() {
   }
   if(!isSendingInProgress()) {
     A2_LOG_INFO(fmt(MSG_SEND_PEER_MESSAGE,
-                    util::itos(getCuid()).c_str(),
+                    getCuid(),
                     getPeer()->getIPAddress().c_str(),
                     getPeer()->getPort(),
                     toString().c_str()));

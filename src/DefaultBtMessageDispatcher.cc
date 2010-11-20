@@ -155,7 +155,7 @@ public:
   void operator()(const RequestSlot& slot) const
   {
     A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT,
-                     util::itos(cuid_).c_str(),
+                     cuid_,
                      static_cast<unsigned long>(slot.getIndex()),
                      slot.getBegin(),
                      static_cast<unsigned long>(slot.getBlockIndex())));
@@ -206,7 +206,7 @@ public:
   {
     if(!peer_->isInPeerAllowedIndexSet(slot.getIndex())) {
       A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT_CHOKED,
-                       util::itos(cuid_).c_str(),
+                       cuid_,
                        static_cast<unsigned long>(slot.getIndex()),
                        slot.getBegin(),
                        static_cast<unsigned long>(slot.getBlockIndex())));
@@ -283,7 +283,7 @@ public:
   {
     if(slot.isTimeout(requestTimeout_)) {
       A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
-                       util::itos(cuid_).c_str(),
+                       cuid_,
                        static_cast<unsigned long>(slot.getIndex()),
                        slot.getBegin(),
                        static_cast<unsigned long>(slot.getBlockIndex())));
@@ -291,7 +291,7 @@ public:
       peer_->snubbing(true);
     } else if(slot.getPiece()->hasBlock(slot.getBlockIndex())) {
       A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
-                       util::itos(cuid_).c_str(),
+                       cuid_,
                        static_cast<unsigned long>(slot.getIndex()),
                        slot.getBegin(),
                        static_cast<unsigned long>(slot.getBlockIndex())));

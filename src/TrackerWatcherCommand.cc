@@ -174,8 +174,8 @@ void TrackerWatcherCommand::processTrackerResponse
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
     e_->addCommand(command);
-    A2_LOG_DEBUG(fmt("CUID#%s - Adding new command CUID#%s",
-                     util::itos(getCuid()).c_str(),
+    A2_LOG_DEBUG(fmt("CUID#%lld - Adding new command CUID#%s",
+                     getCuid(),
                      util::itos(peer->usedBy()).c_str()));
   }
 }

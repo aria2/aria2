@@ -46,14 +46,15 @@ namespace aria2 {
 FileAllocationDispatcherCommand::FileAllocationDispatcherCommand
 (cuid_t cuid,
  const SharedHandle<FileAllocationMan>& fileAllocMan,
- DownloadEngine* e):SequentialDispatcherCommand<FileAllocationEntry>
-                    (cuid, fileAllocMan, e) {}
+ DownloadEngine* e)
+  : SequentialDispatcherCommand<FileAllocationEntry>(cuid, fileAllocMan, e)
+{}
 
 Command* FileAllocationDispatcherCommand::createCommand
 (const SharedHandle<FileAllocationEntry>& entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
-  A2_LOG_INFO(fmt(MSG_FILE_ALLOCATION_DISPATCH, util::itos(newCUID).c_str()));
+  A2_LOG_INFO(fmt(MSG_FILE_ALLOCATION_DISPATCH, newCUID));
   FileAllocationCommand* command =
     new FileAllocationCommand(newCUID, entry->getRequestGroup(),
                               getDownloadEngine(), entry);

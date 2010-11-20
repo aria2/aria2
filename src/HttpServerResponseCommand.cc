@@ -75,26 +75,26 @@ bool HttpServerResponseCommand::execute()
     httpServer_->sendResponse();
   } catch(RecoverableException& e) {
     A2_LOG_INFO_EX
-      (fmt("CUID#%s - Error occurred while transmitting response body.",
-           util::itos(getCuid()).c_str()),
+      (fmt("CUID#%lld - Error occurred while transmitting response body.",
+           getCuid()),
        e);
     return true;
   }
   if(httpServer_->sendBufferIsEmpty()) {
-    A2_LOG_INFO(fmt("CUID#%s - HttpServer: all response transmitted.",
-                    util::itos(getCuid()).c_str()));
+    A2_LOG_INFO(fmt("CUID#%lld - HttpServer: all response transmitted.",
+                    getCuid()));
     if(httpServer_->supportsPersistentConnection()) {
-      A2_LOG_INFO(fmt("CUID#%s - Persist connection.",
-                      util::itos(getCuid()).c_str()));
+      A2_LOG_INFO(fmt("CUID#%lld - Persist connection.",
+                      getCuid()));
       e_->addCommand
         (new HttpServerCommand(getCuid(), httpServer_, e_, socket_));
     }
     return true;
   } else {
     if(timeoutTimer_.difference(global::wallclock) >= 10) {
-      A2_LOG_INFO(fmt("CUID#%s - HttpServer: Timeout while trasmitting"
+      A2_LOG_INFO(fmt("CUID#%lld - HttpServer: Timeout while trasmitting"
                       " response.",
-                      util::itos(getCuid()).c_str()));
+                      getCuid()));
       return true;
     } else {
       e_->addCommand(this);

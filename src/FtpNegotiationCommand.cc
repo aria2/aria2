@@ -254,8 +254,8 @@ bool FtpNegotiationCommand::recvPwd()
     throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
   ftp_->setBaseWorkingDir(pwd);
-  A2_LOG_INFO(fmt("CUID#%s - base working directory is '%s'",
-                  util::itos(getCuid()).c_str(), pwd.c_str()));
+  A2_LOG_INFO(fmt("CUID#%lld - base working directory is '%s'",
+                  getCuid(), pwd.c_str()));
   sequence_ = SEQ_SEND_CWD_PREP;
   return true;
 }
@@ -338,8 +338,8 @@ bool FtpNegotiationCommand::recvMdtm()
                    " a time value as in specified in RFC3659.");
     }
   } else {
-    A2_LOG_INFO(fmt("CUID#%s - MDTM command failed.",
-                    util::itos(getCuid()).c_str()));
+    A2_LOG_INFO(fmt("CUID#%lld - MDTM command failed.",
+                    getCuid()));
   }
   sequence_ = SEQ_SEND_SIZE;
   return true;  
@@ -474,8 +474,8 @@ bool FtpNegotiationCommand::recvSize() {
     }
 
   } else {
-    A2_LOG_INFO(fmt("CUID#%s - The remote FTP Server doesn't recognize SIZE"
-                    " command. Continue.", util::itos(getCuid()).c_str()));
+    A2_LOG_INFO(fmt("CUID#%lld - The remote FTP Server doesn't recognize SIZE"
+                    " command. Continue.", getCuid()));
     // Even if one of the other servers waiting in the queue supports SIZE
     // command, resuming and segmented downloading are disabled when the first
     // contacted FTP server doesn't support it.
@@ -639,7 +639,7 @@ bool FtpNegotiationCommand::preparePasvConnect() {
   } else {
     // make a data connection to the server.
     A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                    util::itos(getCuid()).c_str(),
+                    getCuid(),
                     dataConnAddr_.first.c_str(),
                     dataConnAddr_.second));
     dataSocket_.reset(new SocketCore());
@@ -661,7 +661,7 @@ bool FtpNegotiationCommand::resolveProxy()
     return false;
   }
   A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                  util::itos(getCuid()).c_str(),
+                  getCuid(),
                   proxyAddr_.c_str(), proxyReq->getPort()));
   dataSocket_.reset(new SocketCore());                  
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
@@ -691,11 +691,11 @@ bool FtpNegotiationCommand::sendTunnelRequest()
                  error.c_str()));
         } else {
           A2_LOG_INFO(fmt(MSG_CONNECT_FAILED_AND_RETRY,
-                          util::itos(getCuid()).c_str(),
+                          getCuid(),
                           proxyAddr_.c_str(), proxyReq->getPort()));
           proxyAddr_ = nextProxyAddr;
           A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                          util::itos(getCuid()).c_str(),
+                          getCuid(),
                           proxyAddr_.c_str(), proxyReq->getPort()));
           dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
           return false;

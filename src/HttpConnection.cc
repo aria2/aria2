@@ -98,7 +98,7 @@ void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
 {
   std::string request = httpRequest->createRequest();
   A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                  util::itos(cuid_).c_str(),
+                  cuid_,
                   eraseConfidentialInfo(request).c_str()));
   socketBuffer_.pushStr(request);
   socketBuffer_.send();
@@ -111,7 +111,7 @@ void HttpConnection::sendProxyRequest
 {
   std::string request = httpRequest->createProxyRequest();
   A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                  util::itos(cuid_).c_str(),
+                  cuid_,
                   eraseConfidentialInfo(request).c_str()));
   socketBuffer_.pushStr(request);
   socketBuffer_.send();
@@ -146,7 +146,7 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
   size -= putbackDataLength;
   socket_->readData(buf, size);
   A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
-                  util::itos(cuid_).c_str(),
+                  cuid_,
                   proc->getHeaderString().c_str()));
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
   SharedHandle<HttpResponse> httpResponse(new HttpResponse());

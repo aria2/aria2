@@ -78,9 +78,9 @@ PeerAbstractCommand::~PeerAbstractCommand()
 
 bool PeerAbstractCommand::execute()
 {
-  A2_LOG_DEBUG(fmt("CUID#%s -"
+  A2_LOG_DEBUG(fmt("CUID#%lld -"
                    " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
-                   util::itos(getCuid()).c_str(),
+                   getCuid(),
                    readEventEnabled(), writeEventEnabled(),
                    hupEventEnabled(), errorEventEnabled(),
                    noCheck_));
@@ -110,10 +110,10 @@ bool PeerAbstractCommand::execute()
     return true;
   } catch(RecoverableException& err) {
     A2_LOG_DEBUG_EX(fmt(MSG_TORRENT_DOWNLOAD_ABORTED,
-                        util::itos(getCuid()).c_str()),
+                        getCuid()),
                     err);
     A2_LOG_DEBUG(fmt(MSG_PEER_BANNED,
-                     util::itos(getCuid()).c_str(),
+                     getCuid(),
                      peer_->getIPAddress().c_str(),
                      peer_->getPort()));
     onAbort();

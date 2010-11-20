@@ -144,7 +144,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
            peerConnection_);
         getDownloadEngine()->addCommand(command);
         A2_LOG_DEBUG(fmt(MSG_INCOMING_PEER_CONNECTION,
-                         util::itos(getCuid()).c_str(),
+                         getCuid(),
                          util::itos(getPeer()->usedBy()).c_str()));
       }
     }

@@ -87,7 +87,7 @@ bool FtpConnection::sendUser()
     request += authConfig_->getUser();
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), "USER ********"));
+                    cuid_, "USER ********"));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -101,7 +101,7 @@ bool FtpConnection::sendPass()
     request += authConfig_->getPassword();
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), "PASS ********"));
+                    cuid_, "PASS ********"));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -121,7 +121,7 @@ bool FtpConnection::sendType()
     request += type;
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(),request.c_str()));
+                    cuid_,request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -133,7 +133,7 @@ bool FtpConnection::sendPwd()
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "PWD\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(),request.c_str()));
+                    cuid_,request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -147,7 +147,7 @@ bool FtpConnection::sendCwd(const std::string& dir)
     request += util::percentDecode(dir);
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(),request.c_str()));
+                    cuid_,request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -161,7 +161,7 @@ bool FtpConnection::sendMdtm()
     request += util::percentDecode(req_->getFile());
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -175,7 +175,7 @@ bool FtpConnection::sendSize()
     request += util::percentDecode(req_->getFile());
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -187,7 +187,7 @@ bool FtpConnection::sendEpsv()
   if(socketBuffer_.sendBufferIsEmpty()) {
     static const std::string request("EPSV\r\n");
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -199,7 +199,7 @@ bool FtpConnection::sendPasv()
   if(socketBuffer_.sendBufferIsEmpty()) {
     static const std::string request("PASV\r\n");
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -234,7 +234,7 @@ bool FtpConnection::sendEprt(const SharedHandle<SocketCore>& serverSocket)
     request += util::uitos(addrinfo.second);
     request += "|\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -264,7 +264,7 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
     request += util::uitos(addrinfo.second%256);
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -282,7 +282,7 @@ bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
     }
     request += "\r\n";    
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -296,7 +296,7 @@ bool FtpConnection::sendRetr()
     request += util::percentDecode(req_->getFile());
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    util::itos(cuid_).c_str(), request.c_str()));
+                    cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();
@@ -392,7 +392,7 @@ bool FtpConnection::bulkReceiveResponse
     response.first = status;
     response.second = strbuf_.substr(0, length);
     A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
-                    util::itos(cuid_).c_str(),
+                    cuid_,
                     response.second.c_str()));
     strbuf_.erase(0, length);
     return true;

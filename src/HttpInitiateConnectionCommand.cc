@@ -78,7 +78,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
     std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
     if(!pooledSocket) {
       A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                      util::itos(getCuid()).c_str(), addr.c_str(), port));
+                      getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
 
@@ -131,7 +131,7 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       (resolvedAddresses, getRequest()->getPort());
     if(!pooledSocket) {
       A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                      util::itos(getCuid()).c_str(), addr.c_str(), port));
+                      getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
       getRequest()->setConnectedAddrInfo(hostname, addr, port);

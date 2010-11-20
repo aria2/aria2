@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-typedef int64_t cuid_t;
+typedef long long int cuid_t;
 
 class Command {
 public:

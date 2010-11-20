@@ -115,7 +115,7 @@ std::string HttpResponse::determinFilename() const
     }
   } else {
     A2_LOG_INFO(fmt(MSG_CONTENT_DISPOSITION_DETECTED,
-                    util::itos(cuid_).c_str(),
+                    cuid_,
                     contentDisposition.c_str()));
     return contentDisposition;
   }
@@ -147,12 +147,12 @@ void HttpResponse::processRedirect()
   
   if(httpRequest_->getRequest()->redirectUri(getRedirectURI())) {
     A2_LOG_INFO(fmt(MSG_REDIRECT,
-                    util::itos(cuid_).c_str(),
+                    cuid_,
                     httpRequest_->getRequest()->getCurrentUri().c_str()));
   } else {
     throw DL_RETRY_EX
-      (fmt("CUID#%s - Redirect to %s failed. It may not be a valid URI.",
-           util::itos(cuid_).c_str(),
+      (fmt("CUID#%lld - Redirect to %s failed. It may not be a valid URI.",
+           cuid_,
            httpRequest_->getRequest()->getCurrentUri().c_str()));
   }
 }

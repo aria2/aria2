@@ -91,20 +91,20 @@ bool FtpFinishDownloadCommand::execute()
              getSocket(), options);
         }
       } else {
-        A2_LOG_INFO(fmt("CUID#%s - Bad status for transfer complete.",
-                        util::itos(getCuid()).c_str()));
+        A2_LOG_INFO(fmt("CUID#%lld - Bad status for transfer complete.",
+                        getCuid()));
       }
     } else if(getCheckPoint().difference(global::wallclock) >= getTimeout()) {
-      A2_LOG_INFO(fmt("CUID#%s - Timeout before receiving transfer complete.",
-                      util::itos(getCuid()).c_str()));
+      A2_LOG_INFO(fmt("CUID#%lld - Timeout before receiving transfer complete.",
+                      getCuid()));
     } else {
       getDownloadEngine()->addCommand(this);
       return false;
     }
   } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX(fmt("CUID#%s - Exception was thrown, but download was"
+    A2_LOG_INFO_EX(fmt("CUID#%lld - Exception was thrown, but download was"
                        " finished, so we can ignore the exception.",
-                       util::itos(getCuid()).c_str()),
+                       getCuid()),
                    e);
   }
   if(getRequestGroup()->downloadFinished()) {

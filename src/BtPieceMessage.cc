@@ -109,7 +109,7 @@ void BtPieceMessage::doReceivedAction()
     SharedHandle<Piece> piece = getPieceStorage()->getPiece(index_);
     off_t offset = (off_t)index_*downloadContext_->getPieceLength()+begin_;
     A2_LOG_DEBUG(fmt(MSG_PIECE_RECEIVED,
-                     util::itos(getCuid()).c_str(),
+                     getCuid(),
                      static_cast<unsigned long>(index_),
                      begin_,
                      blockLength_,
@@ -118,7 +118,7 @@ void BtPieceMessage::doReceivedAction()
     getPieceStorage()->getDiskAdaptor()->writeData
       (block_, blockLength_, offset);
     piece->completeBlock(slot.getBlockIndex());
-    A2_LOG_DEBUG(fmt(MSG_PIECE_BITFIELD, util::itos(getCuid()).c_str(),
+    A2_LOG_DEBUG(fmt(MSG_PIECE_BITFIELD, getCuid(),
                      util::toHex(piece->getBitfield(),
                                  piece->getBitfieldLength()).c_str()));
     piece->updateHash(begin_, block_, blockLength_);
@@ -132,8 +132,8 @@ void BtPieceMessage::doReceivedAction()
       }
     }
   } else {
-    A2_LOG_DEBUG(fmt("CUID#%s - RequestSlot not found, index=%lu, begin=%u",
-                     util::itos(getCuid()).c_str(),
+    A2_LOG_DEBUG(fmt("CUID#%lld - RequestSlot not found, index=%lu, begin=%u",
+                     getCuid(),
                      static_cast<unsigned long>(index_),
                      begin_));
   }
@@ -171,7 +171,7 @@ void BtPieceMessage::send()
   size_t writtenLength;
   if(!isSendingInProgress()) {
     A2_LOG_INFO(fmt(MSG_SEND_PEER_MESSAGE,
-                    util::itos(getCuid()).c_str(),
+                    getCuid(),
                     getPeer()->getIPAddress().c_str(),
                     getPeer()->getPort(),
                     toString().c_str()));
@@ -235,7 +235,7 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
 void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
 {
   A2_LOG_INFO(fmt(MSG_GOT_NEW_PIECE,
-                  util::itos(getCuid()).c_str(),
+                  getCuid(),
                   static_cast<unsigned long>(piece->getIndex())));
   getPieceStorage()->completePiece(piece);
   getPieceStorage()->advertisePiece(getCuid(), piece->getIndex());
@@ -244,7 +244,7 @@ void BtPieceMessage::onNewPiece(const SharedHandle<Piece>& piece)
 void BtPieceMessage::onWrongPiece(const SharedHandle<Piece>& piece)
 {
   A2_LOG_INFO(fmt(MSG_GOT_WRONG_PIECE,
-                  util::itos(getCuid()).c_str(),
+                  getCuid(),
                   static_cast<unsigned long>(piece->getIndex())));
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
@@ -274,7 +274,7 @@ void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
      !isSendingInProgress() &&
      !getPeer()->isInAmAllowedIndexSet(index_)) {
     A2_LOG_DEBUG(fmt(MSG_REJECT_PIECE_CHOKED,
-                     util::itos(getCuid()).c_str(),
+                     getCuid(),
                      static_cast<unsigned long>(index_),
                      begin_,
                      blockLength_));
@@ -297,7 +297,7 @@ void BtPieceMessage::onCancelSendingPieceEvent
      begin_ == event.getBegin() &&
      blockLength_ == event.getLength()) {
     A2_LOG_DEBUG(fmt(MSG_REJECT_PIECE_CANCEL,
-                     util::itos(getCuid()).c_str(),
+                     getCuid(),
                      static_cast<unsigned long>(index_),
                      begin_,
                      blockLength_));

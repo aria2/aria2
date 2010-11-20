@@ -85,7 +85,7 @@ bool HttpListenCommand::execute()
       e_->addCommand(c);
     }
   } catch(RecoverableException& e) {
-    A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE, util::itos(getCuid()).c_str()), e);
+    A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE, getCuid()), e);
   }
   e_->addCommand(this);
   return false;
@@ -97,8 +97,8 @@ bool HttpListenCommand::bindPort(uint16_t port)
     e_->deleteSocketForReadCheck(serverSocket_, this);
   }
   serverSocket_.reset(new SocketCore());
-  A2_LOG_INFO(fmt("CUID#%s - Setting up HttpListenCommand for IPv%d",
-                  util::itos(getCuid()).c_str(),
+  A2_LOG_INFO(fmt("CUID#%lld - Setting up HttpListenCommand for IPv%d",
+                  getCuid(),
                   family_ == AF_INET?4:6));
   try {
     int flags = 0;
@@ -109,14 +109,14 @@ bool HttpListenCommand::bindPort(uint16_t port)
     serverSocket_->beginListen();
     serverSocket_->setNonBlockingMode();
     A2_LOG_INFO(fmt(MSG_LISTENING_PORT,
-                    util::itos(getCuid()).c_str(), port));
+                    getCuid(), port));
     e_->addSocketForReadCheck(serverSocket_, this);
     return true;
   } catch(RecoverableException& e) {
     A2_LOG_ERROR(fmt("Failed to setup XML-RPC server for IPv%d",
                      family_ == AF_INET?4:6));
     A2_LOG_ERROR_EX(fmt(MSG_BIND_FAILURE,
-                        util::itos(getCuid()).c_str(), port),
+                        getCuid(), port),
                     e);
     if(serverSocket_) {
       e_->deleteSocketForReadCheck(serverSocket_, this);

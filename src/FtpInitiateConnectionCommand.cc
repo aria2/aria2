@@ -91,7 +91,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     }
     if(!pooledSocket) {
       A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                      util::itos(getCuid()).c_str(), addr.c_str(), port));
+                      getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
       
@@ -154,7 +154,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
        (getRequest(), getOption().get())->getUser());
     if(!pooledSocket) {
       A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
-                      util::itos(getCuid()).c_str(), addr.c_str(), port));
+                      getCuid(), addr.c_str(), port));
       createSocket();
       getSocket()->establishConnection(addr, port);
       FtpNegotiationCommand* c =
