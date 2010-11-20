@@ -71,6 +71,16 @@ BtSeederStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
 
 BtSeederStateChoke::PeerEntry::~PeerEntry() {}
 
+void BtSeederStateChoke::PeerEntry::swap(PeerEntry& c)
+{
+  using std::swap;
+  swap(peer_, c.peer_);
+  swap(outstandingUpload_, c.outstandingUpload_);
+  swap(lastAmUnchoking_, c.lastAmUnchoking_);
+  swap(recentUnchoking_, c.recentUnchoking_);
+  swap(uploadSpeed_, c.uploadSpeed_);
+}
+
 BtSeederStateChoke::PeerEntry& BtSeederStateChoke::PeerEntry::operator=
 (const PeerEntry& c)
 {
@@ -176,4 +186,21 @@ BtSeederStateChoke::executeChoke
   }
 }
 
+void swap
+(BtSeederStateChoke::PeerEntry& a,
+ BtSeederStateChoke::PeerEntry& b)
+{
+  a.swap(b);
+}
+
 } // namespace aria2
+
+namespace std {
+template<>
+void swap<aria2::BtSeederStateChoke::PeerEntry>
+(aria2::BtSeederStateChoke::PeerEntry& a,
+ aria2::BtSeederStateChoke::PeerEntry& b)
+{
+  a.swap(b);
+}
+} // namespace std

@@ -1,5 +1,13 @@
 2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Added BtSeederStateChoke::PeerEntry::swap(). Also added
+	non-member swap for it, which is friend function for
+	BtSeederStateChoke because PeerEntry is private.
+	* src/BtSeederStateChoke.cc
+	* src/BtSeederStateChoke.h
+
+2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Added BtLeecherStateChoke::PeerEntry::swap(). Also added
 	non-member swap for it, which is friend function for
 	BtLeecherStateChoke because PeerEntry is private.
