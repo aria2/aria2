@@ -147,14 +147,14 @@
     "                              allocating files.\n"                 \
     "                              Turn off if you encounter any error")
 #define TEXT_ALLOW_OVERWRITE                                            \
-  _(" --allow-overwrite=true|false Restart download from scratch if the\n" \
+  _(" --allow-overwrite[=true|false] Restart download from scratch if the\n" \
     "                              corresponding control file doesn't exist.  See\n" \
     "                              also --auto-file-renaming option.")
 #define TEXT_ALLOW_PIECE_LENGTH_CHANGE                                  \
-  _(" --allow-piece-length-change=true|false If false is given, aria2 aborts download\n" \
-    "                              when a piece length is different from one in\n" \
-    "                              a control file. If true is given, you can proceed\n" \
-    "                              but some download progress will be lost.")  
+  _(" --allow-piece-length-change[=true|false] If false is given, aria2 aborts\n" \
+    "                              download when a piece length is different from\n" \
+    "                              one in a control file. If true is given, you can\n" \
+    "                              proceed but some download progress will be lost.")  
 #define TEXT_FORCE_SEQUENTIAL                                           \
   _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially\n" \
     "                              and download each URI in a separate session, like\n" \
@@ -195,7 +195,7 @@
     "                              This option has effect only on BitTorrent\n" \
     "                              download.")
 #define TEXT_REALTIME_CHUNK_CHECKSUM                                    \
-  _(" --realtime-chunk-checksum=true|false  Validate chunk of data by calculating\n" \
+  _(" --realtime-chunk-checksum[=true|false]  Validate chunk of data by calculating\n" \
     "                              checksum while downloading a file if chunk\n" \
     "                              checksums are provided.")
 #define TEXT_CONTINUE                                                   \
@@ -255,9 +255,6 @@
     "                              written to the disk, but is just kept in memory.\n" \
     "                              If false is specified, the action mentioned above\n" \
     "                              is not taken.")
-#define TEXT_DIRECT_FILE_MAPPING                                        \
-  _(" --direct-file-mapping=true|false Directly read from and write to each file\n" \
-    "                              mentioned in .torrent file.")
 #define TEXT_LISTEN_PORT                                                \
   _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n" \
     "                              Multiple ports can be specified by using ',',\n" \
@@ -315,7 +312,7 @@
     "                              peer, aria2 chooses the lowest one which satisfies\n" \
     "                              the given level.")
 #define TEXT_BT_REQUIRE_CRYPTO                                          \
-  _(" --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n" \
+  _(" --bt-require-crypto[=true|false] If true is given, aria2 doesn't accept and\n" \
     "                              establish connection with legacy BitTorrent\n" \
     "                              handshake. Thus aria2 always uses Obfuscation\n" \
     "                              handshake.")
@@ -373,7 +370,7 @@
     "                              If false is specified, the action mentioned above\n" \
     "                              is not taken.")
 #define TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL                            \
-  _(" --metalink-enable-unique-protocol=true|false If true is given and several\n" \
+  _(" --metalink-enable-unique-protocol[=true|false] If true is given and several\n" \
     "                              protocols are available for a mirror in a metalink\n" \
     "                              file, aria2 uses one of them.\n"     \
     "                              Use --metalink-preferred-protocol option to\n" \

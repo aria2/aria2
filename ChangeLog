@@ -1,5 +1,14 @@
 2010-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Made --allow-overwrite, --allow-piece-length-change,
+	--realtime-chunk-checksum and --bt-require-crypto take optional
+	argument. Fixed usage doc for --metalink-enable-unique-protocol.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+	* src/usage_text.h
+
+2010-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made --continue, --daemon, --no-conf, --no-netrc and --show-files
 	option take optional argument.
 	* doc/aria2c.1.txt

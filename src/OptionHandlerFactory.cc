@@ -53,7 +53,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ALLOW_OVERWRITE,
                                     TEXT_ALLOW_OVERWRITE,
-                                    A2_V_FALSE));
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
     handlers.push_back(op);
@@ -62,7 +63,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ALLOW_PIECE_LENGTH_CHANGE,
                                     TEXT_ALLOW_PIECE_LENGTH_CHANGE,
-                                    A2_V_FALSE));
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -505,7 +507,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REALTIME_CHUNK_CHECKSUM,
                                     TEXT_REALTIME_CHUNK_CHECKSUM,
-                                    A2_V_TRUE));
+                                    A2_V_TRUE,
+                                    OptionHandler::OPT_ARG));
     op->addTag(TAG_METALINK);
     handlers.push_back(op);
   }
@@ -1262,7 +1265,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_BT_REQUIRE_CRYPTO,
                                     TEXT_BT_REQUIRE_CRYPTO,
-                                    A2_V_FALSE));
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }

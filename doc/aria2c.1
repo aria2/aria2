@@ -721,7 +721,7 @@ or
 \fIM\fR(1K = 1024, 1M = 1024K)\&. If SIZE is omitted, SIZE=1M is used\&.
 .RE
 .PP
-\fB\-\-bt\-require\-crypto\fR=\fItrue\fR|\fIfalse\fR
+\fB\-\-bt\-require\-crypto\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 If true is given, aria2 doesn\(cqt accept and establish connection with legacy BitTorrent handshake(\e19BitTorrent protocol)\&. Thus aria2 always uses Obfuscation handshake\&. Default:
 \fIfalse\fR
@@ -1061,7 +1061,7 @@ to disable this feature\&. Default:
 \fInone\fR
 .RE
 .PP
-\fB\-\-metalink\-enable\-unique\-protocol\fR=\fItrue\fR|\fIfalse\fR
+\fB\-\-metalink\-enable\-unique\-protocol\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 If
 \fItrue\fR
@@ -1115,7 +1115,7 @@ Set XML\-RPC user\&.
 .RE
 .SS "Advanced Options"
 .PP
-\fB\-\-allow\-overwrite\fR=\fItrue\fR|\fIfalse\fR
+\fB\-\-allow\-overwrite\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Restart download from scratch if the corresponding control file doesn\(cqt exist\&. See also
 \fB\-\-auto\-file\-renaming\fR
@@ -1123,7 +1123,7 @@ option\&. Default:
 \fIfalse\fR
 .RE
 .PP
-\fB\-\-allow\-piece\-length\-change\fR=\fItrue\fR|\fIfalse\fR
+\fB\-\-allow\-piece\-length\-change\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 If false is given, aria2 aborts download when a piece length is different from one in a control file\&. If true is given, you can proceed but some download progress will be lost\&. Default:
 \fIfalse\fR
@@ -1456,7 +1456,7 @@ Make aria2 quiet (no console output)\&. Default:
 \fIfalse\fR
 .RE
 .PP
-\fB\-\-realtime\-chunk\-checksum\fR=\fItrue\fR|\fIfalse\fR
+\fB\-\-realtime\-chunk\-checksum\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided\&. Default:
 \fItrue\fR
