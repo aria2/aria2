@@ -1,5 +1,16 @@
 2010-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Cleaned up Possible Values in usage help.  More than 2 values are
+	delimited by ", ".
+	* src/NameMatchOptionHandler.h
+	* src/OptionHandler.cc
+	* src/OptionHandler.h
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.cc
+	* test/OptionHandlerTest.cc
+
+2010-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made --allow-overwrite, --allow-piece-length-change,
 	--realtime-chunk-checksum and --bt-require-crypto take optional
 	argument. Fixed usage doc for --metalink-enable-unique-protocol.

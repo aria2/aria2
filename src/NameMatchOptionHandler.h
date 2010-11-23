@@ -41,9 +41,6 @@
 
 #include "A2STR.h"
 
-#define NO_DESCRIPTION A2STR::NIL
-#define NO_DEFAULT_VALUE A2STR::NIL
-
 namespace aria2 {
 
 class Option;

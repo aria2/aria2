@@ -45,6 +45,15 @@
 
 namespace aria2 {
 
+extern const std::string NO_DESCRIPTION;
+extern const std::string NO_DEFAULT_VALUE;
+
+extern const std::string PATH_TO_FILE;
+extern const std::string PATH_TO_FILE_STDIN;
+extern const std::string PATH_TO_FILE_STDOUT;
+extern const std::string PATH_TO_DIR;
+extern const std::string PATH_TO_COMMAND;
+
 class Option;
 
 class OptionHandler {

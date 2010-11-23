@@ -41,6 +41,15 @@
 
 namespace aria2 {
 
+const std::string NO_DESCRIPTION("");
+const std::string NO_DEFAULT_VALUE("");
+
+const std::string PATH_TO_FILE("/path/to/file");
+const std::string PATH_TO_FILE_STDIN("/path/to/file, -");
+const std::string PATH_TO_FILE_STDOUT("/path/to/file, -");
+const std::string PATH_TO_DIR("/path/to/directory");
+const std::string PATH_TO_COMMAND("/path/to/command");
+
 std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler)
 {
   o << optionHandler.getDescription() << "\n\n";

@@ -138,7 +138,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_CONF_PATH,
                                     TEXT_CONF_PATH,
-                                    util::getHomeDir()+"/.aria2/aria2.conf"));
+                                    util::getHomeDir()+"/.aria2/aria2.conf",
+                                    PATH_TO_FILE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -169,7 +170,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_DIR,
                                     TEXT_DIR,
                                     File::getCurrentDir(),
-                                    A2STR::NIL,
+                                    PATH_TO_DIR,
                                     OptionHandler::REQ_ARG,
                                     'd'));
     op->addTag(TAG_BASIC);
@@ -299,7 +300,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_INPUT_FILE,
                                     TEXT_INPUT_FILE,
                                     NO_DEFAULT_VALUE,
-                                    "FILENAME,-",
+                                    PATH_TO_FILE_STDIN,
                                     OptionHandler::REQ_ARG,
                                     'i'));
     op->addTag(TAG_BASIC);
@@ -320,7 +321,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_LOG,
                                     TEXT_LOG,
                                     NO_DEFAULT_VALUE,
-                                    "FILENAME,-",
+                                    PATH_TO_FILE_STDOUT,
                                     OptionHandler::REQ_ARG,
                                     'l'));
     op->addTag(TAG_BASIC);
@@ -437,7 +438,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_ON_DOWNLOAD_COMPLETE,
                                     TEXT_ON_DOWNLOAD_COMPLETE,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/command"));
+                                    PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
@@ -447,7 +448,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_ON_DOWNLOAD_ERROR,
                                     TEXT_ON_DOWNLOAD_ERROR,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/command"));
+                                    PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
@@ -457,7 +458,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_ON_DOWNLOAD_PAUSE,
                                     TEXT_ON_DOWNLOAD_PAUSE,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/command"));
+                                    PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
@@ -467,7 +468,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_ON_DOWNLOAD_START,
                                     TEXT_ON_DOWNLOAD_START,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/command"));
+                                    PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
@@ -477,7 +478,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_ON_DOWNLOAD_STOP,
                                     TEXT_ON_DOWNLOAD_STOP,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/command"));
+                                    PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);
@@ -527,7 +528,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_SAVE_SESSION,
                                     TEXT_SAVE_SESSION,
                                     NO_DEFAULT_VALUE,
-                                    "FILENAME"));
+                                    PATH_TO_FILE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -668,7 +669,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_OUT,
                                     TEXT_OUT,
                                     NO_DEFAULT_VALUE,
-                                    "FILENAME",
+                                    PATH_TO_FILE,
                                     OptionHandler::REQ_ARG,
                                     'o'));
     op->addTag(TAG_BASIC);
@@ -712,7 +713,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_SERVER_STAT_IF,
                                     TEXT_SERVER_STAT_IF,
                                     NO_DEFAULT_VALUE,
-                                    "FILENAME"));
+                                    PATH_TO_FILE));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -722,7 +723,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_SERVER_STAT_OF,
                                     TEXT_SERVER_STAT_OF,
                                     NO_DEFAULT_VALUE,
-                                    "FILENAME"));
+                                    PATH_TO_FILE));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
@@ -786,7 +787,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_CA_CERTIFICATE,
                                     TEXT_CA_CERTIFICATE,
-                                    CA_BUNDLE));
+                                    CA_BUNDLE,
+                                    PATH_TO_FILE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);
@@ -794,7 +796,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_CERTIFICATE,
-                                    TEXT_CERTIFICATE));
+                                    TEXT_CERTIFICATE,
+                                    NO_DEFAULT_VALUE,
+                                    PATH_TO_FILE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);
@@ -884,7 +888,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_LOAD_COOKIES,
                                     TEXT_LOAD_COOKIES,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/file"));
+                                    PATH_TO_FILE));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_COOKIE);
@@ -902,7 +906,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_PRIVATE_KEY,
-                                    TEXT_PRIVATE_KEY));
+                                    TEXT_PRIVATE_KEY,
+                                    NO_DEFAULT_VALUE,
+                                    PATH_TO_FILE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     handlers.push_back(op);
@@ -919,7 +925,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_SAVE_COOKIES,
                                     TEXT_SAVE_COOKIES,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/file"));
+                                    PATH_TO_FILE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_COOKIE);
     handlers.push_back(op);
@@ -994,7 +1000,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                           (PREF_NETRC_PATH,
                                            NO_DESCRIPTION,
                                            util::getHomeDir()+"/.netrc",
-                                           "/PATH/TO/NETRC"));
+                                           PATH_TO_FILE));
     op->hide();
     handlers.push_back(op);
   }
@@ -1376,7 +1382,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_DHT_FILE_PATH,
                                     TEXT_DHT_FILE_PATH,
                                     util::getHomeDir()+"/.aria2/dht.dat",
-                                    "/PATH/TO/DHT_DAT"));
+                                    PATH_TO_FILE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
@@ -1385,7 +1391,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_DHT_FILE_PATH6,
                                     TEXT_DHT_FILE_PATH6,
                                     util::getHomeDir()+"/.aria2/dht6.dat",
-                                    "/PATH/TO/DHT_DAT"));
+                                    PATH_TO_FILE));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
@@ -1509,7 +1515,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_ON_BT_DOWNLOAD_COMPLETE,
                                     TEXT_ON_BT_DOWNLOAD_COMPLETE,
                                     NO_DEFAULT_VALUE,
-                                    "/path/to/command"));
+                                    PATH_TO_COMMAND));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HOOK);
     handlers.push_back(op);

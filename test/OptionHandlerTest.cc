@@ -78,7 +78,7 @@ void OptionHandlerTest::testBooleanOptionHandler()
     handler.parse(option, "hello");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
-  CPPUNIT_ASSERT_EQUAL(std::string("true,false"),
+  CPPUNIT_ASSERT_EQUAL(std::string("true, false"),
                        handler.createPossibleValuesString());
 }
 

@@ -144,7 +144,7 @@ void BooleanOptionHandler::parseArg(Option& option, const std::string& optarg)
 
 std::string BooleanOptionHandler::createPossibleValuesString() const
 {
-  return "true,false";
+  return "true, false";
 }
 
 IntegerRangeOptionHandler::IntegerRangeOptionHandler
@@ -693,7 +693,11 @@ void LocalFilePathOptionHandler::parseArg
   
 std::string LocalFilePathOptionHandler::createPossibleValuesString() const
 {
-  return "/path/to/file";
+  if(acceptStdin_) {
+    return PATH_TO_FILE_STDIN;
+  } else {
+    return PATH_TO_FILE;
+  }
 }
 
 PrioritizePieceOptionHandler::PrioritizePieceOptionHandler
@@ -718,7 +722,7 @@ void PrioritizePieceOptionHandler::parseArg
 
 std::string PrioritizePieceOptionHandler::createPossibleValuesString() const
 {
-  return "head[=SIZE],tail[=SIZE]";
+  return "head[=SIZE], tail[=SIZE]";
 }
 
 } // namespace aria2
