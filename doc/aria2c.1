@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 10/31/2010
+.\"      Date: 11/23/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.10.6
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "10/31/2010" "Aria2 1\&.10\&.6" "Aria2 Manual"
+.TH "ARIA2C" "1" "11/23/2010" "Aria2 1\&.10\&.6" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -79,7 +79,7 @@ Check file integrity by validating piece hashes or a hash of entire file\&. This
 \fIfalse\fR
 .RE
 .PP
-\fB\-c\fR, \fB\-\-continue\fR
+\fB\-c\fR, \fB\-\-continue\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Continue downloading a partially downloaded file\&. Use this option to resume a download started by a web browser or another program which downloads files sequentially from the beginning\&. Currently this option is only applicable to HTTP(S)/FTP downloads\&.
 .RE
@@ -209,7 +209,7 @@ Default:
 \fI20M\fR
 .RE
 .PP
-\fB\-n\fR, \fB\-\-no\-netrc\fR
+\fB\-n\fR, \fB\-\-no\-netrc\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Disables netrc support\&. netrc support is enabled by default\&.
 .RE
@@ -636,7 +636,7 @@ In multi file torrent, the adjacent files specified by this option may also be d
 .sp .5v
 .RE
 .PP
-\fB\-S\fR, \fB\-\-show\-files\fR
+\fB\-S\fR, \fB\-\-show\-files\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Print file listing of \&.torrent or \&.metalink file and exit\&. In case of \&.torrent file, additional information (infohash, piece length, etc) is also printed\&.
 .RE
@@ -1185,7 +1185,7 @@ Change the configuration file path to PATH\&. Default:
 \fI$HOME/\&.aria2/aria2\&.conf\fR
 .RE
 .PP
-\fB\-D\fR, \fB\-\-daemon\fR
+\fB\-D\fR, \fB\-\-daemon\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Run as daemon\&. The current working directory will be changed to
 \fI/\fR
@@ -1428,7 +1428,7 @@ option\&. Default:
 \fI0\fR
 .RE
 .PP
-\fB\-\-no\-conf\fR
+\fB\-\-no\-conf\fR[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Disable loading aria2\&.conf file\&.
 .RE

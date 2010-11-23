@@ -1,3 +1,11 @@
+2010-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made --continue, --daemon, --no-conf, --no-netrc and --show-files
+	option take optional argument.
+	* doc/aria2c.1.txt
+	* src/OptionHandlerFactory.cc
+	* src/usage_text.h
+
 2010-11-20  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added BtSeederStateChoke::PeerEntry::swap(). Also added

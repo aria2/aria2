@@ -144,8 +144,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_CONTINUE,
                                     TEXT_CONTINUE,
-                                    A2_V_FALSE, // TODO ommit?
-                                    OptionHandler::NO_ARG,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG,
                                     'c'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
@@ -157,8 +157,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_DAEMON,
                                     TEXT_DAEMON,
                                     A2_V_FALSE,
-                                    OptionHandler::NO_ARG,
-                                    'D')); // TODO ommit?
+                                    OptionHandler::OPT_ARG,
+                                    'D'));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -416,7 +416,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_NO_CONF,
                                     TEXT_NO_CONF,
                                     A2_V_FALSE,
-                                    OptionHandler::NO_ARG));
+                                    OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
@@ -653,8 +653,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_NO_NETRC,
                                     TEXT_NO_NETRC,
-                                    A2_V_FALSE, // TODO ommit?
-                                    OptionHandler::NO_ARG,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG,
                                     'n'));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
@@ -1138,8 +1138,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_SHOW_FILES,
                                     TEXT_SHOW_FILES,
-                                    A2_V_FALSE, // TODO ommit?
-                                    OptionHandler::NO_ARG,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG,
                                     'S'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);

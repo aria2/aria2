@@ -42,7 +42,7 @@
   _(" -l, --log=LOG                The file name of the log file. If '-' is\n" \
     "                              specified, log is written to stdout.")
 #define TEXT_DAEMON                                                     \
-  _(" -D, --daemon                 Run as daemon. The current working directory will\n" \
+  _(" -D, --daemon[=true|false]    Run as daemon. The current working directory will\n" \
     "                              be changed to \"/\" and standard input, standard\n" \
     "                              output and standard error will be redirected to\n" \
     "                              \"/dev/null\".")
@@ -199,7 +199,7 @@
     "                              checksum while downloading a file if chunk\n" \
     "                              checksums are provided.")
 #define TEXT_CONTINUE                                                   \
-  _(" -c, --continue               Continue downloading a partially downloaded\n" \
+  _(" -c, --continue[=true|false]  Continue downloading a partially downloaded\n" \
     "                              file. Use this option to resume a download\n" \
     "                              started by a web browser or another program\n" \
     "                              which downloads files sequentially from the\n" \
@@ -208,7 +208,7 @@
 #define TEXT_USER_AGENT                                                 \
   _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.")
 #define TEXT_NO_NETRC                                           \
-  _(" -n, --no-netrc               Disables netrc support.")
+  _(" -n, --no-netrc[=true|false]  Disables netrc support.")
 #define TEXT_INPUT_FILE                                                 \
   _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n" \
     "                              multiple URIs for a single entity: separate\n" \
@@ -231,7 +231,7 @@
     "                              overwritten. Session Cookies are also saved and\n" \
     "                              their expiry values are treated as 0.")
 #define TEXT_SHOW_FILES                                                 \
-  _(" -S, --show-files             Print file listing of .torrent or .metalink file\n" \
+  _(" -S, --show-files[=true|false] Print file listing of .torrent or .metalink file\n" \
     "                              and exit. More detailed information will be listed\n" \
     "                              in case of torrent file.")
 #define TEXT_SELECT_FILE                                                \
@@ -388,7 +388,7 @@
     "                              \"#http\". If non-tag word is given, print the usage\n" \
     "                              for the options whose name includes that word.")
 #define TEXT_NO_CONF                                                    \
-  _(" --no-conf                    Disable loading aria2.conf file.")
+  _(" --no-conf[=true|false]       Disable loading aria2.conf file.")
 #define TEXT_CONF_PATH                                                  \
   _(" --conf-path=PATH             Change the configuration file path to PATH.")
 #define TEXT_STOP                                                       \

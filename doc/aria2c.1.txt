@@ -63,7 +63,7 @@ Basic Options
   hashes and a hash of entire file are provided, only piece hashes are
   used. Default: 'false'
 
-[[aria2_optref_continue]]*-c*, *--continue*::
+[[aria2_optref_continue]]*-c*, *--continue*[='true'|'false']::
    Continue downloading a partially downloaded file.
    Use this option to resume a download started by a web browser or another
    program which downloads files sequentially from the beginning.
@@ -161,7 +161,7 @@ then you get HTTP proxy "http://proxy" with user "user" and password
   1 source.  You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
   Possible Values: '1M'-'1024M' Default: '20M'
 
-[[aria2_optref_no_netrc]]*-n*, *--no-netrc*::
+[[aria2_optref_no_netrc]]*-n*, *--no-netrc*[='true'|'false']::
   Disables netrc support. netrc support is enabled by default.
 
 [[aria2_optref_no_proxy]]*--no-proxy*=DOMAINS::
@@ -441,7 +441,7 @@ also be downloaded. This is by design, not a bug.
 A single piece may include several files or part of files, and aria2
 writes the piece to the appropriate files.
 
-[[aria2_optref_show_files]]*-S*, *--show-files*::
+[[aria2_optref_show_files]]*-S*, *--show-files*[='true'|'false']::
   Print file listing of .torrent or .metalink file and exit.
   In case of .torrent file, additional information
   (infohash, piece length, etc) is also printed.
@@ -831,7 +831,7 @@ Advanced Options
   Change the configuration file path to PATH.
   Default: '$HOME/.aria2/aria2.conf'
 
-[[aria2_optref_daemon]]*-D*, *--daemon*::
+[[aria2_optref_daemon]]*-D*, *--daemon*[='true'|'false']::
   Run as daemon. The current working directory will be changed to '/'
   and standard input, standard output and standard error will be
   redirected to '/dev/null'. Default: 'false'
@@ -990,7 +990,7 @@ are also allocated if they share the same piece.
   limit the overall download speed, use *<<aria2_optref_max_overall_download_limit, --max-overall-download-limit>>*
   option.  Default: '0'
 
-[[aria2_optref_no_conf]]*--no-conf*::
+[[aria2_optref_no_conf]]*--no-conf*[='true'|'false']::
   Disable loading aria2.conf file.
 
 [[aria2_optref_no_file_allocation_limit]]*--no-file-allocation-limit*=SIZE::
