@@ -481,7 +481,7 @@ std::string ParameterOptionHandler::createPossibleValuesString() const
 {
   std::stringstream s;
   std::copy(validParamValues_.begin(), validParamValues_.end(),
-            std::ostream_iterator<std::string>(s, ","));
+            std::ostream_iterator<std::string>(s, ", "));
   return util::strip(s.str(), ", ");
 }
 

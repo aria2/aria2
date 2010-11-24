@@ -1,3 +1,8 @@
+2010-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Added white space after ',' when enumerating valid parameters.
+	* src/OptionHandlerImpl.cc
+
 2010-11-23  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Cleaned up Possible Values in usage help.  More than 2 values are
