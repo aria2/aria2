@@ -52,19 +52,11 @@ const std::string HttpHeader::CONTENT_DISPOSITION("Content-Disposition");
 
 const std::string HttpHeader::SET_COOKIE("Set-Cookie");
 
-const std::string HttpHeader::CHUNKED("chunked");
-
-const std::string HttpHeader::GZIP("gzip");
-
-const std::string HttpHeader::DEFLATE("deflate");
-
 const std::string HttpHeader::CONTENT_TYPE("Content-Type");
 
 const std::string HttpHeader::RETRY_AFTER("Retry-After");
 
 const std::string HttpHeader::CONNECTION("Connection");
-
-const std::string HttpHeader::CLOSE("close");
 
 const std::string HttpHeader::CONTENT_LENGTH("Content-Length");
 
@@ -74,7 +66,11 @@ const std::string HttpHeader::LAST_MODIFIED("Last-Modified");
 
 const std::string HttpHeader::ACCEPT_ENCODING("Accept-Encoding");
 
-const std::string HttpHeader::HTTP_1_1("HTTP/1.1");
+const char HttpHeader::HTTP_1_1[] = "HTTP/1.1";
+const char HttpHeader::CLOSE[] = "close";
+const char HttpHeader::CHUNKED[] = "chunked";
+const char HttpHeader::GZIP[] = "gzip";
+const char HttpHeader::DEFLATE[] = "deflate";
 
 HttpHeader::HttpHeader() {}
 HttpHeader::~HttpHeader() {}

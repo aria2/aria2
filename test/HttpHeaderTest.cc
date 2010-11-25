@@ -93,7 +93,7 @@ void HttpHeaderTest::testClearField()
 
   CPPUNIT_ASSERT_EQUAL(std::string(""), h.getFirst("Foo"));
   CPPUNIT_ASSERT_EQUAL(200, h.getStatusCode());
-  CPPUNIT_ASSERT_EQUAL(HttpHeader::HTTP_1_1, h.getVersion());
+  CPPUNIT_ASSERT_EQUAL(std::string(HttpHeader::HTTP_1_1), h.getVersion());
 }
 
 } // namespace aria2

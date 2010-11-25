@@ -122,19 +122,11 @@ public:
   
   static const std::string SET_COOKIE;
   
-  static const std::string CHUNKED;
-  
-  static const std::string GZIP;
-
-  static const std::string DEFLATE;
-
   static const std::string CONTENT_TYPE;
   
   static const std::string RETRY_AFTER;
   
   static const std::string CONNECTION;
-
-  static const std::string CLOSE;
 
   static const std::string CONTENT_LENGTH;
 
@@ -144,7 +136,15 @@ public:
 
   static const std::string ACCEPT_ENCODING;
 
-  static const std::string HTTP_1_1;
+  static const char HTTP_1_1[];
+
+  static const char CLOSE[];
+
+  static const char CHUNKED[];
+  
+  static const char GZIP[];
+
+  static const char DEFLATE[];
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;

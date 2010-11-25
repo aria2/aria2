@@ -1,3 +1,12 @@
+2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Made strings which are only used in comparison plain C strings.
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/Netrc.cc
+	* src/Netrc.h
+	* test/HttpHeaderTest.cc
+
 2010-11-24  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Added white space after ',' when enumerating valid parameters.

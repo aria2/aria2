@@ -108,18 +108,6 @@ bool DefaultAuthenticator::match(const std::string& hostname) const
   return true;
 }
 
-const std::string Netrc::A2_MACHINE("machine");
-
-const std::string Netrc::A2_DEFAULT("default");
-
-const std::string Netrc::A2_LOGIN("login");
-
-const std::string Netrc::A2_PASSWORD("password");
-
-const std::string Netrc::A2_ACCOUNT("account");
-
-const std::string Netrc::A2_MACDEF("macdef");
-
 Netrc::Netrc() {}
 
 Netrc::~Netrc() {}
@@ -169,11 +157,11 @@ void Netrc::parse(const std::string& path)
           eoi = tokens.end(); iter != eoi; ++iter) {
       const std::string& token = *iter;
       if(state == GET_TOKEN) {
-        if(token == Netrc::A2_MACHINE) {
+        if(token == "machine") {
           storeAuthenticator(authenticator);
           authenticator.reset(new Authenticator());
           state = SET_MACHINE;
-        } else if(token == Netrc::A2_DEFAULT) {
+        } else if(token == "default") {
           storeAuthenticator(authenticator);
           authenticator.reset(new DefaultAuthenticator());
         } else {
@@ -182,13 +170,13 @@ void Netrc::parse(const std::string& path)
               (fmt("Netrc:parse error. %s encounterd where 'machine'"
                    " or 'default' expected.", token.c_str()));
           }
-          if(token == Netrc::A2_LOGIN) {
+          if(token == "login") {
             state = SET_LOGIN;
-          } else if(token == Netrc::A2_PASSWORD) {
+          } else if(token == "password") {
             state = SET_PASSWORD;
-          } else if(token == Netrc::A2_ACCOUNT) {
+          } else if(token == "account") {
             state = SET_ACCOUNT;
-          } else if(token == Netrc::A2_MACDEF) {
+          } else if(token == "macdef") {
             state = SET_MACDEF;
           }
         }
