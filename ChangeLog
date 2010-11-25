@@ -1,5 +1,12 @@
 2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed unused FileEntry::setupDir()
+	* src/FileEntry.cc
+	* src/FileEntry.h
+	* test/FileEntryTest.cc
+
+2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Removed MultiDiskAdaptor::mkdir() because directory structure is
 	created at AbstractDiskWriter::createFile().
 	* src/MultiDiskAdaptor.cc

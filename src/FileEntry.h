@@ -106,8 +106,6 @@ public:
 
   void setRequested(bool flag) { requested_ = flag; }
 
-  void setupDir();
-
   const std::deque<std::string>& getRemainingUris() const
   {
     return uris_;

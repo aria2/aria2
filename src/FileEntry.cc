@@ -74,11 +74,6 @@ FileEntry::FileEntry()
 
 FileEntry::~FileEntry() {}
 
-void FileEntry::setupDir()
-{
-  util::mkdirs(File(path_).getDirname());
-}
-
 FileEntry& FileEntry::operator=(const FileEntry& entry)
 {
   if(this != &entry) {
