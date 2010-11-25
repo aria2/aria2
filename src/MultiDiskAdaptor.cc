@@ -263,15 +263,6 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
   }
 }
 
-void MultiDiskAdaptor::mkdir() const
-{
-  for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
-        diskWriterEntries_.begin(), eoi = diskWriterEntries_.end();
-      i != eoi; ++i) {
-    (*i)->getFileEntry()->setupDir();
-  }
-}
-
 void MultiDiskAdaptor::openIfNot
 (const SharedHandle<DiskWriterEntry>& entry, void (DiskWriterEntry::*open)())
 {
@@ -303,7 +294,9 @@ void MultiDiskAdaptor::openIfNot
 void MultiDiskAdaptor::openFile()
 {
   resetDiskWriterEntries();
-  mkdir();
+  // util::mkdir() is called in AbstractDiskWriter::createFile(), so
+  // we don't need to call it here.
+
   // Call DiskWriterEntry::openFile to make sure that zero-length files are
   // created.
   for(DiskWriterEntries::const_iterator itr = diskWriterEntries_.begin(),
@@ -315,7 +308,9 @@ void MultiDiskAdaptor::openFile()
 void MultiDiskAdaptor::initAndOpenFile()
 {
   resetDiskWriterEntries();
-  mkdir();
+  // util::mkdir() is called in AbstractDiskWriter::createFile(), so
+  // we don't need to call it here.
+
   // Call DiskWriterEntry::initAndOpenFile to make files truncated.
   for(DiskWriterEntries::const_iterator itr = diskWriterEntries_.begin(),
         eoi = diskWriterEntries_.end(); itr != eoi; ++itr) {

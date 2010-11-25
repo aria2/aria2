@@ -1,5 +1,12 @@
 2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Removed MultiDiskAdaptor::mkdir() because directory structure is
+	created at AbstractDiskWriter::createFile().
+	* src/MultiDiskAdaptor.cc
+	* src/MultiDiskAdaptor.h
+
+2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Fixed unittest error
 	* test/OptionHandlerTest.cc
 

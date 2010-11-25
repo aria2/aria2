@@ -128,8 +128,6 @@ private:
 
   void resetDiskWriterEntries();
 
-  void mkdir() const;
-
   void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
                  void (DiskWriterEntry::*f)());
  
