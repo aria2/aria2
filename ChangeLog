@@ -1,5 +1,10 @@
 2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	Fixed unittest error
+	* test/OptionHandlerTest.cc
+
+2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Made strings which are only used in comparison plain C strings.
 	* src/HttpHeader.cc
 	* src/HttpHeader.h

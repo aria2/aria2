@@ -197,7 +197,7 @@ void OptionHandlerTest::testParameterOptionHandler_2argsInit()
     handler.parse(option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
-  CPPUNIT_ASSERT_EQUAL(std::string("value1,value2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("value1, value2"),
                        handler.createPossibleValuesString());
 }
 
@@ -219,7 +219,7 @@ void OptionHandlerTest::testParameterOptionHandler_listInit()
     handler.parse(option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {}
-  CPPUNIT_ASSERT_EQUAL(std::string("value1,value2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("value1, value2"),
                        handler.createPossibleValuesString());
 }
 
