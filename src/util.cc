@@ -1393,7 +1393,9 @@ std::string escapePath(const std::string& s)
        || std::find(vbegin(WIN_INVALID_PATH_CHARS),
                     vend(WIN_INVALID_PATH_CHARS),
                     c) != vend(WIN_INVALID_PATH_CHARS)
-
+       // Since Windows does not understand UTF-8 correctly, we
+       // percent-encode character other than ASCII.
+       || c > 0x7fu
 #endif // __MINGW32__
        ){
       d += fmt("%%%02X", c);

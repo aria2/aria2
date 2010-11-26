@@ -1,5 +1,11 @@
 2010-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
+	For MINGW32 build, percent-encode non-ASCII characters in
+	filename.
+	* src/util.cc
+
+2010-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
 	Include last '/' to directory name to create. This will avoid to
 	create directory 'C:' in Windows.
 	* src/File.cc
