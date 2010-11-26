@@ -1,3 +1,9 @@
+2010-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
+
+	Include last '/' to directory name to create. This will avoid to
+	create directory 'C:' in Windows.
+	* src/File.cc
+
 2010-11-25  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	Removed unused FileEntry::setupDir()

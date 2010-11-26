@@ -122,10 +122,10 @@ bool File::mkdirs() {
       ++i;
       continue;
     }
-    i = j;
     if(j != eoi) {
-      ++i;
+      ++j;
     }
+    i = j;
     std::string dir = std::string(name_.begin(), j);
     if(File(dir).isDir()) {
       continue;
