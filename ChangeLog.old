@@ -1,3 +1,9 @@
+************************************************************************
+* We no longer update this file. Revision log can be obtained with the *
+* following command:                                                   *
+*     git log --pretty=fuller --date=short                             *
+************************************************************************
+
 2010-11-26  Tatsuhiro Tsujikawa  <t-tujikawa@users.sourceforge.net>
 
 	For MINGW32 build, percent-encode non-ASCII characters in
