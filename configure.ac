@@ -82,14 +82,8 @@ fi
 
 if test "x$with_gnutls" = "xyes"; then
   # gnutls >= 2.8 doesn't have libgnutls-config anymore.
-  # First check the presence of libgnutls using pkg-config.
   PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 1.2.9],
                     [have_libgnutls=yes], [have_libgnutls=no])
-  # If no libgnutls found by pkg-config, fall back to old macro
-  if test "x$have_libgnutls" = "xno"; then
-    AC_MSG_WARN([$LIBGNUTLS_PKG_ERRORS])
-    AM_PATH_LIBGNUTLS([1.2.9], [have_libgnutls=yes])
-  fi
   if test "x$have_libgnutls" = "xyes"; then
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
   elif test "x$with_gnutls_requested" = "xyes"; then
