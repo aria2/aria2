@@ -19,7 +19,16 @@ HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's
 chunk checksums, aria2 automatically validates chunks of data while
 downloading a file like BitTorrent.
 
-Here is a list of features.
+The project page is located at http://aria2.sourceforge.net/.
+
+See http://aria2.sourceforge.net/aria2c.1.html[aria2 Online Manual]
+and http://sourceforge.net/apps/trac/aria2/wiki/UsageExample[the usage
+example] to learn how to use aria2.
+
+Features
+--------
+
+Here is a list of features:
 
 * Command-line interface
 * Download files through HTTP(S)/FTP/BitTorrent
@@ -62,6 +71,21 @@ Here is a list of features.
   output filename can be specified optionally
 * Parameterized URI support
 * IPv6 support
+
+How to get source code
+----------------------
+
+We maintain the source code at Github:
+http://github.com/tatsuhiro-t/aria2
+
+To download the latest source code, run following command:
+
+------------------------------------------------
+git clone git://github.com/tatsuhiro-t/aria2.git
+------------------------------------------------
+
+This will create aria2 directory in your current directory and source
+files are stored there.
 
 Dependency
 ----------
@@ -247,7 +271,8 @@ correct permissions(600).
 
 References
 ----------
- * man aria2c
+ * http://aria2.sourceforge.net/aria2c.1.html[aria2 Online Manual]
  * http://aria2.sourceforge.net/
  * http://sourceforge.net/apps/trac/aria2/wiki
+ * http://github.com/tatsuhiro-t/aria2
  * http://tools.ietf.org/html/rfc5854

@@ -571,7 +571,14 @@ BitTorrent at the same time, while the data downloaded from
 HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink&#8217;s
 chunk checksums, aria2 automatically validates chunks of data while
 downloading a file like BitTorrent.</p></div>
-<div class="paragraph"><p>Here is a list of features.</p></div>
+<div class="paragraph"><p>The project page is located at <a href="http://aria2.sourceforge.net/">http://aria2.sourceforge.net/</a>.</p></div>
+<div class="paragraph"><p>See <a href="http://aria2.sourceforge.net/aria2c.1.html">aria2 Online Manual</a>
+and <a href="http://sourceforge.net/apps/trac/aria2/wiki/UsageExample">the usage
+example</a> to learn how to use aria2.</p></div>
+</div>
+<h2 id="_features">3. Features</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is a list of features:</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
@@ -752,7 +759,19 @@ IPv6 support
 </li>
 </ul></div>
 </div>
-<h2 id="_dependency">3. Dependency</h2>
+<h2 id="_how_to_get_source_code">4. How to get source code</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We maintain the source code at Github:
+<a href="http://github.com/tatsuhiro-t/aria2">http://github.com/tatsuhiro-t/aria2</a></p></div>
+<div class="paragraph"><p>To download the latest source code, run following command:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>git clone git://github.com/tatsuhiro-t/aria2.git</tt></pre>
+</div></div>
+<div class="paragraph"><p>This will create aria2 directory in your current directory and source
+files are stored there.</p></div>
+</div>
+<h2 id="_dependency">5. Dependency</h2>
 <div class="sectionbody">
 <div class="tableblock">
 <table rules="all"
@@ -836,7 +855,7 @@ c-ares: <a href="http://daniel.haxx.se/projects/c-ares/">http://daniel.haxx.se/p
 </li>
 </ul></div>
 </div>
-<h2 id="_how_to_build">4. How to build</h2>
+<h2 id="_how_to_build">6. How to build</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>In order to build aria2 from the source package, you need following
 development packages(package name may vary depending on the
@@ -928,9 +947,9 @@ validation using --check-certificate=false.</p></div>
 <pre><tt>$ make check</tt></pre>
 </div></div>
 </div>
-<h2 id="_bittorrrent">5. BitTorrrent</h2>
+<h2 id="_bittorrrent">7. BitTorrrent</h2>
 <div class="sectionbody">
-<h3 id="_about_filename">5.1. About filename</h3><div style="clear:left"></div>
+<h3 id="_about_filename">7.1. About filename</h3><div style="clear:left"></div>
 <div class="paragraph"><p>The filename of the downloaded file is determined as follows:</p></div>
 <div class="dlist"><dl>
 <dt class="hdlist1">
@@ -962,12 +981,12 @@ needed. By default, aria2 opens at most 100 files mentioned in
 .torrent file, and directly writes to and reads from these files.
 The number of files to open simultaneously can be controlled by
 --bt-max-open-files option.</p></div>
-<h3 id="_dht">5.2. DHT</h3><div style="clear:left"></div>
+<h3 id="_dht">7.2. DHT</h3><div style="clear:left"></div>
 <div class="paragraph"><p>aria2 supports mainline compatible DHT. By default, the routing table
 for IPv4 DHT is saved to $HOME/.aria2/dht.dat and the routing table
 for IPv6 DHT is saved to $HOME/.aria2/dht6.dat. aria2 uses same port
 number to listen on for both IPv4 and IPv6 DHT.</p></div>
-<h3 id="_other_things_should_be_noted">5.3. Other things should be noted</h3><div style="clear:left"></div>
+<h3 id="_other_things_should_be_noted">7.3. Other things should be noted</h3><div style="clear:left"></div>
 <div class="ulist"><ul>
 <li>
 <p>
@@ -1003,7 +1022,7 @@ As of release 0.10.0, aria2 stops sending request message after
 </li>
 </ul></div>
 </div>
-<h2 id="_metalink">6. Metalink</h2>
+<h2 id="_metalink">8. Metalink</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>The current implementation supports HTTP(S)/FTP/BitTorrent.  The other
 P2P protocols are ignored. Both Metalink4 and Metalink version 3.0
@@ -1029,18 +1048,18 @@ This is basically multi-file torrent download with file selection, so
 the adjacent files which is not in Metalink document but shares same
 piece with selected file are also created.</p></div>
 </div>
-<h2 id="_netrc">7. netrc</h2>
+<h2 id="_netrc">9. netrc</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
 support, specify -n command-line option.  Your .netrc file should have
 correct permissions(600).</p></div>
 </div>
-<h2 id="_references">8. References</h2>
+<h2 id="_references">10. References</h2>
 <div class="sectionbody">
 <div class="ulist"><ul>
 <li>
 <p>
-man aria2c
+<a href="http://aria2.sourceforge.net/aria2c.1.html">aria2 Online Manual</a>
 </p>
 </li>
 <li>
@@ -1055,6 +1074,11 @@ man aria2c
 </li>
 <li>
 <p>
+<a href="http://github.com/tatsuhiro-t/aria2">http://github.com/tatsuhiro-t/aria2</a>
+</p>
+</li>
+<li>
+<p>
 <a href="http://tools.ietf.org/html/rfc5854">http://tools.ietf.org/html/rfc5854</a>
 </p>
 </li>
@@ -1064,7 +1088,7 @@ man aria2c
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-11-11 12:24:08 JST
+Last updated 2010-11-27 21:58:32 JST
 </div>
 </div>
 </body>
