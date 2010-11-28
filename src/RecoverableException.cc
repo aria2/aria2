@@ -43,24 +43,25 @@ SharedHandle<Exception> RecoverableException::copy() const
 }
 
 RecoverableException::RecoverableException
-(const char* file, int line, const std::string& msg):
-  Exception(file, line, msg),
-  code_(error_code::UNKNOWN_ERROR) {}
+(const char* file, int line, const std::string& msg)
+  : Exception(file, line, msg)
+{}
 
 RecoverableException::RecoverableException
 (const char* file, int line, const std::string& msg,
- const Exception& cause):
-  Exception(file, line, msg, cause),
-  code_(error_code::UNKNOWN_ERROR) {}
-
-RecoverableException::RecoverableException
-(const char* file, int line, int errNum, const std::string& msg):
-  Exception(file, line, errNum, msg),
-  code_(error_code::UNKNOWN_ERROR) {}
+ const Exception& cause)
+  : Exception(file, line, msg, cause)
+{}
 
 RecoverableException::RecoverableException
 (const char* file, int line, const std::string& msg,
- error_code::Value result):
-  Exception(file, line, msg), code_(result) {}
+ error_code::Value errorCode)
+  : Exception(file, line, msg, errorCode)
+{}
+
+RecoverableException::RecoverableException
+(const char* file, int line, int errNum, const std::string& msg)
+  : Exception(file, line, errNum, msg)
+{}
 
 } // namespace aria2

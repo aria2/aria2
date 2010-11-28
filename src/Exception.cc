@@ -45,7 +45,8 @@ Exception::Exception
   : file_(file),
     line_(line),
     errNum_(0),
-    msg_(msg)
+    msg_(msg),
+    errorCode_(error_code::UNKNOWN_ERROR)
 {}
 
 Exception::Exception
@@ -57,7 +58,20 @@ Exception::Exception
     line_(line),
     errNum_(0),
     msg_(msg),
-    cause_(cause.copy())
+    cause_(cause.copy()),
+    errorCode_(cause.errorCode_)
+{}
+
+Exception::Exception
+(const char* file,
+ int line,
+ const std::string& msg,
+ error_code::Value errorCode)
+  : file_(file),
+    line_(line),
+    errNum_(0),
+    msg_(msg),
+    errorCode_(errorCode)
 {}
 
 Exception::Exception
@@ -68,7 +82,8 @@ Exception::Exception
   : file_(file),
     line_(line),
     errNum_(errNum),
-    msg_(msg)
+    msg_(msg),
+    errorCode_(error_code::UNKNOWN_ERROR)
 {}
 
 Exception::~Exception() throw() {}
@@ -78,13 +93,17 @@ std::string Exception::stackTrace() const
   std::stringstream s;
   s << "Exception: " << "[" << file_ << ":" << line_ << "] ";
   if(errNum_) {
-    s << "errno=" << errNum_ << " ";
+    s << "errNum=" << errNum_ << " ";
   }
+  s << "errorCode=" << errorCode_ << " ";
   s  << what() << "\n";
   SharedHandle<Exception> e = cause_;
   while(e) {
-    s << "  -> " << "[" << e->file_ << ":" << e->line_ << "] "
-      << e->what() << "\n";
+    s << "  -> " << "[" << e->file_ << ":" << e->line_ << "] ";
+    if(e->getErrNum()) {
+      s << "errNum=" << e->getErrNum() << " ";
+    }
+    s << "errorCode=" << e->getErrorCode() << " " << e->what() << "\n";
     e = e->cause_;
   }
   return s.str();

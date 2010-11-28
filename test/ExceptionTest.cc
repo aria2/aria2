@@ -25,15 +25,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ExceptionTest);
 
 void ExceptionTest::testStackTrace()
 {
-  DownloadFailureException c1 = DOWNLOAD_FAILURE_EXCEPTION("cause1");
+  DownloadFailureException c1 = DOWNLOAD_FAILURE_EXCEPTION2
+    ("cause1", error_code::TIME_OUT);
   DownloadFailureException c2 = DOWNLOAD_FAILURE_EXCEPTION2("cause2", c1);
   DownloadFailureException e = DOWNLOAD_FAILURE_EXCEPTION2("exception thrown",
                                                            c2);
 
   CPPUNIT_ASSERT_EQUAL
-    (std::string("Exception: [ExceptionTest.cc:31] exception thrown\n"
-                 "  -> [ExceptionTest.cc:29] cause2\n"
-                 "  -> [ExceptionTest.cc:28] cause1\n"),
+    (std::string
+     ("Exception: [ExceptionTest.cc:32] errorCode=2 exception thrown\n"
+      "  -> [ExceptionTest.cc:30] errorCode=2 cause2\n"
+      "  -> [ExceptionTest.cc:29] errorCode=2 cause1\n"),
      e.stackTrace());
 }
 

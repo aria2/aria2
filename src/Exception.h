@@ -41,6 +41,7 @@
 #include <string>
 
 #include "SharedHandle.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -49,20 +50,26 @@ private:
   const char* file_;
   
   int line_;
-
+  // This is low-level system error code, typically errno in Linux.
   int errNum_;
 
   std::string msg_;
-
+  // Exception that this object wraps. Normally this cause_ is the
+  // root cause of this exception.
   SharedHandle<Exception> cause_;
+  // This is application-level error code.
+  error_code::Value errorCode_;
 protected:
   virtual SharedHandle<Exception> copy() const = 0;
 
 public:
   Exception(const char* file, int line, const std::string& msg);
-
+  // errorCode_ is initializedwith cause.errorCode_.
   Exception(const char* file, int line, const std::string& msg,
             const Exception& cause);
+
+  Exception(const char* file, int line, const std::string& msg,
+            error_code::Value errorCode);
 
   Exception(const char* file, int line, int errNum, const std::string& msg);
 
@@ -75,6 +82,11 @@ public:
   int getErrNum() const
   {
     return errNum_;
+  }
+
+  error_code::Value getErrorCode() const
+  {
+    return errorCode_;
   }
 };
 

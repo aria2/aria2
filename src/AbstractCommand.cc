@@ -262,9 +262,9 @@ bool AbstractCommand::execute() {
                           req_->getUri().c_str()),
                       DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()),
                                    err));
-      fileEntry_->addURIResult(req_->getUri(), err.getCode());
-      requestGroup_->setLastErrorCode(err.getCode());
-      if(err.getCode() == error_code::CANNOT_RESUME) {
+      fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
+      requestGroup_->setLastErrorCode(err.getErrorCode());
+      if(err.getErrorCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
     }
@@ -290,9 +290,9 @@ bool AbstractCommand::execute() {
                           getCuid(),
                           req_->getUri().c_str()),
                       err);
-      fileEntry_->addURIResult(req_->getUri(), err.getCode());
-      requestGroup_->setLastErrorCode(err.getCode());
-      if(err.getCode() == error_code::CANNOT_RESUME) {
+      fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
+      requestGroup_->setLastErrorCode(err.getErrorCode());
+      if(err.getErrorCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
       onAbort();
@@ -304,8 +304,8 @@ bool AbstractCommand::execute() {
   } catch(DownloadFailureException& err) {
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, err);
     if(req_) {
-      fileEntry_->addURIResult(req_->getUri(), err.getCode());
-      requestGroup_->setLastErrorCode(err.getCode());
+      fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
+      requestGroup_->setLastErrorCode(err.getErrorCode());
     }
     requestGroup_->setHaltRequested(true);
     return true;
