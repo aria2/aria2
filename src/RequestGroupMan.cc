@@ -92,7 +92,7 @@ RequestGroupMan::RequestGroupMan
     xmlRpc_(option->getAsBool(PREF_ENABLE_XML_RPC)),
     queueCheck_(true),
     removedErrorResult_(0),
-    removedLastErrorResult_(downloadresultcode::FINISHED),
+    removedLastErrorResult_(error_code::FINISHED),
     maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT))
 {}
 
@@ -264,11 +264,11 @@ namespace {
 void executeStopHook
 (const SharedHandle<DownloadResult>& result, const Option* option)
 {
-  if(result->result == downloadresultcode::FINISHED &&
+  if(result->result == error_code::FINISHED &&
      !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
     util::executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE),
                       util::itos(result->gid));
-  } else if(result->result != downloadresultcode::IN_PROGRESS &&
+  } else if(result->result != error_code::IN_PROGRESS &&
             !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
     util::executeHook(option->get(PREF_ON_DOWNLOAD_ERROR),
                       util::itos(result->gid));
@@ -567,11 +567,11 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   size_t finished = 0;
   size_t error = removedErrorResult_;
   size_t inprogress = 0;
-  downloadresultcode::RESULT lastError = removedLastErrorResult_;
+  error_code::Value lastError = removedLastErrorResult_;
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end();
       itr != eoi; ++itr) {
-    if((*itr)->result == downloadresultcode::FINISHED) {
+    if((*itr)->result == error_code::FINISHED) {
       ++finished;
     } else {
       ++error;
@@ -581,7 +581,7 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
         requestGroups_.begin(), eoi = requestGroups_.end(); itr != eoi; ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
-    if(result->result == downloadresultcode::FINISHED) {
+    if(result->result == error_code::FINISHED) {
       ++finished;
     } else {
       ++inprogress;
@@ -618,10 +618,10 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
         downloadResults_.begin(), eoi = downloadResults_.end();
       itr != eoi; ++itr) {
     std::string status;
-    if((*itr)->result == downloadresultcode::FINISHED) {
+    if((*itr)->result == error_code::FINISHED) {
       status = MARK_OK;
       ++ok;
-    } else if((*itr)->result == downloadresultcode::IN_PROGRESS) {
+    } else if((*itr)->result == error_code::IN_PROGRESS) {
       status = MARK_INPR;
       ++inpr;
     } else {
@@ -634,7 +634,7 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
         requestGroups_.begin(), eoi = requestGroups_.end(); itr != eoi; ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
     std::string status;
-    if(result->result == downloadresultcode::FINISHED) {
+    if(result->result == error_code::FINISHED) {
       status = MARK_OK;
       ++ok;
     } else {
@@ -783,14 +783,14 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
       for(std::deque<SharedHandle<DownloadResult> >::iterator i =
             downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi;
           ++i) {
-        if((*i)->result != downloadresultcode::FINISHED) {
+        if((*i)->result != error_code::FINISHED) {
           removedLastErrorResult_ = (*i)->result;
           ++removedErrorResult_;
         }
       }
       downloadResults_.clear();
     }
-    if(dr->result != downloadresultcode::FINISHED) {
+    if(dr->result != error_code::FINISHED) {
       removedLastErrorResult_ = dr->result;
       ++removedErrorResult_;
     }
@@ -801,7 +801,7 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
         downloadResults_.begin()+curSize-maxDownloadResult_+1;
       for(std::deque<SharedHandle<DownloadResult> >::iterator i =
             downloadResults_.begin(); i != last; ++i) {
-        if((*i)->result != downloadresultcode::FINISHED) {
+        if((*i)->result != error_code::FINISHED) {
           removedLastErrorResult_ = (*i)->result;
           ++removedErrorResult_;
         }

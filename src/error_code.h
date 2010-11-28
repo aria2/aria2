@@ -32,16 +32,17 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_DOWNLOAD_RESULT_CODE_H
-#define D_DOWNLOAD_RESULT_CODE_H
+#ifndef D_ERROR_CODE_H
+#define D_ERROR_CODE_H
 
 #include "common.h"
 
 namespace aria2 {
 
-namespace downloadresultcode {
+namespace error_code {
 
-enum RESULT {
+enum Value {
+  UNDEFINED = -1,
   FINISHED = 0,
   UNKNOWN_ERROR = 1,
   TIME_OUT = 2,
@@ -53,8 +54,8 @@ enum RESULT {
   CANNOT_RESUME = 8,
 };
 
-} // namespace downloadresultcode
+} // namespace error_code
 
 } // namespace aria2
 
-#endif // D_DOWNLOAD_RESULT_CODE_H
+#endif // D_ERROR_CODE_H

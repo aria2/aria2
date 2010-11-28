@@ -64,28 +64,28 @@ void RequestGroupTest::testCreateDownloadResult()
     CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime);
     // result is UNKNOWN_ERROR if download has not completed and no specific
     // error has been reported
-    CPPUNIT_ASSERT_EQUAL(downloadresultcode::UNKNOWN_ERROR, result->result);
+    CPPUNIT_ASSERT_EQUAL(error_code::UNKNOWN_ERROR, result->result);
 
     // if haltReason is set to RequestGroup::USER_REQUEST, download
     // result becomes IN_PROGRESS
     group.setHaltRequested(true, RequestGroup::USER_REQUEST);
     result = group.createDownloadResult();
-    CPPUNIT_ASSERT_EQUAL(downloadresultcode::IN_PROGRESS, result->result);
+    CPPUNIT_ASSERT_EQUAL(error_code::IN_PROGRESS, result->result);
   }
   {
     group.setLastUriResult
-      ("http://second/file",downloadresultcode::RESOURCE_NOT_FOUND);
+      ("http://second/file",error_code::RESOURCE_NOT_FOUND);
   
     SharedHandle<DownloadResult> result = group.createDownloadResult();
 
-    CPPUNIT_ASSERT_EQUAL(downloadresultcode::RESOURCE_NOT_FOUND, result->result);
+    CPPUNIT_ASSERT_EQUAL(error_code::RESOURCE_NOT_FOUND, result->result);
   }
   {
     group.getPieceStorage()->markAllPiecesDone();
 
     SharedHandle<DownloadResult> result = group.createDownloadResult();
 
-    CPPUNIT_ASSERT_EQUAL(downloadresultcode::FINISHED, result->result);
+    CPPUNIT_ASSERT_EQUAL(error_code::FINISHED, result->result);
   }
 }
 

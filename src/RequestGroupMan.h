@@ -81,7 +81,7 @@ private:
   size_t removedErrorResult_;
 
   // The last error of removed DownloadResult
-  downloadresultcode::RESULT removedLastErrorResult_;
+  error_code::Value removedLastErrorResult_;
 
   size_t maxDownloadResult_;
 
@@ -172,21 +172,21 @@ public:
     size_t error_;
     size_t inProgress_;
     size_t waiting_;
-    downloadresultcode::RESULT lastErrorResult_;
+    error_code::Value lastErrorResult_;
   public:
     DownloadStat(size_t completed,
                  size_t error,
                  size_t inProgress,
                  size_t waiting,
-                 downloadresultcode::RESULT lastErrorResult =
-                 downloadresultcode::FINISHED):
+                 error_code::Value lastErrorResult =
+                 error_code::FINISHED):
       completed_(completed),
       error_(error),
       inProgress_(inProgress),
       waiting_(waiting),
       lastErrorResult_(lastErrorResult) {}
 
-    downloadresultcode::RESULT getLastErrorResult() const
+    error_code::Value getLastErrorResult() const
     {
       return lastErrorResult_;
     }

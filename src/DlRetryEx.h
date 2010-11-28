@@ -50,7 +50,7 @@ public:
   DlRetryEx(const char* file, int line, const DlRetryEx& e);
 
   DlRetryEx(const char* file, int line, const std::string& msg,
-            downloadresultcode::RESULT code);
+            error_code::Value code);
 };
 
 #define DL_RETRY_EX(arg) DlRetryEx(__FILE__, __LINE__, arg)

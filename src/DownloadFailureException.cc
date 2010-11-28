@@ -59,7 +59,7 @@ DownloadFailureException::DownloadFailureException
 DownloadFailureException::DownloadFailureException
 (const char* file, int line,
  const std::string& msg,
- downloadresultcode::RESULT code):
+ error_code::Value code):
   RecoverableException(file, line, msg, code) {}
 
 } // namespace aria2

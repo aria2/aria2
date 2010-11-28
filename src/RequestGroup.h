@@ -45,7 +45,7 @@
 #include "TransferStat.h"
 #include "TimeA2.h"
 #include "Request.h"
-#include "DownloadResultCode.h"
+#include "error_code.h"
 #include "MetadataInfo.h"
 
 namespace aria2 {
@@ -185,11 +185,11 @@ private:
   bool tryAutoFileRenaming();
 
   // Returns the result code of this RequestGroup.  If the download
-  // finished, then returns downloadresultcode::FINISHED.  If the
+  // finished, then returns error_code::FINISHED.  If the
   // download didn't finish and error result is available in
   // _uriResults, then last result code is returned.  Otherwise
-  // returns downloadresultcode::UNKNOWN_ERROR.
-  downloadresultcode::RESULT downloadResult() const;
+  // returns error_code::UNKNOWN_ERROR.
+  error_code::Value downloadResult() const;
 
   void removeDefunctControlFile
   (const SharedHandle<BtProgressInfoFile>& progressInfoFile);
@@ -481,7 +481,7 @@ public:
     maxUploadSpeedLimit_ = speed;
   }
 
-  void setLastUriResult(std::string uri, downloadresultcode::RESULT result);
+  void setLastUriResult(std::string uri, error_code::Value result);
 
   void saveControlFile() const;
 

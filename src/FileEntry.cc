@@ -284,7 +284,7 @@ void FileEntry::removeIdenticalURI(const std::string& uri)
   uris_.erase(std::remove(uris_.begin(), uris_.end(), uri), uris_.end());
 }
 
-void FileEntry::addURIResult(std::string uri, downloadresultcode::RESULT result)
+void FileEntry::addURIResult(std::string uri, error_code::Value result)
 {
   uriResults_.push_back(URIResult(uri, result));
 }
@@ -292,9 +292,9 @@ void FileEntry::addURIResult(std::string uri, downloadresultcode::RESULT result)
 namespace {
 class FindURIResultByResult {
 private:
-  downloadresultcode::RESULT r_;
+  error_code::Value r_;
 public:
-  FindURIResultByResult(downloadresultcode::RESULT r):r_(r) {}
+  FindURIResultByResult(error_code::Value r):r_(r) {}
 
   bool operator()(const URIResult& uriResult) const
   {
@@ -304,7 +304,7 @@ public:
 } // namespace
 
 void FileEntry::extractURIResult
-(std::deque<URIResult>& res, downloadresultcode::RESULT r)
+(std::deque<URIResult>& res, error_code::Value r)
 {
   std::deque<URIResult>::iterator i =
     std::stable_partition(uriResults_.begin(), uriResults_.end(),

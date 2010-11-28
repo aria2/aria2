@@ -93,7 +93,7 @@ void HttpResponse::validateResponse() const
                util::itos(responseRange->getStartByte(), true).c_str(),
                util::itos(responseRange->getEndByte(), true).c_str(),
                util::uitos(responseRange->getEntityLength(), true).c_str()),
-           downloadresultcode::CANNOT_RESUME);
+           error_code::CANNOT_RESUME);
       }
     }
   } else {

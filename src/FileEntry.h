@@ -46,7 +46,7 @@
 #include "File.h"
 #include "Request.h"
 #include "URIResult.h"
-#include "DownloadResultCode.h"
+#include "error_code.h"
 #include "A2STR.h"
 #include "TimerA2.h"
 
@@ -193,7 +193,7 @@ public:
 
   void removeIdenticalURI(const std::string& uri);
 
-  void addURIResult(std::string uri, downloadresultcode::RESULT result);
+  void addURIResult(std::string uri, error_code::Value result);
 
   const std::deque<URIResult>& getURIResults() const
   {
@@ -203,7 +203,7 @@ public:
   // Extracts URIResult whose _result is r and stores them into res.
   // The extracted URIResults are removed from uriResults_.
   void extractURIResult
-  (std::deque<URIResult>& res, downloadresultcode::RESULT r);
+  (std::deque<URIResult>& res, error_code::Value r);
 
   void setMaxConnectionPerServer(size_t n)
   {

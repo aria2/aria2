@@ -39,7 +39,7 @@
 
 #include <string>
 
-#include "DownloadResultCode.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -48,9 +48,9 @@ class URIResult {
 private:
   std::string uri_;
 
-  downloadresultcode::RESULT result_;
+  error_code::Value result_;
 public:
-  URIResult(const std::string& uri, downloadresultcode::RESULT result);
+  URIResult(const std::string& uri, error_code::Value result);
 
   ~URIResult();
 
@@ -59,7 +59,7 @@ public:
     return uri_;
   }
 
-  downloadresultcode::RESULT getResult() const
+  error_code::Value getResult() const
   {
     return result_;
   }

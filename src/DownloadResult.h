@@ -43,7 +43,7 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "DownloadResultCode.h"
+#include "error_code.h"
 #include "RequestGroup.h"
 
 namespace aria2 {
@@ -65,7 +65,7 @@ struct DownloadResult
   // milliseconds
   int64_t sessionTime;
 
-  downloadresultcode::RESULT result;
+  error_code::Value result;
 
   // This field contains GIDs. See comment in
   // RequestGroup.cc::_followedByGIDs.

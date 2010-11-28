@@ -293,7 +293,7 @@ bool FtpNegotiationCommand::recvCwd()
     getRequestGroup()->increaseAndValidateFileNotFoundCount();
     if (status == 550)
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
-                         downloadresultcode::RESOURCE_NOT_FOUND);
+                         error_code::RESOURCE_NOT_FOUND);
     else
       throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }
@@ -771,7 +771,7 @@ bool FtpNegotiationCommand::recvRest(const SharedHandle<Segment>& segment) {
   if(status != 350) {
     if(segment && segment->getPositionToWrite() != 0) {
       throw DL_ABORT_EX2("FTP server doesn't support resuming.",
-                         downloadresultcode::CANNOT_RESUME);
+                         error_code::CANNOT_RESUME);
     }
   }
   sequence_ = SEQ_SEND_RETR;
@@ -797,7 +797,7 @@ bool FtpNegotiationCommand::recvRetr() {
     getRequestGroup()->increaseAndValidateFileNotFoundCount();
     if (status == 550)
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
-                         downloadresultcode::RESOURCE_NOT_FOUND);
+                         error_code::RESOURCE_NOT_FOUND);
     else
       throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
   }

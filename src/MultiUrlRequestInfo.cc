@@ -112,9 +112,9 @@ void MultiUrlRequestInfo::printMessageForContinue()
               << "\n";
 }
 
-downloadresultcode::RESULT MultiUrlRequestInfo::execute()
+error_code::Value MultiUrlRequestInfo::execute()
 {
-  downloadresultcode::RESULT returnValue = downloadresultcode::FINISHED;
+  error_code::Value returnValue = error_code::FINISHED;
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(option_.get(), requestGroups_);
@@ -200,9 +200,9 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
       e->getRequestGroupMan()->getDownloadStat();
     if(!s.allCompleted()) {
       printMessageForContinue();
-      if(s.getLastErrorResult() == downloadresultcode::FINISHED &&
+      if(s.getLastErrorResult() == error_code::FINISHED &&
          s.getInProgress() > 0) {
-        returnValue = downloadresultcode::IN_PROGRESS;
+        returnValue = error_code::IN_PROGRESS;
       } else {
         returnValue = s.getLastErrorResult();
       }
@@ -220,8 +220,8 @@ downloadresultcode::RESULT MultiUrlRequestInfo::execute()
       }
     }
   } catch(RecoverableException& e) {
-    if(returnValue == downloadresultcode::FINISHED) {
-      returnValue = downloadresultcode::UNKNOWN_ERROR;
+    if(returnValue == error_code::FINISHED) {
+      returnValue = error_code::UNKNOWN_ERROR;
     }
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
   }

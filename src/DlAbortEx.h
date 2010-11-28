@@ -52,7 +52,7 @@ public:
   DlAbortEx(const char* file, int line, int errnoArg, const std::string& msg);
 
   DlAbortEx(const char* file, int line, const std::string& msg,
-            downloadresultcode::RESULT code);
+            error_code::Value code);
 };
 
 #define DL_ABORT_EX(arg) DlAbortEx(__FILE__, __LINE__, arg)

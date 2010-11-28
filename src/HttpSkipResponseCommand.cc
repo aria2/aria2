@@ -191,7 +191,7 @@ bool HttpSkipResponseCommand::processResponse()
       }
     } else if(statusCode == 404) {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
-                         downloadresultcode::RESOURCE_NOT_FOUND);
+                         error_code::RESOURCE_NOT_FOUND);
     } else {
       throw DL_ABORT_EX(fmt(EX_BAD_STATUS, statusCode));
     }

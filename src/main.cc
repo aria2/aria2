@@ -172,7 +172,7 @@ void showFiles
 extern void option_processing(Option& option, std::vector<std::string>& uris,
                               int argc, char* const argv[]);
 
-downloadresultcode::RESULT main(int argc, char* argv[])
+error_code::Value main(int argc, char* argv[])
 {
   std::vector<std::string> args;
   SharedHandle<Option> op(new Option());
@@ -187,7 +187,7 @@ downloadresultcode::RESULT main(int argc, char* argv[])
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }
-  downloadresultcode::RESULT exitStatus = downloadresultcode::FINISHED;
+  error_code::Value exitStatus = error_code::FINISHED;
   A2_LOG_INFO("<<--- --- --- ---");
   A2_LOG_INFO("  --- --- --- ---");
   A2_LOG_INFO("  --- --- --- --->>");
@@ -278,13 +278,13 @@ downloadresultcode::RESULT main(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-  aria2::downloadresultcode::RESULT r;
+  aria2::error_code::Value r;
   try {
     aria2::Platform platform;
     r = aria2::main(argc, argv);
   } catch(aria2::Exception& ex) {
     std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
-    r = aria2::downloadresultcode::UNKNOWN_ERROR;
+    r = aria2::error_code::UNKNOWN_ERROR;
   }
   return r;
 }

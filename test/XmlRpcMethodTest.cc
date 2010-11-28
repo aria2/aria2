@@ -721,7 +721,7 @@ void XmlRpcMethodTest::testGatherStoppedDownload()
   d->inMemoryDownload = false;
   d->sessionDownloadLength = UINT64_MAX;
   d->sessionTime = 1000;
-  d->result = downloadresultcode::FINISHED;
+  d->result = error_code::FINISHED;
   d->followedBy = followedBy;
   d->belongsTo = 2;
   SharedHandle<Dict> entry = Dict::g();

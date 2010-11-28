@@ -248,7 +248,7 @@ bool AbstractCommand::execute() {
           e_->removeCachedIPAddress
             (req_->getConnectedHostname(), req_->getConnectedPort());
         }
-        throw DL_RETRY_EX2(EX_TIME_OUT, downloadresultcode::TIME_OUT);
+        throw DL_RETRY_EX2(EX_TIME_OUT, error_code::TIME_OUT);
       }
       e_->addCommand(this);
       return false;
@@ -264,7 +264,7 @@ bool AbstractCommand::execute() {
                                    err));
       fileEntry_->addURIResult(req_->getUri(), err.getCode());
       requestGroup_->setLastUriResult(req_->getUri(), err.getCode());
-      if(err.getCode() == downloadresultcode::CANNOT_RESUME) {
+      if(err.getCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
     }
@@ -292,7 +292,7 @@ bool AbstractCommand::execute() {
                       err);
       fileEntry_->addURIResult(req_->getUri(), err.getCode());
       requestGroup_->setLastUriResult(req_->getUri(), err.getCode());
-      if(err.getCode() == downloadresultcode::CANNOT_RESUME) {
+      if(err.getCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
       onAbort();
@@ -393,7 +393,7 @@ void AbstractCommand::onAbort() {
         // process.
         getOption()->put(PREF_ALWAYS_RESUME, A2_V_TRUE);
         std::deque<URIResult> res;
-        fileEntry_->extractURIResult(res, downloadresultcode::CANNOT_RESUME);
+        fileEntry_->extractURIResult(res, error_code::CANNOT_RESUME);
         if(!res.empty()) {
           getSegmentMan()->cancelAllSegments();
           getSegmentMan()->eraseSegmentWrittenLengthMemo();

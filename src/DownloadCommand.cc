@@ -262,7 +262,7 @@ void DownloadCommand::checkLowestDownloadSpeed() const
                              nowSpeed,
                              lowestDownloadSpeedLimit_,
                              getRequest()->getHost().c_str()),
-                         downloadresultcode::TOO_SLOW_DOWNLOAD_SPEED);
+                         error_code::TOO_SLOW_DOWNLOAD_SPEED);
     }
   }
 }

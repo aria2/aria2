@@ -171,9 +171,9 @@ void SessionSerializer::save(std::ostream& out) const
     rgman_->getDownloadResults();
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         results.begin(), eoi = results.end(); itr != eoi; ++itr) {
-    if((*itr)->result == downloadresultcode::FINISHED) {
+    if((*itr)->result == error_code::FINISHED) {
       continue;
-    } else if((*itr)->result == downloadresultcode::IN_PROGRESS) {
+    } else if((*itr)->result == error_code::IN_PROGRESS) {
       if(saveInProgress_) {
         writeDownloadResult(out, metainfoCache, *itr);
       }
@@ -190,7 +190,7 @@ void SessionSerializer::save(std::ostream& out) const
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
           groups.begin(), eoi = groups.end(); itr != eoi; ++itr) {
       SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
-      if(result->result == downloadresultcode::FINISHED) {
+      if(result->result == error_code::FINISHED) {
         continue;
       }
       writeDownloadResult(out, metainfoCache, result);

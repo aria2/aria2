@@ -190,17 +190,17 @@ bool RequestGroup::allDownloadFinished() const
   }
 }
 
-downloadresultcode::RESULT RequestGroup::downloadResult() const
+error_code::Value RequestGroup::downloadResult() const
 {
   if(downloadFinished() && !downloadContext_->isChecksumVerificationNeeded())
-    return downloadresultcode::FINISHED;
+    return error_code::FINISHED;
   else {
     if(!lastUriResult_) {
       if(haltReason_ == RequestGroup::USER_REQUEST ||
          haltReason_ == RequestGroup::SHUTDOWN_SIGNAL) {
-        return downloadresultcode::IN_PROGRESS;
+        return error_code::IN_PROGRESS;
       } else {
-        return downloadresultcode::UNKNOWN_ERROR;
+        return error_code::UNKNOWN_ERROR;
       }
     } else {
       return lastUriResult_->getResult();
@@ -1252,7 +1252,7 @@ void RequestGroup::increaseAndValidateFileNotFoundCount()
       segmentMan_->calculateSessionDownloadLength() == 0)) {
     throw DOWNLOAD_FAILURE_EXCEPTION2
       (fmt("Reached max-file-not-found count=%u", maxCount),
-       downloadresultcode::MAX_FILE_NOT_FOUND);
+       error_code::MAX_FILE_NOT_FOUND);
   }
 }
 
@@ -1279,7 +1279,7 @@ bool RequestGroup::doesUploadSpeedExceed()
 }
 
 void RequestGroup::setLastUriResult
-(const std::string uri, downloadresultcode::RESULT result)
+(const std::string uri, error_code::Value result)
 {
   lastUriResult_.reset(new URIResult(uri, result));
 }

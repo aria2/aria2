@@ -56,7 +56,7 @@ public:
 
   DownloadFailureException(const char* file, int line,
                            const std::string& msg,
-                           downloadresultcode::RESULT code);
+                           error_code::Value code);
 };
 
 #define DOWNLOAD_FAILURE_EXCEPTION(arg)                 \

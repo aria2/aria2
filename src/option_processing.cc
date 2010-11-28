@@ -53,7 +53,7 @@
 #include "File.h"
 #include "fmt.h"
 #include "OptionHandlerException.h"
-#include "DownloadResultCode.h"
+#include "error_code.h"
 #include "SimpleRandomizer.h"
 #include "bittorrent_helper.h"
 #ifndef HAVE_DAEMON
@@ -103,7 +103,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
 
       if(op.defined("version")) {
         showVersion();
-        exit(downloadresultcode::FINISHED);
+        exit(error_code::FINISHED);
       }
       if(op.defined("help")) {
         std::string keyword;
@@ -120,7 +120,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           }
         }
         showUsage(keyword, oparser);
-        exit(downloadresultcode::FINISHED);
+        exit(error_code::FINISHED);
       }
     }
 
@@ -145,17 +145,17 @@ void option_processing(Option& op, std::vector<std::string>& uris,
                       << oparser.findByName(e.getOptionName())->getDescription()
                       << std::endl;
           }
-          exit(downloadresultcode::UNKNOWN_ERROR);
+          exit(error_code::UNKNOWN_ERROR);
         } catch(Exception& e) {
           std::cerr << "Parse error in " << cfname << "\n"
                     << e.stackTrace() << std::endl;
-          exit(downloadresultcode::UNKNOWN_ERROR);
+          exit(error_code::UNKNOWN_ERROR);
         }
       } else if(!ucfname.empty()) {
         std::cerr << fmt("Configuration file %s is not found.", cfname.c_str())
                   << "\n";
         showUsage(TAG_HELP, oparser);
-        exit(downloadresultcode::UNKNOWN_ERROR);
+        exit(error_code::UNKNOWN_ERROR);
       }
     }
     // Override configuration with environment variables.
@@ -175,11 +175,11 @@ void option_processing(Option& op, std::vector<std::string>& uris,
               << "Usage:" << "\n"
               << *oparser.findByName(e.getOptionName())
               << std::endl;
-    exit(downloadresultcode::UNKNOWN_ERROR);
+    exit(error_code::UNKNOWN_ERROR);
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
     showUsage(TAG_HELP, oparser);
-    exit(downloadresultcode::UNKNOWN_ERROR);
+    exit(error_code::UNKNOWN_ERROR);
   }
   if(
 #ifdef ENABLE_XML_RPC
@@ -195,13 +195,13 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     if(uris.empty()) {
       std::cerr << MSG_URI_REQUIRED << std::endl;
       showUsage(TAG_HELP, oparser);
-      exit(downloadresultcode::UNKNOWN_ERROR);
+      exit(error_code::UNKNOWN_ERROR);
     }
   }
   if(op.getAsBool(PREF_DAEMON)) {
     if(daemon(0, 0) < 0) {
       perror(MSG_DAEMON_FAILED);
-      exit(downloadresultcode::UNKNOWN_ERROR);
+      exit(error_code::UNKNOWN_ERROR);
     }
   }
 }
