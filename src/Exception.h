@@ -59,12 +59,10 @@ protected:
   virtual SharedHandle<Exception> copy() const = 0;
 
 public:
-  explicit Exception(const char* file, int line, const std::string& msg);
+  Exception(const char* file, int line, const std::string& msg);
 
   Exception(const char* file, int line, const std::string& msg,
             const Exception& cause);
-
-  Exception(const char* file, int line, const Exception& e);
 
   Exception(const char* file, int line, int errNum, const std::string& msg);
 

@@ -53,10 +53,6 @@ OptionHandlerException::OptionHandlerException(const char* file, int line,
   (file, line, fmt(MESSAGE.c_str(), optName.c_str()), cause),
   optName_(optName) {}
 
-OptionHandlerException::OptionHandlerException(const char* file, int line,
-                                               const OptionHandlerException& e):
-  RecoverableException(file, line, e), optName_(e.optName_) {}
-
 OptionHandlerException::~OptionHandlerException() throw() {}
 
 const std::string& OptionHandlerException::getOptionName() const throw()

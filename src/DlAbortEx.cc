@@ -49,12 +49,9 @@ DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
                      const Exception& cause):
   RecoverableException(file, line, msg, cause) {}
 
-DlAbortEx::DlAbortEx(const char* file, int line, const RecoverableException& e):
-  RecoverableException(file, line, e) {}
-
 DlAbortEx::DlAbortEx
-(const char* file, int line, int errnoArg, const std::string& msg):
-  RecoverableException(file, line, errnoArg, msg) {}
+(const char* file, int line, int errNum, const std::string& msg):
+  RecoverableException(file, line, errNum, msg) {}
 
 DlAbortEx::DlAbortEx(const char* file, int line, const std::string& msg,
                      error_code::Value code):

@@ -54,14 +54,8 @@ RecoverableException::RecoverableException
   code_(error_code::UNKNOWN_ERROR) {}
 
 RecoverableException::RecoverableException
-(const char* file, int line,
- const RecoverableException& e):
-  Exception(file, line, e),
-  code_(error_code::UNKNOWN_ERROR) {}
-  
-RecoverableException::RecoverableException
-(const char* file, int line, int errnoArg, const std::string& msg):
-  Exception(file, line, errnoArg, msg),
+(const char* file, int line, int errNum, const std::string& msg):
+  Exception(file, line, errNum, msg),
   code_(error_code::UNKNOWN_ERROR) {}
 
 RecoverableException::RecoverableException

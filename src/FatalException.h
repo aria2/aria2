@@ -46,8 +46,6 @@ public:
 
   FatalException(const char* file, int line, const std::string& msg,
                  const Exception& cause);
-
-  FatalException(const FatalException& e);
 };
 
 #define FATAL_EXCEPTION(arg)                    \

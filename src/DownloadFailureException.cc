@@ -53,11 +53,6 @@ DownloadFailureException::DownloadFailureException
 
 DownloadFailureException::DownloadFailureException
 (const char* file, int line,
- const DownloadFailureException& e):
-  RecoverableException(file, line, e) {}
-
-DownloadFailureException::DownloadFailureException
-(const char* file, int line,
  const std::string& msg,
  error_code::Value code):
   RecoverableException(file, line, msg, code) {}

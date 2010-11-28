@@ -48,8 +48,7 @@ DlRetryEx::DlRetryEx(const char* file, int line, const std::string& msg):
 DlRetryEx::DlRetryEx(const char* file, int line, const std::string& msg,
                      const Exception& cause):
   RecoverableException(file, line, msg, cause) {}
-DlRetryEx::DlRetryEx(const char* file, int line, const DlRetryEx& e):
-  RecoverableException(file, line, e) {}
+
 DlRetryEx::DlRetryEx(const char* file, int line, const std::string& msg,
                      error_code::Value code):
   RecoverableException(file, line, msg, code) {}

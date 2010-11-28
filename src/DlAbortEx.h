@@ -47,9 +47,7 @@ public:
   DlAbortEx(const char* file, int line, const std::string& msg,
             const Exception& cause);
 
-  DlAbortEx(const char* file, int line, const RecoverableException& e);
-
-  DlAbortEx(const char* file, int line, int errnoArg, const std::string& msg);
+  DlAbortEx(const char* file, int line, int errNum, const std::string& msg);
 
   DlAbortEx(const char* file, int line, const std::string& msg,
             error_code::Value code);

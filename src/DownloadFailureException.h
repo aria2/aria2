@@ -52,9 +52,6 @@ public:
                            const Exception& cause);
 
   DownloadFailureException(const char* file, int line,
-                           const DownloadFailureException& e);
-
-  DownloadFailureException(const char* file, int line,
                            const std::string& msg,
                            error_code::Value code);
 };

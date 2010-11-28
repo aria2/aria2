@@ -63,17 +63,6 @@ Exception::Exception
 Exception::Exception
 (const char* file,
  int line,
- const Exception& e)
-  : file_(file),
-    line_(line),
-    errNum_(0),
-    msg_(e.msg_),
-    cause_(e.cause_)
-{}
-
-Exception::Exception
-(const char* file,
- int line,
  int errNum,
  const std::string& msg)
   : file_(file),

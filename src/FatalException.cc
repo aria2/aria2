@@ -51,6 +51,4 @@ FatalException::FatalException
  const Exception& cause):
   Exception(file, line, msg, cause) {}
 
-FatalException::FatalException(const FatalException& e):Exception(e) {}
-
 } // namespace aria2

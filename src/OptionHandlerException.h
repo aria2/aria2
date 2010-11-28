@@ -52,9 +52,6 @@ public:
   OptionHandlerException(const char* file, int line, const std::string& optName,
                          const Exception& cause);
 
-  OptionHandlerException(const char* file, int line,
-                         const OptionHandlerException& e);
-
   virtual ~OptionHandlerException() throw();
 
   const std::string& getOptionName() const throw();

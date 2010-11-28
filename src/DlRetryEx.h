@@ -47,8 +47,6 @@ public:
   DlRetryEx(const char* file, int line, const std::string& msg,
             const Exception& cause);
 
-  DlRetryEx(const char* file, int line, const DlRetryEx& e);
-
   DlRetryEx(const char* file, int line, const std::string& msg,
             error_code::Value code);
 };
