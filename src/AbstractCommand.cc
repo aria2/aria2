@@ -263,7 +263,7 @@ bool AbstractCommand::execute() {
                       DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()),
                                    err));
       fileEntry_->addURIResult(req_->getUri(), err.getCode());
-      requestGroup_->setLastUriResult(req_->getUri(), err.getCode());
+      requestGroup_->setLastErrorCode(err.getCode());
       if(err.getCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
@@ -291,7 +291,7 @@ bool AbstractCommand::execute() {
                           req_->getUri().c_str()),
                       err);
       fileEntry_->addURIResult(req_->getUri(), err.getCode());
-      requestGroup_->setLastUriResult(req_->getUri(), err.getCode());
+      requestGroup_->setLastErrorCode(err.getCode());
       if(err.getCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
@@ -305,7 +305,7 @@ bool AbstractCommand::execute() {
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, err);
     if(req_) {
       fileEntry_->addURIResult(req_->getUri(), err.getCode());
-      requestGroup_->setLastUriResult(req_->getUri(), err.getCode());
+      requestGroup_->setLastErrorCode(err.getCode());
     }
     requestGroup_->setHaltRequested(true);
     return true;

@@ -73,8 +73,7 @@ void RequestGroupTest::testCreateDownloadResult()
     CPPUNIT_ASSERT_EQUAL(error_code::IN_PROGRESS, result->result);
   }
   {
-    group.setLastUriResult
-      ("http://second/file",error_code::RESOURCE_NOT_FOUND);
+    group.setLastErrorCode(error_code::RESOURCE_NOT_FOUND);
   
     SharedHandle<DownloadResult> result = group.createDownloadResult();
 

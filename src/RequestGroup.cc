@@ -146,6 +146,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option)
     inMemoryDownload_(false),
     maxDownloadSpeedLimit_(option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT)),
     maxUploadSpeedLimit_(option->getAsInt(PREF_MAX_UPLOAD_LIMIT)),
+    lastErrorCode_(error_code::UNDEFINED),
     belongsToGID_(0),
     requestGroupMan_(0),
     resumeFailureCount_(0)
@@ -195,7 +196,7 @@ error_code::Value RequestGroup::downloadResult() const
   if(downloadFinished() && !downloadContext_->isChecksumVerificationNeeded())
     return error_code::FINISHED;
   else {
-    if(!lastUriResult_) {
+    if(lastErrorCode_ == error_code::UNDEFINED) {
       if(haltReason_ == RequestGroup::USER_REQUEST ||
          haltReason_ == RequestGroup::SHUTDOWN_SIGNAL) {
         return error_code::IN_PROGRESS;
@@ -203,7 +204,7 @@ error_code::Value RequestGroup::downloadResult() const
         return error_code::UNKNOWN_ERROR;
       }
     } else {
-      return lastUriResult_->getResult();
+      return lastErrorCode_;
     }
   }    
 }
@@ -1276,12 +1277,6 @@ bool RequestGroup::doesUploadSpeedExceed()
 {
   return maxUploadSpeedLimit_ > 0 &&
     maxUploadSpeedLimit_ < calculateStat().getUploadSpeed();
-}
-
-void RequestGroup::setLastUriResult
-(const std::string uri, error_code::Value result)
-{
-  lastUriResult_.reset(new URIResult(uri, result));
 }
 
 void RequestGroup::saveControlFile() const
