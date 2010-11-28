@@ -106,7 +106,7 @@ bool PeerAbstractCommand::execute()
   } catch(DownloadFailureException& err) {
     A2_LOG_ERROR_EX(EX_DOWNLOAD_ABORTED, err);
     onAbort();
-    onFailure();
+    onFailure(err);
     return true;
   } catch(RecoverableException& err) {
     A2_LOG_DEBUG_EX(fmt(MSG_TORRENT_DOWNLOAD_ABORTED,

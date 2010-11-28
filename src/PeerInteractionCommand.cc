@@ -367,8 +367,9 @@ void PeerInteractionCommand::onAbort() {
   peerStorage_->returnPeer(getPeer());
 }
 
-void PeerInteractionCommand::onFailure()
+void PeerInteractionCommand::onFailure(const Exception& err)
 {
+  requestGroup_->setLastErrorCode(err.getErrorCode());
   requestGroup_->setHaltRequested(true);
 }
 

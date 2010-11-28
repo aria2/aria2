@@ -71,7 +71,7 @@ protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort();
-  virtual void onFailure();
+  virtual void onFailure(const Exception& err);
   virtual bool exitBeforeExecute();
 public:
   PeerInteractionCommand(cuid_t cuid,
