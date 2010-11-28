@@ -37,7 +37,6 @@
 
 #include "common.h"
 
-#include <cerrno>
 #include <string>
 
 #include "SharedHandle.h"
