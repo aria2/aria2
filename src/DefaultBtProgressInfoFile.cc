@@ -409,10 +409,11 @@ void DefaultBtProgressInfoFile::load()
     src.setBitfield(savedBitfield, bitfieldLength);
     if((src.getCompletedLength() || numInFlightPiece) &&
        !option_->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
-      throw DOWNLOAD_FAILURE_EXCEPTION
+      throw DOWNLOAD_FAILURE_EXCEPTION2
         ("WARNING: Detected a change in piece length. You can proceed with"
          " --allow-piece-length-change=true, but you may lose some download"
-         " progress.");
+         " progress.",
+         error_code::PIECE_LENGTH_CHANGED);
     }
     BitfieldMan dest(dctx_->getPieceLength(), totalLength);
     util::convertBitfield(&dest, &src);

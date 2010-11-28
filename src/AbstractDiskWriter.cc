@@ -162,10 +162,11 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
     // If errno is ENOSPC(not enough space in device), throw
     // DownloadFailureException and abort download instantly.
     if(errNum == ENOSPC) {
-      throw DOWNLOAD_FAILURE_EXCEPTION
+      throw DOWNLOAD_FAILURE_EXCEPTION2
         (fmt(EX_FILE_WRITE,
              filename_.c_str(),
-             util::safeStrerror(errNum).c_str()));
+             util::safeStrerror(errNum).c_str()),
+         error_code::NOT_ENOUGH_DISK_SPACE);
     } else {
       throw DL_ABORT_EX
         (fmt(EX_FILE_WRITE,

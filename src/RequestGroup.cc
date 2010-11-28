@@ -298,18 +298,20 @@ void RequestGroup::createInitialCommand
       if(btRegistry->getDownloadContext(torrentAttrs->infoHash)) {
         // TODO If metadataGetMode == false and each FileEntry has
         // URI, then go without BT.
-        throw DOWNLOAD_FAILURE_EXCEPTION
+        throw DOWNLOAD_FAILURE_EXCEPTION2
           (fmt("InfoHash %s is already registered.",
-               bittorrent::getInfoHashString(downloadContext_).c_str()));
+               bittorrent::getInfoHashString(downloadContext_).c_str()),
+           error_code::DUPLICATE_INFO_HASH);
       }
       if(metadataGetMode) {
         // Use UnknownLengthPieceStorage.
         initPieceStorage();
       } else {
         if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
-          throw DOWNLOAD_FAILURE_EXCEPTION
+          throw DOWNLOAD_FAILURE_EXCEPTION2
             (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-                 downloadContext_->getBasePath().c_str()));
+                 downloadContext_->getBasePath().c_str()),
+             error_code::DUPLICATE_DOWNLOAD);
         }
         initPieceStorage();
         if(downloadContext_->getFileEntries().size() > 1) {
@@ -413,9 +415,10 @@ void RequestGroup::createInitialCommand
              !option_->getAsBool(PREF_ALLOW_OVERWRITE) &&
              !option_->getAsBool(PREF_BT_SEED_UNVERIFIED)) {
             // TODO we need this->haltRequested = true?
-            throw DOWNLOAD_FAILURE_EXCEPTION
+            throw DOWNLOAD_FAILURE_EXCEPTION2
               (fmt(MSG_FILE_ALREADY_EXISTS,
-                   downloadContext_->getBasePath().c_str()));
+                   downloadContext_->getBasePath().c_str()),
+               error_code::FILE_ALREADY_EXISTS);
           } else {
             pieceStorage_->getDiskAdaptor()->openFile();
           }
@@ -477,9 +480,10 @@ void RequestGroup::createInitialCommand
       createNextCommand(commands, e, 1);
     } else {
       if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
-        throw DOWNLOAD_FAILURE_EXCEPTION
+        throw DOWNLOAD_FAILURE_EXCEPTION2
           (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-               downloadContext_->getBasePath().c_str()));
+               downloadContext_->getBasePath().c_str()),
+           error_code::DUPLICATE_DOWNLOAD);
       }
       SharedHandle<BtProgressInfoFile> progressInfoFile
         (new DefaultBtProgressInfoFile
@@ -503,9 +507,10 @@ void RequestGroup::createInitialCommand
     // In this context, multiple FileEntry objects are in
     // DownloadContext.
     if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
-      throw DOWNLOAD_FAILURE_EXCEPTION
+      throw DOWNLOAD_FAILURE_EXCEPTION2
         (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-             downloadContext_->getBasePath().c_str()));
+             downloadContext_->getBasePath().c_str()),
+         error_code::DUPLICATE_DOWNLOAD);
     }
     initPieceStorage();
     if(downloadContext_->getFileEntries().size() > 1) {
@@ -526,9 +531,10 @@ void RequestGroup::createInitialCommand
         if(!isCheckIntegrityReady() &&
            !option_->getAsBool(PREF_ALLOW_OVERWRITE)) {
           // TODO we need this->haltRequested = true?
-          throw DOWNLOAD_FAILURE_EXCEPTION
+          throw DOWNLOAD_FAILURE_EXCEPTION2
             (fmt(MSG_FILE_ALREADY_EXISTS,
-                 downloadContext_->getBasePath().c_str()));
+                 downloadContext_->getBasePath().c_str()),
+             error_code::FILE_ALREADY_EXISTS);
         } else {
           pieceStorage_->getDiskAdaptor()->openFile();
         }
@@ -763,14 +769,16 @@ void RequestGroup::shouldCancelDownloadForSafety()
       if(tryAutoFileRenaming()) {
         A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED, getFirstFilePath().c_str()));
       } else {
-        throw DOWNLOAD_FAILURE_EXCEPTION
+        throw DOWNLOAD_FAILURE_EXCEPTION2
           (fmt("File renaming failed: %s",
-               getFirstFilePath().c_str()));
+               getFirstFilePath().c_str()),
+           error_code::FILE_RENAMING_FAILED);
       }
     } else {
-      throw DOWNLOAD_FAILURE_EXCEPTION
+      throw DOWNLOAD_FAILURE_EXCEPTION2
         (fmt(MSG_FILE_ALREADY_EXISTS,
-             getFirstFilePath().c_str()));
+             getFirstFilePath().c_str()),
+         error_code::FILE_ALREADY_EXISTS);
     }
   }
 }

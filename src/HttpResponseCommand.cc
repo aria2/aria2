@@ -213,9 +213,10 @@ bool HttpResponseCommand::executeInternal()
     getRequestGroup()->preDownloadProcessing();
     if(getDownloadEngine()->getRequestGroupMan()->
        isSameFileBeingDownloaded(getRequestGroup())) {
-      throw DOWNLOAD_FAILURE_EXCEPTION
+      throw DOWNLOAD_FAILURE_EXCEPTION2
         (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-             getRequestGroup()->getFirstFilePath().c_str()));
+             getRequestGroup()->getFirstFilePath().c_str()),
+         error_code::DUPLICATE_DOWNLOAD);
     }
     // update last modified time
     updateLastModifiedTime(httpResponse->getLastModifiedTime());
