@@ -64,4 +64,13 @@ RecoverableException::RecoverableException
   : Exception(file, line, errNum, msg)
 {}
 
+RecoverableException::RecoverableException
+(const char* file,
+ int line,
+ int errNum,
+ const std::string& msg,
+ error_code::Value errorCode)
+  : Exception(file, line, errNum, msg, errorCode)
+{}
+
 } // namespace aria2

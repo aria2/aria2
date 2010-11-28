@@ -52,6 +52,10 @@ public:
 
   RecoverableException
   (const char* file, int line, int errNum, const std::string& msg);
+
+  RecoverableException
+  (const char* file, int line, int errNum, const std::string& msg,
+   error_code::Value errorCode);
 };
 
 } // namespace aria2

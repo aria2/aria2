@@ -47,14 +47,19 @@ public:
   DlAbortEx(const char* file, int line, const std::string& msg,
             const Exception& cause);
 
+  DlAbortEx(const char* file, int line, const std::string& msg,
+            error_code::Value code);
+
   DlAbortEx(const char* file, int line, int errNum, const std::string& msg);
 
-  DlAbortEx(const char* file, int line, const std::string& msg,
+  DlAbortEx(const char* file, int line, int errNum, const std::string& msg,
             error_code::Value code);
 };
 
 #define DL_ABORT_EX(arg) DlAbortEx(__FILE__, __LINE__, arg)
 #define DL_ABORT_EX2(arg1, arg2) DlAbortEx(__FILE__, __LINE__, arg1, arg2)
+#define DL_ABORT_EX3(arg1, arg2, arg3)\
+  DlAbortEx(__FILE__, __LINE__, arg1, arg2, arg3)
 
 } // namespace aria2
 

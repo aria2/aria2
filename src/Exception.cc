@@ -86,6 +86,19 @@ Exception::Exception
     errorCode_(error_code::UNKNOWN_ERROR)
 {}
 
+Exception::Exception
+(const char* file,
+ int line,
+ int errNum,
+ const std::string& msg,
+ error_code::Value errorCode)
+  : file_(file),
+    line_(line),
+    errNum_(errNum),
+    msg_(msg),
+    errorCode_(errorCode)
+{}
+
 Exception::~Exception() throw() {}
 
 std::string Exception::stackTrace() const

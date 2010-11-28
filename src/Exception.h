@@ -72,6 +72,9 @@ public:
 
   Exception(const char* file, int line, int errNum, const std::string& msg);
 
+  Exception(const char* file, int line, int errNum, const std::string& msg,
+            error_code::Value errorCode);
+
   virtual ~Exception() throw();
 
   virtual const char* what() const throw();
