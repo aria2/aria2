@@ -303,9 +303,9 @@ bool AbstractCommand::execute() {
     }
   } catch(DownloadFailureException& err) {
     A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, err);
+    requestGroup_->setLastErrorCode(err.getErrorCode());
     if(req_) {
       fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
-      requestGroup_->setLastErrorCode(err.getErrorCode());
     }
     requestGroup_->setHaltRequested(true);
     return true;
