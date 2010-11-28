@@ -38,20 +38,49 @@
 
 namespace aria2 {
 
-Exception::Exception(const char* file, int line, const std::string& msg):
-  file_(file), line_(line), errno_(0),  msg_(msg) {}
-
-Exception::Exception(const char* file, int line, const std::string& msg,
-                     const Exception& cause):
-  file_(file), line_(line), errno_(0), msg_(msg), cause_(cause.copy()) {}
-
-Exception::Exception(const char* file, int line, const Exception& e):
-  file_(file), line_(line), errno_(0), msg_(e.msg_), cause_(e.cause_)
+Exception::Exception
+(const char* file,
+ int line,
+ const std::string& msg)
+  : file_(file),
+    line_(line),
+    errNum_(0),
+    msg_(msg)
 {}
 
 Exception::Exception
-(const char* file, int line, int errnoArg, const std::string& msg):
-  file_(file), line_(line), errno_(errnoArg), msg_(msg) {}
+(const char* file,
+ int line,
+ const std::string& msg,
+ const Exception& cause)
+  : file_(file),
+    line_(line),
+    errNum_(0),
+    msg_(msg),
+    cause_(cause.copy())
+{}
+
+Exception::Exception
+(const char* file,
+ int line,
+ const Exception& e)
+  : file_(file),
+    line_(line),
+    errNum_(0),
+    msg_(e.msg_),
+    cause_(e.cause_)
+{}
+
+Exception::Exception
+(const char* file,
+ int line,
+ int errNum,
+ const std::string& msg)
+  : file_(file),
+    line_(line),
+    errNum_(errNum),
+    msg_(msg)
+{}
 
 Exception::~Exception() throw() {}
 
@@ -59,8 +88,8 @@ std::string Exception::stackTrace() const
 {
   std::stringstream s;
   s << "Exception: " << "[" << file_ << ":" << line_ << "] ";
-  if(errno_) {
-    s << "errno=" << errno_ << " ";
+  if(errNum_) {
+    s << "errno=" << errNum_ << " ";
   }
   s  << what() << "\n";
   SharedHandle<Exception> e = cause_;

@@ -71,7 +71,7 @@ void AbstractDiskWriter::openFile(uint64_t totalLength)
   try {
     openExistingFile(totalLength);
   } catch(RecoverableException& e) {
-    if(e.getErrno() == ENOENT) {
+    if(e.getErrNum() == ENOENT) {
       initAndOpenFile(totalLength);
     } else {
       throw;

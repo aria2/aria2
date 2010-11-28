@@ -50,12 +50,11 @@ private:
   
   int line_;
 
-  int errno_;
+  int errNum_;
 
   std::string msg_;
 
   SharedHandle<Exception> cause_;
-
 protected:
   virtual SharedHandle<Exception> copy() const = 0;
 
@@ -67,7 +66,7 @@ public:
 
   Exception(const char* file, int line, const Exception& e);
 
-  Exception(const char* file, int line, int errnoArg, const std::string& msg);
+  Exception(const char* file, int line, int errNum, const std::string& msg);
 
   virtual ~Exception() throw();
 
@@ -75,9 +74,9 @@ public:
 
   std::string stackTrace() const;
 
-  int getErrno() const
+  int getErrNum() const
   {
-    return errno_;
+    return errNum_;
   }
 };
 
