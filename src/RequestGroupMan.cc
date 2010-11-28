@@ -524,6 +524,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       std::for_each(commands.begin(), commands.end(), Deleter());
       commands.clear();
       A2_LOG_DEBUG("Commands deleted");
+      groupToAdd->setLastErrorCode(ex.getErrorCode());
       groupToAdd->releaseRuntimeResource(e);
       addDownloadResult(groupToAdd->createDownloadResult());
     }
