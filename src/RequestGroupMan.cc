@@ -516,8 +516,6 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       ++count;
       e->addCommand(commands);
       commands.clear();
-      util::executeHookByOptName
-        (groupToAdd, e->getOption(), PREF_ON_DOWNLOAD_START);
     } catch(RecoverableException& ex) {
       A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       A2_LOG_DEBUG("Deleting temporal commands.");
@@ -525,9 +523,13 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       commands.clear();
       A2_LOG_DEBUG("Commands deleted");
       groupToAdd->setLastErrorCode(ex.getErrorCode());
-      groupToAdd->releaseRuntimeResource(e);
-      addDownloadResult(groupToAdd->createDownloadResult());
+      // We add groupToAdd to e in order to it is processed in
+      // removeStoppedGroup().
+      requestGroups_.push_back(groupToAdd);
+      requestQueueCheck();
     }
+    util::executeHookByOptName
+      (groupToAdd, e->getOption(), PREF_ON_DOWNLOAD_START);
   }
   if(!temp.empty()) {
     reservedGroups_.insert(reservedGroups_.begin(), temp.begin(), temp.end());
