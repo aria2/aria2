@@ -51,6 +51,7 @@
 #include "a2io.h"
 #include "fmt.h"
 #include "DownloadFailureException.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -100,10 +101,12 @@ void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
         errno == EINTR);
   if(fd_ < 0) {
     int errNum = errno;
-    throw DL_ABORT_EX2
-      (errNum, fmt(EX_FILE_OPEN,
-                   filename_.c_str(),
-                   util::safeStrerror(errNum).c_str()));
+    throw DL_ABORT_EX3
+      (errNum,
+       fmt(EX_FILE_OPEN,
+           filename_.c_str(),
+           util::safeStrerror(errNum).c_str()),
+       error_code::FILE_OPEN_ERROR);
   }
 }
 
@@ -116,10 +119,12 @@ void AbstractDiskWriter::createFile(int addFlags)
                     OPEN_MODE)) == -1 && errno == EINTR);
   if(fd_ < 0) {
     int errNum = errno;
-    throw DL_ABORT_EX2
-      (errNum, fmt(EX_FILE_OPEN,
-                   filename_.c_str(),
-                   util::safeStrerror(errNum).c_str()));
+    throw DL_ABORT_EX3
+      (errNum,
+       fmt(EX_FILE_OPEN,
+           filename_.c_str(),
+           util::safeStrerror(errNum).c_str()),
+       error_code::FILE_CREATE_ERROR);
   }  
 }
 
@@ -148,9 +153,10 @@ void AbstractDiskWriter::seek(off_t offset)
 {
   if(a2lseek(fd_, offset, SEEK_SET) == (off_t)-1) {
     int errNum = errno;
-    throw DL_ABORT_EX(fmt(EX_FILE_SEEK,
-                          filename_.c_str(),
-                          util::safeStrerror(errNum).c_str()));
+    throw DL_ABORT_EX2(fmt(EX_FILE_SEEK,
+                           filename_.c_str(),
+                           util::safeStrerror(errNum).c_str()),
+                       error_code::FILE_IO_ERROR);
   }
 }
 
@@ -162,16 +168,19 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
     // If errno is ENOSPC(not enough space in device), throw
     // DownloadFailureException and abort download instantly.
     if(errNum == ENOSPC) {
-      throw DOWNLOAD_FAILURE_EXCEPTION2
-        (fmt(EX_FILE_WRITE,
+      throw DOWNLOAD_FAILURE_EXCEPTION3
+        (errNum,
+         fmt(EX_FILE_WRITE,
              filename_.c_str(),
              util::safeStrerror(errNum).c_str()),
          error_code::NOT_ENOUGH_DISK_SPACE);
     } else {
-      throw DL_ABORT_EX
-        (fmt(EX_FILE_WRITE,
+      throw DL_ABORT_EX3
+        (errNum,
+         fmt(EX_FILE_WRITE,
              filename_.c_str(),
-             util::safeStrerror(errNum).c_str()));
+             util::safeStrerror(errNum).c_str()),
+         error_code::FILE_IO_ERROR);
     }
   }
 }
@@ -182,10 +191,12 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {
     int errNum = errno;
-    throw DL_ABORT_EX
-      (fmt(EX_FILE_READ,
+    throw DL_ABORT_EX3
+      (errNum,
+       fmt(EX_FILE_READ,
            filename_.c_str(),
-           util::safeStrerror(errNum).c_str()));
+           util::safeStrerror(errNum).c_str()),
+       error_code::FILE_IO_ERROR);
   }
   return ret;
 }
@@ -201,14 +212,17 @@ void AbstractDiskWriter::truncate(uint64_t length)
   HANDLE handle = LongToHandle(_get_osfhandle(fd_));
   seek(length);
   if(SetEndOfFile(handle) == 0) {
-    throw DL_ABORT_EX(fmt("SetEndOfFile failed. cause: %s",
-                          GetLastError()));
+    throw DL_ABORT_EX2(fmt("SetEndOfFile failed. cause: %s",
+                           GetLastError()),
+                       error_code::FILE_IO_ERROR);
   }
 #else
   if(ftruncate(fd_, length) == -1) {
     int errNum = errno;
-    throw DL_ABORT_EX(fmt("ftruncate failed. cause: %s",
-                          util::safeStrerror(errNum).c_str()));
+    throw DL_ABORT_EX3(errNum,
+                       fmt("ftruncate failed. cause: %s",
+                           util::safeStrerror(errNum).c_str()),
+                       error_code::FILE_IO_ERROR);
   }
 #endif
 }
@@ -226,14 +240,18 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
   while((r = fallocate(fd_, 0, offset, length)) == -1 && errno == EINTR);
   int errNum = errno;
   if(r == -1) {
-    throw DL_ABORT_EX(fmt("fallocate failed. cause: %s",
-                          util::safeStrerror(errNum).c_str()));
+    throw DL_ABORT_EX3(errNum,
+                       fmt("fallocate failed. cause: %s",
+                           util::safeStrerror(errNum).c_str()),
+                       error_code::FILE_IO_ERROR);
   }
 # elif HAVE_POSIX_FALLOCATE
   int r = posix_fallocate(fd_, offset, length);
   if(r != 0) {
-    throw DL_ABORT_EX(fmt("posix_fallocate failed. cause: %s",
-                          util::safeStrerror(r).c_str()));
+    throw DL_ABORT_EX3(errNum,
+                       fmt("posix_fallocate failed. cause: %s",
+                           util::safeStrerror(r).c_str()),
+                       error_code::FILE_IO_ERROR);
   }
 # else
 #  error "no *_fallocate function available."

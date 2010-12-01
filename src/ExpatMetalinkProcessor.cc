@@ -46,6 +46,7 @@
 #include "DlAbortEx.h"
 #include "MetalinkParserState.h"
 #include "A2STR.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -158,16 +159,19 @@ namespace {
 void checkError(XML_Parser parser)
 {
   if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                       error_code::METALINK_PARSE_ERROR);
   }
   SessionData* sessionData =
     reinterpret_cast<SessionData*>(XML_GetUserData(parser));
   const SharedHandle<MetalinkParserStateMachine>& stm = sessionData->stm_;
   if(!stm->finished()) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                       error_code::METALINK_PARSE_ERROR);
   }
   if(!stm->getErrors().empty()) {
-    throw DL_ABORT_EX(stm->getErrorString());
+    throw DL_ABORT_EX2(stm->getErrorString(),
+                       error_code::METALINK_PARSE_ERROR);
   }
 }
 } // namespace
@@ -195,11 +199,13 @@ MetalinkProcessor::parseFile(std::istream& stream)
   while(stream) {
     stream.read(buf, sizeof(buf));
     if(XML_Parse(parser, buf, stream.gcount(), 0) == XML_STATUS_ERROR) {
-      throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+      throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                         error_code::METALINK_PARSE_ERROR);
     }
   }
   if(stream.bad()) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                       error_code::METALINK_PARSE_ERROR);
   }
   checkError(parser);
   return stm_->getResult();
@@ -223,7 +229,8 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
     }
     if(XML_Parse(parser, reinterpret_cast<const char*>(buf), res, 0) ==
        XML_STATUS_ERROR) {
-      throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+      throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                         error_code::METALINK_PARSE_ERROR);
     }
     readOffset += res;
   }

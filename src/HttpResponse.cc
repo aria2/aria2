@@ -50,6 +50,7 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "ChunkedDecodingStreamFilter.h"
+#include "error_code.h"
 #ifdef HAVE_LIBZ
 # include "GZipDecodingStreamFilter.h"
 #endif // HAVE_LIBZ
@@ -70,14 +71,16 @@ void HttpResponse::validateResponse() const
   }
   if(statusCode == 304) {
     if(httpRequest_->getIfModifiedSinceHeader().empty()) {
-      throw DL_ABORT_EX("Got 304 without If-Modified-Since");
+      throw DL_ABORT_EX2("Got 304 without If-Modified-Since",
+                         error_code::HTTP_PROTOCOL_ERROR);
     }
   } else if(statusCode == 301 ||
             statusCode == 302 ||
             statusCode == 303 ||
             statusCode == 307) {
     if(!httpHeader_->defined(HttpHeader::LOCATION)) {
-      throw DL_ABORT_EX(fmt(EX_LOCATION_HEADER_REQUIRED, statusCode));
+      throw DL_ABORT_EX2(fmt(EX_LOCATION_HEADER_REQUIRED, statusCode),
+                         error_code::HTTP_PROTOCOL_ERROR);
     }
     return;
   } else if(statusCode == 200 || statusCode == 206) {
@@ -97,7 +100,8 @@ void HttpResponse::validateResponse() const
       }
     }
   } else {
-    throw DL_ABORT_EX(fmt("Unexpected status %d", statusCode));
+    throw DL_ABORT_EX2(fmt("Unexpected status %d", statusCode),
+                       error_code::HTTP_PROTOCOL_ERROR);
   }
 }
 

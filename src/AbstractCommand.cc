@@ -65,6 +65,7 @@
 #include "NameResolver.h"
 #include "uri.h"
 #include "FileEntry.h"
+#include "error_code.h"
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -650,11 +651,12 @@ bool AbstractCommand::asyncResolveHostname()
       e_->getRequestGroupMan()->getOrCreateServerStat
         (req_->getHost(), req_->getProtocol())->setError();
     }
-    throw DL_ABORT_EX
+    throw DL_ABORT_EX2
       (fmt(MSG_NAME_RESOLUTION_FAILED,
-                    getCuid(),
-                    asyncNameResolver_->getHostname().c_str(),
-                    asyncNameResolver_->getError().c_str()));
+           getCuid(),
+           asyncNameResolver_->getHostname().c_str(),
+           asyncNameResolver_->getError().c_str()),
+       error_code::NAME_RESOLVE_ERROR);
   default:
     return false;
   }

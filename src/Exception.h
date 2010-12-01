@@ -53,16 +53,20 @@ private:
   int errNum_;
 
   std::string msg_;
+  // This is application-level error code.
+  error_code::Value errorCode_;
   // Exception that this object wraps. Normally this cause_ is the
   // root cause of this exception.
   SharedHandle<Exception> cause_;
-  // This is application-level error code.
-  error_code::Value errorCode_;
 protected:
   virtual SharedHandle<Exception> copy() const = 0;
 
 public:
   Exception(const char* file, int line, const std::string& msg);
+
+  Exception(const char* file, int line, const std::string& msg,
+            error_code::Value errorCode,
+            const Exception& cause);
   // errorCode_ is initializedwith cause.errorCode_.
   Exception(const char* file, int line, const std::string& msg,
             const Exception& cause);

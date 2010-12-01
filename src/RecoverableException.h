@@ -45,6 +45,10 @@ public:
   RecoverableException(const char* file, int line, const std::string& msg);
 
   RecoverableException(const char* file, int line, const std::string& msg,
+                       error_code::Value errorCode,
+                       const Exception& cause);
+
+  RecoverableException(const char* file, int line, const std::string& msg,
                        const Exception& cause);
 
   RecoverableException(const char* file, int line, const std::string& msg,

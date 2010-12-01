@@ -49,6 +49,7 @@
 #include "array_fun.h"
 #include "OptionHandlerFactory.h"
 #include "DlAbortEx.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -158,7 +159,8 @@ void OptionParser::parseArg
       op = findByShortName(c);
     }
     if(!op) {
-      throw DL_ABORT_EX("Failed to parse command-line options.");
+      throw DL_ABORT_EX2("Failed to parse command-line options.",
+                         error_code::OPTION_ERROR);
     }
     out << op->getName() << "=";
     if(optarg) {

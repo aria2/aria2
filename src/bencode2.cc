@@ -39,6 +39,7 @@
 
 #include "fmt.h"
 #include "DlAbortEx.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -53,9 +54,10 @@ void checkdelim(std::istream& ss, const char delim = ':')
 {
   char d;
   if(!(ss.get(d) && d == delim)) {
-    throw DL_ABORT_EX
+    throw DL_ABORT_EX2
       (fmt("Bencode decoding failed: Delimiter '%c' not found.",
-           delim));
+           delim),
+       error_code::BENCODE_PARSE_ERROR);
   }
 }
 } // namespace
@@ -66,8 +68,9 @@ std::string decoderawstring(std::istream& ss)
   int length;
   ss >> length;
   if(!ss || length < 0) {
-    throw DL_ABORT_EX("Bencode decoding failed:"
-                      " A positive integer expected but none found.");
+    throw DL_ABORT_EX2("Bencode decoding failed:"
+                       " A positive integer expected but none found.",
+                       error_code::BENCODE_PARSE_ERROR);
   }
   // TODO check length, it must be less than or equal to INT_MAX
   checkdelim(ss);
@@ -76,11 +79,12 @@ std::string decoderawstring(std::istream& ss)
   std::string str(&buf[0], &buf[length]);
   delete [] buf;
   if(ss.gcount() != static_cast<int>(length)) {
-    throw DL_ABORT_EX
+    throw DL_ABORT_EX2
       (fmt("Bencode decoding failed:"
            " Expected %lu bytes of data, but only %ld read.",
            static_cast<unsigned long>(length),
-           static_cast<long int>(ss.gcount())));
+           static_cast<long int>(ss.gcount())),
+       error_code::BENCODE_PARSE_ERROR);
   }
   return str;
 }
@@ -99,8 +103,9 @@ SharedHandle<ValueBase> decodeinteger(std::istream& ss)
   Integer::ValueType iv;
   ss >> iv;
   if(!ss) {
-    throw DL_ABORT_EX("Bencode decoding failed:"
-                      " Integer expected but none found");
+    throw DL_ABORT_EX2("Bencode decoding failed:"
+                       " Integer expected but none found",
+                       error_code::BENCODE_PARSE_ERROR);
   }
   checkdelim(ss, 'e');
   return Integer::g(iv);
@@ -121,8 +126,9 @@ SharedHandle<ValueBase> decodedict(std::istream& ss, size_t depth)
       dict->put(key, decodeiter(ss, depth));
     }
   }
-  throw DL_ABORT_EX("Bencode decoding failed:"
-                    " Unexpected EOF in dict context. 'e' expected.");
+  throw DL_ABORT_EX2("Bencode decoding failed:"
+                     " Unexpected EOF in dict context. 'e' expected.",
+                     error_code::BENCODE_PARSE_ERROR);
 }
 } // namespace
 
@@ -139,8 +145,9 @@ SharedHandle<ValueBase> decodelist(std::istream& ss, size_t depth)
       list->append(decodeiter(ss, depth));
     }
   }
-  throw DL_ABORT_EX("Bencode decoding failed:"
-                    " Unexpected EOF in list context. 'e' expected.");
+  throw DL_ABORT_EX2("Bencode decoding failed:"
+                     " Unexpected EOF in list context. 'e' expected.",
+                     error_code::BENCODE_PARSE_ERROR);
 }
 } // namespace
 
@@ -148,7 +155,8 @@ namespace {
 void checkDepth(size_t depth)
 {
   if(depth >= MAX_STRUCTURE_DEPTH) {
-    throw DL_ABORT_EX("Bencode decoding failed: Structure is too deep.");
+    throw DL_ABORT_EX2("Bencode decoding failed: Structure is too deep.",
+                       error_code::BENCODE_PARSE_ERROR);
   }
 }
 } // namespace
@@ -159,9 +167,10 @@ SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth)
   checkDepth(depth);
   char c;
   if(!ss.get(c)) {
-    throw DL_ABORT_EX("Bencode decoding failed:"
-                      " Unexpected EOF in term context."
-                      " 'd', 'l', 'i' or digit is expected.");
+    throw DL_ABORT_EX2("Bencode decoding failed:"
+                       " Unexpected EOF in term context."
+                       " 'd', 'l', 'i' or digit is expected.",
+                       error_code::BENCODE_PARSE_ERROR);
   }
   if(c == 'd') {
     return decodedict(ss, depth+1);
@@ -215,9 +224,10 @@ SharedHandle<ValueBase> decodeFromFile(const std::string& filename)
   if(f) {
     return decode(f);
   } else {
-    throw DL_ABORT_EX
+    throw DL_ABORT_EX2
       (fmt("Bencode decoding failed: Cannot open file '%s'.",
-           filename.c_str()));
+           filename.c_str()),
+       error_code::BENCODE_PARSE_ERROR);
   }
 }
 

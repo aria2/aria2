@@ -49,6 +49,13 @@ RecoverableException::RecoverableException
 
 RecoverableException::RecoverableException
 (const char* file, int line, const std::string& msg,
+ error_code::Value errorCode,
+ const Exception& cause)
+  : Exception(file, line, msg, errorCode, cause)
+{}
+
+RecoverableException::RecoverableException
+(const char* file, int line, const std::string& msg,
  const Exception& cause)
   : Exception(file, line, msg, cause)
 {}

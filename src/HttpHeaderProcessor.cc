@@ -43,6 +43,7 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "A2STR.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -71,7 +72,8 @@ void HttpHeaderProcessor::update(const std::string& data)
 void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
 {
   if(buf_.size()+incomingLength > limit_) {
-    throw DL_ABORT_EX("Too large http header");
+    throw DL_ABORT_EX2("Too large http header",
+                       error_code::HTTP_PROTOCOL_ERROR);
   }
 }
 
@@ -138,7 +140,8 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
   std::vector<std::string> firstLine;
   util::split(buf_.substr(0, delimpos), std::back_inserter(firstLine)," ",true);
   if(firstLine.size() != 3) {
-    throw DL_ABORT_EX("Malformed HTTP request header.");    
+    throw DL_ABORT_EX2("Malformed HTTP request header.",
+                       error_code::HTTP_PROTOCOL_ERROR);
   }
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->setMethod(firstLine[0]);

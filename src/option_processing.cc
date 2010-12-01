@@ -145,11 +145,11 @@ void option_processing(Option& op, std::vector<std::string>& uris,
                       << oparser.findByName(e.getOptionName())->getDescription()
                       << std::endl;
           }
-          exit(error_code::UNKNOWN_ERROR);
+          exit(e.getErrorCode());
         } catch(Exception& e) {
           std::cerr << "Parse error in " << cfname << "\n"
                     << e.stackTrace() << std::endl;
-          exit(error_code::UNKNOWN_ERROR);
+          exit(e.getErrorCode());
         }
       } else if(!ucfname.empty()) {
         std::cerr << fmt("Configuration file %s is not found.", cfname.c_str())
@@ -171,15 +171,18 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     // finaly let's parse and store command-iine options.
     oparser.parse(op, cmdstream);
   } catch(OptionHandlerException& e) {
-    std::cerr << e.stackTrace() << "\n"
-              << "Usage:" << "\n"
-              << *oparser.findByName(e.getOptionName())
-              << std::endl;
-    exit(error_code::UNKNOWN_ERROR);
+    std::cerr << e.stackTrace() << "\n";
+    SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());
+    if(h) {
+      std::cerr << "Usage:" << "\n"
+                << *h
+                << std::endl;
+    }
+    exit(e.getErrorCode());
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
     showUsage(TAG_HELP, oparser);
-    exit(error_code::UNKNOWN_ERROR);
+    exit(e.getErrorCode());
   }
   if(
 #ifdef ENABLE_XML_RPC

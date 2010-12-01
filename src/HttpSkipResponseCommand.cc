@@ -58,6 +58,7 @@
 #include "BinaryStream.h"
 #include "NullSinkStreamFilter.h"
 #include "SinkStreamFilter.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -175,7 +176,8 @@ bool HttpSkipResponseCommand::processResponse()
     unsigned int rnum =
       httpResponse_->getHttpRequest()->getRequest()->getRedirectCount();
     if(rnum >= Request::MAX_REDIRECT) {
-      throw DL_ABORT_EX(fmt("Too many redirects: count=%u", rnum));
+      throw DL_ABORT_EX2(fmt("Too many redirects: count=%u", rnum),
+                         error_code::HTTP_TOO_MANY_REDIRECTS);
     }
     httpResponse_->processRedirect();
     return prepareForRetry(0);
@@ -187,13 +189,15 @@ bool HttpSkipResponseCommand::processResponse()
          (getRequest()->getHost(), getRequest()->getDir(), getOption().get())) {
         return prepareForRetry(0);
       } else {
-        throw DL_ABORT_EX(EX_AUTH_FAILED);
+        throw DL_ABORT_EX2(EX_AUTH_FAILED,
+                           error_code::HTTP_AUTH_FAILED);
       }
     } else if(statusCode == 404) {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          error_code::RESOURCE_NOT_FOUND);
     } else {
-      throw DL_ABORT_EX(fmt(EX_BAD_STATUS, statusCode));
+      throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
+                         error_code::HTTP_PROTOCOL_ERROR);
     }
   } else {
     return prepareForRetry(0);

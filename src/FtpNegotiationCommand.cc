@@ -72,6 +72,7 @@
 #include "HttpResponse.h"
 #include "DlRetryEx.h"
 #include "CheckIntegrityEntry.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -154,7 +155,7 @@ bool FtpNegotiationCommand::recvGreeting() {
     return false;
   }
   if(status != 220) {
-    throw DL_ABORT_EX(EX_CONNECTION_FAILED);
+    throw DL_ABORT_EX2(EX_CONNECTION_FAILED, error_code::FTP_PROTOCOL_ERROR);
   }
   sequence_ = SEQ_SEND_USER;
 
@@ -183,7 +184,8 @@ bool FtpNegotiationCommand::recvUser() {
     sequence_ = SEQ_SEND_PASS;
     break;
   default:
-    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+    throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                       error_code::FTP_PROTOCOL_ERROR);
   }
   return true;
 }
@@ -204,7 +206,8 @@ bool FtpNegotiationCommand::recvPass() {
     return false;
   }
   if(status != 230) {
-    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+    throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                       error_code::FTP_PROTOCOL_ERROR);
   }
   sequence_ = SEQ_SEND_TYPE;
   return true;
@@ -226,7 +229,8 @@ bool FtpNegotiationCommand::recvType() {
     return false;
   }
   if(status != 200) {
-    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+    throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                       error_code::FTP_PROTOCOL_ERROR);
   }
   sequence_ = SEQ_SEND_PWD;
   return true;
@@ -251,7 +255,8 @@ bool FtpNegotiationCommand::recvPwd()
     return false;
   }
   if(status != 257) {
-    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+    throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                       error_code::FTP_PROTOCOL_ERROR);
   }
   ftp_->setBaseWorkingDir(pwd);
   A2_LOG_INFO(fmt("CUID#%lld - base working directory is '%s'",
@@ -295,7 +300,8 @@ bool FtpNegotiationCommand::recvCwd()
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          error_code::RESOURCE_NOT_FOUND);
     else
-      throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+      throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                         error_code::FTP_PROTOCOL_ERROR);
   }
   cwdDirs_.pop_front();
   if(cwdDirs_.empty()) {
@@ -461,9 +467,10 @@ bool FtpNegotiationCommand::recvSize() {
   if(status == 213) {
 
     if(size > INT64_MAX) {
-      throw DL_ABORT_EX
+      throw DL_ABORT_EX2
         (fmt(EX_TOO_LARGE_FILE,
-             util::uitos(size, true).c_str()));
+             util::uitos(size, true).c_str()),
+         error_code::FTP_PROTOCOL_ERROR);
     }
     if(!getPieceStorage()) {
 
@@ -563,7 +570,8 @@ bool FtpNegotiationCommand::recvPort() {
     return false;
   }
   if(status != 200) {
-    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+    throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                       error_code::FTP_PROTOCOL_ERROR);
   }
   sequence_ = SEQ_SEND_REST;
   return true;
@@ -624,7 +632,8 @@ bool FtpNegotiationCommand::recvPasv() {
     return false;
   }
   if(status != 227) {
-    throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+    throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                       error_code::FTP_PROTOCOL_ERROR);
   }
   dataConnAddr_ = dest;
 
@@ -744,8 +753,9 @@ bool FtpNegotiationCommand::sendRestPasv(const SharedHandle<Segment>& segment) {
   // Check connection is made properly
   if(dataSocket_->isReadable(0)) {
     std::string error = dataSocket_->getSocketError();
-    throw DL_ABORT_EX
-      (fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()));
+    throw DL_ABORT_EX2
+      (fmt(MSG_ESTABLISHING_CONNECTION_FAILED, error.c_str()),
+       error_code::FTP_PROTOCOL_ERROR);
   }
   setReadCheckSocket(getSocket());
   disableWriteCheckSocket();
@@ -800,7 +810,8 @@ bool FtpNegotiationCommand::recvRetr() {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          error_code::RESOURCE_NOT_FOUND);
     else
-      throw DL_ABORT_EX(fmt(EX_BAD_STATUS, status));
+      throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
+                         error_code::FTP_PROTOCOL_ERROR);
   }
   if(getOption()->getAsBool(PREF_FTP_PASV)) {
     sequence_ = SEQ_NEGOTIATION_COMPLETED;

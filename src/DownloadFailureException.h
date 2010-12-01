@@ -54,12 +54,19 @@ public:
   DownloadFailureException(const char* file, int line,
                            const std::string& msg,
                            error_code::Value code);
+
+  DownloadFailureException(const char* file, int line,
+                           int errNum,
+                           const std::string& msg,
+                           error_code::Value code);
 };
 
 #define DOWNLOAD_FAILURE_EXCEPTION(arg)                 \
   DownloadFailureException(__FILE__, __LINE__, arg)
 #define DOWNLOAD_FAILURE_EXCEPTION2(arg1, arg2)                 \
   DownloadFailureException(__FILE__, __LINE__, arg1, arg2)
+#define DOWNLOAD_FAILURE_EXCEPTION3(arg1, arg2, arg3)                   \
+  DownloadFailureException(__FILE__, __LINE__, arg1, arg2, arg3)
 
 } // namespace aria2
 

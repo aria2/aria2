@@ -58,7 +58,7 @@ public:
 
 #define DL_ABORT_EX(arg) DlAbortEx(__FILE__, __LINE__, arg)
 #define DL_ABORT_EX2(arg1, arg2) DlAbortEx(__FILE__, __LINE__, arg1, arg2)
-#define DL_ABORT_EX3(arg1, arg2, arg3)\
+#define DL_ABORT_EX3(arg1, arg2, arg3)                  \
   DlAbortEx(__FILE__, __LINE__, arg1, arg2, arg3)
 
 } // namespace aria2

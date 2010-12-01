@@ -1151,9 +1151,11 @@ void mkdirs(const std::string& dirpath)
   if(!dir.mkdirs()) {
     int errNum = errno;
     if(!dir.isDir()) {
-      throw DL_ABORT_EX
-        (fmt(EX_MAKE_DIR, dir.getPath().c_str(),
-             safeStrerror(errNum).c_str()));
+      throw DL_ABORT_EX3
+        (errNum,
+         fmt(EX_MAKE_DIR, dir.getPath().c_str(),
+             safeStrerror(errNum).c_str()),
+         error_code::DIR_CREATE_ERROR);
     }
   }
 }

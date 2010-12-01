@@ -53,13 +53,27 @@ Exception::Exception
 (const char* file,
  int line,
  const std::string& msg,
+ error_code::Value errorCode,
  const Exception& cause)
   : file_(file),
     line_(line),
     errNum_(0),
     msg_(msg),
-    cause_(cause.copy()),
-    errorCode_(cause.errorCode_)
+    errorCode_(errorCode),
+    cause_(cause.copy())
+{}
+
+Exception::Exception
+(const char* file,
+ int line,
+ const std::string& msg,
+ const Exception& cause)
+  : file_(file),
+    line_(line),
+    errNum_(0),
+    msg_(msg),
+    errorCode_(cause.errorCode_),
+    cause_(cause.copy())
 {}
 
 Exception::Exception

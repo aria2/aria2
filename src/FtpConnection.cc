@@ -56,6 +56,7 @@
 #include "AuthConfig.h"
 #include "a2functional.h"
 #include "util.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -382,7 +383,8 @@ bool FtpConnection::bulkReceiveResponse
   if(strbuf_.size() >= 4) {
     status = getStatus(strbuf_);
     if(status == 0) {
-      throw DL_ABORT_EX(EX_INVALID_RESPONSE);
+      throw DL_ABORT_EX2(EX_INVALID_RESPONSE,
+                         error_code::FTP_PROTOCOL_ERROR);
     }
   } else {
     return false;
@@ -549,7 +551,8 @@ unsigned int FtpConnection::receivePwdResponse(std::string& pwd)
          (last = response.second.find("\"", ++first)) != std::string::npos) {
         pwd = response.second.substr(first, last-first);
       } else {
-        throw DL_ABORT_EX(EX_INVALID_RESPONSE);
+        throw DL_ABORT_EX2(EX_INVALID_RESPONSE,
+                           error_code::FTP_PROTOCOL_ERROR);
       }
     }
     return response.first;

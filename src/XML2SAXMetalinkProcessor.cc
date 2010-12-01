@@ -44,6 +44,7 @@
 #include "message.h"
 #include "DlAbortEx.h"
 #include "A2STR.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -200,13 +201,16 @@ MetalinkProcessor::parseFile(const std::string& filename)
   int retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
                                    nfilename.c_str());
   if(retval != 0) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                       error_code::METALINK_PARSE_ERROR);
   }
   if(!stm_->finished()) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                       error_code::METALINK_PARSE_ERROR);
   }
   if(!stm_->getErrors().empty()) {
-    throw DL_ABORT_EX(stm_->getErrorString());
+    throw DL_ABORT_EX2(stm_->getErrorString(),
+                       error_code::METALINK_PARSE_ERROR);
   }
   return stm_->getResult();
 }
@@ -220,7 +224,8 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
 
   ssize_t res = binaryStream->readData(buf, 4, 0);
   if(res != 4) {
-    throw DL_ABORT_EX("Too small data for parsing XML.");
+    throw DL_ABORT_EX2("Too small data for parsing XML.",
+                       error_code::METALINK_PARSE_ERROR);
   }
 
   SharedHandle<SessionData> sessionData(new SessionData(stm_));
@@ -236,17 +241,20 @@ MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binar
       break;
     }
     if(xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), res, 0) != 0) {
-      throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+      throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                         error_code::METALINK_PARSE_ERROR);
     }
     readOffset += res;
   }
   xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), 0, 1);
 
   if(!stm_->finished()) {
-    throw DL_ABORT_EX(MSG_CANNOT_PARSE_METALINK);
+    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
+                       error_code::METALINK_PARSE_ERROR);
   }
   if(!stm_->getErrors().empty()) {
-    throw DL_ABORT_EX(stm_->getErrorString());
+    throw DL_ABORT_EX2(stm_->getErrorString(),
+                       error_code::METALINK_PARSE_ERROR);
   }
   return stm_->getResult();
 }

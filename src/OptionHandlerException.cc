@@ -43,14 +43,15 @@ const std::string OptionHandlerException::MESSAGE
 OptionHandlerException::OptionHandlerException(const char* file, int line,
                                                const std::string& optName):
   RecoverableException
-  (file, line, fmt(MESSAGE.c_str(), optName.c_str())),
+  (file, line, fmt(MESSAGE.c_str(), optName.c_str()), error_code::OPTION_ERROR),
   optName_(optName) {}
 
 OptionHandlerException::OptionHandlerException(const char* file, int line,
                                                const std::string& optName,
                                                const Exception& cause):
   RecoverableException
-  (file, line, fmt(MESSAGE.c_str(), optName.c_str()), cause),
+  (file, line, fmt(MESSAGE.c_str(), optName.c_str()), error_code::OPTION_ERROR,
+   cause),
   optName_(optName) {}
 
 OptionHandlerException::~OptionHandlerException() throw() {}
