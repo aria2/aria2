@@ -1109,38 +1109,120 @@ lots of errors in a session.  aria2 returns the following exit status
 based on the last error encountered.
 
 *0*::
-  If all downloads are successful.
+  If all downloads were successful.
 
 *1*::
-  If an unknown error occurs.
+  If an unknown error occurred.
 
 *2*::
-  If time out occurs.
+  If time out occurred.
 
 *3*::
-  If a resource is not found.
+  If a resource was not found.
 
 *4*::
-  If aria2 sees the specfied number of "resource not found" error.
+  If aria2 saw the specfied number of "resource not found" error.
   See *<<aria2_optref_max_file_not_found, --max-file-not-found>>* option).
 
 *5*::
-  If a download aborts because download speed is too slow.
+  If a download aborted because download speed was too slow.
   See *<<aria2_optref_lowest_speed_limit, --lowest-speed-limit>>* option)
 
 *6*::
-  If network problem occurs.
+  If network problem occurred.
 
 *7*::
-  If there are unfinished downloads. This error is only reported if
-  all finished downloads are successful and there are unfinished
-  downloads in a queue when aria2 exits by pressing Ctrl-C by an user
+  If there were unfinished downloads. This error is only reported if
+  all finished downloads were successful and there were unfinished
+  downloads in a queue when aria2 exited by pressing Ctrl-C by an user
   or sending TERM or INT signal.
 
 *8*::
 
-  If server does not support resume when resume is required to
+  If remote server did not support resume when resume was required to
   complete download.
+
+*9*::
+
+  If there was not enough disk space available.
+
+*10*::
+
+  If piece length was different from one in .aria2 control file. See
+  *<<aria2_optref_allow_piece_length_change, --allow-piece-length-change>>* option.
+
+*11*::
+
+  If aria2 was downloading same file at that moment.
+
+*12*::
+
+  If aria2 was downloading same info hash torrent at that moment.
+
+*13*::
+
+  If file already existed. See *<<aria2_optref_allow_overwrite, --allow-overwrite>>* option.
+
+*14*::
+
+  If renaming file failed. See *<<aria2_optref_auto_file_renaming, --auto-file-renaming>>* option.
+
+*15*::
+
+  If aria2 could not open existing file.
+
+*16*::
+
+  If aria2 could not create new file or truncate existing file.
+
+*17*::
+
+  If file I/O error occurred.
+
+*18*::
+
+  If aria2 could not create directory.
+
+*19*::
+
+  If name resolution failed.
+
+*20*::
+
+  If aria2 could not parse Metalink document.
+
+*21*::
+
+  If FTP command failed.
+
+*22*::
+
+  If HTTP response header was bad or unexpected.
+
+*23*::
+
+  If too many redirections occurred.
+
+*24*::
+
+  If HTTP authorization failed.
+
+*25*::
+
+  If aria2 could not parse bencoded file(usually .torrent file).
+
+*26*::
+
+  If .torrent file was corrupted or missing information that aria2 needed.
+
+*27*::
+
+  If Magnet URI was bad.
+
+*28*::
+
+  If bad/unrecognized option was given or unexpected option argument
+  was given.
 
 [NOTE]
 An error occurred in a finished download will not be reported

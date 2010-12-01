@@ -2469,7 +2469,7 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If all downloads are successful.
+  If all downloads were successful.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2477,7 +2477,7 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If an unknown error occurs.
+  If an unknown error occurred.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2485,7 +2485,7 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If time out occurs.
+  If time out occurred.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2493,7 +2493,7 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If a resource is not found.
+  If a resource was not found.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2501,7 +2501,7 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If aria2 sees the specfied number of "resource not found" error.
+  If aria2 saw the specfied number of "resource not found" error.
   See <strong><a href="#aria2_optref_max_file_not_found">--max-file-not-found</a></strong> option).
 </p>
 </dd>
@@ -2510,7 +2510,7 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If a download aborts because download speed is too slow.
+  If a download aborted because download speed was too slow.
   See <strong><a href="#aria2_optref_lowest_speed_limit">--lowest-speed-limit</a></strong> option)
 </p>
 </dd>
@@ -2519,7 +2519,7 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If network problem occurs.
+  If network problem occurred.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2527,9 +2527,9 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If there are unfinished downloads. This error is only reported if
-  all finished downloads are successful and there are unfinished
-  downloads in a queue when aria2 exits by pressing Ctrl-C by an user
+  If there were unfinished downloads. This error is only reported if
+  all finished downloads were successful and there were unfinished
+  downloads in a queue when aria2 exited by pressing Ctrl-C by an user
   or sending TERM or INT signal.
 </p>
 </dd>
@@ -2538,8 +2538,170 @@ based on the last error encountered.</p></div>
 </dt>
 <dd>
 <p>
-  If server does not support resume when resume is required to
+  If remote server did not support resume when resume was required to
   complete download.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>9</strong>
+</dt>
+<dd>
+<p>
+  If there was not enough disk space available.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>10</strong>
+</dt>
+<dd>
+<p>
+  If piece length was different from one in .aria2 control file. See
+  <strong><a href="#aria2_optref_allow_piece_length_change">--allow-piece-length-change</a></strong> option.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>11</strong>
+</dt>
+<dd>
+<p>
+  If aria2 was downloading same file at that moment.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>12</strong>
+</dt>
+<dd>
+<p>
+  If aria2 was downloading same info hash torrent at that moment.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>13</strong>
+</dt>
+<dd>
+<p>
+  If file already existed. See <strong><a href="#aria2_optref_allow_overwrite">--allow-overwrite</a></strong> option.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>14</strong>
+</dt>
+<dd>
+<p>
+  If renaming file failed. See <strong><a href="#aria2_optref_auto_file_renaming">--auto-file-renaming</a></strong> option.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>15</strong>
+</dt>
+<dd>
+<p>
+  If aria2 could not open existing file.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>16</strong>
+</dt>
+<dd>
+<p>
+  If aria2 could not create new file or truncate existing file.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>17</strong>
+</dt>
+<dd>
+<p>
+  If file I/O error occurred.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>18</strong>
+</dt>
+<dd>
+<p>
+  If aria2 could not create directory.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>19</strong>
+</dt>
+<dd>
+<p>
+  If name resolution failed.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>20</strong>
+</dt>
+<dd>
+<p>
+  If aria2 could not parse Metalink document.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>21</strong>
+</dt>
+<dd>
+<p>
+  If FTP command failed.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>22</strong>
+</dt>
+<dd>
+<p>
+  If HTTP response header was bad or unexpected.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>23</strong>
+</dt>
+<dd>
+<p>
+  If too many redirections occurred.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>24</strong>
+</dt>
+<dd>
+<p>
+  If HTTP authorization failed.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>25</strong>
+</dt>
+<dd>
+<p>
+  If aria2 could not parse bencoded file(usually .torrent file).
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>26</strong>
+</dt>
+<dd>
+<p>
+  If .torrent file was corrupted or missing information that aria2 needed.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>27</strong>
+</dt>
+<dd>
+<p>
+  If Magnet URI was bad.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>28</strong>
+</dt>
+<dd>
+<p>
+  If bad/unrecognized option was given or unexpected option argument
+  was given.
 </p>
 </dd>
 </dl></div>
@@ -4708,7 +4870,7 @@ files in the program, then also delete it here.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2010-11-23 23:06:32 JST
+Last updated 2010-12-01 21:57:22 JST
 </div>
 </div>
 </body>

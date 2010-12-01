@@ -2,12 +2,12 @@
 .\"     Title: aria2c
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-.\"      Date: 11/23/2010
+.\"      Date: 12/01/2010
 .\"    Manual: Aria2 Manual
 .\"    Source: Aria2 1.10.6
 .\"  Language: English
 .\"
-.TH "ARIA2C" "1" "11/23/2010" "Aria2 1\&.10\&.6" "Aria2 Manual"
+.TH "ARIA2C" "1" "12/01/2010" "Aria2 1\&.10\&.6" "Aria2 Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -1546,51 +1546,157 @@ Because aria2 can handle multiple downloads at once, it encounters lots of error
 .PP
 \fB0\fR
 .RS 4
-If all downloads are successful\&.
+If all downloads were successful\&.
 .RE
 .PP
 \fB1\fR
 .RS 4
-If an unknown error occurs\&.
+If an unknown error occurred\&.
 .RE
 .PP
 \fB2\fR
 .RS 4
-If time out occurs\&.
+If time out occurred\&.
 .RE
 .PP
 \fB3\fR
 .RS 4
-If a resource is not found\&.
+If a resource was not found\&.
 .RE
 .PP
 \fB4\fR
 .RS 4
-If aria2 sees the specfied number of "resource not found" error\&. See
+If aria2 saw the specfied number of "resource not found" error\&. See
 \fB\-\-max\-file\-not\-found\fR
 option)\&.
 .RE
 .PP
 \fB5\fR
 .RS 4
-If a download aborts because download speed is too slow\&. See
+If a download aborted because download speed was too slow\&. See
 \fB\-\-lowest\-speed\-limit\fR
 option)
 .RE
 .PP
 \fB6\fR
 .RS 4
-If network problem occurs\&.
+If network problem occurred\&.
 .RE
 .PP
 \fB7\fR
 .RS 4
-If there are unfinished downloads\&. This error is only reported if all finished downloads are successful and there are unfinished downloads in a queue when aria2 exits by pressing Ctrl\-C by an user or sending TERM or INT signal\&.
+If there were unfinished downloads\&. This error is only reported if all finished downloads were successful and there were unfinished downloads in a queue when aria2 exited by pressing Ctrl\-C by an user or sending TERM or INT signal\&.
 .RE
 .PP
 \fB8\fR
 .RS 4
-If server does not support resume when resume is required to complete download\&.
+If remote server did not support resume when resume was required to complete download\&.
+.RE
+.PP
+\fB9\fR
+.RS 4
+If there was not enough disk space available\&.
+.RE
+.PP
+\fB10\fR
+.RS 4
+If piece length was different from one in \&.aria2 control file\&. See
+\fB\-\-allow\-piece\-length\-change\fR
+option\&.
+.RE
+.PP
+\fB11\fR
+.RS 4
+If aria2 was downloading same file at that moment\&.
+.RE
+.PP
+\fB12\fR
+.RS 4
+If aria2 was downloading same info hash torrent at that moment\&.
+.RE
+.PP
+\fB13\fR
+.RS 4
+If file already existed\&. See
+\fB\-\-allow\-overwrite\fR
+option\&.
+.RE
+.PP
+\fB14\fR
+.RS 4
+If renaming file failed\&. See
+\fB\-\-auto\-file\-renaming\fR
+option\&.
+.RE
+.PP
+\fB15\fR
+.RS 4
+If aria2 could not open existing file\&.
+.RE
+.PP
+\fB16\fR
+.RS 4
+If aria2 could not create new file or truncate existing file\&.
+.RE
+.PP
+\fB17\fR
+.RS 4
+If file I/O error occurred\&.
+.RE
+.PP
+\fB18\fR
+.RS 4
+If aria2 could not create directory\&.
+.RE
+.PP
+\fB19\fR
+.RS 4
+If name resolution failed\&.
+.RE
+.PP
+\fB20\fR
+.RS 4
+If aria2 could not parse Metalink document\&.
+.RE
+.PP
+\fB21\fR
+.RS 4
+If FTP command failed\&.
+.RE
+.PP
+\fB22\fR
+.RS 4
+If HTTP response header was bad or unexpected\&.
+.RE
+.PP
+\fB23\fR
+.RS 4
+If too many redirections occurred\&.
+.RE
+.PP
+\fB24\fR
+.RS 4
+If HTTP authorization failed\&.
+.RE
+.PP
+\fB25\fR
+.RS 4
+If aria2 could not parse bencoded file(usually \&.torrent file)\&.
+.RE
+.PP
+\fB26\fR
+.RS 4
+If \&.torrent file was corrupted or missing information that aria2 needed\&.
+.RE
+.PP
+\fB27\fR
+.RS 4
+If Magnet URI was bad\&.
+.RE
+.PP
+\fB28\fR
+.RS 4
+If bad/unrecognized option was given or unexpected option argument was given\&.
 .RE
 .if n \{\
 .sp
