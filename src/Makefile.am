@@ -192,7 +192,7 @@ SRCS =  Socket.h\
 	LongestSequencePieceSelector.cc LongestSequencePieceSelector.h\
 	bitfield.cc bitfield.h\
 	CreateRequestCommand.cc CreateRequestCommand.h\
-	DownloadResultCode.h\
+	error_code.h\
 	wallclock.h\
 	download_helper.cc download_helper.h\
 	MetadataInfo.cc MetadataInfo.h\
