@@ -45,6 +45,14 @@ AC_PROG_MKDIR_P
 AC_PROG_RANLIB
 AC_PROG_YACC
 
+AC_PATH_PROG([A2X], [a2x])
+AC_SUBST([A2X])
+AM_CONDITIONAL([HAVE_A2X], [ test "x$A2X" != "x" ])
+
+AC_PATH_PROG([ASCIIDOC], [asciidoc])
+AC_SUBST([ASCIIDOC])
+AM_CONDITIONAL([HAVE_ASCIIDOC], [ test "x$ASCIIDOC" != "x" ])
+
 # Setting language choice
 AC_LANG([C++])
 
