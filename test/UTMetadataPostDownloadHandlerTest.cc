@@ -34,8 +34,8 @@ public:
   {
     option_.reset(new Option());
     option_->put("HELLO", "WORLD");
-    option_->put(PREF_DIR, ".");
-    dctx_.reset(new DownloadContext(0, 0, "something"));
+    option_->put(PREF_DIR, A2_TEST_OUT_DIR);
+    dctx_.reset(new DownloadContext(0, 0, A2_TEST_OUT_DIR"/something"));
     requestGroup_.reset(new RequestGroup(option_));
     requestGroup_->setDownloadContext(dctx_);
   }
@@ -66,7 +66,7 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
 
 void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
 {
-  File trfile("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf.torrent");
+  File trfile(A2_TEST_OUT_DIR"/cd41c7fdddfd034a15a04d7ff881216e01c4ceaf.torrent");
   if(trfile.exists()) {
     trfile.remove();
   }

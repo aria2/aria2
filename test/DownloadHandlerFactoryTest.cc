@@ -83,7 +83,8 @@ void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_contentType()
 
 void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 {
-  SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0, "test.torrent"));
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(0, 0, A2_TEST_DIR"/test.torrent"));
   RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
 
@@ -91,7 +92,7 @@ void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
-  dctx->getFirstFileEntry()->setPath("test.torrent2");
+  dctx->getFirstFileEntry()->setPath(A2_TEST_DIR"/test.torrent2");
   CPPUNIT_ASSERT(!handler->canHandle(&rg));
 }
 

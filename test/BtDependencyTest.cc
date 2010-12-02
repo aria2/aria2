@@ -85,10 +85,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtDependencyTest );
 
 void BtDependencyTest::testResolve()
 {
-  std::string filename = "single.torrent";
+  std::string filename = A2_TEST_DIR"/single.torrent";
   SharedHandle<RequestGroup> dependant = createDependant(option_);
   SharedHandle<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
+  dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
   
   BtDependency dep(dependant.get(), dependee);
@@ -107,12 +108,13 @@ void BtDependencyTest::testResolve()
 
 void BtDependencyTest::testResolve_originalNameNoMatch()
 {
-  std::string filename = "single.torrent";
+  std::string filename = A2_TEST_DIR"/single.torrent";
   SharedHandle<RequestGroup> dependant = createDependant(option_);
   dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName
     ("aria2-1.1.0.tar.bz2");
   SharedHandle<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
+  dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
   
   BtDependency dep(dependant.get(), dependee);
@@ -124,11 +126,12 @@ void BtDependencyTest::testResolve_originalNameNoMatch()
 
 void BtDependencyTest::testResolve_singleFileWithoutOriginalName()
 {
-  std::string filename = "single.torrent";
+  std::string filename = A2_TEST_DIR"/single.torrent";
   SharedHandle<RequestGroup> dependant = createDependant(option_);
   dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName("");
   SharedHandle<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
+  dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
   BtDependency dep(dependant.get(), dependee);
   CPPUNIT_ASSERT(dep.resolve());
@@ -138,12 +141,13 @@ void BtDependencyTest::testResolve_singleFileWithoutOriginalName()
 
 void BtDependencyTest::testResolve_multiFile()
 {
-  std::string filename = "test.torrent";
+  std::string filename = A2_TEST_DIR"/test.torrent";
   SharedHandle<RequestGroup> dependant = createDependant(option_);
   dependant->getDownloadContext()->getFirstFileEntry()->setOriginalName
     ("aria2-test/aria2/src/aria2c");
   SharedHandle<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());
+  dependee->getPieceStorage()->getDiskAdaptor()->enableReadOnly();
   dependee->getPieceStorage()->markAllPiecesDone();
   
   BtDependency dep(dependant.get(), dependee);
@@ -224,7 +228,7 @@ void BtDependencyTest::testResolve_dependeeFailure()
 
 void BtDependencyTest::testResolve_dependeeInProgress()
 {
-  std::string filename = "single.torrent";
+  std::string filename = A2_TEST_DIR"/single.torrent";
   SharedHandle<RequestGroup> dependant = createDependant(option_);
   SharedHandle<RequestGroup> dependee =
     createDependee(option_, filename, File(filename).size());

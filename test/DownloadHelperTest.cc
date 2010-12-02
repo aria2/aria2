@@ -181,7 +181,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
 {
   std::string array[] = {
     "http://alpha/file",
-    "test.torrent",
+    A2_TEST_DIR"/test.torrent",
     "http://bravo/file",
     "http://charlie/file"
   };
@@ -232,7 +232,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     "http://alpha/file",
     "http://bravo/file",
     "http://charlie/file",
-    "test.xml"
+    A2_TEST_DIR"/test.xml"
   };
   std::vector<std::string> uris(vbegin(array), vend(array));
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
@@ -286,7 +286,7 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
 {
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "3");
   option_->put(PREF_SPLIT, "3");
-  option_->put(PREF_INPUT_FILE, "input_uris.txt");
+  option_->put(PREF_INPUT_FILE, A2_TEST_DIR"/input_uris.txt");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
 
@@ -327,7 +327,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
   std::vector<std::string> auxURIs(vbegin(array), vend(array));
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "2");
   option_->put(PREF_SPLIT, "5");
-  option_->put(PREF_TORRENT_FILE, "test.torrent");
+  option_->put(PREF_TORRENT_FILE, A2_TEST_DIR"/test.torrent");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
   option_->put(PREF_BT_EXCLUDE_TRACKER, "http://tracker1");
@@ -381,7 +381,7 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
 void DownloadHelperTest::testCreateRequestGroupForMetalink()
 {
   option_->put(PREF_SPLIT, "3");
-  option_->put(PREF_METALINK_FILE, "test.xml");
+  option_->put(PREF_METALINK_FILE, A2_TEST_DIR"/test.xml");
   option_->put(PREF_METALINK_SERVERS, "5");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");

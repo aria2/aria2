@@ -33,7 +33,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(Sqlite3CookieParserTest);
 
 void Sqlite3CookieParserTest::testMozParse()
 {
-  Sqlite3MozCookieParser parser("cookies.sqlite");
+  Sqlite3MozCookieParser parser(A2_TEST_DIR"/cookies.sqlite");
   std::vector<Cookie> cookies;
   parser.parse(cookies);
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());
@@ -92,7 +92,7 @@ void Sqlite3CookieParserTest::testMozParse_fileNotFound()
 
 void Sqlite3CookieParserTest::testMozParse_badfile()
 {
-  Sqlite3MozCookieParser parser("badcookies.sqlite");
+  Sqlite3MozCookieParser parser(A2_TEST_DIR"/badcookies.sqlite");
   try {
     std::vector<Cookie> cookies;
     parser.parse(cookies);
@@ -104,7 +104,7 @@ void Sqlite3CookieParserTest::testMozParse_badfile()
 
 void Sqlite3CookieParserTest::testChromumParse()
 {
-  Sqlite3ChromiumCookieParser parser("chromium_cookies.sqlite");
+  Sqlite3ChromiumCookieParser parser(A2_TEST_DIR"/chromium_cookies.sqlite");
   std::vector<Cookie> cookies;
   parser.parse(cookies);
   CPPUNIT_ASSERT_EQUAL((size_t)3, cookies.size());

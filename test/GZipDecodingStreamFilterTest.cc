@@ -66,7 +66,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(GZipDecodingStreamFilterTest);
 void GZipDecodingStreamFilterTest::testTransform()
 {
   unsigned char buf[4096];
-  std::ifstream in("gzip_decode_test.gz", std::ios::binary);
+  std::ifstream in(A2_TEST_DIR"/gzip_decode_test.gz", std::ios::binary);
   while(in) {
     in.read(reinterpret_cast<char*>(buf), sizeof(buf));
     filter_->transform(writer_, segment_, buf, in.gcount());

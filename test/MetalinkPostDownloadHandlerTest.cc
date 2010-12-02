@@ -6,6 +6,8 @@
 #include "Option.h"
 #include "DownloadContext.h"
 #include "FileEntry.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
 
 namespace aria2 {
 
@@ -65,10 +67,11 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   SharedHandle<DownloadContext> dctx
-    (new DownloadContext(1024, 0, "test.xml"));
+    (new DownloadContext(1024, 0, A2_TEST_DIR"/test.xml"));
   RequestGroup rg(option_);
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
+  rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();
 
   MetalinkPostDownloadHandler handler;
   std::vector<SharedHandle<RequestGroup> > groups;

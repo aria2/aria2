@@ -1,3 +1,4 @@
+a2_test_outdir = test_outdir
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
@@ -223,11 +224,14 @@ aria2c_LDADD = ../src/libaria2c.a\
 	${CPPUNIT_LIBS}
 AM_CPPFLAGS =  -Wall\
 	${CPPUNIT_CFLAGS}\
-	-I ../src\
-	-I../lib -I../intl -I$(top_srcdir)/intl\
+	-I$(top_srcdir)/src\
+	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	@LIBZ_CPPFLAGS@	 @SQLITE3_CFLAGS@ -DLOCALEDIR=\"$(localedir)\" @DEFS@
+	@LIBZ_CPPFLAGS@	 @SQLITE3_CFLAGS@ -DLOCALEDIR=\"$(localedir)\"\
+	-DA2_TEST_DIR=\"$(top_srcdir)/test\"\
+	-DA2_TEST_OUT_DIR=\"${a2_test_outdir}\"\
+	@DEFS@
 
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
@@ -260,3 +264,6 @@ EXTRA_DIST = 4096chunk.txt\
 	metalink4-groupbymetaurl.xml\
 	serialize_session.meta4\
 	metalink4-dosdirtraversal.xml
+
+clean-local:
+	-rm -rf ${a2_test_outdir}

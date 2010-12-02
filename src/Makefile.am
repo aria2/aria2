@@ -294,6 +294,7 @@ SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	Checksum.cc Checksum.h\
 	ChunkChecksum.cc ChunkChecksum.h\
 	MessageDigest.cc MessageDigest.h\
+	MessageDigestImpl.h\
 	HashFuncEntry.h
 endif # ENABLE_MESSAGE_DIGEST
 
@@ -559,7 +560,7 @@ aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@SQLITE3_LIBS@ #-lprofiler
 #aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
-	-I../lib -I../intl -I$(top_srcdir)/intl\
+	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
 	@LIBZ_CPPFLAGS@	 @SQLITE3_CFLAGS@\

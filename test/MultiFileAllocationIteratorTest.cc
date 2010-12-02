@@ -35,8 +35,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MultiFileAllocationIteratorTest );
 
 void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 {
-  std::string storeDir = "./aria2_MultiFileAllocationIteratorTest"
-    "testMakeDiskWriterEntries_";
+  std::string storeDir = A2_TEST_OUT_DIR"/aria2_MultiFileAllocationIteratorTest"
+    "_testMakeDiskWriterEntries";
 
   SharedHandle<FileEntry> fs[] = {
     SharedHandle<FileEntry>(new FileEntry(storeDir+"/file1", 1536, 0)),
@@ -137,7 +137,7 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 void MultiFileAllocationIteratorTest::testAllocate()
 {
   std::string storeDir =
-    "./aria2_MultiFileAllocationIteratorTest_testAllocate";
+    A2_TEST_OUT_DIR"/aria2_MultiFileAllocationIteratorTest_testAllocate";
 
   std::string fname1 = "file1";
   std::string fname2 = "file2";

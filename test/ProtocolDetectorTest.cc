@@ -40,9 +40,9 @@ void ProtocolDetectorTest::testIsStreamProtocol()
 void ProtocolDetectorTest::testGuessTorrentFile()
 {
   ProtocolDetector detector;
-  CPPUNIT_ASSERT(detector.guessTorrentFile("test.torrent"));
+  CPPUNIT_ASSERT(detector.guessTorrentFile(A2_TEST_DIR"/test.torrent"));
   CPPUNIT_ASSERT(!detector.guessTorrentFile("http://localhost/test.torrent"));
-  CPPUNIT_ASSERT(!detector.guessTorrentFile("test.xml"));
+  CPPUNIT_ASSERT(!detector.guessTorrentFile(A2_TEST_DIR"/test.xml"));
 }
 
 void ProtocolDetectorTest::testGuessTorrentMagnet()
@@ -63,9 +63,9 @@ void ProtocolDetectorTest::testGuessTorrentMagnet()
 void ProtocolDetectorTest::testGuessMetalinkFile()
 {
   ProtocolDetector detector;
-  CPPUNIT_ASSERT(detector.guessMetalinkFile("test.xml"));
+  CPPUNIT_ASSERT(detector.guessMetalinkFile(A2_TEST_DIR"/test.xml"));
   CPPUNIT_ASSERT(!detector.guessMetalinkFile("http://localhost/test.xml"));
-  CPPUNIT_ASSERT(!detector.guessMetalinkFile("test.torrent"));
+  CPPUNIT_ASSERT(!detector.guessMetalinkFile(A2_TEST_DIR"/test.torrent"));
 }
 
 } // namespace aria2

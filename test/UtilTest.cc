@@ -651,7 +651,7 @@ void UtilTest::testMkdirs()
   util::mkdirs(dir);
   CPPUNIT_ASSERT(d.isDir());
 
-  std::string file = "./UtilTest.cc";
+  std::string file = A2_TEST_DIR"/UtilTest.cc";
   File f(file);
   CPPUNIT_ASSERT(f.isFile());
   try {

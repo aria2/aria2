@@ -29,7 +29,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MessageDigestHelperTest );
 
 void MessageDigestHelperTest::testHexDigestDiskWriter() {
   SharedHandle<DefaultDiskWriter> diskio
-    (new DefaultDiskWriter("4096chunk.txt"));
+    (new DefaultDiskWriter(A2_TEST_DIR"/4096chunk.txt"));
+  diskio->enableReadOnly();
   diskio->openExistingFile();
   CPPUNIT_ASSERT_EQUAL(std::string("608cabc0f2fa18c260cafd974516865c772363d5"),
                        MessageDigestHelper::hexDigest

@@ -260,7 +260,7 @@ void CookieStorageTest::testLoad()
 {
   CookieStorage st;
 
-  st.load("nscookietest.txt", 1001);
+  st.load(A2_TEST_DIR"/nscookietest.txt", 1001);
 
   CPPUNIT_ASSERT_EQUAL((size_t)4, st.size());
 
@@ -310,7 +310,7 @@ void CookieStorageTest::testLoad_sqlite3()
 {
   CookieStorage st;
 #ifdef HAVE_SQLITE3
-  st.load("cookies.sqlite", 1000);
+  st.load(A2_TEST_DIR"/cookies.sqlite", 1000);
   CPPUNIT_ASSERT_EQUAL((size_t)2, st.size());
   std::vector<Cookie> cookies;
   dumpCookie(cookies, st);
@@ -335,7 +335,7 @@ void CookieStorageTest::testLoad_sqlite3()
   CPPUNIT_ASSERT(!c.getSecure());
     
 #else // !HAVE_SQLITE3
-  CPPUNIT_ASSERT(!st.load("cookies.sqlite", 1000));
+  CPPUNIT_ASSERT(!st.load(A2_TEST_DIR"/cookies.sqlite", 1000));
 #endif // !HAVE_SQLITE3
 }
 
@@ -348,7 +348,7 @@ void CookieStorageTest::testLoad_fileNotfound()
 void CookieStorageTest::testSaveNsFormat()
 {
   // TODO add cookie with default domain
-  std::string filename = "./aria2_CookieStorageTest_testSaveNsFormat";
+  std::string filename = A2_TEST_OUT_DIR"/aria2_CookieStorageTest_testSaveNsFormat";
   File(filename).remove();
   CookieStorage st;
   time_t now = 1000;
@@ -370,7 +370,8 @@ void CookieStorageTest::testSaveNsFormat()
 
 void CookieStorageTest::testSaveNsFormat_fail()
 {
-  std::string filename = "./aria2_CookieStorageTest_testSaveNsFormat_fail";
+  std::string filename =
+    A2_TEST_OUT_DIR"/aria2_CookieStorageTest_testSaveNsFormat_fail";
   File f(filename);
   f.remove();
   f.mkdirs();

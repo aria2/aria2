@@ -41,7 +41,7 @@ std::string UriListParserTest::list2String(const std::vector<std::string>& src)
 
 void UriListParserTest::testHasNext()
 {
-  std::ifstream in("filelist1.txt", std::ios::binary);
+  std::ifstream in(A2_TEST_DIR"/filelist1.txt", std::ios::binary);
 
   UriListParser flp(in);
 

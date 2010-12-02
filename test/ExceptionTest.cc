@@ -4,6 +4,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "DownloadFailureException.h"
+#include "util.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -33,10 +35,10 @@ void ExceptionTest::testStackTrace()
 
   CPPUNIT_ASSERT_EQUAL
     (std::string
-     ("Exception: [ExceptionTest.cc:32] errorCode=2 exception thrown\n"
-      "  -> [ExceptionTest.cc:30] errorCode=2 cause2\n"
-      "  -> [ExceptionTest.cc:29] errorCode=2 cause1\n"),
-     e.stackTrace());
+     ("Exception: [ExceptionTest.cc:34] errorCode=2 exception thrown\n"
+      "  -> [ExceptionTest.cc:32] errorCode=2 cause2\n"
+      "  -> [ExceptionTest.cc:31] errorCode=2 cause1\n"),
+     util::replace(e.stackTrace(), A2_TEST_DIR+A2STR::SLASH_C, ""));
 }
 
 } // namespace aria2

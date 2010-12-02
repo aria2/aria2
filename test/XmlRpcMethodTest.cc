@@ -257,7 +257,7 @@ void XmlRpcMethodTest::testAddTorrent()
 {
   AddTorrentXmlRpcMethod m;
   XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), List::g());
-  req.params->append(readFile("single.torrent"));
+  req.params->append(readFile(A2_TEST_DIR"/single.torrent"));
   SharedHandle<List> uris = List::g();
   uris->append("http://localhost/aria2-0.8.2.tar.bz2");
   req.params->append(uris);
@@ -312,14 +312,14 @@ void XmlRpcMethodTest::testAddTorrent_withPosition()
 {
   AddTorrentXmlRpcMethod m;
   XmlRpcRequest req1(AddTorrentXmlRpcMethod::getMethodName(), List::g());
-  req1.params->append(readFile("test.torrent"));
+  req1.params->append(readFile(A2_TEST_DIR"/test.torrent"));
   req1.params->append(List::g());
   req1.params->append(Dict::g());
   XmlRpcResponse res1 = m.execute(req1, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res1.code);
 
   XmlRpcRequest req2(AddTorrentXmlRpcMethod::getMethodName(), List::g());
-  req2.params->append(readFile("single.torrent"));
+  req2.params->append(readFile(A2_TEST_DIR"/single.torrent"));
   req2.params->append(List::g());
   req2.params->append(Dict::g());
   req2.params->append(Integer::g(0));
@@ -337,7 +337,7 @@ void XmlRpcMethodTest::testAddMetalink()
 {
   AddMetalinkXmlRpcMethod m;
   XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), List::g());
-  req.params->append(readFile("2files.metalink"));
+  req.params->append(readFile(A2_TEST_DIR"/2files.metalink"));
   {
     XmlRpcResponse res = m.execute(req, e_.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
@@ -399,7 +399,7 @@ void XmlRpcMethodTest::testAddMetalink_withPosition()
 
   AddMetalinkXmlRpcMethod m2;
   XmlRpcRequest req2("ari2.addMetalink", List::g());
-  req2.params->append(readFile("2files.metalink"));
+  req2.params->append(readFile(A2_TEST_DIR"/2files.metalink"));
   req2.params->append(Dict::g());
   req2.params->append(Integer::g(0));
   XmlRpcResponse res2 = m2.execute(req2, e_.get());
@@ -614,7 +614,7 @@ void XmlRpcMethodTest::testTellWaiting()
   addUri("http://2/", e_);
   addUri("http://3/", e_);
 #ifdef ENABLE_BITTORRENT
-  addTorrent("single.torrent", e_);
+  addTorrent(A2_TEST_DIR"/single.torrent", e_);
 #else // !ENABLE_BITTORRENT
   addUri("http://4/", e_);
 #endif // !ENABLE_BITTORRENT
@@ -795,7 +795,7 @@ void XmlRpcMethodTest::testGatherProgressCommon()
 void XmlRpcMethodTest::testGatherBitTorrentMetadata()
 {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
-  bittorrent::load("test.torrent", dctx);
+  bittorrent::load(A2_TEST_DIR"/test.torrent", dctx);
   SharedHandle<Dict> btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, bittorrent::getTorrentAttrs(dctx));
   CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"),

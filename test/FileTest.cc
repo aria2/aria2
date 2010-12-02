@@ -45,41 +45,41 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( FileTest );
 
 void FileTest::testExists() {
-  File f("FileTest.cc");
+  File f(A2_TEST_DIR"/FileTest.cc");
   CPPUNIT_ASSERT(f.exists());
 
   File f2("NonExistentFile");
   CPPUNIT_ASSERT(!f2.exists());
 
-  File d1("../test");
+  File d1(A2_TEST_DIR);
   CPPUNIT_ASSERT(d1.exists());
 }
 
 void FileTest::testIsFile() {
-  File f("FileTest.cc");
+  File f(A2_TEST_DIR"/FileTest.cc");
   CPPUNIT_ASSERT(f.isFile());
 
   File f2("NonExistentFile");
   CPPUNIT_ASSERT(!f2.isFile());
 
-  File d1("../test");
+  File d1(A2_TEST_DIR);
   CPPUNIT_ASSERT(!d1.isFile());
 }
 
 void FileTest::testIsDir() {
-  File f("FileTest.cc");
+  File f(A2_TEST_DIR"/FileTest.cc");
   CPPUNIT_ASSERT(!f.isDir());
 
   File f2("NonExistentFile");
   CPPUNIT_ASSERT(!f2.isDir());
 
-  File d1("../test");
+  File d1(A2_TEST_DIR);
   CPPUNIT_ASSERT(d1.isDir());
 }
 
 void FileTest::testRemove() {
   int fd;
-  std::string name = "./aria2_FileTest_testRemove_testregfile";
+  std::string name = A2_TEST_OUT_DIR"/aria2_FileTest_testRemove_testregfile";
   unlink(name.c_str());
   if((fd = creat(name.c_str(), S_IRUSR|S_IWUSR)) < 0) {
     CPPUNIT_FAIL("cannot create test file");
@@ -92,7 +92,7 @@ void FileTest::testRemove() {
   // delete the file again
   CPPUNIT_ASSERT(!f.remove());
 
-  std::string dir = "./aria2_FileTest_testRemove_testdir";
+  std::string dir = A2_TEST_OUT_DIR"/aria2_FileTest_testRemove_testdir";
 #ifdef __MINGW32__
   mkdir(dir.c_str());
 #else
@@ -107,13 +107,13 @@ void FileTest::testRemove() {
 }
 
 void FileTest::testSize() {
-  File f("4096chunk.txt");
+  File f(A2_TEST_DIR"/4096chunk.txt");
   CPPUNIT_ASSERT_EQUAL(4096, (int)f.size());
 }
 
 void FileTest::testMkdir() {
   {
-    std::string dir = "./aria2_FileTest_testMkdir/test";
+    std::string dir = A2_TEST_OUT_DIR"/aria2_FileTest_testMkdir/test";
     File d(dir);
     if(d.exists()) {
       CPPUNIT_ASSERT(d.remove());
@@ -128,8 +128,8 @@ void FileTest::testMkdir() {
     CPPUNIT_ASSERT(!d.mkdirs());
   }
   {
-    std::string dir = ".////aria2_FileTest_testMkdir////test2///";
-    std::string nDir = "./aria2_FileTest_testMkdir/test2";
+    std::string dir = A2_TEST_OUT_DIR"////aria2_FileTest_testMkdir////test2///";
+    std::string nDir = A2_TEST_OUT_DIR"/aria2_FileTest_testMkdir/test2";
     File d(dir);
     File nd(nDir);
     if(d.exists()) {
@@ -212,16 +212,16 @@ void FileTest::testGetBasename()
 
 void FileTest::testRenameTo()
 {
-  std::string fname = "aria2_FileTest_testRenameTo.txt";
+  std::string fname = A2_TEST_OUT_DIR"/aria2_FileTest_testRenameTo.txt";
   std::ofstream of(fname.c_str(), std::ios::binary);
   of.close();
 
   File f(fname);
-  std::string fnameTo = "aria2_FileTest_testRenameTo_dest.txt";
+  std::string fnameTo = A2_TEST_OUT_DIR"/aria2_FileTest_testRenameTo_dest.txt";
   CPPUNIT_ASSERT(f.renameTo(fnameTo));
   CPPUNIT_ASSERT(f.exists());
   CPPUNIT_ASSERT(!File(fname).exists());
-  CPPUNIT_ASSERT_EQUAL(fnameTo, f.getBasename());
+  CPPUNIT_ASSERT_EQUAL(File(fnameTo).getBasename(), f.getBasename());
 
   // to see renameTo() work even when the destination file exists
   of.open(fname.c_str());
@@ -232,7 +232,7 @@ void FileTest::testRenameTo()
 
 void FileTest::testUtime()
 {
-  File f("./aria2_FileTest_testUTime");
+  File f(A2_TEST_OUT_DIR"/aria2_FileTest_testUTime");
   createFile(f.getPath(), 0);
   
   time_t atime = (time_t) 100000;
@@ -245,7 +245,7 @@ void FileTest::testUtime()
   CPPUNIT_ASSERT_EQUAL((time_t)atime, buf.st_atime);
   CPPUNIT_ASSERT_EQUAL((time_t)mtime, f.getModifiedTime().getTime());
 
-  File notFound("./aria2_FileTest_testUTime_notFound");
+  File notFound(A2_TEST_OUT_DIR"/aria2_FileTest_testUTime_notFound");
   notFound.remove();
   CPPUNIT_ASSERT(!notFound.utime(Time(atime), Time(mtime)));
 }

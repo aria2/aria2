@@ -46,15 +46,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MultiDiskAdaptorTest );
 
 std::vector<SharedHandle<FileEntry> > createEntries() {
   SharedHandle<FileEntry> array[] = {
-    SharedHandle<FileEntry>(new FileEntry("file0.txt", 0, 0)),
-    SharedHandle<FileEntry>(new FileEntry("file1.txt", 15, 0)),
-    SharedHandle<FileEntry>(new FileEntry("file2.txt", 7, 15)),
-    SharedHandle<FileEntry>(new FileEntry("file3.txt", 0, 22)),
-    SharedHandle<FileEntry>(new FileEntry("file4.txt", 2, 22)),
-    SharedHandle<FileEntry>(new FileEntry("file5.txt", 0, 24)),
-    SharedHandle<FileEntry>(new FileEntry("file6.txt", 3, 24)),
-    SharedHandle<FileEntry>(new FileEntry("file7.txt", 0, 27)),
-    SharedHandle<FileEntry>(new FileEntry("file8.txt", 2, 27)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file0.txt", 0, 0)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file1.txt", 15, 0)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file2.txt", 7, 15)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file3.txt", 0, 22)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file4.txt", 2, 22)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file5.txt", 0, 24)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file6.txt", 3, 24)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file7.txt", 0, 27)),
+    SharedHandle<FileEntry>(new FileEntry(A2_TEST_OUT_DIR"/file8.txt", 2, 27)),
   };
   //           1    1    2    2    3
   // 0....5....0....5....0....5....0
@@ -297,9 +297,9 @@ void MultiDiskAdaptorTest::testWriteData() {
   adaptor->writeData((const unsigned char*)msg.c_str(), msg.size(), 0);
   adaptor->closeFile();
 
-  CPPUNIT_ASSERT(File("file0.txt").isFile());
+  CPPUNIT_ASSERT(File(A2_TEST_OUT_DIR"/file0.txt").isFile());
   char buf[128];
-  readFile("file1.txt", buf, 5);
+  readFile(A2_TEST_OUT_DIR"/file1.txt", buf, 5);
   buf[5] = '\0';
   CPPUNIT_ASSERT_EQUAL(msg, std::string(buf));
 
@@ -308,10 +308,10 @@ void MultiDiskAdaptorTest::testWriteData() {
   adaptor->writeData((const unsigned char*)msg2.c_str(), msg2.size(), 5);
   adaptor->closeFile();
 
-  readFile("file1.txt", buf, 15);
+  readFile(A2_TEST_OUT_DIR"/file1.txt", buf, 15);
   buf[15] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDE"), std::string(buf));
-  readFile("file2.txt", buf, 1);
+  readFile(A2_TEST_OUT_DIR"/file2.txt", buf, 1);
   buf[1] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("F"), std::string(buf));
 
@@ -320,33 +320,33 @@ void MultiDiskAdaptorTest::testWriteData() {
   adaptor->writeData((const unsigned char*)msg3.c_str(), msg3.size(), 10);
   adaptor->closeFile();
 
-  readFile("file1.txt", buf, 15);
+  readFile(A2_TEST_OUT_DIR"/file1.txt", buf, 15);
   buf[15] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("123456789012345"), std::string(buf));
-  readFile("file2.txt", buf, 7);
+  readFile(A2_TEST_OUT_DIR"/file2.txt", buf, 7);
   buf[7] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("1234567"), std::string(buf));
 
-  CPPUNIT_ASSERT(File("file3.txt").isFile());
+  CPPUNIT_ASSERT(File(A2_TEST_OUT_DIR"/file3.txt").isFile());
 
-  readFile("file4.txt", buf, 2);
+  readFile(A2_TEST_OUT_DIR"/file4.txt", buf, 2);
   buf[2] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("12"), std::string(buf));
 
-  CPPUNIT_ASSERT(File("file5.txt").isFile());
+  CPPUNIT_ASSERT(File(A2_TEST_OUT_DIR"/file5.txt").isFile());
 }
 
 void MultiDiskAdaptorTest::testReadData() {
-  SharedHandle<FileEntry> entry1(new FileEntry("file1r.txt", 15, 0));
-  SharedHandle<FileEntry> entry2(new FileEntry("file2r.txt", 7, 15));
-  SharedHandle<FileEntry> entry3(new FileEntry("file3r.txt", 3, 22));
+  SharedHandle<FileEntry> entry1(new FileEntry(A2_TEST_DIR"/file1r.txt", 15, 0));
+  SharedHandle<FileEntry> entry2(new FileEntry(A2_TEST_DIR"/file2r.txt", 7, 15));
+  SharedHandle<FileEntry> entry3(new FileEntry(A2_TEST_DIR"/file3r.txt", 3, 22));
   std::vector<SharedHandle<FileEntry> > entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
   entries.push_back(entry3);
 
   adaptor->setFileEntries(entries.begin(), entries.end());
-
+  adaptor->enableReadOnly();
   adaptor->openFile();
   unsigned char buf[128];
   adaptor->readData(buf, 15, 0);
@@ -365,7 +365,7 @@ void MultiDiskAdaptorTest::testReadData() {
 
 void MultiDiskAdaptorTest::testCutTrailingGarbage()
 {
-  std::string dir = "./";
+  std::string dir = A2_TEST_OUT_DIR;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testCutTrailingGarbage_";
   SharedHandle<FileEntry> entries[] = {
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 256, 0)),
@@ -394,7 +394,7 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
 
 void MultiDiskAdaptorTest::testSize()
 {
-  std::string dir = "./";
+  std::string dir = A2_TEST_OUT_DIR;
   std::string prefix = "aria2_MultiDiskAdaptorTest_testSize_";
   SharedHandle<FileEntry> entries[] = {
     SharedHandle<FileEntry>(new FileEntry(dir+"/"+prefix+"1", 1, 0)),
@@ -418,7 +418,7 @@ void MultiDiskAdaptorTest::testSize()
 
 void MultiDiskAdaptorTest::testUtime()
 {
-  std::string storeDir = "./aria2_MultiDiskAdaptorTest_testUtime";
+  std::string storeDir = A2_TEST_OUT_DIR"/aria2_MultiDiskAdaptorTest_testUtime";
   SharedHandle<FileEntry> entries[] = {
     SharedHandle<FileEntry>(new FileEntry(storeDir+"/requested", 0, 0)),
     SharedHandle<FileEntry>(new FileEntry(storeDir+"/notFound", 0, 0)),

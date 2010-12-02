@@ -28,7 +28,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DirectDiskAdaptorTest);
 
 void DirectDiskAdaptorTest::testCutTrailingGarbage()
 {
-  std::string dir = "./";
+  std::string dir = A2_TEST_OUT_DIR;
   SharedHandle<FileEntry> entry
     (new FileEntry(dir+"/aria2_DirectDiskAdaptorTest_testCutTrailingGarbage",
                    256, 0));

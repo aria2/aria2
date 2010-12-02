@@ -59,7 +59,7 @@ typedef _off_t off_t;
 #endif
 #endif // __MINGW32__
 
-#include "gettext.h"
+#include <gettext.h>
 #ifdef ENABLE_NLS
 # define _(String) gettext(String)
 #else // ENABLE_NLS

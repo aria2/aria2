@@ -46,7 +46,7 @@ private:
 public:
   void setUp() {
     dctx_.reset(new DownloadContext());
-    bittorrent::load("test.torrent", dctx_);
+    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_);
     peer.reset(new Peer("192.168.0.1", 6889));
     peer->allocateSessionResource(dctx_->getPieceLength(),
                                   dctx_->getTotalLength());

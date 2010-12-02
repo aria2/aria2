@@ -82,7 +82,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkProcessorTest );
 void MetalinkProcessorTest::testParseFileV4()
 {
   MetalinkProcessor proc;
-  SharedHandle<Metalinker> m = proc.parseFile("metalink4.xml");
+  SharedHandle<Metalinker> m = proc.parseFile(A2_TEST_DIR"/metalink4.xml");
   SharedHandle<MetalinkEntry> e;
   SharedHandle<MetalinkResource> r;
   SharedHandle<MetalinkMetaurl> mu;
@@ -494,7 +494,7 @@ void MetalinkProcessorTest::testParseFile()
 {
   MetalinkProcessor proc;
   try {
-    SharedHandle<Metalinker> metalinker = proc.parseFile("test.xml");
+    SharedHandle<Metalinker> metalinker = proc.parseFile(A2_TEST_DIR"/test.xml");
 
     std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
       metalinker->getEntries().begin();
@@ -601,7 +601,7 @@ void MetalinkProcessorTest::testParseFile_dirtraversal()
 {
   MetalinkProcessor proc;
   SharedHandle<Metalinker> metalinker =
-    proc.parseFile("metalink3-dirtraversal.xml");
+    proc.parseFile(A2_TEST_DIR"/metalink3-dirtraversal.xml");
   CPPUNIT_ASSERT_EQUAL((size_t)1, metalinker->getEntries().size());
   SharedHandle<MetalinkEntry> e = metalinker->getEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.3.tar.bz2"), e->getPath());
@@ -612,7 +612,8 @@ void MetalinkProcessorTest::testParseFile_dirtraversal()
 void MetalinkProcessorTest::testParseFromBinaryStream()
 {
   MetalinkProcessor proc;
-  DefaultDiskWriterHandle dw(new DefaultDiskWriter("test.xml"));
+  DefaultDiskWriterHandle dw(new DefaultDiskWriter(A2_TEST_DIR"/test.xml"));
+  dw->enableReadOnly();
   dw->openExistingFile();
   
   try {

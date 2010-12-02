@@ -140,7 +140,7 @@ public:
     rg_.reset(new RequestGroup(option_));
 
     dctx_.reset(new DownloadContext());
-    bittorrent::load("test.torrent", dctx_);
+    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_);
 
     rg_->setDownloadContext(dctx_);
 

@@ -70,7 +70,7 @@ void NetrcTest::testFindAuthenticator()
 void NetrcTest::testParse()
 {
   Netrc netrc;
-  netrc.parse("sample.netrc");
+  netrc.parse(A2_TEST_DIR"/sample.netrc");
   std::vector<SharedHandle<Authenticator> >::const_iterator itr =
     netrc.getAuthenticators().begin();
 
@@ -109,7 +109,7 @@ void NetrcTest::testParse_fileNotFound()
 void NetrcTest::testParse_emptyfile()
 {
   Netrc netrc;
-  netrc.parse("emptyfile");
+  netrc.parse(A2_TEST_DIR"/emptyfile");
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, netrc.getAuthenticators().size());
 }
@@ -118,7 +118,7 @@ void NetrcTest::testParse_malformedNetrc()
 {
   Netrc netrc;
   try {
-    netrc.parse("malformed.netrc");
+    netrc.parse(A2_TEST_DIR"/malformed.netrc");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;

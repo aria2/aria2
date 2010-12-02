@@ -42,7 +42,7 @@ void Metalink2RequestGroupTest::testGenerate()
 {
   std::vector<SharedHandle<RequestGroup> > groups;
   option_->put(PREF_DIR, "/tmp");
-  Metalink2RequestGroup().generate(groups, "test.xml", option_);
+  Metalink2RequestGroup().generate(groups, A2_TEST_DIR"/test.xml", option_);
   // first file
   {
     SharedHandle<RequestGroup> rg = groups[0];
@@ -131,7 +131,8 @@ void Metalink2RequestGroupTest::testGenerate()
 void Metalink2RequestGroupTest::testGenerate_groupByMetaurl()
 {
   std::vector<SharedHandle<RequestGroup> > groups;
-  Metalink2RequestGroup().generate(groups, "metalink4-groupbymetaurl.xml",
+  Metalink2RequestGroup().generate(groups,
+                                   A2_TEST_DIR"/metalink4-groupbymetaurl.xml",
                                    option_);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
 
@@ -207,7 +208,7 @@ void Metalink2RequestGroupTest::testGenerate_dosDirTraversal()
   std::vector<SharedHandle<RequestGroup> > groups;
   option_->put(PREF_DIR, "/tmp");
   Metalink2RequestGroup().generate
-    (groups, "metalink4-dosdirtraversal.xml", option_);
+    (groups, A2_TEST_DIR"/metalink4-dosdirtraversal.xml", option_);
   CPPUNIT_ASSERT_EQUAL((size_t)3, groups.size());
   SharedHandle<RequestGroup> rg = groups[0];
   SharedHandle<FileEntry> file = rg->getDownloadContext()->getFirstFileEntry();

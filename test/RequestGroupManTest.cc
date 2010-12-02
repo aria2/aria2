@@ -84,7 +84,7 @@ void RequestGroupManTest::testSaveServerStat()
     (std::vector<SharedHandle<RequestGroup> >(),0,option_.get());
   SharedHandle<ServerStat> ss_localhost(new ServerStat("localhost", "http"));
   rm.addServerStat(ss_localhost);
-  File f("./aria2_RequestGroupManTest_testSaveServerStat");
+  File f(A2_TEST_OUT_DIR"/aria2_RequestGroupManTest_testSaveServerStat");
   if(f.exists()) {
     f.remove();
   }
@@ -98,7 +98,7 @@ void RequestGroupManTest::testSaveServerStat()
 
 void RequestGroupManTest::testLoadServerStat()
 {
-  File f("./aria2_RequestGroupManTest_testLoadServerStat");
+  File f(A2_TEST_OUT_DIR"/aria2_RequestGroupManTest_testLoadServerStat");
   std::ofstream o(f.getPath().c_str(), std::ios::binary);
   o << "host=localhost, protocol=http, dl_speed=0, last_updated=1219505257,"
     << "status=OK";

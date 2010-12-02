@@ -33,7 +33,7 @@ void NsCookieParserTest::testParse()
 {
   NsCookieParser parser;
   time_t now = 0;
-  std::vector<Cookie> cookies = parser.parse("nscookietest.txt", now);
+  std::vector<Cookie> cookies = parser.parse(A2_TEST_DIR"/nscookietest.txt", now);
   CPPUNIT_ASSERT_EQUAL((size_t)5, cookies.size());
 
   Cookie c = cookies[0];

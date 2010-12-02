@@ -32,8 +32,8 @@ void SessionSerializerTest::testSave()
   const std::string URIs[] =
     { "http://localhost/file",
       "http://mirror/file",
-      "test.torrent",
-      "serialize_session.meta4",
+      A2_TEST_DIR"/test.torrent",
+      A2_TEST_DIR"/serialize_session.meta4",
       "magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C"};
   std::vector<std::string> uris(vbegin(URIs), vend(URIs));
   std::vector<SharedHandle<RequestGroup> > result;

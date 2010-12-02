@@ -8,6 +8,7 @@
 
 #include "Platform.h"
 #include "SocketCore.h"
+#include "util.h"
 
 int main(int argc, char* argv[]) {
   aria2::Platform platform;
@@ -27,6 +28,8 @@ int main(int argc, char* argv[]) {
   // If AI_ADDRCONFIG is set, tests fail if IPv4 address is not
   // configured.
   aria2::setDefaultAIFlags(0);
+  // Create output directory
+  aria2::util::mkdirs(A2_TEST_OUT_DIR);
 
   CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
   CppUnit::TextUi::TestRunner runner;

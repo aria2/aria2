@@ -29,7 +29,7 @@ void SignatureTest::testSave()
 {
   Signature sig;
   sig.setBody("SIGNATURE");
-  std::string filepath = "./aria2_SignatureTest_testSave";
+  std::string filepath = A2_TEST_OUT_DIR"/aria2_SignatureTest_testSave";
   File outfile(filepath);
   if(outfile.exists()) {
     outfile.remove();
