@@ -7,3 +7,6 @@ EXTRA_DIST = config.rpath
 dist_doc_DATA = README README.asciidoc README.html
 
 dist_noinst_DATA = LICENSE.OpenSSL
+
+README.html: README.asciidoc
+	/usr/bin/asciidoc -d article -b xhtml11 -n README.asciidoc

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-/usr/bin/asciidoc -d article -b xhtml11 -n README.asciidoc
