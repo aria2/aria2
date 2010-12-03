@@ -62,6 +62,7 @@
 #include "XmlRpcResponse.h"
 #include "SegmentMan.h"
 #include "TimedHaltCommand.h"
+#include "PeerStat.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
