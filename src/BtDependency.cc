@@ -81,7 +81,6 @@ bool BtDependency::resolve()
     // cut reference here
     dependee_.reset();
     SharedHandle<DownloadContext> context(new DownloadContext());
-    context->setDir(dependant_->getDownloadContext()->getDir());
     try {
       SharedHandle<DiskAdaptor> diskAdaptor =
         dependee->getPieceStorage()->getDiskAdaptor();
@@ -91,12 +90,14 @@ bool BtDependency::resolve()
         SharedHandle<TorrentAttribute> attrs =
           bittorrent::getTorrentAttrs(dependee->getDownloadContext());
         bittorrent::loadFromMemory
-          (bittorrent::metadata2Torrent(content, attrs), context, "default");
+          (bittorrent::metadata2Torrent(content, attrs), context,
+           dependant_->getOption(), "default");
         // We don't call bittorrent::adjustAnnounceUri() because it
         // has already been called with attrs.
       } else {
         bittorrent::loadFromMemory
-          (content, context, File(dependee->getFirstFilePath()).getBasename());
+          (content, context, dependant_->getOption(),
+           File(dependee->getFirstFilePath()).getBasename());
         bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(context),
                                       dependant_->getOption());
       }

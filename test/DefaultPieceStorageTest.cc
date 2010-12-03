@@ -15,6 +15,7 @@
 #include "DiskAdaptor.h"
 #include "DiskWriterFactory.h"
 #include "PieceStatMan.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -41,23 +42,18 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
 private:
   SharedHandle<DownloadContext> dctx_;
   SharedHandle<Peer> peer;
-  Option* option;
+  SharedHandle<Option> option_;
   SharedHandle<PieceSelector> pieceSelector_;
 public:
   void setUp() {
+    option_.reset(new Option());
+    option_->put(PREF_DIR, ".");
     dctx_.reset(new DownloadContext());
-    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_);
+    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_, option_);
     peer.reset(new Peer("192.168.0.1", 6889));
     peer->allocateSessionResource(dctx_->getPieceLength(),
                                   dctx_->getTotalLength());
-    option = new Option();
     pieceSelector_.reset(new InOrderPieceSelector());
-  }
-
-  void tearDown()
-  {
-    delete option;
-    option = 0;
   }
 
   void testGetTotalLength();
@@ -82,13 +78,13 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPieceStorageTest);
 
 void DefaultPieceStorageTest::testGetTotalLength() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)384ULL, pss.getTotalLength());
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(pieceSelector_);
   peer->setAllBitfield();
 
@@ -106,7 +102,7 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece_many() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(pieceSelector_);
   peer->setAllBitfield();
   std::vector<SharedHandle<Piece> > pieces;
@@ -125,7 +121,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_many() {
 
 void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(pieceSelector_);
   pss.setEndGamePieceNum(0);
 
@@ -147,7 +143,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(pieceSelector_);
   peer->setAllBitfield();
   std::vector<size_t> excludedIndexes;
@@ -165,7 +161,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes() {
 }
 
 void DefaultPieceStorageTest::testGetMissingFastPiece() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(pieceSelector_);
   pss.setEndGamePieceNum(0);
 
@@ -182,7 +178,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
 
 void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
 {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(pieceSelector_);
   pss.setEndGamePieceNum(0);
 
@@ -202,7 +198,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
 }
 
 void DefaultPieceStorageTest::testHasMissingPiece() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
 
   CPPUNIT_ASSERT(!pss.hasMissingPiece(peer));
   
@@ -212,7 +208,7 @@ void DefaultPieceStorageTest::testHasMissingPiece() {
 }
 
 void DefaultPieceStorageTest::testCompletePiece() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   pss.setPieceSelector(pieceSelector_);
   pss.setEndGamePieceNum(0);
 
@@ -234,7 +230,7 @@ void DefaultPieceStorageTest::testCompletePiece() {
 }
 
 void DefaultPieceStorageTest::testGetPiece() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   
   SharedHandle<Piece> pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
@@ -243,7 +239,7 @@ void DefaultPieceStorageTest::testGetPiece() {
 }
 
 void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   SharedHandle<Piece> piece = SharedHandle<Piece>(new Piece(0, 128));
   piece->completeBlock(0);
   pss.addUsedPiece(piece);
@@ -254,7 +250,7 @@ void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
 }
 
 void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   SharedHandle<Piece> piece = SharedHandle<Piece>(new Piece(0, 128));
   pss.completePiece(piece);
   SharedHandle<Piece> pieceGot = pss.getPiece(0);
@@ -274,7 +270,7 @@ void DefaultPieceStorageTest::testCancelPiece()
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(pieceLength, totalLength, "src/file1.txt"));
 
-  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, option));
+  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, option_.get()));
 
   SharedHandle<Piece> p = ps->getMissingPiece(0);
   p->completeBlock(0);
@@ -293,7 +289,7 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(pieceLength, totalLength));
 
-  DefaultPieceStorage ps(dctx, option);
+  DefaultPieceStorage ps(dctx, option_.get());
 
   ps.markPiecesDone(pieceLength*10+16*1024*2+1);
 
@@ -320,7 +316,7 @@ void DefaultPieceStorageTest::testGetCompletedLength()
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(1024*1024, 256*1024*1024));
   
-  DefaultPieceStorage ps(dctx, option);
+  DefaultPieceStorage ps(dctx, option_.get());
   
   CPPUNIT_ASSERT_EQUAL((uint64_t)0, ps.getCompletedLength());
 
@@ -347,7 +343,7 @@ void DefaultPieceStorageTest::testGetCompletedLength()
 
 void DefaultPieceStorageTest::testGetNextUsedIndex()
 {
-  DefaultPieceStorage pss(dctx_, option);
+  DefaultPieceStorage pss(dctx_, option_.get());
   CPPUNIT_ASSERT_EQUAL((size_t)3, pss.getNextUsedIndex(0));
   SharedHandle<Piece> piece = pss.getMissingPiece(2);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));

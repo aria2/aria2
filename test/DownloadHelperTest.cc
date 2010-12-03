@@ -91,7 +91,6 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)7, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"), ctx->getBasePath());
   }
   option_->put(PREF_SPLIT, "5");
@@ -136,7 +135,6 @@ void DownloadHelperTest::testCreateRequestGroupForUri()
     CPPUNIT_ASSERT_EQUAL((unsigned int)2,
                          alphaGroup->getNumConcurrentCommand());
     SharedHandle<DownloadContext> alphaCtx = alphaGroup->getDownloadContext();
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), alphaCtx->getDir());
     // See filename is not assigned yet
     CPPUNIT_ASSERT_EQUAL(std::string(""), alphaCtx->getBasePath());
   }
@@ -171,7 +169,6 @@ void DownloadHelperTest::testCreateRequestGroupForUri_parameterized()
 
     CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"), ctx->getBasePath());
   }
 }
@@ -207,7 +204,6 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
 
     CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
                          ctx->getBasePath());
 
@@ -218,7 +214,6 @@ void DownloadHelperTest::testCreateRequestGroupForUri_BitTorrent()
     CPPUNIT_ASSERT_EQUAL((unsigned int)3,
                          torrentGroup->getNumConcurrentCommand());
     SharedHandle<DownloadContext> btctx = torrentGroup->getDownloadContext();
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), btctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-test"),
                          btctx->getBasePath());    
   }
@@ -262,7 +257,6 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     }
     CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
                          ctx->getBasePath());
 
@@ -271,7 +265,6 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
                          aria2052Group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> aria2052Ctx =
       aria2052Group->getDownloadContext();
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), aria2052Ctx->getDir());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.5.2.tar.bz2"),
                          aria2052Ctx->getBasePath());
     
@@ -304,13 +297,11 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
   CPPUNIT_ASSERT_EQUAL(std::string("http://charlie/file"), fileURIs[2]);
   CPPUNIT_ASSERT_EQUAL((unsigned int)3, fileGroup->getNumConcurrentCommand());
   SharedHandle<DownloadContext> fileCtx = fileGroup->getDownloadContext();
-  CPPUNIT_ASSERT_EQUAL(std::string("/mydownloads"), fileCtx->getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("/mydownloads/myfile.out"),
                        fileCtx->getBasePath());
 
   SharedHandle<RequestGroup> fileISOGroup = result[1];
   SharedHandle<DownloadContext> fileISOCtx = fileISOGroup->getDownloadContext();
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), fileISOCtx->getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
                        fileISOCtx->getBasePath());
 }

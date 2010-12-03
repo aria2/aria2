@@ -136,11 +136,12 @@ public:
 
   void setUp() {
     option_.reset(new Option());
+    option_->put(PREF_DIR, ".");
 
     rg_.reset(new RequestGroup(option_));
 
     dctx_.reset(new DownloadContext());
-    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_);
+    bittorrent::load(A2_TEST_DIR"/test.torrent", dctx_, option_);
 
     rg_->setDownloadContext(dctx_);
 

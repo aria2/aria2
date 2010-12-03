@@ -611,7 +611,7 @@ void gatherProgressCommon
     entryDict->put(KEY_FILES, files);
   }
   if(requested_key(keys, KEY_DIR)) {
-    entryDict->put(KEY_DIR, dctx->getDir());
+    entryDict->put(KEY_DIR, group->getOption()->get(PREF_DIR));
   }
 }
 

@@ -309,7 +309,6 @@ Metalink2RequestGroup::createRequestGroup
       dctx->setFileEntries(fileEntries.begin(), fileEntries.end());
       rg->setNumConcurrentCommand(option->getAsInt(PREF_METALINK_SERVERS));
     }
-    dctx->setDir(option->get(PREF_DIR));
     rg->setDownloadContext(dctx);
     // remove "metalink" from Accept Type list to avoid loop in
     // tranparent metalink

@@ -193,6 +193,7 @@ void extractFileEntries
 (const SharedHandle<DownloadContext>& ctx,
  const SharedHandle<TorrentAttribute>& torrent,
  const Dict* infoDict,
+ const SharedHandle<Option>& option,
  const std::string& defaultName,
  const std::string& overrideName,
  const std::vector<std::string>& urlList)
@@ -284,7 +285,8 @@ void extractFileEntries
       std::vector<std::string> uris;
       createUri(urlList.begin(), urlList.end(),std::back_inserter(uris),pePath);
       SharedHandle<FileEntry> fileEntry
-        (new FileEntry(util::applyDir(ctx->getDir(),util::escapePath(utf8Path)),
+        (new FileEntry(util::applyDir(option->get(PREF_DIR),
+                                      util::escapePath(utf8Path)),
                        fileLengthData->i(), offset, uris));
       fileEntry->setOriginalName(path);
       fileEntries.push_back(fileEntry);
@@ -312,14 +314,15 @@ void extractFileEntries
       }
     }
     SharedHandle<FileEntry> fileEntry
-      (new FileEntry(util::applyDir(ctx->getDir(), util::escapePath(utf8Name)),
+      (new FileEntry(util::applyDir(option->get(PREF_DIR),
+                                    util::escapePath(utf8Name)),
                      totalLength, 0, uris));
     fileEntry->setOriginalName(name);
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());
   if(torrent->mode == MULTI) {
-    ctx->setBasePath(util::applyDir(ctx->getDir(), utf8Name));
+    ctx->setBasePath(util::applyDir(option->get(PREF_DIR), utf8Name));
   }
 }
 } // namespace
@@ -392,6 +395,7 @@ namespace {
 void processRootDictionary
 (const SharedHandle<DownloadContext>& ctx,
  const SharedHandle<ValueBase>& root,
+ const SharedHandle<Option>& option,
  const std::string& defaultName,
  const std::string& overrideName,
  const std::vector<std::string>& uris)
@@ -466,7 +470,7 @@ void processRootDictionary
 
   // retrieve file entries
   extractFileEntries
-    (ctx, torrent, infoDict, defaultName, overrideName, urlList);
+    (ctx, torrent, infoDict, option, defaultName, overrideName, urlList);
   if((ctx->getTotalLength()+pieceLength-1)/pieceLength != numPieces) {
     throw DL_ABORT_EX2("Too few/many piece hash.",
                        error_code::BITTORRENT_PARSE_ERROR);
@@ -500,10 +504,12 @@ void processRootDictionary
 
 void load(const std::string& torrentFile,
           const SharedHandle<DownloadContext>& ctx,
+          const SharedHandle<Option>& option,
           const std::string& overrideName)
 {
   processRootDictionary(ctx,
                         bencode2::decodeFromFile(torrentFile),
+                        option,
                         torrentFile,
                         overrideName,
                         std::vector<std::string>());
@@ -511,11 +517,13 @@ void load(const std::string& torrentFile,
 
 void load(const std::string& torrentFile,
           const SharedHandle<DownloadContext>& ctx,
+          const SharedHandle<Option>& option,
           const std::vector<std::string>& uris,
           const std::string& overrideName)
 {
   processRootDictionary(ctx,
                         bencode2::decodeFromFile(torrentFile),
+                        option,
                         torrentFile,
                         overrideName,
                         uris);
@@ -524,11 +532,13 @@ void load(const std::string& torrentFile,
 void loadFromMemory(const unsigned char* content,
                     size_t length,
                     const SharedHandle<DownloadContext>& ctx,
+                    const SharedHandle<Option>& option,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
                         bencode2::decode(content, length),
+                        option,
                         defaultName,
                         overrideName,
                         std::vector<std::string>());
@@ -537,12 +547,14 @@ void loadFromMemory(const unsigned char* content,
 void loadFromMemory(const unsigned char* content,
                     size_t length,
                     const SharedHandle<DownloadContext>& ctx,
+                    const SharedHandle<Option>& option,
                     const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
                         bencode2::decode(content, length),
+                        option,
                         defaultName,
                         overrideName,
                         uris);
@@ -550,18 +562,21 @@ void loadFromMemory(const unsigned char* content,
 
 void loadFromMemory(const std::string& context,
                     const SharedHandle<DownloadContext>& ctx,
+                    const SharedHandle<Option>& option,
                     const std::string& defaultName,
                     const std::string& overrideName)
 {
   processRootDictionary
     (ctx,
      bencode2::decode(context),
+     option,
      defaultName, overrideName,
      std::vector<std::string>());
 }
 
 void loadFromMemory(const std::string& context,
                     const SharedHandle<DownloadContext>& ctx,
+                    const SharedHandle<Option>& option,
                     const std::vector<std::string>& uris,
                     const std::string& defaultName,
                     const std::string& overrideName)
@@ -569,6 +584,7 @@ void loadFromMemory(const std::string& context,
   processRootDictionary
     (ctx,
      bencode2::decode(context),
+     option,
      defaultName, overrideName,
      uris);
 }

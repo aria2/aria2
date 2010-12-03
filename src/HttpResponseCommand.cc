@@ -207,7 +207,7 @@ bool HttpResponseCommand::executeInternal()
     if(getFileEntry()->getPath().empty()) {
       getFileEntry()->setPath
         (util::createSafePath
-         (getDownloadContext()->getDir(), httpResponse->determinFilename()));
+         (getOption()->get(PREF_DIR), httpResponse->determinFilename()));
     }
     getFileEntry()->setContentType(httpResponse->getContentType());
     getRequestGroup()->preDownloadProcessing();

@@ -177,7 +177,7 @@ void XmlRpcMethodTest::testAddUri()
     CPPUNIT_ASSERT_EQUAL(0, res.code);
     CPPUNIT_ASSERT_EQUAL(std::string("/sink"),
                          e_->getRequestGroupMan()->findReservedGroup(2)->
-                         getDownloadContext()->getDir());
+                         getOption()->get(PREF_DIR));
   }
 }
 
@@ -747,7 +747,6 @@ void XmlRpcMethodTest::testGatherProgressCommon()
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0,"aria2.tar.bz2"));
   std::string uris[] = { "http://localhost/aria2.tar.bz2" };
   dctx->getFirstFileEntry()->addUris(vbegin(uris), vend(uris));
-  dctx->setDir(option_->get(PREF_DIR));
   SharedHandle<RequestGroup> group(new RequestGroup(option_));
   group->setDownloadContext(dctx);
   std::vector<SharedHandle<RequestGroup> > followedBy;
@@ -794,8 +793,10 @@ void XmlRpcMethodTest::testGatherProgressCommon()
 #ifdef ENABLE_BITTORRENT
 void XmlRpcMethodTest::testGatherBitTorrentMetadata()
 {
+  SharedHandle<Option> option(new Option());
+  option->put(PREF_DIR, ".");
   SharedHandle<DownloadContext> dctx(new DownloadContext());
-  bittorrent::load(A2_TEST_DIR"/test.torrent", dctx);
+  bittorrent::load(A2_TEST_DIR"/test.torrent", dctx, option);
   SharedHandle<Dict> btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, bittorrent::getTorrentAttrs(dctx));
   CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"),

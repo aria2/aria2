@@ -48,7 +48,6 @@
 namespace aria2 {
 
 DownloadContext::DownloadContext():
-  dir_(A2STR::DOT_C),
   pieceLength_(0),
   checksumVerified_(false),
   knowsTotalLength_(true),
@@ -59,7 +58,6 @@ DownloadContext::DownloadContext():
 DownloadContext::DownloadContext(size_t pieceLength,
                                  uint64_t totalLength,
                                  const std::string& path):
-  dir_(A2STR::DOT_C),
   pieceLength_(pieceLength),
   checksumVerified_(false),
   knowsTotalLength_(true),
@@ -257,11 +255,6 @@ void DownloadContext::setChecksumHashAlgo(const std::string& algo)
 void DownloadContext::setBasePath(const std::string& basePath)
 {
   basePath_ = basePath;
-}
-
-void DownloadContext::setDir(const std::string& dir)
-{
-  dir_ = dir;
 }
 
 void DownloadContext::setSignature(const SharedHandle<Signature>& signature)

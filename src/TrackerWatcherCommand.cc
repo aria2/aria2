@@ -238,7 +238,6 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
     (new DownloadContext(getOption()->getAsInt(PREF_SEGMENT_SIZE),
                          0,
                          TRACKER_ANNOUNCE_FILE));
-  dctx->setDir(A2STR::NIL);
   dctx->getFileEntries().front()->setUris(uris);
   rg->setDownloadContext(dctx);
   SharedHandle<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());

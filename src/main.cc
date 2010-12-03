@@ -113,8 +113,9 @@ std::ostream& getSummaryOut(const SharedHandle<Option>& op)
 namespace {
 void showTorrentFile(const std::string& uri)
 {
+  SharedHandle<Option> op(new Option());
   SharedHandle<DownloadContext> dctx(new DownloadContext());
-  bittorrent::load(uri, dctx);
+  bittorrent::load(uri, dctx, op);
   bittorrent::print(std::cout, dctx);
 }
 } // namespace

@@ -59,8 +59,6 @@ class DownloadContext
 private:
   std::vector<SharedHandle<FileEntry> > fileEntries_;
 
-  std::string dir_;
-
   std::vector<std::string> pieceHashes_;
 
   size_t pieceLength_;
@@ -160,10 +158,6 @@ public:
   const std::string& getBasePath() const;
 
   void setBasePath(const std::string& basePath);
-
-  const std::string& getDir() const { return dir_; }
-
-  void setDir(const std::string& dir);
 
   const SharedHandle<Signature>& getSignature() const { return signature_; }
 

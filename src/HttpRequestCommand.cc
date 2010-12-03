@@ -158,7 +158,7 @@ bool HttpRequestCommand::executeInternal() {
           if(getFileEntry()->getPath().empty()) {
             getFileEntry()->setPath
               (util::createSafePath
-               (getDownloadContext()->getDir(),
+               (getOption()->get(PREF_DIR),
                 util::percentDecode(getRequest()->getFile())));
           }
           File ctrlfile(getFileEntry()->getPath()+

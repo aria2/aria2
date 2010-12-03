@@ -17,6 +17,7 @@
 #include "DirectDiskAdaptor.h"
 #include "ByteArrayDiskWriter.h"
 #include "MockPieceStorage.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -38,7 +39,6 @@ class BtDependencyTest:public CppUnit::TestFixture {
     SharedHandle<RequestGroup> dependant(new RequestGroup(option));
     SharedHandle<DownloadContext> dctx
       (new DownloadContext(0, 0, "/tmp/outfile.path"));
-    dctx->setDir("/tmp");
     std::vector<std::string> uris;
     uris.push_back("http://localhost/outfile.path");
     SharedHandle<FileEntry> fileEntry = dctx->getFirstFileEntry();
@@ -57,7 +57,6 @@ class BtDependencyTest:public CppUnit::TestFixture {
     SharedHandle<RequestGroup> dependee(new RequestGroup(option));
     SharedHandle<DownloadContext> dctx
       (new DownloadContext(1024*1024, length, torrentFile));
-    dctx->setDir(".");
     dependee->setDownloadContext(dctx);
     dependee->initPieceStorage();
     return dependee;
@@ -68,6 +67,7 @@ public:
   void setUp()
   {
     option_.reset(new Option());
+    option_->put(PREF_DIR, "/tmp");
   }
 
   void testResolve();

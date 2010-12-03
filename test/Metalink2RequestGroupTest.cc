@@ -59,7 +59,6 @@ void Metalink2RequestGroupTest::testGenerate()
 
     CPPUNIT_ASSERT(dctx);
     CPPUNIT_ASSERT_EQUAL((uint64_t)0ULL, dctx->getTotalLength());
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getChecksumHashAlgo());
     CPPUNIT_ASSERT_EQUAL
@@ -79,7 +78,6 @@ void Metalink2RequestGroupTest::testGenerate()
     const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(dctx);
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getPieceHashAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)2, dctx->getPieceHashes().size());
@@ -124,7 +122,6 @@ void Metalink2RequestGroupTest::testGenerate()
     const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(dctx);
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), dctx->getDir());
   }
 }
 

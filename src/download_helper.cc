@@ -222,7 +222,6 @@ SharedHandle<RequestGroup> createRequestGroup
       0,
       useOutOption&&!option->blank(PREF_OUT)?
       util::applyDir(option->get(PREF_DIR), option->get(PREF_OUT)):A2STR::NIL));
-  dctx->setDir(option->get(PREF_DIR));
   dctx->getFirstFileEntry()->setUris(uris);
   dctx->getFirstFileEntry()->setMaxConnectionPerServer
     (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
@@ -259,14 +258,13 @@ createBtRequestGroup(const std::string& torrentFilePath,
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
-  dctx->setDir(option->get(PREF_DIR));
   if(torrentData.empty()) {
-    bittorrent::load(torrentFilePath, dctx, auxUris);// may throw exception
+    // may throw exception
+    bittorrent::load(torrentFilePath, dctx, option, auxUris);
     rg->setMetadataInfo(createMetadataInfo(torrentFilePath));
   } else {
-    bittorrent::loadFromMemory(torrentData, dctx, auxUris, "default"); // may
-    // throw
-    // exception
+    // may throw exception
+    bittorrent::loadFromMemory(torrentData, dctx, option, auxUris, "default");
     rg->setMetadataInfo(createMetadataInfoDataOnly());
   }
   if(adjustAnnounceUri) {
@@ -279,7 +277,7 @@ createBtRequestGroup(const std::string& torrentFilePath,
   for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin(),
         eoi = indexPathMap.end(); i != eoi; ++i) {
     dctx->setFilePathWithIndex
-      ((*i).first, util::applyDir(dctx->getDir(), (*i).second));
+      ((*i).first, util::applyDir(option->get(PREF_DIR), (*i).second));
   }
   rg->setDownloadContext(dctx);
   // Remove "metalink" from Accept Type list to avoid server from
@@ -299,7 +297,6 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0,
                          A2STR::NIL));
-  dctx->setDir(A2STR::NIL);
   // We only know info hash. Total Length is unknown at this moment.
   dctx->markTotalLengthIsUnknown();
   rg->setFileAllocationEnabled(false);

@@ -73,7 +73,6 @@ public:
     SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
     torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
     dctx_->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
-    dctx_->setDir(option_->get(PREF_DIR));
     const SharedHandle<FileEntry> fileEntries[] = {
       SharedHandle<FileEntry>(new FileEntry("/path/to/file",totalLength,0))
     };

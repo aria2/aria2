@@ -1189,7 +1189,7 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 #endif // ENABLE_BITTORRENT
   res->pieceLength = downloadContext_->getPieceLength();
   res->numPieces = downloadContext_->getNumPieces();
-  res->dir = downloadContext_->getDir();
+  res->dir = option_->get(PREF_DIR);
   return res;
 }
   

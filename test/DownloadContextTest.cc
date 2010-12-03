@@ -71,9 +71,6 @@ void DownloadContextTest::testGetBasePath()
   CPPUNIT_ASSERT_EQUAL(std::string(""), ctx.getBasePath());
   ctx.getFirstFileEntry()->setPath("aria2.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), ctx.getBasePath());
-  ctx.setDir("/tmp");
-  // See dir doesn't effect getBasePath().
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), ctx.getBasePath());
 }
 
 } // namespace aria2

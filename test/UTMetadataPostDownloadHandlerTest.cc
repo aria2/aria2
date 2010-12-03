@@ -33,7 +33,6 @@ public:
   void setUp()
   {
     option_.reset(new Option());
-    option_->put("HELLO", "WORLD");
     option_->put(PREF_DIR, A2_TEST_OUT_DIR);
     dctx_.reset(new DownloadContext(0, 0, A2_TEST_OUT_DIR"/something"));
     requestGroup_.reset(new RequestGroup(option_));
