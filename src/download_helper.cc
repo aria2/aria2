@@ -290,8 +290,7 @@ createBtRequestGroup(const std::string& torrentFilePath,
 namespace {
 SharedHandle<RequestGroup>
 createBtMagnetRequestGroup(const std::string& magnetLink,
-                           const SharedHandle<Option>& option,
-                           const std::vector<std::string>& auxUris)
+                           const SharedHandle<Option>& option)
 {
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx
@@ -393,7 +392,7 @@ public:
     else if(detector_.guessTorrentMagnet(uri)) {
       try {
         SharedHandle<RequestGroup> group =
-          createBtMagnetRequestGroup(uri, option_, std::vector<std::string>());
+          createBtMagnetRequestGroup(uri, option_);
         requestGroups_.push_back(group);
       } catch(RecoverableException& e) {
         // error occurred while parsing torrent file.
