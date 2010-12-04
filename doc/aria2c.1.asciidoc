@@ -951,9 +951,15 @@ name.
 
 [[aria2_optref_on_download_start]]*--on-download-start*=COMMAND::
 
-  Set the command to be executed when download starts up. COMMAND must
-  take just one argument and GID is passed to COMMAND as a first
-  argument.  Possible Values: '/path/to/command'
+  Set the command to be executed when download starts up.  aria2
+  passes GID, number of files and file path in this order to COMMAND.
+  If number of files is more than one, file path is first one.  In
+  other words, this is the value of path key of first struct whose
+  selected key is true in the response of
+  *<<aria2_xmlrpc_aria2_getFiles, aria2.getFiles>>*
+  XML-RPC method.  Please note that file path may change during download in
+  HTTP because of redirection or Content-Disposition header.  Possible
+  Values: '/path/to/command'
 
 [[aria2_optref_on_download_stop]]*--on-download-stop*=COMMAND::
 
