@@ -1201,15 +1201,16 @@ void RequestGroup::reportDownloadFinished()
 #ifdef ENABLE_BITTORRENT
   if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
     TransferStat stat = calculateStat();
-    double shareRatio =
-      ((stat.getAllTimeUploadLength()*10)/getCompletedLength())/10.0;
+    uint64_t completedLength = getCompletedLength();
+    double shareRatio = completedLength == 0 ? 0.0 :
+      1.0*stat.getAllTimeUploadLength()/completedLength;
     SharedHandle<TorrentAttribute> attrs =
       bittorrent::getTorrentAttrs(downloadContext_);
     if(!attrs->metadata.empty()) {
       A2_LOG_NOTICE(fmt(MSG_SHARE_RATIO_REPORT,
                         shareRatio,
                         util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
-                        util::abbrevSize(getCompletedLength()).c_str()));
+                        util::abbrevSize(completedLength).c_str()));
     }
   }
 #endif // ENABLE_BITTORRENT
