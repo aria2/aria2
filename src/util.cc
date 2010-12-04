@@ -1457,19 +1457,27 @@ namespace {
 
 void executeHook
 (const std::string& command,
- const std::string& gid,
+ gid_t gid,
+ size_t numFiles,
  const std::string& firstFilename)
 {
-  A2_LOG_INFO(fmt("Executing user command: %s %s %s",
+  const std::string gidStr = util::itos(gid);
+  const std::string numFilesStr = util::uitos(numFiles);
+  A2_LOG_INFO(fmt("Executing user command: %s %s %s %s",
                   command.c_str(),
-                  gid.c_str(),
+                  gidStr.c_str(),
+                  numFilesStr.c_str(),
                   firstFilename.c_str()));
 #ifndef __MINGW32__
   pid_t cpid = fork();
   if(cpid == -1) {
     A2_LOG_ERROR("fork() failed. Cannot execute user command.");
   } else if(cpid == 0) {
-    execl(command.c_str(), command.c_str(), gid.c_str(), firstFilename.c_str(),
+    execl(command.c_str(),
+          command.c_str(),
+          gidStr.c_str(),
+          numFilesStr.c_str(),
+          firstFilename.c_str(),
           reinterpret_cast<char*>(0));
     perror(("Could not execute user command: "+command).c_str());
     exit(EXIT_FAILURE);
@@ -1484,7 +1492,7 @@ void executeHook
   memset(&pi, 0, sizeof (pi));
 
   std::string cmdline = command;
-  strappend(cmdline, " ", gid, " \"", firstFilename, "\"");
+  strappend(cmdline, " ", gidStr, " ", numFilesStr, " \"", firstFilename, "\"");
 
   DWORD rc = CreateProcess(
                            NULL,
@@ -1519,10 +1527,15 @@ void executeHookByOptName
   if(!option->blank(opt)) {
     const SharedHandle<DownloadContext> dctx = group->getDownloadContext();
     std::string firstFilename;
-    if(!group->inMemoryDownload() && !dctx->getFileEntries().empty()) {
-      firstFilename = group->getFirstFilePath();
+    size_t numFiles = 0;
+    if(!group->inMemoryDownload()) {
+      SharedHandle<FileEntry> file = dctx->getFirstRequestedFileEntry();
+      if(file) {
+        firstFilename = file->getPath();
+      }
+      numFiles = dctx->countRequestedFileEntry();
     }
-    executeHook(option->get(opt), util::itos(group->getGID()), firstFilename);
+    executeHook(option->get(opt), group->getGID(), numFiles, firstFilename);
   }
 }
 

@@ -211,6 +211,30 @@ const std::string& DownloadContext::getBasePath() const
   }
 }
 
+SharedHandle<FileEntry>
+DownloadContext::getFirstRequestedFileEntry() const
+{
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+        fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
+    if((*i)->isRequested()) {
+      return *i;
+    }
+  }
+  return SharedHandle<FileEntry>();
+}
+
+size_t DownloadContext::countRequestedFileEntry() const
+{
+  size_t numFiles = 0;
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+        fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
+    if((*i)->isRequested()) {
+      ++numFiles;
+    }
+  }
+  return numFiles;
+}
+
 bool DownloadContext::isChecksumVerificationNeeded() const
 {
   return pieceHashAlgo_.empty() &&

@@ -127,6 +127,13 @@ public:
     return fileEntries_[0];
   }
 
+  // This function returns first FileEntry whose isRequested() returns
+  // true.  If there is no such FileEntry, returns
+  // SharedHandle<FileEntry>().
+  SharedHandle<FileEntry> getFirstRequestedFileEntry() const;
+
+  size_t countRequestedFileEntry() const;
+
   template<typename InputIterator>
   void setFileEntries(InputIterator first, InputIterator last)
   {
