@@ -635,25 +635,6 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
     o << formatDownloadResult(status, *itr) << "\n";
   }
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
-        requestGroups_.begin(), eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    DownloadResultHandle result = (*itr)->createDownloadResult();
-    std::string status;
-    if(result->result == error_code::FINISHED) {
-      status = MARK_OK;
-      ++ok;
-    } else {
-      // Since this RequestGroup is not processed by ProcessStoppedRequestGroup,
-      // its download stop time is not reseted.
-      // Reset download stop time and assign sessionTime here.
-      (*itr)->getDownloadContext()->resetDownloadStopTime();
-      result->sessionTime =
-        (*itr)->getDownloadContext()->calculateSessionTime();
-      status = MARK_INPR;
-      ++inpr;
-    }
-    o << formatDownloadResult(status, result) << "\n";
-  }
-  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
         reservedGroups_.begin(), eoi = reservedGroups_.end();
       itr != eoi; ++itr) {
     if(!(*itr)->isPauseRequested()) {

@@ -208,7 +208,7 @@ void DownloadEngine::calculateStatistics()
 
 void DownloadEngine::onEndOfRun()
 {
-  requestGroupMan_->updateServerStat();
+  requestGroupMan_->removeStoppedGroup(this);
   requestGroupMan_->closeFile();
   requestGroupMan_->save();
 }

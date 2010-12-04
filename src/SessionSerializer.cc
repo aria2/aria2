@@ -184,18 +184,6 @@ void SessionSerializer::save(std::ostream& out) const
       }
     }
   }
-  if(saveInProgress_) {
-    const std::deque<SharedHandle<RequestGroup> >& groups =
-      rgman_->getRequestGroups();
-    for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
-          groups.begin(), eoi = groups.end(); itr != eoi; ++itr) {
-      SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
-      if(result->result == error_code::FINISHED) {
-        continue;
-      }
-      writeDownloadResult(out, metainfoCache, result);
-    }
-  }
   if(saveWaiting_) {
     const std::deque<SharedHandle<RequestGroup> >& groups =
       rgman_->getReservedGroups();
