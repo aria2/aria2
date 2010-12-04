@@ -51,13 +51,12 @@ void ShareRatioSeedCriteria::reset() {}
 
 bool ShareRatioSeedCriteria::evaluate()
 {
-  if(downloadContext_->getTotalLength() == 0) {
-    return false;
+  uint64_t completedLength = pieceStorage_->getCompletedLength();
+  if(completedLength == 0) {
+    return true;
   }
   TransferStat stat = peerStorage_->calculateStat();
-  return ratio_ <=
-    static_cast<double>(stat.getAllTimeUploadLength())/
-    pieceStorage_->getCompletedLength();
+  return ratio_ <= 1.0*stat.getAllTimeUploadLength()/completedLength;
 }
 
 
