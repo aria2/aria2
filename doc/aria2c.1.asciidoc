@@ -924,50 +924,45 @@ name.
 [[aria2_optref_on_bt_download_complete]]*--on-bt-download-complete*=COMMAND::
 
   For BitTorrent, a command specified in *<<aria2_optref_on_download_complete, --on-download-complete>>* is
-  called when download completes and seeding is over. On the other
-  hand, this option set the command to be executed when download
-  completes but before seeding.  See *<<aria2_optref_on_download_start, --on-download-start>>* option for
-  the requirement of COMMAND.  Possible Values: '/path/to/command'
+  called after download completed and seeding is over. On the other
+  hand, this option set the command to be executed after download
+  completed but before seeding.
+  See *<<_event_hook, Event Hook>>* for more details about COMMAND.
+  Possible Values: '/path/to/command'
 
 [[aria2_optref_on_download_complete]]*--on-download-complete*=COMMAND::
 
-  Set the command to be executed when download completes.  See
-  *<<aria2_optref_on_download_start, --on-download-start>>* option for the requirement of COMMAND.  See
-  also *<<aria2_optref_on_download_stop, --on-download-stop>>* option.  Possible Values:
-  '/path/to/command'
+  Set the command to be executed after download completed.  See
+  See *<<_event_hook, Event Hook>>* for more details about COMMAND.
+  See also *<<aria2_optref_on_download_stop, --on-download-stop>>* option.
+  Possible Values: '/path/to/command'
 
 [[aria2_optref_on_download_error]]*--on-download-error*=COMMAND::
 
-  Set the command to be executed when download aborts due to error.
-  See *<<aria2_optref_on_download_start, --on-download-start>>* option for the requirement of COMMAND.
+  Set the command to be executed after download aborted due to error.
+  See *<<_event_hook, Event Hook>>* for more details about COMMAND.
   See also *<<aria2_optref_on_download_stop, --on-download-stop>>* option.  Possible Values:
   '/path/to/command'
 
 [[aria2_optref_on_download_pause]]*--on-download-pause*=COMMAND::
 
-  Set the command to be executed when download is paused.  See
-  *<<aria2_optref_on_download_start, --on-download-start>>* option for the requirement of COMMAND.
+  Set the command to be executed after download was paused.
+  See *<<_event_hook, Event Hook>>* for more details about COMMAND.
   Possible Values: '/path/to/command'
 
 [[aria2_optref_on_download_start]]*--on-download-start*=COMMAND::
 
-  Set the command to be executed when download starts up.  aria2
-  passes GID, number of files and file path in this order to COMMAND.
-  If number of files is more than one, file path is first one.  In
-  other words, this is the value of path key of first struct whose
-  selected key is true in the response of
-  *<<aria2_xmlrpc_aria2_getFiles, aria2.getFiles>>*
-  XML-RPC method.  Please note that file path may change during download in
-  HTTP because of redirection or Content-Disposition header.  Possible
-  Values: '/path/to/command'
+  Set the command to be executed after download got started.
+  See *<<_event_hook, Event Hook>>* for more details about COMMAND.
+  Possible Values: '/path/to/command'
 
 [[aria2_optref_on_download_stop]]*--on-download-stop*=COMMAND::
 
   Set the command to be executed when download stops. You can override
   the command to be executed for particular download result using
   *<<aria2_optref_on_download_complete, --on-download-complete>>* and *<<aria2_optref_on_download_error, --on-download-error>>*. If they are
-  specified, command specified in this option is not executed.  See
-  *<<aria2_optref_on_download_start, --on-download-start>>* option for the requirement of COMMAND.
+  specified, command specified in this option is not executed.
+  See *<<_event_hook, Event Hook>>* for more details about COMMAND.
   Possible Values: '/path/to/command'
 
 [[aria2_optref_summary_interval]]*--summary-interval*=SEC::
@@ -1107,6 +1102,37 @@ If the previous transfer is made by a browser or wget like sequential
 download manager, then use -c option to continue the transfer(aria2c
 *<<aria2_optref_continue, -c>>* URI).
 
+Event Hook
+~~~~~~~~~~
+
+aria2 provides options to specify arbitrary command after specific event
+occurred. Currently following options are available:
+*<<aria2_optref_on_bt_download_complete, --on-bt-download-complete>>*,
+*<<aria2_optref_on_download_pause, --on-download-pause>>*,
+*<<aria2_optref_on_download_complete, --on-download-complete>>*.
+*<<aria2_optref_on_download_start, --on-download-start>>*,
+*<<aria2_optref_on_download_error, --on-download-error>>*,
+*<<aria2_optref_on_download_stop, --on-download-stop>>*.
+
+aria2 passes 3 arguments to specified command when it is executed.
+These arguments are: GID, the number of files and file path.  For
+HTTP, FTP downloads, usually the number of files is 1.  BitTorrent
+download can contain multiple files.
+If number of files is more than one, file path is first one.  In
+other words, this is the value of path key of first struct whose
+selected key is true in the response of
+*<<aria2_xmlrpc_aria2_getFiles, aria2.getFiles>>*
+XML-RPC method.  Please note that file path may change during download in
+HTTP because of redirection or Content-Disposition header.
+
+Let's see an example of how arguments are passed to command.
+--------------------------------------------------------------------------------
+$ cat hook.sh
+#!/bin/sh
+echo "Called with [$1] [$2] [$3]"
+$ aria2c --on-download-complete hook.sh http://example.org/file.iso
+Called with [1] [1] [/path/to/file.iso]
+--------------------------------------------------------------------------------
 
 EXIT STATUS
 -----------
