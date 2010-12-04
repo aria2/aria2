@@ -1122,8 +1122,10 @@ If number of files is more than one, file path is first one.  In
 other words, this is the value of path key of first struct whose
 selected key is true in the response of
 *<<aria2_xmlrpc_aria2_getFiles, aria2.getFiles>>*
-XML-RPC method.  Please note that file path may change during download in
-HTTP because of redirection or Content-Disposition header.
+XML-RPC method.
+If you want to get all file paths, consider to use XML-RPC.  Please
+note that file path may change during download in HTTP because of
+redirection or Content-Disposition header.
 
 Let's see an example of how arguments are passed to command.
 --------------------------------------------------------------------------------
