@@ -958,7 +958,7 @@ name.
 
 [[aria2_optref_on_download_stop]]*--on-download-stop*=COMMAND::
 
-  Set the command to be executed when download stops. You can override
+  Set the command to be executed after download stopped. You can override
   the command to be executed for particular download result using
   *<<aria2_optref_on_download_complete, --on-download-complete>>* and *<<aria2_optref_on_download_error, --on-download-error>>*. If they are
   specified, command specified in this option is not executed.
