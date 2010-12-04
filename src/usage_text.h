@@ -538,30 +538,31 @@
     "                              based on the response of tracker and the download\n" \
     "                              progress.")
 #define TEXT_ON_DOWNLOAD_COMPLETE                                       \
-  _(" --on-download-complete=COMMAND Set the command to be executed when download\n" \
-    "                              completes.\n"                        \
+  _(" --on-download-complete=COMMAND Set the command to be executed after download\n" \
+    "                              completed.\n"                        \
     "                              See --on-download-start option for the\n" \
     "                              requirement of COMMAND.\n"           \
     "                              See also --on-download-stop option.")
 #define TEXT_ON_DOWNLOAD_START                                          \
-  _(" --on-download-start=COMMAND  Set the command to be executed when download\n" \
-    "                              starts up. COMMAND must take just one argument and\n" \
-    "                              GID is passed to COMMAND as a first argument.")
+  _(" --on-download-start=COMMAND  Set the command to be executed after download\n" \
+    "                              got started. aria2 passes 3 arguments to COMMAND:\n" \
+    "                              GID, the nubmer of files and file path. See Event\n" \
+    "                              Hook in man page for more details.")
 #define TEXT_ON_DOWNLOAD_PAUSE                                          \
-  _(" --on-download-pause=COMMAND  Set the command to be executed when download\n" \
-    "                              is paused.\n"\
+  _(" --on-download-pause=COMMAND  Set the command to be executed after download\n" \
+    "                              was paused.\n"\
     "                              See --on-download-start option for the\n" \
     "                              requirement of COMMAND.")
 #define TEXT_ON_DOWNLOAD_ERROR                                          \
-  _(" --on-download-error=COMMAND  Set the command to be executed when download\n" \
-    "                              aborts due to error.\n"              \
+  _(" --on-download-error=COMMAND  Set the command to be executed after download\n" \
+    "                              aborted due to error.\n"              \
     "                              See --on-download-start option for the\n" \
     "                              requirement of COMMAND.\n"           \
     "                              See also --on-download-stop option.")
 #define TEXT_ON_DOWNLOAD_STOP                                           \
-  _(" --on-download-stop=COMMAND   Set the command to be executed when download\n" \
-    "                              stops. You can override the command to be executed\n" \
-    "                              for particular download result using\n" \
+  _(" --on-download-stop=COMMAND   Set the command to be executed after download\n" \
+    "                              stopped. You can override the command to be\n" \
+    "                              executed for particular download result using\n" \
     "                              --on-download-complete and --on-download-error. If\n" \
     "                              they are specified, command specified in this\n" \
     "                              option is not executed.\n"           \
@@ -701,10 +702,10 @@
     "                              many limitations. See man page for details.")
 #define TEXT_ON_BT_DOWNLOAD_COMPLETE            \
   _(" --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n" \
-    "                              --on-download-complete is called when download\n" \
-    "                              completes and seeding is over. On the other hand,\n" \
-    "                              this option sets the command to be executed when\n" \
-    "                              download completes but before seeding.\n" \
+    "                              --on-download-complete is called after download\n" \
+    "                              completed and seeding is over. On the other hand,\n" \
+    "                              this option sets the command to be executed after\n" \
+    "                              download completed but before seeding.\n" \
     "                              See --on-download-start option for the\n" \
     "                              requirement of COMMAND.")
 #define TEXT_ENABLE_ASYNC_DNS6                  \
