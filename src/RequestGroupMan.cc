@@ -261,22 +261,23 @@ bool RequestGroupMan::removeReservedGroup(gid_t gid)
 }
 
 namespace {
+
 void executeStopHook
-(const SharedHandle<DownloadResult>& result, const Option* option)
+(const SharedHandle<RequestGroup>& group,
+ const Option* option,
+ error_code::Value result)
 {
-  if(result->result == error_code::FINISHED &&
+  if(result == error_code::FINISHED &&
      !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
-    util::executeHook(option->get(PREF_ON_DOWNLOAD_COMPLETE),
-                      util::itos(result->gid));
-  } else if(result->result != error_code::IN_PROGRESS &&
+    util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_COMPLETE);
+  } else if(result != error_code::IN_PROGRESS &&
             !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
-    util::executeHook(option->get(PREF_ON_DOWNLOAD_ERROR),
-                      util::itos(result->gid));
+    util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_ERROR);
   } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
-    util::executeHook(option->get(PREF_ON_DOWNLOAD_STOP),
-                      util::itos(result->gid));
+    util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_STOP);
   }
 }
+
 } // namespace
 
 namespace {
@@ -368,8 +369,8 @@ public:
       } else {
         SharedHandle<DownloadResult> dr = group->createDownloadResult();
         e_->getRequestGroupMan()->addDownloadResult(dr);
+        executeStopHook(group, e_->getOption(), dr->result);
         group->releaseRuntimeResource(e_);
-        executeStopHook(dr, e_->getOption());
       }
     }
   }

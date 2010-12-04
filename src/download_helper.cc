@@ -313,6 +313,7 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   rg->setDiskWriterFactory
     (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
   rg->setMetadataInfo(createMetadataInfo(magnetLink));
+  rg->markInMemoryDownload();
   return rg;
 }
 } // namespace
