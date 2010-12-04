@@ -250,7 +250,7 @@ error_code::Value main(int argc, char* argv[])
         return exitStatus;
 #endif // ENABLE_METALINK || ENABLE_METALINK
       } else {
-        createRequestGroupForUri(requestGroups, op, args);
+        createRequestGroupForUri(requestGroups, op, args, false, false, true);
       }
 
   // Remove option values which is only valid for URIs specified in

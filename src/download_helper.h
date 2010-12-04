@@ -87,13 +87,18 @@ void createRequestGroupForUriList
  const SharedHandle<Option>& option);
 
 // Create RequestGroup object using provided uris.  If ignoreLocalPath
-// is true, a path to torrent file abd metalink file are ignored.
+// is true, a path to torrent file abd metalink file are ignored.  If
+// throwOnError is true, exception will be thrown when Metalink
+// Document or .torrent file cannot be parsed or unrecognized URI is
+// given. If throwOnError is false, these errors are just logged as
+// error.
 void createRequestGroupForUri
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::vector<std::string>& uris,
  bool ignoreForceSequential = false,
- bool ignoreLocalPath = false);
+ bool ignoreLocalPath = false,
+ bool throwOnError = false);
 
 template<typename InputIterator>
 void setMetadataInfo

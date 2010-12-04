@@ -366,12 +366,16 @@ private:
   ProtocolDetector detector_;
   SharedHandle<Option> option_;
   bool ignoreLocalPath_;
+  bool throwOnError_;
 public:
   AccRequestGroup(std::vector<SharedHandle<RequestGroup> >& requestGroups,
                   const SharedHandle<Option>& option,
-                  bool ignoreLocalPath = false):
+                  bool ignoreLocalPath = false,
+                  bool throwOnError = false):
     requestGroups_(requestGroups), option_(option),
-    ignoreLocalPath_(ignoreLocalPath) {}
+    ignoreLocalPath_(ignoreLocalPath),
+    throwOnError_(throwOnError)
+  {}
 
   void
   operator()(const std::string& uri)
@@ -390,23 +394,21 @@ public:
     }
 #ifdef ENABLE_BITTORRENT
     else if(detector_.guessTorrentMagnet(uri)) {
-      try {
-        SharedHandle<RequestGroup> group =
-          createBtMagnetRequestGroup(uri, option_);
-        requestGroups_.push_back(group);
-      } catch(RecoverableException& e) {
-        // error occurred while parsing torrent file.
-        // We simply ignore it. 
-        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
-      }
+      SharedHandle<RequestGroup> group =
+        createBtMagnetRequestGroup(uri, option_);
+      requestGroups_.push_back(group);
     } else if(!ignoreLocalPath_ && detector_.guessTorrentFile(uri)) {
       try {
         requestGroups_.push_back
           (createBtRequestGroup(uri, option_, std::vector<std::string>()));
       } catch(RecoverableException& e) {
-        // error occurred while parsing torrent file.
-        // We simply ignore it. 
-        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+        if(throwOnError_) {
+          throw;
+        } else {
+          // error occurred while parsing torrent file.
+          // We simply ignore it.
+          A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+        }
       }
     } 
 #endif // ENABLE_BITTORRENT
@@ -415,14 +417,22 @@ public:
       try {
         Metalink2RequestGroup().generate(requestGroups_, uri, option_);
       } catch(RecoverableException& e) {
-        // error occurred while parsing metalink file.
-        // We simply ignore it.
-        A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+        if(throwOnError_) {
+          throw;
+        } else {
+          // error occurred while parsing metalink file.
+          // We simply ignore it.
+          A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+        }
       }
     }
 #endif // ENABLE_METALINK
     else {
-      A2_LOG_ERROR(fmt(MSG_UNRECOGNIZED_URI, (uri).c_str()));
+      if(throwOnError_) {
+        throw DL_ABORT_EX(fmt(MSG_UNRECOGNIZED_URI, uri.c_str()));
+      } else {
+        A2_LOG_ERROR(fmt(MSG_UNRECOGNIZED_URI, uri.c_str()));
+      }
     }
   }
 };
@@ -444,7 +454,8 @@ void createRequestGroupForUri
  const SharedHandle<Option>& option,
  const std::vector<std::string>& uris,
  bool ignoreForceSequential,
- bool ignoreLocalPath)
+ bool ignoreLocalPath,
+ bool throwOnError)
 {
   std::vector<std::string> nargs;
   if(option->get(PREF_PARAMETERIZED_URI) == A2_V_TRUE) {
@@ -454,7 +465,8 @@ void createRequestGroupForUri
   }
   if(!ignoreForceSequential && option->get(PREF_FORCE_SEQUENTIAL) == A2_V_TRUE) {
     std::for_each(nargs.begin(), nargs.end(),
-                  AccRequestGroup(result, option, ignoreLocalPath));
+                  AccRequestGroup(result, option, ignoreLocalPath,
+                                  throwOnError));
   } else {
     std::vector<std::string>::iterator strmProtoEnd =
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
@@ -471,7 +483,8 @@ void createRequestGroupForUri
     }
     // process remaining URIs(local metalink, BitTorrent files)
     std::for_each(strmProtoEnd, nargs.end(),
-                  AccRequestGroup(result, option, ignoreLocalPath));
+                  AccRequestGroup(result, option, ignoreLocalPath,
+                                  throwOnError));
   }
 }
 
