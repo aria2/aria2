@@ -1041,7 +1041,8 @@ connections.
 
   Save error/unfinished downloads to FILE on exit.  You can pass this
   output file to aria2c with *<<aria2_optref_input_file, -i>>* option on restart. Please note that
-  downloads added by *aria2.addTorrent* and *aria2.addMetalink*
+  downloads added by *<<aria2_xmlrpc_aria2_addTorrent, aria2.addTorrent>>* and
+  *<<aria2_xmlrpc_aria2_addMetalink, aria2.addMetalink>>*
   XML-RPC method are not saved.
 
 [[aria2_optref_stop]]*--stop*=SEC::
