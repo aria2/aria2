@@ -194,13 +194,3 @@ void swap
 }
 
 } // namespace aria2
-
-namespace std {
-template<>
-void swap<aria2::BtSeederStateChoke::PeerEntry>
-(aria2::BtSeederStateChoke::PeerEntry& a,
- aria2::BtSeederStateChoke::PeerEntry& b)
-{
-  a.swap(b);
-}
-} // namespace std

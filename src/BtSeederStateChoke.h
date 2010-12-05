@@ -103,7 +103,6 @@ public:
   const Timer& getLastRound() const { return lastRound_; }
 
   friend void swap(PeerEntry& a, PeerEntry& b);
-  friend void std::swap<PeerEntry>(PeerEntry& a, PeerEntry& b);
 };
 
 void swap
@@ -111,12 +110,5 @@ void swap
  BtSeederStateChoke::PeerEntry& b);
 
 } // namespace aria2
-
-namespace std {
-template<>
-void swap<aria2::BtSeederStateChoke::PeerEntry>
-(aria2::BtSeederStateChoke::PeerEntry& a,
- aria2::BtSeederStateChoke::PeerEntry& b);
-} // namespace std
 
 #endif // D_BT_SEEDER_STATE_CHOKE_H

@@ -239,13 +239,3 @@ const Timer& BtLeecherStateChoke::getLastRound() const
 }
 
 } // namespace aria2
-
-namespace std {
-template<>
-void swap<aria2::BtLeecherStateChoke::PeerEntry>
-(aria2::BtLeecherStateChoke::PeerEntry& a,
- aria2::BtLeecherStateChoke::PeerEntry& b)
-{
-  a.swap(b);
-}
-} // namespace std;
