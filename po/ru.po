@@ -11,14 +11,14 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-12-05 15:54+0900\n"
-"PO-Revision-Date: 2010-09-17 04:25+0000\n"
-"Last-Translator: Andrew Zhuravlev <Unknown>\n"
+"PO-Revision-Date: 2010-11-04 08:02+0000\n"
+"Last-Translator: andreylosev <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-10-12 11:40+0000\n"
+"X-Launchpad-Export-Date: 2010-12-04 12:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:220
@@ -1918,18 +1918,13 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:688
-#, fuzzy
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
 "one\n"
 "                              server for each download."
 msgstr ""
-" --bt-max-open-files=NUM Указать максимальное количество файлов для открытия "
-"в каждой\n"
-"                              BitTorrent загрузке."
 
 #: src/usage_text.h:691
-#, fuzzy
 msgid ""
 " -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
 "range.\n"
@@ -1945,17 +1940,6 @@ msgid ""
 "source.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --bt-request-peer-speed-limit=SPEED Если вся скорость загрузки каждого\n"
-"                              торента ниже чем SPEED, aria2 временно\n"
-"                              увеличивает количество узлов, чтобы "
-"попробовать увеличить\n"
-"                              скорость загрузки. Настройка этого параметра с "
-"выбранной\n"
-"                              Вами скоростью загрузки может, в некоторых "
-"случаях,\n"
-"                              увеличить Вашу скорость загрузки.\n"
-"                              Вы можете добавить K или M(1K = 1024, 1M = "
-"1024K)."
 
 #: src/usage_text.h:700
 msgid ""
@@ -2275,9 +2259,9 @@ msgid "The download was complete."
 msgstr "Закачка завершена."
 
 #: src/message.h:126
-#, fuzzy, c-format
+#, c-format
 msgid "Removed %lu have entries."
-msgstr "Удаленный %d имеет вхождения"
+msgstr ""
 
 #: src/message.h:127
 #, c-format
@@ -2285,9 +2269,9 @@ msgid "Validating file %s"
 msgstr "Проверяется файл %s"
 
 #: src/message.h:128
-#, fuzzy, c-format
+#, c-format
 msgid "%ld seconds to allocate %s byte(s)"
-msgstr "%d секунд для размещения %s байт"
+msgstr ""
 
 #: src/message.h:131
 #, c-format
@@ -2372,9 +2356,9 @@ msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr "Невозможно разобрать XML файл металинка. XML файл может быть испорчен."
 
 #: src/message.h:148
-#, fuzzy, c-format
+#, c-format
 msgid "Too small payload size for %s, size=%lu."
-msgstr "Слишком маленький полезный размер для %s, размер=%d."
+msgstr ""
 
 #: src/message.h:149
 #, c-format
@@ -2402,9 +2386,9 @@ msgid "Windows socket library initialization failed"
 msgstr "Ошибка инициализации Windows socket библиотеки"
 
 #: src/message.h:154
-#, fuzzy, c-format
+#, c-format
 msgid "%ld second(s) has passed. Stopping application."
-msgstr "прошло %d секунд(ы). Выполнение программы завершается."
+msgstr ""
 
 #: src/message.h:155
 #, c-format
@@ -2465,13 +2449,11 @@ msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "Ошибка во время загрузки CA сертификата %s. Причина: %s"
 
 #: src/message.h:175
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Certificate verification failed. Cause: %s See --ca-certificate and --check-"
 "certificate option."
 msgstr ""
-"Вы можете столкнуться с ошибкой проверки сертификата с HTTPS сервера. "
-"Смотрите параметры --ca-certificate и --check-certificate."
 
 #: src/message.h:177
 msgid "No certificate found."
@@ -2768,9 +2750,9 @@ msgid "File %s exists, but %s does not exist."
 msgstr "Файл %s существует, а %s - нет."
 
 #: src/message.h:254
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid payload size for %s, size=%lu. It should be %lu."
-msgstr "Не действительный размер загрузки для %s,  розмер=%d. Должен быть %d."
+msgstr ""
 
 #: src/message.h:255
 #, c-format
@@ -2778,13 +2760,11 @@ msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Неправильный ID=%d для %s. Должен быть %d."
 
 #: src/message.h:256
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash="
 "%s, actualHash=%s"
 msgstr ""
-"Контрольная сумма блока не прошла подтверждения. checksumIndex=%d, offset="
-"%s, expectedHash=%s, actualHash=%s"
 
 #: src/message.h:257
 msgid "Download aborted."
@@ -2809,13 +2789,11 @@ msgid "Flooding detected."
 msgstr "Обнаружен флудинг."
 
 #: src/message.h:263
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%ld seconds)."
 msgstr ""
-"Потеряно соединение из-за отсутствия запросов/частей сообщений, которыми "
-"обменивались бы за определённый период (%d секунд)."
 
 #: src/message.h:265
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
@@ -2899,9 +2877,6 @@ msgstr "Ошибка при открытии порта.\n"
 #~ msgid "must be one of the following:"
 #~ msgstr "должно быть одним из следующих:"
 
-#~ msgid "Unrecognized format"
-#~ msgstr "Неизвестный формат"
-
 #~ msgid "unrecognized proxy format"
 #~ msgstr "неизвестный формат прокси"
 
@@ -2914,21 +2889,6 @@ msgstr "Ошибка при открытии порта.\n"
 #~ "каждый файл,\n"
 #~ "                              упомянутый в .torrent файле."
 
-#~ msgid ""
-#~ " --on-download-start=COMMAND  Set the command to be executed when "
-#~ "download\n"
-#~ "                              starts up. COMMAND must take just one "
-#~ "argument and\n"
-#~ "                              GID is passed to COMMAND as a first "
-#~ "argument."
-#~ msgstr ""
-#~ " --on-download-start=COMMAND Указать команду, которую будет выполнено "
-#~ "тогда, когда начнется\n"
-#~ "                              загрузка. COMMAND должна содержать только "
-#~ "один аргумент и\n"
-#~ "                              GID добавляется к COMMAND как первый "
-#~ "аргумент."
-
 #~ msgid "Failed to open the segment file %s, cause: %s"
 #~ msgstr "Ошибка открытия сегмента файла %s: %s"
 
@@ -2937,9 +2897,6 @@ msgstr "Ошибка при открытии порта.\n"
 
 #~ msgid "Failed to read from the segment file %s, cause: %s"
 #~ msgstr "Ошибка чтения сегмента файла %s: %s"
-
-#~ msgid "Certificate verification failed. Cause: %s"
-#~ msgstr "Проверка сертификата не состоялась. Причина: %s"
 
 #~ msgid "CUID#%d - The download for one segment completed successfully."
 #~ msgstr "CUID#%d - Скачивание одного из сегментов успешно завершено."
@@ -2982,3 +2939,21 @@ msgstr "Ошибка при открытии порта.\n"
 #~ msgid ""
 #~ " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 #~ msgstr " -M, --metalink-file=METALINK_FILE Путь к .metalink-файлу."
+
+#~ msgid "Unrecognized format"
+#~ msgstr "Неизвестный формат"
+
+#~ msgid ""
+#~ " --on-download-start=COMMAND  Set the command to be executed when "
+#~ "download\n"
+#~ "                              starts up. COMMAND must take just one "
+#~ "argument and\n"
+#~ "                              GID is passed to COMMAND as a first "
+#~ "argument."
+#~ msgstr ""
+#~ " --on-download-start=COMMAND Указать команду, которую будет выполнено "
+#~ "тогда, когда начнется\n"
+#~ "                              загрузка. COMMAND должна содержать только "
+#~ "один аргумент и\n"
+#~ "                              GID добавляется к COMMAND как первый "
+#~ "аргумент."

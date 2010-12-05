@@ -1,17 +1,17 @@
-# Greek translation for aria2
-# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# Arabic translation for aria2
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the aria2 package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-12-05 15:54+0900\n"
-"PO-Revision-Date: 2010-12-05 16:04+0900\n"
-"Last-Translator: Kostas Milonas <milonas.ko@gmail.com>\n"
-"Language-Team: Greek <el@li.org>\n"
-"Language: el\n"
+"PO-Revision-Date: 2010-11-16 03:29+0000\n"
+"Last-Translator: ChArLoK_16 <Unknown>\n"
+"Language-Team: Arabic <ar@li.org>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,68 +22,64 @@ msgstr ""
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
-"Η διαδικασία τερματισμού ξεκινά... Πατήστε Ctrl-C ξανά για άμεσο τερματισμό."
+"بدات خطوات الإغلاق ... إضغط Ctrl-C مجددا للإغلاق الإضطراري / الإجباري ."
 
 #: src/DownloadEngine.cc:227
 msgid "Emergency shutdown sequence commencing..."
-msgstr "Η διαδικασία άμεσου τερματισμού ξεκινά..."
+msgstr "بدأت خطوات الإغلاق الإضطراري / الإجباري ...."
 
 #: src/MultiUrlRequestInfo.cc:109
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr "Το aria2 θα συνεχίσει το κατέβασμα εάν η μεταφορά επανεκκινηθεί."
+msgstr "aria2 سيستأنف التحميل إذا أعيد النقل"
 
 #: src/MultiUrlRequestInfo.cc:111
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
-"Αν υπάρχουν σφάλματα, δείτε το αρχείο καταγραφών (log). Δώστε την παράμετρο -"
-"l στη σελίδα help/man για περαιτέρω λεπτομέρειες."
+"إذا كانت هناك أية أخطاء، راجع السجل. أنظر الخيار 'l-' في الصفحة help/man "
+"لمزيد من التفاصيل."
 
 #: src/RequestGroupMan.cc:608
 msgid "Download Results:"
-msgstr "Αποτελέσματα κατεβάσματος:"
+msgstr "نتائج التحميل"
 
 #: src/RequestGroupMan.cc:649
 msgid "Status Legend:"
-msgstr "Υπόμνημα Κατάστασης:"
+msgstr "وصف الحالة"
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
-msgstr "                              Προκαθορισμένο: "
+msgstr "                              افتراضي: "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
-msgstr "                              Ετικέττα: "
+msgstr "                              الوسوم: "
 
 #: src/OptionHandler.cc:40
 msgid "                              Possible Values: "
-msgstr "                              Πιθανές Τιμές: "
+msgstr "                              القيم المحتملة: "
 
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=DIR Το directory για αποθήκευση του κατεβασμένου αρχείου."
+msgstr " -d، --dir=DIR المجلد الذي سيتم حفظ الملف المحمل فيه."
 
 #: src/usage_text.h:39
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -o, --out=ΑΡΧΕΙΟ               Το όνομα του κατεβασμένου αρχείου. Όταν "
-"χρησιμοποιείται\n"
-"                              η επιλογή -Z, αυτή η επιλογή πραβλέπεται."
 
 #: src/usage_text.h:42
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG Το όνομα του αρχείου καταγραφής. Εάν προσθέσατε '-',\n"
-"                              η καταγραφή γίνετε στο stdout."
+" -l, --log=LOG اسم ملف سجل البيانات. إذا كان If '-'\n"
+"                              محددا، سيجسل ملف البيانات في stdout."
 
 #: src/usage_text.h:45
-#, fuzzy
 msgid ""
 " -D, --daemon[=true|false]    Run as daemon. The current working directory "
 "will\n"
@@ -93,11 +89,6 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
-" -D, --daemon                 Εκτέλεση σαν δαίμονας. Ο τρέχων φάκελλος θα\n"
-"                              αλλάξει σε \"/\" και η κανονική είσοδος, η "
-"κανονική έξοδος\n"
-"                              και το κανονικό σφάλμα θα ανακατευθυνθούν στο\n"
-"                              \"/dev/null\"."
 
 #: src/usage_text.h:50
 msgid ""
@@ -118,26 +109,6 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N                Κατέβασμα ενός αρχείου χρησιμοποιώντας N "
-"συνδέσεις.\n"
-"                              Αν δοθούν περισσότερα από N URLs, θα "
-"χρησιμοποιηθούν\n"
-"                              τα πρώτα N και τα υπόλοιπα θα χρησιμοποιηθούν "
-"ως εφεδρικά.\n"
-"                              Αν δοθούν λιγότερα από N, αυτά τα URLs θα "
-"χρησιμοποιηθούν\n"
-"                              περισσότερες από μια φορές ώστε να γίνουν "
-"συνολικά N\n"
-"                              ταυτόχρονες συνδέσεις. Ο αριθμός των συνδέσεων "
-"στο ίδιο\n"
-"                              μηχάνημα περιορίζεται από την επιλογή --max-"
-"connection-per-server. \n"
-"                              Παρακαλούμε δείτε ακόμη τις επιλογές -j και --"
-"min-split-size.\n"
-"                              Παρακαλούμε σημειώστε ότι στο κατέβασμα "
-"Metalink,\n"
-"                              αυτή η επιλογή δε λειτουργεί και αντί αυτής "
-"χρησιμοποιήστε τη -C."
 
 #: src/usage_text.h:62
 msgid ""
@@ -145,19 +116,14 @@ msgid ""
 "error\n"
 "                              has occured."
 msgstr ""
-" --retry-wait=ΔΤΠ             Ορίστε δευτερόλεπτα αναμονής μετά από σφάλμα, "
-"πριν \n"
-"                              επανάλφθεί η προσπάθεια."
 
 #: src/usage_text.h:65
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr " -t, --timeout=ΔΤΠ            Ορίστε τη λήξη χρόνου σε δευτερόλεπτα."
+msgstr ""
 
 #: src/usage_text.h:67
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
-" -m, --max-tries=N            Ορίστε των αριθμό των προσπαθειών. Το 0 "
-"σημαίνει απεριόριστες."
 
 #: src/usage_text.h:69
 msgid ""
@@ -166,11 +132,6 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --http-proxy=PROXY           Χρήση αυτού του διακομιστή proxy για το HTTP.\n"
-"                              Για να σβήσετε έναν proxy που ορίσατε\n"
-"                              προηγουμένως, χρησιμοποιήστε \"\".\n"
-"                              Ακόμη, δείτε την επιλογή --all-proxy.\n"
-"                              Αυτή η επιλογή επηρεάζει όλα τα URL."
 
 #: src/usage_text.h:74
 msgid ""
@@ -179,12 +140,6 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --https-proxy=PROXY           Χρήση αυτού του διακομιστή proxy για το "
-"HTTPS.\n"
-"                              Για να σβήσετε έναν proxy που ορίσατε\n"
-"                              προηγουμένως, χρησιμοποιήστε \"\".\n"
-"                              Ακόμη, δείτε την επιλογή --all-proxy.\n"
-"                              Αυτή η επιλογή επηρεάζει όλα τα URL."
 
 #: src/usage_text.h:79
 msgid ""
@@ -194,11 +149,6 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-proxy=PROXY           Χρήση αυτού του διακομιστή proxy για το FTP.\n"
-"                              Για να σβήσετε έναν proxy που ορίσατε\n"
-"                              προηγουμένως, χρησιμοποιήστε \"\".\n"
-"                              Ακόμη, δείτε την επιλογή --all-proxy.\n"
-"                              Αυτή η επιλογή επηρεάζει όλα τα URL."
 
 #: src/usage_text.h:84
 msgid ""
@@ -211,48 +161,34 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
-" --ftp-proxy=PROXY           Χρήση αυτού του διακομιστή proxy για όλα τα\n"
-"                              πρωτόκολλα. Για να σβήσετε έναν proxy που "
-"ορίσατε\n"
-"                              προηγουμένως, χρησιμοποιήστε \"\". Μπορείτε "
-"να\n"
-"                              παρακάμψετε αυτήν τη ρύθμιση, ορίζωντας\n"
-"                              διακομιστή proxy για συγκεκριμένο πρωτόκολλο\n"
-"                              χρησιμοποιώντας τις επιλογές --http-proxy,\n"
-"                              --https-proxy και--ftp-proxy.\n"
-"                              Αυτή η επιλογή επηρεάζει όλα τα URL."
 
 #: src/usage_text.h:92
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr " --http-user=USER Ορίστε χρήστη HTTP. Επιδρα σε όλα τα URLs."
+msgstr ""
 
 #: src/usage_text.h:94
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr " --http-passwd=PASSWD Ορίστε τον κωδικό HTTP. Επιδρα σε όλα τα URLs."
+msgstr ""
 
 #: src/usage_text.h:96
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
-msgstr " --proxy-method=ΜΕΘΟΔΟΣ     Ορίστε τη μέθοδο αιτήματος προς τον proxy"
+msgstr ""
 
 #: src/usage_text.h:98
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr " --referer=REFERER Ορίστε το Referer. Επιδρα σε όλα τα URLs."
+msgstr ""
 
 #: src/usage_text.h:100
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
-" --ftp-user=ΧΡΗΣΤΗΣ      Ορίστε το χρήστη FTP. Αυτή η επιλογή επηρεάζει\n"
-"                              όλα τα URL."
 
 #: src/usage_text.h:102
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
-" --ftp-passwd=ΚΩΔΙΚΟΣ  Ορίστε τον κωδικό FTP. Αυτή η επιλογή επηρεάζει\n"
-"                              όλα τα URL."
 
 #: src/usage_text.h:104
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr " --ftp-type=ΤΥΠΟΣ          Ορίστε τον τύπο μεταφοράς FTP."
+msgstr ""
 
 #: src/usage_text.h:106
 msgid ""
@@ -260,9 +196,6 @@ msgid ""
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
-" -p, --ftp-pasv[=true|false]  Χρήση της μεθόδου passive στο FTP.\n"
-"                              Αν δοθεί false, θα χρησιμοποιηθεί η μέθοδος "
-"active."
 
 #: src/usage_text.h:109
 msgid ""
@@ -450,9 +383,8 @@ msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 
 #: src/usage_text.h:211
-#, fuzzy
 msgid " -n, --no-netrc[=true|false]  Disables netrc support."
-msgstr " -n, --no-netrc               Απενεργοποιεί την υποστήριξη netrc."
+msgstr ""
 
 #: src/usage_text.h:213
 msgid ""
@@ -521,7 +453,7 @@ msgstr ""
 
 #: src/usage_text.h:247
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr " -T, --torrent-file=TORRENT_FILE  Η διαδρομή του αρχείου .torrent."
+msgstr ""
 
 #: src/usage_text.h:249
 msgid ""
@@ -631,8 +563,6 @@ msgstr ""
 msgid ""
 " --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
 msgstr ""
-" --dht-file-path=PATH         Αλλαγή του αρχείου του πίνακα δρομολόγησης "
-"(routing table) του IPv4 DHT σε PATH."
 
 #: src/usage_text.h:310
 msgid ""
@@ -710,18 +640,16 @@ msgstr ""
 
 #: src/usage_text.h:350
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr " --metalink-version=VERSION   Η έκδοση του αρχείου που θα κατέβει."
+msgstr ""
 
 #: src/usage_text.h:352
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr " --metalink-version=VERSION   Η γλώσσα του αρχείου που θα κατέβει."
+msgstr ""
 
 #: src/usage_text.h:354
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
-" --metalink-version=VERSION   Το λειτουργικό σύστημα του αρχείου που θα "
-"κατέβει."
 
 #: src/usage_text.h:356
 msgid ""
@@ -766,7 +694,7 @@ msgstr ""
 
 #: src/usage_text.h:379
 msgid " -v, --version                Print the version number and exit."
-msgstr " -v, --version                Εκτύπωση του αριθμού έκδοσης και έξοδος."
+msgstr ""
 
 #: src/usage_text.h:381
 msgid ""
@@ -782,18 +710,13 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:388
-#, fuzzy
 msgid " --no-conf[=true|false]       Disable loading aria2.conf file."
 msgstr ""
-" --no-conf                    Απενεργοποίηση της φόρτωσης του αρχείου aria2."
-"conf."
 
 #: src/usage_text.h:390
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
-" --conf-path=PATH             Αλλαγή της διαδρομής του αρχείου ρυθμίσεων σε "
-"PATH."
 
 #: src/usage_text.h:392
 msgid ""
@@ -817,17 +740,14 @@ msgstr ""
 #: src/usage_text.h:401
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
-" -q, --quiet[=true|false]     Ορισμός σιωπηλής λειτουργίας του aria2 (χωρίς "
-"έξοδο στην κονσόλα)."
 
 #: src/usage_text.h:403
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
-msgstr " --async-dns[=true|false]     Ενεργοποίηση ασύγχρονου DNS."
+msgstr ""
 
 #: src/usage_text.h:405
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
-" --ftp-reuse-connection[=true|false] Επαναχρησιμοποίηση της σύνδεσης στο FTP."
 
 #: src/usage_text.h:407
 msgid ""
@@ -1022,11 +942,11 @@ msgstr ""
 
 #: src/usage_text.h:504
 msgid " --xml-rpc-user=USER          Set XML-RPC user."
-msgstr " --xml-rpc-user=USER          Ορισμός του χρήστη XML-RPC."
+msgstr ""
 
 #: src/usage_text.h:506
 msgid " --xml-rpc-passwd=PASSWD      Set XML-RPC password."
-msgstr " --xml-rpc-passwd=PASSWD      Ορισμός του κωδικού XML-RPC."
+msgstr ""
 
 #: src/usage_text.h:508
 msgid ""
@@ -1114,18 +1034,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:552
-#, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed after download\n"
 "                              was paused.\n"
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --ftp-proxy=PROXY           Χρήση αυτού του διακομιστή proxy για το FTP.\n"
-"                              Για να σβήσετε έναν proxy που ορίσατε\n"
-"                              προηγουμένως, χρησιμοποιήστε \"\".\n"
-"                              Ακόμη, δείτε την επιλογή --all-proxy.\n"
-"                              Αυτή η επιλογή επηρεάζει όλα τα URL."
 
 #: src/usage_text.h:557
 msgid ""
@@ -1196,7 +1110,7 @@ msgstr ""
 
 #: src/usage_text.h:595
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
-msgstr " --disable-ipv6[=true|false]  Απενεργοποίηση του IPv6."
+msgstr ""
 
 #: src/usage_text.h:597
 msgid ""
@@ -1267,48 +1181,34 @@ msgstr ""
 #: src/usage_text.h:629
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
-" --all-proxy-user=USER        Ορισμός του χρήστη για την επιλογή --all-proxy."
 
 #: src/usage_text.h:631
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr ""
-" --all-proxy-passwd=PASSWD    Ορισμός του κωδικού για την επιλογή --all-"
-"proxy."
 
 #: src/usage_text.h:633
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
-" --http-proxy-user=USER       Ορισμός του χρήστη για την επιλογή --http-"
-"proxy."
 
 #: src/usage_text.h:635
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr ""
-" --http-proxy-passwd=PASSWD   Ορισμός του κωδικού για την επιλογή --http-"
-"proxy."
 
 #: src/usage_text.h:637
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
-" --https-proxy-user=USER      Ορισμός του χρήστη για την επιλογή --https-"
-"proxy."
 
 #: src/usage_text.h:639
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
-" --https-proxy-user=PASSWD      Ορισμός του κωδικού για την επιλογή --https-"
-"proxy."
 
 #: src/usage_text.h:641
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
-" --ftp-proxy-user=USER        Ορισμός του χρήστη για την επιλογή --ftp-proxy."
 
 #: src/usage_text.h:643
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr ""
-" --ftp-proxy-passwd=PASSWD    Ορισμός του κωδικού για την επιλογή --ftp-"
-"proxy."
 
 #: src/usage_text.h:645
 msgid ""
@@ -1523,48 +1423,45 @@ msgstr ""
 
 #: src/version_usage.cc:57
 msgid " version "
-msgstr " έκδοση "
+msgstr ""
 
 #: src/version_usage.cc:80
 #, c-format
 msgid "Report bugs to %s"
-msgstr "Αναφορά σφαλμάτων στο %s"
+msgstr ""
 
 #: src/version_usage.cc:85
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
-"Χρήση: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 
 #: src/version_usage.cc:92
 msgid "Printing all options."
-msgstr "Εκτύπωση όλων των επιλογών."
+msgstr ""
 
 #: src/version_usage.cc:94
 #, c-format
 msgid "Printing options tagged with '%s'."
-msgstr "Εκτύπωση των επιλογών που έχουν μαρκαριστεί με '%s'."
+msgstr ""
 
 #: src/version_usage.cc:98
 #, c-format
 msgid "See -h option to know other command-line options(%s)."
 msgstr ""
-"Δείτε την επιλογή -h για να μάθετε και για άλλες επιλογές (%s) της γραμμής "
-"εντολών."
 
 #: src/version_usage.cc:103 src/version_usage.cc:115
 msgid "Options:"
-msgstr "Επιλογές:"
+msgstr ""
 
 #: src/version_usage.cc:112
 #, c-format
 msgid "Printing options whose name includes '%s'."
-msgstr "Εκτύπωση των επιλογών που το όνομά τους περιέχει '%s'."
+msgstr ""
 
 #: src/version_usage.cc:121
 #, c-format
 msgid "No option matching with '%s'."
-msgstr "Δεν υπάρχει επιλογή που να ταιριάζει με το '%s'"
+msgstr ""
 
 #: src/version_usage.cc:129
 msgid ""
@@ -1602,7 +1499,7 @@ msgstr ""
 
 #: src/version_usage.cc:153
 msgid "Refer to man page for more information."
-msgstr "Για περισσότερες πληροφορίες ανατρέξτε στην κεντρική σελίδα."
+msgstr ""
 
 #: src/message.h:57
 #, c-format
@@ -1667,11 +1564,11 @@ msgstr ""
 
 #: src/message.h:117
 msgid "File not found"
-msgstr "Δε βρέθηκε το αρχείο"
+msgstr ""
 
 #: src/message.h:118
 msgid "Not a directory"
-msgstr "Δεν είναι κατάλογος"
+msgstr ""
 
 #: src/message.h:119
 #, c-format
@@ -1681,7 +1578,7 @@ msgstr ""
 #: src/message.h:120
 #, c-format
 msgid "Writing file %s"
-msgstr "Εγγραφή του αρχείου %s"
+msgstr ""
 
 #: src/message.h:121
 msgid "No peer list received."
@@ -1699,11 +1596,11 @@ msgstr ""
 
 #: src/message.h:124
 msgid "Download of selected files was complete."
-msgstr "Το κατέβασμα των επιλεγμένων αρχείων έχει ολοκληρωθεί."
+msgstr ""
 
 #: src/message.h:125
 msgid "The download was complete."
-msgstr "Το κατέβασμα έχει ολοκληρωθεί."
+msgstr ""
 
 #: src/message.h:126
 #, c-format
@@ -1728,7 +1625,7 @@ msgstr ""
 #: src/message.h:132
 #, c-format
 msgid "Download complete: %s"
-msgstr "Το κατέβασμα ολοκληρώθηκε: %s"
+msgstr ""
 
 #: src/message.h:133
 msgid "Seeding is over."
@@ -1754,20 +1651,18 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
-"Το αρχείο .netrc %s δεν έχει τα σωστά δικαιώματα. Θα πρέπει να είναι 600. Η "
-"υποστήριξη για το netrc έχει απενεργοποιηθεί."
 
 #: src/message.h:138
 msgid "Logging started."
-msgstr "Έγινε εκκίνηση της καταγραφής."
+msgstr ""
 
 #: src/message.h:139
 msgid "Specify at least one URL."
-msgstr "Ορίστε τουλάχιστον ένα URL."
+msgstr ""
 
 #: src/message.h:140
 msgid "daemon failed."
-msgstr "Ο δαίμονας απέτυχε."
+msgstr ""
 
 #: src/message.h:141
 #, c-format
@@ -1796,7 +1691,7 @@ msgstr ""
 #: src/message.h:146
 #, c-format
 msgid "File already exists. Renamed to %s."
-msgstr "Το αρχείο υπάρχει ήδη. Έγινε μετονομασία σε %s."
+msgstr ""
 
 #: src/message.h:147
 msgid "Cannot parse metalink XML file. XML may be malformed."
@@ -1910,7 +1805,7 @@ msgstr ""
 
 #: src/message.h:179
 msgid "No files to download."
-msgstr "Δεν υπάρχουν αρχεία για κατέβασμα."
+msgstr ""
 
 #: src/message.h:181
 msgid ""
@@ -1921,7 +1816,7 @@ msgstr ""
 #: src/message.h:183
 #, c-format
 msgid "Printing the contents of file '%s'..."
-msgstr "Εκτύπωση των περιεχομένων του αρχείου '%s'..."
+msgstr ""
 
 #: src/message.h:184
 msgid "This file is neither Torrent nor Metalink file. Skipping."
@@ -1930,7 +1825,7 @@ msgstr ""
 #: src/message.h:189
 #, c-format
 msgid "Is '%s' a file?"
-msgstr "Είναι αρχείο το '%s';"
+msgstr ""
 
 #: src/message.h:190
 #, c-format
@@ -1967,27 +1862,27 @@ msgstr ""
 
 #: src/message.h:202
 msgid "Invalid header."
-msgstr "Εσφαλμένη κεφαλίδα."
+msgstr ""
 
 #: src/message.h:203
 msgid "Invalid response."
-msgstr "Εσφαλμένη απάντηση."
+msgstr ""
 
 #: src/message.h:204
 msgid "No header found."
-msgstr "Δε βρέθηκε κεφαλίδα."
+msgstr ""
 
 #: src/message.h:205
 msgid "No status header."
-msgstr "Δεν υπάρχει κεφαλίδα κατάστασης."
+msgstr ""
 
 #: src/message.h:206
 msgid "Proxy connection failed."
-msgstr "Αποτυχία σύνδεσης στον proxy."
+msgstr ""
 
 #: src/message.h:207
 msgid "Connection failed."
-msgstr "Αποτυχία σύνδεσης."
+msgstr ""
 
 #: src/message.h:208
 #, c-format
@@ -1999,12 +1894,12 @@ msgstr ""
 #: src/message.h:209
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr "Η κατάσταση της απάντησης δεν ήταν επιτυχής. status=%d"
+msgstr ""
 
 #: src/message.h:210
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr "Πολύ μεγάλο μέγεθος αρχείου. size=%s"
+msgstr ""
 
 #: src/message.h:211
 #, c-format
@@ -2072,7 +1967,7 @@ msgstr ""
 
 #: src/message.h:226
 msgid "Failed to read data from disk."
-msgstr "Αποτυχία ανάγνωσης δεδομένων από το δίσκο."
+msgstr ""
 
 #: src/message.h:227
 #, c-format
@@ -2092,7 +1987,7 @@ msgstr ""
 #: src/message.h:230
 #, c-format
 msgid "%s is not a directory."
-msgstr "Το %s δεν είναι κατάλογος."
+msgstr ""
 
 #: src/message.h:231
 #, c-format
@@ -2208,7 +2103,7 @@ msgstr ""
 
 #: src/message.h:257
 msgid "Download aborted."
-msgstr "Το κατέβασμα ματαιώθηκε."
+msgstr ""
 
 #: src/message.h:258
 #, c-format
@@ -2286,34 +2181,34 @@ msgid "Errors occurred while binding port.\n"
 msgstr ""
 
 #~ msgid "must be either 'true' or 'false'."
-#~ msgstr "πρέπει να είναι \"true\" ή \"false\""
+#~ msgstr "لا تحتمل إلا قيمتين، إما'true' or 'false' ، صائب أو خاطئ."
 
 #~ msgid "must be between %s and %s."
-#~ msgstr "πρέπει να είναι μεταξύ %s και %s."
+#~ msgstr "يجب أن تكون بين %s و %s."
 
 #~ msgid "must be smaller than or equal to %s."
-#~ msgstr "πρέπει να είναι μικρότερο ή ίσο με το %s."
+#~ msgstr "يجب أن تكون أصغر من أو تساوي %s."
 
 #~ msgid "must be greater than or equal to %s."
-#~ msgstr "πρέπει να είναι μεγαλύτερο ή ίσο με %s."
+#~ msgstr "يجب أن تكون أكبر من أو تساوي %s."
 
 #~ msgid "must be a number."
-#~ msgstr "πρέπει να είναι αριθμός."
+#~ msgstr "يجب أن تكون رقما."
 
 #~ msgid "must be smaller than or equal to %.1f."
-#~ msgstr "πρέπει να είναι μικρότερο ή ίσο με %.1f."
+#~ msgstr "يجب أن تكون أصغر من أو تساوي %.1f."
 
 #~ msgid "must be between %.1f and %.1f."
-#~ msgstr "πρέπει να είναι μεταξύ %.1f και %.1f."
+#~ msgstr "يجب أن تكون بين %.1f و %.1f."
 
 #~ msgid "must be greater than or equal to %.1f."
-#~ msgstr "πρέπει να είναι μεγαλύτερο ή ίσο με το %.1f."
+#~ msgstr "يجب أن تكون أكبر من أو تساوي %.1f."
 
 #~ msgid "must be one of the following:"
-#~ msgstr "πρέπει να είναι ένα από τα ακόλουθα:"
-
-#~ msgid "unrecognized proxy format"
-#~ msgstr "Μη αναγνωρίσιμο φορμά proxy."
+#~ msgstr "يجب أن تكون واحد من بين التالي:"
 
 #~ msgid "Unrecognized format"
-#~ msgstr "Μη αναγνωρίσιμος τύπος"
+#~ msgstr "صيغة مجهولة"
+
+#~ msgid "unrecognized proxy format"
+#~ msgstr "صيغة حاجب (بروكسي) غير معروفة"

@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2010-12-05 15:54+0900\n"
-"PO-Revision-Date: 2009-07-01 06:37+0000\n"
-"Last-Translator: FuryFire <Unknown>\n"
+"PO-Revision-Date: 2010-11-20 12:18+0000\n"
+"Last-Translator: Josso <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-07-18 09:12+0000\n"
+"X-Launchpad-Export-Date: 2010-12-04 12:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/DownloadEngine.cc:220
@@ -65,13 +65,12 @@ msgid ""
 msgstr " -d, --dir=MAPPE              Mappen hvor den hentede fil skal gemmes."
 
 #: src/usage_text.h:39
-#, fuzzy
 msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
-" -l, --log=LOG                Filnavn for logfilen. Hvis den er sat til '-'\n"
-"                              vil loggen blive skrevet til standarduddata."
+" -o, --out=FIL Navnet på den downloadede fil. Hvis -Z\n"
+"                              flaget er brugt, ignoreres dette flag."
 
 #: src/usage_text.h:42
 msgid ""
@@ -82,6 +81,7 @@ msgstr ""
 "                              vil loggen blive skrevet til standarduddata."
 
 #: src/usage_text.h:45
+#, fuzzy
 msgid ""
 " -D, --daemon[=true|false]    Run as daemon. The current working directory "
 "will\n"
@@ -91,6 +91,11 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
+" -D, --daemon Kør som baggrundsprocess. Den nuværende mappe vil\n"
+"                              blive ændret til \"/“ og standard input, "
+"standard\n"
+"                              output og standard error vil blive sendt til\n"
+"                              \"/dev/null\"."
 
 #: src/usage_text.h:50
 msgid ""
@@ -118,6 +123,8 @@ msgid ""
 "error\n"
 "                              has occured."
 msgstr ""
+" --retry-wait=SEK Antal sekunder før der bliver forsøgt igen, efter\n"
+"                              en fejl er opstået."
 
 #: src/usage_text.h:65
 msgid " -t, --timeout=SEC            Set timeout in seconds."
@@ -134,6 +141,10 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --http-proxy=PROXY Brug denne proxy server til HTTP. For at slette\n"
+"                              tidligere definerede proxy’er, brug \"\".\n"
+"                              Se også --all-proxy flaget.\n"
+"                              Dette påvirker alle URLs."
 
 #: src/usage_text.h:74
 msgid ""
@@ -142,6 +153,10 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --https-proxy=PROXY Brug denne proxy server til HTTPS. For at slette\n"
+"                              tidligere definerede proxy’er, brug \"\".\n"
+"                              Se også --all-proxy flaget.\n"
+"                              Dette påvirker alle URLs."
 
 #: src/usage_text.h:79
 msgid ""
@@ -151,6 +166,10 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --ftp-proxy=PROXY Brug denne proxy server til FTP. For at slette\n"
+"                              tidligere definerede proxy’er, brug \"\".\n"
+"                              Se også --all-proxy flaget.\n"
+"                              Dette påvirker alle URLs."
 
 #: src/usage_text.h:84
 msgid ""
@@ -163,27 +182,34 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
+" --all-proxy=PROXY Brug denne proxy server til alle protokoller. For at "
+"slette\n"
+"                              tidligere definerede proxy’er, brug \"\".\n"
+"                              Du kan overskrive denne indstilling for\n"
+"                              en enkelt protokol, ved at bruge\n"
+"                              --http-proxy, --https-proxy og --ftp-proxy "
+"flagene.\n"
+"                              Dette påvirker alle URLs."
 
 #: src/usage_text.h:92
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
-" --http-user=BRUGER           Sæt HTTP bruger. Dette rammer alle URL'er."
+" --http-user=BRUGER           Sæt HTTP bruger. Dette påvirker alle URLs."
 
 #: src/usage_text.h:94
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=KODE           Sæt HTTP kodeord. Dette rammer alle URL'er."
+" --http-passwd=KODE           Sæt HTTP kodeord. Dette påvirker alle URLs."
 
 #: src/usage_text.h:96
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
 msgstr ""
-" --proxy-method=METHOD Sæt methoden der skal benyttes in en proxy "
-"forspørgsel."
+" --proxy-method=METHOD Sæt metoden der skal benyttes i en proxy forespørgsel."
 
 #: src/usage_text.h:98
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
-" --referer=HENVISER           Sæt henviser. Dette vil ramme alle URL'er."
+" --referer=HENVISER           Sæt henviser. Dette vil påvirke alle URLs."
 
 #: src/usage_text.h:100
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
@@ -203,6 +229,9 @@ msgid ""
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
+" -p, --ftp-pasv[=true|false] Brug den passive tilstand til FTP. Hvis false "
+"(falsk) gives,\n"
+"                              vil aktive tilstand bruges."
 
 #: src/usage_text.h:109
 msgid ""
@@ -215,6 +244,15 @@ msgid ""
 "                              This option does not affect BitTorrent "
 "downloads."
 msgstr ""
+" --lowest-speed-limit=HASTIGHED Luk forbindelsen hvis download hastigheden "
+"er lavere\n"
+"                              eller lig med denne værdig (bytes i "
+"sekundet).\n"
+"                              0 betyder at aria2 ikke har en laveste "
+"hastighedsgrænse.\n"
+"                              Du kan tilføje K eller M (1K = 1024, 1M = "
+"1024K).\n"
+"                              Dette flag påvirker ikke BitTorrent downloads."
 
 #: src/usage_text.h:115
 msgid ""
@@ -225,6 +263,14 @@ msgid ""
 "                              To limit the download speed per download, use\n"
 "                              --max-download-limit option."
 msgstr ""
+" --max-overall-download-limit=HASTIGHED Sæt max download hastighed i bytes/"
+"sek.\n"
+"                              0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M(1K = 1024, 1M = "
+"1024K).\n"
+"                              For at begrænse hastigheden per download, "
+"brug\n"
+"                              --max-download-limit flaget."
 
 #: src/usage_text.h:121
 msgid ""
@@ -234,6 +280,14 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
+" --max-download-limit=HASTIGHED Sæt max download hastigheden for hvert "
+"enkelt download\n"
+"                              i bytes/sek. 0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M(1K = 1024, 1M = "
+"1024K).\n"
+"                              For at begrænse den samlede download "
+"hastighed, brug\n"
+"                              --max-overall-download-limit flaget."
 
 #: src/usage_text.h:127
 msgid ""
@@ -281,14 +335,22 @@ msgid ""
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
+" --enable-direct-io[=true|false] Aktiver direkte I/O, hvilket reducerer cpu-"
+"forbruget under\n"
+"                              allokering af filer.\n"
+"                              Slå det fra, hvis du oplever nogle fejl."
 
 #: src/usage_text.h:150
+#, fuzzy
 msgid ""
 " --allow-overwrite[=true|false] Restart download from scratch if the\n"
 "                              corresponding control file doesn't exist.  "
 "See\n"
 "                              also --auto-file-renaming option."
 msgstr ""
+" --allow-overwrite=true|false Genstart download fra bunden hvis den\n"
+"                              tilhørende kontrolfil ikke eksistere. Se også\n"
+"                              --auto-file-renaming flaget."
 
 #: src/usage_text.h:154
 msgid ""
@@ -320,6 +382,14 @@ msgid ""
 "(1..9999)\n"
 "                              appended."
 msgstr ""
+" --auto-file-renaming[=true|false] Omdøber filen, hvis en fil med samme navn "
+"allerede\n"
+"                              eksistere. Denne funktionvirker kun med http"
+"(s)/ftp\n"
+"                              downloads.\n"
+"                              Den nye fil vil få et punktum samt et tal "
+"(1..9999)\n"
+"                              tilføjet."
 
 #: src/usage_text.h:169
 msgid ""
@@ -341,6 +411,8 @@ msgstr ""
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
+" --enable-http-keep-alive[=true|false] Aktiver HTTP/1.1 vedvarende "
+"forbindelse."
 
 #: src/usage_text.h:182
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
@@ -373,14 +445,20 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:198
+#, fuzzy
 msgid ""
 " --realtime-chunk-checksum[=true|false]  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
+" --enable-direct-io[=true|false] Aktiver direkte I/O, hvilket reducerer cpu-"
+"forbruget under\n"
+"                              allokering af filer.\n"
+"                              Slå det fra, hvis du oplever nogle fejl."
 
 #: src/usage_text.h:202
+#, fuzzy
 msgid ""
 " -c, --continue[=true|false]  Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -389,14 +467,23 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
+" -c, --continue Fortsæt med at downloade en delvist hentet\n"
+"                              fil. Brug dette flag til at genoptage et "
+"download\n"
+"                              startet af en web browser eller et andet "
+"program,\n"
+"                              som downloader filer fortløbende fra\n"
+"                              starten. Denne mulighed er virker kun\n"
+"                              til http(s)/ftp forbindelser."
 
 #: src/usage_text.h:209
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 
 #: src/usage_text.h:211
+#, fuzzy
 msgid " -n, --no-netrc[=true|false]  Disables netrc support."
-msgstr ""
+msgstr " -n, --no-netrc Deaktivere netrc understøttelse."
 
 #: src/usage_text.h:213
 msgid ""
@@ -421,6 +508,11 @@ msgid ""
 "metalink.\n"
 "                              See also -s and -C options."
 msgstr ""
+" -j, --max-concurrent-downloads=N Sæt maximum antal af parallelle downloads "
+"for\n"
+"                              hver statisk (HTTP/FTP) URL, torrent og "
+"metalink.\n"
+"                              Se også -s og -C flagene."
 
 #: src/usage_text.h:226
 msgid ""
@@ -428,6 +520,9 @@ msgid ""
 "format\n"
 "                              and Mozilla/Firefox(1.x/2.x)/Netscape format."
 msgstr ""
+" --load-cookies=FIL Indlæs cookies fra FIL, som bruger Firefox3’s format\n"
+"                              eller Mozilla/Firefox(1.x/2.x)/Netscape "
+"formatet."
 
 #: src/usage_text.h:229
 msgid ""
@@ -439,8 +534,14 @@ msgid ""
 "and\n"
 "                              their expiry values are treated as 0."
 msgstr ""
+" --save-cookies=FIL Gem cookies til FIL i Mozilla/Firefox(1.x/2.x)/\n"
+"                              Netscape formatet. Hvis FIL allerede "
+"eksistere, bliver den\n"
+"                              overskrevet. Session cookies er også gemt og\n"
+"                              deres udløbsdato bliver behandloet som 0."
 
 #: src/usage_text.h:234
+#, fuzzy
 msgid ""
 " -S, --show-files[=true|false] Print file listing of .torrent or .metalink "
 "file\n"
@@ -448,6 +549,10 @@ msgid ""
 "listed\n"
 "                              in case of torrent file."
 msgstr ""
+" -S, --show-files Viser en liste af filer i .torrent eller .metalink-filer.\n"
+"                              Mere detaljerede informationer vil blive "
+"vidst\n"
+"                              af torrent filer."
 
 #: src/usage_text.h:238
 msgid ""
@@ -465,7 +570,7 @@ msgstr ""
 
 #: src/usage_text.h:247
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr ""
+msgstr " -T, --torrent-file=TORRENT_FIL Stien til .torrent-filen."
 
 #: src/usage_text.h:249
 msgid ""
@@ -493,6 +598,14 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
+" --listen-port=PORT… Sæt TCP port-nummeret for BitTorrent downloads.\n"
+"                              Flere porte kan bruges ved at adskille dem med "
+"',',\n"
+"                              for eksempel: \"6881,6885”. Du kan også bruge "
+"'-‘\n"
+"                              til at specificere en række af porte: "
+"\"6881-6999”. \n"
+"                              ',’ og '-‘ kan bruges sammen."
 
 #: src/usage_text.h:265
 msgid ""
@@ -503,6 +616,14 @@ msgid ""
 "                              To limit the upload speed per torrent, use\n"
 "                              --max-upload-limit option."
 msgstr ""
+" --max-overall-upload-limit=HASTIGHED Sæt den maximale overordnede upload "
+"hastighed i bytes/sek.\n"
+"                              0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M (1K = 1024, 1M = "
+"1024K).\n"
+"                              For at begrænse upload hastigheden per "
+"torrent, brug\n"
+"                              --max-upload-limit flaget."
 
 #: src/usage_text.h:271
 msgid ""
@@ -512,12 +633,23 @@ msgid ""
 "                              To limit the overall upload speed, use\n"
 "                              --max-overall-upload-limit option."
 msgstr ""
+" -u, --max-upload-limit=HASTIGHED Sæt max upload hastighed for hver enkelt "
+"torrent i\n"
+"                              bytes/sek. 0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M (1K = 1024, 1M = "
+"1024K).\n"
+"                              For at begrænse den overordnede upload "
+"hastighed, brug\n"
+"                              --max-overall-upload-limit flaget."
 
 #: src/usage_text.h:277
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
+" --seed-time=MINUTTER Specificer hvor lang tid der skal seedes, i minutter. "
+"Se også\n"
+"                              --seed-ratio flaget."
 
 #: src/usage_text.h:280
 msgid ""
@@ -552,7 +684,7 @@ msgstr ""
 
 #: src/usage_text.h:297
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
-msgstr ""
+msgstr " --enable-dht[=true|false] Aktivere IPv4 DHT funktionaliteten."
 
 #: src/usage_text.h:299
 msgid ""
@@ -1026,6 +1158,7 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:541
+#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed after "
 "download\n"
@@ -1034,6 +1167,14 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
+" --max-download-limit=HASTIGHED Sæt max download hastigheden for hvert "
+"enkelt download\n"
+"                              i bytes/sek. 0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M(1K = 1024, 1M = "
+"1024K).\n"
+"                              For at begrænse den samlede download "
+"hastighed, brug\n"
+"                              --max-overall-download-limit flaget."
 
 #: src/usage_text.h:547
 msgid ""
@@ -1046,14 +1187,20 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:552
+#, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed after download\n"
 "                              was paused.\n"
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
+" --ftp-proxy=PROXY Brug denne proxy server til FTP. For at slette\n"
+"                              tidligere definerede proxy’er, brug \"\".\n"
+"                              Se også --all-proxy flaget.\n"
+"                              Dette påvirker alle URLs."
 
 #: src/usage_text.h:557
+#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed after download\n"
 "                              aborted due to error.\n"
@@ -1061,6 +1208,14 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
+" --max-download-limit=HASTIGHED Sæt max download hastigheden for hvert "
+"enkelt download\n"
+"                              i bytes/sek. 0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M(1K = 1024, 1M = "
+"1024K).\n"
+"                              For at begrænse den samlede download "
+"hastighed, brug\n"
+"                              --max-overall-download-limit flaget."
 
 #: src/usage_text.h:563
 msgid ""
@@ -1195,9 +1350,8 @@ msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
 
 #: src/usage_text.h:631
-#, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
-msgstr " --ftp-passwd=PASSWD Sæt FTP password. Dette påvirker all URLs."
+msgstr ""
 
 #: src/usage_text.h:633
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
@@ -1220,9 +1374,8 @@ msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
 #: src/usage_text.h:643
-#, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
-msgstr " --ftp-passwd=PASSWD Sæt FTP password. Dette påvirker all URLs."
+msgstr ""
 
 #: src/usage_text.h:645
 msgid ""
@@ -1265,9 +1418,8 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:667
-#, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
-msgstr " -t, --timeout=SEC Sæt timeout i sekunder."
+msgstr ""
 
 #: src/usage_text.h:669
 msgid ""
@@ -1281,9 +1433,8 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:675
-#, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
-msgstr " -t, --timeout=SEC Sæt timeout i sekunder."
+msgstr ""
 
 #: src/usage_text.h:677
 msgid ""
@@ -2215,7 +2366,7 @@ msgstr ""
 #~ msgstr "skal være mindre end eller lig med %.1f."
 
 #~ msgid "must be between %.1f and %.1f."
-#~ msgstr "skal være i mellem %.1f og %.1f."
+#~ msgstr "skal være imellem %.1f og %.1f."
 
 #~ msgid "must be greater than or equal to %.1f."
 #~ msgstr "skal være større end eller lig med %.1f."
@@ -2223,15 +2374,17 @@ msgstr ""
 #~ msgid "must be one of the following:"
 #~ msgstr "skal være en af de følgende:"
 
-#, fuzzy
-#~ msgid "Unrecognized format"
-#~ msgstr "ukendt proxy format"
-
 #~ msgid "unrecognized proxy format"
 #~ msgstr "ukendt proxy format"
 
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=FIL                Filnavnet for den hentede fil."
+#~ msgid "Unrecognized format"
+#~ msgstr "Ukendt format"
 
-#~ msgid " -D, --daemon                 Run as daemon."
-#~ msgstr " -D, --daemon                 Kør som en dæmon."
+#~ msgid ""
+#~ " --direct-file-mapping=true|false Directly read from and write to each "
+#~ "file\n"
+#~ "                              mentioned in .torrent file."
+#~ msgstr ""
+#~ " --direct-file-mapping=true|false Læs direkte fra og skriv til hver "
+#~ "enkelt fil\n"
+#~ "                              nævnt i en .torrent-fil."
