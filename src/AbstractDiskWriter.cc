@@ -248,7 +248,7 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
 # elif HAVE_POSIX_FALLOCATE
   int r = posix_fallocate(fd_, offset, length);
   if(r != 0) {
-    throw DL_ABORT_EX3(errNum,
+    throw DL_ABORT_EX3(r,
                        fmt("posix_fallocate failed. cause: %s",
                            util::safeStrerror(r).c_str()),
                        error_code::FILE_IO_ERROR);
