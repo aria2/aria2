@@ -244,14 +244,14 @@ bool EpollEventPoll::deleteEvents(sock_t socket,
       // pointer of epoll_event.
       struct epoll_event ev = {0,{0}};
       r = epoll_ctl(epfd_, EPOLL_CTL_DEL, (*i)->getSocket(), &ev);
-      errNum = r;
+      errNum = errno;
       socketEntries_.erase(i);
     } else {
       // If socket is closed, then it seems it is automatically removed from
       // epoll, so following EPOLL_CTL_MOD may fail.
       struct epoll_event epEvent = (*i)->getEvents();
       r = epoll_ctl(epfd_, EPOLL_CTL_MOD, (*i)->getSocket(), &epEvent);
-      errNum = r;
+      errNum = errno;
       if(r == -1) {
         A2_LOG_DEBUG(fmt("Failed to delete socket event, but may be ignored:%s",
                          util::safeStrerror(errNum).c_str()));
