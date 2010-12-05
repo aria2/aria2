@@ -285,7 +285,7 @@ int main(int argc, char* argv[])
     r = aria2::main(argc, argv);
   } catch(aria2::Exception& ex) {
     std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
-    r = aria2::error_code::UNKNOWN_ERROR;
+    r = ex.getErrorCode();
   }
   return r;
 }
