@@ -1,3 +1,58 @@
+aria2 1.10.7
+============
+
+Release Note
+------------
+
+This release fixes the bug that causes memory leak when parsing
+Metalink document if aria2 is built with expat.  It also add several
+exit status codes to help identify the cause of error.
+--max-connection-per-server option now works with Metalink.  aria2 now
+passes number of files and file path in addition to gid to command
+specified in --on-download-* options. MinGW32 build now encodes
+non-ASCII characters in file path using percent-encoding.  With this
+release, bash_completion file for aria2c is included in the
+distribution. See doc/bash_completion directory in the archive.
+
+Please note that since 1.10.0 release, aria2 uses 1 connection per
+host by default and has 20MiB segment size restriction. So whatever
+value you specify using -s option, it uses 1 connection per host. To
+make it behave like 1.9.x, use -x16 -k1M (see
+--max-connection-per-server and --min-split-size option in man
+page). If you specify multiple hosts, aria2 will use all of them and
+open multiple connections.
+
+Changes
+-------
+
+ * Pass the number of requested files and file path to the command
+   specified --{bt-}on-download-* option.
+
+ * Throw exception when unrecognized URI, bad Metalink or bad .torrent
+   file are given in command-line and exits with status non-zero.
+
+ * Added aria2c bash_completion.
+
+ * Added more error code values.
+
+ * For MINGW32 build, percent-encode non-ASCII characters in filename.
+
+ * Made --continue, --daemon, --no-conf, --no-netrc, --show-files,
+   --allow-overwrite, --allow-piece-length-change,
+   --realtime-chunk-checksum and --bt-require-crypto option take
+   optional argument.
+
+ * Enter 'end game' mode from the beginning when getting torrent
+   metadata for quick data retrieval.
+
+ * Use --max-connection-per-server option value for Metalink as well
+
+ * Fixed memory leak with expat.
+
+ * Added sha-224, sha-384, sha-512 hash function support.
+
+
+
 aria2 1.10.6
 ============
 
