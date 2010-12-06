@@ -145,11 +145,13 @@ void PieceStatMan::updatePieceStats(const unsigned char* newBitfield,
   const size_t nbits = pieceStats_.size();
   assert(nbits <= newBitfieldLength*8);
   for(size_t i = 0; i < nbits; ++i) {
-    if(bitfield::test(newBitfield, nbits, i) &&
-       !bitfield::test(oldBitfield, nbits, i)) {
-      pieceStats_[i]->addCount();
-    } else if(!bitfield::test(newBitfield, nbits, i) &&
-              bitfield::test(oldBitfield, nbits, i)) {
+    bool inNew = bitfield::test(newBitfield, nbits, i);
+    bool inOld = bitfield::test(oldBitfield, nbits, i);
+    if(inNew) {
+      if(!inOld) {
+        pieceStats_[i]->addCount();
+      }
+    } else if(inOld) {
       pieceStats_[i]->subCount();
     }
   }
