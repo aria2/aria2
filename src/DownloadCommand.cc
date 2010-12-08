@@ -82,7 +82,6 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
                                  DownloadEngine* e,
                                  const SocketHandle& s):
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-  buf_(new unsigned char[BUFSIZE]),
   startupIdleTime_(10),
   lowestDownloadSpeedLimit_(0),
   pieceHashValidationEnabled_(false)
@@ -111,7 +110,6 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
 DownloadCommand::~DownloadCommand() {
   peerStat_->downloadStop();
   getSegmentMan()->updateFastestPeerStat(peerStat_);
-  delete [] buf_;
 }
 
 bool DownloadCommand::executeInternal() {
@@ -127,6 +125,7 @@ bool DownloadCommand::executeInternal() {
     getPieceStorage()->getDiskAdaptor();
   SharedHandle<Segment> segment = getSegments().front();
   size_t bufSize;
+  unsigned char buf[BUFSIZE];
   if(sinkFilterOnly_) {
     if(segment->getLength() > 0 ) {
       if(static_cast<uint64_t>(segment->getPosition()+segment->getLength()) <=
@@ -143,18 +142,18 @@ bool DownloadCommand::executeInternal() {
     } else {
       bufSize = BUFSIZE;
     }
-    getSocket()->readData(buf_, bufSize);
-    streamFilter_->transform(diskAdaptor, segment, buf_, bufSize);
+    getSocket()->readData(buf, bufSize);
+    streamFilter_->transform(diskAdaptor, segment, buf, bufSize);
   } else {
     // It is possible that segment is completed but we have some bytes
     // of stream to read. For example, chunked encoding has "0"+CRLF
     // after data. After we read data(at this moment segment is
     // completed), we need another 3bytes(or more if it has trailers).
     bufSize = BUFSIZE;
-    getSocket()->peekData(buf_, bufSize);
-    streamFilter_->transform(diskAdaptor, segment, buf_, bufSize);
+    getSocket()->peekData(buf, bufSize);
+    streamFilter_->transform(diskAdaptor, segment, buf, bufSize);
     bufSize = streamFilter_->getBytesProcessed();
-    getSocket()->readData(buf_, bufSize);
+    getSocket()->readData(buf, bufSize);
   }
   peerStat_->updateDownloadLength(bufSize);
   getSegmentMan()->updateDownloadSpeedFor(peerStat_);

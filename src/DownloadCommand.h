@@ -49,8 +49,6 @@ class MessageDigest;
 
 class DownloadCommand : public AbstractCommand {
 private:
-  unsigned char* buf_;
-
   time_t startupIdleTime_;
   unsigned int lowestDownloadSpeedLimit_;
   SharedHandle<PeerStat> peerStat_;
