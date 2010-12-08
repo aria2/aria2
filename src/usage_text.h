@@ -214,10 +214,11 @@
     "                              multiple URIs for a single entity: separate\n" \
     "                              URIs on a single line using the TAB character.\n" \
     "                              Reads input from stdin when '-' is specified.\n" \
-    "                              The additional out and dir options can be\n" \
-    "                              specified after each line of URIs. This optional\n" \
-    "                              line must start with white space(s). See INPUT\n" \
-    "                              FILE section of man page for details.")
+    "                              Additionally, options can be specified after each\n" \
+    "                              line of URI. This optional line must start with\n" \
+    "                              one or more white spaces and have one option per\n" \
+    "                              single line. See INPUT FILE section of man page\n" \
+    "                              for details.")
 #define TEXT_MAX_CONCURRENT_DOWNLOADS                                   \
   _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n" \
     "                              every static (HTTP/FTP) URL, torrent and metalink.\n" \

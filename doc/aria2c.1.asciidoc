@@ -37,9 +37,9 @@ Basic Options
   Downloads URIs found in FILE. You can specify multiple URIs for a single
   entity: separate URIs on a single line using the TAB character.
   Reads input from stdin when '-' is specified.
-  The additional *<<aria2_optref_out, out>>* and *<<aria2_optref_dir, dir>>*
-  options can be specified after each line of
-  URIs. This optional line must start with white space(s).
+  Additionally, options can be specified after each line of
+  URI. This optional line must start with one or more white spaces and have
+  one option per single line.
   See *<<_input_file, Input File>>* subsection for details.
 
 [[aria2_optref_log]]*-l*, *--log*=LOG::
