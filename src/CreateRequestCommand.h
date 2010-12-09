@@ -39,6 +39,12 @@
 
 namespace aria2 {
 
+// CreateRequestCommand selects URI using URISelector object and
+// create Request object with the selected URI. Then create subsequent
+// command using
+// InitiateConnectionCommandFactory. InitiateConnectionCommandFactory
+// creates Command based on the protocol of selected URI.  If there is
+// no URI available, then throws exceptions.
 class CreateRequestCommand:public AbstractCommand {
 public:
   CreateRequestCommand(cuid_t cuid,

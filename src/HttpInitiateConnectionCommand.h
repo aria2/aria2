@@ -39,6 +39,27 @@
 
 namespace aria2 {
 
+// HttpInitiateConnectionCommand determins remote host to connect and
+// resolves IP address from that hostname and creates subsequent
+// command.  Usually, remote host is the host in URI. If proxy is
+// used, remote host becomes proxy server. This command searches
+// pooled socket using resolved IP addresses and use pooled socket if
+// available.  The following chart shows what Command is followed
+// after this command based on conditions.
+//
+// HttpInitiateConnectionCommand
+//                 |
+//                 |  proxy is used?
+//                 +----------------+
+//                 |                |
+//                 |                |  pooled socket?
+//                 |                +------------> HttpRequestCommand
+//                 |                |  tunnel?
+//                 |                +------------> HttpProxyRequestCommand
+//                 |                |  otherwise
+//                 |                +------------> HttpRequestCommand
+//                 | direct connection
+//                 +-----------------------------> HttpRequestCommand
 class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
 protected:
   virtual Command* createNextCommand
