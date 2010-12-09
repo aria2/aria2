@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-// HttpInitiateConnectionCommand determins remote host to connect and
+// HttpInitiateConnectionCommand determines remote host to connect and
 // resolves IP address from that hostname and creates subsequent
 // command.  Usually, remote host is the host in URI. If proxy is
 // used, remote host becomes proxy server. This command searches
