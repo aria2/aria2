@@ -96,7 +96,7 @@ bool InitiateConnectionCommand::executeInternal() {
     // Catch exception and retry another address.
     // See also AbstractCommand::checkIfConnectionEstablished
 
-    // TODO ipaddr might not be used if pooled sockt was found.
+    // TODO ipaddr might not be used if pooled socket was found.
     getDownloadEngine()->markBadIPAddress(hostname, ipaddr, port);
     if(!getDownloadEngine()->findCachedIPAddress(hostname, port).empty()) {
       A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, ex);
