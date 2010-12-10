@@ -46,6 +46,16 @@ class HttpResponse;
 class SocketCore;
 class StreamFilter;
 
+// HttpResponseCommand receives HTTP response header from remote
+// server.  Because network I/O is non-blocking, execute() returns
+// false when all response headers are not received.  Subsequent calls
+// of execute() receives remaining response headers and when all
+// headers are received, it examines headers.  If status code is 200
+// or 206 and Range header satisfies requested range, it creates
+// HttpDownloadCommand to receive response entity body.  Otherwise, it
+// creates HttpSkipResponseCommand to receive response entity body and
+// returns true. Handling errors such as 404 or redirect is handled in
+// HttpSkipResponseCommand.
 class HttpResponseCommand : public AbstractCommand {
 private:
   SharedHandle<HttpConnection> httpConnection_;

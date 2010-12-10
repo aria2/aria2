@@ -42,6 +42,12 @@ namespace aria2 {
 class HttpConnection;
 class SocketCore;
 
+// HttpRequestCommand sends HTTP request header to remote server.
+// Because network I/O is non-blocking, execute() returns false if all
+// headers have not been sent. Subsequent calls of execute() send
+// remaining header and when all headers are completely sent,
+// execute() creates next Command object, HttpResponseCommand, and
+// returns true.
 class HttpRequestCommand:public AbstractCommand {
 private:
   SharedHandle<Request> proxyRequest_;
