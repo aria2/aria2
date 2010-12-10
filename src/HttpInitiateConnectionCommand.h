@@ -60,6 +60,12 @@ namespace aria2 {
 //                 |                +------------> HttpRequestCommand
 //                 | direct connection
 //                 +-----------------------------> HttpRequestCommand
+//
+// HttpInitiateConnectionCommand::execute() returns true when DNS is
+// in synchronous mode and address resolution was complete.  When DNS
+// is in asynchronous mode, it may return false: This means address
+// resolution is in progress. After address resolution completed,
+// calling execute() returns true.
 class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
 protected:
   virtual Command* createNextCommand
