@@ -59,8 +59,16 @@ typedef _off_t off_t;
 #endif
 #endif // __MINGW32__
 
-#include <gettext.h>
 #ifdef ENABLE_NLS
+// If we put #include <gettext.h> outside of #ifdef ENABLE_NLS and
+// --disable-nls is used, gettext(msgid) is defined as ((const char *)
+// (Msgid)). System header includes libintl.h regardless of
+// --disable-nls. For example, #include <string> will include
+// libintl.h through include chain. Since libintl.h refers gettext and
+// it is defined as non-function form, this causes compile error. User
+// reported gcc-4.2.2 has this problem. But gcc-4.4.5 does not suffer
+// from this problem.
+# include <gettext.h>
 # define _(String) gettext(String)
 #else // ENABLE_NLS
 # define _(String) String
