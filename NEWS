@@ -1,3 +1,44 @@
+aria2 1.10.8
+============
+
+Release Note
+------------
+
+This release fixes the compile error which occurs with --disable-nls
+configure option. It also fixes the compile error which occurs when
+the system does not have fallocate() but has posix_fallocate().
+
+Please note that since 1.10.0 release, aria2 uses 1 connection per
+host by default and has 20MiB segment size restriction. So whatever
+value you specify using -s option, it uses 1 connection per host. To
+make it behave like 1.9.x, use -x16 -k1M (see
+--max-connection-per-server and --min-split-size option in man
+page). If you specify multiple hosts, aria2 will use all of them and
+open multiple connections.
+
+Changes
+-------
+
+ * Moved #include <gettext.h> inside of #ifdef ENABLE_NLS.  If we put
+   #include <gettext.h> outside of #ifdef ENABLE_NLS and --disable-nls
+   is used, gettext(msgid) is defined as ((const char *)
+   (Msgid)). System header includes libintl.h regardless of
+   --disable-nls. For example, #include <string> will include
+   libintl.h through include chain. Since libintl.h refers gettext and
+   it is defined as non-function form, this causes compile error. User
+   reported gcc-4.2.2 has this problem. But gcc-4.4.5 does not suffer
+   from this problem.
+
+ * Fixed compile error which occurs when system has posix_fallocate()
+   but does not have fallocate().
+
+ * Removed specializations of std::swap(PeerEntry&, PeerEntry&).
+   Declaring std::swap(PeerEntry&, PeerEntry&) in class declaration
+   breaks under Mac OS X 10.5. They are also not used. So we simply
+   removed them.
+
+
+
 aria2 1.10.7
 ============
 
