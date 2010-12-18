@@ -212,7 +212,7 @@ void AbstractDiskWriter::truncate(uint64_t length)
   HANDLE handle = LongToHandle(_get_osfhandle(fd_));
   seek(length);
   if(SetEndOfFile(handle) == 0) {
-    throw DL_ABORT_EX2(fmt("SetEndOfFile failed. cause: %s",
+    throw DL_ABORT_EX2(fmt("SetEndOfFile failed. cause: %lx",
                            GetLastError()),
                        error_code::FILE_IO_ERROR);
   }
