@@ -173,6 +173,14 @@ public:
   void onReceived(const ResponseMessage* message)
   {
     --inFlightMessage_;
+    // Replace old Node ID with new Node ID.
+    for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i =
+          entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
+      if((*i)->node->getIPAddress() == message->getRemoteNode()->getIPAddress()
+         && (*i)->node->getPort() == message->getRemoteNode()->getPort()) {
+        (*i)->node = message->getRemoteNode();
+      }
+    }
     onReceivedInternal(message);
     std::vector<SharedHandle<DHTNode> > nodes;
     getNodesFromMessage(nodes, message);

@@ -102,17 +102,25 @@ void DHTPeerLookupTask::onFinish()
   size_t num = DHTBucket::K;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i =
         getEntries().begin(), eoi = getEntries().end();
-      i != eoi && num > 0; ++i, --num) {
-    if((*i)->used) {
-      const SharedHandle<DHTNode>& node = (*i)->node;
-      SharedHandle<DHTMessage> m = 
-        getMessageFactory()->createAnnouncePeerMessage
-        (node,
-         getTargetID(), // this is infoHash
-         btRuntime_->getListenPort(),
-         tokenStorage_[util::toHex(node->getID(), DHT_ID_LENGTH)]);
-      getMessageDispatcher()->addMessageToQueue(m);
+      i != eoi && num > 0; ++i) {
+    if(!(*i)->used) {
+      continue;
     }
+    const SharedHandle<DHTNode>& node = (*i)->node;
+    std::string idHex = util::toHex(node->getID(), DHT_ID_LENGTH);
+    std::string token = tokenStorage_[idHex];
+    if(token.empty()) {
+      A2_LOG_DEBUG(fmt("Token is empty for ID:%s", idHex.c_str()));
+      continue;
+    }
+    SharedHandle<DHTMessage> m =
+      getMessageFactory()->createAnnouncePeerMessage
+      (node,
+       getTargetID(), // this is infoHash
+       btRuntime_->getListenPort(),
+       token);
+    getMessageDispatcher()->addMessageToQueue(m);
+    --num;
   }
 }
 
