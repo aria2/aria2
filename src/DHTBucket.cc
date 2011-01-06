@@ -232,7 +232,8 @@ SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std:
   node->setPort(port);
   std::deque<SharedHandle<DHTNode> >::const_iterator itr =
     std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
-  if(itr == nodes_.end()) {
+  if(itr == nodes_.end() ||
+     (*itr)->getIPAddress() != ipaddr || (*itr)->getPort() != port) {
     return SharedHandle<DHTNode>();
   } else {
     return *itr;

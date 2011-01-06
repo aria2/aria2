@@ -24,6 +24,7 @@ class DHTBucketTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetGoodNodes);
   CPPUNIT_TEST(testCacheNode);
   CPPUNIT_TEST(testDropNode);
+  CPPUNIT_TEST(testGetNode);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -40,6 +41,7 @@ public:
   void testGetGoodNodes();
   void testCacheNode();
   void testDropNode();
+  void testGetNode();
 };
 
 
@@ -449,6 +451,25 @@ void DHTBucketTest::testDropNode()
   }
   CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getCachedNodes().size());
   CPPUNIT_ASSERT(*cachedNode1 == *bucket.getCachedNodes()[0]);
+}
+
+void DHTBucketTest::testGetNode()
+{
+  unsigned char localNodeID[DHT_ID_LENGTH];
+  memset(localNodeID, 0, DHT_ID_LENGTH);
+  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
+  DHTBucket bucket(localNode);
+
+  unsigned char id[DHT_ID_LENGTH];
+  createID(id, 0xf0, 0);
+  SharedHandle<DHTNode> node(new DHTNode(id));
+  node->setIPAddress("192.168.0.1");
+  node->setPort(6881);
+  CPPUNIT_ASSERT(bucket.addNode(node));
+  CPPUNIT_ASSERT(bucket.getNode(id, "192.168.0.1", 6881));
+  CPPUNIT_ASSERT(!bucket.getNode(id, "192.168.0.2", 6881));
+  CPPUNIT_ASSERT(!bucket.getNode(id, "192.168.0.1", 6882));
+  CPPUNIT_ASSERT(!bucket.getNode(localNodeID, "192.168.0.1", 6881));
 }
 
 } // namespace aria2
