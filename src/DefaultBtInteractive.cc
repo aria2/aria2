@@ -461,6 +461,10 @@ void DefaultBtInteractive::checkActiveInteraction()
              static_cast<long int>(interval)));
     }
   }
+  // If both of us are seeders, drop connection.
+  if(peer_->isSeeder() && pieceStorage_->downloadFinished()) {
+    throw DL_ABORT_EX(MSG_GOOD_BYE_SEEDER);
+  }
 }
 
 void DefaultBtInteractive::addPeerExchangeMessage()
