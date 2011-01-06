@@ -111,42 +111,38 @@ void HandshakeExtensionMessage::doReceivedAction()
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
     peer_->setExtension(vt.first, vt.second);
   }
-  SharedHandle<TorrentAttribute> attrs =
-    bittorrent::getTorrentAttrs(dctx_);
-  if(attrs->metadata.empty() && !peer_->getExtensionMessageID("ut_metadata")) {
-    // TODO In metadataGetMode, if peer don't support metadata
-    // transfer, should we drop connection? There is a possibility
-    // that peer can still tell us peers using PEX.
-    throw DL_ABORT_EX("Peer doesn't support ut_metadata extension. Goodbye.");
-  }
-  if(metadataSize_ > 0) {
-    if(attrs->metadataSize) {
-      if(metadataSize_ != attrs->metadataSize) {
-        throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
+  SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
+  if(attrs->metadata.empty()) {
+    if(!peer_->getExtensionMessageID("ut_metadata")) {
+      // TODO In metadataGetMode, if peer don't support metadata
+      // transfer, should we drop connection? There is a possibility
+      // that peer can still tell us peers using PEX.
+      throw DL_ABORT_EX("Peer doesn't support ut_metadata extension. Goodbye.");
+    }
+    if(metadataSize_ > 0) {
+      if(attrs->metadataSize) {
+        if(metadataSize_ != attrs->metadataSize) {
+          throw DL_ABORT_EX("Wrong metadata_size. Which one is correct!?");
+        }
+      } else {
+        attrs->metadataSize = metadataSize_;
+        dctx_->getFirstFileEntry()->setLength(metadataSize_);
+        dctx_->markTotalLengthIsKnown();
+        dctx_->getOwnerRequestGroup()->initPieceStorage();
+
+        SharedHandle<PieceStorage> pieceStorage =
+          dctx_->getOwnerRequestGroup()->getPieceStorage();
+        // We enter 'end game' mode from the start to get metadata
+        // quickly.
+        pieceStorage->enterEndGame();
       }
-      if(!peer_->isSeeder()) {
-        peer_->reconfigureSessionResource(dctx_->getPieceLength(),
-                                          dctx_->getTotalLength());
-        peer_->setAllBitfield();
-      }
-    } else {
-      attrs->metadataSize = metadataSize_;
-      dctx_->getFirstFileEntry()->setLength(metadataSize_);
-      dctx_->markTotalLengthIsKnown();
-      dctx_->getOwnerRequestGroup()->initPieceStorage();
-      
-      SharedHandle<PieceStorage> pieceStorage =
-        dctx_->getOwnerRequestGroup()->getPieceStorage();
-      // We enter 'end game' mode from the start to get metadata
-      // quickly.
-      pieceStorage->enterEndGame();
       peer_->reconfigureSessionResource(dctx_->getPieceLength(),
                                         dctx_->getTotalLength());
       peer_->setAllBitfield();
+    } else {
+      throw DL_ABORT_EX("Peer didn't provide metadata_size."
+                        " It seems that it doesn't have whole metadata.");
     }
-  } else if(attrs->metadata.empty()) {
-    throw DL_ABORT_EX("Peer didn't provide metadata_size."
-                      " It seems that it doesn't have whole metadata.");
   }
 }
 

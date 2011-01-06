@@ -79,6 +79,7 @@ void Peer::allocateSessionResource(size_t pieceLength, uint64_t totalLength)
   delete res_;
   res_ = new PeerSessionResource(pieceLength, totalLength);
   res_->getPeerStat().downloadStart();
+  updateSeeder();
 }
 
 void Peer::reconfigureSessionResource(size_t pieceLength, uint64_t totalLength)

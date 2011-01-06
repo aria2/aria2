@@ -117,9 +117,17 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->getPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, peer->getExtensionMessageID("ut_pex"));
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, peer->getExtensionMessageID("a2_dht"));
+  CPPUNIT_ASSERT(peer->isSeeder());
   CPPUNIT_ASSERT_EQUAL((size_t)1024, attrs->metadataSize);
   CPPUNIT_ASSERT_EQUAL((uint64_t)1024, dctx->getTotalLength());
   CPPUNIT_ASSERT(dctx->knowsTotalLength());
+
+  // See Peer is not marked as seeder if !attrs->metadata.empty()
+  peer->allocateSessionResource(1024, 1024*1024);
+  attrs->metadataSize = 1024;
+  attrs->metadata = std::string('0', attrs->metadataSize);
+  msg.doReceivedAction();
+  CPPUNIT_ASSERT(!peer->isSeeder());
 }
 
 void HandshakeExtensionMessageTest::testCreate()
