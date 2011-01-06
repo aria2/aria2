@@ -37,6 +37,7 @@
 #include "DHTAnnouncePeerReplyMessage.h"
 #include "DHTFindNodeReplyMessage.h"
 #include "DHTPingReplyMessage.h"
+#include "DHTGetPeersReplyMessage.h"
 #include "Peer.h"
 
 namespace aria2 {
