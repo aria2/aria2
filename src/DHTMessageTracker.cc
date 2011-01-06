@@ -90,6 +90,16 @@ DHTMessageTracker::messageArrived
         A2_LOG_DEBUG(fmt("RTT is %s", util::itos(rtt).c_str()));
         message->getRemoteNode()->updateRTT(rtt);
         SharedHandle<DHTMessageCallback> callback = entry->getCallback();
+        if(!(*targetNode == *message->getRemoteNode())) {
+          // Node ID has changed. Drop previous node ID from
+          // DHTRoutingTable
+          A2_LOG_DEBUG
+            (fmt("Node ID has changed: old:%s, new:%s",
+                 util::toHex(targetNode->getID(), DHT_ID_LENGTH).c_str(),
+                 util::toHex(message->getRemoteNode()->getID(),
+                             DHT_ID_LENGTH).c_str()));
+          routingTable_->dropNode(targetNode);
+        }
         return std::make_pair(message, callback);
       } catch(RecoverableException& e) {
         handleTimeoutEntry(entry);
