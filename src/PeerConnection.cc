@@ -177,15 +177,20 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
 
 bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
                                       bool peek) {
-  assert(BtHandshakeMessage::MESSAGE_LENGTH >= resbufLength_);
+  if(BtHandshakeMessage::MESSAGE_LENGTH < resbufLength_) {
+    throw DL_ABORT_EX
+      ("More than BtHandshakeMessage::MESSAGE_LENGTH bytes are buffered.");
+  }
   bool retval = true;
-  if(prevPeek_ && resbufLength_) {
+  if(((!prevPeek_ && peek) || (prevPeek_ && !peek)) && resbufLength_) {
     // We have data in previous peek.
     // There is a chance that socket is readable because of EOF, for example,
     // official bttrack shutdowns socket after sending first 48 bytes of
     // handshake in its NAT checking.
     // So if there are data in resbuf_, return it without checking socket
     // status.
+    //
+    // (!prevPeek_ && peek) effectively returns preset buffer.
     prevPeek_ = false;
     retval = BtHandshakeMessage::MESSAGE_LENGTH <= resbufLength_;
   } else {
@@ -246,9 +251,6 @@ void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
   size_t nwrite = std::min((size_t)MAX_PAYLOAD_LEN, length);
   memcpy(resbuf_, data, nwrite);
   resbufLength_ = length;
-  if(resbufLength_ > 0) {
-    prevPeek_ = true;
-  }
 }
 
 bool PeerConnection::sendBufferIsEmpty() const
