@@ -79,7 +79,10 @@ private:
 
   static const size_t CRYPTO_BITFIELD_LENGTH = 4;
 
-  static const size_t MAX_BUFFER_LENGTH = 6*1024;
+  // The largest buffering occurs when receiver receives step2
+  // handshake.  We believe that IA is less than or equal to
+  // BtHandshakeMessage::MESSAGE_LENGTH
+  static const size_t MAX_BUFFER_LENGTH = 636;
 
   cuid_t cuid_;
   SharedHandle<SocketCore> socket_;
