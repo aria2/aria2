@@ -490,7 +490,9 @@ bool MSEHandshake::receiveReceiverIALength()
     return false;
   }
   iaLength_ = decodeLength16(rbuf_);
-  // TODO limit iaLength \19...+handshake
+  if(iaLength_ > BtHandshakeMessage::MESSAGE_LENGTH) {
+    throw DL_ABORT_EX(fmt("Too large IA length length: %u", iaLength_));
+  }
   A2_LOG_DEBUG(fmt("CUID#%lld - len(IA)=%u.", cuid_, iaLength_));
   // shift rbuf_
   shiftBuffer(2);
