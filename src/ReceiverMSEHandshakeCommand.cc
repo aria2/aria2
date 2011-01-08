@@ -213,19 +213,10 @@ void ReceiverMSEHandshakeCommand::createCommand()
     peerConnection->enableEncryption(mseHandshake_->getEncryptor(),
                                      mseHandshake_->getDecryptor());
   }
-  size_t buflen = mseHandshake_->getIALength()+mseHandshake_->getBufferLength();
-  array_ptr<unsigned char> buffer(new unsigned char[buflen]);
-  memcpy(buffer, mseHandshake_->getIA(), mseHandshake_->getIALength());
-  if(mseHandshake_->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
-    mseHandshake_->getDecryptor()->decrypt(buffer+mseHandshake_->getIALength(),
-                                           mseHandshake_->getBufferLength(),
-                                           mseHandshake_->getBuffer(),
-                                           mseHandshake_->getBufferLength());
-  } else {
-    memcpy(buffer+mseHandshake_->getIALength(),
-           mseHandshake_->getBuffer(), mseHandshake_->getBufferLength());
-  }
-  peerConnection->presetBuffer(buffer, buflen);
+  // Since initiator cannot send payload stream before reading step2
+  // from receiver, mseHandshake_->getBufferLength() should be 0.
+  peerConnection->presetBuffer(mseHandshake_->getIA(),
+                               mseHandshake_->getIALength());
   // TODO add mseHandshake_->getInfoHash() to PeerReceiveHandshakeCommand
   // as a hint. If this info hash and one in BitTorrent Handshake does not
   // match, then drop connection.
