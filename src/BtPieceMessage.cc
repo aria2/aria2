@@ -180,18 +180,16 @@ void BtPieceMessage::send()
     A2_LOG_DEBUG(fmt("msglength = %lu bytes",
                      static_cast<unsigned long>(msgHdrLen+blockLength_)));
     getPeerConnection()->pushBytes(msgHdr, msgHdrLen);
-    getPeerConnection()->sendPendingData();
     off_t pieceDataOffset =
       (off_t)index_*downloadContext_->getPieceLength()+begin_;
-    writtenLength = sendPieceData(pieceDataOffset, blockLength_);
-  } else {
-    writtenLength = getPeerConnection()->sendPendingData();
+    pushPieceData(pieceDataOffset, blockLength_);
   }
+  writtenLength = getPeerConnection()->sendPendingData();
   getPeer()->updateUploadLength(writtenLength);
   setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
 }
 
-size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const
+void BtPieceMessage::pushPieceData(off_t offset, size_t length) const
 {
   assert(length <= 16*1024);
   unsigned char* buf = new unsigned char[length];
@@ -204,7 +202,6 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const
   }
   if(r == static_cast<ssize_t>(length)) {
     getPeerConnection()->pushBytes(buf, length);
-    return getPeerConnection()->sendPendingData();
   } else {
     throw DL_ABORT_EX(EX_DATA_READ);
   }
