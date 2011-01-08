@@ -197,22 +197,32 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   return false;
 }
 
+void InitiatorMSEHandshakeCommand::tryNewPeer()
+{
+  if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
+    SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
+    peer->usedBy(getDownloadEngine()->newCUID());
+    PeerInitiateConnectionCommand* command =
+      new PeerInitiateConnectionCommand(peer->usedBy(), requestGroup_, peer,
+                                        getDownloadEngine(), btRuntime_);
+    command->setPeerStorage(peerStorage_);
+    command->setPieceStorage(pieceStorage_);
+    getDownloadEngine()->addCommand(command);
+  }
+}
+
 bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
-  if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    A2_LOG_INFO(fmt("CUID#%lld - Establishing connection using legacy BitTorrent"
-                    " handshake is disabled by preference.",
+  if(sequence_ == INITIATOR_SEND_KEY) {
+    // We don't try legacy handshake when connection did not
+    // established.
+    tryNewPeer();
+    return true;
+  } else if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+    A2_LOG_INFO(fmt("CUID#%lld - Establishing connection using legacy"
+                    " BitTorrent handshake is disabled by preference.",
                     getCuid()));
-    if(peerStorage_->isPeerAvailable() && btRuntime_->lessThanEqMinPeers()) {
-      SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
-      peer->usedBy(getDownloadEngine()->newCUID());
-      PeerInitiateConnectionCommand* command =
-        new PeerInitiateConnectionCommand(peer->usedBy(), requestGroup_, peer,
-                                          getDownloadEngine(), btRuntime_);
-      command->setPeerStorage(peerStorage_);
-      command->setPieceStorage(pieceStorage_);
-      getDownloadEngine()->addCommand(command);
-    }
+    tryNewPeer();
     return true;
   } else {
     // try legacy BitTorrent handshake

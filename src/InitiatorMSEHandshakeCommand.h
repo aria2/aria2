@@ -70,6 +70,8 @@ private:
   MSEHandshake* mseHandshake_;
 
   const SharedHandle<Option>& getOption() const;
+
+  void tryNewPeer();
 protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(time_t wait);
