@@ -37,7 +37,7 @@
 
 // Increment this if major improvements or bug fixes are made in DHT
 // code. This is 2 bytes unsigned integer.
-#define DHT_VERSION 2
+#define DHT_VERSION 3
 
 #define DHT_ID_LENGTH 20
 
