@@ -83,6 +83,7 @@ private:
 
   cuid_t cuid_;
   SharedHandle<SocketCore> socket_;
+  bool wantRead_;
   const Option* option_;
 
   unsigned char rbuf_[MAX_BUFFER_LENGTH];
@@ -130,8 +131,7 @@ private:
 
   void verifyReq1Hash(const unsigned char* req1buf);
 
-  size_t receiveNBytes(size_t bytes);
-
+  void shiftBuffer(size_t offset);
 public:
   MSEHandshake(cuid_t cuid, const SharedHandle<SocketCore>& socket,
                const Option* op);
@@ -142,13 +142,33 @@ public:
 
   void initEncryptionFacility(bool initiator);
 
-  bool sendPublicKey();
+  // Reads data from Socket. If EOF is reached, throws
+  // RecoverableException.
+  void read();
+
+  // Sends pending data in the send buffer. Returns true if all data
+  // is sent. Otherwise returns false.
+  bool send();
+
+  bool getWantRead() const
+  {
+    return wantRead_;
+  }
+
+  void setWantRead(bool wantRead)
+  {
+    wantRead_ = wantRead;
+  }
+
+  bool getWantWrite() const;
+
+  void sendPublicKey();
 
   bool receivePublicKey();
 
   void initCipher(const unsigned char* infoHash);
 
-  bool sendInitiatorStep2();
+  void sendInitiatorStep2();
 
   bool findInitiatorVCMarker();
 
@@ -165,7 +185,7 @@ public:
 
   bool receiveReceiverIA();
 
-  bool sendReceiverStep2();
+  void sendReceiverStep2();
 
   // returns plain text IA
   const unsigned char* getIA() const
@@ -207,7 +227,6 @@ public:
   {
     return rbufLength_;
   }
-
 };
 
 } // namespace aria2

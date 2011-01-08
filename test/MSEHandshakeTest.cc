@@ -70,26 +70,57 @@ createSocketPair()
 void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, const SharedHandle<MSEHandshake>& receiver)
 {
   initiator->sendPublicKey();
-
-  while(!receiver->receivePublicKey());
+  while(initiator->getWantWrite()) {
+    initiator->send();
+  }
+  while(!receiver->receivePublicKey()) {
+    receiver->read();
+  }
   receiver->sendPublicKey();
+  while(receiver->getWantWrite()) {
+    receiver->send();
+  }
 
-  while(!initiator->receivePublicKey());
+  while(!initiator->receivePublicKey()) {
+    initiator->read();
+  }
   initiator->initCipher(bittorrent::getInfoHash(dctx_));
   initiator->sendInitiatorStep2();
+  while(initiator->getWantWrite()) {
+    initiator->send();
+  }
 
-  while(!receiver->findReceiverHashMarker());
+  while(!receiver->findReceiverHashMarker()) {
+    receiver->read();
+  }
   std::vector<SharedHandle<DownloadContext> > contexts;
   contexts.push_back(dctx_);
-  while(!receiver->receiveReceiverHashAndPadCLength(contexts));
-  while(!receiver->receivePad());
-  while(!receiver->receiveReceiverIALength());
-  while(!receiver->receiveReceiverIA());
+  while(!receiver->receiveReceiverHashAndPadCLength(contexts)) {
+    receiver->read();
+  }
+  while(!receiver->receivePad()) {
+    receiver->read();
+  }
+  while(!receiver->receiveReceiverIALength()) {
+    receiver->read();
+  }
+  while(!receiver->receiveReceiverIA()) {
+    receiver->read();
+  }
   receiver->sendReceiverStep2();
+  while(receiver->getWantWrite()) {
+    receiver->send();
+  }
 
-  while(!initiator->findInitiatorVCMarker());
-  while(!initiator->receiveInitiatorCryptoSelectAndPadDLength());
-  while(!initiator->receivePad());
+  while(!initiator->findInitiatorVCMarker()) {
+    initiator->read();
+  }
+  while(!initiator->receiveInitiatorCryptoSelectAndPadDLength()) {
+    initiator->read();
+  }
+  while(!initiator->receivePad()) {
+    initiator->read();
+  }
 }
 
 namespace {

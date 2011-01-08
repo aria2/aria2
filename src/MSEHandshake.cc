@@ -71,6 +71,7 @@ MSEHandshake::MSEHandshake
  const Option* op)
   : cuid_(cuid),
     socket_(socket),
+    wantRead_(false),
     option_(op),
     rbufLength_(0),
     socketBuffer_(socket),
@@ -92,16 +93,8 @@ MSEHandshake::~MSEHandshake()
 
 MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
 {
-  if(!socket_->isReadable(0)) {
-    return HANDSHAKE_NOT_YET;
-  }
-  size_t r = 20-rbufLength_;
-  socket_->readData(rbuf_+rbufLength_, r);
-  if(r == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
-    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
-  }
-  rbufLength_ += r;
   if(rbufLength_ < 20) {
+    wantRead_ = true;
     return HANDSHAKE_NOT_YET;
   }
   if(rbuf_[0] == BtHandshakeMessage::PSTR_LENGTH &&
@@ -126,35 +119,59 @@ void MSEHandshake::initEncryptionFacility(bool initiator)
   initiator_ = initiator;
 }
 
-bool MSEHandshake::sendPublicKey()
+void MSEHandshake::sendPublicKey()
 {
-  if(socketBuffer_.sendBufferIsEmpty()) {
-    A2_LOG_DEBUG(fmt("CUID#%lld - Sending public key.",
-                     cuid_));
-    unsigned char buffer[KEY_LENGTH+MAX_PAD_LENGTH];
-    dh_->getPublicKey(buffer, KEY_LENGTH);
+  A2_LOG_DEBUG(fmt("CUID#%lld - Sending public key.",
+                   cuid_));
+  unsigned char buffer[KEY_LENGTH+MAX_PAD_LENGTH];
+  dh_->getPublicKey(buffer, KEY_LENGTH);
 
-    size_t padLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-    dh_->generateNonce(buffer+KEY_LENGTH, padLength);
-    socketBuffer_.pushStr(std::string(&buffer[0],
-                                      &buffer[KEY_LENGTH+padLength]));
+  size_t padLength =
+    SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+  dh_->generateNonce(buffer+KEY_LENGTH, padLength);
+  socketBuffer_.pushStr(std::string(&buffer[0],
+                                    &buffer[KEY_LENGTH+padLength]));
+}
+
+void MSEHandshake::read()
+{
+  if(rbufLength_ >= MAX_BUFFER_LENGTH) {
+    assert(!wantRead_);
+    return;
   }
+  size_t len = MAX_BUFFER_LENGTH-rbufLength_;
+  socket_->readData(rbuf_+rbufLength_, len);
+  if(len == 0  && !socket_->wantRead() && !socket_->wantWrite()) {
+    // TODO Should we set graceful in peer?
+    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+  }
+  rbufLength_ += len;
+  wantRead_ = false;
+}
+
+bool MSEHandshake::send()
+{
   socketBuffer_.send();
   return socketBuffer_.sendBufferIsEmpty();
 }
 
+void MSEHandshake::shiftBuffer(size_t offset)
+{
+  memmove(rbuf_, rbuf_+offset, rbufLength_-offset);
+  rbufLength_ -= offset;
+}
+
 bool MSEHandshake::receivePublicKey()
 {
-  size_t r = KEY_LENGTH-rbufLength_;
-  if(r > receiveNBytes(r)) {
+  if(rbufLength_ < KEY_LENGTH) {
+    wantRead_ = true;
     return false;
   }
-  A2_LOG_DEBUG(fmt("CUID#%lld - public key received.",
-                   cuid_));
+  A2_LOG_DEBUG(fmt("CUID#%lld - public key received.", cuid_));
   // TODO handle exception. in catch, resbufLength = 0;
-  dh_->computeSecret(secret_, sizeof(secret_), rbuf_, rbufLength_);
-  // reset rbufLength_
-  rbufLength_ = 0;
+  dh_->computeSecret(secret_, sizeof(secret_), rbuf_, KEY_LENGTH);
+  // shift buffer
+  shiftBuffer(KEY_LENGTH);
   return true;
 }
 
@@ -251,109 +268,83 @@ uint16_t MSEHandshake::decodeLength16(const unsigned char* buffer)
   return ntohs(be);
 }
 
-bool MSEHandshake::sendInitiatorStep2()
+void MSEHandshake::sendInitiatorStep2()
 {
-  if(socketBuffer_.sendBufferIsEmpty()) {
-    A2_LOG_DEBUG(fmt("CUID#%lld - Sending negotiation step2.",
-                     cuid_));
-    unsigned char md[20];
-    createReq1Hash(md);
-    socketBuffer_.pushStr(std::string(&md[0], &md[sizeof(md)]));
+  A2_LOG_DEBUG(fmt("CUID#%lld - Sending negotiation step2.", cuid_));
+  unsigned char md[20];
+  createReq1Hash(md);
+  socketBuffer_.pushStr(std::string(&md[0], &md[sizeof(md)]));
+  createReq23Hash(md, infoHash_);
+  socketBuffer_.pushStr(std::string(&md[0], &md[sizeof(md)]));
 
-    createReq23Hash(md, infoHash_);
-    socketBuffer_.pushStr(std::string(&md[0], &md[sizeof(md)]));
+  // buffer is filled in this order:
+  //   VC(VC_LENGTH bytes),
+  //   crypto_provide(CRYPTO_BITFIELD_LENGTH bytes),
+  //   len(padC)(2bytes),
+  //   padC(len(padC)bytes <= MAX_PAD_LENGTH),
+  //   len(IA)(2bytes)
+  unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
 
-    {
-      // buffer is filled in this order:
-      //   VC(VC_LENGTH bytes),
-      //   crypto_provide(CRYPTO_BITFIELD_LENGTH bytes),
-      //   len(padC)(2bytes),
-      //   padC(len(padC)bytes <= MAX_PAD_LENGTH),
-      //   len(IA)(2bytes)
-      unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
-
-      // VC
-      memcpy(buffer, VC, sizeof(VC));
-      // crypto_provide
-      unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
-      memset(cryptoProvide, 0, sizeof(cryptoProvide));
-      if(option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-        cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
-      }
-      cryptoProvide[3] |= CRYPTO_ARC4;
-      memcpy(buffer+VC_LENGTH, cryptoProvide, sizeof(cryptoProvide));
-
-      // len(padC)
-      uint16_t padCLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-      {
-        uint16_t padCLengthBE = htons(padCLength);
-        memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padCLengthBE,
-               sizeof(padCLengthBE));
-      }
-      // padC
-      memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padCLength);
-      // len(IA)
-      // currently, IA is zero-length.
-      uint16_t iaLength = 0;
-      {
-        uint16_t iaLengthBE = htons(iaLength);
-        memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength,
-               &iaLengthBE,sizeof(iaLengthBE));
-      }
-      encryptAndSendData(buffer,
-                         VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength+2);
-    }
+  // VC
+  memcpy(buffer, VC, sizeof(VC));
+  // crypto_provide
+  unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
+  memset(cryptoProvide, 0, sizeof(cryptoProvide));
+  if(option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
+    cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
   }
-  socketBuffer_.send();
-  return socketBuffer_.sendBufferIsEmpty();
+  cryptoProvide[3] |= CRYPTO_ARC4;
+  memcpy(buffer+VC_LENGTH, cryptoProvide, sizeof(cryptoProvide));
+
+  // len(padC)
+  uint16_t padCLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+  {
+    uint16_t padCLengthBE = htons(padCLength);
+    memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padCLengthBE,
+           sizeof(padCLengthBE));
+  }
+  // padC
+  memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padCLength);
+  // len(IA)
+  // currently, IA is zero-length.
+  uint16_t iaLength = 0;
+  {
+    uint16_t iaLengthBE = htons(iaLength);
+    memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength,
+           &iaLengthBE,sizeof(iaLengthBE));
+  }
+  encryptAndSendData(buffer,
+                     VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength+2);
 }
 
 // This function reads exactly until the end of VC marker is reached.
 bool MSEHandshake::findInitiatorVCMarker()
 {
   // 616 is synchronization point of initiator
-  size_t r = 616-KEY_LENGTH-rbufLength_;
-  if(!socket_->isReadable(0)) {
-    return false;
-  }
-  socket_->peekData(rbuf_+rbufLength_, r);
-  if(r == 0) {
-    if(socket_->wantRead() || socket_->wantWrite()) {
+  // find vc
+  std::string buf(&rbuf_[0], &rbuf_[rbufLength_]);
+  std::string vc(&initiatorVCMarker_[0], &initiatorVCMarker_[VC_LENGTH]);
+  if((markerIndex_ = buf.find(vc)) == std::string::npos) {
+    if(616-KEY_LENGTH <= rbufLength_) {
+      throw DL_ABORT_EX("Failed to find VC marker.");
+    } else {
+      wantRead_ = true;
       return false;
     }
-    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
-  // find vc
-  {
-    std::string buf(&rbuf_[0], &rbuf_[rbufLength_+r]);
-    std::string vc(&initiatorVCMarker_[0], &initiatorVCMarker_[VC_LENGTH]);
-    if((markerIndex_ = buf.find(vc)) == std::string::npos) {
-      if(616-KEY_LENGTH <= rbufLength_+r) {
-        throw DL_ABORT_EX("Failed to find VC marker.");
-      } else {
-        socket_->readData(rbuf_+rbufLength_, r);
-        rbufLength_ += r;
-        return false;
-      }
-    }
-  }
-  assert(markerIndex_+VC_LENGTH-rbufLength_ <= r);
-  size_t toRead = markerIndex_+VC_LENGTH-rbufLength_;
-  socket_->readData(rbuf_+rbufLength_, toRead);
-  rbufLength_ += toRead;
   A2_LOG_DEBUG(fmt("CUID#%lld - VC marker found at %lu",
                    cuid_,
                    static_cast<unsigned long>(markerIndex_)));
   verifyVC(rbuf_+markerIndex_);
-  // reset rbufLength_
-  rbufLength_ = 0;
+  // shift rbuf
+  shiftBuffer(markerIndex_+VC_LENGTH);
   return true;
 }
 
 bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
 {
-  size_t r = CRYPTO_BITFIELD_LENGTH+2/* PadD length*/-rbufLength_;
-  if(r > receiveNBytes(r)) {
+  if(CRYPTO_BITFIELD_LENGTH+2/* PadD length*/ > rbufLength_) {
+    wantRead_ = true;
     return false;
   }
   //verifyCryptoSelect
@@ -382,75 +373,57 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
   // padD length
   rbufptr += CRYPTO_BITFIELD_LENGTH;
   padLength_ = verifyPadLength(rbufptr, "PadD");
-  // reset rbufLength_
-  rbufLength_ = 0;
+  // shift rbuf
+  shiftBuffer(CRYPTO_BITFIELD_LENGTH+2/* PadD length*/);
   return true;
 }
 
 bool MSEHandshake::receivePad()
 {
+  if(padLength_ > rbufLength_) {
+    wantRead_ = true;
+    return false;
+  }
   if(padLength_ == 0) {
     return true;
   }
-  size_t r = padLength_-rbufLength_;
-  if(r > receiveNBytes(r)) {
-    return false;
-  }
   unsigned char temp[MAX_PAD_LENGTH];
   decryptor_->decrypt(temp, padLength_, rbuf_, padLength_);
-  // reset rbufLength_
-  rbufLength_ = 0;
+  // shift rbuf_
+  shiftBuffer(padLength_);
   return true;
 }
 
 bool MSEHandshake::findReceiverHashMarker()
 {
   // 628 is synchronization limit of receiver.
-  size_t r = 628-KEY_LENGTH-rbufLength_;
-  if(!socket_->isReadable(0)) {
-    return false;
-  }
-  socket_->peekData(rbuf_+rbufLength_, r);
-  if(r == 0) {
-    if(socket_->wantRead() || socket_->wantWrite()) {
+  // find hash('req1', S), S is secret_.
+  std::string buf(&rbuf_[0], &rbuf_[rbufLength_]);
+  unsigned char md[20];
+  createReq1Hash(md);
+  std::string req1(&md[0], &md[sizeof(md)]);
+  if((markerIndex_ = buf.find(req1)) == std::string::npos) {
+    if(628-KEY_LENGTH <= rbufLength_) {
+      throw DL_ABORT_EX("Failed to find hash marker.");
+    } else {
+      wantRead_ = true;
       return false;
     }
-    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
   }
-  // find hash('req1', S), S is secret_.
-  {
-    std::string buf(&rbuf_[0], &rbuf_[rbufLength_+r]);
-    unsigned char md[20];
-    createReq1Hash(md);
-    std::string req1(&md[0], &md[sizeof(md)]);
-    if((markerIndex_ = buf.find(req1)) == std::string::npos) {
-      if(628-KEY_LENGTH <= rbufLength_+r) {
-        throw DL_ABORT_EX("Failed to find hash marker.");
-      } else {
-        socket_->readData(rbuf_+rbufLength_, r);
-        rbufLength_ += r;
-        return false;
-      }
-    }
-  }
-  assert(markerIndex_+20-rbufLength_ <= r);
-  size_t toRead = markerIndex_+20-rbufLength_;
-  socket_->readData(rbuf_+rbufLength_, toRead);
-  rbufLength_ += toRead;
   A2_LOG_DEBUG(fmt("CUID#%lld - Hash marker found at %lu.",
                    cuid_,
                    static_cast<unsigned long>(markerIndex_)));
   verifyReq1Hash(rbuf_+markerIndex_);
-  // reset rbufLength_
-  rbufLength_ = 0;
+  // shift rbuf_
+  shiftBuffer(markerIndex_+20);
   return true;
 }
 
 bool MSEHandshake::receiveReceiverHashAndPadCLength
 (const std::vector<SharedHandle<DownloadContext> >& downloadContexts)
 {
-  size_t r = 20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/-rbufLength_;
-  if(r > receiveNBytes(r)) {
+  if(20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/ > rbufLength_) {
+    wantRead_ = true;
     return false;
   }
   // resolve info hash
@@ -505,23 +478,22 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   // decrypt PadC length
   rbufptr += CRYPTO_BITFIELD_LENGTH;
   padLength_ = verifyPadLength(rbufptr, "PadC");
-  // reset rbufLength_
-  rbufLength_ = 0;
+  // shift rbuf_
+  shiftBuffer(20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/);
   return true;
 }
 
 bool MSEHandshake::receiveReceiverIALength()
 {
-  size_t r = 2-rbufLength_;
-  assert(r > 0);
-  if(r > receiveNBytes(r)) {
+  if(2 > rbufLength_) {
+    wantRead_ = true;
     return false;
   }
   iaLength_ = decodeLength16(rbuf_);
-  A2_LOG_DEBUG(fmt("CUID#%lld - len(IA)=%u.",
-                   cuid_, iaLength_));
-  // reset rbufLength_
-  rbufLength_ = 0;
+  // TODO limit iaLength \19...+handshake
+  A2_LOG_DEBUG(fmt("CUID#%lld - len(IA)=%u.", cuid_, iaLength_));
+  // shift rbuf_
+  shiftBuffer(2);
   return true;
 }
 
@@ -530,48 +502,44 @@ bool MSEHandshake::receiveReceiverIA()
   if(iaLength_ == 0) {
     return true;
   }
-  size_t r = iaLength_-rbufLength_;
-  if(r > receiveNBytes(r)) {
+  if(iaLength_ > rbufLength_) {
+    wantRead_ = true;
     return false;
   }
   delete [] ia_;
   ia_ = new unsigned char[iaLength_];
   decryptor_->decrypt(ia_, iaLength_, rbuf_, iaLength_);
   A2_LOG_DEBUG(fmt("CUID#%lld - IA received.", cuid_));
-  // reset rbufLength_
-  rbufLength_ = 0;
+  // shift rbuf_
+  shiftBuffer(iaLength_);
   return true;
 }
 
-bool MSEHandshake::sendReceiverStep2()
+void MSEHandshake::sendReceiverStep2()
 {
-  if(socketBuffer_.sendBufferIsEmpty()) {
-    // buffer is filled in this order:
-    //   VC(VC_LENGTH bytes),
-    //   cryptoSelect(CRYPTO_BITFIELD_LENGTH bytes),
-    //   len(padD)(2bytes),
-    //   padD(len(padD)bytes <= MAX_PAD_LENGTH)
-    unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH];
-    // VC
-    memcpy(buffer, VC, sizeof(VC));
-    // crypto_select
-    unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
-    memset(cryptoSelect, 0, sizeof(cryptoSelect));
-    cryptoSelect[3] = negotiatedCryptoType_;
-    memcpy(buffer+VC_LENGTH, cryptoSelect, sizeof(cryptoSelect));
-    // len(padD)
-    uint16_t padDLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-    {
-      uint16_t padDLengthBE = htons(padDLength);
-      memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padDLengthBE,
-             sizeof(padDLengthBE));
-    }
-    // padD, all zeroed
-    memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padDLength);
-    encryptAndSendData(buffer, VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padDLength);
+  // buffer is filled in this order:
+  //   VC(VC_LENGTH bytes),
+  //   cryptoSelect(CRYPTO_BITFIELD_LENGTH bytes),
+  //   len(padD)(2bytes),
+  //   padD(len(padD)bytes <= MAX_PAD_LENGTH)
+  unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH];
+  // VC
+  memcpy(buffer, VC, sizeof(VC));
+  // crypto_select
+  unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
+  memset(cryptoSelect, 0, sizeof(cryptoSelect));
+  cryptoSelect[3] = negotiatedCryptoType_;
+  memcpy(buffer+VC_LENGTH, cryptoSelect, sizeof(cryptoSelect));
+  // len(padD)
+  uint16_t padDLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+  {
+    uint16_t padDLengthBE = htons(padDLength);
+    memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padDLengthBE,
+           sizeof(padDLengthBE));
   }
-  socketBuffer_.send();
-  return socketBuffer_.sendBufferIsEmpty();
+  // padD, all zeroed
+  memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padDLength);
+  encryptAndSendData(buffer, VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padDLength);
 }
 
 uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const char* padName)
@@ -609,20 +577,9 @@ void MSEHandshake::verifyReq1Hash(const unsigned char* req1buf)
   }
 }
 
-size_t MSEHandshake::receiveNBytes(size_t bytes)
+bool MSEHandshake::getWantWrite() const
 {
-  size_t r = bytes;
-  if(r > 0) {
-    if(!socket_->isReadable(0)) {
-      return 0;
-    }
-    socket_->readData(rbuf_+rbufLength_, r);
-    if(r == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
-      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
-    }
-    rbufLength_ += r;
-  }
-  return r;
+  return !socketBuffer_.sendBufferIsEmpty();
 }
 
 } // namespace aria2

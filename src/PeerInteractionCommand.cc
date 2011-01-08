@@ -163,6 +163,11 @@ PeerInteractionCommand::PeerInteractionCommand
     peerConnection.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   } else {
     peerConnection = passedPeerConnection;
+    if(sequence_ == RECEIVER_WAIT_HANDSHAKE &&
+       peerConnection->getBufferLength() > 0) {
+      setStatus(Command::STATUS_ONESHOT_REALTIME);
+      getDownloadEngine()->setNoWait(true);
+    }
   }
 
   SharedHandle<DefaultBtMessageDispatcher> dispatcher
@@ -274,71 +279,80 @@ PeerInteractionCommand::~PeerInteractionCommand() {
 
 bool PeerInteractionCommand::executeInternal() {
   setNoCheck(false);
-  switch(sequence_) {
-  case INITIATOR_SEND_HANDSHAKE:
-    if(!getSocket()->isWritable(0)) {
-      break;
-    }
-    disableWriteCheckSocket();
-    setReadCheckSocket(getSocket());
-    //socket->setBlockingMode();
-    setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
-    btInteractive_->initiateHandshake();
-    sequence_ = INITIATOR_WAIT_HANDSHAKE;
-    break;
-  case INITIATOR_WAIT_HANDSHAKE: {
-    if(btInteractive_->countPendingMessage() > 0) {
-      btInteractive_->sendPendingMessage();
-      if(btInteractive_->countPendingMessage() > 0) {
+  bool done = false;
+  while(!done) {
+    switch(sequence_) {
+    case INITIATOR_SEND_HANDSHAKE:
+      if(!getSocket()->isWritable(0)) {
+        done = true;
         break;
       }
-    }
-    BtMessageHandle handshakeMessage = btInteractive_->receiveHandshake();
-    if(!handshakeMessage) {
+      disableWriteCheckSocket();
+      setReadCheckSocket(getSocket());
+      //socket->setBlockingMode();
+      setTimeout(getOption()->getAsInt(PREF_BT_TIMEOUT));
+      btInteractive_->initiateHandshake();
+      sequence_ = INITIATOR_WAIT_HANDSHAKE;
       break;
-    }
-    btInteractive_->doPostHandshakeProcessing();
-    sequence_ = WIRED;
-    break;
-  }
-  case RECEIVER_WAIT_HANDSHAKE: {
-    BtMessageHandle handshakeMessage =btInteractive_->receiveAndSendHandshake();
-    if(!handshakeMessage) {
-      break;
-    }
-    btInteractive_->doPostHandshakeProcessing();
-    sequence_ = WIRED;    
-    break;
-  }
-  case WIRED:
-    // See the comment for writable check below.
-    disableWriteCheckSocket();
-
-    btInteractive_->doInteractionProcessing();
-    if(btInteractive_->countReceivedMessageInIteration() > 0) {
-      updateKeepAlive();
-    }
-    if((getPeer()->amInterested() && !getPeer()->peerChoking()) ||
-       btInteractive_->countOutstandingRequest() ||
-       (getPeer()->peerInterested() && !getPeer()->amChoking())) {
-
-      // Writable check to avoid slow seeding
-      if(btInteractive_->isSendingMessageInProgress()) {
-        setWriteCheckSocket(getSocket());
+    case INITIATOR_WAIT_HANDSHAKE: {
+      if(btInteractive_->countPendingMessage() > 0) {
+        btInteractive_->sendPendingMessage();
+        if(btInteractive_->countPendingMessage() > 0) {
+          done = true;
+          break;
+        }
       }
+      BtMessageHandle handshakeMessage = btInteractive_->receiveHandshake();
+      if(!handshakeMessage) {
+        done = true;
+        break;
+      }
+      btInteractive_->doPostHandshakeProcessing();
+      sequence_ = WIRED;
+      break;
+    }
+    case RECEIVER_WAIT_HANDSHAKE: {
+      BtMessageHandle handshakeMessage =
+        btInteractive_->receiveAndSendHandshake();
+      if(!handshakeMessage) {
+        done = true;
+        break;
+      }
+      btInteractive_->doPostHandshakeProcessing();
+      sequence_ = WIRED;
+      break;
+    }
+    case WIRED:
+      // See the comment for writable check below.
+      disableWriteCheckSocket();
 
-      if(getDownloadEngine()->getRequestGroupMan()->
-         doesOverallDownloadSpeedExceed() ||
-         requestGroup_->doesDownloadSpeedExceed()) {
-        disableReadCheckSocket();
-        setNoCheck(true);
+      btInteractive_->doInteractionProcessing();
+      if(btInteractive_->countReceivedMessageInIteration() > 0) {
+        updateKeepAlive();
+      }
+      if((getPeer()->amInterested() && !getPeer()->peerChoking()) ||
+         btInteractive_->countOutstandingRequest() ||
+         (getPeer()->peerInterested() && !getPeer()->amChoking())) {
+
+        // Writable check to avoid slow seeding
+        if(btInteractive_->isSendingMessageInProgress()) {
+          setWriteCheckSocket(getSocket());
+        }
+
+        if(getDownloadEngine()->getRequestGroupMan()->
+           doesOverallDownloadSpeedExceed() ||
+           requestGroup_->doesDownloadSpeedExceed()) {
+          disableReadCheckSocket();
+          setNoCheck(true);
+        } else {
+          setReadCheckSocket(getSocket());
+        }
       } else {
-        setReadCheckSocket(getSocket());
+        disableReadCheckSocket();
       }
-    } else {
-      disableReadCheckSocket();
+      done = true;
+      break;
     }
-    break;
   }
   if(btInteractive_->countPendingMessage() > 0) {
     setNoCheck(true);

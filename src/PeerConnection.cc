@@ -110,9 +110,6 @@ void PeerConnection::pushBytes(unsigned char* data, size_t len)
 
 bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
   if(resbufLength_ == 0 && 4 > lenbufLength_) {
-    if(!socket_->isReadable(0)) {
-      return false;
-    }
     // read payload size, 32bit unsigned integer
     size_t remaining = 4-lenbufLength_;
     size_t temp = remaining;
@@ -182,7 +179,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
                                       bool peek) {
   assert(BtHandshakeMessage::MESSAGE_LENGTH >= resbufLength_);
   bool retval = true;
-  if(prevPeek_ && !peek && resbufLength_) {
+  if(prevPeek_ && resbufLength_) {
     // We have data in previous peek.
     // There is a chance that socket is readable because of EOF, for example,
     // official bttrack shutdowns socket after sending first 48 bytes of
@@ -194,17 +191,10 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
   } else {
     prevPeek_ = peek;
     size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength_;
-    if(remaining > 0 && !socket_->isReadable(0)) {
-      dataLength = 0;
-      return false;
-    }
     if(remaining > 0) {
       size_t temp = remaining;
       readData(resbuf_+resbufLength_, remaining, encryptionEnabled_);
-      if(remaining == 0) {
-        if(socket_->wantRead() || socket_->wantWrite()) {
-          return false;
-        }
+      if(remaining == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
         // we got EOF
         A2_LOG_DEBUG
           (fmt("CUID#%lld - In PeerConnection::receiveHandshake(), remain=%lu",
@@ -256,6 +246,9 @@ void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
   size_t nwrite = std::min((size_t)MAX_PAYLOAD_LEN, length);
   memcpy(resbuf_, data, nwrite);
   resbufLength_ = length;
+  if(resbufLength_ > 0) {
+    prevPeek_ = true;
+  }
 }
 
 bool PeerConnection::sendBufferIsEmpty() const

@@ -67,7 +67,12 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
   : PeerAbstractCommand(cuid, peer, e, s),
     peerConnection_(peerConnection)
 {
-  if(!peerConnection_) {
+  if(peerConnection_) {
+    if(peerConnection_->getBufferLength() > 0) {
+      setStatus(Command::STATUS_ONESHOT_REALTIME);
+      getDownloadEngine()->setNoWait(true);
+    }
+  } else {
     peerConnection_.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   }
 }

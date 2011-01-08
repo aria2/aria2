@@ -117,6 +117,11 @@ public:
     return resbuf_;
   }
 
+  size_t getBufferLength() const
+  {
+    return resbufLength_;
+  }
+
   unsigned char* detachBuffer();
 };
 
