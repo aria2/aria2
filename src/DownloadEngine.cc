@@ -165,8 +165,8 @@ void DownloadEngine::waitData()
   if(noWait_) {
     tv.tv_sec = tv.tv_usec = 0;
   } else {
-    tv.tv_sec = 1;
-    tv.tv_usec = 0;
+    tv.tv_sec = 0;
+    tv.tv_usec = refreshInterval_*1000;
   }
   eventPoll_->poll(tv);
 }
@@ -529,7 +529,7 @@ void DownloadEngine::setAuthConfigFactory
 
 void DownloadEngine::setRefreshInterval(int64_t interval)
 {
-  refreshInterval_ = interval;
+  refreshInterval_ = std::min(static_cast<int64_t>(999), interval);
 }
 
 void DownloadEngine::addCommand(const std::vector<Command*>& commands)
