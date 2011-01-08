@@ -157,6 +157,7 @@ bool MSEHandshake::send()
 
 void MSEHandshake::shiftBuffer(size_t offset)
 {
+  assert(rbufLength_ >= offset);
   memmove(rbuf_, rbuf_+offset, rbufLength_-offset);
   rbufLength_ -= offset;
 }
