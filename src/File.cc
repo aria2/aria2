@@ -46,6 +46,9 @@
 #include "util.h"
 #include "A2STR.h"
 #include "array_fun.h"
+#include "Logger.h"
+#include "LogFactory.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -115,22 +118,43 @@ bool File::mkdirs() {
   if(isDir()) {
     return false;
   }
-  for(std::string::iterator i = name_.begin(), eoi = name_.end();
-      i != eoi;) {
-    std::string::iterator j = std::find(i, eoi, '/');
+#ifdef __MINGW32__
+  std::string path = name_;
+  for(std::string::iterator i = path.begin(), eoi = path.end(); i != eoi; ++i) {
+    if(*i == '\\') {
+      *i = '/';
+    }
+  }
+  std::string::iterator begin = path.begin();
+  std::string::iterator end = path.end();
+#else // !__MINGW32__
+  std::string::iterator begin = name_.begin();
+  std::string::iterator end = name_.end();
+#endif // !__MINGW32__
+  for(std::string::iterator i = begin; i != end;) {
+    std::string::iterator j = std::find(i, end, '/');
     if(std::distance(i, j) == 0) {
       ++i;
       continue;
     }
-    if(j != eoi) {
-      ++j;
-    }
     i = j;
-    std::string dir = std::string(name_.begin(), j);
+    if(i != end) {
+      ++i;
+    }
+#ifdef __MINGW32__
+    if(*(j-1) == ':') {
+      // This is a drive letter, e.g. C:, so skip it.
+      continue;
+    }
+#endif // __MINGW32__
+    std::string dir = std::string(begin, j);
+    A2_LOG_DEBUG(fmt("Making directory %s", dir.c_str()));
     if(File(dir).isDir()) {
+      A2_LOG_DEBUG(fmt("%s exists and is a directory.", dir.c_str()));
       continue;
     }
     if(a2mkdir(dir.c_str(), DIR_OPEN_MODE) == -1) {
+      A2_LOG_DEBUG(fmt("Failed to create %s", dir.c_str()));
       return false;
     }
   }
