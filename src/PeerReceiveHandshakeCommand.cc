@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "PeerReceiveHandshakeCommand.h"
+
+#include <cstring>
+
 #include "PeerConnection.h"
 #include "DownloadEngine.h"
 #include "BtHandshakeMessage.h"
@@ -87,13 +90,15 @@ bool PeerReceiveHandshakeCommand::exitBeforeExecute()
 
 bool PeerReceiveHandshakeCommand::executeInternal()
 {
-  unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
-  size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
-  // ignore return value. The received data is kept in PeerConnection object
-  // because of peek = true.
-  peerConnection_->receiveHandshake(data, dataLength, true);
-  // To handle tracker's NAT-checking feature
-  if(dataLength >= 48) {
+  // Handle tracker's NAT-checking feature
+  if(peerConnection_->getBufferLength() < 48) {
+    size_t dataLength = 0;
+    // Ignore return value. The received data is kept in
+    // PeerConnection object because of peek = true.
+    peerConnection_->receiveHandshake(0, dataLength, true);
+  }
+  if(peerConnection_->getBufferLength() >= 48) {
+    const unsigned char* data = peerConnection_->getBuffer();
     // check info_hash
     std::string infoHash = std::string(&data[28], &data[28+INFO_HASH_LENGTH]);
 

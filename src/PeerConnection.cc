@@ -182,36 +182,22 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
       ("More than BtHandshakeMessage::MESSAGE_LENGTH bytes are buffered.");
   }
   bool retval = true;
-  if(((!prevPeek_ && peek) || (prevPeek_ && !peek)) && resbufLength_) {
-    // We have data in previous peek.
-    // There is a chance that socket is readable because of EOF, for example,
-    // official bttrack shutdowns socket after sending first 48 bytes of
-    // handshake in its NAT checking.
-    // So if there are data in resbuf_, return it without checking socket
-    // status.
-    //
-    // (!prevPeek_ && peek) effectively returns preset buffer.
-    prevPeek_ = false;
-    retval = BtHandshakeMessage::MESSAGE_LENGTH <= resbufLength_;
-  } else {
-    prevPeek_ = peek;
-    size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength_;
-    if(remaining > 0) {
-      size_t temp = remaining;
-      readData(resbuf_+resbufLength_, remaining, encryptionEnabled_);
-      if(remaining == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
-        // we got EOF
-        A2_LOG_DEBUG
-          (fmt("CUID#%lld - In PeerConnection::receiveHandshake(), remain=%lu",
-               cuid_,
-               static_cast<unsigned long>(temp)));
-        peer_->setDisconnectedGracefully(true);
-        throw DL_ABORT_EX(EX_EOF_FROM_PEER);
-      }
-      resbufLength_ += remaining;
-      if(BtHandshakeMessage::MESSAGE_LENGTH > resbufLength_) {
-        retval = false;
-      }
+  size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength_;
+  if(remaining > 0) {
+    size_t temp = remaining;
+    readData(resbuf_+resbufLength_, remaining, encryptionEnabled_);
+    if(remaining == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
+      // we got EOF
+      A2_LOG_DEBUG
+        (fmt("CUID#%lld - In PeerConnection::receiveHandshake(), remain=%lu",
+             cuid_,
+             static_cast<unsigned long>(temp)));
+      peer_->setDisconnectedGracefully(true);
+      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+    }
+    resbufLength_ += remaining;
+    if(BtHandshakeMessage::MESSAGE_LENGTH > resbufLength_) {
+      retval = false;
     }
   }
   size_t writeLength = std::min(resbufLength_, dataLength);
