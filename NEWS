@@ -4,10 +4,10 @@ aria2 1.10.9
 Release Note
 ------------
 
-This release fixes the bug that making directory fails on Windows OS.
-It also fixes the bug that aria2 wrongly determines peer as a seeder
-and drop connection in seed state. Some improvements and bug fixes in
-BitTorrent implementation were made.
+This release fixes the bug which prevents from making directories on
+Windows OS. It also fixes the bug that aria2 wrongly determines peer
+as a seeder and drop connection in seed state. Some improvements and
+bug fixes in BitTorrent implementation were made.
 
 Please note that since 1.10.0 release, aria2 uses 1 connection per
 host by default and has 20MiB segment size restriction. So whatever
