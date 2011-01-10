@@ -1,3 +1,45 @@
+aria2 1.10.9
+============
+
+Release Note
+------------
+
+This release fixes the bug that making directory fails on Windows OS.
+It also fixes the bug that aria2 wrongly determines peer as a seeder
+and drop connection in seed state. Some improvements and bug fixes in
+BitTorrent implementation were made.
+
+Please note that since 1.10.0 release, aria2 uses 1 connection per
+host by default and has 20MiB segment size restriction. So whatever
+value you specify using -s option, it uses 1 connection per host. To
+make it behave like 1.9.x, use -x16 -k1M (see
+--max-connection-per-server and --min-split-size option in man
+page). If you specify multiple hosts, aria2 will use all of them and
+open multiple connections.
+
+Changes
+-------
+
+ * Bump up DHT version number to 3.
+
+ * Don't try legacy BitTorrent handshake when first connection attempt
+   timed out.
+
+ * Fixed the bug that making directory fails on Windows OS.
+
+ * Don't send announce_peer message with empty token in
+   DHTPeerLookupTask. Replace old node ID with new node ID when
+   response message is received in DHTAbstractNodeLookupTask.
+
+ * Drop old node from DHT routing table if node ID has changed.
+
+ * Drop connection if client and peer are both seeders.
+
+ * Fixed the bug that peer is marked as seeder whenever it sends
+   extension handshake with metadata size.
+
+
+
 aria2 1.10.8
 ============
 
