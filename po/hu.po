@@ -8,28 +8,28 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2011-01-10 17:04+0900\n"
-"PO-Revision-Date: 2008-01-24 14:58+0000\n"
-"Last-Translator: Juhász József <juhasz.jozsef@gmail.com>\n"
+"PO-Revision-Date: 2010-12-18 06:37+0000\n"
+"Last-Translator: Szabo Lorant <Unknown>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-10 03:56+0000\n"
+"X-Generator: Launchpad (build 12161)\n"
 
 #: src/DownloadEngine.cc:220
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
-msgstr ""
+msgstr "Leállítás megkezdése... Nyomj Ctrl-C-t újra az azonnali leállításhoz."
 
 #: src/DownloadEngine.cc:227
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "Azonnali leállítás megkezdése..."
 
 #: src/MultiUrlRequestInfo.cc:109
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
+msgstr "A letöltést az aria2 újra fogja indítani, ha az adatátvitel újraindul."
 
 #: src/MultiUrlRequestInfo.cc:111
 msgid ""
@@ -1500,9 +1500,9 @@ msgid "Refer to man page for more information."
 msgstr ""
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - Már egyszer letöltve: %s"
+msgstr ""
 
 #: src/message.h:106
 #, c-format
@@ -2178,42 +2178,26 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#~ msgid "must be either 'true' or 'false'."
-#~ msgstr "Az értéknek 'igaz'-nak vagy 'hamis'-nak kell lennie"
-
 #~ msgid "must be smaller than or equal to %s."
 #~ msgstr "az értéknek kisebbnek vagy egyenlőnek kell lennie mint %s"
 
-#~ msgid "must be greater than or equal to %s."
-#~ msgstr "az értéknek nagyobbnak vagy egyenlőnek kell lennie mint %s"
-
-#~ msgid "must be a number."
-#~ msgstr "az értéknek számnak kell lennie"
-
-#~ msgid "must be smaller than or equal to %.1f."
-#~ msgstr "az értéknek kisebbnek vagy egyenlőnek kell lennie mint %.1f"
-
-#~ msgid "must be one of the following:"
-#~ msgstr "az érték a következő lehet"
-
-#, fuzzy
-#~ msgid "Unrecognized format"
-#~ msgstr "értelmezhetetlen proxy formátum"
+#~ msgid "must be either 'true' or 'false'."
+#~ msgstr "Az értéknek 'igaz'-nak vagy 'hamis'-nak kell lennie"
 
 #~ msgid "unrecognized proxy format"
 #~ msgstr "értelmezhetetlen proxy formátum"
 
-#~ msgid "CUID#%d - The download for one segment completed successfully."
-#~ msgstr "CUID#%d - A szegmens letöltése sikeres."
+#~ msgid "must be one of the following:"
+#~ msgstr "az érték a következő lehet"
 
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - Nincs elérhető szegmens."
+#~ msgid "must be smaller than or equal to %.1f."
+#~ msgstr "az értéknek kisebbnek vagy egyenlőnek kell lennie mint %.1f"
 
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - Csatlakozás a %s:%d -hez"
+#~ msgid "must be a number."
+#~ msgstr "az értéknek számnak kell lennie"
 
-#~ msgid "CUID#%d - Redirecting to %s"
-#~ msgstr "CUID#%d - Átirányítás %s -hez"
+#~ msgid "must be greater than or equal to %s."
+#~ msgstr "az értéknek nagyobbnak vagy egyenlőnek kell lennie mint %s"
 
 #~ msgid ""
 #~ "CUID#%d - Requesting:\n"
@@ -2229,14 +2213,26 @@ msgstr ""
 #~ "CUID#%d - Válasz fogadva:\n"
 #~ "%s"
 
+#~ msgid "CUID#%d - Redirecting to %s"
+#~ msgstr "CUID#%d - Átirányítás %s -hez"
+
+#~ msgid "CUID#%d - Download aborted."
+#~ msgstr "CUID#%d - Letöltés megszakítva."
+
 #~ msgid "CUID#%d - Download aborted. URI=%s"
 #~ msgstr "CUID#%d - Letöltés megszakítva. URI=%s"
+
+#~ msgid "CUID#%d - The download for one segment completed successfully."
+#~ msgstr "CUID#%d - A szegmens letöltése sikeres."
 
 #~ msgid "CUID#%d - Restarting the download. URI=%s"
 #~ msgstr "CUID#%d - Letöltés újrakezdése. URI=%s"
 
-#~ msgid "CUID#%d - Download aborted."
-#~ msgstr "CUID#%d - Letöltés megszakítva."
+#~ msgid "CUID#%d - Connecting to %s:%d"
+#~ msgstr "CUID#%d - Csatlakozás a %s:%d -hez"
+
+#~ msgid "CUID#%d - No segment available."
+#~ msgstr "CUID#%d - Nincs elérhető szegmens."
 
 #~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 #~ msgstr "CUID#%d - %d sikertelen próbálkozás. Letöltés megszakítva."
@@ -2247,23 +2243,17 @@ msgstr ""
 #~ msgid "CUID#%d - Good checksum: %s"
 #~ msgstr "CUID#%d - Ellenőrzés rendben: %s"
 
-#~ msgid "CUID#%d - Bad checksum: %s"
-#~ msgstr "CUID#%d - Ellenőrzési hiba: %s"
-
 #~ msgid "CUID#%d - Resolving hostname %s"
 #~ msgstr "CUID#%d - Cím feloldása %s"
+
+#~ msgid "CUID#%d - Bad checksum: %s"
+#~ msgstr "CUID#%d - Ellenőrzési hiba: %s"
 
 #~ msgid "CUID#%d - Name resolution complete: %s -> %s"
 #~ msgstr "CUID#%d - Cím feloldás kész: %s -> %s"
 
-#~ msgid "CUID#%d - Name resolution for %s failed:%s"
-#~ msgstr "CUID#%d - A %s cím feloldása sikertelen:%s"
-
-#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
-#~ msgstr "CUID#%d - DNS cache találat: %s -> %s"
-
-#~ msgid "CUID#%d - Abort requested."
-#~ msgstr "UID#%d - Megszakítás kérelem."
+#~ msgid "#%d - Download has already completed: %s"
+#~ msgstr "#%d - Már egyszer letöltve: %s"
 
 #~ msgid ""
 #~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
@@ -2271,3 +2261,12 @@ msgstr ""
 #~ msgstr ""
 #~ "CUID#%d - Darab letöltve. index=%d, kezdet=%d, hossza=%d, offset=%llu, "
 #~ "blockIndex=%d"
+
+#~ msgid "CUID#%d - Abort requested."
+#~ msgstr "UID#%d - Megszakítás kérelem."
+
+#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
+#~ msgstr "CUID#%d - DNS cache találat: %s -> %s"
+
+#~ msgid "CUID#%d - Name resolution for %s failed:%s"
+#~ msgstr "CUID#%d - A %s cím feloldása sikertelen:%s"
