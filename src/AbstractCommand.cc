@@ -347,6 +347,12 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
     getSegmentMan()->cancelSegment(getCuid());
   }
   if(req_) {
+    // Reset persistentConnection and maxPipelinedRequest to handle
+    // the situation where remote server returns Connection: close
+    // after several pipelined requests.
+    req_->supportsPersistentConnection(true);
+    req_->setMaxPipelinedRequest(1);
+
     fileEntry_->poolRequest(req_);
     A2_LOG_DEBUG(fmt("CUID#%lld - Pooling request URI=%s",
                      getCuid(), req_->getUri().c_str()));

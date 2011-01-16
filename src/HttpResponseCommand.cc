@@ -169,6 +169,8 @@ bool HttpResponseCommand::executeInternal()
   if(getRequest()->isPipeliningEnabled()) {
     getRequest()->setMaxPipelinedRequest
       (getOption()->getAsInt(PREF_MAX_HTTP_PIPELINING));
+  } else {
+    getRequest()->setMaxPipelinedRequest(1);
   }
 
   int statusCode = httpResponse->getStatusCode();
