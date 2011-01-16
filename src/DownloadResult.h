@@ -68,11 +68,11 @@ struct DownloadResult
   error_code::Value result;
 
   // This field contains GIDs. See comment in
-  // RequestGroup.cc::_followedByGIDs.
+  // RequestGroup.cc::followedByGIDs_.
   std::vector<gid_t> followedBy;
 
   // This field contains GID. See comment in
-  // RequestGroup.cc::_belongsToGID.
+  // RequestGroup.cc::belongsToGID_.
   gid_t belongsTo;
 
   SharedHandle<Option> option;
