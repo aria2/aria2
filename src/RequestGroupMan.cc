@@ -575,20 +575,14 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end();
       itr != eoi; ++itr) {
+    if((*itr)->belongsTo != 0) {
+      continue;
+    }
     if((*itr)->result == error_code::FINISHED) {
       ++finished;
     } else {
       ++error;
       lastError = (*itr)->result;
-    }
-  }
-  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
-        requestGroups_.begin(), eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    DownloadResultHandle result = (*itr)->createDownloadResult();
-    if(result->result == error_code::FINISHED) {
-      ++finished;
-    } else {
-      ++inprogress;
     }
   }
   return DownloadStat(finished, error, inprogress, reservedGroups_.size(),
@@ -621,6 +615,9 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end();
       itr != eoi; ++itr) {
+    if((*itr)->belongsTo != 0) {
+      continue;
+    }
     std::string status;
     if((*itr)->result == error_code::FINISHED) {
       status = MARK_OK;
@@ -633,16 +630,6 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
       ++err;
     }
     o << formatDownloadResult(status, *itr) << "\n";
-  }
-  for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
-        reservedGroups_.begin(), eoi = reservedGroups_.end();
-      itr != eoi; ++itr) {
-    if(!(*itr)->isPauseRequested()) {
-      continue;
-    }
-    SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
-    ++inpr;
-    o << formatDownloadResult(MARK_INPR, result) << "\n";
   }
   if(ok > 0 || err > 0 || inpr > 0) {
     o << "\n"
@@ -768,14 +755,14 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
       for(std::deque<SharedHandle<DownloadResult> >::iterator i =
             downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi;
           ++i) {
-        if((*i)->result != error_code::FINISHED) {
+        if((*i)->belongsTo == 0 && (*i)->result != error_code::FINISHED) {
           removedLastErrorResult_ = (*i)->result;
           ++removedErrorResult_;
         }
       }
       downloadResults_.clear();
     }
-    if(dr->result != error_code::FINISHED) {
+    if(dr->belongsTo == 0 && dr->result != error_code::FINISHED) {
       removedLastErrorResult_ = dr->result;
       ++removedErrorResult_;
     }
@@ -786,7 +773,7 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
         downloadResults_.begin()+curSize-maxDownloadResult_+1;
       for(std::deque<SharedHandle<DownloadResult> >::iterator i =
             downloadResults_.begin(); i != last; ++i) {
-        if((*i)->result != error_code::FINISHED) {
+        if((*i)->belongsTo == 0 && (*i)->result != error_code::FINISHED) {
           removedLastErrorResult_ = (*i)->result;
           ++removedErrorResult_;
         }
