@@ -50,6 +50,7 @@
 #include "util.h"
 #include "RecoverableException.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 

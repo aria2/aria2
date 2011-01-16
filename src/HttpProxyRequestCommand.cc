@@ -36,6 +36,7 @@
 #include "HttpProxyResponseCommand.h"
 #include "Request.h"
 #include "Socket.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 

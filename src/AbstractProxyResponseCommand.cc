@@ -46,6 +46,7 @@
 #include "message.h"
 #include "HttpHeader.h"
 #include "DownloadContext.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 

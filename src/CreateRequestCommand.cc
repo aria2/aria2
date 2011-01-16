@@ -45,6 +45,7 @@
 #include "Option.h"
 #include "RequestGroupMan.h"
 #include "FileEntry.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -53,7 +54,9 @@ CreateRequestCommand::CreateRequestCommand(cuid_t cuid,
                                            DownloadEngine* e):
   AbstractCommand
   (cuid, SharedHandle<Request>(), SharedHandle<FileEntry>(), requestGroup, e,
-   SharedHandle<SocketCore>(), false)
+   SharedHandle<SocketCore>(),
+   SharedHandle<SocketRecvBuffer>(),
+   false)
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();

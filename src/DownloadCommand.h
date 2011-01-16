@@ -83,7 +83,8 @@ public:
                   const SharedHandle<FileEntry>& fileEntry,
                   RequestGroup* requestGroup,
                   DownloadEngine* e,
-                  const SharedHandle<SocketCore>& s);
+                  const SharedHandle<SocketCore>& s,
+                  const SharedHandle<SocketRecvBuffer>& socketRecvBuffer);
   virtual ~DownloadCommand();
 
   const SharedHandle<StreamFilter>& getStreamFilter() const

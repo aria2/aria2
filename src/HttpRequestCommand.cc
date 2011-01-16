@@ -58,6 +58,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -69,7 +70,8 @@ HttpRequestCommand::HttpRequestCommand
  const HttpConnectionHandle& httpConnection,
  DownloadEngine* e,
  const SocketHandle& s)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
+                    httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection)
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));

@@ -77,6 +77,7 @@
 #include "SocketCore.h"
 #include "SimpleRandomizer.h"
 #include "Segment.h"
+#include "SocketRecvBuffer.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 # include "ChecksumCheckIntegrityEntry.h"

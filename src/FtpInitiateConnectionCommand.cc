@@ -55,6 +55,7 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -99,8 +100,10 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
         getRequest()->setMethod(Request::METHOD_GET);
+        SharedHandle<SocketRecvBuffer> socketRecvBuffer
+          (new SocketRecvBuffer(getSocket()));
         SharedHandle<HttpConnection> hc
-          (new HttpConnection(getCuid(), getSocket()));
+          (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
         
         HttpRequestCommand* c =
           new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
@@ -130,8 +133,10 @@ Command* FtpInitiateConnectionCommand::createNextCommand
       } else if(proxyMethod == V_GET) {
         // Use GET for FTP via HTTP proxy.
         getRequest()->setMethod(Request::METHOD_GET);
+        SharedHandle<SocketRecvBuffer> socketRecvBuffer
+          (new SocketRecvBuffer(pooledSocket));
         SharedHandle<HttpConnection> hc
-          (new HttpConnection(getCuid(), pooledSocket));
+          (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
         
         HttpRequestCommand* c =
           new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),

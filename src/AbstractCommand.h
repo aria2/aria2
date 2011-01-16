@@ -56,6 +56,7 @@ class DownloadEngine;
 class Segment;
 class SocketCore;
 class Option;
+class SocketRecvBuffer;
 #ifdef ENABLE_ASYNC_DNS
 class AsyncNameResolver;
 #endif // ENABLE_ASYNC_DNS
@@ -70,6 +71,7 @@ private:
   SharedHandle<FileEntry> fileEntry_;
   DownloadEngine* e_;
   SharedHandle<SocketCore> socket_;
+  SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
   std::vector<SharedHandle<Segment> > segments_;
 
 #ifdef ENABLE_ASYNC_DNS
@@ -127,6 +129,11 @@ protected:
   void setSocket(const SharedHandle<SocketCore>& s);
 
   void createSocket();
+
+  const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
+  {
+    return socketRecvBuffer_;
+  }
 
   const std::vector<SharedHandle<Segment> >& getSegments() const
   {
@@ -219,12 +226,16 @@ protected:
   {
     return checkPoint_;
   }
+
+  void checkSocketRecvBuffer();
 public:
   AbstractCommand
   (cuid_t cuid, const SharedHandle<Request>& req,
    const SharedHandle<FileEntry>& fileEntry,
    RequestGroup* requestGroup, DownloadEngine* e,
    const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>(),
+   const SharedHandle<SocketRecvBuffer>& socketRecvBuffer
+   = SharedHandle<SocketRecvBuffer>(),
    bool incNumConnection = true);
 
   virtual ~AbstractCommand();

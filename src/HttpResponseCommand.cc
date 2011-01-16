@@ -71,6 +71,7 @@
 #include "SinkStreamFilter.h"
 #include "ChunkedDecodingStreamFilter.h"
 #include "uri.h"
+#include "SocketRecvBuffer.h"
 #ifdef HAVE_LIBZ
 # include "GZipDecodingStreamFilter.h"
 #endif // HAVE_LIBZ
@@ -134,9 +135,12 @@ HttpResponseCommand::HttpResponseCommand
  const HttpConnectionHandle& httpConnection,
  DownloadEngine* e,
  const SocketHandle& s)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
+                    httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection)
-{}
+{
+  checkSocketRecvBuffer();
+}
 
 HttpResponseCommand::~HttpResponseCommand() {}
 

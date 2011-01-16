@@ -56,6 +56,7 @@
 #include "AuthConfig.h"
 #include "a2functional.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -67,9 +68,13 @@ HttpRequestEntry::HttpRequestEntry
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
-HttpConnection::HttpConnection(cuid_t cuid, const SocketHandle& socket)
+HttpConnection::HttpConnection
+(cuid_t cuid,
+ const SocketHandle& socket,
+ const SharedHandle<SocketRecvBuffer>& socketRecvBuffer)
   : cuid_(cuid),
     socket_(socket),
+    socketRecvBuffer_(socketRecvBuffer),
     socketBuffer_(socket)
 {}
 
@@ -126,36 +131,34 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
   }
   HttpRequestEntryHandle entry = outstandingHttpRequests_.front();
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
-
-  unsigned char buf[512];
-  size_t size = sizeof(buf);
-  socket_->peekData(buf, size);
-  if(size == 0) {
-    if(socket_->wantRead() || socket_->wantWrite()) {
-      return SharedHandle<HttpResponse>();
-    } else {
+  if(socketRecvBuffer_->bufferEmpty()) {
+    if(socketRecvBuffer_->recv() == 0 &&
+       !socket_->wantRead() && !socket_->wantWrite()) {
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   }
-  proc->update(buf, size);
-  if(!proc->eoh()) {
-    socket_->readData(buf, size);
-    return SharedHandle<HttpResponse>();
+  proc->update(socketRecvBuffer_->getBuffer(),
+               socketRecvBuffer_->getBufferLength());
+  SharedHandle<HttpResponse> httpResponse;
+  size_t shiftBufferLength;
+  if(proc->eoh()) {
+    SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
+    size_t putbackDataLength = proc->getPutBackDataLength();
+    A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
+                    cuid_,
+                    proc->getHeaderString().c_str()));
+    assert(socketRecvBuffer_->getBufferLength() >= putbackDataLength);
+    shiftBufferLength =
+      socketRecvBuffer_->getBufferLength()-putbackDataLength;
+    httpResponse.reset(new HttpResponse());
+    httpResponse->setCuid(cuid_);
+    httpResponse->setHttpHeader(httpHeader);
+    httpResponse->setHttpRequest(entry->getHttpRequest());
+    outstandingHttpRequests_.pop_front();
+  } else {
+    shiftBufferLength = socketRecvBuffer_->getBufferLength();
   }
-  size_t putbackDataLength = proc->getPutBackDataLength();
-  size -= putbackDataLength;
-  socket_->readData(buf, size);
-  A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
-                  cuid_,
-                  proc->getHeaderString().c_str()));
-  SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
-  SharedHandle<HttpResponse> httpResponse(new HttpResponse());
-  httpResponse->setCuid(cuid_);
-  httpResponse->setHttpHeader(httpHeader);
-  httpResponse->setHttpRequest(entry->getHttpRequest());
-
-  outstandingHttpRequests_.pop_front();
-
+  socketRecvBuffer_->shiftBuffer(shiftBufferLength);
   return httpResponse;
 }
 

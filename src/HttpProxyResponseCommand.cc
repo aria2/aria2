@@ -39,6 +39,7 @@
 #include "HttpRequest.h"
 #include "Segment.h"
 #include "Socket.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 

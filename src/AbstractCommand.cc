@@ -66,6 +66,7 @@
 #include "uri.h"
 #include "FileEntry.h"
 #include "error_code.h"
+#include "SocketRecvBuffer.h"
 #ifdef ENABLE_ASYNC_DNS
 #include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -75,20 +76,23 @@
 
 namespace aria2 {
 
-AbstractCommand::AbstractCommand(cuid_t cuid,
-                                 const SharedHandle<Request>& req,
-                                 const SharedHandle<FileEntry>& fileEntry,
-                                 RequestGroup* requestGroup,
-                                 DownloadEngine* e,
-                                 const SocketHandle& s,
-                                 bool incNumConnection):
-  Command(cuid), checkPoint_(global::wallclock),
-  timeout_(requestGroup->getTimeout()),
-  requestGroup_(requestGroup),
-  req_(req), fileEntry_(fileEntry), e_(e), socket_(s),
-  checkSocketIsReadable_(false), checkSocketIsWritable_(false),
-  nameResolverCheck_(false),
-  incNumConnection_(incNumConnection)
+AbstractCommand::AbstractCommand
+(cuid_t cuid,
+ const SharedHandle<Request>& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const SocketHandle& s,
+ const SharedHandle<SocketRecvBuffer>& socketRecvBuffer,
+ bool incNumConnection)
+  : Command(cuid), checkPoint_(global::wallclock),
+    timeout_(requestGroup->getTimeout()),
+    requestGroup_(requestGroup),
+    req_(req), fileEntry_(fileEntry), e_(e), socket_(s),
+    socketRecvBuffer_(socketRecvBuffer),
+    checkSocketIsReadable_(false), checkSocketIsWritable_(false),
+    nameResolverCheck_(false),
+    incNumConnection_(incNumConnection)
 {
   if(socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);
@@ -169,7 +173,9 @@ bool AbstractCommand::execute() {
         }
       }
     }
-    if((checkSocketIsReadable_ && readEventEnabled()) ||
+    if((checkSocketIsReadable_ &&
+        (readEventEnabled() ||
+         (socketRecvBuffer_ && !socketRecvBuffer_->bufferEmpty()))) ||
        (checkSocketIsWritable_ && writeEventEnabled()) ||
        hupEventEnabled() ||
 #ifdef ENABLE_ASYNC_DNS
@@ -844,6 +850,14 @@ const SharedHandle<SegmentMan>& AbstractCommand::getSegmentMan() const
 const SharedHandle<PieceStorage>& AbstractCommand::getPieceStorage() const
 {
   return requestGroup_->getPieceStorage();
+}
+
+void AbstractCommand::checkSocketRecvBuffer()
+{
+  if(!socketRecvBuffer_->bufferEmpty()) {
+    setStatus(Command::STATUS_ONESHOT_REALTIME);
+    e_->setNoWait(true);
+  }
 }
 
 } // namespace aria2

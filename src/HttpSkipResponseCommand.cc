@@ -59,6 +59,7 @@
 #include "NullSinkStreamFilter.h"
 #include "SinkStreamFilter.h"
 #include "error_code.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -71,14 +72,17 @@ HttpSkipResponseCommand::HttpSkipResponseCommand
  const SharedHandle<HttpResponse>& httpResponse,
  DownloadEngine* e,
  const SharedHandle<SocketCore>& s)
-  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
+                    httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection),
     httpResponse_(httpResponse),
     streamFilter_(new NullSinkStreamFilter()),
     sinkFilterOnly_(true),
     totalLength_(httpResponse_->getEntityLength()),
     receivedBytes_(0)
-{}
+{
+  checkSocketRecvBuffer();
+}
 
 HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 
@@ -108,30 +112,34 @@ bool HttpSkipResponseCommand::executeInternal()
     }
     return processResponse();
   }
-  const size_t BUFSIZE = 16*1024;
-  unsigned char buf[BUFSIZE];
-  size_t bufSize;
-  if(sinkFilterOnly_ && totalLength_ > 0) {
-    bufSize = totalLength_-receivedBytes_;
-  } else {
-    bufSize = BUFSIZE;
-  }
+  bool eof = false;
   try {
-    if(sinkFilterOnly_) {
-      getSocket()->readData(buf, bufSize);
-      receivedBytes_ += bufSize;
-    } else {
-      getSocket()->peekData(buf, bufSize);
-      // receivedBytes_ is not updated if transferEncoding is set.
-      // The return value is safely ignored here.
-      streamFilter_->transform(SharedHandle<BinaryStream>(),
-                               SharedHandle<Segment>(),
-                               buf, bufSize);
-      bufSize = streamFilter_->getBytesProcessed();
-      getSocket()->readData(buf, bufSize);
+    size_t bufSize;
+    if(getSocketRecvBuffer()->bufferEmpty()) {
+      eof = getSocketRecvBuffer()->recv() == 0 &&
+        !getSocket()->wantRead() && !getSocket()->wantWrite();
     }
-    if(totalLength_ != 0 && bufSize == 0 &&
-       !getSocket()->wantRead() && !getSocket()->wantWrite()) {
+    if(!eof) {
+      if(sinkFilterOnly_) {
+        if(totalLength_ > 0) {
+          bufSize = std::min(totalLength_-receivedBytes_,
+                             getSocketRecvBuffer()->getBufferLength());
+        } else {
+          bufSize = getSocketRecvBuffer()->getBufferLength();
+        }
+        receivedBytes_ += bufSize;
+      } else {
+        // receivedBytes_ is not updated if transferEncoding is set.
+        // The return value is safely ignored here.
+        streamFilter_->transform(SharedHandle<BinaryStream>(),
+                                 SharedHandle<Segment>(),
+                                 getSocketRecvBuffer()->getBuffer(),
+                                 getSocketRecvBuffer()->getBufferLength());
+        bufSize = streamFilter_->getBytesProcessed();
+      }
+      getSocketRecvBuffer()->shiftBuffer(bufSize);
+    }
+    if(totalLength_ != 0 && eof) {
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   } catch(RecoverableException& e) {
@@ -141,10 +149,8 @@ bool HttpSkipResponseCommand::executeInternal()
 
   bool finished = false;
   if(sinkFilterOnly_) {
-    if(bufSize == 0) {
-      if(!getSocket()->wantRead() && !getSocket()->wantWrite()) {
-        return processResponse();
-      }
+    if(eof) {
+      return processResponse();
     } else {
       finished = (totalLength_ == receivedBytes_);
     }

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,54 +32,55 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HTTP_SKIP_RESPONSE_COMMAND_H
-#define D_HTTP_SKIP_RESPONSE_COMMAND_H
+#ifndef D_SOCKET_RECV_BUFFER_H
+#define D_SOCKET_RECV_BUFFER_H
 
-#include "AbstractCommand.h"
+#include "common.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-class HttpConnection;
-class HttpResponse;
-class StreamFilter;
+class SocketCore;
 
-class HttpSkipResponseCommand : public AbstractCommand {
-private:
-  SharedHandle<HttpConnection> httpConnection_;
-
-  SharedHandle<HttpResponse> httpResponse_;
-
-  SharedHandle<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
-
-  uint64_t totalLength_;
-
-  uint64_t receivedBytes_;
-
-  bool processResponse();
-
-  void poolConnection() const;
-protected:
-  virtual bool executeInternal();
+class SocketRecvBuffer {
 public:
-  HttpSkipResponseCommand
-  (cuid_t cuid,
-   const SharedHandle<Request>& req,
-   const SharedHandle<FileEntry>& fileEntry,
-   RequestGroup* requestGroup,
-   const SharedHandle<HttpConnection>& httpConnection,
-   const SharedHandle<HttpResponse>& httpResponse,
-   DownloadEngine* e,
-   const SharedHandle<SocketCore>& s);
+  SocketRecvBuffer
+  (const SharedHandle<SocketCore>& socket,
+   size_t capacity = 16*1024);
+  ~SocketRecvBuffer();
+  // Reads data from socket as much as capacity allows. Returns the
+  // number of bytes read.
+  ssize_t recv();
+  // Shifts buffer by offset bytes. offset must satisfy offset <=
+  // getBufferLength().
+  void shiftBuffer(size_t offset);
 
-  virtual ~HttpSkipResponseCommand();
+  const SharedHandle<SocketCore>& getSocket() const
+  {
+    return socket_;
+  }
 
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
+  const unsigned char* getBuffer() const
+  {
+    return buf_;
+  }
 
-  void disableSocketCheck();
+  size_t getBufferLength() const
+  {
+    return bufLen_;
+  }
+
+  bool bufferEmpty() const
+  {
+    return bufLen_ == 0;
+  }
+private:
+  SharedHandle<SocketCore> socket_;
+  size_t capacity_;
+  unsigned char* buf_;
+  size_t bufLen_;
 };
 
 } // namespace aria2
 
-#endif // D_HTTP_SKIP_RESPONSE_COMMAND_H
+#endif // D_SOCKET_RECV_BUFFER_H

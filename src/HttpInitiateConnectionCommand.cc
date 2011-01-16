@@ -50,6 +50,7 @@
 #include "A2STR.h"
 #include "util.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -94,8 +95,10 @@ Command* HttpInitiateConnectionCommand::createNextCommand
                                       getSocket());
         command = c;
       } else if(proxyMethod == V_GET) {
+        SharedHandle<SocketRecvBuffer> socketRecvBuffer
+          (new SocketRecvBuffer(getSocket()));
         SharedHandle<HttpConnection> httpConnection
-          (new HttpConnection(getCuid(), getSocket()));
+          (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
         HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
                                                        getRequest(),
                                                        getFileEntry(),
@@ -111,8 +114,10 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       }
     } else {
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
+      SharedHandle<SocketRecvBuffer> socketRecvBuffer
+        (new SocketRecvBuffer(pooledSocket));
       SharedHandle<HttpConnection> httpConnection
-        (new HttpConnection(getCuid(), pooledSocket));
+        (new HttpConnection(getCuid(), pooledSocket, socketRecvBuffer));
       HttpRequestCommand* c = new HttpRequestCommand(getCuid(),
                                                      getRequest(),
                                                      getFileEntry(),
@@ -139,8 +144,10 @@ Command* HttpInitiateConnectionCommand::createNextCommand
       setSocket(pooledSocket);
       setConnectedAddrInfo(getRequest(), hostname, pooledSocket);
     }
+    SharedHandle<SocketRecvBuffer> socketRecvBuffer
+      (new SocketRecvBuffer(getSocket()));
     SharedHandle<HttpConnection> httpConnection
-      (new HttpConnection(getCuid(), getSocket()));
+      (new HttpConnection(getCuid(), getSocket(), socketRecvBuffer));
     HttpRequestCommand* c =
       new HttpRequestCommand(getCuid(), getRequest(), getFileEntry(),
                              getRequestGroup(),

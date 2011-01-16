@@ -50,6 +50,7 @@
 #include "LogFactory.h"
 #include "util.h"
 #include "wallclock.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 

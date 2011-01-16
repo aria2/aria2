@@ -44,6 +44,7 @@
 #include "FtpConnection.h"
 #include "Logger.h"
 #include "FileEntry.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -56,12 +57,13 @@ FtpDownloadCommand::FtpDownloadCommand
  DownloadEngine* e,
  const SocketHandle& dataSocket,
  const SocketHandle& ctrlSocket)
-  :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket),
+  :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket,
+                   SharedHandle<SocketRecvBuffer>
+                   (new SocketRecvBuffer(dataSocket))),
    ftpConnection_(ftpConnection),
    ctrlSocket_(ctrlSocket) {}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
-
 
 bool FtpDownloadCommand::prepareForNextSegment()
 {

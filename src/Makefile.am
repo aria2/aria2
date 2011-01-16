@@ -182,6 +182,7 @@ SRCS =  Socket.h\
 	NsCookieParser.cc NsCookieParser.h\
 	CookieStorage.cc CookieStorage.h\
 	SocketBuffer.cc SocketBuffer.h\
+	SocketRecvBuffer.cc SocketRecvBuffer.h\
 	OptionHandlerException.cc OptionHandlerException.h\
 	URIResult.cc URIResult.h\
 	EventPoll.h\

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,54 +32,46 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HTTP_SKIP_RESPONSE_COMMAND_H
-#define D_HTTP_SKIP_RESPONSE_COMMAND_H
+#include "SocketRecvBuffer.h"
 
-#include "AbstractCommand.h"
+#include <cstring>
+
+#include "SocketCore.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
-class HttpConnection;
-class HttpResponse;
-class StreamFilter;
+SocketRecvBuffer::SocketRecvBuffer
+(const SharedHandle<SocketCore>& socket,
+ size_t capacity)
+  : socket_(socket),
+    capacity_(capacity),
+    buf_(new unsigned char[capacity_]),
+    bufLen_(0)
+{}
 
-class HttpSkipResponseCommand : public AbstractCommand {
-private:
-  SharedHandle<HttpConnection> httpConnection_;
+SocketRecvBuffer::~SocketRecvBuffer()
+{
+  delete [] buf_;
+}
 
-  SharedHandle<HttpResponse> httpResponse_;
+ssize_t SocketRecvBuffer::recv()
+{
+  size_t len = capacity_-bufLen_;
+  if(len > 0) {
+    socket_->readData(buf_+bufLen_, len);
+    bufLen_ += len;
+  } else {
+    A2_LOG_DEBUG("Buffer full");
+  }
+  return len;
+}
 
-  SharedHandle<StreamFilter> streamFilter_;
-
-  bool sinkFilterOnly_;
-
-  uint64_t totalLength_;
-
-  uint64_t receivedBytes_;
-
-  bool processResponse();
-
-  void poolConnection() const;
-protected:
-  virtual bool executeInternal();
-public:
-  HttpSkipResponseCommand
-  (cuid_t cuid,
-   const SharedHandle<Request>& req,
-   const SharedHandle<FileEntry>& fileEntry,
-   RequestGroup* requestGroup,
-   const SharedHandle<HttpConnection>& httpConnection,
-   const SharedHandle<HttpResponse>& httpResponse,
-   DownloadEngine* e,
-   const SharedHandle<SocketCore>& s);
-
-  virtual ~HttpSkipResponseCommand();
-
-  void installStreamFilter(const SharedHandle<StreamFilter>& streamFilter);
-
-  void disableSocketCheck();
-};
+void SocketRecvBuffer::shiftBuffer(size_t offset)
+{
+  assert(offset <= bufLen_);
+  memmove(buf_, buf_+offset, bufLen_-offset);
+  bufLen_ -= offset;
+}
 
 } // namespace aria2
-
-#endif // D_HTTP_SKIP_RESPONSE_COMMAND_H

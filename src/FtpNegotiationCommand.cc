@@ -73,6 +73,7 @@
 #include "DlRetryEx.h"
 #include "CheckIntegrityEntry.h"
 #include "error_code.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -677,7 +678,9 @@ bool FtpNegotiationCommand::resolveProxy()
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
   disableReadCheckSocket();
   setWriteCheckSocket(dataSocket_);
-  http_.reset(new HttpConnection(getCuid(), dataSocket_));
+  SharedHandle<SocketRecvBuffer> socketRecvBuffer
+    (new SocketRecvBuffer(dataSocket_));
+  http_.reset(new HttpConnection(getCuid(), dataSocket_, socketRecvBuffer));
   sequence_ = SEQ_SEND_TUNNEL_REQUEST;
   return false;
 }

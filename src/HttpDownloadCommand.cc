@@ -51,6 +51,7 @@
 #include "StreamFilter.h"
 #include "SinkStreamFilter.h"
 #include "util.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -63,9 +64,11 @@ HttpDownloadCommand::HttpDownloadCommand
  const HttpConnectionHandle& httpConnection,
  DownloadEngine* e,
  const SocketHandle& socket)
-  :DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket),
-   httpResponse_(httpResponse),
-   httpConnection_(httpConnection) {}
+  : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
+                    httpConnection->getSocketRecvBuffer()),
+    httpResponse_(httpResponse),
+    httpConnection_(httpConnection)
+{}
 
 HttpDownloadCommand::~HttpDownloadCommand() {}
 

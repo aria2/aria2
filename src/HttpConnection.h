@@ -52,6 +52,7 @@ class HttpHeaderProcessor;
 class Option;
 class Segment;
 class SocketCore;
+class SocketRecvBuffer;
 
 class HttpRequestEntry {
 private:
@@ -80,6 +81,7 @@ class HttpConnection {
 private:
   cuid_t cuid_;
   SharedHandle<SocketCore> socket_;
+  SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
   const Option* option_;
 
@@ -87,7 +89,10 @@ private:
 
   std::string eraseConfidentialInfo(const std::string& request);
 public:
-  HttpConnection(cuid_t cuid, const SharedHandle<SocketCore>& socket);
+  HttpConnection
+  (cuid_t cuid,
+   const SharedHandle<SocketCore>& socket,
+   const SharedHandle<SocketRecvBuffer>& socketRecvBuffer);
   ~HttpConnection();
 
   /**
@@ -124,6 +129,11 @@ public:
   bool sendBufferIsEmpty() const;
 
   void sendPendingData();
+
+  const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
+  {
+    return socketRecvBuffer_;
+  }
 };
 
 typedef SharedHandle<HttpConnection> HttpConnectionHandle;

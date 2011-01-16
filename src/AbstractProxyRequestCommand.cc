@@ -43,6 +43,7 @@
 #include "prefs.h"
 #include "Socket.h"
 #include "DownloadContext.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -57,7 +58,9 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand
   :
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   proxyRequest_(proxyRequest),
-  httpConnection_(new HttpConnection(cuid, s))
+  httpConnection_
+  (new HttpConnection
+   (cuid, s, SharedHandle<SocketRecvBuffer>(new SocketRecvBuffer(s))))
 {
   setTimeout(getOption()->getAsInt(PREF_CONNECT_TIMEOUT));
   disableReadCheckSocket();

@@ -61,6 +61,7 @@
 #include "wallclock.h"
 #include "SinkStreamFilter.h"
 #include "FileEntry.h"
+#include "SocketRecvBuffer.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 # include "MessageDigestHelper.h"
@@ -75,16 +76,18 @@ namespace {
 const size_t BUFSIZE = 16*1024;
 } // namespace
 
-DownloadCommand::DownloadCommand(cuid_t cuid,
-                                 const SharedHandle<Request>& req,
-                                 const SharedHandle<FileEntry>& fileEntry,
-                                 RequestGroup* requestGroup,
-                                 DownloadEngine* e,
-                                 const SocketHandle& s):
-  AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
-  startupIdleTime_(10),
-  lowestDownloadSpeedLimit_(0),
-  pieceHashValidationEnabled_(false)
+DownloadCommand::DownloadCommand
+(cuid_t cuid,
+ const SharedHandle<Request>& req,
+ const SharedHandle<FileEntry>& fileEntry,
+ RequestGroup* requestGroup,
+ DownloadEngine* e,
+ const SocketHandle& s,
+ const SharedHandle<SocketRecvBuffer>& socketRecvBuffer)
+  : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s, socketRecvBuffer),
+    startupIdleTime_(10),
+    lowestDownloadSpeedLimit_(0),
+    pieceHashValidationEnabled_(false)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   {
@@ -105,6 +108,7 @@ DownloadCommand::DownloadCommand(cuid_t cuid,
   streamFilter_.reset(new SinkStreamFilter(pieceHashValidationEnabled_));
   streamFilter_->init();
   sinkFilterOnly_ = true;
+  checkSocketRecvBuffer();
 }
 
 DownloadCommand::~DownloadCommand() {
@@ -124,38 +128,53 @@ bool DownloadCommand::executeInternal() {
   const SharedHandle<DiskAdaptor>& diskAdaptor =
     getPieceStorage()->getDiskAdaptor();
   SharedHandle<Segment> segment = getSegments().front();
-  size_t bufSize;
-  unsigned char buf[BUFSIZE];
-  if(sinkFilterOnly_) {
-    if(segment->getLength() > 0 ) {
-      if(static_cast<uint64_t>(segment->getPosition()+segment->getLength()) <=
-         static_cast<uint64_t>(getFileEntry()->getLastOffset())) {
-        bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
-                           BUFSIZE);
-      } else {
-        bufSize =
-          std::min
-          (static_cast<size_t>
-           (getFileEntry()->getLastOffset()-segment->getPositionToWrite()),
-           BUFSIZE);
-      }
-    } else {
-      bufSize = BUFSIZE;
-    }
-    getSocket()->readData(buf, bufSize);
-    streamFilter_->transform(diskAdaptor, segment, buf, bufSize);
-  } else {
-    // It is possible that segment is completed but we have some bytes
-    // of stream to read. For example, chunked encoding has "0"+CRLF
-    // after data. After we read data(at this moment segment is
-    // completed), we need another 3bytes(or more if it has trailers).
-    bufSize = BUFSIZE;
-    getSocket()->peekData(buf, bufSize);
-    streamFilter_->transform(diskAdaptor, segment, buf, bufSize);
-    bufSize = streamFilter_->getBytesProcessed();
-    getSocket()->readData(buf, bufSize);
+  bool eof = false;
+  if(getSocketRecvBuffer()->bufferEmpty()) {
+    // Only read from socket when buffer is empty.  Imagine that When
+    // segment length is *short* and we are using HTTP pilelining.  We
+    // issued 2 requests in pipeline. When reading first response
+    // header, we may read its response body and 2nd response header
+    // and 2nd response body in buffer if they are small enough to fit
+    // in buffer. And then server may sends EOF.  In this case, we
+    // read data from socket here, we will get EOF and leaves 2nd
+    // response unprocessed.  To prevent this, we don't read from
+    // socket when buffer is not empty.
+    eof = getSocketRecvBuffer()->recv() == 0 &&
+      !getSocket()->wantRead() && !getSocket()->wantWrite();
   }
-  peerStat_->updateDownloadLength(bufSize);
+  if(!eof) {
+    size_t bufSize;
+    if(sinkFilterOnly_) {
+      if(segment->getLength() > 0) {
+        if(static_cast<uint64_t>(segment->getPosition()+segment->getLength()) <=
+           static_cast<uint64_t>(getFileEntry()->getLastOffset())) {
+          bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
+                             getSocketRecvBuffer()->getBufferLength());
+        } else {
+          bufSize =
+            std::min
+            (static_cast<size_t>
+             (getFileEntry()->getLastOffset()-segment->getPositionToWrite()),
+             getSocketRecvBuffer()->getBufferLength());
+        }
+      } else {
+        bufSize = getSocketRecvBuffer()->getBufferLength();
+      }
+      streamFilter_->transform(diskAdaptor, segment,
+                               getSocketRecvBuffer()->getBuffer(), bufSize);
+    } else {
+      // It is possible that segment is completed but we have some bytes
+      // of stream to read. For example, chunked encoding has "0"+CRLF
+      // after data. After we read data(at this moment segment is
+      // completed), we need another 3bytes(or more if it has trailers).
+      streamFilter_->transform(diskAdaptor, segment,
+                               getSocketRecvBuffer()->getBuffer(),
+                               getSocketRecvBuffer()->getBufferLength());
+      bufSize = streamFilter_->getBytesProcessed();
+    }
+    getSocketRecvBuffer()->shiftBuffer(bufSize);
+    peerStat_->updateDownloadLength(bufSize);
+  }
   getSegmentMan()->updateDownloadSpeedFor(peerStat_);
   bool segmentPartComplete = false;
   // Note that GrowSegment::complete() always returns false.
@@ -163,8 +182,7 @@ bool DownloadCommand::executeInternal() {
     if(segment->complete() ||
        segment->getPositionToWrite() == getFileEntry()->getLastOffset()) {
       segmentPartComplete = true;
-    } else if(segment->getLength() == 0 && bufSize == 0 &&
-              !getSocket()->wantRead() && !getSocket()->wantWrite()) {
+    } else if(segment->getLength() == 0 && eof) {
       segmentPartComplete = true;
     }
   } else {
@@ -187,8 +205,7 @@ bool DownloadCommand::executeInternal() {
     }
   }
 
-  if(!segmentPartComplete && bufSize == 0 &&
-     !getSocket()->wantRead() && !getSocket()->wantWrite()) {
+  if(!segmentPartComplete && eof) {
     throw DL_RETRY_EX(EX_GOT_EOF);
   }
 
@@ -245,6 +262,7 @@ bool DownloadCommand::executeInternal() {
   } else {
     checkLowestDownloadSpeed();
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
+    checkSocketRecvBuffer();
     getDownloadEngine()->addCommand(this);
     return false;
   }
@@ -288,8 +306,6 @@ bool DownloadCommand::prepareForNextSegment() {
         getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
       }
     }
-    // Following 2lines are needed for DownloadEngine to detect
-    // completed RequestGroups without 1sec delay.
     getDownloadEngine()->setNoWait(true);
     getDownloadEngine()->setRefreshInterval(0);
 #endif // ENABLE_MESSAGE_DIGEST
@@ -319,6 +335,7 @@ bool DownloadCommand::prepareForNextSegment() {
         // nextSegment->getWrittenLength() corrupts file.
         return prepareForRetry(0);
       } else {
+        checkSocketRecvBuffer();
         getDownloadEngine()->addCommand(this);
         return false;
       }
