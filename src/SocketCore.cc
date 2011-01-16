@@ -158,17 +158,11 @@ void SocketCore::init()
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
   sslSession_ = 0;
-  peekBufMax_ = 4096;
-  peekBuf_ = 0;
-  peekBufLength_ = 0;
 #endif //HAVE_LIBGNUTLS
 }
 
 SocketCore::~SocketCore() {
   closeConnection();
-#ifdef HAVE_LIBGNUTLS
-  delete [] peekBuf_;
-#endif // HAVE_LIBGNUTLS
 }
 
 void SocketCore::create(int family, int protocol)
@@ -646,11 +640,6 @@ bool SocketCore::isWritable(time_t timeout)
 
 bool SocketCore::isReadable(time_t timeout)
 {
-#ifdef HAVE_LIBGNUTLS
-  if(secure_ && peekBufLength_ > 0) {
-    return true;
-  }
-#endif // HAVE_LIBGNUTLS
 #ifdef HAVE_POLL
   struct pollfd p;
   p.fd = sockfd_;
@@ -801,7 +790,8 @@ void SocketCore::readData(char* data, size_t& len)
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-    ret = gnutlsRecv(data, len);
+    while((ret = gnutls_record_recv(sslSession_, data, len)) ==
+          GNUTLS_E_INTERRUPTED);
     if(ret == GNUTLS_E_AGAIN) {
       gnutlsRecordCheckDirection();
       ret = 0;
@@ -813,127 +803,6 @@ void SocketCore::readData(char* data, size_t& len)
 
   len = ret;
 }
-
-void SocketCore::peekData(char* data, size_t& len)
-{
-  ssize_t ret = 0;
-  wantRead_ = false;
-  wantWrite_ = false;
-
-  if(!secure_) {
-    while((ret = recv(sockfd_, data, len, MSG_PEEK)) == -1 &&
-          SOCKET_ERRNO == A2_EINTR);
-    int errNum = SOCKET_ERRNO;
-    if(ret == -1) {
-      if(A2_WOULDBLOCK(errNum)) {
-        wantRead_ = true;
-        ret = 0;
-      } else {
-        throw DL_RETRY_EX(fmt(EX_SOCKET_PEEK, errorMsg(errNum).c_str()));
-      }
-    }
-  } else {
-#ifdef HAVE_LIBSSL
-    // for SSL
-    // TODO handling len == 0 case required
-    ret = SSL_peek(ssl, data, len);
-    if(ret < 0) {
-      ret = sslHandleEAGAIN(ret);
-    }
-    if(ret < 0) {
-      throw DL_RETRY_EX
-        (fmt(EX_SOCKET_PEEK,
-             ERR_error_string(SSL_get_error(ssl, ret), 0)));
-    }
-#endif // HAVE_LIBSSL
-#ifdef HAVE_LIBGNUTLS
-    ret = gnutlsPeek(data, len);
-    if(ret == GNUTLS_E_AGAIN) {
-      gnutlsRecordCheckDirection();
-      ret = 0;
-    } else if(ret < 0) {
-      throw DL_RETRY_EX(fmt(EX_SOCKET_PEEK, gnutls_strerror(ret)));
-    }
-#endif // HAVE_LIBGNUTLS
-  }
-
-  len = ret;
-}
-
-#ifdef HAVE_LIBGNUTLS
-size_t SocketCore::shiftPeekData(char* data, size_t len)
-{
-  if(peekBufLength_ <= len) {
-    memcpy(data, peekBuf_, peekBufLength_);
-    size_t ret = peekBufLength_;
-    peekBufLength_ = 0;
-    return ret;
-  } else {
-    memcpy(data, peekBuf_, len);
-    peekBufLength_ -= len;    
-    memmove(peekBuf_, peekBuf_+len, peekBufLength_);
-    return len;
-  }
-
-}
-
-void SocketCore::addPeekData(char* data, size_t len)
-{
-  if(peekBufLength_+len > peekBufMax_) {
-    char* temp = new char[peekBufMax_+len];
-    memcpy(temp, peekBuf_, peekBufLength_);
-    delete [] peekBuf_;
-    peekBuf_ = temp;
-    peekBufMax_ = peekBufLength_+len;
-  }
-  memcpy(peekBuf_+peekBufLength_, data, len);
-  peekBufLength_ += len;
-}
-
-static ssize_t GNUTLS_RECORD_RECV_NO_INTERRUPT
-(gnutls_session_t sslSession, char* data, size_t len)
-{
-  int ret;
-  while((ret = gnutls_record_recv(sslSession, data, len)) ==
-        GNUTLS_E_INTERRUPTED);
-  if(ret < 0 && ret != GNUTLS_E_AGAIN) {
-    throw DL_RETRY_EX(fmt(EX_SOCKET_RECV, gnutls_strerror(ret)));
-  }
-  return ret;
-}
-
-ssize_t SocketCore::gnutlsRecv(char* data, size_t len)
-{
-  size_t plen = shiftPeekData(data, len);
-  if(plen < len) {
-    ssize_t ret = GNUTLS_RECORD_RECV_NO_INTERRUPT
-      (sslSession_, data+plen, len-plen);
-    if(ret == GNUTLS_E_AGAIN) {
-      return GNUTLS_E_AGAIN;
-    }
-    return plen+ret;
-  } else {
-    return plen;
-  }
-}
-
-ssize_t SocketCore::gnutlsPeek(char* data, size_t len)
-{
-  if(peekBufLength_ >= len) {
-    memcpy(data, peekBuf_, len);
-    return len;
-  } else {
-    memcpy(data, peekBuf_, peekBufLength_);
-    ssize_t ret = GNUTLS_RECORD_RECV_NO_INTERRUPT
-      (sslSession_, data+peekBufLength_, len-peekBufLength_);
-    if(ret == GNUTLS_E_AGAIN) {
-      return GNUTLS_E_AGAIN;
-    }
-    addPeekData(data+peekBufLength_, ret);
-    return peekBufLength_;
-  }
-}
-#endif // HAVE_LIBGNUTLS
 
 void SocketCore::prepareSecureConnection()
 {
@@ -1136,7 +1005,6 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         }
       }
     }
-    peekBuf_ = new char[peekBufMax_];
 #endif // HAVE_LIBGNUTLS
     secure_ = 2;
     return true;

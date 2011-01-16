@@ -96,14 +96,6 @@ private:
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
   gnutls_session_t sslSession_;
-  char* peekBuf_;
-  size_t peekBufLength_;
-  size_t peekBufMax_;
-
-  size_t shiftPeekData(char* data, size_t len);
-  void addPeekData(char* data, size_t len);
-  ssize_t gnutlsRecv(char* data, size_t len);
-  ssize_t gnutlsPeek(char* data, size_t len);
 
   void gnutlsRecordCheckDirection();
 #endif // HAVE_LIBGNUTLS
@@ -292,22 +284,6 @@ public:
                        uint16_t /* port */>& sender)
   {
     return readDataFrom(reinterpret_cast<char*>(data), len, sender);
-  }
-
-  /**
-   * Reads up to len bytes from this socket, but bytes are not removed from
-   * this socket.
-   * This method internally calls isReadable(). The parameter timeout is used
-   * for this method call.
-   * @param data holder to store data.
-   * @param len the maximum size data can store. This method assigns
-   * the number of bytes read to len.
-   */
-  void peekData(char* data, size_t& len);
-
-  void peekData(unsigned char* data, size_t& len)
-  {
-    peekData(reinterpret_cast<char*>(data), len);
   }
 
   /**
