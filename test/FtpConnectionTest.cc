@@ -63,7 +63,6 @@ public:
     clientSocket_->establishConnection("localhost", listenPort_);
 
     while(!clientSocket_->isWritable(0));
-    clientSocket_->setBlockingMode();
 
     serverSocket_.reset(listenSocket->acceptConnection());
     ftp_.reset(new FtpConnection(1, clientSocket_, req_,

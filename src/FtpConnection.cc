@@ -363,14 +363,15 @@ bool FtpConnection::bulkReceiveResponse
 (std::pair<unsigned int, std::string>& response)
 {
   char buf[1024];  
-  while(socket_->isReadable(0)) {
+  while(1) {
     size_t size = sizeof(buf);
     socket_->readData(buf, size);
     if(size == 0) {
       if(socket_->wantRead() || socket_->wantWrite()) {
-        return false;
+        break;
+      } else {
+        throw DL_RETRY_EX(EX_GOT_EOF);
       }
-      throw DL_RETRY_EX(EX_GOT_EOF);
     }
     if(strbuf_.size()+size > MAX_RECV_BUFFER) {
       throw DL_RETRY_EX
