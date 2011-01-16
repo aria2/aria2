@@ -306,9 +306,11 @@ bool DownloadCommand::prepareForNextSegment() {
         getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
       }
     }
+#endif // ENABLE_MESSAGE_DIGEST
+    // Following 2lines are needed for DownloadEngine to detect
+    // completed RequestGroups without 1sec delay.
     getDownloadEngine()->setNoWait(true);
     getDownloadEngine()->setRefreshInterval(0);
-#endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
     // The number of segments should be 1 in order to pass through the next
