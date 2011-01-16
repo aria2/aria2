@@ -50,10 +50,12 @@ class SocketCore;
 class HttpHeader;
 class HttpHeaderProcessor;
 class DownloadEngine;
+class SocketRecvBuffer;
 
 class HttpServer {
 private:
   SharedHandle<SocketCore> socket_;
+  SharedHandle<SocketRecvBuffer> socketRecvBuffer_;
   SocketBuffer socketBuffer_;
   DownloadEngine* e_;
   SharedHandle<HttpHeaderProcessor> headerProcessor_;

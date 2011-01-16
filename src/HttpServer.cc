@@ -47,6 +47,7 @@
 #include "Base64.h"
 #include "a2functional.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -54,6 +55,7 @@ HttpServer::HttpServer
 (const SharedHandle<SocketCore>& socket,
  DownloadEngine* e)
  : socket_(socket),
+   socketRecvBuffer_(new SocketRecvBuffer(socket_)),
    socketBuffer_(socket),
    e_(e),
    headerProcessor_(new HttpHeaderProcessor()),
@@ -67,25 +69,21 @@ HttpServer::~HttpServer() {}
 
 SharedHandle<HttpHeader> HttpServer::receiveRequest()
 {
-  size_t size = 512;
-  unsigned char buf[size];
-  socket_->peekData(buf, size);
-  if(size == 0 && !(socket_->wantRead() || socket_->wantWrite())) {
-    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+  if(socketRecvBuffer_->bufferEmpty()) {
+    if(socketRecvBuffer_->recv() == 0 &&
+       !socket_->wantRead() && !socket_->wantWrite()) {
+      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+    }
   }
-  headerProcessor_->update(buf, size);
-  if(!headerProcessor_->eoh()) {
-    socket_->readData(buf, size);
-    return SharedHandle<HttpHeader>();
-  }
-  size_t putbackDataLength = headerProcessor_->getPutBackDataLength();
-  size -= putbackDataLength;
-  socket_->readData(buf, size);
-
-  SharedHandle<HttpHeader> header = headerProcessor_->getHttpRequestHeader();
-  if(header) {
+  headerProcessor_->update(socketRecvBuffer_->getBuffer(),
+                           socketRecvBuffer_->getBufferLength());
+  if(headerProcessor_->eoh()) {
+    SharedHandle<HttpHeader> header = headerProcessor_->getHttpRequestHeader();
+    size_t putbackDataLength = headerProcessor_->getPutBackDataLength();
     A2_LOG_INFO(fmt("HTTP Server received request\n%s",
                     headerProcessor_->getHeaderString().c_str()));
+    socketRecvBuffer_->shiftBuffer
+      (socketRecvBuffer_->getBufferLength()-putbackDataLength);
     lastRequestHeader_ = header;
     lastBody_.clear();
     lastBody_.str("");
@@ -106,8 +104,11 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     acceptsGZip_ =
       std::find(acceptEncodings.begin(), acceptEncodings.end(), "gzip")
       != acceptEncodings.end();
+    return header;
+  } else {
+    socketRecvBuffer_->clearBuffer();
+    return SharedHandle<HttpHeader>();
   }
-  return header;
 }
 
 bool HttpServer::receiveBody()
@@ -115,16 +116,18 @@ bool HttpServer::receiveBody()
   if(lastContentLength_ == 0) {
     return true;
   }
-  const size_t BUFLEN = 4096;
-  char buf[BUFLEN];
-  size_t length = std::min(BUFLEN,
-                           static_cast<size_t>
-                           (lastContentLength_-lastBody_.tellg()));
-  socket_->readData(buf, length);
-  if(length == 0 && !(socket_->wantRead() || socket_->wantWrite())) {
-    throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+  if(socketRecvBuffer_->bufferEmpty()) {
+    if(socketRecvBuffer_->recv() == 0 &&
+       !socket_->wantRead() && !socket_->wantWrite()) {
+      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+    }
   }
-  lastBody_.write(buf, length);
+  size_t length =
+    std::min(socketRecvBuffer_->getBufferLength(),
+             static_cast<size_t>(lastContentLength_-lastBody_.tellg()));
+  lastBody_.write(reinterpret_cast<const char*>(socketRecvBuffer_->getBuffer()),
+                  length);
+  socketRecvBuffer_->shiftBuffer(length);
   return lastContentLength_ == static_cast<uint64_t>(lastBody_.tellp());
 }
 

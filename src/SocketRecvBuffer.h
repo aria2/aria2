@@ -54,6 +54,11 @@ public:
   // Shifts buffer by offset bytes. offset must satisfy offset <=
   // getBufferLength().
   void shiftBuffer(size_t offset);
+  // Truncates the contents of buffer to 0.
+  void clearBuffer()
+  {
+    bufLen_ = 0;
+  }
 
   const SharedHandle<SocketCore>& getSocket() const
   {
