@@ -158,7 +158,13 @@ bool HttpSkipResponseCommand::executeInternal()
     finished = streamFilter_->finished();
   }
   if(finished) {
-    poolConnection();
+    if(getSegments().size() <= 1) {
+      // Don't pool connection if the command has multiple
+      // segments. This means it did HTTP pipelined request. If this
+      // response is for the first request, then successive response
+      // may arrived to the socket.
+      poolConnection();
+    }
     return processResponse();
   } else {
     setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
