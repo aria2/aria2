@@ -148,8 +148,7 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
                     cuid_,
                     proc->getHeaderString().c_str()));
     assert(socketRecvBuffer_->getBufferLength() >= putbackDataLength);
-    shiftBufferLength =
-      socketRecvBuffer_->getBufferLength()-putbackDataLength;
+    shiftBufferLength = socketRecvBuffer_->getBufferLength()-putbackDataLength;
     httpResponse.reset(new HttpResponse());
     httpResponse->setCuid(cuid_);
     httpResponse->setHttpHeader(httpHeader);
