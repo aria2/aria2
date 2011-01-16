@@ -116,6 +116,11 @@ public:
   void disableGZip() { gzip_ = false; }
 
   uint64_t getContentLength() const { return lastContentLength_; }
+
+  const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
+  {
+    return socketRecvBuffer_;
+  }
 };
 
 } // namespace aria2

@@ -51,6 +51,8 @@ private:
   SharedHandle<SocketCore> socket_;
   SharedHandle<HttpServer> httpServer_;
   Timer timeoutTimer_;
+
+  void checkSocketRecvBuffer();
 public:
   HttpServerCommand(cuid_t cuid, DownloadEngine* e,
                     const SharedHandle<SocketCore>& socket);

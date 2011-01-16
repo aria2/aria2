@@ -49,6 +49,7 @@
 #include "util.h"
 #include "wallclock.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -70,6 +71,7 @@ HttpServerCommand::HttpServerCommand
 #else // !HAVE_LIBZ
   httpServer_->disableGZip();
 #endif // !HAVE_LIBZ
+  checkSocketRecvBuffer();
 }
 
 HttpServerCommand::HttpServerCommand
@@ -83,11 +85,20 @@ HttpServerCommand::HttpServerCommand
     httpServer_(httpServer)
 {
   e_->addSocketForReadCheck(socket_, this);
+  checkSocketRecvBuffer();
 }
 
 HttpServerCommand::~HttpServerCommand()
 {
   e_->deleteSocketForReadCheck(socket_, this);
+}
+
+void HttpServerCommand::checkSocketRecvBuffer()
+{
+  if(!httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
+    setStatus(Command::STATUS_ONESHOT_REALTIME);
+    e_->setNoWait(true);
+  }
 }
 
 bool HttpServerCommand::execute()
@@ -96,7 +107,8 @@ bool HttpServerCommand::execute()
     return true;
   }
   try {
-    if(socket_->isReadable(0)) {
+    if(socket_->isReadable(0) ||
+       !httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
       timeoutTimer_ = global::wallclock;
       SharedHandle<HttpHeader> header;
 

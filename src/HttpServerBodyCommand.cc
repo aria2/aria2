@@ -53,6 +53,7 @@
 #include "wallclock.h"
 #include "util.h"
 #include "fmt.h"
+#include "SocketRecvBuffer.h"
 
 namespace aria2 {
 
@@ -66,8 +67,12 @@ HttpServerBodyCommand::HttpServerBodyCommand
     socket_(socket),
     httpServer_(httpServer)
 {
+  // To handle Content-Length == 0 case
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   e_->addSocketForReadCheck(socket_, this);
+  if(!httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
+    e_->setNoWait(true);
+  }
 }
 
 HttpServerBodyCommand::~HttpServerBodyCommand()
@@ -81,7 +86,9 @@ bool HttpServerBodyCommand::execute()
     return true;
   }
   try {
-    if(socket_->isReadable(0) || httpServer_->getContentLength() == 0) {
+    if(socket_->isReadable(0) ||
+       !httpServer_->getSocketRecvBuffer()->bufferEmpty() ||
+       httpServer_->getContentLength() == 0) {
       timeoutTimer_ = global::wallclock;
 
       if(httpServer_->receiveBody()) {
