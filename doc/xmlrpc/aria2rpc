@@ -211,6 +211,7 @@ OptionParser.new do |opt|
   }
   opt.on("--bt-tracker URIS"){|val| options["bt-tracker"]=val}
   opt.on("--bt-exclude-tracker URIS"){|val| options["bt-exclude-tracker"]=val}
+  opt.on("--retry-wait"){|val| options["retry-wait"]=val}
 
   opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
