@@ -202,6 +202,8 @@ const std::string PREF_SELECT_LEAST_USED_HOST("select-least-used-host");
 const std::string PREF_ENABLE_ASYNC_DNS6("enable-async-dns6");
 // value: 1*digit
 const std::string PREF_MAX_DOWNLOAD_RESULT("max-download-result");
+// value: 1*digit
+const std::string PREF_RETRY_WAIT("retry-wait");
 
 /**
  * FTP related preferences

@@ -39,6 +39,7 @@
 #include <string>
 
 #include "SharedHandle.h"
+#include "TimerA2.h"
 
 namespace aria2 {
 
@@ -95,6 +96,8 @@ private:
   std::string connectedAddr_;
 
   uint16_t connectedPort_;
+
+  Timer wakeTime_;
 
   bool parseUri(const std::string& uri);
 public:
@@ -227,6 +230,16 @@ public:
   uint16_t getConnectedPort() const
   {
     return connectedPort_;
+  }
+
+  void setWakeTime(Timer timer)
+  {
+    wakeTime_ = timer;
+  }
+
+  const Timer& getWakeTime()
+  {
+    return wakeTime_;
   }
 
   static const std::string METHOD_GET;

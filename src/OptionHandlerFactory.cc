@@ -690,6 +690,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
+                                   (PREF_RETRY_WAIT,
+                                    TEXT_RETRY_WAIT,
+                                    "2",
+                                    0, 600));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REUSE_URI,
                                     TEXT_REUSE_URI,

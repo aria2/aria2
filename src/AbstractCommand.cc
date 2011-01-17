@@ -306,6 +306,9 @@ bool AbstractCommand::execute() {
       tryReserved();
       return true;
     } else {
+      Timer wakeTime(global::wallclock);
+      wakeTime.advance(getOption()->getAsInt(PREF_RETRY_WAIT));
+      req_->setWakeTime(wakeTime);
       return prepareForRetry(0);
     }
   } catch(DownloadFailureException& err) {

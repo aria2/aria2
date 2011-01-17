@@ -207,6 +207,16 @@ bool HttpSkipResponseCommand::processResponse()
     } else if(statusCode == 404) {
       throw DL_ABORT_EX2(MSG_RESOURCE_NOT_FOUND,
                          error_code::RESOURCE_NOT_FOUND);
+    } else if(statusCode == 503) {
+      // Only retry if pretry-wait > 0. Hammering 'busy' server is not
+      // a good idea.
+      if(getOption()->getAsInt(PREF_RETRY_WAIT) > 0) {
+        throw DL_RETRY_EX2(fmt(EX_BAD_STATUS, statusCode),
+                           error_code::HTTP_SERVICE_UNAVAILABLE);
+      } else {
+        throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
+                           error_code::HTTP_SERVICE_UNAVAILABLE);
+      }
     } else {
       throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, statusCode),
                          error_code::HTTP_PROTOCOL_ERROR);

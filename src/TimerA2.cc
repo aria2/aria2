@@ -75,6 +75,11 @@ bool Timer::operator<(const Timer& timer) const
   return util::difftv(timer.tv_, tv_) > 0;
 }
 
+bool Timer::operator<=(const Timer& timer) const
+{
+  return util::difftv(timer.tv_, tv_) >= 0;
+}
+
 bool Timer::operator>(const Timer& timer) const
 {
   return util::difftv(tv_, timer.tv_) > 0;

@@ -42,6 +42,7 @@
 #include "A2STR.h"
 #include "uri.h"
 #include "PeerStat.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -66,7 +67,8 @@ Request::Request():
   hasPassword_(false),
   ipv6LiteralAddress_(false),
   removalRequested_(false),
-  connectedPort_(0)
+  connectedPort_(0),
+  wakeTime_(global::wallclock)
 {}
 
 Request::~Request() {}

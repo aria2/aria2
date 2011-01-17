@@ -59,8 +59,7 @@
     "                              Please note that in Metalink download, this\n" \
     "                              option has no effect and use -C option instead.")
 #define TEXT_RETRY_WAIT                                                 \
-  _(" --retry-wait=SEC             Set the seconds to wait to retry after an error\n" \
-    "                              has occured.")
+  _(" --retry-wait=SEC             Set the seconds to wait between retries.")
 #define TEXT_TIMEOUT                                            \
   _(" -t, --timeout=SEC            Set timeout in seconds.")
 #define TEXT_MAX_TRIES                                                  \

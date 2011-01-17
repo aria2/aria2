@@ -170,9 +170,23 @@ FileEntry::getRequest
         break;
       }
     }
-  } else {    
-    req = requestPool_.front();
-    requestPool_.pop_front();
+  } else {
+    // Skip Request object if it is still
+    // sleeping(Request::getWakeTime() < global::wallclock).  If all
+    // pooled objects are sleeping, return first one.  Caller should
+    // inspect returned object's getWakeTime().
+    std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin();
+    std::deque<SharedHandle<Request> >::iterator eoi = requestPool_.end();
+    for(; i != eoi; ++i) {
+      if((*i)->getWakeTime() <= global::wallclock) {
+        break;
+      }
+    }
+    if(i == eoi) {
+      i = requestPool_.begin();
+    }
+    req = *i;
+    requestPool_.erase(i);
     inFlightRequests_.push_back(req);
     A2_LOG_DEBUG(fmt("Picked up from pool: %s", req->getUri().c_str()));
   }

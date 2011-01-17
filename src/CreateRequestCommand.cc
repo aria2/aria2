@@ -46,6 +46,8 @@
 #include "RequestGroupMan.h"
 #include "FileEntry.h"
 #include "SocketRecvBuffer.h"
+#include "LogFactory.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -93,6 +95,11 @@ bool CreateRequestCommand::executeInternal()
       getSegmentMan()->ignoreSegmentFor(getFileEntry());
     }
     throw DL_ABORT_EX("No URI available.");
+  } else if(getRequest()->getWakeTime() > global::wallclock) {
+    A2_LOG_DEBUG("This request object is still sleeping.");
+    getFileEntry()->poolRequest(getRequest());
+    getDownloadEngine()->addCommand(this);
+    return false;
   }
 
   Command* command =

@@ -59,6 +59,8 @@ public:
 
   bool operator<(const Timer& timer) const;
 
+  bool operator<=(const Timer& timer) const;
+
   bool operator>(const Timer& timer) const;
 
   void reset();
