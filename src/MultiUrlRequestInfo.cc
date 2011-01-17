@@ -134,7 +134,12 @@ error_code::Value MultiUrlRequestInfo::execute()
     SharedHandle<AuthConfigFactory> authConfigFactory(new AuthConfigFactory());
     File netrccf(option_->get(PREF_NETRC_PATH));
     if(!option_->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
+#ifdef __MINGW32__
+      // Windows OS does not have permission, so set it to 0.
+      mode_t mode  = 0;
+#else // !__MINGW32__
       mode_t mode = netrccf.mode();
+#endif // !__MINGW32__
       if(mode&(S_IRWXG|S_IRWXO)) {
         A2_LOG_NOTICE(fmt(MSG_INCORRECT_NETRC_PERMISSION,
                           option_->get(PREF_NETRC_PATH).c_str()));
