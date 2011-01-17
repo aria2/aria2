@@ -149,6 +149,7 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 
 [[aria2_optref_max_tries]]*-m*, *--max-tries*=N::
   Set number of tries. '0' means unlimited.
+  See also *<<aria2_optref_retry_wait, --retry-wait>>*.
   Default: '5'
 
 [[aria2_optref_min_split_size]]*-k*, *--min-split-size*=SIZE::
@@ -200,6 +201,10 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
 
   Reuse already used URIs if no unused URIs are left.
   Default: 'true'
+
+[[aria2_optref_retry_wait]]*--retry-wait*=SEC::
+
+  Set the seconds to wait between retries. Default: '2'
 
 [[aria2_optref_server_stat_of]]*--server-stat-of*=FILE::
 
@@ -1259,6 +1264,11 @@ based on the last error encountered.
   If bad/unrecognized option was given or unexpected option argument
   was given.
 
+*29*::
+
+  If the remote server was unable to handle the request due to a
+  temporary overloading or maintenance.
+
 [NOTE]
 An error occurred in a finished download will not be reported
 as exit status.
@@ -1476,6 +1486,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_timeout, timeout>>*
 * *<<aria2_optref_use_head, use-head>>*
 * *<<aria2_optref_user_agent, user-agent>>*
+* *<<aria2_optref_retry_wait, retry-wait>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
