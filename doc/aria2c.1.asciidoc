@@ -204,7 +204,9 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
 
 [[aria2_optref_retry_wait]]*--retry-wait*=SEC::
 
-  Set the seconds to wait between retries. Default: '2'
+  Set the seconds to wait between retries. With SEC > 0, aria2 will
+  retry download when the HTTP server returns 503 response. Default:
+  '0'
 
 [[aria2_optref_server_stat_of]]*--server-stat-of*=FILE::
 
