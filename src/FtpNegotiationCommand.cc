@@ -636,8 +636,10 @@ bool FtpNegotiationCommand::recvPasv() {
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                        error_code::FTP_PROTOCOL_ERROR);
   }
-  dataConnAddr_ = dest;
-
+  std::pair<std::string, uint16_t> peerInfo;
+  getSocket()->getPeerInfo(peerInfo);
+  peerInfo.second = dest.second;;
+  dataConnAddr_ = peerInfo;
   return preparePasvConnect();
 }
 
