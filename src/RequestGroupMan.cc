@@ -748,6 +748,18 @@ RequestGroupMan::findDownloadResult(gid_t gid) const
   return SharedHandle<DownloadResult>();
 }
 
+bool RequestGroupMan::removeDownloadResult(gid_t gid)
+{
+  for(std::deque<SharedHandle<DownloadResult> >::iterator i =
+        downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi; ++i) {
+    if((*i)->gid == gid) {
+      downloadResults_.erase(i);
+      return true;
+    }
+  }
+  return false;
+}
+
 void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
 {
   if(maxDownloadResult_ == 0) {

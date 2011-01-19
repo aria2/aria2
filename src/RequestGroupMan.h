@@ -214,6 +214,10 @@ public:
   // Removes all download results.
   void purgeDownloadResult();
 
+  // Removes download result of given gid. Returns true if download
+  // result was removed. Otherwise returns false.
+  bool removeDownloadResult(gid_t gid);
+
   void addDownloadResult(const SharedHandle<DownloadResult>& downloadResult);
 
   SharedHandle<ServerStat> findServerStat(const std::string& hostname,

@@ -245,6 +245,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} getUris    GID [options]
        #{program_name} getPeers   GID [options]
        #{program_name} purgeDownloadResult [options]
+       #{program_name} removeDownloadResult GID [options]
        #{program_name} changeOption GID [options]
        #{program_name} changeGlobalOption [options]
        #{program_name} getVersion [options]
@@ -338,6 +339,8 @@ elsif command == "getPeers" then
   result=client.call("aria2."+command, resources[0])
 elsif command == "purgeDownloadResult" then
   result=client.call("aria2."+command)
+elsif command == "removeDownloadResult" then
+  result=client.call("aria2."+command, resources[0])
 elsif command == "changeOption" then
   result=client.call("aria2."+command, resources[0], options)
 elsif command == "changeGlobalOption" then

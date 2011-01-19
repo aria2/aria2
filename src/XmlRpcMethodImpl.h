@@ -216,6 +216,18 @@ public:
   }
 };
 
+class RemoveDownloadResultXmlRpcMethod:public XmlRpcMethod {
+protected:
+  virtual SharedHandle<ValueBase> process
+  (const XmlRpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.removeDownloadResult";
+    return methodName;
+  }
+};
+
 class GetUrisXmlRpcMethod:public XmlRpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process

@@ -2425,6 +2425,29 @@ Description
 This method purges completed/error/removed downloads to free memory.
 This method returns "OK".
 
+[[aria2_xmlrpc_aria2_removeDownloadResult]]
+*aria2.removeDownloadResult* ('gid')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
++++++++++++
+
+This method removes completed/error/removed download denoted by 'gid'
+from memory. This method returns "OK" for success.
+
+Example
++++++++
+
+The following example removes the download result of the download
+whose GID is "1".
+
+--------------------------------------------------------------------
+>>> import xmlrpclib
+>>> s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+>>> s.aria2.removeDownloadResult('1')
+'OK'
+--------------------------------------------------------------------
+
 [[aria2_xmlrpc_aria2_getVersion]]
 *aria2.getVersion* ()
 ^^^^^^^^^^^^^^^^^^^^^

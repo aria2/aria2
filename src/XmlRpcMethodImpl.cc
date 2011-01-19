@@ -986,6 +986,18 @@ SharedHandle<ValueBase> PurgeDownloadResultXmlRpcMethod::process
   return VLB_OK;
 }
 
+SharedHandle<ValueBase> RemoveDownloadResultXmlRpcMethod::process
+(const XmlRpcRequest& req, DownloadEngine* e)
+{
+  gid_t gid = getRequiredGidParam(req, 0);
+  if(!e->getRequestGroupMan()->removeDownloadResult(gid)) {
+    throw DL_ABORT_EX
+      (fmt("Could not remove download result of GID#%s",
+           util::itos(gid).c_str()));
+  }
+  return VLB_OK;
+}
+
 SharedHandle<ValueBase> ChangeOptionXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
