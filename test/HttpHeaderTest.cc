@@ -1,6 +1,10 @@
 #include "HttpHeader.h"
-#include "Range.h"
+
+#include <sstream>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "Range.h"
 
 namespace aria2 {
 
@@ -10,12 +14,14 @@ class HttpHeaderTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetRange);
   CPPUNIT_TEST(testGet);
   CPPUNIT_TEST(testClearField);
+  CPPUNIT_TEST(testFill);
   CPPUNIT_TEST_SUITE_END();
   
 public:
   void testGetRange();
   void testGet();
   void testClearField();
+  void testFill();
 };
 
 
@@ -94,6 +100,30 @@ void HttpHeaderTest::testClearField()
   CPPUNIT_ASSERT_EQUAL(std::string(""), h.getFirst("Foo"));
   CPPUNIT_ASSERT_EQUAL(200, h.getStatusCode());
   CPPUNIT_ASSERT_EQUAL(std::string(HttpHeader::HTTP_1_1), h.getVersion());
+}
+
+void HttpHeaderTest::testFill()
+{
+  std::stringstream ss;
+  ss << "Host: aria2.sourceforge.net\r\n"
+     << "Connection: close \r\n" // trailing white space
+     << "Multi-Line: text1\r\n"
+     << "  text2\r\n"
+     << "  text3\r\n"
+     << "Duplicate: foo\r\n"
+     << "Duplicate: bar\r\n";
+  HttpHeader h;
+  h.fill(ss);
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.sourceforge.net"),
+                       h.getFirst("Host"));
+  CPPUNIT_ASSERT_EQUAL(std::string("close"),
+                       h.getFirst("Connection"));
+  CPPUNIT_ASSERT_EQUAL(std::string("text1 text2 text3"),
+                       h.getFirst("Multi-Line"));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"),
+                       h.get("Duplicate")[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("bar"),
+                       h.get("Duplicate")[1]);
 }
 
 } // namespace aria2

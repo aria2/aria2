@@ -193,14 +193,25 @@ void HttpHeader::setRequestPath(const std::string& requestPath)
 void HttpHeader::fill(std::istream& in)
 {
   std::string line;
-  while(std::getline(in, line)) {
+  std::getline(in, line);
+  while(in) {
     line = util::strip(line);
     if(line.empty()) {
-      continue;
+      std::getline(in, line);
+    } else {
+      std::pair<std::string, std::string> hp;
+      util::divide(hp, line, ':');
+      while(std::getline(in, line)) {
+        if(!line.empty() && (line[0] == ' ' || line[0] == '\t')) {
+          line = util::strip(line);
+          hp.second += " ";
+          hp.second += line;
+        } else {
+          break;
+        }
+      }
+      put(hp.first, hp.second);
     }
-    std::pair<std::string, std::string> hp;
-    util::divide(hp, line, ':');
-    put(hp.first, hp.second);
   }
 }
 
