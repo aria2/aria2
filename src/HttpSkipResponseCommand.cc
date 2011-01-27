@@ -122,8 +122,9 @@ bool HttpSkipResponseCommand::executeInternal()
     if(!eof) {
       if(sinkFilterOnly_) {
         if(totalLength_ > 0) {
-          bufSize = std::min(totalLength_-receivedBytes_,
-                             getSocketRecvBuffer()->getBufferLength());
+          bufSize = std::min
+            (totalLength_-receivedBytes_,
+             static_cast<uint64_t>(getSocketRecvBuffer()->getBufferLength()));
         } else {
           bufSize = getSocketRecvBuffer()->getBufferLength();
         }
