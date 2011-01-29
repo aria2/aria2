@@ -70,8 +70,8 @@ void HttpResponse::validateResponse() const
     return;
   }
   if(statusCode == 304) {
-    if(httpRequest_->getIfModifiedSinceHeader().empty()) {
-      throw DL_ABORT_EX2("Got 304 without If-Modified-Since",
+    if(!httpRequest_->conditionalRequest()) {
+      throw DL_ABORT_EX2("Got 304 without If-Modified-Since or If-None-Match",
                          error_code::HTTP_PROTOCOL_ERROR);
     }
   } else if(statusCode == 301 ||

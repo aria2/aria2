@@ -168,6 +168,8 @@ public:
   // accepts multiline headers, delimited by LF
   void addHeader(const std::string& headers);
 
+  void clearHeader();
+
   void addAcceptType(const std::string& type);
 
   template<typename InputIterator>
@@ -249,6 +251,11 @@ public:
   {
     return ifModSinceHeader_;
   }
+
+  // Returns true if request is conditional:more specifically, the
+  // request is considered to be conditional if the client sent
+  // "If-Modified-Since" or "If-None-Match" request-header field.
+  bool conditionalRequest() const;
 };
 
 } // namespace aria2

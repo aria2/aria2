@@ -37,6 +37,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddHeader);
   CPPUNIT_TEST(testAddAcceptType);
   CPPUNIT_TEST(testEnableAcceptEncoding);
+  CPPUNIT_TEST(testConditionalRequest);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Option> option_;
@@ -64,6 +65,7 @@ public:
   void testAddHeader();
   void testAddAcceptType();
   void testEnableAcceptEncoding();
+  void testConditionalRequest();
 };
 
 
@@ -841,6 +843,21 @@ void HttpRequestTest::testCreateRequest_ipv6LiteralAddr()
   std::string proxyRequest = httpRequest.createProxyRequest();
   CPPUNIT_ASSERT(proxyRequest.find("Host: [::1]:80") != std::string::npos);
   CPPUNIT_ASSERT(proxyRequest.find("CONNECT [::1]:80 ") != std::string::npos);
+}
+
+void HttpRequestTest::testConditionalRequest()
+{
+  HttpRequest httpRequest;
+  CPPUNIT_ASSERT(!httpRequest.conditionalRequest());
+  httpRequest.setIfModifiedSinceHeader("dummy");
+  CPPUNIT_ASSERT(httpRequest.conditionalRequest());
+  httpRequest.setIfModifiedSinceHeader("");
+  CPPUNIT_ASSERT(!httpRequest.conditionalRequest());
+  httpRequest.addHeader("If-None-Match: *");
+  CPPUNIT_ASSERT(httpRequest.conditionalRequest());
+  httpRequest.clearHeader();
+  httpRequest.addHeader("If-Modified-Since: dummy");
+  CPPUNIT_ASSERT(httpRequest.conditionalRequest());
 }
 
 } // namespace aria2

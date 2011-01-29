@@ -322,6 +322,11 @@ void HttpRequest::addHeader(const std::string& headersString)
   headers_.insert(headers_.end(), headers.begin(), headers.end());
 }
 
+void HttpRequest::clearHeader()
+{
+  headers_.clear();
+}
+
 void HttpRequest::addAcceptType(const std::string& type)
 {
   acceptTypes_.push_back(type);
@@ -429,6 +434,22 @@ void HttpRequest::setFileEntry(const SharedHandle<FileEntry>& fileEntry)
 void HttpRequest::setIfModifiedSinceHeader(const std::string& hd)
 {
   ifModSinceHeader_ = hd;
+}
+
+bool HttpRequest::conditionalRequest() const
+{
+  if(!ifModSinceHeader_.empty()) {
+    return true;
+  }
+  for(std::vector<std::string>::const_iterator i = headers_.begin(),
+        eoi = headers_.end(); i != eoi; ++i) {
+    std::string hd = util::toLower(*i);
+    if(util::startsWith(hd, "if-modified-since") ||
+       util::startsWith(hd, "if-none-match")) {
+      return true;
+    }
+  }
+  return false;
 }
 
 } // namespace aria2

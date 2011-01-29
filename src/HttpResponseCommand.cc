@@ -174,26 +174,22 @@ bool HttpResponseCommand::executeInternal()
   }
 
   int statusCode = httpResponse->getStatusCode();
-  if(!httpResponse->getHttpRequest()->getIfModifiedSinceHeader().empty()) {
-    if(statusCode == 304) {
-      uint64_t totalLength = httpResponse->getEntityLength();
-      getFileEntry()->setLength(totalLength);
-      getRequestGroup()->initPieceStorage();
-      getPieceStorage()->markAllPiecesDone();
-      // Just set checksum verification done.
-      getDownloadContext()->setChecksumVerified(true);
-      A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(getRequestGroup()->getGID()).c_str(),
-                        getRequestGroup()->getFirstFilePath().c_str()));
-      poolConnection();
-      getFileEntry()->poolRequest(getRequest());
-      return true;
-    } else if(statusCode == 200 || statusCode == 206) {
-      // Remote file is newer than local file. We allow overwrite.
-      getOption()->put(PREF_ALLOW_OVERWRITE, A2_V_TRUE);
-    }
+
+  if(statusCode == 304) {
+    uint64_t totalLength = httpResponse->getEntityLength();
+    getFileEntry()->setLength(totalLength);
+    getRequestGroup()->initPieceStorage();
+    getPieceStorage()->markAllPiecesDone();
+    // Just set checksum verification done.
+    getDownloadContext()->setChecksumVerified(true);
+    A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                      util::itos(getRequestGroup()->getGID()).c_str(),
+                      getRequestGroup()->getFirstFilePath().c_str()));
+    poolConnection();
+    getFileEntry()->poolRequest(getRequest());
+    return true;
   }
-  if(statusCode != 304 && statusCode >= 300) {
+  if(statusCode >= 300) {
     if(statusCode == 404) {
       getRequestGroup()->increaseAndValidateFileNotFoundCount();
     }
