@@ -45,6 +45,12 @@ AC_PROG_MKDIR_P
 AC_PROG_RANLIB
 AC_PROG_YACC
 
+AC_CHECK_TOOL([AR], [ar], [:])
+if test "x$AR" = "x:"; then
+  AC_MSG_FAILURE([ar is not found in the system.])
+fi
+AC_SUBST([AR])
+
 AC_PATH_PROG([A2X], [a2x])
 AC_SUBST([A2X])
 AM_CONDITIONAL([HAVE_A2X], [ test "x$A2X" != "x" ])
