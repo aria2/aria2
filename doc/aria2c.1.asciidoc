@@ -832,7 +832,9 @@ Advanced Options
   will be ignored.  This function uses If-Modified-Since header to get
   only newer file conditionally. When getting modification time of
   local file, it uses user supplied filename(see *<<aria2_optref_out, --out>>* option) or
-  filename part in URI if *<<aria2_optref_out, --out>>* is not specified.  Default: 'false'
+  filename part in URI if *<<aria2_optref_out, --out>>* is not specified.
+  To overwrite existing file, *<<aria2_optref_allow_overwrite, --allow-overwrite>>* is required.
+  Default: 'false'
 
 [[aria2_optref_conf_path]]*--conf-path*=PATH::
   Change the configuration file path to PATH.
