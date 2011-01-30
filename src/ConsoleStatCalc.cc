@@ -311,7 +311,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
         << "B"
         << "(";
       if(entry->getTotalLength() > 0) {
-        o << 100*entry->getCurrentLength()/entry->getTotalLength();
+        o << 100LL*entry->getCurrentLength()/entry->getTotalLength();
       } else {
         o << "--";
       }
@@ -337,9 +337,13 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
         << "/"
         << sizeFormatter(entry->getTotalLength())
         << "B"
-        << "("
-        << 100*entry->getCurrentLength()/entry->getTotalLength()
-        << "%)"
+        << "(";
+      if(entry->getTotalLength() > 0) {
+        o << 100LL*entry->getCurrentLength()/entry->getTotalLength();
+      } else {
+        o << "--";
+      }
+      o << "%)"
         << "]";
       if(e->getCheckIntegrityMan()->hasNext()) {
         o << "("
