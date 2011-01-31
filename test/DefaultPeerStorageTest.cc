@@ -9,6 +9,7 @@
 #include "Peer.h"
 #include "Option.h"
 #include "BtRuntime.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -131,6 +132,26 @@ void DefaultPeerStorageTest::testAddPeer() {
   // this returns false because the peer which has same ip and port
   // has already added
   CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer5));
+
+  SharedHandle<Peer> pa[] = {
+    SharedHandle<Peer>(new Peer("192.168.0.4", 6889)),
+    SharedHandle<Peer>(new Peer("192.168.0.5", 6889)),
+    SharedHandle<Peer>(new Peer("192.168.0.6", 6889)),
+    SharedHandle<Peer>(new Peer("192.168.0.7", 6889)),
+    SharedHandle<Peer>(new Peer("192.168.0.8", 6889))
+  };
+  std::vector<SharedHandle<Peer> > peers(vbegin(pa), vend(pa));
+  ps.addPeer(peers);
+  // peers[0] is not added because it has been already added.
+  // peers[1], peers[2] and peers[3] are going to be added.  peers[4]
+  // is not added because DefaultPeerStorage::addPeer() limits the
+  // number of peers to add.  Finally, unused peers are removed from
+  // back and size 3 vector is made.
+  CPPUNIT_ASSERT_EQUAL((size_t)3, ps.countPeer());
+  CPPUNIT_ASSERT(std::find_if(ps.getPeers().begin(), ps.getPeers().end(),
+                              derefEqual(peers[2])) != ps.getPeers().end());
+  CPPUNIT_ASSERT(std::find_if(ps.getPeers().begin(), ps.getPeers().end(),
+                              derefEqual(peers[3])) != ps.getPeers().end());
 }
 
 void DefaultPeerStorageTest::testGetUnusedPeer() {
