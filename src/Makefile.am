@@ -482,7 +482,7 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkParserStateV4Impl.cc MetalinkParserStateV4Impl.h\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
-	MetalinkHelper.cc MetalinkHelper.h
+	metalink_helper.cc metalink_helper.h
 endif # ENABLE_METALINK
 
 if ENABLE_METALINK_LIBXML2

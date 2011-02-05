@@ -1,4 +1,4 @@
-#include "MetalinkHelper.h"
+#include "metalink_helper.h"
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -31,7 +31,7 @@ void MetalinkHelperTest::testParseAndQuery()
 {
   Option option;
   std::vector<SharedHandle<MetalinkEntry> > result;
-  MetalinkHelper::parseAndQuery(result, A2_TEST_DIR"/test.xml", &option);
+  metalink::parseAndQuery(result, A2_TEST_DIR"/test.xml", &option);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
 }
 
@@ -40,7 +40,7 @@ void MetalinkHelperTest::testParseAndQuery_version()
   Option option;
   option.put(PREF_METALINK_VERSION, "0.5.1");
   std::vector<SharedHandle<MetalinkEntry> > result;
-  MetalinkHelper::parseAndQuery(result, A2_TEST_DIR"/test.xml", &option);
+  metalink::parseAndQuery(result, A2_TEST_DIR"/test.xml", &option);
   CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
   SharedHandle<MetalinkEntry> entry = result.front();
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry->getPath());
@@ -99,7 +99,7 @@ void MetalinkHelperTest::testGroupEntryByMetaurlName()
 
   std::vector<std::pair<std::string,
     std::vector<SharedHandle<MetalinkEntry> > > > result;
-  MetalinkHelper::groupEntryByMetaurlName(result, entries);
+  metalink::groupEntryByMetaurlName(result, entries);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://meta1"), result[0].first);
   CPPUNIT_ASSERT_EQUAL(std::string("1"), result[0].second[0]->version);

@@ -44,7 +44,7 @@
 #include "util.h"
 #include "message.h"
 #include "DownloadContext.h"
-#include "MetalinkHelper.h"
+#include "metalink_helper.h"
 #include "BinaryStream.h"
 #include "MemoryBufferPreDownloadHandler.h"
 #include "TrueRequestGroupCriteria.h"
@@ -113,7 +113,7 @@ Metalink2RequestGroup::generate
  const SharedHandle<Option>& option)
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
-  MetalinkHelper::parseAndQuery(entries, metalinkFile, option.get());
+  metalink::parseAndQuery(entries, metalinkFile, option.get());
   std::vector<SharedHandle<RequestGroup> > tempgroups;
   createRequestGroup(tempgroups, entries, option);
   SharedHandle<MetadataInfo> mi;
@@ -133,7 +133,7 @@ Metalink2RequestGroup::generate
  const SharedHandle<Option>& option)
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
-  MetalinkHelper::parseAndQuery(entries, binaryStream, option.get());
+  metalink::parseAndQuery(entries, binaryStream, option.get());
   std::vector<SharedHandle<RequestGroup> > tempgroups;
   createRequestGroup(tempgroups, entries, option);
   SharedHandle<MetadataInfo> mi(new MetadataInfo());
@@ -191,7 +191,7 @@ Metalink2RequestGroup::createRequestGroup
                 mem_fun_sh(&MetalinkEntry::reorderMetaurlsByPriority));
   std::vector<std::pair<std::string,
     std::vector<SharedHandle<MetalinkEntry> > > > entryGroups;
-  MetalinkHelper::groupEntryByMetaurlName(entryGroups, selectedEntries);
+  metalink::groupEntryByMetaurlName(entryGroups, selectedEntries);
   for(std::vector<std::pair<std::string,
         std::vector<SharedHandle<MetalinkEntry> > > >::const_iterator itr =
         entryGroups.begin(), eoi = entryGroups.end(); itr != eoi; ++itr) {

@@ -73,7 +73,7 @@
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-# include "MetalinkHelper.h"
+# include "metalink_helper.h"
 # include "MetalinkEntry.h"
 #endif // ENABLE_METALINK
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -127,7 +127,7 @@ void showMetalinkFile
 (const std::string& uri, const SharedHandle<Option>& op)
 {
   std::vector<SharedHandle<MetalinkEntry> > metalinkEntries;
-  MetalinkHelper::parseAndQuery(metalinkEntries, uri, op.get());
+  metalink::parseAndQuery(metalinkEntries, uri, op.get());
   std::vector<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
   util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);

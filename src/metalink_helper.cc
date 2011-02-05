@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
+#include "metalink_helper.h"
 #include "Option.h"
 #include "MetalinkEntry.h"
 #include "MetalinkParserStateMachine.h"
@@ -45,31 +45,14 @@
 
 namespace aria2 {
 
-MetalinkHelper::MetalinkHelper() {}
+namespace metalink {
 
-MetalinkHelper::~MetalinkHelper() {}
+namespace {
 
-void MetalinkHelper::parseAndQuery
+void query
 (std::vector<SharedHandle<MetalinkEntry> >& result,
- const std::string& filename, const Option* option)
-{
-  MetalinkProcessor proc;
-  SharedHandle<Metalinker> metalinker = proc.parseFile(filename);
-  query(result, metalinker, option);
-}
-
-void MetalinkHelper::parseAndQuery
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- const SharedHandle<BinaryStream>& binaryStream, const Option* option)
-{
-  MetalinkProcessor proc;
-  SharedHandle<Metalinker> metalinker =proc.parseFromBinaryStream(binaryStream);
-  query(result, metalinker, option);
-}
-
-void MetalinkHelper::query
-(std::vector<SharedHandle<MetalinkEntry> >& result,
- const SharedHandle<Metalinker>& metalinker, const Option* option)
+ const SharedHandle<Metalinker>& metalinker,
+ const Option* option)
 {
   metalinker->queryEntry(result,
                          option->get(PREF_METALINK_VERSION),
@@ -77,9 +60,31 @@ void MetalinkHelper::query
                          option->get(PREF_METALINK_OS));
 }
 
-void MetalinkHelper::groupEntryByMetaurlName
+} // namespace
+
+void parseAndQuery
+(std::vector<SharedHandle<MetalinkEntry> >& result,
+ const std::string& filename,
+ const Option* option)
+{
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> metalinker = proc.parseFile(filename);
+  query(result, metalinker, option);
+}
+
+void parseAndQuery
+(std::vector<SharedHandle<MetalinkEntry> >& result,
+ const SharedHandle<BinaryStream>& binaryStream,
+ const Option* option)
+{
+  MetalinkProcessor proc;
+  SharedHandle<Metalinker> metalinker =proc.parseFromBinaryStream(binaryStream);
+  query(result, metalinker, option);
+}
+
+void groupEntryByMetaurlName
 (std::vector<
- std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
+  std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
  const std::vector<SharedHandle<MetalinkEntry> >& entries)
 {
   for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator eiter =
@@ -113,5 +118,7 @@ void MetalinkHelper::groupEntryByMetaurlName
     }
   }
 }
+
+} // namespace metalink
 
 } // namespace aria2

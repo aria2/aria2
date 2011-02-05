@@ -49,30 +49,24 @@ class MetalinkEntry;
 class BinaryStream;
 class Metalinker;
 
-class MetalinkHelper {
-private:
-  MetalinkHelper();
+namespace metalink {
 
-  ~MetalinkHelper();
+void parseAndQuery
+(std::vector<SharedHandle<MetalinkEntry> >& result,
+ const std::string& filename,
+ const Option* option);
 
-  static void query
-  (std::vector<SharedHandle<MetalinkEntry> >& result,
-   const SharedHandle<Metalinker>& metalinker, const Option* option);
+void parseAndQuery
+(std::vector<SharedHandle<MetalinkEntry> >& result,
+ const SharedHandle<BinaryStream>& binaryStream,
+ const Option* option);
 
-public:
-  static void parseAndQuery
-  (std::vector<SharedHandle<MetalinkEntry> >& result,
-   const std::string& filename, const Option* option);
+void groupEntryByMetaurlName
+(std::vector<
+  std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
+ const std::vector<SharedHandle<MetalinkEntry> >& entries);
 
-  static void parseAndQuery
-  (std::vector<SharedHandle<MetalinkEntry> >& result,
-   const SharedHandle<BinaryStream>& binaryStream, const Option* option);
-
-  static void groupEntryByMetaurlName
-  (std::vector<
-   std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
-   const std::vector<SharedHandle<MetalinkEntry> >& entries);
-};
+} // namespace metalink
 
 } // namespace aria2
 
