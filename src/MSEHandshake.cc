@@ -48,7 +48,7 @@
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
 #include "MessageDigest.h"
-#include "MessageDigestHelper.h"
+#include "message_digest_helper.h"
 #include "SimpleRandomizer.h"
 #include "util.h"
 #include "DownloadContext.h"
@@ -192,16 +192,16 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   
   unsigned char localCipherKey[20];
   sha1_->reset();
-  MessageDigestHelper::digest(localCipherKey, sizeof(localCipherKey),
-                              sha1_, s, sizeof(s));
+  message_digest::digest(localCipherKey, sizeof(localCipherKey),
+                         sha1_, s, sizeof(s));
   encryptor_.reset(new ARC4Encryptor());
   encryptor_->init(localCipherKey, sizeof(localCipherKey));
 
   unsigned char peerCipherKey[20];
   memcpy(s, initiator_?"keyB":"keyA", 4);
   sha1_->reset();
-  MessageDigestHelper::digest(peerCipherKey, sizeof(peerCipherKey),
-                              sha1_, s, sizeof(s));
+  message_digest::digest(peerCipherKey, sizeof(peerCipherKey),
+                         sha1_, s, sizeof(s));
   decryptor_.reset(new ARC4Decryptor());
   decryptor_->init(peerCipherKey, sizeof(peerCipherKey));
 
@@ -241,7 +241,7 @@ void MSEHandshake::createReq1Hash(unsigned char* md) const
   memcpy(buffer, "req1", 4);
   memcpy(buffer+4, secret_, KEY_LENGTH);
   sha1_->reset();
-  MessageDigestHelper::digest(md, 20, sha1_, buffer, 4+KEY_LENGTH);
+  message_digest::digest(md, 20, sha1_, buffer, 4+KEY_LENGTH);
 }
 
 void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoHash) const
@@ -251,14 +251,14 @@ void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoH
   memcpy(x+4, infoHash, INFO_HASH_LENGTH);
   unsigned char xh[20];
   sha1_->reset();
-  MessageDigestHelper::digest(xh, sizeof(xh), sha1_, x, sizeof(x));
+  message_digest::digest(xh, sizeof(xh), sha1_, x, sizeof(x));
 
   unsigned char y[4+96];
   memcpy(y, "req3", 4);
   memcpy(y+4, secret_, KEY_LENGTH);
   unsigned char yh[20];
   sha1_->reset();
-  MessageDigestHelper::digest(yh, sizeof(yh), sha1_, y, sizeof(y));
+  message_digest::digest(yh, sizeof(yh), sha1_, y, sizeof(y));
   
   for(size_t i = 0; i < 20; ++i) {
     md[i] = xh[i]^yh[i];

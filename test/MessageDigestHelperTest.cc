@@ -1,4 +1,4 @@
-#include "MessageDigestHelper.h"
+#include "message_digest_helper.h"
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -12,7 +12,6 @@ class MessageDigestHelperTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MessageDigestHelperTest);
   CPPUNIT_TEST(testHexDigestDiskWriter);
-  CPPUNIT_TEST(testDigest);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -21,7 +20,6 @@ public:
   }
 
   void testHexDigestDiskWriter();
-  void testDigest();
 };
 
 
@@ -33,21 +31,12 @@ void MessageDigestHelperTest::testHexDigestDiskWriter() {
   diskio->enableReadOnly();
   diskio->openExistingFile();
   CPPUNIT_ASSERT_EQUAL(std::string("608cabc0f2fa18c260cafd974516865c772363d5"),
-                       MessageDigestHelper::hexDigest
+                       message_digest::hexDigest
                        (MessageDigest::sha1(), diskio, 0, 4096));
 
   CPPUNIT_ASSERT_EQUAL(std::string("7a4a9ae537ebbbb826b1060e704490ad0f365ead"),
-                       MessageDigestHelper::hexDigest
+                       message_digest::hexDigest
                        (MessageDigest::sha1(), diskio, 5, 100));
-}
-
-void MessageDigestHelperTest::testDigest()
-{
-  std::string data = "aria2";
-  SharedHandle<MessageDigest> sha1 = MessageDigest::sha1();
-  sha1->update(data.data(), data.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("f36003f22b462ffa184390533c500d8989e9f681"),
-                       sha1->hexDigest());
 }
 
 } // namespace aria2

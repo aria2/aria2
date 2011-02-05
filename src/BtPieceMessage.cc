@@ -42,7 +42,7 @@
 #include "util.h"
 #include "message.h"
 #include "DlAbortEx.h"
-#include "MessageDigestHelper.h"
+#include "message_digest_helper.h"
 #include "DiskAdaptor.h"
 #include "Logger.h"
 #include "LogFactory.h"
@@ -223,7 +223,7 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
   } else {
     off_t offset = (off_t)piece->getIndex()*downloadContext_->getPieceLength();
     
-    return MessageDigestHelper::staticSHA1DigestHexDigest
+    return message_digest::staticSHA1DigestHexDigest
       (getPieceStorage()->getDiskAdaptor(), offset, piece->getLength())
       == downloadContext_->getPieceHash(piece->getIndex());
   }

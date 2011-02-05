@@ -291,7 +291,7 @@ SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	CheckIntegrityDispatcherCommand.cc CheckIntegrityDispatcherCommand.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
-	MessageDigestHelper.cc MessageDigestHelper.h\
+	message_digest_helper.cc message_digest_helper.h\
 	Checksum.cc Checksum.h\
 	ChunkChecksum.cc ChunkChecksum.h\
 	MessageDigest.cc MessageDigest.h\

@@ -84,7 +84,7 @@
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
-# include "MessageDigestHelper.h"
+# include "message_digest_helper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
 // For libc6 which doesn't define ULLONG_MAX properly because of broken limits.h
@@ -1324,8 +1324,7 @@ void generateRandomKey(unsigned char* key)
 #ifdef ENABLE_MESSAGE_DIGEST
   unsigned char bytes[40];
   generateRandomData(bytes, sizeof(bytes));
-  MessageDigestHelper::digest
-    (key, 20, MessageDigest::sha1(), bytes, sizeof(bytes));
+  message_digest::digest(key, 20, MessageDigest::sha1(), bytes, sizeof(bytes));
 #else // !ENABLE_MESSAGE_DIGEST
   generateRandomData(key, 20);
 #endif // !ENABLE_MESSAGE_DIGEST

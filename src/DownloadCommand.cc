@@ -64,7 +64,7 @@
 #include "SocketRecvBuffer.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
-# include "MessageDigestHelper.h"
+# include "message_digest_helper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
@@ -236,7 +236,7 @@ bool DownloadCommand::executeInternal() {
             messageDigest_->reset();
             validatePieceHash
               (segment, expectedPieceHash,
-               MessageDigestHelper::hexDigest
+               message_digest::hexDigest
                (messageDigest_,
                 getPieceStorage()->getDiskAdaptor(),
                 segment->getPosition(),

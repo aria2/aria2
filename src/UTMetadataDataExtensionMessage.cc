@@ -41,7 +41,7 @@
 #include "PieceStorage.h"
 #include "BtConstants.h"
 #include "MessageDigest.h"
-#include "MessageDigestHelper.h"
+#include "message_digest_helper.h"
 #include "bittorrent_helper.h"
 #include "DiskAdaptor.h"
 #include "Piece.h"
@@ -87,9 +87,9 @@ void UTMetadataDataExtensionMessage::doReceivedAction()
     if(pieceStorage_->downloadFinished()) {
       std::string metadata = util::toString(pieceStorage_->getDiskAdaptor());
       unsigned char infoHash[INFO_HASH_LENGTH];
-      MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
-                                  MessageDigest::sha1(),
-                                  metadata.data(), metadata.size());
+      message_digest::digest(infoHash, INFO_HASH_LENGTH,
+                             MessageDigest::sha1(),
+                             metadata.data(), metadata.size());
       if(memcmp(infoHash, bittorrent::getInfoHash(dctx_),
                 INFO_HASH_LENGTH) == 0) {
         A2_LOG_INFO("Got ut_metadata");

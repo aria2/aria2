@@ -41,7 +41,7 @@
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "MessageDigest.h"
-#include "MessageDigestHelper.h"
+#include "message_digest_helper.h"
 #include "fmt.h"
 
 namespace aria2 {
@@ -76,8 +76,8 @@ std::string DHTTokenTracker::generateToken
   memcpy(src, infoHash, DHT_ID_LENGTH);
   memcpy(src+DHT_ID_LENGTH+COMPACT_LEN_IPV6, secret, SECRET_SIZE);
   unsigned char md[20];
-  MessageDigestHelper::digest(md, sizeof(md), MessageDigest::sha1(),
-                              src, sizeof(src));
+  message_digest::digest(md, sizeof(md), MessageDigest::sha1(),
+                         src, sizeof(src));
   return std::string(&md[0], &md[sizeof(md)]);
 }
 

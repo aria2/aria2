@@ -39,7 +39,6 @@
 
 #include "util.h"
 #include "message.h"
-#include "MessageDigestHelper.h"
 #include "DiskAdaptor.h"
 #include "FileEntry.h"
 #include "RecoverableException.h"

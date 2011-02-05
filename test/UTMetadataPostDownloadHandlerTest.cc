@@ -13,7 +13,7 @@
 #include "DiskAdaptor.h"
 #include "util.h"
 #include "MessageDigest.h"
-#include "MessageDigestHelper.h"
+#include "message_digest_helper.h"
 #include "prefs.h"
 #include "RecoverableException.h"
 
@@ -73,7 +73,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     "d6:lengthi384e4:name19:aria2-0.8.2.tar.bz212:piece lengthi128e"
     "6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCe";
   unsigned char infoHash[20];
-  MessageDigestHelper::digest
+  message_digest::digest
     (infoHash, sizeof(infoHash), MessageDigest::sha1(),
      reinterpret_cast<const unsigned char*>(metadata.data()), metadata.size());
   dctx_->getFirstFileEntry()->setLength(metadata.size());

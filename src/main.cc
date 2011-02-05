@@ -77,7 +77,7 @@
 # include "MetalinkEntry.h"
 #endif // ENABLE_METALINK
 #ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigestHelper.h"
+# include "message_digest_helper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
 extern char* optarg;
@@ -196,7 +196,7 @@ error_code::Value main(int argc, char* argv[])
   A2_LOG_INFO(MSG_LOGGING_STARTED);
 
 #ifdef ENABLE_MESSAGE_DIGEST
-  MessageDigestHelper::staticSHA1DigestInit();
+  message_digest::staticSHA1DigestInit();
 #endif // ENABLE_MESSAGE_DIGEST
 
   if(op->getAsBool(PREF_DISABLE_IPV6)) {

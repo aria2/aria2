@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MessageDigestHelper.h"
+#include "message_digest_helper.h"
 
 #include <cstring>
 #include <cstdlib>
@@ -46,27 +46,33 @@
 
 namespace aria2 {
 
-SharedHandle<MessageDigest> MessageDigestHelper::sha1Ctx_;
+namespace message_digest {
 
-void MessageDigestHelper::staticSHA1DigestInit()
+namespace {
+
+SharedHandle<MessageDigest> sha1Ctx_;
+
+} // namespace
+
+void staticSHA1DigestInit()
 {
   staticSHA1DigestFree();
   sha1Ctx_ = MessageDigest::sha1();
 }
 
-void MessageDigestHelper::staticSHA1DigestFree()
+void staticSHA1DigestFree()
 {
   sha1Ctx_.reset();
 }
 
-std::string MessageDigestHelper::staticSHA1DigestHexDigest
+std::string staticSHA1DigestHexDigest
 (const BinaryStreamHandle& bs, off_t offset, uint64_t length)
 {
   sha1Ctx_->reset();
   return hexDigest(sha1Ctx_, bs, offset, length);
 }
 
-std::string MessageDigestHelper::hexDigest
+std::string hexDigest
 (const SharedHandle<MessageDigest>& ctx,
  const SharedHandle<BinaryStream>& bs,
  off_t offset, uint64_t length)
@@ -94,7 +100,7 @@ std::string MessageDigestHelper::hexDigest
   return ctx->hexDigest();
 }
 
-void MessageDigestHelper::digest
+void digest
 (unsigned char* md, size_t mdLength,
  const SharedHandle<MessageDigest>& ctx, const void* data, size_t length)
 {
@@ -109,5 +115,7 @@ void MessageDigestHelper::digest
   ctx->update(data, length);
   ctx->digest(md);
 }
+
+} // namespace message_digest
 
 } // namespace aria2

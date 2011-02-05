@@ -15,7 +15,7 @@
 #include "DefaultDiskWriter.h"
 #include "fmt.h"
 #ifdef ENABLE_MESSAGE_DIGEST
-# include "MessageDigestHelper.h"
+# include "message_digest_helper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
@@ -81,7 +81,7 @@ std::string fileHexDigest
 {
   SharedHandle<DiskWriter> writer(new DefaultDiskWriter(filename));
   writer->openExistingFile();
-  return MessageDigestHelper::hexDigest(ctx, writer, 0, writer->size());
+  return message_digest::hexDigest(ctx, writer, 0, writer->size());
 }
 #endif // ENABLE_MESSAGE_DIGEST
 

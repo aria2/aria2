@@ -14,7 +14,6 @@
 #include "MockSegment.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
-# include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {

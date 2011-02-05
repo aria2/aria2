@@ -46,47 +46,44 @@ namespace aria2 {
 class BinaryStream;
 class MessageDigest;
 
-class MessageDigestHelper {
-private:
-  static SharedHandle<MessageDigest> sha1Ctx_;
+namespace message_digest {
 
-  MessageDigestHelper();
-public:
-  /**
-   * staticSHA1DigestInit(), staticSHA1DigestFree(), staticSHA1Digest()
-   * use statically declared MessageDigest sha1Ctx_.
-   */
-  /**
-   * Initializes sha1Ctx_
-   */
-  static void staticSHA1DigestInit();
+/**
+ * staticSHA1DigestInit(), staticSHA1DigestFree(), staticSHA1Digest()
+ * use statically declared MessageDigest sha1Ctx_.
+ */
+/**
+ * Initializes sha1Ctx_
+ */
+void staticSHA1DigestInit();
 
-  /**
-   * Frees allocated resources for sha1Ctx_
-   */
-  static void staticSHA1DigestFree();
+/**
+ * Frees allocated resources for sha1Ctx_
+ */
+void staticSHA1DigestFree();
 
-  static std::string staticSHA1DigestHexDigest
-  (const SharedHandle<BinaryStream>& bs, off_t offset, uint64_t length);
+std::string staticSHA1DigestHexDigest
+(const SharedHandle<BinaryStream>& bs, off_t offset, uint64_t length);
 
-  /**
-   * ctx must be initialized or reseted before calling this function.
-   * Returns hex digest string, not *raw* digest
-   */
-  static std::string hexDigest
-  (const SharedHandle<MessageDigest>& ctx,
-   const SharedHandle<BinaryStream>& bs,
-   off_t offset, uint64_t length);
+/**
+ * ctx must be initialized or reseted before calling this function.
+ * Returns hex digest string, not *raw* digest
+ */
+std::string hexDigest
+(const SharedHandle<MessageDigest>& ctx,
+ const SharedHandle<BinaryStream>& bs,
+ off_t offset, uint64_t length);
 
-  /**
-   * Stores *raw* message digest into md.
-   * Throws exception when mdLength is less than the size of message digest.
-   */
-  static void digest
-  (unsigned char* md, size_t mdLength,
-   const SharedHandle<MessageDigest>& ctx,
-   const void* data, size_t length);
-};
+/**
+ * Stores *raw* message digest into md.
+ * Throws exception when mdLength is less than the size of message digest.
+ */
+void digest
+(unsigned char* md, size_t mdLength,
+ const SharedHandle<MessageDigest>& ctx,
+ const void* data, size_t length);
+
+} // namespace message_digest
 
 } // namespace aria2
 
