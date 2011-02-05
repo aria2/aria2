@@ -59,11 +59,16 @@
 
 namespace aria2 {
 
-const unsigned char* MSEHandshake::PRIME = reinterpret_cast<const unsigned char*>("FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A63A36210000000000090563");
+namespace {
 
-const unsigned char* MSEHandshake::GENERATOR = reinterpret_cast<const unsigned char*>("2");
+const size_t MAX_PAD_LENGTH = 512;
+const size_t CRYPTO_BITFIELD_LENGTH = 4;
+const unsigned char VC[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-const unsigned char MSEHandshake::VC[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+const unsigned char* PRIME = reinterpret_cast<const unsigned char*>("FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A63A36210000000000090563");
+const unsigned char* GENERATOR = reinterpret_cast<const unsigned char*>("2");
+
+} // namespace
 
 MSEHandshake::MSEHandshake
 (cuid_t cuid,

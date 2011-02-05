@@ -70,15 +70,8 @@ public:
 
 private:
   static const size_t PRIME_BITS = 768;
-  
   static const size_t KEY_LENGTH = (PRIME_BITS+7)/8;
-  
-  static const size_t MAX_PAD_LENGTH = 512;
-
   static const size_t VC_LENGTH = 8;
-
-  static const size_t CRYPTO_BITFIELD_LENGTH = 4;
-
   // The largest buffering occurs when receiver receives step2
   // handshake.  We believe that IA is less than or equal to
   // BtHandshakeMessage::MESSAGE_LENGTH
@@ -107,12 +100,6 @@ private:
   uint16_t iaLength_;
   unsigned char* ia_;
   SharedHandle<MessageDigest> sha1_;
-
-  static const unsigned char* PRIME;
-
-  static const unsigned char* GENERATOR;
-
-  static const unsigned char VC[VC_LENGTH];
 
   void encryptAndSendData(const unsigned char* data, size_t length);
 
