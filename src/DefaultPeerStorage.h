@@ -52,6 +52,7 @@ class DefaultPeerStorage : public PeerStorage {
 private:
   SharedHandle<BtRuntime> btRuntime_;
   SharedHandle<PieceStorage> pieceStorage_;
+  size_t maxPeerListSize_;
   std::deque<SharedHandle<Peer> > peers_;
   std::deque<SharedHandle<Peer> > droppedPeers_;
   uint64_t removedPeerSessionDownloadLength_;
@@ -113,6 +114,11 @@ public:
   void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
+
+  void setMaxPeerListSize(size_t maxPeerListSize)
+  {
+    maxPeerListSize_ = maxPeerListSize;
+  }
 };
 
 } // namespace aria2

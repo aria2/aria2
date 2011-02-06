@@ -98,7 +98,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 void DefaultPeerStorageTest::testAddPeer() {
   DefaultPeerStorage ps;
   SharedHandle<BtRuntime> btRuntime(new BtRuntime());
-  btRuntime->setMaxPeers(3);
+  ps.setMaxPeerListSize(3);
   ps.setBtRuntime(btRuntime);
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));

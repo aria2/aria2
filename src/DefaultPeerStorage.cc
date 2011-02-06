@@ -55,7 +55,8 @@ const int MAX_PEER_LIST_SIZE = 1024;
 } // namespace
 
 DefaultPeerStorage::DefaultPeerStorage()
-  : removedPeerSessionDownloadLength_(0),
+  : maxPeerListSize_(MAX_PEER_LIST_SIZE),
+    removedPeerSessionDownloadLength_(0),
     removedPeerSessionUploadLength_(0),
     seederStateChoke_(new BtSeederStateChoke()),
     leecherStateChoke_(new BtLeecherStateChoke()),
@@ -89,18 +90,6 @@ bool DefaultPeerStorage::isPeerAlreadyAdded(const SharedHandle<Peer>& peer)
                       FindIdenticalPeer(peer)) != peers_.end();
 }
 
-namespace {
-size_t calculateMaxPeerListSize(const SharedHandle<BtRuntime>& btRuntime)
-{
-  if(!btRuntime) {
-    return MAX_PEER_LIST_SIZE;
-  }
-  return btRuntime->getMaxPeers() == 0 ?
-    MAX_PEER_LIST_SIZE :
-    btRuntime->getMaxPeers()+(btRuntime->getMaxPeers() >> 2);
-}
-} // namespace
-
 bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
   if(isPeerAlreadyAdded(peer)) {
     A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
@@ -108,9 +97,9 @@ bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
                      peer->getIPAddress().c_str(), peer->getPort()));
     return false;
   }
-  size_t maxPeerListSize = calculateMaxPeerListSize(btRuntime_);
-  if(peers_.size() >= maxPeerListSize) {
-    deleteUnusedPeer(peers_.size()-maxPeerListSize+1);
+  const size_t peerListSize = peers_.size();
+  if(peerListSize >= maxPeerListSize_) {
+    deleteUnusedPeer(peerListSize-maxPeerListSize_+1);
   }
   peers_.push_front(peer);
   A2_LOG_DEBUG(fmt("Now peer list contains %lu peers",
@@ -120,10 +109,9 @@ bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
 
 void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
 {
-  size_t maxPeerListSize = calculateMaxPeerListSize(btRuntime_);
   size_t added = 0;
   for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
-        eoi = peers.end(); itr != eoi && added < maxPeerListSize; ++itr) {
+        eoi = peers.end(); itr != eoi && added < maxPeerListSize_; ++itr) {
     const SharedHandle<Peer>& peer = *itr;
     if(isPeerAlreadyAdded(peer)) {
       A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
@@ -137,8 +125,9 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
     peers_.push_front(peer);
     ++added;
   }
-  if(peers_.size() >= maxPeerListSize) {
-    deleteUnusedPeer(peers_.size()-maxPeerListSize);
+  const size_t peerListSize = peers_.size();
+  if(peerListSize >= maxPeerListSize_) {
+    deleteUnusedPeer(peerListSize-maxPeerListSize_);
   }
   A2_LOG_DEBUG(fmt("Now peer list contains %lu peers",
                    static_cast<unsigned long>(peers_.size())));
