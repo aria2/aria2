@@ -76,8 +76,6 @@ void DHTPeerLookupTask::onReceivedInternal
   tokenStorage_[util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] =
     message->getToken();
   peerStorage_->addPeer(message->getValues());
-  peers_.insert(peers_.end(),
-                message->getValues().begin(), message->getValues().end());
   A2_LOG_INFO(fmt("Received %lu peers.",
                   static_cast<unsigned long>(message->getValues().size())));
 }

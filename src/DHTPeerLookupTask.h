@@ -51,8 +51,6 @@ class DHTPeerLookupTask:
 private:
   std::map<std::string, std::string> tokenStorage_;
 
-  std::vector<SharedHandle<Peer> > peers_;
-
   SharedHandle<PeerStorage> peerStorage_;
 
   SharedHandle<BtRuntime> btRuntime_;
@@ -72,11 +70,6 @@ public:
 
   virtual void onFinish();
   
-  const std::vector<SharedHandle<Peer> >& getPeers() const
-  {
-    return peers_;
-  }
-
   void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
