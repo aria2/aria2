@@ -75,12 +75,13 @@ bool DHTGetPeersCommand::execute()
   if(btRuntime_->isHalt()) {
     return true;
   }
+  time_t elapsed = lastGetPeerTime_.difference(global::wallclock);
   if(!task_ &&
-     ((numRetry_ > 0 &&
-       lastGetPeerTime_.difference(global::wallclock) >= (time_t)numRetry_*5) ||
-      lastGetPeerTime_.difference(global::wallclock) >= GET_PEER_INTERVAL ||
-      (btRuntime_->lessThanMinPeers() &&
-       lastGetPeerTime_.difference(global::wallclock) >= GET_PEER_MIN_INTERVAL
+     ((numRetry_ > 0 && elapsed >= static_cast<time_t>(numRetry_*5)) ||
+      elapsed >= GET_PEER_INTERVAL ||
+      (((btRuntime_->lessThanMinPeers() && elapsed >= GET_PEER_INTERVAL_LOW) ||
+        (btRuntime_->getConnections() == 0 &&
+         elapsed >= GET_PEER_INTERVAL_ZERO))
        && !requestGroup_->downloadFinished()))) {
     A2_LOG_DEBUG(fmt("Issuing PeerLookup for infoHash=%s",
                      bittorrent::getInfoHashString

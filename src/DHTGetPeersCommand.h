@@ -54,7 +54,9 @@ class DHTGetPeersCommand:public Command {
 private:
   static const time_t GET_PEER_INTERVAL = (15*60);
 
-  static const time_t GET_PEER_MIN_INTERVAL = (5*60);
+  static const time_t GET_PEER_INTERVAL_LOW = (5*60);
+
+  static const time_t GET_PEER_INTERVAL_ZERO = 60;
 
   static const size_t MAX_RETRIES = 10;
 
