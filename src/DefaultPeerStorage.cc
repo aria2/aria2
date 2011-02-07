@@ -51,7 +51,10 @@
 namespace aria2 {
 
 namespace {
-const int MAX_PEER_LIST_SIZE = 1024;
+
+const size_t MAX_PEER_LIST_SIZE = 1024;
+const size_t MAX_PEER_LIST_UPDATE = 100;
+
 } // namespace
 
 DefaultPeerStorage::DefaultPeerStorage()
@@ -110,8 +113,9 @@ bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
 void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
 {
   size_t added = 0;
+  size_t addMax = std::min(maxPeerListSize_, MAX_PEER_LIST_UPDATE);
   for(std::vector<SharedHandle<Peer> >::const_iterator itr = peers.begin(),
-        eoi = peers.end(); itr != eoi && added < maxPeerListSize_; ++itr) {
+        eoi = peers.end(); itr != eoi && added < addMax; ++itr) {
     const SharedHandle<Peer>& peer = *itr;
     if(isPeerAlreadyAdded(peer)) {
       A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
