@@ -46,6 +46,15 @@
 
 namespace aria2 {
 
+namespace {
+
+// This is the hard limit of the number of "fresh peer" and "dropped
+// peer".  This number is treated as the sum of IPv4 and IPv6 peers.
+const size_t DEFAULT_MAX_FRESH_PEER = 50;
+const size_t DEFAULT_MAX_DROPPED_PEER = 50;
+
+} // namespace
+
 const std::string UTPexExtensionMessage::EXTENSION_NAME = "ut_pex";
 
 UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):

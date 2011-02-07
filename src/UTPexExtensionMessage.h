@@ -65,7 +65,6 @@ private:
 
   size_t maxDroppedPeer_;
 
-
   std::pair<std::pair<std::string, std::string>,
             std::pair<std::string, std::string> >
   createCompactPeerListAndFlag(const std::vector<SharedHandle<Peer> >& peers);
@@ -131,10 +130,6 @@ public:
   }
 
   static const time_t DEFAULT_INTERVAL = 60;
-
-  static const size_t DEFAULT_MAX_FRESH_PEER = 50;
-
-  static const size_t DEFAULT_MAX_DROPPED_PEER = 50;
 };
 
 typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
