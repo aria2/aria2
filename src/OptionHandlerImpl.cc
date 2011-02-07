@@ -628,10 +628,13 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
   } else {
     Request req;
     std::string uri;
-    if(util::startsWith(optarg, "http://")) {
+    if(util::startsWith(optarg, "http://") ||
+       util::startsWith(optarg, "https://") ||
+       util::startsWith(optarg, "ftp://")) {
       uri = optarg;
     } else {
-      uri = "http://"+optarg;
+      uri = "http://";
+      uri += optarg;
     }
     if(!req.setUri(uri)) {
       throw DL_ABORT_EX(_("unrecognized proxy format"));
