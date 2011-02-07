@@ -141,6 +141,7 @@ void DownloadEngine::run()
   cp.reset(0);
   while(!commands_.empty() || !routineCommands_.empty()) {
     global::wallclock.reset();
+    calculateStatistics();
     if(cp.differenceInMillis(global::wallclock) >= refreshInterval_) {
       refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
       cp = global::wallclock;
@@ -154,7 +155,6 @@ void DownloadEngine::run()
       waitData();
     }
     noWait_ = false;
-    calculateStatistics();
   }
   onEndOfRun();
 }
