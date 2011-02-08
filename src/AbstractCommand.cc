@@ -240,13 +240,17 @@ bool AbstractCommand::execute() {
           e_->getRequestGroupMan()->getOrCreateServerStat(req_->getHost(),
                                                           req_->getProtocol());
         ss->setError();
-        // Purging IP address cache to renew IP address.
-        A2_LOG_DEBUG(fmt("CUID#%lld - Marking IP address %s as bad",
-                         getCuid(),
-                         req_->getConnectedAddr().c_str()));
-        e_->markBadIPAddress(req_->getConnectedHostname(),
-                             req_->getConnectedAddr(),
-                             req_->getConnectedPort());
+        // When DNS query was timeout, req_->getConnectedAddr() is
+        // empty.
+        if(!req_->getConnectedAddr().empty()) {
+          // Purging IP address cache to renew IP address.
+          A2_LOG_DEBUG(fmt("CUID#%lld - Marking IP address %s as bad",
+                           getCuid(),
+                           req_->getConnectedAddr().c_str()));
+          e_->markBadIPAddress(req_->getConnectedHostname(),
+                               req_->getConnectedAddr(),
+                               req_->getConnectedPort());
+        }
         if(e_->findCachedIPAddress
            (req_->getConnectedHostname(), req_->getConnectedPort()).empty()) {
           A2_LOG_DEBUG(fmt("CUID#%lld - All IP addresses were marked bad."
