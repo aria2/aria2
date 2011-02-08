@@ -857,13 +857,13 @@ int packcompact
   for(struct addrinfo* rp = res; rp; rp = rp->ai_next) {
     if(rp->ai_family == AF_INET) {
       struct sockaddr_in* in =
-        reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
+        reinterpret_cast<struct sockaddr_in*>(rp->ai_addr);
       memcpy(compact, &(in->sin_addr), 4);
       memcpy(compact+4, &portN, sizeof(portN));
       return COMPACT_LEN_IPV4;
     } else if(rp->ai_family == AF_INET6) {
       struct sockaddr_in6* in6 =
-        reinterpret_cast<struct sockaddr_in6*>(res->ai_addr);
+        reinterpret_cast<struct sockaddr_in6*>(rp->ai_addr);
       memcpy(compact, &(in6->sin6_addr), 16);
       memcpy(compact+16, &portN, sizeof(portN));
       return COMPACT_LEN_IPV6;
