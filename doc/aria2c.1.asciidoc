@@ -810,6 +810,16 @@ Advanced Options
   Enable asynchronous DNS.
   Default: 'true'
 
+[[aria2_optref_async_dns_server]]*--async-dns-server*=IPADDRESS[,...]::
+
+  Comma separated list of DNS server address used in asynchronous DNS
+  resolver. Usually asynchronous DNS resolver reads DNS server
+  addresses from '/etc/resolv.conf'. When this option is used, it uses
+  DNS servers specified in this option instead of ones in
+  '/etc/resolv.conf'. You can specify both IPv4 and IPv6 address. This
+  option is useful when the system does not have '/etc/resolv.conf' and
+  user does not have the permission to create it.
+
 [[aria2_optref_auto_file_renaming]]*--auto-file-renaming*[='true'|'false']::
   Rename file name if the same file already exists.
   This option works only in HTTP(S)/FTP download.
