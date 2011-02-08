@@ -52,6 +52,16 @@
 
 namespace aria2 {
 
+namespace {
+
+const time_t GET_PEER_INTERVAL = (15*60);
+// Interval when the size of peer list is low.
+const time_t GET_PEER_INTERVAL_LOW = (5*60);
+// Interval when the peer list is empty.
+const time_t GET_PEER_INTERVAL_ZERO = 60;
+
+} // namespace
+
 DHTGetPeersCommand::DHTGetPeersCommand
 (cuid_t cuid,
  RequestGroup* requestGroup,
@@ -59,7 +69,6 @@ DHTGetPeersCommand::DHTGetPeersCommand
   : Command(cuid),
     requestGroup_(requestGroup),
     e_(e),
-    numRetry_(0),
     lastGetPeerTime_(0)
 {
   requestGroup_->increaseNumCommand();
@@ -77,8 +86,7 @@ bool DHTGetPeersCommand::execute()
   }
   time_t elapsed = lastGetPeerTime_.difference(global::wallclock);
   if(!task_ &&
-     ((numRetry_ > 0 && elapsed >= static_cast<time_t>(numRetry_*5)) ||
-      elapsed >= GET_PEER_INTERVAL ||
+     (elapsed >= GET_PEER_INTERVAL ||
       (((btRuntime_->lessThanMinPeers() && elapsed >= GET_PEER_INTERVAL_LOW) ||
         (btRuntime_->getConnections() == 0 &&
          elapsed >= GET_PEER_INTERVAL_ZERO))
@@ -91,11 +99,6 @@ bool DHTGetPeersCommand::execute()
     taskQueue_->addPeriodicTask2(task_);
   } else if(task_ && task_->finished()) {
     lastGetPeerTime_ = global::wallclock;
-    if(numRetry_ < MAX_RETRIES && btRuntime_->lessThanMinPeers()) {
-      ++numRetry_;
-    } else {
-      numRetry_ = 0;
-    }
     task_.reset();
   }
 

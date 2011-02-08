@@ -52,14 +52,6 @@ class PeerStorage;
 
 class DHTGetPeersCommand:public Command {
 private:
-  static const time_t GET_PEER_INTERVAL = (15*60);
-
-  static const time_t GET_PEER_INTERVAL_LOW = (5*60);
-
-  static const time_t GET_PEER_INTERVAL_ZERO = 60;
-
-  static const size_t MAX_RETRIES = 10;
-
   RequestGroup* requestGroup_;
 
   SharedHandle<BtRuntime> btRuntime_;
@@ -73,8 +65,6 @@ private:
   SharedHandle<DHTTaskFactory> taskFactory_;
 
   SharedHandle<DHTTask> task_;
-
-  size_t numRetry_;
 
   Timer lastGetPeerTime_;
 public:
