@@ -753,3 +753,14 @@
     "                              option may result high memory consumption after\n" \
     "                              thousands of downloads. Specifying 0 means no\n" \
     "                              download result is kept.")
+#define TEXT_ASYNC_DNS_SERVER                   \
+  _(" --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server address\n" \
+    "                              used in asynchronous DNS resolver. Usually\n" \
+    "                              asynchronous DNS resolver reads DNS server\n" \
+    "                              addresses from /etc/resolv.conf. When this option\n" \
+    "                              is used, it uses DNS servers specified in this\n" \
+    "                              option instead of ones in /etc/resolv.conf. You\n" \
+    "                              can specify both IPv4 and IPv6 address. This\n" \
+    "                              option is useful when the system does not have\n" \
+    "                              /etc/resolv.conf and user does not have the\n" \
+    "                              permission to create it.")

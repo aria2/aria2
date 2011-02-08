@@ -84,7 +84,7 @@ bool DHTEntryPointNameResolveCommand::execute()
     } else {
       family = AF_INET;
     }
-    resolver_.reset(new AsyncNameResolver(family));
+    resolver_.reset(new AsyncNameResolver(family, e_->getAsyncDNSServers()));
   }
 #endif // ENABLE_ASYNC_DNS
   try {

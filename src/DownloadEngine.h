@@ -135,6 +135,10 @@ private:
 
   CUIDCounter cuidCounter_;
 
+#ifdef ENABLE_ASYNC_DNS
+  ares_addr_node* asyncDNSServers_;
+#endif // ENABLE_ASYNC_DNS
+
   SharedHandle<DNSCache> dnsCache_;
 
   SharedHandle<AuthConfigFactory> authConfigFactory_;
@@ -325,6 +329,13 @@ public:
   const std::string getSessionId() const
   {
     return sessionId_;
+  }
+
+  void setAsyncDNSServers(ares_addr_node* asyncDNSServers);
+
+  ares_addr_node* getAsyncDNSServers() const
+  {
+    return asyncDNSServers_;
   }
 };
 

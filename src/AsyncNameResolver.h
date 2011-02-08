@@ -70,7 +70,7 @@ private:
   std::string error_;
   std::string hostname_;
 public:
-  AsyncNameResolver(int family);
+  AsyncNameResolver(int family, ares_addr_node* servers);
 
   ~AsyncNameResolver();
 

@@ -204,6 +204,8 @@ const std::string PREF_ENABLE_ASYNC_DNS6("enable-async-dns6");
 const std::string PREF_MAX_DOWNLOAD_RESULT("max-download-result");
 // value: 1*digit
 const std::string PREF_RETRY_WAIT("retry-wait");
+// value: string
+const std::string PREF_ASYNC_DNS_SERVER("async-dns-server");
 
 /**
  * FTP related preferences

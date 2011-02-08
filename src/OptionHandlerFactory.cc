@@ -205,6 +205,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_ASYNC_DNS_SERVER,
+                                    TEXT_ASYNC_DNS_SERVER,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
 #endif // ENABLE_ASYNC_DNS
 #ifdef ENABLE_DIRECT_IO
   {

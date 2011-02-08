@@ -208,6 +208,8 @@ extern const std::string PREF_ENABLE_ASYNC_DNS6;
 extern const std::string PREF_MAX_DOWNLOAD_RESULT;
 // value: 1*digit
 extern const std::string PREF_RETRY_WAIT;
+// value: string
+extern const std::string PREF_ASYNC_DNS_SERVER;
 
 /**
  * FTP related preferences

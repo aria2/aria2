@@ -36,6 +36,7 @@
 
 #include <signal.h>
 
+#include <cstring>
 #include <ostream>
 
 #include "RequestGroupMan.h"
@@ -89,6 +90,50 @@ void handler(int signal) {
   }
 }
 } // namespace
+
+namespace {
+
+ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
+{
+  std::vector<std::string> servers;
+  util::split(serversOpt,
+              std::back_inserter(servers),
+              A2STR::COMMA_C,
+              true /* doStrip */);
+  ares_addr_node root;
+  root.next = 0;
+  ares_addr_node* tail = &root;
+  for(std::vector<std::string>::const_iterator i = servers.begin(),
+        eoi = servers.end(); i != eoi; ++i) {
+    struct addrinfo* res;
+    int s = callGetaddrinfo(&res, (*i).c_str(), 0, AF_UNSPEC,
+                            0, AI_NUMERICHOST, 0);
+    if(s != 0) {
+      continue;
+    }
+    WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
+    if(res) {
+      ares_addr_node* node = new ares_addr_node();
+      node->next = 0;
+      node->family = res->ai_family;
+      if(node->family == AF_INET) {
+        struct sockaddr_in* in =
+          reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
+        memcpy(&node->addr.addr4, &(in->sin_addr), 4);
+      } else {
+        struct sockaddr_in6* in =
+          reinterpret_cast<struct sockaddr_in6*>(res->ai_addr);
+        memcpy(&node->addr.addr6, &(in->sin6_addr), 16);
+      }
+      tail->next = node;
+      tail = node;
+    }
+  }
+  return root.next;
+}
+
+} // namespace
+
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
@@ -170,6 +215,10 @@ error_code::Value MultiUrlRequestInfo::execute()
     }
     SocketCore::setTLSContext(tlsContext);
 #endif
+    ares_addr_node* asyncDNSServers =
+      parseAsyncDNSServers(option_->get(PREF_ASYNC_DNS_SERVER));
+    e->setAsyncDNSServers(asyncDNSServers);
+
     if(!Timer::monotonicClock()) {
       A2_LOG_WARN("Don't change system time while aria2c is running."
                   " Doing this may make aria2c hang for long time.");

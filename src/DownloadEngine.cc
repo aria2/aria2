@@ -95,6 +95,9 @@ DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
 #ifdef ENABLE_BITTORRENT
     btRegistry_(new BtRegistry()),
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_ASYNC_DNS
+    asyncDNSServers_(0),
+#endif // ENABLE_ASYNC_DNS
     dnsCache_(new DNSCache())
 {
   unsigned char sessionId[20];
@@ -104,6 +107,7 @@ DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
 
 DownloadEngine::~DownloadEngine() {
   cleanQueue();
+  setAsyncDNSServers(0);
 }
 
 void DownloadEngine::cleanQueue() {
@@ -558,6 +562,17 @@ void DownloadEngine::setCheckIntegrityMan
 (const SharedHandle<CheckIntegrityMan>& ciman)
 {
   checkIntegrityMan_ = ciman;
+}
+
+void DownloadEngine::setAsyncDNSServers(ares_addr_node* asyncDNSServers)
+{
+  ares_addr_node* node = asyncDNSServers_;
+  while(node) {
+    ares_addr_node* next = node->next;
+    delete node;
+    node = next;
+  }
+  asyncDNSServers_ = asyncDNSServers;
 }
 
 } // namespace aria2

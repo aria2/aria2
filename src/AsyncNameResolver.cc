@@ -37,6 +37,7 @@
 #include <cstring>
 
 #include "A2STR.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -77,12 +78,18 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
   }
 }
 
-AsyncNameResolver::AsyncNameResolver(int family):
+AsyncNameResolver::AsyncNameResolver(int family, ares_addr_node* servers):
   status_(STATUS_READY),
   family_(family)
 {
   // TODO evaluate return value
   ares_init(&channel_);
+  if(servers) {
+    // ares_set_servers has been added since c-ares 1.7.1
+    if(ares_set_servers(channel_, servers) != ARES_SUCCESS) {
+      A2_LOG_DEBUG("ares_set_servers failed");
+    }
+  }
 }
 
 AsyncNameResolver::~AsyncNameResolver()
