@@ -89,6 +89,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_ASYNC_DNS_SERVER,
+                                    TEXT_ASYNC_DNS_SERVER,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
 #endif // ENABLE_ASYNC_DNS
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
@@ -202,14 +210,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_ENABLE_ASYNC_DNS6,
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
-    op->addTag(TAG_ADVANCED);
-    handlers.push_back(op);
-  }
-  {
-    SharedHandle<OptionHandler> op(new DefaultOptionHandler
-                                   (PREF_ASYNC_DNS_SERVER,
-                                    TEXT_ASYNC_DNS_SERVER,
-                                    NO_DEFAULT_VALUE));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
