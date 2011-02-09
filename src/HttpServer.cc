@@ -48,6 +48,7 @@
 #include "a2functional.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
+#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -151,10 +152,14 @@ void HttpServer::feedResponse(const std::string& status,
                               const std::string& text,
                               const std::string& contentType)
 {
+  std::string httpDate = Time().toHTTPDate();
   std::string header = "HTTP/1.1 ";
   strappend(header, status, "\r\n",
-            "Content-Type: ", contentType, "\r\n",
-            "Content-Length: ", util::uitos(text.size()), "\r\n");
+            "Date: ", httpDate, "\r\n",
+            "Content-Type: ", contentType, "\r\n");
+  strappend(header, "Content-Length: ", util::uitos(text.size()), "\r\n",
+            "Expires: ", httpDate, "\r\n",
+            "Cache-Control: no-cache\r\n");
   if(supportsGZip()) {
     header += "Content-Encoding: gzip\r\n";
   }
