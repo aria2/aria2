@@ -88,7 +88,8 @@ HTTP/FTP Options
   defined proxy, use "".  You can override this setting and specify a
   proxy server for a particular protocol using *<<aria2_optref_http_proxy, --http-proxy>>*,
   *<<aria2_optref_https_proxy, --https-proxy>>* and *<<aria2_optref_ftp_proxy, --ftp-proxy>>* options.  This affects all URIs.
-  The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT]
+  The format of PROXY is [\\http://][USER:PASSWORD@]HOST[:PORT].
+  See also *<<_environment, ENVIRONMENT>>* section.
 
 [NOTE]
 
@@ -1310,6 +1311,12 @@ all_proxy [\\http://][USER:PASSWORD@]HOST[:PORT]::
   Specify proxy server for use if no protocol-specific proxy is specified.
   Overrides all-proxy value in configuration file.
   The command-line option *<<aria2_optref_all_proxy, --all-proxy>>* overrides this value.
+
+[NOTE]
+
+Although aria2 accepts ftp:// and https:// scheme in proxy URI, it
+simply assumes that http:// is specified and does not change its
+behavior based on the specified scheme.
 
 no_proxy [DOMAIN,...]::
 
