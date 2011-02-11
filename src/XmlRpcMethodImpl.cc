@@ -622,7 +622,7 @@ void gatherBitTorrentMetadata
  const SharedHandle<TorrentAttribute>& torrentAttrs)
 {
   if(!torrentAttrs->comment.empty()) {
-    btDict->put(KEY_COMMENT, util::encodeNonUtf8(torrentAttrs->comment));
+    btDict->put(KEY_COMMENT, torrentAttrs->comment);
   }
   if(torrentAttrs->creationDate) {
     btDict->put(KEY_CREATION_DATE, Integer::g(torrentAttrs->creationDate));
@@ -644,7 +644,7 @@ void gatherBitTorrentMetadata
   btDict->put(KEY_ANNOUNCE_LIST, destAnnounceList);
   if(!torrentAttrs->metadata.empty()) {
     SharedHandle<Dict> infoDict = Dict::g();
-    infoDict->put(KEY_NAME, util::encodeNonUtf8(torrentAttrs->name));
+    infoDict->put(KEY_NAME, torrentAttrs->name);
     btDict->put(KEY_INFO, infoDict);
   }
 }

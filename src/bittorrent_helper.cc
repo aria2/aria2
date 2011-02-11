@@ -144,8 +144,9 @@ void extractUrlList
 
     virtual void visit(const String& v)
     {
-      uris_.push_back(v.s());
-      torrent_->urlList.push_back(v.s());
+      std::string utf8Uri = util::encodeNonUtf8(v.s());
+      uris_.push_back(utf8Uri);
+      torrent_->urlList.push_back(utf8Uri);
     }
 
     virtual void visit(const Integer& v) {}
@@ -156,8 +157,9 @@ void extractUrlList
           itr != eoi; ++itr) {
         const String* uri = asString(*itr);
         if(uri) {
-          uris_.push_back(uri->s());
-          torrent_->urlList.push_back(uri->s());
+          std::string utf8Uri = util::encodeNonUtf8(uri->s());
+          uris_.push_back(utf8Uri);
+          torrent_->urlList.push_back(utf8Uri);
         }
       }
     }
@@ -198,7 +200,6 @@ void extractFileEntries
  const std::string& overrideName,
  const std::vector<std::string>& urlList)
 {
-  std::string name;
   std::string utf8Name;
   if(overrideName.empty()) {
     std::string nameKey;
@@ -216,14 +217,13 @@ void extractFileEntries
                nameData->s().c_str()),
            error_code::BITTORRENT_PARSE_ERROR);
       }
-      name = nameData->s();
     } else {
-      name = utf8Name = strconcat(File(defaultName).getBasename(), ".file");
+      utf8Name = strconcat(File(defaultName).getBasename(), ".file");
     }
   } else {
-    name = utf8Name = overrideName;
+    utf8Name = overrideName;
   }
-  torrent->name = name;
+  torrent->name = utf8Name;
   std::vector<SharedHandle<FileEntry> > fileEntries;
   const List* filesList = asList(infoDict->get(C_FILES));
   if(filesList) {
@@ -258,7 +258,7 @@ void extractFileEntries
       }
       
       std::vector<std::string> pathelem(pathList->size()+1);
-      pathelem[0] = name;
+      pathelem[0] = utf8Name;
       std::vector<std::string>::iterator pathelemOutItr = pathelem.begin();
       ++pathelemOutItr;
       for(List::ValueType::const_iterator itr = pathList->begin(),
@@ -271,7 +271,6 @@ void extractFileEntries
                              error_code::BITTORRENT_PARSE_ERROR);
         }
       }
-      std::string path = strjoin(pathelem.begin(), pathelem.end(), '/');
       std::string utf8Path = strjoin(pathelem.begin(), pathelem.end(), '/',
                                      std::ptr_fun(util::encodeNonUtf8));
       if(util::detectDirTraversal(utf8Path)) {
@@ -288,7 +287,7 @@ void extractFileEntries
         (new FileEntry(util::applyDir(option->get(PREF_DIR),
                                       util::escapePath(utf8Path)),
                        fileLengthData->i(), offset, uris));
-      fileEntry->setOriginalName(path);
+      fileEntry->setOriginalName(utf8Path);
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
@@ -308,7 +307,7 @@ void extractFileEntries
     for(std::vector<std::string>::const_iterator i = urlList.begin(),
           eoi = urlList.end(); i != eoi; ++i) {
       if(util::endsWith(*i, A2STR::SLASH_C)) {
-        uris.push_back((*i)+util::percentEncode(name));
+        uris.push_back((*i)+util::percentEncode(utf8Name));
       } else {
         uris.push_back(*i);
       }
@@ -317,12 +316,13 @@ void extractFileEntries
       (new FileEntry(util::applyDir(option->get(PREF_DIR),
                                     util::escapePath(utf8Name)),
                      totalLength, 0, uris));
-    fileEntry->setOriginalName(name);
+    fileEntry->setOriginalName(utf8Name);
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());
   if(torrent->mode == MULTI) {
-    ctx->setBasePath(util::applyDir(option->get(PREF_DIR), utf8Name));
+    ctx->setBasePath(util::applyDir(option->get(PREF_DIR),
+                                    util::escapePath(utf8Name)));
   }
 }
 } // namespace
@@ -344,7 +344,7 @@ void extractAnnounce
             eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
         const String* uri = asString(*uriIter);
         if(uri) {
-          ntier.push_back(util::strip(uri->s()));
+          ntier.push_back(util::encodeNonUtf8(util::strip(uri->s())));
         }
       }
       if(!ntier.empty()) {
@@ -355,7 +355,7 @@ void extractAnnounce
     const String* announce = asString(rootDict->get(C_ANNOUNCE));
     if(announce) {
       std::vector<std::string> tier;
-      tier.push_back(util::strip(announce->s()));
+      tier.push_back(util::encodeNonUtf8(util::strip(announce->s())));
       torrent->announceList.push_back(tier);
     }
   }
@@ -378,14 +378,16 @@ void extractNodes
       if(!hostname) {
         continue;
       }
-      if(util::strip(hostname->s()).empty()) {
+      std::string utf8Hostname =
+        util::encodeNonUtf8(util::strip(hostname->s()));
+      if(utf8Hostname.empty()) {
         continue;
       }
       const Integer* port = asInteger(addrPairList->get(1));
       if(!port || !(0 < port->i() && port->i() < 65536)) {
         continue;
       }
-      torrent->nodes.push_back(std::make_pair(hostname->s(), port->i()));
+      torrent->nodes.push_back(std::make_pair(utf8Hostname, port->i()));
     }
   }
 }
@@ -486,16 +488,16 @@ void processRootDictionary
   }
   const String* commentUtf8 = asString(rootDict->get(C_COMMENT_UTF8));
   if(commentUtf8) {
-    torrent->comment = commentUtf8->s();
+    torrent->comment = util::encodeNonUtf8(commentUtf8->s());
   } else {
     const String* comment = asString(rootDict->get(C_COMMENT));
     if(comment) {
-      torrent->comment = comment->s();
+      torrent->comment = util::encodeNonUtf8(comment->s());
     }
   }
   const String* createdBy = asString(rootDict->get(C_CREATED_BY));
   if(createdBy) {
-    torrent->createdBy = createdBy->s();
+    torrent->createdBy = util::encodeNonUtf8(createdBy->s());
   }
 
   ctx->setAttribute(BITTORRENT, torrent);
@@ -975,7 +977,7 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
     for(List::ValueType::const_iterator i = trs->begin(), eoi = trs->end();
         i != eoi; ++i) {
       std::vector<std::string> tier;
-      tier.push_back(asString(*i)->s());
+      tier.push_back(util::encodeNonUtf8(asString(*i)->s()));
       attrs->announceList.push_back(tier);
     }
   }
@@ -983,7 +985,7 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
   const List* dns = asList(r->get("dn"));
   if(dns && !dns->empty()) {
     const String* dn = asString(dns->get(0));
-    name += dn->s();
+    name += util::encodeNonUtf8(dn->s());
   } else {
     name += util::toHex(infoHash);
   }
