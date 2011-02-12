@@ -986,6 +986,22 @@ std::string getHomeDir()
   if(p) {
     return p;
   } else {
+#ifdef __MINGW32__
+    p = getenv("USERPROFILE");
+    if(p) {
+      return p;
+    } else {
+      p = getenv("HOMEDRIVE");
+      if(p) {
+        std::string homeDir = p;
+        p = getenv("HOMEPATH");
+        if(p) {
+          homeDir += p;
+          return homeDir;
+        }
+      }
+    }
+#endif
     return A2STR::NIL;
   }
 }
