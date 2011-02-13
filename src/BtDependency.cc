@@ -76,6 +76,9 @@ void copyValues(const SharedHandle<FileEntry>& d,
 
 bool BtDependency::resolve()
 {
+  if(!dependee_) {
+    return true;
+  }
   if(dependee_->getNumCommand() == 0 && dependee_->downloadFinished()) {
     SharedHandle<RequestGroup> dependee = dependee_;
     // cut reference here

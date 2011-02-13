@@ -25,6 +25,7 @@ class BtDependencyTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BtDependencyTest);
   CPPUNIT_TEST(testResolve);
+  CPPUNIT_TEST(testResolve_nullDependee);
   CPPUNIT_TEST(testResolve_originalNameNoMatch);
   CPPUNIT_TEST(testResolve_singleFileWithoutOriginalName);
   CPPUNIT_TEST(testResolve_multiFile);
@@ -71,6 +72,7 @@ public:
   }
 
   void testResolve();
+  void testResolve_nullDependee();
   void testResolve_originalNameNoMatch();
   void testResolve_singleFileWithoutOriginalName();
   void testResolve_multiFile();
@@ -104,6 +106,13 @@ void BtDependencyTest::testResolve()
                        firstFileEntry->getPath());
   CPPUNIT_ASSERT_EQUAL((size_t)1, firstFileEntry->getRemainingUris().size());
   CPPUNIT_ASSERT(firstFileEntry->isRequested());
+}
+
+void BtDependencyTest::testResolve_nullDependee()
+{
+  SharedHandle<RequestGroup> dependant = createDependant(option_);
+  BtDependency dep(dependant.get(), SharedHandle<RequestGroup>());
+  CPPUNIT_ASSERT(dep.resolve());
 }
 
 void BtDependencyTest::testResolve_originalNameNoMatch()
