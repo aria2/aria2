@@ -1058,7 +1058,7 @@ connections.
   output file to aria2c with *<<aria2_optref_input_file, -i>>* option on restart. Please note that
   downloads added by *<<aria2_xmlrpc_aria2_addTorrent, aria2.addTorrent>>* and
   *<<aria2_xmlrpc_aria2_addMetalink, aria2.addMetalink>>*
-  XML-RPC method are not saved.
+  XML-RPC method and whose metadata could not be saved as a file are not saved.
 
 [[aria2_optref_stop]]*--stop*=SEC::
   Stop application after SEC seconds has passed.
@@ -1670,7 +1670,13 @@ given as an integer starting from 0, the new download is inserted at
 'position' in the waiting queue. If 'position' is not given or
 'position' is larger than the size of the queue, it is appended at the
 end of the queue.  This method returns GID of registered download.
-Please note that the downloads added by this method are not saved by
+The uploaded data is saved as a file named hex string of SHA-1 hash of data
+plus ".torrent" in the directory specified by *<<aria2_optref_dir, --dir>>*
+option.
+The example of filename is 0a3893293e27ac0490424c06de4d09242215f0a6.torrent.
+If same file already exists, it is overwritten.
+If the file cannot be saved successfully,
+the downloads added by this method are not saved by
 *<<aria2_optref_save_session, --save-session>>*.
 
 Example
@@ -1700,8 +1706,15 @@ option name and value. See *<<aria2_xmlrpc_options, Options>>* below for more de
 inserted at 'position' in the waiting queue. If 'position' is not
 given or 'position' is larger than the size of the queue, it is
 appended at the end of the queue.  This method returns array of GID of
-registered download.  Please note that the downloads added by this
-method are not saved by *<<aria2_optref_save_session, --save-session>>*.
+registered download.
+The uploaded data is saved as a file named hex string of SHA-1 hash of data
+plus ".metalink" in the directory specified by *<<aria2_optref_dir, --dir>>*
+option.
+The example of filename is 0a3893293e27ac0490424c06de4d09242215f0a6.metalink.
+If same file already exists, it is overwritten.
+If the file cannot be saved successfully,
+the downloads added by this method are not saved by
+*<<aria2_optref_save_session, --save-session>>*.
 
 Example
 +++++++
