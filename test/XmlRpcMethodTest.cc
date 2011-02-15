@@ -85,8 +85,9 @@ public:
   {
     RequestGroup::resetGIDCounter();
     option_.reset(new Option());
-    option_->put(PREF_DIR, "/tmp");
+    option_->put(PREF_DIR, A2_TEST_OUT_DIR"/aria2_XmlRpcMethodTest");
     option_->put(PREF_SEGMENT_SIZE, "1048576");
+    File(option_->get(PREF_DIR)).mkdirs();
     e_.reset
       (new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));
     e_->setOption(option_.get());
@@ -255,6 +256,8 @@ void XmlRpcMethodTest::testAddUri_withBadPosition()
 #ifdef ENABLE_BITTORRENT
 void XmlRpcMethodTest::testAddTorrent()
 {
+  File(e_->getOption()->get(PREF_DIR)+
+       "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").remove();
   AddTorrentXmlRpcMethod m;
   XmlRpcRequest req(AddTorrentXmlRpcMethod::getMethodName(), List::g());
   req.params->append(readFile(A2_TEST_DIR"/single.torrent"));
@@ -263,13 +266,16 @@ void XmlRpcMethodTest::testAddTorrent()
   req.params->append(uris);
   {
     XmlRpcResponse res = m.execute(req, e_.get());
+    CPPUNIT_ASSERT
+      (File(e_->getOption()->get(PREF_DIR)+
+            "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
     CPPUNIT_ASSERT_EQUAL(std::string("1"), asString(res.param)->s());
 
     SharedHandle<RequestGroup> group =
       e_->getRequestGroupMan()->findReservedGroup(1);
     CPPUNIT_ASSERT(group);
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-0.8.2.tar.bz2"),
+    CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR)+"/aria2-0.8.2.tar.bz2",
                          group->getFirstFilePath());
     CPPUNIT_ASSERT_EQUAL((size_t)1,
                          group->getDownloadContext()->getFirstFileEntry()->
@@ -279,15 +285,20 @@ void XmlRpcMethodTest::testAddTorrent()
                          getRemainingUris()[0]);
   }
   // with options
+  std::string dir = A2_TEST_OUT_DIR"/aria2_XmlRpcMethodTest_testAddTorrent";
+  File(dir).mkdirs();
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_DIR, "/sink");
+  opt->put(PREF_DIR, dir);
+  File(dir+"/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").remove();
   req.params->append(opt);
   {
     XmlRpcResponse res = m.execute(req, e_.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
-    CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-0.8.2.tar.bz2"),
-                         e_->getRequestGroupMan()->findReservedGroup(2)->
-                         getFirstFilePath());
+    CPPUNIT_ASSERT_EQUAL
+      (dir+"/aria2-0.8.2.tar.bz2",
+       e_->getRequestGroupMan()->findReservedGroup(2)->getFirstFilePath());
+    CPPUNIT_ASSERT
+      (File(dir+"/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
   }
 }
 
@@ -335,6 +346,8 @@ void XmlRpcMethodTest::testAddTorrent_withPosition()
 #ifdef ENABLE_METALINK
 void XmlRpcMethodTest::testAddMetalink()
 {
+  File(e_->getOption()->get(PREF_DIR)+
+       "/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").remove();
   AddMetalinkXmlRpcMethod m;
   XmlRpcRequest req(AddMetalinkXmlRpcMethod::getMethodName(), List::g());
   req.params->append(readFile(A2_TEST_DIR"/2files.metalink"));
@@ -345,28 +358,36 @@ void XmlRpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
     CPPUNIT_ASSERT_EQUAL(std::string("1"), asString(resParams->get(0))->s());
     CPPUNIT_ASSERT_EQUAL(std::string("2"), asString(resParams->get(1))->s());
+    CPPUNIT_ASSERT
+      (File(e_->getOption()->get(PREF_DIR)+
+            "/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").exists());
 
     SharedHandle<RequestGroup> tar =
       e_->getRequestGroupMan()->findReservedGroup(1);
     CPPUNIT_ASSERT(tar);
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
+    CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR)+"/aria2-5.0.0.tar.bz2",
                          tar->getFirstFilePath());
     SharedHandle<RequestGroup> deb =
       e_->getRequestGroupMan()->findReservedGroup(2);
     CPPUNIT_ASSERT(deb);
-    CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.deb"),
+    CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR)+"/aria2-5.0.0.deb",
                          deb->getFirstFilePath());
   }
   // with options
+  std::string dir = A2_TEST_OUT_DIR"/aria2_XmlRpcMethodTest_testAddMetalink";
+  File(dir).mkdirs();
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_DIR, "/sink");
+  opt->put(PREF_DIR, dir);
+  File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").remove();
   req.params->append(opt);
   {
     XmlRpcResponse res = m.execute(req, e_.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
-    CPPUNIT_ASSERT_EQUAL(std::string("/sink/aria2-5.0.0.tar.bz2"),
+    CPPUNIT_ASSERT_EQUAL(dir+"/aria2-5.0.0.tar.bz2",
                          e_->getRequestGroupMan()->findReservedGroup(3)->
                          getFirstFilePath());
+    CPPUNIT_ASSERT
+      (File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").exists());
   }
 }
 
@@ -405,7 +426,7 @@ void XmlRpcMethodTest::testAddMetalink_withPosition()
   XmlRpcResponse res2 = m2.execute(req2, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res2.code);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-5.0.0.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR)+"/aria2-5.0.0.tar.bz2",
                        e_->getRequestGroupMan()->getReservedGroups()[0]->
                        getFirstFilePath());
 }
@@ -779,7 +800,8 @@ void XmlRpcMethodTest::testGatherProgressCommon()
                         (asList(file->get("uris"))->get(0))
                         ->get("uri"))
                        ->s());
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp"), asString(entry->get("dir"))->s());
+  CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR),
+                       asString(entry->get("dir"))->s());
 
   keys.push_back("gid");
   entry = Dict::g();

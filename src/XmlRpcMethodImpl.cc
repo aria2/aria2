@@ -70,6 +70,8 @@
 # include "Peer.h"
 # include "BtRuntime.h"
 # include "BtAnnounce.h"
+# include "MessageDigest.h"
+# include "message_digest_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -244,6 +246,18 @@ SharedHandle<ValueBase> AddUriXmlRpcMethod::process
   }
 }
 
+namespace {
+
+std::string getHexSha1(const std::string& s)
+{
+  unsigned char hash[20];
+  message_digest::digest(hash, sizeof(hash), MessageDigest::sha1(),
+                         s.data(), s.size());
+  return util::toHex(hash, sizeof(hash));
+}
+
+} // namespace
+
 #ifdef ENABLE_BITTORRENT
 SharedHandle<ValueBase> AddTorrentXmlRpcMethod::process
 (const XmlRpcRequest& req, DownloadEngine* e)
@@ -263,9 +277,21 @@ SharedHandle<ValueBase> AddTorrentXmlRpcMethod::process
   bool posGiven = false;
   getPosParam(req, 3, posGiven, pos);
 
+  std::string filename = util::applyDir
+    (requestOption->get(PREF_DIR), getHexSha1(torrentParam->s())+".torrent");
   std::vector<SharedHandle<RequestGroup> > result;
-  createRequestGroupForBitTorrent(result, requestOption,
-                                  uris, torrentParam->s());
+  // Save uploaded data in order to save this download in
+  // --save-session file.
+  if(util::saveAs(filename, torrentParam->s(), true)) {
+    A2_LOG_INFO(fmt("Uploaded torrent data was saved as %s", filename.c_str()));
+    requestOption->put(PREF_TORRENT_FILE, filename);
+    createRequestGroupForBitTorrent(result, requestOption, uris);
+  } else {
+    A2_LOG_INFO(fmt("Uploaded torrent data was not saved."
+                    " Failed to write file %s", filename.c_str()));
+    createRequestGroupForBitTorrent(result, requestOption,
+                                    uris, torrentParam->s());
+  }
 
   if(!result.empty()) {
     return addRequestGroup(result.front(), e, posGiven, pos);
@@ -291,8 +317,24 @@ SharedHandle<ValueBase> AddMetalinkXmlRpcMethod::process
   bool posGiven = false;
   getPosParam(req, 2, posGiven, pos);
 
+  // TODO RFC5854 Metalink has the extension .meta4. We use .metalink
+  // for both v3 and RFC5854 Metalink. aria2 can detect which of which
+  // by reading content rather than extension.
+  std::string filename = util::applyDir
+    (requestOption->get(PREF_DIR), getHexSha1(metalinkParam->s())+".metalink");
   std::vector<SharedHandle<RequestGroup> > result;
-  createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
+  // Save uploaded data in order to save this download in
+  // --save-session file.
+  if(util::saveAs(filename, metalinkParam->s(), true)) {
+    A2_LOG_INFO(fmt("Uploaded metalink data was saved as %s",
+                    filename.c_str()));
+    requestOption->put(PREF_METALINK_FILE, filename);
+    createRequestGroupForMetalink(result, requestOption);
+  } else {
+    A2_LOG_INFO(fmt("Uploaded metalink data was not saved."
+                    " Failed to write file %s", filename.c_str()));
+    createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
+  }
   SharedHandle<List> gids = List::g();
   if(!result.empty()) {
     if(posGiven) {
