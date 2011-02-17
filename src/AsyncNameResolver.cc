@@ -78,18 +78,25 @@ void callback(void* arg, int status, int timeouts, struct hostent* host)
   }
 }
 
-AsyncNameResolver::AsyncNameResolver(int family, ares_addr_node* servers):
-  status_(STATUS_READY),
-  family_(family)
+AsyncNameResolver::AsyncNameResolver
+(int family
+#ifdef HAVE_ARES_ADDR_NODE
+ , ares_addr_node* servers
+#endif // HAVE_ARES_ADDR_NODE
+ )
+  : status_(STATUS_READY),
+    family_(family)
 {
   // TODO evaluate return value
   ares_init(&channel_);
+#if defined HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
   if(servers) {
     // ares_set_servers has been added since c-ares 1.7.1
     if(ares_set_servers(channel_, servers) != ARES_SUCCESS) {
       A2_LOG_DEBUG("ares_set_servers failed");
     }
   }
+#endif // HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
 }
 
 AsyncNameResolver::~AsyncNameResolver()

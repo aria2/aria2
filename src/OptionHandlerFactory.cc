@@ -89,6 +89,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+#if defined HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_ASYNC_DNS_SERVER,
@@ -97,6 +98,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
+#endif // HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
 #endif // ENABLE_ASYNC_DNS
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler

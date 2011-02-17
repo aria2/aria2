@@ -215,10 +215,11 @@ error_code::Value MultiUrlRequestInfo::execute()
     }
     SocketCore::setTLSContext(tlsContext);
 #endif
+#ifdef HAVE_ARES_ADDR_NODE
     ares_addr_node* asyncDNSServers =
       parseAsyncDNSServers(option_->get(PREF_ASYNC_DNS_SERVER));
     e->setAsyncDNSServers(asyncDNSServers);
-
+#endif // HAVE_ARES_ADDR_NODE
     if(!Timer::monotonicClock()) {
       A2_LOG_WARN("Don't change system time while aria2c is running."
                   " Doing this may make aria2c hang for long time.");

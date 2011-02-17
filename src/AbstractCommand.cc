@@ -651,7 +651,12 @@ void AbstractCommand::initAsyncNameResolver(const std::string& hostname)
     family = AF_INET;
   }
   asyncNameResolver_.reset
-    (new AsyncNameResolver(family, e_->getAsyncDNSServers()));
+    (new AsyncNameResolver(family
+#ifdef HAVE_ARES_ADDR_NODE
+                           ,
+                           e_->getAsyncDNSServers()
+#endif // HAVE_ARES_ADDR_NODE
+                           ));
   A2_LOG_INFO(fmt(MSG_RESOLVING_HOSTNAME,
                   getCuid(),
                   hostname.c_str()));

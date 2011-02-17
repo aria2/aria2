@@ -26,7 +26,10 @@ if test "x$have_libcares" != "xyes"; then
 fi
 
 if test "x$have_libcares" = "xyes"; then
-
+    if test "x$need_librt" = "xyes"; then
+      LIBS="-lrt $LIBS"
+    fi
+    LIBS="-lcares $LIBS"
     AC_MSG_CHECKING([whether ares_host_callback accepts timeouts(c-ares >= 1.5)])
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
     #include <ares.h>
@@ -43,6 +46,8 @@ if test "x$have_libcares" = "xyes"; then
     if test "x$have_libcares1_5" = "xyes"; then
         AC_DEFINE([HAVE_LIBCARES1_5], [1], [Define 1 if ares_host_callback accepts timeouts(c-ares >= 1.5)])
     fi
+    AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
+    AC_CHECK_FUNCS([ares_set_servers])
 
     AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
     LIBCARES_LIBS="-L$libcares_prefix_lib -lcares"

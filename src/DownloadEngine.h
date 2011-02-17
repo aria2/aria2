@@ -135,9 +135,9 @@ private:
 
   CUIDCounter cuidCounter_;
 
-#ifdef ENABLE_ASYNC_DNS
+#ifdef HAVE_ARES_ADDR_NODE
   ares_addr_node* asyncDNSServers_;
-#endif // ENABLE_ASYNC_DNS
+#endif // HAVE_ARES_ADDR_NODE
 
   SharedHandle<DNSCache> dnsCache_;
 
@@ -331,12 +331,14 @@ public:
     return sessionId_;
   }
 
+#ifdef HAVE_ARES_ADDR_NODE
   void setAsyncDNSServers(ares_addr_node* asyncDNSServers);
 
   ares_addr_node* getAsyncDNSServers() const
   {
     return asyncDNSServers_;
   }
+#endif // HAVE_ARES_ADDR_NODE
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
