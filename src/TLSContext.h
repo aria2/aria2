@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
 # include "LibsslTLSContext.h"
 #elif HAVE_LIBGNUTLS
 # include "LibgnutlsTLSContext.h"

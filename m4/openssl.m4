@@ -38,13 +38,13 @@ if test "x$have_openssl" != "xyes"; then
 fi
 
 if test "x$have_openssl" = "xyes"; then
-  AC_DEFINE([HAVE_LIBSSL], [1], [Define to 1 if you have openssl.])
+  AC_DEFINE([HAVE_OPENSSL], [1], [Define to 1 if you have openssl.])
   LIBS="$OPENSSL_LIBS $LIBS"
   CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
   # check whether EVP_DigestInit_ex exists. Old openssl doesn't have it.
   AC_CHECK_FUNCS([EVP_DigestInit_ex], [have_digestinit_ex=yes])
   if test "x$have_digestinit_ex" = "x"; then
-    AC_DEFINE([HAVE_OLD_LIBSSL], [1], [Define to 1 if you have old openssl.])
+    AC_DEFINE([HAVE_OLD_OPENSSL], [1], [Define to 1 if you have old openssl.])
   fi
   # search for sha224 support
   AC_CHECK_FUNCS([EVP_sha224])

@@ -54,10 +54,10 @@
 
 #endif // HAVE_WINSOCK2_H
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
 # include <openssl/err.h>
 # include <openssl/ssl.h>
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
@@ -97,11 +97,11 @@ bool Platform::setUp()
   textdomain (PACKAGE);
 #endif // ENABLE_NLS
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
   // for SSL initialization
   SSL_load_error_strings();
   SSL_library_init();
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_init();
 #endif // HAVE_LIBGNUTLS

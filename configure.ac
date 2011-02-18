@@ -161,7 +161,7 @@ else
 fi
 
 AM_CONDITIONAL([HAVE_LIBGNUTLS], [ test "x$have_libgnutls" = "xyes" ])
-AM_CONDITIONAL([HAVE_LIBSSL], [ test "x$have_openssl" = "xyes" ])
+AM_CONDITIONAL([HAVE_OPENSSL], [ test "x$have_openssl" = "xyes" ])
 
 if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1],

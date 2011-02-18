@@ -44,11 +44,11 @@
 
 #include "a2netcompat.h"
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
 // for SSL
 # include <openssl/ssl.h>
 # include <openssl/err.h>
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
@@ -88,12 +88,12 @@ private:
   static SharedHandle<TLSContext> tlsContext_;
 #endif // ENABLE_SSL
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
   // for SSL
   SSL* ssl;
 
   int sslHandleEAGAIN(int ret);
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
   gnutls_session_t sslSession_;
 

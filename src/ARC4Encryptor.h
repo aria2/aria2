@@ -38,7 +38,7 @@
 #include "common.h"
 #ifdef HAVE_LIBGCRYPT
 # include "LibgcryptARC4Encryptor.h"
-#elif HAVE_LIBSSL
+#elif HAVE_OPENSSL
 # include "LibsslARC4Encryptor.h"
 #else
 

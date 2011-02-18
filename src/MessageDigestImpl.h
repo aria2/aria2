@@ -37,8 +37,8 @@
 
 #ifdef HAVE_LIBGCRYPT
 # include "LibgcryptMessageDigestImpl.h"
-#elif HAVE_LIBSSL
+#elif HAVE_OPENSSL
 # include "LibsslMessageDigestImpl.h"
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 
 #endif // D_MESSAGE_DIGEST_IMPL_H

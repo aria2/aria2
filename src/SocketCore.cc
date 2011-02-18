@@ -152,10 +152,10 @@ void SocketCore::init()
   wantRead_ = false;
   wantWrite_ = false;
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
   // for SSL
   ssl = NULL;
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
   sslSession_ = 0;
 #endif //HAVE_LIBGNUTLS
@@ -554,12 +554,12 @@ void SocketCore::setBlockingMode()
 
 void SocketCore::closeConnection()
 {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
   // for SSL
   if(secure_) {
     SSL_shutdown(ssl);
   }
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
   if(secure_) {
     gnutls_bye(sslSession_, GNUTLS_SHUT_RDWR);
@@ -569,12 +569,12 @@ void SocketCore::closeConnection()
     CLOSE(sockfd_);
     sockfd_ = -1;
   }
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
   // for SSL
   if(secure_) {
     SSL_free(ssl);
   }
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
   if(secure_) {
     gnutls_deinit(sslSession_);
@@ -685,7 +685,7 @@ bool SocketCore::isReadable(time_t timeout)
 #endif // !HAVE_POLL
 }
 
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
 int SocketCore::sslHandleEAGAIN(int ret)
 {
   int error = SSL_get_error(ssl, ret);
@@ -699,7 +699,7 @@ int SocketCore::sslHandleEAGAIN(int ret)
   }
   return ret;
 }
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 
 #ifdef HAVE_LIBGNUTLS
 void SocketCore::gnutlsRecordCheckDirection()
@@ -731,7 +731,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
       }
     }
   } else {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
     ret = SSL_write(ssl, data, len);
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
@@ -741,7 +741,7 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
         (fmt(EX_SOCKET_SEND,
              ERR_error_string(SSL_get_error(ssl, ret), 0)));
     }
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
     while((ret = gnutls_record_send(sslSession_, data, len)) ==
           GNUTLS_E_INTERRUPTED);
@@ -776,7 +776,7 @@ void SocketCore::readData(char* data, size_t& len)
       }
     }
   } else {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
     // for SSL
     // TODO handling len == 0 case required
     ret = SSL_read(ssl, data, len);
@@ -788,7 +788,7 @@ void SocketCore::readData(char* data, size_t& len)
         (fmt(EX_SOCKET_RECV,
              ERR_error_string(SSL_get_error(ssl, ret), 0)));
     }
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
     while((ret = gnutls_record_recv(sslSession_, data, len)) ==
           GNUTLS_E_INTERRUPTED);
@@ -807,7 +807,7 @@ void SocketCore::readData(char* data, size_t& len)
 void SocketCore::prepareSecureConnection()
 {
   if(!secure_) {
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
     // for SSL
     ssl = SSL_new(tlsContext_->getSSLCtx());
     if(!ssl) {
@@ -820,7 +820,7 @@ void SocketCore::prepareSecureConnection()
         (fmt(EX_SSL_INIT_FAILURE,
              ERR_error_string(ERR_get_error(), 0)));
     }
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
     int r;
     gnutls_init(&sslSession_, GNUTLS_CLIENT);
@@ -847,7 +847,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
   if(secure_ == 1) {
     wantRead_ = false;
     wantWrite_ = false;
-#ifdef HAVE_LIBSSL
+#ifdef HAVE_OPENSSL
     int e = SSL_connect(ssl);
 
     if (e <= 0) {
@@ -922,7 +922,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
       }
     }
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
     int ret = gnutls_handshake(sslSession_);
     if(ret == GNUTLS_E_AGAIN) {

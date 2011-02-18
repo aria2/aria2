@@ -38,8 +38,8 @@
 #include "common.h"
 #ifdef HAVE_LIBGCRYPT
 # include "LibgcryptDHKeyExchange.h"
-#elif HAVE_LIBSSL
+#elif HAVE_OPENSSL
 # include "LibsslDHKeyExchange.h"
-#endif // HAVE_LIBSSL
+#endif // HAVE_OPENSSL
 
 #endif // D_DH_KEY_EXCHANGE_H

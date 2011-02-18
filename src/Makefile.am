@@ -261,14 +261,14 @@ SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h\
 	LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
 endif # HAVE_LIBGNUTLS
 
-if HAVE_LIBSSL
+if HAVE_OPENSSL
 SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
 	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h\
 	LibsslARC4Context.cc LibsslARC4Context.h\
 	LibsslARC4Decryptor.cc LibsslARC4Decryptor.h\
 	LibsslARC4Encryptor.cc LibsslARC4Encryptor.h\
 	LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
-endif # HAVE_LIBSSL
+endif # HAVE_OPENSSL
 
 if HAVE_ZLIB
 SRCS += GZipDecoder.cc GZipDecoder.h\
