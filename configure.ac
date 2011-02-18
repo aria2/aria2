@@ -144,8 +144,8 @@ fi
 if test "x$with_libz" = "xyes"; then
   AM_PATH_LIBZ
   if test "x$have_libz" = "xyes"; then
-    LIBS="$LIBZ_LIBS $LIBS"
-    CPPFLAGS="$LIBZ_CPPFLAGS $CPPFLAGS"
+    LIBS="$ZLIB_LIBS $LIBS"
+    CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
   elif test "x$with_libz_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libz])
   fi
