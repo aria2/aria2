@@ -12,8 +12,6 @@ AC_CONFIG_HEADERS([config.h])
 
 case "$target" in
   *mingw*|*cygwin*)
-    WINSOCK_LIBS="-lws2_32"
-    AC_SUBST(WINSOCK_LIBS)
     LIBS="-lws2_32 -lcrypto -lwsock32 -lgdi32 -lwinmm $LIBS"
     ;;
 esac
@@ -73,6 +71,8 @@ if test "x$with_libxml2" = "xyes"; then
   AM_PATH_XML2([2.6.24], [have_libxml2=yes])
   if test "x$have_libxml2" = "xyes"; then
     AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
+    LIBS="$XML_LIBS $LIBS"
+    CPPFLAGS="$XML_CPPFLAGS $CPPFLAGS"
   elif test "x$with_libxml2_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libxml2])
   fi
@@ -80,16 +80,20 @@ fi
 
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
   AM_PATH_LIBEXPAT
-  if test "x$have_libexpat" != "xyes" &&
-     test "x$with_libexpat_requested" = "xyes"; then
+  if test "x$have_libexpat" = "xyes"; then
+    LIBS="$LIBEXPAT_LIBS $LIBS"
+    CPPFLAGS="$LIBEXPAT_CPPFLAGS $CPPFLAGS"
+  elif test "x$with_libexpat_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libexpat])
   fi
 fi
 
 if test "x$with_sqlite3" = "xyes"; then
   AM_PATH_SQLITE3
-  if test "x$have_sqlite3" != "xyes" &&
-     test "x$with_sqlite3_requested" = "xyes"; then
+  if test "x$have_sqlite3" = "xyes"; then
+    LIBS="$SQLITE3_LIBS $LIBS"
+    CPPFLAGS="$SQLITE3_CFLAGS $CPPFLAGS"
+  elif test "x$with_sqlite3_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([sqlite3])
   fi
 fi
@@ -100,32 +104,38 @@ if test "x$with_gnutls" = "xyes"; then
                     [have_libgnutls=yes], [have_libgnutls=no])
   if test "x$have_libgnutls" = "xyes"; then
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
+    LIBS="$LIBGNUTLS_LIBS $LIBS"
+    CPPFLAGS="$LIBGNUTLS_CFLAGS $CPPFLAGS"
   elif test "x$with_gnutls_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([gnutls])
   fi
-  AC_SUBST(LIBGNUTLS_LIBS)
-  AC_SUBST(LIBGNUTLS_CFLAGS)
 fi
 
 if test "x$have_libgnutls" = "xyes"; then
   AM_PATH_LIBGCRYPT([1.2.2], [have_libgcrypt=yes])
   if test "x$have_libgcrypt" = "xyes"; then
     AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
+    LIBS="$LIBGCRYPT_LIBS $LIBS"
+    CPPFLAGS="$LIBGCRYPT_CFLAGS $CPPFLAGS"
   fi
 fi
 
 if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
   AM_PATH_OPENSSL
-  if test "x$have_openssl" != "xyes" &&
-     test "x$with_openssl_requested" = "xyes"; then
+  if test "x$have_openssl" = "xyes"; then
+    LIBS="$OPENSSL_LIBS $LIBS"
+    CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
+  elif test "x$with_openssl_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([openssl])
   fi
 fi
 
 if test "x$with_libcares" = "xyes"; then
   AM_PATH_LIBCARES
-  if test "x$have_libcares" != "xyes" &&
-     test "x$with_libcares_requested" = "xyes"; then
+  if test "x$have_libcares" = "xyes"; then
+    LIBS="$LIBCARES_LIBS $LIBS"
+    CPPFLAGS="$LIBCARES_CPPFLAGS $CPPFLAGS"
+  elif test "x$with_libcares_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libcares])
   fi
 fi
@@ -133,7 +143,10 @@ fi
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
   AM_PATH_LIBZ
-  if test "x$have_libz" != "xyes" && test "x$with_libz_requested" = "xyes"; then
+  if test "x$have_libz" = "xyes"; then
+    LIBS="$LIBZ_LIBS $LIBS"
+    CPPFLAGS="$LIBZ_CPPFLAGS $CPPFLAGS"
+  elif test "x$with_libz_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libz])
   fi
 fi
@@ -497,6 +510,7 @@ echo "CFLAGS:         $CFLAGS"
 echo "CPPFLAGS:       $CPPFLAGS"
 echo "LDFLAGS:        $LDFLAGS"
 echo "LIBS:           $LIBS"
+echo "DEFS:           $DEFS"
 echo "SQLite3:        $have_sqlite3"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"

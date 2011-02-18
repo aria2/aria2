@@ -213,24 +213,14 @@ aria2c_SOURCES += MetalinkerTest.cc\
 	MetalinkProcessorTest.cc
 endif # ENABLE_METALINK
 
-#aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
-#aria2c_LDFLAGS = ${CPPUNIT_LIBS}
-
-aria2c_LDADD = ../src/libaria2c.a\
-    @LIBINTL@ @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
-	@LIBCARES_LIBS@ @LIBEXPAT_LIBS@ @LIBZ_LIBS@\
-	@SQLITE3_LIBS@\
-	${CPPUNIT_LIBS}
+aria2c_LDADD = ../src/libaria2c.a @LIBINTL@ @CPPUNIT_LIBS@
 AM_CPPFLAGS =  -Wall\
-	${CPPUNIT_CFLAGS}\
 	-I$(top_srcdir)/src\
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
-	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	@LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	@LIBZ_CPPFLAGS@	 @SQLITE3_CFLAGS@ -DLOCALEDIR=\"$(localedir)\"\
+        -DLOCALEDIR=\"$(localedir)\"\
 	-DA2_TEST_DIR=\"$(top_srcdir)/test\"\
 	-DA2_TEST_OUT_DIR=\"${a2_test_outdir}\"\
+	@CPPUNIT_CFLAGS@\
 	@DEFS@
 
 EXTRA_DIST = 4096chunk.txt\
