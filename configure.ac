@@ -134,7 +134,7 @@ if test "x$with_libcares" = "xyes"; then
   AM_PATH_LIBCARES
   if test "x$have_libcares" = "xyes"; then
     LIBS="$LIBCARES_LIBS $LIBS"
-    CPPFLAGS="$LIBCARES_CPPFLAGS $CPPFLAGS"
+    CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
   elif test "x$with_libcares_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libcares])
   fi

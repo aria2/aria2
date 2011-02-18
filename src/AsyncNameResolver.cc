@@ -41,11 +41,7 @@
 
 namespace aria2 {
 
-#ifdef HAVE_LIBCARES1_5
 void callback(void* arg, int status, int timeouts, struct hostent* host)
-#else
-  void callback(void* arg, int status, struct hostent* host)
-#endif // HAVE_LIBCARES1_5
 {
   AsyncNameResolver* resolverPtr = reinterpret_cast<AsyncNameResolver*>(arg);
   if(status != ARES_SUCCESS) {

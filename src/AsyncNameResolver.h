@@ -48,12 +48,8 @@
 namespace aria2 {
 
 class AsyncNameResolver {
-#ifdef HAVE_LIBCARES1_5
-  friend void callback(void* arg, int status, int timeouts, struct hostent* host);
-#else
-  friend void callback(void* arg, int status, struct hostent* host);
-#endif // HAVE_LIBCARES1_5
-
+  friend void callback
+  (void* arg, int status, int timeouts, struct hostent* host);
 public:
   enum STATUS {
     STATUS_READY,

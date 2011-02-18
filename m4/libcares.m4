@@ -14,52 +14,46 @@ libcares_prefix_include=$libcares_prefix/include
 
 LIBS_save=$LIBS
 CPPFLAGS_save=$CPPFLAGS
+PKG_CONFIG_PATH_save=$PKG_CONFIG_PATH
 
-LIBS="-L$libcares_prefix_lib $LIBS"
-CPPFLAGS="-I$libcares_prefix_include -Wall $CPPFLAGS"
-
-AC_CHECK_LIB([cares], [ares_init], [have_libcares=yes])
-
-if test "x$have_libcares" != "xyes"; then
-    AC_CHECK_LIB([cares], [ares_init], [have_libcares=yes need_librt=yes], [],
-                 [-lrt])
-fi
+PKG_CONFIG_PATH="$libcares_prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
+PKG_CHECK_MODULES([LIBCARES], [libcares >= 1.7.0], [have_libcares=yes],
+                  [have_libcares=no])
 
 if test "x$have_libcares" = "xyes"; then
-    if test "x$need_librt" = "xyes"; then
-      LIBS="-lrt $LIBS"
-    fi
-    LIBS="-lcares $LIBS"
-    AC_MSG_CHECKING([whether ares_host_callback accepts timeouts(c-ares >= 1.5)])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-    #include <ares.h>
+  LIBS="$LIBCARES_LIBS $LIBS"
+  CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
+fi
 
-    void callback(void* arg, int status, int timeouts, struct hostent* host);
-    ]],
-    [[
-    ares_gethostbyname((ares_channel)0, "foo", 0, callback, 0);
-    ]])],
-    [have_libcares1_5=yes],
-    [have_libcares1_5=no])
-    AC_MSG_RESULT([$have_libcares1_5])
+if test "x$have_libcares" != "xyes"; then
+  LIBS="-L$libcares_prefix_lib $LIBS"
+  CPPFLAGS="-I$libcares_prefix_include -Wall $CPPFLAGS"
 
-    if test "x$have_libcares1_5" = "xyes"; then
-        AC_DEFINE([HAVE_LIBCARES1_5], [1], [Define 1 if ares_host_callback accepts timeouts(c-ares >= 1.5)])
-    fi
-    AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
-    AC_CHECK_FUNCS([ares_set_servers])
+  AC_CHECK_LIB([cares], [ares_init], [have_libcares=yes])
 
-    AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
+  if test "x$have_libcares" != "xyes"; then
+    AC_CHECK_LIB([cares], [ares_init], [have_libcares=yes need_librt=yes], [],
+                 [-lrt])
+  fi
+  if test "x$have_libcares" = "xyes"; then
     LIBCARES_LIBS="-L$libcares_prefix_lib -lcares"
     if test "x$need_librt" = "xyes"; then
       LIBCARES_LIBS="$LIBCARES_LIBS -lrt"
     fi
-    LIBCARES_CPPFLAGS="-I$libcares_prefix_include"
-    AC_SUBST(LIBCARES_LIBS)
-    AC_SUBST(LIBCARES_CPPFLAGS)
+    LIBCARES_CFLAGS="-I$libcares_prefix_include"
+
+    LIBS="$LIBCARES_LIBS $LIBS_save"
+    CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS_save"
+  fi
+fi
+
+if test "x$have_libcares" = "xyes"; then
+  AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
+  AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
+  AC_CHECK_FUNCS([ares_set_servers])
 fi
 
 LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
-
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH_save
 ])
