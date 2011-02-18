@@ -91,6 +91,8 @@ void handler(int signal) {
 }
 } // namespace
 
+#ifdef HAVE_ARES_ADDR_NODE
+
 namespace {
 
 ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
@@ -134,6 +136,7 @@ ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
 
 } // namespace
 
+#endif // HAVE_ARES_ADDR_NODE
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
