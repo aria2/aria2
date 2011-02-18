@@ -89,11 +89,11 @@ const std::string FeatureConfig::FEATURE_FIREFOX3_COOKIE("Firefox3 Cookie");
 # define XML_RPC_ENABLED false
 #endif // !ENABLE_XML_RPC
 
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 # define GZIP_ENABLED true
-#else // !HAVE_LIBZ
+#else // !HAVE_ZLIB
 # define GZIP_ENABLED false
-#endif // !HAVE_LIBZ
+#endif // !HAVE_ZLIB
 
 #ifdef HAVE_SQLITE3
 # define FIREFOX3_COOKIE_ENABLED true

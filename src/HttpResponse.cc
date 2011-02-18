@@ -51,9 +51,9 @@
 #include "AuthConfig.h"
 #include "ChunkedDecodingStreamFilter.h"
 #include "error_code.h"
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 # include "GZipDecodingStreamFilter.h"
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 namespace aria2 {
 
@@ -203,12 +203,12 @@ const std::string& HttpResponse::getContentEncoding() const
 SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
 {
   SharedHandle<StreamFilter> filter;
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
   if(getContentEncoding() == HttpHeader::GZIP ||
      getContentEncoding() == HttpHeader::DEFLATE) {
     filter.reset(new GZipDecodingStreamFilter());
   }
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
   return filter;
 }
 

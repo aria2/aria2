@@ -176,11 +176,11 @@ std::string HttpRequest::createRequest()
   builtinHds.push_back(std::make_pair("Accept:", acceptTypes));
   if(contentEncodingEnabled_) {
     std::string acceptableEncodings;
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
     if(acceptGzip_) {
       acceptableEncodings += "deflate, gzip";
     }
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
     if(!acceptableEncodings.empty()) {
       builtinHds.push_back
         (std::make_pair("Accept-Encoding:", acceptableEncodings));

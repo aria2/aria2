@@ -795,9 +795,9 @@ void HttpRequestTest::testEnableAcceptEncoding()
   httpRequest.setAuthConfigFactory(authConfigFactory_, option_.get());
 
   std::string acceptEncodings;
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
   acceptEncodings += "deflate, gzip";
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
   
   std::string expectedTextHead =
     "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"

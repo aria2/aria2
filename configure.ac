@@ -143,7 +143,7 @@ fi
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
   AM_PATH_LIBZ
-  if test "x$have_libz" = "xyes"; then
+  if test "x$have_zlib" = "xyes"; then
     LIBS="$ZLIB_LIBS $LIBS"
     CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
   elif test "x$with_libz_requested" = "xyes"; then
@@ -225,7 +225,7 @@ else
 fi
 
 # Set conditional for libz
-AM_CONDITIONAL([HAVE_LIBZ], [test "x$have_libz" = "xyes"])
+AM_CONDITIONAL([HAVE_ZLIB], [test "x$have_zlib" = "xyes"])
 
 # Set conditional for sqlite3
 AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
@@ -518,7 +518,7 @@ echo "CA Bundle:      $ca_bundle"
 echo "LibXML2:        $have_libxml2"
 echo "LibExpat:       $have_libexpat"
 echo "LibCares:       $have_libcares"
-echo "Libz:           $have_libz"
+echo "Zlib:           $have_zlib"
 echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"

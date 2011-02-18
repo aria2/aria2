@@ -270,11 +270,11 @@ SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
 	LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
 endif # HAVE_LIBSSL
 
-if HAVE_LIBZ
+if HAVE_ZLIB
 SRCS += GZipDecoder.cc GZipDecoder.h\
 	GZipEncoder.cc GZipEncoder.h\
 	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h
-endif # HAVE_LIBZ
+endif # HAVE_ZLIB
 
 if HAVE_SQLITE3
 SRCS += Sqlite3CookieParser.cc Sqlite3CookieParser.h\

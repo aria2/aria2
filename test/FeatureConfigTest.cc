@@ -65,9 +65,9 @@ void FeatureConfigTest::testFeatureSummary() {
     "Firefox3 Cookie",
 #endif // HAVE_SQLITE3
 
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
     "GZip",
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 #ifdef ENABLE_SSL
     "HTTPS",

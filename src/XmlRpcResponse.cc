@@ -38,9 +38,9 @@
 #include <sstream>
 
 #include "util.h"
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 # include "GZipEncoder.h"
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 namespace aria2 {
 
@@ -140,13 +140,13 @@ XmlRpcResponse& XmlRpcResponse::operator=(const XmlRpcResponse& c)
 std::string XmlRpcResponse::toXml(bool gzip) const
 {
   if(gzip) {
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
     return encodeAll(o, code, param);
-#else // !HAVE_LIBZ
+#else // !HAVE_ZLIB
     abort();
-#endif // !HAVE_LIBZ
+#endif // !HAVE_ZLIB
   } else {
     std::stringstream o;
     return encodeAll(o, code, param);

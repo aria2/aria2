@@ -304,7 +304,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
 
   CPPUNIT_ASSERT(!httpResponse.getContentEncodingStreamFilter());
 
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
   httpHeader->put("Content-Encoding", "gzip");
   {
     SharedHandle<StreamFilter> filter =
@@ -323,7 +323,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
     CPPUNIT_ASSERT_EQUAL(std::string("GZipDecodingStreamFilter"),
                          filter->getName());
   }
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
   httpHeader.reset(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
   httpHeader->put("Content-Encoding", "bzip2");

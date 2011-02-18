@@ -72,9 +72,9 @@
 #include "ChunkedDecodingStreamFilter.h"
 #include "uri.h"
 #include "SocketRecvBuffer.h"
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 # include "GZipDecodingStreamFilter.h"
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 namespace aria2 {
 
@@ -447,7 +447,7 @@ namespace {
 bool decideFileAllocation
 (const SharedHandle<StreamFilter>& filter)
 {
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
   for(SharedHandle<StreamFilter> f = filter; f; f = f->getDelegate()){
     // Since the compressed file's length are returned in the response header
     // and the decompressed file size is unknown at this point, disable file
@@ -456,7 +456,7 @@ bool decideFileAllocation
       return false;
     }
   }
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
   return true;
 }
 } // namespace

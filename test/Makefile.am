@@ -88,11 +88,11 @@ if HAVE_SOME_FALLOCATE
 aria2c_SOURCES += FallocFileAllocationIteratorTest.cc
 endif  # HAVE_SOME_FALLOCATE
 
-if HAVE_LIBZ
+if HAVE_ZLIB
 aria2c_SOURCES += GZipDecoderTest.cc\
 	GZipEncoderTest.cc\
 	GZipDecodingStreamFilterTest.cc
-endif # HAVE_LIBZ
+endif # HAVE_ZLIB
 
 if HAVE_SQLITE3
 aria2c_SOURCES += Sqlite3CookieParserTest.cc

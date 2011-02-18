@@ -66,11 +66,11 @@ HttpServerCommand::HttpServerCommand
   e_->addSocketForReadCheck(socket_, this);
   httpServer_->setUsernamePassword(e_->getOption()->get(PREF_XML_RPC_USER),
                                    e_->getOption()->get(PREF_XML_RPC_PASSWD));
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
   httpServer_->enableGZip();
-#else // !HAVE_LIBZ
+#else // !HAVE_ZLIB
   httpServer_->disableGZip();
-#endif // !HAVE_LIBZ
+#endif // !HAVE_ZLIB
   checkSocketRecvBuffer();
 }
 
