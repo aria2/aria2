@@ -59,6 +59,10 @@ const time_t GET_PEER_INTERVAL = (15*60);
 const time_t GET_PEER_INTERVAL_LOW = (5*60);
 // Interval when the peer list is empty.
 const time_t GET_PEER_INTERVAL_ZERO = 60;
+// Interval for retry.
+const time_t GET_PEER_INTERVAL_RETRY = 5;
+// Maximum retries. Try more than 5 to drop bad node.
+const size_t MAX_RETRIES = 10;
 
 } // namespace
 
@@ -69,6 +73,7 @@ DHTGetPeersCommand::DHTGetPeersCommand
   : Command(cuid),
     requestGroup_(requestGroup),
     e_(e),
+    numRetry_(0),
     lastGetPeerTime_(0)
 {
   requestGroup_->increaseNumCommand();
@@ -87,7 +92,9 @@ bool DHTGetPeersCommand::execute()
   time_t elapsed = lastGetPeerTime_.difference(global::wallclock);
   if(!task_ &&
      (elapsed >= GET_PEER_INTERVAL ||
-      (((btRuntime_->lessThanMinPeers() && elapsed >= GET_PEER_INTERVAL_LOW) ||
+      (((btRuntime_->lessThanMinPeers() &&
+         ((numRetry_ && elapsed >= GET_PEER_INTERVAL_RETRY) ||
+          elapsed >= GET_PEER_INTERVAL_LOW)) ||
         (btRuntime_->getConnections() == 0 &&
          elapsed >= GET_PEER_INTERVAL_ZERO))
        && !requestGroup_->downloadFinished()))) {
@@ -98,7 +105,15 @@ bool DHTGetPeersCommand::execute()
       (requestGroup_->getDownloadContext(), btRuntime_, peerStorage_);
     taskQueue_->addPeriodicTask2(task_);
   } else if(task_ && task_->finished()) {
+    A2_LOG_DEBUG("task finished detected");
     lastGetPeerTime_ = global::wallclock;
+    if(numRetry_ < MAX_RETRIES && btRuntime_->lessThanMinPeers()) {
+      ++numRetry_;
+      A2_LOG_DEBUG(fmt("Too few peers. Try again(%lu)",
+                       static_cast<unsigned long>(numRetry_)));
+    } else {
+      numRetry_ = 0;
+    }
     task_.reset();
   }
 
