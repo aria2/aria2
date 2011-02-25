@@ -209,9 +209,7 @@ void DHTSetup::setup
           desnodes.begin(), eoi = desnodes.end(); i != eoi; ++i) {
       routingTable->addNode(*i);
     }
-    if(!desnodes.empty() &&
-       deserializer.getSerializedTime().
-       difference() >= DHT_BUCKET_REFRESH_INTERVAL) {
+    if(!desnodes.empty()) {
       SharedHandle<DHTBucketRefreshTask> task
         (static_pointer_cast<DHTBucketRefreshTask>
          (taskFactory->createBucketRefreshTask()));
