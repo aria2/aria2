@@ -120,7 +120,7 @@ private:
 
   bool noWait_;
 
-  static const int64_t DEFAULT_REFRESH_INTERVAL = 900;
+  static const int64_t DEFAULT_REFRESH_INTERVAL = 1000;
 
   // Milliseconds
   int64_t refreshInterval_;
