@@ -38,6 +38,8 @@
 #include "Command.h"
 #include "SharedHandle.h"
 #include "TimerA2.h"
+#include "ValueBase.h"
+#include "XmlRpcResponse.h"
 
 namespace aria2 {
 
@@ -51,6 +53,20 @@ private:
   SharedHandle<SocketCore> socket_;
   SharedHandle<HttpServer> httpServer_;
   Timer timeoutTimer_;
+  void sendJsonRpcErrorResponse
+  (const std::string& httpStatus,
+   int code,
+   const std::string& message,
+   const SharedHandle<ValueBase>& id,
+   const std::string& callback);
+  void sendJsonRpcResponse
+  (const xmlrpc::XmlRpcResponse& res,
+   const std::string& callback);
+  void sendJsonRpcBatchResponse
+  (const std::vector<xmlrpc::XmlRpcResponse>& results,
+   const std::string& callback);
+  xmlrpc::XmlRpcResponse processJsonRpcRequest(const Dict* jsondict);
+  void addHttpServerResponseCommand();
 public:
   HttpServerBodyCommand(cuid_t cuid,
                         const SharedHandle<HttpServer>& httpServer,

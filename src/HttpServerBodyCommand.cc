@@ -56,6 +56,7 @@
 #include "SocketRecvBuffer.h"
 #include "json.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
 namespace aria2 {
 
@@ -80,6 +81,102 @@ HttpServerBodyCommand::HttpServerBodyCommand
 HttpServerBodyCommand::~HttpServerBodyCommand()
 {
   e_->deleteSocketForReadCheck(socket_, this);
+}
+
+namespace {
+xmlrpc::XmlRpcResponse
+createJsonRpcErrorResponse
+(int code,
+ const std::string& msg,
+ const SharedHandle<ValueBase>& id)
+{
+  SharedHandle<Dict> params = Dict::g();
+  params->put("code", Integer::g(code));
+  params->put("message", msg);
+  xmlrpc::XmlRpcResponse res(code, params, id);
+  return res;
+}
+} // namespace
+
+void HttpServerBodyCommand::sendJsonRpcResponse
+(const xmlrpc::XmlRpcResponse& res,
+ const std::string& callback)
+{
+  bool gzip = httpServer_->supportsGZip();
+  std::string responseData = res.toJson(callback, gzip);
+  if(res.code == 0) {
+    httpServer_->feedResponse(responseData, "application/json-rpc");
+  } else {
+    httpServer_->disableKeepAlive();
+    std::string httpCode;
+    switch(res.code) {
+    case -32600:
+      httpCode = "400 Bad Request";
+      break;
+    case -32601:
+      httpCode = "404 Not Found";
+      break;
+    default:
+      httpCode = "500 Internal Server Error";
+    };
+    httpServer_->feedResponse(httpCode, A2STR::NIL,
+                              responseData, "application/json-rpc");
+  }
+  addHttpServerResponseCommand();
+}
+
+void HttpServerBodyCommand::sendJsonRpcBatchResponse
+(const std::vector<xmlrpc::XmlRpcResponse>& results,
+ const std::string& callback)
+{
+  bool gzip = httpServer_->supportsGZip();
+  std::string responseData = xmlrpc::toJsonBatch(results, callback, gzip);
+  httpServer_->feedResponse(responseData, "application/json-rpc");
+  addHttpServerResponseCommand();
+}
+
+void HttpServerBodyCommand::addHttpServerResponseCommand()
+{
+  Command* command =
+    new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
+  e_->addCommand(command);
+  e_->setNoWait(true);
+}
+
+xmlrpc::XmlRpcResponse
+HttpServerBodyCommand::processJsonRpcRequest(const Dict* jsondict)
+{
+
+  SharedHandle<ValueBase> id = jsondict->get("id");
+  if(!id) {
+    return createJsonRpcErrorResponse(-32600, "Invalid Request.",
+                                      SharedHandle<ValueBase>());
+  }
+  const String* methodName = asString(jsondict->get("method"));
+  if(!methodName) {
+    return createJsonRpcErrorResponse(-32600, "Invalid Request.", id);
+  }
+  SharedHandle<List> params;
+  const SharedHandle<ValueBase>& tempParams = jsondict->get("params");
+  if(asList(tempParams)) {
+    params = static_pointer_cast<List>(tempParams);
+  } else if(!tempParams) {
+    params = List::g();
+  } else {
+    // TODO No support for Named params
+    return createJsonRpcErrorResponse(-32602, "Invalid params.", id);
+  }
+  xmlrpc::XmlRpcRequest req(methodName->s(), params, id);
+  SharedHandle<xmlrpc::XmlRpcMethod> method;
+  try {
+    method = xmlrpc::XmlRpcMethodFactory::create(req.methodName);
+  } catch(RecoverableException& e) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+    return createJsonRpcErrorResponse(-32601, "Method not found.", id);
+  }
+  method->setJsonRpc(true);
+  xmlrpc::XmlRpcResponse res = method->execute(req, e_);
+  return res;
 }
 
 bool HttpServerBodyCommand::execute()
@@ -113,54 +210,51 @@ bool HttpServerBodyCommand::execute()
           bool gzip = httpServer_->supportsGZip();
           std::string responseData = res.toXml(gzip);
           httpServer_->feedResponse(responseData, "text/xml");
-          Command* command =
-            new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
-          e_->addCommand(command);
-          e_->setNoWait(true);
+          addHttpServerResponseCommand();
           return true;
         } else if(reqPath == "/jsonrpc") {
           // TODO handle query parameter
-          std::string callback;// = "callback";
+          std::string callback;
 
-          SharedHandle<ValueBase> json = json::decode(httpServer_->getBody());
+          SharedHandle<ValueBase> json;
+          try {
+            json = json::decode(httpServer_->getBody());
+          } catch(RecoverableException& e) {
+            A2_LOG_INFO_EX
+              (fmt("CUID#%lld - Failed to parse JSON-RPC request",
+                   getCuid()),
+               e);
+            xmlrpc::XmlRpcResponse res
+              (createJsonRpcErrorResponse
+               (-32700, "Parse error.", SharedHandle<ValueBase>()));
+            sendJsonRpcResponse(res, callback);
+            return true;
+          }
           const Dict* jsondict = asDict(json);
-          if(!jsondict) {
-            // TODO code: -32600, Invalid Request
-            throw DL_ABORT_EX("JSON-RPC Invalid Request");
-          }
-          const String* methodName = asString(jsondict->get("method"));
-          if(!methodName) {
-            // TODO Batch request does not have method
-            throw DL_ABORT_EX("JSON-RPC No Method Found");
-          }
-          SharedHandle<List> params;
-          const SharedHandle<ValueBase>& tempParams = jsondict->get("params");
-          if(asList(tempParams)) {
-            params = static_pointer_cast<List>(tempParams);
-          } else if(!tempParams) {
-            params = List::g();
+          if(jsondict) {
+            xmlrpc::XmlRpcResponse res = processJsonRpcRequest(jsondict);
+            sendJsonRpcResponse(res, callback);
           } else {
-            // TODO No support for Named params
-            throw DL_ABORT_EX("JSON-RPC Named params are not supported");
+            const List* jsonlist = asList(json);
+            if(jsonlist) {
+              // This is batch call
+              std::vector<xmlrpc::XmlRpcResponse> results;
+              for(List::ValueType::const_iterator i = jsonlist->begin(),
+                    eoi = jsonlist->end(); i != eoi; ++i) {
+                const Dict* jsondict = asDict(*i);
+                if(jsondict) {
+                  xmlrpc::XmlRpcResponse r = processJsonRpcRequest(jsondict);
+                  results.push_back(r);
+                }
+              }
+              sendJsonRpcBatchResponse(results, callback);
+            } else {
+              xmlrpc::XmlRpcResponse res
+                (createJsonRpcErrorResponse
+                 (-32600, "Invalid Request.", SharedHandle<ValueBase>()));
+              sendJsonRpcResponse(res, callback);
+            }
           }
-          SharedHandle<ValueBase> id = jsondict->get("id");
-          if(!id) {
-            // TODO Batch request does not have id
-            throw DL_ABORT_EX("JSON-RPC NO id found");
-          }
-          xmlrpc::XmlRpcRequest req(methodName->s(), params, id);
-
-          SharedHandle<xmlrpc::XmlRpcMethod> method =
-            xmlrpc::XmlRpcMethodFactory::create(req.methodName);
-          method->setJsonRpc(true);
-          xmlrpc::XmlRpcResponse res = method->execute(req, e_);
-          bool gzip = httpServer_->supportsGZip();
-          std::string responseData = res.toJson(callback, gzip);
-          httpServer_->feedResponse(responseData, "application/json-rpc");
-          Command* command =
-            new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
-          e_->addCommand(command);
-          e_->setNoWait(true);
           return true;
         } else {
           return true;

@@ -208,6 +208,46 @@ std::string XmlRpcResponse::toJson(const std::string& callback, bool gzip) const
   }
 }
 
+namespace {
+template<typename OutputStream>
+OutputStream& encodeJsonBatchAll
+(OutputStream& o,
+ const std::vector<XmlRpcResponse>& results,
+ const std::string& callback)
+{
+  o << '[';
+  if(!results.empty()) {
+    encodeJsonAll(o, results[0].code, results[0].param, results[0].id,callback);
+  }
+  for(std::vector<XmlRpcResponse>::const_iterator i = results.begin()+1,
+        eoi = results.end(); i != eoi; ++i) {
+    o << ',';
+    encodeJsonAll(o, (*i).code, (*i).param, (*i).id, callback);
+  }
+  o << ']';
+  return o;
+}
+} // namespace
+
+std::string toJsonBatch
+(const std::vector<XmlRpcResponse>& results,
+ const std::string& callback,
+ bool gzip)
+{
+  if(gzip) {
+#ifdef HAVE_ZLIB
+    GZipEncoder o;
+    o.init();
+    return encodeJsonBatchAll(o, results, callback).str();
+#else // !HAVE_ZLIB
+    abort();
+#endif // !HAVE_ZLIB
+  } else {
+    std::stringstream o;
+    return encodeJsonBatchAll(o, results, callback).str();
+  }
+}
+
 } // namespace xmlrpc
 
 } // namespace aria2
