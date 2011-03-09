@@ -143,4 +143,10 @@ GZipEncoder& GZipEncoder::operator<<(int64_t i)
   return *this;
 }
 
+GZipEncoder& GZipEncoder::write(const char* s, size_t length)
+{
+  internalBuf_ += encode(reinterpret_cast<const unsigned char*>(s), length);
+  return *this;
+}
+
 } // namespace aria2

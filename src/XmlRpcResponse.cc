@@ -38,6 +38,7 @@
 #include <sstream>
 
 #include "util.h"
+#include "json.h"
 #ifdef HAVE_ZLIB
 # include "GZipEncoder.h"
 #endif // HAVE_ZLIB
@@ -67,6 +68,10 @@ void encodeValue(const SharedHandle<ValueBase>& value, OutputStream& o)
     {
       o_ << "<value><int>" << v.i() << "</int></value>";
     }
+
+    virtual void visit(const Bool& boolValue) {}
+
+    virtual void visit(const Null& nullValue) {}
 
     virtual void visit(const List& v)
     {
@@ -117,13 +122,16 @@ std::string encodeAll
 } // namespace
 
 XmlRpcResponse::XmlRpcResponse
-(int code, const SharedHandle<ValueBase>& param)
-  : code(code), param(param)
+(int code,
+ const SharedHandle<ValueBase>& param,
+ const SharedHandle<ValueBase>& id)
+  : code(code), param(param), id(id)
 {}
 
 XmlRpcResponse::XmlRpcResponse(const XmlRpcResponse& c)
   : code(c.code),
-    param(c.param)
+    param(c.param),
+    id(c.id)
 {}
 
 XmlRpcResponse::~XmlRpcResponse() {}
@@ -150,6 +158,53 @@ std::string XmlRpcResponse::toXml(bool gzip) const
   } else {
     std::stringstream o;
     return encodeAll(o, code, param);
+  }
+}
+
+namespace {
+template<typename OutputStream>
+OutputStream& encodeJsonAll
+(OutputStream& o,
+ int code,
+ const SharedHandle<ValueBase>& param,
+ const SharedHandle<ValueBase>& id,
+ const std::string& callback)
+{
+  if(!callback.empty()) {
+    o << callback << '(';
+  }
+  SharedHandle<Dict> dict = Dict::g();
+  dict->put("jsonrpc", "2.0");
+  // TODO id may be null?
+  if(id) {
+    dict->put("id", id);
+  }
+  if(code == 0) {
+    dict->put("result", param);
+  } else {
+    dict->put("error", param);
+  }
+  json::encode(o, dict).str();
+  if(!callback.empty()) {
+    o << ')';
+  }
+  return o;
+}
+} // namespace
+
+std::string XmlRpcResponse::toJson(const std::string& callback, bool gzip) const
+{
+  if(gzip) {
+#ifdef HAVE_ZLIB
+    GZipEncoder o;
+    o.init();
+    return encodeJsonAll(o, code, param, id, callback).str();
+#else // !HAVE_ZLIB
+    abort();
+#endif // !HAVE_ZLIB
+  } else {
+    std::stringstream o;
+    return encodeJsonAll(o, code, param, id, callback).str();
   }
 }
 

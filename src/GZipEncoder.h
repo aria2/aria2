@@ -68,6 +68,10 @@ public:
   // in this class.
   GZipEncoder& operator<<(const std::string& s);
 
+  // Feeds binary data in s with size length to deflater.  The
+  // deflated result is kept in this class.
+  GZipEncoder& write(const char* s, size_t length);
+
   // Feeds integer to deflator. Before passed to deflator, i is
   // converted to std::string using util::itos().  The deflated result
   // is kept in this class.

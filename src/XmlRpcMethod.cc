@@ -53,7 +53,8 @@ namespace aria2 {
 namespace xmlrpc {
 
 XmlRpcMethod::XmlRpcMethod()
-  : optionParser_(OptionParser::getInstance())
+  : optionParser_(OptionParser::getInstance()),
+    jsonRpc_(false)
 {}
 
 XmlRpcMethod::~XmlRpcMethod() {}
@@ -62,8 +63,8 @@ SharedHandle<ValueBase> XmlRpcMethod::createErrorResponse
 (const Exception& e)
 {
   SharedHandle<Dict> params = Dict::g();
-  params->put("faultCode", Integer::g(1));
-  params->put("faultString", std::string(e.what()));
+  params->put((jsonRpc_ ? "code" : "faultCode"), Integer::g(1));
+  params->put((jsonRpc_ ? "message" : "faultString"), std::string(e.what()));
   return params;
 }
 
@@ -71,10 +72,10 @@ XmlRpcResponse XmlRpcMethod::execute
 (const XmlRpcRequest& req, DownloadEngine* e)
 {
   try {
-    return XmlRpcResponse(0, process(req, e));
+    return XmlRpcResponse(0, process(req, e), req.id);
   } catch(RecoverableException& e) {
     A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, e);
-    return XmlRpcResponse(1, createErrorResponse(e));
+    return XmlRpcResponse(1, createErrorResponse(e), req.id);
   }
 }
 

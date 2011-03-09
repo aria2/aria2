@@ -63,6 +63,7 @@
 #include "SegmentMan.h"
 #include "TimedHaltCommand.h"
 #include "PeerStat.h"
+#include "Base64.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -266,7 +267,11 @@ SharedHandle<ValueBase> AddTorrentXmlRpcMethod::process
   if(!torrentParam) {
     throw DL_ABORT_EX("Torrent data is not provided.");
   }
-  
+  SharedHandle<String> tempTorrentParam;
+  if(getJsonRpc()) {
+    tempTorrentParam = String::g(Base64::decode(torrentParam->s()));
+    torrentParam = tempTorrentParam.get();
+  }
   std::vector<std::string> uris;
   extractUris(std::back_inserter(uris), req.getListParam(1));
 
@@ -309,7 +314,11 @@ SharedHandle<ValueBase> AddMetalinkXmlRpcMethod::process
   if(!metalinkParam) {
     throw DL_ABORT_EX("Metalink data is not provided.");
   }
-  
+  SharedHandle<String> tempMetalinkParam;
+  if(getJsonRpc()) {
+    tempMetalinkParam = String::g(Base64::decode(metalinkParam->s()));
+    metalinkParam = tempMetalinkParam.get();
+  }
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
   gatherRequestOption(requestOption, req.getDictParam(1));
 

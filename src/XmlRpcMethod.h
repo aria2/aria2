@@ -64,6 +64,7 @@ struct XmlRpcResponse;
 class XmlRpcMethod {
 private:
   SharedHandle<OptionParser> optionParser_;
+  bool jsonRpc_;
 protected:
   // Subclass must implement this function to fulfil XmlRpcRequest
   // req.  The return value of this method is used as a return value
@@ -102,6 +103,15 @@ public:
   // Do work to fulfill XmlRpcRequest req and returns its result as
   // XmlRpcResponse. This method delegates to process() method.
   XmlRpcResponse execute(const XmlRpcRequest& req, DownloadEngine* e);
+  // Set whether JSON-RPC style parameter handling.
+  void setJsonRpc(bool f)
+  {
+    jsonRpc_ = f;
+  }
+  bool getJsonRpc() const
+  {
+    return jsonRpc_;
+  }
 };
 
 } // namespace xmlrpc

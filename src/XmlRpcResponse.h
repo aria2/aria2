@@ -51,7 +51,12 @@ struct XmlRpcResponse {
   
   SharedHandle<ValueBase> param;
 
-  XmlRpcResponse(int code, const SharedHandle<ValueBase>& param);
+  SharedHandle<ValueBase> id;
+
+  XmlRpcResponse
+  (int code,
+   const SharedHandle<ValueBase>& param,
+   const SharedHandle<ValueBase>& id);
 
   XmlRpcResponse(const XmlRpcResponse& c);
 
@@ -60,6 +65,10 @@ struct XmlRpcResponse {
   XmlRpcResponse& operator=(const XmlRpcResponse& c);
 
   std::string toXml(bool gzip = false) const;
+
+  // Encodes RPC response in JSON. If callback is not empty, the
+  // resulting string is JSONP.
+  std::string toJson(const std::string& callback, bool gzip = false) const;
 };
 
 } // namespace xmlrpc

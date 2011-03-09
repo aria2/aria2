@@ -43,8 +43,14 @@ XmlRpcRequest::XmlRpcRequest(const std::string& methodName,
   : methodName(methodName), params(params)
 {}
 
+XmlRpcRequest::XmlRpcRequest(const std::string& methodName,
+                             const SharedHandle<List>& params,
+                             const SharedHandle<ValueBase>& id)
+  : methodName(methodName), params(params), id(id)
+{}
+
 XmlRpcRequest::XmlRpcRequest(const XmlRpcRequest& c)
-  : methodName(c.methodName), params(c.params)
+  : methodName(c.methodName), params(c.params), id(c.id)
 {}
 
 XmlRpcRequest::~XmlRpcRequest() {}

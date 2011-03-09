@@ -97,6 +97,45 @@ void Integer::accept(ValueBaseVisitor& v) const
   v.visit(*this);
 }
 
+const SharedHandle<Bool> Bool::trueValue_(new Bool(true));
+const SharedHandle<Bool> Bool::falseValue_(new Bool(false));
+
+SharedHandle<Bool> Bool::gTrue()
+{
+  return trueValue_;
+}
+
+SharedHandle<Bool> Bool::gFalse()
+{
+  return falseValue_;
+}
+
+bool Bool::val() const
+{
+  return val_;
+}
+
+void Bool::accept(ValueBaseVisitor& v) const
+{
+  v.visit(*this);
+}
+
+Bool::Bool(bool val):val_(val) {}
+
+const SharedHandle<Null> Null::nullValue_(new Null());
+
+SharedHandle<Null> Null::g()
+{
+  return nullValue_;
+}
+
+void Null::accept(ValueBaseVisitor& v) const
+{
+  v.visit(*this);
+}
+
+Null::Null() {}
+
 List::List() {}
 
 List::~List() {}
@@ -262,7 +301,7 @@ void Dict::accept(ValueBaseVisitor& v) const
 const String* asString(const ValueBase* v)
 {
   if(v) {
-    return downcast<String, Integer, List, Dict>(v);
+    return downcast<String>(v);
   } else {
     return 0;
   }
@@ -271,7 +310,7 @@ const String* asString(const ValueBase* v)
 String* asString(ValueBase* v)
 {
   if(v) {
-    return const_cast<String*>(downcast<String, Integer, List, Dict>(v));
+    return const_cast<String*>(downcast<String>(v));
   } else {
     return 0;
   }
@@ -280,7 +319,7 @@ String* asString(ValueBase* v)
 String* asString(const SharedHandle<ValueBase>& v)
 {
   if(v.get()) {
-    return const_cast<String*>(downcast<String, Integer, List, Dict>(v));
+    return const_cast<String*>(downcast<String>(v));
   } else {
     return 0;
   }
@@ -289,7 +328,7 @@ String* asString(const SharedHandle<ValueBase>& v)
 const Integer* asInteger(const ValueBase* v)
 {
   if(v) {
-    return downcast<Integer, String, List, Dict>(v);
+    return downcast<Integer>(v);
   } else {
     return 0;
   }
@@ -298,7 +337,7 @@ const Integer* asInteger(const ValueBase* v)
 Integer* asInteger(ValueBase* v)
 {
   if(v) {
-    return const_cast<Integer*>(downcast<Integer, String, List, Dict>(v));
+    return const_cast<Integer*>(downcast<Integer>(v));
   } else {
     return 0;
   }
@@ -307,7 +346,43 @@ Integer* asInteger(ValueBase* v)
 Integer* asInteger(const SharedHandle<ValueBase>& v)
 {
   if(v.get()) {
-    return const_cast<Integer*>(downcast<Integer, String, List, Dict>(v));
+    return const_cast<Integer*>(downcast<Integer>(v));
+  } else {
+    return 0;
+  }
+}
+
+const Bool* asBool(const ValueBase* v)
+{
+  if(v) {
+    return downcast<Bool>(v);
+  } else {
+    return 0;
+  }
+}
+
+Bool* asBool(const SharedHandle<ValueBase>& v)
+{
+  if(v.get()) {
+    return const_cast<Bool*>(downcast<Bool>(v));
+  } else {
+    return 0;
+  }
+}
+
+const Null* asNull(const ValueBase* v)
+{
+  if(v) {
+    return downcast<Null>(v);
+  } else {
+    return 0;
+  }
+}
+
+Null* asNull(const SharedHandle<ValueBase>& v)
+{
+  if(v) {
+    return const_cast<Null*>(downcast<Null>(v));
   } else {
     return 0;
   }
@@ -316,7 +391,7 @@ Integer* asInteger(const SharedHandle<ValueBase>& v)
 const List* asList(const ValueBase* v)
 {
   if(v) {
-    return downcast<List, String, Integer, Dict>(v);
+    return downcast<List>(v);
   } else {
     return 0;
   }
@@ -325,7 +400,7 @@ const List* asList(const ValueBase* v)
 List* asList(ValueBase* v)
 {
   if(v) {
-    return const_cast<List*>(downcast<List, String, Integer, Dict>(v));
+    return const_cast<List*>(downcast<List>(v));
   } else {
     return 0;
   }
@@ -334,7 +409,7 @@ List* asList(ValueBase* v)
 List* asList(const SharedHandle<ValueBase>& v)
 {
   if(v.get()) {
-    return const_cast<List*>(downcast<List, String, Integer, Dict>(v));
+    return const_cast<List*>(downcast<List>(v));
   } else {
     return 0;
   }
@@ -343,7 +418,7 @@ List* asList(const SharedHandle<ValueBase>& v)
 const Dict* asDict(const ValueBase* v)
 {
   if(v) {
-    return downcast<Dict, String, Integer, List>(v);
+    return downcast<Dict>(v);
   } else {
     return 0;
   }
@@ -352,7 +427,7 @@ const Dict* asDict(const ValueBase* v)
 Dict* asDict(ValueBase* v)
 {
   if(v) {
-    return const_cast<Dict*>(downcast<Dict, String, Integer, List>(v));
+    return const_cast<Dict*>(downcast<Dict>(v));
   } else {
     return 0;
   }
@@ -361,7 +436,7 @@ Dict* asDict(ValueBase* v)
 Dict* asDict(const SharedHandle<ValueBase>& v)
 {
   if(v.get()) {
-    return const_cast<Dict*>(downcast<Dict, String, Integer, List>(v));
+    return const_cast<Dict*>(downcast<Dict>(v));
   } else {
     return 0;
   }

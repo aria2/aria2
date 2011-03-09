@@ -76,7 +76,8 @@ aria2c_SOURCES = AllTest.cc\
 	UriTest.cc\
 	MockSegment.h\
 	TripletTest.cc\
-	CookieHelperTest.cc
+	CookieHelperTest.cc\
+	JsonTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\

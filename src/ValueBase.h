@@ -58,19 +58,19 @@ public:
 
 class String;
 class Integer;
+class Bool;
+class Null;
 class List;
 class Dict;
 
 class ValueBaseVisitor {
 public:
   virtual ~ValueBaseVisitor() {}
-
   virtual void visit(const String& string) = 0;
-
   virtual void visit(const Integer& integer) = 0;
-
+  virtual void visit(const Bool& boolValue) = 0;
+  virtual void visit(const Null& nullValue) = 0;
   virtual void visit(const List& list) = 0;
-
   virtual void visit(const Dict& dict) = 0;
 };
 
@@ -131,6 +131,34 @@ public:
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:
   ValueType integer_;
+};
+
+class Bool:public ValueBase {
+public:
+  static SharedHandle<Bool> gTrue();
+  static SharedHandle<Bool> gFalse();
+  bool val() const;
+  virtual void accept(ValueBaseVisitor& visitor) const;
+private:
+  Bool(bool val);
+  // Don't allow copying
+  Bool(const Bool&);
+  Bool& operator=(const Bool&);
+  bool val_;
+  static const SharedHandle<Bool> trueValue_;
+  static const SharedHandle<Bool> falseValue_;
+};
+
+class Null:public ValueBase {
+public:
+  static SharedHandle<Null> g();
+  virtual void accept(ValueBaseVisitor& visitor) const;
+private:
+  Null();
+  // Don't allow copying
+  Null(const Null&);
+  Null& operator=(const Null&);
+  static const SharedHandle<Null> nullValue_;
 };
 
 class List:public ValueBase {
@@ -256,10 +284,19 @@ private:
   ValueType dict_;
 };
 
-template<typename T, typename T1, typename T2, typename T3>
-class DowncastValueBaseVisitor:public ValueBaseVisitor {
-private:
-  const T* result_;
+class EmptyDowncastValueBaseVisitor:public ValueBaseVisitor {
+public:
+  EmptyDowncastValueBaseVisitor() {}
+  virtual void visit(const String& v) {}
+  virtual void visit(const Integer& v) {}
+  virtual void visit(const Bool& v) {}
+  virtual void visit(const Null& v) {}
+  virtual void visit(const List& v) {}
+  virtual void visit(const Dict& v) {}
+};
+
+template<typename T>
+class DowncastValueBaseVisitor:public EmptyDowncastValueBaseVisitor {
 public:
   DowncastValueBaseVisitor():result_(0) {}
 
@@ -267,10 +304,6 @@ public:
   {
     result_ = &t;
   }
-
-  virtual void visit(const T1& t1) {}
-  virtual void visit(const T2& t2) {}
-  virtual void visit(const T3& t3) {}
 
   const T* getResult() const
   {
@@ -281,12 +314,14 @@ public:
   {
     result_ = r;
   }
+private:
+  const T* result_;
 };
 
-template<typename T, typename T1, typename T2, typename T3, typename VPtr>
+template<typename T, typename VPtr>
 const T* downcast(const VPtr& v)
 {
-  DowncastValueBaseVisitor<T, T1, T2, T3> visitor;
+  DowncastValueBaseVisitor<T> visitor;
   v->accept(visitor);
   return visitor.getResult();
 }
@@ -302,6 +337,14 @@ const Integer* asInteger(const ValueBase* v);
 Integer* asInteger(ValueBase* v);
 
 Integer* asInteger(const SharedHandle<ValueBase>& v);
+
+const Bool* asBool(const ValueBase* v);
+
+Bool* asBool(const SharedHandle<ValueBase>& v);
+
+const Null* asNull(const ValueBase* v);
+
+Null* asNull(const SharedHandle<ValueBase>& v);
 
 const List* asList(const ValueBase* v);
 

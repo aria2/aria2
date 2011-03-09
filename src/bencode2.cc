@@ -249,6 +249,9 @@ std::string encode(const ValueBase* vlb)
       out_ << "i" << integer.i() << "e";
     }
 
+    virtual void visit(const Bool& v) {}
+    virtual void visit(const Null& v) {}
+
     virtual void visit(const List& list)
     {
       out_ << "l";

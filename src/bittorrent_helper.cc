@@ -150,6 +150,8 @@ void extractUrlList
     }
 
     virtual void visit(const Integer& v) {}
+    virtual void visit(const Bool& v) {}
+    virtual void visit(const Null& v) {}
 
     virtual void visit(const List& v)
     {

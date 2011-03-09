@@ -210,7 +210,8 @@ SRCS =  Socket.h\
 	NullSinkStreamFilter.cc NullSinkStreamFilter.h\
 	uri.cc uri.h\
 	Triplet.h\
-	cookie_helper.cc cookie_helper.h
+	cookie_helper.cc cookie_helper.h\
+	json.cc json.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

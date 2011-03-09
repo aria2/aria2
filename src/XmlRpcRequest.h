@@ -48,9 +48,14 @@ namespace xmlrpc {
 struct XmlRpcRequest {
   std::string methodName;
   SharedHandle<List> params;
+  SharedHandle<ValueBase> id;
 
   XmlRpcRequest(const std::string& methodName,
                 const SharedHandle<List>& params);
+
+  XmlRpcRequest(const std::string& methodName,
+                const SharedHandle<List>& params,
+                const SharedHandle<ValueBase>& id);
 
   ~XmlRpcRequest();
 
