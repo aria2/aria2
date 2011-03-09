@@ -454,7 +454,7 @@ decode
     return decodeNull(first, last);
   } else {
     throw DL_ABORT_EX2("JSON decoding failed:"
-                       " Unexpected EOF in term context.",
+                       " Unexpected character in term context.",
                        error_code::JSON_PARSE_ERROR);
   }
 }
