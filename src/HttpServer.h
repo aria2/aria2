@@ -79,6 +79,8 @@ public:
 
   std::string getBody() const;
 
+  const std::string& getMethod() const;
+
   const std::string& getRequestPath() const;
 
   void feedResponse(const std::string& text, const std::string& contentType);

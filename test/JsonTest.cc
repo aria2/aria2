@@ -5,6 +5,7 @@
 #include "RecoverableException.h"
 #include "util.h"
 #include "array_fun.h"
+#include "Base64.h"
 
 namespace aria2 {
 
@@ -14,6 +15,7 @@ class JsonTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDecode);
   CPPUNIT_TEST(testDecode_error);
   CPPUNIT_TEST(testEncode);
+  CPPUNIT_TEST(testDecodeGetParams);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -21,6 +23,7 @@ public:
   void testDecode();
   void testDecode_error();
   void testEncode();
+  void testDecodeGetParams();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( JsonTest );
@@ -440,6 +443,34 @@ void JsonTest::testEncode()
     list.append(Null::g());
     CPPUNIT_ASSERT_EQUAL(std::string("[true,false,null]"),
                          json::encode(&list));
+  }
+}
+
+void JsonTest::testDecodeGetParams()
+{
+  {
+    std::string param = util::percentEncode(Base64::encode("[1,2,3]"));
+    std::string query = "?params=";
+    query += param;
+    query += '&';
+    query += "method=sum&";
+    query += "id=300&";
+    query += "jsoncallback=cb";
+    json::JsonGetParam gparam = json::decodeGetParams(query);
+    CPPUNIT_ASSERT_EQUAL(std::string("{\"method\":\"sum\","
+                                     "\"id\":\"300\","
+                                     "\"params\":[1,2,3]}"),
+                         gparam.request);
+    CPPUNIT_ASSERT_EQUAL(std::string("cb"), gparam.callback);
+  }
+  {
+    std::string query = "?params=";
+    query += util::percentEncode(Base64::encode("[{}]"));
+    query += '&';
+    query += "jsoncallback=cb";
+    json::JsonGetParam gparam = json::decodeGetParams(query);
+    CPPUNIT_ASSERT_EQUAL(std::string("[{}]"), gparam.request);
+    CPPUNIT_ASSERT_EQUAL(std::string("cb"), gparam.callback);
   }
 }
 

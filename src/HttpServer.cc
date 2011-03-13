@@ -137,6 +137,11 @@ std::string HttpServer::getBody() const
   return lastBody_.str();
 }
 
+const std::string& HttpServer::getMethod() const
+{
+  return lastRequestHeader_->getMethod();
+}
+
 const std::string& HttpServer::getRequestPath() const
 {
   return lastRequestHeader_->getRequestPath();

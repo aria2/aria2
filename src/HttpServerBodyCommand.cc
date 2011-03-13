@@ -213,12 +213,16 @@ bool HttpServerBodyCommand::execute()
           addHttpServerResponseCommand();
           return true;
         } else if(reqPath == "/jsonrpc") {
-          // TODO handle query parameter
           std::string callback;
-
           SharedHandle<ValueBase> json;
           try {
-            json = json::decode(httpServer_->getBody());
+            if(httpServer_->getMethod() == "GET") {
+              json::JsonGetParam param = json::decodeGetParams(query);
+              callback = param.callback;
+              json = json::decode(param.request);
+            } else {
+              json = json::decode(httpServer_->getBody());
+            }
           } catch(RecoverableException& e) {
             A2_LOG_INFO_EX
               (fmt("CUID#%lld - Failed to parse JSON-RPC request",

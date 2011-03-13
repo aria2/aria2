@@ -42,6 +42,7 @@
 #include "a2functional.h"
 #include "util.h"
 #include "fmt.h"
+#include "Base64.h"
 
 namespace aria2 {
 
@@ -605,6 +606,54 @@ std::string encode(const SharedHandle<ValueBase>& json)
 {
   std::ostringstream out;
   return encode(out, json.get()).str();
+}
+
+JsonGetParam::JsonGetParam
+(const std::string& request, const std::string& callback)
+  : request(request), callback(callback)
+{}
+
+JsonGetParam
+decodeGetParams(const std::string& query)
+{
+  std::string jsonRequest;
+  std::string callback;
+  if(!query.empty() && query[0] == '?') {
+    std::string method;
+    std::string id;
+    std::string params;
+    std::vector<std::string> getParams;
+    util::split(query.substr(1), std::back_inserter(getParams), "&");
+    for(std::vector<std::string>::const_iterator i =
+          getParams.begin(), eoi = getParams.end(); i != eoi; ++i) {
+      if(util::startsWith(*i, "method=")) {
+        method = (*i).substr(7);
+      } else if(util::startsWith(*i, "id=")) {
+        id = (*i).substr(3);
+      } else if(util::startsWith(*i, "params=")) {
+        params = (*i).substr(7);
+      } else if(util::startsWith(*i, "jsoncallback=")) {
+        callback = (*i).substr(13);
+      }
+    }
+    std::string jsonParam =
+      Base64::decode(util::percentDecode(params));
+    if(method.empty() && id.empty()) {
+      // Assume batch call.
+      jsonRequest = jsonParam;
+    } else {
+      jsonRequest = '{';
+      if(!method.empty()) {
+        strappend(jsonRequest, "\"method\":\"", method, "\",");
+      }
+      if(!id.empty()) {
+        strappend(jsonRequest, "\"id\":\"", id, "\",");
+      }
+      strappend(jsonRequest, "\"params\":", jsonParam);
+      jsonRequest += '}';
+    }
+  }
+  return JsonGetParam(jsonRequest, callback);
 }
 
 } // namespace json

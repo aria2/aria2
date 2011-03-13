@@ -58,9 +58,9 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
     {
       const std::string& s = string.s();
       std::string t = jsonEscape(s);
-      out_ << '"';
+      out_ << "\"";
       out_.write(t.data(), t.size());
-      out_ << '"';
+      out_ << "\"";
     }
 
     virtual void visit(const Integer& integer)
@@ -80,40 +80,40 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
 
     virtual void visit(const List& list)
     {
-      out_ << '[';
+      out_ << "[";
       List::ValueType::const_iterator i = list.begin();
       if(!list.empty()) {
         (*i)->accept(*this);
+        ++i;
+        for(List::ValueType::const_iterator eoi = list.end(); i != eoi; ++i){
+          out_ << ",";
+          (*i)->accept(*this);
+        }
       }
-      ++i;
-      for(List::ValueType::const_iterator eoi = list.end(); i != eoi; ++i){
-        out_ << ',';
-        (*i)->accept(*this);
-      }
-      out_ << ']';
+      out_ << "]";
     }
 
     virtual void visit(const Dict& dict)
     {
-      out_ << '{';
+      out_ << "{";
       Dict::ValueType::const_iterator i = dict.begin();
       if(!dict.empty()) {
         std::string key = jsonEscape((*i).first);
-        out_ << '"';
+        out_ << "\"";
         out_.write(key.data(), key.size());
         out_ << "\":";
         (*i).second->accept(*this);
+        ++i;
+        for(Dict::ValueType::const_iterator eoi = dict.end(); i != eoi; ++i){
+          out_ << ",";
+          std::string key = jsonEscape((*i).first);
+          out_ << "\"";
+          out_.write(key.data(), key.size());
+          out_ << "\":";
+          (*i).second->accept(*this);
+        }
       }
-      ++i;
-      for(Dict::ValueType::const_iterator eoi = dict.end(); i != eoi; ++i){
-        out_ << ',';
-        std::string key = jsonEscape((*i).first);
-        out_ << '"';
-        out_.write(key.data(), key.size());
-        out_ << "\":";
-        (*i).second->accept(*this);
-      }
-      out_ << '}';
+      out_ << "}";
     }
   private:
     OutputStream& out_;
@@ -132,6 +132,26 @@ OutputStream& encode(OutputStream& out, const SharedHandle<ValueBase>& vlb)
 // Serializes JSON object or array.
 std::string encode(const ValueBase* json);
 std::string encode(const SharedHandle<ValueBase>& json);
+
+struct JsonGetParam {
+  std::string request;
+  std::string callback;
+  JsonGetParam(const std::string& request, const std::string& callback);
+};
+
+// Decodes JSON-RPC request from GET query parameter query. query must
+// starts with "?". This function identifies method name, id,
+// parameters and jsonp callback.  For method name, it searches
+// "method" query parameter.  For id, it searches "id" query
+// parameter. The id is always treated as string.  For parameters, it
+// searches "params" query parameter. The params is Base64 encoded
+// JSON string normally associated "params" key in POST request.  For
+// jsonp callback, it searches "jsoncallback".  For example, calling
+// remote method, sum([1,2,3]) with id=300 looks like this:
+// ?method=sum&id=300&params=WzEsMiwzXQ%3D%3D
+//
+// If both method and id are missing, params is treated as batch call.
+JsonGetParam decodeGetParams(const std::string& query);
 
 } // namespace json
 
