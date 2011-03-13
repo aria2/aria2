@@ -171,7 +171,7 @@ OutputStream& encodeJsonAll
  const std::string& callback)
 {
   if(!callback.empty()) {
-    o << callback << '(';
+    o << callback << "(";
   }
   SharedHandle<Dict> dict = Dict::g();
   dict->put("jsonrpc", "2.0");
@@ -184,9 +184,9 @@ OutputStream& encodeJsonAll
   } else {
     dict->put("error", param);
   }
-  json::encode(o, dict).str();
+  json::encode(o, dict);
   if(!callback.empty()) {
-    o << ')';
+    o << ")";
   }
   return o;
 }
@@ -215,16 +215,16 @@ OutputStream& encodeJsonBatchAll
  const std::vector<XmlRpcResponse>& results,
  const std::string& callback)
 {
-  o << '[';
+  o << "[";
   if(!results.empty()) {
     encodeJsonAll(o, results[0].code, results[0].param, results[0].id,callback);
   }
   for(std::vector<XmlRpcResponse>::const_iterator i = results.begin()+1,
         eoi = results.end(); i != eoi; ++i) {
-    o << ',';
+    o << ",";
     encodeJsonAll(o, (*i).code, (*i).param, (*i).id, callback);
   }
-  o << ']';
+  o << "]";
   return o;
 }
 } // namespace
