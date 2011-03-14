@@ -149,8 +149,7 @@ HttpServerBodyCommand::processJsonRpcRequest(const Dict* jsondict)
 
   SharedHandle<ValueBase> id = jsondict->get("id");
   if(!id) {
-    return createJsonRpcErrorResponse(-32600, "Invalid Request.",
-                                      SharedHandle<ValueBase>());
+    return createJsonRpcErrorResponse(-32600, "Invalid Request.", Null::g());
   }
   const String* methodName = asString(jsondict->get("method"));
   if(!methodName) {

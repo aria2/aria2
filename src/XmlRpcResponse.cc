@@ -175,10 +175,7 @@ OutputStream& encodeJsonAll
   }
   SharedHandle<Dict> dict = Dict::g();
   dict->put("jsonrpc", "2.0");
-  // TODO id may be null?
-  if(id) {
-    dict->put("id", id);
-  }
+  dict->put("id", id);
   if(code == 0) {
     dict->put("result", param);
   } else {

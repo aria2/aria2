@@ -70,14 +70,12 @@ struct XmlRpcResponse {
   // Encodes RPC response in JSON. If callback is not empty, the
   // resulting string is JSONP.
   std::string toJson(const std::string& callback, bool gzip = false) const;
-
-  std::string toJsonBatch(const std::string& callback, bool gzip = false) const;
 };
 
 std::string toJsonBatch
 (const std::vector<XmlRpcResponse>& results,
  const std::string& callback,
- bool gzip);
+ bool gzip = false);
 
 } // namespace xmlrpc
 
