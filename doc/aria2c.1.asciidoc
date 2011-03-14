@@ -77,7 +77,7 @@ Basic Options
    usage for the options whose name includes that word.
    Available Values: '#basic', '#advanced', '#http', '#https', '#ftp',
    '#metalink', '#bittorrent', '#cookie', '#hook', '#file',
-   '#xml-rpc', '#experimental', '#all'
+   '#rpc', '#experimental', '#all'
    Default: '#basic'
 
 HTTP/FTP Options
@@ -755,33 +755,33 @@ Metalink Specific Options
   protocol.
   Default: 'true'
 
-XML-RPC Options
-~~~~~~~~~~~~~~~
+JSON-RPC/XML-RPC Options
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-[[aria2_optref_enable_xml_rpc]]*--enable-xml-rpc*[='true'|'false']::
-  Enable XML-RPC server.  It is strongly recommended to set username
-  and password using *<<aria2_optref_xml_rpc_user, --xml-rpc-user>>* and *<<aria2_optref_xml_rpc_passwd, --xml-rpc-passwd>>*
-  option. See also *<<aria2_optref_xml_rpc_listen_port, --xml-rpc-listen-port>>* option.  Default: 'false'
+[[aria2_optref_enable_rpc]]*--enable-rpc*[='true'|'false']::
+  Enable JSON-RPC/XML-RPC server.  It is strongly recommended to set username
+  and password using *<<aria2_optref_rpc_user, --rpc-user>>* and *<<aria2_optref_rpc_passwd, --rpc-passwd>>*
+  option. See also *<<aria2_optref_rpc_listen_port, --rpc-listen-port>>* option.  Default: 'false'
 
-[[aria2_optref_xml_rpc_listen_all]]*--xml-rpc-listen-all*[='true'|'false']::
+[[aria2_optref_rpc_listen_all]]*--rpc-listen-all*[='true'|'false']::
 
-  Listen incoming XML-RPC requests on all network interfaces. If false
+  Listen incoming JSON-RPC/XML-RPC requests on all network interfaces. If false
   is given, listen only on local loopback interface.  Default: 'false'
 
-[[aria2_optref_xml_rpc_listen_port]]*--xml-rpc-listen-port*=PORT::
-  Specify a port number for XML-RPC server to listen to.  Possible
+[[aria2_optref_rpc_listen_port]]*--rpc-listen-port*=PORT::
+  Specify a port number for JSON-RPC/XML-RPC server to listen to.  Possible
   Values: '1024'-'65535' Default: '6800'
 
-[[aria2_optref_xml_rpc_max_request_size]]*--xml-rpc-max-request-size*=SIZE::
+[[aria2_optref_rpc_max_request_size]]*--rpc-max-request-size*=SIZE::
 
-  Set max size of XML-RPC request. If aria2 detects the request is
+  Set max size of JSON-RPC/XML-RPC request. If aria2 detects the request is
   more than SIZE bytes, it drops connection. Default: '2M'
 
-[[aria2_optref_xml_rpc_passwd]]*--xml-rpc-passwd*=PASSWD::
-  Set XML-RPC password.
+[[aria2_optref_rpc_passwd]]*--rpc-passwd*=PASSWD::
+  Set JSON-RPC/XML-RPC password.
 
-[[aria2_optref_xml_rpc_user]]*--xml-rpc-user*=USER::
-  Set XML-RPC user.
+[[aria2_optref_rpc_user]]*--rpc-user*=USER::
+  Set JSON-RPC/XML-RPC user.
 
 Advanced Options
 ~~~~~~~~~~~~~~~~
@@ -1058,7 +1058,7 @@ connections.
   output file to aria2c with *<<aria2_optref_input_file, -i>>* option on restart. Please note that
   downloads added by *<<aria2_xmlrpc_aria2_addTorrent, aria2.addTorrent>>* and
   *<<aria2_xmlrpc_aria2_addMetalink, aria2.addMetalink>>*
-  XML-RPC method and whose metadata could not be saved as a file are not saved.
+  RPC method and whose metadata could not be saved as a file are not saved.
 
 [[aria2_optref_stop]]*--stop*=SEC::
   Stop application after SEC seconds has passed.
@@ -1142,8 +1142,8 @@ If number of files is more than one, file path is first one.  In
 other words, this is the value of path key of first struct whose
 selected key is true in the response of
 *<<aria2_xmlrpc_aria2_getFiles, aria2.getFiles>>*
-XML-RPC method.
-If you want to get all file paths, consider to use XML-RPC.  Please
+RPC method.
+If you want to get all file paths, consider to use JSON-RPC/XML-RPC.  Please
 note that file path may change during download in HTTP because of
 redirection or Content-Disposition header.
 
