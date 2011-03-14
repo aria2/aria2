@@ -71,8 +71,8 @@ private:
 
   unsigned int maxOverallUploadSpeedLimit_;
 
-  // truf if XML-RPC is enabled.
-  bool xmlRpc_;
+  // true if JSON-RPC/XML-RPC is enabled.
+  bool rpc_;
 
   bool queueCheck_;
 

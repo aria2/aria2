@@ -45,7 +45,7 @@
 #define TAG_COOKIE "#cookie"
 #define TAG_HOOK "#hook"
 #define TAG_FILE "#file"
-#define TAG_XML_RPC "#xml-rpc"
+#define TAG_RPC "#rpc"
 #define TAG_EXPERIMENTAL "#experimental"
 #define TAG_HELP "#help"
 #define TAG_ALL "#all"

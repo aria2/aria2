@@ -230,11 +230,24 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 #endif // ENABLE_DIRECT_IO
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
-                                   (PREF_ENABLE_XML_RPC,
-                                    TEXT_ENABLE_XML_RPC,
+                                   (PREF_ENABLE_RPC,
+                                    TEXT_ENABLE_RPC,
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
-    op->addTag(TAG_XML_RPC);
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    // TODO Deprecated
+    SharedHandle<OptionHandler> op
+      (new DeprecatedOptionHandler
+       (SharedHandle<OptionHandler>(new BooleanOptionHandler
+                                    (PREF_ENABLE_XML_RPC,
+                                     TEXT_ENABLE_XML_RPC,
+                                     NO_DEFAULT_VALUE,
+                                     OptionHandler::OPT_ARG)),
+        PREF_ENABLE_RPC));
+    op->addTag(TAG_RPC);
     handlers.push_back(op);
   }
   {
@@ -568,43 +581,104 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
-                                   (PREF_XML_RPC_LISTEN_ALL,
-                                    TEXT_XML_RPC_LISTEN_ALL,
+                                   (PREF_RPC_LISTEN_ALL,
+                                    TEXT_RPC_LISTEN_ALL,
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
-    op->addTag(TAG_XML_RPC);
+    op->addTag(TAG_RPC);
     handlers.push_back(op);
   }
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
-                                   (PREF_XML_RPC_LISTEN_PORT,
-                                    TEXT_XML_RPC_LISTEN_PORT,
+                                   (PREF_RPC_LISTEN_PORT,
+                                    TEXT_RPC_LISTEN_PORT,
                                     "6800",
                                     1024, UINT16_MAX));
-    op->addTag(TAG_XML_RPC);
+    op->addTag(TAG_RPC);
     handlers.push_back(op);
   }
   {
     SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
-                                   (PREF_XML_RPC_MAX_REQUEST_SIZE,
-                                    TEXT_XML_RPC_MAX_REQUEST_SIZE,
+                                   (PREF_RPC_MAX_REQUEST_SIZE,
+                                    TEXT_RPC_MAX_REQUEST_SIZE,
                                     "2M",
                                     0));
-    op->addTag(TAG_XML_RPC);
+    op->addTag(TAG_RPC);
     handlers.push_back(op);
   }                         
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
-                                   (PREF_XML_RPC_USER,
-                                    TEXT_XML_RPC_USER));
-    op->addTag(TAG_XML_RPC);
+                                   (PREF_RPC_USER,
+                                    TEXT_RPC_USER));
+    op->addTag(TAG_RPC);
     handlers.push_back(op);
   }
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
-                                   (PREF_XML_RPC_PASSWD,
-                                    TEXT_XML_RPC_PASSWD));
-    op->addTag(TAG_XML_RPC);
+                                   (PREF_RPC_PASSWD,
+                                    TEXT_RPC_PASSWD));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    // TODO Deprecated
+    SharedHandle<OptionHandler> op
+      (new DeprecatedOptionHandler
+       (SharedHandle<OptionHandler>(new BooleanOptionHandler
+                                    (PREF_XML_RPC_LISTEN_ALL,
+                                     TEXT_XML_RPC_LISTEN_ALL,
+                                     NO_DEFAULT_VALUE,
+                                     OptionHandler::OPT_ARG)),
+        PREF_RPC_LISTEN_ALL));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    // TODO Deprecated
+    SharedHandle<OptionHandler> op
+      (new DeprecatedOptionHandler
+       (SharedHandle<OptionHandler>(new NumberOptionHandler
+                                    (PREF_XML_RPC_LISTEN_PORT,
+                                     TEXT_XML_RPC_LISTEN_PORT,
+                                     NO_DEFAULT_VALUE,
+                                     1024, UINT16_MAX)),
+        PREF_RPC_LISTEN_PORT));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    // TODO Deprecated
+     SharedHandle<OptionHandler> op
+       (new DeprecatedOptionHandler
+        (SharedHandle<OptionHandler>(new UnitNumberOptionHandler
+                                     (PREF_XML_RPC_MAX_REQUEST_SIZE,
+                                      TEXT_XML_RPC_MAX_REQUEST_SIZE,
+                                      NO_DEFAULT_VALUE,
+                                      0)),
+         PREF_RPC_MAX_REQUEST_SIZE));
+     op->addTag(TAG_RPC);
+     handlers.push_back(op);
+  }
+  {
+    // TODO Deprecated
+    SharedHandle<OptionHandler> op
+      (new DeprecatedOptionHandler
+       (SharedHandle<OptionHandler>(new DefaultOptionHandler
+                                    (PREF_XML_RPC_USER,
+                                     TEXT_XML_RPC_USER)),
+        PREF_RPC_USER));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    // TODO Deprecated
+    SharedHandle<OptionHandler> op
+      (new DeprecatedOptionHandler
+       (SharedHandle<OptionHandler>(new DefaultOptionHandler
+                                    (PREF_XML_RPC_PASSWD,
+                                     TEXT_XML_RPC_PASSWD)),
+        PREF_RPC_PASSWD));
+    op->addTag(TAG_RPC);
     handlers.push_back(op);
   }                         
   // HTTP/FTP options
@@ -1689,7 +1763,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
       TAG_COOKIE,
       TAG_HOOK,
       TAG_FILE,
-      TAG_XML_RPC,
+      TAG_RPC,
       TAG_EXPERIMENTAL,
       TAG_HELP,
       TAG_ALL

@@ -158,28 +158,40 @@ extern const std::string V_KQUEUE;
 extern const std::string V_PORT;
 extern const std::string V_POLL;
 extern const std::string V_SELECT;
+// value: true | false
+extern const std::string PREF_ENABLE_RPC;
 // value: 1*digit
-extern const std::string PREF_XML_RPC_LISTEN_PORT;
+extern const std::string PREF_RPC_LISTEN_PORT;
+// value: string
+extern const std::string PREF_RPC_USER;
+// value: string
+extern const std::string PREF_RPC_PASSWD;
+// value: 1*digit
+extern const std::string PREF_RPC_MAX_REQUEST_SIZE;
+// value: true | false
+extern const std::string PREF_RPC_LISTEN_ALL;
 // value: true | false
 extern const std::string PREF_ENABLE_XML_RPC;
-// value: true | false
-extern const std::string PREF_DRY_RUN;
-// value: true | false
-extern const std::string PREF_REUSE_URI;
+// value: 1*digit
+extern const std::string PREF_XML_RPC_LISTEN_PORT;
 // value: string
 extern const std::string PREF_XML_RPC_USER;
 // value: string
 extern const std::string PREF_XML_RPC_PASSWD;
 // value: 1*digit
 extern const std::string PREF_XML_RPC_MAX_REQUEST_SIZE;
+// value: true | false
+extern const std::string PREF_XML_RPC_LISTEN_ALL;
+// value: true | false
+extern const std::string PREF_DRY_RUN;
+// value: true | false
+extern const std::string PREF_REUSE_URI;
 // value: string
 extern const std::string PREF_ON_DOWNLOAD_START;
 extern const std::string PREF_ON_DOWNLOAD_PAUSE;
 extern const std::string PREF_ON_DOWNLOAD_STOP;
 extern const std::string PREF_ON_DOWNLOAD_COMPLETE;
 extern const std::string PREF_ON_DOWNLOAD_ERROR;
-// value: true | false
-extern const std::string PREF_XML_RPC_LISTEN_ALL;
 // value: string
 extern const std::string PREF_INTERFACE;
 // value: true | false

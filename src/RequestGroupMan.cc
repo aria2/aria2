@@ -89,7 +89,7 @@ RequestGroupMan::RequestGroupMan
     (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)),
     maxOverallUploadSpeedLimit_(option->getAsInt
                                 (PREF_MAX_OVERALL_UPLOAD_LIMIT)),
-    xmlRpc_(option->getAsBool(PREF_ENABLE_XML_RPC)),
+    rpc_(option->getAsBool(PREF_ENABLE_RPC)),
     queueCheck_(true),
     removedErrorResult_(0),
     removedLastErrorResult_(error_code::FINISHED),
@@ -100,7 +100,7 @@ RequestGroupMan::~RequestGroupMan() {}
 
 bool RequestGroupMan::downloadFinished()
 {
-  if(xmlRpc_) {
+  if(rpc_) {
     return false;
   }
   return requestGroups_.empty() && reservedGroups_.empty();

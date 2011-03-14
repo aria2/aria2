@@ -102,7 +102,7 @@ bool HttpListenCommand::bindPort(uint16_t port)
                   family_ == AF_INET?4:6));
   try {
     int flags = 0;
-    if(e_->getOption()->getAsBool(PREF_XML_RPC_LISTEN_ALL)) {
+    if(e_->getOption()->getAsBool(PREF_RPC_LISTEN_ALL)) {
       flags = AI_PASSIVE;
     }
     serverSocket_->bind(A2STR::NIL, port, family_, flags);

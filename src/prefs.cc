@@ -154,28 +154,40 @@ const std::string V_KQUEUE("kqueue");
 const std::string V_PORT("port");
 const std::string V_POLL("poll");
 const std::string V_SELECT("select");
+// value: true | false
+const std::string PREF_ENABLE_RPC("enable-rpc");
 // value: 1*digit
-const std::string PREF_XML_RPC_LISTEN_PORT("xml-rpc-listen-port");
+const std::string PREF_RPC_LISTEN_PORT("rpc-listen-port");
+// value: string
+const std::string PREF_RPC_USER("rpc-user");
+// value: string
+const std::string PREF_RPC_PASSWD("rpc-passwd");
+// value: 1*digit
+const std::string PREF_RPC_MAX_REQUEST_SIZE("rpc-max-request-size");
+// value: true | false
+const std::string PREF_RPC_LISTEN_ALL("rpc-listen-all");
 // value: true | false
 const std::string PREF_ENABLE_XML_RPC("enable-xml-rpc");
-// value: true | false
-const std::string PREF_DRY_RUN("dry-run");
-// value: true | false
-const std::string PREF_REUSE_URI("reuse-uri");
+// value: 1*digit
+const std::string PREF_XML_RPC_LISTEN_PORT("xml-rpc-listen-port");
 // value: string
 const std::string PREF_XML_RPC_USER("xml-rpc-user");
 // value: string
 const std::string PREF_XML_RPC_PASSWD("xml-rpc-passwd");
 // value: 1*digit
 const std::string PREF_XML_RPC_MAX_REQUEST_SIZE("xml-rpc-max-request-size");
+// value: true | false
+const std::string PREF_XML_RPC_LISTEN_ALL("xml-rpc-listen-all");
+// value: true | false
+const std::string PREF_DRY_RUN("dry-run");
+// value: true | false
+const std::string PREF_REUSE_URI("reuse-uri");
 // value: string
 const std::string PREF_ON_DOWNLOAD_START("on-download-start");
 const std::string PREF_ON_DOWNLOAD_PAUSE("on-download-pause");
 const std::string PREF_ON_DOWNLOAD_STOP("on-download-stop");
 const std::string PREF_ON_DOWNLOAD_COMPLETE("on-download-complete");
 const std::string PREF_ON_DOWNLOAD_ERROR("on-download-error");
-// value: true | false
-const std::string PREF_XML_RPC_LISTEN_ALL("xml-rpc-listen-all");
 // value: string
 const std::string PREF_INTERFACE("interface");
 // value: true | false

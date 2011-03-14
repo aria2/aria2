@@ -490,22 +490,6 @@
     "                              server.")
 #define TEXT_EVENT_POLL                                                 \
   _(" --event-poll=POLL            Specify the method for polling events.")
-#define TEXT_XML_RPC_LISTEN_PORT                                        \
-  _(" --xml-rpc-listen-port=PORT   Specify a port number for XML-RPC server to listen\n" \
-    "                              to.")
-#define TEXT_ENABLE_XML_RPC                                             \
-  _(" --enable-xml-rpc[=true|false] Enable XML-RPC server.\n"           \
-    "                              It is strongly recommended to set username and\n" \
-    "                              password using --xml-rpc-user and --xml-rpc-passwd\n" \
-    "                              option. See also --xml-rpc-listen-port option.")
-#define TEXT_XML_RPC_MAX_REQUEST_SIZE                                   \
-  _(" --xml-rpc-max-request-size=SIZE Set max size of XML-RPC request. If aria2\n" \
-    "                              detects the request is more than SIZE bytes, it\n" \
-    "                              drops connection.")
-#define TEXT_XML_RPC_USER                               \
-  _(" --xml-rpc-user=USER          Set XML-RPC user.")
-#define TEXT_XML_RPC_PASSWD                                     \
-  _(" --xml-rpc-passwd=PASSWD      Set XML-RPC password.")
 #define TEXT_BT_EXTERNAL_IP                                             \
   _(" --bt-external-ip=IPADDRESS   Specify the external IP address to report to a\n" \
     "                              BitTorrent tracker. Although this function is\n" \
@@ -574,10 +558,6 @@
   _(" --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is 0 in\n" \
     "                              consecutive SEC seconds. If 0 is given, this\n" \
     "                              feature is disabled.")
-#define TEXT_XML_RPC_LISTEN_ALL                                         \
-  _(" --xml-rpc-listen-all[=true|false] Listen incoming XML-RPC requests on all\n" \
-    "                              network interfaces. If false is given, listen only\n" \
-    "                              on local loopback interface.")
 #define TEXT_BT_PRIORITIZE_PIECE                                        \
   _(" --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and last\n" \
     "                              pieces of each file first. This is useful for\n" \
@@ -685,7 +665,7 @@
     "                              You can pass this output file to aria2c with -i\n" \
     "                              option on restart. Please note that downloads\n" \
     "                              added by aria2.addTorrent and aria2.addMetalink\n" \
-    "                              XML-RPC method are not saved.")
+    "                              RPC method are not saved.")
 #define TEXT_MAX_CONNECTION_PER_SERVER          \
   _(" -x, --max-connection-per-server=NUM The maximum number of connections to one\n" \
     "                              server for each download.")
@@ -764,3 +744,36 @@
     "                              option is useful when the system does not have\n" \
     "                              /etc/resolv.conf and user does not have the\n" \
     "                              permission to create it.")
+#define TEXT_ENABLE_RPC                                             \
+  _(" --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"   \
+    "                              It is strongly recommended to set username and\n" \
+    "                              password using --rpc-user and --rpc-passwd\n" \
+    "                              option. See also --rpc-listen-port option.")
+#define TEXT_RPC_MAX_REQUEST_SIZE                                   \
+  _(" --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If aria2\n" \
+    "                              detects the request is more than SIZE bytes, it\n" \
+    "                              drops connection.")
+#define TEXT_RPC_USER                               \
+  _(" --rpc-user=USER              Set JSON-RPC/XML-RPC user.")
+#define TEXT_RPC_PASSWD                                     \
+  _(" --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password.")
+#define TEXT_RPC_LISTEN_ALL                                         \
+  _(" --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on all\n" \
+    "                              network interfaces. If false is given, listen only\n" \
+    "                              on local loopback interface.")
+#define TEXT_RPC_LISTEN_PORT                                        \
+  _(" --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC server\n" \
+    "                              to listen to.")
+#define TEXT_ENABLE_XML_RPC                                             \
+  _(" --enable-xml-rpc[=true|false] Deprecated. Use --enable-rpc instead.")
+#define TEXT_XML_RPC_MAX_REQUEST_SIZE                                   \
+  _(" --xml-rpc-max-request-size=SIZE Deprecated. Use --rpc-max-request-size\n" \
+    "                              instead.")
+#define TEXT_XML_RPC_USER                               \
+  _(" --xml-rpc-user=USER          Deprecated. Use --rpc-user instead.")
+#define TEXT_XML_RPC_PASSWD                                     \
+  _(" --xml-rpc-passwd=PASSWD      Deprecated. Use --rpc-passwd instead.")
+#define TEXT_XML_RPC_LISTEN_ALL                                         \
+  _(" --xml-rpc-listen-all[=true|false] Deprecated. Use --rpc-listen-all instead.")
+#define TEXT_XML_RPC_LISTEN_PORT                                        \
+  _(" --xml-rpc-listen-port=PORT   Deprecated. Use --rpc-listen-port instead.")

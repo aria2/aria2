@@ -292,6 +292,31 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
+class DeprecatedOptionHandler:public OptionHandler {
+private:
+  SharedHandle<OptionHandler> depOptHandler_;
+  std::string repOptName_;
+public:
+  DeprecatedOptionHandler
+  (const SharedHandle<OptionHandler>& depOptHandler,
+   const std::string& repOptName);
+  virtual bool canHandle(const std::string& optName);
+  virtual void parse(Option& option, const std::string& arg);
+  virtual std::string createPossibleValuesString() const;
+  virtual bool hasTag(const std::string& tag) const;
+  virtual void addTag(const std::string& tag);
+  virtual std::string toTagString() const;
+  virtual const std::string& getName() const;
+  virtual const std::string& getDescription() const;
+  virtual const std::string& getDefaultValue() const;
+  virtual bool isHidden() const;
+  virtual void hide();
+  virtual ARG_TYPE getArgType() const;
+  virtual char getShortName() const;
+  virtual int getOptionID() const;
+  virtual void setOptionID(int id);
+};
+
 } // namespace aria2
 
 #endif // D_OPTION_HANDLER_IMPL_H

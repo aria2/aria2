@@ -262,7 +262,7 @@ error_code::Value main(int argc, char* argv[])
   op->remove(PREF_INPUT_FILE);
   op->remove(PREF_INDEX_OUT);
   op->remove(PREF_SELECT_FILE);
-  if(!op->getAsBool(PREF_ENABLE_XML_RPC) && requestGroups.empty()) {
+  if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty()) {
     std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
   } else {
     exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),

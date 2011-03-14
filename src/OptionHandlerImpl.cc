@@ -55,6 +55,7 @@
 #include "File.h"
 #include "FileEntry.h"
 #include "a2io.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -726,6 +727,91 @@ void PrioritizePieceOptionHandler::parseArg
 std::string PrioritizePieceOptionHandler::createPossibleValuesString() const
 {
   return "head[=SIZE], tail[=SIZE]";
+}
+
+DeprecatedOptionHandler::DeprecatedOptionHandler
+(const SharedHandle<OptionHandler>& depOptHandler,
+ const std::string& repOptName)
+  : depOptHandler_(depOptHandler), repOptName_(repOptName)
+{}
+
+bool DeprecatedOptionHandler::canHandle(const std::string& optName)
+{
+  return depOptHandler_->canHandle(optName);
+}
+
+void DeprecatedOptionHandler::parse(Option& option, const std::string& arg)
+{
+  A2_LOG_WARN(fmt("--%s option is deprecated. Use --%s option instead.",
+                  depOptHandler_->getName().c_str(),
+                  repOptName_.c_str()));
+  depOptHandler_->parse(option, arg);
+  option.put(repOptName_, option.get(depOptHandler_->getName()));
+}
+
+std::string DeprecatedOptionHandler::createPossibleValuesString() const
+{
+  return depOptHandler_->createPossibleValuesString();
+}
+
+bool DeprecatedOptionHandler::hasTag(const std::string& tag) const
+{
+  return depOptHandler_->hasTag(tag);
+}
+
+void DeprecatedOptionHandler::addTag(const std::string& tag)
+{
+  depOptHandler_->addTag(tag);
+}
+
+std::string DeprecatedOptionHandler::toTagString() const
+{
+  return depOptHandler_->toTagString();
+}
+
+const std::string& DeprecatedOptionHandler::getName() const
+{
+  return depOptHandler_->getName();
+}
+
+const std::string& DeprecatedOptionHandler::getDescription() const
+{
+  return depOptHandler_->getDescription();
+}
+
+const std::string& DeprecatedOptionHandler::getDefaultValue() const
+{
+  return depOptHandler_->getDefaultValue();
+}
+
+bool DeprecatedOptionHandler::isHidden() const
+{
+  return depOptHandler_->isHidden();
+}
+
+void DeprecatedOptionHandler::hide()
+{
+  depOptHandler_->hide();
+}
+
+OptionHandler::ARG_TYPE DeprecatedOptionHandler::getArgType() const
+{
+  return depOptHandler_->getArgType();
+}
+
+char DeprecatedOptionHandler::getShortName() const
+{
+  return depOptHandler_->getShortName();
+}
+
+int DeprecatedOptionHandler::getOptionID() const
+{
+  return depOptHandler_->getOptionID();
+}
+
+void DeprecatedOptionHandler::setOptionID(int id)
+{
+  depOptHandler_->setOptionID(id);
 }
 
 } // namespace aria2

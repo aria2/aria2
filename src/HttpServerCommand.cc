@@ -64,8 +64,8 @@ HttpServerCommand::HttpServerCommand
 {
   setStatus(Command::STATUS_ONESHOT_REALTIME);
   e_->addSocketForReadCheck(socket_, this);
-  httpServer_->setUsernamePassword(e_->getOption()->get(PREF_XML_RPC_USER),
-                                   e_->getOption()->get(PREF_XML_RPC_PASSWD));
+  httpServer_->setUsernamePassword(e_->getOption()->get(PREF_RPC_USER),
+                                   e_->getOption()->get(PREF_RPC_PASSWD));
 #ifdef HAVE_ZLIB
   httpServer_->enableGZip();
 #else // !HAVE_ZLIB
@@ -130,7 +130,7 @@ bool HttpServerCommand::execute()
         return true;
       }
       if(static_cast<uint64_t>
-         (e_->getOption()->getAsInt(PREF_XML_RPC_MAX_REQUEST_SIZE)) <
+         (e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE)) <
          httpServer_->getContentLength()) {
         A2_LOG_INFO(fmt("Request too long. ContentLength=%s."
                         " See --xml-rpc-max-request-size option to loose"
