@@ -39,7 +39,7 @@
 #include "SharedHandle.h"
 #include "TimerA2.h"
 #include "ValueBase.h"
-#include "XmlRpcResponse.h"
+#include "RpcResponse.h"
 
 namespace aria2 {
 
@@ -60,12 +60,12 @@ private:
    const SharedHandle<ValueBase>& id,
    const std::string& callback);
   void sendJsonRpcResponse
-  (const xmlrpc::XmlRpcResponse& res,
+  (const rpc::RpcResponse& res,
    const std::string& callback);
   void sendJsonRpcBatchResponse
-  (const std::vector<xmlrpc::XmlRpcResponse>& results,
+  (const std::vector<rpc::RpcResponse>& results,
    const std::string& callback);
-  xmlrpc::XmlRpcResponse processJsonRpcRequest(const Dict* jsondict);
+  rpc::RpcResponse processJsonRpcRequest(const Dict* jsondict);
   void addHttpServerResponseCommand();
 public:
   HttpServerBodyCommand(cuid_t cuid,

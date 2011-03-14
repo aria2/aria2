@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "XmlRpcMethod.h"
+#include "RpcMethod.h"
 #include "DownloadEngine.h"
 #include "LogFactory.h"
 #include "RecoverableException.h"
@@ -42,24 +42,24 @@
 #include "Option.h"
 #include "array_fun.h"
 #include "download_helper.h"
-#include "XmlRpcRequest.h"
-#include "XmlRpcResponse.h"
+#include "RpcRequest.h"
+#include "RpcResponse.h"
 #include "prefs.h"
 #include "fmt.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
-XmlRpcMethod::XmlRpcMethod()
+RpcMethod::RpcMethod()
   : optionParser_(OptionParser::getInstance()),
     jsonRpc_(false)
 {}
 
-XmlRpcMethod::~XmlRpcMethod() {}
+RpcMethod::~RpcMethod() {}
 
-SharedHandle<ValueBase> XmlRpcMethod::createErrorResponse
+SharedHandle<ValueBase> RpcMethod::createErrorResponse
 (const Exception& e)
 {
   SharedHandle<Dict> params = Dict::g();
@@ -68,14 +68,14 @@ SharedHandle<ValueBase> XmlRpcMethod::createErrorResponse
   return params;
 }
 
-XmlRpcResponse XmlRpcMethod::execute
-(const XmlRpcRequest& req, DownloadEngine* e)
+RpcResponse RpcMethod::execute
+(const RpcRequest& req, DownloadEngine* e)
 {
   try {
-    return XmlRpcResponse(0, process(req, e), req.id);
+    return RpcResponse(0, process(req, e), req.id);
   } catch(RecoverableException& e) {
     A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, e);
-    return XmlRpcResponse(1, createErrorResponse(e), req.id);
+    return RpcResponse(1, createErrorResponse(e), req.id);
   }
 }
 
@@ -123,7 +123,7 @@ void gatherOption
 }
 } // namespace
 
-void XmlRpcMethod::gatherRequestOption
+void RpcMethod::gatherRequestOption
 (const SharedHandle<Option>& option, const Dict* optionsDict)
 {
   if(optionsDict) {
@@ -162,7 +162,7 @@ const std::set<std::string>& listChangeableOptions()
   return options;
 }
 
-void XmlRpcMethod::gatherChangeableOption
+void RpcMethod::gatherChangeableOption
 (const SharedHandle<Option>& option, const Dict* optionsDict)
 {
   if(optionsDict) {
@@ -172,7 +172,7 @@ void XmlRpcMethod::gatherChangeableOption
   }
 }
 
-void XmlRpcMethod::applyChangeableOption(Option* dest, Option* src) const
+void RpcMethod::applyChangeableOption(Option* dest, Option* src) const
 {
   applyOption(listChangeableOptions().begin(), listChangeableOptions().end(),
               dest, src);
@@ -191,7 +191,7 @@ const std::set<std::string>& listChangeableGlobalOptions()
   return options;
 }
 
-void XmlRpcMethod::gatherChangeableGlobalOption
+void RpcMethod::gatherChangeableGlobalOption
 (const SharedHandle<Option>& option, const Dict* optionsDict)
 {
   if(optionsDict) {
@@ -201,13 +201,13 @@ void XmlRpcMethod::gatherChangeableGlobalOption
   }
 }
 
-void XmlRpcMethod::applyChangeableGlobalOption(Option* dest, Option* src) const
+void RpcMethod::applyChangeableGlobalOption(Option* dest, Option* src) const
 {
   applyOption(listChangeableGlobalOptions().begin(),
               listChangeableGlobalOptions().end(),
               dest, src);
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

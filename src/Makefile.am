@@ -211,7 +211,17 @@ SRCS =  Socket.h\
 	uri.cc uri.h\
 	Triplet.h\
 	cookie_helper.cc cookie_helper.h\
-	json.cc json.h
+	json.cc json.h\
+	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
+	RpcRequest.cc RpcRequest.h\
+	RpcMethod.cc RpcMethod.h\
+	RpcMethodImpl.cc RpcMethodImpl.h\
+	RpcMethodFactory.cc RpcMethodFactory.h\
+	RpcResponse.cc RpcResponse.h\
+	HttpListenCommand.cc HttpListenCommand.h\
+	HttpServerCommand.cc HttpServerCommand.h\
+	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
+	HttpServer.cc HttpServer.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
@@ -219,17 +229,7 @@ SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserState.h\
 	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
 	XmlRpcElements.cc XmlRpcElements.h\
-	XmlRpcRequest.cc XmlRpcRequest.h\
-	XmlRpcRequestProcessor.h\
-	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
-	XmlRpcMethod.cc XmlRpcMethod.h\
-	XmlRpcMethodImpl.cc XmlRpcMethodImpl.h\
-	XmlRpcMethodFactory.cc XmlRpcMethodFactory.h\
-	XmlRpcResponse.cc XmlRpcResponse.h\
-	HttpListenCommand.cc HttpListenCommand.h\
-	HttpServerCommand.cc HttpServerCommand.h\
-	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
-	HttpServer.cc HttpServer.h
+	XmlRpcRequestProcessor.h
 
 if HAVE_LIBXML2
 SRCS += Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h

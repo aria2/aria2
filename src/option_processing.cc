@@ -184,10 +184,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     showUsage(TAG_HELP, oparser);
     exit(e.getErrorCode());
   }
-  if(
-#ifdef ENABLE_XML_RPC
-     !op.getAsBool(PREF_ENABLE_XML_RPC) &&
-#endif // ENABLE_XML_RPC
+  if(!op.getAsBool(PREF_ENABLE_XML_RPC) &&
 #ifdef ENABLE_BITTORRENT
      op.blank(PREF_TORRENT_FILE) &&
 #endif // ENABLE_BITTORRENT

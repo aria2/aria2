@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "XmlRpcMethodImpl.h"
+#include "RpcMethodImpl.h"
 
 #include <cassert>
 #include <algorithm>
@@ -49,7 +49,7 @@
 #include "util.h"
 #include "RequestGroupMan.h"
 #include "fmt.h"
-#include "XmlRpcRequest.h"
+#include "RpcRequest.h"
 #include "PieceStorage.h"
 #include "DownloadContext.h"
 #include "DiskAdaptor.h"
@@ -58,8 +58,8 @@
 #include "message.h"
 #include "FeatureConfig.h"
 #include "array_fun.h"
-#include "XmlRpcMethodFactory.h"
-#include "XmlRpcResponse.h"
+#include "RpcMethodFactory.h"
+#include "RpcResponse.h"
 #include "SegmentMan.h"
 #include "TimedHaltCommand.h"
 #include "PeerStat.h"
@@ -77,7 +77,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 namespace {
 const SharedHandle<String> VLB_TRUE = String::g("true");
@@ -173,8 +173,8 @@ findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
 } // namespace
 
 namespace {
-void getPosParam(const XmlRpcRequest& req, size_t posParamIndex,
-                        bool& posGiven, size_t& pos)
+void getPosParam(const RpcRequest& req, size_t posParamIndex,
+                 bool& posGiven, size_t& pos)
 {
   const Integer* p = req.getIntegerParam(posParamIndex);
   if(p) {
@@ -192,7 +192,7 @@ void getPosParam(const XmlRpcRequest& req, size_t posParamIndex,
 
 namespace {
 gid_t getRequiredGidParam
-(const XmlRpcRequest& req, size_t posParamIndex)
+(const RpcRequest& req, size_t posParamIndex)
 {
   const String* gidParam = req.getStringParam(posParamIndex);
   if(gidParam) {
@@ -219,8 +219,8 @@ void extractUris(OutputIterator out, const List* src)
 }
 } // namespace
 
-SharedHandle<ValueBase> AddUriXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> AddUriRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   std::vector<std::string> uris;
   extractUris(std::back_inserter(uris), req.getListParam(0));
@@ -260,8 +260,8 @@ std::string getHexSha1(const std::string& s)
 } // namespace
 
 #ifdef ENABLE_BITTORRENT
-SharedHandle<ValueBase> AddTorrentXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> AddTorrentRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   const String* torrentParam = req.getStringParam(0);
   if(!torrentParam) {
@@ -307,8 +307,8 @@ SharedHandle<ValueBase> AddTorrentXmlRpcMethod::process
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-SharedHandle<ValueBase> AddMetalinkXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> AddMetalinkRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   const String* metalinkParam = req.getStringParam(0);
   if(!metalinkParam) {
@@ -362,7 +362,7 @@ SharedHandle<ValueBase> AddMetalinkXmlRpcMethod::process
 
 namespace {
 SharedHandle<ValueBase> removeDownload
-(const XmlRpcRequest& req, DownloadEngine* e, bool forceRemove)
+(const RpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
   gid_t gid = getRequiredGidParam(req, 0);
 
@@ -393,14 +393,14 @@ SharedHandle<ValueBase> removeDownload
 }
 } // namespace
 
-SharedHandle<ValueBase> RemoveXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> RemoveRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return removeDownload(req, e, false);
 }
 
-SharedHandle<ValueBase> ForceRemoveXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ForceRemoveRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return removeDownload(req, e, true);
 }
@@ -433,7 +433,7 @@ bool pauseRequestGroup
 
 namespace {
 SharedHandle<ValueBase> pauseDownload
-(const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
+(const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   gid_t gid = getRequiredGidParam(req, 0);
 
@@ -454,14 +454,14 @@ SharedHandle<ValueBase> pauseDownload
 }
 } // namespace
 
-SharedHandle<ValueBase> PauseXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> PauseRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return pauseDownload(req, e, false);
 }
 
-SharedHandle<ValueBase> ForcePauseXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ForcePauseRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return pauseDownload(req, e, true);
 }
@@ -479,7 +479,7 @@ void pauseRequestGroups
 
 namespace {
 SharedHandle<ValueBase> pauseAllDownloads
-(const XmlRpcRequest& req, DownloadEngine* e, bool forcePause)
+(const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
   const std::deque<SharedHandle<RequestGroup> >& groups =
     e->getRequestGroupMan()->getRequestGroups();
@@ -492,20 +492,20 @@ SharedHandle<ValueBase> pauseAllDownloads
 }
 } // namespace
 
-SharedHandle<ValueBase> PauseAllXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> PauseAllRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return pauseAllDownloads(req, e, false);
 }
 
-SharedHandle<ValueBase> ForcePauseAllXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ForcePauseAllRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return pauseAllDownloads(req, e, true);
 }
 
-SharedHandle<ValueBase> UnpauseXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> UnpauseRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
@@ -521,8 +521,8 @@ SharedHandle<ValueBase> UnpauseXmlRpcMethod::process
   return createGIDResponse(gid);
 }
 
-SharedHandle<ValueBase> UnpauseAllXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> UnpauseAllRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   const std::deque<SharedHandle<RequestGroup> >& groups =
     e->getRequestGroupMan()->getReservedGroups();
@@ -862,8 +862,8 @@ void gatherStoppedDownload
   }
 }
 
-SharedHandle<ValueBase> GetFilesXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetFilesRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<List> files = List::g();
@@ -887,8 +887,8 @@ SharedHandle<ValueBase> GetFilesXmlRpcMethod::process
   return files;
 }
 
-SharedHandle<ValueBase> GetUrisXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetUrisRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
@@ -907,8 +907,8 @@ SharedHandle<ValueBase> GetUrisXmlRpcMethod::process
 }
 
 #ifdef ENABLE_BITTORRENT
-SharedHandle<ValueBase> GetPeersXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetPeersRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
 
@@ -929,8 +929,8 @@ SharedHandle<ValueBase> GetPeersXmlRpcMethod::process
 }
 #endif // ENABLE_BITTORRENT
 
-SharedHandle<ValueBase> TellStatusXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> TellStatusRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   
@@ -972,8 +972,8 @@ SharedHandle<ValueBase> TellStatusXmlRpcMethod::process
   return entryDict;
 }
 
-SharedHandle<ValueBase> TellActiveXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> TellActiveRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   const List* keysParam = req.getListParam(0);
   std::vector<std::string> keys;
@@ -994,12 +994,12 @@ SharedHandle<ValueBase> TellActiveXmlRpcMethod::process
 }
 
 const std::deque<SharedHandle<RequestGroup> >&
-TellWaitingXmlRpcMethod::getItems(DownloadEngine* e) const
+TellWaitingRpcMethod::getItems(DownloadEngine* e) const
 {
   return e->getRequestGroupMan()->getReservedGroups();
 }
 
-void TellWaitingXmlRpcMethod::createEntry
+void TellWaitingRpcMethod::createEntry
 (const SharedHandle<Dict>& entryDict,
  const SharedHandle<RequestGroup>& item,
  DownloadEngine* e,
@@ -1016,12 +1016,12 @@ void TellWaitingXmlRpcMethod::createEntry
 }
 
 const std::deque<SharedHandle<DownloadResult> >&
-TellStoppedXmlRpcMethod::getItems(DownloadEngine* e) const
+TellStoppedRpcMethod::getItems(DownloadEngine* e) const
 {
   return e->getRequestGroupMan()->getDownloadResults();
 }
 
-void TellStoppedXmlRpcMethod::createEntry
+void TellStoppedRpcMethod::createEntry
 (const SharedHandle<Dict>& entryDict,
  const SharedHandle<DownloadResult>& item,
  DownloadEngine* e,
@@ -1030,15 +1030,15 @@ void TellStoppedXmlRpcMethod::createEntry
   gatherStoppedDownload(entryDict, item, keys);
 }
 
-SharedHandle<ValueBase> PurgeDownloadResultXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> PurgeDownloadResultRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   e->getRequestGroupMan()->purgeDownloadResult();
   return VLB_OK;
 }
 
-SharedHandle<ValueBase> RemoveDownloadResultXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   if(!e->getRequestGroupMan()->removeDownloadResult(gid)) {
@@ -1049,8 +1049,8 @@ SharedHandle<ValueBase> RemoveDownloadResultXmlRpcMethod::process
   return VLB_OK;
 }
 
-SharedHandle<ValueBase> ChangeOptionXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ChangeOptionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
 
@@ -1085,8 +1085,8 @@ SharedHandle<ValueBase> ChangeOptionXmlRpcMethod::process
   return VLB_OK;
 }
 
-SharedHandle<ValueBase> ChangeGlobalOptionXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ChangeGlobalOptionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   const Dict* optionsParam = req.getDictParam(0);
   if(!optionsParam) {
@@ -1124,8 +1124,8 @@ SharedHandle<ValueBase> ChangeGlobalOptionXmlRpcMethod::process
   return VLB_OK;
 }
 
-SharedHandle<ValueBase> GetVersionXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetVersionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   SharedHandle<Dict> result = Dict::g();
   result->put(KEY_VERSION, PACKAGE_VERSION);
@@ -1156,8 +1156,8 @@ void pushRequestOption
 }
 } // namespace
 
-SharedHandle<ValueBase> GetOptionXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetOptionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
 
@@ -1174,8 +1174,8 @@ SharedHandle<ValueBase> GetOptionXmlRpcMethod::process
   return result;
 }
 
-SharedHandle<ValueBase> GetGlobalOptionXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetGlobalOptionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   SharedHandle<Dict> result = Dict::g();
   for(std::map<std::string, std::string>::const_iterator i =
@@ -1188,8 +1188,8 @@ SharedHandle<ValueBase> GetGlobalOptionXmlRpcMethod::process
   return result;
 }
 
-SharedHandle<ValueBase> ChangePositionXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ChangePositionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   const Integer* posParam = req.getIntegerParam(1);
@@ -1216,16 +1216,16 @@ SharedHandle<ValueBase> ChangePositionXmlRpcMethod::process
   return result;
 }
 
-SharedHandle<ValueBase> GetSessionInfoXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetSessionInfoRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   SharedHandle<Dict> result = Dict::g();
   result->put(KEY_SESSION_ID, util::toHex(e->getSessionId()));
   return result;
 }
 
-SharedHandle<ValueBase> GetServersXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> GetServersRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
@@ -1263,8 +1263,8 @@ SharedHandle<ValueBase> GetServersXmlRpcMethod::process
   return result;
 }
 
-SharedHandle<ValueBase> ChangeUriXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ChangeUriRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   gid_t gid = getRequiredGidParam(req, 0);
   const Integer* indexParam = req.getIntegerParam(1);
@@ -1332,30 +1332,30 @@ SharedHandle<ValueBase> ChangeUriXmlRpcMethod::process
 
 namespace {
 SharedHandle<ValueBase> goingShutdown
-(const XmlRpcRequest& req, DownloadEngine* e, bool forceHalt)
+(const RpcRequest& req, DownloadEngine* e, bool forceHalt)
 {
   // Schedule shutdown after 3seconds to give time to client to
-  // receive XML-RPC response.
+  // receive RPC response.
   e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e, 3, forceHalt));
   A2_LOG_INFO("Scheduled shutdown in 3 seconds.");
   return VLB_OK;
 }
 } // namespace
 
-SharedHandle<ValueBase> ShutdownXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ShutdownRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return goingShutdown(req, e, false);
 }
 
-SharedHandle<ValueBase> ForceShutdownXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> ForceShutdownRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   return goingShutdown(req, e, true);
 }
 
-SharedHandle<ValueBase> SystemMulticallXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> SystemMulticallRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   const List* methodSpecs = req.getListParam(0);
   if(!methodSpecs) {
@@ -1383,11 +1383,11 @@ SharedHandle<ValueBase> SystemMulticallXmlRpcMethod::process
                    (DL_ABORT_EX("Recursive system.multicall forbidden.")));
       continue;
     }
-    SharedHandle<XmlRpcMethod> method =
-      XmlRpcMethodFactory::create(methodName->s());
-    XmlRpcRequest innerReq
+    SharedHandle<RpcMethod> method =
+      RpcMethodFactory::create(methodName->s());
+    RpcRequest innerReq
       (methodName->s(), static_pointer_cast<List>(methodDict->get(KEY_PARAMS)));
-    XmlRpcResponse res = method->execute(innerReq, e);
+    RpcResponse res = method->execute(innerReq, e);
     if(res.code == 0) {
       SharedHandle<List> l = List::g();
       l->append(res.param);
@@ -1399,12 +1399,12 @@ SharedHandle<ValueBase> SystemMulticallXmlRpcMethod::process
   return list;
 }
 
-SharedHandle<ValueBase> NoSuchMethodXmlRpcMethod::process
-(const XmlRpcRequest& req, DownloadEngine* e)
+SharedHandle<ValueBase> NoSuchMethodRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
 {
   throw DL_ABORT_EX(fmt("No such method: %s", req.methodName.c_str()));
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

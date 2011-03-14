@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 class InitialXmlRpcRequestParserState:public XmlRpcRequestParserState {
 public:
@@ -231,7 +231,7 @@ class ArrayValueXmlRpcRequestParserState:public ValueXmlRpcRequestParserState {
                           const std::string& characters);
 };
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 

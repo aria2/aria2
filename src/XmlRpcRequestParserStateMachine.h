@@ -47,7 +47,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 class XmlRpcRequestParserStateMachine {
 private:
@@ -165,7 +165,7 @@ public:
   void pushArrayValueState() { stateStack_.push(arrayValueState_); }
 };
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 

@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 class XmlRpcRequestParserStateMachine;
 
@@ -61,7 +61,7 @@ public:
   virtual bool needsCharactersBuffering() const = 0;
 };
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 

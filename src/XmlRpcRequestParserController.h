@@ -44,7 +44,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 class XmlRpcRequestParserController {
 private:
@@ -89,7 +89,7 @@ public:
   const std::string& getMethodName() const { return methodName_; }
 };
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 

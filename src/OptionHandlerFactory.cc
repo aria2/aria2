@@ -228,7 +228,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_DIRECT_IO
-#ifdef ENABLE_XML_RPC
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_XML_RPC,
@@ -238,7 +237,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }
-#endif // ENABLE_XML_RPC
   {
     std::string params[] = {
 #ifdef HAVE_EPOLL
@@ -568,7 +566,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
   }
-#ifdef ENABLE_XML_RPC
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_XML_RPC_LISTEN_ALL,
@@ -610,7 +607,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_XML_RPC);
     handlers.push_back(op);
   }                         
-#endif // ENABLE_XML_RPC
   // HTTP/FTP options
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler

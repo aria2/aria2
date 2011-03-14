@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_REQUEST_H
-#define D_XML_RPC_REQUEST_H
+#ifndef D_RPC_REQUEST_H
+#define D_RPC_REQUEST_H
 
 #include "common.h"
 
@@ -43,25 +43,25 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
-struct XmlRpcRequest {
+struct RpcRequest {
   std::string methodName;
   SharedHandle<List> params;
   SharedHandle<ValueBase> id;
 
-  XmlRpcRequest(const std::string& methodName,
+  RpcRequest(const std::string& methodName,
                 const SharedHandle<List>& params);
 
-  XmlRpcRequest(const std::string& methodName,
+  RpcRequest(const std::string& methodName,
                 const SharedHandle<List>& params,
                 const SharedHandle<ValueBase>& id);
 
-  ~XmlRpcRequest();
+  ~RpcRequest();
 
-  XmlRpcRequest(const XmlRpcRequest& c);
+  RpcRequest(const RpcRequest& c);
 
-  XmlRpcRequest& operator=(const XmlRpcRequest& c);
+  RpcRequest& operator=(const RpcRequest& c);
 
   const String* getStringParam(size_t index) const;
 
@@ -72,8 +72,8 @@ struct XmlRpcRequest {
   const Dict* getDictParam(size_t index) const;
 };
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 
-#endif // D_XML_RPC_REQUEST_H
+#endif // D_RPC_REQUEST_H

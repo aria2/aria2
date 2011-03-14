@@ -100,11 +100,9 @@ RequestGroupMan::~RequestGroupMan() {}
 
 bool RequestGroupMan::downloadFinished()
 {
-#ifdef ENABLE_XML_RPC
   if(xmlRpc_) {
     return false;
   }
-#endif // ENABLE_XML_RPC
   return requestGroups_.empty() && reservedGroups_.empty();
 }
 

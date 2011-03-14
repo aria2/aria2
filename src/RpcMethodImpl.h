@@ -32,16 +32,16 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_METHOD_IMPL_H
-#define D_XML_RPC_METHOD_IMPL_H
+#ifndef D_RPC_METHOD_IMPL_H
+#define D_RPC_METHOD_IMPL_H
 
-#include "XmlRpcMethod.h"
+#include "RpcMethod.h"
 
 #include <cassert>
 #include <deque>
 #include <algorithm>
 
-#include "XmlRpcRequest.h"
+#include "RpcRequest.h"
 #include "ValueBase.h"
 #include "TorrentAttribute.h"
 #include "DlAbortEx.h"
@@ -51,7 +51,7 @@ namespace aria2 {
 struct DownloadResult;
 class RequestGroup;
 
-namespace xmlrpc {
+namespace rpc {
 
 template<typename OutputIterator>
 void toStringList(OutputIterator out, const List* src)
@@ -68,10 +68,10 @@ void toStringList(OutputIterator out, const List* src)
   }
 }
 
-class AddUriXmlRpcMethod:public XmlRpcMethod {
+class AddUriRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -80,10 +80,10 @@ public:
   }
 };
 
-class RemoveXmlRpcMethod:public XmlRpcMethod {
+class RemoveRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -92,10 +92,10 @@ public:
   }
 };
 
-class ForceRemoveXmlRpcMethod:public XmlRpcMethod {
+class ForceRemoveRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -104,10 +104,10 @@ public:
   }
 };
 
-class PauseXmlRpcMethod:public XmlRpcMethod {
+class PauseRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -116,10 +116,10 @@ public:
   }
 };
 
-class ForcePauseXmlRpcMethod:public XmlRpcMethod {
+class ForcePauseRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -128,10 +128,10 @@ public:
   }
 };
 
-class PauseAllXmlRpcMethod:public XmlRpcMethod {
+class PauseAllRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -140,10 +140,10 @@ public:
   }
 };
 
-class ForcePauseAllXmlRpcMethod:public XmlRpcMethod {
+class ForcePauseAllRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -152,10 +152,10 @@ public:
   }
 };
 
-class UnpauseXmlRpcMethod:public XmlRpcMethod {
+class UnpauseRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -164,10 +164,10 @@ public:
   }
 };
 
-class UnpauseAllXmlRpcMethod:public XmlRpcMethod {
+class UnpauseAllRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -177,10 +177,10 @@ public:
 };
 
 #ifdef ENABLE_BITTORRENT
-class AddTorrentXmlRpcMethod:public XmlRpcMethod {
+class AddTorrentRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -191,10 +191,10 @@ public:
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-class AddMetalinkXmlRpcMethod:public XmlRpcMethod {
+class AddMetalinkRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -204,10 +204,10 @@ public:
 };
 #endif // ENABLE_METALINK
 
-class PurgeDownloadResultXmlRpcMethod:public XmlRpcMethod {
+class PurgeDownloadResultRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -216,10 +216,10 @@ public:
   }
 };
 
-class RemoveDownloadResultXmlRpcMethod:public XmlRpcMethod {
+class RemoveDownloadResultRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -228,10 +228,10 @@ public:
   }
 };
 
-class GetUrisXmlRpcMethod:public XmlRpcMethod {
+class GetUrisRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -240,10 +240,10 @@ public:
   }
 };
 
-class GetFilesXmlRpcMethod:public XmlRpcMethod {
+class GetFilesRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -253,10 +253,10 @@ public:
 };
 
 #ifdef ENABLE_BITTORRENT
-class GetPeersXmlRpcMethod:public XmlRpcMethod {
+class GetPeersRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -266,10 +266,10 @@ public:
 };
 #endif // ENABLE_BITTORRENT
 
-class GetServersXmlRpcMethod:public XmlRpcMethod {
+class GetServersRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -278,10 +278,10 @@ public:
   }
 };
 
-class TellStatusXmlRpcMethod:public XmlRpcMethod {
+class TellStatusRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -290,10 +290,10 @@ public:
   }
 };
 
-class TellActiveXmlRpcMethod:public XmlRpcMethod {
+class TellActiveRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -303,7 +303,7 @@ public:
 };
 
 template<typename T>
-class AbstractPaginationXmlRpcMethod:public XmlRpcMethod {
+class AbstractPaginationRpcMethod:public RpcMethod {
 private:
   template<typename InputIterator>
   std::pair<InputIterator, InputIterator>
@@ -349,7 +349,7 @@ private:
   }
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e)
+  (const RpcRequest& req, DownloadEngine* e)
   {
     const SharedHandle<List>& params = req.params;
     checkPaginationParams(params);
@@ -384,8 +384,8 @@ protected:
    const std::vector<std::string>& keys) const = 0;
 };
 
-class TellWaitingXmlRpcMethod:
-    public AbstractPaginationXmlRpcMethod<RequestGroup> {
+class TellWaitingRpcMethod:
+    public AbstractPaginationRpcMethod<RequestGroup> {
 protected:
   virtual const std::deque<SharedHandle<RequestGroup> >&
   getItems(DownloadEngine* e) const;
@@ -403,8 +403,8 @@ public:
   }
 };
 
-class TellStoppedXmlRpcMethod:
-    public AbstractPaginationXmlRpcMethod<DownloadResult> {
+class TellStoppedRpcMethod:
+    public AbstractPaginationRpcMethod<DownloadResult> {
 protected:
    virtual const std::deque<SharedHandle<DownloadResult> >&
    getItems(DownloadEngine* e) const;
@@ -422,10 +422,10 @@ public:
   }
 };
 
-class ChangeOptionXmlRpcMethod:public XmlRpcMethod {
+class ChangeOptionRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -434,10 +434,10 @@ public:
   }
 };
 
-class ChangeGlobalOptionXmlRpcMethod:public XmlRpcMethod {
+class ChangeGlobalOptionRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -446,10 +446,10 @@ public:
   }
 };
 
-class GetVersionXmlRpcMethod:public XmlRpcMethod {
+class GetVersionRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -458,10 +458,10 @@ public:
   }
 };
 
-class GetOptionXmlRpcMethod:public XmlRpcMethod {
+class GetOptionRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -470,10 +470,10 @@ public:
   }
 };
 
-class GetGlobalOptionXmlRpcMethod:public XmlRpcMethod {
+class GetGlobalOptionRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -482,10 +482,10 @@ public:
   }
 };
 
-class ChangePositionXmlRpcMethod:public XmlRpcMethod {
+class ChangePositionRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -494,10 +494,10 @@ public:
   }
 };
 
-class ChangeUriXmlRpcMethod:public XmlRpcMethod {
+class ChangeUriRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -506,10 +506,10 @@ public:
   }
 };
 
-class GetSessionInfoXmlRpcMethod:public XmlRpcMethod {
+class GetSessionInfoRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -518,10 +518,10 @@ public:
   }
 };
 
-class ShutdownXmlRpcMethod:public XmlRpcMethod {
+class ShutdownRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -530,10 +530,10 @@ public:
   }
 };
 
-class ForceShutdownXmlRpcMethod:public XmlRpcMethod {
+class ForceShutdownRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -542,10 +542,10 @@ public:
   }
 };
 
-class SystemMulticallXmlRpcMethod:public XmlRpcMethod {
+class SystemMulticallRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 public:
   static const std::string& getMethodName()
   {
@@ -554,10 +554,10 @@ public:
   }
 };
 
-class NoSuchMethodXmlRpcMethod:public XmlRpcMethod {
+class NoSuchMethodRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e);
+  (const RpcRequest& req, DownloadEngine* e);
 };
 
 // Helper function to store data to entryDict from ds. This function
@@ -579,8 +579,8 @@ void gatherBitTorrentMetadata
  const SharedHandle<TorrentAttribute>& torrentAttrs);
 #endif // ENABLE_BITTORRENT
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 
-#endif // D_XML_RPC_METHOD_IMPL_H
+#endif // D_RPC_METHOD_IMPL_H

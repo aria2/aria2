@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 // InitialXmlRpcRequestParserState
 
@@ -324,6 +324,6 @@ void ArrayValueXmlRpcRequestParserState::endElement
   stm->popArrayFrame();
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

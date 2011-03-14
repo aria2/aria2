@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "XmlRpcResponse.h"
+#include "RpcResponse.h"
 
 #include <cassert>
 #include <sstream>
@@ -45,7 +45,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 namespace {
 template<typename OutputStream>
@@ -121,22 +121,22 @@ std::string encodeAll
 }
 } // namespace
 
-XmlRpcResponse::XmlRpcResponse
+RpcResponse::RpcResponse
 (int code,
  const SharedHandle<ValueBase>& param,
  const SharedHandle<ValueBase>& id)
   : code(code), param(param), id(id)
 {}
 
-XmlRpcResponse::XmlRpcResponse(const XmlRpcResponse& c)
+RpcResponse::RpcResponse(const RpcResponse& c)
   : code(c.code),
     param(c.param),
     id(c.id)
 {}
 
-XmlRpcResponse::~XmlRpcResponse() {}
+RpcResponse::~RpcResponse() {}
 
-XmlRpcResponse& XmlRpcResponse::operator=(const XmlRpcResponse& c)
+RpcResponse& RpcResponse::operator=(const RpcResponse& c)
 {
   if(this != &c) {
     code = c.code;
@@ -145,7 +145,7 @@ XmlRpcResponse& XmlRpcResponse::operator=(const XmlRpcResponse& c)
   return *this;
 }
 
-std::string XmlRpcResponse::toXml(bool gzip) const
+std::string RpcResponse::toXml(bool gzip) const
 {
   if(gzip) {
 #ifdef HAVE_ZLIB
@@ -189,7 +189,7 @@ OutputStream& encodeJsonAll
 }
 } // namespace
 
-std::string XmlRpcResponse::toJson(const std::string& callback, bool gzip) const
+std::string RpcResponse::toJson(const std::string& callback, bool gzip) const
 {
   if(gzip) {
 #ifdef HAVE_ZLIB
@@ -209,14 +209,14 @@ namespace {
 template<typename OutputStream>
 OutputStream& encodeJsonBatchAll
 (OutputStream& o,
- const std::vector<XmlRpcResponse>& results,
+ const std::vector<RpcResponse>& results,
  const std::string& callback)
 {
   o << "[";
   if(!results.empty()) {
     encodeJsonAll(o, results[0].code, results[0].param, results[0].id,callback);
   }
-  for(std::vector<XmlRpcResponse>::const_iterator i = results.begin()+1,
+  for(std::vector<RpcResponse>::const_iterator i = results.begin()+1,
         eoi = results.end(); i != eoi; ++i) {
     o << ",";
     encodeJsonAll(o, (*i).code, (*i).param, (*i).id, callback);
@@ -227,7 +227,7 @@ OutputStream& encodeJsonBatchAll
 } // namespace
 
 std::string toJsonBatch
-(const std::vector<XmlRpcResponse>& results,
+(const std::vector<RpcResponse>& results,
  const std::string& callback,
  bool gzip)
 {
@@ -245,6 +245,6 @@ std::string toJsonBatch
   }
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

@@ -40,11 +40,11 @@
 #include <string>
 
 #include "SharedHandle.h"
-#include "XmlRpcRequest.h"
+#include "RpcRequest.h"
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 class XmlRpcRequestParserStateMachine;
 
@@ -52,10 +52,10 @@ class XmlRpcRequestProcessor {
 private:
   SharedHandle<XmlRpcRequestParserStateMachine> stm_;
 public:
-  XmlRpcRequest parseMemory(const std::string& xml);
+  RpcRequest parseMemory(const std::string& xml);
 };
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 

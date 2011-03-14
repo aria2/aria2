@@ -38,7 +38,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 void XmlRpcRequestParserController::pushFrame()
 {
@@ -92,6 +92,6 @@ XmlRpcRequestParserController::getCurrentFrameValue() const
   return currentFrame_.value_;
 }
 
-} // namespace xmlrpc
+} // namespace rpc
   
 } // namespace aria2

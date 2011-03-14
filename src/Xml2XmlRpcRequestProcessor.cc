@@ -45,7 +45,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 namespace {
 struct SessionData {
@@ -148,7 +148,7 @@ XmlRpcRequestProcessor::XmlRpcRequestProcessor() {}
 
 XmlRpcRequestProcessor::~XmlRpcRequestProcessor() {}
 
-XmlRpcRequest
+RpcRequest
 XmlRpcRequestProcessor::parseMemory(const std::string& xml)
 {
   stm_.reset(new XmlRpcRequestParserStateMachine());
@@ -162,10 +162,10 @@ XmlRpcRequestProcessor::parseMemory(const std::string& xml)
   if(!asList(stm_->getCurrentFrameValue())) {
     throw DL_ABORT_EX("Bad XML-RPC parameter list");
   }
-  return XmlRpcRequest(stm_->getMethodName(),
-                       static_pointer_cast<List>(stm_->getCurrentFrameValue()));
+  return RpcRequest(stm_->getMethodName(),
+                    static_pointer_cast<List>(stm_->getCurrentFrameValue()));
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

@@ -72,9 +72,7 @@
 #include "SelectEventPoll.h"
 #include "DlAbortEx.h"
 #include "FileAllocationEntry.h"
-#ifdef ENABLE_XML_RPC
-# include "HttpListenCommand.h"
-#endif // ENABLE_XML_RPC
+#include "HttpListenCommand.h"
 
 namespace aria2 {
 
@@ -165,7 +163,6 @@ DownloadEngineFactory::newDownloadEngine
                                                 stopSec));
     }
   }
-#ifdef ENABLE_XML_RPC
   if(op->getAsBool(PREF_ENABLE_XML_RPC)) {
     static int families[] = { AF_INET, AF_INET6 };
     size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6)?1:2;
@@ -179,7 +176,6 @@ DownloadEngineFactory::newDownloadEngine
       }
     }
   }
-#endif // ENABLE_XML_RPC
   return e;
 }
 

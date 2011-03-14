@@ -78,12 +78,12 @@ aria2c_SOURCES = AllTest.cc\
 	TripletTest.cc\
 	CookieHelperTest.cc\
 	JsonTest.cc\
-	XmlRpcResponseTest.cc
+	RpcResponseTest.cc\
+	RpcMethodTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\
-	XmlRpcRequestProcessorTest.cc\
-	XmlRpcMethodTest.cc
+	XmlRpcRequestProcessorTest.cc
 endif # ENABLE_XML_RPC
 
 if HAVE_SOME_FALLOCATE

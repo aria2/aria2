@@ -32,28 +32,53 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_METHOD_FACTORY_H
-#define D_XML_RPC_METHOD_FACTORY_H
+#ifndef D_RPC_RESPONSE_H
+#define D_RPC_RESPONSE_H
 
 #include "common.h"
 
 #include <string>
+#include <vector>
 
-#include "SharedHandle.h"
+#include "ValueBase.h"
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
-class XmlRpcMethod;
+struct RpcResponse {
+  // 0 for success, non-zero for error
+  int code;
+  
+  SharedHandle<ValueBase> param;
 
-class XmlRpcMethodFactory {
-public:
-  static SharedHandle<XmlRpcMethod> create(const std::string& methodName);
+  SharedHandle<ValueBase> id;
+
+  RpcResponse
+  (int code,
+   const SharedHandle<ValueBase>& param,
+   const SharedHandle<ValueBase>& id);
+
+  RpcResponse(const RpcResponse& c);
+
+  ~RpcResponse();
+
+  RpcResponse& operator=(const RpcResponse& c);
+
+  std::string toXml(bool gzip = false) const;
+
+  // Encodes RPC response in JSON. If callback is not empty, the
+  // resulting string is JSONP.
+  std::string toJson(const std::string& callback, bool gzip = false) const;
 };
 
-} // namespace xmlrpc
+std::string toJsonBatch
+(const std::vector<RpcResponse>& results,
+ const std::string& callback,
+ bool gzip = false);
+
+} // namespace rpc
 
 } // namespace aria2
 
-#endif // D_XML_RPC_METHOD_FACTORY_H
+#endif // D_RPC_RESPONSE_H

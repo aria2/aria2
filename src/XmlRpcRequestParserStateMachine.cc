@@ -36,7 +36,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 InitialXmlRpcRequestParserState*
 XmlRpcRequestParserStateMachine::initialState_ =
@@ -113,6 +113,6 @@ XmlRpcRequestParserStateMachine::~XmlRpcRequestParserStateMachine()
   delete controller_;
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

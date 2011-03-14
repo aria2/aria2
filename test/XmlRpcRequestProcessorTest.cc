@@ -7,7 +7,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 class XmlRpcRequestProcessorTest:public CppUnit::TestFixture {
 
@@ -30,7 +30,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(XmlRpcRequestProcessorTest);
 void XmlRpcRequestProcessorTest::testParseMemory()
 {
   XmlRpcRequestProcessor proc;
-  XmlRpcRequest req =
+  RpcRequest req =
     proc.parseMemory("<?xml version=\"1.0\"?>"
                      "<methodCall>"
                      "  <methodName>aria2.addURI</methodName>"
@@ -95,7 +95,7 @@ void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()
     // success
   }
   {
-    XmlRpcRequest req =
+    RpcRequest req =
       proc.parseMemory("<methodCall>"
                        "  <methodName>aria2.addURI</methodName>"
                      "    <params>"
@@ -104,16 +104,16 @@ void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()
     CPPUNIT_ASSERT(req.params);
   }
   try {
-    XmlRpcRequest req =
-    proc.parseMemory("<methodCall>"
-                     "  <methodName>aria2.addURI</methodName>"
-                     "</methodCall>");
+    RpcRequest req =
+      proc.parseMemory("<methodCall>"
+                       "  <methodName>aria2.addURI</methodName>"
+                       "</methodCall>");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // success
   }
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

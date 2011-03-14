@@ -4,7 +4,7 @@
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
 class XmlRpcRequestParserControllerTest:public CppUnit::TestFixture {
 
@@ -157,6 +157,6 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame_compound()
   CPPUNIT_ASSERT_EQUAL(std::string("jp"), asString(countryList->get(0))->s());
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

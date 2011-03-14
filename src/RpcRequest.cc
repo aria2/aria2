@@ -32,30 +32,30 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "XmlRpcRequest.h"
+#include "RpcRequest.h"
 
 namespace aria2 {
 
-namespace xmlrpc {
+namespace rpc {
 
-XmlRpcRequest::XmlRpcRequest(const std::string& methodName,
-                             const SharedHandle<List>& params)
+RpcRequest::RpcRequest(const std::string& methodName,
+                       const SharedHandle<List>& params)
   : methodName(methodName), params(params)
 {}
 
-XmlRpcRequest::XmlRpcRequest(const std::string& methodName,
-                             const SharedHandle<List>& params,
-                             const SharedHandle<ValueBase>& id)
+RpcRequest::RpcRequest(const std::string& methodName,
+                       const SharedHandle<List>& params,
+                       const SharedHandle<ValueBase>& id)
   : methodName(methodName), params(params), id(id)
 {}
 
-XmlRpcRequest::XmlRpcRequest(const XmlRpcRequest& c)
+RpcRequest::RpcRequest(const RpcRequest& c)
   : methodName(c.methodName), params(c.params), id(c.id)
 {}
 
-XmlRpcRequest::~XmlRpcRequest() {}
+RpcRequest::~RpcRequest() {}
 
-XmlRpcRequest& XmlRpcRequest::operator=(const XmlRpcRequest& c)
+RpcRequest& RpcRequest::operator=(const RpcRequest& c)
 {
   if(this != &c) {
     methodName = c.methodName;
@@ -64,7 +64,7 @@ XmlRpcRequest& XmlRpcRequest::operator=(const XmlRpcRequest& c)
   return *this;
 }
 
-const String* XmlRpcRequest::getStringParam(size_t index) const
+const String* RpcRequest::getStringParam(size_t index) const
 {
   const String* stringParam = 0;
   if(params->size() > index) {
@@ -73,7 +73,7 @@ const String* XmlRpcRequest::getStringParam(size_t index) const
   return stringParam;
 }
 
-const Integer* XmlRpcRequest::getIntegerParam(size_t index) const
+const Integer* RpcRequest::getIntegerParam(size_t index) const
 {
   const Integer* integerParam = 0;
   if(params->size() > index) {
@@ -82,7 +82,7 @@ const Integer* XmlRpcRequest::getIntegerParam(size_t index) const
   return integerParam;
 }
 
-const List* XmlRpcRequest::getListParam(size_t index) const
+const List* RpcRequest::getListParam(size_t index) const
 {
   const List* listParam = 0;
   if(params->size() > index) {
@@ -91,7 +91,7 @@ const List* XmlRpcRequest::getListParam(size_t index) const
   return listParam;
 }
 
-const Dict* XmlRpcRequest::getDictParam(size_t index) const
+const Dict* RpcRequest::getDictParam(size_t index) const
 {
   const Dict* dictParam = 0;
   if(params->size() > index) {
@@ -100,6 +100,6 @@ const Dict* XmlRpcRequest::getDictParam(size_t index) const
   return dictParam;
 }
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2

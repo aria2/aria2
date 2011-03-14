@@ -35,7 +35,7 @@
 #include "XmlRpcElements.h"
 
 namespace aria2 {
-namespace xmlrpc {
+namespace rpc {
 namespace elements {
 
 const std::string METHOD_CALL("methodCall");
@@ -57,5 +57,5 @@ const std::string ARRAY("array");
 const std::string DATA("data");
 
 } // namespace elements
-} // namespace xmlrpc
+} // namespace rpc
 } // namespace aria2

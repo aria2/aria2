@@ -40,7 +40,7 @@
 #include <string>
 
 namespace aria2 {
-namespace xmlrpc {
+namespace rpc {
 namespace elements {
 
 extern const std::string METHOD_CALL;
@@ -62,7 +62,7 @@ extern const std::string ARRAY;
 extern const std::string DATA;
 
 } // namespace elements
-} // namespace xmlrpc
+} // namespace rpc
 } // namespace aria2
 
 #endif // D_XML_RPC_ELEMENTS_H

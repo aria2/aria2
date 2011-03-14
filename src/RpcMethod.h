@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_METHOD_H
-#define D_XML_RPC_METHOD_H
+#ifndef D_RPC_METHOD_H
+#define D_RPC_METHOD_H
 
 #include "common.h"
 
@@ -49,28 +49,28 @@ class OptionParser;
 class Option;
 class Exception;
 
-namespace xmlrpc {
+namespace rpc {
 
-struct XmlRpcRequest;
-struct XmlRpcResponse;
+struct RpcRequest;
+struct RpcResponse;
 
-// This class offers abstract implementation of processing XML-RPC
+// This class offers abstract implementation of processing RPC
 // request. You have to inherit this class and implement process()
-// method to add new XML-RPC API.
+// method to add new RPC API.
 //
-// There is XmlRpcMethodFactory class which instantiates XmlRpcMethod
-// subclass. If you add new XmlRpcMethod subclass, don't forget to add
-// it to XmlRpcMethodFactory.
-class XmlRpcMethod {
+// There is RpcMethodFactory class which instantiates RpcMethod
+// subclass. If you add new RpcMethod subclass, don't forget to add it
+// to RpcMethodFactory.
+class RpcMethod {
 private:
   SharedHandle<OptionParser> optionParser_;
   bool jsonRpc_;
 protected:
-  // Subclass must implement this function to fulfil XmlRpcRequest
-  // req.  The return value of this method is used as a return value
-  // of XML-RPC request.
+  // Subclass must implement this function to fulfil RpcRequest req.
+  // The return value of this method is used as a return value of RPC
+  // request.
   virtual SharedHandle<ValueBase> process
-  (const XmlRpcRequest& req, DownloadEngine* e) = 0;
+  (const RpcRequest& req, DownloadEngine* e) = 0;
 
   void gatherRequestOption
   (const SharedHandle<Option>& option, const Dict* optionsDict);
@@ -78,14 +78,14 @@ protected:
   void gatherChangeableOption
   (const SharedHandle<Option>& option, const Dict* optionDict);
 
-  // Copy options which is changeable in XML-RPC changeOption command
-  // to dest.
+  // Copy options which is changeable in RPC changeOption command to
+  // dest.
   void applyChangeableOption(Option* dest, Option* src) const;
 
   void gatherChangeableGlobalOption(const SharedHandle<Option>& option,
                                     const Dict* optionDict);
 
-  // Copy options which is changeable in XML-RPC changeGlobalOption
+  // Copy options which is changeable in RPC changeGlobalOption
   // command to dest.
   void applyChangeableGlobalOption(Option* dest, Option* src) const;
 
@@ -96,13 +96,13 @@ protected:
     return optionParser_;
   }
 public:
-  XmlRpcMethod();
+  RpcMethod();
 
-  virtual ~XmlRpcMethod();
+  virtual ~RpcMethod();
 
-  // Do work to fulfill XmlRpcRequest req and returns its result as
-  // XmlRpcResponse. This method delegates to process() method.
-  XmlRpcResponse execute(const XmlRpcRequest& req, DownloadEngine* e);
+  // Do work to fulfill RpcRequest req and returns its result as
+  // RpcResponse. This method delegates to process() method.
+  RpcResponse execute(const RpcRequest& req, DownloadEngine* e);
   // Set whether JSON-RPC style parameter handling.
   void setJsonRpc(bool f)
   {
@@ -114,8 +114,8 @@ public:
   }
 };
 
-} // namespace xmlrpc
+} // namespace rpc
 
 } // namespace aria2
 
-#endif // D_XML_RPC_METHOD_H
+#endif // D_RPC_METHOD_H
