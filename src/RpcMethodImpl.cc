@@ -1383,8 +1383,8 @@ SharedHandle<ValueBase> SystemMulticallRpcMethod::process
                    (DL_ABORT_EX("Recursive system.multicall forbidden.")));
       continue;
     }
-    SharedHandle<RpcMethod> method =
-      RpcMethodFactory::create(methodName->s());
+    SharedHandle<RpcMethod> method = RpcMethodFactory::create(methodName->s());
+    method->setJsonRpc(getJsonRpc());
     RpcRequest innerReq
       (methodName->s(), static_pointer_cast<List>(methodDict->get(KEY_PARAMS)));
     RpcResponse res = method->execute(innerReq, e);
