@@ -472,6 +472,14 @@ void JsonTest::testDecodeGetParams()
     CPPUNIT_ASSERT_EQUAL(std::string("[{}]"), gparam.request);
     CPPUNIT_ASSERT_EQUAL(std::string("cb"), gparam.callback);
   }
+  {
+    std::string query = "?method=sum&id=300";
+    json::JsonGetParam gparam = json::decodeGetParams(query);
+    CPPUNIT_ASSERT_EQUAL(std::string("{\"method\":\"sum\","
+                                     "\"id\":\"300\"}"),
+                         gparam.request);
+    CPPUNIT_ASSERT_EQUAL(std::string(), gparam.callback);
+  }
 }
 
 } // namespace aria2
