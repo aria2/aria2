@@ -232,8 +232,7 @@ bool HttpServerBodyCommand::execute()
                    getCuid()),
                e);
             rpc::RpcResponse res
-              (createJsonRpcErrorResponse
-               (-32700, "Parse error.", SharedHandle<ValueBase>()));
+              (createJsonRpcErrorResponse(-32700, "Parse error.", Null::g()));
             sendJsonRpcResponse(res, callback);
             return true;
           }
@@ -258,7 +257,7 @@ bool HttpServerBodyCommand::execute()
             } else {
               rpc::RpcResponse res
                 (createJsonRpcErrorResponse
-                 (-32600, "Invalid Request.", SharedHandle<ValueBase>()));
+                 (-32600, "Invalid Request.", Null::g()));
               sendJsonRpcResponse(res, callback);
             }
           }
