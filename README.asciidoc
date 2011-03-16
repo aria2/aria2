@@ -60,7 +60,7 @@ Here is a list of features:
 * BitTorrent Local Peer Discovery
 * Rename/change the directory structure of BitTorrent downloads
   completely
-* XML-RPC interface
+* JSON-RPC/XML-RPC interface
 * Run as a daemon process
 * Selective download in multi-file torrent/Metalink
 * Chunk checksum validation in Metalink
