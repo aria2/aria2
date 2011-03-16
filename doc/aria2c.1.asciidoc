@@ -1284,6 +1284,10 @@ based on the last error encountered.
   If the remote server was unable to handle the request due to a
   temporary overloading or maintenance.
 
+*30*::
+
+  If aria2 could not parse JSON-RPC request.
+
 [NOTE]
 An error occurred in a finished download will not be reported
 as exit status.
