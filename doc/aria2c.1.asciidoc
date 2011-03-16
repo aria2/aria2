@@ -450,7 +450,7 @@ A single piece may include several files or part of files, and aria2
 writes the piece to the appropriate files.
 
 [[aria2_optref_show_files]]*-S*, *--show-files*[='true'|'false']::
-  Print file listing of .torrent or .metalink file and exit.
+  Print file listing of .torrent, .meta4 and .metalink file and exit.
   In case of .torrent file, additional information
   (infohash, piece length, etc) is also printed.
 
@@ -705,8 +705,8 @@ Specifying *<<aria2_optref_seed_time, --seed-time>>*='0' disables seeding after 
 Metalink Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 [[aria2_optref_follow_metalink]]*--follow-metalink*='true'|'false'|'mem'::
-  If 'true' or 'mem' is specified, when a file whose suffix is ".metalink" or content
-  type of "application/metalink+xml" is downloaded, aria2 parses it as a metalink
+  If 'true' or 'mem' is specified, when a file whose suffix is ".meta4" or ".metalink" or content
+  type of "application/metalink4+xml" or "application/metalink+xml" is downloaded, aria2 parses it as a metalink
   file and downloads files mentioned in it.
   If 'mem' is specified, a metalink file is not written to the disk, but is just
   kept in memory.
@@ -715,7 +715,7 @@ Metalink Specific Options
 
 [[aria2_optref_metalink_file]]*-M*, *--metalink-file*=METALINK_FILE::
 
-  The file path to .metalink file. Reads input from stdin when '-' is
+  The file path to .meta4 and .metalink file. Reads input from stdin when '-' is
   specified.  You are not required to use this option because you can
   specify .metalink files without *<<aria2_optref_metalink_file, -M>>*.
 
@@ -2996,14 +2996,14 @@ In the option struct, name element is option name(without preceding
 "--") and value element is argument as string.
 
 JSON-RPC Example
-++++++++++++++++
+^^^^^^^^^^^^^^^^
 
 ----------------------------------------------
 {'split':'1', 'http-proxy':'http://proxy/'}
 ----------------------------------------------
 
 XML-RPC Example
-+++++++++++++++
+^^^^^^^^^^^^^^^
 
 -------------------------------------------------
 <struct>
@@ -3026,14 +3026,14 @@ not enough. To overcome this situation, they can take array as value
 as well as string.
 
 JSON-RPC Example
-++++++++++++++++
+^^^^^^^^^^^^^^^^
 
 -------------------------------------------------------------
 {'header':['Accept-Language: ja', 'Accept-Charset: utf-8']}
 -------------------------------------------------------------
 
 XML-RPC Example
-+++++++++++++++
+^^^^^^^^^^^^^^^
 
 ---------------------------------------------------------------
 <struct>

@@ -233,9 +233,10 @@
     "                              overwritten. Session Cookies are also saved and\n" \
     "                              their expiry values are treated as 0.")
 #define TEXT_SHOW_FILES                                                 \
-  _(" -S, --show-files[=true|false] Print file listing of .torrent or .metalink file\n" \
-    "                              and exit. More detailed information will be listed\n" \
-    "                              in case of torrent file.")
+  _(" -S, --show-files[=true|false] Print file listing of .torrent, .meta4 and\n" \
+    "                              .metalink file and exit. More detailed\n" \
+    "                              information will be listed in case of torrent\n" \
+    "                              file.")
 #define TEXT_SELECT_FILE                                                \
   _(" --select-file=INDEX...       Set file to download by specifying its index.\n" \
     "                              You can find the file index using the\n" \
@@ -337,8 +338,9 @@
     "                              0 means unlimited.\n"                \
     "                              See also --bt-request-peer-speed-limit option.")
 #define TEXT_METALINK_FILE                                              \
-  _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file. Reads\n" \
-    "                              input from stdin when '-' is specified.")
+  _(" -M, --metalink-file=METALINK_FILE The file path to the .meta4 and .metalink\n" \
+    "                              file. Reads input from stdin when '-' is\n" \
+    "                              specified.")
 #define TEXT_METALINK_SERVERS                                           \
   _(" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n" \
     "                              simultaneously. Some Metalinks regulate the\n" \
@@ -363,7 +365,8 @@
     "                              if you don't have any preferred protocol.")
 #define TEXT_FOLLOW_METALINK                                            \
   _(" --follow-metalink=true|false|mem If true or mem is specified, when a file\n" \
-    "                              whose suffix is .metalink or content type of\n" \
+    "                              whose suffix is .meta4 or .metalink, or content\n" \
+    "                              type of application/metalink4+xml or\n" \
     "                              application/metalink+xml is downloaded, aria2\n" \
     "                              parses it as a metalink file and downloads files\n" \
     "                              mentioned in it.\n"                  \
