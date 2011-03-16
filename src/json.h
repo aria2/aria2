@@ -56,11 +56,7 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
 
     virtual void visit(const String& string)
     {
-      const std::string& s = string.s();
-      std::string t = jsonEscape(s);
-      out_ << "\"";
-      out_.write(t.data(), t.size());
-      out_ << "\"";
+      encodeString(string.s());
     }
 
     virtual void visit(const Integer& integer)
@@ -98,24 +94,25 @@ OutputStream& encode(OutputStream& out, const ValueBase* vlb)
       out_ << "{";
       Dict::ValueType::const_iterator i = dict.begin();
       if(!dict.empty()) {
-        std::string key = jsonEscape((*i).first);
-        out_ << "\"";
-        out_.write(key.data(), key.size());
-        out_ << "\":";
+        encodeString((*i).first);
+        out_ << ":";
         (*i).second->accept(*this);
         ++i;
         for(Dict::ValueType::const_iterator eoi = dict.end(); i != eoi; ++i){
           out_ << ",";
-          std::string key = jsonEscape((*i).first);
-          out_ << "\"";
-          out_.write(key.data(), key.size());
-          out_ << "\":";
+          encodeString((*i).first);
+          out_ << ":";
           (*i).second->accept(*this);
         }
       }
       out_ << "}";
     }
   private:
+    void encodeString(const std::string& s)
+    {
+      std::string t = jsonEscape(s);
+      out_ << "\"" << t << "\"";
+    }
     OutputStream& out_;
   };
   JsonValueBaseVisitor visitor(out);
