@@ -168,7 +168,7 @@ OutputStream& encodeJsonAll
  int code,
  const SharedHandle<ValueBase>& param,
  const SharedHandle<ValueBase>& id,
- const std::string& callback)
+ const std::string& callback = A2STR::NIL)
 {
   if(!callback.empty()) {
     o << callback << "(";
@@ -212,16 +212,22 @@ OutputStream& encodeJsonBatchAll
  const std::vector<RpcResponse>& results,
  const std::string& callback)
 {
+  if(!callback.empty()) {
+    o << callback << "(";
+  }
   o << "[";
   if(!results.empty()) {
-    encodeJsonAll(o, results[0].code, results[0].param, results[0].id,callback);
+    encodeJsonAll(o, results[0].code, results[0].param, results[0].id);
   }
   for(std::vector<RpcResponse>::const_iterator i = results.begin()+1,
         eoi = results.end(); i != eoi; ++i) {
     o << ",";
-    encodeJsonAll(o, (*i).code, (*i).param, (*i).id, callback);
+    encodeJsonAll(o, (*i).code, (*i).param, (*i).id);
   }
   o << "]";
+  if(!callback.empty()) {
+    o << ")";
+  }
   return o;
 }
 } // namespace

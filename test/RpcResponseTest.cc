@@ -36,6 +36,12 @@ void RpcResponseTest::testToJson()
                                      "\"jsonrpc\":\"2.0\","
                                      "\"result\":[1]}"),
                          s);
+    // with callback
+    s = res.toJson("cb", false);
+    CPPUNIT_ASSERT_EQUAL(std::string("cb({\"id\":\"9\","
+                                     "\"jsonrpc\":\"2.0\","
+                                     "\"result\":[1]})"),
+                         s);
   }
   {
     // error response
@@ -51,6 +57,14 @@ void RpcResponseTest::testToJson()
                                      "\"jsonrpc\":\"2.0\""
                                      "}"),
                          s);
+    // with callback
+    s = res.toJson("cb", false);
+    CPPUNIT_ASSERT_EQUAL(std::string("cb({\"error\":{\"code\":1,"
+                                     "\"message\":\"HELLO ERROR\"},"
+                                     "\"id\":null,"
+                                     "\"jsonrpc\":\"2.0\""
+                                     "})"),
+                         s);
   }
   {
     // batch response
@@ -65,6 +79,19 @@ void RpcResponseTest::testToJson()
                                      "\"jsonrpc\":\"2.0\""
                                      "}"
                                      "]"),
+                         s);
+    // with callback
+    s = toJsonBatch(results, "cb", false);
+    CPPUNIT_ASSERT_EQUAL(std::string("cb(["
+                                     "{\"id\":\"9\","
+                                     "\"jsonrpc\":\"2.0\","
+                                     "\"result\":[1]},"
+                                     "{\"error\":{\"code\":1,"
+                                     "\"message\":\"HELLO ERROR\"},"
+                                     "\"id\":null,"
+                                     "\"jsonrpc\":\"2.0\""
+                                     "}"
+                                     "])"),
                          s);
   }
 }
