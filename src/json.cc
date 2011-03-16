@@ -644,12 +644,14 @@ decodeGetParams(const std::string& query)
     } else {
       jsonRequest = '{';
       if(!method.empty()) {
-        strappend(jsonRequest, "\"method\":\"", method, "\",");
+        strappend(jsonRequest, "\"method\":\"", method, "\"");
       }
       if(!id.empty()) {
-        strappend(jsonRequest, "\"id\":\"", id, "\",");
+        strappend(jsonRequest, ",\"id\":\"", id, "\"");
       }
-      strappend(jsonRequest, "\"params\":", jsonParam);
+      if(!params.empty()) {
+        strappend(jsonRequest, ",\"params\":", jsonParam);
+      }
       jsonRequest += '}';
     }
   }
