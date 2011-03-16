@@ -347,7 +347,7 @@ void RpcMethodTest::testAddTorrent_withPosition()
 void RpcMethodTest::testAddMetalink()
 {
   File(e_->getOption()->get(PREF_DIR)+
-       "/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").remove();
+       "/c908634fbc257fd56f0114912c2772aeeb4064f4.met4").remove();
   AddMetalinkRpcMethod m;
   RpcRequest req(AddMetalinkRpcMethod::getMethodName(), List::g());
   req.params->append(readFile(A2_TEST_DIR"/2files.metalink"));
@@ -360,7 +360,7 @@ void RpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL(std::string("2"), asString(resParams->get(1))->s());
     CPPUNIT_ASSERT
       (File(e_->getOption()->get(PREF_DIR)+
-            "/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").exists());
+            "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
 
     SharedHandle<RequestGroup> tar =
       e_->getRequestGroupMan()->findReservedGroup(1);
@@ -378,7 +378,7 @@ void RpcMethodTest::testAddMetalink()
   File(dir).mkdirs();
   SharedHandle<Dict> opt = Dict::g();
   opt->put(PREF_DIR, dir);
-  File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").remove();
+  File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").remove();
   req.params->append(opt);
   {
     RpcResponse res = m.execute(req, e_.get());
@@ -387,7 +387,7 @@ void RpcMethodTest::testAddMetalink()
                          e_->getRequestGroupMan()->findReservedGroup(3)->
                          getFirstFilePath());
     CPPUNIT_ASSERT
-      (File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.metalink").exists());
+      (File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
   }
 }
 

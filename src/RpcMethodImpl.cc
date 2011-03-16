@@ -326,11 +326,12 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
   bool posGiven = false;
   getPosParam(req, 2, posGiven, pos);
 
-  // TODO RFC5854 Metalink has the extension .meta4. We use .metalink
-  // for both v3 and RFC5854 Metalink. aria2 can detect which of which
+  // TODO RFC5854 Metalink has the extension .meta4 and Metalink
+  // Version 3 uses .metalink extension. We use .meta4 for both
+  // RFC5854 Metalink and Version 3. aria2 can detect which of which
   // by reading content rather than extension.
   std::string filename = util::applyDir
-    (requestOption->get(PREF_DIR), getHexSha1(metalinkParam->s())+".metalink");
+    (requestOption->get(PREF_DIR), getHexSha1(metalinkParam->s())+".meta4");
   std::vector<SharedHandle<RequestGroup> > result;
   // Save uploaded data in order to save this download in
   // --save-session file.
