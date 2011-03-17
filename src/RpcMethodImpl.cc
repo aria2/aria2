@@ -64,6 +64,10 @@
 #include "TimedHaltCommand.h"
 #include "PeerStat.h"
 #include "Base64.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigest.h"
+# include "message_digest_helper.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtRegistry.h"
@@ -71,8 +75,6 @@
 # include "Peer.h"
 # include "BtRuntime.h"
 # include "BtAnnounce.h"
-# include "MessageDigest.h"
-# include "message_digest_helper.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -247,8 +249,8 @@ SharedHandle<ValueBase> AddUriRpcMethod::process
   }
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
 namespace {
-
 std::string getHexSha1(const std::string& s)
 {
   unsigned char hash[20];
@@ -256,8 +258,8 @@ std::string getHexSha1(const std::string& s)
                          s.data(), s.size());
   return util::toHex(hash, sizeof(hash));
 }
-
 } // namespace
+#endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_BITTORRENT
 SharedHandle<ValueBase> AddTorrentRpcMethod::process
@@ -326,13 +328,14 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
   bool posGiven = false;
   getPosParam(req, 2, posGiven, pos);
 
+  std::vector<SharedHandle<RequestGroup> > result;
+#ifdef ENABLE_MESSAGE_DIGEST
   // TODO RFC5854 Metalink has the extension .meta4 and Metalink
   // Version 3 uses .metalink extension. We use .meta4 for both
   // RFC5854 Metalink and Version 3. aria2 can detect which of which
   // by reading content rather than extension.
   std::string filename = util::applyDir
     (requestOption->get(PREF_DIR), getHexSha1(metalinkParam->s())+".meta4");
-  std::vector<SharedHandle<RequestGroup> > result;
   // Save uploaded data in order to save this download in
   // --save-session file.
   if(util::saveAs(filename, metalinkParam->s(), true)) {
@@ -345,6 +348,9 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
                     " Failed to write file %s", filename.c_str()));
     createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
   }
+#else // !ENABLE_MESSAGE_DIGEST
+  createRequestGroupForMetalink(result, requestOption, metalinkParam->s());
+#endif // !ENABLE_MESSAGE_DIGEST
   SharedHandle<List> gids = List::g();
   if(!result.empty()) {
     if(posGiven) {
