@@ -347,7 +347,7 @@ void RpcMethodTest::testAddTorrent_withPosition()
 void RpcMethodTest::testAddMetalink()
 {
   File(e_->getOption()->get(PREF_DIR)+
-       "/c908634fbc257fd56f0114912c2772aeeb4064f4.met4").remove();
+       "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").remove();
   AddMetalinkRpcMethod m;
   RpcRequest req(AddMetalinkRpcMethod::getMethodName(), List::g());
   req.params->append(readFile(A2_TEST_DIR"/2files.metalink"));
@@ -358,9 +358,11 @@ void RpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
     CPPUNIT_ASSERT_EQUAL(std::string("1"), asString(resParams->get(0))->s());
     CPPUNIT_ASSERT_EQUAL(std::string("2"), asString(resParams->get(1))->s());
+#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT
       (File(e_->getOption()->get(PREF_DIR)+
             "/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
+#endif // ENABLE_MESSAGE_DIGEST
 
     SharedHandle<RequestGroup> tar =
       e_->getRequestGroupMan()->findReservedGroup(1);
@@ -386,8 +388,10 @@ void RpcMethodTest::testAddMetalink()
     CPPUNIT_ASSERT_EQUAL(dir+"/aria2-5.0.0.tar.bz2",
                          e_->getRequestGroupMan()->findReservedGroup(3)->
                          getFirstFilePath());
+#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT
       (File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").exists());
+#endif // ENABLE_MESSAGE_DIGEST
   }
 }
 

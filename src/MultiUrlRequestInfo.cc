@@ -58,8 +58,8 @@
 #include "SessionSerializer.h"
 #include "TimeA2.h"
 #include "fmt.h"
+#include "SocketCore.h"
 #ifdef ENABLE_SSL
-# include "SocketCore.h"
 # include "TLSContext.h"
 #endif // ENABLE_SSL
 
