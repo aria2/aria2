@@ -193,8 +193,6 @@ bool HttpServerBodyCommand::execute()
       timeoutTimer_ = global::wallclock;
 
       if(httpServer_->receiveBody()) {
-        A2_LOG_DEBUG(fmt("%s", httpServer_->getBody().c_str()));
-
         std::string reqPath = httpServer_->getRequestPath();
         reqPath.erase(std::find(reqPath.begin(), reqPath.end(), '#'),
                       reqPath.end());
