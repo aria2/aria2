@@ -282,7 +282,7 @@ bool isUtf8(const std::string& str)
        firstChar == 0x09u || firstChar == 0x0au ||firstChar == 0x0du) {
       // UTF8-1 (without ctrl chars)
     } else if(in(firstChar, 0xc2u, 0xdfu)) {
-       // UTF8-2
+      // UTF8-2
       if(++s == eos || !isUtf8Tail(*s)) {
         return false;
       }
@@ -1472,7 +1472,7 @@ namespace {
 
 void executeHook
 (const std::string& command,
- gid_t gid,
+ a2_gid_t gid,
  size_t numFiles,
  const std::string& firstFilename)
 {

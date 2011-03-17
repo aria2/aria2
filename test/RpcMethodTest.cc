@@ -713,7 +713,7 @@ void RpcMethodTest::testGetVersion()
 void RpcMethodTest::testGatherStoppedDownload()
 {
   std::vector<SharedHandle<FileEntry> > fileEntries;
-  std::vector<gid_t> followedBy;
+  std::vector<a2_gid_t> followedBy;
   followedBy.push_back(3);
   followedBy.push_back(4);
   SharedHandle<DownloadResult> d(new DownloadResult());
@@ -853,7 +853,7 @@ void RpcMethodTest::testChangePosition()
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   CPPUNIT_ASSERT_EQUAL((int64_t)1, asInteger(res.param)->i());
   CPPUNIT_ASSERT_EQUAL
-    ((gid_t)1, e_->getRequestGroupMan()->getReservedGroups()[1]->getGID());
+    ((a2_gid_t)1, e_->getRequestGroupMan()->getReservedGroups()[1]->getGID());
 }
 
 void RpcMethodTest::testChangePosition_fail()

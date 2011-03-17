@@ -132,14 +132,14 @@ public:
     return requestGroups_;
   }
 
-  SharedHandle<RequestGroup> findRequestGroup(gid_t gid) const;
+  SharedHandle<RequestGroup> findRequestGroup(a2_gid_t gid) const;
 
   const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const
   {
     return reservedGroups_;
   }
 
-  SharedHandle<RequestGroup> findReservedGroup(gid_t gid) const;
+  SharedHandle<RequestGroup> findReservedGroup(a2_gid_t gid) const;
 
   enum HOW {
     POS_SET,
@@ -156,9 +156,9 @@ public:
   // beyond the end of the queue, it moves the download to the
   // beginning or the end of the queue respectively.  Returns the
   // destination position.
-  size_t changeReservedGroupPosition(gid_t gid, int pos, HOW how);
+  size_t changeReservedGroupPosition(a2_gid_t gid, int pos, HOW how);
 
-  bool removeReservedGroup(gid_t gid);
+  bool removeReservedGroup(a2_gid_t gid);
 
   void showDownloadResults(std::ostream& o) const;
 
@@ -209,14 +209,14 @@ public:
     return downloadResults_;
   }
 
-  SharedHandle<DownloadResult> findDownloadResult(gid_t gid) const;
+  SharedHandle<DownloadResult> findDownloadResult(a2_gid_t gid) const;
 
   // Removes all download results.
   void purgeDownloadResult();
 
   // Removes download result of given gid. Returns true if download
   // result was removed. Otherwise returns false.
-  bool removeDownloadResult(gid_t gid);
+  bool removeDownloadResult(a2_gid_t gid);
 
   void addDownloadResult(const SharedHandle<DownloadResult>& downloadResult);
 

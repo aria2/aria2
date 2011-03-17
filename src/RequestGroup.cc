@@ -120,7 +120,7 @@
 
 namespace aria2 {
 
-gid_t RequestGroup::gidCounter_ = 0;
+a2_gid_t RequestGroup::gidCounter_ = 0;
 
 RequestGroup::RequestGroup(const SharedHandle<Option>& option)
   : gid_(newGID()),
@@ -1319,7 +1319,7 @@ bool RequestGroup::p2pInvolved() const
 #endif // !ENABLE_BITTORRENT
 }
 
-gid_t RequestGroup::newGID()
+a2_gid_t RequestGroup::newGID()
 {
   if(gidCounter_ == INT64_MAX) {
     gidCounter_ = 0;

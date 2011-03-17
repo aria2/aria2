@@ -54,7 +54,7 @@ class MetadataInfo;
 
 struct DownloadResult
 {
-  gid_t gid;
+  a2_gid_t gid;
  
   std::vector<SharedHandle<FileEntry> > fileEntries;
 
@@ -69,11 +69,11 @@ struct DownloadResult
 
   // This field contains GIDs. See comment in
   // RequestGroup.cc::followedByGIDs_.
-  std::vector<gid_t> followedBy;
+  std::vector<a2_gid_t> followedBy;
 
   // This field contains GID. See comment in
   // RequestGroup.cc::belongsToGID_.
-  gid_t belongsTo;
+  a2_gid_t belongsTo;
 
   SharedHandle<Option> option;
 

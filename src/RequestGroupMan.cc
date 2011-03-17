@@ -167,7 +167,7 @@ SharedHandle<RequestGroup> RequestGroupMan::getRequestGroup(size_t index) const
 
 namespace {
 template<typename Iterator>
-Iterator findByGID(Iterator first, Iterator last, gid_t gid)
+Iterator findByGID(Iterator first, Iterator last, a2_gid_t gid)
 {
   for(; first != last; ++first) {
     if((*first)->getGID() == gid) {
@@ -179,7 +179,7 @@ Iterator findByGID(Iterator first, Iterator last, gid_t gid)
 } // namespace
 
 SharedHandle<RequestGroup>
-RequestGroupMan::findRequestGroup(gid_t gid) const
+RequestGroupMan::findRequestGroup(a2_gid_t gid) const
 {
   std::deque<SharedHandle<RequestGroup> >::const_iterator i =
     findByGID(requestGroups_.begin(), requestGroups_.end(), gid);
@@ -191,7 +191,7 @@ RequestGroupMan::findRequestGroup(gid_t gid) const
 }
 
 SharedHandle<RequestGroup>
-RequestGroupMan::findReservedGroup(gid_t gid) const
+RequestGroupMan::findReservedGroup(a2_gid_t gid) const
 {
   std::deque<SharedHandle<RequestGroup> >::const_iterator i =
     findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
@@ -203,7 +203,7 @@ RequestGroupMan::findReservedGroup(gid_t gid) const
 }
 
 size_t RequestGroupMan::changeReservedGroupPosition
-(gid_t gid, int pos, HOW how)
+(a2_gid_t gid, int pos, HOW how)
 {
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
@@ -246,7 +246,7 @@ size_t RequestGroupMan::changeReservedGroupPosition
   return pos;
 }
 
-bool RequestGroupMan::removeReservedGroup(gid_t gid)
+bool RequestGroupMan::removeReservedGroup(a2_gid_t gid)
 {
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
@@ -735,7 +735,7 @@ TransferStat RequestGroupMan::calculateStat()
 }
 
 SharedHandle<DownloadResult>
-RequestGroupMan::findDownloadResult(gid_t gid) const
+RequestGroupMan::findDownloadResult(a2_gid_t gid) const
 {
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator i =
         downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi; ++i) {
@@ -746,7 +746,7 @@ RequestGroupMan::findDownloadResult(gid_t gid) const
   return SharedHandle<DownloadResult>();
 }
 
-bool RequestGroupMan::removeDownloadResult(gid_t gid)
+bool RequestGroupMan::removeDownloadResult(a2_gid_t gid)
 {
   for(std::deque<SharedHandle<DownloadResult> >::iterator i =
         downloadResults_.begin(), eoi = downloadResults_.end(); i != eoi; ++i) {

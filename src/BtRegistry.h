@@ -79,22 +79,22 @@ struct BtObject {
 
 class BtRegistry {
 private:
-  std::map<gid_t, BtObject> pool_;
+  std::map<a2_gid_t, BtObject> pool_;
 public:
   SharedHandle<DownloadContext>
-  getDownloadContext(gid_t gid) const;
+  getDownloadContext(a2_gid_t gid) const;
 
   SharedHandle<DownloadContext>
   getDownloadContext(const std::string& infoHash) const;
 
-  void put(gid_t gid, const BtObject& obj);
+  void put(a2_gid_t gid, const BtObject& obj);
 
-  BtObject get(gid_t gid) const;
+  BtObject get(a2_gid_t gid) const;
 
   template<typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<gid_t, BtObject>::const_iterator i = pool_.begin(),
+    for(std::map<a2_gid_t, BtObject>::const_iterator i = pool_.begin(),
           eoi = pool_.end(); i != eoi; ++i) {
       *dest++ = (*i).second.downloadContext_;
     }
@@ -103,7 +103,7 @@ public:
 
   void removeAll();
 
-  bool remove(gid_t gid);
+  bool remove(a2_gid_t gid);
 };
 
 } // namespace aria2

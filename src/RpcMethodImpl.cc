@@ -139,7 +139,7 @@ const std::string KEY_SERVERS = "servers";
 } // namespace
 
 namespace {
-SharedHandle<ValueBase> createGIDResponse(gid_t gid)
+SharedHandle<ValueBase> createGIDResponse(a2_gid_t gid)
 {
   return String::g(util::itos(gid));
 }
@@ -162,7 +162,7 @@ addRequestGroup(const SharedHandle<RequestGroup>& group,
 
 namespace {
 SharedHandle<RequestGroup>
-findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, gid_t gid)
+findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, a2_gid_t gid)
 {
   SharedHandle<RequestGroup> group = rgman->findRequestGroup(gid);
   if(!group) {
@@ -191,7 +191,7 @@ void getPosParam(const RpcRequest& req, size_t posParamIndex,
 } // namespace
 
 namespace {
-gid_t getRequiredGidParam
+a2_gid_t getRequiredGidParam
 (const RpcRequest& req, size_t posParamIndex)
 {
   const String* gidParam = req.getStringParam(posParamIndex);
@@ -365,7 +365,7 @@ namespace {
 SharedHandle<ValueBase> removeDownload
 (const RpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
 
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
@@ -436,7 +436,7 @@ namespace {
 SharedHandle<ValueBase> pauseDownload
 (const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
 
   bool reserved = false;
   SharedHandle<RequestGroup> group =
@@ -508,7 +508,7 @@ SharedHandle<ValueBase> ForcePauseAllRpcMethod::process
 SharedHandle<ValueBase> UnpauseRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findReservedGroup(gid);
   if(!group || !group->isPauseRequested()) {
@@ -645,7 +645,7 @@ void gatherProgressCommon
     if(!group->followedBy().empty()) {
       SharedHandle<List> list = List::g();
       // The element is GID.
-      for(std::vector<gid_t>::const_iterator i = group->followedBy().begin(),
+      for(std::vector<a2_gid_t>::const_iterator i = group->followedBy().begin(),
             eoi = group->followedBy().end(); i != eoi; ++i) {
         list->append(util::itos(*i));
       }
@@ -804,7 +804,7 @@ void gatherStoppedDownload
     if(!ds->followedBy.empty()) {
       SharedHandle<List> list = List::g();
       // The element is GID.
-      for(std::vector<gid_t>::const_iterator i = ds->followedBy.begin(),
+      for(std::vector<a2_gid_t>::const_iterator i = ds->followedBy.begin(),
             eoi = ds->followedBy.end(); i != eoi; ++i) {
         list->append(util::itos(*i));
       }
@@ -866,7 +866,7 @@ void gatherStoppedDownload
 SharedHandle<ValueBase> GetFilesRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<List> files = List::g();
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -891,7 +891,7 @@ SharedHandle<ValueBase> GetFilesRpcMethod::process
 SharedHandle<ValueBase> GetUrisRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
@@ -911,7 +911,7 @@ SharedHandle<ValueBase> GetUrisRpcMethod::process
 SharedHandle<ValueBase> GetPeersRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -933,7 +933,7 @@ SharedHandle<ValueBase> GetPeersRpcMethod::process
 SharedHandle<ValueBase> TellStatusRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   
   const List* keysParam = req.getListParam(1);
   std::vector<std::string> keys;
@@ -1041,7 +1041,7 @@ SharedHandle<ValueBase> PurgeDownloadResultRpcMethod::process
 SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   if(!e->getRequestGroupMan()->removeDownloadResult(gid)) {
     throw DL_ABORT_EX
       (fmt("Could not remove download result of GID#%s",
@@ -1053,7 +1053,7 @@ SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
 SharedHandle<ValueBase> ChangeOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -1160,7 +1160,7 @@ void pushRequestOption
 SharedHandle<ValueBase> GetOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
 
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -1192,7 +1192,7 @@ SharedHandle<ValueBase> GetGlobalOptionRpcMethod::process
 SharedHandle<ValueBase> ChangePositionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   const Integer* posParam = req.getIntegerParam(1);
   const String* howParam = req.getStringParam(2);
 
@@ -1228,7 +1228,7 @@ SharedHandle<ValueBase> GetSessionInfoRpcMethod::process
 SharedHandle<ValueBase> GetServersRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
   if(!group) {
@@ -1267,7 +1267,7 @@ SharedHandle<ValueBase> GetServersRpcMethod::process
 SharedHandle<ValueBase> ChangeUriRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  gid_t gid = getRequiredGidParam(req, 0);
+  a2_gid_t gid = getRequiredGidParam(req, 0);
   const Integer* indexParam = req.getIntegerParam(1);
   const List* delUrisParam = req.getListParam(2);
   const List* addUrisParam = req.getListParam(3);
