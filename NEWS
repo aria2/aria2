@@ -1,545 +1,97 @@
-aria2 1.10.9
+aria2 1.11.0
 ============
 
 Release Note
 ------------
 
-This release fixes the bug which prevents from making directories on
-Windows OS. It also fixes the bug that aria2 wrongly determines peer
-as a seeder and drop connection in seed state. Some improvements and
-bug fixes in BitTorrent implementation were made.
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use -x16 -k1M (see
---max-connection-per-server and --min-split-size option in man
-page). If you specify multiple hosts, aria2 will use all of them and
-open multiple connections.
+This release adds JSON-RPC interface. The JSON-RPC and XML-RPC shares
+same APIs. The JSON-RPC also supports JSONP. 2 new options were added:
+--retry-wait and --async-dns-server. The downloads added by
+aria2.addTorrent and aria2.addMetalink RPC method are now saved to the
+file specified in --save-session option. The proxy options and related
+environment variables now accept https:// and ftp:// scheme. This
+release fixes the bug that causes segmentation fault when unpausing
+downloads in some situations.  MinGW32 build now looks for USERPROFILE
+and the combination of HOMEDRIVE and HOMEPATH to get user's home
+directory and doesn't check permission of .netrc file.
 
 Changes
 -------
 
- * Bump up DHT version number to 3.
-
- * Don't try legacy BitTorrent handshake when first connection attempt
-   timed out.
-
- * Fixed the bug that making directory fails on Windows OS.
-
- * Don't send announce_peer message with empty token in
-   DHTPeerLookupTask. Replace old node ID with new node ID when
-   response message is received in DHTAbstractNodeLookupTask.
-
- * Drop old node from DHT routing table if node ID has changed.
-
- * Drop connection if client and peer are both seeders.
-
- * Fixed the bug that peer is marked as seeder whenever it sends
-   extension handshake with metadata size.
-
-
-
-aria2 1.10.8
-============
-
-Release Note
-------------
-
-This release fixes the compile error which occurs with --disable-nls
-configure option. It also fixes the compile error which occurs when
-the system does not have fallocate() but has posix_fallocate().
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use -x16 -k1M (see
---max-connection-per-server and --min-split-size option in man
-page). If you specify multiple hosts, aria2 will use all of them and
-open multiple connections.
-
-Changes
--------
-
- * Moved #include <gettext.h> inside of #ifdef ENABLE_NLS.  If we put
-   #include <gettext.h> outside of #ifdef ENABLE_NLS and --disable-nls
-   is used, gettext(msgid) is defined as ((const char *)
-   (Msgid)). System header includes libintl.h regardless of
-   --disable-nls. For example, #include <string> will include
-   libintl.h through include chain. Since libintl.h refers gettext and
-   it is defined as non-function form, this causes compile error. User
-   reported gcc-4.2.2 has this problem. But gcc-4.4.5 does not suffer
-   from this problem.
-
- * Fixed compile error which occurs when system has posix_fallocate()
-   but does not have fallocate().
-
- * Removed specializations of std::swap(PeerEntry&, PeerEntry&).
-   Declaring std::swap(PeerEntry&, PeerEntry&) in class declaration
-   breaks under Mac OS X 10.5. They are also not used. So we simply
-   removed them.
-
-
-
-aria2 1.10.7
-============
-
-Release Note
-------------
-
-This release fixes the bug that causes memory leak when parsing
-Metalink document if aria2 is built with expat.  It also add several
-exit status codes to help identify the cause of error.
---max-connection-per-server option now works with Metalink.  aria2 now
-passes number of files and file path in addition to gid to command
-specified in --on-download-* options. MinGW32 build now encodes
-non-ASCII characters in file path using percent-encoding.  With this
-release, bash_completion file for aria2c is included in the
-distribution. See doc/bash_completion directory in the archive.
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use -x16 -k1M (see
---max-connection-per-server and --min-split-size option in man
-page). If you specify multiple hosts, aria2 will use all of them and
-open multiple connections.
-
-Changes
--------
-
- * Pass the number of requested files and file path to the command
-   specified --{bt-}on-download-* option.
-
- * Throw exception when unrecognized URI, bad Metalink or bad .torrent
-   file are given in command-line and exits with status non-zero.
-
- * Added aria2c bash_completion.
-
- * Added more error code values.
-
- * For MINGW32 build, percent-encode non-ASCII characters in filename.
-
- * Made --continue, --daemon, --no-conf, --no-netrc, --show-files,
-   --allow-overwrite, --allow-piece-length-change,
-   --realtime-chunk-checksum and --bt-require-crypto option take
-   optional argument.
-
- * Enter 'end game' mode from the beginning when getting torrent
-   metadata for quick data retrieval.
-
- * Use --max-connection-per-server option value for Metalink as well
-
- * Fixed memory leak with expat.
-
- * Added sha-224, sha-384, sha-512 hash function support.
-
-
-
-aria2 1.10.6
-============
-
-Release Note
-------------
-
-This release fixes the bug that downloading files larger than 4GB
-fails on 32 bit systems. It also fixes the bug that dht.dat file is
-not saved.  The improper use of return value of vsnprintf was fixed,
-which caused segmentation fault when formatting strings more than 1024
-characters long.
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use -x16 -k1M (see
---max-connection-per-server and --min-split-size option in man
-page). If you specify multiple hosts, aria2 will use all of them and
-open multiple connections.
-
-Changes
--------
-
- * Fixed the bug that downloading > 4GB file fails on 32bit systems.
-
- * Fixed improper use of vsnprintf in StringFormat which is mainly
-   used for formatting strings of exception message. The actual bug
-   reported by the user was that aria2 emitted segmentation fault
-   error when very long URI(few thousands characters long) was given.
-
- * Fixed the bug that dht.dat file could not be saved. This is because
-   a directory denoting temporary file path is wrongly created and
-   thus aria2 fails to open the file as regular file.
-
-
-
-aria2 1.10.5
-============
-
-Release Note
-------------
-
-This release fixes the bug that file allocation is enabled in HTTP
-even if --file-allocation=none is specified.
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use -x16 -k1M (see
---max-connection-per-server and --min-split-size option in man
-page). If you specify multiple hosts, aria2 will use all of them and
-open multiple connections.
-
-Changes
--------
-
- * Don't reuse socket which is readable because we assume that if
-   socket is readable it means peer shutdowns connection and the
-   socket will receive EOF. Added default timeout value to
-   DownloadEngine::poolSocket().
-
- * Fixed the bug that file allocation is enabled in HTTP even if
-   --file-allocation=none is specified.
-
-
-
-aria2 1.10.4
-============
-
-Release Note
-------------
-
-This release fixes the bug that aria2 hangs when FTP server does not
-send '226 Transfer Complete' message and the bug that the time used in
-file allocation is taken into account when calculating download speed.
-Non UTF-8 filenames are now percent-encoded.  The comments and name in
-.torrent file in XML-RPC response are also percent-encoded if they are
-not UTF-8.  Compile error on OpenBSD4.7(i386) was fixed.  A warning
-message when CA certificates are not imported is not printed in
-console. It is shown when certificate verification error is actually
-occurred.
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use -x16 -k1M (see
---max-connection-per-server and --min-split-size option in man
-page). If you specify multiple hosts, aria2 will use all of them and
-open multiple connections.
-
-Changes
--------
- 
- * Updated Russian, Simplified Chinese and French translation. Thanks
-   to all translators.
-
- * Use RFC1123 date format for creation date of .torrent file printed
-   using -S.
-
- * Rewritten Cookie class and Cookie parser based on
-   http://tools.ietf.org/html/draft-ietf-httpstate-cookie-15
-
- * Use inet_ntoa if inet_ntop is not available. Since inet_ntoa does
-   not handle IPv6 address, IPv6 support is limited in this
-   case. Fixed unit test error under mingw32.
-
- * Don't show warning message in console when CA certificates are not
-   imported.  --ca-certificate and --check-certificate option were
-   mentioned in the error message displayed when certificate
-   verification failed.
-
- * Print message when performing slow file allocation at first time.
-
- * Fixed compile error on OpenBSD4.7(i386).
-
- * Execute 5 DHT tasks concurrently in each task queue.
-
- * Fixed the bug that FtpFinishDownloadCommand does not handle
-   timeout. This means it waits for the remote server to send "226
-   Transfer Complete" message *without* its own timeout until the
-   remote server shutdowns connection(we can detect EOF in this case).
-
- * Rewritten util::escapePath(). Now it does not replace bad chars
-   with '_':it performs percent-encoding against them.
-   util::fixTaintedBasename() now replaces "/" with "%2F".  Added 0x7f
-   as bad chars in util::detectDirTraversal().
-
- * Non-UTF8 filenames are now percent-encoded.  For example, filename
-   for http://example.org/%90%A2%8AE will be %90%A2%8AE because it is
-   Shift_JIS. The comments and name in .torrent file in XML-RPC
-   response are percent-encoded if they are not UTF-8.
-
- * Reset download start time of PeerStat because it is started before
-  file allocation begins. Without reset, we have incorrect download
-  time and aria2 wrongly determines that download speed is too low if
-  --lowest-speed-limit is used.
-
- * Added keys parameter to aria2.tellStatus, aria2.tellActive,
-   aria2.tellWaiting and aria2.tellStopped XML-RPC method.  'keys' is
-   array of string. If it is specified, the response contains only
-   keys in 'keys' array. If 'keys' is empty or not specified, the
-   response contains all keys.  This is useful when you just want
-   specific keys and avoid unnecessary transfers. For example,
-   aria2.tellStatus("1", ["gid", "status"]) returns 'gid' and
-   'status' key.
-
-
-
-aria2 1.10.3
-============
-
-Release Note
-------------
-
-This release adds short option -x for --max-connection-per-server
-option and -k for --min-split-size option.  It also adds
---max-download-result=NUM option.  This option sets maximum number of
-download result kept in memory and the default value is 1000.
---max-connection-per-server now accepts up to 16.  '@' character is
-now allowed in username embedded in URI.  This release fixes the bug
-that aria2 reports error and exits with non-zero status when file is
-already downloaded and checksum is available.
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use -x16 -k1M (see
---max-connection-per-server and --min-split-size option in man
-page). If you specify multiple hosts, aria2 will use all of them and
-open multiple connections.
-
-Changes
--------
-
- * Replaced V_TRUE with A2_V_TRUE. Replaced V_FALSE with A2_V_FALSE.
-
- * Added short option -k for --min-split-size option and -x for
-   --max-connection-per-server option. Raised maximum value of
-   --max-connection-per-server up to 16.
-
- * Added --max-download-result=NUM option. This option sets maximum
-   number of download result kept in memory. The download results are
-   completed/error/ removed downloads. The download results are stored
-   in FIFO queue and it can store at most NUM download results. When
-   queue is full and new download result is created, oldest download
-   result is removed from the front of the queue and new one is pushed
-   to the back. Setting big number in this option may result high
-   memory consumption after thousands of downloads. Specifying 0 means
-   no download result is kept.  Default value is 1000.
-
- * Check hash(hash for entire file, not piece hash) if
-   --check-integrity option is given and file is downloaded(determined
-   by file length). If it fails, re-download file.
-
- * Mark cached IP address bad on timeout to allow
-   aria2 to renew IP address cache.
-
- * Fixed the bug that aria2 reports error and exits with non-zero
-   status when file is already downloaded.
-
- * Allow '@' in username and password embedded in URI. It should be
-   percent-encoded but many people use their mail address as an
-   username and forget about PE.
-
- * Data from remote server in HTTP/FTP download are now written to the
-   disk(or memory) through StreamFilter. Decoding chunked and gziped
-   streams are done cascading StreamFilter.  Removed inefficient 1byte
-   read code.
-
-
-
-aria2 1.10.2
-============
-
-Release Note
-------------
-
-This release fixes the bug that prevents HTTP redirect from working
-when multiple files are downloaded from same host at the same time.
-For netrc, aria2 now performs domain match if machine name defined in
-.netrc starts with ".".
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use --max-connection-per-server=4
---min-split-size=1M. If you specify multiple hosts, aria2 will use
-all of them and open multiple connections.
-
-Changes
--------
-
- * In .netrc file, if machine name starts ".", aria2 performs domain
-   match instead of exact match.
-
- * Fixed the bug which prevents HTTP redirection from working when
-   downloading multiple files from same host at the same time.
-
-
-
-aria2 1.10.1
-============
-
-Release Note
-------------
-
-This release adds IPv6 support for FTP, BitTorrent and BitTorrent DHT.
-For FTP, EPSV and EPRT command support was added.  Enabling IPv6 DHT
-requires several options, so please check out the usage example in man
-page or wiki usage example page. By default, the asynchronous DNS
-resolver does not handle IPv6 address. To work with IPv6 address, use
---enable-async-dns6 option.  aria2 now listens on both IPv4 and IPv6
-socket for BitTorrent, its DHT and XML-RPC. aria2 uses same port for
-both IPv4 and IPv6. The ability to add/remove BitTorrent tracker
-announce URI was added.  The link error for
-FallocFileAllocationIterator was fixed.
-
-Please note that since 1.10.0 release, aria2 uses 1 connection per
-host by default and has 20MiB segment size restriction. So whatever
-value you specify using -s option, it uses 1 connection per host. To
-make it behave like 1.9.x, use --max-connection-per-server=4
---min-split-size=1M. If you specify multiple hosts, aria2 will use
-all of them and open multiple connections.
-
-Changes
--------
-
- * Enter end game mode as soon as all pieces are assigned to peers to
-   avoid substantial slow down at the very last stage of download.
-
- * Set max outstanding request size of BitTorrent download to 100. Set
-   stepping to 6.
-
- * Added --bt-tracker and --bt-exclude-tracker option.  In
-   --bt-tracker option, you can specify comma separated list of
-   additional BitTorrent tracker's announce URI. These URIs are not
-   affected by --bt-exclude-tracker option because they are added
-   after URIs in --bt-exclude-tracker option are removed.  In
-   --bt-exclude-tracker option, you can specify comma separated list
-   of BitTorrent tracker's announce URI to remove. You can use special
-   value '*' which matches all URIs, thus removes all announce
-   URIs. When specifying '*' in shell command-line, don't forget to
-   escape or quote it. Added bt-tracker and bt-exclude-tracker to -i
-   list option.
-
- * Listen both IPv4 and IPv6 for BitTorrent protocol.
-
- * Listen both IPv4 and IPv6 for xml-rpc request.
-
- * Added IPv6 DHT. Added --dht-entry-porint6, --dht-file-path6,
-   --dht-listen-addr6 and --enable-dht6 option.  IPv6 DHT is disabled
-   by default. To use IPv6 DHT, you need to use --enable-dht6 and
-   specify a global unicast address to --dht-listen-addr6.  IPv6 DHT
-   is highly experimental.
-
- * Added support for peers6 key in tracker response.  Added added6,
-   added6.f and dropped6 in ut_pex.
-
- * Add only gracefully disconnected peer to ut_pex dropped list.  Add
-   incoming dropped list to PeerStorage.
-
- * Don't use pre-calculate hash value when end-game mode.  Throw
-   exception if bad piece is received.
-
- * Added bittorrent::packcompact() which replaces
-   bittorrent::createcompact() and supports IPv6 addresses. Rewritten
-   bittorrent::unpackcompact() and bittorrent::extractPeer() to
-   support IPv6 addresses. Fixed added.f flags in ut_pex.
-
- * Added --enable-async-dns6 option. This option enables IPv6 name
-   resolution in asynchronous DNS resolver. This option will be
-   ignored when --async-dns=false.
-
- * Use hostname of original URI when counting hostname in
-   inFlightRequest.
-
- * Fixed the bug that
-   AdaptiveFileAllocationIterator::getCurrentLength() does not return
-   updated allocated bytes.
-
- * Added FTP EPSV and EPRT command support. aria2 issues these
-   commands when address family of local socket is AF_INET6.
-
- * Rewritten check for fallocate using AC_COMPILE_IFELSE.
-
- * Fixed the bug that HAVE_SOME_FALLOCATE gets undefined if fallocate
-   is not available even if posix_fallocate is available. This causes
-   FallocFileAllocationIterator.cc is out of compile targets and
-   linker error.
-
-
-
-aria2 1.10.0
-============
-
-Release Note
-------------
-
-This release adds an option to limit the number of connections to the
-same host in each download. aria2 now chooses server which is least
-used in aria2c instance. This release also adds Chromium cookie
-support and HTTP only conditional download support which is download
-file only when the local file is older than remote file.  aria2 now
-can handle %2F in FTP URI properly. HTTP/1.1 chunked decoder was
-fixed. For Linux, aria2 uses fallocate by default if it is usable.
-
-Changes
--------
-
- * Metadata download may take very long time. If URIs are available,
-   give up metadata download in at most 30 seconds.
-
- * Added --on-bt-download-complete=COMMAND option.  For BitTorrent, a
-   command specified in --on-download-complete is called when download
-   completes and seeding is over. On the other hand, this option set
-   the command to be executed when download completes but before
-   seeding.
-
- * Added --conditional-get option.  Download file only when the local
-   file is older than remote file.  This function only works with
-   HTTP(S) downloads only. It does not work if file size is specified
-   in Metalink. It also ignores Content-Disposition header. If a
-   control file exists, this option will be ignored. This function
-   uses If-Modified-Since header to get only newer file
-   conditionally. When getting modification time of local file, it
-   uses user supplied filename(see --out option) or filename part in
-   URI if --out is not specified.
-
- * FeedbackURISelector now tries to select URI whose host is least
-   used in aria2 globally.
-
- * Added --min-split-size=SIZE option.  aria2 does not split less than
-   2*SIZE byte range.  For example, let's consider downloading 20MiB
-   file. If SIZE is 10M, aria2 can split file into 2 range [0-10MiB)
-   and [10MiB-20MiB) and download it using 2 sources(if --split >= 2,
-   of course).  If SIZE is 15M, since 2*15M > 20MiB, aria2 does not
-   split file and download it using 1 source.
-
- * Added --max-connection-per-server=NUM option. The default value of
-   NUM is 1. This option limits the number of connections allowed to
-   one server for each download. This means when NUM is 2 and 1 URI is
-   provided, even if you specified -s 5, aria2 establishes 2
-   connections.
-
- * Set end byte in Range header if start byte > 0 to get more chance
-   to pool socket.
-
- * Fixed ChunkedDecoder. It does not read trailer and final CRLF.
-
- * Send each CWD component of FTP URI in separate CWD command as
-   described in RFC1738.
-
- * Fixed the bug that aria2 cannot handle %2F in FTP URI properly.  If
-   directory component starts with %2F which percent-encode of '/',
-   client should issue CWD to absolute path, but aria2 does not do
-   that. It just issues relative path and download fails.
-
- * Added Chromium/Google Chrome Cookies file support. Thanks to
-   gotrunks for original patch.
-
- * When allocating disk space, for Linux system with fallocate()
-   system call, first check file system supports fallocate.  This just
-   run fallocate with small chunk and see it succeeds or fails.  If it
-   succeeds, use fallocate() to allocate entire file otherwise fall
-   back to traditional slower method: writing zeros. This behavior is
-   enabled in --file-allocation=prealloc, so this is enabled by
-   default for most modern Linux.
+ * Updated gettext to 0.18
+
+ * Added JSON-RPC support. --enable-xml-rpc was deprecated and
+   --enable-rpc should be used instead.  Similarly, --xml-rpc-*
+   options were replaced with --rpc-* options.  We are implementing
+   JSON-RPC based on JSON-RPC 2.0 draft spec.
+
+ * Fixed rounding error in DownloadEngine::run(). This fixes the bug
+   that executeCommand() with Command::STATUS_ALL is not called in
+   every interval correctly because of rounding error in timer.
+
+ * Refresh buckets at DHT initialization without checking serialized
+   time. Checking serialized time does not work if you stop aria2 as
+   soon as it started DHT. The serialized time in dht.dat will be
+   updated, but buckets are not updated and still old. When you
+   restart aria2 again soon, it does not refresh buckets because
+   serialized time is recent.
+
+ * Save downloads added by aria2.addTorrent or aria2.addMetalink in
+   --save-session file.  Uploaded data are saved as file named hex
+   string of sha1 hash of uploaded data plus extension(".torrent" for
+   torrent and ".meta4" for metalink). For example,
+   0a3893293e27ac0490424c06de4d09242215f0a6.torrent. The directory
+   where these files are saved is specified by --dir option. These
+   file paths are written in --save-session file.
+
+ * Fixed the bug that causes segmentation fault when unpause
+   RequestGroup which has resolved BtDependency.
+
+ * Look for USERPROFILE and the combination of HOMEDRIVE and HOMEPATH
+   to get user's home directory in MinGW32 build.  Usually HOME
+   environment variable is defined in *nix like OSes, but not in
+   Windows. So in MinGW32 build, if HOME is not defined, we also look
+   for USERPROFILE and the combination of HOMEDRIVE and HOMEPATH.
+
+ * Fixed the bug that DownloadContext::basePath_ is not escaped.
+
+ * Added Date, Expires and Cache-Control response header field to RPC
+   response.
+
+ * Added --async-dns-server option. This option accepts comma
+   separated list of DNS server addresses used in asynchronous DNS
+   resolver. Usually asynchronous DNS resolver reads DNS server
+   addresses from /etc/resolv.conf. When this option is used, it uses
+   DNS servers specified in this option instead of ones in
+   /etc/resolv.conf. You can specify both IPv4 and IPv6 address. This
+   option is useful when the system does not have /etc/resolv.conf and
+   user does not have the permission to create it.
+
+ * Accept https:// and ftp:// in proxy options and environment variables.
+
+ * Fixed overflow in the calculation of progress percentage for file
+   allocation and hash check when off_t is 32bit.
+
+ * Accept HTTP 304 reply as success when If-None-Match request-header
+   field is specified using --header option.  When --conditional-get
+   is used, --allow-overwrite is now required to overwrite existing
+   file.
+
+ * Added aria2.removeDownloadResult RPC method.  The method signature
+   is aria2.removeDownloadResult(gid).  This method removes
+   completed/error/removed download denoted by gid from memory. This
+   method returns "OK" for success.
+
+ * Use IP address of control connection to connect to the remote server in
+   FTP passive mode.
+
+ * Don't check permission of .netrc file in MinGW32 build.
+
+ * Added --retry-wait option. This option was once existed in aria2
+   but erased on 2009-09-20.  Now it is resurrected once again.  We
+   choose 0 as default value for backward compatibility.  Now we retry
+   HTTP download when remote server returns "503 Service Unavailable"
+   if --retry-wait > 0. We also added error code 29:
+   HTTP_SERVICE_UNAVAILABLE.
+
+ * Don't show metadata download and paused download in "Download Results".
