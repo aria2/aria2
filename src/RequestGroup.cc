@@ -1025,7 +1025,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
     pieceStorage_->removeAdvertisedPiece(0);
   }
   // Don't reset segmentMan_ and pieceStorage_ here to provide
-  // progress information via XML-RPC
+  // progress information via RPC
   progressInfoFile_.reset();
   downloadContext_->releaseRuntimeResource();
 }

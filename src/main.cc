@@ -254,9 +254,9 @@ error_code::Value main(int argc, char* argv[])
       }
 
   // Remove option values which is only valid for URIs specified in
-  // command-line. If they are left, because op is used as a
-  // template for new RequestGroup(such as created in XML-RPC
-  // command), they causes unintentional effect.
+  // command-line. If they are left, because op is used as a template
+  // for new RequestGroup(such as created in RPC command), they causes
+  // unintentional effect.
   op->remove(PREF_OUT);
   op->remove(PREF_FORCE_SEQUENTIAL);
   op->remove(PREF_INPUT_FILE);

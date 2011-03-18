@@ -76,7 +76,7 @@ bool HttpListenCommand::execute()
       std::pair<std::string, uint16_t> peerInfo;
       socket->getPeerInfo(peerInfo);
 
-      A2_LOG_INFO(fmt("XML-RPC: Accepted the connection from %s:%u.",
+      A2_LOG_INFO(fmt("RPC: Accepted the connection from %s:%u.",
                       peerInfo.first.c_str(), peerInfo.second));
 
       HttpServerCommand* c =
@@ -113,7 +113,7 @@ bool HttpListenCommand::bindPort(uint16_t port)
     e_->addSocketForReadCheck(serverSocket_, this);
     return true;
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR(fmt("Failed to setup XML-RPC server for IPv%d",
+    A2_LOG_ERROR(fmt("Failed to setup RPC server for IPv%d",
                      family_ == AF_INET?4:6));
     A2_LOG_ERROR_EX(fmt(MSG_BIND_FAILURE,
                         getCuid(), port),
