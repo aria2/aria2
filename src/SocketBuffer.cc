@@ -44,57 +44,77 @@
 
 namespace aria2 {
 
+SocketBuffer::ByteArrayBufEntry::ByteArrayBufEntry
+(unsigned char* bytes, size_t length)
+  : bytes_(bytes), length_(length)
+{}
+
+SocketBuffer::ByteArrayBufEntry::~ByteArrayBufEntry()
+{
+  delete [] bytes_;
+}
+
+ssize_t SocketBuffer::ByteArrayBufEntry::send
+(const SharedHandle<SocketCore>& socket, size_t offset)
+{
+  return socket->writeData(bytes_+offset, length_-offset);
+}
+
+bool SocketBuffer::ByteArrayBufEntry::final(size_t offset) const
+{
+  return length_ <= offset;
+}
+
+SocketBuffer::StringBufEntry::StringBufEntry(const std::string& s)
+  : str_(s)
+{}
+
+ssize_t SocketBuffer::StringBufEntry::send
+(const SharedHandle<SocketCore>& socket, size_t offset)
+{
+  return socket->writeData(str_.data()+offset, str_.size()-offset);
+}
+
+bool SocketBuffer::StringBufEntry::final(size_t offset) const
+{
+  return str_.size() <= offset;
+}
+
 SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
   socket_(socket), offset_(0) {}
 
-SocketBuffer::~SocketBuffer()
-{
-  std::for_each(bufq_.begin(), bufq_.end(),
-                std::mem_fun_ref(&BufEntry::deleteBuf));
-}
+SocketBuffer::~SocketBuffer() {}
 
 void SocketBuffer::pushBytes(unsigned char* bytes, size_t len)
 {
-  bufq_.push_back(BufEntry(bytes, len));
+  if(len > 0) {
+    bufq_.push_back(SharedHandle<BufEntry>(new ByteArrayBufEntry(bytes, len)));
+  }
 }
 
 void SocketBuffer::pushStr(const std::string& data)
 {
-  bufq_.push_back(BufEntry(data));
+  if(data.size() > 0) {
+    bufq_.push_back(SharedHandle<BufEntry>(new StringBufEntry(data)));
+  }
 }
 
 ssize_t SocketBuffer::send()
 {
   size_t totalslen = 0;
   while(!bufq_.empty()) {
-    BufEntry& buf = bufq_[0];
-    if(buf.size() == 0) {
-      buf.deleteBuf();
-      bufq_.pop_front();
-      continue;
-    }
-    const char* data;
-    ssize_t r;
-    if(buf.type == TYPE_BYTES) {
-      data = reinterpret_cast<const char*>(buf.bytes);
-      r = buf.bytesLen-offset_;
-    } else {
-      const std::string& str = *buf.str;
-      data = str.data();
-      r = str.size()-offset_;
-    }
-    ssize_t slen = socket_->writeData(data+offset_, r);
+    const SharedHandle<BufEntry>& buf = bufq_[0];
+    ssize_t slen = buf->send(socket_, offset_);
     if(slen == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
       throw DL_ABORT_EX(fmt(EX_SOCKET_SEND, "Connection closed."));
     }
     totalslen += slen;
-    if(slen < r) {
-      offset_ += slen;
-      break;
-    } else {
-      offset_ = 0;
-      buf.deleteBuf();
+    offset_ += slen;
+    if(buf->final(offset_)) {
       bufq_.pop_front();
+      offset_ = 0;
+    } else {
+      break;
     }
   }
   return totalslen;

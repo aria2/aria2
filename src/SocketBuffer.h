@@ -48,44 +48,39 @@ class SocketCore;
 
 class SocketBuffer {
 private:
-  enum BUF_TYPE {
-    TYPE_BYTES,
-    TYPE_STR
+  class BufEntry {
+  public:
+    virtual ~BufEntry() {}
+    virtual ssize_t send
+    (const SharedHandle<SocketCore>& socket, size_t offset) = 0;
+    virtual bool final(size_t offset) const = 0;
   };
-  struct BufEntry {
-    BUF_TYPE type;
-    unsigned char* bytes;
-    size_t bytesLen;
-    std::string* str;
 
-    void deleteBuf()
-    {
-      if(type == TYPE_BYTES) {
-        delete [] bytes;
-      } else if(type == TYPE_STR) {
-        delete str;
-      }
-    }
-    
-    size_t size() const
-    {
-      if(type == TYPE_BYTES) {
-        return bytesLen;
-      } else {
-        return str->size();
-      }
-    }
+  class ByteArrayBufEntry:public BufEntry {
+  public:
+    ByteArrayBufEntry(unsigned char* bytes, size_t length);
+    virtual ~ByteArrayBufEntry();
+    virtual ssize_t send
+    (const SharedHandle<SocketCore>& socket, size_t offset);
+    virtual bool final(size_t offset) const;
+  private:
+    unsigned char* bytes_;
+    size_t length_;
+  };
 
-    BufEntry(unsigned char* bytes, size_t len):
-      type(TYPE_BYTES), bytes(bytes), bytesLen(len) {}
-
-    BufEntry(const std::string& str):
-      type(TYPE_STR), str(new std::string(str)) {}
+  class StringBufEntry:public BufEntry {
+  public:
+    StringBufEntry(const std::string& s);
+    virtual ssize_t send
+    (const SharedHandle<SocketCore>& socket, size_t offset);
+    virtual bool final(size_t offset) const;
+  private:
+    std::string str_;
   };
     
   SharedHandle<SocketCore> socket_;
 
-  std::deque<BufEntry> bufq_;
+  std::deque<SharedHandle<BufEntry> > bufq_;
 
   // Offset of data in bufq_[0]. SocketBuffer tries to send bufq_[0],
   // but it cannot always send whole data. In this case, offset points
@@ -100,7 +95,7 @@ public:
   SocketBuffer(const SocketBuffer&);
   SocketBuffer& operator=(const SocketBuffer&);
 
-  // Feeds data pointered by bytes with length len. into queue.  This
+  // Feeds data pointered by bytes with length len into queue.  This
   // object gets ownership of bytes, so caller must not delete or
   // later bytes after this call. This function doesn't send data.
   void pushBytes(unsigned char* bytes, size_t len);
