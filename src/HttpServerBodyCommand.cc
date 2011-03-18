@@ -101,6 +101,13 @@ createJsonRpcErrorResponse
 }
 } // namespace
 
+namespace {
+std::string getJsonRpcContentType(bool script)
+{
+  return script ? "text/javascript" : "application/json-rpc";
+}
+} // namespace
+
 void HttpServerBodyCommand::sendJsonRpcResponse
 (const rpc::RpcResponse& res,
  const std::string& callback)
@@ -108,7 +115,8 @@ void HttpServerBodyCommand::sendJsonRpcResponse
   bool gzip = httpServer_->supportsGZip();
   std::string responseData = res.toJson(callback, gzip);
   if(res.code == 0) {
-    httpServer_->feedResponse(responseData, "application/json-rpc");
+    httpServer_->feedResponse(responseData,
+                              getJsonRpcContentType(!callback.empty()));
   } else {
     httpServer_->disableKeepAlive();
     std::string httpCode;
@@ -123,7 +131,8 @@ void HttpServerBodyCommand::sendJsonRpcResponse
       httpCode = "500 Internal Server Error";
     };
     httpServer_->feedResponse(httpCode, A2STR::NIL,
-                              responseData, "application/json-rpc");
+                              responseData,
+                              getJsonRpcContentType(!callback.empty()));
   }
   addHttpServerResponseCommand();
 }
@@ -134,7 +143,8 @@ void HttpServerBodyCommand::sendJsonRpcBatchResponse
 {
   bool gzip = httpServer_->supportsGZip();
   std::string responseData = rpc::toJsonBatch(results, callback, gzip);
-  httpServer_->feedResponse(responseData, "application/json-rpc");
+  httpServer_->feedResponse(responseData,
+                            getJsonRpcContentType(!callback.empty()));
   addHttpServerResponseCommand();
 }
 
