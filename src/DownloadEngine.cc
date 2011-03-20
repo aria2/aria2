@@ -178,8 +178,9 @@ void DownloadEngine::waitData()
   if(noWait_) {
     tv.tv_sec = tv.tv_usec = 0;
   } else {
-    tv.tv_sec = 0;
-    tv.tv_usec = refreshInterval_*1000;
+    lldiv_t qr = lldiv(refreshInterval_*1000, 1000000);
+    tv.tv_sec = qr.quot;
+    tv.tv_usec = qr.rem;
   }
   eventPoll_->poll(tv);
 }
