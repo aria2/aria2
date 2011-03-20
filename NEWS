@@ -1,3 +1,19 @@
+aria2 1.11.1
+============
+
+Release Note
+------------
+
+This release fixes the bug that aria2 does not work on platforms which
+have kqueue() system call due to invalid timeout parameter.
+
+Changes
+-------
+
+ * Fixed the bug that microsecond part of timeval overwlows in waitData()
+
+
+
 aria2 1.11.0
 ============
 
