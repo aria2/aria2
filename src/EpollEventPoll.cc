@@ -123,8 +123,11 @@ void EpollEventPoll::poll(const struct timeval& tv)
       KSocketEntry* p = reinterpret_cast<KSocketEntry*>(epEvents_[i].data.ptr);
       p->processEvents(epEvents_[i].events);
     }
+  } else if(res == -1) {
+    int errNum = errno;
+    A2_LOG_INFO(fmt("epoll_wait error: %s",
+                    util::safeStrerror(errNum).c_str()));
   }
-
 #ifdef ENABLE_ASYNC_DNS
   // It turns out that we have to call ares_process_fd before ares's
   // own timeout and ares may create new sockets or closes socket in

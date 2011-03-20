@@ -213,6 +213,9 @@ void SelectEventPoll::poll(const struct timeval& tv)
       }
       (*i)->processEvents(events);
     }
+  } else if(res == -1) {
+    int errNum = errno;
+    A2_LOG_INFO(fmt("select error: %s", util::safeStrerror(errNum).c_str()));
   }
 #ifdef ENABLE_ASYNC_DNS
 

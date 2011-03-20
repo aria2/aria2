@@ -111,6 +111,9 @@ void PollEventPoll::poll(const struct timeval& tv)
         }
       }
     }
+  } else if(res == -1) {
+    int errNum = errno;
+    A2_LOG_INFO(fmt("poll error: %s", util::safeStrerror(errNum).c_str()));
   }
 #ifdef ENABLE_ASYNC_DNS
   // It turns out that we have to call ares_process_fd before ares's
