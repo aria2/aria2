@@ -43,6 +43,7 @@
 #include "Logger.h"
 #include "a2functional.h"
 #include "fmt.h"
+#include "util.h"
 
 namespace aria2 {
 

@@ -46,6 +46,7 @@
 #include "Logger.h"
 #include "a2functional.h"
 #include "fmt.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -213,7 +214,7 @@ void SelectEventPoll::poll(const struct timeval& tv)
       }
       (*i)->processEvents(events);
     }
-  } else if(res == -1) {
+  } else if(retval == -1) {
     int errNum = errno;
     A2_LOG_INFO(fmt("select error: %s", util::safeStrerror(errNum).c_str()));
   }
