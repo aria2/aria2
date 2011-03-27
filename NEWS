@@ -5,16 +5,20 @@ Release Note
 ------------
 
 This release fixes the bug that aria2 does not work on platforms which
-have kqueue() system call due to invalid timeout parameter.
+have kqueue() system call due to invalid timeout parameter. The
+--show-console-readout option was added. This option toggles the
+appearance of console readout.
 
 Changes
 -------
+
+ * Added --show-console-readout option. This option toggles
+   appearance of console readout.
 
  * Fixed the bug that microsecond part of timeval overwlows in
    waitData(). This bug affects platforms which have kqueue() system
    call. Those systems are FreeBSD, OpenBSD, NetBSD and Darwin (Mac OS
    X).
-
 
 
 aria2 1.11.0
