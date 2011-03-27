@@ -19,6 +19,7 @@ Changes
    waitData(). This bug affects platforms which have kqueue() system
    call. Those systems are FreeBSD, OpenBSD, NetBSD and Darwin (Mac OS
    X).
+
 
 
 aria2 1.11.0
