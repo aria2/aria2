@@ -229,7 +229,8 @@ void printProgressSummary
 } // namespace
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
-  summaryInterval_(summaryInterval)
+  summaryInterval_(summaryInterval),
+  readoutVisibility_(true)
 {
   if(humanReadable) {
     sizeFormatter_.reset(new AbbrevSizeFormatter());
@@ -276,7 +277,11 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
                            sizeFormatter);
       std::cout << "\n";
     }
-
+  }
+  if(!readoutVisibility_) {
+    return;
+  }
+  if(e->getRequestGroupMan()->countRequestGroup() > 0) {
     SharedHandle<RequestGroup> firstRequestGroup =
       e->getRequestGroupMan()->getRequestGroup(0);
 

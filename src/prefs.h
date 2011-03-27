@@ -222,6 +222,8 @@ extern const std::string PREF_MAX_DOWNLOAD_RESULT;
 extern const std::string PREF_RETRY_WAIT;
 // value: string
 extern const std::string PREF_ASYNC_DNS_SERVER;
+// value: true | false
+extern const std::string PREF_SHOW_CONSOLE_READOUT;
 
 /**
  * FTP related preferences

@@ -562,6 +562,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_SHOW_CONSOLE_READOUT,
+                                    TEXT_SHOW_CONSOLE_READOUT,
+                                    A2_V_TRUE));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_STOP,
                                     TEXT_STOP,

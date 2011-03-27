@@ -62,12 +62,18 @@ private:
   time_t summaryInterval_;
 
   SharedHandle<SizeFormatter> sizeFormatter_;
+  bool readoutVisibility_;
 public:
   ConsoleStatCalc(time_t summaryInterval, bool humanReadable = true);
 
   virtual ~ConsoleStatCalc() {}
 
   virtual void calculateStat(const DownloadEngine* e);
+
+  void setReadoutVisibility(bool visibility)
+  {
+    readoutVisibility_ = visibility;
+  }
 };
 
 typedef SharedHandle<ConsoleStatCalc> ConsoleStatCalcHandle;

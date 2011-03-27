@@ -218,6 +218,8 @@ const std::string PREF_MAX_DOWNLOAD_RESULT("max-download-result");
 const std::string PREF_RETRY_WAIT("retry-wait");
 // value: string
 const std::string PREF_ASYNC_DNS_SERVER("async-dns-server");
+// value: true | false
+const std::string PREF_SHOW_CONSOLE_READOUT("show-console-readout");
 
 /**
  * FTP related preferences

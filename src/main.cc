@@ -94,8 +94,11 @@ SharedHandle<StatCalc> getStatCalc(const SharedHandle<Option>& op)
   if(op->getAsBool(PREF_QUIET)) {
     statCalc.reset(new NullStatCalc());
   } else {
-    statCalc.reset(new ConsoleStatCalc(op->getAsInt(PREF_SUMMARY_INTERVAL),
-                                       op->getAsBool(PREF_HUMAN_READABLE)));
+    SharedHandle<ConsoleStatCalc> impl
+      (new ConsoleStatCalc(op->getAsInt(PREF_SUMMARY_INTERVAL),
+                           op->getAsBool(PREF_HUMAN_READABLE)));
+    impl->setReadoutVisibility(op->getAsBool(PREF_SHOW_CONSOLE_READOUT));
+    statCalc = impl;
   }
   return statCalc;
 }

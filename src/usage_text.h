@@ -780,3 +780,5 @@
   _(" --xml-rpc-listen-all[=true|false] Deprecated. Use --rpc-listen-all instead.")
 #define TEXT_XML_RPC_LISTEN_PORT                                        \
   _(" --xml-rpc-listen-port=PORT   Deprecated. Use --rpc-listen-port instead.")
+#define TEXT_SHOW_CONSOLE_READOUT                                       \
+  _(" --show-console-readout[=true|false] Show console readout.")
