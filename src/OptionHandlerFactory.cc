@@ -556,7 +556,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_SELECT_LEAST_USED_HOST,
-                                    NO_DEFAULT_VALUE,
+                                    NO_DESCRIPTION,
                                     A2_V_TRUE));
     op->hide();
     handlers.push_back(op);
