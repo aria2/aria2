@@ -985,6 +985,10 @@ name.
   See *<<_event_hook, Event Hook>>* for more details about COMMAND.
   Possible Values: '/path/to/command'
 
+[[aria2_optref_show_console_readout]]*--show-console-readout*[='true'|'false']::
+
+  Show console readout. Default: 'true'
+
 [[aria2_optref_summary_interval]]*--summary-interval*=SEC::
   Set interval in seconds to output download progress summary.
   Setting '0' suppresses the output.
