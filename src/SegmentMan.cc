@@ -404,7 +404,8 @@ void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
 unsigned int SegmentMan::calculateDownloadSpeed()
 {
   unsigned int speed = 0;
-  if(lastPeerStatDlspdMapUpdated_.differenceInMillis(global::wallclock) >= 250){
+  if(lastPeerStatDlspdMapUpdated_.differenceInMillis(global::wallclock)+
+     A2_DELTA_MILLIS >= 250){
     lastPeerStatDlspdMapUpdated_ = global::wallclock;
     peerStatDlspdMap_.clear();
     for(std::vector<SharedHandle<PeerStat> >::const_iterator i =

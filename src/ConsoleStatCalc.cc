@@ -242,7 +242,7 @@ ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
 void
 ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 {
-  if(cp_.differenceInMillis(global::wallclock) < 900) {
+  if(cp_.differenceInMillis(global::wallclock)+A2_DELTA_MILLIS < 1000) {
     return;
   }
   cp_ = global::wallclock;
@@ -271,7 +271,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   std::ostringstream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
     if((summaryInterval_ > 0) &&
-       lastSummaryNotified_.difference(global::wallclock) >= summaryInterval_) {
+       lastSummaryNotified_.differenceInMillis(global::wallclock)+
+       A2_DELTA_MILLIS >= summaryInterval_*1000) {
       lastSummaryNotified_ = global::wallclock;
       printProgressSummary(e->getRequestGroupMan()->getRequestGroups(), cols, e,
                            sizeFormatter);

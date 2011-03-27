@@ -246,7 +246,8 @@ TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
 TransferStat DefaultPeerStorage::calculateStat()
 {
   TransferStat stat;
-  if(lastTransferStatMapUpdated_.differenceInMillis(global::wallclock) >= 250) {
+  if(lastTransferStatMapUpdated_.differenceInMillis(global::wallclock)+
+     A2_DELTA_MILLIS >= 250) {
     A2_LOG_DEBUG("Updating TransferStat of PeerStorage");
     lastTransferStatMapUpdated_ = global::wallclock;
     peerTransferStatMap_.clear();

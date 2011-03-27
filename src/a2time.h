@@ -75,4 +75,7 @@
 # endif // !__MINGW32__
 #endif // !HAVE_CLOCK_GETTIME
 
+// Rounding error in millis
+#define A2_DELTA_MILLIS 10
+
 #endif // D_A2TIME_H

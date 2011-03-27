@@ -141,13 +141,6 @@ void executeCommand(std::deque<Command*>& commands,
 }
 } // namespace
 
-namespace {
-
-// Rounding error in millis
-const int A2_DELTA = 10;
-
-} // namespace
-
 void DownloadEngine::run()
 {
   Timer cp;
@@ -155,7 +148,8 @@ void DownloadEngine::run()
   while(!commands_.empty() || !routineCommands_.empty()) {
     global::wallclock.reset();
     calculateStatistics();
-    if(cp.differenceInMillis(global::wallclock) >= refreshInterval_-A2_DELTA) {
+    if(cp.differenceInMillis(global::wallclock)+A2_DELTA_MILLIS >=
+       refreshInterval_) {
       refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
       cp = global::wallclock;
       executeCommand(commands_, Command::STATUS_ALL);
