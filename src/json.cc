@@ -205,7 +205,7 @@ decodeString
           s += c2;
           s += c3;
           s += c4;
-        } else if(codepoint <= 0xffffu) {
+        } else {
           unsigned char c3 = 0x80u | (codepoint & 0x003Fu);
           unsigned char c2 = 0x80u | ((codepoint >> 6) & 0x003Fu);
           unsigned char c1 = 0xE0u | (codepoint >> 12);
