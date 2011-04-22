@@ -138,7 +138,7 @@ std::string createOptstring(InputIterator first, InputIterator last)
 
 void OptionParser::parseArg
 (std::ostream& out, std::vector<std::string>& nonopts,
- int argc, char* const argv[])
+ int argc, char* argv[])
 {
   size_t numPublicOption = countPublicOption(optionHandlers_.begin(),
                                              optionHandlers_.end());
@@ -165,6 +165,11 @@ void OptionParser::parseArg
     out << op->getName() << "=";
     if(optarg) {
       out << optarg;
+      if(op->getEraseAfterParse()) {
+        for(char* p = optarg; *p != '\0'; ++p) {
+          *p = '*';
+        }
+      }
     }
     out << "\n";
   }

@@ -174,7 +174,7 @@ void showFiles
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 
 extern void option_processing(Option& option, std::vector<std::string>& uris,
-                              int argc, char* const argv[]);
+                              int argc, char* argv[]);
 
 error_code::Value main(int argc, char* argv[])
 {

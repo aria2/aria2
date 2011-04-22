@@ -65,6 +65,8 @@ public:
   virtual int getOptionID() const;
   virtual void setOptionID(int id);
   virtual char getShortName() const;
+  virtual bool getEraseAfterParse() const;
+  virtual void setEraseAfterParse(bool eraseAfterParse);
 };
 
 class BooleanOptionHandler : public NameMatchOptionHandler {
@@ -315,6 +317,8 @@ public:
   virtual char getShortName() const;
   virtual int getOptionID() const;
   virtual void setOptionID(int id);
+  virtual bool getEraseAfterParse() const;
+  virtual void setEraseAfterParse(bool eraseAfterParse);
 };
 
 } // namespace aria2

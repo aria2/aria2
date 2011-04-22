@@ -63,6 +63,8 @@ protected:
 
   bool hidden_;
 
+  bool eraseAfterParse_;
+
   virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
   NameMatchOptionHandler(const std::string& optName,
@@ -126,6 +128,16 @@ public:
   virtual OptionHandler::ARG_TYPE getArgType() const
   {
     return argType_;
+  }
+
+  virtual bool getEraseAfterParse() const
+  {
+    return eraseAfterParse_;
+  }
+
+  virtual void setEraseAfterParse(bool eraseAfterParse)
+  {
+    eraseAfterParse_ = eraseAfterParse;
   }
 };
 

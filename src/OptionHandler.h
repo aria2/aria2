@@ -94,6 +94,12 @@ public:
   virtual int getOptionID() const = 0;
 
   virtual void setOptionID(int id) = 0;
+
+  // Returns true if option value should be erased from argv to
+  // prevent it from appearing in the output of ps.
+  virtual bool getEraseAfterParse() const = 0;
+
+  virtual void setEraseAfterParse(bool eraseAfterParse) = 0;
 };
 
 class OptionHandlerNameLesser:public std::binary_function

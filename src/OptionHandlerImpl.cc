@@ -115,6 +115,13 @@ char NullOptionHandler::getShortName() const
   return 0;
 }
 
+bool NullOptionHandler::getEraseAfterParse() const
+{
+  return false;
+}
+
+void NullOptionHandler::setEraseAfterParse(bool eraseAfterParse) {}
+
 BooleanOptionHandler::BooleanOptionHandler
 (const std::string& optName,
  const std::string& description,
@@ -812,6 +819,16 @@ int DeprecatedOptionHandler::getOptionID() const
 void DeprecatedOptionHandler::setOptionID(int id)
 {
   depOptHandler_->setOptionID(id);
+}
+
+bool DeprecatedOptionHandler::getEraseAfterParse() const
+{
+  return depOptHandler_->getEraseAfterParse();
+}
+
+void DeprecatedOptionHandler::setEraseAfterParse(bool eraseAfterParse)
+{
+  depOptHandler_->setEraseAfterParse(eraseAfterParse);
 }
 
 } // namespace aria2

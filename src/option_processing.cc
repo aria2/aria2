@@ -85,7 +85,7 @@ void overrideWithEnv(Option& op, const OptionParser& optionParser,
 } // namespace
 
 void option_processing(Option& op, std::vector<std::string>& uris,
-                       int argc, char* const argv[])
+                       int argc, char* argv[])
 {
   OptionParser oparser;
   oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());

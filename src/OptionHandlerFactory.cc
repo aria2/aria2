@@ -619,6 +619,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_RPC_USER,
                                     TEXT_RPC_USER));
     op->addTag(TAG_RPC);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -626,6 +627,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_RPC_PASSWD,
                                     TEXT_RPC_PASSWD));
     op->addTag(TAG_RPC);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -676,6 +678,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                      TEXT_XML_RPC_USER)),
         PREF_RPC_USER));
     op->addTag(TAG_RPC);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -687,6 +690,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                      TEXT_XML_RPC_PASSWD)),
         PREF_RPC_PASSWD));
     op->addTag(TAG_RPC);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }                         
   // HTTP/FTP options
@@ -971,6 +975,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_HTTP_PASSWD));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -979,6 +984,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_HTTP_USER));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1055,6 +1061,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_FTP_PASSWD));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }    
   {
@@ -1091,6 +1098,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_FTP_USER));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1117,6 +1125,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_HTTP_PROXY_PASSWD,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1125,6 +1134,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_HTTP_PROXY_USER,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1143,6 +1153,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1152,6 +1163,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1168,6 +1180,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_FTP_PROXY_PASSWD,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1176,6 +1189,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_FTP_PROXY_USER,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1196,6 +1210,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {
@@ -1206,6 +1221,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
+    op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
   {

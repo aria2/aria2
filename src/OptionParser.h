@@ -69,7 +69,7 @@ public:
   // NAME=VALUE format. Non-option strings are stored in nonopts.
   // Throws Exception when an unrecognized option is found.
   void parseArg(std::ostream& out, std::vector<std::string>& nonopts,
-                int argc, char* const argv[]);
+                int argc, char* argv[]);
 
   void parse(Option& option, std::istream& ios);
 
