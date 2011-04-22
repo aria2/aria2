@@ -37,6 +37,7 @@ public:
       (new DefaultOptionHandler("alpha", NO_DESCRIPTION, "ALPHA", "",
                                 OptionHandler::REQ_ARG, 'A'));
     alpha->addTag("apple");
+    alpha->setEraseAfterParse(true);
     oparser_->addOptionHandler(alpha);
 
     SharedHandle<OptionHandler> bravo(new DefaultOptionHandler("bravo"));
@@ -162,8 +163,8 @@ void OptionParserTest::testParseArg()
   char nonopt2[8];
   strncpy(nonopt2, "nonopt2", sizeof(nonopt2));
 
-  char* const argv[] = { prog, optionAlpha, argAlpha, optionBravo, argBravo,
-                         nonopt1, nonopt2 };
+  char* argv[] = { prog, optionAlpha, argAlpha, optionBravo, argBravo,
+                   nonopt1, nonopt2 };
   int argc = A2_ARRAY_LEN(argv);
 
   std::stringstream s;
@@ -177,6 +178,8 @@ void OptionParserTest::testParseArg()
   CPPUNIT_ASSERT_EQUAL((size_t)2, nonopts.size());
   CPPUNIT_ASSERT_EQUAL(std::string("nonopt1"), nonopts[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("nonopt2"), nonopts[1]);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("*****"), std::string(argAlpha));
 }
 
 void OptionParserTest::testParse()
