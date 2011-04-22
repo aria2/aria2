@@ -121,12 +121,12 @@ class ValueXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
                             const std::string& name,
                             const std::map<std::string, std::string>& attrs);
-  
+protected:
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
                           const std::string& name,
-                          const std::string& characters) {}
+                          const std::string& characters);
 
-  virtual bool needsCharactersBuffering() const { return false; }
+  virtual bool needsCharactersBuffering() const { return true; }
 };
 
 class IntXmlRpcRequestParserState:public XmlRpcRequestParserState {

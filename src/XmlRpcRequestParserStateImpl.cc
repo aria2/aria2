@@ -168,7 +168,20 @@ void ValueXmlRpcRequestParserState::beginElement
     stm->pushUnknownElementState();
   }
 }
-  
+
+void ValueXmlRpcRequestParserState::endElement
+(XmlRpcRequestParserStateMachine* stm,
+ const std::string& name,
+ const std::string& characters)
+{
+  // XML-RPC specification says that if no data type tag is used, the
+  // data must be treated as string.  To prevent from overwriting
+  // current frame value, we first check it is still null.
+  if(!stm->getCurrentFrameValue() && !characters.empty()) {
+    stm->setCurrentFrameValue(String::g(characters));
+  }
+}
+
 // IntXmlRpcRequestParserState
 
 void IntXmlRpcRequestParserState::beginElement
@@ -321,6 +334,7 @@ void ArrayValueXmlRpcRequestParserState::endElement
  const std::string& name,
  const std::string& characters)
 {
+  ValueXmlRpcRequestParserState::endElement(stm, name, characters);
   stm->popArrayFrame();
 }
 
