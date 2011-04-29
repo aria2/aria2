@@ -34,6 +34,7 @@ class UriTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUri_ipv6);
   CPPUNIT_TEST(testInnerLink);
   CPPUNIT_TEST(testConstruct);
+  CPPUNIT_TEST(testSwap);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -62,6 +63,7 @@ public:
   void testSetUri_ipv6();
   void testInnerLink();
   void testConstruct();
+  void testSwap();
 };
 
 
@@ -468,6 +470,19 @@ void UriTest::testConstruct()
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://user:passwd%40@host/dir/file"),
                          construct(us));
   }
+}
+
+void UriTest::testSwap()
+{
+  UriStruct us1;
+  CPPUNIT_ASSERT(parse(us1, "http://u1:p1@[::1]/dir1/file1?k1=v1"));
+  UriStruct us2;
+  CPPUNIT_ASSERT(parse(us2, "ftp://host2/dir2/file2?k2=v2"));
+  us1.swap(us2);
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://host2/dir2/file2?k2=v2"),
+                       construct(us1));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://u1:p1@[::1]/dir1/file1?k1=v1"),
+                       construct(us2));
 }
 
 } // namespace uri

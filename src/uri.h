@@ -60,7 +60,10 @@ struct UriStruct {
   ~UriStruct();
 
   UriStruct& operator=(const UriStruct& c);
+  void swap(UriStruct& other);
 };
+
+void swap(UriStruct& lhs, UriStruct& rhs);
 
 // Splits URI uri into components and stores them into result.  On
 // success returns true. Otherwise returns false and result is

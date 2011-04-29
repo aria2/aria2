@@ -77,6 +77,28 @@ UriStruct& UriStruct::operator=(const UriStruct& c)
   return *this;
 }
 
+void UriStruct::swap(UriStruct& other)
+{
+  using std::swap;
+  if(this != &other) {
+    swap(protocol, other.protocol);
+    swap(host, other.host);
+    swap(port, other.port);
+    swap(dir, other.dir);
+    swap(file, other.file);
+    swap(query, other.query);
+    swap(username, other.username);
+    swap(password, other.password);
+    swap(hasPassword, other.hasPassword);
+    swap(ipv6LiteralAddress, other.ipv6LiteralAddress);
+  }
+}
+
+void swap(UriStruct& lhs, UriStruct& rhs)
+{
+  lhs.swap(rhs);
+}
+
 bool parse(UriStruct& result, const std::string& uri)
 {
   // http://user:password@aria2.sourceforge.net:80/dir/file?query#fragment
