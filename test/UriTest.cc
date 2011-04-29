@@ -33,6 +33,7 @@ class UriTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUri_zeroUsername);
   CPPUNIT_TEST(testSetUri_ipv6);
   CPPUNIT_TEST(testInnerLink);
+  CPPUNIT_TEST(testConstruct);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -60,6 +61,7 @@ public:
   void testSetUri_zeroUsername();
   void testSetUri_ipv6();
   void testInnerLink();
+  void testConstruct();
 };
 
 
@@ -382,6 +384,90 @@ void UriTest::testInnerLink()
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), us.file);
   CPPUNIT_ASSERT_EQUAL(std::string(""), us.query);
+}
+
+void UriTest::testConstruct()
+{
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host/dir/file?q=abc#foo"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/dir/file?q=abc"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host/dir/file"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/dir/file"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host/dir/"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/dir/"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host/dir"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/dir"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host/"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    us.protocol = "http";
+    us.host = "host";
+    us.file = "foo.xml";
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/foo.xml"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host:80"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host/"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://host:8080"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://host:8080/"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "http://[::1]:8000/dir/file"));
+    CPPUNIT_ASSERT_EQUAL(std::string("http://[::1]:8000/dir/file"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "ftp://user%40@host/dir/file"));
+    CPPUNIT_ASSERT_EQUAL(std::string("ftp://user%40@host/dir/file"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "ftp://user:@host/dir/file"));
+    CPPUNIT_ASSERT_EQUAL(std::string("ftp://user:@host/dir/file"),
+                         construct(us));
+  }
+  {
+    UriStruct us;
+    CPPUNIT_ASSERT(parse(us, "ftp://user:passwd%40@host/dir/file"));
+    CPPUNIT_ASSERT_EQUAL(std::string("ftp://user:passwd%40@host/dir/file"),
+                         construct(us));
+  }
 }
 
 } // namespace uri

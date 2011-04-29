@@ -67,6 +67,8 @@ struct UriStruct {
 // undefined.
 bool parse(UriStruct& result, const std::string& uri);
 
+std::string construct(const UriStruct& us);
+
 } // namespace uri
 
 } // namespace aria2

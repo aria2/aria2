@@ -238,6 +238,41 @@ bool parse(UriStruct& result, const std::string& uri)
   return true;
 }
 
+std::string construct(const UriStruct& us)
+{
+  std::string res;
+  res += us.protocol;
+  res += "://";
+  if(!us.username.empty()) {
+    res += util::percentEncode(us.username);
+    if(us.hasPassword) {
+      res += ":";
+      res += util::percentEncode(us.password);
+    }
+    res += "@";
+  }
+  if(us.ipv6LiteralAddress) {
+    res += "[";
+    res += us.host;
+    res += "]";
+  } else {
+    res += us.host;
+  }
+  uint16_t defPort= FeatureConfig::getInstance()->
+    getDefaultPort(us.protocol);
+  if(us.port != 0 && defPort != us.port) {
+    res += ":";
+    res += util::uitos(us.port);
+  }
+  res += us.dir;
+  if(us.dir.empty() || us.dir[us.dir.size()-1] != '/') {
+    res += "/";
+  }
+  res += us.file;
+  res += us.query;
+  return res;
+}
+
 } // namespace uri
 
 } // namespace aria2
