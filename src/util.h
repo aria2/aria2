@@ -324,6 +324,8 @@ std::string joinPath(InputIterator first, InputIterator last)
   return strjoin(elements.begin(), elements.end(), "/");
 }
 
+std::string joinUri(const std::string& baseUri, const std::string& uri);
+
 // Parses INDEX=PATH format string. INDEX must be an unsigned
 // integer.
 std::map<size_t, std::string>::value_type

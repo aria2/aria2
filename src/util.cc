@@ -81,6 +81,7 @@
 #include "Logger.h"
 #include "Option.h"
 #include "DownloadContext.h"
+#include "uri.h"
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
@@ -1581,6 +1582,31 @@ std::string makeString(const char* str)
 std::string safeStrerror(int errNum)
 {
   return makeString(strerror(errNum));
+}
+
+std::string joinUri(const std::string& baseUri, const std::string& uri)
+{
+  uri::UriStruct us;
+  if(uri::parse(us, uri)) {
+    return uri;
+  } else {
+    uri::UriStruct bus;
+    if(!uri::parse(bus, baseUri)) {
+      return uri;
+    }
+    if(util::startsWith(uri, "/")) {
+      bus.dir.clear();
+    }
+    bus.file.clear();
+    bus.query.clear();
+    std::string newUri = construct(bus);
+    if(util::startsWith(uri, "/")) {
+      newUri += uri.substr(1);
+    } else {
+      newUri += uri;
+    }
+    return newUri;
+  }
 }
 
 } // namespace util
