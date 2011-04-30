@@ -1268,6 +1268,33 @@ void UtilTest::testJoinUri()
                                      "dir/file?q=k"));
   CPPUNIT_ASSERT_EQUAL(std::string("dir/file"),
                        util::joinUri("baduri", "dir/file"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/b/d/file"),
+                       util::joinUri("http://base/a/b/c/x",
+                                     "../d/file"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/b/file"),
+                       util::joinUri("http://base/c/x",
+                                     "../../a/b/file"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/"),
+                       util::joinUri("http://base/c/x",
+                                     "../.."));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/"),
+                       util::joinUri("http://base/c/x",
+                                     ".."));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/file"),
+                       util::joinUri("http://base/b/c/x",
+                                     "/a/x/../file"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file"),
+                       util::joinUri("http://base/f/?q=k",
+                                     "/file"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file?q=/"),
+                       util::joinUri("http://base/",
+                                     "/file?q=/"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file?q=v"),
+                       util::joinUri("http://base/",
+                                     "/file?q=v#a?q=x"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file"),
+                       util::joinUri("http://base/",
+                                     "/file#a?q=x"));
 }
 
 } // namespace aria2

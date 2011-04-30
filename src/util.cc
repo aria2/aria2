@@ -1594,18 +1594,35 @@ std::string joinUri(const std::string& baseUri, const std::string& uri)
     if(!uri::parse(bus, baseUri)) {
       return uri;
     }
-    if(util::startsWith(uri, "/")) {
-      bus.dir.clear();
+    std::vector<std::string> parts;
+    if(!util::startsWith(uri, "/")) {
+      util::split(bus.dir, std::back_inserter(parts), "/");
     }
+    std::string::const_iterator qend;
+    for(qend = uri.begin(); qend != uri.end(); ++qend) {
+      if(*qend == '#') {
+        break;
+      }
+    }
+    std::string::const_iterator end;
+    for(end = uri.begin(); end != qend; ++end) {
+      if(*end == '?') {
+        break;
+      }
+    }
+    std::string path(uri.begin(), end);
+    util::split(path, std::back_inserter(parts), "/");
+    bus.dir.clear();
     bus.file.clear();
     bus.query.clear();
-    std::string newUri = construct(bus);
-    if(util::startsWith(uri, "/")) {
-      newUri += uri.substr(1);
-    } else {
-      newUri += uri;
+    std::string res = uri::construct(bus);
+    res += util::joinPath(parts.begin(), parts.end());
+    if((path.empty() || util::endsWith(path, "/")) &&
+       !util::endsWith(res, "/")) {
+      res += "/";
     }
-    return newUri;
+    res += std::string(end, qend);
+    return res;
   }
 }
 
