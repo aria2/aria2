@@ -52,9 +52,11 @@ SleepCommand::~SleepCommand() {
 bool SleepCommand::execute() {
   if(requestGroup_->downloadFinished() || requestGroup_->isHaltRequested()) {
     return true;
-  } else if(checkPoint_.difference(global::wallclock) >= wait_) {
+  } else if(checkPoint_.differenceInMillis(global::wallclock)+A2_DELTA_MILLIS
+            >= wait_*1000) {
     engine_->addCommand(nextCommand_);
     nextCommand_ = 0;
+    engine_->setNoWait(true);
     return true;
   } else {
     engine_->addCommand(this);
