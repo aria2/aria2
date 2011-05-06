@@ -295,6 +295,48 @@ std::string construct(const UriStruct& us)
   return res;
 }
 
+std::string joinUri(const std::string& baseUri, const std::string& uri)
+{
+  UriStruct us;
+  if(parse(us, uri)) {
+    return uri;
+  } else {
+    UriStruct bus;
+    if(!parse(bus, baseUri)) {
+      return uri;
+    }
+    std::vector<std::string> parts;
+    if(!util::startsWith(uri, "/")) {
+      util::split(bus.dir, std::back_inserter(parts), "/");
+    }
+    std::string::const_iterator qend;
+    for(qend = uri.begin(); qend != uri.end(); ++qend) {
+      if(*qend == '#') {
+        break;
+      }
+    }
+    std::string::const_iterator end;
+    for(end = uri.begin(); end != qend; ++end) {
+      if(*end == '?') {
+        break;
+      }
+    }
+    std::string path(uri.begin(), end);
+    util::split(path, std::back_inserter(parts), "/");
+    bus.dir.clear();
+    bus.file.clear();
+    bus.query.clear();
+    std::string res = construct(bus);
+    res += util::joinPath(parts.begin(), parts.end());
+    if((path.empty() || util::endsWith(path, "/")) &&
+       !util::endsWith(res, "/")) {
+      res += "/";
+    }
+    res += std::string(end, qend);
+    return res;
+  }
+}
+
 } // namespace uri
 
 } // namespace aria2

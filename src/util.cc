@@ -81,7 +81,6 @@
 #include "Logger.h"
 #include "Option.h"
 #include "DownloadContext.h"
-#include "uri.h"
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
@@ -1582,48 +1581,6 @@ std::string makeString(const char* str)
 std::string safeStrerror(int errNum)
 {
   return makeString(strerror(errNum));
-}
-
-std::string joinUri(const std::string& baseUri, const std::string& uri)
-{
-  uri::UriStruct us;
-  if(uri::parse(us, uri)) {
-    return uri;
-  } else {
-    uri::UriStruct bus;
-    if(!uri::parse(bus, baseUri)) {
-      return uri;
-    }
-    std::vector<std::string> parts;
-    if(!util::startsWith(uri, "/")) {
-      util::split(bus.dir, std::back_inserter(parts), "/");
-    }
-    std::string::const_iterator qend;
-    for(qend = uri.begin(); qend != uri.end(); ++qend) {
-      if(*qend == '#') {
-        break;
-      }
-    }
-    std::string::const_iterator end;
-    for(end = uri.begin(); end != qend; ++end) {
-      if(*end == '?') {
-        break;
-      }
-    }
-    std::string path(uri.begin(), end);
-    util::split(path, std::back_inserter(parts), "/");
-    bus.dir.clear();
-    bus.file.clear();
-    bus.query.clear();
-    std::string res = uri::construct(bus);
-    res += util::joinPath(parts.begin(), parts.end());
-    if((path.empty() || util::endsWith(path, "/")) &&
-       !util::endsWith(res, "/")) {
-      res += "/";
-    }
-    res += std::string(end, qend);
-    return res;
-  }
 }
 
 } // namespace util

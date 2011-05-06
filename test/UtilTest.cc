@@ -71,7 +71,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetCidrPrefix);
   CPPUNIT_TEST(testInSameCidrBlock);
   CPPUNIT_TEST(testIsUtf8String);
-  CPPUNIT_TEST(testJoinUri);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -131,7 +130,6 @@ public:
   void testGetCidrPrefix();
   void testInSameCidrBlock();
   void testIsUtf8String();
-  void testJoinUri();
 };
 
 
@@ -1247,54 +1245,6 @@ void UtilTest::testIsUtf8String()
 
   CPPUNIT_ASSERT(util::isUtf8(""));
   CPPUNIT_ASSERT(!util::isUtf8(util::fromHex("00")));
-}
-
-void UtilTest::testJoinUri()
-{
-  CPPUNIT_ASSERT_EQUAL(std::string("http://host/dir/file"),
-                       util::joinUri("http://base/d/f",
-                                     "http://host/dir/file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/dir/file"),
-                       util::joinUri("http://base/d/f",
-                                     "/dir/file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/d/dir/file"),
-                       util::joinUri("http://base/d/f",
-                                     "dir/file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/d/"),
-                       util::joinUri("http://base/d/f",
-                                     ""));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/d/dir/file?q=k"),
-                       util::joinUri("http://base/d/f",
-                                     "dir/file?q=k"));
-  CPPUNIT_ASSERT_EQUAL(std::string("dir/file"),
-                       util::joinUri("baduri", "dir/file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/b/d/file"),
-                       util::joinUri("http://base/a/b/c/x",
-                                     "../d/file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/b/file"),
-                       util::joinUri("http://base/c/x",
-                                     "../../a/b/file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/"),
-                       util::joinUri("http://base/c/x",
-                                     "../.."));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/"),
-                       util::joinUri("http://base/c/x",
-                                     ".."));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/file"),
-                       util::joinUri("http://base/b/c/x",
-                                     "/a/x/../file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file"),
-                       util::joinUri("http://base/f/?q=k",
-                                     "/file"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file?q=/"),
-                       util::joinUri("http://base/",
-                                     "/file?q=/"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file?q=v"),
-                       util::joinUri("http://base/",
-                                     "/file?q=v#a?q=x"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file"),
-                       util::joinUri("http://base/",
-                                     "/file#a?q=x"));
 }
 
 } // namespace aria2

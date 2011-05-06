@@ -35,6 +35,7 @@ class UriTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testInnerLink);
   CPPUNIT_TEST(testConstruct);
   CPPUNIT_TEST(testSwap);
+  CPPUNIT_TEST(testJoinUri);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -64,6 +65,7 @@ public:
   void testInnerLink();
   void testConstruct();
   void testSwap();
+  void testJoinUri();
 };
 
 
@@ -483,6 +485,68 @@ void UriTest::testSwap()
                        construct(us1));
   CPPUNIT_ASSERT_EQUAL(std::string("http://u1:p1@[::1]/dir1/file1?k1=v1"),
                        construct(us2));
+}
+
+void UriTest::testJoinUri()
+{
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/dir/file"),
+                       joinUri("http://base/d/f",
+                               "http://host/dir/file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/dir/file"),
+                       joinUri("http://base/d/f",
+                               "/dir/file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/d/dir/file"),
+                       joinUri("http://base/d/f",
+                               "dir/file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/d/"),
+                       joinUri("http://base/d/f",
+                               ""));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/d/dir/file?q=k"),
+                       joinUri("http://base/d/f",
+                               "dir/file?q=k"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("dir/file"),
+                       joinUri("baduri", "dir/file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/b/d/file"),
+                       joinUri("http://base/a/b/c/x",
+                               "../d/file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/b/file"),
+                       joinUri("http://base/c/x",
+                               "../../a/b/file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/"),
+                       joinUri("http://base/c/x",
+                               "../.."));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/"),
+                       joinUri("http://base/c/x",
+                               ".."));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/a/file"),
+                       joinUri("http://base/b/c/x",
+                               "/a/x/../file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file"),
+                       joinUri("http://base/f/?q=k",
+                               "/file"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file?q=/"),
+                       joinUri("http://base/",
+                               "/file?q=/"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file?q=v"),
+                       joinUri("http://base/",
+                               "/file?q=v#a?q=x"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/file"),
+                       joinUri("http://base/",
+                               "/file#a?q=x"));
 }
 
 } // namespace uri

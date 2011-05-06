@@ -72,6 +72,8 @@ bool parse(UriStruct& result, const std::string& uri);
 
 std::string construct(const UriStruct& us);
 
+std::string joinUri(const std::string& baseUri, const std::string& uri);
+
 } // namespace uri
 
 } // namespace aria2
