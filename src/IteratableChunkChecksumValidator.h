@@ -37,6 +37,8 @@
 
 #include "IteratableValidator.h"
 
+#include <string>
+
 namespace aria2 {
 
 class DownloadContext;

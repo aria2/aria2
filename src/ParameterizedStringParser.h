@@ -36,6 +36,9 @@
 #define D_PARAMETERIZED_STRING_PARSER_H
 
 #include "common.h"
+
+#include <string>
+
 #include "PStringDatum.h"
 
 namespace aria2 {

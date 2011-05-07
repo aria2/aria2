@@ -36,6 +36,9 @@
 #define D_TRACKER_WATCHER_COMMAND_H
 
 #include "Command.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 
 namespace aria2 {

@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 #include <iosfwd>
+#include <functional>
 
 #include "SharedHandle.h"
 

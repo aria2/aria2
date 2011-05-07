@@ -36,6 +36,9 @@
 #define D_DHT_MESSAGE_RECEIVER_H
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 
 namespace aria2 {

@@ -36,6 +36,9 @@
 #define D_DISK_WRITER_FACTORY_H
 
 #include "common.h"
+
+#include <string>
+
 #include "SharedHandle.h"
 
 namespace aria2 {

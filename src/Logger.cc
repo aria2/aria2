@@ -35,6 +35,7 @@
 #include "Logger.h"
 
 #include <cstring>
+#include <cstdio>
 #include <iostream>
 
 #include "DlAbortEx.h"

@@ -39,6 +39,7 @@
 
 #include <deque>
 #include <vector>
+#include <string>
 
 #include "SharedHandle.h"
 

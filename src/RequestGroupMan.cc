@@ -42,6 +42,7 @@
 #include <fstream>
 #include <numeric>
 #include <algorithm>
+#include <utility>
 
 #include "BtProgressInfoFile.h"
 #include "RecoverableException.h"

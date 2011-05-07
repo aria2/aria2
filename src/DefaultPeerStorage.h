@@ -37,6 +37,7 @@
 
 #include "PeerStorage.h"
 
+#include <string>
 #include <map>
 
 #include "TimerA2.h"

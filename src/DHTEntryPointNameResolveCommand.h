@@ -40,6 +40,7 @@
 #include <utility>
 #include <vector>
 #include <deque>
+#include <string>
 
 #include "SharedHandle.h"
 

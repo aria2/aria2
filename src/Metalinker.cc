@@ -35,6 +35,7 @@
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include <algorithm>
+#include <functional>
 
 namespace aria2 {
 

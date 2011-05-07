@@ -38,6 +38,7 @@
 #include "StatCalc.h"
 
 #include <string>
+#include <functional>
 
 #include "TimerA2.h"
 
