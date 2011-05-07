@@ -17,6 +17,7 @@ class MetalinkPostDownloadHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCanHandle_extension);
   CPPUNIT_TEST(testCanHandle_contentType);
   CPPUNIT_TEST(testGetNextRequestGroups);
+  CPPUNIT_TEST(testGetNextRequestGroups_withBaseUri);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<Option> option_;
@@ -29,6 +30,7 @@ public:
   void testCanHandle_extension();
   void testCanHandle_contentType();
   void testGetNextRequestGroups();
+  void testGetNextRequestGroups_withBaseUri();
 };
 
 
@@ -81,6 +83,25 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 #else
   CPPUNIT_ASSERT_EQUAL((size_t)5, groups.size());
 #endif // ENABLE_BITTORRENT
+}
+
+void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups_withBaseUri()
+{
+  SharedHandle<DownloadContext> dctx
+    (new DownloadContext(1024, 0, A2_TEST_DIR"/base_uri.xml"));
+  dctx->getFirstFileEntry()->addUri("http://base/dir/base_uri.xml");
+  RequestGroup rg(option_);
+  rg.setDownloadContext(dctx);
+  rg.initPieceStorage();
+  rg.getPieceStorage()->getDiskAdaptor()->enableReadOnly();
+
+  MetalinkPostDownloadHandler handler;
+  std::vector<SharedHandle<RequestGroup> > groups;
+  handler.getNextRequestGroups(groups, &rg);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, groups.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://base/dir/example.ext"),
+                       groups[0]->getDownloadContext()->
+                       getFirstFileEntry()->getRemainingUris()[0]);
 }
 
 } // namespace aria2

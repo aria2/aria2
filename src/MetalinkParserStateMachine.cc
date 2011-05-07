@@ -541,5 +541,9 @@ std::string MetalinkParserStateMachine::getErrorString() const
   return error.str();
 }
 
+void MetalinkParserStateMachine::setBaseUri(const std::string& uri)
+{
+  ctrl_->setBaseUri(uri);
+}
 
 } // namespace aria2

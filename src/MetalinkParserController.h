@@ -81,6 +81,7 @@ private:
 #endif // ENABLE_MESSAGE_DIGEST
 
   SharedHandle<Signature> tSignature_;
+  std::string baseUri_;
 public:
   MetalinkParserController();
 
@@ -190,6 +191,11 @@ public:
   void commitMetaurlTransaction();
 
   void cancelMetaurlTransaction();
+
+  void setBaseUri(const std::string& baseUri)
+  {
+    baseUri_ = baseUri;
+  }
 };
 
 } // namespace aria2

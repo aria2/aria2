@@ -110,10 +110,11 @@ void
 Metalink2RequestGroup::generate
 (std::vector<SharedHandle<RequestGroup> >& groups,
  const std::string& metalinkFile,
- const SharedHandle<Option>& option)
+ const SharedHandle<Option>& option,
+ const std::string& baseUri)
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
-  metalink::parseAndQuery(entries, metalinkFile, option.get());
+  metalink::parseAndQuery(entries, metalinkFile, option.get(), baseUri);
   std::vector<SharedHandle<RequestGroup> > tempgroups;
   createRequestGroup(tempgroups, entries, option);
   SharedHandle<MetadataInfo> mi;
@@ -130,10 +131,11 @@ void
 Metalink2RequestGroup::generate
 (std::vector<SharedHandle<RequestGroup> >& groups,
  const SharedHandle<BinaryStream>& binaryStream,
- const SharedHandle<Option>& option)
+ const SharedHandle<Option>& option,
+ const std::string& baseUri)
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
-  metalink::parseAndQuery(entries, binaryStream, option.get());
+  metalink::parseAndQuery(entries, binaryStream, option.get(), baseUri);
   std::vector<SharedHandle<RequestGroup> > tempgroups;
   createRequestGroup(tempgroups, entries, option);
   SharedHandle<MetadataInfo> mi(new MetadataInfo());

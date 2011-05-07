@@ -20,6 +20,7 @@ class MetalinkParserControllerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MetalinkParserControllerTest);
   CPPUNIT_TEST(testEntryTransaction);
   CPPUNIT_TEST(testResourceTransaction);
+  CPPUNIT_TEST(testResourceTransaction_withBaseUri);
   CPPUNIT_TEST(testMetaurlTransaction);
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testChecksumTransaction);
@@ -38,6 +39,7 @@ public:
 
   void testEntryTransaction();
   void testResourceTransaction();
+  void testResourceTransaction_withBaseUri();
   void testMetaurlTransaction();
 #ifdef ENABLE_MESSAGE_DIGEST
   void testChecksumTransaction();
@@ -107,6 +109,46 @@ void MetalinkParserControllerTest::testResourceTransaction()
     CPPUNIT_ASSERT_EQUAL((size_t)2, m->getEntries().size());
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries()[0]->resources.size());
     CPPUNIT_ASSERT_EQUAL((size_t)0, m->getEntries()[1]->resources.size());
+  }
+}
+
+void MetalinkParserControllerTest::testResourceTransaction_withBaseUri()
+{
+  MetalinkParserController ctrl;
+  ctrl.setBaseUri("http://base/dir/file");
+  ctrl.newEntryTransaction();
+  ctrl.newResourceTransaction();
+  ctrl.setURLOfResource("aria2.tar.bz2");
+  ctrl.commitResourceTransaction();
+#ifdef ENABLE_BITTORRENT
+  ctrl.newMetaurlTransaction();
+  ctrl.setURLOfMetaurl("/meta/aria2.tar.bz2.torrent");
+  ctrl.setMediatypeOfMetaurl("torrent");
+  ctrl.commitMetaurlTransaction();
+  ctrl.newMetaurlTransaction();
+  ctrl.setURLOfMetaurl("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c");
+  ctrl.setMediatypeOfMetaurl("torrent");
+  ctrl.commitMetaurlTransaction();
+#endif // ENABLE_BITTORRENT
+  ctrl.commitEntryTransaction();
+  {
+    SharedHandle<Metalinker> m = ctrl.getResult();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries()[0]->resources.size());
+    SharedHandle<MetalinkResource> res = m->getEntries()[0]->resources[0];
+    CPPUNIT_ASSERT_EQUAL(std::string("http://base/dir/aria2.tar.bz2"),
+                         res->url);
+    CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, res->type);
+
+#ifdef ENABLE_BITTORRENT
+    CPPUNIT_ASSERT_EQUAL((size_t)2, m->getEntries()[0]->metaurls.size());
+    SharedHandle<MetalinkMetaurl> metaurl = m->getEntries()[0]->metaurls[0];
+    CPPUNIT_ASSERT_EQUAL(std::string("http://base/meta/aria2.tar.bz2.torrent"),
+                         metaurl->url);
+
+    metaurl = m->getEntries()[0]->metaurls[1];
+    CPPUNIT_ASSERT_EQUAL(std::string("magnet:?xt=urn:btih:248d0a1cd08284299de78d5c1ed359bb46717d8c"),
+                         metaurl->url);
+#endif // ENABLE_BITTORRENT
   }
 }
 

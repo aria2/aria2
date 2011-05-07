@@ -41,6 +41,7 @@
 #include <vector>
 
 #include "SharedHandle.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -54,12 +55,14 @@ namespace metalink {
 void parseAndQuery
 (std::vector<SharedHandle<MetalinkEntry> >& result,
  const std::string& filename,
- const Option* option);
+ const Option* option,
+ const std::string& baseUri = A2STR::NIL);
 
 void parseAndQuery
 (std::vector<SharedHandle<MetalinkEntry> >& result,
  const SharedHandle<BinaryStream>& binaryStream,
- const Option* option);
+ const Option* option,
+ const std::string& baseUri = A2STR::NIL);
 
 void groupEntryByMetaurlName
 (std::vector<

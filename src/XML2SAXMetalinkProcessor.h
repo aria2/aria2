@@ -43,6 +43,7 @@
 #include <libxml/xpath.h>
 
 #include "SharedHandle.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -58,10 +59,13 @@ public:
 
   ~MetalinkProcessor();
 
-  SharedHandle<Metalinker> parseFile(const std::string& filename);
+  SharedHandle<Metalinker> parseFile
+  (const std::string& filename,
+   const std::string& baseUri = A2STR::NIL);
 
   SharedHandle<Metalinker> parseFromBinaryStream
-  (const SharedHandle<BinaryStream>& binaryStream);
+  (const SharedHandle<BinaryStream>& binaryStream,
+   const std::string& baseUri = A2STR::NIL);
 };
 
 } // namespace aria2

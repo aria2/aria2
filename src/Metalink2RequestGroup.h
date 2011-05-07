@@ -36,9 +36,11 @@
 #define D_METALINK_2_REQUEST_GROUP_H
 
 #include "common.h"
-#include "SharedHandle.h"
 #include <string>
 #include <vector>
+
+#include "SharedHandle.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -58,11 +60,13 @@ public:
 
   void generate(std::vector<SharedHandle<RequestGroup> >& groups,
                 const std::string& metalinkFile,
-                const SharedHandle<Option>& option);
+                const SharedHandle<Option>& option,
+                const std::string& baseUri = A2STR::NIL);
 
   void generate(std::vector<SharedHandle<RequestGroup> >& groups,
                 const SharedHandle<BinaryStream>& binaryStream,
-                const SharedHandle<Option>& option);
+                const SharedHandle<Option>& option,
+                const std::string& baseUri = A2STR::NIL);
 };
 
 } // namespace aria2

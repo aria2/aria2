@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metalink xmlns="urn:ietf:params:xml:ns:metalink">
+  <file name="example.ext">
+    <url>example.ext</url>
+  </file>
+</metalink>

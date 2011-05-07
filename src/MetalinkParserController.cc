@@ -43,13 +43,17 @@
 #include "FileEntry.h"
 #include "a2functional.h"
 #include "A2STR.h"
+#include "uri.h"
+#include "Signature.h"
+#include "util.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"
 # include "ChunkChecksum.h"
 # include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include "Signature.h"
-#include "util.h"
+#ifdef ENABLE_BITTORRENT
+# include "magnet.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -166,14 +170,15 @@ void MetalinkParserController::setURLOfResource(const std::string& url)
   if(!tResource_) {
     return;
   }
-  tResource_->url = url;
-  // Metalink4Spec
-  if(tResource_->type == MetalinkResource::TYPE_UNKNOWN) {
-    // guess from URI sheme
-    std::string::size_type pos = url.find("://");
-    if(pos != std::string::npos) {
-      setTypeOfResource(url.substr(0, pos));
+  std::string u = uri::joinUri(baseUri_, url);
+  uri::UriStruct us;
+  if(uri::parse(us, u)) {
+    tResource_->url = u;
+    if(tResource_->type == MetalinkResource::TYPE_UNKNOWN) {
+      setTypeOfResource(us.protocol);
     }
+  } else {
+    tResource_->url = url;
   }
 }
 
@@ -563,7 +568,20 @@ void MetalinkParserController::setURLOfMetaurl(const std::string& url)
   if(!tMetaurl_) {
     return;
   }
-  tMetaurl_->url = url;
+#ifdef ENABLE_BITTORRENT
+  if(magnet::parse(url)) {
+    tMetaurl_->url = url;
+  } else
+#endif // ENABLE_BITTORRENT
+    {
+      std::string u = uri::joinUri(baseUri_, url);
+      uri::UriStruct us;
+      if(uri::parse(us, u)) {
+        tMetaurl_->url = u;
+      } else {
+        tMetaurl_->url = url;
+      }
+    }
 }
 
 void MetalinkParserController::setMediatypeOfMetaurl

@@ -266,6 +266,8 @@ public:
   {
     return ctrl_->getResult();
   }
+
+  void setBaseUri(const std::string& uri);
 };
 
 } //  namespace aria2

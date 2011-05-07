@@ -185,9 +185,12 @@ MetalinkProcessor::MetalinkProcessor() {}
 MetalinkProcessor::~MetalinkProcessor() {}
 
 SharedHandle<Metalinker>
-MetalinkProcessor::parseFile(const std::string& filename)
+MetalinkProcessor::parseFile
+(const std::string& filename,
+ const std::string& baseUri)
 {
   stm_.reset(new MetalinkParserStateMachine());
+  stm_->setBaseUri(baseUri);
   SharedHandle<SessionData> sessionData(new SessionData(stm_));
   // Old libxml2(at least 2.7.6, Ubuntu 10.04LTS) does not read stdin
   // when "/dev/stdin" is passed as filename while 2.7.7 does. So we
@@ -216,9 +219,12 @@ MetalinkProcessor::parseFile(const std::string& filename)
 }
          
 SharedHandle<Metalinker>
-MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
+MetalinkProcessor::parseFromBinaryStream
+(const SharedHandle<BinaryStream>& binaryStream,
+ const std::string& baseUri)
 {
   stm_.reset(new MetalinkParserStateMachine());
+  stm_->setBaseUri(baseUri);
   size_t bufSize = 4096;
   unsigned char buf[bufSize];
 

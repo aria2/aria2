@@ -65,20 +65,23 @@ void query
 void parseAndQuery
 (std::vector<SharedHandle<MetalinkEntry> >& result,
  const std::string& filename,
- const Option* option)
+ const Option* option,
+ const std::string& baseUri)
 {
   MetalinkProcessor proc;
-  SharedHandle<Metalinker> metalinker = proc.parseFile(filename);
+  SharedHandle<Metalinker> metalinker = proc.parseFile(filename, baseUri);
   query(result, metalinker, option);
 }
 
 void parseAndQuery
 (std::vector<SharedHandle<MetalinkEntry> >& result,
  const SharedHandle<BinaryStream>& binaryStream,
- const Option* option)
+ const Option* option,
+ const std::string& baseUri)
 {
   MetalinkProcessor proc;
-  SharedHandle<Metalinker> metalinker =proc.parseFromBinaryStream(binaryStream);
+  SharedHandle<Metalinker> metalinker =
+    proc.parseFromBinaryStream(binaryStream, baseUri);
   query(result, metalinker, option);
 }
 
