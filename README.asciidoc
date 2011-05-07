@@ -1,7 +1,7 @@
 aria2 - The ultra fast download utility
 =======================================
 :Author:    Tatsuhiro Tsujikawa
-:Email:     tujikawa_at_users_dot_sourceforge_dot_net
+:Email:     t-tujikawa_at_users_dot_sourceforge_dot_net
 
 Disclaimer
 ----------
