@@ -169,8 +169,8 @@ error_code::Value MultiUrlRequestInfo::execute()
 
     if(!option_->blank(PREF_LOAD_COOKIES)) {
       File cookieFile(option_->get(PREF_LOAD_COOKIES));
-      if(cookieFile.isFile()) {
-        e->getCookieStorage()->load(cookieFile.getPath(), Time().getTime());
+      if(cookieFile.isFile() &&
+         e->getCookieStorage()->load(cookieFile.getPath(), Time().getTime())) {
         A2_LOG_INFO(fmt("Loaded cookies from '%s'.",
                         cookieFile.getPath().c_str()));
       } else {
