@@ -67,6 +67,8 @@ std::string::const_iterator getNextDigit
 
 bool parseDate(time_t& time, const std::string& cookieDate)
 {
+  // Following algorithm is described in
+  // http://tools.ietf.org/html/rfc6265#section-5.1.1
   std::vector<std::string> dateTokens;
   for(std::string::const_iterator i = cookieDate.begin(),
         eoi = cookieDate.end(); i != eoi;) {
@@ -198,6 +200,8 @@ bool parse
  const std::string& defaultPath,
  time_t creationTime)
 {
+  // This implementation is based on the algorithm listed in
+  // http://tools.ietf.org/html/rfc6265
   std::string::const_iterator nvEnd = cookieStr.begin();
   std::string::const_iterator end = cookieStr.end();
   for(; nvEnd != end && *nvEnd != ';'; ++nvEnd);
@@ -211,6 +215,7 @@ bool parse
     return false;
   }
   std::string cookieValue = util::stripIter(eq+1, nvEnd);
+  cookieValue = util::strip(cookieValue, "\"");
   time_t expiryTime = 0;
   bool foundExpires = false;
   bool persistent = false;

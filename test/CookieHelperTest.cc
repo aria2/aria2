@@ -213,6 +213,13 @@ void CookieHelperTest::testParse()
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), c.getDomain());
     CPPUNIT_ASSERT(c.getHostOnly());
   }
+  {
+    // DQUOTE around cookie-value
+    std::string str = "id=\"foo\";";
+    Cookie c;
+    CPPUNIT_ASSERT(cookie::parse(c, str, "localhost", "/", creationDate));
+    CPPUNIT_ASSERT_EQUAL(std::string("foo"), c.getValue());
+  }
 }
 
 void CookieHelperTest::testReverseDomainLevel()
