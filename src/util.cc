@@ -1478,12 +1478,12 @@ void executeHook
 {
   const std::string gidStr = util::itos(gid);
   const std::string numFilesStr = util::uitos(numFiles);
+#ifndef __MINGW32__
   A2_LOG_INFO(fmt("Executing user command: %s %s %s %s",
                   command.c_str(),
                   gidStr.c_str(),
                   numFilesStr.c_str(),
                   firstFilename.c_str()));
-#ifndef __MINGW32__
   pid_t cpid = fork();
   if(cpid == -1) {
     A2_LOG_ERROR("fork() failed. Cannot execute user command.");
@@ -1506,11 +1506,30 @@ void executeHook
 
   memset(&pi, 0, sizeof (pi));
 
-  std::string cmdline = command;
+  bool batch = util::endsWith(util::toLower(command), ".bat");
+  std::string cmdline;
+  std::string cmdexe;
+  if(batch) {
+    const char* p = getenv("windir");
+    if(p) {
+      cmdexe = std::string(p);
+      cmdexe += "\\system32\\cmd.exe";
+    } else {
+      A2_LOG_INFO("Failed to get windir environment variable."
+                  " Executing batch file will fail.");
+      // TODO Might be useless.
+      cmdexe = "cmd.exe";
+    }
+    cmdline += "/C \"";
+  }
+  strappend(cmdline, "\"", command, "\"");
   strappend(cmdline, " ", gidStr, " ", numFilesStr, " \"", firstFilename, "\"");
-
+  if(batch) {
+    cmdline += "\"";
+  }
+  A2_LOG_INFO(fmt("Executing user command: %s", cmdline.c_str()));
   DWORD rc = CreateProcess(
-                           NULL,
+                           batch ? cmdexe.c_str() : NULL,
                            (LPSTR)cmdline.c_str(),
                            NULL,
                            NULL,
