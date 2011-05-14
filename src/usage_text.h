@@ -782,3 +782,8 @@
   _(" --xml-rpc-listen-port=PORT   Deprecated. Use --rpc-listen-port instead.")
 #define TEXT_SHOW_CONSOLE_READOUT                                       \
   _(" --show-console-readout[=true|false] Show console readout.")
+#define TEXT_METALINK_BASE_URI                  \
+  _(" --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n" \
+    "                              metalink:url and metalink:metaurl element in a\n" \
+    "                              metalink file stored in local disk. If URI points\n" \
+    "                              to a directory, URI must end with '/'.")

@@ -352,11 +352,13 @@ void createRequestGroupForMetalink
   if(metalinkData.empty()) {
     Metalink2RequestGroup().generate(result,
                                      option->get(PREF_METALINK_FILE),
-                                     option);
+                                     option,
+                                     option->get(PREF_METALINK_BASE_URI));
   } else {
     SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
     dw->setString(metalinkData);
-    Metalink2RequestGroup().generate(result, dw, option);
+    Metalink2RequestGroup().generate(result, dw, option,
+                                     option->get(PREF_METALINK_BASE_URI));
   }
 }
 #endif // ENABLE_METALINK
@@ -417,7 +419,8 @@ public:
 #ifdef ENABLE_METALINK
     else if(!ignoreLocalPath_ && detector_.guessMetalinkFile(uri)) {
       try {
-        Metalink2RequestGroup().generate(requestGroups_, uri, option_);
+        Metalink2RequestGroup().generate(requestGroups_, uri, option_,
+                                         option_->get(PREF_METALINK_BASE_URI));
       } catch(RecoverableException& e) {
         if(throwOnError_) {
           throw;

@@ -130,7 +130,8 @@ void showMetalinkFile
 (const std::string& uri, const SharedHandle<Option>& op)
 {
   std::vector<SharedHandle<MetalinkEntry> > metalinkEntries;
-  metalink::parseAndQuery(metalinkEntries, uri, op.get());
+  metalink::parseAndQuery(metalinkEntries, uri, op.get(),
+                          op->get(PREF_METALINK_BASE_URI));
   std::vector<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
   util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);

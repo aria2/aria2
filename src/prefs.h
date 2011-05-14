@@ -427,6 +427,8 @@ extern const std::string V_HTTPS;
 extern const std::string V_FTP;
 // values: true | false
 extern const std::string PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
+// values: a string
+extern const std::string PREF_METALINK_BASE_URI;
 
 } // namespace aria2
 

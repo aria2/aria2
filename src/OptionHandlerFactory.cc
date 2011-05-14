@@ -1693,6 +1693,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_METALINK_BASE_URI,
+                                    TEXT_METALINK_BASE_URI,
+                                    NO_DEFAULT_VALUE));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_METALINK_ENABLE_UNIQUE_PROTOCOL,
                                     TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL,

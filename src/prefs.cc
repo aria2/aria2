@@ -423,5 +423,6 @@ const std::string V_HTTPS("https");
 const std::string V_FTP("ftp");
 // values: true | false
 const std::string PREF_METALINK_ENABLE_UNIQUE_PROTOCOL("metalink-enable-unique-protocol");
+const std::string PREF_METALINK_BASE_URI("metalink-base-uri");
 
 } // namespace aria2
