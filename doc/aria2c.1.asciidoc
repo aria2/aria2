@@ -713,6 +713,12 @@ Metalink Specific Options
   If 'false' is specified, the action mentioned above is not taken.
   Default: 'true'
 
+[[aria2_optref_metalink_base_uri]]*--metalink-base-uri*=URI::
+
+  Specify base URI to resolve relative URI in metalink:url and
+  metalink:metaurl element in a metalink file stored in local disk. If
+  URI points to a directory, URI must end with '/'.
+
 [[aria2_optref_metalink_file]]*-M*, *--metalink-file*=METALINK_FILE::
 
   The file path to .meta4 and .metalink file. Reads input from stdin when '-' is
