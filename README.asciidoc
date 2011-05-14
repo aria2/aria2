@@ -271,6 +271,13 @@ This is basically multi-file torrent download with file selection, so
 the adjacent files which is not in Metalink document but shares same
 piece with selected file are also created.
 
+If relative URI is specified in metalink:url or metalink:metaurl
+element, aria2 uses the URI of Metalink file as base URI to resolve
+the relative URI. If relative URI is found in Metalink file which is
+read from local disk, aria2 uses the value of --metalink-base-uri
+option as base URI. If this option is not specified, the relative URI
+will be ignored.
+
 netrc
 -----
 netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
