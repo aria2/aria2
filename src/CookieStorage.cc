@@ -233,22 +233,16 @@ public:
   bool operator()
   (const CookiePathDivider& lhs, const CookiePathDivider& rhs) const
   {
-    // Sort by path-length.
+    // From http://tools.ietf.org/html/rfc6265#section-5.4:
+    // 2.  The user agent SHOULD sort the cookie-list in the following
+    //    order:
     //
-    // RFC2965 says: Note that the NAME=VALUE pair for the cookie with
-    // the more specific Path attribute, /acme/ammo, comes before the
-    // one with the less specific Path attribute, /acme.  Further note
-    // that the same cookie name appears more than once.
+    //    *  Cookies with longer paths are listed before cookies with
+    //       shorter paths.
     //
-    // Netscape spec says: When sending cookies to a server, all
-    // cookies with a more specific path mapping should be sent before
-    // cookies with less specific path mappings. For example, a cookie
-    // "name1=foo" with a path mapping of "/" should be sent after a
-    // cookie "name1=foo2" with a path mapping of "/bar" if they are
-    // both to be sent.
-    //
-    // See also http://tools.ietf.org/html/draft-ietf-httpstate-cookie-14
-    // section5.4
+    //    *  Among cookies that have equal-length path fields, cookies with
+    //       earlier creation-times are listed before cookies with later
+    //       creation-times.
     return lhs.pathDepth_ > rhs.pathDepth_ ||
       (!(rhs.pathDepth_ > lhs.pathDepth_) &&
        lhs.cookie_.getCreationTime() < rhs.cookie_.getCreationTime());
