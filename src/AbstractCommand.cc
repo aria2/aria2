@@ -211,7 +211,10 @@ bool AbstractCommand::execute() {
             // no URIs available, so don't retry.
             if(getSegmentMan()->allSegmentsIgnored()) {
               A2_LOG_DEBUG("All segments are ignored.");
-              return true;
+              // In this case, the error might be already set in
+              // RequestGroup, so use it here.
+              throw DOWNLOAD_FAILURE_EXCEPTION2
+                ("No URI available.", requestGroup_->getLastErrorCode());
             } else {
               return prepareForRetry(1);
             }
@@ -265,19 +268,19 @@ bool AbstractCommand::execute() {
       return false;
     }
   } catch(DlAbortEx& err) {
-    if(!req_) {
-      A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, err);
-    } else {
+    requestGroup_->setLastErrorCode(err.getErrorCode());
+    if(req_) {
       A2_LOG_ERROR_EX(fmt(MSG_DOWNLOAD_ABORTED,
                           getCuid(),
                           req_->getUri().c_str()),
                       DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()),
                                    err));
       fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
-      requestGroup_->setLastErrorCode(err.getErrorCode());
       if(err.getErrorCode() == error_code::CANNOT_RESUME) {
         requestGroup_->increaseResumeFailureCount();
       }
+    } else {
+      A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, err);
     }
     onAbort();
     tryReserved();
@@ -316,12 +319,19 @@ bool AbstractCommand::execute() {
       return prepareForRetry(0);
     }
   } catch(DownloadFailureException& err) {
-    A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, err);
     requestGroup_->setLastErrorCode(err.getErrorCode());
     if(req_) {
+      A2_LOG_ERROR_EX(fmt(MSG_DOWNLOAD_ABORTED,
+                          getCuid(),
+                          req_->getUri().c_str()),
+                      DL_ABORT_EX2(fmt("URI=%s", req_->getCurrentUri().c_str()),
+                                   err));
       fileEntry_->addURIResult(req_->getUri(), err.getErrorCode());
+    } else {
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, err);
     }
     requestGroup_->setHaltRequested(true);
+    getDownloadEngine()->setRefreshInterval(0);
     return true;
   }
 }

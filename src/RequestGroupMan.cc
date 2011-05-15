@@ -536,6 +536,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
   if(count > 0) {
     e->setNoWait(true);
+    e->setRefreshInterval(0);
     A2_LOG_DEBUG(fmt("%d RequestGroup(s) added.", count));
   }
 }

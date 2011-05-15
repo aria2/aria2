@@ -41,6 +41,7 @@
 #include "wallclock.h"
 #include "util.h"
 #include "fmt.h"
+#include "DownloadEngine.h"
 
 namespace aria2 {
 
@@ -64,6 +65,7 @@ void BtStopDownloadCommand::preProcess()
                       " --bt-stop-timeout option.",
                       util::itos(requestGroup_->getGID()).c_str()));
     requestGroup_->setForceHaltRequested(true);
+    getDownloadEngine()->setRefreshInterval(0);
     enableExit();
   }
 }

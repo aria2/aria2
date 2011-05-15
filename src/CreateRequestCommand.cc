@@ -94,7 +94,10 @@ bool CreateRequestCommand::executeInternal()
     if(getSegmentMan()) {
       getSegmentMan()->ignoreSegmentFor(getFileEntry());
     }
-    throw DL_ABORT_EX("No URI available.");
+    // In this case, the error might be already set in RequestGroup,
+    // so use it here.
+    throw DL_ABORT_EX2("No URI available.",
+                       getRequestGroup()->getLastErrorCode());
   } else if(getRequest()->getWakeTime() > global::wallclock) {
     A2_LOG_DEBUG("This request object is still sleeping.");
     getFileEntry()->poolRequest(getRequest());

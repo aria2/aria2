@@ -486,6 +486,11 @@ public:
     lastErrorCode_ = code;
   }
 
+  error_code::Value getLastErrorCode() const
+  {
+    return lastErrorCode_;
+  }
+
   void saveControlFile() const;
 
   void removeControlFile() const;

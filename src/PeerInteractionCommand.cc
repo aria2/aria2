@@ -385,6 +385,7 @@ void PeerInteractionCommand::onFailure(const Exception& err)
 {
   requestGroup_->setLastErrorCode(err.getErrorCode());
   requestGroup_->setHaltRequested(true);
+  getDownloadEngine()->setRefreshInterval(0);
 }
 
 bool PeerInteractionCommand::exitBeforeExecute()

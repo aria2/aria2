@@ -395,6 +395,7 @@ SharedHandle<ValueBase> removeDownload
     } else {
       group->setHaltRequested(true, RequestGroup::USER_REQUEST);
     }
+    e->setRefreshInterval(0);
   }
   return createGIDResponse(gid);
 }
@@ -452,6 +453,7 @@ SharedHandle<ValueBase> pauseDownload
     group = e->getRequestGroupMan()->findReservedGroup(gid);
   }
   if(group && pauseRequestGroup(group, reserved, forcePause)) {
+    e->setRefreshInterval(0);
     return createGIDResponse(gid);
   } else {
     throw DL_ABORT_EX
