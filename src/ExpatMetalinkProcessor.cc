@@ -177,20 +177,25 @@ void checkError(XML_Parser parser)
 } // namespace
 
 SharedHandle<Metalinker>
-MetalinkProcessor::parseFile(const std::string& filename)
+MetalinkProcessor::parseFile
+(const std::string& filename,
+ const std::string& baseUri)
 {
   if(filename == DEV_STDIN) {
     return parseFile(std::cin);
   } else {
     std::ifstream infile(filename.c_str(), std::ios::binary);
-    return parseFile(infile);
+    return parseFile(infile, baseUri);
   }
 }
 
 SharedHandle<Metalinker>
-MetalinkProcessor::parseFile(std::istream& stream)
+MetalinkProcessor::parseFile
+(std::istream& stream,
+ const std::string& baseUri)
 {
   stm_.reset(new MetalinkParserStateMachine());
+  stm_->setBaseUri(baseUri);
   char buf[4096];
 
   SharedHandle<SessionData> sessionData(new SessionData(stm_));
@@ -212,9 +217,12 @@ MetalinkProcessor::parseFile(std::istream& stream)
 }
          
 SharedHandle<Metalinker>
-MetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
+MetalinkProcessor::parseFromBinaryStream
+(const SharedHandle<BinaryStream>& binaryStream,
+ const std::string& baseUri)
 {
   stm_.reset(new MetalinkParserStateMachine());
+  stm_->setBaseUri(baseUri);
   ssize_t bufSize = 4096;
   unsigned char buf[bufSize];
 

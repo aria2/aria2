@@ -42,6 +42,7 @@
 #include <expat.h>
 
 #include "SharedHandle.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -53,12 +54,17 @@ class MetalinkProcessor {
 private:
   SharedHandle<MetalinkParserStateMachine> stm_;
 public:
-  SharedHandle<Metalinker> parseFile(const std::string& filename);
+  SharedHandle<Metalinker> parseFile
+  (const std::string& filename,
+   const std::string& baseUri = A2STR::NIL);
 
-  SharedHandle<Metalinker> parseFile(std::istream& stream);
+  SharedHandle<Metalinker> parseFile
+  (std::istream& stream,
+   const std::string& baseUri = A2STR::NIL);
 
   SharedHandle<Metalinker> parseFromBinaryStream
-  (const SharedHandle<BinaryStream>& binaryStream);
+  (const SharedHandle<BinaryStream>& binaryStream,
+   const std::string& baseUri = A2STR::NIL);
 };
 
 } // namespace aria2
