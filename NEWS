@@ -1,3 +1,51 @@
+aria2 1.11.2
+============
+
+Release Note
+------------
+
+This release adds the ability to handle metalink file which contains
+relative URI in metalink:url and metalink:metaurl element. The
+username and password specified in command-line are now masked with
+"*" immediately after parsed, so that ps cannot show username and
+password. In XML-RPC, aria2 now treats data without data type tag as
+string. In MinGW32 build, cmd.exe is specified explicitly to run .bat
+file.
+
+Changes
+-------
+
+ * Eliminated few seconds delay when downloads stop or pause.
+
+ * Added --metalink-base-uri option.  --metalink-uri option specifies
+   base URI to resolve relative URI in metalink file stored in local
+   disk. If URI points to a directory, URI must end with '/'.
+
+ * Run batch file with cmd.exe. Quoted user command.  It seems that we
+   have to specify the full path to cmd.exe in the first argument of
+   CreateProcess() to run batch file in proper manner.  We first
+   determine the full path to cmd.exe. To do this, we get windir
+   environment variable and concatenate it with "\system32\cmd.exe".
+
+ * Fixed the bug that the message "Loaded cookies from ..." appears
+   when loading cookies from that file failed.
+
+ * Applied patch from Dan Fandrich. This patch fixes compatibility
+   issue when compiling aria2 on older systems.
+
+ * Support relative URI in Metalink file.  If relative URI is found in
+   Metalink file, aria2 resolves its full URI contatenating the URI
+   from which Metalink file is retrieved and relative URI in Metalink
+   file. This feature is not available if Metalink file in local disk
+   is specified in command line.
+
+ * Erase user and password specified in command-line from argv.  The
+   user and password is masked with '*'.
+
+ * If no data type tag is used in XML-RPC, treat the data as string.
+
+
+
 aria2 1.11.1
 ============
 
