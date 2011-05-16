@@ -1522,6 +1522,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_use_head, use-head>>*
 * *<<aria2_optref_user_agent, user-agent>>*
 * *<<aria2_optref_retry_wait, retry-wait>>*
+* *<<aria2_optref_metalink_base_uri, metalink-base-uri>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

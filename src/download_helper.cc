@@ -166,7 +166,8 @@ const std::set<std::string>& listRequestOptions()
     PREF_ENABLE_ASYNC_DNS6,
     PREF_BT_TRACKER,
     PREF_BT_EXCLUDE_TRACKER,
-    PREF_RETRY_WAIT
+    PREF_RETRY_WAIT,
+    PREF_METALINK_BASE_URI
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
