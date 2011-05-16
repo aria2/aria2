@@ -211,10 +211,10 @@ bool AbstractCommand::execute() {
             // no URIs available, so don't retry.
             if(getSegmentMan()->allSegmentsIgnored()) {
               A2_LOG_DEBUG("All segments are ignored.");
-              // In this case, the error might be already set in
-              // RequestGroup, so use it here.
-              throw DOWNLOAD_FAILURE_EXCEPTION2
-                ("No URI available.", requestGroup_->getLastErrorCode());
+              // This will execute other idle Commands and let them
+              // finish quickly.
+              e_->setRefreshInterval(0);
+              return true;
             } else {
               return prepareForRetry(1);
             }
@@ -383,9 +383,10 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
     e_->setNoWait(true);
     e_->addCommand(command);
   } else {
-    SleepCommand* scom = new SleepCommand(getCuid(), e_, requestGroup_,
-                                          command, wait);
-    e_->addCommand(scom);
+    // We don't use wait so that Command can be executed by
+    // DownloadEngine::setRefreshInterval(0).
+    command->setStatus(Command::STATUS_INACTIVE);
+    e_->addCommand(command);
   }
   return true;
 }
