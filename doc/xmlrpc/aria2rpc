@@ -119,8 +119,8 @@ OptionParser.new do |opt|
   opt.on("--bt-prioritize-piece RANGE") {|val|
     options["bt-prioritize-piece"]=val
   }
-  opt.on("--bt-require-crypto BOOL",["true","false"]){|val|
-    options["bt-require-crypto"]=val
+  opt.on("--bt-require-crypto [BOOL]",["true","false"]){|val|
+    options["bt-require-crypto"]=val||"true"
   }
   opt.on("--bt-request-peer-speed-limit SPEED"){|val|
     options["bt-request-peer-speed-limit"]=val
@@ -161,14 +161,14 @@ OptionParser.new do |opt|
   opt.on("--metalink-preferred-protocol PROTO"){|val|
     options["metalink-preferred-protocol"]=val
   }
-  opt.on("--metalink-enable-unique-protocol BOOL",["true","false"]){|val|
-    options["metalink-enable-unique-protocol"]=val
+  opt.on("--metalink-enable-unique-protocol [BOOL]",["true","false"]){|val|
+    options["metalink-enable-unique-protocol"]=val||"true"
   }
-  opt.on("--allow-overwrite BOOL",["true","false"]){|val|
-    options["allow-overwrite"]=val
+  opt.on("--allow-overwrite [BOOL]",["true","false"]){|val|
+    options["allow-overwrite"]=val||"true"
   }
-  opt.on("--allow-piece-length-change BOOL",["true","false"]){|val|
-    options["allow-piece-length-change"]=val
+  opt.on("--allow-piece-length-change [BOOL]",["true","false"]){|val|
+    options["allow-piece-length-change"]=val||"true"
   }
   opt.on("--async-dns [BOOL]",["true","false"]){|val|
     options["async-dns"]=val||"true"
@@ -186,8 +186,8 @@ OptionParser.new do |opt|
   opt.on("-P","--parameterized-uri [BOOL]",["true","false"]){|val|
     options["parameterized-uri"]=val||"true"
   }
-  opt.on("--realtime-chunk-checksum BOOL",["true","false"]){|val|
-    options["realtime-chunk-checksum"]=val
+  opt.on("--realtime-chunk-checksum [BOOL]",["true","false"]){|val|
+    options["realtime-chunk-checksum"]=val||"true"
   }
   opt.on("--remove-control-file [BOOL]",["true","false"]){|val|
     options["remove-control-file"]=val||"true"
