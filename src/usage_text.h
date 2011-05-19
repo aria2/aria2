@@ -668,7 +668,8 @@
     "                              You can pass this output file to aria2c with -i\n" \
     "                              option on restart. Please note that downloads\n" \
     "                              added by aria2.addTorrent and aria2.addMetalink\n" \
-    "                              RPC method are not saved.")
+    "                              RPC method and whose metadata could not be saved\n" \
+    "                              as a file will not be saved.")
 #define TEXT_MAX_CONNECTION_PER_SERVER          \
   _(" -x, --max-connection-per-server=NUM The maximum number of connections to one\n" \
     "                              server for each download.")
