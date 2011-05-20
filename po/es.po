@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2011-05-20 23:54+0900\n"
-"PO-Revision-Date: 2010-02-03 23:17+0900\n"
-"Last-Translator: Angel Abad <angelabad@gmail.com>\n"
+"PO-Revision-Date: 2011-05-21 00:08+0900\n"
+"Last-Translator: Fitoschido <fitoschido@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-02-03 13:44+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-05-20 14:56+0000\n"
+"X-Generator: Launchpad (build 13085)\n"
 
 #: src/DownloadEngine.cc:228
 msgid ""
@@ -72,6 +72,9 @@ msgid ""
 " -o, --out=FILE               The file name of the downloaded file. When -Z\n"
 "                              option is used, this option is ignored."
 msgstr ""
+" -o, --out=FILE               El nombre del archivo descargado. Cuando la "
+"opción -Z\n"
+"                             se utiliza, esta opción es ignorada."
 
 #: src/usage_text.h:42
 msgid ""
@@ -94,7 +97,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -113,31 +115,14 @@ msgid ""
 "                              Please note that in Metalink download, this\n"
 "                              option has no effect and use -C option instead."
 msgstr ""
-" -s, --split=N                Descargar un archivo usando N conexiones. Si\n"
-"                              hay más de N URL, se usarán las N primeras "
-"para\n"
-"                              descargar y el resto como respaldo. Si hay "
-"menos \n"
-"                              de N, se usarán algunas URL más de una vez "
-"para\n"
-"                              que haya un total de N conexiones "
-"simultáneas. \n"
-"                              Vea también la opción -j. Tenga en cuenta "
-"que \n"
-"                              esta opción no funciona para descargas "
-"Metalink, \n"
-"                              donde se usa la opción -C en su lugar."
 
 #: src/usage_text.h:62
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait between retries. \n"
 "                              With SEC > 0, aria2 will retry download when "
 "the\n"
 "                              HTTP server returns 503 response."
 msgstr ""
-" --retry-wait=SEG             Establecer los segundos para el siguiente \n"
-"                              intento tras un error."
 
 #: src/usage_text.h:66
 msgid " -t, --timeout=SEC            Set timeout in seconds."
@@ -315,17 +300,12 @@ msgstr ""
 "                               Desactivelo si encuentra algún error."
 
 #: src/usage_text.h:151
-#, fuzzy
 msgid ""
 " --allow-overwrite[=true|false] Restart download from scratch if the\n"
 "                              corresponding control file doesn't exist.  "
 "See\n"
 "                              also --auto-file-renaming option."
 msgstr ""
-" --enable-direct-io[=true|false] Acivar E/S directa, que minimiza el uso de "
-"CPU cuando\n"
-"                               se reserva espacio para los archivos.\n"
-"                               Desactivelo si encuentra algún error."
 
 #: src/usage_text.h:155
 msgid ""
@@ -413,20 +393,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:199
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum[=true|false]  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
-" --enable-direct-io[=true|false] Acivar E/S directa, que minimiza el uso de "
-"CPU cuando\n"
-"                               se reserva espacio para los archivos.\n"
-"                               Desactivelo si encuentra algún error."
 
 #: src/usage_text.h:203
-#, fuzzy
 msgid ""
 " -c, --continue[=true|false]  Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -435,15 +409,6 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
-" -c, --continue               Continua descargando un fichero parcialmente "
-"descargado.\n"
-"                              Usen esta opción para seguir la descarga\n"
-"                              comenzada por un navegador Web o otro "
-"programa\n"
-"                              que descarga los ficheros secuencialmente "
-"desde el\n"
-"                              principio. esta opción solamente es\n"
-"                              aplicable a descargas http(s)/ftp."
 
 #: src/usage_text.h:210
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
@@ -452,9 +417,8 @@ msgstr ""
 "http."
 
 #: src/usage_text.h:212
-#, fuzzy
 msgid " -n, --no-netrc[=true|false]  Disables netrc support."
-msgstr " -n, --no-netrc             Desactiva el soporte netrc."
+msgstr ""
 
 #: src/usage_text.h:214
 msgid ""
@@ -502,17 +466,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:236
-#, fuzzy
 msgid ""
 " -S, --show-files[=true|false] Print file listing of .torrent, .meta4 and\n"
 "                              .metalink file and exit. More detailed\n"
 "                              information will be listed in case of torrent\n"
 "                              file."
 msgstr ""
-" -S, --show-files             Escribe el listado de ficheros de un fichero ."
-"torrent o .metalink\n"
-"                              y sale. Se listará información más detallada\n"
-"                              en el caso de un fichero torrent."
 
 #: src/usage_text.h:241
 msgid ""
@@ -624,12 +583,10 @@ msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 
 #: src/usage_text.h:300
-#, fuzzy
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
-msgstr " --enable-dht[=true|false]    Habilitar funcionanlidad DHT."
+msgstr ""
 
 #: src/usage_text.h:302
-#, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"
 "                              DHT. Multiple ports can be specified by using\n"
@@ -638,21 +595,13 @@ msgid ""
 "','\n"
 "                              and '-' can be used together."
 msgstr ""
-" --listen-port=PORT... Fija el puerto TCP para las dercargas bittorrent\n"
-"Multiples puertos pueden ser especificados separando  por ','\n"
-"por ejemplo \"6881,6885\". Tambien puede usar '-'\n"
-"para especificar un rango de puertos: \"6881-6999\" ',' y '-'  pueden \n"
-"ser usados juntos."
 
 #: src/usage_text.h:308
-#, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --retry-wait=SEG             Establecer los segundos para el siguiente \n"
-"                              intento tras un error."
 
 #: src/usage_text.h:311
 msgid ""
@@ -716,17 +665,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:341
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .meta4 and ."
 "metalink\n"
 "                              file. Reads input from stdin when '-' is\n"
 "                              specified."
 msgstr ""
-" -S, --show-files             Escribe el listado de ficheros de un fichero ."
-"torrent o .metalink\n"
-"                              y sale. Se listará información más detallada\n"
-"                              en el caso de un fichero torrent."
 
 #: src/usage_text.h:345
 msgid ""
@@ -1225,9 +1169,8 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:604
-#, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr " --enable-dht[=true|false]    Habilitar funcionanlidad DHT."
+msgstr ""
 
 #: src/usage_text.h:606
 msgid ""
@@ -1250,11 +1193,8 @@ msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
 
 #: src/usage_text.h:616
-#, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr ""
-" --ftp-passwd=PASSWD Establece la contraseña FTP. Esto afecta a todas las "
-"URLs."
 
 #: src/usage_text.h:618
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
@@ -1277,11 +1217,8 @@ msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
 #: src/usage_text.h:628
-#, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr ""
-" --ftp-passwd=PASSWD Establece la contraseña FTP. Esto afecta a todas las "
-"URLs."
 
 #: src/usage_text.h:630
 msgid ""
@@ -1324,11 +1261,8 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:652
-#, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
 msgstr ""
-" -t, --timeout=SEG            Establecer el tiempo de espera máximo\n"
-"                              en segundos."
 
 #: src/usage_text.h:654
 msgid ""
@@ -1342,11 +1276,8 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:660
-#, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
 msgstr ""
-" -t, --timeout=SEG            Establecer el tiempo de espera máximo\n"
-"                              en segundos."
 
 #: src/usage_text.h:662
 msgid ""
@@ -1359,6 +1290,7 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:667
+#, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
 "exit.\n"
@@ -1371,17 +1303,20 @@ msgid ""
 "saved\n"
 "                              as a file will not be saved."
 msgstr ""
+" --all-proxy=PROXY            Usar este proxy para todos los protocolos.\n"
+"                              Esta opción se puede sobreescribir si se\n"
+"                              especifica un servidor proxy para un "
+"protocolo\n"
+"                              particular usando las opciones --http-proxy, \n"
+"                              --https-proxy o --ftp-proxy.\n"
+"                              Esto afecta a todas las URL."
 
 #: src/usage_text.h:674
-#, fuzzy
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
 "one\n"
 "                              server for each download."
 msgstr ""
-" --bt-max-open-files=NUM      Especifica el numero maximo de archivos a "
-"abrir en cada \n"
-"descarga Bittorrent."
 
 #: src/usage_text.h:677
 msgid ""
@@ -1401,7 +1336,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:686
-#, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
 "older\n"
@@ -1409,10 +1343,6 @@ msgid ""
 "has\n"
 "                              many limitations. See man page for details."
 msgstr ""
-" --enable-direct-io[=true|false] Acivar E/S directa, que minimiza el uso de "
-"CPU cuando\n"
-"                               se reserva espacio para los archivos.\n"
-"                               Desactivelo si encuentra algún error."
 
 #: src/usage_text.h:690
 msgid ""
@@ -1429,7 +1359,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:698
-#, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
 "asynchronous\n"
@@ -1437,10 +1366,6 @@ msgid ""
 "when\n"
 "                              --async-dns=false."
 msgstr ""
-" --enable-direct-io[=true|false] Acivar E/S directa, que minimiza el uso de "
-"CPU cuando\n"
-"                               se reserva espacio para los archivos.\n"
-"                               Desactivelo si encuentra algún error."
 
 #: src/usage_text.h:702
 msgid ""
@@ -1554,20 +1479,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:761
-#, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
 msgstr ""
-" --ftp-user=USER Establece el usuario FTP. Esto afecta a todas las URLs."
 
 #: src/usage_text.h:763
-#, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
 msgstr ""
-" --ftp-passwd=PASSWD Establece la contraseña FTP. Esto afecta a todas las "
-"URLs."
 
 #: src/usage_text.h:765
-#, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
 "all\n"
@@ -1575,10 +1494,6 @@ msgid ""
 "only\n"
 "                              on local loopback interface."
 msgstr ""
-" -S, --show-files             Escribe el listado de ficheros de un fichero ."
-"torrent o .metalink\n"
-"                              y sale. Se listará información más detallada\n"
-"                              en el caso de un fichero torrent."
 
 #: src/usage_text.h:769
 msgid ""
@@ -1588,9 +1503,8 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:772
-#, fuzzy
 msgid " --enable-xml-rpc[=true|false] Deprecated. Use --enable-rpc instead."
-msgstr " --enable-dht[=true|false]    Habilitar funcionanlidad DHT."
+msgstr ""
 
 #: src/usage_text.h:774
 msgid ""
@@ -1621,7 +1535,6 @@ msgid " --show-console-readout[=true|false] Show console readout."
 msgstr ""
 
 #: src/usage_text.h:787
-#, fuzzy
 msgid ""
 " --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
 "                              metalink:url and metalink:metaurl element in "
@@ -1630,10 +1543,6 @@ msgid ""
 "points\n"
 "                              to a directory, URI must end with '/'."
 msgstr ""
-" -S, --show-files             Escribe el listado de ficheros de un fichero ."
-"torrent o .metalink\n"
-"                              y sale. Se listará información más detallada\n"
-"                              en el caso de un fichero torrent."
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -1716,9 +1625,9 @@ msgid "Refer to man page for more information."
 msgstr "Para más información consulte la página man."
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - Ya se ha completado la descarga: %s"
+msgstr ""
 
 #: src/message.h:106
 #, c-format
@@ -1823,9 +1732,9 @@ msgid "The download was complete."
 msgstr "Se ha completado la descarga."
 
 #: src/message.h:126
-#, fuzzy, c-format
+#, c-format
 msgid "Removed %lu have entries."
-msgstr "Borrado %d tiene entradas."
+msgstr ""
 
 #: src/message.h:127
 #, c-format
@@ -1833,9 +1742,9 @@ msgid "Validating file %s"
 msgstr "Validando fichero %s"
 
 #: src/message.h:128
-#, fuzzy, c-format
+#, c-format
 msgid "%ld seconds to allocate %s byte(s)"
-msgstr "%d segundos para reservar %s byte(s)"
+msgstr ""
 
 #: src/message.h:131
 #, c-format
@@ -1921,11 +1830,9 @@ msgstr ""
 "No se puede interpretar el archivo metalink XML. puede ser XML erróneo."
 
 #: src/message.h:148
-#, fuzzy, c-format
+#, c-format
 msgid "Too small payload size for %s, size=%lu."
 msgstr ""
-"La Medida de carga útil (payload) es incorrecta para %s, medida=%d. Ha de "
-"ser %d."
 
 #: src/message.h:149
 #, c-format
@@ -1953,9 +1860,9 @@ msgid "Windows socket library initialization failed"
 msgstr "La libreria de Windows socket fallo en la inicializacion"
 
 #: src/message.h:154
-#, fuzzy, c-format
+#, c-format
 msgid "%ld second(s) has passed. Stopping application."
-msgstr "pasaron %d segundos. Deteniendo la aplicacion."
+msgstr ""
 
 #: src/message.h:155
 #, c-format
@@ -2313,11 +2220,9 @@ msgid "File %s exists, but %s does not exist."
 msgstr "fichero %s existe, pero %s no existe."
 
 #: src/message.h:254
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid payload size for %s, size=%lu. It should be %lu."
 msgstr ""
-"La Medida de carga útil (payload) es incorrecta para %s, medida=%d. Ha de "
-"ser %d."
 
 #: src/message.h:255
 #, c-format
@@ -2325,13 +2230,11 @@ msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Incorrecto ID=%d para %s. Ha de ser %d."
 
 #: src/message.h:256
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash="
 "%s, actualHash=%s"
 msgstr ""
-"Ha fallado la validación de la suma de comprobación del trozo. "
-"índiceSumacomprobación=%d, desviación=%s, HashEsperado=%s, HashActual=%s"
 
 #: src/message.h:257
 msgid "Download aborted."
@@ -2356,13 +2259,11 @@ msgid "Flooding detected."
 msgstr "Detectado sobrepasamiento."
 
 #: src/message.h:263
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%ld seconds)."
 msgstr ""
-"Liberamos la conexión debido a que no hemos intercambiado mensajes de "
-"peticiones o piezas en el periodo establecido (%d seg.)."
 
 #: src/message.h:265
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
@@ -2417,23 +2318,8 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Han ocurrido errores mientras cogíamos el puerto.\n"
 
-#~ msgid "must be either 'true' or 'false'."
-#~ msgstr "ha de ser «true» (verdadero) o «false» (falso)"
-
-#~ msgid "must be between %s and %s."
-#~ msgstr "ha de estar entre %s y %s."
-
-#~ msgid "must be smaller than or equal to %s."
-#~ msgstr "ha de ser menor o igual que %s."
-
-#~ msgid "must be greater than or equal to %s."
-#~ msgstr "ha de ser mayor o igual que %s."
-
 #~ msgid "must be a number."
 #~ msgstr "ha de ser un número."
-
-#~ msgid "must be smaller than or equal to %.1f."
-#~ msgstr "ha de ser menor o igual que %.1f."
 
 #~ msgid "must be between %.1f and %.1f."
 #~ msgstr "ha de estar entre %.1f y %.1f."
@@ -2444,38 +2330,11 @@ msgstr "Han ocurrido errores mientras cogíamos el puerto.\n"
 #~ msgid "must be one of the following:"
 #~ msgstr "ha de ser uno de los siguientes:"
 
-#, fuzzy
-#~ msgid "Unrecognized format"
-#~ msgstr "formato proxy no reconocido"
-
 #~ msgid "unrecognized proxy format"
 #~ msgstr "formato proxy no reconocido"
 
-#~ msgid "Failed to open the segment file %s, cause: %s"
-#~ msgstr "Fallo al abrir el fichero de segmentos %s, causa: %s"
-
-#~ msgid "Failed to write into the segment file %s, cause: %s"
-#~ msgstr "Fallo al escribir en el fichero de segmentos %s, causa: %s"
-
-#~ msgid "Failed to read from the segment file %s, cause: %s"
-#~ msgstr "Fallo al leer del fichero de segmentos %s, causa: %s"
-
-#~ msgid "CUID#%d - The download for one segment completed successfully."
-#~ msgstr ""
-#~ "CUID#%d - Se ha completado satisfactoriamente la descarga de un segmento."
-
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - No hay segmentos disponibles."
-
 #~ msgid "CUID#%d - Connecting to %s:%d"
 #~ msgstr "CUID#%d - Conectando a %s:%d"
-
-#~ msgid ""
-#~ "CUID#%d - The segment changed. We send the request again with new Range "
-#~ "header."
-#~ msgstr ""
-#~ "CUID#%d - El segmento ha cambiado. Enviaremos la petición otra vez con "
-#~ "una nueva cabecera de intervalo."
 
 #~ msgid "CUID#%d - Redirecting to %s"
 #~ msgstr "CUID#%d - Redirigiendo hacia %s"
@@ -2506,6 +2365,9 @@ msgstr "Han ocurrido errores mientras cogíamos el puerto.\n"
 #~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 #~ msgstr "CUID#%d - Intentado %d veces, pero sin éxito. Descarga cancelada."
 
+#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
+#~ msgstr "CUID#%d - Des-registrando cuid en el Gestor de segmentos."
+
 #~ msgid "CUID#%d - we got new piece. index=%d"
 #~ msgstr "CUID#%d - tenemos una nueva pieza. índice=%d"
 
@@ -2514,6 +2376,9 @@ msgstr "Han ocurrido errores mientras cogíamos el puerto.\n"
 
 #~ msgid "CUID#%d - Download not complete: %s"
 #~ msgstr "CUID#%d - Descarga incompleta: %s"
+
+#~ msgid "#%d - Download has already completed: %s"
+#~ msgstr "#%d - Ya se ha completado la descarga: %s"
 
 #~ msgid "CUID#%d - Good checksum: %s"
 #~ msgstr "CUID#%d - Suma de comprobación correcta: %s"
@@ -2600,9 +2465,6 @@ msgstr "Han ocurrido errores mientras cogíamos el puerto.\n"
 #~ msgid "CUID#%d - Fast extension enabled."
 #~ msgstr "CUID#%d - Extensión ràpida activada."
 
-#~ msgid "CUID#%d - Extended Messaging enabled."
-#~ msgstr "CUID#%d - Mensajes extendidos activados."
-
 #~ msgid "CUID#%d - Exception caught while allocating file space."
 #~ msgstr ""
 #~ "CUID#%d - Hemos encontrado una excepción mientras reservábamos espacio "
@@ -2639,9 +2501,225 @@ msgstr "Han ocurrido errores mientras cogíamos el puerto.\n"
 #~ msgid "CUID#%d - Creating new tracker request command #%d"
 #~ msgstr "CUID#%d - Creando una nueva orden de petición al seguidor #%d"
 
+#~ msgid "Removed %d have entries."
+#~ msgstr "Borrado %d tiene entradas."
+
+#~ msgid "%d seconds to allocate %s byte(s)"
+#~ msgstr "%d segundos para reservar %s byte(s)"
+
 #~ msgid "Dispatching FileAllocationCommand for CUID#%d."
 #~ msgstr "Ejecutando Orden de Reservar Fichero para CUID#%d."
+
+#~ msgid "Invalid payload size for %s, size=%d. It should be %d."
+#~ msgstr ""
+#~ "La Medida de carga útil (payload) es incorrecta para %s, medida=%d. Ha de "
+#~ "ser %d."
+
+#~ msgid ""
+#~ "Chunk checksum validation failed. checksumIndex=%d, offset=%s, "
+#~ "expectedHash=%s, actualHash=%s"
+#~ msgstr ""
+#~ "Ha fallado la validación de la suma de comprobación del trozo. "
+#~ "índiceSumacomprobación=%d, desviación=%s, HashEsperado=%s, HashActual=%s"
+
+#~ msgid ""
+#~ "Drop connection because no request/piece messages were exchanged in a "
+#~ "certain period(%d seconds)."
+#~ msgstr ""
+#~ "Liberamos la conexión debido a que no hemos intercambiado mensajes de "
+#~ "peticiones o piezas en el periodo establecido (%d seg.)."
+
+#~ msgid "Files:"
+#~ msgstr "Ficheros:"
+
+#~ msgid ""
+#~ " -c, --continue               Continue downloading a partially "
+#~ "downloaded\n"
+#~ "                              file. Use this option to resume a download\n"
+#~ "                              started by a web browser or another "
+#~ "program\n"
+#~ "                              which downloads files sequentially from "
+#~ "the\n"
+#~ "                              beginning. Currently this option is only\n"
+#~ "                              applicable to http(s)/ftp downloads."
+#~ msgstr ""
+#~ " -c, --continue               Continua descargando un fichero "
+#~ "parcialmente descargado.\n"
+#~ "                              Usen esta opción para seguir la descarga\n"
+#~ "                              comenzada por un navegador Web o otro "
+#~ "programa\n"
+#~ "                              que descarga los ficheros secuencialmente "
+#~ "desde el\n"
+#~ "                              principio. esta opción solamente es\n"
+#~ "                              aplicable a descargas http(s)/ftp."
+
+#~ msgid " -n, --no-netrc               Disables netrc support."
+#~ msgstr " -n, --no-netrc             Desactiva el soporte netrc."
+
+#~ msgid ""
+#~ " -S, --show-files             Print file listing of .torrent or .metalink "
+#~ "file\n"
+#~ "                              and exit. More detailed information will be "
+#~ "listed\n"
+#~ "                              in case of torrent file."
+#~ msgstr ""
+#~ " -S, --show-files             Escribe el listado de ficheros de un "
+#~ "fichero .torrent o .metalink\n"
+#~ "                              y sale. Se listará información más "
+#~ "detallada\n"
+#~ "                              en el caso de un fichero torrent."
+
+#~ msgid ""
+#~ " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
+#~ msgstr " -M, --metalink-file=METALINK_FILE El camino al fichero .metalink."
+
+#~ msgid ""
+#~ " You can specify multiple URLs. Unless you specify -Z option, all URLs "
+#~ "must\n"
+#~ " point to the same file or downloading will fail."
+#~ msgstr ""
+#~ " Se pueden poner varias URLs. A menos que se especifique la opción -Z, "
+#~ "todas las URLs han\n"
+#~ " de apuntar al mismo fichero o la descarga fallará."
+
+#~ msgid ""
+#~ " You can specify both torrent file with -T option and URLs. By doing "
+#~ "this,\n"
+#~ " download a file from both torrent swarm and http/ftp server at the same "
+#~ "time,\n"
+#~ " while the data from http/ftp are uploaded to the torrent swarm. Note "
+#~ "that\n"
+#~ " only single file torrent can be integrated with http/ftp."
+#~ msgstr ""
+#~ " Se puede poner tanto un fichero torrent con la opción -T y URLs. Así,\n"
+#~ " descargamos un fichero desde el enjambre Torrent y el servidor http/ftp "
+#~ "al mismo tiempo,\n"
+#~ " mientras las datos provinentes de http/ftp son subidos al enjambre "
+#~ "torrent. Observen que\n"
+#~ " solamente se puede integrar un único fichero con http/ftp."
+
+#~ msgid ""
+#~ "CUID#%d - The segment changed. We send the request again with new Range "
+#~ "header."
+#~ msgstr ""
+#~ "CUID#%d - El segmento ha cambiado. Enviaremos la petición otra vez con "
+#~ "una nueva cabecera de intervalo."
 
 #~ msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
 #~ msgstr ""
 #~ "CUID#%d cancela el segmento índice=%d. El CUID#%d lo gestionará ahora."
+
+#~ msgid "CUID#%d - The download for one segment completed successfully."
+#~ msgstr ""
+#~ "CUID#%d - Se ha completado satisfactoriamente la descarga de un segmento."
+
+#~ msgid "CUID#%d - No segment available."
+#~ msgstr "CUID#%d - No hay segmentos disponibles."
+
+#~ msgid "Failed to open the segment file %s, cause: %s"
+#~ msgstr "Fallo al abrir el fichero de segmentos %s, causa: %s"
+
+#~ msgid "Failed to write into the segment file %s, cause: %s"
+#~ msgstr "Fallo al escribir en el fichero de segmentos %s, causa: %s"
+
+#~ msgid "Failed to read from the segment file %s, cause: %s"
+#~ msgstr "Fallo al leer del fichero de segmentos %s, causa: %s"
+
+#~ msgid "CUID#%d - Extended Messaging enabled."
+#~ msgstr ""
+#~ "Copy text   \t\n"
+#~ "CUID#%d - Mensajes extendidos activados."
+
+#~ msgid "%d second(s) has passed. Stopping application."
+#~ msgstr "pasaron %d segundos. Deteniendo la aplicacion."
+
+#~ msgid " --enable-dht[=true|false]    Enable DHT functionality."
+#~ msgstr " --enable-dht[=true|false]    Habilitar funcionanlidad DHT."
+
+#~ msgid "must be smaller than or equal to %s."
+#~ msgstr "ha de ser menor o igual que %s."
+
+#~ msgid "must be between %s and %s."
+#~ msgstr "ha de estar entre %s y %s."
+
+#~ msgid "must be smaller than or equal to %.1f."
+#~ msgstr "ha de ser menor o igual que %.1f."
+
+#~ msgid "must be greater than or equal to %s."
+#~ msgstr "ha de ser mayor o igual que %s."
+
+#~ msgid " -D, --daemon                 Run as daemon."
+#~ msgstr " -D, --daemon                 Ejecutar como demonio."
+
+#~ msgid ""
+#~ " --retry-wait=SEC             Set the seconds to wait to retry after an "
+#~ "error\n"
+#~ "                              has occured."
+#~ msgstr ""
+#~ " --retry-wait=SEG             Establecer los segundos para el siguiente \n"
+#~ "                              intento tras un error."
+
+#~ msgid ""
+#~ " --http-proxy=PROXY           Use this proxy server for HTTP.\n"
+#~ "                              See also  --all-proxy option.\n"
+#~ "                              This affects all URLs."
+#~ msgstr ""
+#~ " --http-proxy=PROXY           Usar este servidor proxy para HTTP.\n"
+#~ "                              Vea también la opción --all-proxy.\n"
+#~ "                              Afecta a todas las URL."
+
+#~ msgid ""
+#~ " -s, --split=N                Download a file using N connections. If "
+#~ "more\n"
+#~ "                              than N URLs are given, first N URLs are "
+#~ "used and\n"
+#~ "                              remaining URLs are used for backup. If less "
+#~ "than\n"
+#~ "                              N URLs are given, those URLs are used more "
+#~ "than\n"
+#~ "                              once so that N connections total are made\n"
+#~ "                              simultaneously. Please see -j option too.\n"
+#~ "                              Please note that in Metalink download, "
+#~ "this\n"
+#~ "                              option has no effect and use -C option "
+#~ "instead."
+#~ msgstr ""
+#~ " -s, --split=N                Descargar un archivo usando N conexiones. "
+#~ "Si\n"
+#~ "                              hay más de N URL, se usarán las N primeras "
+#~ "para\n"
+#~ "                              descargar y el resto como respaldo. Si hay "
+#~ "menos \n"
+#~ "                              de N, se usarán algunas URL más de una vez "
+#~ "para\n"
+#~ "                              que haya un total de N conexiones "
+#~ "simultáneas. \n"
+#~ "                              Vea también la opción -j. Tenga en cuenta "
+#~ "que \n"
+#~ "                              esta opción no funciona para descargas "
+#~ "Metalink, \n"
+#~ "                              donde se usa la opción -C en su lugar."
+
+#~ msgid ""
+#~ " --https-proxy=PROXY          Use this proxy server for HTTPS.\n"
+#~ "                              See also  --all-proxy option.\n"
+#~ "                              This affects all URLs."
+#~ msgstr ""
+#~ " --https-proxy=PROXY          Usar este servidor proxy para HTTPS.\n"
+#~ "                              Vea también la opción --all-proxy.\n"
+#~ "                              Afecta a todas las URL."
+
+#~ msgid ""
+#~ " --ftp-proxy=PROXY            Use this proxy server for FTP.\n"
+#~ "                              See also  --all-proxy option.\n"
+#~ "                              This affects all URLs."
+#~ msgstr ""
+#~ " --ftp-proxy=PROXY            Usar este servidor proxy para FTP.\n"
+#~ "                              Vea también la opción --all-proxy.\n"
+#~ "                              Afecta a todas las URL."
+
+#~ msgid " -o, --out=FILE               The file name of the downloaded file."
+#~ msgstr " -o, --out=ARCHIVO               El nombre del archivo descargado."
+
+#~ msgid "must be either 'true' or 'false'."
+#~ msgstr "ha de ser «true» (verdadero) o «false» (falso)"

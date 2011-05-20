@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2011-05-20 23:54+0900\n"
-"PO-Revision-Date: 2010-12-10 12:43+0000\n"
-"Last-Translator: luojie-dune <Unknown>\n"
+"PO-Revision-Date: 2011-04-30 04:19+0000\n"
+"Last-Translator: Tom Robert <Unknown>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-01-10 03:56+0000\n"
-"X-Generator: Launchpad (build 12161)\n"
+"X-Launchpad-Export-Date: 2011-05-20 14:56+0000\n"
+"X-Generator: Launchpad (build 13085)\n"
 
 #: src/DownloadEngine.cc:228
 msgid ""
@@ -90,6 +90,10 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
+" -D, --daemon[=true|false]    以守护进程运行。 当前工作目录会\n"
+"                              改变到 \"/\" ，同时标准输入输出和标准错误信息\n"
+"                              会重定向到\n"
+"                              \"/dev/null\"."
 
 #: src/usage_text.h:50
 msgid ""
@@ -121,13 +125,15 @@ msgstr ""
 "                              选项不起作用，请使用-C选项。"
 
 #: src/usage_text.h:62
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait between retries. \n"
 "                              With SEC > 0, aria2 will retry download when "
 "the\n"
 "                              HTTP server returns 503 response."
-msgstr " --retry-wait=SEC 设置出错后等待的秒数。"
+msgstr ""
+" --retry-wait=SEC             设置重试时间隔的秒数。 \n"
+"                              在 SEC > 0 时aria2会在HTTP服务器返回\n"
+"                              503 响应时重试下载"
 
 #: src/usage_text.h:66
 msgid " -t, --timeout=SEC            Set timeout in seconds."
@@ -463,10 +469,9 @@ msgstr " -U, --user-agent=USER_AGENT 为http(s)下载设置用户代理。"
 
 #: src/usage_text.h:212
 msgid " -n, --no-netrc[=true|false]  Disables netrc support."
-msgstr ""
+msgstr " -n, --no-netrc[=true|false]  禁止 netrc 支持。"
 
 #: src/usage_text.h:214
-#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -483,14 +488,6 @@ msgid ""
 "page\n"
 "                              for details."
 msgstr ""
-" -i, --input-file=FILE 下载在FILE中找到的链接。您可以为单个实体指定\n"
-"                              多个链接：在同一行中使用TAB制表符\n"
-"                              分隔多个链接。指定'-'时则从标准输\n"
-"                              入（通常是键盘、鼠标）读取输入。\n"
-"                              可以在每行链接的后面指定附加的out\n"
-"                              和dir选项。此选项行以空白开始。参\n"
-"                              阅man页面的INPUT FILE小节可以了\n"
-"                              解详细信息。"
 
 #: src/usage_text.h:224
 msgid ""
@@ -525,16 +522,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:236
-#, fuzzy
 msgid ""
 " -S, --show-files[=true|false] Print file listing of .torrent, .meta4 and\n"
 "                              .metalink file and exit. More detailed\n"
 "                              information will be listed in case of torrent\n"
 "                              file."
 msgstr ""
-" -S, --show-files 打印.torrent或.metalink文件的列表并退出。\n"
-"                              更多详细信息将在torrent文件\n"
-"                              的实例中列出。"
 
 #: src/usage_text.h:241
 msgid ""
@@ -772,16 +765,12 @@ msgstr ""
 "                              也可以参阅--bt-request-peer-speed-limit选项。"
 
 #: src/usage_text.h:341
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .meta4 and ."
 "metalink\n"
 "                              file. Reads input from stdin when '-' is\n"
 "                              specified."
 msgstr ""
-" --metalink-location=LOCATION[,...] 首选服务器的位置。\n"
-"                              可以使用以英文逗号分隔\n"
-"                              位置的列表。"
 
 #: src/usage_text.h:345
 msgid ""
@@ -838,7 +827,6 @@ msgstr ""
 "                              有首选协议，请指定'none'。"
 
 #: src/usage_text.h:367
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .meta4 or .metalink, or "
@@ -855,15 +843,6 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --follow-metalink=true|false|mem 如果指定true或mem，当下载后缀为\n"
-"                              .metaink或内容类型为\n"
-"                              application/metalink+xml的文件时，\n"
-"                              aria2将分析其为metalink文件并其中的\n"
-"                              文件。\n"
-"                              如果指定mem，metalink文件将不被写\n"
-"                              入磁盘，但只保留其在内存当中。\n"
-"                              如果指定false，将不会采取上述提及\n"
-"                              的动作。"
 
 #: src/usage_text.h:378
 msgid ""
@@ -1644,7 +1623,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:752
-#, fuzzy
 msgid ""
 " --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1652,10 +1630,6 @@ msgid ""
 "                              password using --rpc-user and --rpc-passwd\n"
 "                              option. See also --rpc-listen-port option."
 msgstr ""
-" --server-stat-if=FILE 指定要加载的服务器的性能配置文件的名称。\n"
-"                              加载的数据将被用在\n"
-"                              某些URI选择器之中，比如'feedback'。\n"
-"                              也可以参阅--uri-selector选项"
 
 #: src/usage_text.h:757
 msgid ""
@@ -1667,17 +1641,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:761
-#, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
-msgstr " --ftp-user=USER 设置FTP用户。此设置对所有链接有效。"
+msgstr ""
 
 #: src/usage_text.h:763
-#, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
-msgstr " --ftp-passwd=PASSWD 设置FTP密码。此设置对所有链接有效。"
+msgstr ""
 
 #: src/usage_text.h:765
-#, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
 "all\n"
@@ -1685,9 +1656,6 @@ msgid ""
 "only\n"
 "                              on local loopback interface."
 msgstr ""
-" -Z, --force-sequential[=true|false] 继续从命令行获取链接，\n"
-"                              并以单独的会话下载每个链接，\n"
-"                              如同常见的命令行下载工具。"
 
 #: src/usage_text.h:769
 msgid ""
@@ -1729,7 +1697,6 @@ msgid " --show-console-readout[=true|false] Show console readout."
 msgstr ""
 
 #: src/usage_text.h:787
-#, fuzzy
 msgid ""
 " --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
 "                              metalink:url and metalink:metaurl element in "
@@ -1738,9 +1705,6 @@ msgid ""
 "points\n"
 "                              to a directory, URI must end with '/'."
 msgstr ""
-" -S, --show-files 打印.torrent或.metalink文件的列表并退出。\n"
-"                              更多详细信息将在torrent文件\n"
-"                              的实例中列出。"
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -2728,6 +2692,31 @@ msgstr "绑定端口时发生错误。\n"
 #~ "                              文件时以计算检验和的方式\n"
 #~ "                              校验数据块。"
 
+#~ msgid ""
+#~ " -i, --input-file=FILE        Downloads URIs found in FILE. You can "
+#~ "specify\n"
+#~ "                              multiple URIs for a single entity: "
+#~ "separate\n"
+#~ "                              URIs on a single line using the TAB "
+#~ "character.\n"
+#~ "                              Reads input from stdin when '-' is "
+#~ "specified.\n"
+#~ "                              The additional out and dir options can be\n"
+#~ "                              specified after each line of URIs. This "
+#~ "optional\n"
+#~ "                              line must start with white space(s). See "
+#~ "INPUT\n"
+#~ "                              FILE section of man page for details."
+#~ msgstr ""
+#~ " -i, --input-file=FILE 下载在FILE中找到的链接。您可以为单个实体指定\n"
+#~ "                              多个链接：在同一行中使用TAB制表符\n"
+#~ "                              分隔多个链接。指定'-'时则从标准输\n"
+#~ "                              入（通常是键盘、鼠标）读取输入。\n"
+#~ "                              可以在每行链接的后面指定附加的out\n"
+#~ "                              和dir选项。此选项行以空白开始。参\n"
+#~ "                              阅man页面的INPUT FILE小节可以了\n"
+#~ "                              解详细信息。"
+
 #~ msgid " -n, --no-netrc               Disables netrc support."
 #~ msgstr " -n, --no-netrc 禁止netrc支持。"
 
@@ -2738,6 +2727,17 @@ msgstr "绑定端口时发生错误。\n"
 #~ msgstr ""
 #~ " --direct-file-mapping=true|false 直接读写.torrent文件中\n"
 #~ "                              提及的每个文件。"
+
+#~ msgid ""
+#~ " -S, --show-files             Print file listing of .torrent or .metalink "
+#~ "file\n"
+#~ "                              and exit. More detailed information will be "
+#~ "listed\n"
+#~ "                              in case of torrent file."
+#~ msgstr ""
+#~ " -S, --show-files 打印.torrent或.metalink文件的列表并退出。\n"
+#~ "                              更多详细信息将在torrent文件\n"
+#~ "                              的实例中列出。"
 
 #~ msgid ""
 #~ " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
@@ -2826,6 +2826,34 @@ msgstr "绑定端口时发生错误。\n"
 #~ "                              的单词以嘴匹配的方式搜索选项名\n"
 #~ "                              称并打印结果。"
 
+#~ msgid ""
+#~ " --follow-metalink=true|false|mem If true or mem is specified, when a "
+#~ "file\n"
+#~ "                              whose suffix is .metaink or content type "
+#~ "of\n"
+#~ "                              application/metalink+xml is downloaded, "
+#~ "aria2\n"
+#~ "                              parses it as a metalink file and downloads "
+#~ "files\n"
+#~ "                              mentioned in it.\n"
+#~ "                              If mem is specified, a metalink file is "
+#~ "not\n"
+#~ "                              written to the disk, but is just kept in "
+#~ "memory.\n"
+#~ "                              If false is specified, the action mentioned "
+#~ "above\n"
+#~ "                              is not taken."
+#~ msgstr ""
+#~ " --follow-metalink=true|false|mem 如果指定true或mem，当下载后缀为\n"
+#~ "                              .metaink或内容类型为\n"
+#~ "                              application/metalink+xml的文件时，\n"
+#~ "                              aria2将分析其为metalink文件并其中的\n"
+#~ "                              文件。\n"
+#~ "                              如果指定mem，metalink文件将不被写\n"
+#~ "                              入磁盘，但只保留其在内存当中。\n"
+#~ "                              如果指定false，将不会采取上述提及\n"
+#~ "                              的动作。"
+
 #~ msgid " --no-conf                    Disable loading aria2.conf file."
 #~ msgstr " --no-conf 禁止加载aria2.conf文件。"
 
@@ -2848,6 +2876,12 @@ msgstr "绑定端口时发生错误。\n"
 
 #~ msgid "CUID#%d - Abort requested."
 #~ msgstr "CUID#%d - 被请求中止。"
+
+#~ msgid ""
+#~ " --retry-wait=SEC             Set the seconds to wait to retry after an "
+#~ "error\n"
+#~ "                              has occured."
+#~ msgstr " --retry-wait=SEC 设置出错后等待的秒数。"
 
 #~ msgid ""
 #~ "CUID#%d - Reject piece message in queue because cancel message received. "
