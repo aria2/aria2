@@ -99,8 +99,9 @@ if test "x$with_sqlite3" = "xyes"; then
 fi
 
 if test "x$with_gnutls" = "xyes"; then
-  # gnutls >= 2.8 doesn't have libgnutls-config anymore.
-  PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 1.2.9],
+  # gnutls >= 2.8 doesn't have libgnutls-config anymore. We require
+  # 2.2.0 because we use gnutls_priority_set_direct()
+  PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 2.2.0],
                     [have_libgnutls=yes], [have_libgnutls=no])
   if test "x$have_libgnutls" = "xyes"; then
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
