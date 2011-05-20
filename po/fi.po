@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-03-18 23:58+0900\n"
+"POT-Creation-Date: 2011-05-20 23:54+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:233
+#: src/DownloadEngine.cc:228
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "Sammutus alkaa... Paina Ctrl-C uudestaan hätäsammutukselle."
 
-#: src/DownloadEngine.cc:240
+#: src/DownloadEngine.cc:235
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Hätäsammutus alkaa..."
 
@@ -39,11 +39,11 @@ msgstr ""
 "Jos virheitä tapahtuu, katso lokitiedostoa. Ks. '-l' parametri ohjeessa/man-"
 "sivulla."
 
-#: src/RequestGroupMan.cc:600
+#: src/RequestGroupMan.cc:602
 msgid "Download Results:"
 msgstr "Lataustulokset:"
 
-#: src/RequestGroupMan.cc:634
+#: src/RequestGroupMan.cc:636
 msgid "Status Legend:"
 msgstr "Tilalegenda:"
 
@@ -1754,7 +1754,9 @@ msgid ""
 "                              option on restart. Please note that downloads\n"
 "                              added by aria2.addTorrent and aria2."
 "addMetalink\n"
-"                              RPC method are not saved."
+"                              RPC method and whose metadata could not be "
+"saved\n"
+"                              as a file will not be saved."
 msgstr ""
 " --file-allocation=METODI Aseta tiedostojen varausmetodi. METODI on joko\n"
 "                              'none' tai 'prealloc'. 'none' ei varaa tilaa "
@@ -1765,7 +1767,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:673
+#: src/usage_text.h:674
 #, fuzzy
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
@@ -1775,7 +1777,7 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:676
+#: src/usage_text.h:677
 #, fuzzy
 msgid ""
 " -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
@@ -1797,7 +1799,7 @@ msgstr ""
 "                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
 "= 1024K)"
 
-#: src/usage_text.h:685
+#: src/usage_text.h:686
 #, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
@@ -1811,7 +1813,7 @@ msgstr ""
 "                             joka mainitaan .torrent-tiedostossa\n"
 "                             Oletus: true"
 
-#: src/usage_text.h:689
+#: src/usage_text.h:690
 #, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
@@ -1835,7 +1837,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:697
+#: src/usage_text.h:698
 #, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
@@ -1849,7 +1851,7 @@ msgstr ""
 "                              varatessa tilaa.\n"
 "                              Älä käytä, jos kohtaat virheitä"
 
-#: src/usage_text.h:701
+#: src/usage_text.h:702
 #, fuzzy
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
@@ -1864,7 +1866,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:706
+#: src/usage_text.h:707
 msgid ""
 " --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n"
 "                              It should be a global unicast IPv6 address of "
@@ -1872,7 +1874,7 @@ msgid ""
 "                              host."
 msgstr ""
 
-#: src/usage_text.h:710
+#: src/usage_text.h:711
 #, fuzzy
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
@@ -1882,13 +1884,13 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:713
+#: src/usage_text.h:714
 #, fuzzy
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
 msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
 
-#: src/usage_text.h:715
+#: src/usage_text.h:716
 #, fuzzy
 msgid ""
 " --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n"
@@ -1908,7 +1910,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:721
+#: src/usage_text.h:722
 msgid ""
 " --bt-exclude-tracker=URI[,...] Comma separated list of BitTorrent "
 "tracker's\n"
@@ -1921,7 +1923,7 @@ msgid ""
 "                              See also --bt-tracker option."
 msgstr ""
 
-#: src/usage_text.h:728
+#: src/usage_text.h:729
 msgid ""
 " --max-download-result=NUM    Set maximum number of download result kept in\n"
 "                              memory. The download results are completed/"
@@ -1942,7 +1944,7 @@ msgid ""
 "                              download result is kept."
 msgstr ""
 
-#: src/usage_text.h:740
+#: src/usage_text.h:741
 msgid ""
 " --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server "
 "address\n"
@@ -1961,7 +1963,7 @@ msgid ""
 "                              permission to create it."
 msgstr ""
 
-#: src/usage_text.h:751
+#: src/usage_text.h:752
 #, fuzzy
 msgid ""
 " --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
@@ -1976,7 +1978,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:756
+#: src/usage_text.h:757
 msgid ""
 " --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If "
 "aria2\n"
@@ -1985,19 +1987,19 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:760
+#: src/usage_text.h:761
 #, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
 msgstr ""
 " -http-user=USER Aseta http-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:762
+#: src/usage_text.h:763
 #, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
 msgstr ""
 " --http-passwd=SALASANA Aseta http-salasana. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:764
+#: src/usage_text.h:765
 #, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
@@ -2012,7 +2014,7 @@ msgstr ""
 "                              tavalliset komentorivilatausapuohjelmat.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:768
+#: src/usage_text.h:769
 #, fuzzy
 msgid ""
 " --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC "
@@ -2022,40 +2024,58 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:771
+#: src/usage_text.h:772
 #, fuzzy
 msgid " --enable-xml-rpc[=true|false] Deprecated. Use --enable-rpc instead."
 msgstr ""
 " --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:773
+#: src/usage_text.h:774
 msgid ""
 " --xml-rpc-max-request-size=SIZE Deprecated. Use --rpc-max-request-size\n"
 "                              instead."
 msgstr ""
 
-#: src/usage_text.h:776
+#: src/usage_text.h:777
 #, fuzzy
 msgid " --xml-rpc-user=USER          Deprecated. Use --rpc-user instead."
 msgstr ""
 " -http-user=USER Aseta http-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:778
+#: src/usage_text.h:779
 #, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Deprecated. Use --rpc-passwd instead."
 msgstr ""
 " --http-passwd=SALASANA Aseta http-salasana. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:780
+#: src/usage_text.h:781
 msgid ""
 " --xml-rpc-listen-all[=true|false] Deprecated. Use --rpc-listen-all instead."
 msgstr ""
 
-#: src/usage_text.h:782
+#: src/usage_text.h:783
 msgid ""
 " --xml-rpc-listen-port=PORT   Deprecated. Use --rpc-listen-port instead."
 msgstr ""
+
+#: src/usage_text.h:785
+msgid " --show-console-readout[=true|false] Show console readout."
+msgstr ""
+
+#: src/usage_text.h:787
+#, fuzzy
+msgid ""
+" --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
+"                              metalink:url and metalink:metaurl element in "
+"a\n"
+"                              metalink file stored in local disk. If URI "
+"points\n"
+"                              to a directory, URI must end with '/'."
+msgstr ""
+" -S, --show-files Tulosta .torrent- tai .metalink-tiedoston tiedostolista ja "
+"lopeta.\n"
+"                              Torrent-tiedostot sisältävät enemmän tietoa."
 
 #: src/version_usage.cc:57
 msgid " version "

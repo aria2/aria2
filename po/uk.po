@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-03-18 23:58+0900\n"
+"POT-Creation-Date: 2011-05-20 23:54+0900\n"
 "PO-Revision-Date: 2010-10-20 11:34+0000\n"
 "Last-Translator: Localizator <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -18,14 +18,14 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-11-01 11:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/DownloadEngine.cc:233
+#: src/DownloadEngine.cc:228
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Розпочинається послідовність операцій термінового вимкнення... Натисніть "
 "знов Ctrl-C для невідкладного вимкнення."
 
-#: src/DownloadEngine.cc:240
+#: src/DownloadEngine.cc:235
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Розпочинається послідовність операцій термінового вимкнення..."
 
@@ -41,11 +41,11 @@ msgstr ""
 "При наявності помилок дивіться log файл. Дивіться параметр '-l' в допомозі "
 "(help/man-сторінки) для детальнішої інформації."
 
-#: src/RequestGroupMan.cc:600
+#: src/RequestGroupMan.cc:602
 msgid "Download Results:"
 msgstr "Результати завантаження:"
 
-#: src/RequestGroupMan.cc:634
+#: src/RequestGroupMan.cc:636
 msgid "Status Legend:"
 msgstr "Роз'яснення позначень:"
 
@@ -1833,7 +1833,9 @@ msgid ""
 "                              option on restart. Please note that downloads\n"
 "                              added by aria2.addTorrent and aria2."
 "addMetalink\n"
-"                              RPC method are not saved."
+"                              RPC method and whose metadata could not be "
+"saved\n"
+"                              as a file will not be saved."
 msgstr ""
 " --ca-certificate=FILE Використовувати сертифікат авторизації в FILE задля "
 "перевірки\n"
@@ -1844,14 +1846,14 @@ msgstr ""
 "аби дозволити\n"
 "                              перевірку."
 
-#: src/usage_text.h:673
+#: src/usage_text.h:674
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
 "one\n"
 "                              server for each download."
 msgstr ""
 
-#: src/usage_text.h:676
+#: src/usage_text.h:677
 msgid ""
 " -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
 "range.\n"
@@ -1868,7 +1870,7 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
 
-#: src/usage_text.h:685
+#: src/usage_text.h:686
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
 "older\n"
@@ -1877,7 +1879,7 @@ msgid ""
 "                              many limitations. See man page for details."
 msgstr ""
 
-#: src/usage_text.h:689
+#: src/usage_text.h:690
 #, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
@@ -1905,7 +1907,7 @@ msgstr ""
 "того, щоб з'ясувати\n"
 "                              вимоги до COMMAND."
 
-#: src/usage_text.h:697
+#: src/usage_text.h:698
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
 "asynchronous\n"
@@ -1914,7 +1916,7 @@ msgid ""
 "                              --async-dns=false."
 msgstr ""
 
-#: src/usage_text.h:701
+#: src/usage_text.h:702
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
 "                              Use --dht-listen-port option to specify port\n"
@@ -1923,7 +1925,7 @@ msgid ""
 "                              option."
 msgstr ""
 
-#: src/usage_text.h:706
+#: src/usage_text.h:707
 msgid ""
 " --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n"
 "                              It should be a global unicast IPv6 address of "
@@ -1931,19 +1933,19 @@ msgid ""
 "                              host."
 msgstr ""
 
-#: src/usage_text.h:710
+#: src/usage_text.h:711
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
 "DHT\n"
 "                              network."
 msgstr ""
 
-#: src/usage_text.h:713
+#: src/usage_text.h:714
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
 msgstr ""
 
-#: src/usage_text.h:715
+#: src/usage_text.h:716
 msgid ""
 " --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n"
 "                              tracker's announce URI. These URIs are not\n"
@@ -1954,7 +1956,7 @@ msgid ""
 "                              option are removed."
 msgstr ""
 
-#: src/usage_text.h:721
+#: src/usage_text.h:722
 msgid ""
 " --bt-exclude-tracker=URI[,...] Comma separated list of BitTorrent "
 "tracker's\n"
@@ -1967,7 +1969,7 @@ msgid ""
 "                              See also --bt-tracker option."
 msgstr ""
 
-#: src/usage_text.h:728
+#: src/usage_text.h:729
 msgid ""
 " --max-download-result=NUM    Set maximum number of download result kept in\n"
 "                              memory. The download results are completed/"
@@ -1988,7 +1990,7 @@ msgid ""
 "                              download result is kept."
 msgstr ""
 
-#: src/usage_text.h:740
+#: src/usage_text.h:741
 msgid ""
 " --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server "
 "address\n"
@@ -2007,7 +2009,7 @@ msgid ""
 "                              permission to create it."
 msgstr ""
 
-#: src/usage_text.h:751
+#: src/usage_text.h:752
 #, fuzzy
 msgid ""
 " --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
@@ -2024,7 +2026,7 @@ msgstr ""
 "                              --xml-rpc-passwd. Дивіться також параметр --"
 "xml-rpc-listen-port."
 
-#: src/usage_text.h:756
+#: src/usage_text.h:757
 #, fuzzy
 msgid ""
 " --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If "
@@ -2039,17 +2041,17 @@ msgstr ""
 "байтів, тоді\n"
 "                              з'єднання буде скасовано."
 
-#: src/usage_text.h:760
+#: src/usage_text.h:761
 #, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
 msgstr " --xml-rpc-user=USER Встановити XML-RPC користувача."
 
-#: src/usage_text.h:762
+#: src/usage_text.h:763
 #, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
 msgstr " --xml-rpc-passwd=PASSWD Вказати XML-RPC пароль."
 
-#: src/usage_text.h:764
+#: src/usage_text.h:765
 #, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
@@ -2064,7 +2066,7 @@ msgstr ""
 "прослуховує лишень\n"
 "                              на локальному loopback (127.0.0.1) інтерфейсі."
 
-#: src/usage_text.h:768
+#: src/usage_text.h:769
 #, fuzzy
 msgid ""
 " --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC "
@@ -2074,35 +2076,54 @@ msgstr ""
 " --xml-rpc-listen-port=PORT Вказати номер порта для прослуховування XML-RPC\n"
 "                              сервера."
 
-#: src/usage_text.h:771
+#: src/usage_text.h:772
 msgid " --enable-xml-rpc[=true|false] Deprecated. Use --enable-rpc instead."
 msgstr ""
 
-#: src/usage_text.h:773
+#: src/usage_text.h:774
 msgid ""
 " --xml-rpc-max-request-size=SIZE Deprecated. Use --rpc-max-request-size\n"
 "                              instead."
 msgstr ""
 
-#: src/usage_text.h:776
+#: src/usage_text.h:777
 #, fuzzy
 msgid " --xml-rpc-user=USER          Deprecated. Use --rpc-user instead."
 msgstr " --xml-rpc-user=USER Встановити XML-RPC користувача."
 
-#: src/usage_text.h:778
+#: src/usage_text.h:779
 #, fuzzy
 msgid " --xml-rpc-passwd=PASSWD      Deprecated. Use --rpc-passwd instead."
 msgstr " --xml-rpc-passwd=PASSWD Вказати XML-RPC пароль."
 
-#: src/usage_text.h:780
+#: src/usage_text.h:781
 msgid ""
 " --xml-rpc-listen-all[=true|false] Deprecated. Use --rpc-listen-all instead."
 msgstr ""
 
-#: src/usage_text.h:782
+#: src/usage_text.h:783
 msgid ""
 " --xml-rpc-listen-port=PORT   Deprecated. Use --rpc-listen-port instead."
 msgstr ""
+
+#: src/usage_text.h:785
+msgid " --show-console-readout[=true|false] Show console readout."
+msgstr ""
+
+#: src/usage_text.h:787
+#, fuzzy
+msgid ""
+" --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
+"                              metalink:url and metalink:metaurl element in "
+"a\n"
+"                              metalink file stored in local disk. If URI "
+"points\n"
+"                              to a directory, URI must end with '/'."
+msgstr ""
+" -S, --show-files Вивести перелік із файлу .torrent або з файлу .metalink\n"
+"                              та вийти. Більш детальна інформація буде "
+"перелічена\n"
+"                              для торент файлу."
 
 #: src/version_usage.cc:57
 msgid " version "

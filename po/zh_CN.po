@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-03-18 23:58+0900\n"
+"POT-Creation-Date: 2011-05-20 23:54+0900\n"
 "PO-Revision-Date: 2010-12-10 12:43+0000\n"
 "Last-Translator: luojie-dune <Unknown>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-01-10 03:56+0000\n"
 "X-Generator: Launchpad (build 12161)\n"
 
-#: src/DownloadEngine.cc:233
+#: src/DownloadEngine.cc:228
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "正在关闭程序... 紧急关闭请再按Ctrl-C"
 
-#: src/DownloadEngine.cc:240
+#: src/DownloadEngine.cc:235
 msgid "Emergency shutdown sequence commencing..."
 msgstr "紧急关闭程序..."
 
@@ -39,11 +39,11 @@ msgstr ""
 "如果发生任何错误，请参阅日志文件。要了解详细信息，请在help/man页面中参阅'-"
 "l'选项。"
 
-#: src/RequestGroupMan.cc:600
+#: src/RequestGroupMan.cc:602
 msgid "Download Results:"
 msgstr "下载结果："
 
-#: src/RequestGroupMan.cc:634
+#: src/RequestGroupMan.cc:636
 msgid "Status Legend:"
 msgstr "状态标识："
 
@@ -1474,6 +1474,7 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:667
+#, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
 "exit.\n"
@@ -1482,17 +1483,25 @@ msgid ""
 "                              option on restart. Please note that downloads\n"
 "                              added by aria2.addTorrent and aria2."
 "addMetalink\n"
-"                              RPC method are not saved."
+"                              RPC method and whose metadata could not be "
+"saved\n"
+"                              as a file will not be saved."
 msgstr ""
+" --all-proxy=PROXY 对于所有协议都使用此代理服务器。\n"
+"                              您可以修改此设置并使用--http-proxy、\n"
+"                              --https-proxy和--ftp-proxy选项为\n"
+"                              为特定的协议指定代理服务器。\n"
+"                              \n"
+"                              此设置对所有链接有效。"
 
-#: src/usage_text.h:673
+#: src/usage_text.h:674
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
 "one\n"
 "                              server for each download."
 msgstr ""
 
-#: src/usage_text.h:676
+#: src/usage_text.h:677
 msgid ""
 " -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
 "range.\n"
@@ -1509,7 +1518,7 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
 
-#: src/usage_text.h:685
+#: src/usage_text.h:686
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
 "older\n"
@@ -1518,7 +1527,7 @@ msgid ""
 "                              many limitations. See man page for details."
 msgstr ""
 
-#: src/usage_text.h:689
+#: src/usage_text.h:690
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
 "                              --on-download-complete is called after "
@@ -1532,7 +1541,7 @@ msgid ""
 "                              requirement of COMMAND."
 msgstr ""
 
-#: src/usage_text.h:697
+#: src/usage_text.h:698
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
 "asynchronous\n"
@@ -1541,7 +1550,7 @@ msgid ""
 "                              --async-dns=false."
 msgstr ""
 
-#: src/usage_text.h:701
+#: src/usage_text.h:702
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
 "                              Use --dht-listen-port option to specify port\n"
@@ -1550,7 +1559,7 @@ msgid ""
 "                              option."
 msgstr ""
 
-#: src/usage_text.h:706
+#: src/usage_text.h:707
 msgid ""
 " --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n"
 "                              It should be a global unicast IPv6 address of "
@@ -1558,19 +1567,19 @@ msgid ""
 "                              host."
 msgstr ""
 
-#: src/usage_text.h:710
+#: src/usage_text.h:711
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
 "DHT\n"
 "                              network."
 msgstr ""
 
-#: src/usage_text.h:713
+#: src/usage_text.h:714
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
 msgstr ""
 
-#: src/usage_text.h:715
+#: src/usage_text.h:716
 msgid ""
 " --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n"
 "                              tracker's announce URI. These URIs are not\n"
@@ -1581,7 +1590,7 @@ msgid ""
 "                              option are removed."
 msgstr ""
 
-#: src/usage_text.h:721
+#: src/usage_text.h:722
 msgid ""
 " --bt-exclude-tracker=URI[,...] Comma separated list of BitTorrent "
 "tracker's\n"
@@ -1594,7 +1603,7 @@ msgid ""
 "                              See also --bt-tracker option."
 msgstr ""
 
-#: src/usage_text.h:728
+#: src/usage_text.h:729
 msgid ""
 " --max-download-result=NUM    Set maximum number of download result kept in\n"
 "                              memory. The download results are completed/"
@@ -1615,7 +1624,7 @@ msgid ""
 "                              download result is kept."
 msgstr ""
 
-#: src/usage_text.h:740
+#: src/usage_text.h:741
 msgid ""
 " --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server "
 "address\n"
@@ -1634,7 +1643,7 @@ msgid ""
 "                              permission to create it."
 msgstr ""
 
-#: src/usage_text.h:751
+#: src/usage_text.h:752
 #, fuzzy
 msgid ""
 " --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
@@ -1648,7 +1657,7 @@ msgstr ""
 "                              某些URI选择器之中，比如'feedback'。\n"
 "                              也可以参阅--uri-selector选项"
 
-#: src/usage_text.h:756
+#: src/usage_text.h:757
 msgid ""
 " --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If "
 "aria2\n"
@@ -1657,17 +1666,17 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:760
+#: src/usage_text.h:761
 #, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
 msgstr " --ftp-user=USER 设置FTP用户。此设置对所有链接有效。"
 
-#: src/usage_text.h:762
+#: src/usage_text.h:763
 #, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
 msgstr " --ftp-passwd=PASSWD 设置FTP密码。此设置对所有链接有效。"
 
-#: src/usage_text.h:764
+#: src/usage_text.h:765
 #, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
@@ -1680,40 +1689,58 @@ msgstr ""
 "                              并以单独的会话下载每个链接，\n"
 "                              如同常见的命令行下载工具。"
 
-#: src/usage_text.h:768
+#: src/usage_text.h:769
 msgid ""
 " --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC "
 "server\n"
 "                              to listen to."
 msgstr ""
 
-#: src/usage_text.h:771
+#: src/usage_text.h:772
 msgid " --enable-xml-rpc[=true|false] Deprecated. Use --enable-rpc instead."
 msgstr ""
 
-#: src/usage_text.h:773
+#: src/usage_text.h:774
 msgid ""
 " --xml-rpc-max-request-size=SIZE Deprecated. Use --rpc-max-request-size\n"
 "                              instead."
 msgstr ""
 
-#: src/usage_text.h:776
+#: src/usage_text.h:777
 msgid " --xml-rpc-user=USER          Deprecated. Use --rpc-user instead."
 msgstr ""
 
-#: src/usage_text.h:778
+#: src/usage_text.h:779
 msgid " --xml-rpc-passwd=PASSWD      Deprecated. Use --rpc-passwd instead."
 msgstr ""
 
-#: src/usage_text.h:780
+#: src/usage_text.h:781
 msgid ""
 " --xml-rpc-listen-all[=true|false] Deprecated. Use --rpc-listen-all instead."
 msgstr ""
 
-#: src/usage_text.h:782
+#: src/usage_text.h:783
 msgid ""
 " --xml-rpc-listen-port=PORT   Deprecated. Use --rpc-listen-port instead."
 msgstr ""
+
+#: src/usage_text.h:785
+msgid " --show-console-readout[=true|false] Show console readout."
+msgstr ""
+
+#: src/usage_text.h:787
+#, fuzzy
+msgid ""
+" --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
+"                              metalink:url and metalink:metaurl element in "
+"a\n"
+"                              metalink file stored in local disk. If URI "
+"points\n"
+"                              to a directory, URI must end with '/'."
+msgstr ""
+" -S, --show-files 打印.torrent或.metalink文件的列表并退出。\n"
+"                              更多详细信息将在torrent文件\n"
+"                              的实例中列出。"
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -2648,24 +2675,6 @@ msgstr "绑定端口时发生错误。\n"
 #~ msgstr ""
 #~ " --http-auth-scheme=SCHEME 设置HTTP验证方案。当前，基本的\n"
 #~ "                              是仅支持的方案。"
-
-#~ msgid ""
-#~ " --all-proxy=PROXY            Use this proxy server for all protocols.\n"
-#~ "                              You can override this setting and specify "
-#~ "a\n"
-#~ "                              proxy server for a particular protocol "
-#~ "using\n"
-#~ "                              --http-proxy, --https-proxy and --ftp-"
-#~ "proxy\n"
-#~ "                              options.\n"
-#~ "                              This affects all URLs."
-#~ msgstr ""
-#~ " --all-proxy=PROXY 对于所有协议都使用此代理服务器。\n"
-#~ "                              您可以修改此设置并使用--http-proxy、\n"
-#~ "                              --https-proxy和--ftp-proxy选项为\n"
-#~ "                              为特定的协议指定代理服务器。\n"
-#~ "                              \n"
-#~ "                              此设置对所有链接有效。"
 
 #~ msgid ""
 #~ " --allow-piece-length-change=true|false If false is given, aria2 aborts "
