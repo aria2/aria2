@@ -191,7 +191,7 @@ void OptionParserTest::testParse()
                         "bravo=World");
   oparser_->parse(option, in);
   CPPUNIT_ASSERT_EQUAL
-    ((ptrdiff_t)2, std::distance(option.begin(), option.end()));
+    ((std::ptrdiff_t)2, std::distance(option.begin(), option.end()));
   CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get("alpha"));
   CPPUNIT_ASSERT_EQUAL(std::string("World"), option.get("bravo"));
 }
