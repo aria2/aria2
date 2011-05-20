@@ -15,6 +15,9 @@ file.
 Changes
 -------
 
+ * Updated Japanese, Spanish and Simplified Chinese translation.
+   Thanks to all translators.
+
  * Eliminated few seconds delay when downloads stop or pause.
 
  * Added --metalink-base-uri option.  --metalink-uri option specifies
