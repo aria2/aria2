@@ -1069,6 +1069,10 @@ connections.
   downloads added by *<<aria2_rpc_aria2_addTorrent, aria2.addTorrent>>* and
   *<<aria2_rpc_aria2_addMetalink, aria2.addMetalink>>*
   RPC method and whose metadata could not be saved as a file are not saved.
+  Downloads removed using
+  *<<aria2_rpc_aria2_remove, aria2.remove>>* and
+  *<<aria2_rpc_aria2_forceRemove, aria2.forceRemove>>*
+  will not be saved.
 
 [[aria2_optref_stop]]*--stop*=SEC::
   Stop application after SEC seconds has passed.

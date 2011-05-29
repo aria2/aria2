@@ -669,7 +669,9 @@
     "                              option on restart. Please note that downloads\n" \
     "                              added by aria2.addTorrent and aria2.addMetalink\n" \
     "                              RPC method and whose metadata could not be saved\n" \
-    "                              as a file will not be saved.")
+    "                              as a file will not be saved. Downloads removed\n" \
+    "                              using aria2.remove and aria2.forceRemove will not\n" \
+    "                              be saved.")
 #define TEXT_MAX_CONNECTION_PER_SERVER          \
   _(" -x, --max-connection-per-server=NUM The maximum number of connections to one\n" \
     "                              server for each download.")
