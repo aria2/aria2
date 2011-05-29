@@ -800,7 +800,7 @@ void gatherStoppedDownload
     entryDict->put(KEY_ERROR_CODE, util::itos(static_cast<int>(ds->result)));
   }
   if(requested_key(keys, KEY_STATUS)) {
-    if(ds->result == error_code::IN_PROGRESS) {
+    if(ds->result == error_code::REMOVED) {
       entryDict->put(KEY_STATUS, VLB_REMOVED);
     } else if(ds->result == error_code::FINISHED) {
       entryDict->put(KEY_STATUS, VLB_COMPLETE);

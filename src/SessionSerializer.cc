@@ -171,7 +171,8 @@ void SessionSerializer::save(std::ostream& out) const
     rgman_->getDownloadResults();
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         results.begin(), eoi = results.end(); itr != eoi; ++itr) {
-    if((*itr)->result == error_code::FINISHED) {
+    if((*itr)->result == error_code::FINISHED ||
+       (*itr)->result == error_code::REMOVED) {
       continue;
     } else if((*itr)->result == error_code::IN_PROGRESS) {
       if(saveInProgress_) {

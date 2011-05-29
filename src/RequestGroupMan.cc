@@ -270,6 +270,7 @@ void executeStopHook
      !option->blank(PREF_ON_DOWNLOAD_COMPLETE)) {
     util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_COMPLETE);
   } else if(result != error_code::IN_PROGRESS &&
+            result != error_code::REMOVED &&
             !option->blank(PREF_ON_DOWNLOAD_ERROR)) {
     util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_ERROR);
   } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
@@ -571,6 +572,7 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
   size_t finished = 0;
   size_t error = removedErrorResult_;
   size_t inprogress = 0;
+  size_t removed = 0;
   error_code::Value lastError = removedLastErrorResult_;
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end();
@@ -580,12 +582,17 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
     }
     if((*itr)->result == error_code::FINISHED) {
       ++finished;
+    } else if((*itr)->result == error_code::IN_PROGRESS) {
+      ++inprogress;
+    } else if((*itr)->result == error_code::REMOVED) {
+      ++removed;
     } else {
       ++error;
       lastError = (*itr)->result;
     }
   }
-  return DownloadStat(finished, error, inprogress, reservedGroups_.size(),
+  return DownloadStat(finished, error, inprogress, removed,
+                      reservedGroups_.size(),
                       lastError);
 }
 
@@ -594,6 +601,7 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   static const std::string MARK_OK("OK");
   static const std::string MARK_ERR("ERR");
   static const std::string MARK_INPR("INPR");
+  static const std::string MARK_RM("RM");
 
   // Download Results:
   // idx|stat|path/length
@@ -611,7 +619,7 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   int ok = 0;
   int err = 0;
   int inpr = 0;
-
+  int rm = 0;
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end();
       itr != eoi; ++itr) {
@@ -625,13 +633,16 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
     } else if((*itr)->result == error_code::IN_PROGRESS) {
       status = MARK_INPR;
       ++inpr;
+    } else if((*itr)->result == error_code::REMOVED) {
+      status = MARK_RM;
+      ++rm;
     } else {
       status = MARK_ERR;
       ++err;
     }
     o << formatDownloadResult(status, *itr) << "\n";
   }
-  if(ok > 0 || err > 0 || inpr > 0) {
+  if(ok > 0 || err > 0 || inpr > 0 || rm > 0) {
     o << "\n"
       << _("Status Legend:") << "\n";
 
@@ -643,6 +654,9 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
     }
     if(inpr > 0) {
       o << "(INPR):download in-progress.";
+    }
+    if(rm > 0) {
+      o << "(RM):download removed.";
     }
     o << "\n";
   }

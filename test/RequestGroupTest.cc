@@ -67,8 +67,13 @@ void RequestGroupTest::testCreateDownloadResult()
     CPPUNIT_ASSERT_EQUAL(error_code::UNKNOWN_ERROR, result->result);
 
     // if haltReason is set to RequestGroup::USER_REQUEST, download
-    // result becomes IN_PROGRESS
+    // result will become REMOVED.
     group.setHaltRequested(true, RequestGroup::USER_REQUEST);
+    result = group.createDownloadResult();
+    CPPUNIT_ASSERT_EQUAL(error_code::REMOVED, result->result);
+    // if haltReason is set to RequestGroup::SHUTDOWN_SIGNAL, download
+    // result will become IN_PROGRESS.
+    group.setHaltRequested(true, RequestGroup::SHUTDOWN_SIGNAL);
     result = group.createDownloadResult();
     CPPUNIT_ASSERT_EQUAL(error_code::IN_PROGRESS, result->result);
   }

@@ -73,7 +73,8 @@ enum Value {
   MAGNET_PARSE_ERROR = 27,
   OPTION_ERROR = 28,
   HTTP_SERVICE_UNAVAILABLE = 29,
-  JSON_PARSE_ERROR = 30
+  JSON_PARSE_ERROR = 30,
+  REMOVED = 31
 };
 
 } // namespace error_code

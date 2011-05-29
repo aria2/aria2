@@ -171,18 +171,21 @@ public:
     size_t completed_;
     size_t error_;
     size_t inProgress_;
+    size_t removed_;
     size_t waiting_;
     error_code::Value lastErrorResult_;
   public:
     DownloadStat(size_t completed,
                  size_t error,
                  size_t inProgress,
+                 size_t removed,
                  size_t waiting,
                  error_code::Value lastErrorResult =
                  error_code::FINISHED):
       completed_(completed),
       error_(error),
       inProgress_(inProgress),
+      removed_(removed),
       waiting_(waiting),
       lastErrorResult_(lastErrorResult) {}
 

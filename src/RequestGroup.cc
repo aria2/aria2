@@ -197,9 +197,10 @@ error_code::Value RequestGroup::downloadResult() const
   if(downloadFinished() && !downloadContext_->isChecksumVerificationNeeded())
     return error_code::FINISHED;
   else {
-    if(lastErrorCode_ == error_code::UNDEFINED) {
-      if(haltReason_ == RequestGroup::USER_REQUEST ||
-         haltReason_ == RequestGroup::SHUTDOWN_SIGNAL) {
+    if(haltReason_ == RequestGroup::USER_REQUEST) {
+      return error_code::REMOVED;
+    } else if(lastErrorCode_ == error_code::UNDEFINED) {
+      if(haltReason_ == RequestGroup::SHUTDOWN_SIGNAL) {
         return error_code::IN_PROGRESS;
       } else {
         return error_code::UNKNOWN_ERROR;

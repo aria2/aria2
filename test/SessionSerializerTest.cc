@@ -11,6 +11,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "a2functional.h"
+#include "FileEntry.h"
 
 namespace aria2 {
 
@@ -25,6 +26,25 @@ public:
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SessionSerializerTest);
+
+namespace {
+SharedHandle<DownloadResult> createDownloadResult
+(error_code::Value result, const std::string& uri)
+{
+  std::vector<std::string> uris;
+  uris.push_back(uri);
+  SharedHandle<FileEntry> entry(new FileEntry("/tmp/path", 1, 0, uris));
+  std::vector<SharedHandle<FileEntry> > entries;
+  entries.push_back(entry);
+  SharedHandle<DownloadResult> dr(new DownloadResult());
+  dr->fileEntries = entries;
+  dr->result = result;
+  dr->belongsTo = 0;
+  dr->inMemoryDownload = false;
+  dr->option = SharedHandle<Option>(new Option());
+  return dr;
+}
+} // namespace
 
 void SessionSerializerTest::testSave()
 {
@@ -41,12 +61,20 @@ void SessionSerializerTest::testSave()
   option->put(PREF_DIR, "/tmp");
   createRequestGroupForUri(result, option, uris);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
+  option->put(PREF_MAX_DOWNLOAD_RESULT, "10");
   SharedHandle<RequestGroupMan> rgman
     (new RequestGroupMan(result, 1, option.get()));
   SessionSerializer s(rgman);
+  // REMOVED downloads will not be saved.
+  rgman->addDownloadResult
+    (createDownloadResult(error_code::REMOVED, "http://removed"));
+  rgman->addDownloadResult
+    (createDownloadResult(error_code::TIME_OUT, "http://error"));
   std::stringstream ss;
   s.save(ss);
   std::string line;
+  std::getline(ss, line);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://error\t"), line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(strconcat(uris[0], "\t", uris[1], "\t"), line);
   std::getline(ss, line);
