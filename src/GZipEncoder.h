@@ -87,9 +87,6 @@ public:
     return encode(in, length, Z_NO_FLUSH);
   }
 
-  // Returns true if deflator finished.
-  bool finished();
-
   // Releases allocated resources.
   void release();
 

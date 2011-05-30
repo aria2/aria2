@@ -46,7 +46,7 @@ namespace {
 const int OUTBUF_LENGTH = 4096;
 } // namespace
 
-GZipEncoder::GZipEncoder():strm_(0), finished_(false) {}
+GZipEncoder::GZipEncoder():strm_(0) {}
 
 GZipEncoder::~GZipEncoder()
 {
@@ -55,7 +55,6 @@ GZipEncoder::~GZipEncoder()
 
 void GZipEncoder::init()
 {
-  finished_ = false;
   release();
   strm_ = new z_stream();
   strm_->zalloc = Z_NULL;
@@ -82,39 +81,25 @@ void GZipEncoder::release()
 std::string GZipEncoder::encode
 (const unsigned char* in, size_t length, int flush)
 {
-  std::string out;
-
   strm_->avail_in = length;
   strm_->next_in = const_cast<unsigned char*>(in);
-
+  std::string out;
   unsigned char outbuf[OUTBUF_LENGTH];
   while(1) {
     strm_->avail_out = OUTBUF_LENGTH;
     strm_->next_out = outbuf;
-
     int ret = ::deflate(strm_, flush);
-
-    if(ret == Z_STREAM_END) {
-      finished_ = true;
-    } else if(ret != Z_OK) {
+    if(ret == Z_STREAM_ERROR) {
       throw DL_ABORT_EX(fmt("libz::deflate() failed. cause:%s",
                             strm_->msg));
     }
-
     size_t produced = OUTBUF_LENGTH-strm_->avail_out;
-
     out.append(&outbuf[0], &outbuf[produced]);
-
     if(strm_->avail_out > 0) {
       break;
     }
   }
   return out;
-}
-
-bool GZipEncoder::finished()
-{
-  return finished_;
 }
 
 std::string GZipEncoder::str()
