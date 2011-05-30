@@ -101,7 +101,7 @@ ssize_t GZipDecodingStreamFilter::transform
 
     if(ret == Z_STREAM_END) {
       finished_ = true;
-    } else if(ret != Z_OK) {
+    } else if(ret != Z_OK && ret != Z_BUF_ERROR) {
       throw DL_ABORT_EX(fmt("libz::inflate() failed. cause:%s",
                             strm_->msg));
     }
