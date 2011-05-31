@@ -93,10 +93,10 @@ std::string percentEncode(const std::string& src)
       ++i) {
     // Non-Printable ASCII and non-ASCII chars + some ASCII chars.
     unsigned char c = *i;
-    if(in(c, 0x00u, 0x1fu) || c >= 0x7fu ||
+    if(in(c, 0x00u, 0x20u) || c >= 0x7fu ||
        // Chromium escapes following characters. Firefox4 escapes
        // more.
-       c == ' ' || c == '"' || c == '<' || c == '>') {
+       c == '"' || c == '<' || c == '>') {
       result += fmt("%%%02X", c);
     } else {
       result += c;
