@@ -88,26 +88,20 @@ std::string removeFragment(const std::string& uri)
 namespace {
 std::string percentEncode(const std::string& src)
 {
-  std::string result = src;
-  if(src.empty()) {
-    return result;
-  }
-  result += "  ";
-  for(int index = src.size()-1; index >= 0; --index) {
-    const unsigned char c = result[index];
-    // '/' is not percent encoded because src is expected to be a path.
-    if(!util::inRFC3986ReservedChars(c) && !util::inRFC3986UnreservedChars(c)) {
-      if(c == '%') {
-        if(!util::isHexDigit(result[index+1]) ||
-           !util::isHexDigit(result[index+2])) {
-          result.replace(index, 1, "%25");
-        }
-      } else {
-        result.replace(index, 1, fmt("%%%02X", c));
-      }
+  std::string result;
+  for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;
+      ++i) {
+    // Non-Printable ASCII and non-ASCII chars + some ASCII chars.
+    unsigned char c = *i;
+    if(in(c, 0x00u, 0x1fu) || c >= 0x7fu ||
+       // Chromium escapes following characters. Firefox4 escapes
+       // more.
+       c == ' ' || c == '"' || c == '<' || c == '>') {
+      result += fmt("%%%02X", c);
+    } else {
+      result += c;
     }
   }
-  result.erase(result.size()-2);
   return result;
 }
 } // namespace

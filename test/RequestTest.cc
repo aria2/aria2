@@ -102,13 +102,13 @@ void RequestTest::testSetUri17()
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL(std::string("/file%3Cwith%252%20%20space"),
+  CPPUNIT_ASSERT_EQUAL(std::string("/file%3Cwith%2%20%20space"),
                        req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param%25"),
+  CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param%"),
                        req.getFile());
   CPPUNIT_ASSERT_EQUAL(std::string("?a=/?"), req.getQuery());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file%3Cwith%252%20%20space"
-                                   "/file%20with%20space;param%25?a=/?"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file%3Cwith%2%20%20space"
+                                   "/file%20with%20space;param%?a=/?"),
                        req.getCurrentUri());
   CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file<with%2 %20space"
                                    "/file with space;param%?a=/?"),
