@@ -233,7 +233,24 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
   if(fd_ == -1) {
     throw DL_ABORT_EX("File not yet opened.");
   }
-# ifdef HAVE_FALLOCATE
+# ifdef __MINGW32__
+  LARGE_INTEGER fileLength;
+  fileLength.QuadPart = offset+length;
+  HANDLE handle = LongToHandle(_get_osfhandle(fd_));
+  int r;
+  r = SetFilePointerEx(handle, fileLength, 0, FILE_BEGIN);
+  if(r == 0) {
+    throw DL_ABORT_EX2(fmt("SetFilePointerEx failed. cause: %lx",
+                           GetLastError()),
+                       error_code::FILE_IO_ERROR);
+  }
+  r = SetEndOfFile(handle);
+  if(r == 0) {
+    throw DL_ABORT_EX2(fmt("SetEndOfFile failed. cause: %lx",
+                           GetLastError()),
+                       error_code::FILE_IO_ERROR);
+  }
+# elif HAVE_FALLOCATE
   // For linux, we use fallocate to detect file system supports
   // fallocate or not.
   int r;

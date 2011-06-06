@@ -12,6 +12,7 @@ AC_CONFIG_HEADERS([config.h])
 
 case "$target" in
   *mingw*|*cygwin*)
+    win_build=yes
     LIBS="-lws2_32 -lcrypto -lwsock32 -lgdi32 -lwinmm $LIBS"
     ;;
 esac
@@ -381,12 +382,14 @@ AM_CONDITIONAL([HAVE_EPOLL], [test "x$have_epoll" = "xyes"])
 AC_CHECK_FUNCS([posix_fallocate],[have_posix_fallocate=yes])
 ARIA2_CHECK_FALLOCATE
 if test "x$have_posix_fallocate" = "xyes" ||
-   test "x$have_fallocate" = "xyes"; then
+   test "x$have_fallocate" = "xyes" ||
+   test "x$win_build" = "xyes"; then
   AC_DEFINE([HAVE_SOME_FALLOCATE], [1],
             [Define to 1 if *_fallocate is available.])
 fi
 AM_CONDITIONAL([HAVE_SOME_FALLOCATE],
-  [test "x$have_posix_fallocate" = "xyes" || test "x$have_fallocate" = "xyes"])
+  [test "x$have_posix_fallocate" = "xyes" || test "x$have_fallocate" = "xyes" \
+  || test "x$win_build" = "xyes"])
 
 
 AC_CHECK_FUNCS([asctime_r],
