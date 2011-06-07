@@ -187,6 +187,7 @@ HttpServerBodyCommand::processJsonRpcRequest(const Dict* jsondict)
     return createJsonRpcErrorResponse(-32601, "Method not found.", id);
   }
   method->setJsonRpc(true);
+  A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
   rpc::RpcResponse res = method->execute(req, e_);
   return res;
 }
@@ -216,6 +217,7 @@ bool HttpServerBodyCommand::execute()
             rpc::XmlRpcRequestProcessor().parseMemory(httpServer_->getBody());
           SharedHandle<rpc::RpcMethod> method =
             rpc::RpcMethodFactory::create(req.methodName);
+          A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
           rpc::RpcResponse res = method->execute(req, e_);
           bool gzip = httpServer_->supportsGZip();
           std::string responseData = res.toXml(gzip);
