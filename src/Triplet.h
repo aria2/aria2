@@ -141,9 +141,7 @@ public:
             typename TupleNthType<Tuple, N2>::type>
   operator()(const Tuple& tri) const
   {
-    return std::make_pair<typename TupleNthType<Tuple, N1>::type,
-                          typename TupleNthType<Tuple, N2>::type>
-      (TupleGet<N1>::get(tri), TupleGet<N2>::get(tri));
+    return std::make_pair(TupleGet<N1>::get(tri), TupleGet<N2>::get(tri));
   }
 };
 
