@@ -45,6 +45,7 @@ namespace aria2 {
  */
 extern const std::string A2_V_TRUE;
 extern const std::string A2_V_FALSE;
+extern const std::string A2_V_DEFAULT;
 extern const std::string V_NONE;
 extern const std::string V_MEM;
 extern const std::string V_ALL;
@@ -224,6 +225,8 @@ extern const std::string PREF_RETRY_WAIT;
 extern const std::string PREF_ASYNC_DNS_SERVER;
 // value: true | false
 extern const std::string PREF_SHOW_CONSOLE_READOUT;
+// value: default | inorder
+extern const std::string PREF_STREAM_PIECE_SELECTOR;
 
 /**
  * FTP related preferences

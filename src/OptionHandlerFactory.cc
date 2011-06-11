@@ -862,6 +862,17 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+                                   (PREF_STREAM_PIECE_SELECTOR,
+                                    TEXT_STREAM_PIECE_SELECTOR,
+                                    A2_V_DEFAULT,
+                                    A2_V_DEFAULT,
+                                    V_INORDER));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_TIMEOUT,
                                     TEXT_TIMEOUT,

@@ -57,6 +57,7 @@
 #include "fmt.h"
 #include "RarestPieceSelector.h"
 #include "DefaultStreamPieceSelector.h"
+#include "InOrderStreamPieceSelector.h"
 #include "array_fun.h"
 #include "PieceStatMan.h"
 #include "wallclock.h"
@@ -77,9 +78,18 @@ DefaultPieceStorage::DefaultPieceStorage
    endGamePieceNum_(END_GAME_PIECE_NUM),
    option_(option),
    pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
-   pieceSelector_(new RarestPieceSelector(pieceStatMan_)),
-   streamPieceSelector_(new DefaultStreamPieceSelector(bitfieldMan_))
-{}
+   pieceSelector_(new RarestPieceSelector(pieceStatMan_))
+{
+  const std::string& pieceSelectorOpt =
+    option_->get(PREF_STREAM_PIECE_SELECTOR);
+  if(pieceSelectorOpt.empty() || pieceSelectorOpt == A2_V_DEFAULT) {
+    streamPieceSelector_ = SharedHandle<StreamPieceSelector>
+      (new DefaultStreamPieceSelector(bitfieldMan_));
+  } else if(pieceSelectorOpt == V_INORDER) {
+    streamPieceSelector_ = SharedHandle<StreamPieceSelector>
+      (new InorderStreamPieceSelector(bitfieldMan_));
+  }
+}
 
 DefaultPieceStorage::~DefaultPieceStorage()
 {

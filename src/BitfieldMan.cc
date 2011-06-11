@@ -311,6 +311,73 @@ bool BitfieldMan::getSparseMissingUnusedIndex
 
 namespace {
 template<typename Array>
+bool getInorderMissingUnusedIndex
+(size_t& index,
+ size_t minSplitSize,
+ const Array& bitfield,
+ const unsigned char* useBitfield,
+ size_t blockLength_,
+ size_t blocks)
+{
+  // We always return first piece if it is available.
+  if(!bitfield::test(bitfield, blocks, 0) &&
+     !bitfield::test(useBitfield, blocks, 0)) {
+    index = 0;
+    return true;
+  }
+  for(size_t i = 1; i < blocks;) {
+    if(!bitfield::test(bitfield, blocks, i) &&
+       !bitfield::test(useBitfield, blocks, i)) {
+      // If previous piece has already been retrieved, we can download
+      // from this index.
+      if(!bitfield::test(useBitfield, blocks, i-1) &&
+         bitfield::test(bitfield, blocks, i-1)) {
+        index = i;
+        return true;
+      }
+      // Check free space of minSplitSize.
+      size_t j;
+      for(j = i; j < blocks; ++j) {
+        if(bitfield::test(bitfield, blocks, j) ||
+           bitfield::test(useBitfield, blocks, j)) {
+          break;
+        }
+        if((j-i+1)*blockLength_ >= minSplitSize) {
+          index = j;
+          return true;
+        }
+      }
+      i = j+1;
+    } else {
+      ++i;
+    }
+  }
+  return false;
+}
+} // namespace
+
+bool BitfieldMan::getInorderMissingUnusedIndex
+(size_t& index,
+ size_t minSplitSize,
+ const unsigned char* ignoreBitfield,
+ size_t ignoreBitfieldLength) const
+{
+  if(filterEnabled_) {
+    return aria2::getInorderMissingUnusedIndex
+      (index, minSplitSize,
+       array(ignoreBitfield)|~array(filterBitfield_)|
+       array(bitfield_)|array(useBitfield_),
+       useBitfield_, blockLength_, blocks_);
+  } else {
+    return aria2::getInorderMissingUnusedIndex
+      (index, minSplitSize,
+       array(ignoreBitfield)|array(bitfield_)|array(useBitfield_),
+       useBitfield_, blockLength_, blocks_);
+  }
+}
+
+namespace {
+template<typename Array>
 bool copyBitfield(unsigned char* dst, const Array& src, size_t blocks)
 {
   unsigned char bits = 0;

@@ -790,3 +790,22 @@
     "                              metalink:url and metalink:metaurl element in a\n" \
     "                              metalink file stored in local disk. If URI points\n" \
     "                              to a directory, URI must end with '/'.")
+#define TEXT_STREAM_PIECE_SELECTOR              \
+  _(" --stream-piece-selector=SELECTOR Specify piece selection algorithm\n" \
+    "                              used in HTTP/FTP download. Piece means fixed\n" \
+    "                              length segment which is downloaded in parallel\n" \
+    "                              in segmented download. If 'default' is given,\n" \
+    "                              aria2 selects piece so that it reduces the\n" \
+    "                              number of establishing connection. This is\n" \
+    "                              reasonable default behaviour because\n" \
+    "                              establishing connection is an expensive\n" \
+    "                              operation.\n"                        \
+    "                              If 'inorder' is given, aria2 selects piece which\n" \
+    "                              has minimum index. Index=0 means first of the\n" \
+    "                              file. This will be useful to view movie while\n" \
+    "                              downloading it. --enable-http-pipelining option\n" \
+    "                              may be useful to reduce reconnection overhead.\n" \
+    "                              Please note that aria2 honors\n"     \
+    "                              --min-split-size option, so it will be necessary\n" \
+    "                              to specify a reasonable value to\n"  \
+    "                              --min-split-size option.")

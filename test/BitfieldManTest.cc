@@ -36,6 +36,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountMissingBlock);
   CPPUNIT_TEST(testZeroLengthFilter);
   CPPUNIT_TEST(testGetFirstNMissingUnusedIndex);
+  CPPUNIT_TEST(testGetInorderMissingUnusedIndex);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testGetBlockSize();
@@ -62,6 +63,7 @@ public:
   void testCountMissingBlock();
   void testZeroLengthFilter();
   void testGetFirstNMissingUnusedIndex();
+  void testGetInorderMissingUnusedIndex();
 };
 
 
@@ -638,6 +640,70 @@ void BitfieldManTest::testGetFirstNMissingUnusedIndex()
   CPPUNIT_ASSERT_EQUAL((size_t)1, bt.getFirstNMissingUnusedIndex(out, 256));
   CPPUNIT_ASSERT_EQUAL((size_t)1, out.size());
   CPPUNIT_ASSERT_EQUAL((size_t)9, out[0]);
+}
+
+void BitfieldManTest::testGetInorderMissingUnusedIndex()
+{
+  BitfieldMan bt(1024, 1024*20);
+  const size_t length = 3;
+  unsigned char ignoreBitfield[length];
+  memset(ignoreBitfield, 0, sizeof(ignoreBitfield));
+  size_t minSplitSize = 1024;
+  size_t index;
+  // 00000|00000|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, index);
+  bt.setUseBit(0);
+  // 10000|00000|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, index);
+  minSplitSize = 1024*2;
+  CPPUNIT_ASSERT
+    (bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, index);
+  bt.unsetUseBit(0);
+  bt.setBit(0);
+  CPPUNIT_ASSERT
+    (bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, index);
+  bt.setAllBit();
+  bt.unsetBit(10);
+  // 11111|11111|01111|11111
+  CPPUNIT_ASSERT
+    (bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)10, index);
+  bt.setUseBit(10);
+  CPPUNIT_ASSERT
+    (!bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  bt.unsetUseBit(10);
+  bt.setAllBit();
+  // 11111|11111|11111|11111
+  CPPUNIT_ASSERT
+    (!bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  bt.clearAllBit();
+  // 00000|00000|00000|00000
+  for(int i = 0; i <= 1; ++i) {
+    bitfield::flipBit(ignoreBitfield, length, i);
+  }
+  CPPUNIT_ASSERT
+    (bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, index);
+  bt.addFilter(1024*3, 1024*3);
+  bt.enableFilter();
+  CPPUNIT_ASSERT
+    (bt.getInorderMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)3, index);
 }
 
 } // namespace aria2
