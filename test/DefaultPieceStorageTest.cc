@@ -9,7 +9,7 @@
 #include "Option.h"
 #include "FileEntry.h"
 #include "RarestPieceSelector.h"
-#include "InOrderPieceSelector.h"
+#include "InorderPieceSelector.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
 #include "DiskAdaptor.h"
@@ -53,7 +53,7 @@ public:
     peer.reset(new Peer("192.168.0.1", 6889));
     peer->allocateSessionResource(dctx_->getPieceLength(),
                                   dctx_->getTotalLength());
-    pieceSelector_.reset(new InOrderPieceSelector());
+    pieceSelector_.reset(new InorderPieceSelector());
   }
 
   void testGetTotalLength();

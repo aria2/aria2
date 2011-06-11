@@ -32,17 +32,17 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_IN_ORDER_URI_SELECTOR_H
-#define D_IN_ORDER_URI_SELECTOR_H
+#ifndef D_INORDER_URI_SELECTOR_H
+#define D_INORDER_URI_SELECTOR_H
 #include "URISelector.h"
 
 namespace aria2 {
 
-class InOrderURISelector:public URISelector {
+class InorderURISelector:public URISelector {
 public:
-  InOrderURISelector();
+  InorderURISelector();
 
-  virtual ~InOrderURISelector();
+  virtual ~InorderURISelector();
 
   virtual std::string select
   (FileEntry* fileEntry,
@@ -50,4 +50,4 @@ public:
 };
 
 } // namespace aria2
-#endif // D_IN_ORDER_URI_SELECTOR_H
+#endif // D_INORDER_URI_SELECTOR_H

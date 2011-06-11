@@ -32,17 +32,17 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "InOrderURISelector.h"
+#include "InorderURISelector.h"
 #include "A2STR.h"
 #include "FileEntry.h"
 
 namespace aria2 {
 
-InOrderURISelector::InOrderURISelector() {}
+InorderURISelector::InorderURISelector() {}
 
-InOrderURISelector::~InOrderURISelector() {}
+InorderURISelector::~InorderURISelector() {}
 
-std::string InOrderURISelector::select
+std::string InorderURISelector::select
 (FileEntry* fileEntry,
  const std::vector<std::pair<size_t, std::string> >& usedHosts)
 {

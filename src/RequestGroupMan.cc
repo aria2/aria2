@@ -59,7 +59,7 @@
 #include "PeerStat.h"
 #include "SegmentMan.h"
 #include "FeedbackURISelector.h"
-#include "InOrderURISelector.h"
+#include "InorderURISelector.h"
 #include "AdaptiveURISelector.h"
 #include "Option.h"
 #include "prefs.h"
@@ -468,7 +468,7 @@ void RequestGroupMan::configureRequestGroup
     SharedHandle<URISelector> sel(new FeedbackURISelector(serverStatMan_));
     requestGroup->setURISelector(sel);
   } else if(uriSelectorValue == V_INORDER) {
-    SharedHandle<URISelector> sel(new InOrderURISelector());
+    SharedHandle<URISelector> sel(new InorderURISelector());
     requestGroup->setURISelector(sel);
   } else if(uriSelectorValue == V_ADAPTIVE) {
     SharedHandle<URISelector> sel(new AdaptiveURISelector(serverStatMan_,

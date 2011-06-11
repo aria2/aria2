@@ -2,7 +2,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "InOrderURISelector.h"
+#include "InorderURISelector.h"
 #include "util.h"
 
 namespace aria2 {
@@ -91,7 +91,7 @@ void FileEntryTest::testExtractURIResult()
 void FileEntryTest::testGetRequest()
 {
   SharedHandle<FileEntry> fileEntry = createFileEntry();
-  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<InorderURISelector> selector(new InorderURISelector());
   std::vector<std::pair<size_t, std::string> > usedHosts;
   SharedHandle<Request> req =
     fileEntry->getRequest(selector, true, usedHosts);
@@ -135,7 +135,7 @@ void FileEntryTest::testGetRequest_withoutUriReuse()
   std::vector<std::pair<size_t, std::string> > usedHosts;
   SharedHandle<FileEntry> fileEntry = createFileEntry();
   fileEntry->setMaxConnectionPerServer(2);
-  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<InorderURISelector> selector(new InorderURISelector());
   SharedHandle<Request> req = fileEntry->getRequest(selector, false, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req->getProtocol());
@@ -160,7 +160,7 @@ void FileEntryTest::testGetRequest_withUniqueProtocol()
   std::vector<std::pair<size_t, std::string> > usedHosts;
   SharedHandle<FileEntry> fileEntry = createFileEntry();
   fileEntry->setUniqueProtocol(true);
-  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<InorderURISelector> selector(new InorderURISelector());
   SharedHandle<Request> req =
     fileEntry->getRequest(selector, true, usedHosts);
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req->getHost());
@@ -184,7 +184,7 @@ void FileEntryTest::testGetRequest_withUniqueProtocol()
 
 void FileEntryTest::testReuseUri()
 {
-  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<InorderURISelector> selector(new InorderURISelector());
   SharedHandle<FileEntry> fileEntry = createFileEntry();
   fileEntry->setMaxConnectionPerServer(3);
   size_t numUris = fileEntry->getRemainingUris().size();
@@ -244,7 +244,7 @@ void FileEntryTest::testInsertUri()
 void FileEntryTest::testRemoveUri()
 {
   std::vector<std::pair<size_t, std::string> > usedHosts;
-  SharedHandle<InOrderURISelector> selector(new InOrderURISelector());
+  SharedHandle<InorderURISelector> selector(new InorderURISelector());
   FileEntry file;
   file.addUri("http://example.org/");
   CPPUNIT_ASSERT(file.removeUri("http://example.org/"));

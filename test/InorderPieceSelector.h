@@ -6,7 +6,7 @@
 
 namespace aria2 {
 
-class InOrderPieceSelector:public PieceSelector {
+class InorderPieceSelector:public PieceSelector {
 public:
   virtual bool select
   (size_t& index, const unsigned char* bitfield, size_t nbits) const

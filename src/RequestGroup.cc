@@ -71,7 +71,7 @@
 #include "fmt.h"
 #include "A2STR.h"
 #include "URISelector.h"
-#include "InOrderURISelector.h"
+#include "InorderURISelector.h"
 #include "PieceSelector.h"
 #include "a2functional.h"
 #include "SocketCore.h"
@@ -136,7 +136,7 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option)
     forceHaltRequested_(false),
     haltReason_(RequestGroup::NONE),
     pauseRequested_(false),
-    uriSelector_(new InOrderURISelector()),
+    uriSelector_(new InorderURISelector()),
     lastModifiedTime_(Time::null()),
     fileNotFoundCount_(0),
     timeout_(option->getAsInt(PREF_TIMEOUT)),

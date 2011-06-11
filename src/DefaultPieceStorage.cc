@@ -57,7 +57,7 @@
 #include "fmt.h"
 #include "RarestPieceSelector.h"
 #include "DefaultStreamPieceSelector.h"
-#include "InOrderStreamPieceSelector.h"
+#include "InorderStreamPieceSelector.h"
 #include "array_fun.h"
 #include "PieceStatMan.h"
 #include "wallclock.h"

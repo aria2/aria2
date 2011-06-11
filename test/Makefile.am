@@ -51,7 +51,7 @@ aria2c_SOURCES = AllTest.cc\
 	SignatureTest.cc\
 	ServerStatManTest.cc\
 	FeedbackURISelectorTest.cc\
-	InOrderURISelectorTest.cc\
+	InorderURISelectorTest.cc\
 	ServerStatTest.cc\
 	NsCookieParserTest.cc\
 	DirectDiskAdaptorTest.cc\
@@ -65,7 +65,7 @@ aria2c_SOURCES = AllTest.cc\
 	SequentialPickerTest.cc\
 	RarestPieceSelectorTest.cc\
 	PieceStatManTest.cc\
-	InOrderPieceSelector.h\
+	InorderPieceSelector.h\
 	LongestSequencePieceSelectorTest.cc\
 	a2algoTest.cc\
 	bitfieldTest.cc\

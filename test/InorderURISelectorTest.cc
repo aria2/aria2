@@ -1,4 +1,4 @@
-#include "InOrderURISelector.h"
+#include "InorderURISelector.h"
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -9,15 +9,15 @@
 
 namespace aria2 {
 
-class InOrderURISelectorTest:public CppUnit::TestFixture {
+class InorderURISelectorTest:public CppUnit::TestFixture {
 
-  CPPUNIT_TEST_SUITE(InOrderURISelectorTest);
+  CPPUNIT_TEST_SUITE(InorderURISelectorTest);
   CPPUNIT_TEST(testSelect);
   CPPUNIT_TEST_SUITE_END();
 private:
   FileEntry fileEntry_;
 
-  SharedHandle<InOrderURISelector> sel;
+  SharedHandle<InorderURISelector> sel;
   
 public:
   void setUp()
@@ -32,7 +32,7 @@ public:
     
     fileEntry_.setUris(uris);
 
-    sel.reset(new InOrderURISelector());
+    sel.reset(new InorderURISelector());
   }
 
   void tearDown() {}
@@ -41,9 +41,9 @@ public:
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(InOrderURISelectorTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(InorderURISelectorTest);
 
-void InOrderURISelectorTest::testSelect()
+void InorderURISelectorTest::testSelect()
 {
   std::vector<std::pair<size_t, std::string> > usedHosts;
   CPPUNIT_ASSERT_EQUAL(std::string("http://alpha/file"),
