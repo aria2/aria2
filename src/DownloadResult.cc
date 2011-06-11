@@ -39,7 +39,19 @@
 
 namespace aria2 {
 
-DownloadResult::DownloadResult() {}
+DownloadResult::DownloadResult()
+  : gid(0),
+    inMemoryDownload(false),
+    sessionDownloadLength(0),
+    sessionTime(0),
+    result(error_code::UNDEFINED),
+    belongsTo(0),
+    totalLength(0),
+    completedLength(0),
+    uploadLength(0),
+    pieceLength(0),
+    numPieces(0)
+{}
 
 DownloadResult::~DownloadResult() {}
 
