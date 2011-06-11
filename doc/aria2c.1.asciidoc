@@ -241,6 +241,25 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
   download, this option has no effect and use *<<aria2_optref_metalink_servers, -C>>* option instead.
   Default: '5'
 
+[[aria2_optref_stream_piece_selector]]*--stream-piece-selector*=SELECTOR::
+
+Specify piece selection algorithm used in HTTP/FTP download. Piece
+means fixed length segment which is downloaded in parallel in
+segmented download. If 'default' is given, aria2 selects piece so that
+it reduces the number of establishing connection. This is reasonable
+default behaviour because establishing connection is an expensive
+operation.  If 'inorder' is given, aria2 selects piece which has
+minimum index. Index=0 means first of the file. This will be useful to
+view movie while downloading it.
+*<<aria2_optref_enable_http_pipelining, --enable-http-pipelining>>* option may
+be useful to reduce reconnection overhead.  Please note that aria2
+honors
+*<<aria2_optref_min_split_size, --min-split-size>>* option,
+so it will be necessary to specify a
+reasonable value to
+*<<aria2_optref_min_split_size, --min-split-size>>* option.
+Default: 'default'
+
 [[aria2_optref_timeout]]*-t*, *--timeout*=SEC::
   Set timeout in seconds.
   Default: '60'
