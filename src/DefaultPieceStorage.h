@@ -48,6 +48,7 @@ class DiskWriterFactory;
 class FileEntry;
 class PieceStatMan;
 class PieceSelector;
+class StreamPieceSelector;
 
 #define END_GAME_PIECE_NUM 20
 
@@ -85,7 +86,7 @@ private:
   SharedHandle<PieceStatMan> pieceStatMan_;
 
   SharedHandle<PieceSelector> pieceSelector_;
-
+  SharedHandle<StreamPieceSelector> streamPieceSelector_;
 #ifdef ENABLE_BITTORRENT
   void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
@@ -156,7 +157,7 @@ public:
 
   virtual bool hasMissingUnusedPiece();
 
-  virtual SharedHandle<Piece> getSparseMissingUnusedPiece
+  virtual SharedHandle<Piece> getMissingPiece
   (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length);
 
   virtual SharedHandle<Piece> getMissingPiece(size_t index);

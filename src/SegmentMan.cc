@@ -173,7 +173,7 @@ void SegmentMan::getInFlightSegment
 SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid, size_t minSplitSize)
 {
   SharedHandle<Piece> piece =
-    pieceStorage_->getSparseMissingUnusedPiece
+    pieceStorage_->getMissingPiece
     (minSplitSize,
      ignoreBitfield_.getFilterBitfield(), ignoreBitfield_.getBitfieldLength());
   return checkoutSegment(cuid, piece);
@@ -193,7 +193,7 @@ void SegmentMan::getSegment
   while(segments.size() < maxSegments) {
     SharedHandle<Segment> segment =
       checkoutSegment(cuid,
-                      pieceStorage_->getSparseMissingUnusedPiece
+                      pieceStorage_->getMissingPiece
                       (minSplitSize,
                        filter.getFilterBitfield(), filter.getBitfieldLength()));
     if(!segment) {

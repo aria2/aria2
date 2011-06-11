@@ -56,6 +56,7 @@
 #include "Option.h"
 #include "fmt.h"
 #include "RarestPieceSelector.h"
+#include "DefaultStreamPieceSelector.h"
 #include "array_fun.h"
 #include "PieceStatMan.h"
 #include "wallclock.h"
@@ -76,7 +77,8 @@ DefaultPieceStorage::DefaultPieceStorage
    endGamePieceNum_(END_GAME_PIECE_NUM),
    option_(option),
    pieceStatMan_(new PieceStatMan(downloadContext->getNumPieces(), true)),
-   pieceSelector_(new RarestPieceSelector(pieceStatMan_))
+   pieceSelector_(new RarestPieceSelector(pieceStatMan_)),
+   streamPieceSelector_(new DefaultStreamPieceSelector(bitfieldMan_))
 {}
 
 DefaultPieceStorage::~DefaultPieceStorage()
@@ -338,11 +340,11 @@ bool DefaultPieceStorage::hasMissingUnusedPiece()
   return bitfieldMan_->getFirstMissingUnusedIndex(index);
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getSparseMissingUnusedPiece
+SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
 (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length)
 {
   size_t index;
-  if(bitfieldMan_->getSparseMissingUnusedIndex
+  if(streamPieceSelector_->select
      (index, minSplitSize, ignoreBitfield, length)) {
     return checkOutPiece(index);
   } else {

@@ -87,7 +87,7 @@ public:
     return false;
   }
 
-  virtual SharedHandle<Piece> getSparseMissingUnusedPiece
+  virtual SharedHandle<Piece> getMissingPiece
   (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length)
   {
     return SharedHandle<Piece>(new Piece());
