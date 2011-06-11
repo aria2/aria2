@@ -22,9 +22,9 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddNotFilter);
   CPPUNIT_TEST(testAddNotFilter_zeroLength);
   CPPUNIT_TEST(testAddNotFilter_overflow);
-  CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
-  CPPUNIT_TEST(testGetSparceMissingUnusedIndex_setBit);
-  CPPUNIT_TEST(testGetSparceMissingUnusedIndex_withMinSplitSize);
+  CPPUNIT_TEST(testGetSparseMissingUnusedIndex);
+  CPPUNIT_TEST(testGetSparseMissingUnusedIndex_setBit);
+  CPPUNIT_TEST(testGetSparseMissingUnusedIndex_withMinSplitSize);
   CPPUNIT_TEST(testIsBitSetOffsetRange);
   CPPUNIT_TEST(testGetMissingUnusedLength);
   CPPUNIT_TEST(testSetBitRange);
@@ -52,9 +52,9 @@ public:
   void testAddNotFilter();
   void testAddNotFilter_zeroLength();
   void testAddNotFilter_overflow();
-  void testGetSparceMissingUnusedIndex();
-  void testGetSparceMissingUnusedIndex_setBit();
-  void testGetSparceMissingUnusedIndex_withMinSplitSize();
+  void testGetSparseMissingUnusedIndex();
+  void testGetSparseMissingUnusedIndex_setBit();
+  void testGetSparseMissingUnusedIndex_withMinSplitSize();
   void testIsBitSetOffsetRange();
   void testGetMissingUnusedLength();
   void testSetBitRange();
@@ -277,7 +277,7 @@ void BitfieldManTest::testAddNotFilter_overflow() {
 }
 
 // TODO1.5 add test using ignoreBitfield
-void BitfieldManTest::testGetSparceMissingUnusedIndex() {
+void BitfieldManTest::testGetSparseMissingUnusedIndex() {
   BitfieldMan bitfield(1024*1024, 10*1024*1024);
   const size_t length = 2;
   unsigned char ignoreBitfield[length];
@@ -328,7 +328,7 @@ void BitfieldManTest::testGetSparceMissingUnusedIndex() {
                                                        ignoreBitfield, length));
 }
 
-void BitfieldManTest::testGetSparceMissingUnusedIndex_setBit() {
+void BitfieldManTest::testGetSparseMissingUnusedIndex_setBit() {
   BitfieldMan bitfield(1024*1024, 10*1024*1024);
   const size_t length = 2;
   unsigned char ignoreBitfield[length];
@@ -379,7 +379,7 @@ void BitfieldManTest::testGetSparceMissingUnusedIndex_setBit() {
                                                        ignoreBitfield, length));
 }
 
-void BitfieldManTest::testGetSparceMissingUnusedIndex_withMinSplitSize()
+void BitfieldManTest::testGetSparseMissingUnusedIndex_withMinSplitSize()
 {
   BitfieldMan bitfield(1024*1024, 10*1024*1024);
   const size_t length = 2;
