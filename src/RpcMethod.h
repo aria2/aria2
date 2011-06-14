@@ -56,7 +56,8 @@ struct RpcResponse;
 
 // This class offers abstract implementation of processing RPC
 // request. You have to inherit this class and implement process()
-// method to add new RPC API.
+// method to add new RPC API. The derived class must be stateless
+// since we reuse the instances.
 //
 // There is RpcMethodFactory class which instantiates RpcMethod
 // subclass. If you add new RpcMethod subclass, don't forget to add it
@@ -64,7 +65,6 @@ struct RpcResponse;
 class RpcMethod {
 private:
   SharedHandle<OptionParser> optionParser_;
-  bool jsonRpc_;
 protected:
   // Subclass must implement this function to fulfil RpcRequest req.
   // The return value of this method is used as a return value of RPC
@@ -89,7 +89,8 @@ protected:
   // command to dest.
   void applyChangeableGlobalOption(Option* dest, Option* src) const;
 
-  SharedHandle<ValueBase> createErrorResponse(const Exception& e);
+  SharedHandle<ValueBase> createErrorResponse
+  (const Exception& e, const RpcRequest& req);
 
   const SharedHandle<OptionParser>& getOptionParser() const
   {
@@ -103,15 +104,6 @@ public:
   // Do work to fulfill RpcRequest req and returns its result as
   // RpcResponse. This method delegates to process() method.
   RpcResponse execute(const RpcRequest& req, DownloadEngine* e);
-  // Set whether JSON-RPC style parameter handling.
-  void setJsonRpc(bool f)
-  {
-    jsonRpc_ = f;
-  }
-  bool getJsonRpc() const
-  {
-    return jsonRpc_;
-  }
 };
 
 } // namespace rpc

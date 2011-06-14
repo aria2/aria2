@@ -270,7 +270,7 @@ SharedHandle<ValueBase> AddTorrentRpcMethod::process
     throw DL_ABORT_EX("Torrent data is not provided.");
   }
   SharedHandle<String> tempTorrentParam;
-  if(getJsonRpc()) {
+  if(req.jsonRpc) {
     tempTorrentParam = String::g(Base64::decode(torrentParam->s()));
     torrentParam = tempTorrentParam.get();
   }
@@ -317,7 +317,7 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
     throw DL_ABORT_EX("Metalink data is not provided.");
   }
   SharedHandle<String> tempMetalinkParam;
-  if(getJsonRpc()) {
+  if(req.jsonRpc) {
     tempMetalinkParam = String::g(Base64::decode(metalinkParam->s()));
     metalinkParam = tempMetalinkParam.get();
   }
@@ -1376,7 +1376,7 @@ SharedHandle<ValueBase> SystemMulticallRpcMethod::process
     const Dict* methodDict = asDict(*i);
     if(!methodDict) {
       list->append(createErrorResponse
-                   (DL_ABORT_EX("system.multicall expected struct.")));
+                   (DL_ABORT_EX("system.multicall expected struct."), req));
       continue;
     }
     const String* methodName = asString(methodDict->get(KEY_METHOD_NAME));
@@ -1384,18 +1384,18 @@ SharedHandle<ValueBase> SystemMulticallRpcMethod::process
 
     if(!methodName || !paramsList) {
       list->append(createErrorResponse
-                   (DL_ABORT_EX("Missing methodName or params.")));
+                   (DL_ABORT_EX("Missing methodName or params."), req));
       continue;
     }
     if(methodName->s() == getMethodName()) {
       list->append(createErrorResponse
-                   (DL_ABORT_EX("Recursive system.multicall forbidden.")));
+                   (DL_ABORT_EX("Recursive system.multicall forbidden."), req));
       continue;
     }
     SharedHandle<RpcMethod> method = RpcMethodFactory::create(methodName->s());
-    method->setJsonRpc(getJsonRpc());
     RpcRequest innerReq
       (methodName->s(), static_pointer_cast<List>(methodDict->get(KEY_PARAMS)));
+    innerReq.jsonRpc = req.jsonRpc;
     RpcResponse res = method->execute(innerReq, e);
     if(res.code == 0) {
       SharedHandle<List> l = List::g();

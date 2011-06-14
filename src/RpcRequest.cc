@@ -40,13 +40,13 @@ namespace rpc {
 
 RpcRequest::RpcRequest(const std::string& methodName,
                        const SharedHandle<List>& params)
-  : methodName(methodName), params(params)
+  : methodName(methodName), params(params), jsonRpc(false)
 {}
 
 RpcRequest::RpcRequest(const std::string& methodName,
                        const SharedHandle<List>& params,
                        const SharedHandle<ValueBase>& id)
-  : methodName(methodName), params(params), id(id)
+  : methodName(methodName), params(params), id(id), jsonRpc(false)
 {}
 
 RpcRequest::RpcRequest(const RpcRequest& c)

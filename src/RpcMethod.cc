@@ -53,18 +53,17 @@ namespace aria2 {
 namespace rpc {
 
 RpcMethod::RpcMethod()
-  : optionParser_(OptionParser::getInstance()),
-    jsonRpc_(false)
+  : optionParser_(OptionParser::getInstance())
 {}
 
 RpcMethod::~RpcMethod() {}
 
 SharedHandle<ValueBase> RpcMethod::createErrorResponse
-(const Exception& e)
+(const Exception& e, const RpcRequest& req)
 {
   SharedHandle<Dict> params = Dict::g();
-  params->put((jsonRpc_ ? "code" : "faultCode"), Integer::g(1));
-  params->put((jsonRpc_ ? "message" : "faultString"), std::string(e.what()));
+  params->put((req.jsonRpc ? "code" : "faultCode"), Integer::g(1));
+  params->put((req.jsonRpc ? "message" : "faultString"), std::string(e.what()));
   return params;
 }
 
@@ -73,9 +72,9 @@ RpcResponse RpcMethod::execute
 {
   try {
     return RpcResponse(0, process(req, e), req.id);
-  } catch(RecoverableException& e) {
-    A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, e);
-    return RpcResponse(1, createErrorResponse(e), req.id);
+  } catch(RecoverableException& ex) {
+    A2_LOG_DEBUG_EX(EX_EXCEPTION_CAUGHT, ex);
+    return RpcResponse(1, createErrorResponse(ex, req), req.id);
   }
 }
 

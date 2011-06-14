@@ -179,6 +179,7 @@ HttpServerBodyCommand::processJsonRpcRequest(const Dict* jsondict)
     return createJsonRpcErrorResponse(-32602, "Invalid params.", id);
   }
   rpc::RpcRequest req(methodName->s(), params, id);
+  req.jsonRpc = true;
   SharedHandle<rpc::RpcMethod> method;
   try {
     method = rpc::RpcMethodFactory::create(req.methodName);
@@ -186,7 +187,6 @@ HttpServerBodyCommand::processJsonRpcRequest(const Dict* jsondict)
     A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
     return createJsonRpcErrorResponse(-32601, "Method not found.", id);
   }
-  method->setJsonRpc(true);
   A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
   rpc::RpcResponse res = method->execute(req, e_);
   return res;
