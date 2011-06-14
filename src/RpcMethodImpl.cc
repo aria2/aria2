@@ -1380,11 +1380,9 @@ SharedHandle<ValueBase> SystemMulticallRpcMethod::process
       continue;
     }
     const String* methodName = asString(methodDict->get(KEY_METHOD_NAME));
-    const List* paramsList = asList(methodDict->get(KEY_PARAMS));
-
-    if(!methodName || !paramsList) {
+    if(!methodName) {
       list->append(createErrorResponse
-                   (DL_ABORT_EX("Missing methodName or params."), req));
+                   (DL_ABORT_EX("Missing methodName."), req));
       continue;
     }
     if(methodName->s() == getMethodName()) {
@@ -1392,9 +1390,15 @@ SharedHandle<ValueBase> SystemMulticallRpcMethod::process
                    (DL_ABORT_EX("Recursive system.multicall forbidden."), req));
       continue;
     }
+    const SharedHandle<ValueBase>& tempParamsList = methodDict->get(KEY_PARAMS);
+    SharedHandle<List> paramsList;
+    if(asList(tempParamsList)) {
+      paramsList = static_pointer_cast<List>(tempParamsList);
+    } else {
+      paramsList = List::g();
+    }
     SharedHandle<RpcMethod> method = RpcMethodFactory::create(methodName->s());
-    RpcRequest innerReq
-      (methodName->s(), static_pointer_cast<List>(methodDict->get(KEY_PARAMS)));
+    RpcRequest innerReq(methodName->s(), paramsList);
     innerReq.jsonRpc = req.jsonRpc;
     RpcResponse res = method->execute(innerReq, e);
     if(res.code == 0) {

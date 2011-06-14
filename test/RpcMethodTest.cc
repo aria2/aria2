@@ -1129,10 +1129,7 @@ void RpcMethodTest::testSystemMulticall()
                        asInteger
                        (asDict(resParams->get(4))->get("faultCode"))
                        ->i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1,
-                       asInteger
-                       (asDict(resParams->get(5))->get("faultCode"))
-                       ->i());
+  CPPUNIT_ASSERT(asList(resParams->get(5)));
   CPPUNIT_ASSERT(asList(resParams->get(6)));
 }
 
