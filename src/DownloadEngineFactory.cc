@@ -164,16 +164,21 @@ DownloadEngineFactory::newDownloadEngine
     }
   }
   if(op->getAsBool(PREF_ENABLE_RPC)) {
+    bool ok = false;
     static int families[] = { AF_INET, AF_INET6 };
     size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6)?1:2;
     for(size_t i = 0; i < familiesLength; ++i) {
       HttpListenCommand* httpListenCommand =
         new HttpListenCommand(e->newCUID(), e.get(), families[i]);
       if(httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))){
-        e->addRoutineCommand(httpListenCommand);
+        e->addCommand(httpListenCommand);
+        ok = true;
       } else {
         delete httpListenCommand;
       }
+    }
+    if(!ok) {
+      throw DL_ABORT_EX("Failed to setup RPC server.");
     }
   }
   return e;
