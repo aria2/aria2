@@ -1097,6 +1097,11 @@ connections.
   Stop application after SEC seconds has passed.
   If '0' is given, this feature is disabled.
   Default: '0'
+
+[[aria2_optref_truncate_console_readout]]*--truncate-console-readout*[='true'|'false']::
+
+  Truncate console readout to fit in a single line.
+  Default: 'true'
  
 [[aria2_optref_version]]*-v*, *--version*::
   Print the version number, copyright and the configuration information and
