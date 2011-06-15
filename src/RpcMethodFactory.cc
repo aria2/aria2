@@ -41,8 +41,17 @@ namespace aria2 {
 
 namespace rpc {
 
+namespace {
+SharedHandle<RpcMethod> getNoSuchMethod()
+{
+  static SharedHandle<RpcMethod> m(new NoSuchMethodRpcMethod());
+  return m;
+}
+} // namespace
+
+namespace {
 SharedHandle<RpcMethod>
-RpcMethodFactory::create(const std::string& methodName)
+createMethod(const std::string& methodName)
 {
   if(methodName == AddUriRpcMethod::getMethodName()) {
     return SharedHandle<RpcMethod>(new AddUriRpcMethod());
@@ -118,7 +127,28 @@ RpcMethodFactory::create(const std::string& methodName)
   } else if(methodName == SystemMulticallRpcMethod::getMethodName()) {
     return SharedHandle<RpcMethod>(new SystemMulticallRpcMethod());
   } else {
-    return SharedHandle<RpcMethod>(new NoSuchMethodRpcMethod());
+    return SharedHandle<RpcMethod>();
+  }
+}
+} // namespace
+
+std::map<std::string, SharedHandle<RpcMethod> > RpcMethodFactory::cache_;
+
+SharedHandle<RpcMethod>
+RpcMethodFactory::create(const std::string& methodName)
+{
+  std::map<std::string, SharedHandle<RpcMethod> >::const_iterator itr =
+    cache_.find(methodName);
+  if(itr == cache_.end()) {
+    SharedHandle<RpcMethod> m = createMethod(methodName);
+    if(m) {
+      cache_.insert(std::make_pair(methodName, m));
+      return m;
+    } else {
+      return getNoSuchMethod();
+    }
+  } else {
+    return (*itr).second;
   }
 }
 

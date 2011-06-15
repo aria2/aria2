@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <string>
+#include <map>
 
 #include "SharedHandle.h"
 
@@ -50,6 +51,8 @@ class RpcMethod;
 class RpcMethodFactory {
 public:
   static SharedHandle<RpcMethod> create(const std::string& methodName);
+private:
+  static std::map<std::string, SharedHandle<RpcMethod> > cache_;
 };
 
 } // namespace rpc
