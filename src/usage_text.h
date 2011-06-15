@@ -809,3 +809,6 @@
     "                              --min-split-size option, so it will be necessary\n" \
     "                              to specify a reasonable value to\n"  \
     "                              --min-split-size option.")
+#define TEXT_TRUNCATE_CONSOLE_READOUT                                   \
+  _(" --truncate-console-readout[=true|false] Truncate console readout to fit in\n"\
+    "                              a single line.")

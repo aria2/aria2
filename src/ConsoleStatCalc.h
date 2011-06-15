@@ -64,6 +64,7 @@ private:
 
   SharedHandle<SizeFormatter> sizeFormatter_;
   bool readoutVisibility_;
+  bool truncate_;
 public:
   ConsoleStatCalc(time_t summaryInterval, bool humanReadable = true);
 
@@ -74,6 +75,11 @@ public:
   void setReadoutVisibility(bool visibility)
   {
     readoutVisibility_ = visibility;
+  }
+
+  void setTruncate(bool truncate)
+  {
+    truncate_ = truncate;
   }
 };
 

@@ -227,6 +227,8 @@ extern const std::string PREF_ASYNC_DNS_SERVER;
 extern const std::string PREF_SHOW_CONSOLE_READOUT;
 // value: default | inorder
 extern const std::string PREF_STREAM_PIECE_SELECTOR;
+// value: true | false
+extern const std::string PREF_TRUNCATE_CONSOLE_READOUT;
 
 /**
  * FTP related preferences

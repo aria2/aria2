@@ -224,6 +224,8 @@ const std::string PREF_ASYNC_DNS_SERVER("async-dns-server");
 const std::string PREF_SHOW_CONSOLE_READOUT("show-console-readout");
 // value: default | inorder
 const std::string PREF_STREAM_PIECE_SELECTOR("stream-piece-selector");
+// value: true | false
+const std::string PREF_TRUNCATE_CONSOLE_READOUT("truncate-console-readout");
 
 /**
  * FTP related preferences

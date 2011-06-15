@@ -230,7 +230,8 @@ void printProgressSummary
 
 ConsoleStatCalc::ConsoleStatCalc(time_t summaryInterval, bool humanReadable):
   summaryInterval_(summaryInterval),
-  readoutVisibility_(true)
+  readoutVisibility_(true),
+  truncate_(true)
 {
   if(humanReadable) {
     sizeFormatter_.reset(new AbbrevSizeFormatter());
@@ -362,7 +363,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
   std::string readout = o.str();
   if(isTTY) {
     std::string::iterator last = readout.begin();
-    if(readout.size() > cols) {
+    if(truncate_ && readout.size() > cols) {
       std::advance(last, cols);
     } else {
       last = readout.end();
