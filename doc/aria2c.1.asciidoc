@@ -788,6 +788,12 @@ RPC Options
   and password using *<<aria2_optref_rpc_user, --rpc-user>>* and *<<aria2_optref_rpc_passwd, --rpc-passwd>>*
   option. See also *<<aria2_optref_rpc_listen_port, --rpc-listen-port>>* option.  Default: 'false'
 
+[[aria2_optref_pause]]*--pause*[='true'|'false']::
+
+  Pause download after added. This option is effective only when
+  *<<aria2_optref_enable_rpc, --enable-rpc>>*='true' is given.
+  Default: 'false'
+
 [[aria2_optref_rpc_listen_all]]*--rpc-listen-all*[='true'|'false']::
 
   Listen incoming JSON-RPC/XML-RPC requests on all network interfaces. If false
@@ -1551,6 +1557,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_user_agent, user-agent>>*
 * *<<aria2_optref_retry_wait, retry-wait>>*
 * *<<aria2_optref_metalink_base_uri, metalink-base-uri>>*
+* *<<aria2_optref_pause, pause>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
