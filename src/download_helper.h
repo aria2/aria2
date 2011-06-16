@@ -112,6 +112,10 @@ void setMetadataInfo
 SharedHandle<MetadataInfo>
 createMetadataInfoFromFirstFileEntry(const SharedHandle<DownloadContext>& dctx);
 
+// Removes option value which is only effective at the first
+// construction time.
+void removeOneshotOption(const SharedHandle<Option>& option);
+
 } // namespace aria2
 
 #endif // D_DOWNLOAD_HELPER_H

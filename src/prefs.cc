@@ -226,6 +226,8 @@ const std::string PREF_SHOW_CONSOLE_READOUT("show-console-readout");
 const std::string PREF_STREAM_PIECE_SELECTOR("stream-piece-selector");
 // value: true | false
 const std::string PREF_TRUNCATE_CONSOLE_READOUT("truncate-console-readout");
+// value: true | false
+const std::string PREF_PAUSE("pause");
 
 /**
  * FTP related preferences

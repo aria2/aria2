@@ -192,6 +192,11 @@ void SessionSerializer::save(std::ostream& out) const
           groups.begin(), eoi = groups.end(); itr != eoi; ++itr) {
       SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
       writeDownloadResult(out, metainfoCache, result);
+      // PREF_PAUSE was removed from option, so save it here looking
+      // property separately.
+      if((*itr)->isPauseRequested()) {
+        out << " " << PREF_PAUSE << "=true" << "\n";
+      }
     }
   }
 }

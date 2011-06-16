@@ -167,7 +167,8 @@ const std::set<std::string>& listRequestOptions()
     PREF_BT_TRACKER,
     PREF_BT_EXCLUDE_TRACKER,
     PREF_RETRY_WAIT,
-    PREF_METALINK_BASE_URI
+    PREF_METALINK_BASE_URI,
+    PREF_PAUSE
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
@@ -228,6 +229,8 @@ SharedHandle<RequestGroup> createRequestGroup
   dctx->getFirstFileEntry()->setMaxConnectionPerServer
     (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
   rg->setDownloadContext(dctx);
+  rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+  removeOneshotOption(rg->getOption());
   return rg;
 }
 } // namespace
@@ -282,9 +285,11 @@ createBtRequestGroup(const std::string& torrentFilePath,
       ((*i).first, util::applyDir(option->get(PREF_DIR), (*i).second));
   }
   rg->setDownloadContext(dctx);
+  rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
   // Remove "metalink" from Accept Type list to avoid server from
   // responding Metalink file for web-seeding URIs.
   util::removeMetalinkContentTypes(rg);
+  removeOneshotOption(rg->getOption());
   return rg;
 }
 } // namespace
@@ -316,6 +321,8 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
     (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
   rg->setMetadataInfo(createMetadataInfo(magnetLink));
   rg->markInMemoryDownload();
+  rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+  removeOneshotOption(rg->getOption());
   return rg;
 }
 } // namespace
@@ -553,6 +560,11 @@ createMetadataInfoFromFirstFileEntry(const SharedHandle<DownloadContext>& dctx)
     }
     return SharedHandle<MetadataInfo>(new MetadataInfo(uris[0]));
   }
+}
+
+void removeOneshotOption(const SharedHandle<Option>& option)
+{
+  option->remove(PREF_PAUSE);
 }
 
 } // namespace aria2

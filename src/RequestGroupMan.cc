@@ -500,7 +500,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     reservedGroups_.pop_front();
     std::vector<Command*> commands;
     try {
-      if(groupToAdd->isPauseRequested()||!groupToAdd->isDependencyResolved()) {
+      if((rpc_ && groupToAdd->isPauseRequested()) ||
+         !groupToAdd->isDependencyResolved()) {
         temp.push_back(groupToAdd);
         continue;
       }

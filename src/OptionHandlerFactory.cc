@@ -516,6 +516,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_PAUSE,
+                                    TEXT_PAUSE,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_QUIET,
                                     TEXT_QUIET,
                                     A2_V_FALSE,

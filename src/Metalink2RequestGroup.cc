@@ -312,6 +312,8 @@ Metalink2RequestGroup::createRequestGroup
       rg->setNumConcurrentCommand(option->getAsInt(PREF_METALINK_SERVERS));
     }
     rg->setDownloadContext(dctx);
+    rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
+    removeOneshotOption(rg->getOption());
     // remove "metalink" from Accept Type list to avoid loop in
     // tranparent metalink
     util::removeMetalinkContentTypes(rg);
