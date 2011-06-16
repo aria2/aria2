@@ -116,27 +116,21 @@ void RequestGroupMan::addRequestGroup
 void RequestGroupMan::addReservedGroup
 (const std::vector<SharedHandle<RequestGroup> >& groups)
 {
-  if(reservedGroups_.empty()) {
-    requestQueueCheck();
-  }
+  requestQueueCheck();
   reservedGroups_.insert(reservedGroups_.end(), groups.begin(), groups.end());
 }
 
 void RequestGroupMan::addReservedGroup
 (const SharedHandle<RequestGroup>& group)
 {
-  if(reservedGroups_.empty()) {
-    requestQueueCheck();
-  }
+  requestQueueCheck();
   reservedGroups_.push_back(group);
 }
 
 void RequestGroupMan::insertReservedGroup
 (size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups)
 {
-  if(reservedGroups_.empty()) {
-    requestQueueCheck();
-  }
+  requestQueueCheck();
   reservedGroups_.insert
     (reservedGroups_.begin()+std::min(reservedGroups_.size(), pos),
      groups.begin(), groups.end());
