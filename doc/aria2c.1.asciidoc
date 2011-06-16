@@ -1558,6 +1558,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_retry_wait, retry-wait>>*
 * *<<aria2_optref_metalink_base_uri, metalink-base-uri>>*
 * *<<aria2_optref_pause, pause>>*
+* *<<aria2_optref_stream_piece_selector, stream-piece-selector>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
