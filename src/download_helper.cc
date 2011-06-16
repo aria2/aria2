@@ -168,7 +168,8 @@ const std::set<std::string>& listRequestOptions()
     PREF_BT_EXCLUDE_TRACKER,
     PREF_RETRY_WAIT,
     PREF_METALINK_BASE_URI,
-    PREF_PAUSE
+    PREF_PAUSE,
+    PREF_STREAM_PIECE_SELECTOR
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
