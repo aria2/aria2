@@ -201,8 +201,8 @@ OptionParser.new do |opt|
   opt.on("--http-accept-gzip [BOOL]",["true","false"]){|val|
     options["http-accept-gzip"]=val||"true"
   }
-  opt.on("--max-connection-per-server NUM"){|val| options["max-connection-per-server"]=val}
-  opt.on("--min-split-size SIZE"){|val| options["min-split-size"]=val}
+  opt.on("-x","--max-connection-per-server NUM"){|val| options["max-connection-per-server"]=val}
+  opt.on("-k","--min-split-size SIZE"){|val| options["min-split-size"]=val}
   opt.on("--conditional-get [BOOL]",["true","false"]){|val|
     options["conditional-get"]=val||"true"
   }
@@ -213,6 +213,8 @@ OptionParser.new do |opt|
   opt.on("--bt-exclude-tracker URIS"){|val| options["bt-exclude-tracker"]=val}
   opt.on("--retry-wait SEC"){|val| options["retry-wait"]=val}
   opt.on("--metalink-base-uri URI"){|val| options["metalink-base-uri"]=val}
+  opt.on("--pause [BOOL]",["true","false"]){|val| options["pause"]=val||"true"}
+  opt.on("--stream-piece-selector SELECTOR"){|val| options["stream-piece-selector"]=val}
 
   opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
