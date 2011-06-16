@@ -139,9 +139,7 @@ void RequestGroupMan::insertReservedGroup
 void RequestGroupMan::insertReservedGroup
 (size_t pos, const SharedHandle<RequestGroup>& group)
 {
-  if(reservedGroups_.empty()) {
-    requestQueueCheck();
-  }
+  requestQueueCheck();
   reservedGroups_.insert
     (reservedGroups_.begin()+std::min(reservedGroups_.size(), pos), group);
 }
