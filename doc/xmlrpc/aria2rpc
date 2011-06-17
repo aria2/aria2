@@ -255,6 +255,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} getSessionInfo [options]
        #{program_name} shutdown [options]
        #{program_name} forceShutdown [options]
+       #{program_name} getGlobalStat [options]
 Options:
 EOS
   
@@ -355,6 +356,8 @@ elsif command == "getSessionInfo" then
 elsif command == "shutdown" then
   result=client.call("aria2."+command)
 elsif command == "forceShutdown" then
+  result=client.call("aria2."+command)
+elsif command == "getGlobalStat" then
   result=client.call("aria2."+command)
 else
   puts "Command not recognized"

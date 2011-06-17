@@ -530,6 +530,18 @@ public:
   }
 };
 
+class GetGlobalStatRpcMethod:public RpcMethod {
+protected:
+  virtual SharedHandle<ValueBase> process
+  (const RpcRequest& req, DownloadEngine* e);
+public:
+  static const std::string& getMethodName()
+  {
+    static std::string methodName = "aria2.getGlobalStat";
+    return methodName;
+  }
+};
+
 class ForceShutdownRpcMethod:public RpcMethod {
 protected:
   virtual SharedHandle<ValueBase> process

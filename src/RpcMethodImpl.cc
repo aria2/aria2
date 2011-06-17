@@ -138,6 +138,9 @@ const std::string KEY_COMMENT = "comment";
 const std::string KEY_CREATION_DATE = "creationDate";
 const std::string KEY_MODE = "mode";
 const std::string KEY_SERVERS = "servers";
+const std::string KEY_NUM_WAITING = "numWaiting";
+const std::string KEY_NUM_STOPPED = "numStopped";
+const std::string KEY_NUM_ACTIVE = "numActive";
 } // namespace
 
 namespace {
@@ -1361,6 +1364,20 @@ SharedHandle<ValueBase> ForceShutdownRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   return goingShutdown(req, e, true);
+}
+
+SharedHandle<ValueBase> GetGlobalStatRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
+{
+  const SharedHandle<RequestGroupMan>& rgman = e->getRequestGroupMan();
+  TransferStat ts = rgman->calculateStat();
+  SharedHandle<Dict> res = Dict::g();
+  res->put(KEY_DOWNLOAD_SPEED, util::uitos(ts.downloadSpeed));
+  res->put(KEY_UPLOAD_SPEED, util::uitos(ts.uploadSpeed));
+  res->put(KEY_NUM_WAITING, util::uitos(rgman->getReservedGroups().size()));
+  res->put(KEY_NUM_STOPPED, util::uitos(rgman->getDownloadResults().size()));
+  res->put(KEY_NUM_ACTIVE, util::uitos(rgman->getRequestGroups().size()));
+  return res;
 }
 
 SharedHandle<ValueBase> SystemMulticallRpcMethod::process

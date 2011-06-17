@@ -124,6 +124,8 @@ createMethod(const std::string& methodName)
     return SharedHandle<RpcMethod>(new ShutdownRpcMethod());
   } else if(methodName == ForceShutdownRpcMethod::getMethodName()) {
     return SharedHandle<RpcMethod>(new ForceShutdownRpcMethod());
+  } else if(methodName == GetGlobalStatRpcMethod::getMethodName()) {
+    return SharedHandle<RpcMethod>(new GetGlobalStatRpcMethod());
   } else if(methodName == SystemMulticallRpcMethod::getMethodName()) {
     return SharedHandle<RpcMethod>(new SystemMulticallRpcMethod());
   } else {
