@@ -131,14 +131,15 @@
     "                              This may take some time depending on the size of\n" \
     "                              the file.\n"                         \
     "                              If you are using newer file systems such as ext4\n" \
-    "                              (with extents support), btrfs or xfs, 'falloc' is\n" \
-    "                              your best choice. It allocates large(few GiB)\n" \
-    "                              files almost instantly. Don't use 'falloc' with\n" \
-    "                              legacy file systems such as ext3 because it takes\n" \
-    "                              almost same time as 'prealloc' and it blocks aria2\n" \
-    "                              entirely until allocation finishes. 'falloc' may\n" \
-    "                              not be available if your system doesn't have\n" \
-    "                              posix_fallocate() function.")
+    "                              (with extents support), btrfs, xfs or NTFS\n" \
+    "                              (MinGW build only), 'falloc' is your best\n"   \
+    "                              choice. It allocates large(few GiB) files\n" \
+    "                              almost instantly. Don't use 'falloc' with legacy\n" \
+    "                              file systems such as ext3 and FAT32 because it\n" \
+    "                              takes almost same time as 'prealloc' and it\n" \
+    "                              blocks aria2 entirely until allocation finishes.\n" \
+    "                              'falloc' may not be available if your system\n" \
+    "                              doesn't have posix_fallocate() function.")
 #define TEXT_NO_FILE_ALLOCATION_LIMIT                                   \
   _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n" \
     "                              size is smaller than SIZE.\n"        \
