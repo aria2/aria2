@@ -502,7 +502,8 @@ AC_CONFIG_FILES([Makefile
 		po/Makefile.in
 		intl/Makefile
 		lib/Makefile
-		doc/Makefile])
+		doc/Makefile
+		doc/ru/Makefile])
 AC_OUTPUT
 
 echo " "
