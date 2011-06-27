@@ -294,6 +294,11 @@ public:
 
   // Returns currently used hosts and its use count.
   void getUsedHosts(std::vector<std::pair<size_t, std::string> >& usedHosts);
+
+  const SharedHandle<ServerStatMan>& getServerStatMan() const
+  {
+    return serverStatMan_;
+  }
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

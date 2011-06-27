@@ -53,6 +53,7 @@
 namespace aria2 {
 
 class URISelector;
+class ServerStatMan;
 
 class FileEntry {
 private:
@@ -168,6 +169,13 @@ public:
   // comparing their PeerStat objects. If such Request is found, it is
   // removed from the pool and returned.
   SharedHandle<Request> findFasterRequest(const SharedHandle<Request>& base);
+
+  // Finds faster server using ServerStatMan.
+  SharedHandle<Request>
+  findFasterRequest
+  (const SharedHandle<Request>& base,
+   const std::vector<std::pair<size_t, std::string> >& usedHosts,
+   const SharedHandle<ServerStatMan>& serverStatMan);
 
   void poolRequest(const SharedHandle<Request>& request);
 

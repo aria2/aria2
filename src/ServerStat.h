@@ -39,6 +39,7 @@
 #include <string>
 #include <iosfwd>
 
+#include "SharedHandle.h"
 #include "TimeA2.h"
 
 namespace aria2 {
@@ -166,6 +167,16 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& o, const ServerStat& serverStat);
+
+class ServerStatFaster {
+public:
+  bool operator()
+  (const std::pair<SharedHandle<ServerStat>, std::string> lhs,
+   const std::pair<SharedHandle<ServerStat>, std::string> rhs) const
+  {
+    return lhs.first->getDownloadSpeed() > rhs.first->getDownloadSpeed();
+  }
+};
 
 } // namespace aria2
 

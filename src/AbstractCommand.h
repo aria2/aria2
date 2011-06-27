@@ -85,9 +85,10 @@ private:
   bool nameResolverCheck_;
 
   bool incNumConnection_;
+  Timer serverStatTimer_;
 
   size_t calculateMinSplitSize() const;
-
+  void useFasterRequest(const SharedHandle<Request>& fasterRequest);
 #ifdef ENABLE_ASYNC_DNS
   void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
 

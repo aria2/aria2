@@ -92,7 +92,8 @@ AbstractCommand::AbstractCommand
     socketRecvBuffer_(socketRecvBuffer),
     checkSocketIsReadable_(false), checkSocketIsWritable_(false),
     nameResolverCheck_(false),
-    incNumConnection_(incNumConnection)
+    incNumConnection_(incNumConnection),
+    serverStatTimer_(global::wallclock)
 {
   if(socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);
@@ -115,6 +116,22 @@ AbstractCommand::~AbstractCommand() {
   if(incNumConnection_) {
     requestGroup_->decreaseStreamConnection();
   }
+}
+
+void AbstractCommand::useFasterRequest
+(const SharedHandle<Request>& fasterRequest)
+{
+  A2_LOG_INFO(fmt("CUID#%lld - Use faster Request hostname=%s, port=%u",
+                  getCuid(),
+                  fasterRequest->getHost().c_str(),
+                  fasterRequest->getPort()));
+  // Cancel current Request object and use faster one.
+  fileEntry_->removeRequest(req_);
+  Command* command =
+    InitiateConnectionCommandFactory::createInitiateConnectionCommand
+    (getCuid(), fasterRequest, fileEntry_, requestGroup_, e_);
+  e_->setNoWait(true);
+  e_->addCommand(command);
 }
 
 bool AbstractCommand::execute() {
@@ -158,17 +175,25 @@ bool AbstractCommand::execute() {
          !getPieceStorage()->hasMissingUnusedPiece()) {
         SharedHandle<Request> fasterRequest = fileEntry_->findFasterRequest(req_);
         if(fasterRequest) {
-          A2_LOG_INFO(fmt("CUID#%lld - Use faster Request hostname=%s, port=%u",
-                          getCuid(),
-                          fasterRequest->getHost().c_str(),
-                          fasterRequest->getPort()));
-          // Cancel current Request object and use faster one.
-          fileEntry_->removeRequest(req_);
-          Command* command =
-            InitiateConnectionCommandFactory::createInitiateConnectionCommand
-            (getCuid(), fasterRequest, fileEntry_, requestGroup_, e_);
-          e_->setNoWait(true);
-          e_->addCommand(command);
+          useFasterRequest(fasterRequest);
+          return true;
+        }
+      }
+      // Don't use this feature if PREF_MAX_{OVERALL_}DOWNLOAD_LIMIT
+      // is used
+      if(e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit() == 0 &&
+         requestGroup_->getMaxDownloadSpeedLimit() == 0 &&
+         serverStatTimer_.difference(global::wallclock) >= 10) {
+        serverStatTimer_ = global::wallclock;
+        std::vector<std::pair<size_t, std::string> > usedHosts;
+        if(getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
+          getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
+        }
+        SharedHandle<Request> fasterRequest =
+          fileEntry_->findFasterRequest
+          (req_, usedHosts, e_->getRequestGroupMan()->getServerStatMan());
+        if(fasterRequest) {
+          useFasterRequest(fasterRequest);
           return true;
         }
       }

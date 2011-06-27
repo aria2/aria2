@@ -46,6 +46,8 @@
 #include "uri.h"
 #include "PeerStat.h"
 #include "fmt.h"
+#include "ServerStatMan.h"
+#include "ServerStat.h"
 
 namespace aria2 {
 
@@ -218,6 +220,57 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
     lastFasterReplace_.reset();
     return fastestRequest;
   }
+  return SharedHandle<Request>();
+}
+
+SharedHandle<Request>
+FileEntry::findFasterRequest
+(const SharedHandle<Request>& base,
+ const std::vector<std::pair<size_t, std::string> >& usedHosts,
+ const SharedHandle<ServerStatMan>& serverStatMan)
+{
+  const int startupIdleTime = 10;
+  const unsigned int SPEED_THRESHOLD = 20*1024;
+  if(lastFasterReplace_.difference(global::wallclock) < startupIdleTime) {
+    return SharedHandle<Request>();
+  }
+  const SharedHandle<PeerStat>& basestat = base->getPeerStat();
+  A2_LOG_DEBUG("Search faster server using ServerStat.");
+  // Use first 10 good URIs to introduce some randomness.
+  const size_t NUM_URI = 10;
+  std::vector<std::pair<SharedHandle<ServerStat>, std::string> > fastCands;
+  std::vector<std::string> normCands;
+  for(std::deque<std::string>::const_iterator i = uris_.begin(),
+        eoi = uris_.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
+    uri::UriStruct us;
+    if(!uri::parse(us, *i)) {
+      continue;
+    }
+    if(findSecond(usedHosts.begin(), usedHosts.end(), us.host) !=
+       usedHosts.end()) {
+      A2_LOG_DEBUG(fmt("%s is in usedHosts, not considered", (*i).c_str()));
+      continue;
+    }
+    SharedHandle<ServerStat> ss = serverStatMan->find(us.host, us.protocol);
+    if(ss && ss->isOK()) {
+      if((basestat &&
+          ss->getDownloadSpeed() > basestat->calculateDownloadSpeed()*1.5) ||
+         (!basestat && ss->getDownloadSpeed() > SPEED_THRESHOLD)) {
+        fastCands.push_back(std::make_pair(ss, *i));
+      }
+    }
+  }
+  if(!fastCands.empty()) {
+    A2_LOG_DEBUG("Selected from fastCands");
+    std::sort(fastCands.begin(), fastCands.end(), ServerStatFaster());
+    SharedHandle<Request> fastestRequest(new Request());
+    fastestRequest->setUri(fastCands.front().second);
+    fastestRequest->setReferer(base->getReferer());
+    inFlightRequests_.push_back(fastestRequest);
+    lastFasterReplace_ = global::wallclock;
+    return fastestRequest;
+  }
+  A2_LOG_DEBUG("No faster server found.");
   return SharedHandle<Request>();
 }
 
