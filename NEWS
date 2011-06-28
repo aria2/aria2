@@ -1,172 +1,77 @@
-aria2 1.11.2
+aria2 1.12.0
 ============
 
 Release Note
 ------------
 
-This release adds the ability to handle metalink file which contains
-relative URI in metalink:url and metalink:metaurl element. The
-username and password specified in command-line are now masked with
-"*" immediately after parsed, so that ps cannot show username and
-password. In XML-RPC, aria2 now treats data without data type tag as
-string. In MinGW32 build, cmd.exe is specified explicitly to run .bat
-file.
+This release adds --pause option which makes download paused state
+immediately when added. If --save-session is used, aria2 will save
+paused download with --pause option. aria2.getGlobalStat RPC method
+was added. It returns global statistics such as overall download
+speed.  This release also fixes the bug that RPC request fails if it
+is compressed. aria2 now won't save removed download in --save-session
+text file.  --file-allocation=falloc now works in MinGW32 build. This
+only works with NTFS. Russian translation of man page and HTML manual
+was added.  We added more command line options in this release. See
+Changes for details.
 
 Changes
 -------
 
- * Updated Japanese, Spanish and Simplified Chinese translation.
-   Thanks to all translators.
+ * Use ServerStat to find faster server.
 
- * Eliminated few seconds delay when downloads stop or pause.
+ * Added Russian translation of man page and HTML manual contributed
+   by ITriskTI.
 
- * Added --metalink-base-uri option.  --metalink-uri option specifies
-   base URI to resolve relative URI in metalink file stored in local
-   disk. If URI points to a directory, URI must end with '/'.
+ * Added aria2.getGlobalStat RPC method.  It returns overall
+   download/upload speed and the number of active/stopped/waiting
+   downloads.
 
- * Run batch file with cmd.exe. Quoted user command.  It seems that we
-   have to specify the full path to cmd.exe in the first argument of
-   CreateProcess() to run batch file in proper manner.  We first
-   determine the full path to cmd.exe. To do this, we get windir
-   environment variable and concatenate it with "\system32\cmd.exe".
+ * Added --pause option.  This option pauses download after
+   added. This option is effective only when --enable-rpc=true is
+   given.  When --save-session option is used and there are paused
+   downloads, they are saved with --pause=true so that it will become
+   paused state when the session is recovered.
 
- * Fixed the bug that the message "Loaded cookies from ..." appears
-   when loading cookies from that file failed.
+ * Abort aria2 if it could not setup any RPC server.
 
- * Applied patch from Dan Fandrich. This patch fixes compatibility
-   issue when compiling aria2 on older systems.
+ * Added --truncate-console-readout option.  This option truncates
+   console readout to fit in a single line.  This is default. Give
+   false value to this option to tell aria2 not to truncate console
+   readout.
 
- * Support relative URI in Metalink file.  If relative URI is found in
-   Metalink file, aria2 resolves its full URI contatenating the URI
-   from which Metalink file is retrieved and relative URI in Metalink
-   file. This feature is not available if Metalink file in local disk
-   is specified in command line.
+ * Cache and reuse RpcMethod objects.
 
- * Erase user and password specified in command-line from argv.  The
-   user and password is masked with '*'.
+ * Allowed missing params in system.multicall RPC method.
 
- * If no data type tag is used in XML-RPC, treat the data as string.
+ * Added --stream-piece-selector option.  This option specifies piece
+   selection algorithm used in HTTP/FTP download. Piece means fixed
+   length segment which is downloaded in parallel in segmented
+   download. If 'default' is given, aria2 selects piece so that it
+   reduces the number of establishing connection. This is reasonable
+   default behaviour because establishing connection is an expensive
+   operation.  If 'inorder' is given, aria2 selects piece which has
+   minimum index. Index=0 means first of the file. This will be useful
+   to view movie while downloading it. --enable-http-pipelining option
+   may be useful to reduce reconnection overhead.  Please note that
+   aria2 honors --min-split-size option, so it will be necessary to
+   specify a reasonable value to --min-split-size option.
 
-
+ * Removed unnecessary template parameter from std::make_pair call.
+   The patch was contributed from Dan Fandrich.
 
-aria2 1.11.1
-============
+ * Implemented fast file allocation in MinGW32 build.  We use
+   SetFilePointerEx and SetEndOfFile to allocate extents.  This only
+   works with NTFS. To enable this feature, --file-allocation=falloc
+   must be given.
 
-Release Note
-------------
+ * Only percent-encode non-printable ASCII chars(0x00-0x1f), non-ASCII
+   chars(>0x7f), ' ', '"', '<' and '>' for URIs supplied by user and
+   remote server(usually Location header field).
 
-This release fixes the bug that aria2 does not work on platforms which
-have kqueue() system call due to invalid timeout parameter. The
---show-console-readout option was added. This option toggles the
-appearance of console readout.
+ * Don't throw exception if Z_BUF_ERROR is encountered in GZipEncoder.
+   This fixed the bug that compressed RPC request failed.
 
-Changes
--------
-
- * Added --show-console-readout option. This option toggles
-   appearance of console readout.
-
- * Fixed the bug that microsecond part of timeval overwlows in
-   waitData(). This bug affects platforms which have kqueue() system
-   call. Those systems are FreeBSD, OpenBSD, NetBSD and Darwin (Mac OS
-   X).
-
-
-
-aria2 1.11.0
-============
-
-Release Note
-------------
-
-This release adds JSON-RPC interface. The JSON-RPC and XML-RPC shares
-same APIs. The JSON-RPC also supports JSONP. 2 new options were added:
---retry-wait and --async-dns-server. The downloads added by
-aria2.addTorrent and aria2.addMetalink RPC method are now saved to the
-file specified in --save-session option. The proxy options and related
-environment variables now accept https:// and ftp:// scheme. This
-release fixes the bug that causes segmentation fault when unpausing
-downloads in some situations.  MinGW32 build now looks for USERPROFILE
-and the combination of HOMEDRIVE and HOMEPATH to get user's home
-directory and doesn't check permission of .netrc file.
-
-Changes
--------
-
- * Updated gettext to 0.18
-
- * Added JSON-RPC support. --enable-xml-rpc was deprecated and
-   --enable-rpc should be used instead.  Similarly, --xml-rpc-*
-   options were replaced with --rpc-* options.  We are implementing
-   JSON-RPC based on JSON-RPC 2.0 draft spec.
-
- * Fixed rounding error in DownloadEngine::run(). This fixes the bug
-   that executeCommand() with Command::STATUS_ALL is not called in
-   every interval correctly because of rounding error in timer.
-
- * Refresh buckets at DHT initialization without checking serialized
-   time. Checking serialized time does not work if you stop aria2 as
-   soon as it started DHT. The serialized time in dht.dat will be
-   updated, but buckets are not updated and still old. When you
-   restart aria2 again soon, it does not refresh buckets because
-   serialized time is recent.
-
- * Save downloads added by aria2.addTorrent or aria2.addMetalink in
-   --save-session file.  Uploaded data are saved as file named hex
-   string of sha1 hash of uploaded data plus extension(".torrent" for
-   torrent and ".meta4" for metalink). For example,
-   0a3893293e27ac0490424c06de4d09242215f0a6.torrent. The directory
-   where these files are saved is specified by --dir option. These
-   file paths are written in --save-session file.
-
- * Fixed the bug that causes segmentation fault when unpause
-   RequestGroup which has resolved BtDependency.
-
- * Look for USERPROFILE and the combination of HOMEDRIVE and HOMEPATH
-   to get user's home directory in MinGW32 build.  Usually HOME
-   environment variable is defined in *nix like OSes, but not in
-   Windows. So in MinGW32 build, if HOME is not defined, we also look
-   for USERPROFILE and the combination of HOMEDRIVE and HOMEPATH.
-
- * Fixed the bug that DownloadContext::basePath_ is not escaped.
-
- * Added Date, Expires and Cache-Control response header field to RPC
-   response.
-
- * Added --async-dns-server option. This option accepts comma
-   separated list of DNS server addresses used in asynchronous DNS
-   resolver. Usually asynchronous DNS resolver reads DNS server
-   addresses from /etc/resolv.conf. When this option is used, it uses
-   DNS servers specified in this option instead of ones in
-   /etc/resolv.conf. You can specify both IPv4 and IPv6 address. This
-   option is useful when the system does not have /etc/resolv.conf and
-   user does not have the permission to create it.
-
- * Accept https:// and ftp:// in proxy options and environment variables.
-
- * Fixed overflow in the calculation of progress percentage for file
-   allocation and hash check when off_t is 32bit.
-
- * Accept HTTP 304 reply as success when If-None-Match request-header
-   field is specified using --header option.  When --conditional-get
-   is used, --allow-overwrite is now required to overwrite existing
-   file.
-
- * Added aria2.removeDownloadResult RPC method.  The method signature
-   is aria2.removeDownloadResult(gid).  This method removes
-   completed/error/removed download denoted by gid from memory. This
-   method returns "OK" for success.
-
- * Use IP address of control connection to connect to the remote server in
-   FTP passive mode.
-
- * Don't check permission of .netrc file in MinGW32 build.
-
- * Added --retry-wait option. This option was once existed in aria2
-   but erased on 2009-09-20.  Now it is resurrected once again.  We
-   choose 0 as default value for backward compatibility.  Now we retry
-   HTTP download when remote server returns "503 Service Unavailable"
-   if --retry-wait > 0. We also added error code 29:
-   HTTP_SERVICE_UNAVAILABLE.
-
- * Don't show metadata download and paused download in "Download Results".
+ * Don't save removed download in --save-session text file.  Now stat
+   column of removed downloads in Download Results is 'RM' instead of
+   INPR.
