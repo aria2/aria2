@@ -234,6 +234,9 @@ FileEntry::findFasterRequest
   if(lastFasterReplace_.difference(global::wallclock) < startupIdleTime) {
     return SharedHandle<Request>();
   }
+  std::vector<std::string> inFlightHosts;
+  enumerateInFlightHosts(inFlightRequests_.begin(), inFlightRequests_.end(),
+                         std::back_inserter(inFlightHosts));
   const SharedHandle<PeerStat>& basestat = base->getPeerStat();
   A2_LOG_DEBUG("Search faster server using ServerStat.");
   // Use first 10 good URIs to introduce some randomness.
@@ -244,6 +247,13 @@ FileEntry::findFasterRequest
         eoi = uris_.end(); i != eoi && fastCands.size() < NUM_URI; ++i) {
     uri::UriStruct us;
     if(!uri::parse(us, *i)) {
+      continue;
+    }
+    if(std::count(inFlightHosts.begin(), inFlightHosts.end(),us.host)
+       >= static_cast<int>(maxConnectionPerServer_)) {
+      A2_LOG_DEBUG(fmt("%s has already used %d times, not considered.",
+                       (*i).c_str(),
+                       static_cast<int>(maxConnectionPerServer_)));
       continue;
     }
     if(findSecond(usedHosts.begin(), usedHosts.end(), us.host) !=
