@@ -271,11 +271,14 @@ FileEntry::findFasterRequest
     }
   }
   if(!fastCands.empty()) {
-    A2_LOG_DEBUG("Selected from fastCands");
     std::sort(fastCands.begin(), fastCands.end(), ServerStatFaster());
     SharedHandle<Request> fastestRequest(new Request());
-    fastestRequest->setUri(fastCands.front().second);
+    const std::string& uri = fastCands.front().second;
+    A2_LOG_DEBUG(fmt("Selected %s from fastCands", uri.c_str()));
+    fastestRequest->setUri(uri);
     fastestRequest->setReferer(base->getReferer());
+    uris_.erase(std::find(uris_.begin(), uris_.end(), uri));
+    spentUris_.push_back(uri);
     inFlightRequests_.push_back(fastestRequest);
     lastFasterReplace_ = global::wallclock;
     return fastestRequest;
