@@ -217,7 +217,7 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
     SharedHandle<Request> fastestRequest = requestPool_.front();
     requestPool_.pop_front();
     inFlightRequests_.push_back(fastestRequest);
-    lastFasterReplace_.reset();
+    lastFasterReplace_ = global::wallclock;
     return fastestRequest;
   }
   return SharedHandle<Request>();

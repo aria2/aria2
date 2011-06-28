@@ -77,7 +77,7 @@ bool FtpFinishDownloadCommand::execute()
   }
   try {
     if(readEventEnabled() || hupEventEnabled()) {
-      getCheckPoint().reset();
+      getCheckPoint() = global::wallclock;
       unsigned int status = ftpConnection_->receiveResponse();
       if(status == 0) {
         getDownloadEngine()->addCommand(this);

@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "PeerAddrEntry.h"
+#include "wallclock.h"
 
 namespace aria2 {
 
@@ -61,7 +62,7 @@ PeerAddrEntry& PeerAddrEntry::operator=(const PeerAddrEntry& c)
 
 void PeerAddrEntry::notifyUpdate()
 {
-  lastUpdated_.reset();
+  lastUpdated_ = global::wallclock;
 }
 
 bool PeerAddrEntry::operator==(const PeerAddrEntry& entry) const
