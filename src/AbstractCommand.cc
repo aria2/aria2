@@ -180,8 +180,9 @@ bool AbstractCommand::execute() {
         }
       }
       // Don't use this feature if PREF_MAX_{OVERALL_}DOWNLOAD_LIMIT
-      // is used
-      if(e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit() == 0 &&
+      // is used or total length is unknown.
+      if(req_ && fileEntry_->getLength() > 0 &&
+         e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit() == 0 &&
          requestGroup_->getMaxDownloadSpeedLimit() == 0 &&
          serverStatTimer_.difference(global::wallclock) >= 10) {
         serverStatTimer_ = global::wallclock;
