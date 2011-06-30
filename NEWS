@@ -18,7 +18,13 @@ Changes for details.
 Changes
 -------
 
- * Use ServerStat to find faster server.
+ * Use ServerStat to find faster server. This is useful when several
+   downloads were started in parallel, but one download is slow and
+   the other downloads have completed. Then aria2 knows which servers
+   are fast by the results of completed downloads, and check the
+   available URIs of slow downloads to see faster server is available
+   there. If so, use it instead of current slow one to make download
+   faster.
 
  * Added Russian translation of man page and HTML manual contributed
    by ITriskTI.
