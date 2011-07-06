@@ -562,7 +562,7 @@ void SocketCore::closeConnection()
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
   if(secure_) {
-    gnutls_bye(sslSession_, GNUTLS_SHUT_RDWR);
+    gnutls_bye(sslSession_, GNUTLS_SHUT_WR);
   }
 #endif // HAVE_LIBGNUTLS
   if(sockfd_ != (sock_t) -1) {
