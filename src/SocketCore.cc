@@ -566,6 +566,7 @@ void SocketCore::closeConnection()
   }
 #endif // HAVE_LIBGNUTLS
   if(sockfd_ != (sock_t) -1) {
+    shutdown(sockfd_, SHUT_WR);
     CLOSE(sockfd_);
     sockfd_ = -1;
   }
