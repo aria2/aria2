@@ -76,29 +76,37 @@ public:
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer);
+   const SharedHandle<Peer>& peer,
+   cuid_t cuid);
 
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes);
-
-  virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer);
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid);
 
   virtual void getMissingFastPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes);
+   cuid_t cuid);
 
-  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid);
 
   virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes);
+  (const SharedHandle<Peer>& peer,
+   cuid_t cuid);
+
+  virtual SharedHandle<Piece> getMissingPiece
+  (const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid);
 #endif // ENABLE_BITTORRENT
 
   virtual bool hasMissingUnusedPiece();
@@ -107,7 +115,10 @@ public:
    * Returns a missing piece if available. Otherwise returns 0;
    */
   virtual SharedHandle<Piece> getMissingPiece
-  (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length);
+  (size_t minSplitSize,
+   const unsigned char* ignoreBitfield,
+   size_t length,
+   cuid_t cuid);
 
   /**
    * Returns a missing piece whose index is index.
@@ -115,7 +126,7 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual SharedHandle<Piece> getMissingPiece(size_t index);
+  virtual SharedHandle<Piece> getMissingPiece(size_t index, cuid_t cuid);
 
   /**
    * Returns the piece denoted by index.
@@ -131,7 +142,7 @@ public:
   /**
    * Tells that the download of the specified piece is canceled.
    */
-  virtual void cancelPiece(const SharedHandle<Piece>& piece);
+  virtual void cancelPiece(const SharedHandle<Piece>& piece, cuid_t cuid);
 
   /**
    * Returns true if the specified piece is already downloaded.

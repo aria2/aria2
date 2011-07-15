@@ -44,7 +44,8 @@
 
 namespace aria2 {
 
-Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(0)
+Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(0),
+               usedBySegment_(false)
 #ifdef ENABLE_MESSAGE_DIGEST
               , nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -52,9 +53,10 @@ Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(0)
 
 Piece::Piece(size_t index, size_t length, size_t blockLength):
   index_(index), length_(length), blockLength_(blockLength),
-  bitfield_(new BitfieldMan(blockLength_, length))
+  bitfield_(new BitfieldMan(blockLength_, length)),
+  usedBySegment_(false)
 #ifdef ENABLE_MESSAGE_DIGEST
-                                                             , nextBegin_(0)
+  , nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
@@ -234,5 +236,22 @@ void Piece::destroyHashContext()
 }
 
 #endif // ENABLE_MESSAGE_DIGEST
+
+bool Piece::usedBy(cuid_t cuid) const
+{
+  return std::find(users_.begin(), users_.end(), cuid) != users_.end();
+}
+
+void Piece::addUser(cuid_t cuid)
+{
+  if(std::find(users_.begin(), users_.end(), cuid) == users_.end()) {
+    users_.push_back(cuid);
+  }
+}
+
+void Piece::removeUser(cuid_t cuid)
+{
+  users_.erase(std::remove(users_.begin(), users_.end(), cuid), users_.end());
+}
 
 } // namespace aria2

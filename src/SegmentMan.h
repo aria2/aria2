@@ -106,7 +106,7 @@ private:
   SharedHandle<Segment> checkoutSegment(cuid_t cuid,
                                         const SharedHandle<Piece>& piece);
 
-  void cancelSegment(const SharedHandle<Segment>& segment);
+  void cancelSegmentInternal(cuid_t cuid, const SharedHandle<Segment>& segment);
 public:
   SegmentMan(const Option* option,
              const SharedHandle<DownloadContext>& downloadContext,

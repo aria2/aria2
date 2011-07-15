@@ -123,6 +123,7 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   A2_LOG_DEBUG(fmt("Attach segment#%lu to CUID#%lld.",
                    static_cast<unsigned long>(piece->getIndex()),
                    cuid));
+  piece->setUsedBySegment(true);
   SharedHandle<Segment> segment;
   if(piece->getLength() == 0) {
     segment.reset(new GrowSegment(piece));
@@ -175,7 +176,8 @@ SharedHandle<Segment> SegmentMan::getSegment(cuid_t cuid, size_t minSplitSize)
   SharedHandle<Piece> piece =
     pieceStorage_->getMissingPiece
     (minSplitSize,
-     ignoreBitfield_.getFilterBitfield(), ignoreBitfield_.getBitfieldLength());
+     ignoreBitfield_.getFilterBitfield(), ignoreBitfield_.getBitfieldLength(),
+     cuid);
   return checkoutSegment(cuid, piece);
 }
 
@@ -195,7 +197,8 @@ void SegmentMan::getSegment
       checkoutSegment(cuid,
                       pieceStorage_->getMissingPiece
                       (minSplitSize,
-                       filter.getFilterBitfield(), filter.getBitfieldLength()));
+                       filter.getFilterBitfield(), filter.getBitfieldLength(),
+                       cuid));
     if(!segment) {
       break;
     }
@@ -217,7 +220,7 @@ SharedHandle<Segment> SegmentMan::getSegmentWithIndex
   if(index > 0 && downloadContext_->getNumPieces() <= index) {
     return SharedHandle<Segment>();
   }
-  return checkoutSegment(cuid, pieceStorage_->getMissingPiece(index));
+  return checkoutSegment(cuid, pieceStorage_->getMissingPiece(index, cuid));
 }
 
 SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
@@ -249,11 +252,14 @@ SharedHandle<Segment> SegmentMan::getCleanSegmentIfOwnerIsIdle
   return SharedHandle<Segment>();
 }
 
-void SegmentMan::cancelSegment(const SharedHandle<Segment>& segment)
+void SegmentMan::cancelSegmentInternal
+(cuid_t cuid,
+ const SharedHandle<Segment>& segment)
 {
   A2_LOG_DEBUG(fmt("Canceling segment#%lu",
                    static_cast<unsigned long>(segment->getIndex())));
-  pieceStorage_->cancelPiece(segment->getPiece());
+  segment->getPiece()->setUsedBySegment(false);
+  pieceStorage_->cancelPiece(segment->getPiece(), cuid);
   segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
   A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%lu",
                    static_cast<unsigned long>(segment->getIndex()),
@@ -264,7 +270,7 @@ void SegmentMan::cancelSegment(cuid_t cuid) {
   for(SegmentEntries::iterator itr = usedSegmentEntries_.begin(),
         eoi = usedSegmentEntries_.end(); itr != eoi;) {
     if((*itr)->cuid == cuid) {
-      cancelSegment((*itr)->segment);
+      cancelSegmentInternal(cuid, (*itr)->segment);
       itr = usedSegmentEntries_.erase(itr);
       eoi = usedSegmentEntries_.end();
     } else {
@@ -279,9 +285,8 @@ void SegmentMan::cancelSegment
   for(SegmentEntries::iterator itr = usedSegmentEntries_.begin(),
         eoi = usedSegmentEntries_.end(); itr != eoi;) {
     if((*itr)->cuid == cuid && *(*itr)->segment == *segment) {
-      cancelSegment((*itr)->segment);
+      cancelSegmentInternal(cuid, (*itr)->segment);
       itr = usedSegmentEntries_.erase(itr);
-      //eoi = usedSegmentEntries_.end();
       break;
     } else {
       ++itr;
@@ -294,7 +299,7 @@ void SegmentMan::cancelAllSegments()
   for(std::deque<SharedHandle<SegmentEntry> >::iterator itr =
         usedSegmentEntries_.begin(), eoi = usedSegmentEntries_.end();
       itr != eoi; ++itr) {
-    cancelSegment((*itr)->segment);
+    cancelSegmentInternal((*itr)->cuid, (*itr)->segment);
   }
   usedSegmentEntries_.clear();
 }

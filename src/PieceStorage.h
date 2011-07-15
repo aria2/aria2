@@ -74,7 +74,8 @@ public:
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer) = 0;
+   const SharedHandle<Peer>& peer,
+   cuid_t cuid) = 0;
 
   // Same as getMissingPiece(pieces, minMissingBlocks, peer), but the
   // indexes in excludedIndexes are excluded.
@@ -82,7 +83,8 @@ public:
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes) = 0;
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid) = 0;
   
   // Stores pieces that the peer has but localhost doesn't.  Only
   // pieces that declared as "fast" are stored.  Those pieces stored
@@ -96,7 +98,8 @@ public:
   virtual void getMissingFastPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer) = 0;
+   const SharedHandle<Peer>& peer,
+   cuid_t cuid) = 0;
 
   // Same as getMissingFastPiece(pieces, minMissingBlocks, peer), but
   // the indexes in excludedIndexes are excluded.
@@ -104,7 +107,8 @@ public:
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes) = 0;
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid) = 0;
 
   /**
    * Returns a piece that the peer has but localhost doesn't.
@@ -113,7 +117,7 @@ public:
    * to several commands.
    */
   virtual SharedHandle<Piece>
-  getMissingPiece(const SharedHandle<Peer>& peer) = 0;
+  getMissingPiece(const SharedHandle<Peer>& peer, cuid_t cuid) = 0;
 
   /**
    * Same as getMissingPiece(const SharedHandle<Peer>& peer), but the indexes in
@@ -121,7 +125,8 @@ public:
    */
   virtual SharedHandle<Piece> getMissingPiece
   (const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes) = 0;
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid) = 0;
 #endif // ENABLE_BITTORRENT
 
   // Returns true if there is at least one missing and unused piece.
@@ -132,7 +137,10 @@ public:
    * If ignoreBitfield is set, indexes of true bit are excluded.
    */
   virtual SharedHandle<Piece> getMissingPiece
-  (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length) = 0;
+  (size_t minSplitSize,
+   const unsigned char* ignoreBitfield,
+   size_t length,
+   cuid_t cuid) = 0;
 
   /**
    * Returns a missing piece whose index is index.
@@ -140,7 +148,7 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual SharedHandle<Piece> getMissingPiece(size_t index) = 0;
+  virtual SharedHandle<Piece> getMissingPiece(size_t index, cuid_t cuid) = 0;
 
   /**
    * Returns the piece denoted by index.
@@ -161,7 +169,7 @@ public:
   /**
    * Tells that the download of the specified piece is canceled.
    */
-  virtual void cancelPiece(const SharedHandle<Piece>& piece) = 0;
+  virtual void cancelPiece(const SharedHandle<Piece>& piece, cuid_t cuid) = 0;
 
   /**
    * Returns true if the specified piece is already downloaded.

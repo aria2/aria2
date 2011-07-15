@@ -40,6 +40,7 @@
 #include <vector>
 
 #include "SharedHandle.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -62,6 +63,7 @@ private:
   BtMessageFactory* messageFactory_;
 
   UTMetadataRequestTracker* tracker_;
+  cuid_t cuid_;
 public:
   UTMetadataRequestFactory();
 
@@ -93,6 +95,11 @@ public:
   void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
   {
     tracker_ = tracker;
+  }
+
+  void setCuid(cuid_t cuid)
+  {
+    cuid_ = cuid;
   }
 };
 

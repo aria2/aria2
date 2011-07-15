@@ -56,6 +56,7 @@ private:
   BtMessageDispatcher* dispatcher_;
   BtMessageFactory* messageFactory_;
   std::deque<SharedHandle<Piece> > pieces_;
+  cuid_t cuid_;
 public:
   DefaultBtRequestFactory();
 
@@ -97,6 +98,11 @@ public:
   void setBtMessageDispatcher(BtMessageDispatcher* dispatcher);
 
   void setBtMessageFactory(BtMessageFactory* factory);
+
+  void setCuid(cuid_t cuid)
+  {
+    cuid_ = cuid;
+  }
 };
 
 typedef SharedHandle<DefaultBtRequestFactory> DefaultBtRequestFactoryHandle;

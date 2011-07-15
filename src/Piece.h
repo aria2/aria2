@@ -42,6 +42,7 @@
 #include <string>
 
 #include "SharedHandle.h"
+#include "Command.h"
 
 namespace aria2 {
 
@@ -59,7 +60,8 @@ private:
   size_t length_;
   size_t blockLength_;
   BitfieldMan* bitfield_;
-
+  std::vector<cuid_t> users_;
+  bool usedBySegment_;
 #ifdef ENABLE_MESSAGE_DIGEST
 
   size_t nextBegin_;
@@ -176,6 +178,22 @@ public:
    * Loses current bitfield state.
    */
   void reconfigure(size_t length);
+
+  void addUser(cuid_t cuid);
+  void removeUser(cuid_t cuid);
+  bool getUsed() const
+  {
+    return !users_.empty();
+  }
+  bool usedBy(cuid_t cuid) const;
+  bool getUsedBySegment() const
+  {
+    return usedBySegment_;
+  }
+  void setUsedBySegment(bool f)
+  {
+    usedBySegment_ = f;
+  }
 };
 
 } // namespace aria2

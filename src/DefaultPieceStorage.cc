@@ -96,14 +96,14 @@ DefaultPieceStorage::~DefaultPieceStorage()
   delete bitfieldMan_;
 }
 
-SharedHandle<Piece> DefaultPieceStorage::checkOutPiece(size_t index)
+SharedHandle<Piece> DefaultPieceStorage::checkOutPiece
+(size_t index, cuid_t cuid)
 {
   bitfieldMan_->setUseBit(index);
 
   SharedHandle<Piece> piece = findUsedPiece(index);
   if(!piece) {
     piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
-
 #ifdef ENABLE_MESSAGE_DIGEST
 
     piece->setHashAlgo(downloadContext_->getPieceHashAlgo());
@@ -111,10 +111,9 @@ SharedHandle<Piece> DefaultPieceStorage::checkOutPiece(size_t index)
 #endif // ENABLE_MESSAGE_DIGEST
 
     addUsedPiece(piece);
-    return piece;
-  } else {
-    return piece;
   }
+  piece->addUser(cuid);
+  return piece;
 }
 
 /**
@@ -174,7 +173,8 @@ void DefaultPieceStorage::getMissingPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
  const unsigned char* bitfield,
- size_t length)
+ size_t length,
+ cuid_t cuid)
 {
   const size_t mislen = bitfieldMan_->getBitfieldLength();
   array_ptr<unsigned char> misbitfield(new unsigned char[mislen]);
@@ -195,8 +195,14 @@ void DefaultPieceStorage::getMissingPiece
     std::random_shuffle(indexes.begin(), indexes.end());
     for(std::vector<size_t>::const_iterator i = indexes.begin(),
           eoi = indexes.end(); i != eoi && misBlock < minMissingBlocks; ++i) {
-      pieces.push_back(checkOutPiece(*i));
-      misBlock += pieces.back()->countMissingBlock();
+      SharedHandle<Piece> piece = checkOutPiece(*i, cuid);
+      if(piece->getUsedBySegment()) {
+        // We don't share piece downloaded via HTTP/FTP
+        piece->removeUser(cuid);
+      } else {
+        pieces.push_back(piece);
+        misBlock += piece->countMissingBlock();
+      }
     }
   } else {
     bool r = bitfieldMan_->getAllMissingUnusedIndexes
@@ -207,7 +213,7 @@ void DefaultPieceStorage::getMissingPiece
     while(misBlock < minMissingBlocks) {
       size_t index;
       if(pieceSelector_->select(index, misbitfield, blocks)) {
-        pieces.push_back(checkOutPiece(index));
+        pieces.push_back(checkOutPiece(index, cuid));
         bitfield::flipBit(misbitfield, blocks, index);
         misBlock += pieces.back()->countMissingBlock();
       } else {
@@ -241,10 +247,12 @@ void DefaultPieceStorage::createFastIndexBitfield
 void DefaultPieceStorage::getMissingPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer)
+ const SharedHandle<Peer>& peer,
+ cuid_t cuid)
 {
   getMissingPiece(pieces, minMissingBlocks,
-                  peer->getBitfield(), peer->getBitfieldLength());
+                  peer->getBitfield(), peer->getBitfieldLength(),
+                  cuid);
 }
 
 
@@ -252,20 +260,23 @@ void DefaultPieceStorage::getMissingPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
  const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes)
+ const std::vector<size_t>& excludedIndexes,
+ cuid_t cuid)
 {
   BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
                            bitfieldMan_->getTotalLength());
   tempBitfield.setBitfield(peer->getBitfield(), peer->getBitfieldLength());
   unsetExcludedIndexes(tempBitfield, excludedIndexes);
   getMissingPiece(pieces, minMissingBlocks,
-                  tempBitfield.getBitfield(), tempBitfield.getBitfieldLength());
+                  tempBitfield.getBitfield(), tempBitfield.getBitfieldLength(),
+                  cuid);
 }
 
 void DefaultPieceStorage::getMissingFastPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer)
+ const SharedHandle<Peer>& peer,
+ cuid_t cuid)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
@@ -273,7 +284,8 @@ void DefaultPieceStorage::getMissingFastPiece
     createFastIndexBitfield(tempBitfield, peer);
     getMissingPiece(pieces, minMissingBlocks,
                     tempBitfield.getBitfield(),
-                    tempBitfield.getBitfieldLength());
+                    tempBitfield.getBitfieldLength(),
+                    cuid);
   }
 }
 
@@ -281,7 +293,8 @@ void DefaultPieceStorage::getMissingFastPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
  const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes)
+ const std::vector<size_t>& excludedIndexes,
+ cuid_t cuid)
 {
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan_->getBlockLength(),
@@ -290,15 +303,18 @@ void DefaultPieceStorage::getMissingFastPiece
     unsetExcludedIndexes(tempBitfield, excludedIndexes);
     getMissingPiece(pieces, minMissingBlocks,
                     tempBitfield.getBitfield(),
-                    tempBitfield.getBitfieldLength());
+                    tempBitfield.getBitfieldLength(),
+                    cuid);
   }
 }
 
 SharedHandle<Piece>
-DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
+DefaultPieceStorage::getMissingPiece
+(const SharedHandle<Peer>& peer,
+ cuid_t cuid)
 {
   std::vector<SharedHandle<Piece> > pieces;
-  getMissingPiece(pieces, 1, peer);
+  getMissingPiece(pieces, 1, peer, cuid);
   if(pieces.empty()) {
     return SharedHandle<Piece>();
   } else {
@@ -307,10 +323,12 @@ DefaultPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+(const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes,
+ cuid_t cuid)
 {
   std::vector<SharedHandle<Piece> > pieces;
-  getMissingPiece(pieces, 1, peer, excludedIndexes);
+  getMissingPiece(pieces, 1, peer, excludedIndexes, cuid);
   if(pieces.empty()) {
     return SharedHandle<Piece>();
   } else {
@@ -319,10 +337,11 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer)
+(const SharedHandle<Peer>& peer,
+ cuid_t cuid)
 {
   std::vector<SharedHandle<Piece> > pieces;
-  getMissingFastPiece(pieces, 1, peer);
+  getMissingFastPiece(pieces, 1, peer, cuid);
   if(pieces.empty()) {
     return SharedHandle<Piece>();
   } else {
@@ -331,10 +350,12 @@ SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getMissingFastPiece
-(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+(const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes,
+ cuid_t cuid)
 {
   std::vector<SharedHandle<Piece> > pieces;
-  getMissingFastPiece(pieces, 1, peer, excludedIndexes);
+  getMissingFastPiece(pieces, 1, peer, excludedIndexes, cuid);
   if(pieces.empty()) {
     return SharedHandle<Piece>();
   } else {
@@ -351,23 +372,28 @@ bool DefaultPieceStorage::hasMissingUnusedPiece()
 }
 
 SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
-(size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length)
+(size_t minSplitSize,
+ const unsigned char* ignoreBitfield,
+ size_t length,
+ cuid_t cuid)
 {
   size_t index;
   if(streamPieceSelector_->select
      (index, minSplitSize, ignoreBitfield, length)) {
-    return checkOutPiece(index);
+    return checkOutPiece(index, cuid);
   } else {
     return SharedHandle<Piece>();
   }
 }
 
-SharedHandle<Piece> DefaultPieceStorage::getMissingPiece(size_t index)
+SharedHandle<Piece> DefaultPieceStorage::getMissingPiece
+(size_t index,
+ cuid_t cuid)
 {
   if(hasPiece(index) || isPieceUsed(index)) {
     return SharedHandle<Piece>();
   } else {
-    return checkOutPiece(index);
+    return checkOutPiece(index, cuid);
   }
 }
 
@@ -464,12 +490,16 @@ bool DefaultPieceStorage::isSelectiveDownloadingMode()
 }
 
 // not unittested
-void DefaultPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
+void DefaultPieceStorage::cancelPiece
+(const SharedHandle<Piece>& piece, cuid_t cuid)
 {
   if(!piece) {
     return;
   }
-  bitfieldMan_->unsetUseBit(piece->getIndex());
+  piece->removeUser(cuid);
+  if(!piece->getUsed()) {
+    bitfieldMan_->unsetUseBit(piece->getIndex());
+  }
   if(!isEndGame()) {
     if(piece->getCompletedLength() == 0) {
       deleteUsedPiece(piece);

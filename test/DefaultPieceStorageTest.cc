@@ -88,16 +88,17 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
   pss.setPieceSelector(pieceSelector_);
   peer->setAllBitfield();
 
-  SharedHandle<Piece> piece = pss.getMissingPiece(peer);
+  SharedHandle<Piece> piece = pss.getMissingPiece(peer, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
                        piece->toString());
-  piece = pss.getMissingPiece(peer);
+  CPPUNIT_ASSERT(piece->usedBy(1));
+  piece = pss.getMissingPiece(peer, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
                        piece->toString());
-  piece = pss.getMissingPiece(peer);
+  piece = pss.getMissingPiece(peer, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
                        piece->toString());
-  piece = pss.getMissingPiece(peer);
+  piece = pss.getMissingPiece(peer, 1);
   CPPUNIT_ASSERT(!piece);
 }
 
@@ -106,14 +107,15 @@ void DefaultPieceStorageTest::testGetMissingPiece_many() {
   pss.setPieceSelector(pieceSelector_);
   peer->setAllBitfield();
   std::vector<SharedHandle<Piece> > pieces;
-  pss.getMissingPiece(pieces, 2, peer);
+  pss.getMissingPiece(pieces, 2, peer, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pieces.size());
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
                        pieces[0]->toString());
+  CPPUNIT_ASSERT(pieces[0]->usedBy(1));
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
                        pieces[1]->toString());
   pieces.clear();
-  pss.getMissingPiece(pieces, 2, peer);
+  pss.getMissingPiece(pieces, 2, peer, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)1, pieces.size());
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
                        pieces[0]->toString());
@@ -130,15 +132,15 @@ void DefaultPieceStorageTest::testGetMissingPiece_excludedIndexes()
   std::vector<size_t> excludedIndexes;
   excludedIndexes.push_back(1);
 
-  SharedHandle<Piece> piece = pss.getMissingPiece(peer, excludedIndexes);
+  SharedHandle<Piece> piece = pss.getMissingPiece(peer, excludedIndexes, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
                        piece->toString());
 
-  piece = pss.getMissingPiece(peer, excludedIndexes);
+  piece = pss.getMissingPiece(peer, excludedIndexes, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
                        piece->toString());
 
-  piece = pss.getMissingPiece(peer, excludedIndexes);
+  piece = pss.getMissingPiece(peer, excludedIndexes, 1);
   CPPUNIT_ASSERT(!piece);
 }
 
@@ -149,14 +151,14 @@ void DefaultPieceStorageTest::testGetMissingPiece_manyWithExcludedIndexes() {
   std::vector<size_t> excludedIndexes;
   excludedIndexes.push_back(1);
   std::vector<SharedHandle<Piece> > pieces;
-  pss.getMissingPiece(pieces, 2, peer, excludedIndexes);
+  pss.getMissingPiece(pieces, 2, peer, excludedIndexes, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pieces.size());
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
                        pieces[0]->toString());
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
                        pieces[1]->toString());
   pieces.clear();
-  pss.getMissingPiece(pieces, 2, peer, excludedIndexes);
+  pss.getMissingPiece(pieces, 2, peer, excludedIndexes, 1);
   CPPUNIT_ASSERT(pieces.empty());
 }
 
@@ -169,11 +171,11 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
   peer->setFastExtensionEnabled(true);
   peer->addPeerAllowedIndex(2);
 
-  SharedHandle<Piece> piece = pss.getMissingFastPiece(peer);
+  SharedHandle<Piece> piece = pss.getMissingFastPiece(peer, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
                        piece->toString());
 
-  CPPUNIT_ASSERT(!pss.getMissingFastPiece(peer));
+  CPPUNIT_ASSERT(!pss.getMissingFastPiece(peer, 1));
 }
 
 void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
@@ -190,11 +192,11 @@ void DefaultPieceStorageTest::testGetMissingFastPiece_excludedIndexes()
   std::vector<size_t> excludedIndexes;
   excludedIndexes.push_back(2);
 
-  SharedHandle<Piece> piece = pss.getMissingFastPiece(peer, excludedIndexes);
+  SharedHandle<Piece> piece = pss.getMissingFastPiece(peer, excludedIndexes, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
                        piece->toString());
   
-  CPPUNIT_ASSERT(!pss.getMissingFastPiece(peer, excludedIndexes));
+  CPPUNIT_ASSERT(!pss.getMissingFastPiece(peer, excludedIndexes, 1));
 }
 
 void DefaultPieceStorageTest::testHasMissingPiece() {
@@ -214,7 +216,7 @@ void DefaultPieceStorageTest::testCompletePiece() {
 
   peer->setAllBitfield();
 
-  SharedHandle<Piece> piece = pss.getMissingPiece(peer);
+  SharedHandle<Piece> piece = pss.getMissingPiece(peer, 1);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
                        piece->toString());
 
@@ -224,7 +226,7 @@ void DefaultPieceStorageTest::testCompletePiece() {
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)128ULL, pss.getCompletedLength());
 
-  SharedHandle<Piece> incompletePiece = pss.getMissingPiece(peer);
+  SharedHandle<Piece> incompletePiece = pss.getMissingPiece(peer, 1);
   incompletePiece->completeBlock(0);
   CPPUNIT_ASSERT_EQUAL((uint64_t)256ULL, pss.getCompletedLength());
 }
@@ -272,14 +274,16 @@ void DefaultPieceStorageTest::testCancelPiece()
 
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, option_.get()));
 
-  SharedHandle<Piece> p = ps->getMissingPiece(0);
+  SharedHandle<Piece> p = ps->getMissingPiece(0, 1);
   p->completeBlock(0);
   
-  ps->cancelPiece(p);
+  ps->cancelPiece(p, 1);
 
-  SharedHandle<Piece> p2 = ps->getMissingPiece(0);
+  SharedHandle<Piece> p2 = ps->getMissingPiece(0, 2);
 
   CPPUNIT_ASSERT(p2->hasBlock(0));
+  CPPUNIT_ASSERT(p2->usedBy(2));
+  CPPUNIT_ASSERT(!p2->usedBy(1));
 }
 
 void DefaultPieceStorageTest::testMarkPiecesDone()
@@ -345,11 +349,11 @@ void DefaultPieceStorageTest::testGetNextUsedIndex()
 {
   DefaultPieceStorage pss(dctx_, option_.get());
   CPPUNIT_ASSERT_EQUAL((size_t)3, pss.getNextUsedIndex(0));
-  SharedHandle<Piece> piece = pss.getMissingPiece(2);
+  SharedHandle<Piece> piece = pss.getMissingPiece(2, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
   pss.completePiece(piece);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
-  piece = pss.getMissingPiece(0);
+  piece = pss.getMissingPiece(0, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pss.getNextUsedIndex(0));
 }
 

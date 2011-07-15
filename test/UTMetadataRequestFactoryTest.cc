@@ -30,7 +30,8 @@ public:
 
     virtual SharedHandle<Piece> getMissingPiece
     (const SharedHandle<Peer>& peer,
-     const std::vector<size_t>& exlucdedIndexes)
+     const std::vector<size_t>& exlucdedIndexes,
+     cuid_t cuid)
     {
       if(missingIndexes.empty()) {
         return SharedHandle<Piece>();

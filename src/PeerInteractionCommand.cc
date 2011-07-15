@@ -194,6 +194,7 @@ PeerInteractionCommand::PeerInteractionCommand
   reqFactory->setPieceStorage(pieceStorage);
   reqFactory->setBtMessageDispatcher(dispatcher.get());
   reqFactory->setBtMessageFactory(factory.get());
+  reqFactory->setCuid(cuid);
 
   DefaultBtInteractiveHandle btInteractive
     (new DefaultBtInteractive(requestGroup_->getDownloadContext(), getPeer()));
@@ -248,6 +249,7 @@ PeerInteractionCommand::PeerInteractionCommand
   extensionMessageFactory->setBtMessageFactory(factory.get());
 
   if(metadataGetMode) {
+    utMetadataRequestFactory->setCuid(cuid);
     utMetadataRequestFactory->setDownloadContext
       (requestGroup_->getDownloadContext());
     utMetadataRequestFactory->setBtMessageDispatcher(dispatcher.get());

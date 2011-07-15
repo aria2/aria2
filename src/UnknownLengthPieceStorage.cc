@@ -81,7 +81,8 @@ bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
 void UnknownLengthPieceStorage::getMissingPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
- const SharedHandle<Peer>& peer)
+ const SharedHandle<Peer>& peer,
+ cuid_t cuid)
 {
   abort();
 }
@@ -90,15 +91,8 @@ void UnknownLengthPieceStorage::getMissingPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
  const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes)
-{
-  abort();
-}
-
-void UnknownLengthPieceStorage::getMissingFastPiece
-(std::vector<SharedHandle<Piece> >& pieces,
- size_t minMissingBlocks,
- const SharedHandle<Peer>& peer)
+ const std::vector<size_t>& excludedIndexes,
+ cuid_t cuid)
 {
   abort();
 }
@@ -107,18 +101,32 @@ void UnknownLengthPieceStorage::getMissingFastPiece
 (std::vector<SharedHandle<Piece> >& pieces,
  size_t minMissingBlocks,
  const SharedHandle<Peer>& peer,
- const std::vector<size_t>& excludedIndexes)
+ cuid_t cuid)
 {
   abort();
 }
 
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
+void UnknownLengthPieceStorage::getMissingFastPiece
+(std::vector<SharedHandle<Piece> >& pieces,
+ size_t minMissingBlocks,
+ const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes,
+ cuid_t cuid)
 {
   abort();
 }
 
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
-(const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+(const SharedHandle<Peer>& peer,
+ cuid_t cuid)
+{
+  abort();
+}
+
+SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
+(const SharedHandle<Peer>& peer,
+ const std::vector<size_t>& excludedIndexes,
+ cuid_t cuid)
 {
   abort();
 }
@@ -130,7 +138,10 @@ bool UnknownLengthPieceStorage::hasMissingUnusedPiece()
 }
 
 SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
-(size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length)
+(size_t minSplitSize,
+ const unsigned char* ignoreBitfield,
+ size_t length,
+ cuid_t cuid)
 {
   if(downloadFinished_) {
     return SharedHandle<Piece>();
@@ -143,10 +154,12 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
   }
 }
 
-SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(size_t index)
+SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece
+(size_t index,
+ cuid_t cuid)
 {
   if(index == 0) {
-    return getMissingPiece(0, 0, 0);
+    return getMissingPiece(0, 0, 0, cuid);
   } else {
     return SharedHandle<Piece>();
   }
@@ -175,7 +188,9 @@ void UnknownLengthPieceStorage::completePiece(const SharedHandle<Piece>& piece)
   }
 }
 
-void UnknownLengthPieceStorage::cancelPiece(const SharedHandle<Piece>& piece)
+void UnknownLengthPieceStorage::cancelPiece
+(const SharedHandle<Piece>& piece,
+ cuid_t cuid)
 {
   if(*piece_ == *piece) {
     piece_.reset();

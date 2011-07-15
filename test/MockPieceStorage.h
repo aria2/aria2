@@ -47,35 +47,44 @@ public:
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer)
+   const SharedHandle<Peer>& peer,
+   cuid_t cuid)
   {}
 
   virtual void getMissingPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes)
-  {}
-
-  virtual void getMissingFastPiece
-  (std::vector<SharedHandle<Piece> >& pieces,
-   size_t minMissingBlocks,
-   const SharedHandle<Peer>& peer)
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid)
   {}
 
   virtual void getMissingFastPiece
   (std::vector<SharedHandle<Piece> >& pieces,
    size_t minMissingBlocks,
    const SharedHandle<Peer>& peer,
-   const std::vector<size_t>& excludedIndexes)
+   cuid_t cuid)
   {}
 
-  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer) {
+  virtual void getMissingFastPiece
+  (std::vector<SharedHandle<Piece> >& pieces,
+   size_t minMissingBlocks,
+   const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid)
+  {}
+
+  virtual SharedHandle<Piece> getMissingPiece
+  (const SharedHandle<Peer>& peer,
+   cuid_t cuid)
+  {
     return SharedHandle<Piece>(new Piece());
   }
 
   virtual SharedHandle<Piece> getMissingPiece
-  (const SharedHandle<Peer>& peer, const std::vector<size_t>& excludedIndexes)
+  (const SharedHandle<Peer>& peer,
+   const std::vector<size_t>& excludedIndexes,
+   cuid_t cuid)
   {
     return SharedHandle<Piece>(new Piece());
   }
@@ -88,12 +97,15 @@ public:
   }
 
   virtual SharedHandle<Piece> getMissingPiece
-  (size_t minSplitSize, const unsigned char* ignoreBitfield, size_t length)
+  (size_t minSplitSize,
+   const unsigned char* ignoreBitfield,
+   size_t length,
+   cuid_t cuid)
   {
     return SharedHandle<Piece>(new Piece());
   }
 
-  virtual SharedHandle<Piece> getMissingPiece(size_t index)
+  virtual SharedHandle<Piece> getMissingPiece(size_t index, cuid_t cuid)
   {
     return SharedHandle<Piece>(new Piece());
   }
@@ -113,7 +125,7 @@ public:
 
   virtual void completePiece(const SharedHandle<Piece>& piece) {}
 
-  virtual void cancelPiece(const SharedHandle<Piece>& piece) {}
+  virtual void cancelPiece(const SharedHandle<Piece>& piece, cuid_t cuid) {}
 
   virtual bool hasPiece(size_t index) {
     return false;

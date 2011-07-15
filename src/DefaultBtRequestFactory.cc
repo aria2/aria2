@@ -53,7 +53,8 @@ namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory()
   : dispatcher_(0),
-    messageFactory_(0)
+    messageFactory_(0),
+    cuid_(0)
 {}
 
 DefaultBtRequestFactory::~DefaultBtRequestFactory() {}
@@ -96,7 +97,7 @@ void DefaultBtRequestFactory::removeTargetPiece
                                derefEqual(piece)),
                 pieces_.end());
   dispatcher_->doAbortOutstandingRequestAction(piece);
-  pieceStorage_->cancelPiece(piece);
+  pieceStorage_->cancelPiece(piece, cuid_);
 }
 
 namespace {
@@ -104,16 +105,20 @@ class ProcessChokedPiece {
 private:
   SharedHandle<Peer> peer_;
   SharedHandle<PieceStorage> pieceStorage_;
+  cuid_t cuid_;
 public:
   ProcessChokedPiece(const SharedHandle<Peer>& peer,
-                     const SharedHandle<PieceStorage>& pieceStorage):
+                     const SharedHandle<PieceStorage>& pieceStorage,
+                     cuid_t cuid):
     peer_(peer),
-    pieceStorage_(pieceStorage) {}
+    pieceStorage_(pieceStorage),
+    cuid_(cuid)
+  {}
 
   void operator()(const SharedHandle<Piece>& piece)
   {
     if(!peer_->isInPeerAllowedIndexSet(piece->getIndex())) {
-      pieceStorage_->cancelPiece(piece);
+      pieceStorage_->cancelPiece(piece, cuid_);
     }
   }
 };
@@ -136,7 +141,7 @@ public:
 void DefaultBtRequestFactory::doChokedAction()
 {
   std::for_each(pieces_.begin(), pieces_.end(),
-                ProcessChokedPiece(peer_, pieceStorage_));
+                ProcessChokedPiece(peer_, pieceStorage_, cuid_));
   pieces_.erase(std::remove_if(pieces_.begin(), pieces_.end(),
                               FindChokedPiece(peer_)),
                pieces_.end());
@@ -146,7 +151,7 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
   for(std::deque<SharedHandle<Piece> >::iterator itr = pieces_.begin(),
         eoi = pieces_.end(); itr != eoi; ++itr) {
     dispatcher_->doAbortOutstandingRequestAction(*itr);
-    pieceStorage_->cancelPiece(*itr);
+    pieceStorage_->cancelPiece(*itr, cuid_);
   }
   pieces_.clear();
 }

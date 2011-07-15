@@ -353,10 +353,11 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
           excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
           btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
           pieceStorage_->getMissingFastPiece
-            (pieces, diffMissingBlock, peer_, excludedIndexes);
+            (pieces, diffMissingBlock, peer_, excludedIndexes, cuid_);
         } else {
           pieces.reserve(diffMissingBlock);
-          pieceStorage_->getMissingFastPiece(pieces, diffMissingBlock, peer_);
+          pieceStorage_->getMissingFastPiece
+            (pieces, diffMissingBlock, peer_, cuid_);
         }
       }
     } else {
@@ -365,10 +366,10 @@ void DefaultBtInteractive::fillPiece(size_t maxMissingBlock) {
         excludedIndexes.reserve(btRequestFactory_->countTargetPiece());
         btRequestFactory_->getTargetPieceIndexes(excludedIndexes);
         pieceStorage_->getMissingPiece
-          (pieces, diffMissingBlock, peer_, excludedIndexes);
+          (pieces, diffMissingBlock, peer_, excludedIndexes, cuid_);
       } else {        
         pieces.reserve(diffMissingBlock);
-        pieceStorage_->getMissingPiece(pieces, diffMissingBlock, peer_);
+        pieceStorage_->getMissingPiece(pieces, diffMissingBlock, peer_, cuid_);
       }
     }
     for(std::vector<SharedHandle<Piece> >::const_iterator i =
@@ -410,7 +411,7 @@ void DefaultBtInteractive::cancelAllPiece() {
           eoi = metadataRequests.end(); i != eoi; ++i) {
       A2_LOG_DEBUG(fmt("Cancel metadata: piece=%lu",
                        static_cast<unsigned long>(*i)));
-      pieceStorage_->cancelPiece(pieceStorage_->getPiece(*i));
+      pieceStorage_->cancelPiece(pieceStorage_->getPiece(*i), cuid_);
     }
   }
 }
@@ -524,7 +525,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
           utMetadataRequestTracker_->removeTimeoutEntry();
         for(std::vector<size_t>::const_iterator i = indexes.begin(),
               eoi = indexes.end(); i != eoi; ++i) {
-          pieceStorage_->cancelPiece(pieceStorage_->getPiece(*i));
+          pieceStorage_->cancelPiece(pieceStorage_->getPiece(*i), cuid_);
         }
       }
       if(pieceStorage_->downloadFinished()) {
