@@ -107,6 +107,12 @@
 #define DEFAULT_AI_FLAGS AI_ADDRCONFIG
 
 #ifdef __MINGW32__
+# ifndef SHUT_WR
+#  define SHUT_WR SD_SEND
+# endif // !SHUT_WR
+#endif // __MINGW32__
+
+#ifdef __MINGW32__
 template<typename T>
 class wsaapi_auto_delete {
 private:
