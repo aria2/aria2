@@ -115,6 +115,10 @@ void BtPieceMessage::doReceivedAction()
                      blockLength_,
                      static_cast<long long int>(offset),
                      static_cast<unsigned long>(slot.getBlockIndex())));
+    if(piece->hasBlock(slot.getBlockIndex())) {
+      A2_LOG_DEBUG("Already have this block.");
+      return;
+    }
     getPieceStorage()->getDiskAdaptor()->writeData
       (block_, blockLength_, offset);
     piece->completeBlock(slot.getBlockIndex());
