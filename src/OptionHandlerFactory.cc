@@ -225,6 +225,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                      TEXT_ENABLE_DIRECT_IO,
                                      A2_V_TRUE,
                                      OptionHandler::OPT_ARG))));
+    op->addTag(TAG_DEPRECATED);
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
     handlers.push_back(op);
@@ -1752,6 +1753,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
       TAG_FILE,
       TAG_RPC,
       TAG_EXPERIMENTAL,
+      TAG_DEPRECATED,
       TAG_HELP,
       TAG_ALL
     };

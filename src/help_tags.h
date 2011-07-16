@@ -47,6 +47,7 @@
 #define TAG_FILE "#file"
 #define TAG_RPC "#rpc"
 #define TAG_EXPERIMENTAL "#experimental"
+#define TAG_DEPRECATED "#deprecated"
 #define TAG_HELP "#help"
 #define TAG_ALL "#all"
 
