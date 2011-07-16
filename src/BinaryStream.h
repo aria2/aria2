@@ -58,10 +58,6 @@ public:
   // Allocates given length bytes of disk space from given offset. The
   // default implementation does nothing.
   virtual void allocate(off_t offset, uint64_t length) {}
-
-  virtual void enableDirectIO() = 0;
-
-  virtual void disableDirectIO() = 0;
 };
 
 typedef SharedHandle<BinaryStream> BinaryStreamHandle;

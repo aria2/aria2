@@ -69,11 +69,7 @@ IteratableChunkChecksumValidator::IteratableChunkChecksumValidator
 
 IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
 {
-#ifdef HAVE_POSIX_MEMALIGN
-  free(buffer_);
-#else // !HAVE_POSIX_MEMALIGN
   delete [] buffer_;
-#endif // !HAVE_POSIX_MEMALIGN
 }
 
 
@@ -124,17 +120,8 @@ std::string IteratableChunkChecksumValidator::calculateActualChecksum()
 
 void IteratableChunkChecksumValidator::init()
 {
-#ifdef HAVE_POSIX_MEMALIGN
-  free(buffer_);
-  buffer_ = reinterpret_cast<unsigned char*>
-    (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
-#else // !HAVE_POSIX_MEMALIGN
   delete [] buffer_;
   buffer_ = new unsigned char[BUFSIZE];
-#endif // !HAVE_POSIX_MEMALIGN
-  if(dctx_->getFileEntries().size() == 1) {
-    pieceStorage_->getDiskAdaptor()->enableDirectIO();
-  }
   ctx_ = MessageDigest::create(dctx_->getPieceHashAlgo());
   bitfield_->clearAllBit();
   currentIndex_ = 0;
@@ -176,7 +163,6 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
 bool IteratableChunkChecksumValidator::finished() const
 {
   if(currentIndex_ >= dctx_->getNumPieces()) {
-    pieceStorage_->getDiskAdaptor()->disableDirectIO();
     return true;
   } else {
     return false;

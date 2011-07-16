@@ -44,14 +44,10 @@ namespace aria2 {
 FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand):
   RequestGroupEntry(requestGroup, nextCommand),
   fileAllocationIterator_(requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator())
-{
-  getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableDirectIO();
-}
+{}
 
 FileAllocationEntry:: ~FileAllocationEntry()
-{
-  getRequestGroup()->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
-}
+{}
 
 off_t FileAllocationEntry::getCurrentLength()
 {
@@ -71,11 +67,6 @@ bool FileAllocationEntry::finished()
 void FileAllocationEntry::allocateChunk()
 {
   fileAllocationIterator_->allocateChunk();
-}
-
-void FileAllocationEntry::disableDirectIO()
-{
-  getRequestGroup()->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
 }
 
 } // namespace aria2

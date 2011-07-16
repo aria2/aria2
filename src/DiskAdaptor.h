@@ -81,10 +81,6 @@ public:
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;
 
-  virtual void enableDirectIO() {}
-
-  virtual void disableDirectIO() {}
-
   virtual void enableReadOnly() {}
 
   virtual void disableReadOnly() {}

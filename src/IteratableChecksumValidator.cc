@@ -61,11 +61,7 @@ IteratableChecksumValidator::IteratableChecksumValidator
 
 IteratableChecksumValidator::~IteratableChecksumValidator()
 {
-#ifdef HAVE_POSIX_MEMALIGN
-  free(buffer_);
-#else // !HAVE_POSIX_MEMALIGN
   delete [] buffer_;
-#endif // !HAVE_POSIX_MEMALIGN
 }
 
 void IteratableChecksumValidator::validateChunk()
@@ -91,7 +87,6 @@ void IteratableChecksumValidator::validateChunk()
 bool IteratableChecksumValidator::finished() const
 {
   if((uint64_t)currentOffset_ >= dctx_->getTotalLength()) {
-    pieceStorage_->getDiskAdaptor()->disableDirectIO();
     return true;
   } else {
     return false;
@@ -105,15 +100,8 @@ uint64_t IteratableChecksumValidator::getTotalLength() const
 
 void IteratableChecksumValidator::init()
 {
-#ifdef HAVE_POSIX_MEMALIGN
-  free(buffer_);
-  buffer_ = reinterpret_cast<unsigned char*>
-    (util::allocateAlignedMemory(ALIGNMENT, BUFSIZE));
-#else // !HAVE_POSIX_MEMALIGN
   delete [] buffer_;
   buffer_ = new unsigned char[BUFSIZE];
-#endif // !HAVE_POSIX_MEMALIGN
-  pieceStorage_->getDiskAdaptor()->enableDirectIO();
   currentOffset_ = 0;
   ctx_ = MessageDigest::create(dctx_->getChecksumHashAlgo());
 }

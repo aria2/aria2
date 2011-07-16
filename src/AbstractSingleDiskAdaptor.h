@@ -73,10 +73,6 @@ public:
   
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 
-  virtual void enableDirectIO();
-
-  virtual void disableDirectIO();
-  
   // Make sure that DiskWriter is set before calling this function.
   virtual void enableReadOnly();
 

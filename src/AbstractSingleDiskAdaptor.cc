@@ -114,16 +114,6 @@ AbstractSingleDiskAdaptor::fileAllocationIterator()
     }
 }
 
-void AbstractSingleDiskAdaptor::enableDirectIO()
-{
-  diskWriter_->enableDirectIO();
-}
-
-void AbstractSingleDiskAdaptor::disableDirectIO()
-{
-  diskWriter_->disableDirectIO();
-}
-
 void AbstractSingleDiskAdaptor::enableReadOnly()
 {
   diskWriter_->enableReadOnly();

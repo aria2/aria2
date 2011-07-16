@@ -94,10 +94,6 @@ void CheckIntegrityEntry::proceedFileAllocation
   } else {
     entry->prepareForNextAction(commands, e);
   }
-  // Disable directIO when fallocation() is going to be used.
-  if(getRequestGroup()->getOption()->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
-    entry->disableDirectIO();
-  }
 }
 
 void CheckIntegrityEntry::setValidator

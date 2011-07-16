@@ -56,11 +56,7 @@ SingleFileAllocationIterator::SingleFileAllocationIterator
     offset_(offset),
     totalLength_(totalLength),
     buffer_(0)
-{
-  if(offset_%ALIGNMENT != 0) {
-    stream_->disableDirectIO();
-  }
-}
+{}
 
 SingleFileAllocationIterator::~SingleFileAllocationIterator()
 {

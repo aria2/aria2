@@ -610,10 +610,6 @@ void DefaultPieceStorage::initStorage()
 
     DiskWriterHandle writer =
       diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
-    if(option_->getAsBool(PREF_ENABLE_DIRECT_IO)) {
-      writer->allowDirectIO();
-    }
-
     directDiskAdaptor->setDiskWriter(writer);
     diskAdaptor_ = directDiskAdaptor;
   } else {
@@ -621,9 +617,6 @@ void DefaultPieceStorage::initStorage()
     MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
     multiDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                      downloadContext_->getFileEntries().end());
-    if(option_->getAsBool(PREF_ENABLE_DIRECT_IO)) {
-      multiDiskAdaptor->allowDirectIO();
-    }
     multiDiskAdaptor->setPieceLength(downloadContext_->getPieceLength());
     multiDiskAdaptor->setMaxOpenFiles
       (option_->getAsInt(PREF_BT_MAX_OPEN_FILES));

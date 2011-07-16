@@ -70,12 +70,6 @@ public:
   // Returns file length
   virtual uint64_t size() = 0;
 
-  virtual void enableDirectIO() = 0;
-
-  virtual void disableDirectIO() = 0;
-
-  virtual void allowDirectIO() {}
-
   // Enables read-only mode. After this call, openExistingFile() opens
   // file in read-only mode. This is an optional functionality. The
   // default implementation is do nothing.

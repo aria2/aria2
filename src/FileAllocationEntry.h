@@ -64,8 +64,6 @@ public:
 
   virtual void prepareForNextAction(std::vector<Command*>& commands,
                                     DownloadEngine* e) = 0;
-
-  void disableDirectIO();
 };
 
 } // namespace aria2

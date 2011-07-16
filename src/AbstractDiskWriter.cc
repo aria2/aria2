@@ -58,8 +58,7 @@ namespace aria2 {
 AbstractDiskWriter::AbstractDiskWriter(const std::string& filename)
   : filename_(filename),
     fd_(-1),
-    readOnly_(false),
-    directIOAllowed_(false)
+    readOnly_(false)
 {}
 
 AbstractDiskWriter::~AbstractDiskWriter()
@@ -279,26 +278,6 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
 uint64_t AbstractDiskWriter::size()
 {
   return File(filename_).size();
-}
-
-void AbstractDiskWriter::enableDirectIO()
-{
-#ifdef ENABLE_DIRECT_IO
-  if(directIOAllowed_) {
-    int flg;
-    while((flg = fcntl(fd_, F_GETFL)) == -1 && errno == EINTR);
-    while(fcntl(fd_, F_SETFL, flg|O_DIRECT) == -1 && errno == EINTR);
-  }
-#endif // ENABLE_DIRECT_IO
-}
-
-void AbstractDiskWriter::disableDirectIO()
-{
-#ifdef ENABLE_DIRECT_IO
-  int flg;
-  while((flg = fcntl(fd_, F_GETFL)) == -1 && errno == EINTR);
-  while(fcntl(fd_, F_SETFL, flg&(~O_DIRECT)) == -1 && errno == EINTR);
-#endif // ENABLE_DIRECT_IO
 }
 
 void AbstractDiskWriter::enableReadOnly()

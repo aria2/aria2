@@ -62,10 +62,6 @@ public:
 
   virtual uint64_t size();
 
-  virtual void enableDirectIO() {}
-
-  virtual void disableDirectIO() {}
-
   void setString(const std::string& s);
 
   std::string getString() const;

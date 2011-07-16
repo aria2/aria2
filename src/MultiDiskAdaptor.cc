@@ -56,7 +56,6 @@ namespace aria2 {
 DiskWriterEntry::DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry)
   : fileEntry_(fileEntry),
     open_(false),
-    directIO_(false),
     needsFileAllocation_(false)
 {}
 
@@ -69,9 +68,6 @@ void DiskWriterEntry::initAndOpenFile()
 {
   if(diskWriter_) {
     diskWriter_->initAndOpenFile(fileEntry_->getLength());
-    if(directIO_) {
-      diskWriter_->enableDirectIO();
-    }
     open_ = true;
   }
 }
@@ -80,9 +76,6 @@ void DiskWriterEntry::openFile()
 {
   if(diskWriter_) {
     diskWriter_->openFile(fileEntry_->getLength());
-    if(directIO_) {
-      diskWriter_->enableDirectIO();
-    }
     open_ = true;
   }
 }
@@ -91,9 +84,6 @@ void DiskWriterEntry::openExistingFile()
 {
   if(diskWriter_) {
     diskWriter_->openExistingFile(fileEntry_->getLength());
-    if(directIO_) {
-      diskWriter_->enableDirectIO();
-    }
     open_ = true;
   }
 }
@@ -126,26 +116,9 @@ bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
   return *fileEntry_ < *entry.fileEntry_;
 }
 
-void DiskWriterEntry::enableDirectIO()
-{
-  if(open_) {
-    diskWriter_->enableDirectIO();
-  }
-  directIO_ = true;
-}
-
-void DiskWriterEntry::disableDirectIO()
-{
-  if(open_) {
-    diskWriter_->disableDirectIO();
-  }
-  directIO_ = false;
-}
-
 MultiDiskAdaptor::MultiDiskAdaptor()
   : pieceLength_(0),
     maxOpenFiles_(DEFAULT_MAX_OPEN_FILES),
-    directIOAllowed_(false),
     readOnly_(false)
 {}
 
@@ -253,9 +226,6 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       A2_LOG_DEBUG(fmt("Creating DiskWriter for filename=%s",
                        (*i)->getFilePath().c_str()));
       (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
-      if(directIOAllowed_) {
-        (*i)->getDiskWriter()->allowDirectIO();
-      }
       if(readOnly_) {
         (*i)->getDiskWriter()->enableReadOnly();
       }
@@ -472,18 +442,6 @@ SharedHandle<FileAllocationIterator> MultiDiskAdaptor::fileAllocationIterator()
 {
   return SharedHandle<FileAllocationIterator>
     (new MultiFileAllocationIterator(this));
-}
-
-void MultiDiskAdaptor::enableDirectIO()
-{
-  std::for_each(diskWriterEntries_.begin(), diskWriterEntries_.end(),
-                mem_fun_sh(&DiskWriterEntry::enableDirectIO));
-}
-
-void MultiDiskAdaptor::disableDirectIO()
-{
-  std::for_each(diskWriterEntries_.begin(), diskWriterEntries_.end(),
-                mem_fun_sh(&DiskWriterEntry::disableDirectIO));
 }
 
 void MultiDiskAdaptor::enableReadOnly()

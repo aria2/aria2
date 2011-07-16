@@ -47,8 +47,6 @@ private:
 
   bool readOnly_;
 
-  bool directIOAllowed_;
-
   ssize_t writeDataInternal(const unsigned char* data, size_t len);
   ssize_t readDataInternal(unsigned char* data, size_t len);
 
@@ -76,12 +74,6 @@ public:
 
   virtual uint64_t size();
   
-  virtual void enableDirectIO();
-
-  virtual void disableDirectIO();
-
-  virtual void allowDirectIO() { directIOAllowed_ = true; }
-
   virtual void enableReadOnly();
 
   virtual void disableReadOnly();
