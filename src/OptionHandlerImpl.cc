@@ -738,8 +738,8 @@ std::string PrioritizePieceOptionHandler::createPossibleValuesString() const
 
 DeprecatedOptionHandler::DeprecatedOptionHandler
 (const SharedHandle<OptionHandler>& depOptHandler,
- const std::string& repOptName)
-  : depOptHandler_(depOptHandler), repOptName_(repOptName)
+ const SharedHandle<OptionHandler>& repOptHandler)
+  : depOptHandler_(depOptHandler), repOptHandler_(repOptHandler)
 {}
 
 bool DeprecatedOptionHandler::canHandle(const std::string& optName)
@@ -749,11 +749,15 @@ bool DeprecatedOptionHandler::canHandle(const std::string& optName)
 
 void DeprecatedOptionHandler::parse(Option& option, const std::string& arg)
 {
-  A2_LOG_WARN(fmt("--%s option is deprecated. Use --%s option instead.",
-                  depOptHandler_->getName().c_str(),
-                  repOptName_.c_str()));
-  depOptHandler_->parse(option, arg);
-  option.put(repOptName_, option.get(depOptHandler_->getName()));
+  if(repOptHandler_) {
+    A2_LOG_WARN(fmt(_("--%s option is deprecated. Use --%s option instead."),
+                    depOptHandler_->getName().c_str(),
+                    repOptHandler_->getName().c_str()));
+    repOptHandler_->parse(option, arg);
+  } else {
+    A2_LOG_WARN(fmt(_("--%s option is deprecated."),
+                    depOptHandler_->getName().c_str()));
+  }
 }
 
 std::string DeprecatedOptionHandler::createPossibleValuesString() const

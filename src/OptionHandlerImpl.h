@@ -294,14 +294,20 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
+// This class is used to deprecate option and optionally handle its
+// option value using replacing option.
 class DeprecatedOptionHandler:public OptionHandler {
 private:
   SharedHandle<OptionHandler> depOptHandler_;
-  std::string repOptName_;
+  SharedHandle<OptionHandler> repOptHandler_;
 public:
+  // depOptHandler is deprecated option and repOptHandler is replacing
+  // new option. If there is no replacing option, omit second
+  // argument.
   DeprecatedOptionHandler
   (const SharedHandle<OptionHandler>& depOptHandler,
-   const std::string& repOptName);
+   const SharedHandle<OptionHandler>& repOptHandler =
+   SharedHandle<OptionHandler>());
   virtual bool canHandle(const std::string& optName);
   virtual void parse(Option& option, const std::string& arg);
   virtual std::string createPossibleValuesString() const;

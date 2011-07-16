@@ -218,11 +218,14 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 #endif // ENABLE_ASYNC_DNS
 #ifdef ENABLE_DIRECT_IO
   {
-    SharedHandle<OptionHandler> op(new BooleanOptionHandler
-                                   (PREF_ENABLE_DIRECT_IO,
-                                    TEXT_ENABLE_DIRECT_IO,
-                                    A2_V_TRUE,
-                                    OptionHandler::OPT_ARG));
+    // TODO Deprecated
+    SharedHandle<OptionHandler> op
+      (new DeprecatedOptionHandler
+       (SharedHandle<OptionHandler>(new BooleanOptionHandler
+                                    (PREF_ENABLE_DIRECT_IO,
+                                     TEXT_ENABLE_DIRECT_IO,
+                                     A2_V_TRUE,
+                                     OptionHandler::OPT_ARG))));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
     handlers.push_back(op);

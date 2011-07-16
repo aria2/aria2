@@ -29,6 +29,7 @@ class OptionHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHttpProxyOptionHandler);
   CPPUNIT_TEST(testHttpProxyUserOptionHandler);
   CPPUNIT_TEST(testHttpProxyPasswdOptionHandler);
+  CPPUNIT_TEST(testDeprecatedOptionHandler);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -50,6 +51,7 @@ public:
   void testHttpProxyOptionHandler();
   void testHttpProxyUserOptionHandler();
   void testHttpProxyPasswdOptionHandler();
+  void testDeprecatedOptionHandler();
 };
 
 
@@ -418,6 +420,26 @@ void OptionHandlerTest::testHttpProxyPasswdOptionHandler()
   CPPUNIT_ASSERT_EQUAL(std::string("http://user%40:@proxy:8080"),
                        option.get(PREF_HTTP_PROXY));
   
+}
+
+void OptionHandlerTest::testDeprecatedOptionHandler()
+{
+  {
+    DeprecatedOptionHandler handler
+      (SharedHandle<OptionHandler>(new DefaultOptionHandler("dep")));
+    Option option;
+    handler.parse(option, "foo");
+    CPPUNIT_ASSERT(!option.defined("dep"));
+  }
+  {
+    DeprecatedOptionHandler handler
+      (SharedHandle<OptionHandler>(new DefaultOptionHandler("dep")),
+       SharedHandle<OptionHandler>(new DefaultOptionHandler("rep")));
+    Option option;
+    handler.parse(option, "foo");
+    CPPUNIT_ASSERT(!option.defined("dep"));
+    CPPUNIT_ASSERT_EQUAL(std::string("foo"), option.get("rep"));
+  }
 }
 
 } // namespace aria2
