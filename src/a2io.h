@@ -137,10 +137,6 @@
 # define a2mkdir(path, openMode) mkdir(path, openMode)
 #endif // !__MINGW32__
 
-#if defined HAVE_POSIX_MEMALIGN && defined O_DIRECT
-# define ENABLE_DIRECT_IO 1
-#endif // HAVE_POSIX_MEMALIGN && O_DIRECT
-
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
 

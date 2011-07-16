@@ -216,7 +216,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
 #endif // ENABLE_ASYNC_DNS
-#ifdef ENABLE_DIRECT_IO
   {
     // TODO Deprecated
     SharedHandle<OptionHandler> op
@@ -230,7 +229,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
-#endif // ENABLE_DIRECT_IO
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_RPC,
