@@ -223,7 +223,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
        (SharedHandle<OptionHandler>(new BooleanOptionHandler
                                     (PREF_ENABLE_DIRECT_IO,
                                      TEXT_ENABLE_DIRECT_IO,
-                                     A2_V_TRUE,
+                                     NO_DEFAULT_VALUE,
                                      OptionHandler::OPT_ARG))));
     op->addTag(TAG_DEPRECATED);
     op->addTag(TAG_ADVANCED);
