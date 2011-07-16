@@ -78,7 +78,7 @@ Basic Options
    usage for the options whose name includes that word.
    Available Values: '#basic', '#advanced', '#http', '#https', '#ftp',
    '#metalink', '#bittorrent', '#cookie', '#hook', '#file',
-   '#rpc', '#experimental', '#all'
+   '#rpc', '#experimental', '#deprecated', '#help', '#all'
    Default: '#basic'
 
 HTTP/FTP Options
@@ -898,11 +898,6 @@ Advanced Options
   Enable IPv6 name resolution in asynchronous DNS resolver. This
   option will be ignored when *<<aria2_optref_async_dns, --async-dns>>*='false'.
   Default: 'false'
-
-[[aria2_optref_enable_direct_io]]*--enable-direct-io*[='true'|'false']::
-  Enable directI/O, which lowers cpu usage while allocating/checking files.
-  Turn off if you encounter any error.
-  Default: 'true'
 
 [[aria2_optref_event_poll]]*--event-poll*=POLL::
 
