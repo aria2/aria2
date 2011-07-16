@@ -238,19 +238,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    // TODO Deprecated
-    SharedHandle<OptionHandler> op
-      (new DeprecatedOptionHandler
-       (SharedHandle<OptionHandler>(new BooleanOptionHandler
-                                    (PREF_ENABLE_XML_RPC,
-                                     TEXT_ENABLE_XML_RPC,
-                                     NO_DEFAULT_VALUE,
-                                     OptionHandler::OPT_ARG)),
-        PREF_ENABLE_RPC));
-    op->addTag(TAG_RPC);
-    handlers.push_back(op);
-  }
-  {
     std::string params[] = {
 #ifdef HAVE_EPOLL
       V_EPOLL,
@@ -649,69 +636,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     handlers.push_back(op);
   }
-  {
-    // TODO Deprecated
-    SharedHandle<OptionHandler> op
-      (new DeprecatedOptionHandler
-       (SharedHandle<OptionHandler>(new BooleanOptionHandler
-                                    (PREF_XML_RPC_LISTEN_ALL,
-                                     TEXT_XML_RPC_LISTEN_ALL,
-                                     NO_DEFAULT_VALUE,
-                                     OptionHandler::OPT_ARG)),
-        PREF_RPC_LISTEN_ALL));
-    op->addTag(TAG_RPC);
-    handlers.push_back(op);
-  }
-  {
-    // TODO Deprecated
-    SharedHandle<OptionHandler> op
-      (new DeprecatedOptionHandler
-       (SharedHandle<OptionHandler>(new NumberOptionHandler
-                                    (PREF_XML_RPC_LISTEN_PORT,
-                                     TEXT_XML_RPC_LISTEN_PORT,
-                                     NO_DEFAULT_VALUE,
-                                     1024, UINT16_MAX)),
-        PREF_RPC_LISTEN_PORT));
-    op->addTag(TAG_RPC);
-    handlers.push_back(op);
-  }
-  {
-    // TODO Deprecated
-     SharedHandle<OptionHandler> op
-       (new DeprecatedOptionHandler
-        (SharedHandle<OptionHandler>(new UnitNumberOptionHandler
-                                     (PREF_XML_RPC_MAX_REQUEST_SIZE,
-                                      TEXT_XML_RPC_MAX_REQUEST_SIZE,
-                                      NO_DEFAULT_VALUE,
-                                      0)),
-         PREF_RPC_MAX_REQUEST_SIZE));
-     op->addTag(TAG_RPC);
-     handlers.push_back(op);
-  }
-  {
-    // TODO Deprecated
-    SharedHandle<OptionHandler> op
-      (new DeprecatedOptionHandler
-       (SharedHandle<OptionHandler>(new DefaultOptionHandler
-                                    (PREF_XML_RPC_USER,
-                                     TEXT_XML_RPC_USER)),
-        PREF_RPC_USER));
-    op->addTag(TAG_RPC);
-    op->setEraseAfterParse(true);
-    handlers.push_back(op);
-  }
-  {
-    // TODO Deprecated
-    SharedHandle<OptionHandler> op
-      (new DeprecatedOptionHandler
-       (SharedHandle<OptionHandler>(new DefaultOptionHandler
-                                    (PREF_XML_RPC_PASSWD,
-                                     TEXT_XML_RPC_PASSWD)),
-        PREF_RPC_PASSWD));
-    op->addTag(TAG_RPC);
-    op->setEraseAfterParse(true);
-    handlers.push_back(op);
-  }                         
   // HTTP/FTP options
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
