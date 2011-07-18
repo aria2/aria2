@@ -314,7 +314,7 @@ size_t DefaultBtInteractive::receiveMessages() {
   }
   if(!pieceStorage_->isEndGame() &&
      countOldOutstandingRequest >= maxOutstandingRequest_ &&
-     dispatcher_->countOutstandingRequest() == 0){
+     dispatcher_->countOutstandingRequest()*2 <= maxOutstandingRequest_){
     maxOutstandingRequest_ =
       std::min((size_t)UB_MAX_OUTSTANDING_REQUEST,
                maxOutstandingRequest_+OUTSTANDING_REQUEST_STEP);
