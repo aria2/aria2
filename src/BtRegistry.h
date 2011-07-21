@@ -50,6 +50,7 @@ class BtAnnounce;
 class BtRuntime;
 class BtProgressInfoFile;
 class DownloadContext;
+class LpdMessageReceiver;
 
 struct BtObject {
   SharedHandle<DownloadContext> downloadContext_;
@@ -81,6 +82,7 @@ class BtRegistry {
 private:
   std::map<a2_gid_t, BtObject> pool_;
   uint16_t tcpPort_;
+  SharedHandle<LpdMessageReceiver> lpdMessageReceiver_;
 public:
   BtRegistry();
   ~BtRegistry();
@@ -116,6 +118,12 @@ public:
   uint16_t getTcpPort() const
   {
     return tcpPort_;
+  }
+
+  void setLpdMessageReceiver(const SharedHandle<LpdMessageReceiver>& receiver);
+  const SharedHandle<LpdMessageReceiver>& getLpdMessageReceiver() const
+  {
+    return lpdMessageReceiver_;
   }
 };
 

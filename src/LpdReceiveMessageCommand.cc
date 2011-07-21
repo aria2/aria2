@@ -51,10 +51,6 @@
 
 namespace aria2 {
 
-unsigned int LpdReceiveMessageCommand::numInstance_ = 0;
-
-LpdReceiveMessageCommand* LpdReceiveMessageCommand::instance_ = 0;
-
 LpdReceiveMessageCommand::LpdReceiveMessageCommand
 (cuid_t cuid,
  const SharedHandle<LpdMessageReceiver>& receiver,
@@ -64,16 +60,11 @@ LpdReceiveMessageCommand::LpdReceiveMessageCommand
     e_(e)
 {
   e_->addSocketForReadCheck(receiver_->getSocket(), this);
-  ++numInstance_;
 }
 
 LpdReceiveMessageCommand::~LpdReceiveMessageCommand()
 {
   e_->deleteSocketForReadCheck(receiver_->getSocket(), this);
-  --numInstance_;
-  if(numInstance_ == 0) {
-    instance_ = 0;
-  }
 }
 
 bool LpdReceiveMessageCommand::execute()
@@ -121,25 +112,6 @@ bool LpdReceiveMessageCommand::execute()
   }
   e_->addCommand(this);
   return false;
-}
-
-LpdReceiveMessageCommand*
-LpdReceiveMessageCommand::getInstance
-(DownloadEngine* e, const SharedHandle<LpdMessageReceiver>& receiver)
-{
-  if(numInstance_ == 0) {
-    instance_ = new LpdReceiveMessageCommand(e->newCUID(), receiver, e);
-  }
-  return instance_;
-}
-
-LpdReceiveMessageCommand* LpdReceiveMessageCommand::getInstance()
-{
-  if(numInstance_ == 0) {
-    return 0;
-  } else {
-    return instance_;
-  }
 }
 
 } // namespace aria2

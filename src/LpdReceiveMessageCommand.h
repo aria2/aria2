@@ -47,17 +47,11 @@ class SocketCore;
 class LpdReceiveMessageCommand:public Command {
 private:
   SharedHandle<LpdMessageReceiver> receiver_;
-
-  static unsigned int numInstance_;
-
-  static LpdReceiveMessageCommand* instance_;
-
+  DownloadEngine* e_;
+public:
   LpdReceiveMessageCommand
   (cuid_t cuid, const SharedHandle<LpdMessageReceiver>& receiver,
    DownloadEngine* e);
-
-  DownloadEngine* e_;
-public:
   virtual ~LpdReceiveMessageCommand();
 
   virtual bool execute();
@@ -65,19 +59,6 @@ public:
   const SharedHandle<LpdMessageReceiver>& getLpdMessageReceiver() const
   {
     return receiver_;
-  }
-
-  static LpdReceiveMessageCommand*
-  getInstance
-  (DownloadEngine* e, const SharedHandle<LpdMessageReceiver>& receiver);
-
-  // If numInstance_ is 0, then return 0. If numInstance_ > 0, it
-  // returns instance_
-  static LpdReceiveMessageCommand* getInstance();
-
-  static unsigned int getNumInstance()
-  {
-    return numInstance_;
   }
 };
 

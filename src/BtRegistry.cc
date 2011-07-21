@@ -41,6 +41,7 @@
 #include "BtRuntime.h"
 #include "BtProgressInfoFile.h"
 #include "bittorrent_helper.h"
+#include "LpdMessageReceiver.h"
 
 namespace aria2 {
 
@@ -93,6 +94,12 @@ bool BtRegistry::remove(a2_gid_t gid)
 
 void BtRegistry::removeAll() {
   pool_.clear();
+}
+
+void BtRegistry::setLpdMessageReceiver
+(const SharedHandle<LpdMessageReceiver>& receiver)
+{
+  lpdMessageReceiver_ = receiver;
 }
 
 BtObject::BtObject

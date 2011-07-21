@@ -217,7 +217,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
   if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
      btReg->getTcpPort() &&
      (metadataGetMode || !torrentAttrs->privateTorrent)) {
-    if(LpdReceiveMessageCommand::getNumInstance() == 0) {
+    if(!btReg->getLpdMessageReceiver()) {
       A2_LOG_INFO("Initializing LpdMessageReceiver.");
       SharedHandle<LpdMessageReceiver> receiver
         (new LpdMessageReceiver(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
@@ -242,30 +242,30 @@ void BtSetup::setup(std::vector<Command*>& commands,
         }
       }
       if(initialized) {
+        btReg->setLpdMessageReceiver(receiver);
         A2_LOG_INFO(fmt("LpdMessageReceiver initialized. multicastAddr=%s:%u,"
                         " localAddr=%s",
                         LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
                         receiver->getLocalAddress().c_str()));
         LpdReceiveMessageCommand* cmd =
-          LpdReceiveMessageCommand::getInstance(e, receiver);
+          new LpdReceiveMessageCommand(e->newCUID(), receiver, e);
         e->addCommand(cmd);
       } else {
         A2_LOG_INFO("LpdMessageReceiver not initialized.");
       }
     }
-    if(LpdReceiveMessageCommand::getNumInstance()) {
+    if(btReg->getLpdMessageReceiver()) {
       const unsigned char* infoHash =
         bittorrent::getInfoHash(requestGroup->getDownloadContext());
-      SharedHandle<LpdMessageReceiver> receiver =
-        LpdReceiveMessageCommand::getInstance()->getLpdMessageReceiver();
       A2_LOG_INFO("Initializing LpdMessageDispatcher.");      
       SharedHandle<LpdMessageDispatcher> dispatcher
         (new LpdMessageDispatcher
          (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
           btReg->getTcpPort(),
           LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
-      if(dispatcher->init(receiver->getLocalAddress(), /*ttl*/1, /*loop*/0)) {
-        A2_LOG_INFO("LpdMessageDispatcher initialized.");      
+      if(dispatcher->init(btReg->getLpdMessageReceiver()->getLocalAddress(),
+                          /*ttl*/1, /*loop*/0)) {
+        A2_LOG_INFO("LpdMessageDispatcher initialized.");
         LpdDispatchMessageCommand* cmd =
           new LpdDispatchMessageCommand(e->newCUID(), dispatcher, e);
         cmd->setBtRuntime(btRuntime);
