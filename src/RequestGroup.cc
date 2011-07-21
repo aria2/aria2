@@ -1021,6 +1021,8 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   e->getBtRegistry()->remove(gid_);
+  btRuntime_ = 0;
+  peerStorage_ = 0;
 #endif // ENABLE_BITTORRENT
   if(pieceStorage_) {
     pieceStorage_->removeAdvertisedPiece(0);
