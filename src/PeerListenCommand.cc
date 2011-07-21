@@ -97,6 +97,8 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
                         family_ == AF_INET?4:6, port));
       return true;
     } catch(RecoverableException& ex) {
+      A2_LOG_ERROR(fmt("Failed to setup IPv%d BitTorrent server socket",
+                       family_ == AF_INET?4:6));
       A2_LOG_ERROR_EX(fmt(MSG_BIND_FAILURE,
                           getCuid(), port),
                       ex);
