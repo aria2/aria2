@@ -43,7 +43,6 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
 #include "PeerStorage.h"
-#include "BtRuntime.h"
 #include "util.h"
 #include "DHTBucket.h"
 #include "bittorrent_helper.h"
@@ -54,9 +53,11 @@
 namespace aria2 {
 
 DHTPeerLookupTask::DHTPeerLookupTask
-(const SharedHandle<DownloadContext>& downloadContext)
+(const SharedHandle<DownloadContext>& downloadContext,
+ uint16_t tcpPort)
   : DHTAbstractNodeLookupTask<DHTGetPeersReplyMessage>
-    (bittorrent::getInfoHash(downloadContext))
+    (bittorrent::getInfoHash(downloadContext)),
+    tcpPort_(tcpPort)
 {}
 
 void
@@ -115,16 +116,11 @@ void DHTPeerLookupTask::onFinish()
       getMessageFactory()->createAnnouncePeerMessage
       (node,
        getTargetID(), // this is infoHash
-       btRuntime_->getListenPort(),
+       tcpPort_,
        token);
     getMessageDispatcher()->addMessageToQueue(m);
     --num;
   }
-}
-
-void DHTPeerLookupTask::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
-{
-  btRuntime_ = btRuntime;
 }
 
 void DHTPeerLookupTask::setPeerStorage(const SharedHandle<PeerStorage>& ps)

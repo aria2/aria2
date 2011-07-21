@@ -43,7 +43,6 @@ namespace aria2 {
 class DownloadContext;
 class Peer;
 class PeerStorage;
-class BtRuntime;
 class DHTGetPeersReplyMessage;
 
 class DHTPeerLookupTask:
@@ -52,10 +51,11 @@ private:
   std::map<std::string, std::string> tokenStorage_;
 
   SharedHandle<PeerStorage> peerStorage_;
-
-  SharedHandle<BtRuntime> btRuntime_;
+  uint16_t tcpPort_;
 public:
-  DHTPeerLookupTask(const SharedHandle<DownloadContext>& downloadContext);
+  DHTPeerLookupTask
+  (const SharedHandle<DownloadContext>& downloadContext,
+   uint16_t tcpPort);
 
   virtual void getNodesFromMessage
   (std::vector<SharedHandle<DHTNode> >& nodes,
@@ -69,8 +69,6 @@ public:
   virtual SharedHandle<DHTMessageCallback> createCallback();
 
   virtual void onFinish();
-  
-  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 };

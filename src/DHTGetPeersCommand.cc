@@ -49,6 +49,7 @@
 #include "DownloadContext.h"
 #include "wallclock.h"
 #include "fmt.h"
+#include "BtRegistry.h"
 
 namespace aria2 {
 
@@ -102,7 +103,9 @@ bool DHTGetPeersCommand::execute()
                      bittorrent::getInfoHashString
                      (requestGroup_->getDownloadContext()).c_str()));
     task_ = taskFactory_->createPeerLookupTask
-      (requestGroup_->getDownloadContext(), btRuntime_, peerStorage_);
+      (requestGroup_->getDownloadContext(),
+       e_->getBtRegistry()->getTcpPort(),
+       peerStorage_);
     taskQueue_->addPeriodicTask2(task_);
   } else if(task_ && task_->finished()) {
     A2_LOG_DEBUG("task finished detected");

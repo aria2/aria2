@@ -44,6 +44,12 @@
 
 namespace aria2 {
 
+BtRegistry::BtRegistry()
+  : tcpPort_(0)
+{}
+
+BtRegistry::~BtRegistry() {}
+
 SharedHandle<DownloadContext>
 BtRegistry::getDownloadContext(a2_gid_t gid) const
 {

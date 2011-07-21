@@ -72,7 +72,6 @@ public:
     peerStorage_->setStat(stat);
 
     btRuntime_.reset(new BtRuntime());
-    btRuntime_->setListenPort(6989);
   }
 
   void tearDown()
@@ -150,6 +149,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
   btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.setTcpPort(6989);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
 
@@ -198,6 +198,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
   btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.setTcpPort(6989);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
 
@@ -229,6 +230,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_withQuery()
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
   btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.setTcpPort(6989);
 
   CPPUNIT_ASSERT_EQUAL
     (std::string("http://localhost/announce?k=v&"
@@ -252,6 +254,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl_externalIP()
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
   btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.setTcpPort(6989);
 
   CPPUNIT_ASSERT_EQUAL
     (std::string("http://localhost/announce?"
@@ -275,6 +278,7 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
   btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.setTcpPort(6989);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
 
@@ -307,6 +311,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
   btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.setTcpPort(6989);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
 
@@ -337,6 +342,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   btAnnounce.setPeerStorage(peerStorage_);
   btAnnounce.setBtRuntime(btRuntime_);
   btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
+  btAnnounce.setTcpPort(6989);
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%AB%CD%EF%01%23Eg%89%AB%CD%EF%01%23Eg&peer_id=%2Daria2%2Dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=fastdltl&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
 

@@ -39,7 +39,6 @@ namespace aria2 {
 
 BtRuntime::BtRuntime()
   : uploadLengthAtStartup_(0),
-    port_(0),
     halt_(false),
     connections_(0),
     ready_(false),

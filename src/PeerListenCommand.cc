@@ -52,28 +52,16 @@
 
 namespace aria2 {
 
-unsigned int PeerListenCommand::numInstance_ = 0;
-
-PeerListenCommand* PeerListenCommand::instance_ = 0;
-
-PeerListenCommand* PeerListenCommand::instance6_ = 0;
-
 PeerListenCommand::PeerListenCommand
 (cuid_t cuid,
  DownloadEngine* e,
  int family)
   : Command(cuid),
     e_(e),
-    family_(family),
-    lowestSpeedLimit_(20*1024)
-{
-  ++numInstance_;
-}
+    family_(family)
+{}
 
-PeerListenCommand::~PeerListenCommand()
-{
-  --numInstance_;
-}
+PeerListenCommand::~PeerListenCommand() {}
 
 bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
@@ -150,23 +138,6 @@ bool PeerListenCommand::execute() {
   }
   e_->addCommand(this);
   return false;
-}
-
-PeerListenCommand* PeerListenCommand::getInstance(DownloadEngine* e, int family)
-{
-  if(family == AF_INET) {
-    if(!instance_) {
-      instance_ = new PeerListenCommand(e->newCUID(), e, family);
-    }
-    return instance_;
-  } else if(family == AF_INET6) {
-    if(!instance6_) {
-      instance6_ = new PeerListenCommand(e->newCUID(), e, family);
-    }
-    return instance6_;
-  } else {
-    return 0;
-  }
 }
 
 } // namespace aria2

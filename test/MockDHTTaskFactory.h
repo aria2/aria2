@@ -36,7 +36,7 @@ public:
 
   virtual SharedHandle<DHTTask>
   createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
-                       const SharedHandle<BtRuntime>& btRuntime,
+                       uint16_t tcpPort,
                        const SharedHandle<PeerStorage>& peerStorage)
   {
     return SharedHandle<DHTTask>();

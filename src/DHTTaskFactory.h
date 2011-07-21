@@ -41,7 +41,6 @@
 namespace aria2 {
 
 class DownloadContext;
-class BtRuntime;
 class PeerStorage;
 class DHTTask;
 class DHTNode;
@@ -62,7 +61,7 @@ public:
 
   virtual SharedHandle<DHTTask>
   createPeerLookupTask(const SharedHandle<DownloadContext>& ctx,
-                       const SharedHandle<BtRuntime>& btRuntime,
+                       uint16_t tcpPort,
                        const SharedHandle<PeerStorage>& peerStorage) = 0;
   
   virtual SharedHandle<DHTTask>

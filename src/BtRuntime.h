@@ -43,7 +43,6 @@ namespace aria2 {
 class BtRuntime {
 private:
   uint64_t uploadLengthAtStartup_;
-  uint16_t port_;
   bool halt_;
   unsigned int connections_;
   bool ready_;
@@ -68,12 +67,6 @@ public:
   void setUploadLengthAtStartup(uint64_t length) {
     uploadLengthAtStartup_ = length;
   }
-
-  void setListenPort(uint16_t port) {
-    port_ = port;
-  }
-
-  uint16_t getListenPort() const { return port_; }
 
   bool isHalt() const { return halt_; }
 

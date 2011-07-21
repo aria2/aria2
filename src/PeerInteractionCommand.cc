@@ -75,6 +75,7 @@
 #include "bittorrent_helper.h"
 #include "UTMetadataRequestFactory.h"
 #include "UTMetadataRequestTracker.h"
+#include "BtRegistry.h"
 
 namespace aria2 {
 
@@ -234,6 +235,7 @@ PeerInteractionCommand::PeerInteractionCommand
   }
   btInteractive->setUTMetadataRequestFactory(utMetadataRequestFactory);
   btInteractive->setUTMetadataRequestTracker(utMetadataRequestTracker);
+  btInteractive->setTcpPort(e->getBtRegistry()->getTcpPort());
   if(metadataGetMode) {
     btInteractive->enableMetadataGetMode();
   }

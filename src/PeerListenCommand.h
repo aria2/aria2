@@ -49,13 +49,6 @@ private:
   DownloadEngine* e_;
   int family_;
   SharedHandle<SocketCore> socket_;
-  unsigned int lowestSpeedLimit_;
-
-  static unsigned int numInstance_;
-
-  static PeerListenCommand* instance_;
-
-  static PeerListenCommand* instance6_;
 public:
   PeerListenCommand(cuid_t cuid, DownloadEngine* e, int family);
 
@@ -71,19 +64,6 @@ public:
 
   // Returns binded port
   uint16_t getPort() const;
-
-  void setLowestSpeedLimit(unsigned int speed)
-  {
-    lowestSpeedLimit_ = speed;
-  }
-
-  static PeerListenCommand* getInstance(DownloadEngine* e, int family);
-
-  static unsigned int getNumInstance()
-  {
-    return numInstance_;
-  }
-  
 };
 
 } // namespace aria2 

@@ -80,7 +80,11 @@ struct BtObject {
 class BtRegistry {
 private:
   std::map<a2_gid_t, BtObject> pool_;
+  uint16_t tcpPort_;
 public:
+  BtRegistry();
+  ~BtRegistry();
+
   SharedHandle<DownloadContext>
   getDownloadContext(a2_gid_t gid) const;
 
@@ -104,6 +108,15 @@ public:
   void removeAll();
 
   bool remove(a2_gid_t gid);
+
+  void setTcpPort(uint16_t port)
+  {
+    tcpPort_ = port;
+  }
+  uint16_t getTcpPort() const
+  {
+    return tcpPort_;
+  }
 };
 
 } // namespace aria2

@@ -58,6 +58,8 @@ public:
 
   virtual void overrideMinInterval(time_t interval) {}
 
+  virtual void setTcpPort(uint16_t port) {}
+
   void setPeerId(const std::string& peerId) {
     this->peerId = peerId;
   }

@@ -100,7 +100,8 @@ void BtSetup::setup(std::vector<Command*>& commands,
   SharedHandle<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
-  BtObject btObject = e->getBtRegistry()->get(requestGroup->getGID());
+  const SharedHandle<BtRegistry>& btReg = e->getBtRegistry();
+  BtObject btObject = btReg->get(requestGroup->getGID());
   SharedHandle<PieceStorage> pieceStorage = btObject.pieceStorage_;
   SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
   SharedHandle<BtRuntime> btRuntime = btObject.btRuntime_;
@@ -183,43 +184,38 @@ void BtSetup::setup(std::vector<Command*>& commands,
       commands.push_back(c);
     }
   }
-  if(PeerListenCommand::getNumInstance() == 0) {
+  if(btReg->getTcpPort() == 0) {
     static int families[] = { AF_INET, AF_INET6 };
     size_t familiesLength = e->getOption()->getAsBool(PREF_DISABLE_IPV6)?1:2;
     for(size_t i = 0; i < familiesLength; ++i) {
-      PeerListenCommand* listenCommand =
-        PeerListenCommand::getInstance(e, families[i]);
+      PeerListenCommand* command =
+        new PeerListenCommand(e->newCUID(), e, families[i]);
       bool ret;
       uint16_t port;
-      if(btRuntime->getListenPort()) {
-        IntSequence seq =
-          util::parseIntRange(util::uitos(btRuntime->getListenPort()));
-        ret = listenCommand->bindPort(port, seq);
+      if(btReg->getTcpPort()) {
+        IntSequence seq = util::parseIntRange(util::uitos(btReg->getTcpPort()));
+        ret = command->bindPort(port, seq);
       } else {
         IntSequence seq =
           util::parseIntRange(e->getOption()->get(PREF_LISTEN_PORT));
-        ret = listenCommand->bindPort(port, seq);
+        ret = command->bindPort(port, seq);
       }
       if(ret) {
-        btRuntime->setListenPort(port);
+        btReg->setTcpPort(port);
         // Add command to DownloadEngine directly.
-        e->addCommand(listenCommand);
+        e->addCommand(command);
       } else {
-        delete listenCommand;
+        delete command;
       }
     }
-    if(PeerListenCommand::getNumInstance() == 0) {
+    if(btReg->getTcpPort() == 0) {
       throw DL_ABORT_EX(_("Errors occurred while binding port.\n"));
     }
-  } else {
-    PeerListenCommand* listenCommand =
-      PeerListenCommand::getInstance(e, AF_INET);
-    if(!listenCommand) {
-      listenCommand = PeerListenCommand::getInstance(e, AF_INET6);
-    }
-    btRuntime->setListenPort(listenCommand->getPort());
   }
+  btAnnounce->setTcpPort(btReg->getTcpPort());
+
   if(option->getAsBool(PREF_BT_ENABLE_LPD) &&
+     btReg->getTcpPort() &&
      (metadataGetMode || !torrentAttrs->privateTorrent)) {
     if(LpdReceiveMessageCommand::getNumInstance() == 0) {
       A2_LOG_INFO("Initializing LpdMessageReceiver.");
@@ -266,7 +262,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
       SharedHandle<LpdMessageDispatcher> dispatcher
         (new LpdMessageDispatcher
          (std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]),
-          btRuntime->getListenPort(),
+          btReg->getTcpPort(),
           LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT));
       if(dispatcher->init(receiver->getLocalAddress(), /*ttl*/1, /*loop*/0)) {
         A2_LOG_INFO("LpdMessageDispatcher initialized.");      

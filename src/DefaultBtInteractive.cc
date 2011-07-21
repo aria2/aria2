@@ -190,7 +190,7 @@ void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
   static const std::string CLIENT_ARIA2("aria2/"PACKAGE_VERSION);
   HandshakeExtensionMessageHandle m(new HandshakeExtensionMessage());
   m->setClientVersion(CLIENT_ARIA2);
-  m->setTCPPort(btRuntime_->getListenPort());
+  m->setTCPPort(tcpPort_);
   m->setExtensions(extensionMessageRegistry_->getExtensions());
   SharedHandle<TorrentAttribute> attrs =
     bittorrent::getTorrentAttrs(downloadContext_);

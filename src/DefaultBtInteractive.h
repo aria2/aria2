@@ -143,6 +143,8 @@ private:
 
   RequestGroupMan* requestGroupMan_;
 
+  uint16_t tcpPort_;
+
   static const time_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
@@ -254,6 +256,11 @@ public:
   void enableMetadataGetMode()
   {
     metadataGetMode_ = true;
+  }
+
+  void setTcpPort(uint16_t port)
+  {
+    tcpPort_ = port;
   }
 };
 

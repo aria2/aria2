@@ -68,7 +68,8 @@ DefaultBtAnnounce::DefaultBtAnnounce
     incomplete_(0),
     announceList_(bittorrent::getTorrentAttrs(downloadContext)->announceList),
     option_(option),
-    randomizer_(SimpleRandomizer::getInstance())
+    randomizer_(SimpleRandomizer::getInstance()),
+    tcpPort_(0)
 {}
 
 DefaultBtAnnounce::~DefaultBtAnnounce() {
@@ -166,9 +167,9 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   uri += "&numwant=";
   uri += util::uitos(numWant);
   uri += "&no_peer_id=1";
-  if(btRuntime_->getListenPort() > 0) {
+  if(tcpPort_) {
     uri += "&port=";
-    uri += util::uitos(btRuntime_->getListenPort());
+    uri += util::uitos(tcpPort_);
   }
   std::string event = announceList_.getEventString();
   if(!event.empty()) {

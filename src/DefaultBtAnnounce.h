@@ -65,6 +65,7 @@ private:
   SharedHandle<BtRuntime> btRuntime_;
   SharedHandle<PieceStorage> pieceStorage_;
   SharedHandle<PeerStorage> peerStorage_;
+  uint16_t tcpPort_;
 public:
   DefaultBtAnnounce(const SharedHandle<DownloadContext>& downloadContext,
                     const Option* option);
@@ -120,6 +121,11 @@ public:
   virtual void shuffleAnnounce();
 
   virtual void overrideMinInterval(time_t interval);
+
+  virtual void setTcpPort(uint16_t port)
+  {
+    tcpPort_ = port;
+  }
 
   void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 

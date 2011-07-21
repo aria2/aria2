@@ -109,6 +109,8 @@ public:
 
   virtual void overrideMinInterval(time_t interval) = 0;
 
+  virtual void setTcpPort(uint16_t port) = 0;
+
   static const std::string FAILURE_REASON;
 
   static const std::string WARNING_MESSAGE;
