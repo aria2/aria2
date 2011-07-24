@@ -204,6 +204,7 @@ bool HttpResponseCommand::executeInternal()
     }
   }
   if(!getPieceStorage()) {
+    util::removeMetalinkContentTypes(getRequestGroup());
     uint64_t totalLength = httpResponse->getEntityLength();
     getFileEntry()->setLength(totalLength);
     if(getFileEntry()->getPath().empty()) {

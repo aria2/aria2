@@ -415,6 +415,7 @@ bool getCidrPrefix(struct in_addr& in, const std::string& ip, int bits);
 bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits);
 
 void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group);
+void removeMetalinkContentTypes(RequestGroup* group);
 
 // No throw
 void executeHookByOptName

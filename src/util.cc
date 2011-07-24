@@ -1460,6 +1460,11 @@ bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits)
 
 void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
 {
+  removeMetalinkContentTypes(group.get());
+}
+
+void removeMetalinkContentTypes(RequestGroup* group)
+{
   for(std::vector<std::string>::const_iterator i =
 	DownloadHandlerConstants::getMetalinkContentTypes().begin(),
         eoi = DownloadHandlerConstants::getMetalinkContentTypes().end();
