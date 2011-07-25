@@ -158,10 +158,8 @@ Metalink2RequestGroup::createRequestGroup
   std::sort(selectIndexes.begin(), selectIndexes.end());
   std::vector<std::string> locations;
   if(option->defined(PREF_METALINK_LOCATION)) {
-    util::split(option->get(PREF_METALINK_LOCATION),
+    util::split(util::toLower(option->get(PREF_METALINK_LOCATION)),
                 std::back_inserter(locations), ",", true);
-    std::transform
-      (locations.begin(), locations.end(), locations.begin(), util::toLower);
   }
   std::string preferredProtocol;
   if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
