@@ -224,7 +224,8 @@ SRCS =  Socket.h\
 	HttpServer.cc HttpServer.h\
 	StreamPieceSelector.h\
 	DefaultStreamPieceSelector.cc DefaultStreamPieceSelector.h\
-	InorderStreamPieceSelector.cc InorderStreamPieceSelector.h
+	InorderStreamPieceSelector.cc InorderStreamPieceSelector.h\
+	MetalinkHttpEntry.cc MetalinkHttpEntry.h
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
