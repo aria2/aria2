@@ -17,6 +17,9 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "StreamFilter.h"
+#include "MetalinkHttpEntry.h"
+#include "Option.h"
+#include "Checksum.h"
 
 namespace aria2 {
 
@@ -49,6 +52,10 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testProcessRedirect);
   CPPUNIT_TEST(testRetrieveCookie);
   CPPUNIT_TEST(testSupportsPersistentConnection);
+  CPPUNIT_TEST(testGetMetalinKHttpEntries);
+#ifdef ENABLE_MESSAGE_DIGEST
+  CPPUNIT_TEST(testGetDigest);
+#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -81,6 +88,10 @@ public:
   void testProcessRedirect();
   void testRetrieveCookie();
   void testSupportsPersistentConnection();
+  void testGetMetalinKHttpEntries();
+#ifdef ENABLE_MESSAGE_DIGEST
+  void testGetDigest();
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 
@@ -589,5 +600,74 @@ void HttpResponseTest::testSupportsPersistentConnection()
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
 }
+
+void HttpResponseTest::testGetMetalinKHttpEntries()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+  SharedHandle<Option> option(new Option());
+
+  httpHeader->put("Link", "<http://uri1/>; rel=duplicate; pri=1; pref; geo=JP");
+  httpHeader->put("Link", "<http://uri2/>; rel=duplicate");
+  httpHeader->put("Link", "<http://uri3/>;;;;;;;;rel=duplicate;;;;;pri=2;;;;;");
+  httpHeader->put("Link", "<http://uri4/>;rel=duplicate;=pri=1;pref");
+  httpHeader->put("Link", "<http://describedby>; rel=describedby");
+  httpHeader->put("Link", "<baduri>; rel=duplicate");
+  httpHeader->put("Link", "<http://norel/>");
+  httpHeader->put("Link", "<http://badpri/>; rel=duplicate; pri=-1;");
+  std::vector<MetalinkHttpEntry> result;
+  httpResponse.getMetalinKHttpEntries(result, option);
+  CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
+
+  MetalinkHttpEntry e = result[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("http://uri1/"), e.uri);
+  CPPUNIT_ASSERT_EQUAL(1, e.pri);
+  CPPUNIT_ASSERT(e.pref);
+  CPPUNIT_ASSERT_EQUAL(std::string("jp"), e.geo);
+
+  e = result[1];
+  CPPUNIT_ASSERT_EQUAL(std::string("http://uri4/"), e.uri);
+  CPPUNIT_ASSERT_EQUAL(999999, e.pri);
+  CPPUNIT_ASSERT(e.pref);
+  CPPUNIT_ASSERT(e.geo.empty());
+
+  e = result[2];
+  CPPUNIT_ASSERT_EQUAL(std::string("http://uri3/"), e.uri);
+  CPPUNIT_ASSERT_EQUAL(2, e.pri);
+  CPPUNIT_ASSERT(!e.pref);
+  CPPUNIT_ASSERT(e.geo.empty());
+
+  e = result[3];
+  CPPUNIT_ASSERT_EQUAL(std::string("http://uri2/"), e.uri);
+  CPPUNIT_ASSERT_EQUAL(999999, e.pri);
+  CPPUNIT_ASSERT(!e.pref);
+  CPPUNIT_ASSERT(e.geo.empty());
+
+  e = result[4];
+  CPPUNIT_ASSERT_EQUAL(std::string("http://badpri/"), e.uri);
+  CPPUNIT_ASSERT_EQUAL(999999, e.pri);
+  CPPUNIT_ASSERT(!e.pref);
+  CPPUNIT_ASSERT(e.geo.empty());
+}
+
+#ifdef ENABLE_MESSAGE_DIGEST
+void HttpResponseTest::testGetDigest()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+  SharedHandle<Option> option(new Option());
+
+  httpHeader->put("Digest", "SHA-1=82AD8itGL/oYQ5BTPFANiYnp9oE=");
+  httpHeader->put("Digest", "NOT_SUPPORTED");
+  httpHeader->put("Digest",
+                  "SHA-256=+D8nGudz3G/kpkVKQeDrI3xD57v0UeQmzGCZOk03nsU=,"
+                  "MD5=LJDK2+9ClF8Nz/K5WZd/+A==");
+  SharedHandle<Checksum> c = httpResponse.getDigest();
+  CPPUNIT_ASSERT(c);
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), c->getAlgo());
+}
+#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

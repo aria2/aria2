@@ -38,6 +38,7 @@
 #include "common.h"
 
 #include <stdint.h>
+#include <vector>
 
 #include "SharedHandle.h"
 #include "TimeA2.h"
@@ -48,6 +49,9 @@ namespace aria2 {
 class HttpRequest;
 class HttpHeader;
 class StreamFilter;
+class MetalinkHttpEntry;
+class Option;
+class Checksum;
 
 class HttpResponse {
 private:
@@ -127,6 +131,17 @@ public:
   Time getLastModifiedTime() const;
 
   bool supportsPersistentConnection() const;
+
+  void getMetalinKHttpEntries
+  (std::vector<MetalinkHttpEntry>& result,
+   const SharedHandle<Option>& option) const;
+#ifdef ENABLE_MESSAGE_DIGEST
+  // Returns digest specified in Digest header field.  If multiple
+  // digest algorithm is available, use strongest one defined in
+  // MessageDigest. If several same digest algorithms are available,
+  // but they have different value, they are all ignored.
+  SharedHandle<Checksum> getDigest() const;
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 } // namespace aria2

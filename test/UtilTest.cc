@@ -71,6 +71,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetCidrPrefix);
   CPPUNIT_TEST(testInSameCidrBlock);
   CPPUNIT_TEST(testIsUtf8String);
+  CPPUNIT_TEST(testNextParam);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -130,6 +131,7 @@ public:
   void testGetCidrPrefix();
   void testInSameCidrBlock();
   void testIsUtf8String();
+  void testNextParam();
 };
 
 
@@ -1245,6 +1247,44 @@ void UtilTest::testIsUtf8String()
 
   CPPUNIT_ASSERT(util::isUtf8(""));
   CPPUNIT_ASSERT(!util::isUtf8(util::fromHex("00")));
+}
+
+void UtilTest::testNextParam()
+{
+  std::string s1 = "    :a  :  b=c :d=b::::g::";
+  std::pair<std::string::iterator, bool> r;
+  std::string name, value;
+  r = util::nextParam(name, value, s1.begin(), s1.end(), ':');
+  CPPUNIT_ASSERT(r.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("a"), name);
+  CPPUNIT_ASSERT_EQUAL(std::string(), value);
+
+  r = util::nextParam(name, value, r.first, s1.end(), ':');
+  CPPUNIT_ASSERT(r.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("b"), name);
+  CPPUNIT_ASSERT_EQUAL(std::string("c"), value);
+
+  r = util::nextParam(name, value, r.first, s1.end(), ':');
+  CPPUNIT_ASSERT(r.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("d"), name);
+  CPPUNIT_ASSERT_EQUAL(std::string("b"), value);
+
+  r = util::nextParam(name, value, r.first, s1.end(), ':');
+  CPPUNIT_ASSERT(r.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("g"), name);
+  CPPUNIT_ASSERT_EQUAL(std::string(), value);
+
+  std::string s2 = "";
+  r = util::nextParam(name, value, s2.begin(), s2.end(), ':');
+  CPPUNIT_ASSERT(!r.second);
+
+  std::string s3 = "   ";
+  r = util::nextParam(name, value, s3.begin(), s3.end(), ':');
+  CPPUNIT_ASSERT(!r.second);
+
+  std::string s4 = ":::";
+  r = util::nextParam(name, value, s4.begin(), s4.end(), ':');
+  CPPUNIT_ASSERT(!r.second);
 }
 
 } // namespace aria2

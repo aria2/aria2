@@ -51,6 +51,15 @@
 #include "AuthConfig.h"
 #include "ChunkedDecodingStreamFilter.h"
 #include "error_code.h"
+#include "prefs.h"
+#include "Option.h"
+#include "Checksum.h"
+#include "uri.h"
+#include "MetalinkHttpEntry.h"
+#include "Base64.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#include "MessageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #ifdef HAVE_ZLIB
 # include "GZipDecodingStreamFilter.h"
 #endif // HAVE_ZLIB
@@ -285,5 +294,135 @@ bool HttpResponse::supportsPersistentConnection() const
      util::toLower(httpHeader_->getFirst("Proxy-Connection")).find("keep-alive")
      != std::string::npos);
 }
+
+namespace {
+bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
+{
+  std::string::const_iterator first = std::find(s.begin(), s.end(), '<');
+  if(first == s.end()) {
+    return false;
+  }
+  std::string::const_iterator last = std::find(first, s.end(), '>');
+  if(last == s.end()) {
+    return false;
+  }
+  std::string uri(first+1, last);
+  uri::UriStruct us;
+  if(uri::parse(us, uri)) {
+    result.uri = uri;
+  } else {
+    return false;
+  }
+  last = std::find(last, s.end(), ';');
+  if(last != s.end()) {
+    ++last;
+  }
+  bool ok = false;
+  while(1) {
+    std::string name, value;
+    std::pair<std::string::const_iterator, bool> r =
+      util::nextParam(name, value, last, s.end(), ';');
+    last = r.first;
+    if(!r.second) {
+      break;
+    }
+    if(value.empty()) {
+      if(name == "pref") {
+        result.pref = true;
+      }
+    } else {
+      if(name == "rel") {
+        if(value == "duplicate") {
+          ok = true;
+        } else {
+          ok = false;
+        }
+      } else if(name == "pri") {
+        int32_t priValue;
+        if(util::parseIntNoThrow(priValue, value)) {
+          if(1 <= priValue && priValue <= 999999) {
+            result.pri = priValue;
+          }
+        }
+      } else if(name == "geo") {
+        util::lowercase(value);
+        result.geo = value;
+      }
+    }
+  }
+  return ok;
+}
+} // namespace
+
+// Metalink/HTTP is defined by http://tools.ietf.org/html/rfc6249.
+// Link header field is defined by http://tools.ietf.org/html/rfc5988.
+void HttpResponse::getMetalinKHttpEntries
+(std::vector<MetalinkHttpEntry>& result,
+ const SharedHandle<Option>& option) const
+{
+  std::pair<std::multimap<std::string, std::string>::const_iterator,
+            std::multimap<std::string, std::string>::const_iterator> p =
+    httpHeader_->getIterator(HttpHeader::LINK);
+  for(; p.first != p.second; ++p.first) {
+    MetalinkHttpEntry e;
+    if(parseMetalinkHttpLink(e, (*p.first).second)) {
+      result.push_back(e);
+    }
+  }
+  if(!result.empty()) {
+    std::vector<std::string> locs;
+    if(option->defined(PREF_METALINK_LOCATION)) {
+      util::split(util::toLower(option->get(PREF_METALINK_LOCATION)),
+                  std::back_inserter(locs), ",", true);
+    }
+    for(std::vector<MetalinkHttpEntry>::iterator i = result.begin(),
+          eoi = result.end(); i != eoi; ++i) {
+      if(std::find(locs.begin(), locs.end(), (*i).geo) != locs.end()) {
+        (*i).pri -= 999999;
+      }
+    }
+  }
+  std::sort(result.begin(), result.end());
+}
+
+#ifdef ENABLE_MESSAGE_DIGEST
+// Digest header field is defined by
+// http://tools.ietf.org/html/rfc3230.
+SharedHandle<Checksum> HttpResponse::getDigest() const
+{
+  SharedHandle<Checksum> res;
+  std::pair<std::multimap<std::string, std::string>::const_iterator,
+            std::multimap<std::string, std::string>::const_iterator> p =
+    httpHeader_->getIterator(HttpHeader::DIGEST);
+  for(; p.first != p.second; ++p.first) {
+    const std::string& s = (*p.first).second;
+    std::string::const_iterator itr = s.begin();
+    while(1) {
+      std::string hashType, digest;
+      std::pair<std::string::const_iterator, bool> r =
+        util::nextParam(hashType, digest, itr, s.end(), ',');
+      itr = r.first;
+      if(!r.second) {
+        break;
+      }
+      util::lowercase(hashType);
+      if(!MessageDigest::supports(hashType)) {
+        continue;
+      }
+      std::string hexDigest = util::toHex(Base64::decode(digest));
+      if(!MessageDigest::isValidHash(hashType, hexDigest)) {
+        continue;
+      }
+      if(!res) {
+        res.reset(new Checksum(hashType, hexDigest));
+      } else if(MessageDigest::isStronger(hashType, res->getAlgo())) {
+        res->setAlgo(hashType);
+        res->setMessageDigest(hexDigest);
+      }
+    }
+  }
+  return res;
+}
+#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2
