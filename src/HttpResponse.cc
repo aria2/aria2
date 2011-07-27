@@ -306,12 +306,11 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
   if(last == s.end()) {
     return false;
   }
-  std::string uri(first+1, last);
-  uri::UriStruct us;
-  if(uri::parse(us, uri)) {
-    result.uri = uri;
-  } else {
+  std::string uri = util::stripIter(first+1, last);
+  if(uri.empty()) {
     return false;
+  } else {
+    result.uri = uri;
   }
   last = std::find(last, s.end(), ';');
   if(last != s.end()) {
@@ -388,9 +387,9 @@ void HttpResponse::getMetalinKHttpEntries
 #ifdef ENABLE_MESSAGE_DIGEST
 // Digest header field is defined by
 // http://tools.ietf.org/html/rfc3230.
-SharedHandle<Checksum> HttpResponse::getDigest() const
+void HttpResponse::getDigest(std::vector<Checksum>& result) const
 {
-  SharedHandle<Checksum> res;
+  using std::swap;
   std::pair<std::multimap<std::string, std::string>::const_iterator,
             std::multimap<std::string, std::string>::const_iterator> p =
     httpHeader_->getIterator(HttpHeader::DIGEST);
@@ -413,15 +412,29 @@ SharedHandle<Checksum> HttpResponse::getDigest() const
       if(!MessageDigest::isValidHash(hashType, hexDigest)) {
         continue;
       }
-      if(!res) {
-        res.reset(new Checksum(hashType, hexDigest));
-      } else if(MessageDigest::isStronger(hashType, res->getAlgo())) {
-        res->setAlgo(hashType);
-        res->setMessageDigest(hexDigest);
-      }
+      result.push_back(Checksum(hashType, hexDigest));
     }
   }
-  return res;
+  std::sort(result.begin(), result.end(), HashTypeStronger());
+  std::vector<Checksum> temp;
+  for(std::vector<Checksum>::iterator i = result.begin(),
+        eoi = result.end(); i != eoi;) {
+    bool ok = true;
+    std::vector<Checksum>::iterator j = i+1;
+    for(; j != eoi; ++j) {
+      if((*i).getAlgo() != (*j).getAlgo()) {
+        break;
+      }
+      if((*i).getMessageDigest() != (*j).getMessageDigest()) {
+        ok = false;
+      }
+    }
+    if(ok) {
+      temp.push_back(*i);
+    }
+    i = j;
+  }
+  swap(temp, result);
 }
 #endif // ENABLE_MESSAGE_DIGEST
 

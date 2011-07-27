@@ -64,6 +64,15 @@ public:
   {
     return algo_;
   }
+
+  void swap(Checksum& other);
+};
+
+void swap(Checksum& a, Checksum& b);
+
+class HashTypeStronger {
+public:
+  bool operator()(const Checksum& lhs, const Checksum& rhs) const;
 };
 
 } // namespace aria2

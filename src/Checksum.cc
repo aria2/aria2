@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "Checksum.h"
+#include "MessageDigest.h"
 
 namespace aria2 {
 
@@ -60,6 +61,26 @@ void Checksum::setMessageDigest(const std::string& md)
 void Checksum::setAlgo(const std::string& algo)
 {
   algo_ = algo;
+}
+
+void Checksum::swap(Checksum& other)
+{
+  using std::swap;
+  if(this != &other) {
+    swap(algo_, other.algo_);
+    swap(messageDigest_, other.messageDigest_);
+  }
+}
+
+void swap(Checksum& a, Checksum& b)
+{
+  a.swap(b);
+}
+
+bool HashTypeStronger::operator()
+  (const Checksum& lhs, const Checksum& rhs) const
+{
+  return MessageDigest::isStronger(lhs.getAlgo(), rhs.getAlgo());
 }
 
 } // namespace aria2

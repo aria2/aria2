@@ -613,9 +613,8 @@ void HttpResponseTest::testGetMetalinKHttpEntries()
   httpHeader->put("Link", "<http://uri3/>;;;;;;;;rel=duplicate;;;;;pri=2;;;;;");
   httpHeader->put("Link", "<http://uri4/>;rel=duplicate;=pri=1;pref");
   httpHeader->put("Link", "<http://describedby>; rel=describedby");
-  httpHeader->put("Link", "<baduri>; rel=duplicate");
   httpHeader->put("Link", "<http://norel/>");
-  httpHeader->put("Link", "<http://badpri/>; rel=duplicate; pri=-1;");
+  httpHeader->put("Link", "<baduri>; rel=duplicate; pri=-1;");
   std::vector<MetalinkHttpEntry> result;
   httpResponse.getMetalinKHttpEntries(result, option);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
@@ -645,7 +644,7 @@ void HttpResponseTest::testGetMetalinKHttpEntries()
   CPPUNIT_ASSERT(e.geo.empty());
 
   e = result[4];
-  CPPUNIT_ASSERT_EQUAL(std::string("http://badpri/"), e.uri);
+  CPPUNIT_ASSERT_EQUAL(std::string("baduri"), e.uri);
   CPPUNIT_ASSERT_EQUAL(999999, e.pri);
   CPPUNIT_ASSERT(!e.pref);
   CPPUNIT_ASSERT(e.geo.empty());
@@ -658,15 +657,28 @@ void HttpResponseTest::testGetDigest()
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
   SharedHandle<Option> option(new Option());
-
+  // Python binascii.hexlify(base64.b64decode(B64ED_HASH)) is handy to
+  // retrieve ascii hex hash string.
   httpHeader->put("Digest", "SHA-1=82AD8itGL/oYQ5BTPFANiYnp9oE=");
   httpHeader->put("Digest", "NOT_SUPPORTED");
+  httpHeader->put("Digest", "SHA-224=rQdowoLHQJTMVZ3rF7vmYOIzUXlu7F+FcMbPnA==");
+  httpHeader->put("Digest", "SHA-224=6Ik6LNZ1iPy6cbmlKO4NHfvxzaiurmHilMyhGA==");
   httpHeader->put("Digest",
                   "SHA-256=+D8nGudz3G/kpkVKQeDrI3xD57v0UeQmzGCZOk03nsU=,"
                   "MD5=LJDK2+9ClF8Nz/K5WZd/+A==");
-  SharedHandle<Checksum> c = httpResponse.getDigest();
-  CPPUNIT_ASSERT(c);
-  CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), c->getAlgo());
+  std::vector<Checksum> result;
+  httpResponse.getDigest(result);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
+
+  Checksum c = result[0];
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), c.getAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("f83f271ae773dc6fe4a6454a41e0eb237c43e7bbf451e426cc60993a4d379ec5"),
+                       c.getMessageDigest());
+
+  c = result[1];
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c.getAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("f36003f22b462ffa184390533c500d8989e9f681"),
+                       c.getMessageDigest());
 }
 #endif // ENABLE_MESSAGE_DIGEST
 

@@ -136,11 +136,11 @@ public:
   (std::vector<MetalinkHttpEntry>& result,
    const SharedHandle<Option>& option) const;
 #ifdef ENABLE_MESSAGE_DIGEST
-  // Returns digest specified in Digest header field.  If multiple
-  // digest algorithm is available, use strongest one defined in
-  // MessageDigest. If several same digest algorithms are available,
-  // but they have different value, they are all ignored.
-  SharedHandle<Checksum> getDigest() const;
+  // Returns all digests specified in Digest header field.  Sort
+  // strong algorithm first. Strength is defined in MessageDigest. If
+  // several same digest algorithms are available, but they have
+  // different value, they are all ignored.
+  void getDigest(std::vector<Checksum>& result) const;
 #endif // ENABLE_MESSAGE_DIGEST
 };
 
