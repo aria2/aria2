@@ -67,11 +67,12 @@ public:
     std::string user_;
     std::string password_;
     std::string host_;
+    uint16_t port_;
     std::string path_;
     bool activated_;
 
     BasicCred(const std::string& user, const std::string& password,
-              const std::string& host, const std::string& path,
+              const std::string& host, uint16_t port, const std::string& path,
               bool activated = false);
 
     void activate();
@@ -106,12 +107,19 @@ public:
   // using this AuthConfig object with given host and path "/" and
   // returns true.
   bool activateBasicCred
-  (const std::string& host, const std::string& path, const Option* op);
+  (const std::string& host,
+   uint16_t port,
+   const std::string& path,
+   const Option* op);
 
-  // Find a BasicCred using host and path and return the iterator
-  // pointing to it. If not found, then return basicCreds_.end().
+  // Find a BasicCred using host, port and path and return the
+  // iterator pointing to it. If not found, then return
+  // basicCreds_.end().
   std::deque<AuthConfigFactory::BasicCred>::iterator
-  findBasicCred(const std::string& host, const std::string& path);
+  findBasicCred
+  (const std::string& host,
+   uint16_t port,
+   const std::string& path);
 
   // If the same BasicCred is already added, then it is replaced with
   // given basicCred. Otherwise, insert given basicCred to

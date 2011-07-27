@@ -199,7 +199,8 @@ bool HttpSkipResponseCommand::processResponse()
       if(getOption()->getAsBool(PREF_HTTP_AUTH_CHALLENGE) &&
          !httpResponse_->getHttpRequest()->authenticationUsed() &&
          getDownloadEngine()->getAuthConfigFactory()->activateBasicCred
-         (getRequest()->getHost(), getRequest()->getDir(), getOption().get())) {
+         (getRequest()->getHost(), getRequest()->getPort(),
+          getRequest()->getDir(), getOption().get())) {
         return prepareForRetry(0);
       } else {
         throw DL_ABORT_EX2(EX_AUTH_FAILED,

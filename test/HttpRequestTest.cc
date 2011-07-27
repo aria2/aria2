@@ -244,7 +244,7 @@ void HttpRequestTest::testCreateRequest()
   option_->put(PREF_HTTP_PASSWD, "aria2passwd");
 
   CPPUNIT_ASSERT(authConfigFactory_->activateBasicCred
-                 ("localhost", "/", option_.get()));
+                 ("localhost", 8080, "/", option_.get()));
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"

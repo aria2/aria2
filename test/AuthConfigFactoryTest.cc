@@ -57,7 +57,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   // not activated
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
-  CPPUNIT_ASSERT(factory.activateBasicCred("localhost", "/", &option));
+  CPPUNIT_ASSERT(factory.activateBasicCred("localhost", 80, "/", &option));
 
   CPPUNIT_ASSERT_EQUAL(std::string("localhostuser:localhostpass"),
                        factory.createAuthConfig(req, &option)->getAuthText());
@@ -65,7 +65,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
   // See default token in netrc is ignored.
   req->setUri("http://mirror/");
 
-  CPPUNIT_ASSERT(!factory.activateBasicCred("mirror", "/", &option));
+  CPPUNIT_ASSERT(!factory.activateBasicCred("mirror", 80, "/", &option));
 
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
@@ -75,7 +75,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
 
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
-  CPPUNIT_ASSERT(factory.activateBasicCred("mirror", "/", &option));
+  CPPUNIT_ASSERT(factory.activateBasicCred("mirror", 80, "/", &option));
 
   CPPUNIT_ASSERT_EQUAL(std::string("userDefinedUser:userDefinedPassword"),
                        factory.createAuthConfig(req, &option)->getAuthText());
@@ -204,18 +204,23 @@ void AuthConfigFactoryTest::testUpdateBasicCred()
   AuthConfigFactory factory;
 
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("myname", "mypass", "localhost", "/", true));
+    (AuthConfigFactory::BasicCred("myname", "mypass", "localhost", 80, "/", true));
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("price","j38jdc","localhost","/download", true));
+    (AuthConfigFactory::BasicCred("price", "j38jdc", "localhost", 80, "/download", true));
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("alice","ium8","localhost","/documents", true));
+    (AuthConfigFactory::BasicCred("soap", "planB", "localhost", 80, "/download/beta", true));
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("jack", "jackx","mirror", "/doc", true));
+    (AuthConfigFactory::BasicCred("alice", "ium8", "localhost", 80, "/documents", true));
+  factory.updateBasicCred
+    (AuthConfigFactory::BasicCred("jack", "jackx", "mirror", 80, "/doc", true));
 
   SharedHandle<Request> req(new Request());
   req->setUri("http://localhost/download/v2.6/Changelog");
-  
   CPPUNIT_ASSERT_EQUAL(std::string("price:j38jdc"),
+                       factory.createAuthConfig(req, &option)->getAuthText());
+
+  req->setUri("http://localhost/download/beta/v2.7/Changelog");
+  CPPUNIT_ASSERT_EQUAL(std::string("soap:planB"),
                        factory.createAuthConfig(req, &option)->getAuthText());
 
   req->setUri("http://localhost/documents/reference.html");
@@ -229,6 +234,9 @@ void AuthConfigFactoryTest::testUpdateBasicCred()
   req->setUri("http://localhost/doc/readme.txt");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypass"),
                        factory.createAuthConfig(req, &option)->getAuthText());
+
+  req->setUri("http://localhost:8080/doc/readme.txt");
+  CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
 
   req->setUri("http://local/");
   CPPUNIT_ASSERT(!factory.createAuthConfig(req, &option));
