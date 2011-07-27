@@ -44,6 +44,8 @@
 #include "FileEntry.h"
 #include "BitfieldMan.h"
 #include "DownloadContext.h"
+#include "LogFactory.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -77,6 +79,8 @@ void IteratableChecksumValidator::validateChunk()
       if(dctx_->getDigest() == actualDigest) {
         pieceStorage_->markAllPiecesDone();
       } else {
+        A2_LOG_INFO(fmt("Checksum validation failed. expected=%s, actual=%s",
+                        dctx_->getDigest().c_str(), actualDigest.c_str()));
         BitfieldMan bitfield(dctx_->getPieceLength(), dctx_->getTotalLength());
         pieceStorage_->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
       }
