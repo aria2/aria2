@@ -63,11 +63,11 @@ private:
 
   size_t pieceLength_;
 
-  std::string pieceHashAlgo_;
+  std::string pieceHashType_;
 
-  std::string checksum_;
+  std::string digest_;
 
-  std::string checksumHashAlgo_;
+  std::string hashType_;
 
   bool checksumVerified_;
 
@@ -106,8 +106,11 @@ public:
   }
 
   template<typename InputIterator>
-  void setPieceHashes(InputIterator first, InputIterator last)
+  void setPieceHashes
+  (const std::string& hashType,
+   InputIterator first, InputIterator last)
   {
+    pieceHashType_ = hashType;
     pieceHashes_.assign(first, last);
   }
 
@@ -149,17 +152,13 @@ public:
 
   size_t getNumPieces() const;
 
-  const std::string& getPieceHashAlgo() const { return pieceHashAlgo_; }
+  const std::string& getPieceHashType() const { return pieceHashType_; }
 
-  void setPieceHashAlgo(const std::string& algo);
+  const std::string& getDigest() const { return digest_; }
 
-  const std::string& getChecksum() const { return checksum_; }
+  const std::string& getHashType() const { return hashType_; }
 
-  void setChecksum(const std::string& checksum);
-
-  const std::string& getChecksumHashAlgo() const { return checksumHashAlgo_; }
-
-  void setChecksumHashAlgo(const std::string& algo);
+  void setDigest(const std::string& hashType, const std::string& digest);
 
   // The representative path name for this context. It is used as a
   // part of .aria2 control file. If basePath_ is set, returns

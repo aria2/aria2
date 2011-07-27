@@ -157,7 +157,7 @@ void BittorrentHelperTest::testGetPieceHash() {
   CPPUNIT_ASSERT_EQUAL(std::string(""),
                        dctx->getPieceHash(3));
 
-  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getPieceHashAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getPieceHashType());
 }
 
 void BittorrentHelperTest::testGetFileEntries() {

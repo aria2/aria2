@@ -122,7 +122,7 @@ void IteratableChunkChecksumValidator::init()
 {
   delete [] buffer_;
   buffer_ = new unsigned char[BUFSIZE];
-  ctx_ = MessageDigest::create(dctx_->getPieceHashAlgo());
+  ctx_ = MessageDigest::create(dctx_->getPieceHashType());
   bitfield_->clearAllBit();
   currentIndex_ = 0;
 }

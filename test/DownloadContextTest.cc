@@ -54,7 +54,7 @@ void DownloadContextTest::testGetPieceHash()
 {
   DownloadContext ctx;
   const std::string pieceHashes[] = { "hash1","hash2","shash3" };
-  ctx.setPieceHashes(&pieceHashes[0], &pieceHashes[3]);
+  ctx.setPieceHashes("sha-1", &pieceHashes[0], &pieceHashes[3]);
   CPPUNIT_ASSERT_EQUAL(std::string("hash1"), ctx.getPieceHash(0));
   CPPUNIT_ASSERT_EQUAL(std::string(""), ctx.getPieceHash(3));
 }

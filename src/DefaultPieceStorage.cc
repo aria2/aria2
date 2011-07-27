@@ -106,7 +106,7 @@ SharedHandle<Piece> DefaultPieceStorage::checkOutPiece
     piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
 #ifdef ENABLE_MESSAGE_DIGEST
 
-    piece->setHashAlgo(downloadContext_->getPieceHashAlgo());
+    piece->setHashAlgo(downloadContext_->getPieceHashType());
 
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -735,7 +735,7 @@ void DefaultPieceStorage::markPiecesDone(uint64_t length)
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-      p->setHashAlgo(downloadContext_->getPieceHashAlgo());
+      p->setHashAlgo(downloadContext_->getPieceHashType());
 
 #endif // ENABLE_MESSAGE_DIGEST
 

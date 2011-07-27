@@ -213,12 +213,11 @@ bool HttpResponseCommand::executeInternal()
       httpResponse->getDigest(checksums);
       for(std::vector<Checksum>::iterator i = checksums.begin(),
             eoi = checksums.end(); i != eoi; ++i) {
-        if(getDownloadContext()->getChecksumHashAlgo().empty()) {
+        if(getDownloadContext()->getHashType().empty()) {
           A2_LOG_DEBUG(fmt("Setting digest: type=%s, digest=%s",
                            (*i).getHashType().c_str(),
                            (*i).getDigest().c_str()));
-          getDownloadContext()->setChecksumHashAlgo((*i).getHashType());
-          getDownloadContext()->setChecksum((*i).getDigest());
+          getDownloadContext()->setDigest((*i).getHashType(), (*i).getDigest());
           break;
         } else {
           if(checkChecksum(getDownloadContext(), *i)) {
@@ -282,7 +281,7 @@ bool HttpResponseCommand::executeInternal()
     }
   } else {
 #ifdef ENABLE_MESSAGE_DIGEST
-    if(!getDownloadContext()->getChecksumHashAlgo().empty() &&
+    if(!getDownloadContext()->getHashType().empty() &&
        httpHeader->defined(HttpHeader::DIGEST)) {
       std::vector<Checksum> checksums;
       httpResponse->getDigest(checksums);
@@ -559,8 +558,8 @@ bool HttpResponseCommand::checkChecksum
 (const SharedHandle<DownloadContext>& dctx,
  const Checksum& checksum)
 {
-  if(dctx->getChecksumHashAlgo() == checksum.getHashType()) {
-    if(dctx->getChecksum() == checksum.getDigest()) {
+  if(dctx->getHashType() == checksum.getHashType()) {
+    if(dctx->getDigest() == checksum.getDigest()) {
       A2_LOG_INFO("Valid hash found in Digest header field.");
       return true;
     } else {

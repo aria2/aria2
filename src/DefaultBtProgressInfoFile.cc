@@ -390,7 +390,7 @@ void DefaultBtProgressInfoFile::load()
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-      piece->setHashAlgo(dctx_->getPieceHashAlgo());
+      piece->setHashAlgo(dctx_->getPieceHashType());
 
 #endif // ENABLE_MESSAGE_DIGEST
         

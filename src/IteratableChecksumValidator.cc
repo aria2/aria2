@@ -73,8 +73,8 @@ void IteratableChecksumValidator::validateChunk()
     ctx_->update(buffer_, length);
     currentOffset_ += length;
     if(finished()) {
-      std::string actualChecksum = ctx_->hexDigest();
-      if(dctx_->getChecksum() == actualChecksum) {
+      std::string actualDigest = ctx_->hexDigest();
+      if(dctx_->getDigest() == actualDigest) {
         pieceStorage_->markAllPiecesDone();
       } else {
         BitfieldMan bitfield(dctx_->getPieceLength(), dctx_->getTotalLength());
@@ -103,7 +103,7 @@ void IteratableChecksumValidator::init()
   delete [] buffer_;
   buffer_ = new unsigned char[BUFSIZE];
   currentOffset_ = 0;
-  ctx_ = MessageDigest::create(dctx_->getChecksumHashAlgo());
+  ctx_ = MessageDigest::create(dctx_->getHashType());
 }
 
 } // namespace aria2

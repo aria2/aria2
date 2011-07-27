@@ -239,18 +239,18 @@ size_t DownloadContext::countRequestedFileEntry() const
 
 bool DownloadContext::isChecksumVerificationNeeded() const
 {
-  return pieceHashAlgo_.empty() &&
-    !checksum_.empty() && !checksumHashAlgo_.empty() && !checksumVerified_;
+  return pieceHashType_.empty() &&
+    !digest_.empty() && !hashType_.empty() && !checksumVerified_;
 }
 
 bool DownloadContext::isChecksumVerificationAvailable() const
 {
-  return !checksum_.empty() && !checksumHashAlgo_.empty();
+  return !digest_.empty() && !hashType_.empty();
 }
 
 bool DownloadContext::isPieceHashVerificationAvailable() const
 {
-  return !pieceHashAlgo_.empty() &&
+  return !pieceHashType_.empty() &&
     pieceHashes_.size() > 0 && pieceHashes_.size() == getNumPieces();
 }
 
@@ -263,19 +263,12 @@ const std::string& DownloadContext::getPieceHash(size_t index) const
   }
 }
 
-void DownloadContext::setPieceHashAlgo(const std::string& algo)
+void DownloadContext::setDigest
+(const std::string& hashType,
+ const std::string& digest)
 {
-  pieceHashAlgo_ = algo;
-}
-
-void DownloadContext::setChecksum(const std::string& checksum)
-{
-  checksum_ = checksum;
-}
-
-void DownloadContext::setChecksumHashAlgo(const std::string& algo)
-{
-  checksumHashAlgo_ = algo;
+  hashType_ = hashType;
+  digest_ = digest;
 }
 
 void DownloadContext::setBasePath(const std::string& basePath)

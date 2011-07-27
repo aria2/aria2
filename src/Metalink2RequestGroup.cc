@@ -263,13 +263,13 @@ Metalink2RequestGroup::createRequestGroup
       }
 #ifdef ENABLE_MESSAGE_DIGEST
       if(entry->checksum) {
-        dctx->setChecksum(entry->checksum->getDigest());
-        dctx->setChecksumHashAlgo(entry->checksum->getHashType());
+        dctx->setDigest(entry->checksum->getHashType(),
+                        entry->checksum->getDigest());
       }
       if(entry->chunkChecksum) {
-        dctx->setPieceHashes(entry->chunkChecksum->getPieceHashes().begin(),
+        dctx->setPieceHashes(entry->chunkChecksum->getHashType(),
+                             entry->chunkChecksum->getPieceHashes().begin(),
                              entry->chunkChecksum->getPieceHashes().end());
-        dctx->setPieceHashAlgo(entry->chunkChecksum->getHashType());
       }
 #endif // ENABLE_MESSAGE_DIGEST
       dctx->setSignature(entry->getSignature());

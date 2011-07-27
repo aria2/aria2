@@ -92,7 +92,7 @@ DownloadCommand::DownloadCommand
 #ifdef ENABLE_MESSAGE_DIGEST
   {
     if(getOption()->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM)) {
-      const std::string& algo = getDownloadContext()->getPieceHashAlgo();
+      const std::string& algo = getDownloadContext()->getPieceHashType();
       if(MessageDigest::supports(algo)) {
         messageDigest_ = MessageDigest::create(algo);
         pieceHashValidationEnabled_ = true;
@@ -297,7 +297,7 @@ bool DownloadCommand::prepareForNextSegment() {
       }
     }
 #ifdef ENABLE_MESSAGE_DIGEST
-    if(getDownloadContext()->getPieceHashAlgo().empty()) {
+    if(getDownloadContext()->getPieceHashType().empty()) {
       SharedHandle<CheckIntegrityEntry> entry
         (new ChecksumCheckIntegrityEntry(getRequestGroup()));
       if(entry->isValidationReady()) {

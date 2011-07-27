@@ -122,8 +122,7 @@ void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
     pieceHashes.push_back(util::toHex(hashData.data()+i*hashLength,
                                       hashLength));
   }
-  ctx->setPieceHashes(pieceHashes.begin(), pieceHashes.end());
-  ctx->setPieceHashAlgo("sha-1");
+  ctx->setPieceHashes("sha-1", pieceHashes.begin(), pieceHashes.end());
 }
 } // namespace
 
