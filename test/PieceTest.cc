@@ -65,7 +65,7 @@ void PieceTest::testGetCompletedLength()
 void PieceTest::testUpdateHash()
 {
   Piece p(0, 16, 2*1024*1024);
-  p.setHashAlgo("sha-1");
+  p.setHashType("sha-1");
   
   std::string spam("SPAM!");
   CPPUNIT_ASSERT(p.updateHash

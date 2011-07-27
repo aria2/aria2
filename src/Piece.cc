@@ -190,20 +190,20 @@ size_t Piece::getCompletedLength()
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-void Piece::setHashAlgo(const std::string& algo)
+void Piece::setHashType(const std::string& hashType)
 {
-  hashAlgo_ = algo;
+  hashType_ = hashType;
 }
 
 bool Piece::updateHash
 (uint32_t begin, const unsigned char* data, size_t dataLength)
 {
-  if(hashAlgo_.empty()) {
+  if(hashType_.empty()) {
     return false;
   }
   if(begin == nextBegin_ && nextBegin_+dataLength <= length_) {
     if(!mdctx_) {
-      mdctx_ = MessageDigest::create(hashAlgo_);
+      mdctx_ = MessageDigest::create(hashType_);
     }
     mdctx_->update(data, dataLength);
     nextBegin_ += dataLength;

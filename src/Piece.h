@@ -66,7 +66,7 @@ private:
 
   size_t nextBegin_;
 
-  std::string hashAlgo_;
+  std::string hashType_;
 
   SharedHandle<MessageDigest> mdctx_;
 
@@ -155,7 +155,7 @@ public:
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-  void setHashAlgo(const std::string& algo);
+  void setHashType(const std::string& hashType);
 
   // Updates hash value. This function compares begin and private variable
   // nextBegin_ and only when they are equal, hash is updated eating data and
