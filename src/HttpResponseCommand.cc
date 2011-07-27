@@ -72,6 +72,10 @@
 #include "ChunkedDecodingStreamFilter.h"
 #include "uri.h"
 #include "SocketRecvBuffer.h"
+#include "MetalinkHttpEntry.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#include "Checksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #ifdef HAVE_ZLIB
 # include "GZipDecodingStreamFilter.h"
 #endif // HAVE_ZLIB
@@ -189,6 +193,42 @@ bool HttpResponseCommand::executeInternal()
     getFileEntry()->poolRequest(getRequest());
     return true;
   }
+  if(!getPieceStorage()) {
+    // Metalink/HTTP
+    if(!getDownloadContext()->getMetalinkServerContacted()) {
+      if(httpHeader->defined(HttpHeader::LINK)) {
+        getDownloadContext()->setMetalinkServerContacted(true);
+        std::vector<MetalinkHttpEntry> entries;
+        httpResponse->getMetalinKHttpEntries(entries, getOption());
+        for(std::vector<MetalinkHttpEntry>::iterator i = entries.begin(),
+              eoi = entries.end(); i != eoi; ++i) {
+          getFileEntry()->addUri((*i).uri);
+          A2_LOG_DEBUG(fmt("Adding URI=%s", (*i).uri.c_str()));
+        }
+      }
+    }
+#ifdef ENABLE_MESSAGE_DIGEST
+    if(httpHeader->defined(HttpHeader::DIGEST)) {
+      std::vector<Checksum> checksums;
+      httpResponse->getDigest(checksums);
+      for(std::vector<Checksum>::iterator i = checksums.begin(),
+            eoi = checksums.end(); i != eoi; ++i) {
+        if(getDownloadContext()->getChecksumHashAlgo().empty()) {
+          A2_LOG_DEBUG(fmt("Setting digest: type=%s, digest=%s",
+                           (*i).getAlgo().c_str(),
+                           (*i).getMessageDigest().c_str()));
+          getDownloadContext()->setChecksumHashAlgo((*i).getAlgo());
+          getDownloadContext()->setChecksum((*i).getMessageDigest());
+          break;
+        } else {
+          if(checkChecksum(getDownloadContext(), *i)) {
+            break;
+          }
+        }
+      }
+    }
+#endif // ENABLE_MESSAGE_DIGEST
+  }
   if(statusCode >= 300) {
     if(statusCode == 404) {
       getRequestGroup()->increaseAndValidateFileNotFoundCount();
@@ -241,6 +281,19 @@ bool HttpResponseCommand::executeInternal()
       return handleDefaultEncoding(httpResponse);
     }
   } else {
+#ifdef ENABLE_MESSAGE_DIGEST
+    if(!getDownloadContext()->getChecksumHashAlgo().empty() &&
+       httpHeader->defined(HttpHeader::DIGEST)) {
+      std::vector<Checksum> checksums;
+      httpResponse->getDigest(checksums);
+      for(std::vector<Checksum>::iterator i = checksums.begin(),
+            eoi = checksums.end(); i != eoi; ++i) {
+        if(checkChecksum(getDownloadContext(), *i)) {
+          break;
+        }
+      }
+    }
+#endif // ENABLE_MESSAGE_DIGEST
     // validate totalsize
     getRequestGroup()->validateTotalLength(getFileEntry()->getLength(),
                                        httpResponse->getEntityLength());
@@ -500,5 +553,22 @@ void HttpResponseCommand::onDryRunFileFound()
   getDownloadContext()->setChecksumVerified(true);
   poolConnection();
 }
+
+#ifdef ENABLE_MESSAGE_DIGEST
+bool HttpResponseCommand::checkChecksum
+(const SharedHandle<DownloadContext>& dctx,
+ const Checksum& checksum)
+{
+  if(dctx->getChecksumHashAlgo() == checksum.getAlgo()) {
+    if(dctx->getChecksum() == checksum.getMessageDigest()) {
+      A2_LOG_INFO("Valid hash found in Digest header field.");
+      return true;
+    } else {
+      throw DL_ABORT_EX("Invalid hash found in Digest header field.");
+    }
+  }
+  return false;
+}
+#endif // ENABLE_MESSAGE_DIGEST
 
 } // namespace aria2

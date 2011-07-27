@@ -66,6 +66,10 @@ const std::string HttpHeader::LAST_MODIFIED("Last-Modified");
 
 const std::string HttpHeader::ACCEPT_ENCODING("Accept-Encoding");
 
+const std::string HttpHeader::LINK("Link");
+
+const std::string HttpHeader::DIGEST("Digest");
+
 const char HttpHeader::HTTP_1_1[] = "HTTP/1.1";
 const char HttpHeader::CLOSE[] = "close";
 const char HttpHeader::CHUNKED[] = "chunked";
@@ -108,6 +112,14 @@ std::vector<std::string> HttpHeader::get(const std::string& name) const
     ++first;
   }
   return v;
+}
+
+std::pair<std::multimap<std::string, std::string>::const_iterator,
+          std::multimap<std::string, std::string>::const_iterator>
+HttpHeader::getIterator(const std::string& name) const
+{
+  std::string n(util::toLower(name));
+  return table_.equal_range(n);
 }
 
 unsigned int HttpHeader::getFirstAsUInt(const std::string& name) const {

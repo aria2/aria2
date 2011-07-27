@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,55 +32,31 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Checksum.h"
-#include "MessageDigest.h"
+#ifndef D_METALINK_HTTP_ENTRY_H
+#define D_METALINK_HTTP_ENTRY_H
+
+#include "common.h"
+
+#include <string>
 
 namespace aria2 {
 
-Checksum::Checksum(const std::string& algo, const std::string& messageDigest)
-    : algo_(algo),
-      messageDigest_(messageDigest)
-{}
+// Holds values of Metalink/HTTP in Link header fields.  Metalink/HTTP
+// is defined by http://tools.ietf.org/html/rfc6249
+struct MetalinkHttpEntry {
+  std::string uri;
+  int pri;
+  bool pref;
+  std::string geo;
 
-Checksum::Checksum()
-    : algo_("sha-1")
-{}
+  MetalinkHttpEntry();
+  ~MetalinkHttpEntry();
+  void swap(MetalinkHttpEntry& c);
+  bool operator<(const MetalinkHttpEntry& rhs) const;
+};
 
-Checksum::~Checksum() {}
-
-bool Checksum::isEmpty() const
-{
-  return messageDigest_.empty();
-}
-
-void Checksum::setMessageDigest(const std::string& md)
-{
-  messageDigest_ = md;
-}
-  
-void Checksum::setAlgo(const std::string& algo)
-{
-  algo_ = algo;
-}
-
-void Checksum::swap(Checksum& other)
-{
-  using std::swap;
-  if(this != &other) {
-    swap(algo_, other.algo_);
-    swap(messageDigest_, other.messageDigest_);
-  }
-}
-
-void swap(Checksum& a, Checksum& b)
-{
-  a.swap(b);
-}
-
-bool HashTypeStronger::operator()
-  (const Checksum& lhs, const Checksum& rhs) const
-{
-  return MessageDigest::isStronger(lhs.getAlgo(), rhs.getAlgo());
-}
+void swap(MetalinkHttpEntry& a, MetalinkHttpEntry& b);
 
 } // namespace aria2
+
+#endif // D_METALINK_HTTP_ENTRY_H

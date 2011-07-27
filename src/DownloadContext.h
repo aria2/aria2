@@ -84,6 +84,9 @@ private:
   Timer downloadStopTime_;
 
   SharedHandle<Signature> signature_;
+  // This member variable is required to avoid to parse Metalink/HTTP
+  // Link header fields multiple times.
+  bool metalinkServerContacted_;
 public:
   DownloadContext();
 
@@ -224,6 +227,15 @@ public:
   SharedHandle<FileEntry> findFileEntryByOffset(off_t offset) const;
 
   void releaseRuntimeResource();
+
+  void setMetalinkServerContacted(bool f)
+  {
+    metalinkServerContacted_ = f;
+  }
+  bool getMetalinkServerContacted() const
+  {
+    return metalinkServerContacted_;
+  }
 };
 
 } // namespace aria2

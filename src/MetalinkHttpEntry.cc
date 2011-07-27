@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,55 +32,40 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Checksum.h"
-#include "MessageDigest.h"
+#include "MetalinkHttpEntry.h"
 
 namespace aria2 {
 
-Checksum::Checksum(const std::string& algo, const std::string& messageDigest)
-    : algo_(algo),
-      messageDigest_(messageDigest)
+MetalinkHttpEntry::MetalinkHttpEntry()
+  : pri(999999),
+    pref(false)
 {}
 
-Checksum::Checksum()
-    : algo_("sha-1")
-{}
+MetalinkHttpEntry::~MetalinkHttpEntry() {}
 
-Checksum::~Checksum() {}
-
-bool Checksum::isEmpty() const
-{
-  return messageDigest_.empty();
-}
-
-void Checksum::setMessageDigest(const std::string& md)
-{
-  messageDigest_ = md;
-}
-  
-void Checksum::setAlgo(const std::string& algo)
-{
-  algo_ = algo;
-}
-
-void Checksum::swap(Checksum& other)
+void MetalinkHttpEntry::swap(MetalinkHttpEntry& other)
 {
   using std::swap;
   if(this != &other) {
-    swap(algo_, other.algo_);
-    swap(messageDigest_, other.messageDigest_);
+    swap(uri, other.uri);
+    swap(pri, other.pri);
+    swap(pref, other.pref);
+    swap(geo, other.geo);
   }
 }
 
-void swap(Checksum& a, Checksum& b)
+bool MetalinkHttpEntry::operator<(const MetalinkHttpEntry& rhs) const
 {
-  a.swap(b);
+  if(pref^rhs.pref) {
+    return pref;
+  } else {
+    return pri < rhs.pri;
+  }
 }
 
-bool HashTypeStronger::operator()
-  (const Checksum& lhs, const Checksum& rhs) const
+void swap(MetalinkHttpEntry& a, MetalinkHttpEntry& b)
 {
-  return MessageDigest::isStronger(lhs.getAlgo(), rhs.getAlgo());
+  a.swap(b);
 }
 
 } // namespace aria2

@@ -438,6 +438,60 @@ std::string makeString(const char* str);
 // strerror returns NULL, this function returns empty string.
 std::string safeStrerror(int errNum);
 
+// Parses sequence [first, last) and find name=value pair delimited by
+// delim character. If name(and optionally value) is found, returns
+// pair of iterator which can use as first parameter of next call of
+// this function, and true. If no name is found, returns the pair of
+// last and false.
+template<typename Iterator>
+std::pair<Iterator, bool>
+nextParam
+(std::string& name,
+ std::string& value,
+ Iterator first,
+ Iterator last,
+ char delim)
+{
+  Iterator end = last;
+  while(first != end) {
+    last = first;
+    Iterator parmnameFirst = first;
+    Iterator parmnameLast = first;
+    bool eqFound = false;
+    for(; last != end; ++last) {
+      if(*last == delim) {
+        break;
+      } else if(!eqFound && *last == '=') {
+        eqFound = true;
+        parmnameFirst = first;
+        parmnameLast = last;
+      }
+    }
+    std::string tname, tvalue;
+    if(parmnameFirst == parmnameLast) {
+      if(!eqFound) {
+        parmnameFirst = first;
+        parmnameLast = last;
+        tname = util::stripIter(parmnameFirst, parmnameLast);
+      }
+    } else {
+      first = parmnameLast+1;
+      tname = util::stripIter(parmnameFirst, parmnameLast);
+      tvalue = util::stripIter(first, last);
+    }
+    if(last != end) {
+      ++last;
+    }
+    if(!tname.empty()) {
+      name.swap(tname);
+      value.swap(tvalue);
+      return std::make_pair(last, true);
+    }
+    first = last;
+  }
+  return std::make_pair(end, false);
+}
+
 } // namespace util
 
 } // namespace aria2

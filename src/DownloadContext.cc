@@ -53,7 +53,8 @@ DownloadContext::DownloadContext():
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
   downloadStartTime_(0),
-  downloadStopTime_(downloadStartTime_) {}
+  downloadStopTime_(downloadStartTime_),
+  metalinkServerContacted_(false) {}
 
 DownloadContext::DownloadContext(size_t pieceLength,
                                  uint64_t totalLength,
@@ -63,7 +64,8 @@ DownloadContext::DownloadContext(size_t pieceLength,
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
   downloadStartTime_(0),
-  downloadStopTime_(0)
+  downloadStopTime_(0),
+  metalinkServerContacted_(false)
 {
   SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
   fileEntries_.push_back(fileEntry);

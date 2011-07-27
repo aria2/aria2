@@ -71,6 +71,9 @@ public:
   bool defined(const std::string& name) const;
   const std::string& getFirst(const std::string& name) const;
   std::vector<std::string> get(const std::string& name) const;
+  std::pair<std::multimap<std::string, std::string>::const_iterator,
+            std::multimap<std::string, std::string>::const_iterator>
+  getIterator(const std::string& name) const;
   unsigned int getFirstAsUInt(const std::string& name) const;
   uint64_t getFirstAsULLInt(const std::string& name) const;
 
@@ -135,6 +138,10 @@ public:
   static const std::string LAST_MODIFIED;
 
   static const std::string ACCEPT_ENCODING;
+
+  static const std::string LINK;
+
+  static const std::string DIGEST;
 
   static const char HTTP_1_1[];
 
