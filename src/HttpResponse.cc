@@ -424,10 +424,10 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
     bool ok = true;
     std::vector<Checksum>::iterator j = i+1;
     for(; j != eoi; ++j) {
-      if((*i).getAlgo() != (*j).getAlgo()) {
+      if((*i).getHashType() != (*j).getHashType()) {
         break;
       }
-      if((*i).getMessageDigest() != (*j).getMessageDigest()) {
+      if((*i).getDigest() != (*j).getDigest()) {
         ok = false;
       }
     }

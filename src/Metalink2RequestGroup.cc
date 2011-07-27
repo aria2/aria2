@@ -245,7 +245,7 @@ Metalink2RequestGroup::createRequestGroup
       if(!entry->chunkChecksum) {
         pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
       } else {
-        pieceLength = entry->chunkChecksum->getChecksumLength();
+        pieceLength = entry->chunkChecksum->getPieceLength();
       }
 #else
       pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
@@ -263,13 +263,13 @@ Metalink2RequestGroup::createRequestGroup
       }
 #ifdef ENABLE_MESSAGE_DIGEST
       if(entry->checksum) {
-        dctx->setChecksum(entry->checksum->getMessageDigest());
-        dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
+        dctx->setChecksum(entry->checksum->getDigest());
+        dctx->setChecksumHashAlgo(entry->checksum->getHashType());
       }
       if(entry->chunkChecksum) {
-        dctx->setPieceHashes(entry->chunkChecksum->getChecksums().begin(),
-                             entry->chunkChecksum->getChecksums().end());
-        dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
+        dctx->setPieceHashes(entry->chunkChecksum->getPieceHashes().begin(),
+                             entry->chunkChecksum->getPieceHashes().end());
+        dctx->setPieceHashAlgo(entry->chunkChecksum->getHashType());
       }
 #endif // ENABLE_MESSAGE_DIGEST
       dctx->setSignature(entry->getSignature());

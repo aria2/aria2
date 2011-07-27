@@ -46,45 +46,46 @@ namespace aria2 {
 
 class ChunkChecksum {
 private:
-  std::string algo_;
-  std::vector<std::string> checksums_;
-  size_t checksumLength_;
+  std::string hashType_;
+  std::vector<std::string> pieceHashes_;
+  size_t pieceLength_;
 public:
   ChunkChecksum();
 
-  ChunkChecksum(const std::string& algo,
-                const std::vector<std::string>& checksums,
-                size_t checksumLength);
+  ChunkChecksum
+  (const std::string& hashType,
+   const std::vector<std::string>& pieceHashes,
+   size_t pieceLength);
 
-  bool validateChunk(const std::string& actualChecksum,
-                     size_t checksumIndex) const;
+  bool validateChunk(const std::string& actualDigest,
+                     size_t index) const;
 
   uint64_t getEstimatedDataLength() const;
 
-  size_t countChecksum() const;
+  size_t countPieceHash() const;
 
-  const std::string& getChecksum(size_t index) const;
+  const std::string& getPieceHash(size_t index) const;
   
-  void setChecksums(const std::vector<std::string>& mds);
-  const std::vector<std::string>& getChecksums() const
+  void setPieceHashes(const std::vector<std::string>& pieceHashes);
+  const std::vector<std::string>& getPieceHashes() const
   {
-    return checksums_;
+    return pieceHashes_;
   }
 
-  size_t getChecksumLength() const
+  void setHashType(const std::string& hashType);
+  const std::string& getHashType() const
   {
-    return checksumLength_;
+    return hashType_;
   }
 
-  void setAlgo(const std::string& algo);
-  const std::string& getAlgo() const
+  size_t getPieceLength() const
   {
-    return algo_;
+    return pieceLength_;
   }
 
-  void setChecksumLength(size_t length)
+  void setPieceLength(size_t length)
   {
-    checksumLength_ = length;
+    pieceLength_ = length;
   }
 };
 

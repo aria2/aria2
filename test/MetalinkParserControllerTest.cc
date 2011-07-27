@@ -205,9 +205,9 @@ void MetalinkParserControllerTest::testChecksumTransaction()
   {
     SharedHandle<Metalinker> m = ctrl.getResult();
     SharedHandle<Checksum> md = m->getEntries().front()->checksum;
-    CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getAlgo());
+    CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getHashType());
     CPPUNIT_ASSERT_EQUAL(std::string("acbd18db4cc2f85cedef654fccc4a4d8"),
-                         md->getMessageDigest());
+                         md->getDigest());
   }
   ctrl.newEntryTransaction();
   ctrl.newChecksumTransaction();
@@ -239,19 +239,19 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   {
     SharedHandle<Metalinker> m = ctrl.getResult();
     SharedHandle<ChunkChecksum> md = m->getEntries().front()->chunkChecksum;
-    CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getAlgo());
-    CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getChecksumLength());
-    CPPUNIT_ASSERT_EQUAL((size_t)5, md->countChecksum());
+    CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getHashType());
+    CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)5, md->countPieceHash());
     CPPUNIT_ASSERT_EQUAL(std::string("1cbd18db4cc2f85cedef654fccc4a4d8"),
-                         md->getChecksums()[0]);
+                         md->getPieceHashes()[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("2cbd18db4cc2f85cedef654fccc4a4d8"),
-                         md->getChecksums()[1]);
+                         md->getPieceHashes()[1]);
     CPPUNIT_ASSERT_EQUAL(std::string("3cbd18db4cc2f85cedef654fccc4a4d8"),
-                         md->getChecksums()[2]);
+                         md->getPieceHashes()[2]);
     CPPUNIT_ASSERT_EQUAL(std::string("4cbd18db4cc2f85cedef654fccc4a4d8"),
-                         md->getChecksums()[3]);
+                         md->getPieceHashes()[3]);
     CPPUNIT_ASSERT_EQUAL(std::string("5cbd18db4cc2f85cedef654fccc4a4d8"),
-                         md->getChecksums()[4]);
+                         md->getPieceHashes()[4]);
   }
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransaction();
@@ -283,18 +283,18 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
   {
     SharedHandle<Metalinker> m = ctrl.getResult();
     SharedHandle<ChunkChecksum> md = m->getEntries().front()->chunkChecksum;
-    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), md->getAlgo());
-    CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getChecksumLength());
-    CPPUNIT_ASSERT_EQUAL((size_t)3, md->countChecksum());
+    CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), md->getHashType());
+    CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, md->countPieceHash());
     CPPUNIT_ASSERT_EQUAL
       (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
-       md->getChecksums()[0]);
+       md->getPieceHashes()[0]);
     CPPUNIT_ASSERT_EQUAL
       (std::string("9413ee70957a09d55704123687478e07f18c7b29"),
-       md->getChecksums()[1]);
+       md->getPieceHashes()[1]);
     CPPUNIT_ASSERT_EQUAL
       (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
-       md->getChecksums()[2]);
+       md->getPieceHashes()[2]);
   }
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransactionV4();

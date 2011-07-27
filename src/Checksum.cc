@@ -37,38 +37,40 @@
 
 namespace aria2 {
 
-Checksum::Checksum(const std::string& algo, const std::string& messageDigest)
-    : algo_(algo),
-      messageDigest_(messageDigest)
+Checksum::Checksum
+(const std::string& hashType,
+ const std::string& digest)
+    : hashType_(hashType),
+      digest_(digest)
 {}
 
 Checksum::Checksum()
-    : algo_("sha-1")
+    : hashType_("sha-1")
 {}
 
 Checksum::~Checksum() {}
 
 bool Checksum::isEmpty() const
 {
-  return messageDigest_.empty();
+  return digest_.empty();
 }
 
-void Checksum::setMessageDigest(const std::string& md)
+void Checksum::setDigest(const std::string& digest)
 {
-  messageDigest_ = md;
+  digest_ = digest;
 }
   
-void Checksum::setAlgo(const std::string& algo)
+void Checksum::setHashType(const std::string& hashType)
 {
-  algo_ = algo;
+  hashType_ = hashType;
 }
 
 void Checksum::swap(Checksum& other)
 {
   using std::swap;
   if(this != &other) {
-    swap(algo_, other.algo_);
-    swap(messageDigest_, other.messageDigest_);
+    swap(hashType_, other.hashType_);
+    swap(digest_, other.digest_);
   }
 }
 
@@ -80,7 +82,7 @@ void swap(Checksum& a, Checksum& b)
 bool HashTypeStronger::operator()
   (const Checksum& lhs, const Checksum& rhs) const
 {
-  return MessageDigest::isStronger(lhs.getAlgo(), rhs.getAlgo());
+  return MessageDigest::isStronger(lhs.getHashType(), rhs.getHashType());
 }
 
 } // namespace aria2

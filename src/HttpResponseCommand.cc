@@ -215,10 +215,10 @@ bool HttpResponseCommand::executeInternal()
             eoi = checksums.end(); i != eoi; ++i) {
         if(getDownloadContext()->getChecksumHashAlgo().empty()) {
           A2_LOG_DEBUG(fmt("Setting digest: type=%s, digest=%s",
-                           (*i).getAlgo().c_str(),
-                           (*i).getMessageDigest().c_str()));
-          getDownloadContext()->setChecksumHashAlgo((*i).getAlgo());
-          getDownloadContext()->setChecksum((*i).getMessageDigest());
+                           (*i).getHashType().c_str(),
+                           (*i).getDigest().c_str()));
+          getDownloadContext()->setChecksumHashAlgo((*i).getHashType());
+          getDownloadContext()->setChecksum((*i).getDigest());
           break;
         } else {
           if(checkChecksum(getDownloadContext(), *i)) {
@@ -559,8 +559,8 @@ bool HttpResponseCommand::checkChecksum
 (const SharedHandle<DownloadContext>& dctx,
  const Checksum& checksum)
 {
-  if(dctx->getChecksumHashAlgo() == checksum.getAlgo()) {
-    if(dctx->getChecksum() == checksum.getMessageDigest()) {
+  if(dctx->getChecksumHashAlgo() == checksum.getHashType()) {
+    if(dctx->getChecksum() == checksum.getDigest()) {
       A2_LOG_INFO("Valid hash found in Digest header field.");
       return true;
     } else {

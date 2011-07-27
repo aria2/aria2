@@ -671,14 +671,14 @@ void HttpResponseTest::testGetDigest()
   CPPUNIT_ASSERT_EQUAL((size_t)3, result.size());
 
   Checksum c = result[0];
-  CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), c.getAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), c.getHashType());
   CPPUNIT_ASSERT_EQUAL(std::string("f83f271ae773dc6fe4a6454a41e0eb237c43e7bbf451e426cc60993a4d379ec5"),
-                       c.getMessageDigest());
+                       c.getDigest());
 
   c = result[1];
-  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c.getAlgo());
+  CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c.getHashType());
   CPPUNIT_ASSERT_EQUAL(std::string("f36003f22b462ffa184390533c500d8989e9f681"),
-                       c.getMessageDigest());
+                       c.getDigest());
 }
 #endif // ENABLE_MESSAGE_DIGEST
 

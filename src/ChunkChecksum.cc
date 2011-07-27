@@ -37,55 +37,52 @@
 
 namespace aria2 {
 
-ChunkChecksum::ChunkChecksum():checksumLength_(0) {}
+ChunkChecksum::ChunkChecksum():pieceLength_(0) {}
 
 ChunkChecksum::ChunkChecksum
-(const std::string& algo,
- const std::vector<std::string>& checksums,
- size_t checksumLength)
-    : algo_(algo),
-      checksums_(checksums),
-      checksumLength_(checksumLength)
+(const std::string& hashType,
+ const std::vector<std::string>& pieceHashes,
+ size_t pieceLength)
+    : hashType_(hashType),
+      pieceHashes_(pieceHashes),
+      pieceLength_(pieceLength)
 {}
 
 bool ChunkChecksum::validateChunk
-(const std::string& actualChecksum,
- size_t checksumIndex) const
+(const std::string& actualDigest,
+ size_t index) const
 {
-  if(checksumIndex < checksums_.size()) {
-    return actualChecksum == getChecksum(checksumIndex);
-  } else {
-    return false;
-  }
+  const std::string& digest = getPieceHash(index);
+  return !digest.empty() && actualDigest == digest;
 }
 
 uint64_t ChunkChecksum::getEstimatedDataLength() const
 {
-  return static_cast<uint64_t>(checksumLength_)*checksums_.size();
+  return static_cast<uint64_t>(pieceLength_)*pieceHashes_.size();
 }
 
-size_t ChunkChecksum::countChecksum() const
+size_t ChunkChecksum::countPieceHash() const
 {
-  return checksums_.size();
+  return pieceHashes_.size();
 }
 
-const std::string& ChunkChecksum::getChecksum(size_t index) const
+const std::string& ChunkChecksum::getPieceHash(size_t index) const
 {
-  if(index < checksums_.size()) {
-    return checksums_[index];
+  if(index < pieceHashes_.size()) {
+    return pieceHashes_[index];
   } else {
     return A2STR::NIL;
   }
 }
 
-void ChunkChecksum::setAlgo(const std::string& algo)
+void ChunkChecksum::setHashType(const std::string& hashType)
 {
-  algo_ = algo;
+  hashType_ = hashType;
 }
 
-void ChunkChecksum::setChecksums(const std::vector<std::string>& mds)
+void ChunkChecksum::setPieceHashes(const std::vector<std::string>& pieceHashes)
 {
-  checksums_ = mds;
+  pieceHashes_ = pieceHashes;
 }
 
 } // namespace aria2
