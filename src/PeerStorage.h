@@ -67,6 +67,12 @@ public:
    */
   virtual const std::deque<SharedHandle<Peer> >& getPeers() = 0;
 
+
+  /**
+   * Returns the number of peers.
+   */
+  virtual size_t countPeer() const = 0;
+
   /**
    * Returns internal dropped peer list.
    */

@@ -78,7 +78,7 @@ public:
 
   virtual bool addPeer(const SharedHandle<Peer>& peer);
 
-  size_t countPeer() const;
+  virtual size_t countPeer() const;
 
   virtual SharedHandle<Peer> getUnusedPeer();
 

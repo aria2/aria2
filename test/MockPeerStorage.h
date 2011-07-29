@@ -33,6 +33,11 @@ public:
     return peers;
   }
 
+  virtual size_t countPeer() const
+  {
+    return peers.size();
+  }
+
   virtual const std::deque<SharedHandle<Peer> >& getDroppedPeers() {
     return droppedPeers;
   }

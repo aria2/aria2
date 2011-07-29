@@ -110,9 +110,14 @@ bool DHTGetPeersCommand::execute()
   } else if(task_ && task_->finished()) {
     A2_LOG_DEBUG("task finished detected");
     lastGetPeerTime_ = global::wallclock;
-    if(numRetry_ < MAX_RETRIES && btRuntime_->lessThanMinPeers()) {
+    if(numRetry_ < MAX_RETRIES &&
+       (btRuntime_->getMaxPeers() == 0 ||
+        btRuntime_->getMaxPeers() > peerStorage_->countPeer())) {
       ++numRetry_;
-      A2_LOG_DEBUG(fmt("Too few peers. Try again(%lu)",
+      A2_LOG_DEBUG(fmt("Too few peers. peers=%lu, max_peers=%lu."
+                       " Try again(%lu)",
+                       static_cast<unsigned long>(peerStorage_->countPeer()),
+                       static_cast<unsigned long>(btRuntime_->getMaxPeers()),
                        static_cast<unsigned long>(numRetry_)));
     } else {
       numRetry_ = 0;
