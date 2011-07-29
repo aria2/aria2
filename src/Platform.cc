@@ -68,6 +68,7 @@
 
 #include "DlAbortEx.h"
 #include "message.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -103,7 +104,13 @@ bool Platform::setUp()
   SSL_library_init();
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
-  gnutls_global_init();
+  {
+    int r = gnutls_global_init();
+    if(r != GNUTLS_E_SUCCESS) {
+      throw DL_ABORT_EX(fmt("gnutls_global_init() failed, cause:%s",
+                            gnutls_strerror(r)));
+    }
+  }
 #endif // HAVE_LIBGNUTLS
 
 #ifdef CARES_HAVE_ARES_LIBRARY_INIT
