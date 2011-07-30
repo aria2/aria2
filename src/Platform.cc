@@ -58,6 +58,9 @@
 # include <openssl/err.h>
 # include <openssl/ssl.h>
 #endif // HAVE_OPENSSL
+#ifdef HAVE_LIBGCRYPT
+# include <gcrypt.h>
+#endif // HAVE_LIBGCRYPT
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
@@ -103,6 +106,13 @@ bool Platform::setUp()
   SSL_load_error_strings();
   SSL_library_init();
 #endif // HAVE_OPENSSL
+#ifdef HAVE_LIBGCRYPT
+  if(!gcry_check_version(GCRYPT_VERSION)) {
+    throw DL_ABORT_EX("gcry_check_version() failed.");
+  }
+  gcry_control(GCRYCTL_DISABLE_SECMEM, 0);
+  gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
+#endif // HAVE_LIBGCRYPT
 #ifdef HAVE_LIBGNUTLS
   {
     int r = gnutls_global_init();
