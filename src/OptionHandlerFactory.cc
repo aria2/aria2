@@ -965,6 +965,13 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
+                                   (PREF_METALINK_LOCATION,
+                                    TEXT_METALINK_LOCATION));
+    op->addTag(TAG_METALINK);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_PRIVATE_KEY,
                                     TEXT_PRIVATE_KEY,
                                     NO_DEFAULT_VALUE,
@@ -1680,13 +1687,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_METALINK_LANGUAGE,
                                     TEXT_METALINK_LANGUAGE));
-    op->addTag(TAG_METALINK);
-    handlers.push_back(op);
-  }
-  {
-    SharedHandle<OptionHandler> op(new DefaultOptionHandler
-                                   (PREF_METALINK_LOCATION,
-                                    TEXT_METALINK_LOCATION));
     op->addTag(TAG_METALINK);
     handlers.push_back(op);
   }
