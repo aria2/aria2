@@ -35,6 +35,7 @@ Here is a list of features:
 * Segmented downloading
 * Metalink version 4 (RFC5854) support(HTTP/FTP/BitTorrent)
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent)
+* Metalink/HTTP (RFC6249) support
 * HTTP/1.1 implementation
 * HTTP Proxy support
 * HTTP BASIC authentication support
@@ -277,6 +278,16 @@ the relative URI. If relative URI is found in Metalink file which is
 read from local disk, aria2 uses the value of --metalink-base-uri
 option as base URI. If this option is not specified, the relative URI
 will be ignored.
+
+Metalink/HTTP
+-------------
+
+The current implementation only uses rel=duplicate links only.  aria2
+understands Digest header fields and check whether it matches the
+digest value from other sources. If it differs, drop connection.
+aria2 also uses this digest value to perform checksum verification
+after download finished. aria2 recognizes geo value. To tell aria2
+which location you prefer, you can use --metalink-location option.
 
 netrc
 -----
