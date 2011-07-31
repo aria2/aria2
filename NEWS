@@ -1,3 +1,65 @@
+aria2 1.12.1
+============
+
+Release Note
+------------
+
+This release adds RFC 6249 Metalink/HTTP support. Current
+implementation only uses rel=duplicate links.  --enable-direct-io
+option was deprecated because of performance issue.  Since recent
+GnuTLS uses libnettle as default instead of libgcrypt, this release
+added initialization code for libgcrypt.
+
+Changes
+-------
+
+ * Initialize libgcrypt.  We relied initialization of libgcrypt on
+   gnutls_global_init(), but recent change in gnutls, which changes
+   default crypto backend from libgcrypt to libnettle, leaves
+   libgcrypt uninitialized if it uses libnettle as backend(and this is
+   likely because libnettle is chosen by default). To fix this issue,
+   we simply initialize libgcrypt on our own.
+
+ * Throw exception with error message if gnutls_global_init() failed.
+
+ * Implemented Metalink/HTTP.  Link header fields from first Metalink
+   server is utilized as described in rfc6249. We only set digest from
+   Digest header field to DownloadContext only when PieceStorage is
+   not initialized(in other words, before file size is known). After
+   PieceStorage is initialized, Digest header field is used to check
+   the value is the same in digest in DownloadContext.  Current
+   implementation only handles rel=duplicate.
+
+ * Remove Metalink content-type after first server response.  We don't
+   accept Metalink content-type after first server response.
+
+ * Updated Russian translation of aria2 man page.  Thanks to ITriskTI
+   for translation.
+
+ * Fixed the bug due to dangling pointers in RequestGroup.
+   RequestGroup holds a poitner to btRuntime_ and peerStorage_. After
+   removing them from BtRegistry, we failed to set 0 to them.  When
+   program access them, it goes undefined world, such as random crash.
+   We found this bug when pasuing download and valgrind warned memory
+   corruption.
+
+ * Added log message to clarify error for BitTorrent server socket.
+
+ * Added #deprecated help tag.
+
+ * Removed deprecated options: --enable-xml-rpc, --xml-rpc-listen-all,
+   --xml-rpc-listen-port, --xml-rpc-max-request-size, --xml-rpc-user,
+   --xml-rpc-passwd.
+
+ * Removed use of O_DIRECT because of performance issue.  Deprecated
+   --enable-direct-io option.
+
+ * Increased the maximum number of in-flight request in BitTorrent.
+
+ * Added --log option to aria2rpc
+
+
+
 aria2 1.12.0
 ============
 
