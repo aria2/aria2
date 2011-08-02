@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-06-25 02:59+0900\n"
-"PO-Revision-Date: 2009-05-11 18:09+0000\n"
-"Last-Translator: elchevive <elchevive68@gmail.com>\n"
+"POT-Creation-Date: 2011-08-02 21:25+0900\n"
+"PO-Revision-Date: 2011-07-31 01:01+0000\n"
+"Last-Translator: Jair Henrique de Carvalho Souza <jair.henrique@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-31 13:04+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-08-01 12:36+0000\n"
+"X-Generator: Launchpad (build 13543)\n"
 
 #: src/DownloadEngine.cc:228
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 
 #: src/MultiUrlRequestInfo.cc:157
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
+msgstr "aria2 continuará o download se a transferência for reiniciada."
 
 #: src/MultiUrlRequestInfo.cc:159
 msgid ""
@@ -39,7 +39,7 @@ msgstr ""
 
 #: src/RequestGroupMan.cc:603
 msgid "Download Results:"
-msgstr ""
+msgstr "Resultados do Download"
 
 #: src/RequestGroupMan.cc:640
 msgid "Status Legend:"
@@ -60,7 +60,7 @@ msgstr "                              Possíveis valores: "
 #: src/usage_text.h:37
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr ""
+msgstr " -d, --dir=DIR Diretório onde será salvo o download."
 
 #: src/usage_text.h:39
 msgid ""
@@ -115,11 +115,12 @@ msgstr ""
 
 #: src/usage_text.h:66
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr ""
+msgstr " -t, --timeout=SEC Define timeout em segundos."
 
 #: src/usage_text.h:68
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
+" -m, --max-tries=N Define número de tentativas. 0 siginifica ilimitado."
 
 #: src/usage_text.h:70
 msgid ""
@@ -160,11 +161,11 @@ msgstr ""
 
 #: src/usage_text.h:93
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr ""
+msgstr " --http-user=USER Define usuário HTTP. Isso afeta todas as URLs."
 
 #: src/usage_text.h:95
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr ""
+msgstr " --http-passwd=PASSWD Define senha HTTP. Isso afeta todas as URLs."
 
 #: src/usage_text.h:97
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
@@ -1609,9 +1610,9 @@ msgid "Refer to man page for more information."
 msgstr ""
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%s - Download has already completed: %s"
-msgstr "#%d - Download completo: %s"
+msgstr ""
 
 #: src/message.h:106
 #, c-format
@@ -2287,58 +2288,23 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#~ msgid "must be either 'true' or 'false'."
-#~ msgstr "deve ser 'true' ou 'false'."
-
-#~ msgid "must be between %s and %s."
-#~ msgstr "deve estar entre %s e %s."
-
-#~ msgid "must be smaller than or equal to %s."
-#~ msgstr "deve ser menor que, ou igual a %s."
-
-#~ msgid "must be greater than or equal to %s."
-#~ msgstr "deve ser maior que, ou igual a %s."
-
-#~ msgid "must be a number."
-#~ msgstr "deve ser um número."
-
-#~ msgid "must be smaller than or equal to %.1f."
-#~ msgstr "deve ser menor que, ou igual a %.1f."
-
-#~ msgid "must be between %.1f and %.1f."
-#~ msgstr "deve estar entre %.1f e %.1f."
-
 #~ msgid "must be greater than or equal to %.1f."
 #~ msgstr "deve ser maior que, ou igual a %.1f."
-
-#~ msgid "must be one of the following:"
-#~ msgstr "deve ser um dos seguintes:"
-
-#, fuzzy
-#~ msgid "Unrecognized format"
-#~ msgstr "formato proxy não reconhecido"
 
 #~ msgid "unrecognized proxy format"
 #~ msgstr "formato proxy não reconhecido"
 
-#~ msgid "CUID#%d - The download for one segment completed successfully."
-#~ msgstr "CUID#%d - O download de um segmento terminou finalizou com sucesso."
+#~ msgid "must be one of the following:"
+#~ msgstr "deve ser um dos seguintes:"
 
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - Nenhum segmento disponível."
+#~ msgid "must be smaller than or equal to %.1f."
+#~ msgstr "deve ser menor que, ou igual a %.1f."
 
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - Conectando-se a %s:%d"
+#~ msgid "must be a number."
+#~ msgstr "deve ser um número."
 
-#~ msgid ""
-#~ "CUID#%d - The segment changed. We send the request again with new Range "
-#~ "header."
-#~ msgstr ""
-#~ "CUID#%d - O segmento foi modificado. Enviaremos o requerimento novamente "
-#~ "com uma nova ordem de cabeçalho."
-
-#~ msgid "CUID#%d - Redirecting to %s"
-#~ msgstr "CUID#%d - Redirecionando a %s"
+#~ msgid "must be between %.1f and %.1f."
+#~ msgstr "deve estar entre %.1f e %.1f."
 
 #~ msgid ""
 #~ "CUID#%d - Requesting:\n"
@@ -2354,20 +2320,35 @@ msgstr ""
 #~ "CUID#%d - Resposta recebida:\n"
 #~ "%s"
 
+#~ msgid "CUID#%d - Redirecting to %s"
+#~ msgstr "CUID#%d - Redirecionando a %s"
+
+#~ msgid "CUID#%d - Download aborted."
+#~ msgstr "CUID#%d - Download abortado."
+
 #~ msgid "CUID#%d - Download aborted. URI=%s"
 #~ msgstr "CUID#%d - Download abortado. URI=%s"
 
 #~ msgid "CUID#%d - Restarting the download. URI=%s"
 #~ msgstr "CUID#%d - Reiniciando o download. URI=%s"
 
-#~ msgid "CUID#%d - Download aborted."
-#~ msgstr "CUID#%d - Download abortado."
+#~ msgid "CUID#%d - The download for one segment completed successfully."
+#~ msgstr "CUID#%d - O download de um segmento terminou finalizou com sucesso."
 
-#~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-#~ msgstr "CUID#%d - %d tentativas, nenhum sucesso. Download abortado."
+#~ msgid "CUID#%d - Connecting to %s:%d"
+#~ msgstr "CUID#%d - Conectando-se a %s:%d"
+
+#~ msgid "CUID#%d - No segment available."
+#~ msgstr "CUID#%d - Nenhum segmento disponível."
+
+#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
+#~ msgstr "CUID#%d - Eliminando registro cuid do Gerenciador de segmentos."
 
 #~ msgid "CUID#%d - we got new piece. index=%d"
 #~ msgstr "CUID#%d - obtivémos um novo pedaço. índice=%d"
+
+#~ msgid "CUID#%d - %d times attempted, but no success. Download aborted."
+#~ msgstr "CUID#%d - %d tentativas, nenhum sucesso. Download abortado."
 
 #~ msgid "CUID#%d - we got wrong piece. index=%d"
 #~ msgstr "CUID#%d - obtivémos pedaço errado. índice=%d"
@@ -2378,33 +2359,34 @@ msgstr ""
 #~ msgid "CUID#%d - Good checksum: %s"
 #~ msgstr "CUID#%d - Resultado da soma de verificação positivo: %s"
 
+#~ msgid "CUID#%d - Resolving hostname %s"
+#~ msgstr "CUID#%d - Resolvendo o endereço do host %s"
+
 #~ msgid "CUID#%d - Bad checksum: %s"
 #~ msgstr "CUID#%d - Resultado da soma de verificação negativo: %s"
 
-#~ msgid "CUID#%d - Resolving hostname %s"
-#~ msgstr "CUID#%d - Resolvendo o endereço do host %s"
+#~ msgid "#%d - Download has already completed: %s"
+#~ msgstr "#%d - Download completo: %s"
 
 #~ msgid "CUID#%d - Name resolution complete: %s -> %s"
 #~ msgstr "CUID#%d - Resolução de endereço completa: %s -> %s"
 
-#~ msgid "CUID#%d - Name resolution for %s failed:%s"
-#~ msgstr "CUID#%d - Resolução do nome para %s falhou:%s"
+#~ msgid ""
+#~ "CUID#%d - The segment changed. We send the request again with new Range "
+#~ "header."
+#~ msgstr ""
+#~ "CUID#%d - O segmento foi modificado. Enviaremos o requerimento novamente "
+#~ "com uma nova ordem de cabeçalho."
 
-#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
-#~ msgstr "CUID#%d - Cache DNS acertado: %s -> %s"
-
-#~ msgid "CUID#%d - Abort requested."
-#~ msgstr "CUID#%d - Requerimento para abortar enviado."
-
-#~ msgid "CUID#%d - Connecting to the peer %s"
-#~ msgstr "CUID#%d - Conectando-se ao peer %s"
+#~ msgid "CUID#%d - Interested in the peer"
+#~ msgstr "CUID#%d - Interessado no peer"
 
 #~ msgid ""
-#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-#~ "blockIndex=%d"
+#~ "CUID#%d - Reject piece message in queue because cancel message received. "
+#~ "index=%d, begin=%d, length=%d"
 #~ msgstr ""
-#~ "CUID#%d - Pedaço recebido. índice=%d, início=%d, comprimento=%d, desvio="
-#~ "%llu, índice-de-bloco=%d"
+#~ "CUID#%d - Mensagem da peça na fila rejeitada devido recebimento de uma "
+#~ "mensagem de cancelamento. índice=%d, início=%d, comprimento=%d"
 
 #~ msgid "CUID#%d - Piece bitfield %s"
 #~ msgstr "CUID#%d - Bitfield da peça %s"
@@ -2416,18 +2398,27 @@ msgstr ""
 #~ "CUID#%d - Mensagem da peça na fila rejeitada devido engasgamento do peer. "
 #~ "índice=%d, início=%d, comprimento=%d"
 
+#~ msgid "CUID#%d - Connecting to the peer %s"
+#~ msgstr "CUID#%d - Conectando-se ao peer %s"
+
 #~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because cancel message received. "
-#~ "index=%d, begin=%d, length=%d"
+#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
+#~ "blockIndex=%d"
 #~ msgstr ""
-#~ "CUID#%d - Mensagem da peça na fila rejeitada devido recebimento de uma "
-#~ "mensagem de cancelamento. índice=%d, início=%d, comprimento=%d"
+#~ "CUID#%d - Pedaço recebido. índice=%d, início=%d, comprimento=%d, desvio="
+#~ "%llu, índice-de-bloco=%d"
+
+#~ msgid "CUID#%d - Abort requested."
+#~ msgstr "CUID#%d - Requerimento para abortar enviado."
+
+#~ msgid "CUID#%d - DNS cache hit: %s -> %s"
+#~ msgstr "CUID#%d - Cache DNS acertado: %s -> %s"
+
+#~ msgid "CUID#%d - Name resolution for %s failed:%s"
+#~ msgstr "CUID#%d - Resolução do nome para %s falhou:%s"
 
 #~ msgid "CUID#%d - Exception caught while validating file integrity."
 #~ msgstr "CUID#%d - Captada exceção durante validação da integridade."
-
-#~ msgid "CUID#%d - Interested in the peer"
-#~ msgstr "CUID#%d - Interessado no peer"
 
 #~ msgid "CUID#%d - Not interested in the peer"
 #~ msgstr "CUID#%d - Não interessado no peer"
@@ -2443,10 +2434,18 @@ msgstr ""
 #~ "CUID#%d - Deletando abertura de requerimento índice=%d, índice-de-bloco="
 #~ "%d devido afogamento do host local."
 
-#~ msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
+#~ msgid "CUID#%d - Exception caught while allocating file space."
+#~ msgstr "CUID#%d - Captada exceção durante alocação do espaço do arquivo."
+
+#~ msgid "CUID#%d - Peer %s:%d banned."
+#~ msgstr "CUID#%d - Peer %s:%d banido."
+
+#~ msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 #~ msgstr ""
-#~ "CUID#%d - Deletando abertura de requerimento índice-de-bloco=%d devido "
-#~ "tempo excedido"
+#~ "CUID#%d - Deiposição-do-conteúdo detecteda. Usar %s como nome do arquivo."
+
+#~ msgid "CUID#%d - Using port %d for accepting new connections"
+#~ msgstr "CUID#%d - Usando porta %d para aceitar novas conexões"
 
 #~ msgid ""
 #~ "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
@@ -2455,24 +2454,25 @@ msgstr ""
 #~ "CUID#%d - Deletando bertura de requerimento índice-de-bloco=%d pois o "
 #~ "bloco foi adiquirido."
 
+#~ msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
+#~ msgstr ""
+#~ "CUID#%d - Deletando abertura de requerimento índice-de-bloco=%d devido "
+#~ "tempo excedido"
+
 #~ msgid "CUID#%d - Fast extension enabled."
 #~ msgstr "CUID#%d - Extensão rápida habilitada."
 
-#~ msgid "CUID#%d - Exception caught while allocating file space."
-#~ msgstr "CUID#%d - Captada exceção durante alocação do espaço do arquivo."
+#~ msgid "must be smaller than or equal to %s."
+#~ msgstr "deve ser menor que, ou igual a %s."
 
-#~ msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-#~ msgstr ""
-#~ "CUID#%d - Deiposição-do-conteúdo detecteda. Usar %s como nome do arquivo."
+#~ msgid "must be between %s and %s."
+#~ msgstr "deve estar entre %s e %s."
 
-#~ msgid "CUID#%d - Peer %s:%d banned."
-#~ msgstr "CUID#%d - Peer %s:%d banido."
+#~ msgid "must be either 'true' or 'false'."
+#~ msgstr "deve ser 'true' ou 'false'."
 
-#~ msgid "CUID#%d - Using port %d for accepting new connections"
-#~ msgstr "CUID#%d - Usando porta %d para aceitar novas conexões"
-
-#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
-#~ msgstr "CUID#%d - Eliminando registro cuid do Gerenciador de segmentos."
+#~ msgid "must be greater than or equal to %s."
+#~ msgstr "deve ser maior que, ou igual a %s."
 
 #~ msgid "Files:"
 #~ msgstr "Arquivos:"
