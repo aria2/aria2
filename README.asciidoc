@@ -33,9 +33,9 @@ Here is a list of features:
 * Command-line interface
 * Download files through HTTP(S)/FTP/BitTorrent
 * Segmented downloading
-* Metalink version 4 (RFC5854) support(HTTP/FTP/BitTorrent)
+* Metalink version 4 (RFC 5854) support(HTTP/FTP/BitTorrent)
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent)
-* Metalink/HTTP (RFC6249) support
+* Metalink/HTTP (RFC 6249) support
 * HTTP/1.1 implementation
 * HTTP Proxy support
 * HTTP BASIC authentication support
@@ -302,3 +302,4 @@ References
  * http://sourceforge.net/apps/trac/aria2/wiki
  * http://github.com/tatsuhiro-t/aria2
  * http://tools.ietf.org/html/rfc5854
+ * http://tools.ietf.org/html/rfc6249
