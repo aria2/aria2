@@ -124,9 +124,15 @@
 #  undef stat
 # endif // stat
 # define a2_struct_stat struct _stati64
-# define a2stat(path, buf)  _stati64(path, buf)
+# define a2stat(path, buf) _wstati64(path, buf)
 # define a2tell(handle) _telli64(handle)
-# define a2mkdir(path, openMode) mkdir(path)
+# define a2mkdir(path, openMode) _wmkdir(path)
+# define a2utimbuf _utimbuf
+# define a2utime(path, times) _wutime(path, times)
+# define a2unlink(path) _wunlink(path)
+# define a2rmdir(path) _wrmdir(path)
+# define a2rename(src, dest) _wrename(src, dest)
+# define a2open(path, flags, mode) _wopen(path, flags, mode)
 #else // !__MINGW32__
 # define a2lseek(fd, offset, origin) lseek(fd, offset, origin)
 # define a2fseek(fp, offset, origin) fseek(fp, offset, origin)
@@ -135,6 +141,12 @@
 # define a2_struct_stat struct stat
 # define a2stat(path, buf) stat(path, buf)
 # define a2mkdir(path, openMode) mkdir(path, openMode)
+# define a2utimbuf utimbuf
+# define a2utime(path, times) ::utime(path, times)
+# define a2unlink(path) unlink(path)
+# define a2rmdir(path) rmdir(path)
+# define a2rename(src, dest) rename(src, dest)
+# define a2open(path, flags, mode) open(path, flags, mode)
 #endif // !__MINGW32__
 
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH

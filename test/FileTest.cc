@@ -7,6 +7,8 @@
 #include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "util.h"
+
 namespace aria2 {
 
 class FileTest:public CppUnit::TestFixture {
@@ -241,7 +243,7 @@ void FileTest::testUtime()
   CPPUNIT_ASSERT(f.utime(Time(atime), Time(mtime)));
   
   a2_struct_stat buf;
-  CPPUNIT_ASSERT(0 == a2stat(f.getPath().c_str(), &buf));
+  CPPUNIT_ASSERT(0 == a2stat(utf8ToWChar(f.getPath()).c_str(), &buf));
   CPPUNIT_ASSERT_EQUAL((time_t)atime, (time_t)buf.st_atime);
   CPPUNIT_ASSERT_EQUAL((time_t)mtime, f.getModifiedTime().getTime());
 

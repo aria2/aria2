@@ -376,7 +376,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
      isSameFileBeingDownloaded(getRequestGroup())) {
     throw DOWNLOAD_FAILURE_EXCEPTION2
       (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-           getRequestGroup()->getFirstFilePath().c_str()),
+           utf8ToNative(getRequestGroup()->getFirstFilePath()).c_str()),
        error_code::DUPLICATE_DOWNLOAD);
   }
   if(totalLength == 0) {
@@ -404,9 +404,10 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
       getPieceStorage()->markAllPiecesDone();
       getDownloadContext()->setChecksumVerified(true);
       sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-      A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                        util::itos(getRequestGroup()->getGID()).c_str(),
-                        getRequestGroup()->getFirstFilePath().c_str()));
+      A2_LOG_NOTICE
+        (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+             util::itos(getRequestGroup()->getGID()).c_str(),
+             utf8ToNative(getRequestGroup()->getFirstFilePath()).c_str()));
       poolConnection();
 
       return false;

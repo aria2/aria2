@@ -49,6 +49,7 @@
 #include "error_code.h"
 #include "A2STR.h"
 #include "TimerA2.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -316,9 +317,9 @@ void writeFilePath
       }
     } else {
       if(memory) {
-        o << "[MEMORY]" << File(e->getPath()).getBasename();
+        o << "[MEMORY]" << utf8ToNative(File(e->getPath()).getBasename());
       } else {
-        o << e->getPath();
+        o << utf8ToNative(e->getPath());
       }
       size_t count = countRequestedFileEntry(first, last);
       if(count > 1) {

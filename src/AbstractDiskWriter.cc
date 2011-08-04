@@ -95,15 +95,15 @@ void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
   } else {
     flags |= O_RDWR;
   }
-
-  while((fd_ = open(filename_.c_str(), flags, OPEN_MODE)) == -1 &&
+  while((fd_ = a2open(utf8ToWChar(filename_).c_str(),
+                      flags, OPEN_MODE)) == -1 &&
         errno == EINTR);
   if(fd_ < 0) {
     int errNum = errno;
     throw DL_ABORT_EX3
       (errNum,
        fmt(EX_FILE_OPEN,
-           filename_.c_str(),
+           utf8ToNative(filename_).c_str(),
            util::safeStrerror(errNum).c_str()),
        error_code::FILE_OPEN_ERROR);
   }
@@ -114,14 +114,15 @@ void AbstractDiskWriter::createFile(int addFlags)
   assert(!filename_.empty());
   util::mkdirs(File(filename_).getDirname());
 
-  while((fd_ = open(filename_.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
-                    OPEN_MODE)) == -1 && errno == EINTR);
+  while((fd_ = a2open(utf8ToWChar(filename_).c_str(),
+                      O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags,
+                      OPEN_MODE)) == -1 && errno == EINTR);
   if(fd_ < 0) {
     int errNum = errno;
     throw DL_ABORT_EX3
       (errNum,
        fmt(EX_FILE_OPEN,
-           filename_.c_str(),
+           utf8ToNative(filename_).c_str(),
            util::safeStrerror(errNum).c_str()),
        error_code::FILE_CREATE_ERROR);
   }  
@@ -153,7 +154,7 @@ void AbstractDiskWriter::seek(off_t offset)
   if(a2lseek(fd_, offset, SEEK_SET) == (off_t)-1) {
     int errNum = errno;
     throw DL_ABORT_EX2(fmt(EX_FILE_SEEK,
-                           filename_.c_str(),
+                           utf8ToNative(filename_).c_str(),
                            util::safeStrerror(errNum).c_str()),
                        error_code::FILE_IO_ERROR);
   }
@@ -170,14 +171,14 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
       throw DOWNLOAD_FAILURE_EXCEPTION3
         (errNum,
          fmt(EX_FILE_WRITE,
-             filename_.c_str(),
+             utf8ToNative(filename_).c_str(),
              util::safeStrerror(errNum).c_str()),
          error_code::NOT_ENOUGH_DISK_SPACE);
     } else {
       throw DL_ABORT_EX3
         (errNum,
          fmt(EX_FILE_WRITE,
-             filename_.c_str(),
+             utf8ToNative(filename_).c_str(),
              util::safeStrerror(errNum).c_str()),
          error_code::FILE_IO_ERROR);
     }
@@ -193,7 +194,7 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
     throw DL_ABORT_EX3
       (errNum,
        fmt(EX_FILE_READ,
-           filename_.c_str(),
+           utf8ToNative(filename_).c_str(),
            util::safeStrerror(errNum).c_str()),
        error_code::FILE_IO_ERROR);
   }

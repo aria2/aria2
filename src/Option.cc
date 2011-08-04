@@ -122,4 +122,14 @@ std::map<std::string, std::string>::const_iterator Option::end() const
   return table_.end();
 }
 
+std::map<std::string, std::string>::iterator Option::begin()
+{
+  return table_.begin();
+}
+
+std::map<std::string, std::string>::iterator Option::end()
+{
+  return table_.end();
+}
+
 } // namespace aria2

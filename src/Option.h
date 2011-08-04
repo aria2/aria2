@@ -68,6 +68,10 @@ public:
   std::map<std::string, std::string>::const_iterator begin() const;
 
   std::map<std::string, std::string>::const_iterator end() const;
+
+  std::map<std::string, std::string>::iterator begin();
+
+  std::map<std::string, std::string>::iterator end();
 };
 
 } // namespace aria2

@@ -355,7 +355,7 @@ void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
   }
   A2_LOG_DEBUG(fmt("Removed %lu duplicate hostname URIs for path=%s",
                    static_cast<unsigned long>(uris_.size()-newURIs.size()),
-                   getPath().c_str()));
+                   utf8ToNative(getPath()).c_str()));
   uris_.swap(newURIs);
 }
 

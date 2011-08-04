@@ -73,7 +73,8 @@ bool CheckIntegrityCommand::executeInternal()
     if(getRequestGroup()->downloadFinished()) {
       A2_LOG_NOTICE
         (fmt(MSG_VERIFICATION_SUCCESSFUL,
-             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+             utf8ToNative(getRequestGroup()->getDownloadContext()
+                          ->getBasePath()).c_str()));
       std::vector<Command*>* commands = new std::vector<Command*>();
       auto_delete_container<std::vector<Command*> > commandsDel(commands);
       entry_->onDownloadFinished(*commands, getDownloadEngine());
@@ -82,7 +83,8 @@ bool CheckIntegrityCommand::executeInternal()
     } else {
       A2_LOG_ERROR
         (fmt(MSG_VERIFICATION_FAILED,
-             getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+             utf8ToNative(getRequestGroup()->getDownloadContext()
+                          ->getBasePath()).c_str()));
       std::vector<Command*>* commands = new std::vector<Command*>();
       auto_delete_container<std::vector<Command*> > commandsDel(commands);
       entry_->onDownloadIncomplete(*commands, getDownloadEngine());
@@ -106,7 +108,8 @@ bool CheckIntegrityCommand::handleException(Exception& e)
   A2_LOG_ERROR
     (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
          getCuid(),
-         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
+         utf8ToNative(getRequestGroup()->getDownloadContext()
+                      ->getBasePath()).c_str()));
   return true;
 }
 

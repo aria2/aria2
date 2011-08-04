@@ -86,6 +86,19 @@ inline uint64_t ntoh64(uint64_t x) { return byteswap64(x); }
 inline uint64_t hton64(uint64_t x) { return byteswap64(x); }
 #endif // !WORDS_BIGENDIAN
 
+#ifdef __MINGW32__
+std::wstring utf8ToWChar(const std::string& src);
+
+std::string utf8ToNative(const std::string& src);
+
+std::string wCharToUtf8(const std::wstring& wsrc);
+
+std::string nativeToUtf8(const std::string& src);
+#else // !__MINGW32__
+# define utf8ToWChar(src) src
+# define utf8ToNative(src) src
+#endif // !__MINGW32__
+
 namespace util {
 
 void divide
@@ -255,7 +268,8 @@ void toStream
   os << "===+===========================================================================" << "\n";
   int32_t count = 1;
   for(; first != last; ++first, ++count) {
-    os << std::setw(3) << count << "|" << (*first)->getPath() << "\n";
+    os << std::setw(3) << count << "|"
+       << utf8ToNative((*first)->getPath()) << "\n";
     os << "   |" << util::abbrevSize((*first)->getLength()) << "B ("
        << util::uitos((*first)->getLength(), true) << ")\n";
     os << "---+---------------------------------------------------------------------------" << "\n";

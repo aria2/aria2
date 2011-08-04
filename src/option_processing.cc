@@ -170,6 +170,14 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     cmdstream.seekg(0, std::ios::beg);
     // finaly let's parse and store command-iine options.
     oparser.parse(op, cmdstream);
+#ifdef __MINGW32__
+    for(std::map<std::string, std::string>::iterator i = op.begin();
+        i != op.end(); ++i) {
+      if(!util::isUtf8((*i).second)) {
+        (*i).second = nativeToUtf8((*i).second);
+      }
+    }
+#endif // __MINGW32__
   } catch(OptionHandlerException& e) {
     std::cerr << e.stackTrace() << "\n";
     SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());

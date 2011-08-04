@@ -72,7 +72,7 @@ File& File::operator=(const File& c)
 }
 
 int File::fillStat(a2_struct_stat& fstat) {
-  return a2stat(name_.c_str(), &fstat);
+  return a2stat(utf8ToWChar(name_).c_str(), &fstat);
 }
 
 bool File::exists() {
@@ -98,9 +98,9 @@ bool File::isDir() {
 
 bool File::remove() {
   if(isFile()) {
-    return unlink(name_.c_str()) == 0;
+    return a2unlink(utf8ToWChar(name_).c_str()) == 0;
   } else if(isDir()) {
-    return rmdir(name_.c_str()) == 0;
+    return a2rmdir(utf8ToWChar(name_).c_str()) == 0;
   } else {
     return false;
   }
@@ -148,13 +148,14 @@ bool File::mkdirs() {
     }
 #endif // __MINGW32__
     std::string dir = std::string(begin, j);
-    A2_LOG_DEBUG(fmt("Making directory %s", dir.c_str()));
+    A2_LOG_DEBUG(fmt("Making directory %s", utf8ToNative(dir).c_str()));
     if(File(dir).isDir()) {
-      A2_LOG_DEBUG(fmt("%s exists and is a directory.", dir.c_str()));
+      A2_LOG_DEBUG(fmt("%s exists and is a directory.",
+                       utf8ToNative(dir).c_str()));
       continue;
     }
-    if(a2mkdir(dir.c_str(), DIR_OPEN_MODE) == -1) {
-      A2_LOG_DEBUG(fmt("Failed to create %s", dir.c_str()));
+    if(a2mkdir(utf8ToWChar(dir).c_str(), DIR_OPEN_MODE) == -1) {
+      A2_LOG_DEBUG(fmt("Failed to create %s", utf8ToNative(dir).c_str()));
       return false;
     }
   }
@@ -205,13 +206,13 @@ bool File::renameTo(const std::string& dest)
 {
 #ifdef __MINGW32__
   /* MinGW's rename() doesn't delete an existing destination */
-  if (_access(dest.c_str(), 0) == 0) {
-    if (_unlink(dest.c_str()) != 0) {
+  if (_waccess(utf8ToWChar(dest).c_str(), 0) == 0) {
+    if (a2unlink(utf8ToWChar(dest).c_str()) != 0) {
       return false;
     }
   }
 #endif // __MINGW32__
-  if(rename(name_.c_str(), dest.c_str()) == 0) {
+  if(a2rename(utf8ToWChar(name_).c_str(), utf8ToWChar(dest).c_str()) == 0) {
     name_ = dest;
     return true;
   } else {
@@ -221,10 +222,10 @@ bool File::renameTo(const std::string& dest)
 
 bool File::utime(const Time& actime, const Time& modtime) const
 {
-  struct utimbuf ub;
+  a2utimbuf ub;
   ub.actime = actime.getTime();
   ub.modtime = modtime.getTime();
-  return ::utime(name_.c_str(), &ub) == 0;
+  return a2utime(utf8ToWChar(name_).c_str(), &ub) == 0;
 }
 
 Time File::getModifiedTime()
@@ -238,6 +239,15 @@ Time File::getModifiedTime()
 
 std::string File::getCurrentDir()
 {
+#ifdef __MINGW32__
+  const size_t buflen = 2048;
+  wchar_t buf[buflen];
+  if(_wgetcwd(buf, buflen)) {
+    return wCharToUtf8(buf);
+  } else {
+    return A2STR::DOT_C;
+  }
+#else // !__MINGW32__
   const size_t buflen = 2048;
   char buf[buflen];
   if(getcwd(buf, buflen)) {
@@ -245,6 +255,7 @@ std::string File::getCurrentDir()
   } else {
     return A2STR::DOT_C;
   }
+#endif // !__MINGW32__
 }
 
 } // namespace aria2

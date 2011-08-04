@@ -94,6 +94,101 @@
 
 namespace aria2 {
 
+#ifdef __MINGW32__
+namespace {
+int utf8ToWChar(wchar_t* out, size_t outLength, const std::string& src)
+{
+  return MultiByteToWideChar(CP_UTF8, 0, src.c_str(), -1,
+                             out, outLength);
+}
+} // namespace
+
+namespace {
+int ansiToWChar(wchar_t* out, size_t outLength, const std::string& src)
+{
+  return MultiByteToWideChar(CP_ACP, 0, src.c_str(), -1,
+                             out, outLength);
+}
+} // namespace
+
+namespace {
+int wCharToUtf8(char* out, size_t outLength, const std::wstring& src)
+{
+  return WideCharToMultiByte(CP_UTF8, 0, src.c_str(), -1,
+                             out, outLength, 0, 0);
+}
+} // namespace
+
+namespace {
+int wCharToAnsi(char* out, size_t outLength, const std::wstring& src)
+{
+  return WideCharToMultiByte(CP_ACP, 0, src.c_str(), -1,
+                             out, outLength, 0, 0);
+}
+} // namespace
+
+std::wstring utf8ToWChar(const std::string& src)
+{
+  int len = utf8ToWChar(0, 0, src);
+  if(len == 0) {
+    abort();
+  }
+  wchar_t* buf = new wchar_t[len];
+  len = utf8ToWChar(buf, len, src);
+  if(len == 0) {
+    abort();
+  } else {
+    return buf;
+  }
+}
+
+std::string utf8ToNative(const std::string& src)
+{
+  std::wstring wsrc = utf8ToWChar(src);
+  int len = wCharToAnsi(0, 0, wsrc);
+  if(len == 0) {
+    abort();
+  }
+  char* buf = new char[len];
+  len = wCharToAnsi(buf, len, wsrc);
+  if(len == 0) {
+    abort();
+  } else {
+    return buf;
+  }
+}
+
+std::string wCharToUtf8(const std::wstring& wsrc)
+{
+  int len = wCharToUtf8(0, 0, wsrc);
+  if(len == 0) {
+    abort();
+  }
+  char* buf = new char[len];
+  len = wCharToUtf8(buf, len, wsrc);
+  if(len == 0) {
+    abort();
+  } else {
+    return buf;
+  }
+}
+
+std::string nativeToUtf8(const std::string& src)
+{
+  int len = ansiToWChar(0, 0, src);
+  if(len == 0) {
+    abort();
+  }
+  wchar_t* buf = new wchar_t[len];
+  len = ansiToWChar(buf, len, src);
+  if(len == 0) {
+    abort();
+  } else {
+    return wCharToUtf8(buf);
+  }
+}
+#endif // __MINGW32__
+
 namespace util {
 
 const std::string DEFAULT_STRIP_CHARSET("\r\n\t ");
@@ -1171,7 +1266,7 @@ void mkdirs(const std::string& dirpath)
     if(!dir.isDir()) {
       throw DL_ABORT_EX3
         (errNum,
-         fmt(EX_MAKE_DIR, dir.getPath().c_str(),
+         fmt(EX_MAKE_DIR, utf8ToNative(dir.getPath()).c_str(),
              safeStrerror(errNum).c_str()),
          error_code::DIR_CREATE_ERROR);
     }
@@ -1412,9 +1507,6 @@ std::string escapePath(const std::string& s)
        || std::find(vbegin(WIN_INVALID_PATH_CHARS),
                     vend(WIN_INVALID_PATH_CHARS),
                     c) != vend(WIN_INVALID_PATH_CHARS)
-       // Since Windows does not understand UTF-8 correctly, we
-       // percent-encode character other than ASCII.
-       || c > 0x7fu
 #endif // __MINGW32__
        ){
       d += fmt("%%%02X", c);
