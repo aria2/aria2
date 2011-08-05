@@ -35,8 +35,8 @@
 #include "CookieStorage.h"
 
 #include <cstring>
+#include <cstdio>
 #include <algorithm>
-#include <fstream>
 
 #include "util.h"
 #include "LogFactory.h"
@@ -133,12 +133,17 @@ bool CookieStorage::DomainEntry::contains(const Cookie& cookie) const
   return std::find(cookies_.begin(), cookies_.end(), cookie) != cookies_.end();
 }
 
-void CookieStorage::DomainEntry::writeCookie(std::ostream& o) const
+bool CookieStorage::DomainEntry::writeCookie(FILE* fp) const
 {
   for(std::deque<Cookie>::const_iterator i = cookies_.begin(),
         eoi = cookies_.end(); i != eoi; ++i) {
-    o << (*i).toNsCookieFormat() << "\n";
+    std::string data = (*i).toNsCookieFormat();
+    data += "\n";
+    if(fwrite(data.data(), 1, data.size(), fp) != data.size()) {
+      return false;
+    }
   }
+  return true;
 }
 
 size_t CookieStorage::DomainEntry::countCookie() const
@@ -331,15 +336,17 @@ size_t CookieStorage::size() const
 bool CookieStorage::load(const std::string& filename, time_t now)
 {
   char header[16]; // "SQLite format 3" plus \0
-  std::ifstream s(filename.c_str(), std::ios::binary);
-  if(!s) {
-    A2_LOG_ERROR(fmt("Failed to open cookie file %s", filename.c_str()));
+  FILE* fp = a2fopen(utf8ToWChar(filename).c_str(), "rb");
+  if(!fp) {
+    A2_LOG_ERROR(fmt("Failed to open cookie file %s",
+                     utf8ToNative(filename).c_str()));
     return false;
   }
-  s.get(header, sizeof(header));
-  if(!s) {
+  size_t r = fread(header, 1, sizeof(header), fp);
+  fclose(fp);
+  if(r != sizeof(header)) {
     A2_LOG_ERROR(fmt("Failed to read header of cookie file %s",
-                     filename.c_str()));
+                     utf8ToNative(filename).c_str()));
     return false;
   }
   try {
@@ -367,7 +374,8 @@ bool CookieStorage::load(const std::string& filename, time_t now)
     }
     return true;
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR(fmt("Failed to load cookies from %s", filename.c_str()));
+    A2_LOG_ERROR(fmt("Failed to load cookies from %s",
+                     utf8ToNative(filename).c_str()));
     return false;
   }
 }
@@ -376,18 +384,24 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
 {
   std::string tempfilename = filename+"__temp";
   {
-    std::ofstream o(tempfilename.c_str(), std::ios::binary);
-    if(!o) {
-      A2_LOG_ERROR(fmt("Cannot create cookie file %s", filename.c_str()));
+    FILE* fp = a2fopen(utf8ToWChar(tempfilename).c_str(), "wb");
+    if(!fp) {
+      A2_LOG_ERROR(fmt("Cannot create cookie file %s",
+                       utf8ToNative(filename).c_str()));
       return false;
     }
     for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
           eoi = domains_.end(); i != eoi; ++i) {
-      (*i).writeCookie(o);
+      if(!(*i).writeCookie(fp)) {
+        fclose(fp);
+        A2_LOG_ERROR(fmt("Failed to save cookies to %s",
+                         utf8ToNative(filename).c_str()));
+        return false;
+      }
     }
-    o.flush();
-    if(!o) {
-      A2_LOG_ERROR(fmt("Failed to save cookies to %s", filename.c_str()));
+    if(fclose(fp) == EOF) {
+      A2_LOG_ERROR(fmt("Failed to save cookies to %s",
+                       utf8ToNative(filename).c_str()));
       return false;
     }  
   }
@@ -395,8 +409,8 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     return true;
   } else {
     A2_LOG_ERROR(fmt("Could not rename file %s as %s",
-                     tempfilename.c_str(),
-                     filename.c_str()));
+                     utf8ToNative(tempfilename).c_str(),
+                     utf8ToNative(filename).c_str()));
     return false;
   }
 }

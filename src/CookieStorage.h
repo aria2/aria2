@@ -37,6 +37,7 @@
 
 #include "common.h"
 
+#include <cstdio>
 #include <string>
 #include <deque>
 #include <vector>
@@ -107,7 +108,7 @@ public:
       return lastAccessTime_;
     }
 
-    void writeCookie(std::ostream& o) const;
+    bool writeCookie(FILE* fp) const;
 
     bool contains(const Cookie& cookie) const;
 

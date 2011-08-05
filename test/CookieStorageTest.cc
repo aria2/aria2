@@ -356,7 +356,7 @@ void CookieStorageTest::testSaveNsFormat()
                                "/config",true)), now);
   st.store(Cookie(createCookie("uid", "tujikawa", now, "domain.org", true,
                                "/",false)), now);
-  st.saveNsFormat(filename);
+  CPPUNIT_ASSERT(st.saveNsFormat(filename));
   CookieStorage loadst;
   loadst.load(filename, now);
   CPPUNIT_ASSERT_EQUAL((size_t)2, loadst.size());
