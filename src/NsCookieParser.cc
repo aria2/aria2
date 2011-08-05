@@ -34,7 +34,8 @@
 /* copyright --> */
 #include "NsCookieParser.h"
 
-#include <fstream>
+#include <cstdio>
+#include <cstring>
 #include <limits>
 
 #include "util.h"
@@ -94,13 +95,23 @@ bool parseNsCookie
 std::vector<Cookie> NsCookieParser::parse
 (const std::string& filename, time_t creationTime)
 {
-  std::ifstream s(filename.c_str(), std::ios::binary);
-  if(!s) {
-    throw DL_ABORT_EX(fmt("Failed to open file %s", filename.c_str()));
+  FILE* fp = a2fopen(utf8ToWChar(filename).c_str(), "rb");
+  if(!fp) {
+    throw DL_ABORT_EX(fmt("Failed to open file %s",
+                          utf8ToNative(filename).c_str()));
   }
-  std::string line;
+  auto_delete_r<FILE*, int> deleter(fp, fclose);
   std::vector<Cookie> cookies;
-  while(getline(s, line)) {
+  char buf[8192];
+  while(1) {
+    if(!fgets(buf, sizeof(buf), fp)) {
+      break;
+    }
+    size_t len = strlen(buf);
+    if(buf[len-1] == '\n') {
+      buf[len-1] = '\0';
+    }
+    std::string line(buf);
     if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
