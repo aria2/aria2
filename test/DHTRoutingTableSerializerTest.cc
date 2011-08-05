@@ -1,7 +1,7 @@
 #include "DHTRoutingTableSerializer.h"
 
 #include <cstring>
-#include <sstream>
+#include <fstream>
 #include <iostream>
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -115,8 +115,10 @@ void DHTRoutingTableSerializerTest::testSerialize()
   s.setLocalNode(localNode);
   s.setNodes(nodes);
 
-  std::stringstream ss;
-  s.serialize(ss);
+  std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableSerializerTest_testSerialize";
+  s.serialize(filename);
+
+  std::ifstream ss(filename.c_str(), std::ios::binary);
 
   checkToLocalnode(ss, localNode);
   size_t numNodes = 3;
@@ -242,8 +244,10 @@ void DHTRoutingTableSerializerTest::testSerialize6()
   s.setLocalNode(localNode);
   s.setNodes(nodes);
 
-  std::stringstream ss;
-  s.serialize(ss);
+  std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableSerializerTest_testSerialize6";
+  s.serialize(filename);
+
+  std::ifstream ss(filename.c_str(), std::ios::binary);
 
   checkToLocalnode(ss, localNode);
   size_t numNodes = 2;

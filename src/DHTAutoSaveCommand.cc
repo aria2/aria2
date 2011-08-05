@@ -35,7 +35,6 @@
 #include "DHTAutoSaveCommand.h"
 
 #include <cstring>
-#include <fstream>
 
 #include "DHTRoutingTable.h"
 #include "DHTNode.h"
@@ -86,13 +85,14 @@ void DHTAutoSaveCommand::save()
     get(family_ == AF_INET? PREF_DHT_FILE_PATH : PREF_DHT_FILE_PATH6);
   A2_LOG_INFO(fmt("Saving DHT routing table to %s.", dhtFile.c_str()));
 
-  File tempFile(dhtFile+"__temp");
   // Removing tempFile is unnecessary because the file is truncated on
   // open.  But the bug in 1.10.4 creates directory for this path.
   // Because it is directory, opening directory as file fails.  So we
   // first remove it here.
+  File tempFile(dhtFile+"__temp");
   tempFile.remove();
-  File(tempFile.getDirname()).mkdirs();
+
+  File(File(dhtFile).getDirname()).mkdirs();
   std::vector<SharedHandle<DHTNode> > nodes;
   std::vector<SharedHandle<DHTBucket> > buckets;
   routingTable_->getBuckets(buckets);
@@ -109,20 +109,7 @@ void DHTAutoSaveCommand::save()
   serializer.setNodes(nodes);
 
   try {
-    {
-      std::ofstream o(tempFile.getPath().c_str(),
-                      std::ios::out|std::ios::binary);
-      if(!o) {
-        throw DL_ABORT_EX
-          (fmt("Failed to save DHT routing table to %s.",
-               dhtFile.c_str()));
-      }
-      serializer.serialize(o);
-    }
-    if(!tempFile.renameTo(dhtFile)) {
-      A2_LOG_ERROR(fmt("Cannot move file from %s to %s.",
-                       tempFile.getPath().c_str(), dhtFile.c_str()));
-    }
+    serializer.serialize(dhtFile);
   } catch(RecoverableException& e) {
     A2_LOG_ERROR_EX(fmt("Exception caught while saving DHT routing table to %s",
                         dhtFile.c_str()),

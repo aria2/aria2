@@ -35,7 +35,7 @@
 #include "DHTRoutingTableSerializer.h"
 
 #include <cstring>
-#include <ostream>
+#include <cstdio>
 
 #include "DHTNode.h"
 #include "DlAbortEx.h"
@@ -45,6 +45,8 @@
 #include "a2netcompat.h"
 #include "util.h"
 #include "TimeA2.h"
+#include "fmt.h"
+#include "File.h"
 
 namespace aria2 {
 
@@ -65,8 +67,21 @@ void DHTRoutingTableSerializer::setNodes
   nodes_ = nodes;
 }
 
-void DHTRoutingTableSerializer::serialize(std::ostream& o)
+#define FWRITE_CHECK(ptr, count, fp)                                    \
+  if(fwrite((ptr), 1, (count), (fp)) != (count)) {                      \
+    fclose(fp);                                                         \
+    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",    \
+                          utf8ToNative(filename).c_str()));             \
+  }
+
+void DHTRoutingTableSerializer::serialize(const std::string& filename)
 {
+  std::string filenameTemp = filename+"__temp";
+  FILE* fp = a2fopen(utf8ToWChar(filenameTemp).c_str(), "wb");
+  if(!fp) {
+    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",
+                          utf8ToNative(filename).c_str()));
+  }
   char header[8];
   memset(header, 0, sizeof(header));
   // magic
@@ -81,24 +96,24 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   char zero[18];
   memset(zero, 0, sizeof(zero));
 
-  o.write(header, 8);
+  FWRITE_CHECK(header, 8, fp);
   // write save date
   uint64_t ntime = hton64(Time().getTime());
-  o.write(reinterpret_cast<const char*>(&ntime), sizeof(ntime));
+  FWRITE_CHECK(&ntime, sizeof(ntime), fp);
 
   // localnode
   // 8bytes reserved
-  o.write(zero, 8);
+  FWRITE_CHECK(zero, 8, fp);
   // 20bytes localnode ID
-  o.write(reinterpret_cast<const char*>(localNode_->getID()), DHT_ID_LENGTH);
+  FWRITE_CHECK(localNode_->getID(), DHT_ID_LENGTH, fp);
   // 4bytes reserved
-  o.write(zero, 4);
+  FWRITE_CHECK(zero, 4, fp);
 
   // number of nodes
   uint32_t numNodes = htonl(nodes_.size());
-  o.write(reinterpret_cast<const char*>(&numNodes), sizeof(uint32_t));
+  FWRITE_CHECK(&numNodes, sizeof(uint32_t), fp);
   // 4bytes reserved
-  o.write(zero, 4);
+  FWRITE_CHECK(zero, 4, fp);
 
   const int clen = bittorrent::getCompactLength(family_);
   // nodes
@@ -112,23 +127,27 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
     if(compactlen != clen) {
       memset(compactPeer, 0, clen);
     }
+    uint8_t clen1 = clen;
     // 1byte compact peer format length
-    o << static_cast<uint8_t>(clen);
+    FWRITE_CHECK(&clen1, sizeof(clen1), fp);
     // 7bytes reserved
-    o.write(zero, 7);
+    FWRITE_CHECK(zero, 7, fp);
     // clen bytes compact peer
-    o.write(reinterpret_cast<const char*>(compactPeer), clen);
+    FWRITE_CHECK(compactPeer, static_cast<size_t>(clen), fp);
     // 24-clen bytes reserved
-    o.write(zero, 24-clen);
+    FWRITE_CHECK(zero, 24-clen, fp);
     // 20bytes: node ID
-    o.write(reinterpret_cast<const char*>(node->getID()), DHT_ID_LENGTH);
+    FWRITE_CHECK(node->getID(), DHT_ID_LENGTH, fp);
     // 4bytes reserved
-    o.write(zero, 4);
+    FWRITE_CHECK(zero, 4, fp);
   }
-
-  o.flush();
-  if(!o) {
-    throw DL_ABORT_EX("Failed to save DHT routing table.");
+  if(fclose(fp) == EOF) {
+    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",
+                          utf8ToNative(filename).c_str()));
+  }
+  if(!File(filenameTemp).renameTo(filename)) {
+    throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",
+                          utf8ToNative(filename).c_str()));
   }
 }
 

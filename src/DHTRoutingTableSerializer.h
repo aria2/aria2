@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <vector>
-#include <iosfwd>
+#include <string>
 
 #include "SharedHandle.h"
 
@@ -62,7 +62,7 @@ public:
 
   void setNodes(const std::vector<SharedHandle<DHTNode> >& nodes);
 
-  void serialize(std::ostream& o);
+  void serialize(const std::string& filename);
 };
 
 } // namespace aria2

@@ -55,9 +55,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   s.setNodes(nodes);
 
   std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableDeserializerTest_testDeserialize";
-  std::ofstream outfile(filename.c_str(), std::ios::binary);
-  s.serialize(outfile);
-  outfile.close();
+  s.serialize(filename);
 
   DHTRoutingTableDeserializer d(AF_INET);
   d.deserialize(filename);
@@ -96,9 +94,7 @@ void DHTRoutingTableDeserializerTest::testDeserialize6()
   s.setNodes(nodes);
 
   std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableDeserializerTest_testDeserialize6";
-  std::ofstream outfile(filename.c_str(), std::ios::binary);
-  s.serialize(outfile);
-  outfile.close();
+  s.serialize(filename);
 
   DHTRoutingTableDeserializer d(AF_INET6);
   d.deserialize(filename);
