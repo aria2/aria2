@@ -54,11 +54,13 @@ void DHTRoutingTableDeserializerTest::testDeserialize()
   s.setLocalNode(localNode);
   s.setNodes(nodes);
 
-  std::stringstream ss;
-  s.serialize(ss);
+  std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableDeserializerTest_testDeserialize";
+  std::ofstream outfile(filename.c_str(), std::ios::binary);
+  s.serialize(outfile);
+  outfile.close();
 
   DHTRoutingTableDeserializer d(AF_INET);
-  d.deserialize(ss);
+  d.deserialize(filename);
 
   CPPUNIT_ASSERT(memcmp(localNode->getID(), d.getLocalNode()->getID(),
                         DHT_ID_LENGTH) == 0);
@@ -93,11 +95,13 @@ void DHTRoutingTableDeserializerTest::testDeserialize6()
   s.setLocalNode(localNode);
   s.setNodes(nodes);
 
-  std::stringstream ss;
-  s.serialize(ss);
+  std::string filename = A2_TEST_OUT_DIR"/aria2_DHTRoutingTableDeserializerTest_testDeserialize6";
+  std::ofstream outfile(filename.c_str(), std::ios::binary);
+  s.serialize(outfile);
+  outfile.close();
 
   DHTRoutingTableDeserializer d(AF_INET6);
-  d.deserialize(ss);
+  d.deserialize(filename);
 
   CPPUNIT_ASSERT(memcmp(localNode->getID(), d.getLocalNode()->getID(),
                         DHT_ID_LENGTH) == 0);

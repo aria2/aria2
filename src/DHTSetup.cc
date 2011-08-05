@@ -99,11 +99,7 @@ void DHTSetup::setup
       e->getOption()->get(family == AF_INET?PREF_DHT_FILE_PATH:
                           PREF_DHT_FILE_PATH6);
     try {
-      std::ifstream in(dhtFile.c_str(), std::ios::binary);
-      if(!in) {
-        throw DL_ABORT_EX("Could not open file");
-      }
-      deserializer.deserialize(in);
+      deserializer.deserialize(dhtFile);
       localNode = deserializer.getLocalNode();
     } catch(RecoverableException& e) {
       A2_LOG_ERROR_EX

@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <vector>
-#include <iosfwd>
+#include <string>
 
 #include "SharedHandle.h"
 #include "TimeA2.h"
@@ -76,7 +76,7 @@ public:
     return serializedTime_;
   }
 
-  void deserialize(std::istream& in);
+  void deserialize(const std::string& filename);
 };
 
 } // namespace aria2
