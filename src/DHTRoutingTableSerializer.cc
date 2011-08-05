@@ -47,6 +47,7 @@
 #include "TimeA2.h"
 #include "fmt.h"
 #include "File.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -76,6 +77,8 @@ void DHTRoutingTableSerializer::setNodes
 
 void DHTRoutingTableSerializer::serialize(const std::string& filename)
 {
+  A2_LOG_INFO(fmt("Saving DHT routing table to %s.",
+                  utf8ToNative(filename).c_str()));
   std::string filenameTemp = filename+"__temp";
   FILE* fp = a2fopen(utf8ToWChar(filenameTemp).c_str(), "wb");
   if(!fp) {
@@ -149,6 +152,7 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
     throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",
                           utf8ToNative(filename).c_str()));
   }
+  A2_LOG_INFO("DHT routing table was saved successfully");
 }
 
 } // namespace aria2

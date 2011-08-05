@@ -48,6 +48,7 @@
 #include "fmt.h"
 #include "util.h"
 #include "array_fun.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -72,9 +73,12 @@ void readBytes(unsigned char* buf, size_t buflen,
 
 void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
 {
+  A2_LOG_INFO(fmt("Loading DHT routing table from %s.",
+                  utf8ToNative(filename).c_str()));
   FILE* fp = a2fopen(utf8ToWChar(filename).c_str(), "rb");
   if(!fp) {
-    throw DL_ABORT_EX("Failed to load DHT routing table.");
+    throw DL_ABORT_EX(fmt("Failed to load DHT routing table from %s",
+                          utf8ToNative(filename).c_str()));
   }
   auto_delete_r<FILE*, int> deleter(fp, fclose);
   char header[8];
@@ -116,7 +120,8 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
     version = 2;
   } else {
     throw DL_ABORT_EX
-      (fmt("Failed to load DHT routing table. cause:%s",
+      (fmt("Failed to load DHT routing table from %s. cause:%s",
+           utf8ToNative(filename).c_str(),
            "bad header"));
   }
   
@@ -191,6 +196,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
   }
   localNode_ = localNode;
   nodes_ = nodes;
+  A2_LOG_INFO("DHT routing table was loaded successfully");
 }
 
 } // namespace aria2
