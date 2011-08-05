@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "DHTSetup.h"
 
-#include <fstream>
 #include <algorithm>
 
 #include "LogFactory.h"
