@@ -133,6 +133,7 @@
 # define a2rmdir(path) _wrmdir(path)
 # define a2rename(src, dest) _wrename(src, dest)
 # define a2open(path, flags, mode) _wopen(path, flags, mode)
+# define a2fopen(path, mode) _wfopen(path, mode)
 #else // !__MINGW32__
 # define a2lseek(fd, offset, origin) lseek(fd, offset, origin)
 # define a2fseek(fp, offset, origin) fseek(fp, offset, origin)
@@ -147,6 +148,7 @@
 # define a2rmdir(path) rmdir(path)
 # define a2rename(src, dest) rename(src, dest)
 # define a2open(path, flags, mode) open(path, flags, mode)
+# define a2fopen(path, mode) fopen(path, mode)
 #endif // !__MINGW32__
 
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH

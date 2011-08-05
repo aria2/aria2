@@ -206,6 +206,20 @@ public:
   }
 };
 
+template<typename T, typename R>
+class auto_delete_r {
+private:
+  T obj_;
+  R (*deleter_)(T);
+public:
+  auto_delete_r(T obj, R (*deleter)(T)):obj_(obj), deleter_(deleter) {}
+
+  ~auto_delete_r()
+  {
+    (void)deleter_(obj_);
+  }
+};
+
 template<class Container>
 class auto_delete_container {
 private:
