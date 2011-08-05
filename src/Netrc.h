@@ -39,7 +39,6 @@
 
 #include <string>
 #include <vector>
-#include <iosfwd>
 
 #include "SharedHandle.h"
 
@@ -119,8 +118,6 @@ private:
   void storeAuthenticator(const SharedHandle<Authenticator>& authenticator);
 
   std::string getRequiredNextToken(std::ifstream& f) const;
-  
-  void skipMacdef(std::ifstream& f) const;
 public:
   Netrc();
 

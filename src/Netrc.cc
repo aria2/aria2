@@ -34,7 +34,8 @@
 /* copyright --> */
 #include "Netrc.h"
 
-#include <fstream>
+#include <cstdio>
+#include <cstring>
 #include <algorithm>
 
 #include "DlAbortEx.h"
@@ -117,24 +118,29 @@ void Netrc::addAuthenticator(const SharedHandle<Authenticator>& authenticator)
   authenticators_.push_back(authenticator);
 }
 
-void Netrc::skipMacdef(std::ifstream& f) const
+namespace {
+void skipMacdef(FILE* fp)
 {
-  std::string line;
-  while(getline(f, line)) {
-    if(line == A2STR::CR_C || line.empty()) {
+  char buf[4096];
+  while(1) {
+    if(!fgets(buf, sizeof(buf), fp)) {
+      break;
+    }
+    if(buf[0] == '\n' || buf[0] == '\r') {
       break;
     }
   }
 }
+} // namespace
 
 void Netrc::parse(const std::string& path)
 {
   authenticators_.clear();
-  std::ifstream f(path.c_str(), std::ios::binary);
-  
-  if(!f) {
-    throw DL_ABORT_EX(fmt("File not found: %s", path.c_str()));
+  FILE* fp = a2fopen(utf8ToWChar(path).c_str(), "rb");
+  if(!fp) {
+    throw DL_ABORT_EX(fmt("Cannot open file: %s", utf8ToNative(path).c_str()));
   }
+  auto_delete_r<FILE*, int> deleter(fp, fclose);
 
   enum STATE {
     GET_TOKEN,
@@ -145,9 +151,17 @@ void Netrc::parse(const std::string& path)
     SET_MACDEF
   };
   SharedHandle<Authenticator> authenticator;
-  std::string line;
   STATE state = GET_TOKEN;
-  while(getline(f, line)) {
+  char buf[4096];
+  while(1) {
+    if(!fgets(buf, sizeof(buf), fp)) {
+      break;
+    }
+    size_t len = strlen(buf);
+    if(buf[len-1] == '\n') {
+      buf[len-1] = '\0';
+    }
+    std::string line(buf);
     if(util::startsWith(line, "#")) {
       continue;
     }
@@ -190,7 +204,7 @@ void Netrc::parse(const std::string& path)
         } else if(state == SET_ACCOUNT) {
           authenticator->setAccount(token);
         } else if(state == SET_MACDEF) {
-          skipMacdef(f);
+          skipMacdef(fp);
         }
         state = GET_TOKEN;
       } 
