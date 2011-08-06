@@ -348,8 +348,7 @@ bool CookieStorage::load(const std::string& filename, time_t now)
     headlen = fp.read(header, sizeof(header));
   }
   try {
-    if(headlen &&
-       std::string(&header[0], &header[headlen-1]) == "SQLite format 3") {
+    if(headlen == 16 && memcmp(header, "SQLite format 3\0", 16) == 0) {
 #ifdef HAVE_SQLITE3
       std::vector<Cookie> cookies;
       try {
