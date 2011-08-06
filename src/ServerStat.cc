@@ -41,6 +41,8 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "fmt.h"
+#include "a2functional.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -204,17 +206,20 @@ bool ServerStat::operator==(const ServerStat& serverStat) const
   return hostname_ == serverStat.hostname_ && protocol_ == serverStat.protocol_;
 }
 
-std::ostream& operator<<(std::ostream& o, const ServerStat& serverStat)
+std::string ServerStat::toString() const
 {
-  o << "host=" << serverStat.getHostname() << ", "
-    << "protocol=" << serverStat.getProtocol() << ", "
-    << "dl_speed=" << serverStat.getDownloadSpeed() << ", "
-    << "sc_avg_speed=" << serverStat.getSingleConnectionAvgSpeed() << ", "
-    << "mc_avg_speed=" << serverStat.getMultiConnectionAvgSpeed() << ", "
-    << "last_updated=" << serverStat.getLastUpdated().getTime() << ", "
-    << "counter=" << serverStat.getCounter() << ", "
-    << "status=" << ServerStat::STATUS_STRING[serverStat.getStatus()];
-  return o;
+  std::string res;
+  strappend(res, "host=", getHostname(), ", ");
+  strappend(res, "protocol=", getProtocol(), ", ");
+  strappend(res, "dl_speed=", util::uitos(getDownloadSpeed()), ", ");
+  strappend(res, "sc_avg_speed=", util::uitos(getSingleConnectionAvgSpeed()),
+            ", ");
+  strappend(res, "mc_avg_speed=", util::uitos(getMultiConnectionAvgSpeed()),
+            ", ");
+  strappend(res, "last_updated=", util::itos(getLastUpdated().getTime()), ", ");
+  strappend(res, "counter=", util::uitos(getCounter()), ", ");
+  strappend(res, "status=", ServerStat::STATUS_STRING[getStatus()]);
+  return res;
 }
 
 } // namespace aria2

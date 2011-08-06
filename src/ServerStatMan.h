@@ -38,7 +38,6 @@
 
 #include <string>
 #include <deque>
-#include <iosfwd>
 
 #include "SharedHandle.h"
 #include "a2time.h"
@@ -58,9 +57,9 @@ public:
 
   bool add(const SharedHandle<ServerStat>& serverStat);
 
-  bool load(std::istream& in);
+  bool load(const std::string& filename);
 
-  bool save(std::ostream& out) const;
+  bool save(const std::string& filename) const;
 
   void removeStaleServerStat(time_t timeout);
 private:

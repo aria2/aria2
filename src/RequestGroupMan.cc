@@ -39,7 +39,6 @@
 #include <iomanip>
 #include <sstream>
 #include <ostream>
-#include <fstream>
 #include <numeric>
 #include <algorithm>
 #include <utility>
@@ -835,44 +834,12 @@ bool RequestGroupMan::addServerStat(const SharedHandle<ServerStat>& serverStat)
 
 bool RequestGroupMan::loadServerStat(const std::string& filename)
 {
-  std::ifstream in(filename.c_str(), std::ios::binary);
-  if(!in) {
-    A2_LOG_ERROR(fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED,
-                     filename.c_str()));
-    return false;
-  }
-  if(serverStatMan_->load(in)) {
-    A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_LOADED, filename.c_str()));
-    return true;
-  } else {
-    A2_LOG_ERROR(fmt(MSG_READING_SERVER_STAT_FILE_FAILED, filename.c_str()));
-    return false;
-  }
+  return serverStatMan_->load(filename);
 }
 
 bool RequestGroupMan::saveServerStat(const std::string& filename) const
 {
-  std::string tempfile = filename;
-  tempfile += "__temp";
-  {
-    std::ofstream out(tempfile.c_str(), std::ios::binary);
-    if(!out) {
-      A2_LOG_ERROR(fmt(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
-                       filename.c_str()));
-      return false;
-    }
-    if(!serverStatMan_->save(out)) {
-      A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
-      return false;
-    }
-  }
-  if(File(tempfile).renameTo(filename)) {
-    A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_SAVED, filename.c_str()));
-    return true;
-  } else {
-    A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
-    return false;
-  }
+  return serverStatMan_->save(filename);
 }
 
 void RequestGroupMan::removeStaleServerStat(time_t timeout)

@@ -1,13 +1,14 @@
 #include "ServerStatMan.h"
 
 #include <iostream>
-#include <sstream>
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "ServerStat.h"
 #include "Exception.h"
 #include "util.h"
+#include "BufferedFile.h"
+#include "TestUtil.h"
 
 namespace aria2 {
 
@@ -78,9 +79,8 @@ void ServerStatManTest::testSave()
   CPPUNIT_ASSERT(ssm.add(localhost_ftp));
   CPPUNIT_ASSERT(ssm.add(mirror));
 
-  std::stringstream ss;
-  CPPUNIT_ASSERT(ssm.save(ss));
-  std::string out = ss.str();
+  std::string filename = A2_TEST_OUT_DIR"/aria2_ServerStatManTest_testSave";
+  CPPUNIT_ASSERT(ssm.save(filename));
   CPPUNIT_ASSERT_EQUAL
     (std::string
      ("host=localhost, protocol=ftp,"
@@ -106,20 +106,22 @@ void ServerStatManTest::testSave()
       " last_updated=1210000002,"
       " counter=0,"
       " status=ERROR\n"),
-     out);                         
+     readFile(filename));
 }
 
 void ServerStatManTest::testLoad()
 {
+  std::string filename = A2_TEST_OUT_DIR"/aria2_ServerStatManTest_testLoad";
   std::string in =
     "host=localhost, protocol=ftp, dl_speed=30000, last_updated=1210000001, status=OK\n"
     "host=localhost, protocol=http, dl_speed=25000, sc_avg_speed=101, mc_avg_speed=102, last_updated=1210000000, counter=6, status=OK\n"
     "host=mirror, protocol=http, dl_speed=0, last_updated=1210000002, status=ERROR\n";
-
-  std::stringstream ss(in);
+  BufferedFile fp(filename, BufferedFile::WRITE);
+  CPPUNIT_ASSERT_EQUAL((size_t)in.size(), fp.write(in.data(), in.size()));
+  CPPUNIT_ASSERT(fp.close() != EOF);
 
   ServerStatMan ssm;
-  CPPUNIT_ASSERT(ssm.load(ss));
+  CPPUNIT_ASSERT(ssm.load(filename));
 
   SharedHandle<ServerStat> localhost_http = ssm.find("localhost", "http");
   CPPUNIT_ASSERT(localhost_http);

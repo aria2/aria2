@@ -146,6 +146,8 @@ public:
   bool operator<(const ServerStat& serverStat) const;
 
   bool operator==(const ServerStat& serverStat) const;
+
+  std::string toString() const;
 private:
   std::string hostname_;
   
@@ -165,8 +167,6 @@ private:
 
   void setStatusInternal(STATUS status);
 };
-
-std::ostream& operator<<(std::ostream& o, const ServerStat& serverStat);
 
 class ServerStatFaster {
 public:

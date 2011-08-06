@@ -14,7 +14,7 @@ class ServerStatTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(ServerStatTest);
   CPPUNIT_TEST(testSetStatus);
-  CPPUNIT_TEST(testOperatorOstream);
+  CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -22,7 +22,7 @@ public:
   void tearDown() {}
 
   void testSetStatus();
-  void testOperatorOstream();
+  void testToString();
 };
 
 
@@ -44,7 +44,7 @@ void ServerStatTest::testSetStatus()
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, ss.getStatus());  
 }
 
-void ServerStatTest::testOperatorOstream()
+void ServerStatTest::testToString()
 {
   ServerStat localhost_http("localhost", "http");
   localhost_http.setDownloadSpeed(90000);
@@ -53,33 +53,24 @@ void ServerStatTest::testOperatorOstream()
   localhost_http.setMultiConnectionAvgSpeed(102);
   localhost_http.setCounter(5);
 
-  std::stringstream ss;
-  
-  ss << localhost_http;
-
   CPPUNIT_ASSERT_EQUAL
     (std::string
      ("host=localhost, protocol=http, dl_speed=90000,"
       " sc_avg_speed=101, mc_avg_speed=102,"
       " last_updated=1000, counter=5, status=OK"),
-     ss.str());
-
-  ss.str("");
+     localhost_http.toString());
 
   ServerStat localhost_ftp("localhost", "ftp");
   localhost_ftp.setDownloadSpeed(10000);
   localhost_ftp.setLastUpdated(Time(1210000000));
   localhost_ftp.setStatus("ERROR");
 
-  ss << localhost_ftp;
-
   CPPUNIT_ASSERT_EQUAL
     (std::string
      ("host=localhost, protocol=ftp, dl_speed=10000,"
       " sc_avg_speed=0, mc_avg_speed=0,"
       " last_updated=1210000000, counter=0, status=ERROR"),
-     ss.str());
-
+     localhost_ftp.toString());
 }
 
 } // namespace aria2

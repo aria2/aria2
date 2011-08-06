@@ -34,8 +34,9 @@
 /* copyright --> */
 #include "ServerStatMan.h"
 
+#include <cstring>
+#include <cstdio>
 #include <algorithm>
-#include <ostream>
 #include <iterator>
 #include <map>
 #include <vector>
@@ -44,6 +45,11 @@
 #include "util.h"
 #include "RecoverableException.h"
 #include "a2functional.h"
+#include "BufferedFile.h"
+#include "message.h"
+#include "fmt.h"
+#include "LogFactory.h"
+#include "File.h"
 
 namespace aria2 {
 
@@ -80,17 +86,44 @@ bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
   } 
 }
 
-bool ServerStatMan::save(std::ostream& out) const
+bool ServerStatMan::save(const std::string& filename) const
 {
-  for(std::deque<SharedHandle<ServerStat> >::const_iterator i =
-        serverStats_.begin(), eoi = serverStats_.end(); i != eoi; ++i) {
-    out << *(*i) << "\n";
+  std::string tempfile = filename;
+  tempfile += "__temp";
+  {
+    BufferedFile fp(tempfile, BufferedFile::WRITE);
+    if(!fp) {
+      A2_LOG_ERROR(fmt(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
+                       utf8ToNative(filename).c_str()));
+      return false;
+    }
+    for(std::deque<SharedHandle<ServerStat> >::const_iterator i =
+          serverStats_.begin(), eoi = serverStats_.end(); i != eoi; ++i) {
+      std::string l = (*i)->toString();
+      l += "\n";
+      if(fp.write(l.data(), l.size()) != l.size()) {
+        A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
+                         utf8ToNative(filename).c_str()));
+      }
+    }
+    if(fp.close() == EOF) {
+      A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
+                       utf8ToNative(filename).c_str()));
+      return false;
+    }
   }
-  out.flush();
-  return !out.bad();
+  if(File(tempfile).renameTo(filename)) {
+    A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_SAVED,
+                      utf8ToNative(filename).c_str()));
+    return true;
+  } else {
+    A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
+                     utf8ToNative(filename).c_str()));
+    return false;
+  }
 }
 
-bool ServerStatMan::load(std::istream& in)
+bool ServerStatMan::load(const std::string& filename)
 {
   static const std::string S_HOST = "host";
   static const std::string S_PROTOCOL = "protocol";
@@ -101,9 +134,24 @@ bool ServerStatMan::load(std::istream& in)
   static const std::string S_COUNTER = "counter";
   static const std::string S_STATUS = "status";
 
-  std::string line;
-  while(getline(in, line)) {
-    line = util::strip(line);
+  BufferedFile fp(filename, BufferedFile::READ);
+  if(!fp) {
+    A2_LOG_ERROR(fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED,
+                     utf8ToNative(filename).c_str()));
+    return false;
+  }
+  char buf[4096];
+  while(1) {
+    if(!fp.getsn(buf, sizeof(buf))) {
+      if(fp.eof()) {
+        break;
+      } else {
+        A2_LOG_ERROR(fmt(MSG_READING_SERVER_STAT_FILE_FAILED,
+                         utf8ToNative(filename).c_str()));
+        return false;
+      }
+    }
+    std::string line = util::stripIter(&buf[0], &buf[strlen(buf)]);
     if(line.empty()) {
       continue;
     }
@@ -143,7 +191,8 @@ bool ServerStatMan::load(std::istream& in)
       continue;
     }
   }
-  return !in.bad();
+  A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_LOADED, utf8ToNative(filename).c_str()));
+  return true;
 }
 
 namespace {
