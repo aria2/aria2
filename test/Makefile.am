@@ -79,7 +79,8 @@ aria2c_SOURCES = AllTest.cc\
 	CookieHelperTest.cc\
 	JsonTest.cc\
 	RpcResponseTest.cc\
-	RpcMethodTest.cc
+	RpcMethodTest.cc\
+	BufferedFileTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\

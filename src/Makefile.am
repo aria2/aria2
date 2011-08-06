@@ -233,7 +233,8 @@ SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserState.h\
 	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
 	XmlRpcElements.cc XmlRpcElements.h\
-	XmlRpcRequestProcessor.h
+	XmlRpcRequestProcessor.h\
+	BufferedFile.cc BufferedFile.h
 
 if HAVE_LIBXML2
 SRCS += Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
