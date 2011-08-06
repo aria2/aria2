@@ -81,6 +81,7 @@
 #include "Logger.h"
 #include "Option.h"
 #include "DownloadContext.h"
+#include "BufferedFile.h"
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
@@ -1400,13 +1401,14 @@ bool saveAs
   }
   std::string tempFilename = strconcat(filename, "__temp");
   {
-    std::ofstream out(tempFilename.c_str(), std::ios::binary);
-    if(!out) {
+    BufferedFile fp(tempFilename, BufferedFile::WRITE);
+    if(!fp) {
       return false;
     }
-    out << data;
-    out.flush();
-    if(!out) {
+    if(fp.write(data.data(), data.size()) != data.size()) {
+      return false;
+    }
+    if(fp.close() == EOF) {
       return false;
     }
   }
