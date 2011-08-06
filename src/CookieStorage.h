@@ -37,7 +37,6 @@
 
 #include "common.h"
 
-#include <cstdio>
 #include <string>
 #include <deque>
 #include <vector>
@@ -47,6 +46,8 @@
 #include "Cookie.h"
 
 namespace aria2 {
+
+class BufferedFile;
 
 class CookieStorage {
 public:
@@ -108,7 +109,7 @@ public:
       return lastAccessTime_;
     }
 
-    bool writeCookie(FILE* fp) const;
+    bool writeCookie(BufferedFile& fp) const;
 
     bool contains(const Cookie& cookie) const;
 

@@ -49,6 +49,7 @@
 #include "A2STR.h"
 #include "message.h"
 #include "cookie_helper.h"
+#include "BufferedFile.h"
 #ifdef HAVE_SQLITE3
 # include "Sqlite3CookieParserImpl.h"
 #endif // HAVE_SQLITE3
@@ -133,13 +134,13 @@ bool CookieStorage::DomainEntry::contains(const Cookie& cookie) const
   return std::find(cookies_.begin(), cookies_.end(), cookie) != cookies_.end();
 }
 
-bool CookieStorage::DomainEntry::writeCookie(FILE* fp) const
+bool CookieStorage::DomainEntry::writeCookie(BufferedFile& fp) const
 {
   for(std::deque<Cookie>::const_iterator i = cookies_.begin(),
         eoi = cookies_.end(); i != eoi; ++i) {
     std::string data = (*i).toNsCookieFormat();
     data += "\n";
-    if(fwrite(data.data(), 1, data.size(), fp) != data.size()) {
+    if(fp.write(data.data(), data.size()) != data.size()) {
       return false;
     }
   }
@@ -336,21 +337,19 @@ size_t CookieStorage::size() const
 bool CookieStorage::load(const std::string& filename, time_t now)
 {
   char header[16]; // "SQLite format 3" plus \0
-  FILE* fp = a2fopen(utf8ToWChar(filename).c_str(), "rb");
-  if(!fp) {
-    A2_LOG_ERROR(fmt("Failed to open cookie file %s",
+  size_t headlen;
+  {
+    BufferedFile fp(filename, BufferedFile::READ);
+    if(!fp) {
+      A2_LOG_ERROR(fmt("Failed to open cookie file %s",
                      utf8ToNative(filename).c_str()));
-    return false;
-  }
-  size_t r = fread(header, 1, sizeof(header), fp);
-  fclose(fp);
-  if(r != sizeof(header)) {
-    A2_LOG_ERROR(fmt("Failed to read header of cookie file %s",
-                     utf8ToNative(filename).c_str()));
-    return false;
+      return false;
+    }
+    headlen = fp.read(header, sizeof(header));
   }
   try {
-    if(std::string(header) == "SQLite format 3") {
+    if(headlen &&
+       std::string(&header[0], &header[headlen-1]) == "SQLite format 3") {
 #ifdef HAVE_SQLITE3
       std::vector<Cookie> cookies;
       try {
@@ -384,7 +383,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
 {
   std::string tempfilename = filename+"__temp";
   {
-    FILE* fp = a2fopen(utf8ToWChar(tempfilename).c_str(), "wb");
+    BufferedFile fp(tempfilename, BufferedFile::WRITE);
     if(!fp) {
       A2_LOG_ERROR(fmt("Cannot create cookie file %s",
                        utf8ToNative(filename).c_str()));
@@ -393,13 +392,12 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
           eoi = domains_.end(); i != eoi; ++i) {
       if(!(*i).writeCookie(fp)) {
-        fclose(fp);
         A2_LOG_ERROR(fmt("Failed to save cookies to %s",
                          utf8ToNative(filename).c_str()));
         return false;
       }
     }
-    if(fclose(fp) == EOF) {
+    if(fp.close() == EOF) {
       A2_LOG_ERROR(fmt("Failed to save cookies to %s",
                        utf8ToNative(filename).c_str()));
       return false;
