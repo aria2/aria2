@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "UriListParser.h"
 
-#include <istream>
+#include <cstring>
 #include <sstream>
 
 #include "util.h"
@@ -42,51 +42,61 @@
 #include "OptionHandlerFactory.h"
 #include "OptionHandler.h"
 #include "A2STR.h"
+#include "BufferedFile.h"
 
 namespace aria2 {
 
-UriListParser::UriListParser(std::istream& in):in_(in)
+UriListParser::UriListParser(const std::string& filename)
+  : fp_(filename, BufferedFile::READ)
 {
   optparser_.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
 }
 
 UriListParser::~UriListParser() {}
 
-void UriListParser::getOptions(Option& op)
-{
-  std::stringstream ss;
-  while(getline(in_, line_)) {
-    if(util::startsWith(line_, " ")) {
-      ss << line_ << "\n";
-    } else if(util::startsWith(line_, A2STR::SHARP_C)) {
-      continue;
-    } else {
-      break;
-    }
-  }
-  optparser_.parse(op, ss);
-}
-
 void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 {
+  char buf[4096];
   if(line_.empty()) {
-    getline(in_, line_);
-  }
-  if(!in_) {
-    return;
-  }
-  do {
-    if(!util::startsWith(line_, A2STR::SHARP_C) && !util::strip(line_).empty()){
-      util::split(line_, std::back_inserter(uris), "\t", true);
-      getOptions(op);
+    if(!fp_.getsn(buf, sizeof(buf))) {
+      line_.clear();
       return;
     }
-  } while(getline(in_, line_));
+    line_.assign(&buf[0], &buf[strlen(buf)]);
+  }
+  while(1) {
+    if(!util::startsWith(line_, A2STR::SHARP_C) && !util::strip(line_).empty()){
+      util::split(line_, std::back_inserter(uris), "\t", true);
+      // Read options
+      std::stringstream ss;
+      while(1) {
+        if(!fp_.getsn(buf, sizeof(buf))) {
+          line_.clear();
+          break;
+        }
+        line_.assign(&buf[0], &buf[strlen(buf)]);
+        if(util::startsWith(line_, " ")) {
+          ss << line_ << "\n";
+        } else if(util::startsWith(line_, A2STR::SHARP_C)) {
+          continue;
+        } else {
+          break;
+        }
+      }
+      optparser_.parse(op, ss);
+      return;
+    }
+    if(!fp_.getsn(buf, sizeof(buf))) {
+      line_.clear();
+      return;
+    }
+    line_.assign(&buf[0], &buf[strlen(buf)]);
+  }
 }
 
-bool UriListParser::hasNext() const
+bool UriListParser::hasNext()
 {
-  return in_;
+  return !line_.empty() || (fp_ && !fp_.eof());
 }
 
 } // namespace aria2

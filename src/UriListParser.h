@@ -43,26 +43,25 @@
 
 #include "Option.h"
 #include "OptionParser.h"
+#include "BufferedFile.h"
 
 namespace aria2 {
 
 class UriListParser {
 private:
-  std::istream& in_;
+  BufferedFile fp_;
 
   OptionParser optparser_;
 
   std::string line_;
-
-  void getOptions(Option& op);
 public:
-  UriListParser(std::istream& in);
+  UriListParser(const std::string& filename);
 
   ~UriListParser();
 
   void parseNext(std::vector<std::string>& uris, Option& op);
 
-  bool hasNext() const;
+  bool hasNext();
 };
 
 } // namespace aria2

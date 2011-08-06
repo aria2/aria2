@@ -35,7 +35,6 @@
 #include "download_helper.h"
 
 #include <iostream>
-#include <fstream>
 #include <algorithm>
 #include <sstream>
 
@@ -506,9 +505,9 @@ namespace {
 void createRequestGroupForUriList
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
- std::istream& in)
+ const std::string& filename)
 {
-  UriListParser p(in);
+  UriListParser p(filename);
   while(p.hasNext()) {
     std::vector<std::string> uris;
     SharedHandle<Option> tempOption(new Option());
@@ -536,15 +535,14 @@ void createRequestGroupForUriList
  const SharedHandle<Option>& option)
 {
   if(option->get(PREF_INPUT_FILE) == "-") {
-    createRequestGroupForUriList(result, option, std::cin);
+    createRequestGroupForUriList(result, option, DEV_STDIN);
   } else {
     if(!File(option->get(PREF_INPUT_FILE)).isFile()) {
       throw DL_ABORT_EX
         (fmt(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
              "No such file"));
     }
-    std::ifstream f(option->get(PREF_INPUT_FILE).c_str(), std::ios::binary);
-    createRequestGroupForUriList(result, option, f);
+    createRequestGroupForUriList(result, option, option->get(PREF_INPUT_FILE));
   }
 }
 

@@ -3,7 +3,6 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
-#include <fstream>
 #include <iterator>
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -41,9 +40,9 @@ std::string UriListParserTest::list2String(const std::vector<std::string>& src)
 
 void UriListParserTest::testHasNext()
 {
-  std::ifstream in(A2_TEST_DIR"/filelist1.txt", std::ios::binary);
+  std::string filename = A2_TEST_DIR"/filelist1.txt";
 
-  UriListParser flp(in);
+  UriListParser flp(filename);
 
   std::vector<std::string> uris;
   Option reqOp;
