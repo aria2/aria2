@@ -57,7 +57,7 @@ BufferedFile::~BufferedFile()
 
 BufferedFile::operator unspecified_bool_type() const
 {
-  return (!open_ || ferror(fp_) || feof(fp_)) ? 0 : &BufferedFile::good_state;
+  return (!open_ || ferror(fp_)) ? 0 : &BufferedFile::good_state;
 }
 
 size_t BufferedFile::read(void* ptr, size_t count)
@@ -95,6 +95,11 @@ int BufferedFile::close()
   } else {
     return 0;
   }
+}
+
+bool BufferedFile::eof()
+{
+  return open_ && feof(fp_);
 }
 
 } // namespace aria2

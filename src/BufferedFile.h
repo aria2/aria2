@@ -63,6 +63,8 @@ public:
   char* getsn(char* s, int size);
   // wrapper for fclose
   int close();
+  // Return true if open_ && feof(fp_) != 0. Otherwise returns false.
+  bool eof();
   // Mode for reading
   static const std::string READ;
   // Mode for writing

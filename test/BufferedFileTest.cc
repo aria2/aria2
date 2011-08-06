@@ -52,7 +52,7 @@ void BufferedFileTest::testOpen()
   CPPUNIT_ASSERT(rd.getsn(buf, sizeof(buf)));
   CPPUNIT_ASSERT_EQUAL(std::string("charlie"), std::string(buf));
 
-  CPPUNIT_ASSERT(!rd);
+  CPPUNIT_ASSERT(rd.eof());
 }
 
 } // namespace aria2
