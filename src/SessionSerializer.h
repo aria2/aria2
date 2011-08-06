@@ -45,6 +45,7 @@
 namespace aria2 {
 
 class RequestGroupMan;
+class BufferedFile;
 
 class SessionSerializer {
 private:
@@ -52,12 +53,11 @@ private:
   bool saveError_;
   bool saveInProgress_;
   bool saveWaiting_;
+  bool save(BufferedFile& fp) const;
 public:
   SessionSerializer(const SharedHandle<RequestGroupMan>& requestGroupMan);
 
   bool save(const std::string& filename) const;
-
-  void save(std::ostream& out) const;
 };
 
 } // namespace aria2

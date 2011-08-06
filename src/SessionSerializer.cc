@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "SessionSerializer.h"
 
-#include <fstream>
+#include <cstdio>
 #include <iterator>
 
 #include "RequestGroupMan.h"
@@ -48,6 +48,7 @@
 #include "prefs.h"
 #include "util.h"
 #include "array_fun.h"
+#include "BufferedFile.h"
 
 namespace aria2 {
 
@@ -62,13 +63,11 @@ bool SessionSerializer::save(const std::string& filename) const
 {
   std::string tempFilename = strconcat(filename, "__temp");
   {
-    std::ofstream out(tempFilename.c_str(), std::ios::binary);
-    if(!out) {
+    BufferedFile fp(tempFilename, BufferedFile::WRITE);
+    if(!fp) {
       return false;
     }
-    save(out);
-    out.flush();
-    if(!out) {
+    if(!save(fp) || fp.close() == EOF) {
       return false;
     }
   }
@@ -101,7 +100,7 @@ bool inCumulativeOpts(const std::string& opt)
 } // namespace
 
 namespace {
-void writeOption(std::ostream& out, const SharedHandle<Option>& op)
+bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
 {
   const std::set<std::string>& requestOptions = listRequestOptions();
   for(std::set<std::string>::const_iterator itr = requestOptions.begin(),
@@ -110,7 +109,14 @@ void writeOption(std::ostream& out, const SharedHandle<Option>& op)
       continue;
     }
     if(op->defined(*itr)) {
-      out << " " << *itr << "=" << op->get(*itr) << "\n";
+      if(fp.write(" ", 1) != 1 ||
+         fp.write((*itr).data(), (*itr).size()) != (*itr).size() ||
+         fp.write("=", 1) != 1 ||
+         fp.write(op->get(*itr).data(), op->get(*itr).size()) !=
+         op->get(*itr).size() ||
+         fp.write("\n", 1) != 1) {
+        return false;
+      }
     }
   }
   const std::vector<std::string>& cumopts = getCumulativeOpts();
@@ -122,49 +128,67 @@ void writeOption(std::ostream& out, const SharedHandle<Option>& op)
                   false, false);
       for(std::vector<std::string>::const_iterator i = v.begin(), eoi = v.end();
           i != eoi; ++i) {
-        out << " " << *opitr << "=" << *i << "\n";
+        if(fp.write(" ", 1) != 1 ||
+           fp.write((*opitr).data(), (*opitr).size()) != (*opitr).size() ||
+           fp.write("=", 1) != 1 ||
+           fp.write((*i).data(), (*i).size()) != (*i).size() ||
+           fp.write("\n", 1) != 1) {
+          return false;
+        }
       }
     }
   }
+  return true;
 }
 } // namespace
 
 namespace {
-void writeDownloadResult
-(std::ostream& out, std::set<int64_t>& metainfoCache,
+bool writeDownloadResult
+(BufferedFile& fp, std::set<int64_t>& metainfoCache,
  const SharedHandle<DownloadResult>& dr)
 {
   const SharedHandle<MetadataInfo>& mi = dr->metadataInfo;
   if(dr->belongsTo != 0 || (mi && mi->dataOnly())) {
-    return;
+    return true;
   }
   if(!mi) {
     // only save first file entry
     if(dr->fileEntries.empty()) {
-      return;
+      return true;
     }
     const SharedHandle<FileEntry>& file = dr->fileEntries[0];
     std::vector<std::string> uris;
     file->getUris(uris);
     if(uris.empty()) {
-      return;
+      return true;
     }
-    std::copy(uris.begin(), uris.end(),
-              std::ostream_iterator<std::string>(out, "\t"));
-    out << "\n";
+    for(std::vector<std::string>::const_iterator i = uris.begin(),
+          eoi = uris.end(); i != eoi; ++i) {
+      if(fp.write((*i).data(), (*i).size()) != (*i).size() ||
+         fp.write("\t", 1) != 1) {
+        return false;
+      }
+    }
+    if(fp.write("\n", 1) != 1) {
+      return false;
+    }
   } else {
     if(metainfoCache.count(mi->getId()) != 0) {
-      return;
+      return true;
     } else {
       metainfoCache.insert(mi->getId());
-      out << mi->getUri() << "\n";
+      if(fp.write(mi->getUri().data(), mi->getUri().size()) !=
+         mi->getUri().size() ||
+         fp.write("\n", 1) != 1) {
+        return false;
+      }
     }
   }
-  writeOption(out, dr->option);
+  return writeOption(fp, dr->option);
 }
 } // namespace
 
-void SessionSerializer::save(std::ostream& out) const
+bool SessionSerializer::save(BufferedFile& fp) const
 {
   std::set<int64_t> metainfoCache;
   const std::deque<SharedHandle<DownloadResult> >& results =
@@ -176,12 +200,16 @@ void SessionSerializer::save(std::ostream& out) const
       continue;
     } else if((*itr)->result == error_code::IN_PROGRESS) {
       if(saveInProgress_) {
-        writeDownloadResult(out, metainfoCache, *itr);
+        if(!writeDownloadResult(fp, metainfoCache, *itr)) {
+          return false;
+        }
       }
     } else {
       // error download
       if(saveError_) {
-        writeDownloadResult(out, metainfoCache, *itr);
+        if(!writeDownloadResult(fp, metainfoCache, *itr)) {
+          return false;
+        }
       }
     }
   }
@@ -191,16 +219,22 @@ void SessionSerializer::save(std::ostream& out) const
     for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
           groups.begin(), eoi = groups.end(); itr != eoi; ++itr) {
       SharedHandle<DownloadResult> result = (*itr)->createDownloadResult();
-      writeDownloadResult(out, metainfoCache, result);
+      if(!writeDownloadResult(fp, metainfoCache, result)) {
+        return false;
+      }
       // PREF_PAUSE was removed from option, so save it here looking
       // property separately.
       if((*itr)->isPauseRequested()) {
-        out << " " << PREF_PAUSE << "=true" << "\n";
+        if(fp.write(" ", 1) != 1 ||
+           fp.write(PREF_PAUSE.data(), PREF_PAUSE.size()) !=
+           PREF_PAUSE.size() ||
+           fp.write("=true\n", 1) != 1) {
+          return false;
+        }
       }
     }
   }
+  return true;
 }
 
 } // namespace aria2
-
-

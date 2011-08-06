@@ -1,7 +1,7 @@
 #include "SessionSerializer.h"
 
 #include <iostream>
-#include <sstream>
+#include <fstream>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -70,8 +70,9 @@ void SessionSerializerTest::testSave()
     (createDownloadResult(error_code::REMOVED, "http://removed"));
   rgman->addDownloadResult
     (createDownloadResult(error_code::TIME_OUT, "http://error"));
-  std::stringstream ss;
-  s.save(ss);
+  std::string filename = A2_TEST_OUT_DIR"/aria2_SessionSerializerTest_testSave";
+  s.save(filename);
+  std::ifstream ss(filename.c_str(), std::ios::binary);
   std::string line;
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string("http://error\t"), line);
