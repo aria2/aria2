@@ -70,6 +70,10 @@ public:
   // Mode for writing
   static const std::string WRITE;
 private:
+  // Don't allow copying
+  BufferedFile(const BufferedFile&);
+  BufferedFile& operator=(const BufferedFile&);
+
   FILE* fp_;
   // true when file has been opened.
   bool open_;
