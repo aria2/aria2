@@ -116,8 +116,6 @@ private:
   std::vector<SharedHandle<Authenticator> > authenticators_;
 
   void storeAuthenticator(const SharedHandle<Authenticator>& authenticator);
-
-  std::string getRequiredNextToken(std::ifstream& f) const;
 public:
   Netrc();
 
