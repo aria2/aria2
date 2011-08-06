@@ -42,6 +42,7 @@
 #include "fmt.h"
 #include "A2STR.h"
 #include "util.h"
+#include "BufferedFile.h"
 
 namespace aria2 {
 
@@ -119,11 +120,11 @@ void Netrc::addAuthenticator(const SharedHandle<Authenticator>& authenticator)
 }
 
 namespace {
-void skipMacdef(FILE* fp)
+void skipMacdef(BufferedFile& fp)
 {
   char buf[4096];
   while(1) {
-    if(!fgets(buf, sizeof(buf), fp)) {
+    if(!fp.gets(buf, sizeof(buf))) {
       break;
     }
     if(buf[0] == '\n' || buf[0] == '\r') {
@@ -136,12 +137,10 @@ void skipMacdef(FILE* fp)
 void Netrc::parse(const std::string& path)
 {
   authenticators_.clear();
-  FILE* fp = a2fopen(utf8ToWChar(path).c_str(), "rb");
+  BufferedFile fp(path, BufferedFile::READ);
   if(!fp) {
     throw DL_ABORT_EX(fmt("Cannot open file: %s", utf8ToNative(path).c_str()));
   }
-  auto_delete_r<FILE*, int> deleter(fp, fclose);
-
   enum STATE {
     GET_TOKEN,
     SET_MACHINE,
@@ -154,12 +153,8 @@ void Netrc::parse(const std::string& path)
   STATE state = GET_TOKEN;
   char buf[4096];
   while(1) {
-    if(!fgets(buf, sizeof(buf), fp)) {
+    if(!fp.getsn(buf, sizeof(buf))) {
       break;
-    }
-    size_t len = strlen(buf);
-    if(buf[len-1] == '\n') {
-      buf[len-1] = '\0';
     }
     std::string line(buf);
     if(util::startsWith(line, "#")) {
