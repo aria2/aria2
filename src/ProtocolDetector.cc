@@ -35,7 +35,6 @@
 #include "ProtocolDetector.h"
 
 #include <cstring>
-#include <fstream>
 #include <iomanip>
 
 #include "Request.h"
@@ -43,6 +42,7 @@
 #include "util.h"
 #include "RecoverableException.h"
 #include "uri.h"
+#include "BufferedFile.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -61,14 +61,14 @@ bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
 
 bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
 {
-  if(!File(uri).isFile()) {
-    return false;
-  }
-  std::ifstream in(uri.c_str(), std::ios::binary);
-  if(in) {
-    char head;
-    in >> head;
-    return head == 'd';
+  BufferedFile fp(uri, BufferedFile::READ);
+  if(fp) {
+    char head[1];
+    if(fp.read(head, sizeof(head)) == sizeof(head)) {
+      return head[0] == 'd';
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
@@ -90,14 +90,14 @@ bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
 
 bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
 {
-  if(!File(uri).isFile()) {
-    return false;
-  }
-  std::ifstream in(uri.c_str(), std::ios::binary);
-  if(in) {
-    char head[6];
-    in >> std::setw(6) >> head;
-    return strcmp(head, "<?xml") == 0;
+  BufferedFile fp(uri, BufferedFile::READ);
+  if(fp) {
+    char head[5];
+    if(fp.read(head, sizeof(head)) == sizeof(head)) {
+      return memcmp(head, "<?xml", 5) == 0;
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
