@@ -34,12 +34,12 @@
 /* copyright --> */
 #include "bencode2.h"
 
-#include <fstream>
 #include <sstream>
 
 #include "fmt.h"
 #include "DlAbortEx.h"
 #include "error_code.h"
+#include "BufferedFile.h"
 
 namespace aria2 {
 
@@ -220,9 +220,12 @@ SharedHandle<ValueBase> decode(const unsigned char* data, size_t length, size_t&
 
 SharedHandle<ValueBase> decodeFromFile(const std::string& filename)
 {
-  std::ifstream f(filename.c_str(), std::ios::binary);
-  if(f) {
-    return decode(f);
+  BufferedFile fp(filename, BufferedFile::READ);
+  if(fp) {
+    std::stringstream ss;
+    fp.transfer(ss);
+    fp.close();
+    return decode(ss);
   } else {
     throw DL_ABORT_EX2
       (fmt("Bencode decoding failed: Cannot open file '%s'.",
