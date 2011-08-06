@@ -39,6 +39,7 @@
 
 #include <cstdio>
 #include <string>
+#include <iosfwd>
 
 namespace aria2 {
 
@@ -65,6 +66,9 @@ public:
   int close();
   // Return true if open_ && feof(fp_) != 0. Otherwise returns false.
   bool eof();
+  // Convenient method. Read data to end of file and write them into
+  // given stream. Returns written size.
+  size_t transfer(std::ostream& out);
   // Mode for reading
   static const std::string READ;
   // Mode for writing

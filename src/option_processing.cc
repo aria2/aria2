@@ -36,7 +36,6 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <sstream>
 #include <iostream>
 
@@ -56,6 +55,7 @@
 #include "error_code.h"
 #include "SimpleRandomizer.h"
 #include "bittorrent_helper.h"
+#include "BufferedFile.h"
 #ifndef HAVE_DAEMON
 #include "daemon.h"
 #endif // !HAVE_DAEMON
@@ -133,9 +133,15 @@ void option_processing(Option& op, std::vector<std::string>& uris,
         ucfname;
 
       if(File(cfname).isFile()) {
-        std::ifstream cfstream(cfname.c_str(), std::ios::binary);
+        std::stringstream ss;
+        {
+          BufferedFile fp(cfname, BufferedFile::READ);
+          if(fp) {
+            fp.transfer(ss);
+          }
+        }
         try {
-          oparser.parse(op, cfstream);
+          oparser.parse(op, ss);
         } catch(OptionHandlerException& e) {
           std::cerr << "Parse error in " << cfname << "\n"
                     << e.stackTrace() << std::endl;

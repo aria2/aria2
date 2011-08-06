@@ -35,6 +35,7 @@
 #include "BufferedFile.h"
 
 #include <cstring>
+#include <ostream>
 
 #include "a2io.h"
 #include "util.h"
@@ -100,6 +101,21 @@ int BufferedFile::close()
 bool BufferedFile::eof()
 {
   return open_ && feof(fp_);
+}
+
+size_t BufferedFile::transfer(std::ostream& out)
+{
+  size_t count = 0;
+  char buf[4096];
+  while(1) {
+    size_t r = this->read(buf, sizeof(buf));
+    out.write(buf, r);
+    count += r;
+    if(r < sizeof(buf)) {
+      break;
+    }
+  }
+  return count;
 }
 
 } // namespace aria2
