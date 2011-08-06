@@ -44,6 +44,7 @@
 #include "fmt.h"
 #include "Cookie.h"
 #include "cookie_helper.h"
+#include "BufferedFile.h"
 
 namespace aria2 {
 
@@ -95,21 +96,16 @@ bool parseNsCookie
 std::vector<Cookie> NsCookieParser::parse
 (const std::string& filename, time_t creationTime)
 {
-  FILE* fp = a2fopen(utf8ToWChar(filename).c_str(), "rb");
+  BufferedFile fp(filename, BufferedFile::READ);
   if(!fp) {
     throw DL_ABORT_EX(fmt("Failed to open file %s",
                           utf8ToNative(filename).c_str()));
   }
-  auto_delete_r<FILE*, int> deleter(fp, fclose);
   std::vector<Cookie> cookies;
   char buf[8192];
   while(1) {
-    if(!fgets(buf, sizeof(buf), fp)) {
+    if(!fp.getsn(buf, sizeof(buf))) {
       break;
-    }
-    size_t len = strlen(buf);
-    if(buf[len-1] == '\n') {
-      buf[len-1] = '\0';
     }
     std::string line(buf);
     if(util::startsWith(line, A2STR::SHARP_C)) {
