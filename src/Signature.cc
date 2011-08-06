@@ -33,9 +33,6 @@
  */
 /* copyright --> */
 #include "Signature.h"
-
-#include <fstream>
-
 #include "File.h"
 #include "util.h"
 
