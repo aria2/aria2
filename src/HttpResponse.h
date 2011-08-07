@@ -82,11 +82,11 @@ public:
 
   void processRedirect();
 
-  std::string getRedirectURI() const;
+  const std::string& getRedirectURI() const;
 
   bool isTransferEncodingSpecified() const;
 
-  std::string getTransferEncoding() const;
+  const std::string& getTransferEncoding() const;
 
   SharedHandle<StreamFilter> getTransferEncodingStreamFilter() const;
 

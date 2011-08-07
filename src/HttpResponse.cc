@@ -172,7 +172,7 @@ void HttpResponse::processRedirect()
   }
 }
 
-std::string HttpResponse::getRedirectURI() const
+const std::string& HttpResponse::getRedirectURI() const
 {
   return httpHeader_->getFirst(HttpHeader::LOCATION);
 }
@@ -182,7 +182,7 @@ bool HttpResponse::isTransferEncodingSpecified() const
   return httpHeader_->defined(HttpHeader::TRANSFER_ENCODING);
 }
 
-std::string HttpResponse::getTransferEncoding() const
+const std::string& HttpResponse::getTransferEncoding() const
 {
   // TODO See TODO in getTransferEncodingStreamFilter()
   return httpHeader_->getFirst(HttpHeader::TRANSFER_ENCODING);
