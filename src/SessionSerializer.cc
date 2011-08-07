@@ -109,12 +109,7 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
       continue;
     }
     if(op->defined(*itr)) {
-      if(fp.write(" ", 1) != 1 ||
-         fp.write((*itr).data(), (*itr).size()) != (*itr).size() ||
-         fp.write("=", 1) != 1 ||
-         fp.write(op->get(*itr).data(), op->get(*itr).size()) !=
-         op->get(*itr).size() ||
-         fp.write("\n", 1) != 1) {
+      if(fp.printf(" %s=%s\n", (*itr).c_str(), op->get(*itr).c_str()) < 0) {
         return false;
       }
     }
@@ -128,11 +123,7 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
                   false, false);
       for(std::vector<std::string>::const_iterator i = v.begin(), eoi = v.end();
           i != eoi; ++i) {
-        if(fp.write(" ", 1) != 1 ||
-           fp.write((*opitr).data(), (*opitr).size()) != (*opitr).size() ||
-           fp.write("=", 1) != 1 ||
-           fp.write((*i).data(), (*i).size()) != (*i).size() ||
-           fp.write("\n", 1) != 1) {
+        if(fp.printf(" %s=%s\n", (*opitr).c_str(), (*i).c_str()) < 0) {
           return false;
         }
       }
@@ -164,8 +155,7 @@ bool writeDownloadResult
     }
     for(std::vector<std::string>::const_iterator i = uris.begin(),
           eoi = uris.end(); i != eoi; ++i) {
-      if(fp.write((*i).data(), (*i).size()) != (*i).size() ||
-         fp.write("\t", 1) != 1) {
+      if(fp.printf("%s\t", (*i).c_str()) < 0) {
         return false;
       }
     }
@@ -177,9 +167,7 @@ bool writeDownloadResult
       return true;
     } else {
       metainfoCache.insert(mi->getId());
-      if(fp.write(mi->getUri().data(), mi->getUri().size()) !=
-         mi->getUri().size() ||
-         fp.write("\n", 1) != 1) {
+      if(fp.printf("%s\n", mi->getUri().c_str()) < 0) {
         return false;
       }
     }
@@ -225,10 +213,7 @@ bool SessionSerializer::save(BufferedFile& fp) const
       // PREF_PAUSE was removed from option, so save it here looking
       // property separately.
       if((*itr)->isPauseRequested()) {
-        if(fp.write(" ", 1) != 1 ||
-           fp.write(PREF_PAUSE.data(), PREF_PAUSE.size()) !=
-           PREF_PAUSE.size() ||
-           fp.write("=true\n", 1) != 1) {
+        if(fp.printf(" %s=true\n", PREF_PAUSE.c_str()) < 0) {
           return false;
         }
       }
