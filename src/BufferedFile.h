@@ -50,6 +50,7 @@ private:
   void good_state() const {}
 public:
   BufferedFile(const std::string& filename, const std::string& mode);
+  BufferedFile(FILE* fp);
   ~BufferedFile();
   // Returns true if file is opened and both ferror and feof returns
   // 0. Otherwise returns false.
@@ -69,10 +70,16 @@ public:
   // Convenient method. Read data to end of file and write them into
   // given stream. Returns written size.
   size_t transfer(std::ostream& out);
+  // wrapper for fprintf
+  int printf(const char* format, ...);
+  // wrapper for fflush
+  int flush();
   // Mode for reading
   static const std::string READ;
   // Mode for writing
   static const std::string WRITE;
+  // Mode for append
+  static const std::string APPEND;
 private:
   // Don't allow copying
   BufferedFile(const BufferedFile&);

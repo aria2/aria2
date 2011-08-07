@@ -35,6 +35,7 @@
 #include "BufferedFile.h"
 
 #include <cstring>
+#include <cstdarg>
 #include <ostream>
 
 #include "a2io.h"
@@ -44,12 +45,17 @@ namespace aria2 {
 
 const std::string BufferedFile::READ = "rb";
 const std::string BufferedFile::WRITE = "wb";
+const std::string BufferedFile::APPEND = "ab";
 
 BufferedFile::BufferedFile(const std::string& filename, const std::string& mode)
 {
   fp_ = a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
   open_ = fp_;
 }
+
+BufferedFile::BufferedFile(FILE* fp)
+  : fp_(fp), open_(true)
+{}
 
 BufferedFile::~BufferedFile()
 {
@@ -116,6 +122,20 @@ size_t BufferedFile::transfer(std::ostream& out)
     }
   }
   return count;
+}
+
+int BufferedFile::printf(const char* format, ...)
+{
+  va_list ap;
+  va_start(ap, format);
+  int r = vfprintf(fp_, format, ap);
+  va_end(ap);
+  return r;
+}
+
+int BufferedFile::flush()
+{
+  return fflush(fp_);
 }
 
 } // namespace aria2
