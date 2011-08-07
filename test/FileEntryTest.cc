@@ -218,6 +218,15 @@ void FileEntryTest::testAddUri()
   FileEntry file;
   CPPUNIT_ASSERT(file.addUri("http://good"));
   CPPUNIT_ASSERT(!file.addUri("bad"));
+  // Test for percent-encode
+  CPPUNIT_ASSERT(file.addUri("http://host:80/file<with%2 %20space/"
+                             "file with space;param%?a=/?"));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80"
+                                   "/file%3Cwith%2%20%20space/"
+                                   "file%20with%20space;param%"
+                                   "?a=/?"),
+                       file.getRemainingUris()[1]);
 }
 
 void FileEntryTest::testAddUris()
@@ -239,6 +248,15 @@ void FileEntryTest::testInsertUri()
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/3"), uris[1]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/1"), uris[2]);
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/4"), uris[3]);
+  // Test for percent-encode
+  CPPUNIT_ASSERT(file.insertUri("http://host:80/file<with%2 %20space/"
+                                "file with space;param%?a=/?", 0));
+
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80"
+                                   "/file%3Cwith%2%20%20space/"
+                                   "file%20with%20space;param%"
+                                   "?a=/?"),
+                       file.getRemainingUris()[0]);
 }
 
 void FileEntryTest::testRemoveUri()

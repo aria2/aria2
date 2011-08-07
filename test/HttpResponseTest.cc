@@ -494,6 +494,14 @@ void HttpResponseTest::testProcessRedirect()
 
   httpHeader->clearField();
 
+  // Test for percent-encode
+  httpHeader->put("Location", "http://example.org/white space#aria2");
+  httpResponse.processRedirect();
+  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/white%20space"),
+                       request->getCurrentUri());
+
+  httpHeader->clearField();
+
   // Give unsupported scheme
   httpHeader->put("Location", "unsupported://mirror/aria2-1.0.0.tar.bz2");
   try {

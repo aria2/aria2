@@ -160,7 +160,8 @@ bool HttpResponse::isRedirect() const
 void HttpResponse::processRedirect()
 {
   
-  if(httpRequest_->getRequest()->redirectUri(getRedirectURI())) {
+  if(httpRequest_->getRequest()->redirectUri
+     (util::percentEncodeMini(getRedirectURI()))) {
     A2_LOG_INFO(fmt(MSG_REDIRECT,
                     cuid_,
                     httpRequest_->getRequest()->getCurrentUri().c_str()));

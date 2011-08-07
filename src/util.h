@@ -170,6 +170,8 @@ std::string percentEncode(const unsigned char* target, size_t len);
 
 std::string percentEncode(const std::string& target);
 
+std::string percentEncodeMini(const std::string& target);
+
 bool inRFC3986ReservedChars(const char c);
 
 bool inRFC3986UnreservedChars(const char c);

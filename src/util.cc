@@ -447,6 +447,25 @@ std::string percentEncode(const std::string& target)
                        target.size());
 }
 
+std::string percentEncodeMini(const std::string& src)
+{
+  std::string result;
+  for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;
+      ++i) {
+    // Non-Printable ASCII and non-ASCII chars + some ASCII chars.
+    unsigned char c = *i;
+    if(in(c, 0x00u, 0x20u) || c >= 0x7fu ||
+       // Chromium escapes following characters. Firefox4 escapes
+       // more.
+       c == '"' || c == '<' || c == '>') {
+      result += fmt("%%%02X", c);
+    } else {
+      result += c;
+    }
+  }
+  return result;
+}
+
 std::string torrentPercentEncode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; ++i) {

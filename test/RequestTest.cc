@@ -15,7 +15,6 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUri1);
   CPPUNIT_TEST(testSetUri2);
   CPPUNIT_TEST(testSetUri7);
-  CPPUNIT_TEST(testSetUri17);
   CPPUNIT_TEST(testSetUri_supportsPersistentConnection);
   CPPUNIT_TEST(testRedirectUri);
   CPPUNIT_TEST(testRedirectUri2);
@@ -31,7 +30,6 @@ public:
   void testSetUri1();
   void testSetUri2();
   void testSetUri7();
-  void testSetUri17();
   void testSetUri_supportsPersistentConnection();
   void testRedirectUri();
   void testRedirectUri2();
@@ -94,27 +92,6 @@ void RequestTest::testSetUri7() {
   CPPUNIT_ASSERT(!v);
 }
 
-void RequestTest::testSetUri17()
-{
-  Request req;
-  bool v = req.setUri("http://host:80/file<with%2 %20space/"
-                      "file with space;param%?a=/?");
-  CPPUNIT_ASSERT(v);
-  CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL(std::string("/file%3Cwith%2%20%20space"),
-                       req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param%"),
-                       req.getFile());
-  CPPUNIT_ASSERT_EQUAL(std::string("?a=/?"), req.getQuery());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file%3Cwith%2%20%20space"
-                                   "/file%20with%20space;param%?a=/?"),
-                       req.getCurrentUri());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://host:80/file<with%2 %20space"
-                                   "/file with space;param%?a=/?"),
-                       req.getUri());
-}
-
 void RequestTest::testRedirectUri()
 {
   Request req;
@@ -155,11 +132,6 @@ void RequestTest::testRedirectUri()
                                    "relativepath/to/file"),
                        req.getCurrentUri());
   CPPUNIT_ASSERT_EQUAL((unsigned int)3, req.getRedirectCount());
-
-  // White space in path and fragment is appended.
-  CPPUNIT_ASSERT(req.redirectUri("http://example.org/white space#aria2"));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/white%20space"),
-                       req.getCurrentUri());
 }
 
 void RequestTest::testRedirectUri2()

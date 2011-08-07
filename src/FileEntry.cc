@@ -155,7 +155,7 @@ FileEntry::getRequest
             req.reset();
             continue;
           }
-          req->setReferer(referer);
+          req->setReferer(util::percentEncodeMini(referer));
           req->setMethod(method);
           spentUris_.push_back(uri);
           inFlightRequests_.push_back(req);
@@ -518,8 +518,9 @@ size_t FileEntry::setUris(const std::vector<std::string>& uris)
 bool FileEntry::addUri(const std::string& uri)
 {
   uri::UriStruct us;
-  if(uri::parse(us, uri)) {
-    uris_.push_back(uri);
+  std::string peUri = util::percentEncodeMini(uri);
+  if(uri::parse(us, peUri)) {
+    uris_.push_back(peUri);
     return true;
   } else {
     return false;
@@ -529,9 +530,10 @@ bool FileEntry::addUri(const std::string& uri)
 bool FileEntry::insertUri(const std::string& uri, size_t pos)
 {
   uri::UriStruct us;
-  if(uri::parse(us, uri)) {
+  std::string peUri = util::percentEncodeMini(uri);
+  if(uri::parse(us, peUri)) {
     pos = std::min(pos, uris_.size());
-    uris_.insert(uris_.begin()+pos, uri);
+    uris_.insert(uris_.begin()+pos, peUri);
     return true;
   } else {
     return false;

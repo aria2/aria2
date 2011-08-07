@@ -85,27 +85,6 @@ std::string removeFragment(const std::string& uri)
 }
 } // namespace
 
-namespace {
-std::string percentEncode(const std::string& src)
-{
-  std::string result;
-  for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;
-      ++i) {
-    // Non-Printable ASCII and non-ASCII chars + some ASCII chars.
-    unsigned char c = *i;
-    if(in(c, 0x00u, 0x20u) || c >= 0x7fu ||
-       // Chromium escapes following characters. Firefox4 escapes
-       // more.
-       c == '"' || c == '<' || c == '>') {
-      result += fmt("%%%02X", c);
-    } else {
-      result += c;
-    }
-  }
-  return result;
-}
-} // namespace
-
 bool Request::setUri(const std::string& uri) {
   supportsPersistentConnection_ = true;
   uri_ = uri;
@@ -121,7 +100,7 @@ bool Request::resetUri() {
 
 void Request::setReferer(const std::string& uri)
 {
-  referer_ = previousUri_ = percentEncode(removeFragment(uri));
+  referer_ = previousUri_ = removeFragment(uri);
 }
 
 bool Request::redirectUri(const std::string& uri) {
@@ -145,7 +124,7 @@ bool Request::redirectUri(const std::string& uri) {
 }
 
 bool Request::parseUri(const std::string& srcUri) {
-  currentUri_ = percentEncode(removeFragment(srcUri));
+  currentUri_ = removeFragment(srcUri);
   uri::UriStruct us;
   if(uri::parse(us, currentUri_)) {
     protocol_.swap(us.protocol);
