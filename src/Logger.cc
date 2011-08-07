@@ -36,13 +36,14 @@
 
 #include <cstring>
 #include <cstdio>
-#include <iostream>
 
 #include "DlAbortEx.h"
 #include "fmt.h"
 #include "message.h"
 #include "A2STR.h"
 #include "a2time.h"
+#include "BufferedFile.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -60,23 +61,31 @@ static const std::string ERROR_LABEL("ERROR");
 
 Logger::Logger()
   : logLevel_(Logger::A2_DEBUG),
+    fpp_(0),
+    stdoutfpp_(new BufferedFile(stdout)),
     stdoutField_(0)
 {}
 
-Logger::~Logger() {}
+Logger::~Logger()
+{
+  delete fpp_;
+  delete stdoutfpp_;
+}
 
 void Logger::openFile(const std::string& filename)
 {
-  file_.open(filename.c_str(), std::ios::app|std::ios::binary);
-  if(!file_) {
-    throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "n/a"));
+  closeFile();
+  fpp_ = new BufferedFile(filename, BufferedFile::APPEND);
+  if(!fpp_) {
+    throw DL_ABORT_EX(fmt(EX_FILE_OPEN, utf8ToNative(filename).c_str(), "n/a"));
   }
 }
 
 void Logger::closeFile()
 {
-  if(file_.is_open()) {
-    file_.close();
+  if(fpp_) {
+    fpp_->close();
+    fpp_ = 0;
   }
 }
 
@@ -91,7 +100,7 @@ void Logger::setStdoutLogLevel(Logger::LEVEL level, bool enabled)
 
 bool Logger::levelEnabled(LEVEL level)
 {
-  return (level >= logLevel_ && file_.is_open()) || stdoutField_&level;
+  return (level >= logLevel_ && fpp_) || stdoutField_&level;
 }
 
 namespace {
@@ -116,11 +125,11 @@ const std::string& levelToString(Logger::LEVEL level)
 
 namespace {
 void writeHeader
-(std::ostream& o, Logger::LEVEL level, const char* sourceFile, int lineNum)
+(BufferedFile& fp, Logger::LEVEL level, const char* sourceFile, int lineNum)
 {
   struct timeval tv;
   gettimeofday(&tv, 0);
-  char datestr[27]; // 'YYYY-MM-DD hh:mm:ss.uuuuuu'+'\0' = 27 bytes
+  char datestr[20]; // 'YYYY-MM-DD hh:mm:ss'+'\0' = 20 bytes
   struct tm tm;
   //tv.tv_sec may not be of type time_t.
   time_t timesec = tv.tv_sec;
@@ -128,27 +137,23 @@ void writeHeader
   size_t dateLength =
     strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)20);
-  snprintf(datestr+dateLength,
-           sizeof(datestr)-dateLength,
-           ".%06ld", tv.tv_usec);
-  o << datestr << " " << levelToString(level) << " - ";
+  fp.printf("%s.%06ld %s - ", datestr, tv.tv_usec,
+            levelToString(level).c_str());
   if(sourceFile) {
-    o << "[" << sourceFile << ":" << lineNum << "] ";
+    fp.printf("[%s:%d]", sourceFile, lineNum);
   }
 }
 } // namespace
 
 namespace {
-void writeStackTrace(std::ostream& o, const std::string& stackTrace)
+void writeStackTrace(BufferedFile& fp, const std::string& stackTrace)
 {
-  o << stackTrace;
+  fp.write(stackTrace.data(), stackTrace.size());
 }
 } // namespace
 
-namespace {
-void writeLog
-(std::ostream& o,
- Logger::LEVEL level,
+void Logger::writeLog
+(Logger::LEVEL level,
  const char* sourceFile,
  int lineNum,
  const char* msg,
@@ -157,20 +162,19 @@ void writeLog
  bool toConsole)
 {
   if(toStream) {
-    writeHeader(o, level, sourceFile, lineNum);
-    o << msg << "\n";
-    writeStackTrace(o, trace);
-    o << std::flush;
+    writeHeader(*fpp_, level, sourceFile, lineNum);
+    fpp_->printf("%s\n", msg);
+    writeStackTrace(*fpp_, trace);
+    fpp_->flush();
   }
   if(toConsole) {
-    std::cout << "\n";
-    writeHeader(std::cout, level, 0, 0);
-    std::cout << msg << "\n";
-    writeStackTrace(std::cout, trace);
-    std::cout << std::flush;
+    stdoutfpp_->write("\n", 1);
+    writeHeader(*stdoutfpp_, level, 0, 0);
+    stdoutfpp_->printf("%s\n", msg);
+    writeStackTrace(*stdoutfpp_, trace);
+    stdoutfpp_->flush();
   }
 }
-} // namespace
 
 void Logger::log
 (LEVEL level,
@@ -178,8 +182,8 @@ void Logger::log
  int lineNum,
  const char* msg)
 {
-  writeLog(file_, level, sourceFile, lineNum, msg, A2STR::NIL,
-           level >= logLevel_ && file_.is_open(),
+  writeLog(level, sourceFile, lineNum, msg, A2STR::NIL,
+           level >= logLevel_ && fpp_,
            stdoutField_&level);
 }
 
@@ -199,8 +203,8 @@ void Logger::log
  const char* msg,
  const Exception& ex)
 {
-  writeLog(file_, level, sourceFile, lineNum, msg, ex.stackTrace(),
-           level >= logLevel_ && file_.is_open(),
+  writeLog(level, sourceFile, lineNum, msg, ex.stackTrace(),
+           level >= logLevel_ && fpp_,
            stdoutField_&level);
 }
 

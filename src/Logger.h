@@ -38,11 +38,11 @@
 #include "common.h"
 
 #include <string>
-#include <fstream>
 
 namespace aria2 {
 
 class Exception;
+class BufferedFile;
 
 class Logger {
 public:
@@ -55,11 +55,21 @@ public:
   };
 private:
   LEVEL logLevel_;
-  std::ofstream file_;
+  BufferedFile* fpp_;
+  BufferedFile* stdoutfpp_;
   int stdoutField_;
   // Don't allow copying
   Logger(const Logger&);
   Logger& operator=(const Logger&);
+
+  void writeLog
+  (Logger::LEVEL level,
+   const char* sourceFile,
+   int lineNum,
+   const char* msg,
+   const std::string& trace,
+   bool toStream,
+   bool toConsole);
 public:
   Logger();
 
