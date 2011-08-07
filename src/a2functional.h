@@ -206,6 +206,19 @@ public:
   }
 };
 
+template<typename T>
+class auto_delete_d {
+private:
+  T obj_;
+public:
+  auto_delete_d(T obj):obj_(obj) {}
+
+  ~auto_delete_d()
+  {
+    delete obj_;
+  }
+};
+
 template<typename T, typename R>
 class auto_delete_r {
 private:

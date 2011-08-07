@@ -34,8 +34,7 @@
 /* copyright --> */
 #include "ExpatMetalinkProcessor.h"
 
-#include <iostream>
-#include <fstream>
+#include <cstdio>
 
 #include "DefaultDiskWriter.h"
 #include "MetalinkParserStateMachine.h"
@@ -47,6 +46,8 @@
 #include "MetalinkParserState.h"
 #include "A2STR.h"
 #include "error_code.h"
+#include "BufferedFile.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -181,18 +182,20 @@ MetalinkProcessor::parseFile
 (const std::string& filename,
  const std::string& baseUri)
 {
+  BufferedFile* fp = 0;
+  auto_delete_d<BufferedFile*> deleter(fp);
   if(filename == DEV_STDIN) {
-    return parseFile(std::cin);
+    fp = new BufferedFile(stdin);
+    return parseFile(*fp);
   } else {
-    std::ifstream infile(filename.c_str(), std::ios::binary);
-    return parseFile(infile, baseUri);
+    fp = new BufferedFile(filename, BufferedFile::READ);
+    return parseFile(*fp, baseUri);
   }
 }
 
 SharedHandle<Metalinker>
 MetalinkProcessor::parseFile
-(std::istream& stream,
- const std::string& baseUri)
+(BufferedFile& fp, const std::string& baseUri)
 {
   stm_.reset(new MetalinkParserStateMachine());
   stm_->setBaseUri(baseUri);
@@ -201,16 +204,15 @@ MetalinkProcessor::parseFile
   SharedHandle<SessionData> sessionData(new SessionData(stm_));
   XML_Parser parser = createParser(sessionData);
   auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
-  while(stream) {
-    stream.read(buf, sizeof(buf));
-    if(XML_Parse(parser, buf, stream.gcount(), 0) == XML_STATUS_ERROR) {
+  while(1) {
+    size_t res = fp.read(buf, sizeof(buf));
+    if(XML_Parse(parser, buf, res, 0) == XML_STATUS_ERROR) {
       throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
                          error_code::METALINK_PARSE_ERROR);
     }
-  }
-  if(stream.bad()) {
-    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
-                       error_code::METALINK_PARSE_ERROR);
+    if(res < sizeof(buf)) {
+      break;
+    }
   }
   checkError(parser);
   return stm_->getResult();

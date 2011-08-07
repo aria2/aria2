@@ -49,17 +49,18 @@ namespace aria2 {
 class Metalinker;
 class BinaryStream;
 class MetalinkParserStateMachine;
+class BufferedFile;
 
 class MetalinkProcessor {
 private:
   SharedHandle<MetalinkParserStateMachine> stm_;
+
+  SharedHandle<Metalinker> parseFile
+  (BufferedFile& fp,
+   const std::string& baseUri = A2STR::NIL);
 public:
   SharedHandle<Metalinker> parseFile
   (const std::string& filename,
-   const std::string& baseUri = A2STR::NIL);
-
-  SharedHandle<Metalinker> parseFile
-  (std::istream& stream,
    const std::string& baseUri = A2STR::NIL);
 
   SharedHandle<Metalinker> parseFromBinaryStream
