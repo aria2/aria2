@@ -143,7 +143,7 @@ std::wstring utf8ToWChar(const std::string& src)
   }
 }
 
-std::string utf8ToNative(const std::string& src)
+std::string const std::string& src
 {
   std::wstring wsrc = utf8ToWChar(src);
   int len = wCharToAnsi(0, 0, wsrc);
@@ -1286,7 +1286,7 @@ void mkdirs(const std::string& dirpath)
     if(!dir.isDir()) {
       throw DL_ABORT_EX3
         (errNum,
-         fmt(EX_MAKE_DIR, utf8ToNative(dir.getPath()).c_str(),
+         fmt(EX_MAKE_DIR, dir.getPath().c_str(),
              safeStrerror(errNum).c_str()),
          error_code::DIR_CREATE_ERROR);
     }

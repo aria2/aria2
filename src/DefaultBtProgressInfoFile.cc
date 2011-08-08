@@ -104,20 +104,18 @@ bool DefaultBtProgressInfoFile::isTorrentDownload()
 
 #define WRITE_CHECK(fp, ptr, count)                                     \
   if(fp.write((ptr), (count)) != (count)) {                             \
-    throw DL_ABORT_EX                                                   \
-      (fmt(EX_SEGMENT_FILE_WRITE, utf8ToNative(filename_).c_str()));    \
+    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));   \
   }
 
 // Since version 0001, Integers are saved in binary form, network byte order.
 void DefaultBtProgressInfoFile::save()
 {
-  A2_LOG_INFO(fmt(MSG_SAVING_SEGMENT_FILE, utf8ToNative(filename_).c_str()));
+  A2_LOG_INFO(fmt(MSG_SAVING_SEGMENT_FILE, filename_.c_str()));
   std::string filenameTemp = filename_+"__temp";
   {
     BufferedFile fp(filenameTemp, BufferedFile::WRITE);
     if(!fp) {
-      throw DL_ABORT_EX
-        (fmt(EX_SEGMENT_FILE_WRITE, utf8ToNative(filename_).c_str()));
+      throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
     }
 #ifdef ENABLE_BITTORRENT
     bool torrentDownload = isTorrentDownload();
@@ -193,21 +191,18 @@ void DefaultBtProgressInfoFile::save()
       WRITE_CHECK(fp, (*itr)->getBitfield(), (*itr)->getBitfieldLength());
     }
     if(fp.close() == EOF) {
-      throw DL_ABORT_EX
-        (fmt(EX_SEGMENT_FILE_WRITE, utf8ToNative(filename_).c_str()));
+      throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
     }
     A2_LOG_INFO(MSG_SAVED_SEGMENT_FILE);
   }
   if(!File(filenameTemp).renameTo(filename_)) {
-    throw DL_ABORT_EX
-      (fmt(EX_SEGMENT_FILE_WRITE, utf8ToNative(filename_).c_str()));
+    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
   }
 }
 
-#define READ_CHECK(fp, ptr, count)                              \
-  if(fp.read((ptr), (count)) != (count)) {                      \
-    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ,                 \
-                          utf8ToNative(filename_).c_str()));    \
+#define READ_CHECK(fp, ptr, count)                                      \
+  if(fp.read((ptr), (count)) != (count)) {                              \
+    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ, filename_.c_str()));    \
   }
 
 // It is assumed that integers are saved as:
@@ -215,11 +210,10 @@ void DefaultBtProgressInfoFile::save()
 // 2) network byte order if version == 0001
 void DefaultBtProgressInfoFile::load() 
 {
-  A2_LOG_INFO(fmt(MSG_LOADING_SEGMENT_FILE, utf8ToNative(filename_).c_str()));
+  A2_LOG_INFO(fmt(MSG_LOADING_SEGMENT_FILE, filename_.c_str()));
   BufferedFile fp(filename_, BufferedFile::READ);
   if(!fp) {
-    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ,
-                          utf8ToNative(filename_).c_str()));
+    throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ, filename_.c_str()));
   }
   unsigned char versionBuf[2];
   READ_CHECK(fp, versionBuf, sizeof(versionBuf));
@@ -231,8 +225,7 @@ void DefaultBtProgressInfoFile::load()
     version = 1;
   } else {
     throw DL_ABORT_EX
-      (fmt("Unsupported ctrl file version: %s",
-           versionHex.c_str()));
+      (fmt("Unsupported ctrl file version: %s", versionHex.c_str()));
   }
   unsigned char extension[4];
   READ_CHECK(fp, extension, sizeof(extension));
@@ -249,8 +242,7 @@ void DefaultBtProgressInfoFile::load()
   }
   if((infoHashLength < 0) ||
      ((infoHashLength == 0) && infoHashCheckEnabled)) {
-    throw DL_ABORT_EX
-      (fmt("Invalid info hash length: %d", infoHashLength));
+    throw DL_ABORT_EX(fmt("Invalid info hash length: %d", infoHashLength));
   }
   if(infoHashLength > 0) {
     array_ptr<unsigned char> savedInfoHash(new unsigned char[infoHashLength]);
@@ -333,8 +325,7 @@ void DefaultBtProgressInfoFile::load()
         index = ntohl(index);
       }
       if(!(index < dctx_->getNumPieces())) {
-        throw DL_ABORT_EX
-          (fmt("piece index out of range: %u", index));
+        throw DL_ABORT_EX(fmt("piece index out of range: %u", index));
       }
       uint32_t length;
       READ_CHECK(fp, &length, sizeof(length));
@@ -342,8 +333,7 @@ void DefaultBtProgressInfoFile::load()
         length = ntohl(length);
       }
       if(!(length <=dctx_->getPieceLength())) {
-        throw DL_ABORT_EX
-          (fmt("piece length out of range: %u", length));
+        throw DL_ABORT_EX(fmt("piece length out of range: %u", length));
       }
       SharedHandle<Piece> piece(new Piece(index, length));
       uint32_t bitfieldLength;
@@ -408,12 +398,10 @@ bool DefaultBtProgressInfoFile::exists()
 {
   File f(filename_);
   if(f.isFile()) {
-    A2_LOG_INFO(fmt(MSG_SEGMENT_FILE_EXISTS,
-                    utf8ToNative(filename_).c_str()));
+    A2_LOG_INFO(fmt(MSG_SEGMENT_FILE_EXISTS, filename_.c_str()));
     return true;
   } else {
-    A2_LOG_INFO(fmt(MSG_SEGMENT_FILE_DOES_NOT_EXIST,
-                    utf8ToNative(filename_).c_str()));
+    A2_LOG_INFO(fmt(MSG_SEGMENT_FILE_DOES_NOT_EXIST, filename_.c_str()));
     return false;
   }
 }

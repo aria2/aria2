@@ -197,8 +197,7 @@ Metalink2RequestGroup::createRequestGroup
         entryGroups.begin(), eoi = entryGroups.end(); itr != eoi; ++itr) {
     const std::string& metaurl = (*itr).first;
     const std::vector<SharedHandle<MetalinkEntry> >& mes = (*itr).second;
-    A2_LOG_INFO(fmt("Processing metaurl group metaurl=%s",
-                    utf8ToNative(metaurl).c_str()));
+    A2_LOG_INFO(fmt("Processing metaurl group metaurl=%s", metaurl.c_str()));
 #ifdef ENABLE_BITTORRENT
     SharedHandle<RequestGroup> torrentRg;
     if(!metaurl.empty()) {
@@ -234,8 +233,7 @@ Metalink2RequestGroup::createRequestGroup
     SharedHandle<DownloadContext> dctx;
     if(mes.size() == 1) {
       SharedHandle<MetalinkEntry> entry = mes[0];
-      A2_LOG_INFO(fmt(MSG_METALINK_QUEUEING,
-                      utf8ToNative(entry->getPath()).c_str()));
+      A2_LOG_INFO(fmt(MSG_METALINK_QUEUEING, entry->getPath().c_str()));
       entry->reorderResourcesByPriority();
       std::vector<std::string> uris;
       std::for_each(entry->resources.begin(), entry->resources.end(),
@@ -289,9 +287,8 @@ Metalink2RequestGroup::createRequestGroup
       for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
             mes.begin(), eoi = mes.end(); i != eoi; ++i) {
         A2_LOG_INFO(fmt("Metalink: Queueing %s for download as a member.",
-                        utf8ToNative((*i)->getPath()).c_str()));
-        A2_LOG_DEBUG(fmt("originalName = %s",
-                         utf8ToNative((*i)->metaurls[0]->name).c_str()));
+                        (*i)->getPath().c_str()));
+        A2_LOG_DEBUG(fmt("originalName = %s", (*i)->metaurls[0]->name.c_str()));
         (*i)->reorderResourcesByPriority();
         std::vector<std::string> uris;
         std::for_each((*i)->resources.begin(), (*i)->resources.end(),

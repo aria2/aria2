@@ -249,7 +249,7 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
           A2_LOG_NOTICE
             (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
                  util::itos(gid_).c_str(),
-                 utf8ToNative(downloadContext_->getBasePath()).c_str()));
+                 downloadContext_->getBasePath().c_str()));
         }
     } else {
       checkEntry.reset(new StreamCheckIntegrityEntry(this));
@@ -271,7 +271,7 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
         A2_LOG_NOTICE
           (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
                util::itos(gid_).c_str(),
-               utf8ToNative(downloadContext_->getBasePath()).c_str()));
+               downloadContext_->getBasePath().c_str()));
       }
   } else {
     loadAndOpenFile(infoFile);
@@ -314,7 +314,7 @@ void RequestGroup::createInitialCommand
         if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
           throw DOWNLOAD_FAILURE_EXCEPTION2
             (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-                 utf8ToNative(downloadContext_->getBasePath()).c_str()),
+                 downloadContext_->getBasePath().c_str()),
              error_code::DUPLICATE_DOWNLOAD);
         }
         initPieceStorage();
@@ -421,7 +421,7 @@ void RequestGroup::createInitialCommand
             // TODO we need this->haltRequested = true?
             throw DOWNLOAD_FAILURE_EXCEPTION2
               (fmt(MSG_FILE_ALREADY_EXISTS,
-                   utf8ToNative(downloadContext_->getBasePath()).c_str()),
+                   downloadContext_->getBasePath().c_str()),
                error_code::FILE_ALREADY_EXISTS);
           } else {
             pieceStorage_->getDiskAdaptor()->openFile();
@@ -486,7 +486,7 @@ void RequestGroup::createInitialCommand
       if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
         throw DOWNLOAD_FAILURE_EXCEPTION2
           (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-               utf8ToNative(downloadContext_->getBasePath()).c_str()),
+               downloadContext_->getBasePath().c_str()),
            error_code::DUPLICATE_DOWNLOAD);
       }
       SharedHandle<BtProgressInfoFile> progressInfoFile
@@ -513,7 +513,7 @@ void RequestGroup::createInitialCommand
     if(e->getRequestGroupMan()->isSameFileBeingDownloaded(this)) {
       throw DOWNLOAD_FAILURE_EXCEPTION2
         (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-             utf8ToNative(downloadContext_->getBasePath()).c_str()),
+             downloadContext_->getBasePath().c_str()),
          error_code::DUPLICATE_DOWNLOAD);
     }
     initPieceStorage();
@@ -537,7 +537,7 @@ void RequestGroup::createInitialCommand
           // TODO we need this->haltRequested = true?
           throw DOWNLOAD_FAILURE_EXCEPTION2
             (fmt(MSG_FILE_ALREADY_EXISTS,
-                 utf8ToNative(downloadContext_->getBasePath()).c_str()),
+                 downloadContext_->getBasePath().c_str()),
              error_code::FILE_ALREADY_EXISTS);
         } else {
           pieceStorage_->getDiskAdaptor()->openFile();
@@ -722,7 +722,7 @@ void RequestGroup::removeDefunctControlFile
     progressInfoFile->removeFile();
     A2_LOG_NOTICE(fmt(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
                       progressInfoFile->getFilename().c_str(),
-                      utf8ToNative(downloadContext_->getBasePath()).c_str()));
+                      downloadContext_->getBasePath().c_str()));
   }
 }
 
@@ -771,18 +771,15 @@ void RequestGroup::shouldCancelDownloadForSafety()
   if(outfile.exists()) {
     if(option_->getAsBool(PREF_AUTO_FILE_RENAMING)) {
       if(tryAutoFileRenaming()) {
-        A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED,
-                          utf8ToNative(getFirstFilePath()).c_str()));
+        A2_LOG_NOTICE(fmt(MSG_FILE_RENAMED, getFirstFilePath().c_str()));
       } else {
         throw DOWNLOAD_FAILURE_EXCEPTION2
-          (fmt("File renaming failed: %s",
-               utf8ToNative(getFirstFilePath()).c_str()),
+          (fmt("File renaming failed: %s", getFirstFilePath().c_str()),
            error_code::FILE_RENAMING_FAILED);
       }
     } else {
       throw DOWNLOAD_FAILURE_EXCEPTION2
-        (fmt(MSG_FILE_ALREADY_EXISTS,
-             utf8ToNative(getFirstFilePath()).c_str()),
+        (fmt(MSG_FILE_ALREADY_EXISTS, getFirstFilePath().c_str()),
          error_code::FILE_ALREADY_EXISTS);
     }
   }
@@ -1039,7 +1036,7 @@ void RequestGroup::releaseRuntimeResource(DownloadEngine* e)
 void RequestGroup::preDownloadProcessing()
 {
   A2_LOG_DEBUG(fmt("Finding PreDownloadHandler for path %s.",
-                   utf8ToNative(getFirstFilePath()).c_str()));
+                   getFirstFilePath().c_str()));
   try {
     for(std::vector<SharedHandle<PreDownloadHandler> >::const_iterator itr =
           preDownloadHandlers_.begin(), eoi = preDownloadHandlers_.end();
@@ -1061,7 +1058,7 @@ void RequestGroup::postDownloadProcessing
 (std::vector<SharedHandle<RequestGroup> >& groups)
 {
   A2_LOG_DEBUG(fmt("Finding PostDownloadHandler for path %s.",
-                   utf8ToNative(getFirstFilePath()).c_str()));
+                   getFirstFilePath().c_str()));
   try {
     for(std::vector<SharedHandle<PostDownloadHandler> >::const_iterator itr =
           postDownloadHandlers_.begin(), eoi = postDownloadHandlers_.end();
@@ -1203,7 +1200,7 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 void RequestGroup::reportDownloadFinished()
 {
   A2_LOG_NOTICE(fmt(MSG_FILE_DOWNLOAD_COMPLETED,
-                    utf8ToNative(downloadContext_->getBasePath()).c_str()));
+                    downloadContext_->getBasePath().c_str()));
   uriSelector_->resetCounters();
 #ifdef ENABLE_BITTORRENT
   if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {

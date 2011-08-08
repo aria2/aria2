@@ -96,8 +96,7 @@ bool FileAllocationCommand::handleException(Exception& e)
   A2_LOG_ERROR
     (fmt(MSG_DOWNLOAD_NOT_COMPLETE,
          getCuid(),
-         utf8ToNative(getRequestGroup()->getDownloadContext()
-                      ->getBasePath()).c_str()));
+         getRequestGroup()->getDownloadContext()->getBasePath().c_str()));
   return true;
 }
 

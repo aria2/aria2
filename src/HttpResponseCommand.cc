@@ -189,7 +189,7 @@ bool HttpResponseCommand::executeInternal()
     A2_LOG_NOTICE
       (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
            util::itos(getRequestGroup()->getGID()).c_str(),
-           utf8ToNative(getRequestGroup()->getFirstFilePath()).c_str()));
+           getRequestGroup()->getFirstFilePath().c_str()));
     poolConnection();
     getFileEntry()->poolRequest(getRequest());
     return true;
@@ -258,7 +258,7 @@ bool HttpResponseCommand::executeInternal()
        isSameFileBeingDownloaded(getRequestGroup())) {
       throw DOWNLOAD_FAILURE_EXCEPTION2
         (fmt(EX_DUPLICATE_FILE_DOWNLOAD,
-             utf8ToNative(getRequestGroup()->getFirstFilePath()).c_str()),
+             getRequestGroup()->getFirstFilePath().c_str()),
          error_code::DUPLICATE_DOWNLOAD);
     }
     // update last modified time
@@ -442,7 +442,7 @@ bool HttpResponseCommand::handleOtherEncoding
     A2_LOG_NOTICE
       (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
            util::itos(getRequestGroup()->getGID()).c_str(),
-           utf8ToNative(getRequestGroup()->getFirstFilePath()).c_str()));
+           getRequestGroup()->getFirstFilePath().c_str()));
     poolConnection();
     return true;
   }

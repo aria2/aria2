@@ -343,8 +343,7 @@ public:
           A2_LOG_NOTICE
             (fmt("Download GID#%s not complete: %s",
                  util::itos(group->getGID()).c_str(),
-                 utf8ToNative(group->getDownloadContext()
-                              ->getBasePath()).c_str()));
+                 group->getDownloadContext()->getBasePath().c_str()));
           group->saveControlFile();
         }
       } catch(RecoverableException& ex) {

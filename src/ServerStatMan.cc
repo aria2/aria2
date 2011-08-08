@@ -94,7 +94,7 @@ bool ServerStatMan::save(const std::string& filename) const
     BufferedFile fp(tempfile, BufferedFile::WRITE);
     if(!fp) {
       A2_LOG_ERROR(fmt(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
-                       utf8ToNative(filename).c_str()));
+                       filename.c_str()));
       return false;
     }
     for(std::deque<SharedHandle<ServerStat> >::const_iterator i =
@@ -103,22 +103,19 @@ bool ServerStatMan::save(const std::string& filename) const
       l += "\n";
       if(fp.write(l.data(), l.size()) != l.size()) {
         A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
-                         utf8ToNative(filename).c_str()));
+                         filename.c_str()));
       }
     }
     if(fp.close() == EOF) {
-      A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
-                       utf8ToNative(filename).c_str()));
+      A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
       return false;
     }
   }
   if(File(tempfile).renameTo(filename)) {
-    A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_SAVED,
-                      utf8ToNative(filename).c_str()));
+    A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_SAVED, filename.c_str()));
     return true;
   } else {
-    A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED,
-                     utf8ToNative(filename).c_str()));
+    A2_LOG_ERROR(fmt(MSG_WRITING_SERVER_STAT_FILE_FAILED, filename.c_str()));
     return false;
   }
 }
@@ -137,7 +134,7 @@ bool ServerStatMan::load(const std::string& filename)
   BufferedFile fp(filename, BufferedFile::READ);
   if(!fp) {
     A2_LOG_ERROR(fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED,
-                     utf8ToNative(filename).c_str()));
+                     filename.c_str()));
     return false;
   }
   char buf[4096];
@@ -147,7 +144,7 @@ bool ServerStatMan::load(const std::string& filename)
         break;
       } else {
         A2_LOG_ERROR(fmt(MSG_READING_SERVER_STAT_FILE_FAILED,
-                         utf8ToNative(filename).c_str()));
+                         filename.c_str()));
         return false;
       }
     }
@@ -191,7 +188,7 @@ bool ServerStatMan::load(const std::string& filename)
       continue;
     }
   }
-  A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_LOADED, utf8ToNative(filename).c_str()));
+  A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_LOADED, filename.c_str()));
   return true;
 }
 

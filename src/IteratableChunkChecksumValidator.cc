@@ -143,7 +143,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
                                                          curoffset);
     if(r == 0 || r < static_cast<size_t>(woffset)) {
       throw DL_ABORT_EX
-        (fmt(EX_FILE_READ, utf8ToNative(dctx_->getBasePath()).c_str(),
+        (fmt(EX_FILE_READ, dctx_->getBasePath().c_str(),
              "data is too short"));
     }
     size_t wlength;

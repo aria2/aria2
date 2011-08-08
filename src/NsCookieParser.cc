@@ -98,8 +98,7 @@ std::vector<Cookie> NsCookieParser::parse
 {
   BufferedFile fp(filename, BufferedFile::READ);
   if(!fp) {
-    throw DL_ABORT_EX(fmt("Failed to open file %s",
-                          utf8ToNative(filename).c_str()));
+    throw DL_ABORT_EX(fmt("Failed to open file %s", filename.c_str()));
   }
   std::vector<Cookie> cookies;
   char buf[8192];

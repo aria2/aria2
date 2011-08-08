@@ -341,8 +341,7 @@ bool CookieStorage::load(const std::string& filename, time_t now)
   {
     BufferedFile fp(filename, BufferedFile::READ);
     if(!fp) {
-      A2_LOG_ERROR(fmt("Failed to open cookie file %s",
-                     utf8ToNative(filename).c_str()));
+      A2_LOG_ERROR(fmt("Failed to open cookie file %s", filename.c_str()));
       return false;
     }
     headlen = fp.read(header, sizeof(header));
@@ -372,8 +371,7 @@ bool CookieStorage::load(const std::string& filename, time_t now)
     }
     return true;
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR(fmt("Failed to load cookies from %s",
-                     utf8ToNative(filename).c_str()));
+    A2_LOG_ERROR(fmt("Failed to load cookies from %s", filename.c_str()));
     return false;
   }
 }
@@ -384,21 +382,18 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
   {
     BufferedFile fp(tempfilename, BufferedFile::WRITE);
     if(!fp) {
-      A2_LOG_ERROR(fmt("Cannot create cookie file %s",
-                       utf8ToNative(filename).c_str()));
+      A2_LOG_ERROR(fmt("Cannot create cookie file %s", filename.c_str()));
       return false;
     }
     for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
           eoi = domains_.end(); i != eoi; ++i) {
       if(!(*i).writeCookie(fp)) {
-        A2_LOG_ERROR(fmt("Failed to save cookies to %s",
-                         utf8ToNative(filename).c_str()));
+        A2_LOG_ERROR(fmt("Failed to save cookies to %s", filename.c_str()));
         return false;
       }
     }
     if(fp.close() == EOF) {
-      A2_LOG_ERROR(fmt("Failed to save cookies to %s",
-                       utf8ToNative(filename).c_str()));
+      A2_LOG_ERROR(fmt("Failed to save cookies to %s", filename.c_str()));
       return false;
     }  
   }
@@ -406,8 +401,8 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
     return true;
   } else {
     A2_LOG_ERROR(fmt("Could not rename file %s as %s",
-                     utf8ToNative(tempfilename).c_str(),
-                     utf8ToNative(filename).c_str()));
+                     tempfilename.c_str(),
+                     filename.c_str()));
     return false;
   }
 }

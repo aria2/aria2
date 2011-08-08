@@ -69,7 +69,7 @@ void BtPostDownloadHandler::getNextRequestGroups
  RequestGroup* requestGroup)
 {
   A2_LOG_INFO(fmt("Generating RequestGroups for Torrent file %s",
-                  utf8ToNative(requestGroup->getFirstFilePath()).c_str()));
+                  requestGroup->getFirstFilePath().c_str()));
   std::string content;
   try {
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();

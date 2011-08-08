@@ -77,7 +77,7 @@ void Logger::openFile(const std::string& filename)
   closeFile();
   fpp_ = new BufferedFile(filename, BufferedFile::APPEND);
   if(!fpp_) {
-    throw DL_ABORT_EX(fmt(EX_FILE_OPEN, utf8ToNative(filename).c_str(), "n/a"));
+    throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "n/a"));
   }
 }
 

@@ -187,7 +187,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
           pieceLength_*pieceLength_;
         A2_LOG_DEBUG(fmt("Checking adjacent backward file to %s"
                          " whose lastPieceStartOffset+pieceLength_=%lld",
-                         utf8ToNative(fileEntry->getPath()).c_str(),
+                         fileEntry->getPath().c_str(),
                          static_cast<long long int>
                          (lastPieceStartOffset+pieceLength_)));
         ++itr;
@@ -198,14 +198,14 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
                (*itr)->getFileEntry()->getLength() == 0); ++itr) {
           A2_LOG_DEBUG
             (fmt("file=%s, offset=%lld",
-                 utf8ToNative((*itr)->getFileEntry()->getPath()).c_str(),
+                 (*itr)->getFileEntry()->getPath().c_str(),
                  static_cast<long long int>
                  ((*itr)->getFileEntry()->getOffset())));
           if((*itr)->getFileEntry()->getOffset() <
              static_cast<off_t>(lastPieceStartOffset+pieceLength_)) {
             A2_LOG_DEBUG
               (fmt("%s needs diskwriter",
-                   utf8ToNative((*itr)->getFileEntry()->getPath()).c_str()));
+                   (*itr)->getFileEntry()->getPath().c_str()));
             dwreq[(*itr)->getFileEntry()->getPath()] = true;
           } else {
             break;
@@ -226,7 +226,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
        dwreq.find((*i)->getFileEntry()->getPath()) != dwreq.end() ||
        (*i)->fileExists()) {
       A2_LOG_DEBUG(fmt("Creating DiskWriter for filename=%s",
-                       utf8ToNative((*i)->getFilePath()).c_str()));
+                       (*i)->getFilePath().c_str()));
       (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
       if(readOnly_) {
         (*i)->getDiskWriter()->enableReadOnly();

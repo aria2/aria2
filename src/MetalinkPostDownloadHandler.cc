@@ -97,7 +97,7 @@ void MetalinkPostDownloadHandler::getNextRequestGroups
  RequestGroup* requestGroup)
 {
   A2_LOG_DEBUG(fmt("Generating RequestGroups for Metalink file %s",
-                   utf8ToNative(requestGroup->getFirstFilePath()).c_str()));
+                   requestGroup->getFirstFilePath().c_str()));
   SharedHandle<DiskAdaptor> diskAdaptor =
     requestGroup->getPieceStorage()->getDiskAdaptor();
   try {

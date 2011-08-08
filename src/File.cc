@@ -148,14 +148,13 @@ bool File::mkdirs() {
     }
 #endif // __MINGW32__
     std::string dir = std::string(begin, j);
-    A2_LOG_DEBUG(fmt("Making directory %s", utf8ToNative(dir).c_str()));
+    A2_LOG_DEBUG(fmt("Making directory %s", dir.c_str()));
     if(File(dir).isDir()) {
-      A2_LOG_DEBUG(fmt("%s exists and is a directory.",
-                       utf8ToNative(dir).c_str()));
+      A2_LOG_DEBUG(fmt("%s exists and is a directory.", dir.c_str()));
       continue;
     }
     if(a2mkdir(utf8ToWChar(dir).c_str(), DIR_OPEN_MODE) == -1) {
-      A2_LOG_DEBUG(fmt("Failed to create %s", utf8ToNative(dir).c_str()));
+      A2_LOG_DEBUG(fmt("Failed to create %s", dir.c_str()));
       return false;
     }
   }

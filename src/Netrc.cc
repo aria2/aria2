@@ -139,7 +139,7 @@ void Netrc::parse(const std::string& path)
   authenticators_.clear();
   BufferedFile fp(path, BufferedFile::READ);
   if(!fp) {
-    throw DL_ABORT_EX(fmt("Cannot open file: %s", utf8ToNative(path).c_str()));
+    throw DL_ABORT_EX(fmt("Cannot open file: %s", path.c_str()));
   }
   enum STATE {
     GET_TOKEN,

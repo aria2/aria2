@@ -135,7 +135,7 @@ bool BtDependency::resolve()
           if(d == ctxFilesEnd) {
             throw DL_ABORT_EX
               (fmt("No entry %s in torrent file",
-                   utf8ToNative((*s)->getOriginalName()).c_str()));
+                   (*s)->getOriginalName().c_str()));
           }
           copyValues(*d, *s);
         }
