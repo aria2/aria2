@@ -40,10 +40,6 @@
 #include <cstring>
 #include <cassert>
 
-#ifdef __MINGW32__
-# include <windows.h>
-#endif // __MINGW32__
-
 #include "File.h"
 #include "util.h"
 #include "message.h"

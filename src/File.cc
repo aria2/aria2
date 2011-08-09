@@ -52,11 +52,6 @@
 
 namespace aria2 {
 
-#ifdef __MINGW32__
-# define WIN32_LEAN_AND_MEAN
-# include <windows.h>
-#endif // __MINGW32__
-
 File::File(const std::string& name) : name_(name) {}
 
 File::File(const File& c) : name_(c.name_) {}

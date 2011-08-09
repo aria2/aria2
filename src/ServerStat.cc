@@ -188,7 +188,7 @@ void ServerStat::setOK()
 
 void ServerStat::setError()
 {
-  setStatusInternal(ERROR);
+  setStatusInternal(A2_ERROR);
 }
 
 bool ServerStat::operator<(const ServerStat& serverStat) const

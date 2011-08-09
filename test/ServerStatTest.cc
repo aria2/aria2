@@ -33,10 +33,10 @@ void ServerStatTest::testSetStatus()
   ServerStat ss("localhost", "http");
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, ss.getStatus());
   ss.setStatus("ERROR");
-  CPPUNIT_ASSERT_EQUAL(ServerStat::ERROR, ss.getStatus());
+  CPPUNIT_ASSERT_EQUAL(ServerStat::A2_ERROR, ss.getStatus());
   // See undefined status string will not change current status.
   ss.setStatus("__BADSTATUS");
-  CPPUNIT_ASSERT_EQUAL(ServerStat::ERROR, ss.getStatus());
+  CPPUNIT_ASSERT_EQUAL(ServerStat::A2_ERROR, ss.getStatus());
   ss.setStatus("OK");
   CPPUNIT_ASSERT_EQUAL(ServerStat::OK, ss.getStatus());
   // See undefined status string will not change current status.

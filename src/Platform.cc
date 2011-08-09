@@ -129,9 +129,8 @@ bool Platform::setUp()
 #ifdef CARES_HAVE_ARES_LIBRARY_INIT
   int aresErrorCode;
   if((aresErrorCode = ares_library_init(ARES_LIB_INIT_ALL)) != 0) {
-    std::cerr << "ares_library_init() failed:"
-              << ares_strerror(aresErrorCode)
-              << std::endl;
+    global::cerr->printf("ares_library_init() failed:%s\n",
+                         ares_strerror(aresErrorCode));
   }
 #endif // CARES_HAVE_ARES_LIBRARY_INIT
 

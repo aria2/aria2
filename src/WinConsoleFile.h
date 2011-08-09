@@ -42,12 +42,13 @@ namespace aria2 {
 // This is a wrapper class for WriteConsoleW
 class WinConsoleFile:public OutputFile {
 public:
-  WinConsoleFile();
+  WinConsoleFile(DWORD stdHandle);
   virtual ~WinConsoleFile();
   virtual size_t write(const char* str);
   virtual int printf(const char* format, ...);
   virtual int flush();
 private:
+  DWORD stdHandle_;
   // Don't allow copying
   WinConsoleFile(const WinConsoleFile&);
   WinConsoleFile& operator=(const WinConsoleFile&);

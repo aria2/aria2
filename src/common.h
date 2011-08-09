@@ -59,6 +59,14 @@ typedef _off_t off_t;
 #endif
 #endif // __MINGW32__
 
+#ifdef __MINGW32__
+# define WIN32_LEAN_AND_MEAN
+# ifndef WINVER
+#  define WINVER 0x501u
+# endif // WINVER
+# include <windows.h>
+#endif // __MINGW32__
+
 #ifdef ENABLE_NLS
 // If we put #include <gettext.h> outside of #ifdef ENABLE_NLS and
 // --disable-nls is used, gettext(msgid) is defined as ((const char *)

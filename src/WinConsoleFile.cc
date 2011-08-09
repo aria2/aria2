@@ -39,37 +39,34 @@
 #include <cstdarg>
 #include <string>
 
-#ifdef __MINGW32__
-# define WIN32_LEAN_AND_MEAN
-# include <windows.h>
-#endif // __MINGW32__
-
 #include "a2io.h"
 #include "util.h"
 
 namespace aria2 {
 
-WinConsoleFile::WinConsoleFile() {}
+WinConsoleFile::WinConsoleFile(DWORD stdHandle)
+  : stdHandle_(stdHandle)
+{}
 
 WinConsoleFile::~WinConsoleFile() {}
 
 namespace {
-bool console()
+bool console(DWORD stdHandle)
 {
   DWORD mode;
-  return GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &mode);
+  return GetConsoleMode(GetStdHandle(stdHandle), &mode);
 }
 } // namespace
 
 size_t WinConsoleFile::write(const char* str)
 {
   DWORD written;
-  if(console()) {
+  if(console(stdHandle_)) {
     std::wstring msg = utf8ToWChar(str);
-    WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE),
+    WriteConsoleW(GetStdHandle(stdHandle_),
                   msg.c_str(), msg.size(), &written, 0);
   } else {
-    WriteFile(GetStdHandle(STD_OUTPUT_HANDLE),
+    WriteFile(GetStdHandle(stdHandle_),
               str, strlen(str), &written, 0);
   }
   return written;
@@ -86,12 +83,12 @@ int WinConsoleFile::printf(const char* format, ...)
     return 0;
   }
   DWORD written;
-  if(console()) {
+  if(console(stdHandle_)) {
     std::wstring msg = utf8ToWChar(buf);
-    WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE),
+    WriteConsoleW(GetStdHandle(stdHandle_),
                   msg.c_str(), msg.size(), &written, 0);
   } else {
-    WriteFile(GetStdHandle(STD_OUTPUT_HANDLE),
+    WriteFile(GetStdHandle(stdHandle_),
               buf, r, &written, 0);
   }
   return written;

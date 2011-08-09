@@ -52,7 +52,7 @@ class ServerStat {
 public:
   enum STATUS {
     OK = 0,
-    ERROR
+    A2_ERROR
   };
   
   static const std::string STATUS_STRING[];
@@ -137,7 +137,7 @@ public:
 
   bool isError() const
   {
-    return status_ == ERROR;
+    return status_ == A2_ERROR;
   }
 
   // set status ERROR and update lastUpdated_

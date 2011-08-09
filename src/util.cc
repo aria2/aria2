@@ -48,12 +48,6 @@
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
-#ifndef HAVE_SLEEP
-# ifdef HAVE_WINSOCK_H
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-# endif // HAVE_WINSOCK_H
-#endif // HAVE_SLEEP
 
 #ifdef HAVE_LIBGCRYPT
 # include <gcrypt.h>

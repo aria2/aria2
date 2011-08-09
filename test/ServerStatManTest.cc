@@ -71,7 +71,7 @@ void ServerStatManTest::testSave()
   localhost_ftp->setLastUpdated(Time(1210000001));
   SharedHandle<ServerStat> mirror(new ServerStat("mirror", "http"));
   mirror->setDownloadSpeed(0);
-  mirror->setStatus(ServerStat::ERROR);
+  mirror->setStatus(ServerStat::A2_ERROR);
   mirror->setLastUpdated(Time(1210000002));
 
   ServerStatMan ssm;
@@ -141,7 +141,7 @@ void ServerStatManTest::testLoad()
 
   SharedHandle<ServerStat> mirror = ssm.find("mirror", "http");
   CPPUNIT_ASSERT(mirror);
-  CPPUNIT_ASSERT_EQUAL(ServerStat::ERROR, mirror->getStatus());
+  CPPUNIT_ASSERT_EQUAL(ServerStat::A2_ERROR, mirror->getStatus());
 }
 
 void ServerStatManTest::testRemoveStaleServerStat()
@@ -155,7 +155,7 @@ void ServerStatManTest::testRemoveStaleServerStat()
   localhost_ftp->setLastUpdated(Time(1210000001));
   SharedHandle<ServerStat> mirror(new ServerStat("mirror", "http"));
   mirror->setDownloadSpeed(0);
-  mirror->setStatus(ServerStat::ERROR);
+  mirror->setStatus(ServerStat::A2_ERROR);
   mirror->setLastUpdated(Time(1210000002));
 
   ServerStatMan ssm;

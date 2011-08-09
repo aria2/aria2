@@ -44,12 +44,23 @@ SharedHandle<WinConsoleFile> cout;
 SharedHandle<BufferedFile> cout;
 #endif // !__MINGW32__
 
+#ifdef __MINGW32__
+SharedHandle<WinConsoleFile> cerr;
+#else // !__MINGW32__
+SharedHandle<BufferedFile> cerr;
+#endif // !__MINGW32__
+
 void initConsole()
 {
 #ifdef __MINGW32__
-  cout.reset(new WinConsoleFile());
+  cout.reset(new WinConsoleFile(STD_INPUT_HANDLE));
 #else // !__MINGW32__
   cout.reset(new BufferedFile(stdout));
+#endif // !__MINGW32__
+#ifdef __MINGW32__
+  cerr.reset(new WinConsoleFile(STD_ERROR_HANDLE));
+#else // !__MINGW32__
+  cerr.reset(new BufferedFile(stderr));
 #endif // !__MINGW32__
 }
 
