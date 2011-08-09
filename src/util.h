@@ -89,6 +89,8 @@ inline uint64_t hton64(uint64_t x) { return byteswap64(x); }
 #ifdef __MINGW32__
 std::wstring utf8ToWChar(const std::string& src);
 
+std::wstring utf8ToWChar(const char* str);
+
 std::string utf8ToNative(const std::string& src);
 
 std::string wCharToUtf8(const std::wstring& wsrc);
@@ -261,20 +263,22 @@ int64_t getRealSize(const std::string& sizeWithUnit);
 
 std::string abbrevSize(int64_t size);
 
-template<typename InputIterator>
+template<typename InputIterator, typename Output>
 void toStream
-(InputIterator first, InputIterator last, std::ostream& os)
+(InputIterator first, InputIterator last, Output& os)
 {
-  os << _("Files:") << "\n";
-  os << "idx|path/length" << "\n";
-  os << "===+===========================================================================" << "\n";
+  os.printf("%s\n"
+            "idx|path/length\n"
+            "===+===========================================================================\n", _("Files:"));
   int32_t count = 1;
   for(; first != last; ++first, ++count) {
-    os << std::setw(3) << count << "|"
-       << utf8ToNative((*first)->getPath()) << "\n";
-    os << "   |" << util::abbrevSize((*first)->getLength()) << "B ("
-       << util::uitos((*first)->getLength(), true) << ")\n";
-    os << "---+---------------------------------------------------------------------------" << "\n";
+    os.printf("%3d|%s\n"
+              "   |%sB (%s)\n"
+              "---+---------------------------------------------------------------------------\n",
+              count,
+              (*first)->getPath().c_str(),
+              util::abbrevSize((*first)->getLength()).c_str(),
+              util::uitos((*first)->getLength(), true).c_str());
   }
 }
 

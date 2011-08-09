@@ -44,6 +44,7 @@
 #include "a2time.h"
 #include "BufferedFile.h"
 #include "util.h"
+#include "console.h"
 
 namespace aria2 {
 
@@ -61,31 +62,30 @@ static const std::string ERROR_LABEL("ERROR");
 
 Logger::Logger()
   : logLevel_(Logger::A2_DEBUG),
-    fpp_(0),
-    stdoutfpp_(new BufferedFile(stdout)),
     stdoutField_(0)
 {}
 
 Logger::~Logger()
 {
-  delete fpp_;
-  delete stdoutfpp_;
 }
 
 void Logger::openFile(const std::string& filename)
 {
   closeFile();
-  fpp_ = new BufferedFile(filename, BufferedFile::APPEND);
-  if(!fpp_) {
-    throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "n/a"));
+  if(filename == DEV_STDOUT) {
+    fpp_ = global::cout;
+  } else {
+    fpp_.reset(new BufferedFile(filename, BufferedFile::APPEND));
+    if(!fpp_) {
+      throw DL_ABORT_EX(fmt(EX_FILE_OPEN, filename.c_str(), "n/a"));
+    }
   }
 }
 
 void Logger::closeFile()
 {
   if(fpp_) {
-    fpp_->close();
-    fpp_ = 0;
+    fpp_.reset();
   }
 }
 
@@ -124,8 +124,9 @@ const std::string& levelToString(Logger::LEVEL level)
 } // namespace
 
 namespace {
+template<typename Output>
 void writeHeader
-(BufferedFile& fp, Logger::LEVEL level, const char* sourceFile, int lineNum)
+(Output& fp, Logger::LEVEL level, const char* sourceFile, int lineNum)
 {
   struct timeval tv;
   gettimeofday(&tv, 0);
@@ -146,9 +147,10 @@ void writeHeader
 } // namespace
 
 namespace {
-void writeStackTrace(BufferedFile& fp, const std::string& stackTrace)
+template<typename Output>
+void writeStackTrace(Output& fp, const std::string& stackTrace)
 {
-  fp.write(stackTrace.data(), stackTrace.size());
+  fp.write(stackTrace.c_str());
 }
 } // namespace
 
@@ -168,11 +170,11 @@ void Logger::writeLog
     fpp_->flush();
   }
   if(toConsole) {
-    stdoutfpp_->write("\n", 1);
-    writeHeader(*stdoutfpp_, level, 0, 0);
-    stdoutfpp_->printf("%s\n", msg);
-    writeStackTrace(*stdoutfpp_, trace);
-    stdoutfpp_->flush();
+    global::cout->printf("\n");
+    writeHeader(*global::cout, level, 0, 0);
+    global::cout->printf("%s\n", msg);
+    writeStackTrace(*global::cout, trace);
+    global::cout->flush();
   }
 }
 

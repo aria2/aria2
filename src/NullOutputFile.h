@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,52 +32,21 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MULTI_URL_REQUEST_INFO_H
-#define D_MULTI_URL_REQUEST_INFO_H
+#ifndef D_NULL_OUTPUT_FILE_H
+#define D_NULL_OUTPUT_FILE_H
 
-#include "common.h"
-
-#include <vector>
-
-#include "SharedHandle.h"
-#include "DownloadResult.h"
+#include "OutputFile.h"
 
 namespace aria2 {
 
-class RequestGroup;
-class Option;
-class StatCalc;
-class OutputFile;
-
-class MultiUrlRequestInfo {
-private:
-  std::vector<SharedHandle<RequestGroup> > requestGroups_;
-
-  SharedHandle<Option> option_;
-
-  SharedHandle<StatCalc> statCalc_;
-
-  SharedHandle<OutputFile> summaryOut_;
-
-  void printMessageForContinue();
+class NullOutputFile:public OutputFile {
 public:
-  MultiUrlRequestInfo
-  (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
-   const SharedHandle<Option>& op,
-   const SharedHandle<StatCalc>& statCalc,
-   const SharedHandle<OutputFile>& summaryOut);
-  
-  virtual ~MultiUrlRequestInfo();
-
-  /**
-   * Returns FINISHED if all downloads have completed, otherwise returns the
-   * last download result.
-   */
-  error_code::Value execute();
+  virtual ~NullOutputFile() {}
+  virtual size_t write(const char* str) { return 0; }
+  virtual int printf(const char* format, ...) { return 0; }
+  virtual int flush() { return 0; }
 };
-
-typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;
 
 } // namespace aria2
 
-#endif // D_MULTI_URL_REQUEST_INFO_H
+#endif // D_NULL_OUTPUT_FILE_H

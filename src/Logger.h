@@ -39,10 +39,12 @@
 
 #include <string>
 
+#include "SharedHandle.h"
+
 namespace aria2 {
 
 class Exception;
-class BufferedFile;
+class OutputFile;
 
 class Logger {
 public:
@@ -55,8 +57,7 @@ public:
   };
 private:
   LEVEL logLevel_;
-  BufferedFile* fpp_;
-  BufferedFile* stdoutfpp_;
+  SharedHandle<OutputFile> fpp_;
   int stdoutField_;
   // Don't allow copying
   Logger(const Logger&);

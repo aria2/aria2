@@ -59,6 +59,7 @@
 #include "TimeA2.h"
 #include "fmt.h"
 #include "SocketCore.h"
+#include "OutputFile.h"
 #ifdef ENABLE_SSL
 # include "TLSContext.h"
 #endif // ENABLE_SSL
@@ -142,7 +143,7 @@ MultiUrlRequestInfo::MultiUrlRequestInfo
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
  const SharedHandle<Option>& op,
  const SharedHandle<StatCalc>& statCalc,
- std::ostream& summaryOut)
+ const SharedHandle<OutputFile>& summaryOut)
   : requestGroups_(requestGroups),
     option_(op),
     statCalc_(statCalc),
@@ -153,11 +154,10 @@ MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
 
 void MultiUrlRequestInfo::printMessageForContinue()
 {
-  summaryOut_ << "\n"
-              << _("aria2 will resume download if the transfer is restarted.")
-              << "\n"
-              << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
-              << "\n";
+  summaryOut_->printf
+    ("\n%s\n%s\n",
+     _("aria2 will resume download if the transfer is restarted."),
+     _("If there are any errors, then see the log file. See '-l' option in help/man page for details."));
 }
 
 error_code::Value MultiUrlRequestInfo::execute()
@@ -251,8 +251,8 @@ error_code::Value MultiUrlRequestInfo::execute()
     if(!serverStatOf.empty()) {
       e->getRequestGroupMan()->saveServerStat(serverStatOf);
     }
-    e->getRequestGroupMan()->showDownloadResults(summaryOut_);
-    summaryOut_ << std::flush;
+    e->getRequestGroupMan()->showDownloadResults(*summaryOut_);
+    summaryOut_->flush();
 
     RequestGroupMan::DownloadStat s =
       e->getRequestGroupMan()->getDownloadStat();

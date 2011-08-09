@@ -72,6 +72,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "fmt.h"
+#include "console.h"
 
 namespace aria2 {
 
@@ -93,6 +94,8 @@ bool Platform::setUp()
     return false;
   }
   initialized_ = true;
+
+  global::initConsole();
 
 #ifdef ENABLE_NLS
   setlocale (LC_CTYPE, "");

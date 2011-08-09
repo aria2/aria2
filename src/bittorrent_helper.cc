@@ -611,54 +611,6 @@ getInfoHashString(const SharedHandle<DownloadContext>& dctx)
   return util::toHex(getTorrentAttrs(dctx)->infoHash);
 }
 
-void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx)
-{
-  SharedHandle<TorrentAttribute> torrentAttrs = getTorrentAttrs(dctx);
-  o << "*** BitTorrent File Information ***" << "\n";
-  if(!torrentAttrs->comment.empty()) {
-    o << "Comment: " << torrentAttrs->comment << "\n";
-  }
-  if(torrentAttrs->creationDate) {
-    o << "Creation Date: " << Time(torrentAttrs->creationDate).toHTTPDate()
-      << std::endl;
-  }
-  if(!torrentAttrs->createdBy.empty()) {
-    o << "Created By: " << torrentAttrs->createdBy << "\n";
-  }
-  o << "Mode: " << torrentAttrs->mode << "\n";
-  o << "Announce:" << "\n";
-  for(std::vector<std::vector<std::string> >::const_iterator tierIter =
-        torrentAttrs->announceList.begin(),
-        eoi = torrentAttrs->announceList.end(); tierIter != eoi; ++tierIter) {
-    for(std::vector<std::string>::const_iterator i = (*tierIter).begin(),
-          eoi2 = (*tierIter).end(); i != eoi2; ++i) {
-      o << " " << *i;
-    }
-    o << "\n";
-  }
-  o << "Info Hash: "
-    << util::toHex(torrentAttrs->infoHash) << "\n"
-    << "Piece Length: "
-    << util::abbrevSize(dctx->getPieceLength()) << "B\n"
-    << "The Number of Pieces: "
-    << dctx->getNumPieces() << "\n"
-    << "Total Length: "
-    << util::abbrevSize(dctx->getTotalLength()) << "B ("
-    << util::uitos(dctx->getTotalLength(), true) << ")\n";
-  if(!torrentAttrs->urlList.empty()) {
-    o << "URL List: " << "\n";
-    for(std::vector<std::string>::const_iterator i =
-          torrentAttrs->urlList.begin(),
-          eoi = torrentAttrs->urlList.end(); i != eoi; ++i) {
-      o << " " << *i << "\n";
-    }
-  }
-  o << "Name: " << torrentAttrs->name << "\n"
-    << "Magnet URI: " << torrent2Magnet(torrentAttrs) << "\n";
-  util::toStream
-    (dctx->getFileEntries().begin(), dctx->getFileEntries().end(), o);
-}
-
 void computeFastSet
 (std::vector<size_t>& fastSet, const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize)

@@ -32,115 +32,74 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "BufferedFile.h"
+#include "WinConsoleFile.h"
 
 #include <cstring>
+#include <cstdio>
 #include <cstdarg>
-#include <ostream>
+#include <string>
+
+#ifdef __MINGW32__
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+#endif // __MINGW32__
 
 #include "a2io.h"
 #include "util.h"
 
 namespace aria2 {
 
-const std::string BufferedFile::READ = "rb";
-const std::string BufferedFile::WRITE = "wb";
-const std::string BufferedFile::APPEND = "ab";
+WinConsoleFile::WinConsoleFile() {}
 
-BufferedFile::BufferedFile(const std::string& filename, const std::string& mode)
+WinConsoleFile::~WinConsoleFile() {}
+
+namespace {
+bool console()
 {
-  fp_ = a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
-  open_ = fp_;
+  DWORD mode;
+  return GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &mode);
 }
+} // namespace
 
-BufferedFile::BufferedFile(FILE* fp)
-  : fp_(fp), open_(true)
-{}
-
-BufferedFile::~BufferedFile()
+size_t WinConsoleFile::write(const char* str)
 {
-  close();
-}
-
-BufferedFile::operator unspecified_bool_type() const
-{
-  return (!open_ || ferror(fp_)) ? 0 : &BufferedFile::good_state;
-}
-
-size_t BufferedFile::read(void* ptr, size_t count)
-{
-  return fread(ptr, 1, count, fp_);
-}
-
-size_t BufferedFile::write(const void* ptr, size_t count)
-{
-  return fwrite(ptr, 1, count, fp_);
-}
-
-size_t BufferedFile::write(const char* str)
-{
-  return write(str, strlen(str));
-}
-
-char* BufferedFile::gets(char* s, int size)
-{
-  return fgets(s, size, fp_);
-}
-
-char* BufferedFile::getsn(char* s, int size)
-{
-  char* ptr = fgets(s, size, fp_);
-  if(ptr) {
-    int len = strlen(ptr);
-    if(ptr[len-1] == '\n') {
-      ptr[len-1] = '\0';
-    }
-  }
-  return ptr;
-}
-
-int BufferedFile::close()
-{
-  if(open_) {
-    open_ = false;
-    return fclose(fp_);
+  DWORD written;
+  if(console()) {
+    std::wstring msg = utf8ToWChar(str);
+    WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE),
+                  msg.c_str(), msg.size(), &written, 0);
   } else {
-    return 0;
+    WriteFile(GetStdHandle(STD_OUTPUT_HANDLE),
+              str, strlen(str), &written, 0);
   }
+  return written;
 }
 
-bool BufferedFile::eof()
+int WinConsoleFile::printf(const char* format, ...)
 {
-  return open_ && feof(fp_);
-}
-
-size_t BufferedFile::transfer(std::ostream& out)
-{
-  size_t count = 0;
-  char buf[4096];
-  while(1) {
-    size_t r = this->read(buf, sizeof(buf));
-    out.write(buf, r);
-    count += r;
-    if(r < sizeof(buf)) {
-      break;
-    }
-  }
-  return count;
-}
-
-int BufferedFile::printf(const char* format, ...)
-{
+  char buf[1024];
   va_list ap;
   va_start(ap, format);
-  int r = vfprintf(fp_, format, ap);
+  int r = vsnprintf(buf, sizeof(buf), format, ap);
   va_end(ap);
-  return r;
+  if(r <= 0) {
+    return 0;
+  }
+  DWORD written;
+  if(console()) {
+    std::wstring msg = utf8ToWChar(buf);
+    WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE),
+                  msg.c_str(), msg.size(), &written, 0);
+  } else {
+    WriteFile(GetStdHandle(STD_OUTPUT_HANDLE),
+              buf, r, &written, 0);
+  }
+  return written;
 }
 
-int BufferedFile::flush()
+int WinConsoleFile::flush()
 {
-  return fflush(fp_);
+  return 0;
 }
 
 } // namespace aria2

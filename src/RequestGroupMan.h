@@ -39,7 +39,6 @@
 
 #include <string>
 #include <deque>
-#include <iosfwd>
 #include <vector>
 
 #include "SharedHandle.h"
@@ -55,6 +54,7 @@ struct DownloadResult;
 class ServerStatMan;
 class ServerStat;
 class Option;
+class OutputFile;
 
 class RequestGroupMan {
 private:
@@ -85,9 +85,9 @@ private:
 
   size_t maxDownloadResult_;
 
-  std::string
-  formatDownloadResult(const std::string& status,
-                       const SharedHandle<DownloadResult>& downloadResult) const;
+  std::string formatDownloadResult
+  (const std::string& status,
+   const DownloadResultHandle& downloadResult) const;
 
   void configureRequestGroup
   (const SharedHandle<RequestGroup>& requestGroup) const;
@@ -160,7 +160,7 @@ public:
 
   bool removeReservedGroup(a2_gid_t gid);
 
-  void showDownloadResults(std::ostream& o) const;
+  void showDownloadResults(OutputFile& o) const;
 
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
 

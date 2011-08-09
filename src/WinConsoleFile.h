@@ -32,65 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_BUFFERED_FILE_H
-#define D_BUFFERED_FILE_H
+#ifndef D_WIN_CONSOLE_FILE_H
+#define D_WIN_CONSOLE_FILE_H
 
 #include "OutputFile.h"
 
-#include <cstdio>
-#include <string>
-#include <iosfwd>
-
 namespace aria2 {
 
-// This is a wrapper class for fopen/fclose/fread/fwrite/fgets.
-class BufferedFile:public OutputFile {
-private:
-  typedef void (BufferedFile::*unspecified_bool_type)() const;
-  void good_state() const {}
+// This is a wrapper class for WriteConsoleW
+class WinConsoleFile:public OutputFile {
 public:
-  BufferedFile(const std::string& filename, const std::string& mode);
-  BufferedFile(FILE* fp);
-  virtual ~BufferedFile();
-  // Returns true if file is opened and both ferror and feof returns
-  // 0. Otherwise returns false.
-  operator unspecified_bool_type() const;
-  // wrapper for fread. Using 1 for 2nd argument of fread.
-  size_t read(void* ptr, size_t count);
-  // wrapper for fwrite. Using 1 for 2nd argument of fwrite.
-  size_t write(const void* ptr, size_t count);
+  WinConsoleFile();
+  virtual ~WinConsoleFile();
   virtual size_t write(const char* str);
-  // wrapper for fgets
-  char* gets(char* s, int size);
-  // wrapper for fgets, but trailing '\n' is replaced with '\0'.
-  char* getsn(char* s, int size);
-  // wrapper for fclose
-  int close();
-  // Return true if open_ && feof(fp_) != 0. Otherwise returns false.
-  bool eof();
-  // Convenient method. Read data to end of file and write them into
-  // given stream. Returns written size.
-  size_t transfer(std::ostream& out);
-  // wrapper for fprintf
   virtual int printf(const char* format, ...);
-  // wrapper for fflush
   virtual int flush();
-  // Mode for reading
-  static const std::string READ;
-  // Mode for writing
-  static const std::string WRITE;
-  // Mode for append
-  static const std::string APPEND;
 private:
   // Don't allow copying
-  BufferedFile(const BufferedFile&);
-  BufferedFile& operator=(const BufferedFile&);
-
-  FILE* fp_;
-  // true when file has been opened.
-  bool open_;
+  WinConsoleFile(const WinConsoleFile&);
+  WinConsoleFile& operator=(const WinConsoleFile&);
 };
 
 } // namespace aria2
 
-#endif // D_BUFFERED_FILE_H
+#endif // D_WIN_CONSOLE_FILE_H

@@ -47,6 +47,9 @@
 #include "a2netcompat.h"
 #include "Peer.h"
 #include "ValueBase.h"
+#include "util.h"
+#include "DownloadContext.h"
+#include "TimeA2.h"
 
 namespace aria2 {
 
@@ -141,9 +144,6 @@ void setStaticPeerId(const std::string& newPeerId);
 void computeFastSet
 (std::vector<size_t>& fastSet, const std::string& ipaddr,
  size_t numPieces, const unsigned char* infoHash, size_t fastSetSize);
-
-// Writes the detailed information about torrent loaded in dctx.
-void print(std::ostream& o, const SharedHandle<DownloadContext>& dctx);
 
 SharedHandle<TorrentAttribute> getTorrentAttrs
 (const SharedHandle<DownloadContext>& dctx);
@@ -322,6 +322,55 @@ void extractPeer
 }
 
 int getCompactLength(int family);
+
+// Writes the detailed information about torrent loaded in dctx.
+template<typename Output>
+void print(Output& o, const SharedHandle<DownloadContext>& dctx)
+{
+  SharedHandle<TorrentAttribute> torrentAttrs = getTorrentAttrs(dctx);
+  o.write("*** BitTorrent File Information ***\n");
+  if(!torrentAttrs->comment.empty()) {
+    o.printf("Comment: %s\n", torrentAttrs->comment.c_str());
+  }
+  if(torrentAttrs->creationDate) {
+    o.printf("Creation Date: %s\n",
+             Time(torrentAttrs->creationDate).toHTTPDate().c_str());
+  }
+  if(!torrentAttrs->createdBy.empty()) {
+    o.printf("Created By: %s\n", torrentAttrs->createdBy.c_str());
+  }
+  o.printf("Mode: %s\n", torrentAttrs->mode.c_str());
+  o.write("Announce:\n");
+  for(std::vector<std::vector<std::string> >::const_iterator tierIter =
+        torrentAttrs->announceList.begin(),
+        eoi = torrentAttrs->announceList.end(); tierIter != eoi; ++tierIter) {
+    for(std::vector<std::string>::const_iterator i = (*tierIter).begin(),
+          eoi2 = (*tierIter).end(); i != eoi2; ++i) {
+      o.printf(" %s", (*i).c_str());
+    }
+    o.write("\n");
+  }
+  o.printf("Info Hash: %s\n", util::toHex(torrentAttrs->infoHash).c_str());
+  o.printf("Piece Length: %sB\n",
+           util::abbrevSize(dctx->getPieceLength()).c_str());
+  o.printf("The Number of Pieces: %lu\n",
+           static_cast<unsigned long>(dctx->getNumPieces()));
+  o.printf("Total Length: %sB (%s)\n",
+           util::abbrevSize(dctx->getTotalLength()).c_str(),
+           util::uitos(dctx->getTotalLength(), true).c_str());
+  if(!torrentAttrs->urlList.empty()) {
+    o.write("URL List:\n");
+    for(std::vector<std::string>::const_iterator i =
+          torrentAttrs->urlList.begin(),
+          eoi = torrentAttrs->urlList.end(); i != eoi; ++i) {
+      o.printf(" %s\n", (*i).c_str());
+    }
+  }
+  o.printf("Name: %s\n", torrentAttrs->name.c_str());
+  o.printf("Magnet URI: %s\n", torrent2Magnet(torrentAttrs).c_str());
+  util::toStream
+    (dctx->getFileEntries().begin(), dctx->getFileEntries().end(), o);
+}
 
 } // namespace bittorrent
 

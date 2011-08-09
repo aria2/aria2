@@ -61,6 +61,7 @@
 #include "DownloadContext.h"
 #include "wallclock.h"
 #include "FileEntry.h"
+#include "console.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "PeerStorage.h"
@@ -185,15 +186,17 @@ public:
   void operator()(const SharedHandle<RequestGroup>& rg)
   {
     const char SEP_CHAR = '-';
-    printProgress(std::cout, rg, e_, sizeFormatter_);
+    std::stringstream o;
+    printProgress(o, rg, e_, sizeFormatter_);
     const std::vector<SharedHandle<FileEntry> >& fileEntries =
       rg->getDownloadContext()->getFileEntries();
-    std::cout << "\n"
-              << "FILE: ";
+    o << "\n"
+      << "FILE: ";
     writeFilePath(fileEntries.begin(), fileEntries.end(),
-                  std::cout, rg->inMemoryDownload());
-    std::cout << "\n"
-              << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
+                  o, rg->inMemoryDownload());
+    o << "\n"
+      << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
+    global::cout->write(o.str().c_str());
   }
 };
 } // namespace
@@ -207,7 +210,8 @@ void printProgressSummary
   const char SEP_CHAR = '=';
   time_t now;
   time(&now);
-  std::cout << " *** Download Progress Summary";
+  std::stringstream o;
+  o << " *** Download Progress Summary";
   {
     time_t now;
     struct tm* staticNowtmPtr;
@@ -218,11 +222,12 @@ void printProgressSummary
       if(lfptr) {
         *lfptr = '\0';
       }
-      std::cout << " as of " << buf;
+      o << " as of " << buf;
     }
   }
-  std::cout << " *** " << "\n"
-            << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
+  o << " *** " << "\n"
+    << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
+  global::cout->write(o.str().c_str());
   std::for_each(groups.begin(), groups.end(),
                 PrintSummary(cols, e, sizeFormatter));
 }
@@ -267,7 +272,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     }
 #endif // HAVE_TERMIOS_H
 #endif // !__MINGW32__
-    std::cout << '\r' << std::setfill(' ') << std::setw(cols) << ' ' << '\r';
+    std::string line(cols, ' ');
+    global::cout->printf("\r%s\r", line.c_str());
   }
   std::ostringstream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
@@ -277,7 +283,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       lastSummaryNotified_ = global::wallclock;
       printProgressSummary(e->getRequestGroupMan()->getRequestGroups(), cols, e,
                            sizeFormatter);
-      std::cout << "\n";
+      global::cout->write("\n");
+      global::cout->flush();
     }
   }
   if(!readoutVisibility_) {
@@ -362,17 +369,14 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 #endif // ENABLE_MESSAGE_DIGEST
   std::string readout = o.str();
   if(isTTY) {
-    std::string::iterator last = readout.begin();
     if(truncate_ && readout.size() > cols) {
-      std::advance(last, cols);
-    } else {
-      last = readout.end();
+      readout[cols] = '\0';
     }
-    std::copy(readout.begin(), last, std::ostream_iterator<char>(std::cout));
-    std::cout << std::flush;
+    global::cout->write(readout.c_str());
+    global::cout->flush();
   } else {
-    std::copy(readout.begin(), readout.end(), std::ostream_iterator<char>(std::cout));
-    std::cout << std::endl;
+    global::cout->write(readout.c_str());
+    global::cout->write("\n");
   }
 }
 

@@ -225,7 +225,14 @@ SRCS =  Socket.h\
 	StreamPieceSelector.h\
 	DefaultStreamPieceSelector.cc DefaultStreamPieceSelector.h\
 	InorderStreamPieceSelector.cc InorderStreamPieceSelector.h\
-	MetalinkHttpEntry.cc MetalinkHttpEntry.h
+	MetalinkHttpEntry.cc MetalinkHttpEntry.h\
+	OutputFile.h\
+	NullOutputFile.h\
+	console.cc console.h
+
+if MINGW_BUILD
+SRCS += WinConsoleFile.cc WinConsoleFile.h
+endif # MINGW_BUILD
 
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\

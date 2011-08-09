@@ -38,10 +38,9 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include <fstream>
-#include <iostream>
 #include <numeric>
 #include <vector>
+#include <iostream>
 
 #include "SharedHandle.h"
 #include "LogFactory.h"
@@ -69,6 +68,8 @@
 #include "SocketCore.h"
 #include "DownloadContext.h"
 #include "fmt.h"
+#include "NullOutputFile.h"
+#include "console.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -84,9 +85,6 @@ extern char* optarg;
 extern int optind, opterr, optopt;
 
 namespace aria2 {
-
-// output stream to /dev/null
-std::ofstream nullout(DEV_NULL);
 
 SharedHandle<StatCalc> getStatCalc(const SharedHandle<Option>& op)
 {
@@ -104,12 +102,12 @@ SharedHandle<StatCalc> getStatCalc(const SharedHandle<Option>& op)
   return statCalc;
 }
 
-std::ostream& getSummaryOut(const SharedHandle<Option>& op)
+SharedHandle<OutputFile> getSummaryOut(const SharedHandle<Option>& op)
 {
   if(op->getAsBool(PREF_QUIET)) {
-    return nullout;
+    return SharedHandle<OutputFile>(new NullOutputFile());
   } else {
-    return std::cout;
+    return global::cout;
   }
 }
 
@@ -120,7 +118,7 @@ void showTorrentFile(const std::string& uri)
   SharedHandle<Option> op(new Option());
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   bittorrent::load(uri, dctx, op);
-  bittorrent::print(std::cout, dctx);
+  bittorrent::print(*global::cout, dctx);
 }
 } // namespace
 #endif // ENABLE_BITTORRENT
@@ -135,8 +133,9 @@ void showMetalinkFile
                           op->get(PREF_METALINK_BASE_URI));
   std::vector<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
-  util::toStream(fileEntries.begin(), fileEntries.end(), std::cout);
-  std::cout << std::endl;
+  util::toStream(fileEntries.begin(), fileEntries.end(), *global::cout);
+  global::cout->write("\n");
+  global::cout->flush();
 }
 } // namespace
 #endif // ENABLE_METALINK
@@ -168,7 +167,7 @@ void showFiles
             printf("\n\n");
           }
     } catch(RecoverableException& e) {
-      std::cout << e.stackTrace() << std::endl;
+      global::cout->printf("%s\n", e.stackTrace().c_str());
     }
   }
 }
@@ -269,7 +268,7 @@ error_code::Value main(int argc, char* argv[])
   op->remove(PREF_SELECT_FILE);
   op->remove(PREF_PAUSE);
   if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty()) {
-    std::cout << MSG_NO_FILES_TO_DOWNLOAD << std::endl;
+    global::cout->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   } else {
     exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
                                      getSummaryOut(op)).execute();

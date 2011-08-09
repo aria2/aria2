@@ -13,6 +13,8 @@
 #include "FileEntry.h"
 #include "File.h"
 #include "array_fun.h"
+#include "BufferedFile.h"
+#include "TestUtil.h"
 
 namespace aria2 {
 
@@ -589,7 +591,10 @@ void UtilTest::testToStream()
   std::deque<SharedHandle<FileEntry> > entries;
   entries.push_back(f1);
   entries.push_back(f2);
-  util::toStream(entries.begin(), entries.end(), os);
+  std::string filename = A2_TEST_OUT_DIR"/aria2_UtilTest_testToStream";
+  BufferedFile fp(filename, BufferedFile::WRITE);
+  util::toStream(entries.begin(), entries.end(), fp);
+  fp.close();
   CPPUNIT_ASSERT_EQUAL(
                        std::string("Files:\n"
                                    "idx|path/length\n"
@@ -600,7 +605,7 @@ void UtilTest::testToStream()
                                    "  2|aria2.txt\n"
                                    "   |556B (556)\n"
                                    "---+---------------------------------------------------------------------------\n"),
-                       os.str());
+                       readFile(filename));
 }
 
 void UtilTest::testIsNumber()

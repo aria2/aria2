@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,52 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MULTI_URL_REQUEST_INFO_H
-#define D_MULTI_URL_REQUEST_INFO_H
-
-#include "common.h"
-
-#include <vector>
-
-#include "SharedHandle.h"
-#include "DownloadResult.h"
+#include "console.h"
 
 namespace aria2 {
 
-class RequestGroup;
-class Option;
-class StatCalc;
-class OutputFile;
+namespace global {
 
-class MultiUrlRequestInfo {
-private:
-  std::vector<SharedHandle<RequestGroup> > requestGroups_;
+#ifdef __MINGW32__
+SharedHandle<WinConsoleFile> cout;
+#else // !__MINGW32__
+SharedHandle<BufferedFile> cout;
+#endif // !__MINGW32__
 
-  SharedHandle<Option> option_;
+void initConsole()
+{
+#ifdef __MINGW32__
+  cout.reset(new WinConsoleFile());
+#else // !__MINGW32__
+  cout.reset(new BufferedFile(stdout));
+#endif // !__MINGW32__
+}
 
-  SharedHandle<StatCalc> statCalc_;
-
-  SharedHandle<OutputFile> summaryOut_;
-
-  void printMessageForContinue();
-public:
-  MultiUrlRequestInfo
-  (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
-   const SharedHandle<Option>& op,
-   const SharedHandle<StatCalc>& statCalc,
-   const SharedHandle<OutputFile>& summaryOut);
-  
-  virtual ~MultiUrlRequestInfo();
-
-  /**
-   * Returns FINISHED if all downloads have completed, otherwise returns the
-   * last download result.
-   */
-  error_code::Value execute();
-};
-
-typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;
+} // namespace global
 
 } // namespace aria2
-
-#endif // D_MULTI_URL_REQUEST_INFO_H

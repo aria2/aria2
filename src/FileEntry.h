@@ -317,9 +317,9 @@ void writeFilePath
       }
     } else {
       if(memory) {
-        o << "[MEMORY]" << utf8ToNative(File(e->getPath()).getBasename());
+        o << "[MEMORY]" << File(e->getPath()).getBasename();
       } else {
-        o << utf8ToNative(e->getPath());
+        o << e->getPath();
       }
       size_t count = countRequestedFileEntry(first, last);
       if(count > 1) {

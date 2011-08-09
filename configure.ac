@@ -435,6 +435,7 @@ AM_CONDITIONAL([HAVE_POLL], [test "x$have_poll" = "xyes"])
 
 case "$target" in
   *mingw*)
+    AM_CONDITIONAL([MINGW_BUILD], true)
     dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
     AM_CONDITIONAL([HAVE_GETADDRINFO], true)
     dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
@@ -444,6 +445,7 @@ case "$target" in
     fi
     ;;
   *)
+    AM_CONDITIONAL([MINGW_BUILD], false)
     AM_CONDITIONAL([HAVE_TIMEGETTIME], false)
     ;;
 esac

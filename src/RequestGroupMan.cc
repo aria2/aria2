@@ -38,7 +38,6 @@
 #include <cstring>
 #include <iomanip>
 #include <sstream>
-#include <ostream>
 #include <numeric>
 #include <algorithm>
 #include <utility>
@@ -74,6 +73,7 @@
 #include "uri.h"
 #include "Triplet.h"
 #include "Signature.h"
+#include "OutputFile.h"
 
 namespace aria2 {
 
@@ -588,7 +588,7 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
                       lastError);
 }
 
-void RequestGroupMan::showDownloadResults(std::ostream& o) const
+void RequestGroupMan::showDownloadResults(OutputFile& o) const
 {
   static const std::string MARK_OK("OK");
   static const std::string MARK_ERR("ERR");
@@ -598,16 +598,17 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
   // Download Results:
   // idx|stat|path/length
   // ===+====+=======================================================================
-  o << "\n"
-    <<_("Download Results:") << "\n"
-    << "gid|stat|avg speed  |path/URI" << "\n"
-    << "===+====+===========+";
+  o.printf("\n%s"
+           "\ngid|stat|avg speed  |path/URI"
+           "\n===+====+===========+",
+           _("Download Results:"));
 #ifdef __MINGW32__
   int pathRowSize = 58;
 #else // !__MINGW32__
   int pathRowSize = 59;
 #endif // !__MINGW32__
-  o << std::setfill('=') << std::setw(pathRowSize) << '=' << "\n";
+  std::string line(pathRowSize, '=');
+  o.printf("%s\n", line.c_str());
   int ok = 0;
   int err = 0;
   int inpr = 0;
@@ -632,29 +633,30 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
       status = MARK_ERR;
       ++err;
     }
-    o << formatDownloadResult(status, *itr) << "\n";
+    o.write(formatDownloadResult(status, *itr).c_str());
+    o.write("\n");
   }
   if(ok > 0 || err > 0 || inpr > 0 || rm > 0) {
-    o << "\n"
-      << _("Status Legend:") << "\n";
-
+    o.printf("\n%s\n", _("Status Legend:"));
     if(ok > 0) {
-      o << " (OK):download completed.";
+      o.write(" (OK):download completed.");
     }
     if(err > 0) {
-      o << "(ERR):error occurred.";
+      o.write("(ERR):error occurred.");
     }
     if(inpr > 0) {
-      o << "(INPR):download in-progress.";
+      o.write("(INPR):download in-progress.");
     }
     if(rm > 0) {
-      o << "(RM):download removed.";
+      o.write("(RM):download removed.");
     }
-    o << "\n";
+    o.write("\n");
   }
 }
 
-std::string RequestGroupMan::formatDownloadResult(const std::string& status, const DownloadResultHandle& downloadResult) const
+std::string RequestGroupMan::formatDownloadResult
+(const std::string& status,
+ const DownloadResultHandle& downloadResult) const
 {
   std::stringstream o;
   o << std::setw(3) << downloadResult->gid << "|"
