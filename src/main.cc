@@ -107,7 +107,7 @@ SharedHandle<OutputFile> getSummaryOut(const SharedHandle<Option>& op)
   if(op->getAsBool(PREF_QUIET)) {
     return SharedHandle<OutputFile>(new NullOutputFile());
   } else {
-    return global::cout;
+    return global::cout();
   }
 }
 
@@ -118,7 +118,7 @@ void showTorrentFile(const std::string& uri)
   SharedHandle<Option> op(new Option());
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   bittorrent::load(uri, dctx, op);
-  bittorrent::print(*global::cout, dctx);
+  bittorrent::print(*global::cout(), dctx);
 }
 } // namespace
 #endif // ENABLE_BITTORRENT
@@ -133,9 +133,9 @@ void showMetalinkFile
                           op->get(PREF_METALINK_BASE_URI));
   std::vector<SharedHandle<FileEntry> > fileEntries;
   MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
-  util::toStream(fileEntries.begin(), fileEntries.end(), *global::cout);
-  global::cout->write("\n");
-  global::cout->flush();
+  util::toStream(fileEntries.begin(), fileEntries.end(), *global::cout());
+  global::cout()->write("\n");
+  global::cout()->flush();
 }
 } // namespace
 #endif // ENABLE_METALINK
@@ -167,7 +167,7 @@ void showFiles
             printf("\n\n");
           }
     } catch(RecoverableException& e) {
-      global::cout->printf("%s\n", e.stackTrace().c_str());
+      global::cout()->printf("%s\n", e.stackTrace().c_str());
     }
   }
 }
@@ -268,7 +268,7 @@ error_code::Value main(int argc, char* argv[])
   op->remove(PREF_SELECT_FILE);
   op->remove(PREF_PAUSE);
   if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty()) {
-    global::cout->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
+    global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   } else {
     exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
                                      getSummaryOut(op)).execute();
@@ -285,7 +285,9 @@ int main(int argc, char* argv[])
     aria2::Platform platform;
     r = aria2::main(argc, argv);
   } catch(aria2::Exception& ex) {
-    std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
+    aria2::global::cerr()->printf("%s\n%s\n",
+                                  EX_EXCEPTION_CAUGHT,
+                                  ex.stackTrace().c_str());
     r = ex.getErrorCode();
   }
   return r;

@@ -95,8 +95,6 @@ bool Platform::setUp()
   }
   initialized_ = true;
 
-  global::initConsole();
-
 #ifdef ENABLE_NLS
   setlocale (LC_CTYPE, "");
   setlocale (LC_MESSAGES, "");
@@ -129,8 +127,8 @@ bool Platform::setUp()
 #ifdef CARES_HAVE_ARES_LIBRARY_INIT
   int aresErrorCode;
   if((aresErrorCode = ares_library_init(ARES_LIB_INIT_ALL)) != 0) {
-    global::cerr->printf("ares_library_init() failed:%s\n",
-                         ares_strerror(aresErrorCode));
+    global::cerr()->printf("ares_library_init() failed:%s\n",
+                           ares_strerror(aresErrorCode));
   }
 #endif // CARES_HAVE_ARES_LIBRARY_INIT
 

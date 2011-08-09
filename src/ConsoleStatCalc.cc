@@ -196,7 +196,7 @@ public:
                   o, rg->inMemoryDownload());
     o << "\n"
       << std::setfill(SEP_CHAR) << std::setw(cols_) << SEP_CHAR << "\n";
-    global::cout->write(o.str().c_str());
+    global::cout()->write(o.str().c_str());
   }
 };
 } // namespace
@@ -227,7 +227,7 @@ void printProgressSummary
   }
   o << " *** " << "\n"
     << std::setfill(SEP_CHAR) << std::setw(cols) << SEP_CHAR << "\n";
-  global::cout->write(o.str().c_str());
+  global::cout()->write(o.str().c_str());
   std::for_each(groups.begin(), groups.end(),
                 PrintSummary(cols, e, sizeFormatter));
 }
@@ -273,7 +273,7 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
 #endif // HAVE_TERMIOS_H
 #endif // !__MINGW32__
     std::string line(cols, ' ');
-    global::cout->printf("\r%s\r", line.c_str());
+    global::cout()->printf("\r%s\r", line.c_str());
   }
   std::ostringstream o;
   if(e->getRequestGroupMan()->countRequestGroup() > 0) {
@@ -283,8 +283,8 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       lastSummaryNotified_ = global::wallclock();
       printProgressSummary(e->getRequestGroupMan()->getRequestGroups(), cols, e,
                            sizeFormatter);
-      global::cout->write("\n");
-      global::cout->flush();
+      global::cout()->write("\n");
+      global::cout()->flush();
     }
   }
   if(!readoutVisibility_) {
@@ -372,11 +372,11 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
     if(truncate_ && readout.size() > cols) {
       readout[cols] = '\0';
     }
-    global::cout->write(readout.c_str());
-    global::cout->flush();
+    global::cout()->write(readout.c_str());
+    global::cout()->flush();
   } else {
-    global::cout->write(readout.c_str());
-    global::cout->write("\n");
+    global::cout()->write(readout.c_str());
+    global::cout()->write("\n");
   }
 }
 

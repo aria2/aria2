@@ -39,30 +39,32 @@ namespace aria2 {
 namespace global {
 
 #ifdef __MINGW32__
-SharedHandle<WinConsoleFile> cout;
-#else // !__MINGW32__
-SharedHandle<BufferedFile> cout;
-#endif // !__MINGW32__
-
-#ifdef __MINGW32__
-SharedHandle<WinConsoleFile> cerr;
-#else // !__MINGW32__
-SharedHandle<BufferedFile> cerr;
-#endif // !__MINGW32__
-
-void initConsole()
+const SharedHandle<WinConsoleFile>& cout()
 {
-#ifdef __MINGW32__
-  cout.reset(new WinConsoleFile(STD_INPUT_HANDLE));
-#else // !__MINGW32__
-  cout.reset(new BufferedFile(stdout));
-#endif // !__MINGW32__
-#ifdef __MINGW32__
-  cerr.reset(new WinConsoleFile(STD_ERROR_HANDLE));
-#else // !__MINGW32__
-  cerr.reset(new BufferedFile(stderr));
-#endif // !__MINGW32__
+  static SharedHandle<WinConsoleFile> f(new WinConsoleFile(STD_INPUT_HANDLE));
+  return f;
 }
+#else // !__MINGW32__
+const SharedHandle<BufferedFile>& cout()
+{
+  static SharedHandle<BufferedFile> f(new BufferedFile(stdout));
+  return f;
+}
+#endif // !__MINGW32__
+
+#ifdef __MINGW32__
+const SharedHandle<WinConsoleFile>& cerr()
+{
+  static SharedHandle<WinConsoleFile> f(new WinConsoleFile(STD_ERROR_HANDLE));
+  return f;
+}
+#else // !__MINGW32__
+const SharedHandle<BufferedFile>& cerr()
+{
+  static SharedHandle<BufferedFile> f(new BufferedFile(stderr));
+  return f;
+}
+#endif // !__MINGW32__
 
 } // namespace global
 

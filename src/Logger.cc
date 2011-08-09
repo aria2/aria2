@@ -73,7 +73,7 @@ void Logger::openFile(const std::string& filename)
 {
   closeFile();
   if(filename == DEV_STDOUT) {
-    fpp_ = global::cout;
+    fpp_ = global::cout();
   } else {
     fpp_.reset(new BufferedFile(filename, BufferedFile::APPEND));
     if(!fpp_) {
@@ -170,11 +170,11 @@ void Logger::writeLog
     fpp_->flush();
   }
   if(toConsole) {
-    global::cout->printf("\n");
-    writeHeader(*global::cout, level, 0, 0);
-    global::cout->printf("%s\n", msg);
-    writeStackTrace(*global::cout, trace);
-    global::cout->flush();
+    global::cout()->printf("\n");
+    writeHeader(*global::cout(), level, 0, 0);
+    global::cout()->printf("%s\n", msg);
+    writeStackTrace(*global::cout(), trace);
+    global::cout()->flush();
   }
 }
 

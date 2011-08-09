@@ -76,7 +76,7 @@ void overrideWithEnv(Option& op, const OptionParser& optionParser,
     try {
       optionParser.findByName(pref)->parse(op, value);
     } catch(Exception& e) {
-      global::cerr->printf
+      global::cerr()->printf
         ("Caught Error while parsing environment variable '%s'\n%s\n",
          envName.c_str(),
          e.stackTrace().c_str());
@@ -144,25 +144,25 @@ void option_processing(Option& op, std::vector<std::string>& uris,
         try {
           oparser.parse(op, ss);
         } catch(OptionHandlerException& e) {
-          global::cerr->printf("Parse error in %s\n%s\n",
-                               cfname.c_str(),
-                               e.stackTrace().c_str());
+          global::cerr()->printf("Parse error in %s\n%s\n",
+                                 cfname.c_str(),
+                                 e.stackTrace().c_str());
           SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());
           if(h) {
-            global::cerr->printf
+            global::cerr()->printf
               ("Usage:\n%s\n",
                oparser.findByName(e.getOptionName())->getDescription().c_str());
           }
           exit(e.getErrorCode());
         } catch(Exception& e) {
-          global::cerr->printf("Parse error in %s\n%s\n",
-                               cfname.c_str(),
-                               e.stackTrace().c_str());
+          global::cerr()->printf("Parse error in %s\n%s\n",
+                                 cfname.c_str(),
+                                 e.stackTrace().c_str());
           exit(e.getErrorCode());
         }
       } else if(!ucfname.empty()) {
-        global::cerr->printf("Configuration file %s is not found.\n",
-                             cfname.c_str());
+        global::cerr()->printf("Configuration file %s is not found.\n",
+                               cfname.c_str());
         showUsage(TAG_HELP, oparser);
         exit(error_code::UNKNOWN_ERROR);
       }
@@ -188,16 +188,16 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     }
 #endif // __MINGW32__
   } catch(OptionHandlerException& e) {
-    global::cerr->printf("%s\n", e.stackTrace().c_str());
+    global::cerr()->printf("%s\n", e.stackTrace().c_str());
     SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());
     if(h) {
       std::ostringstream ss;
       ss << *h;
-      global::cerr->printf("Usage:\n%s\n", ss.str().c_str());
+      global::cerr()->printf("Usage:\n%s\n", ss.str().c_str());
     }
     exit(e.getErrorCode());
   } catch(Exception& e) {
-    global::cerr->printf("%s\n", e.stackTrace().c_str());
+    global::cerr()->printf("%s\n", e.stackTrace().c_str());
     showUsage(TAG_HELP, oparser);
     exit(e.getErrorCode());
   }
@@ -210,7 +210,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
 #endif // ENABLE_METALINK
      op.blank(PREF_INPUT_FILE)) {
     if(uris.empty()) {
-      global::cerr->printf("%s\n", MSG_URI_REQUIRED);
+      global::cerr()->printf("%s\n", MSG_URI_REQUIRED);
       showUsage(TAG_HELP, oparser);
       exit(error_code::UNKNOWN_ERROR);
     }

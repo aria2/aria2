@@ -48,18 +48,16 @@ namespace aria2 {
 namespace global {
 
 #ifdef __MINGW32__
-extern SharedHandle<WinConsoleFile> cout;
+const SharedHandle<WinConsoleFile>& cout();
 #else // !__MINGW32__
-extern SharedHandle<BufferedFile> cout;
+const SharedHandle<BufferedFile>& cout();
 #endif // !__MINGW32__
 
 #ifdef __MINGW32__
-extern SharedHandle<WinConsoleFile> cerr;
+const SharedHandle<WinConsoleFile>& cerr();
 #else // !__MINGW32__
-extern SharedHandle<BufferedFile> cerr;
+const SharedHandle<BufferedFile>& cerr();
 #endif // !__MINGW32__
-
-void initConsole();
 
 } // namespace global
 
