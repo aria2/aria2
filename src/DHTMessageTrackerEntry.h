@@ -42,7 +42,6 @@
 #include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "TimerA2.h"
-#include "wallclock.h"
 
 namespace aria2 {
 

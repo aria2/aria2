@@ -52,17 +52,17 @@ SpeedCalc::SpeedCalc():sw_(0), maxSpeed_(0), prevSpeed_(0),
 
 void SpeedCalc::reset() {
   std::fill(&lengthArray_[0], &lengthArray_[2], 0);
-  std::fill(&cpArray_[0], &cpArray_[2], global::wallclock);
+  std::fill(&cpArray_[0], &cpArray_[2], global::wallclock());
   sw_ = 0;
   maxSpeed_ = 0;
   prevSpeed_ = 0;
-  start_ = global::wallclock;
+  start_ = global::wallclock();
   accumulatedLength_ = 0;
   nextInterval_ = CHANGE_INTERVAL_SEC;
 }
 
 unsigned int SpeedCalc::calculateSpeed() {
-  int64_t milliElapsed = cpArray_[sw_].differenceInMillis(global::wallclock);
+  int64_t milliElapsed = cpArray_[sw_].differenceInMillis(global::wallclock());
   if(milliElapsed) {
     unsigned int speed = lengthArray_[sw_]*1000/milliElapsed;
     prevSpeed_ = speed;
@@ -86,7 +86,7 @@ void SpeedCalc::update(size_t bytes) {
 }
 
 bool SpeedCalc::isIntervalOver() const {
-  return nextInterval_ <= cpArray_[sw_].difference(global::wallclock);
+  return nextInterval_ <= cpArray_[sw_].difference(global::wallclock());
 }
 
 bool SpeedCalc::isIntervalOver(int64_t milliElapsed) const
@@ -96,14 +96,14 @@ bool SpeedCalc::isIntervalOver(int64_t milliElapsed) const
 
 void SpeedCalc::changeSw() {
   lengthArray_[sw_] = 0;
-  cpArray_[sw_] = global::wallclock;
+  cpArray_[sw_] = global::wallclock();
   sw_ ^= 0x01u;
   nextInterval_ =
-    cpArray_[sw_].difference(global::wallclock)+CHANGE_INTERVAL_SEC;
+    cpArray_[sw_].difference(global::wallclock())+CHANGE_INTERVAL_SEC;
 }
 
 unsigned int SpeedCalc::calculateAvgSpeed() const {
-  uint64_t milliElapsed = start_.differenceInMillis(global::wallclock);
+  uint64_t milliElapsed = start_.differenceInMillis(global::wallclock());
 
   // if milliElapsed is too small, the average speed is rubish, better return 0
   if(milliElapsed > 4) {

@@ -43,7 +43,7 @@ SleepCommand::SleepCommand(cuid_t cuid, DownloadEngine* e,
                            RequestGroup* requestGroup,
                            Command* nextCommand, time_t wait):
   Command(cuid), engine_(e), requestGroup_(requestGroup),
-  nextCommand_(nextCommand), wait_(wait), checkPoint_(global::wallclock) {}
+  nextCommand_(nextCommand), wait_(wait), checkPoint_(global::wallclock()) {}
 
 SleepCommand::~SleepCommand() {
   delete nextCommand_;
@@ -52,7 +52,7 @@ SleepCommand::~SleepCommand() {
 bool SleepCommand::execute() {
   if(requestGroup_->downloadFinished() || requestGroup_->isHaltRequested()) {
     return true;
-  } else if(checkPoint_.differenceInMillis(global::wallclock)+A2_DELTA_MILLIS
+  } else if(checkPoint_.differenceInMillis(global::wallclock())+A2_DELTA_MILLIS
             >= wait_*1000) {
     engine_->addCommand(nextCommand_);
     nextCommand_ = 0;

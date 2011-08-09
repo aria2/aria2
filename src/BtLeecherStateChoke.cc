@@ -57,7 +57,7 @@ BtLeecherStateChoke::PeerEntry::PeerEntry(const SharedHandle<Peer>& peer):
   // peer must be interested to us and sent block in the last 30 seconds
   regularUnchoker_
   (peer->peerInterested() &&
-   peer->getLastDownloadUpdate().difference(global::wallclock) < 30) {}
+   peer->getLastDownloadUpdate().difference(global::wallclock()) < 30) {}
 
 BtLeecherStateChoke::PeerEntry::PeerEntry(const PeerEntry& c)
   : peer_(c.peer_),
@@ -208,7 +208,7 @@ BtLeecherStateChoke::executeChoke
 (const std::vector<SharedHandle<Peer> >& peerSet)
 {
   A2_LOG_INFO(fmt("Leecher state, %d choke round started", round_));
-  lastRound_ = global::wallclock;
+  lastRound_ = global::wallclock();
 
   std::vector<PeerEntry> peerEntries;
   std::transform(peerSet.begin(), peerSet.end(),

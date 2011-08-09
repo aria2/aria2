@@ -54,7 +54,7 @@ private:
 
     bool elapsed(time_t t) const
     {
-      return dispatchedTime_.difference(global::wallclock) >= t;
+      return dispatchedTime_.difference(global::wallclock()) >= t;
     }
 
     bool operator==(const RequestEntry& e) const

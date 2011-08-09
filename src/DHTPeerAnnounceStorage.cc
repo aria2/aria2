@@ -145,7 +145,7 @@ void DHTPeerAnnounceStorage::announcePeer()
   for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i =
         entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
     if((*i)->getLastUpdated().
-       difference(global::wallclock) >= DHT_PEER_ANNOUNCE_INTERVAL) {
+       difference(global::wallclock()) >= DHT_PEER_ANNOUNCE_INTERVAL) {
       (*i)->notifyUpdate();
       SharedHandle<DHTTask> task =
         taskFactory_->createPeerAnnounceTask((*i)->getInfoHash());

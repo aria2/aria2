@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "RequestSlot.h"
-#include "wallclock.h"
 
 namespace aria2 {
 
@@ -44,7 +43,7 @@ void RequestSlot::setDispatchedTime(time_t sec) {
 }
 
 bool RequestSlot::isTimeout(time_t timeoutSec) const {
-  return dispatchedTime_.difference(global::wallclock) >= timeoutSec;
+  return dispatchedTime_.difference(global::wallclock()) >= timeoutSec;
 }
 
 bool RequestSlot::isNull(const RequestSlot& requestSlot) {

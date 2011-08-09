@@ -35,7 +35,7 @@ public:
   void setUp()
   {
     peerStorage_.reset(new MockPeerStorage());
-    global::wallclock.reset();
+    global::wallclock().reset();
   }
 
   void testGetExtensionMessageID();

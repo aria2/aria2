@@ -85,7 +85,7 @@ AbstractCommand::AbstractCommand
  const SocketHandle& s,
  const SharedHandle<SocketRecvBuffer>& socketRecvBuffer,
  bool incNumConnection)
-  : Command(cuid), checkPoint_(global::wallclock),
+  : Command(cuid), checkPoint_(global::wallclock()),
     timeout_(requestGroup->getTimeout()),
     requestGroup_(requestGroup),
     req_(req), fileEntry_(fileEntry), e_(e), socket_(s),
@@ -93,7 +93,7 @@ AbstractCommand::AbstractCommand
     checkSocketIsReadable_(false), checkSocketIsWritable_(false),
     nameResolverCheck_(false),
     incNumConnection_(incNumConnection),
-    serverStatTimer_(global::wallclock)
+    serverStatTimer_(global::wallclock())
 {
   if(socket_ && socket_->isOpen()) {
     setReadCheckSocket(socket_);
@@ -184,8 +184,8 @@ bool AbstractCommand::execute() {
       if(req_ && fileEntry_->getLength() > 0 &&
          e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit() == 0 &&
          requestGroup_->getMaxDownloadSpeedLimit() == 0 &&
-         serverStatTimer_.difference(global::wallclock) >= 10) {
-        serverStatTimer_ = global::wallclock;
+         serverStatTimer_.difference(global::wallclock()) >= 10) {
+        serverStatTimer_ = global::wallclock();
         std::vector<std::pair<size_t, std::string> > usedHosts;
         if(getOption()->getAsBool(PREF_SELECT_LEAST_USED_HOST)) {
           getDownloadEngine()->getRequestGroupMan()->getUsedHosts(usedHosts);
@@ -209,7 +209,7 @@ bool AbstractCommand::execute() {
 #endif // ENABLE_ASYNC_DNS
        (!checkSocketIsReadable_ && !checkSocketIsWritable_ &&
         !nameResolverCheck_)) {
-      checkPoint_ = global::wallclock;
+      checkPoint_ = global::wallclock();
       if(getPieceStorage()) {
         if(!req_ || req_->getMaxPipelinedRequest() == 1 ||
            // Why the following condition is necessary? That's because
@@ -263,7 +263,7 @@ bool AbstractCommand::execute() {
       throw DL_RETRY_EX(fmt(MSG_NETWORK_PROBLEM,
                             socket_->getSocketError().c_str()));
     } else {
-      if(checkPoint_.difference(global::wallclock) >= timeout_) {
+      if(checkPoint_.difference(global::wallclock()) >= timeout_) {
         // timeout triggers ServerStat error state.
         SharedHandle<ServerStat> ss =
           e_->getRequestGroupMan()->getOrCreateServerStat(req_->getHost(),
@@ -339,7 +339,7 @@ bool AbstractCommand::execute() {
       tryReserved();
       return true;
     } else {
-      Timer wakeTime(global::wallclock);
+      Timer wakeTime(global::wallclock());
       wakeTime.advance(getOption()->getAsInt(PREF_RETRY_WAIT));
       req_->setWakeTime(wakeTime);
       return prepareForRetry(0);

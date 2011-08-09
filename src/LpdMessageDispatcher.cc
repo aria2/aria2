@@ -93,12 +93,12 @@ bool LpdMessageDispatcher::sendMessage()
 
 bool LpdMessageDispatcher::isAnnounceReady() const
 {
-  return timer_.difference(global::wallclock) >= interval_;
+  return timer_.difference(global::wallclock()) >= interval_;
 }
 
 void LpdMessageDispatcher::resetAnnounceTimer()
 {
-  timer_ = global::wallclock;
+  timer_ = global::wallclock();
 }
 
 namespace bittorrent {

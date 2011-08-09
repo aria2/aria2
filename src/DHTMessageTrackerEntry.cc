@@ -49,7 +49,7 @@ DHTMessageTrackerEntry::DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& s
   transactionID_(sentMessage->getTransactionID()),
   messageType_(sentMessage->getMessageType()),
   callback_(callback),
-  dispatchedTime_(global::wallclock),
+  dispatchedTime_(global::wallclock()),
   timeout_(timeout)
 {}
 
@@ -57,7 +57,7 @@ DHTMessageTrackerEntry::~DHTMessageTrackerEntry() {}
 
 bool DHTMessageTrackerEntry::isTimeout() const
 {
-  return dispatchedTime_.difference(global::wallclock) >= timeout_;
+  return dispatchedTime_.difference(global::wallclock()) >= timeout_;
 }
 
 void DHTMessageTrackerEntry::extendTimeout()
@@ -81,7 +81,7 @@ bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::
 
 int64_t DHTMessageTrackerEntry::getElapsedMillis() const
 {
-  return dispatchedTime_.differenceInMillis(global::wallclock);
+  return dispatchedTime_.differenceInMillis(global::wallclock());
 }
 
 } // namespace aria2

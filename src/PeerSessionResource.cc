@@ -70,7 +70,7 @@ void PeerSessionResource::amChoking(bool b)
 {
   amChoking_ = b;
   if(!b) {
-    lastAmUnchoking_ = global::wallclock;
+    lastAmUnchoking_ = global::wallclock();
   }
 }
 
@@ -256,7 +256,7 @@ void PeerSessionResource::updateDownloadLength(size_t bytes)
 {
   peerStat_.updateDownloadLength(bytes);
 
-  lastDownloadUpdate_ = global::wallclock;
+  lastDownloadUpdate_ = global::wallclock();
 }
 
 uint64_t PeerSessionResource::getCompletedLength() const

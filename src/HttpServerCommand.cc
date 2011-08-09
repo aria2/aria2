@@ -109,7 +109,7 @@ bool HttpServerCommand::execute()
   try {
     if(socket_->isReadable(0) ||
        !httpServer_->getSocketRecvBuffer()->bufferEmpty()) {
-      timeoutTimer_ = global::wallclock;
+      timeoutTimer_ = global::wallclock();
       SharedHandle<HttpHeader> header;
 
       header = httpServer_->receiveRequest();
@@ -144,7 +144,7 @@ bool HttpServerCommand::execute()
       e_->setNoWait(true);
       return true;
     } else {
-      if(timeoutTimer_.difference(global::wallclock) >= 30) {
+      if(timeoutTimer_.difference(global::wallclock()) >= 30) {
         A2_LOG_INFO("HTTP request timeout.");
         return true;
       } else {

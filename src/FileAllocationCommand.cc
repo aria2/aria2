@@ -70,7 +70,7 @@ bool FileAllocationCommand::executeInternal()
   if(fileAllocationEntry_->finished()) {
     A2_LOG_DEBUG
       (fmt(MSG_ALLOCATION_COMPLETED,
-           static_cast<long int>(timer_.difference(global::wallclock)),
+           static_cast<long int>(timer_.difference(global::wallclock())),
            util::itos(getRequestGroup()->getTotalLength(), true).c_str()));
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     

@@ -57,7 +57,7 @@ DHTBucket::DHTBucket
  const SharedHandle<DHTNode>& localNode)
   : prefixLength_(prefixLength),
     localNode_(localNode),
-    lastUpdated_(global::wallclock)
+    lastUpdated_(global::wallclock())
 {
   memcpy(max_, max, DHT_ID_LENGTH);
   memcpy(min_, min, DHT_ID_LENGTH);
@@ -66,7 +66,7 @@ DHTBucket::DHTBucket
 DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode)
   : prefixLength_(0),
     localNode_(localNode),
-    lastUpdated_(global::wallclock)
+    lastUpdated_(global::wallclock())
 {
   memset(max_, 0xffu, DHT_ID_LENGTH);
   memset(min_, 0, DHT_ID_LENGTH);
@@ -249,12 +249,12 @@ bool DHTBucket::operator==(const DHTBucket& bucket) const
 bool DHTBucket::needsRefresh() const
 {
   return nodes_.size() < K ||
-    lastUpdated_.difference(global::wallclock) >= DHT_BUCKET_REFRESH_INTERVAL;
+    lastUpdated_.difference(global::wallclock()) >= DHT_BUCKET_REFRESH_INTERVAL;
 }
 
 void DHTBucket::notifyUpdate()
 {
-  lastUpdated_ = global::wallclock;
+  lastUpdated_ = global::wallclock();
 }
 
 namespace {

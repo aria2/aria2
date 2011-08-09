@@ -55,7 +55,7 @@ PeerAbstractCommand::PeerAbstractCommand
  DownloadEngine* e,
  const SocketHandle& s)
  : Command(cuid),
-   checkPoint_(global::wallclock),
+   checkPoint_(global::wallclock()),
    // TODO referring global option
    timeout_(e->getOption()->getAsInt(PREF_BT_TIMEOUT)),
    e_(e),
@@ -93,13 +93,13 @@ bool PeerAbstractCommand::execute()
        (checkSocketIsReadable_ && readEventEnabled()) ||
        (checkSocketIsWritable_ && writeEventEnabled()) ||
        hupEventEnabled()) {
-      checkPoint_ = global::wallclock;
+      checkPoint_ = global::wallclock();
     } else if(errorEventEnabled()) {
       throw DL_ABORT_EX
         (fmt(MSG_NETWORK_PROBLEM,
              socket_->getSocketError().c_str()));
     }
-    if(checkPoint_.difference(global::wallclock) >= timeout_) {
+    if(checkPoint_.difference(global::wallclock()) >= timeout_) {
       throw DL_ABORT_EX(EX_TIME_OUT);
     }
     return executeInternal();
@@ -190,7 +190,7 @@ void PeerAbstractCommand::setNoCheck(bool check)
 
 void PeerAbstractCommand::updateKeepAlive()
 {
-  checkPoint_ = global::wallclock;
+  checkPoint_ = global::wallclock();
 }
 
 void PeerAbstractCommand::createSocket()

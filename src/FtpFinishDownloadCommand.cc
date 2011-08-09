@@ -77,7 +77,7 @@ bool FtpFinishDownloadCommand::execute()
   }
   try {
     if(readEventEnabled() || hupEventEnabled()) {
-      getCheckPoint() = global::wallclock;
+      getCheckPoint() = global::wallclock();
       unsigned int status = ftpConnection_->receiveResponse();
       if(status == 0) {
         getDownloadEngine()->addCommand(this);
@@ -95,7 +95,7 @@ bool FtpFinishDownloadCommand::execute()
         A2_LOG_INFO(fmt("CUID#%lld - Bad status for transfer complete.",
                         getCuid()));
       }
-    } else if(getCheckPoint().difference(global::wallclock) >= getTimeout()) {
+    } else if(getCheckPoint().difference(global::wallclock()) >= getTimeout()) {
       A2_LOG_INFO(fmt("CUID#%lld - Timeout before receiving transfer complete.",
                       getCuid()));
     } else {

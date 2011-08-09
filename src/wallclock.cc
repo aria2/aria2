@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,43 +32,18 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "TimeBasedCommand.h"
-#include "DownloadEngine.h"
 #include "wallclock.h"
 
 namespace aria2 {
 
-TimeBasedCommand::TimeBasedCommand(cuid_t cuid, DownloadEngine* e,
-                                   time_t interval,
-                                   bool routineCommand):
-  Command(cuid), e_(e),exit_(false), interval_(interval),
-  routineCommand_(routineCommand), checkPoint_(global::wallclock()) {}
+namespace global {
 
-TimeBasedCommand::~TimeBasedCommand() {}
-
-bool TimeBasedCommand::execute()
+Timer& wallclock()
 {
-  preProcess();
-  if(exit_) {
-    return true;
-  }
-  if(checkPoint_.difference(global::wallclock()) >= interval_) {
-    checkPoint_ = global::wallclock();
-    process();
-    if(exit_) {
-      return true;
-    }
-  }
-  postProcess();
-  if(exit_) {
-    return true;
-  }
-  if(routineCommand_) {
-    e_->addRoutineCommand(this);
-  } else {
-    e_->addCommand(this);
-  }
-  return false;
+  static Timer* t = new Timer();
+  return *t;
 }
+
+} // namespace global
 
 } // namespace aria2

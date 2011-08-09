@@ -92,7 +92,7 @@ bool DHTNode::isBad() const
 bool DHTNode::isQuestionable() const
 {
   return !isBad() &&
-    lastContact_.difference(global::wallclock) >= DHT_NODE_CONTACT_INTERVAL;
+    lastContact_.difference(global::wallclock()) >= DHT_NODE_CONTACT_INTERVAL;
 }
 
 void DHTNode::markGood()
@@ -107,7 +107,7 @@ void DHTNode::markBad()
 
 void DHTNode::updateLastContact()
 {
-  lastContact_ = global::wallclock;
+  lastContact_ = global::wallclock();
 }
 
 void DHTNode::timeout()

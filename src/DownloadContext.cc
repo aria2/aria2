@@ -75,13 +75,13 @@ DownloadContext::~DownloadContext() {}
 
 void DownloadContext::resetDownloadStartTime()
 {
-  downloadStartTime_ = global::wallclock;
+  downloadStartTime_ = global::wallclock();
   downloadStopTime_.reset(0);
 }
 
 void DownloadContext::resetDownloadStopTime()
 {
-  downloadStopTime_ = global::wallclock;
+  downloadStopTime_ = global::wallclock();
 }
 
 int64_t DownloadContext::calculateSessionTime() const

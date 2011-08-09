@@ -71,7 +71,7 @@ public:
   
   RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex,
               const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
-    dispatchedTime_(global::wallclock),
+    dispatchedTime_(global::wallclock()),
     index_(index), begin_(begin), length_(length), blockIndex_(blockIndex),
     piece_(piece) {}
 

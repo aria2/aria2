@@ -22,8 +22,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TimeSeedCriteriaTest);
 
 void TimeSeedCriteriaTest::testEvaluate() {
   TimeSeedCriteria cri(1);
-  global::wallclock.reset();
-  global::wallclock.advance(2);
+  global::wallclock().reset();
+  global::wallclock().advance(2);
   CPPUNIT_ASSERT(cri.evaluate());
   cri.reset();
   cri.setDuration(10);

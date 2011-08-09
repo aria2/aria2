@@ -57,7 +57,7 @@ BtSeederStateChoke::PeerEntry::PeerEntry
   peer_(peer),
   outstandingUpload_(peer->countOutstandingUpload()),
   lastAmUnchoking_(peer->getLastAmUnchoking()),
-  recentUnchoking_(lastAmUnchoking_.difference(global::wallclock) < TIME_FRAME),
+  recentUnchoking_(lastAmUnchoking_.difference(global::wallclock()) < TIME_FRAME),
   uploadSpeed_(peer->calculateUploadSpeed())
 {}
 
@@ -166,7 +166,7 @@ BtSeederStateChoke::executeChoke
 (const std::vector<SharedHandle<Peer> >& peerSet)
 {
   A2_LOG_INFO(fmt("Seeder state, %d choke round started", round_));
-  lastRound_ = global::wallclock;
+  lastRound_ = global::wallclock();
 
   std::vector<PeerEntry> peerEntries;
 

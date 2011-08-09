@@ -91,7 +91,7 @@ bool HttpServerResponseCommand::execute()
     }
     return true;
   } else {
-    if(timeoutTimer_.difference(global::wallclock) >= 10) {
+    if(timeoutTimer_.difference(global::wallclock()) >= 10) {
       A2_LOG_INFO(fmt("CUID#%lld - HttpServer: Timeout while trasmitting"
                       " response.",
                       getCuid()));

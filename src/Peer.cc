@@ -50,7 +50,7 @@ namespace aria2 {
 Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   ipaddr_(ipaddr),
   port_(port),
-  firstContactTime_(global::wallclock),
+  firstContactTime_(global::wallclock()),
   badConditionStartTime_(0),
   seeder_(false),
   res_(0),
@@ -326,13 +326,13 @@ void Peer::setAllBitfield() {
 
 void Peer::startBadCondition()
 {
-  badConditionStartTime_ = global::wallclock;
+  badConditionStartTime_ = global::wallclock();
 }
 
 bool Peer::isGood() const
 {
   return badConditionStartTime_.
-    difference(global::wallclock) >= BAD_CONDITION_INTERVAL;
+    difference(global::wallclock()) >= BAD_CONDITION_INTERVAL;
 }
 
 uint8_t Peer::getExtensionMessageID(const std::string& name) const

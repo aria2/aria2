@@ -79,7 +79,7 @@ bool DefaultBtAnnounce::isDefaultAnnounceReady() {
   return
     (trackers_ == 0 &&
      prevAnnounceTimer_.
-     difference(global::wallclock) >= (userDefinedInterval_==0?
+     difference(global::wallclock()) >= (userDefinedInterval_==0?
                                        minInterval_:userDefinedInterval_) &&
      !announceList_.allTiersFailed());
 }
@@ -210,7 +210,7 @@ bool DefaultBtAnnounce::isAllAnnounceFailed() {
 }
 
 void DefaultBtAnnounce::resetAnnounce() {
-  prevAnnounceTimer_ = global::wallclock;
+  prevAnnounceTimer_ = global::wallclock();
   announceList_.resetTier();
 }
 

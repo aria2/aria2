@@ -246,10 +246,10 @@ TransferStat calculateStatFor(const SharedHandle<Peer>& peer)
 TransferStat DefaultPeerStorage::calculateStat()
 {
   TransferStat stat;
-  if(lastTransferStatMapUpdated_.differenceInMillis(global::wallclock)+
+  if(lastTransferStatMapUpdated_.differenceInMillis(global::wallclock())+
      A2_DELTA_MILLIS >= 250) {
     A2_LOG_DEBUG("Updating TransferStat of PeerStorage");
-    lastTransferStatMapUpdated_ = global::wallclock;
+    lastTransferStatMapUpdated_ = global::wallclock();
     peerTransferStatMap_.clear();
     std::vector<SharedHandle<Peer> > activePeers;
     getActivePeers(activePeers);
@@ -358,10 +358,10 @@ bool DefaultPeerStorage::chokeRoundIntervalElapsed()
   const time_t CHOKE_ROUND_INTERVAL = 10;
   if(pieceStorage_->downloadFinished()) {
     return seederStateChoke_->getLastRound().
-      difference(global::wallclock) >= CHOKE_ROUND_INTERVAL;
+      difference(global::wallclock()) >= CHOKE_ROUND_INTERVAL;
   } else {
     return leecherStateChoke_->getLastRound().
-      difference(global::wallclock) >= CHOKE_ROUND_INTERVAL;
+      difference(global::wallclock()) >= CHOKE_ROUND_INTERVAL;
   }
 }
 

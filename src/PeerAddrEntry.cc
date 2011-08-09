@@ -62,7 +62,7 @@ PeerAddrEntry& PeerAddrEntry::operator=(const PeerAddrEntry& c)
 
 void PeerAddrEntry::notifyUpdate()
 {
-  lastUpdated_ = global::wallclock;
+  lastUpdated_ = global::wallclock();
 }
 
 bool PeerAddrEntry::operator==(const PeerAddrEntry& entry) const

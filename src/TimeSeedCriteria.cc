@@ -43,12 +43,12 @@ TimeSeedCriteria::~TimeSeedCriteria() {}
 
 void TimeSeedCriteria::reset()
 {
-  watch_ = global::wallclock;
+  watch_ = global::wallclock();
 }
 
 bool TimeSeedCriteria::evaluate()
 {
-  return watch_.difference(global::wallclock) >= duration_;
+  return watch_.difference(global::wallclock()) >= duration_;
 }
 
 } // namespace aria2

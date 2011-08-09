@@ -134,7 +134,7 @@ void UTPexExtensionMessage::doReceivedAction()
 bool UTPexExtensionMessage::addFreshPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
-     peer->getFirstContactTime().difference(global::wallclock) < interval_) {
+     peer->getFirstContactTime().difference(global::wallclock()) < interval_) {
     freshPeers_.push_back(peer);
     return true;
   } else {
@@ -151,7 +151,7 @@ bool UTPexExtensionMessage::addDroppedPeer(const SharedHandle<Peer>& peer)
 {
   if(!peer->isIncomingPeer() &&
      peer->getBadConditionStartTime().
-     difference(global::wallclock) < interval_) {
+     difference(global::wallclock()) < interval_) {
     droppedPeers_.push_back(peer);
     return true;
   } else {

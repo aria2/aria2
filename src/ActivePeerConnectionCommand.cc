@@ -79,8 +79,8 @@ bool ActivePeerConnectionCommand::execute() {
   if(btRuntime_->isHalt()) {
     return true;
   }
-  if(checkPoint_.difference(global::wallclock) >= interval_) {
-    checkPoint_ = global::wallclock;
+  if(checkPoint_.difference(global::wallclock()) >= interval_) {
+    checkPoint_ = global::wallclock();
     TransferStat tstat = requestGroup_->calculateStat();
     const unsigned int maxDownloadLimit =
       requestGroup_->getMaxDownloadSpeedLimit();

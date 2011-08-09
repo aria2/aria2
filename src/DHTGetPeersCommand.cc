@@ -90,7 +90,7 @@ bool DHTGetPeersCommand::execute()
   if(btRuntime_->isHalt()) {
     return true;
   }
-  time_t elapsed = lastGetPeerTime_.difference(global::wallclock);
+  time_t elapsed = lastGetPeerTime_.difference(global::wallclock());
   if(!task_ &&
      (elapsed >= GET_PEER_INTERVAL ||
       (((btRuntime_->lessThanMinPeers() &&
@@ -109,7 +109,7 @@ bool DHTGetPeersCommand::execute()
     taskQueue_->addPeriodicTask2(task_);
   } else if(task_ && task_->finished()) {
     A2_LOG_DEBUG("task finished detected");
-    lastGetPeerTime_ = global::wallclock;
+    lastGetPeerTime_ = global::wallclock();
     if(numRetry_ < MAX_RETRIES &&
        (btRuntime_->getMaxPeers() == 0 ||
         btRuntime_->getMaxPeers() > peerStorage_->countPeer())) {

@@ -174,13 +174,13 @@ FileEntry::getRequest
     }
   } else {
     // Skip Request object if it is still
-    // sleeping(Request::getWakeTime() < global::wallclock).  If all
+    // sleeping(Request::getWakeTime() < global::wallclock()).  If all
     // pooled objects are sleeping, return first one.  Caller should
     // inspect returned object's getWakeTime().
     std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin();
     std::deque<SharedHandle<Request> >::iterator eoi = requestPool_.end();
     for(; i != eoi; ++i) {
-      if((*i)->getWakeTime() <= global::wallclock) {
+      if((*i)->getWakeTime() <= global::wallclock()) {
         break;
       }
     }
@@ -200,7 +200,7 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
 {
   const int startupIdleTime = 10;
   if(requestPool_.empty() ||
-     lastFasterReplace_.difference(global::wallclock) < startupIdleTime) {
+     lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
     return SharedHandle<Request>();
   }
   const SharedHandle<PeerStat>& fastest = requestPool_.front()->getPeerStat();
@@ -211,13 +211,13 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
   // TODO hard coded value. See PREF_STARTUP_IDLE_TIME
   if(!basestat ||
      (basestat->getDownloadStartTime().
-      difference(global::wallclock) >= startupIdleTime &&
+      difference(global::wallclock()) >= startupIdleTime &&
       fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
     // TODO we should consider that "fastest" is very slow.
     SharedHandle<Request> fastestRequest = requestPool_.front();
     requestPool_.pop_front();
     inFlightRequests_.push_back(fastestRequest);
-    lastFasterReplace_ = global::wallclock;
+    lastFasterReplace_ = global::wallclock();
     return fastestRequest;
   }
   return SharedHandle<Request>();
@@ -231,7 +231,7 @@ FileEntry::findFasterRequest
 {
   const int startupIdleTime = 10;
   const unsigned int SPEED_THRESHOLD = 20*1024;
-  if(lastFasterReplace_.difference(global::wallclock) < startupIdleTime) {
+  if(lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
     return SharedHandle<Request>();
   }
   std::vector<std::string> inFlightHosts;
@@ -280,7 +280,7 @@ FileEntry::findFasterRequest
     uris_.erase(std::find(uris_.begin(), uris_.end(), uri));
     spentUris_.push_back(uri);
     inFlightRequests_.push_back(fastestRequest);
-    lastFasterReplace_ = global::wallclock;
+    lastFasterReplace_ = global::wallclock();
     return fastestRequest;
   }
   A2_LOG_DEBUG("No faster server found.");

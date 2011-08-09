@@ -271,7 +271,7 @@ bool DownloadCommand::executeInternal() {
 void DownloadCommand::checkLowestDownloadSpeed() const
 {
   if(lowestDownloadSpeedLimit_ > 0 &&
-     peerStat_->getDownloadStartTime().difference(global::wallclock) >=
+     peerStat_->getDownloadStartTime().difference(global::wallclock()) >=
      startupIdleTime_) {
     unsigned int nowSpeed = peerStat_->calculateDownloadSpeed();
     if(nowSpeed <= lowestDownloadSpeedLimit_) {

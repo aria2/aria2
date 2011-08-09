@@ -98,7 +98,7 @@ bool CreateRequestCommand::executeInternal()
     // so use it here.
     throw DL_ABORT_EX2("No URI available.",
                        getRequestGroup()->getLastErrorCode());
-  } else if(getRequest()->getWakeTime() > global::wallclock) {
+  } else if(getRequest()->getWakeTime() > global::wallclock()) {
     A2_LOG_DEBUG("This request object is still sleeping.");
     getFileEntry()->poolRequest(getRequest());
     getDownloadEngine()->addCommand(this);

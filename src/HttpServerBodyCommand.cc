@@ -201,7 +201,7 @@ bool HttpServerBodyCommand::execute()
     if(socket_->isReadable(0) ||
        !httpServer_->getSocketRecvBuffer()->bufferEmpty() ||
        httpServer_->getContentLength() == 0) {
-      timeoutTimer_ = global::wallclock;
+      timeoutTimer_ = global::wallclock();
 
       if(httpServer_->receiveBody()) {
         std::string reqPath = httpServer_->getRequestPath();
@@ -280,7 +280,7 @@ bool HttpServerBodyCommand::execute()
         return false;
       } 
     } else {
-      if(timeoutTimer_.difference(global::wallclock) >= 30) {
+      if(timeoutTimer_.difference(global::wallclock()) >= 30) {
         A2_LOG_INFO("HTTP request body timeout.");
         return true;
       } else {

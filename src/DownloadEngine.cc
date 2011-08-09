@@ -65,6 +65,7 @@
 #include "BtProgressInfoFile.h"
 #include "DownloadContext.h"
 #include "fmt.h"
+#include "wallclock.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtRegistry.h"
 #endif // ENABLE_BITTORRENT
@@ -72,10 +73,6 @@
 namespace aria2 {
 
 namespace global {
-
-// Global clock, this clock is reseted before executeCommand() call to
-// reduce the call gettimeofday() system call.
-Timer wallclock;
 
 // 0 ... running
 // 1 ... stop signal detected
@@ -146,12 +143,12 @@ void DownloadEngine::run()
   Timer cp;
   cp.reset(0);
   while(!commands_.empty() || !routineCommands_.empty()) {
-    global::wallclock.reset();
+    global::wallclock().reset();
     calculateStatistics();
-    if(cp.differenceInMillis(global::wallclock)+A2_DELTA_MILLIS >=
+    if(cp.differenceInMillis(global::wallclock())+A2_DELTA_MILLIS >=
        refreshInterval_) {
       refreshInterval_ = DEFAULT_REFRESH_INTERVAL;
-      cp = global::wallclock;
+      cp = global::wallclock();
       executeCommand(commands_, Command::STATUS_ALL);
     } else {
       executeCommand(commands_, Command::STATUS_ACTIVE);
@@ -288,10 +285,10 @@ void DownloadEngine::poolSocket(const std::string& key,
   std::multimap<std::string, SocketPoolEntry>::value_type p(key, entry);
   socketPool_.insert(p);
 
-  if(lastSocketPoolScan_.difference(global::wallclock) >= 60) {
+  if(lastSocketPoolScan_.difference(global::wallclock()) >= 60) {
     std::multimap<std::string, SocketPoolEntry> newPool;
     A2_LOG_DEBUG("Scaning SocketPool and erasing timed out entry.");
-    lastSocketPoolScan_ = global::wallclock;
+    lastSocketPoolScan_ = global::wallclock();
     for(std::multimap<std::string, SocketPoolEntry>::iterator i =
           socketPool_.begin(), eoi = socketPool_.end(); i != eoi; ++i) {
       if(!(*i).second.isTimeout()) {
@@ -497,7 +494,7 @@ DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
 
 bool DownloadEngine::SocketPoolEntry::isTimeout() const
 {
-  return registeredTime_.difference(global::wallclock) >= timeout_;
+  return registeredTime_.difference(global::wallclock()) >= timeout_;
 }
 
 cuid_t DownloadEngine::newCUID()

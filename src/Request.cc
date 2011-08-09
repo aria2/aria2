@@ -68,7 +68,7 @@ Request::Request():
   ipv6LiteralAddress_(false),
   removalRequested_(false),
   connectedPort_(0),
-  wakeTime_(global::wallclock)
+  wakeTime_(global::wallclock())
 {}
 
 Request::~Request() {}

@@ -655,7 +655,7 @@ size_t DefaultPieceStorage::getPieceLength(size_t index)
 
 void DefaultPieceStorage::advertisePiece(cuid_t cuid, size_t index)
 {
-  HaveEntry entry(cuid, index, global::wallclock);
+  HaveEntry entry(cuid, index, global::wallclock());
   haves_.push_front(entry);
 }
 
@@ -686,7 +686,7 @@ public:
   FindElapsedHave(time_t elapsed):elapsed(elapsed) {}
 
   bool operator()(const HaveEntry& have) {
-    if(have.getRegisteredTime().difference(global::wallclock) >= elapsed) {
+    if(have.getRegisteredTime().difference(global::wallclock()) >= elapsed) {
       return true;
     } else {
       return false;

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,9 @@ namespace aria2 {
 
 namespace global {
 
-// wallclock is defined in DownloadEngine.cc
-extern Timer wallclock;
+// Global clock, this clock is reseted before executeCommand() call to
+// reduce the call gettimeofday() system call.
+Timer& wallclock();
 
 } // namespace global
 

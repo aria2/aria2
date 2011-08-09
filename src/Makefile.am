@@ -194,7 +194,7 @@ SRCS =  Socket.h\
 	bitfield.cc bitfield.h\
 	CreateRequestCommand.cc CreateRequestCommand.h\
 	error_code.h\
-	wallclock.h\
+	wallclock.cc wallclock.h\
 	download_helper.cc download_helper.h\
 	MetadataInfo.cc MetadataInfo.h\
 	SessionSerializer.cc SessionSerializer.h\

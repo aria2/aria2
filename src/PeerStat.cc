@@ -43,7 +43,7 @@ PeerStat::PeerStat
   : cuid_(cuid),
     hostname_(hostname),
     protocol_(protocol),
-    downloadStartTime_(global::wallclock),
+    downloadStartTime_(global::wallclock()),
     status_(PeerStat::IDLE),
     avgDownloadSpeed_(0),
     avgUploadSpeed_(0),
@@ -113,7 +113,7 @@ void PeerStat::reset()
 {
   downloadSpeed_.reset();
   uploadSpeed_.reset();
-  downloadStartTime_ = global::wallclock;
+  downloadStartTime_ = global::wallclock();
   status_ = PeerStat::IDLE;
 }
 

@@ -75,7 +75,7 @@ public:
 
   bool operator()(const PeerAddrEntry& entry) const
   {
-    if(entry.getLastUpdated().difference(global::wallclock) >= timeout_) {
+    if(entry.getLastUpdated().difference(global::wallclock()) >= timeout_) {
       return true;
     } else {
       return false;
@@ -107,7 +107,7 @@ void DHTPeerAnnounceEntry::getPeers
 
 void DHTPeerAnnounceEntry::notifyUpdate()
 {
-  lastUpdated_ = global::wallclock;
+  lastUpdated_ = global::wallclock();
 }
 
 } // namespace aria2
