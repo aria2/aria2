@@ -52,7 +52,7 @@ const SharedHandle<SimpleRandomizer>& SimpleRandomizer::getInstance()
   
 void SimpleRandomizer::init()
 {
-  srand(time(0)^getpid());
+  srandom(time(0)^getpid());
 }
 
 SimpleRandomizer::SimpleRandomizer() {}
@@ -61,7 +61,7 @@ SimpleRandomizer::~SimpleRandomizer() {}
 
 long int SimpleRandomizer::getRandomNumber()
 {
-  return rand();
+  return random();
 }
 
 long int SimpleRandomizer::getMaxRandomNumber()
@@ -71,7 +71,7 @@ long int SimpleRandomizer::getMaxRandomNumber()
 
 long int SimpleRandomizer::getRandomNumber(long int to)
 {
-  return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
+  return(long int)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
 }
 
 long int SimpleRandomizer::operator()(long int to)
