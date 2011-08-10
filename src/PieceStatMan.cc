@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "PieceStatMan.h"
 
+#include <limits>
 #include <algorithm>
 
 #include "SimpleRandomizer.h"
@@ -41,138 +42,80 @@
 
 namespace aria2 {
 
-PieceStat::PieceStat(size_t index):order_(0), index_(index), count_(0) {}
-
-void PieceStat::addCount()
-{
-  if(count_ < SIZE_MAX) {
-    ++count_;
-  }
-}
-
-void PieceStat::subCount()
-{
-  if(count_ > 0) {
-    --count_;
-  }
-}
-
-namespace {
-class GenPieceStat {
-private:
-  size_t index_;
-public:
-  GenPieceStat():index_(0) {}
-
-  SharedHandle<PieceStat> operator()()
-  {
-    return SharedHandle<PieceStat>(new PieceStat(index_++));
-  }
-};
-} // namespace
-
 PieceStatMan::PieceStatMan(size_t pieceNum, bool randomShuffle):
-  pieceStats_(pieceNum),
-  sortedPieceStatIndexes_(pieceNum)
+  order_(pieceNum),
+  counts_(pieceNum)
 {
-  std::generate(pieceStats_.begin(), pieceStats_.end(), GenPieceStat());
-  std::vector<SharedHandle<PieceStat> > sortedPieceStats(pieceStats_);
+  for(size_t i = 0; i < pieceNum; ++i) {
+    order_[i] = i;
+  }
   // we need some randomness in ordering.
   if(randomShuffle) {
-    std::random_shuffle(sortedPieceStats.begin(), sortedPieceStats.end(),
+    std::random_shuffle(order_.begin(), order_.end(),
                         *(SimpleRandomizer::getInstance().get()));
   }
-  {
-    size_t order = 0;
-    for(std::vector<SharedHandle<PieceStat> >::const_iterator i =
-          sortedPieceStats.begin(), eoi = sortedPieceStats.end();
-        i != eoi; ++i) {
-      sortedPieceStatIndexes_[order] = (*i)->getIndex();
-      (*i)->setOrder(order++);
-    }
-  }  
 }
 
 PieceStatMan::~PieceStatMan() {}
 
 namespace {
-class PieceStatRarer {
-private:
-  const std::vector<SharedHandle<PieceStat> >& pieceStats_;
-public:
-  PieceStatRarer(const std::vector<SharedHandle<PieceStat> >& ps):
-    pieceStats_(ps) {}
-
-  bool operator()(size_t lhs, size_t rhs) const
-  {
-    return *pieceStats_[lhs] < *pieceStats_[rhs];
+void inc(int& x)
+{
+  if(x < std::numeric_limits<int>::max()) {
+    ++x;
   }
-};
+}
+} // namespace
+
+namespace {
+void sub(int& x)
+{
+  if(x > 0) {
+    --x;
+  }
+}
 } // namespace
 
 void PieceStatMan::addPieceStats(const unsigned char* bitfield,
                                  size_t bitfieldLength)
 {
-  const size_t nbits = pieceStats_.size();
-  assert(nbits <= bitfieldLength*8);
-  for(size_t i = 0; i < nbits; ++i) {
+  for(size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
     if(bitfield::test(bitfield, nbits, i)) {
-      pieceStats_[i]->addCount();
+      inc(counts_[i]);
     }
   }
-  std::sort(sortedPieceStatIndexes_.begin(), sortedPieceStatIndexes_.end(),
-            PieceStatRarer(pieceStats_));
 }
 
 void PieceStatMan::subtractPieceStats(const unsigned char* bitfield,
                                       size_t bitfieldLength)
 {
-  const size_t nbits = pieceStats_.size();
-  assert(nbits <= bitfieldLength*8);
-  for(size_t i = 0; i < nbits; ++i) {
+  for(size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
     if(bitfield::test(bitfield, nbits, i)) {
-      pieceStats_[i]->subCount();
+      sub(counts_[i]);
     }
   }
-  std::sort(sortedPieceStatIndexes_.begin(), sortedPieceStatIndexes_.end(),
-            PieceStatRarer(pieceStats_));
 }
 
 void PieceStatMan::updatePieceStats(const unsigned char* newBitfield,
                                     size_t newBitfieldLength,
                                     const unsigned char* oldBitfield)
 {
-  const size_t nbits = pieceStats_.size();
-  assert(nbits <= newBitfieldLength*8);
-  for(size_t i = 0; i < nbits; ++i) {
+  for(size_t i = 0, nbits = counts_.size(); i < nbits; ++i) {
     bool inNew = bitfield::test(newBitfield, nbits, i);
     bool inOld = bitfield::test(oldBitfield, nbits, i);
     if(inNew) {
       if(!inOld) {
-        pieceStats_[i]->addCount();
+        inc(counts_[i]);
       }
     } else if(inOld) {
-      pieceStats_[i]->subCount();
+      sub(counts_[i]);
     }
   }
-  std::sort(sortedPieceStatIndexes_.begin(), sortedPieceStatIndexes_.end(),
-            PieceStatRarer(pieceStats_));
 }
 
 void PieceStatMan::addPieceStats(size_t index)
 {
-  std::vector<size_t>::iterator cur =
-    std::lower_bound(sortedPieceStatIndexes_.begin(),
-                     sortedPieceStatIndexes_.end(),
-                     index, PieceStatRarer(pieceStats_));
-
-  pieceStats_[index]->addCount();
-
-  std::vector<size_t>::iterator to =
-    std::upper_bound(cur+1, sortedPieceStatIndexes_.end(),
-                     index, PieceStatRarer(pieceStats_));
-  
-  std::rotate(cur, cur+1, to);
+  inc(counts_[index]);
 }
 
 } // namespace aria2

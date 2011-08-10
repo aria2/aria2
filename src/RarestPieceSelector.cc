@@ -34,47 +34,35 @@
 /* copyright --> */
 #include "RarestPieceSelector.h"
 
-#include <cassert>
+#include <limits>
 #include <algorithm>
 
 #include "PieceStatMan.h"
+#include "bitfield.h"
 
 namespace aria2 {
 
 RarestPieceSelector::RarestPieceSelector
 (const SharedHandle<PieceStatMan>& pieceStatMan):pieceStatMan_(pieceStatMan) {}
 
-namespace {
-class FindRarestPiece
-{
-private:
-  const unsigned char* misbitfield_;
-  size_t numbits_;
-public:
-  FindRarestPiece(const unsigned char* misbitfield, size_t numbits):
-    misbitfield_(misbitfield), numbits_(numbits) {}
-
-  bool operator()(const size_t& index)
-  {
-    assert(index < numbits_);
-    unsigned char mask = (128 >> (index%8));
-    return misbitfield_[index/8]&mask;
-  }
-};
-} // namespace
-
 bool RarestPieceSelector::select
 (size_t& index, const unsigned char* bitfield, size_t nbits) const
 {
-  const std::vector<size_t>& pieceIndexes =
-    pieceStatMan_->getRarerPieceIndexes();
-  std::vector<size_t>::const_iterator i =
-    std::find_if(pieceIndexes.begin(), pieceIndexes.end(),
-                 FindRarestPiece(bitfield, nbits));
-  if(i == pieceIndexes.end()) {
+  const std::vector<size_t>& order = pieceStatMan_->getOrder();
+  const std::vector<int>& counts = pieceStatMan_->getCounts();
+  int min = std::numeric_limits<int>::max();
+  size_t bestIdx = nbits;
+  for(size_t i = 0; i < nbits; ++i) {
+    size_t idx = order[i];
+    if(bitfield::test(bitfield, nbits, idx) && counts[idx] < min) {
+      min = counts[idx];
+      bestIdx = idx;
+    }
+  }
+  if(bestIdx == nbits) {
     return false;
   } else {
-    index = *i;
+    index = bestIdx;
     return true;
   }
 }

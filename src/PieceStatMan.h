@@ -43,53 +43,10 @@
 
 namespace aria2 {
 
-class PieceStat {
-private:
-  size_t order_;
-  size_t index_;
-  size_t count_;
-public:
-  PieceStat(size_t index);
-
-  bool operator<(const PieceStat& pieceStat) const
-  {
-    if(count_ == pieceStat.count_) {
-      return order_ < pieceStat.order_;
-    } else {
-      return count_ < pieceStat.count_;
-    }
-  }
-
-  void addCount();
-  void subCount();
-
-  size_t getOrder() const
-  {
-    return order_;
-  }
-
-  void setOrder(size_t order)
-  {
-    order_ = order;
-  }
-
-  size_t getIndex() const
-  {
-    return index_;
-  }
-
-  size_t getCount() const
-  {
-    return count_;
-  }
-
-};
-
 class PieceStatMan {
 private:
-  std::vector<SharedHandle<PieceStat> > pieceStats_;
-
-  std::vector<size_t> sortedPieceStatIndexes_;
+  std::vector<size_t> order_;
+  std::vector<int> counts_;
 public:
   PieceStatMan(size_t pieceNum, bool randomShuffle);
 
@@ -107,17 +64,15 @@ public:
                         size_t newBitfieldLength,
                         const unsigned char* oldBitfield);
 
-  // Returns piece index in rarest first order.
-  const std::vector<size_t>& getRarerPieceIndexes() const
+  const std::vector<size_t>& getOrder() const
   {
-    return sortedPieceStatIndexes_;
+    return order_;
   }
 
-  const std::vector<SharedHandle<PieceStat> >& getPieceStats() const
+  const std::vector<int>& getCounts() const
   {
-    return pieceStats_;
+    return counts_;
   }
-
 };
 
 } // namespace aria2
