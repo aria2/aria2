@@ -43,10 +43,10 @@ namespace aria2 {
 class ByteArrayDiskWriter : public DiskWriter {
 private:
   std::stringstream buf_;
-
+  size_t maxLength_;
   void clear();
 public:
-  ByteArrayDiskWriter();
+  ByteArrayDiskWriter(size_t maxLength = 5*1024*1024);
   virtual ~ByteArrayDiskWriter();
 
   virtual void initAndOpenFile(uint64_t totalLength = 0);

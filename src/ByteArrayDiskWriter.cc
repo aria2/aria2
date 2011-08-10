@@ -34,10 +34,14 @@
 /* copyright --> */
 #include "ByteArrayDiskWriter.h"
 #include "A2STR.h"
+#include "DlAbortEx.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-ByteArrayDiskWriter::ByteArrayDiskWriter() {}
+ByteArrayDiskWriter::ByteArrayDiskWriter(size_t maxLength)
+  : maxLength_(maxLength)
+{}
 
 ByteArrayDiskWriter::~ByteArrayDiskWriter() {}
 
@@ -62,6 +66,10 @@ void ByteArrayDiskWriter::openExistingFile(uint64_t totalLength)
 
 void ByteArrayDiskWriter::writeData(const unsigned char* data, size_t dataLength, off_t position)
 {
+  if(position+dataLength > maxLength_) {
+    throw DL_ABORT_EX(fmt("Maximum length(%lu) exceeded.",
+                          static_cast<unsigned long>(maxLength_)));
+  }
   uint64_t length = size();
   if(length < (uint64_t)position) {
     buf_.seekp(length, std::ios::beg);
