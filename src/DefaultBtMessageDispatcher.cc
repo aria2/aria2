@@ -142,24 +142,25 @@ void DefaultBtMessageDispatcher::doCancelSendingPieceAction
 }
 
 namespace {
-class AbortOutstandingRequest {
-private:
-  SharedHandle<Piece> piece_;
-  cuid_t cuid_;
-public:
-  AbortOutstandingRequest(const SharedHandle<Piece>& piece, cuid_t cuid)
-    : piece_(piece),
-      cuid_(cuid)
-  {}
+void abortOutstandingRequest
+(const RequestSlot& slot, const SharedHandle<Piece>& piece, cuid_t cuid)
+{
+  A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT,
+                   cuid,
+                   static_cast<unsigned long>(slot.getIndex()),
+                   slot.getBegin(),
+                   static_cast<unsigned long>(slot.getBlockIndex())));
+  piece->cancelBlock(slot.getBlockIndex());
+}
+} // namespace
 
-  void operator()(const RequestSlot& slot) const
+namespace {
+struct FindRequestSlotByIndex {
+  size_t index;
+  FindRequestSlotByIndex(size_t index) : index(index) {}
+  bool operator()(const RequestSlot& slot) const
   {
-    A2_LOG_DEBUG(fmt(MSG_DELETING_REQUEST_SLOT,
-                     cuid_,
-                     static_cast<unsigned long>(slot.getIndex()),
-                     slot.getBegin(),
-                     static_cast<unsigned long>(slot.getBlockIndex())));
-    piece_->cancelBlock(slot.getBlockIndex());
+    return slot.getIndex() == index;
   }
 };
 } // namespace
@@ -167,16 +168,15 @@ public:
 // localhost cancels outstanding download requests to the peer.
 void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction
 (const SharedHandle<Piece>& piece) {
-  RequestSlot rs(piece->getIndex(), 0, 0, 0);
-  std::deque<RequestSlot>::iterator first =
-    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), rs);
-
-  rs.setIndex(piece->getIndex()+1);
-  std::deque<RequestSlot>::iterator last =
-    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), rs);
-
-  std::for_each(first, last, AbortOutstandingRequest(piece, cuid_));
-  requestSlots_.erase(first, last);
+  for(std::deque<RequestSlot>::iterator itr = requestSlots_.begin(),
+        eoi = requestSlots_.end(); itr != eoi; ++itr) {
+    if((*itr).getIndex() == piece->getIndex()) {
+      abortOutstandingRequest(*itr, piece, cuid_);
+    }
+  }
+  requestSlots_.erase(std::remove_if(requestSlots_.begin(), requestSlots_.end(),
+                                     FindRequestSlotByIndex(piece->getIndex())),
+                      requestSlots_.end());
 
   BtAbortOutstandingRequestEvent event(piece);
 
@@ -370,50 +370,47 @@ public:
 
 bool DefaultBtMessageDispatcher::isOutstandingRequest
 (size_t index, size_t blockIndex) {
-  RequestSlot rs(index, 0, 0, blockIndex);
-
-  std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots_.begin(), requestSlots_.end(),
-                     rs, BlockIndexLess());
-  return i != requestSlots_.end() &&
-    (*i).getIndex() == index && (*i).getBlockIndex() == blockIndex;
+  for(std::deque<RequestSlot>::const_iterator itr = requestSlots_.begin(),
+        eoi = requestSlots_.end(); itr != eoi; ++itr) {
+    if((*itr).getIndex() == index && (*itr).getBlockIndex() == blockIndex) {
+      return true;
+    }
+  }
+  return false;
 }
 
 RequestSlot
 DefaultBtMessageDispatcher::getOutstandingRequest
 (size_t index, uint32_t begin, size_t length)
 {
-  RequestSlot ret;
-  RequestSlot rs(index, begin, length, 0);
-  std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), rs);
-  if(i != requestSlots_.end() && (*i) == rs) {
-    ret = *i;
-  } else {
-    ret = RequestSlot::nullSlot;
+  for(std::deque<RequestSlot>::const_iterator itr = requestSlots_.begin(),
+        eoi = requestSlots_.end(); itr != eoi; ++itr) {
+    if((*itr).getIndex() == index &&
+       (*itr).getBegin() == begin &&
+       (*itr).getLength() == length) {
+      return *itr;
+    }
   }
-  return ret;
+  return RequestSlot::nullSlot;
 }
 
 void DefaultBtMessageDispatcher::removeOutstandingRequest
 (const RequestSlot& slot)
 {
-  std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), slot);
-  if(i != requestSlots_.end() && (*i) == slot) {
-    AbortOutstandingRequest(slot.getPiece(), cuid_)(*i);
-    requestSlots_.erase(i);
+  for(std::deque<RequestSlot>::iterator itr = requestSlots_.begin(),
+        eoi = requestSlots_.end(); itr != eoi; ++itr) {
+    if(*itr == slot) {
+      abortOutstandingRequest(*itr, slot.getPiece(), cuid_);
+      requestSlots_.erase(itr);
+      break;
+    }
   }
 }
 
 void DefaultBtMessageDispatcher::addOutstandingRequest
 (const RequestSlot& slot)
 {
-  std::deque<RequestSlot>::iterator i =
-    std::lower_bound(requestSlots_.begin(), requestSlots_.end(), slot);
-  if(i == requestSlots_.end() || (*i) != slot) {
-    requestSlots_.insert(i, slot);
-  }
+  requestSlots_.push_back(slot);
 }
 
 size_t DefaultBtMessageDispatcher::countOutstandingUpload()
