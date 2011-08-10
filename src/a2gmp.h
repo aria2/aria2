@@ -32,6 +32,9 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+#ifndef D_A2GMP_H
+#define D_A2GMP_H
+
 #include <gmp.h>
 
 namespace aria2 {
@@ -40,6 +43,10 @@ namespace global {
 
 extern gmp_randstate_t gmpRandstate;
 
+void initGmp();
+
 } // namespace global
 
 } // namespace aria2
+
+#endif // D_A2GMP_H

@@ -96,9 +96,9 @@ Dependency
 |====================================================
 |features                |dependency
 |HTTPS                   |GnuTLS or OpenSSL
-|BitTorrent              |GnuTLS+Libgcrypt or OpenSSL
+|BitTorrent              |libnettle+libgmp or libgcrypt or OpenSSL
 |Metalink                |libxml2 or Expat.
-|Checksum                |GnuTLS+Libgcrypt or OpenSSL
+|Checksum                |libnettle or libgcrypt or OpenSSL
 |gzip, deflate in HTTP   |zlib
 |Async DNS               |C-Ares
 |Firefox3/Chromium cookie|libsqlite3
@@ -106,8 +106,14 @@ Dependency
 |====================================================
 
 Note;;
-  GNU TLS has precedence over OpenSSL if both libraries are installed.
+  GnuTLS has precedence over OpenSSL if both libraries are installed.
   If you prefer OpenSSL, run configure with \--without-gnutls.
+
+Note;;
+  libnettle has precedence over libgcrypt and libgcrypt has precedence
+  over OpenSSL. If you prefer libgcrypt, run configure with
+  \--without-libnettle. If you prefer \--without-libnettle
+  \--without-libgcrypt.
 
 Note;;
   libxml2 has precedence over Expat if both libraries are installed.
@@ -128,15 +134,20 @@ development packages(package name may vary depending on the
 distribution you use):
 
 * libgnutls-dev    (Required for HTTPS, BitTorrent, Checksum support)
-* libgpg-error-dev (Required for BitTorrent, Checksum support)
-* libgcrypt-dev    (Required for BitTorrent, Checksum support)
+* nettle-dev       (Required for BitTorrent, Checksum support)
+* libgmp-dev       (Required for BitTorrent)
 * libc-ares-dev    (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
 * zlib1g-dev       (Required for gzip, deflate decoding support in HTTP)
 * libsqlite3-dev   (Required for Firefox3/Chromium cookie support)
 
+You can use libgcrypt-dev instead of nettle-dev and libgmp-dev:
+
+* libgpg-error-dev (Required for BitTorrent, Checksum support)
+* libgcrypt-dev    (Required for BitTorrent, Checksum support)
+
 You can use libssl-dev instead of
-libgnutls-dev,libgpg-error-dev,libgcrypt-dev:
+libgnutls-dev, nettle-dev, libgmp-dev, libgpg-error-dev and libgcrypt-dev:
 
 * libssl-dev       (Required for HTTPS, BitTorrent, Checksum support)
 

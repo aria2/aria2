@@ -21,6 +21,9 @@ AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
 
 # Checks for arguments.
 ARIA2_ARG_WITH([gnutls])
+ARIA2_ARG_WITH([libnettle])
+ARIA2_ARG_WITH([libgmp])
+ARIA2_ARG_WITH([libgcrypt])
 ARIA2_ARG_WITH([openssl])
 ARIA2_ARG_WITH([sqlite3])
 ARIA2_ARG_WITH([libxml2])
@@ -113,15 +116,6 @@ if test "x$with_gnutls" = "xyes"; then
   fi
 fi
 
-if test "x$have_libgnutls" = "xyes"; then
-  AM_PATH_LIBGCRYPT([1.2.2], [have_libgcrypt=yes])
-  if test "x$have_libgcrypt" = "xyes"; then
-    AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
-    LIBS="$LIBGCRYPT_LIBS $LIBS"
-    CPPFLAGS="$LIBGCRYPT_CFLAGS $CPPFLAGS"
-  fi
-fi
-
 if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
   AM_PATH_OPENSSL
   if test "x$have_openssl" = "xyes"; then
@@ -129,6 +123,33 @@ if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
     CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
   elif test "x$with_openssl_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([openssl])
+  fi
+fi
+
+if test "x$have_openssl" != "xyes"; then
+  if test "x$with_libnettle" = "xyes"; then
+    AC_SEARCH_LIBS([nettle_sha1_init], [nettle],
+                   [have_libnettle=yes], [have_libnettle=no])
+    if test "x$have_libnettle" = "xyes"; then
+      AC_DEFINE([HAVE_LIBNETTLE], [1], [Define to 1 if you have libnettle.])
+    fi
+  fi
+  if test "x$with_libgmp" = "xyes" &&
+     test "x$have_libnettle" = "xyes" &&
+     test "x$enable_bittorrent" = "xyes"; then
+    AC_SEARCH_LIBS([__gmpz_init], [gmp], [have_libgmp=yes], [have_libgmp=no])
+    if test "x$have_libgmp" = "xyes"; then
+      AC_DEFINE([HAVE_LIBGMP], [1], [Define to 1 if you have libgmp.])
+    fi
+  fi
+  if test "x$with_libgcrypt" = "xyes" &&
+     test "x$have_libnettle" != "xyes"; then
+    AM_PATH_LIBGCRYPT([1.2.2], [have_libgcrypt=yes])
+    if test "x$have_libgcrypt" = "xyes"; then
+      AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
+      LIBS="$LIBGCRYPT_LIBS $LIBS"
+      CPPFLAGS="$LIBGCRYPT_CFLAGS $CPPFLAGS"
+    fi
   fi
 fi
 
@@ -163,9 +184,13 @@ else
 fi
 
 AM_CONDITIONAL([HAVE_LIBGNUTLS], [ test "x$have_libgnutls" = "xyes" ])
+AM_CONDITIONAL([HAVE_LIBNETTLE], [ test "x$have_libnettle" = "xyes" ])
+AM_CONDITIONAL([HAVE_LIBGMP], [ test "x$have_libgmp" = "xyes" ])
+AM_CONDITIONAL([HAVE_LIBGCRYPT], [ test "x$have_libgcrypt" = "xyes" ])
 AM_CONDITIONAL([HAVE_OPENSSL], [ test "x$have_openssl" = "xyes" ])
 
-if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
+if test "x$have_libnettle" = "xyes" || test "x$have_libgcrypt" = "xyes" ||
+   test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1],
             [Define to 1 if message digest support is enabled.])
   AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], true)
@@ -174,8 +199,14 @@ else
   AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], false)
 fi
 
+if test "x$have_libnettle" = "xyes" && test "x$have_libgmp" = "xyes" ||
+   test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
+  enable_bignum=yes
+fi
+
 if test "x$enable_bittorrent" = "xyes" &&
-   test "x$enable_message_digest" = "xyes"; then
+   test "x$enable_message_digest" = "xyes" &&
+   test "x$enable_bignum" = "xyes"; then
   AC_DEFINE([ENABLE_BITTORRENT], [1],
             [Define to 1 if BitTorrent support is enabled.])
   AM_CONDITIONAL([ENABLE_BITTORRENT], true)

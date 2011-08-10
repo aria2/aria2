@@ -266,13 +266,28 @@ SRCS += TLSContext.h
 endif # ENABLE_SSL
 
 if HAVE_LIBGNUTLS
-SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h\
-	LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h\
+SRCS += LibgnutlsTLSContext.cc LibgnutlsTLSContext.h
+endif # HAVE_LIBGNUTLS
+
+if HAVE_LIBGCRYPT
+SRCS += LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h\
 	LibgcryptARC4Context.cc LibgcryptARC4Context.h\
 	LibgcryptARC4Decryptor.cc LibgcryptARC4Decryptor.h\
 	LibgcryptARC4Encryptor.cc LibgcryptARC4Encryptor.h\
 	LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
-endif # HAVE_LIBGNUTLS
+endif # HAVE_LIBGCRYPT
+
+if HAVE_LIBNETTLE
+SRCS += LibnettleMessageDigestImpl.cc LibnettleMessageDigestImpl.h\
+	LibnettleARC4Context.cc LibnettleARC4Context.h\
+	LibnettleARC4Decryptor.cc LibnettleARC4Decryptor.h\
+	LibnettleARC4Encryptor.cc LibnettleARC4Encryptor.h
+endif # HAVE_LIBNETTLE
+
+if HAVE_LIBGMP
+SRCS += a2gmp.cc a2gmp.h\
+	LibgmpDHKeyExchange.cc LibgmpDHKeyExchange.h
+endif # HAVE_LIBGMP
 
 if HAVE_OPENSSL
 SRCS += LibsslTLSContext.cc LibsslTLSContext.h\

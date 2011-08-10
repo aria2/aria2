@@ -36,7 +36,9 @@
 #define D_ARC4_DECRYPTOR_H
 
 #include "common.h"
-#ifdef HAVE_LIBGCRYPT
+#ifdef HAVE_LIBNETTLE
+# include "LibnettleARC4Decryptor.h"
+#elif HAVE_LIBGCRYPT
 # include "LibgcryptARC4Decryptor.h"
 #elif HAVE_OPENSSL
 # include "LibsslARC4Decryptor.h"

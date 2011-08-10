@@ -36,7 +36,9 @@
 #define D_DH_KEY_EXCHANGE_H
 
 #include "common.h"
-#ifdef HAVE_LIBGCRYPT
+#ifdef HAVE_LIBGMP
+# include "LibgmpDHKeyExchange.h"
+#elif HAVE_LIBGCRYPT
 # include "LibgcryptDHKeyExchange.h"
 #elif HAVE_OPENSSL
 # include "LibsslDHKeyExchange.h"

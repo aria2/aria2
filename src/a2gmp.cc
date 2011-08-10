@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,15 +32,19 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MESSAGE_DIGEST_IMPL_H
-#define D_MESSAGE_DIGEST_IMPL_H
+#include "a2gmp.h"
 
-#ifdef HAVE_LIBNETTLE
-# include "LibnettleMessageDigestImpl.h"
-#elif HAVE_LIBGCRYPT
-# include "LibgcryptMessageDigestImpl.h"
-#elif HAVE_OPENSSL
-# include "LibsslMessageDigestImpl.h"
-#endif // HAVE_OPENSSL
+namespace aria2 {
 
-#endif // D_MESSAGE_DIGEST_IMPL_H
+namespace global {
+
+gmp_randstate_t gmpRandstate;
+
+void initGmp()
+{
+  gmp_randinit_default(gmpRandstate);
+}
+
+} // namespace global
+
+} // namespace aria2

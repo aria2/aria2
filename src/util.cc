@@ -49,13 +49,7 @@
 #include <fstream>
 #include <iomanip>
 
-#ifdef HAVE_LIBGCRYPT
-# include <gcrypt.h>
-#elif HAVE_OPENSSL
-# include <openssl/rand.h>
-# include "SimpleRandomizer.h"
-#endif // HAVE_OPENSSL
-
+#include "SimpleRandomizer.h"
 #include "File.h"
 #include "message.h"
 #include "Randomizer.h"
@@ -1396,18 +1390,10 @@ std::map<size_t, std::string> createIndexPathMap(std::istream& i)
 
 void generateRandomData(unsigned char* data, size_t length)
 {
-#ifdef HAVE_LIBGCRYPT
-  gcry_randomize(data, length, GCRY_STRONG_RANDOM);
-#elif HAVE_OPENSSL
-  if(RAND_bytes(data, length) != 1) {
-    for(size_t i = 0; i < length; ++i) {
-      data[i] = SimpleRandomizer::getInstance()->getRandomNumber(UINT8_MAX+1);
-    }
+  const SharedHandle<SimpleRandomizer>& rd = SimpleRandomizer::getInstance();
+  for(size_t i = 0; i < length; ++i) {
+    data[i] = static_cast<unsigned long>(rd->getRandomNumber(256));
   }
-#else
-  std::ifstream i("/dev/urandom", std::ios::binary);
-  i.read(reinterpret_cast<char*>(data), length);
-#endif // HAVE_OPENSSL
 }
 
 bool saveAs

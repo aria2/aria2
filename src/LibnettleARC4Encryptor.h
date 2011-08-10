@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,15 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MESSAGE_DIGEST_IMPL_H
-#define D_MESSAGE_DIGEST_IMPL_H
+#ifndef D_LIBNETTLE_ARC4_ENCRYPTOR_H
+#define D_LIBNETTLE_ARC4_ENCRYPTOR_H
 
-#ifdef HAVE_LIBNETTLE
-# include "LibnettleMessageDigestImpl.h"
-#elif HAVE_LIBGCRYPT
-# include "LibgcryptMessageDigestImpl.h"
-#elif HAVE_OPENSSL
-# include "LibsslMessageDigestImpl.h"
-#endif // HAVE_OPENSSL
+#include "common.h"
+#include "LibnettleARC4Context.h"
 
-#endif // D_MESSAGE_DIGEST_IMPL_H
+namespace aria2 {
+
+class ARC4Encryptor {
+private:
+  LibnettleARC4Context ctx_;
+public:
+  ARC4Encryptor();
+
+  ~ARC4Encryptor();
+
+  void init(const unsigned char* key, size_t keyLength);
+
+  void encrypt(unsigned char* out, size_t outLength,
+               const unsigned char* in, size_t inLength);
+};
+
+} // namespace aria2
+
+#endif // D_LIBNETTLE_ARC4_ENCRYPTOR_H

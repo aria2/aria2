@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,15 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_MESSAGE_DIGEST_IMPL_H
-#define D_MESSAGE_DIGEST_IMPL_H
+#ifndef D_LIBNETTLE_MESSAGE_DIGEST_IMPL_H
+#define D_LIBNETTLE_MESSAGE_DIGEST_IMPL_H
 
-#ifdef HAVE_LIBNETTLE
-# include "LibnettleMessageDigestImpl.h"
-#elif HAVE_LIBGCRYPT
-# include "LibgcryptMessageDigestImpl.h"
-#elif HAVE_OPENSSL
-# include "LibsslMessageDigestImpl.h"
-#endif // HAVE_OPENSSL
+#include "common.h"
 
-#endif // D_MESSAGE_DIGEST_IMPL_H
+#include <string>
+
+#include <nettle/nettle-meta.h>
+
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class MessageDigestImpl {
+private:
+  const nettle_hash* hashInfo_;
+  char* ctx_;
+
+  MessageDigestImpl(const nettle_hash* hashInfo);
+  // We don't implement copy ctor.
+  MessageDigestImpl(const MessageDigestImpl&);
+  // We don't implement assignment operator.
+  MessageDigestImpl& operator==(const MessageDigestImpl&);
+public:
+  ~MessageDigestImpl();
+
+  static SharedHandle<MessageDigestImpl> sha1();
+  static SharedHandle<MessageDigestImpl> create(const std::string& hashType);
+
+  static bool supports(const std::string& hashType);
+  static size_t getDigestLength(const std::string& hashType);
+
+  size_t getDigestLength() const;
+  void reset();
+  void update(const void* data, size_t length);
+  void digest(unsigned char* md);
+};
+
+} // namespace aria2
+
+#endif // D_LIBNETTLE_MESSAGE_DIGEST_IMPL_H

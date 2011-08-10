@@ -73,6 +73,9 @@
 #include "message.h"
 #include "fmt.h"
 #include "console.h"
+#ifdef HAVE_LIBGMP
+# include "a2gmp.h"
+#endif // HAVE_LIBGMP
 
 namespace aria2 {
 
@@ -94,7 +97,9 @@ bool Platform::setUp()
     return false;
   }
   initialized_ = true;
-
+#ifdef HAVE_LIBGMP
+  global::initGmp();
+#endif // HAVE_LIBGMP
 #ifdef ENABLE_NLS
   setlocale (LC_CTYPE, "");
   setlocale (LC_MESSAGES, "");
