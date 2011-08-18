@@ -165,6 +165,9 @@ void HttpServer::feedResponse(const std::string& status,
   strappend(header, "Content-Length: ", util::uitos(text.size()), "\r\n",
             "Expires: ", httpDate, "\r\n",
             "Cache-Control: no-cache\r\n");
+  if(!allowOrigin_.empty()) {
+    strappend(header, "Access-Control-Allow-Origin: ", allowOrigin_, "\r\n");
+  }
   if(supportsGZip()) {
     header += "Content-Encoding: gzip\r\n";
   }

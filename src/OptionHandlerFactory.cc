@@ -597,6 +597,15 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_RPC_ALLOW_ORIGIN_ALL,
+                                    TEXT_RPC_ALLOW_ORIGIN_ALL,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_RPC_LISTEN_ALL,
                                     TEXT_RPC_LISTEN_ALL,
                                     A2_V_FALSE,

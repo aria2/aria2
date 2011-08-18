@@ -169,6 +169,8 @@ const std::string PREF_RPC_MAX_REQUEST_SIZE("rpc-max-request-size");
 // value: true | false
 const std::string PREF_RPC_LISTEN_ALL("rpc-listen-all");
 // value: true | false
+const std::string PREF_RPC_ALLOW_ORIGIN_ALL("rpc-allow-origin-all");
+// value: true | false
 const std::string PREF_ENABLE_XML_RPC("enable-xml-rpc");
 // value: 1*digit
 const std::string PREF_XML_RPC_LISTEN_PORT("xml-rpc-listen-port");

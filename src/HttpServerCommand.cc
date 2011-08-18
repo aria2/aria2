@@ -66,6 +66,9 @@ HttpServerCommand::HttpServerCommand
   e_->addSocketForReadCheck(socket_, this);
   httpServer_->setUsernamePassword(e_->getOption()->get(PREF_RPC_USER),
                                    e_->getOption()->get(PREF_RPC_PASSWD));
+  if(e_->getOption()->getAsBool(PREF_RPC_ALLOW_ORIGIN_ALL)) {
+    httpServer_->setAllowOrigin("*");
+  }
 #ifdef HAVE_ZLIB
   httpServer_->enableGZip();
 #else // !HAVE_ZLIB

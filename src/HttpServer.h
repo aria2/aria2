@@ -68,6 +68,7 @@ private:
   std::string password_;
   bool acceptsPersistentConnection_;
   bool acceptsGZip_;
+  std::string allowOrigin_;
 public:
   HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
 
@@ -122,6 +123,11 @@ public:
   const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
   {
     return socketRecvBuffer_;
+  }
+
+  void setAllowOrigin(const std::string& allowOrigin)
+  {
+    allowOrigin_ = allowOrigin;
   }
 };
 

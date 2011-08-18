@@ -816,3 +816,6 @@
 #define TEXT_PAUSE                              \
   _(" --pause[=true|false]         Pause download after added. This option is\n" \
     "                              effective only when --enable-rpc=true is given.")
+#define TEXT_RPC_ALLOW_ORIGIN_ALL                                       \
+  _(" --rpc-allow-origin-all[=true|false] Add Access-Control-Allow-Origin header\n" \
+    "                              field with value '*' to the RPC response.")
