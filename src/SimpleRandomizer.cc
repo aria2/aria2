@@ -33,10 +33,12 @@
  */
 /* copyright --> */
 #include "SimpleRandomizer.h"
-#include "a2time.h"
+
 #include <cstdlib>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "a2time.h"
 
 namespace aria2 {
 
@@ -52,25 +54,57 @@ const SharedHandle<SimpleRandomizer>& SimpleRandomizer::getInstance()
   
 void SimpleRandomizer::init()
 {
+#ifndef __MINGW32__
   srandom(time(0)^getpid());
+#endif // !__MINGW32__
 }
 
-SimpleRandomizer::SimpleRandomizer() {}
+SimpleRandomizer::SimpleRandomizer()
+{
+#ifdef __MINGW32__
+  BOOL r = CryptAcquireContext(&cryProvider_, 0, 0, PROV_RSA_FULL,
+                               CRYPT_VERIFYCONTEXT|CRYPT_SILENT);
+  assert(r);
+#endif // __MINGW32__
+}
 
-SimpleRandomizer::~SimpleRandomizer() {}
+SimpleRandomizer::~SimpleRandomizer()
+{
+#ifdef __MINGW32__
+  CryptReleaseContext(cryProvider_, 0);
+#endif // __MINGW32__
+}
 
 long int SimpleRandomizer::getRandomNumber()
 {
+#ifdef __MINGW32__
+  int32_t val;
+  BOOL r = CryptGenRandom(cryProvider_, sizeof(val),
+                          reinterpret_cast<BYTE*>(&val));
+  assert(r);
+  if(val == INT32_MIN) {
+    val = INT32_MAX;
+  } else if(val < 0) {
+    val = -val;
+  }
+  return val;
+#else // !__MINGW32__
   return random();
+#endif // !__MINGW32__
 }
 
 long int SimpleRandomizer::getMaxRandomNumber()
 {
+#ifdef __MINGW32__
+  return INT32_MAX;
+#else // !__MINGW32__
   return RAND_MAX;
+#endif // !__MINGW32__
 }
 
 long int SimpleRandomizer::getRandomNumber(long int to)
 {
+
   return(long int)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
 }
 

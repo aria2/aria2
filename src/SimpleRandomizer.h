@@ -37,11 +37,19 @@
 
 #include "Randomizer.h"
 
+#ifdef __MINGW32__
+# include <wincrypt.h>
+#endif // __MINGW32__
+
 namespace aria2 {
 
 class SimpleRandomizer : public Randomizer {
 private:
   static SharedHandle<SimpleRandomizer> randomizer_;
+
+#ifdef __MINGW32__
+  HCRYPTPROV cryProvider_;
+#endif //__MINGW32__
 
   SimpleRandomizer();
 public:
