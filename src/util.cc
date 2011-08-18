@@ -1420,13 +1420,22 @@ bool saveAs
 
 std::string applyDir(const std::string& dir, const std::string& relPath)
 {
+  std::string s;
   if(dir.empty()) {
-    return strconcat(A2STR::DOT_C, A2STR::SLASH_C, relPath);
+    s = strconcat(A2STR::DOT_C, A2STR::SLASH_C, relPath);
   } else if(dir == A2STR::SLASH_C) {
-    return strconcat(A2STR::SLASH_C, relPath);
+    s = strconcat(A2STR::SLASH_C, relPath);
   } else {
-    return strconcat(dir, A2STR::SLASH_C, relPath);
+    s = strconcat(dir, A2STR::SLASH_C, relPath);
   }
+#ifdef __MINGW32__
+  for(std::string::iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
+    if(*i == '\\') {
+      *i = '/';
+    }
+  }
+#endif // __MINGW32__
+  return s;
 }
 
 std::string fixTaintedBasename(const std::string& src)

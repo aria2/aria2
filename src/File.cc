@@ -167,7 +167,8 @@ mode_t File::mode()
 
 std::string File::getBasename() const
 {
-  std::string::size_type lastSlashIndex = name_.find_last_of(A2STR::SLASH_C);
+  std::string::size_type lastSlashIndex =
+    name_.find_last_of(getPathSeparators());
   if(lastSlashIndex == std::string::npos) {
     return name_;
   } else {
@@ -177,7 +178,8 @@ std::string File::getBasename() const
 
 std::string File::getDirname() const
 {
-  std::string::size_type lastSlashIndex = name_.find_last_of(A2STR::SLASH_C);
+  std::string::size_type lastSlashIndex =
+    name_.find_last_of(getPathSeparators());
   if(lastSlashIndex == std::string::npos) {
     if(name_.empty()) {
       return A2STR::NIL;
@@ -250,6 +252,16 @@ std::string File::getCurrentDir()
     return A2STR::DOT_C;
   }
 #endif // !__MINGW32__
+}
+
+const std::string& File::getPathSeparators()
+{
+#ifdef __MINGW32__
+  static std::string s = "/\\";
+#else // !__MINGW32__
+  static std::string s = "/";
+#endif // !__MINGW32__
+  return s;
 }
 
 } // namespace aria2

@@ -177,7 +177,13 @@ void FileTest::testGetDirname()
   {
     File f("");
     CPPUNIT_ASSERT_EQUAL(std::string(""), f.getDirname());
-  }  
+  }
+#ifdef __MINGW32__
+  {
+    File f("c:\\foo\\bar");
+    CPPUNIT_ASSERT_EQUAL(std::string("c:\\foo"), f.getDirname());
+  }
+#endif // __MINGW32__
 }
 
 void FileTest::testGetBasename()
@@ -210,6 +216,16 @@ void FileTest::testGetBasename()
     File f("");
     CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
   }
+#ifdef __MINGW32__
+  {
+    File f("c:\\foo\\bar");
+    CPPUNIT_ASSERT_EQUAL(std::string("bar"), f.getBasename());
+  }
+  {
+    File f("c:\\foo\\");
+    CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
+  }
+#endif // __MINGW32__
 }
 
 void FileTest::testRenameTo()
