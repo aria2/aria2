@@ -795,6 +795,13 @@ RPC Options
   *<<aria2_optref_enable_rpc, --enable-rpc>>*='true' is given.
   Default: 'false'
 
+
+[[aria2_optref_rpc_allow_origin_all]]*--rpc-allow-origin-all*[='true'|'false']::
+
+  Add Access-Control-Allow-Origin header field with value '*' to the
+  RPC response.
+  Default: 'false'
+
 [[aria2_optref_rpc_listen_all]]*--rpc-listen-all*[='true'|'false']::
 
   Listen incoming JSON-RPC/XML-RPC requests on all network interfaces. If false
