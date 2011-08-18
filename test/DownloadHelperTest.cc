@@ -302,8 +302,8 @@ void DownloadHelperTest::testCreateRequestGroupForUriList()
 
   SharedHandle<RequestGroup> fileISOGroup = result[1];
   SharedHandle<DownloadContext> fileISOCtx = fileISOGroup->getDownloadContext();
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
-                       fileISOCtx->getBasePath());
+  // PREF_OUT in option_ must be ignored.
+  CPPUNIT_ASSERT_EQUAL(std::string(), fileISOCtx->getBasePath());
 }
 
 #ifdef ENABLE_BITTORRENT

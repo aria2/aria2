@@ -517,6 +517,7 @@ void createRequestGroupForUriList
     }
 
     SharedHandle<Option> requestOption(new Option(*option.get()));
+    requestOption->remove(PREF_OUT);
     for(std::set<std::string>::const_iterator i =
           listRequestOptions().begin(), eoi = listRequestOptions().end();
         i != eoi; ++i) {
