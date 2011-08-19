@@ -171,18 +171,6 @@ const std::string PREF_RPC_LISTEN_ALL("rpc-listen-all");
 // value: true | false
 const std::string PREF_RPC_ALLOW_ORIGIN_ALL("rpc-allow-origin-all");
 // value: true | false
-const std::string PREF_ENABLE_XML_RPC("enable-xml-rpc");
-// value: 1*digit
-const std::string PREF_XML_RPC_LISTEN_PORT("xml-rpc-listen-port");
-// value: string
-const std::string PREF_XML_RPC_USER("xml-rpc-user");
-// value: string
-const std::string PREF_XML_RPC_PASSWD("xml-rpc-passwd");
-// value: 1*digit
-const std::string PREF_XML_RPC_MAX_REQUEST_SIZE("xml-rpc-max-request-size");
-// value: true | false
-const std::string PREF_XML_RPC_LISTEN_ALL("xml-rpc-listen-all");
-// value: true | false
 const std::string PREF_DRY_RUN("dry-run");
 // value: true | false
 const std::string PREF_REUSE_URI("reuse-uri");

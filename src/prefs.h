@@ -174,18 +174,6 @@ extern const std::string PREF_RPC_LISTEN_ALL;
 // value: true | false
 extern const std::string PREF_RPC_ALLOW_ORIGIN_ALL;
 // value: true | false
-extern const std::string PREF_ENABLE_XML_RPC;
-// value: 1*digit
-extern const std::string PREF_XML_RPC_LISTEN_PORT;
-// value: string
-extern const std::string PREF_XML_RPC_USER;
-// value: string
-extern const std::string PREF_XML_RPC_PASSWD;
-// value: 1*digit
-extern const std::string PREF_XML_RPC_MAX_REQUEST_SIZE;
-// value: true | false
-extern const std::string PREF_XML_RPC_LISTEN_ALL;
-// value: true | false
 extern const std::string PREF_DRY_RUN;
 // value: true | false
 extern const std::string PREF_REUSE_URI;

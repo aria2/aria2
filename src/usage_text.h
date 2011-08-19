@@ -771,19 +771,6 @@
 #define TEXT_RPC_LISTEN_PORT                                        \
   _(" --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC server\n" \
     "                              to listen to.")
-#define TEXT_ENABLE_XML_RPC                                             \
-  _(" --enable-xml-rpc[=true|false] Deprecated. Use --enable-rpc instead.")
-#define TEXT_XML_RPC_MAX_REQUEST_SIZE                                   \
-  _(" --xml-rpc-max-request-size=SIZE Deprecated. Use --rpc-max-request-size\n" \
-    "                              instead.")
-#define TEXT_XML_RPC_USER                               \
-  _(" --xml-rpc-user=USER          Deprecated. Use --rpc-user instead.")
-#define TEXT_XML_RPC_PASSWD                                     \
-  _(" --xml-rpc-passwd=PASSWD      Deprecated. Use --rpc-passwd instead.")
-#define TEXT_XML_RPC_LISTEN_ALL                                         \
-  _(" --xml-rpc-listen-all[=true|false] Deprecated. Use --rpc-listen-all instead.")
-#define TEXT_XML_RPC_LISTEN_PORT                                        \
-  _(" --xml-rpc-listen-port=PORT   Deprecated. Use --rpc-listen-port instead.")
 #define TEXT_SHOW_CONSOLE_READOUT                                       \
   _(" --show-console-readout[=true|false] Show console readout.")
 #define TEXT_METALINK_BASE_URI                  \
