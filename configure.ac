@@ -400,7 +400,8 @@ AC_CHECK_FUNCS([__argz_count \
                 tzset \
                 unsetenv \
                 usleep \
-		utime])
+		utime \
+		utimes])
 
 if test "x$enable_epoll" = "xyes"; then
   AC_CHECK_FUNCS([epoll_create], [have_epoll=yes])

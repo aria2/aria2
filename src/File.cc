@@ -36,7 +36,9 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
-#include <utime.h>
+#ifdef HAVE_UTIME_H
+# include <utime.h>
+#endif // HAVE_UTIME_H
 #include <unistd.h>
 
 #include <vector>
@@ -218,10 +220,18 @@ bool File::renameTo(const std::string& dest)
 
 bool File::utime(const Time& actime, const Time& modtime) const
 {
+#if defined HAVE_UTIMES && !(defined __MINGW32__)
+  struct timeval times[2] = {
+    { actime.getTime(), 0 },
+    { modtime.getTime(), 0 }
+  };
+  return utimes(name_.c_str(), times) == 0;
+#else // !HAVE_UTIMES
   a2utimbuf ub;
   ub.actime = actime.getTime();
   ub.modtime = modtime.getTime();
   return a2utime(utf8ToWChar(name_).c_str(), &ub) == 0;
+#endif // !HAVE_UTIMES
 }
 
 Time File::getModifiedTime()
