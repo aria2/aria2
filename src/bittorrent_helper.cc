@@ -831,27 +831,14 @@ std::pair<std::string, uint16_t> unpackcompact
 (const unsigned char* compact, int family)
 {
   std::pair<std::string, uint16_t> r;
-#ifdef HAVE_INET_NTOP
   int portOffset = family == AF_INET?4:16;
-  char buf[INET6_ADDRSTRLEN];
-  if(!inet_ntop(family, compact, buf, sizeof(buf))) {
-    return r;
+  char buf[NI_MAXHOST];
+  if(inetNtop(family, compact, buf, sizeof(buf)) == 0) {
+    r.first = buf;
+    uint16_t portN;
+    memcpy(&portN, compact+portOffset, sizeof(portN));
+    r.second = ntohs(portN);
   }
-  r.first = buf;
-  uint16_t portN;
-  memcpy(&portN, compact+portOffset, sizeof(portN));
-  r.second = ntohs(portN);
-#else // !HAVE_INET_NTOP
-  if(family != AF_INET) {
-    return r;
-  }
-  struct in_addr addr;
-  memcpy(&addr, compact, sizeof(in_addr));
-  r.first = inet_ntoa(addr);
-  uint16_t portN;
-  memcpy(&portN, compact+4, sizeof(portN));
-  r.second = ntohs(portN);
-#endif // !HAVE_INET_NTOP
   return r;
 }
 

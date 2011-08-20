@@ -405,18 +405,12 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getMinInterval());
   CPPUNIT_ASSERT_EQUAL((unsigned int)100, an.getComplete());
   CPPUNIT_ASSERT_EQUAL((unsigned int)200, an.getIncomplete());
-#ifdef HAVE_INET_NTOP
   CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getPeers().size());
   SharedHandle<Peer> peer = peerStorage_->getPeers()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
   peer = peerStorage_->getPeers()[1];
   CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
                        peer->getIPAddress());
-#else // !HAVE_INET_NTOP
-  CPPUNIT_ASSERT_EQUAL((size_t)1, peerStorage_->getPeers().size());
-  SharedHandle<Peer> peer = peerStorage_->getPeers()[0];
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
-#endif // !HAVE_INET_NTOP
 }
 
 } // namespace aria2

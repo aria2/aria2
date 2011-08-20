@@ -369,6 +369,11 @@ void getInterfaceAddress
 (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
  const std::string& iface, int family = AF_UNSPEC, int aiFlags = 0);
 
+// Provides functionality of inet_ntop using getnameinfo.  The return
+// value is the exact value of getnameinfo returns. You can get error
+// message using gai_strerror(3).
+int inetNtop(int af, const void* src, char* dst, socklen_t size);
+
 } // namespace aria2
 
 #endif // D_SOCKET_CORE_H

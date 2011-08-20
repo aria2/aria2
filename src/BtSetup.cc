@@ -235,7 +235,9 @@ void BtSetup::setup(std::vector<Command*>& commands,
               i = ifAddrs.begin(), eoi = ifAddrs.end(); i != eoi; ++i) {
           sockaddr_in addr;
           memcpy(&addr, &(*i).first, (*i).second);
-          if(receiver->init(inet_ntoa(addr.sin_addr))) {
+          char host[NI_MAXHOST];
+          if(inetNtop(AF_INET, &addr.sin_addr, host, sizeof(host)) == 0 &&
+             receiver->init(host)) {
             initialized = true;
             break;
           }

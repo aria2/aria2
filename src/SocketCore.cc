@@ -1237,4 +1237,27 @@ int callGetaddrinfo
   return getaddrinfo(host, service, &hints, resPtr);  
 }
 
+int inetNtop(int af, const void* src, char* dst, socklen_t size)
+{
+  int s;
+  if(af == AF_INET) {
+    sockaddr_in sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sin_family = AF_INET;
+    memcpy(&sa.sin_addr, src, sizeof(in_addr));
+    s = getnameinfo(reinterpret_cast<const sockaddr*>(&sa), sizeof(sa),
+                    dst, size, 0, 0, NI_NUMERICHOST);
+  } else if(af == AF_INET6) {
+    sockaddr_in6 sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sin6_family = AF_INET6;
+    memcpy(&sa.sin6_addr, src, sizeof(in6_addr));
+    s = getnameinfo(reinterpret_cast<const sockaddr*>(&sa), sizeof(sa),
+                    dst, size, 0, 0, NI_NUMERICHOST);
+  } else {
+    s = EAI_FAMILY;
+  }
+  return s;
+}
+
 } // namespace aria2

@@ -818,7 +818,6 @@ void BittorrentHelperTest::testExtractPeerFromString()
   SharedHandle<ValueBase> str = bencode2::decode(peersstr);
   std::deque<SharedHandle<Peer> > peers;
   extractPeer(str, AF_INET6, std::back_inserter(peers));
-#ifdef HAVE_INET_NTOP
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
                        peers[0]->getIPAddress());
@@ -826,9 +825,6 @@ void BittorrentHelperTest::testExtractPeerFromString()
   CPPUNIT_ASSERT_EQUAL(std::string("2001:db8:bd05:1d2:288a:1fc0:1:10ee"),
                        peers[1]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->getPort());
-#else // !HAVE_INET_NTOP
-  CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
-#endif // !HAVE_INET_NTOP
 
   hextext = "c0a800011ae1";
   hextext += "c0a800021ae2";
@@ -904,13 +900,9 @@ void BittorrentHelperTest::testUnpackcompact()
     0x1A, 0xE1 };
   std::pair<std::string, uint16_t> p =
     unpackcompact(compact6, AF_INET6);
-#ifdef HAVE_INET_NTOP
   CPPUNIT_ASSERT_EQUAL(std::string("1002:1035:4527:3546:7854:1237:3247:3217"),
                        p.first);
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p.second);
-#else // !HAVE_INET_NTOP
-  CPPUNIT_ASSERT_EQUAL(std::string(), p.first);
-#endif // !HAVE_INET_NTOP
 
   unsigned char compact[] = { 0xC0, 0xa8, 0x00, 0x01, 0x1A, 0xE1 };
   p = unpackcompact(compact, AF_INET);
