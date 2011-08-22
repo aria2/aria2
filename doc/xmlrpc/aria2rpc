@@ -215,6 +215,9 @@ OptionParser.new do |opt|
   opt.on("--metalink-base-uri URI"){|val| options["metalink-base-uri"]=val}
   opt.on("--pause [BOOL]",["true","false"]){|val| options["pause"]=val||"true"}
   opt.on("--stream-piece-selector SELECTOR"){|val| options["stream-piece-selector"]=val}
+  opt.on("--hash-check-only [BOOL]",["true","false"]){|val|
+    options["hash-check-only"]=val||"true"
+  }
 
   opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
