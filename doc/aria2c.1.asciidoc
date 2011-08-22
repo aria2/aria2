@@ -900,6 +900,17 @@ Advanced Options
   Disable IPv6. This is useful if you have to use broken DNS and want
   to avoid terribly slow AAAA record lookup. Default: 'false'
 
+[[aria2_optref_download_result]]*--download-result*=OPT::
+
+  This option changes the way "Download Results" is formatted. If OPT
+  is 'default', print GID, status, average download speed and
+  path/URI. If multiple files are involved, path/URI of first
+  requested file is printed and remaining ones are omitted.  If OPT is
+  'full', print GID, status, average download speed, percentage of
+  progress and path/URI. The percentage of progress and path/URI are
+  printed for each requested file in each row.
+  Default: 'default'
+
 [[aria2_optref_enable_async_dns6]]*--enable-async-dns6*[='true'|'false']::
 
   Enable IPv6 name resolution in asynchronous DNS resolver. This
