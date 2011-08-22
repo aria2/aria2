@@ -818,3 +818,7 @@
     "                              path/URI. The percentage of progress and\n" \
     "                              path/URI are printed for each requested file in\n" \
     "                              each row.")
+#define TEXT_HASH_CHECK_ONLY                    \
+  _(" --hash-check-only[=true|false] If true is given, after hash check using\n" \
+    "                              --check-integrity option, abort download whether\n" \
+    "                              or not download is complete.")

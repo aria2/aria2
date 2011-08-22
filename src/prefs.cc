@@ -221,6 +221,8 @@ const std::string PREF_TRUNCATE_CONSOLE_READOUT("truncate-console-readout");
 const std::string PREF_PAUSE("pause");
 // value: default | full
 const std::string PREF_DOWNLOAD_RESULT("download-result");
+// value: true | false
+const std::string PREF_HASH_CHECK_ONLY("hash-check-only");
 
 /**
  * FTP related preferences

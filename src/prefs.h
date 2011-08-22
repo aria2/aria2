@@ -224,6 +224,8 @@ extern const std::string PREF_TRUNCATE_CONSOLE_READOUT;
 extern const std::string PREF_PAUSE;
 // value: default | full
 extern const std::string PREF_DOWNLOAD_RESULT;
+// value: true | false
+extern const std::string PREF_HASH_CHECK_ONLY;
 
 /**
  * FTP related preferences

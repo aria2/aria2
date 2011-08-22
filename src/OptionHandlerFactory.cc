@@ -306,6 +306,20 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     handlers.push_back(op);
   }
+#ifdef ENABLE_MESSAGE_DIGEST
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_HASH_CHECK_ONLY,
+                                    TEXT_HASH_CHECK_ONLY,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_BITTORRENT);
+    op->addTag(TAG_METALINK);
+    op->addTag(TAG_FILE);
+    handlers.push_back(op);
+  }
+#endif // ENABLE_MESSAGE_DIGEST
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_HUMAN_READABLE,
