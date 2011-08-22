@@ -43,6 +43,7 @@ case "$1" in
 	;;
     *)
 	# Library combinations
+	build "--without-libnettle --with-libgcrypt" "libgcrypt"
 	build "--without-gnutls" "openssl"
 	build "--without-gnutls --without-openssl" "nossl"
 	build "--without-libcares" "nocares"
