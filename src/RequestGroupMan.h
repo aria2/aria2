@@ -85,6 +85,11 @@ private:
 
   size_t maxDownloadResult_;
 
+  void formatDownloadResultFull
+  (OutputFile& out,
+   const std::string& status,
+   const DownloadResultHandle& downloadResult) const;
+
   std::string formatDownloadResult
   (const std::string& status,
    const DownloadResultHandle& downloadResult) const;
@@ -160,7 +165,7 @@ public:
 
   bool removeReservedGroup(a2_gid_t gid);
 
-  void showDownloadResults(OutputFile& o) const;
+  void showDownloadResults(OutputFile& o, bool full) const;
 
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
 

@@ -49,6 +49,7 @@ extern const std::string A2_V_DEFAULT;
 extern const std::string V_NONE;
 extern const std::string V_MEM;
 extern const std::string V_ALL;
+extern const std::string A2_V_FULL;
 /**
  * General preferences
  */
@@ -221,6 +222,8 @@ extern const std::string PREF_STREAM_PIECE_SELECTOR;
 extern const std::string PREF_TRUNCATE_CONSOLE_READOUT;
 // value: true | false
 extern const std::string PREF_PAUSE;
+// value: default | full
+extern const std::string PREF_DOWNLOAD_RESULT;
 
 /**
  * FTP related preferences

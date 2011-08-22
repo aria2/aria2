@@ -251,7 +251,8 @@ error_code::Value MultiUrlRequestInfo::execute()
     if(!serverStatOf.empty()) {
       e->getRequestGroupMan()->saveServerStat(serverStatOf);
     }
-    e->getRequestGroupMan()->showDownloadResults(*summaryOut_);
+    e->getRequestGroupMan()->showDownloadResults
+      (*summaryOut_, option_->get(PREF_DOWNLOAD_RESULT) == A2_V_FULL);
     summaryOut_->flush();
 
     RequestGroupMan::DownloadStat s =

@@ -588,25 +588,32 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
                       lastError);
 }
 
-void RequestGroupMan::showDownloadResults(OutputFile& o) const
+void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
 {
   static const std::string MARK_OK("OK");
   static const std::string MARK_ERR("ERR");
   static const std::string MARK_INPR("INPR");
   static const std::string MARK_RM("RM");
 
-  // Download Results:
-  // idx|stat|path/length
-  // ===+====+=======================================================================
-  o.printf("\n%s"
-           "\ngid|stat|avg speed  |path/URI"
-           "\n===+====+===========+",
-           _("Download Results:"));
 #ifdef __MINGW32__
   int pathRowSize = 58;
 #else // !__MINGW32__
   int pathRowSize = 59;
 #endif // !__MINGW32__
+  // Download Results:
+  // idx|stat|path/length
+  // ===+====+=======================================================================
+  o.printf("\n%s"
+           "\ngid|stat|avg speed  |",
+           _("Download Results:"));
+  if(full) {
+    o.write("  %|path/URI"
+            "\n===+====+===========+===+");
+    pathRowSize -= 4;
+  } else {
+    o.write("path/URI"
+            "\n===+====+===========+");
+  }
   std::string line(pathRowSize, '=');
   o.printf("%s\n", line.c_str());
   int ok = 0;
@@ -633,8 +640,12 @@ void RequestGroupMan::showDownloadResults(OutputFile& o) const
       status = MARK_ERR;
       ++err;
     }
-    o.write(formatDownloadResult(status, *itr).c_str());
-    o.write("\n");
+    if(full) {
+      formatDownloadResultFull(o, status, *itr);
+    } else {
+      o.write(formatDownloadResult(status, *itr).c_str());
+      o.write("\n");
+    }
   }
   if(ok > 0 || err > 0 || inpr > 0 || rm > 0) {
     o.printf("\n%s\n", _("Status Legend:"));
@@ -654,11 +665,12 @@ void RequestGroupMan::showDownloadResults(OutputFile& o) const
   }
 }
 
-std::string RequestGroupMan::formatDownloadResult
-(const std::string& status,
- const DownloadResultHandle& downloadResult) const
+namespace {
+void formatDownloadResultCommon
+(std::ostream& o,
+ const std::string& status,
+ const DownloadResultHandle& downloadResult)
 {
-  std::stringstream o;
   o << std::setw(3) << downloadResult->gid << "|"
     << std::setw(4) << status << "|"
     << std::setw(11);
@@ -670,6 +682,58 @@ std::string RequestGroupMan::formatDownloadResult
     o << "n/a";
   }
   o << "|";
+}
+} // namespace
+
+void RequestGroupMan::formatDownloadResultFull
+(OutputFile& out,
+ const std::string& status,
+ const DownloadResultHandle& downloadResult) const
+{
+  BitfieldMan bt(downloadResult->pieceLength, downloadResult->totalLength);
+  bt.setBitfield(reinterpret_cast<const unsigned char*>
+                 (util::fromHex(downloadResult->bitfieldStr).data()),
+                 downloadResult->bitfieldStr.size()/2);
+  bool head = true;
+  const std::vector<SharedHandle<FileEntry> >& fileEntries =
+    downloadResult->fileEntries;
+  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+        fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
+    if(!(*i)->isRequested()) {
+      continue;
+    }
+    std::stringstream o;
+    if(head) {
+      formatDownloadResultCommon(o, status, downloadResult);
+      head = false;
+    } else {
+      o << "   |    |           |";
+    }
+    if((*i)->getLength() == 0 || downloadResult->bitfieldStr.empty()) {
+      o << "  -|";
+    } else {
+      uint64_t completedLength =
+        bt.getOffsetCompletedLength((*i)->getOffset(), (*i)->getLength());
+      o << std::setw(3) << 100*completedLength/(*i)->getLength() << "|";
+    }
+    writeFilePath(o, *i, downloadResult->inMemoryDownload);
+    o << "\n";
+    out.write(o.str().c_str());
+  }
+  if(head) {
+    std::stringstream o;
+    formatDownloadResultCommon(o, status, downloadResult);
+    o << "  -|n/a\n";
+    out.write(o.str().c_str());
+  }
+}
+
+std::string RequestGroupMan::formatDownloadResult
+(const std::string& status,
+ const DownloadResultHandle& downloadResult) const
+{
+  std::stringstream o;
+  formatDownloadResultCommon(o, status, downloadResult);
   const std::vector<SharedHandle<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
   writeFilePath(fileEntries.begin(), fileEntries.end(), o,

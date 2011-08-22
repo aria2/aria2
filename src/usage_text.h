@@ -806,3 +806,15 @@
 #define TEXT_RPC_ALLOW_ORIGIN_ALL                                       \
   _(" --rpc-allow-origin-all[=true|false] Add Access-Control-Allow-Origin header\n" \
     "                              field with value '*' to the RPC response.")
+#define TEXT_DOWNLOAD_RESULT                    \
+  _(" --download-result=OPT        This option changes the way \"Download Results\"\n" \
+    "                              is formatted. If OPT is 'default', print GID,\n" \
+    "                              status, average download speed and path/URI. If\n" \
+    "                              multiple files are involved, path/URI of first\n" \
+    "                              requested file is printed and remaining ones are\n" \
+    "                              omitted.\n"                          \
+    "                              If OPT is 'full', print GID, status, average\n" \
+    "                              download speed, percentage of progress and\n" \
+    "                              path/URI. The percentage of progress and\n" \
+    "                              path/URI are printed for each requested file in\n" \
+    "                              each row.")

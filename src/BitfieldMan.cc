@@ -60,7 +60,7 @@ BitfieldMan::BitfieldMan(size_t blockLength, uint64_t totalLength)
    cachedFilteredTotalLength_(0)
 {
   if(blockLength_ > 0 && totalLength_ > 0) {
-    blocks_ = totalLength_/blockLength_+(totalLength_%blockLength_ ? 1 : 0);
+    blocks_ = (totalLength_+blockLength_-1)/blockLength_;
     bitfieldLength_ = blocks_/8+(blocks_%8 ? 1 : 0);
     bitfield_ = new unsigned char[bitfieldLength_];
     useBitfield_ = new unsigned char[bitfieldLength_];
@@ -770,6 +770,39 @@ bool BitfieldMan::isBitSetOffsetRange(uint64_t offset, uint64_t length) const
     }
   }
   return true;
+}
+
+uint64_t BitfieldMan::getOffsetCompletedLength
+(uint64_t offset,
+ uint64_t length) const
+{
+  uint64_t res = 0;
+  if(length == 0 || totalLength_ <= offset) {
+    return 0;
+  }
+  if(totalLength_ < offset+length) {
+    length = totalLength_-offset;
+  }
+  size_t start = offset/blockLength_;
+  size_t end = (offset+length-1)/blockLength_;
+  if(start == end) {
+    if(isBitSet(start)) {
+      res = length;
+    }
+  } else {
+    if(isBitSet(start)) {
+      res += (start+1)*blockLength_-offset;
+    }
+    for(size_t i = start+1; i <= end-1; ++i) {
+      if(isBitSet(i)) {
+        res += blockLength_;
+      }
+    }
+    if(isBitSet(end)) {
+      res += offset+length-end*blockLength_;
+    }
+  }
+  return res;
 }
 
 uint64_t BitfieldMan::getMissingUnusedLength(size_t startingIndex) const

@@ -205,6 +205,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->hide();
     handlers.push_back(op);
   }
+  {
+    SharedHandle<OptionHandler> op(new ParameterOptionHandler
+                                   (PREF_DOWNLOAD_RESULT,
+                                    TEXT_DOWNLOAD_RESULT,
+                                    A2_V_DEFAULT,
+                                    A2_V_DEFAULT,
+                                    A2_V_FULL));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
 #ifdef ENABLE_ASYNC_DNS
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler

@@ -26,6 +26,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetSparseMissingUnusedIndex_setBit);
   CPPUNIT_TEST(testGetSparseMissingUnusedIndex_withMinSplitSize);
   CPPUNIT_TEST(testIsBitSetOffsetRange);
+  CPPUNIT_TEST(testGetOffsetCompletedLength);
   CPPUNIT_TEST(testGetMissingUnusedLength);
   CPPUNIT_TEST(testSetBitRange);
   CPPUNIT_TEST(testGetAllMissingIndexes);
@@ -57,6 +58,7 @@ public:
   void testGetSparseMissingUnusedIndex_setBit();
   void testGetSparseMissingUnusedIndex_withMinSplitSize();
   void testIsBitSetOffsetRange();
+  void testGetOffsetCompletedLength();
   void testGetMissingUnusedLength();
   void testSetBitRange();
   void testCountFilteredBlock();
@@ -443,6 +445,28 @@ void BitfieldManTest::testIsBitSetOffsetRange()
   bitfield.setBit(102);
 
   CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(pieceLength*100, pieceLength*3));
+}
+
+void BitfieldManTest::testGetOffsetCompletedLength()
+{
+  BitfieldMan bt(1024, 1024*20);
+  // 00000|00000|00000|00000
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, bt.getOffsetCompletedLength(0, 1024));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, bt.getOffsetCompletedLength(0, 0));
+  for(size_t i = 2; i <= 4; ++i) {
+    bt.setBit(i);
+  }
+  // 00111|00000|00000|00000
+  CPPUNIT_ASSERT_EQUAL((uint64_t)3072, bt.getOffsetCompletedLength(2048, 3072));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)3071, bt.getOffsetCompletedLength(2047, 3072));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)3071, bt.getOffsetCompletedLength(2049, 3072));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, bt.getOffsetCompletedLength(2048, 0));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)1, bt.getOffsetCompletedLength(2048, 1));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, bt.getOffsetCompletedLength(2047, 1));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)3072, bt.getOffsetCompletedLength(0, 1024*20));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)3072,
+                       bt.getOffsetCompletedLength(0, 1024*20+10));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, bt.getOffsetCompletedLength(1024*20, 1));
 }
 
 void BitfieldManTest::testGetMissingUnusedLength()

@@ -570,4 +570,26 @@ bool FileEntry::emptyRequestUri() const
   return uris_.empty() && inFlightRequests_.empty() && requestPool_.empty();
 }
 
+void writeFilePath
+(std::ostream& o,
+ const SharedHandle<FileEntry>& entry,
+ bool memory)
+{
+  if(entry->getPath().empty()) {
+    std::vector<std::string> uris;
+    entry->getUris(uris);
+    if(uris.empty()) {
+      o << "n/a";
+    } else {
+      o << uris.front();
+    }
+  } else {
+    if(memory) {
+      o << "[MEMORY]" << File(entry->getPath()).getBasename();
+    } else {
+      o << entry->getPath();
+    }
+  }
+}
+
 } // namespace aria2

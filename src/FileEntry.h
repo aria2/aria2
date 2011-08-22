@@ -294,6 +294,14 @@ bool isUriSuppliedForRequsetFileEntry(InputIterator first, InputIterator last)
   return false;
 }
 
+// Writes filename to given o.  If memory is true, the output is
+// "[MEMORY]" plus the basename of the filename.  If there is no
+// FileEntry, writes "n/a" to o.
+void writeFilePath
+(std::ostream& o,
+ const SharedHandle<FileEntry>& entry,
+ bool memory);
+
 // Writes first filename to given o.  If memory is true, the output is
 // "[MEMORY]" plus the basename of the first filename.  If there is no
 // FileEntry, writes "n/a" to o.  If more than 1 FileEntry are in the
@@ -307,20 +315,8 @@ void writeFilePath
   if(!e) {
     o << "n/a";
   } else {
-    if(e->getPath().empty()) {
-      std::vector<std::string> uris;
-      e->getUris(uris);
-      if(uris.empty()) {
-        o << "n/a";
-      } else {
-        o << uris.front();
-      }
-    } else {
-      if(memory) {
-        o << "[MEMORY]" << File(e->getPath()).getBasename();
-      } else {
-        o << e->getPath();
-      }
+    writeFilePath(o, e, memory);
+    if(!e->getPath().empty()) {
       size_t count = countRequestedFileEntry(first, last);
       if(count > 1) {
         o << " (" << count-1 << "more)";

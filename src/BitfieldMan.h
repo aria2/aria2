@@ -264,6 +264,10 @@ public:
 
   bool isBitSetOffsetRange(uint64_t offset, uint64_t length) const;
 
+  // Returns completed length in bytes in range [offset,
+  // offset+length). This function will not affected by filter.
+  uint64_t getOffsetCompletedLength(uint64_t offset, uint64_t length) const;
+
   uint64_t getMissingUnusedLength(size_t startingIndex) const;
 
   const unsigned char* getFilterBitfield() const

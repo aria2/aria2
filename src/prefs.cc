@@ -45,6 +45,7 @@ const std::string A2_V_DEFAULT("default");
 const std::string V_NONE("none");
 const std::string V_MEM("mem");
 const std::string V_ALL("all");
+const std::string A2_V_FULL("full");
 
 /**
  * General preferences
@@ -218,6 +219,8 @@ const std::string PREF_STREAM_PIECE_SELECTOR("stream-piece-selector");
 const std::string PREF_TRUNCATE_CONSOLE_READOUT("truncate-console-readout");
 // value: true | false
 const std::string PREF_PAUSE("pause");
+// value: default | full
+const std::string PREF_DOWNLOAD_RESULT("download-result");
 
 /**
  * FTP related preferences
