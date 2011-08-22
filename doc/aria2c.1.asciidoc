@@ -944,6 +944,13 @@ Advanced Options
   Possible Values: 'none', 'prealloc', 'falloc'
   Default: 'prealloc'
 
+[[aria2_optref_hash_check_only]]*--hash-check-only*[=true|false]::
+
+  If 'true' is given, after hash check using
+  *<<aria2_optref_check_integrity, --check-integrity>>* option,
+  abort download whether or not download is complete.
+  Default: 'false'
+
 [[aria2_optref_human_readable]]*--human-readable*[='true'|'false']::
 
   Print sizes and speed in human readable format (e.g., 1.2Ki, 3.4Mi)
@@ -1573,6 +1580,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_metalink_base_uri, metalink-base-uri>>*
 * *<<aria2_optref_pause, pause>>*
 * *<<aria2_optref_stream_piece_selector, stream-piece-selector>>*
+* *<<aria2_optref_hash_check_only, hash-check-only>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
