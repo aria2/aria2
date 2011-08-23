@@ -117,6 +117,14 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 
   Set user for *<<aria2_optref_all_proxy, --all-proxy>>* option.
 
+[[aria2_optref_checksum]]*--checksum*=TYPE=DIGEST::
+
+  Set checksum. TYPE is hash type. The supported hash type is listed
+  in "Hash Algorithms" in "aria2c -v". DIGEST is hex digest.  For
+  example, setting sha-1 digest looks like this:
+  sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 This option applies
+  only to HTTP(S)/FTP downloads.
+
 [[aria2_optref_connect_timeout]]*--connect-timeout*=SEC::
   Set the connect timeout in seconds to establish connection to
   HTTP/FTP/proxy server. After the connection is established, this
@@ -1581,6 +1589,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_pause, pause>>*
 * *<<aria2_optref_stream_piece_selector, stream-piece-selector>>*
 * *<<aria2_optref_hash_check_only, hash-check-only>>*
+* *<<aria2_optref_checksum, checksum>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
