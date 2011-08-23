@@ -218,6 +218,7 @@ OptionParser.new do |opt|
   opt.on("--hash-check-only [BOOL]",["true","false"]){|val|
     options["hash-check-only"]=val||"true"
   }
+  opt.on("--checksum TYPE_DIGEST"){|val| options["checksum"]=val}
 
   opt.on("--max-overall-download-limit LIMIT"){|val| options["max-overall-download-limit"]=val}
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
