@@ -46,6 +46,7 @@
 #define TAG_HOOK "#hook"
 #define TAG_FILE "#file"
 #define TAG_RPC "#rpc"
+#define TAG_CHECKSUM "#checksum"
 #define TAG_EXPERIMENTAL "#experimental"
 #define TAG_DEPRECATED "#deprecated"
 #define TAG_HELP "#help"

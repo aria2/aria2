@@ -77,10 +77,10 @@ Basic Options
    The help messages are classified with tags. A tag starts with
    "#". For example, type "--help=#http" to get the usage for the
    options tagged with "#http". If non-tag word is given, print the
-   usage for the options whose name includes that word.
-   Available Values: '#basic', '#advanced', '#http', '#https', '#ftp',
-   '#metalink', '#bittorrent', '#cookie', '#hook', '#file',
-   '#rpc', '#experimental', '#deprecated', '#help', '#all'
+   usage for the options whose name includes that word.  Available
+   Values: '#basic', '#advanced', '#http', '#https', '#ftp',
+   '#metalink', '#bittorrent', '#cookie', '#hook', '#file', '#rpc',
+   '#checksum', '#experimental', '#deprecated', '#help', '#all'
    Default: '#basic'
 
 HTTP/FTP Options

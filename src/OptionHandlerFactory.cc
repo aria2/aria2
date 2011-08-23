@@ -131,6 +131,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
     op->addTag(TAG_FILE);
+    op->addTag(TAG_CHECKSUM);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -317,6 +318,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
     op->addTag(TAG_FILE);
+    op->addTag(TAG_CHECKSUM);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -555,6 +557,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_METALINK);
+    op->addTag(TAG_CHECKSUM);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -679,6 +682,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_CHECKSUM));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->addTag(TAG_CHECKSUM);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -1322,6 +1326,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
+    op->addTag(TAG_CHECKSUM);
     handlers.push_back(op);
   }
   {
@@ -1795,6 +1800,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
       TAG_HOOK,
       TAG_FILE,
       TAG_RPC,
+      TAG_CHECKSUM,
       TAG_EXPERIMENTAL,
       TAG_DEPRECATED,
       TAG_HELP,
