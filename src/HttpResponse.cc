@@ -408,9 +408,6 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
         break;
       }
       util::lowercase(hashType);
-      if(!MessageDigest::supports(hashType)) {
-        continue;
-      }
       std::string hexDigest = util::toHex(Base64::decode(digest));
       if(!MessageDigest::isValidHash(hashType, hexDigest)) {
         continue;
