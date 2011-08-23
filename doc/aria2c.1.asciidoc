@@ -2157,6 +2157,7 @@ The following example gets information about download whose GID is
              u'downloadSpeed': u'15158',
              u'files': [{u'index': u'1',
                          u'length': u'34896138',
+                         u'completedLength': u'34896138',
                          u'path': u'/downloads/file',
                          u'selected': u'true',
                          u'uris': [{u'status': u'used',
@@ -2208,6 +2209,7 @@ The following example gets information about download whose GID is
  'errorCode': '0',
  'files': [{'index': '1',
             'length': '34896138',
+            'completedLength': '34896138',
             'path': '/downloads/file',
             'selected': 'true',
             'uris': [{'status': 'used',
@@ -2302,6 +2304,18 @@ length::
 
   File size in bytes.
 
+completedLength::
+
+  Completed length of this file in bytes.  Please note that it is
+  possible that sum of completedLength is less than completedLength in
+  *<<aria2_rpc_aria2_tellStatus, aria2.tellStatus>>* method.
+  This is because completedLength in
+  *<<aria2_rpc_aria2_getFiles, aria2.getFiles>>*
+  only calculates completed pieces. On the other hand, completedLength
+  in
+  *<<aria2_rpc_aria2_tellStatus, aria2.tellStatus>>* takes into account
+  of partially completed piece.
+
 selected::
 
   "true" if this file is selected by *<<aria2_optref_select_file, --select-file>>* option. If
@@ -2327,6 +2341,7 @@ JSON-RPC Example
  u'jsonrpc': u'2.0',
  u'result': [{u'index': u'1',
               u'length': u'34896138',
+              u'completedLength': u'34896138',
               u'path': u'/downloads/file',
               u'selected': u'true',
               u'uris': [{u'status': u'used',
@@ -2344,6 +2359,7 @@ XML-RPC Example
 >>> pprint(r)
 [{'index': '1',
   'length': '34896138',
+  'completedLength': '34896138',
   'path': '/downloads/file',
   'selected': 'true',
   'uris': [{'status': 'used',

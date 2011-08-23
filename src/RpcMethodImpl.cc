@@ -64,6 +64,7 @@
 #include "TimedHaltCommand.h"
 #include "PeerStat.h"
 #include "Base64.h"
+#include "BitfieldMan.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 # include "message_digest_helper.h"
@@ -579,7 +580,9 @@ void createUriEntry
 namespace {
 template<typename InputIterator>
 void createFileEntry
-(const SharedHandle<List>& files, InputIterator first, InputIterator last)
+(const SharedHandle<List>& files,
+ InputIterator first, InputIterator last,
+ const BitfieldMan* bf)
 {
   size_t index = 1;
   for(; first != last; ++first, ++index) {
@@ -588,12 +591,49 @@ void createFileEntry
     entry->put(KEY_PATH, (*first)->getPath());
     entry->put(KEY_SELECTED, (*first)->isRequested()?VLB_TRUE:VLB_FALSE);
     entry->put(KEY_LENGTH, util::uitos((*first)->getLength()));
+    uint64_t completedLength = bf->getOffsetCompletedLength
+      ((*first)->getOffset(), (*first)->getLength());
+    entry->put(KEY_COMPLETED_LENGTH, util::uitos(completedLength));
 
     SharedHandle<List> uriList = List::g();
     createUriEntry(uriList, *first);
     entry->put(KEY_URIS, uriList);
     files->append(entry);
   }
+}
+} // namespace
+
+namespace {
+template<typename InputIterator>
+void createFileEntry
+(const SharedHandle<List>& files,
+ InputIterator first, InputIterator last,
+ uint64_t totalLength,
+ size_t pieceLength,
+ const std::string& bitfieldStr)
+{
+  std::string bitfield = util::fromHex(bitfieldStr);
+  BitfieldMan bf(pieceLength, totalLength);
+  bf.setBitfield(reinterpret_cast<const unsigned char*>(bitfield.data()),
+                 bitfield.size());
+  createFileEntry(files, first, last, &bf);
+}
+} // namespace
+
+namespace {
+template<typename InputIterator>
+void createFileEntry
+(const SharedHandle<List>& files,
+ InputIterator first, InputIterator last,
+ uint64_t totalLength,
+ size_t pieceLength,
+ const SharedHandle<PieceStorage>& ps)
+{
+  BitfieldMan bf(pieceLength, totalLength);
+  if(ps) {
+    bf.setBitfield(ps->getBitfield(), ps->getBitfieldLength());
+  }
+  createFileEntry(files, first, last, &bf);
 }
 } // namespace
 
@@ -610,6 +650,7 @@ void gatherProgressCommon
  const SharedHandle<RequestGroup>& group,
  const std::vector<std::string>& keys)
 {
+  const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
   if(requested_key(keys, KEY_GID)) {
     entryDict->put(KEY_GID, util::itos(group->getGID()));
   }
@@ -637,7 +678,6 @@ void gatherProgressCommon
     entryDict->put(KEY_CONNECTIONS, util::uitos(group->getNumConnection()));
   }
   if(requested_key(keys, KEY_BITFIELD)) {
-    SharedHandle<PieceStorage> ps = group->getPieceStorage();
     if(ps) {
       if(ps->getBitfieldLength() > 0) {
         entryDict->put(KEY_BITFIELD,
@@ -671,7 +711,8 @@ void gatherProgressCommon
   if(requested_key(keys, KEY_FILES)) {
     SharedHandle<List> files = List::g();
     createFileEntry
-      (files, dctx->getFileEntries().begin(), dctx->getFileEntries().end());
+      (files, dctx->getFileEntries().begin(), dctx->getFileEntries().end(),
+       dctx->getTotalLength(), dctx->getPieceLength(), ps);
     entryDict->put(KEY_FILES, files);
   }
   if(requested_key(keys, KEY_DIR)) {
@@ -829,7 +870,8 @@ void gatherStoppedDownload
   }
   if(requested_key(keys, KEY_FILES)) {
     SharedHandle<List> files = List::g();
-    createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end());
+    createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end(),
+                    ds->totalLength, ds->pieceLength, ds->bitfieldStr);
     entryDict->put(KEY_FILES, files);
   }
   if(requested_key(keys, KEY_TOTAL_LENGTH)) {
@@ -889,12 +931,18 @@ SharedHandle<ValueBase> GetFilesRpcMethod::process
         (fmt("No file data is available for GID#%s",
              util::itos(gid).c_str()));
     } else {
-      createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end());
+      createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end(),
+                      dr->totalLength, dr->pieceLength, dr->bitfieldStr);
     }
   } else {
+    const SharedHandle<PieceStorage>& ps = group->getPieceStorage();
+    const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
     createFileEntry(files,
                     group->getDownloadContext()->getFileEntries().begin(),
-                    group->getDownloadContext()->getFileEntries().end());
+                    group->getDownloadContext()->getFileEntries().end(),
+                    dctx->getTotalLength(),
+                    dctx->getPieceLength(),
+                    ps);
   }
   return files;
 }
