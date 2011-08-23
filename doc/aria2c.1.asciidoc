@@ -55,14 +55,16 @@ Basic Options
 [[aria2_optref_check_integrity]]*-V*, *--check-integrity*[='true'|'false']::
 
   Check file integrity by validating piece hashes or a hash of entire
-  file.  This option has effect only in BitTorrent and Metalink
-  downloads with checksums.  If piece hashes are provided, this option
-  can detect damaged portions of a file and re-download them.  If a
-  hash of entire file is provided, hash check is only done when file
-  has benn already download. This is determined by file length. If
-  hash check fails, file is re-downloaded from scratch.  If both piece
-  hashes and a hash of entire file are provided, only piece hashes are
-  used. Default: 'false'
+  file.  This option has effect only in BitTorrent, Metalink downloads
+  with checksums or HTTP(S)/FTP downloads with
+  *<<aria2_optref_checksum, --checksum>>* option.  If
+  piece hashes are provided, this option can detect damaged portions
+  of a file and re-download them.  If a hash of entire file is
+  provided, hash check is only done when file has been already
+  download. This is determined by file length. If hash check fails,
+  file is re-downloaded from scratch.  If both piece hashes and a hash
+  of entire file are provided, only piece hashes are used. Default:
+  'false'
 
 [[aria2_optref_continue]]*-c*, *--continue*[='true'|'false']::
    Continue downloading a partially downloaded file.
@@ -3575,8 +3577,9 @@ Repair a damaged download
 aria2c -V file.metalink
 -----------------------
 [NOTE]
-This option is only available used with BitTorrent or metalink with chunk
-checksums.
+
+Repairing damaged downloads can be done efficiently when used with
+BitTorrent or Metalink with chunk checksums.
 
 Drop connection if download speed is lower than specified value
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

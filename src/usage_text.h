@@ -184,10 +184,18 @@
   _(" --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.")
 #define TEXT_CHECK_INTEGRITY                                            \
   _(" -V, --check-integrity[=true|false] Check file integrity by validating piece\n" \
-    "                              hashes. This option has effect only in BitTorrent\n" \
-    "                              and Metalink downloads with chunk checksums.\n" \
-    "                              Use this option to re-download a damaged portion\n" \
-    "                              of a file. See also --bt-hash-check-seed option.")
+    "                              hashes or a hash of entire file. This option has\n" \
+    "                              effect only in BitTorrent, Metalink downloads\n" \
+    "                              with checksums or HTTP(S)/FTP downloads with\n" \
+    "                              --checksum option. If piece hashes are provided,\n" \
+    "                              this option can detect damaged portions of a file\n" \
+    "                              and re-download them. If a hash of entire file is\n" \
+    "                              provided, hash check is only done when file has\n" \
+    "                              been already download. This is determined by file\n" \
+    "                              length. If hash check fails, file is\n" \
+    "                              re-downloaded from scratch. If both piece hashes\n" \
+    "                              and a hash of entire file are provided, only\n" \
+    "                              piece hashes are used.")
 #define TEXT_BT_HASH_CHECK_SEED                                         \
   _(" --bt-hash-check-seed[=true|false] If true is given, after hash check using\n" \
     "                              --check-integrity option and file is complete,\n" \
