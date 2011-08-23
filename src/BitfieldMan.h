@@ -135,6 +135,12 @@ public:
    const unsigned char* ignoreBitfield,
    size_t ignoreBitfieldLength) const;
 
+  bool getGeomMissingUnusedIndex
+  (size_t& index,
+   size_t minSplitSize,
+   const unsigned char* ignoreBitfield,
+   size_t ignoreBitfieldLength) const;
+
   // Stores missing bit index to index. This function selects smallest
   // index of missing piece, considering minSplitSize.  Set bits in
   // ignoreBitfield are excluded. Returns true if such bit index is

@@ -38,6 +38,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testZeroLengthFilter);
   CPPUNIT_TEST(testGetFirstNMissingUnusedIndex);
   CPPUNIT_TEST(testGetInorderMissingUnusedIndex);
+  CPPUNIT_TEST(testGetGeomMissingUnusedIndex);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testGetBlockSize();
@@ -66,6 +67,7 @@ public:
   void testZeroLengthFilter();
   void testGetFirstNMissingUnusedIndex();
   void testGetInorderMissingUnusedIndex();
+  void testGetGeomMissingUnusedIndex();
 };
 
 
@@ -728,6 +730,58 @@ void BitfieldManTest::testGetInorderMissingUnusedIndex()
     (bt.getInorderMissingUnusedIndex
      (index, minSplitSize, ignoreBitfield, length));
   CPPUNIT_ASSERT_EQUAL((size_t)3, index);
+}
+
+void BitfieldManTest::testGetGeomMissingUnusedIndex()
+{
+  BitfieldMan bt(1024, 1024*20);
+  const size_t length = 3;
+  unsigned char ignoreBitfield[length];
+  memset(ignoreBitfield, 0, sizeof(ignoreBitfield));
+  size_t minSplitSize = 1024;
+  size_t index;
+  // 00000|00000|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getGeomMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, index);
+  bt.setUseBit(0);
+  // 10000|00000|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getGeomMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, index);
+  bt.setUseBit(1);
+  // 11000|00000|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getGeomMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, index);
+  bt.setUseBit(2);
+  // 11100|00000|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getGeomMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)4, index);
+  bt.setUseBit(4);
+  // 11110|00000|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getGeomMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)8, index);
+  bt.setUseBit(8);
+  // 11110|00010|00000|00000
+  CPPUNIT_ASSERT
+    (bt.getGeomMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)16, index);
+  bt.setUseBit(16);
+  // 11110|00010|00000|01000
+  CPPUNIT_ASSERT
+    (bt.getGeomMissingUnusedIndex
+     (index, minSplitSize, ignoreBitfield, length));
+  CPPUNIT_ASSERT_EQUAL((size_t)12, index);
+  bt.setUseBit(12);
 }
 
 } // namespace aria2

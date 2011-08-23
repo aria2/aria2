@@ -225,6 +225,7 @@ SRCS =  Socket.h\
 	StreamPieceSelector.h\
 	DefaultStreamPieceSelector.cc DefaultStreamPieceSelector.h\
 	InorderStreamPieceSelector.cc InorderStreamPieceSelector.h\
+	GeomStreamPieceSelector.cc GeomStreamPieceSelector.h\
 	MetalinkHttpEntry.cc MetalinkHttpEntry.h\
 	OutputFile.h\
 	NullOutputFile.h\
