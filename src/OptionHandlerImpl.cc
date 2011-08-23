@@ -56,6 +56,9 @@
 #include "FileEntry.h"
 #include "a2io.h"
 #include "LogFactory.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 
@@ -406,6 +409,33 @@ void IndexOutOptionHandler::parseArg(Option& option, const std::string& optarg)
 std::string IndexOutOptionHandler::createPossibleValuesString() const
 {
   return "INDEX=PATH";
+}
+
+ChecksumOptionHandler::ChecksumOptionHandler
+(const std::string& optName,
+ const std::string& description,
+ char shortName)
+  : NameMatchOptionHandler(optName, description, NO_DEFAULT_VALUE,
+                           OptionHandler::REQ_ARG, shortName)
+{}
+
+ChecksumOptionHandler::~ChecksumOptionHandler() {}
+
+void ChecksumOptionHandler::parseArg(Option& option, const std::string& optarg)
+{
+  std::pair<std::string, std::string> p;
+  util::divide(p, optarg, '=');
+  util::lowercase(p.first);
+  util::lowercase(p.second);
+  if(!MessageDigest::isValidHash(p.first, p.second)) {
+    throw DL_ABORT_EX(_("Unrecognized checksum"));
+  }
+  option.put(optName_, optarg);
+}
+
+std::string ChecksumOptionHandler::createPossibleValuesString() const
+{
+  return "HASH_TYPE=HEX_DIGEST";
 }
 
 ParameterOptionHandler::ParameterOptionHandler

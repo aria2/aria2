@@ -822,3 +822,12 @@
   _(" --hash-check-only[=true|false] If true is given, after hash check using\n" \
     "                              --check-integrity option, abort download whether\n" \
     "                              or not download is complete.")
+#define TEXT_CHECKSUM                                                   \
+  _(" --checksum=TYPE=DIGEST       Set checksum. TYPE is hash type. The supported\n" \
+    "                              hash type is listed in \"Hash Algorithms\" in\n" \
+    "                              \"aria2c -v\". DIGEST is hex digest.\n" \
+    "                              For example, setting sha-1 digest looks like\n" \
+    "                              this:\n"                             \
+    "                              sha-1=0192ba11326fe2298c8cb4de616f4d4140213838\n" \
+    "                              This option applies only to HTTP(S)/FTP\n" \
+    "                              downloads.")

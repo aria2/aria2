@@ -240,6 +240,8 @@ extern const std::string V_ASCII;
 extern const std::string PREF_FTP_PASV;
 // values: true | false
 extern const std::string PREF_FTP_REUSE_CONNECTION;
+// values: hashType=digest
+extern const std::string PREF_CHECKSUM;
 
 /**
  * HTTP related preferences

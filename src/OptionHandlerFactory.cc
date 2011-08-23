@@ -672,6 +672,16 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   // HTTP/FTP options
+#ifdef ENABLE_MESSAGE_DIGEST
+  {
+    SharedHandle<OptionHandler> op(new ChecksumOptionHandler
+                                   (PREF_CHECKSUM,
+                                    TEXT_CHECKSUM));
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+#endif // ENABLE_MESSAGE_DIGEST
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_CONNECT_TIMEOUT,

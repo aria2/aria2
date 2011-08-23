@@ -223,6 +223,8 @@ const std::string PREF_PAUSE("pause");
 const std::string PREF_DOWNLOAD_RESULT("download-result");
 // value: true | false
 const std::string PREF_HASH_CHECK_ONLY("hash-check-only");
+// values: hashType=digest
+const std::string PREF_CHECKSUM("checksum");
 
 /**
  * FTP related preferences

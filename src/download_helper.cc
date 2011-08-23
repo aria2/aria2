@@ -169,7 +169,8 @@ const std::set<std::string>& listRequestOptions()
     PREF_METALINK_BASE_URI,
     PREF_PAUSE,
     PREF_STREAM_PIECE_SELECTOR,
-    PREF_HASH_CHECK_ONLY
+    PREF_HASH_CHECK_ONLY,
+    PREF_CHECKSUM
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
@@ -229,6 +230,16 @@ SharedHandle<RequestGroup> createRequestGroup
   dctx->getFirstFileEntry()->setUris(uris);
   dctx->getFirstFileEntry()->setMaxConnectionPerServer
     (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
+#ifdef ENABLE_MESSAGE_DIGEST
+  const std::string& checksum = option->get(PREF_CHECKSUM);
+  if(!checksum.empty()) {
+    std::pair<std::string, std::string> p;
+    util::divide(p, checksum, '=');
+    util::lowercase(p.first);
+    util::lowercase(p.second);
+    dctx->setDigest(p.first, p.second);
+  }
+#endif // ENABLE_MESSAGE_DIGEST
   rg->setDownloadContext(dctx);
   rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
   removeOneshotOption(rg->getOption());

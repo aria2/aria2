@@ -185,6 +185,17 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
+class ChecksumOptionHandler : public NameMatchOptionHandler {
+private:
+public:
+  ChecksumOptionHandler(const std::string& optName,
+                        const std::string& description,
+                        char shortName = 0);
+  virtual ~ChecksumOptionHandler();
+  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual std::string createPossibleValuesString() const;
+};
+
 class ParameterOptionHandler : public NameMatchOptionHandler {
 private:
   std::vector<std::string> validParamValues_;
