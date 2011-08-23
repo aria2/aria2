@@ -88,7 +88,7 @@ DefaultPieceStorage::DefaultPieceStorage
   } else if(pieceSelectorOpt == V_INORDER) {
     streamPieceSelector_.reset(new InorderStreamPieceSelector(bitfieldMan_));
   } else if(pieceSelectorOpt == A2_V_GEOM) {
-    streamPieceSelector_.reset(new GeomStreamPieceSelector(bitfieldMan_));
+    streamPieceSelector_.reset(new GeomStreamPieceSelector(bitfieldMan_, 1.5));
   }
 }
 

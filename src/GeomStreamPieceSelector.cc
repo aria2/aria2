@@ -38,8 +38,10 @@
 namespace aria2 {
 
 GeomStreamPieceSelector::GeomStreamPieceSelector
-(BitfieldMan* bitfieldMan)
-  : bitfieldMan_(bitfieldMan)
+(BitfieldMan* bitfieldMan,
+ double base)
+  : bitfieldMan_(bitfieldMan),
+    base_(base)
 {}
 
 GeomStreamPieceSelector::~GeomStreamPieceSelector() {}
@@ -51,7 +53,7 @@ bool GeomStreamPieceSelector::select
  size_t length)
 {
   return bitfieldMan_->getGeomMissingUnusedIndex
-    (index, minSplitSize, ignoreBitfield, length);
+    (index, minSplitSize, ignoreBitfield, length, base_, 0);
 }
 
 } // namespace aria2

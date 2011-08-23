@@ -317,15 +317,18 @@ bool getGeomMissingUnusedIndex
  const Array& bitfield,
  const unsigned char* useBitfield,
  size_t blockLength,
- size_t blocks)
+ size_t blocks,
+ double base,
+ size_t offsetIndex)
 {
-  const size_t base = 2;
-  size_t start = 0;
-  size_t end = 1;
-  while(start < blocks) {
+  double start = 0;
+  double end = 1;
+  while(start+offsetIndex < blocks) {
     index = blocks;
     bool ok = false;
-    for(size_t i = start, eoi = std::min(blocks, end); i < eoi; ++i) {
+    for(size_t i = start+offsetIndex,
+          eoi = std::min(blocks, static_cast<size_t>(end+offsetIndex));
+        i < eoi; ++i) {
       if(bitfield::test(useBitfield, blocks, i)) {
         ok = false;
         break;
@@ -351,19 +354,23 @@ bool BitfieldMan::getGeomMissingUnusedIndex
 (size_t& index,
  size_t minSplitSize,
  const unsigned char* ignoreBitfield,
- size_t ignoreBitfieldLength) const
+ size_t ignoreBitfieldLength,
+ double base,
+ size_t offsetIndex) const
 {
   if(filterEnabled_) {
     return aria2::getGeomMissingUnusedIndex
       (index, minSplitSize,
        array(ignoreBitfield)|~array(filterBitfield_)|
        array(bitfield_)|array(useBitfield_),
-       useBitfield_, blockLength_, blocks_);
+       useBitfield_, blockLength_, blocks_,
+       base, offsetIndex);
   } else {
     return aria2::getGeomMissingUnusedIndex
       (index, minSplitSize,
        array(ignoreBitfield)|array(bitfield_)|array(useBitfield_),
-       useBitfield_, blockLength_, blocks_);
+       useBitfield_, blockLength_, blocks_,
+       base, offsetIndex);
   }
 }
 

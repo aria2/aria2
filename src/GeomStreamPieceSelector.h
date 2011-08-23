@@ -43,7 +43,7 @@ class BitfieldMan;
 
 class GeomStreamPieceSelector:public StreamPieceSelector {
 public:
-  GeomStreamPieceSelector(BitfieldMan* bitfieldMan);
+  GeomStreamPieceSelector(BitfieldMan* bitfieldMan, double base);
   virtual ~GeomStreamPieceSelector();
 
   virtual bool select
@@ -53,6 +53,7 @@ public:
    size_t length);
 private:
   BitfieldMan* bitfieldMan_;
+  double base_;
 };
 
 } // namespace aria2

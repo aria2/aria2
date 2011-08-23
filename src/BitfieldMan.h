@@ -139,7 +139,9 @@ public:
   (size_t& index,
    size_t minSplitSize,
    const unsigned char* ignoreBitfield,
-   size_t ignoreBitfieldLength) const;
+   size_t ignoreBitfieldLength,
+   double base,
+   size_t offsetIndex) const;
 
   // Stores missing bit index to index. This function selects smallest
   // index of missing piece, considering minSplitSize.  Set bits in

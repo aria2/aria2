@@ -743,43 +743,43 @@ void BitfieldManTest::testGetGeomMissingUnusedIndex()
   // 00000|00000|00000|00000
   CPPUNIT_ASSERT
     (bt.getGeomMissingUnusedIndex
-     (index, minSplitSize, ignoreBitfield, length));
+     (index, minSplitSize, ignoreBitfield, length, 2, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
   bt.setUseBit(0);
   // 10000|00000|00000|00000
   CPPUNIT_ASSERT
     (bt.getGeomMissingUnusedIndex
-     (index, minSplitSize, ignoreBitfield, length));
+     (index, minSplitSize, ignoreBitfield, length, 2, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)1, index);
   bt.setUseBit(1);
   // 11000|00000|00000|00000
   CPPUNIT_ASSERT
     (bt.getGeomMissingUnusedIndex
-     (index, minSplitSize, ignoreBitfield, length));
+     (index, minSplitSize, ignoreBitfield, length, 2, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)2, index);
   bt.setUseBit(2);
   // 11100|00000|00000|00000
   CPPUNIT_ASSERT
     (bt.getGeomMissingUnusedIndex
-     (index, minSplitSize, ignoreBitfield, length));
+     (index, minSplitSize, ignoreBitfield, length, 2, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)4, index);
   bt.setUseBit(4);
   // 11110|00000|00000|00000
   CPPUNIT_ASSERT
     (bt.getGeomMissingUnusedIndex
-     (index, minSplitSize, ignoreBitfield, length));
+     (index, minSplitSize, ignoreBitfield, length, 2, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)8, index);
   bt.setUseBit(8);
   // 11110|00010|00000|00000
   CPPUNIT_ASSERT
     (bt.getGeomMissingUnusedIndex
-     (index, minSplitSize, ignoreBitfield, length));
+     (index, minSplitSize, ignoreBitfield, length, 2, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)16, index);
   bt.setUseBit(16);
   // 11110|00010|00000|01000
   CPPUNIT_ASSERT
     (bt.getGeomMissingUnusedIndex
-     (index, minSplitSize, ignoreBitfield, length));
+     (index, minSplitSize, ignoreBitfield, length, 2, 0));
   CPPUNIT_ASSERT_EQUAL((size_t)12, index);
   bt.setUseBit(12);
 }
