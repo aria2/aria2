@@ -859,7 +859,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_STREAM_PIECE_SELECTOR,
                                     A2_V_DEFAULT,
                                     A2_V_DEFAULT,
-                                    V_INORDER));
+                                    V_INORDER,
+                                    A2_V_GEOM));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     handlers.push_back(op);

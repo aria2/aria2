@@ -50,6 +50,8 @@ extern const std::string V_NONE;
 extern const std::string V_MEM;
 extern const std::string V_ALL;
 extern const std::string A2_V_FULL;
+extern const std::string A2_V_GEOM;
+
 /**
  * General preferences
  */
@@ -216,7 +218,7 @@ extern const std::string PREF_RETRY_WAIT;
 extern const std::string PREF_ASYNC_DNS_SERVER;
 // value: true | false
 extern const std::string PREF_SHOW_CONSOLE_READOUT;
-// value: default | inorder
+// value: default | inorder | geom
 extern const std::string PREF_STREAM_PIECE_SELECTOR;
 // value: true | false
 extern const std::string PREF_TRUNCATE_CONSOLE_READOUT;

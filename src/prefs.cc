@@ -46,6 +46,7 @@ const std::string V_NONE("none");
 const std::string V_MEM("mem");
 const std::string V_ALL("all");
 const std::string A2_V_FULL("full");
+const std::string A2_V_GEOM("geom");
 
 /**
  * General preferences

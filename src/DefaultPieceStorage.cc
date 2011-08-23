@@ -58,6 +58,7 @@
 #include "RarestPieceSelector.h"
 #include "DefaultStreamPieceSelector.h"
 #include "InorderStreamPieceSelector.h"
+#include "GeomStreamPieceSelector.h"
 #include "array_fun.h"
 #include "PieceStatMan.h"
 #include "wallclock.h"
@@ -83,11 +84,11 @@ DefaultPieceStorage::DefaultPieceStorage
   const std::string& pieceSelectorOpt =
     option_->get(PREF_STREAM_PIECE_SELECTOR);
   if(pieceSelectorOpt.empty() || pieceSelectorOpt == A2_V_DEFAULT) {
-    streamPieceSelector_ = SharedHandle<StreamPieceSelector>
-      (new DefaultStreamPieceSelector(bitfieldMan_));
+    streamPieceSelector_.reset(new DefaultStreamPieceSelector(bitfieldMan_));
   } else if(pieceSelectorOpt == V_INORDER) {
-    streamPieceSelector_ = SharedHandle<StreamPieceSelector>
-      (new InorderStreamPieceSelector(bitfieldMan_));
+    streamPieceSelector_.reset(new InorderStreamPieceSelector(bitfieldMan_));
+  } else if(pieceSelectorOpt == A2_V_GEOM) {
+    streamPieceSelector_.reset(new GeomStreamPieceSelector(bitfieldMan_));
   }
 }
 
