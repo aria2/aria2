@@ -127,22 +127,17 @@ inline size_t countSetBit(const unsigned char* bitfield, size_t nbits)
 
 void flipBit(unsigned char* data, size_t length, size_t bitIndex);
 
-// Stores first missing bit index of bitfield to index.  bitfield
-// contains nbits. Returns true if missing bit index is
-// found. Otherwise returns false.
+// Stores first set bit index of bitfield to index.  bitfield contains
+// nbits. Returns true if missing bit index is found. Otherwise
+// returns false.
 template<typename Array>
-bool getFirstMissingIndex
+bool getFirstSetBitIndex
 (size_t& index, const Array& bitfield, size_t nbits)
 {
-  const size_t bitfieldLength = (nbits+7)/8;
-  for(size_t i = 0; i < bitfieldLength; ++i) {
-    unsigned char mask = 128;
-    size_t tindex = i*8;
-    for(size_t bi = 0; bi < 8 && tindex < nbits; ++bi, mask >>= 1, ++tindex) {
-      if(bitfield[i] & mask) {
-        index = tindex;
-        return true;
-      }
+  for(size_t i = 0; i < nbits; ++i) {
+    if(bitfield::test(bitfield, nbits, i)) {
+      index = i;
+      return true;
     }
   }
   return false;
@@ -151,23 +146,18 @@ bool getFirstMissingIndex
 // Appends first at most n set bit index in bitfield to out.  bitfield
 // contains nbits bits.  Returns the number of appended bit indexes.
 template<typename Array, typename OutputIterator>
-size_t getFirstNMissingIndex
+size_t getFirstNSetBitIndex
 (OutputIterator out, size_t n, const Array& bitfield, size_t nbits)
 {
   if(n == 0) {
     return 0;
   }
   const size_t origN = n;
-  const size_t bitfieldLength = (nbits+7)/8;
-  for(size_t i = 0; i < bitfieldLength; ++i) {
-    unsigned char mask = 128;
-    size_t tindex = i*8;
-    for(size_t bi = 0; bi < 8 && tindex < nbits; ++bi, mask >>= 1, ++tindex) {
-      if(bitfield[i] & mask) {
-        *out++ = tindex;
-        if(--n == 0) {
-          return origN;
-        }
+  for(size_t i = 0; i < nbits; ++i) {
+    if(bitfield::test(bitfield, nbits, i)) {
+      *out++ = i;
+      if(--n == 0) {
+        break;
       }
     }
   }

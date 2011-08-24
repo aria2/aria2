@@ -135,6 +135,20 @@ public:
    const unsigned char* ignoreBitfield,
    size_t ignoreBitfieldLength) const;
 
+  // Stores missing bit index to index. This function first try to
+  // select smallest index starting offsetIndex in the order:
+  // offsetIndex, offsetIndex+base**1, offsetIndex+base**2, ...  For
+  // each sequence [offsetIndex+base**i, offsetIndex+base**(i+1))
+  // (first sequence is special case and it is [offsetIndex,
+  // offsetIndex+base)) test isBitSet() and isUseBitSet() from the
+  // beginning of the sequence.  If isBitSet(x) == false is found
+  // first, select x as index.  If isUseBit(x) == true is found first
+  // or isBitSet(x) == false is not found, then quit search and go to
+  // the next sequence(increment i).  If no index found in the above
+  // algorithm, call getSparseMissingUnusedIndex() and return its
+  // result.
+  //
+  // affected by filter
   bool getGeomMissingUnusedIndex
   (size_t& index,
    size_t minSplitSize,
@@ -147,6 +161,8 @@ public:
   // index of missing piece, considering minSplitSize.  Set bits in
   // ignoreBitfield are excluded. Returns true if such bit index is
   // found. Otherwise returns false.
+  //
+  // affected by filter
   bool getInorderMissingUnusedIndex
   (size_t& index,
    size_t minSplitSize,

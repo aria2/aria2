@@ -169,11 +169,11 @@ bool BitfieldMan::hasMissingPiece
 bool BitfieldMan::getFirstMissingUnusedIndex(size_t& index) const
 {
   if(filterEnabled_) {
-    return bitfield::getFirstMissingIndex
+    return bitfield::getFirstSetBitIndex
       (index, ~array(bitfield_)&~array(useBitfield_)&array(filterBitfield_),
        blocks_);
   } else {
-    return bitfield::getFirstMissingIndex
+    return bitfield::getFirstSetBitIndex
       (index, ~array(bitfield_)&~array(useBitfield_), blocks_);
   }
 }
@@ -182,11 +182,11 @@ size_t BitfieldMan::getFirstNMissingUnusedIndex
 (std::vector<size_t>& out, size_t n) const
 {
   if(filterEnabled_) {
-    return bitfield::getFirstNMissingIndex
+    return bitfield::getFirstNSetBitIndex
       (std::back_inserter(out), n,
        ~array(bitfield_)&~array(useBitfield_)&array(filterBitfield_), blocks_);
   } else {
-    return bitfield::getFirstNMissingIndex
+    return bitfield::getFirstNSetBitIndex
       (std::back_inserter(out), n,
        ~array(bitfield_)&~array(useBitfield_), blocks_);
   }
@@ -195,10 +195,10 @@ size_t BitfieldMan::getFirstNMissingUnusedIndex
 bool BitfieldMan::getFirstMissingIndex(size_t& index) const
 {
   if(filterEnabled_) {
-    return bitfield::getFirstMissingIndex
+    return bitfield::getFirstSetBitIndex
       (index, ~array(bitfield_)&array(filterBitfield_), blocks_);
   } else {
-    return bitfield::getFirstMissingIndex(index, ~array(bitfield_), blocks_);
+    return bitfield::getFirstSetBitIndex(index, ~array(bitfield_), blocks_);
   }
 }
 
@@ -325,19 +325,17 @@ bool getGeomMissingUnusedIndex
   double end = 1;
   while(start+offsetIndex < blocks) {
     index = blocks;
-    bool ok = false;
     for(size_t i = start+offsetIndex,
           eoi = std::min(blocks, static_cast<size_t>(end+offsetIndex));
         i < eoi; ++i) {
       if(bitfield::test(useBitfield, blocks, i)) {
-        ok = false;
         break;
-      } else if(index == blocks && !bitfield::test(bitfield, blocks, i)) {
-        ok = true;
+      } else if(!bitfield::test(bitfield, blocks, i)) {
         index = i;
+        break;
       }
     }
-    if(ok) {
+    if(index < blocks) {
       return true;
     } else {
       start = end;
