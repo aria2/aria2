@@ -97,7 +97,8 @@ _aria2c()
                      '--uri-selector',
                      '--event-poll',
                      '--follow-torrent',
-                     '--stream-piece-selector']:
+                     '--stream-piece-selector',
+                     '--download-result']:
         opt = opts[long_opt]
         output_value_case(out, opt.long_opt, opt.values)
     # Complete directory
