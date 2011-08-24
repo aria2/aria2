@@ -51,6 +51,8 @@ public:
    size_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t length);
+
+  virtual void onBitfieldInit();
 private:
   BitfieldMan* bitfieldMan_;
 };

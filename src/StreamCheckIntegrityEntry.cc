@@ -38,6 +38,7 @@
 #include "StreamFileAllocationEntry.h"
 #include "prefs.h"
 #include "Option.h"
+#include "PieceStorage.h"
 
 namespace aria2 {
 
@@ -51,6 +52,8 @@ StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 void StreamCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<Command*>& commands, DownloadEngine* e)
 {
+  const SharedHandle<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
+  ps->onDownloadIncomplete();
   if(getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
     return;
   }

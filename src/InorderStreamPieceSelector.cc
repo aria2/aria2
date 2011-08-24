@@ -54,4 +54,6 @@ bool InorderStreamPieceSelector::select
     (index, minSplitSize, ignoreBitfield, length);
 }
 
+void InorderStreamPieceSelector::onBitfieldInit() {}
+
 } // namespace aria2

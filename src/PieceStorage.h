@@ -283,6 +283,9 @@ public:
   // are not used and not completed. If all pieces after index+1 are
   // used or completed, returns the number of pieces.
   virtual size_t getNextUsedIndex(size_t index) = 0;
+
+  // Called when system detects download is not finished
+  virtual void onDownloadIncomplete() = 0;
 };
 
 typedef SharedHandle<PieceStorage> PieceStorageHandle;

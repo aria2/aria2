@@ -272,6 +272,8 @@ public:
 
   virtual size_t getNextUsedIndex(size_t index);
 
+  virtual void onDownloadIncomplete();
+
   /**
    * This method is made private for test purpose only.
    */

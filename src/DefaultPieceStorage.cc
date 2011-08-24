@@ -810,4 +810,9 @@ size_t DefaultPieceStorage::getNextUsedIndex(size_t index)
   return bitfieldMan_->countBlock();
 }
 
+void DefaultPieceStorage::onDownloadIncomplete()
+{
+  streamPieceSelector_->onBitfieldInit();
+}
+
 } // namespace aria2

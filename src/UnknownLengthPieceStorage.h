@@ -292,6 +292,8 @@ public:
   virtual size_t getNextUsedIndex(size_t index) { return 0; }
 
   void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
+
+  virtual void onDownloadIncomplete() {}
 };
 
 typedef SharedHandle<UnknownLengthPieceStorage> UnknownLengthPieceStorageHandle;

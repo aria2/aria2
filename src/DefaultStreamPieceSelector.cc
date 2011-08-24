@@ -54,4 +54,6 @@ bool DefaultStreamPieceSelector::select
     (index, minSplitSize, ignoreBitfield, length);
 }
 
+void DefaultStreamPieceSelector::onBitfieldInit() {}
+
 } // namespace aria2

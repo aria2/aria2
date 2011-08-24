@@ -51,11 +51,12 @@ BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 void BtCheckIntegrityEntry::onDownloadIncomplete
 (std::vector<Command*>& commands, DownloadEngine* e)
 {
+  const SharedHandle<PieceStorage>& ps = getRequestGroup()->getPieceStorage();
+  ps->onDownloadIncomplete();
   if(getRequestGroup()->getOption()->getAsBool(PREF_HASH_CHECK_ONLY)) {
     return;
   }
-  const SharedHandle<DiskAdaptor>& diskAdaptor =
-    getRequestGroup()->getPieceStorage()->getDiskAdaptor();
+  const SharedHandle<DiskAdaptor>& diskAdaptor = ps->getDiskAdaptor();
   if(diskAdaptor->isReadOnlyEnabled()) {
     // Now reopen DiskAdaptor with read only disabled.
     diskAdaptor->closeFile();

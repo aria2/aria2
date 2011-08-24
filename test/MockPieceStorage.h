@@ -280,6 +280,8 @@ public:
   {
     return 0;
   }
+
+  virtual void onDownloadIncomplete() {}
 };
 
 } // namespace aria2

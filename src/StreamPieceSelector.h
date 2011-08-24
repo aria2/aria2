@@ -60,6 +60,10 @@ public:
    size_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t length) = 0;
+
+  // Called when initial bitfield was fixed. Optimize
+  // StreamPieceSelector to take advantages of the initial bitfield.
+  virtual void onBitfieldInit() = 0;
 };
 
 } // namespace aria2
