@@ -29,9 +29,7 @@ void FallocFileAllocationIteratorTest::testAllocate()
   // When fallocate is used, test fails if file system does not
   // support it. So skip it.
 #ifndef HAVE_FALLOCATE
-  std::string dir = "./";
-  std::string fname = "aria2_FallocFileAllocationIteratorTest_testAllocate";
-  std::string fn = dir+"/"+fname;
+  std::string fn = A2_TEST_OUT_DIR"/aria2_FallocFileAllocationIteratorTest_testAllocate";
   std::ofstream of(fn.c_str(), std::ios::binary);
   of << "0123456789";
   of.close();

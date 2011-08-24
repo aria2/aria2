@@ -649,7 +649,7 @@ void UtilTest::testAlphaToNum()
 
 void UtilTest::testMkdirs()
 {
-  std::string dir = "./aria2-UtilTest-testMkdirs";
+  std::string dir = A2_TEST_OUT_DIR"/aria2-UtilTest-testMkdirs";
   File d(dir);
   if(d.exists()) {
     CPPUNIT_ASSERT(d.remove());
