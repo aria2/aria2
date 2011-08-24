@@ -172,6 +172,13 @@ void JsonTest::testDecode()
     const String* s4 = asString(list->get(4));
     CPPUNIT_ASSERT_EQUAL(std::string("-1e10"), s4->s());
   }
+  {
+    // escape chars: ", \, /, \b, \f, \n, \r, \t
+    SharedHandle<ValueBase> r =json::decode("[\"\\\"\\\\\\/\\b\\f\\n\\r\\t\"]");
+    const List* list = asList(r);
+    const String* s = asString(list->get(0));
+    CPPUNIT_ASSERT_EQUAL(std::string("\"\\/\b\f\n\r\t"), s->s());
+  }
 }
 
 void JsonTest::testDecode_error()
