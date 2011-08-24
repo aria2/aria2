@@ -367,7 +367,12 @@ bool isUtf8(const std::string& str)
     unsigned char firstChar = *s;
     // See ABNF in http://tools.ietf.org/search/rfc3629#section-4
     if(in(firstChar, 0x20u, 0x7eu) ||
-       firstChar == 0x09u || firstChar == 0x0au ||firstChar == 0x0du) {
+       firstChar == 0x08u || // \b
+       firstChar == 0x09u || // \t
+       firstChar == 0x0au || // \n
+       firstChar == 0x0cu || // \f
+       firstChar == 0x0du    // \r
+       ) {
       // UTF8-1 (without ctrl chars)
     } else if(in(firstChar, 0xc2u, 0xdfu)) {
       // UTF8-2
