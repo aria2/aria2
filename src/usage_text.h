@@ -804,7 +804,15 @@
     "                              Please note that aria2 honors\n"     \
     "                              --min-split-size option, so it will be necessary\n" \
     "                              to specify a reasonable value to\n"  \
-    "                              --min-split-size option.")
+    "                              --min-split-size option.\n"          \
+    "                              If 'geom' is given, at the beginning aria2\n" \
+    "                              selects piece which has minimum index like\n" \
+    "                              'inorder', but it exponentially increasingly\n" \
+    "                              keeps space from previously selected piece. This\n" \
+    "                              will reduce the number of establishing connection\n" \
+    "                              and at the same time it will download the\n" \
+    "                              beginning part of the file first. This will be\n" \
+    "                              useful to view movie while downloading it.")
 #define TEXT_TRUNCATE_CONSOLE_READOUT                                   \
   _(" --truncate-console-readout[=true|false] Truncate console readout to fit in\n"\
     "                              a single line.")
