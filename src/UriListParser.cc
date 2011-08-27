@@ -75,7 +75,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
           break;
         }
         line_.assign(&buf[0], &buf[strlen(buf)]);
-        if(util::startsWith(line_, " ")) {
+        if(util::startsWith(line_, " ") || util::startsWith(line_, "\t")) {
           ss << line_ << "\n";
         } else if(util::startsWith(line_, A2STR::SHARP_C)) {
           continue;

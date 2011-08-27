@@ -4,4 +4,4 @@ http://localhost/index.html	http://localhost2/index.html
 ftp://localhost/aria2.tar.bz2
   dir=/tmp
 # comment line
-  out=chunky_chocolate
+	 out=chunky_chocolate
