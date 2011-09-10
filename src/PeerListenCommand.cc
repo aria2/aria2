@@ -61,12 +61,7 @@ PeerListenCommand::PeerListenCommand
     family_(family)
 {}
 
-PeerListenCommand::~PeerListenCommand()
-{
-  if(socket_) {
-    e_->deleteSocketForReadCheck(socket_, this);
-  }
-}
+PeerListenCommand::~PeerListenCommand() {}
 
 bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
@@ -86,7 +81,6 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       socket_->bind(A2STR::NIL, port, family_);
       socket_->beginListen();
       socket_->setNonBlockingMode();
-      e_->addSocketForReadCheck(socket_, this);
       A2_LOG_NOTICE(fmt("IPv%d BitTorrent: listening to port %u", ipv, port));
       return true;
     } catch(RecoverableException& ex) {
