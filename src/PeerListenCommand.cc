@@ -61,7 +61,12 @@ PeerListenCommand::PeerListenCommand
     family_(family)
 {}
 
-PeerListenCommand::~PeerListenCommand() {}
+PeerListenCommand::~PeerListenCommand()
+{
+  if(socket_) {
+    e_->deleteSocketForReadCheck(socket_, this);
+  }
+}
 
 bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
@@ -70,7 +75,7 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
   std::vector<int32_t> randPorts = seq.flush();
   std::random_shuffle(randPorts.begin(), randPorts.end(),
                       *SimpleRandomizer::getInstance().get());
-  
+  const int ipv = (family_ == AF_INET) ? 4 : 6;
   for(std::vector<int32_t>::const_iterator portItr = randPorts.begin(),
         eoi = randPorts.end(); portItr != eoi; ++portItr) {
     if(!(0 < (*portItr) && (*portItr) <= 65535)) {
@@ -81,15 +86,12 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       socket_->bind(A2STR::NIL, port, family_);
       socket_->beginListen();
       socket_->setNonBlockingMode();
-      A2_LOG_NOTICE(fmt("IPv%d BitTorrent: listening to port %d",
-                        family_ == AF_INET?4:6, port));
+      e_->addSocketForReadCheck(socket_, this);
+      A2_LOG_NOTICE(fmt("IPv%d BitTorrent: listening to port %u", ipv, port));
       return true;
     } catch(RecoverableException& ex) {
-      A2_LOG_ERROR(fmt("Failed to setup IPv%d BitTorrent server socket",
-                       family_ == AF_INET?4:6));
-      A2_LOG_ERROR_EX(fmt(MSG_BIND_FAILURE,
-                          getCuid(), port),
-                      ex);
+      A2_LOG_ERROR_EX(fmt("IPv%d BitTorrent: failed to bind port %u",
+                          ipv, port), ex);
       socket_->closeConnection();
     }
   }

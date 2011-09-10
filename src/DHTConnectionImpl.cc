@@ -76,7 +76,7 @@ bool DHTConnectionImpl::bind
 
 bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
 {
-  int ipv = family_ == AF_INET?4:6;
+  const int ipv = (family_ == AF_INET) ? 4 : 6;
   try {
     if(addr.empty()) {
       socket_->bind(A2STR::NIL, port, family_);
@@ -87,11 +87,10 @@ bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
     std::pair<std::string, uint16_t> svaddr;
     socket_->getAddrInfo(svaddr);
     port = svaddr.second;
-    A2_LOG_NOTICE(fmt("IPv%d DHT: listening to port %d", ipv, port));
+    A2_LOG_NOTICE(fmt("IPv%d DHT: listening to port %u", ipv, port));
     return true;
   } catch(RecoverableException& e) {
-    A2_LOG_ERROR_EX(fmt("Failed to bind for IPv%d DHT. port=%u", ipv, port),
-                    e);
+    A2_LOG_ERROR_EX(fmt("IPv%d DHT: failed to bind port %u", ipv, port), e);
   }
   return false;
 }
