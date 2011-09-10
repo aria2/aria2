@@ -63,12 +63,16 @@ DHTInteractionCommand::~DHTInteractionCommand()
 void DHTInteractionCommand::setReadCheckSocket(const SocketHandle& socket)
 {
   readCheckSocket_ = socket;
-  e_->addSocketForReadCheck(socket, this);
+  if(socket) {
+    e_->addSocketForReadCheck(socket, this);
+  }
 }
 
 void DHTInteractionCommand::disableReadCheckSocket(const SocketHandle& socket)
 {
-  e_->deleteSocketForReadCheck(socket, this);
+  if(socket) {
+    e_->deleteSocketForReadCheck(socket, this);
+  }
 }
 
 bool DHTInteractionCommand::execute()
