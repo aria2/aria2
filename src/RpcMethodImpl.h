@@ -45,6 +45,7 @@
 #include "ValueBase.h"
 #include "TorrentAttribute.h"
 #include "DlAbortEx.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -52,6 +53,28 @@ struct DownloadResult;
 class RequestGroup;
 
 namespace rpc {
+
+template<typename T>
+const T* checkParam(const RpcRequest& req, size_t index, bool required = false)
+{
+  const T* p = 0;
+  if(req.params->size() > index) {
+    if((p = downcast<T>(req.params->get(index))) == 0) {
+      throw DL_ABORT_EX(fmt("The parameter at %lu has wrong type.",
+                            static_cast<unsigned long>(index)));
+    }
+  } else if(required) {
+    throw DL_ABORT_EX(fmt("The parameter at %lu is required but missing.",
+                          static_cast<unsigned long>(index)));
+  }
+  return p;
+}
+
+template<typename T>
+const T* checkRequiredParam(const RpcRequest& req, size_t index)
+{
+  return checkParam<T>(req, index, true);
+}
 
 template<typename OutputIterator>
 void toStringList(OutputIterator out, const List* src)
@@ -335,27 +358,19 @@ private:
     std::advance(last, lastDistance);
     return std::make_pair(first, last);
   }
-
-  void checkPaginationParams(const SharedHandle<List>& params) const
-  {
-    if(params->size() < 2) {
-      throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
-    }
-    const Integer* p1 = asInteger(params->get(0));
-    const Integer* p2 = asInteger(params->get(1));
-    if(!p1 || !p2 || p2->i() < 0) {
-      throw DL_ABORT_EX("Invalid argument. Specify offset and num in integer.");
-    }
-  }
 protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e)
   {
-    const SharedHandle<List>& params = req.params;
-    checkPaginationParams(params);
-    ssize_t offset = req.getIntegerParam(0)->i();
-    size_t num = req.getIntegerParam(1)->i();
-    const List* keysParam = req.getListParam(2);
+    const Integer* offsetParam = checkRequiredParam<Integer>(req, 0);
+    const Integer* numParam = checkRequiredParam<Integer>(req, 1);
+    const List* keysParam = checkParam<List>(req, 2);
+
+    if(numParam->i() < 0) {
+      throw DL_ABORT_EX("The parameter num must be zero or positive integer.");
+    }
+    ssize_t offset = offsetParam->i();
+    size_t num = numParam->i();
     std::vector<std::string> keys;
     toStringList(std::back_inserter(keys), keysParam);
     const std::deque<SharedHandle<T> >& items = getItems(e);

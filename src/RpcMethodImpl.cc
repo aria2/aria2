@@ -179,33 +179,24 @@ findRequestGroup(const SharedHandle<RequestGroupMan>& rgman, a2_gid_t gid)
 } // namespace
 
 namespace {
-void getPosParam(const RpcRequest& req, size_t posParamIndex,
-                 bool& posGiven, size_t& pos)
+bool checkPosParam(const Integer* posParam)
 {
-  const Integer* p = req.getIntegerParam(posParamIndex);
-  if(p) {
-    if(p->i() >= 0) {
-      pos = p->i();
-      posGiven = true;
-      return;
+  if(posParam) {
+    if(posParam->i() >= 0) {
+      return true;
     } else {
       throw DL_ABORT_EX("Position must be greater than or equal to 0.");
     }
   }
-  posGiven = false;
-} 
+  return false;
+}
 } // namespace
 
 namespace {
-a2_gid_t getRequiredGidParam
-(const RpcRequest& req, size_t posParamIndex)
+a2_gid_t str2Gid(const String* str)
 {
-  const String* gidParam = req.getStringParam(posParamIndex);
-  if(gidParam) {
-    return util::parseLLInt(gidParam->s());
-  } else {
-    throw DL_ABORT_EX(MSG_GID_NOT_PROVIDED);
-  }
+  assert(str);
+  return util::parseLLInt(str->s());
 }
 } // namespace
 
@@ -228,18 +219,21 @@ void extractUris(OutputIterator out, const List* src)
 SharedHandle<ValueBase> AddUriRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
+  const List* urisParam = checkRequiredParam<List>(req, 0);
+  const Dict* optsParam = checkParam<Dict>(req, 1);
+  const Integer* posParam = checkParam<Integer>(req, 2);
+
   std::vector<std::string> uris;
-  extractUris(std::back_inserter(uris), req.getListParam(0));
+  extractUris(std::back_inserter(uris), urisParam);
   if(uris.empty()) {
     throw DL_ABORT_EX("URI is not provided.");
   }
 
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  gatherRequestOption(requestOption, req.getDictParam(1));
+  gatherRequestOption(requestOption, optsParam);
 
-  size_t pos = 0;
-  bool posGiven = false;
-  getPosParam(req, 2, posGiven, pos);
+  bool posGiven = checkPosParam(posParam);
+  size_t pos = posGiven ? posParam->i() : 0;
 
   std::vector<SharedHandle<RequestGroup> > result;
   createRequestGroupForUri(result, requestOption, uris,
@@ -269,24 +263,24 @@ std::string getHexSha1(const std::string& s)
 SharedHandle<ValueBase> AddTorrentRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const String* torrentParam = req.getStringParam(0);
-  if(!torrentParam) {
-    throw DL_ABORT_EX("Torrent data is not provided.");
-  }
+  const String* torrentParam = checkRequiredParam<String>(req, 0);
+  const List* urisParam = checkParam<List>(req, 1);
+  const Dict* optsParam = checkParam<Dict>(req, 2);
+  const Integer* posParam = checkParam<Integer>(req, 3);
+
   SharedHandle<String> tempTorrentParam;
   if(req.jsonRpc) {
     tempTorrentParam = String::g(Base64::decode(torrentParam->s()));
     torrentParam = tempTorrentParam.get();
   }
   std::vector<std::string> uris;
-  extractUris(std::back_inserter(uris), req.getListParam(1));
+  extractUris(std::back_inserter(uris), urisParam);
 
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  gatherRequestOption(requestOption, req.getDictParam(2));
+  gatherRequestOption(requestOption, optsParam);
 
-  size_t pos = 0;
-  bool posGiven = false;
-  getPosParam(req, 3, posGiven, pos);
+  bool posGiven = checkPosParam(posParam);
+  size_t pos = posGiven ? posParam->i() : 0;
 
   std::string filename = util::applyDir
     (requestOption->get(PREF_DIR), getHexSha1(torrentParam->s())+".torrent");
@@ -316,21 +310,20 @@ SharedHandle<ValueBase> AddTorrentRpcMethod::process
 SharedHandle<ValueBase> AddMetalinkRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const String* metalinkParam = req.getStringParam(0);
-  if(!metalinkParam) {
-    throw DL_ABORT_EX("Metalink data is not provided.");
-  }
+  const String* metalinkParam = checkRequiredParam<String>(req, 0);
+  const Dict* optsParam = checkParam<Dict>(req, 1);
+  const Integer* posParam = checkParam<Integer>(req, 2);
+
   SharedHandle<String> tempMetalinkParam;
   if(req.jsonRpc) {
     tempMetalinkParam = String::g(Base64::decode(metalinkParam->s()));
     metalinkParam = tempMetalinkParam.get();
   }
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  gatherRequestOption(requestOption, req.getDictParam(1));
+  gatherRequestOption(requestOption, optsParam);
 
-  size_t pos = 0;
-  bool posGiven = false;
-  getPosParam(req, 2, posGiven, pos);
+  bool posGiven = checkPosParam(posParam);
+  size_t pos = posGiven ? posParam->i() : 0;
 
   std::vector<SharedHandle<RequestGroup> > result;
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -375,8 +368,9 @@ namespace {
 SharedHandle<ValueBase> removeDownload
 (const RpcRequest& req, DownloadEngine* e, bool forceRemove)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
 
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
   if(!group) {
@@ -447,8 +441,9 @@ namespace {
 SharedHandle<ValueBase> pauseDownload
 (const RpcRequest& req, DownloadEngine* e, bool forcePause)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
 
+  a2_gid_t gid = str2Gid(gidParam);
   bool reserved = false;
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
@@ -520,7 +515,9 @@ SharedHandle<ValueBase> ForcePauseAllRpcMethod::process
 SharedHandle<ValueBase> UnpauseRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findReservedGroup(gid);
   if(!group || !group->isPauseRequested()) {
@@ -919,7 +916,9 @@ void gatherStoppedDownload
 SharedHandle<ValueBase> GetFilesRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<List> files = List::g();
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -950,7 +949,9 @@ SharedHandle<ValueBase> GetFilesRpcMethod::process
 SharedHandle<ValueBase> GetUrisRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
@@ -970,8 +971,9 @@ SharedHandle<ValueBase> GetUrisRpcMethod::process
 SharedHandle<ValueBase> GetPeersRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
 
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
@@ -992,9 +994,10 @@ SharedHandle<ValueBase> GetPeersRpcMethod::process
 SharedHandle<ValueBase> TellStatusRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
-  
-  const List* keysParam = req.getListParam(1);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+  const List* keysParam = checkParam<List>(req, 1);
+
+  a2_gid_t gid = str2Gid(gidParam);
   std::vector<std::string> keys;
   toStringList(std::back_inserter(keys), keysParam);
 
@@ -1035,7 +1038,7 @@ SharedHandle<ValueBase> TellStatusRpcMethod::process
 SharedHandle<ValueBase> TellActiveRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const List* keysParam = req.getListParam(0);
+  const List* keysParam = checkParam<List>(req, 0);
   std::vector<std::string> keys;
   toStringList(std::back_inserter(keys), keysParam);
   SharedHandle<List> list = List::g();
@@ -1100,7 +1103,9 @@ SharedHandle<ValueBase> PurgeDownloadResultRpcMethod::process
 SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+
+  a2_gid_t gid = str2Gid(gidParam);
   if(!e->getRequestGroupMan()->removeDownloadResult(gid)) {
     throw DL_ABORT_EX
       (fmt("Could not remove download result of GID#%s",
@@ -1112,8 +1117,10 @@ SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
 SharedHandle<ValueBase> ChangeOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+  const Dict* optsParam = checkRequiredParam<Dict>(req, 1);
 
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
@@ -1122,38 +1129,33 @@ SharedHandle<ValueBase> ChangeOptionRpcMethod::process
            util::itos(gid).c_str()));
   }
   SharedHandle<Option> option(new Option());
-  const Dict* optionsParam = req.getDictParam(1);
-  if(optionsParam) {
-    gatherChangeableOption(option, optionsParam);
-    applyChangeableOption(group->getOption().get(), option.get());
-    if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
-      group->setMaxDownloadSpeedLimit
-        (option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
-    }
-    if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
-      group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
-    }
-#ifdef ENABLE_BITTORRENT
-    BtObject btObject = e->getBtRegistry()->get(group->getGID());
-    if(!btObject.isNull()) {
-      if(option->defined(PREF_BT_MAX_PEERS)) {
-        btObject.btRuntime_->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
-      }
-    }
-#endif // ENABLE_BITTORRENT
+  gatherChangeableOption(option, optsParam);
+  applyChangeableOption(group->getOption().get(), option.get());
+  if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
+    group->setMaxDownloadSpeedLimit
+      (option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   }
+  if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
+    group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+  }
+#ifdef ENABLE_BITTORRENT
+  BtObject btObject = e->getBtRegistry()->get(group->getGID());
+  if(!btObject.isNull()) {
+    if(option->defined(PREF_BT_MAX_PEERS)) {
+      btObject.btRuntime_->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
+    }
+  }
+#endif // ENABLE_BITTORRENT
   return VLB_OK;
 }
 
 SharedHandle<ValueBase> ChangeGlobalOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const Dict* optionsParam = req.getDictParam(0);
-  if(!optionsParam) {
-    return VLB_OK;
-  }
+  const Dict* optsParam = checkRequiredParam<Dict>(req, 0);
+
   SharedHandle<Option> option(new Option());
-  gatherChangeableGlobalOption(option, optionsParam);
+  gatherChangeableGlobalOption(option, optsParam);
   applyChangeableGlobalOption(e->getOption(), option.get());
 
   if(option->defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
@@ -1219,8 +1221,9 @@ void pushRequestOption
 SharedHandle<ValueBase> GetOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
 
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
   if(!group) {
@@ -1251,13 +1254,11 @@ SharedHandle<ValueBase> GetGlobalOptionRpcMethod::process
 SharedHandle<ValueBase> ChangePositionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
-  const Integer* posParam = req.getIntegerParam(1);
-  const String* howParam = req.getStringParam(2);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+  const Integer* posParam = checkRequiredParam<Integer>(req, 1);
+  const String* howParam = checkRequiredParam<String>(req, 2);
 
-  if(!posParam || !howParam) {
-    throw DL_ABORT_EX("Illegal argument.");
-  }
+  a2_gid_t gid = str2Gid(gidParam);
   int pos = posParam->i();
   const std::string& howStr = howParam->s();
   RequestGroupMan::HOW how;
@@ -1287,7 +1288,9 @@ SharedHandle<ValueBase> GetSessionInfoRpcMethod::process
 SharedHandle<ValueBase> GetServersRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+
+  a2_gid_t gid = str2Gid(gidParam);
   SharedHandle<RequestGroup> group =
     e->getRequestGroupMan()->findRequestGroup(gid);
   if(!group) {
@@ -1326,17 +1329,15 @@ SharedHandle<ValueBase> GetServersRpcMethod::process
 SharedHandle<ValueBase> ChangeUriRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  a2_gid_t gid = getRequiredGidParam(req, 0);
-  const Integer* indexParam = req.getIntegerParam(1);
-  const List* delUrisParam = req.getListParam(2);
-  const List* addUrisParam = req.getListParam(3);
-  if(!indexParam || !delUrisParam || ! addUrisParam) {
-    throw DL_ABORT_EX("Bad request");
-  }
-  size_t pos = 0;
-  bool posGiven = false;
-  getPosParam(req, 4, posGiven, pos);
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+  const Integer* indexParam = checkRequiredParam<Integer>(req, 1);
+  const List* delUrisParam = checkRequiredParam<List>(req, 2);
+  const List* addUrisParam = checkRequiredParam<List>(req, 3);
+  const Integer* posParam = checkParam<Integer>(req, 4);
 
+  a2_gid_t gid = str2Gid(gidParam);
+  bool posGiven = checkPosParam(posParam);
+  size_t pos = posGiven ? posParam->i() : 0;
   size_t index = indexParam->i()-1;
   SharedHandle<RequestGroup> group =
     findRequestGroup(e->getRequestGroupMan(), gid);
@@ -1431,10 +1432,7 @@ SharedHandle<ValueBase> GetGlobalStatRpcMethod::process
 SharedHandle<ValueBase> SystemMulticallRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
-  const List* methodSpecs = req.getListParam(0);
-  if(!methodSpecs) {
-    throw DL_ABORT_EX("Illegal argument. One item list is expected.");
-  }
+  const List* methodSpecs = checkRequiredParam<List>(req, 0);
   SharedHandle<List> list = List::g();
   for(List::ValueType::const_iterator i = methodSpecs->begin(),
         eoi = methodSpecs->end(); i != eoi; ++i) {

@@ -64,42 +64,6 @@ RpcRequest& RpcRequest::operator=(const RpcRequest& c)
   return *this;
 }
 
-const String* RpcRequest::getStringParam(size_t index) const
-{
-  const String* stringParam = 0;
-  if(params->size() > index) {
-    stringParam = asString(params->get(index));
-  }
-  return stringParam;
-}
-
-const Integer* RpcRequest::getIntegerParam(size_t index) const
-{
-  const Integer* integerParam = 0;
-  if(params->size() > index) {
-    integerParam = asInteger(params->get(index));
-  }
-  return integerParam;
-}
-
-const List* RpcRequest::getListParam(size_t index) const
-{
-  const List* listParam = 0;
-  if(params->size() > index) {
-    listParam = asList(params->get(index));
-  }
-  return listParam;
-}
-
-const Dict* RpcRequest::getDictParam(size_t index) const
-{
-  const Dict* dictParam = 0;
-  if(params->size() > index) {
-    dictParam = asDict(params->get(index));
-  }
-  return dictParam;
-}
-
 } // namespace rpc
 
 } // namespace aria2

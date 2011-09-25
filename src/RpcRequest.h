@@ -63,14 +63,6 @@ struct RpcRequest {
   RpcRequest(const RpcRequest& c);
 
   RpcRequest& operator=(const RpcRequest& c);
-
-  const String* getStringParam(size_t index) const;
-
-  const Integer* getIntegerParam(size_t index) const;
-
-  const List* getListParam(size_t index) const;
-  
-  const Dict* getDictParam(size_t index) const;
 };
 
 } // namespace rpc
