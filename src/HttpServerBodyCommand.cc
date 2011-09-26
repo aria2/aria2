@@ -164,13 +164,13 @@ HttpServerBodyCommand::processJsonRpcRequest(const Dict* jsondict)
   if(!id) {
     return createJsonRpcErrorResponse(-32600, "Invalid Request.", Null::g());
   }
-  const String* methodName = asString(jsondict->get("method"));
+  const String* methodName = downcast<String>(jsondict->get("method"));
   if(!methodName) {
     return createJsonRpcErrorResponse(-32600, "Invalid Request.", id);
   }
   SharedHandle<List> params;
   const SharedHandle<ValueBase>& tempParams = jsondict->get("params");
-  if(asList(tempParams)) {
+  if(downcast<List>(tempParams)) {
     params = static_pointer_cast<List>(tempParams);
   } else if(!tempParams) {
     params = List::g();
@@ -246,18 +246,18 @@ bool HttpServerBodyCommand::execute()
             sendJsonRpcResponse(res, callback);
             return true;
           }
-          const Dict* jsondict = asDict(json);
+          const Dict* jsondict = downcast<Dict>(json);
           if(jsondict) {
             rpc::RpcResponse res = processJsonRpcRequest(jsondict);
             sendJsonRpcResponse(res, callback);
           } else {
-            const List* jsonlist = asList(json);
+            const List* jsonlist = downcast<List>(json);
             if(jsonlist) {
               // This is batch call
               std::vector<rpc::RpcResponse> results;
               for(List::ValueType::const_iterator i = jsonlist->begin(),
                     eoi = jsonlist->end(); i != eoi; ++i) {
-                const Dict* jsondict = asDict(*i);
+                const Dict* jsondict = downcast<Dict>(*i);
                 if(jsondict) {
                   rpc::RpcResponse r = processJsonRpcRequest(jsondict);
                   results.push_back(r);

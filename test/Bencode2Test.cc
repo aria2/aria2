@@ -29,30 +29,30 @@ void Bencode2Test::testDecode()
     // string, integer and list in dict
     SharedHandle<ValueBase> r =
       bencode2::decode("d4:name5:aria24:sizei12345678900e5:filesl3:bin3:docee");
-    const Dict* dict = asDict(r);
+    const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
-                         asString(dict->get("name"))->s());
+                         downcast<String>(dict->get("name"))->s());
     CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(12345678900LL),
-                         asInteger(dict->get("size"))->i());
-    const List* list = asList(dict->get("files"));
+                         downcast<Integer>(dict->get("size"))->i());
+    const List* list = downcast<List>(dict->get("files"));
     CPPUNIT_ASSERT(list);
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), list->size());
     CPPUNIT_ASSERT_EQUAL(std::string("bin"),
-                         asString(list->get(0))->s());
+                         downcast<String>(list->get(0))->s());
     CPPUNIT_ASSERT_EQUAL(std::string("doc"),
-                         asString(list->get(1))->s());
+                         downcast<String>(list->get(1))->s());
   }
   {
     // dict in list
     SharedHandle<ValueBase> r = bencode2::decode("ld1:ki123eee");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), list->size());
-    const Dict* dict = asDict(list->get(0));
+    const Dict* dict = downcast<Dict>(list->get(0));
     CPPUNIT_ASSERT(dict);
     CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(123),
-                         asInteger(dict->get("k"))->i());
+                         downcast<Integer>(dict->get("k"))->i());
   }
   {
     // empty key is allowed
@@ -61,17 +61,17 @@ void Bencode2Test::testDecode()
   {
     // empty string
     SharedHandle<ValueBase> s = bencode2::decode("0:");
-    CPPUNIT_ASSERT_EQUAL(std::string(""), asString(s)->s());
+    CPPUNIT_ASSERT_EQUAL(std::string(""), downcast<String>(s)->s());
   }
   {
     // empty dict
     SharedHandle<ValueBase> d = bencode2::decode("de");
-    CPPUNIT_ASSERT(asDict(d)->empty());
+    CPPUNIT_ASSERT(downcast<Dict>(d)->empty());
   }
   {
     // empty list
     SharedHandle<ValueBase> l = bencode2::decode("le");
-    CPPUNIT_ASSERT(asList(l)->empty());
+    CPPUNIT_ASSERT(downcast<List>(l)->empty());
   }
   {
     // integer, without ending 'e'
@@ -151,13 +151,13 @@ void Bencode2Test::testDecode()
   {
     // ignore trailing garbage at the end of the input.
     SharedHandle<ValueBase> s = bencode2::decode("5:aria2trail");
-    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), asString(s)->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), downcast<String>(s)->s());
   }
   {
     // Get trailing garbage position
     size_t end;
     SharedHandle<ValueBase> s = bencode2::decode("5:aria2trail", end);
-    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), asString(s)->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("aria2"), downcast<String>(s)->s());
     CPPUNIT_ASSERT_EQUAL((size_t)7, end);
   }
 }

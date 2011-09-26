@@ -65,7 +65,7 @@ std::pair<SharedHandle<DHTResponseMessage>, SharedHandle<DHTMessageCallback> >
 DHTMessageTracker::messageArrived
 (const Dict* dict, const std::string& ipaddr, uint16_t port)
 {
-  const String* tid = asString(dict->get(DHTMessage::T));
+  const String* tid = downcast<String>(dict->get(DHTMessage::T));
   if(!tid) {
     throw DL_ABORT_EX(fmt("Malformed DHT message. From:%s:%u",
                           ipaddr.c_str(), port));

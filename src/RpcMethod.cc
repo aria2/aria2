@@ -100,17 +100,17 @@ void gatherOption
           (fmt("We don't know how to deal with %s option",
                optionName.c_str()));
       }
-      const String* opval = asString((*first).second);
+      const String* opval = downcast<String>((*first).second);
       if(opval) {
         optionHandler->parse(*option.get(), opval->s());
       } else {
         // header and index-out option can take array as value
-        const List* oplist = asList((*first).second);
+        const List* oplist = downcast<List>((*first).second);
         if(oplist &&
            (optionName == PREF_HEADER || optionName == PREF_INDEX_OUT)) {
           for(List::ValueType::const_iterator argiter = oplist->begin(),
                 eoi = oplist->end(); argiter != eoi; ++argiter) {
-            const String* opval = asString(*argiter);
+            const String* opval = downcast<String>(*argiter);
             if(opval) {
               optionHandler->parse(*option.get(), opval->s());
             }

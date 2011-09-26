@@ -33,150 +33,150 @@ void JsonTest::testDecode()
   {
     // empty object
     SharedHandle<ValueBase> r = json::decode("{}");
-    const Dict* dict = asDict(r);
+    const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
   }
   {
     // empty object
     SharedHandle<ValueBase> r = json::decode("{  }");
-    const Dict* dict = asDict(r);
+    const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
   }
   {
     // empty array
     SharedHandle<ValueBase> r = json::decode("[]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
   }
   {
     // empty array
     SharedHandle<ValueBase> r = json::decode("[ ]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
   }
   {
     // empty string
     SharedHandle<ValueBase> r = json::decode("[\"\"]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string(), s->s());
   }
   {
     // string
     SharedHandle<ValueBase> r = json::decode("[\"foobar\"]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("foobar"), s->s());
   }
   {
     // string with escape
     SharedHandle<ValueBase> r = json::decode("[\"\\\\foo\\\"\\\"bar\"]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("\\foo\"\"bar"), s->s());
   }
   {
     // string with escape
     SharedHandle<ValueBase> r = json::decode("[\"foo\\\"\"]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("foo\""), s->s());
   }
   {
     // string: utf-8 1 to 3 bytes.
     SharedHandle<ValueBase> r = json::decode("[\"\\u0024\\u00A2\\u20AC\"]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("$¢€"), s->s());
   }
   {
     // string: utf-8 4 bytes
     SharedHandle<ValueBase> r = json::decode("[\"\\uD852\\uDF62\"]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     const char arr[] = { 0xF0u, 0xA4u, 0xADu, 0xA2u };
     CPPUNIT_ASSERT_EQUAL(std::string(vbegin(arr), vend(arr)), s->s());
   }
   {
     // null
     SharedHandle<ValueBase> r = json::decode("[null]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const Null* s = asNull(list->get(0));
+    const Null* s = downcast<Null>(list->get(0));
     CPPUNIT_ASSERT(s);
   }
   {
     // true, false
     SharedHandle<ValueBase> r = json::decode("[true, false]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const Bool* trueValue = asBool(list->get(0));
+    const Bool* trueValue = downcast<Bool>(list->get(0));
     CPPUNIT_ASSERT(trueValue);
     CPPUNIT_ASSERT(trueValue->val());
-    const Bool* falseValue = asBool(list->get(1));
+    const Bool* falseValue = downcast<Bool>(list->get(1));
     CPPUNIT_ASSERT(falseValue);
     CPPUNIT_ASSERT(!falseValue->val());
   }
   {
     // object: 1 member
     SharedHandle<ValueBase> r = json::decode("{\"foo\":[\"bar\"]}");
-    const Dict* dict = asDict(r);
+    const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
-    const List* list = asList(dict->get("foo"));
+    const List* list = downcast<List>(dict->get("foo"));
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("bar"), s->s());
   }
   {
     // object: 2 members
     SharedHandle<ValueBase> r = json::decode("{\"\":[\"bar\"], "
                                              "\"alpha\" : \"bravo\"}");
-    const Dict* dict = asDict(r);
+    const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
-    const List* list = asList(dict->get(""));
+    const List* list = downcast<List>(dict->get(""));
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("bar"), s->s());
-    const String* str = asString(dict->get("alpha"));
+    const String* str = downcast<String>(dict->get("alpha"));
     CPPUNIT_ASSERT_EQUAL(std::string("bravo"), str->s());
   }
   {
     // array: 2 values
     SharedHandle<ValueBase> r = json::decode("[\"foo\", {}]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const String* s = asString(list->get(0));
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("foo"), s->s());
-    const Dict* dict = asDict(list->get(1));
+    const Dict* dict = downcast<Dict>(list->get(1));
     CPPUNIT_ASSERT(dict);
   }
   {
     // Number: currently we handle floating point number as string
     SharedHandle<ValueBase> r = json::decode("[0,-1,1.2,-1.2e-10,-1e10]");
-    const List* list = asList(r);
+    const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
-    const Integer* i = asInteger(list->get(0));
+    const Integer* i = downcast<Integer>(list->get(0));
     CPPUNIT_ASSERT_EQUAL((Integer::ValueType)0, i->i());
-    const Integer* i1 = asInteger(list->get(1));
+    const Integer* i1 = downcast<Integer>(list->get(1));
     CPPUNIT_ASSERT_EQUAL((Integer::ValueType)-1, i1->i());
-    const String* s2 = asString(list->get(2));
+    const String* s2 = downcast<String>(list->get(2));
     CPPUNIT_ASSERT_EQUAL(std::string("1.2"), s2->s());
-    const String* s3 = asString(list->get(3));
+    const String* s3 = downcast<String>(list->get(3));
     CPPUNIT_ASSERT_EQUAL(std::string("-1.2e-10"), s3->s());
-    const String* s4 = asString(list->get(4));
+    const String* s4 = downcast<String>(list->get(4));
     CPPUNIT_ASSERT_EQUAL(std::string("-1e10"), s4->s());
   }
   {
     // escape chars: ", \, /, \b, \f, \n, \r, \t
     SharedHandle<ValueBase> r =json::decode("[\"\\\"\\\\\\/\\b\\f\\n\\r\\t\"]");
-    const List* list = asList(r);
-    const String* s = asString(list->get(0));
+    const List* list = downcast<List>(r);
+    const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("\"\\/\b\f\n\r\t"), s->s());
   }
 }

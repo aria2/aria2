@@ -156,7 +156,7 @@ void extractUrlList
     {
       for(List::ValueType::const_iterator itr = v.begin(), eoi = v.end();
           itr != eoi; ++itr) {
-        const String* uri = asString(*itr);
+        const String* uri = downcast<String>(*itr);
         if(uri) {
           std::string utf8Uri = util::encodeNonUtf8(uri->s());
           uris_.push_back(utf8Uri);
@@ -209,7 +209,7 @@ void extractFileEntries
     } else {
       nameKey = C_NAME;
     }
-    const String* nameData = asString(infoDict->get(nameKey));
+    const String* nameData = downcast<String>(infoDict->get(nameKey));
     if(nameData) {
       utf8Name = util::encodeNonUtf8(nameData->s());
       if(util::detectDirTraversal(utf8Name)) {
@@ -226,7 +226,7 @@ void extractFileEntries
   }
   torrent->name = utf8Name;
   std::vector<SharedHandle<FileEntry> > fileEntries;
-  const List* filesList = asList(infoDict->get(C_FILES));
+  const List* filesList = downcast<List>(infoDict->get(C_FILES));
   if(filesList) {
     fileEntries.reserve(filesList->size());
     uint64_t length = 0;
@@ -235,11 +235,11 @@ void extractFileEntries
     torrent->mode = MULTI;
     for(List::ValueType::const_iterator itr = filesList->begin(),
           eoi = filesList->end(); itr != eoi; ++itr) {
-      const Dict* fileDict = asDict(*itr);
+      const Dict* fileDict = downcast<Dict>(*itr);
       if(!fileDict) {
         continue;
       }
-      const Integer* fileLengthData = asInteger(fileDict->get(C_LENGTH));
+      const Integer* fileLengthData = downcast<Integer>(fileDict->get(C_LENGTH));
       if(!fileLengthData) {
         throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
                            error_code::BITTORRENT_PARSE_ERROR);
@@ -252,7 +252,7 @@ void extractFileEntries
       } else {
         pathKey = C_PATH;
       }
-      const List* pathList = asList(fileDict->get(pathKey));
+      const List* pathList = downcast<List>(fileDict->get(pathKey));
       if(!pathList || pathList->empty()) {
         throw DL_ABORT_EX2("Path is empty.",
                            error_code::BITTORRENT_PARSE_ERROR);
@@ -264,7 +264,7 @@ void extractFileEntries
       ++pathelemOutItr;
       for(List::ValueType::const_iterator itr = pathList->begin(),
             eoi = pathList->end(); itr != eoi; ++itr) {
-        const String* elem = asString(*itr);
+        const String* elem = downcast<String>(*itr);
         if(elem) {
           (*pathelemOutItr++) = elem->s();
         } else {
@@ -295,7 +295,7 @@ void extractFileEntries
   } else {
     // single-file mode;
     torrent->mode = SINGLE;
-    const Integer* lengthData = asInteger(infoDict->get(C_LENGTH));
+    const Integer* lengthData = downcast<Integer>(infoDict->get(C_LENGTH));
     if(!lengthData) {
       throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
                          error_code::BITTORRENT_PARSE_ERROR);
@@ -332,18 +332,18 @@ namespace {
 void extractAnnounce
 (const SharedHandle<TorrentAttribute>& torrent, const Dict* rootDict)
 {
-  const List* announceList = asList(rootDict->get(C_ANNOUNCE_LIST));
+  const List* announceList = downcast<List>(rootDict->get(C_ANNOUNCE_LIST));
   if(announceList) {
     for(List::ValueType::const_iterator tierIter = announceList->begin(),
           eoi = announceList->end(); tierIter != eoi; ++tierIter) {
-      const List* tier = asList(*tierIter);
+      const List* tier = downcast<List>(*tierIter);
       if(!tier) {
         continue;
       }
       std::vector<std::string> ntier;
       for(List::ValueType::const_iterator uriIter = tier->begin(),
             eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
-        const String* uri = asString(*uriIter);
+        const String* uri = downcast<String>(*uriIter);
         if(uri) {
           ntier.push_back(util::encodeNonUtf8(util::strip(uri->s())));
         }
@@ -353,7 +353,7 @@ void extractAnnounce
       }
     }
   } else {
-    const String* announce = asString(rootDict->get(C_ANNOUNCE));
+    const String* announce = downcast<String>(rootDict->get(C_ANNOUNCE));
     if(announce) {
       std::vector<std::string> tier;
       tier.push_back(util::encodeNonUtf8(util::strip(announce->s())));
@@ -367,15 +367,15 @@ namespace {
 void extractNodes
 (const SharedHandle<TorrentAttribute>& torrent, const ValueBase* nodesListSrc)
 {
-  const List* nodesList = asList(nodesListSrc);
+  const List* nodesList = downcast<List>(nodesListSrc);
   if(nodesList) {
     for(List::ValueType::const_iterator i = nodesList->begin(),
           eoi = nodesList->end(); i != eoi; ++i) {
-      const List* addrPairList = asList(*i);
+      const List* addrPairList = downcast<List>(*i);
       if(!addrPairList || addrPairList->size() != 2) {
         continue;
       }
-      const String* hostname = asString(addrPairList->get(0));
+      const String* hostname = downcast<String>(addrPairList->get(0));
       if(!hostname) {
         continue;
       }
@@ -384,7 +384,7 @@ void extractNodes
       if(utf8Hostname.empty()) {
         continue;
       }
-      const Integer* port = asInteger(addrPairList->get(1));
+      const Integer* port = downcast<Integer>(addrPairList->get(1));
       if(!port || !(0 < port->i() && port->i() < 65536)) {
         continue;
       }
@@ -403,12 +403,12 @@ void processRootDictionary
  const std::string& overrideName,
  const std::vector<std::string>& uris)
 {
-  const Dict* rootDict = asDict(root);
+  const Dict* rootDict = downcast<Dict>(root);
   if(!rootDict) {
     throw DL_ABORT_EX2("torrent file does not contain a root dictionary.",
                        error_code::BITTORRENT_PARSE_ERROR);
   }
-  const Dict* infoDict = asDict(rootDict->get(C_INFO));
+  const Dict* infoDict = downcast<Dict>(rootDict->get(C_INFO));
   if(!infoDict) {
     throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_INFO.c_str()),
                        error_code::BITTORRENT_PARSE_ERROR);
@@ -427,7 +427,7 @@ void processRootDictionary
   torrent->metadataSize = encodedInfoDict.size();
 
   // calculate the number of pieces
-  const String* piecesData = asString(infoDict->get(C_PIECES));
+  const String* piecesData = downcast<String>(infoDict->get(C_PIECES));
   if(!piecesData) {
     throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECES.c_str()),
                        error_code::BITTORRENT_PARSE_ERROR);
@@ -442,7 +442,7 @@ void processRootDictionary
   //     throw DL_ABORT_EX("The number of pieces is 0.");
   //   }
   // retrieve piece length
-  const Integer* pieceLengthData = asInteger(infoDict->get(C_PIECE_LENGTH));
+  const Integer* pieceLengthData = downcast<Integer>(infoDict->get(C_PIECE_LENGTH));
   if(!pieceLengthData) {
     throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_PIECE_LENGTH.c_str()),
                        error_code::BITTORRENT_PARSE_ERROR);
@@ -452,7 +452,7 @@ void processRootDictionary
   // retrieve piece hashes
   extractPieceHash(ctx, piecesData->s(), PIECE_HASH_LENGTH, numPieces);
   // private flag
-  const Integer* privateData = asInteger(infoDict->get(C_PRIVATE));
+  const Integer* privateData = downcast<Integer>(infoDict->get(C_PRIVATE));
   int privatefg = 0;
   if(privateData) {
     if(privateData->i() == 1) {
@@ -483,20 +483,20 @@ void processRootDictionary
   // retrieve nodes
   extractNodes(torrent, rootDict->get(C_NODES).get());
 
-  const Integer* creationDate = asInteger(rootDict->get(C_CREATION_DATE));
+  const Integer* creationDate = downcast<Integer>(rootDict->get(C_CREATION_DATE));
   if(creationDate) {
     torrent->creationDate = creationDate->i();
   }
-  const String* commentUtf8 = asString(rootDict->get(C_COMMENT_UTF8));
+  const String* commentUtf8 = downcast<String>(rootDict->get(C_COMMENT_UTF8));
   if(commentUtf8) {
     torrent->comment = util::encodeNonUtf8(commentUtf8->s());
   } else {
-    const String* comment = asString(rootDict->get(C_COMMENT));
+    const String* comment = downcast<String>(rootDict->get(C_COMMENT));
     if(comment) {
       torrent->comment = util::encodeNonUtf8(comment->s());
     }
   }
-  const String* createdBy = asString(rootDict->get(C_CREATED_BY));
+  const String* createdBy = downcast<String>(rootDict->get(C_CREATED_BY));
   if(createdBy) {
     torrent->createdBy = util::encodeNonUtf8(createdBy->s());
   }
@@ -881,7 +881,7 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
     throw DL_ABORT_EX2("Bad BitTorrent Magnet URI.",
                        error_code::MAGNET_PARSE_ERROR);
   }
-  const List* xts = asList(r->get("xt"));
+  const List* xts = downcast<List>(r->get("xt"));
   if(!xts) {
     throw DL_ABORT_EX2("Missing xt parameter in Magnet URI.",
                        error_code::MAGNET_PARSE_ERROR);
@@ -890,7 +890,7 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
   std::string infoHash;
   for(List::ValueType::const_iterator xtiter = xts->begin(),
         eoi = xts->end(); xtiter != eoi && infoHash.empty(); ++xtiter) {
-    const String* xt = asString(*xtiter);
+    const String* xt = downcast<String>(*xtiter);
     if(util::startsWith(xt->s(), "urn:btih:")) {
       std::string xtarg = xt->s().substr(9);
       size_t size = xtarg.size();
@@ -912,19 +912,19 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
                        "No valid BitTorrent Info Hash found.",
                        error_code::MAGNET_PARSE_ERROR);
   }
-  const List* trs = asList(r->get("tr"));
+  const List* trs = downcast<List>(r->get("tr"));
   if(trs) {
     for(List::ValueType::const_iterator i = trs->begin(), eoi = trs->end();
         i != eoi; ++i) {
       std::vector<std::string> tier;
-      tier.push_back(util::encodeNonUtf8(asString(*i)->s()));
+      tier.push_back(util::encodeNonUtf8(downcast<String>(*i)->s()));
       attrs->announceList.push_back(tier);
     }
   }
   std::string name = "[METADATA]";
-  const List* dns = asList(r->get("dn"));
+  const List* dns = downcast<List>(r->get("dn"));
   if(dns && !dns->empty()) {
-    const String* dn = asString(dns->get(0));
+    const String* dn = downcast<String>(dns->get(0));
     name += util::encodeNonUtf8(dn->s());
   } else {
     name += util::toHex(infoHash);

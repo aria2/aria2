@@ -61,23 +61,24 @@ void ValueBaseTest::testString()
 void ValueBaseTest::testDowncast()
 {
   Integer integer(100);
-  const Integer* x = asInteger(&integer);
+  const Integer* x = downcast<Integer>(&integer);
   CPPUNIT_ASSERT(x);
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(100), x->i());
+  CPPUNIT_ASSERT(!downcast<String>(&integer));
   SharedHandle<Integer> si(new Integer(101));
-  const Integer* x2 = asInteger(si);
+  const Integer* x2 = downcast<Integer>(si);
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(101), x2->i());
 
   String str("foo");
-  const String* x3 = asString(&str);
+  const String* x3 = downcast<String>(&str);
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("foo"), x3->s());
 
   List list;
-  const List* x4 = asList(&list);
+  const List* x4 = downcast<List>(&list);
   CPPUNIT_ASSERT(x4);
 
   Dict dict;
-  const Dict* x5 = asDict(&dict);
+  const Dict* x5 = downcast<Dict>(&dict);
   CPPUNIT_ASSERT(x5);
 }
 
@@ -92,10 +93,10 @@ void ValueBaseTest::testDict()
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), dict.size());
   CPPUNIT_ASSERT(dict.containsKey("ki"));
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(7),
-                       asInteger(dict["ki"])->i());
+                       downcast<Integer>(dict["ki"])->i());
   CPPUNIT_ASSERT(dict.containsKey("ks"));
   CPPUNIT_ASSERT_EQUAL(std::string("abc"),
-                       asString(dict["ks"])->s());
+                       downcast<String>(dict["ks"])->s());
 
   CPPUNIT_ASSERT(!dict["kn"]); // This adds kn key with default value.
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), dict.size());
@@ -141,15 +142,15 @@ void ValueBaseTest::testList()
 
   CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), list.size());
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(7),
-                       asInteger(list[0])->i());
+                       downcast<Integer>(list[0])->i());
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("aria2"),
-                       asString(list[1])->s());
+                       downcast<String>(list[1])->s());
 
   const List& ref = list;
   CPPUNIT_ASSERT_EQUAL(static_cast<Integer::ValueType>(7),
-                       asInteger(ref[0])->i());
+                       downcast<Integer>(ref[0])->i());
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("aria2"),
-                       asString(ref[1])->s());
+                       downcast<String>(ref[1])->s());
 }
 
 void ValueBaseTest::testListIter()
@@ -162,19 +163,19 @@ void ValueBaseTest::testListIter()
 
   List::ValueType::iterator i = list.begin();
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("alpha2"),
-                       asString(*i++)->s());
+                       downcast<String>(*i++)->s());
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("charlie"),
-                       asString(*i++)->s());
+                       downcast<String>(*i++)->s());
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("bravo"),
-                       asString(*i++)->s());
+                       downcast<String>(*i++)->s());
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("alpha"),
-                       asString(*i++)->s());
+                       downcast<String>(*i++)->s());
   CPPUNIT_ASSERT(list.end() == i);
 
   const List& ref = list;
   List::ValueType::const_iterator ci = ref.begin();
   CPPUNIT_ASSERT_EQUAL(static_cast<String::ValueType>("alpha2"),
-                       asString(*ci++)->s());
+                       downcast<String>(*ci++)->s());
   std::advance(ci, 3);
   CPPUNIT_ASSERT(ref.end() == ci);
 }

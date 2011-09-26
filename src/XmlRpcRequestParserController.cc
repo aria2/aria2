@@ -51,7 +51,7 @@ void XmlRpcRequestParserController::popStructFrame()
   assert(!frameStack_.empty());
 
   StateFrame parentFrame = frameStack_.top();
-  Dict* dict = asDict(parentFrame.value_);
+  Dict* dict = downcast<Dict>(parentFrame.value_);
   assert(dict);
   frameStack_.pop();
   if(currentFrame_.validMember()) {
@@ -65,7 +65,7 @@ void XmlRpcRequestParserController::popArrayFrame()
   assert(!frameStack_.empty());
 
   StateFrame parentFrame = frameStack_.top();
-  List* list = asList(parentFrame.value_);
+  List* list = downcast<List>(parentFrame.value_);
   assert(list);
   frameStack_.pop();
   if(currentFrame_.value_) {

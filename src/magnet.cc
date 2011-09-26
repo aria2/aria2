@@ -54,7 +54,7 @@ SharedHandle<Dict> parse(const std::string& magnet)
     std::pair<std::string, std::string> kv;
     util::divide(kv, *i, '=');
     std::string value = util::percentDecode(kv.second);
-    List* l = asList(dict->get(kv.first));
+    List* l = downcast<List>(dict->get(kv.first));
     if(l) {
       l->append(String::g(value));
     } else {

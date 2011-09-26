@@ -40,10 +40,10 @@ void XmlRpcRequestParserControllerTest::testPopStructFrame()
   controller.setCurrentFrameValue(String::g("Hello, aria2"));
   controller.setCurrentFrameName("greeting");
   controller.popStructFrame();
-  const Dict* structValue = asDict(controller.getCurrentFrameValue());
+  const Dict* structValue = downcast<Dict>(controller.getCurrentFrameValue());
   CPPUNIT_ASSERT_EQUAL((size_t)1, structValue->size());
   CPPUNIT_ASSERT_EQUAL(std::string("Hello, aria2"),
-                       asString(structValue->get("greeting"))->s());
+                       downcast<String>(structValue->get("greeting"))->s());
 }
 
 void XmlRpcRequestParserControllerTest::testPopStructFrame_noName()
@@ -53,7 +53,7 @@ void XmlRpcRequestParserControllerTest::testPopStructFrame_noName()
   controller.pushFrame();
   controller.setCurrentFrameValue(String::g("Hello, aria2"));
   controller.popStructFrame();
-  const Dict* structValue = asDict(controller.getCurrentFrameValue());
+  const Dict* structValue = downcast<Dict>(controller.getCurrentFrameValue());
   CPPUNIT_ASSERT(structValue->empty());
 }
 
@@ -64,7 +64,7 @@ void XmlRpcRequestParserControllerTest::testPopStructFrame_noValue()
   controller.pushFrame();
   controller.setCurrentFrameName("greeting");
   controller.popStructFrame();
-  const Dict* structValue = asDict(controller.getCurrentFrameValue());
+  const Dict* structValue = downcast<Dict>(controller.getCurrentFrameValue());
   CPPUNIT_ASSERT(structValue->empty());
 }
 
@@ -75,9 +75,9 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame()
   controller.pushFrame();
   controller.setCurrentFrameValue(Integer::g(100));
   controller.popArrayFrame();
-  const List* array = asList(controller.getCurrentFrameValue());
+  const List* array = downcast<List>(controller.getCurrentFrameValue());
   CPPUNIT_ASSERT_EQUAL((size_t)1, array->size());
-  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)100, asInteger(array->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((Integer::ValueType)100, downcast<Integer>(array->get(0))->i());
 }
 
 void XmlRpcRequestParserControllerTest::testPopArrayFrame_noValue()
@@ -86,7 +86,7 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame_noValue()
   controller.setCurrentFrameValue(List::g());
   controller.pushFrame();
   controller.popArrayFrame();
-  const List* array = asList(controller.getCurrentFrameValue());
+  const List* array = downcast<List>(controller.getCurrentFrameValue());
   CPPUNIT_ASSERT(array->empty());
 }
 
@@ -145,16 +145,16 @@ void XmlRpcRequestParserControllerTest::testPopArrayFrame_compound()
 
   controller.popArrayFrame();
 
-  const List* result = asList(controller.getCurrentFrameValue());
-  const Dict* dict = asDict(result->get(0));
-  const List* uris = asList(dict->get("uris"));
-  const Dict* options = asDict(dict->get("options"));
-  const List* countryList = asList(result->get(1));
+  const List* result = downcast<List>(controller.getCurrentFrameValue());
+  const Dict* dict = downcast<Dict>(result->get(0));
+  const List* uris = downcast<List>(dict->get("uris"));
+  const Dict* options = downcast<Dict>(dict->get("options"));
+  const List* countryList = downcast<List>(result->get(1));
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sf.net/"),
-                       asString(uris->get(1))->s());
+                       downcast<String>(uris->get(1))->s());
   CPPUNIT_ASSERT_EQUAL((Integer::ValueType)120,
-                       asInteger(options->get("timeout"))->i());
-  CPPUNIT_ASSERT_EQUAL(std::string("jp"), asString(countryList->get(0))->s());
+                       downcast<Integer>(options->get("timeout"))->i());
+  CPPUNIT_ASSERT_EQUAL(std::string("jp"), downcast<String>(countryList->get(0))->s());
 }
 
 } // namespace rpc

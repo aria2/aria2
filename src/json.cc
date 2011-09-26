@@ -405,7 +405,7 @@ decodeObject
       ++first;
       std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
         valueRet = decode(first, last, depth);
-      dict->put(asString(keyRet.first)->s(), valueRet.first);
+      dict->put(downcast<String>(keyRet.first)->s(), valueRet.first);
       first = valueRet.second;
       first = skipWs(first, last);
       if(first == last || (*first != ',' && *first != '}')) {

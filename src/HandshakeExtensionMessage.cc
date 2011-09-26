@@ -174,30 +174,30 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   A2_LOG_DEBUG(fmt("Creating HandshakeExtensionMessage from %s",
                    util::percentEncode(data, length).c_str()));
   SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length-1);
-  const Dict* dict = asDict(decoded);
+  const Dict* dict = downcast<Dict>(decoded);
   if(!dict) {
     throw DL_ABORT_EX
       ("Unexpected payload format for extended message handshake");
   }
-  const Integer* port = asInteger(dict->get("p"));
+  const Integer* port = downcast<Integer>(dict->get("p"));
   if(port && 0 < port->i() && port->i() < 65536) {
     msg->tcpPort_ = port->i();
   }
-  const String* version = asString(dict->get("v"));
+  const String* version = downcast<String>(dict->get("v"));
   if(version) {
     msg->clientVersion_ = version->s();
   }
-  const Dict* extDict = asDict(dict->get("m"));
+  const Dict* extDict = downcast<Dict>(dict->get("m"));
   if(extDict) {
     for(Dict::ValueType::const_iterator i = extDict->begin(),
           eoi = extDict->end(); i != eoi; ++i) {
-      const Integer* extId = asInteger((*i).second);
+      const Integer* extId = downcast<Integer>((*i).second);
       if(extId) {
         msg->extensions_[(*i).first] = extId->i();
       }
     }
   }
-  const Integer* metadataSize = asInteger(dict->get("metadata_size"));
+  const Integer* metadataSize = downcast<Integer>(dict->get("metadata_size"));
   // Only accept metadata smaller than 1MiB
   if(metadataSize && metadataSize->i() <= 1024*1024) {
     msg->metadataSize_ = metadataSize->i();

@@ -290,14 +290,14 @@ void extractPeer(const ValueBase* peerData, int family, OutputIterator dest)
     {
       for(List::ValueType::const_iterator itr = peerData.begin(),
             eoi = peerData.end(); itr != eoi; ++itr) {
-        const Dict* peerDict = asDict(*itr);
+        const Dict* peerDict = downcast<Dict>(*itr);
         if(!peerDict) {
           continue;
         }
         static const std::string IP = "ip";
         static const std::string PORT = "port";
-        const String* ip = asString(peerDict->get(IP));
-        const Integer* port = asInteger(peerDict->get(PORT));
+        const String* ip = downcast<String>(peerDict->get(IP));
+        const Integer* port = downcast<Integer>(peerDict->get(PORT));
         if(!ip || !port || !(0 < port->i() && port->i() < 65536)) {
           continue;
         }

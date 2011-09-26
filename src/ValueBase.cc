@@ -239,9 +239,19 @@ const SharedHandle<ValueBase>& Dict::get(const std::string& key) const
   }
 }
 
+SharedHandle<ValueBase>& Dict::get(const std::string& key)
+{
+  ValueType::iterator itr = dict_.find(key);
+  if(itr == dict_.end()) {
+    return dict_[key];
+  } else {
+    return (*itr).second;
+  }
+}
+
 SharedHandle<ValueBase>& Dict::operator[](const std::string& key)
 {
-  return dict_[key];
+  return get(key);
 }
 
 const SharedHandle<ValueBase>& Dict::operator[](const std::string& key) const
@@ -296,150 +306,6 @@ SharedHandle<Dict> Dict::g()
 void Dict::accept(ValueBaseVisitor& v) const
 {
   v.visit(*this);
-}
-
-const String* asString(const ValueBase* v)
-{
-  if(v) {
-    return downcast<String>(v);
-  } else {
-    return 0;
-  }
-}
-
-String* asString(ValueBase* v)
-{
-  if(v) {
-    return const_cast<String*>(downcast<String>(v));
-  } else {
-    return 0;
-  }
-}
-
-String* asString(const SharedHandle<ValueBase>& v)
-{
-  if(v.get()) {
-    return const_cast<String*>(downcast<String>(v));
-  } else {
-    return 0;
-  }
-}
-
-const Integer* asInteger(const ValueBase* v)
-{
-  if(v) {
-    return downcast<Integer>(v);
-  } else {
-    return 0;
-  }
-}
-
-Integer* asInteger(ValueBase* v)
-{
-  if(v) {
-    return const_cast<Integer*>(downcast<Integer>(v));
-  } else {
-    return 0;
-  }
-}
-
-Integer* asInteger(const SharedHandle<ValueBase>& v)
-{
-  if(v.get()) {
-    return const_cast<Integer*>(downcast<Integer>(v));
-  } else {
-    return 0;
-  }
-}
-
-const Bool* asBool(const ValueBase* v)
-{
-  if(v) {
-    return downcast<Bool>(v);
-  } else {
-    return 0;
-  }
-}
-
-Bool* asBool(const SharedHandle<ValueBase>& v)
-{
-  if(v.get()) {
-    return const_cast<Bool*>(downcast<Bool>(v));
-  } else {
-    return 0;
-  }
-}
-
-const Null* asNull(const ValueBase* v)
-{
-  if(v) {
-    return downcast<Null>(v);
-  } else {
-    return 0;
-  }
-}
-
-Null* asNull(const SharedHandle<ValueBase>& v)
-{
-  if(v) {
-    return const_cast<Null*>(downcast<Null>(v));
-  } else {
-    return 0;
-  }
-}
-
-const List* asList(const ValueBase* v)
-{
-  if(v) {
-    return downcast<List>(v);
-  } else {
-    return 0;
-  }
-}
-
-List* asList(ValueBase* v)
-{
-  if(v) {
-    return const_cast<List*>(downcast<List>(v));
-  } else {
-    return 0;
-  }
-}
-
-List* asList(const SharedHandle<ValueBase>& v)
-{
-  if(v.get()) {
-    return const_cast<List*>(downcast<List>(v));
-  } else {
-    return 0;
-  }
-}
-
-const Dict* asDict(const ValueBase* v)
-{
-  if(v) {
-    return downcast<Dict>(v);
-  } else {
-    return 0;
-  }
-}
-
-Dict* asDict(ValueBase* v)
-{
-  if(v) {
-    return const_cast<Dict*>(downcast<Dict>(v));
-  } else {
-    return 0;
-  }
-}
-
-Dict* asDict(const SharedHandle<ValueBase>& v)
-{
-  if(v.get()) {
-    return const_cast<Dict*>(downcast<Dict>(v));
-  } else {
-    return 0;
-  }
 }
 
 } // namespace aria2

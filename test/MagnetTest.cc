@@ -23,7 +23,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MagnetTest);
 namespace {
 const std::string& nthStr(const SharedHandle<ValueBase>& v, size_t index)
 {
-  return asString(asList(v)->get(index))->s();
+  return downcast<String>(downcast<List>(v)->get(index))->s();
 }
 } // namespace
 

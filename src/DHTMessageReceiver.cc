@@ -77,9 +77,9 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
     }
     bool isReply = false;
     SharedHandle<ValueBase> decoded = bencode2::decode(data, length);
-    const Dict* dict = asDict(decoded);
+    const Dict* dict = downcast<Dict>(decoded);
     if(dict) {
-      const String* y = asString(dict->get(DHTMessage::Y));
+      const String* y = downcast<String>(dict->get(DHTMessage::Y));
       if(y) {
         if(y->s() == DHTResponseMessage::R || y->s() == DHTUnknownMessage::E) {
           isReply = true;

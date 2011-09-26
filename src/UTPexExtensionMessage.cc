@@ -191,24 +191,24 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
 
   SharedHandle<ValueBase> decoded = bencode2::decode(data+1, len-1);
-  const Dict* dict = asDict(decoded);
+  const Dict* dict = downcast<Dict>(decoded);
   if(dict) {
-    const String* added = asString(dict->get("added"));
+    const String* added = downcast<String>(dict->get("added"));
     if(added) {
       bittorrent::extractPeer
         (added, AF_INET,  std::back_inserter(msg->freshPeers_));
     }
-    const String* dropped = asString(dict->get("dropped"));
+    const String* dropped = downcast<String>(dict->get("dropped"));
     if(dropped) {
       bittorrent::extractPeer
         (dropped, AF_INET, std::back_inserter(msg->droppedPeers_));
     }
-    const String* added6 = asString(dict->get("added6"));
+    const String* added6 = downcast<String>(dict->get("added6"));
     if(added6) {
       bittorrent::extractPeer
         (added6, AF_INET6, std::back_inserter(msg->freshPeers_));
     }
-    const String* dropped6 = asString(dict->get("dropped6"));
+    const String* dropped6 = downcast<String>(dict->get("dropped6"));
     if(dropped6) {
       bittorrent::extractPeer
         (dropped6, AF_INET6, std::back_inserter(msg->droppedPeers_));

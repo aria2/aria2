@@ -102,15 +102,15 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       }
       size_t end;
       SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length-1, end);
-      const Dict* dict = asDict(decoded);
+      const Dict* dict = downcast<Dict>(decoded);
       if(!dict) {
         throw DL_ABORT_EX("Bad ut_metadata: dictionary not found");
       }
-      const Integer* msgType = asInteger(dict->get("msg_type"));
+      const Integer* msgType = downcast<Integer>(dict->get("msg_type"));
       if(!msgType) {
         throw DL_ABORT_EX("Bad ut_metadata: msg_type not found");
       }
-      const Integer* index = asInteger(dict->get("piece"));
+      const Integer* index = downcast<Integer>(dict->get("piece"));
       if(!index) {
         throw DL_ABORT_EX("Bad ut_metadata: piece not found");
       }
@@ -129,7 +129,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         if(end == length) {
           throw DL_ABORT_EX("Bad ut_metadata data: data not found");
         }
-        const Integer* totalSize = asInteger(dict->get("total_size"));
+        const Integer* totalSize = downcast<Integer>(dict->get("total_size"));
         if(!totalSize) {
           throw DL_ABORT_EX("Bad ut_metadata data: total_size not found");
         }

@@ -70,16 +70,16 @@ void XmlRpcRequestProcessorTest::testParseMemory()
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.addURI"), req.methodName);
   CPPUNIT_ASSERT_EQUAL((size_t)3, req.params->size());
   CPPUNIT_ASSERT_EQUAL((Integer::ValueType)100,
-                       asInteger(req.params->get(0))->i());
-  const Dict* dict = asDict(req.params->get(1));
+                       downcast<Integer>(req.params->get(0))->i());
+  const Dict* dict = downcast<Dict>(req.params->get(1));
   CPPUNIT_ASSERT_EQUAL((Integer::ValueType)65535,
-                       asInteger(dict->get("max-count"))->i());
+                       downcast<Integer>(dict->get("max-count"))->i());
   // Current implementation handles double as string.
   CPPUNIT_ASSERT_EQUAL(std::string("0.99"),
-                       asString(dict->get("seed-ratio"))->s());
-  const List* list = asList(req.params->get(2));
-  CPPUNIT_ASSERT_EQUAL(std::string("pudding"), asString(list->get(0))->s());
-  CPPUNIT_ASSERT_EQUAL(std::string("hello world"), asString(list->get(1))->s());
+                       downcast<String>(dict->get("seed-ratio"))->s());
+  const List* list = downcast<List>(req.params->get(2));
+  CPPUNIT_ASSERT_EQUAL(std::string("pudding"), downcast<String>(list->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("hello world"), downcast<String>(list->get(1))->s());
 }
 
 void XmlRpcRequestProcessorTest::testParseMemory_shouldFail()
@@ -156,16 +156,16 @@ void XmlRpcRequestProcessorTest::testParseMemory_withoutStringTag()
 
   CPPUNIT_ASSERT_EQUAL((size_t)4, req.params->size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sourceforge.net"),
-                       asString(req.params->get(0))->s());
+                       downcast<String>(req.params->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sourceforge.net"),
-                       asString(req.params->get(1))->s());
-  const Dict* dict = asDict(req.params->get(2));
+                       downcast<String>(req.params->get(1))->s());
+  const Dict* dict = downcast<Dict>(req.params->get(2));
   CPPUNIT_ASSERT_EQUAL(std::string("world"),
-                       asString(dict->get("hello"))->s());
-  const List* list = asList(req.params->get(3));
-  CPPUNIT_ASSERT_EQUAL(std::string("apple"), asString(list->get(0))->s());
-  CPPUNIT_ASSERT_EQUAL(std::string("banana"), asString(list->get(1))->s());
-  CPPUNIT_ASSERT_EQUAL(std::string("lemon"), asString(list->get(2))->s());
+                       downcast<String>(dict->get("hello"))->s());
+  const List* list = downcast<List>(req.params->get(3));
+  CPPUNIT_ASSERT_EQUAL(std::string("apple"), downcast<String>(list->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("banana"), downcast<String>(list->get(1))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("lemon"), downcast<String>(list->get(2))->s());
 }
 
 } // namespace rpc

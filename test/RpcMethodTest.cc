@@ -148,7 +148,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RpcMethodTest);
 namespace {
 std::string getString(const Dict* dict, const std::string& key)
 {
-  return asString(dict->get(key))->s();
+  return downcast<String>(dict->get(key))->s();
 }
 } // namespace
 
@@ -270,7 +270,7 @@ void RpcMethodTest::testAddTorrent()
       (File(e_->getOption()->get(PREF_DIR)+
             "/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").exists());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
-    CPPUNIT_ASSERT_EQUAL(std::string("1"), asString(res.param)->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("1"), downcast<String>(res.param)->s());
 
     SharedHandle<RequestGroup> group =
       e_->getRequestGroupMan()->findReservedGroup(1);
@@ -354,10 +354,10 @@ void RpcMethodTest::testAddMetalink()
   {
     RpcResponse res = m.execute(req, e_.get());
     CPPUNIT_ASSERT_EQUAL(0, res.code);
-    const List* resParams = asList(res.param);
+    const List* resParams = downcast<List>(res.param);
     CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
-    CPPUNIT_ASSERT_EQUAL(std::string("1"), asString(resParams->get(0))->s());
-    CPPUNIT_ASSERT_EQUAL(std::string("2"), asString(resParams->get(1))->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("1"), downcast<String>(resParams->get(0))->s());
+    CPPUNIT_ASSERT_EQUAL(std::string("2"), downcast<String>(resParams->get(1))->s());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT
       (File(e_->getOption()->get(PREF_DIR)+
@@ -577,7 +577,7 @@ void RpcMethodTest::testNoSuchMethod()
   RpcResponse res = m.execute(req, 0);
   CPPUNIT_ASSERT_EQUAL(1, res.code);
   CPPUNIT_ASSERT_EQUAL(std::string("No such method: make.hamburger"),
-                       getString(asDict(res.param), "faultString"));
+                       getString(downcast<Dict>(res.param), "faultString"));
 }
 
 void RpcMethodTest::testTellStatus_withoutGid()
@@ -630,19 +630,19 @@ void RpcMethodTest::testTellWaiting()
   req.params->append(Integer::g(2));
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  const List* resParams = asList(res.param);
+  const List* resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
   CPPUNIT_ASSERT_EQUAL(std::string("2"),
-                       getString(asDict(resParams->get(0)), "gid"));
+                       getString(downcast<Dict>(resParams->get(0)), "gid"));
   CPPUNIT_ASSERT_EQUAL(std::string("3"),
-                       getString(asDict(resParams->get(1)), "gid"));
+                       getString(downcast<Dict>(resParams->get(1)), "gid"));
   // waiting.size() == offset+num 
   req = RpcRequest(TellWaitingRpcMethod::getMethodName(), List::g());
   req.params->append(Integer::g(1));
   req.params->append(Integer::g(3));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  resParams = asList(res.param);
+  resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)3, resParams->size());
   // waiting.size() < offset+num 
   req = RpcRequest(TellWaitingRpcMethod::getMethodName(), List::g());
@@ -650,7 +650,7 @@ void RpcMethodTest::testTellWaiting()
   req.params->append(Integer::g(4));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  resParams = asList(res.param);
+  resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)3, resParams->size());
   // negative offset
   req = RpcRequest(TellWaitingRpcMethod::getMethodName(), List::g());
@@ -658,29 +658,29 @@ void RpcMethodTest::testTellWaiting()
   req.params->append(Integer::g(2));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  resParams = asList(res.param);
+  resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)2, resParams->size());
   CPPUNIT_ASSERT_EQUAL(std::string("4"),
-                       getString(asDict(resParams->get(0)), "gid"));
+                       getString(downcast<Dict>(resParams->get(0)), "gid"));
   CPPUNIT_ASSERT_EQUAL(std::string("3"),
-                       getString(asDict(resParams->get(1)), "gid"));
+                       getString(downcast<Dict>(resParams->get(1)), "gid"));
   // negative offset and size < num
   req.params->set(1, Integer::g(100));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  resParams = asList(res.param);
+  resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)4, resParams->size());
   // nagative offset and normalized offset < 0
   req.params->set(0, Integer::g(-5));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  resParams = asList(res.param);
+  resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)0, resParams->size());
   // nagative offset and normalized offset == 0
   req.params->set(0, Integer::g(-4));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  resParams = asList(res.param);
+  resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)1, resParams->size());
 }
 
@@ -698,14 +698,14 @@ void RpcMethodTest::testGetVersion()
   RpcRequest req(GetVersionRpcMethod::getMethodName(), List::g());
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  const Dict* resParams = asDict(res.param);
+  const Dict* resParams = downcast<Dict>(res.param);
   CPPUNIT_ASSERT_EQUAL(std::string(PACKAGE_VERSION),
                        getString(resParams, "version"));
-  const List* featureList = asList(resParams->get("enabledFeatures"));
+  const List* featureList = downcast<List>(resParams->get("enabledFeatures"));
   std::string features;
   for(List::ValueType::const_iterator i = featureList->begin();
       i != featureList->end(); ++i) {
-    const String* s = asString(*i);
+    const String* s = downcast<String>(*i);
     features += s->s();
     features += ", ";
   }
@@ -733,11 +733,11 @@ void RpcMethodTest::testGatherStoppedDownload()
   std::vector<std::string> keys;
   gatherStoppedDownload(entry, d, keys);
 
-  const List* followedByRes = asList(entry->get("followedBy"));
-  CPPUNIT_ASSERT_EQUAL(std::string("3"), asString(followedByRes->get(0))->s());
-  CPPUNIT_ASSERT_EQUAL(std::string("4"), asString(followedByRes->get(1))->s());
+  const List* followedByRes = downcast<List>(entry->get("followedBy"));
+  CPPUNIT_ASSERT_EQUAL(std::string("3"), downcast<String>(followedByRes->get(0))->s());
+  CPPUNIT_ASSERT_EQUAL(std::string("4"), downcast<String>(followedByRes->get(1))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("2"),
-                       asString(entry->get("belongsTo"))->s());
+                       downcast<String>(entry->get("belongsTo"))->s());
 
   keys.push_back("gid");
 
@@ -766,26 +766,26 @@ void RpcMethodTest::testGatherProgressCommon()
   std::vector<std::string> keys;
   gatherProgressCommon(entry, group, keys);
   
-  const List* followedByRes = asList(entry->get("followedBy"));
+  const List* followedByRes = downcast<List>(entry->get("followedBy"));
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[0]->getGID()),
-                       asString(followedByRes->get(0))->s());
+                       downcast<String>(followedByRes->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(util::itos(followedBy[1]->getGID()),
-                       asString(followedByRes->get(1))->s());
+                       downcast<String>(followedByRes->get(1))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("2"),
-                       asString(entry->get("belongsTo"))->s());
-  const List* files = asList(entry->get("files"));
+                       downcast<String>(entry->get("belongsTo"))->s());
+  const List* files = downcast<List>(entry->get("files"));
   CPPUNIT_ASSERT_EQUAL((size_t)1, files->size());
-  const Dict* file = asDict(files->get(0));
+  const Dict* file = downcast<Dict>(files->get(0));
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
-                       asString(file->get("path"))->s());
+                       downcast<String>(file->get("path"))->s());
   CPPUNIT_ASSERT_EQUAL(uris[0],
-                       asString
-                       (asDict
-                        (asList(file->get("uris"))->get(0))
+                       downcast<String>
+                       (downcast<Dict>
+                        (downcast<List>(file->get("uris"))->get(0))
                         ->get("uri"))
                        ->s());
   CPPUNIT_ASSERT_EQUAL(e_->getOption()->get(PREF_DIR),
-                       asString(entry->get("dir"))->s());
+                       downcast<String>(entry->get("dir"))->s());
 
   keys.push_back("gid");
   entry = Dict::g();
@@ -806,25 +806,25 @@ void RpcMethodTest::testGatherBitTorrentMetadata()
   SharedHandle<Dict> btDict = Dict::g();
   gatherBitTorrentMetadata(btDict, bittorrent::getTorrentAttrs(dctx));
   CPPUNIT_ASSERT_EQUAL(std::string("REDNOAH.COM RULES"),
-                       asString(btDict->get("comment"))->s());
+                       downcast<String>(btDict->get("comment"))->s());
   CPPUNIT_ASSERT_EQUAL((int64_t)1123456789,
-                       asInteger(btDict->get("creationDate"))->i());
+                       downcast<Integer>(btDict->get("creationDate"))->i());
   CPPUNIT_ASSERT_EQUAL(std::string("multi"),
-                       asString(btDict->get("mode"))->s());
+                       downcast<String>(btDict->get("mode"))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"),
-                       asString
-                       (asDict
+                       downcast<String>
+                       (downcast<Dict>
                         (btDict->get("info"))
                         ->get("name"))
                        ->s());
-  const List* announceList = asList(btDict->get("announceList"));
+  const List* announceList = downcast<List>(btDict->get("announceList"));
   CPPUNIT_ASSERT_EQUAL((size_t)3, announceList->size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
-                       asString(asList(announceList->get(0))->get(0))->s());
+                       downcast<String>(downcast<List>(announceList->get(0))->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"),
-                       asString(asList(announceList->get(1))->get(0))->s());
+                       downcast<String>(downcast<List>(announceList->get(1))->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"),
-                       asString(asList(announceList->get(2))->get(0))->s());
+                       downcast<String>(downcast<List>(announceList->get(2))->get(0))->s());
   // Remove some keys
   SharedHandle<TorrentAttribute> modBtAttrs = bittorrent::getTorrentAttrs(dctx);
   modBtAttrs->comment.clear();
@@ -855,7 +855,7 @@ void RpcMethodTest::testChangePosition()
   req.params->append("POS_SET");
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)1, asInteger(res.param)->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, downcast<Integer>(res.param)->i());
   CPPUNIT_ASSERT_EQUAL
     ((a2_gid_t)1, e_->getRequestGroupMan()->getReservedGroups()[1]->getGID());
 }
@@ -905,8 +905,8 @@ void RpcMethodTest::testChangeUri()
   req.params->append(adduris);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)2, asInteger(asList(res.param)->get(0))->i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)3, asInteger(asList(res.param)->get(1))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, downcast<Integer>(downcast<List>(res.param)->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)3, downcast<Integer>(downcast<List>(res.param)->get(1))->i());
   CPPUNIT_ASSERT_EQUAL((size_t)0, files[0]->getRemainingUris().size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, files[2]->getRemainingUris().size());
   std::deque<std::string> uris = files[1]->getRemainingUris();
@@ -925,8 +925,8 @@ void RpcMethodTest::testChangeUri()
   req.params->append(Integer::g(2));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, asInteger(asList(res.param)->get(0))->i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)2, asInteger(asList(res.param)->get(1))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, downcast<Integer>(downcast<List>(res.param)->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, downcast<Integer>(downcast<List>(res.param)->get(1))->i());
   uris = files[1]->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)6, uris.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-1"), uris[2]);
@@ -938,8 +938,8 @@ void RpcMethodTest::testChangeUri()
   req.params->set(4, Integer::g(1000));
   res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, asInteger(asList(res.param)->get(0))->i());
-  CPPUNIT_ASSERT_EQUAL((int64_t)2, asInteger(asList(res.param)->get(1))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, downcast<Integer>(downcast<List>(res.param)->get(0))->i());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, downcast<Integer>(downcast<List>(res.param)->get(1))->i());
   uris = files[0]->getRemainingUris();
   CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/added1-1"), uris[0]);
@@ -1005,7 +1005,7 @@ void RpcMethodTest::testGetSessionInfo()
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   CPPUNIT_ASSERT_EQUAL(util::toHex(e_->getSessionId()),
-                       getString(asDict(res.param), "sessionId"));
+                       getString(downcast<Dict>(res.param), "sessionId"));
 }
 
 void RpcMethodTest::testPause()
@@ -1111,26 +1111,26 @@ void RpcMethodTest::testSystemMulticall()
   }
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  const List* resParams = asList(res.param);
+  const List* resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)7, resParams->size());
   CPPUNIT_ASSERT_EQUAL(std::string("1"),
-                       asString(asList(resParams->get(0))->get(0))->s());
+                       downcast<String>(downcast<List>(resParams->get(0))->get(0))->s());
   CPPUNIT_ASSERT_EQUAL(std::string("2"),
-                       asString(asList(resParams->get(1))->get(0))->s());
+                       downcast<String>(downcast<List>(resParams->get(1))->get(0))->s());
   CPPUNIT_ASSERT_EQUAL((int64_t)1,
-                       asInteger
-                       (asDict(resParams->get(2))->get("faultCode"))
+                       downcast<Integer>
+                       (downcast<Dict>(resParams->get(2))->get("faultCode"))
                        ->i());
   CPPUNIT_ASSERT_EQUAL((int64_t)1,
-                       asInteger
-                       (asDict(resParams->get(3))->get("faultCode"))
+                       downcast<Integer>
+                       (downcast<Dict>(resParams->get(3))->get("faultCode"))
                        ->i());
   CPPUNIT_ASSERT_EQUAL((int64_t)1,
-                       asInteger
-                       (asDict(resParams->get(4))->get("faultCode"))
+                       downcast<Integer>
+                       (downcast<Dict>(resParams->get(4))->get("faultCode"))
                        ->i());
-  CPPUNIT_ASSERT(asList(resParams->get(5)));
-  CPPUNIT_ASSERT(asList(resParams->get(6)));
+  CPPUNIT_ASSERT(downcast<List>(resParams->get(5)));
+  CPPUNIT_ASSERT(downcast<List>(resParams->get(6)));
 }
 
 void RpcMethodTest::testSystemMulticall_fail()

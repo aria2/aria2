@@ -732,7 +732,7 @@ void BittorrentHelperTest::testMetadata() {
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
   std::string torrentData = readFile(A2_TEST_DIR"/test.torrent");
   SharedHandle<ValueBase> tr = bencode2::decode(torrentData);
-  SharedHandle<ValueBase> infoDic = asDict(tr)->get("info");
+  SharedHandle<ValueBase> infoDic = downcast<Dict>(tr)->get("info");
   std::string metadata = bencode2::encode(infoDic);
   SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
   CPPUNIT_ASSERT(metadata == attrs->metadata);
@@ -848,7 +848,7 @@ void BittorrentHelperTest::testExtractPeerFromList()
   SharedHandle<ValueBase> dict = bencode2::decode(peersString);
   
   std::deque<SharedHandle<Peer> > peers;
-  extractPeer(asDict(dict)->get("peers"), AF_INET, std::back_inserter(peers));
+  extractPeer(downcast<Dict>(dict)->get("peers"), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());
@@ -865,7 +865,7 @@ void BittorrentHelperTest::testExtract2PeersFromList()
   SharedHandle<ValueBase> dict = bencode2::decode(peersString);
 
   std::deque<SharedHandle<Peer> > peers;
-  extractPeer(asDict(dict)->get("peers"), AF_INET, std::back_inserter(peers));
+  extractPeer(downcast<Dict>(dict)->get("peers"), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   SharedHandle<Peer> peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());

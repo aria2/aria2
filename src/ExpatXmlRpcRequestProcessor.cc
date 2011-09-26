@@ -122,7 +122,7 @@ XmlRpcRequestProcessor::parseMemory(const std::string& xml)
   if(r == XML_STATUS_ERROR) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
-  if(!asList(stm_->getCurrentFrameValue())) {
+  if(!downcast<List>(stm_->getCurrentFrameValue())) {
     throw DL_ABORT_EX("Bad XML-RPC parameter list");
   }
   return RpcRequest(stm_->getMethodName(),

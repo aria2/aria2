@@ -239,6 +239,8 @@ public:
 
   const SharedHandle<ValueBase>& get(const std::string& key) const;
 
+  SharedHandle<ValueBase>& get(const std::string& key);
+
   // Returns the reference to object associated with given key.  If
   // the key is not found, new pair with that key is created using
   // default values, which is then returned. In other words, this is
@@ -321,42 +323,26 @@ private:
 template<typename T, typename VPtr>
 const T* downcast(const VPtr& v)
 {
-  DowncastValueBaseVisitor<T> visitor;
-  v->accept(visitor);
-  return visitor.getResult();
+  if(v) {
+    DowncastValueBaseVisitor<T> visitor;
+    v->accept(visitor);
+    return visitor.getResult();
+  } else {
+    return 0;
+  }
 }
 
-const String* asString(const ValueBase* v);
-
-String* asString(ValueBase* v);
-
-String* asString(const SharedHandle<ValueBase>& v);
-
-const Integer* asInteger(const ValueBase* v);
-
-Integer* asInteger(ValueBase* v);
-
-Integer* asInteger(const SharedHandle<ValueBase>& v);
-
-const Bool* asBool(const ValueBase* v);
-
-Bool* asBool(const SharedHandle<ValueBase>& v);
-
-const Null* asNull(const ValueBase* v);
-
-Null* asNull(const SharedHandle<ValueBase>& v);
-
-const List* asList(const ValueBase* v);
-
-List* asList(ValueBase* v);
-
-List* asList(const SharedHandle<ValueBase>& v);
-
-const Dict* asDict(const ValueBase* v);
-
-Dict* asDict(ValueBase* v);
-
-Dict* asDict(const SharedHandle<ValueBase>& v);
+template<typename T, typename VPtr>
+T* downcast(VPtr& v)
+{
+  if(v) {
+    DowncastValueBaseVisitor<T> visitor;
+    v->accept(visitor);
+    return const_cast<T*>(visitor.getResult());
+  } else {
+    return 0;
+  }
+}
 
 } // namespace aria2
 

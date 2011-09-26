@@ -91,7 +91,7 @@ DHTMessageFactoryImpl::getRemoteNode
 namespace {
 const Dict* getDictionary(const Dict* dict, const std::string& key)
 {
-  const Dict* d = asDict(dict->get(key));
+  const Dict* d = downcast<Dict>(dict->get(key));
   if(d) {
     return d;
   } else {
@@ -104,7 +104,7 @@ const Dict* getDictionary(const Dict* dict, const std::string& key)
 namespace {
 const String* getString(const Dict* dict, const std::string& key)
 {
-  const String* c = asString(dict->get(key));
+  const String* c = downcast<String>(dict->get(key));
   if(c) {
     return c;
   } else {
@@ -117,7 +117,7 @@ const String* getString(const Dict* dict, const std::string& key)
 namespace {
 const Integer* getInteger(const Dict* dict, const std::string& key)
 {
-  const Integer* c = asInteger(dict->get(key));
+  const Integer* c = downcast<Integer>(dict->get(key));
   if(c) {
     return c;
   } else {
@@ -130,7 +130,7 @@ const Integer* getInteger(const Dict* dict, const std::string& key)
 namespace {
 const String* getString(const List* list, size_t index)
 {
-  const String* c = asString(list->get(index));
+  const String* c = downcast<String>(list->get(index));
   if(c) {
     return c;
   } else {
@@ -144,7 +144,7 @@ const String* getString(const List* list, size_t index)
 namespace {
 const Integer* getInteger(const List* list, size_t index)
 {
-  const Integer* c = asInteger(list->get(index));
+  const Integer* c = downcast<Integer>(list->get(index));
   if(c) {
     return c;
   } else {
@@ -158,7 +158,7 @@ const Integer* getInteger(const List* list, size_t index)
 namespace {
 const List* getList(const Dict* dict, const std::string& key)
 {
-  const List* l = asList(dict->get(key));
+  const List* l = downcast<List>(dict->get(key));
   if(l) {
     return l;
   } else {
@@ -191,7 +191,7 @@ void DHTMessageFactoryImpl::validatePort(const Integer* port) const
 namespace {
 void setVersion(const SharedHandle<DHTMessage>& msg, const Dict* dict)
 {
-  const String* v = asString(dict->get(DHTMessage::V));
+  const String* v = downcast<String>(dict->get(DHTMessage::V));
   if(v) {
     msg->setVersion(v->s());
   } else {
@@ -389,7 +389,7 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage
  const std::string& transactionID)
 {
   const String* nodesData =
-    asString(getDictionary(dict, DHTResponseMessage::R)->
+    downcast<String>(getDictionary(dict, DHTResponseMessage::R)->
              get(family_ == AF_INET?DHTFindNodeReplyMessage::NODES:
                  DHTFindNodeReplyMessage::NODES6));
   std::vector<SharedHandle<DHTNode> > nodes;
@@ -421,20 +421,20 @@ DHTMessageFactoryImpl::createGetPeersReplyMessage
 {
   const Dict* rDict = getDictionary(dict, DHTResponseMessage::R);
   const String* nodesData =
-    asString(rDict->get(family_ == AF_INET?DHTGetPeersReplyMessage::NODES:
+    downcast<String>(rDict->get(family_ == AF_INET?DHTGetPeersReplyMessage::NODES:
                         DHTGetPeersReplyMessage::NODES6));
   std::vector<SharedHandle<DHTNode> > nodes;
   if(nodesData) {
     extractNodes(nodes, nodesData->uc(), nodesData->s().size());
   }
   const List* valuesList =
-    asList(rDict->get(DHTGetPeersReplyMessage::VALUES));
+    downcast<List>(rDict->get(DHTGetPeersReplyMessage::VALUES));
   std::vector<SharedHandle<Peer> > peers;
   size_t clen = bittorrent::getCompactLength(family_);
   if(valuesList) {
     for(List::ValueType::const_iterator i = valuesList->begin(),
           eoi = valuesList->end(); i != eoi; ++i) {
-      const String* data = asString(*i);
+      const String* data = downcast<String>(*i);
       if(data && data->s().size() == clen) {
         std::pair<std::string, uint16_t> addr =
           bittorrent::unpackcompact(data->uc(), family_);

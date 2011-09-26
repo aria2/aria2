@@ -124,10 +124,10 @@ void setAnnounceList(const SharedHandle<DownloadContext>& dctx,
   for(List::ValueType::const_iterator tierIter = announceList->begin(),
         eoi = announceList->end(); tierIter != eoi; ++tierIter) {
     std::vector<std::string> ntier;
-    const List* tier = asList(*tierIter);
+    const List* tier = downcast<List>(*tierIter);
     for(List::ValueType::const_iterator uriIter = tier->begin(),
           eoi2 = tier->end(); uriIter != eoi2; ++uriIter) {
-      const String* uri = asString(*uriIter);
+      const String* uri = downcast<String>(*uriIter);
       ntier.push_back(uri->s());
     }
     dest.push_back(ntier);

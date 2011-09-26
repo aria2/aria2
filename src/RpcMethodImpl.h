@@ -84,7 +84,7 @@ void toStringList(OutputIterator out, const List* src)
   }
   for(List::ValueType::const_iterator i = src->begin(), eoi = src->end();
       i != eoi; ++i) {
-    const String* s = asString(*i);
+    const String* s = downcast<String>(*i);
     if(s) {
       *out++ = s->s();
     }

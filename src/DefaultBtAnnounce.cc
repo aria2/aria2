@@ -221,30 +221,30 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   A2_LOG_DEBUG("Now processing tracker response.");
   SharedHandle<ValueBase> decodedValue =
     bencode2::decode(trackerResponse, trackerResponseLength);
-  const Dict* dict = asDict(decodedValue);
+  const Dict* dict = downcast<Dict>(decodedValue);
   if(!dict) {
     throw DL_ABORT_EX(MSG_NULL_TRACKER_RESPONSE);
   }
-  const String* failure = asString(dict->get(BtAnnounce::FAILURE_REASON));
+  const String* failure = downcast<String>(dict->get(BtAnnounce::FAILURE_REASON));
   if(failure) {
     throw DL_ABORT_EX
       (fmt(EX_TRACKER_FAILURE, failure->s().c_str()));
   }
-  const String* warn = asString(dict->get(BtAnnounce::WARNING_MESSAGE));
+  const String* warn = downcast<String>(dict->get(BtAnnounce::WARNING_MESSAGE));
   if(warn) {
     A2_LOG_WARN(fmt(MSG_TRACKER_WARNING_MESSAGE, warn->s().c_str()));
   }
-  const String* tid = asString(dict->get(BtAnnounce::TRACKER_ID));
+  const String* tid = downcast<String>(dict->get(BtAnnounce::TRACKER_ID));
   if(tid) {
     trackerId_ = tid->s();
     A2_LOG_DEBUG(fmt("Tracker ID:%s", trackerId_.c_str()));
   }
-  const Integer* ival = asInteger(dict->get(BtAnnounce::INTERVAL));
+  const Integer* ival = downcast<Integer>(dict->get(BtAnnounce::INTERVAL));
   if(ival && ival->i() > 0) {
     interval_ = ival->i();
     A2_LOG_DEBUG(fmt("Interval:%ld", static_cast<long int>(interval_)));
   }
-  const Integer* mival = asInteger(dict->get(BtAnnounce::MIN_INTERVAL));
+  const Integer* mival = downcast<Integer>(dict->get(BtAnnounce::MIN_INTERVAL));
   if(mival && mival->i() > 0) {
     minInterval_ = mival->i();
     A2_LOG_DEBUG(fmt("Min interval:%ld", static_cast<long int>(minInterval_)));
@@ -253,12 +253,12 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
     // Use interval as a minInterval if minInterval is not supplied.
     minInterval_ = interval_;
   }
-  const Integer* comp = asInteger(dict->get(BtAnnounce::COMPLETE));
+  const Integer* comp = downcast<Integer>(dict->get(BtAnnounce::COMPLETE));
   if(comp) {
     complete_ = comp->i();
     A2_LOG_DEBUG(fmt("Complete:%d", complete_));
   }
-  const Integer* incomp = asInteger(dict->get(BtAnnounce::INCOMPLETE));
+  const Integer* incomp = downcast<Integer>(dict->get(BtAnnounce::INCOMPLETE));
   if(incomp) {
     incomplete_ = incomp->i();
     A2_LOG_DEBUG(fmt("Incomplete:%d", incomplete_));

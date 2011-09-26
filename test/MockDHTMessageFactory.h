@@ -33,7 +33,7 @@ public:
     remoteNode->setPort(port);
     SharedHandle<MockDHTResponseMessage> m
       (new MockDHTResponseMessage(localNode_, remoteNode,
-                                  asString(dict->get("t"))->s()));
+                                  downcast<String>(dict->get("t"))->s()));
     return m;
   }
 

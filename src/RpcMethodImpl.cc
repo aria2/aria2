@@ -207,7 +207,7 @@ void extractUris(OutputIterator out, const List* src)
   if(src) {
     for(List::ValueType::const_iterator i = src->begin(), eoi = src->end();
         i != eoi; ++i) {
-      const String* uri = asString(*i);
+      const String* uri = downcast<String>(*i);
       if(uri) {
         out++ = uri->s();
       }
@@ -1355,7 +1355,7 @@ SharedHandle<ValueBase> ChangeUriRpcMethod::process
   size_t delcount = 0;
   for(List::ValueType::const_iterator i = delUrisParam->begin(),
         eoi = delUrisParam->end(); i != eoi; ++i) {
-    const String* uri = asString(*i);
+    const String* uri = downcast<String>(*i);
     if(uri && s->removeUri(uri->s())) {
       ++delcount;
     }
@@ -1364,7 +1364,7 @@ SharedHandle<ValueBase> ChangeUriRpcMethod::process
   if(posGiven) {
     for(List::ValueType::const_iterator i = addUrisParam->begin(),
           eoi = addUrisParam->end(); i != eoi; ++i) {
-      const String* uri = asString(*i);
+      const String* uri = downcast<String>(*i);
       if(uri && s->insertUri(uri->s(), pos)) {
         ++addcount;
         ++pos;
@@ -1373,7 +1373,7 @@ SharedHandle<ValueBase> ChangeUriRpcMethod::process
   } else {
     for(List::ValueType::const_iterator i = addUrisParam->begin(),
           eoi = addUrisParam->end(); i != eoi; ++i) {
-      const String* uri = asString(*i);
+      const String* uri = downcast<String>(*i);
       if(uri && s->addUri(uri->s())) {
         ++addcount;
       }
@@ -1436,13 +1436,13 @@ SharedHandle<ValueBase> SystemMulticallRpcMethod::process
   SharedHandle<List> list = List::g();
   for(List::ValueType::const_iterator i = methodSpecs->begin(),
         eoi = methodSpecs->end(); i != eoi; ++i) {
-    const Dict* methodDict = asDict(*i);
+    const Dict* methodDict = downcast<Dict>(*i);
     if(!methodDict) {
       list->append(createErrorResponse
                    (DL_ABORT_EX("system.multicall expected struct."), req));
       continue;
     }
-    const String* methodName = asString(methodDict->get(KEY_METHOD_NAME));
+    const String* methodName = downcast<String>(methodDict->get(KEY_METHOD_NAME));
     if(!methodName) {
       list->append(createErrorResponse
                    (DL_ABORT_EX("Missing methodName."), req));
@@ -1455,7 +1455,7 @@ SharedHandle<ValueBase> SystemMulticallRpcMethod::process
     }
     const SharedHandle<ValueBase>& tempParamsList = methodDict->get(KEY_PARAMS);
     SharedHandle<List> paramsList;
-    if(asList(tempParamsList)) {
+    if(downcast<List>(tempParamsList)) {
       paramsList = static_pointer_cast<List>(tempParamsList);
     } else {
       paramsList = List::g();
