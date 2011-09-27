@@ -236,6 +236,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} addTorrent /path/to/torrent_file URI... [options]
        #{program_name} addMetalink /path/to/metalink_file [options]
        #{program_name} remove GID [options]
+       #{program_name} forceRemove GID [options]
        #{program_name} pause GID [options]
        #{program_name} pauseAll [options]
        #{program_name} forcePause GID [options]
@@ -252,6 +253,7 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} getFiles   GID [options]
        #{program_name} getUris    GID [options]
        #{program_name} getPeers   GID [options]
+       #{program_name} getServers GID [options]
        #{program_name} purgeDownloadResult [options]
        #{program_name} removeDownloadResult GID [options]
        #{program_name} changeOption GID [options]
@@ -337,6 +339,8 @@ elsif command == "unpauseAll" then
   result=client.call("aria2."+command)
 elsif command == "remove" then
   result=client.call("aria2."+command, resources[0])
+elsif command == "forceRemove" then
+  result=client.call("aria2."+command, resources[0])
 elsif command == "changePosition" then
   result=client.call("aria2."+command, resources[0], resources[1].to_i(),
                      resources[2])
@@ -345,6 +349,8 @@ elsif command == "getFiles" then
 elsif command == "getUris" then
   result=client.call("aria2."+command, resources[0])
 elsif command == "getPeers" then
+  result=client.call("aria2."+command, resources[0])
+elsif command == "getServers" then
   result=client.call("aria2."+command, resources[0])
 elsif command == "purgeDownloadResult" then
   result=client.call("aria2."+command)
