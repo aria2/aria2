@@ -80,7 +80,7 @@ extern const std::string PREF_REFERER;
 // value: 1*digit
 extern const std::string PREF_LOWEST_SPEED_LIMIT;
 // value: 1*digit
-extern const std::string PREF_SEGMENT_SIZE;
+extern const std::string PREF_PIECE_LENGTH;
 // value: 1*digit
 extern const std::string PREF_MAX_DOWNLOAD_LIMIT;
 // value: 1*digit

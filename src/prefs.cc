@@ -76,7 +76,7 @@ const std::string PREF_REFERER("referer");
 // value: 1*digit
 const std::string PREF_LOWEST_SPEED_LIMIT("lowest-speed-limit");
 // value: 1*digit
-const std::string PREF_SEGMENT_SIZE("segment-size");
+const std::string PREF_PIECE_LENGTH("piece-length");
 // value: 1*digit
 const std::string PREF_MAX_OVERALL_DOWNLOAD_LIMIT("max-overall-download-limit");
 // value: 1*digit

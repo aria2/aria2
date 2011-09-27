@@ -86,7 +86,7 @@ public:
     RequestGroup::resetGIDCounter();
     option_.reset(new Option());
     option_->put(PREF_DIR, A2_TEST_OUT_DIR"/aria2_RpcMethodTest");
-    option_->put(PREF_SEGMENT_SIZE, "1048576");
+    option_->put(PREF_PIECE_LENGTH, "1048576");
     File(option_->get(PREF_DIR)).mkdirs();
     e_.reset
       (new DownloadEngine(SharedHandle<EventPoll>(new SelectEventPoll())));

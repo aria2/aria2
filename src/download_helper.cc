@@ -170,7 +170,8 @@ const std::set<std::string>& listRequestOptions()
     PREF_PAUSE,
     PREF_STREAM_PIECE_SELECTOR,
     PREF_HASH_CHECK_ONLY,
-    PREF_CHECKSUM
+    PREF_CHECKSUM,
+    PREF_PIECE_LENGTH
   };
   static std::set<std::string> requestOptions
     (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
@@ -223,7 +224,7 @@ SharedHandle<RequestGroup> createRequestGroup
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext
-     (option->getAsInt(PREF_SEGMENT_SIZE),
+     (option->getAsInt(PREF_PIECE_LENGTH),
       0,
       useOutOption&&!option->blank(PREF_OUT)?
       util::applyDir(option->get(PREF_DIR), option->get(PREF_OUT)):A2STR::NIL));

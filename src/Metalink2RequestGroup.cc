@@ -243,12 +243,12 @@ Metalink2RequestGroup::createRequestGroup
       size_t pieceLength;
 #ifdef ENABLE_MESSAGE_DIGEST
       if(!entry->chunkChecksum) {
-        pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
+        pieceLength = option->getAsInt(PREF_PIECE_LENGTH);
       } else {
         pieceLength = entry->chunkChecksum->getPieceLength();
       }
 #else
-      pieceLength = option->getAsInt(PREF_SEGMENT_SIZE);
+      pieceLength = option->getAsInt(PREF_PIECE_LENGTH);
 #endif // ENABLE_MESSAGE_DIGEST
       dctx.reset(new DownloadContext
                  (pieceLength,
@@ -281,7 +281,7 @@ Metalink2RequestGroup::createRequestGroup
     } else {
       dctx.reset(new DownloadContext());
       // piece length is overridden by the one in torrent file.
-      dctx->setPieceLength(option->getAsInt(PREF_SEGMENT_SIZE));
+      dctx->setPieceLength(option->getAsInt(PREF_PIECE_LENGTH));
       std::vector<SharedHandle<FileEntry> > fileEntries;
       off_t offset = 0;
       for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =

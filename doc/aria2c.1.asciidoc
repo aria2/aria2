@@ -1052,6 +1052,21 @@ name.
   See *<<_event_hook, Event Hook>>* for more details about COMMAND.
   Possible Values: '/path/to/command'
 
+[[aria2_optref_piece_length]]*--piece-length*=LENGTH::
+
+  Set a piece length for HTTP/FTP downloads. This is the boundary when
+  aria2 splits a file. All splits occur at multiple of this
+  length. This option will be ignored in BitTorrent downloads.  It
+  will be also ignored if Metalink file contains piece hashes.
+  Default: '1M'
+
+[NOTE]
+
+The possible usecase of *<<aria2_optref_piece_length, --piece-length>>*
+option is change the request range in one HTTP pipelined request.
+To enable HTTP pipelining use
+*<<aria2_optref_enable_http_pipelining, --enable-http-pipelining>>*.
+
 [[aria2_optref_show_console_readout]]*--show-console-readout*[='true'|'false']::
 
   Show console readout. Default: 'true'
@@ -1597,6 +1612,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_stream_piece_selector, stream-piece-selector>>*
 * *<<aria2_optref_hash_check_only, hash-check-only>>*
 * *<<aria2_optref_checksum, checksum>>*
+* *<<aria2_optref_piece_length, piece_length>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

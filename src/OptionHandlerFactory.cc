@@ -763,6 +763,18 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<UnitNumberOptionHandler> op(new UnitNumberOptionHandler
+                                             (PREF_PIECE_LENGTH,
+                                              TEXT_PIECE_LENGTH,
+                                              "1M",
+                                              1024*1024,
+                                              1024*1024*1024));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_FTP);
+    op->addTag(TAG_HTTP);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_REMOTE_TIME,
                                     TEXT_REMOTE_TIME,
@@ -791,15 +803,6 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
-    handlers.push_back(op);
-  }
-  {
-    SharedHandle<UnitNumberOptionHandler> op(new UnitNumberOptionHandler
-                                             (PREF_SEGMENT_SIZE,
-                                              NO_DESCRIPTION,
-                                              "1M",
-                                              1024, -1));
-    op->hide();
     handlers.push_back(op);
   }
   {

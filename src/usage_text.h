@@ -847,3 +847,10 @@
     "                              sha-1=0192ba11326fe2298c8cb4de616f4d4140213838\n" \
     "                              This option applies only to HTTP(S)/FTP\n" \
     "                              downloads.")
+#define TEXT_PIECE_LENGTH                       \
+  _(" --piece-length=LENGTH        Set a piece length for HTTP/FTP downloads. This\n" \
+    "                              is the boundary when aria2 splits a file. All\n" \
+    "                              splits occur at multiple of this length. This\n" \
+    "                              option will be ignored in BitTorrent downloads.\n" \
+    "                              It will be also ignored if Metalink file\n" \
+    "                              contains piece hashes.")

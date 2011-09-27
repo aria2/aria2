@@ -236,7 +236,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->getOption()->put(PREF_SELECT_LEAST_USED_HOST, A2_V_FALSE);
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SharedHandle<DownloadContext> dctx
-    (new DownloadContext(getOption()->getAsInt(PREF_SEGMENT_SIZE),
+    (new DownloadContext(getOption()->getAsInt(PREF_PIECE_LENGTH),
                          0,
                          TRACKER_ANNOUNCE_FILE));
   dctx->getFileEntries().front()->setUris(uris);
