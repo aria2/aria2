@@ -229,7 +229,8 @@ SRCS =  Socket.h\
 	MetalinkHttpEntry.cc MetalinkHttpEntry.h\
 	OutputFile.h\
 	NullOutputFile.h\
-	console.cc console.h
+	console.cc console.h\
+	BufferedFile.cc BufferedFile.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
@@ -241,8 +242,7 @@ SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserState.h\
 	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
 	XmlRpcElements.cc XmlRpcElements.h\
-	XmlRpcRequestProcessor.h\
-	BufferedFile.cc BufferedFile.h
+	XmlRpcRequestProcessor.h
 
 if HAVE_LIBXML2
 SRCS += Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
