@@ -144,7 +144,7 @@ if test "x$have_openssl" != "xyes"; then
   fi
   if test "x$with_libgcrypt" = "xyes" &&
      test "x$have_libnettle" != "xyes"; then
-    AM_PATH_LIBGCRYPT([1.2.2], [have_libgcrypt=yes])
+    AM_PATH_LIBGCRYPT([1.2.4], [have_libgcrypt=yes])
     if test "x$have_libgcrypt" = "xyes"; then
       AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
       LIBS="$LIBGCRYPT_LIBS $LIBS"

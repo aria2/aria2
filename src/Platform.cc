@@ -77,6 +77,8 @@
 # include "a2gmp.h"
 #endif // HAVE_LIBGMP
 
+#define A2_MIN_GCRYPT_VERSION "1.2.4"
+
 namespace aria2 {
 
 bool Platform::initialized_ = false;
@@ -113,7 +115,7 @@ bool Platform::setUp()
   SSL_library_init();
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGCRYPT
-  if(!gcry_check_version(GCRYPT_VERSION)) {
+  if(!gcry_check_version(A2_MIN_GCRYPT_VERSION)) {
     throw DL_ABORT_EX("gcry_check_version() failed.");
   }
   gcry_control(GCRYCTL_DISABLE_SECMEM, 0);
