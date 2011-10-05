@@ -41,7 +41,7 @@ namespace global {
 #ifdef __MINGW32__
 const SharedHandle<WinConsoleFile>& cout()
 {
-  static SharedHandle<WinConsoleFile> f(new WinConsoleFile(STD_INPUT_HANDLE));
+  static SharedHandle<WinConsoleFile> f(new WinConsoleFile(STD_OUTPUT_HANDLE));
   return f;
 }
 #else // !__MINGW32__
