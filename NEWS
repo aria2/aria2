@@ -1,145 +1,95 @@
-aria2 1.12.1
+aria2 1.13.0
 ============
 
 Release Note
 ------------
 
-This release adds RFC 6249 Metalink/HTTP support. Current
-implementation only uses rel=duplicate links.  --enable-direct-io
-option was deprecated because of performance issue.  Since recent
-GnuTLS uses libnettle as default instead of libgcrypt, this release
-added initialization code for libgcrypt.
+This release fixed libgcrypt version check error.  The several command
+line options were added. Read changes below for details.  aria2 now
+returns error response if RPC request parameter has wrong type.  For
+MinGW32 build, Unicode filenames support was added.
+
+From this release, aria2 uses libnettle and libgmp by default instead
+of libgcrypt.  If you want to use libgcrypt, use configure options
+--without-libnettle --with-libgcrypt.
 
 Changes
 -------
 
- * Initialize libgcrypt.  We relied initialization of libgcrypt on
-   gnutls_global_init(), but recent change in gnutls, which changes
-   default crypto backend from libgcrypt to libnettle, leaves
-   libgcrypt uninitialized if it uses libnettle as backend(and this is
-   likely because libnettle is chosen by default). To fix this issue,
-   we simply initialize libgcrypt on our own.
+ * Check libgcrypt version is greater or equal to required version.
+   This will fixes Debian bug#642989.
 
- * Throw exception with error message if gnutls_global_init() failed.
+ * Added --piece-length option.  This option sets a piece length for
+   HTTP/FTP downloads. This is the boundary when aria2 splits a
+   file. All splits occur at multiple of this length. This option will
+   be ignored in BitTorrent downloads.  It will be also ignored if
+   Metalink file contains piece hashes.
 
- * Implemented Metalink/HTTP.  Link header fields from first Metalink
-   server is utilized as described in rfc6249. We only set digest from
-   Digest header field to DownloadContext only when PieceStorage is
-   not initialized(in other words, before file size is known). After
-   PieceStorage is initialized, Digest header field is used to check
-   the value is the same in digest in DownloadContext.  Current
-   implementation only handles rel=duplicate.
+ * Throw exception if parameter has wrong type in RPC method.
+   Formally, depending on the method implementation, this kind of
+   error is just ignored and parameter is skipped. Now aria2 responds
+   error for these cases. The required parameter checking is also
+   reworked along with this change.
 
- * Remove Metalink content-type after first server response.  We don't
-   accept Metalink content-type after first server response.
+ * Cleanup log message for binding server socket.
 
- * Updated Russian translation of aria2 man page.  Thanks to ITriskTI
-   for translation.
+ * Recognize tab as white space before option in -i list.
 
- * Fixed the bug due to dangling pointers in RequestGroup.
-   RequestGroup holds a poitner to btRuntime_ and peerStorage_. After
-   removing them from BtRegistry, we failed to set 0 to them.  When
-   program access them, it goes undefined world, such as random crash.
-   We found this bug when pasuing download and valgrind warned memory
-   corruption.
+ * Added geom parameter to --stream-piece-selector option.  If 'geom'
+   is given, at the beginning aria2 selects piece which has minimum
+   index like 'inorder', but it exponentially increasingly keeps space
+   from previously selected piece. This will reduce the number of
+   establishing connection and at the same time it will download the
+   beginning part of the file first. This will be useful to view movie
+   while downloading it.
 
- * Added log message to clarify error for BitTorrent server socket.
+ * Added completedLength response key in aria2.getFiles RPC method
 
- * Added #deprecated help tag.
+ * Added #checksum help tag.
 
- * Removed deprecated options: --enable-xml-rpc, --xml-rpc-listen-all,
-   --xml-rpc-listen-port, --xml-rpc-max-request-size, --xml-rpc-user,
-   --xml-rpc-passwd.
+ * Added --checksum option.  Added --checksum=TYPE=DIGEST option. This
+   option sets checksum. TYPE is hash type. The supported hash type is
+   listed in "Hash Algorithms" in "aria2c -v". DIGEST is hex digest.
+   For example, setting sha-1 digest looks like this:
+   sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 This option applies
+   only to HTTP(S)/FTP downloads.
 
- * Removed use of O_DIRECT because of performance issue.  Deprecated
-   --enable-direct-io option.
+ * Added --hash-check-only opiton.  Added --hash-check-only opiton.
+   If true is given, after hash check using --check-integrity option,
+   abort download whether or not download is complete. The default
+   value is false.
 
- * Increased the maximum number of in-flight request in BitTorrent.
+ * Added --download-result option.  Added --download-result=OPT
+   option.  This option changes the way "Download Results" is
+   formatted. If OPT is 'default', print GID, status, average download
+   speed and path/URI. If multiple files are involved, path/URI of
+   first requested file is printed and remaining ones are omitted.  If
+   OPT is 'full', print GID, status, average download speed,
+   percentage of progress and path/URI. The percentage of progress and
+   path/URI are printed for each requested file in each row.
 
- * Added --log option to aria2rpc
+ * Added --rpc-allow-origin-all option.  This option adds
+   Access-Control-Allow-Origin header field with value '*' to the RPC
+   response.
 
-
+ * Ignore --out option supplied in command-line if -i is used.  You
+   can still use out option in the text file specified in -i.
 
-aria2 1.12.0
-============
+ * MinGW32 build: Replace all '\' in path with '/' in util::applyDir()
+   In MinGW32 build, replace all '\' in path with '/' in
+   util::applyDir().  Take into account '\' in File::getBasename() and
+   File::getDirname().
 
-Release Note
-------------
+ * Disable SSLv2 by default and optimize memory usage.
+   Patch from Cristian Rodríguez.
 
-This release adds --pause option which makes download paused state
-immediately when added. If --save-session is used, aria2 will save
-paused download with --pause option. aria2.getGlobalStat RPC method
-was added. It returns global statistics such as overall download
-speed.  This release also fixes the bug that RPC request fails if it
-is compressed. aria2 now won't save removed download in --save-session
-text file.  --file-allocation=falloc now works in MinGW32 build. This
-only works with NTFS. Russian translation of man page and HTML manual
-was added.  We added more command line options in this release. See
-Changes for details.
+ * Added libnettle and libgmp support.  libnettle and libgmp is used
+   by default. Old implementation uses libgcrypt as default. If more
+   and more Linux distributions offer libnettle linked GnuTLS, then
+   this change decrease library dependency against libgcrypt and
+   libgpg-error.  The current library detection for libnettle and
+   libgmp is very simple, just use AC_SEARCH_LIBS.
+   util::generateRandomData() was written using SimpleRandomizer, thus
+   no external library dependency from this function.
 
-Changes
--------
-
- * Use ServerStat to find faster server. This is useful when several
-   downloads were started in parallel, but one download is slow and
-   the other downloads have completed. Then aria2 knows which servers
-   are fast by the results of completed downloads, and check the
-   available URIs of slow downloads to see faster server is available
-   there. If so, use it instead of current slow one to make download
-   faster.
-
- * Added Russian translation of man page and HTML manual contributed
-   by ITriskTI.
-
- * Added aria2.getGlobalStat RPC method.  It returns overall
-   download/upload speed and the number of active/stopped/waiting
-   downloads.
-
- * Added --pause option.  This option pauses download after
-   added. This option is effective only when --enable-rpc=true is
-   given.  When --save-session option is used and there are paused
-   downloads, they are saved with --pause=true so that it will become
-   paused state when the session is recovered.
-
- * Abort aria2 if it could not setup any RPC server.
-
- * Added --truncate-console-readout option.  This option truncates
-   console readout to fit in a single line.  This is default. Give
-   false value to this option to tell aria2 not to truncate console
-   readout.
-
- * Cache and reuse RpcMethod objects.
-
- * Allowed missing params in system.multicall RPC method.
-
- * Added --stream-piece-selector option.  This option specifies piece
-   selection algorithm used in HTTP/FTP download. Piece means fixed
-   length segment which is downloaded in parallel in segmented
-   download. If 'default' is given, aria2 selects piece so that it
-   reduces the number of establishing connection. This is reasonable
-   default behaviour because establishing connection is an expensive
-   operation.  If 'inorder' is given, aria2 selects piece which has
-   minimum index. Index=0 means first of the file. This will be useful
-   to view movie while downloading it. --enable-http-pipelining option
-   may be useful to reduce reconnection overhead.  Please note that
-   aria2 honors --min-split-size option, so it will be necessary to
-   specify a reasonable value to --min-split-size option.
-
- * Removed unnecessary template parameter from std::make_pair call.
-   The patch was contributed from Dan Fandrich.
-
- * Implemented fast file allocation in MinGW32 build.  We use
-   SetFilePointerEx and SetEndOfFile to allocate extents.  This only
-   works with NTFS. To enable this feature, --file-allocation=falloc
-   must be given.
-
- * Only percent-encode non-printable ASCII chars(0x00-0x1f), non-ASCII
-   chars(>0x7f), ' ', '"', '<' and '>' for URIs supplied by user and
-   remote server(usually Location header field).
-
- * Don't throw exception if Z_BUF_ERROR is encountered in GZipEncoder.
-   This fixed the bug that compressed RPC request failed.
-
- * Don't save removed download in --save-session text file.  Now stat
-   column of removed downloads in Download Results is 'RM' instead of
-   INPR.
+ * In MinGW32, open file with UNICODE filename and print them in ANSI.
