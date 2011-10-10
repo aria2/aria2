@@ -4,10 +4,10 @@ aria2 1.13.0
 Release Note
 ------------
 
-This release fixed libgcrypt version check error.  The several command
-line options were added. Read changes below for details.  aria2 now
-returns error response if RPC request parameter has wrong type.  For
-MinGW32 build, Unicode filenames support was added.
+This release fixed libgcrypt version check error. Several command line
+options were added. For details of each new option, read changes
+below.  aria2 now returns error response if RPC request parameter has
+wrong type.  For MinGW32 build, Unicode filenames support was added.
 
 From this release, aria2 uses libnettle and libgmp by default instead
 of libgcrypt.  If you want to use libgcrypt, use configure options
@@ -74,11 +74,6 @@ Changes
 
  * Ignore --out option supplied in command-line if -i is used.  You
    can still use out option in the text file specified in -i.
-
- * MinGW32 build: Replace all '\' in path with '/' in util::applyDir()
-   In MinGW32 build, replace all '\' in path with '/' in
-   util::applyDir().  Take into account '\' in File::getBasename() and
-   File::getDirname().
 
  * Disable SSLv2 by default and optimize memory usage.
    Patch from Cristian Rodríguez.
