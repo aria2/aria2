@@ -49,30 +49,23 @@
 
 namespace aria2 {
 
-#define BUFSIZE (256*1024)
-#define ALIGNMENT 512
-
 IteratableChecksumValidator::IteratableChecksumValidator
 (const SharedHandle<DownloadContext>& dctx,
  const PieceStorageHandle& pieceStorage)
   : dctx_(dctx),
     pieceStorage_(pieceStorage),
-    currentOffset_(0),
-    buffer_(0)
+    currentOffset_(0)
 {}
 
-IteratableChecksumValidator::~IteratableChecksumValidator()
-{
-  delete [] buffer_;
-}
+IteratableChecksumValidator::~IteratableChecksumValidator() {}
 
 void IteratableChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    size_t length = pieceStorage_->getDiskAdaptor()->readData(buffer_,
-                                                              BUFSIZE,
-                                                              currentOffset_);
-    ctx_->update(buffer_, length);
+    unsigned char buf[4096];
+    size_t length = pieceStorage_->getDiskAdaptor()->readData
+      (buf, sizeof(buf), currentOffset_);
+    ctx_->update(buf, length);
     currentOffset_ += length;
     if(finished()) {
       std::string actualDigest = ctx_->digest();
@@ -105,8 +98,6 @@ uint64_t IteratableChecksumValidator::getTotalLength() const
 
 void IteratableChecksumValidator::init()
 {
-  delete [] buffer_;
-  buffer_ = new unsigned char[BUFSIZE];
   currentOffset_ = 0;
   ctx_ = MessageDigest::create(dctx_->getHashType());
 }

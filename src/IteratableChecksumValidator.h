@@ -53,8 +53,6 @@ private:
   off_t currentOffset_;
 
   SharedHandle<MessageDigest> ctx_;
-
-  unsigned char* buffer_;
 public:
   IteratableChecksumValidator(const SharedHandle<DownloadContext>& dctx,
                               const SharedHandle<PieceStorage>& pieceStorage);
