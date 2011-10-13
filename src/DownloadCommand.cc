@@ -231,12 +231,12 @@ bool DownloadCommand::executeInternal() {
             A2_LOG_DEBUG(fmt("Hash is available! index=%lu",
                              static_cast<unsigned long>(segment->getIndex())));
             validatePieceHash
-              (segment, expectedPieceHash, segment->getHashString());
+              (segment, expectedPieceHash, segment->getDigest());
           } else {
             messageDigest_->reset();
             validatePieceHash
               (segment, expectedPieceHash,
-               message_digest::hexDigest
+               message_digest::digest
                (messageDigest_,
                 getPieceStorage()->getDiskAdaptor(),
                 segment->getPosition(),
@@ -350,18 +350,18 @@ bool DownloadCommand::prepareForNextSegment() {
 #ifdef ENABLE_MESSAGE_DIGEST
 
 void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
-                                        const std::string& expectedPieceHash,
-                                        const std::string& actualPieceHash)
+                                        const std::string& expectedHash,
+                                        const std::string& actualHash)
 {
-  if(actualPieceHash == expectedPieceHash) {
-    A2_LOG_INFO(fmt(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str()));
+  if(actualHash == expectedHash) {
+    A2_LOG_INFO(fmt(MSG_GOOD_CHUNK_CHECKSUM, util::toHex(actualHash).c_str()));
     getSegmentMan()->completeSegment(getCuid(), segment);
   } else {
     A2_LOG_INFO(fmt(EX_INVALID_CHUNK_CHECKSUM,
                     static_cast<unsigned long>(segment->getIndex()),
                     util::itos(segment->getPosition(), true).c_str(),
-                    expectedPieceHash.c_str(),
-                    actualPieceHash.c_str()));
+                    util::toHex(expectedHash).c_str(),
+                    util::toHex(actualHash).c_str()));
     segment->clear();
     getSegmentMan()->cancelSegment(getCuid());
     throw DL_RETRY_EX

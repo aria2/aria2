@@ -223,11 +223,10 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
     A2_LOG_DEBUG(fmt("Hash is available!! index=%lu",
                      static_cast<unsigned long>(piece->getIndex())));
     return
-      piece->getHashString()==downloadContext_->getPieceHash(piece->getIndex());
+      piece->getDigest() == downloadContext_->getPieceHash(piece->getIndex());
   } else {
     off_t offset = (off_t)piece->getIndex()*downloadContext_->getPieceLength();
-    
-    return message_digest::staticSHA1DigestHexDigest
+    return message_digest::staticSHA1Digest
       (getPieceStorage()->getDiskAdaptor(), offset, piece->getLength())
       == downloadContext_->getPieceHash(piece->getIndex());
   }

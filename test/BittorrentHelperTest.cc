@@ -148,11 +148,11 @@ void BittorrentHelperTest::testGetPieceHash() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
 
-  CPPUNIT_ASSERT_EQUAL(util::toHex("AAAAAAAAAAAAAAAAAAAA", 20),
+  CPPUNIT_ASSERT_EQUAL(std::string("AAAAAAAAAAAAAAAAAAAA"),
                        dctx->getPieceHash(0));
-  CPPUNIT_ASSERT_EQUAL(util::toHex("BBBBBBBBBBBBBBBBBBBB", 20),
+  CPPUNIT_ASSERT_EQUAL(std::string("BBBBBBBBBBBBBBBBBBBB"),
                        dctx->getPieceHash(1));
-  CPPUNIT_ASSERT_EQUAL(util::toHex("CCCCCCCCCCCCCCCCCCCC", 20),
+  CPPUNIT_ASSERT_EQUAL(std::string("CCCCCCCCCCCCCCCCCCCC"),
                        dctx->getPieceHash(2));
   CPPUNIT_ASSERT_EQUAL(std::string(""),
                        dctx->getPieceHash(3));

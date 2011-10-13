@@ -46,7 +46,7 @@ private:
   std::string hashType_;
   std::string digest_;
 public:
-  // messageDigest_ is ascii hexadecimal notation.
+  // digest_ is raw byte array of hash value, not ascii hexadecimal notation.
   Checksum(const std::string& hashType, const std::string& digest);
   Checksum();
   ~Checksum();

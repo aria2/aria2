@@ -238,7 +238,7 @@ SharedHandle<RequestGroup> createRequestGroup
     util::divide(p, checksum, '=');
     util::lowercase(p.first);
     util::lowercase(p.second);
-    dctx->setDigest(p.first, p.second);
+    dctx->setDigest(p.first, util::fromHex(p.second));
   }
 #endif // ENABLE_MESSAGE_DIGEST
   rg->setDownloadContext(dctx);

@@ -207,7 +207,7 @@ void MetalinkParserControllerTest::testChecksumTransaction()
     SharedHandle<Checksum> md = m->getEntries().front()->checksum;
     CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getHashType());
     CPPUNIT_ASSERT_EQUAL(std::string("acbd18db4cc2f85cedef654fccc4a4d8"),
-                         md->getDigest());
+                         util::toHex(md->getDigest()));
   }
   ctrl.newEntryTransaction();
   ctrl.newChecksumTransaction();
@@ -288,13 +288,13 @@ void MetalinkParserControllerTest::testChunkChecksumTransactionV4()
     CPPUNIT_ASSERT_EQUAL((size_t)3, md->countPieceHash());
     CPPUNIT_ASSERT_EQUAL
       (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
-       md->getPieceHashes()[0]);
+       util::toHex(md->getPieceHashes()[0]));
     CPPUNIT_ASSERT_EQUAL
       (std::string("9413ee70957a09d55704123687478e07f18c7b29"),
-       md->getPieceHashes()[1]);
+       util::toHex(md->getPieceHashes()[1]));
     CPPUNIT_ASSERT_EQUAL
       (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
-       md->getPieceHashes()[2]);
+       util::toHex(md->getPieceHashes()[2]));
   }
   ctrl.newEntryTransaction();
   ctrl.newChunkChecksumTransactionV4();

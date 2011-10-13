@@ -34,7 +34,8 @@ void IteratableChecksumValidatorTest::testValidate() {
   Option option;
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(100, 250, A2_TEST_DIR"/chunkChecksumTestFile250.txt"));
-  dctx->setDigest("sha-1", "898a81b8e0181280ae2ee1b81e269196d91e869a");
+  dctx->setDigest("sha-1",
+                  util::fromHex("898a81b8e0181280ae2ee1b81e269196d91e869a"));
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->enableReadOnly();
@@ -53,7 +54,8 @@ void IteratableChecksumValidatorTest::testValidate_fail() {
   Option option;
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(100, 250, A2_TEST_DIR"/chunkChecksumTestFile250.txt"));
-  dctx->setDigest("sha-1", std::string(40, '0')); // set wrong checksum
+  dctx->setDigest("sha-1",
+                  util::fromHex(std::string(40, '0'))); // set wrong checksum
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->enableReadOnly();

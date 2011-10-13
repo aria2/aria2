@@ -60,7 +60,7 @@ public:
     return false;
   }
 
-  virtual std::string getHashString()
+  virtual std::string getDigest()
   {
     return A2STR::NIL;
   }

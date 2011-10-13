@@ -164,11 +164,11 @@ public:
 
   bool isHashCalculated() const;
 
-  // Returns hash value in ASCII hexadecimal form, which is calculated
+  // Returns raw hash value, not hex digest, which is calculated
   // by updateHash().  Please note that this function returns hash
   // value only once. Second invocation without updateHash() returns
   // empty string.
-  std::string getHashString();
+  std::string getDigest();
 
   void destroyHashContext();
 

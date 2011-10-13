@@ -9,7 +9,7 @@ namespace aria2 {
 class MessageDigestTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MessageDigestTest);
-  CPPUNIT_TEST(testHexDigest);
+  CPPUNIT_TEST(testDigest);
   CPPUNIT_TEST(testSupports);
   CPPUNIT_TEST(testGetDigestLength);
   CPPUNIT_TEST(testIsStronger);
@@ -24,7 +24,7 @@ public:
     sha1_ = MessageDigest::sha1();
   }
 
-  void testHexDigest();
+  void testDigest();
   void testSupports();
   void testGetDigestLength();
   void testIsStronger();
@@ -35,11 +35,11 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MessageDigestTest );
 
-void MessageDigestTest::testHexDigest()
+void MessageDigestTest::testDigest()
 {
   sha1_->update("aria2", 5);
   CPPUNIT_ASSERT_EQUAL(std::string("f36003f22b462ffa184390533c500d8989e9f681"),
-                       sha1_->hexDigest());
+                       util::toHex(sha1_->digest()));
 }
 
 void MessageDigestTest::testSupports()

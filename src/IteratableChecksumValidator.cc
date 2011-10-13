@@ -75,12 +75,13 @@ void IteratableChecksumValidator::validateChunk()
     ctx_->update(buffer_, length);
     currentOffset_ += length;
     if(finished()) {
-      std::string actualDigest = ctx_->hexDigest();
+      std::string actualDigest = ctx_->digest();
       if(dctx_->getDigest() == actualDigest) {
         pieceStorage_->markAllPiecesDone();
       } else {
         A2_LOG_INFO(fmt("Checksum validation failed. expected=%s, actual=%s",
-                        dctx_->getDigest().c_str(), actualDigest.c_str()));
+                        util::toHex(dctx_->getDigest()).c_str(),
+                        util::toHex(actualDigest).c_str()));
         BitfieldMan bitfield(dctx_->getPieceLength(), dctx_->getTotalLength());
         pieceStorage_->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
       }

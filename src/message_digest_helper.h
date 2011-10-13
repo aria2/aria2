@@ -62,14 +62,14 @@ void staticSHA1DigestInit();
  */
 void staticSHA1DigestFree();
 
-std::string staticSHA1DigestHexDigest
+std::string staticSHA1Digest
 (const SharedHandle<BinaryStream>& bs, off_t offset, uint64_t length);
 
 /**
  * ctx must be initialized or reseted before calling this function.
- * Returns hex digest string, not *raw* digest
+ * Returns raw digest string, not hex digest
  */
-std::string hexDigest
+std::string digest
 (const SharedHandle<MessageDigest>& ctx,
  const SharedHandle<BinaryStream>& bs,
  off_t offset, uint64_t length);

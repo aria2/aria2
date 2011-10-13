@@ -218,12 +218,12 @@ bool Piece::isHashCalculated() const
   return mdctx_ && nextBegin_ == length_;
 }
 
-std::string Piece::getHashString()
+std::string Piece::getDigest()
 {
   if(!mdctx_) {
     return A2STR::NIL;
   } else {
-    std::string hash = mdctx_->hexDigest();
+    std::string hash = mdctx_->digest();
     destroyHashContext();
     return hash;
   }

@@ -82,11 +82,12 @@ void IteratableChunkChecksumValidator::validateChunk()
       if(actualChecksum == dctx_->getPieceHashes()[currentIndex_]) {
         bitfield_->setBit(currentIndex_);
       } else {
-        A2_LOG_INFO(fmt(EX_INVALID_CHUNK_CHECKSUM,
-                        static_cast<unsigned long>(currentIndex_),
-                        util::itos(getCurrentOffset(), true).c_str(),
-                        dctx_->getPieceHashes()[currentIndex_].c_str(),
-                        actualChecksum.c_str()));
+        A2_LOG_INFO
+          (fmt(EX_INVALID_CHUNK_CHECKSUM,
+               static_cast<unsigned long>(currentIndex_),
+               util::itos(getCurrentOffset(), true).c_str(),
+               util::toHex(dctx_->getPieceHashes()[currentIndex_]).c_str(),
+               util::toHex(actualChecksum).c_str()));
         bitfield_->unsetBit(currentIndex_);
       }
     } catch(RecoverableException& ex) {
@@ -156,7 +157,7 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     curoffset += r;
     woffset = 0;
   }
-  return ctx_->hexDigest();
+  return ctx_->digest();
 }
 
 

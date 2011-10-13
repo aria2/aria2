@@ -65,14 +65,14 @@ void staticSHA1DigestFree()
   sha1Ctx_.reset();
 }
 
-std::string staticSHA1DigestHexDigest
+std::string staticSHA1Digest
 (const BinaryStreamHandle& bs, off_t offset, uint64_t length)
 {
   sha1Ctx_->reset();
-  return hexDigest(sha1Ctx_, bs, offset, length);
+  return digest(sha1Ctx_, bs, offset, length);
 }
 
-std::string hexDigest
+std::string digest
 (const SharedHandle<MessageDigest>& ctx,
  const SharedHandle<BinaryStream>& bs,
  off_t offset, uint64_t length)
@@ -97,7 +97,7 @@ std::string hexDigest
     }
     ctx->update(BUF, readLength);
   }
-  return ctx->hexDigest();
+  return ctx->digest();
 }
 
 void digest

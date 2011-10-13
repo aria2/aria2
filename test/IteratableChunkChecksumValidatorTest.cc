@@ -19,7 +19,7 @@ class IteratableChunkChecksumValidatorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 private:
 
-  static const char* csArray[];
+  static const std::string csArray[];
 public:
   void setUp() {
   }
@@ -31,9 +31,10 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( IteratableChunkChecksumValidatorTest );
 
-const char* IteratableChunkChecksumValidatorTest::csArray[] = { "29b0e7878271645fffb7eec7db4a7473a1c00bc1",
-                                                                "4df75a661cb7eb2733d9cdaa7f772eae3a4e2976",
-                                                                "0a4ea2f7dd7c52ddf2099a444ab2184b4d341bdb" };
+const std::string IteratableChunkChecksumValidatorTest::csArray[] =
+  { util::fromHex("29b0e7878271645fffb7eec7db4a7473a1c00bc1"),
+    util::fromHex("4df75a661cb7eb2733d9cdaa7f772eae3a4e2976"),
+    util::fromHex("0a4ea2f7dd7c52ddf2099a444ab2184b4d341bdb") };
 
 void IteratableChunkChecksumValidatorTest::testValidate() {
   Option option;
@@ -59,7 +60,7 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
 
   // make the test fail
   std::deque<std::string> badHashes(&csArray[0], &csArray[3]);
-  badHashes[1] = "ffffffffffffffffffffffffffffffffffffffff";
+  badHashes[1] = util::fromHex("ffffffffffffffffffffffffffffffffffffffff");
   dctx->setPieceHashes("sha-1", badHashes.begin(), badHashes.end());
 
   validator.init();
@@ -77,8 +78,8 @@ void IteratableChunkChecksumValidatorTest::testValidate_readError() {
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(100, 500, A2_TEST_DIR"/chunkChecksumTestFile250.txt"));
   std::deque<std::string> hashes(&csArray[0], &csArray[3]);
-  hashes.push_back("ffffffffffffffffffffffffffffffffffffffff");
-  hashes.push_back("ffffffffffffffffffffffffffffffffffffffff");
+  hashes.push_back(util::fromHex("ffffffffffffffffffffffffffffffffffffffff"));
+  hashes.push_back(util::fromHex("ffffffffffffffffffffffffffffffffffffffff"));
   dctx->setPieceHashes("sha-1", hashes.begin(), hashes.end());
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &option));
   ps->initStorage();

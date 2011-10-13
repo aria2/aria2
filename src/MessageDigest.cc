@@ -172,12 +172,12 @@ void MessageDigest::digest(unsigned char* md)
   pImpl_->digest(md);
 }
 
-std::string MessageDigest::hexDigest()
+std::string MessageDigest::digest()
 {
   size_t length = pImpl_->getDigestLength();
   array_ptr<unsigned char> buf(new unsigned char[length]);
   pImpl_->digest(buf);
-  std::string hd = util::toHex(buf, length);
+  std::string hd(&buf[0], &buf[length]);
   return hd;
 }
 

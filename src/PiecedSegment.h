@@ -84,7 +84,7 @@ public:
 
   virtual bool isHashCalculated() const;
 
-  virtual std::string getHashString();
+  virtual std::string getDigest();
 
 #endif // ENABLE_MESSAGE_DIGEST
 

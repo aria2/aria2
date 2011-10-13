@@ -408,11 +408,12 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
         break;
       }
       util::lowercase(hashType);
-      std::string hexDigest = util::toHex(Base64::decode(digest));
-      if(!MessageDigest::isValidHash(hashType, hexDigest)) {
+      digest = Base64::decode(digest);
+      if(!MessageDigest::supports(hashType) ||
+         MessageDigest::getDigestLength(hashType) != digest.size()) {
         continue;
       }
-      result.push_back(Checksum(hashType, hexDigest));
+      result.push_back(Checksum(hashType, digest));
     }
   }
   std::sort(result.begin(), result.end(), HashTypeStronger());

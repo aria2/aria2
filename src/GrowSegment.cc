@@ -52,7 +52,7 @@ void GrowSegment::updateWrittenLength(size_t bytes)
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-std::string GrowSegment::getHashString()
+std::string GrowSegment::getDigest()
 {
   return A2STR::NIL;
 }

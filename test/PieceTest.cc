@@ -4,6 +4,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "util.h"
+
 namespace aria2 {
 
 class PieceTest:public CppUnit::TestFixture {
@@ -81,7 +83,7 @@ void PieceTest::testUpdateHash()
   CPPUNIT_ASSERT(p.isHashCalculated());
 
   CPPUNIT_ASSERT_EQUAL(std::string("d9189aff79e075a2e60271b9556a710dc1bc7de7"),
-                       p.getHashString());
+                       util::toHex(p.getDigest()));
 }
 
 #endif // ENABLE_MESSAGE_DIGEST

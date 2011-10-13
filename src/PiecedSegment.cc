@@ -102,9 +102,9 @@ bool PiecedSegment::isHashCalculated() const
   return piece_->isHashCalculated();
 }
 
-std::string PiecedSegment::getHashString()
+std::string PiecedSegment::getDigest()
 {
-  return piece_->getHashString();
+  return piece_->getDigest();
 }
 
 #endif // ENABLE_MESSAGE_DIGEST

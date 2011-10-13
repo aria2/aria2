@@ -119,8 +119,8 @@ void extractPieceHash(const SharedHandle<DownloadContext>& ctx,
   std::vector<std::string> pieceHashes;
   pieceHashes.reserve(numPieces);
   for(size_t i = 0; i < numPieces; ++i) {
-    pieceHashes.push_back(util::toHex(hashData.data()+i*hashLength,
-                                      hashLength));
+    const char* p = hashData.data()+i*hashLength;
+    pieceHashes.push_back(std::string(p, p+hashLength));
   }
   ctx->setPieceHashes("sha-1", pieceHashes.begin(), pieceHashes.end());
 }

@@ -101,9 +101,9 @@ public:
   // reset().
   void digest(unsigned char* md);
 
-  // Returns hex digest.  This call can only be called once. To reuse
-  // this object, call reset().
-  std::string hexDigest();
+  // Returns raw digest, not hex digest.  This call can only be called
+  // once. To reuse this object, call reset().
+  std::string digest();
 };
 
 } // namespace aria2

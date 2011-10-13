@@ -20,6 +20,7 @@
 #include "Signature.h"
 #include "fmt.h"
 #include "RecoverableException.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -93,7 +94,7 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL(-1, e->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(std::string("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
-		       e->checksum->getDigest());
+		       util::toHex(e->checksum->getDigest()));
   CPPUNIT_ASSERT(e->checksum);
   CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->checksum->getHashType());
   CPPUNIT_ASSERT(e->chunkChecksum);
@@ -102,24 +103,24 @@ void MetalinkProcessorTest::testParseFileV4()
     CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countPieceHash());
     CPPUNIT_ASSERT_EQUAL(std::string("0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5"),
-                         e->chunkChecksum->getPieceHash(0));
+                         util::toHex(e->chunkChecksum->getPieceHash(0)));
     CPPUNIT_ASSERT_EQUAL(std::string("487ba2299be7f759d7c7bf6a4ac3a32cee81f1bb9332fc485947e32918864fb2"),
-                         e->chunkChecksum->getPieceHash(1));
+                         util::toHex(e->chunkChecksum->getPieceHash(1)));
     CPPUNIT_ASSERT_EQUAL(std::string("37290d74ac4d186e3a8e5785d259d2ec04fac91ae28092e7620ec8bc99e830aa"),
-                         e->chunkChecksum->getPieceHash(2));
+                         util::toHex(e->chunkChecksum->getPieceHash(2)));
   } else {
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->chunkChecksum->getHashType());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countPieceHash());
     CPPUNIT_ASSERT_EQUAL
       (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
-       e->chunkChecksum->getPieceHash(0));
+       util::toHex(e->chunkChecksum->getPieceHash(0)));
     CPPUNIT_ASSERT_EQUAL
       (std::string("9413ee70957a09d55704123687478e07f18c7b29"),
-       e->chunkChecksum->getPieceHash(1));
+       util::toHex(e->chunkChecksum->getPieceHash(1)));
     CPPUNIT_ASSERT_EQUAL
       (std::string("44213f9f4d59b557314fadcd233232eebcac8012"),
-       e->chunkChecksum->getPieceHash(2));
+       util::toHex(e->chunkChecksum->getPieceHash(2)));
   }
 #endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT(e->getSignature());
@@ -508,7 +509,7 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(1, entry1->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
-                         entry1->checksum->getDigest());
+                         util::toHex(entry1->checksum->getDigest()));
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry1->checksum->getHashType());
 #endif // ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT(entry1->getSignature());
@@ -557,13 +558,13 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(-1, entry2->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
-                         entry2->checksum->getDigest());
+                         util::toHex(entry2->checksum->getDigest()));
     CPPUNIT_ASSERT_EQUAL((size_t)2, entry2->chunkChecksum->countPieceHash());
     CPPUNIT_ASSERT_EQUAL((size_t)262144, entry2->chunkChecksum->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("179463a88d79cbf0b1923991708aead914f26142"),
-                         entry2->chunkChecksum->getPieceHash(0));
+                         util::toHex(entry2->chunkChecksum->getPieceHash(0)));
     CPPUNIT_ASSERT_EQUAL(std::string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),
-                         entry2->chunkChecksum->getPieceHash(1));
+                         util::toHex(entry2->chunkChecksum->getPieceHash(1)));
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry2->checksum->getHashType());
 #endif // ENABLE_MESSAGE_DIGEST
     // See that signature is null
@@ -587,7 +588,7 @@ void MetalinkProcessorTest::testParseFile()
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), entry4->checksum->getHashType());
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
-                         entry4->checksum->getDigest());
+                         util::toHex(entry4->checksum->getDigest()));
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"),entry4->chunkChecksum->getHashType());
 #endif // ENABLE_MESSAGE_DIGEST
 
