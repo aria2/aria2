@@ -87,7 +87,7 @@ struct DownloadResult
 
   std::string bitfieldStr;
 
-  std::string infoHashStr;
+  std::string infoHash;
 
   size_t pieceLength;
 

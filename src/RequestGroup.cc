@@ -1188,7 +1188,8 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
   }
 #ifdef ENABLE_BITTORRENT
   if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
-    res->infoHashStr = bittorrent::getInfoHashString(downloadContext_);
+    const unsigned char* p = bittorrent::getInfoHash(downloadContext_);
+    res->infoHash = std::string(p, p+INFO_HASH_LENGTH);
   }
 #endif // ENABLE_BITTORRENT
   res->pieceLength = downloadContext_->getPieceLength();

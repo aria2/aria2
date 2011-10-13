@@ -891,9 +891,9 @@ void gatherStoppedDownload
   if(requested_key(keys, KEY_UPLOAD_SPEED)) {
     entryDict->put(KEY_UPLOAD_SPEED, VLB_ZERO);
   }
-  if(!ds->infoHashStr.empty()) {
+  if(!ds->infoHash.empty()) {
     if(requested_key(keys, KEY_INFO_HASH)) {
-      entryDict->put(KEY_INFO_HASH, ds->infoHashStr);
+      entryDict->put(KEY_INFO_HASH, util::toHex(ds->infoHash));
     }
     if(requested_key(keys, KEY_NUM_SEEDERS)) {
       entryDict->put(KEY_NUM_SEEDERS, VLB_ZERO);
