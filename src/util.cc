@@ -1393,12 +1393,52 @@ std::map<size_t, std::string> createIndexPathMap(std::istream& i)
   return indexPathMap;
 }
 
-void generateRandomData(unsigned char* data, size_t length)
+namespace {
+void generateRandomDataRandom(unsigned char* data, size_t length)
 {
   const SharedHandle<SimpleRandomizer>& rd = SimpleRandomizer::getInstance();
   for(size_t i = 0; i < length; ++i) {
     data[i] = static_cast<unsigned long>(rd->getRandomNumber(256));
   }
+}
+} // namespace
+
+namespace {
+void generateRandomDataUrandom(unsigned char* data, size_t length, int fd)
+{
+  while(length > 0) {
+    ssize_t r;
+    while((r = read(fd, data, length)) == -1 && errno == EINTR);
+    if(r <= 0) {
+      generateRandomDataRandom(data, length);
+      return;
+    }
+    length -= r;
+    data += r;
+  }
+}
+} // namespace
+
+void generateRandomData(unsigned char* data, size_t length)
+{
+#ifdef __MINGW32__
+  generateRandomDataRandom(data, length);
+#else // !__MINGW32__
+  static int method = -1;
+  static int fd;
+  if(method == 0) {
+    generateRandomDataUrandom(data, length, fd);
+  } else if(method == 1) {
+    generateRandomDataRandom(data, length);
+  } else {
+    while((fd = open("/dev/urandom", O_RDONLY)) == -1 && errno == EINTR);
+    if(fd == -1) {
+      method = 1;
+    } else {
+      method = 0;
+    }
+  }
+#endif // !__MINGW32__
 }
 
 bool saveAs
