@@ -53,9 +53,6 @@
 
 namespace aria2 {
 
-#define BUFSIZE (256*1024)
-#define ALIGNMENT 512
-
 IteratableChunkChecksumValidator::IteratableChunkChecksumValidator
 (const SharedHandle<DownloadContext>& dctx,
  const PieceStorageHandle& pieceStorage)
@@ -63,14 +60,10 @@ IteratableChunkChecksumValidator::IteratableChunkChecksumValidator
     pieceStorage_(pieceStorage),
     bitfield_(new BitfieldMan(dctx_->getPieceLength(),
                               dctx_->getTotalLength())),
-    currentIndex_(0),
-    buffer_(0)
+    currentIndex_(0)
 {}
 
-IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
-{
-  delete [] buffer_;
-}
+IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator() {}
 
 
 void IteratableChunkChecksumValidator::validateChunk()
@@ -121,8 +114,6 @@ std::string IteratableChunkChecksumValidator::calculateActualChecksum()
 
 void IteratableChunkChecksumValidator::init()
 {
-  delete [] buffer_;
-  buffer_ = new unsigned char[BUFSIZE];
   ctx_ = MessageDigest::create(dctx_->getPieceHashType());
   bitfield_->clearAllBit();
   currentIndex_ = 0;
@@ -130,36 +121,22 @@ void IteratableChunkChecksumValidator::init()
 
 std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length)
 {
+  unsigned char buf[4096];
   ctx_->reset();
-  off_t curoffset = offset/ALIGNMENT*ALIGNMENT;
   off_t max = offset+length;
-  off_t woffset;
-  if(curoffset < offset) {
-    woffset = offset-curoffset;
-  } else {
-    woffset = 0;
-  }
-  while(curoffset < max) {
-    size_t r = pieceStorage_->getDiskAdaptor()->readData(buffer_, BUFSIZE,
-                                                         curoffset);
-    if(r == 0 || r < static_cast<size_t>(woffset)) {
+  while(offset < max) {
+    size_t r = pieceStorage_->getDiskAdaptor()->readData
+      (buf, std::min(static_cast<off_t>(sizeof(buf)), max-offset), offset);
+    if(r == 0) {
       throw DL_ABORT_EX
         (fmt(EX_FILE_READ, dctx_->getBasePath().c_str(),
              "data is too short"));
     }
-    size_t wlength;
-    if(max < static_cast<off_t>(curoffset+r)) {
-      wlength = max-curoffset-woffset;
-    } else {
-      wlength = r-woffset;
-    }
-    ctx_->update(buffer_+woffset, wlength);
-    curoffset += r;
-    woffset = 0;
+    ctx_->update(buf, r);
+    offset += r;
   }
   return ctx_->digest();
 }
-
 
 bool IteratableChunkChecksumValidator::finished() const
 {

@@ -54,7 +54,6 @@ private:
   SharedHandle<BitfieldMan> bitfield_;
   size_t currentIndex_;
   SharedHandle<MessageDigest> ctx_;
-  unsigned char* buffer_;
 
   std::string calculateActualChecksum();
 
