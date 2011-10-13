@@ -607,9 +607,8 @@ void createFileEntry
  InputIterator first, InputIterator last,
  uint64_t totalLength,
  size_t pieceLength,
- const std::string& bitfieldStr)
+ const std::string& bitfield)
 {
-  std::string bitfield = util::fromHex(bitfieldStr);
   BitfieldMan bf(pieceLength, totalLength);
   bf.setBitfield(reinterpret_cast<const unsigned char*>(bitfield.data()),
                  bitfield.size());
@@ -868,7 +867,7 @@ void gatherStoppedDownload
   if(requested_key(keys, KEY_FILES)) {
     SharedHandle<List> files = List::g();
     createFileEntry(files, ds->fileEntries.begin(), ds->fileEntries.end(),
-                    ds->totalLength, ds->pieceLength, ds->bitfieldStr);
+                    ds->totalLength, ds->pieceLength, ds->bitfield);
     entryDict->put(KEY_FILES, files);
   }
   if(requested_key(keys, KEY_TOTAL_LENGTH)) {
@@ -881,8 +880,8 @@ void gatherStoppedDownload
     entryDict->put(KEY_UPLOAD_LENGTH, util::uitos(ds->uploadLength));
   }
   if(requested_key(keys, KEY_BITFIELD)) {
-    if(!ds->bitfieldStr.empty()) {
-      entryDict->put(KEY_BITFIELD, ds->bitfieldStr);
+    if(!ds->bitfield.empty()) {
+      entryDict->put(KEY_BITFIELD, util::toHex(ds->bitfield));
     }
   }
   if(requested_key(keys, KEY_DOWNLOAD_SPEED)) {
@@ -931,7 +930,7 @@ SharedHandle<ValueBase> GetFilesRpcMethod::process
              util::itos(gid).c_str()));
     } else {
       createFileEntry(files, dr->fileEntries.begin(), dr->fileEntries.end(),
-                      dr->totalLength, dr->pieceLength, dr->bitfieldStr);
+                      dr->totalLength, dr->pieceLength, dr->bitfield);
     }
   } else {
     const SharedHandle<PieceStorage>& ps = group->getPieceStorage();

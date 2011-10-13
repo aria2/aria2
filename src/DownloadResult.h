@@ -85,7 +85,7 @@ struct DownloadResult
 
   uint64_t uploadLength;
 
-  std::string bitfieldStr;
+  std::string bitfield;
 
   std::string infoHash;
 

@@ -1182,8 +1182,9 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
   res->uploadLength = st.getAllTimeUploadLength();
   if(pieceStorage_) {
     if(pieceStorage_->getBitfieldLength() > 0) {
-      res->bitfieldStr = util::toHex(pieceStorage_->getBitfield(),
-                                     pieceStorage_->getBitfieldLength());
+      res->bitfield = std::string(pieceStorage_->getBitfield(),
+                                  pieceStorage_->getBitfield()+
+                                  pieceStorage_->getBitfieldLength());
     }
   }
 #ifdef ENABLE_BITTORRENT

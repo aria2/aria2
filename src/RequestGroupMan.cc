@@ -692,8 +692,8 @@ void RequestGroupMan::formatDownloadResultFull
 {
   BitfieldMan bt(downloadResult->pieceLength, downloadResult->totalLength);
   bt.setBitfield(reinterpret_cast<const unsigned char*>
-                 (util::fromHex(downloadResult->bitfieldStr).data()),
-                 downloadResult->bitfieldStr.size()/2);
+                 (downloadResult->bitfield.data()),
+                 downloadResult->bitfield.size());
   bool head = true;
   const std::vector<SharedHandle<FileEntry> >& fileEntries =
     downloadResult->fileEntries;
@@ -709,7 +709,7 @@ void RequestGroupMan::formatDownloadResultFull
     } else {
       o << "   |    |           |";
     }
-    if((*i)->getLength() == 0 || downloadResult->bitfieldStr.empty()) {
+    if((*i)->getLength() == 0 || downloadResult->bitfield.empty()) {
       o << "  -|";
     } else {
       uint64_t completedLength =
