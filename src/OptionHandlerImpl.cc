@@ -697,7 +697,12 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
     if(uri.size() > 7) {
       uri += "@";
     }
-    strappend(uri, req.getHost(), A2STR::COLON_C, util::uitos(req.getPort()));
+    if(req.isIPv6LiteralAddress()) {
+      strappend(uri, "[", req.getHost(), "]");
+    } else {
+      uri += req.getHost();
+    }
+    strappend(uri, A2STR::COLON_C, util::uitos(req.getPort()));
     option.put(optName_, uri);
   }
 }
