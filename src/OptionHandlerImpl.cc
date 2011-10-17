@@ -56,6 +56,7 @@
 #include "FileEntry.h"
 #include "a2io.h"
 #include "LogFactory.h"
+#include "uri.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -674,36 +675,23 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
       uri = "http://";
       uri += optarg;
     }
-    if(!req.setUri(uri)) {
+    uri::UriStruct us;
+    if(!uri::parse(us, uri)) {
       throw DL_ABORT_EX(_("unrecognized proxy format"));
     }
-    uri = "http://";
-    if(req.getUsername().empty()) {
+    us.protocol = "http";
+    if(us.username.empty()) {
       if(option.defined(proxyUserPref_)) {
-        uri += util::percentEncode(option.get(proxyUserPref_));
+        us.username = option.get(proxyUserPref_);
       }
-    } else {
-      uri += util::percentEncode(req.getUsername());
     }
-    if(!req.hasPassword()) {
+    if(!us.hasPassword) {
       if(option.defined(proxyPasswdPref_)) {
-        uri += A2STR::COLON_C;
-        uri += util::percentEncode(option.get(proxyPasswdPref_));
+        us.password = option.get(proxyPasswdPref_);
+        us.hasPassword = true;
       }
-    } else {
-      uri += A2STR::COLON_C;
-      uri += util::percentEncode(req.getPassword());
     }
-    if(uri.size() > 7) {
-      uri += "@";
-    }
-    if(req.isIPv6LiteralAddress()) {
-      strappend(uri, "[", req.getHost(), "]");
-    } else {
-      uri += req.getHost();
-    }
-    strappend(uri, A2STR::COLON_C, util::uitos(req.getPort()));
-    option.put(optName_, uri);
+    option.put(optName_, uri::construct(us));
   }
 }
 
