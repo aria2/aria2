@@ -39,7 +39,7 @@ LpdMessage::LpdMessage() {}
 
 LpdMessage::LpdMessage
 (const SharedHandle<Peer>& peer, const std::string& infoHash)
-  : peer_(peer), infoHash_(infoHash)
+  : peer(peer), infoHash(infoHash)
 {}
 
 LpdMessage::~LpdMessage() {}

@@ -77,16 +77,15 @@ bool LpdReceiveMessageCommand::execute()
     if(!m) {
       break;
     }
-    if(!m->getPeer()) {
+    if(!m->peer) {
       // bad message
       continue;
     }
     SharedHandle<BtRegistry> reg = e_->getBtRegistry();
-    SharedHandle<DownloadContext> dctx =
-      reg->getDownloadContext(m->getInfoHash());
+    SharedHandle<DownloadContext> dctx = reg->getDownloadContext(m->infoHash);
     if(!dctx) {
       A2_LOG_DEBUG(fmt("Download Context is null for infohash=%s.",
-                       util::toHex(m->getInfoHash()).c_str()));
+                       util::toHex(m->infoHash).c_str()));
       continue;
     }
     if(bittorrent::getTorrentAttrs(dctx)->privateTorrent) {
@@ -99,7 +98,7 @@ bool LpdReceiveMessageCommand::execute()
     assert(!btobj.isNull());
     SharedHandle<PeerStorage> peerStorage = btobj.peerStorage_;
     assert(peerStorage);
-    SharedHandle<Peer> peer = m->getPeer();
+    SharedHandle<Peer> peer = m->peer;
     if(peerStorage->addPeer(peer)) {
       A2_LOG_DEBUG(fmt("LPD peer %s:%u local=%d added.",
                        peer->getIPAddress().c_str(), peer->getPort(),

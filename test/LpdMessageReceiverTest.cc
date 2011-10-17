@@ -52,8 +52,8 @@ void LpdMessageReceiverTest::testReceiveMessage()
   SharedHandle<LpdMessage> msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(msg);
   CPPUNIT_ASSERT_EQUAL(std::string("cd41c7fdddfd034a15a04d7ff881216e01c4ceaf"),
-                       util::toHex(msg->getInfoHash()));
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6000, msg->getPeer()->getPort());
+                       util::toHex(msg->infoHash));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6000, msg->peer->getPort());
 
   // Bad infohash
   std::string badInfoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ce";
@@ -67,8 +67,8 @@ void LpdMessageReceiverTest::testReceiveMessage()
   rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(msg);
-  CPPUNIT_ASSERT(!msg->getPeer());
-  CPPUNIT_ASSERT(msg->getInfoHash().empty());
+  CPPUNIT_ASSERT(!msg->peer);
+  CPPUNIT_ASSERT(msg->infoHash.empty());
 
   // Bad port
   request =
@@ -81,8 +81,8 @@ void LpdMessageReceiverTest::testReceiveMessage()
   rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
   CPPUNIT_ASSERT(msg);
-  CPPUNIT_ASSERT(!msg->getPeer());
-  CPPUNIT_ASSERT(msg->getInfoHash().empty());
+  CPPUNIT_ASSERT(!msg->peer);
+  CPPUNIT_ASSERT(msg->infoHash.empty());
 
   // No data available
   msg = rcv.receiveMessage();

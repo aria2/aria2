@@ -43,26 +43,12 @@ namespace aria2 {
 
 class Peer;
 
-class LpdMessage {
-private:
-  SharedHandle<Peer> peer_;
-  std::string infoHash_;
-public:
+struct LpdMessage {
+  SharedHandle<Peer> peer;
+  std::string infoHash;
   LpdMessage();
-
   LpdMessage(const SharedHandle<Peer>& peer, const std::string& infoHash);
-
   ~LpdMessage();
-
-  const SharedHandle<Peer>& getPeer() const
-  {
-    return peer_;
-  }
-
-  const std::string& getInfoHash() const
-  {
-    return infoHash_;
-  }
 };
 
 } // namespace aria2
