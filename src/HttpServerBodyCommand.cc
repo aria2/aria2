@@ -113,7 +113,7 @@ void HttpServerBodyCommand::sendJsonRpcResponse
  const std::string& callback)
 {
   bool gzip = httpServer_->supportsGZip();
-  std::string responseData = res.toJson(callback, gzip);
+  std::string responseData = rpc::toJson(res, callback, gzip);
   if(res.code == 0) {
     httpServer_->feedResponse(responseData,
                               getJsonRpcContentType(!callback.empty()));
@@ -220,7 +220,7 @@ bool HttpServerBodyCommand::execute()
           A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
           rpc::RpcResponse res = method->execute(req, e_);
           bool gzip = httpServer_->supportsGZip();
-          std::string responseData = res.toXml(gzip);
+          std::string responseData = rpc::toXml(res, gzip);
           httpServer_->feedResponse(responseData, "text/xml");
           addHttpServerResponseCommand();
 #endif // ENABLE_XML_RPC

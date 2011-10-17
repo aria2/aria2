@@ -64,13 +64,16 @@ struct RpcResponse {
   ~RpcResponse();
 
   RpcResponse& operator=(const RpcResponse& c);
-
-  std::string toXml(bool gzip = false) const;
-
-  // Encodes RPC response in JSON. If callback is not empty, the
-  // resulting string is JSONP.
-  std::string toJson(const std::string& callback, bool gzip = false) const;
 };
+
+std::string toXml(const RpcResponse& response, bool gzip = false);
+
+// Encodes RPC response in JSON. If callback is not empty, the
+// resulting string is JSONP.
+std::string toJson
+(const RpcResponse& response,
+ const std::string& callback,
+ bool gzip = false);
 
 std::string toJsonBatch
 (const std::vector<RpcResponse>& results,

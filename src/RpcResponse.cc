@@ -145,19 +145,19 @@ RpcResponse& RpcResponse::operator=(const RpcResponse& c)
   return *this;
 }
 
-std::string RpcResponse::toXml(bool gzip) const
+std::string toXml(const RpcResponse& res, bool gzip)
 {
   if(gzip) {
 #ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
-    return encodeAll(o, code, param);
+    return encodeAll(o, res.code, res.param);
 #else // !HAVE_ZLIB
     abort();
 #endif // !HAVE_ZLIB
   } else {
     std::stringstream o;
-    return encodeAll(o, code, param);
+    return encodeAll(o, res.code, res.param);
   }
 }
 
@@ -189,19 +189,20 @@ OutputStream& encodeJsonAll
 }
 } // namespace
 
-std::string RpcResponse::toJson(const std::string& callback, bool gzip) const
+std::string toJson
+(const RpcResponse& res, const std::string& callback, bool gzip)
 {
   if(gzip) {
 #ifdef HAVE_ZLIB
     GZipEncoder o;
     o.init();
-    return encodeJsonAll(o, code, param, id, callback).str();
+    return encodeJsonAll(o, res.code, res.param, res.id, callback).str();
 #else // !HAVE_ZLIB
     abort();
 #endif // !HAVE_ZLIB
   } else {
     std::stringstream o;
-    return encodeJsonAll(o, code, param, id, callback).str();
+    return encodeJsonAll(o, res.code, res.param, res.id, callback).str();
   }
 }
 

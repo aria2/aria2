@@ -31,13 +31,13 @@ void RpcResponseTest::testToJson()
     SharedHandle<String> id = String::g("9");
     RpcResponse res(0, param, id);
     results.push_back(res);
-    std::string s = res.toJson("", false);
+    std::string s = toJson(res, "", false);
     CPPUNIT_ASSERT_EQUAL(std::string("{\"id\":\"9\","
                                      "\"jsonrpc\":\"2.0\","
                                      "\"result\":[1]}"),
                          s);
     // with callback
-    s = res.toJson("cb", false);
+    s = toJson(res, "cb", false);
     CPPUNIT_ASSERT_EQUAL(std::string("cb({\"id\":\"9\","
                                      "\"jsonrpc\":\"2.0\","
                                      "\"result\":[1]})"),
@@ -50,7 +50,7 @@ void RpcResponseTest::testToJson()
     param->put("message", "HELLO ERROR");
     RpcResponse res(1, param, Null::g());
     results.push_back(res);
-    std::string s = res.toJson("", false);
+    std::string s = toJson(res, "", false);
     CPPUNIT_ASSERT_EQUAL(std::string("{\"error\":{\"code\":1,"
                                      "\"message\":\"HELLO ERROR\"},"
                                      "\"id\":null,"
@@ -58,7 +58,7 @@ void RpcResponseTest::testToJson()
                                      "}"),
                          s);
     // with callback
-    s = res.toJson("cb", false);
+    s = toJson(res, "cb", false);
     CPPUNIT_ASSERT_EQUAL(std::string("cb({\"error\":{\"code\":1,"
                                      "\"message\":\"HELLO ERROR\"},"
                                      "\"id\":null,"
@@ -103,7 +103,7 @@ void RpcResponseTest::testToXml()
   param->put("faultCode", Integer::g(1));
   param->put("faultString", "No such method: make.hamburger");
   RpcResponse res(1, param, Null::g());
-  std::string s = res.toXml(false);
+  std::string s = toXml(res, false);
   CPPUNIT_ASSERT_EQUAL
     (std::string("<?xml version=\"1.0\"?>"
                  "<methodResponse>"
