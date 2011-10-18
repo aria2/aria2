@@ -1437,6 +1437,7 @@ void generateRandomData(unsigned char* data, size_t length)
     } else {
       method = 0;
     }
+    generateRandomData(data, length);
   }
 #endif // !__MINGW32__
 }
