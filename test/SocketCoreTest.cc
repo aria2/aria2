@@ -1,7 +1,11 @@
 #include "SocketCore.h"
-#include "Exception.h"
+
+#include <cstring>
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "a2functional.h"
+#include "Exception.h"
 
 namespace aria2 {
 
@@ -10,6 +14,7 @@ class SocketCoreTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(SocketCoreTest);
   CPPUNIT_TEST(testWriteAndReadDatagram);
   CPPUNIT_TEST(testGetSocketError);
+  CPPUNIT_TEST(testInetNtop);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -18,6 +23,7 @@ public:
 
   void testWriteAndReadDatagram();
   void testGetSocketError();
+  void testInetNtop();
 };
 
 
@@ -67,6 +73,35 @@ void SocketCoreTest::testGetSocketError()
   s.bind(0);
   // See there is no error at this point
   CPPUNIT_ASSERT_EQUAL(std::string(""), s.getSocketError());
+}
+
+void SocketCoreTest::testInetNtop()
+{
+  char dest[NI_MAXHOST];
+  {
+    std::string s = "192.168.0.1";
+    addrinfo* res;
+    CPPUNIT_ASSERT_EQUAL(0, callGetaddrinfo(&res, s.c_str(), 0, AF_INET,
+                                            SOCK_STREAM, 0, 0));
+    WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
+    sockaddr_in addr;
+    memcpy(&addr, res->ai_addr, sizeof(addr));
+    CPPUNIT_ASSERT_EQUAL(0, inetNtop(AF_INET, &addr.sin_addr,
+                                     dest, sizeof(dest)));
+    CPPUNIT_ASSERT_EQUAL(s, std::string(dest));
+  }
+  {
+    std::string s = "2001:db8::2:1";
+    addrinfo* res;
+    CPPUNIT_ASSERT_EQUAL(0, callGetaddrinfo(&res, s.c_str(), 0, AF_INET6,
+                                            SOCK_STREAM, 0, 0));
+    WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
+    sockaddr_in6 addr;
+    memcpy(&addr, res->ai_addr, sizeof(addr));
+    CPPUNIT_ASSERT_EQUAL(0, inetNtop(AF_INET6, &addr.sin6_addr,
+                                     dest, sizeof(dest)));
+    CPPUNIT_ASSERT_EQUAL(s, std::string(dest));
+  }
 }
 
 } // namespace aria2
