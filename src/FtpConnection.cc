@@ -221,21 +221,20 @@ SharedHandle<SocketCore> FtpConnection::createServerSocket()
 bool FtpConnection::sendEprt(const SharedHandle<SocketCore>& serverSocket)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
-    struct sockaddr_storage sockaddr;
+    sockaddr_union sockaddr;
     socklen_t len = sizeof(sockaddr);
     serverSocket->getAddrInfo(sockaddr, len);
-    std::pair<std::string, uint16_t> addrinfo = util::getNumericNameInfo
-      (reinterpret_cast<const struct sockaddr*>(&sockaddr), len);
+    std::pair<std::string, uint16_t> addrinfo =
+      util::getNumericNameInfo(&sockaddr.sa, len);
     std::string request = "EPRT ";
     request += "|";
-    request += util::itos(sockaddr.ss_family == AF_INET?1:2);
+    request += util::itos(sockaddr.storage.ss_family == AF_INET ? 1 : 2);
     request += "|";
     request += addrinfo.first;
     request += "|";
     request += util::uitos(addrinfo.second);
     request += "|\r\n";
-    A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
-                    cuid_, request.c_str()));
+    A2_LOG_INFO(fmt(MSG_SENDING_REQUEST, cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
   socketBuffer_.send();

@@ -118,7 +118,7 @@ std::string errorMsg(int errNum)
 
 int SocketCore::protocolFamily_ = AF_UNSPEC;
 
-std::vector<std::pair<struct sockaddr_storage, socklen_t> >
+std::vector<std::pair<sockaddr_union, socklen_t> >
 SocketCore::bindAddrs_;
 
 #ifdef ENABLE_SSL
@@ -280,14 +280,12 @@ void SocketCore::bind
       sockfd_ = fd;
     }
   } else {
-    for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
+    for(std::vector<std::pair<sockaddr_union, socklen_t> >::
           const_iterator i = bindAddrs_.begin(), eoi = bindAddrs_.end();
         i != eoi; ++i) {
       char host[NI_MAXHOST];
       int s;
-      s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
-                      (*i).second,
-                      host, NI_MAXHOST, 0, 0,
+      s = getnameinfo(&(*i).first.sa, (*i).second, host, NI_MAXHOST, 0, 0,
                       NI_NUMERICHOST);
       if(s) {
         error = gai_strerror(s);
@@ -336,11 +334,10 @@ void SocketCore::beginListen()
 
 SocketCore* SocketCore::acceptConnection() const
 {
-  struct sockaddr_storage sockaddr;
+  sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
   sock_t fd;
-  while((fd = accept(sockfd_, reinterpret_cast<struct sockaddr*>(&sockaddr),
-                     &len)) == (sock_t) -1 &&
+  while((fd = accept(sockfd_, &sockaddr.sa, &len)) == (sock_t) -1 &&
         SOCKET_ERRNO == A2_EINTR);
   int errNum = SOCKET_ERRNO;
   if(fd == (sock_t) -1) {
@@ -351,18 +348,15 @@ SocketCore* SocketCore::acceptConnection() const
 
 void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
 {
-  struct sockaddr_storage sockaddr;
+  sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
   getAddrInfo(sockaddr, len);
-  addrinfo = util::getNumericNameInfo
-    (reinterpret_cast<const struct sockaddr*>(&sockaddr), len);
+  addrinfo = util::getNumericNameInfo(&sockaddr.sa, len);
 }
 
-void SocketCore::getAddrInfo
-(struct sockaddr_storage& sockaddr, socklen_t& len) const
+void SocketCore::getAddrInfo(sockaddr_union& sockaddr, socklen_t& len) const
 {
-  struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
-  if(getsockname(sockfd_, addrp, &len) == -1) {
+  if(getsockname(sockfd_, &sockaddr.sa, &len) == -1) {
     int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX(fmt(EX_SOCKET_GET_NAME, errorMsg(errNum).c_str()));
   }
@@ -370,22 +364,21 @@ void SocketCore::getAddrInfo
 
 int SocketCore::getAddressFamily() const
 {
-  struct sockaddr_storage sockaddr;
+  sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
   getAddrInfo(sockaddr, len);
-  return sockaddr.ss_family;
+  return sockaddr.storage.ss_family;
 }
 
 void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
 {
-  struct sockaddr_storage sockaddr;
+  sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
-  struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
-  if(getpeername(sockfd_, addrp, &len) == -1) {
+  if(getpeername(sockfd_, &sockaddr.sa, &len) == -1) {
     int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX(fmt(EX_SOCKET_GET_NAME, errorMsg(errNum).c_str()));
   }
-  peerinfo = util::getNumericNameInfo(addrp, len);
+  peerinfo = util::getNumericNameInfo(&sockaddr.sa, len);
 }
 
 void SocketCore::establishConnection(const std::string& host, uint16_t port)
@@ -421,11 +414,10 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     }
     if(!bindAddrs_.empty()) {
       bool bindSuccess = false;
-      for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
+      for(std::vector<std::pair<sockaddr_union, socklen_t> >::
             const_iterator i = bindAddrs_.begin(), eoi = bindAddrs_.end();
           i != eoi; ++i) {
-        if(::bind(fd,reinterpret_cast<const struct sockaddr*>(&(*i).first),
-                  (*i).second) == -1) {
+        if(::bind(fd, &(*i).first.sa, (*i).second) == -1) {
           errNum = SOCKET_ERRNO;
           error = errorMsg(errNum);
           A2_LOG_DEBUG(fmt(EX_SOCKET_BIND, error.c_str()));
@@ -1056,12 +1048,11 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
 {
   wantRead_ = false;
   wantWrite_ = false;
-  struct sockaddr_storage sockaddr;
-  socklen_t sockaddrlen = sizeof(struct sockaddr_storage);
-  struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
+  sockaddr_union sockaddr;
+  socklen_t sockaddrlen = sizeof(sockaddr);
   ssize_t r;
-  while((r = recvfrom(sockfd_, data, len, 0, addrp, &sockaddrlen)) == -1 &&
-        A2_EINTR == SOCKET_ERRNO);
+  while((r = recvfrom(sockfd_, data, len, 0, &sockaddr.sa, &sockaddrlen)) == -1
+        && A2_EINTR == SOCKET_ERRNO);
   int errNum = SOCKET_ERRNO;
   if(r == -1) {
     if(A2_WOULDBLOCK(errNum)) {
@@ -1071,7 +1062,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
       throw DL_RETRY_EX(fmt(EX_SOCKET_RECV, errorMsg(errNum).c_str()));
     }
   } else {
-    sender = util::getNumericNameInfo(addrp, sockaddrlen);
+    sender = util::getNumericNameInfo(&sockaddr.sa, sockaddrlen);
   }
 
   return r;
@@ -1108,23 +1099,19 @@ bool SocketCore::wantWrite() const
 
 void SocketCore::bindAddress(const std::string& iface)
 {
-  std::vector<std::pair<struct sockaddr_storage, socklen_t> > bindAddrs;
+  std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs;
   getInterfaceAddress(bindAddrs, iface, protocolFamily_);
   if(bindAddrs.empty()) {
     throw DL_ABORT_EX
-      (fmt(MSG_INTERFACE_NOT_FOUND,
-           iface.c_str(),
-           "not available"));
+      (fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(), "not available"));
   } else {
-    bindAddrs_ = bindAddrs;
-    for(std::vector<std::pair<struct sockaddr_storage, socklen_t> >::
+    bindAddrs_.swap(bindAddrs);
+    for(std::vector<std::pair<sockaddr_union, socklen_t> >::
           const_iterator i = bindAddrs_.begin(), eoi = bindAddrs_.end();
         i != eoi; ++i) {
       char host[NI_MAXHOST];
       int s;
-      s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&(*i).first),
-                      (*i).second,
-                      host, NI_MAXHOST, 0, 0,
+      s = getnameinfo(&(*i).first.sa, (*i).second, host, NI_MAXHOST, 0, 0,
                       NI_NUMERICHOST);
       if(s == 0) {
         A2_LOG_DEBUG(fmt("Sockets will bind to %s", host));
@@ -1134,7 +1121,7 @@ void SocketCore::bindAddress(const std::string& iface)
 }
 
 void getInterfaceAddress
-(std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
+(std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,
  const std::string& iface, int family, int aiFlags)
 {
   A2_LOG_DEBUG(fmt("Finding interface %s", iface.c_str()));
@@ -1146,8 +1133,8 @@ void getInterfaceAddress
     A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND,
                     iface.c_str(), errorMsg(errNum).c_str()));
   } else {
-    auto_delete<struct ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
-    for(struct ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
+    auto_delete<ifaddrs*> ifaddrDeleter(ifaddr, freeifaddrs);
+    for(ifaddrs* ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
       if(!ifa->ifa_addr) {
         continue;
       }
@@ -1168,37 +1155,36 @@ void getInterfaceAddress
         continue;
       }
       if(std::string(ifa->ifa_name) == iface) {
-        socklen_t bindAddrLen = iffamily == AF_INET?sizeof(struct sockaddr_in):
-          sizeof(struct sockaddr_in6);
-        struct sockaddr_storage bindAddr;
+        socklen_t bindAddrLen =
+          iffamily == AF_INET ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+        sockaddr_union bindAddr;
         memset(&bindAddr, 0, sizeof(bindAddr));
-        memcpy(&bindAddr, ifa->ifa_addr, bindAddrLen);
+        memcpy(&bindAddr.storage, ifa->ifa_addr, bindAddrLen);
         ifAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
       }
     }
   }
 #endif // HAVE_GETIFADDRS
   if(ifAddrs.empty()) {
-    struct addrinfo* res;
+    addrinfo* res;
     int s;
     s = callGetaddrinfo(&res, iface.c_str(), 0, family, SOCK_STREAM, aiFlags,0);
     if(s) {
       A2_LOG_INFO(fmt(MSG_INTERFACE_NOT_FOUND, iface.c_str(), gai_strerror(s)));
     } else {
-      WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
-      struct addrinfo* rp;
+      WSAAPI_AUTO_DELETE<addrinfo*> resDeleter(res, freeaddrinfo);
+      addrinfo* rp;
       for(rp = res; rp; rp = rp->ai_next) {
-        socklen_t bindAddrLen = rp->ai_addrlen;
-        struct sockaddr_storage bindAddr;
-        memset(&bindAddr, 0, sizeof(bindAddr));
-        memcpy(&bindAddr, rp->ai_addr, rp->ai_addrlen);
         // Try to bind socket with this address. If it fails, the
         // address is not for this machine.
         try {
           SocketCore socket;
-          socket.bind
-            (reinterpret_cast<const struct sockaddr*>(&bindAddr), bindAddrLen);
-          ifAddrs.push_back(std::make_pair(bindAddr, bindAddrLen));
+          //socket.bind(&bindAddr.sa, bindAddrLen);
+          socket.bind(rp->ai_addr, rp->ai_addrlen);          
+          sockaddr_union bindAddr;
+          memset(&bindAddr, 0, sizeof(bindAddr));
+          memcpy(&bindAddr.storage, rp->ai_addr, rp->ai_addrlen);
+          ifAddrs.push_back(std::make_pair(bindAddr, rp->ai_addrlen));
         } catch(RecoverableException& e) {
           continue;
         }

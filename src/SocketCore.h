@@ -76,7 +76,7 @@ private:
 
   static int protocolFamily_;
 
-  static std::vector<std::pair<struct sockaddr_storage, socklen_t> > bindAddrs_;
+  static std::vector<std::pair<sockaddr_union, socklen_t> > bindAddrs_;
 
   bool blocking_;
   int secure_;
@@ -159,7 +159,7 @@ public:
    * in len.
    */
   void getAddrInfo
-  (struct sockaddr_storage& sockaddr, socklen_t& len) const;
+  (sockaddr_union& sockaddr, socklen_t& len) const;
 
   /**
    * Returns address family of this socket.
@@ -344,7 +344,7 @@ public:
   static void bindAddress(const std::string& iface);
 
   friend void getInterfaceAddress
-  (std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
+  (std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,
    const std::string& iface, int family, int aiFlags);
 };
 
@@ -366,7 +366,7 @@ int callGetaddrinfo
 // to collect using family argument. aiFlags is passed to
 // getaddrinfo() as hints.ai_flags. No throw.
 void getInterfaceAddress
-(std::vector<std::pair<struct sockaddr_storage, socklen_t> >& ifAddrs,
+(std::vector<std::pair<sockaddr_union, socklen_t> >& ifAddrs,
  const std::string& iface, int family = AF_UNSPEC, int aiFlags = 0);
 
 // Provides functionality of inet_ntop using getnameinfo.  The return
