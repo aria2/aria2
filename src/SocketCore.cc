@@ -173,8 +173,7 @@ void SocketCore::create(int family, int protocol)
   errNum = SOCKET_ERRNO;
   if(fd == (sock_t) -1) {
     throw DL_ABORT_EX
-      (fmt("Failed to create socket. Cause:%s",
-           errorMsg(errNum).c_str()));
+      (fmt("Failed to create socket. Cause:%s", errorMsg(errNum).c_str()));
   }
   int sockopt = 1;
   if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR,
@@ -182,15 +181,15 @@ void SocketCore::create(int family, int protocol)
     errNum = SOCKET_ERRNO;
     CLOSE(fd);
     throw DL_ABORT_EX
-      (fmt("Failed to create socket. Cause:%s",
-           errorMsg(errNum).c_str()));
+      (fmt("Failed to create socket. Cause:%s", errorMsg(errNum).c_str()));
   }
   sockfd_ = fd;
 }
 
-static sock_t bindInternal(int family, int socktype, int protocol,
-                           const struct sockaddr* addr, socklen_t addrlen,
-                           std::string& error)
+static sock_t bindInternal
+(int family, int socktype, int protocol,
+ const struct sockaddr* addr, socklen_t addrlen,
+ std::string& error)
 {
   int errNum;
   sock_t fd = socket(family, socktype, protocol);
@@ -390,9 +389,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
   s = callGetaddrinfo(&res, host.c_str(), util::uitos(port).c_str(),
                       protocolFamily_, sockType_, 0, 0);
   if(s) {
-    throw DL_ABORT_EX(fmt(EX_RESOLVE_HOSTNAME,
-                          host.c_str(),
-                          gai_strerror(s)));
+    throw DL_ABORT_EX(fmt(EX_RESOLVE_HOSTNAME, host.c_str(), gai_strerror(s)));
   }
   WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   struct addrinfo* rp;
@@ -448,10 +445,7 @@ void SocketCore::establishConnection(const std::string& host, uint16_t port)
     break;
   }
   if(sockfd_ == (sock_t) -1) {
-    throw DL_ABORT_EX
-      (fmt(EX_SOCKET_CONNECT,
-           host.c_str(),
-           error.c_str()));
+    throw DL_ABORT_EX(fmt(EX_SOCKET_CONNECT, host.c_str(), error.c_str()));
   }
 }
 
@@ -624,8 +618,7 @@ bool SocketCore::isWritable(time_t timeout)
       return false;
     } else {
       throw DL_RETRY_EX
-        (fmt(EX_SOCKET_CHECK_WRITABLE,
-             errorMsg(errNum).c_str()));
+        (fmt(EX_SOCKET_CHECK_WRITABLE, errorMsg(errNum).c_str()));
     }
   }
 #endif // !HAVE_POLL
@@ -671,8 +664,7 @@ bool SocketCore::isReadable(time_t timeout)
       return false;
     } else {
       throw DL_RETRY_EX
-        (fmt(EX_SOCKET_CHECK_READABLE,
-             errorMsg(errNum).c_str()));
+        (fmt(EX_SOCKET_CHECK_READABLE, errorMsg(errNum).c_str()));
     }
   }
 #endif // !HAVE_POLL
@@ -757,8 +749,8 @@ void SocketCore::readData(char* data, size_t& len)
   wantWrite_ = false;
 
   if(!secure_) {    
-    while((ret = recv(sockfd_, data, len, 0)) == -1 && SOCKET_ERRNO == A2_EINTR);
-    
+    while((ret = recv(sockfd_, data, len, 0)) == -1 &&
+          SOCKET_ERRNO == A2_EINTR);
     int errNum = SOCKET_ERRNO;
     if(ret == -1) {
       if(A2_WOULDBLOCK(errNum)) {
@@ -778,8 +770,7 @@ void SocketCore::readData(char* data, size_t& len)
     }
     if(ret < 0) {
       throw DL_RETRY_EX
-        (fmt(EX_SOCKET_RECV,
-             ERR_error_string(SSL_get_error(ssl, ret), 0)));
+        (fmt(EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)));
     }
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
@@ -805,13 +796,11 @@ void SocketCore::prepareSecureConnection()
     ssl = SSL_new(tlsContext_->getSSLCtx());
     if(!ssl) {
       throw DL_ABORT_EX
-        (fmt(EX_SSL_INIT_FAILURE,
-             ERR_error_string(ERR_get_error(), 0)));
+        (fmt(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), 0)));
     }
     if(SSL_set_fd(ssl, sockfd_) == 0) {
       throw DL_ABORT_EX
-        (fmt(EX_SSL_INIT_FAILURE,
-             ERR_error_string(ERR_get_error(), 0)));
+        (fmt(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), 0)));
     }
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
@@ -848,7 +837,6 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       switch(ssl_error) {
       case SSL_ERROR_NONE:
         break;
-
       case SSL_ERROR_WANT_READ:
         wantRead_ = true;
         return false;
@@ -1077,8 +1065,7 @@ std::string SocketCore::getSocketError() const
                 (a2_sockopt_t) &error, &optlen) == -1) {
     int errNum = SOCKET_ERRNO;
     throw DL_ABORT_EX
-      (fmt("Failed to get socket error: %s",
-           errorMsg(errNum).c_str()));
+      (fmt("Failed to get socket error: %s", errorMsg(errNum).c_str()));
   }
   if(error != 0) {
     return errorMsg(error);
@@ -1179,7 +1166,6 @@ void getInterfaceAddress
         // address is not for this machine.
         try {
           SocketCore socket;
-          //socket.bind(&bindAddr.sa, bindAddrLen);
           socket.bind(rp->ai_addr, rp->ai_addrlen);          
           sockaddr_union bindAddr;
           memset(&bindAddr, 0, sizeof(bindAddr));
