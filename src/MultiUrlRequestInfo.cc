@@ -120,12 +120,12 @@ ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
       node->next = 0;
       node->family = res->ai_family;
       if(node->family == AF_INET) {
-        struct sockaddr_in* in =
-          reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
+        sockaddr_in* in =
+          &reinterpret_cast<sockaddr_union*>(res->ai_addr)->in;
         memcpy(&node->addr.addr4, &(in->sin_addr), 4);
       } else {
-        struct sockaddr_in6* in =
-          reinterpret_cast<struct sockaddr_in6*>(res->ai_addr);
+        sockaddr_in6* in =
+          &reinterpret_cast<sockaddr_union*>(res->ai_addr)->in6;
         memcpy(&node->addr.addr6, &(in->sin6_addr), 16);
       }
       tail->next = node;
