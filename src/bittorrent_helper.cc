@@ -801,30 +801,13 @@ void createPeerMessageString
 int packcompact
 (unsigned char* compact, const std::string& addr, uint16_t port)
 {
-  struct addrinfo* res;
-  int s =
-    callGetaddrinfo(&res, addr.c_str(), 0, AF_UNSPEC, 0, AI_NUMERICHOST, 0);
-  if(s != 0) {
+  size_t len = net::getBinAddr(compact, addr);
+  if(len == 0) {
     return 0;
   }
-  WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
   uint16_t portN = htons(port);
-  for(struct addrinfo* rp = res; rp; rp = rp->ai_next) {
-    if(rp->ai_family == AF_INET) {
-      struct sockaddr_in* in =
-        reinterpret_cast<struct sockaddr_in*>(rp->ai_addr);
-      memcpy(compact, &(in->sin_addr), 4);
-      memcpy(compact+4, &portN, sizeof(portN));
-      return COMPACT_LEN_IPV4;
-    } else if(rp->ai_family == AF_INET6) {
-      struct sockaddr_in6* in6 =
-        reinterpret_cast<struct sockaddr_in6*>(rp->ai_addr);
-      memcpy(compact, &(in6->sin6_addr), 16);
-      memcpy(compact+16, &portN, sizeof(portN));
-      return COMPACT_LEN_IPV6;
-    }
-  }
-  return 0;
+  memcpy(compact+len, &portN, sizeof(portN));
+  return len+2;
 }
 
 std::pair<std::string, uint16_t> unpackcompact
