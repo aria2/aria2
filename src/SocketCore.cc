@@ -1260,4 +1260,33 @@ int inetNtop(int af, const void* src, char* dst, socklen_t size)
   return s;
 }
 
+namespace net {
+
+size_t getBinAddr(unsigned char* dest, const std::string& ip)
+{
+  size_t len = 0;
+  addrinfo* res;
+  if(callGetaddrinfo(&res, ip.c_str(), 0, AF_UNSPEC,
+                     0, AI_NUMERICHOST, 0) != 0) {
+    return len;
+  }
+  WSAAPI_AUTO_DELETE<addrinfo*> resDeleter(res, freeaddrinfo);
+  for(addrinfo* rp = res; rp; rp = rp->ai_next) {
+    if(rp->ai_family == AF_INET) {
+      sockaddr_in* addr = &reinterpret_cast<sockaddr_union*>(rp->ai_addr)->in;
+      len = 4;
+      memcpy(dest, &(addr->sin_addr), len);
+      return len;
+    } else if(rp->ai_family == AF_INET6) {
+      sockaddr_in6* addr = &reinterpret_cast<sockaddr_union*>(rp->ai_addr)->in6;
+      len = 16;
+      memcpy(dest, &(addr->sin6_addr), len);
+      return len;
+    }
+  }
+  return len;
+}
+
+} // namespace net
+
 } // namespace aria2

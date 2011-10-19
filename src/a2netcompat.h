@@ -132,4 +132,11 @@ public:
 # define WSAAPI_AUTO_DELETE auto_delete
 #endif // !__MINGW32__
 
+union sockaddr_union {
+  sockaddr sa;
+  sockaddr_storage storage;
+  sockaddr_in6 in6;
+  sockaddr_in in;
+};
+
 #endif // D_A2NETCOMPAT_H

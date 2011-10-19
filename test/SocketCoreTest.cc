@@ -15,6 +15,7 @@ class SocketCoreTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testWriteAndReadDatagram);
   CPPUNIT_TEST(testGetSocketError);
   CPPUNIT_TEST(testInetNtop);
+  CPPUNIT_TEST(testGetBinAddr);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -24,6 +25,7 @@ public:
   void testWriteAndReadDatagram();
   void testGetSocketError();
   void testInetNtop();
+  void testGetBinAddr();
 };
 
 
@@ -102,6 +104,23 @@ void SocketCoreTest::testInetNtop()
                                      dest, sizeof(dest)));
     CPPUNIT_ASSERT_EQUAL(s, std::string(dest));
   }
+}
+
+void SocketCoreTest::testGetBinAddr()
+{
+  unsigned char dest[16];
+  unsigned char ans1[] = { 192, 168, 0, 1 };
+  CPPUNIT_ASSERT_EQUAL((size_t)4, net::getBinAddr(dest, "192.168.0.1"));
+  CPPUNIT_ASSERT(std::equal(&dest[0], &dest[4], &ans1[0]));
+
+  unsigned char ans2[] = { 0x20u, 0x01u, 0x0du, 0xb8u,
+                           0x00u, 0x00u, 0x00u, 0x00u,
+                           0x00u, 0x00u, 0x00u, 0x00u,
+                           0x00u, 0x02u, 0x00u, 0x01u };
+  CPPUNIT_ASSERT_EQUAL((size_t)16, net::getBinAddr(dest, "2001:db8::2:1"));
+  CPPUNIT_ASSERT(std::equal(&dest[0], &dest[16], &ans2[0]));
+
+  CPPUNIT_ASSERT_EQUAL((size_t)0, net::getBinAddr(dest, "localhost"));
 }
 
 } // namespace aria2

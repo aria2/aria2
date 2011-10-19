@@ -70,6 +70,7 @@
 #include "Option.h"
 #include "DownloadContext.h"
 #include "BufferedFile.h"
+#include "SocketCore.h"
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
@@ -1577,37 +1578,27 @@ std::string escapePath(const std::string& s)
   return d;
 }
 
-bool getCidrPrefix(struct in_addr& in, const std::string& ip, int bits)
+bool inSameCidrBlock
+(const std::string& ip1, const std::string& ip2, size_t bits)
 {
-  struct in_addr t;
-  if(inet_aton(ip.c_str(), &t) == 0) {
+  unsigned char s1[16], s2[16];
+  size_t len1, len2;
+  if((len1 = net::getBinAddr(s1, ip1)) == 0 ||
+     (len2 = net::getBinAddr(s2, ip2)) == 0 ||
+     len1 != len2) {
     return false;
   }
-  int lastindex = bits/8;
-  if(lastindex < 4) {
-    char* p = reinterpret_cast<char*>(&t.s_addr);
-    const char* last = p+4;
-    p += lastindex;    
-    if(bits%8 != 0) {
-      *p &= bitfield::lastByteMask(bits);
-      ++p;
-    }
-    for(; p != last; ++p) {
-      *p &= 0;
+  if(bits > 8*len1) {
+    bits = 8*len1;
+  }
+  int last = (bits-1)/8;
+  for(int i = 0; i < last; ++i) {
+    if(s1[i] != s2[i]) {
+      return false;
     }
   }
-  in = t;
-  return true;
-}
-
-bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits)
-{
-  struct in_addr in1;
-  struct in_addr in2;
-  if(!getCidrPrefix(in1, ip1, bits) || !getCidrPrefix(in2, ip2, bits)) {
-    return false;
-  }
-  return in1.s_addr == in2.s_addr;
+  unsigned char mask = bitfield::lastByteMask(bits);
+  return (s1[last] & mask) == (s2[last] & mask);
 }
 
 void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)

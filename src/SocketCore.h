@@ -374,6 +374,18 @@ void getInterfaceAddress
 // message using gai_strerror(3).
 int inetNtop(int af, const void* src, char* dst, socklen_t size);
 
+namespace net {
+
+// Stores binary representation of IP address ip which is represented
+// in text.  ip must be numeric IPv4 or IPv6 address. dest must be
+// allocated by caller before the call. For IPv4 address, dest must be
+// at least 4. For IPv6 address, dest must be at least 16. Returns the
+// number of bytes written in dest, that is 4 for IPv4 and 16 for
+// IPv6. Return 0 if error occurred.
+size_t getBinAddr(unsigned char* dest, const std::string& ip);
+
+} // namespace net
+
 } // namespace aria2
 
 #endif // D_SOCKET_CORE_H

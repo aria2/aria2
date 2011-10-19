@@ -427,12 +427,13 @@ bool detectDirTraversal(const std::string& s);
 // '_': '"', '*', ':', '<', '>', '?', '\', '|'.
 std::string escapePath(const std::string& s);
 
-// Stores network address of numeric IPv4 address ip using CIDR bits
-// into in.  On success, returns true. Otherwise returns false.
-bool getCidrPrefix(struct in_addr& in, const std::string& ip, int bits);
-
-// Returns true if ip1 and ip2 are in the same CIDR block.
-bool inSameCidrBlock(const std::string& ip1, const std::string& ip2, int bits);
+// Returns true if ip1 and ip2 are in the same CIDR block.  ip1 and
+// ip2 must be numeric IPv4 or IPv6 address. If either of them or both
+// of them is not valid numeric address, then returns false. bits is
+// prefix bits. If bits is out of range, then bits is set to the
+// length of binary representation of the address*8.
+bool inSameCidrBlock
+(const std::string& ip1, const std::string& ip2, size_t bits);
 
 void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group);
 void removeMetalinkContentTypes(RequestGroup* group);

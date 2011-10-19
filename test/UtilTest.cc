@@ -15,6 +15,7 @@
 #include "array_fun.h"
 #include "BufferedFile.h"
 #include "TestUtil.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 
@@ -70,7 +71,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsNumericHost);
   CPPUNIT_TEST(testDetectDirTraversal);
   CPPUNIT_TEST(testEscapePath);
-  CPPUNIT_TEST(testGetCidrPrefix);
   CPPUNIT_TEST(testInSameCidrBlock);
   CPPUNIT_TEST(testIsUtf8String);
   CPPUNIT_TEST(testNextParam);
@@ -130,7 +130,6 @@ public:
   void testIsNumericHost();
   void testDetectDirTraversal();
   void testEscapePath();
-  void testGetCidrPrefix();
   void testInSameCidrBlock();
   void testIsUtf8String();
   void testNextParam();
@@ -1192,34 +1191,20 @@ void UtilTest::testEscapePath()
 #endif // !__MINGW32__
 }
 
-void UtilTest::testGetCidrPrefix()
-{
-  struct in_addr in;
-  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.0.1", 16));
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.0"), std::string(inet_ntoa(in)));
-
-  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.255.255", 17));
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.128.0"),std::string(inet_ntoa(in)));
-
-  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.128.1", 16));
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.0"), std::string(inet_ntoa(in)));
-
-  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.0.1", 32));
-  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), std::string(inet_ntoa(in)));
-
-  CPPUNIT_ASSERT(util::getCidrPrefix(in, "192.168.0.1", 0));
-  CPPUNIT_ASSERT_EQUAL(std::string("0.0.0.0"), std::string(inet_ntoa(in)));
-
-  CPPUNIT_ASSERT(util::getCidrPrefix(in, "10.10.1.44", 27));
-  CPPUNIT_ASSERT_EQUAL(std::string("10.10.1.32"), std::string(inet_ntoa(in)));
-
-  CPPUNIT_ASSERT(!util::getCidrPrefix(in, "::1", 32));
-}
-
 void UtilTest::testInSameCidrBlock()
 {
   CPPUNIT_ASSERT(util::inSameCidrBlock("192.168.128.1", "192.168.0.1", 16));
   CPPUNIT_ASSERT(!util::inSameCidrBlock("192.168.128.1", "192.168.0.1", 17));
+
+  CPPUNIT_ASSERT(util::inSameCidrBlock("192.168.0.1", "192.168.0.1", 32));
+  CPPUNIT_ASSERT(!util::inSameCidrBlock("192.168.0.1", "192.168.0.0", 32));
+
+  CPPUNIT_ASSERT(util::inSameCidrBlock("192.168.0.1", "10.0.0.1", 0));
+
+  CPPUNIT_ASSERT(util::inSameCidrBlock("2001:db8::2:1", "2001:db0::2:2", 28));
+  CPPUNIT_ASSERT(!util::inSameCidrBlock("2001:db8::2:1", "2001:db0::2:2", 29));
+
+  CPPUNIT_ASSERT(!util::inSameCidrBlock("2001:db8::2:1", "192.168.0.1", 8));
 }
 
 void UtilTest::testIsUtf8String()
