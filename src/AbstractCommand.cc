@@ -625,13 +625,10 @@ bool inNoProxy(const SharedHandle<Request>& req,
         return true;
       }
     } else {
-      if(!util::isNumericHost(req->getHost())) {
-        // TODO We don't resolve hostname here.  More complete
-        // implementation is that we should first resolve
-        // hostname(which may result in several IP addresses) and
-        // evaluates against all of them
-        continue;
-      }
+      // TODO We don't resolve hostname here.  More complete
+      // implementation is that we should first resolve
+      // hostname(which may result in several IP addresses) and
+      // evaluates against all of them
       std::string ip = (*i).substr(0, slashpos);
       uint32_t bits;
       if(!util::parseUIntNoThrow(bits, (*i).substr(slashpos+1))) {
