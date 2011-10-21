@@ -1244,8 +1244,8 @@ SharedHandle<ValueBase> GetGlobalOptionRpcMethod::process
     if(!e->getOption()->defined(pref)) {
       continue;
     }
-    SharedHandle<OptionHandler> h = getOptionParser()->findByName(pref->k);
-    if(h && !h->isHidden()) {
+    const SharedHandle<OptionHandler>& h = getOptionParser()->find(pref);
+    if(h) {
       result->put(pref->k, e->getOption()->get(pref));
     }
   }

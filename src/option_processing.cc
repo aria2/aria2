@@ -64,17 +64,20 @@
 namespace aria2 {
 
 extern void showVersion();
-extern void showUsage(const std::string& keyword, const OptionParser& oparser);
+extern void showUsage
+(const std::string& keyword, const SharedHandle<OptionParser>& oparser);
 
 namespace {
-void overrideWithEnv(Option& op, const OptionParser& optionParser,
-                     const Pref* pref,
-                     const std::string& envName)
+void overrideWithEnv
+(Option& op,
+ const SharedHandle<OptionParser>& optionParser,
+ const Pref* pref,
+ const std::string& envName)
 {
   char* value = getenv(envName.c_str());
   if(value) {
     try {
-      optionParser.findByName(pref->k)->parse(op, value);
+      optionParser->find(pref)->parse(op, value);
     } catch(Exception& e) {
       global::cerr()->printf
         ("Caught Error while parsing environment variable '%s'\n%s\n",
@@ -88,17 +91,16 @@ void overrideWithEnv(Option& op, const OptionParser& optionParser,
 void option_processing(Option& op, std::vector<std::string>& uris,
                        int argc, char* argv[])
 {
-  OptionParser oparser;
-  oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
+  const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
   try {
     bool noConf = false;
     std::string ucfname;
     std::stringstream cmdstream;
-    oparser.parseArg(cmdstream, uris, argc, argv);
+    oparser->parseArg(cmdstream, uris, argc, argv);
     {
       // first evaluate --no-conf and --conf-path options.
       Option op;
-      oparser.parse(op, cmdstream);
+      oparser->parse(op, cmdstream);
       noConf = op.getAsBool(PREF_NO_CONF);
       ucfname = op.get(PREF_CONF_PATH);
 
@@ -125,13 +127,12 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       }
     }
 
-    oparser.parseDefaultValues(op);
+    oparser->parseDefaultValues(op);
 
     if(!noConf) {
       std::string cfname = 
         ucfname.empty() ?
-        oparser.findByName(PREF_CONF_PATH->k)->getDefaultValue():
-        ucfname;
+        oparser->find(PREF_CONF_PATH)->getDefaultValue() : ucfname;
 
       if(File(cfname).isFile()) {
         std::stringstream ss;
@@ -142,16 +143,14 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           }
         }
         try {
-          oparser.parse(op, ss);
+          oparser->parse(op, ss);
         } catch(OptionHandlerException& e) {
           global::cerr()->printf("Parse error in %s\n%s\n",
                                  cfname.c_str(),
                                  e.stackTrace().c_str());
-          SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());
+          const SharedHandle<OptionHandler>& h = oparser->find(e.getPref());
           if(h) {
-            global::cerr()->printf
-              ("Usage:\n%s\n",
-               oparser.findByName(e.getOptionName())->getDescription().c_str());
+            global::cerr()->printf("Usage:\n%s\n", h->getDescription().c_str());
           }
           exit(e.getErrorCode());
         } catch(Exception& e) {
@@ -178,7 +177,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     cmdstream.clear();
     cmdstream.seekg(0, std::ios::beg);
     // finaly let's parse and store command-iine options.
-    oparser.parse(op, cmdstream);
+    oparser->parse(op, cmdstream);
 #ifdef __MINGW32__
     for(std::map<std::string, std::string>::iterator i = op.begin();
         i != op.end(); ++i) {
@@ -189,7 +188,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
 #endif // __MINGW32__
   } catch(OptionHandlerException& e) {
     global::cerr()->printf("%s\n", e.stackTrace().c_str());
-    SharedHandle<OptionHandler> h = oparser.findByName(e.getOptionName());
+    const SharedHandle<OptionHandler>& h = oparser->find(e.getPref());
     if(h) {
       std::ostringstream ss;
       ss << *h;

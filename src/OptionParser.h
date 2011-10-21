@@ -47,38 +47,32 @@ namespace aria2 {
 
 class Option;
 class OptionHandler;
+class Pref;
 
 class OptionParser {
 private:
-  int idCounter_;
-
-  // optionHandlers_ is sorted by OptionHandler::getName() in
-  // ascending order.
-  std::vector<SharedHandle<OptionHandler> > optionHandlers_;
-
-  SharedHandle<OptionHandler>
-  getOptionHandlerByName(const std::string& optName);
-
+  std::vector<SharedHandle<OptionHandler> > handlers_;
+  // Index of handler in handlers_ for option who has short option name.
+  std::vector<size_t> shortOpts_;
   static SharedHandle<OptionParser> optionParser_;
 public:
   OptionParser();
-
   ~OptionParser();
 
   // Parses options in argv and writes option name and value to out in
   // NAME=VALUE format. Non-option strings are stored in nonopts.
   // Throws Exception when an unrecognized option is found.
   void parseArg(std::ostream& out, std::vector<std::string>& nonopts,
-                int argc, char* argv[]);
+                int argc, char* argv[]) const;
 
-  void parse(Option& option, std::istream& ios);
+  void parse(Option& option, std::istream& ios) const;
 
   void parseDefaultValues(Option& option) const;
 
   void setOptionHandlers
-  (const std::vector<SharedHandle<OptionHandler> >& optionHandlers);
+  (const std::vector<SharedHandle<OptionHandler> >& handlers);
 
-  void addOptionHandler(const SharedHandle<OptionHandler>& optionHandler);
+  void addOptionHandler(const SharedHandle<OptionHandler>& handler);
 
   // Hidden options are not returned.
   std::vector<SharedHandle<OptionHandler> >
@@ -92,19 +86,16 @@ public:
   std::vector<SharedHandle<OptionHandler> > findAll() const;
 
   // Hidden options are not returned.
-  SharedHandle<OptionHandler>
-  findByName(const std::string& name) const;
+  const SharedHandle<OptionHandler>& find(const Pref* pref) const;
 
   // Hidden options are not returned.
-  SharedHandle<OptionHandler> findByID(int id) const;
+  const SharedHandle<OptionHandler>& findById(size_t id) const;
 
   // Hidden options are not returned.
-  SharedHandle<OptionHandler> findByShortName(char shortName) const;
+  const SharedHandle<OptionHandler>& findByShortName(char shortName) const;
 
   static const SharedHandle<OptionParser>& getInstance();
 };
-
-typedef SharedHandle<OptionParser> OptionParserHandle;
 
 } // namespace aria2
 

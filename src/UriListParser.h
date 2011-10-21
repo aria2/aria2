@@ -42,7 +42,6 @@
 #include <iosfwd>
 
 #include "Option.h"
-#include "OptionParser.h"
 #include "BufferedFile.h"
 
 namespace aria2 {
@@ -50,8 +49,6 @@ namespace aria2 {
 class UriListParser {
 private:
   BufferedFile fp_;
-
-  OptionParser optparser_;
 
   std::string line_;
 public:

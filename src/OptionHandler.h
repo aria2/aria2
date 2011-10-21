@@ -56,6 +56,7 @@ extern const std::string PATH_TO_DIR;
 extern const std::string PATH_TO_COMMAND;
 
 class Option;
+class Pref;
 
 class OptionHandler {
 public:
@@ -81,6 +82,8 @@ public:
   virtual bool isHidden() const = 0;
 
   virtual void hide() = 0;
+
+  virtual const Pref* getPref() const = 0;
 
   enum ARG_TYPE {
     REQ_ARG,

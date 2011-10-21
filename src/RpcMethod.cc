@@ -93,16 +93,16 @@ void gatherOption
         (fmt("%s option cannot be used in this context.",
              optionName.c_str()));
     } else {
-      SharedHandle<OptionHandler> optionHandler =
-        optionParser->findByName(optionName);
-      if(!optionHandler) {
+      const Pref* pref = option::k2p(optionName);
+      const SharedHandle<OptionHandler>& handler = optionParser->find(pref);
+      if(!handler) {
         throw DL_ABORT_EX
           (fmt("We don't know how to deal with %s option",
                optionName.c_str()));
       }
       const String* opval = downcast<String>((*first).second);
       if(opval) {
-        optionHandler->parse(*option.get(), opval->s());
+        handler->parse(*option.get(), opval->s());
       } else {
         // header and index-out option can take array as value
         const List* oplist = downcast<List>((*first).second);
@@ -112,7 +112,7 @@ void gatherOption
                 eoi = oplist->end(); argiter != eoi; ++argiter) {
             const String* opval = downcast<String>(*argiter);
             if(opval) {
-              optionHandler->parse(*option.get(), opval->s());
+              handler->parse(*option.get(), opval->s());
             }
           }
         }

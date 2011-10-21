@@ -46,30 +46,6 @@ namespace aria2 {
 class Option;
 class Pref;
 
-class NullOptionHandler : public OptionHandler {
-private:
-  int id_;
-public:
-  virtual ~NullOptionHandler();
-  virtual bool canHandle(const std::string& optName);
-  virtual void parse(Option& option, const std::string& arg);
-  virtual bool hasTag(const std::string& tag) const;
-  virtual void addTag(const std::string& tag);
-  virtual std::string toTagString() const;
-  virtual const std::string& getName() const;
-  virtual const std::string& getDescription() const;
-  virtual const std::string& getDefaultValue() const;
-  virtual std::string createPossibleValuesString() const;
-  virtual bool isHidden() const;
-  virtual void hide();
-  virtual OptionHandler::ARG_TYPE getArgType() const;
-  virtual int getOptionID() const;
-  virtual void setOptionID(int id);
-  virtual char getShortName() const;
-  virtual bool getEraseAfterParse() const;
-  virtual void setEraseAfterParse(bool eraseAfterParse);
-};
-
 class BooleanOptionHandler : public NameMatchOptionHandler {
 public:
   BooleanOptionHandler(const Pref* pref,
@@ -329,6 +305,7 @@ public:
   virtual const std::string& getDefaultValue() const;
   virtual bool isHidden() const;
   virtual void hide();
+  virtual const Pref* getPref() const;
   virtual ARG_TYPE getArgType() const;
   virtual char getShortName() const;
   virtual int getOptionID() const;

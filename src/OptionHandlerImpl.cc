@@ -63,69 +63,6 @@
 
 namespace aria2 {
 
-NullOptionHandler::~NullOptionHandler() {}
-
-bool NullOptionHandler::canHandle(const std::string& optName) { return true; }
-
-void NullOptionHandler::parse(Option& option, const std::string& arg) {}
-
-bool NullOptionHandler::hasTag(const std::string& tag) const { return false; }
-
-void NullOptionHandler::addTag(const std::string& tag) {}
-
-std::string NullOptionHandler::toTagString() const { return A2STR::NIL; }
-
-const std::string& NullOptionHandler::getName() const { return A2STR::NIL; }
-
-const std::string& NullOptionHandler::getDescription() const
-{
-  return A2STR::NIL;
-}
-
-const std::string& NullOptionHandler::getDefaultValue() const
-{
-  return A2STR::NIL;
-}
-
-std::string NullOptionHandler::createPossibleValuesString() const
-{
-  return A2STR::NIL;
-}
-
-bool NullOptionHandler::isHidden() const
-{
-  return true;
-}
-
-void NullOptionHandler::hide() {}
-
-OptionHandler::ARG_TYPE NullOptionHandler::getArgType() const
-{
-  return OptionHandler::NO_ARG;
-}
-
-int NullOptionHandler::getOptionID() const
-{
-  return id_;
-}
-
-void NullOptionHandler::setOptionID(int id)
-{
-  id_ = id;
-}
-
-char NullOptionHandler::getShortName() const
-{
-  return 0;
-}
-
-bool NullOptionHandler::getEraseAfterParse() const
-{
-  return false;
-}
-
-void NullOptionHandler::setEraseAfterParse(bool eraseAfterParse) {}
-
 BooleanOptionHandler::BooleanOptionHandler
 (const Pref* pref,
  const std::string& description,
@@ -826,6 +763,11 @@ bool DeprecatedOptionHandler::isHidden() const
 void DeprecatedOptionHandler::hide()
 {
   depOptHandler_->hide();
+}
+
+const Pref* DeprecatedOptionHandler::getPref() const
+{
+  return depOptHandler_->getPref();
 }
 
 OptionHandler::ARG_TYPE DeprecatedOptionHandler::getArgType() const

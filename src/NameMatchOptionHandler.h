@@ -108,6 +108,11 @@ public:
     hidden_ = true;
   }
 
+  virtual const Pref* getPref() const
+  {
+    return pref_;
+  }
+
   virtual char getShortName() const
   {
     return shortName_;

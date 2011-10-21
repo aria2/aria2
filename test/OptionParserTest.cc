@@ -20,9 +20,9 @@ class OptionParserTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFindAll);
   CPPUNIT_TEST(testFindByNameSubstring);
   CPPUNIT_TEST(testFindByTag);
-  CPPUNIT_TEST(testFindByName);
+  CPPUNIT_TEST(testFind);
   CPPUNIT_TEST(testFindByShortName);
-  CPPUNIT_TEST(testFindByID);
+  CPPUNIT_TEST(testFindById);
   CPPUNIT_TEST(testParseDefaultValues);
   CPPUNIT_TEST(testParseArg);
   CPPUNIT_TEST(testParse);
@@ -66,9 +66,9 @@ public:
   void testFindAll();
   void testFindByNameSubstring();
   void testFindByTag();
-  void testFindByName();
+  void testFind();
   void testFindByShortName();
-  void testFindByID();
+  void testFindById();
   void testParseDefaultValues();
   void testParseArg();
   void testParse();
@@ -104,35 +104,36 @@ void OptionParserTest::testFindByTag()
   CPPUNIT_ASSERT_EQUAL(std::string("out"), res[1]->getName());
 }
 
-void OptionParserTest::testFindByName()
+void OptionParserTest::testFind()
 {
-  SharedHandle<OptionHandler> dir = oparser_->findByName("dir");
+  const SharedHandle<OptionHandler>& dir = oparser_->find(PREF_DIR);
   CPPUNIT_ASSERT(dir);
   CPPUNIT_ASSERT_EQUAL(std::string("dir"), dir->getName());
 
-  SharedHandle<OptionHandler> daemon = oparser_->findByName("daemon");
+  const SharedHandle<OptionHandler>& daemon = oparser_->find(PREF_DAEMON);
   CPPUNIT_ASSERT(!daemon);
 
-  SharedHandle<OptionHandler> timeout2 = oparser_->findByName("timeout2");
-  CPPUNIT_ASSERT(!timeout2);
+  const SharedHandle<OptionHandler>& log = oparser_->find(PREF_LOG);
+  CPPUNIT_ASSERT(!log);
 }
 
 void OptionParserTest::testFindByShortName()
 {
-  SharedHandle<OptionHandler> timeout = oparser_->findByShortName('A');
+  const SharedHandle<OptionHandler>& timeout = oparser_->findByShortName('A');
   CPPUNIT_ASSERT(timeout);
   CPPUNIT_ASSERT_EQUAL(std::string("timeout"), timeout->getName());
 
   CPPUNIT_ASSERT(!oparser_->findByShortName('C'));
 }
 
-void OptionParserTest::testFindByID()
+void OptionParserTest::testFindById()
 {
-  SharedHandle<OptionHandler> timeout = oparser_->findByID(1);
+  const SharedHandle<OptionHandler>& timeout =
+    oparser_->findById(PREF_TIMEOUT->i);
   CPPUNIT_ASSERT(timeout);
   CPPUNIT_ASSERT_EQUAL(std::string("timeout"), timeout->getName());
 
-  CPPUNIT_ASSERT(!oparser_->findByID(3));
+  CPPUNIT_ASSERT(!oparser_->findById(9999));
 }
 
 void OptionParserTest::testParseDefaultValues()

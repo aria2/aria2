@@ -43,14 +43,13 @@
 #include "OptionHandler.h"
 #include "A2STR.h"
 #include "BufferedFile.h"
+#include "OptionParser.h"
 
 namespace aria2 {
 
 UriListParser::UriListParser(const std::string& filename)
   : fp_(filename, BufferedFile::READ)
-{
-  optparser_.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
-}
+{}
 
 UriListParser::~UriListParser() {}
 
@@ -64,6 +63,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
     }
     line_.assign(&buf[0], &buf[strlen(buf)]);
   }
+  const SharedHandle<OptionParser>& optparser = OptionParser::getInstance();
   while(1) {
     if(!util::startsWith(line_, A2STR::SHARP_C) && !util::strip(line_).empty()){
       util::split(line_, std::back_inserter(uris), "\t", true);
@@ -83,7 +83,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
           break;
         }
       }
-      optparser_.parse(op, ss);
+      optparser->parse(op, ss);
       return;
     }
     if(!fp_.getsn(buf, sizeof(buf))) {

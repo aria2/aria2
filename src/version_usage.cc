@@ -80,20 +80,22 @@ void showVersion() {
             << _("Visit") << " " << PACKAGE_URL << std::endl;
 }
 
-void showUsage(const std::string& keyword, const OptionParser& oparser) {
+void showUsage
+(const std::string& keyword,
+ const SharedHandle<OptionParser>& oparser) {
   std::cout << _("Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE |"
                  " METALINK_FILE]...") << "\n"
             << "\n";
   if(util::startsWith(keyword, "#")) {
     std::vector<SharedHandle<OptionHandler> > handlers =
-      keyword == TAG_ALL ? oparser.findAll():oparser.findByTag(keyword);
+      keyword == TAG_ALL ? oparser->findAll() : oparser->findByTag(keyword);
     if(keyword == TAG_ALL) {
       std::cout << _("Printing all options.");
     } else {
       std::cout << fmt(_("Printing options tagged with '%s'."),
                        keyword.c_str());
       std::cout << "\n";
-      SharedHandle<OptionHandler> help = oparser.findByName("help");
+      const SharedHandle<OptionHandler>& help = oparser->find(PREF_HELP);
       std::cout << fmt(_("See -h option to know other command-line"
                          " options(%s)."),
                        help->createPossibleValuesString().c_str());
@@ -106,7 +108,7 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
     }
   } else {    
     std::vector<SharedHandle<OptionHandler> > handlers =
-      oparser.findByNameSubstring(keyword);
+      oparser->findByNameSubstring(keyword);
     if(!handlers.empty()) {
       std::cout << fmt(_("Printing options whose name includes '%s'."),
                        keyword.c_str())
@@ -119,7 +121,7 @@ void showUsage(const std::string& keyword, const OptionParser& oparser) {
     } else {
       std::cout << fmt(_("No option matching with '%s'."),
                        keyword.c_str())
-                << "\n" << *oparser.findByName("help") << "\n";
+                << "\n" << *oparser->find(PREF_HELP) << "\n";
     }
   }
 

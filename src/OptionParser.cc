@@ -54,8 +54,9 @@
 
 namespace aria2 {
 
-OptionParser::OptionParser():
-  idCounter_(0)
+OptionParser::OptionParser()
+  : handlers_(option::countOption()),
+    shortOpts_(256)
 {}
 
 OptionParser::~OptionParser() {}
@@ -66,7 +67,7 @@ size_t countPublicOption(InputIterator first, InputIterator last)
 {
   size_t count = 0;
   for(; first != last; ++first) {
-    if(!(*first)->isHidden()) {
+    if(*first && !(*first)->isHidden()) {
       ++count;
     }
   }
@@ -80,7 +81,7 @@ void putOptions(struct option* longOpts, int* plopt,
                 InputIterator first, InputIterator last)
 {
   for(; first != last; ++first) {
-    if(!(*first)->isHidden()) {
+    if(*first && !(*first)->isHidden()) {
 #ifdef HAVE_OPTION_CONST_NAME
       (*longOpts).name = (*first)->getName().c_str();
 #else // !HAVE_OPTION_CONST_NAME
@@ -101,7 +102,7 @@ void putOptions(struct option* longOpts, int* plopt,
       }
       if((*first)->getShortName() == 0) {
         (*longOpts).flag = plopt;
-        (*longOpts).val = (*first)->getOptionID();
+        (*longOpts).val = (*first)->getPref()->i;
       } else {
         (*longOpts).flag = 0;
         (*longOpts).val = (*first)->getShortName();
@@ -122,7 +123,7 @@ std::string createOptstring(InputIterator first, InputIterator last)
 {
   std::string str = "";
   for(; first != last; ++first) {
-    if(!(*first)->isHidden()) {
+    if(*first && !(*first)->isHidden()) {
       if((*first)->getShortName() != 0) {
         str += (*first)->getShortName();
         if((*first)->getArgType() == OptionHandler::REQ_ARG) {
@@ -139,15 +140,14 @@ std::string createOptstring(InputIterator first, InputIterator last)
 
 void OptionParser::parseArg
 (std::ostream& out, std::vector<std::string>& nonopts,
- int argc, char* argv[])
+ int argc, char* argv[]) const
 {
-  size_t numPublicOption = countPublicOption(optionHandlers_.begin(),
-                                             optionHandlers_.end());
+  size_t numPublicOption = countPublicOption(handlers_.begin(),
+                                             handlers_.end());
   int lopt;
   array_ptr<struct option> longOpts(new struct option[numPublicOption+1]);
-  putOptions(longOpts, &lopt,optionHandlers_.begin(),optionHandlers_.end());
-  std::string optstring = createOptstring(optionHandlers_.begin(),
-                                          optionHandlers_.end());
+  putOptions(longOpts, &lopt,handlers_.begin(),handlers_.end());
+  std::string optstring = createOptstring(handlers_.begin(), handlers_.end());
   while(1) {
     int c = getopt_long(argc, argv, optstring.c_str(), longOpts, 0);
     if(c == -1) {
@@ -155,7 +155,7 @@ void OptionParser::parseArg
     }
     SharedHandle<OptionHandler> op;
     if(c == 0) {
-      op = findByID(lopt);
+      op = findById(lopt);
     } else {
       op = findByShortName(c);
     }
@@ -177,12 +177,10 @@ void OptionParser::parseArg
   std::copy(argv+optind, argv+argc, std::back_inserter(nonopts));
 }
 
-void OptionParser::parse(Option& option, std::istream& is)
+void OptionParser::parse(Option& option, std::istream& is) const
 {
   std::string line;
-  int32_t linenum = 0;
   while(getline(is, line)) {
-    ++linenum;
     if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
@@ -191,216 +189,105 @@ void OptionParser::parse(Option& option, std::istream& is)
     if(nv.first.empty()) {
       continue;
     }
-    OptionHandlerHandle handler = getOptionHandlerByName(nv.first);
-    handler->parse(option, nv.second);
+    const SharedHandle<OptionHandler>& handler = find(option::k2p(nv.first));
+    if(handler) {
+      handler->parse(option, nv.second);
+    }
   }
-}
-
-namespace {
-class DummyOptionHandler:public NullOptionHandler {
-protected:
-  virtual void parseArg(Option& option, const std::string& arg) {}
-public:
-  DummyOptionHandler(const std::string& optName)
-    : NullOptionHandler(),
-      optName_(optName)
-  {}
-
-  virtual const std::string& getName() const
-  {
-    return optName_;
-  }
-private:
-  std::string optName_;
-};
-} // namespace
-
-OptionHandlerHandle OptionParser::getOptionHandlerByName
-(const std::string& optName)
-{
-  SharedHandle<OptionHandler> handler(new DummyOptionHandler(optName));
-  std::vector<SharedHandle<OptionHandler> >::const_iterator i =
-    std::lower_bound(optionHandlers_.begin(), optionHandlers_.end(),
-                     handler, OptionHandlerNameLesser());
-  if(i != optionHandlers_.end() && (*i)->canHandle(optName)) {
-    handler = *i;
-  } else {
-    handler.reset(new NullOptionHandler());
-  }
-  return handler;
 }
 
 void OptionParser::setOptionHandlers
-(const std::vector<SharedHandle<OptionHandler> >& optionHandlers)
+(const std::vector<SharedHandle<OptionHandler> >& handlers)
 {
-  optionHandlers_ = optionHandlers;
   for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
-        optionHandlers_.begin(), eoi = optionHandlers_.end();
-      i != eoi; ++i) {
-    (*i)->setOptionID(++idCounter_);
+        handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
+    addOptionHandler(*i);
   }
-  std::sort(optionHandlers_.begin(), optionHandlers_.end(),
-            OptionHandlerNameLesser());
 }
 
-void OptionParser::addOptionHandler
-(const SharedHandle<OptionHandler>& optionHandler)
+void OptionParser::addOptionHandler(const SharedHandle<OptionHandler>& handler)
 {
-  optionHandler->setOptionID(++idCounter_);
-  std::vector<SharedHandle<OptionHandler> >::iterator i =
-    std::lower_bound(optionHandlers_.begin(), optionHandlers_.end(),
-                     optionHandler, OptionHandlerNameLesser());
-  optionHandlers_.insert(i, optionHandler);
+  size_t optId = handler->getPref()->i;
+  assert(optId < handlers_.size());
+  handlers_[optId] = handler;
+  if(handler->getShortName()) {
+    shortOpts_[static_cast<unsigned char>(handler->getShortName())] = optId;
+  }
 }
 
 void OptionParser::parseDefaultValues(Option& option) const
 {
   for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
-        optionHandlers_.begin(), eoi = optionHandlers_.end();
-      i != eoi; ++i) {
-    if(!(*i)->getDefaultValue().empty()) {
+        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
+    if(*i && !(*i)->getDefaultValue().empty()) {
       (*i)->parse(option, (*i)->getDefaultValue());
     }
   }
 }
 
-namespace {
-class FindOptionHandlerByTag :
-    public std::unary_function<SharedHandle<OptionHandler>, bool> {
-private:
-  std::string tag_;
-public:
-  FindOptionHandlerByTag(const std::string& tag):tag_(tag) {}
-
-  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
-  {
-    return !optionHandler->isHidden() && optionHandler->hasTag(tag_);
-  }
-};
-} // namespace
-
 std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByTag(const std::string& tag) const
 {
   std::vector<SharedHandle<OptionHandler> > result;
-  std::remove_copy_if(optionHandlers_.begin(), optionHandlers_.end(),
-                      std::back_inserter(result),
-                      std::not1(FindOptionHandlerByTag(tag)));
-  std::sort(result.begin(), result.end(), OptionHandlerIDLesser());
+  for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
+    if(*i && !(*i)->isHidden() && (*i)->hasTag(tag)) {
+      result.push_back(*i);
+    }
+  }
   return result;
 }
-
-namespace {
-class FindOptionHandlerByNameSubstring :
-    public std::unary_function<SharedHandle<OptionHandler> , bool> {
-private:
-  std::string substring_;
-public:
-  FindOptionHandlerByNameSubstring
-  (const std::string& substring):substring_(substring) {}
-
-  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
-  {
-    return !optionHandler->isHidden() &&
-      optionHandler->getName().find(substring_) != std::string::npos;
-  }
-};
-} // namespace
 
 std::vector<SharedHandle<OptionHandler> >
 OptionParser::findByNameSubstring(const std::string& substring) const
 {
   std::vector<SharedHandle<OptionHandler> > result;
-  std::remove_copy_if(optionHandlers_.begin(), optionHandlers_.end(),
-                      std::back_inserter(result),
-                      std::not1(FindOptionHandlerByNameSubstring(substring)));
-  std::sort(result.begin(), result.end(), OptionHandlerIDLesser());
+  for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
+    if(*i && !(*i)->isHidden() &&
+       (*i)->getName().find(substring) != std::string::npos) {
+      result.push_back(*i);
+    }
+  }
   return result;  
 }
 
 std::vector<SharedHandle<OptionHandler> > OptionParser::findAll() const
 {
   std::vector<SharedHandle<OptionHandler> > result;
-  std::remove_copy_if(optionHandlers_.begin(), optionHandlers_.end(),
-                      std::back_inserter(result),
-                      mem_fun_sh(&OptionHandler::isHidden));
-  std::sort(result.begin(), result.end(), OptionHandlerIDLesser());
+  for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+        handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
+    if(*i && !(*i)->isHidden()) {
+      result.push_back(*i);
+    }
+  }
   return result;
 }
 
-namespace {
-template<typename InputIterator, typename Predicate>
-SharedHandle<OptionHandler> findOptionHandler
-(InputIterator first, InputIterator last, Predicate pred)
+const SharedHandle<OptionHandler>& OptionParser::find(const Pref* pref) const
 {
-  SharedHandle<OptionHandler> handler;
-  InputIterator i = std::find_if(first, last, pred);
-  if(i != last) {
-    handler = *i;
-  }
-  return handler;
+  return findById(pref->i);
 }
-} // namespace
 
-SharedHandle<OptionHandler>
-OptionParser::findByName(const std::string& name) const
+const SharedHandle<OptionHandler>& OptionParser::findById(size_t id) const
 {
-  SharedHandle<OptionHandler> handler(new DummyOptionHandler(name));
-  std::vector<SharedHandle<OptionHandler> >::const_iterator i =
-    std::lower_bound(optionHandlers_.begin(), optionHandlers_.end(),
-                     handler, OptionHandlerNameLesser());
-  if(i != optionHandlers_.end() && (*i)->getName() == name &&
-     !(*i)->isHidden()) {
-    handler = *i;
+  if(id >= handlers_.size()) {
+    return handlers_[0];
+  }
+  const SharedHandle<OptionHandler>& h = handlers_[id];
+  if(!h || h->isHidden()) {
+    return handlers_[0];
   } else {
-    handler.reset();
+    return h;
   }
-  return handler;
 }
 
-namespace {
-class FindOptionHandlerByID:public std::unary_function
-<SharedHandle<OptionHandler>, bool> {
-private:
-  int id_;
-public:
-  FindOptionHandlerByID(int id):id_(id) {}
-
-  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
-  {
-    return !optionHandler->isHidden() && optionHandler->getOptionID() == id_;
-  }
-};
-} // namespace
-
-SharedHandle<OptionHandler> OptionParser::findByID(int id) const
+const SharedHandle<OptionHandler>& OptionParser::findByShortName
+(char shortName) const
 {
-  return findOptionHandler(optionHandlers_.begin(), optionHandlers_.end(),
-                           FindOptionHandlerByID(id));
+  size_t idx = static_cast<unsigned char>(shortName);
+  return findById(shortOpts_[idx]);
 }
-
-namespace {
-class FindOptionHandlerByShortName:
-    public std::unary_function<SharedHandle<OptionHandler>, bool> {
-private:
-  char shortName_;
-public:
-  FindOptionHandlerByShortName(char shortName):shortName_(shortName) {}
-
-  bool operator()(const SharedHandle<OptionHandler>& optionHandler) const
-  {
-    return !optionHandler->isHidden() &&
-      optionHandler->getShortName() == shortName_;
-  }
-};
-} // namespace
-
-SharedHandle<OptionHandler> OptionParser::findByShortName(char shortName) const
-{
-  return findOptionHandler(optionHandlers_.begin(), optionHandlers_.end(),
-                           FindOptionHandlerByShortName(shortName));
-}
-
 
 SharedHandle<OptionParser> OptionParser::optionParser_;
 

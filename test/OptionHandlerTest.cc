@@ -11,7 +11,6 @@ namespace aria2 {
 class OptionHandlerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(OptionHandlerTest);
-  CPPUNIT_TEST(testNullOptionHandler);
   CPPUNIT_TEST(testBooleanOptionHandler);
   CPPUNIT_TEST(testNumberOptionHandler);
   CPPUNIT_TEST(testNumberOptionHandler_min);
@@ -33,7 +32,6 @@ class OptionHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
   
 public:
-  void testNullOptionHandler();
   void testBooleanOptionHandler();
   void testNumberOptionHandler();
   void testNumberOptionHandler_min();
@@ -56,15 +54,6 @@ public:
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OptionHandlerTest );
-
-void OptionHandlerTest::testNullOptionHandler()
-{
-  NullOptionHandler handler;
-  CPPUNIT_ASSERT(handler.canHandle("foo"));
-  Option option;
-  handler.parse(option, "bar");
-  CPPUNIT_ASSERT(!option.defined(PREF_TIMEOUT));
-}
 
 void OptionHandlerTest::testBooleanOptionHandler()
 {

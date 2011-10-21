@@ -57,7 +57,10 @@ public:
 
   virtual ~OptionHandlerException() throw();
 
-  const std::string& getOptionName() const throw();
+  const Pref* getPref() const
+  {
+    return pref_;
+  }
 };
 
 #define OPTION_HANDLER_EXCEPTION(arg)                   \

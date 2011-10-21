@@ -63,11 +63,6 @@ OptionHandlerException::OptionHandlerException
 
 OptionHandlerException::~OptionHandlerException() throw() {}
 
-const std::string& OptionHandlerException::getOptionName() const throw()
-{
-  return pref_->k;
-}
-
 SharedHandle<Exception> OptionHandlerException::copy() const
 {
   SharedHandle<Exception> e(new OptionHandlerException(*this));
