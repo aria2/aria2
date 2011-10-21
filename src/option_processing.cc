@@ -68,13 +68,13 @@ extern void showUsage(const std::string& keyword, const OptionParser& oparser);
 
 namespace {
 void overrideWithEnv(Option& op, const OptionParser& optionParser,
-                     const std::string& pref,
+                     const Pref* pref,
                      const std::string& envName)
 {
   char* value = getenv(envName.c_str());
   if(value) {
     try {
-      optionParser.findByName(pref)->parse(op, value);
+      optionParser.findByName(pref->k)->parse(op, value);
     } catch(Exception& e) {
       global::cerr()->printf
         ("Caught Error while parsing environment variable '%s'\n%s\n",
@@ -102,16 +102,16 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       noConf = op.getAsBool(PREF_NO_CONF);
       ucfname = op.get(PREF_CONF_PATH);
 
-      if(op.defined("version")) {
+      if(op.defined(PREF_VERSION)) {
         showVersion();
         exit(error_code::FINISHED);
       }
-      if(op.defined("help")) {
+      if(op.defined(PREF_HELP)) {
         std::string keyword;
-        if(op.get("help").empty()) {
+        if(op.get(PREF_HELP).empty()) {
           keyword = TAG_BASIC;
         } else {
-          keyword = op.get("help");
+          keyword = op.get(PREF_HELP);
           if(util::startsWith(keyword, "--")) {
             keyword = keyword.substr(2);
           }
@@ -130,7 +130,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     if(!noConf) {
       std::string cfname = 
         ucfname.empty() ?
-        oparser.findByName(PREF_CONF_PATH)->getDefaultValue():
+        oparser.findByName(PREF_CONF_PATH->k)->getDefaultValue():
         ucfname;
 
       if(File(cfname).isFile()) {

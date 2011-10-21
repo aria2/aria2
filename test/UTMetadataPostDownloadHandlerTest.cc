@@ -107,8 +107,8 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
     newAttrs->announceList;
   CPPUNIT_ASSERT_EQUAL((size_t)1, newAnnounceList.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker"), newAnnounceList[0][0]);
-  CPPUNIT_ASSERT_EQUAL(option_->get("Hello"),
-                       newRg->getOption()->get("Hello"));
+  CPPUNIT_ASSERT_EQUAL(option_->get(PREF_DIR),
+                       newRg->getOption()->get(PREF_DIR));
   CPPUNIT_ASSERT
     (std::find(requestGroup_->followedBy().begin(),
                requestGroup_->followedBy().end(),

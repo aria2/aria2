@@ -44,10 +44,11 @@
 namespace aria2 {
 
 class Option;
+class Pref;
 
 class NameMatchOptionHandler : public OptionHandler {
 protected:
-  std::string optName_;
+  const Pref* pref_;
 
   std::string description_;
 
@@ -67,7 +68,7 @@ protected:
 
   virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
-  NameMatchOptionHandler(const std::string& optName,
+  NameMatchOptionHandler(const Pref* pref,
                          const std::string& description = NO_DESCRIPTION,
                          const std::string& defaultValue = NO_DEFAULT_VALUE,
                          ARG_TYPE argType = REQ_ARG,
@@ -85,10 +86,7 @@ public:
 
   virtual std::string toTagString() const;
 
-  virtual const std::string& getName() const
-  {
-    return optName_;
-  }
+  virtual const std::string& getName() const;
 
   virtual const std::string& getDescription() const
   {

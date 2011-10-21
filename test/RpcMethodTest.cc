@@ -171,7 +171,7 @@ void RpcMethodTest::testAddUri()
   }
   // with options
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_DIR, "/sink");
+  opt->put(PREF_DIR->k, "/sink");
   req.params->append(opt);
   {
     RpcResponse res = m.execute(req, e_.get());
@@ -209,7 +209,7 @@ void RpcMethodTest::testAddUri_withBadOption()
   urisParam->append("http://localhost");
   req.params->append(urisParam);
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_FILE_ALLOCATION, "badvalue");
+  opt->put(PREF_FILE_ALLOCATION->k, "badvalue");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
@@ -288,7 +288,7 @@ void RpcMethodTest::testAddTorrent()
   std::string dir = A2_TEST_OUT_DIR"/aria2_RpcMethodTest_testAddTorrent";
   File(dir).mkdirs();
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_DIR, dir);
+  opt->put(PREF_DIR->k, dir);
   File(dir+"/0a3893293e27ac0490424c06de4d09242215f0a6.torrent").remove();
   req.params->append(opt);
   {
@@ -379,7 +379,7 @@ void RpcMethodTest::testAddMetalink()
   std::string dir = A2_TEST_OUT_DIR"/aria2_RpcMethodTest_testAddMetalink";
   File(dir).mkdirs();
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_DIR, dir);
+  opt->put(PREF_DIR->k, dir);
   File(dir+"/c908634fbc257fd56f0114912c2772aeeb4064f4.meta4").remove();
   req.params->append(opt);
   {
@@ -446,11 +446,11 @@ void RpcMethodTest::testChangeOption()
   RpcRequest req(ChangeOptionRpcMethod::getMethodName(), List::g());
   req.params->append("1");
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_MAX_DOWNLOAD_LIMIT, "100K");
+  opt->put(PREF_MAX_DOWNLOAD_LIMIT->k, "100K");
 #ifdef ENABLE_BITTORRENT
-  opt->put(PREF_BT_MAX_PEERS, "100");
-  opt->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT, "300K");
-  opt->put(PREF_MAX_UPLOAD_LIMIT, "50K");
+  opt->put(PREF_BT_MAX_PEERS->k, "100");
+  opt->put(PREF_BT_REQUEST_PEER_SPEED_LIMIT->k, "300K");
+  opt->put(PREF_MAX_UPLOAD_LIMIT->k, "50K");
 
   BtObject btObject;
   btObject.btRuntime_ = SharedHandle<BtRuntime>(new BtRuntime());
@@ -489,7 +489,7 @@ void RpcMethodTest::testChangeOption_withBadOption()
   RpcRequest req(ChangeOptionRpcMethod::getMethodName(), List::g());
   req.params->append("1");
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_MAX_DOWNLOAD_LIMIT, "badvalue");
+  opt->put(PREF_MAX_DOWNLOAD_LIMIT->k, "badvalue");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
@@ -504,7 +504,7 @@ void RpcMethodTest::testChangeOption_withNotAllowedOption()
   RpcRequest req(ChangeOptionRpcMethod::getMethodName(), List::g());
   req.params->append("1");
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT, "100K");
+  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k, "100K");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
@@ -524,9 +524,9 @@ void RpcMethodTest::testChangeGlobalOption()
   RpcRequest req
     (ChangeGlobalOptionRpcMethod::getMethodName(), List::g());
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT, "100K");
+  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k, "100K");
 #ifdef ENABLE_BITTORRENT
-  opt->put(PREF_MAX_OVERALL_UPLOAD_LIMIT, "50K");
+  opt->put(PREF_MAX_OVERALL_UPLOAD_LIMIT->k, "50K");
 #endif // ENABLE_BITTORRENT
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
@@ -552,7 +552,7 @@ void RpcMethodTest::testChangeGlobalOption_withBadOption()
   RpcRequest req
     (ChangeGlobalOptionRpcMethod::getMethodName(), List::g());
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT, "badvalue");
+  opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k, "badvalue");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
@@ -564,7 +564,7 @@ void RpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
   RpcRequest req
     (ChangeGlobalOptionRpcMethod::getMethodName(), List::g());
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_MAX_DOWNLOAD_LIMIT, "100K");
+  opt->put(PREF_MAX_DOWNLOAD_LIMIT->k, "100K");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);

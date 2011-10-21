@@ -44,6 +44,7 @@
 namespace aria2 {
 
 class Option;
+class Pref;
 
 class NullOptionHandler : public OptionHandler {
 private:
@@ -71,7 +72,7 @@ public:
 
 class BooleanOptionHandler : public NameMatchOptionHandler {
 public:
-  BooleanOptionHandler(const std::string& optName,
+  BooleanOptionHandler(const Pref* pref,
                        const std::string& description = NO_DESCRIPTION,
                        const std::string& defaultValue = NO_DEFAULT_VALUE,
                        OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
@@ -86,7 +87,7 @@ private:
   int32_t min_;
   int32_t max_;
 public:
-  IntegerRangeOptionHandler(const std::string& optName,
+  IntegerRangeOptionHandler(const Pref* pref,
                             const std::string& description,
                             const std::string& defaultValue,
                             int32_t min, int32_t max,
@@ -101,7 +102,7 @@ private:
   int64_t min_;
   int64_t max_;
 public:
-  NumberOptionHandler(const std::string& optName,
+  NumberOptionHandler(const Pref* pref,
                       const std::string& description = NO_DESCRIPTION,
                       const std::string& defaultValue = NO_DEFAULT_VALUE,
                       int64_t min = -1,
@@ -116,7 +117,7 @@ public:
 
 class UnitNumberOptionHandler : public NumberOptionHandler {
 public:
-  UnitNumberOptionHandler(const std::string& optName,
+  UnitNumberOptionHandler(const Pref* pref,
                           const std::string& description = NO_DESCRIPTION,
                           const std::string& defaultValue = NO_DEFAULT_VALUE,
                           int64_t min = -1,
@@ -131,7 +132,7 @@ private:
   double min_;
   double max_;
 public:
-  FloatNumberOptionHandler(const std::string& optName,
+  FloatNumberOptionHandler(const Pref* pref,
                            const std::string& description = NO_DESCRIPTION,
                            const std::string& defaultValue = NO_DEFAULT_VALUE,
                            double min = -1, double max = -1,
@@ -145,7 +146,7 @@ class DefaultOptionHandler : public NameMatchOptionHandler {
 private:
   std::string possibleValuesString_;
 public:
-  DefaultOptionHandler(const std::string& optName,
+  DefaultOptionHandler(const Pref* pref,
                        const std::string& description = NO_DESCRIPTION,
                        const std::string& defaultValue = NO_DEFAULT_VALUE,
                        const std::string& possibleValuesString = A2STR::NIL,
@@ -161,7 +162,7 @@ private:
   std::string delim_;
   std::string possibleValuesString_;
 public:
-  CumulativeOptionHandler(const std::string& optName,
+  CumulativeOptionHandler(const Pref* pref,
                           const std::string& description,
                           const std::string& defaultValue,
                           const std::string& delim,
@@ -175,9 +176,8 @@ public:
 };
 
 class IndexOutOptionHandler : public NameMatchOptionHandler {
-private:
 public:
-  IndexOutOptionHandler(const std::string& optName,
+  IndexOutOptionHandler(const Pref* pref,
                         const std::string& description,
                         char shortName = 0);
   virtual ~IndexOutOptionHandler();
@@ -186,9 +186,8 @@ public:
 };
 
 class ChecksumOptionHandler : public NameMatchOptionHandler {
-private:
 public:
-  ChecksumOptionHandler(const std::string& optName,
+  ChecksumOptionHandler(const Pref* pref,
                         const std::string& description,
                         char shortName = 0);
   virtual ~ChecksumOptionHandler();
@@ -200,23 +199,23 @@ class ParameterOptionHandler : public NameMatchOptionHandler {
 private:
   std::vector<std::string> validParamValues_;
 public:
-  ParameterOptionHandler(const std::string& optName,
+  ParameterOptionHandler(const Pref* pref,
                          const std::string& description,
                          const std::string& defaultValue,
                          const std::vector<std::string>& validParamValues,
                          char shortName = 0);
-  ParameterOptionHandler(const std::string& optName,
+  ParameterOptionHandler(const Pref* pref,
                          const std::string& description,
                          const std::string& defaultValue,
                          const std::string& validParamValue,
                          char shortName = 0);
-  ParameterOptionHandler(const std::string& optName,
+  ParameterOptionHandler(const Pref* pref,
                          const std::string& description,
                          const std::string& defaultValue,
                          const std::string& validParamValue1,
                          const std::string& validParamValue2,
                          char shortName = 0);
-  ParameterOptionHandler(const std::string& optName,
+  ParameterOptionHandler(const Pref* pref,
                          const std::string& description,
                          const std::string& defaultValue,
                          const std::string& validParamValue1,
@@ -230,14 +229,14 @@ public:
 
 class HostPortOptionHandler : public NameMatchOptionHandler {
 private:
-  std::string hostOptionName_;
-  std::string portOptionName_;
+  const Pref* hostOptionName_;
+  const Pref* portOptionName_;
 public:
-  HostPortOptionHandler(const std::string& optName,
+  HostPortOptionHandler(const Pref* pref,
                         const std::string& description,
                         const std::string& defaultValue,
-                        const std::string& hostOptionName,
-                        const std::string& portOptionName,
+                        const Pref* hostOptionName,
+                        const Pref* portOptionName,
                         char shortName = 0);
   virtual ~HostPortOptionHandler();
   virtual void parseArg(Option& option, const std::string& optarg);
@@ -248,7 +247,7 @@ public:
 
 class HttpProxyUserOptionHandler:public NameMatchOptionHandler {
 public:
-  HttpProxyUserOptionHandler(const std::string& optName,
+  HttpProxyUserOptionHandler(const Pref* pref,
                              const std::string& description,
                              const std::string& defaultValue,
                              char shortName = 0);
@@ -258,7 +257,7 @@ public:
 
 class HttpProxyPasswdOptionHandler:public NameMatchOptionHandler {
 public:
-  HttpProxyPasswdOptionHandler(const std::string& optName,
+  HttpProxyPasswdOptionHandler(const Pref* pref,
                                const std::string& description,
                                const std::string& defaultValue,
                                char shortName = 0);
@@ -268,10 +267,10 @@ public:
 
 class HttpProxyOptionHandler : public NameMatchOptionHandler {
 private:
-  std::string proxyUserPref_;
-  std::string proxyPasswdPref_;
+  const Pref* proxyUserPref_;
+  const Pref* proxyPasswdPref_;
 public:
-  HttpProxyOptionHandler(const std::string& optName,
+  HttpProxyOptionHandler(const Pref* pref,
                          const std::string& description,
                          const std::string& defaultValue,
                          char shortName = 0);
@@ -285,7 +284,7 @@ private:
   bool acceptStdin_;
 public:
   LocalFilePathOptionHandler
-  (const std::string& optName,
+  (const Pref* pref,
    const std::string& description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    bool acceptStdin = false,
@@ -297,7 +296,7 @@ public:
 class PrioritizePieceOptionHandler:public NameMatchOptionHandler {
 public:
   PrioritizePieceOptionHandler
-  (const std::string& optName,
+  (const Pref* pref,
    const std::string& description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    char shortName = 0);

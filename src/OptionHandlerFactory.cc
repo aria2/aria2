@@ -1781,7 +1781,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   // Version Option
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
-                                   ("version",
+                                   (PREF_VERSION,
                                     TEXT_VERSION,
                                     NO_DEFAULT_VALUE,
                                     A2STR::NIL,
@@ -1812,7 +1812,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     };
     static std::string tagsStr = strjoin(vbegin(tags), vend(tags), ", ");
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
-                                   ("help",
+                                   (PREF_HELP,
                                     TEXT_HELP,
                                     TAG_BASIC,
                                     tagsStr,

@@ -1,6 +1,10 @@
 #include "Option.h"
+
 #include <string>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -31,45 +35,45 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OptionTest );
 
 void OptionTest::testPutAndGet() {
   Option op;
-  op.put("key", "value");
+  op.put(PREF_TIMEOUT, "value");
   
-  CPPUNIT_ASSERT(op.defined("key"));
-  CPPUNIT_ASSERT_EQUAL(std::string("value"), op.get("key"));
+  CPPUNIT_ASSERT(op.defined(PREF_TIMEOUT));
+  CPPUNIT_ASSERT_EQUAL(std::string("value"), op.get(PREF_TIMEOUT));
 }
 
 void OptionTest::testPutAndGetAsInt() {
   Option op;
-  op.put("key", "1000");
+  op.put(PREF_TIMEOUT, "1000");
 
-  CPPUNIT_ASSERT(op.defined("key"));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1000, op.getAsInt("key"));
+  CPPUNIT_ASSERT(op.defined(PREF_TIMEOUT));
+  CPPUNIT_ASSERT_EQUAL((int32_t)1000, op.getAsInt(PREF_TIMEOUT));
 }
 
 void OptionTest::testPutAndGetAsDouble() {
   Option op;
-  op.put("key", "10.0");
+  op.put(PREF_TIMEOUT, "10.0");
   
-  CPPUNIT_ASSERT_EQUAL(10.0, op.getAsDouble("key"));
+  CPPUNIT_ASSERT_EQUAL(10.0, op.getAsDouble(PREF_TIMEOUT));
 }
 
 void OptionTest::testDefined()
 {
   Option op;
-  op.put("k", "v");
-  op.put("k1", "");
-  CPPUNIT_ASSERT(op.defined("k"));
-  CPPUNIT_ASSERT(op.defined("k1"));
-  CPPUNIT_ASSERT(!op.defined("undefined"));
+  op.put(PREF_TIMEOUT, "v");
+  op.put(PREF_DIR, "");
+  CPPUNIT_ASSERT(op.defined(PREF_TIMEOUT));
+  CPPUNIT_ASSERT(op.defined(PREF_DIR));
+  CPPUNIT_ASSERT(!op.defined(PREF_DAEMON));
 }
 
 void OptionTest::testBlank()
 {
   Option op;
-  op.put("k", "v");
-  op.put("k1", "");
-  CPPUNIT_ASSERT(!op.blank("k"));
-  CPPUNIT_ASSERT(op.blank("k1"));
-  CPPUNIT_ASSERT(op.blank("undefined"));
+  op.put(PREF_TIMEOUT, "v");
+  op.put(PREF_DIR, "");
+  CPPUNIT_ASSERT(!op.blank(PREF_TIMEOUT));
+  CPPUNIT_ASSERT(op.blank(PREF_DIR));
+  CPPUNIT_ASSERT(op.blank(PREF_DAEMON));
 }
 
 } // namespace aria2

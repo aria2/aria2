@@ -34,7 +34,90 @@
 /* copyright --> */
 #include "prefs.h"
 
+#include <cassert>
+#include <vector>
+#include <map>
+
 namespace aria2 {
+
+Pref::Pref(const std::string& k, size_t i):k(k), i(i) {}
+
+namespace {
+
+class PrefFactory {
+public:
+  PrefFactory():count_(0)
+  {
+    // We add special null pref whose ID is 0.
+    makePref("");
+  }
+  size_t nextId()
+  {
+    return count_++;
+  }
+  Pref* makePref(const std::string& key)
+  {
+    size_t id = nextId();
+    Pref* pref = new Pref(key, id);
+    i2p_.push_back(pref);
+    k2p_[key] = pref;
+    return pref;
+  }
+  size_t getCount() const
+  {
+    return count_;
+  }
+  const Pref* i2p(size_t id) const
+  {
+    assert(id < count_);
+    return i2p_[id];
+  }
+  const Pref* k2p(const std::string& k) const
+  {
+    std::map<std::string, const Pref*>::const_iterator i = k2p_.find(k);
+    if(i == k2p_.end()) {
+      return i2p_[0];
+    } else {
+      return (*i).second;
+    }
+  }
+private:
+  size_t count_;
+  std::vector<const Pref*> i2p_;
+  std::map<std::string, const Pref*> k2p_;
+};
+
+PrefFactory* getPrefFactory()
+{
+  static PrefFactory* pf = new PrefFactory();
+  return pf;
+}
+
+Pref* makePref(const std::string& key)
+{
+  return getPrefFactory()->makePref(key);
+}
+
+} // namespace
+
+namespace option {
+
+size_t countOption()
+{
+  return getPrefFactory()->getCount();
+}
+
+const Pref* i2p(size_t id)
+{
+  return getPrefFactory()->i2p(id);
+}
+
+const Pref* k2p(const std::string& key)
+{
+  return getPrefFactory()->k2p(key);
+}
+
+} // namespace option
 
 /**
  * Constants
@@ -47,388 +130,391 @@ const std::string V_MEM("mem");
 const std::string V_ALL("all");
 const std::string A2_V_FULL("full");
 const std::string A2_V_GEOM("geom");
-
-/**
- * General preferences
- */
-// values: 1*digit
-const std::string PREF_TIMEOUT("timeout");
-// values: 1*digit
-const std::string PREF_DNS_TIMEOUT("dns-timeout");
-// values: 1*digit
-const std::string PREF_CONNECT_TIMEOUT("connect-timeout");
-// values: 1*digit
-const std::string PREF_MAX_TRIES("max-tries");
-// values: 1*digit
-const std::string PREF_AUTO_SAVE_INTERVAL("auto-save-interval");
-// values: a string that your file system recognizes as a file name.
-const std::string PREF_LOG("log");
-// values: a string that your file system recognizes as a directory.
-const std::string PREF_DIR("dir");
-// values: a string that your file system recognizes as a file name.
-const std::string PREF_OUT("out");
-// values: 1*digit
-const std::string PREF_SPLIT("split");
-// value: true | false
-const std::string PREF_DAEMON("daemon");
-// value: a string
-const std::string PREF_REFERER("referer");
-// value: 1*digit
-const std::string PREF_LOWEST_SPEED_LIMIT("lowest-speed-limit");
-// value: 1*digit
-const std::string PREF_PIECE_LENGTH("piece-length");
-// value: 1*digit
-const std::string PREF_MAX_OVERALL_DOWNLOAD_LIMIT("max-overall-download-limit");
-// value: 1*digit
-const std::string PREF_MAX_DOWNLOAD_LIMIT("max-download-limit");
-// value: 1*digit
-const std::string PREF_STARTUP_IDLE_TIME("startup-idle-time");
-// value: prealloc | fallc | none
-const std::string PREF_FILE_ALLOCATION("file-allocation");
 const std::string V_PREALLOC("prealloc");
 const std::string V_FALLOC("falloc");
-// value: 1*digit
-const std::string PREF_NO_FILE_ALLOCATION_LIMIT("no-file-allocation-limit");
-// value: true | false
-const std::string PREF_ALLOW_OVERWRITE("allow-overwrite");
-// value: true | false
-const std::string PREF_REALTIME_CHUNK_CHECKSUM("realtime-chunk-checksum");
-// value: true | false
-const std::string PREF_CHECK_INTEGRITY("check-integrity");
-// value: string that your file system recognizes as a file name.
-const std::string PREF_NETRC_PATH("netrc-path");
-// value:
-const std::string PREF_CONTINUE("continue");
-// value:
-const std::string PREF_NO_NETRC("no-netrc");
-// value: 1*digit
-const std::string PREF_MAX_DOWNLOADS("max-downloads");
-// value: string that your file system recognizes as a file name.
-const std::string PREF_INPUT_FILE("input-file");
-// value: 1*digit
-const std::string PREF_MAX_CONCURRENT_DOWNLOADS("max-concurrent-downloads");
-// value: true | false
-const std::string PREF_FORCE_SEQUENTIAL("force-sequential");
-// value: true | false
-const std::string PREF_AUTO_FILE_RENAMING("auto-file-renaming");
-// value: true | false
-const std::string PREF_PARAMETERIZED_URI("parameterized-uri");
-// value: true | false
-const std::string PREF_ENABLE_DIRECT_IO("enable-direct-io");
-// value: true | false
-const std::string PREF_ALLOW_PIECE_LENGTH_CHANGE("allow-piece-length-change");
-// value: true | false
-const std::string PREF_NO_CONF("no-conf");
-// value: string
-const std::string PREF_CONF_PATH("conf-path");
-// value: 1*digit
-const std::string PREF_STOP("stop");
-// value: true | false
-const std::string PREF_QUIET("quiet");
-// value: true | false
-const std::string PREF_ASYNC_DNS("async-dns");
-// value: 1*digit
-const std::string PREF_SUMMARY_INTERVAL("summary-interval");
-// value: debug, info, notice, warn, error
-const std::string PREF_LOG_LEVEL("log-level");
 const std::string V_DEBUG("debug");
 const std::string V_INFO("info");
 const std::string V_NOTICE("notice");
 const std::string V_WARN("warn");
 const std::string V_ERROR("error");
-// value: inorder | feedback | adaptive
-const std::string PREF_URI_SELECTOR("uri-selector");
 const std::string V_INORDER("inorder");
 const std::string V_FEEDBACK("feedback");
 const std::string V_ADAPTIVE("adaptive");
-// value: 1*digit
-const std::string PREF_SERVER_STAT_TIMEOUT("server-stat-timeout");
-// value: string that your file system recognizes as a file name.
-const std::string PREF_SERVER_STAT_IF("server-stat-if");
-// value: string that your file system recognizes as a file name.
-const std::string PREF_SERVER_STAT_OF("server-stat-of");
-// value: true | false
-const std::string PREF_REMOTE_TIME("remote-time");
-// value: 1*digit
-const std::string PREF_MAX_FILE_NOT_FOUND("max-file-not-found");
-// value: epoll | select
-const std::string PREF_EVENT_POLL("event-poll");
 const std::string V_EPOLL("epoll");
 const std::string V_KQUEUE("kqueue");
 const std::string V_PORT("port");
 const std::string V_POLL("poll");
 const std::string V_SELECT("select");
+const std::string V_BINARY("binary");
+const std::string V_ASCII("ascii");
+const std::string V_GET("get");
+const std::string V_TUNNEL("tunnel");
+const std::string V_PLAIN("plain");
+const std::string V_ARC4("arc4");
+const std::string V_HTTP("http");
+const std::string V_HTTPS("https");
+const std::string V_FTP("ftp");
+
+const Pref* PREF_VERSION = makePref("version");
+const Pref* PREF_HELP = makePref("help");
+
+/**
+ * General preferences
+ */
+// values: 1*digit
+const Pref* PREF_TIMEOUT = makePref("timeout");
+// values: 1*digit
+const Pref* PREF_DNS_TIMEOUT = makePref("dns-timeout");
+// values: 1*digit
+const Pref* PREF_CONNECT_TIMEOUT = makePref("connect-timeout");
+// values: 1*digit
+const Pref* PREF_MAX_TRIES = makePref("max-tries");
+// values: 1*digit
+const Pref* PREF_AUTO_SAVE_INTERVAL = makePref("auto-save-interval");
+// values: a string that your file system recognizes as a file name.
+const Pref* PREF_LOG = makePref("log");
+// values: a string that your file system recognizes as a directory.
+const Pref* PREF_DIR = makePref("dir");
+// values: a string that your file system recognizes as a file name.
+const Pref* PREF_OUT = makePref("out");
+// values: 1*digit
+const Pref* PREF_SPLIT = makePref("split");
 // value: true | false
-const std::string PREF_ENABLE_RPC("enable-rpc");
+const Pref* PREF_DAEMON = makePref("daemon");
+// value: a string
+const Pref* PREF_REFERER = makePref("referer");
 // value: 1*digit
-const std::string PREF_RPC_LISTEN_PORT("rpc-listen-port");
-// value: string
-const std::string PREF_RPC_USER("rpc-user");
-// value: string
-const std::string PREF_RPC_PASSWD("rpc-passwd");
+const Pref* PREF_LOWEST_SPEED_LIMIT = makePref("lowest-speed-limit");
 // value: 1*digit
-const std::string PREF_RPC_MAX_REQUEST_SIZE("rpc-max-request-size");
-// value: true | false
-const std::string PREF_RPC_LISTEN_ALL("rpc-listen-all");
-// value: true | false
-const std::string PREF_RPC_ALLOW_ORIGIN_ALL("rpc-allow-origin-all");
-// value: true | false
-const std::string PREF_DRY_RUN("dry-run");
-// value: true | false
-const std::string PREF_REUSE_URI("reuse-uri");
-// value: string
-const std::string PREF_ON_DOWNLOAD_START("on-download-start");
-const std::string PREF_ON_DOWNLOAD_PAUSE("on-download-pause");
-const std::string PREF_ON_DOWNLOAD_STOP("on-download-stop");
-const std::string PREF_ON_DOWNLOAD_COMPLETE("on-download-complete");
-const std::string PREF_ON_DOWNLOAD_ERROR("on-download-error");
-// value: string
-const std::string PREF_INTERFACE("interface");
-// value: true | false
-const std::string PREF_DISABLE_IPV6("disable-ipv6");
-// value: true | false
-const std::string PREF_HUMAN_READABLE("human-readable");
-// value: true | false
-const std::string PREF_REMOVE_CONTROL_FILE("remove-control-file");
-// value: true | false
-const std::string PREF_ALWAYS_RESUME("always-resume");
+const Pref* PREF_PIECE_LENGTH = makePref("piece-length");
 // value: 1*digit
-const std::string PREF_MAX_RESUME_FAILURE_TRIES("max-resume-failure-tries");
+const Pref* PREF_MAX_OVERALL_DOWNLOAD_LIMIT = makePref("max-overall-download-limit");
+// value: 1*digit
+const Pref* PREF_MAX_DOWNLOAD_LIMIT = makePref("max-download-limit");
+// value: 1*digit
+const Pref* PREF_STARTUP_IDLE_TIME = makePref("startup-idle-time");
+// value: prealloc | fallc | none
+const Pref* PREF_FILE_ALLOCATION = makePref("file-allocation");
+// value: 1*digit
+const Pref* PREF_NO_FILE_ALLOCATION_LIMIT = makePref("no-file-allocation-limit");
+// value: true | false
+const Pref* PREF_ALLOW_OVERWRITE = makePref("allow-overwrite");
+// value: true | false
+const Pref* PREF_REALTIME_CHUNK_CHECKSUM = makePref("realtime-chunk-checksum");
+// value: true | false
+const Pref* PREF_CHECK_INTEGRITY = makePref("check-integrity");
 // value: string that your file system recognizes as a file name.
-const std::string PREF_SAVE_SESSION("save-session");
+const Pref* PREF_NETRC_PATH = makePref("netrc-path");
+// value:
+const Pref* PREF_CONTINUE = makePref("continue");
+// value:
+const Pref* PREF_NO_NETRC = makePref("no-netrc");
 // value: 1*digit
-const std::string PREF_MAX_CONNECTION_PER_SERVER("max-connection-per-server");
+const Pref* PREF_MAX_DOWNLOADS = makePref("max-downloads");
+// value: string that your file system recognizes as a file name.
+const Pref* PREF_INPUT_FILE = makePref("input-file");
 // value: 1*digit
-const std::string PREF_MIN_SPLIT_SIZE("min-split-size");
+const Pref* PREF_MAX_CONCURRENT_DOWNLOADS = makePref("max-concurrent-downloads");
 // value: true | false
-const std::string PREF_CONDITIONAL_GET("conditional-get");
+const Pref* PREF_FORCE_SEQUENTIAL = makePref("force-sequential");
 // value: true | false
-const std::string PREF_SELECT_LEAST_USED_HOST("select-least-used-host");
+const Pref* PREF_AUTO_FILE_RENAMING = makePref("auto-file-renaming");
 // value: true | false
-const std::string PREF_ENABLE_ASYNC_DNS6("enable-async-dns6");
-// value: 1*digit
-const std::string PREF_MAX_DOWNLOAD_RESULT("max-download-result");
-// value: 1*digit
-const std::string PREF_RETRY_WAIT("retry-wait");
+const Pref* PREF_PARAMETERIZED_URI = makePref("parameterized-uri");
+// value: true | false
+const Pref* PREF_ENABLE_DIRECT_IO = makePref("enable-direct-io");
+// value: true | false
+const Pref* PREF_ALLOW_PIECE_LENGTH_CHANGE = makePref("allow-piece-length-change");
+// value: true | false
+const Pref* PREF_NO_CONF = makePref("no-conf");
 // value: string
-const std::string PREF_ASYNC_DNS_SERVER("async-dns-server");
+const Pref* PREF_CONF_PATH = makePref("conf-path");
+// value: 1*digit
+const Pref* PREF_STOP = makePref("stop");
 // value: true | false
-const std::string PREF_SHOW_CONSOLE_READOUT("show-console-readout");
+const Pref* PREF_QUIET = makePref("quiet");
+// value: true | false
+const Pref* PREF_ASYNC_DNS = makePref("async-dns");
+// value: 1*digit
+const Pref* PREF_SUMMARY_INTERVAL = makePref("summary-interval");
+// value: debug, info, notice, warn, error
+const Pref* PREF_LOG_LEVEL = makePref("log-level");
+// value: inorder | feedback | adaptive
+const Pref* PREF_URI_SELECTOR = makePref("uri-selector");
+// value: 1*digit
+const Pref* PREF_SERVER_STAT_TIMEOUT = makePref("server-stat-timeout");
+// value: string that your file system recognizes as a file name.
+const Pref* PREF_SERVER_STAT_IF = makePref("server-stat-if");
+// value: string that your file system recognizes as a file name.
+const Pref* PREF_SERVER_STAT_OF = makePref("server-stat-of");
+// value: true | false
+const Pref* PREF_REMOTE_TIME = makePref("remote-time");
+// value: 1*digit
+const Pref* PREF_MAX_FILE_NOT_FOUND = makePref("max-file-not-found");
+// value: epoll | select
+const Pref* PREF_EVENT_POLL = makePref("event-poll");
+// value: true | false
+const Pref* PREF_ENABLE_RPC = makePref("enable-rpc");
+// value: 1*digit
+const Pref* PREF_RPC_LISTEN_PORT = makePref("rpc-listen-port");
+// value: string
+const Pref* PREF_RPC_USER = makePref("rpc-user");
+// value: string
+const Pref* PREF_RPC_PASSWD = makePref("rpc-passwd");
+// value: 1*digit
+const Pref* PREF_RPC_MAX_REQUEST_SIZE = makePref("rpc-max-request-size");
+// value: true | false
+const Pref* PREF_RPC_LISTEN_ALL = makePref("rpc-listen-all");
+// value: true | false
+const Pref* PREF_RPC_ALLOW_ORIGIN_ALL = makePref("rpc-allow-origin-all");
+// value: true | false
+const Pref* PREF_DRY_RUN = makePref("dry-run");
+// value: true | false
+const Pref* PREF_REUSE_URI = makePref("reuse-uri");
+// value: string
+const Pref* PREF_ON_DOWNLOAD_START = makePref("on-download-start");
+const Pref* PREF_ON_DOWNLOAD_PAUSE = makePref("on-download-pause");
+const Pref* PREF_ON_DOWNLOAD_STOP = makePref("on-download-stop");
+const Pref* PREF_ON_DOWNLOAD_COMPLETE = makePref("on-download-complete");
+const Pref* PREF_ON_DOWNLOAD_ERROR = makePref("on-download-error");
+// value: string
+const Pref* PREF_INTERFACE = makePref("interface");
+// value: true | false
+const Pref* PREF_DISABLE_IPV6 = makePref("disable-ipv6");
+// value: true | false
+const Pref* PREF_HUMAN_READABLE = makePref("human-readable");
+// value: true | false
+const Pref* PREF_REMOVE_CONTROL_FILE = makePref("remove-control-file");
+// value: true | false
+const Pref* PREF_ALWAYS_RESUME = makePref("always-resume");
+// value: 1*digit
+const Pref* PREF_MAX_RESUME_FAILURE_TRIES = makePref("max-resume-failure-tries");
+// value: string that your file system recognizes as a file name.
+const Pref* PREF_SAVE_SESSION = makePref("save-session");
+// value: 1*digit
+const Pref* PREF_MAX_CONNECTION_PER_SERVER = makePref("max-connection-per-server");
+// value: 1*digit
+const Pref* PREF_MIN_SPLIT_SIZE = makePref("min-split-size");
+// value: true | false
+const Pref* PREF_CONDITIONAL_GET = makePref("conditional-get");
+// value: true | false
+const Pref* PREF_SELECT_LEAST_USED_HOST = makePref("select-least-used-host");
+// value: true | false
+const Pref* PREF_ENABLE_ASYNC_DNS6 = makePref("enable-async-dns6");
+// value: 1*digit
+const Pref* PREF_MAX_DOWNLOAD_RESULT = makePref("max-download-result");
+// value: 1*digit
+const Pref* PREF_RETRY_WAIT = makePref("retry-wait");
+// value: string
+const Pref* PREF_ASYNC_DNS_SERVER = makePref("async-dns-server");
+// value: true | false
+const Pref* PREF_SHOW_CONSOLE_READOUT = makePref("show-console-readout");
 // value: default | inorder
-const std::string PREF_STREAM_PIECE_SELECTOR("stream-piece-selector");
+const Pref* PREF_STREAM_PIECE_SELECTOR = makePref("stream-piece-selector");
 // value: true | false
-const std::string PREF_TRUNCATE_CONSOLE_READOUT("truncate-console-readout");
+const Pref* PREF_TRUNCATE_CONSOLE_READOUT = makePref("truncate-console-readout");
 // value: true | false
-const std::string PREF_PAUSE("pause");
+const Pref* PREF_PAUSE = makePref("pause");
 // value: default | full
-const std::string PREF_DOWNLOAD_RESULT("download-result");
+const Pref* PREF_DOWNLOAD_RESULT = makePref("download-result");
 // value: true | false
-const std::string PREF_HASH_CHECK_ONLY("hash-check-only");
+const Pref* PREF_HASH_CHECK_ONLY = makePref("hash-check-only");
 // values: hashType=digest
-const std::string PREF_CHECKSUM("checksum");
+const Pref* PREF_CHECKSUM = makePref("checksum");
 
 /**
  * FTP related preferences
  */
-const std::string PREF_FTP_USER("ftp-user");
-const std::string PREF_FTP_PASSWD("ftp-passwd");
+const Pref* PREF_FTP_USER = makePref("ftp-user");
+const Pref* PREF_FTP_PASSWD = makePref("ftp-passwd");
 // values: binary | ascii
-const std::string PREF_FTP_TYPE("ftp-type");
-const std::string V_BINARY("binary");
-const std::string V_ASCII("ascii");
+const Pref* PREF_FTP_TYPE = makePref("ftp-type");
 // values: true | false
-const std::string PREF_FTP_PASV("ftp-pasv");
+const Pref* PREF_FTP_PASV = makePref("ftp-pasv");
 // values: true | false
-const std::string PREF_FTP_REUSE_CONNECTION("ftp-reuse-connection");
+const Pref* PREF_FTP_REUSE_CONNECTION = makePref("ftp-reuse-connection");
 
 /**
  * HTTP related preferences
  */
-const std::string PREF_HTTP_USER("http-user");
-const std::string PREF_HTTP_PASSWD("http-passwd");
+const Pref* PREF_HTTP_USER = makePref("http-user");
+const Pref* PREF_HTTP_PASSWD = makePref("http-passwd");
 // values: string
-const std::string PREF_USER_AGENT("user-agent");
+const Pref* PREF_USER_AGENT = makePref("user-agent");
 // value: string that your file system recognizes as a file name.
-const std::string PREF_LOAD_COOKIES("load-cookies");
+const Pref* PREF_LOAD_COOKIES = makePref("load-cookies");
 // value: string that your file system recognizes as a file name.
-const std::string PREF_SAVE_COOKIES("save-cookies");
+const Pref* PREF_SAVE_COOKIES = makePref("save-cookies");
 // values: true | false
-const std::string PREF_ENABLE_HTTP_KEEP_ALIVE("enable-http-keep-alive");
+const Pref* PREF_ENABLE_HTTP_KEEP_ALIVE = makePref("enable-http-keep-alive");
 // values: true | false
-const std::string PREF_ENABLE_HTTP_PIPELINING("enable-http-pipelining");
+const Pref* PREF_ENABLE_HTTP_PIPELINING = makePref("enable-http-pipelining");
 // value: 1*digit
-const std::string PREF_MAX_HTTP_PIPELINING("max-http-pipelining");
+const Pref* PREF_MAX_HTTP_PIPELINING = makePref("max-http-pipelining");
 // value: string
-const std::string PREF_HEADER("header");
+const Pref* PREF_HEADER = makePref("header");
 // value: string that your file system recognizes as a file name.
-const std::string PREF_CERTIFICATE("certificate");
+const Pref* PREF_CERTIFICATE = makePref("certificate");
 // value: string that your file system recognizes as a file name.
-const std::string PREF_PRIVATE_KEY("private-key");
+const Pref* PREF_PRIVATE_KEY = makePref("private-key");
 // value: string that your file system recognizes as a file name.
-const std::string PREF_CA_CERTIFICATE("ca-certificate");
+const Pref* PREF_CA_CERTIFICATE = makePref("ca-certificate");
 // value: true | false
-const std::string PREF_CHECK_CERTIFICATE("check-certificate");
+const Pref* PREF_CHECK_CERTIFICATE = makePref("check-certificate");
 // value: true | false
-const std::string PREF_USE_HEAD("use-head");
+const Pref* PREF_USE_HEAD = makePref("use-head");
 // value: true | false
-const std::string PREF_HTTP_AUTH_CHALLENGE("http-auth-challenge");
+const Pref* PREF_HTTP_AUTH_CHALLENGE = makePref("http-auth-challenge");
 // value: true | false
-const std::string PREF_HTTP_NO_CACHE("http-no-cache");
+const Pref* PREF_HTTP_NO_CACHE = makePref("http-no-cache");
 // value: true | false
-const std::string PREF_HTTP_ACCEPT_GZIP("http-accept-gzip");
+const Pref* PREF_HTTP_ACCEPT_GZIP = makePref("http-accept-gzip");
 
 /** 
  * Proxy related preferences
  */
-const std::string PREF_HTTP_PROXY("http-proxy");
-const std::string PREF_HTTPS_PROXY("https-proxy");
-const std::string PREF_FTP_PROXY("ftp-proxy");
-const std::string PREF_ALL_PROXY("all-proxy");
+const Pref* PREF_HTTP_PROXY = makePref("http-proxy");
+const Pref* PREF_HTTPS_PROXY = makePref("https-proxy");
+const Pref* PREF_FTP_PROXY = makePref("ftp-proxy");
+const Pref* PREF_ALL_PROXY = makePref("all-proxy");
 // values: comma separeted hostname or domain
-const std::string PREF_NO_PROXY("no-proxy");
+const Pref* PREF_NO_PROXY = makePref("no-proxy");
 // values: get | tunnel
-const std::string PREF_PROXY_METHOD("proxy-method");
-const std::string V_GET("get");
-const std::string V_TUNNEL("tunnel");
-const std::string PREF_HTTP_PROXY_USER("http-proxy-user");
-const std::string PREF_HTTP_PROXY_PASSWD("http-proxy-passwd");
-const std::string PREF_HTTPS_PROXY_USER("https-proxy-user");
-const std::string PREF_HTTPS_PROXY_PASSWD("https-proxy-passwd");
-const std::string PREF_FTP_PROXY_USER("ftp-proxy-user");
-const std::string PREF_FTP_PROXY_PASSWD("ftp-proxy-passwd");
-const std::string PREF_ALL_PROXY_USER("all-proxy-user");
-const std::string PREF_ALL_PROXY_PASSWD("all-proxy-passwd");
+const Pref* PREF_PROXY_METHOD = makePref("proxy-method");
+const Pref* PREF_HTTP_PROXY_USER = makePref("http-proxy-user");
+const Pref* PREF_HTTP_PROXY_PASSWD = makePref("http-proxy-passwd");
+const Pref* PREF_HTTPS_PROXY_USER = makePref("https-proxy-user");
+const Pref* PREF_HTTPS_PROXY_PASSWD = makePref("https-proxy-passwd");
+const Pref* PREF_FTP_PROXY_USER = makePref("ftp-proxy-user");
+const Pref* PREF_FTP_PROXY_PASSWD = makePref("ftp-proxy-passwd");
+const Pref* PREF_ALL_PROXY_USER = makePref("all-proxy-user");
+const Pref* PREF_ALL_PROXY_PASSWD = makePref("all-proxy-passwd");
 
 /**
  * BitTorrent related preferences
  */
 // values: 1*digit
-const std::string PREF_PEER_CONNECTION_TIMEOUT("peer-connection-timeout");
+const Pref* PREF_PEER_CONNECTION_TIMEOUT = makePref("peer-connection-timeout");
 // values: 1*digit
-const std::string PREF_BT_TIMEOUT("bt-timeout");
+const Pref* PREF_BT_TIMEOUT = makePref("bt-timeout");
 // values: 1*digit
-const std::string PREF_BT_REQUEST_TIMEOUT("bt-request-timeout");
+const Pref* PREF_BT_REQUEST_TIMEOUT = makePref("bt-request-timeout");
 // values: true | false
-const std::string PREF_SHOW_FILES("show-files");
+const Pref* PREF_SHOW_FILES = makePref("show-files");
 // values: 1*digit
-const std::string PREF_MAX_OVERALL_UPLOAD_LIMIT("max-overall-upload-limit");
+const Pref* PREF_MAX_OVERALL_UPLOAD_LIMIT = makePref("max-overall-upload-limit");
 // values: 1*digit
-const std::string PREF_MAX_UPLOAD_LIMIT("max-upload-limit");
+const Pref* PREF_MAX_UPLOAD_LIMIT = makePref("max-upload-limit");
 // values: a string that your file system recognizes as a file name.
-const std::string PREF_TORRENT_FILE("torrent-file");
+const Pref* PREF_TORRENT_FILE = makePref("torrent-file");
 // values: 1*digit
-const std::string PREF_LISTEN_PORT("listen-port");
+const Pref* PREF_LISTEN_PORT = makePref("listen-port");
 // values: true | false | mem
-const std::string PREF_FOLLOW_TORRENT("follow-torrent");
-// values: 1*digit *( (,|-) 1*digit);
-const std::string PREF_SELECT_FILE("select-file");
+const Pref* PREF_FOLLOW_TORRENT = makePref("follow-torrent");
+// values: 1*digit * = makePref(  = makePref(,|-) 1*digit);
+const Pref* PREF_SELECT_FILE = makePref("select-file");
 // values: 1*digit
-const std::string PREF_SEED_TIME("seed-time");
+const Pref* PREF_SEED_TIME = makePref("seed-time");
 // values: 1*digit ['.' [ 1*digit ] ]
-const std::string PREF_SEED_RATIO("seed-ratio");
+const Pref* PREF_SEED_RATIO = makePref("seed-ratio");
 // values: 1*digit
-const std::string PREF_BT_KEEP_ALIVE_INTERVAL("bt-keep-alive-interval");
+const Pref* PREF_BT_KEEP_ALIVE_INTERVAL = makePref("bt-keep-alive-interval");
 // values: a string, less than or equals to 20 bytes length
-const std::string PREF_PEER_ID_PREFIX("peer-id-prefix");
+const Pref* PREF_PEER_ID_PREFIX = makePref("peer-id-prefix");
 // values: true | false
-const std::string PREF_ENABLE_PEER_EXCHANGE("enable-peer-exchange");
+const Pref* PREF_ENABLE_PEER_EXCHANGE = makePref("enable-peer-exchange");
 // values: true | false
-const std::string PREF_ENABLE_DHT("enable-dht");
+const Pref* PREF_ENABLE_DHT = makePref("enable-dht");
 // values: a string
-const std::string PREF_DHT_LISTEN_ADDR("dht-listen-addr");
+const Pref* PREF_DHT_LISTEN_ADDR = makePref("dht-listen-addr");
 // values: 1*digit
-const std::string PREF_DHT_LISTEN_PORT("dht-listen-port");
+const Pref* PREF_DHT_LISTEN_PORT = makePref("dht-listen-port");
 // values: a string
-const std::string PREF_DHT_ENTRY_POINT_HOST("dht-entry-point-host");
+const Pref* PREF_DHT_ENTRY_POINT_HOST = makePref("dht-entry-point-host");
 // values: 1*digit
-const std::string PREF_DHT_ENTRY_POINT_PORT("dht-entry-point-port");
-// values: a string (hostname:port);
-const std::string PREF_DHT_ENTRY_POINT("dht-entry-point");
+const Pref* PREF_DHT_ENTRY_POINT_PORT = makePref("dht-entry-point-port");
+// values: a string  = makePref(hostname:port);
+const Pref* PREF_DHT_ENTRY_POINT = makePref("dht-entry-point");
 // values: a string
-const std::string PREF_DHT_FILE_PATH("dht-file-path");
+const Pref* PREF_DHT_FILE_PATH = makePref("dht-file-path");
 // values: true | false
-const std::string PREF_ENABLE_DHT6("enable-dht6");
+const Pref* PREF_ENABLE_DHT6 = makePref("enable-dht6");
 // values: a string
-const std::string PREF_DHT_LISTEN_ADDR6("dht-listen-addr6");
+const Pref* PREF_DHT_LISTEN_ADDR6 = makePref("dht-listen-addr6");
 // values: a string
-const std::string PREF_DHT_ENTRY_POINT_HOST6("dht-entry-point-host6");
+const Pref* PREF_DHT_ENTRY_POINT_HOST6 = makePref("dht-entry-point-host6");
 // values: 1*digit
-const std::string PREF_DHT_ENTRY_POINT_PORT6("dht-entry-point-port6");
-// values: a string (hostname:port)
-const std::string PREF_DHT_ENTRY_POINT6("dht-entry-point6");
+const Pref* PREF_DHT_ENTRY_POINT_PORT6 = makePref("dht-entry-point-port6");
+// values: a string  = makePref(hostname:port)
+const Pref* PREF_DHT_ENTRY_POINT6 = makePref("dht-entry-point6");
 // values: a string
-const std::string PREF_DHT_FILE_PATH6("dht-file-path6");
+const Pref* PREF_DHT_FILE_PATH6 = makePref("dht-file-path6");
 // values: plain | arc4
-const std::string PREF_BT_MIN_CRYPTO_LEVEL("bt-min-crypto-level");
-const std::string V_PLAIN("plain");
-const std::string V_ARC4("arc4");
+const Pref* PREF_BT_MIN_CRYPTO_LEVEL = makePref("bt-min-crypto-level");
 // values:: true | false
-const std::string PREF_BT_REQUIRE_CRYPTO("bt-require-crypto");
+const Pref* PREF_BT_REQUIRE_CRYPTO = makePref("bt-require-crypto");
 // values: 1*digit
-const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT("bt-request-peer-speed-limit");
+const Pref* PREF_BT_REQUEST_PEER_SPEED_LIMIT = makePref("bt-request-peer-speed-limit");
 // values: 1*digit
-const std::string PREF_BT_MAX_OPEN_FILES("bt-max-open-files");
+const Pref* PREF_BT_MAX_OPEN_FILES = makePref("bt-max-open-files");
 // values: true | false
-const std::string PREF_BT_SEED_UNVERIFIED("bt-seed-unverified");
+const Pref* PREF_BT_SEED_UNVERIFIED = makePref("bt-seed-unverified");
 // values: true | false
-const std::string PREF_BT_HASH_CHECK_SEED("bt-hash-check-seed");
+const Pref* PREF_BT_HASH_CHECK_SEED = makePref("bt-hash-check-seed");
 // values: 1*digit
-const std::string PREF_BT_MAX_PEERS("bt-max-peers");
-// values: a string (IP address)
-const std::string PREF_BT_EXTERNAL_IP("bt-external-ip");
+const Pref* PREF_BT_MAX_PEERS = makePref("bt-max-peers");
+// values: a string  = makePref(IP address)
+const Pref* PREF_BT_EXTERNAL_IP = makePref("bt-external-ip");
 // values: 1*digit '=' a string that your file system recognizes as a file name.
-const std::string PREF_INDEX_OUT("index-out");
+const Pref* PREF_INDEX_OUT = makePref("index-out");
 // values: 1*digit
-const std::string PREF_BT_TRACKER_INTERVAL("bt-tracker-interval");
+const Pref* PREF_BT_TRACKER_INTERVAL = makePref("bt-tracker-interval");
 // values: 1*digit
-const std::string PREF_BT_STOP_TIMEOUT("bt-stop-timeout");
+const Pref* PREF_BT_STOP_TIMEOUT = makePref("bt-stop-timeout");
 // values: head[=SIZE]|tail[=SIZE], ...
-const std::string PREF_BT_PRIORITIZE_PIECE("bt-prioritize-piece");
+const Pref* PREF_BT_PRIORITIZE_PIECE = makePref("bt-prioritize-piece");
 // values: true | false
-const std::string PREF_BT_SAVE_METADATA("bt-save-metadata");
+const Pref* PREF_BT_SAVE_METADATA = makePref("bt-save-metadata");
 // values: true | false
-const std::string PREF_BT_METADATA_ONLY("bt-metadata-only");
+const Pref* PREF_BT_METADATA_ONLY = makePref("bt-metadata-only");
 // values: true | false
-const std::string PREF_BT_ENABLE_LPD("bt-enable-lpd");
+const Pref* PREF_BT_ENABLE_LPD = makePref("bt-enable-lpd");
 // values: string
-const std::string PREF_BT_LPD_INTERFACE("bt-lpd-interface");
+const Pref* PREF_BT_LPD_INTERFACE = makePref("bt-lpd-interface");
 // values: 1*digit
-const std::string PREF_BT_TRACKER_TIMEOUT("bt-tracker-timeout");
+const Pref* PREF_BT_TRACKER_TIMEOUT = makePref("bt-tracker-timeout");
 // values: 1*digit
-const std::string PREF_BT_TRACKER_CONNECT_TIMEOUT("bt-tracker-connect-timeout");
+const Pref* PREF_BT_TRACKER_CONNECT_TIMEOUT = makePref("bt-tracker-connect-timeout");
 // values: 1*digit
-const std::string PREF_DHT_MESSAGE_TIMEOUT("dht-message-timeout");
+const Pref* PREF_DHT_MESSAGE_TIMEOUT = makePref("dht-message-timeout");
 // values: string
-const std::string PREF_ON_BT_DOWNLOAD_COMPLETE("on-bt-download-complete");
+const Pref* PREF_ON_BT_DOWNLOAD_COMPLETE = makePref("on-bt-download-complete");
 // values: string
-const std::string PREF_BT_TRACKER("bt-tracker");
+const Pref* PREF_BT_TRACKER = makePref("bt-tracker");
 // values: string
-const std::string PREF_BT_EXCLUDE_TRACKER("bt-exclude-tracker");
+const Pref* PREF_BT_EXCLUDE_TRACKER = makePref("bt-exclude-tracker");
 
 /**
  * Metalink related preferences
  */
 // values: a string that your file system recognizes as a file name.
-const std::string PREF_METALINK_FILE("metalink-file");
+const Pref* PREF_METALINK_FILE = makePref("metalink-file");
 // values: a string
-const std::string PREF_METALINK_VERSION("metalink-version");
+const Pref* PREF_METALINK_VERSION = makePref("metalink-version");
 // values: a string
-const std::string PREF_METALINK_LANGUAGE("metalink-language");
+const Pref* PREF_METALINK_LANGUAGE = makePref("metalink-language");
 // values: a string
-const std::string PREF_METALINK_OS("metalink-os");
+const Pref* PREF_METALINK_OS = makePref("metalink-os");
 // values: a string
-const std::string PREF_METALINK_LOCATION("metalink-location");
+const Pref* PREF_METALINK_LOCATION = makePref("metalink-location");
 // values: 1*digit
-const std::string PREF_METALINK_SERVERS("metalink-servers");
+const Pref* PREF_METALINK_SERVERS = makePref("metalink-servers");
 // values: true | false | mem
-const std::string PREF_FOLLOW_METALINK("follow-metalink");
+const Pref* PREF_FOLLOW_METALINK = makePref("follow-metalink");
 // values: http | https | ftp | none
-const std::string PREF_METALINK_PREFERRED_PROTOCOL("metalink-preferred-protocol");
-const std::string V_HTTP("http");
-const std::string V_HTTPS("https");
-const std::string V_FTP("ftp");
+const Pref* PREF_METALINK_PREFERRED_PROTOCOL = makePref("metalink-preferred-protocol");
 // values: true | false
-const std::string PREF_METALINK_ENABLE_UNIQUE_PROTOCOL("metalink-enable-unique-protocol");
-const std::string PREF_METALINK_BASE_URI("metalink-base-uri");
+const Pref* PREF_METALINK_ENABLE_UNIQUE_PROTOCOL = makePref("metalink-enable-unique-protocol");
+const Pref* PREF_METALINK_BASE_URI = makePref("metalink-base-uri");
 
 } // namespace aria2

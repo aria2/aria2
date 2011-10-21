@@ -39,16 +39,17 @@
 #include "OptionHandlerException.h"
 #include "a2functional.h"
 #include "Option.h"
+#include "prefs.h"
 
 namespace aria2 {
 
 NameMatchOptionHandler::NameMatchOptionHandler
-(const std::string& optName,
+(const Pref* pref,
  const std::string& description,
  const std::string& defaultValue,
  ARG_TYPE argType,
  char shortName)
-  : optName_(optName),
+  : pref_(pref),
     description_(description),
     defaultValue_(defaultValue),
     id_(0),
@@ -62,7 +63,7 @@ NameMatchOptionHandler::~NameMatchOptionHandler() {}
   
 bool NameMatchOptionHandler::canHandle(const std::string& optName)
 {
-  return optName_ == optName;
+  return pref_->k == optName;
 }
 
 void NameMatchOptionHandler::parse(Option& option, const std::string& arg)
@@ -70,7 +71,7 @@ void NameMatchOptionHandler::parse(Option& option, const std::string& arg)
   try {
     parseArg(option, arg);
   } catch(Exception& e) {
-    throw OPTION_HANDLER_EXCEPTION2(optName_, e);
+    throw OPTION_HANDLER_EXCEPTION2(pref_, e);
   }
 }
 
@@ -87,6 +88,11 @@ void NameMatchOptionHandler::addTag(const std::string& tag)
 std::string NameMatchOptionHandler::toTagString() const
 {
   return strjoin(tags_.begin(), tags_.end(), ", ");
+}
+
+const std::string& NameMatchOptionHandler::getName() const
+{
+  return pref_->k;
 }
 
 } // namespace aria2

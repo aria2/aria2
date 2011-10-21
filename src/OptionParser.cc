@@ -50,6 +50,7 @@
 #include "OptionHandlerFactory.h"
 #include "DlAbortEx.h"
 #include "error_code.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -196,16 +197,21 @@ void OptionParser::parse(Option& option, std::istream& is)
 }
 
 namespace {
-class DummyOptionHandler:public NameMatchOptionHandler {
+class DummyOptionHandler:public NullOptionHandler {
 protected:
   virtual void parseArg(Option& option, const std::string& arg) {}
 public:
-  DummyOptionHandler(const std::string& name):NameMatchOptionHandler(name) {}
+  DummyOptionHandler(const std::string& optName)
+    : NullOptionHandler(),
+      optName_(optName)
+  {}
 
-  virtual std::string createPossibleValuesString() const
+  virtual const std::string& getName() const
   {
-    return A2STR::NIL;
+    return optName_;
   }
+private:
+  std::string optName_;
 };
 } // namespace
 

@@ -40,6 +40,28 @@
 
 namespace aria2 {
 
+struct Pref {
+  Pref(const std::string& k, size_t i);
+  // Keyword, aka Option Name
+  std::string k;
+  // Option ID
+  size_t i;
+};
+
+namespace option {
+
+// Returns the number of options.
+size_t countOption();
+
+// Returns Pref whose ID is id. id must be less than countOption().
+const Pref* i2p(size_t id);
+
+// Returns Pref whose keyword is k. If no such Pref is found, returns
+// special null Pref whose ID is 0.
+const Pref* k2p(const std::string& k);
+
+} // namespace option
+
 /**
  * Constants
  */
@@ -51,390 +73,393 @@ extern const std::string V_MEM;
 extern const std::string V_ALL;
 extern const std::string A2_V_FULL;
 extern const std::string A2_V_GEOM;
-
-/**
- * General preferences
- */
-// values: 1*digit
-extern const std::string PREF_TIMEOUT;
-// values: 1*digit
-extern const std::string PREF_DNS_TIMEOUT;
-// values: 1*digit
-extern const std::string PREF_CONNECT_TIMEOUT;
-// values: 1*digit
-extern const std::string PREF_MAX_TRIES;
-// values: 1*digit
-extern const std::string PREF_AUTO_SAVE_INTERVAL;
-// values: a string that your file system recognizes as a file name.
-extern const std::string PREF_LOG;
-// values: a string that your file system recognizes as a directory.
-extern const std::string PREF_DIR;
-// values: a string that your file system recognizes as a file name.
-extern const std::string PREF_OUT;
-// values: 1*digit
-extern const std::string PREF_SPLIT;
-// value: true | false
-extern const std::string PREF_DAEMON;
-// value: a string
-extern const std::string PREF_REFERER;
-// value: 1*digit
-extern const std::string PREF_LOWEST_SPEED_LIMIT;
-// value: 1*digit
-extern const std::string PREF_PIECE_LENGTH;
-// value: 1*digit
-extern const std::string PREF_MAX_DOWNLOAD_LIMIT;
-// value: 1*digit
-extern const std::string PREF_STARTUP_IDLE_TIME;
-// value: prealloc | falloc | none
-extern const std::string PREF_FILE_ALLOCATION;
 extern const std::string V_PREALLOC;
 extern const std::string V_FALLOC;
-// value: 1*digit
-extern const std::string PREF_NO_FILE_ALLOCATION_LIMIT;
-// value: true | false
-extern const std::string PREF_ALLOW_OVERWRITE;
-// value: true | false
-extern const std::string PREF_REALTIME_CHUNK_CHECKSUM;
-// value: true | false
-extern const std::string PREF_CHECK_INTEGRITY;
-// value: string that your file system recognizes as a file name.
-extern const std::string PREF_NETRC_PATH;
-// value:
-extern const std::string PREF_CONTINUE;
-// value:
-extern const std::string PREF_NO_NETRC;
-// value: 1*digit
-extern const std::string PREF_MAX_OVERALL_DOWNLOAD_LIMIT;
-// value: 1*digit
-extern const std::string PREF_MAX_DOWNLOADS;
-// value: string that your file system recognizes as a file name.
-extern const std::string PREF_INPUT_FILE;
-// value: 1*digit
-extern const std::string PREF_MAX_CONCURRENT_DOWNLOADS;
-// value: true | false
-extern const std::string PREF_FORCE_SEQUENTIAL;
-// value: true | false
-extern const std::string PREF_AUTO_FILE_RENAMING;
-// value: true | false
-extern const std::string PREF_PARAMETERIZED_URI;
-// value: true | false
-extern const std::string PREF_ENABLE_DIRECT_IO;
-// value: true | false
-extern const std::string PREF_ALLOW_PIECE_LENGTH_CHANGE;
-// value: true | false
-extern const std::string PREF_NO_CONF;
-// value: string
-extern const std::string PREF_CONF_PATH;
-// value: 1*digit
-extern const std::string PREF_STOP;
-// value: true | false
-extern const std::string PREF_QUIET;
-// value: true | false
-extern const std::string PREF_ASYNC_DNS;
-// value: 1*digit
-extern const std::string PREF_SUMMARY_INTERVAL;
-// value: debug, info, notice, warn, error
-extern const std::string PREF_LOG_LEVEL;
 extern const std::string V_DEBUG;
 extern const std::string V_INFO;
 extern const std::string V_NOTICE;
 extern const std::string V_WARN;
 extern const std::string V_ERROR;
-// value: inorder | feedback | adaptive
-extern const std::string PREF_URI_SELECTOR;
 extern const std::string V_INORDER;
 extern const std::string V_FEEDBACK;
 extern const std::string V_ADAPTIVE;
-// value: 1*digit
-extern const std::string PREF_SERVER_STAT_TIMEOUT;
-// value: string that your file system recognizes as a file name.
-extern const std::string PREF_SERVER_STAT_IF;
-// value: string that your file system recognizes as a file name.
-extern const std::string PREF_SERVER_STAT_OF;
-// value: true | false
-extern const std::string PREF_REMOTE_TIME;
-// value: 1*digit
-extern const std::string PREF_MAX_FILE_NOT_FOUND;
-// value: epoll | select
-extern const std::string PREF_EVENT_POLL;
 extern const std::string V_EPOLL;
 extern const std::string V_KQUEUE;
 extern const std::string V_PORT;
 extern const std::string V_POLL;
 extern const std::string V_SELECT;
+extern const std::string V_BINARY;
+extern const std::string V_ASCII;
+extern const std::string V_GET;
+extern const std::string V_TUNNEL;
+extern const std::string V_PLAIN;
+extern const std::string V_ARC4;
+extern const std::string V_HTTP;
+extern const std::string V_HTTPS;
+extern const std::string V_FTP;
+
+extern const Pref* PREF_VERSION;
+extern const Pref* PREF_HELP;
+
+/**
+ * General preferences
+ */
+// values: 1*digit
+extern const Pref* PREF_TIMEOUT;
+// values: 1*digit
+extern const Pref* PREF_DNS_TIMEOUT;
+// values: 1*digit
+extern const Pref* PREF_CONNECT_TIMEOUT;
+// values: 1*digit
+extern const Pref* PREF_MAX_TRIES;
+// values: 1*digit
+extern const Pref* PREF_AUTO_SAVE_INTERVAL;
+// values: a string that your file system recognizes as a file name.
+extern const Pref* PREF_LOG;
+// values: a string that your file system recognizes as a directory.
+extern const Pref* PREF_DIR;
+// values: a string that your file system recognizes as a file name.
+extern const Pref* PREF_OUT;
+// values: 1*digit
+extern const Pref* PREF_SPLIT;
 // value: true | false
-extern const std::string PREF_ENABLE_RPC;
+extern const Pref* PREF_DAEMON;
+// value: a string
+extern const Pref* PREF_REFERER;
 // value: 1*digit
-extern const std::string PREF_RPC_LISTEN_PORT;
-// value: string
-extern const std::string PREF_RPC_USER;
-// value: string
-extern const std::string PREF_RPC_PASSWD;
+extern const Pref* PREF_LOWEST_SPEED_LIMIT;
 // value: 1*digit
-extern const std::string PREF_RPC_MAX_REQUEST_SIZE;
-// value: true | false
-extern const std::string PREF_RPC_LISTEN_ALL;
-// value: true | false
-extern const std::string PREF_RPC_ALLOW_ORIGIN_ALL;
-// value: true | false
-extern const std::string PREF_DRY_RUN;
-// value: true | false
-extern const std::string PREF_REUSE_URI;
-// value: string
-extern const std::string PREF_ON_DOWNLOAD_START;
-extern const std::string PREF_ON_DOWNLOAD_PAUSE;
-extern const std::string PREF_ON_DOWNLOAD_STOP;
-extern const std::string PREF_ON_DOWNLOAD_COMPLETE;
-extern const std::string PREF_ON_DOWNLOAD_ERROR;
-// value: string
-extern const std::string PREF_INTERFACE;
-// value: true | false
-extern const std::string PREF_DISABLE_IPV6;
-// value: true | false
-extern const std::string PREF_HUMAN_READABLE;
-// value: true | false
-extern const std::string PREF_REMOVE_CONTROL_FILE;
-// value: true | false
-extern const std::string PREF_ALWAYS_RESUME;
+extern const Pref* PREF_PIECE_LENGTH;
 // value: 1*digit
-extern const std::string PREF_MAX_RESUME_FAILURE_TRIES;
+extern const Pref* PREF_MAX_DOWNLOAD_LIMIT;
+// value: 1*digit
+extern const Pref* PREF_STARTUP_IDLE_TIME;
+// value: prealloc | falloc | none
+extern const Pref* PREF_FILE_ALLOCATION;
+// value: 1*digit
+extern const Pref* PREF_NO_FILE_ALLOCATION_LIMIT;
+// value: true | false
+extern const Pref* PREF_ALLOW_OVERWRITE;
+// value: true | false
+extern const Pref* PREF_REALTIME_CHUNK_CHECKSUM;
+// value: true | false
+extern const Pref* PREF_CHECK_INTEGRITY;
 // value: string that your file system recognizes as a file name.
-extern const std::string PREF_SAVE_SESSION;
+extern const Pref* PREF_NETRC_PATH;
+// value:
+extern const Pref* PREF_CONTINUE;
+// value:
+extern const Pref* PREF_NO_NETRC;
 // value: 1*digit
-extern const std::string PREF_MAX_CONNECTION_PER_SERVER;
+extern const Pref* PREF_MAX_OVERALL_DOWNLOAD_LIMIT;
 // value: 1*digit
-extern const std::string PREF_MIN_SPLIT_SIZE;
+extern const Pref* PREF_MAX_DOWNLOADS;
+// value: string that your file system recognizes as a file name.
+extern const Pref* PREF_INPUT_FILE;
+// value: 1*digit
+extern const Pref* PREF_MAX_CONCURRENT_DOWNLOADS;
 // value: true | false
-extern const std::string PREF_CONDITIONAL_GET;
+extern const Pref* PREF_FORCE_SEQUENTIAL;
 // value: true | false
-extern const std::string PREF_SELECT_LEAST_USED_HOST;
+extern const Pref* PREF_AUTO_FILE_RENAMING;
 // value: true | false
-extern const std::string PREF_ENABLE_ASYNC_DNS6;
-// value: 1*digit
-extern const std::string PREF_MAX_DOWNLOAD_RESULT;
-// value: 1*digit
-extern const std::string PREF_RETRY_WAIT;
+extern const Pref* PREF_PARAMETERIZED_URI;
+// value: true | false
+extern const Pref* PREF_ENABLE_DIRECT_IO;
+// value: true | false
+extern const Pref* PREF_ALLOW_PIECE_LENGTH_CHANGE;
+// value: true | false
+extern const Pref* PREF_NO_CONF;
 // value: string
-extern const std::string PREF_ASYNC_DNS_SERVER;
+extern const Pref* PREF_CONF_PATH;
+// value: 1*digit
+extern const Pref* PREF_STOP;
 // value: true | false
-extern const std::string PREF_SHOW_CONSOLE_READOUT;
+extern const Pref* PREF_QUIET;
+// value: true | false
+extern const Pref* PREF_ASYNC_DNS;
+// value: 1*digit
+extern const Pref* PREF_SUMMARY_INTERVAL;
+// value: debug, info, notice, warn, error
+extern const Pref* PREF_LOG_LEVEL;
+// value: inorder | feedback | adaptive
+extern const Pref* PREF_URI_SELECTOR;
+// value: 1*digit
+extern const Pref* PREF_SERVER_STAT_TIMEOUT;
+// value: string that your file system recognizes as a file name.
+extern const Pref* PREF_SERVER_STAT_IF;
+// value: string that your file system recognizes as a file name.
+extern const Pref* PREF_SERVER_STAT_OF;
+// value: true | false
+extern const Pref* PREF_REMOTE_TIME;
+// value: 1*digit
+extern const Pref* PREF_MAX_FILE_NOT_FOUND;
+// value: epoll | select
+extern const Pref* PREF_EVENT_POLL;
+// value: true | false
+extern const Pref* PREF_ENABLE_RPC;
+// value: 1*digit
+extern const Pref* PREF_RPC_LISTEN_PORT;
+// value: string
+extern const Pref* PREF_RPC_USER;
+// value: string
+extern const Pref* PREF_RPC_PASSWD;
+// value: 1*digit
+extern const Pref* PREF_RPC_MAX_REQUEST_SIZE;
+// value: true | false
+extern const Pref* PREF_RPC_LISTEN_ALL;
+// value: true | false
+extern const Pref* PREF_RPC_ALLOW_ORIGIN_ALL;
+// value: true | false
+extern const Pref* PREF_DRY_RUN;
+// value: true | false
+extern const Pref* PREF_REUSE_URI;
+// value: string
+extern const Pref* PREF_ON_DOWNLOAD_START;
+extern const Pref* PREF_ON_DOWNLOAD_PAUSE;
+extern const Pref* PREF_ON_DOWNLOAD_STOP;
+extern const Pref* PREF_ON_DOWNLOAD_COMPLETE;
+extern const Pref* PREF_ON_DOWNLOAD_ERROR;
+// value: string
+extern const Pref* PREF_INTERFACE;
+// value: true | false
+extern const Pref* PREF_DISABLE_IPV6;
+// value: true | false
+extern const Pref* PREF_HUMAN_READABLE;
+// value: true | false
+extern const Pref* PREF_REMOVE_CONTROL_FILE;
+// value: true | false
+extern const Pref* PREF_ALWAYS_RESUME;
+// value: 1*digit
+extern const Pref* PREF_MAX_RESUME_FAILURE_TRIES;
+// value: string that your file system recognizes as a file name.
+extern const Pref* PREF_SAVE_SESSION;
+// value: 1*digit
+extern const Pref* PREF_MAX_CONNECTION_PER_SERVER;
+// value: 1*digit
+extern const Pref* PREF_MIN_SPLIT_SIZE;
+// value: true | false
+extern const Pref* PREF_CONDITIONAL_GET;
+// value: true | false
+extern const Pref* PREF_SELECT_LEAST_USED_HOST;
+// value: true | false
+extern const Pref* PREF_ENABLE_ASYNC_DNS6;
+// value: 1*digit
+extern const Pref* PREF_MAX_DOWNLOAD_RESULT;
+// value: 1*digit
+extern const Pref* PREF_RETRY_WAIT;
+// value: string
+extern const Pref* PREF_ASYNC_DNS_SERVER;
+// value: true | false
+extern const Pref* PREF_SHOW_CONSOLE_READOUT;
 // value: default | inorder | geom
-extern const std::string PREF_STREAM_PIECE_SELECTOR;
+extern const Pref* PREF_STREAM_PIECE_SELECTOR;
 // value: true | false
-extern const std::string PREF_TRUNCATE_CONSOLE_READOUT;
+extern const Pref* PREF_TRUNCATE_CONSOLE_READOUT;
 // value: true | false
-extern const std::string PREF_PAUSE;
+extern const Pref* PREF_PAUSE;
 // value: default | full
-extern const std::string PREF_DOWNLOAD_RESULT;
+extern const Pref* PREF_DOWNLOAD_RESULT;
 // value: true | false
-extern const std::string PREF_HASH_CHECK_ONLY;
+extern const Pref* PREF_HASH_CHECK_ONLY;
 
 /**
  * FTP related preferences
  */
-extern const std::string PREF_FTP_USER;
-extern const std::string PREF_FTP_PASSWD;
+extern const Pref* PREF_FTP_USER;
+extern const Pref* PREF_FTP_PASSWD;
 // values: binary | ascii
-extern const std::string PREF_FTP_TYPE;
-extern const std::string V_BINARY;
-extern const std::string V_ASCII;
+extern const Pref* PREF_FTP_TYPE;
 // values: true | false
-extern const std::string PREF_FTP_PASV;
+extern const Pref* PREF_FTP_PASV;
 // values: true | false
-extern const std::string PREF_FTP_REUSE_CONNECTION;
+extern const Pref* PREF_FTP_REUSE_CONNECTION;
 // values: hashType=digest
-extern const std::string PREF_CHECKSUM;
+extern const Pref* PREF_CHECKSUM;
 
 /**
  * HTTP related preferences
  */
-extern const std::string PREF_HTTP_USER;
-extern const std::string PREF_HTTP_PASSWD;
+extern const Pref* PREF_HTTP_USER;
+extern const Pref* PREF_HTTP_PASSWD;
 // values: string
-extern const std::string PREF_USER_AGENT;
+extern const Pref* PREF_USER_AGENT;
 // value: string that your file system recognizes as a file name.
-extern const std::string PREF_LOAD_COOKIES;
+extern const Pref* PREF_LOAD_COOKIES;
 // value: string that your file system recognizes as a file name.
-extern const std::string PREF_SAVE_COOKIES;
+extern const Pref* PREF_SAVE_COOKIES;
 // values: true | false
-extern const std::string PREF_ENABLE_HTTP_KEEP_ALIVE;
+extern const Pref* PREF_ENABLE_HTTP_KEEP_ALIVE;
 // values: true | false
-extern const std::string PREF_ENABLE_HTTP_PIPELINING;
+extern const Pref* PREF_ENABLE_HTTP_PIPELINING;
 // value: 1*digit
-extern const std::string PREF_MAX_HTTP_PIPELINING;
+extern const Pref* PREF_MAX_HTTP_PIPELINING;
 // value: string
-extern const std::string PREF_HEADER;
+extern const Pref* PREF_HEADER;
 // value: string that your file system recognizes as a file name.
-extern const std::string PREF_CERTIFICATE;
+extern const Pref* PREF_CERTIFICATE;
 // value: string that your file system recognizes as a file name.
-extern const std::string PREF_PRIVATE_KEY;
+extern const Pref* PREF_PRIVATE_KEY;
 // value: string that your file system recognizes as a file name.
-extern const std::string PREF_CA_CERTIFICATE;
+extern const Pref* PREF_CA_CERTIFICATE;
 // value: true | false
-extern const std::string PREF_CHECK_CERTIFICATE;
+extern const Pref* PREF_CHECK_CERTIFICATE;
 // value: true | false
-extern const std::string PREF_USE_HEAD;
+extern const Pref* PREF_USE_HEAD;
 // value: true | false
-extern const std::string PREF_HTTP_AUTH_CHALLENGE;
+extern const Pref* PREF_HTTP_AUTH_CHALLENGE;
 // value: true | false
-extern const std::string PREF_HTTP_NO_CACHE;
+extern const Pref* PREF_HTTP_NO_CACHE;
 // value: true | false
-extern const std::string PREF_HTTP_ACCEPT_GZIP;
+extern const Pref* PREF_HTTP_ACCEPT_GZIP;
 
 /**;
  * Proxy related preferences
  */
-extern const std::string PREF_HTTP_PROXY;
-extern const std::string PREF_HTTPS_PROXY;
-extern const std::string PREF_FTP_PROXY;
-extern const std::string PREF_ALL_PROXY;
+extern const Pref* PREF_HTTP_PROXY;
+extern const Pref* PREF_HTTPS_PROXY;
+extern const Pref* PREF_FTP_PROXY;
+extern const Pref* PREF_ALL_PROXY;
 // values: comma separeted hostname or domain
-extern const std::string PREF_NO_PROXY;
+extern const Pref* PREF_NO_PROXY;
 // values: get | tunnel
-extern const std::string PREF_PROXY_METHOD;
-extern const std::string V_GET;
-extern const std::string V_TUNNEL;
-extern const std::string PREF_HTTP_PROXY_USER;
-extern const std::string PREF_HTTP_PROXY_PASSWD;
-extern const std::string PREF_HTTPS_PROXY_USER;
-extern const std::string PREF_HTTPS_PROXY_PASSWD;
-extern const std::string PREF_FTP_PROXY_USER;
-extern const std::string PREF_FTP_PROXY_PASSWD;
-extern const std::string PREF_ALL_PROXY_USER;
-extern const std::string PREF_ALL_PROXY_PASSWD;
+extern const Pref* PREF_PROXY_METHOD;
+extern const Pref* PREF_HTTP_PROXY_USER;
+extern const Pref* PREF_HTTP_PROXY_PASSWD;
+extern const Pref* PREF_HTTPS_PROXY_USER;
+extern const Pref* PREF_HTTPS_PROXY_PASSWD;
+extern const Pref* PREF_FTP_PROXY_USER;
+extern const Pref* PREF_FTP_PROXY_PASSWD;
+extern const Pref* PREF_ALL_PROXY_USER;
+extern const Pref* PREF_ALL_PROXY_PASSWD;
 
 /**
  * BitTorrent related preferences
  */
 // values: 1*digit
-extern const std::string PREF_PEER_CONNECTION_TIMEOUT;
+extern const Pref* PREF_PEER_CONNECTION_TIMEOUT;
 // values: 1*digit
-extern const std::string PREF_BT_TIMEOUT;
+extern const Pref* PREF_BT_TIMEOUT;
 // values: 1*digit
-extern const std::string PREF_BT_REQUEST_TIMEOUT;
+extern const Pref* PREF_BT_REQUEST_TIMEOUT;
 // values: true | false
-extern const std::string PREF_SHOW_FILES;
+extern const Pref* PREF_SHOW_FILES;
 // values: 1*digit
-extern const std::string PREF_MAX_OVERALL_UPLOAD_LIMIT;
+extern const Pref* PREF_MAX_OVERALL_UPLOAD_LIMIT;
 // values: 1*digit
-extern const std::string PREF_MAX_UPLOAD_LIMIT;
+extern const Pref* PREF_MAX_UPLOAD_LIMIT;
 // values: a string that your file system recognizes as a file name.
-extern const std::string PREF_TORRENT_FILE;
+extern const Pref* PREF_TORRENT_FILE;
 // values: 1*digit
-extern const std::string PREF_LISTEN_PORT;
+extern const Pref* PREF_LISTEN_PORT;
 // values: true | false | mem
-extern const std::string PREF_FOLLOW_TORRENT;
+extern const Pref* PREF_FOLLOW_TORRENT;
 // values: 1*digit *( (,|-) 1*digit)
-extern const std::string PREF_SELECT_FILE;
+extern const Pref* PREF_SELECT_FILE;
 // values: 1*digit
-extern const std::string PREF_SEED_TIME;
+extern const Pref* PREF_SEED_TIME;
 // values: 1*digit ['.' [ 1*digit ] ]
-extern const std::string PREF_SEED_RATIO;
+extern const Pref* PREF_SEED_RATIO;
 // values: 1*digit
-extern const std::string PREF_BT_KEEP_ALIVE_INTERVAL;
+extern const Pref* PREF_BT_KEEP_ALIVE_INTERVAL;
 // values: a string, less than or equals to 20 bytes length
-extern const std::string PREF_PEER_ID_PREFIX;
+extern const Pref* PREF_PEER_ID_PREFIX;
 // values: true | false
-extern const std::string PREF_ENABLE_PEER_EXCHANGE;
+extern const Pref* PREF_ENABLE_PEER_EXCHANGE;
 // values: true | false
-extern const std::string PREF_ENABLE_DHT;
+extern const Pref* PREF_ENABLE_DHT;
 // values: a string
-extern const std::string PREF_DHT_LISTEN_ADDR;
+extern const Pref* PREF_DHT_LISTEN_ADDR;
 // values: 1*digit
-extern const std::string PREF_DHT_LISTEN_PORT;
+extern const Pref* PREF_DHT_LISTEN_PORT;
 // values: a string
-extern const std::string PREF_DHT_ENTRY_POINT_HOST;
+extern const Pref* PREF_DHT_ENTRY_POINT_HOST;
 // values: 1*digit
-extern const std::string PREF_DHT_ENTRY_POINT_PORT;
+extern const Pref* PREF_DHT_ENTRY_POINT_PORT;
 // values: a string (hostname:port)
-extern const std::string PREF_DHT_ENTRY_POINT;
+extern const Pref* PREF_DHT_ENTRY_POINT;
 // values: a string
-extern const std::string PREF_DHT_FILE_PATH;
+extern const Pref* PREF_DHT_FILE_PATH;
 // values: true | false
-extern const std::string PREF_ENABLE_DHT6;
+extern const Pref* PREF_ENABLE_DHT6;
 // values: a string
-extern const std::string PREF_DHT_LISTEN_ADDR6;
+extern const Pref* PREF_DHT_LISTEN_ADDR6;
 // values: a string
-extern const std::string PREF_DHT_ENTRY_POINT_HOST6;
+extern const Pref* PREF_DHT_ENTRY_POINT_HOST6;
 // values: 1*digit
-extern const std::string PREF_DHT_ENTRY_POINT_PORT6;
+extern const Pref* PREF_DHT_ENTRY_POINT_PORT6;
 // values: a string (hostname:port)
-extern const std::string PREF_DHT_ENTRY_POINT6;
+extern const Pref* PREF_DHT_ENTRY_POINT6;
 // values: a string
-extern const std::string PREF_DHT_FILE_PATH6;
+extern const Pref* PREF_DHT_FILE_PATH6;
 // values: plain | arc4
-extern const std::string PREF_BT_MIN_CRYPTO_LEVEL;
-extern const std::string V_PLAIN;
-extern const std::string V_ARC4;
+extern const Pref* PREF_BT_MIN_CRYPTO_LEVEL;
 // values:: true | false
-extern const std::string PREF_BT_REQUIRE_CRYPTO;
+extern const Pref* PREF_BT_REQUIRE_CRYPTO;
 // values: 1*digit
-extern const std::string PREF_BT_REQUEST_PEER_SPEED_LIMIT;
+extern const Pref* PREF_BT_REQUEST_PEER_SPEED_LIMIT;
 // values: 1*digit
-extern const std::string PREF_BT_MAX_OPEN_FILES;
+extern const Pref* PREF_BT_MAX_OPEN_FILES;
 // values: true | false
-extern const std::string PREF_BT_SEED_UNVERIFIED;
+extern const Pref* PREF_BT_SEED_UNVERIFIED;
 // values: true | false
-extern const std::string PREF_BT_HASH_CHECK_SEED;
+extern const Pref* PREF_BT_HASH_CHECK_SEED;
 // values: 1*digit
-extern const std::string PREF_BT_MAX_PEERS;
+extern const Pref* PREF_BT_MAX_PEERS;
 // values: a string (IP address)
-extern const std::string PREF_BT_EXTERNAL_IP;
+extern const Pref* PREF_BT_EXTERNAL_IP;
 // values: 1*digit '=' a string that your file system recognizes as a file name.
-extern const std::string PREF_INDEX_OUT;
+extern const Pref* PREF_INDEX_OUT;
 // values: 1*digit
-extern const std::string PREF_BT_TRACKER_INTERVAL;
+extern const Pref* PREF_BT_TRACKER_INTERVAL;
 // values: 1*digit
-extern const std::string PREF_BT_STOP_TIMEOUT;
+extern const Pref* PREF_BT_STOP_TIMEOUT;
 // values: head[=SIZE]|tail[=SIZE], ...
-extern const std::string PREF_BT_PRIORITIZE_PIECE;
+extern const Pref* PREF_BT_PRIORITIZE_PIECE;
 // values: true | false
-extern const std::string PREF_BT_SAVE_METADATA;
+extern const Pref* PREF_BT_SAVE_METADATA;
 // values: true | false
-extern const std::string PREF_BT_METADATA_ONLY;
+extern const Pref* PREF_BT_METADATA_ONLY;
 // values: true | false
-extern const std::string PREF_BT_ENABLE_LPD;
+extern const Pref* PREF_BT_ENABLE_LPD;
 // values: string
-extern const std::string PREF_BT_LPD_INTERFACE;
+extern const Pref* PREF_BT_LPD_INTERFACE;
 // values: 1*digit
-extern const std::string PREF_BT_TRACKER_TIMEOUT;
+extern const Pref* PREF_BT_TRACKER_TIMEOUT;
 // values: 1*digit
-extern const std::string PREF_BT_TRACKER_CONNECT_TIMEOUT;
+extern const Pref* PREF_BT_TRACKER_CONNECT_TIMEOUT;
 // values: 1*digit
-extern const std::string PREF_DHT_MESSAGE_TIMEOUT;
+extern const Pref* PREF_DHT_MESSAGE_TIMEOUT;
 // values: string
-extern const std::string PREF_ON_BT_DOWNLOAD_COMPLETE;
+extern const Pref* PREF_ON_BT_DOWNLOAD_COMPLETE;
 // values: string
-extern const std::string PREF_BT_TRACKER;
+extern const Pref* PREF_BT_TRACKER;
 // values: string
-extern const std::string PREF_BT_EXCLUDE_TRACKER;
+extern const Pref* PREF_BT_EXCLUDE_TRACKER;
 
 /**
  * Metalink related preferences
  */
 // values: a string that your file system recognizes as a file name.
-extern const std::string PREF_METALINK_FILE;
+extern const Pref* PREF_METALINK_FILE;
 // values: a string
-extern const std::string PREF_METALINK_VERSION;
+extern const Pref* PREF_METALINK_VERSION;
 // values: a string
-extern const std::string PREF_METALINK_LANGUAGE;
+extern const Pref* PREF_METALINK_LANGUAGE;
 // values: a string
-extern const std::string PREF_METALINK_OS;
+extern const Pref* PREF_METALINK_OS;
 // values: a string
-extern const std::string PREF_METALINK_LOCATION;
+extern const Pref* PREF_METALINK_LOCATION;
 // values: 1*digit
-extern const std::string PREF_METALINK_SERVERS;
+extern const Pref* PREF_METALINK_SERVERS;
 // values: true | false | mem
-extern const std::string PREF_FOLLOW_METALINK;
+extern const Pref* PREF_FOLLOW_METALINK;
 // values: http | https | ftp | none
-extern const std::string PREF_METALINK_PREFERRED_PROTOCOL;
-extern const std::string V_HTTP;
-extern const std::string V_HTTPS;
-extern const std::string V_FTP;
+extern const Pref* PREF_METALINK_PREFERRED_PROTOCOL;
 // values: true | false
-extern const std::string PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
+extern const Pref* PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
 // values: a string
-extern const std::string PREF_METALINK_BASE_URI;
+extern const Pref* PREF_METALINK_BASE_URI;
 
 } // namespace aria2
 

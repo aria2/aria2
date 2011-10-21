@@ -36,42 +36,45 @@
 #define D_OPTION_H
 
 #include "common.h"
+
 #include <string>
-#include <map>
+#include <vector>
 
 namespace aria2 {
 
+class Pref;
+
 class Option {
 private:
-  std::map<std::string, std::string> table_;
+  std::vector<std::string> table_;
+  std::vector<unsigned char> use_;
 public:
   Option();
   ~Option();
+  Option(const Option& option);
+  Option& operator=(const Option& option);
 
-  void put(const std::string& name, const std::string& value);
+  void put(const Pref* pref, const std::string& value);
   // Returns true if name is defined. Otherwise returns false.
   // Note that even if the value is a empty string, this method returns true.
-  bool defined(const std::string& name) const;
+  bool defined(const Pref* pref) const;
   // Returns true if name is not defined or the value is a empty string.
   // Otherwise returns false.
-  bool blank(const std::string& name) const;
-  const std::string& get(const std::string& name) const;
-  int32_t getAsInt(const std::string& name) const;
-  int64_t getAsLLInt(const std::string& name) const;
-  bool getAsBool(const std::string& name) const;
-  double getAsDouble(const std::string& name) const;
+  bool blank(const Pref* pref) const;
+  const std::string& get(const Pref* pref) const;
+  int32_t getAsInt(const Pref* pref) const;
+  int64_t getAsLLInt(const Pref* pref) const;
+  bool getAsBool(const Pref* pref) const;
+  double getAsDouble(const Pref* pref) const;
   
-  void remove(const std::string& name);
+  void remove(const Pref* pref);
 
   void clear();
 
-  std::map<std::string, std::string>::const_iterator begin() const;
-
-  std::map<std::string, std::string>::const_iterator end() const;
-
-  std::map<std::string, std::string>::iterator begin();
-
-  std::map<std::string, std::string>::iterator end();
+  const std::vector<std::string>& getTable()
+  {
+    return table_;
+  }
 };
 
 } // namespace aria2

@@ -545,7 +545,7 @@ void AbstractCommand::setWriteCheckSocketIf
 namespace {
 // Returns proxy option value for the given protocol.
 const std::string& getProxyOptionFor
-(const std::string& proxyPref, const SharedHandle<Option>& option)
+(const Pref* proxyPref, const SharedHandle<Option>& option)
 {
   if(option->defined(proxyPref)) {
     return option->get(proxyPref);

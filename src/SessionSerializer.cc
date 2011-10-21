@@ -78,7 +78,7 @@ bool SessionSerializer::save(const std::string& filename) const
 namespace {
 const std::vector<std::string>& getCumulativeOpts()
 {
-  static std::string cumulativeOpts[] = { PREF_INDEX_OUT, PREF_HEADER };
+  static std::string cumulativeOpts[] = { PREF_INDEX_OUT->k, PREF_HEADER->k };
   static std::vector<std::string> opts
     (vbegin(cumulativeOpts), vend(cumulativeOpts));
   return opts;
@@ -108,8 +108,9 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
     if(inCumulativeOpts(*itr)) {
       continue;
     }
-    if(op->defined(*itr)) {
-      if(fp.printf(" %s=%s\n", (*itr).c_str(), op->get(*itr).c_str()) < 0) {
+    const Pref* pref = option::k2p(*itr);
+    if(op->defined(pref)) {
+      if(fp.printf(" %s=%s\n", (*itr).c_str(), op->get(pref).c_str()) < 0) {
         return false;
       }
     }
@@ -117,9 +118,10 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
   const std::vector<std::string>& cumopts = getCumulativeOpts();
   for(std::vector<std::string>::const_iterator opitr = cumopts.begin(),
         eoi = cumopts.end(); opitr != eoi; ++opitr) {
-    if(op->defined(*opitr)) {
+    const Pref* pref = option::k2p(*opitr);
+    if(op->defined(pref)) {
       std::vector<std::string> v;
-      util::split(op->get(*opitr), std::back_inserter(v), "\n",
+      util::split(op->get(pref), std::back_inserter(v), "\n",
                   false, false);
       for(std::vector<std::string>::const_iterator i = v.begin(), eoi = v.end();
           i != eoi; ++i) {
@@ -213,7 +215,7 @@ bool SessionSerializer::save(BufferedFile& fp) const
       // PREF_PAUSE was removed from option, so save it here looking
       // property separately.
       if((*itr)->isPauseRequested()) {
-        if(fp.printf(" %s=true\n", PREF_PAUSE.c_str()) < 0) {
+        if(fp.printf(" %s=true\n", PREF_PAUSE->k.c_str()) < 0) {
           return false;
         }
       }

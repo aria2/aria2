@@ -1203,15 +1203,14 @@ SharedHandle<ValueBase> GetVersionRpcMethod::process
 }
 
 namespace {
-template<typename InputIterator>
 void pushRequestOption
-(const SharedHandle<Dict>& dict,
- InputIterator optionFirst, InputIterator optionLast)
+(const SharedHandle<Dict>& dict, const SharedHandle<Option>& option)
 {
   const std::set<std::string>& requestOptions = listRequestOptions();
-  for(; optionFirst != optionLast; ++optionFirst) {
-    if(requestOptions.count((*optionFirst).first)) {
-      dict->put((*optionFirst).first, (*optionFirst).second);
+  for(size_t i = 0, len = option->getTable().size(); i < len; ++i) {
+    const Pref* pref = option::i2p(i);
+    if(requestOptions.count(pref->k) && option->defined(pref)) {
+      dict->put(pref->k, option->get(pref));
     }
   }
 }
@@ -1232,7 +1231,7 @@ SharedHandle<ValueBase> GetOptionRpcMethod::process
   }
   SharedHandle<Dict> result = Dict::g();
   SharedHandle<Option> option = group->getOption();
-  pushRequestOption(result, option->begin(), option->end());
+  pushRequestOption(result, option);
   return result;
 }
 
@@ -1240,11 +1239,14 @@ SharedHandle<ValueBase> GetGlobalOptionRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   SharedHandle<Dict> result = Dict::g();
-  for(std::map<std::string, std::string>::const_iterator i =
-        e->getOption()->begin(), eoi = e->getOption()->end(); i != eoi; ++i) {
-    SharedHandle<OptionHandler> h = getOptionParser()->findByName((*i).first);
+  for(size_t i = 0, len = e->getOption()->getTable().size(); i < len; ++i) {
+    const Pref* pref = option::i2p(i);
+    if(!e->getOption()->defined(pref)) {
+      continue;
+    }
+    SharedHandle<OptionHandler> h = getOptionParser()->findByName(pref->k);
     if(h && !h->isHidden()) {
-      result->put((*i).first, (*i).second);
+      result->put(pref->k, e->getOption()->get(pref));
     }
   }
   return result;

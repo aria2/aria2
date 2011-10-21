@@ -107,7 +107,7 @@ void gatherOption
         // header and index-out option can take array as value
         const List* oplist = downcast<List>((*first).second);
         if(oplist &&
-           (optionName == PREF_HEADER || optionName == PREF_INDEX_OUT)) {
+           (optionName == PREF_HEADER->k || optionName == PREF_INDEX_OUT->k)) {
           for(List::ValueType::const_iterator argiter = oplist->begin(),
                 eoi = oplist->end(); argiter != eoi; ++argiter) {
             const String* opval = downcast<String>(*argiter);
@@ -142,8 +142,9 @@ void applyOption(InputIterator optNameFirst,
                  Option* src)
 {
   for(; optNameFirst != optNameLast; ++optNameFirst) {
-    if(src->defined(*optNameFirst)) {
-      dest->put(*optNameFirst, src->get(*optNameFirst));
+    const Pref* pref = option::k2p(*optNameFirst);
+    if(src->defined(pref)) {
+      dest->put(pref, src->get(pref));
     }
   }
 }
@@ -152,10 +153,10 @@ void applyOption(InputIterator optNameFirst,
 const std::set<std::string>& listChangeableOptions()
 {
   static const std::string OPTIONS[] = {
-    PREF_BT_MAX_PEERS,
-    PREF_BT_REQUEST_PEER_SPEED_LIMIT,
-    PREF_MAX_DOWNLOAD_LIMIT,
-    PREF_MAX_UPLOAD_LIMIT
+    PREF_BT_MAX_PEERS->k,
+    PREF_BT_REQUEST_PEER_SPEED_LIMIT->k,
+    PREF_MAX_DOWNLOAD_LIMIT->k,
+    PREF_MAX_UPLOAD_LIMIT->k
   };
   static std::set<std::string> options(vbegin(OPTIONS), vend(OPTIONS));
   return options;
@@ -180,11 +181,11 @@ void RpcMethod::applyChangeableOption(Option* dest, Option* src) const
 const std::set<std::string>& listChangeableGlobalOptions()
 {
   static const std::string OPTIONS[] = {
-    PREF_MAX_OVERALL_UPLOAD_LIMIT,
-    PREF_MAX_OVERALL_DOWNLOAD_LIMIT,
-    PREF_MAX_CONCURRENT_DOWNLOADS,
-    PREF_LOG,
-    PREF_LOG_LEVEL
+    PREF_MAX_OVERALL_UPLOAD_LIMIT->k,
+    PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k,
+    PREF_MAX_CONCURRENT_DOWNLOADS->k,
+    PREF_LOG->k,
+    PREF_LOG_LEVEL->k
   };
   static std::set<std::string> options(vbegin(OPTIONS), vend(OPTIONS));
   return options;

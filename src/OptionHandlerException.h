@@ -38,18 +38,21 @@
 
 namespace aria2 {
 
+class Pref;
+
 class OptionHandlerException:public RecoverableException {
 private:
-  std::string optName_;
+  const Pref* pref_;
 
   static const std::string MESSAGE;
 protected:
   virtual SharedHandle<Exception> copy() const;
 public:
   OptionHandlerException(const char* file, int line,
-                         const std::string& optName);
+                         const Pref* pref);
 
-  OptionHandlerException(const char* file, int line, const std::string& optName,
+  OptionHandlerException(const char* file, int line,
+                         const Pref* pref,
                          const Exception& cause);
 
   virtual ~OptionHandlerException() throw();

@@ -10,6 +10,7 @@
 #include "util.h"
 #include "Option.h"
 #include "array_fun.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -33,30 +34,31 @@ public:
   {
     oparser_.reset(new OptionParser());
 
-    SharedHandle<OptionHandler> alpha
-      (new DefaultOptionHandler("alpha", NO_DESCRIPTION, "ALPHA", "",
+    SharedHandle<OptionHandler> timeout
+      (new DefaultOptionHandler(PREF_TIMEOUT, NO_DESCRIPTION, "ALPHA", "",
                                 OptionHandler::REQ_ARG, 'A'));
-    alpha->addTag("apple");
-    alpha->setEraseAfterParse(true);
-    oparser_->addOptionHandler(alpha);
+    timeout->addTag("apple");
+    timeout->setEraseAfterParse(true);
+    oparser_->addOptionHandler(timeout);
 
-    SharedHandle<OptionHandler> bravo(new DefaultOptionHandler("bravo"));
-    bravo->addTag("apple");
-    bravo->addTag("orange");
-    bravo->addTag("pineapple");
-    oparser_->addOptionHandler(bravo);
+    SharedHandle<OptionHandler> dir(new DefaultOptionHandler(PREF_DIR));
+    dir->addTag("apple");
+    dir->addTag("orange");
+    dir->addTag("pineapple");
+    oparser_->addOptionHandler(dir);
 
-    SharedHandle<DefaultOptionHandler> charlie
-      (new DefaultOptionHandler("charlie", NO_DESCRIPTION, "CHARLIE", "",
+    SharedHandle<DefaultOptionHandler> daemon
+      (new DefaultOptionHandler(PREF_DAEMON, NO_DESCRIPTION, "CHARLIE", "",
                                 OptionHandler::REQ_ARG, 'C'));
-    charlie->hide();
-    charlie->addTag("pineapple");
-    oparser_->addOptionHandler(charlie);
+    daemon->hide();
+    daemon->addTag("pineapple");
+    oparser_->addOptionHandler(daemon);
 
-    SharedHandle<OptionHandler> delta
-      (new UnitNumberOptionHandler("delta", NO_DESCRIPTION, "1M", -1, -1, 'D'));
-    delta->addTag("pineapple");
-    oparser_->addOptionHandler(delta);    
+    SharedHandle<OptionHandler> out
+      (new UnitNumberOptionHandler(PREF_OUT, NO_DESCRIPTION, "1M",
+                                   -1, -1, 'D'));
+    out->addTag("pineapple");
+    oparser_->addOptionHandler(out);    
   }
 
   void tearDown() {}
@@ -79,18 +81,18 @@ void OptionParserTest::testFindAll()
 {
   std::vector<SharedHandle<OptionHandler> > res = oparser_->findAll();
   CPPUNIT_ASSERT_EQUAL((size_t)3, res.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("alpha"), res[0]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("bravo"), res[1]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("delta"), res[2]->getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), res[0]->getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("dir"), res[1]->getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("out"), res[2]->getName());
 }
 
 void OptionParserTest::testFindByNameSubstring()
 {
   std::vector<SharedHandle<OptionHandler> > res =
-    oparser_->findByNameSubstring("l");
+    oparser_->findByNameSubstring("i");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("alpha"), res[0]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("delta"), res[1]->getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), res[0]->getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("dir"), res[1]->getName());
 }
 
 void OptionParserTest::testFindByTag()
@@ -98,37 +100,37 @@ void OptionParserTest::testFindByTag()
   std::vector<SharedHandle<OptionHandler> > res =
     oparser_->findByTag("pineapple");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("bravo"), res[0]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("delta"), res[1]->getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("dir"), res[0]->getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("out"), res[1]->getName());
 }
 
 void OptionParserTest::testFindByName()
 {
-  SharedHandle<OptionHandler> bravo = oparser_->findByName("bravo");
-  CPPUNIT_ASSERT(bravo);
-  CPPUNIT_ASSERT_EQUAL(std::string("bravo"), bravo->getName());
+  SharedHandle<OptionHandler> dir = oparser_->findByName("dir");
+  CPPUNIT_ASSERT(dir);
+  CPPUNIT_ASSERT_EQUAL(std::string("dir"), dir->getName());
 
-  SharedHandle<OptionHandler> charlie = oparser_->findByName("charlie");
-  CPPUNIT_ASSERT(!charlie);
+  SharedHandle<OptionHandler> daemon = oparser_->findByName("daemon");
+  CPPUNIT_ASSERT(!daemon);
 
-  SharedHandle<OptionHandler> alpha2 = oparser_->findByName("alpha2");
-  CPPUNIT_ASSERT(!alpha2);
+  SharedHandle<OptionHandler> timeout2 = oparser_->findByName("timeout2");
+  CPPUNIT_ASSERT(!timeout2);
 }
 
 void OptionParserTest::testFindByShortName()
 {
-  SharedHandle<OptionHandler> alpha = oparser_->findByShortName('A');
-  CPPUNIT_ASSERT(alpha);
-  CPPUNIT_ASSERT_EQUAL(std::string("alpha"), alpha->getName());
+  SharedHandle<OptionHandler> timeout = oparser_->findByShortName('A');
+  CPPUNIT_ASSERT(timeout);
+  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), timeout->getName());
 
   CPPUNIT_ASSERT(!oparser_->findByShortName('C'));
 }
 
 void OptionParserTest::testFindByID()
 {
-  SharedHandle<OptionHandler> alpha = oparser_->findByID(1);
-  CPPUNIT_ASSERT(alpha);
-  CPPUNIT_ASSERT_EQUAL(std::string("alpha"), alpha->getName());
+  SharedHandle<OptionHandler> timeout = oparser_->findByID(1);
+  CPPUNIT_ASSERT(timeout);
+  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), timeout->getName());
 
   CPPUNIT_ASSERT(!oparser_->findByID(3));
 }
@@ -137,10 +139,10 @@ void OptionParserTest::testParseDefaultValues()
 {
   Option option;
   oparser_->parseDefaultValues(option);
-  CPPUNIT_ASSERT_EQUAL(std::string("ALPHA"), option.get("alpha"));
-  CPPUNIT_ASSERT_EQUAL(std::string("1048576"), option.get("delta"));
-  CPPUNIT_ASSERT_EQUAL(std::string("CHARLIE"), option.get("charlie"));
-  CPPUNIT_ASSERT(!option.defined("bravo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("ALPHA"), option.get(PREF_TIMEOUT));
+  CPPUNIT_ASSERT_EQUAL(std::string("1048576"), option.get(PREF_OUT));
+  CPPUNIT_ASSERT_EQUAL(std::string("CHARLIE"), option.get(PREF_DAEMON));
+  CPPUNIT_ASSERT(!option.defined(PREF_DIR));
 }
 
 void OptionParserTest::testParseArg()
@@ -149,21 +151,21 @@ void OptionParserTest::testParseArg()
   char prog[7];
   strncpy(prog, "aria2c", sizeof(prog));
 
-  char optionAlpha[3];
-  strncpy(optionAlpha, "-A", sizeof(optionAlpha));
-  char argAlpha[6];
-  strncpy(argAlpha, "ALPHA", sizeof(argAlpha));
-  char optionBravo[8];
-  strncpy(optionBravo, "--bravo", sizeof(optionBravo));
-  char argBravo[6];
-  strncpy(argBravo, "BRAVO", sizeof(argBravo));
+  char optionTimeout[3];
+  strncpy(optionTimeout, "-A", sizeof(optionTimeout));
+  char argTimeout[6];
+  strncpy(argTimeout, "ALPHA", sizeof(argTimeout));
+  char optionDir[8];
+  strncpy(optionDir, "--dir", sizeof(optionDir));
+  char argDir[6];
+  strncpy(argDir, "BRAVO", sizeof(argDir));
 
   char nonopt1[8];
   strncpy(nonopt1, "nonopt1", sizeof(nonopt1));
   char nonopt2[8];
   strncpy(nonopt2, "nonopt2", sizeof(nonopt2));
 
-  char* argv[] = { prog, optionAlpha, argAlpha, optionBravo, argBravo,
+  char* argv[] = { prog, optionTimeout, argTimeout, optionDir, argDir,
                    nonopt1, nonopt2 };
   int argc = A2_ARRAY_LEN(argv);
 
@@ -172,28 +174,26 @@ void OptionParserTest::testParseArg()
 
   oparser_->parseArg(s, nonopts, argc, argv);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("alpha=ALPHA\n"
-                                   "bravo=BRAVO\n"), s.str());
+  CPPUNIT_ASSERT_EQUAL(std::string("timeout=ALPHA\n"
+                                   "dir=BRAVO\n"), s.str());
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, nonopts.size());
   CPPUNIT_ASSERT_EQUAL(std::string("nonopt1"), nonopts[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("nonopt2"), nonopts[1]);
 
-  CPPUNIT_ASSERT_EQUAL(std::string("*****"), std::string(argAlpha));
+  CPPUNIT_ASSERT_EQUAL(std::string("*****"), std::string(argTimeout));
 }
 
 void OptionParserTest::testParse()
 {
   Option option;
-  std::istringstream in("alpha=Hello\n"
+  std::istringstream in("timeout=Hello\n"
                         "UNKNOWN=x\n"
                         "\n"
-                        "bravo=World");
+                        "dir=World");
   oparser_->parse(option, in);
-  CPPUNIT_ASSERT_EQUAL
-    ((std::ptrdiff_t)2, std::distance(option.begin(), option.end()));
-  CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get("alpha"));
-  CPPUNIT_ASSERT_EQUAL(std::string("World"), option.get("bravo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello"), option.get(PREF_TIMEOUT));
+  CPPUNIT_ASSERT_EQUAL(std::string("World"), option.get(PREF_DIR));
 }
 
 } // namespace aria2

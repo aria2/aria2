@@ -212,11 +212,11 @@ void DHTSetup::setup
       taskQueue->addPeriodicTask1(task);
     }
 
-    const std::string& prefEntryPointHost =
+    const Pref* prefEntryPointHost =
       family == AF_INET?PREF_DHT_ENTRY_POINT_HOST:PREF_DHT_ENTRY_POINT_HOST6;
     if(!e->getOption()->get(prefEntryPointHost).empty()) {
       {
-        const std::string& prefEntryPointPort =
+        const Pref* prefEntryPointPort =
           family == AF_INET?PREF_DHT_ENTRY_POINT_PORT:
           PREF_DHT_ENTRY_POINT_PORT6;
         std::pair<std::string, uint16_t> addr

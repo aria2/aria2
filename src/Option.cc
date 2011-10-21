@@ -33,43 +33,74 @@
  */
 /* copyright --> */
 #include "Option.h"
-#include "prefs.h"
-#include "A2STR.h"
+
 #include <cstdlib>
 #include <cstring>
 
+#include "prefs.h"
+#include "bitfield.h"
+
 namespace aria2 {
 
-Option::Option() {}
+Option::Option()
+  : table_(option::countOption()),
+    use_((option::countOption()+7)/8)
+{}
 
 Option::~Option() {}
 
-void Option::put(const std::string& name, const std::string& value) {
-  table_[name] = value;
-}
+Option::Option(const Option& option)
+  : table_(option.table_),
+    use_(option.use_)
+{}
 
-bool Option::defined(const std::string& name) const
+Option& Option::operator=(const Option& option)
 {
-  return table_.count(name) == 1;
-}
-
-bool Option::blank(const std::string& name) const
-{
-  std::map<std::string, std::string>::const_iterator i = table_.find(name);
-  return i == table_.end() || (*i).second.empty();
-}
-
-const std::string& Option::get(const std::string& name) const {
-  std::map<std::string, std::string>::const_iterator itr = table_.find(name);
-  if(itr == table_.end()) {
-    return A2STR::NIL;
-  } else {
-    return (*itr).second;
+  if(this != &option) {
+    table_ = option.table_;
+    use_ = option.use_;
   }
+  return *this;
 }
 
-int32_t Option::getAsInt(const std::string& name) const {
-  const std::string& value = get(name);
+namespace {
+
+template<typename V>
+void setBit(V& b, const Pref* pref)
+{
+  b[pref->i/8] |= 128 >> (pref->i%8);
+}
+
+template<typename V>
+void unsetBit(V& b, const Pref* pref)
+{
+  b[pref->i/8] &= ~(128 >> (pref->i%8));
+}
+
+} // namespace
+
+void Option::put(const Pref* pref, const std::string& value) {
+  setBit(use_, pref);
+  table_[pref->i] = value;
+}
+
+bool Option::defined(const Pref* pref) const
+{
+  return bitfield::test(use_, use_.size()*8, pref->i);
+}
+
+bool Option::blank(const Pref* pref) const
+{
+  return !defined(pref) || table_[pref->i].empty();
+}
+
+const std::string& Option::get(const Pref* pref) const
+{
+  return table_[pref->i];
+}
+
+int32_t Option::getAsInt(const Pref* pref) const {
+  const std::string& value = get(pref);
   if(value.empty()) {
     return 0;
   } else {
@@ -77,8 +108,8 @@ int32_t Option::getAsInt(const std::string& name) const {
   }
 }
 
-int64_t Option::getAsLLInt(const std::string& name) const {
-  const std::string& value = get(name);
+int64_t Option::getAsLLInt(const Pref* pref) const {
+  const std::string& value = get(pref);
   if(value.empty()) {
     return 0;
   } else {
@@ -86,12 +117,12 @@ int64_t Option::getAsLLInt(const std::string& name) const {
   }
 }
 
-bool Option::getAsBool(const std::string& name) const {
-  return get(name) == A2_V_TRUE;
+bool Option::getAsBool(const Pref* pref) const {
+  return get(pref) == A2_V_TRUE;
 }
 
-double Option::getAsDouble(const std::string& name) const {
-  const std::string& value = get(name);
+double Option::getAsDouble(const Pref* pref) const {
+  const std::string& value = get(pref);
   if(value.empty()) {
     return 0.0;
   } else {
@@ -99,37 +130,16 @@ double Option::getAsDouble(const std::string& name) const {
   }
 }
 
-void Option::remove(const std::string& name)
+void Option::remove(const Pref* pref)
 {
-  std::map<std::string, std::string>::iterator i = table_.find(name);
-  if(i != table_.end()) {
-    table_.erase(i);
-  }
+  unsetBit(use_, pref);
+  table_[pref->i].clear();
 }
 
 void Option::clear()
 {
-  table_.clear();
-}
-
-std::map<std::string, std::string>::const_iterator Option::begin() const
-{
-  return table_.begin();
-}
-
-std::map<std::string, std::string>::const_iterator Option::end() const
-{
-  return table_.end();
-}
-
-std::map<std::string, std::string>::iterator Option::begin()
-{
-  return table_.begin();
-}
-
-std::map<std::string, std::string>::iterator Option::end()
-{
-  return table_.end();
+  std::fill(use_.begin(), use_.end(), 0);
+  std::fill(table_.begin(), table_.end(), "");
 }
 
 } // namespace aria2

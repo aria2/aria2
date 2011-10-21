@@ -64,6 +64,7 @@ class BinaryStream;
 class FileEntry;
 class RequestGroup;
 class Option;
+class Pref;
 
 #define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
 #define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)
@@ -441,11 +442,11 @@ void removeMetalinkContentTypes(RequestGroup* group);
 // No throw
 void executeHookByOptName
 (const SharedHandle<RequestGroup>& group, const Option* option,
- const std::string& opt);
+ const Pref* pref);
 
 // No throw
 void executeHookByOptName
-(const RequestGroup* group, const Option* option, const std::string& opt);
+(const RequestGroup* group, const Option* option, const Pref* pref);
 
 std::string createSafePath(const std::string& dir, const std::string& filename);
 

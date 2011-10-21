@@ -71,6 +71,7 @@
 #include "DownloadContext.h"
 #include "BufferedFile.h"
 #include "SocketCore.h"
+#include "prefs.h"
 
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
@@ -1698,15 +1699,16 @@ void executeHook
 
 void executeHookByOptName
 (const SharedHandle<RequestGroup>& group, const Option* option,
- const std::string& opt)
+ const Pref* pref)
 {
-  executeHookByOptName(group.get(), option, opt);
+  executeHookByOptName(group.get(), option, pref);
 }
 
 void executeHookByOptName
-(const RequestGroup* group, const Option* option, const std::string& opt)
+(const RequestGroup* group, const Option* option, const Pref* pref)
 {
-  if(!option->blank(opt)) {
+  const std::string& cmd = option->get(pref);
+  if(!cmd.empty()) {
     const SharedHandle<DownloadContext> dctx = group->getDownloadContext();
     std::string firstFilename;
     size_t numFiles = 0;
@@ -1717,7 +1719,7 @@ void executeHookByOptName
       }
       numFiles = dctx->countRequestedFileEntry();
     }
-    executeHook(option->get(opt), group->getGID(), numFiles, firstFilename);
+    executeHook(cmd, group->getGID(), numFiles, firstFilename);
   }
 }
 

@@ -34,31 +34,38 @@
 /* copyright --> */
 #include "OptionHandlerException.h"
 #include "fmt.h"
+#include "prefs.h"
 
 namespace aria2 {
 
 const std::string OptionHandlerException::MESSAGE
 ("We encountered a problem while processing the option '--%s'.");
 
-OptionHandlerException::OptionHandlerException(const char* file, int line,
-                                               const std::string& optName):
-  RecoverableException
-  (file, line, fmt(MESSAGE.c_str(), optName.c_str()), error_code::OPTION_ERROR),
-  optName_(optName) {}
+OptionHandlerException::OptionHandlerException
+(const char* file, int line,
+ const Pref* pref)
+  : RecoverableException
+    (file, line, fmt(MESSAGE.c_str(), pref->k.c_str()),
+     error_code::OPTION_ERROR),
+    pref_(pref)
+{}
 
-OptionHandlerException::OptionHandlerException(const char* file, int line,
-                                               const std::string& optName,
-                                               const Exception& cause):
-  RecoverableException
-  (file, line, fmt(MESSAGE.c_str(), optName.c_str()), error_code::OPTION_ERROR,
-   cause),
-  optName_(optName) {}
+OptionHandlerException::OptionHandlerException
+(const char* file, int line,
+ const Pref* pref,
+ const Exception& cause)
+  : RecoverableException
+    (file, line, fmt(MESSAGE.c_str(), pref->k.c_str()),
+     error_code::OPTION_ERROR,
+     cause),
+    pref_(pref)
+{}
 
 OptionHandlerException::~OptionHandlerException() throw() {}
 
 const std::string& OptionHandlerException::getOptionName() const throw()
 {
-  return optName_;
+  return pref_->k;
 }
 
 SharedHandle<Exception> OptionHandlerException::copy() const
