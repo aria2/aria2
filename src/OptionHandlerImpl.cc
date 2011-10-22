@@ -702,11 +702,6 @@ DeprecatedOptionHandler::DeprecatedOptionHandler
   : depOptHandler_(depOptHandler), repOptHandler_(repOptHandler)
 {}
 
-bool DeprecatedOptionHandler::canHandle(const std::string& optName)
-{
-  return depOptHandler_->canHandle(optName);
-}
-
 void DeprecatedOptionHandler::parse(Option& option, const std::string& arg)
 {
   if(repOptHandler_) {
@@ -778,16 +773,6 @@ OptionHandler::ARG_TYPE DeprecatedOptionHandler::getArgType() const
 char DeprecatedOptionHandler::getShortName() const
 {
   return depOptHandler_->getShortName();
-}
-
-int DeprecatedOptionHandler::getOptionID() const
-{
-  return depOptHandler_->getOptionID();
-}
-
-void DeprecatedOptionHandler::setOptionID(int id)
-{
-  depOptHandler_->setOptionID(id);
 }
 
 bool DeprecatedOptionHandler::getEraseAfterParse() const

@@ -45,9 +45,10 @@
 
 namespace aria2 {
 
-OptionHandlers OptionHandlerFactory::createOptionHandlers()
+std::vector<SharedHandle<OptionHandler> >
+OptionHandlerFactory::createOptionHandlers()
 {
-  OptionHandlers handlers;
+  std::vector<SharedHandle<OptionHandler> > handlers;
   // General Options
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler

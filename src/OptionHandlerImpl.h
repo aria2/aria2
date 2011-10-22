@@ -294,7 +294,6 @@ public:
   (const SharedHandle<OptionHandler>& depOptHandler,
    const SharedHandle<OptionHandler>& repOptHandler =
    SharedHandle<OptionHandler>());
-  virtual bool canHandle(const std::string& optName);
   virtual void parse(Option& option, const std::string& arg);
   virtual std::string createPossibleValuesString() const;
   virtual bool hasTag(const std::string& tag) const;
@@ -308,8 +307,6 @@ public:
   virtual const Pref* getPref() const;
   virtual ARG_TYPE getArgType() const;
   virtual char getShortName() const;
-  virtual int getOptionID() const;
-  virtual void setOptionID(int id);
   virtual bool getEraseAfterParse() const;
   virtual void setEraseAfterParse(bool eraseAfterParse);
   virtual bool getInitialOption() const;

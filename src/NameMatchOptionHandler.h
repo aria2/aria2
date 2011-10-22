@@ -56,8 +56,6 @@ protected:
 
   std::vector<std::string> tags_;
 
-  int id_;
-
   OptionHandler::ARG_TYPE argType_;
 
   char shortName_;
@@ -81,8 +79,6 @@ public:
 
   virtual ~NameMatchOptionHandler();
   
-  virtual bool canHandle(const std::string& optName);
-
   virtual void parse(Option& option, const std::string& arg);
 
   virtual bool hasTag(const std::string& tag) const;
@@ -121,16 +117,6 @@ public:
   virtual char getShortName() const
   {
     return shortName_;
-  }
-
-  virtual int getOptionID() const
-  {
-    return id_;
-  }
-
-  virtual void setOptionID(int id)
-  {
-    id_ = id;
   }
 
   virtual OptionHandler::ARG_TYPE getArgType() const
@@ -188,8 +174,6 @@ public:
     cumulative_ = f;
   }
 };
-
-typedef SharedHandle<NameMatchOptionHandler> NameMatchOptionHandlerHandle;
 
 } // namespace aria2
 

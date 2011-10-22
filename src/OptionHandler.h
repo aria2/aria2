@@ -62,7 +62,6 @@ class OptionHandler {
 public:
   virtual ~OptionHandler() {}
   
-  virtual bool canHandle(const std::string& optName) = 0;
   virtual void parse(Option& option, const std::string& arg) = 0;
 
   virtual std::string createPossibleValuesString() const = 0;
@@ -95,10 +94,6 @@ public:
 
   virtual char getShortName() const = 0;
 
-  virtual int getOptionID() const = 0;
-
-  virtual void setOptionID(int id) = 0;
-
   // Returns true if option value should be erased from argv to
   // prevent it from appearing in the output of ps.
   virtual bool getEraseAfterParse() const = 0;
@@ -114,31 +109,6 @@ public:
   virtual bool getCumulative() const = 0;
   virtual void setCumulative(bool f) = 0;
 };
-
-class OptionHandlerNameLesser:public std::binary_function
-<SharedHandle<OptionHandler>, SharedHandle<OptionHandler>, bool> {
-public:
-  bool operator()
-  (const SharedHandle<OptionHandler>& lhs,
-   const SharedHandle<OptionHandler>& rhs) const
-  {
-    return lhs->getName() < rhs->getName();
-  }
-};
-
-class OptionHandlerIDLesser:public std::binary_function
-<SharedHandle<OptionHandler>, SharedHandle<OptionHandler>, bool> {
-public:
-  bool operator()
-  (const SharedHandle<OptionHandler>& lhs,
-   const SharedHandle<OptionHandler>& rhs) const
-  {
-    return lhs->getOptionID() < rhs->getOptionID();
-  }
-};
-
-typedef SharedHandle<OptionHandler> OptionHandlerHandle;
-typedef std::vector<OptionHandlerHandle> OptionHandlers;
 
 std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler);
 

@@ -52,7 +52,6 @@ NameMatchOptionHandler::NameMatchOptionHandler
   : pref_(pref),
     description_(description),
     defaultValue_(defaultValue),
-    id_(0),
     argType_(argType),
     shortName_(shortName),
     hidden_(false),
@@ -65,11 +64,6 @@ NameMatchOptionHandler::NameMatchOptionHandler
 
 NameMatchOptionHandler::~NameMatchOptionHandler() {}
   
-bool NameMatchOptionHandler::canHandle(const std::string& optName)
-{
-  return pref_->k == optName;
-}
-
 void NameMatchOptionHandler::parse(Option& option, const std::string& arg)
 {
   try {

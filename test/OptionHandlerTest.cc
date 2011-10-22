@@ -58,8 +58,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION( OptionHandlerTest );
 void OptionHandlerTest::testBooleanOptionHandler()
 {
   BooleanOptionHandler handler(PREF_DAEMON);
-  CPPUNIT_ASSERT(handler.canHandle(PREF_DAEMON->k));
-  CPPUNIT_ASSERT(!handler.canHandle(PREF_DIR->k));
   Option option;
   handler.parse(option, A2_V_TRUE);
   CPPUNIT_ASSERT_EQUAL(std::string(A2_V_TRUE), option.get(PREF_DAEMON));
@@ -76,8 +74,6 @@ void OptionHandlerTest::testBooleanOptionHandler()
 void OptionHandlerTest::testNumberOptionHandler()
 {
   NumberOptionHandler handler(PREF_TIMEOUT);
-  CPPUNIT_ASSERT(handler.canHandle(PREF_TIMEOUT->k));
-  CPPUNIT_ASSERT(!handler.canHandle(PREF_DIR->k));
   Option option;
   handler.parse(option, "0");
   CPPUNIT_ASSERT_EQUAL(std::string("0"), option.get(PREF_TIMEOUT));
@@ -136,8 +132,6 @@ void OptionHandlerTest::testNumberOptionHandler_min_max()
 void OptionHandlerTest::testUnitNumberOptionHandler()
 {
   UnitNumberOptionHandler handler(PREF_TIMEOUT);
-  CPPUNIT_ASSERT(handler.canHandle(PREF_TIMEOUT->k));
-  CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(option, "4294967296");
   CPPUNIT_ASSERT_EQUAL(std::string("4294967296"), option.get(PREF_TIMEOUT));
@@ -161,8 +155,6 @@ void OptionHandlerTest::testUnitNumberOptionHandler()
 void OptionHandlerTest::testParameterOptionHandler_1argInit()
 {
   ParameterOptionHandler handler(PREF_TIMEOUT, "", "", "value1");
-  CPPUNIT_ASSERT(handler.canHandle(PREF_TIMEOUT->k));
-  CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(option, "value1");
   CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get(PREF_TIMEOUT));
@@ -177,8 +169,6 @@ void OptionHandlerTest::testParameterOptionHandler_1argInit()
 void OptionHandlerTest::testParameterOptionHandler_2argsInit()
 {
   ParameterOptionHandler handler(PREF_TIMEOUT, "", "", "value1", "value2");
-  CPPUNIT_ASSERT(handler.canHandle(PREF_TIMEOUT->k));
-  CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(option, "value1");
   CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get(PREF_TIMEOUT));
@@ -199,8 +189,6 @@ void OptionHandlerTest::testParameterOptionHandler_listInit()
   validValues.push_back("value2");
 
   ParameterOptionHandler handler(PREF_TIMEOUT, "", "", validValues);
-  CPPUNIT_ASSERT(handler.canHandle(PREF_TIMEOUT->k));
-  CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(option, "value1");
   CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get(PREF_TIMEOUT));
@@ -217,8 +205,6 @@ void OptionHandlerTest::testParameterOptionHandler_listInit()
 void OptionHandlerTest::testDefaultOptionHandler()
 {
   DefaultOptionHandler handler(PREF_TIMEOUT);
-  CPPUNIT_ASSERT(handler.canHandle(PREF_TIMEOUT->k));
-  CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(option, "bar");
   CPPUNIT_ASSERT_EQUAL(std::string("bar"), option.get(PREF_TIMEOUT));
@@ -238,8 +224,6 @@ void OptionHandlerTest::testDefaultOptionHandler()
 void OptionHandlerTest::testFloatNumberOptionHandler()
 {
   FloatNumberOptionHandler handler(PREF_TIMEOUT);
-  CPPUNIT_ASSERT(handler.canHandle(PREF_TIMEOUT->k));
-  CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(option, "1.0");
   CPPUNIT_ASSERT_EQUAL(std::string("1.0"), option.get(PREF_TIMEOUT));
@@ -298,8 +282,6 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
 void OptionHandlerTest::testHttpProxyOptionHandler()
 {
   HttpProxyOptionHandler handler(PREF_HTTP_PROXY, "", "");
-  CPPUNIT_ASSERT(handler.canHandle(PREF_HTTP_PROXY->k));
-  CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(option, "proxy:65535");
   CPPUNIT_ASSERT_EQUAL(std::string("http://proxy:65535/"),
