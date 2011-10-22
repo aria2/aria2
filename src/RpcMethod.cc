@@ -142,7 +142,7 @@ void RpcMethod::gatherChangeableGlobalOption
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 mem_fun_sh(&OptionHandler::getGlobalChangeOption),
+                 mem_fun_sh(&OptionHandler::getChangeGlobalOption),
                  option, optionParser_);
   }
 }

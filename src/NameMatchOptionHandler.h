@@ -168,12 +168,12 @@ public:
     changeOption_ = f;
   }
 
-  virtual bool getGlobalChangeOption() const
+  virtual bool getChangeGlobalOption() const
   {
     return globalChangeOption_;
   }
 
-  virtual void setGlobalChangeOption(bool f)
+  virtual void setChangeGlobalOption(bool f)
   {
     globalChangeOption_ = f;
   }

@@ -820,14 +820,14 @@ void DeprecatedOptionHandler::setChangeOption(bool f)
   depOptHandler_->setChangeOption(f);
 }
 
-bool DeprecatedOptionHandler::getGlobalChangeOption() const
+bool DeprecatedOptionHandler::getChangeGlobalOption() const
 {
-  return depOptHandler_->getGlobalChangeOption();
+  return depOptHandler_->getChangeGlobalOption();
 }
 
-void DeprecatedOptionHandler::setGlobalChangeOption(bool f)
+void DeprecatedOptionHandler::setChangeGlobalOption(bool f)
 {
-  depOptHandler_->setGlobalChangeOption(f);
+  depOptHandler_->setChangeGlobalOption(f);
 }
 
 bool DeprecatedOptionHandler::getCumulative() const

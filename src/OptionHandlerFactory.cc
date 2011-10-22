@@ -373,7 +373,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::REQ_ARG,
                                     'l'));
     op->addTag(TAG_BASIC);
-    op->setGlobalChangeOption(true);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -385,7 +385,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     std::vector<std::string>
                                     (vbegin(params), vend(params))));
     op->addTag(TAG_ADVANCED);
-    op->setGlobalChangeOption(true);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -396,7 +396,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     1, -1,
                                     'j'));
     op->addTag(TAG_BASIC);
-    op->setGlobalChangeOption(true);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -443,7 +443,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
-    op->setGlobalChangeOption(true);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -1724,7 +1724,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     0));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
-    op->setGlobalChangeOption(true);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
