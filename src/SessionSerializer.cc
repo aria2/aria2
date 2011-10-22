@@ -49,6 +49,8 @@
 #include "util.h"
 #include "array_fun.h"
 #include "BufferedFile.h"
+#include "OptionParser.h"
+#include "OptionHandler.h"
 
 namespace aria2 {
 
@@ -74,58 +76,26 @@ bool SessionSerializer::save(const std::string& filename) const
   return File(tempFilename).renameTo(filename);
 }
 
-
-namespace {
-const std::vector<std::string>& getCumulativeOpts()
-{
-  static std::string cumulativeOpts[] = { PREF_INDEX_OUT->k, PREF_HEADER->k };
-  static std::vector<std::string> opts
-    (vbegin(cumulativeOpts), vend(cumulativeOpts));
-  return opts;
-}
-} // namespace
-
-namespace {
-bool inCumulativeOpts(const std::string& opt)
-{
-  const std::vector<std::string>& cumopts = getCumulativeOpts();
-  for(std::vector<std::string>::const_iterator itr = cumopts.begin(),
-        eoi = cumopts.end(); itr != eoi; ++itr) {
-    if(opt == *itr) {
-      return true;
-    }
-  }
-  return false;
-}
-} // namespace
-
 namespace {
 bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
 {
-  const std::set<std::string>& requestOptions = listRequestOptions();
-  for(std::set<std::string>::const_iterator itr = requestOptions.begin(),
-        eoi = requestOptions.end(); itr != eoi; ++itr) {
-    if(inCumulativeOpts(*itr)) {
-      continue;
-    }
-    const Pref* pref = option::k2p(*itr);
-    if(op->defined(pref)) {
-      if(fp.printf(" %s=%s\n", (*itr).c_str(), op->get(pref).c_str()) < 0) {
-        return false;
-      }
-    }
-  }
-  const std::vector<std::string>& cumopts = getCumulativeOpts();
-  for(std::vector<std::string>::const_iterator opitr = cumopts.begin(),
-        eoi = cumopts.end(); opitr != eoi; ++opitr) {
-    const Pref* pref = option::k2p(*opitr);
-    if(op->defined(pref)) {
-      std::vector<std::string> v;
-      util::split(op->get(pref), std::back_inserter(v), "\n",
-                  false, false);
-      for(std::vector<std::string>::const_iterator i = v.begin(), eoi = v.end();
-          i != eoi; ++i) {
-        if(fp.printf(" %s=%s\n", (*opitr).c_str(), (*i).c_str()) < 0) {
+  const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
+  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
+    const Pref* pref = option::i2p(i);
+    const SharedHandle<OptionHandler>& h = oparser->find(pref);
+    if(h && h->getInitialOption() && op->defined(pref)) {
+      if(h->getCumulative()) {
+        std::vector<std::string> v;
+        util::split(op->get(pref), std::back_inserter(v), "\n",
+                    false, false);
+        for(std::vector<std::string>::const_iterator j = v.begin(),
+              eoj = v.end(); j != eoj; ++j) {
+          if(fp.printf(" %s=%s\n", pref->k.c_str(), (*j).c_str()) < 0) {
+            return false;
+          }
+        }
+      } else {
+        if(fp.printf(" %s=%s\n", pref->k.c_str(), op->get(pref).c_str()) < 0) {
           return false;
         }
       }

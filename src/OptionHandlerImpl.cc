@@ -800,4 +800,44 @@ void DeprecatedOptionHandler::setEraseAfterParse(bool eraseAfterParse)
   depOptHandler_->setEraseAfterParse(eraseAfterParse);
 }
 
+bool DeprecatedOptionHandler::getInitialOption() const
+{
+  return depOptHandler_->getInitialOption();
+}
+
+void DeprecatedOptionHandler::setInitialOption(bool f)
+{
+  depOptHandler_->setInitialOption(f);
+}
+
+bool DeprecatedOptionHandler::getChangeOption() const
+{
+  return depOptHandler_->getChangeOption();
+}
+
+void DeprecatedOptionHandler::setChangeOption(bool f)
+{
+  depOptHandler_->setChangeOption(f);
+}
+
+bool DeprecatedOptionHandler::getGlobalChangeOption() const
+{
+  return depOptHandler_->getGlobalChangeOption();
+}
+
+void DeprecatedOptionHandler::setGlobalChangeOption(bool f)
+{
+  depOptHandler_->setGlobalChangeOption(f);
+}
+
+bool DeprecatedOptionHandler::getCumulative() const
+{
+  return depOptHandler_->getCumulative();
+}
+
+void DeprecatedOptionHandler::setCumulative(bool f)
+{
+  depOptHandler_->setCumulative(f);
+}
+
 } // namespace aria2

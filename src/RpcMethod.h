@@ -72,22 +72,11 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e) = 0;
 
-  void gatherRequestOption
-  (const SharedHandle<Option>& option, const Dict* optionsDict);
+  void gatherRequestOption(Option* option, const Dict* optionsDict);
 
-  void gatherChangeableOption
-  (const SharedHandle<Option>& option, const Dict* optionDict);
+  void gatherChangeableOption(Option* option, const Dict* optionDict);
 
-  // Copy options which is changeable in RPC changeOption command to
-  // dest.
-  void applyChangeableOption(Option* dest, Option* src) const;
-
-  void gatherChangeableGlobalOption(const SharedHandle<Option>& option,
-                                    const Dict* optionDict);
-
-  // Copy options which is changeable in RPC changeGlobalOption
-  // command to dest.
-  void applyChangeableGlobalOption(Option* dest, Option* src) const;
+  void gatherChangeableGlobalOption(Option* option, const Dict* optionDict);
 
   SharedHandle<ValueBase> createErrorResponse
   (const Exception& e, const RpcRequest& req);

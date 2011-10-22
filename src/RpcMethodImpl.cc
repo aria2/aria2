@@ -230,7 +230,7 @@ SharedHandle<ValueBase> AddUriRpcMethod::process
   }
 
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  gatherRequestOption(requestOption, optsParam);
+  gatherRequestOption(requestOption.get(), optsParam);
 
   bool posGiven = checkPosParam(posParam);
   size_t pos = posGiven ? posParam->i() : 0;
@@ -277,7 +277,7 @@ SharedHandle<ValueBase> AddTorrentRpcMethod::process
   extractUris(std::back_inserter(uris), urisParam);
 
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  gatherRequestOption(requestOption, optsParam);
+  gatherRequestOption(requestOption.get(), optsParam);
 
   bool posGiven = checkPosParam(posParam);
   size_t pos = posGiven ? posParam->i() : 0;
@@ -320,7 +320,7 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
     metalinkParam = tempMetalinkParam.get();
   }
   SharedHandle<Option> requestOption(new Option(*e->getOption()));
-  gatherRequestOption(requestOption, optsParam);
+  gatherRequestOption(requestOption.get(), optsParam);
 
   bool posGiven = checkPosParam(posParam);
   size_t pos = posGiven ? posParam->i() : 0;
@@ -1127,21 +1127,21 @@ SharedHandle<ValueBase> ChangeOptionRpcMethod::process
       (fmt("Cannot change option for GID#%s",
            util::itos(gid).c_str()));
   }
-  SharedHandle<Option> option(new Option());
-  gatherChangeableOption(option, optsParam);
-  applyChangeableOption(group->getOption().get(), option.get());
-  if(option->defined(PREF_MAX_DOWNLOAD_LIMIT)) {
+  Option option;
+  gatherChangeableOption(&option, optsParam);
+  group->getOption()->merge(option);
+  if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
-      (option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+      (option.getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   }
-  if(option->defined(PREF_MAX_UPLOAD_LIMIT)) {
-    group->setMaxUploadSpeedLimit(option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+  if(option.defined(PREF_MAX_UPLOAD_LIMIT)) {
+    group->setMaxUploadSpeedLimit(option.getAsInt(PREF_MAX_UPLOAD_LIMIT));
   }
 #ifdef ENABLE_BITTORRENT
   BtObject btObject = e->getBtRegistry()->get(group->getGID());
   if(!btObject.isNull()) {
-    if(option->defined(PREF_BT_MAX_PEERS)) {
-      btObject.btRuntime_->setMaxPeers(option->getAsInt(PREF_BT_MAX_PEERS));
+    if(option.defined(PREF_BT_MAX_PEERS)) {
+      btObject.btRuntime_->setMaxPeers(option.getAsInt(PREF_BT_MAX_PEERS));
     }
   }
 #endif // ENABLE_BITTORRENT
@@ -1153,28 +1153,28 @@ SharedHandle<ValueBase> ChangeGlobalOptionRpcMethod::process
 {
   const Dict* optsParam = checkRequiredParam<Dict>(req, 0);
 
-  SharedHandle<Option> option(new Option());
-  gatherChangeableGlobalOption(option, optsParam);
-  applyChangeableGlobalOption(e->getOption(), option.get());
+  Option option;
+  gatherChangeableGlobalOption(&option, optsParam);
+  e->getOption()->merge(option);
 
-  if(option->defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
+  if(option.defined(PREF_MAX_OVERALL_DOWNLOAD_LIMIT)) {
     e->getRequestGroupMan()->setMaxOverallDownloadSpeedLimit
-      (option->getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
+      (option.getAsInt(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
   }
-  if(option->defined(PREF_MAX_OVERALL_UPLOAD_LIMIT)) {
+  if(option.defined(PREF_MAX_OVERALL_UPLOAD_LIMIT)) {
     e->getRequestGroupMan()->setMaxOverallUploadSpeedLimit
-      (option->getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
+      (option.getAsInt(PREF_MAX_OVERALL_UPLOAD_LIMIT));
   }
-  if(option->defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
+  if(option.defined(PREF_MAX_CONCURRENT_DOWNLOADS)) {
     e->getRequestGroupMan()->setMaxSimultaneousDownloads
-      (option->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
+      (option.getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
     e->getRequestGroupMan()->requestQueueCheck();
   }
-  if(option->defined(PREF_LOG_LEVEL)) {
-    LogFactory::setLogLevel(option->get(PREF_LOG_LEVEL));
+  if(option.defined(PREF_LOG_LEVEL)) {
+    LogFactory::setLogLevel(option.get(PREF_LOG_LEVEL));
   }
-  if(option->defined(PREF_LOG)) {
-    LogFactory::setLogFile(option->get(PREF_LOG));
+  if(option.defined(PREF_LOG)) {
+    LogFactory::setLogFile(option.get(PREF_LOG));
     try {
       LogFactory::reconfigure();
     } catch(RecoverableException& e) {
@@ -1204,12 +1204,14 @@ SharedHandle<ValueBase> GetVersionRpcMethod::process
 
 namespace {
 void pushRequestOption
-(const SharedHandle<Dict>& dict, const SharedHandle<Option>& option)
+(const SharedHandle<Dict>& dict,
+ const SharedHandle<Option>& option,
+ const SharedHandle<OptionParser>& oparser)
 {
-  const std::set<std::string>& requestOptions = listRequestOptions();
-  for(size_t i = 0, len = option->getTable().size(); i < len; ++i) {
+  for(size_t i = 1, len = option::countOption(); i < len; ++i) {
     const Pref* pref = option::i2p(i);
-    if(requestOptions.count(pref->k) && option->defined(pref)) {
+    const SharedHandle<OptionHandler>& h = oparser->find(pref);
+    if(h && h->getInitialOption() && option->defined(pref)) {
       dict->put(pref->k, option->get(pref));
     }
   }
@@ -1231,7 +1233,7 @@ SharedHandle<ValueBase> GetOptionRpcMethod::process
   }
   SharedHandle<Dict> result = Dict::g();
   SharedHandle<Option> option = group->getOption();
-  pushRequestOption(result, option);
+  pushRequestOption(result, option, getOptionParser());
   return result;
 }
 

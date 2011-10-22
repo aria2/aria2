@@ -61,6 +61,7 @@
 #include "a2functional.h"
 #include "ByteArrayDiskWriterFactory.h"
 #include "MetadataInfo.h"
+#include "OptionParser.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtConstants.h"
@@ -68,115 +69,6 @@
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
-
-const std::set<std::string>& listRequestOptions()
-{
-  static const std::string REQUEST_OPTIONS[] = {
-    PREF_DIR->k,
-    PREF_CHECK_INTEGRITY->k,
-    PREF_CONTINUE->k,
-    PREF_ALL_PROXY->k,
-    PREF_ALL_PROXY_USER->k,
-    PREF_ALL_PROXY_PASSWD->k,
-    PREF_CONNECT_TIMEOUT->k,
-    PREF_DRY_RUN->k,
-    PREF_LOWEST_SPEED_LIMIT->k,
-    PREF_MAX_FILE_NOT_FOUND->k,
-    PREF_MAX_TRIES->k,
-    PREF_NO_PROXY->k,
-    PREF_OUT->k,
-    PREF_PROXY_METHOD->k,
-    PREF_REMOTE_TIME->k,
-    PREF_SPLIT->k,
-    PREF_TIMEOUT->k,
-    PREF_HTTP_AUTH_CHALLENGE->k,
-    PREF_HTTP_NO_CACHE->k,
-    PREF_HTTP_USER->k,
-    PREF_HTTP_PASSWD->k,
-    PREF_HTTP_PROXY->k,
-    PREF_HTTP_PROXY_USER->k,
-    PREF_HTTP_PROXY_PASSWD->k,
-    PREF_HTTPS_PROXY->k,
-    PREF_HTTPS_PROXY_USER->k,
-    PREF_HTTPS_PROXY_PASSWD->k,
-    PREF_REFERER->k,
-    PREF_ENABLE_HTTP_KEEP_ALIVE->k,
-    PREF_ENABLE_HTTP_PIPELINING->k,
-    PREF_HEADER->k,
-    PREF_USE_HEAD->k,
-    PREF_USER_AGENT->k,
-    PREF_FTP_USER->k,
-    PREF_FTP_PASSWD->k,
-    PREF_FTP_PASV->k,
-    PREF_FTP_PROXY->k,
-    PREF_FTP_PROXY_USER->k,
-    PREF_FTP_PROXY_PASSWD->k,
-    PREF_FTP_TYPE->k,
-    PREF_FTP_REUSE_CONNECTION->k,
-    PREF_NO_NETRC->k,
-    PREF_REUSE_URI->k,
-    PREF_SELECT_FILE->k,
-    PREF_BT_ENABLE_LPD->k,
-    PREF_BT_EXTERNAL_IP->k,
-    PREF_BT_HASH_CHECK_SEED->k,
-    PREF_BT_MAX_OPEN_FILES->k,
-    PREF_BT_MAX_PEERS->k,
-    PREF_BT_METADATA_ONLY->k,
-    PREF_BT_MIN_CRYPTO_LEVEL->k,
-    PREF_BT_PRIORITIZE_PIECE->k,
-    PREF_BT_REQUIRE_CRYPTO->k,
-    PREF_BT_REQUEST_PEER_SPEED_LIMIT->k,
-    PREF_BT_SAVE_METADATA->k,
-    PREF_BT_SEED_UNVERIFIED->k,
-    PREF_BT_STOP_TIMEOUT->k,
-    PREF_BT_TRACKER_INTERVAL->k,
-    PREF_BT_TRACKER_TIMEOUT->k,
-    PREF_BT_TRACKER_CONNECT_TIMEOUT->k,
-    PREF_ENABLE_PEER_EXCHANGE->k,
-    PREF_FOLLOW_TORRENT->k,
-    PREF_INDEX_OUT->k,
-    PREF_MAX_UPLOAD_LIMIT->k,
-    PREF_SEED_RATIO->k,
-    PREF_SEED_TIME->k,
-    PREF_FOLLOW_METALINK->k,
-    PREF_METALINK_SERVERS->k,
-    PREF_METALINK_LANGUAGE->k,
-    PREF_METALINK_LOCATION->k,
-    PREF_METALINK_OS->k,
-    PREF_METALINK_VERSION->k,
-    PREF_METALINK_PREFERRED_PROTOCOL->k,
-    PREF_METALINK_ENABLE_UNIQUE_PROTOCOL->k,
-    PREF_ALLOW_OVERWRITE->k,
-    PREF_ALLOW_PIECE_LENGTH_CHANGE->k,
-    PREF_ASYNC_DNS->k,
-    PREF_AUTO_FILE_RENAMING->k,
-    PREF_FILE_ALLOCATION->k,
-    PREF_MAX_DOWNLOAD_LIMIT->k,
-    PREF_NO_FILE_ALLOCATION_LIMIT->k,
-    PREF_PARAMETERIZED_URI->k,
-    PREF_REALTIME_CHUNK_CHECKSUM->k,
-    PREF_REMOVE_CONTROL_FILE->k,
-    PREF_ALWAYS_RESUME->k,
-    PREF_MAX_RESUME_FAILURE_TRIES->k,
-    PREF_HTTP_ACCEPT_GZIP->k,
-    PREF_MAX_CONNECTION_PER_SERVER->k,
-    PREF_MIN_SPLIT_SIZE->k,
-    PREF_CONDITIONAL_GET->k,
-    PREF_ENABLE_ASYNC_DNS6->k,
-    PREF_BT_TRACKER->k,
-    PREF_BT_EXCLUDE_TRACKER->k,
-    PREF_RETRY_WAIT->k,
-    PREF_METALINK_BASE_URI->k,
-    PREF_PAUSE->k,
-    PREF_STREAM_PIECE_SELECTOR->k,
-    PREF_HASH_CHECK_ONLY->k,
-    PREF_CHECKSUM->k,
-    PREF_PIECE_LENGTH->k
-  };
-  static std::set<std::string> requestOptions
-    (vbegin(REQUEST_OPTIONS), vend(REQUEST_OPTIONS));
-  return requestOptions;
-}
 
 namespace {
 void unfoldURI
@@ -523,23 +415,21 @@ void createRequestGroupForUriList
   UriListParser p(filename);
   while(p.hasNext()) {
     std::vector<std::string> uris;
-    SharedHandle<Option> tempOption(new Option());
-    p.parseNext(uris, *tempOption.get());
+    Option tempOption;
+    p.parseNext(uris, tempOption);
     if(uris.empty()) {
       continue;
     }
-
     SharedHandle<Option> requestOption(new Option(*option.get()));
     requestOption->remove(PREF_OUT);
-    for(std::set<std::string>::const_iterator i =
-          listRequestOptions().begin(), eoi = listRequestOptions().end();
-        i != eoi; ++i) {
-      const Pref* pref = option::k2p(*i);
-      if(tempOption->defined(pref)) {
-        requestOption->put(pref, tempOption->get(pref));
+    const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
+    for(size_t i = 1, len = option::countOption(); i < len; ++i) {
+      const Pref* pref = option::i2p(i);
+      const SharedHandle<OptionHandler>& h = oparser->find(pref);
+      if(h && h->getInitialOption() && tempOption.defined(pref)) {
+        requestOption->put(pref, tempOption.get(pref));
       }
     }
-
     createRequestGroupForUri(result, requestOption, uris);
   }
 }

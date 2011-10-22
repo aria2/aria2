@@ -312,6 +312,14 @@ public:
   virtual void setOptionID(int id);
   virtual bool getEraseAfterParse() const;
   virtual void setEraseAfterParse(bool eraseAfterParse);
+  virtual bool getInitialOption() const;
+  virtual void setInitialOption(bool f);
+  virtual bool getChangeOption() const;
+  virtual void setChangeOption(bool f);
+  virtual bool getGlobalChangeOption() const;
+  virtual void setGlobalChangeOption(bool f);
+  virtual bool getCumulative() const;
+  virtual void setCumulative(bool f);
 };
 
 } // namespace aria2

@@ -50,8 +50,6 @@ class Option;
 class MetadataInfo;
 class DownloadContext;
 
-const std::set<std::string>& listRequestOptions();
-
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by
 // torrent-file option.  If non-empty torrentData is specified, then

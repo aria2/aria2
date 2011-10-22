@@ -57,6 +57,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -66,6 +67,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -77,6 +79,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #ifdef ENABLE_ASYNC_DNS
@@ -87,6 +90,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #if defined HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
@@ -108,6 +112,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -132,6 +137,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->addTag(TAG_FILE);
     op->addTag(TAG_CHECKSUM);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -143,6 +149,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -164,6 +171,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -186,6 +194,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     'd'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FILE);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -224,6 +233,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_ASYNC_DNS
@@ -295,6 +305,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     'a'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FILE);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -319,6 +330,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->addTag(TAG_FILE);
     op->addTag(TAG_CHECKSUM);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -361,6 +373,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::REQ_ARG,
                                     'l'));
     op->addTag(TAG_BASIC);
+    op->setGlobalChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -372,6 +385,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     std::vector<std::string>
                                     (vbegin(params), vend(params))));
     op->addTag(TAG_ADVANCED);
+    op->setGlobalChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -382,6 +396,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     1, -1,
                                     'j'));
     op->addTag(TAG_BASIC);
+    op->setGlobalChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -394,6 +409,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -405,6 +421,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
+    op->setChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -425,6 +443,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setGlobalChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -436,7 +455,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
-    handlers.push_back(op);    
+    op->setInitialOption(true);
+    handlers.push_back(op);
   }
   {
     SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
@@ -448,7 +468,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
-    handlers.push_back(op);    
+    op->setInitialOption(true);
+    handlers.push_back(op);
   }
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
@@ -467,6 +488,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     0));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FILE);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -525,8 +547,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_PARAMETERIZED_URI,
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG,
-                                    'P'));  
+                                    'P'));
     op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -537,6 +560,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_RPC);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -558,6 +582,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_METALINK);
     op->addTag(TAG_CHECKSUM);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -568,6 +593,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -657,7 +683,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     0));
     op->addTag(TAG_RPC);
     handlers.push_back(op);
-  }                         
+  }
   {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_RPC_USER,
@@ -683,6 +709,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_CHECKSUM);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -694,6 +721,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     1, 600));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -704,6 +732,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -714,6 +743,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     0));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -724,6 +754,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     0));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -735,6 +766,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     'm'));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -746,6 +778,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     'n'));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -760,6 +793,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_FILE);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -772,6 +806,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -783,6 +818,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     'R'));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -793,6 +829,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     0, 600));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -803,6 +840,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -845,6 +883,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -866,6 +905,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_GEOM));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -877,6 +917,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     't'));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -929,6 +970,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -938,6 +980,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -947,6 +990,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE,
                                     "\n"));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
+    op->setCumulative(true);
     handlers.push_back(op);
   }
   {
@@ -956,6 +1001,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -965,6 +1011,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -974,6 +1021,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -983,6 +1031,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -992,6 +1041,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_HTTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1019,6 +1069,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_METALINK_LOCATION,
                                     TEXT_METALINK_LOCATION));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1036,6 +1087,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_REFERER,
                                     TEXT_REFERER));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1055,6 +1107,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1066,6 +1119,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::REQ_ARG,
                                     'U'));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   // FTP Specific Options
@@ -1076,8 +1130,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
-  }    
+  }
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_FTP_PASV,
@@ -1086,6 +1141,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG,
                                     'p'));
     op->addTag(TAG_FTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1095,6 +1151,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_FTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1104,6 +1161,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     V_BINARY,
                                     V_BINARY, V_ASCII));
     op->addTag(TAG_FTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1113,6 +1171,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1131,6 +1190,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_HTTP_PROXY,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1140,6 +1200,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1149,6 +1210,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1158,6 +1220,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1168,6 +1231,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1178,6 +1242,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1186,6 +1251,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_FTP_PROXY,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1195,6 +1261,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1204,6 +1271,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_FTP);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1214,6 +1282,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1225,6 +1294,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1236,6 +1306,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
     op->setEraseAfterParse(true);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1247,6 +1318,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
     op->addTag(TAG_HTTPS);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1257,6 +1329,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     V_GET, V_TUNNEL));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   // BitTorrent/Metalink Options
@@ -1269,6 +1342,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     1, INT32_MAX));
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1293,6 +1367,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1303,6 +1378,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                            "URI,... "
                                            "or *"));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1312,6 +1388,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE,
                                     "a numeric IP address"));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1331,6 +1408,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_CHECKSUM);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1350,6 +1428,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "100",
                                     1));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1359,8 +1438,10 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "55",
                                     0));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeOption(true);
     handlers.push_back(op);
-                                   
+
   }
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
@@ -1369,6 +1450,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1378,6 +1460,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     V_PLAIN,
                                     V_PLAIN, V_ARC4));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1385,6 +1468,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_BT_PRIORITIZE_PIECE,
                                     TEXT_BT_PRIORITIZE_PIECE));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1394,6 +1478,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "50K",
                                     0));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -1403,6 +1489,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1421,6 +1508,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1430,6 +1518,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_FALSE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1439,6 +1528,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "0",
                                     0));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1457,6 +1547,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                            NO_DESCRIPTION,
                                            "URI,..."));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1466,6 +1557,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                           "60",
                                           1, 600));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1475,6 +1567,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                           "0",
                                           0));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1484,6 +1577,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                           "60",
                                           1, 600));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1589,6 +1683,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1598,6 +1693,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     A2_V_TRUE, V_MEM, A2_V_FALSE));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1606,6 +1702,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_INDEX_OUT,
                                     'O'));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setCumulative(true);
     handlers.push_back(op);
   }
   {
@@ -1626,6 +1724,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     0));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
+    op->setGlobalChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -1637,6 +1736,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     'u'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeOption(true);
     handlers.push_back(op);
   }
   {
@@ -1673,6 +1774,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE,
                                     0));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1682,6 +1784,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "1.0",
                                     0.0));
     op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1705,6 +1808,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     A2_V_TRUE, V_MEM, A2_V_FALSE));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1713,6 +1817,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     TEXT_METALINK_BASE_URI,
                                     NO_DEFAULT_VALUE));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1722,6 +1827,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     A2_V_TRUE,
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1740,6 +1846,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_METALINK_LANGUAGE,
                                     TEXT_METALINK_LANGUAGE));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1747,6 +1854,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_METALINK_OS,
                                     TEXT_METALINK_OS));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1758,6 +1866,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     std::vector<std::string>
                                     (vbegin(params), vend(params))));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1768,6 +1877,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     1, -1,
                                     'C'));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   {
@@ -1775,6 +1885,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                    (PREF_METALINK_VERSION,
                                     TEXT_METALINK_VERSION));
     op->addTag(TAG_METALINK);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_METALINK
@@ -1822,7 +1933,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HELP);
     handlers.push_back(op);
   }
-  
+
   return handlers;
 }
 

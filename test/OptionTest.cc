@@ -16,6 +16,7 @@ class OptionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testPutAndGetAsDouble);
   CPPUNIT_TEST(testDefined);
   CPPUNIT_TEST(testBlank);
+  CPPUNIT_TEST(testMerge);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -28,6 +29,7 @@ public:
   void testPutAndGetAsDouble();
   void testDefined();
   void testBlank();
+  void testMerge();
 };
 
 
@@ -74,6 +76,21 @@ void OptionTest::testBlank()
   CPPUNIT_ASSERT(!op.blank(PREF_TIMEOUT));
   CPPUNIT_ASSERT(op.blank(PREF_DIR));
   CPPUNIT_ASSERT(op.blank(PREF_DAEMON));
+}
+
+void OptionTest::testMerge()
+{
+  Option src;
+  src.put(PREF_TIMEOUT, "100");
+  src.put(PREF_DAEMON, "true");
+  Option dest;
+  dest.put(PREF_DAEMON, "false");
+  dest.put(PREF_DIR, "foo");
+  dest.merge(src);
+  CPPUNIT_ASSERT_EQUAL(100, dest.getAsInt(PREF_TIMEOUT));
+  CPPUNIT_ASSERT(dest.getAsBool(PREF_DAEMON));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), dest.get(PREF_DIR));
+  CPPUNIT_ASSERT(!dest.defined(PREF_OUT));
 }
 
 } // namespace aria2

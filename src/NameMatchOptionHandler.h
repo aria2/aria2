@@ -66,6 +66,11 @@ protected:
 
   bool eraseAfterParse_;
 
+  bool initialOption_;
+  bool changeOption_;
+  bool globalChangeOption_;
+  bool cumulative_;
+
   virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
   NameMatchOptionHandler(const Pref* pref,
@@ -141,6 +146,46 @@ public:
   virtual void setEraseAfterParse(bool eraseAfterParse)
   {
     eraseAfterParse_ = eraseAfterParse;
+  }
+
+  virtual bool getInitialOption() const
+  {
+    return initialOption_;
+  }
+
+  virtual void setInitialOption(bool f)
+  {
+    initialOption_ = f;
+  }
+
+  virtual bool getChangeOption() const
+  {
+    return changeOption_;
+  }
+
+  virtual void setChangeOption(bool f)
+  {
+    changeOption_ = f;
+  }
+
+  virtual bool getGlobalChangeOption() const
+  {
+    return globalChangeOption_;
+  }
+
+  virtual void setGlobalChangeOption(bool f)
+  {
+    globalChangeOption_ = f;
+  }
+
+  virtual bool getCumulative() const
+  {
+    return cumulative_;
+  }
+
+  virtual void setCumulative(bool f)
+  {
+    cumulative_ = f;
   }
 };
 

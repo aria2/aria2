@@ -75,6 +75,9 @@ public:
   {
     return table_;
   }
+
+  // Copy option values defined in option to this option.
+  void merge(const Option& option);
 };
 
 } // namespace aria2

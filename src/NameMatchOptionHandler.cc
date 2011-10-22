@@ -56,7 +56,11 @@ NameMatchOptionHandler::NameMatchOptionHandler
     argType_(argType),
     shortName_(shortName),
     hidden_(false),
-    eraseAfterParse_(false)
+    eraseAfterParse_(false),
+    initialOption_(false),
+    changeOption_(false),
+    globalChangeOption_(false),
+    cumulative_(false)
 {}
 
 NameMatchOptionHandler::~NameMatchOptionHandler() {}

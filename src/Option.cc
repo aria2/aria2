@@ -142,4 +142,15 @@ void Option::clear()
   std::fill(table_.begin(), table_.end(), "");
 }
 
+void Option::merge(const Option& option)
+{
+  size_t bits = option.use_.size()*8;
+  for(size_t i = 1, len = table_.size(); i < len; ++i) {
+    if(bitfield::test(option.use_, bits, i)) {
+      use_[i/8] |= 128 >> (i%8);
+      table_[i] = option.table_[i];
+    }
+  }
+}
+
 } // namespace aria2

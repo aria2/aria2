@@ -104,6 +104,15 @@ public:
   virtual bool getEraseAfterParse() const = 0;
 
   virtual void setEraseAfterParse(bool eraseAfterParse) = 0;
+
+  virtual bool getInitialOption() const = 0;
+  virtual void setInitialOption(bool f) = 0;
+  virtual bool getChangeOption() const = 0;
+  virtual void setChangeOption(bool f) = 0;
+  virtual bool getGlobalChangeOption() const = 0;
+  virtual void setGlobalChangeOption(bool f) = 0;
+  virtual bool getCumulative() const = 0;
+  virtual void setCumulative(bool f) = 0;
 };
 
 class OptionHandlerNameLesser:public std::binary_function
