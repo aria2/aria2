@@ -1613,6 +1613,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_hash_check_only, hash-check-only>>*
 * *<<aria2_optref_checksum, checksum>>*
 * *<<aria2_optref_piece_length, piece_length>>*
+* *<<aria2_optref_uri_selector, uri-selector>>*
 
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.

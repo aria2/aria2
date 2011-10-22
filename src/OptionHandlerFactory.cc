@@ -930,6 +930,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     (vbegin(params), vend(params))));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setInitialOption(true);
     handlers.push_back(op);
   }
   // HTTP Specific Options

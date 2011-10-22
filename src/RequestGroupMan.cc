@@ -454,16 +454,17 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 void RequestGroupMan::configureRequestGroup
 (const SharedHandle<RequestGroup>& requestGroup) const
 {
-  const std::string& uriSelectorValue = option_->get(PREF_URI_SELECTOR);
+  const std::string& uriSelectorValue =
+    requestGroup->getOption()->get(PREF_URI_SELECTOR);
+  SharedHandle<URISelector> sel;
   if(uriSelectorValue == V_FEEDBACK) {
-    SharedHandle<URISelector> sel(new FeedbackURISelector(serverStatMan_));
-    requestGroup->setURISelector(sel);
+    sel.reset(new FeedbackURISelector(serverStatMan_));
   } else if(uriSelectorValue == V_INORDER) {
-    SharedHandle<URISelector> sel(new InorderURISelector());
-    requestGroup->setURISelector(sel);
+    sel.reset(new InorderURISelector());
   } else if(uriSelectorValue == V_ADAPTIVE) {
-    SharedHandle<URISelector> sel(new AdaptiveURISelector(serverStatMan_,
-                                                          requestGroup.get()));
+    sel.reset(new AdaptiveURISelector(serverStatMan_, requestGroup.get()));
+  }
+  if(sel) {
     requestGroup->setURISelector(sel);
   }
 }
