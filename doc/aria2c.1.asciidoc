@@ -2849,13 +2849,19 @@ Description
 +++++++++++
 
 This method changes global options dynamically.  'options' is of type
-struct and the available options are
-*<<aria2_optref_max_concurrent_downloads, max-concurrent-downloads>>*,
-*<<aria2_optref_max_download_result, max-download-result>>*,
-*<<aria2_optref_max_overall_download_limit, max-overall-download-limit>>*,
-*<<aria2_optref_max_overall_upload_limit, max-overall-upload-limit>>*,
-*<<aria2_optref_log_level, log-level>>*
-and *<<aria2_optref_log, log>>*.
+struct and the available options are:
+
+* *<<aria2_optref_download_result, download-result>>*
+* *<<aria2_optref_log, log>>*
+* *<<aria2_optref_log_level, log-level>>*
+* *<<aria2_optref_max_concurrent_downloads, max-concurrent-downloads>>*
+* *<<aria2_optref_max_download_result, max-download-result>>*
+* *<<aria2_optref_max_overall_download_limit, max-overall-download-limit>>*
+* *<<aria2_optref_max_overall_upload_limit, max-overall-upload-limit>>*
+* *<<aria2_optref_save_cookies, save-cookies>>*
+* *<<aria2_optref_save_session, save-session>>*
+* *<<aria2_optref_server_stat_of, server-stat-of>>*
+
 Using *<<aria2_optref_log, log>>* option, you can dynamically start logging or
 change log file. To stop logging, give empty string("") as a parameter
 value. Note that log file is always opened in append mode. This method

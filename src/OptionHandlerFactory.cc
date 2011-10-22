@@ -224,6 +224,7 @@ OptionHandlerFactory::createOptionHandlers()
                                     A2_V_DEFAULT,
                                     A2_V_FULL));
     op->addTag(TAG_ADVANCED);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
 #ifdef ENABLE_ASYNC_DNS
@@ -605,6 +606,7 @@ OptionHandlerFactory::createOptionHandlers()
                                     NO_DEFAULT_VALUE,
                                     PATH_TO_FILE));
     op->addTag(TAG_ADVANCED);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -863,6 +865,7 @@ OptionHandlerFactory::createOptionHandlers()
                                     PATH_TO_FILE));
     op->addTag(TAG_FTP);
     op->addTag(TAG_HTTP);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -1101,6 +1104,7 @@ OptionHandlerFactory::createOptionHandlers()
                                     PATH_TO_FILE));
     op->addTag(TAG_HTTP);
     op->addTag(TAG_COOKIE);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
