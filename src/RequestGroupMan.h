@@ -304,6 +304,11 @@ public:
   {
     return serverStatMan_;
   }
+
+  void setMaxDownloadResult(size_t v)
+  {
+    maxDownloadResult_ = v;
+  }
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

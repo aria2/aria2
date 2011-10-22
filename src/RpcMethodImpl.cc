@@ -1170,6 +1170,10 @@ SharedHandle<ValueBase> ChangeGlobalOptionRpcMethod::process
       (option.getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
     e->getRequestGroupMan()->requestQueueCheck();
   }
+  if(option.defined(PREF_MAX_DOWNLOAD_RESULT)) {
+    e->getRequestGroupMan()->setMaxDownloadResult
+      (option.getAsInt(PREF_MAX_DOWNLOAD_RESULT));
+  }
   if(option.defined(PREF_LOG_LEVEL)) {
     LogFactory::setLogLevel(option.get(PREF_LOG_LEVEL));
   }

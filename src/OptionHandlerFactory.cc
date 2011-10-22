@@ -432,6 +432,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
                                     "1000",
                                     0));
     op->addTag(TAG_ADVANCED);
+    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {

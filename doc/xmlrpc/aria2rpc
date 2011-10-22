@@ -226,6 +226,7 @@ OptionParser.new do |opt|
   opt.on("--max-overall-upload-limit LIMIT"){|val| options["max-overall-upload-limit"]=val}
   opt.on("-j","--max-concurrent-downloads N"){|val| options["max-concurrent-downloads"]=val}
   opt.on("-l","--log FILE"){|val| options["log"]=val}
+  opt.on("--max-download-result NUM"){|val| options["max-download-result"]=val}
 
   opt.on("--server SERVER", "hostname of XML-RPC server. Default: localhost"){|val| options["server"]=val }
   opt.on("--port PORT", "port of XML-RPC server. Default: 6800"){|val| options["port"]=val }
