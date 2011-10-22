@@ -69,8 +69,8 @@ BooleanOptionHandler::BooleanOptionHandler
  const std::string& defaultValue,
  OptionHandler::ARG_TYPE argType,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           argType, shortName)
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          argType, shortName)
 {}
 
 BooleanOptionHandler::~BooleanOptionHandler() {}
@@ -102,8 +102,8 @@ IntegerRangeOptionHandler::IntegerRangeOptionHandler
  const std::string& defaultValue,
  int32_t min, int32_t max,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName),
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName),
     min_(min),
     max_(max)
 {}
@@ -139,8 +139,8 @@ NumberOptionHandler::NumberOptionHandler
  int64_t min,
  int64_t max,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName),
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName),
     min_(min),
     max_(max)
 {}
@@ -221,8 +221,8 @@ FloatNumberOptionHandler::FloatNumberOptionHandler
  double min,
  double max,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName),
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName),
     min_(min),
     max_(max)
 {}
@@ -279,8 +279,8 @@ DefaultOptionHandler::DefaultOptionHandler
  const std::string& possibleValuesString,
  OptionHandler::ARG_TYPE argType,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue, argType,
-                           shortName),
+  : AbstractOptionHandler(pref, description, defaultValue, argType,
+                          shortName),
     possibleValuesString_(possibleValuesString)
 {}
 
@@ -304,8 +304,8 @@ CumulativeOptionHandler::CumulativeOptionHandler
  const std::string& possibleValuesString,
  OptionHandler::ARG_TYPE argType,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue, argType,
-                           shortName),
+  : AbstractOptionHandler(pref, description, defaultValue, argType,
+                          shortName),
     delim_(delim),
     possibleValuesString_(possibleValuesString)
 {}
@@ -329,8 +329,8 @@ IndexOutOptionHandler::IndexOutOptionHandler
 (const Pref* pref,
  const std::string& description,
  char shortName)
-  : NameMatchOptionHandler(pref, description, NO_DEFAULT_VALUE,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
+                          OptionHandler::REQ_ARG, shortName)
 {}
 
 IndexOutOptionHandler::~IndexOutOptionHandler() {}
@@ -353,8 +353,8 @@ ChecksumOptionHandler::ChecksumOptionHandler
 (const Pref* pref,
  const std::string& description,
  char shortName)
-  : NameMatchOptionHandler(pref, description, NO_DEFAULT_VALUE,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
+                          OptionHandler::REQ_ARG, shortName)
 {}
 
 ChecksumOptionHandler::~ChecksumOptionHandler() {}
@@ -382,8 +382,8 @@ ParameterOptionHandler::ParameterOptionHandler
  const std::string& defaultValue,
  const std::vector<std::string>& validParamValues,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName),
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName),
     validParamValues_(validParamValues)
 {}
 
@@ -393,8 +393,8 @@ ParameterOptionHandler::ParameterOptionHandler
  const std::string& defaultValue,
  const std::string& validParamValue,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName)
 {
   validParamValues_.push_back(validParamValue);
 }
@@ -406,8 +406,8 @@ ParameterOptionHandler::ParameterOptionHandler
  const std::string& validParamValue1,
  const std::string& validParamValue2,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName)
 {
   validParamValues_.push_back(validParamValue1);
   validParamValues_.push_back(validParamValue2);
@@ -421,8 +421,8 @@ ParameterOptionHandler::ParameterOptionHandler
  const std::string& validParamValue2,
  const std::string& validParamValue3,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName)
 {
   validParamValues_.push_back(validParamValue1);
   validParamValues_.push_back(validParamValue2);
@@ -468,8 +468,8 @@ HostPortOptionHandler::HostPortOptionHandler
  const Pref* hostOptionName,
  const Pref* portOptionName,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName),
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName),
     hostOptionName_(hostOptionName),
     portOptionName_(portOptionName)
 {}
@@ -505,8 +505,8 @@ HttpProxyUserOptionHandler::HttpProxyUserOptionHandler
  const std::string& description,
  const std::string& defaultValue,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName)
 {}
 
 void HttpProxyUserOptionHandler::parseArg
@@ -547,8 +547,8 @@ HttpProxyPasswdOptionHandler::HttpProxyPasswdOptionHandler
  const std::string& description,
  const std::string& defaultValue,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName)
 {}
 
 void HttpProxyPasswdOptionHandler::parseArg
@@ -589,8 +589,8 @@ HttpProxyOptionHandler::HttpProxyOptionHandler
  const std::string& description,
  const std::string& defaultValue,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName),
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName),
     proxyUserPref_(option::k2p(pref->k+"-user")),
     proxyPasswdPref_(option::k2p(pref->k+"-passwd"))
 {}
@@ -643,8 +643,8 @@ LocalFilePathOptionHandler::LocalFilePathOptionHandler
  const std::string& defaultValue,
  bool acceptStdin,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName),
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName),
     acceptStdin_(acceptStdin)
 {}
 
@@ -676,8 +676,8 @@ PrioritizePieceOptionHandler::PrioritizePieceOptionHandler
  const std::string& description,
  const std::string& defaultValue,
  char shortName)
-  : NameMatchOptionHandler(pref, description, defaultValue,
-                           OptionHandler::REQ_ARG, shortName)
+  : AbstractOptionHandler(pref, description, defaultValue,
+                          OptionHandler::REQ_ARG, shortName)
 {}
 
 void PrioritizePieceOptionHandler::parseArg

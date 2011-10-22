@@ -39,14 +39,14 @@
 
 #include <vector>
 
-#include "NameMatchOptionHandler.h"
+#include "AbstractOptionHandler.h"
 
 namespace aria2 {
 
 class Option;
 class Pref;
 
-class BooleanOptionHandler : public NameMatchOptionHandler {
+class BooleanOptionHandler : public AbstractOptionHandler {
 public:
   BooleanOptionHandler(const Pref* pref,
                        const std::string& description = NO_DESCRIPTION,
@@ -58,7 +58,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class IntegerRangeOptionHandler : public NameMatchOptionHandler {
+class IntegerRangeOptionHandler : public AbstractOptionHandler {
 private:
   int32_t min_;
   int32_t max_;
@@ -73,7 +73,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class NumberOptionHandler : public NameMatchOptionHandler {
+class NumberOptionHandler : public AbstractOptionHandler {
 private:
   int64_t min_;
   int64_t max_;
@@ -103,7 +103,7 @@ public:
   virtual void parseArg(Option& option, const std::string& optarg);
 };
 
-class FloatNumberOptionHandler : public NameMatchOptionHandler {
+class FloatNumberOptionHandler : public AbstractOptionHandler {
 private:
   double min_;
   double max_;
@@ -118,7 +118,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class DefaultOptionHandler : public NameMatchOptionHandler {
+class DefaultOptionHandler : public AbstractOptionHandler {
 private:
   std::string possibleValuesString_;
 public:
@@ -133,7 +133,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class CumulativeOptionHandler : public NameMatchOptionHandler {
+class CumulativeOptionHandler : public AbstractOptionHandler {
 private:
   std::string delim_;
   std::string possibleValuesString_;
@@ -151,7 +151,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class IndexOutOptionHandler : public NameMatchOptionHandler {
+class IndexOutOptionHandler : public AbstractOptionHandler {
 public:
   IndexOutOptionHandler(const Pref* pref,
                         const std::string& description,
@@ -161,7 +161,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class ChecksumOptionHandler : public NameMatchOptionHandler {
+class ChecksumOptionHandler : public AbstractOptionHandler {
 public:
   ChecksumOptionHandler(const Pref* pref,
                         const std::string& description,
@@ -171,7 +171,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class ParameterOptionHandler : public NameMatchOptionHandler {
+class ParameterOptionHandler : public AbstractOptionHandler {
 private:
   std::vector<std::string> validParamValues_;
 public:
@@ -203,7 +203,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class HostPortOptionHandler : public NameMatchOptionHandler {
+class HostPortOptionHandler : public AbstractOptionHandler {
 private:
   const Pref* hostOptionName_;
   const Pref* portOptionName_;
@@ -221,7 +221,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class HttpProxyUserOptionHandler:public NameMatchOptionHandler {
+class HttpProxyUserOptionHandler:public AbstractOptionHandler {
 public:
   HttpProxyUserOptionHandler(const Pref* pref,
                              const std::string& description,
@@ -231,7 +231,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class HttpProxyPasswdOptionHandler:public NameMatchOptionHandler {
+class HttpProxyPasswdOptionHandler:public AbstractOptionHandler {
 public:
   HttpProxyPasswdOptionHandler(const Pref* pref,
                                const std::string& description,
@@ -241,7 +241,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class HttpProxyOptionHandler : public NameMatchOptionHandler {
+class HttpProxyOptionHandler : public AbstractOptionHandler {
 private:
   const Pref* proxyUserPref_;
   const Pref* proxyPasswdPref_;
@@ -255,7 +255,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class LocalFilePathOptionHandler : public NameMatchOptionHandler {
+class LocalFilePathOptionHandler : public AbstractOptionHandler {
 private:
   bool acceptStdin_;
 public:
@@ -269,7 +269,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class PrioritizePieceOptionHandler:public NameMatchOptionHandler {
+class PrioritizePieceOptionHandler:public AbstractOptionHandler {
 public:
   PrioritizePieceOptionHandler
   (const Pref* pref,

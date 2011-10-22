@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_NAME_MATCH_OPTION_HANDLER_H
-#define D_NAME_MATCH_OPTION_HANDLER_H
+#ifndef D_ABSTRACT_OPTION_HANDLER_H
+#define D_ABSTRACT_OPTION_HANDLER_H
 
 #include "OptionHandler.h"
 
@@ -46,7 +46,7 @@ namespace aria2 {
 class Option;
 class Pref;
 
-class NameMatchOptionHandler : public OptionHandler {
+class AbstractOptionHandler : public OptionHandler {
 protected:
   const Pref* pref_;
 
@@ -71,13 +71,13 @@ protected:
 
   virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
-  NameMatchOptionHandler(const Pref* pref,
+  AbstractOptionHandler(const Pref* pref,
                          const std::string& description = NO_DESCRIPTION,
                          const std::string& defaultValue = NO_DEFAULT_VALUE,
                          ARG_TYPE argType = REQ_ARG,
                          char shortName = 0);
 
-  virtual ~NameMatchOptionHandler();
+  virtual ~AbstractOptionHandler();
   
   virtual void parse(Option& option, const std::string& arg);
 
@@ -177,4 +177,4 @@ public:
 
 } // namespace aria2
 
-#endif // D_NAME_MATCH_OPTION_HANDLER_H
+#endif // D_ABSTRACT_OPTION_HANDLER_H

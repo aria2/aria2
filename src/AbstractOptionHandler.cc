@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "NameMatchOptionHandler.h"
+#include "AbstractOptionHandler.h"
 
 #include <algorithm>
 
@@ -43,7 +43,7 @@
 
 namespace aria2 {
 
-NameMatchOptionHandler::NameMatchOptionHandler
+AbstractOptionHandler::AbstractOptionHandler
 (const Pref* pref,
  const std::string& description,
  const std::string& defaultValue,
@@ -62,9 +62,9 @@ NameMatchOptionHandler::NameMatchOptionHandler
     cumulative_(false)
 {}
 
-NameMatchOptionHandler::~NameMatchOptionHandler() {}
+AbstractOptionHandler::~AbstractOptionHandler() {}
   
-void NameMatchOptionHandler::parse(Option& option, const std::string& arg)
+void AbstractOptionHandler::parse(Option& option, const std::string& arg)
 {
   try {
     parseArg(option, arg);
@@ -73,22 +73,22 @@ void NameMatchOptionHandler::parse(Option& option, const std::string& arg)
   }
 }
 
-bool NameMatchOptionHandler::hasTag(const std::string& tag) const
+bool AbstractOptionHandler::hasTag(const std::string& tag) const
 {
   return std::find(tags_.begin(), tags_.end(), tag) != tags_.end();
 }
 
-void NameMatchOptionHandler::addTag(const std::string& tag)
+void AbstractOptionHandler::addTag(const std::string& tag)
 {
   tags_.push_back(tag);
 }
 
-std::string NameMatchOptionHandler::toTagString() const
+std::string AbstractOptionHandler::toTagString() const
 {
   return strjoin(tags_.begin(), tags_.end(), ", ");
 }
 
-const std::string& NameMatchOptionHandler::getName() const
+const std::string& AbstractOptionHandler::getName() const
 {
   return pref_->k;
 }

@@ -77,7 +77,7 @@ SRCS =  Socket.h\
 	OptionHandlerFactory.cc OptionHandlerFactory.h\
 	OptionHandler.cc OptionHandler.h\
 	OptionHandlerImpl.cc OptionHandlerImpl.h\
-	NameMatchOptionHandler.cc NameMatchOptionHandler.h\
+	AbstractOptionHandler.cc AbstractOptionHandler.h\
 	NameResolver.cc NameResolver.h\
 	RequestGroup.cc RequestGroup.h\
 	RequestGroupMan.cc RequestGroupMan.h\
