@@ -564,7 +564,7 @@ void RpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
   RpcRequest req
     (ChangeGlobalOptionRpcMethod::getMethodName(), List::g());
   SharedHandle<Dict> opt = Dict::g();
-  opt->put(PREF_MAX_DOWNLOAD_LIMIT->k, "100K");
+  opt->put(PREF_ENABLE_RPC->k, "100K");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(1, res.code);
