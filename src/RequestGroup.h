@@ -196,7 +196,6 @@ private:
 
   bool isCheckIntegrityReady() const;
 public:
-  // The copy of option is stored in RequestGroup object.
   RequestGroup(const SharedHandle<Option>& option);
 
   ~RequestGroup();

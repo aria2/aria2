@@ -110,9 +110,11 @@ void splitURI(std::vector<std::string>& result,
 
 namespace {
 SharedHandle<RequestGroup> createRequestGroup
-(const SharedHandle<Option>& option, const std::vector<std::string>& uris,
+(const SharedHandle<Option>& optionTemplate,
+ const std::vector<std::string>& uris,
  bool useOutOption = false)
 {
+  SharedHandle<Option> option = util::copy(optionTemplate);
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext
@@ -135,7 +137,7 @@ SharedHandle<RequestGroup> createRequestGroup
 #endif // ENABLE_MESSAGE_DIGEST
   rg->setDownloadContext(dctx);
   rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
-  removeOneshotOption(rg->getOption());
+  removeOneshotOption(option);
   return rg;
 }
 } // namespace
@@ -161,11 +163,12 @@ SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
 namespace {
 SharedHandle<RequestGroup>
 createBtRequestGroup(const std::string& torrentFilePath,
-                     const SharedHandle<Option>& option,
+                     const SharedHandle<Option>& optionTemplate,
                      const std::vector<std::string>& auxUris,
                      const std::string& torrentData = "",
                      bool adjustAnnounceUri = true)
 {
+  SharedHandle<Option> option = util::copy(optionTemplate);
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   if(torrentData.empty()) {
@@ -194,16 +197,18 @@ createBtRequestGroup(const std::string& torrentFilePath,
   // Remove "metalink" from Accept Type list to avoid server from
   // responding Metalink file for web-seeding URIs.
   util::removeMetalinkContentTypes(rg);
-  removeOneshotOption(rg->getOption());
+  removeOneshotOption(option);
   return rg;
 }
 } // namespace
 
 namespace {
 SharedHandle<RequestGroup>
-createBtMagnetRequestGroup(const std::string& magnetLink,
-                           const SharedHandle<Option>& option)
+createBtMagnetRequestGroup
+(const std::string& magnetLink,
+ const SharedHandle<Option>& optionTemplate)
 {
+  SharedHandle<Option> option = util::copy(optionTemplate);
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(METADATA_PIECE_SIZE, 0,
@@ -215,7 +220,7 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   bittorrent::loadMagnet(magnetLink, dctx);
   SharedHandle<TorrentAttribute> torrentAttrs =
     bittorrent::getTorrentAttrs(dctx);
-  bittorrent::adjustAnnounceUri(torrentAttrs, rg->getOption());
+  bittorrent::adjustAnnounceUri(torrentAttrs, option);
   dctx->getFirstFileEntry()->setPath(torrentAttrs->name);
   rg->setDownloadContext(dctx);
   rg->clearPostDownloadHandler();
@@ -227,7 +232,7 @@ createBtMagnetRequestGroup(const std::string& magnetLink,
   rg->setMetadataInfo(createMetadataInfo(magnetLink));
   rg->markInMemoryDownload();
   rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
-  removeOneshotOption(rg->getOption());
+  removeOneshotOption(option);
   return rg;
 }
 } // namespace

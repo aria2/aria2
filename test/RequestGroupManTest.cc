@@ -15,6 +15,7 @@
 #include "File.h"
 #include "array_fun.h"
 #include "RecoverableException.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -48,8 +49,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( RequestGroupManTest );
 
 void RequestGroupManTest::testIsSameFileBeingDownloaded()
 {
-  SharedHandle<RequestGroup> rg1(new RequestGroup(option_));
-  SharedHandle<RequestGroup> rg2(new RequestGroup(option_));
+  SharedHandle<RequestGroup> rg1(new RequestGroup(util::copy(option_)));
+  SharedHandle<RequestGroup> rg2(new RequestGroup(util::copy(option_)));
 
   SharedHandle<DownloadContext> dctx1
     (new DownloadContext(0, 0, "aria2.tar.bz2"));
@@ -117,10 +118,10 @@ void RequestGroupManTest::testLoadServerStat()
 void RequestGroupManTest::testChangeReservedGroupPosition()
 {
   SharedHandle<RequestGroup> gs[] = {
-    SharedHandle<RequestGroup>(new RequestGroup(option_)),
-    SharedHandle<RequestGroup>(new RequestGroup(option_)),
-    SharedHandle<RequestGroup>(new RequestGroup(option_)),
-    SharedHandle<RequestGroup>(new RequestGroup(option_))
+    SharedHandle<RequestGroup>(new RequestGroup(util::copy(option_))),
+    SharedHandle<RequestGroup>(new RequestGroup(util::copy(option_))),
+    SharedHandle<RequestGroup>(new RequestGroup(util::copy(option_))),
+    SharedHandle<RequestGroup>(new RequestGroup(util::copy(option_)))
   };
   std::vector<SharedHandle<RequestGroup> > groups(vbegin(gs), vend(gs));
   RequestGroupMan rm(groups, 0, option_.get());

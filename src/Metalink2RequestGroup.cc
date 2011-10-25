@@ -147,23 +147,23 @@ void
 Metalink2RequestGroup::createRequestGroup
 (std::vector<SharedHandle<RequestGroup> >& groups,
  const std::vector<SharedHandle<MetalinkEntry> >& entries,
- const SharedHandle<Option>& option)
+ const SharedHandle<Option>& optionTemplate)
 {
   if(entries.empty()) {
     A2_LOG_NOTICE(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
   std::vector<int32_t> selectIndexes =
-    util::parseIntRange(option->get(PREF_SELECT_FILE)).flush();
+    util::parseIntRange(optionTemplate->get(PREF_SELECT_FILE)).flush();
   std::sort(selectIndexes.begin(), selectIndexes.end());
   std::vector<std::string> locations;
-  if(option->defined(PREF_METALINK_LOCATION)) {
-    util::split(util::toLower(option->get(PREF_METALINK_LOCATION)),
+  if(optionTemplate->defined(PREF_METALINK_LOCATION)) {
+    util::split(util::toLower(optionTemplate->get(PREF_METALINK_LOCATION)),
                 std::back_inserter(locations), ",", true);
   }
   std::string preferredProtocol;
-  if(option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
-    preferredProtocol = option->get(PREF_METALINK_PREFERRED_PROTOCOL);
+  if(optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
+    preferredProtocol = optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL);
   }
   std::vector<SharedHandle<MetalinkEntry> > selectedEntries;
   selectedEntries.reserve(entries.size());
@@ -205,7 +205,7 @@ Metalink2RequestGroup::createRequestGroup
       uris.push_back(metaurl);
       {
         std::vector<SharedHandle<RequestGroup> > result;
-        createRequestGroupForUri(result, option, uris,
+        createRequestGroupForUri(result, optionTemplate, uris,
                                  /* ignoreForceSequential = */true,
                                  /* ignoreLocalPath = */true);
         if(!uris.empty()) {
@@ -229,6 +229,7 @@ Metalink2RequestGroup::createRequestGroup
       }
     }
 #endif // ENABLE_BITTORRENT
+    SharedHandle<Option> option = util::copy(optionTemplate);
     SharedHandle<RequestGroup> rg(new RequestGroup(option));
     SharedHandle<DownloadContext> dctx;
     if(mes.size() == 1) {
@@ -311,7 +312,7 @@ Metalink2RequestGroup::createRequestGroup
     }
     rg->setDownloadContext(dctx);
     rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
-    removeOneshotOption(rg->getOption());
+    removeOneshotOption(option);
     // remove "metalink" from Accept Type list to avoid loop in
     // tranparent metalink
     util::removeMetalinkContentTypes(rg);

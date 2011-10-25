@@ -215,7 +215,8 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 {
   std::vector<std::string> uris;
   uris.push_back(uri);
-  SharedHandle<RequestGroup> rg(new RequestGroup(getOption()));
+  SharedHandle<Option> option = util::copy(getOption());
+  SharedHandle<RequestGroup> rg(new RequestGroup(option));
   if(backupTrackerIsAvailable(requestGroup_->getDownloadContext())) {
     A2_LOG_DEBUG("This is multi-tracker announce.");
   } else {
@@ -224,19 +225,19 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setNumConcurrentCommand(1);
   // If backup tracker is available, try 2 times for each tracker
   // and if they all fails, then try next one.
-  rg->getOption()->put(PREF_MAX_TRIES, "2");
+  option->put(PREF_MAX_TRIES, "2");
   // TODO When dry-run mode becomes available in BitTorrent, set
   // PREF_DRY_RUN=false too.
-  rg->getOption()->put(PREF_USE_HEAD, A2_V_FALSE);
+  option->put(PREF_USE_HEAD, A2_V_FALSE);
   // Setting tracker timeouts
-  rg->setTimeout(rg->getOption()->getAsInt(PREF_BT_TRACKER_TIMEOUT));
-  rg->getOption()->put(PREF_CONNECT_TIMEOUT,
-                       rg->getOption()->get(PREF_BT_TRACKER_CONNECT_TIMEOUT));
-  rg->getOption()->put(PREF_REUSE_URI, A2_V_FALSE);
-  rg->getOption()->put(PREF_SELECT_LEAST_USED_HOST, A2_V_FALSE);
+  rg->setTimeout(option->getAsInt(PREF_BT_TRACKER_TIMEOUT));
+  option->put(PREF_CONNECT_TIMEOUT,
+              option->get(PREF_BT_TRACKER_CONNECT_TIMEOUT));
+  option->put(PREF_REUSE_URI, A2_V_FALSE);
+  option->put(PREF_SELECT_LEAST_USED_HOST, A2_V_FALSE);
   static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SharedHandle<DownloadContext> dctx
-    (new DownloadContext(getOption()->getAsInt(PREF_PIECE_LENGTH),
+    (new DownloadContext(option->getAsInt(PREF_PIECE_LENGTH),
                          0,
                          TRACKER_ANNOUNCE_FILE));
   dctx->getFileEntries().front()->setUris(uris);

@@ -514,6 +514,12 @@ nextParam
   return std::make_pair(end, false);
 }
 
+template<typename T>
+SharedHandle<T> copy(const SharedHandle<T>& a)
+{
+  return SharedHandle<T>(new T(*a.get()));
+}
+
 } // namespace util
 
 } // namespace aria2

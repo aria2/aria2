@@ -752,11 +752,11 @@ void RpcMethodTest::testGatherProgressCommon()
   SharedHandle<DownloadContext> dctx(new DownloadContext(0, 0,"aria2.tar.bz2"));
   std::string uris[] = { "http://localhost/aria2.tar.bz2" };
   dctx->getFirstFileEntry()->addUris(vbegin(uris), vend(uris));
-  SharedHandle<RequestGroup> group(new RequestGroup(option_));
+  SharedHandle<RequestGroup> group(new RequestGroup(util::copy(option_)));
   group->setDownloadContext(dctx);
   std::vector<SharedHandle<RequestGroup> > followedBy;
   for(int i = 0; i < 2; ++i) {
-    followedBy.push_back(SharedHandle<RequestGroup>(new RequestGroup(option_)));
+    followedBy.push_back(SharedHandle<RequestGroup>(new RequestGroup(util::copy(option_))));
   }
 
   group->followedBy(followedBy.begin(), followedBy.end());
@@ -844,9 +844,9 @@ void RpcMethodTest::testGatherBitTorrentMetadata()
 void RpcMethodTest::testChangePosition()
 {
   e_->getRequestGroupMan()->addReservedGroup
-    (SharedHandle<RequestGroup>(new RequestGroup(option_)));
+    (SharedHandle<RequestGroup>(new RequestGroup(util::copy(option_))));
   e_->getRequestGroupMan()->addReservedGroup
-    (SharedHandle<RequestGroup>(new RequestGroup(option_)));
+    (SharedHandle<RequestGroup>(new RequestGroup(util::copy(option_))));
 
   ChangePositionRpcMethod m;
   RpcRequest req(ChangePositionRpcMethod::getMethodName(), List::g());
