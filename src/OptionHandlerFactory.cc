@@ -582,7 +582,6 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->addTag(TAG_RPC);
     op->setInitialOption(true);
-    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -735,7 +734,6 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_CHECKSUM);
     op->setInitialOption(true);
-    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -826,7 +824,6 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
-    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -1418,7 +1415,6 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
-    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {
@@ -1800,7 +1796,6 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setCumulative(true);
-    op->setChangeGlobalOption(true);
     handlers.push_back(op);
   }
   {

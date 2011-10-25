@@ -2850,7 +2850,14 @@ Description
 
 This method changes global options dynamically.  'options' is of type
 struct and the available options are ones listed in
-*<<_input_file, Input File>>* subsection and following options:
+*<<_input_file, Input File>>* subsection
+(except for following 5 options:
+*<<aria2_optref_checksum, checksum>>*,
+*<<aria2_optref_index_out, index-out>>*,
+*<<aria2_optref_out, out>>*,
+*<<aria2_optref_pause, pause>>*,
+*<<aria2_optref_select_file, select-file>>*
+). In addition to them, following options are also available:
 
 * *<<aria2_optref_download_result, download-result>>*
 * *<<aria2_optref_log, log>>*
