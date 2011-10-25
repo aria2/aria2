@@ -161,6 +161,7 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
+#ifdef ENABLE_MESSAGE_DIGEST
 class ChecksumOptionHandler : public AbstractOptionHandler {
 public:
   ChecksumOptionHandler(const Pref* pref,
@@ -170,6 +171,7 @@ public:
   virtual void parseArg(Option& option, const std::string& optarg);
   virtual std::string createPossibleValuesString() const;
 };
+#endif // ENABLE_MESSAGE_DIGEST
 
 class ParameterOptionHandler : public AbstractOptionHandler {
 private:

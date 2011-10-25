@@ -349,6 +349,7 @@ std::string IndexOutOptionHandler::createPossibleValuesString() const
   return "INDEX=PATH";
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
 ChecksumOptionHandler::ChecksumOptionHandler
 (const Pref* pref,
  const std::string& description,
@@ -375,6 +376,7 @@ std::string ChecksumOptionHandler::createPossibleValuesString() const
 {
   return "HASH_TYPE=HEX_DIGEST";
 }
+#endif // ENABLE_MESSAGE_DIGEST
 
 ParameterOptionHandler::ParameterOptionHandler
 (const Pref* pref,
