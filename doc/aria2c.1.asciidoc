@@ -177,6 +177,16 @@ then you get HTTP proxy "http://proxy" with user "user" and password
 [[aria2_optref_no_netrc]]*-n*, *--no-netrc*[='true'|'false']::
   Disables netrc support. netrc support is enabled by default.
 
+[NOTE]
+
+netrc file is only read at the startup if
+*<<aria2_optref_no_netrc, --no-netrc>>* is 'false'.
+So if *<<aria2_optref_no_netrc, --no-netrc>>* is 'true' at the startup,
+no netrc is available throughout the session.
+You cannot get netrc enabled even if you send
+*<<aria2_optref_no_netrc, --no-netrc>>*='false' using
+*<<aria2_rpc_aria2_changeGlobalOption, aria2.changeGlobalOption>>*.
+
 [[aria2_optref_no_proxy]]*--no-proxy*=DOMAINS::
   Specify comma separated hostnames, domains and network address with
   or without CIDR block where proxy should not be used.
@@ -1463,7 +1473,7 @@ Netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
 support, specify *<<aria2_optref_no_netrc, -n>>* option.  Your .netrc file should have correct
 permissions(600).
 
-If machine name starts ".", aria2 performs domain match instead of
+If machine name starts ".", aria2 performs domain-match instead of
 exact match. This is an extension of aria2. For example of domain
 match, imagine the following .netrc entry:
 
@@ -1471,9 +1481,13 @@ match, imagine the following .netrc entry:
 machine .example.org login myid password mypasswd
 -------------------------------------------------
 
-In domain match, aria2.example.org matches .example.org and uses myid
-and mypasswd. example.org also matches .example.org.  But example.net
-does not match .example.org.
+"aria2.example.org" domain-matches ".example.org" and uses 'myid' and
+'mypasswd'.
+
+Some domain-match example follow: "example.net" does not domain-match
+".example.org". "example.org" does not domain-match ".example.org"
+because of preceding ".". If you want to match "example.org", specify
+"example.org".
 
 Control File
 ~~~~~~~~~~~~
