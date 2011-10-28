@@ -64,7 +64,7 @@ void NetrcTest::testFindAuthenticator()
   SharedHandle<Authenticator> domainMatchAuth2 =
     netrc.findAuthenticator("my.domain");
   CPPUNIT_ASSERT(domainMatchAuth2);
-  CPPUNIT_ASSERT_EQUAL(std::string("dmname"), domainMatchAuth2->getLogin());
+  CPPUNIT_ASSERT_EQUAL(std::string("default"), domainMatchAuth2->getLogin());
 }
 
 void NetrcTest::testParse()

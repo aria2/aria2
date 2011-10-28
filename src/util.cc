@@ -1752,6 +1752,18 @@ std::string safeStrerror(int errNum)
   return makeString(strerror(errNum));
 }
 
+bool noProxyDomainMatch
+(const std::string& hostname,
+ const std::string& domain)
+{
+  if(!util::isNumericHost(hostname) &&
+     util::startsWith(domain, A2STR::DOT_C)) {
+    return util::endsWith(hostname, domain);
+  } else {
+    return hostname == domain;
+  }
+}
+
 } // namespace util
 
 } // namespace aria2

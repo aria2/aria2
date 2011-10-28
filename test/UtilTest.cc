@@ -74,6 +74,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testInSameCidrBlock);
   CPPUNIT_TEST(testIsUtf8String);
   CPPUNIT_TEST(testNextParam);
+  CPPUNIT_TEST(testNoProxyDomainMatch);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -133,6 +134,7 @@ public:
   void testInSameCidrBlock();
   void testIsUtf8String();
   void testNextParam();
+  void testNoProxyDomainMatch();
 };
 
 
@@ -1275,6 +1277,17 @@ void UtilTest::testNextParam()
   std::string s4 = ":::";
   r = util::nextParam(name, value, s4.begin(), s4.end(), ':');
   CPPUNIT_ASSERT(!r.second);
+}
+
+void UtilTest::testNoProxyDomainMatch()
+{
+  CPPUNIT_ASSERT(util::noProxyDomainMatch("localhost", "localhost"));
+  CPPUNIT_ASSERT(util::noProxyDomainMatch("192.168.0.1", "192.168.0.1"));
+  CPPUNIT_ASSERT(util::noProxyDomainMatch("www.example.org", ".example.org"));
+  CPPUNIT_ASSERT(!util::noProxyDomainMatch("www.example.org", "example.org"));
+  CPPUNIT_ASSERT(!util::noProxyDomainMatch("192.168.0.1", "0.1"));
+  CPPUNIT_ASSERT(!util::noProxyDomainMatch("example.org", "example.com"));
+  CPPUNIT_ASSERT(!util::noProxyDomainMatch("example.org", "www.example.org"));
 }
 
 } // namespace aria2

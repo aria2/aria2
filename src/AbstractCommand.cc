@@ -586,24 +586,6 @@ bool isProxyRequest
 } // namespace
 
 namespace {
-class DomainMatch {
-private:
-  std::string hostname_;
-public:
-  DomainMatch(const std::string& hostname):hostname_(hostname) {}
-
-  bool operator()(const std::string& domain) const
-  {
-    if(util::startsWith(domain, A2STR::DOT_C)) {
-      return util::endsWith(hostname_, domain);
-    } else {
-      return util::endsWith(hostname_, A2STR::DOT_C+domain);
-    }
-  }
-};
-} // namespace
-
-namespace {
 bool inNoProxy(const SharedHandle<Request>& req,
                const std::string& noProxy)
 {
@@ -612,16 +594,11 @@ bool inNoProxy(const SharedHandle<Request>& req,
   if(entries.empty()) {
     return false;
   }
-  DomainMatch domainMatch(A2STR::DOT_C+req->getHost());
   for(std::vector<std::string>::const_iterator i = entries.begin(),
         eoi = entries.end(); i != eoi; ++i) {
     std::string::size_type slashpos = (*i).find('/');
     if(slashpos == std::string::npos) {
-      if(util::isNumericHost(*i)) {
-        if(req->getHost() == *i) {
-          return true;
-        }
-      } else if(domainMatch(*i)) {
+      if(util::noProxyDomainMatch(req->getHost(), *i)) {
         return true;
       }
     } else {

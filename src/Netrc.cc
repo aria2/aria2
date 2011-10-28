@@ -63,15 +63,7 @@ Authenticator::~Authenticator() {}
 
 bool Authenticator::match(const std::string& hostname) const
 {
-  if(util::isNumericHost(hostname)) {
-    return hostname == machine_;
-  } else {
-    if(util::startsWith(machine_, A2STR::DOT_C)) {
-      return util::endsWith(A2STR::DOT_C+hostname, machine_);
-    } else {
-      return hostname == machine_;
-    }
-  }
+  return util::noProxyDomainMatch(hostname, machine_);
 }
 
 void Authenticator::setMachine(const std::string& machine)

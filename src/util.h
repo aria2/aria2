@@ -520,6 +520,17 @@ SharedHandle<T> copy(const SharedHandle<T>& a)
   return SharedHandle<T>(new T(*a.get()));
 }
 
+// This is a bit different from cookie_helper::domainMatch().  If
+// hostname is numeric host, then returns true if domain == hostname.
+// That is if domain starts with ".", then returns true if domain is a
+// suffix of hostname.  If domain does not start with ".", then
+// returns true if domain == hostname.  Otherwise returns true.
+// For example,
+//
+// * noProxyDomainMatch("aria2.sf.net", ".sf.net") returns true.
+// * noProxyDomainMatch("sf.net", ".sf.net") returns false.
+bool noProxyDomainMatch(const std::string& hostname, const std::string& domain);
+
 } // namespace util
 
 } // namespace aria2
