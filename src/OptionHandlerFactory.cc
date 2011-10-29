@@ -1471,7 +1471,7 @@ OptionHandlerFactory::createOptionHandlers()
                                    (PREF_SELECT_FILE,
                                     TEXT_SELECT_FILE,
                                     NO_DEFAULT_VALUE,
-                                    1, INT32_MAX));
+                                    1, 65535));
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
