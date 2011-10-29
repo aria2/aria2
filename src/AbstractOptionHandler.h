@@ -66,6 +66,7 @@ protected:
 
   bool initialOption_;
   bool changeOption_;
+  bool changeOptionForReserved_;
   bool globalChangeOption_;
   bool cumulative_;
 
@@ -152,6 +153,16 @@ public:
   virtual void setChangeOption(bool f)
   {
     changeOption_ = f;
+  }
+
+  virtual bool getChangeOptionForReserved() const
+  {
+    return changeOptionForReserved_;
+  }
+
+  virtual void setChangeOptionForReserved(bool f)
+  {
+    changeOptionForReserved_ = f;
   }
 
   virtual bool getChangeGlobalOption() const

@@ -104,6 +104,8 @@ public:
   virtual void setInitialOption(bool f) = 0;
   virtual bool getChangeOption() const = 0;
   virtual void setChangeOption(bool f) = 0;
+  virtual bool getChangeOptionForReserved() const = 0;
+  virtual void setChangeOptionForReserved(bool f) = 0;
   virtual bool getChangeGlobalOption() const = 0;
   virtual void setChangeGlobalOption(bool f) = 0;
   virtual bool getCumulative() const = 0;

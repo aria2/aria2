@@ -137,6 +137,17 @@ void RpcMethod::gatherChangeableOption(Option* option, const Dict* optionsDict)
   }
 }
 
+void RpcMethod::gatherChangeableOptionForReserved
+(Option* option,
+ const Dict* optionsDict)
+{
+  if(optionsDict) {
+    gatherOption(optionsDict->begin(), optionsDict->end(),
+                 mem_fun_sh(&OptionHandler::getChangeOptionForReserved),
+                 option, optionParser_);
+  }
+}
+
 void RpcMethod::gatherChangeableGlobalOption
 (Option* option, const Dict* optionsDict)
 {

@@ -807,6 +807,16 @@ void DeprecatedOptionHandler::setChangeOption(bool f)
   depOptHandler_->setChangeOption(f);
 }
 
+bool DeprecatedOptionHandler::getChangeOptionForReserved() const
+{
+  return depOptHandler_->getChangeOptionForReserved();
+}
+
+void DeprecatedOptionHandler::setChangeOptionForReserved(bool f)
+{
+  depOptHandler_->setChangeOptionForReserved(f);
+}
+
 bool DeprecatedOptionHandler::getChangeGlobalOption() const
 {
   return depOptHandler_->getChangeGlobalOption();

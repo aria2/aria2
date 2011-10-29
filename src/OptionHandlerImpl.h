@@ -315,6 +315,8 @@ public:
   virtual void setInitialOption(bool f);
   virtual bool getChangeOption() const;
   virtual void setChangeOption(bool f);
+  virtual bool getChangeOptionForReserved() const;
+  virtual void setChangeOptionForReserved(bool f);
   virtual bool getChangeGlobalOption() const;
   virtual void setChangeGlobalOption(bool f);
   virtual bool getCumulative() const;

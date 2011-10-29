@@ -1113,22 +1113,12 @@ SharedHandle<ValueBase> RemoveDownloadResultRpcMethod::process
   return VLB_OK;
 }
 
-SharedHandle<ValueBase> ChangeOptionRpcMethod::process
-(const RpcRequest& req, DownloadEngine* e)
+namespace {
+void changeOption
+(const SharedHandle<RequestGroup>& group,
+ const Option& option,
+ DownloadEngine* e)
 {
-  const String* gidParam = checkRequiredParam<String>(req, 0);
-  const Dict* optsParam = checkRequiredParam<Dict>(req, 1);
-
-  a2_gid_t gid = str2Gid(gidParam);
-  SharedHandle<RequestGroup> group =
-    findRequestGroup(e->getRequestGroupMan(), gid);
-  if(!group) {
-    throw DL_ABORT_EX
-      (fmt("Cannot change option for GID#%s",
-           util::itos(gid).c_str()));
-  }
-  Option option;
-  gatherChangeableOption(&option, optsParam);
   group->getOption()->merge(option);
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
@@ -1145,6 +1135,32 @@ SharedHandle<ValueBase> ChangeOptionRpcMethod::process
     }
   }
 #endif // ENABLE_BITTORRENT
+}
+} // namespace
+
+SharedHandle<ValueBase> ChangeOptionRpcMethod::process
+(const RpcRequest& req, DownloadEngine* e)
+{
+  const String* gidParam = checkRequiredParam<String>(req, 0);
+  const Dict* optsParam = checkRequiredParam<Dict>(req, 1);
+
+  a2_gid_t gid = str2Gid(gidParam);
+  SharedHandle<RequestGroup> group =
+    e->getRequestGroupMan()->findRequestGroup(gid);
+  Option option;
+  if(group) {
+    gatherChangeableOption(&option, optsParam);
+    changeOption(group, option, e);
+  } else {
+    group = e->getRequestGroupMan()->findReservedGroup(gid);
+    if(group) {
+      gatherChangeableOptionForReserved(&option, optsParam);
+      changeOption(group, option, e);
+    } else {
+      throw DL_ABORT_EX
+        (fmt("Cannot change option for GID#%s", util::itos(gid).c_str()));
+    }
+  }
   return VLB_OK;
 }
 

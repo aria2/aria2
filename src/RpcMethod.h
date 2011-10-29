@@ -76,6 +76,9 @@ protected:
 
   void gatherChangeableOption(Option* option, const Dict* optionDict);
 
+  void gatherChangeableOptionForReserved
+  (Option* option, const Dict* optionsDict);
+
   void gatherChangeableGlobalOption(Option* option, const Dict* optionDict);
 
   SharedHandle<ValueBase> createErrorResponse

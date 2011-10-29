@@ -60,6 +60,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -71,6 +72,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -84,6 +86,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #ifdef ENABLE_ASYNC_DNS
@@ -96,6 +99,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #if defined HAVE_ARES_SET_SERVERS && HAVE_ARES_ADDR_NODE
@@ -119,6 +123,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -145,6 +150,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_CHECKSUM);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -158,6 +164,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -181,6 +188,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -246,6 +254,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_ASYNC_DNS
@@ -319,6 +328,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -345,6 +355,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_CHECKSUM);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -439,6 +450,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -474,6 +486,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -488,6 +501,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -509,6 +523,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -605,6 +620,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_CHECKSUM);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -617,6 +633,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -747,6 +764,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -783,6 +801,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -796,6 +815,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -809,6 +829,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -851,6 +872,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -863,6 +885,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -875,6 +898,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -943,6 +967,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -956,6 +981,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -970,6 +996,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   // HTTP Specific Options
@@ -1012,6 +1039,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1023,6 +1051,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1035,6 +1064,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setCumulative(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1046,6 +1076,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1057,6 +1088,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1068,6 +1100,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1079,6 +1112,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1090,6 +1124,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1119,6 +1154,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1138,6 +1174,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1160,6 +1197,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1173,6 +1211,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   // FTP Specific Options
@@ -1185,6 +1224,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1197,6 +1237,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1208,6 +1249,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1219,6 +1261,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1230,6 +1273,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1250,6 +1294,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1261,6 +1306,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1272,6 +1318,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1283,6 +1330,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTPS);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1295,6 +1343,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1307,6 +1356,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1317,6 +1367,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1328,6 +1379,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1339,6 +1391,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1351,6 +1404,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTPS);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1364,6 +1418,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1377,6 +1432,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setEraseAfterParse(true);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1390,6 +1446,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTPS);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1402,6 +1459,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   // BitTorrent/Metalink Options
@@ -1441,6 +1499,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1453,6 +1512,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1464,6 +1524,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1485,6 +1546,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_CHECKSUM);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1506,6 +1568,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1518,6 +1581,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
 
   }
@@ -1530,6 +1594,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1541,6 +1606,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1550,6 +1616,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1562,6 +1629,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1573,6 +1641,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1593,6 +1662,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1604,6 +1674,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1615,6 +1686,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1635,6 +1707,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1646,6 +1719,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1657,6 +1731,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1668,6 +1743,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1775,6 +1851,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1786,6 +1863,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1831,6 +1909,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1869,6 +1948,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1880,6 +1960,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1905,6 +1986,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1926,6 +2008,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1946,6 +2029,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1955,6 +2039,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1968,6 +2053,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1980,6 +2066,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -1989,6 +2076,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_METALINK

@@ -58,6 +58,7 @@ AbstractOptionHandler::AbstractOptionHandler
     eraseAfterParse_(false),
     initialOption_(false),
     changeOption_(false),
+    changeOptionForReserved_(false),
     globalChangeOption_(false),
     cumulative_(false)
 {}
