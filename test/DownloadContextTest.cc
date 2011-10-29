@@ -14,12 +14,14 @@ class DownloadContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetPieceHash);
   CPPUNIT_TEST(testGetNumPieces);
   CPPUNIT_TEST(testGetBasePath);
+  CPPUNIT_TEST(testSetFileFilter);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testFindFileEntryByOffset();
   void testGetPieceHash();
   void testGetNumPieces();
   void testGetBasePath();
+  void testSetFileFilter();
 };
 
 
@@ -71,6 +73,30 @@ void DownloadContextTest::testGetBasePath()
   CPPUNIT_ASSERT_EQUAL(std::string(""), ctx.getBasePath());
   ctx.getFirstFileEntry()->setPath("aria2.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), ctx.getBasePath());
+}
+
+void DownloadContextTest::testSetFileFilter()
+{
+  DownloadContext ctx;
+  std::vector<SharedHandle<FileEntry> > files;
+  for(int i = 0; i < 10; ++i) {
+    files.push_back(SharedHandle<FileEntry>(new FileEntry("file", 1, i)));
+  }
+  ctx.setFileEntries(files.begin(), files.end());
+  SegList<int> sgl;
+  util::parseIntSegments(sgl, "2-4,6-8");
+  ctx.setFileFilter(sgl);
+  const std::vector<SharedHandle<FileEntry> >& res = ctx.getFileEntries();
+  CPPUNIT_ASSERT(!res[0]->isRequested());
+  CPPUNIT_ASSERT(res[1]->isRequested());
+  CPPUNIT_ASSERT(res[2]->isRequested());
+  CPPUNIT_ASSERT(res[3]->isRequested());
+  CPPUNIT_ASSERT(!res[4]->isRequested());
+  CPPUNIT_ASSERT(res[5]->isRequested());
+  CPPUNIT_ASSERT(res[6]->isRequested());
+  CPPUNIT_ASSERT(res[7]->isRequested());
+  CPPUNIT_ASSERT(!res[8]->isRequested());
+  CPPUNIT_ASSERT(!res[9]->isRequested());
 }
 
 } // namespace aria2

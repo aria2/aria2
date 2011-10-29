@@ -645,16 +645,20 @@ void BittorrentHelperTest::testSetFileFilter_single()
   load(A2_TEST_DIR"/single.torrent", dctx, option_);
 
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
-
-  dctx->setFileFilter(util::parseIntRange(""));
+  SegList<int> sgl;
+  dctx->setFileFilter(sgl);
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
 
-  dctx->setFileFilter(util::parseIntRange("1"));
+  sgl.clear();
+  sgl.add(1, 2);
+  dctx->setFileFilter(sgl);
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
 
   // For single file torrent, file is always selected whatever range
   // is passed.
-  dctx->setFileFilter(util::parseIntRange("2"));
+  sgl.clear();
+  sgl.add(2, 3);
+  dctx->setFileFilter(sgl);
   CPPUNIT_ASSERT(dctx->getFirstFileEntry()->isRequested());
 }
 
@@ -666,19 +670,25 @@ void BittorrentHelperTest::testSetFileFilter_multi()
   CPPUNIT_ASSERT(dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(util::parseIntRange(""));
+  SegList<int> sgl;
+  dctx->setFileFilter(sgl);
   CPPUNIT_ASSERT(dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(util::parseIntRange("2"));
+  sgl.add(2, 3);
+  dctx->setFileFilter(sgl);
   CPPUNIT_ASSERT(!dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(util::parseIntRange("3"));
+  sgl.clear();
+  sgl.add(3, 4);
+  dctx->setFileFilter(sgl);
   CPPUNIT_ASSERT(!dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(!dctx->getFileEntries()[1]->isRequested());
 
-  dctx->setFileFilter(util::parseIntRange("1,2"));
+  sgl.clear();
+  util::parseIntSegments(sgl, "1,2");
+  dctx->setFileFilter(sgl);
   CPPUNIT_ASSERT(dctx->getFileEntries()[0]->isRequested());
   CPPUNIT_ASSERT(dctx->getFileEntries()[1]->isRequested());
 }

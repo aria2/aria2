@@ -8,10 +8,14 @@ class SegListTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SegListTest);
   CPPUNIT_TEST(testNext);
+  CPPUNIT_TEST(testPeek);
+  CPPUNIT_TEST(testClear);
   CPPUNIT_TEST(testNormalize);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testNext();
+  void testPeek();
+  void testClear();
   void testNormalize();
 };
 
@@ -38,6 +42,32 @@ void SegListTest::testNext()
   }
   CPPUNIT_ASSERT(!sgl.hasNext());
   CPPUNIT_ASSERT_EQUAL(0, sgl.next());
+}
+
+void SegListTest::testPeek()
+{
+  SegList<int> sgl;
+  sgl.add(1, 3);
+  sgl.add(4, 5);
+  CPPUNIT_ASSERT_EQUAL(1, sgl.peek());
+  CPPUNIT_ASSERT_EQUAL(1, sgl.peek());
+  CPPUNIT_ASSERT_EQUAL(1, sgl.next());
+  CPPUNIT_ASSERT_EQUAL(2, sgl.peek());
+  CPPUNIT_ASSERT_EQUAL(2, sgl.next());
+  CPPUNIT_ASSERT_EQUAL(4, sgl.peek());
+  CPPUNIT_ASSERT_EQUAL(4, sgl.next());
+  CPPUNIT_ASSERT(!sgl.hasNext());
+}
+
+void SegListTest::testClear()
+{
+  SegList<int> sgl;
+  sgl.add(1, 3);
+  CPPUNIT_ASSERT_EQUAL(1, sgl.next());
+  sgl.clear();
+  CPPUNIT_ASSERT(!sgl.hasNext());
+  sgl.add(2, 3);
+  CPPUNIT_ASSERT_EQUAL(2, sgl.next());
 }
 
 void SegListTest::testNormalize()

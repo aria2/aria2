@@ -62,6 +62,7 @@
 #include "ByteArrayDiskWriterFactory.h"
 #include "MetadataInfo.h"
 #include "OptionParser.h"
+#include "SegList.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 # include "BtConstants.h"
@@ -183,7 +184,9 @@ createBtRequestGroup(const std::string& torrentFilePath,
   if(adjustAnnounceUri) {
     bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(dctx), option);
   }
-  dctx->setFileFilter(util::parseIntRange(option->get(PREF_SELECT_FILE)));
+  SegList<int> sgl;
+  util::parseIntSegments(sgl, option->get(PREF_SELECT_FILE));
+  dctx->setFileFilter(sgl);
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
   std::map<size_t, std::string> indexPathMap =
     util::createIndexPathMap(indexOutIn);

@@ -55,6 +55,7 @@
 #include "a2time.h"
 #include "a2netcompat.h"
 #include "a2functional.h"
+#include "SegList.h"
 
 namespace aria2 {
 
@@ -219,6 +220,8 @@ bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base = 10);
 uint64_t parseULLInt(const std::string& s, int base = 10);
 
 IntSequence parseIntRange(const std::string& src);
+
+void parseIntSegments(SegList<int>& sgl, const std::string& src);
 
 // Parses string which specifies the range of piece index for higher
 // priority and appends those indexes into result.  The input string

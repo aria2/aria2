@@ -128,22 +128,31 @@ void DownloadContext::setFilePathWithIndex
   }
 }
 
-void DownloadContext::setFileFilter(IntSequence seq)
+void DownloadContext::setFileFilter(SegList<int>& sgl)
 {
-  std::vector<int32_t> fileIndexes = seq.flush();
-  std::sort(fileIndexes.begin(), fileIndexes.end());
-  fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()),
-                    fileIndexes.end());
-
-  bool selectAll = fileIndexes.empty() || fileEntries_.size() == 1;
-    
-  int32_t index = 1;
-  for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
-        fileEntries_.begin(), eoi = fileEntries_.end();
-      i != eoi; ++i, ++index) {
-    (*i)->setRequested
-      (selectAll ||
-       std::binary_search(fileIndexes.begin(), fileIndexes.end(), index));
+  sgl.normalize();
+  if(!sgl.hasNext() || fileEntries_.size() == 1) {
+    std::for_each(fileEntries_.begin(), fileEntries_.end(),
+                  std::bind2nd(mem_fun_sh(&FileEntry::setRequested), true));
+    return;
+  }
+  assert(sgl.peek() >= 1);
+  size_t i = 0;
+  while(i < fileEntries_.size() && sgl.hasNext()) {
+    size_t idx = sgl.peek()-1;
+    if(i == idx) {
+      fileEntries_[i]->setRequested(true);
+      ++i;
+      sgl.next();
+    } else if(i < idx) {
+      fileEntries_[i]->setRequested(false);
+      ++i;
+    } else {
+      sgl.next();
+    }
+  }
+  for(; i < fileEntries_.size(); ++i) {
+    fileEntries_[i]->setRequested(false);
   }
 }
 

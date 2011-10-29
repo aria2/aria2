@@ -45,7 +45,7 @@
 #include "TimerA2.h"
 #include "A2STR.h"
 #include "ValueBase.h"
-#include "IntSequence.h"
+#include "SegList.h"
 
 namespace aria2 {
 
@@ -179,7 +179,7 @@ public:
     ownerRequestGroup_ = owner;
   }
 
-  void setFileFilter(IntSequence seq);
+  void setFileFilter(SegList<int>& sgl);
 
   // Sets file path for specified index. index starts from 1. The
   // index is the same used in setFileFilter(). path is not escaped by

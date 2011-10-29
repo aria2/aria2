@@ -774,6 +774,38 @@ IntSequence parseIntRange(const std::string& src)
   return values;
 }
 
+void parseIntSegments(SegList<int>& sgl, const std::string& src)
+{
+  for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;) {
+    std::string::const_iterator j = i;
+    while(j != eoi && *j != ',') {
+      ++j;
+    }
+    if(j == i) {
+      ++i;
+      continue;
+    }
+    std::string::const_iterator p = i;
+    while(p != j && *p != '-') {
+      ++p;
+    }
+    if(p == j) {
+      int a = parseInt(std::string(i, j));
+      sgl.add(a, a+1);
+    } else if(p == i || p+1 == j) {
+      throw DL_ABORT_EX(fmt(MSG_INCOMPLETE_RANGE, std::string(i, j).c_str()));
+    } else {
+      int a = parseInt(std::string(i, p));
+      int b = parseInt(std::string(p+1, j));
+      sgl.add(a, b+1);
+    }
+    if(j == eoi) {
+      break;
+    }
+    i = j+1;
+  }
+}
+
 namespace {
 void computeHeadPieces
 (std::vector<size_t>& indexes,

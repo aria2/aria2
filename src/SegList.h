@@ -49,6 +49,13 @@ public:
     : index_(0), val_(std::numeric_limits<T>::min())
   {}
 
+  void clear()
+  {
+    seg_.clear();
+    index_ = 0;
+    val_ = std::numeric_limits<T>::min();
+  }
+
   // Transforms list of segments so that they are sorted ascending
   // order of starting value and intersecting and touching segments
   // are all merged into one. This function resets current position.
@@ -102,6 +109,19 @@ public:
         ++index_;
         val_ = seg_[index_].first;
       }
+    } else {
+      res = 0;
+    }
+    return res;
+  }
+
+  // Returns next value. Current position is not advanced.  If
+  // this fuction is called when hasNext() returns false, returns 0.
+  T peek() const
+  {
+    T res;
+    if(index_ < seg_.size()) {
+      res = val_;
     } else {
       res = 0;
     }

@@ -47,6 +47,8 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testConvertBitfield);
   CPPUNIT_TEST(testParseIntRange);
   CPPUNIT_TEST(testParseIntRange_invalidRange);
+  CPPUNIT_TEST(testParseIntSegments);
+  CPPUNIT_TEST(testParseIntSegments_invalidRange);
   CPPUNIT_TEST(testParseInt);
   CPPUNIT_TEST(testParseUInt);
   CPPUNIT_TEST(testParseLLInt);
@@ -107,6 +109,8 @@ public:
   void testConvertBitfield();
   void testParseIntRange();
   void testParseIntRange_invalidRange();
+  void testParseIntSegments();
+  void testParseIntSegments_invalidRange();
   void testParseInt();
   void testParseUInt();
   void testParseLLInt();
@@ -739,6 +743,77 @@ void UtilTest::testParseIntRange_invalidRange()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
+  }
+}
+
+void UtilTest::testParseIntSegments()
+{
+  SegList<int> sgl;
+  util::parseIntSegments(sgl, "1,3-8,10");
+
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(1, sgl.next());
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(3, sgl.next());
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(4, sgl.next());
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(5, sgl.next());
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(6, sgl.next());
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(7, sgl.next());
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(8, sgl.next());
+  CPPUNIT_ASSERT(sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(10, sgl.next());
+  CPPUNIT_ASSERT(!sgl.hasNext());
+  CPPUNIT_ASSERT_EQUAL(0, sgl.next());
+
+  sgl.clear();
+  util::parseIntSegments(sgl, ",,,1,,,3,,,");
+  CPPUNIT_ASSERT_EQUAL(1, sgl.next());
+  CPPUNIT_ASSERT_EQUAL(3, sgl.next());
+  CPPUNIT_ASSERT(!sgl.hasNext());
+}
+
+void UtilTest::testParseIntSegments_invalidRange()
+{
+  try {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, "-1");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+  }
+  try {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, "1-");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+  }
+  try {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, "2147483648");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+  }
+  try {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, "2147483647-2147483648");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+  }
+  try {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, "1-2x");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
+  }
+  try {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, "3x-4");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception& e) {
   }
 }
 
