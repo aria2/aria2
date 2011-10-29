@@ -751,6 +751,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_CHECKSUM);
     op->setInitialOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
 #endif // ENABLE_MESSAGE_DIGEST

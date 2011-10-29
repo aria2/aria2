@@ -1119,7 +1119,15 @@ void changeOption
  const Option& option,
  DownloadEngine* e)
 {
+  const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   group->getOption()->merge(option);
+  if(option.defined(PREF_CHECKSUM)) {
+    std::pair<std::string, std::string> p;
+    util::divide(p, option.get(PREF_CHECKSUM), '=');
+    util::lowercase(p.first);
+    util::lowercase(p.second);
+    dctx->setDigest(p.first, util::fromHex(p.second));
+  }
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
       (option.getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
