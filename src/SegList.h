@@ -51,7 +51,7 @@ public:
 
   void clear()
   {
-    seg_.clear();
+    segs_.clear();
     index_ = 0;
     val_ = std::numeric_limits<T>::min();
   }
@@ -61,12 +61,12 @@ public:
   // are all merged into one. This function resets current position.
   void normalize()
   {
-    if(!seg_.empty()) {
-      std::sort(seg_.begin(), seg_.end());
+    if(!segs_.empty()) {
+      std::sort(segs_.begin(), segs_.end());
       std::vector<std::pair<T, T> > s;
-      s.push_back(seg_.front());
-      for(size_t i = 1, len = seg_.size(); i < len; ++i) {
-        const std::pair<T, T>& x = seg_[i];
+      s.push_back(segs_.front());
+      for(size_t i = 1, len = segs_.size(); i < len; ++i) {
+        const std::pair<T, T>& x = segs_[i];
         if(x.first <= s.back().second) {
           if(s.back().second < x.second) {
             s.back().second = x.second;
@@ -75,9 +75,9 @@ public:
           s.push_back(x);
         }
       }
-      s.swap(seg_);
+      s.swap(segs_);
       index_ = 0;
-      val_ = seg_.front().first;
+      val_ = segs_.front().first;
     }
   }
 
@@ -85,17 +85,17 @@ public:
   void add(T a, T b)
   {
     if(a < b) {
-      if(seg_.empty()) {
+      if(segs_.empty()) {
         val_ = std::max(val_, a);
       }
-      seg_.push_back(std::make_pair(a, b));
+      segs_.push_back(std::make_pair(a, b));
     }
   }
 
   // Returns true if next value is available. Otherwise returns false.
   bool hasNext() const
   {
-    return index_ < seg_.size() && val_ < seg_[index_].second;
+    return index_ < segs_.size() && val_ < segs_[index_].second;
   }
 
   // Returns next value. Advance current position to the next.  If
@@ -103,11 +103,11 @@ public:
   T next()
   {
     T res;
-    if(index_ < seg_.size()) {
+    if(index_ < segs_.size()) {
       res = val_++;
-      if(val_ == seg_[index_].second) {
+      if(val_ == segs_[index_].second) {
         ++index_;
-        val_ = seg_[index_].first;
+        val_ = segs_[index_].first;
       }
     } else {
       res = 0;
@@ -120,7 +120,7 @@ public:
   T peek() const
   {
     T res;
-    if(index_ < seg_.size()) {
+    if(index_ < segs_.size()) {
       res = val_;
     } else {
       res = 0;
@@ -128,7 +128,7 @@ public:
     return res;
   }
 private:
-  std::vector<std::pair<T, T> > seg_;
+  std::vector<std::pair<T, T> > segs_;
   size_t index_;
   T val_;
 };
