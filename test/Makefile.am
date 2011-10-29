@@ -81,7 +81,8 @@ aria2c_SOURCES = AllTest.cc\
 	RpcResponseTest.cc\
 	RpcMethodTest.cc\
 	BufferedFileTest.cc\
-	GeomStreamPieceSelectorTest.cc
+	GeomStreamPieceSelectorTest.cc\
+	SegListTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\
