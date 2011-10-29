@@ -84,7 +84,8 @@ void DownloadContextTest::testSetFileFilter()
   }
   ctx.setFileEntries(files.begin(), files.end());
   SegList<int> sgl;
-  util::parseIntSegments(sgl, "2-4,6-8");
+  util::parseIntSegments(sgl, "6-8,2-4");
+  sgl.normalize();
   ctx.setFileFilter(sgl);
   const std::vector<SharedHandle<FileEntry> >& res = ctx.getFileEntries();
   CPPUNIT_ASSERT(!res[0]->isRequested());

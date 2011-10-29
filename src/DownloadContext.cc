@@ -130,7 +130,6 @@ void DownloadContext::setFilePathWithIndex
 
 void DownloadContext::setFileFilter(SegList<int>& sgl)
 {
-  sgl.normalize();
   if(!sgl.hasNext() || fileEntries_.size() == 1) {
     std::for_each(fileEntries_.begin(), fileEntries_.end(),
                   std::bind2nd(mem_fun_sh(&FileEntry::setRequested), true));

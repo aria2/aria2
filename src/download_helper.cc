@@ -186,6 +186,7 @@ createBtRequestGroup(const std::string& torrentFilePath,
   }
   SegList<int> sgl;
   util::parseIntSegments(sgl, option->get(PREF_SELECT_FILE));
+  sgl.normalize();
   dctx->setFileFilter(sgl);
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
   std::map<size_t, std::string> indexPathMap =

@@ -179,6 +179,7 @@ public:
     ownerRequestGroup_ = owner;
   }
 
+  // sgl must be normalized before the call.
   void setFileFilter(SegList<int>& sgl);
 
   // Sets file path for specified index. index starts from 1. The
