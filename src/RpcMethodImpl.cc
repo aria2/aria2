@@ -1134,6 +1134,9 @@ void changeOption
     sgl.normalize();
     dctx->setFileFilter(sgl);
   }
+  if(option.defined(PREF_SPLIT)) {
+    group->setNumConcurrentCommand(option.getAsInt(PREF_SPLIT));
+  }
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
       (option.getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
