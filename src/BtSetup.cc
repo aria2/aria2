@@ -53,7 +53,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "util.h"
-#include "IntSequence.h"
+#include "SegList.h"
 #include "DHTGetPeersCommand.h"
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTSetup.h"
@@ -193,12 +193,15 @@ void BtSetup::setup(std::vector<Command*>& commands,
       bool ret;
       uint16_t port;
       if(btReg->getTcpPort()) {
-        IntSequence seq = util::parseIntRange(util::uitos(btReg->getTcpPort()));
-        ret = command->bindPort(port, seq);
+        SegList<int> sgl;
+        int usedPort = btReg->getTcpPort();
+        sgl.add(usedPort, usedPort+1);
+        ret = command->bindPort(port, sgl);
       } else {
-        IntSequence seq =
-          util::parseIntRange(e->getOption()->get(PREF_LISTEN_PORT));
-        ret = command->bindPort(port, seq);
+        SegList<int> sgl;
+        util::parseIntSegments(sgl, e->getOption()->get(PREF_LISTEN_PORT));
+        sgl.normalize();
+        ret = command->bindPort(port, sgl);
       }
       if(ret) {
         btReg->setTcpPort(port);

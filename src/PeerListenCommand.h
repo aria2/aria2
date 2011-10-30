@@ -37,7 +37,7 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "IntSequence.h"
+#include "SegList.h"
 
 namespace aria2 {
 
@@ -60,7 +60,7 @@ public:
    * Binds port. If successful, the binded port number is assinged to port and
    * returns true, otherwise port is undefined and returns false.
    */
-  bool bindPort(uint16_t& port, IntSequence& seq);
+  bool bindPort(uint16_t& port, SegList<int>& seq);
 
   // Returns binded port
   uint16_t getPort() const;

@@ -63,20 +63,19 @@ PeerListenCommand::PeerListenCommand
 
 PeerListenCommand::~PeerListenCommand() {}
 
-bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
+bool PeerListenCommand::bindPort(uint16_t& port, SegList<int>& sgl)
 {
   socket_.reset(new SocketCore());
-
-  std::vector<int32_t> randPorts = seq.flush();
-  std::random_shuffle(randPorts.begin(), randPorts.end(),
+  std::vector<uint16_t> ports;
+  while(sgl.hasNext()) {
+    ports.push_back(sgl.next());
+  }
+  std::random_shuffle(ports.begin(), ports.end(),
                       *SimpleRandomizer::getInstance().get());
   const int ipv = (family_ == AF_INET) ? 4 : 6;
-  for(std::vector<int32_t>::const_iterator portItr = randPorts.begin(),
-        eoi = randPorts.end(); portItr != eoi; ++portItr) {
-    if(!(0 < (*portItr) && (*portItr) <= 65535)) {
-      continue;
-    }
-    port = (*portItr);
+  for(std::vector<uint16_t>::const_iterator i = ports.begin(),
+        eoi = ports.end(); i != eoi; ++i) {
+    port = *i;
     try {
       socket_->bind(A2STR::NIL, port, family_);
       socket_->beginListen();
