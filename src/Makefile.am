@@ -149,8 +149,6 @@ SRCS =  Socket.h\
 	CUIDCounter.cc CUIDCounter.h\
 	DNSCache.cc DNSCache.h\
 	DownloadResult.cc DownloadResult.h\
-	Sequence.h\
-	IntSequence.h\
 	PostDownloadHandler.h\
 	PreDownloadHandler.h\
 	SingletonHolder.h\

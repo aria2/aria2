@@ -45,8 +45,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAlphaToNum);
   CPPUNIT_TEST(testMkdirs);
   CPPUNIT_TEST(testConvertBitfield);
-  CPPUNIT_TEST(testParseIntRange);
-  CPPUNIT_TEST(testParseIntRange_invalidRange);
   CPPUNIT_TEST(testParseIntSegments);
   CPPUNIT_TEST(testParseIntSegments_invalidRange);
   CPPUNIT_TEST(testParseInt);
@@ -107,8 +105,6 @@ public:
   void testAlphaToNum();
   void testMkdirs();
   void testConvertBitfield();
-  void testParseIntRange();
-  void testParseIntRange_invalidRange();
   void testParseIntSegments();
   void testParseIntSegments_invalidRange();
   void testParseInt();
@@ -686,64 +682,6 @@ void UtilTest::testConvertBitfield()
   CPPUNIT_ASSERT_EQUAL(std::string("9fffffffffffffffffffffffffffffff80"),
                        util::toHex(destBitfield.getBitfield(),
                                    destBitfield.getBitfieldLength()));
-}
-
-void UtilTest::testParseIntRange()
-{
-  IntSequence seq = util::parseIntRange("1,3-8,10");
-
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, seq.next());
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)3, seq.next());
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)4, seq.next());
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)5, seq.next());
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)6, seq.next());
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)7, seq.next());
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)8, seq.next());
-  CPPUNIT_ASSERT(seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)10, seq.next());
-  CPPUNIT_ASSERT(!seq.hasNext());
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, seq.next()); 
-}
-
-void UtilTest::testParseIntRange_invalidRange()
-{
-  try {
-    IntSequence seq = util::parseIntRange("-1");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
-  try {
-    IntSequence seq = util::parseIntRange("2147483648");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
-  try {
-    IntSequence seq = util::parseIntRange("2147483647-2147483648");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
-  try {
-    IntSequence seq = util::parseIntRange("1-2x");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
-  try {
-    IntSequence seq = util::parseIntRange("3x-4");
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
 }
 
 void UtilTest::testParseIntSegments()

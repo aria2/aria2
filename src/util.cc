@@ -746,34 +746,6 @@ uint64_t parseULLInt(const std::string& s, int base)
   return v;
 }
 
-IntSequence parseIntRange(const std::string& src)
-{
-  IntSequence::Values values;
-  std::string temp = src;
-  while(temp.size()) {
-    std::pair<std::string, std::string> p;
-    divide(p, temp, ',');
-    temp = p.second;
-    if(p.first.empty()) {
-      continue;
-    }
-    if(p.first.find("-") == std::string::npos) {
-      int32_t v = parseInt(p.first.c_str());
-      values.push_back(IntSequence::Value(v, v+1));
-    } else {
-      std::pair<std::string, std::string> vp;
-      divide(vp, p.first.c_str(), '-');
-      if(vp.first.empty() || vp.second.empty()) {
-        throw DL_ABORT_EX(fmt(MSG_INCOMPLETE_RANGE, p.first.c_str()));
-      }
-      int32_t v1 = parseInt(vp.first.c_str());
-      int32_t v2 = parseInt(vp.second.c_str());
-      values.push_back(IntSequence::Value(v1, v2+1));
-    } 
-  }
-  return values;
-}
-
 void parseIntSegments(SegList<int>& sgl, const std::string& src)
 {
   for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;) {

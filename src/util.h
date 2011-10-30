@@ -51,7 +51,6 @@
 #include <vector>
 
 #include "SharedHandle.h"
-#include "IntSequence.h"
 #include "a2time.h"
 #include "a2netcompat.h"
 #include "a2functional.h"
@@ -218,8 +217,6 @@ int64_t parseLLInt(const std::string& s, int32_t base = 10);
 bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base = 10);
 
 uint64_t parseULLInt(const std::string& s, int base = 10);
-
-IntSequence parseIntRange(const std::string& src);
 
 void parseIntSegments(SegList<int>& sgl, const std::string& src);
 

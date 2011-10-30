@@ -7,7 +7,6 @@ aria2c_SOURCES = AllTest.cc\
 	array_funTest.cc\
 	Base64Test.cc\
 	Base32Test.cc\
-	SequenceTest.cc\
 	a2functionalTest.cc\
 	FileEntryTest.cc\
 	PieceTest.cc\
