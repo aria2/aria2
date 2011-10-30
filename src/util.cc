@@ -777,18 +777,12 @@ IntSequence parseIntRange(const std::string& src)
 void parseIntSegments(SegList<int>& sgl, const std::string& src)
 {
   for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;) {
-    std::string::const_iterator j = i;
-    while(j != eoi && *j != ',') {
-      ++j;
-    }
+    std::string::const_iterator j = std::find(i, eoi, ',');
     if(j == i) {
       ++i;
       continue;
     }
-    std::string::const_iterator p = i;
-    while(p != j && *p != '-') {
-      ++p;
-    }
+    std::string::const_iterator p = std::find(i, j, '-');
     if(p == j) {
       int a = parseInt(std::string(i, j));
       sgl.add(a, a+1);
