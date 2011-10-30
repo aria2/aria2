@@ -57,6 +57,7 @@
 #include "a2io.h"
 #include "LogFactory.h"
 #include "uri.h"
+#include "SegList.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -113,9 +114,11 @@ IntegerRangeOptionHandler::~IntegerRangeOptionHandler() {}
 void IntegerRangeOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
-  IntSequence seq = util::parseIntRange(optarg);
-  while(seq.hasNext()) {
-    int32_t v = seq.next();
+  SegList<int> sgl;
+  util::parseIntSegments(sgl, optarg);
+  sgl.normalize();
+  while(sgl.hasNext()) {
+    int v = sgl.next();
     if(v < min_ || max_ < v) {
       std::string msg = pref_->k;
       strappend(msg, " ", _("must be between %s and %s."));

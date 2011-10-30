@@ -37,7 +37,7 @@
 
 #include "DHTConnection.h"
 #include "SharedHandle.h"
-#include "IntSequence.h"
+#include "SegList.h"
 
 namespace aria2 {
 
@@ -54,12 +54,13 @@ public:
   virtual ~DHTConnectionImpl();
 
   /**
-   * Binds port. All number in ports are tried.  If successful, the
-   * binded port is assigned to port and returns true.  Otherwise
-   * return false and port is undefined in this case.  If non-empty
-   * string addr is given, the socket is associated to the address.
+   * Binds port. All number in sgl are tried. All numbers in sgl must
+   * be in range [1, 65535], inclusive. If successful, the binded port
+   * is assigned to port and returns true.  Otherwise return false and
+   * port is undefined in this case.  If non-empty string addr is
+   * given, the socket is associated to the address.
    */
-  bool bind(uint16_t& port, const std::string& addr, IntSequence& ports);
+  bool bind(uint16_t& port, const std::string& addr, SegList<int>& sgl);
   
   /**
    * Binds port. The port number specified by port is used to bind.

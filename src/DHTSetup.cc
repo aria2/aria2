@@ -112,13 +112,14 @@ void DHTSetup::setup
 
     SharedHandle<DHTConnectionImpl> connection(new DHTConnectionImpl(family));
     {
-      IntSequence seq =
-        util::parseIntRange(e->getOption()->get(PREF_DHT_LISTEN_PORT));
+      SegList<int> sgl;
+      util::parseIntSegments(sgl, e->getOption()->get(PREF_DHT_LISTEN_PORT));
+      sgl.normalize();
       uint16_t port;
       const std::string& addr =
         e->getOption()->get(family == AF_INET?PREF_DHT_LISTEN_ADDR:
                             PREF_DHT_LISTEN_ADDR6);
-      if(!connection->bind(port, addr, seq)) {
+      if(!connection->bind(port, addr, sgl)) {
         throw DL_ABORT_EX("Error occurred while binding port for DHT");
       }
       localNode->setPort(port);
