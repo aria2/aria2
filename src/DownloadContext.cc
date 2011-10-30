@@ -136,21 +136,18 @@ void DownloadContext::setFileFilter(SegList<int>& sgl)
     return;
   }
   assert(sgl.peek() >= 1);
+  size_t len = fileEntries_.size();
   size_t i = 0;
-  while(i < fileEntries_.size() && sgl.hasNext()) {
+  for(; i < len && sgl.hasNext(); ++i) {
     size_t idx = sgl.peek()-1;
     if(i == idx) {
       fileEntries_[i]->setRequested(true);
-      ++i;
       sgl.next();
     } else if(i < idx) {
       fileEntries_[i]->setRequested(false);
-      ++i;
-    } else {
-      sgl.next();
     }
   }
-  for(; i < fileEntries_.size(); ++i) {
+  for(; i < len; ++i) {
     fileEntries_[i]->setRequested(false);
   }
 }
