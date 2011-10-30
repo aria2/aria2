@@ -237,6 +237,8 @@ Metalink2RequestGroup::createRequestGroup
     SharedHandle<Option> option = util::copy(optionTemplate);
     SharedHandle<RequestGroup> rg(new RequestGroup(option));
     SharedHandle<DownloadContext> dctx;
+    int numSplit = option->getAsInt(PREF_SPLIT);
+    int maxConn = option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
     if(mes.size() == 1) {
       SharedHandle<MetalinkEntry> entry = mes[0];
       A2_LOG_INFO(fmt(MSG_METALINK_QUEUEING, entry->getPath().c_str()));
@@ -262,8 +264,7 @@ Metalink2RequestGroup::createRequestGroup
                   util::applyDir(option->get(PREF_DIR),
                                  entry->file->getPath())));
       dctx->getFirstFileEntry()->setUris(uris);
-      dctx->getFirstFileEntry()->setMaxConnectionPerServer
-        (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
+      dctx->getFirstFileEntry()->setMaxConnectionPerServer(maxConn);
       if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
         dctx->getFirstFileEntry()->setUniqueProtocol(true);
       }
@@ -281,9 +282,7 @@ Metalink2RequestGroup::createRequestGroup
       dctx->setSignature(entry->getSignature());
       rg->setNumConcurrentCommand
         (entry->maxConnections < 0 ?
-         option->getAsInt(PREF_SPLIT) :
-         std::min(option->getAsInt(PREF_SPLIT),
-                  static_cast<int32_t>(entry->maxConnections)));
+         numSplit : std::min(numSplit, entry->maxConnections));
     } else {
       dctx.reset(new DownloadContext());
       // piece length is overridden by the one in torrent file.
@@ -303,8 +302,7 @@ Metalink2RequestGroup::createRequestGroup
           (new FileEntry
            (util::applyDir(option->get(PREF_DIR), (*i)->file->getPath()),
             (*i)->file->getLength(), offset, uris));
-        fe->setMaxConnectionPerServer
-          (option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
+        fe->setMaxConnectionPerServer(maxConn);
         if(option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)) {
           fe->setUniqueProtocol(true);
         }
@@ -313,7 +311,7 @@ Metalink2RequestGroup::createRequestGroup
         offset += (*i)->file->getLength();
       }
       dctx->setFileEntries(fileEntries.begin(), fileEntries.end());
-      rg->setNumConcurrentCommand(option->getAsInt(PREF_SPLIT));
+      rg->setNumConcurrentCommand(numSplit);
     }
     rg->setDownloadContext(dctx);
     rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
