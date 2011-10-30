@@ -231,8 +231,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
   };
   std::vector<std::string> uris(vbegin(array), vend(array));
   option_->put(PREF_MAX_CONNECTION_PER_SERVER, "1");
-  option_->put(PREF_SPLIT, "3");
-  option_->put(PREF_METALINK_SERVERS, "2");
+  option_->put(PREF_SPLIT, "2");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
   {
@@ -255,7 +254,7 @@ void DownloadHelperTest::testCreateRequestGroupForUri_Metalink()
     for(size_t i = 0; i < 3; ++i) {
       CPPUNIT_ASSERT_EQUAL(array[i], xuris[i]);
     }
-    CPPUNIT_ASSERT_EQUAL((unsigned int)3, group->getNumConcurrentCommand());
+    CPPUNIT_ASSERT_EQUAL((unsigned int)2, group->getNumConcurrentCommand());
     SharedHandle<DownloadContext> ctx = group->getDownloadContext();
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/file.out"),
                          ctx->getBasePath());
@@ -371,9 +370,8 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
 #ifdef ENABLE_METALINK
 void DownloadHelperTest::testCreateRequestGroupForMetalink()
 {
-  option_->put(PREF_SPLIT, "3");
+  option_->put(PREF_SPLIT, "5");
   option_->put(PREF_METALINK_FILE, A2_TEST_DIR"/test.xml");
-  option_->put(PREF_METALINK_SERVERS, "5");
   option_->put(PREF_DIR, "/tmp");
   option_->put(PREF_OUT, "file.out");
   {

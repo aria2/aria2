@@ -934,6 +934,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     handlers.push_back(op);
   }
+  SharedHandle<OptionHandler> splitHandler;
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_SPLIT,
@@ -947,6 +948,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
     op->setChangeOptionForReserved(true);
+    splitHandler = op;
     handlers.push_back(op);
   }
   {
@@ -2061,16 +2063,18 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new NumberOptionHandler
-                                   (PREF_METALINK_SERVERS,
-                                    TEXT_METALINK_SERVERS,
-                                    "5",
-                                    1, -1,
-                                    'C'));
+    SharedHandle<OptionHandler> op
+      (new DeprecatedOptionHandler
+       (SharedHandle<OptionHandler>(new NumberOptionHandler
+                                    (PREF_METALINK_SERVERS,
+                                     TEXT_METALINK_SERVERS,
+                                     "5",
+                                     1, -1,
+                                     'C')),
+        splitHandler));
+    op->addTag(TAG_DEPRECATED);
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
-    op->setChangeGlobalOption(true);
-    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {

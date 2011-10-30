@@ -54,10 +54,8 @@
     "                              once so that N connections total are made\n" \
     "                              simultaneously. The number of connections to the\n" \
     "                              same host is restricted by\n"        \
-    "                              --max-connection-per-server option. Please see -j\n" \
-    "                              and --min-split-size option too.\n"  \
-    "                              Please note that in Metalink download, this\n" \
-    "                              option has no effect and use -C option instead.")
+    "                              --max-connection-per-server option. See also\n" \
+    "                              --min-split-size option.")
 #define TEXT_RETRY_WAIT                                                 \
   _(" --retry-wait=SEC             Set the seconds to wait between retries. \n" \
     "                              With SEC > 0, aria2 will retry download when the\n" \
@@ -232,7 +230,7 @@
 #define TEXT_MAX_CONCURRENT_DOWNLOADS                                   \
   _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n" \
     "                              every static (HTTP/FTP) URL, torrent and metalink.\n" \
-    "                              See also -s and -C options.")
+    "                              See also --split option.")
 #define TEXT_LOAD_COOKIES                                               \
   _(" --load-cookies=FILE          Load Cookies from FILE using the Firefox3 format\n" \
     "                              and Mozilla/Firefox(1.x/2.x)/Netscape format.")

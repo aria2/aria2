@@ -281,8 +281,8 @@ Metalink2RequestGroup::createRequestGroup
       dctx->setSignature(entry->getSignature());
       rg->setNumConcurrentCommand
         (entry->maxConnections < 0 ?
-         option->getAsInt(PREF_METALINK_SERVERS) :
-         std::min(option->getAsInt(PREF_METALINK_SERVERS),
+         option->getAsInt(PREF_SPLIT) :
+         std::min(option->getAsInt(PREF_SPLIT),
                   static_cast<int32_t>(entry->maxConnections)));
     } else {
       dctx.reset(new DownloadContext());
@@ -313,7 +313,7 @@ Metalink2RequestGroup::createRequestGroup
         offset += (*i)->file->getLength();
       }
       dctx->setFileEntries(fileEntries.begin(), fileEntries.end());
-      rg->setNumConcurrentCommand(option->getAsInt(PREF_METALINK_SERVERS));
+      rg->setNumConcurrentCommand(option->getAsInt(PREF_SPLIT));
     }
     rg->setDownloadContext(dctx);
     rg->setPauseRequested(option->getAsBool(PREF_PAUSE));

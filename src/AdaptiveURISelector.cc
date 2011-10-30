@@ -206,7 +206,7 @@ void AdaptiveURISelector::resetCounters()
 {
   nbConnections_ = 1;
   nbServerToEvaluate_ =
-    requestGroup_->getOption()->getAsInt(PREF_METALINK_SERVERS) - 1;
+    requestGroup_->getOption()->getAsInt(PREF_SPLIT) - 1;
 }
 
 void AdaptiveURISelector::tuneDownloadCommand

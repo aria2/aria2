@@ -49,7 +49,7 @@ Basic Options
 
 [[aria2_optref_max_concurrent_downloads]]*-j*, *--max-concurrent-downloads*=N::
   Set maximum number of parallel downloads for every static (HTTP/FTP) URI,
-  torrent and metalink. See also *<<aria2_optref_split, -s>>* and *<<aria2_optref_metalink_servers, -C>>* option.
+  torrent and metalink. See also *<<aria2_optref_split, -s>>* option.
   Default: '5'
 
 [[aria2_optref_check_integrity]]*-V*, *--check-integrity*[='true'|'false']::
@@ -257,10 +257,16 @@ aria2c -o myfile.zip "http://mirror1/file.zip" "http://mirror2/file.zip"
   less than N URIs are given, those URIs are used more than once so
   that N connections total are made simultaneously.  The number of
   connections to the same host is restricted by
-  *<<aria2_optref_max_connection_per_server, --max-connection-per-server>>* option.  Please see *<<aria2_optref_max_concurrent_downloads, -j>>* and
-  *<<aria2_optref_min_split_size, --min-split-size>>* option too.  Please note that in Metalink
-  download, this option has no effect and use *<<aria2_optref_metalink_servers, -C>>* option instead.
+  *<<aria2_optref_max_connection_per_server, --max-connection-per-server>>* option.
+  See also *<<aria2_optref_min_split_size, --min-split-size>>* option.
   Default: '5'
+
+[NOTE]
+
+Some Metalinks regulate the number of servers to connect.  aria2
+strictly respects them.  This means that if Metalink defines the
+maxconnections attribute lower than N, then aria2 uses the
+value of maxconnections attribute instead of N.
 
 [[aria2_optref_stream_piece_selector]]*--stream-piece-selector*=SELECTOR::
 
@@ -770,16 +776,6 @@ Metalink Specific Options
   specified.  You are not required to use this option because you can
   specify .metalink files without *<<aria2_optref_metalink_file, -M>>*.
 
-[[aria2_optref_metalink_servers]]*-C*, *--metalink-servers*=NUM_SERVERS::
-  The number of servers to connect to simultaneously.
-  Some Metalinks regulate the number of servers to connect.
-  aria2 strictly respects them.
-  This means that if Metalink defines the maxconnections attribute lower
-  than NUM_SERVERS, then aria2 uses the value of maxconnections attribute
-  instead of NUM_SERVERS.
-  See also *<<aria2_optref_split, -s>>* and *<<aria2_optref_max_concurrent_downloads, -j>>* options.
-  Default: '5'
-
 [[aria2_optref_metalink_language]]*--metalink-language*=LANGUAGE::
   The language of the file to download.
 
@@ -1141,12 +1137,6 @@ are also allocated if they share the same piece.
    *<<aria2_optref_allow_overwrite, --allow-overwrite>>*='true', download always starts from
    scratch. This will be useful for users behind proxy server which
    disables resume.
-
-[NOTE]
-
-For Metalink downloads, -C1 is recommended for proxy server which
-disables resume, in order to avoid establishing unnecessary
-connections.
 
 [[aria2_optref_save_session]]*--save-session*=FILE::
 
@@ -1599,7 +1589,6 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_metalink_location, metalink-location>>*
 * *<<aria2_optref_metalink_os, metalink-os>>*
 * *<<aria2_optref_metalink_preferred_protocol, metalink-preferred-protocol>>*
-* *<<aria2_optref_metalink_servers, metalink-servers>>*
 * *<<aria2_optref_metalink_version, metalink-version>>*
 * *<<aria2_optref_min_split_size, min-split-size>>*
 * *<<aria2_optref_no_file_allocation_limit, no-file-allocation-limit>>*
