@@ -1128,6 +1128,12 @@ void changeOption
     util::lowercase(p.second);
     dctx->setDigest(p.first, util::fromHex(p.second));
   }
+  if(option.defined(PREF_SELECT_FILE)) {
+    SegList<int> sgl;
+    util::parseIntSegments(sgl, option.get(PREF_SELECT_FILE));
+    sgl.normalize();
+    dctx->setFileFilter(sgl);
+  }
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
       (option.getAsInt(PREF_MAX_DOWNLOAD_LIMIT));

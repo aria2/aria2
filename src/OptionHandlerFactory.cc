@@ -1475,6 +1475,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->addTag(TAG_METALINK);
     op->setInitialOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
