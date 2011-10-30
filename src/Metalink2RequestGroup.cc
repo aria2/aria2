@@ -56,6 +56,7 @@
 #include "a2functional.h"
 #include "download_helper.h"
 #include "fmt.h"
+#include "SegList.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 # include "download_helper.h"
@@ -153,9 +154,6 @@ Metalink2RequestGroup::createRequestGroup
     A2_LOG_NOTICE(EX_NO_RESULT_WITH_YOUR_PREFS);
     return;
   }
-  std::vector<int32_t> selectIndexes =
-    util::parseIntRange(optionTemplate->get(PREF_SELECT_FILE)).flush();
-  std::sort(selectIndexes.begin(), selectIndexes.end());
   std::vector<std::string> locations;
   if(optionTemplate->defined(PREF_METALINK_LOCATION)) {
     util::split(util::toLower(optionTemplate->get(PREF_METALINK_LOCATION)),
@@ -165,25 +163,32 @@ Metalink2RequestGroup::createRequestGroup
   if(optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
     preferredProtocol = optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL);
   }
+  for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
+        entries.begin(), eoi = entries.end(); i != eoi; ++i) {
+    (*i)->dropUnsupportedResource();
+    if((*i)->resources.empty() && (*i)->metaurls.empty()) {
+      continue;
+    }
+    (*i)->setLocationPriority
+      (locations, -MetalinkResource::getLowestPriority());
+    if(!preferredProtocol.empty()) {
+      (*i)->setProtocolPriority
+        (preferredProtocol, -MetalinkResource::getLowestPriority());
+    }
+  }
   std::vector<SharedHandle<MetalinkEntry> > selectedEntries;
-  selectedEntries.reserve(entries.size());
-  {
-    int32_t count = 1;
-    for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
-          entries.begin(), eoi = entries.end(); i != eoi; ++i, ++count) {
-      (*i)->dropUnsupportedResource();
-      if((*i)->resources.empty() && (*i)->metaurls.empty()) {
-        continue;
-      }
-      (*i)->setLocationPriority
-        (locations, -MetalinkResource::getLowestPriority());
-      if(!preferredProtocol.empty()) {
-        (*i)->setProtocolPriority
-          (preferredProtocol, -MetalinkResource::getLowestPriority());
-      }
-      if(selectIndexes.empty() ||
-         std::binary_search(selectIndexes.begin(), selectIndexes.end(), count)){
-        selectedEntries.push_back(*i);
+  SegList<int> sgl;
+  util::parseIntSegments(sgl, optionTemplate->get(PREF_SELECT_FILE));
+  sgl.normalize();
+  if(!sgl.hasNext()) {
+    selectedEntries.assign(entries.begin(), entries.end());
+  } else {
+    selectedEntries.reserve(entries.size());
+    for(size_t i = 0, len = entries.size(); i < len && sgl.hasNext(); ++i) {
+      size_t j = sgl.peek()-1;
+      if(i == j) {
+        selectedEntries.push_back(entries[i]);
+        sgl.next();
       }
     }
   }
