@@ -2069,7 +2069,7 @@ OptionHandlerFactory::createOptionHandlers()
        (SharedHandle<OptionHandler>(new NumberOptionHandler
                                     (PREF_METALINK_SERVERS,
                                      TEXT_METALINK_SERVERS,
-                                     "5",
+                                     NO_DEFAULT_VALUE,
                                      1, -1,
                                      'C')),
         splitHandler));
