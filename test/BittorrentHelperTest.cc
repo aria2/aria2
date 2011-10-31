@@ -162,6 +162,7 @@ void BittorrentHelperTest::testGetPieceHash() {
 
 void BittorrentHelperTest::testGetFileEntries() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "10");
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
   // This is multi-file torrent.
   std::vector<SharedHandle<FileEntry> > fileEntries = dctx->getFileEntries();
@@ -174,14 +175,17 @@ void BittorrentHelperTest::testGetFileEntries() {
                        fileEntry1->getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-test/aria2/src/aria2c"),
                        fileEntry1->getOriginalName());
+  CPPUNIT_ASSERT_EQUAL((size_t)10, fileEntry1->getMaxConnectionPerServer());
   itr++;
   SharedHandle<FileEntry> fileEntry2 = *itr;
   CPPUNIT_ASSERT_EQUAL(std::string("./aria2-test/aria2-0.2.2.tar.bz2"),
                        fileEntry2->getPath());
+  CPPUNIT_ASSERT_EQUAL((size_t)10, fileEntry2->getMaxConnectionPerServer());
 }
 
 void BittorrentHelperTest::testGetFileEntriesSingle() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
+  option_->put(PREF_MAX_CONNECTION_PER_SERVER, "10");
   load(A2_TEST_DIR"/single.torrent", dctx, option_);
   // This is multi-file torrent.
   std::vector<SharedHandle<FileEntry> > fileEntries = dctx->getFileEntries();
@@ -194,6 +198,7 @@ void BittorrentHelperTest::testGetFileEntriesSingle() {
                        fileEntry1->getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
                        fileEntry1->getOriginalName());
+  CPPUNIT_ASSERT_EQUAL((size_t)10, fileEntry1->getMaxConnectionPerServer());
 }
 
 void BittorrentHelperTest::testGetTotalLength() {

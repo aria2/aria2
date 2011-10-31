@@ -225,6 +225,7 @@ void extractFileEntries
     utf8Name = overrideName;
   }
   torrent->name = utf8Name;
+  int maxConn = option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
   std::vector<SharedHandle<FileEntry> > fileEntries;
   const List* filesList = downcast<List>(infoDict->get(C_FILES));
   if(filesList) {
@@ -289,6 +290,7 @@ void extractFileEntries
                                       util::escapePath(utf8Path)),
                        fileLengthData->i(), offset, uris));
       fileEntry->setOriginalName(utf8Path);
+      fileEntry->setMaxConnectionPerServer(maxConn);
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
@@ -318,6 +320,7 @@ void extractFileEntries
                                     util::escapePath(utf8Name)),
                      totalLength, 0, uris));
     fileEntry->setOriginalName(utf8Name);
+    fileEntry->setMaxConnectionPerServer(maxConn);
     fileEntries.push_back(fileEntry);
   }
   ctx->setFileEntries(fileEntries.begin(), fileEntries.end());
