@@ -453,6 +453,25 @@ void FileEntry::releaseRuntimeResource()
 }
 
 namespace {
+template<typename InputIterator>
+void putBackUri
+(std::deque<std::string>& uris,
+ InputIterator first,
+ InputIterator last)
+{
+  for(; first != last; ++first) {
+    uris.push_front((*first)->getUri());
+  }
+}
+} // namespace
+
+void FileEntry::putBackRequest()
+{
+  putBackUri(uris_, requestPool_.begin(), requestPool_.end());
+  putBackUri(uris_, inFlightRequests_.begin(), inFlightRequests_.end());
+}
+
+namespace {
 template<typename InputIterator, typename T>
 InputIterator findRequestByUri
 (InputIterator first, InputIterator last, const T& uri)

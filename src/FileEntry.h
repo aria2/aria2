@@ -231,6 +231,9 @@ public:
 
   void releaseRuntimeResource();
 
+  // Push URIs in pooled or in-flight requests to the front of uris_.
+  void putBackRequest();
+
   void setOriginalName(const std::string& originalName);
 
   const std::string& getOriginalName() const

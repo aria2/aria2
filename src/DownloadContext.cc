@@ -185,6 +185,7 @@ void DownloadContext::releaseRuntimeResource()
 {
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
         fileEntries_.begin(), eoi = fileEntries_.end(); i != eoi; ++i) {
+    (*i)->putBackRequest();
     (*i)->releaseRuntimeResource();
   }
 }

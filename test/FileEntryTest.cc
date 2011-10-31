@@ -20,6 +20,7 @@ class FileEntryTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddUris);
   CPPUNIT_TEST(testInsertUri);
   CPPUNIT_TEST(testRemoveUri);
+  CPPUNIT_TEST(testPutBackRequest);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -34,6 +35,7 @@ public:
   void testAddUris();
   void testInsertUri();
   void testRemoveUri();
+  void testPutBackRequest();
 };
 
 
@@ -290,6 +292,25 @@ void FileEntryTest::testRemoveUri()
 
   file.addUri("http://example.org/");
   CPPUNIT_ASSERT(!file.removeUri("http://example.net"));
+}
+
+void FileEntryTest::testPutBackRequest()
+{
+  SharedHandle<FileEntry> fileEntry = createFileEntry();
+  SharedHandle<InorderURISelector> selector(new InorderURISelector());
+  std::vector<std::pair<size_t, std::string> > usedHosts;
+  SharedHandle<Request> req1 =
+    fileEntry->getRequest(selector, false, usedHosts);
+  SharedHandle<Request> req2 =
+    fileEntry->getRequest(selector, false, usedHosts);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntry->getRemainingUris().size());
+  fileEntry->poolRequest(req2);
+  fileEntry->putBackRequest();
+  const std::deque<std::string>& uris = fileEntry->getRemainingUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)3, uris.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/aria2.zip"), uris[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("http://mirror/aria2.zip"), uris[1]);
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.zip"), uris[2]);
 }
 
 } // namespace aria2
