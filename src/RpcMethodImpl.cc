@@ -1137,6 +1137,14 @@ void changeOption
   if(option.defined(PREF_SPLIT)) {
     group->setNumConcurrentCommand(option.getAsInt(PREF_SPLIT));
   }
+  if(option.defined(PREF_MAX_CONNECTION_PER_SERVER)) {
+    int maxConn = option.getAsInt(PREF_MAX_CONNECTION_PER_SERVER);
+    const std::vector<SharedHandle<FileEntry> >& files = dctx->getFileEntries();
+    for(std::vector<SharedHandle<FileEntry> >::const_iterator i = files.begin(),
+          eoi = files.end(); i != eoi; ++i) {
+      (*i)->setMaxConnectionPerServer(maxConn);
+    }
+  }
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
       (option.getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
