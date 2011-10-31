@@ -131,6 +131,9 @@ private:
   std::vector<std::pair<T, T> > segs_;
   size_t index_;
   T val_;
+  // Don't allow copying
+  SegList(const SegList<T>&);
+  SegList& operator=(const SegList<T>&);
 };
 
 } // namespace aria2
