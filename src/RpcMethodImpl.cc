@@ -1147,6 +1147,15 @@ void changeOption
       (*i)->setMaxConnectionPerServer(maxConn);
     }
   }
+  if(option.defined(PREF_DIR) || option.defined(PREF_OUT)) {
+    if(dctx->getFileEntries().size() == 1 &&
+       !dctx->hasAttribute(bittorrent::BITTORRENT)) {
+      dctx->getFirstFileEntry()->setPath
+        (group->getOption()->blank(PREF_OUT) ? A2STR::NIL :
+         util::applyDir(group->getOption()->get(PREF_DIR),
+                        group->getOption()->get(PREF_OUT)));
+    }
+  }
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
       (option.getAsInt(PREF_MAX_DOWNLOAD_LIMIT));

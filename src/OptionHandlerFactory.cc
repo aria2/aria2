@@ -213,6 +213,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
     op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
@@ -848,6 +849,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_HTTP);
     op->addTag(TAG_FILE);
     op->setInitialOption(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
