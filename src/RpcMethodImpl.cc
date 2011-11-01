@@ -36,6 +36,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <sstream>
 
 #include "Logger.h"
 #include "LogFactory.h"
@@ -1154,6 +1155,19 @@ void changeOption
         (group->getOption()->blank(PREF_OUT) ? A2STR::NIL :
          util::applyDir(group->getOption()->get(PREF_DIR),
                         group->getOption()->get(PREF_OUT)));
+    }
+  }
+  if(option.defined(PREF_DIR) || option.defined(PREF_INDEX_OUT)) {
+    if(dctx->hasAttribute(bittorrent::BITTORRENT)) {
+      std::istringstream indexOutIn(group->getOption()->get(PREF_INDEX_OUT));
+      std::vector<std::pair<size_t, std::string> > indexPaths =
+        util::createIndexPaths(indexOutIn);
+      for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
+            indexPaths.begin(), eoi = indexPaths.end(); i != eoi; ++i) {
+        dctx->setFilePathWithIndex
+          ((*i).first,
+           util::applyDir(group->getOption()->get(PREF_DIR), (*i).second));
+      }
     }
   }
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {

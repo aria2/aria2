@@ -1883,6 +1883,7 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_BITTORRENT);
     op->setInitialOption(true);
     op->setCumulative(true);
+    op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
   {
