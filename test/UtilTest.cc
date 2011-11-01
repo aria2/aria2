@@ -62,7 +62,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testHtmlEscape);
   CPPUNIT_TEST(testJoinPath);
   CPPUNIT_TEST(testParseIndexPath);
-  CPPUNIT_TEST(testCreateIndexPathMap);
+  CPPUNIT_TEST(testCreateIndexPaths);
   CPPUNIT_TEST(testGenerateRandomData);
   CPPUNIT_TEST(testFromHex);
   CPPUNIT_TEST(testParsePrioritizePieceRange);
@@ -122,7 +122,7 @@ public:
   void testHtmlEscape();
   void testJoinPath();
   void testParseIndexPath();
-  void testCreateIndexPathMap();
+  void testCreateIndexPaths();
   void testGenerateRandomData();
   void testFromHex();
   void testParsePrioritizePieceRange();
@@ -1015,7 +1015,7 @@ void UtilTest::testJoinPath()
 
 void UtilTest::testParseIndexPath()
 {
-  std::map<size_t, std::string>::value_type p = util::parseIndexPath("1=foo");
+  std::pair<size_t, std::string> p = util::parseIndexPath("1=foo");
   CPPUNIT_ASSERT_EQUAL((size_t)1, p.first);
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), p.second);
   try {
@@ -1032,17 +1032,17 @@ void UtilTest::testParseIndexPath()
   }
 }
 
-void UtilTest::testCreateIndexPathMap()
+void UtilTest::testCreateIndexPaths()
 {
   std::stringstream in
     ("1=/tmp/myfile\n"
      "100=/myhome/mypicture.png\n");
-  std::map<size_t, std::string> m = util::createIndexPathMap(in);
+  std::vector<std::pair<size_t, std::string> > m = util::createIndexPaths(in);
   CPPUNIT_ASSERT_EQUAL((size_t)2, m.size());
-  CPPUNIT_ASSERT(m.find(1) != m.end());
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), m[1]);
-  CPPUNIT_ASSERT(m.find(100) != m.end());
-  CPPUNIT_ASSERT_EQUAL(std::string("/myhome/mypicture.png"), m[100]);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, m[0].first);
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"), m[0].second);
+  CPPUNIT_ASSERT_EQUAL((size_t)100, m[1].first);
+  CPPUNIT_ASSERT_EQUAL(std::string("/myhome/mypicture.png"), m[1].second);
 }
 
 void UtilTest::testGenerateRandomData()

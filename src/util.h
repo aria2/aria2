@@ -347,10 +347,10 @@ std::string joinPath(InputIterator first, InputIterator last)
 
 // Parses INDEX=PATH format string. INDEX must be an unsigned
 // integer.
-std::map<size_t, std::string>::value_type
+std::pair<size_t, std::string>
 parseIndexPath(const std::string& line);
 
-std::map<size_t, std::string> createIndexPathMap(std::istream& i);
+std::vector<std::pair<size_t, std::string> > createIndexPaths(std::istream& i);
 
 /**
  * Take a string src which is a delimited list and add its elements

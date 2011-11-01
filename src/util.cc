@@ -1370,7 +1370,7 @@ std::string htmlEscape(const std::string& src)
   return dest;
 }
 
-std::map<size_t, std::string>::value_type
+std::pair<size_t, std::string>
 parseIndexPath(const std::string& line)
 {
   std::pair<std::string, std::string> p;
@@ -1380,17 +1380,17 @@ parseIndexPath(const std::string& line)
     throw DL_ABORT_EX(fmt("Path with index=%u is empty.",
                           static_cast<unsigned int>(index)));
   }
-  return std::map<size_t, std::string>::value_type(index, p.second);
+  return std::make_pair(index, p.second);
 }
 
-std::map<size_t, std::string> createIndexPathMap(std::istream& i)
+std::vector<std::pair<size_t, std::string> > createIndexPaths(std::istream& i)
 {
-  std::map<size_t, std::string> indexPathMap;
+  std::vector<std::pair<size_t, std::string> > indexPaths;
   std::string line;
   while(getline(i, line)) {
-    indexPathMap.insert(indexPathMap.begin(), parseIndexPath(line));
+    indexPaths.push_back(parseIndexPath(line));
   }
-  return indexPathMap;
+  return indexPaths;
 }
 
 namespace {

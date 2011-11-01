@@ -189,10 +189,10 @@ createBtRequestGroup(const std::string& torrentFilePath,
   sgl.normalize();
   dctx->setFileFilter(sgl);
   std::istringstream indexOutIn(option->get(PREF_INDEX_OUT));
-  std::map<size_t, std::string> indexPathMap =
-    util::createIndexPathMap(indexOutIn);
-  for(std::map<size_t, std::string>::const_iterator i = indexPathMap.begin(),
-        eoi = indexPathMap.end(); i != eoi; ++i) {
+  std::vector<std::pair<size_t, std::string> > indexPaths =
+    util::createIndexPaths(indexOutIn);
+  for(std::vector<std::pair<size_t, std::string> >::const_iterator i =
+        indexPaths.begin(), eoi = indexPaths.end(); i != eoi; ++i) {
     dctx->setFilePathWithIndex
       ((*i).first, util::applyDir(option->get(PREF_DIR), (*i).second));
   }
