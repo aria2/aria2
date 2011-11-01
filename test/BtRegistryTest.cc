@@ -41,8 +41,8 @@ void BtRegistryTest::testGetDownloadContext()
   BtRegistry btRegistry;
   CPPUNIT_ASSERT(!btRegistry.getDownloadContext(1));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
-  BtObject btObject;
-  btObject.downloadContext_ = dctx;
+  SharedHandle<BtObject> btObject(new BtObject());
+  btObject->downloadContext = dctx;
   btRegistry.put(1, btObject);
   CPPUNIT_ASSERT_EQUAL(dctx.get(), btRegistry.getDownloadContext(1).get());
 }
@@ -52,10 +52,10 @@ void addTwoDownloadContext(BtRegistry& btRegistry)
 {
   SharedHandle<DownloadContext> dctx1(new DownloadContext());
   SharedHandle<DownloadContext> dctx2(new DownloadContext());
-  BtObject btObject1;
-  btObject1.downloadContext_ = dctx1;
-  BtObject btObject2;
-  btObject2.downloadContext_ = dctx2;
+  SharedHandle<BtObject> btObject1(new BtObject());
+  btObject1->downloadContext = dctx1;
+  SharedHandle<BtObject> btObject2(new BtObject());
+  btObject2->downloadContext = dctx2;
   btRegistry.put(1, btObject1);
   btRegistry.put(2, btObject2);
 }
@@ -95,8 +95,8 @@ void BtRegistryTest::testRemove()
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
   CPPUNIT_ASSERT(btRegistry.remove(1));
-  CPPUNIT_ASSERT(btRegistry.get(1).isNull());
-  CPPUNIT_ASSERT(!btRegistry.get(2).isNull());
+  CPPUNIT_ASSERT(!btRegistry.get(1));
+  CPPUNIT_ASSERT(btRegistry.get(2));
 }
 
 void BtRegistryTest::testRemoveAll()
@@ -104,8 +104,8 @@ void BtRegistryTest::testRemoveAll()
   BtRegistry btRegistry;
   addTwoDownloadContext(btRegistry);
   btRegistry.removeAll();
-  CPPUNIT_ASSERT(btRegistry.get(1).isNull());
-  CPPUNIT_ASSERT(btRegistry.get(2).isNull());
+  CPPUNIT_ASSERT(!btRegistry.get(1));
+  CPPUNIT_ASSERT(!btRegistry.get(2));
 }
 
 } // namespace aria2

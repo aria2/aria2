@@ -354,17 +354,18 @@ void RequestGroup::createInitialCommand
         (option_->getAsInt(PREF_BT_TRACKER_INTERVAL));
       btAnnounce->shuffleAnnounce();
       
-      assert(btRegistry->get(gid_).isNull());
+      assert(!btRegistry->get(gid_));
       btRegistry->put
-        (gid_, BtObject
-         (downloadContext_,
-          pieceStorage_,
-          peerStorage,
-          btAnnounce,
-          btRuntime,
-          (progressInfoFile ?
-           SharedHandle<BtProgressInfoFile>(progressInfoFile) :
-           progressInfoFile_)));
+        (gid_, SharedHandle<BtObject>
+         (new BtObject
+          (downloadContext_,
+           pieceStorage_,
+           peerStorage,
+           btAnnounce,
+           btRuntime,
+           (progressInfoFile ?
+            SharedHandle<BtProgressInfoFile>(progressInfoFile) :
+            progressInfoFile_))));
       if(metadataGetMode) {
         if(option_->getAsBool(PREF_ENABLE_DHT) ||
            (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&

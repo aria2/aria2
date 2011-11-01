@@ -101,11 +101,11 @@ void BtSetup::setup(std::vector<Command*>& commands,
     bittorrent::getTorrentAttrs(requestGroup->getDownloadContext());
   bool metadataGetMode = torrentAttrs->metadata.empty();
   const SharedHandle<BtRegistry>& btReg = e->getBtRegistry();
-  BtObject btObject = btReg->get(requestGroup->getGID());
-  SharedHandle<PieceStorage> pieceStorage = btObject.pieceStorage_;
-  SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
-  SharedHandle<BtRuntime> btRuntime = btObject.btRuntime_;
-  SharedHandle<BtAnnounce> btAnnounce = btObject.btAnnounce_;
+  const SharedHandle<BtObject>& btObject = btReg->get(requestGroup->getGID());
+  const SharedHandle<PieceStorage>& pieceStorage = btObject->pieceStorage;
+  const SharedHandle<PeerStorage>& peerStorage = btObject->peerStorage;
+  const SharedHandle<BtRuntime>& btRuntime = btObject->btRuntime;
+  const SharedHandle<BtAnnounce>& btAnnounce = btObject->btAnnounce;
   // commands
   {
     TrackerWatcherCommand* c =

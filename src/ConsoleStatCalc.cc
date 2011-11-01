@@ -140,11 +140,10 @@ void printProgress
     << "CN:"
     << rg->getNumConnection();
 #ifdef ENABLE_BITTORRENT
-  SharedHandle<PeerStorage> ps =
-    e->getBtRegistry()->get(rg->getGID()).peerStorage_;
-  if(ps) {
+  const SharedHandle<BtObject>& btObj = e->getBtRegistry()->get(rg->getGID());
+  if(btObj) {
     std::vector<SharedHandle<Peer> > peers;
-    ps->getActivePeers(peers);
+    btObj->peerStorage->getActivePeers(peers);
     o << " " << "SEED:"
       << countSeeder(peers.begin(), peers.end());
   }

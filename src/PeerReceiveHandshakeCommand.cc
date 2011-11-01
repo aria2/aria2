@@ -109,11 +109,12 @@ bool PeerReceiveHandshakeCommand::executeInternal()
         (fmt("Unknown info hash %s",
              util::toHex(infoHash).c_str()));
     }
-    BtObject btObject = getDownloadEngine()->getBtRegistry()->get
+    const SharedHandle<BtObject>& btObject =
+      getDownloadEngine()->getBtRegistry()->get
       (downloadContext->getOwnerRequestGroup()->getGID());
-    SharedHandle<BtRuntime> btRuntime = btObject.btRuntime_;
-    SharedHandle<PieceStorage> pieceStorage = btObject.pieceStorage_;
-    SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
+    const SharedHandle<BtRuntime>& btRuntime = btObject->btRuntime;
+    const SharedHandle<PieceStorage>& pieceStorage = btObject->pieceStorage;
+    const SharedHandle<PeerStorage>& peerStorage = btObject->peerStorage;
     if(!btRuntime->ready()) {
       throw DL_ABORT_EX
         (fmt("Unknown info hash %s",

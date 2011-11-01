@@ -753,7 +753,7 @@ namespace {
 void gatherProgressBitTorrent
 (const SharedHandle<Dict>& entryDict,
  const SharedHandle<TorrentAttribute>& torrentAttrs,
- const BtObject& btObject,
+ const SharedHandle<BtObject>& btObject,
  const std::vector<std::string>& keys)
 {
   if(requested_key(keys, KEY_INFO_HASH)) {
@@ -765,10 +765,10 @@ void gatherProgressBitTorrent
     entryDict->put(KEY_BITTORRENT, btDict);
   }
   if(requested_key(keys, KEY_NUM_SEEDERS)) {
-    if(btObject.isNull()) {
+    if(!btObject) {
       entryDict->put(KEY_NUM_SEEDERS, VLB_ZERO);
     } else {
-      SharedHandle<PeerStorage> peerStorage = btObject.peerStorage_;
+      const SharedHandle<PeerStorage>& peerStorage = btObject->peerStorage;
       assert(peerStorage);
       std::vector<SharedHandle<Peer> > peers;
       peerStorage->getActivePeers(peers);
@@ -822,7 +822,8 @@ void gatherProgress
   if(group->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
     SharedHandle<TorrentAttribute> torrentAttrs =
       bittorrent::getTorrentAttrs(group->getDownloadContext());
-    BtObject btObject = e->getBtRegistry()->get(group->getGID());
+    const SharedHandle<BtObject>& btObject =
+      e->getBtRegistry()->get(group->getGID());
     gatherProgressBitTorrent(entryDict, torrentAttrs, btObject, keys);
   }
 #endif // ENABLE_BITTORRENT
@@ -981,10 +982,11 @@ SharedHandle<ValueBase> GetPeersRpcMethod::process
            util::itos(gid).c_str()));
   }
   SharedHandle<List> peers = List::g();
-  BtObject btObject = e->getBtRegistry()->get(group->getGID());
-  if(!btObject.isNull()) {
-    assert(btObject.peerStorage_);
-    gatherPeer(peers, btObject.peerStorage_);
+  const SharedHandle<BtObject>& btObject =
+    e->getBtRegistry()->get(group->getGID());
+  if(btObject) {
+    assert(btObject->peerStorage);
+    gatherPeer(peers, btObject->peerStorage);
   }
   return peers;
 }
@@ -1153,10 +1155,11 @@ void changeOption
     group->setMaxUploadSpeedLimit(option.getAsInt(PREF_MAX_UPLOAD_LIMIT));
   }
 #ifdef ENABLE_BITTORRENT
-  BtObject btObject = e->getBtRegistry()->get(group->getGID());
-  if(!btObject.isNull()) {
+  const SharedHandle<BtObject>& btObject =
+    e->getBtRegistry()->get(group->getGID());
+  if(btObject) {
     if(option.defined(PREF_BT_MAX_PEERS)) {
-      btObject.btRuntime_->setMaxPeers(option.getAsInt(PREF_BT_MAX_PEERS));
+      btObject->btRuntime->setMaxPeers(option.getAsInt(PREF_BT_MAX_PEERS));
     }
   }
 #endif // ENABLE_BITTORRENT

@@ -94,9 +94,9 @@ bool LpdReceiveMessageCommand::execute()
     }
     RequestGroup* group = dctx->getOwnerRequestGroup();
     assert(group);
-    BtObject btobj = reg->get(group->getGID());
-    assert(!btobj.isNull());
-    SharedHandle<PeerStorage> peerStorage = btobj.peerStorage_;
+    const SharedHandle<BtObject>& btobj = reg->get(group->getGID());
+    assert(btobj);
+    const SharedHandle<PeerStorage>& peerStorage = btobj->peerStorage;
     assert(peerStorage);
     SharedHandle<Peer> peer = m->peer;
     if(peerStorage->addPeer(peer)) {

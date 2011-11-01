@@ -53,12 +53,12 @@ class DownloadContext;
 class LpdMessageReceiver;
 
 struct BtObject {
-  SharedHandle<DownloadContext> downloadContext_;
-  SharedHandle<PieceStorage> pieceStorage_;
-  SharedHandle<PeerStorage> peerStorage_;
-  SharedHandle<BtAnnounce> btAnnounce_;
-  SharedHandle<BtRuntime> btRuntime_;
-  SharedHandle<BtProgressInfoFile> btProgressInfoFile_;
+  SharedHandle<DownloadContext> downloadContext;
+  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<PeerStorage> peerStorage;
+  SharedHandle<BtAnnounce> btAnnounce;
+  SharedHandle<BtRuntime> btRuntime;
+  SharedHandle<BtProgressInfoFile> btProgressInfoFile;
 
   BtObject(const SharedHandle<DownloadContext>& downloadContext,
            const SharedHandle<PieceStorage>& pieceStorage,
@@ -74,35 +74,33 @@ struct BtObject {
   ~BtObject();
 
   BtObject& operator=(const BtObject& c);
-
-  bool isNull() const;
 };
 
 class BtRegistry {
 private:
-  std::map<a2_gid_t, BtObject> pool_;
+  std::map<a2_gid_t, SharedHandle<BtObject> > pool_;
   uint16_t tcpPort_;
   SharedHandle<LpdMessageReceiver> lpdMessageReceiver_;
 public:
   BtRegistry();
   ~BtRegistry();
 
-  SharedHandle<DownloadContext>
+  const SharedHandle<DownloadContext>&
   getDownloadContext(a2_gid_t gid) const;
 
-  SharedHandle<DownloadContext>
+  const SharedHandle<DownloadContext>&
   getDownloadContext(const std::string& infoHash) const;
 
-  void put(a2_gid_t gid, const BtObject& obj);
+  void put(a2_gid_t gid, const SharedHandle<BtObject>& obj);
 
-  BtObject get(a2_gid_t gid) const;
+  const SharedHandle<BtObject>& get(a2_gid_t gid) const;
 
   template<typename OutputIterator>
   OutputIterator getAllDownloadContext(OutputIterator dest)
   {
-    for(std::map<a2_gid_t, BtObject>::const_iterator i = pool_.begin(),
-          eoi = pool_.end(); i != eoi; ++i) {
-      *dest++ = (*i).second.downloadContext_;
+    for(std::map<a2_gid_t, SharedHandle<BtObject> >::const_iterator i =
+          pool_.begin(), eoi = pool_.end(); i != eoi; ++i) {
+      *dest++ = (*i).second->downloadContext;
     }
     return dest;
   }
