@@ -2794,10 +2794,23 @@ Description
 +++++++++++
 
 This method changes options of the download denoted by 'gid'
-dynamically.  'gid' is of type string.  'options' is of type struct
-and the available options are: *<<aria2_optref_bt_max_peers, bt-max-peers>>*,
-*<<aria2_optref_bt_request_peer_speed_limit, bt-request-peer-speed-limit>>*, *<<aria2_optref_max_download_limit, max-download-limit>>* and
-*<<aria2_optref_max_upload_limit, max-upload-limit>>*.  This method returns "OK" for success.
+dynamically.  'gid' is of type string.  'options' is of type struct.
+The following options are available for active downloads:
+
+* *<<aria2_optref_bt_max_peers, bt-max-peers>>*
+* *<<aria2_optref_bt_request_peer_speed_limit, bt-request-peer-speed-limit>>*
+* *<<aria2_optref_max_download_limit, max-download-limit>>*
+* *<<aria2_optref_max_upload_limit, max-upload-limit>>*
+
+For waiting or paused downloads, in addition to the above options,
+options listed in *<<_input_file, Input File>>* subsection are available,
+except for following options:
+*<<aria2_optref_dry_run, dry-run>>*,
+*<<aria2_optref_metalink_base_uri, metalink-base-uri>>*,
+*<<aria2_optref_parameterized_uri, parameterized-uri>>*,
+*<<aria2_optref_pause, pause>>* and
+*<<aria2_optref_piece_length, piece_length>>*.
+This method returns "OK" for success.
 
 JSON-RPC Example
 ++++++++++++++++
@@ -2852,15 +2865,8 @@ Description
 +++++++++++
 
 This method changes global options dynamically.  'options' is of type
-struct and the available options are ones listed in
-*<<_input_file, Input File>>* subsection
-(except for following 5 options:
-*<<aria2_optref_checksum, checksum>>*,
-*<<aria2_optref_index_out, index-out>>*,
-*<<aria2_optref_out, out>>*,
-*<<aria2_optref_pause, pause>>*,
-*<<aria2_optref_select_file, select-file>>*
-). In addition to them, following options are also available:
+struct.
+The following options are available:
 
 * *<<aria2_optref_download_result, download-result>>*
 * *<<aria2_optref_log, log>>*
@@ -2872,6 +2878,14 @@ struct and the available options are ones listed in
 * *<<aria2_optref_save_cookies, save-cookies>>*
 * *<<aria2_optref_save_session, save-session>>*
 * *<<aria2_optref_server_stat_of, server-stat-of>>*
+
+In addition to them, options listed in *<<_input_file, Input File>>* subsection
+are available, except for following options:
+*<<aria2_optref_checksum, checksum>>*,
+*<<aria2_optref_index_out, index-out>>*,
+*<<aria2_optref_out, out>>*,
+*<<aria2_optref_pause, pause>>* and
+*<<aria2_optref_select_file, select-file>>*.
 
 Using *<<aria2_optref_log, log>>* option, you can dynamically start logging or
 change log file. To stop logging, give empty string("") as a parameter
