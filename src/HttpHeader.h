@@ -40,7 +40,6 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <iosfwd>
 
 #include "SharedHandle.h"
 
@@ -110,7 +109,9 @@ public:
 
   void setRequestPath(const std::string& requestPath);
 
-  void fill(std::istream& in);
+  void fill
+  (std::string::const_iterator first,
+   std::string::const_iterator last);
 
   // Clears table_. responseStatus_ and version_ are unchanged.
   void clearField();

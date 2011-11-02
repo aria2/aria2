@@ -1,9 +1,12 @@
 #include "HttpHeaderProcessor.h"
+
+#include <iostream>
+
+#include <cppunit/extensions/HelperMacros.h>
+
 #include "HttpHeader.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
-#include <iostream>
-#include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
 
@@ -102,7 +105,8 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
     "Content-Length: 9187\r\n"
     "Connection: close\r\n"
     "Content-Type: text/html; charset=UTF-8\r\n"
-    "\r\n";
+    "\r\n"
+    "Entity: body";
 
   proc.update(hd);
 
@@ -116,6 +120,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
   CPPUNIT_ASSERT_EQUAL((uint64_t)9187ULL, header->getFirstAsULLInt("Content-Length"));
   CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"),
                        header->getFirst("Content-Type"));
+  CPPUNIT_ASSERT(!header->defined("entity"));
 }
 
 void HttpHeaderProcessorTest::testGetHttpResponseHeader_empty()
@@ -208,7 +213,8 @@ void HttpHeaderProcessorTest::testGetHttpRequestHeader()
   std::string request = "GET /index.html HTTP/1.1\r\n"
     "Host: host\r\n"
     "Connection: close\r\n"
-    "\r\n";
+    "\r\n"
+    "Entity: body";
 
   proc.update(request);
 
@@ -218,6 +224,7 @@ void HttpHeaderProcessorTest::testGetHttpRequestHeader()
   CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());
   CPPUNIT_ASSERT_EQUAL(std::string("close"),httpHeader->getFirst("Connection"));
+  CPPUNIT_ASSERT(!httpHeader->defined("entity"));
 }
 
 } // namespace aria2

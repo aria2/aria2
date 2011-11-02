@@ -36,9 +36,11 @@
 #define D_HTTP_HEADER_PROCESSOR_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <utility>
 #include <string>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 

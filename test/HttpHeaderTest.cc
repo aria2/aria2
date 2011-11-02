@@ -1,10 +1,9 @@
 #include "HttpHeader.h"
 
-#include <sstream>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "Range.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -71,6 +70,56 @@ void HttpHeaderTest::testGetRange()
     CPPUNIT_ASSERT_EQUAL((off_t)0, range->getEndByte());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0, range->getEntityLength());
   }
+  {
+    HttpHeader httpHeader;
+    httpHeader.put("Content-Range", "bytes */*");
+
+    SharedHandle<Range> range = httpHeader.getRange();
+
+    CPPUNIT_ASSERT_EQUAL((off_t)0, range->getStartByte());
+    CPPUNIT_ASSERT_EQUAL((off_t)0, range->getEndByte());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)0, range->getEntityLength());
+  }
+  {
+    HttpHeader httpHeader;
+    httpHeader.put("Content-Range", "bytes 0");
+
+    SharedHandle<Range> range = httpHeader.getRange();
+
+    CPPUNIT_ASSERT_EQUAL((off_t)0, range->getStartByte());
+    CPPUNIT_ASSERT_EQUAL((off_t)0, range->getEndByte());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)0, range->getEntityLength());
+  }
+  {
+    HttpHeader httpHeader;
+    httpHeader.put("Content-Range", "bytes 0/");
+
+    SharedHandle<Range> range = httpHeader.getRange();
+
+    CPPUNIT_ASSERT_EQUAL((off_t)0, range->getStartByte());
+    CPPUNIT_ASSERT_EQUAL((off_t)0, range->getEndByte());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)0, range->getEntityLength());
+  }
+  {
+    HttpHeader httpHeader;
+    httpHeader.put("Content-Range", "bytes 0-/3");
+    try {
+      httpHeader.getRange();
+      CPPUNIT_FAIL("Exception must be thrown");
+    } catch(const DlAbortEx& e) {
+      // success
+    }
+  }
+  {
+    HttpHeader httpHeader;
+    httpHeader.put("Content-Range", "bytes -0/3");
+    try {
+      httpHeader.getRange();
+      CPPUNIT_FAIL("Exception must be thrown");
+    } catch(const DlAbortEx& e) {
+      // success
+    }
+  }
 }
 
 void HttpHeaderTest::testGet()
@@ -104,16 +153,16 @@ void HttpHeaderTest::testClearField()
 
 void HttpHeaderTest::testFill()
 {
-  std::stringstream ss;
-  ss << "Host: aria2.sourceforge.net\r\n"
-     << "Connection: close \r\n" // trailing white space
-     << "Multi-Line: text1\r\n"
-     << "  text2\r\n"
-     << "  text3\r\n"
-     << "Duplicate: foo\r\n"
-     << "Duplicate: bar\r\n";
+  std::string s =
+    "Host: aria2.sourceforge.net\r\n"
+    "Connection: close \r\n" // trailing white space
+    "Multi-Line: text1\r\n"
+    "  text2\r\n"
+    "  text3\r\n"
+    "Duplicate: foo\r\n"
+    "Duplicate: bar\r\n";
   HttpHeader h;
-  h.fill(ss);
+  h.fill(s.begin(), s.end());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.sourceforge.net"),
                        h.getFirst("Host"));
   CPPUNIT_ASSERT_EQUAL(std::string("close"),

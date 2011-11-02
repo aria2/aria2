@@ -33,9 +33,6 @@
  */
 /* copyright --> */
 #include "HttpHeader.h"
-
-#include <istream>
-
 #include "Range.h"
 #include "util.h"
 #include "A2STR.h"
@@ -152,38 +149,37 @@ RangeHandle HttpHeader::getRange() const
       }
     }
   }
-  std::string byteRangeSpec;
-  {
-    // we expect that rangeStr looks like 'bytes 100-199/100'
-    // but some server returns '100-199/100', omitting bytes-unit sepcifier
-    // 'bytes'.
-    std::pair<std::string, std::string> splist;
-    util::divide(splist, rangeStr, ' ');
-    if(splist.second.empty()) {
-      // we assume bytes-unit specifier omitted.
-      byteRangeSpec = splist.first;
-    } else {
-      byteRangeSpec = splist.second;
+  // we expect that rangeStr looks like 'bytes 100-199/100'
+  // but some server returns '100-199/100', omitting bytes-unit sepcifier
+  // 'bytes'.
+  std::string::const_iterator byteRangeSpec =
+    std::find(rangeStr.begin(), rangeStr.end(), ' ');
+  if(byteRangeSpec == rangeStr.end()) {
+    // we assume bytes-unit specifier omitted.
+    byteRangeSpec = rangeStr.begin();
+  } else {
+    while(byteRangeSpec != rangeStr.end() &&
+          (*byteRangeSpec == ' ' || *byteRangeSpec == '\t')) {
+      ++byteRangeSpec;
     }
   }
-  std::pair<std::string, std::string> byteRangeSpecPair;
-  util::divide(byteRangeSpecPair, byteRangeSpec, '/');
-
-  if(util::strip(byteRangeSpecPair.first) == "*" ||
-     util::strip(byteRangeSpecPair.second) == "*") {
+  std::string::const_iterator slash =
+    std::find(byteRangeSpec, rangeStr.end(), '/');
+  if(slash == rangeStr.end() || slash+1 == rangeStr.end() ||
+     (byteRangeSpec+1 == slash && *byteRangeSpec == '*') ||
+     (slash+2 == rangeStr.end() && *(slash+1) == '*')) {
     // If byte-range-resp-spec or instance-length is "*", we returns
     // empty Range. The former is usually sent with 416 (Request range
     // not satisfiable) status.
     return SharedHandle<Range>(new Range());
   }
-
-  std::pair<std::string, std::string> byteRangeRespSpecPair;
-  util::divide(byteRangeRespSpecPair, byteRangeSpecPair.first, '-');
-
-  off_t startByte = util::parseLLInt(byteRangeRespSpecPair.first);
-  off_t endByte = util::parseLLInt(byteRangeRespSpecPair.second);
-  uint64_t entityLength = util::parseULLInt(byteRangeSpecPair.second);
-
+  std::string::const_iterator minus = std::find(byteRangeSpec, slash, '-');
+  if(minus == slash) {
+    return SharedHandle<Range>(new Range());
+  }
+  off_t startByte = util::parseLLInt(std::string(byteRangeSpec, minus));
+  off_t endByte = util::parseLLInt(std::string(minus+1, slash));
+  uint64_t entityLength = util::parseULLInt(std::string(slash+1, rangeStr.end()));
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }
 
@@ -202,28 +198,67 @@ void HttpHeader::setRequestPath(const std::string& requestPath)
   requestPath_ = requestPath;
 }
 
-void HttpHeader::fill(std::istream& in)
+namespace {
+template<typename InputIterator>
+std::pair<InputIterator, InputIterator> stripIter2
+(InputIterator first, InputIterator last,
+ const std::string& chars = "\r\n \t")
 {
-  std::string line;
-  std::getline(in, line);
-  while(in) {
-    line = util::strip(line);
-    if(line.empty()) {
-      std::getline(in, line);
-    } else {
-      std::pair<std::string, std::string> hp;
-      util::divide(hp, line, ':');
-      while(std::getline(in, line)) {
-        if(!line.empty() && (line[0] == ' ' || line[0] == '\t')) {
-          line = util::strip(line);
-          hp.second += " ";
-          hp.second += line;
-        } else {
-          break;
-        }
-      }
-      put(hp.first, hp.second);
+  for(; first != last &&
+        std::find(chars.begin(), chars.end(), *first) != chars.end(); ++first);
+  if(first == last) {
+    return std::make_pair(first, last);
+  }
+  InputIterator left = last-1;
+  for(; left != first &&
+        std::find(chars.begin(), chars.end(), *left) != chars.end(); --left);
+  return std::make_pair(first, left+1);
+}
+} // namespace
+
+void HttpHeader::fill
+(std::string::const_iterator first,
+ std::string::const_iterator last)
+{
+  std::string name;
+  std::string value;
+  while(first != last) {
+    std::string::const_iterator j = first;
+    while(j != last && *j != '\r' && *j != '\n') {
+      ++j;
     }
+    if(first != j) {
+      std::string::const_iterator sep = std::find(first, j, ':');
+      if(sep == j) {
+        // multiline header?
+        if(*first == ' ' || *first == '\t') {
+          std::pair<std::string::const_iterator,
+                    std::string::const_iterator> p = stripIter2(first, j);
+          if(!name.empty() && p.first != p.second) {
+            if(!value.empty()) {
+              value += ' ';
+            }
+            value.append(p.first, p.second);
+          }
+        }
+      } else {
+        if(!name.empty()) {
+          put(name, value);
+        }
+        std::pair<std::string::const_iterator,
+                  std::string::const_iterator> p = stripIter2(first, sep);
+        name.assign(p.first, p.second);
+        p = stripIter2(sep+1, j);
+        value.assign(p.first, p.second);
+      }
+    }
+    while(j != last && (*j == '\r' || *j == '\n')) {
+      ++j;
+    }
+    first = j;
+  }
+  if(!name.empty()) {
+    put(name, value);
   }
 }
 

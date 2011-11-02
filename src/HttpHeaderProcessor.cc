@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "HttpHeaderProcessor.h"
 
-#include <sstream>
 #include <vector>
 
 #include "HttpHeader.h"
@@ -60,7 +59,7 @@ HttpHeaderProcessor::~HttpHeaderProcessor() {}
 void HttpHeaderProcessor::update(const unsigned char* data, size_t length)
 {
   checkHeaderLimit(length);
-  buf_ += std::string(&data[0], &data[length]);
+  buf_.append(&data[0], &data[length]);
 }
 
 void HttpHeaderProcessor::update(const std::string& data)
@@ -119,10 +118,13 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
   HttpHeaderHandle httpHeader(new HttpHeader());
   httpHeader->setVersion(buf_.substr(0, 8));
   httpHeader->setStatusCode(statusCode);
-  std::istringstream strm(buf_);
   // TODO 1st line(HTTP/1.1 200...) is also send to HttpHeader, but it should
   // not.
-  httpHeader->fill(strm);
+  if((delimpos = buf_.find("\r\n\r\n")) == std::string::npos &&
+     (delimpos = buf_.find("\n\n")) == std::string::npos) {
+    delimpos = buf_.size();
+  }
+  httpHeader->fill(buf_.begin(), buf_.begin()+delimpos);
   return httpHeader;
 }
 
@@ -147,8 +149,11 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
   httpHeader->setMethod(firstLine[0]);
   httpHeader->setRequestPath(firstLine[1]);
   httpHeader->setVersion(firstLine[2]);
-  std::istringstream strm(buf_.substr(delimpos));
-  httpHeader->fill(strm);
+  if((delimpos = buf_.find("\r\n\r\n")) == std::string::npos &&
+     (delimpos = buf_.find("\n\n")) == std::string::npos) {
+    delimpos = buf_.size();
+  }
+  httpHeader->fill(buf_.begin(), buf_.begin()+delimpos);
   return httpHeader;
 }
 
