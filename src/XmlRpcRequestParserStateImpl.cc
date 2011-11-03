@@ -198,7 +198,7 @@ void IntXmlRpcRequestParserState::endElement
  const std::string& characters)
 {
   try {
-    int64_t value = util::parseLLInt(characters);
+    int64_t value = util::parseLLInt(characters.begin(), characters.end());
     stm->setCurrentFrameValue(Integer::g(value));
   } catch(RecoverableException& e) {
     // nothing to do here: We just leave current frame value to null.

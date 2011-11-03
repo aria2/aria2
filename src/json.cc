@@ -161,13 +161,12 @@ decodeString
       checkEof(first, last);
       if(*first == 'u') {
         ++first;
-        std::string uchars;
+        std::string::const_iterator uchars = first;
         for(int i = 0; i < 4; ++i, ++first) {
           checkEof(first, last);
-          uchars += *first;
         }
         checkEof(first, last);
-        uint16_t codepoint = util::parseUInt(uchars, 16);
+        uint16_t codepoint = util::parseUInt(uchars, first, 16);
         if(codepoint <= 0x007fu) {
           s += static_cast<char>(codepoint);
         } else if(codepoint <= 0x07ffu) {
@@ -183,13 +182,12 @@ decodeString
                                error_code::JSON_PARSE_ERROR);
           }
           first += 2;
-          std::string uchars;
+          std::string::const_iterator uchars = first;
           for(int i = 0; i < 4; ++i, ++first) {
             checkEof(first, last);
-            uchars += *first;
           }
           checkEof(first, last);
-          uint16_t codepoint2 = util::parseUInt(uchars, 16);
+          uint16_t codepoint2 = util::parseUInt(uchars, first, 16);
           if(!in(codepoint2, 0xDC00u, 0xDFFFu)) {
             throw DL_ABORT_EX2("JSON decoding failed: bad UTF-8 sequence.",
                                error_code::JSON_PARSE_ERROR);
@@ -290,7 +288,7 @@ decodeNumber
   checkEof(first, last);
   checkEmptyDigit(offset, first);
   checkLeadingZero(offset, first);
-  s += std::string(offset, first);
+  s.append(offset, first);
   bool fp = false;
   if(*first == '.') {
     fp = true;
@@ -302,7 +300,7 @@ decodeNumber
     }
     checkEof(first, last);
     checkEmptyDigit(offset, first);
-    s += std::string(offset, first);
+    s.append(offset, first);
   }
   if(*first == 'e') {
     fp = true;
@@ -319,14 +317,14 @@ decodeNumber
     }
     checkEof(first, last);
     checkEmptyDigit(offset, first);
-    s += std::string(offset, first);
+    s.append(offset, first);
   }
   if(fp) {
     // Since we don't have floating point coutner part in ValueBase,
     // we just treat it as string.
     return std::make_pair(String::g(s), first);
   } else {
-    Integer::ValueType val = util::parseLLInt(s);
+    Integer::ValueType val = util::parseLLInt(s.begin(), s.end());
     return std::make_pair(Integer::g(val), first);
   }
 }

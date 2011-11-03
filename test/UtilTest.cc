@@ -23,6 +23,7 @@ class UtilTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(UtilTest);
   CPPUNIT_TEST(testStrip);
+  CPPUNIT_TEST(testStripIter);
   CPPUNIT_TEST(testDivide);
   CPPUNIT_TEST(testSplit);
   CPPUNIT_TEST(testEndsWith);
@@ -83,6 +84,7 @@ public:
   }
 
   void testStrip();
+  void testStripIter();
   void testDivide();
   void testSplit();
   void testEndsWith();
@@ -159,6 +161,54 @@ void UtilTest::testStrip()
   CPPUNIT_ASSERT_EQUAL(str4, util::strip("A"));
   CPPUNIT_ASSERT_EQUAL(str4, util::strip(" A "));
   CPPUNIT_ASSERT_EQUAL(str4, util::strip("  A  "));
+}
+
+void UtilTest::testStripIter()
+{
+  Scip p;
+  std::string str1 = "aria2";
+  std::string s = "aria2";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str1, std::string(p.first, p.second));
+  s = " aria2";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str1, std::string(p.first, p.second));
+  s = "aria2 ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str1, std::string(p.first, p.second));
+  s = " aria2 ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str1, std::string(p.first, p.second));
+  s = "  aria2  ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str1, std::string(p.first, p.second));
+  std::string str2 = "aria2 debut";
+  s = "aria2 debut";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str2, std::string(p.first, p.second));
+  s = " aria2 debut ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str2, std::string(p.first, p.second));
+  std::string str3 = "";
+  s = "";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str3, std::string(p.first, p.second));
+  s = " ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str3, std::string(p.first, p.second));
+  s = "  ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str3, std::string(p.first, p.second));
+  std::string str4 = "A";
+  s = "A";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str4, std::string(p.first, p.second));
+  s = " A ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str4, std::string(p.first, p.second));
+  s = "  A  ";
+  p = util::stripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(str4, std::string(p.first, p.second));
 }
 
 void UtilTest::testDivide() {
@@ -757,76 +807,92 @@ void UtilTest::testParseIntSegments_invalidRange()
 
 void UtilTest::testParseInt()
 {
-  CPPUNIT_ASSERT_EQUAL(-1, util::parseInt(" -1 "));
-  CPPUNIT_ASSERT_EQUAL(2147483647, util::parseInt("2147483647"));
+  std::string s;
+  s = " -1 ";
+  CPPUNIT_ASSERT_EQUAL(-1, util::parseInt(s.begin(), s.end()));
+  s = "2147483647";
+  CPPUNIT_ASSERT_EQUAL(2147483647, util::parseInt(s.begin(), s.end()));
   try {
-    util::parseInt("2147483648");
+    s = "2147483648";
+    util::parseInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
   try {
-    util::parseInt("-2147483649");
+    s = "-2147483649";
+    util::parseInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
   try {
-    util::parseInt("12x");
+    s = "12x";
+    util::parseInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
   try {
-    util::parseInt("");
+    s = "";
+    util::parseInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
 }
 
 void UtilTest::testParseUInt()
 {
-  CPPUNIT_ASSERT_EQUAL(4294967295U, util::parseUInt(" 4294967295 "));
+  std::string s;
+  s = " 4294967295 ";
+  CPPUNIT_ASSERT_EQUAL(4294967295U, util::parseUInt(s.begin(), s.end()));
   try {
-    util::parseUInt("-1");
+    s = "-1";
+    util::parseUInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
   try {
-    util::parseUInt("4294967296");
+    s = "4294967296";
+    util::parseUInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
 }
 
 void UtilTest::testParseLLInt()
 {
-  CPPUNIT_ASSERT_EQUAL((int64_t)-1LL, util::parseLLInt(" -1 "));
-  CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
-                       util::parseLLInt("9223372036854775807"));
+  std::string s;
+  {
+    s = " -1 ";
+    CPPUNIT_ASSERT_EQUAL((int64_t)-1LL, util::parseLLInt(s.begin(), s.end()));
+  }
+  {
+    s = "9223372036854775807";
+    CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
+                         util::parseLLInt(s.begin(), s.end()));
+  }
   try {
-    util::parseLLInt("9223372036854775808");
+    s = "9223372036854775808";
+    util::parseLLInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
-    util::parseLLInt("-9223372036854775809");
+    s = "-9223372036854775809";
+    util::parseLLInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
-    util::parseLLInt("12x");
+    s = "12x";
+    util::parseLLInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
-    util::parseLLInt("");
+    s = "";
+    util::parseLLInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
@@ -835,56 +901,74 @@ void UtilTest::testParseLLInt()
 
 void UtilTest::testParseULLInt()
 {
+  std::string s;
+  s = "18446744073709551615";
   CPPUNIT_ASSERT_EQUAL((uint64_t)18446744073709551615ULL,
-                       util::parseULLInt("18446744073709551615"));
+                       util::parseULLInt(s.begin(), s.end()));
   try {
-    util::parseUInt("-1");
+    s = "-1";
+    util::parseULLInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
   try {
-    util::parseLLInt("18446744073709551616");
+    s = "18446744073709551616";
+    util::parseULLInt(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
 }
 
 void UtilTest::testParseIntNoThrow()
 {
+  std::string s;
   int32_t n;
-  CPPUNIT_ASSERT(util::parseIntNoThrow(n, " -1 "));
+  s = " -1 ";
+  CPPUNIT_ASSERT(util::parseIntNoThrow(n, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((int32_t)-1, n);
 
-  CPPUNIT_ASSERT(util::parseIntNoThrow(n, "2147483647"));
+  s = "2147483647";
+  CPPUNIT_ASSERT(util::parseIntNoThrow(n, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((int32_t)2147483647, n);
 
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, "2147483648"));
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, "-2147483649"));
+  s = "2147483648";
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
+  s = "-2147483649";
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
 
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, "12x"));
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, ""));
+  s = "12x";
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
+  s = "";
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
 }
 
 void UtilTest::testParseUIntNoThrow()
 {
+  std::string s;
   uint32_t n;
-  CPPUNIT_ASSERT(util::parseUIntNoThrow(n, " 4294967295 "));
+  s = " 4294967295 ";
+  CPPUNIT_ASSERT(util::parseUIntNoThrow(n, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((uint32_t)UINT32_MAX, n);
-  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, "4294967296"));
-  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, "-1"));
+  s = "4294967296";
+  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, s.begin(), s.end()));
+  s = "-1";
+  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, s.begin(), s.end()));
 }
 
 void UtilTest::testParseLLIntNoThrow()
 {
+  std::string s;
   int64_t n;
-  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, " 9223372036854775807 "));
+  s = " 9223372036854775807 ";
+  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((int64_t)INT64_MAX, n);
-  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, "9223372036854775808"));
-  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, "-9223372036854775808"));
+  s = "9223372036854775808";
+  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, s.begin(), s.end()));
+  s = "-9223372036854775808";
+  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((int64_t)INT64_MIN, n);
-  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, "-9223372036854775809"));
+  s = "-9223372036854775809";
+  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, s.begin(), s.end()));
 }
 
 void UtilTest::testToString_binaryStream()

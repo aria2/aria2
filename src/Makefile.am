@@ -230,7 +230,8 @@ SRCS =  Socket.h\
 	console.cc console.h\
 	BufferedFile.cc BufferedFile.h\
 	SegList.h\
-	NullHandle.h
+	NullHandle.h\
+	a2iterator.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h

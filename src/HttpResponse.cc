@@ -342,7 +342,7 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
         }
       } else if(name == "pri") {
         int32_t priValue;
-        if(util::parseIntNoThrow(priValue, value)) {
+        if(util::parseIntNoThrow(priValue, value.begin(), value.end())) {
           if(1 <= priValue && priValue <= 999999) {
             result.pri = priValue;
           }

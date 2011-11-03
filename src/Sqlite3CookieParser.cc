@@ -82,9 +82,10 @@ std::string toString(const char* str)
 } // namespace
 
 namespace {
-bool parseTime(int64_t& time, const std::string& s)
+template<typename InputIterator>
+bool parseTime(int64_t& time, InputIterator first, InputIterator last)
 {
-  if(!util::parseLLIntNoThrow(time, s)) {
+  if(!util::parseLLIntNoThrow(time, first, last)) {
     return false;
   }
   if(std::numeric_limits<time_t>::max() < time) {
@@ -112,11 +113,13 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
     return 0;
   }
   int64_t expiryTime;
-  if(!parseTime(expiryTime, toString(values[3]))) {
+  if(!values[3] ||
+     !parseTime(expiryTime, &values[3][0], &values[3][strlen(values[3])])) {
     return 0;
   }
   int64_t lastAccessTime;
-  if(!parseTime(lastAccessTime, toString(values[6]))) {
+  if(!values[6] ||
+     !parseTime(lastAccessTime, &values[6][0], &values[6][strlen(values[6])])) {
     return 0;
   }
   Cookie c(cookieName,
@@ -124,9 +127,10 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
            expiryTime,
            true, // persistent
            cookieDomain,
-           util::isNumericHost(cookieDomain) || values[0][0] != '.', // hostOnly
+           util::isNumericHost(cookieDomain) ||
+           (values[0] && values[0][0] != '.'), // hostOnly
            cookiePath,
-           strcmp(toString(values[2]).c_str(), "1") == 0, //secure
+           values[2] && strcmp(values[2], "1") == 0, //secure
            false,
            lastAccessTime // creation time. Set this later.
            );
@@ -151,8 +155,7 @@ void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
   }
   if(SQLITE_OK != ret) {
     throw DL_ABORT_EX
-      (fmt("Failed to read SQLite3 database: %s",
-           errMsg.c_str()));
+      (fmt("Failed to read SQLite3 database: %s", errMsg.c_str()));
   }
   cookies.swap(tcookies);
 }

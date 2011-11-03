@@ -35,8 +35,6 @@
 #include "util.h"
 
 #include <signal.h>
-#include <limits.h>
-#include <stdint.h>
 
 #include <cerrno>
 #include <cassert>
@@ -51,15 +49,12 @@
 
 #include "SimpleRandomizer.h"
 #include "File.h"
-#include "message.h"
 #include "Randomizer.h"
 #include "a2netcompat.h"
-#include "DlAbortEx.h"
 #include "BitfieldMan.h"
 #include "DefaultDiskWriter.h"
 #include "FatalException.h"
 #include "FileEntry.h"
-#include "fmt.h"
 #include "A2STR.h"
 #include "array_fun.h"
 #include "bitfield.h"
@@ -496,7 +491,7 @@ std::string percentDecode(const std::string& target) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
          isHexDigit(*(itr+1)) && isHexDigit(*(itr+2))) {
-        result += parseInt(std::string(itr+1, itr+3), 16);
+        result += parseInt(itr+1, itr+3, 16);
         itr += 2;
       } else {
         result += *itr;
@@ -625,133 +620,6 @@ int getNum(const char* buf, int offset, size_t length) {
   return x;
 }
 
-int32_t parseInt(const std::string& s, int32_t base)
-{
-  int64_t v = parseLLInt(s, base);
-  if(v < INT32_MIN || INT32_MAX < v) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          s.c_str()));
-  }
-  return v;
-}
-
-bool parseIntNoThrow(int32_t& result, const std::string& s, int base)
-{
-  // Without trim, strtol("  -1  ",..) emits error.
-  std::string trimed = strip(s);
-  if(trimed.empty()) {
-    return false;
-  }
-  char* stop;
-  errno = 0;
-  long int v = strtol(trimed.c_str(), &stop, base);
-  if(*stop != '\0') {
-    return false;
-  } else if(((v == LONG_MAX || v == LONG_MIN) && (errno == ERANGE)) ||
-            v < INT32_MIN || INT32_MAX < v) {
-    return false;
-  }
-  result = v;
-  return true;
-}
-
-uint32_t parseUInt(const std::string& s, int base)
-{
-  uint64_t v = parseULLInt(s, base);
-  if(UINT32_MAX < v) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          s.c_str()));
-  }
-  return v;
-}
-
-bool parseUIntNoThrow(uint32_t& result, const std::string& s, int base)
-{
-  // Without trim, strtol("  -1  ",..) emits error.
-  std::string trimed = strip(s);
-  if(trimed.empty()) {
-    return false;
-  }
-  // We don't allow negative number.
-  if(trimed[0] == '-') {
-    return false;
-  }
-  char* stop;
-  errno = 0;
-  unsigned long int v = strtoul(trimed.c_str(), &stop, base);
-  if(*stop != '\0') {
-    return false;
-  } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
-    return false;
-  }
-  result = v;
-  return true;
-}
-
-int64_t parseLLInt(const std::string& s, int32_t base)
-{
-  std::string trimed = strip(s);
-  if(trimed.empty()) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          "empty string"));
-  }
-  char* stop;
-  errno = 0;
-  int64_t v = strtoll(trimed.c_str(), &stop, base);
-  if(*stop != '\0') {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          trimed.c_str()));
-  } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          trimed.c_str()));
-  }
-  return v;
-}
-
-bool parseLLIntNoThrow(int64_t& result, const std::string& s, int base)
-{
-  // Without trim, strtol("  -1  ",..) emits error.
-  std::string trimed = strip(s);
-  if(trimed.empty()) {
-    return false;
-  }
-  char* stop;
-  errno = 0;
-  int64_t v = strtoll(trimed.c_str(), &stop, base);
-  if(*stop != '\0') {
-    return false;
-  } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
-    return false;
-  }
-  result = v;
-  return true;
-}
-
-uint64_t parseULLInt(const std::string& s, int base)
-{
-  std::string trimed = strip(s);
-  if(trimed.empty()) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          "empty string"));
-  }
-  // We don't allow negative number.
-  if(trimed[0] == '-') {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          trimed.c_str()));
-  }
-  char* stop;
-  errno = 0;
-  uint64_t v = strtoull(trimed.c_str(), &stop, base);
-  if(*stop != '\0') {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          trimed.c_str()));
-  } else if((v == ULLONG_MAX) && (errno == ERANGE)) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          trimed.c_str()));
-  }
-  return v;
-}
-
 void parseIntSegments(SegList<int>& sgl, const std::string& src)
 {
   for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;) {
@@ -762,13 +630,13 @@ void parseIntSegments(SegList<int>& sgl, const std::string& src)
     }
     std::string::const_iterator p = std::find(i, j, '-');
     if(p == j) {
-      int a = parseInt(std::string(i, j));
+      int a = parseInt(i, j);
       sgl.add(a, a+1);
     } else if(p == i || p+1 == j) {
       throw DL_ABORT_EX(fmt(MSG_INCOMPLETE_RANGE, std::string(i, j).c_str()));
     } else {
-      int a = parseInt(std::string(i, p));
-      int b = parseInt(std::string(p+1, j));
+      int a = parseInt(i, p);
+      int b = parseInt(p+1, j);
       sgl.add(a, b+1);
     }
     if(j == eoi) {
@@ -1139,7 +1007,7 @@ int64_t getRealSize(const std::string& sizeWithUnit)
     }
     size = sizeWithUnit.substr(0, p);
   }
-  int64_t v = parseLLInt(size);
+  int64_t v = parseLLInt(size.begin(), size.end());
 
   if(v < 0) {
     throw DL_ABORT_EX(fmt("Negative value detected: %s", sizeWithUnit.c_str()));
@@ -1381,7 +1249,7 @@ parseIndexPath(const std::string& line)
 {
   std::pair<std::string, std::string> p;
   divide(p, line, '=');
-  size_t index = parseUInt(p.first);
+  size_t index = parseUInt(p.first.begin(), p.first.end());
   if(p.second.empty()) {
     throw DL_ABORT_EX(fmt("Path with index=%u is empty.",
                           static_cast<unsigned int>(index)));

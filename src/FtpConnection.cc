@@ -434,7 +434,7 @@ unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
     if(response.first == 213) {
       std::pair<std::string, std::string> rp;
       util::divide(rp, response.second, ' ');
-      size = util::parseULLInt(rp.second);
+      size = util::parseULLInt(rp.second.begin(), rp.second.end());
     }
     return response.first;
   } else {
@@ -455,17 +455,12 @@ unsigned int FtpConnection::receiveMdtmResponse(Time& time)
         // and included strptime doesn't parse data for this format.
         struct tm tm;
         memset(&tm, 0, sizeof(tm));
-        tm.tm_sec = util::parseInt(&buf[12]);
-        buf[12] = '\0';
-        tm.tm_min = util::parseInt(&buf[10]);
-        buf[10] = '\0';
-        tm.tm_hour = util::parseInt(&buf[8]);
-        buf[8] = '\0';
-        tm.tm_mday = util::parseInt(&buf[6]);
-        buf[6] = '\0';
-        tm.tm_mon = util::parseInt(&buf[4])-1;
-        buf[4] = '\0';
-        tm.tm_year = util::parseInt(&buf[0])-1900;
+        tm.tm_sec = util::parseInt(&buf[12], &buf[14]);
+        tm.tm_min = util::parseInt(&buf[10], &buf[12]);
+        tm.tm_hour = util::parseInt(&buf[8], &buf[10]);
+        tm.tm_mday = util::parseInt(&buf[6], &buf[8]);
+        tm.tm_mon = util::parseInt(&buf[4], &buf[6])-1;
+        tm.tm_year = util::parseInt(&buf[0], &buf[4])-1900;
         time = Time(timegm(&tm));
       } else {
         time = Time::null();
@@ -493,7 +488,8 @@ unsigned int FtpConnection::receiveEpsvResponse(uint16_t& port)
       util::split(response.second.substr(leftParen+1, rightParen-(leftParen+1)),
                   std::back_inserter(rd), "|", true, true);
       uint32_t portTemp = 0;
-      if(rd.size() == 5 && util::parseUIntNoThrow(portTemp, rd[3])) {
+      if(rd.size() == 5 &&
+         util::parseUIntNoThrow(portTemp, rd[3].begin(), rd[3].end())) {
         if(0 < portTemp  && portTemp <= UINT16_MAX) {
           port = portTemp;
         }

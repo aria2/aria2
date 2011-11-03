@@ -151,7 +151,7 @@ void FileMetalinkParserStateV4::beginElement
         priority = MetalinkResource::getLowestPriority();
       } else {
         try {
-          priority = util::parseInt((*itr).value);
+          priority = util::parseInt((*itr).value.begin(), (*itr).value.end());
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
             stm->logError("metaurl@priority is out of range");
             return;
@@ -192,7 +192,7 @@ void FileMetalinkParserStateV4::beginElement
         priority = MetalinkResource::getLowestPriority();
       } else {
         try {
-          priority = util::parseInt((*itr).value);
+          priority = util::parseInt((*itr).value.begin(), (*itr).value.end());
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
             stm->logError("url@priority is out of range");
             return;
@@ -229,7 +229,7 @@ void FileMetalinkParserStateV4::beginElement
         return;
       } else {
         try {
-          length = util::parseInt((*itr).value);
+          length = util::parseInt((*itr).value.begin(), (*itr).value.end());
         } catch(RecoverableException& e) {
           stm->logError("Bad pieces@length");
           return;
@@ -283,7 +283,8 @@ void SizeMetalinkParserStateV4::endElement
  const std::string& characters)
 {
   try {
-    stm->setFileLengthOfEntry(util::parseULLInt(characters));
+    stm->setFileLengthOfEntry
+      (util::parseULLInt(characters.begin(), characters.end()));
   } catch(RecoverableException& e) {
     stm->cancelEntryTransaction();
     stm->logError("Bad size");

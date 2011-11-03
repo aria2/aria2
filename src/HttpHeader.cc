@@ -128,7 +128,7 @@ uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
   if(value.empty()) {
     return 0;
   } else {
-    return util::parseULLInt(value);
+    return util::parseULLInt(value.begin(), value.end());
   }
 }
 
@@ -136,11 +136,12 @@ RangeHandle HttpHeader::getRange() const
 {
   const std::string& rangeStr = getFirst(CONTENT_RANGE);
   if(rangeStr.empty()) {
-    const std::string& contentLengthStr = getFirst(CONTENT_LENGTH);
-    if(contentLengthStr.empty()) {
+    const std::string& clenStr = getFirst(CONTENT_LENGTH);
+    if(clenStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
-      uint64_t contentLength = util::parseULLInt(contentLengthStr);
+      uint64_t contentLength =
+        util::parseULLInt(clenStr.begin(), clenStr.end());
       if(contentLength == 0) {
         return SharedHandle<Range>(new Range());
       } else {
@@ -177,9 +178,9 @@ RangeHandle HttpHeader::getRange() const
   if(minus == slash) {
     return SharedHandle<Range>(new Range());
   }
-  off_t startByte = util::parseLLInt(std::string(byteRangeSpec, minus));
-  off_t endByte = util::parseLLInt(std::string(minus+1, slash));
-  uint64_t entityLength = util::parseULLInt(std::string(slash+1, rangeStr.end()));
+  off_t startByte = util::parseLLInt(byteRangeSpec, minus);
+  off_t endByte = util::parseLLInt(minus+1, slash);
+  uint64_t entityLength = util::parseULLInt(slash+1, rangeStr.end());
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }
 

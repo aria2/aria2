@@ -96,7 +96,7 @@ bool ChunkedDecodingStreamFilter::readChunkSize
   if(extPos == std::string::npos || crlfPos < extPos) {
     extPos = crlfPos;
   }
-  chunkSize_ = util::parseULLInt(buf_.substr(0, extPos), 16);
+  chunkSize_ = util::parseULLInt(buf_.begin(), buf_.begin()+extPos, 16);
   assert(crlfPos+2 > pbufSize);
   inbufOffset += crlfPos+2-pbufSize;
   buf_.clear();

@@ -112,7 +112,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
     throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
   int32_t statusCode;
-  if(!util::parseIntNoThrow(statusCode, buf_.substr(9, 3))) {
+  if(!util::parseIntNoThrow(statusCode, buf_.begin()+9, buf_.begin()+12)) {
     throw DL_RETRY_EX("Status code could not be parsed as integer.");
   }
   HttpHeaderHandle httpHeader(new HttpHeader());

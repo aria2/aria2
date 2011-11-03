@@ -152,7 +152,7 @@ NumberOptionHandler::~NumberOptionHandler() {}
 
 void NumberOptionHandler::parseArg(Option& option, const std::string& optarg)
 {
-  int64_t num = util::parseLLInt(optarg);
+  int64_t num = util::parseLLInt(optarg.begin(), optarg.end());
   parseArg(option, num);
 }
 

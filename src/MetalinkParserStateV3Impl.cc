@@ -155,7 +155,8 @@ void FileMetalinkParserState::beginElement
         maxConnections = -1;
       } else {
         try {
-          maxConnections = util::parseInt((*itr).value);
+          maxConnections =
+            util::parseInt((*itr).value.begin(), (*itr).value.end());
         } catch(RecoverableException& e) {
           maxConnections = -1;
         }
@@ -185,7 +186,8 @@ void SizeMetalinkParserState::endElement
  const std::string& characters)
 {
   try {
-    stm->setFileLengthOfEntry(util::parseULLInt(characters));
+    stm->setFileLengthOfEntry
+      (util::parseULLInt(characters.begin(), characters.end()));
   } catch(RecoverableException& e) {
     // current metalink specification doesn't require size element.
   }
@@ -251,7 +253,7 @@ void VerificationMetalinkParserState::beginElement
         if(itr == attrs.end()) {
           return;
         } else {
-          length = util::parseInt((*itr).value);
+          length = util::parseInt((*itr).value.begin(), (*itr).value.end());
         }
       }
       std::string type;
@@ -317,7 +319,8 @@ void PiecesMetalinkParserState::beginElement
       stm->cancelChunkChecksumTransaction();
     } else {
       try {
-        stm->createNewHashOfChunkChecksum(util::parseInt((*itr).value));
+        stm->createNewHashOfChunkChecksum
+          (util::parseInt((*itr).value.begin(), (*itr).value.end()));
       } catch(RecoverableException& e) {
         stm->cancelChunkChecksumTransaction();
       }
@@ -396,7 +399,8 @@ void ResourcesMetalinkParserState::beginElement
           // In Metalink3Spec, highest prefernce value is 100.  We
           // uses Metalink4Spec priority unit system in which 1 is
           // higest.
-          preference = 101-util::parseInt((*itr).value);
+          preference =
+            101-util::parseInt((*itr).value.begin(), (*itr).value.end());
         } catch(RecoverableException& e) {
           preference = MetalinkResource::getLowestPriority();
         }
@@ -409,7 +413,8 @@ void ResourcesMetalinkParserState::beginElement
         maxConnections = -1;
       } else {
         try {
-          maxConnections = util::parseInt((*itr).value);
+          maxConnections =
+            util::parseInt((*itr).value.begin(), (*itr).value.end());
         } catch(RecoverableException& e) {
           maxConnections = -1;
         }

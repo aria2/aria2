@@ -171,20 +171,26 @@ bool ServerStatMan::load(const std::string& filename)
     }
     SharedHandle<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
     try {
-      sstat->setDownloadSpeed(util::parseUInt(m[S_DL_SPEED]));
+      const std::string& dlSpeed = m[S_DL_SPEED];
+      sstat->setDownloadSpeed(util::parseUInt(dlSpeed.begin(), dlSpeed.end()));
       // Old serverstat file doesn't contains SC_AVG_SPEED
       if(m.find(S_SC_AVG_SPEED) != m.end()) {
-        sstat->setSingleConnectionAvgSpeed(util::parseUInt(m[S_SC_AVG_SPEED]));
+        const std::string& s = m[S_SC_AVG_SPEED];
+        sstat->setSingleConnectionAvgSpeed(util::parseUInt(s.begin(), s.end()));
       }
       // Old serverstat file doesn't contains MC_AVG_SPEED
       if(m.find(S_MC_AVG_SPEED) != m.end()) {
-        sstat->setMultiConnectionAvgSpeed(util::parseUInt(m[S_MC_AVG_SPEED]));
+        const std::string& s = m[S_MC_AVG_SPEED];
+        sstat->setMultiConnectionAvgSpeed(util::parseUInt(s.begin(), s.end()));
       }
       // Old serverstat file doesn't contains COUNTER_SPEED
       if(m.find(S_COUNTER) != m.end()) {
-        sstat->setCounter(util::parseUInt(m[S_COUNTER]));
+        const std::string& s = m[S_COUNTER];
+        sstat->setCounter(util::parseUInt(s.begin(), s.end()));
       }
-      sstat->setLastUpdated(Time(util::parseInt(m[S_LAST_UPDATED])));
+      const std::string& lastUpdated = m[S_LAST_UPDATED];
+      sstat->setLastUpdated
+        (Time(util::parseInt(lastUpdated.begin(), lastUpdated.end())));
       sstat->setStatus(m[S_STATUS]);
       add(sstat);
     } catch(RecoverableException& e) {

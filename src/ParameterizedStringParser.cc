@@ -118,7 +118,7 @@ ParameterizedStringParser::createLoop(const std::string& src, int& offset)
   if(colonIndex != std::string::npos) {
     std::string stepStr = loopStr.substr(colonIndex+1);
     if(util::isNumber(stepStr)) {
-      step = util::parseUInt(stepStr);
+      step = util::parseUInt(loopStr.begin()+colonIndex+1, loopStr.end());
     } else {
       throw DL_ABORT_EX("A step count must be a positive number.");
     }
@@ -134,8 +134,8 @@ ParameterizedStringParser::createLoop(const std::string& src, int& offset)
   unsigned int end;
   if(util::isNumber(range.first) && util::isNumber(range.second)) {
     nd.reset(new FixedWidthNumberDecorator(range.first.size()));
-    start = util::parseUInt(range.first);
-    end = util::parseUInt(range.second);
+    start = util::parseUInt(range.first.begin(), range.first.end());
+    end = util::parseUInt(range.second.begin(), range.second.end());
   } else if(util::isLowercase(range.first) && util::isLowercase(range.second)) {
     nd.reset(new AlphaNumberDecorator(range.first.size()));
     start = util::alphaToNum(range.first);

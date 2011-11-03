@@ -30,7 +30,7 @@ void GZipEncoderTest::testEncode()
   inputs.push_back("Fox");
   
   encoder << inputs[0];
-  encoder << util::parseLLInt(inputs[1]);
+  encoder << util::parseLLInt(inputs[1].begin(), inputs[1].end());
   encoder << inputs[2].c_str();
 
   std::string gzippedData = encoder.str();

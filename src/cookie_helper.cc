@@ -117,9 +117,9 @@ bool parseDate
         goto NOT_TIME;
       }
       foundTime = true;
-      hour = util::parseInt(std::string((*i).begin(), hEnd));
-      minute = util::parseInt(std::string(hEnd+1, mEnd));
-      second = util::parseInt(std::string(mEnd+1, sEnd));
+      hour = util::parseInt((*i).begin(), hEnd);
+      minute = util::parseInt(hEnd+1, mEnd);
+      second = util::parseInt(mEnd+1, sEnd);
       continue;
     NOT_TIME:
       ;
@@ -129,7 +129,7 @@ bool parseDate
       size_t len = std::distance((*i).begin(), j);
       if(1 <= len && len <= 2) {
         foundDayOfMonth = true;
-        dayOfMonth = util::parseInt(std::string((*i).begin(), j));
+        dayOfMonth = util::parseInt((*i).begin(), j);
         continue;
       }
     }
@@ -154,7 +154,7 @@ bool parseDate
       size_t len = std::distance((*i).begin(), j);
       if(1 <= len && len <= 4) {
         foundYear = true;
-        year = util::parseInt(std::string((*i).begin(), j));
+        year = util::parseInt((*i).begin(), j);
         continue;
       }
     }
@@ -273,8 +273,7 @@ bool parse
         }
       }
       int64_t delta;
-      if(util::parseLLIntNoThrow(delta,
-                                 std::string(attrp.first, attrp.second))) {
+      if(util::parseLLIntNoThrow(delta, attrp.first, attrp.second)) {
         foundMaxAge = true;
         if(delta <= 0) {
           maxAge = 0;
