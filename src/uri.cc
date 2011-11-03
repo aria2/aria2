@@ -125,11 +125,11 @@ bool parse(UriStruct& result, const std::string& uri)
   for(; queryFirst != fragmentFirst; ++queryFirst) {
     if(*queryFirst == '?') break;
   }
-  result.query = std::string(queryFirst, fragmentFirst);
+  result.query.assign(queryFirst, fragmentFirst);
   // find protocol
   std::string::size_type protocolOffset = uri.find("://");
   if(protocolOffset == std::string::npos) return false;
-  result.protocol = std::string(uri.begin(), uri.begin()+protocolOffset);
+  result.protocol.assign(uri.begin(), uri.begin()+protocolOffset);
   uint16_t defPort;
   if((defPort = FeatureConfig::getInstance()->
       getDefaultPort(result.protocol)) == 0) {
@@ -221,9 +221,9 @@ bool parse(UriStruct& result, const std::string& uri)
     }
   }
   if(result.ipv6LiteralAddress) {
-    result.host = std::string(hostPortFirst+1, hostLast-1);
+    result.host.assign(hostPortFirst+1, hostLast-1);
   } else {
-    result.host = std::string(hostPortFirst, hostLast);
+    result.host.assign(hostPortFirst, hostLast);
   }
   // find directory and file part
   std::string::const_iterator dirLast = authorityLast;
@@ -236,7 +236,7 @@ bool parse(UriStruct& result, const std::string& uri)
   if(dirLast == queryFirst) {
     result.file = A2STR::NIL;
   } else {
-    result.file = std::string(dirLast+1, queryFirst);
+    result.file.assign(dirLast+1, queryFirst);
   }
   // Erase duplicated slashes.
   std::string::const_iterator dirFirst = authorityLast;
@@ -255,7 +255,7 @@ bool parse(UriStruct& result, const std::string& uri)
   if(dirFirst == dirLast) {
     result.dir = A2STR::SLASH_C;
   } else {
-    result.dir = std::string(dirFirst, dirLast);
+    result.dir.assign(dirFirst, dirLast);
   }
   return true;
 }
