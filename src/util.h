@@ -110,8 +110,22 @@ std::string nativeToUtf8(const std::string& src);
 
 namespace util {
 
+template<typename InputIterator>
 void divide
-(std::pair<std::string, std::string>& hp, const std::string& src, char delim);
+(std::pair<Scip, Scip>& hp,
+ InputIterator first,
+ InputIterator last,
+ char delim)
+{
+  InputIterator dpos = std::find(first, last, delim);
+  if(dpos == last) {
+    hp.first = stripIter(first, last);
+    hp.second.first = hp.second.second;
+  } else {
+    hp.first = stripIter(first, dpos);
+    hp.second = stripIter(dpos+1, last);
+  }
+}
 
 template<typename T>
 std::string uitos(T value, bool comma = false)

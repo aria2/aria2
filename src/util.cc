@@ -191,24 +191,6 @@ std::string strip(const std::string& str, const std::string& chars)
   return std::string(p.first, p.second);
 }
 
-void divide
-(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
-{
-  std::string::const_iterator first = src.begin();
-  std::string::const_iterator last = src.end();
-  std::string::const_iterator dpos = std::find(first, last, delim);
-  if(dpos == last) {
-    hp.first = strip(src);
-    hp.second = A2STR::NIL;
-  } else {
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> p = stripIter(first, dpos);
-    hp.first.assign(p.first, p.second);
-    p = stripIter(dpos+1, last);
-    hp.second.assign(p.first, p.second);
-  }
-}
-
 std::string itos(int64_t value, bool comma)
 {
   bool flag = false;
@@ -820,11 +802,9 @@ std::string getContentDispositionFilename(const std::string& header)
       if(markeritr == param.end() || *markeritr != '=') {
         continue;
       }
-      std::pair<std::string, std::string> paramPair;
-      divide(paramPair, param, '=');
-      std::string value = paramPair.second;
+      std::string value(markeritr+1, param.end());
       std::vector<std::string> extValues;
-      split(value, std::back_inserter(extValues), "'", false, true);
+      split(value, std::back_inserter(extValues), "'", true, true);
       if(extValues.size() != 3) {
         continue;
       }
@@ -877,17 +857,17 @@ std::string getContentDispositionFilename(const std::string& header)
       }
     } else {
       for(; markeritr != param.end() && *markeritr == ' '; ++markeritr);
-      if(markeritr == param.end() || *markeritr != '=') {
+      if(markeritr == param.end() || markeritr+1 == param.end() ||
+         *markeritr != '=') {
         continue;
       }
-      std::pair<std::string, std::string> paramPair;
-      divide(paramPair, param, '=');
-      std::string value = paramPair.second;
-      if(value.empty()) {
+      Scip p = stripIter(markeritr+1, param.end());
+      if(p.first == p.second) {
         continue;
       }
+      std::string value(p.first, p.second);
       std::string::iterator filenameLast;
-      if(*value.begin() == '\'' || *value.begin() == '"') {
+      if(value[0] == '\'' || value[0] == '"') {
         char qc = *value.begin();
         for(filenameLast = value.begin()+1;
             filenameLast != value.end() && *filenameLast != qc;
@@ -1248,14 +1228,14 @@ std::string htmlEscape(const std::string& src)
 std::pair<size_t, std::string>
 parseIndexPath(const std::string& line)
 {
-  std::pair<std::string, std::string> p;
-  divide(p, line, '=');
-  size_t index = parseUInt(p.first.begin(), p.first.end());
-  if(p.second.empty()) {
+  std::pair<Scip, Scip> p;
+  divide(p, line.begin(), line.end(), '=');
+  size_t index = parseUInt(p.first.first, p.first.second);
+  if(p.second.first == p.second.second) {
     throw DL_ABORT_EX(fmt("Path with index=%u is empty.",
                           static_cast<unsigned int>(index)));
   }
-  return std::make_pair(index, p.second);
+  return std::make_pair(index, std::string(p.second.first, p.second.second));
 }
 
 std::vector<std::pair<size_t, std::string> > createIndexPaths(std::istream& i)

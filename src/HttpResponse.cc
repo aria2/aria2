@@ -249,9 +249,10 @@ std::string HttpResponse::getContentType() const
   if(!httpHeader_) {
     return A2STR::NIL;
   } else {
-    std::pair<std::string, std::string> p;
-    util::divide(p, httpHeader_->getFirst(HttpHeader::CONTENT_TYPE), ';');
-    return p.first;
+    const std::string& ctype = httpHeader_->getFirst(HttpHeader::CONTENT_TYPE);
+    std::string::const_iterator i = std::find(ctype.begin(), ctype.end(), ';');
+    Scip p = util::stripIter(ctype.begin(), i);
+    return std::string(p.first, p.second);
   }
 }
 

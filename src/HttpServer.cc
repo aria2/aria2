@@ -203,19 +203,26 @@ bool HttpServer::authenticate()
     return true;
   }
 
-  std::string authHeader = lastRequestHeader_->getFirst("Authorization");
+  const std::string& authHeader = lastRequestHeader_->getFirst("Authorization");
   if(authHeader.empty()) {
     return false;
   }
-  std::pair<std::string, std::string> p;
-  util::divide(p, authHeader, ' ');
-  if(p.first != "Basic") {
+  std::pair<Scip, Scip> p;
+  util::divide(p, authHeader.begin(), authHeader.end(), ' ');
+  const char authMethod[] = "Basic";
+  if(!std::distance(p.first.first, p.first.second) == sizeof(authMethod) ||
+     !std::equal(p.first.first, p.first.second, &authMethod[0])) {
     return false;
   }
-  std::string userpass = Base64::decode(p.second);
-  std::pair<std::string, std::string> userpassPair;
-  util::divide(userpassPair, userpass, ':');
-  return username_ == userpassPair.first && password_ == userpassPair.second;
+  std::string userpass = Base64::decode(std::string(p.second.first,
+                                                    p.second.second));
+  util::divide(p, userpass.begin(), userpass.end(), ':');
+  return username_.size() ==
+    static_cast<size_t>(std::distance(p.first.first, p.first.second)) &&
+    std::equal(username_.begin(), username_.end(), p.first.first) &&
+    password_.size() ==
+    static_cast<size_t>(std::distance(p.second.first, p.second.second)) &&
+    std::equal(password_.begin(), password_.end(), p.second.first);
 }
 
 void HttpServer::setUsernamePassword

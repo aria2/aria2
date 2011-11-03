@@ -35,6 +35,7 @@
 #include "ExpatMetalinkProcessor.h"
 
 #include <cstdio>
+#include <cstring>
 
 #include "DefaultDiskWriter.h"
 #include "MetalinkParserStateMachine.h"
@@ -63,17 +64,18 @@ public:
 } // namespace
 
 namespace {
+template<typename InputIterator>
 void splitNsName
 (std::string& localname, std::string& prefix, std::string& nsUri,
- const std::string& nsName)
+ InputIterator first, InputIterator last)
 {
-  std::pair<std::string, std::string> nsNamePair;
-  util::divide(nsNamePair, nsName, '\t');
-  if(nsNamePair.second.empty()) {
-    localname = nsNamePair.first;
+  std::pair<Scip, Scip> nsNamePair;
+  util::divide(nsNamePair, first, last, '\t');
+  if(nsNamePair.second.first == nsNamePair.second.second) {
+    localname.assign(nsNamePair.first.first, nsNamePair.first.second);
   } else {
-    nsUri = nsNamePair.first;
-    localname = nsNamePair.second;
+    nsUri.assign(nsNamePair.first.first, nsNamePair.first.second);
+    localname.assign(nsNamePair.second.first, nsNamePair.second.second);
   }
 }
 } // namespace
@@ -87,29 +89,22 @@ void mlStartElement(void* userData, const char* nsName, const char** attrs)
   if(attrs) {
     const char** p = attrs;
     while(*p != 0) {
-      std::string attrNsName = *p++;
+      const char* attrNsName = *p++;
       if(*p == 0) {
         break;
       }
-      std::string value = *p++;
-      std::pair<std::string, std::string> nsNamePair;
-      util::divide(nsNamePair, attrNsName, '\t');
       XmlAttr xa;
-      if(nsNamePair.second.empty()) {
-        xa.localname = nsNamePair.first;
-      } else {
-        xa.nsUri = nsNamePair.first;
-        xa.localname = nsNamePair.second;
-      }
-      xa.value = value;
+      splitNsName(xa.localname, xa.prefix, xa.nsUri,
+                  attrNsName, attrNsName+strlen(attrNsName));
+      const char* value = *p++;
+      xa.value.assign(value, value+strlen(value));
       xmlAttrs.push_back(xa);
     }
   }
   std::string localname;
   std::string prefix;
   std::string nsUri;
-  splitNsName(localname, prefix, nsUri, nsName);
-  
+  splitNsName(localname, prefix, nsUri, nsName, nsName+strlen(nsName));
   sd->stm_->beginElement(localname, prefix, nsUri, xmlAttrs);
   if(sd->stm_->needsCharactersBuffering()) {
     sd->charactersStack_.push_front(A2STR::NIL);
@@ -123,7 +118,7 @@ void mlEndElement(void* userData, const char* nsName)
   std::string localname;
   std::string prefix;
   std::string nsUri;
-  splitNsName(localname, prefix, nsUri, nsName);
+  splitNsName(localname, prefix, nsUri, nsName, nsName+strlen(nsName));
 
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;

@@ -1126,11 +1126,14 @@ void changeOption
   const SharedHandle<Option>& grOption = group->getOption();
   grOption->merge(option);
   if(option.defined(PREF_CHECKSUM)) {
-    std::pair<std::string, std::string> p;
-    util::divide(p, grOption->get(PREF_CHECKSUM), '=');
-    util::lowercase(p.first);
-    util::lowercase(p.second);
-    dctx->setDigest(p.first, util::fromHex(p.second));
+    const std::string& checksum = grOption->get(PREF_CHECKSUM);
+    std::pair<Scip, Scip> p;
+    util::divide(p, checksum.begin(), checksum.end(), '=');
+    std::string hashType(p.first.first, p.first.second);
+    std::string hexDigest(p.second.first, p.second.second);
+    util::lowercase(hashType);
+    util::lowercase(hexDigest);
+    dctx->setDigest(hashType, util::fromHex(hexDigest));
   }
   if(option.defined(PREF_SELECT_FILE)) {
     SegList<int> sgl;

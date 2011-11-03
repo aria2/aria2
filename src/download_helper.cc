@@ -129,11 +129,13 @@ SharedHandle<RequestGroup> createRequestGroup
 #ifdef ENABLE_MESSAGE_DIGEST
   const std::string& checksum = option->get(PREF_CHECKSUM);
   if(!checksum.empty()) {
-    std::pair<std::string, std::string> p;
-    util::divide(p, checksum, '=');
-    util::lowercase(p.first);
-    util::lowercase(p.second);
-    dctx->setDigest(p.first, util::fromHex(p.second));
+    std::pair<Scip, Scip> p;
+    util::divide(p, checksum.begin(), checksum.end(), '=');
+    std::string hashType(p.first.first, p.first.second);
+    std::string hexDigest(p.second.first, p.second.second);
+    util::lowercase(hashType);
+    util::lowercase(hexDigest);
+    dctx->setDigest(hashType, hexDigest);
   }
 #endif // ENABLE_MESSAGE_DIGEST
   rg->setDownloadContext(dctx);

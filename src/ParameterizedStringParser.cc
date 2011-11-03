@@ -124,26 +124,29 @@ ParameterizedStringParser::createLoop(const std::string& src, int& offset)
     }
     loopStr.erase(colonIndex);
   }
-  std::pair<std::string, std::string> range;
-  util::divide(range, loopStr, '-');
-  if(range.first.empty() || range.second.empty()) {
+  std::pair<Scip, Scip> range;
+  util::divide(range, loopStr.begin(), loopStr.end(), '-');
+  if(range.first.first == range.first.second ||
+     range.second.first == range.second.second) {
     throw DL_ABORT_EX("Loop range missing.");
   }
   SharedHandle<NumberDecorator> nd;
   unsigned int start;
   unsigned int end;
-  if(util::isNumber(range.first) && util::isNumber(range.second)) {
-    nd.reset(new FixedWidthNumberDecorator(range.first.size()));
-    start = util::parseUInt(range.first.begin(), range.first.end());
-    end = util::parseUInt(range.second.begin(), range.second.end());
-  } else if(util::isLowercase(range.first) && util::isLowercase(range.second)) {
-    nd.reset(new AlphaNumberDecorator(range.first.size()));
-    start = util::alphaToNum(range.first);
-    end = util::alphaToNum(range.second);
-  } else if(util::isUppercase(range.first) && util::isUppercase(range.second)) {
-    nd.reset(new AlphaNumberDecorator(range.first.size(), true));
-    start = util::alphaToNum(range.first);
-    end = util::alphaToNum(range.second);
+  std::string rstart(range.first.first, range.first.second);
+  std::string rend(range.second.first, range.second.second);
+  if(util::isNumber(rstart) && util::isNumber(rend)) {
+    nd.reset(new FixedWidthNumberDecorator(rstart.size()));
+    start = util::parseUInt(rstart.begin(), rstart.end());
+    end = util::parseUInt(rend.begin(), rend.end());
+  } else if(util::isLowercase(rstart) && util::isLowercase(rend)) {
+    nd.reset(new AlphaNumberDecorator(rstart.size()));
+    start = util::alphaToNum(rstart);
+    end = util::alphaToNum(rend);
+  } else if(util::isUppercase(rstart) && util::isUppercase(rend)) {
+    nd.reset(new AlphaNumberDecorator(rstart.size(), true));
+    start = util::alphaToNum(rstart);
+    end = util::alphaToNum(rend);
   } else {
     throw DL_ABORT_EX("Invalid loop range.");
   }

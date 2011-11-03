@@ -365,11 +365,13 @@ ChecksumOptionHandler::~ChecksumOptionHandler() {}
 
 void ChecksumOptionHandler::parseArg(Option& option, const std::string& optarg)
 {
-  std::pair<std::string, std::string> p;
-  util::divide(p, optarg, '=');
-  util::lowercase(p.first);
-  util::lowercase(p.second);
-  if(!MessageDigest::isValidHash(p.first, p.second)) {
+  std::pair<Scip, Scip> p;
+  util::divide(p, optarg.begin(), optarg.end(), '=');
+  std::string hashType(p.first.first, p.first.second);
+  std::string hexDigest(p.second.first, p.second.second);
+  util::lowercase(hashType);
+  util::lowercase(hexDigest);
+  if(!MessageDigest::isValidHash(hashType, hexDigest)) {
     throw DL_ABORT_EX(_("Unrecognized checksum"));
   }
   option.put(pref_, optarg);

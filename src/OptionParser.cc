@@ -184,14 +184,15 @@ void OptionParser::parse(Option& option, std::istream& is) const
     if(util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
-    std::pair<std::string, std::string> nv;
-    util::divide(nv, line, '=');
-    if(nv.first.empty()) {
+    std::pair<Scip, Scip> nv;
+    util::divide(nv, line.begin(), line.end(), '=');
+    if(nv.first.first == nv.first.second) {
       continue;
     }
-    const SharedHandle<OptionHandler>& handler = find(option::k2p(nv.first));
+    const SharedHandle<OptionHandler>& handler =
+      find(option::k2p(std::string(nv.first.first, nv.first.second)));
     if(handler) {
-      handler->parse(option, nv.second);
+      handler->parse(option, std::string(nv.second.first, nv.second.second));
     }
   }
 }

@@ -212,22 +212,37 @@ void UtilTest::testStripIter()
 }
 
 void UtilTest::testDivide() {
-  std::pair<std::string, std::string> p1;
-  util::divide(p1, "name=value", '=');
-  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
-  util::divide(p1, " name = value ", '=');
-  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
-  util::divide(p1, "=value", '=');
-  CPPUNIT_ASSERT_EQUAL(std::string(""), p1.first);
-  CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
-  util::divide(p1, "name=", '=');
-  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), p1.second);
-  util::divide(p1, "name", '=');
-  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), p1.second);
+  std::pair<Scip, Scip> p1;
+  std::string s = "name=value";
+  util::divide(p1, s.begin(), s.end(), '=');
+  CPPUNIT_ASSERT_EQUAL(std::string("name"),
+                       std::string(p1.first.first, p1.first.second));
+  CPPUNIT_ASSERT_EQUAL(std::string("value"),
+                       std::string(p1.second.first, p1.second.second));
+  s = " name = value ";
+  util::divide(p1, s.begin(), s.end(), '=');
+  CPPUNIT_ASSERT_EQUAL(std::string("name"),
+                       std::string(p1.first.first, p1.first.second));
+  CPPUNIT_ASSERT_EQUAL(std::string("value"),
+                       std::string(p1.second.first, p1.second.second));
+  s = "=value";
+  util::divide(p1, s.begin(), s.end(), '=');
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       std::string(p1.first.first, p1.first.second));
+  CPPUNIT_ASSERT_EQUAL(std::string("value"),
+                       std::string(p1.second.first, p1.second.second));
+  s = "name=";
+  util::divide(p1, s.begin(), s.end(), '=');
+  CPPUNIT_ASSERT_EQUAL(std::string("name"),
+                       std::string(p1.first.first, p1.first.second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       std::string(p1.second.first, p1.second.second));
+  s = "name";
+  util::divide(p1, s.begin(), s.end(), '=');
+  CPPUNIT_ASSERT_EQUAL(std::string("name"),
+                       std::string(p1.first.first, p1.first.second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
+                       std::string(p1.second.first, p1.second.second));
 }
 
 void UtilTest::testSplit() {
@@ -406,6 +421,10 @@ void UtilTest::testGetContentDispositionFilename() {
 
   std::string h3 = "attachment; filename=\"";
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h3));
+
+  std::string h3_2 = "attachment; filename= \" aria2.tar.bz2 \"";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"),
+                       util::getContentDispositionFilename(h3_2));
 
   std::string h4 = "attachment;";
   CPPUNIT_ASSERT_EQUAL(std::string(""), util::getContentDispositionFilename(h4));
