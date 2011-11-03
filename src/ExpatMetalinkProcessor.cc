@@ -140,7 +140,7 @@ void mlCharacters(void* userData, const char* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   if(sd->stm_->needsCharactersBuffering()) {
-    sd->charactersStack_.front() += std::string(&ch[0], &ch[len]);
+    sd->charactersStack_.front().append(&ch[0], &ch[len]);
   }
 }
 } // namespace

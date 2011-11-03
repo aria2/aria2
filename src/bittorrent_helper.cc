@@ -663,7 +663,7 @@ std::string generatePeerId(const std::string& peerIdPrefix)
   int len = 20-peerIdPrefix.size();
   if(len > 0) {
     util::generateRandomData(buf, len);
-    peerId += std::string(&buf[0], &buf[len]);
+    peerId.append(&buf[0], &buf[len]);
   } if(peerId.size() > 20) {
     peerId.erase(20);
   }

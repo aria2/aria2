@@ -332,7 +332,7 @@ std::string joinUri(const std::string& baseUri, const std::string& uri)
        !util::endsWith(res, "/")) {
       res += "/";
     }
-    res += std::string(end, qend);
+    res.append(end, qend);
     return res;
   }
 }

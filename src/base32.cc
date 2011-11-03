@@ -63,7 +63,7 @@ std::string encode(const std::string& src)
         temp[7-j] = B32TABLE[buf&0x1fu];
         buf >>= 5;
       }
-      ret += std::string(&temp[0], &temp[8]);
+      ret.append(&temp[0], &temp[8]);
       count = 0;
       buf = 0;      
     }
@@ -87,9 +87,9 @@ std::string encode(const std::string& src)
     temp[r-1-j] = B32TABLE[buf&0x1fu];
     buf >>= 5;
   }
-  ret += std::string(&temp[0], &temp[r]);
+  ret.append(&temp[0], &temp[r]);
   if(r) {
-    ret += std::string(8-r, '=');
+    ret.append(8-r, '=');
   }
   return ret;
 }
@@ -126,7 +126,7 @@ std::string decode(const std::string& src)
     bits = bits/8*8;
     buf = hton64(buf);
     char* p = reinterpret_cast<char*>(&buf);
-    ret += std::string(&p[(64-bits)/8], &p[8]);
+    ret.append(&p[(64-bits)/8], &p[8]);
   }
   return ret;
 }

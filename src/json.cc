@@ -156,7 +156,7 @@ decodeString
       break;
     }
     if(*first == '\\') {
-      s += std::string(offset, first);
+      s.append(offset, first);
       ++first;
       checkEof(first, last);
       if(*first == 'u') {
@@ -235,7 +235,7 @@ decodeString
   }
   checkEof(first, last);
   if(std::distance(offset, first) > 0) {
-    s += std::string(offset, first);
+    s.append(offset, first);
   }
   if(!util::isUtf8(s)) {
     throw DL_ABORT_EX2("JSON decoding failed: Non UTF-8 string.",
