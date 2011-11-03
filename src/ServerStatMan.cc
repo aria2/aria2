@@ -148,10 +148,13 @@ bool ServerStatMan::load(const std::string& filename)
         return false;
       }
     }
-    std::string line = util::stripIter(&buf[0], &buf[strlen(buf)]);
-    if(line.empty()) {
+    std::pair<std::string::const_iterator,
+              std::string::const_iterator> p =
+      util::stripIter(&buf[0], &buf[strlen(buf)]);
+    if(p.first == p.second) {
       continue;
     }
+    std::string line(p.first, p.second);
     std::vector<std::string> items;
     util::split(line, std::back_inserter(items), ",");
     std::map<std::string, std::string> m;

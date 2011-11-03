@@ -47,7 +47,10 @@ class Cookie;
 
 namespace cookie {
 
-bool parseDate(time_t& time, const std::string& cookieDate);
+bool parseDate
+(time_t& time,
+ std::string::const_iterator first,
+ std::string::const_iterator last);
 
 bool parse
 (Cookie& cookie,
@@ -58,7 +61,9 @@ bool parse
 
 std::string removePrecedingDots(const std::string& host);
 
-bool goodPath(const std::string& cookiePath);
+bool goodPath
+(std::string::const_iterator first,
+ std::string::const_iterator last);
 
 std::string canonicalizeHost(const std::string& host);
 

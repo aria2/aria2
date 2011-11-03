@@ -309,11 +309,12 @@ bool parseMetalinkHttpLink(MetalinkHttpEntry& result, const std::string& s)
   if(last == s.end()) {
     return false;
   }
-  std::string uri = util::stripIter(first+1, last);
-  if(uri.empty()) {
+  std::pair<std::string::const_iterator,
+            std::string::const_iterator> p = util::stripIter(first+1, last);
+  if(p.first == p.second) {
     return false;
   } else {
-    result.uri = uri;
+    result.uri.assign(p.first, p.second);
   }
   last = std::find(last, s.end(), ';');
   if(last != s.end()) {

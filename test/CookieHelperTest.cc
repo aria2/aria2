@@ -34,25 +34,33 @@ void CookieHelperTest::testParseDate()
 {
   // RFC1123
   time_t time = 0;
-  CPPUNIT_ASSERT(cookie::parseDate(time, "Sat, 06 Sep 2008 15:26:33 GMT"));
+  std::string s = "Sat, 06 Sep 2008 15:26:33 GMT";
+  CPPUNIT_ASSERT(cookie::parseDate(time, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793, time);
   // RFC850
-  CPPUNIT_ASSERT(cookie::parseDate(time, "Saturday, 06-Sep-08 15:26:33 GMT"));
+  s = "Saturday, 06-Sep-08 15:26:33 GMT";
+  CPPUNIT_ASSERT(cookie::parseDate(time, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793, time);
   // ANSI C's asctime()
-  CPPUNIT_ASSERT(cookie::parseDate(time, "Sun Sep  6 15:26:33 2008"));
+  s = "Sun Sep  6 15:26:33 2008";
+  CPPUNIT_ASSERT(cookie::parseDate(time, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((time_t)1220714793, time);
-
-  CPPUNIT_ASSERT(cookie::parseDate(time, "Thu Jan 1 0:0:0 1970"));
+  s = "Thu Jan 1 0:0:0 1970";
+  CPPUNIT_ASSERT(cookie::parseDate(time, s.begin(), s.end()));
   CPPUNIT_ASSERT_EQUAL((time_t)0, time);
 
-  CPPUNIT_ASSERT(!cookie::parseDate(time, "Thu Jan 1 1970 0:")); 
-  CPPUNIT_ASSERT(!cookie::parseDate(time, "Thu Jan 1 1970 0:0")); 
-  CPPUNIT_ASSERT(!cookie::parseDate(time, "Thu Jan 1 1970 0:0:")); 
+  s = "Thu Jan 1 1970 0:";
+  CPPUNIT_ASSERT(!cookie::parseDate(time, s.begin(), s.end()));
+  s = "Thu Jan 1 1970 0:0";
+  CPPUNIT_ASSERT(!cookie::parseDate(time, s.begin(), s.end()));
+  s = "Thu Jan 1 1970 0:0:";
+  CPPUNIT_ASSERT(!cookie::parseDate(time, s.begin(), s.end()));
 
   // Leap year
-  CPPUNIT_ASSERT(cookie::parseDate(time, "Tue, 29 Feb 2000 00:00:00 GMT"));
-  CPPUNIT_ASSERT(!cookie::parseDate(time, "Thu, 29 Feb 2001 00:00:00 GMT"));
+  s = "Tue, 29 Feb 2000 00:00:00 GMT";
+  CPPUNIT_ASSERT(cookie::parseDate(time, s.begin(), s.end()));
+  s = "Thu, 29 Feb 2001 00:00:00 GMT";
+  CPPUNIT_ASSERT(!cookie::parseDate(time, s.begin(), s.end()));
 }
 
 void CookieHelperTest::testDomainMatch()

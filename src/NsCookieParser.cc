@@ -66,7 +66,8 @@ bool parseNsCookie
     return false;
   }
   std::string cookieDomain = cookie::removePrecedingDots(vs[0]);
-  if(vs[5].empty() || cookieDomain.empty() || !cookie::goodPath(vs[2])) {
+  if(vs[5].empty() || cookieDomain.empty() ||
+     !cookie::goodPath(vs[2].begin(), vs[2].end())) {
     return false;
   }
   int64_t expiryTime;

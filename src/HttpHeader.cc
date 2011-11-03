@@ -198,24 +198,6 @@ void HttpHeader::setRequestPath(const std::string& requestPath)
   requestPath_ = requestPath;
 }
 
-namespace {
-template<typename InputIterator>
-std::pair<InputIterator, InputIterator> stripIter2
-(InputIterator first, InputIterator last,
- const std::string& chars = "\r\n \t")
-{
-  for(; first != last &&
-        std::find(chars.begin(), chars.end(), *first) != chars.end(); ++first);
-  if(first == last) {
-    return std::make_pair(first, last);
-  }
-  InputIterator left = last-1;
-  for(; left != first &&
-        std::find(chars.begin(), chars.end(), *left) != chars.end(); --left);
-  return std::make_pair(first, left+1);
-}
-} // namespace
-
 void HttpHeader::fill
 (std::string::const_iterator first,
  std::string::const_iterator last)
@@ -233,7 +215,7 @@ void HttpHeader::fill
         // multiline header?
         if(*first == ' ' || *first == '\t') {
           std::pair<std::string::const_iterator,
-                    std::string::const_iterator> p = stripIter2(first, j);
+                    std::string::const_iterator> p = util::stripIter(first, j);
           if(!name.empty() && p.first != p.second) {
             if(!value.empty()) {
               value += ' ';
@@ -246,9 +228,9 @@ void HttpHeader::fill
           put(name, value);
         }
         std::pair<std::string::const_iterator,
-                  std::string::const_iterator> p = stripIter2(first, sep);
+                  std::string::const_iterator> p = util::stripIter(first, sep);
         name.assign(p.first, p.second);
-        p = stripIter2(sep+1, j);
+        p = util::stripIter(sep+1, j);
         value.assign(p.first, p.second);
       }
     }

@@ -65,13 +65,16 @@ std::string::const_iterator getNextDigit
 }
 } // namespace
 
-bool parseDate(time_t& time, const std::string& cookieDate)
+bool parseDate
+(time_t& time,
+ std::string::const_iterator first,
+ std::string::const_iterator last)
 {
   // Following algorithm is described in
   // http://tools.ietf.org/html/rfc6265#section-5.1.1
   std::vector<std::string> dateTokens;
-  for(std::string::const_iterator i = cookieDate.begin(),
-        eoi = cookieDate.end(); i != eoi;) {
+  for(std::string::const_iterator i = first,
+        eoi = last; i != eoi;) {
     unsigned char c = *i;
     if(isDelimiter(c)) {
       ++i;
@@ -210,12 +213,16 @@ bool parse
   if(eq == nvEnd) {
     return false;
   }
-  std::string cookieName = util::stripIter(cookieStr.begin(), eq);
-  if(cookieName.empty()) {
+  std::pair<std::string::const_iterator,
+            std::string::const_iterator> p =
+    util::stripIter(cookieStr.begin(), eq);
+  if(p.first == p.second) {
     return false;
   }
-  std::string cookieValue = util::stripIter(eq+1, nvEnd);
-  cookieValue = util::strip(cookieValue, "\"");
+  std::string cookieName(p.first, p.second);
+  p = util::stripIter(eq+1, nvEnd);
+  p = util::stripIter(p.first, p.second, "\"");
+  std::string cookieValue(p.first, p.second);
   time_t expiryTime = 0;
   bool foundExpires = false;
   bool persistent = false;
@@ -233,36 +240,41 @@ bool parse
   for(std::string::const_iterator i = nvEnd; i != end;) {
     std::string::const_iterator j = std::find(i, end, ';');
     std::string::const_iterator eq = std::find(i, j, '=');
-    std::string attrName = util::stripIter(i, eq);
+    p = util::stripIter(i, eq);
+    std::string attrName(p.first, p.second);
     util::lowercase(attrName);
-    std::string attrValue;
-    if(eq != j) {
-      attrValue = util::stripIter(eq+1, j);
+    std::pair<std::string::const_iterator,
+              std::string::const_iterator> attrp;
+    if(eq == j) {
+      attrp.first = attrp.second = j;
+    } else {
+      attrp = util::stripIter(eq+1, j);
     }
     i = j;
     if(j != end) {
       ++i;
     }
     if(attrName == "expires") {
-      if(parseDate(expiryTime, attrValue)) {
+      if(parseDate(expiryTime, attrp.first, attrp.second)) {
         foundExpires = true;
       } else {
         return false;
       }
     } else if(attrName == "max-age") {
-      if(attrValue.empty() ||
-         (!in(static_cast<unsigned char>(attrValue[0]), 0x30u, 0x39u) &&
-          attrValue[0] != '-')) {
+      if(attrp.first == attrp.second ||
+         (!in(static_cast<unsigned char>(*attrp.first), 0x30u, 0x39u) &&
+          *attrp.first != '-')) {
         return false;
       }
-      for(std::string::const_iterator s = attrValue.begin()+1,
-            eos = attrValue.end(); s != eos; ++s) {
+      for(std::string::const_iterator s = attrp.first+1,
+            eos = attrp.second; s != eos; ++s) {
         if(!in(static_cast<unsigned char>(*s), 0x30u, 0x39u)) {
           return false;
         }
       }
       int64_t delta;
-      if(util::parseLLIntNoThrow(delta, attrValue)) {
+      if(util::parseLLIntNoThrow(delta,
+                                 std::string(attrp.first, attrp.second))) {
         foundMaxAge = true;
         if(delta <= 0) {
           maxAge = 0;
@@ -279,19 +291,19 @@ bool parse
         return false;
       }
     } else if(attrName == "domain") {
-      if(attrValue.empty()) {
+      if(attrp.first == attrp.second) {
         return false;
       }
-      std::string::const_iterator noDot = attrValue.begin();
-      std::string::const_iterator end = attrValue.end();
+      std::string::const_iterator noDot = attrp.first;
+      std::string::const_iterator end = attrp.second;
       for(; noDot != end && *noDot == '.'; ++noDot);
       if(noDot == end) {
         return false;
       }
       cookieDomain = std::string(noDot, end);
     } else if(attrName == "path") {
-      if(goodPath(attrValue)) {
-        cookiePath = attrValue;
+      if(goodPath(attrp.first, attrp.second)) {
+        cookiePath.assign(attrp.first, attrp.second);
       } else {
         cookiePath = defaultPath;
       }
@@ -349,9 +361,11 @@ std::string removePrecedingDots(const std::string& host)
   return std::string(noDot, end);
 }
 
-bool goodPath(const std::string& cookiePath)
+bool goodPath
+(std::string::const_iterator first,
+ std::string::const_iterator last)
 {
-  return !cookiePath.empty() && cookiePath[0] == '/';
+  return first != last && *first == '/';
 }
 
 std::string canonicalizeHost(const std::string& host)

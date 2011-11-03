@@ -108,7 +108,7 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
   std::string cookieName = toString(values[4]);
   std::string cookiePath = toString(values[1]);
   if(cookieName.empty() || cookieDomain.empty() ||
-     !cookie::goodPath(cookiePath)) {
+     !cookie::goodPath(cookiePath.begin(), cookiePath.end())) {
     return 0;
   }
   int64_t expiryTime;

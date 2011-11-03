@@ -190,7 +190,10 @@ const std::string DEFAULT_STRIP_CHARSET("\r\n\t ");
 
 std::string strip(const std::string& str, const std::string& chars)
 {
-  return stripIter(str.begin(), str.end(), chars);
+  std::pair<std::string::const_iterator,
+            std::string::const_iterator> p =
+    stripIter(str.begin(), str.end(), chars);
+  return std::string(p.first, p.second);
 }
 
 void divide
@@ -203,8 +206,11 @@ void divide
     hp.first = strip(src);
     hp.second = A2STR::NIL;
   } else {
-    hp.first = stripIter(first, dpos);
-    hp.second = stripIter(dpos+1, last);
+    std::pair<std::string::const_iterator,
+              std::string::const_iterator> p = stripIter(first, dpos);
+    hp.first.assign(p.first, p.second);
+    p = stripIter(dpos+1, last);
+    hp.second.assign(p.first, p.second);
   }
 }
 

@@ -142,22 +142,19 @@ int32_t difftvsec(struct timeval tv1, struct timeval tv2);
 extern const std::string DEFAULT_STRIP_CHARSET;
 
 template<typename InputIterator>
-std::string stripIter
+std::pair<InputIterator, InputIterator> stripIter
 (InputIterator first, InputIterator last,
  const std::string& chars = DEFAULT_STRIP_CHARSET)
 {
-  if(std::distance(first, last) == 0) {
-    return A2STR::NIL;
-  }
   for(; first != last &&
         std::find(chars.begin(), chars.end(), *first) != chars.end(); ++first);
   if(first == last) {
-    return A2STR::NIL;
+    return std::make_pair(first, last);
   }
   InputIterator left = last-1;
   for(; left != first &&
         std::find(chars.begin(), chars.end(), *left) != chars.end(); --left);
-  return std::string(first, left+1);
+  return std::make_pair(first, left+1);
 }
 
 std::string strip
@@ -367,9 +364,13 @@ OutputIterator split(const std::string& src, OutputIterator out,
     std::string::const_iterator j = i;
     for(; j != last &&
           std::find(delims.begin(), delims.end(), *j) == delims.end(); ++j);
-    std::string t = doStrip?util::stripIter(i, j):std::string(i, j);
-    if(allowEmpty || !t.empty()) {
-      *out++ = t;
+    std::pair<std::string::const_iterator,
+              std::string::const_iterator> p(i, j);
+    if(doStrip) {
+      p = stripIter(i, j);
+    }
+    if(allowEmpty || p.first != p.second) {
+      *out++ = std::string(p.first, p.second);
     }
     i = j;
     if(j != last) {
@@ -489,24 +490,27 @@ nextParam
         parmnameLast = last;
       }
     }
-    std::string tname, tvalue;
+    std::pair<std::string::const_iterator,
+              std::string::const_iterator> namep;
+    std::pair<std::string::const_iterator,
+              std::string::const_iterator> valuep;
     if(parmnameFirst == parmnameLast) {
       if(!eqFound) {
         parmnameFirst = first;
         parmnameLast = last;
-        tname = util::stripIter(parmnameFirst, parmnameLast);
+        namep = stripIter(parmnameFirst, parmnameLast);
       }
     } else {
       first = parmnameLast+1;
-      tname = util::stripIter(parmnameFirst, parmnameLast);
-      tvalue = util::stripIter(first, last);
+      namep = stripIter(parmnameFirst, parmnameLast);
+      valuep = stripIter(first, last);
     }
     if(last != end) {
       ++last;
     }
-    if(!tname.empty()) {
-      name.swap(tname);
-      value.swap(tvalue);
+    if(namep.first != namep.second) {
+      name.assign(namep.first, namep.second);
+      value.assign(valuep.first, valuep.second);
       return std::make_pair(last, true);
     }
     first = last;
