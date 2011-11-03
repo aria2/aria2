@@ -617,38 +617,46 @@ decodeGetParams(const std::string& query)
   std::string jsonRequest;
   std::string callback;
   if(!query.empty() && query[0] == '?') {
-    std::string method;
-    std::string id;
-    std::string params;
+    Scip method;
+    Scip id;
+    Scip params;
     std::vector<std::string> getParams;
     util::split(query.substr(1), std::back_inserter(getParams), "&");
     for(std::vector<std::string>::const_iterator i =
           getParams.begin(), eoi = getParams.end(); i != eoi; ++i) {
       if(util::startsWith(*i, "method=")) {
-        method = (*i).substr(7);
+        method.first = (*i).begin()+7;
+        method.second = (*i).end();
       } else if(util::startsWith(*i, "id=")) {
-        id = (*i).substr(3);
+        id.first = (*i).begin()+3;
+        id.second = (*i).end();
       } else if(util::startsWith(*i, "params=")) {
-        params = (*i).substr(7);
+        params.first = (*i).begin()+7;
+        params.second = (*i).end();
       } else if(util::startsWith(*i, "jsoncallback=")) {
-        callback = (*i).substr(13);
+        callback.assign((*i).begin()+13, (*i).end());
       }
     }
     std::string jsonParam =
-      Base64::decode(util::percentDecode(params));
-    if(method.empty() && id.empty()) {
+      Base64::decode(util::percentDecode(params.first, params.second));
+    if(method.first == method.second && id.first == id.second) {
       // Assume batch call.
       jsonRequest = jsonParam;
     } else {
       jsonRequest = '{';
-      if(!method.empty()) {
-        strappend(jsonRequest, "\"method\":\"", method, "\"");
+      if(method.first != method.second) {
+        jsonRequest += "\"method\":\"";
+        jsonRequest.append(method.first, method.second);
+        jsonRequest += '"';
       }
-      if(!id.empty()) {
-        strappend(jsonRequest, ",\"id\":\"", id, "\"");
+      if(id.first != id.second) {
+        jsonRequest += ",\"id\":\"";
+        jsonRequest.append(id.first, id.second);
+        jsonRequest += '"';
       }
-      if(!params.empty()) {
-        strappend(jsonRequest, ",\"params\":", jsonParam);
+      if(params.first != params.second) {
+        jsonRequest += ",\"params\":";
+        jsonRequest += jsonParam;
       }
       jsonRequest += '}';
     }

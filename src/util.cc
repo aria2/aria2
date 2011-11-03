@@ -484,20 +484,21 @@ std::string torrentPercentEncode(const std::string& target)
     (reinterpret_cast<const unsigned char*>(target.c_str()), target.size());
 }
 
-std::string percentDecode(const std::string& target) {
+std::string percentDecode
+(std::string::const_iterator first, std::string::const_iterator last)
+{
   std::string result;
-  for(std::string::const_iterator itr = target.begin(), eoi = target.end();
-      itr != eoi; ++itr) {
-    if(*itr == '%') {
-      if(itr+1 != target.end() && itr+2 != target.end() &&
-         isHexDigit(*(itr+1)) && isHexDigit(*(itr+2))) {
-        result += parseInt(itr+1, itr+3, 16);
-        itr += 2;
+  for(; first != last; ++first) {
+    if(*first == '%') {
+      if(first+1 != last && first+2 != last &&
+         isHexDigit(*(first+1)) && isHexDigit(*(first+2))) {
+        result += parseInt(first+1, first+3, 16);
+        first += 2;
       } else {
-        result += *itr;
+        result += *first;
       }
     } else {
-      result += *itr;
+      result += *first;
     }
   }
   return result;
@@ -863,7 +864,7 @@ std::string getContentDispositionFilename(const std::string& header)
       if(bad) {
         continue;
       }
-      value = percentDecode(value);
+      value = percentDecode(value.begin(), value.end());
       if(toLower(extValues[0]) == "iso-8859-1") {
         value = iso8859ToUtf8(value);
       }
@@ -895,7 +896,7 @@ std::string getContentDispositionFilename(const std::string& header)
         filenameLast = value.end();
       }
       static const std::string TRIMMED("\r\n\t '\"");
-      value = percentDecode(std::string(value.begin(), filenameLast));
+      value = percentDecode(value.begin(), filenameLast);
       value = strip(value, TRIMMED);
       value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
       if(!detectDirTraversal(value) &&

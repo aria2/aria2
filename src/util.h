@@ -184,7 +184,8 @@ bool inRFC3986UnreservedChars(const char c);
 
 bool isUtf8(const std::string& str);
 
-std::string percentDecode(const std::string& target);
+std::string percentDecode
+(std::string::const_iterator first, std::string::const_iterator last);
 
 std::string torrentPercentEncode(const unsigned char* target, size_t len);
 

@@ -120,7 +120,9 @@ std::string HttpResponse::determinFilename() const
     util::getContentDispositionFilename
     (httpHeader_->getFirst(HttpHeader::CONTENT_DISPOSITION));
   if(contentDisposition.empty()) {
-    std::string file = util::percentDecode(httpRequest_->getFile());
+    std::string file =
+      util::percentDecode(httpRequest_->getFile().begin(),
+                          httpRequest_->getFile().end());
     if(file.empty()) {
       return "index.html";
     } else {

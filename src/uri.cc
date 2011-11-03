@@ -159,13 +159,13 @@ bool parse(UriStruct& result, const std::string& uri)
       for(; userLast != userInfoLast; ++userLast) {
         if(*userLast == ':') {
           result.password =
-            util::percentDecode(std::string(userLast+1,userInfoLast));
+            util::percentDecode(userLast+1,userInfoLast);
           result.hasPassword = true;
           break;
         }
       }
       result.username =
-        util::percentDecode(std::string(authorityFirst, userLast));
+        util::percentDecode(authorityFirst, userLast);
       break;
     }
   }

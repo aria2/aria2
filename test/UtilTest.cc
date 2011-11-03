@@ -569,22 +569,27 @@ void UtilTest::testLowercase() {
 void UtilTest::testPercentDecode() {
   std::string src = "http://aria2.sourceforge.net/aria2%200.7.0%20docs.html";
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sourceforge.net/aria2 0.7.0 docs.html"),
-                       util::percentDecode(src));
+                       util::percentDecode(src.begin(), src.end()));
 
   std::string src2 = "aria2+aria2";
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2+aria2"), util::percentDecode(src2));
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2+aria2"),
+                       util::percentDecode(src2.begin(), src2.end()));
 
   std::string src3 = "%5t%20";
-  CPPUNIT_ASSERT_EQUAL(std::string("%5t "), util::percentDecode(src3));
+  CPPUNIT_ASSERT_EQUAL(std::string("%5t "),
+                       util::percentDecode(src3.begin(), src3.end()));
 
   std::string src4 = "%";
-  CPPUNIT_ASSERT_EQUAL(std::string("%"), util::percentDecode(src4));
+  CPPUNIT_ASSERT_EQUAL(std::string("%"),
+                       util::percentDecode(src4.begin(), src4.end()));
   
   std::string src5 = "%3";
-  CPPUNIT_ASSERT_EQUAL(std::string("%3"), util::percentDecode(src5));
+  CPPUNIT_ASSERT_EQUAL(std::string("%3"),
+                       util::percentDecode(src5.begin(), src5.end()));
 
   std::string src6 = "%2f";
-  CPPUNIT_ASSERT_EQUAL(std::string("/"), util::percentDecode(src6));
+  CPPUNIT_ASSERT_EQUAL(std::string("/"),
+                       util::percentDecode(src6.begin(), src6.end()));
 }
 
 void UtilTest::testGetRealSize()

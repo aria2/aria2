@@ -51,16 +51,17 @@ SharedHandle<Dict> parse(const std::string& magnet)
               std::back_inserter(queries), "&");
   for(std::vector<std::string>::const_iterator i = queries.begin(),
         eoi = queries.end(); i != eoi; ++i) {
-    std::pair<std::string, std::string> kv;
-    util::divide(kv, *i, '=');
-    std::string value = util::percentDecode(kv.second);
-    List* l = downcast<List>(dict->get(kv.first));
+    std::string::const_iterator eq = std::find((*i).begin(), (*i).end(), '=');
+    std::string name((*i).begin(), eq);
+    std::string value =
+      eq == (*i).end() ? "" : util::percentDecode(eq+1, (*i).end());
+    List* l = downcast<List>(dict->get(name));
     if(l) {
       l->append(String::g(value));
     } else {
       SharedHandle<List> l = List::g();
       l->append(String::g(value));
-      dict->put(kv.first, l);
+      dict->put(name, l);
     }
   }
   return dict;

@@ -369,7 +369,8 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
     getFileEntry()->setPath
       (util::createSafePath
        (getOption()->get(PREF_DIR),
-        util::percentDecode(getRequest()->getFile())));
+        util::percentDecode(getRequest()->getFile().begin(),
+                            getRequest()->getFile().end())));
   }
   getRequestGroup()->preDownloadProcessing();
   if(getDownloadEngine()->getRequestGroupMan()->

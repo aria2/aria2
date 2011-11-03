@@ -145,7 +145,7 @@ bool FtpConnection::sendCwd(const std::string& dir)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "CWD ";
-    request += util::percentDecode(dir);
+    request += util::percentDecode(dir.begin(), dir.end());
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_,request.c_str()));
@@ -159,7 +159,8 @@ bool FtpConnection::sendMdtm()
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "MDTM ";
-    request += util::percentDecode(req_->getFile());
+    request +=
+      util::percentDecode(req_->getFile().begin(), req_->getFile().end());
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
@@ -173,7 +174,8 @@ bool FtpConnection::sendSize()
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "SIZE ";
-    request += util::percentDecode(req_->getFile());
+    request +=
+      util::percentDecode(req_->getFile().begin(), req_->getFile().end());
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
@@ -293,7 +295,8 @@ bool FtpConnection::sendRetr()
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request = "RETR ";
-    request += util::percentDecode(req_->getFile());
+    request +=
+      util::percentDecode(req_->getFile().begin(), req_->getFile().end());
     request += "\r\n";
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));

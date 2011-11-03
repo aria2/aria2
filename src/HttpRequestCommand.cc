@@ -161,7 +161,8 @@ bool HttpRequestCommand::executeInternal() {
             getFileEntry()->setPath
               (util::createSafePath
                (getOption()->get(PREF_DIR),
-                util::percentDecode(getRequest()->getFile())));
+                util::percentDecode(getRequest()->getFile().begin(),
+                                    getRequest()->getFile().end())));
           }
           File ctrlfile(getFileEntry()->getPath()+
                         DefaultBtProgressInfoFile::getSuffix());
