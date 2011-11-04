@@ -219,10 +219,10 @@ bool parse
   if(p.first == p.second) {
     return false;
   }
-  std::string cookieName(p.first, p.second);
+  Scip cookieName(p.first, p.second);
   p = util::stripIter(eq+1, nvEnd);
   p = util::stripIter(p.first, p.second, "\"");
-  std::string cookieValue(p.first, p.second);
+  Scip cookieValue(p.first, p.second);
   time_t expiryTime = 0;
   bool foundExpires = false;
   bool persistent = false;
@@ -337,8 +337,8 @@ bool parse
     cookiePath = defaultPath;
   }
   
-  cookie.setName(cookieName);
-  cookie.setValue(cookieValue);
+  cookie.setName(cookieName.first, cookieName.second);
+  cookie.setValue(cookieValue.first, cookieValue.second);
   cookie.setExpiryTime(expiryTime);
   cookie.setPersistent(persistent);
   cookie.setDomain(cookieDomain);
