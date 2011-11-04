@@ -238,13 +238,12 @@ std::string replace(const std::string& target, const std::string& oldstr, const 
   std::string::size_type p = 0;
   std::string::size_type np = target.find(oldstr);
   while(np != std::string::npos) {
-    result += target.substr(p, np-p);
+    result.append(target.begin()+p, target.begin()+np);
     result += newstr;
     p = np+oldstr.size();
     np = target.find(oldstr, p);
   }
-  result += target.substr(p);
-
+  result.append(target.begin()+p, target.end());
   return result;
 }
 
@@ -966,7 +965,7 @@ int64_t getRealSize(const std::string& sizeWithUnit)
     } else if(sizeWithUnit[p] == 'M') {
       mult = 1024*1024;
     }
-    size = sizeWithUnit.substr(0, p);
+    size.assign(sizeWithUnit.begin(), sizeWithUnit.begin()+p);
   }
   int64_t v = parseLLInt(size.begin(), size.end());
 

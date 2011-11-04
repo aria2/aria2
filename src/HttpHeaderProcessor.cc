@@ -116,7 +116,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
     throw DL_RETRY_EX("Status code could not be parsed as integer.");
   }
   HttpHeaderHandle httpHeader(new HttpHeader());
-  httpHeader->setVersion(buf_.substr(0, 8));
+  httpHeader->setVersion(buf_.begin(), buf_.begin()+8);
   httpHeader->setStatusCode(statusCode);
   // TODO 1st line(HTTP/1.1 200...) is also send to HttpHeader, but it should
   // not.

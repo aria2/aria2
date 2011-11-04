@@ -139,7 +139,7 @@ bool parseDate
         "may", "jun", "jul", "aug",
         "sep", "oct", "nov", "dec" };
       if((*i).size() >= 3) {
-        std::string head = (*i).substr(0, 3);
+        std::string head((*i).begin(), (*i).begin()+3);
         util::lowercase(head);
         std::string* mptr = std::find(vbegin(MONTH), vend(MONTH), head);
         if(mptr != vend(MONTH)) {

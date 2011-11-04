@@ -881,7 +881,7 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
     const String* xt = downcast<String>(*xtiter);
     if(util::startsWith(xt->s().begin(), xt->s().end(),
                         A2_URN_BTIH, vend(A2_URN_BTIH)-1)) {
-      std::string xtarg = xt->s().substr(9);
+      std::string xtarg(xt->s().begin()+9, xt->s().end());
       size_t size = xtarg.size();
       if(size == 32) {
         std::string rawhash = base32::decode(xtarg);

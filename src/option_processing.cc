@@ -118,11 +118,11 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           const char A2_HH[] = "--";
           if(util::startsWith(keyword.begin(), keyword.end(),
                               A2_HH, vend(A2_HH)-1)) {
-            keyword = keyword.substr(2);
+            keyword.erase(keyword.begin(), keyword.begin()+2);
           }
           std::string::size_type eqpos = keyword.find("=");
           if(eqpos != std::string::npos) {
-            keyword = keyword.substr(0, eqpos);
+            keyword.erase(keyword.begin()+eqpos, keyword.end());
           }
         }
         showUsage(keyword, oparser);

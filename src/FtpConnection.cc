@@ -395,7 +395,7 @@ bool FtpConnection::bulkReceiveResponse
   std::string::size_type length;
   if((length = findEndOfResponse(status, strbuf_)) != std::string::npos) {
     response.first = status;
-    response.second = strbuf_.substr(0, length);
+    response.second.assign(strbuf_.begin(), strbuf_.begin()+length);
     A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
                     cuid_,
                     response.second.c_str()));
@@ -516,7 +516,7 @@ unsigned int FtpConnection::receivePasvResponse
       unsigned int h1, h2, h3, h4, p1, p2;
       std::string::size_type p = response.second.find("(");
       if(p >= 4) {
-        sscanf(response.second.substr(response.second.find("(")).c_str(),
+        sscanf(response.second.c_str()+p,
                "(%u,%u,%u,%u,%u,%u).",
                &h1, &h2, &h3, &h4, &p1, &p2);
         // ip address
@@ -549,7 +549,7 @@ unsigned int FtpConnection::receivePwdResponse(std::string& pwd)
 
       if((first = response.second.find("\"")) != std::string::npos &&
          (last = response.second.find("\"", ++first)) != std::string::npos) {
-        pwd = response.second.substr(first, last-first);
+        pwd.assign(response.second.begin()+first, response.second.begin()+last);
       } else {
         throw DL_ABORT_EX2(EX_INVALID_RESPONSE,
                            error_code::FTP_PROTOCOL_ERROR);
