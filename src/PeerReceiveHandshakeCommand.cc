@@ -100,7 +100,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
   if(peerConnection_->getBufferLength() >= 48) {
     const unsigned char* data = peerConnection_->getBuffer();
     // check info_hash
-    std::string infoHash = std::string(&data[28], &data[28+INFO_HASH_LENGTH]);
+    std::string infoHash(&data[28], &data[28+INFO_HASH_LENGTH]);
 
     SharedHandle<DownloadContext> downloadContext =
       getDownloadEngine()->getBtRegistry()->getDownloadContext(infoHash);

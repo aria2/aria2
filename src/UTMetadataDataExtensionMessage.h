@@ -77,6 +77,12 @@ public:
 
   void setData(const std::string& data);
 
+  template<typename InputIterator>
+  void setData(InputIterator first, InputIterator last)
+  {
+    data_.assign(first, last);
+  }
+
   const std::string& getData() const
   {
     return data_;

@@ -78,7 +78,7 @@ void mlStartElement(void* userData, const xmlChar* name,
   }
   sd->stm_->beginElement(reinterpret_cast<const char*>(name), attrmap);
   if(sd->stm_->needsCharactersBuffering()) {
-    sd->charactersStack_.push(std::string());
+    sd->charactersStack_.push(A2STR::NIL);
   }
 }
 } // namespace

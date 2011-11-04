@@ -728,7 +728,7 @@ void parseParam(OutputIterator out, const std::string& header)
     std::string param;
     if(paramLast == eoi || *paramLast == ';') {
       // No value, parmname only
-      param = std::string(paramFirst, paramLast);
+      param.assign(paramFirst, paramLast);
     } else {
       for(; paramLast != eoi && *paramLast != '"' && *paramLast != ';';
           ++paramLast);
@@ -739,10 +739,10 @@ void parseParam(OutputIterator out, const std::string& header)
         if(paramLast != eoi) {
           ++paramLast;
         }
-        param = std::string(paramFirst, paramLast);
+        param.assign(paramFirst, paramLast);
         for(; paramLast != eoi && *paramLast != ';'; ++paramLast);
       } else {
-        param = std::string(paramFirst, paramLast);
+        param.assign(paramFirst, paramLast);
       }
     }
     param = strip(param);
@@ -1509,7 +1509,7 @@ void executeHook
   if(batch) {
     const char* p = getenv("windir");
     if(p) {
-      cmdexe = std::string(p);
+      cmdexe = p;
       cmdexe += "\\system32\\cmd.exe";
     } else {
       A2_LOG_INFO("Failed to get windir environment variable."

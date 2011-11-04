@@ -86,7 +86,7 @@ void mlStartElement
     }
     const char* valueBegin = reinterpret_cast<const char*>(attrs[index+3]);
     const char* valueEnd = reinterpret_cast<const char*>(attrs[index+4]);
-    xmlAttr.value = std::string(valueBegin, valueEnd);
+    xmlAttr.value.assign(valueBegin, valueEnd);
     xmlAttrs.push_back(xmlAttr);
   }
   assert(srcLocalname);

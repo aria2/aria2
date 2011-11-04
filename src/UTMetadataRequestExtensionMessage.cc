@@ -93,7 +93,7 @@ void UTMetadataRequestExtensionMessage::doReceivedAction()
       (getIndex()+1)*METADATA_PIECE_SIZE <= attrs->metadata.size()?
       attrs->metadata.begin()+(getIndex()+1)*METADATA_PIECE_SIZE:
       attrs->metadata.end();
-    m->setData(std::string(begin, end));
+    m->setData(begin, end);
     SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
     dispatcher_->addMessageToQueue(msg);
   } else {

@@ -144,7 +144,7 @@ bool File::mkdirs() {
       continue;
     }
 #endif // __MINGW32__
-    std::string dir = std::string(begin, j);
+    std::string dir(begin, j);
     A2_LOG_DEBUG(fmt("Making directory %s", dir.c_str()));
     if(File(dir).isDir()) {
       A2_LOG_DEBUG(fmt("%s exists and is a directory.", dir.c_str()));

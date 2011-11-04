@@ -426,7 +426,7 @@ void processRootDictionary
                          MessageDigest::sha1(),
                          encodedInfoDict.data(),
                          encodedInfoDict.size());
-  torrent->infoHash = std::string(&infoHash[0], &infoHash[INFO_HASH_LENGTH]);
+  torrent->infoHash.assign(&infoHash[0], &infoHash[INFO_HASH_LENGTH]);
   torrent->metadata = encodedInfoDict;
   torrent->metadataSize = encodedInfoDict.size();
 

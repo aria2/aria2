@@ -99,7 +99,7 @@ DownloadEngine::DownloadEngine(const SharedHandle<EventPoll>& eventPoll)
 {
   unsigned char sessionId[20];
   util::generateRandomKey(sessionId);
-  sessionId_ = std::string(&sessionId[0], & sessionId[sizeof(sessionId)]);
+  sessionId_.assign(&sessionId[0], & sessionId[sizeof(sessionId)]);
 }
 
 DownloadEngine::~DownloadEngine() {

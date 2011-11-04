@@ -137,7 +137,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
           (new UTMetadataDataExtensionMessage(extensionMessageID));
         m->setIndex(index->i());
         m->setTotalSize(totalSize->i());
-        m->setData(std::string(&data[1+end], &data[length]));
+        m->setData(&data[1+end], &data[length]);
         m->setUTMetadataRequestTracker(tracker_);
         m->setPieceStorage(dctx_->getOwnerRequestGroup()->getPieceStorage());
         m->setDownloadContext(dctx_);

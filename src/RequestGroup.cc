@@ -1183,15 +1183,15 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
   res->uploadLength = st.getAllTimeUploadLength();
   if(pieceStorage_) {
     if(pieceStorage_->getBitfieldLength() > 0) {
-      res->bitfield = std::string(pieceStorage_->getBitfield(),
-                                  pieceStorage_->getBitfield()+
-                                  pieceStorage_->getBitfieldLength());
+      res->bitfield.assign(pieceStorage_->getBitfield(),
+                           pieceStorage_->getBitfield()+
+                           pieceStorage_->getBitfieldLength());
     }
   }
 #ifdef ENABLE_BITTORRENT
   if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
     const unsigned char* p = bittorrent::getInfoHash(downloadContext_);
-    res->infoHash = std::string(p, p+INFO_HASH_LENGTH);
+    res->infoHash.assign(p, p+INFO_HASH_LENGTH);
   }
 #endif // ENABLE_BITTORRENT
   res->pieceLength = downloadContext_->getPieceLength();

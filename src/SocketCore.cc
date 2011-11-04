@@ -1141,7 +1141,8 @@ void getInterfaceAddress
       } else {
         continue;
       }
-      if(std::string(ifa->ifa_name) == iface) {
+      if(util::streq(iface.begin(), iface.end(),
+                     ifa->ifa_name, ifa->ifa_name+strlen(ifa->ifa_name))) {
         socklen_t bindAddrLen =
           iffamily == AF_INET ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
         sockaddr_union bindAddr;

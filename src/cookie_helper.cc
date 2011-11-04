@@ -299,7 +299,7 @@ bool parse
       if(noDot == end) {
         return false;
       }
-      cookieDomain = std::string(noDot, end);
+      cookieDomain.assign(noDot, end);
     } else if(attrName == "path") {
       if(goodPath(attrp.first, attrp.second)) {
         cookiePath.assign(attrp.first, attrp.second);
