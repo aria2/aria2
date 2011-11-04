@@ -97,12 +97,24 @@ public:
 
   void setName(const std::string& name);
 
+  template<typename InputIterator>
+  void setName(InputIterator first, InputIterator last)
+  {
+    name_.assign(first, last);
+  }
+
   const std::string& getValue() const
   {
     return value_;
   }
 
   void setValue(const std::string& value);
+
+  template<typename InputIterator>
+  void setValue(InputIterator first, InputIterator last)
+  {
+    value_.assign(first, last);
+  }
 
   time_t getExpiryTime() const
   {
@@ -131,6 +143,12 @@ public:
 
   void setDomain(const std::string& domain);
 
+  template<typename InputIterator>
+  void setDomain(InputIterator first, InputIterator last)
+  {
+    domain_.assign(first, last);
+  }
+
   bool getHostOnly() const
   {
     return hostOnly_;
@@ -147,6 +165,12 @@ public:
   }
 
   void setPath(const std::string& path);
+
+  template<typename InputIterator>
+  void setPath(InputIterator first, InputIterator last)
+  {
+    path_.assign(first, last);
+  }
 
   bool getSecure() const
   {

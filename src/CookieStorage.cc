@@ -210,11 +210,19 @@ bool CookieStorage::parseAndStore
 struct CookiePathDivider {
   Cookie cookie_;
   int pathDepth_;
-  CookiePathDivider(const Cookie& cookie):cookie_(cookie)
+  CookiePathDivider(const Cookie& cookie):cookie_(cookie), pathDepth_(0)
   {
-    std::vector<std::string> paths;
-    util::split(cookie_.getPath(), std::back_inserter(paths), A2STR::SLASH_C);
-    pathDepth_ = paths.size();
+    const std::string& path = cookie_.getPath();
+    if(!path.empty()) {
+      for(size_t i = 1, len = path.size(); i < len; ++i) {
+        if(path[i] == '/' && path[i-1] != '/') {
+          ++pathDepth_;
+        }
+      }
+      if(path[path.size()-1] != '/') {
+        ++pathDepth_;
+      }
+    }
   }
 };
 
@@ -302,14 +310,14 @@ std::vector<Cookie> CookieStorage::criteriaFind
       (requestHost, domains_.begin(), domains_.end(), std::back_inserter(res),
        requestHost, requestPath, now, secure);
   } else {
-    std::vector<std::string> levels;
-    util::split(requestHost, std::back_inserter(levels),A2STR::DOT_C);
-    std::reverse(levels.begin(), levels.end());
+    std::vector<Scip> levels;
+    util::splitIter(requestHost.begin(), requestHost.end(),
+                    std::back_inserter(levels), '.');
     std::string domain;
-    for(std::vector<std::string>::const_iterator i =
-          levels.begin(), eoi = levels.end();
+    for(std::vector<Scip>::const_reverse_iterator i =
+          levels.rbegin(), eoi = levels.rend();
         i != eoi; ++i, domain.insert(domain.begin(), '.')) {
-      domain.insert(domain.begin(), (*i).begin(), (*i).end());
+      domain.insert(domain.begin(), (*i).first, (*i).second);
       searchCookieByDomainSuffix
         (domain, domains_.begin(), domains_.end(),
          std::back_inserter(res), requestHost, requestPath, now, secure);

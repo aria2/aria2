@@ -139,16 +139,17 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
      delimpos < 14) {
     throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
   }
-  std::vector<std::string> firstLine;
-  util::split(buf_.substr(0, delimpos), std::back_inserter(firstLine)," ",true);
+  std::vector<Scip> firstLine;
+  util::splitIter(buf_.begin(), buf_.begin()+delimpos,
+                  std::back_inserter(firstLine), ' ', true);
   if(firstLine.size() != 3) {
     throw DL_ABORT_EX2("Malformed HTTP request header.",
                        error_code::HTTP_PROTOCOL_ERROR);
   }
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->setMethod(firstLine[0]);
-  httpHeader->setRequestPath(firstLine[1]);
-  httpHeader->setVersion(firstLine[2]);
+  httpHeader->setMethod(firstLine[0].first, firstLine[0].second);
+  httpHeader->setRequestPath(firstLine[1].first, firstLine[1].second);
+  httpHeader->setVersion(firstLine[2].first, firstLine[2].second);
   if((delimpos = buf_.find("\r\n\r\n")) == std::string::npos &&
      (delimpos = buf_.find("\n\n")) == std::string::npos) {
     delimpos = buf_.size();

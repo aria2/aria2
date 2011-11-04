@@ -317,9 +317,8 @@ void HttpRequest::disableContentEncoding()
 
 void HttpRequest::addHeader(const std::string& headersString)
 {
-  std::vector<std::string> headers;
-  util::split(headersString, std::back_inserter(headers), "\n", true);
-  headers_.insert(headers_.end(), headers.begin(), headers.end());
+  util::split(headersString.begin(), headersString.end(),
+              std::back_inserter(headers_), '\n', true);
 }
 
 void HttpRequest::clearHeader()

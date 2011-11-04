@@ -24,8 +24,14 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(UtilTest);
   CPPUNIT_TEST(testStrip);
   CPPUNIT_TEST(testStripIter);
+  CPPUNIT_TEST(testLstripIter);
+  CPPUNIT_TEST(testLstripIter_char);
   CPPUNIT_TEST(testDivide);
   CPPUNIT_TEST(testSplit);
+  CPPUNIT_TEST(testSplitIter);
+  CPPUNIT_TEST(testSplitIterM);
+  CPPUNIT_TEST(testStreq);
+  CPPUNIT_TEST(testStrieq);
   CPPUNIT_TEST(testEndsWith);
   CPPUNIT_TEST(testReplace);
   CPPUNIT_TEST(testStartsWith);
@@ -85,8 +91,14 @@ public:
 
   void testStrip();
   void testStripIter();
+  void testLstripIter();
+  void testLstripIter_char();
   void testDivide();
   void testSplit();
+  void testSplitIter();
+  void testSplitIterM();
+  void testStreq();
+  void testStrieq();
   void testEndsWith();
   void testReplace();
   void testStartsWith();
@@ -211,6 +223,46 @@ void UtilTest::testStripIter()
   CPPUNIT_ASSERT_EQUAL(str4, std::string(p.first, p.second));
 }
 
+void UtilTest::testLstripIter()
+{
+  std::string::iterator r;
+  std::string s = "foo";
+  r = util::lstripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), std::string(r, s.end()));
+  
+  s = "  foo bar  ";
+  r = util::lstripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo bar  "), std::string(r, s.end()));
+
+  s = "f";
+  r = util::lstripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("f"), std::string(r, s.end()));
+
+  s = "foo  ";
+  r = util::lstripIter(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo  "), std::string(r, s.end()));
+}
+
+void UtilTest::testLstripIter_char()
+{
+  std::string::iterator r;
+  std::string s = "foo";
+  r = util::lstripIter(s.begin(), s.end(), '$');
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), std::string(r, s.end()));
+  
+  s = "$$foo$bar$$";
+  r = util::lstripIter(s.begin(), s.end(), '$');
+  CPPUNIT_ASSERT_EQUAL(std::string("foo$bar$$"), std::string(r, s.end()));
+
+  s = "f";
+  r = util::lstripIter(s.begin(), s.end(), '$');
+  CPPUNIT_ASSERT_EQUAL(std::string("f"), std::string(r, s.end()));
+
+  s = "foo$$";
+  r = util::lstripIter(s.begin(), s.end(), '$');
+  CPPUNIT_ASSERT_EQUAL(std::string("foo$$"), std::string(r, s.end()));
+}
+
 void UtilTest::testDivide() {
   std::pair<Scip, Scip> p1;
   std::string s = "name=value";
@@ -247,7 +299,8 @@ void UtilTest::testDivide() {
 
 void UtilTest::testSplit() {
   std::vector<std::string> v;
-  util::split("k1; k2;; k3", std::back_inserter(v), ";", true);
+  std::string s = "k1; k2;; k3";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';', true);
   CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
   std::vector<std::string>::iterator itr = v.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), *itr++);
@@ -256,8 +309,8 @@ void UtilTest::testSplit() {
 
   v.clear();
 
-  util::split("k1; k2; k3",
-              std::back_inserter(v), ";");
+  s = "k1; k2; k3";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';');
   CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
   itr = v.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), *itr++);
@@ -266,14 +319,16 @@ void UtilTest::testSplit() {
 
   v.clear();
 
-  util::split("k=v", std::back_inserter(v), ";", false, true);
+  s = "k=v";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   itr = v.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("k=v"), *itr++);
 
   v.clear();
 
-  util::split(";;k1;;k2;", std::back_inserter(v), ";", false, true);
+  s = ";;k1;;k2;";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)6, v.size());
   itr = v.begin();
   CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
@@ -285,7 +340,8 @@ void UtilTest::testSplit() {
 
   v.clear();
 
-  util::split(";;k1;;k2;", std::back_inserter(v), ";");
+  s = ";;k1;;k2;";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';');
   CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
   itr = v.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), *itr++);
@@ -293,7 +349,8 @@ void UtilTest::testSplit() {
 
   v.clear();
 
-  util::split("k; ", std::back_inserter(v), ";");
+  s = "k; ";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';');
   CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
   itr = v.begin();
   CPPUNIT_ASSERT_EQUAL(std::string("k"), *itr++);
@@ -301,29 +358,34 @@ void UtilTest::testSplit() {
 
   v.clear();
 
-  util::split(" ", std::back_inserter(v), ";", true, true);
+  s = " ";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';', true, true);
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(""), v[0]);
 
   v.clear();
 
-  util::split(" ", std::back_inserter(v), ";", true);
+  s = " ";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';', true);
   CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
 
   v.clear();
 
-  util::split(" ", std::back_inserter(v), ";");
+  s = " ";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';');
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(" "), v[0]);
 
   v.clear();
 
-  util::split(";", std::back_inserter(v), ";");
+  s = ";";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';');
   CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
 
   v.clear();
 
-  util::split(";", std::back_inserter(v), ";", false, true);
+  s = ";";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
   itr = v.begin();
   CPPUNIT_ASSERT_EQUAL(std::string(""), *itr++);
@@ -331,43 +393,337 @@ void UtilTest::testSplit() {
 
   v.clear();
 
-  util::split("", std::back_inserter(v), ";", false, true);
+  s = "";
+  util::split(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(""), v[0]);
+}
+
+void UtilTest::testSplitIter() {
+  std::vector<Scip> v;
+  std::string s = "k1; k2;; k3";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';', true);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k3"), std::string(v[2].first, v[2].second));
+
+  v.clear();
+
+  s = "k1; k2; k3";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';');
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(" k2"),
+                       std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(" k3"),
+                       std::string(v[2].first, v[2].second));
+
+  v.clear();
+
+  s = "k=v";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k=v"),
+                       std::string(v[0].first, v[0].second));
+
+  v.clear();
+
+  s = ";;k1;;k2;";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[2].first, v[2].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[3].first, v[3].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[4].first, v[4].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[5].first, v[5].second));
+
+  v.clear();
+
+  s = ";;k1;;k2;";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';');
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
+
+  v.clear();
+
+  s = "k; ";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';');
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(" "), std::string(v[1].first, v[1].second));
+
+  v.clear();
+
+  s = " ";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';', true, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
+
+  v.clear();
+
+  s = " ";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';', true);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
+
+  v.clear();
+
+  s = " ";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';');
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(" "), std::string(v[0].first, v[0].second));
+
+  v.clear();
+
+  s = ";";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';');
+  CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
+
+  v.clear();
+
+  s = ";";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
+
+  v.clear();
+
+  s = "";
+  util::splitIter(s.begin(), s.end(), std::back_inserter(v), ';', false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
+}
+
+void UtilTest::testSplitIterM() {
+  std::string d = ";";
+  std::string md = "; ";
+  std::vector<Scip> v;
+  std::string s = "k1; k2;; k3";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end(), true);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k3"), std::string(v[2].first, v[2].second));
+
+  v.clear();
+
+  s = "k1; k2; k3";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(" k2"),
+                       std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(" k3"),
+                       std::string(v[2].first, v[2].second));
+
+  v.clear();
+
+  s = "k1; k2; k3";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   md.begin(), md.end());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k3"), std::string(v[2].first, v[2].second));
+
+  v.clear();
+
+  s = "k1; k2; k3;";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   md.begin(), md.end(), false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[2].first, v[2].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[3].first, v[3].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k3"), std::string(v[4].first, v[4].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[5].first, v[5].second));
+
+  v.clear();
+
+  s = "k=v";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end(), false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k=v"),
+                       std::string(v[0].first, v[0].second));
+
+  v.clear();
+
+  s = ";;k1;;k2;";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end(), false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)6, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[2].first, v[2].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[3].first, v[3].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[4].first, v[4].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[5].first, v[5].second));
+
+  v.clear();
+
+  s = ";;k1;;k2;";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
+
+  v.clear();
+
+  s = "k; ";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("k"), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(" "), std::string(v[1].first, v[1].second));
+
+  v.clear();
+
+  s = " ";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end(), true, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
+
+  v.clear();
+
+  s = " ";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end(), true);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
+
+  v.clear();
+
+  s = " ";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(" "), std::string(v[0].first, v[0].second));
+
+  v.clear();
+
+  s = ";";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
+
+  v.clear();
+
+  s = ";";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end(), false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
+
+  v.clear();
+
+  s = "";
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
+                   d.begin(), d.end(), false, true);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
 }
 
 void UtilTest::testEndsWith() {
   std::string target = "abcdefg";
   std::string part = "fg";
   CPPUNIT_ASSERT(util::endsWith(target, part));
+  CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
+                                part.begin(), part.end()));
 
   target = "abdefg";
   part = "g";
   CPPUNIT_ASSERT(util::endsWith(target, part));
+  CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
+                                part.begin(), part.end()));
 
   target = "abdefg";
   part = "eg";
   CPPUNIT_ASSERT(!util::endsWith(target, part));
+  CPPUNIT_ASSERT(!util::endsWith(target.begin(), target.end(),
+                                 part.begin(), part.end()));
 
   target = "g";
   part = "eg";
   CPPUNIT_ASSERT(!util::endsWith(target, part));
+  CPPUNIT_ASSERT(!util::endsWith(target.begin(), target.end(),
+                                 part.begin(), part.end()));
 
   target = "g";
   part = "g";
   CPPUNIT_ASSERT(util::endsWith(target, part));
+  CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
+                                part.begin(), part.end()));
 
   target = "g";
   part = "";
   CPPUNIT_ASSERT(util::endsWith(target, part));
+  CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
+                                part.begin(), part.end()));
 
   target = "";
   part = "";
   CPPUNIT_ASSERT(util::endsWith(target, part));
+  CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
+                                part.begin(), part.end()));
 
   target = "";
   part = "g";
   CPPUNIT_ASSERT(!util::endsWith(target, part));
+  CPPUNIT_ASSERT(!util::endsWith(target.begin(), target.end(),
+                                 part.begin(), part.end()));
+}
+
+void UtilTest::testStreq()
+{
+  std::string s1, s2;
+  s1 = "foo";
+  s2 = "foo";
+  CPPUNIT_ASSERT(util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s2 = "fooo";
+  CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s2 = "fo";
+  CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s2 = "";
+  CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s1 = "";
+  CPPUNIT_ASSERT(util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+}
+
+void UtilTest::testStrieq()
+{
+  std::string s1, s2;
+  s1 = "foo";
+  s2 = "foo";
+  CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s1 = "FoO";
+  s2 = "fOo";
+  CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s2 = "fooo";
+  CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s2 = "fo";
+  CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s2 = "";
+  CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+
+  s1 = "";
+  CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
 }
 
 void UtilTest::testReplace() {
@@ -385,31 +741,44 @@ void UtilTest::testStartsWith() {
   target = "abcdefg";
   part = "abc";
   CPPUNIT_ASSERT(util::startsWith(target, part));
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
+                                  part.begin(), part.end()));
 
   target = "abcdefg";
   part = "abx";
   CPPUNIT_ASSERT(!util::startsWith(target, part));
+  CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
+                                   part.begin(), part.end()));
 
   target = "abcdefg";
   part = "bcd";
   CPPUNIT_ASSERT(!util::startsWith(target, part));
+  CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
+                                   part.begin(), part.end()));
 
   target = "";
   part = "a";
   CPPUNIT_ASSERT(!util::startsWith(target, part));
+  CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
+                                   part.begin(), part.end()));
 
   target = "";
   part = "";
   CPPUNIT_ASSERT(util::startsWith(target, part));
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
+                                  part.begin(), part.end()));
   
   target = "a";
   part = "";
   CPPUNIT_ASSERT(util::startsWith(target, part));
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
+                                  part.begin(), part.end()));
 
   target = "a";
   part = "a";
   CPPUNIT_ASSERT(util::startsWith(target, part));
-
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
+                                  part.begin(), part.end()));
 }
 
 void UtilTest::testGetContentDispositionFilename() {

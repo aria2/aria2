@@ -307,7 +307,8 @@ std::string joinUri(const std::string& baseUri, const std::string& uri)
     }
     std::vector<std::string> parts;
     if(!util::startsWith(uri, "/")) {
-      util::split(bus.dir, std::back_inserter(parts), "/");
+      util::split(bus.dir.begin(), bus.dir.end(), std::back_inserter(parts),
+                  '/');
     }
     std::string::const_iterator qend;
     for(qend = uri.begin(); qend != uri.end(); ++qend) {
@@ -321,15 +322,13 @@ std::string joinUri(const std::string& baseUri, const std::string& uri)
         break;
       }
     }
-    std::string path(uri.begin(), end);
-    util::split(path, std::back_inserter(parts), "/");
+    util::split(uri.begin(), end, std::back_inserter(parts), '/');
     bus.dir.clear();
     bus.file.clear();
     bus.query.clear();
     std::string res = construct(bus);
     res += util::joinPath(parts.begin(), parts.end());
-    if((path.empty() || util::endsWith(path, "/")) &&
-       !util::endsWith(res, "/")) {
+    if((uri.begin() == end || *(end-1) == '/') && *(res.end()-1) != '/') {
       res += "/";
     }
     res.append(end, qend);

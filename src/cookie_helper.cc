@@ -352,14 +352,6 @@ bool parse
   return true;
 }
 
-std::string removePrecedingDots(const std::string& host)
-{
-  std::string::const_iterator noDot = host.begin();
-  std::string::const_iterator end = host.end();
-  for(; noDot != end && *noDot == '.'; ++noDot);
-  return std::string(noDot, end);
-}
-
 bool goodPath
 (std::string::const_iterator first,
  std::string::const_iterator last)

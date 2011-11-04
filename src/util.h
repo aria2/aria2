@@ -177,6 +177,31 @@ std::pair<InputIterator, InputIterator> stripIter
   return std::make_pair(first, left+1);
 }
 
+template<typename InputIterator>
+InputIterator lstripIter
+(InputIterator first, InputIterator last, char ch)
+{
+  for(; first != last && *first == ch; ++first);
+  return first;
+}
+
+template<typename InputIterator, typename InputIterator2>
+InputIterator lstripIter
+(InputIterator first, InputIterator last,
+ InputIterator2 cfirst, InputIterator2 clast)
+{
+  for(; first != last && std::find(cfirst, clast, *first) != clast; ++first);
+  return first;
+}
+
+template<typename InputIterator>
+InputIterator lstripIter
+(InputIterator first, InputIterator last)
+{
+  return lstripIter(first, last,
+                    DEFAULT_STRIP_CHARSET.begin(), DEFAULT_STRIP_CHARSET.end());
+}
+
 std::string strip
 (const std::string& str, const std::string& chars = DEFAULT_STRIP_CHARSET);
 
@@ -526,22 +551,86 @@ parseIndexPath(const std::string& line);
 std::vector<std::pair<size_t, std::string> > createIndexPaths(std::istream& i);
 
 /**
- * Take a string src which is a delimited list and add its elements
- * into result. result is stored in out.
+ * Take a string [first, last) which is a delimited list and add its
+ * elements into result as iterator pair. result is stored in out.
  */
-template<typename OutputIterator>
-OutputIterator split(const std::string& src, OutputIterator out,
-                     const std::string& delims, bool doStrip = false,
-                     bool allowEmpty = false)
+template<typename InputIterator, typename OutputIterator>
+OutputIterator splitIter
+(InputIterator first,
+ InputIterator last,
+ OutputIterator out,
+ char delim,
+ bool doStrip = false,
+ bool allowEmpty = false)
 {
-  std::string::const_iterator first = src.begin();
-  std::string::const_iterator last = src.end();
-  for(std::string::const_iterator i = first; i != last;) {
-    std::string::const_iterator j = i;
-    for(; j != last &&
-          std::find(delims.begin(), delims.end(), *j) == delims.end(); ++j);
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> p(i, j);
+  for(InputIterator i = first; i != last;) {
+    InputIterator j = std::find(i, last, delim);
+    std::pair<InputIterator, InputIterator> p(i, j);
+    if(doStrip) {
+      p = stripIter(i, j);
+    }
+    if(allowEmpty || p.first != p.second) {
+      *out++ = p;
+    }
+    i = j;
+    if(j != last) {
+      ++i;
+    }
+  }
+  if(allowEmpty &&
+     (first == last || *(last-1) == delim)) {
+    *out++ = std::make_pair(last, last);
+  }
+  return out;
+}
+
+template<typename InputIterator,
+         typename InputIterator2,
+         typename OutputIterator>
+OutputIterator splitIterM
+(InputIterator first,
+ InputIterator last,
+ OutputIterator out,
+ InputIterator2 dfirst,
+ InputIterator2 dlast,
+ bool doStrip = false,
+ bool allowEmpty = false)
+{
+  for(InputIterator i = first; i != last;) {
+    InputIterator j = i;
+    for(; j != last && std::find(dfirst, dlast, *j) == dlast; ++j);
+    std::pair<InputIterator, InputIterator> p(i, j);
+    if(doStrip) {
+      p = stripIter(i, j);
+    }
+    if(allowEmpty || p.first != p.second) {
+      *out++ = p;
+    }
+    i = j;
+    if(j != last) {
+      ++i;
+    }
+  }
+  if(allowEmpty &&
+     (first == last ||
+      std::find(dfirst, dlast, *(last-1)) != dlast)) {
+    *out++ = std::make_pair(last, last);
+  }
+  return out;
+}
+
+template<typename InputIterator, typename OutputIterator>
+OutputIterator split
+(InputIterator first,
+ InputIterator last,
+ OutputIterator out,
+ char delim,
+ bool doStrip = false,
+ bool allowEmpty = false)
+{
+  for(InputIterator i = first; i != last;) {
+    InputIterator j = std::find(i, last, delim);
+    std::pair<InputIterator, InputIterator> p(i, j);
     if(doStrip) {
       p = stripIter(i, j);
     }
@@ -554,12 +643,75 @@ OutputIterator split(const std::string& src, OutputIterator out,
     }
   }
   if(allowEmpty &&
-     (src.empty() ||
-      std::find(delims.begin(), delims.end(),
-                src[src.size()-1]) != delims.end())) {
-    *out++ = A2STR::NIL;
+     (first == last || *(last-1) == delim)) {
+    *out++ = std::string(last, last);
   }
   return out;
+}
+
+template<typename InputIterator1, typename InputIterator2>
+bool streq
+(InputIterator1 first1,
+ InputIterator1 last1,
+ InputIterator2 first2,
+ InputIterator2 last2)
+{
+  if(last1-first1 != last2-first2) {
+    return false;
+  }
+  return std::equal(first1, last1, first2);
+}
+
+template<typename InputIterator1, typename InputIterator2>
+bool strieq
+(InputIterator1 first1,
+ InputIterator1 last1,
+ InputIterator2 first2,
+ InputIterator2 last2)
+{
+  if(last1-first1 != last2-first2) {
+    return false;
+  }
+  for(; first1 != last1; ++first1, ++first2) {
+    char c1 = *first1;
+    char c2 = *first2;
+    if('A' <= c1 && c1 <= 'Z') {
+      c1 = c1-'A'+'a';
+    }
+    if('A' <= c2 && c2 <= 'Z') {
+      c2 = c2-'A'+'a';
+    }
+    if(c1 != c2) {
+      return false;
+    }
+  }
+  return true;
+}
+
+template<typename InputIterator1, typename InputIterator2>
+bool startsWith
+(InputIterator1 first1,
+ InputIterator1 last1,
+ InputIterator2 first2,
+ InputIterator2 last2)
+{
+  if(last1-first1 < last2-first2) {
+    return false;
+  }
+  return std::equal(first2, last2, first1);
+}
+
+template<typename InputIterator1, typename InputIterator2>
+bool endsWith
+(InputIterator1 first1,
+ InputIterator1 last1,
+ InputIterator2 first2,
+ InputIterator2 last2)
+{
+  if(last1-first1 < last2-first2) {
+    return false;
+  }
+  return std::equal(first2, last2, last1-(last2-first2));
 }
 
 void generateRandomData(unsigned char* data, size_t length);

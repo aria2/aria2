@@ -155,13 +155,13 @@ bool ServerStatMan::load(const std::string& filename)
       continue;
     }
     std::string line(p.first, p.second);
-    std::vector<std::string> items;
-    util::split(line, std::back_inserter(items), ",");
+    std::vector<Scip> items;
+    util::splitIter(line.begin(), line.end(), std::back_inserter(items), ',');
     std::map<std::string, std::string> m;
-    for(std::vector<std::string>::const_iterator i = items.begin(),
+    for(std::vector<Scip>::const_iterator i = items.begin(),
           eoi = items.end(); i != eoi; ++i) {
       std::pair<Scip, Scip> p;
-      util::divide(p, (*i).begin(), (*i).end(), '=');
+      util::divide(p, (*i).first, (*i).second, '=');
       m[std::string(p.first.first, p.first.second)] =
         std::string(p.second.first, p.second.second);
     }

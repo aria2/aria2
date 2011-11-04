@@ -687,26 +687,31 @@ void parsePrioritizePieceRange
  uint64_t defaultSize)
 {
   std::vector<size_t> indexes;
-  std::vector<std::string> parts;
-  split(src, std::back_inserter(parts), ",", true);
-  for(std::vector<std::string>::const_iterator i = parts.begin(),
+  std::vector<Scip> parts;
+  const char A2_HEAD[] = "head";
+  const char A2_HEADEQ[] = "head=";
+  const char A2_TAIL[] = "tail";
+  const char A2_TAILEQ[] = "tail=";
+  splitIter(src.begin(), src.end(), std::back_inserter(parts), ',', true);
+  for(std::vector<Scip>::const_iterator i = parts.begin(),
         eoi = parts.end(); i != eoi; ++i) {
-    if((*i) == "head") {
+    if(util::streq((*i).first, (*i).second, A2_HEAD, vend(A2_HEAD)-1)) {
       computeHeadPieces(indexes, fileEntries, pieceLength, defaultSize);
-    } else if(util::startsWith(*i, "head=")) {
-      std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
-                                        (*i).end());
+    } else if(util::startsWith((*i).first, (*i).second,
+                               A2_HEADEQ, vend(A2_HEADEQ)-1)) {
+      std::string sizestr((*i).first+5, (*i).second);
       computeHeadPieces(indexes, fileEntries, pieceLength,
                         std::max((int64_t)0, getRealSize(sizestr)));
-    } else if((*i) == "tail") {
+    } else if(util::streq((*i).first, (*i).second, A2_TAIL, vend(A2_TAIL)-1)) {
       computeTailPieces(indexes, fileEntries, pieceLength, defaultSize);
-    } else if(util::startsWith(*i, "tail=")) {
-      std::string sizestr = std::string((*i).begin()+(*i).find("=")+1,
-                                        (*i).end());
+    } else if(util::startsWith((*i).first, (*i).second,
+                               A2_TAILEQ, vend(A2_TAILEQ)-1)) {
+      std::string sizestr((*i).first+5, (*i).second);
       computeTailPieces(indexes, fileEntries, pieceLength,
                         std::max((int64_t)0, getRealSize(sizestr)));
     } else {
-      throw DL_ABORT_EX(fmt("Unrecognized token %s", (*i).c_str()));
+      throw DL_ABORT_EX(fmt("Unrecognized token %s",
+                            std::string((*i).first, (*i).second).c_str()));
     }
   }
   std::sort(indexes.begin(), indexes.end());
@@ -802,16 +807,15 @@ std::string getContentDispositionFilename(const std::string& header)
       if(markeritr == param.end() || *markeritr != '=') {
         continue;
       }
-      std::string value(markeritr+1, param.end());
-      std::vector<std::string> extValues;
-      split(value, std::back_inserter(extValues), "'", true, true);
+      std::vector<Scip> extValues;
+      splitIter(markeritr+1, param.end(), std::back_inserter(extValues),
+                '\'', true, true);
       if(extValues.size() != 3) {
         continue;
       }
       bool bad = false;
-      const std::string& charset = extValues[0];
-      for(std::string::const_iterator j = charset.begin(), eoi = charset.end();
-          j != eoi; ++j) {
+      for(std::string::const_iterator j = extValues[0].first,
+            eoj = extValues[0].second; j != eoj; ++j) {
         // Since we first split parameter by ', we can safely assume
         // that ' is not included in charset.
         if(!inRFC2978MIMECharset(*j)) {
@@ -823,12 +827,11 @@ std::string getContentDispositionFilename(const std::string& header)
         continue;
       }
       bad = false;
-      value = extValues[2];
-      for(std::string::const_iterator j = value.begin(), eoi = value.end();
-          j != eoi; ++j){
+      for(std::string::const_iterator j = extValues[2].first,
+            eoj = extValues[2].second; j != eoj; ++j){
         if(*j == '%') {
-          if(j+1 != value.end() && isHexDigit(*(j+1)) &&
-             j+2 != value.end() && isHexDigit(*(j+2))) {
+          if(j+1 != eoj && isHexDigit(*(j+1)) &&
+             j+2 != eoj && isHexDigit(*(j+2))) {
             j += 2;
           } else {
             bad = true;
@@ -844,8 +847,11 @@ std::string getContentDispositionFilename(const std::string& header)
       if(bad) {
         continue;
       }
-      value = percentDecode(value.begin(), value.end());
-      if(toLower(extValues[0]) == "iso-8859-1") {
+      std::string value =
+        percentDecode(extValues[2].first, extValues[2].second);
+      const char A2_ISO88591[] = "iso-8859-1";
+      if(util::strieq(extValues[0].first, extValues[0].second,
+                      A2_ISO88591, vend(A2_ISO88591)-1)) {
         value = iso8859ToUtf8(value);
       }
       if(!detectDirTraversal(value) &&

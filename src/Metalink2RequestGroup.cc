@@ -156,8 +156,13 @@ Metalink2RequestGroup::createRequestGroup
   }
   std::vector<std::string> locations;
   if(optionTemplate->defined(PREF_METALINK_LOCATION)) {
-    util::split(util::toLower(optionTemplate->get(PREF_METALINK_LOCATION)),
-                std::back_inserter(locations), ",", true);
+    const std::string& loc = optionTemplate->get(PREF_METALINK_LOCATION);
+    util::split(loc.begin(), loc.end(),
+                std::back_inserter(locations), ',', true);
+    for(std::vector<std::string>::iterator i = locations.begin(),
+          eoi = locations.end(); i != eoi; ++i) {
+      util::lowercase(*i);
+    }
   }
   std::string preferredProtocol;
   if(optionTemplate->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {

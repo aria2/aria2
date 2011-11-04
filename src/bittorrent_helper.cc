@@ -1036,10 +1036,12 @@ void adjustAnnounceUri
 {
   std::vector<std::string> excludeUris;
   std::vector<std::string> addUris;
-  util::split(option->get(PREF_BT_EXCLUDE_TRACKER),
-              std::back_inserter(excludeUris), A2STR::COMMA_C, true);
-  util::split(option->get(PREF_BT_TRACKER),
-              std::back_inserter(addUris), A2STR::COMMA_C, true);
+  const std::string& exTracker = option->get(PREF_BT_EXCLUDE_TRACKER);
+  util::split(exTracker.begin(), exTracker.end(),
+              std::back_inserter(excludeUris), ',', true);
+  const std::string& btTracker = option->get(PREF_BT_TRACKER);
+  util::split(btTracker.begin(), btTracker.end(),
+              std::back_inserter(addUris), ',', true);
   removeAnnounceUri(attrs, excludeUris);
   addAnnounceUri(attrs, addUris);
 }

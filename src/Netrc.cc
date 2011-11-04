@@ -43,6 +43,7 @@
 #include "A2STR.h"
 #include "util.h"
 #include "BufferedFile.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -152,44 +153,58 @@ void Netrc::parse(const std::string& path)
     if(util::startsWith(line, "#")) {
       continue;
     }
-    std::vector<std::string> tokens;
-    util::split(line, std::back_inserter(tokens), " \t", true);
-    for(std::vector<std::string>::const_iterator iter = tokens.begin(),
+    std::vector<Scip> tokens;
+    const char A2_DELIMS[] = " \t";
+    util::splitIterM(line.begin(), line.end(), std::back_inserter(tokens),
+                     A2_DELIMS, vend(A2_DELIMS)-1, true);
+    const char A2_MACHINE[] = "machine";
+    const char A2_DEFAULT[] = "default";
+    const char A2_LOGIN[] = "login";
+    const char A2_PASSWORD[] = "password";
+    const char A2_ACCOUNT[] = "account";
+    const char A2_MACDEF[] = "macdef";
+    for(std::vector<Scip>::const_iterator iter = tokens.begin(),
           eoi = tokens.end(); iter != eoi; ++iter) {
-      const std::string& token = *iter;
       if(state == GET_TOKEN) {
-        if(token == "machine") {
+        if(util::streq((*iter).first, (*iter).second,
+                       A2_MACHINE, vend(A2_MACHINE)-1)) {
           storeAuthenticator(authenticator);
           authenticator.reset(new Authenticator());
           state = SET_MACHINE;
-        } else if(token == "default") {
+        } else if(util::streq((*iter).first, (*iter).second,
+                              A2_DEFAULT, vend(A2_DEFAULT)-1)) {
           storeAuthenticator(authenticator);
           authenticator.reset(new DefaultAuthenticator());
         } else {
           if(!authenticator) {
             throw DL_ABORT_EX
               (fmt("Netrc:parse error. %s encounterd where 'machine'"
-                   " or 'default' expected.", token.c_str()));
+                   " or 'default' expected.",
+                   std::string((*iter).first, (*iter).second).c_str()));
           }
-          if(token == "login") {
+          if(util::streq((*iter).first, (*iter).second,
+                         A2_LOGIN, vend(A2_LOGIN)-1)) {
             state = SET_LOGIN;
-          } else if(token == "password") {
+          } else if(util::streq((*iter).first, (*iter).second,
+                                A2_PASSWORD, vend(A2_PASSWORD)-1)) {
             state = SET_PASSWORD;
-          } else if(token == "account") {
+          } else if(util::streq((*iter).first, (*iter).second,
+                                A2_ACCOUNT, vend(A2_ACCOUNT)-1)) {
             state = SET_ACCOUNT;
-          } else if(token == "macdef") {
+          } else if(util::streq((*iter).first, (*iter).second,
+                                A2_MACDEF, vend(A2_MACDEF)-1)) {
             state = SET_MACDEF;
           }
         }
       } else {
         if(state == SET_MACHINE) {
-          authenticator->setMachine(token);
+          authenticator->setMachine((*iter).first, (*iter).second);
         } else if(state == SET_LOGIN) {
-          authenticator->setLogin(token);
+          authenticator->setLogin((*iter).first, (*iter).second);
         } else if(state == SET_PASSWORD) {
-          authenticator->setPassword(token);
+          authenticator->setPassword((*iter).first, (*iter).second);
         } else if(state == SET_ACCOUNT) {
-          authenticator->setAccount(token);
+          authenticator->setAccount((*iter).first, (*iter).second);
         } else if(state == SET_MACDEF) {
           skipMacdef(fp);
         }

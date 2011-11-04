@@ -59,8 +59,6 @@ bool parse
  const std::string& defaultPath,
  time_t creationTime);
 
-std::string removePrecedingDots(const std::string& host);
-
 bool goodPath
 (std::string::const_iterator first,
  std::string::const_iterator last);

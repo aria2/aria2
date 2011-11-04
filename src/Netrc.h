@@ -76,12 +76,24 @@ public:
 
   void setMachine(const std::string& machine);
 
+  template<typename InputIterator>
+  void setMachine(InputIterator first, InputIterator last)
+  {
+    machine_.assign(first, last);
+  }
+
   const std::string& getLogin() const
   {
     return login_;
   }
 
   void setLogin(const std::string& login);
+
+  template<typename InputIterator>
+  void setLogin(InputIterator first, InputIterator last)
+  {
+    login_.assign(first, last);
+  }
 
   const std::string& getPassword() const
   {
@@ -90,12 +102,24 @@ public:
 
   void setPassword(const std::string& password);
 
+  template<typename InputIterator>
+  void setPassword(InputIterator first, InputIterator last)
+  {
+    password_.assign(first, last);
+  }
+
   const std::string& getAccount() const
   {
     return account_;
   }
 
   void setAccount(const std::string& account);
+
+  template<typename InputIterator>
+  void setAccount(InputIterator first, InputIterator last)
+  {
+    account_.assign(first, last);
+  }
 };
 
 class DefaultAuthenticator : public Authenticator {

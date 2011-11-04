@@ -46,15 +46,15 @@ SharedHandle<Dict> parse(const std::string& magnet)
     return dict;
   }
   dict.reset(new Dict());
-  std::vector<std::string> queries;
-  util::split(std::string(magnet.begin()+8, magnet.end()),
-              std::back_inserter(queries), "&");
-  for(std::vector<std::string>::const_iterator i = queries.begin(),
+  std::vector<Scip> queries;
+  util::splitIter(magnet.begin()+8, magnet.end(), std::back_inserter(queries),
+                  '&');
+  for(std::vector<Scip>::const_iterator i = queries.begin(),
         eoi = queries.end(); i != eoi; ++i) {
-    std::string::const_iterator eq = std::find((*i).begin(), (*i).end(), '=');
-    std::string name((*i).begin(), eq);
-    std::string value =
-      eq == (*i).end() ? "" : util::percentDecode(eq+1, (*i).end());
+    std::pair<Scip, Scip> p;
+    util::divide(p, (*i).first, (*i).second, '=');
+    std::string name(p.first.first, p.first.second);
+    std::string value(util::percentDecode(p.second.first, p.second.second));
     List* l = downcast<List>(dict->get(name));
     if(l) {
       l->append(String::g(value));

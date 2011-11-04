@@ -92,8 +92,8 @@ ParameterizedStringParser::createSelect(const std::string& src, int& offset)
     throw DL_ABORT_EX("Missing '}' in the parameterized string.");
   }
   std::vector<std::string> values;
-  util::split(src.substr(offset, rightParenIndex-offset),
-              std::back_inserter(values), ",", true);
+  util::split(src.begin()+offset, src.begin()+rightParenIndex,
+              std::back_inserter(values), ',', true);
   if(values.empty()) {
     throw DL_ABORT_EX("Empty {} is not allowed.");
   }

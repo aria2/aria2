@@ -95,6 +95,12 @@ public:
 
   void setVersion(const std::string& version);
 
+  template<typename InputIterator>
+  void setVersion(InputIterator first, InputIterator last)
+  {
+    version_.assign(first, last);
+  }
+
   const std::string& getMethod() const
   {
     return method_;
@@ -102,12 +108,24 @@ public:
 
   void setMethod(const std::string& method);
 
+  template<typename InputIterator>
+  void setMethod(InputIterator first, InputIterator last)
+  {
+    method_.assign(first, last);
+  }
+
   const std::string& getRequestPath() const
   {
     return requestPath_;
   }
 
   void setRequestPath(const std::string& requestPath);
+
+  template<typename InputIterator>
+  void setRequestPath(InputIterator first, InputIterator last)
+  {
+    requestPath_.assign(first, last);
+  }
 
   void fill
   (std::string::const_iterator first,

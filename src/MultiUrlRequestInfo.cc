@@ -99,9 +99,9 @@ namespace {
 ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
 {
   std::vector<std::string> servers;
-  util::split(serversOpt,
+  util::split(serversOpt.begin(), serversOpt.end(),
               std::back_inserter(servers),
-              A2STR::COMMA_C,
+              ',',
               true /* doStrip */);
   ares_addr_node root;
   root.next = 0;

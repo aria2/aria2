@@ -100,14 +100,17 @@ bool parseTime(int64_t& time, InputIterator first, InputIterator last)
 namespace {
 int cookieRowMapper(void* data, int columns, char** values, char** names)
 {
-  if(columns != 7) {
+  if(columns != 7 || !values[0] || !values[1] || !values[4]) {
     return 0;
   }
   std::vector<Cookie>& cookies =
     *reinterpret_cast<std::vector<Cookie>*>(data);
-  std::string cookieDomain = cookie::removePrecedingDots(toString(values[0]));
-  std::string cookieName = toString(values[4]);
-  std::string cookiePath = toString(values[1]);
+  size_t val0len = strlen(values[0]);
+  std::string cookieDomain
+    (util::lstripIter(&values[0][0], &values[0][val0len], '.'),
+     &values[0][val0len]);
+  std::string cookieName(&values[4][0], &values[4][strlen(values[4])]);
+  std::string cookiePath(&values[1][0], &values[1][strlen(values[1])]);
   if(cookieName.empty() || cookieDomain.empty() ||
      !cookie::goodPath(cookiePath.begin(), cookiePath.end())) {
     return 0;

@@ -620,21 +620,30 @@ decodeGetParams(const std::string& query)
     Scip method;
     Scip id;
     Scip params;
-    std::vector<std::string> getParams;
-    util::split(query.substr(1), std::back_inserter(getParams), "&");
-    for(std::vector<std::string>::const_iterator i =
+    std::vector<Scip> getParams;
+    util::splitIter(query.begin()+1, query.end(), std::back_inserter(getParams),
+                    '&');
+    const char A2_METHOD[] = "method=";
+    const char A2_ID[] = "id=";
+    const char A2_PARAMS[] = "params=";
+    const char A2_JSONCB[] = "jsoncallback=";
+    for(std::vector<Scip>::const_iterator i =
           getParams.begin(), eoi = getParams.end(); i != eoi; ++i) {
-      if(util::startsWith(*i, "method=")) {
-        method.first = (*i).begin()+7;
-        method.second = (*i).end();
-      } else if(util::startsWith(*i, "id=")) {
-        id.first = (*i).begin()+3;
-        id.second = (*i).end();
-      } else if(util::startsWith(*i, "params=")) {
-        params.first = (*i).begin()+7;
-        params.second = (*i).end();
-      } else if(util::startsWith(*i, "jsoncallback=")) {
-        callback.assign((*i).begin()+13, (*i).end());
+      if(util::startsWith((*i).first, (*i).second,
+                          A2_METHOD, vend(A2_METHOD)-1)) {
+        method.first = (*i).first+7;
+        method.second = (*i).second;
+      } else if(util::startsWith((*i).first, (*i).second,
+                                 A2_ID, vend(A2_ID)-1)) {
+        id.first = (*i).first+3;
+        id.second = (*i).second;
+      } else if(util::startsWith((*i).first, (*i).second,
+                                 A2_PARAMS, vend(A2_PARAMS)-1)) {
+        params.first = (*i).first+7;
+        params.second = (*i).second;
+      } else if(util::startsWith((*i).first, (*i).second,
+                                 A2_JSONCB, vend(A2_JSONCB)-1)) {
+        callback.assign((*i).first+13, (*i).second);
       }
     }
     std::string jsonParam =

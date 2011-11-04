@@ -378,8 +378,12 @@ void HttpResponse::getMetalinKHttpEntries
   if(!result.empty()) {
     std::vector<std::string> locs;
     if(option->defined(PREF_METALINK_LOCATION)) {
-      util::split(util::toLower(option->get(PREF_METALINK_LOCATION)),
-                  std::back_inserter(locs), ",", true);
+      const std::string& loc = option->get(PREF_METALINK_LOCATION);
+      util::split(loc.begin(), loc.end(), std::back_inserter(locs), ',', true);
+      for(std::vector<std::string>::iterator i = locs.begin(), eoi = locs.end();
+          i != eoi; ++i) {
+        util::lowercase(*i);
+      }
     }
     for(std::vector<MetalinkHttpEntry>::iterator i = result.begin(),
           eoi = result.end(); i != eoi; ++i) {

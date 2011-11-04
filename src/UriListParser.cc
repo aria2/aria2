@@ -66,7 +66,8 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
   const SharedHandle<OptionParser>& optparser = OptionParser::getInstance();
   while(1) {
     if(!util::startsWith(line_, A2STR::SHARP_C) && !util::strip(line_).empty()){
-      util::split(line_, std::back_inserter(uris), "\t", true);
+      util::split(line_.begin(), line_.end(), std::back_inserter(uris),
+                  '\t', true);
       // Read options
       std::stringstream ss;
       while(1) {

@@ -49,6 +49,7 @@
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
 #include "TimeA2.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -99,12 +100,20 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
       (lastRequestHeader_->getVersion() == HttpHeader::HTTP_1_1 ||
        connection.find("keep-alive") != std::string::npos);
 
-    std::vector<std::string> acceptEncodings;
-    util::split(lastRequestHeader_->getFirst(HttpHeader::ACCEPT_ENCODING),
-                std::back_inserter(acceptEncodings), A2STR::COMMA_C, true);
-    acceptsGZip_ =
-      std::find(acceptEncodings.begin(), acceptEncodings.end(), "gzip")
-      != acceptEncodings.end();
+    std::vector<Scip> acceptEncodings;
+    const std::string& acceptEnc =
+      lastRequestHeader_->getFirst(HttpHeader::ACCEPT_ENCODING);
+    util::splitIter(acceptEnc.begin(), acceptEnc.end(),
+                    std::back_inserter(acceptEncodings), ',', true);
+    const char A2_GZIP[] = "gzip";
+    acceptsGZip_ = false;
+    for(std::vector<Scip>::const_iterator i = acceptEncodings.begin(),
+          eoi = acceptEncodings.end(); i != eoi; ++i) {
+      if(util::streq((*i).first, (*i).second, A2_GZIP, vend(A2_GZIP)-1)) {
+        acceptsGZip_ = true;
+        break;
+      }
+    }
     return header;
   } else {
     socketRecvBuffer_->clearBuffer();
@@ -209,20 +218,18 @@ bool HttpServer::authenticate()
   }
   std::pair<Scip, Scip> p;
   util::divide(p, authHeader.begin(), authHeader.end(), ' ');
-  const char authMethod[] = "Basic";
-  if(!std::distance(p.first.first, p.first.second) == sizeof(authMethod) ||
-     !std::equal(p.first.first, p.first.second, &authMethod[0])) {
+  const char A2_AUTHMETHOD[] = "Basic";
+  if(!util::streq(p.first.first, p.first.second,
+                  A2_AUTHMETHOD, vend(A2_AUTHMETHOD)-1)) {
     return false;
   }
   std::string userpass = Base64::decode(std::string(p.second.first,
                                                     p.second.second));
   util::divide(p, userpass.begin(), userpass.end(), ':');
-  return username_.size() ==
-    static_cast<size_t>(std::distance(p.first.first, p.first.second)) &&
-    std::equal(username_.begin(), username_.end(), p.first.first) &&
-    password_.size() ==
-    static_cast<size_t>(std::distance(p.second.first, p.second.second)) &&
-    std::equal(password_.begin(), password_.end(), p.second.first);
+  return util::streq(p.first.first, p.first.second,
+                     username_.begin(), username_.end()) &&
+    util::streq(p.second.first, p.second.second,
+                password_.begin(), password_.end());
 }
 
 void HttpServer::setUsernamePassword

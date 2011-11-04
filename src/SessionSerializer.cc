@@ -85,8 +85,9 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
     const SharedHandle<OptionHandler>& h = oparser->find(pref);
     if(h && h->getInitialOption() && op->defined(pref)) {
       if(h->getCumulative()) {
+        const std::string& val = op->get(pref);
         std::vector<std::string> v;
-        util::split(op->get(pref), std::back_inserter(v), "\n",
+        util::split(val.begin(), val.end(), std::back_inserter(v), '\n',
                     false, false);
         for(std::vector<std::string>::const_iterator j = v.begin(),
               eoj = v.end(); j != eoj; ++j) {

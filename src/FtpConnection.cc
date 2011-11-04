@@ -487,12 +487,13 @@ unsigned int FtpConnection::receiveEpsvResponse(uint16_t& port)
          leftParen > rightParen) {
         return response.first;
       }
-      std::vector<std::string> rd;
-      util::split(response.second.substr(leftParen+1, rightParen-(leftParen+1)),
-                  std::back_inserter(rd), "|", true, true);
+      std::vector<Scip> rd;
+      util::splitIter(response.second.begin()+leftParen+1,
+                      response.second.begin()+rightParen,
+                      std::back_inserter(rd), '|', true, true);
       uint32_t portTemp = 0;
       if(rd.size() == 5 &&
-         util::parseUIntNoThrow(portTemp, rd[3].begin(), rd[3].end())) {
+         util::parseUIntNoThrow(portTemp, rd[3].first, rd[3].second)) {
         if(0 < portTemp  && portTemp <= UINT16_MAX) {
           port = portTemp;
         }

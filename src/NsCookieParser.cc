@@ -45,6 +45,7 @@
 #include "Cookie.h"
 #include "cookie_helper.h"
 #include "BufferedFile.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -53,25 +54,22 @@ NsCookieParser::NsCookieParser() {}
 NsCookieParser::~NsCookieParser() {}
 
 namespace {
-const std::string C_TRUE("TRUE");
-} // namespace
-
-namespace {
 bool parseNsCookie
 (Cookie& cookie, const std::string& nsCookieStr, time_t creationTime)
 {
-  std::vector<std::string> vs;
-  util::split(nsCookieStr, std::back_inserter(vs), "\t", true);
+  std::vector<Scip> vs;
+  util::splitIter(nsCookieStr.begin(), nsCookieStr.end(),
+                  std::back_inserter(vs), '\t', true);
   if(vs.size() < 6) {
     return false;
   }
-  std::string cookieDomain = cookie::removePrecedingDots(vs[0]);
-  if(vs[5].empty() || cookieDomain.empty() ||
-     !cookie::goodPath(vs[2].begin(), vs[2].end())) {
+  vs[0].first = util::lstripIter(vs[0].first, vs[0].second, '.');
+  if(vs[5].first == vs[5].second || vs[0].first == vs[0].second ||
+     !cookie::goodPath(vs[2].first, vs[2].second)) {
     return false;
   }
   int64_t expiryTime;
-  if(!util::parseLLIntNoThrow(expiryTime, vs[4].begin(), vs[4].end())) {
+  if(!util::parseLLIntNoThrow(expiryTime, vs[4].first, vs[4].second)) {
     return false;
   }
   if(std::numeric_limits<time_t>::max() < expiryTime) {
@@ -79,16 +77,24 @@ bool parseNsCookie
   } else if(std::numeric_limits<time_t>::min() > expiryTime) {
     expiryTime = std::numeric_limits<time_t>::min();
   }
-  cookie.setName(vs[5]);
-  cookie.setValue(vs.size() >= 7? vs[6]:A2STR::NIL);
+  cookie.setName(vs[5].first, vs[5].second);
+  if(vs.size() >= 7) {
+    cookie.setValue(vs[6].first, vs[6].second);
+  } else {
+    cookie.setValue(A2STR::NIL.begin(), A2STR::NIL.end());
+  }
   cookie.setExpiryTime(expiryTime == 0?
                        std::numeric_limits<time_t>::max():expiryTime);
   // aria2 treats expiryTime == 0 means session cookie.
   cookie.setPersistent(expiryTime != 0);
-  cookie.setDomain(cookieDomain);
-  cookie.setHostOnly(util::isNumericHost(cookieDomain) || vs[1] != C_TRUE);
-  cookie.setPath(vs[2]);
-  cookie.setSecure(vs[3] == C_TRUE);
+  cookie.setDomain(vs[0].first, vs[0].second);
+  const char C_TRUE[] = "TRUE";
+  cookie.setHostOnly(util::isNumericHost(cookie.getDomain()) ||
+                     !util::streq(vs[1].first, vs[1].second,
+                                  C_TRUE, vend(C_TRUE)-1));
+  cookie.setPath(vs[2].first, vs[2].second);
+  cookie.setSecure(util::streq(vs[3].first, vs[3].second,
+                               C_TRUE, vend(C_TRUE)-1));
   cookie.setCreationTime(creationTime);
   return true;
 }

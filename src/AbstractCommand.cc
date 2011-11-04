@@ -589,16 +589,19 @@ namespace {
 bool inNoProxy(const SharedHandle<Request>& req,
                const std::string& noProxy)
 {
-  std::vector<std::string> entries;
-  util::split(noProxy, std::back_inserter(entries), ",", true);
+  std::vector<Scip> entries;
+  util::splitIter(noProxy.begin(), noProxy.end(), std::back_inserter(entries),
+                  ',', true);
   if(entries.empty()) {
     return false;
   }
-  for(std::vector<std::string>::const_iterator i = entries.begin(),
+  for(std::vector<Scip>::const_iterator i = entries.begin(),
         eoi = entries.end(); i != eoi; ++i) {
-    std::string::size_type slashpos = (*i).find('/');
-    if(slashpos == std::string::npos) {
-      if(util::noProxyDomainMatch(req->getHost(), *i)) {
+    std::string::const_iterator slashpos =
+      std::find((*i).first, (*i).second, '/');
+    if(slashpos == (*i).second) {
+      if(util::noProxyDomainMatch
+         (req->getHost(), std::string((*i).first, (*i).second))) {
         return true;
       }
     } else {
@@ -606,9 +609,9 @@ bool inNoProxy(const SharedHandle<Request>& req,
       // implementation is that we should first resolve
       // hostname(which may result in several IP addresses) and
       // evaluates against all of them
-      std::string ip = (*i).substr(0, slashpos);
+      std::string ip((*i).first, slashpos);
       uint32_t bits;
-      if(!util::parseUIntNoThrow(bits, (*i).begin()+slashpos+1, (*i).end())) {
+      if(!util::parseUIntNoThrow(bits, slashpos+1, (*i).second)) {
         continue;
       }
       if(util::inSameCidrBlock(ip, req->getHost(), bits)) {

@@ -270,9 +270,9 @@ bool FtpNegotiationCommand::sendCwdPrep()
 {
   // Calling setReadCheckSocket() is needed when the socket is reused, 
   setReadCheckSocket(getSocket());
-  util::split(getRequest()->getDir(), std::back_inserter(cwdDirs_),
-              A2STR::SLASH_C);
   cwdDirs_.push_front(ftp_->getBaseWorkingDir());
+  util::split(getRequest()->getDir().begin(), getRequest()->getDir().end(),
+              std::back_inserter(cwdDirs_), '/');
   sequence_ = SEQ_SEND_CWD;
   return true;
 }
