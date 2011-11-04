@@ -698,6 +698,19 @@ bool startsWith
 }
 
 template<typename InputIterator1, typename InputIterator2>
+bool istartsWith
+(InputIterator1 first1,
+ InputIterator1 last1,
+ InputIterator2 first2,
+ InputIterator2 last2)
+{
+  if(last1-first1 < last2-first2) {
+    return false;
+  }
+  return strieq(first1, first1+(last2-first2), first2, last2);
+}
+
+template<typename InputIterator1, typename InputIterator2>
 bool endsWith
 (InputIterator1 first1,
  InputIterator1 last1,
@@ -720,8 +733,7 @@ bool iendsWith
   if(last1-first1 < last2-first2) {
     return false;
   }
-  first1 = last1-(last2-first2);
-  return strieq(first1, last1, first2, last2);
+  return strieq(last1-(last2-first2), last1, first2, last2);
 }
 
 void generateRandomData(unsigned char* data, size_t length);

@@ -36,6 +36,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIendsWith);
   CPPUNIT_TEST(testReplace);
   CPPUNIT_TEST(testStartsWith);
+  CPPUNIT_TEST(testIstartsWith);
   // may be moved to other helper class in the future.
   CPPUNIT_TEST(testGetContentDispositionFilename);
   CPPUNIT_TEST(testRandomAlpha);
@@ -104,6 +105,7 @@ public:
   void testIendsWith();
   void testReplace();
   void testStartsWith();
+  void testIstartsWith();
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
   void testRandomAlpha();
@@ -778,6 +780,21 @@ void UtilTest::testStartsWith() {
   part = "a";
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
+}
+
+void UtilTest::testIstartsWith() {
+  std::string target;
+  std::string part;
+
+  target = "abcdefg";
+  part = "aBc";
+  CPPUNIT_ASSERT(util::istartsWith(target.begin(), target.end(),
+                                   part.begin(), part.end()));
+
+  target = "abcdefg";
+  part = "abx";
+  CPPUNIT_ASSERT(!util::istartsWith(target.begin(), target.end(),
+                                    part.begin(), part.end()));
 }
 
 void UtilTest::testGetContentDispositionFilename() {

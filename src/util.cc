@@ -765,8 +765,7 @@ std::string getContentDispositionFilename(const std::string& header)
   for(std::vector<std::string>::const_iterator i = params.begin(),
         eoi = params.end(); i != eoi; ++i) {
     const std::string& param = *i;
-    std::string lowparam = toLower(param);
-    if(!startsWith(lowparam.begin(), lowparam.end(),
+    if(!istartsWith(param.begin(), param.end(),
                    A2_KEYNAME, vend(A2_KEYNAME)-1) ||
        param.size() == sizeof(A2_KEYNAME)-1) {
       continue;
