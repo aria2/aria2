@@ -49,7 +49,8 @@ bool tailMatch
 (InputIterator first, InputIterator last, const std::string& target)
 {
   for(; first != last; ++first) {
-    if(util::endsWith(target, *first)) {
+    if(util::endsWith(target.begin(), target.end(),
+                      (*first).begin(), (*first).end())) {
       return true;
     }
   }

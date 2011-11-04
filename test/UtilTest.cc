@@ -33,6 +33,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testStreq);
   CPPUNIT_TEST(testStrieq);
   CPPUNIT_TEST(testEndsWith);
+  CPPUNIT_TEST(testIendsWith);
   CPPUNIT_TEST(testReplace);
   CPPUNIT_TEST(testStartsWith);
   // may be moved to other helper class in the future.
@@ -100,6 +101,7 @@ public:
   void testStreq();
   void testStrieq();
   void testEndsWith();
+  void testIendsWith();
   void testReplace();
   void testStartsWith();
   // may be moved to other helper class in the future.
@@ -635,51 +637,55 @@ void UtilTest::testSplitIterM() {
 void UtilTest::testEndsWith() {
   std::string target = "abcdefg";
   std::string part = "fg";
-  CPPUNIT_ASSERT(util::endsWith(target, part));
   CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
                                 part.begin(), part.end()));
 
   target = "abdefg";
   part = "g";
-  CPPUNIT_ASSERT(util::endsWith(target, part));
   CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
                                 part.begin(), part.end()));
 
   target = "abdefg";
   part = "eg";
-  CPPUNIT_ASSERT(!util::endsWith(target, part));
   CPPUNIT_ASSERT(!util::endsWith(target.begin(), target.end(),
                                  part.begin(), part.end()));
 
   target = "g";
   part = "eg";
-  CPPUNIT_ASSERT(!util::endsWith(target, part));
   CPPUNIT_ASSERT(!util::endsWith(target.begin(), target.end(),
                                  part.begin(), part.end()));
 
   target = "g";
   part = "g";
-  CPPUNIT_ASSERT(util::endsWith(target, part));
   CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
                                 part.begin(), part.end()));
 
   target = "g";
   part = "";
-  CPPUNIT_ASSERT(util::endsWith(target, part));
   CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
                                 part.begin(), part.end()));
 
   target = "";
   part = "";
-  CPPUNIT_ASSERT(util::endsWith(target, part));
   CPPUNIT_ASSERT(util::endsWith(target.begin(), target.end(),
                                 part.begin(), part.end()));
 
   target = "";
   part = "g";
-  CPPUNIT_ASSERT(!util::endsWith(target, part));
   CPPUNIT_ASSERT(!util::endsWith(target.begin(), target.end(),
                                  part.begin(), part.end()));
+}
+
+void UtilTest::testIendsWith() {
+  std::string target = "abcdefg";
+  std::string part = "Fg";
+  CPPUNIT_ASSERT(util::iendsWith(target.begin(), target.end(),
+                                part.begin(), part.end()));
+
+  target = "abdefg";
+  part = "ef";
+  CPPUNIT_ASSERT(!util::iendsWith(target.begin(), target.end(),
+                                  part.begin(), part.end()));
 }
 
 void UtilTest::testStreq()

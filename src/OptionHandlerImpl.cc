@@ -520,7 +520,9 @@ HttpProxyUserOptionHandler::HttpProxyUserOptionHandler
 void HttpProxyUserOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
-  if(util::endsWith(pref_->k, "-user")) {
+  const char A2_USER[] = "-user";
+  if(util::endsWith(pref_->k.begin(), pref_->k.end(),
+                    A2_USER, vend(A2_USER)-1)) {
     const Pref* proxyPref = option::k2p(pref_->k.substr(0, pref_->k.size()-5));
     const std::string& olduri = option.get(proxyPref);
     if(!olduri.empty()) {
@@ -562,7 +564,9 @@ HttpProxyPasswdOptionHandler::HttpProxyPasswdOptionHandler
 void HttpProxyPasswdOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
-  if(util::endsWith(pref_->k, "-passwd")) {
+  const char A2_PASSWD[] = "-passwd";
+  if(util::endsWith(pref_->k.begin(), pref_->k.end(),
+                    A2_PASSWD, vend(A2_PASSWD)-1)) {
     const Pref* proxyPref = option::k2p(pref_->k.substr(0, pref_->k.size()-7));
     const std::string& olduri = option.get(proxyPref);
     if(!olduri.empty()) {

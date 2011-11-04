@@ -185,7 +185,9 @@ void HttpServer::feedResponse(const std::string& status,
   }
   if(!headers.empty()) {
     header += headers;
-    if(!util::endsWith(headers, "\r\n")) {
+    if(headers.size() < 2 ||
+       (headers[headers.size()-2] != '\r' &&
+        headers[headers.size()-1] != '\n')) {
       header += "\r\n";
     }
   }

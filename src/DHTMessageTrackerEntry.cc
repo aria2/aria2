@@ -71,9 +71,13 @@ bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::
   if(targetNode_->getIPAddress() == ipaddr) {
     return true;
   }
-  if(util::endsWith(targetNode_->getIPAddress(), ipaddr)) {
+  if(util::endsWith(targetNode_->getIPAddress().begin(),
+                    targetNode_->getIPAddress().end(),
+                    ipaddr.begin(), ipaddr.end())) {
     return targetNode_->getIPAddress() == "::ffff:"+ipaddr;
-  } else if(util::endsWith(ipaddr, targetNode_->getIPAddress())) {
+  } else if(util::endsWith(ipaddr.begin(), ipaddr.end(),
+                           targetNode_->getIPAddress().begin(),
+                           targetNode_->getIPAddress().end())) {
     return ipaddr == "::ffff:"+targetNode_->getIPAddress();
   }
   return false;

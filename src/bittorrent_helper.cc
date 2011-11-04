@@ -182,7 +182,7 @@ OutputIterator createUri
  const std::string& filePath)
 {
   for(; first != last; ++first) {
-    if(util::endsWith(*first, "/")) {
+    if(!(*first).empty() && (*first)[(*first).size()-1] == '/') {
       *out++ = (*first)+filePath;
     } else {
       *out++ = (*first)+"/"+filePath;
@@ -310,7 +310,7 @@ void extractFileEntries
     std::vector<std::string> uris;
     for(std::vector<std::string>::const_iterator i = urlList.begin(),
           eoi = urlList.end(); i != eoi; ++i) {
-      if(util::endsWith(*i, A2STR::SLASH_C)) {
+      if(!(*i).empty() && (*i)[(*i).size()-1] == '/') {
         uris.push_back((*i)+util::percentEncode(utf8Name));
       } else {
         uris.push_back(*i);

@@ -205,10 +205,6 @@ InputIterator lstripIter
 std::string strip
 (const std::string& str, const std::string& chars = DEFAULT_STRIP_CHARSET);
 
-bool startsWith(const std::string& target, const std::string& part);
-
-bool endsWith(const std::string& target, const std::string& part);
-
 std::string replace(const std::string& target, const std::string& oldstr, const std::string& newstr);
 
 std::string percentEncode(const unsigned char* target, size_t len);
@@ -712,6 +708,20 @@ bool endsWith
     return false;
   }
   return std::equal(first2, last2, last1-(last2-first2));
+}
+
+template<typename InputIterator1, typename InputIterator2>
+bool iendsWith
+(InputIterator1 first1,
+ InputIterator1 last1,
+ InputIterator2 first2,
+ InputIterator2 last2)
+{
+  if(last1-first1 < last2-first2) {
+    return false;
+  }
+  first1 = last1-(last2-first2);
+  return strieq(first1, last1, first2, last2);
 }
 
 void generateRandomData(unsigned char* data, size_t length);

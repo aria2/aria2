@@ -368,7 +368,8 @@ std::string canonicalizeHost(const std::string& host)
 bool domainMatch(const std::string& requestHost, const std::string& domain)
 {
   return requestHost == domain ||
-    (util::endsWith(requestHost, domain) &&
+    (util::endsWith(requestHost.begin(), requestHost.end(),
+                    domain.begin(), domain.end()) &&
      requestHost[requestHost.size()-domain.size()-1] == '.' &&
      !util::isNumericHost(requestHost));
 }

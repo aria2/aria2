@@ -215,7 +215,7 @@ AuthConfigFactory::BasicCred::BasicCred
   user_(user), password_(password),
   host_(host), port_(port), path_(path), activated_(activated)
 {
-  if(!util::endsWith(path_, "/")) {
+  if(path_.empty() || path_[path_.size()-1] != '/') {
     path_ += "/";
   }
 }

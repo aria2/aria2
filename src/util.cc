@@ -230,20 +230,6 @@ int32_t difftvsec(struct timeval tv1, struct timeval tv2) {
   return tv1.tv_sec-tv2.tv_sec;
 }
 
-bool endsWith(const std::string& target, const std::string& part) {
-  if(target.size() < part.size()) {
-    return false;
-  }
-  if(part.empty()) {
-    return true;
-  }
-  if(target.rfind(part) == target.size()-part.size()) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 std::string replace(const std::string& target, const std::string& oldstr, const std::string& newstr) {
   if(target.empty() || oldstr.empty()) {
     return target;
@@ -1516,7 +1502,9 @@ void executeHook
 
   memset(&pi, 0, sizeof (pi));
 
-  bool batch = util::endsWith(util::toLower(command), ".bat");
+  const char A2_BAT[] = ".bat";
+  bool batch = util::iendsWith(command.begin(), command.end(),
+                               A2_BAT, vend(A2_BAT)-1);
   std::string cmdline;
   std::string cmdexe;
   if(batch) {
@@ -1618,7 +1606,8 @@ bool noProxyDomainMatch
  const std::string& domain)
 {
   if(!domain.empty() && domain[0] == '.' && !util::isNumericHost(hostname)) {
-    return util::endsWith(hostname, domain);
+    return util::endsWith(hostname.begin(), hostname.end(),
+                          domain.begin(), domain.end());
   } else {
     return hostname == domain;
   }

@@ -87,12 +87,15 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     getDownloadEngine()->addCommand(command);
     return true;
   } else {
+    const std::string& streamFilterName = getStreamFilter()->getName();
     if(getRequest()->isPipeliningEnabled() ||
        (getRequest()->isKeepAliveEnabled() &&
         (
          // Make sure that all filters are finished to pool socket
-         (!util::endsWith(getStreamFilter()->getName(),
-                          SinkStreamFilter::NAME) &&
+         (!util::endsWith(streamFilterName.begin(),
+                          streamFilterName.end(),
+                          SinkStreamFilter::NAME.begin(),
+                          SinkStreamFilter::NAME.end()) &&
           getStreamFilter()->finished()) ||
          getRequestEndOffset() ==
          getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())
