@@ -230,20 +230,6 @@ int32_t difftvsec(struct timeval tv1, struct timeval tv2) {
   return tv1.tv_sec-tv2.tv_sec;
 }
 
-bool startsWith(const std::string& target, const std::string& part) {
-  if(target.size() < part.size()) {
-    return false;
-  }
-  if(part.empty()) {
-    return true;
-  }
-  if(target.find(part) == 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 bool endsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;
@@ -786,17 +772,20 @@ void parseParam(OutputIterator out, const std::string& header)
 
 std::string getContentDispositionFilename(const std::string& header)
 {
+  const char A2_KEYNAME[] = "filename";
   std::string filename;
   std::vector<std::string> params;
   parseParam(std::back_inserter(params), header);
   for(std::vector<std::string>::const_iterator i = params.begin(),
         eoi = params.end(); i != eoi; ++i) {
     const std::string& param = *i;
-    static const std::string keyName = "filename";
-    if(!startsWith(toLower(param), keyName) || param.size() == keyName.size()) {
+    std::string lowparam = toLower(param);
+    if(!startsWith(lowparam.begin(), lowparam.end(),
+                   A2_KEYNAME, vend(A2_KEYNAME)-1) ||
+       param.size() == sizeof(A2_KEYNAME)-1) {
       continue;
     }
-    std::string::const_iterator markeritr = param.begin()+keyName.size();
+    std::string::const_iterator markeritr = param.begin()+sizeof(A2_KEYNAME)-1;
     if(*markeritr == '*') {
       // See RFC2231 Section4 and draft-reschke-rfc2231-in-http.
       // Please note that this function doesn't do charset conversion
@@ -1370,13 +1359,23 @@ void generateRandomKey(unsigned char* key)
 // 192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
 bool inPrivateAddress(const std::string& ipv4addr)
 {
-  if(util::startsWith(ipv4addr, "10.") ||
-     util::startsWith(ipv4addr, "192.168.")) {
+  const char A2_IP10[] = "10.";
+  const char A2_IP192[] = "192.168.";
+  if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
+                      A2_IP10, vend(A2_IP10)-1) ||
+     util::startsWith(ipv4addr.begin(), ipv4addr.end(),
+                      A2_IP192, vend(A2_IP192)-1)) {
     return true;
   }
-  if(util::startsWith(ipv4addr, "172.")) {
+  std::string p172("172.");
+  if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
+                      p172.begin(), p172.end())) {
     for(int i = 16; i <= 31; ++i) {
-      if(util::startsWith(ipv4addr, "172."+util::itos(i)+".")) {
+      std::string t(p172);
+      t += util::itos(i);
+      t += '.';
+      if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
+                          t.begin(), t.end())) {
         return true;
       }
     }
@@ -1386,6 +1385,9 @@ bool inPrivateAddress(const std::string& ipv4addr)
 
 bool detectDirTraversal(const std::string& s)
 {
+  if(s.empty()) {
+    return false;
+  }
   for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {
     unsigned char c = *i;
     if(in(c, 0x00u, 0x1fu) || c == 0x7fu) {
@@ -1393,24 +1395,24 @@ bool detectDirTraversal(const std::string& s)
     }
   }
 
-  static std::string A2_DS = "./";
-  static std::string A2_DDS = "../";
-  static std::string A2_SD = "/.";
-  static std::string A2_SDD = "/..";
-  static std::string A2_SDDS = "/../";
-  static std::string A2_SDS = "/./";
-  static std::string A2_DD = "..";
+  const char A2_DS[] = "./";
+  const char A2_DDS[] = "../";
+  const char A2_SD[] = "/.";
+  const char A2_SDD[] = "/..";
+  const char A2_SDDS[] = "/../";
+  const char A2_SDS[] = "/./";
+  const char A2_DD[] = "..";
 
   return s == A2STR::DOT_C ||
     s == A2_DD ||
-    util::startsWith(s, A2STR::SLASH_C) ||
-    util::startsWith(s, A2_DS) ||
-    util::startsWith(s, A2_DDS) ||
+    s[0] == '/' ||
+    util::startsWith(s.begin(), s.end(), A2_DS, vend(A2_DS)-1) ||
+    util::startsWith(s.begin(), s.end(), A2_DDS, vend(A2_DDS)-1) ||
     s.find(A2_SDDS) != std::string::npos ||
     s.find(A2_SDS) != std::string::npos ||
-    util::endsWith(s, A2STR::SLASH_C) ||
-    util::endsWith(s, A2_SD) ||
-    util::endsWith(s, A2_SDD);
+    s[s.size()-1] == '/' ||
+    util::endsWith(s.begin(), s.end(), A2_SD, vend(A2_SD)-1) ||
+    util::endsWith(s.begin(), s.end(), A2_SDD, vend(A2_SDD)-1);
 }
 
 std::string escapePath(const std::string& s)
@@ -1615,8 +1617,7 @@ bool noProxyDomainMatch
 (const std::string& hostname,
  const std::string& domain)
 {
-  if(!util::isNumericHost(hostname) &&
-     util::startsWith(domain, A2STR::DOT_C)) {
+  if(!domain.empty() && domain[0] == '.' && !util::isNumericHost(hostname)) {
     return util::endsWith(hostname, domain);
   } else {
     return hostname == domain;

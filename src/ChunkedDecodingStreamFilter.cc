@@ -173,7 +173,7 @@ bool ChunkedDecodingStreamFilter::readDataEnd
   size_t pbufSize = buf_.size();
   buf_.append(&inbuf[inbufOffset], &inbuf[inlen]);
   if(buf_.size() >= 2) {
-    if(util::startsWith(buf_, A2STR::CRLF)) {
+    if(buf_[0] == '\r' && buf_[1] == '\n') {
       inbufOffset += 2-pbufSize;
       buf_.clear();
       state_ = readChunkSizeStateHandler_;

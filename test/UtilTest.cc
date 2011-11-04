@@ -740,43 +740,36 @@ void UtilTest::testStartsWith() {
 
   target = "abcdefg";
   part = "abc";
-  CPPUNIT_ASSERT(util::startsWith(target, part));
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
 
   target = "abcdefg";
   part = "abx";
-  CPPUNIT_ASSERT(!util::startsWith(target, part));
   CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
                                    part.begin(), part.end()));
 
   target = "abcdefg";
   part = "bcd";
-  CPPUNIT_ASSERT(!util::startsWith(target, part));
   CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
                                    part.begin(), part.end()));
 
   target = "";
   part = "a";
-  CPPUNIT_ASSERT(!util::startsWith(target, part));
   CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
                                    part.begin(), part.end()));
 
   target = "";
   part = "";
-  CPPUNIT_ASSERT(util::startsWith(target, part));
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
   
   target = "a";
   part = "";
-  CPPUNIT_ASSERT(util::startsWith(target, part));
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
 
   target = "a";
   part = "a";
-  CPPUNIT_ASSERT(util::startsWith(target, part));
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
 }

@@ -149,13 +149,13 @@ void Netrc::parse(const std::string& path)
     if(!fp.getsn(buf, sizeof(buf))) {
       break;
     }
-    std::string line(buf);
-    if(util::startsWith(line, "#")) {
+    size_t len = strlen(buf);
+    if(len == 0 || buf[0] == '#') {
       continue;
     }
     std::vector<Scip> tokens;
     const char A2_DELIMS[] = " \t";
-    util::splitIterM(line.begin(), line.end(), std::back_inserter(tokens),
+    util::splitIterM(&buf[0], &buf[len], std::back_inserter(tokens),
                      A2_DELIMS, vend(A2_DELIMS)-1, true);
     const char A2_MACHINE[] = "machine";
     const char A2_DEFAULT[] = "default";

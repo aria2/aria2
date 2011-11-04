@@ -376,7 +376,8 @@ bool domainMatch(const std::string& requestHost, const std::string& domain)
 bool pathMatch(const std::string& requestPath, const std::string& path)
 {
   return requestPath == path ||
-    (util::startsWith(requestPath, path) &&
+    (util::startsWith(requestPath.begin(), requestPath.end(),
+                      path.begin(), path.end()) &&
      (path[path.size()-1] == '/' || requestPath[path.size()] == '/'));
 }
 

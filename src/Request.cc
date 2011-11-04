@@ -106,11 +106,14 @@ void Request::setReferer(const std::string& uri)
 bool Request::redirectUri(const std::string& uri) {
   supportsPersistentConnection_ = true;
   ++redirectCount_;
+  if(uri.empty()) {
+    return false;
+  }
   std::string redirectedUri;
   if(uri.find("://") == std::string::npos) {
     // rfc2616 requires absolute URI should be provided by Location header
     // field, but some servers don't obey this rule.
-    if(util::startsWith(uri, "/")) {
+    if(uri[0] == '/') {
       // abosulute path
       redirectedUri = strconcat(protocol_, "://", host_, uri);
     } else {

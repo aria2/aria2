@@ -254,7 +254,8 @@ std::string HttpRequest::createRequest()
     std::vector<std::string>::const_iterator j = headers_.begin();
     std::vector<std::string>::const_iterator jend = headers_.end();
     for(; j != jend; ++j) {
-      if(util::startsWith(*j, (*i).first)) {
+      if(util::startsWith((*j).begin(), (*j).end(),
+                          (*i).first.begin(), (*i).first.end())) {
         break;
       }
     }
@@ -440,11 +441,15 @@ bool HttpRequest::conditionalRequest() const
   if(!ifModSinceHeader_.empty()) {
     return true;
   }
+  const char A2_IF_MOD_SINCE[] = "if-modified-since";
+  const char A2_IF_NONE_MATCH[] = "if-none-match";
   for(std::vector<std::string>::const_iterator i = headers_.begin(),
         eoi = headers_.end(); i != eoi; ++i) {
     std::string hd = util::toLower(*i);
-    if(util::startsWith(hd, "if-modified-since") ||
-       util::startsWith(hd, "if-none-match")) {
+    if(util::startsWith(hd.begin(), hd.end(),
+                        A2_IF_MOD_SINCE, vend(A2_IF_MOD_SINCE)-1) ||
+       util::startsWith(hd.begin(), hd.end(),
+                        A2_IF_NONE_MATCH, vend(A2_IF_NONE_MATCH)-1)) {
       return true;
     }
   }

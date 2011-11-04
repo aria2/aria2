@@ -306,7 +306,7 @@ std::string joinUri(const std::string& baseUri, const std::string& uri)
       return uri;
     }
     std::vector<std::string> parts;
-    if(!util::startsWith(uri, "/")) {
+    if(uri.empty() || uri[0] != '/') {
       util::split(bus.dir.begin(), bus.dir.end(), std::back_inserter(parts),
                   '/');
     }

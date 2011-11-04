@@ -65,7 +65,7 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
   }
   const SharedHandle<OptionParser>& optparser = OptionParser::getInstance();
   while(1) {
-    if(!util::startsWith(line_, A2STR::SHARP_C) && !util::strip(line_).empty()){
+    if(!line_.empty() && line_[0] != '#') {
       util::split(line_.begin(), line_.end(), std::back_inserter(uris),
                   '\t', true);
       // Read options
@@ -76,12 +76,16 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
           break;
         }
         line_.assign(&buf[0], &buf[strlen(buf)]);
-        if(util::startsWith(line_, " ") || util::startsWith(line_, "\t")) {
-          ss << line_ << "\n";
-        } else if(util::startsWith(line_, A2STR::SHARP_C)) {
+        if(line_.empty()) {
           continue;
         } else {
-          break;
+          if(line_[0] == ' ' || line_[0] == '\t') {
+            ss << line_ << "\n";
+          } else if(line_[0] == '#') {
+            continue;
+          } else {
+            break;
+          }
         }
       }
       optparser->parse(op, ss);

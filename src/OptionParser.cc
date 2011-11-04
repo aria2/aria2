@@ -181,7 +181,7 @@ void OptionParser::parse(Option& option, std::istream& is) const
 {
   std::string line;
   while(getline(is, line)) {
-    if(util::startsWith(line, A2STR::SHARP_C)) {
+    if(line.empty() || line[0] == '#') {
       continue;
     }
     std::pair<Scip, Scip> nv;

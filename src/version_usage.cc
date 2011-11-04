@@ -86,7 +86,7 @@ void showUsage
   std::cout << _("Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE |"
                  " METALINK_FILE]...") << "\n"
             << "\n";
-  if(util::startsWith(keyword, "#")) {
+  if(!keyword.empty() && keyword[0] == '#') {
     std::vector<SharedHandle<OptionHandler> > handlers =
       keyword == TAG_ALL ? oparser->findAll() : oparser->findByTag(keyword);
     if(keyword == TAG_ALL) {

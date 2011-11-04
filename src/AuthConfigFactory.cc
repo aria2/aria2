@@ -253,7 +253,8 @@ AuthConfigFactory::findBasicCred
     std::lower_bound(basicCreds_.begin(), basicCreds_.end(), bc);
   for(; i != basicCreds_.end() && (*i).host_ == host && (*i).port_ == port;
       ++i) {
-    if(util::startsWith(bc.path_, (*i).path_)) {
+    if(util::startsWith(bc.path_.begin(), bc.path_.end(),
+                        (*i).path_.begin(), (*i).path_.end())) {
       return i;
     }
   }

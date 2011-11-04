@@ -59,6 +59,7 @@
 #include "prefs.h"
 #include "FileEntry.h"
 #include "error_code.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -874,10 +875,12 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
   }
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   std::string infoHash;
+  const char A2_URN_BTIH[] = "urn:btih:";
   for(List::ValueType::const_iterator xtiter = xts->begin(),
         eoi = xts->end(); xtiter != eoi && infoHash.empty(); ++xtiter) {
     const String* xt = downcast<String>(*xtiter);
-    if(util::startsWith(xt->s(), "urn:btih:")) {
+    if(util::startsWith(xt->s().begin(), xt->s().end(),
+                        A2_URN_BTIH, vend(A2_URN_BTIH)-1)) {
       std::string xtarg = xt->s().substr(9);
       size_t size = xtarg.size();
       if(size == 32) {

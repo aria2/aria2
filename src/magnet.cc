@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "magnet.h"
 #include "util.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -42,7 +43,9 @@ namespace magnet {
 SharedHandle<Dict> parse(const std::string& magnet)
 {
   SharedHandle<Dict> dict;
-  if(!util::startsWith(magnet, "magnet:?")) {
+  const char A2_MSGNET[] = "magnet:?";
+  if(!util::startsWith(magnet.begin(), magnet.end(),
+                       A2_MSGNET, vend(A2_MSGNET)-1)) {
     return dict;
   }
   dict.reset(new Dict());

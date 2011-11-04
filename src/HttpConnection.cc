@@ -57,6 +57,7 @@
 #include "a2functional.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -86,11 +87,14 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
   std::string result;
   std::string line;
   while(getline(istr, line)) {
-    static const std::string AUTH_HEADER("Authorization: Basic");
-    static const std::string PROXY_AUTH_HEADER("Proxy-Authorization: Basic");
-    if(util::startsWith(line, AUTH_HEADER)) {
+    const char A2_AUTH_HEADER[] = "Authorization: Basic";
+    const char A2_PROXY_AUTH_HEADER[] = "Proxy-Authorization: Basic";
+    if(util::startsWith(line.begin(), line.end(),
+                        A2_AUTH_HEADER, vend(A2_AUTH_HEADER)-1)) {
       result += "Authorization: Basic ********\n";
-    } else if(util::startsWith(line, PROXY_AUTH_HEADER)) {
+    } else if(util::startsWith(line.begin(), line.end(),
+                               A2_PROXY_AUTH_HEADER,
+                               vend(A2_PROXY_AUTH_HEADER)-1)) {
       result += "Proxy-Authorization: Basic ********\n";
     } else {
       strappend(result, line, "\n");

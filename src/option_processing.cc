@@ -57,6 +57,7 @@
 #include "bittorrent_helper.h"
 #include "BufferedFile.h"
 #include "console.h"
+#include "array_fun.h"
 #ifndef HAVE_DAEMON
 #include "daemon.h"
 #endif // !HAVE_DAEMON
@@ -114,7 +115,9 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           keyword = TAG_BASIC;
         } else {
           keyword = op.get(PREF_HELP);
-          if(util::startsWith(keyword, "--")) {
+          const char A2_HH[] = "--";
+          if(util::startsWith(keyword.begin(), keyword.end(),
+                              A2_HH, vend(A2_HH)-1)) {
             keyword = keyword.substr(2);
           }
           std::string::size_type eqpos = keyword.find("=");

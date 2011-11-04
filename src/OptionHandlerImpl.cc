@@ -58,6 +58,7 @@
 #include "LogFactory.h"
 #include "uri.h"
 #include "SegList.h"
+#include "array_fun.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -611,9 +612,15 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
   } else {
     Request req;
     std::string uri;
-    if(util::startsWith(optarg, "http://") ||
-       util::startsWith(optarg, "https://") ||
-       util::startsWith(optarg, "ftp://")) {
+    const char A2_HTTP[] = "http://";
+    const char A2_HTTPS[] = "https://";
+    const char A2_FTP[] = "ftp://";
+    if(util::startsWith(optarg.begin(), optarg.end(),
+                        A2_HTTP, vend(A2_HTTP)-1) ||
+       util::startsWith(optarg.begin(), optarg.end(),
+                        A2_HTTPS, vend(A2_HTTPS)-1) ||
+       util::startsWith(optarg.begin(), optarg.end(),
+                        A2_FTP, vend(A2_FTP)-1)) {
       uri = optarg;
     } else {
       uri = "http://";
