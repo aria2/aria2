@@ -56,7 +56,7 @@
 #include "Checksum.h"
 #include "uri.h"
 #include "MetalinkHttpEntry.h"
-#include "Base64.h"
+#include "base64.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST

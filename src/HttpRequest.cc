@@ -43,7 +43,7 @@
 #include "CookieStorage.h"
 #include "Option.h"
 #include "util.h"
-#include "Base64.h"
+#include "base64.h"
 #include "prefs.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"

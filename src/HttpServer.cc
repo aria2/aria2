@@ -44,7 +44,7 @@
 #include "util.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Base64.h"
+#include "base64.h"
 #include "a2functional.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"

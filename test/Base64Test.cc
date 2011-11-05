@@ -1,4 +1,4 @@
-#include "Base64.h"
+#include "base64.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

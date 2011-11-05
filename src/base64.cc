@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Base64.h"
+#include "base64.h"
 
 namespace aria2 {
 

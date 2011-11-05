@@ -64,7 +64,7 @@
 #include "SegmentMan.h"
 #include "TimedHaltCommand.h"
 #include "PeerStat.h"
-#include "Base64.h"
+#include "base64.h"
 #include "BitfieldMan.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigest.h"

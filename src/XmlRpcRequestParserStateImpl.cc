@@ -37,7 +37,7 @@
 #include "XmlRpcElements.h"
 #include "RecoverableException.h"
 #include "util.h"
-#include "Base64.h"
+#include "base64.h"
 
 namespace aria2 {
 
