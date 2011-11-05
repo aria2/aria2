@@ -69,6 +69,8 @@ SocketBuffer::StringBufEntry::StringBufEntry(const std::string& s)
   : str_(s)
 {}
 
+SocketBuffer::StringBufEntry::StringBufEntry() {}
+
 ssize_t SocketBuffer::StringBufEntry::send
 (const SharedHandle<SocketCore>& socket, size_t offset)
 {
@@ -78,6 +80,11 @@ ssize_t SocketBuffer::StringBufEntry::send
 bool SocketBuffer::StringBufEntry::final(size_t offset) const
 {
   return str_.size() <= offset;
+}
+
+void SocketBuffer::StringBufEntry::swap(std::string& s)
+{
+  str_.swap(s);
 }
 
 SocketBuffer::SocketBuffer(const SharedHandle<SocketCore>& socket):
@@ -96,6 +103,15 @@ void SocketBuffer::pushStr(const std::string& data)
 {
   if(data.size() > 0) {
     bufq_.push_back(SharedHandle<BufEntry>(new StringBufEntry(data)));
+  }
+}
+
+void SocketBuffer::pushStrSwap(std::string& data)
+{
+  if(data.size() > 0) {
+    SharedHandle<StringBufEntry> e(new StringBufEntry());
+    e->swap(data);
+    bufq_.push_back(e);
   }
 }
 

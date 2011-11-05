@@ -71,9 +71,11 @@ private:
   class StringBufEntry:public BufEntry {
   public:
     StringBufEntry(const std::string& s);
+    StringBufEntry();
     virtual ssize_t send
     (const SharedHandle<SocketCore>& socket, size_t offset);
     virtual bool final(size_t offset) const;
+    void swap(std::string& s);
   private:
     std::string str_;
   };
@@ -102,6 +104,11 @@ public:
 
   // Feeds data into queue. This function doesn't send data.
   void pushStr(const std::string& data);
+
+  // Feeds data into queue. This function doesn't send data.  data is
+  // swapped with internal buffer, so after this call, data will be
+  // empty.
+  void pushStrSwap(std::string& data);
 
   // Sends data in queue.  Returns the number of bytes sent.
   ssize_t send();

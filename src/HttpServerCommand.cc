@@ -123,9 +123,10 @@ bool HttpServerCommand::execute()
       }
       if(!httpServer_->authenticate()) {
         httpServer_->disableKeepAlive();
+        std::string text;
         httpServer_->feedResponse("401 Unauthorized",
                                   "WWW-Authenticate: Basic realm=\"aria2\"",
-                                  "","text/html");
+                                  text,"text/html");
         Command* command =
           new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
         e_->addCommand(command);

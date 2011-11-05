@@ -156,14 +156,14 @@ const std::string& HttpServer::getRequestPath() const
   return lastRequestHeader_->getRequestPath();
 }
 
-void HttpServer::feedResponse(const std::string& text, const std::string& contentType)
+void HttpServer::feedResponse(std::string& text, const std::string& contentType)
 {
   feedResponse("200 OK", "", text, contentType);
 }
 
 void HttpServer::feedResponse(const std::string& status,
                               const std::string& headers,
-                              const std::string& text,
+                              std::string& text,
                               const std::string& contentType)
 {
   std::string httpDate = Time().toHTTPDate();
@@ -194,8 +194,8 @@ void HttpServer::feedResponse(const std::string& status,
 
   header += "\r\n";
   A2_LOG_DEBUG(fmt("HTTP Server sends response:\n%s", header.c_str()));
-  socketBuffer_.pushStr(header);
-  socketBuffer_.pushStr(text);
+  socketBuffer_.pushStrSwap(header);
+  socketBuffer_.pushStrSwap(text);
 }
 
 ssize_t HttpServer::sendResponse()

@@ -84,11 +84,11 @@ public:
 
   const std::string& getRequestPath() const;
 
-  void feedResponse(const std::string& text, const std::string& contentType);
+  void feedResponse(std::string& text, const std::string& contentType);
 
   void feedResponse(const std::string& status,
                     const std::string& headers,
-                    const std::string& text,
+                    std::string& text,
                     const std::string& contentType);
 
   bool authenticate();
