@@ -111,14 +111,17 @@ bool Request::redirectUri(const std::string& uri) {
   if(uri.find("://") == std::string::npos) {
     // rfc2616 requires absolute URI should be provided by Location header
     // field, but some servers don't obey this rule.
+    uri::UriStruct rus(us_);
+    rus.query.clear();
+    rus.file.clear();
+    size_t offset = 0;
     if(uri[0] == '/') {
       // abosulute path
-      redirectedUri = strconcat(us_.protocol, "://", us_.host, uri);
-    } else {
-      // relative path
-      redirectedUri = strconcat(us_.protocol, "://", us_.host, us_.dir,
-                                "/", uri);
+      rus.dir.clear();
+      offset = 1;
     }
+    redirectedUri = uri::construct(rus);
+    redirectedUri.append(uri.begin()+offset, uri.end());
   } else {
     redirectedUri = uri;
   }

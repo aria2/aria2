@@ -98,8 +98,13 @@ void RequestTest::testRedirectUri()
   req.supportsPersistentConnection(false);
   req.setUri("http://aria.rednoah.com:8080/aria2/index.html");
   
-  bool v2 = req.redirectUri("http://aria.rednoah.co.jp/");
-  CPPUNIT_ASSERT(v2);
+  // See port number is preserved.
+  CPPUNIT_ASSERT(req.redirectUri("/foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080/foo"),
+                       req.getCurrentUri());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, req.getRedirectCount());
+
+  CPPUNIT_ASSERT(req.redirectUri("http://aria.rednoah.co.jp/"));
   // persistent connection flag is set to be true after redirection
   CPPUNIT_ASSERT(req.supportsPersistentConnection());
   // uri must be the same
@@ -118,20 +123,20 @@ void RequestTest::testRedirectUri()
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
   // See redirect count is incremented.
-  CPPUNIT_ASSERT_EQUAL((unsigned int)1, req.getRedirectCount());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)2, req.getRedirectCount());
 
   // Give abosulute path
   CPPUNIT_ASSERT(req.redirectUri("/abspath/to/file"));
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.co.jp/abspath/to/file"),
                        req.getCurrentUri());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)2, req.getRedirectCount());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)3, req.getRedirectCount());
 
   // Give relative path
   CPPUNIT_ASSERT(req.redirectUri("relativepath/to/file"));
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.co.jp/abspath/to/"
                                    "relativepath/to/file"),
                        req.getCurrentUri());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)3, req.getRedirectCount());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)4, req.getRedirectCount());
 }
 
 void RequestTest::testRedirectUri2()
