@@ -56,6 +56,7 @@
 #include "Option.h"
 #include "fmt.h"
 #include "bittorrent_helper.h"
+#include "array_fun.h"
 
 namespace aria2 {
 
@@ -128,14 +129,15 @@ void MSEHandshake::sendPublicKey()
 {
   A2_LOG_DEBUG(fmt("CUID#%lld - Sending public key.",
                    cuid_));
-  unsigned char buffer[KEY_LENGTH+MAX_PAD_LENGTH];
-  dh_->getPublicKey(buffer, KEY_LENGTH);
+  unsigned char* buf = new unsigned char[KEY_LENGTH+MAX_PAD_LENGTH];
+  array_ptr<unsigned char> bufp(buf);
+  dh_->getPublicKey(buf, KEY_LENGTH);
 
   size_t padLength =
     SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-  dh_->generateNonce(buffer+KEY_LENGTH, padLength);
-  socketBuffer_.pushStr(std::string(&buffer[0],
-                                    &buffer[KEY_LENGTH+padLength]));
+  dh_->generateNonce(buf+KEY_LENGTH, padLength);
+  socketBuffer_.pushBytes(buf, KEY_LENGTH+padLength);
+  bufp.reset(0);
 }
 
 void MSEHandshake::read()
@@ -222,17 +224,11 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
 
 void MSEHandshake::encryptAndSendData(const unsigned char* data, size_t length)
 {
-  unsigned char temp[4096];
-  const unsigned char* dptr = data;
-  size_t s;
-  size_t r = length;
-  while(r > 0) {
-    s = std::min(r, sizeof(temp));
-    encryptor_->encrypt(temp, s, dptr, s);
-    socketBuffer_.pushStr(std::string(&temp[0], &temp[s]));
-    dptr += s;
-    r -= s;
-  }
+  unsigned char* buf = new unsigned char[length];
+  array_ptr<unsigned char> bufp(buf);
+  encryptor_->encrypt(buf, length, data, length);
+  socketBuffer_.pushBytes(buf, length);
+  bufp.reset(0);
 }
 
 void MSEHandshake::createReq1Hash(unsigned char* md) const
@@ -277,50 +273,52 @@ uint16_t MSEHandshake::decodeLength16(const unsigned char* buffer)
 void MSEHandshake::sendInitiatorStep2()
 {
   A2_LOG_DEBUG(fmt("CUID#%lld - Sending negotiation step2.", cuid_));
-  unsigned char md[20];
+  // Assuming no exception
+  unsigned char* md = new unsigned char[20];
   createReq1Hash(md);
-  socketBuffer_.pushStr(std::string(&md[0], &md[sizeof(md)]));
+  socketBuffer_.pushBytes(md, 20);
+  // Assuming no exception
+  md = new unsigned char[20];
   createReq23Hash(md, infoHash_);
-  socketBuffer_.pushStr(std::string(&md[0], &md[sizeof(md)]));
-
+  socketBuffer_.pushBytes(md, 20);
   // buffer is filled in this order:
   //   VC(VC_LENGTH bytes),
   //   crypto_provide(CRYPTO_BITFIELD_LENGTH bytes),
-  //   len(padC)(2bytes),
-  //   padC(len(padC)bytes <= MAX_PAD_LENGTH),
-  //   len(IA)(2bytes)
-  unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
-
+  //   len(padC)(2 bytes),
+  //   padC(len(padC) bytes <= MAX_PAD_LENGTH),
+  //   len(IA)(2 bytes)
+  unsigned char buffer[40+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
+  unsigned char* ptr = buffer;
   // VC
-  memcpy(buffer, VC, sizeof(VC));
+  memcpy(ptr, VC, sizeof(VC));
+  ptr += sizeof(VC);
   // crypto_provide
-  unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
-  memset(cryptoProvide, 0, sizeof(cryptoProvide));
+  memset(ptr, 0, CRYPTO_BITFIELD_LENGTH);
   if(option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-    cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
+    ptr[3] = CRYPTO_PLAIN_TEXT;
   }
-  cryptoProvide[3] |= CRYPTO_ARC4;
-  memcpy(buffer+VC_LENGTH, cryptoProvide, sizeof(cryptoProvide));
-
+  ptr[3] |= CRYPTO_ARC4;
+  ptr += CRYPTO_BITFIELD_LENGTH;
   // len(padC)
-  uint16_t padCLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+  uint16_t padCLength =
+    SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
   {
     uint16_t padCLengthBE = htons(padCLength);
-    memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padCLengthBE,
-           sizeof(padCLengthBE));
+    memcpy(ptr, &padCLengthBE, sizeof(padCLengthBE));
   }
+  ptr += 2;
   // padC
-  memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padCLength);
+  memset(ptr, 0, padCLength);
+  ptr += padCLength;
   // len(IA)
   // currently, IA is zero-length.
   uint16_t iaLength = 0;
   {
     uint16_t iaLengthBE = htons(iaLength);
-    memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength,
-           &iaLengthBE,sizeof(iaLengthBE));
+    memcpy(ptr, &iaLengthBE, sizeof(iaLengthBE));
   }
-  encryptAndSendData(buffer,
-                     VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padCLength+2);
+  ptr += 2;
+  encryptAndSendData(buffer, ptr-buffer);
 }
 
 // This function reads exactly until the end of VC marker is reached.

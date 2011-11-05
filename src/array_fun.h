@@ -95,6 +95,11 @@ public:
   {
     return array_;
   }
+
+  void reset(T* array)
+  {
+    array_ = array;
+  }
 };
 
 template<typename T, size_t N>
