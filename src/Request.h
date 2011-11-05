@@ -40,6 +40,7 @@
 
 #include "SharedHandle.h"
 #include "TimerA2.h"
+#include "uri.h"
 
 namespace aria2 {
 
@@ -47,6 +48,7 @@ class PeerStat;
 
 class Request {
 private:
+  uri::UriStruct us_;
   std::string uri_;
   std::string currentUri_;
   /**
@@ -57,17 +59,12 @@ private:
    * URI used as Referer in the initial request
    */
   std::string referer_;
-  std::string protocol_;
-  std::string host_;
-  uint16_t port_;
-  std::string dir_;
-  std::string file_;
-  /* after ? mark(includes '?' itself) */
-  std::string query_;
+  std::string method_;
+  std::string connectedHostname_;
+  std::string connectedAddr_;
+
   unsigned int tryCount_;
-
   unsigned int redirectCount_;
-
   // whether or not the server supports persistent connection
   bool supportsPersistentConnection_;
   // enable keep-alive if possible.
@@ -76,27 +73,9 @@ private:
   bool pipeliningHint_;
   // maximum number of pipelined requests
   unsigned int maxPipelinedRequest_;
-
-  std::string method_;
-
-  std::string username_;
-
-  std::string password_;
-
-  bool hasPassword_;
-
-  bool ipv6LiteralAddress_;
-
   SharedHandle<PeerStat> peerStat_;
-
   bool removalRequested_;
-
-  std::string connectedHostname_;
-
-  std::string connectedAddr_;
-
   uint16_t connectedPort_;
-
   Timer wakeTime_;
 
   bool parseUri(const std::string& uri);
@@ -121,16 +100,16 @@ public:
   const std::string& getPreviousUri() const { return previousUri_; }
   const std::string& getReferer() const { return referer_; }
   void setReferer(const std::string& uri);
-  const std::string& getProtocol() const { return protocol_; }
-  const std::string& getHost() const { return host_; }
+  const std::string& getProtocol() const { return us_.protocol; }
+  const std::string& getHost() const { return us_.host; }
   // Same as getHost(), but for IPv6 literal addresses, enclose them
   // with square brackets and return.
   std::string getURIHost() const;
-  uint16_t getPort() const { return port_; }
-  const std::string& getDir() const { return dir_; }
-  const std::string& getFile() const { return file_;}
-  const std::string& getQuery() const { return query_; }
-  bool isIPv6LiteralAddress() const { return ipv6LiteralAddress_; }
+  uint16_t getPort() const { return us_.port; }
+  const std::string& getDir() const { return us_.dir; }
+  const std::string& getFile() const { return us_.file;}
+  const std::string& getQuery() const { return us_.query; }
+  bool isIPv6LiteralAddress() const { return us_.ipv6LiteralAddress; }
 
   void supportsPersistentConnection(bool f)
   {
@@ -178,18 +157,18 @@ public:
 
   const std::string& getUsername() const
   {
-    return username_;
+    return us_.username;
   }
 
   const std::string& getPassword() const
   {
-    return password_;
+    return us_.password;
   }
 
   // Returns true if current URI has embedded password.
   bool hasPassword() const
   {
-    return hasPassword_;
+    return us_.hasPassword;
   }
 
   const std::string& getMethod() const

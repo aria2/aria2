@@ -57,15 +57,13 @@ const std::string Request::PROTO_HTTPS("https");
 const std::string Request::PROTO_FTP("ftp");
 
 Request::Request():
-  port_(0), tryCount_(0),
+  method_(METHOD_GET),
+  tryCount_(0),
   redirectCount_(0),
   supportsPersistentConnection_(true),
   keepAliveHint_(false),
   pipeliningHint_(false),
   maxPipelinedRequest_(1),
-  method_(METHOD_GET),
-  hasPassword_(false),
-  ipv6LiteralAddress_(false),
   removalRequested_(false),
   connectedPort_(0),
   wakeTime_(global::wallclock())
@@ -115,10 +113,11 @@ bool Request::redirectUri(const std::string& uri) {
     // field, but some servers don't obey this rule.
     if(uri[0] == '/') {
       // abosulute path
-      redirectedUri = strconcat(protocol_, "://", host_, uri);
+      redirectedUri = strconcat(us_.protocol, "://", us_.host, uri);
     } else {
       // relative path
-      redirectedUri = strconcat(protocol_, "://", host_, dir_, "/", uri);
+      redirectedUri = strconcat(us_.protocol, "://", us_.host, us_.dir,
+                                "/", uri);
     }
   } else {
     redirectedUri = uri;
@@ -130,16 +129,7 @@ bool Request::parseUri(const std::string& srcUri) {
   currentUri_ = removeFragment(srcUri);
   uri::UriStruct us;
   if(uri::parse(us, currentUri_)) {
-    protocol_.swap(us.protocol);
-    host_.swap(us.host);
-    port_ = us.port;
-    dir_.swap(us.dir);
-    file_.swap(us.file);
-    query_.swap(us.query);
-    username_.swap(us.username);
-    password_.swap(us.password);
-    hasPassword_ = us.hasPassword;
-    ipv6LiteralAddress_ = us.ipv6LiteralAddress;
+    us_.swap(us);
     return true;
   } else {
     return false;
