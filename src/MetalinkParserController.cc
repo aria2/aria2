@@ -284,7 +284,7 @@ void MetalinkParserController::setHashOfChecksum(const std::string& md)
     return;
   }
   if(MessageDigest::isValidHash(tChecksum_->getHashType(), md)) {
-    tChecksum_->setDigest(util::fromHex(md));
+    tChecksum_->setDigest(util::fromHex(md.begin(), md.end()));
   } else {
     cancelChecksumTransaction();
   }
@@ -360,7 +360,7 @@ void MetalinkParserController::addHashOfChunkChecksumV4(const std::string& md)
     return;
   }
   if(MessageDigest::isValidHash(tChunkChecksumV4_->getHashType(), md)) {
-    tempChunkChecksumsV4_.push_back(util::fromHex(md));
+    tempChunkChecksumsV4_.push_back(util::fromHex(md.begin(), md.end()));
   } else {
     cancelChunkChecksumTransactionV4();
   }
@@ -463,7 +463,7 @@ void MetalinkParserController::setMessageDigestOfChunkChecksum(const std::string
     return;
   }
   if(MessageDigest::isValidHash(tChunkChecksum_->getHashType(), md)) {
-    tempHashPair_.second = util::fromHex(md);
+    tempHashPair_.second = util::fromHex(md.begin(), md.end());
   } else {
     cancelChunkChecksumTransaction();
   }

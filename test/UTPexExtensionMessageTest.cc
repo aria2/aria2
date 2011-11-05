@@ -4,6 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "Peer.h"
 #include "a2netcompat.h"
 #include "util.h"
@@ -103,9 +104,9 @@ void UTPexExtensionMessageTest::testGetBencodedData()
 
   std::string expected = "d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
-    "7:added.f2:"+util::fromHex("0200")+
+    "7:added.f2:"+fromHex("0200")+
     "6:added618:"+std::string(&c5[0], &c5[COMPACT_LEN_IPV6])+
-    "8:added6.f1:"+util::fromHex("00")+
+    "8:added6.f1:"+fromHex("00")+
     "7:dropped12:"+std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "8:dropped618:"+std::string(&c6[0], &c6[COMPACT_LEN_IPV6])+
     "e";
@@ -194,9 +195,9 @@ void UTPexExtensionMessageTest::testCreate()
 
   std::string data = std::string(&id[0], &id[1])+"d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
-    "7:added.f2:"+util::fromHex("0200")+
+    "7:added.f2:"+fromHex("0200")+
     "6:added618:"+std::string(&c5[0], &c5[COMPACT_LEN_IPV6])+
-    "8:added6.f1:"+util::fromHex("00")+
+    "8:added6.f1:"+fromHex("00")+
     "7:dropped12:"+std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "8:dropped618:"+std::string(&c6[0], &c6[COMPACT_LEN_IPV6])+
     "e";

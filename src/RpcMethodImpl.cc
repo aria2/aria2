@@ -1130,10 +1130,8 @@ void changeOption
     std::pair<Scip, Scip> p;
     util::divide(p, checksum.begin(), checksum.end(), '=');
     std::string hashType(p.first.first, p.first.second);
-    std::string hexDigest(p.second.first, p.second.second);
     util::lowercase(hashType);
-    util::lowercase(hexDigest);
-    dctx->setDigest(hashType, util::fromHex(hexDigest));
+    dctx->setDigest(hashType, util::fromHex(p.second.first, p.second.second));
   }
   if(option.defined(PREF_SELECT_FILE)) {
     SegList<int> sgl;

@@ -4,6 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "Option.h"
 #include "util.h"
 #include "Exception.h"
@@ -391,9 +392,9 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
     "8:completei100e"
     "10:incompletei200e";
   res += "5:peers6:";
-  res += util::fromHex("c0a800011ae1");
+  res += fromHex("c0a800011ae1");
   res += "6:peers618:";
-  res += util::fromHex("100210354527354678541237324732171ae1");
+  res += fromHex("100210354527354678541237324732171ae1");
   res += "e";
   
   DefaultBtAnnounce an(dctx_, option_);

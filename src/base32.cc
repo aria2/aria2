@@ -94,43 +94,6 @@ std::string encode(const std::string& src)
   return ret;
 }
 
-std::string decode(const std::string& src)
-{
-  std::string ret;
-  if(src.size()%8) {
-    return ret;
-  }
-  bool done = false;
-  for(size_t i = 0; i < src.size() && !done; i += 8) {
-    uint64_t buf = 0;
-    size_t bits = 0;
-    for(size_t j = 0; j < 8; ++j) {
-      char ch = src[i+j];
-      unsigned char value;
-      if('A' <= ch && ch <= 'Z') {
-        value = ch-'A';
-      } else if('2' <= ch && ch <= '7') {
-        value = ch-'2'+26;
-      } else if(ch == '=') {
-        done = true;
-        break;
-      } else {
-        ret.clear();
-        return ret;
-      }
-      buf <<= 5;
-      buf += value;
-      bits += 5;
-    }
-    buf >>= (bits%8);
-    bits = bits/8*8;
-    buf = hton64(buf);
-    char* p = reinterpret_cast<char*>(&buf);
-    ret.append(&p[(64-bits)/8], &p[8]);
-  }
-  return ret;
-}
-
 } // namespace base32
 
 } // namespace aria2

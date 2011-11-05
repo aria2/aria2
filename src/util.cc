@@ -486,10 +486,8 @@ std::string toHex(const std::string& src)
   return toHex(reinterpret_cast<const unsigned char*>(src.c_str()), src.size());
 }
 
-namespace {
 unsigned int hexCharToUInt(unsigned char ch)
 {
-
   if('a' <= ch && ch <= 'f') {
     ch -= 'a';
     ch += 10;
@@ -502,25 +500,6 @@ unsigned int hexCharToUInt(unsigned char ch)
     ch = 255;
   }
   return ch;
-}
-} // namespace
-
-std::string fromHex(const std::string& src)
-{
-  std::string dest;
-  if(src.size()%2) {
-    return dest;
-  }
-  for(size_t i = 0, eoi = src.size(); i < eoi; i += 2) {
-    unsigned char high = hexCharToUInt(src[i]);
-    unsigned char low = hexCharToUInt(src[i+1]);
-    if(high == 255 || low == 255) {
-      dest.clear();
-      return dest;
-    }
-    dest += (high*16+low);
-  }
-  return dest;
 }
 
 FILE* openFile(const std::string& filename, const std::string& mode) {

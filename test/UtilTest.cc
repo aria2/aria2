@@ -1553,17 +1553,17 @@ void UtilTest::testFromHex()
   std::string dest;
 
   src = "0011fF";
-  dest = util::fromHex(src);
+  dest = util::fromHex(src.begin(), src.end());
   CPPUNIT_ASSERT_EQUAL((size_t)3, dest.size());
   CPPUNIT_ASSERT_EQUAL((char)0x00, dest[0]);
   CPPUNIT_ASSERT_EQUAL((char)0x11, dest[1]);
   CPPUNIT_ASSERT_EQUAL((char)0xff, dest[2]);
 
   src = "0011f";
-  CPPUNIT_ASSERT(util::fromHex(src).empty());
+  CPPUNIT_ASSERT(util::fromHex(src.begin(), src.end()).empty());
 
   src = "001g";
-  CPPUNIT_ASSERT(util::fromHex(src).empty());
+  CPPUNIT_ASSERT(util::fromHex(src.begin(), src.end()).empty());
 }
 
 void UtilTest::testParsePrioritizePieceRange()
@@ -1720,31 +1720,31 @@ void UtilTest::testIsUtf8String()
   CPPUNIT_ASSERT(util::isUtf8("ascii"));
   // "Hello World" in Japanese UTF-8
   CPPUNIT_ASSERT(util::isUtf8
-                 (util::fromHex("e38193e38293e381abe381a1e381afe4b896e7958c")));
+                 (fromHex("e38193e38293e381abe381a1e381afe4b896e7958c")));
   // "World" in Shift_JIS
-  CPPUNIT_ASSERT(!util::isUtf8(util::fromHex("90a28a")+"E"));
+  CPPUNIT_ASSERT(!util::isUtf8(fromHex("90a28a")+"E"));
   // UTF8-2
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("c280")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("dfbf")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("c280")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("dfbf")));
   // UTF8-3
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("e0a080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("e0bf80")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("e18080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ec8080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ed8080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ed9f80")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ee8080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("ef8080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("e0a080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("e0bf80")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("e18080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("ec8080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("ed8080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("ed9f80")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("ee8080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("ef8080")));
   // UTF8-4
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f0908080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f0bf8080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f1808080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f3808080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f4808080")));
-  CPPUNIT_ASSERT(util::isUtf8(util::fromHex("f48f8080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("f0908080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("f0bf8080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("f1808080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("f3808080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("f4808080")));
+  CPPUNIT_ASSERT(util::isUtf8(fromHex("f48f8080")));
 
   CPPUNIT_ASSERT(util::isUtf8(""));
-  CPPUNIT_ASSERT(!util::isUtf8(util::fromHex("00")));
+  CPPUNIT_ASSERT(!util::isUtf8(fromHex("00")));
 }
 
 void UtilTest::testNextParam()

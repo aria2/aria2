@@ -417,7 +417,7 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
 {
   SharedHandle<List> path = List::g();
   path->append("path");
-  path->append(util::fromHex("90a28a")+"E");
+  path->append(fromHex("90a28a")+"E");
   SharedHandle<Dict> file = Dict::g();
   file->put("length", Integer::g(1024));
   file->put("path", path);
@@ -427,7 +427,7 @@ void BittorrentHelperTest::testLoadFromMemory_multiFileNonUtf8Path()
   info->put("files", files);
   info->put("piece length", Integer::g(1024));
   info->put("pieces", "01234567890123456789");
-  info->put("name", util::fromHex("1b")+"$B%O%m!<"+util::fromHex("1b")+"(B");
+  info->put("name", fromHex("1b")+"$B%O%m!<"+fromHex("1b")+"(B");
   Dict dict;
   dict.put("info", info);
   SharedHandle<DownloadContext> dctx(new DownloadContext());
@@ -446,7 +446,7 @@ void BittorrentHelperTest::testLoadFromMemory_singleFileNonUtf8Path()
   SharedHandle<Dict> info = Dict::g();
   info->put("piece length", Integer::g(1024));
   info->put("pieces", "01234567890123456789");
-  info->put("name", util::fromHex("90a28a")+"E");
+  info->put("name", fromHex("90a28a")+"E");
   info->put("length", Integer::g(1024));
   Dict dict;
   dict.put("info", info);
@@ -787,7 +787,7 @@ void BittorrentHelperTest::testParseMagnet()
 void BittorrentHelperTest::testParseMagnet_base32()
 {
   std::string infoHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
-  std::string base32InfoHash = base32::encode(util::fromHex(infoHash));
+  std::string base32InfoHash = base32::encode(fromHex(infoHash));
   std::string magnet = "magnet:?xt=urn:btih:"+base32InfoHash+"&dn=aria2";
   SharedHandle<TorrentAttribute> attrs = bittorrent::parseMagnet(magnet);
   CPPUNIT_ASSERT_EQUAL
@@ -830,7 +830,7 @@ void BittorrentHelperTest::testExtractPeerFromString()
 {
   std::string hextext = "100210354527354678541237324732171ae1";
   hextext += "20010db8bd0501d2288a1fc0000110ee1ae2";
-  std::string peersstr = "36:"+util::fromHex(hextext);
+  std::string peersstr = "36:"+fromHex(hextext);
   SharedHandle<ValueBase> str =
     bencode2::decode(peersstr.begin(), peersstr.end());
   std::deque<SharedHandle<Peer> > peers;
@@ -845,7 +845,7 @@ void BittorrentHelperTest::testExtractPeerFromString()
 
   hextext = "c0a800011ae1";
   hextext += "c0a800021ae2";
-  peersstr = "12:"+util::fromHex(hextext);
+  peersstr = "12:"+fromHex(hextext);
   str = bencode2::decode(peersstr.begin(), peersstr.end());
   peers.clear();
   extractPeer(str, AF_INET, std::back_inserter(peers));

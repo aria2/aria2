@@ -28,18 +28,26 @@ void Base32Test::testEncode()
   CPPUNIT_ASSERT_EQUAL(std::string("GEZDG==="), base32::encode("123"));
   CPPUNIT_ASSERT_EQUAL(std::string("GEZDGNA="), base32::encode("1234"));
   CPPUNIT_ASSERT_EQUAL(std::string("GEZDGNBV"), base32::encode("12345"));
+  std::string s = "248d0a1cd08284";
   CPPUNIT_ASSERT_EQUAL(std::string("ESGQUHGQQKCA===="),
-                       base32::encode(util::fromHex("248d0a1cd08284")));
+                       base32::encode(util::fromHex(s.begin(), s.end())));
 }
 
 void Base32Test::testDecode()
 {
-  CPPUNIT_ASSERT_EQUAL(std::string(), base32::decode(""));
-  CPPUNIT_ASSERT_EQUAL(std::string("1"), base32::decode("GE======"));
-  CPPUNIT_ASSERT_EQUAL(std::string("12"), base32::decode("GEZA===="));
-  CPPUNIT_ASSERT_EQUAL(std::string("123"), base32::decode("GEZDG==="));
-  CPPUNIT_ASSERT_EQUAL(std::string("1234"), base32::decode("GEZDGNA="));
-  CPPUNIT_ASSERT_EQUAL(std::string("12345"), base32::decode("GEZDGNBV"));
+  std::string s = "";
+  CPPUNIT_ASSERT_EQUAL(std::string(), base32::decode(s.begin(), s.end()));
+  s = "GE======";
+  CPPUNIT_ASSERT_EQUAL(std::string("1"), base32::decode(s.begin(), s.end()));
+  s = "GEZA====";
+  CPPUNIT_ASSERT_EQUAL(std::string("12"), base32::decode(s.begin(), s.end()));
+  s = "GEZDG===";
+  CPPUNIT_ASSERT_EQUAL(std::string("123"), base32::decode(s.begin(), s.end()));
+  s = "GEZDGNA=";
+  CPPUNIT_ASSERT_EQUAL(std::string("1234"), base32::decode(s.begin(), s.end()));
+  s = "GEZDGNBV";
+  CPPUNIT_ASSERT_EQUAL(std::string("12345"),
+                       base32::decode(s.begin(), s.end()));
 }
 
 } // namespace aria2

@@ -5,6 +5,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "Exception.h"
 #include "util.h"
 #include "LpdMessageDispatcher.h"
@@ -37,7 +38,7 @@ void LpdMessageDispatcherTest::testCreateLpdRequest()
                  "Infohash: cd41c7fdddfd034a15a04d7ff881216e01c4ceaf\r\n"
                  "\r\n\r\n"),
      bittorrent::createLpdRequest("239.192.152.143", 6771,
-                                  util::fromHex(infoHashString), 6000));
+                                  fromHex(infoHashString), 6000));
 }
 
 void LpdMessageDispatcherTest::testSendMessage()

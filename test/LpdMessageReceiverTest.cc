@@ -4,6 +4,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "TestUtil.h"
 #include "Exception.h"
 #include "util.h"
 #include "LpdMessageReceiver.h"
@@ -39,7 +40,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
   sendsock->setMulticastTtl(0);
 
   std::string infoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ceaf";
-  std::string infoHash = util::fromHex(infoHashString);
+  std::string infoHash = fromHex(infoHashString);
   std::string request =
     bittorrent::createLpdRequest(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
                                  infoHash,
@@ -59,7 +60,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
   std::string badInfoHashString = "cd41c7fdddfd034a15a04d7ff881216e01c4ce";
   request =
     bittorrent::createLpdRequest(LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT,
-                                 util::fromHex(badInfoHashString),
+                                 fromHex(badInfoHashString),
                                  6000);
   sendsock->writeData(request.c_str(), request.size(),
                      LPD_MULTICAST_ADDR, LPD_MULTICAST_PORT);

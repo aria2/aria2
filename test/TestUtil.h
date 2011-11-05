@@ -42,6 +42,8 @@ Cookie createCookie
  const std::string& path,
  bool secure);
 
+std::string fromHex(const std::string& s);
+
 #ifdef ENABLE_MESSAGE_DIGEST
 // Returns hex digest of contents of file denoted by filename.
 std::string fileHexDigest

@@ -76,6 +76,11 @@ Cookie createCookie
     (name, value, expiryTime, true, domain, hostOnly, path, secure, false, 0);
 }
 
+std::string fromHex(const std::string& s)
+{
+  return util::fromHex(s.begin(), s.end());
+}
+
 #ifdef ENABLE_MESSAGE_DIGEST
 std::string fileHexDigest
 (const SharedHandle<MessageDigest>& ctx, const std::string& filename)

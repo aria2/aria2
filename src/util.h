@@ -233,10 +233,30 @@ std::string toHex(const char* src, size_t len);
 
 std::string toHex(const std::string& src);
 
-// Converts hexadecimal ascii string 'src' into packed binary form and
-// return the result. If src is not well formed, then empty string is
-// returned.
-std::string fromHex(const std::string& src);
+unsigned int hexCharToUInt(unsigned char ch);
+
+// Converts hexadecimal ascii characters in [first, last) into packed
+// binary form and return the result. If characters in given range is
+// not well formed, then empty string is returned.
+template<typename InputIterator>
+std::string fromHex(InputIterator first, InputIterator last)
+{
+  std::string dest;
+  size_t len = last-first;
+  if(len%2) {
+    return dest;
+  }
+  for(; first != last; first += 2) {
+    unsigned char high = hexCharToUInt(*first);
+    unsigned char low = hexCharToUInt(*(first+1));
+    if(high == 255 || low == 255) {
+      dest.clear();
+      return dest;
+    }
+    dest += (high*16+low);
+  }
+  return dest;
+}
 
 FILE* openFile(const std::string& filename, const std::string& mode);
 

@@ -94,7 +94,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
       return msg;
     }
     SharedHandle<HttpHeader> header = proc.getHttpRequestHeader();
-    std::string infoHashString = header->getFirst("Infohash");
+    const std::string& infoHashString = header->getFirst("Infohash");
     uint16_t port = header->getFirstAsUInt("Port");
     A2_LOG_INFO(fmt("LPD message received infohash=%s, port=%u from %s",
                     infoHashString.c_str(),
@@ -102,7 +102,8 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
                     peerAddr.first.c_str()));
     std::string infoHash;
     if(infoHashString.size() != 40 ||
-       (infoHash = util::fromHex(infoHashString)).empty() ||
+       (infoHash = util::fromHex(infoHashString.begin(),
+                                 infoHashString.end())).empty() ||
        port == 0) {
       A2_LOG_INFO(fmt("LPD bad request. infohash=%s", infoHashString.c_str()));
       msg.reset(new LpdMessage());
