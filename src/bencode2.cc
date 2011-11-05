@@ -57,7 +57,7 @@ decodeiter
 
 namespace {
 template<typename InputIterator>
-std::pair<std::string, InputIterator>
+std::pair<std::pair<InputIterator, InputIterator>, InputIterator>
 decoderawstring(InputIterator first, InputIterator last)
 {
   InputIterator i = first;
@@ -77,7 +77,7 @@ decoderawstring(InputIterator first, InputIterator last)
            len, static_cast<int>(last-i)),
        error_code::BENCODE_PARSE_ERROR);
   }
-  return std::make_pair(std::string(i, i+len), i+len);
+  return std::make_pair(std::make_pair(i, i+len), i+len);
 }
 } // namespace
 
@@ -86,8 +86,9 @@ template<typename InputIterator>
 std::pair<SharedHandle<ValueBase>, InputIterator>
 decodestring(InputIterator first, InputIterator last)
 {
-  std::pair<std::string, InputIterator> r = decoderawstring(first, last);
-  return std::make_pair(String::g(r.first), r.second);
+  std::pair<std::pair<InputIterator, InputIterator>, InputIterator> r =
+    decoderawstring(first, last);
+  return std::make_pair(String::g(r.first.first, r.first.second), r.second);
 }
 } // namespace
 
@@ -121,10 +122,11 @@ decodedict
     if(*first == 'e') {
       return std::make_pair(dict, ++first);
     } else {
-      std::pair<std::string, InputIterator> keyp = decoderawstring(first, last);
+      std::pair<std::pair<InputIterator, InputIterator>, InputIterator> keyp =
+        decoderawstring(first, last);
       std::pair<SharedHandle<ValueBase>, InputIterator> r =
         decodeiter(keyp.second, last, depth);
-      dict->put(keyp.first, r.first);
+      dict->put(std::string(keyp.first.first, keyp.first.second), r.first);
       first = r.second;
     }
   }

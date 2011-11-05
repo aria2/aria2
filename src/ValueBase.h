@@ -86,6 +86,11 @@ public:
 
   String(const unsigned char* data, size_t length);
 
+  template<typename InputIterator>
+  String(InputIterator first, InputIterator last)
+    : str_(first, last)
+  {}
+
   String();
 
   ~String();
@@ -103,6 +108,12 @@ public:
   static SharedHandle<String> g(const ValueType& string);
 
   static SharedHandle<String> g(const unsigned char* data, size_t length);
+
+  template<typename InputIterator>
+  static SharedHandle<String> g(InputIterator first, InputIterator last)
+  {
+    return SharedHandle<String>(new String(first, last));
+  }
 
   virtual void accept(ValueBaseVisitor& visitor) const;
 private:
