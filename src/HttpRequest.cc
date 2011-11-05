@@ -219,10 +219,10 @@ std::string HttpRequest::createRequest()
     builtinHds.push_back(getProxyAuthString());
   }
   if(authConfig_) {
-    builtinHds.push_back
-      (std::make_pair("Authorization:",
-                      strconcat("Basic ",
-                                Base64::encode(authConfig_->getAuthText()))));
+    std::string authText = authConfig_->getAuthText();
+    std::string val = "Basic ";
+    val += base64::encode(authText.begin(), authText.end());
+    builtinHds.push_back(std::make_pair("Authorization:", val));
   }
   if(getPreviousURI().size()) {
     builtinHds.push_back(std::make_pair("Referer:", getPreviousURI()));
@@ -298,12 +298,12 @@ std::string HttpRequest::createProxyRequest() const
 
 std::pair<std::string, std::string> HttpRequest::getProxyAuthString() const
 {
-  return std::make_pair
-    ("Proxy-Authorization:",
-     strconcat("Basic ",
-               Base64::encode(strconcat(proxyRequest_->getUsername(),
-                                        ":",
-                                        proxyRequest_->getPassword()))));
+  std::string authText = proxyRequest_->getUsername();
+  authText += ':';
+  authText += proxyRequest_->getPassword();
+  std::string val = "Basic ";
+  val += base64::encode(authText.begin(), authText.end());
+  return std::make_pair("Proxy-Authorization:", val);
 }
 
 void HttpRequest::enableContentEncoding()

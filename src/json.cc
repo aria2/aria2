@@ -646,8 +646,8 @@ decodeGetParams(const std::string& query)
         callback.assign((*i).first+13, (*i).second);
       }
     }
-    std::string jsonParam =
-      Base64::decode(util::percentDecode(params.first, params.second));
+    std::string decparam = util::percentDecode(params.first, params.second);
+    std::string jsonParam = base64::decode(decparam.begin(), decparam.end());
     if(method.first == method.second && id.first == id.second) {
       // Assume batch call.
       jsonRequest = jsonParam;

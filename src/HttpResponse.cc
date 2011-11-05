@@ -416,7 +416,7 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
         break;
       }
       util::lowercase(hashType);
-      digest = Base64::decode(digest);
+      digest = base64::decode(digest.begin(), digest.end());
       if(!MessageDigest::supports(hashType) ||
          MessageDigest::getDigestLength(hashType) != digest.size()) {
         continue;

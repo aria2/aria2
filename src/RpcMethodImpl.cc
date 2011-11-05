@@ -271,7 +271,9 @@ SharedHandle<ValueBase> AddTorrentRpcMethod::process
 
   SharedHandle<String> tempTorrentParam;
   if(req.jsonRpc) {
-    tempTorrentParam = String::g(Base64::decode(torrentParam->s()));
+    tempTorrentParam = String::g
+      (base64::decode(torrentParam->s().begin(),
+                      torrentParam->s().end()));
     torrentParam = tempTorrentParam.get();
   }
   std::vector<std::string> uris;
@@ -317,7 +319,9 @@ SharedHandle<ValueBase> AddMetalinkRpcMethod::process
 
   SharedHandle<String> tempMetalinkParam;
   if(req.jsonRpc) {
-    tempMetalinkParam = String::g(Base64::decode(metalinkParam->s()));
+    tempMetalinkParam = String::g
+      (base64::decode(metalinkParam->s().begin(),
+                      metalinkParam->s().end()));
     metalinkParam = tempMetalinkParam.get();
   }
   SharedHandle<Option> requestOption(new Option(*e->getOption()));

@@ -456,7 +456,8 @@ void JsonTest::testEncode()
 void JsonTest::testDecodeGetParams()
 {
   {
-    std::string param = util::percentEncode(Base64::encode("[1,2,3]"));
+    std::string s = "[1,2,3]";
+    std::string param = util::percentEncode(base64::encode(s.begin(), s.end()));
     std::string query = "?params=";
     query += param;
     query += '&';
@@ -471,8 +472,9 @@ void JsonTest::testDecodeGetParams()
     CPPUNIT_ASSERT_EQUAL(std::string("cb"), gparam.callback);
   }
   {
+    std::string s = "[{}]";
     std::string query = "?params=";
-    query += util::percentEncode(Base64::encode("[{}]"));
+    query += util::percentEncode(base64::encode(s.begin(), s.end()));
     query += '&';
     query += "jsoncallback=cb";
     json::JsonGetParam gparam = json::decodeGetParams(query);

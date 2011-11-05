@@ -238,7 +238,8 @@ void Base64XmlRpcRequestParserState::endElement
  const std::string& name,
  const std::string& characters)
 {
-  stm->setCurrentFrameValue(String::g(Base64::decode(characters)));
+  stm->setCurrentFrameValue
+    (String::g(base64::decode(characters.begin(), characters.end())));
 }
 
 // StructXmlRpcRequestParserState

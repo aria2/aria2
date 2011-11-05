@@ -225,8 +225,7 @@ bool HttpServer::authenticate()
                   A2_AUTHMETHOD, vend(A2_AUTHMETHOD)-1)) {
     return false;
   }
-  std::string userpass = Base64::decode(std::string(p.second.first,
-                                                    p.second.second));
+  std::string userpass = base64::decode(p.second.first, p.second.second);
   std::pair<Sip, Sip> up;
   util::divide(up, userpass.begin(), userpass.end(), ':');
   return util::streq(up.first.first, up.first.second,

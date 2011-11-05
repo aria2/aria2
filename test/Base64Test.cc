@@ -8,8 +8,6 @@ class Base64Test:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(Base64Test);
   CPPUNIT_TEST(testEncode);
   CPPUNIT_TEST(testDecode);
-  CPPUNIT_TEST(testEncode_string);
-  CPPUNIT_TEST(testDecode_string);
   CPPUNIT_TEST(testLongString);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -20,8 +18,6 @@ public:
 
   void testEncode();
   void testDecode();
-  void testEncode_string();
-  void testDecode_string();
   void testLongString();
 };
 
@@ -29,125 +25,72 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( Base64Test );
 
 void Base64Test::testEncode() {
-  unsigned char* buf = 0;
-  size_t len;
-  std::string s1 = "Hello World!";
-  Base64::encode(buf, len, s1.c_str(), s1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("SGVsbG8gV29ybGQh"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  std::string s = "Hello World!";
+  CPPUNIT_ASSERT_EQUAL(std::string("SGVsbG8gV29ybGQh"),
+                       base64::encode(s.begin(), s.end()));
 
-  std::string s2 = "Hello World";
-  Base64::encode(buf, len, s2.c_str(), s2.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("SGVsbG8gV29ybGQ="), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "Hello World";
+  CPPUNIT_ASSERT_EQUAL(std::string("SGVsbG8gV29ybGQ="),
+                       base64::encode(s.begin(), s.end()));
 
-  std::string s3 = "Hello Worl";
-  Base64::encode(buf, len, s3.c_str(), s3.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("SGVsbG8gV29ybA=="), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "Hello Worl";
+  CPPUNIT_ASSERT_EQUAL(std::string("SGVsbG8gV29ybA=="),
+                       base64::encode(s.begin(), s.end()));
 
-  std::string s4 = "Man";
-  Base64::encode(buf, len, s4.c_str(), s4.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("TWFu"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "Man";
+  CPPUNIT_ASSERT_EQUAL(std::string("TWFu"), base64::encode(s.begin(), s.end()));
 
-  std::string s5 = "M";
-  Base64::encode(buf, len, s5.c_str(), s5.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("TQ=="), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "M";
+  CPPUNIT_ASSERT_EQUAL(std::string("TQ=="), base64::encode(s.begin(), s.end()));
 
-  buf = 0;
-  std::string s6 = "";
-  Base64::encode(buf, len, s6.c_str(), s6.size());
-  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(&buf[0], &buf[len]));
-  CPPUNIT_ASSERT_EQUAL((size_t)0, len);
-  CPPUNIT_ASSERT(0 == buf);
+  s = "";
+  CPPUNIT_ASSERT_EQUAL(std::string(), base64::encode(s.begin(), s.end()));
 
-  {
-    const char temp[] = { -1 };
-    Base64::encode(buf, len, temp, 1);
-    CPPUNIT_ASSERT_EQUAL(std::string("/w=="), std::string(&buf[0], &buf[len]));
-    delete [] buf;
-  }
-}
+  s.assign(1, (char)-1);
+  base64::encode(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("/w=="), base64::encode(s.begin(), s.end()));
 
-void Base64Test::testEncode_string()
-{
-  std::string s1 = "Hello World!";
-  CPPUNIT_ASSERT_EQUAL(std::string("SGVsbG8gV29ybGQh"), Base64::encode(s1));
+  s.assign(2, (char)-1);
+  base64::encode(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("//8="), base64::encode(s.begin(), s.end()));
 
-  std::string s2 = "";
-  CPPUNIT_ASSERT_EQUAL(std::string(""), Base64::encode(s2));
-
-
-  
+  s.assign(3, (char)-1);
+  base64::encode(s.begin(), s.end());
+  CPPUNIT_ASSERT_EQUAL(std::string("////"), base64::encode(s.begin(), s.end()));
 }
 
 void Base64Test::testDecode()
 {
-  unsigned char* buf;
-  size_t len;
+  std::string s = "SGVsbG8gV29ybGQh";
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello World!"),
+                       base64::decode(s.begin(), s.end()));
 
-  std::string s1 = "SGVsbG8gV29ybGQh";
-  Base64::decode(buf, len, s1.c_str(), s1.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("Hello World!"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "SGVsbG8gV29ybGQ=";
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello World"),
+                       base64::decode(s.begin(), s.end()));
 
-  std::string s2 = "SGVsbG8gV29ybGQ=";
-  Base64::decode(buf, len, s2.c_str(), s2.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("Hello World"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "SGVsbG8gV29ybA==";
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello Worl"),
+                       base64::decode(s.begin(), s.end()));
 
-  std::string s3 = "SGVsbG8gV29ybA==";
-  Base64::decode(buf, len, s3.c_str(), s3.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("Hello Worl"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "TWFu";
+  CPPUNIT_ASSERT_EQUAL(std::string("Man"), base64::decode(s.begin(), s.end()));
 
-  std::string s4 = "TWFu";
-  Base64::decode(buf, len, s4.c_str(), s4.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("Man"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "TQ==";
+  CPPUNIT_ASSERT_EQUAL(std::string("M"), base64::decode(s.begin(), s.end()));
 
-  std::string s5 = "TQ==";
-  Base64::decode(buf, len, s5.c_str(), s5.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("M"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "";
+  CPPUNIT_ASSERT_EQUAL(std::string(""), base64::decode(s.begin(), s.end()));
 
-  buf = 0;
-  std::string s6 = "";
-  Base64::decode(buf, len, s6.c_str(), s6.size());
-  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(&buf[0], &buf[len]));
-  CPPUNIT_ASSERT_EQUAL((size_t)0, len);
-  CPPUNIT_ASSERT(!buf);
+  s = "SGVsbG8\ngV2*9ybGQ=";
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello World"),
+                       base64::decode(s.begin(), s.end()));
 
-  std::string s7 = "SGVsbG8\ngV2*9ybGQ=";
-  Base64::decode(buf, len, s7.c_str(), s7.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("Hello World"), std::string(&buf[0], &buf[len]));
-  delete [] buf;
+  s = "SGVsbG8\ngV2*9ybGQ";
+  CPPUNIT_ASSERT_EQUAL(std::string(""), base64::decode(s.begin(), s.end()));
 
-  buf = 0;
-  std::string s8 = "SGVsbG8\ngV2*9ybGQ";
-  Base64::decode(buf, len, s8.c_str(), s8.size());
-  CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(&buf[0], &buf[len]));
-  CPPUNIT_ASSERT_EQUAL((size_t)0, len);
-  CPPUNIT_ASSERT(!buf);
-
-  {
-    std::string s = "/w==";
-    Base64::decode(buf, len, s.c_str(), s.size());
-    CPPUNIT_ASSERT_EQUAL((unsigned char)-1, buf[0]);
-    delete [] buf;
-  }
-
-}
-
-void Base64Test::testDecode_string()
-{
-  std::string s1 = "SGVsbG8gV29ybGQh";
-  CPPUNIT_ASSERT_EQUAL(std::string("Hello World!"), Base64::decode(s1));
-
-  std::string s2 = "";
-  CPPUNIT_ASSERT_EQUAL(std::string(""), Base64::decode(s2));
+  s = "/w==";
+  CPPUNIT_ASSERT_EQUAL(std::string(1, -1), base64::decode(s.begin(), s.end()));
 }
 
 void Base64Test::testLongString()
@@ -217,8 +160,8 @@ void Base64Test::testLongString()
     " * files in the program, then also delete it here.\n"
     " */\n"
     "/* copyright --> */\n";
-  CPPUNIT_ASSERT_EQUAL(d, Base64::decode(s));  
-  CPPUNIT_ASSERT_EQUAL(s, Base64::encode(d));  
+  CPPUNIT_ASSERT_EQUAL(d, base64::decode(s.begin(), s.end()));
+  CPPUNIT_ASSERT_EQUAL(s, base64::encode(d.begin(), d.end()));
 }
 
 } // namespace aria2

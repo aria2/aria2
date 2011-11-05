@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,63 +34,147 @@
 /* copyright --> */
 #ifndef D_BASE64_H
 #define D_BASE64_H
+
 #include <string>
 
 namespace aria2 {
 
-class Base64
+namespace base64 {
+
+template<typename InputIterator>
+std::string encode(InputIterator first, InputIterator last)
 {
-private:
-  /**
-   * Removes non base64 chars(including '=') from src, and results are
-   * stored in nsrc and its length is stored in nlength.
-   * Caller must delete nsrc.
-   */
-  static void removeNonBase64Chars(unsigned char*& nsrc, size_t& nlength,
-                                   const unsigned char* src, size_t slength);
-
-public:
-  /**
-   * Encods src whose length is slength into base64 encoded data
-   * and stores them to result.
-   * result is allocated in this function and the length is stored to rlength.
-   * If slength is equal to 0, then return with rlength set to 0 and result
-   * is left untouched.
-   * A caller must deallocate the memory used by result.
-   */
-  static void encode(unsigned char*& result, size_t& rlength,
-                     const unsigned char* src, size_t slength);
-
-  static void encode(unsigned char*& result, size_t& rlength,
-                     const char* src, size_t slength)
-  {
-    encode(result, rlength, reinterpret_cast<const unsigned char*>(src),
-           slength);
+  static const char CHAR_TABLE[] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+    'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+    'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+    'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+    'w', 'x', 'y', 'z', '0', '1', '2', '3',
+    '4', '5', '6', '7', '8', '9', '+', '/',
+  };
+  std::string res;
+  size_t len = last-first;
+  if(len == 0) {
+    return res;
   }
-
-  static std::string encode(const std::string& s);
-
-  /**
-   * Dencods base64 encoded src whose length is slength and stores them to
-   * result.
-   * result is allocated in this function and the length is stored to rlength.
-   * If slength is equal to 0 or is not multiple of 4, then return with rlength
-   * set to 0 and result is left untouched.
-   * The function removes non-base64 characters before decoding.
-   * A caller must deallocate the memory used by result.
-   */
-  static void decode(unsigned char*& result, size_t& rlength,
-                     const unsigned char* src, size_t slength);
-
-  static void decode(unsigned char*& result, size_t& rlength,
-                     const char* src, size_t slength)
-  {
-    decode(result, rlength, reinterpret_cast<const unsigned char*>(src),
-           slength);
+  size_t r = len%3;
+  InputIterator j = last-r;
+  while(first != j) {
+    int n = static_cast<unsigned char>(*first++) << 16;
+    n += static_cast<unsigned char>(*first++) << 8;
+    n += static_cast<unsigned char>(*first++);
+    res += CHAR_TABLE[n >> 18];
+    res += CHAR_TABLE[(n >> 12) & 0x3fu];
+    res += CHAR_TABLE[(n >> 6) & 0x3fu];
+    res += CHAR_TABLE[n & 0x3fu];
   }
+  if(r == 2) {
+    int n = static_cast<unsigned char>(*first++) << 16;
+    n += static_cast<unsigned char>(*first++) << 8;
+    res += CHAR_TABLE[n >> 18];
+    res += CHAR_TABLE[(n >> 12) & 0x3fu];
+    res += CHAR_TABLE[(n >> 6) & 0x3fu];
+    res += '=';
+  } else if(r == 1) {
+    int n = static_cast<unsigned char>(*first++) << 16;
+    res += CHAR_TABLE[n >> 18];
+    res += CHAR_TABLE[(n >> 12) & 0x3fu];
+    res += '=';
+    res += '=';
+  }
+  return res;
+}
 
-  static std::string decode(const std::string& s);
-};
+template<typename InputIterator>
+InputIterator getNext
+(InputIterator first,
+ InputIterator last,
+ const int* tbl)
+{
+  for(; first != last; ++first) {
+    if(tbl[static_cast<size_t>(*first)] != -1 || *first == '=') {
+      break;
+    }
+  }
+  return first;
+}
+
+template<typename InputIterator>
+std::string decode(InputIterator first, InputIterator last)
+{
+  static const int INDEX_TABLE[] = {
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1,
+    -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
+    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1,
+    -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+  };
+  std::string res;
+  InputIterator k[5];
+  int eq = 0;
+  for(; first != last;) {
+    for(int i = 1; i <= 4; ++i) {
+      k[i] = getNext(first, last, INDEX_TABLE);
+      if(k[i] == last) {
+        res.clear();
+        return res;
+      } else if(*k[i] == '=' && eq == 0) {
+        eq = i;
+      }
+      first = k[i]+1;
+    }
+    if(eq) {
+      break;
+    }
+    int n = (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 18)+
+      (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 12)+
+      (INDEX_TABLE[static_cast<unsigned char>(*k[3])] << 6)+
+      INDEX_TABLE[static_cast<unsigned char>(*k[4])];
+    res += n >> 16;
+    res += n >> 8 & 0xffu;
+    res += n & 0xffu;
+  }
+  if(eq) {
+    if(eq <= 2) {
+      res.clear();
+      return res;
+    } else {
+      for(int i = eq; i <= 4; ++i) {
+        if(*k[i] != '=') {
+          res.clear();
+          return res;
+        }
+      }
+      if(eq == 3) {
+        int n = (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 18)+
+          (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 12);
+        res += n >> 16;
+      } else if(eq == 4) {
+        int n = (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 18)+
+          (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 12)+
+          (INDEX_TABLE[static_cast<unsigned char>(*k[3])] << 6);
+        res += n >> 16;
+        res += n >> 8 & 0xffu;
+      }
+    }
+  }
+  return res;
+}
+
+} // namespace base64
 
 } // namespace aria2
 

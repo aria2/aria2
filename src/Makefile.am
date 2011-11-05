@@ -48,7 +48,7 @@ SRCS =  Socket.h\
 	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h\
 	File.cc File.h\
 	Option.cc Option.h\
-	base64.cc base64.h\
+	base64.h\
 	base32.cc base32.h\
 	LogFactory.cc LogFactory.h\
 	TimerA2.cc TimerA2.h\
