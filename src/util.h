@@ -112,7 +112,8 @@ namespace util {
 
 template<typename InputIterator>
 void divide
-(std::pair<Scip, Scip>& hp,
+(std::pair<std::pair<InputIterator, InputIterator>,
+           std::pair<InputIterator, InputIterator> >& hp,
  InputIterator first,
  InputIterator last,
  char delim)
@@ -248,7 +249,7 @@ bool parseIntNoThrow
 (int32_t& result, InputIterator first, InputIterator last, int base = 10)
 {
   // Without strip, strtol("  -1  ",..) emits error.
-  Scip p = util::stripIter(first, last);
+  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
   if(p.first == p.second) {
     return false;
   }
@@ -277,7 +278,7 @@ bool parseUIntNoThrow
 (uint32_t& result, InputIterator first, InputIterator last, int base = 10)
 {
   // Without strip, strtol("  -1  ",..) emits error.
-  Scip p = util::stripIter(first, last);
+  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
   if(p.first == p.second) {
     return false;
   }
@@ -309,7 +310,7 @@ bool parseLLIntNoThrow
 (int64_t& result, InputIterator first, InputIterator last, int base = 10)
 {
   // Without strip, strtol("  -1  ",..) emits error.
-  Scip p = util::stripIter(first, last);
+  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
   if(p.first == p.second) {
     return false;
   }
@@ -335,7 +336,7 @@ bool parseLLIntNoThrow
 template<typename InputIterator>
 int64_t parseLLInt(InputIterator first, InputIterator last, int base = 10)
 {
-  Scip p = util::stripIter(first, last);
+  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
   if(p.first == p.second) {
     throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
                           "empty string"));
@@ -373,7 +374,7 @@ int32_t parseInt(InputIterator first, InputIterator last, int base = 10)
 template<typename InputIterator>
 uint64_t parseULLInt(InputIterator first, InputIterator last, int base = 10)
 {
-  Scip p = util::stripIter(first, last);
+  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
   if(p.first == p.second) {
     throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
                           "empty string"));

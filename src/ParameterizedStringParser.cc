@@ -124,7 +124,7 @@ ParameterizedStringParser::createLoop(const std::string& src, int& offset)
     }
     loopStr.erase(colonIndex);
   }
-  std::pair<Scip, Scip> range;
+  std::pair<Sip, Sip> range;
   util::divide(range, loopStr.begin(), loopStr.end(), '-');
   if(range.first.first == range.first.second ||
      range.second.first == range.second.second) {

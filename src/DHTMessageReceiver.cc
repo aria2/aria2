@@ -76,7 +76,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       return SharedHandle<DHTMessage>();
     }
     bool isReply = false;
-    SharedHandle<ValueBase> decoded = bencode2::decode(data, length);
+    SharedHandle<ValueBase> decoded = bencode2::decode(data, data+length);
     const Dict* dict = downcast<Dict>(decoded);
     if(dict) {
       const String* y = downcast<String>(dict->get(DHTMessage::Y));

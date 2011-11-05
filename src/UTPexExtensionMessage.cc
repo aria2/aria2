@@ -190,7 +190,7 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
 
-  SharedHandle<ValueBase> decoded = bencode2::decode(data+1, len-1);
+  SharedHandle<ValueBase> decoded = bencode2::decode(data+1, data+len);
   const Dict* dict = downcast<Dict>(decoded);
   if(dict) {
     const String* added = downcast<String>(dict->get("added"));

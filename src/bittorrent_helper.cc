@@ -544,7 +544,7 @@ void loadFromMemory(const unsigned char* content,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
-                        bencode2::decode(content, length),
+                        bencode2::decode(content, content+length),
                         option,
                         defaultName,
                         overrideName,
@@ -560,7 +560,7 @@ void loadFromMemory(const unsigned char* content,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
-                        bencode2::decode(content, length),
+                        bencode2::decode(content, content+length),
                         option,
                         defaultName,
                         overrideName,
@@ -575,7 +575,7 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode2::decode(context),
+     bencode2::decode(context.begin(), context.end()),
      option,
      defaultName, overrideName,
      std::vector<std::string>());
@@ -590,7 +590,7 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode2::decode(context),
+     bencode2::decode(context.begin(), context.end()),
      option,
      defaultName, overrideName,
      uris);

@@ -48,19 +48,26 @@ namespace bencode2 {
 
 const size_t MAX_STRUCTURE_DEPTH = 100;
 
-SharedHandle<ValueBase> decode(std::istream& in);
+// Decode the data in [first, last).
+SharedHandle<ValueBase> decode
+(std::string::const_iterator first,
+ std::string::const_iterator last);
 
-// Decode the data in s.
-SharedHandle<ValueBase> decode(const std::string& s);
-
-// Decode the data in s. After decode is done successfully, return the
-// bencoded string length in end.
-SharedHandle<ValueBase> decode(const std::string& s, size_t& end);
-
-SharedHandle<ValueBase> decode(const unsigned char* data, size_t length);
+// Decode the data in [first, last). After decode is done
+// successfully, return the bencoded string length in end.
+SharedHandle<ValueBase> decode
+(std::string::const_iterator first,
+ std::string::const_iterator last,
+ size_t& end);
 
 SharedHandle<ValueBase> decode
-(const unsigned char* data, size_t length, size_t& end);
+(const unsigned char* first,
+ const unsigned char* last);
+
+SharedHandle<ValueBase> decode
+(const unsigned char* first,
+ const unsigned char* last,
+ size_t& end);
 
 SharedHandle<ValueBase> decodeFromFile(const std::string& filename);
 

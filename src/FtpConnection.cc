@@ -435,7 +435,7 @@ unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
   std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
-      std::pair<Scip, Scip> rp;
+      std::pair<Sip, Sip> rp;
       util::divide(rp, response.second.begin(), response.second.end(), ' ');
       size = util::parseULLInt(rp.second.first, rp.second.second);
     }

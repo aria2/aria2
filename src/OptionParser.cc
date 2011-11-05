@@ -184,7 +184,7 @@ void OptionParser::parse(Option& option, std::istream& is) const
     if(line.empty() || line[0] == '#') {
       continue;
     }
-    std::pair<Scip, Scip> nv;
+    std::pair<Sip, Sip> nv;
     util::divide(nv, line.begin(), line.end(), '=');
     if(nv.first.first == nv.first.second) {
       continue;

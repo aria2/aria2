@@ -40,90 +40,92 @@
 #include "DlAbortEx.h"
 #include "error_code.h"
 #include "BufferedFile.h"
+#include "util.h"
 
 namespace aria2 {
 
 namespace bencode2 {
 
 namespace {
-SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth);
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeiter
+(InputIterator first,
+ InputIterator last,
+ size_t depth);
 } // namespace
 
 namespace {
-void checkdelim(std::istream& ss, const char delim = ':')
+template<typename InputIterator>
+std::pair<std::string, InputIterator>
+decoderawstring(InputIterator first, InputIterator last)
 {
-  char d;
-  if(!(ss.get(d) && d == delim)) {
-    throw DL_ABORT_EX2
-      (fmt("Bencode decoding failed: Delimiter '%c' not found.",
-           delim),
-       error_code::BENCODE_PARSE_ERROR);
-  }
-}
-} // namespace
-
-namespace {
-std::string decoderawstring(std::istream& ss)
-{
-  int length;
-  ss >> length;
-  if(!ss || length < 0) {
+  InputIterator i = first;
+  int32_t len;
+  for(; i != last && *i != ':'; ++i);
+  if(i == last || i == first || !util::parseIntNoThrow(len, first, i) ||
+     len < 0) {
     throw DL_ABORT_EX2("Bencode decoding failed:"
                        " A positive integer expected but none found.",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  // TODO check length, it must be less than or equal to INT_MAX
-  checkdelim(ss);
-  char* buf = new char[length];
-  ss.read(buf, length);
-  std::string str(&buf[0], &buf[length]);
-  delete [] buf;
-  if(ss.gcount() != static_cast<int>(length)) {
+  ++i;
+  if(last-i < len) {
     throw DL_ABORT_EX2
       (fmt("Bencode decoding failed:"
-           " Expected %lu bytes of data, but only %ld read.",
-           static_cast<unsigned long>(length),
-           static_cast<long int>(ss.gcount())),
+           " Expected %d bytes of data, but only %d read.",
+           len, static_cast<int>(last-i)),
        error_code::BENCODE_PARSE_ERROR);
   }
-  return str;
+  return std::make_pair(std::string(i, i+len), i+len);
 }
 } // namespace
 
 namespace {
-SharedHandle<ValueBase> decodestring(std::istream& ss)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodestring(InputIterator first, InputIterator last)
 {
-  return String::g(decoderawstring(ss));
+  std::pair<std::string, InputIterator> r = decoderawstring(first, last);
+  return std::make_pair(String::g(r.first), r.second);
 }
 } // namespace
 
 namespace {
-SharedHandle<ValueBase> decodeinteger(std::istream& ss)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeinteger(InputIterator first, InputIterator last)
 {
+  InputIterator i = first;
+  for(; i != last && *i != 'e'; ++i);
   Integer::ValueType iv;
-  ss >> iv;
-  if(!ss) {
+  if(i == last || !util::parseLLIntNoThrow(iv, first, i)) {
     throw DL_ABORT_EX2("Bencode decoding failed:"
                        " Integer expected but none found",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  checkdelim(ss, 'e');
-  return Integer::g(iv);
+  return std::make_pair(Integer::g(iv), ++i);
 }
 } // namespace
 
 namespace {
-SharedHandle<ValueBase> decodedict(std::istream& ss, size_t depth)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodedict
+(InputIterator first,
+ InputIterator last,
+ size_t depth)
 {
   SharedHandle<Dict> dict = Dict::g();
-  char c;
-  while(ss.get(c)) {
-    if(c == 'e') {
-      return dict;
+  while(first != last) {
+    if(*first == 'e') {
+      return std::make_pair(dict, ++first);
     } else {
-      ss.unget();
-      std::string key = decoderawstring(ss);
-      dict->put(key, decodeiter(ss, depth));
+      std::pair<std::string, InputIterator> keyp = decoderawstring(first, last);
+      std::pair<SharedHandle<ValueBase>, InputIterator> r =
+        decodeiter(keyp.second, last, depth);
+      dict->put(keyp.first, r.first);
+      first = r.second;
     }
   }
   throw DL_ABORT_EX2("Bencode decoding failed:"
@@ -133,16 +135,22 @@ SharedHandle<ValueBase> decodedict(std::istream& ss, size_t depth)
 } // namespace
 
 namespace {
-SharedHandle<ValueBase> decodelist(std::istream& ss, size_t depth)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodelist
+(InputIterator first,
+ InputIterator last,
+ size_t depth)
 {
   SharedHandle<List> list = List::g();
-  char c;
-  while(ss.get(c)) {
-    if(c == 'e') {
-      return list;
+  while(first != last) {
+    if(*first == 'e') {
+      return std::make_pair(list, ++first);
     } else {
-      ss.unget();
-      list->append(decodeiter(ss, depth));
+      std::pair<SharedHandle<ValueBase>, InputIterator> r =
+        decodeiter(first, last, depth);
+      list->append(r.first);
+      first = r.second;
     }
   }
   throw DL_ABORT_EX2("Bencode decoding failed:"
@@ -162,60 +170,79 @@ void checkDepth(size_t depth)
 } // namespace
 
 namespace {
-SharedHandle<ValueBase> decodeiter(std::istream& ss, size_t depth)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeiter
+(InputIterator first,
+ InputIterator last,
+ size_t depth)
 {
   checkDepth(depth);
-  char c;
-  if(!ss.get(c)) {
+  if(first == last) {
     throw DL_ABORT_EX2("Bencode decoding failed:"
                        " Unexpected EOF in term context."
                        " 'd', 'l', 'i' or digit is expected.",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  if(c == 'd') {
-    return decodedict(ss, depth+1);
-  } else if(c == 'l') {
-    return decodelist(ss, depth+1);
-  } else if(c == 'i') {
-    return decodeinteger(ss);
+  if(*first == 'd') {
+    return decodedict(++first, last, depth+1);
+  } else if(*first == 'l') {
+    return decodelist(++first, last, depth+1);
+  } else if(*first == 'i') {
+    return decodeinteger(++first, last);
   } else {
-    ss.unget();
-    return decodestring(ss);
+    return decodestring(first, last);
   }
 }
 } // namespace
 
-SharedHandle<ValueBase> decode(std::istream& in)
+namespace {
+template<typename InputIterator>
+SharedHandle<ValueBase> decodegen
+(InputIterator first,
+ InputIterator last,
+ size_t& end)
 {
-  return decodeiter(in, 0);
-}
-
-SharedHandle<ValueBase> decode(const std::string& s)
-{
-  size_t end;
-  return decode(s, end);
-}
-
-SharedHandle<ValueBase> decode(const std::string& s, size_t& end)
-{
-  if(s.empty()) {
+  if(first == last) {
     return SharedHandle<ValueBase>();
   }
-  std::istringstream ss(s);
+  std::pair<SharedHandle<ValueBase>, InputIterator> p =
+    decodeiter(first, last, 0);
+  end = p.second-first;
+  return p.first;
+}
+} // namespace
 
-  SharedHandle<ValueBase> vlb = decodeiter(ss, 0);
-  end = ss.tellg();
-  return vlb;
+SharedHandle<ValueBase> decode
+(std::string::const_iterator first,
+ std::string::const_iterator last)
+{
+  size_t end;
+  return decodegen(first, last, end);
 }
 
-SharedHandle<ValueBase> decode(const unsigned char* data, size_t length)
+SharedHandle<ValueBase> decode
+(std::string::const_iterator first,
+ std::string::const_iterator last,
+ size_t& end)
 {
-  return decode(std::string(&data[0], &data[length]));
+  return decodegen(first, last, end);
 }
 
-SharedHandle<ValueBase> decode(const unsigned char* data, size_t length, size_t& end)
+SharedHandle<ValueBase> decode
+(const unsigned char* first,
+ const unsigned char* last)
 {
-  return decode(std::string(&data[0], &data[length]), end);
+  size_t end;
+  return decodegen(first, last, end);
+}
+
+SharedHandle<ValueBase> decode
+(const unsigned char* first,
+ const unsigned char* last,
+ size_t& end)
+{
+  return decodegen(first, last, end);
 }
 
 SharedHandle<ValueBase> decodeFromFile(const std::string& filename)
@@ -225,7 +252,9 @@ SharedHandle<ValueBase> decodeFromFile(const std::string& filename)
     std::stringstream ss;
     fp.transfer(ss);
     fp.close();
-    return decode(ss);
+    const std::string s = ss.str();
+    size_t end;
+    return decodegen(s.begin(), s.end(), end);
   } else {
     throw DL_ABORT_EX2
       (fmt("Bencode decoding failed: Cannot open file '%s'.",

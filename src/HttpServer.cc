@@ -227,10 +227,11 @@ bool HttpServer::authenticate()
   }
   std::string userpass = Base64::decode(std::string(p.second.first,
                                                     p.second.second));
-  util::divide(p, userpass.begin(), userpass.end(), ':');
-  return util::streq(p.first.first, p.first.second,
+  std::pair<Sip, Sip> up;
+  util::divide(up, userpass.begin(), userpass.end(), ':');
+  return util::streq(up.first.first, up.first.second,
                      username_.begin(), username_.end()) &&
-    util::streq(p.second.first, p.second.second,
+    util::streq(up.second.first, up.second.second,
                 password_.begin(), password_.end());
 }
 

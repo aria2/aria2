@@ -64,7 +64,8 @@ std::vector<std::vector<std::string> > toVector
 
 void AnnounceListTest::testSingleElementList() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -110,7 +111,8 @@ void AnnounceListTest::testSingleElementList() {
 
 void AnnounceListTest::testMultiElementList() {
   std::string peersString = "ll8:tracker18:tracker28:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2, tracker3 ] ]
@@ -143,7 +145,8 @@ void AnnounceListTest::testMultiElementList() {
 
 void AnnounceListTest::testSingleAndMulti() {
   std::string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2 ], [ tracker3 ] ]
@@ -169,14 +172,16 @@ void AnnounceListTest::testSingleAndMulti() {
 
 void AnnounceListTest::testNoGroup() {
   std::string peersString = "llee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
   AnnounceList announceList(toVector(downcast<List>(announcesList)));
   CPPUNIT_ASSERT(announceList.countTier() == 0);
 }
 
 void AnnounceListTest::testNextEventIfAfterStarted() {
   std::string peersString = "ll8:tracker1ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ] ]
@@ -196,7 +201,8 @@ void AnnounceListTest::testNextEventIfAfterStarted() {
 
 void AnnounceListTest::testEvent() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -220,7 +226,8 @@ void AnnounceListTest::testEvent() {
 
 void AnnounceListTest::testCountStoppedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -247,7 +254,8 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
 
 void AnnounceListTest::testCountCompletedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  SharedHandle<ValueBase> announcesList = bencode2::decode(peersString);
+  SharedHandle<ValueBase> announcesList =
+    bencode2::decode(peersString.begin(), peersString.end());
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]

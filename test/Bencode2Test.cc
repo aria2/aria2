@@ -27,8 +27,8 @@ void Bencode2Test::testDecode()
 {
   {
     // string, integer and list in dict
-    SharedHandle<ValueBase> r =
-      bencode2::decode("d4:name5:aria24:sizei12345678900e5:filesl3:bin3:docee");
+    std::string src = "d4:name5:aria24:sizei12345678900e5:filesl3:bin3:docee";
+    SharedHandle<ValueBase> r = bencode2::decode(src.begin(), src.end());
     const Dict* dict = downcast<Dict>(r);
     CPPUNIT_ASSERT(dict);
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"),
@@ -45,7 +45,8 @@ void Bencode2Test::testDecode()
   }
   {
     // dict in list
-    SharedHandle<ValueBase> r = bencode2::decode("ld1:ki123eee");
+    std::string src = "ld1:ki123eee";
+    SharedHandle<ValueBase> r = bencode2::decode(src.begin(), src.end());
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), list->size());
@@ -56,38 +57,44 @@ void Bencode2Test::testDecode()
   }
   {
     // empty key is allowed
-    SharedHandle<ValueBase> s = bencode2::decode("d0:1:ve");
+    std::string src = "d0:1:ve";
+    SharedHandle<ValueBase> s = bencode2::decode(src.begin(), src.end());
   }
   {
     // empty string
-    SharedHandle<ValueBase> s = bencode2::decode("0:");
+    std::string src = "0:";
+    SharedHandle<ValueBase> s = bencode2::decode(src.begin(), src.end());
     CPPUNIT_ASSERT_EQUAL(std::string(""), downcast<String>(s)->s());
   }
   {
     // empty dict
-    SharedHandle<ValueBase> d = bencode2::decode("de");
+    std::string src = "de";
+    SharedHandle<ValueBase> d = bencode2::decode(src.begin(), src.end());
     CPPUNIT_ASSERT(downcast<Dict>(d)->empty());
   }
   {
     // empty list
-    SharedHandle<ValueBase> l = bencode2::decode("le");
+    std::string src = "le";
+    SharedHandle<ValueBase> l = bencode2::decode(src.begin(), src.end());
     CPPUNIT_ASSERT(downcast<List>(l)->empty());
   }
   {
     // integer, without ending 'e'
+    std::string src = "i3";
     try {
-      bencode2::decode("i3");
+      bencode2::decode(src.begin(), src.end());
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
-                                       " Delimiter 'e' not found."),
+                                       " Integer expected but none found"),
                            std::string(e.what()));
     }    
   }
   {
     // dict, without ending 'e'
+    std::string src = "d";
     try {
-      bencode2::decode("d");
+      bencode2::decode(src.begin(), src.end());
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -99,7 +106,8 @@ void Bencode2Test::testDecode()
   {
     // list, without ending 'e'
     try {
-      bencode2::decode("l");
+      std::string src = "l";
+      bencode2::decode(src.begin(), src.end());
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -111,7 +119,8 @@ void Bencode2Test::testDecode()
   {
     // string, less than the specified length.
     try {
-      bencode2::decode("3:ab");
+      std::string src = "3:ab";
+      bencode2::decode(src.begin(), src.end());
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -123,7 +132,8 @@ void Bencode2Test::testDecode()
   {
     // string, but length is invalid
     try {
-      bencode2::decode("x:abc");
+      std::string src = "x:abc";
+      bencode2::decode(src.begin(), src.end());
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -134,8 +144,9 @@ void Bencode2Test::testDecode()
   }
   {
     // string with minus length
+    std::string src = "-1:a";
     try {
-      bencode2::decode("-1:a");
+      bencode2::decode(src.begin(), src.end());
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       CPPUNIT_ASSERT_EQUAL(std::string("Bencode decoding failed:"
@@ -146,17 +157,20 @@ void Bencode2Test::testDecode()
   }
   {
     // empty encoded data
-    CPPUNIT_ASSERT(!bencode2::decode(""));
+    std::string src = "";
+    CPPUNIT_ASSERT(!bencode2::decode(src.begin(), src.end()));
   }
   {
     // ignore trailing garbage at the end of the input.
-    SharedHandle<ValueBase> s = bencode2::decode("5:aria2trail");
+    std::string src = "5:aria2trail";
+    SharedHandle<ValueBase> s = bencode2::decode(src.begin(), src.end());
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"), downcast<String>(s)->s());
   }
   {
     // Get trailing garbage position
+    std::string src = "5:aria2trail";
     size_t end;
-    SharedHandle<ValueBase> s = bencode2::decode("5:aria2trail", end);
+    SharedHandle<ValueBase> s = bencode2::decode(src.begin(), src.end(), end);
     CPPUNIT_ASSERT_EQUAL(std::string("aria2"), downcast<String>(s)->s());
     CPPUNIT_ASSERT_EQUAL((size_t)7, end);
   }
@@ -173,7 +187,7 @@ void Bencode2Test::testDecode_overflow()
     s += "e";
   }
   try {
-    bencode2::decode(s);
+    bencode2::decode(s.begin(), s.end());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {
     // success

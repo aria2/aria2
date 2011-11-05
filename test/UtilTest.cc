@@ -268,7 +268,7 @@ void UtilTest::testLstripIter_char()
 }
 
 void UtilTest::testDivide() {
-  std::pair<Scip, Scip> p1;
+  std::pair<Sip, Sip> p1;
   std::string s = "name=value";
   util::divide(p1, s.begin(), s.end(), '=');
   CPPUNIT_ASSERT_EQUAL(std::string("name"),
