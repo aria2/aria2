@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "download_helper.h"
 
-#include <iostream>
 #include <algorithm>
 #include <sstream>
 
@@ -43,8 +42,7 @@
 #include "prefs.h"
 #include "Metalink2RequestGroup.h"
 #include "ProtocolDetector.h"
-#include "ParameterizedStringParser.h"
-#include "PStringBuildVisitor.h"
+#include "paramed_string.h"
 #include "UriListParser.h"
 #include "DownloadContext.h"
 #include "RecoverableException.h"
@@ -75,13 +73,10 @@ namespace {
 void unfoldURI
 (std::vector<std::string>& result, const std::vector<std::string>& args)
 {
-  ParameterizedStringParser p;
-  PStringBuildVisitor v;
-  for(std::vector<std::string>::const_iterator itr = args.begin(),
-        eoi = args.end(); itr != eoi; ++itr) {
-    v.reset();
-    p.parse(*itr)->accept(v);
-    result.insert(result.end(), v.getURIs().begin(), v.getURIs().end()); 
+  for(std::vector<std::string>::const_iterator i = args.begin(),
+        eoi = args.end(); i != eoi; ++i) {
+    paramed_string::expand((*i).begin(), (*i).end(),
+                           std::back_inserter(result));
   }
 }
 } // namespace

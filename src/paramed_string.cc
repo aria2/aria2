@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,28 +32,29 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_P_STRING_VISITOR_H
-#define D_P_STRING_VISITOR_H
-
-#include "common.h"
+#include "paramed_string.h"
 
 namespace aria2 {
 
-class PStringSegment;
-class PStringNumLoop;
-class PStringSelect;
+namespace paramed_string {
 
-class PStringVisitor {
-public:
-  virtual ~PStringVisitor() {}
+std::string toBase26(uint32_t n, char zero, size_t width)
+{
+  std::string res;
+  if(n == 0 && width == 0) {
+    width = 1;
+  }
+  while(n) {
+    res += zero+(n % 26);
+    n /= 26;
+  }
+  if(width > res.size()) {
+    res.append(width-res.size(), zero);
+  }
+  std::reverse(res.begin(), res.end());
+  return res;
+}
 
-  virtual void visit(PStringSegment& s) = 0;
-
-  virtual void visit(PStringNumLoop& s) = 0;
-
-  virtual void visit(PStringSelect& s) = 0;
-};
+} // namespace paramed_string
 
 } // namespace aria2
-
-#endif // D_P_STRING_VISITOR_H

@@ -1026,46 +1026,6 @@ void usleep(long microseconds) {
 #endif
 }
 
-bool isNumber(const std::string& what)
-{
-  if(what.empty()) {
-    return false;
-  }
-  for(std::string::const_iterator i = what.begin(), eoi = what.end();
-      i != eoi; ++i) {
-    if(!isDigit(*i)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-bool isLowercase(const std::string& what)
-{
-  if(what.empty()) {
-    return false;
-  }
-  for(uint32_t i = 0, eoi = what.size(); i < eoi; ++i) {
-    if(!('a' <= what[i] && what[i] <= 'z')) {
-      return false;
-    }
-  }
-  return true;
-}
-
-bool isUppercase(const std::string& what)
-{
-  if(what.empty()) {
-    return false;
-  }
-  for(uint32_t i = 0, eoi = what.size(); i < eoi; ++i) {
-    if(!('A' <= what[i] && what[i] <= 'Z')) {
-      return false;
-    }
-  }
-  return true;
-}
-
 unsigned int alphaToNum(const std::string& alphabets)
 {
   if(alphabets.empty()) {

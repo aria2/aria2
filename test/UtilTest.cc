@@ -1070,29 +1070,44 @@ void UtilTest::testToStream()
 
 void UtilTest::testIsNumber()
 {
-  CPPUNIT_ASSERT_EQUAL(true, util::isNumber("000"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isNumber("a"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isNumber("0a"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isNumber(""));
-  CPPUNIT_ASSERT_EQUAL(false, util::isNumber(" "));
+  std::string s = "000";
+  CPPUNIT_ASSERT_EQUAL(true, util::isNumber(s.begin(),s.end()));
+  s = "a";
+  CPPUNIT_ASSERT_EQUAL(false, util::isNumber(s.begin(), s.end()));
+  s = "0a";
+  CPPUNIT_ASSERT_EQUAL(false, util::isNumber(s.begin(), s.end()));
+  s = "";
+  CPPUNIT_ASSERT_EQUAL(false, util::isNumber(s.begin(), s.end()));
+  s = " ";
+  CPPUNIT_ASSERT_EQUAL(false, util::isNumber(s.begin(), s.end()));
 }
 
 void UtilTest::testIsLowercase()
 {
-  CPPUNIT_ASSERT_EQUAL(true, util::isLowercase("alpha"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase("Alpha"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase("1alpha"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase(""));
-  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase(" "));
+  std::string s = "alpha";
+  CPPUNIT_ASSERT_EQUAL(true, util::isLowercase(s.begin(), s.end()));
+  s = "Alpha";
+  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase(s.begin(), s.end()));
+  s = "1alpha";
+  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase(s.begin(), s.end()));
+  s = "";
+  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase(s.begin(), s.end()));
+  s = " ";
+  CPPUNIT_ASSERT_EQUAL(false, util::isLowercase(s.begin(), s.end()));
 }
 
 void UtilTest::testIsUppercase()
 {
-  CPPUNIT_ASSERT_EQUAL(true, util::isUppercase("ALPHA"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase("Alpha"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase("1ALPHA"));
-  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(""));
-  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(" "));
+  std::string s = "ALPHA";
+  CPPUNIT_ASSERT_EQUAL(true, util::isUppercase(s.begin(), s.end()));
+  s = "Alpha";
+  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(s.begin(), s.end()));
+  s = "1ALPHA";
+  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(s.begin(), s.end()));
+  s = "";
+  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(s.begin(), s.end()));
+  s = " ";
+  CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(s.begin(), s.end()));
 }
 
 void UtilTest::testAlphaToNum()

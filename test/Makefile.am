@@ -15,10 +15,7 @@ aria2c_SOURCES = AllTest.cc\
 	SingleFileAllocationIteratorTest.cc\
 	DefaultBtProgressInfoFileTest.cc\
 	RequestGroupTest.cc\
-	PStringBuildVisitorTest.cc\
-	ParameterizedStringParserTest.cc\
 	UtilTest.cc\
-	AlphaNumberDecoratorTest.cc\
 	UriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
 	RequestTest.cc\
@@ -81,7 +78,8 @@ aria2c_SOURCES = AllTest.cc\
 	RpcMethodTest.cc\
 	BufferedFileTest.cc\
 	GeomStreamPieceSelectorTest.cc\
-	SegListTest.cc
+	SegListTest.cc\
+	ParamedStringTest.cc
 
 if ENABLE_XML_RPC
 aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\

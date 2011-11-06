@@ -501,18 +501,54 @@ void toStream
 void sleep(long seconds);
 
 void usleep(long microseconds);
-  
-bool isNumber(const std::string& what);
+
+template<typename InputIterator>
+bool isNumber(InputIterator first, InputIterator last)
+{
+  if(first == last) {
+    return false;
+  }
+  for(; first != last; ++first) {
+    if('0' > *first || *first > '9') {
+      return false;
+    }
+  }
+  return true;
+}
 
 bool isDigit(const char c);
 
 bool isHexDigit(const char c);
 
 bool isHexDigit(const std::string& s);
-  
-bool isLowercase(const std::string& what);
-  
-bool isUppercase(const std::string& what);
+
+template<typename InputIterator>
+bool isLowercase(InputIterator first, InputIterator last)
+{
+  if(first == last) {
+    return false;
+  }
+  for(; first != last; ++first) {
+    if('a' > *first || *first > 'z') {
+      return false;
+    }
+  }
+  return true;
+}
+
+template<typename InputIterator>
+bool isUppercase(InputIterator first, InputIterator last)
+{
+  if(first == last) {
+    return false;
+  }
+  for(; first != last; ++first) {
+    if('A' > *first || *first > 'Z') {
+      return false;
+    }
+  }
+  return true;
+}
 
 /**
  * Converts alphabets to unsigned int, assuming alphabets as a base 26

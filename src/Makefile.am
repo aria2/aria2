@@ -96,16 +96,6 @@ SRCS =  Socket.h\
 	HttpHeaderProcessor.cc HttpHeaderProcessor.h\
 	FileEntry.cc FileEntry.h\
 	Platform.cc Platform.h\
-	PStringDatum.h\
-	PStringSegment.cc PStringSegment.h\
-	PStringNumLoop.cc PStringNumLoop.h\
-	PStringSelect.cc PStringSelect.h\
-	PStringVisitor.h\
-	PStringBuildVisitor.cc PStringBuildVisitor.h\
-	ParameterizedStringParser.cc ParameterizedStringParser.h\
-	FixedWidthNumberDecorator.cc FixedWidthNumberDecorator.h\
-	NumberDecorator.h\
-	AlphaNumberDecorator.cc AlphaNumberDecorator.h\
 	TimeBasedCommand.cc TimeBasedCommand.h\
 	AutoSaveCommand.cc AutoSaveCommand.h\
 	PieceStorage.h\
@@ -231,7 +221,8 @@ SRCS =  Socket.h\
 	BufferedFile.cc BufferedFile.h\
 	SegList.h\
 	NullHandle.h\
-	a2iterator.h
+	a2iterator.h\
+	paramed_string.cc paramed_string.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
