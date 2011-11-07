@@ -46,7 +46,6 @@
 #include "a2netcompat.h"
 #include "DHKeyExchange.h"
 #include "ARC4Encryptor.h"
-#include "ARC4Decryptor.h"
 #include "MessageDigest.h"
 #include "message_digest_helper.h"
 #include "SimpleRandomizer.h"
@@ -204,14 +203,14 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   sha1_->reset();
   message_digest::digest(peerCipherKey, sizeof(peerCipherKey),
                          sha1_, s, sizeof(s));
-  decryptor_.reset(new ARC4Decryptor());
+  decryptor_.reset(new ARC4Encryptor());
   decryptor_->init(peerCipherKey, sizeof(peerCipherKey));
 
   // discard first 1024 bytes ARC4 output.
   unsigned char from[1024];
   unsigned char to[1024];
   encryptor_->encrypt(to, 1024, from, 1024);
-  decryptor_->decrypt(to, 1024, from, 1024);
+  decryptor_->encrypt(to, 1024, from, 1024);
 
   if(initiator_) {
     ARC4Encryptor enc;
@@ -264,7 +263,7 @@ void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoH
 uint16_t MSEHandshake::decodeLength16(const unsigned char* buffer)
 {
   uint16_t be;
-  decryptor_->decrypt(reinterpret_cast<unsigned char*>(&be),
+  decryptor_->encrypt(reinterpret_cast<unsigned char*>(&be),
                       sizeof(be),
                       buffer, sizeof(be));
   return ntohs(be);
@@ -355,7 +354,7 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
   unsigned char* rbufptr = rbuf_;
   {
     unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
-    decryptor_->decrypt(cryptoSelect, sizeof(cryptoSelect),
+    decryptor_->encrypt(cryptoSelect, sizeof(cryptoSelect),
                         rbufptr, sizeof(cryptoSelect));
     if(cryptoSelect[3]&CRYPTO_PLAIN_TEXT &&
        option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
@@ -392,7 +391,7 @@ bool MSEHandshake::receivePad()
     return true;
   }
   unsigned char temp[MAX_PAD_LENGTH];
-  decryptor_->decrypt(temp, padLength_, rbuf_, padLength_);
+  decryptor_->encrypt(temp, padLength_, rbuf_, padLength_);
   // shift rbuf_
   shiftBuffer(padLength_);
   return true;
@@ -459,7 +458,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   rbufptr += VC_LENGTH;
   {
     unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
-    decryptor_->decrypt(cryptoProvide, sizeof(cryptoProvide),
+    decryptor_->encrypt(cryptoProvide, sizeof(cryptoProvide),
                         rbufptr, sizeof(cryptoProvide));
     // TODO choose the crypto type based on the preference.
     // For now, choose ARC4.
@@ -514,7 +513,7 @@ bool MSEHandshake::receiveReceiverIA()
   }
   delete [] ia_;
   ia_ = new unsigned char[iaLength_];
-  decryptor_->decrypt(ia_, iaLength_, rbuf_, iaLength_);
+  decryptor_->encrypt(ia_, iaLength_, rbuf_, iaLength_);
   A2_LOG_DEBUG(fmt("CUID#%lld - IA received.", cuid_));
   // shift rbuf_
   shiftBuffer(iaLength_);
@@ -566,7 +565,7 @@ void MSEHandshake::verifyVC(const unsigned char* vcbuf)
 {
   A2_LOG_DEBUG(fmt("CUID#%lld - Verifying VC.", cuid_));
   unsigned char vc[VC_LENGTH];
-  decryptor_->decrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
+  decryptor_->encrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
   if(memcmp(VC, vc, sizeof(VC)) != 0) {
     throw DL_ABORT_EX
       (fmt("Invalid VC: %s", util::toHex(vc, VC_LENGTH).c_str()));

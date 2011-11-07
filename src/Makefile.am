@@ -265,7 +265,6 @@ endif # HAVE_LIBGNUTLS
 if HAVE_LIBGCRYPT
 SRCS += LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h\
 	LibgcryptARC4Context.cc LibgcryptARC4Context.h\
-	LibgcryptARC4Decryptor.cc LibgcryptARC4Decryptor.h\
 	LibgcryptARC4Encryptor.cc LibgcryptARC4Encryptor.h\
 	LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
 endif # HAVE_LIBGCRYPT
@@ -273,7 +272,6 @@ endif # HAVE_LIBGCRYPT
 if HAVE_LIBNETTLE
 SRCS += LibnettleMessageDigestImpl.cc LibnettleMessageDigestImpl.h\
 	LibnettleARC4Context.cc LibnettleARC4Context.h\
-	LibnettleARC4Decryptor.cc LibnettleARC4Decryptor.h\
 	LibnettleARC4Encryptor.cc LibnettleARC4Encryptor.h
 endif # HAVE_LIBNETTLE
 
@@ -286,7 +284,6 @@ if HAVE_OPENSSL
 SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
 	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h\
 	LibsslARC4Context.cc LibsslARC4Context.h\
-	LibsslARC4Decryptor.cc LibsslARC4Decryptor.h\
 	LibsslARC4Encryptor.cc LibsslARC4Encryptor.h\
 	LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
 endif # HAVE_OPENSSL
@@ -466,7 +463,6 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	InitiatorMSEHandshakeCommand.cc InitiatorMSEHandshakeCommand.h\
 	ReceiverMSEHandshakeCommand.cc ReceiverMSEHandshakeCommand.h\
 	MSEHandshake.cc MSEHandshake.h\
-	ARC4Decryptor.h\
 	ARC4Encryptor.h\
 	DHKeyExchange.h\
 	BtConstants.h\

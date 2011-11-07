@@ -46,7 +46,6 @@
 #include "Socket.h"
 #include "a2netcompat.h"
 #include "ARC4Encryptor.h"
-#include "ARC4Decryptor.h"
 #include "fmt.h"
 #include "util.h"
 #include "Peer.h"
@@ -216,7 +215,7 @@ void PeerConnection::readData
     unsigned char temp[MAX_PAYLOAD_LEN];
     assert(MAX_PAYLOAD_LEN >= length);
     socket_->readData(temp, length);
-    decryptor_->decrypt(data, length, temp, length);
+    decryptor_->encrypt(data, length, temp, length);
   } else {
     socket_->readData(data, length);
   }
@@ -224,7 +223,7 @@ void PeerConnection::readData
 
 void PeerConnection::enableEncryption
 (const SharedHandle<ARC4Encryptor>& encryptor,
- const SharedHandle<ARC4Decryptor>& decryptor)
+ const SharedHandle<ARC4Encryptor>& decryptor)
 {
   encryptor_ = encryptor;
   decryptor_ = decryptor;

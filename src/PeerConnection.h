@@ -48,7 +48,6 @@ namespace aria2 {
 class Peer;
 class SocketCore;
 class ARC4Encryptor;
-class ARC4Decryptor;
 
 // The maximum length of payload. Messages beyond that length are
 // dropped.
@@ -70,7 +69,7 @@ private:
 
   bool encryptionEnabled_;
   SharedHandle<ARC4Encryptor> encryptor_;
-  SharedHandle<ARC4Decryptor> decryptor_;
+  SharedHandle<ARC4Encryptor> decryptor_;
 
   bool prevPeek_;
 
@@ -104,7 +103,7 @@ public:
   (unsigned char* data, size_t& dataLength, bool peek = false);
 
   void enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,
-                        const SharedHandle<ARC4Decryptor>& decryptor);
+                        const SharedHandle<ARC4Encryptor>& decryptor);
 
   void presetBuffer(const unsigned char* data, size_t length);
 

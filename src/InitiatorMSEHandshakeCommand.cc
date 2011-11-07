@@ -50,7 +50,6 @@
 #include "Option.h"
 #include "MSEHandshake.h"
 #include "ARC4Encryptor.h"
-#include "ARC4Decryptor.h"
 #include "RequestGroup.h"
 #include "DownloadContext.h"
 #include "bittorrent_helper.h"
@@ -158,7 +157,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
                                            mseHandshake_->getDecryptor());
           size_t buflen = mseHandshake_->getBufferLength();
           array_ptr<unsigned char> buffer(new unsigned char[buflen]);
-          mseHandshake_->getDecryptor()->decrypt(buffer, buflen,
+          mseHandshake_->getDecryptor()->encrypt(buffer, buflen,
                                                  mseHandshake_->getBuffer(),
                                                  buflen);
           peerConnection->presetBuffer(buffer, buflen);

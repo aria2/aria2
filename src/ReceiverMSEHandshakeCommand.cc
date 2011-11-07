@@ -46,7 +46,6 @@
 #include "Option.h"
 #include "MSEHandshake.h"
 #include "ARC4Encryptor.h"
-#include "ARC4Decryptor.h"
 #include "RequestGroupMan.h"
 #include "BtRegistry.h"
 #include "DownloadContext.h"

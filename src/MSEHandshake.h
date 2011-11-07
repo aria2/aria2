@@ -50,7 +50,6 @@ class Option;
 class SocketCore;
 class DHKeyExchange;
 class ARC4Encryptor;
-class ARC4Decryptor;
 class DownloadContext;
 class MessageDigest;
 
@@ -90,7 +89,7 @@ private:
   CRYPTO_TYPE negotiatedCryptoType_;
   DHKeyExchange* dh_;
   SharedHandle<ARC4Encryptor> encryptor_;
-  SharedHandle<ARC4Decryptor> decryptor_;
+  SharedHandle<ARC4Encryptor> decryptor_;
   unsigned char infoHash_[INFO_HASH_LENGTH];
   unsigned char secret_[KEY_LENGTH];
   bool initiator_;
@@ -203,7 +202,7 @@ public:
     return encryptor_;
   }
 
-  const SharedHandle<ARC4Decryptor>& getDecryptor() const
+  const SharedHandle<ARC4Encryptor>& getDecryptor() const
   {
     return decryptor_;
   }
