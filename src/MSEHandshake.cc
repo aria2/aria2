@@ -326,9 +326,10 @@ bool MSEHandshake::findInitiatorVCMarker()
 {
   // 616 is synchronization point of initiator
   // find vc
-  std::string buf(&rbuf_[0], &rbuf_[rbufLength_]);
-  std::string vc(&initiatorVCMarker_[0], &initiatorVCMarker_[VC_LENGTH]);
-  if((markerIndex_ = buf.find(vc)) == std::string::npos) {
+  unsigned char* ptr =
+    std::search(&rbuf_[0], &rbuf_[rbufLength_],
+                &initiatorVCMarker_[0], &initiatorVCMarker_[VC_LENGTH]);
+  if(ptr == &rbuf_[rbufLength_]) {
     if(616-KEY_LENGTH <= rbufLength_) {
       throw DL_ABORT_EX("Failed to find VC marker.");
     } else {
@@ -336,6 +337,7 @@ bool MSEHandshake::findInitiatorVCMarker()
       return false;
     }
   }
+  markerIndex_ = ptr-rbuf_;
   A2_LOG_DEBUG(fmt("CUID#%lld - VC marker found at %lu",
                    cuid_,
                    static_cast<unsigned long>(markerIndex_)));
@@ -397,11 +399,11 @@ bool MSEHandshake::findReceiverHashMarker()
 {
   // 628 is synchronization limit of receiver.
   // find hash('req1', S), S is secret_.
-  std::string buf(&rbuf_[0], &rbuf_[rbufLength_]);
   unsigned char md[20];
   createReq1Hash(md);
-  std::string req1(&md[0], &md[sizeof(md)]);
-  if((markerIndex_ = buf.find(req1)) == std::string::npos) {
+  unsigned char* ptr = std::search
+    (&rbuf_[0], &rbuf_[rbufLength_], &md[0], &md[sizeof(md)]);
+  if(ptr == &rbuf_[rbufLength_]) {
     if(628-KEY_LENGTH <= rbufLength_) {
       throw DL_ABORT_EX("Failed to find hash marker.");
     } else {
@@ -409,6 +411,7 @@ bool MSEHandshake::findReceiverHashMarker()
       return false;
     }
   }
+  markerIndex_ = ptr-rbuf_;
   A2_LOG_DEBUG(fmt("CUID#%lld - Hash marker found at %lu.",
                    cuid_,
                    static_cast<unsigned long>(markerIndex_)));
