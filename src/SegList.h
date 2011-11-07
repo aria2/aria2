@@ -103,11 +103,14 @@ public:
   T next()
   {
     T res;
-    if(index_ < segs_.size()) {
+    size_t len = segs_.size();
+    if(index_ < len) {
       res = val_++;
       if(val_ == segs_[index_].second) {
         ++index_;
-        val_ = segs_[index_].first;
+        if(index_ < len) {
+          val_ = segs_[index_].first;
+        }
       }
     } else {
       res = 0;
