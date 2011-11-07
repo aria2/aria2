@@ -39,13 +39,11 @@
 
 #include <gcrypt.h>
 
-#include "LibgcryptARC4Context.h"
-
 namespace aria2 {
 
 class ARC4Encryptor {
 private:
-  LibgcryptARC4Context ctx_;
+  gcry_cipher_hd_t hdl_;
 public:
   ARC4Encryptor();
 
@@ -53,8 +51,9 @@ public:
 
   void init(const unsigned char* key, size_t keyLength);
 
-  void encrypt(unsigned char* out, size_t outLength,
-               const unsigned char* in, size_t inLength);
+  // Encrypts data in in buffer to out buffer. in and out can be the
+  // same buffer.
+  void encrypt(size_t len, unsigned char* out, const unsigned char* in);
 };
 
 } // namespace aria2

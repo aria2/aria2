@@ -71,40 +71,12 @@ PeerConnection::~PeerConnection()
   delete [] resbuf_;
 }
 
-void PeerConnection::pushStr(const std::string& data)
-{
-  if(encryptionEnabled_) {
-    const size_t len = data.size();
-    unsigned char* chunk = new unsigned char[len];
-    try {
-      encryptor_->encrypt
-        (chunk, len, reinterpret_cast<const unsigned char*>(data.data()), len);
-    } catch(RecoverableException& e) {
-      delete [] chunk;
-      throw;
-    }
-    socketBuffer_.pushBytes(chunk, len);
-  } else {
-    socketBuffer_.pushStr(data);
-  }
-}
-
 void PeerConnection::pushBytes(unsigned char* data, size_t len)
 {
   if(encryptionEnabled_) {
-    unsigned char* chunk = new unsigned char[len];
-    try {
-      encryptor_->encrypt(chunk, len, data, len);
-    } catch(RecoverableException& e) {
-      delete [] data;
-      delete [] chunk;
-      throw;
-    }
-    delete [] data;
-    socketBuffer_.pushBytes(chunk, len);
-  } else {
-    socketBuffer_.pushBytes(data, len);
+    encryptor_->encrypt(len, data, data);
   }
+  socketBuffer_.pushBytes(data, len);
 }
 
 bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
@@ -211,13 +183,9 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
 void PeerConnection::readData
 (unsigned char* data, size_t& length, bool encryption)
 {
+  socket_->readData(data, length);
   if(encryption) {
-    unsigned char temp[MAX_PAYLOAD_LEN];
-    assert(MAX_PAYLOAD_LEN >= length);
-    socket_->readData(temp, length);
-    decryptor_->encrypt(data, length, temp, length);
-  } else {
-    socket_->readData(data, length);
+    decryptor_->encrypt(length, data, data);
   }
 }
 

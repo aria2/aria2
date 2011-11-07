@@ -100,7 +100,7 @@ private:
   unsigned char* ia_;
   SharedHandle<MessageDigest> sha1_;
 
-  void encryptAndSendData(const unsigned char* data, size_t length);
+  void encryptAndSendData(unsigned char* data, size_t length);
 
   void createReq1Hash(unsigned char* md) const;
 
@@ -116,7 +116,7 @@ private:
   uint16_t verifyPadLength(const unsigned char* padlenbuf,
                            const char* padName);
 
-  void verifyVC(const unsigned char* vcbuf);
+  void verifyVC(unsigned char* vcbuf);
 
   void verifyReq1Hash(const unsigned char* req1buf);
 
@@ -208,6 +208,11 @@ public:
   }
 
   const unsigned char* getBuffer() const
+  {
+    return rbuf_;
+  }
+
+  unsigned char* getBuffer()
   {
     return rbuf_;
   }

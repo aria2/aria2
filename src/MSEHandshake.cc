@@ -207,27 +207,25 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   decryptor_->init(peerCipherKey, sizeof(peerCipherKey));
 
   // discard first 1024 bytes ARC4 output.
-  unsigned char from[1024];
-  unsigned char to[1024];
-  encryptor_->encrypt(to, 1024, from, 1024);
-  decryptor_->encrypt(to, 1024, from, 1024);
+  unsigned char garbage[1024];
+  encryptor_->encrypt(1024, garbage, garbage);
+  decryptor_->encrypt(1024, garbage, garbage);
 
   if(initiator_) {
     ARC4Encryptor enc;
     enc.init(peerCipherKey, sizeof(peerCipherKey));
     // discard first 1024 bytes ARC4 output.
-    enc.encrypt(to, 1024, from, 1024);
-    enc.encrypt(initiatorVCMarker_, sizeof(initiatorVCMarker_), VC, sizeof(VC));
+    enc.encrypt(1024, garbage, garbage);
+    enc.encrypt(VC_LENGTH, initiatorVCMarker_, VC);
   }
 }
 
-void MSEHandshake::encryptAndSendData(const unsigned char* data, size_t length)
+// Given data is pushed to socketBuffer_ and data will be deleted by
+// socketBuffer_.
+void MSEHandshake::encryptAndSendData(unsigned char* data, size_t length)
 {
-  unsigned char* buf = new unsigned char[length];
-  array_ptr<unsigned char> bufp(buf);
-  encryptor_->encrypt(buf, length, data, length);
-  socketBuffer_.pushBytes(buf, length);
-  bufp.reset(0);
+  encryptor_->encrypt(length, data, data);
+  socketBuffer_.pushBytes(data, length);
 }
 
 void MSEHandshake::createReq1Hash(unsigned char* md) const
@@ -263,9 +261,9 @@ void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoH
 uint16_t MSEHandshake::decodeLength16(const unsigned char* buffer)
 {
   uint16_t be;
-  decryptor_->encrypt(reinterpret_cast<unsigned char*>(&be),
-                      sizeof(be),
-                      buffer, sizeof(be));
+  decryptor_->encrypt(sizeof(be),
+                      reinterpret_cast<unsigned char*>(&be),
+                      buffer);
   return ntohs(be);
 }
 
@@ -286,7 +284,9 @@ void MSEHandshake::sendInitiatorStep2()
   //   len(padC)(2 bytes),
   //   padC(len(padC) bytes <= MAX_PAD_LENGTH),
   //   len(IA)(2 bytes)
-  unsigned char buffer[40+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
+  unsigned char* buffer = new unsigned char
+    [40+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH+2];
+  array_ptr<unsigned char> bufp(buffer);
   unsigned char* ptr = buffer;
   // VC
   memcpy(ptr, VC, sizeof(VC));
@@ -318,6 +318,7 @@ void MSEHandshake::sendInitiatorStep2()
   }
   ptr += 2;
   encryptAndSendData(buffer, ptr-buffer);
+  bufp.reset(0);
 }
 
 // This function reads exactly until the end of VC marker is reached.
@@ -352,26 +353,22 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
   }
   //verifyCryptoSelect
   unsigned char* rbufptr = rbuf_;
-  {
-    unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
-    decryptor_->encrypt(cryptoSelect, sizeof(cryptoSelect),
-                        rbufptr, sizeof(cryptoSelect));
-    if(cryptoSelect[3]&CRYPTO_PLAIN_TEXT &&
-       option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-      A2_LOG_DEBUG(fmt("CUID#%lld - peer prefers plaintext.",
-                       cuid_));
-      negotiatedCryptoType_ = CRYPTO_PLAIN_TEXT;
-    }
-    if(cryptoSelect[3]&CRYPTO_ARC4) {
-      A2_LOG_DEBUG(fmt("CUID#%lld - peer prefers ARC4",
-                       cuid_));
-      negotiatedCryptoType_ = CRYPTO_ARC4;
-    }
-    if(negotiatedCryptoType_ == CRYPTO_NONE) {
-      throw DL_ABORT_EX
-        (fmt("CUID#%lld - No supported crypto type selected.",
-             cuid_));
-    }
+  decryptor_->encrypt(CRYPTO_BITFIELD_LENGTH, rbufptr, rbufptr);
+  if(rbufptr[3]&CRYPTO_PLAIN_TEXT &&
+     option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
+    A2_LOG_DEBUG(fmt("CUID#%lld - peer prefers plaintext.",
+                     cuid_));
+    negotiatedCryptoType_ = CRYPTO_PLAIN_TEXT;
+  }
+  if(rbufptr[3]&CRYPTO_ARC4) {
+    A2_LOG_DEBUG(fmt("CUID#%lld - peer prefers ARC4",
+                     cuid_));
+    negotiatedCryptoType_ = CRYPTO_ARC4;
+  }
+  if(negotiatedCryptoType_ == CRYPTO_NONE) {
+    throw DL_ABORT_EX
+      (fmt("CUID#%lld - No supported crypto type selected.",
+           cuid_));
   }
   // padD length
   rbufptr += CRYPTO_BITFIELD_LENGTH;
@@ -390,8 +387,7 @@ bool MSEHandshake::receivePad()
   if(padLength_ == 0) {
     return true;
   }
-  unsigned char temp[MAX_PAD_LENGTH];
-  decryptor_->encrypt(temp, padLength_, rbuf_, padLength_);
+  decryptor_->encrypt(padLength_, rbuf_, rbuf_);
   // shift rbuf_
   shiftBuffer(padLength_);
   return true;
@@ -456,27 +452,23 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength
   verifyVC(rbufptr);
   // decrypt crypto_provide
   rbufptr += VC_LENGTH;
-  {
-    unsigned char cryptoProvide[CRYPTO_BITFIELD_LENGTH];
-    decryptor_->encrypt(cryptoProvide, sizeof(cryptoProvide),
-                        rbufptr, sizeof(cryptoProvide));
-    // TODO choose the crypto type based on the preference.
-    // For now, choose ARC4.
-    if(cryptoProvide[3]&CRYPTO_PLAIN_TEXT &&
-       option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
-      A2_LOG_DEBUG(fmt("CUID#%lld - peer provides plaintext.",
-                       cuid_));
-      negotiatedCryptoType_ = CRYPTO_PLAIN_TEXT;
-    } else if(cryptoProvide[3]&CRYPTO_ARC4) {
-      A2_LOG_DEBUG(fmt("CUID#%lld - peer provides ARC4.",
-                       cuid_));
-      negotiatedCryptoType_ = CRYPTO_ARC4;
-    }
-    if(negotiatedCryptoType_ == CRYPTO_NONE) {
-      throw DL_ABORT_EX
-        (fmt("CUID#%lld - No supported crypto type provided.",
-             cuid_));
-    }
+  decryptor_->encrypt(CRYPTO_BITFIELD_LENGTH, rbufptr, rbufptr);
+  // TODO choose the crypto type based on the preference.
+  // For now, choose ARC4.
+  if(rbufptr[3]&CRYPTO_PLAIN_TEXT &&
+     option_->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
+    A2_LOG_DEBUG(fmt("CUID#%lld - peer provides plaintext.",
+                     cuid_));
+    negotiatedCryptoType_ = CRYPTO_PLAIN_TEXT;
+  } else if(rbufptr[3]&CRYPTO_ARC4) {
+    A2_LOG_DEBUG(fmt("CUID#%lld - peer provides ARC4.",
+                     cuid_));
+    negotiatedCryptoType_ = CRYPTO_ARC4;
+  }
+  if(negotiatedCryptoType_ == CRYPTO_NONE) {
+    throw DL_ABORT_EX
+      (fmt("CUID#%lld - No supported crypto type provided.",
+           cuid_));
   }
   // decrypt PadC length
   rbufptr += CRYPTO_BITFIELD_LENGTH;
@@ -513,7 +505,7 @@ bool MSEHandshake::receiveReceiverIA()
   }
   delete [] ia_;
   ia_ = new unsigned char[iaLength_];
-  decryptor_->encrypt(ia_, iaLength_, rbuf_, iaLength_);
+  decryptor_->encrypt(iaLength_, ia_, rbuf_);
   A2_LOG_DEBUG(fmt("CUID#%lld - IA received.", cuid_));
   // shift rbuf_
   shiftBuffer(iaLength_);
@@ -527,24 +519,28 @@ void MSEHandshake::sendReceiverStep2()
   //   cryptoSelect(CRYPTO_BITFIELD_LENGTH bytes),
   //   len(padD)(2bytes),
   //   padD(len(padD)bytes <= MAX_PAD_LENGTH)
-  unsigned char buffer[VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH];
+  unsigned char* buffer = new unsigned char
+    [VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+MAX_PAD_LENGTH];
+  array_ptr<unsigned char> bufp(buffer);
+  unsigned char* ptr = buffer;
   // VC
-  memcpy(buffer, VC, sizeof(VC));
+  memcpy(ptr, VC, sizeof(VC));
+  ptr += sizeof(VC);
   // crypto_select
-  unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
-  memset(cryptoSelect, 0, sizeof(cryptoSelect));
-  cryptoSelect[3] = negotiatedCryptoType_;
-  memcpy(buffer+VC_LENGTH, cryptoSelect, sizeof(cryptoSelect));
+  memset(ptr, 0, CRYPTO_BITFIELD_LENGTH);
+  ptr[3] = negotiatedCryptoType_;
+  ptr += CRYPTO_BITFIELD_LENGTH;
   // len(padD)
-  uint16_t padDLength = SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
-  {
-    uint16_t padDLengthBE = htons(padDLength);
-    memcpy(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH, &padDLengthBE,
-           sizeof(padDLengthBE));
-  }
+  uint16_t padDLength =
+    SimpleRandomizer::getInstance()->getRandomNumber(MAX_PAD_LENGTH+1);
+  uint16_t padDLengthBE = htons(padDLength);
+  memcpy(ptr, &padDLengthBE, sizeof(padDLengthBE));
+  ptr += sizeof(padDLengthBE);
   // padD, all zeroed
-  memset(buffer+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2, 0, padDLength);
-  encryptAndSendData(buffer, VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2+padDLength);
+  memset(ptr, 0, padDLength);
+  ptr += padDLength;
+  encryptAndSendData(buffer, ptr-buffer);
+  bufp.reset(0);
 }
 
 uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const char* padName)
@@ -561,14 +557,13 @@ uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const cha
   return padLength;
 }
 
-void MSEHandshake::verifyVC(const unsigned char* vcbuf)
+void MSEHandshake::verifyVC(unsigned char* vcbuf)
 {
   A2_LOG_DEBUG(fmt("CUID#%lld - Verifying VC.", cuid_));
-  unsigned char vc[VC_LENGTH];
-  decryptor_->encrypt(vc, sizeof(vc), vcbuf, sizeof(vc));
-  if(memcmp(VC, vc, sizeof(VC)) != 0) {
+  decryptor_->encrypt(VC_LENGTH, vcbuf, vcbuf);
+  if(memcmp(VC, vcbuf, VC_LENGTH) != 0) {
     throw DL_ABORT_EX
-      (fmt("Invalid VC: %s", util::toHex(vc, VC_LENGTH).c_str()));
+      (fmt("Invalid VC: %s", util::toHex(vcbuf, VC_LENGTH).c_str()));
   }
 }
 

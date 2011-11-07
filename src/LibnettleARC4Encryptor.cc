@@ -34,8 +34,6 @@
 /* copyright --> */
 #include "LibnettleARC4Encryptor.h"
 
-#include <cassert>
-
 namespace aria2 {
 
 ARC4Encryptor::ARC4Encryptor() {}
@@ -44,14 +42,15 @@ ARC4Encryptor::~ARC4Encryptor() {}
 
 void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 {
-  ctx_.init(key, keyLength);
+  arcfour_set_key(&ctx_, keyLength, key);
 }
 
-void ARC4Encryptor::encrypt(unsigned char* out, size_t outLength,
-                            const unsigned char* in, size_t inLength)
+void ARC4Encryptor::encrypt
+(size_t len,
+ unsigned char* out,
+ const unsigned char* in)
 {
-  assert(outLength == inLength);
-  arcfour_crypt(ctx_.getCipherContext(), outLength, out, in);
+  arcfour_crypt(&ctx_, len, out, in);
 }
 
 } // namespace aria2

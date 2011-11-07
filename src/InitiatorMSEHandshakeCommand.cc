@@ -156,11 +156,10 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
           peerConnection->enableEncryption(mseHandshake_->getEncryptor(),
                                            mseHandshake_->getDecryptor());
           size_t buflen = mseHandshake_->getBufferLength();
-          array_ptr<unsigned char> buffer(new unsigned char[buflen]);
-          mseHandshake_->getDecryptor()->encrypt(buffer, buflen,
+          mseHandshake_->getDecryptor()->encrypt(buflen,
                                                  mseHandshake_->getBuffer(),
-                                                 buflen);
-          peerConnection->presetBuffer(buffer, buflen);
+                                                 mseHandshake_->getBuffer());
+          peerConnection->presetBuffer(mseHandshake_->getBuffer(), buflen);
         } else {
           peerConnection->presetBuffer(mseHandshake_->getBuffer(),
                                        mseHandshake_->getBufferLength());

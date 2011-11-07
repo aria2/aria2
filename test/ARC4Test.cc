@@ -37,13 +37,13 @@ void ARC4Test::testEncrypt()
 
   unsigned char encrypted[LEN];
   unsigned char decrypted[LEN];
-  enc.encrypt(encrypted, LEN, key, LEN);
-  dec.encrypt(decrypted, LEN, encrypted, LEN);
+  enc.encrypt(LEN, encrypted, key);
+  dec.encrypt(LEN, decrypted, encrypted);
 
   CPPUNIT_ASSERT(memcmp(key, decrypted, LEN) == 0);
   // once more
-  enc.encrypt(encrypted, LEN, key, LEN);
-  dec.encrypt(decrypted, LEN, encrypted, LEN);
+  enc.encrypt(LEN, encrypted, key);
+  dec.encrypt(LEN, decrypted, encrypted);
 
   CPPUNIT_ASSERT(memcmp(key, decrypted, LEN) == 0);
 }

@@ -264,14 +264,12 @@ endif # HAVE_LIBGNUTLS
 
 if HAVE_LIBGCRYPT
 SRCS += LibgcryptMessageDigestImpl.cc LibgcryptMessageDigestImpl.h\
-	LibgcryptARC4Context.cc LibgcryptARC4Context.h\
 	LibgcryptARC4Encryptor.cc LibgcryptARC4Encryptor.h\
 	LibgcryptDHKeyExchange.cc LibgcryptDHKeyExchange.h
 endif # HAVE_LIBGCRYPT
 
 if HAVE_LIBNETTLE
 SRCS += LibnettleMessageDigestImpl.cc LibnettleMessageDigestImpl.h\
-	LibnettleARC4Context.cc LibnettleARC4Context.h\
 	LibnettleARC4Encryptor.cc LibnettleARC4Encryptor.h
 endif # HAVE_LIBNETTLE
 
@@ -283,7 +281,6 @@ endif # HAVE_LIBGMP
 if HAVE_OPENSSL
 SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
 	LibsslMessageDigestImpl.cc LibsslMessageDigestImpl.h\
-	LibsslARC4Context.cc LibsslARC4Context.h\
 	LibsslARC4Encryptor.cc LibsslARC4Encryptor.h\
 	LibsslDHKeyExchange.cc LibsslDHKeyExchange.h
 endif # HAVE_OPENSSL

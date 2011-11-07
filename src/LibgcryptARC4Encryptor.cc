@@ -50,21 +50,47 @@ void handleError(gcry_error_t err)
 }
 } // namespace
 
-ARC4Encryptor::ARC4Encryptor() {}
+ARC4Encryptor::ARC4Encryptor()
+  : hdl_(0)
+{}
 
-ARC4Encryptor::~ARC4Encryptor() {}
+ARC4Encryptor::~ARC4Encryptor()
+{
+  gcry_cipher_close(hdl_);
+}
 
 void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 {
-  ctx_.init(key, keyLength);
+  int algo = GCRY_CIPHER_ARCFOUR;
+  int mode = GCRY_CIPHER_MODE_STREAM;
+  unsigned int flags = 0;
+  gcry_error_t r;
+  if((r = gcry_cipher_open(&hdl_, algo, mode, flags))) {
+    handleError(r);
+  }
+  if((r = gcry_cipher_setkey(hdl_, key, keyLength))) {
+    handleError(r);
+  }
+  if((r = gcry_cipher_setiv(hdl_, 0, 0))) {
+    handleError(r);
+  }
 }
 
-void ARC4Encryptor::encrypt(unsigned char* out, size_t outLength,
-                            const unsigned char* in, size_t inLength)
+void ARC4Encryptor::encrypt
+(size_t len,
+ unsigned char* out,
+ const unsigned char* in)
 {
-  gcry_error_t r = gcry_cipher_encrypt(ctx_.getCipherContext(),
-                                       out, outLength, in, inLength);
-  if(r) {
+  size_t inlen;
+  if(in == out) {
+    out = const_cast<unsigned char*>(in);
+    in = 0;
+    inlen = 0;
+  } else {
+    inlen = len;
+  }
+  gcry_error_t r;
+  if((r = gcry_cipher_encrypt(hdl_, out, len, in, inlen))) {
     handleError(r);
   }
 }

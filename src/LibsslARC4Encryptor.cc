@@ -34,21 +34,7 @@
 /* copyright --> */
 #include "LibsslARC4Encryptor.h"
 
-#include <openssl/err.h>
-
-#include "DlAbortEx.h"
-#include "fmt.h"
-
 namespace aria2 {
-
-namespace {
-void handleError()
-{
-  throw DL_ABORT_EX
-    (fmt("Exception in libssl routine(ARC4Encryptor class): %s",
-         ERR_error_string(ERR_get_error(), 0)));
-}
-} // namespace
 
 ARC4Encryptor::ARC4Encryptor() {}
 
@@ -56,17 +42,15 @@ ARC4Encryptor::~ARC4Encryptor() {}
 
 void ARC4Encryptor::init(const unsigned char* key, size_t keyLength)
 {
-  ctx_.init(key, keyLength, 1);
+  RC4_set_key(&key_, keyLength, key);
 }
 
-void ARC4Encryptor::encrypt(unsigned char* out, size_t outLength,
-                            const unsigned char* in, size_t inLength)
+void ARC4Encryptor::encrypt
+(size_t len,
+ unsigned char* out,
+ const unsigned char* in)
 {
-  int soutLength = outLength;
-  if(!EVP_CipherUpdate(ctx_.getCipherContext(), out, &soutLength,
-                       in, inLength)) {
-    handleError();
-  }
+  RC4(&key_, len, in, out);
 }
 
 } // namespace aria2

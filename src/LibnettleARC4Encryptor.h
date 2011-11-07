@@ -36,13 +36,16 @@
 #define D_LIBNETTLE_ARC4_ENCRYPTOR_H
 
 #include "common.h"
-#include "LibnettleARC4Context.h"
+
+#include <cstdlib>
+
+#include <nettle/arcfour.h>
 
 namespace aria2 {
 
 class ARC4Encryptor {
 private:
-  LibnettleARC4Context ctx_;
+  arcfour_ctx ctx_;
 public:
   ARC4Encryptor();
 
@@ -50,8 +53,9 @@ public:
 
   void init(const unsigned char* key, size_t keyLength);
 
-  void encrypt(unsigned char* out, size_t outLength,
-               const unsigned char* in, size_t inLength);
+  // Encrypts data in in buffer to out buffer. in and out can be the
+  // same buffer.
+  void encrypt(size_t len, unsigned char* out, const unsigned char* in);
 };
 
 } // namespace aria2
