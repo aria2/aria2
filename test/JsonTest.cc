@@ -413,43 +413,43 @@ void JsonTest::testDecode_error()
 void JsonTest::testEncode()
 {
   {
-    Dict dict;
-    dict["name"] = String::g("aria2");
-    dict["loc"] = Integer::g(80000);
+    SharedHandle<Dict> dict = Dict::g();
+    dict->put("name", String::g("aria2"));
+    dict->put("loc", Integer::g(80000));
     SharedHandle<List> files = List::g();
     files->append(String::g("aria2c"));
-    dict["files"] = files;
+    dict->put("files", files);
     SharedHandle<Dict> attrs = Dict::g();
     attrs->put("license", String::g("GPL"));
-    dict["attrs"] = attrs;
+    dict->put("attrs", attrs);
 
     CPPUNIT_ASSERT_EQUAL(std::string("{\"attrs\":{\"license\":\"GPL\"},"
                                      "\"files\":[\"aria2c\"],"
                                      "\"loc\":80000,"
                                      "\"name\":\"aria2\"}"),
-                         json::encode(&dict));
+                         json::encode(dict));
   }
   {
-    List list;
-    list.append("\"\\/\b\f\n\r\t");
+    SharedHandle<List> list = List::g();
+    list->append("\"\\/\b\f\n\r\t");
     CPPUNIT_ASSERT_EQUAL(std::string("[\"\\\"\\\\\\/\\b\\f\\n\\r\\t\"]"),
-                         json::encode(&list));
+                         json::encode(list));
   }
   {
-    List list;
+    SharedHandle<List> list = List::g();
     std::string s;
     s += 0x1Fu;
-    list.append(s);
+    list->append(s);
     CPPUNIT_ASSERT_EQUAL(std::string("[\"\\u001F\"]"),
-                         json::encode(&list));
+                         json::encode(list));
   }
   {
-    List list;
-    list.append(Bool::gTrue());
-    list.append(Bool::gFalse());
-    list.append(Null::g());
+    SharedHandle<List> list = List::g();
+    list->append(Bool::gTrue());
+    list->append(Bool::gFalse());
+    list->append(Null::g());
     CPPUNIT_ASSERT_EQUAL(std::string("[true,false,null]"),
-                         json::encode(&list));
+                         json::encode(list));
   }
 }
 

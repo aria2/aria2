@@ -127,7 +127,6 @@ OutputStream& encode(OutputStream& out, const SharedHandle<ValueBase>& vlb)
 }
 
 // Serializes JSON object or array.
-std::string encode(const ValueBase* json);
 std::string encode(const SharedHandle<ValueBase>& json);
 
 struct JsonGetParam {
