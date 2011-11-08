@@ -715,6 +715,19 @@ bool streq
   return std::equal(first1, last1, first2);
 }
 
+struct CaseCmp {
+  bool operator()(char lhs, char rhs) const
+  {
+    if('A' <= lhs && lhs <= 'Z') {
+      lhs += 'a'-'A';
+    }
+    if('A' <= rhs && rhs <= 'Z') {
+      rhs += 'a'-'A';
+    }
+    return lhs == rhs;
+  }
+};
+
 template<typename InputIterator1, typename InputIterator2>
 bool strieq
 (InputIterator1 first1,
@@ -725,20 +738,7 @@ bool strieq
   if(last1-first1 != last2-first2) {
     return false;
   }
-  for(; first1 != last1; ++first1, ++first2) {
-    char c1 = *first1;
-    char c2 = *first2;
-    if('A' <= c1 && c1 <= 'Z') {
-      c1 = c1-'A'+'a';
-    }
-    if('A' <= c2 && c2 <= 'Z') {
-      c2 = c2-'A'+'a';
-    }
-    if(c1 != c2) {
-      return false;
-    }
-  }
-  return true;
+  return std::equal(first1, last1, first2, CaseCmp());
 }
 
 template<typename InputIterator1, typename InputIterator2>
@@ -764,7 +764,7 @@ bool istartsWith
   if(last1-first1 < last2-first2) {
     return false;
   }
-  return strieq(first1, first1+(last2-first2), first2, last2);
+  return std::equal(first2, last2, first1, CaseCmp());
 }
 
 template<typename InputIterator1, typename InputIterator2>
@@ -790,7 +790,7 @@ bool iendsWith
   if(last1-first1 < last2-first2) {
     return false;
   }
-  return strieq(last1-(last2-first2), last1, first2, last2);
+  return std::equal(first2, last2, last1-(last2-first2), CaseCmp());
 }
 
 void generateRandomData(unsigned char* data, size_t length);
