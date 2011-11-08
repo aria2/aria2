@@ -134,17 +134,23 @@ bool parseDate
       }
     }
     if(!foundMonth) {
-      static std::string MONTH[] = {
+      static const char MONTH[][12] = {
         "jan", "feb", "mar", "apr",
         "may", "jun", "jul", "aug",
         "sep", "oct", "nov", "dec" };
       if((*i).size() >= 3) {
-        std::string head((*i).begin(), (*i).begin()+3);
-        util::lowercase(head);
-        std::string* mptr = std::find(vbegin(MONTH), vend(MONTH), head);
-        if(mptr != vend(MONTH)) {
+        bool found = false;
+        size_t j;
+        for(j = 0; j < 12; ++j) {
+          if(util::strieq((*i).begin(), (*i).begin()+3,
+                          &MONTH[j][0], &MONTH[j][3])) {
+            found = true;
+            break;
+          }
+        }
+        if(found) {
           foundMonth = true;
-          month = std::distance(vbegin(MONTH), mptr)+1;
+          month = j+1;
           continue;
         }
       }
