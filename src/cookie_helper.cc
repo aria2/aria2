@@ -243,12 +243,16 @@ bool parse
   if(nvEnd != end) {
     ++nvEnd;
   }
+  static const char A2_EXPIRES[] = "expires";
+  static const char A2_MAX_AGE[] = "max-age";
+  static const char A2_DOMAIN[] = "domain";
+  static const char A2_PATH[] = "path";
+  static const char A2_SECURE[] = "secure";
+  static const char A2_HTTPONLY[] = "httponly";
   for(std::string::const_iterator i = nvEnd; i != end;) {
     std::string::const_iterator j = std::find(i, end, ';');
     std::string::const_iterator eq = std::find(i, j, '=');
     p = util::stripIter(i, eq);
-    std::string attrName(p.first, p.second);
-    util::lowercase(attrName);
     std::pair<std::string::const_iterator,
               std::string::const_iterator> attrp;
     if(eq == j) {
@@ -260,13 +264,13 @@ bool parse
     if(j != end) {
       ++i;
     }
-    if(attrName == "expires") {
+    if(util::strieq(p.first, p.second, A2_EXPIRES, vend(A2_EXPIRES)-1)) {
       if(parseDate(expiryTime, attrp.first, attrp.second)) {
         foundExpires = true;
       } else {
         return false;
       }
-    } else if(attrName == "max-age") {
+    } else if(util::strieq(p.first, p.second, A2_MAX_AGE, vend(A2_MAX_AGE)-1)) {
       if(attrp.first == attrp.second ||
          (!in(static_cast<unsigned char>(*attrp.first), 0x30u, 0x39u) &&
           *attrp.first != '-')) {
@@ -295,7 +299,7 @@ bool parse
       } else {
         return false;
       }
-    } else if(attrName == "domain") {
+    } else if(util::strieq(p.first, p.second, A2_DOMAIN, vend(A2_DOMAIN)-1)) {
       if(attrp.first == attrp.second) {
         return false;
       }
@@ -306,15 +310,15 @@ bool parse
         return false;
       }
       cookieDomain.assign(noDot, end);
-    } else if(attrName == "path") {
+    } else if(util::strieq(p.first, p.second, A2_PATH, vend(A2_PATH)-1)) {
       if(goodPath(attrp.first, attrp.second)) {
         cookiePath.assign(attrp.first, attrp.second);
       } else {
         cookiePath = defaultPath;
       }
-    } else if(attrName == "secure") {
+    } else if(util::strieq(p.first, p.second, A2_SECURE, vend(A2_SECURE)-1)) {
       secure = true;
-    } else if(attrName == "httponly") {
+    } else if(util::strieq(p.first, p.second, A2_HTTPONLY, vend(A2_HTTPONLY)-1)) {
       httpOnly = true;
     }
   }
