@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Xml2XmlRpcRequestProcessor.h"
 
+#include <cstring>
 #include <stack>
 
 #include <libxml/parser.h>
@@ -64,16 +65,15 @@ void mlStartElement(void* userData, const xmlChar* name,
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::map<std::string, std::string> attrmap;
   if(attrs) {
-    const xmlChar** p = attrs;
+    const char** p = reinterpret_cast<const char**>(attrs);
     while(*p != 0) {
-      std::string name = reinterpret_cast<const char*>(*p);
+      std::string name = *p;
       ++p;
       if(*p == 0) {
         break;
       }
-      std::string value = util::strip(reinterpret_cast<const char*>(*p));
+      attrmap[name].assign(*p, *p+strlen(*p));
       ++p;
-      attrmap[name] = value;
     }
   }
   sd->stm_->beginElement(reinterpret_cast<const char*>(name), attrmap);
@@ -87,12 +87,13 @@ namespace {
 void mlEndElement(void* userData, const xmlChar* name)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  std::string characters;
   if(sd->stm_->needsCharactersBuffering()) {
-    characters = util::strip(sd->charactersStack_.top());
+    sd->stm_->endElement(reinterpret_cast<const char*>(name),
+                         sd->charactersStack_.top());
     sd->charactersStack_.pop();
+  } else {
+    sd->stm_->endElement(reinterpret_cast<const char*>(name), A2STR::NIL);
   }
-  sd->stm_->endElement(reinterpret_cast<const char*>(name), characters);
 }
 } // namespace
 

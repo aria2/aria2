@@ -77,13 +77,13 @@ public:
 
   ~XmlRpcRequestParserStateMachine();
 
-  void beginElement(const std::string& name,
+  void beginElement(const char* name,
                     const std::map<std::string, std::string>& attrs)
   {
     stateStack_.top()->beginElement(this, name, attrs);
   }
   
-  void endElement(const std::string& name, const std::string& characters)
+  void endElement(const char* name, const std::string& characters)
   {
     stateStack_.top()->endElement(this, name, characters);
     stateStack_.pop();

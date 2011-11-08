@@ -47,7 +47,7 @@ namespace rpc {
 
 void InitialXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::METHOD_CALL) {
@@ -59,7 +59,7 @@ void InitialXmlRpcRequestParserState::beginElement
   
 void InitialXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {}
 
@@ -67,7 +67,7 @@ void InitialXmlRpcRequestParserState::endElement
 
 void UnknownElementXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   stm->pushUnknownElementState();
@@ -77,7 +77,7 @@ void UnknownElementXmlRpcRequestParserState::beginElement
 
 void MethodCallXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::METHOD_NAME) {
@@ -94,7 +94,7 @@ void MethodCallXmlRpcRequestParserState::beginElement
 
 void MethodNameXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   stm->pushUnknownElementState();
@@ -102,7 +102,7 @@ void MethodNameXmlRpcRequestParserState::beginElement
   
 void MethodNameXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   stm->setMethodName(characters);
@@ -112,7 +112,7 @@ void MethodNameXmlRpcRequestParserState::endElement
 
 void ParamsXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::PARAM) {
@@ -127,7 +127,7 @@ void ParamsXmlRpcRequestParserState::beginElement
 
 void ParamXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::VALUE) {
@@ -139,7 +139,7 @@ void ParamXmlRpcRequestParserState::beginElement
 
 void ParamXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   stm->popArrayFrame();
@@ -149,7 +149,7 @@ void ParamXmlRpcRequestParserState::endElement
 
 void ValueXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::I4 || name == elements::INT) {
@@ -171,7 +171,7 @@ void ValueXmlRpcRequestParserState::beginElement
 
 void ValueXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   // XML-RPC specification says that if no data type tag is used, the
@@ -186,7 +186,7 @@ void ValueXmlRpcRequestParserState::endElement
 
 void IntXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   stm->pushUnknownElementState();
@@ -194,7 +194,7 @@ void IntXmlRpcRequestParserState::beginElement
   
 void IntXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   try {
@@ -209,7 +209,7 @@ void IntXmlRpcRequestParserState::endElement
 
 void StringXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   stm->pushUnknownElementState();
@@ -217,7 +217,7 @@ void StringXmlRpcRequestParserState::beginElement
   
 void StringXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   stm->setCurrentFrameValue(String::g(characters));
@@ -227,7 +227,7 @@ void StringXmlRpcRequestParserState::endElement
 
 void Base64XmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   stm->pushUnknownElementState();
@@ -235,7 +235,7 @@ void Base64XmlRpcRequestParserState::beginElement
   
 void Base64XmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   stm->setCurrentFrameValue
@@ -246,7 +246,7 @@ void Base64XmlRpcRequestParserState::endElement
 
 void StructXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::MEMBER) {
@@ -261,7 +261,7 @@ void StructXmlRpcRequestParserState::beginElement
 
 void MemberXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::NAME) {
@@ -275,7 +275,7 @@ void MemberXmlRpcRequestParserState::beginElement
 
 void MemberXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   stm->popStructFrame();
@@ -285,7 +285,7 @@ void MemberXmlRpcRequestParserState::endElement
 
 void NameXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   stm->pushUnknownElementState();
@@ -293,7 +293,7 @@ void NameXmlRpcRequestParserState::beginElement
 
 void NameXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   stm->setCurrentFrameName(characters);
@@ -303,7 +303,7 @@ void NameXmlRpcRequestParserState::endElement
 
 void ArrayXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::DATA) {
@@ -317,7 +317,7 @@ void ArrayXmlRpcRequestParserState::beginElement
 
 void DataXmlRpcRequestParserState::beginElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::map<std::string, std::string>& attrs)
 {
   if(name == elements::VALUE) {
@@ -332,7 +332,7 @@ void DataXmlRpcRequestParserState::beginElement
 
 void ArrayValueXmlRpcRequestParserState::endElement
 (XmlRpcRequestParserStateMachine* stm,
- const std::string& name,
+ const char* name,
  const std::string& characters)
 {
   ValueXmlRpcRequestParserState::endElement(stm, name, characters);

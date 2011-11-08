@@ -44,11 +44,11 @@ namespace rpc {
 class InitialXmlRpcRequestParserState:public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -57,11 +57,11 @@ public:
 class UnknownElementXmlRpcRequestParserState:public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -70,11 +70,11 @@ public:
 class MethodCallXmlRpcRequestParserState:public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -83,11 +83,11 @@ public:
 class MethodNameXmlRpcRequestParserState:public XmlRpcRequestParserState {
 public:
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return true; }
@@ -95,11 +95,11 @@ public:
 
 class ParamsXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -107,11 +107,11 @@ class ParamsXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class ParamXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -119,11 +119,11 @@ class ParamXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class ValueXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
 protected:
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return true; }
@@ -131,11 +131,11 @@ protected:
 
 class IntXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return true; }
@@ -143,11 +143,11 @@ class IntXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class StringXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return true; }
@@ -155,11 +155,11 @@ class StringXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class Base64XmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return true; }
@@ -167,11 +167,11 @@ class Base64XmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class StructXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -179,11 +179,11 @@ class StructXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class MemberXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -191,11 +191,11 @@ class MemberXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class NameXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const { return true; }
@@ -203,11 +203,11 @@ class NameXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class ArrayXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -215,11 +215,11 @@ class ArrayXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class DataXmlRpcRequestParserState:public XmlRpcRequestParserState {
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs);
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters) {}
 
   virtual bool needsCharactersBuffering() const { return false; }
@@ -227,7 +227,7 @@ class DataXmlRpcRequestParserState:public XmlRpcRequestParserState {
 
 class ArrayValueXmlRpcRequestParserState:public ValueXmlRpcRequestParserState {
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters);
 };
 

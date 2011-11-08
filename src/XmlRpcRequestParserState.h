@@ -51,11 +51,11 @@ public:
   virtual ~XmlRpcRequestParserState() {}
 
   virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
-                            const std::string& name,
+                            const char* name,
                             const std::map<std::string, std::string>& attrs)= 0;
   
   virtual void endElement(XmlRpcRequestParserStateMachine* stm,
-                          const std::string& name,
+                          const char* name,
                           const std::string& characters) = 0;
 
   virtual bool needsCharactersBuffering() const = 0;
