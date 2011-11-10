@@ -1,4 +1,4 @@
-#include "MetalinkProcessor.h"
+#include "metalink_helper.h"
 
 #include <iostream>
 
@@ -21,7 +21,6 @@
 #include "fmt.h"
 #include "RecoverableException.h"
 #include "util.h"
-#include "metalink_helper.h"
 
 namespace aria2 {
 

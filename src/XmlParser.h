@@ -40,7 +40,7 @@
 #ifdef HAVE_LIBXML2
 # include "Xml2XmlParser.h"
 #elif HAVE_LIBEXPAT
-# include "Expat2XmlParser.h"
+# include "ExpatXmlParser.h"
 #endif
 
 #endif // D_XML_PARSER_H

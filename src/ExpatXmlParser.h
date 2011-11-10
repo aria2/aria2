@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,42 +32,33 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_EXPAT_METALINK_PROCESSOR_H
-#define D_EXPAT_METALINK_PROCESSOR_H
+#ifndef D_EXPAT_XML_PARSER_H
+#define D_EXPAT_XML_PARSER_H
 
 #include "common.h"
 
-#include <string>
-
-#include <expat.h>
-
-#include "SharedHandle.h"
-#include "A2STR.h"
+#include <cstdlib>
 
 namespace aria2 {
 
-class Metalinker;
 class BinaryStream;
-class MetalinkParserStateMachine;
+class ParserStateMachine;
 class BufferedFile;
 
-class MetalinkProcessor {
-private:
-  SharedHandle<MetalinkParserStateMachine> stm_;
-
-  SharedHandle<Metalinker> parseFile
-  (BufferedFile& fp,
-   const std::string& baseUri = A2STR::NIL);
+class XmlParser {
 public:
-  SharedHandle<Metalinker> parseFile
-  (const std::string& filename,
-   const std::string& baseUri = A2STR::NIL);
+  // This object does not delete psm.
+  XmlParser(ParserStateMachine* psm);
+  ~XmlParser();
+  bool parseFile(const char* filename);
+  bool parseBinaryStream(BinaryStream* binaryStream);
+  bool parseMemory(const char* xml, size_t size);
+private:
+  bool parseFile(BufferedFile* fp);
 
-  SharedHandle<Metalinker> parseFromBinaryStream
-  (const SharedHandle<BinaryStream>& binaryStream,
-   const std::string& baseUri = A2STR::NIL);
+  ParserStateMachine* psm_;
 };
 
 } // namespace aria2
 
-#endif // D_EXPAT_METALINK_PROCESSOR_H
+#endif // D_EXPAT_XML_PARSER_H

@@ -43,8 +43,6 @@
 #include "a2io.h"
 #include "BinaryStream.h"
 #include "ParserStateMachine.h"
-#include "message.h"
-#include "DlAbortEx.h"
 #include "A2STR.h"
 #include "a2functional.h"
 #include "XmlAttr.h"
