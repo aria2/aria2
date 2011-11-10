@@ -56,8 +56,8 @@
 #include "RpcMethodFactory.h"
 #include "RpcRequest.h"
 #include "RpcResponse.h"
+#include "rpc_helper.h"
 #ifdef ENABLE_XML_RPC
-# include "XmlRpcRequestProcessor.h"
 # include "XmlRpcRequestParserStateMachine.h"
 #endif // ENABLE_XML_RPC
 
@@ -213,8 +213,8 @@ bool HttpServerBodyCommand::execute()
         // Do something for requestpath and body
         if(reqPath == "/rpc") {
 #ifdef ENABLE_XML_RPC
-          rpc::RpcRequest req =
-            rpc::XmlRpcRequestProcessor().parseMemory(httpServer_->getBody());
+          std::string body = httpServer_->getBody();
+          rpc::RpcRequest req = rpc::xmlParseMemory(body.c_str(), body.size());
           SharedHandle<rpc::RpcMethod> method =
             rpc::RpcMethodFactory::create(req.methodName);
           A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));

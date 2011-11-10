@@ -79,11 +79,11 @@ aria2c_SOURCES = AllTest.cc\
 	BufferedFileTest.cc\
 	GeomStreamPieceSelectorTest.cc\
 	SegListTest.cc\
-	ParamedStringTest.cc
+	ParamedStringTest.cc\
+	RpcHelperTest.cc
 
 if ENABLE_XML_RPC
-aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc\
-	XmlRpcRequestProcessorTest.cc
+aria2c_SOURCES += XmlRpcRequestParserControllerTest.cc
 endif # ENABLE_XML_RPC
 
 if HAVE_SOME_FALLOCATE

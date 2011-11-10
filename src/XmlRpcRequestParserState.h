@@ -38,9 +38,11 @@
 #include "common.h"
 
 #include <string>
-#include <map>
+#include <vector>
 
 namespace aria2 {
+
+class XmlAttr;
 
 namespace rpc {
 
@@ -50,11 +52,11 @@ class XmlRpcRequestParserState {
 public:
   virtual ~XmlRpcRequestParserState() {}
 
-  virtual void beginElement(XmlRpcRequestParserStateMachine* stm,
+  virtual void beginElement(XmlRpcRequestParserStateMachine* psm,
                             const char* name,
-                            const std::map<std::string, std::string>& attrs)= 0;
+                            const std::vector<XmlAttr>& attrs)= 0;
   
-  virtual void endElement(XmlRpcRequestParserStateMachine* stm,
+  virtual void endElement(XmlRpcRequestParserStateMachine* psm,
                           const char* name,
                           const std::string& characters) = 0;
 

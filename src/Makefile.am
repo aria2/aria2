@@ -222,7 +222,8 @@ SRCS =  Socket.h\
 	SegList.h\
 	NullHandle.h\
 	a2iterator.h\
-	paramed_string.cc paramed_string.h
+	paramed_string.cc paramed_string.h\
+	rpc_helper.cc rpc_helper.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
@@ -239,16 +240,7 @@ SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
 	XmlRpcRequestParserState.h\
 	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
-	XmlRpcElements.cc XmlRpcElements.h\
 	XmlRpcRequestProcessor.h
-
-if HAVE_LIBXML2
-SRCS += Xml2XmlRpcRequestProcessor.cc Xml2XmlRpcRequestProcessor.h
-endif # HAVE_LIBXML2
-
-if HAVE_LIBEXPAT
-SRCS += ExpatXmlRpcRequestProcessor.cc ExpatXmlRpcRequestProcessor.h
-endif # HAVE_LIBEXPAT
 
 endif # ENABLE_XML_RPC
 

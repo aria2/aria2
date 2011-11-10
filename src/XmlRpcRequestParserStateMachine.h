@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,134 +35,69 @@
 #ifndef D_XML_RPC_REQUEST_PARSER_STATE_MACHINE_H
 #define D_XML_RPC_REQUEST_PARSER_STATE_MACHINE_H
 
-#include "common.h"
+#include "ParserStateMachine.h"
 
 #include <string>
-#include <map>
 #include <stack>
 
-#include "XmlRpcRequestParserController.h"
-#include "XmlRpcRequestParserStateImpl.h"
-#include "ValueBase.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
+class ValueBase;
+
 namespace rpc {
 
-class XmlRpcRequestParserStateMachine {
-private:
-  XmlRpcRequestParserController* controller_;
+class XmlRpcRequestParserController;
+class XmlRpcRequestParserState;
 
-  std::stack<XmlRpcRequestParserState*> stateStack_;
-
-  static InitialXmlRpcRequestParserState* initialState_;
-  static MethodCallXmlRpcRequestParserState* methodCallState_;
-  static MethodNameXmlRpcRequestParserState* methodNameState_;
-  static ParamsXmlRpcRequestParserState* paramsState_;
-  static ParamXmlRpcRequestParserState* paramState_;
-  static ValueXmlRpcRequestParserState* valueState_;
-  static IntXmlRpcRequestParserState* intState_;
-  static StringXmlRpcRequestParserState* stringState_;
-  static Base64XmlRpcRequestParserState* base64State_;
-  static StructXmlRpcRequestParserState* structState_;
-  static MemberXmlRpcRequestParserState* memberState_;
-  static NameXmlRpcRequestParserState* nameState_;
-  static ArrayXmlRpcRequestParserState* arrayState_;
-  static DataXmlRpcRequestParserState* dataState_;
-  static ArrayValueXmlRpcRequestParserState* arrayValueState_;
-  
-  static UnknownElementXmlRpcRequestParserState* unknownElementState_;
+class XmlRpcRequestParserStateMachine : public ParserStateMachine {
 public:
   XmlRpcRequestParserStateMachine();
+  virtual ~XmlRpcRequestParserStateMachine();
 
-  ~XmlRpcRequestParserStateMachine();
+  virtual bool needsCharactersBuffering() const;
+  virtual bool finished() const;
 
-  void beginElement(const char* name,
-                    const std::map<std::string, std::string>& attrs)
-  {
-    stateStack_.top()->beginElement(this, name, attrs);
-  }
-  
-  void endElement(const char* name, const std::string& characters)
-  {
-    stateStack_.top()->endElement(this, name, characters);
-    stateStack_.pop();
-  }
+  virtual void beginElement
+  (const char* localname,
+   const char* prefix,
+   const char* nsUri,
+   const std::vector<XmlAttr>& attrs);
 
-  void setMethodName(const std::string& methodName)
-  {
-    controller_->setMethodName(methodName);
-  }
+  virtual void endElement
+  (const char* localname,
+   const char* prefix,
+   const char* nsUri,
+   const std::string& characters);
 
-  const std::string& getMethodName() const
-  {
-    return controller_->getMethodName();
-  }
+  void setMethodName(const std::string& methodName);
+  const std::string& getMethodName() const;
+  void popArrayFrame();
+  void popStructFrame();
+  void pushFrame();
+  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
+  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
+  void setCurrentFrameName(const std::string& name);
 
-  void popArrayFrame()
-  {
-    controller_->popArrayFrame();
-  }
-
-  void popStructFrame()
-  {
-    controller_->popStructFrame();
-  }
-
-  void pushFrame()
-  {
-    controller_->pushFrame();
-  }
-
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value)
-  {
-    controller_->setCurrentFrameValue(value);
-  }
-
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const
-  {
-    return controller_->getCurrentFrameValue();
-  }
-
-  void setCurrentFrameName(const std::string& name)
-  {
-    controller_->setCurrentFrameName(name);
-  }
-
-  bool needsCharactersBuffering() const
-  {
-    return stateStack_.top()->needsCharactersBuffering();
-  }
-
-  void pushUnknownElementState() { stateStack_.push(unknownElementState_); }
-
-  void pushMethodCallState() { stateStack_.push(methodCallState_); }
-
-  void pushMethodNameState() { stateStack_.push(methodNameState_); }
-
-  void pushParamsState() { stateStack_.push(paramsState_); }
-
-  void pushParamState() { stateStack_.push(paramState_); }
-
-  void pushValueState() { stateStack_.push(valueState_); }
-
-  void pushIntState() { stateStack_.push(intState_); }
-
-  void pushStringState() { stateStack_.push(stringState_); }
-
-  void pushBase64State() { stateStack_.push(base64State_); }
-
-  void pushStructState() { stateStack_.push(structState_); }
-
-  void pushMemberState() { stateStack_.push(memberState_); }
-
-  void pushNameState() { stateStack_.push(nameState_); }
-
-  void pushArrayState() { stateStack_.push(arrayState_); }
-
-  void pushDataState() { stateStack_.push(dataState_); }
-
-  void pushArrayValueState() { stateStack_.push(arrayValueState_); }
+  void pushUnknownElementState();
+  void pushMethodCallState();
+  void pushMethodNameState();
+  void pushParamsState();
+  void pushParamState();
+  void pushValueState();
+  void pushIntState();
+  void pushStringState();
+  void pushBase64State();
+  void pushStructState();
+  void pushMemberState();
+  void pushNameState();
+  void pushArrayState();
+  void pushDataState();
+  void pushArrayValueState();
+private:
+  std::stack<XmlRpcRequestParserState*> stateStack_;
+  XmlRpcRequestParserController* controller_;
 };
 
 } // namespace rpc

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,30 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "XmlRpcElements.h"
+#ifndef D_RPC_HELPER_H
+#define D_RPC_HELPER_H
+
+#include "common.h"
+
+#include <cstdlib>
 
 namespace aria2 {
+
 namespace rpc {
-namespace elements {
 
-const std::string METHOD_CALL("methodCall");
-const std::string METHOD_NAME("methodName");
-const std::string A2_PARAMS("params");
-const std::string PARAM("param");
-const std::string VALUE("value");
-const std::string I4("i4");
-const std::string INT("int");
-const std::string BOOLEAN("boolean");
-const std::string STRING("string");
-const std::string DOUBLE("double");
-const std::string DATE_TIME_ISO8601("dateTime.iso8601");
-const std::string BASE64("base64");
-const std::string STRUCT("struct");
-const std::string MEMBER("member");
-const std::string NAME("name");
-const std::string ARRAY("array");
-const std::string DATA("data");
+class RpcRequest;
 
-} // namespace elements
+#ifdef ENABLE_XML_RPC
+RpcRequest xmlParseMemory(const char* xml, size_t size);
+#endif // ENABLE_XML_RPC
+
 } // namespace rpc
+
 } // namespace aria2
+
+#endif // D_RPC_HELPER_H

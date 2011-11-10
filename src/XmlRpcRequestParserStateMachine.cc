@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,84 +33,220 @@
  */
 /* copyright --> */
 #include "XmlRpcRequestParserStateMachine.h"
+#include "XmlRpcRequestParserController.h"
+#include "XmlRpcRequestParserStateImpl.h"
 
 namespace aria2 {
 
 namespace rpc {
 
+namespace {
 InitialXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::initialState_ =
-  new InitialXmlRpcRequestParserState();
+initialState = new InitialXmlRpcRequestParserState();
 
 UnknownElementXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::unknownElementState_ =
-  new UnknownElementXmlRpcRequestParserState();
+unknownElementState = new UnknownElementXmlRpcRequestParserState();
 
 MethodCallXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::methodCallState_ =
-  new MethodCallXmlRpcRequestParserState();
+methodCallState = new MethodCallXmlRpcRequestParserState();
 
 MethodNameXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::methodNameState_ =
-  new MethodNameXmlRpcRequestParserState();
+methodNameState = new MethodNameXmlRpcRequestParserState();
 
 ParamsXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::paramsState_ =
-  new ParamsXmlRpcRequestParserState();
+paramsState = new ParamsXmlRpcRequestParserState();
 
 ParamXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::paramState_ =
-  new ParamXmlRpcRequestParserState();
+paramState = new ParamXmlRpcRequestParserState();
 
 ValueXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::valueState_ =
-  new ValueXmlRpcRequestParserState();
+valueState = new ValueXmlRpcRequestParserState();
 
 IntXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::intState_ =
-  new IntXmlRpcRequestParserState();
+intState = new IntXmlRpcRequestParserState();
 
 StringXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::stringState_ =
-  new StringXmlRpcRequestParserState();
+stringState = new StringXmlRpcRequestParserState();
 
 Base64XmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::base64State_ =
-  new Base64XmlRpcRequestParserState();
+base64State = new Base64XmlRpcRequestParserState();
 
 StructXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::structState_ =
-  new StructXmlRpcRequestParserState();
+structState = new StructXmlRpcRequestParserState();
 
 MemberXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::memberState_ =
-  new MemberXmlRpcRequestParserState();
+memberState = new MemberXmlRpcRequestParserState();
 
 NameXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::nameState_ =
-  new NameXmlRpcRequestParserState();
+nameState = new NameXmlRpcRequestParserState();
 
 ArrayXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::arrayState_ = 
-  new ArrayXmlRpcRequestParserState();
+arrayState =  new ArrayXmlRpcRequestParserState();
 
 DataXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::dataState_ =
-  new DataXmlRpcRequestParserState();
+dataState = new DataXmlRpcRequestParserState();
 
 ArrayValueXmlRpcRequestParserState*
-XmlRpcRequestParserStateMachine::arrayValueState_ =
-  new ArrayValueXmlRpcRequestParserState();
+arrayValueState = new ArrayValueXmlRpcRequestParserState();
+} // namespace
 
 XmlRpcRequestParserStateMachine::XmlRpcRequestParserStateMachine():
   controller_(new XmlRpcRequestParserController())
 {
-  stateStack_.push(initialState_);
+  stateStack_.push(initialState);
 }
 
 XmlRpcRequestParserStateMachine::~XmlRpcRequestParserStateMachine()
 {
   delete controller_;
+}
+
+bool XmlRpcRequestParserStateMachine::needsCharactersBuffering() const
+{
+  return stateStack_.top()->needsCharactersBuffering();
+}
+
+bool XmlRpcRequestParserStateMachine::finished() const
+{
+  return stateStack_.top() == initialState;
+}
+
+void XmlRpcRequestParserStateMachine::beginElement
+(const char* localname,
+ const char* prefix,
+ const char* nsUri,
+ const std::vector<XmlAttr>& attrs)
+{
+  stateStack_.top()->beginElement(this, localname, attrs);
+}
+
+void XmlRpcRequestParserStateMachine::endElement
+(const char* localname,
+ const char* prefix,
+ const char* nsUri,
+ const std::string& characters)
+{
+  stateStack_.top()->endElement(this, localname, characters);
+  stateStack_.pop();
+}
+
+void XmlRpcRequestParserStateMachine::setMethodName
+(const std::string& methodName)
+{
+  controller_->setMethodName(methodName);
+}
+
+const std::string& XmlRpcRequestParserStateMachine::getMethodName() const
+{
+  return controller_->getMethodName();
+}
+
+void XmlRpcRequestParserStateMachine::popArrayFrame()
+{
+  controller_->popArrayFrame();
+}
+
+void XmlRpcRequestParserStateMachine::popStructFrame()
+{
+  controller_->popStructFrame();
+}
+
+void XmlRpcRequestParserStateMachine::pushFrame()
+{
+  controller_->pushFrame();
+}
+
+void XmlRpcRequestParserStateMachine::setCurrentFrameValue
+(const SharedHandle<ValueBase>& value)
+{
+  controller_->setCurrentFrameValue(value);
+}
+
+const SharedHandle<ValueBase>&
+XmlRpcRequestParserStateMachine::getCurrentFrameValue() const
+{
+  return controller_->getCurrentFrameValue();
+}
+
+void XmlRpcRequestParserStateMachine::setCurrentFrameName
+(const std::string& name)
+{
+  controller_->setCurrentFrameName(name);
+}
+
+void XmlRpcRequestParserStateMachine::pushUnknownElementState()
+{
+  stateStack_.push(unknownElementState);
+}
+
+void XmlRpcRequestParserStateMachine::pushMethodCallState()
+{
+  stateStack_.push(methodCallState);
+}
+
+void XmlRpcRequestParserStateMachine::pushMethodNameState()
+{
+  stateStack_.push(methodNameState);
+}
+
+void XmlRpcRequestParserStateMachine::pushParamsState()
+{
+  stateStack_.push(paramsState);
+}
+
+void XmlRpcRequestParserStateMachine::pushParamState()
+{
+  stateStack_.push(paramState);
+}
+
+void XmlRpcRequestParserStateMachine::pushValueState()
+{
+  stateStack_.push(valueState);
+}
+
+void XmlRpcRequestParserStateMachine::pushIntState()
+{
+  stateStack_.push(intState);
+}
+
+void XmlRpcRequestParserStateMachine::pushStringState()
+{
+  stateStack_.push(stringState);
+}
+
+void XmlRpcRequestParserStateMachine::pushBase64State()
+{
+  stateStack_.push(base64State);
+}
+
+void XmlRpcRequestParserStateMachine::pushStructState()
+{
+  stateStack_.push(structState);
+}
+
+void XmlRpcRequestParserStateMachine::pushMemberState()
+{
+  stateStack_.push(memberState);
+}
+
+void XmlRpcRequestParserStateMachine::pushNameState()
+{
+  stateStack_.push(nameState);
+}
+
+void XmlRpcRequestParserStateMachine::pushArrayState()
+{
+  stateStack_.push(arrayState);
+}
+
+void XmlRpcRequestParserStateMachine::pushDataState()
+{
+  stateStack_.push(dataState);
+}
+
+void XmlRpcRequestParserStateMachine::pushArrayValueState()
+{
+  stateStack_.push(arrayValueState);
 }
 
 } // namespace rpc

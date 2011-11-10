@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,15 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_REQUEST_PROCESSOR_H
-#define D_XML_RPC_REQUEST_PROCESSOR_H
+#include "rpc_helper.h"
+#include "XmlParser.h"
+#include "RpcRequest.h"
+#include "XmlRpcRequestParserStateMachine.h"
+#include "message.h"
+#include "DlAbortEx.h"
 
-#include "common.h"
+namespace aria2 {
 
-#ifdef HAVE_LIBXML2
-# include "Xml2XmlRpcRequestProcessor.h"
-#elif HAVE_LIBEXPAT
-# include "ExpatXmlRpcRequestProcessor.h"
-#endif // HAVE_LIBEXPAT
+namespace rpc {
 
-#endif // D_XML_RPC_REQUEST_PROCESSOR_H
+#ifdef ENABLE_XML_RPC
+RpcRequest xmlParseMemory(const char* xml, size_t size)
+{
+  XmlRpcRequestParserStateMachine psm;
+  if(!XmlParser(&psm).parseMemory(xml, size)) {
+    throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
+  }
+  if(!downcast<List>(psm.getCurrentFrameValue())) {
+    throw DL_ABORT_EX("Bad XML-RPC parameter list");
+  }
+  return RpcRequest(psm.getMethodName(),
+                    static_pointer_cast<List>(psm.getCurrentFrameValue()));
+}
+#endif // ENABLE_XML_RPC
+
+} // namespace rpc
+
+} // namespace aria2
