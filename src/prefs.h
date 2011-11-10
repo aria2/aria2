@@ -41,9 +41,9 @@
 namespace aria2 {
 
 struct Pref {
-  Pref(const std::string& k, size_t i);
+  Pref(const char* k, size_t i);
   // Keyword, aka Option Name
-  std::string k;
+  const char* k;
   // Option ID
   size_t i;
 };

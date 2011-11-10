@@ -91,12 +91,12 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
                     false, false);
         for(std::vector<std::string>::const_iterator j = v.begin(),
               eoj = v.end(); j != eoj; ++j) {
-          if(fp.printf(" %s=%s\n", pref->k.c_str(), (*j).c_str()) < 0) {
+          if(fp.printf(" %s=%s\n", pref->k, (*j).c_str()) < 0) {
             return false;
           }
         }
       } else {
-        if(fp.printf(" %s=%s\n", pref->k.c_str(), op->get(pref).c_str()) < 0) {
+        if(fp.printf(" %s=%s\n", pref->k, op->get(pref).c_str()) < 0) {
           return false;
         }
       }
@@ -186,7 +186,7 @@ bool SessionSerializer::save(BufferedFile& fp) const
       // PREF_PAUSE was removed from option, so save it here looking
       // property separately.
       if((*itr)->isPauseRequested()) {
-        if(fp.printf(" %s=true\n", PREF_PAUSE->k.c_str()) < 0) {
+        if(fp.printf(" %s=true\n", PREF_PAUSE->k) < 0) {
           return false;
         }
       }

@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-Pref::Pref(const std::string& k, size_t i):k(k), i(i) {}
+Pref::Pref(const char* k, size_t i):k(k), i(i) {}
 
 namespace {
 
@@ -55,7 +55,7 @@ public:
   {
     return count_++;
   }
-  Pref* makePref(const std::string& key)
+  Pref* makePref(const char* key)
   {
     size_t id = nextId();
     Pref* pref = new Pref(key, id);
@@ -93,7 +93,7 @@ PrefFactory* getPrefFactory()
   return pf;
 }
 
-Pref* makePref(const std::string& key)
+Pref* makePref(const char* key)
 {
   return getPrefFactory()->makePref(key);
 }

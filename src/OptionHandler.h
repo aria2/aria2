@@ -46,7 +46,7 @@
 
 namespace aria2 {
 
-extern const std::string NO_DESCRIPTION;
+extern const char NO_DESCRIPTION[];
 extern const std::string NO_DEFAULT_VALUE;
 
 extern const std::string PATH_TO_FILE;
@@ -72,9 +72,9 @@ public:
 
   virtual std::string toTagString() const = 0;
 
-  virtual const std::string& getName() const = 0;
+  virtual const char* getName() const = 0;
 
-  virtual const std::string& getDescription() const = 0;
+  virtual const char* getDescription() const = 0;
 
   virtual const std::string& getDefaultValue() const = 0;
 

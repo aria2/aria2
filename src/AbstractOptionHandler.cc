@@ -45,7 +45,7 @@ namespace aria2 {
 
 AbstractOptionHandler::AbstractOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  ARG_TYPE argType,
  char shortName)
@@ -89,7 +89,7 @@ std::string AbstractOptionHandler::toTagString() const
   return strjoin(tags_.begin(), tags_.end(), ", ");
 }
 
-const std::string& AbstractOptionHandler::getName() const
+const char* AbstractOptionHandler::getName() const
 {
   return pref_->k;
 }

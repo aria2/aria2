@@ -50,7 +50,7 @@ class AbstractOptionHandler : public OptionHandler {
 protected:
   const Pref* pref_;
 
-  std::string description_;
+  const char* description_;
 
   std::string defaultValue_;
 
@@ -73,7 +73,7 @@ protected:
   virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
   AbstractOptionHandler(const Pref* pref,
-                         const std::string& description = NO_DESCRIPTION,
+                         const char* description = NO_DESCRIPTION,
                          const std::string& defaultValue = NO_DEFAULT_VALUE,
                          ARG_TYPE argType = REQ_ARG,
                          char shortName = 0);
@@ -88,9 +88,9 @@ public:
 
   virtual std::string toTagString() const;
 
-  virtual const std::string& getName() const;
+  virtual const char* getName() const;
 
-  virtual const std::string& getDescription() const
+  virtual const char* getDescription() const
   {
     return description_;
   }

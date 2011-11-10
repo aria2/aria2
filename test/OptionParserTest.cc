@@ -81,9 +81,9 @@ void OptionParserTest::testFindAll()
 {
   std::vector<SharedHandle<OptionHandler> > res = oparser_->findAll();
   CPPUNIT_ASSERT_EQUAL((size_t)3, res.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), res[0]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("dir"), res[1]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("out"), res[2]->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"timeout", res[0]->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"dir", res[1]->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"out", res[2]->getName());
 }
 
 void OptionParserTest::testFindByNameSubstring()
@@ -91,8 +91,8 @@ void OptionParserTest::testFindByNameSubstring()
   std::vector<SharedHandle<OptionHandler> > res =
     oparser_->findByNameSubstring("i");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), res[0]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("dir"), res[1]->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"timeout", res[0]->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"dir", res[1]->getName());
 }
 
 void OptionParserTest::testFindByTag()
@@ -100,15 +100,15 @@ void OptionParserTest::testFindByTag()
   std::vector<SharedHandle<OptionHandler> > res =
     oparser_->findByTag("pineapple");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("dir"), res[0]->getName());
-  CPPUNIT_ASSERT_EQUAL(std::string("out"), res[1]->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"dir", res[0]->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"out", res[1]->getName());
 }
 
 void OptionParserTest::testFind()
 {
   const SharedHandle<OptionHandler>& dir = oparser_->find(PREF_DIR);
   CPPUNIT_ASSERT(dir);
-  CPPUNIT_ASSERT_EQUAL(std::string("dir"), dir->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"dir", dir->getName());
 
   const SharedHandle<OptionHandler>& daemon = oparser_->find(PREF_DAEMON);
   CPPUNIT_ASSERT(!daemon);
@@ -121,7 +121,7 @@ void OptionParserTest::testFindByShortName()
 {
   const SharedHandle<OptionHandler>& timeout = oparser_->findByShortName('A');
   CPPUNIT_ASSERT(timeout);
-  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), timeout->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"timeout", timeout->getName());
 
   CPPUNIT_ASSERT(!oparser_->findByShortName('C'));
 }
@@ -131,7 +131,7 @@ void OptionParserTest::testFindById()
   const SharedHandle<OptionHandler>& timeout =
     oparser_->findById(PREF_TIMEOUT->i);
   CPPUNIT_ASSERT(timeout);
-  CPPUNIT_ASSERT_EQUAL(std::string("timeout"), timeout->getName());
+  CPPUNIT_ASSERT_EQUAL((const char*)"timeout", timeout->getName());
 
   CPPUNIT_ASSERT(!oparser_->findById(9999));
 }

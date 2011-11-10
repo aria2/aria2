@@ -49,7 +49,7 @@ class Pref;
 class BooleanOptionHandler : public AbstractOptionHandler {
 public:
   BooleanOptionHandler(const Pref* pref,
-                       const std::string& description = NO_DESCRIPTION,
+                       const char* description = NO_DESCRIPTION,
                        const std::string& defaultValue = NO_DEFAULT_VALUE,
                        OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
                        char shortName = 0);
@@ -64,7 +64,7 @@ private:
   int32_t max_;
 public:
   IntegerRangeOptionHandler(const Pref* pref,
-                            const std::string& description,
+                            const char* description,
                             const std::string& defaultValue,
                             int32_t min, int32_t max,
                             char shortName = 0);
@@ -79,7 +79,7 @@ private:
   int64_t max_;
 public:
   NumberOptionHandler(const Pref* pref,
-                      const std::string& description = NO_DESCRIPTION,
+                      const char* description = NO_DESCRIPTION,
                       const std::string& defaultValue = NO_DEFAULT_VALUE,
                       int64_t min = -1,
                       int64_t max = -1,
@@ -94,7 +94,7 @@ public:
 class UnitNumberOptionHandler : public NumberOptionHandler {
 public:
   UnitNumberOptionHandler(const Pref* pref,
-                          const std::string& description = NO_DESCRIPTION,
+                          const char* description = NO_DESCRIPTION,
                           const std::string& defaultValue = NO_DEFAULT_VALUE,
                           int64_t min = -1,
                           int64_t max = -1,
@@ -109,7 +109,7 @@ private:
   double max_;
 public:
   FloatNumberOptionHandler(const Pref* pref,
-                           const std::string& description = NO_DESCRIPTION,
+                           const char* description = NO_DESCRIPTION,
                            const std::string& defaultValue = NO_DEFAULT_VALUE,
                            double min = -1, double max = -1,
                            char shortName = 0);
@@ -123,7 +123,7 @@ private:
   std::string possibleValuesString_;
 public:
   DefaultOptionHandler(const Pref* pref,
-                       const std::string& description = NO_DESCRIPTION,
+                       const char* description = NO_DESCRIPTION,
                        const std::string& defaultValue = NO_DEFAULT_VALUE,
                        const std::string& possibleValuesString = A2STR::NIL,
                        OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
@@ -139,7 +139,7 @@ private:
   std::string possibleValuesString_;
 public:
   CumulativeOptionHandler(const Pref* pref,
-                          const std::string& description,
+                          const char* description,
                           const std::string& defaultValue,
                           const std::string& delim,
                           const std::string& possibleValuesString = A2STR::NIL,
@@ -154,7 +154,7 @@ public:
 class IndexOutOptionHandler : public AbstractOptionHandler {
 public:
   IndexOutOptionHandler(const Pref* pref,
-                        const std::string& description,
+                        const char* description,
                         char shortName = 0);
   virtual ~IndexOutOptionHandler();
   virtual void parseArg(Option& option, const std::string& optarg);
@@ -165,7 +165,7 @@ public:
 class ChecksumOptionHandler : public AbstractOptionHandler {
 public:
   ChecksumOptionHandler(const Pref* pref,
-                        const std::string& description,
+                        const char* description,
                         char shortName = 0);
   virtual ~ChecksumOptionHandler();
   virtual void parseArg(Option& option, const std::string& optarg);
@@ -178,23 +178,23 @@ private:
   std::vector<std::string> validParamValues_;
 public:
   ParameterOptionHandler(const Pref* pref,
-                         const std::string& description,
+                         const char* description,
                          const std::string& defaultValue,
                          const std::vector<std::string>& validParamValues,
                          char shortName = 0);
   ParameterOptionHandler(const Pref* pref,
-                         const std::string& description,
+                         const char* description,
                          const std::string& defaultValue,
                          const std::string& validParamValue,
                          char shortName = 0);
   ParameterOptionHandler(const Pref* pref,
-                         const std::string& description,
+                         const char* description,
                          const std::string& defaultValue,
                          const std::string& validParamValue1,
                          const std::string& validParamValue2,
                          char shortName = 0);
   ParameterOptionHandler(const Pref* pref,
-                         const std::string& description,
+                         const char* description,
                          const std::string& defaultValue,
                          const std::string& validParamValue1,
                          const std::string& validParamValue2,
@@ -211,7 +211,7 @@ private:
   const Pref* portOptionName_;
 public:
   HostPortOptionHandler(const Pref* pref,
-                        const std::string& description,
+                        const char* description,
                         const std::string& defaultValue,
                         const Pref* hostOptionName,
                         const Pref* portOptionName,
@@ -226,7 +226,7 @@ public:
 class HttpProxyUserOptionHandler:public AbstractOptionHandler {
 public:
   HttpProxyUserOptionHandler(const Pref* pref,
-                             const std::string& description,
+                             const char* description,
                              const std::string& defaultValue,
                              char shortName = 0);
   virtual void parseArg(Option& option, const std::string& optarg);
@@ -236,7 +236,7 @@ public:
 class HttpProxyPasswdOptionHandler:public AbstractOptionHandler {
 public:
   HttpProxyPasswdOptionHandler(const Pref* pref,
-                               const std::string& description,
+                               const char* description,
                                const std::string& defaultValue,
                                char shortName = 0);
   virtual void parseArg(Option& option, const std::string& optarg);
@@ -249,7 +249,7 @@ private:
   const Pref* proxyPasswdPref_;
 public:
   HttpProxyOptionHandler(const Pref* pref,
-                         const std::string& description,
+                         const char* description,
                          const std::string& defaultValue,
                          char shortName = 0);
   virtual ~HttpProxyOptionHandler();
@@ -263,7 +263,7 @@ private:
 public:
   LocalFilePathOptionHandler
   (const Pref* pref,
-   const std::string& description = NO_DESCRIPTION,
+   const char* description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    bool acceptStdin = false,
    char shortName = 0);
@@ -275,7 +275,7 @@ class PrioritizePieceOptionHandler:public AbstractOptionHandler {
 public:
   PrioritizePieceOptionHandler
   (const Pref* pref,
-   const std::string& description = NO_DESCRIPTION,
+   const char* description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    char shortName = 0);
   virtual void parseArg(Option& option, const std::string& optarg);
@@ -301,8 +301,8 @@ public:
   virtual bool hasTag(const std::string& tag) const;
   virtual void addTag(const std::string& tag);
   virtual std::string toTagString() const;
-  virtual const std::string& getName() const;
-  virtual const std::string& getDescription() const;
+  virtual const char* getName() const;
+  virtual const char* getDescription() const;
   virtual const std::string& getDefaultValue() const;
   virtual bool isHidden() const;
   virtual void hide();

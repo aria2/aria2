@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-const std::string NO_DESCRIPTION("");
+const char NO_DESCRIPTION[] = "";
 const std::string NO_DEFAULT_VALUE("");
 
 const std::string PATH_TO_FILE("/path/to/file");

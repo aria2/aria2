@@ -83,9 +83,9 @@ void putOptions(struct option* longOpts, int* plopt,
   for(; first != last; ++first) {
     if(*first && !(*first)->isHidden()) {
 #ifdef HAVE_OPTION_CONST_NAME
-      (*longOpts).name = (*first)->getName().c_str();
+      (*longOpts).name = (*first)->getName();
 #else // !HAVE_OPTION_CONST_NAME
-      (*longOpts).name = strdup((*first)->getName().c_str());
+      (*longOpts).name = strdup((*first)->getName());
 #endif // !HAVE_OPTION_CONST_NAME
       switch((*first)->getArgType()) {
       case OptionHandler::REQ_ARG:
@@ -146,7 +146,7 @@ void OptionParser::parseArg
                                              handlers_.end());
   int lopt;
   array_ptr<struct option> longOpts(new struct option[numPublicOption+1]);
-  putOptions(longOpts, &lopt,handlers_.begin(),handlers_.end());
+  putOptions(longOpts, &lopt, handlers_.begin(), handlers_.end());
   std::string optstring = createOptstring(handlers_.begin(), handlers_.end());
   while(1) {
     int c = getopt_long(argc, argv, optstring.c_str(), longOpts, 0);
@@ -245,9 +245,13 @@ OptionParser::findByNameSubstring(const std::string& substring) const
   std::vector<SharedHandle<OptionHandler> > result;
   for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
         handlers_.begin(), eoi = handlers_.end(); i != eoi; ++i) {
-    if(*i && !(*i)->isHidden() &&
-       (*i)->getName().find(substring) != std::string::npos) {
-      result.push_back(*i);
+    if(*i && !(*i)->isHidden()) {
+      size_t nameLen = strlen((*i)->getName());
+      if(std::search((*i)->getName(), (*i)->getName()+nameLen,
+                     substring.begin(), substring.end()) !=
+         (*i)->getName()+nameLen) {
+        result.push_back(*i);
+      }
     }
   }
   return result;  

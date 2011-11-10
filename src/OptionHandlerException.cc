@@ -45,7 +45,7 @@ OptionHandlerException::OptionHandlerException
 (const char* file, int line,
  const Pref* pref)
   : RecoverableException
-    (file, line, fmt(MESSAGE.c_str(), pref->k.c_str()),
+    (file, line, fmt(MESSAGE.c_str(), pref->k),
      error_code::OPTION_ERROR),
     pref_(pref)
 {}
@@ -55,7 +55,7 @@ OptionHandlerException::OptionHandlerException
  const Pref* pref,
  const Exception& cause)
   : RecoverableException
-    (file, line, fmt(MESSAGE.c_str(), pref->k.c_str()),
+    (file, line, fmt(MESSAGE.c_str(), pref->k),
      error_code::OPTION_ERROR,
      cause),
     pref_(pref)

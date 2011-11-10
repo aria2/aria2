@@ -36,6 +36,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <cstring>
 #include <utility>
 #include <algorithm>
 #include <numeric>
@@ -67,7 +68,7 @@ namespace aria2 {
 
 BooleanOptionHandler::BooleanOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  OptionHandler::ARG_TYPE argType,
  char shortName)
@@ -100,7 +101,7 @@ std::string BooleanOptionHandler::createPossibleValuesString() const
 
 IntegerRangeOptionHandler::IntegerRangeOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  int32_t min, int32_t max,
  char shortName)
@@ -138,7 +139,7 @@ std::string IntegerRangeOptionHandler::createPossibleValuesString() const
 
 NumberOptionHandler::NumberOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  int64_t min,
  int64_t max,
@@ -200,7 +201,7 @@ std::string NumberOptionHandler::createPossibleValuesString() const
 
 UnitNumberOptionHandler::UnitNumberOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  int64_t min,
  int64_t max,
@@ -220,7 +221,7 @@ void UnitNumberOptionHandler::parseArg
 
 FloatNumberOptionHandler::FloatNumberOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  double min,
  double max,
@@ -278,7 +279,7 @@ std::string FloatNumberOptionHandler::createPossibleValuesString() const
 
 DefaultOptionHandler::DefaultOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  const std::string& possibleValuesString,
  OptionHandler::ARG_TYPE argType,
@@ -302,7 +303,7 @@ std::string DefaultOptionHandler::createPossibleValuesString() const
 
 CumulativeOptionHandler::CumulativeOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  const std::string& delim,
  const std::string& possibleValuesString,
@@ -331,7 +332,7 @@ std::string CumulativeOptionHandler::createPossibleValuesString() const
 
 IndexOutOptionHandler::IndexOutOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  char shortName)
   : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
                           OptionHandler::REQ_ARG, shortName)
@@ -356,7 +357,7 @@ std::string IndexOutOptionHandler::createPossibleValuesString() const
 #ifdef ENABLE_MESSAGE_DIGEST
 ChecksumOptionHandler::ChecksumOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  char shortName)
   : AbstractOptionHandler(pref, description, NO_DEFAULT_VALUE,
                           OptionHandler::REQ_ARG, shortName)
@@ -386,7 +387,7 @@ std::string ChecksumOptionHandler::createPossibleValuesString() const
 
 ParameterOptionHandler::ParameterOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  const std::vector<std::string>& validParamValues,
  char shortName)
@@ -397,7 +398,7 @@ ParameterOptionHandler::ParameterOptionHandler
 
 ParameterOptionHandler::ParameterOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  const std::string& validParamValue,
  char shortName)
@@ -409,7 +410,7 @@ ParameterOptionHandler::ParameterOptionHandler
 
 ParameterOptionHandler::ParameterOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  const std::string& validParamValue1,
  const std::string& validParamValue2,
@@ -423,7 +424,7 @@ ParameterOptionHandler::ParameterOptionHandler
 
 ParameterOptionHandler::ParameterOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  const std::string& validParamValue1,
  const std::string& validParamValue2,
@@ -471,7 +472,7 @@ std::string ParameterOptionHandler::createPossibleValuesString() const
 
 HostPortOptionHandler::HostPortOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  const Pref* hostOptionName,
  const Pref* portOptionName,
@@ -510,7 +511,7 @@ std::string HostPortOptionHandler::createPossibleValuesString() const
 
 HttpProxyUserOptionHandler::HttpProxyUserOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue,
@@ -521,9 +522,9 @@ void HttpProxyUserOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
   const char A2_USER[] = "-user";
-  if(util::endsWith(pref_->k.begin(), pref_->k.end(),
-                    A2_USER, vend(A2_USER)-1)) {
-    const Pref* proxyPref = option::k2p(pref_->k.substr(0, pref_->k.size()-5));
+  size_t kLen = strlen(pref_->k);
+  if(util::endsWith(pref_->k, pref_->k+kLen, A2_USER, vend(A2_USER)-1)) {
+    const Pref* proxyPref = option::k2p(std::string(pref_->k, kLen-5));
     const std::string& olduri = option.get(proxyPref);
     if(!olduri.empty()) {
       Request req;
@@ -554,7 +555,7 @@ std::string HttpProxyUserOptionHandler::createPossibleValuesString() const
 
 HttpProxyPasswdOptionHandler::HttpProxyPasswdOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue,
@@ -565,9 +566,9 @@ void HttpProxyPasswdOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
   const char A2_PASSWD[] = "-passwd";
-  if(util::endsWith(pref_->k.begin(), pref_->k.end(),
-                    A2_PASSWD, vend(A2_PASSWD)-1)) {
-    const Pref* proxyPref = option::k2p(pref_->k.substr(0, pref_->k.size()-7));
+  size_t kLen = strlen(pref_->k);
+  if(util::endsWith(pref_->k, pref_->k+kLen, A2_PASSWD, vend(A2_PASSWD)-1)) {
+    const Pref* proxyPref = option::k2p(std::string(pref_->k, kLen-7));
     const std::string& olduri = option.get(proxyPref);
     if(!olduri.empty()) {
       Request req;
@@ -598,13 +599,13 @@ std::string HttpProxyPasswdOptionHandler::createPossibleValuesString() const
 
 HttpProxyOptionHandler::HttpProxyOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue,
                           OptionHandler::REQ_ARG, shortName),
-    proxyUserPref_(option::k2p(pref->k+"-user")),
-    proxyPasswdPref_(option::k2p(pref->k+"-passwd"))
+    proxyUserPref_(option::k2p(std::string(pref->k)+"-user")),
+    proxyPasswdPref_(option::k2p(std::string(pref->k)+"-passwd"))
 {}
 
 HttpProxyOptionHandler::~HttpProxyOptionHandler() {}
@@ -657,7 +658,7 @@ std::string HttpProxyOptionHandler::createPossibleValuesString() const
 
 LocalFilePathOptionHandler::LocalFilePathOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  bool acceptStdin,
  char shortName)
@@ -691,7 +692,7 @@ std::string LocalFilePathOptionHandler::createPossibleValuesString() const
 
 PrioritizePieceOptionHandler::PrioritizePieceOptionHandler
 (const Pref* pref,
- const std::string& description,
+ const char* description,
  const std::string& defaultValue,
  char shortName)
   : AbstractOptionHandler(pref, description, defaultValue,
@@ -724,12 +725,12 @@ void DeprecatedOptionHandler::parse(Option& option, const std::string& arg)
 {
   if(repOptHandler_) {
     A2_LOG_WARN(fmt(_("--%s option is deprecated. Use --%s option instead."),
-                    depOptHandler_->getName().c_str(),
-                    repOptHandler_->getName().c_str()));
+                    depOptHandler_->getName(),
+                    repOptHandler_->getName()));
     repOptHandler_->parse(option, arg);
   } else {
     A2_LOG_WARN(fmt(_("--%s option is deprecated."),
-                    depOptHandler_->getName().c_str()));
+                    depOptHandler_->getName()));
   }
 }
 
@@ -753,12 +754,12 @@ std::string DeprecatedOptionHandler::toTagString() const
   return depOptHandler_->toTagString();
 }
 
-const std::string& DeprecatedOptionHandler::getName() const
+const char* DeprecatedOptionHandler::getName() const
 {
   return depOptHandler_->getName();
 }
 
-const std::string& DeprecatedOptionHandler::getDescription() const
+const char* DeprecatedOptionHandler::getDescription() const
 {
   return depOptHandler_->getDescription();
 }

@@ -153,7 +153,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
                                  e.stackTrace().c_str());
           const SharedHandle<OptionHandler>& h = oparser->find(e.getPref());
           if(h) {
-            global::cerr()->printf("Usage:\n%s\n", h->getDescription().c_str());
+            global::cerr()->printf("Usage:\n%s\n", h->getDescription());
           }
           exit(e.getErrorCode());
         } catch(Exception& e) {
