@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,75 +32,70 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "XML2SAXMetalinkProcessor.h"
+#include "XmlParser.h"
 
 #include <cassert>
+#include <cstring>
+#include <deque>
 
+#include <libxml/parser.h>
+
+#include "a2io.h"
 #include "BinaryStream.h"
-#include "MetalinkParserStateMachine.h"
-#include "Metalinker.h"
-#include "MetalinkEntry.h"
-#include "util.h"
+#include "ParserStateMachine.h"
 #include "message.h"
 #include "DlAbortEx.h"
 #include "A2STR.h"
-#include "error_code.h"
+#include "a2functional.h"
+#include "XmlAttr.h"
 
 namespace aria2 {
 
 namespace {
-class SessionData {
-public:
-  SharedHandle<MetalinkParserStateMachine> stm_;
-
+struct SessionData {
   std::deque<std::string> charactersStack_;
-
-  SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):stm_(stm) {}
+  ParserStateMachine* psm_;
+  SessionData(ParserStateMachine* psm)
+    : psm_(psm)
+  {}
 };
 } // namespace
 
 namespace {
 void mlStartElement
 (void* userData,
- const xmlChar* srcLocalname,
- const xmlChar* srcPrefix,
- const xmlChar* srcNsUri,
+ const xmlChar* localname,
+ const xmlChar* prefix,
+ const xmlChar* nsUri,
  int numNamespaces,
- const xmlChar **namespaces,
+ const xmlChar** namespaces,
  int numAttrs,
  int numDefaulted,
- const xmlChar **attrs)
+ const xmlChar** attrs)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::vector<XmlAttr> xmlAttrs;
-  size_t index = 0;
-  for(int attrIndex = 0; attrIndex < numAttrs; ++attrIndex, index += 5) {
+  const char** pattrs = reinterpret_cast<const char**>(attrs);
+  for(size_t i = 0, max = numAttrs*5; i < max; i += 5) {
     XmlAttr xmlAttr;
-    assert(attrs[index]);
-    xmlAttr.localname = reinterpret_cast<const char*>(attrs[index]);
-    if(attrs[index+1]) {
-      xmlAttr.prefix = reinterpret_cast<const char*>(attrs[index+1]);
+    assert(pattrs[i]);
+    xmlAttr.localname = pattrs[i];
+    if(pattrs[i+1]) {
+      xmlAttr.prefix = pattrs[i+1];
     }
-    if(attrs[index+2]) {
-      xmlAttr.nsUri = reinterpret_cast<const char*>(attrs[index+2]);
+    if(attrs[i+2]) {
+      xmlAttr.nsUri = pattrs[i+2];
     }
-    const char* valueBegin = reinterpret_cast<const char*>(attrs[index+3]);
-    const char* valueEnd = reinterpret_cast<const char*>(attrs[index+4]);
-    xmlAttr.value.assign(valueBegin, valueEnd);
+    xmlAttr.value = pattrs[i+3];
+    xmlAttr.valueLength = pattrs[i+4]-xmlAttr.value;
     xmlAttrs.push_back(xmlAttr);
   }
-  assert(srcLocalname);
-  std::string localname = reinterpret_cast<const char*>(srcLocalname);
-  std::string prefix;
-  std::string nsUri;
-  if(srcPrefix) {
-    prefix = reinterpret_cast<const char*>(srcPrefix);
-  }
-  if(srcNsUri) {
-    nsUri = reinterpret_cast<const char*>(srcNsUri);
-  }
-  sd->stm_->beginElement(localname, prefix, nsUri, xmlAttrs);
-  if(sd->stm_->needsCharactersBuffering()) {
+  sd->psm_->beginElement
+    (reinterpret_cast<const char*>(localname),
+     reinterpret_cast<const char*>(prefix),
+     reinterpret_cast<const char*>(nsUri),
+     xmlAttrs);
+  if(sd->psm_->needsCharactersBuffering()) {
     sd->charactersStack_.push_front(A2STR::NIL);
   }
 }
@@ -109,26 +104,21 @@ void mlStartElement
 namespace {
 void mlEndElement
 (void* userData,
- const xmlChar* srcLocalname,
- const xmlChar* srcPrefix,
- const xmlChar* srcNsUri)
+ const xmlChar* localname,
+ const xmlChar* prefix,
+ const xmlChar* nsUri)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
-  if(sd->stm_->needsCharactersBuffering()) {
+  if(sd->psm_->needsCharactersBuffering()) {
     characters = sd->charactersStack_.front();
     sd->charactersStack_.pop_front();
   }
-  std::string localname = reinterpret_cast<const char*>(srcLocalname);
-  std::string prefix;
-  std::string nsUri;
-  if(srcPrefix) {
-    prefix = reinterpret_cast<const char*>(srcPrefix);
-  }
-  if(srcNsUri) {
-    nsUri = reinterpret_cast<const char*>(srcNsUri);
-  }
-  sd->stm_->endElement(localname, prefix, nsUri, characters);
+  sd->psm_->endElement
+    (reinterpret_cast<const char*>(localname),
+     reinterpret_cast<const char*>(prefix),
+     reinterpret_cast<const char*>(nsUri),
+     characters);
 }
 } // namespace
 
@@ -136,7 +126,7 @@ namespace {
 void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  if(sd->stm_->needsCharactersBuffering()) {
+  if(sd->psm_->needsCharactersBuffering()) {
     sd->charactersStack_.front().append(&ch[0], &ch[len]);
   }
 }
@@ -180,89 +170,62 @@ xmlSAXHandler mySAXHandler =
   };
 } // namespace
 
-MetalinkProcessor::MetalinkProcessor() {}
+XmlParser::XmlParser(ParserStateMachine* psm)
+  : psm_(psm)
+{}
 
-MetalinkProcessor::~MetalinkProcessor() {}
+XmlParser::~XmlParser() {}
 
-SharedHandle<Metalinker>
-MetalinkProcessor::parseFile
-(const std::string& filename,
- const std::string& baseUri)
+bool XmlParser::parseFile(const char* filename)
 {
-  stm_.reset(new MetalinkParserStateMachine());
-  stm_->setBaseUri(baseUri);
-  SharedHandle<SessionData> sessionData(new SessionData(stm_));
+  SessionData sessionData(psm_);
   // Old libxml2(at least 2.7.6, Ubuntu 10.04LTS) does not read stdin
   // when "/dev/stdin" is passed as filename while 2.7.7 does. So we
   // convert DEV_STDIN to "-" for compatibility.
-  std::string nfilename;
-  if(filename == DEV_STDIN) {
+  const char* nfilename;
+  if(strcmp(filename, DEV_STDIN) == 0) {
     nfilename = "-";
   } else {
     nfilename = filename;
   }
-  int retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
-                                   nfilename.c_str());
-  if(retval != 0) {
-    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
-                       error_code::METALINK_PARSE_ERROR);
-  }
-  if(!stm_->finished()) {
-    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
-                       error_code::METALINK_PARSE_ERROR);
-  }
-  if(!stm_->getErrors().empty()) {
-    throw DL_ABORT_EX2(stm_->getErrorString(),
-                       error_code::METALINK_PARSE_ERROR);
-  }
-  return stm_->getResult();
+  int r = xmlSAXUserParseFile(&mySAXHandler, &sessionData, nfilename);
+  return r == 0 && psm_->finished();
 }
-         
-SharedHandle<Metalinker>
-MetalinkProcessor::parseFromBinaryStream
-(const SharedHandle<BinaryStream>& binaryStream,
- const std::string& baseUri)
+
+bool XmlParser::parseBinaryStream(BinaryStream* bs)
 {
-  stm_.reset(new MetalinkParserStateMachine());
-  stm_->setBaseUri(baseUri);
-  size_t bufSize = 4096;
+  const size_t bufSize = 4096;
   unsigned char buf[bufSize];
-
-  ssize_t res = binaryStream->readData(buf, 4, 0);
+  ssize_t res = bs->readData(buf, 4, 0);
   if(res != 4) {
-    throw DL_ABORT_EX2("Too small data for parsing XML.",
-                       error_code::METALINK_PARSE_ERROR);
+    return false;
   }
-
-  SharedHandle<SessionData> sessionData(new SessionData(stm_));
+  SessionData sessionData(psm_);
   xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt
-    (&mySAXHandler, sessionData.get(),
+    (&mySAXHandler, &sessionData,
      reinterpret_cast<const char*>(buf), res, 0);
   auto_delete<xmlParserCtxtPtr> deleter(ctx, xmlFreeParserCtxt);
-
   off_t readOffset = res;
   while(1) {
-    ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
+    ssize_t res = bs->readData(buf, bufSize, readOffset);
     if(res == 0) {
       break;
     }
     if(xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), res, 0) != 0) {
-      throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
-                         error_code::METALINK_PARSE_ERROR);
+      // TODO we need this? Just break is not suffice?
+      return false;
     }
     readOffset += res;
   }
   xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), 0, 1);
+  return psm_->finished();
+}
 
-  if(!stm_->finished()) {
-    throw DL_ABORT_EX2(MSG_CANNOT_PARSE_METALINK,
-                       error_code::METALINK_PARSE_ERROR);
-  }
-  if(!stm_->getErrors().empty()) {
-    throw DL_ABORT_EX2(stm_->getErrorString(),
-                       error_code::METALINK_PARSE_ERROR);
-  }
-  return stm_->getResult();
+bool XmlParser::parseMemory(const char* xml, size_t len)
+{
+  SessionData sessionData(psm_);
+  int r = xmlSAXUserParseMemory(&mySAXHandler, &sessionData, xml, len);
+  return r == 0 && psm_->finished();
 }
 
 } // namespace aria2

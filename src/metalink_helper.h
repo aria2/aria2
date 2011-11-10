@@ -60,7 +60,7 @@ void parseAndQuery
 
 void parseAndQuery
 (std::vector<SharedHandle<MetalinkEntry> >& result,
- const SharedHandle<BinaryStream>& binaryStream,
+ BinaryStream* bs,
  const Option* option,
  const std::string& baseUri = A2STR::NIL);
 
@@ -68,6 +68,14 @@ void groupEntryByMetaurlName
 (std::vector<
   std::pair<std::string, std::vector<SharedHandle<MetalinkEntry> > > >& result,
  const std::vector<SharedHandle<MetalinkEntry> >& entries);
+
+SharedHandle<Metalinker> parseFile
+(const std::string& filename,
+ const std::string& baseUri = A2STR::NIL);
+
+SharedHandle<Metalinker> parseBinaryStream
+(BinaryStream* bs,
+ const std::string& baseUri = A2STR::NIL);
 
 } // namespace metalink
 

@@ -33,36 +33,69 @@
  */
 /* copyright --> */
 #include "MetalinkParserStateImpl.h"
+
+#include <cstring>
+
 #include "MetalinkParserStateV3Impl.h"
 #include "MetalinkParserStateV4Impl.h"
 #include "MetalinkParserStateMachine.h"
+#include "XmlAttr.h"
 
 namespace aria2 {
 
+namespace {
+class FindAttr {
+private:
+  const char* localname_;
+  const char* nsUri_;
+public:
+  FindAttr(const char* localname, const char* nsUri)
+    : localname_(localname),
+      nsUri_(nsUri)
+  {}
+
+  bool operator()(const XmlAttr& attr) const
+  {
+    return strcmp(attr.localname, localname_) == 0 &&
+      (attr.nsUri == 0 || strcmp(attr.nsUri, nsUri_) == 0);
+  }
+};
+} // namespace
+
+std::vector<XmlAttr>::const_iterator findAttr
+(const std::vector<XmlAttr>& attrs,
+ const char* localname,
+ const char* nsUri)
+{
+  return std::find_if(attrs.begin(), attrs.end(), FindAttr(localname, nsUri));
+}
+
 void InitialMetalinkParserState::beginElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::vector<XmlAttr>& attrs)
 {
-  if(nsUri == METALINK4_NAMESPACE_URI && localname == "metalink") {
-    stm->setMetalinkStateV4();
-  } else if(nsUri == METALINK3_NAMESPACE_URI && localname == "metalink") {
-    stm->setMetalinkState();
+  if(!nsUri || strcmp(localname, "metalink") != 0) {
+    psm->setSkipTagState();
+  } else if(strcmp(nsUri, METALINK4_NAMESPACE_URI) == 0) {
+    psm->setMetalinkStateV4();
+  } else if(strcmp(nsUri, METALINK3_NAMESPACE_URI) == 0) {
+    psm->setMetalinkState();
   } else {
-    stm->setSkipTagState();
+    psm->setSkipTagState();
   }
 }
 
 void SkipTagMetalinkParserState::beginElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::vector<XmlAttr>& attrs)
 {
-  stm->setSkipTagState();
+  psm->setSkipTagState();
 }
 
 } // namespace aria2

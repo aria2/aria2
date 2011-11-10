@@ -136,7 +136,7 @@ Metalink2RequestGroup::generate
  const std::string& baseUri)
 {
   std::vector<SharedHandle<MetalinkEntry> > entries;
-  metalink::parseAndQuery(entries, binaryStream, option.get(), baseUri);
+  metalink::parseAndQuery(entries, binaryStream.get(), option.get(), baseUri);
   std::vector<SharedHandle<RequestGroup> > tempgroups;
   createRequestGroup(tempgroups, entries, option);
   SharedHandle<MetadataInfo> mi(new MetadataInfo());

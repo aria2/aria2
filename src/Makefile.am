@@ -228,6 +228,12 @@ if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
 endif # MINGW_BUILD
 
+if HAVE_SOME_XMLLIB
+SRCS += XmlAttr.cc XmlAttr.h\
+	XmlParser.h\
+	ParserStateMachine.h
+endif # HAVE_SOME_XMLLIB
+
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
@@ -487,7 +493,6 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkMetaurl.cc MetalinkMetaurl.h\
-	MetalinkProcessor.h\
 	MetalinkParserController.cc MetalinkParserController.h\
 	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
 	MetalinkParserState.cc MetalinkParserState.h\
@@ -497,15 +502,16 @@ SRCS += Metalinker.cc Metalinker.h\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 	metalink_helper.cc metalink_helper.h
+
+if HAVE_LIBXML2
+SRCS +=  Xml2XmlParser.cc Xml2XmlParser.h
+endif # HAVE_LIBXML2
+
+if HAVE_LIBEXPAT
+SRCS +=  ExpatXmlParser.cc ExpatXmlParser.h
+endif # HAVE_LIBEXPAT
+
 endif # ENABLE_METALINK
-
-if ENABLE_METALINK_LIBXML2
-SRCS += XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
-endif # ENABLE_METALINK_LIBXML2
-
-if ENABLE_METALINK_LIBEXPAT
-SRCS += ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
-endif # ENABLE_METALINK_LIBEXPAT
 
 if !HAVE_ASCTIME_R
 SRCS += asctime_r.c asctime_r.h

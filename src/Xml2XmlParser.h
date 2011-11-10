@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,44 +32,30 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_METALINK_PARSER_STATE_H
-#define D_METALINK_PARSER_STATE_H
+#ifndef D_XML2_XML_PARSER_H
+#define D_XML2_XML_PARSER_H
 
 #include "common.h"
 
-#include <vector>
-#include <string>
+#include <cstdlib>
 
 namespace aria2 {
 
-class MetalinkParserStateMachine;
-class XmlAttr;
+class BinaryStream;
+class ParserStateMachine;
 
-class MetalinkParserState
-{
+class XmlParser {
 public:
-  virtual ~MetalinkParserState() {}
-
-  virtual void beginElement
-  (MetalinkParserStateMachine* stm,
-   const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::vector<XmlAttr>& attrs) {}
-  
-  virtual void endElement
-  (MetalinkParserStateMachine* stm,
-   const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::string& characters) {}
-
-  virtual bool needsCharactersBuffering() const
-  {
-    return false;
-  }
+  // This object does not delete psm.
+  XmlParser(ParserStateMachine* psm);
+  ~XmlParser();
+  bool parseFile(const char* filename);
+  bool parseBinaryStream(BinaryStream* binaryStream);
+  bool parseMemory(const char* xml, size_t size);
+private:
+  ParserStateMachine* psm_;
 };
 
 } // namespace aria2
 
-#endif // D_METALINK_PARSER_STATE_H
+#endif // D_XML2_XML_PARSER_H

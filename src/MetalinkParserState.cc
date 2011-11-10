@@ -36,23 +36,4 @@
 
 namespace aria2 {
 
-XmlAttr::XmlAttr() {}
-
-XmlAttr::XmlAttr(const XmlAttr& c)
-  : localname(c.localname), prefix(c.prefix), nsUri(c.nsUri), value(c.value)
-{}
-
-XmlAttr::~XmlAttr() {}
-
-XmlAttr& XmlAttr::operator=(const XmlAttr& c)
-{
-  if(this != &c) {
-    localname = c.localname;
-    prefix = c.prefix;
-    nsUri = c.nsUri;
-    value = c.value;
-  }
-  return *this;
-}
-
 } // namespace aria2

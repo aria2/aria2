@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,15 +32,15 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_METALINK_PROCESSOR_H
-#define D_METALINK_PROCESSOR_H
+#ifndef D_XML_PARSER_H
+#define D_XML_PARSER_H
 
 #include "common.h"
 
 #ifdef HAVE_LIBXML2
-# include "XML2SAXMetalinkProcessor.h"
+# include "Xml2XmlParser.h"
 #elif HAVE_LIBEXPAT
-# include "ExpatMetalinkProcessor.h"
+# include "Expat2XmlParser.h"
 #endif
 
-#endif // D_METALINK_PROCESSOR_H
+#endif // D_XML_PARSER_H

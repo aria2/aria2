@@ -502,18 +502,18 @@ void MetalinkParserStateMachine::cancelMetaurlTransaction()
 }
 
 void MetalinkParserStateMachine::beginElement
-(const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::vector<XmlAttr>& attrs)
 {
   stateStack_.top()->beginElement(this, localname, prefix, nsUri, attrs);
 }
   
 void MetalinkParserStateMachine::endElement
-(const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
   stateStack_.top()->endElement(this, localname, prefix, nsUri, characters);

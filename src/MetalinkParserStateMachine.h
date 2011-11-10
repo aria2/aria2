@@ -35,7 +35,8 @@
 #ifndef D_METALINK_PARSER_STATE_MACHINE_H
 #define D_METALINK_PARSER_STATE_MACHINE_H
 
-#include "common.h"
+#include "ParserStateMachine.h"
+
 #include <string>
 #include <vector>
 #include <stack>
@@ -48,7 +49,7 @@ namespace aria2 {
 
 class Metalinker;
 
-class MetalinkParserStateMachine {
+class MetalinkParserStateMachine : public ParserStateMachine {
 private:
   SharedHandle<MetalinkParserController> ctrl_;
 
@@ -92,7 +93,23 @@ private:
 public:
   MetalinkParserStateMachine();
 
-  ~MetalinkParserStateMachine();
+  virtual ~MetalinkParserStateMachine();
+
+  virtual bool needsCharactersBuffering() const;
+
+  virtual bool finished() const;
+
+  virtual void beginElement
+  (const char* localname,
+   const char* prefix,
+   const char* nsUri,
+   const std::vector<XmlAttr>& attrs);
+
+  virtual void endElement
+  (const char* localname,
+   const char* prefix,
+   const char* nsUri,
+   const std::string& characters);
 
   void setSkipTagState();
 
@@ -137,20 +154,6 @@ public:
   void setSignatureStateV4();
   void setURLStateV4();
   void setMetaurlStateV4();
-
-  bool finished() const;
-
-  void beginElement
-  (const std::string& localname,
-   const std::string& prefix,
-   const std::string& nsUri,
-   const std::vector<XmlAttr>& attrs);
-  
-  void endElement
-  (const std::string& localname,
-   const std::string& prefix,
-   const std::string& nsUri,
-   const std::string& characters);
 
   void newEntryTransaction();
 
@@ -249,8 +252,6 @@ public:
   void commitMetaurlTransaction();
 
   void cancelMetaurlTransaction();
-
-  bool needsCharactersBuffering() const;
 
   // Only stores first 10 errors.
   void logError(const std::string& log);

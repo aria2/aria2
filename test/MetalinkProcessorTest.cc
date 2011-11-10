@@ -21,6 +21,7 @@
 #include "fmt.h"
 #include "RecoverableException.h"
 #include "util.h"
+#include "metalink_helper.h"
 
 namespace aria2 {
 
@@ -31,7 +32,7 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseFileV4_attrs);
   CPPUNIT_TEST(testParseFile);
   CPPUNIT_TEST(testParseFile_dirtraversal);
-  CPPUNIT_TEST(testParseFromBinaryStream);
+  CPPUNIT_TEST(testParseBinaryStream);
   CPPUNIT_TEST(testMalformedXML);
   CPPUNIT_TEST(testMalformedXML2);
   CPPUNIT_TEST(testBadSize);
@@ -57,7 +58,7 @@ public:
   void testParseFileV4_attrs();
   void testParseFile();
   void testParseFile_dirtraversal();
-  void testParseFromBinaryStream();
+  void testParseBinaryStream();
   void testMalformedXML();
   void testMalformedXML2();
   void testBadSize();
@@ -82,8 +83,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkProcessorTest );
 
 void MetalinkProcessorTest::testParseFileV4()
 {
-  MetalinkProcessor proc;
-  SharedHandle<Metalinker> m = proc.parseFile(A2_TEST_DIR"/metalink4.xml");
+  SharedHandle<Metalinker> m = metalink::parseFile(A2_TEST_DIR"/metalink4.xml");
   SharedHandle<MetalinkEntry> e;
   SharedHandle<MetalinkResource> r;
   SharedHandle<MetalinkMetaurl> mu;
@@ -152,9 +152,8 @@ void MetalinkProcessorTest::testParseFileV4()
 
 void MetalinkProcessorTest::testParseFileV4_attrs()
 {
-  MetalinkProcessor proc;
   SharedHandle<Metalinker> m;  
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
+  ByteArrayDiskWriter dw;
   {
     // Testing file@name
     const char* tmpl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -163,27 +162,27 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "<url>http://example.org</url>"
       "</file>"
       "</metalink>";
-    dw->setString(fmt(tmpl, "foo"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "foo"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
     // empty name
-    dw->setString(fmt(tmpl, ""));
+    dw.setString(fmt(tmpl, ""));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
 
     // dir traversing
-    dw->setString(fmt(tmpl, "../doughnuts"));
-    try {
-      m = proc.parseFromBinaryStream(dw);
-      CPPUNIT_FAIL("exception must be thrown.");
-    } catch(RecoverableException& e) {
-      // success
-    }
+    dw.setString(fmt(tmpl, "../doughnuts"));
+     try {
+       m = metalink::parseBinaryStream(&dw);
+       CPPUNIT_FAIL("exception must be thrown.");
+     } catch(RecoverableException& e) {
+       // success
+     }
   }
   {
     // Testing url@priority
@@ -193,36 +192,36 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "<url priority=\"%s\">http://example.org</url>"
       "</file>"
       "</metalink>";
-    dw->setString(fmt(tmpl, "0"));
+    dw.setString(fmt(tmpl, "0"));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
 
-    dw->setString(fmt(tmpl, "1"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "1"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(fmt(tmpl, "100"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "100"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(fmt(tmpl, "999999"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "999999"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(fmt(tmpl, "1000000"));
+    dw.setString(fmt(tmpl, "1000000"));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
-    dw->setString(fmt(tmpl, "A"));
+    dw.setString(fmt(tmpl, "A"));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
@@ -235,36 +234,36 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "<metaurl priority=\"%s\" mediatype=\"torrent\">http://example.org</metaurl>"
       "</file>"
       "</metalink>";
-    dw->setString(fmt(tmpl, "0"));
+    dw.setString(fmt(tmpl, "0"));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
 
-    dw->setString(fmt(tmpl, "1"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "1"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(fmt(tmpl, "100"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "100"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(fmt(tmpl, "999999"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "999999"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
-    dw->setString(fmt(tmpl, "1000000"));
+    dw.setString(fmt(tmpl, "1000000"));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
-    dw->setString(fmt(tmpl, "A"));
+    dw.setString(fmt(tmpl, "A"));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
@@ -272,14 +271,14 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
     // Testing metaurl@mediatype
 
     // no mediatype
-    dw->setString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    dw.setString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                   "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
                   "<file name=\"example.ext\">"
                   "<metaurl>http://example.org</metaurl>"
                   "</file>"
                   "</metalink>");
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
@@ -293,14 +292,14 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(fmt(tmpl, "torrent"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "torrent"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
     // empty mediatype
-    dw->setString(fmt(tmpl, ""));
+    dw.setString(fmt(tmpl, ""));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
@@ -316,22 +315,22 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(fmt(tmpl, "foo"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "foo"));
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
 
     // dir traversing
-    dw->setString(fmt(tmpl, "../doughnuts"));
+    dw.setString(fmt(tmpl, "../doughnuts"));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
     }
     // empty name
-    dw->setString(fmt(tmpl, ""));
+    dw.setString(fmt(tmpl, ""));
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {
       // success
@@ -341,7 +340,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
   {
     // Testing pieces@length
     // No pieces@length
-    dw->setString
+    dw.setString
       ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
        "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
        "<file name=\"example.ext\">"
@@ -352,7 +351,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
        "</file>"
        "</metalink>");
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
 
@@ -367,25 +366,25 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(fmt(tmpl, "262144"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "262144"));
+    m = metalink::parseBinaryStream(&dw);
     // empty
     try {
-      dw->setString(fmt(tmpl, ""));
-      m = proc.parseFromBinaryStream(dw);
+      dw.setString(fmt(tmpl, ""));
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
     // not a number
     try {
-      dw->setString(fmt(tmpl, "A"));
-      m = proc.parseFromBinaryStream(dw);
+      dw.setString(fmt(tmpl, "A"));
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
   {
     // Testing pieces@type
     // No pieces@type
-    dw->setString
+    dw.setString
       ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
        "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
        "<file name=\"example.ext\">"
@@ -396,7 +395,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
        "</file>"
        "</metalink>");
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
 
@@ -411,19 +410,19 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(fmt(tmpl, "sha-1"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "sha-1"));
+    m = metalink::parseBinaryStream(&dw);
     // empty
     try {
-      dw->setString(fmt(tmpl, ""));
-      m = proc.parseFromBinaryStream(dw);
+      dw.setString(fmt(tmpl, ""));
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
   {
     // Testing hash@type
     // No hash@type
-    dw->setString
+    dw.setString
       ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
        "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
        "<file name=\"example.ext\">"
@@ -432,7 +431,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
        "</file>"
        "</metalink>");
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
 
@@ -445,12 +444,12 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(fmt(tmpl, "sha-1"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "sha-1"));
+    m = metalink::parseBinaryStream(&dw);
     // empty
     try {
-      dw->setString(fmt(tmpl, ""));
-      m = proc.parseFromBinaryStream(dw);
+      dw.setString(fmt(tmpl, ""));
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
@@ -458,7 +457,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
   {
     // Testing signature@mediatype
     // No hash@type
-    dw->setString
+    dw.setString
       ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
        "<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">"
        "<file name=\"example.ext\">"
@@ -467,7 +466,7 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
        "</file>"
        "</metalink>");
     try {
-      m = proc.parseFromBinaryStream(dw);
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
 
@@ -480,12 +479,12 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
       "</file>"
       "</metalink>";
 
-    dw->setString(fmt(tmpl, "application/pgp-signature"));
-    m = proc.parseFromBinaryStream(dw);
+    dw.setString(fmt(tmpl, "application/pgp-signature"));
+    m = metalink::parseBinaryStream(&dw);
     // empty
     try {
-      dw->setString(fmt(tmpl, ""));
-      m = proc.parseFromBinaryStream(dw);
+      dw.setString(fmt(tmpl, ""));
+      m = metalink::parseBinaryStream(&dw);
       CPPUNIT_FAIL("exception must be thrown.");
     } catch(RecoverableException& e) {}
   }
@@ -493,9 +492,9 @@ void MetalinkProcessorTest::testParseFileV4_attrs()
 
 void MetalinkProcessorTest::testParseFile()
 {
-  MetalinkProcessor proc;
   try {
-    SharedHandle<Metalinker> metalinker = proc.parseFile(A2_TEST_DIR"/test.xml");
+    SharedHandle<Metalinker> metalinker =
+      metalink::parseFile(A2_TEST_DIR"/test.xml");
 
     std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
       metalinker->getEntries().begin();
@@ -516,16 +515,17 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("pgp"), entry1->getSignature()->getType());
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2.sig"),
                          entry1->getSignature()->getFile());
-    // Note that last '\n' character is trimmed.
+    // Note that we don't strip anything
     CPPUNIT_ASSERT_EQUAL
       (std::string
-       ("-----BEGIN PGP SIGNATURE-----\n"
+       ("\n-----BEGIN PGP SIGNATURE-----\n"
         "Version: GnuPG v1.4.9 (GNU/Linux)\n"
         "\n"
         "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n"
         "ffffffffffffffffffffffff\n"
         "fffff\n"
-        "-----END PGP SIGNATURE-----"),
+        "-----END PGP SIGNATURE-----\n"
+        "\t"),
        entry1->getSignature()->getBody());
 
     std::vector<SharedHandle<MetalinkResource> >::iterator resourceItr1 =
@@ -600,9 +600,8 @@ void MetalinkProcessorTest::testParseFile()
 
 void MetalinkProcessorTest::testParseFile_dirtraversal()
 {
-  MetalinkProcessor proc;
   SharedHandle<Metalinker> metalinker =
-    proc.parseFile(A2_TEST_DIR"/metalink3-dirtraversal.xml");
+    metalink::parseFile(A2_TEST_DIR"/metalink3-dirtraversal.xml");
   CPPUNIT_ASSERT_EQUAL((size_t)1, metalinker->getEntries().size());
   SharedHandle<MetalinkEntry> e = metalinker->getEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.3.tar.bz2"), e->getPath());
@@ -610,15 +609,14 @@ void MetalinkProcessorTest::testParseFile_dirtraversal()
   CPPUNIT_ASSERT_EQUAL(std::string(""), e->getSignature()->getFile());
 }
 
-void MetalinkProcessorTest::testParseFromBinaryStream()
+void MetalinkProcessorTest::testParseBinaryStream()
 {
-  MetalinkProcessor proc;
-  DefaultDiskWriterHandle dw(new DefaultDiskWriter(A2_TEST_DIR"/test.xml"));
-  dw->enableReadOnly();
-  dw->openExistingFile();
+  DefaultDiskWriter dw(A2_TEST_DIR"/test.xml");
+  dw.enableReadOnly();
+  dw.openExistingFile();
   
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
 
     std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
@@ -631,12 +629,11 @@ void MetalinkProcessorTest::testParseFromBinaryStream()
 
 void MetalinkProcessorTest::testMalformedXML()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></file></metalink>");
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></file></metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -645,12 +642,11 @@ void MetalinkProcessorTest::testMalformedXML()
 
 void MetalinkProcessorTest::testMalformedXML2()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></files>");
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\"><files></files>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
@@ -659,9 +655,8 @@ void MetalinkProcessorTest::testMalformedXML2()
 
 void MetalinkProcessorTest::testBadSizeV4()
 {
-  MetalinkProcessor proc;
   SharedHandle<Metalinker> m;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
+  ByteArrayDiskWriter dw;
 
   const char* tmpl =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -672,21 +667,20 @@ void MetalinkProcessorTest::testBadSizeV4()
      "</file>"
     "</metalink>";
 
-  dw->setString(fmt(tmpl, "9223372036854775807"));
-  m = proc.parseFromBinaryStream(dw);
+  dw.setString(fmt(tmpl, "9223372036854775807"));
+  m = metalink::parseBinaryStream(&dw);
 
-  dw->setString(fmt(tmpl, "-1"));
+  dw.setString(fmt(tmpl, "-1"));
   try {
-    m = proc.parseFromBinaryStream(dw);
+    m = metalink::parseBinaryStream(&dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(RecoverableException& e) {}
 }
   
 void MetalinkProcessorTest::testBadSize()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>abc</size>"
@@ -698,7 +692,7 @@ void MetalinkProcessorTest::testBadSize()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
 
     std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
@@ -716,9 +710,8 @@ void MetalinkProcessorTest::testBadSize()
 
 void MetalinkProcessorTest::testBadMaxConn()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -731,7 +724,7 @@ void MetalinkProcessorTest::testBadMaxConn()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
 
     std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
@@ -744,9 +737,8 @@ void MetalinkProcessorTest::testBadMaxConn()
 
 void MetalinkProcessorTest::testNoName()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file>"
                 "  <size>1024</size>"
@@ -764,7 +756,7 @@ void MetalinkProcessorTest::testNoName()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
@@ -777,9 +769,8 @@ void MetalinkProcessorTest::testNoName()
 
 void MetalinkProcessorTest::testBadURLPrefs()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -795,7 +786,7 @@ void MetalinkProcessorTest::testBadURLPrefs()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
@@ -809,9 +800,8 @@ void MetalinkProcessorTest::testBadURLPrefs()
 
 void MetalinkProcessorTest::testBadURLMaxConn()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -828,7 +818,7 @@ void MetalinkProcessorTest::testBadURLMaxConn()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<MetalinkResource> r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
@@ -843,9 +833,8 @@ void MetalinkProcessorTest::testBadURLMaxConn()
 #ifdef ENABLE_MESSAGE_DIGEST
 void MetalinkProcessorTest::testUnsupportedType()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2-0.5.2.tar.bz2\">"
                 "  <size>43743838</size>"
@@ -862,7 +851,7 @@ void MetalinkProcessorTest::testUnsupportedType()
                 "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->resources.size());
     SharedHandle<MetalinkResource> r1 = e->resources[0];
@@ -878,9 +867,8 @@ void MetalinkProcessorTest::testUnsupportedType()
 
 void MetalinkProcessorTest::testMultiplePieces()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
                 "<files>"
                 "<file name=\"aria2.tar.bz2\">"
                 "  <verification>"
@@ -895,7 +883,7 @@ void MetalinkProcessorTest::testMultiplePieces()
 
   try {
     // aria2 prefers sha1
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
@@ -908,9 +896,8 @@ void MetalinkProcessorTest::testMultiplePieces()
 
 void MetalinkProcessorTest::testBadPieceNo()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString
+  ByteArrayDiskWriter dw;
+  dw.setString
     ("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
      "<files>"
      "<file name=\"aria2.tar.bz2\">"
@@ -928,7 +915,7 @@ void MetalinkProcessorTest::testBadPieceNo()
      "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
 
@@ -942,9 +929,8 @@ void MetalinkProcessorTest::testBadPieceNo()
 
 void MetalinkProcessorTest::testBadPieceLength()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString
+  ByteArrayDiskWriter dw;
+  dw.setString
     ("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
      "<files>"
      "<file name=\"aria2.tar.bz2\">"
@@ -961,7 +947,7 @@ void MetalinkProcessorTest::testBadPieceLength()
      "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
@@ -975,9 +961,8 @@ void MetalinkProcessorTest::testBadPieceLength()
 
 void MetalinkProcessorTest::testUnsupportedType_piece()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString
+  ByteArrayDiskWriter dw;
+  dw.setString
     ("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
      "<files>"
      "<file name=\"aria2.tar.bz2\">"
@@ -994,7 +979,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
      "</metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
@@ -1009,21 +994,20 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
 
 void MetalinkProcessorTest::testLargeFileSize()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
-                "<files>"
-                "<file name=\"dvd.iso\">"
-                "  <size>9223372036854775807</size>"
-                "  <resources>"
-                "    <url type=\"http\">ftp://mirror/</url>"
-                "  </resources>"                
-                "</file>"
-                "</files>"
-                "</metalink>");
-
+  ByteArrayDiskWriter dw;
+  dw.setString
+    ("<metalink version=\"3.0\" xmlns=\"http://www.metalinker.org/\">"
+     "<files>"
+     "<file name=\"dvd.iso\">"
+     "  <size>9223372036854775807</size>"
+     "  <resources>"
+     "    <url type=\"http\">ftp://mirror/</url>"
+     "  </resources>"
+     "</file>"
+     "</files>"
+     "</metalink>");
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, e->getLength());
   } catch(Exception& e) {
@@ -1033,9 +1017,8 @@ void MetalinkProcessorTest::testLargeFileSize()
 
 void MetalinkProcessorTest::testXmlPrefixV3()
 {
-  MetalinkProcessor proc;
-  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
-  dw->setString("<m:metalink version=\"3.0\" xmlns:m=\"http://www.metalinker.org/\">"
+  ByteArrayDiskWriter dw;
+  dw.setString("<m:metalink version=\"3.0\" xmlns:m=\"http://www.metalinker.org/\">"
                 "<m:files>"
                 "<m:file name=\"dvd.iso\">"
                 "  <m:size>9223372036854775807</m:size>"
@@ -1047,7 +1030,7 @@ void MetalinkProcessorTest::testXmlPrefixV3()
                 "</m:metalink>");
 
   try {
-    SharedHandle<Metalinker> m = proc.parseFromBinaryStream(dw);
+    SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807ULL, e->getLength());

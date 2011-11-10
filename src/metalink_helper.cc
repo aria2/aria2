@@ -37,7 +37,7 @@
 #include "MetalinkEntry.h"
 #include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
-#include "MetalinkProcessor.h"
+#include "XmlParser.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "BinaryStream.h"
@@ -68,20 +68,17 @@ void parseAndQuery
  const Option* option,
  const std::string& baseUri)
 {
-  MetalinkProcessor proc;
-  SharedHandle<Metalinker> metalinker = proc.parseFile(filename, baseUri);
+  SharedHandle<Metalinker> metalinker = parseFile(filename, baseUri);
   query(result, metalinker, option);
 }
 
 void parseAndQuery
 (std::vector<SharedHandle<MetalinkEntry> >& result,
- const SharedHandle<BinaryStream>& binaryStream,
+ BinaryStream* bs,
  const Option* option,
  const std::string& baseUri)
 {
-  MetalinkProcessor proc;
-  SharedHandle<Metalinker> metalinker =
-    proc.parseFromBinaryStream(binaryStream, baseUri);
+  SharedHandle<Metalinker> metalinker = parseBinaryStream(bs, baseUri);
   query(result, metalinker, option);
 }
 
@@ -120,6 +117,40 @@ void groupEntryByMetaurlName
       }
     }
   }
+}
+
+SharedHandle<Metalinker> parseFile
+(const std::string& filename,
+ const std::string& baseUri)
+{
+  MetalinkParserStateMachine psm;
+  psm.setBaseUri(baseUri);
+  if(!XmlParser(&psm).parseFile(filename.c_str())) {
+    throw DL_ABORT_EX2("Could not parse Metalink XML document.",
+                       error_code::METALINK_PARSE_ERROR);
+  }
+  if(!psm.getErrors().empty()) {
+    throw DL_ABORT_EX2(psm.getErrorString(),
+                       error_code::METALINK_PARSE_ERROR);
+  }
+  return psm.getResult();
+}
+
+SharedHandle<Metalinker> parseBinaryStream
+(BinaryStream* bs,
+ const std::string& baseUri)
+{
+  MetalinkParserStateMachine psm;
+  psm.setBaseUri(baseUri);
+  if(!XmlParser(&psm).parseBinaryStream(bs)) {
+    throw DL_ABORT_EX2("Could not parse Metalink XML document.",
+                       error_code::METALINK_PARSE_ERROR);
+  }
+  if(!psm.getErrors().empty()) {
+    throw DL_ABORT_EX2(psm.getErrorString(),
+                       error_code::METALINK_PARSE_ERROR);
+  }
+  return psm.getResult();
 }
 
 } // namespace metalink

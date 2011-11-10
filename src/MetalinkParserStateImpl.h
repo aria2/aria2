@@ -39,23 +39,28 @@
 
 namespace aria2 {
 
+std::vector<XmlAttr>::const_iterator findAttr
+(const std::vector<XmlAttr>& attrs,
+ const char* localname,
+ const char* nsUri);
+
 class SkipTagMetalinkParserState:public MetalinkParserState
 {
 public:
-  virtual void beginElement(MetalinkParserStateMachine* stm,
-                            const std::string& localname,
-                            const std::string& prefix,
-                            const std::string& nsUri,
+  virtual void beginElement(MetalinkParserStateMachine* psm,
+                            const char* localname,
+                            const char* prefix,
+                            const char* nsUri,
                             const std::vector<XmlAttr>& attrs);
 };
 
 class InitialMetalinkParserState:public MetalinkParserState
 {
 public:
-  virtual void beginElement(MetalinkParserStateMachine* stm,
-                            const std::string& localname,
-                            const std::string& prefix,
-                            const std::string& nsUri,
+  virtual void beginElement(MetalinkParserStateMachine* psm,
+                            const char* localname,
+                            const char* prefix,
+                            const char* nsUri,
                             const std::vector<XmlAttr>& attrs);
 };
 

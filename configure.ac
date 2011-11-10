@@ -231,10 +231,8 @@ else
   AM_CONDITIONAL([ENABLE_METALINK], false)
 fi
 
-AM_CONDITIONAL([ENABLE_METALINK_LIBXML2],
-          [test "x$enable_metalink" = "xyes" && test "x$have_libxml2" = "xyes"])
-AM_CONDITIONAL([ENABLE_METALINK_LIBEXPAT],
-         [test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"])
+AM_CONDITIONAL([HAVE_SOME_XMLLIB],
+  [test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes"])
 
 if test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes"; then
   enable_xml_rpc=yes

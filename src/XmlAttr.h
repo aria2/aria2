@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,44 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_METALINK_PARSER_STATE_H
-#define D_METALINK_PARSER_STATE_H
+#ifndef D_XML_ATTR_H
+#define D_XML_ATTR_H
 
 #include "common.h"
 
-#include <vector>
-#include <string>
+#include <cstdlib>
 
 namespace aria2 {
 
-class MetalinkParserStateMachine;
-class XmlAttr;
+struct XmlAttr {
+  const char* localname;
+  const char* prefix;
+  const char* nsUri;
+  const char* value;
+  size_t valueLength;
 
-class MetalinkParserState
-{
-public:
-  virtual ~MetalinkParserState() {}
-
-  virtual void beginElement
-  (MetalinkParserStateMachine* stm,
-   const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::vector<XmlAttr>& attrs) {}
-  
-  virtual void endElement
-  (MetalinkParserStateMachine* stm,
-   const char* localname,
-   const char* prefix,
-   const char* nsUri,
-   const std::string& characters) {}
-
-  virtual bool needsCharactersBuffering() const
-  {
-    return false;
-  }
+  XmlAttr();
+  // XmlAttr(const XmlAttr& attr);
+  // ~XmlAttr();
+  // XmlAttr& operator=(const XmlAttr&);
 };
 
 } // namespace aria2
 
-#endif // D_METALINK_PARSER_STATE_H
+#endif // D_XML_ATTR_H

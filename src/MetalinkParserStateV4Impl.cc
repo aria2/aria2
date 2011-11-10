@@ -33,370 +33,343 @@
  */
 /* copyright --> */
 #include "MetalinkParserStateV4Impl.h"
+
+#include <cstring>
+
 #include "MetalinkParserStateMachine.h"
 #include "RecoverableException.h"
 #include "MetalinkResource.h"
 #include "util.h"
+#include "XmlAttr.h"
 
 namespace aria2 {
 
-namespace {
-
-const std::string FILE("file");
-const std::string HASH("hash");
-const std::string LANGUAGE("language");
-const std::string LENGTH("length");
-const std::string LOCATION("location");
-const std::string METALINK("metalink");
-// Can't use name VERSION because it is used as a macro.
-const std::string METALINK_VERSION("version");
-const std::string METAURL("metaurl");
-const std::string NAME("name");
-const std::string OS("os");
-const std::string PIECE("piece");
-const std::string PIECES("pieces");
-const std::string PRIORITY("priority");
-const std::string SIGNATURE("signature");
-const std::string SIZE("size");
-const std::string TYPE("type");
-const std::string MEDIATYPE("mediatype");
-const std::string URL("url");
-} // namespace
-
-const std::string METALINK4_NAMESPACE_URI("urn:ietf:params:xml:ns:metalink");
+const char METALINK4_NAMESPACE_URI[] = "urn:ietf:params:xml:ns:metalink";
 
 namespace {
-class FindAttr {
-private:
-  const std::string& localname_;
-public:
-  FindAttr(const std::string& localname):localname_(localname) {}
-
-  bool operator()(const XmlAttr& attr) const
-  {
-    return attr.localname == localname_ &&
-      (attr.nsUri.empty() || attr.nsUri == METALINK4_NAMESPACE_URI);
-  }
-};
-} // namespace
-
-namespace {
-template<typename Container>
-typename Container::const_iterator findAttr
-(const Container& attrs, const std::string& localname)
+bool checkNsUri(const char* nsUri)
 {
-  return std::find_if(attrs.begin(), attrs.end(), FindAttr(localname));
+  return nsUri && strcmp(nsUri, METALINK4_NAMESPACE_URI) == 0;
 }
 } // namespace
 
 void MetalinkMetalinkParserStateV4::beginElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::vector<XmlAttr>& attrs)
 {
-  if(nsUri == METALINK4_NAMESPACE_URI && localname == FILE) {
-    stm->setFileStateV4();
-    std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
-    if(itr == attrs.end() || (*itr).value.empty()) {
-      stm->logError("Missing file@name");
-      return;
-    } else if(util::detectDirTraversal((*itr).value)) {
-      stm->logError("Bad file@name");
+  if(checkNsUri(nsUri) && strcmp(localname, "file") == 0) {
+    psm->setFileStateV4();
+    std::vector<XmlAttr>::const_iterator itr =
+      findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
+    if(itr == attrs.end() || (*itr).valueLength == 0) {
+      psm->logError("Missing file@name");
       return;
     }
-    stm->newEntryTransaction();
-    stm->setFileNameOfEntry((*itr).value);
+    std::string name((*itr).value, (*itr).valueLength);
+    if(util::detectDirTraversal(name)) {
+      psm->logError("Bad file@name");
+      return;
+    }
+    psm->newEntryTransaction();
+    psm->setFileNameOfEntry(name);
   } else {
-    stm->setSkipTagState();
+    psm->setSkipTagState();
   }
 }
 
 void FileMetalinkParserStateV4::beginElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::vector<XmlAttr>& attrs)
 {
-  if(nsUri != METALINK4_NAMESPACE_URI) {
-    stm->setSkipTagState();
-  } else if(localname == SIZE) {
-    stm->setSizeStateV4();
-  } else if(localname == METALINK_VERSION) {
-    stm->setVersionStateV4();
-  } else if(localname == LANGUAGE) {
-    stm->setLanguageStateV4();
-  } else if(localname == OS) {
-    stm->setOSStateV4();
-  } else if(localname == METAURL) {
-    stm->setMetaurlStateV4();
+  if(!checkNsUri(nsUri)) {
+    psm->setSkipTagState();
+  } else if(strcmp(localname, "size") == 0) {
+    psm->setSizeStateV4();
+  } else if(strcmp(localname, "version") == 0) {
+    psm->setVersionStateV4();
+  } else if(strcmp(localname, "language") == 0) {
+    psm->setLanguageStateV4();
+  } else if(strcmp(localname, "os") == 0) {
+    psm->setOSStateV4();
+  } else if(strcmp(localname, "metaurl") == 0) {
+    psm->setMetaurlStateV4();
     std::string name;
     {
-      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, NAME);
+      std::vector<XmlAttr>::const_iterator itr =
+        findAttr(attrs, "name", METALINK4_NAMESPACE_URI);
       if(itr != attrs.end()) {
-        if((*itr).value.empty() || util::detectDirTraversal((*itr).value)) {
-          stm->logError("Bad metaurl@name");
+        name.assign((*itr).value, (*itr).valueLength);
+        if(name.empty() || util::detectDirTraversal(name)) {
+          psm->logError("Bad metaurl@name");
           return;
-        } else {
-          name = (*itr).value;
         }
       }
     }
     int priority;
     {
-      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, PRIORITY);
+      std::vector<XmlAttr>::const_iterator itr =
+        findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end()) {
         priority = MetalinkResource::getLowestPriority();
       } else {
-        try {
-          priority = util::parseInt((*itr).value.begin(), (*itr).value.end());
+        if(util::parseIntNoThrow
+           (priority, (*itr).value, (*itr).value+(*itr).valueLength)) {
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
-            stm->logError("metaurl@priority is out of range");
+            psm->logError("metaurl@priority is out of range");
             return;
           }
-        } catch(RecoverableException& e) {
-          stm->logError("Bad metaurl@priority");
+        } else {
+          psm->logError("Bad metaurl@priority");
           return;
         }
       }
     }
     std::string mediatype;
     {
-      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, MEDIATYPE);
-      if(itr == attrs.end() || (*itr).value.empty()) {
-        stm->logError("Missing metaurl@mediatype");
+      std::vector<XmlAttr>::const_iterator itr =
+        findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
+      if(itr == attrs.end() || (*itr).valueLength == 0) {
+        psm->logError("Missing metaurl@mediatype");
         return;
       } else {
-        mediatype = (*itr).value;
+        mediatype.assign((*itr).value, (*itr).valueLength);
       }
     }
-    stm->newMetaurlTransaction();
-    stm->setPriorityOfMetaurl(priority);
-    stm->setMediatypeOfMetaurl(mediatype);
-    stm->setNameOfMetaurl(name);
-  } else if(localname == URL) {
-    stm->setURLStateV4();
+    psm->newMetaurlTransaction();
+    psm->setPriorityOfMetaurl(priority);
+    psm->setMediatypeOfMetaurl(mediatype);
+    psm->setNameOfMetaurl(name);
+  } else if(strcmp(localname, "url") == 0) {
+    psm->setURLStateV4();
     std::string location;
     {
-      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, LOCATION);
+      std::vector<XmlAttr>::const_iterator itr =
+        findAttr(attrs, "location", METALINK4_NAMESPACE_URI);
       if(itr != attrs.end()) {
-        location = (*itr).value;
+        location.assign((*itr).value, (*itr).valueLength);
       }
     }
     int priority;
     {
-      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, PRIORITY);
+      std::vector<XmlAttr>::const_iterator itr =
+        findAttr(attrs, "priority", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end()) {
         priority = MetalinkResource::getLowestPriority();
       } else {
-        try {
-          priority = util::parseInt((*itr).value.begin(), (*itr).value.end());
+        if(util::parseIntNoThrow
+           (priority, (*itr).value, (*itr).value+(*itr).valueLength)) {
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
-            stm->logError("url@priority is out of range");
+            psm->logError("url@priority is out of range");
             return;
           }
-        } catch(RecoverableException& e) {
-          stm->logError("Bad url@priority");
+        } else {
+          psm->logError("Bad url@priority");
           return;
         }
       }
     }
-    stm->newResourceTransaction();
-    stm->setLocationOfResource(location);
-    stm->setPriorityOfResource(priority);
+    psm->newResourceTransaction();
+    psm->setLocationOfResource(location);
+    psm->setPriorityOfResource(priority);
   }
 #ifdef ENABLE_MESSAGE_DIGEST
-  else if(localname == HASH) {
-    stm->setHashStateV4();
-    std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, TYPE);
-    if(itr == attrs.end() || (*itr).value.empty()) {
-      stm->logError("Missing hash@type");
+  else if(strcmp(localname, "hash") == 0) {
+    psm->setHashStateV4();
+    std::vector<XmlAttr>::const_iterator itr =
+      findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
+    if(itr == attrs.end() || (*itr).valueLength == 0) {
+      psm->logError("Missing hash@type");
       return;
     } else {
-      std::string type = (*itr).value;
-      stm->newChecksumTransaction();
-      stm->setTypeOfChecksum(type);
+      psm->newChecksumTransaction();
+      psm->setTypeOfChecksum(std::string((*itr).value, (*itr).valueLength));
     }
-  } else if(localname == PIECES) {
-    stm->setPiecesStateV4();
-    size_t length;
+  } else if(strcmp(localname, "pieces") == 0) {
+    psm->setPiecesStateV4();
+    int32_t length;
     {
-      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, LENGTH);
-      if(itr == attrs.end() || (*itr).value.empty()) {
-        stm->logError("Missing pieces@length");
+      std::vector<XmlAttr>::const_iterator itr =
+        findAttr(attrs, "length", METALINK4_NAMESPACE_URI);
+      if(itr == attrs.end() || (*itr).valueLength == 0) {
+        psm->logError("Missing pieces@length");
         return;
-      } else {
-        try {
-          length = util::parseInt((*itr).value.begin(), (*itr).value.end());
-        } catch(RecoverableException& e) {
-          stm->logError("Bad pieces@length");
-          return;
-        }
+      } else if(!util::parseIntNoThrow
+                (length, (*itr).value, (*itr).value+(*itr).valueLength) ||
+                length < 0) {
+        psm->logError("Bad pieces@length");
+        return;
       }
     }
     std::string type;
     {
-      std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, TYPE);
-      if(itr == attrs.end() || (*itr).value.empty()) {
-        stm->logError("Missing pieces@type");
+      std::vector<XmlAttr>::const_iterator itr =
+        findAttr(attrs, "type", METALINK4_NAMESPACE_URI);
+      if(itr == attrs.end() || (*itr).valueLength == 0) {
+        psm->logError("Missing pieces@type");
         return;
       } else {
-        type = (*itr).value;
+        type.assign((*itr).value, (*itr).valueLength);
       }
     }
-    stm->newChunkChecksumTransactionV4();
-    stm->setLengthOfChunkChecksumV4(length);
-    stm->setTypeOfChunkChecksumV4(type);
+    psm->newChunkChecksumTransactionV4();
+    psm->setLengthOfChunkChecksumV4(length);
+    psm->setTypeOfChunkChecksumV4(type);
   }
 #endif // ENABLE_MESSAGE_DIGEST
-  else if(localname == SIGNATURE) {
-    stm->setSignatureStateV4();
-    std::vector<XmlAttr>::const_iterator itr = findAttr(attrs, MEDIATYPE);
-    if(itr == attrs.end() || (*itr).value.empty()) {
-      stm->logError("Missing signature@mediatype");
+  else if(strcmp(localname, "signature") == 0) {
+    psm->setSignatureStateV4();
+    std::vector<XmlAttr>::const_iterator itr =
+      findAttr(attrs, "mediatype", METALINK4_NAMESPACE_URI);
+    if(itr == attrs.end() || (*itr).valueLength == 0) {
+      psm->logError("Missing signature@mediatype");
       return;
     }
-    stm->newSignatureTransaction();
-    stm->setTypeOfSignature((*itr).value);
+    psm->newSignatureTransaction();
+    psm->setTypeOfSignature(std::string((*itr).value, (*itr).valueLength));
   } else {
-    stm->setSkipTagState();
+    psm->setSkipTagState();
   }
 }
 
 void FileMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->commitEntryTransaction();
+  psm->commitEntryTransaction();
 }
 
 void SizeMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  try {
-    stm->setFileLengthOfEntry
-      (util::parseULLInt(characters.begin(), characters.end()));
-  } catch(RecoverableException& e) {
-    stm->cancelEntryTransaction();
-    stm->logError("Bad size");
+  int64_t size;
+  if(util::parseLLIntNoThrow(size, characters.begin(), characters.end()) &&
+     size >= 0) {
+    psm->setFileLengthOfEntry(size);
+  } else {
+    psm->cancelEntryTransaction();
+    psm->logError("Bad size");
   }
 }
 
 void VersionMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->setVersionOfEntry(characters);
+  psm->setVersionOfEntry(characters);
 }
 
 void LanguageMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->setLanguageOfEntry(characters);
+  psm->setLanguageOfEntry(characters);
 }
 
 void OSMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->setOSOfEntry(characters);
+  psm->setOSOfEntry(characters);
 }
 
 void HashMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->setHashOfChecksum(characters);
-  stm->commitChecksumTransaction();
+  psm->setHashOfChecksum(characters);
+  psm->commitChecksumTransaction();
 }
 
 void PiecesMetalinkParserStateV4::beginElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::vector<XmlAttr>& attrs)
 {
-  if(nsUri == METALINK4_NAMESPACE_URI && localname == HASH) {
-    stm->setPieceHashStateV4();
+  if(checkNsUri(nsUri) && strcmp(localname, "hash") == 0) {
+    psm->setPieceHashStateV4();
   } else {
-    stm->setSkipTagState();
+    psm->setSkipTagState();
   }
 }
 
 void PiecesMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->commitChunkChecksumTransactionV4();
+  psm->commitChunkChecksumTransactionV4();
 }
 
 void PieceHashMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->addHashOfChunkChecksumV4(characters);
+  psm->addHashOfChunkChecksumV4(characters);
 }
 
 void SignatureMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->setBodyOfSignature(characters);
-  stm->commitSignatureTransaction();
+  psm->setBodyOfSignature(characters);
+  psm->commitSignatureTransaction();
 }
 
 void URLMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->setURLOfResource(characters);
-  stm->commitResourceTransaction();
+  psm->setURLOfResource(characters);
+  psm->commitResourceTransaction();
 }
 
 void MetaurlMetalinkParserStateV4::endElement
-(MetalinkParserStateMachine* stm,
- const std::string& localname,
- const std::string& prefix,
- const std::string& nsUri,
+(MetalinkParserStateMachine* psm,
+ const char* localname,
+ const char* prefix,
+ const char* nsUri,
  const std::string& characters)
 {
-  stm->setURLOfMetaurl(characters);
-  stm->commitMetaurlTransaction();
+  psm->setURLOfMetaurl(characters);
+  psm->commitMetaurlTransaction();
 }
 
 } // namespace aria2

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2011 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,42 +32,16 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML2_SAX_METALINK_PROCESSOR_H
-#define D_XML2_SAX_METALINK_PROCESSOR_H
-
-#include "common.h"
-
-#include <string>
-
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
-
-#include "SharedHandle.h"
-#include "A2STR.h"
+#include "XmlAttr.h"
 
 namespace aria2 {
 
-class Metalinker;
-class BinaryStream;
-class MetalinkParserStateMachine;
-
-class MetalinkProcessor {
-private:
-  SharedHandle<MetalinkParserStateMachine> stm_;
-public:
-  MetalinkProcessor();
-
-  ~MetalinkProcessor();
-
-  SharedHandle<Metalinker> parseFile
-  (const std::string& filename,
-   const std::string& baseUri = A2STR::NIL);
-
-  SharedHandle<Metalinker> parseFromBinaryStream
-  (const SharedHandle<BinaryStream>& binaryStream,
-   const std::string& baseUri = A2STR::NIL);
-};
+XmlAttr::XmlAttr()
+  : localname(0),
+    prefix(0),
+    nsUri(0),
+    value(0),
+    valueLength(0)
+{}
 
 } // namespace aria2
-
-#endif // D_XML2_SAX_METALINK_PROCESSOR_H

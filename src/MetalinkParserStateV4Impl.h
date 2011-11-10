@@ -40,31 +40,31 @@
 
 namespace aria2 {
 
-extern const std::string METALINK4_NAMESPACE_URI;
+extern const char METALINK4_NAMESPACE_URI[];
 
 class MetalinkMetalinkParserStateV4:public MetalinkParserState
 {
 public:
-  virtual void beginElement(MetalinkParserStateMachine* stm,
-                            const std::string& localname,
-                            const std::string& prefix,
-                            const std::string& nsUri,
+  virtual void beginElement(MetalinkParserStateMachine* psm,
+                            const char* localname,
+                            const char* prefix,
+                            const char* nsUri,
                             const std::vector<XmlAttr>& attrs);
 };
 
 class FileMetalinkParserStateV4:public MetalinkParserState
 {
 public:
-  virtual void beginElement(MetalinkParserStateMachine* stm,
-                            const std::string& localname,
-                            const std::string& prefix,
-                            const std::string& nsUri,
+  virtual void beginElement(MetalinkParserStateMachine* psm,
+                            const char* localname,
+                            const char* prefix,
+                            const char* nsUri,
                             const std::vector<XmlAttr>& attrs);
 
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -76,10 +76,10 @@ public:
 class SizeMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -91,10 +91,10 @@ public:
 class VersionMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -106,10 +106,10 @@ public:
 class LanguageMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -121,10 +121,10 @@ public:
 class OSMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -136,10 +136,10 @@ public:
 class HashMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -151,16 +151,16 @@ public:
 class PiecesMetalinkParserStateV4:public MetalinkParserState
 {
 public:
-  virtual void beginElement(MetalinkParserStateMachine* stm,
-                            const std::string& localname,
-                            const std::string& prefix,
-                            const std::string& nsUri,
+  virtual void beginElement(MetalinkParserStateMachine* psm,
+                            const char* localname,
+                            const char* prefix,
+                            const char* nsUri,
                             const std::vector<XmlAttr>& attrs);
 
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -172,10 +172,10 @@ public:
 class PieceHashMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
 			  const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -187,10 +187,10 @@ public:
 class SignatureMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -202,10 +202,10 @@ public:
 class URLMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
@@ -217,10 +217,10 @@ public:
 class MetaurlMetalinkParserStateV4:public SkipTagMetalinkParserState
 {
 public:
-  virtual void endElement(MetalinkParserStateMachine* stm,
-                          const std::string& localname,
-                          const std::string& prefix,
-                          const std::string& nsUri,
+  virtual void endElement(MetalinkParserStateMachine* psm,
+                          const char* localname,
+                          const char* prefix,
+                          const char* nsUri,
                           const std::string& characters);
 
   virtual bool needsCharactersBuffering() const
