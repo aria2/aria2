@@ -109,7 +109,7 @@ void HttpResponseTest::testGetContentLength_contentLength()
   HttpResponse httpResponse;
 
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->put("Content-Length", "4294967296");
+  httpHeader->put("content-length", "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -121,13 +121,13 @@ void HttpResponseTest::testGetEntityLength()
   HttpResponse httpResponse;
 
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->put("Content-Length", "4294967296");
+  httpHeader->put("content-length", "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)4294967296ULL, httpResponse.getEntityLength());
 
-  httpHeader->put("Content-Range", "bytes 1-4294967296/4294967297");
+  httpHeader->put("content-range", "bytes 1-4294967296/4294967297");
 
   CPPUNIT_ASSERT_EQUAL((uint64_t)4294967297ULL, httpResponse.getEntityLength());
 
@@ -165,7 +165,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->put("Content-Disposition", "attachment; filename=\"\"");
+  httpHeader->put("content-disposition", "attachment; filename=\"\"");
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
   request->setUri("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -182,7 +182,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->put("Content-Disposition",
+  httpHeader->put("content-disposition",
                   "attachment; filename=\"aria2-current.tar.bz2\"");
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   SharedHandle<Request> request(new Request());
@@ -211,7 +211,7 @@ void HttpResponseTest::testGetRedirectURI_with_Location()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
+  httpHeader->put("location", "http://localhost/download/aria2-1.0.0.tar.bz2");
   httpResponse.setHttpHeader(httpHeader);
 
   CPPUNIT_ASSERT_EQUAL
@@ -224,7 +224,7 @@ void HttpResponseTest::testIsRedirect()
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->setStatusCode(200);
-  httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
+  httpHeader->put("location", "http://localhost/download/aria2-1.0.0.tar.bz2");
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -244,7 +244,7 @@ void HttpResponseTest::testIsTransferEncodingSpecified()
 
   CPPUNIT_ASSERT(!httpResponse.isTransferEncodingSpecified());  
 
-  httpHeader->put("Transfer-Encoding", "chunked");
+  httpHeader->put("transfer-encoding", "chunked");
 
   CPPUNIT_ASSERT(httpResponse.isTransferEncodingSpecified());
 }
@@ -258,7 +258,7 @@ void HttpResponseTest::testGetTransferEncoding()
 
   CPPUNIT_ASSERT_EQUAL(std::string(""), httpResponse.getTransferEncoding());  
 
-  httpHeader->put("Transfer-Encoding", "chunked");
+  httpHeader->put("transfer-encoding", "chunked");
 
   CPPUNIT_ASSERT_EQUAL(std::string("chunked"),
                        httpResponse.getTransferEncoding());
@@ -273,7 +273,7 @@ void HttpResponseTest::testGetTransferEncodingStreamFilter()
 
   CPPUNIT_ASSERT(!httpResponse.getTransferEncodingStreamFilter());
 
-  httpHeader->put("Transfer-Encoding", "chunked");
+  httpHeader->put("transfer-encoding", "chunked");
 
   CPPUNIT_ASSERT(httpResponse.getTransferEncodingStreamFilter());
 }
@@ -287,7 +287,7 @@ void HttpResponseTest::testIsContentEncodingSpecified()
 
   CPPUNIT_ASSERT(!httpResponse.isContentEncodingSpecified());
 
-  httpHeader->put("Content-Encoding", "gzip");
+  httpHeader->put("content-encoding", "gzip");
 
   CPPUNIT_ASSERT(httpResponse.isContentEncodingSpecified());
 }
@@ -301,7 +301,7 @@ void HttpResponseTest::testGetContentEncoding()
 
   CPPUNIT_ASSERT_EQUAL(A2STR::NIL, httpResponse.getContentEncoding());
 
-  httpHeader->put("Content-Encoding", "gzip");
+  httpHeader->put("content-encoding", "gzip");
 
   CPPUNIT_ASSERT_EQUAL(std::string("gzip"), httpResponse.getContentEncoding());
 }
@@ -316,7 +316,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   CPPUNIT_ASSERT(!httpResponse.getContentEncodingStreamFilter());
 
 #ifdef HAVE_ZLIB
-  httpHeader->put("Content-Encoding", "gzip");
+  httpHeader->put("content-encoding", "gzip");
   {
     SharedHandle<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
@@ -326,7 +326,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
   }
   httpHeader.reset(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
-  httpHeader->put("Content-Encoding", "deflate");
+  httpHeader->put("content-encoding", "deflate");
   {
     SharedHandle<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
@@ -337,7 +337,7 @@ void HttpResponseTest::testGetContentEncodingStreamFilter()
 #endif // HAVE_ZLIB
   httpHeader.reset(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
-  httpHeader->put("Content-Encoding", "bzip2");
+  httpHeader->put("content-encoding", "bzip2");
   {
     SharedHandle<StreamFilter> filter =
       httpResponse.getContentEncodingStreamFilter();
@@ -359,7 +359,7 @@ void HttpResponseTest::testValidateResponse()
   } catch(Exception& e) {
   }
 
-  httpHeader->put("Location", "http://localhost/archives/aria2-1.0.0.tar.bz2");
+  httpHeader->put("location", "http://localhost/archives/aria2-1.0.0.tar.bz2");
   try {
     httpResponse.validateResponse();
   } catch(Exception& e) {
@@ -384,7 +384,7 @@ void HttpResponseTest::testValidateResponse_good_range()
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setStatusCode(206);
-  httpHeader->put("Content-Range", "bytes 1048576-10485760/10485760");
+  httpHeader->put("content-range", "bytes 1048576-10485760/10485760");
   
   try {
     httpResponse.validateResponse();
@@ -411,7 +411,7 @@ void HttpResponseTest::testValidateResponse_bad_range()
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setStatusCode(206);
-  httpHeader->put("Content-Range", "bytes 0-10485760/10485761");
+  httpHeader->put("content-range", "bytes 0-10485760/10485761");
 
   try {
     httpResponse.validateResponse();
@@ -437,8 +437,8 @@ void HttpResponseTest::testValidateResponse_chunked()
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setStatusCode(206);
-  httpHeader->put("Content-Range", "bytes 0-10485760/10485761");
-  httpHeader->put("Transfer-Encoding", "chunked");
+  httpHeader->put("content-range", "bytes 0-10485760/10485761");
+  httpHeader->put("transfer-encoding", "chunked");
 
   // if transfer-encoding is specified, then range validation is skipped.
   try {
@@ -471,7 +471,7 @@ void HttpResponseTest::testHasRetryAfter()
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  httpHeader->put("Retry-After", "60");
+  httpHeader->put("retry-after", "60");
 
   CPPUNIT_ASSERT(httpResponse.hasRetryAfter());
   CPPUNIT_ASSERT_EQUAL((time_t)60, httpResponse.getRetryAfter());
@@ -489,13 +489,13 @@ void HttpResponseTest::testProcessRedirect()
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   
-  httpHeader->put("Location", "http://mirror/aria2-1.0.0.tar.bz2");
+  httpHeader->put("location", "http://mirror/aria2-1.0.0.tar.bz2");
   httpResponse.processRedirect();
 
   httpHeader->clearField();
 
   // Test for percent-encode
-  httpHeader->put("Location", "http://example.org/white space#aria2");
+  httpHeader->put("location", "http://example.org/white space#aria2");
   httpResponse.processRedirect();
   CPPUNIT_ASSERT_EQUAL(std::string("http://example.org/white%20space"),
                        request->getCurrentUri());
@@ -503,7 +503,7 @@ void HttpResponseTest::testProcessRedirect()
   httpHeader->clearField();
 
   // Give unsupported scheme
-  httpHeader->put("Location", "unsupported://mirror/aria2-1.0.0.tar.bz2");
+  httpHeader->put("location", "unsupported://mirror/aria2-1.0.0.tar.bz2");
   try {
     httpResponse.processRedirect();
     CPPUNIT_FAIL("DlRetryEx exception must be thrown.");
@@ -528,11 +528,11 @@ void HttpResponseTest::testRetrieveCookie()
   httpRequest->setCookieStorage(st);
   httpResponse.setHttpRequest(httpRequest);
 
-  httpHeader->put("Set-Cookie", "k1=v1; expires=Sun, 10-Jun-2007 11:00:00 GMT;"
+  httpHeader->put("set-cookie", "k1=v1; expires=Sun, 10-Jun-2007 11:00:00 GMT;"
                   "path=/; domain=.aria2.org;");
-  httpHeader->put("Set-Cookie", "k2=v2; expires=Sun, 01-Jan-38 00:00:00 GMT;"
+  httpHeader->put("set-cookie", "k2=v2; expires=Sun, 01-Jan-38 00:00:00 GMT;"
                   "path=/; domain=.aria2.org;");
-  httpHeader->put("Set-Cookie", "k3=v3;");
+  httpHeader->put("set-cookie", "k3=v3;");
 
   httpResponse.retrieveCookie();
 
@@ -554,19 +554,19 @@ void HttpResponseTest::testSupportsPersistentConnection()
 
   httpHeader->setVersion("HTTP/1.1");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
-  httpHeader->put("Connection", "close");
+  httpHeader->put("connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Connection", "keep-alive");
+  httpHeader->put("connection", "keep-alive");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
 
   httpHeader->setVersion("HTTP/1.0");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->put("Connection", "close");
+  httpHeader->put("connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Connection", "keep-alive");
+  httpHeader->put("connection", "keep-alive");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
 
@@ -576,35 +576,35 @@ void HttpResponseTest::testSupportsPersistentConnection()
   
   httpHeader->setVersion("HTTP/1.1");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->put("Connection", "close");
+  httpHeader->put("connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Connection", "keep-alive");
+  httpHeader->put("connection", "keep-alive");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Proxy-Connection", "keep-alive");
+  httpHeader->put("proxy-connection", "keep-alive");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
-  httpHeader->put("Connection", "close");
+  httpHeader->put("connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Proxy-Connection", "close");
+  httpHeader->put("proxy-connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
 
   httpHeader->setVersion("HTTP/1.0");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->put("Connection", "close");
+  httpHeader->put("connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Connection", "keep-alive");
+  httpHeader->put("connection", "keep-alive");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->put("Proxy-Connection", "keep-alive");
+  httpHeader->put("proxy-connection", "keep-alive");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Proxy-Connection", "keep-alive");
+  httpHeader->put("proxy-connection", "keep-alive");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put("Proxy-Connection", "close");
+  httpHeader->put("proxy-connection", "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
 }
@@ -616,13 +616,13 @@ void HttpResponseTest::testGetMetalinKHttpEntries()
   httpResponse.setHttpHeader(httpHeader);
   SharedHandle<Option> option(new Option());
 
-  httpHeader->put("Link", "<http://uri1/>; rel=duplicate; pri=1; pref; geo=JP");
-  httpHeader->put("Link", "<http://uri2/>; rel=duplicate");
-  httpHeader->put("Link", "<http://uri3/>;;;;;;;;rel=duplicate;;;;;pri=2;;;;;");
-  httpHeader->put("Link", "<http://uri4/>;rel=duplicate;=pri=1;pref");
-  httpHeader->put("Link", "<http://describedby>; rel=describedby");
-  httpHeader->put("Link", "<http://norel/>");
-  httpHeader->put("Link", "<baduri>; rel=duplicate; pri=-1;");
+  httpHeader->put("link", "<http://uri1/>; rel=duplicate; pri=1; pref; geo=JP");
+  httpHeader->put("link", "<http://uri2/>; rel=duplicate");
+  httpHeader->put("link", "<http://uri3/>;;;;;;;;rel=duplicate;;;;;pri=2;;;;;");
+  httpHeader->put("link", "<http://uri4/>;rel=duplicate;=pri=1;pref");
+  httpHeader->put("link", "<http://describedby>; rel=describedby");
+  httpHeader->put("link", "<http://norel/>");
+  httpHeader->put("link", "<baduri>; rel=duplicate; pri=-1;");
   std::vector<MetalinkHttpEntry> result;
   httpResponse.getMetalinKHttpEntries(result, option);
   CPPUNIT_ASSERT_EQUAL((size_t)5, result.size());
@@ -667,11 +667,11 @@ void HttpResponseTest::testGetDigest()
   SharedHandle<Option> option(new Option());
   // Python binascii.hexlify(base64.b64decode(B64ED_HASH)) is handy to
   // retrieve ascii hex hash string.
-  httpHeader->put("Digest", "SHA-1=82AD8itGL/oYQ5BTPFANiYnp9oE=");
-  httpHeader->put("Digest", "NOT_SUPPORTED");
-  httpHeader->put("Digest", "SHA-224=rQdowoLHQJTMVZ3rF7vmYOIzUXlu7F+FcMbPnA==");
-  httpHeader->put("Digest", "SHA-224=6Ik6LNZ1iPy6cbmlKO4NHfvxzaiurmHilMyhGA==");
-  httpHeader->put("Digest",
+  httpHeader->put("digest", "SHA-1=82AD8itGL/oYQ5BTPFANiYnp9oE=");
+  httpHeader->put("digest", "NOT_SUPPORTED");
+  httpHeader->put("digest", "SHA-224=rQdowoLHQJTMVZ3rF7vmYOIzUXlu7F+FcMbPnA==");
+  httpHeader->put("digest", "SHA-224=6Ik6LNZ1iPy6cbmlKO4NHfvxzaiurmHilMyhGA==");
+  httpHeader->put("digest",
                   "SHA-256=+D8nGudz3G/kpkVKQeDrI3xD57v0UeQmzGCZOk03nsU=,"
                   "MD5=LJDK2+9ClF8Nz/K5WZd/+A==");
   std::vector<Checksum> result;

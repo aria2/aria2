@@ -57,6 +57,7 @@
 #include "uri.h"
 #include "MetalinkHttpEntry.h"
 #include "base64.h"
+#include "array_fun.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "MessageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -118,7 +119,7 @@ std::string HttpResponse::determinFilename() const
 {
   std::string contentDisposition =
     util::getContentDispositionFilename
-    (httpHeader_->getFirst(HttpHeader::CONTENT_DISPOSITION));
+    (httpHeader_->find(HttpHeader::CONTENT_DISPOSITION));
   if(contentDisposition.empty()) {
     std::string file =
       util::percentDecode(httpRequest_->getFile().begin(),
@@ -141,7 +142,7 @@ void HttpResponse::retrieveCookie()
   Time now;
   std::pair<std::multimap<std::string, std::string>::const_iterator,
             std::multimap<std::string, std::string>::const_iterator> r =
-    httpHeader_->getIterator(HttpHeader::SET_COOKIE);
+    httpHeader_->equalRange(HttpHeader::SET_COOKIE);
   for(; r.first != r.second; ++r.first) {
     httpRequest_->getCookieStorage()->parseAndStore
       ((*r.first).second, httpRequest_->getHost(), httpRequest_->getDir(),
@@ -177,7 +178,7 @@ void HttpResponse::processRedirect()
 
 const std::string& HttpResponse::getRedirectURI() const
 {
-  return httpHeader_->getFirst(HttpHeader::LOCATION);
+  return httpHeader_->find(HttpHeader::LOCATION);
 }
 
 bool HttpResponse::isTransferEncodingSpecified() const
@@ -188,7 +189,7 @@ bool HttpResponse::isTransferEncodingSpecified() const
 const std::string& HttpResponse::getTransferEncoding() const
 {
   // TODO See TODO in getTransferEncodingStreamFilter()
-  return httpHeader_->getFirst(HttpHeader::TRANSFER_ENCODING);
+  return httpHeader_->find(HttpHeader::TRANSFER_ENCODING);
 }
 
 SharedHandle<StreamFilter> HttpResponse::getTransferEncodingStreamFilter() const
@@ -211,7 +212,7 @@ bool HttpResponse::isContentEncodingSpecified() const
 
 const std::string& HttpResponse::getContentEncoding() const
 {
-  return httpHeader_->getFirst(HttpHeader::CONTENT_ENCODING);
+  return httpHeader_->find(HttpHeader::CONTENT_ENCODING);
 }
 
 SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
@@ -249,7 +250,7 @@ std::string HttpResponse::getContentType() const
   if(!httpHeader_) {
     return A2STR::NIL;
   } else {
-    const std::string& ctype = httpHeader_->getFirst(HttpHeader::CONTENT_TYPE);
+    const std::string& ctype = httpHeader_->find(HttpHeader::CONTENT_TYPE);
     std::string::const_iterator i = std::find(ctype.begin(), ctype.end(), ';');
     Scip p = util::stripIter(ctype.begin(), i);
     return std::string(p.first, p.second);
@@ -278,27 +279,35 @@ bool HttpResponse::hasRetryAfter() const
 
 time_t HttpResponse::getRetryAfter() const
 {
-  return httpHeader_->getFirstAsUInt(HttpHeader::RETRY_AFTER);
+  return httpHeader_->findAsUInt(HttpHeader::RETRY_AFTER);
 }
 
 Time HttpResponse::getLastModifiedTime() const
 {
-  return Time::parseHTTPDate(httpHeader_->getFirst(HttpHeader::LAST_MODIFIED));
+  return Time::parseHTTPDate(httpHeader_->find(HttpHeader::LAST_MODIFIED));
 }
 
 bool HttpResponse::supportsPersistentConnection() const
 {
-  std::string connection =
-    util::toLower(httpHeader_->getFirst(HttpHeader::CONNECTION));
-  std::string version = httpHeader_->getVersion();
-
+  const std::string& connection = httpHeader_->find(HttpHeader::CONNECTION);
+  const std::string& version = httpHeader_->getVersion();
+  const std::string& proxyConn =
+    httpHeader_->find(HttpHeader::PROXY_CONNECTION);
   return
-    connection.find(HttpHeader::CLOSE) == std::string::npos &&
+    util::strifind(connection.begin(),
+                   connection.end(),
+                   HttpHeader::CLOSE.begin(),
+                   HttpHeader::CLOSE.end()) == connection.end() &&
     (version == HttpHeader::HTTP_1_1 ||
-     connection.find("keep-alive") != std::string::npos) &&
+     util::strifind(connection.begin(),
+                    connection.end(),
+                    HttpHeader::KEEP_ALIVE.begin(),
+                    HttpHeader::KEEP_ALIVE.end()) != connection.end()) &&
     (!httpRequest_->isProxyRequestSet() ||
-     util::toLower(httpHeader_->getFirst("Proxy-Connection")).find("keep-alive")
-     != std::string::npos);
+     util::strifind(proxyConn.begin(),
+                    proxyConn.end(),
+                    HttpHeader::KEEP_ALIVE.begin(),
+                    HttpHeader::KEEP_ALIVE.end()) != proxyConn.end());
 }
 
 namespace {
@@ -368,7 +377,7 @@ void HttpResponse::getMetalinKHttpEntries
 {
   std::pair<std::multimap<std::string, std::string>::const_iterator,
             std::multimap<std::string, std::string>::const_iterator> p =
-    httpHeader_->getIterator(HttpHeader::LINK);
+    httpHeader_->equalRange(HttpHeader::LINK);
   for(; p.first != p.second; ++p.first) {
     MetalinkHttpEntry e;
     if(parseMetalinkHttpLink(e, (*p.first).second)) {
@@ -403,7 +412,7 @@ void HttpResponse::getDigest(std::vector<Checksum>& result) const
   using std::swap;
   std::pair<std::multimap<std::string, std::string>::const_iterator,
             std::multimap<std::string, std::string>::const_iterator> p =
-    httpHeader_->getIterator(HttpHeader::DIGEST);
+    httpHeader_->equalRange(HttpHeader::DIGEST);
   for(; p.first != p.second; ++p.first) {
     const std::string& s = (*p.first).second;
     std::string::const_iterator itr = s.begin();

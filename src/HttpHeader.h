@@ -68,30 +68,21 @@ public:
 
   void put(const std::string& name, const std::string& value);
   bool defined(const std::string& name) const;
-  const std::string& getFirst(const std::string& name) const;
-  std::vector<std::string> get(const std::string& name) const;
+  const std::string& find(const std::string& name) const;
+  std::vector<std::string> findAll(const std::string& name) const;
   std::pair<std::multimap<std::string, std::string>::const_iterator,
             std::multimap<std::string, std::string>::const_iterator>
-  getIterator(const std::string& name) const;
-  unsigned int getFirstAsUInt(const std::string& name) const;
-  uint64_t getFirstAsULLInt(const std::string& name) const;
+  equalRange(const std::string& name) const;
+  unsigned int findAsUInt(const std::string& name) const;
+  uint64_t findAsULLInt(const std::string& name) const;
 
   SharedHandle<Range> getRange() const;
 
-  int getStatusCode() const
-  {
-    return statusCode_;
-  }
+  int getStatusCode() const;
 
-  void setStatusCode(int code)
-  {
-    statusCode_ = code;
-  }
+  void setStatusCode(int code);
 
-  const std::string& getVersion() const
-  {
-    return version_;
-  }
+  const std::string& getVersion() const;
 
   void setVersion(const std::string& version);
 
@@ -101,10 +92,7 @@ public:
     version_.assign(first, last);
   }
 
-  const std::string& getMethod() const
-  {
-    return method_;
-  }
+  const std::string& getMethod() const;
 
   void setMethod(const std::string& method);
 
@@ -114,10 +102,7 @@ public:
     method_.assign(first, last);
   }
 
-  const std::string& getRequestPath() const
-  {
-    return requestPath_;
-  }
+  const std::string& getRequestPath() const;
 
   void setRequestPath(const std::string& requestPath);
 
@@ -127,6 +112,8 @@ public:
     requestPath_.assign(first, last);
   }
 
+  // Parses header fields in [first, last). Field name is stored in
+  // lowercase.
   void fill
   (std::string::const_iterator first,
    std::string::const_iterator last);
@@ -135,42 +122,28 @@ public:
   void clearField();
 
   static const std::string LOCATION;
-
   static const std::string TRANSFER_ENCODING;
-  
   static const std::string CONTENT_ENCODING;
-
   static const std::string CONTENT_DISPOSITION;
-  
   static const std::string SET_COOKIE;
-  
   static const std::string CONTENT_TYPE;
-  
   static const std::string RETRY_AFTER;
-  
   static const std::string CONNECTION;
-
   static const std::string CONTENT_LENGTH;
-
   static const std::string CONTENT_RANGE;
-
   static const std::string LAST_MODIFIED;
-
   static const std::string ACCEPT_ENCODING;
-
   static const std::string LINK;
-
   static const std::string DIGEST;
+  static const std::string AUTHORIZATION;
+  static const std::string PROXY_CONNECTION;
 
-  static const char HTTP_1_1[];
-
-  static const char CLOSE[];
-
-  static const char CHUNKED[];
-  
-  static const char GZIP[];
-
-  static const char DEFLATE[];
+  static const std::string HTTP_1_1;
+  static const std::string CLOSE;
+  static const std::string KEEP_ALIVE;
+  static const std::string CHUNKED;
+  static const std::string GZIP;
+  static const std::string DEFLATE;
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;

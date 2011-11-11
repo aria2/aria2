@@ -39,56 +39,48 @@
 
 namespace aria2 {
 
-const std::string HttpHeader::LOCATION("Location");
+const std::string HttpHeader::LOCATION("location");
+const std::string HttpHeader::TRANSFER_ENCODING("transfer-encoding");
+const std::string HttpHeader::CONTENT_ENCODING("content-encoding");
+const std::string HttpHeader::CONTENT_DISPOSITION("content-disposition");
+const std::string HttpHeader::SET_COOKIE("set-cookie");
+const std::string HttpHeader::CONTENT_TYPE("content-type");
+const std::string HttpHeader::RETRY_AFTER("retry-after");
+const std::string HttpHeader::CONNECTION("connection");
+const std::string HttpHeader::CONTENT_LENGTH("content-length");
+const std::string HttpHeader::CONTENT_RANGE("content-range");
+const std::string HttpHeader::LAST_MODIFIED("last-modified");
+const std::string HttpHeader::ACCEPT_ENCODING("accept-encoding");
+const std::string HttpHeader::LINK("link");
+const std::string HttpHeader::DIGEST("digest");
+const std::string HttpHeader::PROXY_CONNECTION("proxy-connection");
+const std::string HttpHeader::AUTHORIZATION("authorization");
 
-const std::string HttpHeader::TRANSFER_ENCODING("Transfer-Encoding");
-
-const std::string HttpHeader::CONTENT_ENCODING("Content-Encoding");
-
-const std::string HttpHeader::CONTENT_DISPOSITION("Content-Disposition");
-
-const std::string HttpHeader::SET_COOKIE("Set-Cookie");
-
-const std::string HttpHeader::CONTENT_TYPE("Content-Type");
-
-const std::string HttpHeader::RETRY_AFTER("Retry-After");
-
-const std::string HttpHeader::CONNECTION("Connection");
-
-const std::string HttpHeader::CONTENT_LENGTH("Content-Length");
-
-const std::string HttpHeader::CONTENT_RANGE("Content-Range");
-
-const std::string HttpHeader::LAST_MODIFIED("Last-Modified");
-
-const std::string HttpHeader::ACCEPT_ENCODING("Accept-Encoding");
-
-const std::string HttpHeader::LINK("Link");
-
-const std::string HttpHeader::DIGEST("Digest");
-
-const char HttpHeader::HTTP_1_1[] = "HTTP/1.1";
-const char HttpHeader::CLOSE[] = "close";
-const char HttpHeader::CHUNKED[] = "chunked";
-const char HttpHeader::GZIP[] = "gzip";
-const char HttpHeader::DEFLATE[] = "deflate";
+const std::string HttpHeader::HTTP_1_1 = "HTTP/1.1";
+const std::string HttpHeader::CLOSE = "close";
+const std::string HttpHeader::KEEP_ALIVE = "keep-alive";
+const std::string HttpHeader::CHUNKED = "chunked";
+const std::string HttpHeader::GZIP = "gzip";
+const std::string HttpHeader::DEFLATE = "deflate";
 
 HttpHeader::HttpHeader() {}
 HttpHeader::~HttpHeader() {}
 
-void HttpHeader::put(const std::string& name, const std::string& value) {
-  std::multimap<std::string, std::string>::value_type vt
-    (util::toLower(name), value);
+void HttpHeader::put(const std::string& name, const std::string& value)
+{
+  std::multimap<std::string, std::string>::value_type vt(name, value);
   table_.insert(vt);
 }
 
-bool HttpHeader::defined(const std::string& name) const {
-  return table_.count(util::toLower(name)) >= 1;
+bool HttpHeader::defined(const std::string& name) const
+{
+  return table_.count(name);
 }
 
-const std::string& HttpHeader::getFirst(const std::string& name) const {
+const std::string& HttpHeader::find(const std::string& name) const
+{
   std::multimap<std::string, std::string>::const_iterator itr =
-    table_.find(util::toLower(name));
+    table_.find(name);
   if(itr == table_.end()) {
     return A2STR::NIL;
   } else {
@@ -96,35 +88,32 @@ const std::string& HttpHeader::getFirst(const std::string& name) const {
   }
 }
 
-std::vector<std::string> HttpHeader::get(const std::string& name) const
+std::vector<std::string> HttpHeader::findAll(const std::string& name) const
 {
   std::vector<std::string> v;
-  std::string n(util::toLower(name));
   std::pair<std::multimap<std::string, std::string>::const_iterator,
-    std::multimap<std::string, std::string>::const_iterator> itrpair =
-    table_.equal_range(n);
-  std::multimap<std::string, std::string>::const_iterator first = itrpair.first;
-  while(first != itrpair.second) {
-    v.push_back((*first).second);
-    ++first;
+            std::multimap<std::string, std::string>::const_iterator> itrpair =
+    table_.equal_range(name);
+  while(itrpair.first != itrpair.second) {
+    v.push_back((*itrpair.first).second);
+    ++itrpair.first;
   }
   return v;
 }
 
 std::pair<std::multimap<std::string, std::string>::const_iterator,
           std::multimap<std::string, std::string>::const_iterator>
-HttpHeader::getIterator(const std::string& name) const
+HttpHeader::equalRange(const std::string& name) const
 {
-  std::string n(util::toLower(name));
-  return table_.equal_range(n);
+  return table_.equal_range(name);
 }
 
-unsigned int HttpHeader::getFirstAsUInt(const std::string& name) const {
-  return getFirstAsULLInt(name);
+unsigned int HttpHeader::findAsUInt(const std::string& name) const {
+  return findAsULLInt(name);
 }
 
-uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
-  const std::string& value = getFirst(name);
+uint64_t HttpHeader::findAsULLInt(const std::string& name) const {
+  const std::string& value = find(name);
   if(value.empty()) {
     return 0;
   } else {
@@ -134,9 +123,9 @@ uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
 
 RangeHandle HttpHeader::getRange() const
 {
-  const std::string& rangeStr = getFirst(CONTENT_RANGE);
+  const std::string& rangeStr = find(CONTENT_RANGE);
   if(rangeStr.empty()) {
-    const std::string& clenStr = getFirst(CONTENT_LENGTH);
+    const std::string& clenStr = find(CONTENT_LENGTH);
     if(clenStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
@@ -231,6 +220,7 @@ void HttpHeader::fill
         std::pair<std::string::const_iterator,
                   std::string::const_iterator> p = util::stripIter(first, sep);
         name.assign(p.first, p.second);
+        util::lowercase(name);
         p = util::stripIter(sep+1, j);
         value.assign(p.first, p.second);
       }
@@ -248,6 +238,31 @@ void HttpHeader::fill
 void HttpHeader::clearField()
 {
   table_.clear();
+}
+
+int HttpHeader::getStatusCode() const
+{
+  return statusCode_;
+}
+
+void HttpHeader::setStatusCode(int code)
+{
+  statusCode_ = code;
+}
+
+const std::string& HttpHeader::getVersion() const
+{
+  return version_;
+}
+
+const std::string& HttpHeader::getMethod() const
+{
+  return method_;
+}
+
+const std::string& HttpHeader::getRequestPath() const
+{
+  return requestPath_;
 }
 
 } // namespace aria2

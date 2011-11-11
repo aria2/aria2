@@ -32,6 +32,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSplitIterM);
   CPPUNIT_TEST(testStreq);
   CPPUNIT_TEST(testStrieq);
+  CPPUNIT_TEST(testStrifind);
   CPPUNIT_TEST(testEndsWith);
   CPPUNIT_TEST(testIendsWith);
   CPPUNIT_TEST(testReplace);
@@ -101,6 +102,7 @@ public:
   void testSplitIterM();
   void testStreq();
   void testStrieq();
+  void testStrifind();
   void testEndsWith();
   void testIendsWith();
   void testReplace();
@@ -732,6 +734,22 @@ void UtilTest::testStrieq()
 
   s1 = "";
   CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+}
+
+void UtilTest::testStrifind()
+{
+  std::string s1, s2;
+  s1 = "yamagakani mukashi wo toheba hARU no tuki";
+  s2 = "HaRu";
+  CPPUNIT_ASSERT(util::strifind(s1.begin(), s1.end(), s2.begin(), s2.end())
+                 != s1.end());
+  s2 = "aki";
+  CPPUNIT_ASSERT(util::strifind(s1.begin(), s1.end(), s2.begin(), s2.end())
+                 == s1.end());
+  s1 = "h";
+  s2 = "HH";
+  CPPUNIT_ASSERT(util::strifind(s1.begin(), s1.end(), s2.begin(), s2.end())
+                 == s1.end());
 }
 
 void UtilTest::testReplace() {

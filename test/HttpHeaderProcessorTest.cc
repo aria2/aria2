@@ -114,12 +114,13 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
   CPPUNIT_ASSERT_EQUAL(200, header->getStatusCode());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
   CPPUNIT_ASSERT_EQUAL(std::string("Mon, 25 Jun 2007 16:04:59 GMT"),
-                       header->getFirst("Date"));
+                       header->find("date"));
   CPPUNIT_ASSERT_EQUAL(std::string("Apache/2.2.3 (Debian)"),
-                       header->getFirst("Server"));
-  CPPUNIT_ASSERT_EQUAL((uint64_t)9187ULL, header->getFirstAsULLInt("Content-Length"));
+                       header->find("server"));
+  CPPUNIT_ASSERT_EQUAL((uint64_t)9187ULL,
+                       header->findAsULLInt("content-length"));
   CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"),
-                       header->getFirst("Content-Type"));
+                       header->find("content-type"));
   CPPUNIT_ASSERT(!header->defined("entity"));
 }
 
@@ -223,7 +224,7 @@ void HttpHeaderProcessorTest::testGetHttpRequestHeader()
   CPPUNIT_ASSERT_EQUAL(std::string("GET"), httpHeader->getMethod());
   CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());
-  CPPUNIT_ASSERT_EQUAL(std::string("close"),httpHeader->getFirst("Connection"));
+  CPPUNIT_ASSERT_EQUAL(std::string("close"),httpHeader->find("connection"));
   CPPUNIT_ASSERT(!httpHeader->defined("entity"));
 }
 

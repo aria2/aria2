@@ -729,6 +729,16 @@ struct CaseCmp {
 };
 
 template<typename InputIterator1, typename InputIterator2>
+InputIterator1 strifind
+(InputIterator1 first1,
+ InputIterator1 last1,
+ InputIterator2 first2,
+ InputIterator2 last2)
+{
+  return std::search(first1, last1, first2, last2, CaseCmp());
+}
+
+template<typename InputIterator1, typename InputIterator2>
 bool strieq
 (InputIterator1 first1,
  InputIterator1 last1,

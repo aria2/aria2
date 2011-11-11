@@ -11,14 +11,14 @@ class HttpHeaderTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HttpHeaderTest);
   CPPUNIT_TEST(testGetRange);
-  CPPUNIT_TEST(testGet);
+  CPPUNIT_TEST(testFindAll);
   CPPUNIT_TEST(testClearField);
   CPPUNIT_TEST(testFill);
   CPPUNIT_TEST_SUITE_END();
   
 public:
   void testGetRange();
-  void testGet();
+  void testFindAll();
   void testClearField();
   void testFill();
 };
@@ -30,7 +30,7 @@ void HttpHeaderTest::testGetRange()
 {
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range",
+    httpHeader.put("content-range",
                    "9223372036854775800-9223372036854775801/9223372036854775807");
     
     SharedHandle<Range> range = httpHeader.getRange();
@@ -41,7 +41,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range",
+    httpHeader.put("content-range",
                    "9223372036854775800-9223372036854775801/9223372036854775807");
      
     SharedHandle<Range> range = httpHeader.getRange();
@@ -52,7 +52,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range", "bytes */1024");
+    httpHeader.put("content-range", "bytes */1024");
 
     SharedHandle<Range> range = httpHeader.getRange();
 
@@ -62,7 +62,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range", "bytes 0-9/*");
+    httpHeader.put("content-range", "bytes 0-9/*");
 
     SharedHandle<Range> range = httpHeader.getRange();
 
@@ -72,7 +72,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range", "bytes */*");
+    httpHeader.put("content-range", "bytes */*");
 
     SharedHandle<Range> range = httpHeader.getRange();
 
@@ -82,7 +82,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range", "bytes 0");
+    httpHeader.put("content-range", "bytes 0");
 
     SharedHandle<Range> range = httpHeader.getRange();
 
@@ -92,7 +92,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range", "bytes 0/");
+    httpHeader.put("content-range", "bytes 0/");
 
     SharedHandle<Range> range = httpHeader.getRange();
 
@@ -102,7 +102,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range", "bytes 0-/3");
+    httpHeader.put("content-range", "bytes 0-/3");
     try {
       httpHeader.getRange();
       CPPUNIT_FAIL("Exception must be thrown");
@@ -112,7 +112,7 @@ void HttpHeaderTest::testGetRange()
   }
   {
     HttpHeader httpHeader;
-    httpHeader.put("Content-Range", "bytes -0/3");
+    httpHeader.put("content-range", "bytes -0/3");
     try {
       httpHeader.getRange();
       CPPUNIT_FAIL("Exception must be thrown");
@@ -122,14 +122,14 @@ void HttpHeaderTest::testGetRange()
   }
 }
 
-void HttpHeaderTest::testGet()
+void HttpHeaderTest::testFindAll()
 {
   HttpHeader h;
   h.put("A", "100");
-  h.put("a", "101");
+  h.put("A", "101");
   h.put("B", "200");
   
-  std::vector<std::string> r(h.get("A"));
+  std::vector<std::string> r(h.findAll("A"));
   CPPUNIT_ASSERT_EQUAL((size_t)2, r.size());
   CPPUNIT_ASSERT_EQUAL(std::string("100"), r[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("101"), r[1]);
@@ -142,11 +142,11 @@ void HttpHeaderTest::testClearField()
   h.setVersion(HttpHeader::HTTP_1_1);
   h.put("Foo", "Bar");
   
-  CPPUNIT_ASSERT_EQUAL(std::string("Bar"), h.getFirst("Foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("Bar"), h.find("Foo"));
 
   h.clearField();
 
-  CPPUNIT_ASSERT_EQUAL(std::string(""), h.getFirst("Foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), h.find("Foo"));
   CPPUNIT_ASSERT_EQUAL(200, h.getStatusCode());
   CPPUNIT_ASSERT_EQUAL(std::string(HttpHeader::HTTP_1_1), h.getVersion());
 }
@@ -164,15 +164,15 @@ void HttpHeaderTest::testFill()
   HttpHeader h;
   h.fill(s.begin(), s.end());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2.sourceforge.net"),
-                       h.getFirst("Host"));
+                       h.find("host"));
   CPPUNIT_ASSERT_EQUAL(std::string("close"),
-                       h.getFirst("Connection"));
+                       h.find("connection"));
   CPPUNIT_ASSERT_EQUAL(std::string("text1 text2 text3"),
-                       h.getFirst("Multi-Line"));
+                       h.find("multi-line"));
   CPPUNIT_ASSERT_EQUAL(std::string("foo"),
-                       h.get("Duplicate")[0]);
+                       h.findAll("duplicate")[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("bar"),
-                       h.get("Duplicate")[1]);
+                       h.findAll("duplicate")[1]);
 }
 
 } // namespace aria2

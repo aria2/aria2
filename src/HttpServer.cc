@@ -90,11 +90,11 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     lastBody_.clear();
     lastBody_.str("");
     lastContentLength_ =
-      lastRequestHeader_->getFirstAsUInt(HttpHeader::CONTENT_LENGTH);
+      lastRequestHeader_->findAsUInt(HttpHeader::CONTENT_LENGTH);
     headerProcessor_->clear();
 
     std::string connection =
-      util::toLower(lastRequestHeader_->getFirst(HttpHeader::CONNECTION));
+      util::toLower(lastRequestHeader_->find(HttpHeader::CONNECTION));
     acceptsPersistentConnection_ =
       connection.find(HttpHeader::CLOSE) == std::string::npos &&
       (lastRequestHeader_->getVersion() == HttpHeader::HTTP_1_1 ||
@@ -102,14 +102,14 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
 
     std::vector<Scip> acceptEncodings;
     const std::string& acceptEnc =
-      lastRequestHeader_->getFirst(HttpHeader::ACCEPT_ENCODING);
+      lastRequestHeader_->find(HttpHeader::ACCEPT_ENCODING);
     util::splitIter(acceptEnc.begin(), acceptEnc.end(),
                     std::back_inserter(acceptEncodings), ',', true);
-    const char A2_GZIP[] = "gzip";
     acceptsGZip_ = false;
     for(std::vector<Scip>::const_iterator i = acceptEncodings.begin(),
           eoi = acceptEncodings.end(); i != eoi; ++i) {
-      if(util::streq((*i).first, (*i).second, A2_GZIP, vend(A2_GZIP)-1)) {
+      if(util::strieq((*i).first, (*i).second,
+                      HttpHeader::GZIP.begin(), HttpHeader::GZIP.end())) {
         acceptsGZip_ = true;
         break;
       }
@@ -214,7 +214,8 @@ bool HttpServer::authenticate()
     return true;
   }
 
-  const std::string& authHeader = lastRequestHeader_->getFirst("Authorization");
+  const std::string& authHeader =
+    lastRequestHeader_->find(HttpHeader::AUTHORIZATION);
   if(authHeader.empty()) {
     return false;
   }
