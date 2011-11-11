@@ -264,174 +264,19 @@ bool isPowerOf(int num, int base);
 
 std::string secfmt(time_t sec);
 
-template<typename InputIterator>
-bool parseIntNoThrow
-(int32_t& result, InputIterator first, InputIterator last, int base = 10)
-{
-  // Without strip, strtol("  -1  ",..) emits error.
-  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
-  if(p.first == p.second) {
-    return false;
-  }
-  char buf[32];
-  size_t len = std::distance(p.first, p.second);
-  if(len+1 > sizeof(buf)) {
-    return false;
-  }
-  std::copy(p.first, p.second, &buf[0]);
-  buf[len] = '\0';
-  char* stop;
-  errno = 0;
-  long int v = strtol(buf, &stop, base);
-  if(*stop != '\0') {
-    return false;
-  } else if(((v == LONG_MAX || v == LONG_MIN) && (errno == ERANGE)) ||
-            v < INT32_MIN || INT32_MAX < v) {
-    return false;
-  }
-  result = v;
-  return true;
-}
+bool parseIntNoThrow(int32_t& res, const std::string& s, int base = 10);
+int32_t parseInt(const std::string& s, int base = 10);
 
-template<typename InputIterator>
-bool parseUIntNoThrow
-(uint32_t& result, InputIterator first, InputIterator last, int base = 10)
-{
-  // Without strip, strtol("  -1  ",..) emits error.
-  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
-  if(p.first == p.second) {
-    return false;
-  }
-  char buf[32];
-  size_t len = std::distance(p.first, p.second);
-  if(len+1 > sizeof(buf)) {
-    return false;
-  }
-  std::copy(p.first, p.second, &buf[0]);
-  buf[len] = '\0';
-  // We don't allow negative number.
-  if(buf[0] == '-') {
-    return false;
-  }
-  char* stop;
-  errno = 0;
-  unsigned long int v = strtoul(buf, &stop, base);
-  if(*stop != '\0') {
-    return false;
-  } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
-    return false;
-  }
-  result = v;
-  return true;
-}
+// Valid range: [0, INT32_MAX]
+bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base = 10);
+uint32_t parseUInt(const std::string& s, int base = 10);
 
-template<typename InputIterator>
-bool parseLLIntNoThrow
-(int64_t& result, InputIterator first, InputIterator last, int base = 10)
-{
-  // Without strip, strtol("  -1  ",..) emits error.
-  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
-  if(p.first == p.second) {
-    return false;
-  }
-  char buf[32];
-  size_t len = std::distance(p.first, p.second);
-  if(len+1 > sizeof(buf)) {
-    return false;
-  }
-  std::copy(p.first, p.second, &buf[0]);
-  buf[len] = '\0';
-  char* stop;
-  errno = 0;
-  int64_t v = strtoll(buf, &stop, base);
-  if(*stop != '\0') {
-    return false;
-  } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
-    return false;
-  }
-  result = v;
-  return true;
-}
+bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base = 10);
+int64_t parseLLInt(const std::string& s, int base = 10);
 
-template<typename InputIterator>
-int64_t parseLLInt(InputIterator first, InputIterator last, int base = 10)
-{
-  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
-  if(p.first == p.second) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          "empty string"));
-  }
-  char buf[32];
-  size_t len = std::distance(p.first, p.second);
-  if(len+1 > sizeof(buf)) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          "too large"));
-  }
-  std::copy(p.first, p.second, &buf[0]);
-  buf[len] = '\0';
-  char* stop;
-  errno = 0;
-  int64_t v = strtoll(buf, &stop, base);
-  if(*stop != '\0') {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE, buf));
-  } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE, buf));
-  }
-  return v;
-}
-
-template<typename InputIterator>
-int32_t parseInt(InputIterator first, InputIterator last, int base = 10)
-{
-  int64_t v = util::parseLLInt(first, last, base);
-  if(v < INT32_MIN || INT32_MAX < v) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          std::string(first, last).c_str()));
-  }
-  return v;
-}
-
-template<typename InputIterator>
-uint64_t parseULLInt(InputIterator first, InputIterator last, int base = 10)
-{
-  std::pair<InputIterator, InputIterator> p = util::stripIter(first, last);
-  if(p.first == p.second) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          "empty string"));
-  }
-  char buf[32];
-  size_t len = std::distance(p.first, p.second);
-  if(len+1 > sizeof(buf)) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          "too large"));
-  }
-  std::copy(p.first, p.second, &buf[0]);
-  buf[len] = '\0';
-  // We don't allow negative number.
-  if(buf[0] == '-') {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE, buf));
-  }
-  char* stop;
-  errno = 0;
-  uint64_t v = strtoull(buf, &stop, base);
-  if(*stop != '\0') {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE, buf));
-  } else if((v == ULLONG_MAX) && (errno == ERANGE)) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE, buf));
-  }
-  return v;
-}
-
-template<typename InputIterator>
-uint32_t parseUInt(InputIterator first, InputIterator last, int base = 10)
-{
-  uint64_t v = util::parseULLInt(first, last, base);
-  if(UINT32_MAX < v) {
-    throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-                          std::string(first, last).c_str()));
-  }
-  return v;
-}
+// Valid range: [0, INT64_MAX]
+bool parseULLIntNoThrow(uint64_t& res, const std::string& s, int base = 10);
+uint64_t parseULLInt(const std::string& s, int base = 10);
 
 void parseIntSegments(SegList<int>& sgl, const std::string& src);
 

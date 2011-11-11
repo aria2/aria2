@@ -1251,30 +1251,30 @@ void UtilTest::testParseInt()
 {
   std::string s;
   s = " -1 ";
-  CPPUNIT_ASSERT_EQUAL(-1, util::parseInt(s.begin(), s.end()));
+  CPPUNIT_ASSERT_EQUAL(-1, util::parseInt(s));
   s = "2147483647";
-  CPPUNIT_ASSERT_EQUAL(2147483647, util::parseInt(s.begin(), s.end()));
+  CPPUNIT_ASSERT_EQUAL(2147483647, util::parseInt(s));
   try {
     s = "2147483648";
-    util::parseInt(s.begin(), s.end());
+    util::parseInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
     s = "-2147483649";
-    util::parseInt(s.begin(), s.end());
+    util::parseInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
     s = "12x";
-    util::parseInt(s.begin(), s.end());
+    util::parseInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
     s = "";
-    util::parseInt(s.begin(), s.end());
+    util::parseInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
@@ -1283,17 +1283,17 @@ void UtilTest::testParseInt()
 void UtilTest::testParseUInt()
 {
   std::string s;
-  s = " 4294967295 ";
-  CPPUNIT_ASSERT_EQUAL(4294967295U, util::parseUInt(s.begin(), s.end()));
+  s = " 2147483647 ";
+  CPPUNIT_ASSERT_EQUAL(2147483647U, util::parseUInt(s));
   try {
     s = "-1";
-    util::parseUInt(s.begin(), s.end());
+    util::parseUInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
-    s = "4294967296";
-    util::parseUInt(s.begin(), s.end());
+    s = "2147483648";
+    util::parseUInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
@@ -1304,37 +1304,37 @@ void UtilTest::testParseLLInt()
   std::string s;
   {
     s = " -1 ";
-    CPPUNIT_ASSERT_EQUAL((int64_t)-1LL, util::parseLLInt(s.begin(), s.end()));
+    CPPUNIT_ASSERT_EQUAL((int64_t)-1LL, util::parseLLInt(s));
   }
   {
     s = "9223372036854775807";
     CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
-                         util::parseLLInt(s.begin(), s.end()));
+                         util::parseLLInt(s));
   }
   try {
     s = "9223372036854775808";
-    util::parseLLInt(s.begin(), s.end());
+    util::parseLLInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
     s = "-9223372036854775809";
-    util::parseLLInt(s.begin(), s.end());
+    util::parseLLInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
     s = "12x";
-    util::parseLLInt(s.begin(), s.end());
+    util::parseLLInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
   }
   try {
     s = "";
-    util::parseLLInt(s.begin(), s.end());
+    util::parseLLInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
@@ -1344,18 +1344,18 @@ void UtilTest::testParseLLInt()
 void UtilTest::testParseULLInt()
 {
   std::string s;
-  s = "18446744073709551615";
-  CPPUNIT_ASSERT_EQUAL((uint64_t)18446744073709551615ULL,
-                       util::parseULLInt(s.begin(), s.end()));
+  s = "9223372036854775807";
+  CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807LL,
+                       util::parseULLInt(s));
   try {
     s = "-1";
-    util::parseULLInt(s.begin(), s.end());
+    util::parseULLInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
   try {
-    s = "18446744073709551616";
-    util::parseULLInt(s.begin(), s.end());
+    s = "9223372036854775808";
+    util::parseULLInt(s);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
   }
@@ -1366,35 +1366,35 @@ void UtilTest::testParseIntNoThrow()
   std::string s;
   int32_t n;
   s = " -1 ";
-  CPPUNIT_ASSERT(util::parseIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(util::parseIntNoThrow(n, s));
   CPPUNIT_ASSERT_EQUAL((int32_t)-1, n);
 
   s = "2147483647";
-  CPPUNIT_ASSERT(util::parseIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(util::parseIntNoThrow(n, s));
   CPPUNIT_ASSERT_EQUAL((int32_t)2147483647, n);
 
   s = "2147483648";
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s));
   s = "-2147483649";
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s));
 
   s = "12x";
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s));
   s = "";
-  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(!util::parseIntNoThrow(n, s));
 }
 
 void UtilTest::testParseUIntNoThrow()
 {
   std::string s;
   uint32_t n;
-  s = " 4294967295 ";
-  CPPUNIT_ASSERT(util::parseUIntNoThrow(n, s.begin(), s.end()));
-  CPPUNIT_ASSERT_EQUAL((uint32_t)UINT32_MAX, n);
-  s = "4294967296";
-  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, s.begin(), s.end()));
+  s = " 2147483647 ";
+  CPPUNIT_ASSERT(util::parseUIntNoThrow(n, s));
+  CPPUNIT_ASSERT_EQUAL((uint32_t)INT32_MAX, n);
+  s = "2147483648";
+  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, s));
   s = "-1";
-  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(!util::parseUIntNoThrow(n, s));
 }
 
 void UtilTest::testParseLLIntNoThrow()
@@ -1402,15 +1402,15 @@ void UtilTest::testParseLLIntNoThrow()
   std::string s;
   int64_t n;
   s = " 9223372036854775807 ";
-  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, s));
   CPPUNIT_ASSERT_EQUAL((int64_t)INT64_MAX, n);
   s = "9223372036854775808";
-  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, s));
   s = "-9223372036854775808";
-  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(util::parseLLIntNoThrow(n, s));
   CPPUNIT_ASSERT_EQUAL((int64_t)INT64_MIN, n);
   s = "-9223372036854775809";
-  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, s.begin(), s.end()));
+  CPPUNIT_ASSERT(!util::parseLLIntNoThrow(n, s));
 }
 
 void UtilTest::testToString_binaryStream()

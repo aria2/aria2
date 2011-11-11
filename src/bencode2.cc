@@ -63,7 +63,8 @@ decoderawstring(InputIterator first, InputIterator last)
   InputIterator i = first;
   int32_t len;
   for(; i != last && *i != ':'; ++i);
-  if(i == last || i == first || !util::parseIntNoThrow(len, first, i) ||
+  if(i == last || i == first ||
+     !util::parseIntNoThrow(len, std::string(first, i)) ||
      len < 0) {
     throw DL_ABORT_EX2("Bencode decoding failed:"
                        " A positive integer expected but none found.",
@@ -100,7 +101,7 @@ decodeinteger(InputIterator first, InputIterator last)
   InputIterator i = first;
   for(; i != last && *i != 'e'; ++i);
   Integer::ValueType iv;
-  if(i == last || !util::parseLLIntNoThrow(iv, first, i)) {
+  if(i == last || !util::parseLLIntNoThrow(iv, std::string(first, i))) {
     throw DL_ABORT_EX2("Bencode decoding failed:"
                        " Integer expected but none found",
                        error_code::BENCODE_PARSE_ERROR);

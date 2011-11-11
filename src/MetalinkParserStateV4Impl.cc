@@ -119,7 +119,7 @@ void FileMetalinkParserStateV4::beginElement
         priority = MetalinkResource::getLowestPriority();
       } else {
         if(util::parseIntNoThrow
-           (priority, (*itr).value, (*itr).value+(*itr).valueLength)) {
+           (priority, std::string((*itr).value, (*itr).valueLength))) {
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
             psm->logError("metaurl@priority is out of range");
             return;
@@ -163,7 +163,7 @@ void FileMetalinkParserStateV4::beginElement
         priority = MetalinkResource::getLowestPriority();
       } else {
         if(util::parseIntNoThrow
-           (priority, (*itr).value, (*itr).value+(*itr).valueLength)) {
+           (priority, std::string((*itr).value, (*itr).valueLength))) {
           if(priority < 1 || MetalinkResource::getLowestPriority() < priority) {
             psm->logError("url@priority is out of range");
             return;
@@ -192,16 +192,15 @@ void FileMetalinkParserStateV4::beginElement
     }
   } else if(strcmp(localname, "pieces") == 0) {
     psm->setPiecesStateV4();
-    int32_t length;
+    uint32_t length;
     {
       std::vector<XmlAttr>::const_iterator itr =
         findAttr(attrs, "length", METALINK4_NAMESPACE_URI);
       if(itr == attrs.end() || (*itr).valueLength == 0) {
         psm->logError("Missing pieces@length");
         return;
-      } else if(!util::parseIntNoThrow
-                (length, (*itr).value, (*itr).value+(*itr).valueLength) ||
-                length < 0) {
+      } else if(!util::parseUIntNoThrow
+                (length, std::string((*itr).value, (*itr).valueLength))) {
         psm->logError("Bad pieces@length");
         return;
       }
@@ -254,9 +253,8 @@ void SizeMetalinkParserStateV4::endElement
  const char* nsUri,
  const std::string& characters)
 {
-  int64_t size;
-  if(util::parseLLIntNoThrow(size, characters.begin(), characters.end()) &&
-     size >= 0) {
+  uint64_t size;
+  if(util::parseULLIntNoThrow(size, characters)) {
     psm->setFileLengthOfEntry(size);
   } else {
     psm->cancelEntryTransaction();

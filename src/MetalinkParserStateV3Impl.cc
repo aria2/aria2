@@ -119,7 +119,7 @@ void FileMetalinkParserState::beginElement
       maxConnections = -1;
     } else {
       if(!util::parseIntNoThrow
-         (maxConnections,(*itr).value, (*itr).value+(*itr).valueLength) ||
+         (maxConnections, std::string((*itr).value, (*itr).valueLength)) ||
          maxConnections <= 0) {
         maxConnections = -1;
       }
@@ -148,9 +148,8 @@ void SizeMetalinkParserState::endElement
  const std::string& characters)
 {
   // current metalink specification doesn't require size element.
-  int64_t size;
-  if(util::parseLLIntNoThrow(size, characters.begin(), characters.end()) &&
-     size >= 0) {
+  uint64_t size;
+  if(util::parseULLIntNoThrow(size, characters)) {
     psm->setFileLengthOfEntry(size);
   }
 }
@@ -208,16 +207,15 @@ void VerificationMetalinkParserState::beginElement
       }
     } else if(strcmp(localname, "pieces") == 0) {
       psm->setPiecesState();
-      int32_t length;
+      uint32_t length;
       {
         std::vector<XmlAttr>::const_iterator itr =
           findAttr(attrs, "length", METALINK3_NAMESPACE_URI);
         if(itr == attrs.end()) {
           return;
         } else {
-          if(!util::parseIntNoThrow
-             (length, (*itr).value, (*itr).value+(*itr).valueLength) ||
-             length < 0) {
+          if(!util::parseUIntNoThrow
+             (length, std::string((*itr).value, (*itr).valueLength))) {
             return;
           }
         }
@@ -286,9 +284,9 @@ void PiecesMetalinkParserState::beginElement
     if(itr == attrs.end()) {
       psm->cancelChunkChecksumTransaction();
     } else {
-      int32_t idx;
-      if(util::parseIntNoThrow
-         (idx, (*itr).value, (*itr).value+(*itr).valueLength) && idx >= 0) {
+      uint32_t idx;
+      if(util::parseUIntNoThrow
+         (idx, std::string((*itr).value, (*itr).valueLength))) {
         psm->createNewHashOfChunkChecksum(idx);
       } else {
         psm->cancelChunkChecksumTransaction();
@@ -368,7 +366,7 @@ void ResourcesMetalinkParserState::beginElement
         preference = MetalinkResource::getLowestPriority();
       } else {
         if(util::parseIntNoThrow
-           (preference, (*itr).value, (*itr).value+(*itr).valueLength) &&
+           (preference, std::string((*itr).value, (*itr).valueLength)) &&
            preference >= 0) {
           // In Metalink3Spec, highest prefernce value is 100.  We
           // use Metalink4Spec priority unit system in which 1 is
@@ -387,7 +385,7 @@ void ResourcesMetalinkParserState::beginElement
         maxConnections = -1;
       } else {
         if(!util::parseIntNoThrow
-           (maxConnections, (*itr).value, (*itr).value+(*itr).valueLength) ||
+           (maxConnections, std::string((*itr).value, (*itr).valueLength)) ||
            maxConnections <= 0) {
           maxConnections = -1;
         }

@@ -166,7 +166,7 @@ decodeString
           checkEof(first, last);
         }
         checkEof(first, last);
-        uint16_t codepoint = util::parseUInt(uchars, first, 16);
+        uint16_t codepoint = util::parseUInt(std::string(uchars, first), 16);
         if(codepoint <= 0x007fu) {
           s += static_cast<char>(codepoint);
         } else if(codepoint <= 0x07ffu) {
@@ -187,7 +187,7 @@ decodeString
             checkEof(first, last);
           }
           checkEof(first, last);
-          uint16_t codepoint2 = util::parseUInt(uchars, first, 16);
+          uint16_t codepoint2 = util::parseUInt(std::string(uchars, first), 16);
           if(!in(codepoint2, 0xDC00u, 0xDFFFu)) {
             throw DL_ABORT_EX2("JSON decoding failed: bad UTF-8 sequence.",
                                error_code::JSON_PARSE_ERROR);
@@ -324,7 +324,7 @@ decodeNumber
     // we just treat it as string.
     return std::make_pair(String::g(s), first);
   } else {
-    Integer::ValueType val = util::parseLLInt(s.begin(), s.end());
+    Integer::ValueType val = util::parseLLInt(s);
     return std::make_pair(Integer::g(val), first);
   }
 }

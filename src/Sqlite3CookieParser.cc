@@ -82,10 +82,9 @@ std::string toString(const char* str)
 } // namespace
 
 namespace {
-template<typename InputIterator>
-bool parseTime(int64_t& time, InputIterator first, InputIterator last)
+bool parseTime(int64_t& time, const std::string& s)
 {
-  if(!util::parseLLIntNoThrow(time, first, last)) {
+  if(!util::parseLLIntNoThrow(time, s)) {
     return false;
   }
   if(std::numeric_limits<time_t>::max() < time) {
@@ -116,13 +115,11 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
     return 0;
   }
   int64_t expiryTime;
-  if(!values[3] ||
-     !parseTime(expiryTime, &values[3][0], &values[3][strlen(values[3])])) {
+  if(!values[3] || !parseTime(expiryTime, values[3])) {
     return 0;
   }
   int64_t lastAccessTime;
-  if(!values[6] ||
-     !parseTime(lastAccessTime, &values[6][0], &values[6][strlen(values[6])])) {
+  if(!values[6] || !parseTime(lastAccessTime, values[6])) {
     return 0;
   }
   Cookie c(cookieName,

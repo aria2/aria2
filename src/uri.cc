@@ -211,7 +211,8 @@ bool parse(UriStruct& result, const std::string& uri)
     result.port = defPort;
   } else {
     uint32_t tempPort;
-    if(util::parseUIntNoThrow(tempPort, portFirst, authorityLast)) {
+    if(util::parseUIntNoThrow(tempPort,
+                              std::string(portFirst, authorityLast))) {
       if(65535 < tempPort) {
         return false;
       }

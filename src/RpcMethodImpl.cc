@@ -197,7 +197,7 @@ namespace {
 a2_gid_t str2Gid(const String* str)
 {
   assert(str);
-  return util::parseLLInt(str->s().begin(), str->s().end());
+  return util::parseLLInt(str->s());
 }
 } // namespace
 

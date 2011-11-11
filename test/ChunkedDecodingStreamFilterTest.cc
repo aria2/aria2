@@ -196,10 +196,10 @@ void ChunkedDecodingStreamFilterTest::testTransform_with2Trailers()
 
 void ChunkedDecodingStreamFilterTest::testTransform_largeChunkSize()
 {
-  // chunkSize should be under 2^64-1
+  // chunkSize should be under 2^63-1
   {
     std::basic_string<unsigned char> msg =
-      reinterpret_cast<const unsigned char*>("ffffffffffffffff\r\n");
+      reinterpret_cast<const unsigned char*>("7fffffffffffffff\r\n");
     filter_->transform(writer_, segment_, msg.data(), msg.size());
   }
 }
@@ -209,7 +209,7 @@ void ChunkedDecodingStreamFilterTest::testTransform_tooLargeChunkSize()
   // chunkSize 2^64 causes error
   {
     std::basic_string<unsigned char> msg =
-      reinterpret_cast<const unsigned char*>("10000000000000000\r\n");
+      reinterpret_cast<const unsigned char*>("ffffffffffffffff\r\n");
     try {
       filter_->transform(writer_, segment_, msg.data(), msg.size());
       CPPUNIT_FAIL("exception must be thrown.");

@@ -104,7 +104,7 @@ InputIterator expandLoop
   if(colon == i) {
     step = 1;
   } else {
-    if(!util::parseUIntNoThrow(step, colon+1, i)) {
+    if(!util::parseUIntNoThrow(step, std::string(colon+1, i))) {
       throw DL_ABORT_EX("A step count must be a positive number.");
     }
     if(step > UINT16_MAX) {
@@ -117,8 +117,8 @@ InputIterator expandLoop
   }
   if(util::isNumber(first, minus) && util::isNumber(minus+1, colon)) {
     uint32_t start, end;
-    if(!util::parseUIntNoThrow(start, first, minus) ||
-       !util::parseUIntNoThrow(end, minus+1, colon)) {
+    if(!util::parseUIntNoThrow(start, std::string(first, minus)) ||
+       !util::parseUIntNoThrow(end, std::string(minus+1, colon))) {
       throw DL_ABORT_EX("Loop range missing.");
     }
     if(start > UINT16_MAX || end > UINT16_MAX) {

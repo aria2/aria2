@@ -611,7 +611,7 @@ bool inNoProxy(const SharedHandle<Request>& req,
       // evaluates against all of them
       std::string ip((*i).first, slashpos);
       uint32_t bits;
-      if(!util::parseUIntNoThrow(bits, slashpos+1, (*i).second)) {
+      if(!util::parseUIntNoThrow(bits, std::string(slashpos+1, (*i).second))) {
         continue;
       }
       if(util::inSameCidrBlock(ip, req->getHost(), bits)) {

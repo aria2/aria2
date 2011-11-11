@@ -200,10 +200,10 @@ void IntXmlRpcRequestParserState::endElement
  const char* name,
  const std::string& characters)
 {
-  try {
-    int64_t value = util::parseLLInt(characters.begin(), characters.end());
+  int64_t value;
+  if(util::parseLLIntNoThrow(value, characters)) {
     psm->setCurrentFrameValue(Integer::g(value));
-  } catch(RecoverableException& e) {
+  } else {
     // nothing to do here: We just leave current frame value to null.
   }
 }

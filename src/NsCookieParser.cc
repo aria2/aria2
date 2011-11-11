@@ -68,7 +68,8 @@ bool parseNsCookie
     return false;
   }
   int64_t expiryTime;
-  if(!util::parseLLIntNoThrow(expiryTime, vs[4].first, vs[4].second)) {
+  if(!util::parseLLIntNoThrow(expiryTime,
+                              std::string(vs[4].first, vs[4].second))) {
     return false;
   }
   if(std::numeric_limits<time_t>::max() < expiryTime) {
