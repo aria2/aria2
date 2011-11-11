@@ -109,7 +109,7 @@ void HttpConnection::sendRequest(const SharedHandle<HttpRequest>& httpRequest)
   A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                   cuid_,
                   eraseConfidentialInfo(request).c_str()));
-  socketBuffer_.pushStrSwap(request);
+  socketBuffer_.pushStr(request);
   socketBuffer_.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests_.push_back(entry);
@@ -122,7 +122,7 @@ void HttpConnection::sendProxyRequest
   A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                   cuid_,
                   eraseConfidentialInfo(request).c_str()));
-  socketBuffer_.pushStrSwap(request);
+  socketBuffer_.pushStr(request);
   socketBuffer_.send();
   SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
   outstandingHttpRequests_.push_back(entry);

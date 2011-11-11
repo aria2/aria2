@@ -106,15 +106,6 @@ void SocketBuffer::pushStr(const std::string& data)
   }
 }
 
-void SocketBuffer::pushStrSwap(std::string& data)
-{
-  if(data.size() > 0) {
-    SharedHandle<StringBufEntry> e(new StringBufEntry());
-    e->swap(data);
-    bufq_.push_back(e);
-  }
-}
-
 ssize_t SocketBuffer::send()
 {
   size_t totalslen = 0;

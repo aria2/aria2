@@ -200,8 +200,8 @@ void HttpServer::feedResponse(const std::string& status,
 
   header += "\r\n";
   A2_LOG_DEBUG(fmt("HTTP Server sends response:\n%s", header.c_str()));
-  socketBuffer_.pushStrSwap(header);
-  socketBuffer_.pushStrSwap(text);
+  socketBuffer_.pushStr(header);
+  socketBuffer_.pushStr(text);
 }
 
 ssize_t HttpServer::sendResponse()
