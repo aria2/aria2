@@ -93,12 +93,18 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
       lastRequestHeader_->findAsUInt(HttpHeader::CONTENT_LENGTH);
     headerProcessor_->clear();
 
-    std::string connection =
-      util::toLower(lastRequestHeader_->find(HttpHeader::CONNECTION));
+    const std::string& connection =
+      lastRequestHeader_->find(HttpHeader::CONNECTION);
     acceptsPersistentConnection_ =
-      connection.find(HttpHeader::CLOSE) == std::string::npos &&
+      util::strifind(connection.begin(),
+                     connection.end(),
+                     HttpHeader::CLOSE.begin(),
+                     HttpHeader::CLOSE.end()) == connection.end() &&
       (lastRequestHeader_->getVersion() == HttpHeader::HTTP_1_1 ||
-       connection.find("keep-alive") != std::string::npos);
+       util::strifind(connection.begin(),
+                      connection.end(),
+                      HttpHeader::KEEP_ALIVE.begin(),
+                      HttpHeader::KEEP_ALIVE.end()) != connection.end());
 
     std::vector<Scip> acceptEncodings;
     const std::string& acceptEnc =

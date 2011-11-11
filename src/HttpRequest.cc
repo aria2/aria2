@@ -445,10 +445,9 @@ bool HttpRequest::conditionalRequest() const
   static const char A2_IF_NONE_MATCH[] = "if-none-match";
   for(std::vector<std::string>::const_iterator i = headers_.begin(),
         eoi = headers_.end(); i != eoi; ++i) {
-    std::string hd = util::toLower(*i);
-    if(util::startsWith(hd.begin(), hd.end(),
+    if(util::istartsWith((*i).begin(), (*i).end(),
                         A2_IF_MOD_SINCE, vend(A2_IF_MOD_SINCE)-1) ||
-       util::startsWith(hd.begin(), hd.end(),
+       util::istartsWith((*i).begin(), (*i).end(),
                         A2_IF_NONE_MATCH, vend(A2_IF_NONE_MATCH)-1)) {
       return true;
     }
