@@ -441,8 +441,8 @@ bool HttpRequest::conditionalRequest() const
   if(!ifModSinceHeader_.empty()) {
     return true;
   }
-  const char A2_IF_MOD_SINCE[] = "if-modified-since";
-  const char A2_IF_NONE_MATCH[] = "if-none-match";
+  static const char A2_IF_MOD_SINCE[] = "if-modified-since";
+  static const char A2_IF_NONE_MATCH[] = "if-none-match";
   for(std::vector<std::string>::const_iterator i = headers_.begin(),
         eoi = headers_.end(); i != eoi; ++i) {
     std::string hd = util::toLower(*i);

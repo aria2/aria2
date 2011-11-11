@@ -521,7 +521,7 @@ HttpProxyUserOptionHandler::HttpProxyUserOptionHandler
 void HttpProxyUserOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
-  const char A2_USER[] = "-user";
+  static const char A2_USER[] = "-user";
   size_t kLen = strlen(pref_->k);
   if(util::endsWith(pref_->k, pref_->k+kLen, A2_USER, vend(A2_USER)-1)) {
     const Pref* proxyPref = option::k2p(std::string(pref_->k, kLen-5));
@@ -565,7 +565,7 @@ HttpProxyPasswdOptionHandler::HttpProxyPasswdOptionHandler
 void HttpProxyPasswdOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
-  const char A2_PASSWD[] = "-passwd";
+  static const char A2_PASSWD[] = "-passwd";
   size_t kLen = strlen(pref_->k);
   if(util::endsWith(pref_->k, pref_->k+kLen, A2_PASSWD, vend(A2_PASSWD)-1)) {
     const Pref* proxyPref = option::k2p(std::string(pref_->k, kLen-7));
@@ -617,9 +617,9 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
   } else {
     Request req;
     std::string uri;
-    const char A2_HTTP[] = "http://";
-    const char A2_HTTPS[] = "https://";
-    const char A2_FTP[] = "ftp://";
+    static const char A2_HTTP[] = "http://";
+    static const char A2_HTTPS[] = "https://";
+    static const char A2_FTP[] = "ftp://";
     if(util::startsWith(optarg.begin(), optarg.end(),
                         A2_HTTP, vend(A2_HTTP)-1) ||
        util::startsWith(optarg.begin(), optarg.end(),

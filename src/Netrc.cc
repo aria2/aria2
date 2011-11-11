@@ -154,15 +154,15 @@ void Netrc::parse(const std::string& path)
       continue;
     }
     std::vector<Scip> tokens;
-    const char A2_DELIMS[] = " \t";
+    static const char A2_DELIMS[] = " \t";
     util::splitIterM(&buf[0], &buf[len], std::back_inserter(tokens),
                      A2_DELIMS, vend(A2_DELIMS)-1, true);
-    const char A2_MACHINE[] = "machine";
-    const char A2_DEFAULT[] = "default";
-    const char A2_LOGIN[] = "login";
-    const char A2_PASSWORD[] = "password";
-    const char A2_ACCOUNT[] = "account";
-    const char A2_MACDEF[] = "macdef";
+    static const char A2_MACHINE[] = "machine";
+    static const char A2_DEFAULT[] = "default";
+    static const char A2_LOGIN[] = "login";
+    static const char A2_PASSWORD[] = "password";
+    static const char A2_ACCOUNT[] = "account";
+    static const char A2_MACDEF[] = "macdef";
     for(std::vector<Scip>::const_iterator iter = tokens.begin(),
           eoi = tokens.end(); iter != eoi; ++iter) {
       if(state == GET_TOKEN) {

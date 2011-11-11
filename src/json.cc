@@ -545,10 +545,10 @@ decodeGetParams(const std::string& query)
     std::vector<Scip> getParams;
     util::splitIter(query.begin()+1, query.end(), std::back_inserter(getParams),
                     '&');
-    const char A2_METHOD[] = "method=";
-    const char A2_ID[] = "id=";
-    const char A2_PARAMS[] = "params=";
-    const char A2_JSONCB[] = "jsoncallback=";
+    static const char A2_METHOD[] = "method=";
+    static const char A2_ID[] = "id=";
+    static const char A2_PARAMS[] = "params=";
+    static const char A2_JSONCB[] = "jsoncallback=";
     for(std::vector<Scip>::const_iterator i =
           getParams.begin(), eoi = getParams.end(); i != eoi; ++i) {
       if(util::startsWith((*i).first, (*i).second,

@@ -43,7 +43,7 @@ namespace magnet {
 SharedHandle<Dict> parse(const std::string& magnet)
 {
   SharedHandle<Dict> dict;
-  const char A2_MSGNET[] = "magnet:?";
+  static const char A2_MSGNET[] = "magnet:?";
   if(!util::startsWith(magnet.begin(), magnet.end(),
                        A2_MSGNET, vend(A2_MSGNET)-1)) {
     return dict;

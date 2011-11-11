@@ -638,10 +638,10 @@ void parsePrioritizePieceRange
 {
   std::vector<size_t> indexes;
   std::vector<Scip> parts;
-  const char A2_HEAD[] = "head";
-  const char A2_HEADEQ[] = "head=";
-  const char A2_TAIL[] = "tail";
-  const char A2_TAILEQ[] = "tail=";
+  static const char A2_HEAD[] = "head";
+  static const char A2_HEADEQ[] = "head=";
+  static const char A2_TAIL[] = "tail";
+  static const char A2_TAILEQ[] = "tail=";
   splitIter(src.begin(), src.end(), std::back_inserter(parts), ',', true);
   for(std::vector<Scip>::const_iterator i = parts.begin(),
         eoi = parts.end(); i != eoi; ++i) {
@@ -736,7 +736,7 @@ void parseParam(OutputIterator out, const std::string& header)
 
 std::string getContentDispositionFilename(const std::string& header)
 {
-  const char A2_KEYNAME[] = "filename";
+  static const char A2_KEYNAME[] = "filename";
   std::string filename;
   std::vector<std::string> params;
   parseParam(std::back_inserter(params), header);
@@ -801,7 +801,7 @@ std::string getContentDispositionFilename(const std::string& header)
       }
       std::string value =
         percentDecode(extValues[2].first, extValues[2].second);
-      const char A2_ISO88591[] = "iso-8859-1";
+      static const char A2_ISO88591[] = "iso-8859-1";
       if(util::strieq(extValues[0].first, extValues[0].second,
                       A2_ISO88591, vend(A2_ISO88591)-1)) {
         value = iso8859ToUtf8(value);
@@ -1282,8 +1282,8 @@ void generateRandomKey(unsigned char* key)
 // 192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
 bool inPrivateAddress(const std::string& ipv4addr)
 {
-  const char A2_IP10[] = "10.";
-  const char A2_IP192[] = "192.168.";
+  static const char A2_IP10[] = "10.";
+  static const char A2_IP192[] = "192.168.";
   if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
                       A2_IP10, vend(A2_IP10)-1) ||
      util::startsWith(ipv4addr.begin(), ipv4addr.end(),
@@ -1318,13 +1318,13 @@ bool detectDirTraversal(const std::string& s)
     }
   }
 
-  const char A2_DS[] = "./";
-  const char A2_DDS[] = "../";
-  const char A2_SD[] = "/.";
-  const char A2_SDD[] = "/..";
-  const char A2_SDDS[] = "/../";
-  const char A2_SDS[] = "/./";
-  const char A2_DD[] = "..";
+  static const char A2_DS[] = "./";
+  static const char A2_DDS[] = "../";
+  static const char A2_SD[] = "/.";
+  static const char A2_SDD[] = "/..";
+  static const char A2_SDDS[] = "/../";
+  static const char A2_SDS[] = "/./";
+  static const char A2_DD[] = "..";
 
   return s == A2STR::DOT_C ||
     s == A2_DD ||
@@ -1439,7 +1439,7 @@ void executeHook
 
   memset(&pi, 0, sizeof (pi));
 
-  const char A2_BAT[] = ".bat";
+  static const char A2_BAT[] = ".bat";
   bool batch = util::iendsWith(command.begin(), command.end(),
                                A2_BAT, vend(A2_BAT)-1);
   std::string cmdline;

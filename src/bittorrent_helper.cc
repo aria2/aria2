@@ -875,7 +875,7 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
   }
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   std::string infoHash;
-  const char A2_URN_BTIH[] = "urn:btih:";
+  static const char A2_URN_BTIH[] = "urn:btih:";
   for(List::ValueType::const_iterator xtiter = xts->begin(),
         eoi = xts->end(); xtiter != eoi && infoHash.empty(); ++xtiter) {
     const String* xt = downcast<String>(*xtiter);

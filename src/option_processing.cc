@@ -115,7 +115,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
           keyword = TAG_BASIC;
         } else {
           keyword = op.get(PREF_HELP);
-          const char A2_HH[] = "--";
+          static const char A2_HH[] = "--";
           if(util::startsWith(keyword.begin(), keyword.end(),
                               A2_HH, vend(A2_HH)-1)) {
             keyword.erase(keyword.begin(), keyword.begin()+2);
