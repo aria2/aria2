@@ -127,9 +127,7 @@ InputIterator expandLoop
     if(start <= end) {
       std::string format;
       if(minus-first == colon-minus-1) {
-        format = "%0";
-        format += util::uitos(minus-first);
-        format += 'd';
+        format = fmt("%%0%lud", minus-first);
       } else {
         format = "%d";
       }

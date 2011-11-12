@@ -168,12 +168,12 @@ decodeString
         checkEof(first, last);
         uint16_t codepoint = util::parseUInt(std::string(uchars, first), 16);
         if(codepoint <= 0x007fu) {
-          s += static_cast<char>(codepoint);
+          unsigned char temp[1] = { static_cast<char>(codepoint) };
+          s.append(&temp[0], &temp[sizeof(temp)]);
         } else if(codepoint <= 0x07ffu) {
-          unsigned char c2 = 0x80u | (codepoint & 0x003fu);
-          unsigned char c1 = 0xC0u | (codepoint >> 6);
-          s += c1;
-          s += c2;
+          unsigned char temp[2] = { 0xC0u | (codepoint >> 6),
+                                    0x80u | (codepoint & 0x003fu) };
+          s.append(&temp[0], &temp[sizeof(temp)]);
         } else if(in(codepoint, 0xD800u, 0xDBFFu)) {
           // surrogate pair
           if(*first != '\\' || first+1 == last ||
@@ -195,36 +195,31 @@ decodeString
           uint32_t fullcodepoint = 0x010000u;
           fullcodepoint += (codepoint & 0x03FFu) << 10;
           fullcodepoint += (codepoint2 & 0x03FFu);
-          unsigned char c4 = 0x80u | (fullcodepoint & 0x003Fu);
-          unsigned char c3 = 0x80u | ((fullcodepoint >> 6) & 0x003Fu);
-          unsigned char c2 = 0x80u | ((fullcodepoint >> 12) & 0x003Fu);
-          unsigned char c1 = 0xf0u | (fullcodepoint >> 18);
-          s += c1;
-          s += c2;
-          s += c3;
-          s += c4;
+          unsigned char temp[4] = { 0xf0u | (fullcodepoint >> 18),
+                                    0x80u | ((fullcodepoint >> 12) & 0x003Fu),
+                                    0x80u | ((fullcodepoint >> 6) & 0x003Fu),
+                                    0x80u | (fullcodepoint & 0x003Fu) };
+          s.append(&temp[0], &temp[sizeof(temp)]);
         } else {
-          unsigned char c3 = 0x80u | (codepoint & 0x003Fu);
-          unsigned char c2 = 0x80u | ((codepoint >> 6) & 0x003Fu);
-          unsigned char c1 = 0xE0u | (codepoint >> 12);
-          s += c1;
-          s += c2;
-          s += c3;
+          unsigned char temp[3] = { 0xE0u | (codepoint >> 12),
+                                    0x80u | ((codepoint >> 6) & 0x003Fu),
+                                    0x80u | (codepoint & 0x003Fu) };
+          s.append(&temp[0], &temp[sizeof(temp)]);
         }
         offset = first;
       } else {
         if(*first == 'b') {
-          s += '\b';
+          s += "\b";
         } else if(*first == 'f') {
-          s += '\f';
+          s += "\f";
         } else if(*first == 'n') {
-          s += '\n';
+          s += "\n";
         } else if(*first == 'r') {
-          s += '\r';
+          s += "\r";
         } else if(*first == 't') {
-          s += '\t';
+          s += "\t";
         } else {
-          s += *first;
+          s.append(first, first+1);
         }
         ++first;
         offset = first;
@@ -278,7 +273,7 @@ decodeNumber
 {
   std::string s;
   if(*first == '-') {
-    s += *first;
+    s.append(first, first+1);
     ++first;
   }
   std::string::const_iterator offset = first;
@@ -292,7 +287,7 @@ decodeNumber
   bool fp = false;
   if(*first == '.') {
     fp = true;
-    s += *first;
+    s.append(first, first+1);
     ++first;
     offset = first;
     while(first != last && in(*first, '0', '9')) {
@@ -304,11 +299,11 @@ decodeNumber
   }
   if(*first == 'e') {
     fp = true;
-    s += *first;
+    s.append(first, first+1);
     ++first;
     checkEof(first, last);
     if(*first == '+' || *first == '-') {
-      s += *first;
+      s.append(first, first+1);
       ++first;
     }
     offset = first;
@@ -488,7 +483,7 @@ std::string jsonEscape(const std::string& s)
   for(std::string::const_iterator i = s.begin(), eoi = s.end(); i != eoi;
       ++i) {
     if(*i == '"' || *i == '\\' || *i == '/') {
-      t += '\\';
+      t += "\\";
       t += *i;
     } else if(*i == '\b') {
       t += "\\b";
@@ -515,7 +510,7 @@ std::string jsonEscape(const std::string& s)
       }
       t += temp;
     } else {
-      t += *i;
+      t.append(i, i+1);
     }
   }
   return t;
@@ -574,22 +569,22 @@ decodeGetParams(const std::string& query)
       // Assume batch call.
       jsonRequest = jsonParam;
     } else {
-      jsonRequest = '{';
+      jsonRequest = "{";
       if(method.first != method.second) {
         jsonRequest += "\"method\":\"";
         jsonRequest.append(method.first, method.second);
-        jsonRequest += '"';
+        jsonRequest += "\"";
       }
       if(id.first != id.second) {
         jsonRequest += ",\"id\":\"";
         jsonRequest.append(id.first, id.second);
-        jsonRequest += '"';
+        jsonRequest += "\"";
       }
       if(params.first != params.second) {
         jsonRequest += ",\"params\":";
         jsonRequest += jsonParam;
       }
-      jsonRequest += '}';
+      jsonRequest += "}";
     }
   }
   return JsonGetParam(jsonRequest, callback);

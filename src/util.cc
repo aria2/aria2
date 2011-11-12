@@ -1415,20 +1415,18 @@ bool inPrivateAddress(const std::string& ipv4addr)
 {
   static const char A2_IP10[] = "10.";
   static const char A2_IP192[] = "192.168.";
+  static const char A2_IP172[] = "172.";
   if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
                       A2_IP10, vend(A2_IP10)-1) ||
      util::startsWith(ipv4addr.begin(), ipv4addr.end(),
                       A2_IP192, vend(A2_IP192)-1)) {
     return true;
   }
-  std::string p172("172.");
   if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
-                      p172.begin(), p172.end())) {
+                      A2_IP172, vend(A2_IP172)-1)) {
     for(int i = 16; i <= 31; ++i) {
-      std::string t(p172);
-      t += util::itos(i);
-      t += '.';
-      if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
+      std::string t(fmt("%d.", i));
+      if(util::startsWith(ipv4addr.begin()+4, ipv4addr.end(),
                           t.begin(), t.end())) {
         return true;
       }

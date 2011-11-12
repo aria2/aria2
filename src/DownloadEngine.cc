@@ -311,16 +311,12 @@ std::string createSockPoolKey
   std::string key;
   if(!username.empty()) {
     key += util::percentEncode(username);
-    key += '@';
+    key += "@";
   }
   key += host;
-  key += A2STR::COLON_C;
-  key += util::uitos(port);
+  key += fmt(":%u", port);
   if(!proxyhost.empty()) {
-    key += A2STR::SLASH_C;
-    key += proxyhost;
-    key += A2STR::COLON_C;
-    key += util::uitos(proxyport);
+    key += fmt("/%s:%u", proxyhost.c_str(), proxyport);
   }
   return key;
 }

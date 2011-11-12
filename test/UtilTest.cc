@@ -85,6 +85,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsUtf8String);
   CPPUNIT_TEST(testNextParam);
   CPPUNIT_TEST(testNoProxyDomainMatch);
+  CPPUNIT_TEST(testInPrivateAddress);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -155,6 +156,7 @@ public:
   void testIsUtf8String();
   void testNextParam();
   void testNoProxyDomainMatch();
+  void testInPrivateAddress();
 };
 
 
@@ -1827,6 +1829,19 @@ void UtilTest::testNoProxyDomainMatch()
   CPPUNIT_ASSERT(!util::noProxyDomainMatch("192.168.0.1", "0.1"));
   CPPUNIT_ASSERT(!util::noProxyDomainMatch("example.org", "example.com"));
   CPPUNIT_ASSERT(!util::noProxyDomainMatch("example.org", "www.example.org"));
+}
+
+void UtilTest::testInPrivateAddress()
+{
+  CPPUNIT_ASSERT(!util::inPrivateAddress("localhost"));
+  CPPUNIT_ASSERT(util::inPrivateAddress("192.168.0.1"));
+  // Only checks prefix..
+  CPPUNIT_ASSERT(util::inPrivateAddress("10."));
+  CPPUNIT_ASSERT(!util::inPrivateAddress("172."));
+  CPPUNIT_ASSERT(!util::inPrivateAddress("172.15.0.0"));
+  CPPUNIT_ASSERT(util::inPrivateAddress("172.16.0.0"));
+  CPPUNIT_ASSERT(util::inPrivateAddress("172.31.0.0"));
+  CPPUNIT_ASSERT(!util::inPrivateAddress("172.32.0.0"));
 }
 
 } // namespace aria2

@@ -208,7 +208,7 @@ void HttpHeader::fill
                     std::string::const_iterator> p = util::stripIter(first, j);
           if(!name.empty() && p.first != p.second) {
             if(!value.empty()) {
-              value += ' ';
+              value += " ";
             }
             value.append(p.first, p.second);
           }

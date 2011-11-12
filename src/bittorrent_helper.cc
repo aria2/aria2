@@ -275,14 +275,14 @@ void extractFileEntries
                              error_code::BITTORRENT_PARSE_ERROR);
         }
       }
-      std::string utf8Path = strjoin(pathelem.begin(), pathelem.end(), '/',
+      std::string utf8Path = strjoin(pathelem.begin(), pathelem.end(), "/",
                                      std::ptr_fun(util::encodeNonUtf8));
       if(util::detectDirTraversal(utf8Path)) {
         throw DL_ABORT_EX2(fmt(MSG_DIR_TRAVERSAL_DETECTED, utf8Path.c_str()),
                            error_code::BITTORRENT_PARSE_ERROR);
       }
       std::string pePath =
-        strjoin(pathelem.begin(), pathelem.end(), '/',
+        strjoin(pathelem.begin(), pathelem.end(), "/",
                 std::ptr_fun(static_cast<std::string (*)(const std::string&)>
                              (util::percentEncode)));
       std::vector<std::string> uris;

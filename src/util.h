@@ -141,7 +141,7 @@ std::string uitos(T value, bool comma = false)
     ++count;
     char digit = value%10+'0';
     if(comma && count > 3 && count%3 == 1) {
-      str += ',';
+      str += ",";
     }
     str += digit;
     value /= 10;

@@ -313,7 +313,7 @@ std::string HttpRequest::createProxyRequest() const
 std::pair<std::string, std::string> HttpRequest::getProxyAuthString() const
 {
   std::string authText = proxyRequest_->getUsername();
-  authText += ':';
+  authText += ":";
   authText += proxyRequest_->getPassword();
   std::string val = "Basic ";
   val += base64::encode(authText.begin(), authText.end());

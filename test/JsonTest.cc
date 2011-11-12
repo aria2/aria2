@@ -179,6 +179,16 @@ void JsonTest::testDecode()
     const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("\"\\/\b\f\n\r\t"), s->s());
   }
+  {
+    // string: literal + escaped chars.
+    SharedHandle<ValueBase> r =
+      json::decode("[\"foo\\u0024b\\u00A2\\u20ACbaz\"]");
+    const List* list = downcast<List>(r);
+    CPPUNIT_ASSERT(list);
+    const String* s = downcast<String>(list->get(0));
+    CPPUNIT_ASSERT_EQUAL(std::string("foo$b¢€baz"), s->s());
+  }
+
 }
 
 void JsonTest::testDecode_error()

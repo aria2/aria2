@@ -61,28 +61,32 @@ std::string encode(InputIterator first, InputIterator last)
   }
   size_t r = len%3;
   InputIterator j = last-r;
+  char temp[4];
   while(first != j) {
     int n = static_cast<unsigned char>(*first++) << 16;
     n += static_cast<unsigned char>(*first++) << 8;
     n += static_cast<unsigned char>(*first++);
-    res += CHAR_TABLE[n >> 18];
-    res += CHAR_TABLE[(n >> 12) & 0x3fu];
-    res += CHAR_TABLE[(n >> 6) & 0x3fu];
-    res += CHAR_TABLE[n & 0x3fu];
+    temp[0] = CHAR_TABLE[n >> 18];
+    temp[1] = CHAR_TABLE[(n >> 12) & 0x3fu];
+    temp[2] = CHAR_TABLE[(n >> 6) & 0x3fu];
+    temp[3] = CHAR_TABLE[n & 0x3fu];
+    res.append(temp, sizeof(temp));
   }
   if(r == 2) {
     int n = static_cast<unsigned char>(*first++) << 16;
     n += static_cast<unsigned char>(*first++) << 8;
-    res += CHAR_TABLE[n >> 18];
-    res += CHAR_TABLE[(n >> 12) & 0x3fu];
-    res += CHAR_TABLE[(n >> 6) & 0x3fu];
-    res += '=';
+    temp[0] = CHAR_TABLE[n >> 18];
+    temp[1] = CHAR_TABLE[(n >> 12) & 0x3fu];
+    temp[2] = CHAR_TABLE[(n >> 6) & 0x3fu];
+    temp[3] = '=';
+    res.append(temp, sizeof(temp));
   } else if(r == 1) {
     int n = static_cast<unsigned char>(*first++) << 16;
-    res += CHAR_TABLE[n >> 18];
-    res += CHAR_TABLE[(n >> 12) & 0x3fu];
-    res += '=';
-    res += '=';
+    temp[0] = CHAR_TABLE[n >> 18];
+    temp[1] = CHAR_TABLE[(n >> 12) & 0x3fu];
+    temp[2] = '=';
+    temp[3] = '=';
+    res.append(temp, sizeof(temp));
   }
   return res;
 }
