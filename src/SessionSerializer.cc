@@ -63,7 +63,8 @@ SessionSerializer::SessionSerializer
 
 bool SessionSerializer::save(const std::string& filename) const
 {
-  std::string tempFilename = strconcat(filename, "__temp");
+  std::string tempFilename = filename;
+  tempFilename += "__temp";
   {
     BufferedFile fp(tempFilename, BufferedFile::WRITE);
     if(!fp) {

@@ -111,7 +111,8 @@ bool DefaultBtProgressInfoFile::isTorrentDownload()
 void DefaultBtProgressInfoFile::save()
 {
   A2_LOG_INFO(fmt(MSG_SAVING_SEGMENT_FILE, filename_.c_str()));
-  std::string filenameTemp = filename_+"__temp";
+  std::string filenameTemp = filename_;
+  filenameTemp += "__temp";
   {
     BufferedFile fp(filenameTemp, BufferedFile::WRITE);
     if(!fp) {

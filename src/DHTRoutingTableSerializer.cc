@@ -78,7 +78,8 @@ void DHTRoutingTableSerializer::setNodes
 void DHTRoutingTableSerializer::serialize(const std::string& filename)
 {
   A2_LOG_INFO(fmt("Saving DHT routing table to %s.", filename.c_str()));
-  std::string filenameTemp = filename+"__temp";
+  std::string filenameTemp = filename;
+  filenameTemp += "__temp";
   BufferedFile fp(filenameTemp, BufferedFile::WRITE);
   if(!fp) {
     throw DL_ABORT_EX(fmt("Failed to save DHT routing table to %s.",

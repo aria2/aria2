@@ -386,7 +386,8 @@ bool CookieStorage::load(const std::string& filename, time_t now)
 
 bool CookieStorage::saveNsFormat(const std::string& filename)
 {
-  std::string tempfilename = filename+"__temp";
+  std::string tempfilename = filename;
+  tempfilename += "__temp";
   {
     BufferedFile fp(tempfilename, BufferedFile::WRITE);
     if(!fp) {

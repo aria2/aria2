@@ -1346,7 +1346,8 @@ bool saveAs
   if(!overwrite && File(filename).exists()) {
     return false;
   }
-  std::string tempFilename = strconcat(filename, "__temp");
+  std::string tempFilename = filename;
+  tempFilename += "__temp";
   {
     BufferedFile fp(tempFilename, BufferedFile::WRITE);
     if(!fp) {
