@@ -187,7 +187,7 @@ void RequestTest::testResetUri()
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL((uint16_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL(std::string("/aria2"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(std::string("/aria2/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }

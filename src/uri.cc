@@ -102,15 +102,15 @@ void swap(UriStruct& lhs, UriStruct& rhs)
 bool parse(UriStruct& result, const std::string& uri)
 {
   // http://user:password@aria2.sourceforge.net:80/dir/file?query#fragment
-  //        |            ||                    || |   |    |     |
-  //        |            ||             hostLast| |   |    |     |
-  //        |            ||              portFirst|   |    |     |
-  //    authorityFirst   ||             authorityLast |    |     |
-  //                     ||                       |   |    |     |
-  //                   userInfoLast               |   |    |     |
-  //                      |                       |   |    |     |
-  //                     hostPortFirst            |   |    |     |
-  //                                              |   |    |     |
+  //        |            ||                    || |    |   |     |
+  //        |            ||             hostLast| |    |   |     |
+  //        |            ||              portFirst|    |   |     |
+  //    authorityFirst   ||             authorityLast  |   |     |
+  //                     ||                       |    |   |     |
+  //                   userInfoLast               |    |   |     |
+  //                      |                       |    |   |     |
+  //                     hostPortFirst            |    |   |     |
+  //                                              |    |   |     |
   //                                       dirFirst dirLast|     |
   //                                                       |     |
   //                                                queryFirst fragmentFirst
@@ -231,32 +231,19 @@ bool parse(UriStruct& result, const std::string& uri)
   for(std::string::const_iterator i = authorityLast;
       i != queryFirst; ++i) {
     if(*i == '/') {
-      dirLast = i;
+      dirLast = i+1;
     }
   }
   if(dirLast == queryFirst) {
     result.file = A2STR::NIL;
   } else {
-    result.file.assign(dirLast+1, queryFirst);
+    result.file.assign(dirLast, queryFirst);
   }
-  // Erase duplicated slashes.
-  std::string::const_iterator dirFirst = authorityLast;
-  for(; dirFirst != dirLast; ++dirFirst) {
-    if(*dirFirst != '/') {
-      --dirFirst;
-      break;
-    }
-  }
-  for(; dirLast != dirFirst; --dirLast) {
-    if(*dirLast != '/') {
-      ++dirLast;
-      break;
-    }
-  }
-  if(dirFirst == dirLast) {
-    result.dir = A2STR::SLASH_C;
+  // dirFirst == authorityLast
+  if(authorityLast == dirLast) {
+    result.dir = "/";
   } else {
-    result.dir.assign(dirFirst, dirLast);
+    result.dir.assign(authorityLast, dirLast);
   }
   return true;
 }
@@ -284,8 +271,7 @@ std::string construct(const UriStruct& us)
   uint16_t defPort= FeatureConfig::getInstance()->
     getDefaultPort(us.protocol);
   if(us.port != 0 && defPort != us.port) {
-    res += ":";
-    res += util::uitos(us.port);
+    res += fmt(":%u", us.port);
   }
   res += us.dir;
   if(us.dir.empty() || us.dir[us.dir.size()-1] != '/') {

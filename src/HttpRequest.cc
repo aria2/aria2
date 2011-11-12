@@ -154,12 +154,7 @@ std::string HttpRequest::createRequest()
       requestLine += getCurrentURI();
     }
   } else {
-    if(getDir() == A2STR::SLASH_C) {
-      requestLine += getDir();
-    } else {
-      requestLine += getDir();
-      requestLine += A2STR::SLASH_C;
-    }
+    requestLine += getDir();
     requestLine += getFile();
     requestLine += getQuery();
   }
@@ -231,12 +226,7 @@ std::string HttpRequest::createRequest()
   if(cookieStorage_) {
     std::string cookiesValue;
     std::string path = getDir();
-    if(getDir() == "/") {
-      path += getFile();
-    } else {
-      path += "/";
-      path += getFile();
-    }
+    path += getFile();
     std::vector<Cookie> cookies =
       cookieStorage_->criteriaFind(getHost(), path,
                                    Time().getTime(),
