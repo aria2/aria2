@@ -313,10 +313,9 @@ std::string createSockPoolKey
     key += util::percentEncode(username);
     key += "@";
   }
-  key += host;
-  key += fmt(":%u", port);
+  key += fmt("%s(%u)", host.c_str(), port);
   if(!proxyhost.empty()) {
-    key += fmt("/%s:%u", proxyhost.c_str(), proxyport);
+    key += fmt("/%s(%u)", proxyhost.c_str(), proxyport);
   }
   return key;
 }
