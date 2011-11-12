@@ -69,7 +69,10 @@ std::string UTMetadataRequestExtensionMessage::getPayload()
 
 std::string UTMetadataRequestExtensionMessage::toString() const
 {
-  return strconcat("ut_metadata request piece=", util::uitos(getIndex()));
+  char buf[256];
+  snprintf(buf, sizeof(buf), "ut_metadata request piece=%lu",
+           static_cast<unsigned long>(getIndex()));
+  return buf;
 }
 
 void UTMetadataRequestExtensionMessage::doReceivedAction()

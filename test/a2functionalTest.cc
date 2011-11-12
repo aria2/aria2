@@ -14,7 +14,6 @@ class a2functionalTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMemFunSh);
   CPPUNIT_TEST(testAdopt2nd);
   CPPUNIT_TEST(testStrjoin);
-  CPPUNIT_TEST(testStrconcat);
   CPPUNIT_TEST(testStrappend);
   CPPUNIT_TEST(testLeastRecentAccess);
   CPPUNIT_TEST_SUITE_END();
@@ -22,7 +21,6 @@ public:
   void testMemFunSh();
   void testAdopt2nd();
   void testStrjoin();
-  void testStrconcat();
   void testStrappend();
   void testLeastRecentAccess();
 
@@ -98,11 +96,6 @@ void a2functionalTest::testStrjoin()
 
   CPPUNIT_ASSERT_EQUAL(std::string("A hero is lonely"),
                        strjoin(v.begin(), v.end(), " "));
-}
-
-void a2functionalTest::testStrconcat()
-{
-  CPPUNIT_ASSERT_EQUAL(std::string("X=3"), strconcat("X=", "3"));
 }
 
 void a2functionalTest::testStrappend()

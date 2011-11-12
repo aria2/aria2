@@ -229,14 +229,17 @@ std::string HttpRequest::createRequest()
   }
   if(cookieStorage_) {
     std::string cookiesValue;
+    std::string path = getDir();
+    if(getDir() == "/") {
+      path += getFile();
+    } else {
+      path += "/";
+      path += getFile();
+    }
     std::vector<Cookie> cookies =
-      cookieStorage_->criteriaFind
-      (getHost(),
-       getDir() == A2STR::SLASH_C?
-       getDir()+getFile():strconcat(getDir(), A2STR::SLASH_C, getFile()),
-       Time().getTime(),
-       getProtocol() == Request::PROTO_HTTPS ?
-       true : false);
+      cookieStorage_->criteriaFind(getHost(), path,
+                                   Time().getTime(),
+                                   getProtocol() == Request::PROTO_HTTPS);
     for(std::vector<Cookie>::const_iterator itr = cookies.begin(),
           eoi = cookies.end(); itr != eoi; ++itr) {
       strappend(cookiesValue, (*itr).toString(), ";");

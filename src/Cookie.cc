@@ -110,7 +110,10 @@ Cookie& Cookie::operator=(const Cookie& c)
 
 std::string Cookie::toString() const
 {
-  return strconcat(name_, '=', value_);
+  std::string s = name_;
+  s += "=";
+  s += value_;
+  return s;
 }
 
 bool Cookie::match

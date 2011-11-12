@@ -793,7 +793,10 @@ bool RequestGroup::tryAutoFileRenaming()
     return false;
   }
   for(unsigned int i = 1; i < 10000; ++i) {
-    File newfile(strconcat(filepath, A2STR::DOT_C, util::uitos(i)));
+    std::string newfilename = filepath;
+    newfilename += ".";
+    newfilename += util::uitos(i);
+    File newfile(newfilename);
     File ctrlfile(newfile.getPath()+DefaultBtProgressInfoFile::getSuffix());
     if(!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
       downloadContext_->getFirstFileEntry()->setPath(newfile.getPath());

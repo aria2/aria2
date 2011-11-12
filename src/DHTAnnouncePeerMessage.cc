@@ -129,9 +129,13 @@ void DHTAnnouncePeerMessage::setTokenTracker(DHTTokenTracker* tokenTracker)
 
 std::string DHTAnnouncePeerMessage::toStringOptional() const
 {
-  return strconcat("token=", util::toHex(token_),
-                   ", info_hash=", util::toHex(infoHash_, INFO_HASH_LENGTH),
-                   ", tcpPort=", util::uitos(tcpPort_));
+  char buf[256];
+  snprintf(buf, sizeof(buf),
+           "token=%s, info_hash=%s, tcpPort=%u",
+           util::toHex(token_).c_str(),
+           util::toHex(infoHash_, INFO_HASH_LENGTH).c_str(),
+           tcpPort_);
+  return buf;
 }
 
 } // namespace aria2

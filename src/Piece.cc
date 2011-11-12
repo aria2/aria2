@@ -167,8 +167,11 @@ bool Piece::getAllMissingBlockIndexes
 }
 
 std::string Piece::toString() const {
-  return strconcat("piece: index=", util::itos(index_),
-                   ", length=", util::itos(length_));
+  char buf[256];
+  snprintf(buf, sizeof(buf), "piece: index=%lu, length=%lu",
+           static_cast<unsigned long>(index_),
+           static_cast<unsigned long>(length_));
+  return buf;
 }
 
 void Piece::reconfigure(size_t length)

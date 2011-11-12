@@ -103,10 +103,13 @@ size_t BtHandshakeMessage::getMessageLength() {
 }
 
 std::string BtHandshakeMessage::toString() const {
-  return strconcat(NAME, " peerId=",
-                   util::percentEncode(peerId_, PEER_ID_LENGTH),
-                   ", reserved=",
-                   util::toHex(reserved_, RESERVED_LENGTH));
+  char buf[256];
+  snprintf(buf, sizeof(buf),
+           "%s peerId=%s, reserved=%s",
+           NAME.c_str(),
+           util::percentEncode(peerId_, PEER_ID_LENGTH).c_str(),
+           util::toHex(reserved_, RESERVED_LENGTH).c_str());
+  return buf;
 }
 
 bool BtHandshakeMessage::isFastExtensionSupported() const {

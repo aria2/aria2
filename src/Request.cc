@@ -163,7 +163,10 @@ const SharedHandle<PeerStat>& Request::initPeerStat()
 std::string Request::getURIHost() const
 {
   if(isIPv6LiteralAddress()) {
-    return strconcat("[", getHost(), "]");
+    std::string s = "[";
+    s += getHost();
+    s += "]";
+    return s;
   } else {
     return getHost();
   }

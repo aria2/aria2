@@ -51,7 +51,10 @@ AuthConfig::~AuthConfig() {}
 
 std::string AuthConfig::getAuthText() const
 {
-  return strconcat(user_, ":", password_);
+  std::string s = user_;
+  s += ":";
+  s += password_;
+  return s;
 }
 
 std::ostream& operator<<(std::ostream& o, const AuthConfigHandle& authConfig)

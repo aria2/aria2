@@ -220,7 +220,8 @@ void extractFileEntries
            error_code::BITTORRENT_PARSE_ERROR);
       }
     } else {
-      utf8Name = strconcat(File(defaultName).getBasename(), ".file");
+      utf8Name = File(defaultName).getBasename();
+      utf8Name += ".file";
     }
   } else {
     utf8Name = overrideName;
@@ -951,8 +952,9 @@ std::string metadata2Torrent
     torrent += "13:announce-list";
     torrent += bencode2::encode(&announceList);
   }
-  torrent +=
-    strconcat("4:info", metadata, "e");
+  torrent += "4:info";
+  torrent += metadata;
+  torrent += "e";
   return torrent;
 }
 

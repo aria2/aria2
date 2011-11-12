@@ -54,7 +54,10 @@ std::string UTMetadataRejectExtensionMessage::getPayload()
 
 std::string UTMetadataRejectExtensionMessage::toString() const
 {
-  return strconcat("ut_metadata reject piece=", util::uitos(getIndex()));
+  char buf[256];
+  snprintf(buf, sizeof(buf), "ut_metadata reject piece=%lu",
+           static_cast<unsigned long>(getIndex()));
+  return buf;
 }
 
 void UTMetadataRejectExtensionMessage::doReceivedAction()

@@ -72,9 +72,14 @@ size_t RangeBtMessage::getMessageLength()
 
 std::string RangeBtMessage::toString() const
 {
-  return strconcat(getName(), " index=", util::uitos(index_),
-                   ", begin=", util::uitos(begin_),
-                   ", length=", util::uitos(length_));
+  char buf[256];
+  snprintf(buf, sizeof(buf),
+           "%s index=%lu, begin=%u, length=%lu",
+           getName().c_str(),
+           static_cast<unsigned long>(index_),
+           begin_,
+           static_cast<unsigned long>(length_));
+  return buf;
 }
 
 } // namespace aria2

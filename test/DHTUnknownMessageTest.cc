@@ -35,7 +35,7 @@ void DHTUnknownMessageTest::testToString()
                           data.size(),
                           ipaddr, port);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("dht unknown Remote:192.168.0.1:6881 length=9, first 8 bytes(hex)=63686f636f6c6174"), msg.toString());
+    CPPUNIT_ASSERT_EQUAL(std::string("dht unknown Remote:192.168.0.1(6881) length=9, first 8 bytes(hex)=63686f636f6c6174"), msg.toString());
   }
   {
     // data.size() == 3
@@ -45,7 +45,7 @@ void DHTUnknownMessageTest::testToString()
                           data.size(),
                           ipaddr, port);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("dht unknown Remote:192.168.0.1:6881 length=3, first 8 bytes(hex)=666f6f"), msg.toString());
+    CPPUNIT_ASSERT_EQUAL(std::string("dht unknown Remote:192.168.0.1(6881) length=3, first 8 bytes(hex)=666f6f"), msg.toString());
   }
 }
 

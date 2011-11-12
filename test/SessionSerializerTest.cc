@@ -77,7 +77,7 @@ void SessionSerializerTest::testSave()
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string("http://error\t"), line);
   std::getline(ss, line);
-  CPPUNIT_ASSERT_EQUAL(strconcat(uris[0], "\t", uris[1], "\t"), line);
+  CPPUNIT_ASSERT_EQUAL(uris[0]+"\t"+uris[1]+"\t", line);
   std::getline(ss, line);
   CPPUNIT_ASSERT_EQUAL(std::string(" dir=/tmp"), line);
   std::getline(ss, line);

@@ -1367,11 +1367,16 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
 {
   std::string s;
   if(dir.empty()) {
-    s = strconcat(A2STR::DOT_C, A2STR::SLASH_C, relPath);
-  } else if(dir == A2STR::SLASH_C) {
-    s = strconcat(A2STR::SLASH_C, relPath);
+    s = "./";
+    s += relPath;
   } else {
-    s = strconcat(dir, A2STR::SLASH_C, relPath);
+    s = dir;
+    if(dir == "/") {
+      s += relPath;
+    } else {
+      s += "/";
+      s += relPath;
+    }
   }
 #ifdef __MINGW32__
   for(std::string::iterator i = s.begin(), eoi = s.end(); i != eoi; ++i) {

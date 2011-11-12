@@ -90,7 +90,10 @@ bool BtExtendedMessage::sendPredicate() const
 }
 
 std::string BtExtendedMessage::toString() const {
-  return strconcat(NAME, " ", extensionMessage_->toString());
+  std::string s = NAME;
+  s += " ";
+  s += extensionMessage_->toString();
+  return s;
 }
 
 BtExtendedMessageHandle

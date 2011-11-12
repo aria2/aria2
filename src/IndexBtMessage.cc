@@ -60,7 +60,11 @@ size_t IndexBtMessage::getMessageLength()
 
 std::string IndexBtMessage::toString() const
 {
-  return strconcat(getName(), " index=", util::itos(index_));
+  char buf[256];
+  snprintf(buf, sizeof(buf), "%s index=%lu",
+           getName().c_str(),
+           static_cast<unsigned long>(index_));
+  return buf;
 }
 
 } // namespace aria2

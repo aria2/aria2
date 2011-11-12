@@ -723,8 +723,11 @@ bool FtpNegotiationCommand::sendTunnelRequest()
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     SharedHandle<Request> req(new Request());
     // Construct fake URI in order to use HttpRequest
-    req->setUri(strconcat("ftp://", dataConnAddr_.first,
-                          A2STR::COLON_C, util::uitos(dataConnAddr_.second)));
+    // TODO Handle IPv6 address; it must be enclosed with [].
+    char fakeUriBuf[1024];
+    snprintf(fakeUriBuf, sizeof(fakeUriBuf), "ftp://%s:%u",
+             dataConnAddr_.first.c_str(), dataConnAddr_.second);
+    req->setUri(fakeUriBuf);
     httpRequest->setRequest(req);
     httpRequest->setProxyRequest(createProxyRequest());
     http_->sendProxyRequest(httpRequest);

@@ -89,10 +89,13 @@ std::string DHTUnknownMessage::toString() const
     sampleLength = length_;
   }
   std::string sample(&data_[0], &data_[sampleLength]);
-
-  return strconcat("dht unknown Remote:", ipaddr_, ":", util::uitos(port_),
-                   " length=", util::uitos(length_),
-                   ", first 8 bytes(hex)=", util::toHex(sample));
+  char buf[256];
+  snprintf(buf, sizeof(buf),
+           "dht unknown Remote:%s(%u) length=%lu, first 8 bytes(hex)=%s",
+           ipaddr_.c_str(), port_,
+           static_cast<unsigned long>(length_),
+           util::toHex(data_, sampleLength).c_str());
+  return buf;
 }
 
 } // namespace aria2
