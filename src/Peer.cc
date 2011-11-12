@@ -50,6 +50,7 @@ namespace aria2 {
 Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
   ipaddr_(ipaddr),
   port_(port),
+  id_(fmt("%s(%u)", ipaddr_.c_str(), port_)),
   firstContactTime_(global::wallclock()),
   badConditionStartTime_(0),
   seeder_(false),
@@ -60,8 +61,6 @@ Peer::Peer(std::string ipaddr, uint16_t port, bool incoming):
 {
   memset(peerId_, 0, PEER_ID_LENGTH);
   resetStatus();
-  id_ = ipaddr_;
-  strappend(id_, A2STR::COLON_C, util::uitos(port_));
 }
 
 Peer::~Peer()

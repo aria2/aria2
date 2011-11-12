@@ -43,7 +43,7 @@ void PeerTest::testAmAllowedIndexSet() {
 }
 
 void PeerTest::testGetId() {
-  CPPUNIT_ASSERT_EQUAL(std::string("localhost:6969"), peer->getID());
+  CPPUNIT_ASSERT_EQUAL(std::string("localhost(6969)"), peer->getID());
 }
 
 void PeerTest::testOperatorEqual()

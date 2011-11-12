@@ -89,7 +89,8 @@ void BooleanOptionHandler::parseArg(Option& option, const std::string& optarg)
     option.put(pref_, A2_V_FALSE);
   } else {
     std::string msg = pref_->k;
-    strappend(msg, " ", _("must be either 'true' or 'false'."));
+    msg += " ";
+    msg += _("must be either 'true' or 'false'.");
     throw DL_ABORT_EX(msg);
   }
 }
@@ -123,10 +124,10 @@ void IntegerRangeOptionHandler::parseArg
     int v = sgl.next();
     if(v < min_ || max_ < v) {
       std::string msg = pref_->k;
-      strappend(msg, " ", _("must be between %s and %s."));
+      msg += " ";
+      msg += _("must be between %s and %s.");
       throw DL_ABORT_EX
-        (fmt(msg.c_str(), util::itos(min_).c_str(),
-             util::itos(max_).c_str()));
+        (fmt(msg.c_str(), util::itos(min_).c_str(), util::itos(max_).c_str()));
     }
     option.put(pref_, optarg);
   }
@@ -320,7 +321,8 @@ void CumulativeOptionHandler::parseArg
 (Option& option, const std::string& optarg)
 {
   std::string value = option.get(pref_);
-  strappend(value, optarg, delim_);
+  value += optarg;
+  value += delim_;
   option.put(pref_, value);
 }
 
@@ -344,7 +346,8 @@ void IndexOutOptionHandler::parseArg(Option& option, const std::string& optarg)
   // See optarg is in the fomrat of "INDEX=PATH"
   util::parseIndexPath(optarg);
   std::string value = option.get(pref_);
-  strappend(value, optarg, "\n");
+  value += optarg;
+  value += "\n";
   option.put(pref_, value);
 }
 
@@ -445,14 +448,17 @@ void ParameterOptionHandler::parseArg(Option& option, const std::string& optarg)
     std::find(validParamValues_.begin(), validParamValues_.end(), optarg);
   if(itr == validParamValues_.end()) {
     std::string msg = pref_->k;
-    strappend(msg, " ", _("must be one of the following:"));
+    msg += " ";
+    msg += _("must be one of the following:");
     if(validParamValues_.size() == 0) {
       msg += "''";
     } else {
       for(std::vector<std::string>::const_iterator itr =
             validParamValues_.begin(), eoi = validParamValues_.end();
           itr != eoi; ++itr) {
-        strappend(msg, "'", *itr, "' ");
+        msg += "'";
+        msg += *itr;
+        msg += "' ";
       }
     }
     throw DL_ABORT_EX(msg);
@@ -540,7 +546,9 @@ void HttpProxyUserOptionHandler::parseArg
       if(uri.size() > 7) {
         uri += "@";
       }
-      strappend(uri, req.getHost(),A2STR::COLON_C,util::uitos(req.getPort()));
+      uri += req.getHost();
+      uri += ":";
+      uri += util::uitos(req.getPort());
       option.put(proxyPref, uri);
     }
   }
@@ -584,7 +592,9 @@ void HttpProxyPasswdOptionHandler::parseArg
       if(uri.size() > 7) {
         uri += "@";
       }
-      strappend(uri, req.getHost(), A2STR::COLON_C,util::itos(req.getPort()));
+      uri += req.getHost();
+      uri += ":";
+      uri += util::itos(req.getPort());
       option.put(proxyPref, uri);
     }
   }

@@ -107,13 +107,15 @@ std::string createLpdRequest
 (const std::string& multicastAddress, uint16_t multicastPort,
  const std::string& infoHash, uint16_t port)
 {
-  std::string req = "BT-SEARCH * HTTP/1.1\r\n";
-  strappend(req, "Host: ", multicastAddress, A2STR::COLON_C,
-            util::uitos(multicastPort), A2STR::CRLF);
-  strappend(req, "Port: ", util::uitos(port), A2STR::CRLF);
-  strappend(req, "Infohash: ", util::toHex(infoHash), A2STR::CRLF);
-  req += "\r\n\r\n";
-  return req;
+  return fmt("BT-SEARCH * HTTP/1.1\r\n"
+             "Host: %s:%u\r\n"
+             "Port: %u\r\n"
+             "Infohash: %s\r\n"
+             "\r\n\r\n",
+             multicastAddress.c_str(),
+             multicastPort,
+             port,
+             util::toHex(infoHash).c_str());
 }
 
 } // namespace bittorrent

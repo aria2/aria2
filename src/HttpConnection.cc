@@ -97,7 +97,8 @@ std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
                                vend(A2_PROXY_AUTH_HEADER)-1)) {
       result += "Proxy-Authorization: Basic ********\n";
     } else {
-      strappend(result, line, "\n");
+      result += line;
+      result += "\n";
     }
   }
   return result;

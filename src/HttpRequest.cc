@@ -131,7 +131,7 @@ std::string getHostText(const std::string& host, uint16_t port)
 {
   std::string hosttext = host;
   if(!(port == 80 || port == 443)) {
-    strappend(hosttext, ":", util::uitos(port));
+    hosttext += fmt(":%u", port);;
   }
   return hosttext;
 }
@@ -171,7 +171,8 @@ std::string HttpRequest::createRequest()
   std::string acceptTypes = "*/*";
   for(std::vector<std::string>::const_iterator i = acceptTypes_.begin(),
         eoi = acceptTypes_.end(); i != eoi; ++i) {
-    strappend(acceptTypes, ",", (*i));
+    acceptTypes += ",";
+    acceptTypes += *i;
   }
   builtinHds.push_back(std::make_pair("Accept:", acceptTypes));
   if(contentEncodingEnabled_) {
@@ -242,7 +243,8 @@ std::string HttpRequest::createRequest()
                                    getProtocol() == Request::PROTO_HTTPS);
     for(std::vector<Cookie>::const_iterator itr = cookies.begin(),
           eoi = cookies.end(); itr != eoi; ++itr) {
-      strappend(cookiesValue, (*itr).toString(), ";");
+      cookiesValue += (*itr).toString();
+      cookiesValue += ";";
     }
     if(!cookiesValue.empty()) {
       builtinHds.push_back(std::make_pair("Cookie:", cookiesValue));
@@ -263,28 +265,34 @@ std::string HttpRequest::createRequest()
       }
     }
     if(j == jend) {
-      strappend(requestLine, (*i).first, " ", (*i).second, A2STR::CRLF);
+      requestLine += (*i).first;
+      requestLine += " ";
+      requestLine += (*i).second;
+      requestLine += "\r\n";
     }
   }
   // append additional headers given by user.
   for(std::vector<std::string>::const_iterator i = headers_.begin(),
         eoi = headers_.end(); i != eoi; ++i) {
-    strappend(requestLine, (*i), A2STR::CRLF);
+    requestLine += *i;
+    requestLine += "\r\n";
   }
-  requestLine += A2STR::CRLF;
+  requestLine += "\r\n";
   return requestLine;
 }
 
 std::string HttpRequest::createProxyRequest() const
 {
   assert(proxyRequest_);
-  std::string hostport = getURIHost();
-  strappend(hostport, ":", util::uitos(getPort()));
-
-  std::string requestLine = "CONNECT ";
-  strappend(requestLine, hostport, " HTTP/1.1\r\n");
-  strappend(requestLine, "User-Agent: ", userAgent_, "\r\n");
-  strappend(requestLine, "Host: ", hostport, "\r\n");
+  //std::string hostport(fmt("%s:%u", getURIHost().c_str(), getPort()));
+  std::string requestLine(fmt("CONNECT %s:%u HTTP/1.1\r\n"
+                              "User-Agent: %s\r\n"
+                              "Host: %s:%u\r\n",
+                              getURIHost().c_str(),
+                              getPort(),
+                              userAgent_.c_str(),
+                              getURIHost().c_str(),
+                              getPort()));
   // TODO Is "Proxy-Connection" needed here?
   //   if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
   //     requestLine += "Proxy-Connection: Keep-Alive\r\n";
@@ -293,9 +301,12 @@ std::string HttpRequest::createProxyRequest() const
   //   }
   if(!proxyRequest_->getUsername().empty()) {
     std::pair<std::string, std::string> auth = getProxyAuthString();
-    strappend(requestLine, auth.first, " ", auth.second, A2STR::CRLF);
+    requestLine += auth.first;
+    requestLine += " ";
+    requestLine += auth.second;
+    requestLine += "\r\n";
   }
-  requestLine += A2STR::CRLF;
+  requestLine += "\r\n";
   return requestLine;
 }
 

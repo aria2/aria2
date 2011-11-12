@@ -82,20 +82,15 @@ std::string HandshakeExtensionMessage::getPayload()
 
 std::string HandshakeExtensionMessage::toString() const
 {
-  std::string s = getExtensionName();
-  if(!clientVersion_.empty()) {
-    strappend(s, " client=", util::percentEncode(clientVersion_));
-  }
-  if(tcpPort_ > 0) {
-    strappend(s, ", tcpPort=", util::uitos(tcpPort_));
-  }
-  if(metadataSize_) {
-    strappend(s, ", metadataSize=", util::uitos(metadataSize_));
-  }
+  std::string s(fmt("%s client=%s, tcpPort=%u, metadataSize=%lu",
+                    getExtensionName().c_str(),
+                    util::percentEncode(clientVersion_).c_str(),
+                    tcpPort_,
+                    metadataSize_));
   for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
         eoi = extensions_.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    strappend(s, ", ", vt.first, "=", util::uitos(vt.second));
+    s += fmt(", %s=%u", vt.first.c_str(), vt.second);
   }
   return s;
 }

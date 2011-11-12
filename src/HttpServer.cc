@@ -173,21 +173,26 @@ void HttpServer::feedResponse(const std::string& status,
                               const std::string& contentType)
 {
   std::string httpDate = Time().toHTTPDate();
-  std::string header = "HTTP/1.1 ";
-  strappend(header, status, "\r\n",
-            "Date: ", httpDate, "\r\n",
-            "Content-Type: ", contentType, "\r\n");
-  strappend(header, "Content-Length: ", util::uitos(text.size()), "\r\n",
-            "Expires: ", httpDate, "\r\n",
-            "Cache-Control: no-cache\r\n");
+  std::string header= fmt("HTTP/1.1 %s\r\n"
+                          "Date: %s\r\n"
+                          "Content-Type: %s\r\n"
+                          "Content-Length: %lu\r\n"
+                          "Expires: %s\r\n"
+                          "Cache-Control: no-cache\r\n"
+                          "%s%s",
+                          status.c_str(),
+                          httpDate.c_str(),
+                          contentType.c_str(),
+                          static_cast<unsigned long>(text.size()),
+                          httpDate.c_str(),
+                          supportsGZip() ?
+                          "Content-Encoding: gzip\r\n" : "",
+                          !supportsPersistentConnection() ?
+                          "Connection: close\r\n" : "");
   if(!allowOrigin_.empty()) {
-    strappend(header, "Access-Control-Allow-Origin: ", allowOrigin_, "\r\n");
-  }
-  if(supportsGZip()) {
-    header += "Content-Encoding: gzip\r\n";
-  }
-  if(!supportsPersistentConnection()) {
-    header += "Connection: close\r\n";
+    header += "Access-Control-Allow-Origin: ";
+    header += allowOrigin_;
+    header += "\r\n";
   }
   if(!headers.empty()) {
     header += headers;

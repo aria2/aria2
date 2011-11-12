@@ -1588,8 +1588,16 @@ void executeHook
     }
     cmdline += "/C \"";
   }
-  strappend(cmdline, "\"", command, "\"");
-  strappend(cmdline, " ", gidStr, " ", numFilesStr, " \"", firstFilename, "\"");
+  cmdline += "\"";
+  cmdline += command;
+  cmdline += "\"";
+  cmdline += " ";
+  cmdline += gidStr;
+  cmdline += " ";
+  cmdline += numFilesStr;
+  cmdline += " \"";
+  cmdline += firstFilename;
+  cmdline += "\"";
   if(batch) {
     cmdline += "\"";
   }

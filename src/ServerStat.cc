@@ -208,18 +208,16 @@ bool ServerStat::operator==(const ServerStat& serverStat) const
 
 std::string ServerStat::toString() const
 {
-  std::string res;
-  strappend(res, "host=", getHostname(), ", ");
-  strappend(res, "protocol=", getProtocol(), ", ");
-  strappend(res, "dl_speed=", util::uitos(getDownloadSpeed()), ", ");
-  strappend(res, "sc_avg_speed=", util::uitos(getSingleConnectionAvgSpeed()),
-            ", ");
-  strappend(res, "mc_avg_speed=", util::uitos(getMultiConnectionAvgSpeed()),
-            ", ");
-  strappend(res, "last_updated=", util::itos(getLastUpdated().getTime()), ", ");
-  strappend(res, "counter=", util::uitos(getCounter()), ", ");
-  strappend(res, "status=", ServerStat::STATUS_STRING[getStatus()]);
-  return res;
+  return fmt("host=%s, protocol=%s, dl_speed=%u, sc_avg_speed=%u,"
+             " mc_avg_speed=%u, last_updated=%ld, counter=%u, status=%s",
+             getHostname().c_str(),
+             getProtocol().c_str(),
+             getDownloadSpeed(),
+             getSingleConnectionAvgSpeed(),
+             getMultiConnectionAvgSpeed(),
+             getLastUpdated().getTime(),
+             getCounter(),
+             ServerStat::STATUS_STRING[getStatus()].c_str());
 }
 
 } // namespace aria2
