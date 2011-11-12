@@ -71,10 +71,8 @@ std::string UTMetadataDataExtensionMessage::getPayload()
 
 std::string UTMetadataDataExtensionMessage::toString() const
 {
-  char buf[256];
-  snprintf(buf, sizeof(buf), "ut_metadata data piece=%lu",
-           static_cast<unsigned long>(getIndex()));
-  return buf;
+  return fmt("ut_metadata data piece=%lu",
+             static_cast<unsigned long>(getIndex()));
 }
 
 void UTMetadataDataExtensionMessage::doReceivedAction()

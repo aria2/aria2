@@ -262,17 +262,13 @@ std::string FloatNumberOptionHandler::createPossibleValuesString() const
   if(min_ < 0) {
     valuesString += "*";
   } else {
-    char buf[11];
-    snprintf(buf, sizeof(buf), "%.1f", min_);
-    valuesString += buf;
+    valuesString += fmt("%.1f", min_);
   }
   valuesString += "-";
   if(max_ < 0) {
     valuesString += "*";
   } else {
-    char buf[11];
-    snprintf(buf, sizeof(buf), "%.1f", max_);
-    valuesString += buf;
+    valuesString += fmt("%.1f", max_);
   }
   return valuesString;
 }

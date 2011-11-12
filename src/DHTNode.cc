@@ -117,15 +117,12 @@ void DHTNode::timeout()
 
 std::string DHTNode::toString() const
 {
-  char buf[256];
-  snprintf(buf, sizeof(buf),
-           "DHTNode ID=%s, Host=%s(%u), Condition=%u, RTT=%u",
-           util::toHex(id_, DHT_ID_LENGTH).c_str(),
-           ipaddr_.c_str(),
-           port_,
-           condition_,
-           rtt_);
-  return buf;
+  return fmt("DHTNode ID=%s, Host=%s(%u), Condition=%u, RTT=%u",
+             util::toHex(id_, DHT_ID_LENGTH).c_str(),
+             ipaddr_.c_str(),
+             port_,
+             condition_,
+             rtt_);
 }
 
 void DHTNode::setID(const unsigned char* id)

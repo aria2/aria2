@@ -158,13 +158,10 @@ void DHTGetPeersReplyMessage::accept(DHTMessageCallback* callback)
 
 std::string DHTGetPeersReplyMessage::toStringOptional() const
 {
-  char buf[256];
-  snprintf(buf, sizeof(buf),
-           "token=%s, values=%lu, nodes=%lu",
-           util::toHex(token_).c_str(),
-           static_cast<unsigned long>(values_.size()),
-           static_cast<unsigned long>(closestKNodes_.size()));
-  return buf;
+  return fmt("token=%s, values=%lu, nodes=%lu",
+             util::toHex(token_).c_str(),
+             static_cast<unsigned long>(values_.size()),
+             static_cast<unsigned long>(closestKNodes_.size()));
 }
 
 } // namespace aria2

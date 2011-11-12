@@ -213,13 +213,11 @@ void BtPieceMessage::pushPieceData(off_t offset, size_t length) const
 
 std::string BtPieceMessage::toString() const
 {
-  char buf[256];
-  snprintf(buf, sizeof(buf), "%s index=%lu, begin=%u, length=%lu",
-           NAME.c_str(),
-           static_cast<unsigned long>(index_),
-           begin_,
-           static_cast<unsigned long>(blockLength_));
-  return buf;
+  return fmt("%s index=%lu, begin=%u, length=%lu",
+             NAME.c_str(),
+             static_cast<unsigned long>(index_),
+             begin_,
+             static_cast<unsigned long>(blockLength_));
 }
 
 bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)

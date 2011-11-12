@@ -121,11 +121,9 @@ UTPexExtensionMessage::createCompactPeerListAndFlag
 
 std::string UTPexExtensionMessage::toString() const
 {
-  char buf[256];
-  snprintf(buf, sizeof(buf), "ut_pex added=%lu, dropped=%lu",
-           static_cast<unsigned long>(freshPeers_.size()),
-           static_cast<unsigned long>(droppedPeers_.size()));
-  return buf;
+  return fmt("ut_pex added=%lu, dropped=%lu",
+             static_cast<unsigned long>(freshPeers_.size()),
+             static_cast<unsigned long>(droppedPeers_.size()));
 }
 
 void UTPexExtensionMessage::doReceivedAction()
