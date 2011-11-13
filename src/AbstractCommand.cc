@@ -543,35 +543,72 @@ void AbstractCommand::setWriteCheckSocketIf
 }
 
 namespace {
-// Returns proxy option value for the given protocol.
-const std::string& getProxyOptionFor
-(const Pref* proxyPref, const SharedHandle<Option>& option)
+// Constructs proxy URI, merging username and password if they are
+// defined.
+std::string makeProxyUri
+(const Pref* proxyPref,
+ const Pref* proxyUser,
+ const Pref* proxyPasswd,
+ const Option* option)
 {
-  if(option->defined(proxyPref)) {
-    return option->get(proxyPref);
+  uri::UriStruct us;
+  if(uri::parse(us, option->get(proxyPref))) {
+    if(option->defined(proxyUser)) {
+      us.username = option->get(proxyUser);
+    }
+    if(option->defined(proxyPasswd)) {
+      us.password = option->get(proxyPasswd);
+      us.hasPassword = true;
+    }
+    return uri::construct(us);
   } else {
-    return option->get(PREF_ALL_PROXY);
+    return "";
   }
 }
 } // namespace
 
 namespace {
+// Returns proxy option value for the given protocol.
+std::string getProxyOptionFor
+(const Pref* proxyPref,
+ const Pref* proxyUser,
+ const Pref* proxyPasswd,
+ const Option* option)
+{
+  std::string uri = makeProxyUri(proxyPref, proxyUser, proxyPasswd, option);
+  if(uri.empty()) {
+    return makeProxyUri(PREF_ALL_PROXY, PREF_ALL_PROXY_USER,
+                        PREF_ALL_PROXY_PASSWD, option);
+  } else {
+    return uri;
+  }
+}
+} // namespace
+
 // Returns proxy URI for given protocol.  If no proxy URI is defined,
 // then returns an empty string.
-const std::string& getProxyUri
-(const std::string& protocol, const SharedHandle<Option>& option)
+std::string getProxyUri
+(const std::string& protocol, const Option* option)
 {
   if(protocol == Request::PROTO_HTTP) {
-    return getProxyOptionFor(PREF_HTTP_PROXY, option);
+    return getProxyOptionFor(PREF_HTTP_PROXY,
+                             PREF_HTTP_PROXY_USER,
+                             PREF_HTTP_PROXY_PASSWD,
+                             option);
   } else if(protocol == Request::PROTO_HTTPS) {
-    return getProxyOptionFor(PREF_HTTPS_PROXY, option);
+    return getProxyOptionFor(PREF_HTTPS_PROXY,
+                             PREF_HTTPS_PROXY_USER,
+                             PREF_HTTPS_PROXY_PASSWD,
+                             option);
   } else if(protocol == Request::PROTO_FTP) {
-    return getProxyOptionFor(PREF_FTP_PROXY, option);
+    return getProxyOptionFor(PREF_FTP_PROXY,
+                             PREF_FTP_PROXY_USER,
+                             PREF_FTP_PROXY_PASSWD,
+                             option);
   } else {
     return A2STR::NIL;
   }
 }
-} // namespace
 
 namespace {
 // Returns true if proxy is defined for the given protocol. Otherwise
@@ -579,9 +616,8 @@ namespace {
 bool isProxyRequest
 (const std::string& protocol, const SharedHandle<Option>& option)
 {
-  const std::string& proxyUri = getProxyUri(protocol, option);
-  uri::UriStruct us;
-  return !proxyUri.empty() && uri::parse(us, proxyUri);
+  std::string proxyUri = getProxyUri(protocol, option.get());
+  return !proxyUri.empty();
 }
 } // namespace
 
@@ -635,7 +671,7 @@ SharedHandle<Request> AbstractCommand::createProxyRequest() const
   if(inNoProxy(req_, getOption()->get(PREF_NO_PROXY))) {
     return proxyRequest;
   }
-  std::string proxy = getProxyUri(req_->getProtocol(), getOption());
+  std::string proxy = getProxyUri(req_->getProtocol(), getOption().get());
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
     if(proxyRequest->setUri(proxy)) {

@@ -26,8 +26,6 @@ class OptionHandlerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFloatNumberOptionHandler_max);
   CPPUNIT_TEST(testFloatNumberOptionHandler_min_max);
   CPPUNIT_TEST(testHttpProxyOptionHandler);
-  CPPUNIT_TEST(testHttpProxyUserOptionHandler);
-  CPPUNIT_TEST(testHttpProxyPasswdOptionHandler);
   CPPUNIT_TEST(testDeprecatedOptionHandler);
   CPPUNIT_TEST_SUITE_END();
   
@@ -47,11 +45,8 @@ public:
   void testFloatNumberOptionHandler_max();
   void testFloatNumberOptionHandler_min_max();
   void testHttpProxyOptionHandler();
-  void testHttpProxyUserOptionHandler();
-  void testHttpProxyPasswdOptionHandler();
   void testDeprecatedOptionHandler();
 };
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OptionHandlerTest );
 
@@ -306,90 +301,9 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
   CPPUNIT_ASSERT_EQUAL(std::string("http://user%40:passwd%40@proxy:8080/"),
                        option.get(PREF_HTTP_PROXY));
 
-  option.put(PREF_HTTP_PROXY_USER, "proxy@user");
-  handler.parse(option, "http://proxy:8080");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://proxy%40user@proxy:8080/"),
-                       option.get(PREF_HTTP_PROXY));
-
-  option.put(PREF_HTTP_PROXY_PASSWD, "proxy@passwd");
-  handler.parse(option, "http://proxy:8080");
-  CPPUNIT_ASSERT_EQUAL
-    (std::string("http://proxy%40user:proxy%40passwd@proxy:8080/"),
-     option.get(PREF_HTTP_PROXY));
-
-  handler.parse(option, "http://user:passwd@proxy:8080");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://user:passwd@proxy:8080/"),
-                       option.get(PREF_HTTP_PROXY));
-
-  option.put(PREF_HTTP_PROXY_PASSWD, "");
-  handler.parse(option, "http://proxy:8080");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://proxy%40user:@proxy:8080/"),
-                       option.get(PREF_HTTP_PROXY));
-
   handler.parse(option, "http://[::1]:8080");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://proxy%40user:@[::1]:8080/"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://[::1]:8080/"),
                        option.get(PREF_HTTP_PROXY));
-}
-
-void OptionHandlerTest::testHttpProxyUserOptionHandler()
-{
-  HttpProxyUserOptionHandler handler(PREF_HTTP_PROXY_USER, "", "");
-  Option option;
-  handler.parse(option, "proxyuser");
-  CPPUNIT_ASSERT_EQUAL(std::string("proxyuser"),
-                       option.get(PREF_HTTP_PROXY_USER));
-
-  option.put(PREF_HTTP_PROXY, "http://proxy:8080");
-  handler.parse(option, "proxy@user");
-  CPPUNIT_ASSERT_EQUAL(std::string("proxy@user"),
-                       option.get(PREF_HTTP_PROXY_USER));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://proxy%40user@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-
-  option.put(PREF_HTTP_PROXY, "http://user@proxy:8080");
-  handler.parse(option, "proxyuser");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://proxyuser@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-
-  option.put(PREF_HTTP_PROXY, "http://user:passwd%40@proxy:8080");
-  handler.parse(option, "proxyuser");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://proxyuser:passwd%40@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-
-  handler.parse(option, "");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://:passwd%40@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-}
-
-void OptionHandlerTest::testHttpProxyPasswdOptionHandler()
-{
-  HttpProxyPasswdOptionHandler handler(PREF_HTTP_PROXY_PASSWD, "", "");
-  Option option;
-  handler.parse(option, "proxypasswd");
-  CPPUNIT_ASSERT_EQUAL(std::string("proxypasswd"),
-                       option.get(PREF_HTTP_PROXY_PASSWD));
-
-  option.put(PREF_HTTP_PROXY, "http://proxy:8080");
-  handler.parse(option, "proxy@passwd");
-  CPPUNIT_ASSERT_EQUAL(std::string("proxy@passwd"),
-                       option.get(PREF_HTTP_PROXY_PASSWD));
-  CPPUNIT_ASSERT_EQUAL(std::string("http://:proxy%40passwd@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-
-  option.put(PREF_HTTP_PROXY, "http://:pass@proxy:8080");
-  handler.parse(option, "proxypasswd");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://:proxypasswd@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-
-  option.put(PREF_HTTP_PROXY, "http://user%40:pass@proxy:8080");
-  handler.parse(option, "proxypasswd");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://user%40:proxypasswd@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-
-  handler.parse(option, "");
-  CPPUNIT_ASSERT_EQUAL(std::string("http://user%40:@proxy:8080"),
-                       option.get(PREF_HTTP_PROXY));
-  
 }
 
 void OptionHandlerTest::testDeprecatedOptionHandler()

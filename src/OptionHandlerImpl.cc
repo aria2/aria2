@@ -509,98 +509,6 @@ std::string HostPortOptionHandler::createPossibleValuesString() const
   return "HOST:PORT";
 }
 
-HttpProxyUserOptionHandler::HttpProxyUserOptionHandler
-(const Pref* pref,
- const char* description,
- const std::string& defaultValue,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName)
-{}
-
-void HttpProxyUserOptionHandler::parseArg
-(Option& option, const std::string& optarg)
-{
-  static const char A2_USER[] = "-user";
-  size_t kLen = strlen(pref_->k);
-  if(util::endsWith(pref_->k, pref_->k+kLen, A2_USER, vend(A2_USER)-1)) {
-    const Pref* proxyPref = option::k2p(std::string(pref_->k, kLen-5));
-    const std::string& olduri = option.get(proxyPref);
-    if(!olduri.empty()) {
-      Request req;
-      bool b = req.setUri(olduri);
-      assert(b);
-      std::string uri = "http://";
-      if(!optarg.empty()) {
-        uri += util::percentEncode(optarg);
-      }
-      if(req.hasPassword()) {
-        uri += A2STR::COLON_C;
-        uri += util::percentEncode(req.getPassword());
-      }
-      if(uri.size() > 7) {
-        uri += "@";
-      }
-      uri += req.getHost();
-      uri += ":";
-      uri += util::uitos(req.getPort());
-      option.put(proxyPref, uri);
-    }
-  }
-  option.put(pref_, optarg);
-}
-
-std::string HttpProxyUserOptionHandler::createPossibleValuesString() const
-{
-  return "";
-}
-
-HttpProxyPasswdOptionHandler::HttpProxyPasswdOptionHandler
-(const Pref* pref,
- const char* description,
- const std::string& defaultValue,
- char shortName)
-  : AbstractOptionHandler(pref, description, defaultValue,
-                          OptionHandler::REQ_ARG, shortName)
-{}
-
-void HttpProxyPasswdOptionHandler::parseArg
-(Option& option, const std::string& optarg)
-{
-  static const char A2_PASSWD[] = "-passwd";
-  size_t kLen = strlen(pref_->k);
-  if(util::endsWith(pref_->k, pref_->k+kLen, A2_PASSWD, vend(A2_PASSWD)-1)) {
-    const Pref* proxyPref = option::k2p(std::string(pref_->k, kLen-7));
-    const std::string& olduri = option.get(proxyPref);
-    if(!olduri.empty()) {
-      Request req;
-      bool b = req.setUri(olduri);
-      assert(b);
-      std::string uri = "http://";
-      if(!req.getUsername().empty()) {
-        uri += util::percentEncode(req.getUsername());
-      }
-      uri += A2STR::COLON_C;
-      if(!optarg.empty()) {
-        uri += util::percentEncode(optarg);
-      }
-      if(uri.size() > 7) {
-        uri += "@";
-      }
-      uri += req.getHost();
-      uri += ":";
-      uri += util::itos(req.getPort());
-      option.put(proxyPref, uri);
-    }
-  }
-  option.put(pref_, optarg);
-}
-
-std::string HttpProxyPasswdOptionHandler::createPossibleValuesString() const
-{
-  return "";
-}
-
 HttpProxyOptionHandler::HttpProxyOptionHandler
 (const Pref* pref,
  const char* description,
@@ -619,7 +527,6 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
   if(optarg.empty()) {
     option.put(pref_, optarg);
   } else {
-    Request req;
     std::string uri;
     static const char A2_HTTP[] = "http://";
     static const char A2_HTTPS[] = "https://";
@@ -640,17 +547,6 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
       throw DL_ABORT_EX(_("unrecognized proxy format"));
     }
     us.protocol = "http";
-    if(us.username.empty()) {
-      if(option.defined(proxyUserPref_)) {
-        us.username = option.get(proxyUserPref_);
-      }
-    }
-    if(!us.hasPassword) {
-      if(option.defined(proxyPasswdPref_)) {
-        us.password = option.get(proxyPasswdPref_);
-        us.hasPassword = true;
-      }
-    }
     option.put(pref_, uri::construct(us));
   }
 }

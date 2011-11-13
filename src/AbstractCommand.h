@@ -243,6 +243,11 @@ public:
   bool execute();
 };
 
+// Returns proxy URI for given protocol.  If no proxy URI is defined,
+// then returns an empty string.
+std::string getProxyUri
+(const std::string& protocol, const Option* option);
+
 } // namespace aria2
 
 #endif // D_ABSTRACT_COMMAND_H

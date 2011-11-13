@@ -223,26 +223,6 @@ public:
   virtual std::string createPossibleValuesString() const;
 };
 
-class HttpProxyUserOptionHandler:public AbstractOptionHandler {
-public:
-  HttpProxyUserOptionHandler(const Pref* pref,
-                             const char* description,
-                             const std::string& defaultValue,
-                             char shortName = 0);
-  virtual void parseArg(Option& option, const std::string& optarg);
-  virtual std::string createPossibleValuesString() const;
-};
-
-class HttpProxyPasswdOptionHandler:public AbstractOptionHandler {
-public:
-  HttpProxyPasswdOptionHandler(const Pref* pref,
-                               const char* description,
-                               const std::string& defaultValue,
-                               char shortName = 0);
-  virtual void parseArg(Option& option, const std::string& optarg);
-  virtual std::string createPossibleValuesString() const;
-};
-
 class HttpProxyOptionHandler : public AbstractOptionHandler {
 private:
   const Pref* proxyUserPref_;

@@ -1306,7 +1306,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_HTTP_PROXY_PASSWD,
                                     TEXT_HTTP_PROXY_PASSWD,
                                     NO_DEFAULT_VALUE));
@@ -1318,7 +1318,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_HTTP_PROXY_USER,
                                     TEXT_HTTP_PROXY_USER,
                                     NO_DEFAULT_VALUE));
@@ -1342,7 +1342,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_HTTPS_PROXY_PASSWD,
                                     TEXT_HTTPS_PROXY_PASSWD,
                                     NO_DEFAULT_VALUE));
@@ -1355,7 +1355,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_HTTPS_PROXY_USER,
                                     TEXT_HTTPS_PROXY_USER,
                                     NO_DEFAULT_VALUE));
@@ -1379,7 +1379,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_FTP_PROXY_PASSWD,
                                     TEXT_FTP_PROXY_PASSWD,
                                     NO_DEFAULT_VALUE));
@@ -1391,7 +1391,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_FTP_PROXY_USER,
                                     TEXT_FTP_PROXY_USER,
                                     NO_DEFAULT_VALUE));
@@ -1416,7 +1416,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyPasswdOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_ALL_PROXY_PASSWD,
                                     TEXT_ALL_PROXY_PASSWD,
                                     NO_DEFAULT_VALUE));
@@ -1430,7 +1430,7 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
-    SharedHandle<OptionHandler> op(new HttpProxyUserOptionHandler
+    SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_ALL_PROXY_USER,
                                     TEXT_ALL_PROXY_USER,
                                     NO_DEFAULT_VALUE));
