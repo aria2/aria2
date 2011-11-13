@@ -161,6 +161,9 @@ You can use libexpat1-dev instead of libxml2-dev:
 
 You may also need pkg-config to detect the above mentioned libraries.
 
+On Fedora you need the following packages: 
+gcc, gcc-c++, kernel-devel, libgcrypt-devel, libgcrypt-devel, libxml2-devel, openssl-devel
+
 If you downloaded source code from git repository, you have to run
 following command to generate configure script and other files
 necessary to build the program:
