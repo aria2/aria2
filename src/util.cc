@@ -521,26 +521,19 @@ bool isPowerOf(int num, int base) {
 }
 
 std::string secfmt(time_t sec) {
+  time_t tsec = sec;
   std::string str;
   if(sec >= 3600) {
-    str = itos(sec/3600);
-    str += "h";
+    str = fmt("%lldh", static_cast<long long int>(sec/3600));
     sec %= 3600;
   }
   if(sec >= 60) {
-    int min = sec/60;
-    if(min < 10) {
-      str += "0";
-    }
-    str += itos(min);
-    str += "m";
+    str += fmt("%dm", static_cast<int>(sec/60));
     sec %= 60;
   }
-  if(sec < 10) {
-    str += "0";
+  if(sec || tsec == 0) {
+    str += fmt("%ds", static_cast<int>(sec));
   }
-  str += itos(sec);
-  str += "s";
   return str;
 }
 

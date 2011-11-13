@@ -86,6 +86,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNextParam);
   CPPUNIT_TEST(testNoProxyDomainMatch);
   CPPUNIT_TEST(testInPrivateAddress);
+  CPPUNIT_TEST(testSecfmt);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -157,6 +158,7 @@ public:
   void testNextParam();
   void testNoProxyDomainMatch();
   void testInPrivateAddress();
+  void testSecfmt();
 };
 
 
@@ -1842,6 +1844,19 @@ void UtilTest::testInPrivateAddress()
   CPPUNIT_ASSERT(util::inPrivateAddress("172.16.0.0"));
   CPPUNIT_ASSERT(util::inPrivateAddress("172.31.0.0"));
   CPPUNIT_ASSERT(!util::inPrivateAddress("172.32.0.0"));
+}
+
+void UtilTest::testSecfmt()
+{
+  CPPUNIT_ASSERT_EQUAL(std::string("0s"), util::secfmt(0));
+  CPPUNIT_ASSERT_EQUAL(std::string("1s"), util::secfmt(1));
+  CPPUNIT_ASSERT_EQUAL(std::string("9s"), util::secfmt(9));
+  CPPUNIT_ASSERT_EQUAL(std::string("10s"), util::secfmt(10));
+  CPPUNIT_ASSERT_EQUAL(std::string("1m"), util::secfmt(60));
+  CPPUNIT_ASSERT_EQUAL(std::string("1m59s"), util::secfmt(119));
+  CPPUNIT_ASSERT_EQUAL(std::string("2m"), util::secfmt(120));
+  CPPUNIT_ASSERT_EQUAL(std::string("59m59s"), util::secfmt(3599));
+  CPPUNIT_ASSERT_EQUAL(std::string("1h"), util::secfmt(3600));
 }
 
 } // namespace aria2
