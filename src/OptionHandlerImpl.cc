@@ -125,9 +125,8 @@ void IntegerRangeOptionHandler::parseArg
     if(v < min_ || max_ < v) {
       std::string msg = pref_->k;
       msg += " ";
-      msg += _("must be between %s and %s.");
-      throw DL_ABORT_EX
-        (fmt(msg.c_str(), util::itos(min_).c_str(), util::itos(max_).c_str()));
+      msg += _("must be between %d and %d.");
+      throw DL_ABORT_EX(fmt(msg.c_str(), min_, max_));
     }
     option.put(pref_, optarg);
   }
@@ -135,7 +134,7 @@ void IntegerRangeOptionHandler::parseArg
 
 std::string IntegerRangeOptionHandler::createPossibleValuesString() const
 {
-  return util::itos(min_)+"-"+util::itos(max_);
+  return fmt("%d-%d", min_, max_);
 }
 
 NumberOptionHandler::NumberOptionHandler
@@ -166,15 +165,15 @@ void NumberOptionHandler::parseArg(Option& option, int64_t number)
     std::string msg = pref_->k;
     msg += " ";
     if(min_ == -1 && max_ != -1) {
-      msg += fmt(_("must be smaller than or equal to %s."),
-                 util::itos(max_).c_str());
+      msg += fmt(_("must be smaller than or equal to %lld."),
+                 static_cast<long long int>(max_));
     } else if(min_ != -1 && max_ != -1) {
-      msg += fmt(_("must be between %s and %s."),
-                 util::itos(min_).c_str(),
-                 util::itos(max_).c_str());
+      msg += fmt(_("must be between %lld and %lld."),
+                 static_cast<long long int>(min_),
+                 static_cast<long long int>(max_));
     } else if(min_ != -1 && max_ == -1) {
-      msg += fmt(_("must be greater than or equal to %s."),
-                 util::itos(min_).c_str());
+      msg += fmt(_("must be greater than or equal to %lld."),
+                 static_cast<long long int>(min_));
     } else {
       msg += _("must be a number.");
     }

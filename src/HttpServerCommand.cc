@@ -136,10 +136,11 @@ bool HttpServerCommand::execute()
       if(static_cast<uint64_t>
          (e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE)) <
          httpServer_->getContentLength()) {
-        A2_LOG_INFO(fmt("Request too long. ContentLength=%s."
-                        " See --rpc-max-request-size option to loose"
-                        " this limitation.",
-                        util::uitos(httpServer_->getContentLength()).c_str()));
+        A2_LOG_INFO
+          (fmt("Request too long. ContentLength=%lld."
+               " See --rpc-max-request-size option to loose"
+               " this limitation.",
+               static_cast<long long int>(httpServer_->getContentLength())));
         return true;
       }
       Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,

@@ -193,9 +193,8 @@ std::string HttpRequest::createRequest()
   }
   if(segment_ && segment_->getLength() > 0 && 
      (request_->isPipeliningEnabled() || getStartByte() > 0)) {
-    std::string rangeHeader = "bytes=";
-    rangeHeader += util::itos(getStartByte());
-    rangeHeader += "-";
+    std::string rangeHeader(fmt("bytes=%lld-",
+                                static_cast<long long int>(getStartByte())));
     if(request_->isPipeliningEnabled()) {
       rangeHeader += util::itos(getEndByte());
     } else if(getProtocol() != Request::PROTO_FTP && endOffsetOverride_ > 0) {

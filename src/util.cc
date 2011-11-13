@@ -1087,20 +1087,16 @@ std::string abbrevSize(int64_t size)
   if(size < 1024) {
     return itos(size, true);
   }
-  char units[] = { 'K', 'M' };
-  size_t numUnit = sizeof(units)/sizeof(char);
+  static const char units[] = { 'K', 'M' };
   size_t i = 0;
   int r = size&0x3ffu;
   size >>= 10;
-  for(; i < numUnit-1 && size >= 1024; ++i) {
+  for(; i < sizeof(units)-1 && size >= 1024; ++i) {
     r = size&0x3ffu;
     size >>= 10;
   }
   std::string result = itos(size, true);
-  result += A2STR::DOT_C;
-  result += itos(r*10/1024);
-  result += units[i];
-  result += "i";
+  result += fmt(".%d%ci", r*10/1024, units[i]);
   return result;
 }
 

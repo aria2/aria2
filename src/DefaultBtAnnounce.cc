@@ -144,32 +144,33 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   TransferStat stat = peerStorage_->calculateStat();
   uint64_t left =
     pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
+  // Use last 8 bytes of peer ID as a key
+  const size_t keyLen = 8;
   std::string uri = announceList_.getAnnounce();
   uri += uriHasQuery(uri) ? "&" : "?";
-  uri += "info_hash=";
-  uri += util::torrentPercentEncode(bittorrent::getInfoHash(downloadContext_),
-                                    INFO_HASH_LENGTH);
-  uri += "&peer_id=";
-  uri += util::torrentPercentEncode(bittorrent::getStaticPeerId(),
-                                    PEER_ID_LENGTH);
-  uri += "&uploaded=";
-  uri += util::uitos(stat.getSessionUploadLength());
-  uri += "&downloaded=";
-  uri += util::uitos(stat.getSessionDownloadLength());
-  uri += "&left=";
-  uri += util::uitos(left);
-  uri += "&compact=1";
-  uri += "&key=";
-  // Use last 8 bytes of peer ID as a key
-  size_t keyLen = 8;
-  uri += util::torrentPercentEncode
-    (bittorrent::getStaticPeerId()+PEER_ID_LENGTH-keyLen, keyLen);
-  uri += "&numwant=";
-  uri += util::uitos(numWant);
-  uri += "&no_peer_id=1";
+  uri += fmt("info_hash=%s&"
+             "peer_id=%s&"
+             "uploaded=%lld&"
+             "downloaded=%lld&"
+             "left=%lld&"
+             "compact=1&"
+             "key=%s&"
+             "numwant=%u&"
+             "no_peer_id=1",
+             util::torrentPercentEncode
+             (bittorrent::getInfoHash(downloadContext_),
+              INFO_HASH_LENGTH).c_str(),
+             util::torrentPercentEncode
+             (bittorrent::getStaticPeerId(), PEER_ID_LENGTH).c_str(),
+             static_cast<long long int>(stat.getSessionUploadLength()),
+             static_cast<long long int>(stat.getSessionDownloadLength()),
+             static_cast<long long int>(left),
+             util::torrentPercentEncode
+             (bittorrent::getStaticPeerId()+PEER_ID_LENGTH-keyLen,
+              keyLen).c_str(),
+             numWant);
   if(tcpPort_) {
-    uri += "&port=";
-    uri += util::uitos(tcpPort_);
+    uri += fmt("&port=%u", tcpPort_);
   }
   std::string event = announceList_.getEventString();
   if(!event.empty()) {
@@ -177,7 +178,8 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     uri += event;
   }
   if(!trackerId_.empty()) {
-    uri += "&trackerid="+util::torrentPercentEncode(trackerId_);
+    uri += "&trackerid=";
+    uri += util::torrentPercentEncode(trackerId_);
   }
   if(option_->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     uri += "&requirecrypto=1";

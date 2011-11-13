@@ -95,7 +95,7 @@
   "CUID#%lld - Using port %d for accepting new connections"
 #define MSG_BIND_FAILURE "CUID#%lld - An error occurred while binding port=%d"
 #define MSG_INCOMING_PEER_CONNECTION                            \
-  "CUID#%lld - Incoming connection, adding new command CUID#%s"
+  "CUID#%lld - Incoming connection, adding new command CUID#%lld"
 #define MSG_ACCEPT_FAILURE "CUID#%lld - Error in accepting connection"
 #define MSG_TRACKER_RESPONSE_PROCESSING_FAILED                  \
   "CUID#%lld - Error occurred while processing tracker response."
@@ -125,7 +125,7 @@
 #define MSG_DOWNLOAD_COMPLETED _("The download was complete.")
 #define MSG_REMOVED_HAVE_ENTRY _("Removed %lu have entries.")
 #define MSG_VALIDATING_FILE _("Validating file %s")
-#define MSG_ALLOCATION_COMPLETED _("%ld seconds to allocate %s byte(s)")
+#define MSG_ALLOCATION_COMPLETED "%ld seconds to allocate %lld byte(s)"
 #define MSG_FILE_ALLOCATION_DISPATCH                    \
   "Dispatching FileAllocationCommand for CUID#%lld."
 #define MSG_METALINK_QUEUEING _("Metalink: Queueing %s for download.")
@@ -207,14 +207,14 @@
 #define EX_CONNECTION_FAILED _("Connection failed.")
 #define EX_FILENAME_MISMATCH _("The requested filename and the previously registered one are not same. Expected:%s Actual:%s")
 #define EX_BAD_STATUS _("The response status is not successful. status=%d")
-#define EX_TOO_LARGE_FILE _("Too large file size. size=%s")
+#define EX_TOO_LARGE_FILE "Too large file size. size=%lld"
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED _("Transfer encoding %s is not supported.")
 #define EX_SSL_INIT_FAILURE _("SSL initialization failed: %s")
 #define EX_SSL_IO_ERROR _("SSL I/O error")
 #define EX_SSL_PROTOCOL_ERROR _("SSL protocol error")
 #define EX_SSL_UNKNOWN_ERROR _("SSL unknown error %d")
 #define EX_SSL_CONNECT_ERROR _("SSL initialization failed: OpenSSL connect error %d")
-#define EX_SIZE_MISMATCH _("Size mismatch Expected:%s Actual:%s")
+#define EX_SIZE_MISMATCH "Size mismatch Expected:%lld Actual:%lld"
 #define EX_AUTH_FAILED _("Authorization failed.")
 #define EX_GOT_EOF _("Got EOF from the server.")
 #define EX_EOF_FROM_PEER _("Got EOF from peer.")
@@ -226,7 +226,7 @@
 #define EX_DATA_READ _("Failed to read data from disk.")
 #define EX_FILE_SHA1SUM _("Failed to calculate SHA1 digest of or a part of the file %s, cause: %s")
 #define EX_FILE_SEEK _("Failed to seek the file %s, cause: %s")
-#define EX_FILE_OFFSET_OUT_OF_RANGE _("The offset is out of range, offset=%s")
+#define EX_FILE_OFFSET_OUT_OF_RANGE "The offset is out of range, offset=%lld"
 #define EX_NOT_DIRECTORY _("%s is not a directory.")
 #define EX_MAKE_DIR _("Failed to make the directory %s, cause: %s")
 #define EX_SEGMENT_FILE_WRITE "Failed to write into the segment file %s"
@@ -253,7 +253,7 @@
 #define EX_INVALID_PAYLOAD_SIZE                                 \
   _("Invalid payload size for %s, size=%lu. It should be %lu.")
 #define EX_INVALID_BT_MESSAGE_ID _("Invalid ID=%d for %s. It should be %d.")
-#define EX_INVALID_CHUNK_CHECKSUM _("Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash=%s, actualHash=%s")
+#define EX_INVALID_CHUNK_CHECKSUM "Chunk checksum validation failed. checksumIndex=%lu, offset=%lld, expectedHash=%s, actualHash=%s"
 #define EX_DOWNLOAD_ABORTED _("Download aborted.")
 #define EX_DUPLICATE_FILE_DOWNLOAD _("File %s is being downloaded by other command.")
 #define EX_INSUFFICIENT_CHECKSUM _("Insufficient checksums.")
@@ -267,7 +267,7 @@
 #define EX_TOO_SLOW_DOWNLOAD_SPEED _("Too slow Downloading speed: %d <= %d(B/s), host:%s")
 #define EX_NO_HTTP_REQUEST_ENTRY_FOUND _("No HttpRequestEntry found.")
 #define EX_LOCATION_HEADER_REQUIRED _("Got %d status, but no location header provided.")
-#define EX_INVALID_RANGE_HEADER _("Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s")
+#define EX_INVALID_RANGE_HEADER "Invalid range header. Request: %lld-%lld/%lld, Response: %lld-%lld/%lld"
 #define EX_NO_RESULT_WITH_YOUR_PREFS _("No file matched with your preference.")
 #define EX_EXCEPTION_CAUGHT _("Exception caught")
 #define EX_TOO_LONG_PAYLOAD _("Max payload length exceeded or invalid. length = %u")

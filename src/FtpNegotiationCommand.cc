@@ -471,8 +471,7 @@ bool FtpNegotiationCommand::recvSize() {
 
     if(size > INT64_MAX) {
       throw DL_ABORT_EX2
-        (fmt(EX_TOO_LARGE_FILE,
-             util::uitos(size, true).c_str()),
+        (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(size)),
          error_code::FTP_PROTOCOL_ERROR);
     }
     if(!getPieceStorage()) {

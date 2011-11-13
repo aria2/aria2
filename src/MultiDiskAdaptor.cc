@@ -348,8 +348,7 @@ DiskWriterEntries::const_iterator findFirstDiskWriterEntry
   // In case when offset is out-of-range
   if(!isInRange(*first, offset)) {
     throw DL_ABORT_EX
-      (fmt(EX_FILE_OFFSET_OUT_OF_RANGE,
-           util::itos(offset, true).c_str()));
+      (fmt(EX_FILE_OFFSET_OUT_OF_RANGE, static_cast<long long int>(offset)));
   }
   return first;
 }
@@ -360,8 +359,8 @@ void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
                                 off_t offset)
 {
   throw DL_ABORT_EX
-    (fmt("DiskWriter for offset=%s, filename=%s is not opened.",
-         util::itos(offset).c_str(),
+    (fmt("DiskWriter for offset=%lld, filename=%s is not opened.",
+         static_cast<long long int>(offset),
          e->getFilePath().c_str()));  
 }
 } // namespace

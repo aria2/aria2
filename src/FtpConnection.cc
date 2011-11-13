@@ -218,14 +218,11 @@ bool FtpConnection::sendEprt(const SharedHandle<SocketCore>& serverSocket)
     serverSocket->getAddrInfo(sockaddr, len);
     std::pair<std::string, uint16_t> addrinfo =
       util::getNumericNameInfo(&sockaddr.sa, len);
-    std::string request = "EPRT ";
-    request += "|";
-    request += util::itos(sockaddr.storage.ss_family == AF_INET ? 1 : 2);
-    request += "|";
-    request += addrinfo.first;
-    request += "|";
-    request += util::uitos(addrinfo.second);
-    request += "|\r\n";
+    std::string request =
+      fmt("EPRT |%d|%s|%u|\r\n",
+          sockaddr.storage.ss_family == AF_INET ? 1 : 2,
+          addrinfo.first.c_str(),
+          addrinfo.second);
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST, cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
   }
@@ -242,19 +239,9 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
     sscanf(addrinfo.first.c_str(), "%u.%u.%u.%u",
            &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
     serverSocket->getAddrInfo(addrinfo);
-    std::string request = "PORT ";
-    request += util::uitos(ipaddr[0]);
-    request += ",";
-    request += util::uitos(ipaddr[1]);
-    request += ",";
-    request += util::uitos(ipaddr[2]);
-    request += ",";
-    request += util::uitos(ipaddr[3]);
-    request += ",";
-    request += util::uitos(addrinfo.second/256);
-    request += ",";
-    request += util::uitos(addrinfo.second%256);
-    request += "\r\n";
+    std::string request = fmt("PORT %u,%u,%u,%u,%u,%u\r\n",
+                              ipaddr[0], ipaddr[1], ipaddr[2], ipaddr[3],
+                              addrinfo.second/256, addrinfo.second%256);
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
@@ -266,13 +253,10 @@ bool FtpConnection::sendPort(const SharedHandle<SocketCore>& serverSocket)
 bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
-    std::string request = "REST ";
-    if(!segment) {
-      request += "0";
-    } else {
-      request += util::itos(segment->getPositionToWrite());
-    }
-    request += "\r\n";    
+    std::string request =
+      fmt("REST %lld\r\n",
+          segment ?
+          static_cast<long long int>(segment->getPositionToWrite()) : 0LL);
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
@@ -326,11 +310,7 @@ FtpConnection::findEndOfResponse(unsigned int status,
   if(buf.at(3) == '-') {
     // multi line response
     std::string::size_type p;
-
-    std::string endPattern = A2STR::CRLF;
-    endPattern += util::uitos(status);
-    endPattern += " ";
-    p = buf.find(endPattern);
+    p = buf.find(fmt("\r\n%u ", status));
     if(p == std::string::npos) {
       return std::string::npos;
     }
@@ -511,13 +491,7 @@ unsigned int FtpConnection::receivePasvResponse
                "(%u,%u,%u,%u,%u,%u).",
                &h1, &h2, &h3, &h4, &p1, &p2);
         // ip address
-        dest.first = util::uitos(h1);
-        dest.first += A2STR::DOT_C;
-        dest.first += util::uitos(h2);
-        dest.first += A2STR::DOT_C;
-        dest.first += util::uitos(h3);
-        dest.first += A2STR::DOT_C;
-        dest.first += util::uitos(h4);
+        dest.first = fmt("%u.%u.%u.%u", h1, h2, h3, h4);
         // port number
         dest.second = 256*p1+p2;
       } else {

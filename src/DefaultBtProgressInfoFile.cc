@@ -277,9 +277,9 @@ void DefaultBtProgressInfoFile::load()
   }
   if(totalLength != dctx_->getTotalLength()) {
     throw DL_ABORT_EX
-      (fmt("total length mismatch. expected: %s, actual: %s",
-           util::itos(dctx_->getTotalLength()).c_str(),
-           util::itos(totalLength).c_str()));
+      (fmt("total length mismatch. expected: %lld, actual: %lld",
+           static_cast<long long int>(dctx_->getTotalLength()),
+           static_cast<long long int>(totalLength)));
   }
   uint64_t uploadLength;
   READ_CHECK(fp, &uploadLength, sizeof(uploadLength));

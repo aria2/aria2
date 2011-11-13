@@ -87,7 +87,7 @@ DHTMessageTracker::messageArrived
                                           targetNode->getPort());
 
         int64_t rtt = entry->getElapsedMillis();
-        A2_LOG_DEBUG(fmt("RTT is %s", util::itos(rtt).c_str()));
+        A2_LOG_DEBUG(fmt("RTT is %lld", static_cast<long long int>(rtt)));
         message->getRemoteNode()->updateRTT(rtt);
         SharedHandle<DHTMessageCallback> callback = entry->getCallback();
         if(!(*targetNode == *message->getRemoteNode())) {

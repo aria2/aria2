@@ -78,7 +78,7 @@ void IteratableChunkChecksumValidator::validateChunk()
         A2_LOG_INFO
           (fmt(EX_INVALID_CHUNK_CHECKSUM,
                static_cast<unsigned long>(currentIndex_),
-               util::itos(getCurrentOffset(), true).c_str(),
+               static_cast<long long int>(getCurrentOffset()),
                util::toHex(dctx_->getPieceHashes()[currentIndex_]).c_str(),
                util::toHex(actualChecksum).c_str()));
         bitfield_->unsetBit(currentIndex_);

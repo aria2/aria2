@@ -404,9 +404,9 @@ void RequestGroup::createInitialCommand
           // truncate the file to downloadContext_->getTotalLength()
           A2_LOG_DEBUG
             (fmt("File size not match. File is opened in writable"
-                 " mode. Expected:%s Actual:%s",
-                 util::uitos(downloadContext_->getTotalLength()).c_str(),
-                 util::uitos(actualFileSize).c_str()));
+                 " mode. Expected:%lld Actual:%lld",
+                 static_cast<long long int>(downloadContext_->getTotalLength()),
+                 static_cast<long long int>(actualFileSize)));
         }
       }
       // Call Load, Save and file allocation command here
@@ -793,9 +793,7 @@ bool RequestGroup::tryAutoFileRenaming()
     return false;
   }
   for(unsigned int i = 1; i < 10000; ++i) {
-    std::string newfilename = filepath;
-    newfilename += ".";
-    newfilename += util::uitos(i);
+    std::string newfilename = fmt("%s.%u", filepath.c_str(), i);
     File newfile(newfilename);
     File ctrlfile(newfile.getPath()+DefaultBtProgressInfoFile::getSuffix());
     if(!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
@@ -917,8 +915,8 @@ void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
   if(expectedTotalLength != actualTotalLength) {
     throw DL_ABORT_EX
       (fmt(EX_SIZE_MISMATCH,
-           util::itos(expectedTotalLength, true).c_str(),
-           util::itos(actualTotalLength, true).c_str()));
+           static_cast<long long int>(expectedTotalLength),
+           static_cast<long long int>(actualTotalLength)));
   }
 }
 

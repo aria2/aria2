@@ -183,8 +183,8 @@ void DHTMessageFactoryImpl::validatePort(const Integer* port) const
 {
   if(!(0 < port->i() && port->i() < UINT16_MAX)) {
     throw DL_ABORT_EX
-      (fmt("Malformed DHT message. Invalid port=%s",
-           util::itos(port->i()).c_str()));
+      (fmt("Malformed DHT message. Invalid port=%lld",
+           static_cast<long long int>(port->i())));
   }
 }
 
@@ -256,8 +256,8 @@ DHTMessageFactoryImpl::createResponseMessage
     // for now, just report error message arrived and throw exception.
     const List* e = getList(dict, DHTUnknownMessage::E);
     if(e->size() == 2) {
-      A2_LOG_INFO(fmt("Received Error DHT message. code=%s, msg=%s",
-                      util::itos(getInteger(e, 0)->i()).c_str(),
+      A2_LOG_INFO(fmt("Received Error DHT message. code=%lld, msg=%s",
+                      static_cast<long long int>(getInteger(e, 0)->i()),
                       util::percentEncode(getString(e, 1)->s()).c_str()));
     } else {
       A2_LOG_DEBUG("e doesn't have 2 elements.");
