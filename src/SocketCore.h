@@ -147,10 +147,12 @@ public:
   void beginListen();
 
   /**
-   * Stores host address and port of this socket to addrinfo.
+   * Stores host address and port of this socket to addrinfo and
+   * returns address family.
+   *
    * @param addrinfo placeholder to store host address and port.
    */
-  void getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
+  int getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
 
   /**
    * Stores address of this socket to sockaddr.  len must be
@@ -168,10 +170,12 @@ public:
   int getAddressFamily() const;
 
   /**
-   * Stores peer's address and port to peerinfo.
+   * Stores peer's address and port to peerinfo and returns address
+   * family.
+   *
    * @param peerinfo placeholder to store peer's address and port.
    */
-  void getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const;
+  int getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const;
 
   /**
    * Accepts incoming connection on this socket.

@@ -147,8 +147,8 @@ private:
   SharedHandle<FtpConnection> ftp_;
   // For tunneling
   SharedHandle<HttpConnection> http_;
-  // IP, Port pair in pasv response
-  std::pair<std::string, uint16_t> dataConnAddr_;
+  // Port number in PASV/EPSV response
+  uint16_t pasvPort_;
   // Resolved address for proxy
   std::string proxyAddr_;
 

@@ -86,11 +86,13 @@ FtpNegotiationCommand::FtpNegotiationCommand
  const SocketHandle& socket,
  Seq seq,
  const std::string& baseWorkingDir):
-  AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket), sequence_(seq),
+  AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),
+  sequence_(seq),
   ftp_(new FtpConnection(cuid, socket, req,
                         e->getAuthConfigFactory()->createAuthConfig
                         (req, requestGroup->getOption().get()),
-                        getOption().get()))
+                         getOption().get())),
+  pasvPort_(0)
 {
   ftp_->setBaseWorkingDir(baseWorkingDir);
   if(seq == SEQ_RECV_GREETING) {
@@ -606,10 +608,7 @@ bool FtpNegotiationCommand::recvEpsv() {
     return false;
   }
   if(status == 229) {
-    std::pair<std::string, uint16_t> peerInfo;
-    getSocket()->getPeerInfo(peerInfo);
-    peerInfo.second = port;
-    dataConnAddr_ = peerInfo;
+    pasvPort_ = port;
     return preparePasvConnect();
   } else {
     sequence_ = SEQ_SEND_PASV;
@@ -637,27 +636,24 @@ bool FtpNegotiationCommand::recvPasv() {
     throw DL_ABORT_EX2(fmt(EX_BAD_STATUS, status),
                        error_code::FTP_PROTOCOL_ERROR);
   }
-  std::pair<std::string, uint16_t> peerInfo;
-  getSocket()->getPeerInfo(peerInfo);
-  peerInfo.second = dest.second;;
-  dataConnAddr_ = peerInfo;
+  pasvPort_ = dest.second;;
   return preparePasvConnect();
 }
 
 bool FtpNegotiationCommand::preparePasvConnect() {
-  // TODO Should we check to see that dataConnAddr_.first is not in
-  // noProxy list?
   if(isProxyDefined()) {
     sequence_ = SEQ_RESOLVE_PROXY;
     return true;
   } else {
+    std::pair<std::string, uint16_t> dataAddr;
+    getSocket()->getPeerInfo(dataAddr);
     // make a data connection to the server.
     A2_LOG_INFO(fmt(MSG_CONNECTING_TO_SERVER,
                     getCuid(),
-                    dataConnAddr_.first.c_str(),
-                    dataConnAddr_.second));
+                    dataAddr.first.c_str(),
+                    pasvPort_));
     dataSocket_.reset(new SocketCore());
-    dataSocket_->establishConnection(dataConnAddr_.first, dataConnAddr_.second);
+    dataSocket_->establishConnection(dataAddr.first, pasvPort_);
     disableReadCheckSocket();
     setWriteCheckSocket(dataSocket_);
     sequence_ = SEQ_SEND_REST_PASV;
@@ -722,9 +718,14 @@ bool FtpNegotiationCommand::sendTunnelRequest()
     httpRequest->setUserAgent(getOption()->get(PREF_USER_AGENT));
     SharedHandle<Request> req(new Request());
     // Construct fake URI in order to use HttpRequest
-    // TODO Handle IPv6 address; it must be enclosed with [].
-    req->setUri(fmt("ftp://%s:%u",
-                    dataConnAddr_.first.c_str(), dataConnAddr_.second));
+    std::pair<std::string, uint16_t> dataAddr;
+    int family = getSocket()->getPeerInfo(dataAddr);
+    uri::UriStruct us;
+    us.protocol = "ftp";
+    us.host = dataAddr.first;
+    us.port = pasvPort_;
+    us.ipv6LiteralAddress = (family == AF_INET6);
+    req->setUri(uri::construct(us));
     httpRequest->setRequest(req);
     httpRequest->setProxyRequest(createProxyRequest());
     http_->sendProxyRequest(httpRequest);

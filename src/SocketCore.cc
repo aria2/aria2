@@ -345,12 +345,13 @@ SocketCore* SocketCore::acceptConnection() const
   return new SocketCore(fd, sockType_);
 }
 
-void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
+int SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
 {
   sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
   getAddrInfo(sockaddr, len);
   addrinfo = util::getNumericNameInfo(&sockaddr.sa, len);
+  return sockaddr.storage.ss_family;
 }
 
 void SocketCore::getAddrInfo(sockaddr_union& sockaddr, socklen_t& len) const
@@ -369,7 +370,7 @@ int SocketCore::getAddressFamily() const
   return sockaddr.storage.ss_family;
 }
 
-void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
+int SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
 {
   sockaddr_union sockaddr;
   socklen_t len = sizeof(sockaddr);
@@ -378,6 +379,7 @@ void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
     throw DL_ABORT_EX(fmt(EX_SOCKET_GET_NAME, errorMsg(errNum).c_str()));
   }
   peerinfo = util::getNumericNameInfo(&sockaddr.sa, len);
+  return sockaddr.storage.ss_family;
 }
 
 void SocketCore::establishConnection(const std::string& host, uint16_t port)
