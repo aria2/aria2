@@ -218,4 +218,15 @@ bool XmlParser::parseBinaryStream(BinaryStream* bs)
   return XML_Parse(parser, 0, 0, 1) != XML_STATUS_ERROR && psm_->finished();
 }
 
+bool XmlParser::parseMemory(const char* xml, size_t size)
+{
+  SessionData sessionData(psm_);
+  XML_Parser parser = createParser(&sessionData);
+  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
+  if(XML_Parse(parser, xml, size, 0) == XML_STATUS_ERROR) {
+    return false;
+  }
+  return XML_Parse(parser, 0, 0, 1) != XML_STATUS_ERROR && psm_->finished();
+}
+
 } // namespace aria2
