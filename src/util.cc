@@ -1491,6 +1491,9 @@ bool inSameCidrBlock
      len1 != len2) {
     return false;
   }
+  if(bits == 0) {
+    return true;
+  }
   if(bits > 8*len1) {
     bits = 8*len1;
   }
