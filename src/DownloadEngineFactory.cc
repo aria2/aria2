@@ -52,6 +52,7 @@
 #include "AutoSaveCommand.h"
 #include "HaveEraseCommand.h"
 #include "TimedHaltCommand.h"
+#include "WatchProcessCommand.h"
 #include "DownloadResult.h"
 #include "ServerStatMan.h"
 #include "a2io.h"
@@ -162,6 +163,10 @@ DownloadEngineFactory::newDownloadEngine
       e->addRoutineCommand(new TimedHaltCommand(e->newCUID(), e.get(),
                                                 stopSec));
     }
+  }
+  if(op->defined(PREF_STOP_WITH_PROCESS)) {
+    unsigned int pid = op->getAsInt(PREF_STOP_WITH_PROCESS);
+    e->addRoutineCommand(new WatchProcessCommand(e->newCUID(), e.get(), pid));
   }
   if(op->getAsBool(PREF_ENABLE_RPC)) {
     bool ok = false;

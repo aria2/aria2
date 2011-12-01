@@ -276,6 +276,8 @@ extern const Pref* PREF_FTP_PASV;
 extern const Pref* PREF_FTP_REUSE_CONNECTION;
 // values: hashType=digest
 extern const Pref* PREF_CHECKSUM;
+// value: pid
+extern const Pref* PREF_STOP_WITH_PROCESS;
 
 /**
  * HTTP related preferences

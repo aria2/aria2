@@ -321,6 +321,8 @@ const Pref* PREF_DOWNLOAD_RESULT = makePref("download-result");
 const Pref* PREF_HASH_CHECK_ONLY = makePref("hash-check-only");
 // values: hashType=digest
 const Pref* PREF_CHECKSUM = makePref("checksum");
+// value: pid
+const Pref* PREF_STOP_WITH_PROCESS = makePref("stop-with-process");
 
 /**
  * FTP related preferences

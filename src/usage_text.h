@@ -852,3 +852,10 @@
     "                              option will be ignored in BitTorrent downloads.\n" \
     "                              It will be also ignored if Metalink file\n" \
     "                              contains piece hashes.")
+#define TEXT_STOP_WITH_PROCESS                                          \
+  _(" --stop-with-process=PID      Stop application when process PID is not running.\n" \
+    "                              This is useful if aria2 process is forked from a\n" \
+    "                              parent process. The parent process can fork aria2\n" \
+    "                              with its own pid and when parent process exits\n" \
+    "                              for some reason, aria2 can detect it and shutdown\n" \
+    "                              itself.")

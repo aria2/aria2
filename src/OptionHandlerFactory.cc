@@ -675,6 +675,15 @@ OptionHandlerFactory::createOptionHandlers()
   }
   {
     SharedHandle<OptionHandler> op(new NumberOptionHandler
+                                   (PREF_STOP_WITH_PROCESS,
+                                    TEXT_STOP_WITH_PROCESS,
+                                    NO_DEFAULT_VALUE,
+                                    0));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
+    SharedHandle<OptionHandler> op(new NumberOptionHandler
                                    (PREF_SUMMARY_INTERVAL,
                                     TEXT_SUMMARY_INTERVAL,
                                     "60",

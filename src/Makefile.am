@@ -223,7 +223,8 @@ SRCS =  Socket.h\
 	NullHandle.h\
 	a2iterator.h\
 	paramed_string.cc paramed_string.h\
-	rpc_helper.cc rpc_helper.h
+	rpc_helper.cc rpc_helper.h\
+	WatchProcessCommand.cc WatchProcessCommand.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
