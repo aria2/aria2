@@ -1155,6 +1155,13 @@ are also allocated if they share the same piece.
   If '0' is given, this feature is disabled.
   Default: '0'
 
+[[aria2_optref_stop_with_process]]*--stop-with-process*=PID::
+
+  Stop application when process PID is not running.  This is useful if
+  aria2 process is forked from a parent process. The parent process
+  can fork aria2 with its own pid and when parent process exits for
+  some reason, aria2 can detect it and shutdown itself.
+
 [[aria2_optref_truncate_console_readout]]*--truncate-console-readout*[='true'|'false']::
 
   Truncate console readout to fit in a single line.
