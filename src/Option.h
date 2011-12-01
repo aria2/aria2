@@ -71,7 +71,7 @@ public:
 
   void clear();
 
-  const std::vector<std::string>& getTable()
+  const std::vector<std::string>& getTable() const
   {
     return table_;
   }
