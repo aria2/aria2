@@ -647,7 +647,7 @@ int64_t parseLLInt(const std::string& s, int base)
 
 bool parseULLIntNoThrow(uint64_t& res, const std::string& s, int base)
 {
-  long int t;
+  long long int t;
   if(parseLong(t, strtoll, s, base) &&
      t >= 0 &&
      t <= std::numeric_limits<int64_t>::max()) {
