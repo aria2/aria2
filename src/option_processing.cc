@@ -182,10 +182,10 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     // finaly let's parse and store command-iine options.
     oparser->parse(op, cmdstream);
 #ifdef __MINGW32__
-    for(std::map<std::string, std::string>::iterator i = op.begin();
-        i != op.end(); ++i) {
-      if(!util::isUtf8((*i).second)) {
-        (*i).second = nativeToUtf8((*i).second);
+    for(size_t i = 1, len = option::countOption(); i < len; ++i) {
+      const Pref* pref = option::i2p(i);
+      if(op.defined(pref) && !util::isUtf8(op.get(pref))) {
+        op.put(pref, nativeToUtf8(op.get(pref)));
       }
     }
 #endif // __MINGW32__
