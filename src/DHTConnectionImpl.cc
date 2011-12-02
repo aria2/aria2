@@ -86,7 +86,7 @@ bool DHTConnectionImpl::bind(uint16_t& port, const std::string& addr)
     std::pair<std::string, uint16_t> svaddr;
     socket_->getAddrInfo(svaddr);
     port = svaddr.second;
-    A2_LOG_NOTICE(fmt("IPv%d DHT: listening to port %u", ipv, port));
+    A2_LOG_NOTICE(fmt(_("IPv%d DHT: listening to port %u"), ipv, port));
     return true;
   } catch(RecoverableException& e) {
     A2_LOG_ERROR_EX(fmt("IPv%d DHT: failed to bind port %u", ipv, port), e);

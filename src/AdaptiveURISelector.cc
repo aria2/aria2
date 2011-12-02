@@ -224,15 +224,15 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
     unsigned int low_lowest = 4 * 1024;
     unsigned int max = getMaxDownloadSpeed(uris);
     if (max > 0 && lowest > max / 4) {
-      A2_LOG_NOTICE(fmt("Lowering lowest-speed-limit since known max speed is"
-                        " too near (new:%d was:%d max:%d)",
+      A2_LOG_NOTICE(fmt(_("Lowering lowest-speed-limit since known max speed is"
+                          " too near (new:%d was:%d max:%d)"),
                         max / 4,
                         lowest,
                         max));
       command->setLowestDownloadSpeedLimit(max / 4);
     } else if (max == 0 && lowest > low_lowest) {
-      A2_LOG_NOTICE(fmt("Lowering lowest-speed-limit since we have no clue"
-                        " about available speed (now:%d was:%d)",
+      A2_LOG_NOTICE(fmt(_("Lowering lowest-speed-limit since we have no clue"
+                          " about available speed (now:%d was:%d)"),
                         low_lowest,
                         lowest));
       command->setLowestDownloadSpeedLimit(low_lowest);

@@ -271,10 +271,10 @@ error_code::Value MultiUrlRequestInfo::execute()
     if(!option_->blank(PREF_SAVE_SESSION)) {
       const std::string& filename = option_->get(PREF_SAVE_SESSION);
       if(sessionSerializer.save(filename)) {
-        A2_LOG_NOTICE(fmt("Serialized session to '%s' successfully.",
+        A2_LOG_NOTICE(fmt(_("Serialized session to '%s' successfully."),
                           filename.c_str()));
       } else {
-        A2_LOG_NOTICE(fmt("Failed to serialize session to '%s'.",
+        A2_LOG_NOTICE(fmt(_("Failed to serialize session to '%s'."),
                           filename.c_str()));
       }
     }

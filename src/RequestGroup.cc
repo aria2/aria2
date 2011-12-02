@@ -378,8 +378,8 @@ void RequestGroup::createInitialCommand
             e->addCommand(dhtCommands);
           }
         } else {
-          A2_LOG_NOTICE("For BitTorrent Magnet URI, enabling DHT is strongly"
-                        " recommended. See --enable-dht option.");
+          A2_LOG_NOTICE(_("For BitTorrent Magnet URI, enabling DHT is strongly"
+                          " recommended. See --enable-dht option."));
         }
 
         SharedHandle<CheckIntegrityEntry> entry
@@ -683,8 +683,8 @@ void RequestGroup::adjustFilename
      option_->getAsBool(PREF_REMOVE_CONTROL_FILE) &&
      infoFile->exists()) {
     infoFile->removeFile();
-    A2_LOG_NOTICE(fmt("Removed control file for %s because it is requested by"
-                      " user.",
+    A2_LOG_NOTICE(fmt(_("Removed control file for %s because it is requested by"
+                        " user."),
                       infoFile->getFilename().c_str()));
   }
   if(infoFile->exists()) {

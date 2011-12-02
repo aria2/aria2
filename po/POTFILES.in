@@ -5,5 +5,14 @@ src/OptionHandler.cc
 src/OptionHandlerImpl.h
 src/usage_text.h
 src/version_usage.cc
-src/message.h
 src/BtSetup.cc
+src/AbstractCommand.cc
+src/AdaptiveURISelector.cc
+src/BtStopDownloadCommand.cc
+src/DHTConnectionImpl.cc
+src/HttpListenCommand.cc
+src/PeerListenCommand.cc
+src/RequestGroup.cc
+src/SingleFileAllocationIterator.cc
+src/TimedHaltCommand.cc
+src/message.h

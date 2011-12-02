@@ -339,7 +339,7 @@ public:
           }
         } else {
           A2_LOG_NOTICE
-            (fmt("Download GID#%lld not complete: %s",
+            (fmt(_("Download GID#%lld not complete: %s"),
                  group->getGID(),
                  group->getDownloadContext()->getBasePath().c_str()));
           group->saveControlFile();

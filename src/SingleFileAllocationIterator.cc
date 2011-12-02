@@ -72,9 +72,9 @@ void SingleFileAllocationIterator::init()
   static bool noticeDone = false;
   if(!noticeDone) {
     noticeDone = true;
-    A2_LOG_NOTICE("Allocating disk space. Use --file-allocation=none to"
-                  " disable it. See --file-allocation option in man page for"
-                  " more details.");
+    A2_LOG_NOTICE(_("Allocating disk space. Use --file-allocation=none to"
+                    " disable it. See --file-allocation option in man page for"
+                    " more details."));
   }
 #ifdef HAVE_POSIX_MEMALIGN
   buffer_ = reinterpret_cast<unsigned char*>

@@ -66,7 +66,6 @@ void TimedHaltCommand::process()
     A2_LOG_NOTICE(fmt(MSG_TIME_HAS_PASSED,
                       static_cast<long int>(getInterval())));
     if(forceHalt_) {
-      A2_LOG_NOTICE("This is emergency shutdown.");
       getDownloadEngine()->requestForceHalt();
     } else {
       getDownloadEngine()->requestHalt();

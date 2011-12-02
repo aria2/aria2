@@ -80,7 +80,8 @@ bool PeerListenCommand::bindPort(uint16_t& port, SegList<int>& sgl)
       socket_->bind(A2STR::NIL, port, family_);
       socket_->beginListen();
       socket_->setNonBlockingMode();
-      A2_LOG_NOTICE(fmt("IPv%d BitTorrent: listening to port %u", ipv, port));
+      A2_LOG_NOTICE(fmt(_("IPv%d BitTorrent: listening to port %u"),
+                        ipv, port));
       return true;
     } catch(RecoverableException& ex) {
       A2_LOG_ERROR_EX(fmt("IPv%d BitTorrent: failed to bind port %u",

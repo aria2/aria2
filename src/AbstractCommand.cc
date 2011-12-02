@@ -440,8 +440,8 @@ void AbstractCommand::onAbort() {
         // Local file exists, but given servers(or at least contacted
         // ones) doesn't support resume. Let's restart download from
         // scratch.
-        A2_LOG_NOTICE(fmt("CUID#%lld - Failed to resume download."
-                          " Download from scratch.",
+        A2_LOG_NOTICE(fmt(_("CUID#%lld - Failed to resume download."
+                            " Download from scratch."),
                           getCuid()));
         A2_LOG_DEBUG(fmt("CUID#%lld - Gathering URIs that has CANNOT_RESUME"
                          " error",
