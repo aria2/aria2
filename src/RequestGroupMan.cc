@@ -200,9 +200,7 @@ size_t RequestGroupMan::changeReservedGroupPosition
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
   if(i == reservedGroups_.end()) {
-    throw DL_ABORT_EX
-      (fmt("GID#%s not found in the waiting queue.",
-           util::itos(gid).c_str()));
+    throw DL_ABORT_EX(fmt("GID#%lld not found in the waiting queue.", gid));
   }
   SharedHandle<RequestGroup> rg = *i;
   const size_t maxPos = reservedGroups_.size()-1;
@@ -341,8 +339,8 @@ public:
           }
         } else {
           A2_LOG_NOTICE
-            (fmt("Download GID#%s not complete: %s",
-                 util::itos(group->getGID()).c_str(),
+            (fmt("Download GID#%lld not complete: %s",
+                 group->getGID(),
                  group->getDownloadContext()->getBasePath().c_str()));
           group->saveControlFile();
         }

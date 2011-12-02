@@ -246,10 +246,8 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 #endif // ENABLE_MESSAGE_DIGEST
         {
           downloadContext_->setChecksumVerified(true);
-          A2_LOG_NOTICE
-            (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                 util::itos(gid_).c_str(),
-                 downloadContext_->getBasePath().c_str()));
+          A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                            gid_, downloadContext_->getBasePath().c_str()));
         }
     } else {
       checkEntry.reset(new StreamCheckIntegrityEntry(this));
@@ -268,10 +266,8 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 #endif // ENABLE_MESSAGE_DIGEST
       {
         downloadContext_->setChecksumVerified(true);
-        A2_LOG_NOTICE
-          (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-               util::itos(gid_).c_str(),
-               downloadContext_->getBasePath().c_str()));
+        A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                          gid_, downloadContext_->getBasePath().c_str()));
       }
   } else {
     loadAndOpenFile(infoFile);
@@ -970,7 +966,7 @@ void RequestGroup::decreaseNumCommand()
 {
   --numCommand_;
   if(!numCommand_ && requestGroupMan_) {
-    A2_LOG_DEBUG(fmt("GID#%s - Request queue check", util::itos(gid_).c_str()));
+    A2_LOG_DEBUG(fmt("GID#%lld - Request queue check", gid_));
     requestGroupMan_->requestQueueCheck();
   }
 }
@@ -1165,8 +1161,7 @@ bool RequestGroup::needsFileAllocation() const
 
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
-  A2_LOG_DEBUG(fmt("GID#%s - Creating DownloadResult.",
-                   util::itos(gid_).c_str()));
+  A2_LOG_DEBUG(fmt("GID#%lld - Creating DownloadResult.", gid_));
   TransferStat st = calculateStat();
   SharedHandle<DownloadResult> res(new DownloadResult());
   res->gid = gid_;

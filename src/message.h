@@ -54,7 +54,7 @@
 #define MSG_GOT_NEW_PIECE "CUID#%lld - we got new piece. index=%lu"
 #define MSG_GOT_WRONG_PIECE "CUID#%lld - we got wrong piece. index=%lu"
 #define MSG_DOWNLOAD_NOT_COMPLETE "CUID#%lld - Download not complete: %s"
-#define MSG_DOWNLOAD_ALREADY_COMPLETED _("GID#%s - Download has already completed: %s")
+#define MSG_DOWNLOAD_ALREADY_COMPLETED _("GID#%lld - Download has already completed: %s")
 #define MSG_RESOLVING_HOSTNAME "CUID#%lld - Resolving hostname %s"
 #define MSG_NAME_RESOLUTION_COMPLETE                    \
   "CUID#%lld - Name resolution complete: %s -> %s"

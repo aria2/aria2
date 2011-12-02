@@ -246,8 +246,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
   util::removeMetalinkContentTypes(rg);
-  A2_LOG_INFO(fmt("Creating tracker request group GID#%s",
-                  util::itos(rg->getGID()).c_str()));
+  A2_LOG_INFO(fmt("Creating tracker request group GID#%lld", rg->getGID()));
   return rg;
 }
 
