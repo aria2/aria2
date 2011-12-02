@@ -649,16 +649,16 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
   if(ok > 0 || err > 0 || inpr > 0 || rm > 0) {
     o.printf("\n%s\n", _("Status Legend:"));
     if(ok > 0) {
-      o.write(" (OK):download completed.");
+      o.write(_("(OK):download completed."));
     }
     if(err > 0) {
-      o.write("(ERR):error occurred.");
+      o.write(_("(ERR):error occurred."));
     }
     if(inpr > 0) {
-      o.write("(INPR):download in-progress.");
+      o.write(_("(INPR):download in-progress."));
     }
     if(rm > 0) {
-      o.write("(RM):download removed.");
+      o.write(_("(RM):download removed."));
     }
     o.write("\n");
   }
