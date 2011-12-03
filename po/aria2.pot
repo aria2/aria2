@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 1.13.0\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-12-02 22:39+0900\n"
+"POT-Creation-Date: 2011-12-03 23:34+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1662,54 +1662,65 @@ msgstr ""
 msgid "Visit"
 msgstr ""
 
-#: src/version_usage.cc:86
+#: src/version_usage.cc:87
+#, c-format
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
 
-#: src/version_usage.cc:93
-msgid "Printing all options."
-msgstr ""
-
-#: src/version_usage.cc:95
+#: src/version_usage.cc:92
 #, c-format
-msgid "Printing options tagged with '%s'."
+msgid "See 'aria2c -h'."
 msgstr ""
 
 #: src/version_usage.cc:99
 #, c-format
-msgid "See -h option to know other command-line options(%s)."
+msgid "Printing all options."
 msgstr ""
 
-#: src/version_usage.cc:104 src/version_usage.cc:116
+#: src/version_usage.cc:101
+#, c-format
+msgid "Printing options tagged with '%s'."
+msgstr ""
+
+#: src/version_usage.cc:104
+#, c-format
+msgid "See 'aria2c -h#help' to know all available tags."
+msgstr ""
+
+#: src/version_usage.cc:107 src/version_usage.cc:121
+#, c-format
 msgid "Options:"
 msgstr ""
 
-#: src/version_usage.cc:113
+#: src/version_usage.cc:118
 #, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr ""
 
-#: src/version_usage.cc:122
+#: src/version_usage.cc:129
 #, c-format
 msgid "No option matching with '%s'."
 msgstr ""
 
-#: src/version_usage.cc:130
+#: src/version_usage.cc:137
+#, c-format
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
 " URIs must point to the same file or downloading will fail."
 msgstr ""
 
-#: src/version_usage.cc:132
+#: src/version_usage.cc:140
+#, c-format
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
 " treated as a separate download."
 msgstr ""
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:144
+#, c-format
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
 " download a file from both torrent swarm and HTTP/FTP server at the same "
@@ -1723,14 +1734,51 @@ msgid ""
 " 'path' in torrent are added to form a URI for each file."
 msgstr ""
 
-#: src/version_usage.cc:144
+#: src/version_usage.cc:151
+#, c-format
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 
-#: src/version_usage.cc:154
+#: src/version_usage.cc:161
+#, c-format
 msgid "Refer to man page for more information."
+msgstr ""
+
+#: src/option_processing.cc:86
+#, c-format
+msgid "Caught Error while parsing environment variable '%s'"
+msgstr ""
+
+#: src/option_processing.cc:168
+#, c-format
+msgid "Did you mean:"
+msgstr ""
+
+#: src/option_processing.cc:237 src/option_processing.cc:246
+#, c-format
+msgid "Parse error in %s"
+msgstr ""
+
+#: src/option_processing.cc:241 src/option_processing.cc:282
+#, c-format
+msgid "Usage:"
+msgstr ""
+
+#: src/option_processing.cc:251
+#, c-format
+msgid "Configuration file %s is not found."
+msgstr ""
+
+#: src/OptionHandlerException.cc:43
+#, c-format
+msgid "We encountered a problem while processing the option '--%s'."
+msgstr ""
+
+#: src/UnknownOptionException.cc:41
+#, c-format
+msgid "Unknown option '%s'"
 msgstr ""
 
 #: src/BtSetup.cc:215
