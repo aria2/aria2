@@ -92,7 +92,11 @@ void overrideWithEnv
 } // namespace
 
 namespace {
-int levenstein
+// Calculates Damerau–Levenshtein distance between c-string a and b
+// with given costs.  swapcost, subcost, addcost and delcost are cost
+// to swap 2 adjacent characters, substitute characters, add character
+// and delete character respectively.
+int levenshtein
 (const char* a,
  const char* b,
  int swapcost,
@@ -109,11 +113,7 @@ int levenstein
   for(int i = 1; i <= alen; ++i) {
     dp[0][0] = i;
     for(int j = 1; j <= blen; ++j) {
-      if(a[i-1] == b[j-1]) {
-        dp[0][j] = dp[1][j-1];
-      } else {
-        dp[0][j] = dp[1][j-1]+subcost;
-      }
+      dp[0][j] = dp[1][j-1]+(a[i-1] == b[j-1] ? 0 : subcost);
       if(i >= 2 && j >= 2 && a[i-1] != b[j-1] &&
          a[i-2] == b[j-1] && a[i-1] == b[j-2]) {
         dp[0][j] = std::min(dp[0][j], dp[2][j-2]+swapcost);
@@ -152,7 +152,7 @@ void showCandidates
       continue;
     }
     // cost values are borrowed from git, help.c.
-    int sim = levenstein(optstr, pref->k, 0, 2, 1, 4);
+    int sim = levenshtein(optstr, pref->k, 0, 2, 1, 4);
     cands.push_back(std::make_pair(sim, pref));
   }
   if(cands.empty()) {
