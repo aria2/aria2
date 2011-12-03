@@ -104,6 +104,17 @@ public:
   virtual TransferStat getTransferStatFor(const SharedHandle<Peer>& peer) = 0;
 
   /**
+   * Returns true if peer with ipaddr should be ignored because, for
+   * example, it sends bad data.
+   */
+  virtual bool isBadPeer(const std::string& ipaddr) = 0;
+
+  /**
+   * Adds peer with ipaddr in bad peer set.
+   */
+  virtual void addBadPeer(const std::string& ipaddr) = 0;
+
+  /**
    * Tells PeerStorage object that peer is no longer used in the session.
    */
   virtual void returnPeer(const SharedHandle<Peer>& peer) = 0;

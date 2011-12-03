@@ -25,6 +25,7 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCalculateStat);
   CPPUNIT_TEST(testReturnPeer);
   CPPUNIT_TEST(testOnErasingPeer);
+  CPPUNIT_TEST(testAddBadPeer);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<BtRuntime> btRuntime;
@@ -48,6 +49,7 @@ public:
   void testCalculateStat();
   void testReturnPeer();
   void testOnErasingPeer();
+  void testAddBadPeer();
 };
 
 
@@ -260,6 +262,14 @@ void DefaultPeerStorageTest::testReturnPeer()
 void DefaultPeerStorageTest::testOnErasingPeer()
 {
   // test this
+}
+
+void DefaultPeerStorageTest::testAddBadPeer()
+{
+  DefaultPeerStorage ps;
+  ps.addBadPeer("192.168.0.1");
+  CPPUNIT_ASSERT(ps.isBadPeer("192.168.0.1"));
+  CPPUNIT_ASSERT(!ps.isBadPeer("192.168.0.2"));
 }
 
 } // namespace aria2

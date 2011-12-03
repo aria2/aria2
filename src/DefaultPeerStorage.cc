@@ -47,6 +47,7 @@
 #include "wallclock.h"
 #include "a2functional.h"
 #include "fmt.h"
+#include "SimpleRandomizer.h"
 
 namespace aria2 {
 
@@ -100,6 +101,11 @@ bool DefaultPeerStorage::addPeer(const SharedHandle<Peer>& peer) {
                      peer->getIPAddress().c_str(), peer->getPort()));
     return false;
   }
+  if(isBadPeer(peer->getIPAddress())) {
+    A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it is marked bad.",
+                     peer->getIPAddress().c_str(), peer->getPort()));
+    return false;
+  }
   const size_t peerListSize = peers_.size();
   if(peerListSize >= maxPeerListSize_) {
     deleteUnusedPeer(peerListSize-maxPeerListSize_+1);
@@ -120,6 +126,10 @@ void DefaultPeerStorage::addPeer(const std::vector<SharedHandle<Peer> >& peers)
     if(isPeerAlreadyAdded(peer)) {
       A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it has been already"
                        " added.",
+                       peer->getIPAddress().c_str(), peer->getPort()));
+      continue;
+    } else if(isBadPeer(peer->getIPAddress())) {
+      A2_LOG_DEBUG(fmt("Adding %s:%u is rejected because it is marked bad.",
                        peer->getIPAddress().c_str(), peer->getPort()));
       continue;
     } else {
@@ -299,6 +309,40 @@ TransferStat DefaultPeerStorage::getTransferStatFor
   } else {
     return (*itr).second;
   }
+}
+
+bool DefaultPeerStorage::isBadPeer(const std::string& ipaddr)
+{
+  std::map<std::string, time_t>::iterator i = badPeers_.find(ipaddr);
+  if(i == badPeers_.end()) {
+    return false;
+  } else if(global::wallclock().getTime() >= (*i).second) {
+    badPeers_.erase(i);
+    return false;
+  } else {
+    return true;
+  }
+}
+
+void DefaultPeerStorage::addBadPeer(const std::string& ipaddr)
+{
+  if(lastBadPeerCleaned_.difference(global::wallclock()) >= 3600) {
+    for(std::map<std::string, time_t>::iterator i = badPeers_.begin(),
+          eoi = badPeers_.end(); i != eoi;) {
+      if(global::wallclock().getTime() >= (*i).second) {
+        A2_LOG_DEBUG(fmt("Purge %s from bad peer", (*i).first.c_str()));
+        badPeers_.erase(i++);
+        eoi = badPeers_.end();
+      } else {
+        ++i;
+      }
+    }
+    lastBadPeerCleaned_ = global::wallclock();
+  }
+  A2_LOG_DEBUG(fmt("Added %s as bad peer", ipaddr.c_str()));
+  // We use variable timeout to avoid many bad peers wake up at once.
+  badPeers_[ipaddr] = global::wallclock().getTime()+
+    std::max(SimpleRandomizer::getInstance()->getRandomNumber(601), 120L);
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(size_t delSize) {

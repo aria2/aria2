@@ -71,6 +71,15 @@ public:
     this->stat = stat;
   }
 
+  virtual bool isBadPeer(const std::string& ipaddr)
+  {
+    return false;
+  }
+
+  virtual void addBadPeer(const std::string& ipaddr)
+  {
+  }
+
   virtual void returnPeer(const SharedHandle<Peer>& peer)
   {
   }

@@ -68,6 +68,9 @@ private:
 
   TransferStat cachedTransferStat_;
 
+  std::map<std::string, time_t> badPeers_;
+  Timer lastBadPeerCleaned_;
+
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 
   void addDroppedPeer(const SharedHandle<Peer>& peer);
@@ -99,6 +102,10 @@ public:
   virtual void updateTransferStatFor(const SharedHandle<Peer>& peer);
 
   virtual TransferStat getTransferStatFor(const SharedHandle<Peer>& peer);
+
+  virtual bool isBadPeer(const std::string& ipaddr);
+
+  virtual void addBadPeer(const std::string& ipaddr);
 
   virtual void returnPeer(const SharedHandle<Peer>& peer);
 

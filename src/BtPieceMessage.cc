@@ -55,6 +55,7 @@
 #include "PeerConnection.h"
 #include "fmt.h"
 #include "DownloadContext.h"
+#include "PeerStorage.h"
 
 namespace aria2 {
 
@@ -132,6 +133,7 @@ void BtPieceMessage::doReceivedAction()
         onNewPiece(piece);
       } else {
         onWrongPiece(piece);
+        peerStorage_->addBadPeer(getPeer()->getIPAddress());
         throw DL_ABORT_EX("Bad piece hash.");
       }
     }
@@ -318,6 +320,12 @@ void BtPieceMessage::setDownloadContext
 (const SharedHandle<DownloadContext>& downloadContext)
 {
   downloadContext_ = downloadContext;
+}
+
+void BtPieceMessage::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
+{
+  peerStorage_ = peerStorage;
 }
 
 } // namespace aria2
