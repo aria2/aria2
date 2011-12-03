@@ -74,6 +74,17 @@ void copyValues(const SharedHandle<FileEntry>& d,
 }
 } // namespace
 
+namespace {
+struct EntryCmp {
+  bool operator()
+  (const SharedHandle<FileEntry>& lhs,
+   const SharedHandle<FileEntry>& rhs) const
+  {
+    return lhs->getOriginalName() < rhs->getOriginalName();
+  }
+};
+} // namespace
+
 bool BtDependency::resolve()
 {
   if(!dependee_) {
@@ -115,29 +126,31 @@ bool BtDependency::resolve()
          dependantFileEntries[0]->getOriginalName().empty()) {
         copyValues(fileEntries[0], dependantFileEntries[0]);
       } else {
-        std::for_each(fileEntries.begin(), fileEntries.end(),
-                      std::bind2nd(mem_fun_sh(&FileEntry::setRequested),false));
+        std::vector<SharedHandle<FileEntry> > destFiles;
+        destFiles.reserve(fileEntries.size());
+        for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+              fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
+          (*i)->setRequested(false);
+          destFiles.push_back(*i);
+        }
+        std::sort(destFiles.begin(), destFiles.end(), EntryCmp());
         // Copy file path in dependant_'s FileEntries to newly created
         // context's FileEntries to endorse the path structure of
         // dependant_.  URIs and singleHostMultiConnection are also copied.
-        std::vector<SharedHandle<FileEntry> >::const_iterator ctxFilesEnd =
-          fileEntries.end();
         for(std::vector<SharedHandle<FileEntry> >::const_iterator s =
               dependantFileEntries.begin(), eoi = dependantFileEntries.end();
             s != eoi; ++s){
           std::vector<SharedHandle<FileEntry> >::const_iterator d =
-            fileEntries.begin();
-          for(; d != ctxFilesEnd; ++d) {
-            if((*d)->getOriginalName() == (*s)->getOriginalName()) {
-              break;
-            }
-          }
-          if(d == ctxFilesEnd) {
+            std::lower_bound(destFiles.begin(), destFiles.end(), *s,
+                             EntryCmp());
+          if(d == destFiles.end() ||
+             (*d)->getOriginalName() != (*s)->getOriginalName()) {
             throw DL_ABORT_EX
               (fmt("No entry %s in torrent file",
                    (*s)->getOriginalName().c_str()));
+          } else {
+            copyValues(*d, *s);
           }
-          copyValues(*d, *s);
         }
       }
     } catch(RecoverableException& e) {
