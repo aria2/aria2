@@ -43,6 +43,7 @@
 #include <functional>
 
 #include "SharedHandle.h"
+#include "console.h"
 
 namespace aria2 {
 
@@ -113,6 +114,8 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& o, const OptionHandler& optionHandler);
+
+void write(const Console& out, const OptionHandler& optionHandler);
 
 } // namespace aria2
 

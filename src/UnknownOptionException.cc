@@ -32,32 +32,37 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_CONSOLE_H
-#define D_CONSOLE_H
-
-#include "common.h"
-#include "SharedHandle.h"
-#ifdef __MINGW32__
-# include "WinConsoleFile.h"
-#else // !__MINGW32__
-# include "BufferedFile.h"
-#endif // !__MINGW32__
+#include "UnknownOptionException.h"
+#include "fmt.h"
 
 namespace aria2 {
 
-#ifdef __MINGW32__
-typedef SharedHandle<WinConsoleFile> Console;
-#else // !__MINGW32__
-typedef SharedHandle<BufferedFile> Console;
-#endif // !__MINGW32__
+namespace {
+const char* MESSAGE = _("Unknown option '%s'");
+} // namespace
 
-namespace global {
+UnknownOptionException::UnknownOptionException
+(const char* file, int line, const std::string& unknownOption)
+  : RecoverableException
+    (file, line, fmt(MESSAGE, unknownOption.c_str()), error_code::OPTION_ERROR),
+    unknownOption_(unknownOption)
+{}
 
-const Console& cout();
-const Console& cerr();
+UnknownOptionException::UnknownOptionException
+(const char* file, int line, const std::string& unknownOption,
+ const Exception& cause)
+  : RecoverableException
+    (file, line, fmt(MESSAGE, unknownOption.c_str()), error_code::OPTION_ERROR,
+     cause),
+    unknownOption_(unknownOption)
+{}
 
-} // namespace global
+UnknownOptionException::~UnknownOptionException() throw() {}
+
+SharedHandle<Exception> UnknownOptionException::copy() const
+{
+  SharedHandle<Exception> e(new UnknownOptionException(*this));
+  return e;
+}
 
 } // namespace aria2
-
-#endif // D_CONSOLE_H

@@ -51,6 +51,7 @@
 #include "DlAbortEx.h"
 #include "error_code.h"
 #include "prefs.h"
+#include "UnknownOptionException.h"
 
 namespace aria2 {
 
@@ -156,13 +157,52 @@ void OptionParser::parseArg
     SharedHandle<OptionHandler> op;
     if(c == 0) {
       op = findById(lopt);
-    } else {
+    } else if(c != '?') {
       op = findByShortName(c);
+    } else {
+      assert(c  == '?');
+      if(optind == 1) {
+        throw DL_ABORT_EX2("Failed to parse command-line options.",
+                           error_code::OPTION_ERROR);
+      }
+      int optlen = strlen(argv[optind-1]);
+      const char* optstr = argv[optind-1];
+      for(; *optstr == '-'; ++optstr);
+      int optstrlen = strlen(optstr);
+      if(optstrlen+1 >= optlen) {
+        // If this is short option form (1 '-' prefix), just throw
+        // error here.
+        throw DL_ABORT_EX2("Failed to parse command-line options.",
+                           error_code::OPTION_ERROR);
+      }
+      // There are 3 situations: 1) completely unknown option 2)
+      // getopt_long() complained because too few arguments.  3)
+      // option is ambiguous.
+      int ambiguous = 0;
+      for(int i = 1, len = option::countOption(); i < len; ++i) {
+        const Pref* pref = option::i2p(i);
+        const SharedHandle<OptionHandler>& h = find(pref);
+        if(h && !h->isHidden()) {
+          if(strcmp(pref->k, optstr) == 0) {
+            // Exact match, this means getopt_long detected error
+            // while handling this option.
+            throw DL_ABORT_EX2("Failed to parse command-line options.",
+                               error_code::OPTION_ERROR);
+          } else if(util::startsWith(pref->k, pref->k+strlen(pref->k),
+                                     optstr, optstr+optstrlen)) {
+            ++ambiguous;
+          }
+        }
+      }
+      if(ambiguous == 1) {
+        // This is successfully abbreviated option. So it must be case
+        // 2).
+        throw DL_ABORT_EX2("Failed to parse command-line options.",
+                           error_code::OPTION_ERROR);
+      }
+      throw UNKNOWN_OPTION_EXCEPTION(argv[optind-1]);
     }
-    if(!op) {
-      throw DL_ABORT_EX2("Failed to parse command-line options.",
-                         error_code::OPTION_ERROR);
-    }
+    assert(op);
     out << op->getName() << "=";
     if(optarg) {
       out << optarg;
@@ -189,8 +229,9 @@ void OptionParser::parse(Option& option, std::istream& is) const
     if(nv.first.first == nv.first.second) {
       continue;
     }
-    const SharedHandle<OptionHandler>& handler =
-      find(option::k2p(std::string(nv.first.first, nv.first.second)));
+    const Pref* pref =
+      option::k2p(std::string(nv.first.first, nv.first.second));
+    const SharedHandle<OptionHandler>& handler = find(pref);
     if(handler) {
       handler->parse(option, std::string(nv.second.first, nv.second.second));
     }

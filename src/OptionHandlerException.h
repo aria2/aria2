@@ -43,8 +43,6 @@ class Pref;
 class OptionHandlerException:public RecoverableException {
 private:
   const Pref* pref_;
-
-  static const std::string MESSAGE;
 protected:
   virtual SharedHandle<Exception> copy() const;
 public:

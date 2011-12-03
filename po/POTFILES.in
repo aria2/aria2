@@ -5,6 +5,9 @@ src/OptionHandler.cc
 src/OptionHandlerImpl.h
 src/usage_text.h
 src/version_usage.cc
+src/option_processing.cc
+src/OptionHandlerException.cc
+src/UnknownOptionException.cc
 src/BtSetup.cc
 src/AbstractCommand.cc
 src/AdaptiveURISelector.cc

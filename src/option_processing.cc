@@ -37,7 +37,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
-#include <iostream>
 
 #include "Option.h"
 #include "prefs.h"
@@ -52,6 +51,7 @@
 #include "File.h"
 #include "fmt.h"
 #include "OptionHandlerException.h"
+#include "UnknownOptionException.h"
 #include "error_code.h"
 #include "SimpleRandomizer.h"
 #include "bittorrent_helper.h"
@@ -66,7 +66,9 @@ namespace aria2 {
 
 extern void showVersion();
 extern void showUsage
-(const std::string& keyword, const SharedHandle<OptionParser>& oparser);
+(const std::string& keyword,
+ const SharedHandle<OptionParser>& oparser,
+ const Console& out);
 
 namespace {
 void overrideWithEnv
@@ -81,12 +83,96 @@ void overrideWithEnv
       optionParser->find(pref)->parse(op, value);
     } catch(Exception& e) {
       global::cerr()->printf
-        ("Caught Error while parsing environment variable '%s'\n%s\n",
-         envName.c_str(),
-         e.stackTrace().c_str());
+        (_("Caught Error while parsing environment variable '%s'"),
+         envName.c_str());
+      global::cerr()->printf("\n%s\n", e.stackTrace().c_str());
     }
   }
 }
+} // namespace
+
+namespace {
+int levenstein
+(const char* a,
+ const char* b,
+ int swapcost,
+ int subcost,
+ int addcost,
+ int delcost)
+{
+  int alen = strlen(a);
+  int blen = strlen(b);
+  std::vector<std::vector<int> > dp(3, std::vector<int>(blen+1));
+  for(int i = 0; i <= blen; ++i) {
+    dp[1][i] = i;
+  }
+  for(int i = 1; i <= alen; ++i) {
+    dp[0][0] = i;
+    for(int j = 1; j <= blen; ++j) {
+      if(a[i-1] == b[j-1]) {
+        dp[0][j] = dp[1][j-1];
+      } else {
+        dp[0][j] = dp[1][j-1]+subcost;
+      }
+      if(i >= 2 && j >= 2 && a[i-1] != b[j-1] &&
+         a[i-2] == b[j-1] && a[i-1] == b[j-2]) {
+        dp[0][j] = std::min(dp[0][j], dp[2][j-2]+swapcost);
+      }
+      dp[0][j] = std::min(dp[0][j],
+                          std::min(dp[1][j]+delcost, dp[0][j-1]+addcost));
+    }
+    std::rotate(dp.begin(), dp.begin()+2, dp.end());
+  }
+  return dp[1][blen];
+}
+} // namespace
+
+namespace {
+
+void showCandidates
+(const std::string& unknownOption, const SharedHandle<OptionParser>& parser)
+{
+  const char* optstr = unknownOption.c_str();
+  for(; *optstr == '-'; ++optstr);
+  if(*optstr == '\0') {
+    return;
+  }
+  int optstrlen = strlen(optstr);
+  std::vector<std::pair<int, const Pref*> > cands;
+  for(int i = 1, len = option::countOption(); i < len; ++i) {
+    const Pref* pref = option::i2p(i);
+    const SharedHandle<OptionHandler>& h = parser->find(pref);
+    if(!h || h->isHidden()) {
+      continue;
+    }
+    // Use cost 0 for prefix match
+    if(util::startsWith(pref->k, pref->k+strlen(pref->k),
+                        optstr, optstr+optstrlen)) {
+      cands.push_back(std::make_pair(0, pref));
+      continue;
+    }
+    // cost values are borrowed from git, help.c.
+    int sim = levenstein(optstr, pref->k, 0, 2, 1, 4);
+    cands.push_back(std::make_pair(sim, pref));
+  }
+  if(cands.empty()) {
+    return;
+  }
+  std::sort(cands.begin(), cands.end());
+  int threshold = cands[0].first;
+  // threshold value 7 is borrowed from git, help.c.
+  if(threshold >= 7) {
+    return;
+  }
+  global::cerr()->printf("\n");
+  global::cerr()->printf(_("Did you mean:"));
+  global::cerr()->printf("\n");
+  for(std::vector<std::pair<int, const Pref*> >::iterator i = cands.begin(),
+        eoi = cands.end(); i != eoi && (*i).first <= threshold; ++i) {
+    global::cerr()->printf("\t--%s\n", (*i).second->k);
+  }
+}
+
 } // namespace
 
 void option_processing(Option& op, std::vector<std::string>& uris,
@@ -125,7 +211,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
             keyword.erase(keyword.begin()+eqpos, keyword.end());
           }
         }
-        showUsage(keyword, oparser);
+        showUsage(keyword, oparser, global::cout());
         exit(error_code::FINISHED);
       }
     }
@@ -148,24 +234,24 @@ void option_processing(Option& op, std::vector<std::string>& uris,
         try {
           oparser->parse(op, ss);
         } catch(OptionHandlerException& e) {
-          global::cerr()->printf("Parse error in %s\n%s\n",
-                                 cfname.c_str(),
-                                 e.stackTrace().c_str());
+          global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
+          global::cerr()->printf("\n%s", e.stackTrace().c_str());
           const SharedHandle<OptionHandler>& h = oparser->find(e.getPref());
           if(h) {
-            global::cerr()->printf("Usage:\n%s\n", h->getDescription());
+            global::cerr()->printf(_("Usage:"));
+            global::cerr()->printf("\n%s\n", h->getDescription());
           }
           exit(e.getErrorCode());
         } catch(Exception& e) {
-          global::cerr()->printf("Parse error in %s\n%s\n",
-                                 cfname.c_str(),
-                                 e.stackTrace().c_str());
+          global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
+          global::cerr()->printf("\n%s", e.stackTrace().c_str());
           exit(e.getErrorCode());
         }
       } else if(!ucfname.empty()) {
-        global::cerr()->printf("Configuration file %s is not found.\n",
+        global::cerr()->printf(_("Configuration file %s is not found."),
                                cfname.c_str());
-        showUsage(TAG_HELP, oparser);
+        global::cerr()->printf("\n");
+        showUsage(TAG_HELP, oparser, global::cerr());
         exit(error_code::UNKNOWN_ERROR);
       }
     }
@@ -190,17 +276,21 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     }
 #endif // __MINGW32__
   } catch(OptionHandlerException& e) {
-    global::cerr()->printf("%s\n", e.stackTrace().c_str());
+    global::cerr()->printf("%s", e.stackTrace().c_str());
     const SharedHandle<OptionHandler>& h = oparser->find(e.getPref());
     if(h) {
-      std::ostringstream ss;
-      ss << *h;
-      global::cerr()->printf("Usage:\n%s\n", ss.str().c_str());
+      global::cerr()->printf(_("Usage:"));
+      global::cerr()->printf("\n");
+      write(global::cerr(), *h);
     }
     exit(e.getErrorCode());
+  } catch(UnknownOptionException& e) {
+    showUsage("", oparser, global::cerr());
+    showCandidates(e.getUnknownOption(), oparser);
+    exit(e.getErrorCode());
   } catch(Exception& e) {
-    global::cerr()->printf("%s\n", e.stackTrace().c_str());
-    showUsage(TAG_HELP, oparser);
+    global::cerr()->printf("%s", e.stackTrace().c_str());
+    showUsage("", oparser, global::cerr());
     exit(e.getErrorCode());
   }
   if(!op.getAsBool(PREF_ENABLE_RPC) &&
@@ -212,8 +302,9 @@ void option_processing(Option& op, std::vector<std::string>& uris,
 #endif // ENABLE_METALINK
      op.blank(PREF_INPUT_FILE)) {
     if(uris.empty()) {
-      global::cerr()->printf("%s\n", MSG_URI_REQUIRED);
-      showUsage(TAG_HELP, oparser);
+      global::cerr()->printf(MSG_URI_REQUIRED);
+      global::cerr()->printf("\n");
+      showUsage("", oparser, global::cerr());
       exit(error_code::UNKNOWN_ERROR);
     }
   }

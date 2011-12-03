@@ -82,76 +82,84 @@ void showVersion() {
 
 void showUsage
 (const std::string& keyword,
- const SharedHandle<OptionParser>& oparser) {
-  std::cout << _("Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE |"
-                 " METALINK_FILE]...") << "\n"
-            << "\n";
-  if(!keyword.empty() && keyword[0] == '#') {
+ const SharedHandle<OptionParser>& oparser,
+ const Console& out) {
+  out->printf(_("Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE |"
+                " METALINK_FILE]..."));
+  out->printf("\n");
+  if(keyword.empty()) {
+    // Very short version of usage.
+    out->printf(_("See 'aria2c -h'."));
+    out->printf("\n");
+    return;
+  } else if(keyword[0] == '#') {
     std::vector<SharedHandle<OptionHandler> > handlers =
       keyword == TAG_ALL ? oparser->findAll() : oparser->findByTag(keyword);
     if(keyword == TAG_ALL) {
-      std::cout << _("Printing all options.");
+      out->printf(_("Printing all options."));
     } else {
-      std::cout << fmt(_("Printing options tagged with '%s'."),
-                       keyword.c_str());
-      std::cout << "\n";
-      const SharedHandle<OptionHandler>& help = oparser->find(PREF_HELP);
-      std::cout << fmt(_("See -h option to know other command-line"
-                         " options(%s)."),
-                       help->createPossibleValuesString().c_str());
+      out->printf(_("Printing options tagged with '%s'."),
+                  keyword.c_str());
+      out->printf("\n");
+      out->printf(_("See 'aria2c -h#help' to know all available tags."));
     }
-    std::cout << "\n"
-              << _("Options:") << "\n";
+    out->printf("\n");
+    out->printf(_("Options:"));
+    out->printf("\n");
     for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
           handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
-      std::cout << *(*i) << "\n\n";
+      write(out, *(*i));
+      out->printf("\n");
     }
   } else {    
     std::vector<SharedHandle<OptionHandler> > handlers =
       oparser->findByNameSubstring(keyword);
     if(!handlers.empty()) {
-      std::cout << fmt(_("Printing options whose name includes '%s'."),
-                       keyword.c_str())
-                << "\n"
-                << _("Options:") << "\n";
+      out->printf(_("Printing options whose name includes '%s'."),
+                  keyword.c_str());
+      out->printf("\n");
+      out->printf(_("Options:"));
+      out->printf("\n");
       for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
             handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
-        std::cout << *(*i) << "\n\n";
+        write(out, *(*i));
+        out->printf("\n");
       }
     } else {
-      std::cout << fmt(_("No option matching with '%s'."),
-                       keyword.c_str())
-                << "\n" << *oparser->find(PREF_HELP) << "\n";
+      out->printf(_("No option matching with '%s'."),
+                  keyword.c_str());
+      out->printf("\n");
+      write(out, *oparser->find(PREF_HELP));
     }
   }
-
   if(keyword == TAG_BASIC) {
-    std::cout << "URI, MAGNET, TORRENT_FILE, METALINK_FILE:" << "\n"
-              << _(" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, all\n"
-                   " URIs must point to the same file or downloading will fail.") << "\n"
-              << _(" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
-                   " metalink files stored in a local drive. Please note that they are always\n"
-                   " treated as a separate download.") << "\n"
-
-              << "\n"
-              << _(" You can specify both torrent file with -T option and URIs. By doing this,\n"
-                   " download a file from both torrent swarm and HTTP/FTP server at the same time,\n"
-                   " while the data from HTTP/FTP are uploaded to the torrent swarm. For single file\n"
-                   " torrents, URI can be a complete URI pointing to the resource or if URI ends\n"
-                   " with '/', 'name' in torrent file is added. For multi-file torrents, 'name' and\n"
-                   " 'path' in torrent are added to form a URI for each file.") << "\n"
-              << "\n"
-              << _(" Make sure that URI is quoted with single(\') or double(\") quotation if it\n"
-                   " contains \"&\" or any characters that have special meaning in shell.") << "\n"
-              << "\n";
-    std::cout << "About the number of connections\n"
-              << " Since 1.10.0 release, aria2 uses 1 connection per host by default and has 20MiB\n"
-              << " segment size restriction. So whatever value you specify using -s option, it\n"
-              << " uses 1 connection per host. To make it behave like 1.9.x, use\n"
-              << " --max-connection-per-server=4 --min-split-size=1M.\n"
-              << "\n";
+    out->printf("URI, MAGNET, TORRENT_FILE, METALINK_FILE:\n");
+    out->printf(_(" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, all\n"
+                  " URIs must point to the same file or downloading will fail."));
+    out->printf("\n");
+    out->printf(_(" You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
+                  " metalink files stored in a local drive. Please note that they are always\n"
+                  " treated as a separate download."));
+    out->printf("\n\n");
+    out->printf(_(" You can specify both torrent file with -T option and URIs. By doing this,\n"
+                  " download a file from both torrent swarm and HTTP/FTP server at the same time,\n"
+                  " while the data from HTTP/FTP are uploaded to the torrent swarm. For single file\n"
+                  " torrents, URI can be a complete URI pointing to the resource or if URI ends\n"
+                  " with '/', 'name' in torrent file is added. For multi-file torrents, 'name' and\n"
+                  " 'path' in torrent are added to form a URI for each file."));
+    out->printf("\n\n");
+    out->printf(_(" Make sure that URI is quoted with single(\') or double(\") quotation if it\n"
+                  " contains \"&\" or any characters that have special meaning in shell."));
+    out->printf("\n\n");
+    out->printf("About the number of connections\n"
+                " Since 1.10.0 release, aria2 uses 1 connection per host by default and has 20MiB\n"
+                " segment size restriction. So whatever value you specify using -s option, it\n"
+                " uses 1 connection per host. To make it behave like 1.9.x, use\n"
+                " --max-connection-per-server=4 --min-split-size=1M.\n"
+                "\n");
   }
-  std::cout << _("Refer to man page for more information.") << std::endl;
+  out->printf(_("Refer to man page for more information."));
+  out->printf("\n");
 }
 
 } // namespace aria2

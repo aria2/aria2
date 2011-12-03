@@ -38,15 +38,16 @@
 
 namespace aria2 {
 
-const std::string OptionHandlerException::MESSAGE
-("We encountered a problem while processing the option '--%s'.");
+namespace {
+const char* MESSAGE =
+  _("We encountered a problem while processing the option '--%s'.");
+} // namespace
 
 OptionHandlerException::OptionHandlerException
 (const char* file, int line,
  const Pref* pref)
   : RecoverableException
-    (file, line, fmt(MESSAGE.c_str(), pref->k),
-     error_code::OPTION_ERROR),
+    (file, line, fmt(MESSAGE, pref->k), error_code::OPTION_ERROR),
     pref_(pref)
 {}
 
@@ -55,8 +56,7 @@ OptionHandlerException::OptionHandlerException
  const Pref* pref,
  const Exception& cause)
   : RecoverableException
-    (file, line, fmt(MESSAGE.c_str(), pref->k),
-     error_code::OPTION_ERROR,
+    (file, line, fmt(MESSAGE, pref->k), error_code::OPTION_ERROR,
      cause),
     pref_(pref)
 {}

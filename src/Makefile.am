@@ -224,7 +224,8 @@ SRCS =  Socket.h\
 	a2iterator.h\
 	paramed_string.cc paramed_string.h\
 	rpc_helper.cc rpc_helper.h\
-	WatchProcessCommand.cc WatchProcessCommand.h
+	WatchProcessCommand.cc WatchProcessCommand.h\
+	UnknownOptionException.cc UnknownOptionException.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
