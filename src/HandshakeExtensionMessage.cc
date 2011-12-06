@@ -86,7 +86,7 @@ std::string HandshakeExtensionMessage::toString() const
                     getExtensionName().c_str(),
                     util::percentEncode(clientVersion_).c_str(),
                     tcpPort_,
-                    metadataSize_));
+                    static_cast<unsigned long>(metadataSize_)));
   for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
         eoi = extensions_.end(); itr != eoi; ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
