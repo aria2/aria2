@@ -38,12 +38,12 @@
 namespace aria2 {
 
 FallocFileAllocationIterator::FallocFileAllocationIterator
-(BinaryStream* stream, off_t offset, uint64_t totalLength):
+(BinaryStream* stream, off_t offset, off_t totalLength):
   stream_(stream), offset_(offset), totalLength_(totalLength) {}
 
 void FallocFileAllocationIterator::allocateChunk()
 {
-  if(static_cast<uint64_t>(offset_) < totalLength_) {
+  if(offset_ < totalLength_) {
     stream_->allocate(offset_, totalLength_-offset_);
     offset_ = totalLength_;
   } else {
@@ -54,7 +54,7 @@ void FallocFileAllocationIterator::allocateChunk()
 
 bool FallocFileAllocationIterator::finished()
 {
-  return static_cast<uint64_t>(offset_) == totalLength_;
+  return offset_ == totalLength_;
 }
 
 off_t FallocFileAllocationIterator::getCurrentLength()
@@ -62,7 +62,7 @@ off_t FallocFileAllocationIterator::getCurrentLength()
   return offset_;
 }
 
-uint64_t FallocFileAllocationIterator::getTotalLength()
+off_t FallocFileAllocationIterator::getTotalLength()
 {
   return totalLength_;
 }

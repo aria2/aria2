@@ -133,8 +133,7 @@ bool HttpServerCommand::execute()
         e_->setNoWait(true);
         return true;
       }
-      if(static_cast<uint64_t>
-         (e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE)) <
+      if(e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE) <
          httpServer_->getContentLength()) {
         A2_LOG_INFO
           (fmt("Request too long. ContentLength=%lld."

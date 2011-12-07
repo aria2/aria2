@@ -149,10 +149,10 @@ bool IteratableChunkChecksumValidator::finished() const
 
 off_t IteratableChunkChecksumValidator::getCurrentOffset() const
 {
-  return (off_t)currentIndex_*dctx_->getPieceLength();
+  return static_cast<off_t>(currentIndex_)*dctx_->getPieceLength();
 }
 
-uint64_t IteratableChunkChecksumValidator::getTotalLength() const
+off_t IteratableChunkChecksumValidator::getTotalLength() const
 {
   return dctx_->getTotalLength();
 }

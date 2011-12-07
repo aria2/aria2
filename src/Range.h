@@ -47,11 +47,11 @@ class Range {
 private:
   off_t startByte_;
   off_t endByte_;
-  uint64_t entityLength_;
+  off_t entityLength_;
 public:
   Range();
 
-  Range(off_t startByte, off_t endByte, uint64_t entityLength);
+  Range(off_t startByte, off_t endByte, off_t entityLength);
 
   Range(const Range& c);
 
@@ -73,12 +73,12 @@ public:
     return endByte_;
   }
 
-  uint64_t getEntityLength() const
+  off_t getEntityLength() const
   {
     return entityLength_;
   }
 
-  uint64_t getContentLength() const;
+  off_t getContentLength() const;
 };
 
 typedef SharedHandle<Range> RangeHandle;

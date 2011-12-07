@@ -62,7 +62,7 @@ AbstractDiskWriter::~AbstractDiskWriter()
   closeFile();
 }
 
-void AbstractDiskWriter::openFile(uint64_t totalLength)
+void AbstractDiskWriter::openFile(off_t totalLength)
 {
   try {
     openExistingFile(totalLength);
@@ -83,7 +83,7 @@ void AbstractDiskWriter::closeFile()
   }
 }
 
-void AbstractDiskWriter::openExistingFile(uint64_t totalLength)
+void AbstractDiskWriter::openExistingFile(off_t totalLength)
 {
   int flags = O_BINARY;
   if(readOnly_) {
@@ -197,7 +197,7 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
   return ret;
 }
 
-void AbstractDiskWriter::truncate(uint64_t length)
+void AbstractDiskWriter::truncate(off_t length)
 {
   if(fd_ == -1) {
     throw DL_ABORT_EX("File not opened.");
@@ -223,7 +223,7 @@ void AbstractDiskWriter::truncate(uint64_t length)
 #endif
 }
 
-void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
+void AbstractDiskWriter::allocate(off_t offset, off_t length)
 {
 #ifdef  HAVE_SOME_FALLOCATE
   if(fd_ == -1) {
@@ -272,7 +272,7 @@ void AbstractDiskWriter::allocate(off_t offset, uint64_t length)
 #endif // HAVE_SOME_FALLOCATE
 }
 
-uint64_t AbstractDiskWriter::size()
+off_t AbstractDiskWriter::size()
 {
   return File(filename_).size();
 }

@@ -101,7 +101,7 @@ const std::string& MetalinkEntry::getPath() const
   return file->getPath();
 }
 
-uint64_t MetalinkEntry::getLength() const
+off_t MetalinkEntry::getLength() const
 {
   return file->getLength();
 }

@@ -45,7 +45,7 @@ public:
 
   virtual ~DefaultDiskWriter();
 
-  virtual void initAndOpenFile(uint64_t totalLength = 0);
+  virtual void initAndOpenFile(off_t totalLength = 0);
 };
 
 typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;

@@ -275,7 +275,7 @@ void DefaultBtProgressInfoFile::load()
   if(version >= 1) {
     totalLength = ntoh64(totalLength);
   }
-  if(totalLength != dctx_->getTotalLength()) {
+  if(totalLength != static_cast<uint64_t>(dctx_->getTotalLength())) {
     throw DL_ABORT_EX
       (fmt("total length mismatch. expected: %lld, actual: %lld",
            static_cast<long long int>(dctx_->getTotalLength()),

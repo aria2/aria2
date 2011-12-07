@@ -60,7 +60,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseInt);
   CPPUNIT_TEST(testParseUInt);
   CPPUNIT_TEST(testParseLLInt);
-  CPPUNIT_TEST(testParseULLInt);
   CPPUNIT_TEST(testParseIntNoThrow);
   CPPUNIT_TEST(testParseUIntNoThrow);
   CPPUNIT_TEST(testParseLLIntNoThrow);
@@ -132,7 +131,6 @@ public:
   void testParseInt();
   void testParseUInt();
   void testParseLLInt();
-  void testParseULLInt();
   void testParseIntNoThrow();
   void testParseUIntNoThrow();
   void testParseLLIntNoThrow();
@@ -1342,26 +1340,6 @@ void UtilTest::testParseLLInt()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace();
-  }
-}
-
-void UtilTest::testParseULLInt()
-{
-  std::string s;
-  s = "9223372036854775807";
-  CPPUNIT_ASSERT_EQUAL((uint64_t)9223372036854775807LL,
-                       util::parseULLInt(s));
-  try {
-    s = "-1";
-    util::parseULLInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-  try {
-    s = "9223372036854775808";
-    util::parseULLInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
   }
 }
 

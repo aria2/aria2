@@ -49,18 +49,18 @@ public:
   ByteArrayDiskWriter(size_t maxLength = 5*1024*1024);
   virtual ~ByteArrayDiskWriter();
 
-  virtual void initAndOpenFile(uint64_t totalLength = 0);
+  virtual void initAndOpenFile(off_t totalLength = 0);
 
-  virtual void openFile(uint64_t totalLength = 0);
+  virtual void openFile(off_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(uint64_t totalLength = 0);
+  virtual void openExistingFile(off_t totalLength = 0);
 
   virtual void writeData(const unsigned char* data, size_t len, off_t position);
   virtual ssize_t readData(unsigned char* data, size_t len, off_t position);
 
-  virtual uint64_t size();
+  virtual off_t size();
 
   void setString(const std::string& s);
 

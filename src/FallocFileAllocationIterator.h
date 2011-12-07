@@ -45,10 +45,10 @@ class FallocFileAllocationIterator:public FileAllocationIterator {
 private:
   BinaryStream* stream_;
   off_t offset_;
-  uint64_t totalLength_;
+  off_t totalLength_;
 public:
   FallocFileAllocationIterator(BinaryStream* stream, off_t offset,
-                               uint64_t totalLength);
+                               off_t totalLength);
 
   virtual void allocateChunk();
 
@@ -56,7 +56,7 @@ public:
 
   virtual off_t getCurrentLength();
 
-  virtual uint64_t getTotalLength();
+  virtual off_t getTotalLength();
 };
 
 } // namespace aria2

@@ -97,7 +97,7 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
     static const std::string A2_INFOHASH = "infohash";
     static const std::string A2_PORT = "port";
     const std::string& infoHashString = header->find(A2_INFOHASH);
-    uint16_t port = header->findAsUInt(A2_PORT);
+    uint16_t port = header->findAsInt(A2_PORT);
     A2_LOG_INFO(fmt("LPD message received infohash=%s, port=%u from %s",
                     infoHashString.c_str(),
                     port,

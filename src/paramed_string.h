@@ -75,20 +75,20 @@ InputIterator expandChoice
 }
 
 template<typename InputIterator>
-uint32_t fromBase26(InputIterator first, InputIterator last, char zero)
+int32_t fromBase26(InputIterator first, InputIterator last, char zero)
 {
-  uint64_t res = 0;
+  int32_t res = 0;
   for(; first != last; ++first) {
     res *= 26;
     res += *first-zero;
-    if(res > UINT16_MAX) {
+    if(res > static_cast<int32_t>(UINT16_MAX)) {
       throw DL_ABORT_EX("Loop range overflow.");
     }
   }
   return res;
 }
 
-std::string toBase26(uint32_t n, char zero, size_t width);
+std::string toBase26(int32_t n, char zero, size_t width);
 
 template<typename InputIterator>
 InputIterator expandLoop
@@ -147,7 +147,7 @@ InputIterator expandLoop
             (util::isUppercase(first, minus) &&
              util::isUppercase(minus+1, colon))) {
     char zero = ('a' <= *first && *first <= 'z' ? 'a' : 'A');
-    uint32_t start, end;
+    int32_t start, end;
     start = fromBase26(first, minus, zero);
     end = fromBase26(minus+1, colon, zero);
     if(start <= end) {
@@ -161,7 +161,7 @@ InputIterator expandLoop
       res2.reserve(res.size()*((end+1-start)/step));
       for(std::vector<std::string>::const_iterator i = res.begin(),
             eoi = res.end(); i != eoi; ++i) {
-        for(uint32_t j = start; j <= end; j += step) {
+        for(int32_t j = start; j <= end; j += step) {
           res2.push_back(*i);
           res2.back() += toBase26(j, zero, width);
         }

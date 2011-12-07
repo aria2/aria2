@@ -61,7 +61,7 @@ public:
 
   virtual ~CheckIntegrityEntry();
 
-  virtual uint64_t getTotalLength();
+  virtual off_t getTotalLength();
 
   virtual off_t getCurrentLength();
 

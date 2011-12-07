@@ -364,7 +364,7 @@ bool FtpNegotiationCommand::sendSize() {
   return false;
 }
 
-bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
+bool FtpNegotiationCommand::onFileSizeDetermined(off_t totalLength)
 {
   getFileEntry()->setLength(totalLength);
   if(getFileEntry()->getPath().empty()) {
@@ -464,7 +464,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(uint64_t totalLength)
 }
 
 bool FtpNegotiationCommand::recvSize() {
-  uint64_t size = 0;
+  off_t size = 0;
   unsigned int status = ftp_->receiveSizeResponse(size);
   if(status == 0) {
     return false;

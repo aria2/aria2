@@ -68,7 +68,7 @@ void MetalinkParserControllerTest::testEntryTransaction()
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     SharedHandle<MetalinkEntry> e = m->getEntries().front();
     CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), e->file->getPath());
-    CPPUNIT_ASSERT_EQUAL((uint64_t)(1024*1024ULL), e->file->getLength());
+    CPPUNIT_ASSERT_EQUAL((off_t)(1024*1024LL), e->file->getLength());
     CPPUNIT_ASSERT_EQUAL((off_t)0, e->file->getOffset());
     CPPUNIT_ASSERT_EQUAL(std::string("1.0"), e->version);
     CPPUNIT_ASSERT_EQUAL(std::string("ja_JP"), e->languages[0]);

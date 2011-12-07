@@ -102,7 +102,7 @@ public:
   bool sendRetr();
 
   unsigned int receiveResponse();
-  unsigned int receiveSizeResponse(uint64_t& size);
+  unsigned int receiveSizeResponse(off_t& size);
   // Returns status code of MDTM reply. If the status code is 213, parses
   // time-val and store it in time.
   // If a code other than 213 is returned, time is not touched.

@@ -70,7 +70,7 @@ public:
     return currentOffset_;
   }
 
-  virtual uint64_t getTotalLength() const;
+  virtual off_t getTotalLength() const;
 };
 
 typedef SharedHandle<IteratableChecksumValidator> IteratableChecksumValidatorHandle;

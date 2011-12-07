@@ -274,10 +274,6 @@ uint32_t parseUInt(const std::string& s, int base = 10);
 bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base = 10);
 int64_t parseLLInt(const std::string& s, int base = 10);
 
-// Valid range: [0, INT64_MAX]
-bool parseULLIntNoThrow(uint64_t& res, const std::string& s, int base = 10);
-uint64_t parseULLInt(const std::string& s, int base = 10);
-
 void parseIntSegments(SegList<int>& sgl, const std::string& src);
 
 // Parses string which specifies the range of piece index for higher
@@ -296,7 +292,7 @@ void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- uint64_t defaultSize = 1048576 /* 1MiB */);
+ int64_t defaultSize = 1048576LL /* 1MiB */);
 
 // Converts ISO/IEC 8859-1 string src to utf-8.
 std::string iso8859ToUtf8(const std::string& src);

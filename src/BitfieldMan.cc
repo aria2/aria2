@@ -44,7 +44,7 @@ using namespace aria2::expr;
 
 namespace aria2 {
 
-BitfieldMan::BitfieldMan(size_t blockLength, uint64_t totalLength)
+BitfieldMan::BitfieldMan(size_t blockLength, off_t totalLength)
   :blockLength_(blockLength),
    totalLength_(totalLength),
    bitfieldLength_(0),
@@ -275,8 +275,8 @@ bool getSparseMissingUnusedIndex
     } else {
       if((!bitfield::test(useBitfield, blocks, maxRange.startIndex-1) &&
           bitfield::test(bitfield, blocks, maxRange.startIndex-1)) ||
-         ((uint64_t)(maxRange.endIndex-maxRange.startIndex)*blockLength_
-          >= minSplitSize)) {
+         (static_cast<uint64_t>(maxRange.endIndex-maxRange.startIndex)*
+          blockLength_ >= minSplitSize)) {
         index = maxRange.startIndex;
         return true;
       } else {
@@ -663,7 +663,7 @@ void BitfieldMan::ensureFilterBitfield()
   }
 }
 
-void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
+void BitfieldMan::addFilter(off_t offset, off_t length) {
   ensureFilterBitfield();
   if(length > 0) {
     size_t startBlock = offset/blockLength_;
@@ -675,7 +675,7 @@ void BitfieldMan::addFilter(uint64_t offset, uint64_t length) {
   updateCache();
 }
 
-void BitfieldMan::removeFilter(uint64_t offset, uint64_t length) {
+void BitfieldMan::removeFilter(off_t offset, off_t length) {
   ensureFilterBitfield();
   if(length > 0) {
     size_t startBlock = offset/blockLength_;
@@ -687,7 +687,7 @@ void BitfieldMan::removeFilter(uint64_t offset, uint64_t length) {
   updateCache();
 }
 
-void BitfieldMan::addNotFilter(uint64_t offset, uint64_t length)
+void BitfieldMan::addNotFilter(off_t offset, off_t length)
 {
   ensureFilterBitfield();
   if(length > 0 && blocks_ > 0) {
@@ -726,7 +726,7 @@ void BitfieldMan::clearFilter() {
   updateCache();
 }
 
-uint64_t BitfieldMan::getFilteredTotalLengthNow() const {
+off_t BitfieldMan::getFilteredTotalLengthNow() const {
   if(!filterBitfield_) {
     return 0;
   }
@@ -735,13 +735,13 @@ uint64_t BitfieldMan::getFilteredTotalLengthNow() const {
     return 0;
   }
   if(bitfield::test(filterBitfield_, blocks_, blocks_-1)) {
-    return ((uint64_t)filteredBlocks-1)*blockLength_+getLastBlockLength();
+    return ((off_t)filteredBlocks-1)*blockLength_+getLastBlockLength();
   } else {
-    return ((uint64_t)filteredBlocks)*blockLength_;
+    return ((off_t)filteredBlocks)*blockLength_;
   }
 }
 
-uint64_t BitfieldMan::getCompletedLength(bool useFilter) const {
+off_t BitfieldMan::getCompletedLength(bool useFilter) const {
   unsigned char* temp;
   if(useFilter) {
     temp = new unsigned char[bitfieldLength_];
@@ -755,14 +755,15 @@ uint64_t BitfieldMan::getCompletedLength(bool useFilter) const {
     temp = bitfield_;
   }
   size_t completedBlocks = bitfield::countSetBit(temp, blocks_);
-  uint64_t completedLength = 0;
+  off_t completedLength = 0;
   if(completedBlocks == 0) {
     completedLength = 0;
   } else {
     if(bitfield::test(temp, blocks_, blocks_-1)) {
-      completedLength = ((uint64_t)completedBlocks-1)*blockLength_+getLastBlockLength();
+      completedLength =
+        ((off_t)completedBlocks-1)*blockLength_+getLastBlockLength();
     } else {
-      completedLength = ((uint64_t)completedBlocks)*blockLength_;
+      completedLength = ((off_t)completedBlocks)*blockLength_;
     }
   }
   if(useFilter) {
@@ -771,11 +772,11 @@ uint64_t BitfieldMan::getCompletedLength(bool useFilter) const {
   return completedLength;
 }
 
-uint64_t BitfieldMan::getCompletedLengthNow() const {
+off_t BitfieldMan::getCompletedLengthNow() const {
   return getCompletedLength(false);
 }
 
-uint64_t BitfieldMan::getFilteredCompletedLengthNow() const {
+off_t BitfieldMan::getFilteredCompletedLengthNow() const {
   return getCompletedLength(true);
 }
 
@@ -814,7 +815,7 @@ void BitfieldMan::setBitRange(size_t startIndex, size_t endIndex)
   updateCache();
 }
 
-bool BitfieldMan::isBitSetOffsetRange(uint64_t offset, uint64_t length) const
+bool BitfieldMan::isBitSetOffsetRange(off_t offset, off_t length) const
 {
   if(length <= 0) {
     return false;
@@ -835,11 +836,11 @@ bool BitfieldMan::isBitSetOffsetRange(uint64_t offset, uint64_t length) const
   return true;
 }
 
-uint64_t BitfieldMan::getOffsetCompletedLength
-(uint64_t offset,
- uint64_t length) const
+off_t BitfieldMan::getOffsetCompletedLength
+(off_t offset,
+ off_t length) const
 {
-  uint64_t res = 0;
+  off_t res = 0;
   if(length == 0 || totalLength_ <= offset) {
     return 0;
   }
@@ -868,12 +869,12 @@ uint64_t BitfieldMan::getOffsetCompletedLength
   return res;
 }
 
-uint64_t BitfieldMan::getMissingUnusedLength(size_t startingIndex) const
+off_t BitfieldMan::getMissingUnusedLength(size_t startingIndex) const
 {
   if(startingIndex < 0 || blocks_ <= startingIndex) {
     return 0;
   }
-  uint64_t length = 0;
+  off_t length = 0;
   for(size_t i = startingIndex; i < blocks_; ++i) {
     if(isBitSet(i) || isUseBitSet(i)) {
       break;

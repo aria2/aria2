@@ -232,7 +232,7 @@ void extractFileEntries
   const List* filesList = downcast<List>(infoDict->get(C_FILES));
   if(filesList) {
     fileEntries.reserve(filesList->size());
-    uint64_t length = 0;
+    off_t length = 0;
     off_t offset = 0;
     // multi-file mode
     torrent->mode = MULTI;
@@ -304,7 +304,7 @@ void extractFileEntries
       throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
                          error_code::BITTORRENT_PARSE_ERROR);
     }
-    uint64_t totalLength = lengthData->i();
+    off_t totalLength = lengthData->i();
 
     // For each uri in urlList, if it ends with '/', then
     // concatenate name to it. Specification just says so.

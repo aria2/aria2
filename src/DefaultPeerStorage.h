@@ -56,8 +56,8 @@ private:
   size_t maxPeerListSize_;
   std::deque<SharedHandle<Peer> > peers_;
   std::deque<SharedHandle<Peer> > droppedPeers_;
-  uint64_t removedPeerSessionDownloadLength_;
-  uint64_t removedPeerSessionUploadLength_;
+  int64_t removedPeerSessionDownloadLength_;
+  int64_t removedPeerSessionUploadLength_;
 
   BtSeederStateChoke* seederStateChoke_;
   BtLeecherStateChoke* leecherStateChoke_;

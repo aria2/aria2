@@ -160,9 +160,9 @@ public:
 
   bool isGood() const;
 
-  void allocateSessionResource(size_t pieceLength, uint64_t totalLength);
+  void allocateSessionResource(size_t pieceLength, off_t totalLength);
 
-  void reconfigureSessionResource(size_t pieceLength, uint64_t totalLength);
+  void reconfigureSessionResource(size_t pieceLength, off_t totalLength);
 
   void releaseSessionResource();
 
@@ -234,12 +234,12 @@ public:
   /**
    * Returns the number of bytes uploaded to the remote host.
    */
-  uint64_t getSessionUploadLength() const;
+  off_t getSessionUploadLength() const;
 
   /**
    * Returns the number of bytes downloaded from the remote host.
    */
-  uint64_t getSessionDownloadLength() const;
+  off_t getSessionDownloadLength() const;
   
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
@@ -293,7 +293,7 @@ public:
 
   const Timer& getLastAmUnchoking() const;
 
-  uint64_t getCompletedLength() const;
+  off_t getCompletedLength() const;
 
   bool isIncomingPeer() const
   {

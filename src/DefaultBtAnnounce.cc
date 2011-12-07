@@ -142,7 +142,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     numWant = 0;
   }
   TransferStat stat = peerStorage_->calculateStat();
-  uint64_t left =
+  off_t left =
     pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
   // Use last 8 bytes of peer ID as a key
   const size_t keyLen = 8;

@@ -94,7 +94,7 @@ void SegmentMan::init()
   // PieceStorage here?
 }
 
-uint64_t SegmentMan::getTotalLength() const
+off_t SegmentMan::getTotalLength() const
 {
   if(!pieceStorage_) {
     return 0;
@@ -342,7 +342,7 @@ bool SegmentMan::hasSegment(size_t index) const {
   return pieceStorage_->hasPiece(index);
 }
 
-uint64_t SegmentMan::getDownloadLength() const {
+off_t SegmentMan::getDownloadLength() const {
   if(!pieceStorage_) {
     return 0;
   } else {
@@ -444,14 +444,14 @@ void SegmentMan::updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat)
 namespace {
 class PeerStatDownloadLengthOperator {
 public:
-  uint64_t operator()(uint64_t total, const SharedHandle<PeerStat>& ps)
+  off_t operator()(off_t total, const SharedHandle<PeerStat>& ps)
   {
     return ps->getSessionDownloadLength()+total;
   }
 };
 } // namespace
 
-uint64_t SegmentMan::calculateSessionDownloadLength() const
+off_t SegmentMan::calculateSessionDownloadLength() const
 {
   return std::accumulate(fastestPeerStats_.begin(), fastestPeerStats_.end(),
                          0LL, PeerStatDownloadLengthOperator());

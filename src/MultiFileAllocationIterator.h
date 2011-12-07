@@ -61,7 +61,7 @@ public:
 
   virtual off_t getCurrentLength();
 
-  virtual uint64_t getTotalLength();
+  virtual off_t getTotalLength();
 
   const std::deque<SharedHandle<DiskWriterEntry> >&
   getDiskWriterEntries() const;

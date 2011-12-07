@@ -86,7 +86,7 @@ SharedHandle<HttpRequest>
 createHttpRequest(const SharedHandle<Request>& req,
                   const SharedHandle<FileEntry>& fileEntry,
                   const SharedHandle<Segment>& segment,
-                  uint64_t totalLength,
+                  off_t totalLength,
                   const SharedHandle<Option>& option,
                   const RequestGroup* rg,
                   const SharedHandle<CookieStorage>& cookieStorage,

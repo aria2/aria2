@@ -60,8 +60,8 @@ const size_t MAX_PEER_LIST_UPDATE = 100;
 
 DefaultPeerStorage::DefaultPeerStorage()
   : maxPeerListSize_(MAX_PEER_LIST_SIZE),
-    removedPeerSessionDownloadLength_(0),
-    removedPeerSessionUploadLength_(0),
+    removedPeerSessionDownloadLength_(0LL),
+    removedPeerSessionUploadLength_(0LL),
     seederStateChoke_(new BtSeederStateChoke()),
     leecherStateChoke_(new BtLeecherStateChoke()),
     lastTransferStatMapUpdated_(0)

@@ -96,8 +96,11 @@ bool ChunkedDecodingStreamFilter::readChunkSize
   if(extPos == std::string::npos || crlfPos < extPos) {
     extPos = crlfPos;
   }
-  chunkSize_ = util::parseULLInt
+  chunkSize_ = util::parseLLInt
     (std::string(buf_.begin(), buf_.begin()+extPos), 16);
+  if(chunkSize_ < 0) {
+    throw DL_ABORT_EX("Chunk size must be positive");
+  }
   assert(crlfPos+2 > pbufSize);
   inbufOffset += crlfPos+2-pbufSize;
   buf_.clear();
@@ -155,8 +158,8 @@ bool ChunkedDecodingStreamFilter::readData
  const SharedHandle<BinaryStream>& out,
  const SharedHandle<Segment>& segment)
 {
-  uint64_t readlen =
-    std::min(chunkSize_, static_cast<uint64_t>(inlen-inbufOffset));
+  off_t readlen =
+    std::min(chunkSize_, static_cast<off_t>(inlen-inbufOffset));
   outlen += getDelegate()->transform(out, segment, inbuf+inbufOffset, readlen);
   chunkSize_ -= readlen;
   inbufOffset += readlen;

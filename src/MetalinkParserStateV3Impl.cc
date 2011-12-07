@@ -148,8 +148,8 @@ void SizeMetalinkParserState::endElement
  const std::string& characters)
 {
   // current metalink specification doesn't require size element.
-  uint64_t size;
-  if(util::parseULLIntNoThrow(size, characters)) {
+  off_t size;
+  if(util::parseLLIntNoThrow(size, characters) && size >= 0) {
     psm->setFileLengthOfEntry(size);
   }
 }

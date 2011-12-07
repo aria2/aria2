@@ -105,7 +105,7 @@ public:
 
   void setRequest(const SharedHandle<Request>& request);
 
-  uint64_t getEntityLength() const;
+  off_t getEntityLength() const;
 
   const std::string& getHost() const;
 

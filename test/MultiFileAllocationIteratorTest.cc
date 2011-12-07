@@ -209,11 +209,11 @@ void MultiFileAllocationIteratorTest::testAllocate()
     while(!itr->finished()) {
       itr->allocateChunk();
     }
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length1, File(fileEntry1->getPath()).size());
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length2, File(fileEntry2->getPath()).size());
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length3, File(fileEntry3->getPath()).size());
+    CPPUNIT_ASSERT_EQUAL((off_t)length1, File(fileEntry1->getPath()).size());
+    CPPUNIT_ASSERT_EQUAL((off_t)length2, File(fileEntry2->getPath()).size());
+    CPPUNIT_ASSERT_EQUAL((off_t)length3, File(fileEntry3->getPath()).size());
     CPPUNIT_ASSERT(!File(fileEntry4->getPath()).isFile());
-    CPPUNIT_ASSERT_EQUAL((uint64_t)length5, File(fileEntry5->getPath()).size());
+    CPPUNIT_ASSERT_EQUAL((off_t)length5, File(fileEntry5->getPath()).size());
     CPPUNIT_ASSERT(!File(fileEntry6->getPath()).isFile());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());

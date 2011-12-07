@@ -84,14 +84,14 @@ void IteratableChecksumValidator::validateChunk()
 
 bool IteratableChecksumValidator::finished() const
 {
-  if((uint64_t)currentOffset_ >= dctx_->getTotalLength()) {
+  if(currentOffset_ >= dctx_->getTotalLength()) {
     return true;
   } else {
     return false;
   }
 }
 
-uint64_t IteratableChecksumValidator::getTotalLength() const
+off_t IteratableChecksumValidator::getTotalLength() const
 {
   return dctx_->getTotalLength();
 }

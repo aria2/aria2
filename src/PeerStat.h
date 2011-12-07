@@ -61,8 +61,8 @@ private:
   PeerStat::STATUS status_;
   unsigned int avgDownloadSpeed_;
   unsigned int avgUploadSpeed_;
-  uint64_t sessionDownloadLength_;
-  uint64_t sessionUploadLength_;
+  int64_t sessionDownloadLength_;
+  int64_t sessionUploadLength_;
 public:
   PeerStat
   (cuid_t cuid, const std::string& hostname, const::std::string& protocol);

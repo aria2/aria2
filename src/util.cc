@@ -645,32 +645,6 @@ int64_t parseLLInt(const std::string& s, int base)
   }
 }
 
-bool parseULLIntNoThrow(uint64_t& res, const std::string& s, int base)
-{
-  long long int t;
-  if(parseLong(t, strtoll, s, base) &&
-     t >= 0 &&
-     t <= std::numeric_limits<int64_t>::max()) {
-    res = t;
-    return true;
-  } else {
-    return false;
-  }
-}
-
-uint64_t parseULLInt(const std::string& s, int base)
-{
-  uint64_t res;
-  if(parseULLIntNoThrow(res, s, base)) {
-    return res;
-  } else {
-    throw DL_ABORT_EX
-      (fmt("Failed to convert string into 64bit unsigned integer. '%s'",
-           s.c_str()));
-  }
-}
-
-
 void parseIntSegments(SegList<int>& sgl, const std::string& src)
 {
   for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;) {
@@ -702,7 +676,7 @@ void computeHeadPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- uint64_t head)
+ int64_t head)
 {
   if(head == 0) {
     return;
@@ -727,7 +701,7 @@ void computeTailPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- uint64_t tail)
+ int64_t tail)
 {
   if(tail == 0) {
     return;
@@ -737,7 +711,7 @@ void computeTailPieces
     if((*fi)->getLength() == 0) {
       continue;
     }
-    uint64_t endOffset = (*fi)->getLastOffset();
+    int64_t endOffset = (*fi)->getLastOffset();
     size_t fromIndex =
       (endOffset-1-(std::min(tail, (*fi)->getLength())-1))/pieceLength;
     for(size_t index = fromIndex; index <= (endOffset-1)/pieceLength;
@@ -752,7 +726,7 @@ void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- uint64_t defaultSize)
+ int64_t defaultSize)
 {
   std::vector<size_t> indexes;
   std::vector<Scip> parts;
@@ -1181,7 +1155,7 @@ void convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
 {
   size_t numBlock = dest->countBlock();
   for(size_t index = 0; index < numBlock; ++index) {
-    if(src->isBitSetOffsetRange((uint64_t)index*dest->getBlockLength(),
+    if(src->isBitSetOffsetRange((off_t)index*dest->getBlockLength(),
                                 dest->getBlockLength())) {
       dest->setBit(index);
     }

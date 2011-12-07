@@ -60,7 +60,7 @@ private:
   DownloadEngine* e_;
   SharedHandle<HttpHeaderProcessor> headerProcessor_;
   SharedHandle<HttpHeader> lastRequestHeader_;
-  uint64_t lastContentLength_;
+  off_t lastContentLength_;
   std::stringstream lastBody_;
   bool keepAlive_;
   bool gzip_;
@@ -118,7 +118,7 @@ public:
 
   void disableGZip() { gzip_ = false; }
 
-  uint64_t getContentLength() const { return lastContentLength_; }
+  off_t getContentLength() const { return lastContentLength_; }
 
   const SharedHandle<SocketRecvBuffer>& getSocketRecvBuffer() const
   {

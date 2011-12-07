@@ -83,7 +83,7 @@ private:
 
   BtMessageDispatcher* dispatcher_;
 public:
-  PeerSessionResource(size_t pieceLength, uint64_t totalLength);
+  PeerSessionResource(size_t pieceLength, off_t totalLength);
 
   ~PeerSessionResource();
 
@@ -155,7 +155,7 @@ public:
 
   size_t getBitfieldLength() const;
 
-  void reconfigure(size_t index, uint64_t totalLength);
+  void reconfigure(size_t index, off_t totalLength);
 
   bool hasPiece(size_t index) const;
 
@@ -210,11 +210,11 @@ public:
     return peerStat_;
   }
 
-  uint64_t uploadLength() const;
+  off_t uploadLength() const;
 
   void updateUploadLength(size_t bytes);
 
-  uint64_t downloadLength() const;
+  off_t downloadLength() const;
 
   void updateDownloadLength(size_t bytes);
 
@@ -228,7 +228,7 @@ public:
     return lastAmUnchoking_;
   }
 
-  uint64_t getCompletedLength() const;
+  off_t getCompletedLength() const;
 
   void setBtMessageDispatcher(BtMessageDispatcher* dpt);
 

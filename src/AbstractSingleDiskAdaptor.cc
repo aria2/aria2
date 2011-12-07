@@ -85,12 +85,12 @@ bool AbstractSingleDiskAdaptor::fileExists()
   return File(getFilePath()).exists();
 }
 
-uint64_t AbstractSingleDiskAdaptor::size()
+off_t AbstractSingleDiskAdaptor::size()
 {
   return File(getFilePath()).size();
 }
 
-void AbstractSingleDiskAdaptor::truncate(uint64_t length)
+void AbstractSingleDiskAdaptor::truncate(off_t length)
 {
   diskWriter_->truncate(length);
 }
@@ -139,7 +139,7 @@ void AbstractSingleDiskAdaptor::setDiskWriter
   diskWriter_ = diskWriter;
 }
 
-void AbstractSingleDiskAdaptor::setTotalLength(const uint64_t& totalLength)
+void AbstractSingleDiskAdaptor::setTotalLength(const off_t& totalLength)
 {
   totalLength_ = totalLength;
 }

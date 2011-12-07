@@ -66,7 +66,7 @@ public:
 
   virtual bool fileExists() = 0;
 
-  virtual uint64_t size() = 0;
+  virtual off_t size() = 0;
 
   template<typename InputIterator>
   void setFileEntries(InputIterator first, InputIterator last)

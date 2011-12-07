@@ -51,7 +51,7 @@ namespace aria2 {
 SingleFileAllocationIterator::SingleFileAllocationIterator
 (BinaryStream* stream,
  off_t offset,
- uint64_t totalLength)
+ off_t totalLength)
   : stream_(stream),
     offset_(offset),
     totalLength_(totalLength),
@@ -90,7 +90,7 @@ void SingleFileAllocationIterator::allocateChunk()
   stream_->writeData(buffer_, BUFSIZE, offset_);
   offset_ += BUFSIZE;
 
-  if(totalLength_ < (uint64_t)offset_) {
+  if(totalLength_ < offset_) {
     stream_->truncate(totalLength_);
     offset_ = totalLength_;
   }
@@ -98,7 +98,7 @@ void SingleFileAllocationIterator::allocateChunk()
 
 bool SingleFileAllocationIterator::finished()
 {
-  return (uint64_t)offset_ == totalLength_;
+  return offset_ == totalLength_;
 }
 
 } // namespace aria2

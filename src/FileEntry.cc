@@ -53,7 +53,7 @@ namespace aria2 {
 
 FileEntry::FileEntry
 (const std::string& path,
- uint64_t length,
+ off_t length,
  off_t offset,
  const std::vector<std::string>& uris)
   : path_(path),

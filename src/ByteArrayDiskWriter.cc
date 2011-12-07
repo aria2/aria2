@@ -50,16 +50,16 @@ void ByteArrayDiskWriter::clear()
   buf_.str(A2STR::NIL);
 }
 
-void ByteArrayDiskWriter::initAndOpenFile(uint64_t totalLength)
+void ByteArrayDiskWriter::initAndOpenFile(off_t totalLength)
 {
   clear();
 }
 
-void ByteArrayDiskWriter::openFile(uint64_t totalLength) {}
+void ByteArrayDiskWriter::openFile(off_t totalLength) {}
 
 void ByteArrayDiskWriter::closeFile() {}
 
-void ByteArrayDiskWriter::openExistingFile(uint64_t totalLength)
+void ByteArrayDiskWriter::openExistingFile(off_t totalLength)
 {
   openFile();
 }
@@ -70,10 +70,10 @@ void ByteArrayDiskWriter::writeData(const unsigned char* data, size_t dataLength
     throw DL_ABORT_EX(fmt("Maximum length(%lu) exceeded.",
                           static_cast<unsigned long>(maxLength_)));
   }
-  uint64_t length = size();
-  if(length < (uint64_t)position) {
+  off_t length = size();
+  if(length < position) {
     buf_.seekp(length, std::ios::beg);
-    for(uint64_t i = length; i < (uint64_t)position; ++i) {
+    for(off_t i = length; i < position; ++i) {
       buf_.put('\0');
     }
   } else {
@@ -90,7 +90,7 @@ ssize_t ByteArrayDiskWriter::readData(unsigned char* data, size_t len, off_t pos
   return buf_.gcount();
 }
 
-uint64_t ByteArrayDiskWriter::size()
+off_t ByteArrayDiskWriter::size()
 {
   buf_.seekg(0, std::ios::end);
   buf_.clear();

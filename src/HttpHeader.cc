@@ -108,16 +108,23 @@ HttpHeader::equalRange(const std::string& name) const
   return table_.equal_range(name);
 }
 
-unsigned int HttpHeader::findAsUInt(const std::string& name) const {
-  return findAsULLInt(name);
-}
-
-uint64_t HttpHeader::findAsULLInt(const std::string& name) const {
+int32_t HttpHeader::findAsInt(const std::string& name) const
+{
   const std::string& value = find(name);
   if(value.empty()) {
     return 0;
   } else {
-    return util::parseULLInt(value);
+    return util::parseInt(value);
+  }
+}
+
+int64_t HttpHeader::findAsLLInt(const std::string& name) const
+{
+  const std::string& value = find(name);
+  if(value.empty()) {
+    return 0;
+  } else {
+    return util::parseLLInt(value);
   }
 }
 
@@ -129,7 +136,10 @@ RangeHandle HttpHeader::getRange() const
     if(clenStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
-      uint64_t contentLength = util::parseULLInt(clenStr);
+      off_t contentLength = util::parseLLInt(clenStr);
+      if(contentLength < 0) {
+        throw DL_ABORT_EX("Content-Length must be positive");
+      }
       if(contentLength == 0) {
         return SharedHandle<Range>(new Range());
       } else {
@@ -168,8 +178,11 @@ RangeHandle HttpHeader::getRange() const
   }
   off_t startByte = util::parseLLInt(std::string(byteRangeSpec, minus));
   off_t endByte = util::parseLLInt(std::string(minus+1, slash));
-  uint64_t entityLength =
-    util::parseULLInt(std::string(slash+1, rangeStr.end()));
+  off_t entityLength =
+    util::parseLLInt(std::string(slash+1, rangeStr.end()));
+  if(startByte < 0 || endByte < 0 || entityLength < 0) {
+    throw DL_ABORT_EX("byte-range-spec must be positive");
+  }
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }
 

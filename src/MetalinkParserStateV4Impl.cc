@@ -253,8 +253,8 @@ void SizeMetalinkParserStateV4::endElement
  const char* nsUri,
  const std::string& characters)
 {
-  uint64_t size;
-  if(util::parseULLIntNoThrow(size, characters)) {
+  off_t size;
+  if(util::parseLLIntNoThrow(size, characters) && size >= 0) {
     psm->setFileLengthOfEntry(size);
   } else {
     psm->cancelEntryTransaction();

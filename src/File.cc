@@ -103,7 +103,7 @@ bool File::remove() {
   }
 }
 
-uint64_t File::size() {
+off_t File::size() {
   a2_struct_stat fstat;
   if(fillStat(fstat) < 0) {
     return 0;

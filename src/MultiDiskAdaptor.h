@@ -69,7 +69,7 @@ public:
 
   bool fileExists();
 
-  uint64_t size() const;
+  off_t size() const;
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
@@ -139,7 +139,7 @@ public:
 
   virtual bool fileExists();
 
-  virtual uint64_t size();
+  virtual off_t size();
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 

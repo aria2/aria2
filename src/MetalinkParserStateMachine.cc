@@ -262,7 +262,7 @@ void MetalinkParserStateMachine::setFileNameOfEntry(const std::string& filename)
   ctrl_->setFileNameOfEntry(filename);
 }
 
-void MetalinkParserStateMachine::setFileLengthOfEntry(uint64_t length)
+void MetalinkParserStateMachine::setFileLengthOfEntry(off_t length)
 {
   ctrl_->setFileLengthOfEntry(length);
 }

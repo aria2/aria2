@@ -44,9 +44,9 @@ class TransferStat {
 public:
   unsigned int downloadSpeed;
   unsigned int uploadSpeed;
-  uint64_t sessionDownloadLength;
-  uint64_t sessionUploadLength;
-  uint64_t allTimeUploadLength;
+  int64_t sessionDownloadLength;
+  int64_t sessionUploadLength;
+  int64_t allTimeUploadLength;
 
   void copy(const TransferStat& stat)
   {
@@ -98,28 +98,28 @@ public:
    * Returns the number of bytes downloaded since the program started.
    * This is not the total number of bytes downloaded.
    */
-  uint64_t getSessionDownloadLength() const {
+  int64_t getSessionDownloadLength() const {
     return sessionDownloadLength;
   }
 
-  void setSessionDownloadLength(uint64_t s) { sessionDownloadLength = s; }
+  void setSessionDownloadLength(int64_t s) { sessionDownloadLength = s; }
 
   /**
    * Returns the number of bytes uploaded since the program started.
    * This is not the total number of bytes uploaded.
    */
-  uint64_t getSessionUploadLength() const {
+  int64_t getSessionUploadLength() const {
     return sessionUploadLength;
   }
 
-  void setSessionUploadLength(uint64_t s) { sessionUploadLength = s; }
+  void setSessionUploadLength(int64_t s) { sessionUploadLength = s; }
 
-  void setAllTimeUploadLength(uint64_t s)
+  void setAllTimeUploadLength(int64_t s)
   {
     allTimeUploadLength = s;
   }
 
-  uint64_t getAllTimeUploadLength() const
+  int64_t getAllTimeUploadLength() const
   {
     return allTimeUploadLength;
   }

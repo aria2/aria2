@@ -238,7 +238,7 @@ void UnknownLengthPieceStorage::markAllPiecesDone()
   downloadFinished_ = true;
 }
 
-void UnknownLengthPieceStorage::markPiecesDone(uint64_t length)
+void UnknownLengthPieceStorage::markPiecesDone(off_t length)
 {
   // TODO not implemented yet
   abort();

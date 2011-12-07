@@ -73,8 +73,8 @@ public:
   std::pair<std::multimap<std::string, std::string>::const_iterator,
             std::multimap<std::string, std::string>::const_iterator>
   equalRange(const std::string& name) const;
-  unsigned int findAsUInt(const std::string& name) const;
-  uint64_t findAsULLInt(const std::string& name) const;
+  int32_t findAsInt(const std::string& name) const;
+  int64_t findAsLLInt(const std::string& name) const;
 
   SharedHandle<Range> getRange() const;
 

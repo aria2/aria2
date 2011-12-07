@@ -32,11 +32,11 @@ void SingleFileAllocationIteratorTest::testAllocate()
   of.close();
 
   File x(fn);
-  CPPUNIT_ASSERT_EQUAL((uint64_t)10, x.size());
+  CPPUNIT_ASSERT_EQUAL((off_t)10, x.size());
 
   DefaultDiskWriter writer(fn);
-  int64_t offset = 10;
-  int64_t totalLength = 16*1024*2+8*1024;
+  off_t offset = 10;
+  off_t totalLength = 16*1024*2+8*1024;
 
   // we have to open file first.
   writer.openExistingFile();
@@ -47,7 +47,7 @@ void SingleFileAllocationIteratorTest::testAllocate()
     itr.allocateChunk();
   }
   File f(fn);
-  CPPUNIT_ASSERT_EQUAL((uint64_t)40960, f.size());
+  CPPUNIT_ASSERT_EQUAL((off_t)40960, f.size());
 }
 
 } // namespace aria2

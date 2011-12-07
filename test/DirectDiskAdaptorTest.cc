@@ -46,7 +46,7 @@ void DirectDiskAdaptorTest::testCutTrailingGarbage()
 
   adaptor.cutTrailingGarbage();
 
-  CPPUNIT_ASSERT_EQUAL((uint64_t)entry->getLength(),
+  CPPUNIT_ASSERT_EQUAL((off_t)entry->getLength(),
                        File(entry->getPath()).size());
 }
 

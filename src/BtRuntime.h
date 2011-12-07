@@ -42,7 +42,7 @@ namespace aria2 {
 
 class BtRuntime {
 private:
-  uint64_t uploadLengthAtStartup_;
+  off_t uploadLengthAtStartup_;
   bool halt_;
   unsigned int connections_;
   bool ready_;
@@ -60,11 +60,11 @@ public:
 
   ~BtRuntime();
 
-  uint64_t getUploadLengthAtStartup() const {
+  off_t getUploadLengthAtStartup() const {
     return uploadLengthAtStartup_;
   }
 
-  void setUploadLengthAtStartup(uint64_t length) {
+  void setUploadLengthAtStartup(off_t length) {
     uploadLengthAtStartup_ = length;
   }
 

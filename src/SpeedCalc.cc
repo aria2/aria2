@@ -79,7 +79,7 @@ unsigned int SpeedCalc::calculateSpeed() {
 void SpeedCalc::update(size_t bytes) {
   accumulatedLength_ += bytes;
   std::transform(&lengthArray_[0], &lengthArray_[2], &lengthArray_[0],
-                 std::bind1st(std::plus<uint64_t>(), (uint64_t)bytes));
+                 std::bind1st(std::plus<int64_t>(), (int64_t)bytes));
   if(isIntervalOver()) {
     changeSw();
   }
@@ -103,7 +103,7 @@ void SpeedCalc::changeSw() {
 }
 
 unsigned int SpeedCalc::calculateAvgSpeed() const {
-  uint64_t milliElapsed = start_.differenceInMillis(global::wallclock());
+  int64_t milliElapsed = start_.differenceInMillis(global::wallclock());
 
   // if milliElapsed is too small, the average speed is rubish, better return 0
   if(milliElapsed > 4) {

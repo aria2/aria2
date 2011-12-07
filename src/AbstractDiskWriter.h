@@ -57,22 +57,22 @@ public:
   AbstractDiskWriter(const std::string& filename);
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(uint64_t totalLength = 0);
+  virtual void openFile(off_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(uint64_t totalLength = 0);
+  virtual void openExistingFile(off_t totalLength = 0);
 
   virtual void writeData(const unsigned char* data, size_t len, off_t offset);
 
   virtual ssize_t readData(unsigned char* data, size_t len, off_t offset);
 
-  virtual void truncate(uint64_t length);
+  virtual void truncate(off_t length);
 
   // File must be opened before calling this function.
-  virtual void allocate(off_t offset, uint64_t length);
+  virtual void allocate(off_t offset, off_t length);
 
-  virtual uint64_t size();
+  virtual off_t size();
   
   virtual void enableReadOnly();
 

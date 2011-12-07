@@ -38,7 +38,7 @@ namespace aria2 {
 
 namespace paramed_string {
 
-std::string toBase26(uint32_t n, char zero, size_t width)
+std::string toBase26(int32_t n, char zero, size_t width)
 {
   std::string res;
   if(n == 0 && width == 0) {

@@ -104,7 +104,7 @@ off_t MultiFileAllocationIterator::getCurrentLength()
   }
 }
 
-uint64_t MultiFileAllocationIterator::getTotalLength()
+off_t MultiFileAllocationIterator::getTotalLength()
 {
   if(!fileAllocationIterator_) {
     return 0;

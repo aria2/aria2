@@ -61,7 +61,7 @@ private:
   std::string path_;
   std::deque<std::string> uris_;
   std::deque<std::string> spentUris_;
-  uint64_t length_;
+  off_t length_;
   off_t offset_;
   bool requested_;
   std::deque<SharedHandle<Request> > requestPool_;
@@ -79,7 +79,7 @@ private:
 public:
   FileEntry();
 
-  FileEntry(const std::string& path, uint64_t length, off_t offset,
+  FileEntry(const std::string& path, off_t length, off_t offset,
             const std::vector<std::string>& uris = std::vector<std::string>());
 
   ~FileEntry();
@@ -94,9 +94,9 @@ public:
 
   void setPath(const std::string& path);
 
-  uint64_t getLength() const { return length_; }
+  off_t getLength() const { return length_; }
 
-  void setLength(uint64_t length) { length_ = length; }
+  void setLength(off_t length) { length_ = length; }
 
   off_t getOffset() const { return offset_; }
 

@@ -101,7 +101,7 @@ bool DiskWriterEntry::fileExists()
   return fileEntry_->exists();
 }
 
-uint64_t DiskWriterEntry::size() const
+off_t DiskWriterEntry::size() const
 {
   return File(getFilePath()).size();
 }
@@ -169,8 +169,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
               itr-1; true; --i) {
           const SharedHandle<FileEntry>& fileEntry = (*i)->getFileEntry();
           if(pieceStartOffset <= fileEntry->getOffset() ||
-             (uint64_t)pieceStartOffset <
-             fileEntry->getOffset()+fileEntry->getLength()) {
+             pieceStartOffset < fileEntry->getLastOffset()) {
             (*i)->needsFileAllocation(true);
           } else {
             break;
@@ -306,22 +305,19 @@ namespace {
 bool isInRange(const DiskWriterEntryHandle entry, off_t offset)
 {
   return entry->getFileEntry()->getOffset() <= offset &&
-    (uint64_t)offset <
-    entry->getFileEntry()->getOffset()+entry->getFileEntry()->getLength();
+    offset < entry->getFileEntry()->getLastOffset();
 }
 } // namespace
 
 namespace {
-size_t calculateLength(const DiskWriterEntryHandle entry,
-                       off_t fileOffset, size_t rem)
+ssize_t calculateLength(const DiskWriterEntryHandle entry,
+                        off_t fileOffset, ssize_t rem)
 {
-  size_t length;
-  if(entry->getFileEntry()->getLength() < (uint64_t)fileOffset+rem) {
-    length = entry->getFileEntry()->getLength()-fileOffset;
+  if(entry->getFileEntry()->getLength() < fileOffset+rem) {
+    return entry->getFileEntry()->getLength()-fileOffset;
   } else {
-    length = rem;
+    return rem;
   }
-  return length;
 }
 } // namespace
 
@@ -371,11 +367,11 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
   DiskWriterEntries::const_iterator first =
     findFirstDiskWriterEntry(diskWriterEntries_, offset);
 
-  size_t rem = len;
+  ssize_t rem = len;
   off_t fileOffset = offset-(*first)->getFileEntry()->getOffset();
   for(DiskWriterEntries::const_iterator i = first,
         eoi = diskWriterEntries_.end(); i != eoi; ++i) {
-    size_t writeLength = calculateLength(*i, fileOffset, rem);
+    ssize_t writeLength = calculateLength(*i, fileOffset, rem);
 
     openIfNot(*i, &DiskWriterEntry::openFile);
 
@@ -398,12 +394,12 @@ ssize_t MultiDiskAdaptor::readData
   DiskWriterEntries::const_iterator first =
     findFirstDiskWriterEntry(diskWriterEntries_, offset);
 
-  size_t rem = len;
-  size_t totalReadLength = 0;
+  ssize_t rem = len;
+  ssize_t totalReadLength = 0;
   off_t fileOffset = offset-(*first)->getFileEntry()->getOffset();
   for(DiskWriterEntries::const_iterator i = first,
         eoi = diskWriterEntries_.end(); i != eoi; ++i) {
-    size_t readLength = calculateLength(*i, fileOffset, rem);
+    ssize_t readLength = calculateLength(*i, fileOffset, rem);
 
     openIfNot(*i, &DiskWriterEntry::openFile);
 
@@ -429,9 +425,9 @@ bool MultiDiskAdaptor::fileExists()
     getFileEntries().end();
 }
 
-uint64_t MultiDiskAdaptor::size()
+off_t MultiDiskAdaptor::size()
 {
-  uint64_t size = 0;
+  off_t size = 0;
   for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
         getFileEntries().begin(), eoi = getFileEntries().end(); i != eoi; ++i) {
     size += File((*i)->getPath()).size();
@@ -460,9 +456,9 @@ void MultiDiskAdaptor::cutTrailingGarbage()
   for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
         diskWriterEntries_.begin(), eoi = diskWriterEntries_.end();
       i != eoi; ++i) {
-    uint64_t length = (*i)->getFileEntry()->getLength();
+    off_t length = (*i)->getFileEntry()->getLength();
     if(File((*i)->getFilePath()).size() > length) {
-      // We need open file before calling DiskWriter::truncate(uint64_t)
+      // We need open file before calling DiskWriter::truncate(off_t)
       openIfNot(*i, &DiskWriterEntry::openFile);
       (*i)->getDiskWriter()->truncate(length);
     }

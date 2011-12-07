@@ -400,14 +400,17 @@ unsigned int FtpConnection::receiveResponse()
 # define ULONGLONG_SCANF "%Lu"
 #endif // __MINGW32__
 
-unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
+unsigned int FtpConnection::receiveSizeResponse(off_t& size)
 {
   std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
       std::pair<Sip, Sip> rp;
       util::divide(rp, response.second.begin(), response.second.end(), ' ');
-      size = util::parseULLInt(std::string(rp.second.first, rp.second.second));
+      size = util::parseLLInt(std::string(rp.second.first, rp.second.second));
+      if(size < 0) {
+        throw DL_ABORT_EX("Size must be positive");
+      }
     }
     return response.first;
   } else {

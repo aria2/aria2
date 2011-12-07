@@ -227,7 +227,7 @@ SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
   return filter;
 }
 
-uint64_t HttpResponse::getContentLength() const
+off_t HttpResponse::getContentLength() const
 {
   if(!httpHeader_) {
     return 0;
@@ -236,7 +236,7 @@ uint64_t HttpResponse::getContentLength() const
   }
 }
 
-uint64_t HttpResponse::getEntityLength() const
+off_t HttpResponse::getEntityLength() const
 {
   if(!httpHeader_) {
     return 0;
@@ -279,7 +279,7 @@ bool HttpResponse::hasRetryAfter() const
 
 time_t HttpResponse::getRetryAfter() const
 {
-  return httpHeader_->findAsUInt(HttpHeader::RETRY_AFTER);
+  return httpHeader_->findAsInt(HttpHeader::RETRY_AFTER);
 }
 
 Time HttpResponse::getLastModifiedTime() const

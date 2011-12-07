@@ -54,7 +54,7 @@ off_t FileAllocationEntry::getCurrentLength()
   return fileAllocationIterator_->getCurrentLength();
 }
 
-uint64_t FileAllocationEntry::getTotalLength()
+off_t FileAllocationEntry::getTotalLength()
 {
   return fileAllocationIterator_->getTotalLength();
 }

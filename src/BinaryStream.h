@@ -53,11 +53,11 @@ public:
 
   // Truncates a file to given length. The default implementation does
   // nothing.
-  virtual void truncate(uint64_t length) {}
+  virtual void truncate(off_t length) {}
 
   // Allocates given length bytes of disk space from given offset. The
   // default implementation does nothing.
-  virtual void allocate(off_t offset, uint64_t length) {}
+  virtual void allocate(off_t offset, off_t length) {}
 };
 
 typedef SharedHandle<BinaryStream> BinaryStreamHandle;

@@ -53,7 +53,7 @@ private:
   SharedHandle<Option> option_;
   SharedHandle<BitfieldMan> bitfield_;
 public:   
-  void initializeMembers(int32_t pieceLength, int64_t totalLength)
+  void initializeMembers(int32_t pieceLength, off_t totalLength)
   {
     option_.reset(new Option());
     option_->put(PREF_DIR, A2_TEST_OUT_DIR);
@@ -126,10 +126,10 @@ void DefaultBtProgressInfoFileTest::testLoad_compat()
   // check the contents of objects
 
   // total length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)81920, dctx_->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((off_t)81920, dctx_->getTotalLength());
 
   // upload length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, btRuntime_->getUploadLengthAtStartup());
+  CPPUNIT_ASSERT_EQUAL((off_t)1024, btRuntime_->getUploadLengthAtStartup());
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
@@ -175,10 +175,10 @@ void DefaultBtProgressInfoFileTest::testLoad()
   // check the contents of objects
 
   // total length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)81920, dctx_->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((off_t)81920, dctx_->getTotalLength());
 
   // upload length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, btRuntime_->getUploadLengthAtStartup());
+  CPPUNIT_ASSERT_EQUAL((off_t)1024, btRuntime_->getUploadLengthAtStartup());
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
@@ -343,7 +343,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_compat()
   // check the contents of objects
 
   // total length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)81920, dctx->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((off_t)81920, dctx->getTotalLength());
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
@@ -388,7 +388,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
   // check the contents of objects
 
   // total length
-  CPPUNIT_ASSERT_EQUAL((uint64_t)81920, dctx->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((off_t)81920, dctx->getTotalLength());
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),

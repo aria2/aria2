@@ -93,7 +93,7 @@ public:
   // Convenient constructor that creates single file download.  path
   // should be escaped with util::escapePath(...).
   DownloadContext(size_t pieceLength,
-                  uint64_t totalLength,
+                  off_t totalLength,
                   const std::string& path = A2STR::NIL);
 
   ~DownloadContext();
@@ -114,7 +114,7 @@ public:
     pieceHashes_.assign(first, last);
   }
 
-  uint64_t getTotalLength() const;
+  off_t getTotalLength() const;
 
   bool knowsTotalLength() const { return knowsTotalLength_; }
 

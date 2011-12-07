@@ -66,7 +66,7 @@ void staticSHA1DigestFree()
 }
 
 std::string staticSHA1Digest
-(const BinaryStreamHandle& bs, off_t offset, uint64_t length)
+(const BinaryStreamHandle& bs, off_t offset, off_t length)
 {
   sha1Ctx_->reset();
   return digest(sha1Ctx_, bs, offset, length);
@@ -75,14 +75,14 @@ std::string staticSHA1Digest
 std::string digest
 (const SharedHandle<MessageDigest>& ctx,
  const SharedHandle<BinaryStream>& bs,
- off_t offset, uint64_t length)
+ off_t offset, off_t length)
 {
   size_t BUFSIZE = 4096;
   unsigned char BUF[BUFSIZE];
   lldiv_t res = lldiv(length, BUFSIZE);
-  uint64_t iteration = res.quot;
+  int64_t iteration = res.quot;
   size_t tail = res.rem;
-  for(uint64_t i = 0; i < iteration; ++i) {
+  for(int64_t i = 0; i < iteration; ++i) {
     ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
     if((size_t)readLength != BUFSIZE) {
       throw DL_ABORT_EX(fmt(EX_FILE_READ, "n/a", "data is too short"));

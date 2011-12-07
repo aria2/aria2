@@ -368,7 +368,7 @@ const SharedHandle<AuthConfig>& HttpRequest::getAuthConfig() const
   return authConfig_;
 }
 
-uint64_t HttpRequest::getEntityLength() const
+off_t HttpRequest::getEntityLength() const
 {
   assert(fileEntry_);
   return fileEntry_->getLength();

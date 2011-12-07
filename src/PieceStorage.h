@@ -179,13 +179,13 @@ public:
 
   virtual bool isPieceUsed(size_t index) = 0;
 
-  virtual uint64_t getTotalLength() = 0;
+  virtual off_t getTotalLength() = 0;
 
-  virtual uint64_t getFilteredTotalLength() = 0;
+  virtual off_t getFilteredTotalLength() = 0;
 
-  virtual uint64_t getCompletedLength() = 0;
+  virtual off_t getCompletedLength() = 0;
 
-  virtual uint64_t getFilteredCompletedLength() = 0;
+  virtual off_t getFilteredCompletedLength() = 0;
 
   virtual void setupFileFilter() = 0;
   
@@ -258,7 +258,7 @@ public:
   /**
    * Sets all bits in bitfield(0 to length) to 1.
    */
-  virtual void markPiecesDone(uint64_t length) = 0;
+  virtual void markPiecesDone(off_t length) = 0;
 
   virtual void
   addInFlightPiece(const std::vector<SharedHandle<Piece> >& pieces) = 0;

@@ -59,7 +59,7 @@ private:
 
   std::string buf_;
 
-  uint64_t chunkSize_;
+  off_t chunkSize_;
 
   size_t bytesProcessed_;
 

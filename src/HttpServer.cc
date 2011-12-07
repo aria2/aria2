@@ -90,7 +90,10 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     lastBody_.clear();
     lastBody_.str("");
     lastContentLength_ =
-      lastRequestHeader_->findAsUInt(HttpHeader::CONTENT_LENGTH);
+      lastRequestHeader_->findAsLLInt(HttpHeader::CONTENT_LENGTH);
+    if(lastContentLength_ < 0) {
+      throw DL_ABORT_EX("Content-Length must be positive.");
+    }
     headerProcessor_->clear();
 
     const std::string& connection =
@@ -144,7 +147,7 @@ bool HttpServer::receiveBody()
   lastBody_.write(reinterpret_cast<const char*>(socketRecvBuffer_->getBuffer()),
                   length);
   socketRecvBuffer_->shiftBuffer(length);
-  return lastContentLength_ == static_cast<uint64_t>(lastBody_.tellp());
+  return lastContentLength_ == lastBody_.tellp();
 }
 
 std::string HttpServer::getBody() const

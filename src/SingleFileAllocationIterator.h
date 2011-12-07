@@ -48,11 +48,14 @@ private:
 
   off_t offset_;
 
-  uint64_t totalLength_;
+  off_t totalLength_;
 
   unsigned char* buffer_;
 public:
-  SingleFileAllocationIterator(BinaryStream* stream, off_t offset, uint64_t totalLength);
+  SingleFileAllocationIterator
+  (BinaryStream* stream,
+   off_t offset,
+   off_t totalLength);
 
   virtual ~SingleFileAllocationIterator();
 
@@ -65,7 +68,7 @@ public:
     return offset_;
   }
 
-  virtual uint64_t getTotalLength()
+  virtual off_t getTotalLength()
   {
     return totalLength_;
   }
