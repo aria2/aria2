@@ -41,8 +41,8 @@ public:
       this->slot = slot;
     }
 
-    virtual RequestSlot getOutstandingRequest(size_t index, uint32_t begin,
-                                              size_t length) {
+    virtual RequestSlot getOutstandingRequest
+    (size_t index, int32_t begin, int32_t length) {
       if(slot.getIndex() == index && slot.getBegin() == begin &&
          slot.getLength() == length) {
         return slot;
@@ -93,8 +93,8 @@ void BtRejectMessageTest::testCreate() {
   SharedHandle<BtRejectMessage> pm = BtRejectMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((uint8_t)16, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
-  CPPUNIT_ASSERT_EQUAL((uint32_t)256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL((size_t)1024, pm->getLength());
+  CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL(1024, pm->getLength());
 
   // case: payload size is wrong
   try {

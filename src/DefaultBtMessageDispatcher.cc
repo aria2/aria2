@@ -123,7 +123,7 @@ void DefaultBtMessageDispatcher::sendMessages() {
 
 // Cancel sending piece message to peer.
 void DefaultBtMessageDispatcher::doCancelSendingPieceAction
-(size_t index, uint32_t begin, size_t length)
+(size_t index, int32_t begin, int32_t length)
 {
   BtCancelSendingPieceEvent event(index, begin, length);
 
@@ -381,7 +381,7 @@ bool DefaultBtMessageDispatcher::isOutstandingRequest
 
 RequestSlot
 DefaultBtMessageDispatcher::getOutstandingRequest
-(size_t index, uint32_t begin, size_t length)
+(size_t index, int32_t begin, int32_t length)
 {
   for(std::deque<RequestSlot>::const_iterator itr = requestSlots_.begin(),
         eoi = requestSlots_.end(); itr != eoi; ++itr) {

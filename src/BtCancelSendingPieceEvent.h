@@ -42,17 +42,17 @@ namespace aria2 {
 class BtCancelSendingPieceEvent {
 private:
   size_t index_;
-  uint32_t begin_;
-  size_t length_;
+  int32_t begin_;
+  int32_t length_;
 public:
-  BtCancelSendingPieceEvent(size_t index, uint32_t begin, size_t length):
+  BtCancelSendingPieceEvent(size_t index, int32_t begin, int32_t length):
     index_(index), begin_(begin), length_(length) {}
 
   size_t getIndex() const { return index_; }
 
-  uint32_t getBegin() const { return begin_; }
+  int32_t getBegin() const { return begin_; }
 
-  size_t getLength() const { return length_; }
+  int32_t getLength() const { return length_; }
 };
 
 } // namespace aria2

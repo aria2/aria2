@@ -39,7 +39,7 @@
 namespace aria2 {
 
 RangeBtMessageValidator::RangeBtMessageValidator
-(const RangeBtMessage* message, size_t numPiece, size_t pieceLength)
+(const RangeBtMessage* message, size_t numPiece, int32_t pieceLength)
   : message_(message),
     numPiece_(numPiece),
     pieceLength_(pieceLength)

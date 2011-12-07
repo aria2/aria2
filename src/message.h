@@ -63,27 +63,27 @@
 #define MSG_DNS_CACHE_HIT "CUID#%lld - DNS cache hit: %s -> %s"
 #define MSG_CONNECTING_TO_PEER "CUID#%lld - Connecting to the peer %s"
 #define MSG_PIECE_RECEIVED                                              \
-  "CUID#%lld - Piece received. index=%lu, begin=%u, length=%u, offset=%lld," \
+  "CUID#%lld - Piece received. index=%lu, begin=%d, length=%d, offset=%lld," \
   " blockIndex=%lu"
 #define MSG_PIECE_BITFIELD "CUID#%lld - Piece bitfield %s"
 #define MSG_REJECT_PIECE_CHOKED                                         \
   "CUID#%lld - Reject piece message in queue because the peer has been" \
-  " choked. index=%lu, begin=%u, length=%u"
+  " choked. index=%lu, begin=%d, length=%d"
 #define MSG_REJECT_PIECE_CANCEL                                         \
   "CUID#%lld - Reject piece message in queue because cancel message received." \
-  " index=%lu, begin=%u, length=%u"
+  " index=%lu, begin=%d, length=%d"
 #define MSG_FILE_VALIDATION_FAILURE                             \
   "CUID#%lld - Exception caught while validating file integrity."
 #define MSG_PEER_INTERESTED "CUID#%lld - Interested in the peer"
 #define MSG_PEER_NOT_INTERESTED "CUID#%lld - Not interested in the peer"
 #define MSG_DELETING_REQUEST_SLOT "CUID#%lld - Deleting request slot" \
-  " index=%lu, begin=%u, blockIndex=%lu"
+  " index=%lu, begin=%d, blockIndex=%lu"
 #define MSG_DELETING_REQUEST_SLOT_CHOKED "CUID#%lld - Deleting request slot" \
-  " index=%lu, begin=%u, blockIndex=%lu because localhost got choked."
+  " index=%lu, begin=%d, blockIndex=%lu because localhost got choked."
 #define MSG_DELETING_REQUEST_SLOT_TIMEOUT "CUID#%lld - Deleting request slot" \
-  " index=%lu, begin=%u, blockIndex=%lu because of time out"
+  " index=%lu, begin=%d, blockIndex=%lu because of time out"
 #define MSG_DELETING_REQUEST_SLOT_ACQUIRED "CUID#%lld - Deleting request slot" \
-  " index=%lu, begin=%u, blockIndex=%lu because the block has been acquired."
+  " index=%lu, begin=%d, blockIndex=%lu because the block has been acquired."
 #define MSG_FAST_EXTENSION_ENABLED "CUID#%lld - Fast extension enabled."
 #define MSG_EXTENDED_MESSAGING_ENABLED "CUID#%lld - Extended Messaging enabled."
 #define MSG_FILE_ALLOCATION_FAILURE                             \

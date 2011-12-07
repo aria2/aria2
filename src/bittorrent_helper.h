@@ -178,9 +178,9 @@ void setShortIntParam(unsigned char* dest, uint16_t param);
 uint8_t getId(const unsigned char* msg);
   
 void checkIndex(size_t index, size_t pieces);
-void checkBegin(uint32_t begin, size_t pieceLength);
-void checkLength(size_t length);
-void checkRange(uint32_t begin, size_t length, size_t pieceLength);
+void checkBegin(int32_t begin, int32_t pieceLength);
+void checkLength(int32_t length);
+void checkRange(int32_t begin, int32_t length, int32_t pieceLength);
 void checkBitfield
 (const unsigned char* bitfield, size_t bitfieldLength, size_t pieces);
 

@@ -49,10 +49,9 @@ typedef SharedHandle<BtPieceMessage> BtPieceMessageHandle;
 class BtPieceMessage : public AbstractBtMessage {
 private:
   size_t index_;
-  uint32_t begin_;
-  uint32_t blockLength_;
-  unsigned char* block_;
-  unsigned char* rawData_;
+  int32_t begin_;
+  int32_t blockLength_;
+  unsigned char* data_;
   SharedHandle<DownloadContext> downloadContext_;
   SharedHandle<PeerStorage> peerStorage_;
 
@@ -66,9 +65,9 @@ private:
 
   void erasePieceOnDisk(const SharedHandle<Piece>& piece);
 
-  void pushPieceData(off_t offset, size_t length) const;
+  void pushPieceData(off_t offset, int32_t length) const;
 public:
-  BtPieceMessage(size_t index = 0, uint32_t begin = 0, size_t blockLength = 0);
+  BtPieceMessage(size_t index = 0, int32_t begin = 0, int32_t blockLength = 0);
 
   virtual ~BtPieceMessage();
 
@@ -80,20 +79,20 @@ public:
 
   void setIndex(size_t index) { index_ = index; }
 
-  uint32_t getBegin() const { return begin_; }
+  int32_t getBegin() const { return begin_; }
 
-  void setBegin(uint32_t begin) { begin_ = begin; }
+  void setBegin(int32_t begin) { begin_ = begin; }
 
-  const unsigned char* getBlock() const { return block_; }
+  const unsigned char* getBlock() const { return data_+9; }
 
-  size_t getBlockLength() const { return blockLength_; }
+  int32_t getBlockLength() const { return blockLength_; }
 
   // Stores raw message data. After this function call, this object
   // has ownership of data. Caller must not be free or alter data.
   // Member block is pointed to block starting position in data.
   void setRawMessage(unsigned char* data);
 
-  void setBlockLength(size_t blockLength) { blockLength_ = blockLength; }
+  void setBlockLength(int32_t blockLength) { blockLength_ = blockLength; }
 
   void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 

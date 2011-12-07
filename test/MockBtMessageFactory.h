@@ -35,12 +35,12 @@ public:
   }
 
   virtual SharedHandle<BtMessage>
-  createCancelMessage(size_t index, uint32_t begin, size_t length) {
+  createCancelMessage(size_t index, int32_t begin, int32_t length) {
     return SharedHandle<BtMessage>();
   }
 
   virtual SharedHandle<BtMessage>
-  createPieceMessage(size_t index, uint32_t begin, size_t length) {
+  createPieceMessage(size_t index, int32_t begin, int32_t length) {
     return SharedHandle<BtMessage>();
   }
 
@@ -81,7 +81,7 @@ public:
   }
 
   virtual SharedHandle<BtMessage>
-  createRejectMessage(size_t index, uint32_t begin, size_t length) {
+  createRejectMessage(size_t index, int32_t begin, int32_t length) {
     return SharedHandle<BtMessage>();
   }
 

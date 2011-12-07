@@ -48,8 +48,8 @@ private:
   size_t blockIndex_;
 public:
   BtRequestMessage(size_t index = 0,
-                   uint32_t begin = 0,
-                   uint32_t length = 0,
+                   int32_t begin = 0,
+                   int32_t length = 0,
                    size_t blockIndex = 0);
 
   static const uint8_t ID = 6;

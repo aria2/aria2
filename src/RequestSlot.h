@@ -46,8 +46,8 @@ class RequestSlot {
 private:
   Timer dispatchedTime_;
   size_t index_;
-  uint32_t begin_;
-  size_t length_;
+  int32_t begin_;
+  int32_t length_;
   size_t blockIndex_;
 
   // This is the piece whose index is index of this RequestSlot has.
@@ -69,7 +69,7 @@ private:
   }
 public:
   
-  RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex,
+  RequestSlot(size_t index, int32_t begin, int32_t length, size_t blockIndex,
               const SharedHandle<Piece>& piece = SharedHandle<Piece>()):
     dispatchedTime_(global::wallclock()),
     index_(index), begin_(begin), length_(length), blockIndex_(blockIndex),
@@ -124,11 +124,11 @@ public:
   size_t getIndex() const { return index_; }
   void setIndex(size_t index) { index_ = index; }
 
-  uint32_t getBegin() const { return begin_; }
-  void setBegin(uint32_t begin) { begin_ = begin; }
+  int32_t getBegin() const { return begin_; }
+  void setBegin(int32_t begin) { begin_ = begin; }
 
-  size_t getLength() const { return length_; }
-  void setLength(size_t length) { length_ = length; }
+  int32_t getLength() const { return length_; }
+  void setLength(int32_t length) { length_ = length; }
 
   size_t getBlockIndex() const { return blockIndex_; }
   void setBlockIndex(size_t blockIndex) { blockIndex_ = blockIndex; }

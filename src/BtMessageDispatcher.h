@@ -58,7 +58,8 @@ public:
 
   virtual void sendMessages() = 0;
 
-  virtual void doCancelSendingPieceAction(size_t index, uint32_t begin, size_t length) = 0;
+  virtual void doCancelSendingPieceAction
+  (size_t index, int32_t begin, int32_t length) = 0;
 
   virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) = 0;
 
@@ -78,7 +79,8 @@ public:
 
   virtual bool isOutstandingRequest(size_t index, size_t blockIndex) = 0;
 
-  virtual RequestSlot getOutstandingRequest(size_t index, uint32_t begin, size_t length) = 0;
+  virtual RequestSlot getOutstandingRequest
+  (size_t index, int32_t begin, int32_t length) = 0;
 
   virtual void removeOutstandingRequest(const RequestSlot& slot) = 0;
 

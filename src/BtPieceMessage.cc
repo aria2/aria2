@@ -62,27 +62,25 @@ namespace aria2 {
 const std::string BtPieceMessage::NAME("piece");
 
 BtPieceMessage::BtPieceMessage
-(size_t index, uint32_t begin, size_t blockLength)
+(size_t index, int32_t begin, int32_t blockLength)
   : AbstractBtMessage(ID, NAME),
     index_(index),
     begin_(begin),
     blockLength_(blockLength),
-    block_(0),
-    rawData_(0)
+    data_(0)
 {
   setUploading(true);
 }
 
 BtPieceMessage::~BtPieceMessage()
 {
-  delete [] rawData_;
+  delete [] data_;
 }
 
 void BtPieceMessage::setRawMessage(unsigned char* data)
 {
-  delete [] rawData_;
-  rawData_ = data;
-  block_ = data+9;
+  delete [] data_;
+  data_ = data;
 }
 
 BtPieceMessageHandle BtPieceMessage::create
@@ -121,12 +119,12 @@ void BtPieceMessage::doReceivedAction()
       return;
     }
     getPieceStorage()->getDiskAdaptor()->writeData
-      (block_, blockLength_, offset);
+      (data_+9, blockLength_, offset);
     piece->completeBlock(slot.getBlockIndex());
     A2_LOG_DEBUG(fmt(MSG_PIECE_BITFIELD, getCuid(),
                      util::toHex(piece->getBitfield(),
                                  piece->getBitfieldLength()).c_str()));
-    piece->updateHash(begin_, block_, blockLength_);
+    piece->updateHash(begin_, data_+9, blockLength_);
     getBtMessageDispatcher()->removeOutstandingRequest(slot);
     if(piece->pieceComplete()) {
       if(checkPieceHash(piece)) {
@@ -195,7 +193,7 @@ void BtPieceMessage::send()
   setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
 }
 
-void BtPieceMessage::pushPieceData(off_t offset, size_t length) const
+void BtPieceMessage::pushPieceData(off_t offset, int32_t length) const
 {
   assert(length <= 16*1024);
   unsigned char* buf = new unsigned char[length];
@@ -206,7 +204,7 @@ void BtPieceMessage::pushPieceData(off_t offset, size_t length) const
     delete [] buf;
     throw;
   }
-  if(r == static_cast<ssize_t>(length)) {
+  if(r == length) {
     getPeerConnection()->pushBytes(buf, length);
   } else {
     throw DL_ABORT_EX(EX_DATA_READ);
@@ -215,11 +213,10 @@ void BtPieceMessage::pushPieceData(off_t offset, size_t length) const
 
 std::string BtPieceMessage::toString() const
 {
-  return fmt("%s index=%lu, begin=%u, length=%lu",
+  return fmt("%s index=%lu, begin=%d, length=%d",
              NAME.c_str(),
              static_cast<unsigned long>(index_),
-             begin_,
-             static_cast<unsigned long>(blockLength_));
+             begin_, blockLength_);
 }
 
 bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)

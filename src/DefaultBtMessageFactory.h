@@ -102,10 +102,10 @@ public:
   createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex);
 
   virtual SharedHandle<BtMessage>
-  createCancelMessage(size_t index, uint32_t begin, size_t length);
+  createCancelMessage(size_t index, int32_t begin, int32_t length);
 
   virtual SharedHandle<BtMessage>
-  createPieceMessage(size_t index, uint32_t begin, size_t length);
+  createPieceMessage(size_t index, int32_t begin, int32_t length);
 
   virtual SharedHandle<BtMessage> createHaveMessage(size_t index);
 
@@ -126,7 +126,7 @@ public:
   virtual SharedHandle<BtMessage> createHaveNoneMessage();
 
   virtual SharedHandle<BtMessage>
-  createRejectMessage(size_t index, uint32_t begin, size_t length);
+  createRejectMessage(size_t index, int32_t begin, int32_t length);
 
   virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index);
 

@@ -40,7 +40,7 @@ namespace aria2 {
 const std::string BtCancelMessage::NAME("cancel");
 
 BtCancelMessage::BtCancelMessage
-(size_t index, uint32_t begin, size_t length)
+(size_t index, int32_t begin, int32_t length)
   :RangeBtMessage(ID, NAME, index, begin, length) {}
 
 SharedHandle<BtCancelMessage> BtCancelMessage::create

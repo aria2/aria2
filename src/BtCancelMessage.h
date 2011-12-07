@@ -45,7 +45,7 @@ typedef SharedHandle<BtCancelMessage> BtCancelMessageHandle;
 
 class BtCancelMessage : public RangeBtMessage {
 public:
-  BtCancelMessage(size_t index = 0, uint32_t begin = 0, size_t length = 0);
+  BtCancelMessage(size_t index = 0, int32_t begin = 0, int32_t length = 0);
 
   static const int8_t ID = 8;
 

@@ -729,42 +729,34 @@ void checkIndex(size_t index, size_t pieces)
   }
 }
 
-void checkBegin(uint32_t begin, size_t pieceLength)
+void checkBegin(int32_t begin, int32_t pieceLength)
 {
   if(!(begin < pieceLength)) {
-    throw DL_ABORT_EX(fmt("Invalid begin: %u", begin));
+    throw DL_ABORT_EX(fmt("Invalid begin: %d", begin));
   }  
 }
 
-void checkLength(size_t length)
+void checkLength(int32_t length)
 {
   if(length > MAX_BLOCK_LENGTH) {
     throw DL_ABORT_EX
-      (fmt("Length too long: %lu > %uKB",
-           static_cast<unsigned long>(length),
-           MAX_BLOCK_LENGTH/1024));
+      (fmt("Length too long: %d > %dKB", length, MAX_BLOCK_LENGTH/1024));
   }
   if(length == 0) {
-    throw DL_ABORT_EX
-      (fmt("Invalid length: %lu",
-           static_cast<unsigned long>(length)));
+    throw DL_ABORT_EX(fmt("Invalid length: %d", length));
   }
 }
 
-void checkRange(uint32_t begin, size_t length, size_t pieceLength)
+void checkRange(int32_t begin, int32_t length, int32_t pieceLength)
 {
   if(!(0 < length)) {
     throw DL_ABORT_EX
-      (fmt("Invalid range: begin=%u, length=%lu",
-           begin,
-           static_cast<unsigned long>(length)));
+      (fmt("Invalid range: begin=%d, length=%d", begin, length));
   }
-  uint32_t end = begin+length;
+  int32_t end = begin+length;
   if(!(end <= pieceLength)) {
     throw DL_ABORT_EX
-      (fmt("Invalid range: begin=%u, length=%lu",
-           begin,
-           static_cast<unsigned long>(length)));
+      (fmt("Invalid range: begin=%d, length=%d", begin, length));
   }
 }
 

@@ -127,7 +127,7 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual SharedHandle<BtMessage>
-    createCancelMessage(size_t index, uint32_t begin, size_t length) {
+    createCancelMessage(size_t index, int32_t begin, int32_t length) {
       SharedHandle<MockBtMessage2> btMsg(new MockBtMessage2());
       btMsg->type = "cancel";
       return btMsg;

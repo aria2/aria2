@@ -28,7 +28,8 @@ public:
 
   virtual void sendMessages() {}
 
-  virtual void doCancelSendingPieceAction(size_t index, uint32_t begin, size_t length) {}
+  virtual void doCancelSendingPieceAction
+  (size_t index, int32_t begin, int32_t length) {}
 
   virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) {}
 
@@ -56,7 +57,8 @@ public:
     return false;
   }
 
-  virtual RequestSlot getOutstandingRequest(size_t index, uint32_t begin, size_t length) {
+  virtual RequestSlot getOutstandingRequest
+  (size_t index, int32_t begin, int32_t length) {
     return RequestSlot::nullSlot;
   }
 

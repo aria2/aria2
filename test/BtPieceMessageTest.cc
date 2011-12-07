@@ -65,8 +65,8 @@ public:
   public:
     virtual SharedHandle<BtMessage>
     createRejectMessage(size_t index,
-                        uint32_t begin,
-                        size_t length) {
+                        int32_t begin,
+                        int32_t length) {
       SharedHandle<MockBtMessage2> msg(new MockBtMessage2(index, begin, length));
       return msg;
     }
@@ -113,8 +113,8 @@ void BtPieceMessageTest::testCreate() {
   SharedHandle<BtPieceMessage> pm = BtPieceMessage::create(&msg[4], 11);
   CPPUNIT_ASSERT_EQUAL((uint8_t)7, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
-  CPPUNIT_ASSERT_EQUAL((uint32_t)256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL((size_t)2, pm->getBlockLength());
+  CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL(2, pm->getBlockLength());
 
   // case: payload size is wrong
   try {

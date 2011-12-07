@@ -45,11 +45,11 @@ class RangeBtMessageValidator : public BtMessageValidator {
 private:
   const RangeBtMessage* message_;
   size_t numPiece_;
-  size_t pieceLength_;
+  int32_t pieceLength_;
 public:
   RangeBtMessageValidator(const RangeBtMessage* message,
                           size_t numPiece,
-                          size_t pieceLength);
+                          int32_t pieceLength);
 
   ~RangeBtMessageValidator();
 

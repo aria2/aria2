@@ -317,7 +317,7 @@ DefaultBtMessageFactory::createRequestMessage
 
 BtMessageHandle
 DefaultBtMessageFactory::createCancelMessage
-(size_t index, uint32_t begin, size_t length)
+(size_t index, int32_t begin, int32_t length)
 {
   BtCancelMessageHandle msg(new BtCancelMessage(index, begin, length));
   SharedHandle<BtMessageValidator> validator
@@ -332,7 +332,7 @@ DefaultBtMessageFactory::createCancelMessage
 
 BtMessageHandle
 DefaultBtMessageFactory::createPieceMessage
-(size_t index, uint32_t begin, size_t length)
+(size_t index, int32_t begin, int32_t length)
 {
   BtPieceMessageHandle msg(new BtPieceMessage(index, begin, length));
   BtMessageValidatorHandle validator
@@ -428,7 +428,7 @@ DefaultBtMessageFactory::createHaveNoneMessage()
 
 BtMessageHandle
 DefaultBtMessageFactory::createRejectMessage
-(size_t index, uint32_t begin, size_t length)
+(size_t index, int32_t begin, int32_t length)
 {
   BtRejectMessageHandle msg(new BtRejectMessage(index, begin, length));
   SharedHandle<BtMessageValidator> validator
