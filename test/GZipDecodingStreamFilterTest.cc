@@ -30,7 +30,7 @@ class GZipDecodingStreamFilterTest:public CppUnit::TestFixture {
   public:
     MockSegment2():positionToWrite_(0) {}
 
-    virtual void updateWrittenLength(size_t bytes)
+    virtual void updateWrittenLength(int32_t bytes)
     {
       positionToWrite_ += bytes;
     }

@@ -57,14 +57,14 @@ class MessageDigest;
 class Piece {
 private:
   size_t index_;
-  size_t length_;
-  size_t blockLength_;
+  int32_t length_;
+  int32_t blockLength_;
   BitfieldMan* bitfield_;
   std::vector<cuid_t> users_;
   bool usedBySegment_;
 #ifdef ENABLE_MESSAGE_DIGEST
 
-  size_t nextBegin_;
+  int32_t nextBegin_;
 
   std::string hashType_;
 
@@ -77,11 +77,11 @@ private:
   Piece& operator=(const Piece& piece);  
 public:
 
-  static const size_t BLOCK_LENGTH  = 16*1024;
+  static const int32_t BLOCK_LENGTH  = 16*1024;
 
   Piece();
 
-  Piece(size_t index, size_t length, size_t blockLength = BLOCK_LENGTH);
+  Piece(size_t index, int32_t length, int32_t blockLength = BLOCK_LENGTH);
 
   ~Piece();
 
@@ -125,17 +125,17 @@ public:
 
   size_t countBlock() const;
 
-  size_t getBlockLength(size_t index) const;
+  int32_t getBlockLength(size_t index) const;
 
-  size_t getBlockLength() const;
+  int32_t getBlockLength() const;
 
   size_t getIndex() const { return index_; }
 
   void setIndex(size_t index) { index_ = index; }
 
-  size_t getLength() const { return length_; }
+  int32_t getLength() const { return length_; }
 
-  void setLength(size_t length) { length_ = length; }
+  void setLength(int32_t length) { length_ = length; }
 
   const unsigned char* getBitfield() const;
 
@@ -151,7 +151,7 @@ public:
   bool isBlockUsed(size_t index) const;
 
   // Calculates completed length
-  size_t getCompletedLength();
+  int32_t getCompletedLength();
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
@@ -160,7 +160,7 @@ public:
   // Updates hash value. This function compares begin and private variable
   // nextBegin_ and only when they are equal, hash is updated eating data and
   // returns true. Otherwise returns false.
-  bool updateHash(uint32_t begin, const unsigned char* data, size_t dataLength);
+  bool updateHash(int32_t begin, const unsigned char* data, size_t dataLength);
 
   bool isHashCalculated() const;
 
@@ -177,7 +177,7 @@ public:
   /**
    * Loses current bitfield state.
    */
-  void reconfigure(size_t length);
+  void reconfigure(int32_t length);
 
   void addUser(cuid_t cuid);
   void removeUser(cuid_t cuid);

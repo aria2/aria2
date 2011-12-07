@@ -882,7 +882,7 @@ void AbstractCommand::createSocket()
   socket_.reset(new SocketCore());
 }
 
-size_t AbstractCommand::calculateMinSplitSize() const
+int32_t AbstractCommand::calculateMinSplitSize() const
 {
   if(req_ && req_->isPipeliningEnabled()) {
     return getDownloadContext()->getPieceLength();

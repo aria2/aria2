@@ -132,21 +132,19 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   }
   SegmentEntryHandle entry(new SegmentEntry(cuid, segment));
   usedSegmentEntries_.push_back(entry);
-  A2_LOG_DEBUG(fmt("index=%lu, length=%lu, segmentLength=%lu,"
-                   " writtenLength=%lu",
+  A2_LOG_DEBUG(fmt("index=%lu, length=%d, segmentLength=%d,"
+                   " writtenLength=%d",
                    static_cast<unsigned long>(segment->getIndex()),
-                   static_cast<unsigned long>(segment->getLength()),
-                   static_cast<unsigned long>(segment->getSegmentLength()),
-                   static_cast<unsigned long>(segment->getWrittenLength())));
+                   segment->getLength(),
+                   segment->getSegmentLength(),
+                   segment->getWrittenLength()));
   if(piece->getLength() > 0) {
-    std::map<size_t, size_t>::iterator positr =
+    std::map<size_t, int32_t>::iterator positr =
       segmentWrittenLengthMemo_.find(segment->getIndex());
     if(positr != segmentWrittenLengthMemo_.end()) {
-      const size_t writtenLength = (*positr).second;
-      A2_LOG_DEBUG(fmt("writtenLength(in memo)=%lu, writtenLength=%lu",
-                       static_cast<unsigned long>(writtenLength),
-                       static_cast<unsigned long>(segment->getWrittenLength()))
-                   );
+      const int32_t writtenLength = (*positr).second;
+      A2_LOG_DEBUG(fmt("writtenLength(in memo)=%d, writtenLength=%d",
+                       writtenLength, segment->getWrittenLength()));
       //  If the difference between cached writtenLength and segment's
       //  writtenLength is less than one block, we assume that these
       //  missing bytes are already downloaded.
@@ -261,9 +259,9 @@ void SegmentMan::cancelSegmentInternal
   segment->getPiece()->setUsedBySegment(false);
   pieceStorage_->cancelPiece(segment->getPiece(), cuid);
   segmentWrittenLengthMemo_[segment->getIndex()] = segment->getWrittenLength();
-  A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%lu",
+  A2_LOG_DEBUG(fmt("Memorized segment index=%lu, writtenLength=%d",
                    static_cast<unsigned long>(segment->getIndex()),
-                   static_cast<unsigned long>(segment->getWrittenLength())));
+                   segment->getWrittenLength()));
 }
 
 void SegmentMan::cancelSegment(cuid_t cuid) {

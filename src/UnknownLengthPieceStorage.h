@@ -231,7 +231,7 @@ public:
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
   
-  virtual size_t getPieceLength(size_t index);
+  virtual int32_t getPieceLength(size_t index);
 
   /**
    * Adds piece index to advertise to other commands. They send have message

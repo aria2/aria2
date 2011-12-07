@@ -309,7 +309,7 @@ void DefaultBtProgressInfoFile::load()
   array_ptr<unsigned char> savedBitfield(new unsigned char[bitfieldLength]);
   READ_CHECK(fp, static_cast<unsigned char*>(savedBitfield),
              bitfieldLength);
-  if(pieceLength == dctx_->getPieceLength()) {
+  if(pieceLength == static_cast<uint32_t>(dctx_->getPieceLength())) {
     pieceStorage_->setBitfield(savedBitfield, bitfieldLength);
 
     uint32_t numInFlightPiece;
@@ -333,7 +333,7 @@ void DefaultBtProgressInfoFile::load()
       if(version >= 1) {
         length = ntohl(length);
       }
-      if(!(length <=dctx_->getPieceLength())) {
+      if(!(length <= static_cast<uint32_t>(dctx_->getPieceLength()))) {
         throw DL_ABORT_EX(fmt("piece length out of range: %u", length));
       }
       SharedHandle<Piece> piece(new Piece(index, length));

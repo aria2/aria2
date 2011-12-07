@@ -160,9 +160,9 @@ public:
 
   bool isGood() const;
 
-  void allocateSessionResource(size_t pieceLength, off_t totalLength);
+  void allocateSessionResource(int32_t pieceLength, off_t totalLength);
 
-  void reconfigureSessionResource(size_t pieceLength, off_t totalLength);
+  void reconfigureSessionResource(int32_t pieceLength, off_t totalLength);
 
   void releaseSessionResource();
 
@@ -217,9 +217,9 @@ public:
 
   void snubbing(bool b);
 
-  void updateUploadLength(size_t bytes);
+  void updateUploadLength(int32_t bytes);
 
-  void updateDownloadLength(size_t bytes);
+  void updateDownloadLength(int32_t bytes);
 
   /**
    * Returns the transfer rate from localhost to remote host.

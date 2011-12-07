@@ -48,14 +48,14 @@ class ChunkChecksum {
 private:
   std::string hashType_;
   std::vector<std::string> pieceHashes_;
-  size_t pieceLength_;
+  int32_t pieceLength_;
 public:
   ChunkChecksum();
 
   ChunkChecksum
   (const std::string& hashType,
    const std::vector<std::string>& pieceHashes,
-   size_t pieceLength);
+   int32_t pieceLength);
 
   bool validateChunk(const std::string& actualDigest,
                      size_t index) const;
@@ -78,12 +78,12 @@ public:
     return hashType_;
   }
 
-  size_t getPieceLength() const
+  int32_t getPieceLength() const
   {
     return pieceLength_;
   }
 
-  void setPieceLength(size_t length)
+  void setPieceLength(int32_t length)
   {
     pieceLength_ = length;
   }

@@ -29,28 +29,28 @@ public:
     return 0;
   }
 
-  virtual size_t getLength() const
+  virtual int32_t getLength() const
   {
     return 0;
   }
 
-  virtual size_t getSegmentLength() const
+  virtual int32_t getSegmentLength() const
   {
     return 0;
   }
 
-  virtual size_t getWrittenLength() const
+  virtual int32_t getWrittenLength() const
   {
     return 0;
   }
 
-  virtual void updateWrittenLength(size_t bytes) {}
+  virtual void updateWrittenLength(int32_t bytes) {}
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
   // `begin' is a offset inside this segment.
   virtual bool updateHash
-  (uint32_t begin, const unsigned char* data, size_t dataLength)
+  (int32_t begin, const unsigned char* data, size_t dataLength)
   {
     return false;
   }

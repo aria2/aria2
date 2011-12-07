@@ -81,7 +81,7 @@ void Metalink2RequestGroupTest::testGenerate()
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getPieceHashType());
     CPPUNIT_ASSERT_EQUAL((size_t)2, dctx->getPieceHashes().size());
-    CPPUNIT_ASSERT_EQUAL((size_t)262144, dctx->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(262144, dctx->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getHashType());
     CPPUNIT_ASSERT_EQUAL
       (std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),

@@ -43,7 +43,7 @@ GrowSegment::GrowSegment(const SharedHandle<Piece>& piece):
 
 GrowSegment::~GrowSegment() {}
 
-void GrowSegment::updateWrittenLength(size_t bytes)
+void GrowSegment::updateWrittenLength(int32_t bytes)
 {
   writtenLength_ += bytes;
   piece_->reconfigure(writtenLength_);

@@ -32,7 +32,7 @@ void SegmentTest::testUpdateWrittenLength()
 {
   SharedHandle<Piece> p(new Piece(0, 16*1024*10));
   PiecedSegment s(16*1024*10, p);
-  CPPUNIT_ASSERT_EQUAL((size_t)0, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL(0, s.getWrittenLength());
 
   s.updateWrittenLength(16*1024);
   CPPUNIT_ASSERT(p->hasBlock(0));
@@ -67,9 +67,9 @@ void SegmentTest::testClear()
   SharedHandle<Piece> p(new Piece(0, 16*1024*10));
   PiecedSegment s(16*1024*10, p);
   s.updateWrittenLength(16*1024*10);
-  CPPUNIT_ASSERT_EQUAL((size_t)16*1024*10, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL(16*1024*10, s.getWrittenLength());
   s.clear();
-  CPPUNIT_ASSERT_EQUAL((size_t)0, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL(0, s.getWrittenLength());
 }
 
 } // namespace aria2

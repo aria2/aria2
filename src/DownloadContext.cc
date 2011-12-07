@@ -56,7 +56,7 @@ DownloadContext::DownloadContext():
   downloadStopTime_(downloadStartTime_),
   metalinkServerContacted_(false) {}
 
-DownloadContext::DownloadContext(size_t pieceLength,
+DownloadContext::DownloadContext(int32_t pieceLength,
                                  off_t totalLength,
                                  const std::string& path):
   pieceLength_(pieceLength),

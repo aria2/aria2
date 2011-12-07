@@ -83,7 +83,7 @@ private:
 
   BtMessageDispatcher* dispatcher_;
 public:
-  PeerSessionResource(size_t pieceLength, off_t totalLength);
+  PeerSessionResource(int32_t pieceLength, off_t totalLength);
 
   ~PeerSessionResource();
 
@@ -155,7 +155,7 @@ public:
 
   size_t getBitfieldLength() const;
 
-  void reconfigure(size_t index, off_t totalLength);
+  void reconfigure(int32_t pieceLength, off_t totalLength);
 
   bool hasPiece(size_t index) const;
 
@@ -212,11 +212,11 @@ public:
 
   off_t uploadLength() const;
 
-  void updateUploadLength(size_t bytes);
+  void updateUploadLength(int32_t bytes);
 
   off_t downloadLength() const;
 
-  void updateDownloadLength(size_t bytes);
+  void updateDownloadLength(int32_t bytes);
 
   const Timer& getLastDownloadUpdate() const
   {

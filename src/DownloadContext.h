@@ -61,7 +61,7 @@ private:
 
   std::vector<std::string> pieceHashes_;
 
-  size_t pieceLength_;
+  int32_t pieceLength_;
 
   std::string pieceHashType_;
 
@@ -92,7 +92,7 @@ public:
 
   // Convenient constructor that creates single file download.  path
   // should be escaped with util::escapePath(...).
-  DownloadContext(size_t pieceLength,
+  DownloadContext(int32_t pieceLength,
                   off_t totalLength,
                   const std::string& path = A2STR::NIL);
 
@@ -146,9 +146,9 @@ public:
     fileEntries_.assign(first, last);
   }
 
-  size_t getPieceLength() const { return pieceLength_; }
+  int32_t getPieceLength() const { return pieceLength_; }
 
-  void setPieceLength(size_t length) { pieceLength_ = length; }
+  void setPieceLength(int32_t length) { pieceLength_ = length; }
 
   size_t getNumPieces() const;
 

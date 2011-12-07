@@ -603,7 +603,7 @@ void createFileEntry
 (const SharedHandle<List>& files,
  InputIterator first, InputIterator last,
  off_t totalLength,
- size_t pieceLength,
+ int32_t pieceLength,
  const std::string& bitfield)
 {
   BitfieldMan bf(pieceLength, totalLength);
@@ -619,7 +619,7 @@ void createFileEntry
 (const SharedHandle<List>& files,
  InputIterator first, InputIterator last,
  off_t totalLength,
- size_t pieceLength,
+ int32_t pieceLength,
  const SharedHandle<PieceStorage>& ps)
 {
   BitfieldMan bf(pieceLength, totalLength);
@@ -680,7 +680,7 @@ void gatherProgressCommon
   }
   const SharedHandle<DownloadContext>& dctx = group->getDownloadContext();
   if(requested_key(keys, KEY_PIECE_LENGTH)) {
-    entryDict->put(KEY_PIECE_LENGTH, util::uitos(dctx->getPieceLength()));
+    entryDict->put(KEY_PIECE_LENGTH, util::itos(dctx->getPieceLength()));
   }
   if(requested_key(keys, KEY_NUM_PIECES)) {
     entryDict->put(KEY_NUM_PIECES, util::uitos(dctx->getNumPieces()));
@@ -897,7 +897,7 @@ void gatherStoppedDownload
     }
   }
   if(requested_key(keys, KEY_PIECE_LENGTH)) {
-    entryDict->put(KEY_PIECE_LENGTH, util::uitos(ds->pieceLength));
+    entryDict->put(KEY_PIECE_LENGTH, util::itos(ds->pieceLength));
   }
   if(requested_key(keys, KEY_NUM_PIECES)) {
     entryDict->put(KEY_NUM_PIECES, util::uitos(ds->numPieces));

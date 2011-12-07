@@ -89,7 +89,7 @@ struct DownloadResult
 
   std::string infoHash;
 
-  size_t pieceLength;
+  int32_t pieceLength;
 
   size_t numPieces;
 

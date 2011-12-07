@@ -51,12 +51,14 @@ Piece::Piece():index_(0), length_(0), blockLength_(BLOCK_LENGTH), bitfield_(0),
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
-Piece::Piece(size_t index, size_t length, size_t blockLength):
-  index_(index), length_(length), blockLength_(blockLength),
-  bitfield_(new BitfieldMan(blockLength_, length)),
-  usedBySegment_(false)
+Piece::Piece(size_t index, int32_t length, int32_t blockLength)
+ : index_(index),
+   length_(length),
+   blockLength_(blockLength),
+   bitfield_(new BitfieldMan(blockLength_, length)),
+   usedBySegment_(false)
 #ifdef ENABLE_MESSAGE_DIGEST
-  , nextBegin_(0)
+ ,nextBegin_(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
@@ -88,12 +90,12 @@ size_t Piece::countBlock() const
   return bitfield_->countBlock();
 }
 
-size_t Piece::getBlockLength(size_t index) const
+int32_t Piece::getBlockLength(size_t index) const
 {
   return bitfield_->getBlockLength(index);
 }
 
-size_t Piece::getBlockLength() const
+int32_t Piece::getBlockLength() const
 {
   return bitfield_->getBlockLength();
 }
@@ -167,12 +169,11 @@ bool Piece::getAllMissingBlockIndexes
 }
 
 std::string Piece::toString() const {
-  return fmt("piece: index=%lu, length=%lu",
-             static_cast<unsigned long>(index_),
-             static_cast<unsigned long>(length_));
+  return fmt("piece: index=%lu, length=%d",
+             static_cast<unsigned long>(index_), length_);
 }
 
-void Piece::reconfigure(size_t length)
+void Piece::reconfigure(int32_t length)
 {
   delete bitfield_;
   length_ = length;
@@ -184,7 +185,7 @@ void Piece::setBitfield(const unsigned char* bitfield, size_t len)
   bitfield_->setBitfield(bitfield, len);
 }
 
-size_t Piece::getCompletedLength()
+int32_t Piece::getCompletedLength()
 {
   return bitfield_->getCompletedLength();
 }
@@ -197,12 +198,13 @@ void Piece::setHashType(const std::string& hashType)
 }
 
 bool Piece::updateHash
-(uint32_t begin, const unsigned char* data, size_t dataLength)
+(int32_t begin, const unsigned char* data, size_t dataLength)
 {
   if(hashType_.empty()) {
     return false;
   }
-  if(begin == nextBegin_ && nextBegin_+dataLength <= length_) {
+  if(begin == nextBegin_ &&
+     nextBegin_+dataLength <= static_cast<size_t>(length_)) {
     if(!mdctx_) {
       mdctx_ = MessageDigest::create(hashType_);
     }

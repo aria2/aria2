@@ -44,7 +44,7 @@ using namespace aria2::expr;
 
 namespace aria2 {
 
-BitfieldMan::BitfieldMan(size_t blockLength, off_t totalLength)
+BitfieldMan::BitfieldMan(int32_t blockLength, off_t totalLength)
   :blockLength_(blockLength),
    totalLength_(totalLength),
    bitfieldLength_(0),
@@ -130,12 +130,12 @@ BitfieldMan::~BitfieldMan() {
   delete [] filterBitfield_;
 }
 
-size_t BitfieldMan::getLastBlockLength() const
+int32_t BitfieldMan::getLastBlockLength() const
 {
   return totalLength_-blockLength_*(blocks_-1);
 }
 
-size_t BitfieldMan::getBlockLength(size_t index) const
+int32_t BitfieldMan::getBlockLength(size_t index) const
 {
   if(index == blocks_-1) {
     return getLastBlockLength();
@@ -230,10 +230,10 @@ namespace {
 template<typename Array>
 bool getSparseMissingUnusedIndex
 (size_t& index,
- size_t minSplitSize,
+ int32_t minSplitSize,
  const Array& bitfield,
  const unsigned char* useBitfield,
- size_t blockLength_,
+ int32_t blockLength,
  size_t blocks)
 {
   BitfieldMan::Range maxRange;
@@ -275,8 +275,8 @@ bool getSparseMissingUnusedIndex
     } else {
       if((!bitfield::test(useBitfield, blocks, maxRange.startIndex-1) &&
           bitfield::test(bitfield, blocks, maxRange.startIndex-1)) ||
-         (static_cast<uint64_t>(maxRange.endIndex-maxRange.startIndex)*
-          blockLength_ >= minSplitSize)) {
+         (static_cast<int64_t>(maxRange.endIndex-maxRange.startIndex)*
+          blockLength >= minSplitSize)) {
         index = maxRange.startIndex;
         return true;
       } else {
@@ -291,7 +291,7 @@ bool getSparseMissingUnusedIndex
 
 bool BitfieldMan::getSparseMissingUnusedIndex
 (size_t& index,
- size_t minSplitSize,
+ int32_t minSplitSize,
  const unsigned char* ignoreBitfield,
  size_t ignoreBitfieldLength) const
 {
@@ -313,10 +313,10 @@ namespace {
 template<typename Array>
 bool getGeomMissingUnusedIndex
 (size_t& index,
- size_t minSplitSize,
+ int32_t minSplitSize,
  const Array& bitfield,
  const unsigned char* useBitfield,
- size_t blockLength,
+ int32_t blockLength,
  size_t blocks,
  double base,
  size_t offsetIndex)
@@ -350,7 +350,7 @@ bool getGeomMissingUnusedIndex
 
 bool BitfieldMan::getGeomMissingUnusedIndex
 (size_t& index,
- size_t minSplitSize,
+ int32_t minSplitSize,
  const unsigned char* ignoreBitfield,
  size_t ignoreBitfieldLength,
  double base,
@@ -376,10 +376,10 @@ namespace {
 template<typename Array>
 bool getInorderMissingUnusedIndex
 (size_t& index,
- size_t minSplitSize,
+ int32_t minSplitSize,
  const Array& bitfield,
  const unsigned char* useBitfield,
- size_t blockLength_,
+ int32_t blockLength,
  size_t blocks)
 {
   // We always return first piece if it is available.
@@ -405,7 +405,7 @@ bool getInorderMissingUnusedIndex
            bitfield::test(useBitfield, blocks, j)) {
           break;
         }
-        if((j-i+1)*blockLength_ >= minSplitSize) {
+        if(static_cast<int64_t>(j-i+1)*blockLength >= minSplitSize) {
           index = j;
           return true;
         }
@@ -421,7 +421,7 @@ bool getInorderMissingUnusedIndex
 
 bool BitfieldMan::getInorderMissingUnusedIndex
 (size_t& index,
- size_t minSplitSize,
+ int32_t minSplitSize,
  const unsigned char* ignoreBitfield,
  size_t ignoreBitfieldLength) const
 {

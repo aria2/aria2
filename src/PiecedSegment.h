@@ -41,16 +41,16 @@ namespace aria2 {
 
 class PiecedSegment:public Segment {
 private:
+  SharedHandle<Piece> piece_;
   /**
    * Piece class has length property but it is a actual length of piece.
    * The last piece likely have shorter length than the other length.
    */
-  size_t pieceLength_;
-  SharedHandle<Piece> piece_;
-  size_t writtenLength_;
+  int32_t pieceLength_;
+  int32_t writtenLength_;
 
 public:
-  PiecedSegment(size_t pieceLength, const SharedHandle<Piece>& piece);
+  PiecedSegment(int32_t pieceLength, const SharedHandle<Piece>& piece);
 
   virtual ~PiecedSegment();
 
@@ -62,25 +62,27 @@ public:
 
   virtual off_t getPositionToWrite() const;
 
-  virtual size_t getLength() const;
+  virtual int32_t getLength() const;
 
-  virtual size_t getSegmentLength() const
+  virtual int32_t getSegmentLength() const
   {
     return pieceLength_;
   }
 
-  virtual size_t getWrittenLength() const
+  virtual int32_t getWrittenLength() const
   {
     return writtenLength_;
   }
 
-  virtual void updateWrittenLength(size_t bytes);
+  virtual void updateWrittenLength(int32_t bytes);
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
   // `begin' is a offset inside this segment.
-  virtual bool updateHash(uint32_t begin,
-                          const unsigned char* data, size_t dataLength);
+  virtual bool updateHash
+  (int32_t begin,
+   const unsigned char* data,
+   size_t dataLength);
 
   virtual bool isHashCalculated() const;
 

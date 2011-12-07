@@ -73,7 +73,7 @@ void Peer::usedBy(cuid_t cuid)
   cuid_ = cuid;
 }
 
-void Peer::allocateSessionResource(size_t pieceLength, off_t totalLength)
+void Peer::allocateSessionResource(int32_t pieceLength, off_t totalLength)
 {
   delete res_;
   res_ = new PeerSessionResource(pieceLength, totalLength);
@@ -81,7 +81,7 @@ void Peer::allocateSessionResource(size_t pieceLength, off_t totalLength)
   updateSeeder();
 }
 
-void Peer::reconfigureSessionResource(size_t pieceLength, off_t totalLength)
+void Peer::reconfigureSessionResource(int32_t pieceLength, off_t totalLength)
 {
   assert(res_);
   res_->reconfigure(pieceLength, totalLength);
@@ -192,13 +192,13 @@ void Peer::snubbing(bool b)
   res_->snubbing(b);
 }
 
-void Peer::updateUploadLength(size_t bytes)
+void Peer::updateUploadLength(int32_t bytes)
 {
   assert(res_);
   res_->updateUploadLength(bytes);
 }
 
-void Peer::updateDownloadLength(size_t bytes)
+void Peer::updateDownloadLength(int32_t bytes)
 {
   assert(res_);
   res_->updateDownloadLength(bytes);

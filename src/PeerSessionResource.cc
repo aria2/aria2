@@ -44,7 +44,8 @@
 
 namespace aria2 {
 
-PeerSessionResource::PeerSessionResource(size_t pieceLength, off_t totalLength):
+PeerSessionResource::PeerSessionResource(int32_t pieceLength, off_t totalLength)
+  :
   amChoking_(true),
   amInterested_(false),
   peerChoking_(true),
@@ -130,7 +131,8 @@ void PeerSessionResource::updateBitfield(size_t index, int operation)
   }
 }
 
-void PeerSessionResource::setBitfield(const unsigned char* bitfield, size_t bitfieldLength)
+void PeerSessionResource::setBitfield
+(const unsigned char* bitfield, size_t bitfieldLength)
 {
   bitfieldMan_->setBitfield(bitfield, bitfieldLength);
 }
@@ -242,7 +244,7 @@ off_t PeerSessionResource::uploadLength() const
   return peerStat_.getSessionUploadLength();
 }
 
-void PeerSessionResource::updateUploadLength(size_t bytes)
+void PeerSessionResource::updateUploadLength(int32_t bytes)
 {
   peerStat_.updateUploadLength(bytes);
 }
@@ -252,7 +254,7 @@ off_t PeerSessionResource::downloadLength() const
   return peerStat_.getSessionDownloadLength();
 }
 
-void PeerSessionResource::updateDownloadLength(size_t bytes)
+void PeerSessionResource::updateDownloadLength(int32_t bytes)
 {
   peerStat_.updateDownloadLength(bytes);
 
@@ -275,7 +277,7 @@ size_t PeerSessionResource::countOutstandingUpload() const
   return dispatcher_->countOutstandingUpload();
 }
 
-void PeerSessionResource::reconfigure(size_t pieceLength, off_t totalLenth)
+void PeerSessionResource::reconfigure(int32_t pieceLength, off_t totalLenth)
 {
   delete bitfieldMan_;
   bitfieldMan_ = new BitfieldMan(pieceLength, totalLenth);

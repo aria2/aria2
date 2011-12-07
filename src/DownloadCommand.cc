@@ -148,8 +148,10 @@ bool DownloadCommand::executeInternal() {
       if(segment->getLength() > 0) {
         if(static_cast<off_t>(segment->getPosition()+segment->getLength()) <=
            getFileEntry()->getLastOffset()) {
-          bufSize = std::min(segment->getLength()-segment->getWrittenLength(),
-                             getSocketRecvBuffer()->getBufferLength());
+          bufSize =
+            std::min(static_cast<size_t>(segment->getLength()
+                                         -segment->getWrittenLength()),
+                     getSocketRecvBuffer()->getBufferLength());
         } else {
           bufSize =
             std::min

@@ -99,7 +99,7 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT(e->chunkChecksum);
   if(MessageDigest::supports("sha-256")) {
     CPPUNIT_ASSERT_EQUAL(std::string("sha-256"), e->chunkChecksum->getHashType());
-    CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(262144, e->chunkChecksum->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countPieceHash());
     CPPUNIT_ASSERT_EQUAL(std::string("0245178074fd042e19b7c3885b360fc21064b30e73f5626c7e3b005d048069c5"),
                          util::toHex(e->chunkChecksum->getPieceHash(0)));
@@ -109,7 +109,7 @@ void MetalinkProcessorTest::testParseFileV4()
                          util::toHex(e->chunkChecksum->getPieceHash(2)));
   } else {
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), e->chunkChecksum->getHashType());
-    CPPUNIT_ASSERT_EQUAL((size_t)262144, e->chunkChecksum->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(262144, e->chunkChecksum->getPieceLength());
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->chunkChecksum->countPieceHash());
     CPPUNIT_ASSERT_EQUAL
       (std::string("5bd9f7248df0f3a6a86ab6c95f48787d546efa14"),
@@ -559,7 +559,7 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
                          util::toHex(entry2->checksum->getDigest()));
     CPPUNIT_ASSERT_EQUAL((size_t)2, entry2->chunkChecksum->countPieceHash());
-    CPPUNIT_ASSERT_EQUAL((size_t)262144, entry2->chunkChecksum->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(262144, entry2->chunkChecksum->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("179463a88d79cbf0b1923991708aead914f26142"),
                          util::toHex(entry2->chunkChecksum->getPieceHash(0)));
     CPPUNIT_ASSERT_EQUAL(std::string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),
@@ -887,7 +887,7 @@ void MetalinkProcessorTest::testMultiplePieces()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
-    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -919,7 +919,7 @@ void MetalinkProcessorTest::testBadPieceNo()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
 
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -951,7 +951,7 @@ void MetalinkProcessorTest::testBadPieceLength()
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
@@ -983,7 +983,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
     CPPUNIT_ASSERT(c);
-    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getPieceLength());
+    CPPUNIT_ASSERT_EQUAL(1024, c->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), c->getHashType());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());

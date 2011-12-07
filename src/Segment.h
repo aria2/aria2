@@ -58,19 +58,21 @@ public:
   
   virtual off_t getPositionToWrite() const = 0;
 
-  virtual size_t getLength() const = 0;
+  virtual int32_t getLength() const = 0;
 
-  virtual size_t getSegmentLength() const = 0;
+  virtual int32_t getSegmentLength() const = 0;
 
-  virtual size_t getWrittenLength() const = 0;
+  virtual int32_t getWrittenLength() const = 0;
 
-  virtual void updateWrittenLength(size_t bytes) = 0;
+  virtual void updateWrittenLength(int32_t bytes) = 0;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
   // `begin' is a offset inside this segment.
-  virtual bool updateHash(uint32_t begin,
-                          const unsigned char* data, size_t dataLength) = 0;
+  virtual bool updateHash
+  (int32_t begin,
+   const unsigned char* data,
+   size_t dataLength) = 0;
 
   virtual bool isHashCalculated() const = 0;
 

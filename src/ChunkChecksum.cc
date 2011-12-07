@@ -42,7 +42,7 @@ ChunkChecksum::ChunkChecksum():pieceLength_(0) {}
 ChunkChecksum::ChunkChecksum
 (const std::string& hashType,
  const std::vector<std::string>& pieceHashes,
- size_t pieceLength)
+ int32_t pieceLength)
     : hashType_(hashType),
       pieceHashes_(pieceHashes),
       pieceLength_(pieceLength)

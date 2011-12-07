@@ -293,7 +293,7 @@ void BittorrentHelperTest::testGetPieceLength() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
 
-  CPPUNIT_ASSERT_EQUAL((size_t)128, dctx->getPieceLength());
+  CPPUNIT_ASSERT_EQUAL(128, dctx->getPieceLength());
 }
 
 void BittorrentHelperTest::testGetInfoHashAsString() {

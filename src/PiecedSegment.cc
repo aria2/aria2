@@ -39,8 +39,9 @@
 namespace aria2 {
 
 PiecedSegment::PiecedSegment
-(size_t pieceLength, const SharedHandle<Piece>& piece):
-  pieceLength_(pieceLength), piece_(piece)
+(int32_t pieceLength, const SharedHandle<Piece>& piece)
+  : piece_(piece),
+    pieceLength_(pieceLength)
 {
   size_t index;
   bool t = piece_->getFirstMissingBlockIndexWithoutLock(index);
@@ -70,14 +71,14 @@ off_t PiecedSegment::getPositionToWrite() const
   return getPosition()+writtenLength_;
 }
 
-size_t PiecedSegment::getLength() const
+int32_t PiecedSegment::getLength() const
 {
   return piece_->getLength();
 }
 
-void PiecedSegment::updateWrittenLength(size_t bytes)
+void PiecedSegment::updateWrittenLength(int32_t bytes)
 {
-  size_t newWrittenLength = writtenLength_+bytes;
+  int32_t newWrittenLength = writtenLength_+bytes;
   assert(newWrittenLength <= piece_->getLength());
   for(size_t i = writtenLength_/piece_->getBlockLength(),
         end = newWrittenLength/piece_->getBlockLength(); i < end; ++i) {
@@ -91,8 +92,10 @@ void PiecedSegment::updateWrittenLength(size_t bytes)
 
 #ifdef ENABLE_MESSAGE_DIGEST
 
-bool PiecedSegment::updateHash(uint32_t begin,
-                               const unsigned char* data, size_t dataLength)
+bool PiecedSegment::updateHash
+(int32_t begin,
+ const unsigned char* data,
+ size_t dataLength)
 {
   return piece_->updateHash(begin, data, dataLength);
 }

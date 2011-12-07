@@ -220,7 +220,7 @@ DiskAdaptorHandle UnknownLengthPieceStorage::getDiskAdaptor()
   return diskAdaptor_;
 }
 
-size_t UnknownLengthPieceStorage::getPieceLength(size_t index)
+int32_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 {
   if(index == 0) {
     return totalLength_;

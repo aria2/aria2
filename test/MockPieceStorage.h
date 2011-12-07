@@ -21,7 +21,7 @@ private:
   bool selectiveDownloadingMode;
   bool endGame;
   SharedHandle<DiskAdaptor> diskAdaptor;
-  std::deque<size_t> pieceLengthList;
+  std::deque<int32_t> pieceLengthList;
   std::deque<SharedHandle<Piece> > inFlightPieces;
   bool downloadFinished_;
   bool allDownloadFinished_;
@@ -230,11 +230,11 @@ public:
     this->diskAdaptor = adaptor;
   }
   
-  virtual size_t getPieceLength(size_t index) {
+  virtual int32_t getPieceLength(size_t index) {
     return pieceLengthList.at(index);
   }
 
-  void addPieceLengthList(size_t length) {
+  void addPieceLengthList(int32_t length) {
     pieceLengthList.push_back(length);
   }
 

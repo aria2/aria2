@@ -45,7 +45,7 @@ namespace aria2 {
 
 class BitfieldMan {
 private:
-  size_t blockLength_;
+  int32_t blockLength_;
   off_t totalLength_;
   size_t bitfieldLength_;
   size_t blocks_;
@@ -84,20 +84,20 @@ public:
     bool operator==(const Range& range) const;
   };
 public:
-  BitfieldMan(size_t blockLength, off_t totalLength);
+  BitfieldMan(int32_t blockLength, off_t totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);
   ~BitfieldMan();
 
   BitfieldMan& operator=(const BitfieldMan& bitfieldMan);
 
-  size_t getBlockLength() const
+  int32_t getBlockLength() const
   {
     return blockLength_;
   }
 
-  size_t getLastBlockLength() const;
+  int32_t getLastBlockLength() const;
 
-  size_t getBlockLength(size_t index) const;
+  int32_t getBlockLength(size_t index) const;
 
   off_t getTotalLength() const { return totalLength_; }
 
@@ -131,7 +131,7 @@ public:
   // affected by filter
   bool getSparseMissingUnusedIndex
   (size_t& index,
-   size_t minSplitSize,
+   int32_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t ignoreBitfieldLength) const;
 
@@ -151,7 +151,7 @@ public:
   // affected by filter
   bool getGeomMissingUnusedIndex
   (size_t& index,
-   size_t minSplitSize,
+   int32_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t ignoreBitfieldLength,
    double base,
@@ -165,7 +165,7 @@ public:
   // affected by filter
   bool getInorderMissingUnusedIndex
   (size_t& index,
-   size_t minSplitSize,
+   int32_t minSplitSize,
    const unsigned char* ignoreBitfield,
    size_t ignoreBitfieldLength) const;
 

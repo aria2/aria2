@@ -253,7 +253,7 @@ Metalink2RequestGroup::createRequestGroup
                     AccumulateNonP2PUri(uris));
       // If piece hash is specified in the metalink,
       // make segment size equal to piece hash size.
-      size_t pieceLength;
+      int32_t pieceLength;
 #ifdef ENABLE_MESSAGE_DIGEST
       if(!entry->chunkChecksum) {
         pieceLength = option->getAsInt(PREF_PIECE_LENGTH);

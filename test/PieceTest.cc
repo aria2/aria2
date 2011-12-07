@@ -51,7 +51,7 @@ void PieceTest::testCompleteBlock()
 
 void PieceTest::testGetCompletedLength()
 {
-  size_t blockLength = 16*1024;
+  int32_t blockLength = 16*1024;
   Piece p(0, blockLength*10+100, blockLength);
   
   p.completeBlock(1);

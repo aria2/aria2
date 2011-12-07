@@ -75,12 +75,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BitfieldManTest );
 
 void BitfieldManTest::testGetBlockSize() {
   BitfieldMan bt1(1024, 1024*10);
-  CPPUNIT_ASSERT_EQUAL((size_t)1024, bt1.getBlockLength(9));
+  CPPUNIT_ASSERT_EQUAL(1024, bt1.getBlockLength(9));
 
   BitfieldMan bt2(1024, 1024*10+1);
-  CPPUNIT_ASSERT_EQUAL((size_t)1024, bt2.getBlockLength(9));
-  CPPUNIT_ASSERT_EQUAL((size_t)1, bt2.getBlockLength(10));
-  CPPUNIT_ASSERT_EQUAL((size_t)0, bt2.getBlockLength(11));
+  CPPUNIT_ASSERT_EQUAL(1024, bt2.getBlockLength(9));
+  CPPUNIT_ASSERT_EQUAL(1, bt2.getBlockLength(10));
+  CPPUNIT_ASSERT_EQUAL(0, bt2.getBlockLength(11));
 }
 
 void BitfieldManTest::testGetFirstMissingUnusedIndex()

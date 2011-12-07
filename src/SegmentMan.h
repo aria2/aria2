@@ -86,7 +86,7 @@ private:
 
   // Remember writtenLength for each segment. The key is an index of a
   // segment. The value is writtenLength for that segment.
-  std::map<size_t, size_t> segmentWrittenLengthMemo_;
+  std::map<size_t, int32_t> segmentWrittenLengthMemo_;
 
   // Used for calculating download speed.
   std::vector<SharedHandle<PeerStat> > peerStats_;

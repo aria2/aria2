@@ -649,7 +649,7 @@ DiskAdaptorHandle DefaultPieceStorage::getDiskAdaptor() {
   return diskAdaptor_;
 }
 
-size_t DefaultPieceStorage::getPieceLength(size_t index)
+int32_t DefaultPieceStorage::getPieceLength(size_t index)
 {
   return bitfieldMan_->getBlockLength(index);
 }
