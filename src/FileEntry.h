@@ -71,7 +71,7 @@ private:
   // available.
   std::deque<URIResult> uriResults_;
   bool uniqueProtocol_;
-  size_t maxConnectionPerServer_;
+  int maxConnectionPerServer_;
   std::string originalName_;
   Timer lastFasterReplace_;
 
@@ -214,12 +214,12 @@ public:
   void extractURIResult
   (std::deque<URIResult>& res, error_code::Value r);
 
-  void setMaxConnectionPerServer(size_t n)
+  void setMaxConnectionPerServer(int n)
   {
     maxConnectionPerServer_ = n;
   }
 
-  size_t getMaxConnectionPerServer() const
+  int getMaxConnectionPerServer() const
   {
     return maxConnectionPerServer_;
   }

@@ -560,10 +560,10 @@ void RequestGroupMan::closeFile()
 
 RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
 {
-  size_t finished = 0;
-  size_t error = removedErrorResult_;
-  size_t inprogress = 0;
-  size_t removed = 0;
+  int finished = 0;
+  int error = removedErrorResult_;
+  int inprogress = 0;
+  int removed = 0;
   error_code::Value lastError = removedLastErrorResult_;
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr =
         downloadResults_.begin(), eoi = downloadResults_.end();
@@ -850,7 +850,7 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
       ++removedErrorResult_;
     }
   } else {
-    size_t curSize = downloadResults_.size();
+    int curSize = downloadResults_.size();
     if(curSize >= maxDownloadResult_) {
       std::deque<SharedHandle<DownloadResult> >::iterator last =
         downloadResults_.begin()+curSize-maxDownloadResult_+1;

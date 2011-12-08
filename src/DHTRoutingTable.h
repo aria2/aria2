@@ -56,7 +56,7 @@ private:
 
   DHTBucketTreeNode* root_;
 
-  size_t numBucket_;
+  int numBucket_;
 
   SharedHandle<DHTTaskQueue> taskQueue_;
 
@@ -75,7 +75,7 @@ public:
   void getClosestKNodes(std::vector<SharedHandle<DHTNode> >& nodes,
                         const unsigned char* key) const;
 
-  size_t countBucket() const;
+  int getNumBucket() const;
 
   void showBuckets() const;
 

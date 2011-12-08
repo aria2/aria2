@@ -46,9 +46,9 @@ class DHTPingTask:public DHTAbstractTask {
 private:
   SharedHandle<DHTNode> remoteNode_;
 
-  size_t numMaxRetry_;
+  int numMaxRetry_;
 
-  size_t numRetry_;
+  int numRetry_;
 
   bool pingSuccessful_;
 
@@ -56,7 +56,7 @@ private:
 
   void addMessage();
 public:
-  DHTPingTask(const SharedHandle<DHTNode>& remoteNode, size_t numMaxRetry = 0);
+  DHTPingTask(const SharedHandle<DHTNode>& remoteNode, int numMaxRetry = 0);
 
   virtual ~DHTPingTask();
 

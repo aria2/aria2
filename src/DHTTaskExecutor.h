@@ -48,11 +48,11 @@ class DHTTask;
 
 class DHTTaskExecutor {
 private:
-  size_t numConcurrent_;
+  int numConcurrent_;
   std::vector<SharedHandle<DHTTask> > execTasks_;
   std::deque<SharedHandle<DHTTask> > queue_;
 public:
-  DHTTaskExecutor(size_t numConcurrent);
+  DHTTaskExecutor(int numConcurrent);
 
   ~DHTTaskExecutor();
 
@@ -68,7 +68,7 @@ public:
     return execTasks_.size();
   }
 
-  size_t getNumConcurrent() const
+  int getNumConcurrent() const
   {
     return numConcurrent_;
   }

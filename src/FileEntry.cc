@@ -149,7 +149,7 @@ FileEntry::getRequest
         if(req->setUri(uri)) {
           if(std::count(inFlightHosts.begin(),
                         inFlightHosts.end(),req->getHost())
-             >= static_cast<int>(maxConnectionPerServer_)) {
+             >= maxConnectionPerServer_) {
             pending.push_back(uri);
             ignoreHost.push_back(req->getHost());
             req.reset();
@@ -250,10 +250,10 @@ FileEntry::findFasterRequest
       continue;
     }
     if(std::count(inFlightHosts.begin(), inFlightHosts.end(),us.host)
-       >= static_cast<int>(maxConnectionPerServer_)) {
+       >= maxConnectionPerServer_) {
       A2_LOG_DEBUG(fmt("%s has already used %d times, not considered.",
                        (*i).c_str(),
-                       static_cast<int>(maxConnectionPerServer_)));
+                       maxConnectionPerServer_));
       continue;
     }
     if(findSecond(usedHosts.begin(), usedHosts.end(), us.host) !=

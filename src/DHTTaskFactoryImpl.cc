@@ -62,7 +62,7 @@ DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
-                                   size_t numRetry)
+                                   int numRetry)
 {
   SharedHandle<DHTPingTask> task(new DHTPingTask(remoteNode, numRetry));
   task->setTimeout(timeout_);

@@ -40,7 +40,7 @@ public:
   class MockDHTTaskFactory2:public MockDHTTaskFactory {
   public:
     virtual SharedHandle<DHTTask>
-    createPingTask(const SharedHandle<DHTNode>& remoteNode, size_t numRetry)
+    createPingTask(const SharedHandle<DHTNode>& remoteNode, int numRetry)
     {
       return SharedHandle<DHTTask>(new MockDHTTask(remoteNode));
     }

@@ -104,12 +104,12 @@ typedef std::vector<DiskWriterEntryHandle> DiskWriterEntries;
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
 private:
-  size_t pieceLength_;
+  int32_t pieceLength_;
   DiskWriterEntries diskWriterEntries_;
 
   std::vector<SharedHandle<DiskWriterEntry> > openedDiskWriterEntries_;
 
-  size_t maxOpenFiles_;
+  int maxOpenFiles_;
 
   bool readOnly_;
 
@@ -118,7 +118,7 @@ private:
   void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
                  void (DiskWriterEntry::*f)());
  
-  static const size_t DEFAULT_MAX_OPEN_FILES = 100;
+  static const int DEFAULT_MAX_OPEN_FILES = 100;
 
 public:
   MultiDiskAdaptor();
@@ -149,18 +149,18 @@ public:
 
   virtual bool isReadOnlyEnabled() const { return readOnly_; }
 
-  void setPieceLength(size_t pieceLength)
+  void setPieceLength(int32_t pieceLength)
   {
     pieceLength_ = pieceLength;
   }
 
-  size_t getPieceLength() const {
+  int32_t getPieceLength() const {
     return pieceLength_;
   }
 
   virtual void cutTrailingGarbage();
 
-  void setMaxOpenFiles(size_t maxOpenFiles);
+  void setMaxOpenFiles(int maxOpenFiles);
 
   virtual size_t utime(const Time& actime, const Time& modtime);
 

@@ -113,7 +113,7 @@ void DHTRoutingTable::getClosestKNodes
   dht::findClosestKNodes(nodes, root_, key);
 }
 
-size_t DHTRoutingTable::countBucket() const
+int DHTRoutingTable::getNumBucket() const
 {
   return numBucket_;
 }

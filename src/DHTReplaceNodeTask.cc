@@ -82,12 +82,16 @@ void DHTReplaceNodeTask::onReceived(const DHTPingReplyMessage* message)
   setFinished(true);
 }
 
+namespace {
+const int MAX_RETRY = 2;
+} //namespace
+
 void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   ++numRetry_;
   if(numRetry_ >= MAX_RETRY) {
-    A2_LOG_INFO(fmt("ReplaceNode: Ping failed %lu times. Replace %s with %s.",
-                    static_cast<unsigned long>(numRetry_),
+    A2_LOG_INFO(fmt("ReplaceNode: Ping failed %d times. Replace %s with %s.",
+                    numRetry_,
                     node->toString().c_str(),
                     newNode_->toString().c_str()));
     node->markBad();

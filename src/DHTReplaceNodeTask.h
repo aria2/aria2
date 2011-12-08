@@ -49,9 +49,7 @@ private:
 
   SharedHandle<DHTNode> newNode_;
 
-  static const size_t MAX_RETRY = 2;
-
-  size_t numRetry_;
+  int numRetry_;
 
   time_t timeout_;
 

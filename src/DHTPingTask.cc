@@ -44,7 +44,7 @@
 namespace aria2 {
 
 DHTPingTask::DHTPingTask
-(const SharedHandle<DHTNode>& remoteNode, size_t numMaxRetry):
+(const SharedHandle<DHTNode>& remoteNode, int numMaxRetry):
   remoteNode_(remoteNode),
   numMaxRetry_(numMaxRetry),
   numRetry_(0),

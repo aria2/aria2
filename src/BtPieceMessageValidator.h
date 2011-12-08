@@ -45,11 +45,11 @@ class BtPieceMessageValidator : public BtMessageValidator {
 private:
   const BtPieceMessage* message_;
   size_t numPiece_;
-  size_t pieceLength_;
+  int32_t pieceLength_;
 public:
   BtPieceMessageValidator(const BtPieceMessage* message,
                           size_t numPiece,
-                          size_t pieceLength);
+                          int32_t pieceLength);
 
   ~BtPieceMessageValidator();
 

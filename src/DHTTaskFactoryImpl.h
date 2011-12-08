@@ -69,7 +69,7 @@ public:
 
   virtual SharedHandle<DHTTask>
   createPingTask(const SharedHandle<DHTNode>& remoteNode,
-                 size_t numRetry = 0);
+                 int numRetry = 0);
 
   virtual SharedHandle<DHTTask>
   createNodeLookupTask(const unsigned char* targetID);

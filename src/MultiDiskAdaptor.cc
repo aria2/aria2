@@ -241,7 +241,7 @@ void MultiDiskAdaptor::openIfNot
     //     A2_LOG_DEBUG(fmt("DiskWriterEntry: Cache MISS. offset=%s",
     //            util::itos(entry->getFileEntry()->getOffset()).c_str()));
  
-    size_t numOpened = openedDiskWriterEntries_.size();
+    int numOpened = openedDiskWriterEntries_.size();
     (entry.get()->*open)();
     if(numOpened >= maxOpenFiles_) {
       // Cache is full. 
@@ -465,7 +465,7 @@ void MultiDiskAdaptor::cutTrailingGarbage()
   }
 }
 
-void MultiDiskAdaptor::setMaxOpenFiles(size_t maxOpenFiles)
+void MultiDiskAdaptor::setMaxOpenFiles(int maxOpenFiles)
 {
   maxOpenFiles_ = maxOpenFiles;
 }

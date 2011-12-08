@@ -11,14 +11,7 @@ public:
 
   virtual SharedHandle<DHTTask>
   createPingTask(const SharedHandle<DHTNode>& remoteNode,
-                 size_t numRetry = 0)
-  {
-    return SharedHandle<DHTTask>();
-  }
-
-  virtual SharedHandle<DHTTask>
-  createGetIDTask(const SharedHandle<DHTNode>& remoteNode,
-                  size_t numRetry = 0)
+                 int numRetry = 0)
   {
     return SharedHandle<DHTTask>();
   }

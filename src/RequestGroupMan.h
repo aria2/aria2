@@ -78,12 +78,12 @@ private:
 
   // The number of error DownloadResult removed because of upper limit
   // of the queue
-  size_t removedErrorResult_;
+  int removedErrorResult_;
 
   // The last error of removed DownloadResult
   error_code::Value removedLastErrorResult_;
 
-  size_t maxDownloadResult_;
+  int maxDownloadResult_;
 
   void formatDownloadResultFull
   (OutputFile& out,
@@ -173,18 +173,18 @@ public:
 
   class DownloadStat {
   private:
-    size_t completed_;
-    size_t error_;
-    size_t inProgress_;
-    size_t removed_;
-    size_t waiting_;
+    int completed_;
+    int error_;
+    int inProgress_;
+    int removed_;
+    int waiting_;
     error_code::Value lastErrorResult_;
   public:
-    DownloadStat(size_t completed,
-                 size_t error,
-                 size_t inProgress,
-                 size_t removed,
-                 size_t waiting,
+    DownloadStat(int completed,
+                 int error,
+                 int inProgress,
+                 int removed,
+                 int waiting,
                  error_code::Value lastErrorResult =
                  error_code::FINISHED):
       completed_(completed),
@@ -204,7 +204,7 @@ public:
       return error_ == 0 && inProgress_ == 0 && waiting_ == 0;
     }
 
-    size_t getInProgress() const
+    int getInProgress() const
     {
       return inProgress_;
     }
@@ -305,7 +305,7 @@ public:
     return serverStatMan_;
   }
 
-  void setMaxDownloadResult(size_t v)
+  void setMaxDownloadResult(int v)
   {
     maxDownloadResult_ = v;
   }

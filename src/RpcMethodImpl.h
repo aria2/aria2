@@ -331,11 +331,11 @@ private:
   template<typename InputIterator>
   std::pair<InputIterator, InputIterator>
   getPaginationRange
-  (ssize_t offset, size_t num, InputIterator first, InputIterator last)
+  (int offset, int num, InputIterator first, InputIterator last)
   {
-    size_t size = std::distance(first, last);
+    int size = std::distance(first, last);
     if(offset < 0) {
-      ssize_t tempoffset = offset+size;
+      int tempoffset = offset+size;
       if(tempoffset < 0) {
         return std::make_pair(last, last);
       }
@@ -344,10 +344,10 @@ private:
         offset = 0;
         num = tempoffset+1;
       }
-    } else if(size <= (size_t)offset) {
+    } else if(size <= offset) {
       return std::make_pair(last, last);
     }
-    size_t lastDistance;
+    int lastDistance;
     if(size < offset+num) {
       lastDistance = size;
     } else {
@@ -369,8 +369,8 @@ protected:
     if(numParam->i() < 0) {
       throw DL_ABORT_EX("The parameter num must be zero or positive integer.");
     }
-    ssize_t offset = offsetParam->i();
-    size_t num = numParam->i();
+    int offset = offsetParam->i();
+    int num = numParam->i();
     std::vector<std::string> keys;
     toStringList(std::back_inserter(keys), keysParam);
     const std::deque<SharedHandle<T> >& items = getItems(e);

@@ -87,7 +87,7 @@ void BtPortMessage::doReceivedAction()
       SharedHandle<DHTTask> task = taskFactory_->createPingTask(node);
       taskQueue_->addImmediateTask(task);
     }
-    if(routingTable_->countBucket() == 1) {
+    if(routingTable_->getNumBucket() == 1) {
       // initiate bootstrap
       A2_LOG_INFO("Dispatch node_lookup since too few buckets.");
       taskQueue_->addImmediateTask
