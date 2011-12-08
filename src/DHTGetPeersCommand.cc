@@ -63,7 +63,7 @@ const time_t GET_PEER_INTERVAL_ZERO = 60;
 // Interval for retry.
 const time_t GET_PEER_INTERVAL_RETRY = 5;
 // Maximum retries. Try more than 5 to drop bad node.
-const size_t MAX_RETRIES = 10;
+const int MAX_RETRIES = 10;
 
 } // namespace
 
@@ -112,13 +112,13 @@ bool DHTGetPeersCommand::execute()
     lastGetPeerTime_ = global::wallclock();
     if(numRetry_ < MAX_RETRIES &&
        (btRuntime_->getMaxPeers() == 0 ||
-        btRuntime_->getMaxPeers() > peerStorage_->countPeer())) {
+        btRuntime_->getMaxPeers()) > peerStorage_->countPeer()) {
       ++numRetry_;
-      A2_LOG_DEBUG(fmt("Too few peers. peers=%lu, max_peers=%lu."
-                       " Try again(%lu)",
+      A2_LOG_DEBUG(fmt("Too few peers. peers=%lu, max_peers=%d."
+                       " Try again(%d)",
                        static_cast<unsigned long>(peerStorage_->countPeer()),
-                       static_cast<unsigned long>(btRuntime_->getMaxPeers()),
-                       static_cast<unsigned long>(numRetry_)));
+                       btRuntime_->getMaxPeers(),
+                       numRetry_));
     } else {
       numRetry_ = 0;
     }

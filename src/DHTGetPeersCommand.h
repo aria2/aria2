@@ -66,7 +66,7 @@ private:
 
   SharedHandle<DHTTask> task_;
 
-  size_t numRetry_;
+  int numRetry_;
 
   Timer lastGetPeerTime_;
 public:
