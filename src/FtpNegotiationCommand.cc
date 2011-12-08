@@ -464,14 +464,13 @@ bool FtpNegotiationCommand::onFileSizeDetermined(off_t totalLength)
 }
 
 bool FtpNegotiationCommand::recvSize() {
-  off_t size = 0;
+  int64_t size = 0;
   int status = ftp_->receiveSizeResponse(size);
   if(status == 0) {
     return false;
   }
   if(status == 213) {
-
-    if(size > INT64_MAX) {
+    if(size > std::numeric_limits<off_t>::max()) {
       throw DL_ABORT_EX2
         (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(size)),
          error_code::FTP_PROTOCOL_ERROR);

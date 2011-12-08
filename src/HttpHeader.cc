@@ -36,6 +36,7 @@
 #include "Range.h"
 #include "util.h"
 #include "A2STR.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
@@ -136,11 +137,13 @@ RangeHandle HttpHeader::getRange() const
     if(clenStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
-      off_t contentLength = util::parseLLInt(clenStr);
+      int64_t contentLength = util::parseLLInt(clenStr);
       if(contentLength < 0) {
         throw DL_ABORT_EX("Content-Length must be positive");
-      }
-      if(contentLength == 0) {
+      } else if(contentLength > std::numeric_limits<off_t>::max()) {
+        throw DOWNLOAD_FAILURE_EXCEPTION
+          (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(contentLength)));
+      } else if(contentLength == 0) {
         return SharedHandle<Range>(new Range());
       } else {
         return SharedHandle<Range>
@@ -176,12 +179,24 @@ RangeHandle HttpHeader::getRange() const
   if(minus == slash) {
     return SharedHandle<Range>(new Range());
   }
-  off_t startByte = util::parseLLInt(std::string(byteRangeSpec, minus));
-  off_t endByte = util::parseLLInt(std::string(minus+1, slash));
-  off_t entityLength =
+  int64_t startByte = util::parseLLInt(std::string(byteRangeSpec, minus));
+  int64_t endByte = util::parseLLInt(std::string(minus+1, slash));
+  int64_t entityLength =
     util::parseLLInt(std::string(slash+1, rangeStr.end()));
   if(startByte < 0 || endByte < 0 || entityLength < 0) {
     throw DL_ABORT_EX("byte-range-spec must be positive");
+  }
+  if(startByte > std::numeric_limits<off_t>::max()) {
+    throw DOWNLOAD_FAILURE_EXCEPTION
+      (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(startByte)));
+  }
+  if(endByte > std::numeric_limits<off_t>::max()) {
+    throw DOWNLOAD_FAILURE_EXCEPTION
+      (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(endByte)));
+  }
+  if(entityLength > std::numeric_limits<off_t>::max()) {
+    throw DOWNLOAD_FAILURE_EXCEPTION
+      (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(entityLength)));
   }
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }

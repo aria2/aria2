@@ -60,6 +60,7 @@
 #include "FileEntry.h"
 #include "error_code.h"
 #include "array_fun.h"
+#include "DownloadFailureException.h"
 
 namespace aria2 {
 
@@ -232,7 +233,7 @@ void extractFileEntries
   const List* filesList = downcast<List>(infoDict->get(C_FILES));
   if(filesList) {
     fileEntries.reserve(filesList->size());
-    off_t length = 0;
+    int64_t length = 0;
     off_t offset = 0;
     // multi-file mode
     torrent->mode = MULTI;
@@ -248,7 +249,10 @@ void extractFileEntries
                            error_code::BITTORRENT_PARSE_ERROR);
       }
       length += fileLengthData->i();
-
+      if(length > std::numeric_limits<off_t>::max()) {
+        throw DOWNLOAD_FAILURE_EXCEPTION
+          (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(length)));
+      }
       std::string pathKey;
       if(fileDict->containsKey(C_PATH_UTF8)) {
         pathKey = C_PATH_UTF8;
@@ -304,8 +308,11 @@ void extractFileEntries
       throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
                          error_code::BITTORRENT_PARSE_ERROR);
     }
-    off_t totalLength = lengthData->i();
-
+    int64_t totalLength = lengthData->i();
+    if(totalLength > std::numeric_limits<off_t>::max()) {
+      throw DOWNLOAD_FAILURE_EXCEPTION
+        (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(totalLength)));
+    }
     // For each uri in urlList, if it ends with '/', then
     // concatenate name to it. Specification just says so.
     std::vector<std::string> uris;
