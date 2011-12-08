@@ -48,10 +48,10 @@ BtRuntime::BtRuntime()
 
 BtRuntime::~BtRuntime() {}
 
-void BtRuntime::setMaxPeers(unsigned int maxPeers)
+void BtRuntime::setMaxPeers(int maxPeers)
 {
   maxPeers_ = maxPeers;
-  minPeers_ = static_cast<unsigned int>(maxPeers*0.8);
+  minPeers_ = maxPeers*0.8;
   if(minPeers_ == 0 && maxPeers != 0) {
     minPeers_ = maxPeers;
   }

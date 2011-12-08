@@ -79,40 +79,40 @@ public:
   // This method doesn't update _lastUpdate.
   void setLastUpdated(const Time& time);
 
-  unsigned int getDownloadSpeed() const
+  int getDownloadSpeed() const
   {
     return downloadSpeed_;
   }
 
   // update download speed and update lastUpdated_
-  void updateDownloadSpeed(unsigned int downloadSpeed);
+  void updateDownloadSpeed(int downloadSpeed);
 
   // set download speed. This method doesn't update _lastUpdate.
-  void setDownloadSpeed(unsigned int downloadSpeed);
+  void setDownloadSpeed(int downloadSpeed);
 
-  unsigned int getSingleConnectionAvgSpeed() const
+  int getSingleConnectionAvgSpeed() const
   {
     return singleConnectionAvgSpeed_;
   }
 
-  void updateSingleConnectionAvgSpeed(unsigned int downloadSpeed);
-  void setSingleConnectionAvgSpeed(unsigned int singleConnectionAvgSpeed);
+  void updateSingleConnectionAvgSpeed(int downloadSpeed);
+  void setSingleConnectionAvgSpeed(int singleConnectionAvgSpeed);
 
-  unsigned int getMultiConnectionAvgSpeed() const
+  int getMultiConnectionAvgSpeed() const
   {
     return multiConnectionAvgSpeed_;
   }
 
-  void updateMultiConnectionAvgSpeed(unsigned int downloadSpeed);
-  void setMultiConnectionAvgSpeed(unsigned int singleConnectionAvgSpeed);
+  void updateMultiConnectionAvgSpeed(int downloadSpeed);
+  void setMultiConnectionAvgSpeed(int singleConnectionAvgSpeed);
 
-  unsigned int getCounter() const
+  int getCounter() const
   {
     return counter_;
   }
 
   void increaseCounter();
-  void setCounter(unsigned int value);
+  void setCounter(int value);
 
   // This method doesn't update _lastUpdate.
   void setStatus(STATUS status);
@@ -153,13 +153,13 @@ private:
   
   std::string protocol_;
 
-  unsigned int downloadSpeed_;
+  int downloadSpeed_;
   
-  unsigned int singleConnectionAvgSpeed_;
+  int singleConnectionAvgSpeed_;
   
-  unsigned int multiConnectionAvgSpeed_;
+  int multiConnectionAvgSpeed_;
 
-  unsigned int counter_;
+  int counter_;
 
   STATUS status_;
 

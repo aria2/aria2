@@ -102,43 +102,43 @@ void FtpConnectionTest::testReceiveResponse()
 {
   serverSocket_->writeData("100");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
   serverSocket_->writeData(" single line response");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
   serverSocket_->writeData("\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)100, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(100, ftp_->receiveResponse());
   // 2 responses in the buffer
   serverSocket_->writeData("101 single1\r\n"
                            "102 single2\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)101, ftp_->receiveResponse());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)102, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(101, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(102, ftp_->receiveResponse());
 
   serverSocket_->writeData("103-multi line response\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
   serverSocket_->writeData("103-line2\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
   serverSocket_->writeData("103");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
   serverSocket_->writeData(" ");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
   serverSocket_->writeData("last\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)103, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(103, ftp_->receiveResponse());
 
   serverSocket_->writeData("104-multi\r\n"
                            "104 \r\n"
                            "105-multi\r\n"
                            "105 \r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)104, ftp_->receiveResponse());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)105, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(104, ftp_->receiveResponse());
+  CPPUNIT_ASSERT_EQUAL(105, ftp_->receiveResponse());
 }
 
 void FtpConnectionTest::testSendMdtm()
@@ -158,10 +158,10 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     Time t;
     serverSocket_->writeData("213 20080908124312");
     waitRead(clientSocket_);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveMdtmResponse(t));
+    CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveMdtmResponse(t));
     serverSocket_->writeData("\r\n");
     waitRead(clientSocket_);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
+    CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
     CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTime());
   }
   {
@@ -169,7 +169,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     Time t;
     serverSocket_->writeData("213 20080908124312.014\r\n");
     waitRead(clientSocket_);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
+    CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
     CPPUNIT_ASSERT_EQUAL((time_t)1220877792, t.getTime());
   }
   {
@@ -177,7 +177,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     Time t;
     serverSocket_->writeData("213 20080908\r\n");
     waitRead(clientSocket_);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
+    CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
     CPPUNIT_ASSERT(t.bad());
   }
   {
@@ -185,7 +185,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     Time t;
     serverSocket_->writeData("213 20081908124312\r\n");
     waitRead(clientSocket_);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveMdtmResponse(t));
+    CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
     // Wed Jul 8 12:43:12 2009
     CPPUNIT_ASSERT_EQUAL((time_t)1247056992, t.getTime());
   }
@@ -193,7 +193,7 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     Time t;
     serverSocket_->writeData("550 File Not Found\r\n");
     waitRead(clientSocket_);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)550, ftp_->receiveMdtmResponse(t));
+    CPPUNIT_ASSERT_EQUAL(550, ftp_->receiveMdtmResponse(t));
   }
 }
 
@@ -205,7 +205,7 @@ void FtpConnectionTest::testReceiveResponse_overflow()
   for(int i = 0; i < 64; ++i) {
     serverSocket_->writeData(data, sizeof(data));
     waitRead(clientSocket_);
-    CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receiveResponse());
+    CPPUNIT_ASSERT_EQUAL(0, ftp_->receiveResponse());
   }
   serverSocket_->writeData(data, sizeof(data));
   waitRead(clientSocket_);
@@ -233,11 +233,11 @@ void FtpConnectionTest::testReceivePwdResponse()
   std::string pwd;
   serverSocket_->writeData("257 ");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)0, ftp_->receivePwdResponse(pwd));
+  CPPUNIT_ASSERT_EQUAL(0, ftp_->receivePwdResponse(pwd));
   CPPUNIT_ASSERT(pwd.empty());
   serverSocket_->writeData("\"/dir/to\" is your directory.\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)257, ftp_->receivePwdResponse(pwd));
+  CPPUNIT_ASSERT_EQUAL(257, ftp_->receivePwdResponse(pwd));
   CPPUNIT_ASSERT_EQUAL(std::string("/dir/to"), pwd);
 }
 
@@ -259,7 +259,7 @@ void FtpConnectionTest::testReceivePwdResponse_badStatus()
   std::string pwd;
   serverSocket_->writeData("500 failed\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)500, ftp_->receivePwdResponse(pwd));
+  CPPUNIT_ASSERT_EQUAL(500, ftp_->receivePwdResponse(pwd));
   CPPUNIT_ASSERT(pwd.empty());
 }
 
@@ -288,7 +288,7 @@ void FtpConnectionTest::testReceiveSizeResponse()
   serverSocket_->writeData("213 4294967296\r\n");
   waitRead(clientSocket_);
   off_t size;
-  CPPUNIT_ASSERT_EQUAL((unsigned int)213, ftp_->receiveSizeResponse(size));
+  CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveSizeResponse(size));
   CPPUNIT_ASSERT_EQUAL((off_t)4294967296LL, size);
 }
 
@@ -307,32 +307,32 @@ void FtpConnectionTest::testReceiveEpsvResponse()
   serverSocket_->writeData("229 Success (|||12000|)\r\n");
   waitRead(clientSocket_);
   uint16_t port = 0;
-  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL(229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)12000, port);
 
   serverSocket_->writeData("229 Success |||12000|)\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL(229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success (|||12000|\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL(229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success ()|||12000|\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL(229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success )(|||12000|)\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL(229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 
   serverSocket_->writeData("229 Success )(||12000|)\r\n");
   waitRead(clientSocket_);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)229, ftp_->receiveEpsvResponse(port));
+  CPPUNIT_ASSERT_EQUAL(229, ftp_->receiveEpsvResponse(port));
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, port);
 }
 

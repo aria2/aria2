@@ -58,7 +58,7 @@ private:
     size_t outstandingUpload_;
     Timer lastAmUnchoking_;
     bool recentUnchoking_;
-    unsigned int uploadSpeed_;
+    int uploadSpeed_;
     
     const static time_t TIME_FRAME = 20;
   public:
@@ -74,7 +74,7 @@ private:
 
     const SharedHandle<Peer>& getPeer() const { return peer_; }
 
-    unsigned int getUploadSpeed() const { return uploadSpeed_; }
+    int getUploadSpeed() const { return uploadSpeed_; }
 
     void disableOptUnchoking();
   };

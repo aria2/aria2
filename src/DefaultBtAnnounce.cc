@@ -137,7 +137,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   } else {
     return A2STR::NIL;
   }
-  unsigned int numWant = 50;
+  int numWant = 50;
   if(!btRuntime_->lessThanMinPeers() || btRuntime_->isHalt()) {
     numWant = 0;
   }
@@ -155,7 +155,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
              "left=%lld&"
              "compact=1&"
              "key=%s&"
-             "numwant=%u&"
+             "numwant=%d&"
              "no_peer_id=1",
              util::torrentPercentEncode
              (bittorrent::getInfoHash(downloadContext_),

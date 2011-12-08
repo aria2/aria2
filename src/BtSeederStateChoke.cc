@@ -134,7 +134,7 @@ void BtSeederStateChoke::unchoke
   for(std::vector<PeerEntry>::iterator eoi = peers.end();
       r != eoi && count; ++r, --count) {
     (*r).getPeer()->chokingRequired(false);
-    A2_LOG_INFO(fmt("RU: %s, ulspd=%u",
+    A2_LOG_INFO(fmt("RU: %s, ulspd=%d",
                     (*r).getPeer()->getIPAddress().c_str(),
                     (*r).getUploadSpeed()));
   }

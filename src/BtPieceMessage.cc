@@ -136,7 +136,7 @@ void BtPieceMessage::doReceivedAction()
       }
     }
   } else {
-    A2_LOG_DEBUG(fmt("CUID#%lld - RequestSlot not found, index=%lu, begin=%u",
+    A2_LOG_DEBUG(fmt("CUID#%lld - RequestSlot not found, index=%lu, begin=%d",
                      getCuid(),
                      static_cast<unsigned long>(index_),
                      begin_));

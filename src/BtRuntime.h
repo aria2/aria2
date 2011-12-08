@@ -44,17 +44,14 @@ class BtRuntime {
 private:
   off_t uploadLengthAtStartup_;
   bool halt_;
-  unsigned int connections_;
+  int connections_;
   bool ready_;
   // Maximum number of peers to hold connections at the same time.
   // 0 means unlimited.
-  unsigned int maxPeers_;
+  int maxPeers_;
   // Minimum number of peers. This value is used for getting more peers from
   // tracker. 0 means always the number of peers is under minimum.
-  unsigned int minPeers_;
-
-  static const unsigned int DEFAULT_MIN_PEERS = 40;
-
+  int minPeers_;
 public:
   BtRuntime();
 
@@ -74,7 +71,7 @@ public:
     halt_ = halt;
   }
 
-  unsigned int getConnections() const { return connections_; }
+  int getConnections() const { return connections_; }
 
   void increaseConnections() { ++connections_; }
 
@@ -99,14 +96,15 @@ public:
 
   void setReady(bool go) { ready_ = go; }
 
-  void setMaxPeers(unsigned int maxPeers);
+  void setMaxPeers(int maxPeers);
 
-  unsigned int getMaxPeers() const
+  int getMaxPeers() const
   {
     return maxPeers_;
   }
 
-  static const unsigned int DEFAULT_MAX_PEERS = 55;
+  static const int DEFAULT_MAX_PEERS = 55;
+  static const int DEFAULT_MIN_PEERS = 40;
 };
 
 typedef SharedHandle<BtRuntime> BtRuntimeHandle;

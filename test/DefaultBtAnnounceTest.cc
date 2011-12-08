@@ -404,8 +404,8 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), an.getTrackerID());
   CPPUNIT_ASSERT_EQUAL((time_t)3000, an.getInterval());
   CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getMinInterval());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)100, an.getComplete());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)200, an.getIncomplete());
+  CPPUNIT_ASSERT_EQUAL(100, an.getComplete());
+  CPPUNIT_ASSERT_EQUAL(200, an.getIncomplete());
   CPPUNIT_ASSERT_EQUAL((size_t)2, peerStorage_->getPeers().size());
   SharedHandle<Peer> peer = peerStorage_->getPeers()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->getIPAddress());

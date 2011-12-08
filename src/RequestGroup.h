@@ -90,16 +90,16 @@ private:
 
   SharedHandle<Option> option_;
 
-  size_t numConcurrentCommand_;
+  int numConcurrentCommand_;
 
   /**
    * This is the number of connections used in streaming protocol(http/ftp)
    */
-  unsigned int numStreamConnection_;
+  int numStreamConnection_;
 
-  unsigned int numStreamCommand_;
+  int numStreamCommand_;
 
-  unsigned int numCommand_;
+  int numCommand_;
 
   SharedHandle<SegmentMan> segmentMan_;
 
@@ -137,7 +137,7 @@ private:
 
   Time lastModifiedTime_;
 
-  unsigned int fileNotFoundCount_;
+  int fileNotFoundCount_;
 
   // Timeout used for HTTP/FTP downloads.
   time_t timeout_;
@@ -152,9 +152,9 @@ private:
   // just sits in memory.
   bool inMemoryDownload_;
 
-  unsigned int maxDownloadSpeedLimit_;
+  int maxDownloadSpeedLimit_;
 
-  unsigned int maxUploadSpeedLimit_;
+  int maxUploadSpeedLimit_;
 
   error_code::Value lastErrorCode_;
 
@@ -218,7 +218,7 @@ public:
                                 DownloadEngine* e, int numAdj);
 
   void createNextCommand(std::vector<Command*>& commands,
-                         DownloadEngine* e, unsigned int numCommand);
+                         DownloadEngine* e, int numCommand);
   
   void createNextCommand(std::vector<Command*>& commands, DownloadEngine* e);
 
@@ -246,12 +246,12 @@ public:
 
   void validateTotalLength(off_t actualTotalLength) const;
 
-  void setNumConcurrentCommand(unsigned int num)
+  void setNumConcurrentCommand(int num)
   {
     numConcurrentCommand_ = num;
   }
 
-  unsigned int getNumConcurrentCommand() const
+  int getNumConcurrentCommand() const
   {
     return numConcurrentCommand_;
   }
@@ -289,13 +289,13 @@ public:
 
   void decreaseStreamConnection();
 
-  unsigned int getNumConnection() const;
+  int getNumConnection() const;
 
   void increaseNumCommand();
 
   void decreaseNumCommand();
 
-  unsigned int getNumCommand() const
+  int getNumCommand() const
   {
     return numCommand_;
   }
@@ -461,22 +461,22 @@ public:
   // maxUploadSpeedLimit_ == 0. Otherwise returns false.
   bool doesUploadSpeedExceed();
 
-  unsigned int getMaxDownloadSpeedLimit() const
+  int getMaxDownloadSpeedLimit() const
   {
     return maxDownloadSpeedLimit_;
   }
 
-  void setMaxDownloadSpeedLimit(unsigned int speed)
+  void setMaxDownloadSpeedLimit(int speed)
   {
     maxDownloadSpeedLimit_ = speed;
   }
 
-  unsigned int getMaxUploadSpeedLimit() const
+  int getMaxUploadSpeedLimit() const
   {
     return maxUploadSpeedLimit_;
   }
 
-  void setMaxUploadSpeedLimit(unsigned int speed)
+  void setMaxUploadSpeedLimit(int speed)
   {
     maxUploadSpeedLimit_ = speed;
   }

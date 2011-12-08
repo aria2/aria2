@@ -54,9 +54,9 @@ private:
   uint16_t port_;
 
   // in milli sec
-  unsigned int rtt_;
+  int rtt_;
 
-  unsigned int condition_;
+  int condition_;
 
   Timer lastContact_;
 public:
@@ -76,7 +76,7 @@ public:
     return id_;
   }
 
-  void updateRTT(unsigned int millisec)
+  void updateRTT(int millisec)
   {
     rtt_ = millisec;
   }

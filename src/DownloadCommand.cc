@@ -275,7 +275,7 @@ void DownloadCommand::checkLowestDownloadSpeed() const
   if(lowestDownloadSpeedLimit_ > 0 &&
      peerStat_->getDownloadStartTime().difference(global::wallclock()) >=
      startupIdleTime_) {
-    unsigned int nowSpeed = peerStat_->calculateDownloadSpeed();
+    int nowSpeed = peerStat_->calculateDownloadSpeed();
     if(nowSpeed <= lowestDownloadSpeedLimit_) {
       throw DL_ABORT_EX2(fmt(EX_TOO_SLOW_DOWNLOAD_SPEED,
                              nowSpeed,

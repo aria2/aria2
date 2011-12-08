@@ -136,7 +136,7 @@ std::string uitos(T value, bool comma = false)
     str = "0";
     return str;
   }
-  unsigned int count = 0;
+  int count = 0;
   while(value) {
     ++count;
     char digit = value%10+'0';

@@ -404,9 +404,9 @@ void SegmentMan::updateFastestPeerStat(const SharedHandle<PeerStat>& peerStat)
   }
 }
 
-unsigned int SegmentMan::calculateDownloadSpeed()
+int SegmentMan::calculateDownloadSpeed()
 {
-  unsigned int speed = 0;
+  int speed = 0;
   if(lastPeerStatDlspdMapUpdated_.differenceInMillis(global::wallclock())+
      A2_DELTA_MILLIS >= 250){
     lastPeerStatDlspdMapUpdated_ = global::wallclock();
@@ -414,7 +414,7 @@ unsigned int SegmentMan::calculateDownloadSpeed()
     for(std::vector<SharedHandle<PeerStat> >::const_iterator i =
           peerStats_.begin(), eoi = peerStats_.end(); i != eoi; ++i) {
       if((*i)->getStatus() == PeerStat::ACTIVE) {
-        unsigned int s = (*i)->calculateDownloadSpeed();
+        int s = (*i)->calculateDownloadSpeed();
         peerStatDlspdMap_[(*i)->getCuid()] = s;
         speed += s;
       }
@@ -428,8 +428,8 @@ unsigned int SegmentMan::calculateDownloadSpeed()
 
 void SegmentMan::updateDownloadSpeedFor(const SharedHandle<PeerStat>& pstat)
 {
-  unsigned int newspd = pstat->calculateDownloadSpeed();
-  unsigned int oldSpd = peerStatDlspdMap_[pstat->getCuid()];
+  int newspd = pstat->calculateDownloadSpeed();
+  int oldSpd = peerStatDlspdMap_[pstat->getCuid()];
   if(cachedDlspd_ > oldSpd) {
     cachedDlspd_ -= oldSpd;
     cachedDlspd_ += newspd;

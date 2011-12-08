@@ -51,13 +51,13 @@ class Randomizer;
 class DefaultBtAnnounce : public BtAnnounce {
 private:
   SharedHandle<DownloadContext> downloadContext_;
-  unsigned int trackers_;
+  int trackers_;
   Timer prevAnnounceTimer_;
   time_t interval_;
   time_t minInterval_;
   time_t userDefinedInterval_;
-  unsigned int complete_;
-  unsigned int incomplete_;
+  int complete_;
+  int incomplete_;
   AnnounceList announceList_;
   std::string trackerId_;
   const Option* option_;
@@ -139,12 +139,12 @@ public:
     return minInterval_;
   }
 
-  unsigned int getComplete() const
+  int getComplete() const
   {
     return complete_;
   }
 
-  unsigned int getIncomplete() const
+  int getIncomplete() const
   {
     return incomplete_;
   }

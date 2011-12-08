@@ -48,7 +48,7 @@ class LpdDispatchMessageCommand:public Command {
 private:
   SharedHandle<LpdMessageDispatcher> dispatcher_;
   DownloadEngine* e_;
-  unsigned int tryCount_;
+  int tryCount_;
   SharedHandle<BtRuntime> btRuntime_;
 public:
   LpdDispatchMessageCommand

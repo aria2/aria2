@@ -230,7 +230,7 @@ FileEntry::findFasterRequest
  const SharedHandle<ServerStatMan>& serverStatMan)
 {
   const int startupIdleTime = 10;
-  const unsigned int SPEED_THRESHOLD = 20*1024;
+  const int SPEED_THRESHOLD = 20*1024;
   if(lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
     return SharedHandle<Request>();
   }

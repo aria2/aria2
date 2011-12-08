@@ -68,12 +68,12 @@ void ServerStat::setLastUpdated(const Time& time)
   lastUpdated_ = time;
 }
 
-void ServerStat::setDownloadSpeed(unsigned int downloadSpeed)
+void ServerStat::setDownloadSpeed(int downloadSpeed)
 {
   downloadSpeed_ = downloadSpeed;
 }
 
-void ServerStat::updateDownloadSpeed(unsigned int downloadSpeed)
+void ServerStat::updateDownloadSpeed(int downloadSpeed)
 {
   downloadSpeed_ = downloadSpeed;
   if(downloadSpeed > 0) {
@@ -82,13 +82,12 @@ void ServerStat::updateDownloadSpeed(unsigned int downloadSpeed)
   lastUpdated_.reset();
 }
 
-void ServerStat::setSingleConnectionAvgSpeed
-(unsigned int singleConnectionAvgSpeed)
+void ServerStat::setSingleConnectionAvgSpeed(int singleConnectionAvgSpeed)
 {
   singleConnectionAvgSpeed_ = singleConnectionAvgSpeed;
 }
 
-void ServerStat::updateSingleConnectionAvgSpeed(unsigned int downloadSpeed)
+void ServerStat::updateSingleConnectionAvgSpeed(int downloadSpeed)
 {
   float avgDownloadSpeed;
   if(counter_ == 0)
@@ -117,13 +116,12 @@ void ServerStat::updateSingleConnectionAvgSpeed(unsigned int downloadSpeed)
   singleConnectionAvgSpeed_ = (int)avgDownloadSpeed;
 }
 
-void ServerStat::setMultiConnectionAvgSpeed
-(unsigned int multiConnectionAvgSpeed)
+void ServerStat::setMultiConnectionAvgSpeed(int multiConnectionAvgSpeed)
 {
   multiConnectionAvgSpeed_ = multiConnectionAvgSpeed;
 }
 
-void ServerStat::updateMultiConnectionAvgSpeed(unsigned int downloadSpeed)
+void ServerStat::updateMultiConnectionAvgSpeed(int downloadSpeed)
 {
   float avgDownloadSpeed;
   if(counter_ == 0)
@@ -151,7 +149,7 @@ void ServerStat::increaseCounter()
   ++counter_;
 }
 
-void ServerStat::setCounter(unsigned int value)
+void ServerStat::setCounter(int value)
 {
   counter_ = value;
 }
@@ -208,8 +206,8 @@ bool ServerStat::operator==(const ServerStat& serverStat) const
 
 std::string ServerStat::toString() const
 {
-  return fmt("host=%s, protocol=%s, dl_speed=%u, sc_avg_speed=%u,"
-             " mc_avg_speed=%u, last_updated=%ld, counter=%u, status=%s",
+  return fmt("host=%s, protocol=%s, dl_speed=%d, sc_avg_speed=%d,"
+             " mc_avg_speed=%d, last_updated=%ld, counter=%d, status=%s",
              getHostname().c_str(),
              getProtocol().c_str(),
              getDownloadSpeed(),

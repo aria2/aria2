@@ -61,15 +61,15 @@ private:
   std::deque<SharedHandle<RequestGroup> > requestGroups_;
   std::deque<SharedHandle<RequestGroup> > reservedGroups_;
   std::deque<SharedHandle<DownloadResult> > downloadResults_;
-  unsigned int maxSimultaneousDownloads_;
+  int maxSimultaneousDownloads_;
 
   const Option* option_;
 
   SharedHandle<ServerStatMan> serverStatMan_;
 
-  unsigned int maxOverallDownloadSpeedLimit_;
+  int maxOverallDownloadSpeedLimit_;
 
-  unsigned int maxOverallUploadSpeedLimit_;
+  int maxOverallUploadSpeedLimit_;
 
   // true if JSON-RPC/XML-RPC is enabled.
   bool rpc_;
@@ -98,7 +98,7 @@ private:
   (const SharedHandle<RequestGroup>& requestGroup) const;
 public:
   RequestGroupMan(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
-                  unsigned int maxSimultaneousDownloads,
+                  int maxSimultaneousDownloads,
                   const Option* option);
 
   ~RequestGroupMan();
@@ -249,12 +249,12 @@ public:
   // maxOverallDownloadSpeedLimit_ == 0.  Otherwise returns false.
   bool doesOverallDownloadSpeedExceed();
 
-  void setMaxOverallDownloadSpeedLimit(unsigned int speed)
+  void setMaxOverallDownloadSpeedLimit(int speed)
   {
     maxOverallDownloadSpeedLimit_ = speed;
   }
 
-  unsigned int getMaxOverallDownloadSpeedLimit() const
+  int getMaxOverallDownloadSpeedLimit() const
   {
     return maxOverallDownloadSpeedLimit_;
   }
@@ -264,17 +264,17 @@ public:
   // maxOverallUploadSpeedLimit_ == 0. Otherwise returns false.
   bool doesOverallUploadSpeedExceed();
 
-  void setMaxOverallUploadSpeedLimit(unsigned int speed)
+  void setMaxOverallUploadSpeedLimit(int speed)
   {
     maxOverallUploadSpeedLimit_ = speed;
   }
 
-  unsigned int getMaxOverallUploadSpeedLimit() const
+  int getMaxOverallUploadSpeedLimit() const
   {
     return maxOverallUploadSpeedLimit_;
   }
 
-  void setMaxSimultaneousDownloads(unsigned int max)
+  void setMaxSimultaneousDownloads(int max)
   {
     maxSimultaneousDownloads_ = max;
   }

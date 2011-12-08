@@ -45,8 +45,8 @@ private:
   int64_t lengthArray_[2];
   int sw_;
   Timer cpArray_[2];
-  unsigned int maxSpeed_;
-  unsigned int prevSpeed_;
+  int maxSpeed_;
+  int prevSpeed_;
   Timer start_;
   int64_t accumulatedLength_;
   time_t nextInterval_;
@@ -62,13 +62,13 @@ public:
   /**
    * Returns download/upload speed in byte per sec
    */
-  unsigned int calculateSpeed();
+  int calculateSpeed();
 
-  unsigned int getMaxSpeed() const {
+  int getMaxSpeed() const {
     return maxSpeed_;
   }
 
-  unsigned int calculateAvgSpeed() const;
+  int calculateAvgSpeed() const;
 
   void update(size_t bytes);
 

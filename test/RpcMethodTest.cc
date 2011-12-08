@@ -462,7 +462,7 @@ void RpcMethodTest::testChangeOption()
   SharedHandle<Option> option = group->getOption();
 
   CPPUNIT_ASSERT_EQUAL(0, res.code);
-  CPPUNIT_ASSERT_EQUAL((unsigned int)100*1024,
+  CPPUNIT_ASSERT_EQUAL(100*1024,
                        group->getMaxDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
                        option->get(PREF_MAX_DOWNLOAD_LIMIT));
@@ -471,9 +471,9 @@ void RpcMethodTest::testChangeOption()
                        option->get(PREF_BT_REQUEST_PEER_SPEED_LIMIT));
 
   CPPUNIT_ASSERT_EQUAL(std::string("100"), option->get(PREF_BT_MAX_PEERS));
-  CPPUNIT_ASSERT_EQUAL((unsigned int)100, btObject->btRuntime->getMaxPeers());
+  CPPUNIT_ASSERT_EQUAL(100, btObject->btRuntime->getMaxPeers());
 
-  CPPUNIT_ASSERT_EQUAL((unsigned int)50*1024,
+  CPPUNIT_ASSERT_EQUAL(50*1024,
                        group->getMaxUploadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
                        option->get(PREF_MAX_UPLOAD_LIMIT));
@@ -533,13 +533,13 @@ void RpcMethodTest::testChangeGlobalOption()
 
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   CPPUNIT_ASSERT_EQUAL
-    ((unsigned int)100*1024,
+    (100*1024,
      e_->getRequestGroupMan()->getMaxOverallDownloadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("102400"),
                        e_->getOption()->get(PREF_MAX_OVERALL_DOWNLOAD_LIMIT));
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL
-    ((unsigned int)50*1024,
+    (50*1024,
      e_->getRequestGroupMan()->getMaxOverallUploadSpeedLimit());
   CPPUNIT_ASSERT_EQUAL(std::string("51200"),
                        e_->getOption()->get(PREF_MAX_OVERALL_UPLOAD_LIMIT));

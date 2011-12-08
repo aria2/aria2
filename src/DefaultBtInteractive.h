@@ -64,28 +64,28 @@ class UTMetadataRequestTracker;
 
 class FloodingStat {
 private:
-  unsigned int chokeUnchokeCount;
-  unsigned int keepAliveCount;
+  int chokeUnchokeCount;
+  int keepAliveCount;
 public:
   FloodingStat():chokeUnchokeCount(0), keepAliveCount(0) {}
   
   void incChokeUnchokeCount() {
-    if(chokeUnchokeCount < UINT_MAX) {
+    if(chokeUnchokeCount < INT_MAX) {
       chokeUnchokeCount++;
     }
   }
 
   void incKeepAliveCount() {
-    if(keepAliveCount < UINT_MAX) {
+    if(keepAliveCount < INT_MAX) {
       keepAliveCount++;
     }
   }
 
-  unsigned int getChokeUnchokeCount() const {
+  int getChokeUnchokeCount() const {
     return chokeUnchokeCount;
   }
 
-  unsigned int getKeepAliveCount() const {
+  int getKeepAliveCount() const {
     return keepAliveCount;
   }
 

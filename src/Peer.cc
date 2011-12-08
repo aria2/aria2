@@ -216,13 +216,13 @@ void Peer::updateBitfield(size_t index, int operation) {
   updateSeeder();
 }
 
-unsigned int Peer::calculateUploadSpeed()
+int Peer::calculateUploadSpeed()
 {
   assert(res_);
   return res_->getPeerStat().calculateUploadSpeed();
 }
 
-unsigned int Peer::calculateDownloadSpeed()
+int Peer::calculateDownloadSpeed()
 {
   assert(res_);
   return res_->getPeerStat().calculateDownloadSpeed();

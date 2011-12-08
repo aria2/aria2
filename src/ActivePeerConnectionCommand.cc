@@ -82,10 +82,9 @@ bool ActivePeerConnectionCommand::execute() {
   if(checkPoint_.difference(global::wallclock()) >= interval_) {
     checkPoint_ = global::wallclock();
     TransferStat tstat = requestGroup_->calculateStat();
-    const unsigned int maxDownloadLimit =
-      requestGroup_->getMaxDownloadSpeedLimit();
-    const unsigned int maxUploadLimit = requestGroup_->getMaxUploadSpeedLimit();
-    unsigned int thresholdSpeed;
+    const int maxDownloadLimit = requestGroup_->getMaxDownloadSpeedLimit();
+    const int maxUploadLimit = requestGroup_->getMaxUploadSpeedLimit();
+    int thresholdSpeed;
     if(!bittorrent::getTorrentAttrs
        (requestGroup_->getDownloadContext())->metadata.empty()) {
       thresholdSpeed =
@@ -104,7 +103,7 @@ bool ActivePeerConnectionCommand::execute() {
         (tstat.getDownloadSpeed() < thresholdSpeed ||
          btRuntime_->lessThanMinPeers()))) {
 
-      unsigned int numConnection = 0;
+      int numConnection = 0;
       if(pieceStorage_->downloadFinished()) {
         if(btRuntime_->getMaxPeers() > btRuntime_->getConnections()) {
           numConnection =
@@ -115,7 +114,7 @@ bool ActivePeerConnectionCommand::execute() {
         numConnection = numNewConnection_;
       }
 
-      for(unsigned int numAdd = numConnection;
+      for(int numAdd = numConnection;
           numAdd > 0 && peerStorage_->isPeerAvailable(); --numAdd) {
         SharedHandle<Peer> peer = peerStorage_->getUnusedPeer();
         connectToPeer(peer);

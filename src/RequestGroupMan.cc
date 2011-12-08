@@ -79,7 +79,7 @@ namespace aria2 {
 
 RequestGroupMan::RequestGroupMan
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
- unsigned int maxSimultaneousDownloads,
+ int maxSimultaneousDownloads,
  const Option* option)
   : reservedGroups_(requestGroups.begin(), requestGroups.end()),
     maxSimultaneousDownloads_(maxSimultaneousDownloads),
@@ -479,12 +479,12 @@ void createInitialCommand(const SharedHandle<RequestGroup>& requestGroup,
 void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
   removeStoppedGroup(e);
-  if(maxSimultaneousDownloads_ <= requestGroups_.size()) {
+  if(static_cast<size_t>(maxSimultaneousDownloads_) <= requestGroups_.size()) {
     return;
   }
   std::vector<SharedHandle<RequestGroup> > temp;
-  unsigned int count = 0;
-  size_t num = maxSimultaneousDownloads_-requestGroups_.size();
+  int count = 0;
+  int num = maxSimultaneousDownloads_-requestGroups_.size();
   while(count < num && !reservedGroups_.empty()) {
     SharedHandle<RequestGroup> groupToAdd = reservedGroups_.front();
     reservedGroups_.pop_front();

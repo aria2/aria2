@@ -153,7 +153,7 @@ bool FtpNegotiationCommand::recvGreeting() {
   disableWriteCheckSocket();
   setReadCheckSocket(getSocket());
 
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -176,7 +176,7 @@ bool FtpNegotiationCommand::sendUser() {
 }
 
 bool FtpNegotiationCommand::recvUser() {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   switch(status) {
   case 0:
     return false;
@@ -204,7 +204,7 @@ bool FtpNegotiationCommand::sendPass() {
 }
 
 bool FtpNegotiationCommand::recvPass() {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -227,7 +227,7 @@ bool FtpNegotiationCommand::sendType() {
 }
 
 bool FtpNegotiationCommand::recvType() {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -253,7 +253,7 @@ bool FtpNegotiationCommand::sendPwd()
 bool FtpNegotiationCommand::recvPwd()
 {
   std::string pwd;
-  unsigned int status = ftp_->receivePwdResponse(pwd);
+  int status = ftp_->receivePwdResponse(pwd);
   if(status == 0) {
     return false;
   }
@@ -292,7 +292,7 @@ bool FtpNegotiationCommand::sendCwd()
 
 bool FtpNegotiationCommand::recvCwd()
 {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -333,7 +333,7 @@ bool FtpNegotiationCommand::sendMdtm()
 bool FtpNegotiationCommand::recvMdtm()
 {
   Time lastModifiedTime = Time::null();
-  unsigned int status = ftp_->receiveMdtmResponse(lastModifiedTime);
+  int status = ftp_->receiveMdtmResponse(lastModifiedTime);
   if(status == 0) {
     return false;
   }
@@ -465,7 +465,7 @@ bool FtpNegotiationCommand::onFileSizeDetermined(off_t totalLength)
 
 bool FtpNegotiationCommand::recvSize() {
   off_t size = 0;
-  unsigned int status = ftp_->receiveSizeResponse(size);
+  int status = ftp_->receiveSizeResponse(size);
   if(status == 0) {
     return false;
   }
@@ -546,7 +546,7 @@ bool FtpNegotiationCommand::sendEprt() {
 }
 
 bool FtpNegotiationCommand::recvEprt() {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -569,7 +569,7 @@ bool FtpNegotiationCommand::sendPort() {
 }
 
 bool FtpNegotiationCommand::recvPort() {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -603,7 +603,7 @@ bool FtpNegotiationCommand::sendEpsv() {
 
 bool FtpNegotiationCommand::recvEpsv() {
   uint16_t port;
-  unsigned int status = ftp_->receiveEpsvResponse(port);
+  int status = ftp_->receiveEpsvResponse(port);
   if(status == 0) {
     return false;
   }
@@ -628,7 +628,7 @@ bool FtpNegotiationCommand::sendPasv() {
 
 bool FtpNegotiationCommand::recvPasv() {
   std::pair<std::string, uint16_t> dest;
-  unsigned int status = ftp_->receivePasvResponse(dest);
+  int status = ftp_->receivePasvResponse(dest);
   if(status == 0) {
     return false;
   }
@@ -781,7 +781,7 @@ bool FtpNegotiationCommand::sendRest(const SharedHandle<Segment>& segment) {
 }
 
 bool FtpNegotiationCommand::recvRest(const SharedHandle<Segment>& segment) {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -808,7 +808,7 @@ bool FtpNegotiationCommand::sendRetr() {
 }
 
 bool FtpNegotiationCommand::recvRetr() {
-  unsigned int status = ftp_->receiveResponse();
+  int status = ftp_->receiveResponse();
   if(status == 0) {
     return false;
   }

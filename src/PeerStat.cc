@@ -65,23 +65,23 @@ PeerStat::~PeerStat() {}
 /**
  * Returns current download speed in byte per sec.
  */
-unsigned int PeerStat::calculateDownloadSpeed()
+int PeerStat::calculateDownloadSpeed()
 {
   return downloadSpeed_.calculateSpeed();
 }
 
-unsigned int PeerStat::calculateAvgDownloadSpeed()
+int PeerStat::calculateAvgDownloadSpeed()
 {
   avgDownloadSpeed_ = downloadSpeed_.calculateAvgSpeed();
   return avgDownloadSpeed_;
 }
 
-unsigned int PeerStat::calculateUploadSpeed()
+int PeerStat::calculateUploadSpeed()
 {
   return uploadSpeed_.calculateSpeed();
 }
 
-unsigned int PeerStat::calculateAvgUploadSpeed()
+int PeerStat::calculateAvgUploadSpeed()
 {
   avgUploadSpeed_ = uploadSpeed_.calculateAvgSpeed();
   return avgUploadSpeed_;
@@ -99,12 +99,12 @@ void PeerStat::updateUploadLength(size_t bytes)
   sessionUploadLength_ += bytes;
 }
 
-unsigned int PeerStat::getMaxDownloadSpeed() const
+int PeerStat::getMaxDownloadSpeed() const
 {
   return downloadSpeed_.getMaxSpeed();
 }
 
-unsigned int PeerStat::getMaxUploadSpeed() const
+int PeerStat::getMaxUploadSpeed() const
 {
   return uploadSpeed_.getMaxSpeed();
 }

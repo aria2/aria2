@@ -59,8 +59,8 @@ private:
   SpeedCalc uploadSpeed_;
   Timer downloadStartTime_;
   PeerStat::STATUS status_;
-  unsigned int avgDownloadSpeed_;
-  unsigned int avgUploadSpeed_;
+  int avgDownloadSpeed_;
+  int avgUploadSpeed_;
   int64_t sessionDownloadLength_;
   int64_t sessionUploadLength_;
 public:
@@ -78,28 +78,28 @@ public:
   /**
    * Returns current download speed in byte per sec.
    */
-  unsigned int calculateDownloadSpeed();
+  int calculateDownloadSpeed();
 
-  unsigned int calculateAvgDownloadSpeed();
+  int calculateAvgDownloadSpeed();
 
-  unsigned int calculateUploadSpeed();
+  int calculateUploadSpeed();
 
-  unsigned int calculateAvgUploadSpeed();
+  int calculateAvgUploadSpeed();
 
   void updateDownloadLength(size_t bytes);
 
   void updateUploadLength(size_t bytes);
 
-  unsigned int getMaxDownloadSpeed() const;
+  int getMaxDownloadSpeed() const;
 
-  unsigned int getMaxUploadSpeed() const;
+  int getMaxUploadSpeed() const;
 
-  unsigned int getAvgDownloadSpeed() const
+  int getAvgDownloadSpeed() const
   {
     return avgDownloadSpeed_;
   }
 
-  unsigned int getAvgUploadSpeed() const
+  int getAvgUploadSpeed() const
   {
     return avgUploadSpeed_;
   }

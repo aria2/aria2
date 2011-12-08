@@ -50,7 +50,7 @@ class MessageDigest;
 class DownloadCommand : public AbstractCommand {
 private:
   time_t startupIdleTime_;
-  unsigned int lowestDownloadSpeedLimit_;
+  int lowestDownloadSpeedLimit_;
   SharedHandle<PeerStat> peerStat_;
 
   bool pieceHashValidationEnabled_;
@@ -99,7 +99,7 @@ public:
     startupIdleTime_ = startupIdleTime;
   }
 
-  void setLowestDownloadSpeedLimit(unsigned int lowestDownloadSpeedLimit)
+  void setLowestDownloadSpeedLimit(int lowestDownloadSpeedLimit)
   {
     lowestDownloadSpeedLimit_ = lowestDownloadSpeedLimit;
   }

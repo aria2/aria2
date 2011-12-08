@@ -788,8 +788,8 @@ bool RequestGroup::tryAutoFileRenaming()
   if(filepath.empty()) {
     return false;
   }
-  for(unsigned int i = 1; i < 10000; ++i) {
-    std::string newfilename = fmt("%s.%u", filepath.c_str(), i);
+  for(int i = 1; i < 10000; ++i) {
+    std::string newfilename = fmt("%s.%d", filepath.c_str(), i);
     File newfile(newfilename);
     File ctrlfile(newfile.getPath()+DefaultBtProgressInfoFile::getSuffix());
     if(!newfile.exists() || (newfile.exists() && ctrlfile.exists())) {
@@ -808,7 +808,7 @@ void RequestGroup::createNextCommandWithAdj(std::vector<Command*>& commands,
     numCommand = 1+numAdj;
   } else {
     numCommand = std::min(downloadContext_->getNumPieces(),
-                          numConcurrentCommand_);
+                          static_cast<size_t>(numConcurrentCommand_));
     numCommand += numAdj;
   }
   if(numCommand > 0) {
@@ -830,8 +830,9 @@ void RequestGroup::createNextCommand(std::vector<Command*>& commands,
     if(numStreamCommand_ >= numConcurrentCommand_) {
       numCommand = 0;
     } else {
-      numCommand = std::min(downloadContext_->getNumPieces(),
-                            numConcurrentCommand_-numStreamCommand_);
+      numCommand =
+        std::min(downloadContext_->getNumPieces(),
+                 static_cast<size_t>(numConcurrentCommand_-numStreamCommand_));
     }
   }
   if(numCommand > 0) {
@@ -841,9 +842,9 @@ void RequestGroup::createNextCommand(std::vector<Command*>& commands,
 
 void RequestGroup::createNextCommand(std::vector<Command*>& commands,
                                      DownloadEngine* e,
-                                     unsigned int numCommand)
+                                     int numCommand)
 {
-  for(; numCommand--; ) {
+  for(; numCommand > 0; --numCommand) {
     Command* command = new CreateRequestCommand(e->newCUID(), this, e);
     commands.push_back(command);
   }
@@ -946,9 +947,9 @@ void RequestGroup::decreaseStreamConnection()
   --numStreamConnection_;
 }
 
-unsigned int RequestGroup::getNumConnection() const
+int RequestGroup::getNumConnection() const
 {
-  unsigned int numConnection = numStreamConnection_;
+  int numConnection = numStreamConnection_;
 #ifdef ENABLE_BITTORRENT
   if(btRuntime_) {
     numConnection += btRuntime_->getConnections();
@@ -1259,12 +1260,12 @@ void RequestGroup::updateLastModifiedTime(const Time& time)
 void RequestGroup::increaseAndValidateFileNotFoundCount()
 {
   ++fileNotFoundCount_;
-  const unsigned int maxCount = option_->getAsInt(PREF_MAX_FILE_NOT_FOUND);
+  const int maxCount = option_->getAsInt(PREF_MAX_FILE_NOT_FOUND);
   if(maxCount > 0 && fileNotFoundCount_ >= maxCount &&
      (!segmentMan_ ||
       segmentMan_->calculateSessionDownloadLength() == 0)) {
     throw DOWNLOAD_FAILURE_EXCEPTION2
-      (fmt("Reached max-file-not-found count=%u", maxCount),
+      (fmt("Reached max-file-not-found count=%d", maxCount),
        error_code::MAX_FILE_NOT_FOUND);
   }
 }

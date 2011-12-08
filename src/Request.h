@@ -63,8 +63,8 @@ private:
   std::string connectedHostname_;
   std::string connectedAddr_;
 
-  unsigned int tryCount_;
-  unsigned int redirectCount_;
+  int tryCount_;
+  int redirectCount_;
   // whether or not the server supports persistent connection
   bool supportsPersistentConnection_;
   // enable keep-alive if possible.
@@ -72,7 +72,7 @@ private:
   // enable pipelining if possible.
   bool pipeliningHint_;
   // maximum number of pipelined requests
-  unsigned int maxPipelinedRequest_;
+  int maxPipelinedRequest_;
   SharedHandle<PeerStat> peerStat_;
   bool removalRequested_;
   uint16_t connectedPort_;
@@ -91,9 +91,9 @@ public:
   bool resetUri();
   void resetTryCount() { tryCount_ = 0; }
   void addTryCount() { ++tryCount_; }
-  unsigned int getTryCount() const { return tryCount_; }
+  int getTryCount() const { return tryCount_; }
   void resetRedirectCount();
-  unsigned int getRedirectCount() const { return redirectCount_; }
+  int getRedirectCount() const { return redirectCount_; }
   // Returns URI passed by setUri()
   const std::string& getUri() const { return uri_; }
   const std::string& getCurrentUri() const { return currentUri_; }
@@ -146,9 +146,9 @@ public:
     return pipeliningHint_;
   }
 
-  void setMaxPipelinedRequest(unsigned int num);
+  void setMaxPipelinedRequest(int num);
 
-  unsigned int getMaxPipelinedRequest() const
+  int getMaxPipelinedRequest() const
   {
     return maxPipelinedRequest_;
   }
@@ -230,7 +230,7 @@ public:
 
   static const std::string PROTO_FTP;
 
-  static const unsigned int MAX_REDIRECT = 20;
+  static const int MAX_REDIRECT = 20;
 
 };
 

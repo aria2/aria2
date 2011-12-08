@@ -91,7 +91,7 @@ const SharedHandle<Peer>& BtLeecherStateChoke::PeerEntry::getPeer() const
   return peer_;
 }
 
-unsigned int BtLeecherStateChoke::PeerEntry::getDownloadSpeed() const
+int BtLeecherStateChoke::PeerEntry::getDownloadSpeed() const
 {
   return downloadSpeed_;
 }
@@ -178,7 +178,7 @@ void BtLeecherStateChoke::regularUnchoke(std::vector<PeerEntry>& peerEntries)
   std::vector<PeerEntry>::iterator peerIter = peerEntries.begin();
   for(;peerIter != rest && count; ++peerIter, --count) {
     (*peerIter).disableChokingRequired();
-    A2_LOG_INFO(fmt("RU: %s, dlspd=%u",
+    A2_LOG_INFO(fmt("RU: %s, dlspd=%d",
                     (*peerIter).getPeer()->getIPAddress().c_str(),
                     (*peerIter).getDownloadSpeed()));
     if((*peerIter).getPeer()->optUnchoking()) {

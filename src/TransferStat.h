@@ -42,8 +42,8 @@ namespace aria2 {
 
 class TransferStat {
 public:
-  unsigned int downloadSpeed;
-  unsigned int uploadSpeed;
+  int downloadSpeed;
+  int uploadSpeed;
   int64_t sessionDownloadLength;
   int64_t sessionUploadLength;
   int64_t allTimeUploadLength;
@@ -82,17 +82,17 @@ public:
 
   TransferStat& operator-=(const TransferStat& stat);
 
-  unsigned int getDownloadSpeed() const {
+  int getDownloadSpeed() const {
     return downloadSpeed;
   }
 
-  void setDownloadSpeed(unsigned int s) { downloadSpeed = s; }
+  void setDownloadSpeed(int s) { downloadSpeed = s; }
 
-  unsigned int getUploadSpeed() const {
+  int getUploadSpeed() const {
     return uploadSpeed;
   }
 
-  void setUploadSpeed(unsigned int s) { uploadSpeed = s; }
+  void setUploadSpeed(int s) { uploadSpeed = s; }
 
   /**
    * Returns the number of bytes downloaded since the program started.

@@ -60,7 +60,7 @@ private:
   time_t interval_; // UNIT: sec
   DownloadEngine* e_;
   Timer checkPoint_;
-  unsigned int numNewConnection_; // the number of the connection to establish.
+  int numNewConnection_; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(cuid_t cuid,
                               RequestGroup* requestGroup,
@@ -73,7 +73,7 @@ public:
 
   void connectToPeer(const SharedHandle<Peer>& peer);
 
-  void setNumNewConnection(size_t numNewConnection)
+  void setNumNewConnection(int numNewConnection)
   {
     numNewConnection_ = numNewConnection;
   }

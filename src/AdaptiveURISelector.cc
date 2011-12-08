@@ -125,12 +125,13 @@ std::string AdaptiveURISelector::selectOne(const std::deque<std::string>& uris)
   if(uris.empty()) {
     return A2STR::NIL;
   } else {
-    const unsigned int numPieces =
+    const size_t numPieces =
       requestGroup_->getDownloadContext()->getNumPieces();
 
     bool reservedContext = numPieces > 0 && 
-      nbConnections_ > std::min(numPieces,
-                                requestGroup_->getNumConcurrentCommand());
+      static_cast<size_t>(nbConnections_) > std::min
+      (numPieces,
+       static_cast<size_t>(requestGroup_->getNumConcurrentCommand()));
     bool selectBest = numPieces == 0 || reservedContext;
     
     if(numPieces > 0)
@@ -180,8 +181,8 @@ std::string AdaptiveURISelector::getBestMirror
 (const std::deque<std::string>& uris) const
 {
   /* Here we return one of the bests mirrors */
-  unsigned int max = getMaxDownloadSpeed(uris);
-  unsigned int min = max-(int)(max*0.25);
+  int max = getMaxDownloadSpeed(uris);
+  int min = max-(int)(max*0.25);
   std::deque<std::string> bests = getUrisBySpeed(uris, min);
   
   if (bests.size() < 2) {
@@ -218,11 +219,11 @@ void AdaptiveURISelector::tuneDownloadCommand
 void AdaptiveURISelector::adjustLowestSpeedLimit
 (const std::deque<std::string>& uris, DownloadCommand* command) const
 {
-  unsigned int lowest =
+  int lowest =
     requestGroup_->getOption()->getAsInt(PREF_LOWEST_SPEED_LIMIT);
   if (lowest > 0) {
-    unsigned int low_lowest = 4 * 1024;
-    unsigned int max = getMaxDownloadSpeed(uris);
+    int low_lowest = 4 * 1024;
+    int max = getMaxDownloadSpeed(uris);
     if (max > 0 && lowest > max / 4) {
       A2_LOG_NOTICE(fmt(_("Lowering lowest-speed-limit since known max speed is"
                           " too near (new:%d was:%d max:%d)"),
@@ -241,14 +242,14 @@ void AdaptiveURISelector::adjustLowestSpeedLimit
 }
 
 namespace {
-unsigned int getUriMaxSpeed(SharedHandle<ServerStat> ss)
+int getUriMaxSpeed(SharedHandle<ServerStat> ss)
 {
   return std::max(ss->getSingleConnectionAvgSpeed(),
                   ss->getMultiConnectionAvgSpeed());
 }
 } // namespace
 
-unsigned int AdaptiveURISelector::getMaxDownloadSpeed
+int AdaptiveURISelector::getMaxDownloadSpeed
 (const std::deque<std::string>& uris) const
 {
   std::string uri = getMaxDownloadSpeedUri(uris);
@@ -281,7 +282,7 @@ std::string AdaptiveURISelector::getMaxDownloadSpeedUri
 }
 
 std::deque<std::string> AdaptiveURISelector::getUrisBySpeed
-(const std::deque<std::string>& uris, unsigned int min) const
+(const std::deque<std::string>& uris, int min) const
 {
   std::deque<std::string> bests;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
@@ -321,7 +322,7 @@ std::string AdaptiveURISelector::getFirstNotTestedUri
 std::string AdaptiveURISelector::getFirstToTestUri
 (const std::deque<std::string>& uris) const
 {
-  unsigned int counter;
+  int counter;
   int power;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
@@ -352,10 +353,10 @@ SharedHandle<ServerStat> AdaptiveURISelector::getServerStats
   }
 }
 
-unsigned int AdaptiveURISelector::getNbTestedServers
+int AdaptiveURISelector::getNbTestedServers
 (const std::deque<std::string>& uris) const
 {
-  unsigned int counter = 0;
+  int counter = 0;
   for(std::deque<std::string>::const_iterator i = uris.begin(),
         eoi = uris.end(); i != eoi; ++i) {
     SharedHandle<ServerStat> ss = getServerStats(*i);

@@ -127,9 +127,9 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     }
     TransferStat tstat =
       downloadContext->getOwnerRequestGroup()->calculateStat();
-    const unsigned int maxDownloadLimit =
+    const int maxDownloadLimit =
       downloadContext->getOwnerRequestGroup()->getMaxDownloadSpeedLimit();
-    unsigned int thresholdSpeed =
+    int thresholdSpeed =
       downloadContext->getOwnerRequestGroup()->
       getOption()->getAsInt(PREF_BT_REQUEST_PEER_SPEED_LIMIT);
     if(maxDownloadLimit > 0) {

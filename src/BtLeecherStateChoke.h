@@ -55,7 +55,7 @@ private:
   class PeerEntry {
   private:
     SharedHandle<Peer> peer_;
-    unsigned int downloadSpeed_;
+    int downloadSpeed_;
     bool regularUnchoker_;
   public:
     PeerEntry(const SharedHandle<Peer>& peer);
@@ -70,7 +70,7 @@ private:
 
     const SharedHandle<Peer>& getPeer() const;
 
-    unsigned int getDownloadSpeed() const;
+    int getDownloadSpeed() const;
 
     bool isRegularUnchoker() const;
 

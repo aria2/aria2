@@ -69,10 +69,10 @@ private:
 
   std::string baseWorkingDir_;
 
-  unsigned int getStatus(const std::string& response) const;
-  std::string::size_type findEndOfResponse(unsigned int status,
-                                           const std::string& buf) const;
-  bool bulkReceiveResponse(std::pair<unsigned int, std::string>& response);
+  int getStatus(const std::string& response) const;
+  std::string::size_type findEndOfResponse
+  (int status, const std::string& buf) const;
+  bool bulkReceiveResponse(std::pair<int, std::string>& response);
 
   static const std::string A;
 
@@ -101,18 +101,18 @@ public:
   bool sendRest(const SharedHandle<Segment>& segment);
   bool sendRetr();
 
-  unsigned int receiveResponse();
-  unsigned int receiveSizeResponse(off_t& size);
+  int receiveResponse();
+  int receiveSizeResponse(off_t& size);
   // Returns status code of MDTM reply. If the status code is 213, parses
   // time-val and store it in time.
   // If a code other than 213 is returned, time is not touched.
   // Expect MDTM reply is YYYYMMDDhhmmss in GMT. If status is 213 but returned
   // date cannot be parsed, then assign Time::null() to given time.
   // If reply is not received yet, returns 0.
-  unsigned int receiveMdtmResponse(Time& time);
-  unsigned int receiveEpsvResponse(uint16_t& port);
-  unsigned int receivePasvResponse(std::pair<std::string, uint16_t>& dest);
-  unsigned int receivePwdResponse(std::string& pwd);
+  int receiveMdtmResponse(Time& time);
+  int receiveEpsvResponse(uint16_t& port);
+  int receivePasvResponse(std::pair<std::string, uint16_t>& dest);
+  int receivePwdResponse(std::string& pwd);
 
   void setBaseWorkingDir(const std::string& baseWorkingDir);
 

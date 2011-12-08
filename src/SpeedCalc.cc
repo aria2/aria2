@@ -61,10 +61,10 @@ void SpeedCalc::reset() {
   nextInterval_ = CHANGE_INTERVAL_SEC;
 }
 
-unsigned int SpeedCalc::calculateSpeed() {
+int SpeedCalc::calculateSpeed() {
   int64_t milliElapsed = cpArray_[sw_].differenceInMillis(global::wallclock());
   if(milliElapsed) {
-    unsigned int speed = lengthArray_[sw_]*1000/milliElapsed;
+    int speed = lengthArray_[sw_]*1000/milliElapsed;
     prevSpeed_ = speed;
     maxSpeed_ = std::max(speed, maxSpeed_);
     if(isIntervalOver(milliElapsed)) {
@@ -102,12 +102,12 @@ void SpeedCalc::changeSw() {
     cpArray_[sw_].difference(global::wallclock())+CHANGE_INTERVAL_SEC;
 }
 
-unsigned int SpeedCalc::calculateAvgSpeed() const {
+int SpeedCalc::calculateAvgSpeed() const {
   int64_t milliElapsed = start_.differenceInMillis(global::wallclock());
 
   // if milliElapsed is too small, the average speed is rubish, better return 0
   if(milliElapsed > 4) {
-    unsigned int speed = accumulatedLength_*1000/milliElapsed;
+    int speed = accumulatedLength_*1000/milliElapsed;
     return speed;
   } else {
     return 0;

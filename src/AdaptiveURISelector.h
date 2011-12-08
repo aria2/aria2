@@ -49,8 +49,8 @@ private:
   SharedHandle<ServerStatMan> serverStatMan_;
   // No need to delete requestGroup_
   RequestGroup* requestGroup_;
-  unsigned int nbServerToEvaluate_;
-  unsigned int nbConnections_;
+  int nbServerToEvaluate_;
+  int nbConnections_;
 
   static const time_t MAX_TIMEOUT = 60;
 
@@ -59,15 +59,15 @@ private:
   std::string selectOne(const std::deque<std::string>& uris);
   void adjustLowestSpeedLimit(const std::deque<std::string>& uris,
                               DownloadCommand* command) const;
-  unsigned int getMaxDownloadSpeed(const std::deque<std::string>& uris) const;
+  int getMaxDownloadSpeed(const std::deque<std::string>& uris) const;
   std::string getMaxDownloadSpeedUri(const std::deque<std::string>& uris) const;
   std::deque<std::string> getUrisBySpeed(const std::deque<std::string>& uris,
-                                         unsigned int min) const;
+                                         int min) const;
   std::string selectRandomUri(const std::deque<std::string>& uris) const;
   std::string getFirstNotTestedUri(const std::deque<std::string>& uris) const;
   std::string getFirstToTestUri(const std::deque<std::string>& uris) const;
   SharedHandle<ServerStat> getServerStats(const std::string& uri) const;
-  unsigned int getNbTestedServers(const std::deque<std::string>& uris) const;
+  int getNbTestedServers(const std::deque<std::string>& uris) const;
   std::string getBestMirror(const std::deque<std::string>& uris) const;
 public:
   AdaptiveURISelector(const SharedHandle<ServerStatMan>& serverStatMan, 

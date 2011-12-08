@@ -126,7 +126,7 @@ std::string FeedbackURISelector::selectFaster
   // Use first 10 good URIs to introduce some randomness.
   const size_t NUM_URI = 10;
   // Ignore low speed server
-  const unsigned int SPEED_THRESHOLD = 20*1024;
+  const int SPEED_THRESHOLD = 20*1024;
   std::vector<std::pair<SharedHandle<ServerStat>, std::string> > fastCands;
   std::vector<std::string> normCands;
   for(std::deque<std::string>::const_iterator i = uris.begin(),

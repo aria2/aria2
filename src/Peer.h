@@ -224,12 +224,12 @@ public:
   /**
    * Returns the transfer rate from localhost to remote host.
    */
-  unsigned int calculateUploadSpeed();
+  int calculateUploadSpeed();
 
   /**
    * Returns the transfer rate from remote host to localhost.
    */
-  unsigned int calculateDownloadSpeed();
+  int calculateDownloadSpeed();
 
   /**
    * Returns the number of bytes uploaded to the remote host.

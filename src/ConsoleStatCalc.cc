@@ -101,7 +101,7 @@ void printProgress
  const SizeFormatter& sizeFormatter)
 {
   TransferStat stat = rg->calculateStat();
-  unsigned int eta = 0;
+  int eta = 0;
   if(rg->getTotalLength() > 0 && stat.getDownloadSpeed() > 0) {
     eta = (rg->getTotalLength()-rg->getCompletedLength())/stat.getDownloadSpeed();
   }
