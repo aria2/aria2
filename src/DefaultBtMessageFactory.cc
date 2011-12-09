@@ -178,6 +178,7 @@ DefaultBtMessageFactory::createBtMessage
         temp->setBtMessageValidator(validator);
       }
       temp->setDownloadContext(downloadContext_);
+      temp->setPeerStorage(peerStorage_);
       msg = temp;
       break;
     }
@@ -340,7 +341,6 @@ DefaultBtMessageFactory::createPieceMessage
                                  pieceStorage_->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   msg->setDownloadContext(downloadContext_);
-  msg->setPeerStorage(peerStorage_);
   setCommonProperty(msg);
   return msg;
 }
