@@ -584,7 +584,7 @@ void createFileEntry
     entry->put(KEY_INDEX, util::uitos(index));
     entry->put(KEY_PATH, (*first)->getPath());
     entry->put(KEY_SELECTED, (*first)->isRequested()?VLB_TRUE:VLB_FALSE);
-    entry->put(KEY_LENGTH, util::uitos((*first)->getLength()));
+    entry->put(KEY_LENGTH, util::itos((*first)->getLength()));
     off_t completedLength = bf->getOffsetCompletedLength
       ((*first)->getOffset(), (*first)->getLength());
     entry->put(KEY_COMPLETED_LENGTH, util::itos(completedLength));
@@ -649,26 +649,26 @@ void gatherProgressCommon
   }
   if(requested_key(keys, KEY_TOTAL_LENGTH)) {
     // This is "filtered" total length if --select-file is used.
-    entryDict->put(KEY_TOTAL_LENGTH, util::uitos(group->getTotalLength()));
+    entryDict->put(KEY_TOTAL_LENGTH, util::itos(group->getTotalLength()));
   }
   if(requested_key(keys, KEY_COMPLETED_LENGTH)) {
     // This is "filtered" total length if --select-file is used.
     entryDict->put
-      (KEY_COMPLETED_LENGTH,util::uitos(group->getCompletedLength()));
+      (KEY_COMPLETED_LENGTH,util::itos(group->getCompletedLength()));
   }
   TransferStat stat = group->calculateStat();
   if(requested_key(keys, KEY_DOWNLOAD_SPEED)) {
-    entryDict->put(KEY_DOWNLOAD_SPEED, util::uitos(stat.getDownloadSpeed()));
+    entryDict->put(KEY_DOWNLOAD_SPEED, util::itos(stat.getDownloadSpeed()));
   }
   if(requested_key(keys, KEY_UPLOAD_SPEED)) {
-    entryDict->put(KEY_UPLOAD_SPEED, util::uitos(stat.getUploadSpeed()));
+    entryDict->put(KEY_UPLOAD_SPEED, util::itos(stat.getUploadSpeed()));
   }
   if(requested_key(keys, KEY_UPLOAD_LENGTH)) {
     entryDict->put
-      (KEY_UPLOAD_LENGTH, util::uitos(stat.getAllTimeUploadLength()));
+      (KEY_UPLOAD_LENGTH, util::itos(stat.getAllTimeUploadLength()));
   }
   if(requested_key(keys, KEY_CONNECTIONS)) {
-    entryDict->put(KEY_CONNECTIONS, util::uitos(group->getNumConnection()));
+    entryDict->put(KEY_CONNECTIONS, util::itos(group->getNumConnection()));
   }
   if(requested_key(keys, KEY_BITFIELD)) {
     if(ps) {
@@ -798,8 +798,8 @@ void gatherPeer
     peerEntry->put(KEY_AM_CHOKING, (*i)->amChoking()?VLB_TRUE:VLB_FALSE);
     peerEntry->put(KEY_PEER_CHOKING, (*i)->peerChoking()?VLB_TRUE:VLB_FALSE);
     TransferStat stat = ps->getTransferStatFor(*i);
-    peerEntry->put(KEY_DOWNLOAD_SPEED, util::uitos(stat.getDownloadSpeed()));
-    peerEntry->put(KEY_UPLOAD_SPEED, util::uitos(stat.getUploadSpeed()));
+    peerEntry->put(KEY_DOWNLOAD_SPEED, util::itos(stat.getDownloadSpeed()));
+    peerEntry->put(KEY_UPLOAD_SPEED, util::itos(stat.getUploadSpeed()));
     peerEntry->put(KEY_SEEDER, (*i)->isSeeder()?VLB_TRUE:VLB_FALSE);
     peers->append(peerEntry);
   }
@@ -869,13 +869,13 @@ void gatherStoppedDownload
     entryDict->put(KEY_FILES, files);
   }
   if(requested_key(keys, KEY_TOTAL_LENGTH)) {
-    entryDict->put(KEY_TOTAL_LENGTH, util::uitos(ds->totalLength));
+    entryDict->put(KEY_TOTAL_LENGTH, util::itos(ds->totalLength));
   }
   if(requested_key(keys, KEY_COMPLETED_LENGTH)) {
-    entryDict->put(KEY_COMPLETED_LENGTH, util::uitos(ds->completedLength));
+    entryDict->put(KEY_COMPLETED_LENGTH, util::itos(ds->completedLength));
   }
   if(requested_key(keys, KEY_UPLOAD_LENGTH)) {
-    entryDict->put(KEY_UPLOAD_LENGTH, util::uitos(ds->uploadLength));
+    entryDict->put(KEY_UPLOAD_LENGTH, util::itos(ds->uploadLength));
   }
   if(requested_key(keys, KEY_BITFIELD)) {
     if(!ds->bitfield.empty()) {
@@ -1373,7 +1373,7 @@ SharedHandle<ValueBase> GetServersRpcMethod::process
         serverEntry->put(KEY_URI, (*ri)->getUri());
         serverEntry->put(KEY_CURRENT_URI, (*ri)->getCurrentUri());
         serverEntry->put(KEY_DOWNLOAD_SPEED,
-                         util::uitos(ps->calculateDownloadSpeed()));
+                         util::itos(ps->calculateDownloadSpeed()));
         servers->append(serverEntry);
       }
     }
@@ -1476,8 +1476,8 @@ SharedHandle<ValueBase> GetGlobalStatRpcMethod::process
   const SharedHandle<RequestGroupMan>& rgman = e->getRequestGroupMan();
   TransferStat ts = rgman->calculateStat();
   SharedHandle<Dict> res = Dict::g();
-  res->put(KEY_DOWNLOAD_SPEED, util::uitos(ts.downloadSpeed));
-  res->put(KEY_UPLOAD_SPEED, util::uitos(ts.uploadSpeed));
+  res->put(KEY_DOWNLOAD_SPEED, util::itos(ts.downloadSpeed));
+  res->put(KEY_UPLOAD_SPEED, util::itos(ts.uploadSpeed));
   res->put(KEY_NUM_WAITING, util::uitos(rgman->getReservedGroups().size()));
   res->put(KEY_NUM_STOPPED, util::uitos(rgman->getDownloadResults().size()));
   res->put(KEY_NUM_ACTIVE, util::uitos(rgman->getRequestGroups().size()));
