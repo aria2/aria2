@@ -722,7 +722,7 @@ bool FtpNegotiationCommand::sendTunnelRequest()
     int family = getSocket()->getPeerInfo(dataAddr);
     uri::UriStruct us;
     us.protocol = "ftp";
-    us.host = dataAddr.first;
+    us.host = getRequest()->getHost();
     us.port = pasvPort_;
     us.ipv6LiteralAddress = (family == AF_INET6);
     req->setUri(uri::construct(us));
