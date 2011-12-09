@@ -554,7 +554,11 @@ void RequestGroupMan::closeFile()
 {
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
         requestGroups_.begin(), eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    (*itr)->closeFile();
+    try {
+      (*itr)->closeFile();
+    } catch(RecoverableException& e) {
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
+    }
   }
 }
 

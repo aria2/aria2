@@ -59,7 +59,10 @@ AbstractDiskWriter::AbstractDiskWriter(const std::string& filename)
 
 AbstractDiskWriter::~AbstractDiskWriter()
 {
-  closeFile();
+  try {
+    closeFile();
+  } catch(...) {
+  }
 }
 
 void AbstractDiskWriter::openFile(off_t totalLength)
@@ -78,8 +81,15 @@ void AbstractDiskWriter::openFile(off_t totalLength)
 void AbstractDiskWriter::closeFile()
 {
   if(fd_ >= 0) {
-    close(fd_);
+    int r;
+    while((r = close(fd_)) == -1 && errno == EINTR);
     fd_ = -1;
+    if(r == -1) {
+      int errNum = errno;
+      throw DL_ABORT_EX3(errNum, fmt("Failed to close file: %s",
+                                     util::safeStrerror(errNum).c_str()),
+                         error_code::FILE_IO_ERROR);
+    }
   }
 }
 
