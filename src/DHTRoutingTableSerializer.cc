@@ -138,7 +138,7 @@ void DHTRoutingTableSerializer::serialize(const std::string& filename)
     // clen bytes compact peer
     WRITE_CHECK(fp, compactPeer, static_cast<size_t>(clen));
     // 24-clen bytes reserved
-    WRITE_CHECK(fp, zero, 24-clen);
+    WRITE_CHECK(fp, zero, static_cast<size_t>(24-clen));
     // 20bytes: node ID
     WRITE_CHECK(fp, node->getID(), DHT_ID_LENGTH);
     // 4bytes reserved
