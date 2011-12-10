@@ -718,13 +718,14 @@ bool FtpNegotiationCommand::sendTunnelRequest()
     SharedHandle<Request> req(new Request());
     // Construct fake URI in order to use HttpRequest
     std::pair<std::string, uint16_t> dataAddr;
-    int family = getSocket()->getPeerInfo(dataAddr);
     uri::UriStruct us;
     us.protocol = "ftp";
     us.host = getRequest()->getHost();
     us.port = pasvPort_;
-    us.ipv6LiteralAddress = (family == AF_INET6);
-    req->setUri(uri::construct(us));
+    us.ipv6LiteralAddress = getRequest()->isIPv6LiteralAddress();
+    if(!req->setUri(uri::construct(us))) {
+      throw DL_RETRY_EX("Something wrong with FTP URI");
+    }
     httpRequest->setRequest(req);
     httpRequest->setProxyRequest(createProxyRequest());
     http_->sendProxyRequest(httpRequest);
