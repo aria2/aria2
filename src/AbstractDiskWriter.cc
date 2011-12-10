@@ -86,8 +86,10 @@ void AbstractDiskWriter::closeFile()
     fd_ = -1;
     if(r == -1) {
       int errNum = errno;
-      throw DL_ABORT_EX3(errNum, fmt("Failed to close file: %s",
-                                     util::safeStrerror(errNum).c_str()),
+      throw DL_ABORT_EX3(errNum,
+                         fmt("Failed to close file %s, cause: %s",
+                             filename_.c_str(),
+                             util::safeStrerror(errNum).c_str()),
                          error_code::FILE_IO_ERROR);
     }
   }
