@@ -241,8 +241,7 @@ if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
 	XmlRpcRequestParserState.h\
-	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
-	XmlRpcRequestProcessor.h
+	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h
 
 endif # ENABLE_XML_RPC
 
