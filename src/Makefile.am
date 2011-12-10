@@ -237,6 +237,14 @@ SRCS += XmlAttr.cc XmlAttr.h\
 	ParserStateMachine.h
 endif # HAVE_SOME_XMLLIB
 
+if HAVE_LIBXML2
+SRCS +=  Xml2XmlParser.cc Xml2XmlParser.h
+endif # HAVE_LIBXML2
+
+if HAVE_LIBEXPAT
+SRCS +=  ExpatXmlParser.cc ExpatXmlParser.h
+endif # HAVE_LIBEXPAT
+
 if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
@@ -495,14 +503,6 @@ SRCS += Metalinker.cc Metalinker.h\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 	metalink_helper.cc metalink_helper.h
-
-if HAVE_LIBXML2
-SRCS +=  Xml2XmlParser.cc Xml2XmlParser.h
-endif # HAVE_LIBXML2
-
-if HAVE_LIBEXPAT
-SRCS +=  ExpatXmlParser.cc ExpatXmlParser.h
-endif # HAVE_LIBEXPAT
 
 endif # ENABLE_METALINK
 

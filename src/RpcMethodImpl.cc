@@ -1137,8 +1137,11 @@ void changeOption
     }
   }
   if(option.defined(PREF_DIR) || option.defined(PREF_OUT)) {
-    if(dctx->getFileEntries().size() == 1 &&
-       !dctx->hasAttribute(bittorrent::BITTORRENT)) {
+    if(dctx->getFileEntries().size() == 1
+#ifdef ENABLE_BITTORRENT
+       && !dctx->hasAttribute(bittorrent::BITTORRENT)
+#endif // ENABLE_BITTORRENT
+       ) {
       dctx->getFirstFileEntry()->setPath
         (grOption->blank(PREF_OUT) ? A2STR::NIL :
          util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
