@@ -1147,6 +1147,7 @@ void changeOption
          util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
     }
   }
+#ifdef ENABLE_BITTORRENT
   if(option.defined(PREF_DIR) || option.defined(PREF_INDEX_OUT)) {
     if(dctx->hasAttribute(bittorrent::BITTORRENT)) {
       std::istringstream indexOutIn(grOption->get(PREF_INDEX_OUT));
@@ -1160,6 +1161,7 @@ void changeOption
       }
     }
   }
+#endif // ENABLE_BITTORRENT
   if(option.defined(PREF_MAX_DOWNLOAD_LIMIT)) {
     group->setMaxDownloadSpeedLimit
       (grOption->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
