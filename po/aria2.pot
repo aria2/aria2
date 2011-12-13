@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 1.13.0\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-12-03 23:34+0900\n"
+"POT-Creation-Date: 2011-12-14 02:12+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,27 +51,27 @@ msgstr ""
 msgid "Download GID#%lld not complete: %s"
 msgstr ""
 
-#: src/RequestGroupMan.cc:607
+#: src/RequestGroupMan.cc:611
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:654
 msgid "Status Legend:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:652
+#: src/RequestGroupMan.cc:656
 msgid "(OK):download completed."
 msgstr ""
 
-#: src/RequestGroupMan.cc:655
+#: src/RequestGroupMan.cc:659
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:658
+#: src/RequestGroupMan.cc:662
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:661
+#: src/RequestGroupMan.cc:665
 msgid "(RM):download removed."
 msgstr ""
 
@@ -1741,6 +1741,19 @@ msgid ""
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 
+#: src/version_usage.cc:154
+#, c-format
+msgid ""
+"About the number of connections\n"
+" Since 1.10.0 release, aria2 uses 1 connection per host by default and has "
+"20MiB\n"
+" segment size restriction. So whatever value you specify using -s option, "
+"it\n"
+" uses 1 connection per host. To make it behave like 1.9.x, use\n"
+" --max-connection-per-server=4 --min-split-size=1M.\n"
+"\n"
+msgstr ""
+
 #: src/version_usage.cc:161
 #, c-format
 msgid "Refer to man page for more information."
@@ -1790,14 +1803,14 @@ msgstr ""
 msgid "CUID#%lld - Failed to resume download. Download from scratch."
 msgstr ""
 
-#: src/AdaptiveURISelector.cc:227
+#: src/AdaptiveURISelector.cc:228
 #, c-format
 msgid ""
 "Lowering lowest-speed-limit since known max speed is too near (new:%d was:%d "
 "max:%d)"
 msgstr ""
 
-#: src/AdaptiveURISelector.cc:234
+#: src/AdaptiveURISelector.cc:235
 #, c-format
 msgid ""
 "Lowering lowest-speed-limit since we have no clue about available speed (now:"
