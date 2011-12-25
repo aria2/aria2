@@ -292,7 +292,7 @@ void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- int64_t defaultSize = 1048576LL /* 1MiB */);
+ off_t defaultSize = 1048576 /* 1MiB */);
 
 // Converts ISO/IEC 8859-1 string src to utf-8.
 std::string iso8859ToUtf8(const std::string& src);

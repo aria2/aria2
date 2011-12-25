@@ -399,7 +399,7 @@ int FtpConnection::receiveResponse()
 # define ULONGLONG_SCANF "%Lu"
 #endif // __MINGW32__
 
-int FtpConnection::receiveSizeResponse(off_t& size)
+int FtpConnection::receiveSizeResponse(int64_t& size)
 {
   std::pair<int, std::string> response;
   if(bulkReceiveResponse(response)) {

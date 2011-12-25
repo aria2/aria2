@@ -676,7 +676,7 @@ void computeHeadPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- int64_t head)
+ off_t head)
 {
   if(head == 0) {
     return;
@@ -701,7 +701,7 @@ void computeTailPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- int64_t tail)
+ off_t tail)
 {
   if(tail == 0) {
     return;
@@ -726,7 +726,7 @@ void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- int64_t defaultSize)
+ off_t defaultSize)
 {
   std::vector<size_t> indexes;
   std::vector<Scip> parts;
