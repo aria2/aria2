@@ -1,90 +1,94 @@
-aria2 1.13.0
+aria2 1.14.0
 ============
 
 Release Note
 ------------
 
-This release fixed libgcrypt version check error. Several command line
-options were added. For details of each new option, read changes
-below.  aria2 now returns error response if RPC request parameter has
-wrong type.  For MinGW32 build, Unicode filenames support was added.
-
-From this release, aria2 uses libnettle and libgmp by default instead
-of libgcrypt.  If you want to use libgcrypt, use configure options
---without-libnettle --with-libgcrypt.
+This release adds many available options to aria2.changeOption and
+aria2.changeGlobalOption RPC methods.  IPv6 literal address is now
+supported in the proxy options. --metalink-server option is now
+deprecated and --split option should be used instead. In this release,
+--metalink-server is the alias of --split option.  The format ETA in
+console readout is changed slightly. New option --stop-with-process is
+added.
 
 Changes
 -------
 
- * Check libgcrypt version is greater or equal to required version.
-   This will fixes Debian bug#642989.
+ * Updated Russian man page. Thanks to ITriskTI.
 
- * Added --piece-length option.  This option sets a piece length for
-   HTTP/FTP downloads. This is the boundary when aria2 splits a
-   file. All splits occur at multiple of this length. This option will
-   be ignored in BitTorrent downloads.  It will be also ignored if
-   Metalink file contains piece hashes.
+ * Ignore peer which possibly sent bad data in next few minuts.  In
+   aria2, one piece is downloaded from several peers, so when hash
+   check failed for that piece, it cannot determine which peer(s) sent
+   bad data. So, we ignore peer who sent last block of data in random
+   minutes. We use randomized timeout because all peers get waken up
+   at the almost same time.
+ 
+ * Added suggestion for unknown/ambiguous options.  The help messages
+   shown when argument error were redesigned and less verbose now.
+   When unknown or ambiguous option is given, show suggestions like
+   "Did you mean...". Some constant values related to levenstein
+   distance are borrowed from git help.c.
 
- * Throw exception if parameter has wrong type in RPC method.
-   Formally, depending on the method implementation, this kind of
-   error is just ignored and parameter is skipped. Now aria2 responds
-   error for these cases. The required parameter checking is also
-   reworked along with this change.
+ * Added --stop-with-process=PID option.  This feature stops
+   application when process PID is not running.  This is useful if
+   aria2 process is forked from a parent process. The parent process
+   can fork aria2 with its own pid and when parent process exits for
+   some reason, aria2 can detect it and shutdown itself.  The code
+   which detects whether or not given process PID is running is
+   contributed by Emmanuel Engelhart.
+ 
+ * Support IPv6 address for FTP via HTTP tunneling.
 
- * Cleanup log message for binding server socket.
+ * The previous implementation could not handle the situation when
+   user, password and proxy URI is given various order.  Now we just
+   set rules: username set in --*-proxy-user overrides username in
+   --*-proxy option, no matter in any order username, password and
+   proxy URI are parsed. Likewise, password set in --*--proxy-passwd
+   overrides password in --*-proxy option.
 
- * Recognize tab as white space before option in -i list.
+ * Changed format of ETA.  Now no leading 0 is used. If hour part
+   and/or min part is non-zero, and sec part is 0, sec part is
+   omitted, like this "1h3m".
 
- * Added geom parameter to --stream-piece-selector option.  If 'geom'
-   is given, at the beginning aria2 selects piece which has minimum
-   index like 'inorder', but it exponentially increasingly keeps space
-   from previously selected piece. This will reduce the number of
-   establishing connection and at the same time it will download the
-   beginning part of the file first. This will be useful to view movie
-   while downloading it.
+ * Rewritten Metalink XML parser.  Now we don't strip white spaces
+   while parsing Metalink V3 document.
 
- * Added completedLength response key in aria2.getFiles RPC method
+ * Now xml attribute and characters in RPC request is not stripped at
+   all.
 
- * Added #checksum help tag.
+ * Fixed bug that some information such as port number is lost if
+   redirect URI contains only path component.
 
- * Added --checksum option.  Added --checksum=TYPE=DIGEST option. This
-   option sets checksum. TYPE is hash type. The supported hash type is
-   listed in "Hash Algorithms" in "aria2c -v". DIGEST is hex digest.
-   For example, setting sha-1 digest looks like this:
-   sha-1=0192ba11326fe2298c8cb4de616f4d4140213838 This option applies
-   only to HTTP(S)/FTP downloads.
+ * Apply PREF_MAX_CONNECTION_PER_SERVER to BitTorrent WEB Seeding
+   hosts.
 
- * Added --hash-check-only opiton.  Added --hash-check-only opiton.
-   If true is given, after hash check using --check-integrity option,
-   abort download whether or not download is complete. The default
-   value is false.
+ * Reuse in-flight and pooled URIs when a download is paused.
 
- * Added --download-result option.  Added --download-result=OPT
-   option.  This option changes the way "Download Results" is
-   formatted. If OPT is 'default', print GID, status, average download
-   speed and path/URI. If multiple files are involved, path/URI of
-   first requested file is printed and remaining ones are omitted.  If
-   OPT is 'full', print GID, status, average download speed,
-   percentage of progress and path/URI. The percentage of progress and
-   path/URI are printed for each requested file in each row.
+ * Deprecated --metalink-server option. Use --split option instead.
 
- * Added --rpc-allow-origin-all option.  This option adds
-   Access-Control-Allow-Origin header field with value '*' to the RPC
-   response.
+ * Made max value of --select-file to 65535
 
- * Ignore --out option supplied in command-line if -i is used.  You
-   can still use out option in the text file specified in -i.
+ * Use same domain-match algorithm for no-proxy and netrc.  Now
+   "example.org" does not domain-match ".example.org" in both
+   functions.
 
- * Disable SSLv2 by default and optimize memory usage.
-   Patch from Cristian Rodríguez.
+ * For waiting or paused downloads, the options listed in Input File
+   subsection in man page are available in aria2.changeOption RPC
+   method, except for following options: dry-run, metalink-base-uri,
+   parameterized-uri, pause and piece_length.
 
- * Added libnettle and libgmp support.  libnettle and libgmp is used
-   by default. Old implementation uses libgcrypt as default. If more
-   and more Linux distributions offer libnettle linked GnuTLS, then
-   this change decrease library dependency against libgcrypt and
-   libgpg-error.  The current library detection for libnettle and
-   libgmp is very simple, just use AC_SEARCH_LIBS.
-   util::generateRandomData() was written using SimpleRandomizer, thus
-   no external library dependency from this function.
+ * Made --download-result, --save-session, --server-stat-of and
+   --save-cookies option available in aria2.changeGlobalOption.  In
+   addition to them, the options listed in Input File subsection in
+   man page are also available, except for following options:
+   checksum, index-out, out, pause and select-file.
 
- * In MinGW32, open file with UNICODE filename and print them in ANSI.
+ * Made --uri-selector option available in -i list.
+
+ * Support IPv6 literal address in proxy option.
+
+ * Support IPv6 CIDR block in --http-no-proxy option.
+
+ * HttpProxyOptionHandler: Enclose hostname with square brackets if
+   hostname is IPv6 numeric address.
