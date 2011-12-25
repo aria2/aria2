@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-10-02 16:14+0900\n"
+"POT-Creation-Date: 2011-12-26 00:58+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -39,13 +39,46 @@ msgstr ""
 "Jos virheitä tapahtuu, katso lokitiedostoa. Ks. '-l' parametri ohjeessa/man-"
 "sivulla."
 
-#: src/RequestGroupMan.cc:608
+#: src/MultiUrlRequestInfo.cc:274
+#, fuzzy, c-format
+msgid "Serialized session to '%s' successfully."
+msgstr "Osatiedosto tallennettu onnistuneesti."
+
+#: src/MultiUrlRequestInfo.cc:277
+#, fuzzy, c-format
+msgid "Failed to serialize session to '%s'."
+msgstr "Dataa ei voitu vastaanottaa, syy: %s"
+
+#: src/RequestGroupMan.cc:342
+#, fuzzy, c-format
+msgid "Download GID#%lld not complete: %s"
+msgstr "Lataus on valmis: %s"
+
+#: src/RequestGroupMan.cc:607
 msgid "Download Results:"
 msgstr "Lataustulokset:"
 
-#: src/RequestGroupMan.cc:651
+#: src/RequestGroupMan.cc:650
 msgid "Status Legend:"
 msgstr "Tilalegenda:"
+
+#: src/RequestGroupMan.cc:652
+#, fuzzy
+msgid "(OK):download completed."
+msgstr "Lataus on valmis."
+
+#: src/RequestGroupMan.cc:655
+msgid "(ERR):error occurred."
+msgstr ""
+
+#: src/RequestGroupMan.cc:658
+msgid "(INPR):download in-progress."
+msgstr ""
+
+#: src/RequestGroupMan.cc:661
+#, fuzzy
+msgid "(RM):download removed."
+msgstr "Lataus keskeytettiin."
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
@@ -113,11 +146,8 @@ msgid ""
 "                              simultaneously. The number of connections to "
 "the\n"
 "                              same host is restricted by\n"
-"                              --max-connection-per-server option. Please see "
-"-j\n"
-"                              and --min-split-size option too.\n"
-"                              Please note that in Metalink download, this\n"
-"                              option has no effect and use -C option instead."
+"                              --max-connection-per-server option. See also\n"
+"                              --min-split-size option."
 msgstr ""
 " -s, --split=N Lataa tiedosto käyttäen N yhteyttä. N täytyy olla\n"
 "                              väliltä 1-5. Tämä asetus vaikuttaa kaikkiin "
@@ -126,7 +156,7 @@ msgstr ""
 "                              N yhteydellä.\n"
 "                              Oletus: 1"
 
-#: src/usage_text.h:62
+#: src/usage_text.h:60
 #, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait between retries. \n"
@@ -138,19 +168,19 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:66
+#: src/usage_text.h:64
 #, fuzzy
 msgid " -t, --timeout=SEC            Set timeout in seconds."
 msgstr " -t, --timeout=SEK Aikakatkaisu sekunneissa. Oletus: 60"
 
-#: src/usage_text.h:68
+#: src/usage_text.h:66
 #, fuzzy
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:70
+#: src/usage_text.h:68
 #, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
@@ -162,7 +192,7 @@ msgstr ""
 "                              METODI on joko 'get' tai 'tunnel'.\n"
 "                              Oletus: tunnel"
 
-#: src/usage_text.h:75
+#: src/usage_text.h:73
 #, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
@@ -174,7 +204,7 @@ msgstr ""
 "                              METODI on joko 'get' tai 'tunnel'.\n"
 "                              Oletus: tunnel"
 
-#: src/usage_text.h:80
+#: src/usage_text.h:78
 #, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
@@ -187,7 +217,7 @@ msgstr ""
 "                              tai 'ascii'.\n"
 "                              Oletus: binary"
 
-#: src/usage_text.h:85
+#: src/usage_text.h:83
 #, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
@@ -206,48 +236,48 @@ msgstr ""
 "                              Tällä hetkellä tämä vaikuttaa vain \n"
 "                              http(s)/ftp-latauksiin."
 
-#: src/usage_text.h:93
+#: src/usage_text.h:91
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
 " -http-user=USER Aseta http-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:95
+#: src/usage_text.h:93
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
 " --http-passwd=SALASANA Aseta http-salasana. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:97
+#: src/usage_text.h:95
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
 msgstr ""
 
-#: src/usage_text.h:99
+#: src/usage_text.h:97
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr " --referer=REFERER Aseta viittaaja. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:101
+#: src/usage_text.h:99
 #, fuzzy
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
 " -http-user=USER Aseta http-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:103
+#: src/usage_text.h:101
 #, fuzzy
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr ""
 " --http-passwd=SALASANA Aseta http-salasana. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:105
+#: src/usage_text.h:103
 msgid " --ftp-type=TYPE              Set FTP transfer type."
 msgstr ""
 
-#: src/usage_text.h:107
+#: src/usage_text.h:105
 msgid ""
 " -p, --ftp-pasv[=true|false]  Use the passive mode in FTP. If false is "
 "given,\n"
 "                              the active mode will be used."
 msgstr ""
 
-#: src/usage_text.h:110
+#: src/usage_text.h:108
 #, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
@@ -267,7 +297,7 @@ msgstr ""
 "                              Tämä asetus ei vaikuta BitTorrent-latauksiin.\n"
 "                              Oletus: 0"
 
-#: src/usage_text.h:116
+#: src/usage_text.h:114
 #, fuzzy
 msgid ""
 " --max-overall-download-limit=SPEED Set max overall download speed in bytes/"
@@ -283,7 +313,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:122
+#: src/usage_text.h:120
 #, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed per each download in\n"
@@ -298,7 +328,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:128
+#: src/usage_text.h:126
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
 "                              'none' doesn't pre-allocate file space. "
@@ -324,7 +354,7 @@ msgid ""
 "                              doesn't have posix_fallocate() function."
 msgstr ""
 
-#: src/usage_text.h:144
+#: src/usage_text.h:142
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
@@ -335,7 +365,7 @@ msgstr ""
 "                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
 "= 1024K)"
 
-#: src/usage_text.h:148
+#: src/usage_text.h:146
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
@@ -347,7 +377,7 @@ msgstr ""
 "                              varatessa tilaa.\n"
 "                              Älä käytä, jos kohtaat virheitä"
 
-#: src/usage_text.h:152
+#: src/usage_text.h:150
 #, fuzzy
 msgid ""
 " --allow-overwrite[=true|false] Restart download from scratch if the\n"
@@ -361,7 +391,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:156
+#: src/usage_text.h:154
 #, fuzzy
 msgid ""
 " --allow-piece-length-change[=true|false] If false is given, aria2 aborts\n"
@@ -378,7 +408,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:161
+#: src/usage_text.h:159
 #, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
@@ -393,7 +423,7 @@ msgstr ""
 "                              tavalliset komentorivilatausapuohjelmat.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:165
+#: src/usage_text.h:163
 #, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
@@ -413,7 +443,7 @@ msgstr ""
 "                              (1..9999) lisättynä.\n"
 "                              Oletus: true"
 
-#: src/usage_text.h:171
+#: src/usage_text.h:169
 #, fuzzy
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
@@ -441,7 +471,7 @@ msgstr ""
 "vaaditaan.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:182
+#: src/usage_text.h:180
 #, fuzzy
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
@@ -449,14 +479,14 @@ msgstr ""
 " --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:184
+#: src/usage_text.h:182
 #, fuzzy
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
 " --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:186
+#: src/usage_text.h:184
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -481,7 +511,7 @@ msgid ""
 "                              piece hashes are used."
 msgstr ""
 
-#: src/usage_text.h:200
+#: src/usage_text.h:198
 #, fuzzy
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
@@ -502,7 +532,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:208
+#: src/usage_text.h:206
 #, fuzzy
 msgid ""
 " --realtime-chunk-checksum[=true|false]  Validate chunk of data by "
@@ -517,7 +547,7 @@ msgstr ""
 "                              tarkistussumma.\n"
 "                              Oletus: true"
 
-#: src/usage_text.h:212
+#: src/usage_text.h:210
 #, fuzzy
 msgid ""
 " -c, --continue[=true|false]  Continue downloading a partially downloaded\n"
@@ -534,16 +564,16 @@ msgstr ""
 "                              Tällä hetkellä tämä vaikuttaa vain \n"
 "                              http(s)/ftp-latauksiin."
 
-#: src/usage_text.h:219
+#: src/usage_text.h:217
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr " -U, --user-agent=USER_AGENT Aseta selaimen nimi http(s)-latauksiin."
 
-#: src/usage_text.h:221
+#: src/usage_text.h:219
 #, fuzzy
 msgid " -n, --no-netrc[=true|false]  Disables netrc support."
 msgstr " -n, --no-netrc Asettaa netrc-tuen pois päältä."
 
-#: src/usage_text.h:223
+#: src/usage_text.h:221
 #, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
@@ -566,20 +596,20 @@ msgstr ""
 "                              URI:t yhdellä rivillä käyttäen TAB-nappia.\n"
 "                              Lukee stdin:stä jos käytät '-' FILE:nä."
 
-#: src/usage_text.h:233
+#: src/usage_text.h:231
 #, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
 "                              every static (HTTP/FTP) URL, torrent and "
 "metalink.\n"
-"                              See also -s and -C options."
+"                              See also --split option."
 msgstr ""
 " -j, --max-concurrent-downloads=N Aseta yhtäaikaisten latausten maksimi.\n"
 "                             Tätä pitäisi käyttää -i valinnan kanssa.\n"
 "                             Oletus: 5"
 
-#: src/usage_text.h:237
+#: src/usage_text.h:235
 #, fuzzy
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
@@ -589,7 +619,7 @@ msgstr ""
 " --load-cookies=FILE Lataa cookiet tiedostosta. Tiedoston formaatti on\n"
 "                              sama kuin Netscapella ja Mozillalla."
 
-#: src/usage_text.h:240
+#: src/usage_text.h:238
 msgid ""
 " --save-cookies=FILE          Save Cookies to FILE in Mozilla/Firefox(1.x/2."
 "x)/\n"
@@ -600,7 +630,7 @@ msgid ""
 "                              their expiry values are treated as 0."
 msgstr ""
 
-#: src/usage_text.h:245
+#: src/usage_text.h:243
 #, fuzzy
 msgid ""
 " -S, --show-files[=true|false] Print file listing of .torrent, .meta4 and\n"
@@ -612,7 +642,7 @@ msgstr ""
 "lopeta.\n"
 "                              Torrent-tiedostot sisältävät enemmän tietoa."
 
-#: src/usage_text.h:250
+#: src/usage_text.h:248
 #, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
@@ -639,11 +669,11 @@ msgstr ""
 "voivat vaihdella\n"
 "                              riippuen asetuksista (ks. --metalink-*)"
 
-#: src/usage_text.h:259
+#: src/usage_text.h:257
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT käytä ladattua .torrent-tiedostoa"
 
-#: src/usage_text.h:261
+#: src/usage_text.h:259
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -668,7 +698,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:271
+#: src/usage_text.h:269
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -685,7 +715,7 @@ msgstr ""
 "'6881-6999'\n"
 "                            Molempia voi käyttää yhtäaikaa."
 
-#: src/usage_text.h:277
+#: src/usage_text.h:275
 #, fuzzy
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
@@ -701,7 +731,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:283
+#: src/usage_text.h:281
 #, fuzzy
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
@@ -716,7 +746,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:289
+#: src/usage_text.h:287
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -724,7 +754,7 @@ msgstr ""
 " --seed-time=MIN Aseta jakamisaika (seeding) minuuteissa. Ks. myös\n"
 "                             --seed-ratio valinta."
 
-#: src/usage_text.h:292
+#: src/usage_text.h:290
 #, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
@@ -747,7 +777,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:299
 #, fuzzy
 msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
@@ -766,18 +796,18 @@ msgstr ""
 "lisätään.\n"
 "                              Oletus: -aria2-"
 
-#: src/usage_text.h:307
+#: src/usage_text.h:305
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 
-#: src/usage_text.h:309
+#: src/usage_text.h:307
 #, fuzzy
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
 msgstr ""
 " --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:311
+#: src/usage_text.h:309
 #, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"
@@ -794,7 +824,7 @@ msgstr ""
 "'6881-6999'\n"
 "                            Molempia voi käyttää yhtäaikaa."
 
-#: src/usage_text.h:317
+#: src/usage_text.h:315
 #, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
@@ -804,13 +834,13 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:320
+#: src/usage_text.h:318
 #, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
 msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
 
-#: src/usage_text.h:322
+#: src/usage_text.h:320
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -820,7 +850,7 @@ msgid ""
 "                              the given level."
 msgstr ""
 
-#: src/usage_text.h:327
+#: src/usage_text.h:325
 #, fuzzy
 msgid ""
 " --bt-require-crypto[=true|false] If true is given, aria2 doesn't accept "
@@ -835,7 +865,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:332
+#: src/usage_text.h:330
 #, fuzzy
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
@@ -853,7 +883,7 @@ msgstr ""
 "                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
 "= 1024K)"
 
-#: src/usage_text.h:340
+#: src/usage_text.h:338
 #, fuzzy
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
@@ -863,13 +893,13 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:343
+#: src/usage_text.h:341
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
 
-#: src/usage_text.h:346
+#: src/usage_text.h:344
 #, fuzzy
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
@@ -881,7 +911,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:350
+#: src/usage_text.h:348
 #, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .meta4 and ."
@@ -890,7 +920,7 @@ msgid ""
 "                              specified."
 msgstr " -M, --metalink-file=METALINK Käytä ladattua .metalink-tiedostoa."
 
-#: src/usage_text.h:354
+#: src/usage_text.h:352
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
@@ -913,21 +943,21 @@ msgstr ""
 "                           Jos mem, metalink-tiedostoa ei ladata levylle, "
 "vaan pidetään muistissa."
 
-#: src/usage_text.h:363
+#: src/usage_text.h:361
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSIO Aseta minkä version tiedostosta haluat."
 
-#: src/usage_text.h:365
+#: src/usage_text.h:363
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr ""
 " --metalink-language=KIELI Aseta minkä kielisen version tiedostosta haluat."
 
-#: src/usage_text.h:367
+#: src/usage_text.h:365
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS Mille käyttöjärjestelmälle lataat tiedostoa."
 
-#: src/usage_text.h:369
+#: src/usage_text.h:367
 #, fuzzy
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
@@ -937,7 +967,7 @@ msgstr ""
 " --metalink-location=SIJAINTI[,...] Suosittavan palvelimen sijainti.\n"
 "                              Pilkuilla erotettu lista on hyväksyttävä."
 
-#: src/usage_text.h:373
+#: src/usage_text.h:371
 #, fuzzy
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
@@ -950,7 +980,7 @@ msgstr ""
 "'none'. Käytä 'none' poistaaksesi\n"
 "                              tämä ominaisuus käytöstä."
 
-#: src/usage_text.h:376
+#: src/usage_text.h:374
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
@@ -977,7 +1007,7 @@ msgstr ""
 "                           Jos mem, metalink-tiedostoa ei ladata levylle, "
 "vaan pidetään muistissa."
 
-#: src/usage_text.h:387
+#: src/usage_text.h:385
 #, fuzzy
 msgid ""
 " --metalink-enable-unique-protocol[=true|false] If true is given and "
@@ -996,11 +1026,11 @@ msgstr ""
 "vaihtoehtoa\n"
 "                              valitaksesi mitä protokollaa käytetään."
 
-#: src/usage_text.h:393
+#: src/usage_text.h:391
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Tulosta versionumero ja lopeta."
 
-#: src/usage_text.h:395
+#: src/usage_text.h:393
 #, fuzzy
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
@@ -1021,24 +1051,24 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:402
+#: src/usage_text.h:400
 #, fuzzy
 msgid " --no-conf[=true|false]       Disable loading aria2.conf file."
 msgstr " --no-conf Estä aria2.conf -asetustiedoston käyttö."
 
-#: src/usage_text.h:404
+#: src/usage_text.h:402
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
 
-#: src/usage_text.h:406
+#: src/usage_text.h:404
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:409
+#: src/usage_text.h:407
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1050,30 +1080,30 @@ msgid ""
 "                              http://host/file"
 msgstr ""
 
-#: src/usage_text.h:415
+#: src/usage_text.h:413
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr ""
 
-#: src/usage_text.h:417
+#: src/usage_text.h:415
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr ""
 
-#: src/usage_text.h:419
+#: src/usage_text.h:417
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
-#: src/usage_text.h:421
+#: src/usage_text.h:419
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
 "                              Setting 0 suppresses the output."
 msgstr ""
 
-#: src/usage_text.h:424
+#: src/usage_text.h:422
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr ""
 
-#: src/usage_text.h:426
+#: src/usage_text.h:424
 #, fuzzy
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
@@ -1087,7 +1117,7 @@ msgstr ""
 "                             joka mainitaan .torrent-tiedostossa\n"
 "                             Oletus: true"
 
-#: src/usage_text.h:430
+#: src/usage_text.h:428
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1098,7 +1128,7 @@ msgid ""
 "                              effect and --timeout option is used instead."
 msgstr ""
 
-#: src/usage_text.h:435
+#: src/usage_text.h:433
 #, fuzzy
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
@@ -1120,7 +1150,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:442
+#: src/usage_text.h:440
 #, fuzzy
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
@@ -1160,7 +1190,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:461
+#: src/usage_text.h:459
 #, fuzzy
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
@@ -1173,7 +1203,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:465
+#: src/usage_text.h:463
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1183,7 +1213,7 @@ msgid ""
 "                              See also --uri-selector option"
 msgstr ""
 
-#: src/usage_text.h:470
+#: src/usage_text.h:468
 #, fuzzy
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
@@ -1195,7 +1225,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:474
+#: src/usage_text.h:472
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1206,7 +1236,7 @@ msgid ""
 "                              regardless of the value."
 msgstr ""
 
-#: src/usage_text.h:479
+#: src/usage_text.h:477
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1215,7 +1245,7 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:484
+#: src/usage_text.h:482
 #, fuzzy
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
@@ -1226,7 +1256,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:488
+#: src/usage_text.h:486
 #, fuzzy
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
@@ -1247,14 +1277,14 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:494
+#: src/usage_text.h:492
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:497
+#: src/usage_text.h:495
 #, fuzzy
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n"
@@ -1265,18 +1295,18 @@ msgstr ""
 " --seed-time=MIN Aseta jakamisaika (seeding) minuuteissa. Ks. myös\n"
 "                             --seed-ratio valinta."
 
-#: src/usage_text.h:501
+#: src/usage_text.h:499
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
 "                              server."
 msgstr ""
 
-#: src/usage_text.h:504
+#: src/usage_text.h:502
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:506
+#: src/usage_text.h:504
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1286,7 +1316,7 @@ msgid ""
 "                              addresses."
 msgstr ""
 
-#: src/usage_text.h:511
+#: src/usage_text.h:509
 #, fuzzy
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
@@ -1309,7 +1339,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:519
+#: src/usage_text.h:517
 #, fuzzy
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
@@ -1331,7 +1361,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:525
+#: src/usage_text.h:523
 #, fuzzy
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
@@ -1351,7 +1381,7 @@ msgstr ""
 "                              (1..9999) lisättynä.\n"
 "                              Oletus: true"
 
-#: src/usage_text.h:531
+#: src/usage_text.h:529
 #, fuzzy
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
@@ -1375,7 +1405,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:539
+#: src/usage_text.h:537
 #, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed after "
@@ -1391,7 +1421,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:545
+#: src/usage_text.h:543
 #, fuzzy
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed after download\n"
@@ -1407,7 +1437,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:550
+#: src/usage_text.h:548
 #, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed after download\n"
@@ -1421,7 +1451,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:555
+#: src/usage_text.h:553
 #, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed after download\n"
@@ -1436,7 +1466,7 @@ msgstr ""
 "= 1024K)\n"
 "                             Oletus: 0"
 
-#: src/usage_text.h:561
+#: src/usage_text.h:559
 #, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed after download\n"
@@ -1459,7 +1489,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:570
+#: src/usage_text.h:568
 #, fuzzy
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
@@ -1471,7 +1501,7 @@ msgstr ""
 "                              Arvon oltava väliltä 0 ja 60.\n"
 "                              Oletus: 5"
 
-#: src/usage_text.h:574
+#: src/usage_text.h:572
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1493,18 +1523,18 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:586
+#: src/usage_text.h:584
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:589
+#: src/usage_text.h:587
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
-#: src/usage_text.h:591
+#: src/usage_text.h:589
 #, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
@@ -1529,7 +1559,7 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
-#: src/usage_text.h:599
+#: src/usage_text.h:597
 msgid ""
 " --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
 "cache\n"
@@ -1541,7 +1571,7 @@ msgid ""
 "                              using --header option."
 msgstr ""
 
-#: src/usage_text.h:605
+#: src/usage_text.h:603
 #, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
@@ -1557,21 +1587,21 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:610
+#: src/usage_text.h:608
 msgid ""
 " --human-readable[=true|false] Print sizes and speed in human readable "
 "format\n"
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
-#: src/usage_text.h:613
+#: src/usage_text.h:611
 #, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
 msgstr ""
 " --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:615
+#: src/usage_text.h:613
 #, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
@@ -1587,69 +1617,69 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:620
+#: src/usage_text.h:618
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
 "                              left."
 msgstr ""
 
-#: src/usage_text.h:623
+#: src/usage_text.h:621
 #, fuzzy
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
 " --http-proxy-user=USER Aseta http-välityspalvelin-käyttäjänimi. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:625
+#: src/usage_text.h:623
 #, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr ""
 " --http-proxy-passwd=SALASANA Aseta http-välityspalvelin-salasana. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:627
+#: src/usage_text.h:625
 #, fuzzy
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
 " --http-proxy-user=USER Aseta http-välityspalvelin-käyttäjänimi. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:629
+#: src/usage_text.h:627
 #, fuzzy
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr ""
 " --http-proxy-passwd=SALASANA Aseta http-välityspalvelin-salasana. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:631
+#: src/usage_text.h:629
 #, fuzzy
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
 " --http-proxy-user=USER Aseta http-välityspalvelin-käyttäjänimi. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:633
+#: src/usage_text.h:631
 #, fuzzy
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
 " --http-proxy-passwd=SALASANA Aseta http-välityspalvelin-salasana. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:635
+#: src/usage_text.h:633
 #, fuzzy
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 " --http-proxy-user=USER Aseta http-välityspalvelin-käyttäjänimi. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:637
+#: src/usage_text.h:635
 #, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr ""
 " --http-proxy-passwd=SALASANA Aseta http-välityspalvelin-salasana. Tämä "
 "vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:639
+#: src/usage_text.h:637
 #, fuzzy
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
@@ -1665,7 +1695,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:644
+#: src/usage_text.h:642
 #, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
@@ -1692,7 +1722,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:654
+#: src/usage_text.h:652
 msgid ""
 " --max-resume-failure-tries=N When used with --always-resume=false, aria2\n"
 "                              downloads file from scratch when aria2 detects "
@@ -1705,12 +1735,12 @@ msgid ""
 "                              See --always-resume option."
 msgstr ""
 
-#: src/usage_text.h:661
+#: src/usage_text.h:659
 #, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
 msgstr " -t, --timeout=SEK Aikakatkaisu sekunneissa. Oletus: 60"
 
-#: src/usage_text.h:663
+#: src/usage_text.h:661
 #, fuzzy
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
@@ -1730,12 +1760,12 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:669
+#: src/usage_text.h:667
 #, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
 msgstr " -t, --timeout=SEK Aikakatkaisu sekunneissa. Oletus: 60"
 
-#: src/usage_text.h:671
+#: src/usage_text.h:669
 msgid ""
 " --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request "
 "header\n"
@@ -1745,7 +1775,7 @@ msgid ""
 "                              'Content-Encoding: deflate'."
 msgstr ""
 
-#: src/usage_text.h:676
+#: src/usage_text.h:674
 #, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
@@ -1772,7 +1802,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:685
+#: src/usage_text.h:683
 #, fuzzy
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
@@ -1782,7 +1812,7 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:688
+#: src/usage_text.h:686
 #, fuzzy
 msgid ""
 " -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
@@ -1804,7 +1834,7 @@ msgstr ""
 "                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
 "= 1024K)"
 
-#: src/usage_text.h:697
+#: src/usage_text.h:695
 #, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
@@ -1818,7 +1848,7 @@ msgstr ""
 "                             joka mainitaan .torrent-tiedostossa\n"
 "                             Oletus: true"
 
-#: src/usage_text.h:701
+#: src/usage_text.h:699
 #, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
@@ -1842,7 +1872,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:709
+#: src/usage_text.h:707
 #, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
@@ -1856,7 +1886,7 @@ msgstr ""
 "                              varatessa tilaa.\n"
 "                              Älä käytä, jos kohtaat virheitä"
 
-#: src/usage_text.h:713
+#: src/usage_text.h:711
 #, fuzzy
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
@@ -1871,7 +1901,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:718
+#: src/usage_text.h:716
 msgid ""
 " --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n"
 "                              It should be a global unicast IPv6 address of "
@@ -1879,7 +1909,7 @@ msgid ""
 "                              host."
 msgstr ""
 
-#: src/usage_text.h:722
+#: src/usage_text.h:720
 #, fuzzy
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
@@ -1889,13 +1919,13 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:725
+#: src/usage_text.h:723
 #, fuzzy
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
 msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
 
-#: src/usage_text.h:727
+#: src/usage_text.h:725
 #, fuzzy
 msgid ""
 " --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n"
@@ -1915,7 +1945,7 @@ msgstr ""
 "tiedoston koosta.\n"
 "                              Oletus: prealloc"
 
-#: src/usage_text.h:733
+#: src/usage_text.h:731
 msgid ""
 " --bt-exclude-tracker=URI[,...] Comma separated list of BitTorrent "
 "tracker's\n"
@@ -1928,7 +1958,7 @@ msgid ""
 "                              See also --bt-tracker option."
 msgstr ""
 
-#: src/usage_text.h:740
+#: src/usage_text.h:738
 msgid ""
 " --max-download-result=NUM    Set maximum number of download result kept in\n"
 "                              memory. The download results are completed/"
@@ -1949,7 +1979,7 @@ msgid ""
 "                              download result is kept."
 msgstr ""
 
-#: src/usage_text.h:752
+#: src/usage_text.h:750
 msgid ""
 " --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server "
 "address\n"
@@ -1968,7 +1998,7 @@ msgid ""
 "                              permission to create it."
 msgstr ""
 
-#: src/usage_text.h:763
+#: src/usage_text.h:761
 #, fuzzy
 msgid ""
 " --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
@@ -1983,7 +2013,7 @@ msgstr ""
 "true, voit jatkaa\n"
 "                             mutta hieman latausedistystä voidaan menettää."
 
-#: src/usage_text.h:768
+#: src/usage_text.h:766
 msgid ""
 " --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If "
 "aria2\n"
@@ -1992,19 +2022,19 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:772
+#: src/usage_text.h:770
 #, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
 msgstr ""
 " -http-user=USER Aseta http-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:774
+#: src/usage_text.h:772
 #, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
 msgstr ""
 " --http-passwd=SALASANA Aseta http-salasana. Tämä vaikuttaa kaikkiin URL:hin."
 
-#: src/usage_text.h:776
+#: src/usage_text.h:774
 #, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
@@ -2019,7 +2049,7 @@ msgstr ""
 "                              tavalliset komentorivilatausapuohjelmat.\n"
 "                              Oletus: false"
 
-#: src/usage_text.h:780
+#: src/usage_text.h:778
 #, fuzzy
 msgid ""
 " --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC "
@@ -2029,11 +2059,11 @@ msgstr ""
 " -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
 "                              OIetus:5"
 
-#: src/usage_text.h:783
+#: src/usage_text.h:781
 msgid " --show-console-readout[=true|false] Show console readout."
 msgstr ""
 
-#: src/usage_text.h:785
+#: src/usage_text.h:783
 #, fuzzy
 msgid ""
 " --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
@@ -2047,7 +2077,7 @@ msgstr ""
 "lopeta.\n"
 "                              Torrent-tiedostot sisältävät enemmän tietoa."
 
-#: src/usage_text.h:790
+#: src/usage_text.h:788
 #, fuzzy
 msgid ""
 " --stream-piece-selector=SELECTOR Specify piece selection algorithm\n"
@@ -2095,7 +2125,7 @@ msgstr ""
 "levylle, vaan\n"
 "                              pidetään muistissa."
 
-#: src/usage_text.h:817
+#: src/usage_text.h:815
 #, fuzzy
 msgid ""
 " --truncate-console-readout[=true|false] Truncate console readout to fit in\n"
@@ -2106,19 +2136,19 @@ msgstr ""
 "                             joka mainitaan .torrent-tiedostossa\n"
 "                             Oletus: true"
 
-#: src/usage_text.h:820
+#: src/usage_text.h:818
 msgid ""
 " --pause[=true|false]         Pause download after added. This option is\n"
 "                              effective only when --enable-rpc=true is given."
 msgstr ""
 
-#: src/usage_text.h:823
+#: src/usage_text.h:821
 msgid ""
 " --rpc-allow-origin-all[=true|false] Add Access-Control-Allow-Origin header\n"
 "                              field with value '*' to the RPC response."
 msgstr ""
 
-#: src/usage_text.h:826
+#: src/usage_text.h:824
 msgid ""
 " --download-result=OPT        This option changes the way \"Download Results"
 "\"\n"
@@ -2138,7 +2168,7 @@ msgid ""
 "                              each row."
 msgstr ""
 
-#: src/usage_text.h:838
+#: src/usage_text.h:836
 #, fuzzy
 msgid ""
 " --hash-check-only[=true|false] If true is given, after hash check using\n"
@@ -2153,7 +2183,7 @@ msgstr ""
 "                              tarkistussumma.\n"
 "                              Oletus: true"
 
-#: src/usage_text.h:842
+#: src/usage_text.h:840
 msgid ""
 " --checksum=TYPE=DIGEST       Set checksum. TYPE is hash type. The "
 "supported\n"
@@ -2166,7 +2196,7 @@ msgid ""
 "                              downloads."
 msgstr ""
 
-#: src/usage_text.h:851
+#: src/usage_text.h:849
 msgid ""
 " --piece-length=LENGTH        Set a piece length for HTTP/FTP downloads. "
 "This\n"
@@ -2176,6 +2206,21 @@ msgid ""
 "downloads.\n"
 "                              It will be also ignored if Metalink file\n"
 "                              contains piece hashes."
+msgstr ""
+
+#: src/usage_text.h:856
+msgid ""
+" --stop-with-process=PID      Stop application when process PID is not "
+"running.\n"
+"                              This is useful if aria2 process is forked from "
+"a\n"
+"                              parent process. The parent process can fork "
+"aria2\n"
+"                              with its own pid and when parent process "
+"exits\n"
+"                              for some reason, aria2 can detect it and "
+"shutdown\n"
+"                              itself."
 msgstr ""
 
 #: src/version_usage.cc:57
@@ -2230,42 +2275,49 @@ msgstr "Ilmoita bugit %s:lle."
 msgid "Visit"
 msgstr ""
 
-#: src/version_usage.cc:84
-#, fuzzy
+#: src/version_usage.cc:87
+#, fuzzy, c-format
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr "Käyttö: %s [parametrit] URL ...\n"
 
-#: src/version_usage.cc:91
+#: src/version_usage.cc:92
+#, c-format
+msgid "See 'aria2c -h'."
+msgstr ""
+
+#: src/version_usage.cc:99
+#, c-format
 msgid "Printing all options."
 msgstr "Tulostetaan kaikki valinnat."
 
-#: src/version_usage.cc:93
+#: src/version_usage.cc:101
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "Tulostetaan valinnat merkittynä '%s':llä."
 
-#: src/version_usage.cc:97
+#: src/version_usage.cc:104
 #, c-format
-msgid "See -h option to know other command-line options(%s)."
-msgstr "Ks. -h valinta nähdäksesi muita valintoja (%s)"
+msgid "See 'aria2c -h#help' to know all available tags."
+msgstr ""
 
-#: src/version_usage.cc:102 src/version_usage.cc:114
+#: src/version_usage.cc:107 src/version_usage.cc:121
+#, c-format
 msgid "Options:"
 msgstr "Asetukset:"
 
-#: src/version_usage.cc:111
+#: src/version_usage.cc:118
 #, fuzzy, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr "Tulostetaan valinnat, joiden nimi alkaa '%s'"
 
-#: src/version_usage.cc:120
+#: src/version_usage.cc:129
 #, fuzzy, c-format
 msgid "No option matching with '%s'."
 msgstr "Ei ohjeosiota tai valintaa nimellä '%s'"
 
-#: src/version_usage.cc:128
-#, fuzzy
+#: src/version_usage.cc:137
+#, fuzzy, c-format
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
@@ -2274,15 +2326,16 @@ msgstr ""
 " Voit antaa useita osoitteita. Jos et käytä -Z valintaa, kaikkien\n"
 " osoitteiden täytyy johtaa samaan tiedostoon, tai lataaminen keskeytyy."
 
-#: src/version_usage.cc:130
+#: src/version_usage.cc:140
+#, c-format
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
 " treated as a separate download."
 msgstr ""
 
-#: src/version_usage.cc:135
-#, fuzzy
+#: src/version_usage.cc:144
+#, fuzzy, c-format
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
 " download a file from both torrent swarm and HTTP/FTP server at the same "
@@ -2300,8 +2353,8 @@ msgstr ""
 " samaan aikaan, ja jaat http/ftp:ltä saatua dataa torrent-parveen.\n"
 " HUOM: vain yhden tiedoston torrent-tiedostoa voi käyttää näin."
 
-#: src/version_usage.cc:142
-#, fuzzy
+#: src/version_usage.cc:151
+#, fuzzy, c-format
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -2311,13 +2364,122 @@ msgstr ""
 " siinä on \"&\" tai jokin muu merkki, jolla on erityismerkitys "
 "komentotulkille."
 
-#: src/version_usage.cc:152
+#: src/version_usage.cc:154
+#, c-format
+msgid ""
+"About the number of connections\n"
+" Since 1.10.0 release, aria2 uses 1 connection per host by default and has "
+"20MiB\n"
+" segment size restriction. So whatever value you specify using -s option, "
+"it\n"
+" uses 1 connection per host. To make it behave like 1.9.x, use\n"
+" --max-connection-per-server=4 --min-split-size=1M.\n"
+"\n"
+msgstr ""
+
+#: src/version_usage.cc:161
+#, c-format
 msgid "Refer to man page for more information."
 msgstr "Ks. man-sivulta lisätietoja."
 
+#: src/option_processing.cc:86
+#, c-format
+msgid "Caught Error while parsing environment variable '%s'"
+msgstr ""
+
+#: src/option_processing.cc:168
+#, c-format
+msgid "Did you mean:"
+msgstr ""
+
+#: src/option_processing.cc:237 src/option_processing.cc:246
+#, c-format
+msgid "Parse error in %s"
+msgstr ""
+
+#: src/option_processing.cc:241 src/option_processing.cc:282
+#, c-format
+msgid "Usage:"
+msgstr ""
+
+#: src/option_processing.cc:251
+#, c-format
+msgid "Configuration file %s is not found."
+msgstr ""
+
+#: src/OptionHandlerException.cc:43
+#, c-format
+msgid "We encountered a problem while processing the option '--%s'."
+msgstr ""
+
+#: src/UnknownOptionException.cc:41
+#, c-format
+msgid "Unknown option '%s'"
+msgstr ""
+
+#: src/BtSetup.cc:215
+msgid "Errors occurred while binding port.\n"
+msgstr "Virheitä tapahtui sitoessa porttia.\n"
+
+#: src/AbstractCommand.cc:443
+#, c-format
+msgid "CUID#%lld - Failed to resume download. Download from scratch."
+msgstr ""
+
+#: src/AdaptiveURISelector.cc:228
+#, c-format
+msgid ""
+"Lowering lowest-speed-limit since known max speed is too near (new:%d was:%d "
+"max:%d)"
+msgstr ""
+
+#: src/AdaptiveURISelector.cc:235
+#, c-format
+msgid ""
+"Lowering lowest-speed-limit since we have no clue about available speed (now:"
+"%d was:%d)"
+msgstr ""
+
+#: src/BtStopDownloadCommand.cc:64
+#, c-format
+msgid "GID#%lld Stop downloading torrent due to --bt-stop-timeout option."
+msgstr ""
+
+#: src/DHTConnectionImpl.cc:89
+#, c-format
+msgid "IPv%d DHT: listening to port %u"
+msgstr ""
+
+#: src/HttpListenCommand.cc:112
+#, c-format
+msgid "IPv%d RPC: listening to port %u"
+msgstr ""
+
+#: src/PeerListenCommand.cc:83
+#, c-format
+msgid "IPv%d BitTorrent: listening to port %u"
+msgstr ""
+
+#: src/RequestGroup.cc:381
+msgid ""
+"For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
+"enable-dht option."
+msgstr ""
+
+#: src/RequestGroup.cc:686
+#, fuzzy, c-format
+msgid "Removed control file for %s because it is requested by user."
+msgstr "Poistettiin vanha ohjaustiedosto %s koska lataustiedostoa %s ei ole."
+
+#: src/SingleFileAllocationIterator.cc:75
+msgid ""
+"Allocating disk space. Use --file-allocation=none to disable it. See --file-"
+"allocation option in man page for more details."
+msgstr ""
+
 #: src/message.h:57
 #, fuzzy, c-format
-msgid "GID#%s - Download has already completed: %s"
+msgid "GID#%lld - Download has already completed: %s"
 msgstr "#%d - Lataus on jo valmistunut: %s"
 
 #: src/message.h:106
@@ -2429,11 +2591,6 @@ msgstr "Poistettiin %d kohtaa."
 #, c-format
 msgid "Validating file %s"
 msgstr "Tarkistetaan tiedostoa %s"
-
-#: src/message.h:128
-#, fuzzy, c-format
-msgid "%ld seconds to allocate %s byte(s)"
-msgstr "%d sekuntia tilan %s varaamiseen"
 
 #: src/message.h:131
 #, c-format
@@ -2719,11 +2876,6 @@ msgstr ""
 msgid "The response status is not successful. status=%d"
 msgstr "Vastauksen tila ei ole onnistunut. Tila=%d"
 
-#: src/message.h:210
-#, c-format
-msgid "Too large file size. size=%s"
-msgstr "Tiedostokoko liian suuri. Koko=%s"
-
 #: src/message.h:211
 #, c-format
 msgid "Transfer encoding %s is not supported."
@@ -2751,11 +2903,6 @@ msgstr "SSL: tuntematon virhe %d"
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "SSL valmistelu epäonnistui: OpenSSL yhdistysvirhe %d"
-
-#: src/message.h:217
-#, c-format
-msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "Koko ei täsmää. Odotettu:%s  Oikea:%s"
 
 #: src/message.h:218
 msgid "Authorization failed."
@@ -2801,11 +2948,6 @@ msgstr "SHA1-summaa ei voitu laskea tiedostosta tai sen osasta %s, syy: %s"
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Tiedostoa %s ei löydy, syy: %s"
-
-#: src/message.h:229
-#, c-format
-msgid "The offset is out of range, offset=%s"
-msgstr "Offset on rajojen ulkopuolella, offset=%s"
 
 #: src/message.h:230
 #, c-format
@@ -2917,15 +3059,6 @@ msgstr "Väärä payload-koko %s:lla (%d), pitäisi olla %d."
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Epäkelpo ID=%d %s:lla. Pitäisi olla %d."
 
-#: src/message.h:256
-#, fuzzy, c-format
-msgid ""
-"Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash="
-"%s, actualHash=%s"
-msgstr ""
-"Palan tarkistussumma ei täsmää. checksumIndex=%d, offset=%s, expectedHash="
-"%s, actualHash=%s"
-
 #: src/message.h:257
 msgid "Download aborted."
 msgstr "Lataus keskeytettiin."
@@ -2980,11 +3113,6 @@ msgstr "HttpRequestEntry:ä ei löydy."
 msgid "Got %d status, but no location header provided."
 msgstr "Saatiin %d-tila, mutta ei osoiteotsaketta."
 
-#: src/message.h:270
-#, c-format
-msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
-msgstr "Epäkelpo rajaotsake. Pyyntö: %s-%s/%s, Vastaus %s-%s/%s"
-
 #: src/message.h:271
 msgid "No file matched with your preference."
 msgstr "Yksikään tiedosto ei vastaa asetuksiasi."
@@ -3004,9 +3132,32 @@ msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
 "Epäkelpo tiedoston pituus. Latausta %s ei voi jatkaa: paikallinen %s, etä %s"
 
-#: src/BtSetup.cc:212
-msgid "Errors occurred while binding port.\n"
-msgstr "Virheitä tapahtui sitoessa porttia.\n"
+#~ msgid "See -h option to know other command-line options(%s)."
+#~ msgstr "Ks. -h valinta nähdäksesi muita valintoja (%s)"
+
+#, fuzzy
+#~ msgid "%ld seconds to allocate %s byte(s)"
+#~ msgstr "%d sekuntia tilan %s varaamiseen"
+
+#~ msgid "Too large file size. size=%s"
+#~ msgstr "Tiedostokoko liian suuri. Koko=%s"
+
+#~ msgid "Size mismatch Expected:%s Actual:%s"
+#~ msgstr "Koko ei täsmää. Odotettu:%s  Oikea:%s"
+
+#~ msgid "The offset is out of range, offset=%s"
+#~ msgstr "Offset on rajojen ulkopuolella, offset=%s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Chunk checksum validation failed. checksumIndex=%lu, offset=%s, "
+#~ "expectedHash=%s, actualHash=%s"
+#~ msgstr ""
+#~ "Palan tarkistussumma ei täsmää. checksumIndex=%d, offset=%s, expectedHash="
+#~ "%s, actualHash=%s"
+
+#~ msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
+#~ msgstr "Epäkelpo rajaotsake. Pyyntö: %s-%s/%s, Vastaus %s-%s/%s"
 
 #, fuzzy
 #~ msgid ""

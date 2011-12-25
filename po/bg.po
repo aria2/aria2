@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-10-02 16:14+0900\n"
+"POT-Creation-Date: 2011-12-26 00:58+0900\n"
 "PO-Revision-Date: 2009-08-25 12:32+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -41,13 +41,46 @@ msgstr ""
 "Ако има някакви грешки, тогава вижте лог файла. Вижте '-l' опцията в "
 "страницата на помощника/наръчника за подробности."
 
-#: src/RequestGroupMan.cc:608
+#: src/MultiUrlRequestInfo.cc:274
+#, fuzzy, c-format
+msgid "Serialized session to '%s' successfully."
+msgstr "ServerStat файла %s записан успешно."
+
+#: src/MultiUrlRequestInfo.cc:277
+#, fuzzy, c-format
+msgid "Failed to serialize session to '%s'."
+msgstr "Неуспех при записването на ServerStat към %s."
+
+#: src/RequestGroupMan.cc:342
+#, fuzzy, c-format
+msgid "Download GID#%lld not complete: %s"
+msgstr "Даунлоудът е завършен: %s"
+
+#: src/RequestGroupMan.cc:607
 msgid "Download Results:"
 msgstr "Резултати от даунлоуда:"
 
-#: src/RequestGroupMan.cc:651
+#: src/RequestGroupMan.cc:650
 msgid "Status Legend:"
 msgstr "Легенда за състоянието:"
+
+#: src/RequestGroupMan.cc:652
+#, fuzzy
+msgid "(OK):download completed."
+msgstr "Даунлоудът е завършен."
+
+#: src/RequestGroupMan.cc:655
+msgid "(ERR):error occurred."
+msgstr ""
+
+#: src/RequestGroupMan.cc:658
+msgid "(INPR):download in-progress."
+msgstr ""
+
+#: src/RequestGroupMan.cc:661
+#, fuzzy
+msgid "(RM):download removed."
+msgstr "Даунлоудът е преустановен."
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
@@ -115,11 +148,8 @@ msgid ""
 "                              simultaneously. The number of connections to "
 "the\n"
 "                              same host is restricted by\n"
-"                              --max-connection-per-server option. Please see "
-"-j\n"
-"                              and --min-split-size option too.\n"
-"                              Please note that in Metalink download, this\n"
-"                              option has no effect and use -C option instead."
+"                              --max-connection-per-server option. See also\n"
+"                              --min-split-size option."
 msgstr ""
 " -s, --split=N Даунлоуд на файл използвайки N връзки. Ако повече\n"
 "                              от N URL-и са дадени, първите N URL-и ще бъдат "
@@ -134,7 +164,7 @@ msgstr ""
 "                              опция няма ефект и изплозвайте опцията -C "
 "вместо това."
 
-#: src/usage_text.h:62
+#: src/usage_text.h:60
 #, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait between retries. \n"
@@ -146,15 +176,15 @@ msgstr ""
 "грешка\n"
 "                              е настъпила."
 
-#: src/usage_text.h:66
+#: src/usage_text.h:64
 msgid " -t, --timeout=SEC            Set timeout in seconds."
 msgstr " -t, --timeout=SEC Определя таймаут в секунди."
 
-#: src/usage_text.h:68
+#: src/usage_text.h:66
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
 msgstr " -m, --max-tries=N Определя броя на опитите. 0 означава неограничен."
 
-#: src/usage_text.h:70
+#: src/usage_text.h:68
 #, fuzzy
 msgid ""
 " --http-proxy=PROXY           Use this proxy server for HTTP. To erase\n"
@@ -166,7 +196,7 @@ msgstr ""
 "                              Вижте също опцията --all-proxy.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:75
+#: src/usage_text.h:73
 #, fuzzy
 msgid ""
 " --https-proxy=PROXY          Use this proxy server for HTTPS. To erase\n"
@@ -178,7 +208,7 @@ msgstr ""
 "                              Вижте също опцията --all-proxy.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:80
+#: src/usage_text.h:78
 #, fuzzy
 msgid ""
 " --ftp-proxy=PROXY            Use this proxy server for FTP. To erase "
@@ -191,7 +221,7 @@ msgstr ""
 "                              Вижте също опцията --all-proxy.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:85
+#: src/usage_text.h:83
 #, fuzzy
 msgid ""
 " --all-proxy=PROXY            Use this proxy server for all protocols. To "
@@ -212,37 +242,37 @@ msgstr ""
 "                              опциите.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:93
+#: src/usage_text.h:91
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
 " --http-user=USER Определя HTTP потребител. Това влияе върху всички URL-и."
 
-#: src/usage_text.h:95
+#: src/usage_text.h:93
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
 " --http-passwd=PASSWD Определя HTTP парола. Това влияе върху всички URL-и."
 
-#: src/usage_text.h:97
+#: src/usage_text.h:95
 msgid " --proxy-method=METHOD        Set the method to use in proxy request."
 msgstr " --proxy-method=METHOD Определя използваният метод за прокси заявка."
 
-#: src/usage_text.h:99
+#: src/usage_text.h:97
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr " --referer=REFERER Определя насочвача. Това влияе върху всички URL-и."
 
-#: src/usage_text.h:101
+#: src/usage_text.h:99
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr " --ftp-user=USER Определя FTP потребител. Това засяга всички URL-и."
 
-#: src/usage_text.h:103
+#: src/usage_text.h:101
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
 msgstr " --ftp-passwd=PASSWD Определя FTP парола. Това засяга всички URL-и."
 
-#: src/usage_text.h:105
+#: src/usage_text.h:103
 msgid " --ftp-type=TYPE              Set FTP transfer type."
 msgstr " --ftp-type=TYPE Определя тип на трансфер по FTP."
 
-#: src/usage_text.h:107
+#: src/usage_text.h:105
 msgid ""
 " -p, --ftp-pasv[=true|false]  Use the passive mode in FTP. If false is "
 "given,\n"
@@ -252,7 +282,7 @@ msgstr ""
 "е дадено,\n"
 "                              активният режим ще бъде използван."
 
-#: src/usage_text.h:110
+#: src/usage_text.h:108
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -272,7 +302,7 @@ msgstr ""
 "1024K).\n"
 "                              Тази опция не засяга BitTorrent даунлоудите."
 
-#: src/usage_text.h:116
+#: src/usage_text.h:114
 msgid ""
 " --max-overall-download-limit=SPEED Set max overall download speed in bytes/"
 "sec.\n"
@@ -290,7 +320,7 @@ msgstr ""
 "сваляне, използвайте\n"
 "                              опцията --max-download-limit."
 
-#: src/usage_text.h:122
+#: src/usage_text.h:120
 msgid ""
 " --max-download-limit=SPEED   Set max download speed per each download in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -307,7 +337,7 @@ msgstr ""
 "даунлоуд, използвайте\n"
 "                              опцията --max-overall-download-limit."
 
-#: src/usage_text.h:128
+#: src/usage_text.h:126
 #, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method.\n"
@@ -357,7 +387,7 @@ msgstr ""
 "                              да не бъде налична, ако системата Ви няма\n"
 "                              posix_fallocate() функция."
 
-#: src/usage_text.h:144
+#: src/usage_text.h:142
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
@@ -369,7 +399,7 @@ msgstr ""
 "                              Можете да приложите K или M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:148
+#: src/usage_text.h:146
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
@@ -381,7 +411,7 @@ msgstr ""
 "                              се разпределят файловете.\n"
 "                              Изключете опцията ако срещнете някаква грешка"
 
-#: src/usage_text.h:152
+#: src/usage_text.h:150
 #, fuzzy
 msgid ""
 " --allow-overwrite[=true|false] Restart download from scratch if the\n"
@@ -397,7 +427,7 @@ msgstr ""
 "                              този файл. Вижте също опцията --auto-file-"
 "renaming."
 
-#: src/usage_text.h:156
+#: src/usage_text.h:154
 #, fuzzy
 msgid ""
 " --allow-piece-length-change[=true|false] If false is given, aria2 aborts\n"
@@ -417,7 +447,7 @@ msgstr ""
 "                              но малък прогрес от даунлоуда може да бъде "
 "загубен."
 
-#: src/usage_text.h:161
+#: src/usage_text.h:159
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -432,7 +462,7 @@ msgstr ""
 "                              обичайните полезни вещи за даунлоуд в "
 "командната линия."
 
-#: src/usage_text.h:165
+#: src/usage_text.h:163
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -451,7 +481,7 @@ msgstr ""
 "(1..9999)\n"
 "                              прикрепени."
 
-#: src/usage_text.h:171
+#: src/usage_text.h:169
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -480,18 +510,18 @@ msgstr ""
 "                              вторият пример отгоре, -Z опцията се\n"
 "                              изисква."
 
-#: src/usage_text.h:182
+#: src/usage_text.h:180
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
 " --enable-http-keep-alive[=true|false] Включва постоянна HTTP/1.1 връзка."
 
-#: src/usage_text.h:184
+#: src/usage_text.h:182
 msgid " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining."
 msgstr ""
 " --enable-http-pipelining[=true|false] Включване на HTTP/1.1 тръбопровеждане."
 
-#: src/usage_text.h:186
+#: src/usage_text.h:184
 msgid ""
 " -V, --check-integrity[=true|false] Check file integrity by validating "
 "piece\n"
@@ -516,7 +546,7 @@ msgid ""
 "                              piece hashes are used."
 msgstr ""
 
-#: src/usage_text.h:200
+#: src/usage_text.h:198
 msgid ""
 " --bt-hash-check-seed[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option and file is "
@@ -539,7 +569,7 @@ msgstr ""
 "                              Тази опция оказва ефект само върху BitTorrent\n"
 "                              даунлоуди."
 
-#: src/usage_text.h:208
+#: src/usage_text.h:206
 #, fuzzy
 msgid ""
 " --realtime-chunk-checksum[=true|false]  Validate chunk of data by "
@@ -553,7 +583,7 @@ msgstr ""
 "даунлоудва, ако парчетата\n"
 "                              на контролните суми са осигурени."
 
-#: src/usage_text.h:212
+#: src/usage_text.h:210
 #, fuzzy
 msgid ""
 " -c, --continue[=true|false]  Continue downloading a partially downloaded\n"
@@ -571,18 +601,18 @@ msgstr ""
 "                              началото. Понастоящем тази опция е само\n"
 "                              приложима към http(и)/ftp даунлоуди."
 
-#: src/usage_text.h:219
+#: src/usage_text.h:217
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 " -U, --user-agent=USER_AGENT Определя потребителския агент за http(и) "
 "даунлоуди."
 
-#: src/usage_text.h:221
+#: src/usage_text.h:219
 #, fuzzy
 msgid " -n, --no-netrc[=true|false]  Disables netrc support."
 msgstr " -n, --no-netrc Изключва поддръжката на netrc."
 
-#: src/usage_text.h:223
+#: src/usage_text.h:221
 #, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
@@ -616,13 +646,14 @@ msgstr ""
 "                              FILE секцията от ръководството за повече "
 "детайли."
 
-#: src/usage_text.h:233
+#: src/usage_text.h:231
+#, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of parallel downloads "
 "for\n"
 "                              every static (HTTP/FTP) URL, torrent and "
 "metalink.\n"
-"                              See also -s and -C options."
+"                              See also --split option."
 msgstr ""
 " -j, --max-concurrent-downloads=N Определя максималният брой паралелни "
 "даунлоуди за\n"
@@ -630,7 +661,7 @@ msgstr ""
 "metalink.\n"
 "                              Вижте също -s и -C опциите."
 
-#: src/usage_text.h:237
+#: src/usage_text.h:235
 msgid ""
 " --load-cookies=FILE          Load Cookies from FILE using the Firefox3 "
 "format\n"
@@ -640,7 +671,7 @@ msgstr ""
 "формат\n"
 "                              и Mozilla/Firefox(1.x/2.x)/Netscape формат."
 
-#: src/usage_text.h:240
+#: src/usage_text.h:238
 msgid ""
 " --save-cookies=FILE          Save Cookies to FILE in Mozilla/Firefox(1.x/2."
 "x)/\n"
@@ -658,7 +689,7 @@ msgstr ""
 "запазват и\n"
 "                              стойност на изтичане се разглежда като 0."
 
-#: src/usage_text.h:245
+#: src/usage_text.h:243
 #, fuzzy
 msgid ""
 " -S, --show-files[=true|false] Print file listing of .torrent, .meta4 and\n"
@@ -672,7 +703,7 @@ msgstr ""
 "изписана\n"
 "                              в случай на торент файл."
 
-#: src/usage_text.h:250
+#: src/usage_text.h:248
 msgid ""
 " --select-file=INDEX...       Set file to download by specifying its index.\n"
 "                              You can find the file index using the\n"
@@ -701,11 +732,11 @@ msgstr ""
 "                              в зависимост от заявката(вижте --metalink-* "
 "опциите)."
 
-#: src/usage_text.h:259
+#: src/usage_text.h:257
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE Пътят към .torrent файла."
 
-#: src/usage_text.h:261
+#: src/usage_text.h:259
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -733,7 +764,7 @@ msgstr ""
 "отгоре\n"
 "                              не се извършва."
 
-#: src/usage_text.h:271
+#: src/usage_text.h:269
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -753,7 +784,7 @@ msgstr ""
 "'-' могат\n"
 "                              да се използват заедно."
 
-#: src/usage_text.h:277
+#: src/usage_text.h:275
 msgid ""
 " --max-overall-upload-limit=SPEED Set max overall upload speed in bytes/"
 "sec.\n"
@@ -771,7 +802,7 @@ msgstr ""
 "торент, използвайте\n"
 "                              опцията --max-upload-limit."
 
-#: src/usage_text.h:283
+#: src/usage_text.h:281
 msgid ""
 " -u, --max-upload-limit=SPEED Set max upload speed per each torrent in\n"
 "                              bytes/sec. 0 means unrestricted.\n"
@@ -788,7 +819,7 @@ msgstr ""
 "използвайте\n"
 "                              опцията --max-overall-upload-limit."
 
-#: src/usage_text.h:289
+#: src/usage_text.h:287
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -796,7 +827,7 @@ msgstr ""
 " --seed-time=MINUTES Уточнява време за сийдване в минути. Вижте също\n"
 "                              опцията --seed-ratio."
 
-#: src/usage_text.h:292
+#: src/usage_text.h:290
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO.\n"
@@ -825,7 +856,7 @@ msgstr ""
 "от\n"
 "                              условията е изпълнено."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:299
 #, fuzzy
 msgid ""
 " --peer-id-prefix=PEER_ID_PREFIX Specify the prefix of peer ID. The peer ID "
@@ -847,17 +878,17 @@ msgstr ""
 "                              уточнени, произволни букви от азбуката ще\n"
 "                              бъдат добавени за да стане дължината 20 байта."
 
-#: src/usage_text.h:307
+#: src/usage_text.h:305
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 " --enable-peer-exchange[=true|false] Включва разширението Peer Exchange."
 
-#: src/usage_text.h:309
+#: src/usage_text.h:307
 #, fuzzy
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
 msgstr " --enable-dht[=true|false] Включва DHT функционалността."
 
-#: src/usage_text.h:311
+#: src/usage_text.h:309
 #, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"
@@ -876,7 +907,7 @@ msgstr ""
 "'-' могат\n"
 "                              да бъдат използвани заедно."
 
-#: src/usage_text.h:317
+#: src/usage_text.h:315
 #, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
@@ -887,13 +918,13 @@ msgstr ""
 "DHT\n"
 "                              мрежата."
 
-#: src/usage_text.h:320
+#: src/usage_text.h:318
 #, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
 msgstr " --dht-file-path=PATH Сменя DHT файловата таблица за марширути с PATH."
 
-#: src/usage_text.h:322
+#: src/usage_text.h:320
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -910,7 +941,7 @@ msgstr ""
 "удовлетворява\n"
 "                              даденото ниво."
 
-#: src/usage_text.h:327
+#: src/usage_text.h:325
 #, fuzzy
 msgid ""
 " --bt-require-crypto[=true|false] If true is given, aria2 doesn't accept "
@@ -926,7 +957,7 @@ msgstr ""
 "използва Obfuscation\n"
 "                              ръкостискане."
 
-#: src/usage_text.h:332
+#: src/usage_text.h:330
 msgid ""
 " --bt-request-peer-speed-limit=SPEED If the whole download speed of every\n"
 "                              torrent is lower than SPEED, aria2 "
@@ -951,7 +982,7 @@ msgstr ""
 "                              Можете да приложите K или M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:340
+#: src/usage_text.h:338
 msgid ""
 " --bt-max-open-files=NUM      Specify maximum number of files to open in "
 "each\n"
@@ -961,7 +992,7 @@ msgstr ""
 "във всеки\n"
 "                              BitTorrent даунлоуд."
 
-#: src/usage_text.h:343
+#: src/usage_text.h:341
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
@@ -970,7 +1001,7 @@ msgstr ""
 "без\n"
 "                              проверяване на частта на хеша."
 
-#: src/usage_text.h:346
+#: src/usage_text.h:344
 msgid ""
 " --bt-max-peers=NUM           Specify the maximum number of peers per "
 "torrent.\n"
@@ -982,7 +1013,7 @@ msgstr ""
 "                              Вижте също и опцията --bt-request-peer-speed-"
 "limit."
 
-#: src/usage_text.h:350
+#: src/usage_text.h:348
 #, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .meta4 and ."
@@ -991,7 +1022,7 @@ msgid ""
 "                              specified."
 msgstr " -M, --metalink-file=METALINK_FILE Пътят към .metalink файла."
 
-#: src/usage_text.h:354
+#: src/usage_text.h:352
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. Some Metalinks regulate the\n"
@@ -1017,20 +1048,20 @@ msgstr ""
 "NUM_SERVERS.\n"
 "                              Вижте също опциите -s и -j."
 
-#: src/usage_text.h:363
+#: src/usage_text.h:361
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION Версията на файла за даунлоуд."
 
-#: src/usage_text.h:365
+#: src/usage_text.h:363
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE Езикът на файла за даунлоуд."
 
-#: src/usage_text.h:367
+#: src/usage_text.h:365
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS Операционнта система на файла за даунлоуд."
 
-#: src/usage_text.h:369
+#: src/usage_text.h:367
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-delimited list of locations is\n"
@@ -1042,7 +1073,7 @@ msgstr ""
 "определен със\n"
 "                              запетаи."
 
-#: src/usage_text.h:373
+#: src/usage_text.h:371
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. Specify "
 "'none'\n"
@@ -1052,7 +1083,7 @@ msgstr ""
 "Уточнете 'none',\n"
 "                              ако нямате предпочитан протокол."
 
-#: src/usage_text.h:376
+#: src/usage_text.h:374
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
@@ -1084,7 +1115,7 @@ msgstr ""
 "горе,\n"
 "                              няма да бъде извършено."
 
-#: src/usage_text.h:387
+#: src/usage_text.h:385
 #, fuzzy
 msgid ""
 " --metalink-enable-unique-protocol[=true|false] If true is given and "
@@ -1103,11 +1134,11 @@ msgstr ""
 "protocol за да\n"
 "                              уточните предпочитанието си на протокол."
 
-#: src/usage_text.h:393
+#: src/usage_text.h:391
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Отпечатва номера на версията и излиза."
 
-#: src/usage_text.h:395
+#: src/usage_text.h:393
 msgid ""
 " -h, --help[=TAG|KEYWORD]     Print usage and exit.\n"
 "                              The help messages are classified with tags. A "
@@ -1120,17 +1151,17 @@ msgid ""
 "                              for the options whose name includes that word."
 msgstr ""
 
-#: src/usage_text.h:402
+#: src/usage_text.h:400
 #, fuzzy
 msgid " --no-conf[=true|false]       Disable loading aria2.conf file."
 msgstr " --no-conf Изключва зареждането на файла aria2.conf."
 
-#: src/usage_text.h:404
+#: src/usage_text.h:402
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr " --conf-path=PATH Промяна на пътя до конфигурационния файл към PATH."
 
-#: src/usage_text.h:406
+#: src/usage_text.h:404
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1140,7 +1171,7 @@ msgstr ""
 "                              Ако 0 е дадено, тази характеристика ще бъде "
 "изключена."
 
-#: src/usage_text.h:409
+#: src/usage_text.h:407
 msgid ""
 " --header=HEADER              Append HEADER to HTTP request header. You can "
 "use\n"
@@ -1160,21 +1191,21 @@ msgstr ""
 "9J1\"\n"
 "                              http://хост/файл"
 
-#: src/usage_text.h:415
+#: src/usage_text.h:413
 msgid " -q, --quiet[=true|false]     Make aria2 quiet(no console output)."
 msgstr " -q, --quiet[=true|false] Прави aria2 тиха(без конзолно извеждане)."
 
-#: src/usage_text.h:417
+#: src/usage_text.h:415
 msgid " --async-dns[=true|false]     Enable asynchronous DNS."
 msgstr " --async-dns[=true|false] Включва несинхронизиран DNS."
 
-#: src/usage_text.h:419
+#: src/usage_text.h:417
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 " --ftp-reuse-connection[=true|false] Многократно използване на връзката в "
 "FTP."
 
-#: src/usage_text.h:421
+#: src/usage_text.h:419
 msgid ""
 " --summary-interval=SEC       Set interval to output download progress "
 "summary.\n"
@@ -1183,11 +1214,11 @@ msgstr ""
 " --summary-interval=SEC Определя интервал за извеждане на разюмето за "
 "прогреса на даунлоуда."
 
-#: src/usage_text.h:424
+#: src/usage_text.h:422
 msgid " --log-level=LEVEL            Set log level to output."
 msgstr " --log-level=LEVEL Определя нивото на лога към извеждането на данни."
 
-#: src/usage_text.h:426
+#: src/usage_text.h:424
 msgid ""
 " -R, --remote-time[=true|false] Retrieve timestamp of the remote file from "
 "the\n"
@@ -1200,7 +1231,7 @@ msgstr ""
 "                              отдалечения HTTP/FTP сървър и ако е наличен,\n"
 "                              се прилага съм локалния файл."
 
-#: src/usage_text.h:430
+#: src/usage_text.h:428
 msgid ""
 " --connect-timeout=SEC        Set the connect timeout in seconds to "
 "establish\n"
@@ -1217,7 +1248,7 @@ msgstr ""
 "                              ефект и --timeout опцията се използва вместо "
 "това."
 
-#: src/usage_text.h:435
+#: src/usage_text.h:433
 msgid ""
 " --max-file-not-found=NUM     If aria2 receives `file not found' status from "
 "the\n"
@@ -1230,7 +1261,7 @@ msgid ""
 "                              HTTP/FTP servers."
 msgstr ""
 
-#: src/usage_text.h:442
+#: src/usage_text.h:440
 msgid ""
 " --uri-selector=SELECTOR      Specify URI selection algorithm.\n"
 "                              If 'inorder' is given, URI is tried in the "
@@ -1260,7 +1291,7 @@ msgid ""
 "                              performance profile of servers."
 msgstr ""
 
-#: src/usage_text.h:461
+#: src/usage_text.h:459
 msgid ""
 " --server-stat-of=FILE        Specify the filename to which performance "
 "profile\n"
@@ -1274,7 +1305,7 @@ msgstr ""
 "записана информация\n"
 "                              използвайки --server-stat-if опцията."
 
-#: src/usage_text.h:465
+#: src/usage_text.h:463
 msgid ""
 " --server-stat-if=FILE        Specify the filename to load performance "
 "profile\n"
@@ -1290,7 +1321,7 @@ msgstr ""
 "                              някои URI селектори като 'feedback'.\n"
 "                              Вижте също --uri-selector опцията"
 
-#: src/usage_text.h:470
+#: src/usage_text.h:468
 msgid ""
 " --server-stat-timeout=SEC    Specifies timeout in seconds to invalidate\n"
 "                              performance profile of the servers since the "
@@ -1302,7 +1333,7 @@ msgstr ""
 "направен последният\n"
 "                              контакт с тях."
 
-#: src/usage_text.h:474
+#: src/usage_text.h:472
 msgid ""
 " --auto-save-interval=SEC     Save a control file(*.aria2) every SEC "
 "seconds.\n"
@@ -1320,7 +1351,7 @@ msgstr ""
 "спре\n"
 "                              независимо от стойността."
 
-#: src/usage_text.h:479
+#: src/usage_text.h:477
 msgid ""
 " --certificate=FILE           Use the client certificate in FILE.\n"
 "                              The certificate must be in PEM format.\n"
@@ -1329,14 +1360,14 @@ msgid ""
 "                              private key."
 msgstr ""
 
-#: src/usage_text.h:484
+#: src/usage_text.h:482
 msgid ""
 " --private-key=FILE           Use the private key in FILE.\n"
 "                              The private key must be decrypted and in PEM\n"
 "                              format. See also --certificate option."
 msgstr ""
 
-#: src/usage_text.h:488
+#: src/usage_text.h:486
 msgid ""
 " --ca-certificate=FILE        Use the certificate authorities in FILE to "
 "verify\n"
@@ -1348,14 +1379,14 @@ msgid ""
 "                              verification."
 msgstr ""
 
-#: src/usage_text.h:494
+#: src/usage_text.h:492
 msgid ""
 " --check-certificate[=true|false] Verify the peer using certificates "
 "specified\n"
 "                              in --ca-certificate option."
 msgstr ""
 
-#: src/usage_text.h:497
+#: src/usage_text.h:495
 msgid ""
 " --no-proxy=DOMAINS           Specify comma separated hostnames, domains or\n"
 "                              network address with or without CIDR block "
@@ -1363,18 +1394,18 @@ msgid ""
 "                              proxy should not be used."
 msgstr ""
 
-#: src/usage_text.h:501
+#: src/usage_text.h:499
 msgid ""
 " --use-head[=true|false]      Use HEAD method for the first request to the "
 "HTTP\n"
 "                              server."
 msgstr ""
 
-#: src/usage_text.h:504
+#: src/usage_text.h:502
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
 
-#: src/usage_text.h:506
+#: src/usage_text.h:504
 msgid ""
 " --bt-external-ip=IPADDRESS   Specify the external IP address to report to "
 "a\n"
@@ -1384,7 +1415,7 @@ msgid ""
 "                              addresses."
 msgstr ""
 
-#: src/usage_text.h:511
+#: src/usage_text.h:509
 msgid ""
 " --http-auth-challenge[=true|false] Send HTTP authorization header only when "
 "it\n"
@@ -1399,7 +1430,7 @@ msgid ""
 "                              option."
 msgstr ""
 
-#: src/usage_text.h:519
+#: src/usage_text.h:517
 msgid ""
 " -O, --index-out=INDEX=PATH   Set file path for file with index=INDEX. You "
 "can\n"
@@ -1412,7 +1443,7 @@ msgid ""
 "                              times."
 msgstr ""
 
-#: src/usage_text.h:525
+#: src/usage_text.h:523
 msgid ""
 " --dry-run[=true|false]       If true is given, aria2 just checks whether "
 "the\n"
@@ -1423,7 +1454,7 @@ msgid ""
 "                              specified."
 msgstr ""
 
-#: src/usage_text.h:531
+#: src/usage_text.h:529
 msgid ""
 " --bt-tracker-interval=SEC    Set the interval in seconds between tracker\n"
 "                              requests. This completely overrides interval "
@@ -1439,7 +1470,7 @@ msgid ""
 "                              progress."
 msgstr ""
 
-#: src/usage_text.h:539
+#: src/usage_text.h:537
 #, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed after "
@@ -1453,7 +1484,7 @@ msgstr ""
 "                              Вижте също опцията --all-proxy.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:545
+#: src/usage_text.h:543
 #, fuzzy
 msgid ""
 " --on-download-start=COMMAND  Set the command to be executed after download\n"
@@ -1467,7 +1498,7 @@ msgstr ""
 "                              Вижте също опцията --all-proxy.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:550
+#: src/usage_text.h:548
 #, fuzzy
 msgid ""
 " --on-download-pause=COMMAND  Set the command to be executed after download\n"
@@ -1479,7 +1510,7 @@ msgstr ""
 "                              Вижте също опцията --all-proxy.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:555
+#: src/usage_text.h:553
 #, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed after download\n"
@@ -1492,7 +1523,7 @@ msgstr ""
 "                              Вижте също опцията --all-proxy.\n"
 "                              Това оказва ефект върху всички URL-и."
 
-#: src/usage_text.h:561
+#: src/usage_text.h:559
 #, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed after download\n"
@@ -1516,7 +1547,7 @@ msgstr ""
 "                              Тази опция оказва ефект само върху BitTorrent\n"
 "                              даунлоуди."
 
-#: src/usage_text.h:570
+#: src/usage_text.h:568
 msgid ""
 " --bt-stop-timeout=SEC        Stop BitTorrent download if download speed is "
 "0 in\n"
@@ -1524,7 +1555,7 @@ msgid ""
 "                              feature is disabled."
 msgstr ""
 
-#: src/usage_text.h:574
+#: src/usage_text.h:572
 msgid ""
 " --bt-prioritize-piece=head[=SIZE],tail[=SIZE] Try to download first and "
 "last\n"
@@ -1546,18 +1577,18 @@ msgid ""
 "                              1024K). If SIZE is omitted, SIZE=1M is used."
 msgstr ""
 
-#: src/usage_text.h:586
+#: src/usage_text.h:584
 msgid ""
 " --interface=INTERFACE        Bind sockets to given interface. You can "
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
 
-#: src/usage_text.h:589
+#: src/usage_text.h:587
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
 msgstr ""
 
-#: src/usage_text.h:591
+#: src/usage_text.h:589
 #, fuzzy
 msgid ""
 " --bt-save-metadata[=true|false] Save metadata as .torrent file. This option "
@@ -1585,7 +1616,7 @@ msgstr ""
 "                              Тази опция оказва ефект само върху BitTorrent\n"
 "                              даунлоуди."
 
-#: src/usage_text.h:599
+#: src/usage_text.h:597
 msgid ""
 " --http-no-cache[=true|false] Send Cache-Control: no-cache and Pragma: no-"
 "cache\n"
@@ -1597,7 +1628,7 @@ msgid ""
 "                              using --header option."
 msgstr ""
 
-#: src/usage_text.h:605
+#: src/usage_text.h:603
 #, fuzzy
 msgid ""
 " --bt-metadata-only[=true|false] Download metadata only. The file(s) "
@@ -1614,19 +1645,19 @@ msgstr ""
 "                              някои URI селектори като 'feedback'.\n"
 "                              Вижте също --uri-selector опцията"
 
-#: src/usage_text.h:610
+#: src/usage_text.h:608
 msgid ""
 " --human-readable[=true|false] Print sizes and speed in human readable "
 "format\n"
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
 
-#: src/usage_text.h:613
+#: src/usage_text.h:611
 #, fuzzy
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
 msgstr " --enable-dht[=true|false] Включва DHT функционалността."
 
-#: src/usage_text.h:615
+#: src/usage_text.h:613
 #, fuzzy
 msgid ""
 " --bt-lpd-interface=INTERFACE Use given interface for Local Peer Discovery. "
@@ -1644,7 +1675,7 @@ msgstr ""
 "спре\n"
 "                              независимо от стойността."
 
-#: src/usage_text.h:620
+#: src/usage_text.h:618
 #, fuzzy
 msgid ""
 " --reuse-uri[=true|false]     Reuse already used URIs if no unused URIs are\n"
@@ -1654,41 +1685,41 @@ msgstr ""
 "без\n"
 "                              проверяване на частта на хеша."
 
-#: src/usage_text.h:623
+#: src/usage_text.h:621
 msgid " --all-proxy-user=USER        Set user for --all-proxy option."
 msgstr ""
 
-#: src/usage_text.h:625
+#: src/usage_text.h:623
 #, fuzzy
 msgid " --all-proxy-passwd=PASSWD    Set password for --all-proxy option."
 msgstr " --ftp-passwd=PASSWD Определя FTP парола. Това засяга всички URL-и."
 
-#: src/usage_text.h:627
+#: src/usage_text.h:625
 msgid " --http-proxy-user=USER       Set user for --http-proxy option."
 msgstr ""
 
-#: src/usage_text.h:629
+#: src/usage_text.h:627
 msgid " --http-proxy-passwd=PASSWD   Set password for --http-proxy option."
 msgstr ""
 
-#: src/usage_text.h:631
+#: src/usage_text.h:629
 msgid " --https-proxy-user=USER      Set user for --https-proxy option."
 msgstr ""
 
-#: src/usage_text.h:633
+#: src/usage_text.h:631
 msgid " --https-proxy-passwd=PASSWD  Set password for --https-proxy option."
 msgstr ""
 
-#: src/usage_text.h:635
+#: src/usage_text.h:633
 msgid " --ftp-proxy-user=USER        Set user for --ftp-proxy option."
 msgstr ""
 
-#: src/usage_text.h:637
+#: src/usage_text.h:635
 #, fuzzy
 msgid " --ftp-proxy-passwd=PASSWD    Set password for --ftp-proxy option."
 msgstr " --ftp-passwd=PASSWD Определя FTP парола. Това засяга всички URL-и."
 
-#: src/usage_text.h:639
+#: src/usage_text.h:637
 #, fuzzy
 msgid ""
 " --remove-control-file[=true|false] Remove control file before download. "
@@ -1707,7 +1738,7 @@ msgstr ""
 "                              но малък прогрес от даунлоуда може да бъде "
 "загубен."
 
-#: src/usage_text.h:644
+#: src/usage_text.h:642
 #, fuzzy
 msgid ""
 " --always-resume[=true|false] Always resume download. If true is given, "
@@ -1737,7 +1768,7 @@ msgstr ""
 "отгоре\n"
 "                              не се извършва."
 
-#: src/usage_text.h:654
+#: src/usage_text.h:652
 msgid ""
 " --max-resume-failure-tries=N When used with --always-resume=false, aria2\n"
 "                              downloads file from scratch when aria2 detects "
@@ -1750,12 +1781,12 @@ msgid ""
 "                              See --always-resume option."
 msgstr ""
 
-#: src/usage_text.h:661
+#: src/usage_text.h:659
 #, fuzzy
 msgid " --bt-tracker-timeout=SEC     Set timeout in seconds."
 msgstr " -t, --timeout=SEC Определя таймаут в секунди."
 
-#: src/usage_text.h:663
+#: src/usage_text.h:661
 #, fuzzy
 msgid ""
 " --bt-tracker-connect-timeout=SEC Set the connect timeout in seconds to\n"
@@ -1773,12 +1804,12 @@ msgstr ""
 "                              ефект и --timeout опцията се използва вместо "
 "това."
 
-#: src/usage_text.h:669
+#: src/usage_text.h:667
 #, fuzzy
 msgid " --dht-message-timeout=SEC    Set timeout in seconds."
 msgstr " -t, --timeout=SEC Определя таймаут в секунди."
 
-#: src/usage_text.h:671
+#: src/usage_text.h:669
 msgid ""
 " --http-accept-gzip[=true|false] Send 'Accept: deflate, gzip' request "
 "header\n"
@@ -1788,7 +1819,7 @@ msgid ""
 "                              'Content-Encoding: deflate'."
 msgstr ""
 
-#: src/usage_text.h:676
+#: src/usage_text.h:674
 #, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
@@ -1813,7 +1844,7 @@ msgstr ""
 "                              ефект и --timeout опцията се използва вместо "
 "това."
 
-#: src/usage_text.h:685
+#: src/usage_text.h:683
 #, fuzzy
 msgid ""
 " -x, --max-connection-per-server=NUM The maximum number of connections to "
@@ -1824,7 +1855,7 @@ msgstr ""
 "във всеки\n"
 "                              BitTorrent даунлоуд."
 
-#: src/usage_text.h:688
+#: src/usage_text.h:686
 #, fuzzy
 msgid ""
 " -k, --min-split-size=SIZE    aria2 does not split less than 2*SIZE byte "
@@ -1854,7 +1885,7 @@ msgstr ""
 "                              Можете да приложите K или M(1K = 1024, 1M = "
 "1024K)."
 
-#: src/usage_text.h:697
+#: src/usage_text.h:695
 #, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
@@ -1868,7 +1899,7 @@ msgstr ""
 "                              отдалечения HTTP/FTP сървър и ако е наличен,\n"
 "                              се прилага съм локалния файл."
 
-#: src/usage_text.h:701
+#: src/usage_text.h:699
 #, fuzzy
 msgid ""
 " --on-bt-download-complete=COMMAND For BitTorrent, a command specified in\n"
@@ -1893,7 +1924,7 @@ msgstr ""
 "                              Тази опция оказва ефект само върху BitTorrent\n"
 "                              даунлоуди."
 
-#: src/usage_text.h:709
+#: src/usage_text.h:707
 #, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
@@ -1907,7 +1938,7 @@ msgstr ""
 "                              се разпределят файловете.\n"
 "                              Изключете опцията ако срещнете някаква грешка"
 
-#: src/usage_text.h:713
+#: src/usage_text.h:711
 #, fuzzy
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
@@ -1923,7 +1954,7 @@ msgstr ""
 "използва Obfuscation\n"
 "                              ръкостискане."
 
-#: src/usage_text.h:718
+#: src/usage_text.h:716
 msgid ""
 " --dht-listen-addr6=ADDR      Specify address to bind socket for IPv6 DHT. \n"
 "                              It should be a global unicast IPv6 address of "
@@ -1931,7 +1962,7 @@ msgid ""
 "                              host."
 msgstr ""
 
-#: src/usage_text.h:722
+#: src/usage_text.h:720
 #, fuzzy
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
@@ -1942,13 +1973,13 @@ msgstr ""
 "DHT\n"
 "                              мрежата."
 
-#: src/usage_text.h:725
+#: src/usage_text.h:723
 #, fuzzy
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
 msgstr " --dht-file-path=PATH Сменя DHT файловата таблица за марширути с PATH."
 
-#: src/usage_text.h:727
+#: src/usage_text.h:725
 #, fuzzy
 msgid ""
 " --bt-tracker=URI[,...]       Comma separated list of additional BitTorrent\n"
@@ -1966,7 +1997,7 @@ msgstr ""
 "                              ефект и --timeout опцията се използва вместо "
 "това."
 
-#: src/usage_text.h:733
+#: src/usage_text.h:731
 msgid ""
 " --bt-exclude-tracker=URI[,...] Comma separated list of BitTorrent "
 "tracker's\n"
@@ -1979,7 +2010,7 @@ msgid ""
 "                              See also --bt-tracker option."
 msgstr ""
 
-#: src/usage_text.h:740
+#: src/usage_text.h:738
 msgid ""
 " --max-download-result=NUM    Set maximum number of download result kept in\n"
 "                              memory. The download results are completed/"
@@ -2000,7 +2031,7 @@ msgid ""
 "                              download result is kept."
 msgstr ""
 
-#: src/usage_text.h:752
+#: src/usage_text.h:750
 msgid ""
 " --async-dns-server=IPADDRESS[,...] Comma separated list of DNS server "
 "address\n"
@@ -2019,7 +2050,7 @@ msgid ""
 "                              permission to create it."
 msgstr ""
 
-#: src/usage_text.h:763
+#: src/usage_text.h:761
 #, fuzzy
 msgid ""
 " --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
@@ -2035,7 +2066,7 @@ msgstr ""
 "използва Obfuscation\n"
 "                              ръкостискане."
 
-#: src/usage_text.h:768
+#: src/usage_text.h:766
 msgid ""
 " --rpc-max-request-size=SIZE  Set max size of JSON-RPC/XML-RPC request. If "
 "aria2\n"
@@ -2044,17 +2075,17 @@ msgid ""
 "                              drops connection."
 msgstr ""
 
-#: src/usage_text.h:772
+#: src/usage_text.h:770
 #, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
 msgstr " --ftp-user=USER Определя FTP потребител. Това засяга всички URL-и."
 
-#: src/usage_text.h:774
+#: src/usage_text.h:772
 #, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
 msgstr " --ftp-passwd=PASSWD Определя FTP парола. Това засяга всички URL-и."
 
-#: src/usage_text.h:776
+#: src/usage_text.h:774
 #, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
@@ -2069,18 +2100,18 @@ msgstr ""
 "изписана\n"
 "                              в случай на торент файл."
 
-#: src/usage_text.h:780
+#: src/usage_text.h:778
 msgid ""
 " --rpc-listen-port=PORT       Specify a port number for JSON-RPC/XML-RPC "
 "server\n"
 "                              to listen to."
 msgstr ""
 
-#: src/usage_text.h:783
+#: src/usage_text.h:781
 msgid " --show-console-readout[=true|false] Show console readout."
 msgstr ""
 
-#: src/usage_text.h:785
+#: src/usage_text.h:783
 #, fuzzy
 msgid ""
 " --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
@@ -2096,7 +2127,7 @@ msgstr ""
 "изписана\n"
 "                              в случай на торент файл."
 
-#: src/usage_text.h:790
+#: src/usage_text.h:788
 msgid ""
 " --stream-piece-selector=SELECTOR Specify piece selection algorithm\n"
 "                              used in HTTP/FTP download. Piece means fixed\n"
@@ -2134,7 +2165,7 @@ msgid ""
 "                              useful to view movie while downloading it."
 msgstr ""
 
-#: src/usage_text.h:817
+#: src/usage_text.h:815
 #, fuzzy
 msgid ""
 " --truncate-console-readout[=true|false] Truncate console readout to fit in\n"
@@ -2144,7 +2175,7 @@ msgstr ""
 "файл\n"
 "                              споменат в .torrent файла."
 
-#: src/usage_text.h:820
+#: src/usage_text.h:818
 #, fuzzy
 msgid ""
 " --pause[=true|false]         Pause download after added. This option is\n"
@@ -2154,13 +2185,13 @@ msgstr ""
 "е дадено,\n"
 "                              активният режим ще бъде използван."
 
-#: src/usage_text.h:823
+#: src/usage_text.h:821
 msgid ""
 " --rpc-allow-origin-all[=true|false] Add Access-Control-Allow-Origin header\n"
 "                              field with value '*' to the RPC response."
 msgstr ""
 
-#: src/usage_text.h:826
+#: src/usage_text.h:824
 msgid ""
 " --download-result=OPT        This option changes the way \"Download Results"
 "\"\n"
@@ -2180,7 +2211,7 @@ msgid ""
 "                              each row."
 msgstr ""
 
-#: src/usage_text.h:838
+#: src/usage_text.h:836
 #, fuzzy
 msgid ""
 " --hash-check-only[=true|false] If true is given, after hash check using\n"
@@ -2194,7 +2225,7 @@ msgstr ""
 "даунлоудва, ако парчетата\n"
 "                              на контролните суми са осигурени."
 
-#: src/usage_text.h:842
+#: src/usage_text.h:840
 msgid ""
 " --checksum=TYPE=DIGEST       Set checksum. TYPE is hash type. The "
 "supported\n"
@@ -2207,7 +2238,7 @@ msgid ""
 "                              downloads."
 msgstr ""
 
-#: src/usage_text.h:851
+#: src/usage_text.h:849
 msgid ""
 " --piece-length=LENGTH        Set a piece length for HTTP/FTP downloads. "
 "This\n"
@@ -2217,6 +2248,21 @@ msgid ""
 "downloads.\n"
 "                              It will be also ignored if Metalink file\n"
 "                              contains piece hashes."
+msgstr ""
+
+#: src/usage_text.h:856
+msgid ""
+" --stop-with-process=PID      Stop application when process PID is not "
+"running.\n"
+"                              This is useful if aria2 process is forked from "
+"a\n"
+"                              parent process. The parent process can fork "
+"aria2\n"
+"                              with its own pid and when parent process "
+"exits\n"
+"                              for some reason, aria2 can detect it and "
+"shutdown\n"
+"                              itself."
 msgstr ""
 
 #: src/version_usage.cc:57
@@ -2257,42 +2303,49 @@ msgstr "Докладвайте за дефекти към %s"
 msgid "Visit"
 msgstr ""
 
-#: src/version_usage.cc:84
-#, fuzzy
+#: src/version_usage.cc:87
+#, fuzzy, c-format
 msgid ""
 "Usage: aria2c [OPTIONS] [URI | MAGNET | TORRENT_FILE | METALINK_FILE]..."
 msgstr "Употреба: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 
-#: src/version_usage.cc:91
+#: src/version_usage.cc:92
+#, c-format
+msgid "See 'aria2c -h'."
+msgstr ""
+
+#: src/version_usage.cc:99
+#, c-format
 msgid "Printing all options."
 msgstr "Отпечатване на всички опции."
 
-#: src/version_usage.cc:93
+#: src/version_usage.cc:101
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "Отпечатване на опции маркирани с '%s'."
 
-#: src/version_usage.cc:97
+#: src/version_usage.cc:104
 #, c-format
-msgid "See -h option to know other command-line options(%s)."
-msgstr "Вижте -h опцията за да научите другите опции в командната линия(%s)."
+msgid "See 'aria2c -h#help' to know all available tags."
+msgstr ""
 
-#: src/version_usage.cc:102 src/version_usage.cc:114
+#: src/version_usage.cc:107 src/version_usage.cc:121
+#, c-format
 msgid "Options:"
 msgstr "Опции:"
 
-#: src/version_usage.cc:111
+#: src/version_usage.cc:118
 #, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr "Отпечатване на опциите чието име включва '%s'."
 
-#: src/version_usage.cc:120
+#: src/version_usage.cc:129
 #, c-format
 msgid "No option matching with '%s'."
 msgstr ""
 
-#: src/version_usage.cc:128
-#, fuzzy
+#: src/version_usage.cc:137
+#, fuzzy, c-format
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
 "all\n"
@@ -2302,8 +2355,8 @@ msgstr ""
 "всички URL-и трябва\n"
 " да сочат към същия файл или даунлоуда ще е неуспешен."
 
-#: src/version_usage.cc:130
-#, fuzzy
+#: src/version_usage.cc:140
+#, fuzzy, c-format
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
 " metalink files stored in a local drive. Please note that they are always\n"
@@ -2314,7 +2367,8 @@ msgstr ""
 "разглеждани като\n"
 " отделен даунлоуд."
 
-#: src/version_usage.cc:135
+#: src/version_usage.cc:144
+#, c-format
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
 " download a file from both torrent swarm and HTTP/FTP server at the same "
@@ -2328,8 +2382,8 @@ msgid ""
 " 'path' in torrent are added to form a URI for each file."
 msgstr ""
 
-#: src/version_usage.cc:142
-#, fuzzy
+#: src/version_usage.cc:151
+#, fuzzy, c-format
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -2338,13 +2392,124 @@ msgstr ""
 " съдържа \"&\" или някакви знаци които имат специално значение в текстовата "
 "обвивка."
 
-#: src/version_usage.cc:152
+#: src/version_usage.cc:154
+#, c-format
+msgid ""
+"About the number of connections\n"
+" Since 1.10.0 release, aria2 uses 1 connection per host by default and has "
+"20MiB\n"
+" segment size restriction. So whatever value you specify using -s option, "
+"it\n"
+" uses 1 connection per host. To make it behave like 1.9.x, use\n"
+" --max-connection-per-server=4 --min-split-size=1M.\n"
+"\n"
+msgstr ""
+
+#: src/version_usage.cc:161
+#, c-format
 msgid "Refer to man page for more information."
 msgstr "Позовете се на страницата в наръчника за повече информация."
 
+#: src/option_processing.cc:86
+#, c-format
+msgid "Caught Error while parsing environment variable '%s'"
+msgstr ""
+
+#: src/option_processing.cc:168
+#, c-format
+msgid "Did you mean:"
+msgstr ""
+
+#: src/option_processing.cc:237 src/option_processing.cc:246
+#, c-format
+msgid "Parse error in %s"
+msgstr ""
+
+#: src/option_processing.cc:241 src/option_processing.cc:282
+#, c-format
+msgid "Usage:"
+msgstr ""
+
+#: src/option_processing.cc:251
+#, c-format
+msgid "Configuration file %s is not found."
+msgstr ""
+
+#: src/OptionHandlerException.cc:43
+#, c-format
+msgid "We encountered a problem while processing the option '--%s'."
+msgstr ""
+
+#: src/UnknownOptionException.cc:41
+#, c-format
+msgid "Unknown option '%s'"
+msgstr ""
+
+#: src/BtSetup.cc:215
+msgid "Errors occurred while binding port.\n"
+msgstr "Намерени са грешки докато протича приързване към порта.\n"
+
+#: src/AbstractCommand.cc:443
+#, c-format
+msgid "CUID#%lld - Failed to resume download. Download from scratch."
+msgstr ""
+
+#: src/AdaptiveURISelector.cc:228
+#, c-format
+msgid ""
+"Lowering lowest-speed-limit since known max speed is too near (new:%d was:%d "
+"max:%d)"
+msgstr ""
+
+#: src/AdaptiveURISelector.cc:235
+#, c-format
+msgid ""
+"Lowering lowest-speed-limit since we have no clue about available speed (now:"
+"%d was:%d)"
+msgstr ""
+
+#: src/BtStopDownloadCommand.cc:64
+#, c-format
+msgid "GID#%lld Stop downloading torrent due to --bt-stop-timeout option."
+msgstr ""
+
+#: src/DHTConnectionImpl.cc:89
+#, c-format
+msgid "IPv%d DHT: listening to port %u"
+msgstr ""
+
+#: src/HttpListenCommand.cc:112
+#, c-format
+msgid "IPv%d RPC: listening to port %u"
+msgstr ""
+
+#: src/PeerListenCommand.cc:83
+#, c-format
+msgid "IPv%d BitTorrent: listening to port %u"
+msgstr ""
+
+#: src/RequestGroup.cc:381
+msgid ""
+"For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
+"enable-dht option."
+msgstr ""
+
+#: src/RequestGroup.cc:686
+#, fuzzy, c-format
+msgid "Removed control file for %s because it is requested by user."
+msgstr ""
+"Премахнат е покойния контролен файл %s защото даунлоуднатият файл %s не "
+"съществува."
+
+#: src/SingleFileAllocationIterator.cc:75
+msgid ""
+"Allocating disk space. Use --file-allocation=none to disable it. See --file-"
+"allocation option in man page for more details."
+msgstr ""
+
 #: src/message.h:57
 #, fuzzy, c-format
-msgid "GID#%s - Download has already completed: %s"
+msgid "GID#%lld - Download has already completed: %s"
 msgstr "#%d - Даунлоудът вече е завършен: %s"
 
 #: src/message.h:106
@@ -2459,11 +2624,6 @@ msgstr "Премахнати %d имащи вписвания."
 #, c-format
 msgid "Validating file %s"
 msgstr "Потвърждение на файл %s"
-
-#: src/message.h:128
-#, fuzzy, c-format
-msgid "%ld seconds to allocate %s byte(s)"
-msgstr "%d секунди за разпределяне на %s байт(а)"
 
 #: src/message.h:131
 #, c-format
@@ -2755,11 +2915,6 @@ msgstr ""
 msgid "The response status is not successful. status=%d"
 msgstr "Състоянието на отговора е неуспешно. състояние=%d"
 
-#: src/message.h:210
-#, c-format
-msgid "Too large file size. size=%s"
-msgstr "Твърде голям размер на файла. размер=%s"
-
 #: src/message.h:211
 #, c-format
 msgid "Transfer encoding %s is not supported."
@@ -2787,11 +2942,6 @@ msgstr "Неизвестна SSL грешка %d"
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Инициализацията на SSL е неуспешна: Грешка в свързването на OpenSSL %d"
-
-#: src/message.h:217
-#, c-format
-msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "Несъответствие в размера Очакван:%s Настоящ:%s"
 
 #: src/message.h:218
 msgid "Authorization failed."
@@ -2839,11 +2989,6 @@ msgstr ""
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Неуспех при търсенето на файл %s, причина: %s"
-
-#: src/message.h:229
-#, c-format
-msgid "The offset is out of range, offset=%s"
-msgstr "Офсетът е извън обхват, офсет=%s"
 
 #: src/message.h:230
 #, c-format
@@ -2956,15 +3101,6 @@ msgstr ""
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Невалдно ID=%d за %s. Трябва да бъде %d."
 
-#: src/message.h:256
-#, fuzzy, c-format
-msgid ""
-"Chunk checksum validation failed. checksumIndex=%lu, offset=%s, expectedHash="
-"%s, actualHash=%s"
-msgstr ""
-"Потвърждението на контролната сума на парчето е неуспешно. Индекс на "
-"контролната сума=%d, офсет%s, очакван хеш=%s, настоящ хеш=%s"
-
 #: src/message.h:257
 msgid "Download aborted."
 msgstr "Даунлоудът е преустановен."
@@ -3020,12 +3156,6 @@ msgstr "Не е намерен Http запис за заявка."
 msgid "Got %d status, but no location header provided."
 msgstr "Получено %d състояние, но никаква местна заглавна част не е доставена."
 
-#: src/message.h:270
-#, c-format
-msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
-msgstr ""
-"Невалиден обхват на заглавната част. Заявка: %s-%s/%s, Отговор: %s-%s/%s"
-
 #: src/message.h:271
 msgid "No file matched with your preference."
 msgstr "Никакъв файл не съответства с Вашето предпочитание."
@@ -3048,9 +3178,34 @@ msgstr ""
 "Невалидна дължина на файла. Даунлоудът не може да продължи %s: локална %s, "
 "отдалечена %s"
 
-#: src/BtSetup.cc:212
-msgid "Errors occurred while binding port.\n"
-msgstr "Намерени са грешки докато протича приързване към порта.\n"
+#~ msgid "See -h option to know other command-line options(%s)."
+#~ msgstr ""
+#~ "Вижте -h опцията за да научите другите опции в командната линия(%s)."
+
+#, fuzzy
+#~ msgid "%ld seconds to allocate %s byte(s)"
+#~ msgstr "%d секунди за разпределяне на %s байт(а)"
+
+#~ msgid "Too large file size. size=%s"
+#~ msgstr "Твърде голям размер на файла. размер=%s"
+
+#~ msgid "Size mismatch Expected:%s Actual:%s"
+#~ msgstr "Несъответствие в размера Очакван:%s Настоящ:%s"
+
+#~ msgid "The offset is out of range, offset=%s"
+#~ msgstr "Офсетът е извън обхват, офсет=%s"
+
+#, fuzzy
+#~ msgid ""
+#~ "Chunk checksum validation failed. checksumIndex=%lu, offset=%s, "
+#~ "expectedHash=%s, actualHash=%s"
+#~ msgstr ""
+#~ "Потвърждението на контролната сума на парчето е неуспешно. Индекс на "
+#~ "контролната сума=%d, офсет%s, очакван хеш=%s, настоящ хеш=%s"
+
+#~ msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
+#~ msgstr ""
+#~ "Невалиден обхват на заглавната част. Заявка: %s-%s/%s, Отговор: %s-%s/%s"
 
 #~ msgid ""
 #~ " -V, --check-integrity[=true|false] Check file integrity by validating "

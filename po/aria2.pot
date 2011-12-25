@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2 1.13.0\n"
+"Project-Id-Version: aria2 1.14.0\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-12-14 02:12+0900\n"
+"POT-Creation-Date: 2011-12-26 00:58+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,27 +51,27 @@ msgstr ""
 msgid "Download GID#%lld not complete: %s"
 msgstr ""
 
-#: src/RequestGroupMan.cc:611
+#: src/RequestGroupMan.cc:607
 msgid "Download Results:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:654
+#: src/RequestGroupMan.cc:650
 msgid "Status Legend:"
 msgstr ""
 
-#: src/RequestGroupMan.cc:656
+#: src/RequestGroupMan.cc:652
 msgid "(OK):download completed."
 msgstr ""
 
-#: src/RequestGroupMan.cc:659
+#: src/RequestGroupMan.cc:655
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:662
+#: src/RequestGroupMan.cc:658
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:665
+#: src/RequestGroupMan.cc:661
 msgid "(RM):download removed."
 msgstr ""
 
