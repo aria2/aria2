@@ -297,20 +297,8 @@ void MultiDiskAdaptor::openExistingFile()
 
 void MultiDiskAdaptor::closeFile()
 {
-  bool ok = true;
-  for(std::vector<SharedHandle<DiskWriterEntry> >::const_iterator i =
-        diskWriterEntries_.begin(), eoi = diskWriterEntries_.end(); i != eoi;
-      ++i) {
-    try {
-      (*i)->closeFile();
-    } catch(RecoverableException& e) {
-      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
-      ok = false;
-    }
-  }
-  if(!ok) {
-    throw DL_ABORT_EX("Failed to close some files");
-  }
+  std::for_each(diskWriterEntries_.begin(), diskWriterEntries_.end(),
+                mem_fun_sh(&DiskWriterEntry::closeFile));
 }
 
 namespace {

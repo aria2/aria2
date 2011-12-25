@@ -97,8 +97,7 @@ KqueueEventPoll::KqueueEventPoll()
 KqueueEventPoll::~KqueueEventPoll()
 {
   if(kqfd_ != -1) {
-    int r;
-    while((r = close(kqfd_)) == -1 && errno == EINTR);
+    int r = close(kqfd_);
     int errNum = errno;
     if(r == -1) {
       A2_LOG_ERROR(fmt("Error occurred while closing kqueue file descriptor"

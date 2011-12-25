@@ -89,7 +89,7 @@ namespace aria2 {
 #ifdef __MINGW32__
 # define CLOSE(X) ::closesocket(X)
 #else
-# define CLOSE(X) while(close(X) == -1 && errno == EINTR)
+# define CLOSE(X) close(X)
 #endif // __MINGW32__
 
 namespace {
