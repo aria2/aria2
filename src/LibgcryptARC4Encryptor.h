@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+#include <cstdlib>
+
 #include <gcrypt.h>
 
 namespace aria2 {

@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+#include <cstdlib>
+
 #include <openssl/rc4.h>
 
 namespace aria2 {
