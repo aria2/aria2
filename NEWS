@@ -15,6 +15,9 @@ added.
 Changes
 -------
 
+ * Updated Chinese (Simplified), Spanish, French and Russian
+   translations. Thanks to all translators.
+
  * Updated Russian man page. Thanks to ITriskTI.
 
  * Ignore peer which possibly sent bad data in next few minuts.  In
