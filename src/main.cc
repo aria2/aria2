@@ -192,6 +192,7 @@ error_code::Value main(int argc, char* argv[])
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }
+  LogFactory::reconfigure();
   error_code::Value exitStatus = error_code::FINISHED;
   A2_LOG_INFO("<<--- --- --- ---");
   A2_LOG_INFO("  --- --- --- ---");
