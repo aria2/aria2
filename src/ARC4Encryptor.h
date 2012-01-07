@@ -56,8 +56,7 @@ public:
 
   void init(const unsigned char* key, size_t keyLength) {}
 
-  void encrypt(unsigned char* out, size_t outLength,
-               const unsigned char* in, size_t inLength) {}
+  void encrypt(size_t len, unsigned char* out, const unsigned char* in);
 };
 
 } // namespace aria2
