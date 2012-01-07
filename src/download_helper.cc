@@ -129,8 +129,8 @@ SharedHandle<RequestGroup> createRequestGroup
     std::string hashType(p.first.first, p.first.second);
     std::string hexDigest(p.second.first, p.second.second);
     util::lowercase(hashType);
-    util::lowercase(hexDigest);
-    dctx->setDigest(hashType, hexDigest);
+    dctx->setDigest(hashType,
+                    util::fromHex(hexDigest.begin(), hexDigest.end()));
   }
 #endif // ENABLE_MESSAGE_DIGEST
   rg->setDownloadContext(dctx);
