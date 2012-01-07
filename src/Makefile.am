@@ -131,7 +131,6 @@ SRCS =  Socket.h\
 	PeerSessionResource.cc PeerSessionResource.h\
 	BtRegistry.cc BtRegistry.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
-	PeerConnection.cc PeerConnection.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h\
 	DownloadContext.cc DownloadContext.h\
@@ -326,6 +325,7 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 	PeerInteractionCommand.cc PeerInteractionCommand.h\
 	Peer.cc Peer.h\
+	PeerConnection.cc PeerConnection.h\
 	PeerListenCommand.cc PeerListenCommand.h\
 	RequestSlot.cc RequestSlot.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
