@@ -195,11 +195,12 @@ private:
   void removeDefunctControlFile
   (const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 
-  bool isCheckIntegrityReady() const;
 public:
   RequestGroup(const SharedHandle<Option>& option);
 
   ~RequestGroup();
+
+  bool isCheckIntegrityReady();
 
   const SharedHandle<SegmentMan>& getSegmentMan() const
   {

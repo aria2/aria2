@@ -69,9 +69,7 @@ void ChecksumCheckIntegrityEntry::initValidator()
 void
 ChecksumCheckIntegrityEntry::onDownloadFinished
 (std::vector<Command*>& commands, DownloadEngine* e)
-{
-  getRequestGroup()->getDownloadContext()->setChecksumVerified(true);
-}
+{}
 
 void
 ChecksumCheckIntegrityEntry::onDownloadIncomplete

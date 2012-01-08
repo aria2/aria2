@@ -167,10 +167,11 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option)
 
 RequestGroup::~RequestGroup() {}
 
-bool RequestGroup::isCheckIntegrityReady() const
+bool RequestGroup::isCheckIntegrityReady()
 {
   return option_->getAsBool(PREF_CHECK_INTEGRITY) &&
-    (downloadContext_->isChecksumVerificationAvailable() ||
+    ((downloadContext_->isChecksumVerificationAvailable() &&
+      downloadFinishedByFileLength()) ||
      downloadContext_->isPieceHashVerificationAvailable());
 }
 
@@ -252,27 +253,21 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     } else {
       checkEntry.reset(new StreamCheckIntegrityEntry(this));
     }
-  } else if(downloadFinishedByFileLength()) {
-    pieceStorage_->markAllPiecesDone();
 #ifdef ENABLE_MESSAGE_DIGEST
-    if(option_->getAsBool(PREF_CHECK_INTEGRITY) &&
-       downloadContext_->isChecksumVerificationAvailable()) {
-      loadAndOpenFile(infoFile);
-      ChecksumCheckIntegrityEntry* tempEntry =
-        new ChecksumCheckIntegrityEntry(this);
-      tempEntry->setRedownload(true);
-      checkEntry.reset(tempEntry);
-    } else
-#endif // ENABLE_MESSAGE_DIGEST
-      {
-        downloadContext_->setChecksumVerified(true);
-        A2_LOG_NOTICE(fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-                          gid_, downloadContext_->getBasePath().c_str()));
-      }
-  } else {
+  } else if(downloadFinishedByFileLength() &&
+            downloadContext_->isChecksumVerificationAvailable()) {
+    pieceStorage_->markAllPiecesDone();
     loadAndOpenFile(infoFile);
-    checkEntry.reset(new StreamCheckIntegrityEntry(this));
-  }
+    ChecksumCheckIntegrityEntry* tempEntry =
+      new ChecksumCheckIntegrityEntry(this);
+    tempEntry->setRedownload(true);
+    checkEntry.reset(tempEntry);
+  } else
+#endif // ENABLE_MESSAGE_DIGEST
+    {
+      loadAndOpenFile(infoFile);
+      checkEntry.reset(new StreamCheckIntegrityEntry(this));
+    }
   return checkEntry;
 }
 
@@ -689,8 +684,6 @@ void RequestGroup::adjustFilename
   }
   if(infoFile->exists()) {
     // Use current filename
-  } else if(downloadFinishedByFileLength()) {
-    // File was downloaded already, no need to change file name.
   } else {
     File outfile(getFirstFilePath());    
     if(outfile.exists() && option_->getAsBool(PREF_CONTINUE) &&

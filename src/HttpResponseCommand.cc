@@ -74,7 +74,8 @@
 #include "SocketRecvBuffer.h"
 #include "MetalinkHttpEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
-#include "Checksum.h"
+# include "Checksum.h"
+# include "ChecksumCheckIntegrityEntry.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #ifdef HAVE_ZLIB
 # include "GZipDecodingStreamFilter.h"
@@ -431,18 +432,28 @@ bool HttpResponseCommand::handleOtherEncoding
   // For zero-length file, check existing file comparing its size
   if(!chunkedUsed && getDownloadContext()->knowsTotalLength() &&
      getRequestGroup()->downloadFinishedByFileLength()) {
-    // TODO If metalink file does not contain size and it contains
-    // hash and file is not zero length, but remote server says the
-    // file size is 0, no hash check is performed in the current
-    // implementation. See also
-    // FtpNegotiationCommand::onFileSizeDetermined()
     getRequestGroup()->initPieceStorage();
-    getPieceStorage()->markAllPiecesDone();
-    getDownloadContext()->setChecksumVerified(true);
-    A2_LOG_NOTICE
-      (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-           getRequestGroup()->getGID(),
-           getRequestGroup()->getFirstFilePath().c_str()));
+#ifdef ENABLE_MESSAGE_DIGEST
+    // TODO Known issue: if .aria2 file exists, it will not be deleted
+    // on successful verification, because .aria2 file is not loaded.
+    // See also FtpNegotiationCommand::onFileSizeDetermined()
+    if(getDownloadContext()->isChecksumVerificationNeeded()) {
+      A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
+      SharedHandle<ChecksumCheckIntegrityEntry> entry
+        (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+      entry->initValidator();
+      getPieceStorage()->getDiskAdaptor()->openExistingFile();
+      getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+    } else
+#endif // ENABLE_MESSAGE_DIGEST
+      {
+        getPieceStorage()->markAllPiecesDone();
+        getDownloadContext()->setChecksumVerified(true);
+        A2_LOG_NOTICE
+          (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+               getRequestGroup()->getGID(),
+               getRequestGroup()->getFirstFilePath().c_str()));
+      }
     poolConnection();
     return true;
   }
@@ -455,7 +466,22 @@ bool HttpResponseCommand::handleOtherEncoding
   // is called. So zero-length file is complete if chunked encoding is
   // not used.
   if(!chunkedUsed && getDownloadContext()->knowsTotalLength()) {
-    getRequestGroup()->getPieceStorage()->markAllPiecesDone();
+    A2_LOG_DEBUG("File length becomes zero and it means download completed.");
+    // TODO Known issue: if .aria2 file exists, it will not be deleted
+    // on successful verification, because .aria2 file is not loaded.
+    // See also FtpNegotiationCommand::onFileSizeDetermined()
+#ifdef ENABLE_MESSAGE_DIGEST
+    if(getDownloadContext()->isChecksumVerificationNeeded()) {
+      A2_LOG_DEBUG("Verify checksum for zero-length file");
+      SharedHandle<ChecksumCheckIntegrityEntry> entry
+        (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+      entry->initValidator();
+      getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+    } else
+#endif // ENABLE_MESSAGE_DIGEST
+      {
+        getRequestGroup()->getPieceStorage()->markAllPiecesDone();
+      }
     poolConnection();
     return true;
   }

@@ -74,6 +74,9 @@
 #include "CheckIntegrityEntry.h"
 #include "error_code.h"
 #include "SocketRecvBuffer.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "ChecksumCheckIntegrityEntry.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 namespace aria2 {
 
@@ -398,21 +401,32 @@ bool FtpNegotiationCommand::onFileSizeDetermined(off_t totalLength)
 
     if(getDownloadContext()->knowsTotalLength() &&
        getRequestGroup()->downloadFinishedByFileLength()) {
-      // TODO If metalink file does not contain size and it contains
-      // hash and file is not zero length, but remote server says the
-      // file size is 0, no hash check is performed in the current
-      // implementation. See also
+#ifdef ENABLE_MESSAGE_DIGEST
+      // TODO Known issue: if .aria2 file exists, it will not be
+      // deleted on successful verification, because .aria2 file is
+      // not loaded.  See also
       // HttpResponseCommand::handleOtherEncoding()
       getRequestGroup()->initPieceStorage();
-      getPieceStorage()->markAllPiecesDone();
-      getDownloadContext()->setChecksumVerified(true);
-      sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-      A2_LOG_NOTICE
-        (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
-             getRequestGroup()->getGID(),
-             getRequestGroup()->getFirstFilePath().c_str()));
+      if(getDownloadContext()->isChecksumVerificationNeeded()) {
+        A2_LOG_DEBUG("Zero length file exists. Verify checksum.");
+        SharedHandle<ChecksumCheckIntegrityEntry> entry
+          (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+        entry->initValidator();
+        getPieceStorage()->getDiskAdaptor()->openExistingFile();
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+        sequence_ = SEQ_EXIT;
+      } else
+#endif // ENABLE_MESSAGE_DIGEST
+        {
+          getPieceStorage()->markAllPiecesDone();
+          getDownloadContext()->setChecksumVerified(true);
+          sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+          A2_LOG_NOTICE
+            (fmt(MSG_DOWNLOAD_ALREADY_COMPLETED,
+                 getRequestGroup()->getGID(),
+                 getRequestGroup()->getFirstFilePath().c_str()));
+        }
       poolConnection();
-
       return false;
     }
 
@@ -421,8 +435,25 @@ bool FtpNegotiationCommand::onFileSizeDetermined(off_t totalLength)
     getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
 
     if(getDownloadContext()->knowsTotalLength()) {
-      sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-      getPieceStorage()->markAllPiecesDone();
+      A2_LOG_DEBUG("File length becomes zero and it means download completed.");
+#ifdef ENABLE_MESSAGE_DIGEST
+      // TODO Known issue: if .aria2 file exists, it will not be
+      // deleted on successful verification, because .aria2 file is
+      // not loaded.  See also
+      // HttpResponseCommand::handleOtherEncoding()
+      if(getDownloadContext()->isChecksumVerificationNeeded()) {
+        A2_LOG_DEBUG("Verify checksum for zero-length file");
+        SharedHandle<ChecksumCheckIntegrityEntry> entry
+          (new ChecksumCheckIntegrityEntry(getRequestGroup()));
+        entry->initValidator();
+        getDownloadEngine()->getCheckIntegrityMan()->pushEntry(entry);
+        sequence_ = SEQ_EXIT;
+      } else
+#endif // ENABLE_MESSAGE_DIGEST
+        {
+          sequence_ = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+          getPieceStorage()->markAllPiecesDone();
+        }
       poolConnection();
       return false;
     }

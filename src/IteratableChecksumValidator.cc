@@ -61,23 +61,24 @@ IteratableChecksumValidator::~IteratableChecksumValidator() {}
 
 void IteratableChecksumValidator::validateChunk()
 {
-  if(!finished()) {
-    unsigned char buf[4096];
-    size_t length = pieceStorage_->getDiskAdaptor()->readData
-      (buf, sizeof(buf), currentOffset_);
-    ctx_->update(buf, length);
-    currentOffset_ += length;
-    if(finished()) {
-      std::string actualDigest = ctx_->digest();
-      if(dctx_->getDigest() == actualDigest) {
-        pieceStorage_->markAllPiecesDone();
-      } else {
-        A2_LOG_INFO(fmt("Checksum validation failed. expected=%s, actual=%s",
-                        util::toHex(dctx_->getDigest()).c_str(),
-                        util::toHex(actualDigest).c_str()));
-        BitfieldMan bitfield(dctx_->getPieceLength(), dctx_->getTotalLength());
-        pieceStorage_->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
-      }
+  // Don't guard with !finished() to allow zero-length file to be
+  // verified.
+  unsigned char buf[4096];
+  size_t length = pieceStorage_->getDiskAdaptor()->readData
+    (buf, sizeof(buf), currentOffset_);
+  ctx_->update(buf, length);
+  currentOffset_ += length;
+  if(finished()) {
+    std::string actualDigest = ctx_->digest();
+    if(dctx_->getDigest() == actualDigest) {
+      pieceStorage_->markAllPiecesDone();
+      dctx_->setChecksumVerified(true);
+    } else {
+      A2_LOG_INFO(fmt("Checksum validation failed. expected=%s, actual=%s",
+                      util::toHex(dctx_->getDigest()).c_str(),
+                      util::toHex(actualDigest).c_str()));
+      BitfieldMan bitfield(dctx_->getPieceLength(), dctx_->getTotalLength());
+      pieceStorage_->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
     }
   }
 }
