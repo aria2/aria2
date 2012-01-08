@@ -192,7 +192,7 @@ You cannot get netrc enabled even if you send
   or without CIDR block where proxy should not be used.
 
 [NOTE]
-For network address with CIDR block, only IPv4 address works.  Current
+For network address with CIDR block, both IPv4 and IPv6 addresses work. Current
 implementation does not resolve hostname in URI to compare network
 address specified in *<<aria2_optref_no_proxy, --no-proxy>>*. So it is only effecive if URI has
 numeric IP addresses.
