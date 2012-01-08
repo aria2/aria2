@@ -253,21 +253,22 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     } else {
       checkEntry.reset(new StreamCheckIntegrityEntry(this));
     }
-#ifdef ENABLE_MESSAGE_DIGEST
-  } else if(downloadFinishedByFileLength() &&
-            downloadContext_->isChecksumVerificationAvailable()) {
-    pieceStorage_->markAllPiecesDone();
-    loadAndOpenFile(infoFile);
-    ChecksumCheckIntegrityEntry* tempEntry =
-      new ChecksumCheckIntegrityEntry(this);
-    tempEntry->setRedownload(true);
-    checkEntry.reset(tempEntry);
   } else
-#endif // ENABLE_MESSAGE_DIGEST
-    {
+#ifdef ENABLE_MESSAGE_DIGEST
+    if(downloadFinishedByFileLength() &&
+       downloadContext_->isChecksumVerificationAvailable()) {
+      pieceStorage_->markAllPiecesDone();
       loadAndOpenFile(infoFile);
-      checkEntry.reset(new StreamCheckIntegrityEntry(this));
-    }
+      ChecksumCheckIntegrityEntry* tempEntry =
+        new ChecksumCheckIntegrityEntry(this);
+      tempEntry->setRedownload(true);
+      checkEntry.reset(tempEntry);
+    } else
+#endif // ENABLE_MESSAGE_DIGEST
+      {
+        loadAndOpenFile(infoFile);
+        checkEntry.reset(new StreamCheckIntegrityEntry(this));
+      }
   return checkEntry;
 }
 
