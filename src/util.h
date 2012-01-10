@@ -624,6 +624,7 @@ bool startsWith(InputIterator first, InputIterator last, const char* b)
 }
 
 bool startsWith(const std::string& a, const char* b);
+bool startsWith(const std::string& a, const std::string& b);
 
 template<typename InputIterator1, typename InputIterator2>
 bool istartsWith

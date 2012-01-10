@@ -1616,6 +1616,11 @@ bool startsWith(const std::string& a, const char* b)
   return startsWith(a.begin(), a.end(), b, b+strlen(b));
 }
 
+bool startsWith(const std::string& a, const std::string& b)
+{
+  return startsWith(a.begin(), a.end(), b.begin(), b.end());
+}
+
 bool istartsWith(const std::string& a, const char* b)
 {
   return istartsWith(a.begin(), a.end(), b, b+strlen(b));

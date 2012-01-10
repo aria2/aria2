@@ -373,8 +373,7 @@ std::string canonicalizeHost(const std::string& host)
 bool domainMatch(const std::string& requestHost, const std::string& domain)
 {
   return requestHost == domain ||
-    (util::endsWith(requestHost.begin(), requestHost.end(),
-                    domain.begin(), domain.end()) &&
+    (util::endsWith(requestHost, domain) &&
      requestHost[requestHost.size()-domain.size()-1] == '.' &&
      !util::isNumericHost(requestHost));
 }
@@ -382,8 +381,7 @@ bool domainMatch(const std::string& requestHost, const std::string& domain)
 bool pathMatch(const std::string& requestPath, const std::string& path)
 {
   return requestPath == path ||
-    (util::startsWith(requestPath.begin(), requestPath.end(),
-                      path.begin(), path.end()) &&
+    (util::startsWith(requestPath, path) &&
      (path[path.size()-1] == '/' || requestPath[path.size()] == '/'));
 }
 

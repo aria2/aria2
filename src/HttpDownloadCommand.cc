@@ -92,10 +92,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
        (getRequest()->isKeepAliveEnabled() &&
         (
          // Make sure that all filters are finished to pool socket
-         (!util::endsWith(streamFilterName.begin(),
-                          streamFilterName.end(),
-                          SinkStreamFilter::NAME.begin(),
-                          SinkStreamFilter::NAME.end()) &&
+         (!util::endsWith(streamFilterName, SinkStreamFilter::NAME) &&
           getStreamFilter()->finished()) ||
          getRequestEndOffset() ==
          getFileEntry()->gtoloff(getSegments().front()->getPositionToWrite())

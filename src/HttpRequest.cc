@@ -248,8 +248,7 @@ std::string HttpRequest::createRequest()
     std::vector<std::string>::const_iterator j = headers_.begin();
     std::vector<std::string>::const_iterator jend = headers_.end();
     for(; j != jend; ++j) {
-      if(util::startsWith((*j).begin(), (*j).end(),
-                          (*i).first.begin(), (*i).first.end())) {
+      if(util::startsWith(*j, (*i).first)) {
         break;
       }
     }

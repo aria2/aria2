@@ -383,10 +383,7 @@ void DownloadCommand::installStreamFilter
   streamFilter->installDelegate(streamFilter_);
   streamFilter_ = streamFilter;
   const std::string& name = streamFilter_->getName();
-  sinkFilterOnly_ =
-    util::endsWith(name.begin(), name.end(),
-                   SinkStreamFilter::NAME.begin(),
-                   SinkStreamFilter::NAME.end());
+  sinkFilterOnly_ = util::endsWith(name, SinkStreamFilter::NAME);
 }
 
 } // namespace aria2
