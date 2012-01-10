@@ -108,9 +108,16 @@ bool Request::redirectUri(const std::string& uri) {
     return false;
   }
   std::string redirectedUri;
-  if(uri.find("://") == std::string::npos) {
+  if(util::startsWith(uri, "//")) {
+    // Network-path reference (according to RFC 3986, Section 4.2)
+    // Just complement current protocol.
+    redirectedUri = getProtocol();
+    redirectedUri += ":";
+    redirectedUri += uri;
+  } else if(uri.find("://") == std::string::npos) {
     // rfc2616 requires absolute URI should be provided by Location header
     // field, but some servers don't obey this rule.
+    // UPDATE: draft-ietf-httpbis-p2-semantics-18 now allows this.
     uri::UriStruct rus(us_);
     rus.query.clear();
     rus.file.clear();

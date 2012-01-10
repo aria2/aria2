@@ -137,6 +137,11 @@ void RequestTest::testRedirectUri()
                                    "relativepath/to/file"),
                        req.getCurrentUri());
   CPPUNIT_ASSERT_EQUAL(4, req.getRedirectCount());
+
+  // Give network-path reference
+  CPPUNIT_ASSERT(req.redirectUri("//host/to/file"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/to/file"), req.getCurrentUri());
+  CPPUNIT_ASSERT_EQUAL(5, req.getRedirectCount());
 }
 
 void RequestTest::testRedirectUri2()
