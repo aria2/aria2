@@ -61,23 +61,18 @@ struct SessionData {
 } // namespace
 
 namespace {
-template<typename InputIterator>
-void splitNsName
-(const char** localname,
- const char** nsUri,
- InputIterator first,
- InputIterator last)
+void splitNsName(const char** localname, const char** nsUri, const char* src)
 {
-  InputIterator sep = std::find(first, last, '\t');
-  if(sep == last) {
-    *localname = first;
-  } else {
+  const char* sep = strchr(src, '\t');
+  if(sep) {
     *localname = sep+1;
-    size_t nsUriLen = sep-first;
+    size_t nsUriLen = sep-src;
     char* temp = new char[nsUriLen+1];
-    memcpy(temp, first, nsUriLen);
+    memcpy(temp, src, nsUriLen);
     temp[nsUriLen] = '\0';
     *nsUri = temp;
+  } else {
+    *localname = src;
   }
 }
 } // namespace
@@ -95,8 +90,7 @@ void mlStartElement(void* userData, const char* nsName, const char** attrs)
       if(*p == 0) {
         break;
       }
-      splitNsName(&xa.localname, &xa.nsUri,
-                  attrNsName, attrNsName+strlen(attrNsName));
+      splitNsName(&xa.localname, &xa.nsUri, attrNsName);
       const char* value = *p++;
       xa.value = value;
       xa.valueLength = strlen(value);
@@ -106,7 +100,7 @@ void mlStartElement(void* userData, const char* nsName, const char** attrs)
   const char* localname = 0;
   const char* prefix = 0;
   const char* nsUri = 0;
-  splitNsName(&localname, &nsUri, nsName, nsName+strlen(nsName));
+  splitNsName(&localname, &nsUri, nsName);
   sd->psm_->beginElement(localname, prefix, nsUri, xmlAttrs);
   delete [] nsUri;
   for(std::vector<XmlAttr>::iterator i = xmlAttrs.begin(),
@@ -125,7 +119,7 @@ void mlEndElement(void* userData, const char* nsName)
   const char* localname = 0;
   const char* prefix = 0;
   const char* nsUri = 0;
-  splitNsName(&localname, &nsUri, nsName, nsName+strlen(nsName));
+  splitNsName(&localname, &nsUri, nsName);
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
   if(sd->psm_->needsCharactersBuffering()) {
