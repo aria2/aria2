@@ -1613,7 +1613,7 @@ bool noProxyDomainMatch
 
 bool startsWith(const std::string& a, const char* b)
 {
-  return startsWith(a.begin(), a.end(), b, b+strlen(b));
+  return startsWith(a.begin(), a.end(), b);
 }
 
 bool startsWith(const std::string& a, const std::string& b)
@@ -1623,7 +1623,7 @@ bool startsWith(const std::string& a, const std::string& b)
 
 bool istartsWith(const std::string& a, const char* b)
 {
-  return istartsWith(a.begin(), a.end(), b, b+strlen(b));
+  return istartsWith(a.begin(), a.end(), b);
 }
 
 bool endsWith(const std::string& a, const char* b)

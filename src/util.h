@@ -559,7 +559,12 @@ bool streq
 template<typename InputIterator>
 bool streq(InputIterator first, InputIterator last, const char* b)
 {
-  return streq(first, last, b, b+strlen(b));
+  for(; first != last && *b != '\0'; ++first, ++b) {
+    if(*first != *b) {
+      return false;
+    }
+  }
+  return first == last && *b == '\0';
 }
 
 struct CaseCmp {
@@ -601,7 +606,13 @@ bool strieq
 template<typename InputIterator>
 bool strieq(InputIterator first, InputIterator last, const char* b)
 {
-  return strieq(first, last, b, b+strlen(b));
+  CaseCmp cmp;
+  for(; first != last && *b != '\0'; ++first, ++b) {
+    if(!cmp(*first, *b)) {
+      return false;
+    }
+  }
+  return first == last && *b == '\0';
 }
 
 template<typename InputIterator1, typename InputIterator2>
@@ -620,7 +631,12 @@ bool startsWith
 template<typename InputIterator>
 bool startsWith(InputIterator first, InputIterator last, const char* b)
 {
-  return startsWith(first, last, b, b+strlen(b));
+  for(; first != last && *b != '\0'; ++first, ++b) {
+    if(*first != *b) {
+      return false;
+    }
+  }
+  return *b == '\0';
 }
 
 bool startsWith(const std::string& a, const char* b);
@@ -642,7 +658,13 @@ bool istartsWith
 template<typename InputIterator>
 bool istartsWith(InputIterator first, InputIterator last, const char* b)
 {
-  return istartsWith(first, last, b, b+strlen(b));
+  CaseCmp cmp;
+  for(; first != last && *b != '\0'; ++first, ++b) {
+    if(!cmp(*first, *b)) {
+      return false;
+    }
+  }
+  return *b == '\0';
 }
 
 bool istartsWith(const std::string& a, const char* b);

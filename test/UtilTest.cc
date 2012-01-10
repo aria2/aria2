@@ -686,18 +686,23 @@ void UtilTest::testStreq()
   s1 = "foo";
   s2 = "foo";
   CPPUNIT_ASSERT(util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(util::streq(s1.begin(), s1.end(), s2.c_str()));
 
   s2 = "fooo";
   CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.c_str()));
 
   s2 = "fo";
   CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.c_str()));
 
   s2 = "";
   CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(!util::streq(s1.begin(), s1.end(), s2.c_str()));
 
   s1 = "";
   CPPUNIT_ASSERT(util::streq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(util::streq(s1.begin(), s1.end(), s2.c_str()));
 }
 
 void UtilTest::testStrieq()
@@ -706,22 +711,28 @@ void UtilTest::testStrieq()
   s1 = "foo";
   s2 = "foo";
   CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.c_str()));
 
   s1 = "FoO";
   s2 = "fOo";
   CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.c_str()));
 
   s2 = "fooo";
   CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.c_str()));
 
   s2 = "fo";
   CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.c_str()));
 
   s2 = "";
   CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(!util::strieq(s1.begin(), s1.end(), s2.c_str()));
 
   s1 = "";
   CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.begin(), s2.end()));
+  CPPUNIT_ASSERT(util::strieq(s1.begin(), s1.end(), s2.c_str()));
 }
 
 void UtilTest::testStrifind()
@@ -756,36 +767,43 @@ void UtilTest::testStartsWith() {
   part = "abc";
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(), part.c_str()));
 
   target = "abcdefg";
   part = "abx";
   CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
                                    part.begin(), part.end()));
+  CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(), part.c_str()));
 
   target = "abcdefg";
   part = "bcd";
   CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
                                    part.begin(), part.end()));
+  CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(), part.c_str()));
 
   target = "";
   part = "a";
   CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(),
                                    part.begin(), part.end()));
+  CPPUNIT_ASSERT(!util::startsWith(target.begin(), target.end(), part.c_str()));
 
   target = "";
   part = "";
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(), part.c_str()));
   
   target = "a";
   part = "";
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(), part.c_str()));
 
   target = "a";
   part = "a";
   CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(),
                                   part.begin(), part.end()));
+  CPPUNIT_ASSERT(util::startsWith(target.begin(), target.end(), part.c_str()));
 }
 
 void UtilTest::testIstartsWith() {
@@ -796,11 +814,13 @@ void UtilTest::testIstartsWith() {
   part = "aBc";
   CPPUNIT_ASSERT(util::istartsWith(target.begin(), target.end(),
                                    part.begin(), part.end()));
+  CPPUNIT_ASSERT(util::istartsWith(target.begin(), target.end(), part.c_str()));
 
   target = "abcdefg";
   part = "abx";
   CPPUNIT_ASSERT(!util::istartsWith(target.begin(), target.end(),
                                     part.begin(), part.end()));
+  CPPUNIT_ASSERT(!util::istartsWith(target.begin(), target.end(), part.c_str()));
 }
 
 void UtilTest::testGetContentDispositionFilename() {
