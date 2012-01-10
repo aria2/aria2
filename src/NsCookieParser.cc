@@ -88,13 +88,10 @@ bool parseNsCookie
   // aria2 treats expiryTime == 0 means session cookie.
   cookie.setPersistent(expiryTime != 0);
   cookie.setDomain(vs[0].first, vs[0].second);
-  static const char C_TRUE[] = "TRUE";
   cookie.setHostOnly(util::isNumericHost(cookie.getDomain()) ||
-                     !util::streq(vs[1].first, vs[1].second,
-                                  C_TRUE, vend(C_TRUE)-1));
+                     !util::streq(vs[1].first, vs[1].second, "TRUE"));
   cookie.setPath(vs[2].first, vs[2].second);
-  cookie.setSecure(util::streq(vs[3].first, vs[3].second,
-                               C_TRUE, vend(C_TRUE)-1));
+  cookie.setSecure(util::streq(vs[3].first, vs[3].second, "TRUE"));
   cookie.setCreationTime(creationTime);
   return true;
 }

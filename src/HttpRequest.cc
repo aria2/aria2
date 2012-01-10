@@ -444,14 +444,10 @@ bool HttpRequest::conditionalRequest() const
   if(!ifModSinceHeader_.empty()) {
     return true;
   }
-  static const char A2_IF_MOD_SINCE[] = "if-modified-since";
-  static const char A2_IF_NONE_MATCH[] = "if-none-match";
   for(std::vector<std::string>::const_iterator i = headers_.begin(),
         eoi = headers_.end(); i != eoi; ++i) {
-    if(util::istartsWith((*i).begin(), (*i).end(),
-                        A2_IF_MOD_SINCE, vend(A2_IF_MOD_SINCE)-1) ||
-       util::istartsWith((*i).begin(), (*i).end(),
-                        A2_IF_NONE_MATCH, vend(A2_IF_NONE_MATCH)-1)) {
+    if(util::istartsWith(*i, "if-modified-since") ||
+       util::istartsWith(*i, "if-none-match")) {
       return true;
     }
   }

@@ -83,18 +83,13 @@ HttpConnection::~HttpConnection() {}
 
 std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 {
-  static const char A2_AUTH_HEADER[] = "Authorization: Basic";
-  static const char A2_PROXY_AUTH_HEADER[] = "Proxy-Authorization: Basic";
   std::istringstream istr(request);
   std::string result;
   std::string line;
   while(getline(istr, line)) {
-    if(util::startsWith(line.begin(), line.end(),
-                        A2_AUTH_HEADER, vend(A2_AUTH_HEADER)-1)) {
+    if(util::startsWith(line, "Authorization: Basic")) {
       result += "Authorization: Basic ********\n";
-    } else if(util::startsWith(line.begin(), line.end(),
-                               A2_PROXY_AUTH_HEADER,
-                               vend(A2_PROXY_AUTH_HEADER)-1)) {
+    } else if(util::startsWith(line, "Proxy-Authorization: Basic")) {
       result += "Proxy-Authorization: Basic ********\n";
     } else {
       result += line;

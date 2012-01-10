@@ -528,15 +528,9 @@ void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
     option.put(pref_, optarg);
   } else {
     std::string uri;
-    static const char A2_HTTP[] = "http://";
-    static const char A2_HTTPS[] = "https://";
-    static const char A2_FTP[] = "ftp://";
-    if(util::startsWith(optarg.begin(), optarg.end(),
-                        A2_HTTP, vend(A2_HTTP)-1) ||
-       util::startsWith(optarg.begin(), optarg.end(),
-                        A2_HTTPS, vend(A2_HTTPS)-1) ||
-       util::startsWith(optarg.begin(), optarg.end(),
-                        A2_FTP, vend(A2_FTP)-1)) {
+    if(util::startsWith(optarg.begin(), optarg.end(), "http://") ||
+       util::startsWith(optarg.begin(), optarg.end(), "https://") ||
+       util::startsWith(optarg.begin(), optarg.end(), "ftp://")) {
       uri = optarg;
     } else {
       uri = "http://";

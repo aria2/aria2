@@ -730,24 +730,18 @@ void parsePrioritizePieceRange
 {
   std::vector<size_t> indexes;
   std::vector<Scip> parts;
-  static const char A2_HEAD[] = "head";
-  static const char A2_HEADEQ[] = "head=";
-  static const char A2_TAIL[] = "tail";
-  static const char A2_TAILEQ[] = "tail=";
   splitIter(src.begin(), src.end(), std::back_inserter(parts), ',', true);
   for(std::vector<Scip>::const_iterator i = parts.begin(),
         eoi = parts.end(); i != eoi; ++i) {
-    if(util::streq((*i).first, (*i).second, A2_HEAD, vend(A2_HEAD)-1)) {
+    if(util::streq((*i).first, (*i).second, "head")) {
       computeHeadPieces(indexes, fileEntries, pieceLength, defaultSize);
-    } else if(util::startsWith((*i).first, (*i).second,
-                               A2_HEADEQ, vend(A2_HEADEQ)-1)) {
+    } else if(util::startsWith((*i).first, (*i).second, "head=")) {
       std::string sizestr((*i).first+5, (*i).second);
       computeHeadPieces(indexes, fileEntries, pieceLength,
                         std::max((int64_t)0, getRealSize(sizestr)));
-    } else if(util::streq((*i).first, (*i).second, A2_TAIL, vend(A2_TAIL)-1)) {
+    } else if(util::streq((*i).first, (*i).second, "tail")) {
       computeTailPieces(indexes, fileEntries, pieceLength, defaultSize);
-    } else if(util::startsWith((*i).first, (*i).second,
-                               A2_TAILEQ, vend(A2_TAILEQ)-1)) {
+    } else if(util::startsWith((*i).first, (*i).second, "tail=")) {
       std::string sizestr((*i).first+5, (*i).second);
       computeTailPieces(indexes, fileEntries, pieceLength,
                         std::max((int64_t)0, getRealSize(sizestr)));
@@ -835,8 +829,7 @@ std::string getContentDispositionFilename(const std::string& header)
   for(std::vector<std::string>::const_iterator i = params.begin(),
         eoi = params.end(); i != eoi; ++i) {
     const std::string& param = *i;
-    if(!istartsWith(param.begin(), param.end(),
-                   A2_KEYNAME, vend(A2_KEYNAME)-1) ||
+    if(!istartsWith(param, A2_KEYNAME) ||
        param.size() == sizeof(A2_KEYNAME)-1) {
       continue;
     }
@@ -893,13 +886,10 @@ std::string getContentDispositionFilename(const std::string& header)
       }
       std::string value =
         percentDecode(extValues[2].first, extValues[2].second);
-      static const char A2_ISO88591[] = "iso-8859-1";
-      if(util::strieq(extValues[0].first, extValues[0].second,
-                      A2_ISO88591, vend(A2_ISO88591)-1)) {
+      if(util::strieq(extValues[0].first, extValues[0].second, "iso-8859-1")) {
         value = iso8859ToUtf8(value);
       }
-      if(!detectDirTraversal(value) &&
-         value.find(A2STR::SLASH_C) == std::string::npos) {
+      if(!detectDirTraversal(value) && value.find("/") == std::string::npos) {
         filename = value;
       }
       if(!filename.empty()) {
@@ -929,8 +919,7 @@ std::string getContentDispositionFilename(const std::string& header)
       value = percentDecode(value.begin(), filenameLast);
       value = strip(value, TRIMMED);
       value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
-      if(!detectDirTraversal(value) &&
-         value.find(A2STR::SLASH_C) == std::string::npos) {
+      if(!detectDirTraversal(value) && value.find("/") == std::string::npos) {
         filename = value;
       }
       // continue because there is a chance we can find filename*=...
@@ -940,11 +929,12 @@ std::string getContentDispositionFilename(const std::string& header)
 }
 
 std::string randomAlpha(size_t length, const RandomizerHandle& randomizer) {
-  static const char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  static const char randomChars[] =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   std::string str;
   for(size_t i = 0; i < length; ++i) {
-    size_t index = randomizer->getRandomNumber(strlen(random_chars));
-    str += random_chars[index];
+    size_t index = randomizer->getRandomNumber(sizeof(randomChars)-1);
+    str += randomChars[index];
   }
   return str;
 }
@@ -1368,17 +1358,11 @@ void generateRandomKey(unsigned char* key)
 // 192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
 bool inPrivateAddress(const std::string& ipv4addr)
 {
-  static const char A2_IP10[] = "10.";
-  static const char A2_IP192[] = "192.168.";
-  static const char A2_IP172[] = "172.";
-  if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
-                      A2_IP10, vend(A2_IP10)-1) ||
-     util::startsWith(ipv4addr.begin(), ipv4addr.end(),
-                      A2_IP192, vend(A2_IP192)-1)) {
+  if(util::startsWith(ipv4addr, "10.") ||
+     util::startsWith(ipv4addr, "192.168.")) {
     return true;
   }
-  if(util::startsWith(ipv4addr.begin(), ipv4addr.end(),
-                      A2_IP172, vend(A2_IP172)-1)) {
+  if(util::startsWith(ipv4addr, "172.")) {
     for(int i = 16; i <= 31; ++i) {
       std::string t(fmt("%d.", i));
       if(util::startsWith(ipv4addr.begin()+4, ipv4addr.end(),
@@ -1401,25 +1385,12 @@ bool detectDirTraversal(const std::string& s)
       return true;
     }
   }
-
-  static const char A2_DS[] = "./";
-  static const char A2_DDS[] = "../";
-  static const char A2_SD[] = "/.";
-  static const char A2_SDD[] = "/..";
-  static const char A2_SDDS[] = "/../";
-  static const char A2_SDS[] = "/./";
-  static const char A2_DD[] = "..";
-
-  return s == A2STR::DOT_C ||
-    s == A2_DD ||
-    s[0] == '/' ||
-    util::startsWith(s.begin(), s.end(), A2_DS, vend(A2_DS)-1) ||
-    util::startsWith(s.begin(), s.end(), A2_DDS, vend(A2_DDS)-1) ||
-    s.find(A2_SDDS) != std::string::npos ||
-    s.find(A2_SDS) != std::string::npos ||
+  return s == "." || s == ".." || s[0] == '/' ||
+    util::startsWith(s, "./") || util::startsWith(s, "../") ||
+    s.find("/../") != std::string::npos ||
+    s.find("/./") != std::string::npos ||
     s[s.size()-1] == '/' ||
-    util::endsWith(s.begin(), s.end(), A2_SD, vend(A2_SD)-1) ||
-    util::endsWith(s.begin(), s.end(), A2_SDD, vend(A2_SDD)-1);
+    util::endsWith(s, "/.") || util::endsWith(s, "/..");
 }
 
 std::string escapePath(const std::string& s)
@@ -1523,12 +1494,8 @@ void executeHook
 
   memset(&si, 0, sizeof (si));
   si.cb = sizeof(STARTUPINFO);
-
   memset(&pi, 0, sizeof (pi));
-
-  static const char A2_BAT[] = ".bat";
-  bool batch = util::iendsWith(command.begin(), command.end(),
-                               A2_BAT, vend(A2_BAT)-1);
+  bool batch = util::iendsWith(command, ".bat");
   std::string cmdline;
   std::string cmdexe;
   if(batch) {
@@ -1638,11 +1605,40 @@ bool noProxyDomainMatch
  const std::string& domain)
 {
   if(!domain.empty() && domain[0] == '.' && !util::isNumericHost(hostname)) {
-    return util::endsWith(hostname.begin(), hostname.end(),
-                          domain.begin(), domain.end());
+    return util::endsWith(hostname, domain);
   } else {
     return hostname == domain;
   }
+}
+
+bool startsWith(const std::string& a, const char* b)
+{
+  return startsWith(a.begin(), a.end(), b, b+strlen(b));
+}
+
+bool istartsWith(const std::string& a, const char* b)
+{
+  return istartsWith(a.begin(), a.end(), b, b+strlen(b));
+}
+
+bool endsWith(const std::string& a, const char* b)
+{
+  return endsWith(a.begin(), a.end(), b, b+strlen(b));
+}
+
+bool endsWith(const std::string& a, const std::string& b)
+{
+  return endsWith(a.begin(), a.end(), b.begin(), b.end());
+}
+
+bool iendsWith(const std::string& a, const char* b)
+{
+  return iendsWith(a.begin(), a.end(), b, b+strlen(b));
+}
+
+bool iendsWith(const std::string& a, const std::string& b)
+{
+  return iendsWith(a.begin(), a.end(), b.begin(), b.end());
 }
 
 } // namespace util

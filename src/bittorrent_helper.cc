@@ -875,12 +875,10 @@ SharedHandle<TorrentAttribute> parseMagnet(const std::string& magnet)
   }
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
   std::string infoHash;
-  static const char A2_URN_BTIH[] = "urn:btih:";
   for(List::ValueType::const_iterator xtiter = xts->begin(),
         eoi = xts->end(); xtiter != eoi && infoHash.empty(); ++xtiter) {
     const String* xt = downcast<String>(*xtiter);
-    if(util::startsWith(xt->s().begin(), xt->s().end(),
-                        A2_URN_BTIH, vend(A2_URN_BTIH)-1)) {
+    if(util::startsWith(xt->s(), "urn:btih:")) {
       size_t size = xt->s().end()-xt->s().begin()-9;
       if(size == 32) {
         std::string rawhash = base32::decode(xt->s().begin()+9, xt->s().end());

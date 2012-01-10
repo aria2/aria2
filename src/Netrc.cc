@@ -154,25 +154,16 @@ void Netrc::parse(const std::string& path)
       continue;
     }
     std::vector<Scip> tokens;
-    static const char A2_DELIMS[] = " \t";
-    util::splitIterM(&buf[0], &buf[len], std::back_inserter(tokens),
-                     A2_DELIMS, vend(A2_DELIMS)-1, true);
-    static const char A2_MACHINE[] = "machine";
-    static const char A2_DEFAULT[] = "default";
-    static const char A2_LOGIN[] = "login";
-    static const char A2_PASSWORD[] = "password";
-    static const char A2_ACCOUNT[] = "account";
-    static const char A2_MACDEF[] = "macdef";
+    util::splitIterM(&buf[0], &buf[len], std::back_inserter(tokens), " \t",
+                     true);
     for(std::vector<Scip>::const_iterator iter = tokens.begin(),
           eoi = tokens.end(); iter != eoi; ++iter) {
       if(state == GET_TOKEN) {
-        if(util::streq((*iter).first, (*iter).second,
-                       A2_MACHINE, vend(A2_MACHINE)-1)) {
+        if(util::streq((*iter).first, (*iter).second, "machine")) {
           storeAuthenticator(authenticator);
           authenticator.reset(new Authenticator());
           state = SET_MACHINE;
-        } else if(util::streq((*iter).first, (*iter).second,
-                              A2_DEFAULT, vend(A2_DEFAULT)-1)) {
+        } else if(util::streq((*iter).first, (*iter).second, "default")) {
           storeAuthenticator(authenticator);
           authenticator.reset(new DefaultAuthenticator());
         } else {
@@ -182,17 +173,13 @@ void Netrc::parse(const std::string& path)
                    " or 'default' expected.",
                    std::string((*iter).first, (*iter).second).c_str()));
           }
-          if(util::streq((*iter).first, (*iter).second,
-                         A2_LOGIN, vend(A2_LOGIN)-1)) {
+          if(util::streq((*iter).first, (*iter).second, "login")) {
             state = SET_LOGIN;
-          } else if(util::streq((*iter).first, (*iter).second,
-                                A2_PASSWORD, vend(A2_PASSWORD)-1)) {
+          } else if(util::streq((*iter).first, (*iter).second, "password")) {
             state = SET_PASSWORD;
-          } else if(util::streq((*iter).first, (*iter).second,
-                                A2_ACCOUNT, vend(A2_ACCOUNT)-1)) {
+          } else if(util::streq((*iter).first, (*iter).second, "account")) {
             state = SET_ACCOUNT;
-          } else if(util::streq((*iter).first, (*iter).second,
-                                A2_MACDEF, vend(A2_MACDEF)-1)) {
+          } else if(util::streq((*iter).first, (*iter).second, "macdef")) {
             state = SET_MACDEF;
           }
         }

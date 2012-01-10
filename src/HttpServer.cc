@@ -235,9 +235,7 @@ bool HttpServer::authenticate()
   }
   std::pair<Scip, Scip> p;
   util::divide(p, authHeader.begin(), authHeader.end(), ' ');
-  static const char A2_AUTHMETHOD[] = "Basic";
-  if(!util::streq(p.first.first, p.first.second,
-                  A2_AUTHMETHOD, vend(A2_AUTHMETHOD)-1)) {
+  if(!util::streq(p.first.first, p.first.second, "Basic")) {
     return false;
   }
   std::string userpass = base64::decode(p.second.first, p.second.second);

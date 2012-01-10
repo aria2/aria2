@@ -42,6 +42,7 @@
 #include <stdint.h>
 
 #include <cstdio>
+#include <cstring>
 #include <string>
 #include <utility>
 #include <iosfwd>
@@ -478,21 +479,20 @@ OutputIterator splitIter
   return out;
 }
 
-template<typename InputIterator,
-         typename InputIterator2,
-         typename OutputIterator>
+template<typename InputIterator, typename OutputIterator>
 OutputIterator splitIterM
 (InputIterator first,
  InputIterator last,
  OutputIterator out,
- InputIterator2 dfirst,
- InputIterator2 dlast,
+ const char* delims,
  bool doStrip = false,
  bool allowEmpty = false)
 {
+  size_t numDelims = strlen(delims);
+  const char* dlast = delims+numDelims;
   for(InputIterator i = first; i != last;) {
     InputIterator j = i;
-    for(; j != last && std::find(dfirst, dlast, *j) == dlast; ++j);
+    for(; j != last && std::find(delims, dlast, *j) == dlast; ++j);
     std::pair<InputIterator, InputIterator> p(i, j);
     if(doStrip) {
       p = stripIter(i, j);
@@ -507,7 +507,7 @@ OutputIterator splitIterM
   }
   if(allowEmpty &&
      (first == last ||
-      std::find(dfirst, dlast, *(last-1)) != dlast)) {
+      std::find(delims, dlast, *(last-1)) != dlast)) {
     *out++ = std::make_pair(last, last);
   }
   return out;
@@ -556,6 +556,12 @@ bool streq
   return std::equal(first1, last1, first2);
 }
 
+template<typename InputIterator>
+bool streq(InputIterator first, InputIterator last, const char* b)
+{
+  return streq(first, last, b, b+strlen(b));
+}
+
 struct CaseCmp {
   bool operator()(char lhs, char rhs) const
   {
@@ -592,6 +598,12 @@ bool strieq
   return std::equal(first1, last1, first2, CaseCmp());
 }
 
+template<typename InputIterator>
+bool strieq(InputIterator first, InputIterator last, const char* b)
+{
+  return strieq(first, last, b, b+strlen(b));
+}
+
 template<typename InputIterator1, typename InputIterator2>
 bool startsWith
 (InputIterator1 first1,
@@ -604,6 +616,14 @@ bool startsWith
   }
   return std::equal(first2, last2, first1);
 }
+
+template<typename InputIterator>
+bool startsWith(InputIterator first, InputIterator last, const char* b)
+{
+  return startsWith(first, last, b, b+strlen(b));
+}
+
+bool startsWith(const std::string& a, const char* b);
 
 template<typename InputIterator1, typename InputIterator2>
 bool istartsWith
@@ -618,6 +638,14 @@ bool istartsWith
   return std::equal(first2, last2, first1, CaseCmp());
 }
 
+template<typename InputIterator>
+bool istartsWith(InputIterator first, InputIterator last, const char* b)
+{
+  return istartsWith(first, last, b, b+strlen(b));
+}
+
+bool istartsWith(const std::string& a, const char* b);
+
 template<typename InputIterator1, typename InputIterator2>
 bool endsWith
 (InputIterator1 first1,
@@ -631,6 +659,9 @@ bool endsWith
   return std::equal(first2, last2, last1-(last2-first2));
 }
 
+bool endsWith(const std::string& a, const char* b);
+bool endsWith(const std::string& a, const std::string& b);
+
 template<typename InputIterator1, typename InputIterator2>
 bool iendsWith
 (InputIterator1 first1,
@@ -643,6 +674,9 @@ bool iendsWith
   }
   return std::equal(first2, last2, last1-(last2-first2), CaseCmp());
 }
+
+bool iendsWith(const std::string& a, const char* b);
+bool iendsWith(const std::string& a, const std::string& b);
 
 void generateRandomData(unsigned char* data, size_t length);
 

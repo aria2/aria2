@@ -506,12 +506,11 @@ void UtilTest::testSplitIter() {
 }
 
 void UtilTest::testSplitIterM() {
-  std::string d = ";";
-  std::string md = "; ";
+  const char d[] = ";";
+  const char md[] = "; ";
   std::vector<Scip> v;
   std::string s = "k1; k2;; k3";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end(), true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d, true);
   CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
@@ -520,8 +519,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = "k1; k2; k3";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end());
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d);
   CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string(" k2"),
@@ -532,8 +530,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = "k1; k2; k3";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   md.begin(), md.end());
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), md);
   CPPUNIT_ASSERT_EQUAL((size_t)3, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
@@ -542,8 +539,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = "k1; k2; k3;";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   md.begin(), md.end(), false, true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), md, false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)6, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
@@ -555,8 +551,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = "k=v";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end(), false, true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d, false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string("k=v"),
                        std::string(v[0].first, v[0].second));
@@ -564,8 +559,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = ";;k1;;k2;";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end(), false, true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d, false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)6, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
@@ -577,8 +571,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = ";;k1;;k2;";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end());
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d);
   CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string("k1"), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string("k2"), std::string(v[1].first, v[1].second));
@@ -586,8 +579,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = "k; ";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end());
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d);
   CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string("k"), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string(" "), std::string(v[1].first, v[1].second));
@@ -595,38 +587,33 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = " ";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end(), true, true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d, true, true);
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
 
   v.clear();
 
   s = " ";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end(), true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d, true);
   CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
 
   v.clear();
 
   s = " ";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end());
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d);
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(" "), std::string(v[0].first, v[0].second));
 
   v.clear();
 
   s = ";";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end());
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d);
   CPPUNIT_ASSERT_EQUAL((size_t)0, v.size());
 
   v.clear();
 
   s = ";";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end(), false, true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d, false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)2, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
   CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[1].first, v[1].second));
@@ -634,8 +621,7 @@ void UtilTest::testSplitIterM() {
   v.clear();
 
   s = "";
-  util::splitIterM(s.begin(), s.end(), std::back_inserter(v),
-                   d.begin(), d.end(), false, true);
+  util::splitIterM(s.begin(), s.end(), std::back_inserter(v), d, false, true);
   CPPUNIT_ASSERT_EQUAL((size_t)1, v.size());
   CPPUNIT_ASSERT_EQUAL(std::string(""), std::string(v[0].first, v[0].second));
 }

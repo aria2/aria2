@@ -540,26 +540,18 @@ decodeGetParams(const std::string& query)
     std::vector<Scip> getParams;
     util::splitIter(query.begin()+1, query.end(), std::back_inserter(getParams),
                     '&');
-    static const char A2_METHOD[] = "method=";
-    static const char A2_ID[] = "id=";
-    static const char A2_PARAMS[] = "params=";
-    static const char A2_JSONCB[] = "jsoncallback=";
     for(std::vector<Scip>::const_iterator i =
           getParams.begin(), eoi = getParams.end(); i != eoi; ++i) {
-      if(util::startsWith((*i).first, (*i).second,
-                          A2_METHOD, vend(A2_METHOD)-1)) {
+      if(util::startsWith((*i).first, (*i).second, "method=")) {
         method.first = (*i).first+7;
         method.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second,
-                                 A2_ID, vend(A2_ID)-1)) {
+      } else if(util::startsWith((*i).first, (*i).second, "id=")) {
         id.first = (*i).first+3;
         id.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second,
-                                 A2_PARAMS, vend(A2_PARAMS)-1)) {
+      } else if(util::startsWith((*i).first, (*i).second, "params=")) {
         params.first = (*i).first+7;
         params.second = (*i).second;
-      } else if(util::startsWith((*i).first, (*i).second,
-                                 A2_JSONCB, vend(A2_JSONCB)-1)) {
+      } else if(util::startsWith((*i).first, (*i).second, "jsoncallback=")) {
         callback.assign((*i).first+13, (*i).second);
       }
     }
