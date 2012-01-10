@@ -1143,8 +1143,7 @@ void getInterfaceAddress
       } else {
         continue;
       }
-      if(util::streq(iface.begin(), iface.end(),
-                     ifa->ifa_name, ifa->ifa_name+strlen(ifa->ifa_name))) {
+      if(strcmp(iface.c_str(), ifa->ifa_name) == 0) {
         socklen_t bindAddrLen =
           iffamily == AF_INET ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
         sockaddr_union bindAddr;
