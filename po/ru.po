@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-12-26 00:58+0900\n"
+"POT-Creation-Date: 2012-01-12 00:45+0900\n"
 "PO-Revision-Date: 2011-12-14 11:12+0000\n"
 "Last-Translator: ITriskTI <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
@@ -2747,17 +2747,17 @@ msgstr "Обнаружена ошибка при разборе переменн
 msgid "Did you mean:"
 msgstr "Вы имели в виду:"
 
-#: src/option_processing.cc:237 src/option_processing.cc:246
+#: src/option_processing.cc:235 src/option_processing.cc:244
 #, c-format
 msgid "Parse error in %s"
 msgstr "Синтаксическая ошибка в %s"
 
-#: src/option_processing.cc:241 src/option_processing.cc:282
+#: src/option_processing.cc:239 src/option_processing.cc:280
 #, c-format
 msgid "Usage:"
 msgstr "Использование:"
 
-#: src/option_processing.cc:251
+#: src/option_processing.cc:249
 #, c-format
 msgid "Configuration file %s is not found."
 msgstr "Конфигурационный файл %s не найден."
@@ -2821,7 +2821,7 @@ msgstr "IPv%d RPC: прослушивание %u порта"
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr "IPv%d BitTorrent: прослушивание %u порта"
 
-#: src/RequestGroup.cc:381
+#: src/RequestGroup.cc:377
 msgid ""
 "For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
 "enable-dht option."
@@ -2829,7 +2829,7 @@ msgstr ""
 "Для BitTorrent Magnet URI включение DHT строго рекомендуется. Смотрите "
 "параметр --enable-dht."
 
-#: src/RequestGroup.cc:686
+#: src/RequestGroup.cc:682
 #, c-format
 msgid "Removed control file for %s because it is requested by user."
 msgstr ""

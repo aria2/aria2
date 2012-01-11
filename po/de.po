@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-12-26 00:58+0900\n"
-"PO-Revision-Date: 2010-04-14 23:11+0900\n"
-"Last-Translator: Ulrich Zeller <Unknown>\n"
+"POT-Creation-Date: 2012-01-12 00:45+0900\n"
+"PO-Revision-Date: 2012-01-12 00:46+0900\n"
+"Last-Translator: Daniel Winzen <d@winzen4.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-14 13:00+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2012-01-11 15:40+0000\n"
+"X-Generator: Launchpad (build 14640)\n"
 
 #: src/DownloadEngine.cc:225
 msgid ""
@@ -43,19 +43,19 @@ msgstr ""
 "Details hierzu siehe die Option \"-l\" in den Hilfe- und man-Seiten."
 
 #: src/MultiUrlRequestInfo.cc:274
-#, fuzzy, c-format
+#, c-format
 msgid "Serialized session to '%s' successfully."
-msgstr "ServerStat-Datei %s erfolgreich gespeichert."
+msgstr ""
 
 #: src/MultiUrlRequestInfo.cc:277
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to serialize session to '%s'."
-msgstr "Schreiben von ServerStat nach %s fehlgeschlagen."
+msgstr ""
 
 #: src/RequestGroupMan.cc:342
-#, fuzzy, c-format
+#, c-format
 msgid "Download GID#%lld not complete: %s"
-msgstr "Download fertig: %s"
+msgstr "Herunterladen GID#%lld nicht vollständig: %s"
 
 #: src/RequestGroupMan.cc:607
 msgid "Download Results:"
@@ -66,22 +66,20 @@ msgid "Status Legend:"
 msgstr "Statuserläuterung:"
 
 #: src/RequestGroupMan.cc:652
-#, fuzzy
 msgid "(OK):download completed."
-msgstr "Der Download wurde fertiggestellt."
+msgstr "(OK):Herunterladen abgeschlossen."
 
 #: src/RequestGroupMan.cc:655
 msgid "(ERR):error occurred."
-msgstr ""
+msgstr "(ERR):ein Fehler ist unterlaufen."
 
 #: src/RequestGroupMan.cc:658
 msgid "(INPR):download in-progress."
-msgstr ""
+msgstr "(INPR):wird heruntergeladen."
 
 #: src/RequestGroupMan.cc:661
-#, fuzzy
 msgid "(RM):download removed."
-msgstr "Download abgebrochen."
+msgstr ""
 
 #: src/OptionHandler.cc:38
 msgid "                              Default: "
@@ -122,7 +120,6 @@ msgstr ""
 "geschrieben."
 
 #: src/usage_text.h:45
-#, fuzzy
 msgid ""
 " -D, --daemon[=true|false]    Run as daemon. The current working directory "
 "will\n"
@@ -132,16 +129,8 @@ msgid ""
 "to\n"
 "                              \"/dev/null\"."
 msgstr ""
-" -D, --daemon Starte als Daemon. Das aktuelle Arbeitsverzeichnis wird zu \"/"
-"\"\n"
-"                              geändert. Standardeingabe, Standardausgabe "
-"und\n"
-"                              Standardfehler (stderr) wird nach \"/dev/null"
-"\"\n"
-"                              umgeleitet."
 
 #: src/usage_text.h:50
-#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. If more\n"
 "                              than N URLs are given, first N URLs are used "
@@ -157,28 +146,14 @@ msgid ""
 "                              --max-connection-per-server option. See also\n"
 "                              --min-split-size option."
 msgstr ""
-" -s, --split=N Datei mit N Verbindungen herunterladen. Wenn mehr als N URLs\n"
-"                              angegeben werden, werden die ersten N URLs\n"
-"                              verwendet, weitere werden als Backup genutzt.\n"
-"                              Wenn weniger als N URLs angegeben sind, "
-"werden\n"
-"                              diese URLs mehrmals verwendet um insgesamt N\n"
-"                              Verbindungen zu erreichen. Siehe auch Option -"
-"j.\n"
-"                              Diese Einstellung betrifft Metalink-Downloads\n"
-"                              nicht, nutzen sie statt dessen -C."
 
 #: src/usage_text.h:60
-#, fuzzy
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait between retries. \n"
 "                              With SEC > 0, aria2 will retry download when "
 "the\n"
 "                              HTTP server returns 503 response."
 msgstr ""
-" --retry-wait=SEC             Festlegen der Sekundenanzahl SEC, die im "
-"Fehler-\n"
-"                              fall vor einem erneuten Versuch gewartet wird."
 
 #: src/usage_text.h:64
 msgid " -t, --timeout=SEC            Set timeout in seconds."
@@ -211,6 +186,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --https-proxy=PROXY Diesen Proxy-Server für HTTPS verwenden. Geben Sie \"\" "
+"an,\n"
+"                              um einen vorher definierten Proxy zu löschen.\n"
+"                              Siehe auch Option --all-proxy.\n"
+"                              Dies betrifft alle URLs."
 
 #: src/usage_text.h:78
 msgid ""
@@ -220,6 +200,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --ftp-proxy=PROXY Diesen Proxy-Server für FTP verwenden. Geben Sie \"\" an, "
+"um\n"
+"                              einen vorher definierten Proxy zu löschen.\n"
+"                              Siehe auch Option --all-proxy.\n"
+"                              Dies betrifft alle URLs."
 
 #: src/usage_text.h:83
 msgid ""
@@ -232,6 +217,17 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
+" --all-proxy=PROXY Diesen Proxy-Server für alle Protokolle verwenden. Geben\n"
+"                              Sie \"\" an, um einen vorher definierten Proxy "
+"zu\n"
+"                              löschen.\n"
+"                              Sie können diese Einstellung überschreiben "
+"und\n"
+"                              einen Proxy-Server für ein bestimmtes "
+"Protokoll\n"
+"                              angeben, wenn Sie die Optionen --http-proxy, \n"
+"                              --https-proxy und --ftp-proxy verwenden.\n"
+"                              Dies betrifft alle URLs."
 
 #: src/usage_text.h:91
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -326,6 +322,13 @@ msgid ""
 "                              To limit the overall download speed, use\n"
 "                              --max-overall-download-limit option."
 msgstr ""
+" --max-download-limit=GESCHWINDIGKEIT Setze die maximal Geschwindigkeit pro\n"
+"                              einzelnem Download in Bytes/s. 0 bedeutet\n"
+"                              unbegrenzt. Sie können K oder M\n"
+"                              (1K = 1024, 1M = 1024K) anhängen.\n"
+"                              Um die Gesamtdownloadgeschwindigkeit zu\n"
+"                              begrenzen, verwenden Sie die Option\n"
+"                              --max-overall-download-limit."
 
 #: src/usage_text.h:126
 msgid ""
@@ -379,21 +382,14 @@ msgstr ""
 "                              auftreten."
 
 #: src/usage_text.h:150
-#, fuzzy
 msgid ""
 " --allow-overwrite[=true|false] Restart download from scratch if the\n"
 "                              corresponding control file doesn't exist.  "
 "See\n"
 "                              also --auto-file-renaming option."
 msgstr ""
-" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
-"                              während der Vorbelegung von "
-"Dateispeicherplatz\n"
-"                              verringert. Abschaltbar, falls dabei Fehler\n"
-"                              auftreten."
 
 #: src/usage_text.h:154
-#, fuzzy
 msgid ""
 " --allow-piece-length-change[=true|false] If false is given, aria2 aborts\n"
 "                              download when a piece length is different "
@@ -403,14 +399,6 @@ msgid ""
 "                              proceed but some download progress will be "
 "lost."
 msgstr ""
-" --allow-piece-length-change=true|false  Wenn \"false\" angegeben wird, "
-"bricht\n"
-"                              Aria2 den Download ab, wenn eine "
-"Abschnittslänge\n"
-"                              des Downloads sich von der in der Steuerdatei\n"
-"                              unterscheidet. Bei \"true\" wird "
-"fortgefahren,\n"
-"                              mit Einbußen am bisherigen Downloadfortschritt."
 
 #: src/usage_text.h:159
 msgid ""
@@ -420,6 +408,10 @@ msgid ""
 "like\n"
 "                              the usual command-line download utilities."
 msgstr ""
+" -Z, --force-sequential[=true|false] Hole die URIs sequentiell von der\n"
+"                              Kommandozeile und lade jede URI in einer\n"
+"                              separaten Sitzung herunter, wie es übliche\n"
+"                              Downloadprogramme auch tun."
 
 #: src/usage_text.h:163
 msgid ""
@@ -431,6 +423,13 @@ msgid ""
 "(1..9999)\n"
 "                              appended."
 msgstr ""
+" --auto-file-renaming[=true|false] Benenne Datei um, wenn die gleiche Datei\n"
+"                              bereits vorhanden ist. Diese Option "
+"funktioniert\n"
+"                              nur bei http(s)/ftp Download.\n"
+"                              Der neue Dateiname bekommt einen Punkt und "
+"eine\n"
+"                              Nummer (1..9999) angehängt."
 
 #: src/usage_text.h:169
 msgid ""
@@ -496,23 +495,29 @@ msgid ""
 "                              This option has effect only on BitTorrent\n"
 "                              download."
 msgstr ""
+" --bt-hash-check-seed[=true|false] Wenn 'true' angegeben ist, wird nach "
+"einer\n"
+"                              Integritätsprüfung mit der --check-integrity\n"
+"                              Option und nach dem vollständigen Download "
+"die\n"
+"                              Datei verteilt (geseeded). Wollen Sie die "
+"Datei\n"
+"                              überprüfen und nur herunterladen wenn sie\n"
+"                              beschädigt oder unvollständig ist, setzen Sie\n"
+"                              diese Option auf 'false'.\n"
+"                              Diese Option hat nur Auswirkungen auf "
+"BitTorrent\n"
+"                              Downloads."
 
 #: src/usage_text.h:206
-#, fuzzy
 msgid ""
 " --realtime-chunk-checksum[=true|false]  Validate chunk of data by "
 "calculating\n"
 "                              checksum while downloading a file if chunk\n"
 "                              checksums are provided."
 msgstr ""
-" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
-"                              während der Vorbelegung von "
-"Dateispeicherplatz\n"
-"                              verringert. Abschaltbar, falls dabei Fehler\n"
-"                              auftreten."
 
 #: src/usage_text.h:210
-#, fuzzy
 msgid ""
 " -c, --continue[=true|false]  Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -521,31 +526,16 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
-" -c, --continue   Den Download einer teilweise heruntergeladenen Datei "
-"fort-\n"
-"                              setzen. Unvollständige Downloads, die von\n"
-"                              Programmen begonnen wurden, die Dateien "
-"linear\n"
-"                              von Anfang nach Ende herunterladen (z. B. "
-"Web-\n"
-"                              Browser), können mit dieser Option "
-"fortgeführt\n"
-"                              werden.\n"
-"                              Im Moment ist diese Option nur für HTTP(S) "
-"und\n"
-"                              FTP verfügbar."
 
 #: src/usage_text.h:217
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr " -U, --user-agent=USER_AGENT  Setze User Agent für http(s) Downloads."
 
 #: src/usage_text.h:219
-#, fuzzy
 msgid " -n, --no-netrc[=true|false]  Disables netrc support."
-msgstr " -n, --no-netrc               Deaktiviert netrc Unterstützung."
+msgstr ""
 
 #: src/usage_text.h:221
-#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -562,21 +552,6 @@ msgid ""
 "page\n"
 "                              for details."
 msgstr ""
-" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
-"nach\n"
-"                              dem Download einer .torrent-Datei oder einer "
-"Da-\n"
-"                              tei, deren Inhaltstyp \"application/x-"
-"bittorrent\"\n"
-"                              ist, diese Datei als Torrent-Steuerdatei "
-"durch-\n"
-"                              sucht und alle gefundenen Download-Positionen\n"
-"                              heruntergeladen.\n"
-"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
-"                              der Festplatte gespeichert, sondern nur im \n"
-"                              Speicher gehalten.\n"
-"                              Bei \"false\" wird die .torrent-Datei nicht\n"
-"                              durchsucht."
 
 #: src/usage_text.h:231
 msgid ""
@@ -609,17 +584,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:243
-#, fuzzy
 msgid ""
 " -S, --show-files[=true|false] Print file listing of .torrent, .meta4 and\n"
 "                              .metalink file and exit. More detailed\n"
 "                              information will be listed in case of torrent\n"
 "                              file."
 msgstr ""
-" -S, --show-files             Listenanzeige aller Download-Positionen\n"
-"                              in einer .torrent- oder .metalink-Datei. Für\n"
-"                              .torrent werden genauere Informationen "
-"angezeigt."
 
 #: src/usage_text.h:248
 msgid ""
@@ -749,16 +719,14 @@ msgstr ""
 #: src/usage_text.h:305
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
+" --enable-peer-exchange[=true|false] Schalte die Peer Exchange\n"
+"                              Protokollerweiterung ein."
 
 #: src/usage_text.h:307
-#, fuzzy
 msgid " --enable-dht[=true|false]    Enable IPv4 DHT functionality."
 msgstr ""
-" --enable-dht[=true|false]    Nutzung von DHT (VHT, Verteilte Hash-Tabelle)\n"
-"                              einschalten."
 
 #: src/usage_text.h:309
-#, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for both IPv4 and IPv6\n"
 "                              DHT. Multiple ports can be specified by using\n"
@@ -767,35 +735,18 @@ msgid ""
 "','\n"
 "                              and '-' can be used together."
 msgstr ""
-" --dht-listen-port=PORT   Bestimmt den UDP-Lauschport für DHT.\n"
-"                              Mehrere Ports können mit Kommatrennung "
-"angegeben\n"
-"                              werden (Bsp: \"6881,6885\"). Mit \"-\" kann "
-"ein\n"
-"                              Port-Bereich angegeben werden (Bsp: "
-"\"6881-6999\").\n"
-"                              \",\" und \"-\" können gemeinsam benutzt "
-"werden."
 
 #: src/usage_text.h:315
-#, fuzzy
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to IPv4 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT  Festlegung von Wirt und Port, über den das "
-"DHT-\n"
-"                              Netzwerk betreten wird."
 
 #: src/usage_text.h:318
-#, fuzzy
 msgid ""
 " --dht-file-path=PATH         Change the IPv4 DHT routing table file to PATH."
 msgstr ""
-" --conf-path=VERZEICHNIS      Ändern des Verzeichnisses für die "
-"Konfigurations-\n"
-"                              datei auf VERZEICHNIS."
 
 #: src/usage_text.h:320
 msgid ""
@@ -808,7 +759,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:325
-#, fuzzy
 msgid ""
 " --bt-require-crypto[=true|false] If true is given, aria2 doesn't accept "
 "and\n"
@@ -816,13 +766,6 @@ msgid ""
 "                              handshake. Thus aria2 always uses Obfuscation\n"
 "                              handshake."
 msgstr ""
-" --bt-require-crypto=true|false  Falls \"true\" wird Aria2 keine "
-"Verbindungen\n"
-"                              mit herkömmlichem BitTorrent-Handshake auf-\n"
-"                              bauen oder akzeptieren. Damit wird stets der\n"
-"                              Verschleierungs-Handshake (\"Obfuscation\") "
-"ver-\n"
-"                              wendet."
 
 #: src/usage_text.h:330
 msgid ""
@@ -843,12 +786,18 @@ msgid ""
 "each\n"
 "                              BitTorrent download."
 msgstr ""
+" --bt-max-open-files=NUM      Legt die maximale Anzahl an offenen Dateien "
+"in\n"
+"                              jedem BitTorrent Download fest."
 
 #: src/usage_text.h:341
 msgid ""
 " --bt-seed-unverified[=true|false] Seed previously downloaded files without\n"
 "                              verifying piece hashes."
 msgstr ""
+" --bt-seed-unverified[=true|false] Verteile bereits heruntergeladene "
+"Dateien,\n"
+"                              ohne die Hashes zu überprüfen."
 
 #: src/usage_text.h:344
 msgid ""
@@ -857,18 +806,19 @@ msgid ""
 "                              0 means unlimited.\n"
 "                              See also --bt-request-peer-speed-limit option."
 msgstr ""
+" --bt-max-peers=NUM           Legt die maximale Anzahl der Peers pro "
+"Torrent\n"
+"                              fest.\n"
+"                              0 bedeutet unbegrenzt.\n"
+"                              Siehe auch --bt-request-peer-speed-limit."
 
 #: src/usage_text.h:348
-#, fuzzy
 msgid ""
 " -M, --metalink-file=METALINK_FILE The file path to the .meta4 and ."
 "metalink\n"
 "                              file. Reads input from stdin when '-' is\n"
 "                              specified."
 msgstr ""
-" -M, --metalink-file=METALINK_DATEI Der Dateipfad zur .metalink Datei. "
-"Liest\n"
-"                              von stdin, wenn '-' angegeben wird."
 
 #: src/usage_text.h:352
 msgid ""
@@ -904,6 +854,8 @@ msgid ""
 "                              A comma-delimited list of locations is\n"
 "                              acceptable."
 msgstr ""
+" --metalink-location=ORT[,...] Der bevorzugte Standort des Downloadservers.\n"
+"                              Eine kommagetrennte Liste ist zulässig."
 
 #: src/usage_text.h:371
 msgid ""
@@ -911,9 +863,12 @@ msgid ""
 "'none'\n"
 "                              if you don't have any preferred protocol."
 msgstr ""
+" --metalink-preferred-protocol=PROTO Legt das bevorzugte Protokoll fest. "
+"Geben\n"
+"                              Sie 'none' an, wenn Sie kein bevorzugtes\n"
+"                              Protokoll haben."
 
 #: src/usage_text.h:374
-#, fuzzy
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .meta4 or .metalink, or "
@@ -930,24 +885,8 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
-"nach\n"
-"                              dem Download einer .torrent-Datei oder einer "
-"Da-\n"
-"                              tei, deren Inhaltstyp \"application/x-"
-"bittorrent\"\n"
-"                              ist, diese Datei als Torrent-Steuerdatei "
-"durch-\n"
-"                              sucht und alle gefundenen Download-Positionen\n"
-"                              heruntergeladen.\n"
-"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
-"                              der Festplatte gespeichert, sondern nur im \n"
-"                              Speicher gehalten.\n"
-"                              Bei \"false\" wird die .torrent-Datei nicht\n"
-"                              durchsucht."
 
 #: src/usage_text.h:385
-#, fuzzy
 msgid ""
 " --metalink-enable-unique-protocol[=true|false] If true is given and "
 "several\n"
@@ -957,15 +896,6 @@ msgid ""
 "                              Use --metalink-preferred-protocol option to\n"
 "                              specify the preference of protocol."
 msgstr ""
-" --metalink-enable-unique-protocol=true|false  Wenn dies \"true\" ist und "
-"für\n"
-"                              einen Spiegelserver in der Metalink-"
-"Steuerdatei\n"
-"                              mehrere Protokolle verfügbar sind, wird Aria2\n"
-"                              genau eines davon verwenden.\n"
-"                              Siehe Option \"--metalink-preferred-protocol"
-"\"\n"
-"                              zur Festlegung des bevorzugten Protokolls."
 
 #: src/usage_text.h:391
 msgid " -v, --version                Print the version number and exit."
@@ -983,11 +913,25 @@ msgid ""
 "usage\n"
 "                              for the options whose name includes that word."
 msgstr ""
+" -h, --help[=TAG|KEYWORD]     Gib Benutzungshinweise aus und beendet.\n"
+"                              Die Hilfetexte sind mit Schlagwörtern\n"
+"                              gekennzeichnet. Ein Schlagwort beginnt mit \"#"
+"\".\n"
+"                              Geben Sie beispielsweise \"--help=#http\" ein, "
+"um\n"
+"                              die Benutzungshinweise für die Optionen, die "
+"mit\n"
+"                              \"#http\" markiert sind, zu erhalten. Wenn "
+"kein\n"
+"                              Schlagwort angegeben wurde, werden die "
+"Hilfetexte\n"
+"                              der Optionen ausgegeben, in deren Namen das "
+"Wort\n"
+"                              vorkommt."
 
 #: src/usage_text.h:400
-#, fuzzy
 msgid " --no-conf[=true|false]       Disable loading aria2.conf file."
-msgstr " --no-conf                    Laden der aria2.conf-Datei unterbinden."
+msgstr ""
 
 #: src/usage_text.h:402
 msgid ""
@@ -1204,6 +1148,8 @@ msgstr ""
 #: src/usage_text.h:502
 msgid " --event-poll=POLL            Specify the method for polling events."
 msgstr ""
+" --event-poll=POLL            Legt die Methode für die Abfrageereignisse "
+"fest."
 
 #: src/usage_text.h:504
 msgid ""
@@ -1271,7 +1217,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:537
-#, fuzzy
 msgid ""
 " --on-download-complete=COMMAND Set the command to be executed after "
 "download\n"
@@ -1280,14 +1225,6 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-overall-download-limit=GESCHWINDIGKEIT Setze die maximale "
-"Gesamtdownloadgeschwindigkeit in Bytes/s.\n"
-"                              0 bedeutet unbegrenzt.\n"
-"                              Sie können K oder M (1K = 1024, 1M = 1024K) "
-"anhängen.\n"
-"                              Verwenden Sie --max-download-limit , um die "
-"Downloadgeschwindigkeit\n"
-"                              pro einzelnem Download zu begrenzen."
 
 #: src/usage_text.h:543
 msgid ""
@@ -1308,7 +1245,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:553
-#, fuzzy
 msgid ""
 " --on-download-error=COMMAND  Set the command to be executed after download\n"
 "                              aborted due to error.\n"
@@ -1316,17 +1252,8 @@ msgid ""
 "                              requirement of COMMAND.\n"
 "                              See also --on-download-stop option."
 msgstr ""
-" --max-overall-download-limit=GESCHWINDIGKEIT Setze die maximale "
-"Gesamtdownloadgeschwindigkeit in Bytes/s.\n"
-"                              0 bedeutet unbegrenzt.\n"
-"                              Sie können K oder M (1K = 1024, 1M = 1024K) "
-"anhängen.\n"
-"                              Verwenden Sie --max-download-limit , um die "
-"Downloadgeschwindigkeit\n"
-"                              pro einzelnem Download zu begrenzen."
 
 #: src/usage_text.h:559
-#, fuzzy
 msgid ""
 " --on-download-stop=COMMAND   Set the command to be executed after download\n"
 "                              stopped. You can override the command to be\n"
@@ -1338,21 +1265,6 @@ msgid ""
 "                              See --on-download-start option for the\n"
 "                              requirement of COMMAND."
 msgstr ""
-" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
-"nach\n"
-"                              dem Download einer .torrent-Datei oder einer "
-"Da-\n"
-"                              tei, deren Inhaltstyp \"application/x-"
-"bittorrent\"\n"
-"                              ist, diese Datei als Torrent-Steuerdatei "
-"durch-\n"
-"                              sucht und alle gefundenen Download-Positionen\n"
-"                              heruntergeladen.\n"
-"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
-"                              der Festplatte gespeichert, sondern nur im \n"
-"                              Speicher gehalten.\n"
-"                              Bei \"false\" wird die .torrent-Datei nicht\n"
-"                              durchsucht."
 
 #: src/usage_text.h:568
 msgid ""
@@ -1390,6 +1302,10 @@ msgid ""
 "specify\n"
 "                              interface name, IP address and hostname."
 msgstr ""
+" --interface=SCHNITTSTELLE    Binde Sockets an die angegebene "
+"Schnittstelle.\n"
+"                              Sie können Schnittstelle, IP-Adresse und\n"
+"                              Rechnername angeben."
 
 #: src/usage_text.h:587
 msgid " --disable-ipv6[=true|false]  Disable IPv6."
@@ -1440,10 +1356,12 @@ msgid ""
 "format\n"
 "                              (e.g., 1.2Ki, 3.4Mi) in the console readout."
 msgstr ""
+" --human-readable[=true|false] Gib Größen und Geschwindigkeiten in lesbarem\n"
+"                              Format (z.B. 1.2Ki, 3.4Mi) auf der Konsole aus."
 
 #: src/usage_text.h:611
 msgid " --bt-enable-lpd[=true|false] Enable Local Peer Discovery."
-msgstr ""
+msgstr " --bt-enable-lpd[=true|false] Aktiviere Local Peer Discovery."
 
 #: src/usage_text.h:613
 msgid ""
@@ -1579,7 +1497,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:674
-#, fuzzy
 msgid ""
 " --save-session=FILE          Save error/unfinished downloads to FILE on "
 "exit.\n"
@@ -1596,21 +1513,6 @@ msgid ""
 "not\n"
 "                              be saved."
 msgstr ""
-" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
-"nach\n"
-"                              dem Download einer .torrent-Datei oder einer "
-"Da-\n"
-"                              tei, deren Inhaltstyp \"application/x-"
-"bittorrent\"\n"
-"                              ist, diese Datei als Torrent-Steuerdatei "
-"durch-\n"
-"                              sucht und alle gefundenen Download-Positionen\n"
-"                              heruntergeladen.\n"
-"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
-"                              der Festplatte gespeichert, sondern nur im \n"
-"                              Speicher gehalten.\n"
-"                              Bei \"false\" wird die .torrent-Datei nicht\n"
-"                              durchsucht."
 
 #: src/usage_text.h:683
 msgid ""
@@ -1637,7 +1539,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:695
-#, fuzzy
 msgid ""
 " --conditional-get[=true|false] Download file only when the local file is "
 "older\n"
@@ -1645,11 +1546,6 @@ msgid ""
 "has\n"
 "                              many limitations. See man page for details."
 msgstr ""
-" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
-"                              während der Vorbelegung von "
-"Dateispeicherplatz\n"
-"                              verringert. Abschaltbar, falls dabei Fehler\n"
-"                              auftreten."
 
 #: src/usage_text.h:699
 msgid ""
@@ -1666,7 +1562,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:707
-#, fuzzy
 msgid ""
 " --enable-async-dns6[=true|false] Enable IPv6 name resolution in "
 "asynchronous\n"
@@ -1674,14 +1569,8 @@ msgid ""
 "when\n"
 "                              --async-dns=false."
 msgstr ""
-" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
-"                              während der Vorbelegung von "
-"Dateispeicherplatz\n"
-"                              verringert. Abschaltbar, falls dabei Fehler\n"
-"                              auftreten."
 
 #: src/usage_text.h:711
-#, fuzzy
 msgid ""
 " --enable-dht6[=true|false]   Enable IPv6 DHT functionality.\n"
 "                              Use --dht-listen-port option to specify port\n"
@@ -1689,13 +1578,6 @@ msgid ""
 "addr6\n"
 "                              option."
 msgstr ""
-" --bt-require-crypto=true|false  Falls \"true\" wird Aria2 keine "
-"Verbindungen\n"
-"                              mit herkömmlichem BitTorrent-Handshake auf-\n"
-"                              bauen oder akzeptieren. Damit wird stets der\n"
-"                              Verschleierungs-Handshake (\"Obfuscation\") "
-"ver-\n"
-"                              wendet."
 
 #: src/usage_text.h:716
 msgid ""
@@ -1706,24 +1588,16 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:720
-#, fuzzy
 msgid ""
 " --dht-entry-point6=HOST:PORT Set host and port as an entry point to IPv6 "
 "DHT\n"
 "                              network."
 msgstr ""
-" --dht-entry-point=HOST:PORT  Festlegung von Wirt und Port, über den das "
-"DHT-\n"
-"                              Netzwerk betreten wird."
 
 #: src/usage_text.h:723
-#, fuzzy
 msgid ""
 " --dht-file-path6=PATH        Change the IPv6 DHT routing table file to PATH."
 msgstr ""
-" --conf-path=VERZEICHNIS      Ändern des Verzeichnisses für die "
-"Konfigurations-\n"
-"                              datei auf VERZEICHNIS."
 
 #: src/usage_text.h:725
 msgid ""
@@ -1790,7 +1664,6 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:761
-#, fuzzy
 msgid ""
 " --enable-rpc[=true|false]    Enable JSON-RPC/XML-RPC server.\n"
 "                              It is strongly recommended to set username "
@@ -1798,13 +1671,6 @@ msgid ""
 "                              password using --rpc-user and --rpc-passwd\n"
 "                              option. See also --rpc-listen-port option."
 msgstr ""
-" --bt-require-crypto=true|false  Falls \"true\" wird Aria2 keine "
-"Verbindungen\n"
-"                              mit herkömmlichem BitTorrent-Handshake auf-\n"
-"                              bauen oder akzeptieren. Damit wird stets der\n"
-"                              Verschleierungs-Handshake (\"Obfuscation\") "
-"ver-\n"
-"                              wendet."
 
 #: src/usage_text.h:766
 msgid ""
@@ -1816,21 +1682,14 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:770
-#, fuzzy
 msgid " --rpc-user=USER              Set JSON-RPC/XML-RPC user."
 msgstr ""
-" --ftp-user=BENUTZER          Festlegen des FTP-Benutzernamens. Wird für\n"
-"                              alle URLs verwendet."
 
 #: src/usage_text.h:772
-#, fuzzy
 msgid " --rpc-passwd=PASSWD          Set JSON-RPC/XML-RPC password."
 msgstr ""
-" --ftp-passwd=PASSWORT        Festlegen des FTP-Paßworts. Wird für\n"
-"                              alle URLs verwendet."
 
 #: src/usage_text.h:774
-#, fuzzy
 msgid ""
 " --rpc-listen-all[=true|false] Listen incoming JSON-RPC/XML-RPC requests on "
 "all\n"
@@ -1838,10 +1697,6 @@ msgid ""
 "only\n"
 "                              on local loopback interface."
 msgstr ""
-" -S, --show-files             Listenanzeige aller Download-Positionen\n"
-"                              in einer .torrent- oder .metalink-Datei. Für\n"
-"                              .torrent werden genauere Informationen "
-"angezeigt."
 
 #: src/usage_text.h:778
 msgid ""
@@ -1855,7 +1710,6 @@ msgid " --show-console-readout[=true|false] Show console readout."
 msgstr ""
 
 #: src/usage_text.h:783
-#, fuzzy
 msgid ""
 " --metalink-base-uri=URI      Specify base URI to resolve relative URI in\n"
 "                              metalink:url and metalink:metaurl element in "
@@ -1864,10 +1718,6 @@ msgid ""
 "points\n"
 "                              to a directory, URI must end with '/'."
 msgstr ""
-" -S, --show-files             Listenanzeige aller Download-Positionen\n"
-"                              in einer .torrent- oder .metalink-Datei. Für\n"
-"                              .torrent werden genauere Informationen "
-"angezeigt."
 
 #: src/usage_text.h:788
 msgid ""
@@ -1914,14 +1764,10 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:818
-#, fuzzy
 msgid ""
 " --pause[=true|false]         Pause download after added. This option is\n"
 "                              effective only when --enable-rpc=true is given."
 msgstr ""
-" -p, --ftp-pasv[=true|false] Passiven Modus für FTP nutzen. Wenn der Wert "
-"false ist\n"
-"                              wird aktives FTP verwendet."
 
 #: src/usage_text.h:821
 msgid ""
@@ -1950,18 +1796,12 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:836
-#, fuzzy
 msgid ""
 " --hash-check-only[=true|false] If true is given, after hash check using\n"
 "                              --check-integrity option, abort download "
 "whether\n"
 "                              or not download is complete."
 msgstr ""
-" --enable-direct-io[=true|false] Verwendet directI/O, was die CPU-Last\n"
-"                              während der Vorbelegung von "
-"Dateispeicherplatz\n"
-"                              verringert. Abschaltbar, falls dabei Fehler\n"
-"                              auftreten."
 
 #: src/usage_text.h:840
 msgid ""
@@ -2149,17 +1989,17 @@ msgstr ""
 msgid "Did you mean:"
 msgstr ""
 
-#: src/option_processing.cc:237 src/option_processing.cc:246
+#: src/option_processing.cc:235 src/option_processing.cc:244
 #, c-format
 msgid "Parse error in %s"
 msgstr ""
 
-#: src/option_processing.cc:241 src/option_processing.cc:282
+#: src/option_processing.cc:239 src/option_processing.cc:280
 #, c-format
 msgid "Usage:"
 msgstr ""
 
-#: src/option_processing.cc:251
+#: src/option_processing.cc:249
 #, c-format
 msgid "Configuration file %s is not found."
 msgstr ""
@@ -2217,18 +2057,16 @@ msgstr ""
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr ""
 
-#: src/RequestGroup.cc:381
+#: src/RequestGroup.cc:377
 msgid ""
 "For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
 "enable-dht option."
 msgstr ""
 
-#: src/RequestGroup.cc:686
-#, fuzzy, c-format
+#: src/RequestGroup.cc:682
+#, c-format
 msgid "Removed control file for %s because it is requested by user."
 msgstr ""
-"Die veraltete Steuerdatei %s wurde entfernt, da die Download-Datei %s nicht "
-"existiert."
 
 #: src/SingleFileAllocationIterator.cc:75
 msgid ""
@@ -2237,9 +2075,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%lld - Download has already completed: %s"
-msgstr "#%d - Wurde bereits beendet: %s"
+msgstr ""
 
 #: src/message.h:106
 #, c-format
@@ -2343,9 +2181,9 @@ msgid "The download was complete."
 msgstr "Der Download wurde fertiggestellt."
 
 #: src/message.h:126
-#, fuzzy, c-format
+#, c-format
 msgid "Removed %lu have entries."
-msgstr "Entfernte %d Einträge."
+msgstr ""
 
 #: src/message.h:127
 #, c-format
@@ -2386,12 +2224,12 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
-".netrc Datei %s hat ungültige Zugriffsrechte. Sollte 600 sein. netrc Support "
+".netrc Datei %s hat ungültige Zugriffsrechte. Korret ist 600. netrc Support "
 "abgeschaltet."
 
 #: src/message.h:138
 msgid "Logging started."
-msgstr "Loggen gestartet."
+msgstr "Protokollierung gestartet."
 
 #: src/message.h:139
 msgid "Specify at least one URL."
@@ -2436,9 +2274,9 @@ msgstr ""
 "Konnte Metalink-XML-Datei nicht verarbeiten. Syntax könnte falsch sein."
 
 #: src/message.h:148
-#, fuzzy, c-format
+#, c-format
 msgid "Too small payload size for %s, size=%lu."
-msgstr "Zu geringe Nutzgröße für %s, Größe=%d."
+msgstr ""
 
 #: src/message.h:149
 #, c-format
@@ -2468,9 +2306,9 @@ msgid "Windows socket library initialization failed"
 msgstr "Initialisierung der Windows-Socket-Bibliothek schlug fehl."
 
 #: src/message.h:154
-#, fuzzy, c-format
+#, c-format
 msgid "%ld second(s) has passed. Stopping application."
-msgstr "%d Sekunden sind verstrichen. Anwendung wird gestoppt."
+msgstr ""
 
 #: src/message.h:155
 #, c-format
@@ -2532,13 +2370,11 @@ msgid "Failed to load trusted CA certificates from %s. Cause: %s"
 msgstr "Konnte vertraute CA-Zertifikate nicht von %s laden. Ursache: %s"
 
 #: src/message.h:175
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Certificate verification failed. Cause: %s See --ca-certificate and --check-"
 "certificate option."
 msgstr ""
-"Sie erhalten möglicherweise einen Zertifikatprüfungsfehler des HTTPS-"
-"Servers. Siehe --ca-certificate und --check-certificate."
 
 #: src/message.h:177
 msgid "No certificate found."
@@ -2546,7 +2382,7 @@ msgstr "Kein Zertifikat gefunden."
 
 #: src/message.h:178
 msgid "Hostname not match."
-msgstr ""
+msgstr "Rechnername stimmt nicht überein."
 
 #: src/message.h:179
 msgid "No files to download."
@@ -2660,7 +2496,7 @@ msgstr "SSL-Initialisierung fehlgeschlagen: %s"
 
 #: src/message.h:213
 msgid "SSL I/O error"
-msgstr "SSL I/O störung"
+msgstr "SSL Ein-/Ausgabe Fehler"
 
 #: src/message.h:214
 msgid "SSL protocol error"
@@ -2678,7 +2514,7 @@ msgstr "SSL-Initialisierung schlug fehl: OpenSSL-Verbindungsfehler %d"
 
 #: src/message.h:218
 msgid "Authorization failed."
-msgstr "Die Anmeldung ist fehlgeschlagen."
+msgstr "Authentifizierung fehlgeschlagen."
 
 #: src/message.h:219
 msgid "Got EOF from the server."
@@ -2823,9 +2659,9 @@ msgid "File %s exists, but %s does not exist."
 msgstr "Die Datei %s existiert, %s jedoch nicht."
 
 #: src/message.h:254
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid payload size for %s, size=%lu. It should be %lu."
-msgstr "Ungültige Payload Grösse %s, size=%d. Sollte %d sein."
+msgstr ""
 
 #: src/message.h:255
 #, c-format
@@ -2855,13 +2691,11 @@ msgid "Flooding detected."
 msgstr "Flooding entdeckt."
 
 #: src/message.h:263
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%ld seconds)."
 msgstr ""
-"Verbindung abgebrochen da während einer gewissen Zeit (%d Sekunden) keine "
-"Anfragen/Teile übetragen wurden."
 
 #: src/message.h:265
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
@@ -2905,144 +2739,3 @@ msgstr "Maximale Nutzdatenlänge überschritten oder ungültig. Länge = %u"
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr "Ungültige Dateigrösse. Download abgebrochen %s: local %s, remote %s"
-
-#~ msgid "See -h option to know other command-line options(%s)."
-#~ msgstr "Siehe Option -h für weitere Kommandozeilen-Optionen (%s)."
-
-#, fuzzy
-#~ msgid "%ld seconds to allocate %s byte(s)"
-#~ msgstr "%d Sekunden, um %s Byte(s) zu reservieren"
-
-#~ msgid "Too large file size. size=%s"
-#~ msgstr "Dateigröße zu groß. Größe=%s"
-
-#~ msgid "Size mismatch Expected:%s Actual:%s"
-#~ msgstr "Größenunterschied. Erwartet:%s Tatsächlich:%s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Chunk checksum validation failed. checksumIndex=%lu, offset=%s, "
-#~ "expectedHash=%s, actualHash=%s"
-#~ msgstr ""
-#~ "Chunk Prüfusummenvalidierung nicht bestanden. checksumIndex=%d, offset="
-#~ "%s, expectedHash=%s, actualHash=%s"
-
-#~ msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
-#~ msgstr "Ungültiger Bereichs Header. Request: %s-%s/%s, Response: %s-%s/%s"
-
-#~ msgid "must be either 'true' or 'false'."
-#~ msgstr "muss entweder \"true\" (wahr) oder \"false\" (falsch) sein"
-
-#~ msgid "must be between %s and %s."
-#~ msgstr "muss zwischen %s und %s sein"
-
-#~ msgid "must be smaller than or equal to %s."
-#~ msgstr "muss kleiner oder gleich %s sein"
-
-#~ msgid "must be greater than or equal to %s."
-#~ msgstr "muss größer oder gleich %s sein"
-
-#~ msgid "must be a number."
-#~ msgstr "muss eine Zahl sein"
-
-#~ msgid "must be smaller than or equal to %.1f."
-#~ msgstr "muss kleiner oder gleich %.1f sein."
-
-#~ msgid "must be between %.1f and %.1f."
-#~ msgstr "muss zwischen %.1f und %.1f sein."
-
-#~ msgid "must be greater than or equal to %.1f."
-#~ msgstr "muss größer oder gleich %.1f sein."
-
-#~ msgid "must be one of the following:"
-#~ msgstr "muss eines der folgenden sein:"
-
-#, fuzzy
-#~ msgid "Unrecognized format"
-#~ msgstr "unbekanntes Proxy-Format"
-
-#~ msgid "unrecognized proxy format"
-#~ msgstr "unbekanntes Proxy-Format"
-
-#~ msgid "Failed to open the segment file %s, cause: %s"
-#~ msgstr "Konnte Segmentdatei %s nicht öffnen, Ursache %s"
-
-#~ msgid "Failed to write into the segment file %s, cause: %s"
-#~ msgstr "Konnte nicht in Segmentdatei %s schreiben, Ursache: %s"
-
-#~ msgid "Failed to read from the segment file %s, cause: %s"
-#~ msgstr "Konnte nicht aus Segmentdatei %s lesen, Ursache: %s"
-
-#~ msgid "Certificate verification failed. Cause: %s"
-#~ msgstr "Zertifikatprüfung fehlgeschlagen. Ursache: %s"
-
-#~ msgid ""
-#~ "CUID#%d - Response received:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "CUID#%d - Erhaltene Antwort:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "CUID#%d - The segment changed. We send the request again with new Range "
-#~ "header."
-#~ msgstr ""
-#~ "CUID#%d - Segment wurde verändert. Anforderung wird mit neuem Bereichs-"
-#~ "Header erneut gesendet."
-
-#~ msgid "CUID#%d - Redirecting to %s"
-#~ msgstr "CUID#%d - Weiterleitung zu %s"
-
-#~ msgid "CUID#%d - Connecting to %s:%d"
-#~ msgstr "CUID#%d - Verbinde mit %s:%d"
-
-#~ msgid "CUID#%d - No segment available."
-#~ msgstr "CUID#%d - Kein Segment verfügbar."
-
-#~ msgid "CUID#%d - Unregistering cuid from segmentManager."
-#~ msgstr "CUID#%d - cuid beim segmentManager deregistriert."
-
-#~ msgid "CUID#%d - we got new piece. index=%d"
-#~ msgstr "CUID#%d - Neues Teilstück erhalten. Index=%d"
-
-#~ msgid "CUID#%d - we got wrong piece. index=%d"
-#~ msgstr "CUID#%d - falsches Teilstück erhalten. Index=%d"
-
-#~ msgid "CUID#%d - Good checksum: %s"
-#~ msgstr "CUID#%d - Prüfsumme ok: %s"
-
-#~ msgid "CUID#%d - Bad checksum: %s"
-#~ msgstr "CUID#%d - Ungültige Prüfsumme: %s"
-
-#~ msgid "CUID#%d - Resolving hostname %s"
-#~ msgstr "CUID#%d - Löse Hostnamen auf %s"
-
-#~ msgid "CUID#%d - Abort requested."
-#~ msgstr "CUID#%d - Abbruch angefordert."
-
-#~ msgid ""
-#~ "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
-#~ "blockIndex=%d"
-#~ msgstr ""
-#~ "CUID#%d - Stück empfangen. index=%d, begin=%d, length=%d, offset=%llu, "
-#~ "blockIndex=%d"
-
-#~ msgid ""
-#~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
-#~ "index=%d, begin=%d, length=%d"
-#~ msgstr ""
-#~ "CUID#%d - Reject piece message in queue because the peer has been choked. "
-#~ "index=%d, begin=%d, length=%d"
-
-#~ msgid "Dispatching FileAllocationCommand for CUID#%d."
-#~ msgstr "Dispatching FileAllocationCommand for CUID#%d."
-
-#~ msgid " -o, --out=FILE               The file name of the downloaded file."
-#~ msgstr " -o, --out=FILE               Dateiname für die abgerufene Datei."
-
-#~ msgid " -D, --daemon                 Run as daemon."
-#~ msgstr " -D, --daemon                 Start als Daemon-Prozeß."
-
-#~ msgid ""
-#~ " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
-#~ msgstr " -M, --metalink-file=METALINK_FILE  Datenpfad zur metalink-Datei."

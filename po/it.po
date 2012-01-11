@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2011-12-26 00:58+0900\n"
+"POT-Creation-Date: 2012-01-12 00:45+0900\n"
 "PO-Revision-Date: 2010-04-27 18:26+0000\n"
 "Last-Translator: Simone F. <Unknown>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -2633,17 +2633,17 @@ msgstr ""
 msgid "Did you mean:"
 msgstr ""
 
-#: src/option_processing.cc:237 src/option_processing.cc:246
+#: src/option_processing.cc:235 src/option_processing.cc:244
 #, c-format
 msgid "Parse error in %s"
 msgstr ""
 
-#: src/option_processing.cc:241 src/option_processing.cc:282
+#: src/option_processing.cc:239 src/option_processing.cc:280
 #, c-format
 msgid "Usage:"
 msgstr ""
 
-#: src/option_processing.cc:251
+#: src/option_processing.cc:249
 #, c-format
 msgid "Configuration file %s is not found."
 msgstr ""
@@ -2701,13 +2701,13 @@ msgstr ""
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr ""
 
-#: src/RequestGroup.cc:381
+#: src/RequestGroup.cc:377
 msgid ""
 "For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
 "enable-dht option."
 msgstr ""
 
-#: src/RequestGroup.cc:686
+#: src/RequestGroup.cc:682
 #, fuzzy, c-format
 msgid "Removed control file for %s because it is requested by user."
 msgstr "Rimosso il file di controllo zombie %s perchè il file %s non esiste."
