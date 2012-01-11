@@ -1,3 +1,41 @@
+aria2 1.14.1
+============
+
+Release Note
+------------
+
+This release fixes the bug that prevents --checksum option from
+working correctly. It also fixes the bug that log file is not created
+if a warn level log is created before log file is opened. Now aria2
+doesn't assume download has completed just because file size matched.
+The old behavior is problematic because aria2 just assumes download is
+completed but in reality it is not.
+
+Changes
+-------
+
+ * Supported network-path reference in HTTP redirect.
+
+ * Updated bash_completion.
+
+ * aria2 now doesn't assume download has completed just because file
+   size matched. The only exception is zero-length file.  If server
+   tells that file is zero-length and --checksum option is given,
+   aria2 now correctly checks its checksum. There is one known issue:
+   If downloaded file is zero-length file and .aria2 file exists, it
+   will not be deleted on successful verification, because .aria2 file
+   is not loaded.
+
+ * Fixed the bug that --checksum is not working. SFBUG#3466888
+
+ * Fixed compile error without libnettle, libgcrypt and openssl.
+   SFBUG#3466463
+
+ * Fixed the bug that log file is not created if there is warning
+   before log file is opened.
+
+
+
 aria2 1.14.0
 ============
 
