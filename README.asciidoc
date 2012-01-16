@@ -113,10 +113,10 @@ Note;;
 
 Note;;
 
-  libnettle has precedence over libgcrypt and libgcrypt has precedence
-  over OpenSSL. If you prefer libgcrypt, run configure with
-  \--without-libnettle \--with-libgcrypt. If you prefer OpenSSL, run
-  configure with \--without-gnutls \--with-openssl.
+  libnettle has precedence over libgcrypt if both libraries are
+  installed.  If you prefer libgcrypt, run configure with
+  \--without-libnettle \--with-libgcrypt. If OpenSSL is selected over
+  GnuTLS, neither libnettle nor libgcrypt will be used.
 
 Note;;
 
