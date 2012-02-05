@@ -213,6 +213,8 @@ const Pref* PREF_NO_NETRC = makePref("no-netrc");
 const Pref* PREF_MAX_DOWNLOADS = makePref("max-downloads");
 // value: string that your file system recognizes as a file name.
 const Pref* PREF_INPUT_FILE = makePref("input-file");
+// value: true | false
+const Pref* PREF_DEFERRED_INPUT = makePref("deferred-input");
 // value: 1*digit
 const Pref* PREF_MAX_CONCURRENT_DOWNLOADS = makePref("max-concurrent-downloads");
 // value: true | false

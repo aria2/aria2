@@ -42,6 +42,7 @@ Basic Options
   URI. This optional line must start with one or more white spaces and have
   one option per single line.
   See *<<_input_file, Input File>>* subsection for details.
+  See also *<<aria2_optref_deferred_input, --deferred-input>>* option.
 
 [[aria2_optref_log]]*-l*, *--log*=LOG::
   The file name of the log file. If '-' is specified, log is written to
@@ -915,6 +916,16 @@ Advanced Options
   Run as daemon. The current working directory will be changed to '/'
   and standard input, standard output and standard error will be
   redirected to '/dev/null'. Default: 'false'
+
+[[aria2_optref_deferred_input]]*--deferred-input*[='true'|'false']::
+
+  If 'true' is given, aria2 does not read all URIs and options from file
+  specified by *<<aria2_optref_input_file, -i>>* option at startup,
+  but it reads one by one when it
+  needs later. This may reduce memory usage if input file contains a
+  lot of URIs to download.  If 'false' is given, aria2 reads all URIs
+  and options at startup.
+  Default: 'false'
 
 [[aria2_optref_disable_ipv6]]*--disable-ipv6*[='true'|'false']::
 

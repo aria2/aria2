@@ -48,6 +48,7 @@ class RequestGroup;
 class Option;
 class StatCalc;
 class OutputFile;
+class UriListParser;
 
 class MultiUrlRequestInfo {
 private:
@@ -59,13 +60,16 @@ private:
 
   SharedHandle<OutputFile> summaryOut_;
 
+  SharedHandle<UriListParser> uriListParser_;
+
   void printMessageForContinue();
 public:
   MultiUrlRequestInfo
   (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
    const SharedHandle<Option>& op,
    const SharedHandle<StatCalc>& statCalc,
-   const SharedHandle<OutputFile>& summaryOut);
+   const SharedHandle<OutputFile>& summaryOut,
+   const SharedHandle<UriListParser>& uriListParser);
   
   virtual ~MultiUrlRequestInfo();
 

@@ -60,6 +60,7 @@
 #include "fmt.h"
 #include "SocketCore.h"
 #include "OutputFile.h"
+#include "UriListParser.h"
 #ifdef ENABLE_SSL
 # include "TLSContext.h"
 #endif // ENABLE_SSL
@@ -143,11 +144,13 @@ MultiUrlRequestInfo::MultiUrlRequestInfo
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,
  const SharedHandle<Option>& op,
  const SharedHandle<StatCalc>& statCalc,
- const SharedHandle<OutputFile>& summaryOut)
+ const SharedHandle<OutputFile>& summaryOut,
+ const SharedHandle<UriListParser>& uriListParser)
   : requestGroups_(requestGroups),
     option_(op),
     statCalc_(statCalc),
-    summaryOut_(summaryOut)
+    summaryOut_(summaryOut),
+    uriListParser_(uriListParser)
 {}
 
 MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
@@ -235,6 +238,9 @@ error_code::Value MultiUrlRequestInfo::execute()
         (option_->getAsInt(PREF_SERVER_STAT_TIMEOUT));
     }
     e->setStatCalc(statCalc_);
+    if(uriListParser_) {
+      e->getRequestGroupMan()->setUriListParser(uriListParser_);
+    }
 #ifdef SIGHUP
     util::setGlobalSignalHandler(SIGHUP, handler, 0);
 #endif // SIGHUP

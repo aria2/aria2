@@ -156,6 +156,8 @@ extern const Pref* PREF_MAX_OVERALL_DOWNLOAD_LIMIT;
 extern const Pref* PREF_MAX_DOWNLOADS;
 // value: string that your file system recognizes as a file name.
 extern const Pref* PREF_INPUT_FILE;
+// value: true | false
+extern const Pref* PREF_DEFERRED_INPUT;
 // value: 1*digit
 extern const Pref* PREF_MAX_CONCURRENT_DOWNLOADS;
 // value: true | false

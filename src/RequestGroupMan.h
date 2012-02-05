@@ -55,6 +55,7 @@ class ServerStatMan;
 class ServerStat;
 class Option;
 class OutputFile;
+class UriListParser;
 
 class RequestGroupMan {
 private:
@@ -84,6 +85,9 @@ private:
   error_code::Value removedLastErrorResult_;
 
   int maxDownloadResult_;
+
+  // UriListParser for deferred input.
+  SharedHandle<UriListParser> uriListParser_;
 
   void formatDownloadResultFull
   (OutputFile& out,
@@ -309,6 +313,8 @@ public:
   {
     maxDownloadResult_ = v;
   }
+
+  void setUriListParser(const SharedHandle<UriListParser>& uriListParser);
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

@@ -412,21 +412,23 @@ void createRequestGroupForUri
   }
 }
 
-namespace {
-void createRequestGroupForUriList
+bool createRequestGroupFromUriListParser
 (std::vector<SharedHandle<RequestGroup> >& result,
- const SharedHandle<Option>& option,
- const std::string& filename)
+ const Option* option,
+ UriListParser* uriListParser)
 {
-  UriListParser p(filename);
-  while(p.hasNext()) {
+  // Since result already contains some entries, we cache the size of
+  // it. Later, we use this value to determine RequestGroup is
+  // actually created.
+  size_t num = result.size();
+  while(uriListParser->hasNext()) {
     std::vector<std::string> uris;
     Option tempOption;
-    p.parseNext(uris, tempOption);
+    uriListParser->parseNext(uris, tempOption);
     if(uris.empty()) {
       continue;
     }
-    SharedHandle<Option> requestOption(new Option(*option.get()));
+    SharedHandle<Option> requestOption(new Option(*option));
     requestOption->remove(PREF_OUT);
     const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
     for(size_t i = 1, len = option::countOption(); i < len; ++i) {
@@ -436,25 +438,38 @@ void createRequestGroupForUriList
         requestOption->put(pref, tempOption.get(pref));
       }
     }
+    // This does not throw exception because throwOnError = false.
     createRequestGroupForUri(result, requestOption, uris);
+    if(num < result.size()) {
+      return true;
+    }
   }
+  return false;
 }
-} // namespace
+
+SharedHandle<UriListParser> openUriListParser(const std::string& filename)
+{
+  std::string listPath;
+  if(filename == "-") {
+    listPath = DEV_STDIN;
+  } else {
+    if(!File(filename).isFile()) {
+      throw DL_ABORT_EX
+        (fmt(EX_FILE_OPEN, filename.c_str(), "No such file"));
+    }
+    listPath = filename;
+  }
+  return SharedHandle<UriListParser>(new UriListParser(listPath));
+}
 
 void createRequestGroupForUriList
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option)
 {
-  if(option->get(PREF_INPUT_FILE) == "-") {
-    createRequestGroupForUriList(result, option, DEV_STDIN);
-  } else {
-    if(!File(option->get(PREF_INPUT_FILE)).isFile()) {
-      throw DL_ABORT_EX
-        (fmt(EX_FILE_OPEN, option->get(PREF_INPUT_FILE).c_str(),
-             "No such file"));
-    }
-    createRequestGroupForUriList(result, option, option->get(PREF_INPUT_FILE));
-  }
+  SharedHandle<UriListParser> uriListParser = openUriListParser
+    (option->get(PREF_INPUT_FILE));
+  while(createRequestGroupFromUriListParser(result, option.get(),
+                                            uriListParser.get()));
 }
 
 SharedHandle<MetadataInfo>

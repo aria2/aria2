@@ -74,6 +74,8 @@
 #include "Triplet.h"
 #include "Signature.h"
 #include "OutputFile.h"
+#include "download_helper.h"
+#include "UriListParser.h"
 
 namespace aria2 {
 
@@ -485,7 +487,21 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   std::vector<SharedHandle<RequestGroup> > temp;
   int count = 0;
   int num = maxSimultaneousDownloads_-requestGroups_.size();
-  while(count < num && !reservedGroups_.empty()) {
+  while(count < num && (uriListParser_ || !reservedGroups_.empty())) {
+    if(uriListParser_ && reservedGroups_.empty()) {
+      std::vector<SharedHandle<RequestGroup> > groups;
+      bool ok = createRequestGroupFromUriListParser(groups, option_,
+                                                    uriListParser_.get());
+      if(ok) {
+        reservedGroups_.insert(reservedGroups_.end(), groups.begin(),
+                               groups.end());
+      } else {
+        uriListParser_.reset();
+        if(reservedGroups_.empty()) {
+          break;
+        }
+      }
+    }
     SharedHandle<RequestGroup> groupToAdd = reservedGroups_.front();
     reservedGroups_.pop_front();
     std::vector<Command*> commands;
@@ -960,6 +976,12 @@ void RequestGroupMan::getUsedHosts
   std::sort(tempHosts.begin(), tempHosts.end());
   std::transform(tempHosts.begin(), tempHosts.end(),
                  std::back_inserter(usedHosts), Tuple2Pair<1, 3>());
+}
+
+void RequestGroupMan::setUriListParser
+(const SharedHandle<UriListParser>& uriListParser)
+{
+  uriListParser_ = uriListParser;
 }
 
 } // namespace aria2

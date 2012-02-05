@@ -49,6 +49,7 @@ class RequestGroup;
 class Option;
 class MetadataInfo;
 class DownloadContext;
+class UriListParser;
 
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by
@@ -74,6 +75,26 @@ void createRequestGroupForMetalink
  const SharedHandle<Option>& option,
  const std::string& metalinkData = "");
 #endif // ENABLE_METALINK
+
+// Reads one entry from uriListParser and creates RequestGroups from
+// it and store them in result. If the bad entry is found, this
+// function just skips it and reads next entry. If at least one
+// RequestGroup is created successfully, this function returns true
+// and created RequestGroups are stored in result. If no RequestGroup
+// is created and uriListParser reads all input, this function returns
+// false. The option is used as a option template.
+bool createRequestGroupFromUriListParser
+(std::vector<SharedHandle<RequestGroup> >& result,
+ const Option* option,
+ UriListParser* uriListParser);
+
+// Creates UriListParser using given filename.  If filename is "-",
+// then UriListParser is configured to read from standard input.
+// Otherwise, this function first checks file denoted by filename
+// exists.  If it does not exist, this function throws exception.
+// This function returns SharedHandle<UriListParser> object if it
+// succeeds.
+SharedHandle<UriListParser> openUriListParser(const std::string& filename);
 
 // Create RequestGroup objects from reading file specified by input-file option.
 // If the value of input-file option is "-", stdin is used as a input source.

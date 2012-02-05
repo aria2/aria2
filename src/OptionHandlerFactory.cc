@@ -202,6 +202,15 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_DEFERRED_INPUT,
+                                    TEXT_DEFERRED_INPUT,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_DIR,
                                     TEXT_DIR,

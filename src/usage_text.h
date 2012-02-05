@@ -226,7 +226,7 @@
     "                              line of URI. This optional line must start with\n" \
     "                              one or more white spaces and have one option per\n" \
     "                              single line. See INPUT FILE section of man page\n" \
-    "                              for details.")
+    "                              for details. See also --deferred-input option.")
 #define TEXT_MAX_CONCURRENT_DOWNLOADS                                   \
   _(" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads for\n" \
     "                              every static (HTTP/FTP) URL, torrent and metalink.\n" \
@@ -859,3 +859,11 @@
     "                              with its own pid and when parent process exits\n" \
     "                              for some reason, aria2 can detect it and shutdown\n" \
     "                              itself.")
+#define TEXT_DEFERRED_INPUT                     \
+  _(" --deferred-input[=true|false] If true is given, aria2 does not read all URIs\n" \
+    "                              and options from file specified by -i option at\n" \
+    "                              startup, but it reads one by one when it needs\n" \
+    "                              later. This may reduce memory usage if input\n" \
+    "                              file contains a lot of URIs to download.\n" \
+    "                              If false is given, aria2 reads all URIs and\n" \
+    "                              options at startup.")

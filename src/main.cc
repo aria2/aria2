@@ -70,6 +70,7 @@
 #include "fmt.h"
 #include "NullOutputFile.h"
 #include "console.h"
+#include "UriListParser.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -225,6 +226,7 @@ error_code::Value main(int argc, char* argv[])
   util::setGlobalSignalHandler(SIGCHLD, SIG_IGN, 0);
 #endif // SIGCHILD
   std::vector<SharedHandle<RequestGroup> > requestGroups;
+  SharedHandle<UriListParser> uriListParser;
 #ifdef ENABLE_BITTORRENT
   if(!op->blank(PREF_TORRENT_FILE)) {
     if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
@@ -248,7 +250,11 @@ error_code::Value main(int argc, char* argv[])
     else
 #endif // ENABLE_METALINK
       if(!op->blank(PREF_INPUT_FILE)) {
-        createRequestGroupForUriList(requestGroups, op);
+        if(op->getAsBool(PREF_DEFERRED_INPUT)) {
+          uriListParser = openUriListParser(op->get(PREF_INPUT_FILE));
+        } else {
+          createRequestGroupForUriList(requestGroups, op);
+        }
 #if defined ENABLE_BITTORRENT || defined ENABLE_METALINK
       } else if(op->get(PREF_SHOW_FILES) == A2_V_TRUE) {
         showFiles(args, op);
@@ -269,11 +275,13 @@ error_code::Value main(int argc, char* argv[])
   op->remove(PREF_SELECT_FILE);
   op->remove(PREF_PAUSE);
   op->remove(PREF_CHECKSUM);
-  if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty()) {
+  if(!op->getAsBool(PREF_ENABLE_RPC) && requestGroups.empty() &&
+     !uriListParser) {
     global::cout()->printf("%s\n", MSG_NO_FILES_TO_DOWNLOAD);
   } else {
     exitStatus = MultiUrlRequestInfo(requestGroups, op, getStatCalc(op),
-                                     getSummaryOut(op)).execute();
+                                     getSummaryOut(op),
+                                     uriListParser).execute();
   }
   return exitStatus;
 }
