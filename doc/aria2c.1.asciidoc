@@ -1519,6 +1519,9 @@ single line using the TAB character.
 Each line is treated as if it is provided in command-line argument.
 Therefore they are affected by *<<aria2_optref_force_sequential, -Z>>* and *<<aria2_optref_parameterized_uri, -P>>* options.
 
+Since URIs in the input file are directly read by aria2, they must not
+be quoted with single(') or double(") quotation.
+
 Lines starting with "#" are treated as comments and skipped.
 
 Additionally, the following options can be specified after each line
