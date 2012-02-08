@@ -104,8 +104,8 @@ unsigned char* BtBitfieldMessage::createMessage() {
   /**
    * len --- 1+bitfieldLength, 4bytes
    * id --- 5, 1byte
-   * bitfield --- bitfield, len bytes
-   * total: 5+len bytes
+   * bitfield --- bitfield, bitfieldLength bytes
+   * total: 5+bitfieldLength bytes
    */
   const size_t msgLength = 5+bitfieldLength_;
   unsigned char* msg = new unsigned char[msgLength];

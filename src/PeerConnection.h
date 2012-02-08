@@ -59,6 +59,8 @@ private:
   SharedHandle<Peer> peer_;
   SharedHandle<SocketCore> socket_;
 
+  // Maximum payload length
+  size_t maxPayloadLength_;
   unsigned char* resbuf_;
   size_t resbufLength_;
   size_t currentPayloadLength_;
@@ -122,6 +124,15 @@ public:
   }
 
   unsigned char* detachBuffer();
+
+  // Reserves buffer at least minSize. Reallocate memory if current
+  // buffer length < minSize
+  void reserveBuffer(size_t minSize);
+
+  size_t getMaxPayloadLength()
+  {
+    return maxPayloadLength_;
+  }
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;

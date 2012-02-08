@@ -203,7 +203,8 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	extension_message_test_helper.h\
 	LpdMessageDispatcherTest.cc\
 	LpdMessageReceiverTest.cc\
-	Bencode2Test.cc
+	Bencode2Test.cc\
+	PeerConnectionTest.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

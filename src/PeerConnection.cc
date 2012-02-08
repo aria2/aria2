@@ -57,7 +57,8 @@ PeerConnection::PeerConnection
   : cuid_(cuid),
     peer_(peer),
     socket_(socket),
-    resbuf_(new unsigned char[MAX_PAYLOAD_LEN]),
+    maxPayloadLength_(MAX_PAYLOAD_LEN),
+    resbuf_(new unsigned char[maxPayloadLength_]),
     resbufLength_(0),
     currentPayloadLength_(0),
     lenbufLength_(0),
@@ -105,7 +106,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
     uint32_t payloadLength;
     memcpy(&payloadLength, lenbuf_, sizeof(payloadLength));
     payloadLength = ntohl(payloadLength);
-    if(payloadLength > MAX_PAYLOAD_LEN) {
+    if(payloadLength > maxPayloadLength_) {
       throw DL_ABORT_EX(fmt(EX_TOO_LONG_PAYLOAD, payloadLength));
     }
     currentPayloadLength_ = payloadLength;
@@ -201,7 +202,7 @@ void PeerConnection::enableEncryption
 
 void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
 {
-  size_t nwrite = std::min((size_t)MAX_PAYLOAD_LEN, length);
+  size_t nwrite = std::min(maxPayloadLength_, length);
   memcpy(resbuf_, data, nwrite);
   resbufLength_ = length;
 }
@@ -221,8 +222,19 @@ ssize_t PeerConnection::sendPendingData()
 unsigned char* PeerConnection::detachBuffer()
 {
   unsigned char* detachbuf = resbuf_;
-  resbuf_ = new unsigned char[MAX_PAYLOAD_LEN];
+  resbuf_ = new unsigned char[maxPayloadLength_];
   return detachbuf;
+}
+
+void PeerConnection::reserveBuffer(size_t minSize)
+{
+  if(maxPayloadLength_ < minSize) {
+    maxPayloadLength_ = minSize;
+    unsigned char *buf = new unsigned char[maxPayloadLength_];
+    memcpy(buf, resbuf_, resbufLength_);
+    delete [] resbuf_;
+    resbuf_ = buf;
+  }
 }
 
 } // namespace aria2

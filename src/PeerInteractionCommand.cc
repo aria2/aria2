@@ -170,6 +170,14 @@ PeerInteractionCommand::PeerInteractionCommand
       getDownloadEngine()->setNoWait(true);
     }
   }
+  // If the number of pieces gets bigger, the length of Bitfield
+  // message payload exceeds the initial buffer capacity of
+  // PeerConnection, which is MAX_PAYLOAD_LEN.  We expand buffer as
+  // necessary so that PeerConnection can receive the Bitfield
+  // message.
+  size_t bitfieldPayloadSize =
+    1+(requestGroup_->getDownloadContext()->getNumPieces()+7)/8;
+  peerConnection->reserveBuffer(bitfieldPayloadSize);
 
   SharedHandle<DefaultBtMessageDispatcher> dispatcher
     (new DefaultBtMessageDispatcher());
