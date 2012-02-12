@@ -219,7 +219,7 @@ std::string HttpRequest::createRequest()
     val += base64::encode(authText.begin(), authText.end());
     builtinHds.push_back(std::make_pair("Authorization:", val));
   }
-  if(getPreviousURI().size()) {
+  if(!getPreviousURI().empty()) {
     builtinHds.push_back(std::make_pair("Referer:", getPreviousURI()));
   }
   if(cookieStorage_) {

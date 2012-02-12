@@ -143,7 +143,7 @@ void DHTBucket::cacheNode(const SharedHandle<DHTNode>& node)
 
 void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 {
-  if(cachedNodes_.size()) {
+  if(!cachedNodes_.empty()) {
     std::deque<SharedHandle<DHTNode> >::iterator itr =
       std::find_if(nodes_.begin(), nodes_.end(), derefEqual(node));
     if(itr != nodes_.end()) {
