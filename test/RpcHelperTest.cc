@@ -29,6 +29,7 @@ public:
 #ifdef ENABLE_XML_RPC
   void testParseMemory();
   void testParseMemory_shouldFail();
+  void testParseMemory_withoutParams();
   void testParseMemory_withoutStringTag();
 #endif // ENABLE_XML_RPC
 };
@@ -105,6 +106,10 @@ void RpcHelperTest::testParseMemory_shouldFail()
   } catch(RecoverableException& e) {
     // success
   }
+}
+
+void RpcHelperTest::testParseMemory_withoutParams()
+{
   {
     std::string s =
       "<methodCall>"
@@ -115,15 +120,13 @@ void RpcHelperTest::testParseMemory_shouldFail()
     RpcRequest req = xmlParseMemory(s.c_str(), s.size());
     CPPUNIT_ASSERT(req.params);
   }
-  try {
+  {
     std::string s =
       "<methodCall>"
       "  <methodName>aria2.addURI</methodName>"
       "</methodCall>";
-    xmlParseMemory(s.c_str(), s.size());
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(RecoverableException& e) {
-    // success
+    RpcRequest req = xmlParseMemory(s.c_str(), s.size());
+    CPPUNIT_ASSERT(req.params->size());
   }
 }
 

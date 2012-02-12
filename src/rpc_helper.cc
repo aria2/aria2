@@ -50,11 +50,13 @@ RpcRequest xmlParseMemory(const char* xml, size_t size)
   if(!XmlParser(&psm).parseMemory(xml, size)) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
-  if(!downcast<List>(psm.getCurrentFrameValue())) {
-    throw DL_ABORT_EX("Bad XML-RPC parameter list");
+  SharedHandle<List> params;
+  if(downcast<List>(psm.getCurrentFrameValue())) {
+    params = static_pointer_cast<List>(psm.getCurrentFrameValue());
+  } else {
+    params = List::g();
   }
-  return RpcRequest(psm.getMethodName(),
-                    static_pointer_cast<List>(psm.getCurrentFrameValue()));
+  return RpcRequest(psm.getMethodName(), params);
 }
 #endif // ENABLE_XML_RPC
 
