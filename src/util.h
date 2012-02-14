@@ -358,6 +358,8 @@ bool isNumber(InputIterator first, InputIterator last)
   return true;
 }
 
+bool isAlpha(const char c);
+
 bool isDigit(const char c);
 
 bool isHexDigit(const char c);

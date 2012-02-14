@@ -142,6 +142,12 @@ void RequestTest::testRedirectUri()
   CPPUNIT_ASSERT(req.redirectUri("//host/to/file"));
   CPPUNIT_ASSERT_EQUAL(std::string("http://host/to/file"), req.getCurrentUri());
   CPPUNIT_ASSERT_EQUAL(5, req.getRedirectCount());
+
+  // http:// in query part
+  CPPUNIT_ASSERT(req.redirectUri("/abspath?uri=http://foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://host/abspath?uri=http://foo"),
+                       req.getCurrentUri());
+  CPPUNIT_ASSERT_EQUAL(6, req.getRedirectCount());
 }
 
 void RequestTest::testRedirectUri2()

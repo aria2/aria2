@@ -114,23 +114,41 @@ bool Request::redirectUri(const std::string& uri) {
     redirectedUri = getProtocol();
     redirectedUri += ":";
     redirectedUri += uri;
-  } else if(uri.find("://") == std::string::npos) {
-    // rfc2616 requires absolute URI should be provided by Location header
-    // field, but some servers don't obey this rule.
-    // UPDATE: draft-ietf-httpbis-p2-semantics-18 now allows this.
-    uri::UriStruct rus(us_);
-    rus.query.clear();
-    rus.file.clear();
-    size_t offset = 0;
-    if(uri[0] == '/') {
-      // abosulute path
-      rus.dir.clear();
-      offset = 1;
-    }
-    redirectedUri = uri::construct(rus);
-    redirectedUri.append(uri.begin()+offset, uri.end());
   } else {
-    redirectedUri = uri;
+    std::string::size_type schemeEnd = uri.find("://");
+    bool absUri;
+    if(schemeEnd == std::string::npos) {
+      absUri = false;
+    } else {
+      absUri = true;
+      // Check that scheme is acceptable one.
+      for(size_t i = 0; i < schemeEnd; ++i) {
+        char c = uri[i];
+        if(!util::isAlpha(c) && !util::isDigit(c) &&
+           c != '+' && c != '-' && c != '.') {
+          absUri = false;
+          break;
+        }
+      }
+    }
+    if(absUri) {
+      redirectedUri = uri;
+    } else {
+      // rfc2616 requires absolute URI should be provided by Location header
+      // field, but some servers don't obey this rule.
+      // UPDATE: draft-ietf-httpbis-p2-semantics-18 now allows this.
+      uri::UriStruct rus(us_);
+      rus.query.clear();
+      rus.file.clear();
+      size_t offset = 0;
+      if(uri[0] == '/') {
+        // abosulute path
+        rus.dir.clear();
+        offset = 1;
+      }
+      redirectedUri = uri::construct(rus);
+      redirectedUri.append(uri.begin()+offset, uri.end());
+    }
   }
   return parseUri(redirectedUri);
 }
