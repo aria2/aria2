@@ -122,13 +122,43 @@ bool File::mkdirs() {
       *i = '/';
     }
   }
+  std::string::iterator dbegin;
+  if(util::startsWith(path, "//")) {
+    // UNC path
+    std::string::size_type hostEnd = path.find('/', 2);
+    if(hostEnd == std::string::npos) {
+      // UNC path with only hostname considered as an error.
+      return false;
+    } else if(hostEnd == 2) {
+      // If path starts with "///", it is not considered as UNC.
+      dbegin = path.begin();
+    } else {
+      std::string::iterator i = path.begin()+hostEnd;
+      std::string::iterator eoi = path.end();
+      // //host/mount/dir/...
+      //       |     |
+      //       i (at this point)
+      //             |
+      //             dbegin (will be)
+      // Skip to after first directory part. This is because
+      // //host/dir appears to be non-directory and mkdir it fails.
+      for(; i != eoi && *i == '/'; ++i);
+      for(; i != eoi && *i != '/'; ++i);
+      dbegin = i;
+      A2_LOG_DEBUG(fmt("UNC Prefix %s",
+                       std::string(path.begin(), dbegin).c_str()));
+   }
+  } else {
+    dbegin = path.begin();
+  }
   std::string::iterator begin = path.begin();
   std::string::iterator end = path.end();
+  for(std::string::iterator i = dbegin; i != end;) {
 #else // !__MINGW32__
   std::string::iterator begin = name_.begin();
   std::string::iterator end = name_.end();
-#endif // !__MINGW32__
   for(std::string::iterator i = begin; i != end;) {
+#endif // !__MINGW32__
     std::string::iterator j = std::find(i, end, '/');
     if(std::distance(i, j) == 0) {
       ++i;
