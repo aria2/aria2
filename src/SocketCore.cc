@@ -294,7 +294,7 @@ void SocketCore::bind
         error = "Given address and resolved address do not match.";
         continue;
       }
-      sock_t fd = bindTo(addrp, port, family, sockType_, flags, error);
+      sock_t fd = bindTo(host, port, family, sockType_, flags, error);
       if(fd != (sock_t)-1) {
         sockfd_ = fd;
         break;
