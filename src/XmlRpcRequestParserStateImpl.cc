@@ -200,8 +200,8 @@ void IntXmlRpcRequestParserState::endElement
  const char* name,
  const std::string& characters)
 {
-  int64_t value;
-  if(util::parseLLIntNoThrow(value, characters)) {
+  int32_t value;
+  if(util::parseIntNoThrow(value, characters)) {
     psm->setCurrentFrameValue(Integer::g(value));
   } else {
     // nothing to do here: We just leave current frame value to null.

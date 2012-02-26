@@ -652,6 +652,36 @@ void RpcMethodTest::testTellWaiting()
   CPPUNIT_ASSERT_EQUAL(0, res.code);
   resParams = downcast<List>(res.param);
   CPPUNIT_ASSERT_EQUAL((size_t)3, resParams->size());
+
+  // offset = INT32_MAX
+  req.params->set(0, Integer::g(INT32_MAX));
+  req.params->set(1, Integer::g(1));
+  res = m.execute(req, e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+  resParams = downcast<List>(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, resParams->size());
+  // num = INT32_MAX
+  req.params->set(0, Integer::g(1));
+  req.params->set(1, Integer::g(INT32_MAX));
+  res = m.execute(req, e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+  resParams = downcast<List>(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)3, resParams->size());
+  // offset=INT32_MAX and num = INT32_MAX
+  req.params->set(0, Integer::g(INT32_MAX));
+  req.params->set(1, Integer::g(INT32_MAX));
+  res = m.execute(req, e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+  resParams = downcast<List>(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, resParams->size());
+  // offset=INT32_MIN and num = INT32_MAX
+  req.params->set(0, Integer::g(INT32_MIN));
+  req.params->set(1, Integer::g(INT32_MAX));
+  res = m.execute(req, e_.get());
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
+  resParams = downcast<List>(res.param);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, resParams->size());
+
   // negative offset
   req = RpcRequest(TellWaitingRpcMethod::getMethodName(), List::g());
   req.params->append(Integer::g(-1));
