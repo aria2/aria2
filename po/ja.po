@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-01-12 00:45+0900\n"
+"POT-Creation-Date: 2012-02-26 18:56+0900\n"
 "PO-Revision-Date: 2011-05-21 00:09+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -29,11 +29,11 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急シャットダウン中です..."
 
-#: src/MultiUrlRequestInfo.cc:159
+#: src/MultiUrlRequestInfo.cc:162
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 は次回, ダウンロードを再開します."
 
-#: src/MultiUrlRequestInfo.cc:160
+#: src/MultiUrlRequestInfo.cc:163
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -41,43 +41,43 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/MultiUrlRequestInfo.cc:274
+#: src/MultiUrlRequestInfo.cc:280
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "ServerStat ファイル %s を保存しました."
 
-#: src/MultiUrlRequestInfo.cc:277
+#: src/MultiUrlRequestInfo.cc:283
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "ServerStat ファイル %s の書き込みに失敗しました."
 
-#: src/RequestGroupMan.cc:342
+#: src/RequestGroupMan.cc:344
 #, fuzzy, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "ダウンロード完了: %s"
 
-#: src/RequestGroupMan.cc:607
+#: src/RequestGroupMan.cc:623
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:666
 msgid "Status Legend:"
 msgstr "凡例:"
 
-#: src/RequestGroupMan.cc:652
+#: src/RequestGroupMan.cc:668
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "ダウンロードが完了."
 
-#: src/RequestGroupMan.cc:655
+#: src/RequestGroupMan.cc:671
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:658
+#: src/RequestGroupMan.cc:674
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:661
+#: src/RequestGroupMan.cc:677
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "ダウンロードを中止します."
@@ -648,6 +648,7 @@ msgid " -n, --no-netrc[=true|false]  Disables netrc support."
 msgstr " -n, --no-netrc[=true|false]  netrc サポートをに無効にします."
 
 #: src/usage_text.h:221
+#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -662,7 +663,7 @@ msgid ""
 "per\n"
 "                              single line. See INPUT FILE section of man "
 "page\n"
-"                              for details."
+"                              for details. See also --deferred-input option."
 msgstr ""
 " -i, --input-file=FILE        FILE の中にある URI をダウンロードします. 一つ"
 "の項\n"
@@ -2534,6 +2535,32 @@ msgstr ""
 "                              合, ランダムなアルファベットキャラクターを付加"
 "し\n"
 "                              20 バイトにします."
+
+#: src/usage_text.h:863
+#, fuzzy
+msgid ""
+" --deferred-input[=true|false] If true is given, aria2 does not read all "
+"URIs\n"
+"                              and options from file specified by -i option "
+"at\n"
+"                              startup, but it reads one by one when it "
+"needs\n"
+"                              later. This may reduce memory usage if input\n"
+"                              file contains a lot of URIs to download.\n"
+"                              If false is given, aria2 reads all URIs and\n"
+"                              options at startup."
+msgstr ""
+" --bt-hash-check-seed[=true|false] true が指定された場合, --check-integrity "
+"オプ\n"
+"                              ションによるハッシュ チェック後にファイルが完全"
+"で\n"
+"                              ある場合, 引き続きシードを行います. ダウンロー"
+"ドが\n"
+"                              未完の場合のみダウンロードをしたい場合は, "
+"false を\n"
+"                              指定します. このオプションは BitTorrent ダウン"
+"ロー\n"
+"                              ドでのみ有効です."
 
 #: src/version_usage.cc:57
 msgid " version "

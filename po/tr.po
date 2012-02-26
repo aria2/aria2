@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-01-12 00:45+0900\n"
+"POT-Creation-Date: 2012-02-26 18:56+0900\n"
 "PO-Revision-Date: 2010-07-19 18:10+0000\n"
 "Last-Translator: Fatih Aşıcı <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -28,11 +28,11 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Acil kapanış başlıyor..."
 
-#: src/MultiUrlRequestInfo.cc:159
+#: src/MultiUrlRequestInfo.cc:162
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "Transferi tekrar başlatırsanız, aria2 indirmeye devam edecek."
 
-#: src/MultiUrlRequestInfo.cc:160
+#: src/MultiUrlRequestInfo.cc:163
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -40,43 +40,43 @@ msgstr ""
 "Bir hatayla karşılaşırsanız log dosyasına bakın. Detaylar için yardım ve man "
 "sayfalarındaki '-l' seçeneğine bakın."
 
-#: src/MultiUrlRequestInfo.cc:274
+#: src/MultiUrlRequestInfo.cc:280
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:277
+#: src/MultiUrlRequestInfo.cc:283
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "%s sebebiyle soket yerleştirilemedi"
 
-#: src/RequestGroupMan.cc:342
+#: src/RequestGroupMan.cc:344
 #, fuzzy, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "İndirme tamamlandı: %s"
 
-#: src/RequestGroupMan.cc:607
+#: src/RequestGroupMan.cc:623
 msgid "Download Results:"
 msgstr "İndirme Sonuçları:"
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:666
 msgid "Status Legend:"
 msgstr "Durum Kısaltmaları:"
 
-#: src/RequestGroupMan.cc:652
+#: src/RequestGroupMan.cc:668
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "İndirme tamamlandı."
 
-#: src/RequestGroupMan.cc:655
+#: src/RequestGroupMan.cc:671
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:658
+#: src/RequestGroupMan.cc:674
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:661
+#: src/RequestGroupMan.cc:677
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "İndirme iptal edildi."
@@ -516,7 +516,7 @@ msgid ""
 "per\n"
 "                              single line. See INPUT FILE section of man "
 "page\n"
-"                              for details."
+"                              for details. See also --deferred-input option."
 msgstr ""
 " --follow-torrent=true|false|mem  True veya mem seçilirse, .torrent uzantılı "
 "bir dosya ya da \n"
@@ -1860,6 +1860,31 @@ msgid ""
 "shutdown\n"
 "                              itself."
 msgstr ""
+
+#: src/usage_text.h:863
+#, fuzzy
+msgid ""
+" --deferred-input[=true|false] If true is given, aria2 does not read all "
+"URIs\n"
+"                              and options from file specified by -i option "
+"at\n"
+"                              startup, but it reads one by one when it "
+"needs\n"
+"                              later. This may reduce memory usage if input\n"
+"                              file contains a lot of URIs to download.\n"
+"                              If false is given, aria2 reads all URIs and\n"
+"                              options at startup."
+msgstr ""
+" --follow-torrent=true|false|mem  True veya mem seçilirse, .torrent uzantılı "
+"bir dosya ya da \n"
+"                              içerik tipi application/x-bittorrent olan bir "
+"dosya indirildiğinde, aria2\n"
+"                              onu bir torrent dosyası olarak okur ve "
+"içindeki dosyaları indirir.\n"
+"                              Eğer mem seçilirse, torrent dosyası diske "
+"yazılmaz sadece hafızada\n"
+"                              tutulur.Eğer false seçilirse, yukarıda "
+"anlatılan işler yapılmaz."
 
 #: src/version_usage.cc:57
 msgid " version "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-01-12 00:45+0900\n"
+"POT-Creation-Date: 2012-02-26 18:56+0900\n"
 "PO-Revision-Date: 2010-05-30 06:00+0000\n"
 "Last-Translator: Bundo <bundo@bundo.biz>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -27,11 +27,11 @@ msgstr "종료 중입니다 ... 비상시에 즉시 종료하려면 : Ctrl-C를 
 msgid "Emergency shutdown sequence commencing..."
 msgstr "긴급 종료 중입니다 ..."
 
-#: src/MultiUrlRequestInfo.cc:159
+#: src/MultiUrlRequestInfo.cc:162
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2는 다음 다운로드를 다시 시작합니다."
 
-#: src/MultiUrlRequestInfo.cc:160
+#: src/MultiUrlRequestInfo.cc:163
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -39,42 +39,42 @@ msgstr ""
 "오류가 발생하면 로그 파일을 보십시오. 자세한 내용은 help/man 페이지의 '-l' 옵"
 "션 항목을 보십시오."
 
-#: src/MultiUrlRequestInfo.cc:274
+#: src/MultiUrlRequestInfo.cc:280
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:277
+#: src/MultiUrlRequestInfo.cc:283
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
 
-#: src/RequestGroupMan.cc:342
+#: src/RequestGroupMan.cc:344
 #, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr ""
 
-#: src/RequestGroupMan.cc:607
+#: src/RequestGroupMan.cc:623
 msgid "Download Results:"
 msgstr "다운로드 결과:"
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:666
 msgid "Status Legend:"
 msgstr "상태 설명:"
 
-#: src/RequestGroupMan.cc:652
+#: src/RequestGroupMan.cc:668
 msgid "(OK):download completed."
 msgstr ""
 
-#: src/RequestGroupMan.cc:655
+#: src/RequestGroupMan.cc:671
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:658
+#: src/RequestGroupMan.cc:674
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:661
+#: src/RequestGroupMan.cc:677
 msgid "(RM):download removed."
 msgstr ""
 
@@ -443,6 +443,7 @@ msgid " -n, --no-netrc[=true|false]  Disables netrc support."
 msgstr ""
 
 #: src/usage_text.h:221
+#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -457,8 +458,18 @@ msgid ""
 "per\n"
 "                              single line. See INPUT FILE section of man "
 "page\n"
-"                              for details."
+"                              for details. See also --deferred-input option."
 msgstr ""
+" - s, - split = N개의 연결을 사용하여 파일을 다운로드합니다.\n"
+"                              N 개인 저쪽 URL이 주어진다면, \n"
+"                              첫번째 N 개의 URL 이 사용되고, \n"
+"                              나머지는 백업으로 간주합니다. N 개 이하의 URL"
+"을 지정하면 \n"
+"                              URL을 몇 번 사용하여 총 N 개의 연결되도록 조정"
+"합니다.\n"
+"                              -j 옵션을 참조하십시오.\n"
+"                              Metalink의 다운로드는 이 옵션을 사용하는\n"
+"                              구, -C 옵션을 사용하십시오."
 
 #: src/usage_text.h:231
 msgid ""
@@ -1656,6 +1667,20 @@ msgid ""
 "                              for some reason, aria2 can detect it and "
 "shutdown\n"
 "                              itself."
+msgstr ""
+
+#: src/usage_text.h:863
+msgid ""
+" --deferred-input[=true|false] If true is given, aria2 does not read all "
+"URIs\n"
+"                              and options from file specified by -i option "
+"at\n"
+"                              startup, but it reads one by one when it "
+"needs\n"
+"                              later. This may reduce memory usage if input\n"
+"                              file contains a lot of URIs to download.\n"
+"                              If false is given, aria2 reads all URIs and\n"
+"                              options at startup."
 msgstr ""
 
 #: src/version_usage.cc:57

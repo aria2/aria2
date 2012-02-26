@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-01-12 00:45+0900\n"
+"POT-Creation-Date: 2012-02-26 18:56+0900\n"
 "PO-Revision-Date: 2008-10-08 08:24+0000\n"
 "Last-Translator: snufkinto <Unknown>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -27,54 +27,54 @@ msgstr "關閉序列開始...如要緊急關閉，請再次按Ctrl-C。"
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急關閉序列開始..."
 
-#: src/MultiUrlRequestInfo.cc:159
+#: src/MultiUrlRequestInfo.cc:162
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2將於傳輸重新開始後恢復下載。"
 
-#: src/MultiUrlRequestInfo.cc:160
+#: src/MultiUrlRequestInfo.cc:163
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
 "如有錯誤，請查看日誌記錄檔案。詳細資訊請參考幫助/man page內的 '-l' 選項。"
 
-#: src/MultiUrlRequestInfo.cc:274
+#: src/MultiUrlRequestInfo.cc:280
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "ServerStat檔案 %s 儲存成功。"
 
-#: src/MultiUrlRequestInfo.cc:277
+#: src/MultiUrlRequestInfo.cc:283
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "寫入ServerStat至 %s 失敗。"
 
-#: src/RequestGroupMan.cc:342
+#: src/RequestGroupMan.cc:344
 #, fuzzy, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "下載完畢：%s"
 
-#: src/RequestGroupMan.cc:607
+#: src/RequestGroupMan.cc:623
 msgid "Download Results:"
 msgstr "下載結果："
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:666
 msgid "Status Legend:"
 msgstr "狀態說明："
 
-#: src/RequestGroupMan.cc:652
+#: src/RequestGroupMan.cc:668
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "下載完畢。"
 
-#: src/RequestGroupMan.cc:655
+#: src/RequestGroupMan.cc:671
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:658
+#: src/RequestGroupMan.cc:674
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:661
+#: src/RequestGroupMan.cc:677
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "下載已中斷。"
@@ -443,7 +443,7 @@ msgid ""
 "per\n"
 "                              single line. See INPUT FILE section of man "
 "page\n"
-"                              for details."
+"                              for details. See also --deferred-input option."
 msgstr ""
 
 #: src/usage_text.h:231
@@ -1649,6 +1649,20 @@ msgid ""
 "                              for some reason, aria2 can detect it and "
 "shutdown\n"
 "                              itself."
+msgstr ""
+
+#: src/usage_text.h:863
+msgid ""
+" --deferred-input[=true|false] If true is given, aria2 does not read all "
+"URIs\n"
+"                              and options from file specified by -i option "
+"at\n"
+"                              startup, but it reads one by one when it "
+"needs\n"
+"                              later. This may reduce memory usage if input\n"
+"                              file contains a lot of URIs to download.\n"
+"                              If false is given, aria2 reads all URIs and\n"
+"                              options at startup."
 msgstr ""
 
 #: src/version_usage.cc:57

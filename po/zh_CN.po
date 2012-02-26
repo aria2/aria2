@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-01-12 00:45+0900\n"
+"POT-Creation-Date: 2012-02-26 18:56+0900\n"
 "PO-Revision-Date: 2011-12-25 07:42+0000\n"
 "Last-Translator: wodesuck <Unknown>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
@@ -27,11 +27,11 @@ msgstr "正在关闭程序... 紧急关闭请再按Ctrl-C"
 msgid "Emergency shutdown sequence commencing..."
 msgstr "紧急关闭程序..."
 
-#: src/MultiUrlRequestInfo.cc:159
+#: src/MultiUrlRequestInfo.cc:162
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "重新启动aria2，自动继续下载文件"
 
-#: src/MultiUrlRequestInfo.cc:160
+#: src/MultiUrlRequestInfo.cc:163
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -39,42 +39,42 @@ msgstr ""
 "如果发生任何错误，请参阅日志文件。要了解详细信息，请在help/man页面中参阅'-"
 "l'选项。"
 
-#: src/MultiUrlRequestInfo.cc:274
+#: src/MultiUrlRequestInfo.cc:280
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:277
+#: src/MultiUrlRequestInfo.cc:283
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
 
-#: src/RequestGroupMan.cc:342
+#: src/RequestGroupMan.cc:344
 #, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "GID为 %lld 的下载未完成： %s"
 
-#: src/RequestGroupMan.cc:607
+#: src/RequestGroupMan.cc:623
 msgid "Download Results:"
 msgstr "下载结果："
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:666
 msgid "Status Legend:"
 msgstr "状态标识："
 
-#: src/RequestGroupMan.cc:652
+#: src/RequestGroupMan.cc:668
 msgid "(OK):download completed."
 msgstr "(OK)：完成下载。"
 
-#: src/RequestGroupMan.cc:655
+#: src/RequestGroupMan.cc:671
 msgid "(ERR):error occurred."
 msgstr "(ERR)：发生错误。"
 
-#: src/RequestGroupMan.cc:658
+#: src/RequestGroupMan.cc:674
 msgid "(INPR):download in-progress."
 msgstr "(INPR)：下载中断。"
 
-#: src/RequestGroupMan.cc:661
+#: src/RequestGroupMan.cc:677
 msgid "(RM):download removed."
 msgstr "(RM)：已删除下载。"
 
@@ -517,6 +517,7 @@ msgid " -n, --no-netrc[=true|false]  Disables netrc support."
 msgstr " -n, --no-netrc[=true|false]  禁止 netrc 支持。"
 
 #: src/usage_text.h:221
+#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -531,8 +532,15 @@ msgid ""
 "per\n"
 "                              single line. See INPUT FILE section of man "
 "page\n"
-"                              for details."
+"                              for details. See also --deferred-input option."
 msgstr ""
+" --s, --split=N 使用N个连接下载文件。如果提供了超过N个URL，使用前N个URL而剩下"
+"的URL作为备用。\n"
+"                    如果提供了少于N个URL，这些URL将会被重复使用来使这N个连接"
+"能够同时建立。\n"
+"                    对相同主机的连接数被--max-connection-per-server选项所限"
+"制。\n"
+"                    另见--min-split-size选项。"
 
 #: src/usage_text.h:231
 msgid ""
@@ -1840,6 +1848,27 @@ msgid ""
 "shutdown\n"
 "                              itself."
 msgstr ""
+
+#: src/usage_text.h:863
+#, fuzzy
+msgid ""
+" --deferred-input[=true|false] If true is given, aria2 does not read all "
+"URIs\n"
+"                              and options from file specified by -i option "
+"at\n"
+"                              startup, but it reads one by one when it "
+"needs\n"
+"                              later. This may reduce memory usage if input\n"
+"                              file contains a lot of URIs to download.\n"
+"                              If false is given, aria2 reads all URIs and\n"
+"                              options at startup."
+msgstr ""
+" --bt-hash-check-seed[=true|false] 如果选择true，在使用--check-integrityer\n"
+"                              选项进行哈希检查后，且文件完整时，\n"
+"                              继续提供文件种子。如果您仅仅想检查并下\n"
+"                              载文件，当文件被损坏或不完整时，\n"
+"                              请设置此选项为false。\n"
+"                              此设置仅对BT下载有效。"
 
 #: src/version_usage.cc:57
 msgid " version "

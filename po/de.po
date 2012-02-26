@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-01-12 00:45+0900\n"
+"POT-Creation-Date: 2012-02-26 18:56+0900\n"
 "PO-Revision-Date: 2012-01-12 00:46+0900\n"
 "Last-Translator: Daniel Winzen <d@winzen4.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -28,13 +28,13 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Sofortiger Abbruch wurde eingeleitet..."
 
-#: src/MultiUrlRequestInfo.cc:159
+#: src/MultiUrlRequestInfo.cc:162
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
 "aria2 wird den Download wiederaufnehmen, wenn die Übertragung neugestartet "
 "wird."
 
-#: src/MultiUrlRequestInfo.cc:160
+#: src/MultiUrlRequestInfo.cc:163
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -42,42 +42,42 @@ msgstr ""
 "Sollten Fehler aufgetreten sein, bitte die Mitschnitt-Datei beachten. Für "
 "Details hierzu siehe die Option \"-l\" in den Hilfe- und man-Seiten."
 
-#: src/MultiUrlRequestInfo.cc:274
+#: src/MultiUrlRequestInfo.cc:280
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:277
+#: src/MultiUrlRequestInfo.cc:283
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
 
-#: src/RequestGroupMan.cc:342
+#: src/RequestGroupMan.cc:344
 #, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "Herunterladen GID#%lld nicht vollständig: %s"
 
-#: src/RequestGroupMan.cc:607
+#: src/RequestGroupMan.cc:623
 msgid "Download Results:"
 msgstr "Download-Ergebnisse:"
 
-#: src/RequestGroupMan.cc:650
+#: src/RequestGroupMan.cc:666
 msgid "Status Legend:"
 msgstr "Statuserläuterung:"
 
-#: src/RequestGroupMan.cc:652
+#: src/RequestGroupMan.cc:668
 msgid "(OK):download completed."
 msgstr "(OK):Herunterladen abgeschlossen."
 
-#: src/RequestGroupMan.cc:655
+#: src/RequestGroupMan.cc:671
 msgid "(ERR):error occurred."
 msgstr "(ERR):ein Fehler ist unterlaufen."
 
-#: src/RequestGroupMan.cc:658
+#: src/RequestGroupMan.cc:674
 msgid "(INPR):download in-progress."
 msgstr "(INPR):wird heruntergeladen."
 
-#: src/RequestGroupMan.cc:661
+#: src/RequestGroupMan.cc:677
 msgid "(RM):download removed."
 msgstr ""
 
@@ -536,6 +536,7 @@ msgid " -n, --no-netrc[=true|false]  Disables netrc support."
 msgstr ""
 
 #: src/usage_text.h:221
+#, fuzzy
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -550,8 +551,23 @@ msgid ""
 "per\n"
 "                              single line. See INPUT FILE section of man "
 "page\n"
-"                              for details."
+"                              for details. See also --deferred-input option."
 msgstr ""
+" --follow-torrent=true|false|mem  Für Angabe von \"true\" oder \"mem\" wird "
+"nach\n"
+"                              dem Download einer .torrent-Datei oder einer "
+"Da-\n"
+"                              tei, deren Inhaltstyp \"application/x-"
+"bittorrent\"\n"
+"                              ist, diese Datei als Torrent-Steuerdatei "
+"durch-\n"
+"                              sucht und alle gefundenen Download-Positionen\n"
+"                              heruntergeladen.\n"
+"                              Für \"mem\" wird die .torrent-Datei nicht auf\n"
+"                              der Festplatte gespeichert, sondern nur im \n"
+"                              Speicher gehalten.\n"
+"                              Bei \"false\" wird die .torrent-Datei nicht\n"
+"                              durchsucht."
 
 #: src/usage_text.h:231
 msgid ""
@@ -1842,6 +1858,34 @@ msgid ""
 "shutdown\n"
 "                              itself."
 msgstr ""
+
+#: src/usage_text.h:863
+#, fuzzy
+msgid ""
+" --deferred-input[=true|false] If true is given, aria2 does not read all "
+"URIs\n"
+"                              and options from file specified by -i option "
+"at\n"
+"                              startup, but it reads one by one when it "
+"needs\n"
+"                              later. This may reduce memory usage if input\n"
+"                              file contains a lot of URIs to download.\n"
+"                              If false is given, aria2 reads all URIs and\n"
+"                              options at startup."
+msgstr ""
+" --bt-hash-check-seed[=true|false] Wenn 'true' angegeben ist, wird nach "
+"einer\n"
+"                              Integritätsprüfung mit der --check-integrity\n"
+"                              Option und nach dem vollständigen Download "
+"die\n"
+"                              Datei verteilt (geseeded). Wollen Sie die "
+"Datei\n"
+"                              überprüfen und nur herunterladen wenn sie\n"
+"                              beschädigt oder unvollständig ist, setzen Sie\n"
+"                              diese Option auf 'false'.\n"
+"                              Diese Option hat nur Auswirkungen auf "
+"BitTorrent\n"
+"                              Downloads."
 
 #: src/version_usage.cc:57
 msgid " version "
