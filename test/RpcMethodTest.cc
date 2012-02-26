@@ -999,6 +999,12 @@ void RpcMethodTest::testChangeUri_fail()
   RpcResponse res = m.execute(req, e_.get());
   CPPUNIT_ASSERT_EQUAL(0, res.code);
 
+  req.params->set(1, Integer::g(0));
+  res = m.execute(req, e_.get());
+  // RPC request fails because 2nd argument is less than 1.
+  CPPUNIT_ASSERT_EQUAL(1, res.code);
+
+  req.params->set(1, Integer::g(1));
   req.params->set(0, String::g("2"));
   res = m.execute(req, e_.get());  
   // RPC request fails because GID#2 does not exist.

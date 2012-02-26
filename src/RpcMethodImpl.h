@@ -76,6 +76,37 @@ const T* checkRequiredParam(const RpcRequest& req, size_t index)
   return checkParam<T>(req, index, true);
 }
 
+struct IntegerGE {
+  IntegerGE(int32_t min):min(min) {}
+
+  bool operator()(const Integer* param, std::string* error) const
+  {
+    if(min <= param->i()) {
+      return true;
+    } else {
+      if(error) {
+        *error = fmt("the value must be greater than or equal to %d.", min);
+      }
+      return false;
+    }
+  }
+
+  int32_t min;
+};
+
+template<typename Validator>
+const Integer* checkRequiredInteger(const RpcRequest& req, size_t index,
+                                    Validator validator)
+{
+  const Integer* param = checkRequiredParam<Integer>(req, index);
+  std::string error;
+  if(!validator(param, &error)) {
+    throw DL_ABORT_EX(fmt("The integer parameter at %lu has invalid value: %s",
+                          static_cast<unsigned long>(index), error.c_str()));
+  }
+  return param;
+}
+
 template<typename OutputIterator>
 void toStringList(OutputIterator out, const List* src)
 {
@@ -363,12 +394,9 @@ protected:
   (const RpcRequest& req, DownloadEngine* e)
   {
     const Integer* offsetParam = checkRequiredParam<Integer>(req, 0);
-    const Integer* numParam = checkRequiredParam<Integer>(req, 1);
+    const Integer* numParam = checkRequiredInteger(req, 1, IntegerGE(0));
     const List* keysParam = checkParam<List>(req, 2);
 
-    if(numParam->i() < 0) {
-      throw DL_ABORT_EX("The parameter num must be zero or positive integer.");
-    }
     int64_t offset = offsetParam->i();
     int64_t num = numParam->i();
     std::vector<std::string> keys;

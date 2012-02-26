@@ -1392,7 +1392,7 @@ SharedHandle<ValueBase> ChangeUriRpcMethod::process
 (const RpcRequest& req, DownloadEngine* e)
 {
   const String* gidParam = checkRequiredParam<String>(req, 0);
-  const Integer* indexParam = checkRequiredParam<Integer>(req, 1);
+  const Integer* indexParam = checkRequiredInteger(req, 1, IntegerGE(1));
   const List* delUrisParam = checkRequiredParam<List>(req, 2);
   const List* addUrisParam = checkRequiredParam<List>(req, 3);
   const Integer* posParam = checkParam<Integer>(req, 4);
