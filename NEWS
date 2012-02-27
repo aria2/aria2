@@ -1,3 +1,57 @@
+aria2 1.14.2
+============
+
+Release Note
+------------
+
+This release fixes the bug that aria2 does not listen on the address
+given in --interface. It also fixes the bug of HTTP redirect when
+Location header field contains an absolute path which contains "://".
+aria2 now doesn't emit "Max payload length exceeded or invalid" error
+when the number of pieces is very large in BitTorrent. It also allows
+missing <params> element in XML-RPC request as specified in XML-RPC
+specification. Also in XML-RPC, <i4> and <int> elements must be 32
+bits signed integer from this release.  The --deferred-input option
+was added.  It prevents aria2 from reading all URIs from -i file, and
+makes aria2 read URI one by one as it is needed. This will save memory
+usage if -i file contains lots of URIs. Windows UNC path support was
+added.
+
+Changes
+-------
+
+ * Only accepts 32 bit integer values from int and i4 elements in
+   XML-RPC. Fixed overflow bug in aria2.tellWaiting and
+   aria2.tellStopped RPC methods.
+
+ * Updated Spanish, Italian, Russian and Chinese (Simplified)
+   translations. Thanks to all translators.
+
+ * Fixed the bug that aria2 does not listen on address given in
+   --interface.
+
+ * Supported Windows UNC path.
+
+ * Check scheme part in redirected URI more strictly.  The previous
+   implementation mistakenly sees '/abspath?uri=http://foo' as an
+   absolute URI because it contains '://', but actually it is not.
+   This change checks scheme part is constructed in the allowed
+   character set described in RFC 3986 Section 3.1.
+
+ * Allow missing params in XML-RPC request.
+
+ * Fixed "Max payload length exceeded or invalid" error when the
+   number of pieces is very large.
+
+ * Added --deferred-input option.  If true is given to
+   --deferred-input option, aria2 does not read all URIs and options
+   from file specified by -i option at startup, but it reads one by
+   one when it needs later. This may reduce memory usage if input file
+   contains a lot of URIs to download. If false is given, aria2 reads
+   all URIs and options at startup. This option defaults to false.
+
+
+
 aria2 1.14.1
 ============
 
