@@ -99,6 +99,28 @@ char* BufferedFile::getsn(char* s, int size)
   return ptr;
 }
 
+std::string BufferedFile::getLine()
+{
+  std::string res;
+  if(eof()) {
+    return res;
+  }
+  char buf[4096];
+  while(gets(buf, sizeof(buf))) {
+    size_t len = strlen(buf);
+    bool lineBreak = false;
+    if(buf[len-1] == '\n') {
+      --len;
+      lineBreak = true;
+    }
+    res.append(buf, len);
+    if(lineBreak) {
+      break;
+    }
+  }
+  return res;
+}
+
 int BufferedFile::close()
 {
   if(open_) {

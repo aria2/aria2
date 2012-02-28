@@ -55,14 +55,6 @@ UriListParser::~UriListParser() {}
 
 void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
 {
-  char buf[4096];
-  if(line_.empty()) {
-    if(!fp_.getsn(buf, sizeof(buf))) {
-      line_.clear();
-      return;
-    }
-    line_.assign(&buf[0], &buf[strlen(buf)]);
-  }
   const SharedHandle<OptionParser>& optparser = OptionParser::getInstance();
   while(1) {
     if(!line_.empty() && line_[0] != '#') {
@@ -71,31 +63,35 @@ void UriListParser::parseNext(std::vector<std::string>& uris, Option& op)
       // Read options
       std::stringstream ss;
       while(1) {
-        if(!fp_.getsn(buf, sizeof(buf))) {
-          line_.clear();
-          break;
-        }
-        line_.assign(&buf[0], &buf[strlen(buf)]);
+        line_ = fp_.getLine();
         if(line_.empty()) {
+          if(fp_.eof()) {
+            break;
+          } else if(!fp_) {
+            throw DL_ABORT_EX("UriListParser:I/O error.");
+          } else {
+            continue;
+          }
+        }
+        if(line_[0] == ' ' || line_[0] == '\t') {
+          ss << line_ << "\n";
+        } else if(line_[0] == '#') {
           continue;
         } else {
-          if(line_[0] == ' ' || line_[0] == '\t') {
-            ss << line_ << "\n";
-          } else if(line_[0] == '#') {
-            continue;
-          } else {
-            break;
-          }
+          break;
         }
       }
       optparser->parse(op, ss);
       return;
     }
-    if(!fp_.getsn(buf, sizeof(buf))) {
-      line_.clear();
-      return;
+    line_ = fp_.getLine();
+    if(line_.empty()) {
+      if(fp_.eof()) {
+        return;
+      } else if(!fp_) {
+        throw DL_ABORT_EX("UriListParser:I/O error.");
+      }
     }
-    line_.assign(&buf[0], &buf[strlen(buf)]);
   }
 }
 

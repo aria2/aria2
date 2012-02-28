@@ -115,12 +115,16 @@ void Netrc::addAuthenticator(const SharedHandle<Authenticator>& authenticator)
 namespace {
 void skipMacdef(BufferedFile& fp)
 {
-  char buf[4096];
+  std::string s;
   while(1) {
-    if(!fp.gets(buf, sizeof(buf))) {
+    s = fp.getLine();
+    if(s.empty() || fp.eof()) {
       break;
     }
-    if(buf[0] == '\n' || buf[0] == '\r') {
+    if(!fp) {
+      throw DL_ABORT_EX("Netrc:I/O error.");
+    }
+    if(s[0] == '\n' || s[0] == '\r') {
       break;
     }
   }
@@ -144,18 +148,23 @@ void Netrc::parse(const std::string& path)
   };
   SharedHandle<Authenticator> authenticator;
   STATE state = GET_TOKEN;
-  char buf[4096];
   while(1) {
-    if(!fp.getsn(buf, sizeof(buf))) {
-      break;
+    std::string line = fp.getLine();
+    if(line.empty()) {
+      if(fp.eof()) {
+        break;
+      } else if(!fp) {
+        throw DL_ABORT_EX("Netrc:I/O error.");
+      } else {
+        continue;
+      }
     }
-    size_t len = strlen(buf);
-    if(len == 0 || buf[0] == '#') {
+    if(line[0] == '#') {
       continue;
     }
     std::vector<Scip> tokens;
-    util::splitIterM(&buf[0], &buf[len], std::back_inserter(tokens), " \t",
-                     true);
+    util::splitIterM(line.begin(), line.end(), std::back_inserter(tokens),
+                     " \t", true);
     for(std::vector<Scip>::const_iterator iter = tokens.begin(),
           eoi = tokens.end(); iter != eoi; ++iter) {
       if(state == GET_TOKEN) {

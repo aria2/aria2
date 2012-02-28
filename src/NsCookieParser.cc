@@ -55,10 +55,11 @@ NsCookieParser::~NsCookieParser() {}
 
 namespace {
 bool parseNsCookie
-(Cookie& cookie, const char* buf, size_t buflen, time_t creationTime)
+(Cookie& cookie, const std::string& cookieStr, time_t creationTime)
 {
   std::vector<Scip> vs;
-  util::splitIter(&buf[0], &buf[buflen], std::back_inserter(vs), '\t', true);
+  util::splitIter(cookieStr.begin(), cookieStr.end(), std::back_inserter(vs),
+                  '\t', true);
   if(vs.size() < 6) {
     return false;
   }
@@ -105,17 +106,22 @@ std::vector<Cookie> NsCookieParser::parse
     throw DL_ABORT_EX(fmt("Failed to open file %s", filename.c_str()));
   }
   std::vector<Cookie> cookies;
-  char buf[8192];
   while(1) {
-    if(!fp.getsn(buf, sizeof(buf))) {
-      break;
+    std::string line = fp.getLine();
+    if(line.empty()) {
+      if(fp.eof()) {
+        break;
+      } else if(!fp) {
+        throw DL_ABORT_EX("CookieParser:I/O error.");
+      } else {
+        continue;
+      }
     }
-    size_t len = strlen(buf);
-    if(len == 0 || buf[0] == '#') {
+    if(line[0] == '#') {
       continue;
     }
     Cookie c;
-    if(parseNsCookie(c, buf, len, creationTime)) {
+    if(parseNsCookie(c, line, creationTime)) {
       cookies.push_back(c);
     }
   }

@@ -137,26 +137,27 @@ bool ServerStatMan::load(const std::string& filename)
                      filename.c_str()));
     return false;
   }
-  char buf[4096];
   while(1) {
-    if(!fp.getsn(buf, sizeof(buf))) {
+    std::string line = fp.getLine();
+    if(line.empty()) {
       if(fp.eof()) {
         break;
-      } else {
+      } else if(!fp) {
         A2_LOG_ERROR(fmt(MSG_READING_SERVER_STAT_FILE_FAILED,
                          filename.c_str()));
         return false;
+      } else {
+        continue;
       }
     }
     std::pair<std::string::const_iterator,
               std::string::const_iterator> p =
-      util::stripIter(&buf[0], &buf[strlen(buf)]);
+      util::stripIter(line.begin(), line.end());
     if(p.first == p.second) {
       continue;
     }
-    std::string line(p.first, p.second);
     std::vector<Scip> items;
-    util::splitIter(line.begin(), line.end(), std::back_inserter(items), ',');
+    util::splitIter(p.first, p.second, std::back_inserter(items), ',');
     std::map<std::string, std::string> m;
     for(std::vector<Scip>::const_iterator i = items.begin(),
           eoi = items.end(); i != eoi; ++i) {
