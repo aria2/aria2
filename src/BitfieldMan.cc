@@ -871,7 +871,7 @@ off_t BitfieldMan::getOffsetCompletedLength
 
 off_t BitfieldMan::getMissingUnusedLength(size_t startingIndex) const
 {
-  if(startingIndex < 0 || blocks_ <= startingIndex) {
+  if(blocks_ <= startingIndex) {
     return 0;
   }
   off_t length = 0;

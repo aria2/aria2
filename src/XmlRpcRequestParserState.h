@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-class XmlAttr;
+struct XmlAttr;
 
 namespace rpc {
 

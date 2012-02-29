@@ -52,7 +52,7 @@ namespace aria2 {
 class RequestGroup;
 class Signature;
 class FileEntry;
-class ContextAttribute;
+struct ContextAttribute;
 
 class DownloadContext
 {

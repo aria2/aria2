@@ -57,7 +57,7 @@ extern const std::string PATH_TO_DIR;
 extern const std::string PATH_TO_COMMAND;
 
 class Option;
-class Pref;
+struct Pref;
 
 class OptionHandler {
 public:

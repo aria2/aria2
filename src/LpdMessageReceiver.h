@@ -42,7 +42,7 @@
 namespace aria2 {
 
 class SocketCore;
-class LpdMessage;
+struct LpdMessage;
 
 class LpdMessageReceiver {
 private:

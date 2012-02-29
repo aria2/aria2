@@ -49,7 +49,7 @@ namespace aria2 {
 class HttpRequest;
 class HttpHeader;
 class StreamFilter;
-class MetalinkHttpEntry;
+struct MetalinkHttpEntry;
 class Option;
 class Checksum;
 

@@ -43,7 +43,7 @@ namespace aria2 {
 
 namespace rpc {
 
-class RpcRequest;
+struct RpcRequest;
 
 #ifdef ENABLE_XML_RPC
 RpcRequest xmlParseMemory(const char* xml, size_t size);

@@ -38,7 +38,7 @@
 
 namespace aria2 {
 
-class Pref;
+struct Pref;
 
 class OptionHandlerException:public RecoverableException {
 private:

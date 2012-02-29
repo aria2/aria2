@@ -43,7 +43,7 @@
 namespace aria2 {
 
 class MetalinkParserStateMachine;
-class XmlAttr;
+struct XmlAttr;
 
 class MetalinkParserState
 {

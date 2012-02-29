@@ -44,7 +44,7 @@
 namespace aria2 {
 
 class Option;
-class Pref;
+struct Pref;
 
 class BooleanOptionHandler : public AbstractOptionHandler {
 public:

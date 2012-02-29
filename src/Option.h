@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-class Pref;
+struct Pref;
 
 class Option {
 private:

@@ -47,7 +47,7 @@ namespace aria2 {
 
 class Option;
 class OptionHandler;
-class Pref;
+struct Pref;
 
 class OptionParser {
 private:

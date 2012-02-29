@@ -241,8 +241,7 @@ void DefaultBtProgressInfoFile::load()
   if(version >= 1) {
     infoHashLength = ntohl(infoHashLength);
   }
-  if((infoHashLength < 0) ||
-     ((infoHashLength == 0) && infoHashCheckEnabled)) {
+  if(infoHashLength == 0 && infoHashCheckEnabled) {
     throw DL_ABORT_EX(fmt("Invalid info hash length: %d", infoHashLength));
   }
   if(infoHashLength > 0) {

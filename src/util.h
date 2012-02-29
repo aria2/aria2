@@ -71,7 +71,7 @@ class BinaryStream;
 class FileEntry;
 class RequestGroup;
 class Option;
-class Pref;
+struct Pref;
 
 #define STRTOLL(X) strtoll(X, reinterpret_cast<char**>(0), 10)
 #define STRTOULL(X) strtoull(X, reinterpret_cast<char**>(0), 10)
@@ -110,6 +110,52 @@ std::string nativeToUtf8(const std::string& src);
 #endif // !__MINGW32__
 
 namespace util {
+
+extern const std::string DEFAULT_STRIP_CHARSET;
+
+template<typename InputIterator>
+std::pair<InputIterator, InputIterator> stripIter
+(InputIterator first, InputIterator last,
+ const std::string& chars = DEFAULT_STRIP_CHARSET)
+{
+  for(; first != last &&
+        std::find(chars.begin(), chars.end(), *first) != chars.end(); ++first);
+  if(first == last) {
+    return std::make_pair(first, last);
+  }
+  InputIterator left = last-1;
+  for(; left != first &&
+        std::find(chars.begin(), chars.end(), *left) != chars.end(); --left);
+  return std::make_pair(first, left+1);
+}
+
+template<typename InputIterator>
+InputIterator lstripIter
+(InputIterator first, InputIterator last, char ch)
+{
+  for(; first != last && *first == ch; ++first);
+  return first;
+}
+
+template<typename InputIterator, typename InputIterator2>
+InputIterator lstripIter
+(InputIterator first, InputIterator last,
+ InputIterator2 cfirst, InputIterator2 clast)
+{
+  for(; first != last && std::find(cfirst, clast, *first) != clast; ++first);
+  return first;
+}
+
+template<typename InputIterator>
+InputIterator lstripIter
+(InputIterator first, InputIterator last)
+{
+  return lstripIter(first, last,
+                    DEFAULT_STRIP_CHARSET.begin(), DEFAULT_STRIP_CHARSET.end());
+}
+
+std::string strip
+(const std::string& str, const std::string& chars = DEFAULT_STRIP_CHARSET);
 
 template<typename InputIterator>
 void divide
@@ -160,52 +206,6 @@ std::string itos(int64_t value, bool comma = false);
  */
 int64_t difftv(struct timeval tv1, struct timeval tv2);
 int32_t difftvsec(struct timeval tv1, struct timeval tv2);
-
-extern const std::string DEFAULT_STRIP_CHARSET;
-
-template<typename InputIterator>
-std::pair<InputIterator, InputIterator> stripIter
-(InputIterator first, InputIterator last,
- const std::string& chars = DEFAULT_STRIP_CHARSET)
-{
-  for(; first != last &&
-        std::find(chars.begin(), chars.end(), *first) != chars.end(); ++first);
-  if(first == last) {
-    return std::make_pair(first, last);
-  }
-  InputIterator left = last-1;
-  for(; left != first &&
-        std::find(chars.begin(), chars.end(), *left) != chars.end(); --left);
-  return std::make_pair(first, left+1);
-}
-
-template<typename InputIterator>
-InputIterator lstripIter
-(InputIterator first, InputIterator last, char ch)
-{
-  for(; first != last && *first == ch; ++first);
-  return first;
-}
-
-template<typename InputIterator, typename InputIterator2>
-InputIterator lstripIter
-(InputIterator first, InputIterator last,
- InputIterator2 cfirst, InputIterator2 clast)
-{
-  for(; first != last && std::find(cfirst, clast, *first) != clast; ++first);
-  return first;
-}
-
-template<typename InputIterator>
-InputIterator lstripIter
-(InputIterator first, InputIterator last)
-{
-  return lstripIter(first, last,
-                    DEFAULT_STRIP_CHARSET.begin(), DEFAULT_STRIP_CHARSET.end());
-}
-
-std::string strip
-(const std::string& str, const std::string& chars = DEFAULT_STRIP_CHARSET);
 
 std::string replace(const std::string& target, const std::string& oldstr, const std::string& newstr);
 

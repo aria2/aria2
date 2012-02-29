@@ -124,7 +124,7 @@ SharedHandle<Piece> DefaultPieceStorage::checkOutPiece
 SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
 {
   SharedHandle<Piece> piece;
-  if(0 <= index && index <= bitfieldMan_->getMaxIndex()) {
+  if(index <= bitfieldMan_->getMaxIndex()) {
     piece = findUsedPiece(index);
     if(!piece) {
       piece.reset(new Piece(index, bitfieldMan_->getBlockLength(index)));
