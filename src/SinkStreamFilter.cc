@@ -49,16 +49,28 @@ ssize_t SinkStreamFilter::transform
  const SharedHandle<Segment>& segment,
  const unsigned char* inbuf, size_t inlen)
 {
+  size_t wlen;
   if(inlen > 0) {
-    out->writeData(inbuf, inlen, segment->getPositionToWrite());
+    if(segment->getLength() > 0) {
+      // We must not write data larger than available space in
+      // segment.
+      assert(segment->getLength() >= segment->getWrittenLength());
+      size_t lenAvail = segment->getLength()-segment->getWrittenLength();
+      wlen = std::min(inlen, lenAvail);
+    } else {
+      wlen = inlen;
+    }
+    out->writeData(inbuf, wlen, segment->getPositionToWrite());
 #ifdef ENABLE_MESSAGE_DIGEST
     if(hashUpdate_) {
-      segment->updateHash(segment->getWrittenLength(), inbuf, inlen);
+      segment->updateHash(segment->getWrittenLength(), inbuf, wlen);
     }
 #endif // ENABLE_MESSAGE_DIGEST
-    segment->updateWrittenLength(inlen);
+    segment->updateWrittenLength(wlen);
+  } else {
+    wlen = 0;
   }
-  bytesProcessed_ = inlen;
+  bytesProcessed_ = wlen;
   return bytesProcessed_;
 }
 
