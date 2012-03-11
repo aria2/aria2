@@ -172,6 +172,9 @@ necessary to build the program:
 $ autoreconf -i
 ---------------
 
+If you are building aria2 for Mac OS X, take a look at
+build_osx_release.sh, which builds OSX universal binary DMG.
+
 The quickest way to build aria2 is just type following commands:
 
 -------------
