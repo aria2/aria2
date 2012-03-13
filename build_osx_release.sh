@@ -8,9 +8,9 @@
 # Additionally, Macports must be installed with the following packages:
 #
 # autoconf autoconf213 autogen +universal automake coreutils +universal
-# expat +universal gettext +universal gmake +universal gnutls +universal
-# icu +universal libgcrypt +universal libxml2 +universal m4 +universal
-# openssl +universal pkgconfig +universal
+# gettext +universal gmake +universal icu +universal 
+# libgcrypt +universal libxml2 +universal m4 +universal
+# openssl +universal pkgconfig +universal c-ares +universal zlib +universal
 #
 # Author: renaud gaudin
 
@@ -28,9 +28,14 @@ DMG_SKEL=aria2_dmg
 
 # build aria2 mostly static
 mkdir -p $BUILD_TARGET
-export LIBS="-lcrypto -lz -lpthread -ldl"
+
+export ZLIB_LIBS="/opt/local/lib/libz.a"
+export OPENSSL_LIBS="-L/usr/lib -lssl -L/usr/lib -lcrypto"
+export LIBCARES_LIBS="/opt/local/lib/libcares.a"
+export CPPFLAGS="-I/opt/local/include"
 export LDFLAGS="-static-libstdc++"
-CC="gcc -arch i386 -arch x86_64" CXX="g++ -arch i386 -arch x86_64" CPP="gcc -E" CXXCPP="g++ -E" ./configure --without-libxml2 --without-gnutls --with-libexpat --with-openssl --prefix=$BUILD_TARGET
+export LIBS="/opt/local/lib/libintl.a /opt/local/lib/libcrypto.a /opt/local/lib/libiconv.a"
+CC="gcc -arch i386 -arch x86_64" CXX="g++ -arch i386 -arch x86_64" CPP="gcc -E" CXXCPP="g++ -E" ./configure --without-libxml2 --without-gnutls --prefix=$BUILD_TARGET --without-libgcrypt --without-libnettle --without-libgmp --enable-bittorrent --enable-metalink --enable-epoll --with-libexpat --with-openssl
 make
 
 # install into our target
