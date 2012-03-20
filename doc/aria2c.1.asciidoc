@@ -1727,6 +1727,9 @@ The request path of JSON-RPC interface (for both over HTTP and over
 WebSocket) is '/jsonrpc'.  The request path of XML-RPC interface is
 '/rpc'.
 
+The WebSocket URI for JSON-RPC over WebSocket is
+ws://HOST:PORT/jsonrpc.
+
 The implemented JSON-RPC is based on
 http://jsonrpc.org/specification[JSON-RPC 2.0 Specification] and
 supports HTTP POST and GET (JSONP). Using WebSocket as a transport is
