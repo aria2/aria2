@@ -24,3 +24,5 @@ config.rpath
 aria2c.1
 aria2c.1.html
 intl/
+libtool
+ltmain.sh
