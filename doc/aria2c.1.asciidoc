@@ -1716,17 +1716,25 @@ host=localhost, protocol=ftp, dl_speed=0, last_updated=1222491632, status=ERROR
 RPC INTERFACE
 -------------
 
-aria2 provides both JSON-RPC and XML-RPC and they basically have the
-same functionality.
+aria2 provides JSON-RPC over HTTP and XML-RPC over HTTP and they
+basically have the same functionality.  aria2 also provides JSON-RPC
+over WebSocket. JSON-RPC over WebSocket uses same method signatures
+and response format with JSON-RPC over HTTP, but it additionally has
+server-initiated notifications. See *<<_json_rpc_over_websocket,
+JSON-RPC over WebSocket>>* section for details.
 
-The request path of JSON-RPC interface is '/jsonrpc'.
-The request path of XML-RPC interface is '/rpc'.
+The request path of JSON-RPC interface (for both over HTTP and over
+WebSocket) is '/jsonrpc'.  The request path of XML-RPC interface is
+'/rpc'.
 
-The implemented JSON-RPC is based on http://groups.google.com/group/json-rpc/web/json-rpc-2-0[JSON-RPC 2.0 Specification (2010-03-26)] and supports HTTP POST and GET (JSONP).
+The implemented JSON-RPC is based on
+http://jsonrpc.org/specification[JSON-RPC 2.0 Specification] and
+supports HTTP POST and GET (JSONP). Using WebSocket as a transport is
+the original extension of aria2.
 
-The JSON-RPC interface does not support notification. It also
-does not support floating point number. The character encoding must be
-UTF-8.
+The JSON-RPC interface does not support notification in HTTP, but the
+RPC server will send the notification in WebSocket. It also does not
+support floating point number. The character encoding must be UTF-8.
 
 When reading following document for JSON-RPC, interpret struct as JSON
 object.
@@ -3354,6 +3362,80 @@ will be encoded like this:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /jsonrpc?params=W3sianNvbnJwYyI6ICIyLjAiLCAiaWQiOiAicXdlciIsICJtZXRob2QiOiAiYXJpYTIuZ2V0VmVyc2lvbiJ9LCB7Impzb25ycGMiOiAiMi4wIiwgImlkIjogImFzZGYiLCAibWV0aG9kIjogImFyaWEyLnRlbGxBY3RpdmUifV0%3D
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+JSON-RPC over WebSocket
+~~~~~~~~~~~~~~~~~~~~~~~
+
+JSON-RPC over WebSocket uses same method signatures and response
+format with JSON-RPC over HTTP. The supported WebSocket version is 13
+which is detailed in http://tools.ietf.org/html/rfc6455[RFC 6455].
+
+To send a RPC request to the RPC server, send serialized JSON string
+in Text frame. The response from the RPC server is delivered also in
+Text frame.
+
+The RPC server will send the notification to the client. The
+notification is unidirectional, therefore the client which received
+the notification must not respond to it. The method signature of
+notification is much like a normal method request but lacks id
+key. The value associated by the params key is the data which this
+notification carries. The format of this value varies depending on the
+notification method. Following notification methods are defined.
+
+[[aria2_rpc_aria2_onDownloadStart]]
+*aria2.onDownloadStart* ('event')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This notification will be sent if a download is started.
+The 'event' is of type struct and it contains following keys.
+The value type is string.
+
+gid::
+
+  GID of the download.
+
+[[aria2_rpc_aria2_onDownloadPause]]
+*aria2.onDownloadPause* ('event')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This notification will be sent if a download is paused.  The 'event'
+is the same struct of the 'event' argument of
+*<<aria2_rpc_aria2_onDownloadStart, aria2.onDownloadStart>>* method.
+
+[[aria2_rpc_aria2_onDownloadStop]]
+*aria2.onDownloadStop* ('event')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This notification will be sent if a download is stopped by the user.
+The 'event' is the same struct of the 'event' argument of
+*<<aria2_rpc_aria2_onDownloadStart, aria2.onDownloadStart>>* method.
+
+[[aria2_rpc_aria2_onDownloadComplete]]
+*aria2.onDownloadComplete* ('event')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This notification will be sent if a download is completed.  In
+BitTorrent downloads, this notification is sent when the download is
+completed and seeding is over. The 'event' is the same struct of the
+'event' argument of *<<aria2_rpc_aria2_onDownloadStart,
+aria2.onDownloadStart>>* method.
+
+[[aria2_rpc_aria2_onDownloadError]]
+*aria2.onDownloadError* ('event')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This notification will be sent if a download is stopped due to error.
+The 'event' is the same struct of the 'event' argument of
+*<<aria2_rpc_aria2_onDownloadStart, aria2.onDownloadStart>>* method.
+
+[[aria2_rpc_aria2_onBtDownloadComplete]]
+*aria2.onBtDownloadComplete* ('event')
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This notification will be sent if a download is completed in
+BitTorrent (but seeding may not be over).  The 'event' is the same struct
+of the 'event' argument of *<<aria2_rpc_aria2_onDownloadStart,
+aria2.onDownloadStart>>* method.
 
 Sample XML-RPC Client Code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
