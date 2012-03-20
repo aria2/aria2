@@ -163,6 +163,7 @@ bool HttpServerCommand::execute()
         httpServer_->feedUpgradeResponse("websocket",
                                          fmt("Sec-WebSocket-Accept: %s\r\n",
                                              serverKey.c_str()));
+        httpServer_->getSocket()->setTcpNodelay(true);
         Command* command =
           new rpc::WebSocketResponseCommand(getCuid(), httpServer_, e_,
                                             socket_);

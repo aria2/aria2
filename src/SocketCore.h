@@ -125,6 +125,9 @@ public:
   (const std::string& multicastAddr, uint16_t multicastPort,
    const std::string& localAddr);
   
+  // Enables TCP_NODELAY socket option if f == true.
+  void setTcpNodelay(bool f);
+
   void create(int family, int protocol = 0);
 
   void bindWithFamily(uint16_t port, int family, int flags = AI_PASSIVE);

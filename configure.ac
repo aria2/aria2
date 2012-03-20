@@ -300,6 +300,7 @@ AC_CHECK_HEADERS([argz.h \
                   malloc.h \
                   netdb.h \
                   netinet/in.h \
+                  netinet/tcp.h \
 		  poll.h \
 		  port.h \
                   stddef.h \

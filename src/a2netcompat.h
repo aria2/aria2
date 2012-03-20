@@ -73,6 +73,10 @@
 # include <netinet/in.h>
 #endif // HAVE_NETINET_IN_H
 
+#ifdef HAVE_NETINET_TCP_H
+# include <netinet/tcp.h>
+#endif // HAVE_NETINET_TCP_H
+
 #ifdef HAVE_ARPA_INET_H
 # include <arpa/inet.h>
 #endif // HAVE_ARPA_INET_H

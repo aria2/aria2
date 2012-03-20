@@ -506,6 +506,12 @@ void SocketCore::joinMulticastGroup
   setSockOpt(IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
 }
 
+void SocketCore::setTcpNodelay(bool f)
+{
+  int val = f;
+  setSockOpt(IPPROTO_TCP, TCP_NODELAY, &val, sizeof(val));
+}
+
 void SocketCore::setNonBlockingMode()
 {
 #ifdef __MINGW32__
