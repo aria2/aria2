@@ -59,12 +59,13 @@ void Notifier::removeWebSocketSession
   wsSessionMan_->removeSession(wsSession);
 }
 
-const std::string Notifier::ON_DOWNLOAD_START = "onDownloadStart";
-const std::string Notifier::ON_DOWNLOAD_PAUSE = "onDownloadPause";
-const std::string Notifier::ON_DOWNLOAD_STOP = "onDownloadStop";
-const std::string Notifier::ON_DOWNLOAD_COMPLETE = "onDownloadComplete";
-const std::string Notifier::ON_DOWNLOAD_ERROR = "onDownloadError";
-const std::string Notifier::ON_BT_DOWNLOAD_COMPLETE = "onBtDownloadComplete";
+const std::string Notifier::ON_DOWNLOAD_START = "aria2.onDownloadStart";
+const std::string Notifier::ON_DOWNLOAD_PAUSE = "aria2.onDownloadPause";
+const std::string Notifier::ON_DOWNLOAD_STOP = "aria2.onDownloadStop";
+const std::string Notifier::ON_DOWNLOAD_COMPLETE = "aria2.onDownloadComplete";
+const std::string Notifier::ON_DOWNLOAD_ERROR = "aria2.onDownloadError";
+const std::string Notifier::ON_BT_DOWNLOAD_COMPLETE =
+  "aria2.onBtDownloadComplete";
 
 void Notifier::notifyDownloadEvent
 (const std::string& event, const RequestGroup* group)
