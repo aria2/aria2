@@ -4,7 +4,7 @@ Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
 :doctype: manpage
 :man source: Aria2
 :man manual: Aria2 Manual
-:man version: 1.14.2
+:man version: 1.15.0
 
 NAME
 ----
