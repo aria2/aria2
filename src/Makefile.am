@@ -208,6 +208,8 @@ SRCS =  Socket.h\
 	HttpListenCommand.cc HttpListenCommand.h\
 	HttpServerCommand.cc HttpServerCommand.h\
 	HttpServerResponseCommand.cc HttpServerResponseCommand.h\
+	AbstractHttpServerResponseCommand.cc \
+	AbstractHttpServerResponseCommand.h \
 	HttpServer.cc HttpServer.h\
 	StreamPieceSelector.h\
 	DefaultStreamPieceSelector.cc DefaultStreamPieceSelector.h\
@@ -224,7 +226,12 @@ SRCS =  Socket.h\
 	paramed_string.cc paramed_string.h\
 	rpc_helper.cc rpc_helper.h\
 	WatchProcessCommand.cc WatchProcessCommand.h\
-	UnknownOptionException.cc UnknownOptionException.h
+	UnknownOptionException.cc UnknownOptionException.h\
+	WebSocketSession.cc WebSocketSession.h\
+	WebSocketSessionMan.cc WebSocketSessionMan.h\
+	WebSocketResponseCommand.cc WebSocketResponseCommand.h\
+	WebSocketInteractionCommand.cc WebSocketInteractionCommand.h\
+	Notifier.cc Notifier.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h

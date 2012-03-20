@@ -35,22 +35,14 @@
 #ifndef D_HTTP_SERVER_RESPONSE_COMMAND_H
 #define D_HTTP_SERVER_RESPONSE_COMMAND_H
 
-#include "Command.h"
-#include "SharedHandle.h"
-#include "TimerA2.h"
+#include "AbstractHttpServerResponseCommand.h"
 
 namespace aria2 {
 
-class DownloadEngine;
-class SocketCore;
-class HttpServer;
-
-class HttpServerResponseCommand : public Command {
-private:
-  DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
-  Timer timeoutTimer_;
+class HttpServerResponseCommand : public AbstractHttpServerResponseCommand {
+protected:
+  virtual void afterSend(const SharedHandle<HttpServer>& httpServer,
+                         DownloadEngine* e);
 public:
   HttpServerResponseCommand(cuid_t cuid,
                             const SharedHandle<HttpServer>& httpServer,
@@ -58,8 +50,6 @@ public:
                             const SharedHandle<SocketCore>& socket);
 
   virtual ~HttpServerResponseCommand();
-  
-  virtual bool execute();
 };
 
 } // namespace aria2 

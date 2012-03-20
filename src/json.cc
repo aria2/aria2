@@ -50,11 +50,9 @@ namespace json {
 
 // Function prototype declaration
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decode
-(std::string::const_iterator first,
- std::string::const_iterator last,
- size_t depth);
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decode(InputIterator first, InputIterator last, size_t depth);
 } // namespace
 
 namespace {
@@ -64,9 +62,8 @@ const size_t MAX_STRUCTURE_DEPTH = 100;
 } // namespace
 
 namespace {
-std::string::const_iterator skipWs
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+InputIterator skipWs(InputIterator first, InputIterator last)
 {
   while(first != last && std::find(vbegin(WS), vend(WS), *first) != vend(WS)) {
     ++first;
@@ -76,9 +73,8 @@ std::string::const_iterator skipWs
 } // namespace
 
 namespace {
-void checkEof
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+void checkEof(InputIterator first, InputIterator last)
 {
   if(first == last) {
     throw DL_ABORT_EX2("JSON decoding failed: unexpected EOF",
@@ -88,11 +84,10 @@ void checkEof
 } // namespace
 
 namespace {
-std::string::const_iterator
-decodeKeyword
-(std::string::const_iterator first,
- std::string::const_iterator last,
- const std::string& keyword)
+template<typename InputIterator>
+InputIterator
+decodeKeyword(InputIterator first, InputIterator last,
+              const std::string& keyword)
 {
   size_t len = keyword.size();
   for(size_t i = 0; i < len; ++i) {
@@ -109,10 +104,9 @@ decodeKeyword
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decodeTrue
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeTrue(InputIterator first, InputIterator last)
 {
   first = decodeKeyword(first, last, "true");
   return std::make_pair(Bool::gTrue(), first);
@@ -120,10 +114,9 @@ decodeTrue
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decodeFalse
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeFalse(InputIterator first, InputIterator last)
 {
   first = decodeKeyword(first, last, "false");
   return std::make_pair(Bool::gFalse(), first);
@@ -131,10 +124,9 @@ decodeFalse
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decodeNull
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeNull(InputIterator first, InputIterator last)
 {
   first = decodeKeyword(first, last, "null");
   return std::make_pair(Null::g(), first);
@@ -142,15 +134,14 @@ decodeNull
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decodeString
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeString(InputIterator first, InputIterator last)
 {
   // Consume first char, assuming it is '"'.
   ++first;
   std::string s;
-  std::string::const_iterator offset = first;
+  InputIterator offset = first;
   while(first != last) {
     if(*first == '"') {
       break;
@@ -161,7 +152,7 @@ decodeString
       checkEof(first, last);
       if(*first == 'u') {
         ++first;
-        std::string::const_iterator uchars = first;
+        InputIterator uchars = first;
         for(int i = 0; i < 4; ++i, ++first) {
           checkEof(first, last);
         }
@@ -182,7 +173,7 @@ decodeString
                                error_code::JSON_PARSE_ERROR);
           }
           first += 2;
-          std::string::const_iterator uchars = first;
+          InputIterator uchars = first;
           for(int i = 0; i < 4; ++i, ++first) {
             checkEof(first, last);
           }
@@ -242,9 +233,8 @@ decodeString
 } // namespace
 
 namespace {
-void checkEmptyDigit
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+void checkEmptyDigit(InputIterator first, InputIterator last)
 {
   if(std::distance(first, last) == 0) {
     throw DL_ABORT_EX2("JSON decoding failed: zero DIGIT.",
@@ -254,9 +244,8 @@ void checkEmptyDigit
 } // namespace
 
 namespace {
-void checkLeadingZero
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+void checkLeadingZero(InputIterator first, InputIterator last)
 {
   if(std::distance(first, last) > 2 && *first == '0') {
     throw DL_ABORT_EX2("JSON decoding failed: leading zero.",
@@ -266,17 +255,16 @@ void checkLeadingZero
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decodeNumber
-(std::string::const_iterator first,
- std::string::const_iterator last)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeNumber(InputIterator first, InputIterator last)
 {
   std::string s;
   if(*first == '-') {
     s.append(first, first+1);
     ++first;
   }
-  std::string::const_iterator offset = first;
+  InputIterator offset = first;
   while(first != last && in(*first, '0', '9')) {
     ++first;
   }
@@ -336,11 +324,9 @@ void checkDepth(size_t depth)
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decodeArray
-(std::string::const_iterator first,
- std::string::const_iterator last,
- size_t depth)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeArray(InputIterator first, InputIterator last, size_t depth)
 {
   checkDepth(depth);
   SharedHandle<List> list = List::g();
@@ -350,7 +336,7 @@ decodeArray
   checkEof(first, last);
   if(*first != ']') {
     while(1) {
-      std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
+      std::pair<SharedHandle<ValueBase>, InputIterator>
         r = decode(first, last, depth);
       list->append(r.first);
       first = r.second;
@@ -372,11 +358,9 @@ decodeArray
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decodeObject
-(std::string::const_iterator first,
- std::string::const_iterator last,
- size_t depth)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decodeObject(InputIterator first, InputIterator last, size_t depth)
 {
   checkDepth(depth);
   SharedHandle<Dict> dict = Dict::g();
@@ -386,7 +370,7 @@ decodeObject
   checkEof(first, last);
   if(*first != '}') {
     while(1) {
-      std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
+      std::pair<SharedHandle<ValueBase>, InputIterator>
         keyRet = decodeString(first, last);
       first = keyRet.second;
       first = skipWs(first, last);
@@ -396,7 +380,7 @@ decodeObject
                            error_code::JSON_PARSE_ERROR);
       }
       ++first;
-      std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
+      std::pair<SharedHandle<ValueBase>, InputIterator>
         valueRet = decode(first, last, depth);
       dict->put(downcast<String>(keyRet.first)->s(), valueRet.first);
       first = valueRet.second;
@@ -420,11 +404,9 @@ decodeObject
 } // namespace
 
 namespace {
-std::pair<SharedHandle<ValueBase>, std::string::const_iterator>
-decode
-(std::string::const_iterator first,
- std::string::const_iterator last,
- size_t depth)
+template<typename InputIterator>
+std::pair<SharedHandle<ValueBase>, InputIterator>
+decode(InputIterator first, InputIterator last, size_t depth)
 {
   first = skipWs(first, last);
   if(first == last) {
@@ -454,17 +436,16 @@ decode
 }
 } // namespace
 
-SharedHandle<ValueBase> decode(const std::string& json)
+template<typename InputIterator>
+SharedHandle<ValueBase> decode(InputIterator first, InputIterator last)
 {
-  std::string::const_iterator first = json.begin();
-  std::string::const_iterator last = json.end();
   first = skipWs(first, last);
   if(first == last) {
     throw DL_ABORT_EX2("JSON decoding failed:"
                        " Unexpected EOF in term context.",
                        error_code::JSON_PARSE_ERROR);
   }
-  std::pair<SharedHandle<ValueBase>, std::string::const_iterator> r;
+  std::pair<SharedHandle<ValueBase>, InputIterator> r;
   if(*first == '[') {
     r = decodeArray(first, last, 1);
   } else if(*first == '{') {
@@ -475,6 +456,16 @@ SharedHandle<ValueBase> decode(const std::string& json)
                        error_code::JSON_PARSE_ERROR);
   }
   return r.first;
+}
+
+SharedHandle<ValueBase> decode(const std::string& json)
+{
+  return decode(json.begin(), json.end());
+}
+
+SharedHandle<ValueBase> decode(const unsigned char* json, size_t len)
+{
+  return decode(json, json+len);
 }
 
 std::string jsonEscape(const std::string& s)

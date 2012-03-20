@@ -63,6 +63,8 @@
 #include "PieceStatMan.h"
 #include "wallclock.h"
 #include "bitfield.h"
+#include "SingletonHolder.h"
+#include "Notifier.h"
 #ifdef ENABLE_BITTORRENT
 # include "bittorrent_helper.h"
 #endif // ENABLE_BITTORRENT
@@ -479,6 +481,9 @@ void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
       if(!torrentAttrs->metadata.empty()) {
         util::executeHookByOptName(downloadContext_->getOwnerRequestGroup(),
                                    option_, PREF_ON_BT_DOWNLOAD_COMPLETE);
+        SingletonHolder<Notifier>::instance()->
+          notifyDownloadEvent(Notifier::ON_BT_DOWNLOAD_COMPLETE,
+                              downloadContext_->getOwnerRequestGroup());
       }
     }
 #endif // ENABLE_BITTORRENT

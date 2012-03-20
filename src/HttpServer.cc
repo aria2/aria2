@@ -212,6 +212,20 @@ void HttpServer::feedResponse(const std::string& status,
   socketBuffer_.pushStr(text);
 }
 
+void HttpServer::feedUpgradeResponse(const std::string& protocol,
+                                     const std::string& headers)
+{
+  std::string header= fmt("HTTP/1.1 101 Switching Protocols\r\n"
+                          "Upgrade: %s\r\n"
+                          "Connection: Upgrade\r\n"
+                          "%s"
+                          "\r\n",
+                          protocol.c_str(),
+                          headers.c_str());
+  A2_LOG_DEBUG(fmt("HTTP Server sends upgrade response:\n%s", header.c_str()));
+  socketBuffer_.pushStr(header);
+}
+
 ssize_t HttpServer::sendResponse()
 {
   return socketBuffer_.send();

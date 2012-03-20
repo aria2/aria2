@@ -91,6 +91,12 @@ public:
                     std::string& text,
                     const std::string& contentType);
 
+  // Feeds "101 Switching Protocols" response. The |protocol| will
+  // appear in Upgrade header field. The |headers| is zero or more
+  // lines of HTTP header field and each line must end with "\r\n".
+  void feedUpgradeResponse(const std::string& protocol,
+                           const std::string& headers);
+
   bool authenticate();
 
   void setUsernamePassword
@@ -128,6 +134,11 @@ public:
   void setAllowOrigin(const std::string& allowOrigin)
   {
     allowOrigin_ = allowOrigin;
+  }
+
+  const SharedHandle<SocketCore>& getSocket() const
+  {
+    return socket_;
   }
 };
 

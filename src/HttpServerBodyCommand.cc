@@ -87,21 +87,6 @@ HttpServerBodyCommand::~HttpServerBodyCommand()
 }
 
 namespace {
-rpc::RpcResponse
-createJsonRpcErrorResponse
-(int code,
- const std::string& msg,
- const SharedHandle<ValueBase>& id)
-{
-  SharedHandle<Dict> params = Dict::g();
-  params->put("code", Integer::g(code));
-  params->put("message", msg);
-  rpc::RpcResponse res(code, params, id);
-  return res;
-}
-} // namespace
-
-namespace {
 std::string getJsonRpcContentType(bool script)
 {
   return script ? "text/javascript" : "application/json-rpc";
@@ -156,42 +141,6 @@ void HttpServerBodyCommand::addHttpServerResponseCommand()
   e_->setNoWait(true);
 }
 
-rpc::RpcResponse
-HttpServerBodyCommand::processJsonRpcRequest(const Dict* jsondict)
-{
-
-  SharedHandle<ValueBase> id = jsondict->get("id");
-  if(!id) {
-    return createJsonRpcErrorResponse(-32600, "Invalid Request.", Null::g());
-  }
-  const String* methodName = downcast<String>(jsondict->get("method"));
-  if(!methodName) {
-    return createJsonRpcErrorResponse(-32600, "Invalid Request.", id);
-  }
-  SharedHandle<List> params;
-  const SharedHandle<ValueBase>& tempParams = jsondict->get("params");
-  if(downcast<List>(tempParams)) {
-    params = static_pointer_cast<List>(tempParams);
-  } else if(!tempParams) {
-    params = List::g();
-  } else {
-    // TODO No support for Named params
-    return createJsonRpcErrorResponse(-32602, "Invalid params.", id);
-  }
-  rpc::RpcRequest req(methodName->s(), params, id);
-  req.jsonRpc = true;
-  SharedHandle<rpc::RpcMethod> method;
-  try {
-    method = rpc::RpcMethodFactory::create(req.methodName);
-  } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
-    return createJsonRpcErrorResponse(-32601, "Method not found.", id);
-  }
-  A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
-  rpc::RpcResponse res = method->execute(req, e_);
-  return res;
-}
-
 bool HttpServerBodyCommand::execute()
 {
   if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
@@ -242,13 +191,14 @@ bool HttpServerBodyCommand::execute()
                    getCuid()),
                e);
             rpc::RpcResponse res
-              (createJsonRpcErrorResponse(-32700, "Parse error.", Null::g()));
+              (rpc::createJsonRpcErrorResponse(-32700, "Parse error.",
+                                               Null::g()));
             sendJsonRpcResponse(res, callback);
             return true;
           }
           const Dict* jsondict = downcast<Dict>(json);
           if(jsondict) {
-            rpc::RpcResponse res = processJsonRpcRequest(jsondict);
+            rpc::RpcResponse res = rpc::processJsonRpcRequest(jsondict, e_);
             sendJsonRpcResponse(res, callback);
           } else {
             const List* jsonlist = downcast<List>(json);
@@ -259,14 +209,14 @@ bool HttpServerBodyCommand::execute()
                     eoi = jsonlist->end(); i != eoi; ++i) {
                 const Dict* jsondict = downcast<Dict>(*i);
                 if(jsondict) {
-                  rpc::RpcResponse r = processJsonRpcRequest(jsondict);
+                  rpc::RpcResponse r = rpc::processJsonRpcRequest(jsondict, e_);
                   results.push_back(r);
                 }
               }
               sendJsonRpcBatchResponse(results, callback);
             } else {
               rpc::RpcResponse res
-                (createJsonRpcErrorResponse
+                (rpc::createJsonRpcErrorResponse
                  (-32600, "Invalid Request.", Null::g()));
               sendJsonRpcResponse(res, callback);
             }

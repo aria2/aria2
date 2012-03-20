@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,42 +32,80 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_RPC_HELPER_H
-#define D_RPC_HELPER_H
+#ifndef D_WEB_SOCKET_SESSION_H
+#define D_WEB_SOCKET_SESSION_H
 
 #include "common.h"
 
-#include <cstdlib>
-#include <string>
+#include <wslay/wslay.h>
 
 #include "SharedHandle.h"
 
 namespace aria2 {
 
-class ValueBase;
-class Dict;
+class SocketCore;
 class DownloadEngine;
 
 namespace rpc {
 
-struct RpcRequest;
-struct RpcResponse;
+class WebSocketInteractionCommand;
 
-#ifdef ENABLE_XML_RPC
-RpcRequest xmlParseMemory(const char* xml, size_t size);
-#endif // ENABLE_XML_RPC
+class WebSocketSession {
+public:
+  WebSocketSession(const SharedHandle<SocketCore>& socket,
+                   DownloadEngine* e);
+  ~WebSocketSession();
+  // Returns true if this session object wants to read data from the
+  // remote endpoint.
+  bool wantRead();
+  // Returns true if this session object wants to write data to the
+  // remote endpoint.
+  bool wantWrite();
+  // Returns true if the session ended and the underlying connection
+  // can be closed.
+  bool finish();
+  // Call this function when data is available to read.  This function
+  // returns 0 if it succeeds, or -1.
+  int onReadEvent();
+  // Call this function when data can be sent without blocking.  This
+  // function returns 0 if it succeeds, or -1.
+  int onWriteEvent();
+  // Adds text message |msg|. The message is queued and will be sent
+  // in onWriteEvent().
+  void addTextMessage(const std::string& msg);
+  // Returns true if the close frame is received.
+  bool closeReceived();
+  // Returns true if the close frame is sent.
+  bool closeSent();
 
-// Creates error response. The |code| is the JSON-RPC error code.  The
-// |msg| is the error message. The |id| is the id of the request .
-RpcResponse createJsonRpcErrorResponse(int code,
-                                       const std::string& msg,
-                                       const SharedHandle<ValueBase>& id);
+  const SharedHandle<SocketCore>& getSocket() const
+  {
+    return socket_;
+  }
 
-// Processes JSON-RPC request |jsondict| and returns the result.
-RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e);
+  DownloadEngine* getDownloadEngine()
+  {
+    return e_;
+  }
+
+  WebSocketInteractionCommand* getCommand()
+  {
+    return command_;
+  }
+
+  void setCommand(WebSocketInteractionCommand* command)
+  {
+    command_ = command;
+  }
+private:
+  SharedHandle<SocketCore> socket_;
+  DownloadEngine* e_;
+  wslay_event_context_ptr wsctx_;
+  WebSocketInteractionCommand* command_;
+};
 
 } // namespace rpc
 
 } // namespace aria2
 
-#endif // D_RPC_HELPER_H
+#endif // D_WEB_SOCKET_SESSION_H

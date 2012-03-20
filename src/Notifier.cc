@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,51 +32,46 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HTTP_SERVER_BODY_COMMAND_H
-#define D_HTTP_SERVER_BODY_COMMAND_H
-
-#include "Command.h"
-#include "SharedHandle.h"
-#include "TimerA2.h"
-#include "ValueBase.h"
-#include "RpcResponse.h"
+#include "Notifier.h"
+#include "RequestGroup.h"
+#include "WebSocketSessionMan.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
-class DownloadEngine;
-class SocketCore;
-class HttpServer;
+Notifier::Notifier(const SharedHandle<rpc::WebSocketSessionMan>& wsSessionMan)
+  : wsSessionMan_(wsSessionMan)
+{}
 
-class HttpServerBodyCommand : public Command {
-private:
-  DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
-  Timer timeoutTimer_;
-  void sendJsonRpcErrorResponse
-  (const std::string& httpStatus,
-   int code,
-   const std::string& message,
-   const SharedHandle<ValueBase>& id,
-   const std::string& callback);
-  void sendJsonRpcResponse
-  (const rpc::RpcResponse& res,
-   const std::string& callback);
-  void sendJsonRpcBatchResponse
-  (const std::vector<rpc::RpcResponse>& results,
-   const std::string& callback);
-  void addHttpServerResponseCommand();
-public:
-  HttpServerBodyCommand(cuid_t cuid,
-                        const SharedHandle<HttpServer>& httpServer,
-                        DownloadEngine* e,
-                        const SharedHandle<SocketCore>& socket);
+Notifier::~Notifier() {}
 
-  virtual ~HttpServerBodyCommand();
-  
-  virtual bool execute();
-};
+void Notifier::addWebSocketSession
+(const SharedHandle<rpc::WebSocketSession>& wsSession)
+{
+  A2_LOG_DEBUG("WebSocket session added.");
+  wsSessionMan_->addSession(wsSession);
+}
 
-} // namespace aria2 
+void Notifier::removeWebSocketSession
+(const SharedHandle<rpc::WebSocketSession>& wsSession)
+{
+  A2_LOG_DEBUG("WebSocket session removed.");
+  wsSessionMan_->removeSession(wsSession);
+}
 
-#endif // D_HTTP_SERVER_BODY_COMMAND_H
+const std::string Notifier::ON_DOWNLOAD_START = "onDownloadStart";
+const std::string Notifier::ON_DOWNLOAD_PAUSE = "onDownloadPause";
+const std::string Notifier::ON_DOWNLOAD_STOP = "onDownloadStop";
+const std::string Notifier::ON_DOWNLOAD_COMPLETE = "onDownloadComplete";
+const std::string Notifier::ON_DOWNLOAD_ERROR = "onDownloadError";
+const std::string Notifier::ON_BT_DOWNLOAD_COMPLETE = "onBtDownloadComplete";
+
+void Notifier::notifyDownloadEvent
+(const std::string& event, const RequestGroup* group)
+{
+  if(wsSessionMan_) {
+    wsSessionMan_->addNotification(event, group);
+  }
+}
+
+} // namespace aria2

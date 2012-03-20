@@ -40,25 +40,25 @@ namespace aria2 {
 template<typename T>
 class SingletonHolder {
 private:
-  static T instance_;
+  static T* instance_;
 
   SingletonHolder() {}
 public:
   ~SingletonHolder() {}
 
-  static T& instance()
+  static T* instance()
   {
     return instance_;
   }
 
-  static void instance(T& instance)
+  static void instance(T* instance)
   {
     instance_ = instance;
   }
 };
 
 template<typename T>
-T SingletonHolder<T>::instance_;
+T* SingletonHolder<T>::instance_ = 0;
 
 } // namespace aria2
 

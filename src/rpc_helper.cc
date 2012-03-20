@@ -38,6 +38,12 @@
 #include "XmlRpcRequestParserStateMachine.h"
 #include "message.h"
 #include "DlAbortEx.h"
+#include "DownloadEngine.h"
+#include "RpcMethod.h"
+#include "RpcResponse.h"
+#include "RpcMethodFactory.h"
+#include "LogFactory.h"
+#include "fmt.h"
 
 namespace aria2 {
 
@@ -59,6 +65,51 @@ RpcRequest xmlParseMemory(const char* xml, size_t size)
   return RpcRequest(psm.getMethodName(), params);
 }
 #endif // ENABLE_XML_RPC
+
+RpcResponse createJsonRpcErrorResponse(int code,
+                                       const std::string& msg,
+                                       const SharedHandle<ValueBase>& id)
+{
+  SharedHandle<Dict> params = Dict::g();
+  params->put("code", Integer::g(code));
+  params->put("message", msg);
+  rpc::RpcResponse res(code, params, id);
+  return res;
+}
+
+RpcResponse processJsonRpcRequest(const Dict* jsondict, DownloadEngine* e)
+{
+  SharedHandle<ValueBase> id = jsondict->get("id");
+  if(!id) {
+    return createJsonRpcErrorResponse(-32600, "Invalid Request.", Null::g());
+  }
+  const String* methodName = downcast<String>(jsondict->get("method"));
+  if(!methodName) {
+    return createJsonRpcErrorResponse(-32600, "Invalid Request.", id);
+  }
+  SharedHandle<List> params;
+  const SharedHandle<ValueBase>& tempParams = jsondict->get("params");
+  if(downcast<List>(tempParams)) {
+    params = static_pointer_cast<List>(tempParams);
+  } else if(!tempParams) {
+    params = List::g();
+  } else {
+    // TODO No support for Named params
+    return createJsonRpcErrorResponse(-32602, "Invalid params.", id);
+  }
+  rpc::RpcRequest req(methodName->s(), params, id);
+  req.jsonRpc = true;
+  SharedHandle<rpc::RpcMethod> method;
+  try {
+    method = rpc::RpcMethodFactory::create(req.methodName);
+  } catch(RecoverableException& e) {
+    A2_LOG_INFO_EX(EX_EXCEPTION_CAUGHT, e);
+    return createJsonRpcErrorResponse(-32601, "Method not found.", id);
+  }
+  A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
+  rpc::RpcResponse res = method->execute(req, e);
+  return res;
+}
 
 } // namespace rpc
 

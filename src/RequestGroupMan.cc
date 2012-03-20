@@ -76,6 +76,8 @@
 #include "OutputFile.h"
 #include "download_helper.h"
 #include "UriListParser.h"
+#include "SingletonHolder.h"
+#include "Notifier.h"
 
 namespace aria2 {
 
@@ -252,6 +254,16 @@ bool RequestGroupMan::removeReservedGroup(a2_gid_t gid)
 
 namespace {
 
+void notifyDownloadEvent
+(const std::string& event, const SharedHandle<RequestGroup>& group)
+{
+  SingletonHolder<Notifier>::instance()->notifyDownloadEvent(event, group);
+}
+
+} // namespace
+
+namespace {
+
 void executeStopHook
 (const SharedHandle<RequestGroup>& group,
  const Option* option,
@@ -266,6 +278,14 @@ void executeStopHook
     util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_ERROR);
   } else if(!option->blank(PREF_ON_DOWNLOAD_STOP)) {
     util::executeHookByOptName(group, option, PREF_ON_DOWNLOAD_STOP);
+  }
+  if(result == error_code::FINISHED) {
+    notifyDownloadEvent(Notifier::ON_DOWNLOAD_COMPLETE, group);
+  } else if(result != error_code::IN_PROGRESS &&
+            result != error_code::REMOVED) {
+    notifyDownloadEvent(Notifier::ON_DOWNLOAD_ERROR, group);
+  } else {
+    notifyDownloadEvent(Notifier::ON_DOWNLOAD_STOP, group);
   }
 }
 
@@ -353,8 +373,9 @@ public:
         reservedGroups_.push_front(group);
         group->releaseRuntimeResource(e_);
         group->setForceHaltRequested(false);
-        util::executeHookByOptName
-          (group, e_->getOption(), PREF_ON_DOWNLOAD_PAUSE);
+        util::executeHookByOptName(group, e_->getOption(),
+                                   PREF_ON_DOWNLOAD_PAUSE);
+        notifyDownloadEvent(Notifier::ON_DOWNLOAD_PAUSE, group);
         // TODO Should we have to prepend spend uris to remaining uris
         // in case PREF_REUSE_URI is disabed?
       } else {
@@ -536,8 +557,9 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       requestGroups_.push_back(groupToAdd);
       requestQueueCheck();
     }
-    util::executeHookByOptName
-      (groupToAdd, e->getOption(), PREF_ON_DOWNLOAD_START);
+    util::executeHookByOptName(groupToAdd, e->getOption(),
+                               PREF_ON_DOWNLOAD_START);
+    notifyDownloadEvent(Notifier::ON_DOWNLOAD_START, groupToAdd);
   }
   if(!temp.empty()) {
     reservedGroups_.insert(reservedGroups_.begin(), temp.begin(), temp.end());

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,40 +32,80 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpServerResponseCommand.h"
+#include "WebSocketInteractionCommand.h"
 #include "SocketCore.h"
 #include "DownloadEngine.h"
-#include "HttpServer.h"
+#include "RequestGroupMan.h"
+#include "WebSocketSession.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include "HttpServerCommand.h"
-#include "RequestGroupMan.h"
 #include "fmt.h"
+#include "SingletonHolder.h"
+#include "Notifier.h"
 
 namespace aria2 {
 
-HttpServerResponseCommand::HttpServerResponseCommand
+namespace rpc {
+
+WebSocketInteractionCommand::WebSocketInteractionCommand
 (cuid_t cuid,
- const SharedHandle<HttpServer>& httpServer,
+ const SharedHandle<WebSocketSession>& wsSession,
  DownloadEngine* e,
  const SharedHandle<SocketCore>& socket)
-  : AbstractHttpServerResponseCommand(cuid, httpServer, e, socket)
-{}
-
-HttpServerResponseCommand::~HttpServerResponseCommand()
-{}
-
-void HttpServerResponseCommand::afterSend
-(const SharedHandle<HttpServer>& httpServer,
- DownloadEngine* e)
+ : Command(cuid),
+   e_(e),
+   socket_(socket),
+   writeCheck_(false),
+   wsSession_(wsSession)
 {
-  if(httpServer->supportsPersistentConnection()) {
-    A2_LOG_INFO(fmt("CUID#%lld - Persist connection.",
-                    getCuid()));
-    e->addCommand
-      (new HttpServerCommand(getCuid(), httpServer, e,
-                             httpServer->getSocket()));
+  SingletonHolder<Notifier>::instance()->addWebSocketSession(wsSession_);
+  e_->addSocketForReadCheck(socket_, this);
+}
+
+WebSocketInteractionCommand::~WebSocketInteractionCommand()
+{
+  e_->deleteSocketForReadCheck(socket_, this);
+  if(writeCheck_) {
+    e_->deleteSocketForWriteCheck(socket_, this);
+  }
+  SingletonHolder<Notifier>::instance()->removeWebSocketSession(wsSession_);
+}
+
+void WebSocketInteractionCommand::updateWriteCheck()
+{
+  if(wsSession_->wantWrite()) {
+    if(!writeCheck_) {
+      writeCheck_ = true;
+      e_->addSocketForWriteCheck(socket_, this);
+    }
+  } else if(writeCheck_) {
+    writeCheck_ = false;
+    e_->deleteSocketForWriteCheck(socket_, this);
   }
 }
+
+bool WebSocketInteractionCommand::execute()
+{
+  if(e_->isHaltRequested()) {
+    return true;
+  }
+  if(wsSession_->onReadEvent() == -1 || wsSession_->onWriteEvent() == -1) {
+    if(wsSession_->closeSent() || wsSession_->closeReceived()) {
+      A2_LOG_INFO(fmt("CUID#%lld - WebSocket session terminated.", getCuid()));
+    } else {
+      A2_LOG_INFO(fmt("CUID#%lld - WebSocket session terminated"
+                      " (Possibly due to EOF).", getCuid()));
+    }
+    return true;
+  }
+  if(wsSession_->finish()) {
+    return true;
+  }
+  updateWriteCheck();
+  e_->addCommand(this);
+  return false;
+}
+
+} // namespace rpc
 
 } // namespace aria2

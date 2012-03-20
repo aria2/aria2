@@ -32,51 +32,41 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HTTP_SERVER_BODY_COMMAND_H
-#define D_HTTP_SERVER_BODY_COMMAND_H
-
-#include "Command.h"
-#include "SharedHandle.h"
-#include "TimerA2.h"
-#include "ValueBase.h"
-#include "RpcResponse.h"
+#include "WebSocketResponseCommand.h"
+#include "SocketCore.h"
+#include "DownloadEngine.h"
+#include "HttpServer.h"
+#include "WebSocketSession.h"
+#include "WebSocketInteractionCommand.h"
 
 namespace aria2 {
 
-class DownloadEngine;
-class SocketCore;
-class HttpServer;
+namespace rpc {
 
-class HttpServerBodyCommand : public Command {
-private:
-  DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
-  Timer timeoutTimer_;
-  void sendJsonRpcErrorResponse
-  (const std::string& httpStatus,
-   int code,
-   const std::string& message,
-   const SharedHandle<ValueBase>& id,
-   const std::string& callback);
-  void sendJsonRpcResponse
-  (const rpc::RpcResponse& res,
-   const std::string& callback);
-  void sendJsonRpcBatchResponse
-  (const std::vector<rpc::RpcResponse>& results,
-   const std::string& callback);
-  void addHttpServerResponseCommand();
-public:
-  HttpServerBodyCommand(cuid_t cuid,
-                        const SharedHandle<HttpServer>& httpServer,
-                        DownloadEngine* e,
-                        const SharedHandle<SocketCore>& socket);
+WebSocketResponseCommand::WebSocketResponseCommand
+(cuid_t cuid,
+ const SharedHandle<HttpServer>& httpServer,
+ DownloadEngine* e,
+ const SharedHandle<SocketCore>& socket)
+  : AbstractHttpServerResponseCommand(cuid, httpServer, e, socket)
+{}
 
-  virtual ~HttpServerBodyCommand();
-  
-  virtual bool execute();
-};
+WebSocketResponseCommand::~WebSocketResponseCommand()
+{}
 
-} // namespace aria2 
+void WebSocketResponseCommand::afterSend
+(const SharedHandle<HttpServer>& httpServer,
+ DownloadEngine* e)
+{
+  SharedHandle<WebSocketSession> wsSession
+    (new WebSocketSession(httpServer->getSocket(), getDownloadEngine()));
+  WebSocketInteractionCommand* command =
+    new WebSocketInteractionCommand(getCuid(), wsSession, e,
+                                    wsSession->getSocket());
+  wsSession->setCommand(command);
+  e->addCommand(command);
+}
 
-#endif // D_HTTP_SERVER_BODY_COMMAND_H
+} // namespace rpc
+
+} // namespace aria2

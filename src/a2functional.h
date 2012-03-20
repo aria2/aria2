@@ -331,6 +331,14 @@ struct DerefEqual<T> derefEqual(const T& t)
   return DerefEqual<T>(t);
 }
 
+template<typename T>
+struct RefLess {
+  bool operator()(const SharedHandle<T>& lhs, const SharedHandle<T>& rhs) const
+  {
+    return lhs.get() < rhs.get();
+  }
+};
+
 } // namespace aria2
 
 #endif // D_A2_FUNCTIONAL_H

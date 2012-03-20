@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,51 +32,42 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HTTP_SERVER_BODY_COMMAND_H
-#define D_HTTP_SERVER_BODY_COMMAND_H
+#ifndef D_WEB_SOCKET_INTERACTION_COMMAND_H
+#define D_WEB_SOCKET_INTERACTION_COMMAND_H
 
 #include "Command.h"
 #include "SharedHandle.h"
-#include "TimerA2.h"
-#include "ValueBase.h"
-#include "RpcResponse.h"
 
 namespace aria2 {
 
 class DownloadEngine;
 class SocketCore;
-class HttpServer;
 
-class HttpServerBodyCommand : public Command {
+namespace rpc {
+
+class WebSocketSession;
+
+class WebSocketInteractionCommand : public Command {
 private:
   DownloadEngine* e_;
   SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
-  Timer timeoutTimer_;
-  void sendJsonRpcErrorResponse
-  (const std::string& httpStatus,
-   int code,
-   const std::string& message,
-   const SharedHandle<ValueBase>& id,
-   const std::string& callback);
-  void sendJsonRpcResponse
-  (const rpc::RpcResponse& res,
-   const std::string& callback);
-  void sendJsonRpcBatchResponse
-  (const std::vector<rpc::RpcResponse>& results,
-   const std::string& callback);
-  void addHttpServerResponseCommand();
+  bool writeCheck_;
+  SharedHandle<WebSocketSession> wsSession_;
 public:
-  HttpServerBodyCommand(cuid_t cuid,
-                        const SharedHandle<HttpServer>& httpServer,
-                        DownloadEngine* e,
-                        const SharedHandle<SocketCore>& socket);
+  WebSocketInteractionCommand(cuid_t cuid,
+                              const SharedHandle<WebSocketSession>& wsSession,
+                              DownloadEngine* e,
+                              const SharedHandle<SocketCore>& socket);
 
-  virtual ~HttpServerBodyCommand();
+  virtual ~WebSocketInteractionCommand();
   
   virtual bool execute();
+
+  void updateWriteCheck();
 };
+
+} // namespace rpc
 
 } // namespace aria2 
 
-#endif // D_HTTP_SERVER_BODY_COMMAND_H
+#endif // D_WEB_SOCKET_INTERACTION_COMMAND_H

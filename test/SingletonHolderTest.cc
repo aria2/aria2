@@ -1,7 +1,10 @@
 #include "SingletonHolder.h"
-#include "SharedHandle.h"
+
 #include <iostream>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -35,26 +38,16 @@ public:
   }
 };
 
-typedef SharedHandle<M> MHandle;
-typedef SharedHandle<int> IntHandle;
-
 void SingletonHolderTest::testInstance()
 {
-  MHandle m(new M("Hello world."));
-  SingletonHolder<MHandle>::instance(m);
+  M m("Hello world.");
+  SingletonHolder<M>::instance(&m);
+  CPPUNIT_ASSERT_EQUAL(std::string("Hello world."),
+                       SingletonHolder<M>::instance()->greeting());
 
-  std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
-
-  SingletonHolder<MHandle>::instance()->greeting("Yes, it worked!");
-
-  std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
-
-  IntHandle i(new int(100));
-  SingletonHolder<IntHandle>::instance(i);
-  std::cerr << *SingletonHolder<IntHandle>::instance() << std::endl;
-
-  std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
-
+  SingletonHolder<M>::instance()->greeting("Yes, it worked!");
+  CPPUNIT_ASSERT_EQUAL(std::string("Yes, it worked!"),
+                       SingletonHolder<M>::instance()->greeting());
 }
 
 } // namespace aria2

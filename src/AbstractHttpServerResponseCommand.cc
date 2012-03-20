@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpServerResponseCommand.h"
+#include "AbstractHttpServerResponseCommand.h"
 #include "SocketCore.h"
 #include "DownloadEngine.h"
 #include "HttpServer.h"
@@ -40,31 +40,61 @@
 #include "LogFactory.h"
 #include "HttpServerCommand.h"
 #include "RequestGroupMan.h"
+#include "RecoverableException.h"
+#include "wallclock.h"
+#include "util.h"
 #include "fmt.h"
 
 namespace aria2 {
 
-HttpServerResponseCommand::HttpServerResponseCommand
+AbstractHttpServerResponseCommand::AbstractHttpServerResponseCommand
 (cuid_t cuid,
  const SharedHandle<HttpServer>& httpServer,
  DownloadEngine* e,
  const SharedHandle<SocketCore>& socket)
-  : AbstractHttpServerResponseCommand(cuid, httpServer, e, socket)
-{}
-
-HttpServerResponseCommand::~HttpServerResponseCommand()
-{}
-
-void HttpServerResponseCommand::afterSend
-(const SharedHandle<HttpServer>& httpServer,
- DownloadEngine* e)
+ : Command(cuid),
+   e_(e),
+   socket_(socket),
+   httpServer_(httpServer)
 {
-  if(httpServer->supportsPersistentConnection()) {
-    A2_LOG_INFO(fmt("CUID#%lld - Persist connection.",
+  setStatus(Command::STATUS_ONESHOT_REALTIME); 
+  e_->addSocketForWriteCheck(socket_, this);
+}
+
+AbstractHttpServerResponseCommand::~AbstractHttpServerResponseCommand()
+{
+  e_->deleteSocketForWriteCheck(socket_, this);
+}
+
+bool AbstractHttpServerResponseCommand::execute()
+{
+  if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
+    return true;
+  }
+  try {
+    httpServer_->sendResponse();
+  } catch(RecoverableException& e) {
+    A2_LOG_INFO_EX
+      (fmt("CUID#%lld - Error occurred while transmitting response body.",
+           getCuid()),
+       e);
+    return true;
+  }
+  if(httpServer_->sendBufferIsEmpty()) {
+    A2_LOG_INFO(fmt("CUID#%lld - HttpServer: all response transmitted.",
                     getCuid()));
-    e->addCommand
-      (new HttpServerCommand(getCuid(), httpServer, e,
-                             httpServer->getSocket()));
+    afterSend(httpServer_, e_);
+    return true;
+  } else {
+    if(timeoutTimer_.difference(global::wallclock()) >= 10) {
+      A2_LOG_INFO(fmt("CUID#%lld - HttpServer: Timeout while trasmitting"
+                      " response.",
+                      getCuid()));
+      return true;
+    } else {
+      e_->addCommand(this);
+      return false;
+    }
   }
 }
 

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,51 +32,40 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HTTP_SERVER_BODY_COMMAND_H
-#define D_HTTP_SERVER_BODY_COMMAND_H
+#ifndef D_WEB_SOCKET_SESSION_MAN_H
+#define D_WEB_SOCKET_SESSION_MAN_H
 
-#include "Command.h"
+#include "common.h"
+
+#include <set>
+#include <string>
+
 #include "SharedHandle.h"
-#include "TimerA2.h"
-#include "ValueBase.h"
-#include "RpcResponse.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
-class DownloadEngine;
-class SocketCore;
-class HttpServer;
+class RequestGroup;
 
-class HttpServerBodyCommand : public Command {
-private:
-  DownloadEngine* e_;
-  SharedHandle<SocketCore> socket_;
-  SharedHandle<HttpServer> httpServer_;
-  Timer timeoutTimer_;
-  void sendJsonRpcErrorResponse
-  (const std::string& httpStatus,
-   int code,
-   const std::string& message,
-   const SharedHandle<ValueBase>& id,
-   const std::string& callback);
-  void sendJsonRpcResponse
-  (const rpc::RpcResponse& res,
-   const std::string& callback);
-  void sendJsonRpcBatchResponse
-  (const std::vector<rpc::RpcResponse>& results,
-   const std::string& callback);
-  void addHttpServerResponseCommand();
+namespace rpc {
+
+class WebSocketSession;
+
+class WebSocketSessionMan {
 public:
-  HttpServerBodyCommand(cuid_t cuid,
-                        const SharedHandle<HttpServer>& httpServer,
-                        DownloadEngine* e,
-                        const SharedHandle<SocketCore>& socket);
-
-  virtual ~HttpServerBodyCommand();
-  
-  virtual bool execute();
+  typedef std::set<SharedHandle<WebSocketSession>,
+                   RefLess<WebSocketSession> > WebSocketSessions;
+  WebSocketSessionMan();
+  ~WebSocketSessionMan();
+  void addSession(const SharedHandle<WebSocketSession>& wsSession);
+  void removeSession(const SharedHandle<WebSocketSession>& wsSession);
+  void addNotification(const std::string& method, const RequestGroup* group);
+private:
+  WebSocketSessions sessions_;
 };
 
-} // namespace aria2 
+} // namespace rpc
 
-#endif // D_HTTP_SERVER_BODY_COMMAND_H
+} // aria2
+
+#endif // D_WEB_SOCKET_SESSION_MAN_H

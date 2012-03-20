@@ -1,4 +1,4 @@
-SUBDIRS =  po intl lib src test doc
+SUBDIRS =  po intl lib deps src test doc
 
 ACLOCAL_AMFLAGS = -I m4 --install
 

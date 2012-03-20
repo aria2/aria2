@@ -43,6 +43,7 @@
 #include "RequestGroupMan.h"
 #include "HttpServerBodyCommand.h"
 #include "HttpServerResponseCommand.h"
+#include "WebSocketResponseCommand.h"
 #include "RecoverableException.h"
 #include "prefs.h"
 #include "Option.h"
@@ -50,6 +51,9 @@
 #include "wallclock.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
+#include "MessageDigest.h"
+#include "message_digest_helper.h"
+#include "base64.h"
 
 namespace aria2 {
 
@@ -104,6 +108,19 @@ void HttpServerCommand::checkSocketRecvBuffer()
   }
 }
 
+// Creates server's WebSocket accept key which will be sent in
+// Sec-WebSocket-Accept header field. The |clientKey| is the value
+// found in Sec-WebSocket-Key header field in the request.
+std::string createWebSocketServerKey(const std::string& clientKey)
+{
+  std::string src = clientKey;
+  src += "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+  unsigned char digest[20];
+  message_digest::digest(digest, sizeof(digest), MessageDigest::sha1(),
+                         src.c_str(), src.size());
+  return base64::encode(&digest[0], &digest[sizeof(digest)]);
+}
+
 bool HttpServerCommand::execute()
 {
   if(e_->getRequestGroupMan()->downloadFinished() || e_->isHaltRequested()) {
@@ -133,20 +150,41 @@ bool HttpServerCommand::execute()
         e_->setNoWait(true);
         return true;
       }
-      if(e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE) <
-         httpServer_->getContentLength()) {
-        A2_LOG_INFO
-          (fmt("Request too long. ContentLength=%lld."
-               " See --rpc-max-request-size option to loose"
-               " this limitation.",
-               static_cast<long long int>(httpServer_->getContentLength())));
+      const std::string& upgradeHd = header->find("upgrade");
+      const std::string& connectionHd = header->find("connection");
+      if(httpServer_->getRequestPath() == "/jsonrpc" &&
+         httpServer_->getMethod() == "GET" &&
+         util::strieq(upgradeHd.begin(), upgradeHd.end(), "websocket") &&
+         util::strieq(connectionHd.begin(), connectionHd.end(), "upgrade") &&
+         header->find("sec-websocket-version") == "13" &&
+         header->defined("sec-websocket-key")) {
+        std::string serverKey =
+          createWebSocketServerKey(header->find("sec-websocket-key"));
+        httpServer_->feedUpgradeResponse("websocket",
+                                         fmt("Sec-WebSocket-Accept: %s\r\n",
+                                             serverKey.c_str()));
+        Command* command =
+          new rpc::WebSocketResponseCommand(getCuid(), httpServer_, e_,
+                                            socket_);
+        e_->addCommand(command);
+        e_->setNoWait(true);
+        return true;
+      } else {
+        if(e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE) <
+           httpServer_->getContentLength()) {
+          A2_LOG_INFO
+            (fmt("Request too long. ContentLength=%lld."
+                 " See --rpc-max-request-size option to loose"
+                 " this limitation.",
+                 static_cast<long long int>(httpServer_->getContentLength())));
+          return true;
+        }
+        Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,
+                                                     socket_);
+        e_->addCommand(command);
+        e_->setNoWait(true);
         return true;
       }
-      Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,
-                                                   socket_);
-      e_->addCommand(command);
-      e_->setNoWait(true);
-      return true;
     } else {
       if(timeoutTimer_.difference(global::wallclock()) >= 30) {
         A2_LOG_INFO("HTTP request timeout.");

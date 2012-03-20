@@ -2,7 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.67])
+LT_PREREQ([2.2.6])
 AC_INIT([aria2],[1.14.2],[t-tujikawa@users.sourceforge.net],[aria2],[http://aria2.sourceforge.net/])
+LT_INIT()
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE()
@@ -44,7 +46,6 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
-AC_PROG_RANLIB
 AC_PROG_YACC
 
 AC_CHECK_TOOL([AR], [ar], [:])
@@ -526,6 +527,10 @@ if test "x$have_option_const_name" = "xyes"; then
   AC_DEFINE([HAVE_OPTION_CONST_NAME], [1], [Define 1 if struct option.name is const char*])
 fi
 
+AC_CONFIG_SUBDIRS([deps/wslay])
+LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la $LIBS"
+CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes $CPPFLAGS"
+
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		test/Makefile
@@ -533,7 +538,8 @@ AC_CONFIG_FILES([Makefile
 		intl/Makefile
 		lib/Makefile
 		doc/Makefile
-		doc/ru/Makefile])
+		doc/ru/Makefile
+		deps/Makefile])
 AC_OUTPUT
 
 echo " "
