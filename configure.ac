@@ -6,6 +6,7 @@ LT_PREREQ([2.2.6])
 AC_INIT([aria2],[1.14.2],[t-tujikawa@users.sourceforge.net],[aria2],[http://aria2.sourceforge.net/])
 AC_USE_SYSTEM_EXTENSIONS
 LT_INIT()
+AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE()
