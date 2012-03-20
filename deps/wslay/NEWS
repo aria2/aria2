@@ -1,0 +1,41 @@
+wslay 0.1.1
+===========
+
+Release Note
+------------
+
+This release fixes the example programs and tutorial.  It does not
+change library code at all, so the library version has not been
+changed.
+
+Changes
+-------
+
+* Fixed example source code and tutorial.
+
+
+
+wslay 0.1.0
+===========
+
+Release Note
+------------
+
+This is the initial release of wslay WebSocket C library.
+
+Wslay is a WebSocket library written in C. It implements the protocol
+version 13 described in RFC 6455. This library offers 2 levels of API:
+event-based API and frame-based low-level API. For event-based API, it
+is suitable for non-blocking reactor pattern style. You can set
+callbacks in various events. For frame-based API, you can send
+WebSocket frame directly. Wslay only supports data transfer part of
+WebSocket protocol and does not perform opening handshake in HTTP.
+
+Wslay does not perform any I/O operations for its own. Instead, it
+offers callbacks for them. This makes Wslay independent on any I/O
+frameworks, SSL, sockets, etc. This makes Wslay protable across
+various platforms and the application authors can choose freely IO
+frameworks.
+
+Visit http://wslay.sourceforge.net/ for the API reference and
+tutorial.
