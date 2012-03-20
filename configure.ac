@@ -529,7 +529,8 @@ fi
 
 AC_CONFIG_SUBDIRS([deps/wslay])
 LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la $LIBS"
-CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes $CPPFLAGS"
+# $(top_srcdir) for `make distcheck`
+CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
 
 AC_CONFIG_FILES([Makefile
 		src/Makefile
