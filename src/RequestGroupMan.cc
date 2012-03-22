@@ -971,9 +971,9 @@ void RequestGroupMan::getUsedHosts
   std::vector<Triplet<size_t, int, std::string> > tempHosts;
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator i =
         requestGroups_.begin(), eoi = requestGroups_.end(); i != eoi; ++i) {
-    const std::deque<SharedHandle<Request> >& inFlightReqs =
+    const FileEntry::InFlightRequestSet& inFlightReqs =
       (*i)->getDownloadContext()->getFirstFileEntry()->getInFlightRequests();
-    for(std::deque<SharedHandle<Request> >::const_iterator j =
+    for(FileEntry::InFlightRequestSet::iterator j =
           inFlightReqs.begin(), eoj = inFlightReqs.end(); j != eoj; ++j) {
       uri::UriStruct us;
       if(uri::parse(us, (*j)->getUri())) {

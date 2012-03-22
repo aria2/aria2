@@ -70,9 +70,9 @@ void StreamFileAllocationEntry::prepareForNextAction
       dctx->getFileEntries();
     for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
           fileEntries.begin(), eoi = fileEntries.end(); i != eoi; ++i) {
-      const std::deque<SharedHandle<Request> >& reqs =
+      const FileEntry::InFlightRequestSet& reqs =
         (*i)->getInFlightRequests();
-      for(std::deque<SharedHandle<Request> >::const_iterator j =
+      for(FileEntry::InFlightRequestSet::iterator j =
             reqs.begin(), eoj = reqs.end(); j != eoj; ++j) {
         const SharedHandle<PeerStat>& peerStat = (*j)->getPeerStat();
         if(peerStat) {

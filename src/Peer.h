@@ -39,7 +39,7 @@
 
 #include <cassert>
 #include <string>
-#include <vector>
+#include <set>
 #include <algorithm>
 
 #include "SharedHandle.h"
@@ -265,7 +265,7 @@ public:
 
   size_t countPeerAllowedIndexSet() const;
 
-  const std::vector<size_t>& getPeerAllowedIndexSet() const;
+  const std::set<size_t>& getPeerAllowedIndexSet() const;
 
   void addAmAllowedIndex(size_t index);
 

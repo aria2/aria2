@@ -37,10 +37,11 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <set>
 
 #include "SharedHandle.h"
 #include "a2time.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -63,7 +64,9 @@ public:
 
   void removeStaleServerStat(time_t timeout);
 private:
-  std::deque<SharedHandle<ServerStat> > serverStats_;
+  typedef std::set<SharedHandle<ServerStat>,
+                   DerefLess<SharedHandle<ServerStat> > > ServerStatSet;
+  ServerStatSet serverStats_;
 };
 
 } // namespace aria2

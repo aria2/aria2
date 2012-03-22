@@ -162,43 +162,29 @@ void PeerSessionResource::fastExtensionEnabled(bool b)
   fastExtensionEnabled_ = b;
 }
 
-const std::vector<size_t>& PeerSessionResource::peerAllowedIndexSet() const
+const std::set<size_t>& PeerSessionResource::peerAllowedIndexSet() const
 {
   return peerAllowedIndexSet_;
 }
 
-namespace {
-void updateIndexSet(std::vector<size_t>& c, size_t index)
-{
-  std::vector<size_t>::iterator i = std::lower_bound(c.begin(), c.end(), index);
-  if(i == c.end() || (*i) != index) {
-    c.insert(i, index);
-  } 
-}
-} // namespace
-
 void PeerSessionResource::addPeerAllowedIndex(size_t index)
 {
-  updateIndexSet(peerAllowedIndexSet_, index);
+  peerAllowedIndexSet_.insert(index);
 }
 
 bool PeerSessionResource::peerAllowedIndexSetContains(size_t index) const
 {
-  return std::binary_search(peerAllowedIndexSet_.begin(),
-                            peerAllowedIndexSet_.end(),
-                            index);
+  return peerAllowedIndexSet_.count(index) == 1;
 }
 
 void PeerSessionResource::addAmAllowedIndex(size_t index)
 {
-  updateIndexSet(amAllowedIndexSet_, index);
+  amAllowedIndexSet_.insert(index);
 }
 
 bool PeerSessionResource::amAllowedIndexSetContains(size_t index) const
 {
-  return std::binary_search(amAllowedIndexSet_.begin(),
-                            amAllowedIndexSet_.end(),
-                            index);
+  return amAllowedIndexSet_.count(index) == 1;
 }
 
 void PeerSessionResource::extendedMessagingEnabled(bool b)

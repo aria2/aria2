@@ -61,23 +61,17 @@ SharedHandle<ServerStat> ServerStatMan::find(const std::string& hostname,
                                              const std::string& protocol) const
 {
   SharedHandle<ServerStat> ss(new ServerStat(hostname, protocol));
-  std::deque<SharedHandle<ServerStat> >::const_iterator i =
-    std::lower_bound(serverStats_.begin(), serverStats_.end(), ss,
-                     DerefLess<SharedHandle<ServerStat> >());
-  if(i != serverStats_.end() &&
-     (*i)->getHostname() == hostname && (*i)->getProtocol() == protocol) {
-    return *i;
-  } else {
+  ServerStatSet::iterator i = serverStats_.find(ss);
+  if(i == serverStats_.end()) {
     return SharedHandle<ServerStat>();
+  } else {
+    return *i;
   }
 }
 
 bool ServerStatMan::add(const SharedHandle<ServerStat>& serverStat)
 {
-  std::deque<SharedHandle<ServerStat> >::iterator i =
-    std::lower_bound(serverStats_.begin(), serverStats_.end(), serverStat,
-                     DerefLess<SharedHandle<ServerStat> >());
-
+  ServerStatSet::iterator i = serverStats_.lower_bound(serverStat);
   if(i != serverStats_.end() && *(*i) == *serverStat) {
     return false;
   } else {
@@ -97,8 +91,8 @@ bool ServerStatMan::save(const std::string& filename) const
                        filename.c_str()));
       return false;
     }
-    for(std::deque<SharedHandle<ServerStat> >::const_iterator i =
-          serverStats_.begin(), eoi = serverStats_.end(); i != eoi; ++i) {
+    for(ServerStatSet::iterator i = serverStats_.begin(),
+          eoi = serverStats_.end(); i != eoi; ++i) {
       std::string l = (*i)->toString();
       l += "\n";
       if(fp.write(l.data(), l.size()) != l.size()) {
@@ -217,9 +211,15 @@ public:
 
 void ServerStatMan::removeStaleServerStat(time_t timeout)
 {
-  serverStats_.erase(std::remove_if(serverStats_.begin(), serverStats_.end(),
-                                    FindStaleServerStat(timeout)),
-                     serverStats_.end());
+  FindStaleServerStat finder(timeout);
+  for(ServerStatSet::iterator i = serverStats_.begin(),
+        eoi = serverStats_.end(); i != eoi;) {
+    if(finder(*i)) {
+      serverStats_.erase(i++);
+    } else {
+      ++i;
+    }
+  }
 }
 
 } // namespace aria2

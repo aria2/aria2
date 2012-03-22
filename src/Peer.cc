@@ -287,7 +287,7 @@ size_t Peer::countPeerAllowedIndexSet() const
   return res_->peerAllowedIndexSet().size();
 }
 
-const std::vector<size_t>& Peer::getPeerAllowedIndexSet() const
+const std::set<size_t>& Peer::getPeerAllowedIndexSet() const
 {
   assert(res_);
   return res_->peerAllowedIndexSet();

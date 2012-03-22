@@ -195,6 +195,21 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
                        factory.createAuthConfig(req, &option)->getAuthText());
 }
 
+namespace {
+SharedHandle<AuthConfigFactory::BasicCred>
+createBasicCred(const std::string& user,
+                const std::string& password,
+                const std::string& host, uint16_t port,
+                const std::string& path,
+                bool activated = false)
+{
+  SharedHandle<AuthConfigFactory::BasicCred> bc
+    (new AuthConfigFactory::BasicCred(user, password, host, port, path,
+                                      activated));
+  return bc;
+}
+} // namespace
+
 void AuthConfigFactoryTest::testUpdateBasicCred()
 {
   Option option;
@@ -204,15 +219,15 @@ void AuthConfigFactoryTest::testUpdateBasicCred()
   AuthConfigFactory factory;
 
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("myname", "mypass", "localhost", 80, "/", true));
+    (createBasicCred("myname", "mypass", "localhost", 80, "/", true));
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("price", "j38jdc", "localhost", 80, "/download", true));
+    (createBasicCred("price", "j38jdc", "localhost", 80, "/download", true));
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("soap", "planB", "localhost", 80, "/download/beta", true));
+    (createBasicCred("soap", "planB", "localhost", 80, "/download/beta", true));
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("alice", "ium8", "localhost", 80, "/documents", true));
+    (createBasicCred("alice", "ium8", "localhost", 80, "/documents", true));
   factory.updateBasicCred
-    (AuthConfigFactory::BasicCred("jack", "jackx", "mirror", 80, "/doc", true));
+    (createBasicCred("jack", "jackx", "mirror", 80, "/doc", true));
 
   SharedHandle<Request> req(new Request());
   req->setUri("http://localhost/download/v2.6/Changelog");

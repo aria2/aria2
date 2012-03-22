@@ -41,6 +41,7 @@
 #include <deque>
 #include <vector>
 #include <ostream>
+#include <set>
 
 #include "SharedHandle.h"
 #include "File.h"
@@ -50,6 +51,7 @@
 #include "A2STR.h"
 #include "TimerA2.h"
 #include "util.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -57,6 +59,9 @@ class URISelector;
 class ServerStatMan;
 
 class FileEntry {
+public:
+  typedef std::set<SharedHandle<Request>, RefLess<Request> >
+  InFlightRequestSet;
 private:
   std::string path_;
   std::deque<std::string> uris_;
@@ -64,8 +69,16 @@ private:
   off_t length_;
   off_t offset_;
   bool requested_;
-  std::deque<SharedHandle<Request> > requestPool_;
-  std::deque<SharedHandle<Request> > inFlightRequests_;
+
+  class RequestFaster {
+  public:
+    bool operator()(const SharedHandle<Request>& lhs,
+                    const SharedHandle<Request>& rhs) const;
+  };
+
+  typedef std::set<SharedHandle<Request>, RequestFaster> RequestPool;
+  RequestPool requestPool_;
+  InFlightRequestSet inFlightRequests_;
   std::string contentType_;
   // URIResult is stored in the ascending order of the time when its result is
   // available.
@@ -186,7 +199,7 @@ public:
 
   size_t countPooledRequest() const;
 
-  const std::deque<SharedHandle<Request> >& getInFlightRequests() const
+  const InFlightRequestSet& getInFlightRequests() const
   {
     return inFlightRequests_;
   }

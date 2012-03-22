@@ -38,10 +38,11 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <set>
 
 #include "SharedHandle.h"
 #include "SingletonHolder.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -83,8 +84,11 @@ public:
 
     bool operator<(const BasicCred& cred) const;
   };
+
+  typedef std::set<SharedHandle<BasicCred>,
+                   DerefLess<SharedHandle<BasicCred> > > BasicCredSet;
 private:
-  std::deque<BasicCred> basicCreds_;
+  BasicCredSet basicCreds_;
 public:
   
   AuthConfigFactory();
@@ -115,7 +119,7 @@ public:
   // Find a BasicCred using host, port and path and return the
   // iterator pointing to it. If not found, then return
   // basicCreds_.end().
-  std::deque<AuthConfigFactory::BasicCred>::iterator
+  BasicCredSet::iterator
   findBasicCred
   (const std::string& host,
    uint16_t port,
@@ -124,7 +128,7 @@ public:
   // If the same BasicCred is already added, then it is replaced with
   // given basicCred. Otherwise, insert given basicCred to
   // basicCreds_.
-  void updateBasicCred(const BasicCred& basicCred);
+  void updateBasicCred(const SharedHandle<BasicCred>& basicCred);
 
   static const std::string ANONYMOUS;
 

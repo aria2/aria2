@@ -1368,9 +1368,9 @@ SharedHandle<ValueBase> GetServersRpcMethod::process
     SharedHandle<Dict> fileEntry = Dict::g();
     fileEntry->put(KEY_INDEX, util::uitos(index));
     SharedHandle<List> servers = List::g();
-    const std::deque<SharedHandle<Request> >& requests =
+    const FileEntry::InFlightRequestSet& requests =
       (*fi)->getInFlightRequests();
-    for(std::deque<SharedHandle<Request> >::const_iterator ri =requests.begin(),
+    for(FileEntry::InFlightRequestSet::iterator ri =requests.begin(),
           eoi = requests.end(); ri != eoi; ++ri) {
       SharedHandle<PeerStat> ps = (*ri)->getPeerStat();
       if(ps) {

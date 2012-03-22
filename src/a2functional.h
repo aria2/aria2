@@ -286,6 +286,12 @@ std::string strjoin(InputIterator first, InputIterator last,
 template<typename T>
 class LeastRecentAccess:public std::binary_function<T, T, bool> {
 public:
+  bool operator()(const SharedHandle<T>& lhs,
+                  const SharedHandle<T>& rhs) const
+  {
+    return lhs->getLastAccessTime() < rhs->getLastAccessTime();
+  }
+
   bool operator()(const T& lhs, const T& rhs) const
   {
     return lhs.getLastAccessTime() < rhs.getLastAccessTime();

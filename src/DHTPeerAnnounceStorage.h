@@ -37,7 +37,7 @@
 
 #include "common.h"
 
-#include <deque>
+#include <set>
 #include <vector>
 #include <string>
 
@@ -52,7 +52,14 @@ class DHTTaskFactory;
 
 class DHTPeerAnnounceStorage {
 private:
-  std::deque<SharedHandle<DHTPeerAnnounceEntry> > entries_;
+  class InfoHashLess {
+  public:
+    bool operator()(const SharedHandle<DHTPeerAnnounceEntry>& lhs,
+                    const SharedHandle<DHTPeerAnnounceEntry>& rhs);
+  };
+  typedef std::set<SharedHandle<DHTPeerAnnounceEntry>, InfoHashLess>
+  DHTPeerAnnounceEntrySet;
+  DHTPeerAnnounceEntrySet entries_;
 
   SharedHandle<DHTPeerAnnounceEntry> getPeerAnnounceEntry(const unsigned char* infoHash);
 

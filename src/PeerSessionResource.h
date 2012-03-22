@@ -38,7 +38,7 @@
 #include "common.h"
 
 #include <string>
-#include <vector>
+#include <set>
 
 #include "BtConstants.h"
 #include "PeerStat.h"
@@ -69,9 +69,9 @@ private:
   BitfieldMan* bitfieldMan_;
   bool fastExtensionEnabled_;
   // fast index set which a peer has sent to localhost.
-  std::vector<size_t> peerAllowedIndexSet_;
+  std::set<size_t> peerAllowedIndexSet_;
   // fast index set which localhost has sent to a peer.
-  std::vector<size_t> amAllowedIndexSet_;
+  std::set<size_t> amAllowedIndexSet_;
   bool extendedMessagingEnabled_;
   Extensions extensions_;
   bool dhtEnabled_;
@@ -169,14 +169,14 @@ public:
   void fastExtensionEnabled(bool b);
 
   // fast index set which a peer has sent to localhost.
-  const std::vector<size_t>& peerAllowedIndexSet() const;
+  const std::set<size_t>& peerAllowedIndexSet() const;
 
   void addPeerAllowedIndex(size_t index);
 
   bool peerAllowedIndexSetContains(size_t index) const;
 
   // fast index set which localhost has sent to a peer.
-  const std::vector<size_t>& amAllowedIndexSet() const
+  const std::set<size_t>& amAllowedIndexSet() const
   {
     return amAllowedIndexSet_;
   }

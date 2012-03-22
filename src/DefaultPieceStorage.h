@@ -38,6 +38,9 @@
 #include "PieceStorage.h"
 
 #include <deque>
+#include <set>
+
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -76,7 +79,9 @@ private:
   BitfieldMan* bitfieldMan_;
   SharedHandle<DiskAdaptor> diskAdaptor_;
   SharedHandle<DiskWriterFactory> diskWriterFactory_;
-  std::deque<SharedHandle<Piece> > usedPieces_;
+  typedef std::set<SharedHandle<Piece>,
+                   DerefLess<SharedHandle<Piece> > > UsedPieceSet;
+  UsedPieceSet usedPieces_;
 
   bool endGame_;
   size_t endGamePieceNum_;

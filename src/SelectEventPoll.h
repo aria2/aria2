@@ -38,7 +38,9 @@
 #include "EventPoll.h"
 
 #include <deque>
+#include <set>
 
+#include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
 # include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -145,6 +147,13 @@ private:
         command_ == entry.command_;
     }
 
+    bool operator<(const AsyncNameResolverEntry& entry)
+    {
+      return nameResolver_.get() < entry.nameResolver_.get() ||
+        (nameResolver_.get() == entry.nameResolver_.get() &&
+         command_ < entry.command_);
+    }
+
     int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr);
 
     void process(fd_set* rfdsPtr, fd_set* wfdsPtr);
@@ -155,9 +164,14 @@ private:
   fd_set wfdset_;
   sock_t fdmax_;
 
-  std::deque<SharedHandle<SocketEntry> > socketEntries_;
+  typedef std::set<SharedHandle<SocketEntry>,
+                   DerefLess<SharedHandle<SocketEntry> > > SocketEntrySet;
+  SocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  std::deque<SharedHandle<AsyncNameResolverEntry> > nameResolverEntries_;
+  typedef std::set<SharedHandle<AsyncNameResolverEntry>,
+                   DerefLess<SharedHandle<AsyncNameResolverEntry> > >
+  AsyncNameResolverEntrySet;
+  AsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
 #ifdef __MINGW32__

@@ -38,9 +38,11 @@
 #include "common.h"
 
 #include <string>
-#include <deque>
+#include <set>
 #include <algorithm>
 #include <vector>
+
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -68,7 +70,7 @@ private:
 
     CacheEntry& operator=(const CacheEntry& c);
 
-    void add(const std::string& addr);
+    bool add(const std::string& addr);
 
     std::vector<AddrEntry>::iterator find(const std::string& addr);
 
@@ -96,8 +98,9 @@ private:
     bool operator==(const CacheEntry& e) const;
   };
 
-  std::deque<CacheEntry> entries_;
-
+  typedef std::set<SharedHandle<CacheEntry>,
+                   DerefLess<SharedHandle<CacheEntry> > > CacheEntrySet;
+  CacheEntrySet entries_;
 public:
   DNSCache();
   DNSCache(const DNSCache& c);
@@ -111,11 +114,10 @@ public:
   void findAll
   (OutputIterator out, const std::string& hostname, uint16_t port) const
   {
-    CacheEntry target(hostname, port);
-    std::deque<CacheEntry>::const_iterator i =
-      std::lower_bound(entries_.begin(), entries_.end(), target);
-    if(i != entries_.end() && (*i) == target) {
-      (*i).getAllGoodAddrs(out);
+    SharedHandle<CacheEntry> target(new CacheEntry(hostname, port));
+    CacheEntrySet::iterator i = entries_.find(target);
+    if(i != entries_.end()) {
+      (*i)->getAllGoodAddrs(out);
     }
   }
 

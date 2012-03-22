@@ -327,6 +327,13 @@ public:
       command_ == entry.command_;
   }
 
+  bool operator<(const AsyncNameResolverEntry& entry)
+  {
+    return nameResolver_.get() < entry.nameResolver_.get() ||
+      (nameResolver_.get() == entry.nameResolver_.get() &&
+       command_ < entry.command_);
+  }
+
   void addSocketEvents(EventPoll* e)
   {
     socketsSize_ = 0;

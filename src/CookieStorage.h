@@ -40,10 +40,12 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <set>
 #include <algorithm>
 
 #include "a2time.h"
 #include "Cookie.h"
+#include "a2functional.h"
 
 namespace aria2 {
 
@@ -78,22 +80,11 @@ public:
       return key_;
     }
 
-    template<typename OutputIterator>
-    OutputIterator findCookie
-    (OutputIterator out,
+    void findCookie
+    (std::vector<Cookie>& out,
      const std::string& requestHost,
      const std::string& requestPath,
-     time_t now, bool secure)
-    {
-      for(std::deque<Cookie>::iterator i = cookies_.begin(),
-            eoi = cookies_.end(); i != eoi; ++i) {
-        if((*i).match(requestHost, requestPath, now, secure)) {
-          (*i).setLastAccessTime(now);
-          out++ = *i;
-        }
-      }
-      return out;
-    }
+     time_t now, bool secure);
 
     size_t countCookie() const;
 
@@ -119,10 +110,13 @@ public:
       return std::copy(cookies_.begin(), cookies_.end(), out);
     }
 
+    bool operator==(const DomainEntry& de) const;
     bool operator<(const DomainEntry& de) const;
   };
 private:
-  std::deque<DomainEntry> domains_;
+  typedef std::set<SharedHandle<DomainEntry>,
+                   DerefLess<SharedHandle<DomainEntry> > > DomainEntrySet;
+  DomainEntrySet domains_;
 
   template<typename InputIterator>
   void storeCookies(InputIterator first, InputIterator last, time_t now)
@@ -176,12 +170,22 @@ public:
   // satisfies.
   bool contains(const Cookie& cookie) const;
 
+  // Searches Cookie using given domain, requestHost, requestPath,
+  // current time and secure flag. The found Cookies are stored in
+  // out.
+  void searchCookieByDomainSuffix
+  (std::vector<Cookie>& out,
+   const std::string& domain,
+   const std::string& requestHost,
+   const std::string& requestPath,
+   time_t now, bool secure);
+
   template<typename OutputIterator>
   OutputIterator dumpCookie(OutputIterator out) const
   {
-    for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
-          eoi = domains_.end(); i != eoi; ++i) {
-      out = (*i).dumpCookie(out);
+    for(DomainEntrySet::iterator i = domains_.begin(), eoi = domains_.end();
+        i != eoi; ++i) {
+      out = (*i)->dumpCookie(out);
     }
     return out;
   }

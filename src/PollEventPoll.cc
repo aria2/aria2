@@ -101,14 +101,12 @@ void PollEventPoll::poll(const struct timeval& tv)
         first != last; ++first) {
       if(first->revents) {
         se->setSocket(first->fd);
-        std::deque<SharedHandle<KSocketEntry> >::iterator itr =
-          std::lower_bound(socketEntries_.begin(), socketEntries_.end(), se,
-                           DerefLess<SharedHandle<KSocketEntry> >());
-        if(itr != socketEntries_.end() && *(*itr) == *se) {
-          (*itr)->processEvents(first->revents);
-        } else {
+        KSocketEntrySet::iterator itr = socketEntries_.find(se);
+        if(itr == socketEntries_.end()) {
           A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.",
                            first->fd));
+        } else {
+          (*itr)->processEvents(first->revents);
         }
       }
     }
@@ -121,9 +119,8 @@ void PollEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for(std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator i =
-        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
-      i != eoi; ++i) {
+  for(KAsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
+        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
     (*i)->processTimeout();
     (*i)->removeSocketEvents(this);
     (*i)->addSocketEvents(this);
@@ -156,9 +153,7 @@ bool PollEventPoll::addEvents
 (sock_t socket, const PollEventPoll::KEvent& event)
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<KSocketEntry> >());
+  KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     event.addSelf(*i);
     for(struct pollfd* first = pollfds_, *last = pollfds_+pollfdNum_;
@@ -204,10 +199,11 @@ bool PollEventPoll::deleteEvents
 (sock_t socket, const PollEventPoll::KEvent& event)
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<KSocketEntry> >());
-  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
+  KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  if(i == socketEntries_.end()) {
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
+    return false;
+  } else {
     event.removeSelf(*i);
     for(struct pollfd* first = pollfds_, *last = pollfds_+pollfdNum_;
         first != last; ++first) {
@@ -225,9 +221,6 @@ bool PollEventPoll::deleteEvents
       }
     }
     return true;
-  } else {
-    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
-    return false;
   }
 }
 
@@ -252,15 +245,14 @@ bool PollEventPoll::addNameResolver
 {
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
-  if(itr == nameResolverEntries_.end()) {
-    nameResolverEntries_.push_back(entry);
+  KAsyncNameResolverEntrySet::iterator itr =
+    nameResolverEntries_.lower_bound(entry);
+  if(itr != nameResolverEntries_.end() && *(*itr) == *entry) {
+    return false;
+  } else {
+    nameResolverEntries_.insert(itr, entry);
     entry->addSocketEvents(this);
     return true;
-  } else {
-    return false;
   }
 }
 
@@ -269,9 +261,7 @@ bool PollEventPoll::deleteNameResolver
 {
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
+  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

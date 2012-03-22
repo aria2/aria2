@@ -64,20 +64,21 @@ AuthConfigFactory::createAuthConfig
 
     if(op->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
       if(!request->getUsername().empty()) {
-        updateBasicCred(BasicCred(request->getUsername(),
-                                  request->getPassword(),
-                                  request->getHost(),
-                                  request->getPort(),
-                                  request->getDir(), true));
+        SharedHandle<BasicCred> bc(new BasicCred(request->getUsername(),
+                                                 request->getPassword(),
+                                                 request->getHost(),
+                                                 request->getPort(),
+                                                 request->getDir(), true));
+        updateBasicCred(bc);
         return createAuthConfig(request->getUsername(), request->getPassword());
       }
-      std::deque<BasicCred>::const_iterator i =
+      BasicCredSet::iterator i =
         findBasicCred(request->getHost(), request->getPort(),
                       request->getDir());
       if(i == basicCreds_.end()) {
         return SharedHandle<AuthConfig>();
       } else {
-        return createAuthConfig((*i).user_, (*i).password_);
+        return createAuthConfig((*i)->user_, (*i)->password_);
       }
     } else {
       if(!request->getUsername().empty()) {
@@ -170,13 +171,12 @@ void AuthConfigFactory::setNetrc(const SharedHandle<Netrc>& netrc)
   netrc_ = netrc;
 }
 
-void AuthConfigFactory::updateBasicCred(const BasicCred& basicCred)
+void AuthConfigFactory::updateBasicCred
+(const SharedHandle<BasicCred>& basicCred)
 {
-  std::deque<BasicCred>::iterator i =
-    std::lower_bound(basicCreds_.begin(), basicCreds_.end(), basicCred);
-
-  if(i != basicCreds_.end() && (*i) == basicCred) {
-    (*i) = basicCred;
+  BasicCredSet::iterator i = basicCreds_.lower_bound(basicCred);
+  if(i != basicCreds_.end() && *(*i) == *basicCred) {
+    *(*i) = *basicCred;
   } else {
     basicCreds_.insert(i, basicCred);
   }
@@ -188,22 +188,21 @@ bool AuthConfigFactory::activateBasicCred
  const std::string& path,
  const Option* op)
 {
-
-  std::deque<BasicCred>::iterator i = findBasicCred(host, port, path);
+  BasicCredSet::iterator i = findBasicCred(host, port, path);
   if(i == basicCreds_.end()) {
     SharedHandle<AuthConfig> authConfig =
       createHttpAuthResolver(op)->resolveAuthConfig(host);
     if(!authConfig) {
       return false;
     } else {
-      BasicCred bc(authConfig->getUser(), authConfig->getPassword(),
-                   host, port, path, true);
-      i = std::lower_bound(basicCreds_.begin(), basicCreds_.end(), bc);
-      basicCreds_.insert(i, bc);
+      SharedHandle<BasicCred> bc
+        (new BasicCred(authConfig->getUser(), authConfig->getPassword(),
+                       host, port, path, true));
+      basicCreds_.insert(bc);
       return true;
     }
   } else {
-    (*i).activate();
+    (*i)->activate();
     return true;
   }
 }
@@ -242,18 +241,17 @@ bool AuthConfigFactory::BasicCred::operator<(const BasicCred& cred) const
                                (!(cred.port_ < port_) && path_ > cred.path_)));
 }
 
-std::deque<AuthConfigFactory::BasicCred>::iterator
+AuthConfigFactory::BasicCredSet::iterator
 AuthConfigFactory::findBasicCred
 (const std::string& host,
  uint16_t port,
  const std::string& path)
 {
-  BasicCred bc("", "", host, port, path);
-  std::deque<BasicCred>::iterator i =
-    std::lower_bound(basicCreds_.begin(), basicCreds_.end(), bc);
-  for(; i != basicCreds_.end() && (*i).host_ == host && (*i).port_ == port;
+  SharedHandle<BasicCred> bc(new BasicCred("", "", host, port, path));
+  BasicCredSet::iterator i = basicCreds_.lower_bound(bc);
+  for(; i != basicCreds_.end() && (*i)->host_ == host && (*i)->port_ == port;
       ++i) {
-    if(util::startsWith(bc.path_, (*i).path_)) {
+    if(util::startsWith(bc->path_, (*i)->path_)) {
       return i;
     }
   }

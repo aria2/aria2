@@ -56,25 +56,19 @@ DHTPeerAnnounceStorage::DHTPeerAnnounceStorage() {}
 
 DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
 
-namespace {
-class InfoHashLess
+bool DHTPeerAnnounceStorage::InfoHashLess::operator()
+  (const SharedHandle<DHTPeerAnnounceEntry>& lhs,
+   const SharedHandle<DHTPeerAnnounceEntry>& rhs)
 {
-public:
-  bool operator()(const SharedHandle<DHTPeerAnnounceEntry>& lhs,
-                  const SharedHandle<DHTPeerAnnounceEntry>& rhs)
-  {
-    return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
-  }
-};
-} // namespace
+  return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
+}
 
 SharedHandle<DHTPeerAnnounceEntry>
 DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
 {
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
-  std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::lower_bound(entries_.begin(), entries_.end(), entry, InfoHashLess());
+  DHTPeerAnnounceEntrySet::iterator i = entries_.lower_bound(entry);
 
   if(i != entries_.end() &&
      memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0) {
@@ -107,11 +101,8 @@ void DHTPeerAnnounceStorage::getPeers(std::vector<SharedHandle<Peer> >& peers,
 {
   SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
 
-  std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::lower_bound(entries_.begin(), entries_.end(), entry, InfoHashLess());
-  if(i != entries_.end() &&
-     memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0 &&
-     !(*i)->empty()) {
+  DHTPeerAnnounceEntrySet::iterator i = entries_.find(entry);
+  if(i != entries_.end()) {
     (*i)->getPeers(peers);
   }
 }
@@ -132,9 +123,14 @@ void DHTPeerAnnounceStorage::handleTimeout()
   A2_LOG_DEBUG(fmt("Now purge peer announces(%lu entries) which are timed out.",
                    static_cast<unsigned long>(entries_.size())));
   std::for_each(entries_.begin(), entries_.end(), RemoveStalePeerAddrEntry());
-  entries_.erase(std::remove_if(entries_.begin(), entries_.end(),
-                                mem_fun_sh(&DHTPeerAnnounceEntry::empty)),
-                 entries_.end());
+  for(DHTPeerAnnounceEntrySet::iterator i = entries_.begin(),
+        eoi = entries_.end(); i != eoi;) {
+    if((*i)->empty()) {
+      entries_.erase(i++);
+    } else {
+      ++i;
+    }
+  }
   A2_LOG_DEBUG(fmt("Currently %lu peer announce entries",
                    static_cast<unsigned long>(entries_.size())));
 }
@@ -142,7 +138,7 @@ void DHTPeerAnnounceStorage::handleTimeout()
 void DHTPeerAnnounceStorage::announcePeer()
 {
   A2_LOG_DEBUG("Now announcing peer.");
-  for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i =
+  for(DHTPeerAnnounceEntrySet::iterator i =
         entries_.begin(), eoi = entries_.end(); i != eoi; ++i) {
     if((*i)->getLastUpdated().
        difference(global::wallclock()) >= DHT_PEER_ANNOUNCE_INTERVAL) {

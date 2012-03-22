@@ -51,6 +51,21 @@
 
 namespace aria2 {
 
+bool FileEntry::RequestFaster::operator()
+  (const SharedHandle<Request>& lhs,
+   const SharedHandle<Request>& rhs) const
+{
+  if(!lhs->getPeerStat()) {
+    return false;
+  }
+  if(!rhs->getPeerStat()) {
+    return true;
+  }
+  int lspd = lhs->getPeerStat()->getAvgDownloadSpeed();
+  int rspd = rhs->getPeerStat()->getAvgDownloadSpeed();
+  return lspd > rspd || (lspd == rspd && lhs.get() < rhs.get());
+}
+
 FileEntry::FileEntry
 (const std::string& path,
  off_t length,
@@ -158,7 +173,7 @@ FileEntry::getRequest
           req->setReferer(util::percentEncodeMini(referer));
           req->setMethod(method);
           spentUris_.push_back(uri);
-          inFlightRequests_.push_back(req);
+          inFlightRequests_.insert(req);
           break;
         } else {
           req.reset();
@@ -177,8 +192,8 @@ FileEntry::getRequest
     // sleeping(Request::getWakeTime() < global::wallclock()).  If all
     // pooled objects are sleeping, return first one.  Caller should
     // inspect returned object's getWakeTime().
-    std::deque<SharedHandle<Request> >::iterator i = requestPool_.begin();
-    std::deque<SharedHandle<Request> >::iterator eoi = requestPool_.end();
+    RequestPool::iterator i = requestPool_.begin();
+    RequestPool::iterator eoi = requestPool_.end();
     for(; i != eoi; ++i) {
       if((*i)->getWakeTime() <= global::wallclock()) {
         break;
@@ -189,7 +204,7 @@ FileEntry::getRequest
     }
     req = *i;
     requestPool_.erase(i);
-    inFlightRequests_.push_back(req);
+    inFlightRequests_.insert(req);
     A2_LOG_DEBUG(fmt("Picked up from pool: %s", req->getUri().c_str()));
   }
   return req;
@@ -203,7 +218,8 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
      lastFasterReplace_.difference(global::wallclock()) < startupIdleTime) {
     return SharedHandle<Request>();
   }
-  const SharedHandle<PeerStat>& fastest = requestPool_.front()->getPeerStat();
+  const SharedHandle<PeerStat>& fastest =
+    (*requestPool_.begin())->getPeerStat();
   if(!fastest) {
     return SharedHandle<Request>();
   }
@@ -214,9 +230,9 @@ FileEntry::findFasterRequest(const SharedHandle<Request>& base)
       difference(global::wallclock()) >= startupIdleTime &&
       fastest->getAvgDownloadSpeed()*0.8 > basestat->calculateDownloadSpeed())){
     // TODO we should consider that "fastest" is very slow.
-    SharedHandle<Request> fastestRequest = requestPool_.front();
-    requestPool_.pop_front();
-    inFlightRequests_.push_back(fastestRequest);
+    SharedHandle<Request> fastestRequest = *requestPool_.begin();
+    requestPool_.erase(requestPool_.begin());
+    inFlightRequests_.insert(fastestRequest);
     lastFasterReplace_ = global::wallclock();
     return fastestRequest;
   }
@@ -279,31 +295,13 @@ FileEntry::findFasterRequest
     fastestRequest->setReferer(base->getReferer());
     uris_.erase(std::find(uris_.begin(), uris_.end(), uri));
     spentUris_.push_back(uri);
-    inFlightRequests_.push_back(fastestRequest);
+    inFlightRequests_.insert(fastestRequest);
     lastFasterReplace_ = global::wallclock();
     return fastestRequest;
   }
   A2_LOG_DEBUG("No faster server found.");
   return SharedHandle<Request>();
 }
-
-namespace {
-class RequestFaster {
-public:
-  bool operator()(const SharedHandle<Request>& lhs,
-                  const SharedHandle<Request>& rhs) const
-  {
-    if(!lhs->getPeerStat()) {
-      return false;
-    }
-    if(!rhs->getPeerStat()) {
-      return true;
-    }
-    return
-      lhs->getPeerStat()->getAvgDownloadSpeed() > rhs->getPeerStat()->getAvgDownloadSpeed();
-  }
-};
-} // namespace
 
 void FileEntry::storePool(const SharedHandle<Request>& request)
 {
@@ -313,10 +311,7 @@ void FileEntry::storePool(const SharedHandle<Request>& request)
     // store Request in the right position in the pool.
     peerStat->calculateAvgDownloadSpeed();
   }
-  std::deque<SharedHandle<Request> >::iterator i =
-    std::lower_bound(requestPool_.begin(), requestPool_.end(), request,
-                     RequestFaster());
-  requestPool_.insert(i, request);
+  requestPool_.insert(request);
 }
 
 void FileEntry::poolRequest(const SharedHandle<Request>& request)
@@ -329,15 +324,7 @@ void FileEntry::poolRequest(const SharedHandle<Request>& request)
 
 bool FileEntry::removeRequest(const SharedHandle<Request>& request)
 {
-  for(std::deque<SharedHandle<Request> >::iterator i =
-        inFlightRequests_.begin(), eoi = inFlightRequests_.end();
-      i != eoi; ++i) {
-    if((*i).get() == request.get()) {
-      inFlightRequests_.erase(i);
-      return true;
-    }
-  }
-  return false;
+  return inFlightRequests_.erase(request) == 1;
 }
 
 void FileEntry::removeURIWhoseHostnameIs(const std::string& hostname)
@@ -500,10 +487,11 @@ bool FileEntry::removeUri(const std::string& uri)
   } else {
     spentUris_.erase(itr);
     SharedHandle<Request> req;
-    std::deque<SharedHandle<Request> >::iterator riter =
+    InFlightRequestSet::iterator riter =
       findRequestByUri(inFlightRequests_.begin(), inFlightRequests_.end(), uri);
     if(riter == inFlightRequests_.end()) {
-      riter = findRequestByUri(requestPool_.begin(), requestPool_.end(), uri);
+      RequestPool::iterator riter = findRequestByUri(requestPool_.begin(),
+                                                     requestPool_.end(), uri);
       if(riter == requestPool_.end()) {
         return true;
       } else {

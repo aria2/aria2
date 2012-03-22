@@ -140,10 +140,7 @@ SharedHandle<Piece> DefaultPieceStorage::getPiece(size_t index)
 
 void DefaultPieceStorage::addUsedPiece(const SharedHandle<Piece>& piece)
 {
-  std::deque<SharedHandle<Piece> >::iterator i =
-    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece,
-                     DerefLess<SharedHandle<Piece> >());
-  usedPieces_.insert(i, piece);
+  usedPieces_.insert(piece);
   A2_LOG_DEBUG(fmt("usedPieces_.size()=%lu",
                    static_cast<unsigned long>(usedPieces_.size())));
 }
@@ -153,14 +150,12 @@ SharedHandle<Piece> DefaultPieceStorage::findUsedPiece(size_t index) const
   SharedHandle<Piece> p(new Piece());
   p->setIndex(index);
 
-  std::deque<SharedHandle<Piece> >::const_iterator i =
-    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), p,
-                     DerefLess<SharedHandle<Piece> >());
-  if(i != usedPieces_.end() && *(*i) == *p) {
-    return *i;
-  } else {
+  UsedPieceSet::iterator i = usedPieces_.find(p);
+  if(i == usedPieces_.end()) {
     p.reset();
     return p;
+  } else {
+    return *i;
   }
 }
 
@@ -238,7 +233,7 @@ void unsetExcludedIndexes(BitfieldMan& bitfield,
 void DefaultPieceStorage::createFastIndexBitfield
 (BitfieldMan& bitfield, const SharedHandle<Peer>& peer)
 {
-  for(std::vector<size_t>::const_iterator itr =
+  for(std::set<size_t>::const_iterator itr =
         peer->getPeerAllowedIndexSet().begin(),
         eoi = peer->getPeerAllowedIndexSet().end(); itr != eoi; ++itr) {
     if(!bitfieldMan_->isBitSet(*itr) && peer->hasPiece(*itr)) {
@@ -405,12 +400,7 @@ void DefaultPieceStorage::deleteUsedPiece(const SharedHandle<Piece>& piece)
   if(!piece) {
     return;
   }
-  std::deque<SharedHandle<Piece> >::iterator i = 
-    std::lower_bound(usedPieces_.begin(), usedPieces_.end(), piece,
-                     DerefLess<SharedHandle<Piece> >());
-  if(i != usedPieces_.end() && *(*i) == *piece) {
-    usedPieces_.erase(i);
-  }
+  usedPieces_.erase(piece);
 }
 
 // void DefaultPieceStorage::reduceUsedPieces(size_t upperBound)
@@ -758,9 +748,7 @@ void DefaultPieceStorage::markPieceMissing(size_t index)
 void DefaultPieceStorage::addInFlightPiece
 (const std::vector<SharedHandle<Piece> >& pieces)
 {
-  usedPieces_.insert(usedPieces_.end(), pieces.begin(), pieces.end());
-  std::sort(usedPieces_.begin(), usedPieces_.end(),
-            DerefLess<SharedHandle<Piece> >());
+  usedPieces_.insert(pieces.begin(), pieces.end());
 }
 
 size_t DefaultPieceStorage::countInFlightPiece()

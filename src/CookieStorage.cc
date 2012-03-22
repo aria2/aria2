@@ -93,6 +93,21 @@ void swap(CookieStorage::DomainEntry& a, CookieStorage::DomainEntry& b)
   a.swap(b);
 }
 
+void CookieStorage::DomainEntry::findCookie
+(std::vector<Cookie>& out,
+ const std::string& requestHost,
+ const std::string& requestPath,
+ time_t now, bool secure)
+{
+  for(std::deque<Cookie>::iterator i = cookies_.begin(),
+        eoi = cookies_.end(); i != eoi; ++i) {
+    if((*i).match(requestHost, requestPath, now, secure)) {
+      (*i).setLastAccessTime(now);
+      out.push_back(*i);
+    }
+  }
+}
+
 bool CookieStorage::DomainEntry::addCookie(const Cookie& cookie, time_t now)
 {
   setLastAccessTime(now);
@@ -152,6 +167,10 @@ size_t CookieStorage::DomainEntry::countCookie() const
   return cookies_.size();
 }
 
+bool CookieStorage::DomainEntry::operator==(const DomainEntry& de) const
+{
+  return key_ == de.key_;
+}
 
 bool CookieStorage::DomainEntry::operator<(const DomainEntry& de) const
 {
@@ -172,20 +191,21 @@ const double DOMAIN_EVICTION_RATE = 0.1;
 bool CookieStorage::store(const Cookie& cookie, time_t now)
 {
   if(domains_.size() >= DOMAIN_EVICTION_TRIGGER) {
-    std::sort(domains_.begin(), domains_.end(),
+    std::vector<SharedHandle<DomainEntry> > evictions(domains_.begin(),
+                                                      domains_.end());
+    std::sort(evictions.begin(), evictions.end(),
               LeastRecentAccess<DomainEntry>());
-    size_t delnum = (size_t)(domains_.size()*DOMAIN_EVICTION_RATE);
-    domains_.erase(domains_.begin(), domains_.begin()+delnum);
-    std::sort(domains_.begin(), domains_.end());
+    size_t delnum = (size_t)(evictions.size()*DOMAIN_EVICTION_RATE);
+    domains_.clear();
+    domains_.insert(evictions.begin()+delnum, evictions.end());
   }
-  DomainEntry v(cookie.getDomain());
-  std::deque<DomainEntry>::iterator i =
-    std::lower_bound(domains_.begin(), domains_.end(), v);
+  SharedHandle<DomainEntry> v(new DomainEntry(cookie.getDomain()));
+  DomainEntrySet::iterator i = domains_.lower_bound(v);
   bool added = false;
-  if(i != domains_.end() && (*i).getKey() == v.getKey()) {
-    added = (*i).addCookie(cookie, now);
+  if(i != domains_.end() && *(*i) == *v) {
+    added = (*i)->addCookie(cookie, now);
   } else {
-    added = v.addCookie(cookie, now);
+    added = v->addCookie(cookie, now);
     if(added) {
       domains_.insert(i, v);
     }
@@ -264,32 +284,27 @@ public:
 };
 } // namespace
 
-namespace {
-template<typename DomainInputIterator, typename CookieOutputIterator>
-void searchCookieByDomainSuffix
-(const std::string& domain,
- DomainInputIterator first, DomainInputIterator last, CookieOutputIterator out,
+void CookieStorage::searchCookieByDomainSuffix
+(std::vector<Cookie>& out,
+ const std::string& domain,
  const std::string& requestHost,
  const std::string& requestPath,
  time_t now, bool secure)
 {
-  CookieStorage::DomainEntry v(domain);
-  std::deque<CookieStorage::DomainEntry>::iterator i =
-    std::lower_bound(first, last, v);
-  if(i != last && (*i).getKey() == v.getKey()) {
-    (*i).setLastAccessTime(now);
-    (*i).findCookie(out, requestHost, requestPath, now, secure);
+  SharedHandle<DomainEntry> v(new DomainEntry(domain));
+  DomainEntrySet::iterator i = domains_.lower_bound(v);
+  if(i != domains_.end() && *(*i) == *v) {
+    (*i)->setLastAccessTime(now);
+    (*i)->findCookie(out, requestHost, requestPath, now, secure);
   }
 }
-} // namespace
 
 bool CookieStorage::contains(const Cookie& cookie) const
 {
-  CookieStorage::DomainEntry v(cookie.getDomain());
-  std::deque<CookieStorage::DomainEntry>::const_iterator i =
-    std::lower_bound(domains_.begin(), domains_.end(), v);
-  if(i != domains_.end() && (*i).getKey() == v.getKey()) {
-    return (*i).contains(cookie);
+  SharedHandle<DomainEntry> v(new DomainEntry(cookie.getDomain()));
+  DomainEntrySet::iterator i = domains_.find(v);
+  if(i != domains_.end()) {
+    return (*i)->contains(cookie);
   } else {
     return false;
   }
@@ -307,8 +322,7 @@ std::vector<Cookie> CookieStorage::criteriaFind
   }
   if(util::isNumericHost(requestHost)) {
     searchCookieByDomainSuffix
-      (requestHost, domains_.begin(), domains_.end(), std::back_inserter(res),
-       requestHost, requestPath, now, secure);
+      (res, requestHost, requestHost, requestPath, now, secure);
   } else {
     std::vector<Scip> levels;
     util::splitIter(requestHost.begin(), requestHost.end(),
@@ -319,8 +333,7 @@ std::vector<Cookie> CookieStorage::criteriaFind
         i != eoi; ++i, domain.insert(domain.begin(), '.')) {
       domain.insert(domain.begin(), (*i).first, (*i).second);
       searchCookieByDomainSuffix
-        (domain, domains_.begin(), domains_.end(),
-         std::back_inserter(res), requestHost, requestPath, now, secure);
+        (res, domain, requestHost, requestPath, now, secure);
     }
   }
   std::vector<CookiePathDivider> divs;
@@ -335,9 +348,9 @@ std::vector<Cookie> CookieStorage::criteriaFind
 size_t CookieStorage::size() const
 {
   size_t numCookie = 0;
-  for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
-        eoi = domains_.end(); i != eoi; ++i) {
-    numCookie += (*i).countCookie();
+  for(DomainEntrySet::iterator i = domains_.begin(), eoi = domains_.end();
+      i != eoi; ++i) {
+    numCookie += (*i)->countCookie();
   }
   return numCookie;
 }
@@ -394,9 +407,9 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
       A2_LOG_ERROR(fmt("Cannot create cookie file %s", filename.c_str()));
       return false;
     }
-    for(std::deque<DomainEntry>::const_iterator i = domains_.begin(),
-          eoi = domains_.end(); i != eoi; ++i) {
-      if(!(*i).writeCookie(fp)) {
+    for(DomainEntrySet::iterator i = domains_.begin(), eoi = domains_.end();
+        i != eoi; ++i) {
+      if(!(*i)->writeCookie(fp)) {
         A2_LOG_ERROR(fmt("Failed to save cookies to %s", filename.c_str()));
         return false;
       }

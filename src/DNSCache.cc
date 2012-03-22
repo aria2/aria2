@@ -76,9 +76,16 @@ DNSCache::CacheEntry& DNSCache::CacheEntry::operator=(const CacheEntry& c)
   return *this;
 }
 
-void DNSCache::CacheEntry::add(const std::string& addr)
+bool DNSCache::CacheEntry::add(const std::string& addr)
 {
+  for(std::vector<AddrEntry>::const_iterator i = addrEntries_.begin(),
+        eoi = addrEntries_.end(); i != eoi; ++i) {
+    if((*i).addr_ == addr) {
+      return false;
+    }
+  }
   addrEntries_.push_back(AddrEntry(addr));
+  return true;
 }
 
 std::vector<DNSCache::AddrEntry>::iterator DNSCache::CacheEntry::find
@@ -160,50 +167,42 @@ DNSCache& DNSCache::operator=(const DNSCache& c)
 const std::string& DNSCache::find
 (const std::string& hostname, uint16_t port) const
 {
-  CacheEntry target(hostname, port);
-  std::deque<CacheEntry>::const_iterator i =
-    std::lower_bound(entries_.begin(), entries_.end(), target);
-  if(i != entries_.end() && (*i) == target) {
-    return (*i).getGoodAddr();
+  SharedHandle<CacheEntry> target(new CacheEntry(hostname, port));
+  CacheEntrySet::iterator i = entries_.find(target);
+  if(i == entries_.end()) {
+    return A2STR::NIL;
+  } else {
+    return (*i)->getGoodAddr();
   }
-  return A2STR::NIL;
 }
 
 void DNSCache::put
 (const std::string& hostname, const std::string& ipaddr, uint16_t port)
 {
-  CacheEntry target(hostname, port);
-  std::deque<CacheEntry>::iterator i =
-    std::lower_bound(entries_.begin(), entries_.end(), target);
-  if(i == entries_.end() || !((*i) == target)) {
-    target.add(ipaddr);
-    entries_.insert(i, target);
+  SharedHandle<CacheEntry> target(new CacheEntry(hostname, port));
+  CacheEntrySet::iterator i = entries_.lower_bound(target);
+  if(i != entries_.end() && *(*i) == *target) {
+    (*i)->add(ipaddr);
   } else {
-    if(!(*i).contains(ipaddr)) {
-      (*i).add(ipaddr);
-    }
+    target->add(ipaddr);
+    entries_.insert(i, target);
   }
 }
 
 void DNSCache::markBad
 (const std::string& hostname, const std::string& ipaddr, uint16_t port)
 {
-  CacheEntry target(hostname, port);
-  std::deque<CacheEntry>::iterator i =
-    std::lower_bound(entries_.begin(), entries_.end(), target);
-  if(i != entries_.end() && (*i) == target) {
-    (*i).markBad(ipaddr);
+  SharedHandle<CacheEntry> target(new CacheEntry(hostname, port));
+  CacheEntrySet::iterator i = entries_.find(target);
+  if(i != entries_.end()) {
+    (*i)->markBad(ipaddr);
   }
 }
 
 void DNSCache::remove(const std::string& hostname, uint16_t port)
 {
-  CacheEntry target(hostname, port);
-  std::deque<CacheEntry>::iterator i =
-    std::lower_bound(entries_.begin(), entries_.end(), target);
-  if(i != entries_.end() && (*i) == target) {
-    entries_.erase(i);
-  }
+  SharedHandle<CacheEntry> target(new CacheEntry(hostname, port));
+  entries_.erase(target);
 }
 
 } // namespace aria2

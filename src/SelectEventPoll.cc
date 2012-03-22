@@ -181,9 +181,8 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // __MINGW32__
 #ifdef ENABLE_ASYNC_DNS
 
-  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::const_iterator itr =
-        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
-      itr != eoi; ++itr) {
+  for(AsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.begin(),
+        eoi = nameResolverEntries_.end(); itr != eoi; ++itr) {
     const SharedHandle<AsyncNameResolverEntry>& entry = *itr;
     int fd = entry->getFds(&rfds, &wfds);
     // TODO force error if fd == 0
@@ -203,8 +202,8 @@ void SelectEventPoll::poll(const struct timeval& tv)
 #endif // !__MINGW32__
   } while(retval == -1 && errno == EINTR);
   if(retval > 0) {
-    for(std::deque<SharedHandle<SocketEntry> >::const_iterator i =
-          socketEntries_.begin(), eoi = socketEntries_.end(); i != eoi; ++i) {
+    for(SocketEntrySet::iterator i = socketEntries_.begin(),
+          eoi = socketEntries_.end(); i != eoi; ++i) {
       int events = 0;
       if(FD_ISSET((*i)->getSocket(), &rfds)) {
         events |= EventPoll::EVENT_READ;
@@ -220,9 +219,8 @@ void SelectEventPoll::poll(const struct timeval& tv)
   }
 #ifdef ENABLE_ASYNC_DNS
 
-  for(std::deque<SharedHandle<AsyncNameResolverEntry> >::const_iterator i =
-        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
-      i != eoi; ++i) {
+  for(AsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
+        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
     (*i)->process(&rfds, &wfds);
   }
 
@@ -250,8 +248,8 @@ void SelectEventPoll::updateFdSet()
 #endif // !__MINGW32__
   FD_ZERO(&rfdset_);
   FD_ZERO(&wfdset_);
-  for(std::deque<SharedHandle<SocketEntry> >::const_iterator i =
-        socketEntries_.begin(), eoi = socketEntries_.end(); i != eoi; ++i) {
+  for(SocketEntrySet::iterator i = socketEntries_.begin(),
+        eoi = socketEntries_.end(); i != eoi; ++i) {
     sock_t fd = (*i)->getSocket();
 #ifndef __MINGW32__
     if(fd < 0 || FD_SETSIZE <= fd) {
@@ -283,9 +281,7 @@ bool SelectEventPoll::addEvents(sock_t socket, Command* command,
                                 EventPoll::EventType events)
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
-  std::deque<SharedHandle<SocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<SocketEntry> >());
+  SocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
     (*i)->addCommandEvent(command, events);
   } else {
@@ -300,19 +296,17 @@ bool SelectEventPoll::deleteEvents(sock_t socket, Command* command,
                                    EventPoll::EventType events)
 {
   SharedHandle<SocketEntry> socketEntry(new SocketEntry(socket));
-  std::deque<SharedHandle<SocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<SocketEntry> >());
-  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
+  SocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  if(i == socketEntries_.end()) {
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
+    return false;
+  } else {
     (*i)->removeCommandEvent(command, events);
     if((*i)->eventEmpty()) {
       socketEntries_.erase(i);
     }
     updateFdSet();
     return true;
-  } else {
-    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
-    return false;
   }
 }
 
@@ -322,14 +316,13 @@ bool SelectEventPoll::addNameResolver
 {
   SharedHandle<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
-  if(itr == nameResolverEntries_.end()) {
-    nameResolverEntries_.push_back(entry);
-    return true;
-  } else {
+  AsyncNameResolverEntrySet::iterator itr =
+    nameResolverEntries_.lower_bound(entry);
+  if(itr != nameResolverEntries_.end() && *(*itr) == *entry) {
     return false;
+  } else {
+    nameResolverEntries_.insert(itr, entry);
+    return true;
   }
 }
 
@@ -338,15 +331,7 @@ bool SelectEventPoll::deleteNameResolver
 {
   SharedHandle<AsyncNameResolverEntry> entry
     (new AsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<AsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
-  if(itr == nameResolverEntries_.end()) {
-    return false;
-  } else {
-    nameResolverEntries_.erase(itr);
-    return true;
-  }
+  return nameResolverEntries_.erase(entry) == 1;
 }
 #endif // ENABLE_ASYNC_DNS
 

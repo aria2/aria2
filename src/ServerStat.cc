@@ -191,12 +191,8 @@ void ServerStat::setError()
 
 bool ServerStat::operator<(const ServerStat& serverStat) const
 {
-  int c = hostname_.compare(serverStat.hostname_);
-  if(c == 0) {
-    return protocol_ < serverStat.protocol_;
-  } else {
-    return c < 0;
-  }
+  return hostname_ < serverStat.hostname_ ||
+    (hostname_ == serverStat.hostname_ && protocol_ < serverStat.protocol_);
 }
 
 bool ServerStat::operator==(const ServerStat& serverStat) const
