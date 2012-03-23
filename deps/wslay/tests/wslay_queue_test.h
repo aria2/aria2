@@ -25,6 +25,6 @@
 #ifndef WSLAY_QUEUE_TEST_H
 #define WSLAY_QUEUE_TEST_H
 
-void test_wslay_queue();
+void test_wslay_queue(void);
 
-#endif // WSLAY_QUEUE_TEST_H
+#endif /* WSLAY_QUEUE_TEST_H */

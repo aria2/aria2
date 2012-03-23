@@ -37,25 +37,16 @@
 #ifdef HAVE_NETINET_IN_H
 #  include <netinet/in.h>
 #endif /* HAVE_NETINET_IN_H */
+/* For Mingw build */
+#ifdef HAVE_WINSOCK2_H
+#  include <winsock2.h>
+#endif /* HAVE_WINSOCK2_H */
 
 #ifdef WORDS_BIGENDIAN
-#  ifndef HAVE_HTONS
-#    define htons(x) (x)
-#  endif /* !HAVE_HTONS */
-#  ifndef HAVE_NTOHS
-#    define ntohs(x) (x)
-#  endif /* !HAVE_NTOHS */
 #  define ntoh64(x) (x)
 #  define hton64(x) (x)
 #else /* !WORDS_BIGENDIAN */
-uint16_t wslay_byteswap16(uint16_t x);
 uint64_t wslay_byteswap64(uint64_t x);
-#  ifndef HAVE_HTONS
-#    define htons(x) wslay_byteswap16(x)
-#  endif /* !HAVE_HTONS */
-#  ifndef HAVE_NTOHS
-#    define ntohs(x) wslay_byteswap16(x)
-#  endif /* !HAVE_NTOHS */
 #  define ntoh64(x) wslay_byteswap64(x)
 #  define hton64(x) wslay_byteswap64(x)
 #endif /* !WORDS_BIGENDIAN */

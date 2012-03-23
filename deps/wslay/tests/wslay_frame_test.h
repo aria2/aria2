@@ -25,22 +25,22 @@
 #ifndef WSLAY_FRAME_TEST_H
 #define WSLAY_FRAME_TEST_H
 
-void test_wslay_frame_context_init();
-void test_wslay_frame_recv();
-void test_wslay_frame_recv_1byte();
-void test_wslay_frame_recv_fragmented();
-void test_wslay_frame_recv_interleaved_ctrl_frame();
-void test_wslay_frame_recv_zero_payloadlen();
-void test_wslay_frame_recv_too_large_payload();
-void test_wslay_frame_recv_ctrl_frame_too_large_payload();
-void test_wslay_frame_recv_minimum_ext_payload16();
-void test_wslay_frame_recv_minimum_ext_payload64();
-void test_wslay_frame_send();
-void test_wslay_frame_send_fragmented();
-void test_wslay_frame_send_interleaved_ctrl_frame();
-void test_wslay_frame_send_1byte_masked();
-void test_wslay_frame_send_zero_payloadlen();
-void test_wslay_frame_send_too_large_payload();
-void test_wslay_frame_send_ctrl_frame_too_large_payload();
+void test_wslay_frame_context_init(void);
+void test_wslay_frame_recv(void);
+void test_wslay_frame_recv_1byte(void);
+void test_wslay_frame_recv_fragmented(void);
+void test_wslay_frame_recv_interleaved_ctrl_frame(void);
+void test_wslay_frame_recv_zero_payloadlen(void);
+void test_wslay_frame_recv_too_large_payload(void);
+void test_wslay_frame_recv_ctrl_frame_too_large_payload(void);
+void test_wslay_frame_recv_minimum_ext_payload16(void);
+void test_wslay_frame_recv_minimum_ext_payload64(void);
+void test_wslay_frame_send(void);
+void test_wslay_frame_send_fragmented(void);
+void test_wslay_frame_send_interleaved_ctrl_frame(void);
+void test_wslay_frame_send_1byte_masked(void);
+void test_wslay_frame_send_zero_payloadlen(void);
+void test_wslay_frame_send_too_large_payload(void);
+void test_wslay_frame_send_ctrl_frame_too_large_payload(void);
 
-#endif // WSLAY_FRAME_TEST_H
+#endif /* WSLAY_FRAME_TEST_H */

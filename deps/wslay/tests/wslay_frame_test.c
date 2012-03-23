@@ -30,7 +30,7 @@
 
 #include "wslay_frame.h"
 
-void test_wslay_frame_context_init()
+void test_wslay_frame_context_init(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks;
@@ -88,7 +88,7 @@ static ssize_t scripted_send_callback(const uint8_t* data, size_t len,
   return wlen;
 }
 
-void test_wslay_frame_recv()
+void test_wslay_frame_recv(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -114,7 +114,7 @@ void test_wslay_frame_recv()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_1byte()
+void test_wslay_frame_recv_1byte(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -122,7 +122,7 @@ void test_wslay_frame_recv_1byte()
                                              NULL };
   struct scripted_data_feed df;
   struct wslay_frame_iocb iocb;
-  int i;
+  size_t i;
   /* Masked text frame containing "Hello" */
   uint8_t msg[] = { 0x81u, 0x85u, 0x37u, 0xfau, 0x21u, 0x3du, 0x7fu, 0x9fu,
                     0x4du, 0x51u, 0x58u };
@@ -150,7 +150,7 @@ void test_wslay_frame_recv_1byte()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_fragmented()
+void test_wslay_frame_recv_fragmented(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -187,7 +187,7 @@ void test_wslay_frame_recv_fragmented()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_interleaved_ctrl_frame()
+void test_wslay_frame_recv_interleaved_ctrl_frame(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -236,7 +236,7 @@ void test_wslay_frame_recv_interleaved_ctrl_frame()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_zero_payloadlen()
+void test_wslay_frame_recv_zero_payloadlen(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -261,7 +261,7 @@ void test_wslay_frame_recv_zero_payloadlen()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_too_large_payload()
+void test_wslay_frame_recv_too_large_payload(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -278,7 +278,7 @@ void test_wslay_frame_recv_too_large_payload()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_ctrl_frame_too_large_payload()
+void test_wslay_frame_recv_ctrl_frame_too_large_payload(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -295,7 +295,7 @@ void test_wslay_frame_recv_ctrl_frame_too_large_payload()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_minimum_ext_payload16()
+void test_wslay_frame_recv_minimum_ext_payload16(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -312,7 +312,7 @@ void test_wslay_frame_recv_minimum_ext_payload16()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_recv_minimum_ext_payload64()
+void test_wslay_frame_recv_minimum_ext_payload64(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { NULL,
@@ -347,12 +347,12 @@ static ssize_t accumulator_send_callback(const uint8_t *buf, size_t len,
 static int static_genmask_callback(uint8_t *buf, size_t len,
                                    void* user_data)
 {
-  const static uint8_t makskey[] = { 0x37u, 0xfau, 0x21u, 0x3du };
+  static const uint8_t makskey[] = { 0x37u, 0xfau, 0x21u, 0x3du };
   memcpy(buf, makskey, 4);
   return 0;
 }
 
-void test_wslay_frame_send()
+void test_wslay_frame_send(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { accumulator_send_callback,
@@ -379,7 +379,7 @@ void test_wslay_frame_send()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_send_fragmented()
+void test_wslay_frame_send_fragmented(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { accumulator_send_callback,
@@ -416,7 +416,7 @@ void test_wslay_frame_send_fragmented()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_send_interleaved_ctrl_frame()
+void test_wslay_frame_send_interleaved_ctrl_frame(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { accumulator_send_callback,
@@ -467,7 +467,7 @@ void test_wslay_frame_send_interleaved_ctrl_frame()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_send_1byte_masked()
+void test_wslay_frame_send_1byte_masked(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { scripted_send_callback,
@@ -479,7 +479,7 @@ void test_wslay_frame_send_1byte_masked()
                     0x4du, 0x51u, 0x58u };
   uint8_t hello[] = "Hello";
   struct scripted_data_feed df;
-  int i;
+  size_t i;
   scripted_data_feed_init(&df, NULL, 0);
   for(i = 0; i < sizeof(msg); ++i) {
     df.feedseq[i] = 1;
@@ -500,7 +500,7 @@ void test_wslay_frame_send_1byte_masked()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_send_zero_payloadlen()
+void test_wslay_frame_send_zero_payloadlen(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks = { accumulator_send_callback,
@@ -525,7 +525,7 @@ void test_wslay_frame_send_zero_payloadlen()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_send_too_large_payload()
+void test_wslay_frame_send_too_large_payload(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks;
@@ -542,7 +542,7 @@ void test_wslay_frame_send_too_large_payload()
   wslay_frame_context_free(ctx);
 }
 
-void test_wslay_frame_send_ctrl_frame_too_large_payload()
+void test_wslay_frame_send_ctrl_frame_too_large_payload(void)
 {
   wslay_frame_context_ptr ctx;
   struct wslay_frame_callbacks callbacks;

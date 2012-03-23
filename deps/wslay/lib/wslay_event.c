@@ -507,12 +507,12 @@ static void wslay_event_call_on_frame_recv_chunk_callback
 (wslay_event_context_ptr ctx, const struct wslay_frame_iocb *iocb)
 {
   if(ctx->callbacks.on_frame_recv_chunk_callback) {
-    struct wslay_event_on_frame_recv_chunk_arg arg = {
-      iocb->data, iocb->data_length
-    };
+    struct wslay_event_on_frame_recv_chunk_arg arg;
+    arg.data = iocb->data;
+    arg.data_length = iocb->data_length;
     ctx->callbacks.on_frame_recv_chunk_callback(ctx, &arg, ctx->user_data);
   }
-};
+}
 
 static void wslay_event_call_on_frame_recv_end_callback
 (wslay_event_context_ptr ctx)
@@ -697,9 +697,10 @@ int wslay_event_recv(wslay_event_context_ptr ctx)
                 return r;
               }
             } else if(ctx->imsg->opcode == WSLAY_PING) {
-              struct wslay_event_msg arg = {
-                WSLAY_PONG, msg, ctx->imsg->msg_length
-              };
+              struct wslay_event_msg arg;
+              arg.opcode = WSLAY_PONG;
+              arg.msg = msg;
+              arg.msg_length = ctx->imsg->msg_length;
               if((r = wslay_event_queue_msg(ctx, &arg)) &&
                  r != WSLAY_ERR_NO_MORE_MSG) {
                 ctx->read_enabled = 0;

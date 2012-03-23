@@ -26,9 +26,6 @@
 
 #include <stddef.h>
 #include <string.h>
-#ifdef HAVE_ARPA_INET_H
-#  include <arpa/inet.h>
-#endif // HAVE_ARPA_INET_H
 #include <assert.h>
 
 #include "wslay_net.h"
@@ -142,17 +139,18 @@ ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
         const uint8_t *datamark = iocb->data,
           *datalimit = iocb->data+iocb->data_length;
         while(datamark < datalimit) {
+          size_t datalen = datalimit - datamark;
           const uint8_t *writelimit = datamark+
-            wslay_min(sizeof(temp), datalimit-datamark);
+            wslay_min(sizeof(temp), datalen);
           size_t writelen = writelimit-datamark;
           ssize_t r;
-          int i;
+          size_t i;
           for(i = 0; i < writelen; ++i) {
             temp[i] = datamark[i]^ctx->omaskkey[(ctx->opayloadoff+i)%4];
           }
           r = ctx->callbacks.send_callback(temp, writelen, 0, ctx->user_data);
           if(r > 0) {
-            if(r > writelen) {
+            if((size_t)r > writelen) {
               return WSLAY_ERR_INVALID_CALLBACK;
             } else {
               datamark += r;
@@ -172,7 +170,7 @@ ssize_t wslay_frame_send(wslay_frame_context_ptr ctx,
         r = ctx->callbacks.send_callback(iocb->data, iocb->data_length, 0,
                                          ctx->user_data);
         if(r > 0) {
-          if(r > iocb->data_length) {
+          if((size_t)r > iocb->data_length) {
             return WSLAY_ERR_INVALID_CALLBACK;
           } else {
             ctx->opayloadoff += r;
@@ -216,7 +214,7 @@ static ssize_t wslay_recv(wslay_frame_context_ptr ctx)
   return r;
 }
 
-#define WSLAY_AVAIL_IBUF(ctx) (ctx->ibuflimit-ctx->ibufmark)
+#define WSLAY_AVAIL_IBUF(ctx) ((size_t)(ctx->ibuflimit - ctx->ibufmark))
 
 ssize_t wslay_frame_recv(wslay_frame_context_ptr ctx,
                          struct wslay_frame_iocb *iocb)

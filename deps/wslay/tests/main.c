@@ -30,18 +30,18 @@
 #include "wslay_event_test.h"
 #include "wslay_queue_test.h"
 
-int init_suite1(void)
+static int init_suite1(void)
 {
   return 0;
 }
 
-int clean_suite1(void)
+static int clean_suite1(void)
 {
   return 0;
 }
 
 
-int main()
+int main(void)
 {
    CU_pSuite pSuite = NULL;
 

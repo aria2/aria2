@@ -25,17 +25,17 @@
 #ifndef WSLAY_EVENT_TEST_H
 #define WSLAY_EVENT_TEST_H
 
-void test_wslay_event_send_fragmented_msg();
-void test_wslay_event_send_fragmented_msg_with_ctrl();
-void test_wslay_event_send_ctrl_msg_first();
-void test_wslay_event_queue_close();
-void test_wslay_event_queue_close_without_code();
-void test_wslay_event_recv_close_without_code();
-void test_wslay_event_reply_close();
-void test_wslay_event_no_more_msg();
-void test_wslay_event_callback_failure();
-void test_wslay_event_no_buffering();
-void test_wslay_event_frame_too_big();
-void test_wslay_event_message_too_big();
+void test_wslay_event_send_fragmented_msg(void);
+void test_wslay_event_send_fragmented_msg_with_ctrl(void);
+void test_wslay_event_send_ctrl_msg_first(void);
+void test_wslay_event_queue_close(void);
+void test_wslay_event_queue_close_without_code(void);
+void test_wslay_event_recv_close_without_code(void);
+void test_wslay_event_reply_close(void);
+void test_wslay_event_no_more_msg(void);
+void test_wslay_event_callback_failure(void);
+void test_wslay_event_no_buffering(void);
+void test_wslay_event_frame_too_big(void);
+void test_wslay_event_message_too_big(void);
 
-#endif // WSLAY_EVENT_TEST_H
+#endif /* WSLAY_EVENT_TEST_H */

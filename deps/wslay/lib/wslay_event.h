@@ -73,7 +73,7 @@ struct wslay_event_frame_user_data {
 enum wslay_event_close_status {
   WSLAY_CLOSE_RECEIVED = 1 << 0,
   WSLAY_CLOSE_QUEUED = 1 << 1,
-  WSLAY_CLOSE_SENT = 1 << 2,
+  WSLAY_CLOSE_SENT = 1 << 2
 };
 
 enum wslay_event_config {

@@ -28,7 +28,7 @@
 
 #include "wslay_queue.h"
 
-void test_wslay_queue()
+void test_wslay_queue(void)
 {
   int ints[] = { 1, 2, 3, 4, 5 };
   int i;

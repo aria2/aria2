@@ -41,7 +41,7 @@ struct wslay_queue {
   struct wslay_queue_cell *tail;
 };
 
-struct wslay_queue* wslay_queue_new();
+struct wslay_queue* wslay_queue_new(void);
 void wslay_queue_free(struct wslay_queue *queue);
 int wslay_queue_push(struct wslay_queue *queue, void *data);
 int wslay_queue_push_front(struct wslay_queue *queue, void *data);

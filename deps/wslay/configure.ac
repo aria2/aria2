@@ -31,6 +31,10 @@ AC_SUBST(LT_CURRENT, 0)
 AC_SUBST(LT_REVISION, 0)
 AC_SUBST(LT_AGE, 0)
 
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE()
@@ -51,6 +55,13 @@ AC_CHECK_LIB([cunit], [CU_initialize_registry],
              [have_cunit=yes], [have_cunit=no])
 AM_CONDITIONAL([HAVE_CUNIT], [ test "x${have_cunit}" = "xyes" ])
 
+case "$target" in
+  *mingw*)
+    # Required for ntoh*/hton* functions.
+    LIBS="-lws2_32 $LIBS"
+    ;;
+esac
+
 # Checks for header files.
 AC_CHECK_HEADERS([ \
   arpa/inet.h \
@@ -61,6 +72,13 @@ AC_CHECK_HEADERS([ \
   string.h \
   unistd.h \
 ])
+
+# Need winsock2.h for ntoh*/hton* functions.
+case "$target" in
+  *mingw*)
+    AC_CHECK_HEADERS([winsock2.h])
+    ;;
+esac
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -73,7 +91,9 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_C_BIGENDIAN
 
 # Checks for library functions.
-AC_FUNC_MALLOC
+if test "x$cross_compiling" != "xyes"; then
+  AC_FUNC_MALLOC
+fi
 AC_CHECK_FUNCS([ \
   memmove \
   memset \

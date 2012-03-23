@@ -26,37 +26,11 @@
 
 #ifndef WORDS_BIGENDIAN
 
-static uint16_t byteswap16(uint16_t x)
-{
-  return ((x & 0xffu) << 8) | (x >> 8);;
-}
-
-#ifdef HAVE_NTOHL
-#  define byteswap32(x) ntohl(x)
-#else /* !HAVE_NTOHL */
-static uint32_t byteswap32(uint32_t x)
-{
-  uint32_t u = byteswap16(x & 0xffffu);
-  uint32_t l = byteswap16(x >> 16);
-  return (u << 16) | l;
-}
-#endif /* !HAVE_NTOHL */
-
-static uint64_t byteswap64(uint64_t x)
-{
-  uint64_t u = byteswap32(x & 0xffffffffllu);
-  uint64_t l = byteswap32(x >> 32);
-  return (u << 32) | l;
-}
-
-uint16_t wslay_byteswap16(uint16_t x)
-{
-  return byteswap16(x);
-}
-
 uint64_t wslay_byteswap64(uint64_t x)
 {
-  return byteswap64(x);
+  uint64_t u = ntohl(x & 0xffffffffllu);
+  uint64_t l = ntohl(x >> 32);
+  return (u << 32) | l;
 }
 
 #endif /* !WORDS_BIGENDIAN */

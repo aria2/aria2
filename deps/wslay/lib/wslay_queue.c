@@ -27,7 +27,7 @@
 #include <string.h>
 #include <assert.h>
 
-struct wslay_queue* wslay_queue_new()
+struct wslay_queue* wslay_queue_new(void)
 {
   struct wslay_queue *queue = (struct wslay_queue*)malloc
     (sizeof(struct wslay_queue));
@@ -42,14 +42,15 @@ void wslay_queue_free(struct wslay_queue *queue)
 {
   if(!queue) {
     return;
+  } else {
+    struct wslay_queue_cell *p = queue->top;
+    while(p) {
+      struct wslay_queue_cell *next = p->next;
+      free(p);
+      p = next;
+    }
+    free(queue);
   }
-  struct wslay_queue_cell *p = queue->top;
-  while(p) {
-    struct wslay_queue_cell *next = p->next;
-    free(p);
-    p = next;
-  }
-  free(queue);
 }
 
 int wslay_queue_push(struct wslay_queue *queue, void *data)

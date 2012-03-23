@@ -133,7 +133,7 @@ static ssize_t fail_send_callback(wslay_event_context_ptr ctx,
 }
 
 
-void test_wslay_event_send_fragmented_msg()
+void test_wslay_event_send_fragmented_msg(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -166,7 +166,7 @@ void test_wslay_event_send_fragmented_msg()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_send_fragmented_msg_with_ctrl()
+void test_wslay_event_send_fragmented_msg_with_ctrl(void)
 {
   int i;
   wslay_event_context_ptr ctx;
@@ -214,7 +214,7 @@ void test_wslay_event_send_fragmented_msg_with_ctrl()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_send_ctrl_msg_first()
+void test_wslay_event_send_ctrl_msg_first(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -246,7 +246,7 @@ void test_wslay_event_send_ctrl_msg_first()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_queue_close()
+void test_wslay_event_queue_close(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -270,7 +270,7 @@ void test_wslay_event_queue_close()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_queue_close_without_code()
+void test_wslay_event_queue_close_without_code(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -284,7 +284,7 @@ void test_wslay_event_queue_close_without_code()
   ud.acc = &acc;
   wslay_event_context_server_init(&ctx, &callbacks, &ud);
   CU_ASSERT(0 == wslay_event_queue_msg(ctx, &ping));
-  // See that ping is not sent because close frame is queued
+  /* See that ping is not sent because close frame is queued */
   CU_ASSERT(0 == wslay_event_queue_close(ctx, 0, NULL, 0));
   CU_ASSERT(0 == wslay_event_send(ctx));
   CU_ASSERT(2 == acc.length);
@@ -295,7 +295,7 @@ void test_wslay_event_queue_close_without_code()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_recv_close_without_code()
+void test_wslay_event_recv_close_without_code(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -314,7 +314,7 @@ void test_wslay_event_recv_close_without_code()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_reply_close()
+void test_wslay_event_reply_close(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -360,7 +360,7 @@ void test_wslay_event_reply_close()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_no_more_msg()
+void test_wslay_event_no_more_msg(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -371,7 +371,7 @@ void test_wslay_event_no_more_msg()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_callback_failure()
+void test_wslay_event_callback_failure(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -398,7 +398,7 @@ static void no_buffering_callback(wslay_event_context_ptr ctx,
   }
 }
 
-void test_wslay_event_no_buffering()
+void test_wslay_event_no_buffering(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -422,7 +422,7 @@ void test_wslay_event_no_buffering()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_frame_too_big()
+void test_wslay_event_frame_too_big(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
@@ -455,7 +455,7 @@ void test_wslay_event_frame_too_big()
   wslay_event_context_free(ctx);
 }
 
-void test_wslay_event_message_too_big()
+void test_wslay_event_message_too_big(void)
 {
   wslay_event_context_ptr ctx;
   struct wslay_event_callbacks callbacks;
