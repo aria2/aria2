@@ -37,7 +37,8 @@ main_SOURCES = $(HFILES) $(OBJECTS)
 
 main_LDADD = ${top_builddir}/lib/libwslay.la -lcunit
 main_LDFLAGS = -static
-AM_CFLAGS = -Wall -g -O2 -I${top_srcdir}/lib -I${top_srcdir}/lib/includes
+AM_CFLAGS = -Wall -g -O2 -I${top_srcdir}/lib -I${top_srcdir}/lib/includes\
+	@DEFS@
 # DEFS += -D_ISOC99_SOURCE -D_GNU_SOURCE
 TESTS = main
 
