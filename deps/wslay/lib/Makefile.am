@@ -35,7 +35,7 @@ OBJECTS = wslay_frame.c wslay_event.c\
 	wslay_queue.c wslay_net.c
 
 HFILES = wslay_frame.h wslay_event.h\
-	wslay_queue.h wlsay_net.h
+	wslay_queue.h wslay_net.h
 
 libwslay_la_SOURCES = $(HFILES) $(OBJECTS)
 libwslay_la_LDFLAGS = -no-undefined \
