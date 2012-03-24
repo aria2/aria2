@@ -2776,8 +2776,10 @@ Description
 +++++++++++
 
 This method returns options of the download denoted by 'gid'.  The
-response is of type struct. Its key is the name of option.  The value type
-is string.
+response is of type struct. Its key is the name of option.  The value
+type is string. Note that this method does not return options which
+have no default value and have not been set by the command-line
+options, configuration files or RPC methods.
 
 JSON-RPC Example
 ++++++++++++++++
@@ -2885,9 +2887,11 @@ Description
 
 This method returns global options.  The response is of type
 struct. Its key is the name of option.  The value type is string.
-Because global options are used as a template for the options of newly
-added download, the response contains keys returned by
-*<<aria2_rpc_aria2_getOption, aria2.getOption>>* method.
+Note that this method does not return options which have no default
+value and have not been set by the command-line options, configuration
+files or RPC methods. Because global options are used as a template
+for the options of newly added download, the response contains keys
+returned by *<<aria2_rpc_aria2_getOption, aria2.getOption>>* method.
 
 [[aria2_rpc_aria2_changeGlobalOption]]
 *aria2.changeGlobalOption* ('options')
