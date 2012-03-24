@@ -139,9 +139,8 @@ void PortEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for(std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator i =
-        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
-      i != eoi; ++i) {
+  for(KAsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
+        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
     (*i)->processTimeout();
     (*i)->removeSocketEvents(this);
     (*i)->addSocketEvents(this);
@@ -176,9 +175,7 @@ bool PortEventPoll::addEvents(sock_t socket,
                               const PortEventPoll::KEvent& event)
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<KSocketEntry> >());
+  KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   int r = 0;
   int errNum = 0;
   if(i != socketEntries_.end() && *(*i) == *socketEntry) {
@@ -228,10 +225,11 @@ bool PortEventPoll::deleteEvents(sock_t socket,
                                  const PortEventPoll::KEvent& event)
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<KSocketEntry> >());
-  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
+  KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  if(i == socketEntries_.end()) {
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
+    return false;
+  } else {
     event.removeSelf(*i);
     int r = 0;
     int errNum = 0;
@@ -252,9 +250,6 @@ bool PortEventPoll::deleteEvents(sock_t socket,
     } else {
       return true;
     }
-  } else {
-    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
-    return false;
   }
 }
 
@@ -279,11 +274,9 @@ bool PortEventPoll::addNameResolver
 {
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
+  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
-    nameResolverEntries_.push_back(entry);
+    nameResolverEntries_.insert(entry);
     entry->addSocketEvents(this);
     return true;
   } else {
@@ -296,9 +289,7 @@ bool PortEventPoll::deleteNameResolver
 {
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
+  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {

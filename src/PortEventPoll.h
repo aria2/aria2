@@ -41,9 +41,10 @@
 # include <port.h>
 #endif // HAVE_PORT_H
 
-#include <deque>
+#include <set>
 
 #include "Event.h"
+#include "a2functional.h"
 #ifdef ENABLE_ASYNC_DNS
 # include "AsyncNameResolver.h"
 #endif // ENABLE_ASYNC_DNS
@@ -76,9 +77,14 @@ private:
   friend int accumulateEvent(int events, const KEvent& event);
 
 private:
-  std::deque<SharedHandle<KSocketEntry> > socketEntries_;
+  typedef std::set<SharedHandle<KSocketEntry>,
+                   DerefLess<SharedHandle<KSocketEntry> > > KSocketEntrySet;
+  KSocketEntrySet socketEntries_;
 #ifdef ENABLE_ASYNC_DNS
-  std::deque<SharedHandle<KAsyncNameResolverEntry> > nameResolverEntries_;
+  typedef std::set<SharedHandle<KAsyncNameResolverEntry>,
+                   DerefLess<SharedHandle<KAsyncNameResolverEntry> > >
+  KAsyncNameResolverEntrySet;
+  KAsyncNameResolverEntrySet nameResolverEntries_;
 #endif // ENABLE_ASYNC_DNS
 
   int port_;
