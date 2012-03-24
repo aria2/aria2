@@ -332,19 +332,7 @@ private:
 };
 
 template<typename T, typename VPtr>
-const T* downcast(const VPtr& v)
-{
-  if(v) {
-    DowncastValueBaseVisitor<T> visitor;
-    v->accept(visitor);
-    return visitor.getResult();
-  } else {
-    return 0;
-  }
-}
-
-template<typename T, typename VPtr>
-T* downcast(VPtr& v)
+T* downcast(const VPtr& v)
 {
   if(v) {
     DowncastValueBaseVisitor<T> visitor;
