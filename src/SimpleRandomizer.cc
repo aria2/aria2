@@ -98,14 +98,15 @@ long int SimpleRandomizer::getMaxRandomNumber()
 #ifdef __MINGW32__
   return INT32_MAX;
 #else // !__MINGW32__
+  // TODO Warning: The maximum value of random() in some sytems (e.g.,
+  // Solaris and openbsd) is (2**31)-1.
   return RAND_MAX;
 #endif // !__MINGW32__
 }
 
 long int SimpleRandomizer::getRandomNumber(long int to)
 {
-
-  return(long int)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
+  return getRandomNumber() % to;
 }
 
 long int SimpleRandomizer::operator()(long int to)
