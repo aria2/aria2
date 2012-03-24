@@ -141,9 +141,8 @@ void KqueueEventPoll::poll(const struct timeval& tv)
   // own timeout and ares may create new sockets or closes socket in
   // their API. So we call ares_process_fd for all ares_channel and
   // re-register their sockets.
-  for(std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator i =
-        nameResolverEntries_.begin(), eoi = nameResolverEntries_.end();
-      i != eoi; ++i) {
+  for(KAsyncNameResolverEntrySet::iterator i = nameResolverEntries_.begin(),
+        eoi = nameResolverEntries_.end(); i != eoi; ++i) {
     (*i)->processTimeout();
     (*i)->removeSocketEvents(this);
     (*i)->addSocketEvents(this);
@@ -172,9 +171,7 @@ bool KqueueEventPoll::addEvents
 (sock_t socket, const KqueueEventPoll::KEvent& event)
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<KSocketEntry> >());
+  KSocketEntrySet::iterator i = socketEntries_.lower_bound(socketEntry);
   int r = 0;
   struct timespec zeroTimeout = { 0, 0 };
   struct kevent changelist[2];
@@ -213,7 +210,7 @@ bool KqueueEventPoll::addEvents(sock_t socket, Command* command,
 
 #ifdef ENABLE_ASYNC_DNS
 bool KqueueEventPoll::addEvents(sock_t socket, Command* command, int events,
-                               const SharedHandle<AsyncNameResolver>& rs)
+                                const SharedHandle<AsyncNameResolver>& rs)
 {
   return addEvents(socket, KADNSEvent(rs, command, socket, events));
 }
@@ -223,10 +220,11 @@ bool KqueueEventPoll::deleteEvents(sock_t socket,
                                   const KqueueEventPoll::KEvent& event)
 {
   SharedHandle<KSocketEntry> socketEntry(new KSocketEntry(socket));
-  std::deque<SharedHandle<KSocketEntry> >::iterator i =
-    std::lower_bound(socketEntries_.begin(), socketEntries_.end(), socketEntry,
-                     DerefLess<SharedHandle<KSocketEntry> >());
-  if(i != socketEntries_.end() && *(*i) == *socketEntry) {
+  KSocketEntrySet::iterator i = socketEntries_.find(socketEntry);
+  if(i == socketEntries_.end()) {
+    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
+    return false;
+  } else {
     event.removeSelf(*i);
     int r = 0;
     struct timespec zeroTimeout = { 0, 0 };
@@ -244,9 +242,6 @@ bool KqueueEventPoll::deleteEvents(sock_t socket,
     } else {
       return true;
     }
-  } else {
-    A2_LOG_DEBUG(fmt("Socket %d is not found in SocketEntries.", socket));
-    return false;
   }
 }
 
@@ -271,11 +266,9 @@ bool KqueueEventPoll::addNameResolver
 {
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
+  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
-    nameResolverEntries_.push_back(entry);
+    nameResolverEntries_.insert(entry);
     entry->addSocketEvents(this);
     return true;
   } else {
@@ -288,9 +281,7 @@ bool KqueueEventPoll::deleteNameResolver
 {
   SharedHandle<KAsyncNameResolverEntry> entry
     (new KAsyncNameResolverEntry(resolver, command));
-  std::deque<SharedHandle<KAsyncNameResolverEntry> >::iterator itr =
-    std::find_if(nameResolverEntries_.begin(), nameResolverEntries_.end(),
-                 derefEqual(entry));
+  KAsyncNameResolverEntrySet::iterator itr = nameResolverEntries_.find(entry);
   if(itr == nameResolverEntries_.end()) {
     return false;
   } else {
