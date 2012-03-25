@@ -195,6 +195,9 @@
 #define MSG_DIR_TRAVERSAL_DETECTED _("Detected directory traversal directive in %s")
 #define MSG_HASH_CHECK_NOT_DONE                                         \
   "File has already been downloaded but hash check has not been done yet."
+#define MSG_REMOVING_UNSELECTED_FILE _("GID#%lld - Removing unselected file.")
+#define MSG_FILE_REMOVED _("File %s removed.")
+#define MSG_FILE_COULD_NOT_REMOVED _("File %s could not be removed.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

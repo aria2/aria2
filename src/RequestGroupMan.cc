@@ -78,6 +78,9 @@
 #include "UriListParser.h"
 #include "SingletonHolder.h"
 #include "Notifier.h"
+#ifdef ENABLE_BITTORRENT
+#  include "bittorrent_helper.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
@@ -358,6 +361,27 @@ public:
                    " PostDownloadHandler.",
                    static_cast<unsigned long>(nextGroups.size())));
             e_->getRequestGroupMan()->insertReservedGroup(0, nextGroups);
+          }
+          // For in-memory download (e.g., Magnet URI), the
+          // FileEntry::getPath() does not return actual file path, so
+          // we don't remove it.
+          if(group->getOption()->getAsBool(PREF_BT_REMOVE_UNSELECTED_FILE) &&
+             !group->inMemoryDownload() &&
+             dctx->hasAttribute(bittorrent::BITTORRENT)) {
+            A2_LOG_INFO(fmt(MSG_REMOVING_UNSELECTED_FILE, group->getGID()));
+            const std::vector<SharedHandle<FileEntry> >& files =
+              dctx->getFileEntries();
+            for(std::vector<SharedHandle<FileEntry> >::const_iterator i =
+                  files.begin(), eoi = files.end(); i != eoi; ++i) {
+              if(!(*i)->isRequested()) {
+                if(File((*i)->getPath()).remove()) {
+                  A2_LOG_INFO(fmt(MSG_FILE_REMOVED, (*i)->getPath().c_str()));
+                } else {
+                  A2_LOG_INFO(fmt(MSG_FILE_COULD_NOT_REMOVED,
+                                  (*i)->getPath().c_str()));
+                }
+              }
+            }
           }
         } else {
           A2_LOG_NOTICE

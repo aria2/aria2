@@ -497,6 +497,9 @@ const Pref* PREF_ON_BT_DOWNLOAD_COMPLETE = makePref("on-bt-download-complete");
 const Pref* PREF_BT_TRACKER = makePref("bt-tracker");
 // values: string
 const Pref* PREF_BT_EXCLUDE_TRACKER = makePref("bt-exclude-tracker");
+// values: true | false
+const Pref* PREF_BT_REMOVE_UNSELECTED_FILE =
+  makePref("bt-remove-unselected-file");
 
 /**
  * Metalink related preferences

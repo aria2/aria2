@@ -574,6 +574,16 @@ BitTorrent Specific Options
   last SIZE bytes of each file. SIZE can include 'K' or 'M'(1K = 1024,
   1M = 1024K). If SIZE is omitted, SIZE=1M is used.
 
+[[aria2_optref_bt_remove_unselected_file]]*--bt-remove-unselected-file*[='true'|'false']::
+
+   Removes the unselected files when download is completed in
+   BitTorrent. To selecting files, use
+   *<<aria2_optref_select_file, --select-file>>* option. If it is
+   not used, all files are assumed to be selected. Please use this
+   option with care because it will actually remove files from your
+   disk.
+   Default: 'false'
+
 [[aria2_optref_bt_require_crypto]]*--bt-require-crypto*[='true'|'false']::
   If true is given, aria2 doesn't accept and establish connection with legacy
   BitTorrent handshake(\19BitTorrent protocol).
@@ -1564,6 +1574,7 @@ of URIs. These optional lines must start with white space(s).
 * *<<aria2_optref_bt_tracker_connect_timeout, bt-tracker-connect-timeout>>*
 * *<<aria2_optref_bt_tracker_interval, bt-tracker-interval>>*
 * *<<aria2_optref_bt_tracker_timeout, bt-tracker-timeout>>*
+* *<<aria2_optref_bt_remove_unselected_file, bt-remove-unselected-file>>*
 * *<<aria2_optref_check_integrity, check-integrity>>*
 * *<<aria2_optref_conditional_get, conditional-get>>*
 * *<<aria2_optref_connect_timeout, connect-timeout>>*
@@ -2833,6 +2844,7 @@ The following options are available for active downloads:
 
 * *<<aria2_optref_bt_max_peers, bt-max-peers>>*
 * *<<aria2_optref_bt_request_peer_speed_limit, bt-request-peer-speed-limit>>*
+* *<<aria2_optref_bt_remove_unselected_file, bt-remove-unselected-file>>*
 * *<<aria2_optref_max_download_limit, max-download-limit>>*
 * *<<aria2_optref_max_upload_limit, max-upload-limit>>*
 

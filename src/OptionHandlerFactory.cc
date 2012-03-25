@@ -1647,6 +1647,19 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_BT_REMOVE_UNSELECTED_FILE,
+                                    TEXT_BT_REMOVE_UNSELECTED_FILE,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_BITTORRENT);
+    op->setInitialOption(true);
+    op->setChangeOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+  {
     SharedHandle<OptionHandler> op(new UnitNumberOptionHandler
                                    (PREF_BT_REQUEST_PEER_SPEED_LIMIT,
                                     TEXT_BT_REQUEST_PEER_SPEED_LIMIT,

@@ -440,6 +440,8 @@ extern const Pref* PREF_ON_BT_DOWNLOAD_COMPLETE;
 extern const Pref* PREF_BT_TRACKER;
 // values: string
 extern const Pref* PREF_BT_EXCLUDE_TRACKER;
+// values: true | false
+extern const Pref* PREF_BT_REMOVE_UNSELECTED_FILE;
 
 /**
  * Metalink related preferences
