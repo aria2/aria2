@@ -104,16 +104,16 @@ void HttpServerBodyCommand::sendJsonRpcResponse
                               getJsonRpcContentType(!callback.empty()));
   } else {
     httpServer_->disableKeepAlive();
-    std::string httpCode;
+    int httpCode;
     switch(res.code) {
     case -32600:
-      httpCode = "400 Bad Request";
+      httpCode = 400;
       break;
     case -32601:
-      httpCode = "404 Not Found";
+      httpCode = 404;
       break;
     default:
-      httpCode = "500 Internal Server Error";
+      httpCode = 500;
     };
     httpServer_->feedResponse(httpCode, A2STR::NIL,
                               responseData,

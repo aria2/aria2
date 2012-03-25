@@ -108,6 +108,7 @@ void HttpServerCommand::checkSocketRecvBuffer()
   }
 }
 
+namespace {
 // Creates server's WebSocket accept key which will be sent in
 // Sec-WebSocket-Accept header field. The |clientKey| is the value
 // found in Sec-WebSocket-Key header field in the request.
@@ -120,6 +121,23 @@ std::string createWebSocketServerKey(const std::string& clientKey)
                          src.c_str(), src.size());
   return base64::encode(&digest[0], &digest[sizeof(digest)]);
 }
+} // namespace
+
+namespace {
+int websocketHandshake(const SharedHandle<HttpHeader>& header)
+{
+  if(header->getMethod() != "GET" ||
+     header->find("sec-websocket-key").empty()) {
+    return 400;
+  } else if(header->find("sec-websocket-version") != "13") {
+    return 426;
+  } else if(header->getRequestPath() != "/jsonrpc") {
+    return 404;
+  } else {
+    return 101;
+  }
+}
+} // namespace
 
 bool HttpServerCommand::execute()
 {
@@ -140,10 +158,8 @@ bool HttpServerCommand::execute()
       }
       if(!httpServer_->authenticate()) {
         httpServer_->disableKeepAlive();
-        std::string text;
-        httpServer_->feedResponse("401 Unauthorized",
-                                  "WWW-Authenticate: Basic realm=\"aria2\"",
-                                  text,"text/html");
+        httpServer_->feedResponse
+          (401, "WWW-Authenticate: Basic realm=\"aria2\"\r\n");
         Command* command =
           new HttpServerResponseCommand(getCuid(), httpServer_, e_, socket_);
         e_->addCommand(command);
@@ -152,21 +168,28 @@ bool HttpServerCommand::execute()
       }
       const std::string& upgradeHd = header->find("upgrade");
       const std::string& connectionHd = header->find("connection");
-      if(httpServer_->getRequestPath() == "/jsonrpc" &&
-         httpServer_->getMethod() == "GET" &&
-         util::strieq(upgradeHd.begin(), upgradeHd.end(), "websocket") &&
-         util::strieq(connectionHd.begin(), connectionHd.end(), "upgrade") &&
-         header->find("sec-websocket-version") == "13" &&
-         header->defined("sec-websocket-key")) {
-        std::string serverKey =
-          createWebSocketServerKey(header->find("sec-websocket-key"));
-        httpServer_->feedUpgradeResponse("websocket",
-                                         fmt("Sec-WebSocket-Accept: %s\r\n",
-                                             serverKey.c_str()));
-        httpServer_->getSocket()->setTcpNodelay(true);
-        Command* command =
-          new rpc::WebSocketResponseCommand(getCuid(), httpServer_, e_,
-                                            socket_);
+      if(util::strieq(upgradeHd.begin(), upgradeHd.end(), "websocket") &&
+         util::strieq(connectionHd.begin(), connectionHd.end(), "upgrade")) {
+        int status = websocketHandshake(header);
+        Command* command;
+        if(status == 101) {
+          std::string serverKey =
+            createWebSocketServerKey(header->find("sec-websocket-key"));
+          httpServer_->feedUpgradeResponse("websocket",
+                                           fmt("Sec-WebSocket-Accept: %s\r\n",
+                                               serverKey.c_str()));
+          httpServer_->getSocket()->setTcpNodelay(true);
+          command = new rpc::WebSocketResponseCommand(getCuid(), httpServer_,
+                                                      e_, socket_);
+        } else {
+          if(status == 426) {
+            httpServer_->feedResponse(426, "Sec-WebSocket-Version: 13\r\n");
+          } else {
+            httpServer_->feedResponse(status);
+          }
+          command = new HttpServerResponseCommand(getCuid(), httpServer_, e_,
+                                                  socket_);
+        }
         e_->addCommand(command);
         e_->setNoWait(true);
         return true;
