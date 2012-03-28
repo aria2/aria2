@@ -61,7 +61,7 @@ Here is a list of features:
 * BitTorrent Local Peer Discovery
 * Rename/change the directory structure of BitTorrent downloads
   completely
-* JSON-RPC/XML-RPC interface
+* JSON-RPC (over HTTP and WebSocket)/XML-RPC interface
 * Run as a daemon process
 * Selective download in multi-file torrent/Metalink
 * Chunk checksum validation in Metalink
@@ -324,3 +324,4 @@ References
  * http://github.com/tatsuhiro-t/aria2
  * http://tools.ietf.org/html/rfc5854
  * http://tools.ietf.org/html/rfc6249
+ * http://tools.ietf.org/html/rfc6455
