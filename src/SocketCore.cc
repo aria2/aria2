@@ -42,6 +42,11 @@
 #include <cerrno>
 #include <cstring>
 
+#ifdef HAVE_OPENSSL
+# include <openssl/x509.h>
+# include <openssl/x509v3.h>
+#endif // HAVE_OPENSSL
+
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/x509.h>
 #endif // HAVE_LIBGNUTLS
@@ -882,32 +887,71 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
           (fmt(MSG_CERT_VERIFICATION_FAILED,
                X509_verify_cert_error_string(verifyResult)));
       }
-      X509_NAME* name = X509_get_subject_name(peerCert);
-      if(!name) {
-        throw DL_ABORT_EX("Could not get X509 name object from the certificate.");
+      int hostnameOK = -1;
+      GENERAL_NAMES* altNames;
+      altNames = reinterpret_cast<GENERAL_NAMES*>
+        (X509_get_ext_d2i(peerCert, NID_subject_alt_name, NULL, NULL));
+      if(altNames) {
+        int addrType;
+        if(util::isNumericHost(hostname)) {
+          addrType = GEN_IPADD;
+        } else {
+          addrType = GEN_DNS;
+        }
+        size_t n = sk_GENERAL_NAME_num(altNames);
+        for(size_t i = 0; i < n; ++i) {
+          const GENERAL_NAME* altName = sk_GENERAL_NAME_value(altNames, i);
+          if(altName->type == addrType) {
+            const char* name =
+              reinterpret_cast<char*>(ASN1_STRING_data(altName->d.ia5));
+            size_t len = ASN1_STRING_length(altName->d.ia5);
+            if(addrType == GEN_DNS) {
+              if(util::tlsHostnameMatch(std::string(name, len), hostname)) {
+                hostnameOK = 1;
+                break;
+              } else {
+                hostnameOK = 0;
+              }
+            } else if(addrType == GEN_IPADD) {
+              if(hostname == std::string(name, len)) {
+                hostnameOK = 1;
+                break;
+              } else {
+                hostnameOK = 0;
+              }
+            }
+          }
+        }
+        GENERAL_NAMES_free(altNames);
       }
-
-      bool hostnameOK = false;
-      int lastpos = -1;
-      while(true) {
-        lastpos = X509_NAME_get_index_by_NID(name, NID_commonName, lastpos);
-        if(lastpos == -1) {
-          break;
+      if(hostnameOK == -1) {
+        X509_NAME* name = X509_get_subject_name(peerCert);
+        if(!name) {
+          throw DL_ABORT_EX
+            ("Could not get X509 name object from the certificate.");
         }
-        X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, lastpos);
-        unsigned char* out;
-        int outlen = ASN1_STRING_to_UTF8(&out, X509_NAME_ENTRY_get_data(entry));
-        if(outlen < 0) {
-          continue;
-        }
-        std::string commonName(&out[0], &out[outlen]);
-        OPENSSL_free(out);
-        if(commonName == hostname) {
-          hostnameOK = true;
-          break;
+        int lastpos = -1;
+        while(true) {
+          lastpos = X509_NAME_get_index_by_NID(name, NID_commonName, lastpos);
+          if(lastpos == -1) {
+            break;
+          }
+          X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, lastpos);
+          unsigned char* out;
+          int outlen = ASN1_STRING_to_UTF8(&out,
+                                           X509_NAME_ENTRY_get_data(entry));
+          if(outlen < 0) {
+            continue;
+          }
+          std::string commonName(&out[0], &out[outlen]);
+          OPENSSL_free(out);
+          if(commonName == hostname) {
+            hostnameOK = 1;
+            break;
+          }
         }
       }
-      if(!hostnameOK) {
+      if(hostnameOK != 1) {
         throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
       }
     }

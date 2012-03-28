@@ -1611,6 +1611,43 @@ bool noProxyDomainMatch
   }
 }
 
+bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname)
+{
+  int wildcardpos;
+  {
+    std::string::size_type pos = pattern.find('*');
+    if(pos == std::string::npos) {
+      return pattern == hostname;
+    } else if(pos > hostname.size()) {
+      return false;
+    } else {
+      wildcardpos = pos;
+    }
+  }
+  int i, j;
+  for(i = 0; i < wildcardpos; ++i) {
+    if(pattern[i] != hostname[i]) {
+      return false;
+    }
+  }
+  for(i = static_cast<int>(pattern.size())-1,
+        j = static_cast<int>(hostname.size())-1;
+      i > wildcardpos && j >= wildcardpos; --i, --j) {
+    if(pattern[i] != hostname[j]) {
+      return false;
+    }
+  }
+  if(i != wildcardpos) {
+    return false;
+  }
+  for(i = wildcardpos; i <= j; ++i) {
+    if(hostname[i] == '.') {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool startsWith(const std::string& a, const char* b)
 {
   return startsWith(a.begin(), a.end(), b);

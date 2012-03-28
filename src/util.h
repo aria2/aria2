@@ -852,6 +852,24 @@ SharedHandle<T> copy(const SharedHandle<T>& a)
 // * noProxyDomainMatch("sf.net", ".sf.net") returns false.
 bool noProxyDomainMatch(const std::string& hostname, const std::string& domain);
 
+// Checks hostname matches pattern as described in RFC 2818.
+//
+// Quoted from RFC 2818 section 3.1. Server Identity:
+//
+// Matching is performed using the matching rules specified by
+// [RFC2459].  If more than one identity of a given type is present in
+// the certificate (e.g., more than one dNSName name, a match in any
+// one of the set is considered acceptable.) Names may contain the
+// wildcard character * which is considered to match any single domain
+// name component or component fragment. E.g., *.a.com matches
+// foo.a.com but not bar.foo.a.com. f*.com matches foo.com but not
+// bar.com.
+//
+// If pattern contains multiple '*', this function considers left most
+// '*' as a wildcard character and other '*'s are considered just
+// character literals.
+bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname);
+
 } // namespace util
 
 } // namespace aria2

@@ -86,6 +86,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNoProxyDomainMatch);
   CPPUNIT_TEST(testInPrivateAddress);
   CPPUNIT_TEST(testSecfmt);
+  CPPUNIT_TEST(testTlsHostnameMatch);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -157,6 +158,7 @@ public:
   void testNoProxyDomainMatch();
   void testInPrivateAddress();
   void testSecfmt();
+  void testTlsHostnameMatch();
 };
 
 
@@ -1841,6 +1843,31 @@ void UtilTest::testSecfmt()
   CPPUNIT_ASSERT_EQUAL(std::string("2m"), util::secfmt(120));
   CPPUNIT_ASSERT_EQUAL(std::string("59m59s"), util::secfmt(3599));
   CPPUNIT_ASSERT_EQUAL(std::string("1h"), util::secfmt(3600));
+}
+
+void UtilTest::testTlsHostnameMatch()
+{
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.com", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("*.a.com", "foo.a.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*.a.com", "bar.foo.a.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("f*.com", "foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("f*.com", "bar.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.*", "foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo.*", "bar.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.*m", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.c*", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.com*", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("*foo.com", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.b*z.com", "foo.baz.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo.b*z.com", "foo.bar.baz.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("*", "foo"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*", "foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*.co*", "foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("fooo*.com", "foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo*foo.com", "foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("*", ""));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("", ""));
 }
 
 } // namespace aria2
