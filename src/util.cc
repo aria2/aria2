@@ -35,6 +35,8 @@
 #include "util.h"
 
 #include <signal.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 #include <cerrno>
 #include <cassert>
@@ -1008,7 +1010,12 @@ std::string getHomeDir()
         }
       }
     }
-#endif
+#else // !__MINGW32__
+    passwd* pw = getpwuid(geteuid());
+    if(pw && pw->pw_dir) {
+      return pw->pw_dir;
+    }
+#endif // !__MINGW32__
     return A2STR::NIL;
   }
 }
