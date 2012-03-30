@@ -1847,27 +1847,26 @@ void UtilTest::testSecfmt()
 
 void UtilTest::testTlsHostnameMatch()
 {
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.com", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("Foo.com", "foo.com"));
   CPPUNIT_ASSERT(util::tlsHostnameMatch("*.a.com", "foo.a.com"));
   CPPUNIT_ASSERT(!util::tlsHostnameMatch("*.a.com", "bar.foo.a.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("f*.com", "foo.com"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("f*.com", "bar.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.*", "foo.com"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo.*", "bar.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.*m", "foo.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.c*", "foo.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.com*", "foo.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("*foo.com", "foo.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("foo.b*z.com", "foo.baz.com"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo.b*z.com", "foo.bar.baz.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("*", "foo"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*", "foo.com"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*.co*", "foo.com"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("fooo*.com", "foo.com"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo*foo.com", "foo.com"));
-  CPPUNIT_ASSERT(!util::tlsHostnameMatch("", "foo.com"));
-  CPPUNIT_ASSERT(util::tlsHostnameMatch("*", ""));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("f*.com", "foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*.com", "bar.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("com", "com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo.*", "foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("a.foo.com", "A.foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("a.foo.com", "b.foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*a.foo.com", "a.foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("*a.foo.com", "ba.foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("a*.foo.com", "a.foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("a*.foo.com", "ab.foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("foo.b*z.foo.com", "foo.baz.foo.com"));
+  CPPUNIT_ASSERT(util::tlsHostnameMatch("B*z.foo.com", "bAZ.Foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("b*z.foo.com", "bz.foo.com"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*", "foo"));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("*", ""));
   CPPUNIT_ASSERT(util::tlsHostnameMatch("", ""));
+  CPPUNIT_ASSERT(!util::tlsHostnameMatch("xn--*.a.b", "xn--c.a.b"));
 }
 
 } // namespace aria2
