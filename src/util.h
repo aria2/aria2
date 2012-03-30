@@ -311,6 +311,10 @@ void uppercase(std::string& s);
 
 void lowercase(std::string& s);
 
+char toUpperChar(char c);
+
+char toLowerChar(char c);
+
 bool isNumericHost(const std::string& name);
 
 void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);

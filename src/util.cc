@@ -943,24 +943,40 @@ std::string randomAlpha(size_t length, const RandomizerHandle& randomizer) {
 
 std::string toUpper(const std::string& src) {
   std::string temp = src;
-  std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
+  std::transform(temp.begin(), temp.end(), temp.begin(), toUpperChar);
   return temp;
 }
 
 std::string toLower(const std::string& src) {
   std::string temp = src;
-  std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+  std::transform(temp.begin(), temp.end(), temp.begin(), toLowerChar);
   return temp;
 }
 
 void uppercase(std::string& s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+  std::transform(s.begin(), s.end(), s.begin(), toUpperChar);
 }
 
 void lowercase(std::string& s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+  std::transform(s.begin(), s.end(), s.begin(), toLowerChar);
+}
+
+char toUpperChar(char c)
+{
+  if('a' <= c && c <= 'z') {
+    c += 'A'-'a';
+  }
+  return c;
+}
+
+char toLowerChar(char c)
+{
+  if('A' <= c && c <= 'Z') {
+    c += 'a'-'A';
+  }
+  return c;
 }
 
 bool isNumericHost(const std::string& name)
