@@ -887,10 +887,10 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
           (fmt(MSG_CERT_VERIFICATION_FAILED,
                X509_verify_cert_error_string(verifyResult)));
       }
-      GENERAL_NAMES* altNames;
       std::string commonName;
       std::vector<std::string> dnsNames;
       std::vector<std::string> ipAddrs;
+      GENERAL_NAMES* altNames;
       altNames = reinterpret_cast<GENERAL_NAMES*>
         (X509_get_ext_d2i(peerCert, NID_subject_alt_name, NULL, NULL));
       if(altNames) {
@@ -987,7 +987,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       unsigned int peerCertsLength;
       const gnutls_datum_t* peerCerts = gnutls_certificate_get_peers
         (sslSession_, &peerCertsLength);
-      if(!peerCerts) {
+      if(!peerCerts || peerCertsLength == 0 ) {
         throw DL_ABORT_EX(MSG_NO_CERT_FOUND);
       }
       Time now;
@@ -1008,7 +1008,30 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
                  gnutls_strerror(ret)));
         }
         if(i == 0) {
-          if(!gnutls_x509_crt_check_hostname(cert, hostname.c_str())) {
+          std::string commonName;
+          std::vector<std::string> dnsNames;
+          std::vector<std::string> ipAddrs;
+          int ret = 0;
+          char altName[256];
+          size_t altNameLen;
+          for(int j = 0; !(ret < 0); ++j) {
+            altNameLen = sizeof(altName);
+            ret = gnutls_x509_crt_get_subject_alt_name(cert, j, altName,
+                                                       &altNameLen, 0);
+            if(ret == GNUTLS_SAN_DNSNAME) {
+              dnsNames.push_back(std::string(altName, altNameLen));
+            } else if(ret == GNUTLS_SAN_IPADDRESS) {
+              ipAddrs.push_back(std::string(altName, altNameLen));
+            }
+          }
+          altNameLen = sizeof(altName);
+          ret = gnutls_x509_crt_get_dn_by_oid(cert,
+                                              GNUTLS_OID_X520_COMMON_NAME, 0, 0,
+                                              altName, &altNameLen);
+          if(ret == 0) {
+            commonName.assign(altName, altNameLen);
+          }
+          if(!net::verifyHostname(hostname, dnsNames, ipAddrs, commonName)) {
             throw DL_ABORT_EX(MSG_HOSTNAME_NOT_MATCH);
           }
         }
