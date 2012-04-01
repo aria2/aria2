@@ -1330,15 +1330,14 @@ bool verifyHostname(const std::string& hostname,
                     const std::string& commonName)
 {
   if(util::isNumericHost(hostname)) {
+    if(ipAddrs.empty()) {
+      return commonName == hostname;
+    }
     // We need max 16 bytes to store IPv6 address.
     unsigned char binAddr[16];
     size_t addrLen = getBinAddr(binAddr, hostname);
     if(addrLen == 0) {
       return false;
-    }
-    if(ipAddrs.empty()) {
-      return addrLen == commonName.size() &&
-        memcmp(binAddr, commonName.c_str(), addrLen) == 0;
     }
     for(std::vector<std::string>::const_iterator i = ipAddrs.begin(),
           eoi = ipAddrs.end(); i != eoi; ++i) {
