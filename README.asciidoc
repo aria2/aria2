@@ -77,7 +77,7 @@ How to get source code
 ----------------------
 
 We maintain the source code at Github:
-http://github.com/tatsuhiro-t/aria2
+https://github.com/tatsuhiro-t/aria2
 
 To download the latest source code, run following command:
 
@@ -330,7 +330,7 @@ References
  * http://aria2.sourceforge.net/aria2c.1.html[aria2 Online Manual]
  * http://aria2.sourceforge.net/
  * http://sourceforge.net/apps/trac/aria2/wiki
- * http://github.com/tatsuhiro-t/aria2
+ * https://github.com/tatsuhiro-t/aria2
  * http://tools.ietf.org/html/rfc5854
  * http://tools.ietf.org/html/rfc6249
  * http://tools.ietf.org/html/rfc6455
