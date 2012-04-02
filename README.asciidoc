@@ -107,6 +107,11 @@ Dependency
 
 Note;;
 
+  libxml2 has precedence over Expat if both libraries are installed.
+  If you prefer Expat, run configure with \--without-libxml2.
+
+Note;;
+
   GnuTLS has precedence over OpenSSL if both libraries are installed.
   If you prefer OpenSSL, run configure with \--without-gnutls
   \--with-openssl.
@@ -118,10 +123,14 @@ Note;;
   \--without-libnettle \--with-libgcrypt. If OpenSSL is selected over
   GnuTLS, neither libnettle nor libgcrypt will be used.
 
-Note;;
+A user can have one of the following configurations for SSL and crypto
+libraries:
 
-  libxml2 has precedence over Expat if both libraries are installed.
-  If you prefer Expat, run configure with \--without-libxml2.
+* libgcrypt
+* libnettle
+* OpenSSL
+* GnuTLS + libgcrypt
+* GnuTLS + libnettle
 
 You can disable BitTorrent, Metalink support by providing
 \--disable-bittorrent, \--disable-metalink respectively to configure
