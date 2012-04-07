@@ -78,7 +78,7 @@ public:
 
   std::string getExtensionMessageID(const std::string& name)
   {
-    char id[1] = { registry_->getExtensionMessageID(name) };
+    unsigned char id[1] = { registry_->getExtensionMessageID(name) };
     return std::string(&id[0], &id[1]);
   }
 
@@ -105,7 +105,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_unknown()
 {
   peer_->setExtension("foo", 255);
 
-  char id[1] = { 255 };
+  unsigned char id[1] = { 255 };
 
   std::string data = std::string(&id[0], &id[1]);
   try {

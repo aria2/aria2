@@ -36,6 +36,7 @@
 #define D_DHT_CONNECTION_H
 
 #include "common.h"
+#include <sys/types.h>
 #include <string>
 
 namespace aria2 {

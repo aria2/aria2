@@ -159,11 +159,13 @@ decodeString(InputIterator first, InputIterator last)
         checkEof(first, last);
         uint16_t codepoint = util::parseUInt(std::string(uchars, first), 16);
         if(codepoint <= 0x007fu) {
-          unsigned char temp[1] = { static_cast<char>(codepoint) };
+          unsigned char temp[1];
+          temp[0] = static_cast<char>(codepoint);
           s.append(&temp[0], &temp[sizeof(temp)]);
         } else if(codepoint <= 0x07ffu) {
-          unsigned char temp[2] = { 0xC0u | (codepoint >> 6),
-                                    0x80u | (codepoint & 0x003fu) };
+          unsigned char temp[2];
+          temp[0] = 0xC0u | (codepoint >> 6);
+          temp[1] = 0x80u | (codepoint & 0x003fu);
           s.append(&temp[0], &temp[sizeof(temp)]);
         } else if(in(codepoint, 0xD800u, 0xDBFFu)) {
           // surrogate pair
@@ -186,15 +188,17 @@ decodeString(InputIterator first, InputIterator last)
           uint32_t fullcodepoint = 0x010000u;
           fullcodepoint += (codepoint & 0x03FFu) << 10;
           fullcodepoint += (codepoint2 & 0x03FFu);
-          unsigned char temp[4] = { 0xf0u | (fullcodepoint >> 18),
-                                    0x80u | ((fullcodepoint >> 12) & 0x003Fu),
-                                    0x80u | ((fullcodepoint >> 6) & 0x003Fu),
-                                    0x80u | (fullcodepoint & 0x003Fu) };
+          unsigned char temp[4];
+          temp[0] = 0xf0u | (fullcodepoint >> 18);
+          temp[1] = 0x80u | ((fullcodepoint >> 12) & 0x003Fu);
+          temp[2] = 0x80u | ((fullcodepoint >> 6) & 0x003Fu);
+          temp[3] = 0x80u | (fullcodepoint & 0x003Fu);
           s.append(&temp[0], &temp[sizeof(temp)]);
         } else {
-          unsigned char temp[3] = { 0xE0u | (codepoint >> 12),
-                                    0x80u | ((codepoint >> 6) & 0x003Fu),
-                                    0x80u | (codepoint & 0x003Fu) };
+          unsigned char temp[3];
+          temp[0] = 0xE0u | (codepoint >> 12);
+          temp[1] = 0x80u | ((codepoint >> 6) & 0x003Fu);
+          temp[2] = 0x80u | (codepoint & 0x003Fu);
           s.append(&temp[0], &temp[sizeof(temp)]);
         }
         offset = first;

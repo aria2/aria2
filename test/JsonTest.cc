@@ -100,7 +100,7 @@ void JsonTest::testDecode()
     const List* list = downcast<List>(r);
     CPPUNIT_ASSERT(list);
     const String* s = downcast<String>(list->get(0));
-    const char arr[] = { 0xF0u, 0xA4u, 0xADu, 0xA2u };
+    const unsigned char arr[] = { 0xF0u, 0xA4u, 0xADu, 0xA2u };
     CPPUNIT_ASSERT_EQUAL(std::string(vbegin(arr), vend(arr)), s->s());
   }
   {
