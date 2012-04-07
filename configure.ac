@@ -17,7 +17,7 @@ AC_CONFIG_HEADERS([config.h])
 case "$target" in
   *mingw*|*cygwin*)
     win_build=yes
-    LIBS="-lws2_32 -lcrypto -lwsock32 -lgdi32 -lwinmm $LIBS"
+    LIBS="-lws2_32 -lwsock32 -lgdi32 -lwinmm $LIBS"
     ;;
 esac
 
