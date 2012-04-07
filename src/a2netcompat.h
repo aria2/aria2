@@ -54,7 +54,9 @@
 
 #ifdef __MINGW32__
 # define a2_sockopt_t char *
-# define HAVE_GETADDRINFO
+# ifndef HAVE_GETADDRINFO
+#   define HAVE_GETADDRINFO
+# endif // !HAVE_GETADDRINFO
 # undef HAVE_GAI_STRERROR
 # undef gai_strerror
 #else
