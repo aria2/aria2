@@ -85,18 +85,20 @@ fi
 if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
   AM_PATH_LIBEXPAT
   if test "x$have_libexpat" = "xyes"; then
-    LIBS="$LIBEXPAT_LIBS $LIBS"
-    CPPFLAGS="$LIBEXPAT_CPPFLAGS $CPPFLAGS"
+    LIBS="$EXPAT_LIBS $LIBS"
+    CPPFLAGS="$EXPAT_CFLAGS $CPPFLAGS"
   elif test "x$with_libexpat_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libexpat])
   fi
 fi
 
 if test "x$with_sqlite3" = "xyes"; then
-  AM_PATH_SQLITE3
+  PKG_CHECK_MODULES([SQLITE3],[sqlite3],[have_sqlite3=yes],[have_sqlite3=no])
   if test "x$have_sqlite3" = "xyes"; then
+    AC_DEFINE([HAVE_SQLITE3], [1], [Define to 1 if you have sqlite3.])
     LIBS="$SQLITE3_LIBS $LIBS"
     CPPFLAGS="$SQLITE3_CFLAGS $CPPFLAGS"
+    AC_CHECK_FUNCS([sqlite3_open_v2])
   elif test "x$with_sqlite3_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([sqlite3])
   fi
@@ -117,10 +119,21 @@ if test "x$with_gnutls" = "xyes"; then
 fi
 
 if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
-  AM_PATH_OPENSSL
+  PKG_CHECK_MODULES([OPENSSL], [openssl >= 0.9.8],
+                    [have_openssl=yes], [have_openssl=no])
   if test "x$have_openssl" = "xyes"; then
+    AC_DEFINE([HAVE_OPENSSL], [1], [Define to 1 if you have openssl.])
     LIBS="$OPENSSL_LIBS $LIBS"
     CPPFLAGS="$OPENSSL_CFLAGS $CPPFLAGS"
+
+    AC_CHECK_FUNCS([EVP_DigestInit_ex], [have_digestinit_ex=yes])
+    if test "x$have_digestinit_ex" = "x"; then
+      AC_DEFINE([HAVE_OLD_OPENSSL], [1], [Define to 1 if you have old openssl.])
+    fi
+    AC_CHECK_FUNCS([EVP_sha224])
+    AC_CHECK_FUNCS([EVP_sha256])
+    AC_CHECK_FUNCS([EVP_sha384])
+    AC_CHECK_FUNCS([EVP_sha512])
   elif test "x$with_openssl_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([openssl])
   fi
@@ -154,10 +167,14 @@ if test "x$have_openssl" != "xyes"; then
 fi
 
 if test "x$with_libcares" = "xyes"; then
-  AM_PATH_LIBCARES
+  PKG_CHECK_MODULES([LIBCARES], [libcares >= 1.7.0], [have_libcares=yes],
+                    [have_libcares=no])
   if test "x$have_libcares" = "xyes"; then
+    AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
     LIBS="$LIBCARES_LIBS $LIBS"
     CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
+    AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
+    AC_CHECK_FUNCS([ares_set_servers])
   elif test "x$with_libcares_requested" = "xyes"; then
     ARIA2_DEP_NOT_MET([libcares])
   fi
@@ -165,8 +182,9 @@ fi
 
 # Check availability of libz
 if test "x$with_libz" = "xyes"; then
-  AM_PATH_LIBZ
+  PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.3], [have_zlib=yes], [have_zlib=no])
   if test "x$have_zlib" = "xyes"; then
+    AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
     LIBS="$ZLIB_LIBS $LIBS"
     CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
   elif test "x$with_libz_requested" = "xyes"; then
