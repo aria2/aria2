@@ -317,7 +317,8 @@ AC_CHECK_HEADERS([argz.h \
                   unistd.h \
 		  utime.h \
                   wchar.h \
-		  ifaddrs.h])
+		  ifaddrs.h \
+		  pwd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
