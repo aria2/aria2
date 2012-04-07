@@ -35,17 +35,6 @@
 #ifndef D_COMMON_H
 #define D_COMMON_H
 
-#ifdef __MINGW32__
-# undef SIZE_MAX
-# ifndef _OFF_T_
-#  define _OFF_T_
-typedef long long _off_t;
-#  ifndef _NO_OLDNAMES
-typedef _off_t off_t;
-#  endif // !_NO_OLDNAMES
-# endif // !_OFF_T_
-#endif // __MINGW32__
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif

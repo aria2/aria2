@@ -1083,14 +1083,14 @@ std::string abbrevSize(int64_t size)
 }
 
 void sleep(long seconds) {
-#ifdef HAVE_SLEEP
+#if defined(HAVE_WINSOCK2_H)
+  ::Sleep(seconds * 1000);
+#elif HAVE_SLEEP
   ::sleep(seconds);
 #elif defined(HAVE_USLEEP)
   ::usleep(seconds * 1000000);
-#elif defined(HAVE_WINSOCK2_H)
-  ::Sleep(seconds * 1000);
 #else
-#error no sleep function is available (nanosleep?)
+#  error no sleep function is available (nanosleep?)
 #endif
 }
 
@@ -1556,7 +1556,7 @@ void executeHook
                            NULL,
                            NULL,
                            true,
-                           NULL,
+                           0,
                            NULL,
                            0,
                            &si,

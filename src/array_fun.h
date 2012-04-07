@@ -35,6 +35,8 @@
 #ifndef D_ARRAY_FUN_H
 #define D_ARRAY_FUN_H
 
+#include "common.h"
+
 #include <cstdlib>
 #include <functional>
 
