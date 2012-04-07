@@ -1515,7 +1515,7 @@ void executeHook
   }
 #else
   PROCESS_INFORMATION pi;
-  STARTUPINFO si;
+  STARTUPINFOW si;
 
   memset(&si, 0, sizeof (si));
   si.cb = sizeof(STARTUPINFO);
@@ -1549,18 +1549,22 @@ void executeHook
   if(batch) {
     cmdline += "\"";
   }
+  int cmdlineLen = utf8ToWChar(0, 0, cmdline.c_str());
+  assert(cmdlineLen > 0);
+  array_ptr<wchar_t> wcharCmdline(new wchar_t[cmdlineLen]);
+  cmdlineLen = utf8ToWChar(wcharCmdline, cmdlineLen, cmdline.c_str());
+  assert(cmdlineLen > 0);
   A2_LOG_INFO(fmt("Executing user command: %s", cmdline.c_str()));
-  DWORD rc = CreateProcess(
-                           batch ? cmdexe.c_str() : NULL,
-                           (LPSTR)cmdline.c_str(),
-                           NULL,
-                           NULL,
-                           true,
-                           0,
-                           NULL,
-                           0,
-                           &si,
-                           &pi);
+  DWORD rc = CreateProcessW(batch ? utf8ToWChar(cmdexe).c_str() : NULL,
+                            wcharCmdline,
+                            NULL,
+                            NULL,
+                            true,
+                            0,
+                            NULL,
+                            0,
+                            &si,
+                            &pi);
 
   if(!rc) {
     A2_LOG_ERROR("CreateProcess() failed. Cannot execute user command.");
