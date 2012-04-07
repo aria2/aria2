@@ -362,6 +362,7 @@ public:
                    static_cast<unsigned long>(nextGroups.size())));
             e_->getRequestGroupMan()->insertReservedGroup(0, nextGroups);
           }
+#ifdef ENABLE_BITTORRENT
           // For in-memory download (e.g., Magnet URI), the
           // FileEntry::getPath() does not return actual file path, so
           // we don't remove it.
@@ -383,6 +384,7 @@ public:
               }
             }
           }
+#endif // ENABLE_BITTORRENT
         } else {
           A2_LOG_NOTICE
             (fmt(_("Download GID#%lld not complete: %s"),
