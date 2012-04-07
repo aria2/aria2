@@ -32,51 +32,36 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Notifier.h"
-#include "RequestGroup.h"
-#include "LogFactory.h"
-#ifdef ENABLE_WEBSOCKET
-#  include "WebSocketSessionMan.h"
-#else // !ENABLE_WEBSOCKET
-#  include "NullWebSocketSessionMan.h"
-#endif // !ENABLE_WEBSOCKET
+#ifndef D_NULL_WEB_SOCKET_SESSION_MAN_H
+#define D_NULL_WEB_SOCKET_SESSION_MAN_H
+
+#include "common.h"
+
+#include <string>
+
+#include "SharedHandle.h"
+
+// Empty implementation for build without WebSocket support.
 
 namespace aria2 {
 
-Notifier::Notifier(const SharedHandle<rpc::WebSocketSessionMan>& wsSessionMan)
-  : wsSessionMan_(wsSessionMan)
-{}
+class RequestGroup;
 
-Notifier::~Notifier() {}
+namespace rpc {
 
-void Notifier::addWebSocketSession
-(const SharedHandle<rpc::WebSocketSession>& wsSession)
-{
-  A2_LOG_DEBUG("WebSocket session added.");
-  wsSessionMan_->addSession(wsSession);
-}
+class WebSocketSession {};
 
-void Notifier::removeWebSocketSession
-(const SharedHandle<rpc::WebSocketSession>& wsSession)
-{
-  A2_LOG_DEBUG("WebSocket session removed.");
-  wsSessionMan_->removeSession(wsSession);
-}
+class WebSocketSessionMan {
+public:
+  WebSocketSessionMan() {}
+  ~WebSocketSessionMan() {}
+  void addSession(const SharedHandle<WebSocketSession>& wsSession) {}
+  void removeSession(const SharedHandle<WebSocketSession>& wsSession) {}
+  void addNotification(const std::string& method, const RequestGroup* group) {}
+};
 
-const std::string Notifier::ON_DOWNLOAD_START = "aria2.onDownloadStart";
-const std::string Notifier::ON_DOWNLOAD_PAUSE = "aria2.onDownloadPause";
-const std::string Notifier::ON_DOWNLOAD_STOP = "aria2.onDownloadStop";
-const std::string Notifier::ON_DOWNLOAD_COMPLETE = "aria2.onDownloadComplete";
-const std::string Notifier::ON_DOWNLOAD_ERROR = "aria2.onDownloadError";
-const std::string Notifier::ON_BT_DOWNLOAD_COMPLETE =
-  "aria2.onBtDownloadComplete";
+} // namespace rpc
 
-void Notifier::notifyDownloadEvent
-(const std::string& event, const RequestGroup* group)
-{
-  if(wsSessionMan_) {
-    wsSessionMan_->addNotification(event, group);
-  }
-}
+} // aria2
 
-} // namespace aria2
+#endif // D_NULL_WEB_SOCKET_SESSION_MAN_H

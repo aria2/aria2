@@ -562,9 +562,15 @@ if test "x$have_option_const_name" = "xyes"; then
 fi
 
 AC_CONFIG_SUBDIRS([deps/wslay])
-LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la $LIBS"
-# $(top_srcdir) for `make distcheck`
-CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
+if test "x$enable_message_digest" = "xyes"; then
+  enable_websocket=yes
+  AC_DEFINE([ENABLE_WEBSOCKET], [1],
+            [Define 1 if WebSocket support is enabled.])
+  LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la $LIBS"
+  # $(top_srcdir) for `make distcheck`
+  CPPFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes $CPPFLAGS"
+fi
+AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
 AC_CONFIG_FILES([Makefile
 		src/Makefile
@@ -599,3 +605,5 @@ echo "Epoll:          $have_epoll"
 echo "Bittorrent:     $enable_bittorrent"
 echo "Metalink:       $enable_metalink"
 echo "XML-RPC:        $enable_xml_rpc"
+echo "Message Digest: $enable_message_digest"
+echo "WebSocket:      $enable_websocket"

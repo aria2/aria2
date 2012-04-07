@@ -43,7 +43,6 @@
 #include "RequestGroupMan.h"
 #include "HttpServerBodyCommand.h"
 #include "HttpServerResponseCommand.h"
-#include "WebSocketResponseCommand.h"
 #include "RecoverableException.h"
 #include "prefs.h"
 #include "Option.h"
@@ -51,9 +50,14 @@
 #include "wallclock.h"
 #include "fmt.h"
 #include "SocketRecvBuffer.h"
-#include "MessageDigest.h"
-#include "message_digest_helper.h"
 #include "base64.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#  include "MessageDigest.h"
+#  include "message_digest_helper.h"
+#endif // ENABLE_MESSAGE_DIGEST
+#ifdef ENABLE_WEBSOCKET
+#  include "WebSocketResponseCommand.h"
+#endif // ENABLE_WEBSOCKET
 
 namespace aria2 {
 
@@ -108,6 +112,8 @@ void HttpServerCommand::checkSocketRecvBuffer()
   }
 }
 
+#ifdef ENABLE_WEBSOCKET
+
 namespace {
 // Creates server's WebSocket accept key which will be sent in
 // Sec-WebSocket-Accept header field. The |clientKey| is the value
@@ -138,6 +144,8 @@ int websocketHandshake(const SharedHandle<HttpHeader>& header)
   }
 }
 } // namespace
+
+#endif // ENABLE_WEBSOCKET
 
 bool HttpServerCommand::execute()
 {
@@ -170,6 +178,7 @@ bool HttpServerCommand::execute()
       const std::string& connectionHd = header->find("connection");
       if(util::strieq(upgradeHd.begin(), upgradeHd.end(), "websocket") &&
          util::strieq(connectionHd.begin(), connectionHd.end(), "upgrade")) {
+#ifdef ENABLE_WEBSOCKET
         int status = websocketHandshake(header);
         Command* command;
         if(status == 101) {
@@ -193,6 +202,15 @@ bool HttpServerCommand::execute()
         e_->addCommand(command);
         e_->setNoWait(true);
         return true;
+#else // !ENABLE_WEBSOCKET
+        httpServer_->feedResponse(400);
+        Command* command = new HttpServerResponseCommand(getCuid(),
+                                                         httpServer_, e_,
+                                                         socket_);
+        e_->addCommand(command);
+        e_->setNoWait(true);
+        return true;
+#endif // !ENABLE_WEBSOCKET
       } else {
         if(e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE) <
            httpServer_->getContentLength()) {

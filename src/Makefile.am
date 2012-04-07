@@ -227,15 +227,22 @@ SRCS =  Socket.h\
 	rpc_helper.cc rpc_helper.h\
 	WatchProcessCommand.cc WatchProcessCommand.h\
 	UnknownOptionException.cc UnknownOptionException.h\
-	WebSocketSession.cc WebSocketSession.h\
-	WebSocketSessionMan.cc WebSocketSessionMan.h\
-	WebSocketResponseCommand.cc WebSocketResponseCommand.h\
-	WebSocketInteractionCommand.cc WebSocketInteractionCommand.h\
 	Notifier.cc Notifier.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
 endif # MINGW_BUILD
+
+if ENABLE_WEBSOCKET
+SRCS += WebSocketSession.cc WebSocketSession.h\
+	WebSocketSessionMan.cc WebSocketSessionMan.h\
+	WebSocketResponseCommand.cc WebSocketResponseCommand.h\
+	WebSocketInteractionCommand.cc WebSocketInteractionCommand.h
+endif # ENABLE_WEBSOCKET
+
+if !ENABLE_WEBSOCKET
+SRCS += NullWebSocketMan.h
+endif # !ENABLE_WEBSOCKET
 
 if HAVE_SOME_XMLLIB
 SRCS += XmlAttr.cc XmlAttr.h\

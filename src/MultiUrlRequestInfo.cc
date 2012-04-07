@@ -63,7 +63,11 @@
 #include "UriListParser.h"
 #include "SingletonHolder.h"
 #include "Notifier.h"
-#include "WebSocketSessionMan.h"
+#ifdef ENABLE_WEBSOCKET
+# include "WebSocketSessionMan.h"
+#else // !ENABLE_WEBSOCKET
+# include "NullWebSocketSessionMan.h"
+#endif // !ENABLE_WEBSOCKET
 #ifdef ENABLE_SSL
 # include "TLSContext.h"
 #endif // ENABLE_SSL

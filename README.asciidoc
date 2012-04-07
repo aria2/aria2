@@ -93,7 +93,7 @@ Dependency
 
 .External Library Dependency
 [options="header"]
-|====================================================
+|==================================================================
 |features                |dependency
 |HTTPS                   |GnuTLS or OpenSSL
 |BitTorrent              |libnettle+libgmp or libgcrypt or OpenSSL
@@ -103,7 +103,8 @@ Dependency
 |Async DNS               |C-Ares
 |Firefox3/Chromium cookie|libsqlite3
 |XML-RPC                 |libxml2 or Expat.
-|====================================================
+|JSON-RPC over WebSocket |libnettle or libgcrypt or OpenSSL
+|==================================================================
 
 Note;;
 
