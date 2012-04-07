@@ -99,8 +99,11 @@ if test "x$with_sqlite3" = "xyes"; then
     LIBS="$SQLITE3_LIBS $LIBS"
     CPPFLAGS="$SQLITE3_CFLAGS $CPPFLAGS"
     AC_CHECK_FUNCS([sqlite3_open_v2])
-  elif test "x$with_sqlite3_requested" = "xyes"; then
-    ARIA2_DEP_NOT_MET([sqlite3])
+  else
+    AC_MSG_WARN([$SQLITE3_PKG_ERRORS])
+    if test "x$with_sqlite3_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([sqlite3])
+    fi
   fi
 fi
 
@@ -113,8 +116,11 @@ if test "x$with_gnutls" = "xyes"; then
     AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
     LIBS="$LIBGNUTLS_LIBS $LIBS"
     CPPFLAGS="$LIBGNUTLS_CFLAGS $CPPFLAGS"
-  elif test "x$with_gnutls_requested" = "xyes"; then
-    ARIA2_DEP_NOT_MET([gnutls])
+  else
+    AC_MSG_WARN([$LIBGNUTLS_PKG_ERRORS])
+    if test "x$with_gnutls_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([gnutls])
+    fi
   fi
 fi
 
@@ -134,8 +140,11 @@ if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
     AC_CHECK_FUNCS([EVP_sha256])
     AC_CHECK_FUNCS([EVP_sha384])
     AC_CHECK_FUNCS([EVP_sha512])
-  elif test "x$with_openssl_requested" = "xyes"; then
-    ARIA2_DEP_NOT_MET([openssl])
+  else
+    AC_MSG_WARN([$OPENSSL_PKG_ERRORS])
+    if test "x$with_openssl_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([openssl])
+    fi
   fi
 fi
 
@@ -175,8 +184,11 @@ if test "x$with_libcares" = "xyes"; then
     CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
     AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
     AC_CHECK_FUNCS([ares_set_servers])
-  elif test "x$with_libcares_requested" = "xyes"; then
-    ARIA2_DEP_NOT_MET([libcares])
+  else
+    AC_MSG_WARN([$LIBCARES_PKG_ERRORS])
+    if test "x$with_libcares_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([libcares])
+    fi
   fi
 fi
 
@@ -187,8 +199,11 @@ if test "x$with_libz" = "xyes"; then
     AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
     LIBS="$ZLIB_LIBS $LIBS"
     CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
-  elif test "x$with_libz_requested" = "xyes"; then
-    ARIA2_DEP_NOT_MET([libz])
+  else
+    AC_MSG_WARN([$ZLIB_PKG_ERRORS])
+    if test "x$with_libz_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([libz])
+    fi
   fi
 fi
 
