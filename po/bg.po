@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-02-26 18:56+0900\n"
+"POT-Creation-Date: 2012-04-08 22:50+0900\n"
 "PO-Revision-Date: 2009-08-25 12:32+0000\n"
 "Last-Translator: Plamen Atanasov <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -29,11 +29,11 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Извънредно започване на поредица за изключване..."
 
-#: src/MultiUrlRequestInfo.cc:162
+#: src/MultiUrlRequestInfo.cc:169
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 ще продължи даунлоуда ако трансферът е рестартиран."
 
-#: src/MultiUrlRequestInfo.cc:163
+#: src/MultiUrlRequestInfo.cc:170
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -41,43 +41,43 @@ msgstr ""
 "Ако има някакви грешки, тогава вижте лог файла. Вижте '-l' опцията в "
 "страницата на помощника/наръчника за подробности."
 
-#: src/MultiUrlRequestInfo.cc:280
+#: src/MultiUrlRequestInfo.cc:294
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "ServerStat файла %s записан успешно."
 
-#: src/MultiUrlRequestInfo.cc:283
+#: src/MultiUrlRequestInfo.cc:297
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "Неуспех при записването на ServerStat към %s."
 
-#: src/RequestGroupMan.cc:344
+#: src/RequestGroupMan.cc:390
 #, fuzzy, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "Даунлоудът е завършен: %s"
 
-#: src/RequestGroupMan.cc:623
+#: src/RequestGroupMan.cc:671
 msgid "Download Results:"
 msgstr "Резултати от даунлоуда:"
 
-#: src/RequestGroupMan.cc:666
+#: src/RequestGroupMan.cc:714
 msgid "Status Legend:"
 msgstr "Легенда за състоянието:"
 
-#: src/RequestGroupMan.cc:668
+#: src/RequestGroupMan.cc:716
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "Даунлоудът е завършен."
 
-#: src/RequestGroupMan.cc:671
+#: src/RequestGroupMan.cc:719
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:674
+#: src/RequestGroupMan.cc:722
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:677
+#: src/RequestGroupMan.cc:725
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "Даунлоудът е преустановен."
@@ -2290,6 +2290,28 @@ msgstr ""
 "                              Тази опция оказва ефект само върху BitTorrent\n"
 "                              даунлоуди."
 
+#: src/usage_text.h:871
+#, fuzzy
+msgid ""
+" --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
+"                              download is completed in BitTorrent. To\n"
+"                              selecting files, use --select-file option. If\n"
+"                              it is not used, all files are assumed to be\n"
+"                              selected. Please use this option with care\n"
+"                              because it will actually remove files from\n"
+"                              your disk."
+msgstr ""
+" --bt-hash-check-seed[=true|false] Ако true е дадено, след проверката на "
+"хеша използвайки\n"
+"                              опцията --check-integrity и файлът е "
+"завършен,\n"
+"                              се продължава да се сийдва файла. Ако искате "
+"да проверите файла\n"
+"                              и да го даунлоуднете само ако е повреден или\n"
+"                              недовършен, определете тази опция на false.\n"
+"                              Тази опция оказва ефект само върху BitTorrent\n"
+"                              даунлоуди."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " версия "
@@ -2889,44 +2911,59 @@ msgstr ""
 msgid "Detected directory traversal directive in %s"
 msgstr ""
 
+#: src/message.h:198
+#, c-format
+msgid "GID#%lld - Removing unselected file."
+msgstr ""
+
 #: src/message.h:199
+#, c-format
+msgid "File %s removed."
+msgstr ""
+
+#: src/message.h:200
+#, c-format
+msgid "File %s could not be removed."
+msgstr ""
+
+#: src/message.h:202
 msgid "Timeout."
 msgstr "Таймаут."
 
-#: src/message.h:200
+#: src/message.h:203
 msgid "Invalid chunk size."
 msgstr "Невалиден размер на парчето."
 
-#: src/message.h:201
+#: src/message.h:204
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Твърде голям размер на парчето. размер=%d"
 
-#: src/message.h:202
+#: src/message.h:205
 msgid "Invalid header."
 msgstr "Невалидна заглавна част."
 
-#: src/message.h:203
+#: src/message.h:206
 msgid "Invalid response."
 msgstr "Невалиден отговор."
 
-#: src/message.h:204
+#: src/message.h:207
 msgid "No header found."
 msgstr "Не е намерена заглавна част."
 
-#: src/message.h:205
+#: src/message.h:208
 msgid "No status header."
 msgstr "Няма състоятелна заглавна част."
 
-#: src/message.h:206
+#: src/message.h:209
 msgid "Proxy connection failed."
 msgstr "Неуспешен опит за връзка през прокси."
 
-#: src/message.h:207
+#: src/message.h:210
 msgid "Connection failed."
 msgstr "Неуспешен опит за връзка."
 
-#: src/message.h:208
+#: src/message.h:211
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2935,220 +2972,220 @@ msgstr ""
 "Заявеното име на файла и предишното регистрирано не са едни и същи. Очакван:"
 "%s Настоящ:%s"
 
-#: src/message.h:209
+#: src/message.h:212
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Състоянието на отговора е неуспешно. състояние=%d"
 
-#: src/message.h:211
+#: src/message.h:214
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Трансферната кодировка %s не се поддържа."
 
-#: src/message.h:212
+#: src/message.h:215
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Инициализацията на SSL е неуспешна: %s"
 
-#: src/message.h:213
+#: src/message.h:216
 msgid "SSL I/O error"
 msgstr "SSL Входно/Изходна грешка"
 
-#: src/message.h:214
+#: src/message.h:217
 msgid "SSL protocol error"
 msgstr "Грешка в SSL протокола"
 
-#: src/message.h:215
+#: src/message.h:218
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Неизвестна SSL грешка %d"
 
-#: src/message.h:216
+#: src/message.h:219
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Инициализацията на SSL е неуспешна: Грешка в свързването на OpenSSL %d"
 
-#: src/message.h:218
+#: src/message.h:221
 msgid "Authorization failed."
 msgstr "Упълномощаването е неуспешно."
 
-#: src/message.h:219
+#: src/message.h:222
 msgid "Got EOF from the server."
 msgstr "Получен край на файла от сървъра."
 
-#: src/message.h:220
+#: src/message.h:223
 msgid "Got EOF from peer."
 msgstr "Получен край на файла от пера."
 
-#: src/message.h:221
+#: src/message.h:224
 msgid "Malformed meta info."
 msgstr "Деформирана мета информация."
 
-#: src/message.h:223
+#: src/message.h:226
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Неуспех при отварянето на файла %s, причина: %s"
 
-#: src/message.h:224
+#: src/message.h:227
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Неуспех при записването на файла %s, причина: %s"
 
-#: src/message.h:225
+#: src/message.h:228
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Неуспех при четенето на файла %s, причина: %s"
 
-#: src/message.h:226
+#: src/message.h:229
 msgid "Failed to read data from disk."
 msgstr "Неуспех при четенето на данни от диска."
 
-#: src/message.h:227
+#: src/message.h:230
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Неуспех при изчисляването на SHA1 класификация или част от файла %s, "
 "причина: %s"
 
-#: src/message.h:228
+#: src/message.h:231
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Неуспех при търсенето на файл %s, причина: %s"
 
-#: src/message.h:230
+#: src/message.h:233
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s не е директория."
 
-#: src/message.h:231
+#: src/message.h:234
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Неуспех при създаването на директория %s, причина: %s"
 
-#: src/message.h:235
+#: src/message.h:238
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Неуспех при отварянето на сокет, причина: %s"
 
-#: src/message.h:236
+#: src/message.h:239
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Неуспех при задаването на опция на сокета, причина: %s"
 
-#: src/message.h:237
+#: src/message.h:240
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Неуспех при задаването на сокет като блокиращ, причина: %s"
 
-#: src/message.h:238
+#: src/message.h:241
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Неуспех при задаването на сокет като неблокиращ, причина: %s"
 
-#: src/message.h:239
+#: src/message.h:242
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Неуспех при свързването със сокета, причина: %s"
 
-#: src/message.h:240
+#: src/message.h:243
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Неуспех при вслушването в сокета, причина: %s"
 
-#: src/message.h:241
+#: src/message.h:244
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Неуспех при приемането на връзка от пера, причина: %s"
 
-#: src/message.h:242
+#: src/message.h:245
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Неуспех при получаването на името на сокета, причина: %s"
 
-#: src/message.h:243
+#: src/message.h:246
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Неуспех при получаването на името на свързаният пер, причина: %s"
 
-#: src/message.h:244
+#: src/message.h:247
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Неуспех при анализирането на името на хоста %s, причина: %s"
 
-#: src/message.h:245
+#: src/message.h:248
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Неуспех при свързването към хост %s, причина: %s"
 
-#: src/message.h:246
+#: src/message.h:249
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Неуспех при проверката дали в сокета може да се записва, причина: %s"
 
-#: src/message.h:247
+#: src/message.h:250
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Неуспех при проверката дали сокета е четлив, причина: %s"
 
-#: src/message.h:248
+#: src/message.h:251
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Неуспех при изпращането на данни, причина: %s"
 
-#: src/message.h:249
+#: src/message.h:252
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Неуспех при приемането на данни, причина: %s"
 
-#: src/message.h:250
+#: src/message.h:253
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Неуспех при надничането в данните, причина: %s"
 
-#: src/message.h:251
+#: src/message.h:254
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Неизвестна грешка в сокета %d (0x%x)"
 
-#: src/message.h:252
+#: src/message.h:255
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Файлът %s съществува, но %s не съществува."
 
-#: src/message.h:254
+#: src/message.h:257
 #, fuzzy, c-format
 msgid "Invalid payload size for %s, size=%lu. It should be %lu."
 msgstr ""
 "Невалиден размер на полезния товар за %s, размер=%d. Трябва да бъде %d."
 
-#: src/message.h:255
+#: src/message.h:258
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Невалдно ID=%d за %s. Трябва да бъде %d."
 
-#: src/message.h:257
+#: src/message.h:260
 msgid "Download aborted."
 msgstr "Даунлоудът е преустановен."
 
-#: src/message.h:258
+#: src/message.h:261
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Файлът %s е даунлоудван от друга команда."
 
-#: src/message.h:259
+#: src/message.h:262
 msgid "Insufficient checksums."
 msgstr "Недостатъчни контролни суми."
 
-#: src/message.h:260
+#: src/message.h:263
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Тракерът върна неуспех причина: %s"
 
-#: src/message.h:261
+#: src/message.h:264
 msgid "Flooding detected."
 msgstr "Засечено е наводнение."
 
-#: src/message.h:263
+#: src/message.h:266
 #, fuzzy, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -3157,46 +3194,46 @@ msgstr ""
 "Отпадане на връзката защото никакви заявени/частни съобщениея не бяха "
 "разменени в определен период(%d секунди)."
 
-#: src/message.h:265
+#: src/message.h:268
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "Информационният хеш в торент файла не съответства на този в .aria2 файла."
 
-#: src/message.h:266
+#: src/message.h:269
 #, c-format
 msgid "No such file entry %s"
 msgstr "Няма такъв файлов запис %s"
 
-#: src/message.h:267
+#: src/message.h:270
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Твърде ниска Скорост на даунлоуда: %d <= %d(B/s), хост:%s"
 
-#: src/message.h:268
+#: src/message.h:271
 msgid "No HttpRequestEntry found."
 msgstr "Не е намерен Http запис за заявка."
 
-#: src/message.h:269
+#: src/message.h:272
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Получено %d състояние, но никаква местна заглавна част не е доставена."
 
-#: src/message.h:271
+#: src/message.h:274
 msgid "No file matched with your preference."
 msgstr "Никакъв файл не съответства с Вашето предпочитание."
 
-#: src/message.h:272
+#: src/message.h:275
 msgid "Exception caught"
 msgstr "Прихванато е изключение"
 
-#: src/message.h:273
+#: src/message.h:276
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 "Максималната дължина на полезния товар е превишена или невалидна. дължина = "
 "%u"
 
-#: src/message.h:274
+#: src/message.h:277
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-02-26 18:56+0900\n"
+"POT-Creation-Date: 2012-04-08 22:50+0900\n"
 "PO-Revision-Date: 2011-10-09 21:24+0900\n"
 "Last-Translator: Kostas Milonas <milonas.ko@gmail.com>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -28,11 +28,11 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Η διαδικασία άμεσου τερματισμού ξεκινά..."
 
-#: src/MultiUrlRequestInfo.cc:162
+#: src/MultiUrlRequestInfo.cc:169
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "Το aria2 θα συνεχίσει τη λήψη εάν η μεταφορά επανεκκινηθεί."
 
-#: src/MultiUrlRequestInfo.cc:163
+#: src/MultiUrlRequestInfo.cc:170
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -40,43 +40,43 @@ msgstr ""
 "Αν υπάρχουν σφάλματα, δείτε το αρχείο καταγραφών. Για περαιτέρω "
 "λεπτομέρειες, δείτε την παράμετρο -l στη σελίδα βοήθειας/man."
 
-#: src/MultiUrlRequestInfo.cc:280
+#: src/MultiUrlRequestInfo.cc:294
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "Το αρχείο ServerStat %s αποθηκεύτηκε επιτυχώς."
 
-#: src/MultiUrlRequestInfo.cc:283
+#: src/MultiUrlRequestInfo.cc:297
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "Αποτυχία εγγραφής του ServerStat στο %s."
 
-#: src/RequestGroupMan.cc:344
+#: src/RequestGroupMan.cc:390
 #, fuzzy, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "Η λήψη ολοκληρώθηκε: %s"
 
-#: src/RequestGroupMan.cc:623
+#: src/RequestGroupMan.cc:671
 msgid "Download Results:"
 msgstr "Αποτελέσματα λήψης:"
 
-#: src/RequestGroupMan.cc:666
+#: src/RequestGroupMan.cc:714
 msgid "Status Legend:"
 msgstr "Υπόμνημα Κατάστασης:"
 
-#: src/RequestGroupMan.cc:668
+#: src/RequestGroupMan.cc:716
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "Η λήψη ολοκληρώθηκε."
 
-#: src/RequestGroupMan.cc:671
+#: src/RequestGroupMan.cc:719
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:674
+#: src/RequestGroupMan.cc:722
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:677
+#: src/RequestGroupMan.cc:725
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "Η λήψη ματαιώθηκε."
@@ -2634,6 +2634,30 @@ msgstr ""
 "                              Αυτή η επιλογή λειτουργεί μόνο στις λήψεις "
 "μέσω BitTorrent."
 
+#: src/usage_text.h:871
+#, fuzzy
+msgid ""
+" --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
+"                              download is completed in BitTorrent. To\n"
+"                              selecting files, use --select-file option. If\n"
+"                              it is not used, all files are assumed to be\n"
+"                              selected. Please use this option with care\n"
+"                              because it will actually remove files from\n"
+"                              your disk."
+msgstr ""
+" --bt-hash-check-seed[=true|false] Αν δοθεί true, μετά τον έλεγχο του hash\n"
+"                              χρησιμοποιώντας την επιλογή --check-integrity\n"
+"                              και αν το αρχείο είναι ολοκληρωμένο, "
+"συνεχίζεται\n"
+"                              ο διαμοιρασμός του αρχείου. Αν θέλετε να γίνει "
+"έλεγχος\n"
+"                              του αρχείου και να γίνει λήψη μόνο αν είναι "
+"κατεστραμμένο\n"
+"                              ή μη ολοκληρωμένο, ορίστε αυτήν την επιλογή σε "
+"false.\n"
+"                              Αυτή η επιλογή λειτουργεί μόνο στις λήψεις "
+"μέσω BitTorrent."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " έκδοση "
@@ -3248,44 +3272,59 @@ msgstr ""
 msgid "Detected directory traversal directive in %s"
 msgstr "Εντοπίστηκε οδηγία directory traversal στο %s"
 
+#: src/message.h:198
+#, c-format
+msgid "GID#%lld - Removing unselected file."
+msgstr ""
+
 #: src/message.h:199
+#, c-format
+msgid "File %s removed."
+msgstr ""
+
+#: src/message.h:200
+#, c-format
+msgid "File %s could not be removed."
+msgstr ""
+
+#: src/message.h:202
 msgid "Timeout."
 msgstr "Υπέρβαση χρονικού ορίου."
 
-#: src/message.h:200
+#: src/message.h:203
 msgid "Invalid chunk size."
 msgstr "Μη έγκυρο μέγεθος τμήματος."
 
-#: src/message.h:201
+#: src/message.h:204
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Πολύ μεγάλο τμήμα. μέγεθος=%d"
 
-#: src/message.h:202
+#: src/message.h:205
 msgid "Invalid header."
 msgstr "Μη έγκυρη κεφαλίδα."
 
-#: src/message.h:203
+#: src/message.h:206
 msgid "Invalid response."
 msgstr "Μη έγκυρη απάντηση."
 
-#: src/message.h:204
+#: src/message.h:207
 msgid "No header found."
 msgstr "Δε βρέθηκε κεφαλίδα."
 
-#: src/message.h:205
+#: src/message.h:208
 msgid "No status header."
 msgstr "Δεν υπάρχει κεφαλίδα κατάστασης."
 
-#: src/message.h:206
+#: src/message.h:209
 msgid "Proxy connection failed."
 msgstr "Αποτυχία σύνδεσης με το διακομιστή μεσολάβησης."
 
-#: src/message.h:207
+#: src/message.h:210
 msgid "Connection failed."
 msgstr "Αποτυχία σύνδεσης."
 
-#: src/message.h:208
+#: src/message.h:211
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -3294,219 +3333,219 @@ msgstr ""
 "Το όνομα αρχείου που ζητήθηκε και εκείνο που δηλώθηκε προηγουμένως, δεν "
 "είναι τα ίδια. Αναμενόμενο:%s Πραγματικό:%s"
 
-#: src/message.h:209
+#: src/message.h:212
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Η κατάσταση της απάντησης δεν είναι επιτυχής. status=%d"
 
-#: src/message.h:211
+#: src/message.h:214
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Η κωδικοποίηση μεταφοράς %s δεν υποστηρίζεται."
 
-#: src/message.h:212
+#: src/message.h:215
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "Η αρχικοποίηση του SSL απέτυχε: %s"
 
-#: src/message.h:213
+#: src/message.h:216
 msgid "SSL I/O error"
 msgstr "Σφάλμα SSL I/O"
 
-#: src/message.h:214
+#: src/message.h:217
 msgid "SSL protocol error"
 msgstr "Σφάλμα πρωτοκόλλου SSL"
 
-#: src/message.h:215
+#: src/message.h:218
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "Άγνωστο σφάλμα του SSL %d"
 
-#: src/message.h:216
+#: src/message.h:219
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "Η αρχικοποίηση του SSL απέτυχε: Σφάλμα σύνδεσης του OpenSSL %d"
 
-#: src/message.h:218
+#: src/message.h:221
 msgid "Authorization failed."
 msgstr "Αποτυχία εξουσιοδότησης."
 
-#: src/message.h:219
+#: src/message.h:222
 msgid "Got EOF from the server."
 msgstr "Έγινε λήψη EOF από το διακομιστή."
 
-#: src/message.h:220
+#: src/message.h:223
 msgid "Got EOF from peer."
 msgstr "Έγινε λήψη EOF από το χρήστη."
 
-#: src/message.h:221
+#: src/message.h:224
 msgid "Malformed meta info."
 msgstr "Λανθασμένες metainfo."
 
-#: src/message.h:223
+#: src/message.h:226
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Αποτυχία ανοίγματος του αρχείου %s, λόγω: %s"
 
-#: src/message.h:224
+#: src/message.h:227
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Αποτυχία εγγραφής στο αρχείο %s, λόγω: %s"
 
-#: src/message.h:225
+#: src/message.h:228
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Αποτυχία ανάγνωσης του αρχείου %s, λόγω: %s"
 
-#: src/message.h:226
+#: src/message.h:229
 msgid "Failed to read data from disk."
 msgstr "Αποτυχία ανάγνωσης δεδομένων από το δίσκο."
 
-#: src/message.h:227
+#: src/message.h:230
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Αποτυχία υπολογισμού του αλγορίθμου SHA1 για το αρχείο %s ή ενός μέρους του, "
 "λόγω: %s"
 
-#: src/message.h:228
+#: src/message.h:231
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Αποτυχία αναζήτησης του αρχείου %s, λόγω: %s"
 
-#: src/message.h:230
+#: src/message.h:233
 #, c-format
 msgid "%s is not a directory."
 msgstr "Το %s δεν είναι κατάλογος."
 
-#: src/message.h:231
+#: src/message.h:234
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Αποτυχία δημιουργίας του καταλόγου %s, λόγω: %s"
 
-#: src/message.h:235
+#: src/message.h:238
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Αποτυχία ανοίγματος ενός socket, λόγω: %s"
 
-#: src/message.h:236
+#: src/message.h:239
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Αποτυχία ορισμού μιας επιλογής του socket, λόγω: %s"
 
-#: src/message.h:237
+#: src/message.h:240
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Αποτυχία ρύθμισης ενός socket ως κλειστό, λόγω: %s"
 
-#: src/message.h:238
+#: src/message.h:241
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Αποτυχία ρύθμισης ενός socket ως ανοιχτό, λόγω: %s"
 
-#: src/message.h:239
+#: src/message.h:242
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Αποτυχία δέσμευσης ενός socket, λόγω: %s"
 
-#: src/message.h:240
+#: src/message.h:243
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Αποτυχία ακρόασης σε ένα socket, λόγω: %s"
 
-#: src/message.h:241
+#: src/message.h:244
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Αποτυχία αποδοχής μιας σύνδεσης χρήστη, λόγω: %s"
 
-#: src/message.h:242
+#: src/message.h:245
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Αποτυχία λήψης του ονόματος του socket, λόγω: %s"
 
-#: src/message.h:243
+#: src/message.h:246
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Αποτυχία λήψης του ονόματος του συνδεδεμένου χρήστη, λόγω: %s"
 
-#: src/message.h:244
+#: src/message.h:247
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Αποτυχία επίλυσης του ονόματος υπολογιστή %s, λόγω: %s"
 
-#: src/message.h:245
+#: src/message.h:248
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Αποτυχία σύνδεσης στον υπολογιστή %s, λόγω: %s"
 
-#: src/message.h:246
+#: src/message.h:249
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Αποτυχία ελέγχου αν το socket είναι εγγράψιμο, λόγω: %s"
 
-#: src/message.h:247
+#: src/message.h:250
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Αποτυχία ελέγχου αν το socket είναι αναγνώσιμο, λόγω: %s"
 
-#: src/message.h:248
+#: src/message.h:251
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Αποτυχία αποστολής δεδομένων, λόγω: %s"
 
-#: src/message.h:249
+#: src/message.h:252
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Αποτυχία λήψης δεδομένων, λόγω: %s"
 
-#: src/message.h:250
+#: src/message.h:253
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Αποτυχία εύρεσης δεδομένων, λόγω: %s"
 
-#: src/message.h:251
+#: src/message.h:254
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Άγνωστο σφάλμα του socket %d (0x%x)"
 
-#: src/message.h:252
+#: src/message.h:255
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Το αρχείο %s υπάρχει, αλλά το %s δεν υπάρχει."
 
-#: src/message.h:254
+#: src/message.h:257
 #, c-format
 msgid "Invalid payload size for %s, size=%lu. It should be %lu."
 msgstr "Μη έγκυρο μέγεθος φόρτου για το %s, size=%lu. Θα έπρεπε να είναι %lu."
 
-#: src/message.h:255
+#: src/message.h:258
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Μη έγκυρο ID=%d για το %s. Θα έπρεπε να είναι %d."
 
-#: src/message.h:257
+#: src/message.h:260
 msgid "Download aborted."
 msgstr "Η λήψη ματαιώθηκε."
 
-#: src/message.h:258
+#: src/message.h:261
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Γίνεται λήψη του αρχείου %s από κάποια άλλη εντολή."
 
-#: src/message.h:259
+#: src/message.h:262
 msgid "Insufficient checksums."
 msgstr "Μη επαρκή checksums."
 
-#: src/message.h:260
+#: src/message.h:263
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Ο tracker επέστρεψε το λόγο αποτυχίας: %s"
 
-#: src/message.h:261
+#: src/message.h:264
 msgid "Flooding detected."
 msgstr "Εντοπίστηκε υπερχείλιση."
 
-#: src/message.h:263
+#: src/message.h:266
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -3515,44 +3554,44 @@ msgstr ""
 "Κλείσιμο της σύνδεσης γιατί δεν ανταλλάχτηκαν μηνύματα αιτήσεων/κομματιών "
 "μέσα σε μια συγκεκριμένη περίοδο (%ld δευτερόλεπτα)."
 
-#: src/message.h:265
+#: src/message.h:268
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 "Το infoHash στο αρχείο torrent δεν ταιριάζει με κάποιο στο αρχείο .aria2."
 
-#: src/message.h:266
+#: src/message.h:269
 #, c-format
 msgid "No such file entry %s"
 msgstr "Δε βρέθηκε η εγγραφή αρχείου %s"
 
-#: src/message.h:267
+#: src/message.h:270
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Πολύ αργή ταχύτητα λήψης: %d <= %d(B/s), υπολογιστής:%s"
 
-#: src/message.h:268
+#: src/message.h:271
 msgid "No HttpRequestEntry found."
 msgstr "Δε βρέθηκε HttpRequestEntry."
 
-#: src/message.h:269
+#: src/message.h:272
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Ελήφθη η κατάσταση %d, αλλά δεν παρέχεται η κεφαλίδα τοποθεσίας."
 
-#: src/message.h:271
+#: src/message.h:274
 msgid "No file matched with your preference."
 msgstr "Δε βρέθηκε αρχείο που να ταιριάζει με τις προτιμήσεις σας."
 
-#: src/message.h:272
+#: src/message.h:275
 msgid "Exception caught"
 msgstr "Ελήφθη εξαίρεση"
 
-#: src/message.h:273
+#: src/message.h:276
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "Υπέρβαση του μέγιστου μήκους φόρτου ή μη έγκυρο μήκος = %u"
 
-#: src/message.h:274
+#: src/message.h:277
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""

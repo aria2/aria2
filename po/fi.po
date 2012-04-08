@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-02-26 18:56+0900\n"
+"POT-Creation-Date: 2012-04-08 22:50+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -27,11 +27,11 @@ msgstr "Sammutus alkaa... Paina Ctrl-C uudestaan hätäsammutukselle."
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Hätäsammutus alkaa..."
 
-#: src/MultiUrlRequestInfo.cc:162
+#: src/MultiUrlRequestInfo.cc:169
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 jatkaa latausta, jos siirto käynnistetään uudelleen."
 
-#: src/MultiUrlRequestInfo.cc:163
+#: src/MultiUrlRequestInfo.cc:170
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -39,43 +39,43 @@ msgstr ""
 "Jos virheitä tapahtuu, katso lokitiedostoa. Ks. '-l' parametri ohjeessa/man-"
 "sivulla."
 
-#: src/MultiUrlRequestInfo.cc:280
+#: src/MultiUrlRequestInfo.cc:294
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "Osatiedosto tallennettu onnistuneesti."
 
-#: src/MultiUrlRequestInfo.cc:283
+#: src/MultiUrlRequestInfo.cc:297
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "Dataa ei voitu vastaanottaa, syy: %s"
 
-#: src/RequestGroupMan.cc:344
+#: src/RequestGroupMan.cc:390
 #, fuzzy, c-format
 msgid "Download GID#%lld not complete: %s"
 msgstr "Lataus on valmis: %s"
 
-#: src/RequestGroupMan.cc:623
+#: src/RequestGroupMan.cc:671
 msgid "Download Results:"
 msgstr "Lataustulokset:"
 
-#: src/RequestGroupMan.cc:666
+#: src/RequestGroupMan.cc:714
 msgid "Status Legend:"
 msgstr "Tilalegenda:"
 
-#: src/RequestGroupMan.cc:668
+#: src/RequestGroupMan.cc:716
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "Lataus on valmis."
 
-#: src/RequestGroupMan.cc:671
+#: src/RequestGroupMan.cc:719
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:674
+#: src/RequestGroupMan.cc:722
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:677
+#: src/RequestGroupMan.cc:725
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "Lataus keskeytettiin."
@@ -2245,6 +2245,25 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
+#: src/usage_text.h:871
+#, fuzzy
+msgid ""
+" --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
+"                              download is completed in BitTorrent. To\n"
+"                              selecting files, use --select-file option. If\n"
+"                              it is not used, all files are assumed to be\n"
+"                              selected. Please use this option with care\n"
+"                              because it will actually remove files from\n"
+"                              your disk."
+msgstr ""
+" --seed-ratio=SUHDE Aseta jakamissuhde. Jaat valmistuneita torrentteja\n"
+"                              kunnes jaon suhde saavuttaa SUHTEEN. 1.0 on\n"
+"                              suositeltava. Käytä 0.0 jakaaksesi "
+"välittämättä suhteesta.\n"
+"                             Jos sekä tämä että --seed-time ovat käytössä, "
+"jakaminen\n"
+"                             päättyy kun toinen ehdoista täyttyy."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " versio "
@@ -2847,44 +2866,59 @@ msgstr ""
 msgid "Detected directory traversal directive in %s"
 msgstr ""
 
+#: src/message.h:198
+#, c-format
+msgid "GID#%lld - Removing unselected file."
+msgstr ""
+
 #: src/message.h:199
+#, c-format
+msgid "File %s removed."
+msgstr ""
+
+#: src/message.h:200
+#, c-format
+msgid "File %s could not be removed."
+msgstr ""
+
+#: src/message.h:202
 msgid "Timeout."
 msgstr "Aikakatkaisu."
 
-#: src/message.h:200
+#: src/message.h:203
 msgid "Invalid chunk size."
 msgstr "Väärä palan koko."
 
-#: src/message.h:201
+#: src/message.h:204
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Liian suuri pala. Koko %d"
 
-#: src/message.h:202
+#: src/message.h:205
 msgid "Invalid header."
 msgstr "Väärä otsake."
 
-#: src/message.h:203
+#: src/message.h:206
 msgid "Invalid response."
 msgstr "Epäkelpo vastaus."
 
-#: src/message.h:204
+#: src/message.h:207
 msgid "No header found."
 msgstr "Ei löydetty otsaketta."
 
-#: src/message.h:205
+#: src/message.h:208
 msgid "No status header."
 msgstr "Ei tila-otsikkoa."
 
-#: src/message.h:206
+#: src/message.h:209
 msgid "Proxy connection failed."
 msgstr "Välityspalvelinyhteys epäonnistui."
 
-#: src/message.h:207
+#: src/message.h:210
 msgid "Connection failed."
 msgstr "Yhteys epäonnistui."
 
-#: src/message.h:208
+#: src/message.h:211
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -2893,217 +2927,217 @@ msgstr ""
 "Pyydetty tiedostonimi ja aiemmin rekisteröity eivät täsmää. Odotettu: %s  "
 "Oikea: %s"
 
-#: src/message.h:209
+#: src/message.h:212
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Vastauksen tila ei ole onnistunut. Tila=%d"
 
-#: src/message.h:211
+#: src/message.h:214
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Siirron koodausta %s ei tueta."
 
-#: src/message.h:212
+#: src/message.h:215
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "SSL-aloitus epäonnistui: %s"
 
-#: src/message.h:213
+#: src/message.h:216
 msgid "SSL I/O error"
 msgstr "SSL I/O-virhe"
 
-#: src/message.h:214
+#: src/message.h:217
 msgid "SSL protocol error"
 msgstr "SSL protokollavirhe"
 
-#: src/message.h:215
+#: src/message.h:218
 #, c-format
 msgid "SSL unknown error %d"
 msgstr "SSL: tuntematon virhe %d"
 
-#: src/message.h:216
+#: src/message.h:219
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "SSL valmistelu epäonnistui: OpenSSL yhdistysvirhe %d"
 
-#: src/message.h:218
+#: src/message.h:221
 msgid "Authorization failed."
 msgstr "Kirjautuminen epäonnistui."
 
-#: src/message.h:219
+#: src/message.h:222
 msgid "Got EOF from the server."
 msgstr "Saatiin tiedoston lopetus palvelimelta."
 
-#: src/message.h:220
+#: src/message.h:223
 msgid "Got EOF from peer."
 msgstr "Saatiin tiedoston lopetus käyttäjältä."
 
-#: src/message.h:221
+#: src/message.h:224
 msgid "Malformed meta info."
 msgstr "Vioittunut metatieto."
 
-#: src/message.h:223
+#: src/message.h:226
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Tiedoston %s avaaminen epäonnistui, syy: %s"
 
-#: src/message.h:224
+#: src/message.h:227
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Tiedostoon %s ei voi kirjoittaa, syy: %s"
 
-#: src/message.h:225
+#: src/message.h:228
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Tiedostosta %s ei voi lukea, syy: %s"
 
-#: src/message.h:226
+#: src/message.h:229
 msgid "Failed to read data from disk."
 msgstr "Lukeminen levyltä epäonnistui."
 
-#: src/message.h:227
+#: src/message.h:230
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr "SHA1-summaa ei voitu laskea tiedostosta tai sen osasta %s, syy: %s"
 
-#: src/message.h:228
+#: src/message.h:231
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Tiedostoa %s ei löydy, syy: %s"
 
-#: src/message.h:230
+#: src/message.h:233
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s ei ole hakemisto."
 
-#: src/message.h:231
+#: src/message.h:234
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Hakemistoa %s ei voi luoda, syy: %s"
 
-#: src/message.h:235
+#: src/message.h:238
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Sockettia ei voi avata, syy: %s"
 
-#: src/message.h:236
+#: src/message.h:239
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Socket-asetuksen asetus epäonnistui, syy: %s"
 
-#: src/message.h:237
+#: src/message.h:240
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr "Socketin asetus estäväksi epäonnistui, syy: %s"
 
-#: src/message.h:238
+#: src/message.h:241
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Socketin asetus ei-estäväksi epäonnistui, syy: %s"
 
-#: src/message.h:239
+#: src/message.h:242
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Socketin sitominen epäonnistui, syy: %s"
 
-#: src/message.h:240
+#: src/message.h:243
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Socketin kuuntelu epäonnistui, syy: %s"
 
-#: src/message.h:241
+#: src/message.h:244
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Käyttäjäyhteyttä ei voitu hyväksyä, syy: %s"
 
-#: src/message.h:242
+#: src/message.h:245
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Socketin nimen saaminen epäonnistui, syy: %s"
 
-#: src/message.h:243
+#: src/message.h:246
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Yhdistyneen käyttäjän nimeä ei saatu, syy: %s"
 
-#: src/message.h:244
+#: src/message.h:247
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Koneen %s osoitetta ei pystytty selvittämään, syy: %s"
 
-#: src/message.h:245
+#: src/message.h:248
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Yhteyttä koneeseen %s ei saatu, syy: %s"
 
-#: src/message.h:246
+#: src/message.h:249
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Socketin kirjoitettavuutta ei voitu tarkistaa, syy: %s"
 
-#: src/message.h:247
+#: src/message.h:250
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Socketin luettavuutta ei voitu tarkistaa, syy: %s"
 
-#: src/message.h:248
+#: src/message.h:251
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Dataa ei voitu lähettää, syy: %s"
 
-#: src/message.h:249
+#: src/message.h:252
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Dataa ei voitu vastaanottaa, syy: %s"
 
-#: src/message.h:250
+#: src/message.h:253
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Dataa ei voitu katsoa, syy: %s"
 
-#: src/message.h:251
+#: src/message.h:254
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Tuntematon socket-virhe %d (0x%x)"
 
-#: src/message.h:252
+#: src/message.h:255
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Tiedosto %s on olemassa, mutta %s ei."
 
-#: src/message.h:254
+#: src/message.h:257
 #, fuzzy, c-format
 msgid "Invalid payload size for %s, size=%lu. It should be %lu."
 msgstr "Väärä payload-koko %s:lla (%d), pitäisi olla %d."
 
-#: src/message.h:255
+#: src/message.h:258
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "Epäkelpo ID=%d %s:lla. Pitäisi olla %d."
 
-#: src/message.h:257
+#: src/message.h:260
 msgid "Download aborted."
 msgstr "Lataus keskeytettiin."
 
-#: src/message.h:258
+#: src/message.h:261
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr "Tiedostoa %s lataa joku toinen komento."
 
-#: src/message.h:259
+#: src/message.h:262
 msgid "Insufficient checksums."
 msgstr "Riittämättömät tarkistussummat."
 
-#: src/message.h:260
+#: src/message.h:263
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Tracker palautti epäonnistumisen syyn: %s"
 
-#: src/message.h:261
+#: src/message.h:264
 msgid "Flooding detected."
 msgstr "Tulva huomattu."
 
-#: src/message.h:263
+#: src/message.h:266
 #, fuzzy, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
@@ -3112,43 +3146,43 @@ msgstr ""
 "Sulje yhteys koska yhtään pyyntöä/palaa ei vaihdettu tietyssä ajassa (%d "
 "sekunnissa)."
 
-#: src/message.h:265
+#: src/message.h:268
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr "InfoHash torrent-tiedostossa ei täsmää .aria2-tiedostossa olevaan."
 
-#: src/message.h:266
+#: src/message.h:269
 #, c-format
 msgid "No such file entry %s"
 msgstr "Tiedostokohtaa %s ei ole."
 
-#: src/message.h:267
+#: src/message.h:270
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "Liian hidas latausnopeus: %d <= %d(B/s), kone:%s"
 
-#: src/message.h:268
+#: src/message.h:271
 msgid "No HttpRequestEntry found."
 msgstr "HttpRequestEntry:ä ei löydy."
 
-#: src/message.h:269
+#: src/message.h:272
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr "Saatiin %d-tila, mutta ei osoiteotsaketta."
 
-#: src/message.h:271
+#: src/message.h:274
 msgid "No file matched with your preference."
 msgstr "Yksikään tiedosto ei vastaa asetuksiasi."
 
-#: src/message.h:272
+#: src/message.h:275
 msgid "Exception caught"
 msgstr "Poikkeus löytyi"
 
-#: src/message.h:273
+#: src/message.h:276
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
 msgstr "Suurin payload-koko ylitetty tai väärä. Pituus = %u"
 
-#: src/message.h:274
+#: src/message.h:277
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
