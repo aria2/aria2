@@ -326,6 +326,12 @@ netrc support is enabled by default for HTTP(S)/FTP.  To disable netrc
 support, specify -n command-line option.  Your .netrc file should have
 correct permissions(600).
 
+WebSocket
+---------
+
+The WebSocket server embedded in aria2 implements the specification
+defined in RFC 6455. The supported protocol version is 13.
+
 References
 ----------
  * http://aria2.sourceforge.net/aria2c.1.html[aria2 Online Manual]
