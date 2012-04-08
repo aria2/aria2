@@ -42,7 +42,7 @@ namespace aria2 {
 
 class RequestGroup;
 class Option;
-class Pref;
+struct Pref;
 
 namespace rpc {
 
