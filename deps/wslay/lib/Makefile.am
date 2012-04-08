@@ -25,11 +25,9 @@ SUBDIRS = includes
 AM_CFLAGS = -Wall
 AM_CPPFLAGS = @DEFS@ -I$(srcdir)/includes -I$(builddir)/includes
 
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libwslay.pc
 DISTCLEANFILES = $(pkgconfig_DATA)
 
-lib_LTLIBRARIES = libwslay.la
+noinst_LTLIBRARIES = libwslay.la
 
 OBJECTS = wslay_frame.c wslay_event.c\
 	wslay_queue.c wslay_net.c
