@@ -11,15 +11,15 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2012-04-08 22:50+0900\n"
-"PO-Revision-Date: 2012-02-26 12:48+0000\n"
+"PO-Revision-Date: 2012-04-01 14:41+0000\n"
 "Last-Translator: ITriskTI <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-27 12:28+0000\n"
-"X-Generator: Launchpad (build 14868)\n"
+"X-Launchpad-Export-Date: 2012-04-08 13:12+0000\n"
+"X-Generator: Launchpad (build 15060)\n"
 
 #: src/DownloadEngine.cc:225
 msgid ""
@@ -2590,7 +2590,6 @@ msgstr ""
 "                              параметры."
 
 #: src/usage_text.h:871
-#, fuzzy
 msgid ""
 " --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
 "                              download is completed in BitTorrent. To\n"
@@ -2600,17 +2599,14 @@ msgid ""
 "                              because it will actually remove files from\n"
 "                              your disk."
 msgstr ""
-" --bt-hash-check-seed[=true|false] Если задано true (да), то после проверки "
-"хеша с использованием\n"
-"                              параметра --check-integrity , когда файл "
-"целостен,\n"
-"                              продолжается сидирование файла. Если Вы "
-"желаете проверить файл\n"
-"                              и загрузить его только ежели он поврежден или\n"
-"                              неполный, то установите в этом параметре false "
-"(нет).\n"
-"                              Этот параметр влияет лишь на BitTorrent\n"
-"                              загрузки."
+" --bt-remove-unselected-file[=true|false] Удалить невыбранные файлы,\n"
+"                              когда завершена загрузка в BitTorrent.\n"
+"                              Для выбора файлов используйте параметр\n"
+"                              --select-file. Если не использовался этот\n"
+"                              параметр, то предполагается, что все файлы\n"
+"                              выбраны. Пожалуйста, используйте этот\n"
+"                              параметр внимательно, так как это\n"
+"                              фактически удалит файлы с вашего диска."
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -3255,17 +3251,17 @@ msgstr "Обнаружена директива directory traversal (обход 
 #: src/message.h:198
 #, c-format
 msgid "GID#%lld - Removing unselected file."
-msgstr ""
+msgstr "GID#%lld - Удаление невыбранного файла."
 
 #: src/message.h:199
 #, c-format
 msgid "File %s removed."
-msgstr ""
+msgstr "Файл %s удален."
 
 #: src/message.h:200
 #, c-format
 msgid "File %s could not be removed."
-msgstr ""
+msgstr "Файл %s не может быть удален."
 
 #: src/message.h:202
 msgid "Timeout."
