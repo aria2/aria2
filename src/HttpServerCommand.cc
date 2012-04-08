@@ -174,10 +174,8 @@ bool HttpServerCommand::execute()
         e_->setNoWait(true);
         return true;
       }
-      const std::string& upgradeHd = header->find("upgrade");
-      const std::string& connectionHd = header->find("connection");
-      if(util::strieq(upgradeHd.begin(), upgradeHd.end(), "websocket") &&
-         util::strieq(connectionHd.begin(), connectionHd.end(), "upgrade")) {
+      if(header->fieldContains("upgrade", "websocket") &&
+         header->fieldContains("connection", "upgrade")) {
 #ifdef ENABLE_WEBSOCKET
         int status = websocketHandshake(header);
         Command* command;

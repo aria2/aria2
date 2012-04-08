@@ -66,6 +66,7 @@ public:
   HttpHeader();
   ~HttpHeader();
 
+  // For all methods, use lowercased header field name.
   void put(const std::string& name, const std::string& value);
   bool defined(const std::string& name) const;
   const std::string& find(const std::string& name) const;
@@ -120,6 +121,10 @@ public:
 
   // Clears table_. responseStatus_ and version_ are unchanged.
   void clearField();
+
+  // Returns true if heder field |name| contains |value|. This method
+  // assumes the values of the header field is delimited by ','.
+  bool fieldContains(const std::string& name, const std::string& value);
 
   static const std::string LOCATION;
   static const std::string TRANSFER_ENCODING;

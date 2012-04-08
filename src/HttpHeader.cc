@@ -293,4 +293,28 @@ const std::string& HttpHeader::getRequestPath() const
   return requestPath_;
 }
 
+bool HttpHeader::fieldContains(const std::string& name,
+                               const std::string& value)
+{
+  std::pair<std::multimap<std::string, std::string>::const_iterator,
+            std::multimap<std::string, std::string>::const_iterator> range =
+    equalRange(name);
+  for(std::multimap<std::string, std::string>::const_iterator i = range.first;
+      i != range.second; ++i) {
+    std::vector<Scip> values;
+    util::splitIter((*i).second.begin(), (*i).second.end(),
+                    std::back_inserter(values),
+                    ',',
+                    true // doStrip
+                    );
+    for(std::vector<Scip>::const_iterator j = values.begin(),
+          eoj = values.end(); j != eoj; ++j) {
+      if(util::strieq((*j).first, (*j).second, value.begin(), value.end())) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 } // namespace aria2

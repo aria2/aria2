@@ -14,6 +14,7 @@ class HttpHeaderTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFindAll);
   CPPUNIT_TEST(testClearField);
   CPPUNIT_TEST(testFill);
+  CPPUNIT_TEST(testFieldContains);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -21,6 +22,7 @@ public:
   void testFindAll();
   void testClearField();
   void testFill();
+  void testFieldContains();
 };
 
 
@@ -173,6 +175,23 @@ void HttpHeaderTest::testFill()
                        h.findAll("duplicate")[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("bar"),
                        h.findAll("duplicate")[1]);
+}
+
+void HttpHeaderTest::testFieldContains()
+{
+  HttpHeader h;
+  h.put("connection", "Keep-Alive, Upgrade");
+  h.put("upgrade", "WebSocket");
+  h.put("sec-websocket-version", "13");
+  h.put("sec-websocket-version", "8, 7");
+  CPPUNIT_ASSERT(h.fieldContains("connection", "upgrade"));
+  CPPUNIT_ASSERT(h.fieldContains("connection", "keep-alive"));
+  CPPUNIT_ASSERT(!h.fieldContains("connection", "close"));
+  CPPUNIT_ASSERT(h.fieldContains("upgrade", "websocket"));
+  CPPUNIT_ASSERT(!h.fieldContains("upgrade", "spdy"));
+  CPPUNIT_ASSERT(h.fieldContains("sec-websocket-version", "13"));
+  CPPUNIT_ASSERT(h.fieldContains("sec-websocket-version", "8"));
+  CPPUNIT_ASSERT(!h.fieldContains("sec-websocket-version", "6"));
 }
 
 } // namespace aria2
