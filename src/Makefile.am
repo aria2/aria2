@@ -241,7 +241,7 @@ SRCS += WebSocketSession.cc WebSocketSession.h\
 endif # ENABLE_WEBSOCKET
 
 if !ENABLE_WEBSOCKET
-SRCS += NullWebSocketMan.h
+SRCS += NullWebSocketSessionMan.h
 endif # !ENABLE_WEBSOCKET
 
 if HAVE_SOME_XMLLIB
