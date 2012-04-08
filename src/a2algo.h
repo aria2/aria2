@@ -35,6 +35,8 @@
 #ifndef D_A2_ALGO_H
 #define D_A2_ALGO_H
 
+#include "common.h"
+
 #include <algorithm>
 
 namespace aria2 {

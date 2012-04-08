@@ -35,6 +35,8 @@
 #ifndef D_A2_FUNCTIONAL_H
 #define D_A2_FUNCTIONAL_H
 
+#include "common.h"
+
 #include <functional>
 #include <string>
 #include <algorithm>
