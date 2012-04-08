@@ -1,189 +1,54 @@
-aria2 1.14.2
+aria2 1.15.0
 ============
 
 Release Note
 ------------
 
-This release fixes the bug that aria2 does not listen on the address
-given in --interface. It also fixes the bug of HTTP redirect when
-Location header field contains an absolute path which contains "://".
-aria2 now doesn't emit "Max payload length exceeded or invalid" error
-when the number of pieces is very large in BitTorrent. It also allows
-missing <params> element in XML-RPC request as specified in XML-RPC
-specification. Also in XML-RPC, <i4> and <int> elements must be 32
-bits signed integer from this release.  The --deferred-input option
-was added.  It prevents aria2 from reading all URIs from -i file, and
-makes aria2 read URI one by one as it is needed. This will save memory
-usage if -i file contains lots of URIs. Windows UNC path support was
-added.
+This release adds JSON-RPC over WebSocket. It uses the same
+request/response JSON objects with existing JSON-RPC over HTTP and
+adds event notifications from server to client. See manpage for
+details. TLS hostname check is rewritten based on RFC 6125 and it is
+used for both GNUTLS and OpenSSL builds. The
+--bt-remove-unselected-file option was added. This option removes the
+unselected files when BitTorrent download is completed.
 
 Changes
 -------
 
- * Only accepts 32 bit integer values from int and i4 elements in
-   XML-RPC. Fixed overflow bug in aria2.tellWaiting and
-   aria2.tellStopped RPC methods.
+* Use CreateProcessW instead of CreateProcessA in MinGW build.  This
+  means filename is now passed as wchar string, not UTF-8 encoded char
+  string.
 
- * Updated Spanish, Italian, Russian and Chinese (Simplified)
-   translations. Thanks to all translators.
+* Check with pkg-config only: c-ares, openssl, sqlite3 and zlib.
+  Removed --with-*-prefix configure option for c-ares, openssl,
+  sqlite3, zlib and expat. Use CPPFLAGS and/or PKG_CONFIG_PATH
+  instead.
 
- * Fixed the bug that aria2 does not listen on address given in
-   --interface.
+* Fixed compile error with i686-w64-mingw32 and x86_64-w64-mingw32
+  cross compilers.
 
- * Supported Windows UNC path.
+* Get the home directory of the effective user ID using getpwuid() if
+  $HOME is not defined.
 
- * Check scheme part in redirected URI more strictly.  The previous
-   implementation mistakenly sees '/abspath?uri=http://foo' as an
-   absolute URI because it contains '://', but actually it is not.
-   This change checks scheme part is constructed in the allowed
-   character set described in RFC 3986 Section 3.1.
+* Don't use locale dependent toupper and tolower.
 
- * Allow missing params in XML-RPC request.
+* Rewritten TLS hostname check based on RFC 6125 for both GNUTLS and
+  OpenSSL builds.
 
- * Fixed "Max payload length exceeded or invalid" error when the
-   number of pieces is very large.
+* Added --bt-remove-unselected-file option.  Removes the unselected
+  files when download is completed in BitTorrent. To select files, use
+  --select-file option. If it is not used, all files are assumed to be
+  selected. Please use this option with care because it will actually
+  remove files from your disk.  This option is default to false.
 
- * Added --deferred-input option.  If true is given to
-   --deferred-input option, aria2 does not read all URIs and options
-   from file specified by -i option at startup, but it reads one by
-   one when it needs later. This may reduce memory usage if input file
-   contains a lot of URIs to download. If false is given, aria2 reads
-   all URIs and options at startup. This option defaults to false.
+* Fixed compile error on Open Solaris. Fixes bug#3497518
 
-
+* Added JSON-RPC over WebSocket.
 
-aria2 1.14.1
-============
+* Fixed assertion failure if Chunked encoding along with
+  Content-Length is used.
 
-Release Note
-------------
+* Fixed clang and gcc-4.7 warning and errors.
 
-This release fixes the bug that prevents --checksum option from
-working correctly. It also fixes the bug that log file is not created
-if a warn level log is created before log file is opened. Now aria2
-doesn't assume download has completed just because file size matched.
-The old behavior is problematic because aria2 just assumes download is
-completed but in reality it is not.
-
-Changes
--------
-
- * Supported network-path reference in HTTP redirect.
-
- * Updated bash_completion.
-
- * aria2 now doesn't assume download has completed just because file
-   size matched. The only exception is zero-length file.  If server
-   tells that file is zero-length and --checksum option is given,
-   aria2 now correctly checks its checksum. There is one known issue:
-   If downloaded file is zero-length file and .aria2 file exists, it
-   will not be deleted on successful verification, because .aria2 file
-   is not loaded.
-
- * Fixed the bug that --checksum is not working. SFBUG#3466888
-
- * Fixed compile error without libnettle, libgcrypt and openssl.
-   SFBUG#3466463
-
- * Fixed the bug that log file is not created if there is warning
-   before log file is opened.
-
-
-
-aria2 1.14.0
-============
-
-Release Note
-------------
-
-This release adds many available options to aria2.changeOption and
-aria2.changeGlobalOption RPC methods.  IPv6 literal address is now
-supported in the proxy options. --metalink-server option is now
-deprecated and --split option should be used instead. In this release,
---metalink-server is the alias of --split option.  The format ETA in
-console readout is changed slightly. New option --stop-with-process is
-added.
-
-Changes
--------
-
- * Updated Chinese (Simplified), Spanish, French and Russian
-   translations. Thanks to all translators.
-
- * Updated Russian man page. Thanks to ITriskTI.
-
- * Ignore peer which possibly sent bad data in next few minuts.  In
-   aria2, one piece is downloaded from several peers, so when hash
-   check failed for that piece, it cannot determine which peer(s) sent
-   bad data. So, we ignore peer who sent last block of data in random
-   minutes. We use randomized timeout because all peers get waken up
-   at the almost same time.
- 
- * Added suggestion for unknown/ambiguous options.  The help messages
-   shown when argument error were redesigned and less verbose now.
-   When unknown or ambiguous option is given, show suggestions like
-   "Did you mean...". Some constant values related to levenstein
-   distance are borrowed from git help.c.
-
- * Added --stop-with-process=PID option.  This feature stops
-   application when process PID is not running.  This is useful if
-   aria2 process is forked from a parent process. The parent process
-   can fork aria2 with its own pid and when parent process exits for
-   some reason, aria2 can detect it and shutdown itself.  The code
-   which detects whether or not given process PID is running is
-   contributed by Emmanuel Engelhart.
- 
- * Support IPv6 address for FTP via HTTP tunneling.
-
- * The previous implementation could not handle the situation when
-   user, password and proxy URI is given various order.  Now we just
-   set rules: username set in --*-proxy-user overrides username in
-   --*-proxy option, no matter in any order username, password and
-   proxy URI are parsed. Likewise, password set in --*--proxy-passwd
-   overrides password in --*-proxy option.
-
- * Changed format of ETA.  Now no leading 0 is used. If hour part
-   and/or min part is non-zero, and sec part is 0, sec part is
-   omitted, like this "1h3m".
-
- * Rewritten Metalink XML parser.  Now we don't strip white spaces
-   while parsing Metalink V3 document.
-
- * Now xml attribute and characters in RPC request is not stripped at
-   all.
-
- * Fixed bug that some information such as port number is lost if
-   redirect URI contains only path component.
-
- * Apply PREF_MAX_CONNECTION_PER_SERVER to BitTorrent WEB Seeding
-   hosts.
-
- * Reuse in-flight and pooled URIs when a download is paused.
-
- * Deprecated --metalink-server option. Use --split option instead.
-
- * Made max value of --select-file to 65535
-
- * Use same domain-match algorithm for no-proxy and netrc.  Now
-   "example.org" does not domain-match ".example.org" in both
-   functions.
-
- * For waiting or paused downloads, the options listed in Input File
-   subsection in man page are available in aria2.changeOption RPC
-   method, except for following options: dry-run, metalink-base-uri,
-   parameterized-uri, pause and piece_length.
-
- * Made --download-result, --save-session, --server-stat-of and
-   --save-cookies option available in aria2.changeGlobalOption.  In
-   addition to them, the options listed in Input File subsection in
-   man page are also available, except for following options:
-   checksum, index-out, out, pause and select-file.
-
- * Made --uri-selector option available in -i list.
-
- * Support IPv6 literal address in proxy option.
-
- * Support IPv6 CIDR block in --http-no-proxy option.
-
- * HttpProxyOptionHandler: Enclose hostname with square brackets if
-   hostname is IPv6 numeric address.
+* Fixed the bug that aria2 cannot read line longer than 4096 bytes
+  from the file specified by --input-file option. Fixes bug#3495336
