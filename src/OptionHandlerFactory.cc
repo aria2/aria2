@@ -229,7 +229,7 @@ OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_DISABLE_IPV6,
                                     TEXT_DISABLE_IPV6,
-#ifdef __MINGW32__
+#if defined(__MINGW32__) && !defined(__MINGW64__)
                                     // Disable IPv6 by default for
                                     // MinGW build.  This is because
                                     // numerous IPv6 routines are
@@ -237,9 +237,9 @@ OptionHandlerFactory::createOptionHandlers()
                                     // getaddrinfo failed in
                                     // configure.
                                     A2_V_TRUE,
-#else // !__MINGW32__
+#else // !defined(__MINGW32__) || defined(__MINGW64__)
                                     A2_V_FALSE,
-#endif // !__MINGW32__
+#endif // !defined(__MINGW32__) || defined(__MINGW64__)
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     handlers.push_back(op);
