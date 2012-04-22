@@ -579,7 +579,11 @@ AC_CONFIG_FILES([Makefile
 		intl/Makefile
 		lib/Makefile
 		doc/Makefile
-		doc/ru/Makefile
+		doc/manual-src/Makefile
+		doc/manual-src/en/Makefile
+		doc/manual-src/en/conf.py
+		doc/manual-src/ru/Makefile
+		doc/manual-src/ru/conf.py
 		deps/Makefile])
 AC_OUTPUT
 
