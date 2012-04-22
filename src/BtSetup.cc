@@ -237,7 +237,8 @@ void BtSetup::setup(std::vector<Command*>& commands,
         for(std::vector<std::pair<sockaddr_union, socklen_t> >::const_iterator
               i = ifAddrs.begin(), eoi = ifAddrs.end(); i != eoi; ++i) {
           char host[NI_MAXHOST];
-          if(inetNtop(AF_INET, &(*i).first.in, host, sizeof(host)) == 0 &&
+          if(inetNtop(AF_INET, &(*i).first.in.sin_addr, host,
+                      sizeof(host)) == 0 &&
              receiver->init(host)) {
             initialized = true;
             break;
