@@ -21,9 +21,8 @@ downloading a file like BitTorrent.
 
 The project page is located at http://aria2.sourceforge.net/.
 
-See http://aria2.sourceforge.net/aria2c.1.html[aria2 Online Manual]
-and http://sourceforge.net/apps/trac/aria2/wiki/UsageExample[the usage
-example] to learn how to use aria2.
+See `aria2 Online Manual <http://aria2.sourceforge.net/manual/en/html/>`_
+and `the usage examples <http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_ to learn how to use aria2.
 
 Features
 --------
@@ -55,7 +54,7 @@ Here is a list of features:
 * FTP through HTTP Proxy
 * Download/Upload speed throttling
 * BitTorrent extensions: Fast extension, DHT, PEX, MSE/PSE, Multi-Tracker
-* BitTorrent http://getright.com/seedtorrent.html[WEB-Seeding]. aria2
+* BitTorrent `WEB-Seeding <http://getright.com/seedtorrent.html>`_. aria2
   requests chunks more than piece size to reduce the request
   overhead. It also supports pipelined requests with piece size.
 * BitTorrent Local Peer Discovery
@@ -79,11 +78,9 @@ How to get source code
 We maintain the source code at Github:
 https://github.com/tatsuhiro-t/aria2
 
-To download the latest source code, run following command:
+To get the latest source code, run following command::
 
-------------------------------------------------
-git clone git://github.com/tatsuhiro-t/aria2.git
-------------------------------------------------
+    $ git clone git://github.com/tatsuhiro-t/aria2.git
 
 This will create aria2 directory in your current directory and source
 files are stored there.
@@ -91,37 +88,38 @@ files are stored there.
 Dependency
 ----------
 
-.External Library Dependency
-[options="header"]
-|==================================================================
-|features                |dependency
-|HTTPS                   |GnuTLS or OpenSSL
-|BitTorrent              |libnettle+libgmp or libgcrypt or OpenSSL
-|Metalink                |libxml2 or Expat.
-|Checksum                |libnettle or libgcrypt or OpenSSL
-|gzip, deflate in HTTP   |zlib
-|Async DNS               |C-Ares
-|Firefox3/Chromium cookie|libsqlite3
-|XML-RPC                 |libxml2 or Expat.
-|JSON-RPC over WebSocket |libnettle or libgcrypt or OpenSSL
-|==================================================================
 
-Note;;
+======================== ========================================
+features                  dependency
+======================== ========================================
+HTTPS                    GnuTLS or OpenSSL
+BitTorrent               libnettle+libgmp or libgcrypt or OpenSSL
+Metalink                 libxml2 or Expat.
+Checksum                 libnettle or libgcrypt or OpenSSL
+gzip, deflate in HTTP    zlib
+Async DNS                C-Ares
+Firefox3/Chromium cookie libsqlite3
+XML-RPC                  libxml2 or Expat.
+JSON-RPC over WebSocket  libnettle or libgcrypt or OpenSSL
+======================== ========================================
+
+
+.. note::
 
   libxml2 has precedence over Expat if both libraries are installed.
-  If you prefer Expat, run configure with \--without-libxml2.
+  If you prefer Expat, run configure with ``--without-libxml2``.
 
-Note;;
+.. note::
 
   GnuTLS has precedence over OpenSSL if both libraries are installed.
-  If you prefer OpenSSL, run configure with \--without-gnutls
-  \--with-openssl.
+  If you prefer OpenSSL, run configure with ``--without-gnutls``
+  ``--with-openssl``.
 
-Note;;
+.. note::
 
   libnettle has precedence over libgcrypt if both libraries are
   installed.  If you prefer libgcrypt, run configure with
-  \--without-libnettle \--with-libgcrypt. If OpenSSL is selected over
+  ``--without-libnettle --with-libgcrypt``. If OpenSSL is selected over
   GnuTLS, neither libnettle nor libgcrypt will be used.
 
 A user can have one of the following configurations for SSL and crypto
@@ -133,9 +131,9 @@ libraries:
 * GnuTLS + libgcrypt
 * GnuTLS + libnettle
 
-You can disable BitTorrent, Metalink support by providing
-\--disable-bittorrent, \--disable-metalink respectively to configure
-script.
+You can disable BitTorrent and Metalink support by providing
+``--disable-bittorrent`` and ``--disable-metalink`` to the configure
+script respectively.
 
 In order to enable async DNS support, you need c-ares.
 
@@ -176,21 +174,17 @@ gcc, gcc-c++, kernel-devel, libgcrypt-devel, libgcrypt-devel, libxml2-devel, ope
 
 If you downloaded source code from git repository, you have to run
 following command to generate configure script and other files
-necessary to build the program:
+necessary to build the program::
 
----------------
-$ autoreconf -i
----------------
+    $ autoreconf -i
 
 If you are building aria2 for Mac OS X, take a look at
 build_osx_release.sh, which builds OSX universal binary DMG.
 
-The quickest way to build aria2 is just type following commands:
+The quickest way to build aria2 is just type following commands::
 
--------------
-$ ./configure
-$ make
--------------
+    $ ./configure
+    $ make
 
 The configure script checks available libraries and enables the features
 as much as possible because all the features are enabled by default.
@@ -200,35 +194,32 @@ If you build with HTTPS support, I recommend to supply the path to the
 CA bundle file. For example, in Debian the path to CA bundle file is
 '/etc/ssl/certs/ca-certificates.crt' (in ca-certificates package). This
 may vary depending on your distribution. You can give it to
-configure script using \--with-ca-bundle option:
+configure script using ``--with-ca-bundle option``::
 
--------------------------------------------------------------------
-$ ./configure --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
-$ make
--------------------------------------------------------------------
+    $ ./configure --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
+    $ make
 
-Without \--with-ca-bundle option, you will encounter the error when
+Without ``--with-ca-bundle`` option, you will encounter the error when
 accessing HTTPS servers because the certificate cannot be verified
 without CA bundle. In such case, you can specify the CA bundle file
-using aria2's \--ca-certificate option.  If you don't have CA bundle
+using aria2's ``--ca-certificate`` option.  If you don't have CA bundle
 file installed, then the last resort is disable the certificate
-validation using \--check-certificate=false.
+validation using ``--check-certificate=false``.
 
 The executable is 'aria2c' in src directory.
 
-aria2 uses CppUnit for automated unit testing. To run the unit test:
+aria2 uses CppUnit for automated unit testing. To run the unit test::
 
-------------
-$ make check
-------------
+    $ make check
 
 BitTorrrent
 -----------
+
 About filename
 ~~~~~~~~~~~~~~
 The filename of the downloaded file is determined as follows:
 
-single-file mode::
+single-file mode
     If "name" key is present in .torrent file, filename is the value
     of "name" key. Otherwise, filename is the basename of .torrent
     file appended by ".file". For example, .torrent file is
@@ -236,7 +227,7 @@ single-file mode::
     directory to store the downloaded file can be specified by -d
     option.
 
-multi-file mode::
+multi-file mode
     The complete directory/file structure mentioned in .torrent file
     is created.  The directory to store the top directory of
     downloaded files can be specified by -d option.
@@ -245,7 +236,7 @@ Before download starts, a complete directory structure is created if
 needed. By default, aria2 opens at most 100 files mentioned in
 .torrent file, and directly writes to and reads from these files. 
 The number of files to open simultaneously can be controlled by
-\--bt-max-open-files option.
+``--bt-max-open-files`` option.
 
 DHT
 ~~~
@@ -260,14 +251,14 @@ Other things should be noted
 
 * -o option is used to change the filename of .torrent file itself,
   not a filename of a file in .torrent file. For this purpose, use
-  --index-out option instead.
+  ``--index-out`` option instead.
 * The port numbers that aria2 uses by default are 6881-6999 for TCP
   and UDP.
 * aria2 doesn't configure port-forwarding automatically. Please
   configure your router or firewall manually.
 * The maximum number of peers is 55. This limit may be exceeded when
   download rate is low. This download rate can be adjusted using
-  \--bt-request-peer-speed-limit option.
+  ``--bt-request-peer-speed-limit`` option.
 * As of release 0.10.0, aria2 stops sending request message after
   selective download completes.
 
@@ -306,7 +297,7 @@ piece with selected file are also created.
 If relative URI is specified in metalink:url or metalink:metaurl
 element, aria2 uses the URI of Metalink file as base URI to resolve
 the relative URI. If relative URI is found in Metalink file which is
-read from local disk, aria2 uses the value of --metalink-base-uri
+read from local disk, aria2 uses the value of ``--metalink-base-uri``
 option as base URI. If this option is not specified, the relative URI
 will be ignored.
 
@@ -318,7 +309,7 @@ understands Digest header fields and check whether it matches the
 digest value from other sources. If it differs, drop connection.
 aria2 also uses this digest value to perform checksum verification
 after download finished. aria2 recognizes geo value. To tell aria2
-which location you prefer, you can use --metalink-location option.
+which location you prefer, you can use ``--metalink-location`` option.
 
 netrc
 -----
@@ -334,10 +325,11 @@ defined in RFC 6455. The supported protocol version is 13.
 
 References
 ----------
- * http://aria2.sourceforge.net/aria2c.1.html[aria2 Online Manual]
- * http://aria2.sourceforge.net/
- * http://sourceforge.net/apps/trac/aria2/wiki
- * https://github.com/tatsuhiro-t/aria2
- * http://tools.ietf.org/html/rfc5854
- * http://tools.ietf.org/html/rfc6249
- * http://tools.ietf.org/html/rfc6455
+
+* `aria2 Online Manual <http://aria2.sourceforge.net/manual/en/html/>`_
+* http://aria2.sourceforge.net/
+* http://sourceforge.net/apps/trac/aria2/wiki
+* https://github.com/tatsuhiro-t/aria2
+* http://tools.ietf.org/html/rfc5854
+* http://tools.ietf.org/html/rfc6249
+* http://tools.ietf.org/html/rfc6455
