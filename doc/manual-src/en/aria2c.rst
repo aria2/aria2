@@ -75,9 +75,9 @@ Basic Options
    ``#``. For example, type ``--help=#http`` to get the usage for the
    options tagged with ``#http``. If non-tag word is given, print the
    usage for the options whose name includes that word.  Available
-   Values: ``#basic`` , ``#advanced`` , ``#http`` , ``#https`` , ``#ftp`` ,
-   ``#metalink`` , ``#bittorrent`` , ``#cookie`` , ``#hook`` , ``#file`` , ``#rpc`` ,
-   ``#checksum`` , ``#experimental`` , ``#deprecated`` , ``#help`` , ``#all``
+   Values: ``#basic``, ``#advanced``, ``#http``, ``#https``, ``#ftp``,
+   ``#metalink``, ``#bittorrent``, ``#cookie``, ``#hook``, ``#file``, ``#rpc``,
+   ``#checksum``, ``#experimental``, ``#deprecated``, ``#help``, ``#all``
    Default: ``#basic``
 
 HTTP/FTP Options
@@ -300,7 +300,7 @@ HTTP/FTP Options
   so it will be necessary to specify a reasonable value to
   :option:`--min-split-size <-k>` option.
   If ``geom`` is given, at the beginning aria2 selects piece which has
-  minimum index like ``inorder`` , but it exponentially increasingly
+  minimum index like ``inorder``, but it exponentially increasingly
   keeps space from previously selected piece. This will reduce the
   number of establishing connection and at the same time it will
   download the beginning part of the file first. This will be useful
@@ -314,7 +314,7 @@ HTTP/FTP Options
 
 .. option:: --uri-selector=<SELECTOR>
 
-  Specify URI selection algorithm. The possible values are ``inorder`` ,
+  Specify URI selection algorithm. The possible values are ``inorder``,
   ``feedback`` and ``adaptive``.  If ``inorder`` is given, URI is tried in
   the order appeared in the URI list.  If ``feedback`` is given, aria2
   uses download speed observed in the previous downloads and choose
@@ -326,7 +326,7 @@ HTTP/FTP Options
   supplementary ones, it returns mirrors which has not been tested
   yet, and if each of them has already been tested, returns mirrors
   which has to be tested again. Otherwise, it doesn't select anymore
-  mirrors. Like ``feedback`` , it uses a performance profile of servers.
+  mirrors. Like ``feedback``, it uses a performance profile of servers.
   Default: ``feedback``
 
 HTTP Specific Options
@@ -474,7 +474,7 @@ HTTP Specific Options
 .. option:: -U, --user-agent=<USER_AGENT>
 
   Set user agent for HTTP(S) downloads.
-  Default: ``aria2/$VERSION`` , $VERSION is replaced by package version.
+  Default: ``aria2/$VERSION``, $VERSION is replaced by package version.
 
 FTP Specific Options
 ~~~~~~~~~~~~~~~~~~~~
@@ -802,7 +802,7 @@ BitTorrent Specific Options
   bytes are specified, only first 20 bytes are
   used. If less than 20 bytes are specified, random
   byte data are added to make its length 20 bytes.
-  Default: ``aria2/$VERSION-`` , $VERSION is replaced by package version.
+  Default: ``aria2/$VERSION-``, $VERSION is replaced by package version.
 
 .. option:: --seed-ratio=<RATIO>
 
@@ -871,7 +871,7 @@ Metalink Specific Options
 .. option:: --metalink-preferred-protocol=<PROTO>
 
   Specify preferred protocol.
-  The possible values are ``http`` , ``https`` , ``ftp`` and ``none``.
+  The possible values are ``http``, ``https``, ``ftp`` and ``none``.
   Specify ``none`` to disable this feature.
   Default: ``none``
  
@@ -1025,10 +1025,10 @@ Advanced Options
 .. option:: --download-result=<OPT>
 
   This option changes the way ``Download Results`` is formatted. If OPT
-  is ``default`` , print GID, status, average download speed and
+  is ``default``, print GID, status, average download speed and
   path/URI. If multiple files are involved, path/URI of first
   requested file is printed and remaining ones are omitted.  If OPT is
-  ``full`` , print GID, status, average download speed, percentage of
+  ``full``, print GID, status, average download speed, percentage of
   progress and path/URI. The percentage of progress and path/URI are
   printed for each requested file in each row.
   Default: ``default``
@@ -1042,8 +1042,8 @@ Advanced Options
 .. option:: --event-poll=<POLL>
 
   Specify the method for polling events.  The possible values are
-  ``epoll`` , ``kqueue`` , ``port`` , ``poll`` and ``select``.  For each ``epoll`` ,
-  ``kqueue`` , ``port`` and ``poll`` , it is available if system supports it.
+  ``epoll``, ``kqueue``, ``port``, ``poll`` and ``select``.  For each ``epoll``,
+  ``kqueue``, ``port`` and ``poll``, it is available if system supports it.
   ``epoll`` is available on recent Linux. ``kqueue`` is available on
   various \*BSD systems including Mac OS X. ``port`` is available on Open
   Solaris. The default value may vary depending on the system you use.
@@ -1063,7 +1063,7 @@ Advanced Options
   entirely until allocation finishes. ``falloc`` may
   not be available if your system doesn't have
   :manpage:`posix_fallocate(3)` function.
-  Possible Values: ``none`` , ``prealloc`` , ``falloc``
+  Possible Values: ``none``, ``prealloc``, ``falloc``
   Default: ``prealloc``
 
 .. option:: --hash-check-only[=true|false]
@@ -1106,15 +1106,15 @@ Advanced Options
 .. option:: --max-resume-failure-tries=<N>
 
   When used with :option:`--always-resume=false, <--always-resume>` aria2 downloads file from
-  scratch when aria2 detects ``N`` number of URIs that does not support
-  resume. If ``N`` is ``0`` , aria2 downloads file from scratch when all
+  scratch when aria2 detects N number of URIs that does not support
+  resume. If N is ``0``, aria2 downloads file from scratch when all
   given URIs do not support resume.  See :option:`--always-resume` option.
   Default: ``0``
 
 .. option:: --log-level=<LEVEL>
 
   Set log level to output.
-  LEVEL is either ``debug`` , ``info`` , ``notice`` , ``warn`` or ``error``.
+  LEVEL is either ``debug``, ``info``, ``notice``, ``warn`` or ``error``.
   Default: ``debug``
 
 .. option:: --on-bt-download-complete=<COMMAND>
