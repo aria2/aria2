@@ -16,11 +16,11 @@ mandir = @mandir@/ru
 man_MANS = $(BUILDDIR)/man/aria2c.1
 HTML = $(BUILDDIR)/html
 EXTRA_DIST = $(man_MANS) $(HTML)
-HTMLINSTALLDIR = $(docdir)/manual/ru
+HTMLINSTALLDIR = $(DESTDIR)$(docdir)/manual/ru
 
 # Copy $(BUILDDIR)/html recursively to the install dir. Since Automake
 # does not provide this feature, we do it ourselves.
-install-data-local:
+install-data-local: $(HTML)
 	mkdir -p $(HTMLINSTALLDIR) && \
 	cp -r $(BUILDDIR)/html $(HTMLINSTALLDIR) && \
 	rm -f $(HTMLINSTALLDIR)/html/.buildinfo

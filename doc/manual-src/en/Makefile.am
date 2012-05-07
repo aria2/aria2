@@ -15,11 +15,11 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 man_MANS = $(BUILDDIR)/man/aria2c.1
 HTML = $(BUILDDIR)/html
 EXTRA_DIST = $(man_MANS) $(HTML)
-HTMLINSTALLDIR = $(docdir)/manual/en
+HTMLINSTALLDIR = $(DESTDIR)$(docdir)/manual/en
 
 # Copy $(BUILDDIR)/html recursively to the install dir. Since Automake
 # does not provide this feature, we do it ourselves.
-install-data-local:
+install-data-local: $(HTML)
 	mkdir -p $(HTMLINSTALLDIR) && \
 	cp -r $(BUILDDIR)/html $(HTMLINSTALLDIR) && \
 	rm -f $(HTMLINSTALLDIR)/html/.buildinfo
