@@ -730,14 +730,14 @@ ssize_t SocketCore::writeData(const char* data, size_t len)
     }
   } else {
 #ifdef HAVE_OPENSSL
+    ERR_clear_error();
     ret = SSL_write(ssl, data, len);
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
       throw DL_RETRY_EX
-        (fmt(EX_SOCKET_SEND,
-             ERR_error_string(SSL_get_error(ssl, ret), 0)));
+        (fmt(EX_SOCKET_SEND, ERR_error_string(ERR_get_error(), 0)));
     }
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
@@ -777,13 +777,14 @@ void SocketCore::readData(char* data, size_t& len)
 #ifdef HAVE_OPENSSL
     // for SSL
     // TODO handling len == 0 case required
+    ERR_clear_error();
     ret = SSL_read(ssl, data, len);
     if(ret < 0) {
       ret = sslHandleEAGAIN(ret);
     }
     if(ret < 0) {
       throw DL_RETRY_EX
-        (fmt(EX_SOCKET_RECV, ERR_error_string(SSL_get_error(ssl, ret), 0)));
+        (fmt(EX_SOCKET_RECV, ERR_error_string(ERR_get_error(), 0)));
     }
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
@@ -843,6 +844,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
     wantRead_ = false;
     wantWrite_ = false;
 #ifdef HAVE_OPENSSL
+    ERR_clear_error();
     int e = SSL_connect(ssl);
 
     if (e <= 0) {
