@@ -15,7 +15,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 mandir = @mandir@/ru
 man_MANS = $(BUILDDIR)/man/aria2c.1
 HTML = $(BUILDDIR)/html
-EXTRA_DIST = $(man_MANS) $(HTML)
+EXTRA_DIST = aria2c.rst $(man_MANS) $(HTML)
 HTMLINSTALLDIR = $(DESTDIR)$(docdir)/manual/ru
 
 # Copy $(BUILDDIR)/html recursively to the install dir. Since Automake
