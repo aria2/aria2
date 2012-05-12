@@ -43,6 +43,11 @@ AC_ARG_WITH([ca-bundle],
   AS_HELP_STRING([--with-ca-bundle=FILE],[Use FILE as default CA bundle.]),
   [ca_bundle=$withval], [ca_bundle=""])
 
+AC_ARG_WITH([bashcompletiondir],
+  AS_HELP_STRING([--with-bashcompletiondir=DIR],
+                 [Directory to install bash_completion file]),
+  [bashcompletiondir=$withval], [bashcompletiondir=$docdir/bash_completion])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -572,6 +577,8 @@ if test "x$enable_message_digest" = "xyes"; then
 fi
 AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
+AC_SUBST([bashcompletiondir])
+
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		test/Makefile
@@ -611,3 +618,4 @@ echo "Metalink:       $enable_metalink"
 echo "XML-RPC:        $enable_xml_rpc"
 echo "Message Digest: $enable_message_digest"
 echo "WebSocket:      $enable_websocket"
+echo "bash_completion dir: $bashcompletiondir"

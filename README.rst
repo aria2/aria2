@@ -206,6 +206,11 @@ using aria2's ``--ca-certificate`` option.  If you don't have CA bundle
 file installed, then the last resort is disable the certificate
 validation using ``--check-certificate=false``.
 
+By default, bash_completion file named ``aria2c`` is installed to the
+directory ``$prefix/share/doc/aria2/bash_completion``.  To change the
+install directory of the file, use ``--with-bashcompletiondir``
+option.
+
 The executable is 'aria2c' in src directory.
 
 aria2 uses CppUnit for automated unit testing. To run the unit test::
