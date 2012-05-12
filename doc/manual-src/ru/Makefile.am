@@ -4,7 +4,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = ../../manual/ru
+BUILDDIR      = $(top_srcdir)/doc/manual/ru
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -23,6 +23,7 @@ HTMLINSTALLDIR = $(DESTDIR)$(docdir)/manual/ru
 install-data-local: $(HTML)
 	mkdir -p $(HTMLINSTALLDIR) && \
 	cp -r $(BUILDDIR)/html $(HTMLINSTALLDIR) && \
+	chmod -R u+w $(HTMLINSTALLDIR) && \
 	rm -f $(HTMLINSTALLDIR)/html/.buildinfo
 
 uninstall-local:
