@@ -870,7 +870,7 @@
 #define TEXT_BT_REMOVE_UNSELECTED_FILE                                  \
   _(" --bt-remove-unselected-file[=true|false] Removes the unselected files when\n" \
     "                              download is completed in BitTorrent. To\n" \
-    "                              selecting files, use --select-file option. If\n" \
+    "                              select files, use --select-file option. If\n" \
     "                              it is not used, all files are assumed to be\n" \
     "                              selected. Please use this option with care\n" \
     "                              because it will actually remove files from\n" \

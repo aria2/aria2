@@ -623,7 +623,7 @@ BitTorrent Specific Options
 .. option:: --bt-remove-unselected-file[=true|false]
 
    Removes the unselected files when download is completed in
-   BitTorrent. To selecting files, use
+   BitTorrent. To select files, use
    :option:`--select-file` option. If it is
    not used, all files are assumed to be selected. Please use this
    option with care because it will actually remove files from your
