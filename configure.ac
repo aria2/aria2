@@ -304,7 +304,6 @@ AC_SEARCH_LIBS([clock_gettime], [rt])
 case "$target" in
 	*solaris*)
                 AC_SEARCH_LIBS([getaddrinfo], [nsl socket])
-                AC_SEARCH_LIBS([inet_aton], [nsl socket])
 		;;
 esac
 
@@ -475,9 +474,6 @@ AC_CHECK_FUNCS([getaddrinfo],
 AC_CHECK_FUNCS([gettimeofday],
 	[AM_CONDITIONAL([HAVE_GETTIMEOFDAY], true)],
 	[AM_CONDITIONAL([HAVE_GETTIMEOFDAY], false)])
-AC_CHECK_FUNCS([inet_aton],
-	[AM_CONDITIONAL([HAVE_INET_ATON], true)],
-	[AM_CONDITIONAL([HAVE_INET_ATON], false)])
 AC_CHECK_FUNCS([localtime_r],
 	[AM_CONDITIONAL([HAVE_LOCALTIME_R], true)],
 	[AM_CONDITIONAL([HAVE_LOCALTIME_R], false)])

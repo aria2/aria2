@@ -471,8 +471,9 @@ void SocketCore::setMulticastInterface(const std::string& localAddr)
   if(localAddr.empty()) {
     addr.s_addr = htonl(INADDR_ANY);
   } else {
-    if(inet_aton(localAddr.c_str(), &addr) == 0) {
-      throw DL_ABORT_EX(fmt("inet_aton failed for %s", localAddr.c_str()));
+    if(inetPton(AF_INET, localAddr.c_str(), &addr) != 0) {
+      throw DL_ABORT_EX(fmt("%s is not valid IPv4 numeric address",
+                            localAddr.c_str()));
     }
   }
   setSockOpt(IPPROTO_IP, IP_MULTICAST_IF, &addr, sizeof(addr));
@@ -493,15 +494,17 @@ void SocketCore::joinMulticastGroup
  const std::string& localAddr)
 {
   in_addr multiAddr;
-  if(inet_aton(multicastAddr.c_str(), &multiAddr) == 0) {
-    throw DL_ABORT_EX(fmt("inet_aton failed for %s", multicastAddr.c_str()));
+  if(inetPton(AF_INET, multicastAddr.c_str(), &multiAddr) != 0) {
+    throw DL_ABORT_EX(fmt("%s is not valid IPv4 numeric address",
+                          multicastAddr.c_str()));
   }
   in_addr ifAddr;
   if(localAddr.empty()) {
     ifAddr.s_addr = htonl(INADDR_ANY);
   } else {
-    if(inet_aton(localAddr.c_str(), &ifAddr) == 0) {
-      throw DL_ABORT_EX(fmt("inet_aton failed for %s", localAddr.c_str()));
+    if(inetPton(AF_INET, localAddr.c_str(), &ifAddr) != 0) {
+      throw DL_ABORT_EX(fmt("%s is not valid IPv4 numeric address",
+                            localAddr.c_str()));
     }
   }
   struct ip_mreq mreq;
@@ -1299,9 +1302,34 @@ int inetNtop(int af, const void* src, char* dst, socklen_t size)
   return s;
 }
 
+int inetPton(int af, const char* src, void* dst)
+{
+  union {
+    uint32_t ipv4_addr;
+    unsigned char ipv6_addr[16];
+  } binaddr;
+  size_t len = net::getBinAddr(binaddr.ipv6_addr, src);
+  if(af == AF_INET) {
+    if(len != 4) {
+      return -1;
+    }
+    in_addr* addr = reinterpret_cast<in_addr*>(dst);
+    addr->s_addr = binaddr.ipv4_addr;
+  } else if(af == AF_INET6) {
+    if(len != 16) {
+      return -1;
+    }
+    in6_addr* addr = reinterpret_cast<in6_addr*>(dst);
+    memcpy(addr->s6_addr, binaddr.ipv6_addr, sizeof(addr->s6_addr));
+  } else {
+    return -1;
+  }
+  return 0;
+}
+
 namespace net {
 
-size_t getBinAddr(unsigned char* dest, const std::string& ip)
+size_t getBinAddr(void* dest, const std::string& ip)
 {
   size_t len = 0;
   addrinfo* res;

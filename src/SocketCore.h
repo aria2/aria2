@@ -381,6 +381,13 @@ void getInterfaceAddress
 // message using gai_strerror(3).
 int inetNtop(int af, const void* src, char* dst, socklen_t size);
 
+// Provides functionality of inet_pton using getBinAddr.  If af is
+// AF_INET, dst is assumed to be the pointer to struct in_addr.  If af
+// is AF_INET6, dst is assumed to be the pointer to struct in6_addr.
+//
+// This function returns 0 if it succeeds, or -1.
+int inetPton(int af, const char* src, void* dst);
+
 namespace net {
 
 // Stores binary representation of IP address ip which is represented
@@ -389,7 +396,7 @@ namespace net {
 // at least 4. For IPv6 address, dest must be at least 16. Returns the
 // number of bytes written in dest, that is 4 for IPv4 and 16 for
 // IPv6. Return 0 if error occurred.
-size_t getBinAddr(unsigned char* dest, const std::string& ip);
+size_t getBinAddr(void* dest, const std::string& ip);
 
 // Verifies hostname against presented identifiers in the certificate.
 // The implementation is based on the procedure described in RFC 6125.

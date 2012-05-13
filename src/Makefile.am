@@ -540,10 +540,6 @@ if !HAVE_GETTIMEOFDAY
 SRCS += gettimeofday.c gettimeofday.h
 endif # !HAVE_GETTIMEOFDAY
 
-if !HAVE_INET_ATON
-SRCS += inet_aton.c inet_aton.h
-endif # !HAVE_INET_ATON
-
 if !HAVE_LOCALTIME_R
 SRCS += localtime_r.c localtime_r.h
 endif # !HAVE_LOCALTIME_R

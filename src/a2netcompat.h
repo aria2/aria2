@@ -87,10 +87,6 @@
 # include <netinet/in.h>
 #endif // HAVE_NETINET_IN_H
 
-#ifndef HAVE_INET_ATON
-# include "inet_aton.h"
-#endif // HAVE_INET_ATON
-
 #ifndef HAVE_GETADDRINFO
 # include "getaddrinfo.h"
 # define HAVE_GAI_STRERROR
