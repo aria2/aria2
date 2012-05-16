@@ -71,6 +71,9 @@
 #ifdef ENABLE_SSL
 # include "TLSContext.h"
 #endif // ENABLE_SSL
+#ifdef ENABLE_ASYNC_DNS
+#include "AsyncNameResolver.h"
+#endif // ENABLE_ASYNC_DNS
 
 namespace aria2 {
 
@@ -99,53 +102,6 @@ void handler(int signal) {
   }
 }
 } // namespace
-
-#ifdef HAVE_ARES_ADDR_NODE
-
-namespace {
-
-ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
-{
-  std::vector<std::string> servers;
-  util::split(serversOpt.begin(), serversOpt.end(),
-              std::back_inserter(servers),
-              ',',
-              true /* doStrip */);
-  ares_addr_node root;
-  root.next = 0;
-  ares_addr_node* tail = &root;
-  for(std::vector<std::string>::const_iterator i = servers.begin(),
-        eoi = servers.end(); i != eoi; ++i) {
-    struct addrinfo* res;
-    int s = callGetaddrinfo(&res, (*i).c_str(), 0, AF_UNSPEC,
-                            0, AI_NUMERICHOST, 0);
-    if(s != 0) {
-      continue;
-    }
-    WSAAPI_AUTO_DELETE<struct addrinfo*> resDeleter(res, freeaddrinfo);
-    if(res) {
-      ares_addr_node* node = new ares_addr_node();
-      node->next = 0;
-      node->family = res->ai_family;
-      if(node->family == AF_INET) {
-        sockaddr_in* in =
-          &reinterpret_cast<sockaddr_union*>(res->ai_addr)->in;
-        memcpy(&node->addr.addr4, &(in->sin_addr), 4);
-      } else {
-        sockaddr_in6* in =
-          &reinterpret_cast<sockaddr_union*>(res->ai_addr)->in6;
-        memcpy(&node->addr.addr6, &(in->sin6_addr), 16);
-      }
-      tail->next = node;
-      tail = node;
-    }
-  }
-  return root.next;
-}
-
-} // namespace
-
-#endif // HAVE_ARES_ADDR_NODE
 
 MultiUrlRequestInfo::MultiUrlRequestInfo
 (const std::vector<SharedHandle<RequestGroup> >& requestGroups,

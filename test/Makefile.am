@@ -218,6 +218,10 @@ aria2c_SOURCES += MetalinkerTest.cc\
 	MetalinkProcessorTest.cc
 endif # ENABLE_METALINK
 
+if ENABLE_ASYNC_DNS
+aria2c_SOURCES += AsyncNameResolverTest.cc
+endif # ENABLE_ASYNC_DNS
+
 aria2c_LDADD = ../src/libaria2c.a @LIBINTL@ @CPPUNIT_LIBS@
 AM_CPPFLAGS =  -Wall\
 	-I$(top_srcdir)/src\

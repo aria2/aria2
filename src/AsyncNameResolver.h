@@ -117,6 +117,13 @@ public:
 
 };
 
+#ifdef HAVE_ARES_ADDR_NODE
+
+ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt);
+
+#endif // HAVE_ARES_ADDR_NODE
+
+
 } // namespace aria2
 
 #endif // D_ASYNC_NAME_RESOLVER_H

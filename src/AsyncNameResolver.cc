@@ -39,6 +39,7 @@
 #include "A2STR.h"
 #include "LogFactory.h"
 #include "SocketCore.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -136,5 +137,37 @@ void AsyncNameResolver::reset()
   // TODO evaluate return value
   ares_init(&channel_);
 }
+
+#ifdef HAVE_ARES_ADDR_NODE
+
+ares_addr_node* parseAsyncDNSServers(const std::string& serversOpt)
+{
+  std::vector<std::string> servers;
+  util::split(serversOpt.begin(), serversOpt.end(),
+              std::back_inserter(servers),
+              ',',
+              true /* doStrip */);
+  ares_addr_node root;
+  root.next = 0;
+  ares_addr_node* tail = &root;
+  ares_addr_node* node = 0;
+  for(std::vector<std::string>::const_iterator i = servers.begin(),
+        eoi = servers.end(); i != eoi; ++i) {
+    if(node == 0) {
+      node = new ares_addr_node();
+    }
+    size_t len = net::getBinAddr(&node->addr, (*i).c_str());
+    if(len != 0) {
+      node->next = 0;
+      node->family = (len == 4 ? AF_INET : AF_INET6);
+      tail->next = node;
+      tail = node;
+      node = 0;
+    }
+  }
+  return root.next;
+}
+
+#endif // HAVE_ARES_ADDR_NODE
 
 } // namespace aria2
