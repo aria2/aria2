@@ -114,19 +114,19 @@ void SocketCoreTest::testInetPton()
 {
   {
     const char ipaddr[] = "192.168.0.1";
-    uint32_t ans;
+    in_addr ans;
     CPPUNIT_ASSERT_EQUAL((size_t)4, net::getBinAddr(&ans, ipaddr));
     in_addr dest;
     CPPUNIT_ASSERT_EQUAL(0, inetPton(AF_INET, ipaddr, &dest));
-    CPPUNIT_ASSERT(ans == dest.s_addr);
+    CPPUNIT_ASSERT(memcmp(&ans, &dest, sizeof(ans)) == 0);
   }
   {
     const char ipaddr[] = "2001:db8::2:1";
-    unsigned char ans[16];
-    CPPUNIT_ASSERT_EQUAL((size_t)16, net::getBinAddr(ans, ipaddr));
+    in6_addr ans;
+    CPPUNIT_ASSERT_EQUAL((size_t)16, net::getBinAddr(&ans, ipaddr));
     in6_addr dest;
     CPPUNIT_ASSERT_EQUAL(0, inetPton(AF_INET6, ipaddr, &dest));
-    CPPUNIT_ASSERT(memcmp(ans, &dest, sizeof(ans)) == 0);
+    CPPUNIT_ASSERT(memcmp(&ans, &dest, sizeof(ans)) == 0);
   }
   unsigned char dest[16];
   CPPUNIT_ASSERT_EQUAL(-1, inetPton(AF_INET, "localhost", &dest));
