@@ -541,7 +541,21 @@ AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
                 [AC_DEFINE([HAVE_SOCKADDR_IN_SIN_LEN],[1],
                   [Define to 1 if struct sockaddr_in has sin_len member.])],
                 [],
-                [[#include <netinet/in.h>]])
+                [[
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+]])
+
+AC_CHECK_MEMBER([struct sockaddr_in6.sin6_len],
+                [AC_DEFINE([HAVE_SOCKADDR_IN6_SIN6_LEN],[1],
+                  [Define to 1 if struct sockaddr_in6 has sin6_len member.])],
+                [],
+                [[
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+]])
 
 # Check struct option.name is assignable from const char*.  struct
 # option.name in opensolaris is of type char*. In Linux, it is const

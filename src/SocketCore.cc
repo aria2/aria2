@@ -1282,19 +1282,23 @@ int callGetaddrinfo
 int inetNtop(int af, const void* src, char* dst, socklen_t size)
 {
   int s;
+  sockaddr_union su;
+  memset(&su, 0, sizeof(su));
   if(af == AF_INET) {
-    sockaddr_in sa;
-    memset(&sa, 0, sizeof(sa));
-    sa.sin_family = AF_INET;
-    memcpy(&sa.sin_addr, src, sizeof(in_addr));
-    s = getnameinfo(reinterpret_cast<const sockaddr*>(&sa), sizeof(sa),
+    su.in.sin_family = AF_INET;
+#ifdef HAVE_SOCKADDR_IN_SIN_LEN
+    su.in.sin_len = sizeof(su.in);
+#endif // HAVE_SOCKADDR_IN_SIN_LEN
+    memcpy(&su.in.sin_addr, src, sizeof(su.in.sin_addr));
+    s = getnameinfo(&su.sa, sizeof(su.in),
                     dst, size, 0, 0, NI_NUMERICHOST);
   } else if(af == AF_INET6) {
-    sockaddr_in6 sa;
-    memset(&sa, 0, sizeof(sa));
-    sa.sin6_family = AF_INET6;
-    memcpy(&sa.sin6_addr, src, sizeof(in6_addr));
-    s = getnameinfo(reinterpret_cast<const sockaddr*>(&sa), sizeof(sa),
+    su.in6.sin6_family = AF_INET6;
+#ifdef HAVE_SOCKADDR_IN6_SIN6_LEN
+    su.in6.sin6_len = sizeof(su.in6);
+#endif // HAVE_SOCKADDR_IN6_SIN6_LEN
+    memcpy(&su.in6.sin6_addr, src, sizeof(su.in6.sin6_addr));
+    s = getnameinfo(&su.sa, sizeof(su.in6),
                     dst, size, 0, 0, NI_NUMERICHOST);
   } else {
     s = EAI_FAMILY;
@@ -1339,16 +1343,16 @@ size_t getBinAddr(void* dest, const std::string& ip)
   }
   WSAAPI_AUTO_DELETE<addrinfo*> resDeleter(res, freeaddrinfo);
   for(addrinfo* rp = res; rp; rp = rp->ai_next) {
+    sockaddr_union su;
+    memcpy(&su, rp->ai_addr, rp->ai_addrlen);
     if(rp->ai_family == AF_INET) {
-      sockaddr_in* addr = &reinterpret_cast<sockaddr_union*>(rp->ai_addr)->in;
-      len = 4;
-      memcpy(dest, &(addr->sin_addr), len);
-      return len;
+      len = sizeof(in_addr);
+      memcpy(dest, &(su.in.sin_addr), len);
+      break;
     } else if(rp->ai_family == AF_INET6) {
-      sockaddr_in6* addr = &reinterpret_cast<sockaddr_union*>(rp->ai_addr)->in6;
-      len = 16;
-      memcpy(dest, &(addr->sin6_addr), len);
-      return len;
+      len = sizeof(in6_addr);
+      memcpy(dest, &(su.in6.sin6_addr), len);
+      break;
     }
   }
   return len;
