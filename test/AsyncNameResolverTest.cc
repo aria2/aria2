@@ -42,6 +42,11 @@ void AsyncNameResolverTest::testParseAsyncDNSServers()
   CPPUNIT_ASSERT(node);
   CPPUNIT_ASSERT_EQUAL(AF_INET6, node->family);
   CPPUNIT_ASSERT(memcmp(&ans6, &node->addr, sizeof(ans6)) == 0);
+  for(node = root; node;) {
+    ares_addr_node* nextNode = node->next;
+    delete node;
+    node = nextNode;
+  }
 #endif // HAVE_ARES_ADDR_NODE
 }
 
