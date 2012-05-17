@@ -96,8 +96,8 @@ void gatherOption
     }
     const SharedHandle<OptionHandler>& handler = optionParser->find(pref);
     if(!handler || !pred(handler)) {
-      throw DL_ABORT_EX
-        (fmt("%s option cannot be used in this context.", optionName.c_str()));
+      // Just ignore the unacceptable options in this context.
+      continue;
     }
     const String* opval = downcast<String>((*first).second);
     if(opval) {

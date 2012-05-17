@@ -507,7 +507,8 @@ void RpcMethodTest::testChangeOption_withNotAllowedOption()
   opt->put(PREF_MAX_OVERALL_DOWNLOAD_LIMIT->k, "100K");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
-  CPPUNIT_ASSERT_EQUAL(1, res.code);
+  // The unacceptable options are just ignored.
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
 }
 
 void RpcMethodTest::testChangeOption_withoutGid()
@@ -567,7 +568,8 @@ void RpcMethodTest::testChangeGlobalOption_withNotAllowedOption()
   opt->put(PREF_ENABLE_RPC->k, "100K");
   req.params->append(opt);
   RpcResponse res = m.execute(req, e_.get());
-  CPPUNIT_ASSERT_EQUAL(1, res.code);
+  // The unacceptable options are just ignored.
+  CPPUNIT_ASSERT_EQUAL(0, res.code);
 }
 
 void RpcMethodTest::testNoSuchMethod()
