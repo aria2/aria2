@@ -51,6 +51,8 @@ struct RpcRequest {
   SharedHandle<ValueBase> id;
   bool jsonRpc;
 
+  RpcRequest();
+
   RpcRequest(const std::string& methodName,
              const SharedHandle<List>& params);
 

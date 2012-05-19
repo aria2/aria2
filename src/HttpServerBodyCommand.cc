@@ -163,7 +163,18 @@ bool HttpServerBodyCommand::execute()
         if(reqPath == "/rpc") {
 #ifdef ENABLE_XML_RPC
           std::string body = httpServer_->getBody();
-          rpc::RpcRequest req = rpc::xmlParseMemory(body.c_str(), body.size());
+          rpc::RpcRequest req;
+          try {
+            req = rpc::xmlParseMemory(body.c_str(), body.size());
+          } catch(RecoverableException& e) {
+            A2_LOG_INFO_EX
+              (fmt("CUID#%lld - Failed to parse XML-RPC request",
+                   getCuid()),
+               e);
+            httpServer_->feedResponse(400);
+            addHttpServerResponseCommand();
+            return true;
+          }
           SharedHandle<rpc::RpcMethod> method =
             rpc::RpcMethodFactory::create(req.methodName);
           A2_LOG_INFO(fmt("Executing RPC method %s", req.methodName.c_str()));
@@ -172,7 +183,10 @@ bool HttpServerBodyCommand::execute()
           std::string responseData = rpc::toXml(res, gzip);
           httpServer_->feedResponse(responseData, "text/xml");
           addHttpServerResponseCommand();
-#endif // ENABLE_XML_RPC
+#else // !ENABLE_XML_RPC
+          httpServer_->feedResponse(404);
+          addHttpServerResponseCommand();
+#endif // !ENABLE_XML_RPC
           return true;
         } else if(reqPath == "/jsonrpc") {
           std::string callback;
@@ -223,6 +237,8 @@ bool HttpServerBodyCommand::execute()
           }
           return true;
         } else {
+          httpServer_->feedResponse(404);
+          addHttpServerResponseCommand();
           return true;
         }
       } else {

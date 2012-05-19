@@ -38,6 +38,10 @@ namespace aria2 {
 
 namespace rpc {
 
+RpcRequest::RpcRequest()
+  : jsonRpc(false)
+{}
+
 RpcRequest::RpcRequest(const std::string& methodName,
                        const SharedHandle<List>& params)
   : methodName(methodName), params(params), jsonRpc(false)
