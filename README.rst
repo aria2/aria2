@@ -22,6 +22,7 @@ downloading a file like BitTorrent.
 The project page is located at http://aria2.sourceforge.net/.
 
 See `aria2 Online Manual <http://aria2.sourceforge.net/manual/en/html/>`_
+(`Russian translation <http://aria2.sourceforge.net/manual/ru/html/>`_)
 and `the usage examples <http://sourceforge.net/apps/trac/aria2/wiki/UsageExample>`_ to learn how to use aria2.
 
 Features
@@ -169,14 +170,16 @@ You can use libexpat1-dev instead of libxml2-dev:
 
 You may also need pkg-config to detect the above mentioned libraries.
 
-On Fedora you need the following packages: 
-gcc, gcc-c++, kernel-devel, libgcrypt-devel, libgcrypt-devel, libxml2-devel, openssl-devel
+On Fedora you need the following packages: gcc, gcc-c++, kernel-devel,
+libgcrypt-devel, libgcrypt-devel, libxml2-devel, openssl-devel
 
 If you downloaded source code from git repository, you have to run
 following command to generate configure script and other files
 necessary to build the program::
 
     $ autoreconf -i
+
+Also you need `Sphinx <http://sphinx.pocoo.org/>`_ to build man page.
 
 If you are building aria2 for Mac OS X, take a look at
 build_osx_release.sh, which builds OSX universal binary DMG.
@@ -216,6 +219,16 @@ The executable is 'aria2c' in src directory.
 aria2 uses CppUnit for automated unit testing. To run the unit test::
 
     $ make check
+
+Building documentation
+----------------------
+
+`Sphinx <http://sphinx.pocoo.org/>`_ is used to build the
+documentation. aria2 man pages will be build when you run ``make`` if
+they are not up-to-date.  You can also build HTML version of aria2 man
+page by ``make html``. The HTML version manual is also available at
+`online <http://aria2.sourceforge.net/manual/en/html/>`_ (`Russian
+translation <http://aria2.sourceforge.net/manual/ru/html/>`_).
 
 BitTorrrent
 -----------
@@ -335,6 +348,6 @@ References
 * http://aria2.sourceforge.net/
 * http://sourceforge.net/apps/trac/aria2/wiki
 * https://github.com/tatsuhiro-t/aria2
-* http://tools.ietf.org/html/rfc5854
-* http://tools.ietf.org/html/rfc6249
-* http://tools.ietf.org/html/rfc6455
+* `RFC 5854 The Metalink Download Description Format <http://tools.ietf.org/html/rfc5854>`_
+* `RFC 6249 Metalink/HTTP: Mirrors and Hashes <http://tools.ietf.org/html/rfc6249>`_
+* `RFC 6455 The WebSocket Protocol <http://tools.ietf.org/html/rfc6455>`_
