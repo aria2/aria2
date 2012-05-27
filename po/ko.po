@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-04-08 22:50+0900\n"
+"POT-Creation-Date: 2012-05-27 17:21+0900\n"
 "PO-Revision-Date: 2010-05-30 06:00+0000\n"
 "Last-Translator: Bundo <bundo@bundo.biz>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -27,11 +27,11 @@ msgstr "종료 중입니다 ... 비상시에 즉시 종료하려면 : Ctrl-C를 
 msgid "Emergency shutdown sequence commencing..."
 msgstr "긴급 종료 중입니다 ..."
 
-#: src/MultiUrlRequestInfo.cc:169
+#: src/MultiUrlRequestInfo.cc:125
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2는 다음 다운로드를 다시 시작합니다."
 
-#: src/MultiUrlRequestInfo.cc:170
+#: src/MultiUrlRequestInfo.cc:126
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -39,12 +39,12 @@ msgstr ""
 "오류가 발생하면 로그 파일을 보십시오. 자세한 내용은 help/man 페이지의 '-l' 옵"
 "션 항목을 보십시오."
 
-#: src/MultiUrlRequestInfo.cc:294
+#: src/MultiUrlRequestInfo.cc:250
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:297
+#: src/MultiUrlRequestInfo.cc:253
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
@@ -1687,7 +1687,7 @@ msgstr ""
 msgid ""
 " --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
 "                              download is completed in BitTorrent. To\n"
-"                              selecting files, use --select-file option. If\n"
+"                              select files, use --select-file option. If\n"
 "                              it is not used, all files are assumed to be\n"
 "                              selected. Please use this option with care\n"
 "                              because it will actually remove files from\n"

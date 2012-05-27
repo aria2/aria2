@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-04-08 22:50+0900\n"
+"POT-Creation-Date: 2012-05-27 17:21+0900\n"
 "PO-Revision-Date: 2012-01-27 11:38+0000\n"
 "Last-Translator: stian1990 <crizan90@gmail.com>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -30,11 +30,11 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Sequenza di arresto di emergenza avviata..."
 
-#: src/MultiUrlRequestInfo.cc:169
+#: src/MultiUrlRequestInfo.cc:125
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2 continuerà a scaricare se il trasferimento verrà riavviato."
 
-#: src/MultiUrlRequestInfo.cc:170
+#: src/MultiUrlRequestInfo.cc:126
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -42,12 +42,12 @@ msgstr ""
 "Se avvengono errori, controllare il file di log. Vedi l'opzione '-l' nella "
 "pagina di man/help per informazioni."
 
-#: src/MultiUrlRequestInfo.cc:294
+#: src/MultiUrlRequestInfo.cc:250
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:297
+#: src/MultiUrlRequestInfo.cc:253
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
@@ -2154,7 +2154,7 @@ msgstr ""
 msgid ""
 " --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
 "                              download is completed in BitTorrent. To\n"
-"                              selecting files, use --select-file option. If\n"
+"                              select files, use --select-file option. If\n"
 "                              it is not used, all files are assumed to be\n"
 "                              selected. Please use this option with care\n"
 "                              because it will actually remove files from\n"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-04-08 22:50+0900\n"
+"POT-Creation-Date: 2012-05-27 17:21+0900\n"
 "PO-Revision-Date: 2012-04-08 22:51+0900\n"
 "Last-Translator: Dennis Baudys <Unknown>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -28,13 +28,13 @@ msgstr ""
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Sofortiger Abbruch wurde eingeleitet..."
 
-#: src/MultiUrlRequestInfo.cc:169
+#: src/MultiUrlRequestInfo.cc:125
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
 "aria2 wird den Download wiederaufnehmen, wenn die Übertragung neugestartet "
 "wird."
 
-#: src/MultiUrlRequestInfo.cc:170
+#: src/MultiUrlRequestInfo.cc:126
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -42,12 +42,12 @@ msgstr ""
 "Sollten Fehler aufgetreten sein, bitte die Mitschnitt-Datei beachten. Für "
 "Details hierzu siehe die Option \"-l\" in den Hilfe- und man-Seiten."
 
-#: src/MultiUrlRequestInfo.cc:294
+#: src/MultiUrlRequestInfo.cc:250
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:297
+#: src/MultiUrlRequestInfo.cc:253
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
@@ -1858,15 +1858,29 @@ msgid ""
 msgstr ""
 
 #: src/usage_text.h:871
+#, fuzzy
 msgid ""
 " --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
 "                              download is completed in BitTorrent. To\n"
-"                              selecting files, use --select-file option. If\n"
+"                              select files, use --select-file option. If\n"
 "                              it is not used, all files are assumed to be\n"
 "                              selected. Please use this option with care\n"
 "                              because it will actually remove files from\n"
 "                              your disk."
 msgstr ""
+" --bt-hash-check-seed[=true|false] Wenn 'true' angegeben ist, wird nach "
+"einer\n"
+"                              Integritätsprüfung mit der --check-integrity\n"
+"                              Option und nach dem vollständigen Download "
+"die\n"
+"                              Datei verteilt (geseeded). Wollen Sie die "
+"Datei\n"
+"                              überprüfen und nur herunterladen wenn sie\n"
+"                              beschädigt oder unvollständig ist, setzen Sie\n"
+"                              diese Option auf 'false'.\n"
+"                              Diese Option hat nur Auswirkungen auf "
+"BitTorrent\n"
+"                              Downloads."
 
 #: src/version_usage.cc:57
 msgid " version "

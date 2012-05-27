@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-04-08 22:50+0900\n"
+"POT-Creation-Date: 2012-05-27 17:21+0900\n"
 "PO-Revision-Date: 2008-10-08 08:24+0000\n"
 "Last-Translator: snufkinto <Unknown>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
@@ -27,23 +27,23 @@ msgstr "關閉序列開始...如要緊急關閉，請再次按Ctrl-C。"
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急關閉序列開始..."
 
-#: src/MultiUrlRequestInfo.cc:169
+#: src/MultiUrlRequestInfo.cc:125
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2將於傳輸重新開始後恢復下載。"
 
-#: src/MultiUrlRequestInfo.cc:170
+#: src/MultiUrlRequestInfo.cc:126
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
 "如有錯誤，請查看日誌記錄檔案。詳細資訊請參考幫助/man page內的 '-l' 選項。"
 
-#: src/MultiUrlRequestInfo.cc:294
+#: src/MultiUrlRequestInfo.cc:250
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "ServerStat檔案 %s 儲存成功。"
 
-#: src/MultiUrlRequestInfo.cc:297
+#: src/MultiUrlRequestInfo.cc:253
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "寫入ServerStat至 %s 失敗。"
@@ -1669,7 +1669,7 @@ msgstr ""
 msgid ""
 " --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
 "                              download is completed in BitTorrent. To\n"
-"                              selecting files, use --select-file option. If\n"
+"                              select files, use --select-file option. If\n"
 "                              it is not used, all files are assumed to be\n"
 "                              selected. Please use this option with care\n"
 "                              because it will actually remove files from\n"
