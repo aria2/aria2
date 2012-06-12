@@ -296,6 +296,11 @@ ConsoleStatCalc::calculateStat(const DownloadEngine* e)
       cols = std::max(0, (int)size.ws_col-1);
     }
 #endif // HAVE_TERMIOS_H
+#else // __MINGW32__
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    if(::GetConsoleScreenBufferInfo(::GetStdHandle(STD_OUTPUT_HANDLE), &info)) {
+      cols = std::max(0, info.dwSize.X - 2);
+    }
 #endif // !__MINGW32__
     std::string line(cols, ' ');
     global::cout()->printf("\r%s\r", line.c_str());
