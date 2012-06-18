@@ -59,119 +59,144 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ChunkedDecodingStreamFilterTest );
 void ChunkedDecodingStreamFilterTest::testTransform()
 {
   try {
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("a\r\n1234567890\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)10, r);
-      CPPUNIT_ASSERT_EQUAL(std::string("1234567890"), writer_->getString());
-    }
-    clearWriter();
-    // Feed extension; see it is ignored.
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>
-        ("3;extensionIgnored\r\n123\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)3, r);
-      CPPUNIT_ASSERT_EQUAL(std::string("123"), writer_->getString());
-    }
-    clearWriter();
-    // Feed 2extensions; see it is ignored.
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>
-        ("3;extension1;extension2;\r\n123\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)3, r);
-      CPPUNIT_ASSERT_EQUAL(std::string("123"), writer_->getString());
-    }
-    clearWriter();
-    // Not all chunk size is available
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("1");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
-    }
-    clearWriter();
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("0\r\n1234567890123456\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)16, r);
-      CPPUNIT_ASSERT_EQUAL(std::string("1234567890123456"),
-                           writer_->getString());
-    }
-    clearWriter();
-    // Not all chunk data is available
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("10\r\n1234567890");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)10, r);
-      CPPUNIT_ASSERT_EQUAL(std::string("1234567890"), writer_->getString());
-    }
-    clearWriter();
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("123456\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)6, r);
-      CPPUNIT_ASSERT_EQUAL(std::string("123456"), writer_->getString());
-    }
-    clearWriter();
-    // no trailing CR LF.
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("10\r\n1234567890123456");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)16, r);
-      CPPUNIT_ASSERT_EQUAL(std::string("1234567890123456"),
-                           writer_->getString());
-    }
-    clearWriter();
-    // feed only CR
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("\r");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
-    }
-    // feed next LF
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
-      CPPUNIT_ASSERT_EQUAL(std::string(""), writer_->getString());
-    }
-    // feed 0 CR LF.
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("0\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
-    }
-    // feed trailer
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("trailer\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
-    }
-    // feed final CRLF
-    {
-      std::basic_string<unsigned char> msg =
-        reinterpret_cast<const unsigned char*>("\r\n");
-      ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
-      CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
-    }
-    // input is over
-    CPPUNIT_ASSERT(filter_->finished());
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("a\r\n1234567890\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)10, r);
+    CPPUNIT_ASSERT_EQUAL(std::string("1234567890"), writer_->getString());
+    CPPUNIT_ASSERT_EQUAL((size_t)15, filter_->getBytesProcessed());
   } catch(DlAbortEx& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
+  clearWriter();
+  try {
+    // Feed extension; see it is ignored.
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>
+      ("3;extensionIgnored\r\n123\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)3, r);
+    CPPUNIT_ASSERT_EQUAL(std::string("123"), writer_->getString());
+    CPPUNIT_ASSERT_EQUAL((size_t)25, filter_->getBytesProcessed());
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+
+  clearWriter();
+  // Feed 2extensions; see it is ignored.
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>
+      ("3;extension1;extension2;\r\n123\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)3, r);
+    CPPUNIT_ASSERT_EQUAL(std::string("123"), writer_->getString());
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  clearWriter();
+  // Not all chunk size is available
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("1");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  clearWriter();
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("0\r\n1234567890123456\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)16, r);
+    CPPUNIT_ASSERT_EQUAL(std::string("1234567890123456"),
+                         writer_->getString());
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  clearWriter();
+  // Not all chunk data is available
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("10\r\n1234567890");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)10, r);
+    CPPUNIT_ASSERT_EQUAL(std::string("1234567890"), writer_->getString());
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  clearWriter();
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("123456\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)6, r);
+    CPPUNIT_ASSERT_EQUAL(std::string("123456"), writer_->getString());
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  clearWriter();
+  // no trailing CR LF.
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("10\r\n1234567890123456");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)16, r);
+    CPPUNIT_ASSERT_EQUAL(std::string("1234567890123456"),
+                         writer_->getString());
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  clearWriter();
+  // feed only CR
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("\r");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  // feed next LF
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
+    CPPUNIT_ASSERT_EQUAL(std::string(""), writer_->getString());
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  // feed 0 CR LF.
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("0\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  // feed trailer
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("trailer\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  // feed final CRLF
+  try {
+    std::basic_string<unsigned char> msg =
+      reinterpret_cast<const unsigned char*>("\r\n");
+    ssize_t r = filter_->transform(writer_, segment_, msg.data(), msg.size());
+    CPPUNIT_ASSERT_EQUAL((ssize_t)0, r);
+  } catch(DlAbortEx& e) {
+    CPPUNIT_FAIL(e.stackTrace());
+  }
+  // input is over
+  CPPUNIT_ASSERT(filter_->finished());
 }
 
 void ChunkedDecodingStreamFilterTest::testTransform_withoutTrailer()

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,174 +46,164 @@ namespace aria2 {
 const std::string ChunkedDecodingStreamFilter::NAME
 ("ChunkedDecodingStreamFilter");
 
-size_t ChunkedDecodingStreamFilter::MAX_BUF_SIZE = 1024*1024;
-
-ChunkedDecodingStreamFilter::ReadChunkSizeStateHandler*
-ChunkedDecodingStreamFilter::readChunkSizeStateHandler_ =
-  new ChunkedDecodingStreamFilter::ReadChunkSizeStateHandler();
-
-ChunkedDecodingStreamFilter::ReadTrailerStateHandler*
-ChunkedDecodingStreamFilter::readTrailerStateHandler_ =
-  new ChunkedDecodingStreamFilter::ReadTrailerStateHandler();
-
-ChunkedDecodingStreamFilter::ReadDataStateHandler*
-ChunkedDecodingStreamFilter::readDataStateHandler_ =
-  new ChunkedDecodingStreamFilter::ReadDataStateHandler();
-
-ChunkedDecodingStreamFilter::ReadDataEndStateHandler*
-ChunkedDecodingStreamFilter::readDataEndStateHandler_ =
-  new ChunkedDecodingStreamFilter::ReadDataEndStateHandler();
-
-ChunkedDecodingStreamFilter::StreamEndStatehandler*
-ChunkedDecodingStreamFilter::streamEndStateHandler_ =
-  new ChunkedDecodingStreamFilter::StreamEndStatehandler();
+namespace {
+enum {
+  PREV_CHUNK_SIZE,
+  CHUNK_SIZE,
+  CHUNK_EXTENSION,
+  PREV_CHUNK_SIZE_LF,
+  CHUNK,
+  PREV_CHUNK_CR,
+  PREV_CHUNK_LF,
+  PREV_TRAILER,
+  TRAILER,
+  PREV_TRAILER_LF,
+  PREV_END_CR,
+  PREV_END_LF,
+  CHUNKS_COMPLETE
+};
+} // namespace
 
 ChunkedDecodingStreamFilter::ChunkedDecodingStreamFilter
 (const SharedHandle<StreamFilter>& delegate):
   StreamFilter(delegate),
-  state_(readChunkSizeStateHandler_),
+  state_(PREV_CHUNK_SIZE),
   chunkSize_(0),
+  chunkRemaining_(0),
   bytesProcessed_(0) {}
 
 ChunkedDecodingStreamFilter::~ChunkedDecodingStreamFilter() {}
 
 void ChunkedDecodingStreamFilter::init() {}
 
-bool ChunkedDecodingStreamFilter::readChunkSize
-(size_t& inbufOffset, const unsigned char* inbuf, size_t inlen)
-{
-  size_t pbufSize = buf_.size();
-  buf_.append(&inbuf[inbufOffset], &inbuf[inlen]);
-  std::string::size_type crlfPos = buf_.find(A2STR::CRLF);
-  if(crlfPos == std::string::npos) {
-    if(buf_.size() > MAX_BUF_SIZE) {
-      throw DL_ABORT_EX("Could not find chunk size before buffer got full.");
-    }
-    inbufOffset = inlen;
-    return false;
-  }
-  std::string::size_type extPos = buf_.find(A2STR::SEMICOLON_C);
-  if(extPos == std::string::npos || crlfPos < extPos) {
-    extPos = crlfPos;
-  }
-  chunkSize_ = util::parseLLInt
-    (std::string(buf_.begin(), buf_.begin()+extPos), 16);
-  if(chunkSize_ < 0) {
-    throw DL_ABORT_EX("Chunk size must be positive");
-  }
-  assert(crlfPos+2 > pbufSize);
-  inbufOffset += crlfPos+2-pbufSize;
-  buf_.clear();
-  if(chunkSize_ == 0) {
-    state_ = readTrailerStateHandler_;
-  } else {
-    state_ = readDataStateHandler_;
-  }
-  return true;
-}
-
-bool ChunkedDecodingStreamFilter::readTrailer
-(size_t& inbufOffset, const unsigned char* inbuf, size_t inlen)
-{
-  size_t pbufSize = buf_.size();
-  buf_.append(&inbuf[inbufOffset], &inbuf[inlen]);
-  std::string::size_type crlfcrlfPos = buf_.find("\r\n\r\n");
-  if(crlfcrlfPos != std::string::npos) {
-    // TODO crlfcrlfPos == 0 case?
-    inbufOffset += crlfcrlfPos+4-pbufSize;
-    inbufOffset = inlen;
-    buf_.clear();
-    state_ = streamEndStateHandler_;
-    return true;
-  } else {
-    std::string::size_type crlfPos = buf_.find(A2STR::CRLF);
-    if(crlfPos == std::string::npos) {
-      if(buf_.size() > MAX_BUF_SIZE) {
-        throw DL_ABORT_EX
-          ("Could not find end of stream before buffer got full.");
-      }
-      inbufOffset = inlen;
-      return false;
-    } else if(crlfPos == 0) {
-      inbufOffset += crlfPos+2-pbufSize;
-      buf_.clear();
-      state_ = streamEndStateHandler_;
-      return true;
-    } else {
-      if(buf_.size() > MAX_BUF_SIZE) {
-        throw DL_ABORT_EX
-          ("Could not find end of stream before buffer got full.");
-      }
-      inbufOffset = inlen;
-      return false;
-    }
-  }
-}
-
-bool ChunkedDecodingStreamFilter::readData
-(ssize_t& outlen,
- size_t& inbufOffset,
- const unsigned char* inbuf,
- size_t inlen,
- const SharedHandle<BinaryStream>& out,
- const SharedHandle<Segment>& segment)
-{
-  off_t readlen =
-    std::min(chunkSize_, static_cast<off_t>(inlen-inbufOffset));
-  outlen += getDelegate()->transform(out, segment, inbuf+inbufOffset, readlen);
-  chunkSize_ -= readlen;
-  inbufOffset += readlen;
-  if(chunkSize_ == 0) {
-    state_ = readDataEndStateHandler_;    
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool ChunkedDecodingStreamFilter::readDataEnd
-(size_t& inbufOffset, const unsigned char* inbuf, size_t inlen)
-{
-  size_t pbufSize = buf_.size();
-  buf_.append(&inbuf[inbufOffset], &inbuf[inlen]);
-  if(buf_.size() >= 2) {
-    if(buf_[0] == '\r' && buf_[1] == '\n') {
-      inbufOffset += 2-pbufSize;
-      buf_.clear();
-      state_ = readChunkSizeStateHandler_;
-      return true;
-    } else {
-      throw DL_ABORT_EX("No CRLF at the end of chunk.");
-    }
-  } else {
-    inbufOffset = inlen;
-    return false;
-  }
-}
-
 ssize_t ChunkedDecodingStreamFilter::transform
 (const SharedHandle<BinaryStream>& out,
  const SharedHandle<Segment>& segment,
  const unsigned char* inbuf, size_t inlen)
 {
-  size_t inbufOffset = 0;
   ssize_t outlen = 0;
-  while(inbufOffset < inlen) {
-    ssize_t olen = 0;
-    bool r = state_->execute
-      (this, olen, inbufOffset, inbuf, inlen, out, segment);
-    outlen += olen;
-    if(!r) {
+  size_t i;
+  bytesProcessed_ = 0;
+  for(i = 0; i < inlen; ++i) {
+    unsigned char c = inbuf[i];
+    switch(state_) {
+    case PREV_CHUNK_SIZE:
+      if(util::isHexDigit(c)) {
+        chunkSize_ = util::hexCharToUInt(c);
+        state_ = CHUNK_SIZE;
+      } else {
+        throw DL_ABORT_EX("Bad chunk size: not hex string");
+      }
+      break;
+    case CHUNK_SIZE:
+      if(util::isHexDigit(c)) {
+        if(chunkSize_ & 0x7800000000000000LL) {
+          throw DL_ABORT_EX("Too big chunk size");
+        }
+        chunkSize_ <<= 4;
+        chunkSize_ += util::hexCharToUInt(c);
+      } else if(c == ';') {
+        state_ = CHUNK_EXTENSION;
+      } else if(c == '\r') {
+        state_ = PREV_CHUNK_SIZE_LF;
+      } else {
+        throw DL_ABORT_EX("Bad chunk size: not hex string");
+      }
+      break;
+    case CHUNK_EXTENSION:
+      if(c == '\r') {
+        state_ = PREV_CHUNK_SIZE_LF;
+      }
+      break;
+    case PREV_CHUNK_SIZE_LF:
+      if(c == '\n') {
+        chunkRemaining_ = chunkSize_;
+        if(chunkSize_ == 0) {
+          state_ = PREV_TRAILER;
+        } else {
+          state_ = CHUNK;
+        }
+      } else {
+        throw DL_ABORT_EX("Bad chunk encoding: "
+                          "missing LF at the end of chunk size");
+      }
+      break;
+    case CHUNK: {
+      int64_t readlen = std::min(chunkRemaining_,
+                                 static_cast<int64_t>(inlen-i));
+      outlen += getDelegate()->transform(out, segment, inbuf+i, readlen);
+      chunkRemaining_ -= readlen;
+      i += readlen-1;
+      if(chunkRemaining_ == 0) {
+        state_ = PREV_CHUNK_CR;
+      }
       break;
     }
+    case PREV_CHUNK_CR:
+      if(c == '\r') {
+        state_ = PREV_CHUNK_LF;
+      } else {
+        throw DL_ABORT_EX("Bad chunk encoding: "
+                          "missing CR at the end of chunk");
+      }
+      break;
+    case PREV_CHUNK_LF:
+      if(c == '\n') {
+        if(chunkSize_ == 0) {
+          state_ = PREV_TRAILER;
+        } else {
+          chunkSize_ = chunkRemaining_ = 0;
+          state_ = PREV_CHUNK_SIZE;
+        }
+      } else {
+        throw DL_ABORT_EX("Bad chunk encoding: "
+                          "missing LF at the end of chunk");
+      }
+      break;
+    case PREV_TRAILER:
+      if(c == '\r') {
+        // No trailer
+        state_ = PREV_END_LF;
+      } else {
+        state_= TRAILER;
+      }
+      break;
+    case TRAILER:
+      if(c == '\r') {
+        state_ = PREV_TRAILER_LF;
+      }
+      break;
+    case PREV_TRAILER_LF:
+      if(c == '\n') {
+        state_ = PREV_TRAILER;
+      } else {
+        throw DL_ABORT_EX("Bad chunk encoding: "
+                          "missing LF at the end of trailer");
+      }
+      break;
+    case PREV_END_LF:
+      if(c == '\n') {
+        state_ = CHUNKS_COMPLETE;
+      } else {
+        throw DL_ABORT_EX("Bad chunk encoding: "
+                          "missing LF at the end of chunks");
+      }
+      break;
+    case CHUNKS_COMPLETE:
+      goto fin;
+    default:
+      // unreachable
+      assert(0);
+    }
   }
-  bytesProcessed_ = inbufOffset;
+ fin:
+  bytesProcessed_ += i;
   return outlen;
 }
 
 bool ChunkedDecodingStreamFilter::finished()
 {
-  return state_ == streamEndStateHandler_ && getDelegate()->finished();
+  return state_ == CHUNKS_COMPLETE && getDelegate()->finished();
 }
 
 void ChunkedDecodingStreamFilter::release() {}

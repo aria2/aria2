@@ -57,6 +57,7 @@ public:
   // init() must be called before calling decode().
   virtual void init() = 0;
 
+  // Returns the number of bytes written to sink
   virtual ssize_t transform(const SharedHandle<BinaryStream>& out,
                             const SharedHandle<Segment>& segment,
                             const unsigned char* inbuf, size_t inlen) = 0;
@@ -69,6 +70,8 @@ public:
 
   virtual const std::string& getName() const = 0;
 
+  // Returns the number of input bytes processed in the last
+  // tranfrom() invocation.
   virtual size_t getBytesProcessed() const = 0;
 
   virtual bool installDelegate(const SharedHandle<StreamFilter>& filter);

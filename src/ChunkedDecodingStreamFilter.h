@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,127 +41,10 @@ namespace aria2 {
 
 class ChunkedDecodingStreamFilter : public StreamFilter {
 private:
-  class StateHandler {
-  public:
-    virtual ~StateHandler() {}
-
-    virtual bool execute
-    (ChunkedDecodingStreamFilter* filter,
-     ssize_t& outlen,
-     size_t& inbufOffset,
-     const unsigned char* inbuf,
-     size_t inlen,
-     const SharedHandle<BinaryStream>& out,
-     const SharedHandle<Segment>& segment) const = 0;
-  };
-
-  StateHandler* state_;
-
-  std::string buf_;
-
-  off_t chunkSize_;
-
+  int state_;
+  int64_t chunkSize_;
+  int64_t chunkRemaining_;
   size_t bytesProcessed_;
-
-  static size_t MAX_BUF_SIZE;
-
-  bool readChunkSize
-  (size_t& inbufOffset, const unsigned char* inbuf, size_t inlen);
-
-  bool readTrailer
-  (size_t& inbufOffset, const unsigned char* inbuf, size_t inlen);
-
-  bool readData
-  (ssize_t& outlen,
-   size_t& inbufOffset,
-   const unsigned char* inbuf,
-   size_t inlen,
-   const SharedHandle<BinaryStream>& out,
-   const SharedHandle<Segment>& segment);
-
-  bool readDataEnd
-  (size_t& inbufOffset, const unsigned char* inbuf, size_t inlen);
-
-  class ReadChunkSizeStateHandler:public StateHandler {
-  public:
-    virtual bool execute
-    (ChunkedDecodingStreamFilter* filter,
-     ssize_t& outlen,
-     size_t& inbufOffset,
-     const unsigned char* inbuf,
-     size_t inlen,
-     const SharedHandle<BinaryStream>& out,
-     const SharedHandle<Segment>& segment) const
-    {
-      return filter->readChunkSize(inbufOffset, inbuf, inlen);
-    }
-  };
-
-  class ReadTrailerStateHandler:public StateHandler {
-  public:
-    virtual bool execute
-    (ChunkedDecodingStreamFilter* filter,
-     ssize_t& outlen,
-     size_t& inbufOffset,
-     const unsigned char* inbuf,
-     size_t inlen,
-     const SharedHandle<BinaryStream>& out,
-     const SharedHandle<Segment>& segment) const
-    {
-      return filter->readTrailer(inbufOffset, inbuf, inlen);
-    }
-  };
-
-  class ReadDataStateHandler:public StateHandler {
-  public:
-    virtual bool execute
-    (ChunkedDecodingStreamFilter* filter,
-     ssize_t& outlen,
-     size_t& inbufOffset,
-     const unsigned char* inbuf,
-     size_t inlen,
-     const SharedHandle<BinaryStream>& out,
-     const SharedHandle<Segment>& segment) const
-    {
-      return filter->readData(outlen, inbufOffset, inbuf, inlen, out, segment);
-    }
-  };
-
-  class ReadDataEndStateHandler:public StateHandler {
-  public:
-    virtual bool execute
-    (ChunkedDecodingStreamFilter* filter,
-     ssize_t& outlen,
-     size_t& inbufOffset,
-     const unsigned char* inbuf,
-     size_t inlen,
-     const SharedHandle<BinaryStream>& out,
-     const SharedHandle<Segment>& segment) const
-    {
-      return filter->readDataEnd(inbufOffset, inbuf, inlen);
-    }
-  };
-
-  class StreamEndStatehandler:public StateHandler {
-  public:
-    virtual bool execute
-    (ChunkedDecodingStreamFilter* filter,
-     ssize_t& outlen,
-     size_t& inbufOffset,
-     const unsigned char* inbuf,
-     size_t inlen,
-     const SharedHandle<BinaryStream>& out,
-     const SharedHandle<Segment>& segment) const
-    {
-      return false;
-    }
-  };
-
-  static ReadChunkSizeStateHandler* readChunkSizeStateHandler_;
-  static ReadTrailerStateHandler* readTrailerStateHandler_;
-  static ReadDataStateHandler* readDataStateHandler_;
-  static ReadDataEndStateHandler* readDataEndStateHandler_;
-  static StreamEndStatehandler* streamEndStateHandler_;
 public:
   ChunkedDecodingStreamFilter
   (const SharedHandle<StreamFilter>& delegate = SharedHandle<StreamFilter>());
