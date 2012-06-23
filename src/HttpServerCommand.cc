@@ -164,7 +164,10 @@ bool HttpServerCommand::execute()
         e_->addCommand(this);
         return false;
       }
-      if(!httpServer_->authenticate()) {
+      // CORS preflight request uses OPTIONS method. It is not
+      // restricted by authentication.
+      if(!httpServer_->authenticate() &&
+         httpServer_->getMethod() != "OPTIONS") {
         httpServer_->disableKeepAlive();
         httpServer_->feedResponse
           (401, "WWW-Authenticate: Basic realm=\"aria2\"\r\n");

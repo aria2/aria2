@@ -84,6 +84,7 @@ public:
 
   const std::string& getRequestPath() const;
 
+
   void feedResponse(std::string& text, const std::string& contentType);
 
   // Feeds HTTP response with the status code |status| (e.g.,
@@ -135,6 +136,11 @@ public:
     return socketRecvBuffer_;
   }
 
+  const std::string& getAllowOrigin() const
+  {
+    return allowOrigin_;
+  }
+
   void setAllowOrigin(const std::string& allowOrigin)
   {
     allowOrigin_ = allowOrigin;
@@ -143,6 +149,11 @@ public:
   const SharedHandle<SocketCore>& getSocket() const
   {
     return socket_;
+  }
+
+  const SharedHandle<HttpHeader>& getRequestHeader() const
+  {
+    return lastRequestHeader_;
   }
 };
 

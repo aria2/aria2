@@ -159,6 +159,33 @@ bool HttpServerBodyCommand::execute()
         std::string query(std::find(reqPath.begin(), reqPath.end(), '?'),
                           reqPath.end());
         reqPath.erase(reqPath.size()-query.size(), query.size());
+
+        if(httpServer_->getMethod() == "OPTIONS") {
+          // Response to Preflight Request.
+          // See http://www.w3.org/TR/cors/
+          const SharedHandle<HttpHeader>& header =
+            httpServer_->getRequestHeader();
+          std::string accessControlHeaders;
+          if(!header->find("origin").empty() &&
+             !header->find("access-control-request-method").empty() &&
+             !httpServer_->getAllowOrigin().empty()) {
+            accessControlHeaders +=
+              "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
+              "Access-Control-Max-Age: 1728000\r\n";
+            const std::string& accReqHeaders =
+              header->find("access-control-request-headers");
+            if(!accReqHeaders.empty()) {
+              // We allow all headers requested.
+              accessControlHeaders += "Access-Control-Allow-Headers: ";
+              accessControlHeaders += accReqHeaders;
+              accessControlHeaders += "\r\n";
+            }
+          }
+          httpServer_->feedResponse(200, accessControlHeaders);
+          addHttpServerResponseCommand();
+          return true;
+        }
+
         // Do something for requestpath and body
         if(reqPath == "/rpc") {
 #ifdef ENABLE_XML_RPC
