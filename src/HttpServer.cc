@@ -60,7 +60,8 @@ HttpServer::HttpServer
    socketRecvBuffer_(new SocketRecvBuffer(socket_)),
    socketBuffer_(socket),
    e_(e),
-   headerProcessor_(new HttpHeaderProcessor()),
+   headerProcessor_(new HttpHeaderProcessor
+                    (HttpHeaderProcessor::SERVER_PARSER)),
    keepAlive_(true),
    gzip_(false),
    acceptsPersistentConnection_(true),
@@ -129,15 +130,13 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
       throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
   }
-  headerProcessor_->update(socketRecvBuffer_->getBuffer(),
-                           socketRecvBuffer_->getBufferLength());
-  if(headerProcessor_->eoh()) {
-    SharedHandle<HttpHeader> header = headerProcessor_->getHttpRequestHeader();
-    size_t putbackDataLength = headerProcessor_->getPutBackDataLength();
+  SharedHandle<HttpHeader> header;
+  if(headerProcessor_->parse(socketRecvBuffer_->getBuffer(),
+                             socketRecvBuffer_->getBufferLength())) {
+    header = headerProcessor_->getResult();
     A2_LOG_INFO(fmt("HTTP Server received request\n%s",
                     headerProcessor_->getHeaderString().c_str()));
-    socketRecvBuffer_->shiftBuffer
-      (socketRecvBuffer_->getBufferLength()-putbackDataLength);
+    socketRecvBuffer_->shiftBuffer(headerProcessor_->getLastBytesProcessed());
     lastRequestHeader_ = header;
     lastBody_.clear();
     lastBody_.str("");
@@ -175,11 +174,10 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
         break;
       }
     }
-    return header;
   } else {
-    socketRecvBuffer_->clearBuffer();
-    return SharedHandle<HttpHeader>();
+    socketRecvBuffer_->shiftBuffer(headerProcessor_->getLastBytesProcessed());
   }
+  return header;
 }
 
 bool HttpServer::receiveBody()

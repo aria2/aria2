@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,128 +46,330 @@
 
 namespace aria2 {
 
-HttpHeaderProcessor::HttpHeaderProcessor():
-  limit_(21/*lines*/*8190/*per line*/) {}
-// The above values come from Apache's documentation
-// http://httpd.apache.org/docs/2.2/en/mod/core.html: See
-// LimitRequestFieldSize and LimitRequestLine directive.  Also the
-// page states that the number of request fields rarely exceeds 20.
-// aria2 uses this class in both client and server side.
+namespace {
+enum {
+  // Server mode
+  PREV_METHOD,
+  METHOD,
+  PREV_PATH,
+  PATH,
+  PREV_REQ_VERSION,
+  REQ_VERSION,
+  // Client mode,
+  PREV_RES_VERSION,
+  RES_VERSION,
+  PREV_STATUS_CODE,
+  STATUS_CODE,
+  PREV_REASON_PHRASE,
+  REASON_PHRASE,
+  // name/value header fields
+  PREV_EOL,
+  PREV_FIELD_NAME,
+  FIELD_NAME,
+  PREV_FIELD_VALUE,
+  FIELD_VALUE,
+  // End of header
+  PREV_EOH,
+  HEADERS_COMPLETE
+};
+} // namespace
+
+HttpHeaderProcessor::HttpHeaderProcessor(ParserMode mode)
+  : mode_(mode),
+    state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
+    lastBytesProcessed_(0),
+    result_(new HttpHeader())
+{}
 
 HttpHeaderProcessor::~HttpHeaderProcessor() {}
 
-void HttpHeaderProcessor::update(const unsigned char* data, size_t length)
+namespace {
+size_t getToken(std::string& buf,
+                const unsigned char* data, size_t length, size_t off)
 {
-  checkHeaderLimit(length);
-  buf_.append(&data[0], &data[length]);
+  size_t j;
+  for(j = off; j < length && !util::isLws(data[j]) && !util::isCRLF(data[j]);
+      ++j);
+  buf.append(&data[off], &data[j]);
+  return j-1;
 }
+} // namespace
 
-void HttpHeaderProcessor::update(const std::string& data)
+namespace {
+size_t getFieldNameToken(std::string& buf,
+                         const unsigned char* data, size_t length, size_t off)
 {
-  checkHeaderLimit(data.size());
-  buf_ += data;
+  size_t j;
+  for(j = off; j < length && data[j] != ':' &&
+        !util::isLws(data[j]) && !util::isCRLF(data[j]); ++j);
+  buf.append(&data[off], &data[j]);
+  return j-1;
 }
+} // namespace
 
-void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
+namespace {
+size_t getText(std::string& buf,
+               const unsigned char* data, size_t length, size_t off)
 {
-  if(buf_.size()+incomingLength > limit_) {
-    throw DL_ABORT_EX2("Too large http header",
-                       error_code::HTTP_PROTOCOL_ERROR);
+  size_t j;
+  for(j = off; j < length && !util::isCRLF(data[j]); ++j);
+  buf.append(&data[off], &data[j]);
+  return j-1;
+}
+} // namespace
+
+bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
+{
+  size_t i;
+  lastBytesProcessed_ = 0;
+  for(i = 0; i < length; ++i) {
+    unsigned char c = data[i];
+    switch(state_) {
+    case PREV_METHOD:
+      if(util::isLws(c) || util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: missing method");
+      } else {
+        i = getToken(buf_, data, length, i);
+        state_ = METHOD;
+      }
+      break;
+    case METHOD:
+      if(util::isLws(c)) {
+        result_->setMethod(buf_);
+        buf_.clear();
+        state_ = PREV_PATH;
+      } else if(util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: missing request-target");
+      } else {
+        i = getToken(buf_, data, length, i);
+      }
+      break;
+    case PREV_PATH:
+      if(util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: missing request-target");
+      } else if(!util::isLws(c)) {
+        i = getToken(buf_, data, length, i);
+        state_ = PATH;
+      }
+      break;
+    case PATH:
+      if(util::isLws(c)) {
+        result_->setRequestPath(buf_);
+        buf_.clear();
+        state_ = PREV_REQ_VERSION;
+      } else if(util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: missing HTTP-version");
+      } else {
+        i = getToken(buf_, data, length, i);
+      }
+      break;
+    case PREV_REQ_VERSION:
+      if(util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: missing HTTP-version");
+      } else if(!util::isLws(c)) {
+        i = getToken(buf_, data, length, i);
+        state_ = REQ_VERSION;
+      }
+      break;
+    case REQ_VERSION:
+      if(util::isCRLF(c)) {
+        result_->setVersion(buf_);
+        buf_.clear();
+        if(c == '\n') {
+          state_ = PREV_FIELD_NAME;
+        } else {
+          state_ = PREV_EOL;
+        }
+      } else if(util::isLws(c)) {
+        throw DL_ABORT_EX("Bad Request-Line: LWS after HTTP-version");
+      } else {
+        i = getToken(buf_, data, length, i);
+      }
+      break;
+    case PREV_RES_VERSION:
+      if(util::isLws(c) || util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Status-Line: missing HTTP-version");
+      } else {
+        i = getToken(buf_, data, length, i);
+        state_ = RES_VERSION;
+      }
+      break;
+    case RES_VERSION:
+      if(util::isLws(c)) {
+        result_->setVersion(buf_);
+        buf_.clear();
+        state_ = PREV_STATUS_CODE;
+      } else if(util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Status-Line: missing status-code");
+      }
+      break;
+    case PREV_STATUS_CODE:
+      if(util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad Status-Line: missing status-code");
+      } else if(!util::isLws(c)) {
+        state_ = STATUS_CODE;
+        i = getToken(buf_, data, length, i);
+      }
+      break;
+    case STATUS_CODE:
+      if(util::isLws(c) || util::isCRLF(c)) {
+        int statusCode = -1;
+        if(buf_.size() == 3 && util::isNumber(buf_.begin(), buf_.end())) {
+          statusCode = (buf_[0]-'0')*100 + (buf_[1]-'0')*10 + (buf_[2]-'0');
+        }
+        if(statusCode >= 100) {
+          result_->setStatusCode(statusCode);
+          buf_.clear();
+        } else {
+          throw DL_ABORT_EX("Bad status code: bad status-code");
+        }
+        if(c == '\r') {
+          state_ = PREV_EOL;
+        } else if(c == '\n') {
+          state_ = PREV_FIELD_NAME;
+        } else {
+          state_ = PREV_REASON_PHRASE;
+        }
+      } else {
+        i = getToken(buf_, data, length, i);
+      }
+      break;
+    case PREV_REASON_PHRASE:
+      if(util::isCRLF(c)) {
+        // The reason-phrase is completely optional.
+        if(c == '\n') {
+          state_ = PREV_FIELD_NAME;
+        } else {
+          state_ = PREV_EOL;
+        }
+      } else if(!util::isLws(c)) {
+        state_ = REASON_PHRASE;
+        i = getText(buf_, data, length, i);
+      }
+      break;
+    case REASON_PHRASE:
+      if(util::isCRLF(c)) {
+        result_->setReasonPhrase(buf_);
+        buf_.clear();
+        if(c == '\n') {
+          state_ = PREV_FIELD_NAME;
+        } else {
+          state_ = PREV_EOL;
+        }
+      } else {
+        i = getText(buf_, data, length, i);
+      }
+      break;
+    case PREV_EOL:
+      if(c == '\n') {
+        state_ = PREV_FIELD_NAME;
+      } else {
+        throw DL_ABORT_EX("Bad HTTP header: missing LF");
+      }
+      break;
+    case PREV_FIELD_NAME:
+      if(util::isLws(c)) {
+        // Evil Multi-line header field
+        state_ = FIELD_VALUE;
+      } else {
+        if(!lastFieldName_.empty()) {
+          util::lowercase(lastFieldName_);
+          result_->put(lastFieldName_, util::strip(buf_));
+          lastFieldName_.clear();
+          buf_.clear();
+        }
+        if(c == '\n') {
+          state_ = HEADERS_COMPLETE;
+        } else if(c == '\r') {
+          state_ = PREV_EOH;
+        } else {
+          state_ = FIELD_NAME;
+          i = getFieldNameToken(lastFieldName_, data, length, i);
+        }
+      }
+      break;
+    case FIELD_NAME:
+      if(util::isLws(c) || util::isCRLF(c)) {
+        throw DL_ABORT_EX("Bad HTTP header: missing ':'");
+      } else if(c == ':') {
+        state_ = PREV_FIELD_VALUE;
+      } else {
+        i = getFieldNameToken(lastFieldName_, data, length, i);
+      }
+      break;
+    case PREV_FIELD_VALUE:
+      if(c == '\r') {
+        state_ = PREV_EOL;
+      } else if(c == '\n') {
+        state_ = PREV_FIELD_NAME;
+      } else if(!util::isLws(c)) {
+        state_ = FIELD_VALUE;
+        i = getText(buf_, data, length, i);
+      }
+      break;
+    case FIELD_VALUE:
+      if(c == '\r') {
+        state_ = PREV_EOL;
+      } else if(c == '\n') {
+        state_ = PREV_FIELD_NAME;
+      } else {
+        i = getText(buf_, data, length, i);
+      }
+      break;
+    case PREV_EOH:
+      if(c == '\n') {
+        state_ = HEADERS_COMPLETE;
+      } else {
+        throw DL_ABORT_EX("Bad HTTP header: "
+                          "missing LF at the end of the header");
+      }
+      break;
+    case HEADERS_COMPLETE:
+      goto fin;
+    }
   }
+ fin:
+  // See Apache's documentation
+  // http://httpd.apache.org/docs/2.2/en/mod/core.html about size
+  // limit of HTTP headers. The page states that the number of request
+  // fields rarely exceeds 20.
+  if(lastFieldName_.size() > 1024 || buf_.size() > 8192) {
+    throw DL_ABORT_EX("Too large HTTP header");
+  }
+  lastBytesProcessed_ = i;
+  headers_.append(&data[0], &data[i]);
+  return state_ == HEADERS_COMPLETE;
 }
 
-bool HttpHeaderProcessor::eoh() const
+bool HttpHeaderProcessor::parse(const std::string& data)
 {
-  if(buf_.find("\r\n\r\n") == std::string::npos &&
-     buf_.find("\n\n") == std::string::npos) {
-    return false;
-  } else {
-    return true;
-  }
+  return parse(reinterpret_cast<const unsigned char*>(data.c_str()),
+               data.size());
 }
 
-size_t HttpHeaderProcessor::getPutBackDataLength() const
+size_t HttpHeaderProcessor::getLastBytesProcessed() const
 {
-  std::string::size_type delimpos = std::string::npos;
-  if((delimpos = buf_.find("\r\n\r\n")) != std::string::npos) {
-    return buf_.size()-(delimpos+4);
-  } else if((delimpos = buf_.find("\n\n")) != std::string::npos) {
-    return buf_.size()-(delimpos+2);
-  } else {
-    return 0;
-  }
+  return lastBytesProcessed_;
 }
 
 void HttpHeaderProcessor::clear()
 {
-  buf_.erase();
+  state_ = (mode_ == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD);
+  lastBytesProcessed_ = 0;
+  buf_.clear();
+  lastFieldName_.clear();
+  result_.reset(new HttpHeader());
+  headers_.clear();
 }
 
-SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
+const SharedHandle<HttpHeader>& HttpHeaderProcessor::getResult() const
 {
-  std::string::size_type delimpos = std::string::npos;
-  if(((delimpos = buf_.find("\r\n")) == std::string::npos &&
-      (delimpos = buf_.find("\n")) == std::string::npos) ||
-     delimpos < 12) {
-    throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
-  }
-  int32_t statusCode;
-  if(!util::parseIntNoThrow(statusCode,
-                            std::string(buf_.begin()+9, buf_.begin()+12))) {
-    throw DL_RETRY_EX("Status code could not be parsed as integer.");
-  }
-  HttpHeaderHandle httpHeader(new HttpHeader());
-  httpHeader->setVersion(buf_.begin(), buf_.begin()+8);
-  httpHeader->setStatusCode(statusCode);
-  // TODO 1st line(HTTP/1.1 200...) is also send to HttpHeader, but it should
-  // not.
-  if((delimpos = buf_.find("\r\n\r\n")) == std::string::npos &&
-     (delimpos = buf_.find("\n\n")) == std::string::npos) {
-    delimpos = buf_.size();
-  }
-  httpHeader->fill(buf_.begin(), buf_.begin()+delimpos);
-  return httpHeader;
-}
-
-SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpRequestHeader()
-{
-  // The minimum case of the first line is:
-  // GET / HTTP/1.x
-  // At least 14bytes before \r\n or \n.
-  std::string::size_type delimpos = std::string::npos;
-  if(((delimpos = buf_.find("\r\n")) == std::string::npos &&
-      (delimpos = buf_.find("\n")) == std::string::npos) ||
-     delimpos < 14) {
-    throw DL_RETRY_EX(EX_NO_STATUS_HEADER);
-  }
-  std::vector<Scip> firstLine;
-  util::splitIter(buf_.begin(), buf_.begin()+delimpos,
-                  std::back_inserter(firstLine), ' ', true);
-  if(firstLine.size() != 3) {
-    throw DL_ABORT_EX2("Malformed HTTP request header.",
-                       error_code::HTTP_PROTOCOL_ERROR);
-  }
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->setMethod(firstLine[0].first, firstLine[0].second);
-  httpHeader->setRequestPath(firstLine[1].first, firstLine[1].second);
-  httpHeader->setVersion(firstLine[2].first, firstLine[2].second);
-  if((delimpos = buf_.find("\r\n\r\n")) == std::string::npos &&
-     (delimpos = buf_.find("\n\n")) == std::string::npos) {
-    delimpos = buf_.size();
-  }
-  httpHeader->fill(buf_.begin(), buf_.begin()+delimpos);
-  return httpHeader;
+  return result_;
 }
 
 std::string HttpHeaderProcessor::getHeaderString() const
 {
-  std::string::size_type delimpos = std::string::npos;
-  if((delimpos = buf_.find("\r\n\r\n")) == std::string::npos &&
-     (delimpos = buf_.find("\n\n")) == std::string::npos) {
-    return buf_;
-  } else {
-    return buf_.substr(0, delimpos);
-  }
+  return headers_;
 }
 
 } // namespace aria2

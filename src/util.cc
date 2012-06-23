@@ -313,6 +313,15 @@ bool inRFC2616HttpToken(const char c)
     std::find(vbegin(chars), vend(chars), c) != vend(chars);
 }
 
+bool isLws(const char c)
+{
+  return c == ' ' || c == '\t';
+}
+bool isCRLF(const char c)
+{
+  return c == '\r' || c == '\n';
+}
+
 namespace {
 bool isUtf8Tail(unsigned char ch)
 {

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,50 +47,50 @@ namespace aria2 {
 class HttpHeader;
 
 class HttpHeaderProcessor {
-private:
-  std::string buf_;
-  size_t limit_;
-
-  void checkHeaderLimit(size_t incomingLength);
-
 public:
-  HttpHeaderProcessor();
+  enum ParserMode {
+    CLIENT_PARSER,
+    SERVER_PARSER
+  };
+
+  HttpHeaderProcessor(ParserMode mode);
 
   ~HttpHeaderProcessor();
-
-  void update(const unsigned char* data, size_t length);
-
-  void update(const std::string& data);
+  /**
+   * Parses incoming data. Returns true if end of header is reached.
+   * This function stops processing data when end of header is
+   * reached.
+   */
+  bool parse(const unsigned char* data, size_t length);
+  bool parse(const std::string& data);
 
   /**
-   * Returns true if end of header is reached.
+   * Retruns the number of bytes processed in the last invocation of
+   * parse().
    */
-  bool eoh() const;
-
-  /**
-   * Retruns the number of bytes beyond the end of header.
-   */
-  size_t getPutBackDataLength() const;
+  size_t getLastBytesProcessed() const;
 
   /**
    * Processes the received header as a http response header and returns
    * HttpHeader object.
    */
-  SharedHandle<HttpHeader> getHttpResponseHeader();
-
-  SharedHandle<HttpHeader> getHttpRequestHeader();
+  const SharedHandle<HttpHeader>& getResult() const;
 
   std::string getHeaderString() const;
 
+  /**
+   * Resets internal status and ready for next header processing.
+   */
   void clear();
-
-  void setHeaderLimit(size_t limit)
-  {
-    limit_ = limit;
-  }
+private:
+  ParserMode mode_;
+  int state_;
+  size_t lastBytesProcessed_;
+  std::string buf_;
+  std::string lastFieldName_;
+  SharedHandle<HttpHeader> result_;
+  std::string headers_;
 };
-
-typedef SharedHandle<HttpHeaderProcessor> HttpHeaderProcessorHandle;
 
 } // namespace aria2
 

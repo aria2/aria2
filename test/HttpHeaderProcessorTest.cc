@@ -13,12 +13,12 @@ namespace aria2 {
 class HttpHeaderProcessorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HttpHeaderProcessorTest);
-  CPPUNIT_TEST(testUpdate1);
-  CPPUNIT_TEST(testUpdate2);
-  CPPUNIT_TEST(testGetPutBackDataLength);
-  CPPUNIT_TEST(testGetPutBackDataLength_nullChar);
+  CPPUNIT_TEST(testParse1);
+  CPPUNIT_TEST(testParse2);
+  CPPUNIT_TEST(testParse3);
+  CPPUNIT_TEST(testGetLastBytesProcessed);
+  CPPUNIT_TEST(testGetLastBytesProcessed_nullChar);
   CPPUNIT_TEST(testGetHttpResponseHeader);
-  CPPUNIT_TEST(testGetHttpResponseHeader_empty);
   CPPUNIT_TEST(testGetHttpResponseHeader_statusOnly);
   CPPUNIT_TEST(testGetHttpResponseHeader_insufficientStatusLength);
   CPPUNIT_TEST(testBeyondLimit);
@@ -27,12 +27,12 @@ class HttpHeaderProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
   
 public:
-  void testUpdate1();
-  void testUpdate2();
-  void testGetPutBackDataLength();
-  void testGetPutBackDataLength_nullChar();
+  void testParse1();
+  void testParse2();
+  void testParse3();
+  void testGetLastBytesProcessed();
+  void testGetLastBytesProcessed_nullChar();
   void testGetHttpResponseHeader();
-  void testGetHttpResponseHeader_empty();
   void testGetHttpResponseHeader_statusOnly();
   void testGetHttpResponseHeader_insufficientStatusLength();
   void testBeyondLimit();
@@ -43,60 +43,84 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( HttpHeaderProcessorTest );
 
-void HttpHeaderProcessorTest::testUpdate1()
+void HttpHeaderProcessorTest::testParse1()
 {
-  HttpHeaderProcessor proc;
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
   std::string hd1 = "HTTP/1.1 200 OK\r\n";
-  proc.update(hd1);
-  CPPUNIT_ASSERT(!proc.eoh());
-  proc.update("\r\n");
-  CPPUNIT_ASSERT(proc.eoh());
+  CPPUNIT_ASSERT(!proc.parse(hd1));
+  CPPUNIT_ASSERT(proc.parse("\r\n"));
 }
 
-void HttpHeaderProcessorTest::testUpdate2()
+void HttpHeaderProcessorTest::testParse2()
 {
-  HttpHeaderProcessor proc;
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
   std::string hd1 = "HTTP/1.1 200 OK\n";
-  proc.update(hd1);
-  CPPUNIT_ASSERT(!proc.eoh());
-  proc.update("\n");
-  CPPUNIT_ASSERT(proc.eoh());
+  CPPUNIT_ASSERT(!proc.parse(hd1));
+  CPPUNIT_ASSERT(proc.parse("\n"));
 }
 
-void HttpHeaderProcessorTest::testGetPutBackDataLength()
+void HttpHeaderProcessorTest::testParse3()
 {
-  HttpHeaderProcessor proc;
-  std::string hd1 = "HTTP/1.1 200 OK\r\n"
+  HttpHeaderProcessor proc(HttpHeaderProcessor::SERVER_PARSER);
+  std::string s =
+    "GET / HTTP/1.1\r\n"
+    "Host: aria2.sourceforge.net\r\n"
+    "Connection: close \r\n" // trailing white space (BWS)
+    "Multi-Line: text1\r\n" // Multi-line header
+    "  text2\r\n"
+    "  text3\r\n"
+    "Duplicate: foo\r\n"
+    "Duplicate: bar\r\n"
+    "\r\n";
+  CPPUNIT_ASSERT(proc.parse(s));
+  SharedHandle<HttpHeader> h = proc.getResult();
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.sourceforge.net"),
+                       h->find("host"));
+  CPPUNIT_ASSERT_EQUAL(std::string("close"),
+                       h->find("connection"));
+  CPPUNIT_ASSERT_EQUAL(std::string("text1 text2 text3"),
+                       h->find("multi-line"));
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"),
+                       h->findAll("duplicate")[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("bar"),
+                       h->findAll("duplicate")[1]);
+}
+
+void HttpHeaderProcessorTest::testGetLastBytesProcessed()
+{
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
+  std::string hd1 =
+    "HTTP/1.1 200 OK\r\n"
     "\r\nputbackme";
-  proc.update(hd1);
-  CPPUNIT_ASSERT(proc.eoh());
-  CPPUNIT_ASSERT_EQUAL((size_t)9, proc.getPutBackDataLength());
+  CPPUNIT_ASSERT(proc.parse(hd1));
+  CPPUNIT_ASSERT_EQUAL((size_t)19, proc.getLastBytesProcessed());
 
   proc.clear();
 
-  std::string hd2 = "HTTP/1.1 200 OK\n"
+  std::string hd2 =
+    "HTTP/1.1 200 OK\n"
     "\nputbackme";
-  proc.update(hd2);
-  CPPUNIT_ASSERT(proc.eoh());
-  CPPUNIT_ASSERT_EQUAL((size_t)9, proc.getPutBackDataLength());
+  CPPUNIT_ASSERT(proc.parse(hd2));
+  CPPUNIT_ASSERT_EQUAL((size_t)17, proc.getLastBytesProcessed());
 }
 
-void HttpHeaderProcessorTest::testGetPutBackDataLength_nullChar()
+void HttpHeaderProcessorTest::testGetLastBytesProcessed_nullChar()
 {
-  HttpHeaderProcessor proc;
-  const char* x = "HTTP/1.1 200 OK\r\n"
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
+  const char x[] =
+    "HTTP/1.1 200 OK\r\n"
     "foo: foo\0bar\r\n"
     "\r\nputbackme";
-  std::string hd1(&x[0], &x[42]);
-  proc.update(hd1);
-  CPPUNIT_ASSERT(proc.eoh());
-  CPPUNIT_ASSERT_EQUAL((size_t)9, proc.getPutBackDataLength());
+  std::string hd1(&x[0], &x[sizeof(x)-1]);
+  CPPUNIT_ASSERT(proc.parse(hd1));
+  CPPUNIT_ASSERT_EQUAL((size_t)33, proc.getLastBytesProcessed());
 }
 
 void HttpHeaderProcessorTest::testGetHttpResponseHeader()
 {
-  HttpHeaderProcessor proc;
-  std::string hd = "HTTP/1.1 200 OK\r\n"
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
+  std::string hd =
+    "HTTP/1.1 404 Not Found\r\n"
     "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
     "Server: Apache/2.2.3 (Debian)\r\n"
     "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
@@ -108,10 +132,11 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
     "\r\n"
     "Entity: body";
 
-  proc.update(hd);
+  CPPUNIT_ASSERT(proc.parse(hd));
 
-  SharedHandle<HttpHeader> header = proc.getHttpResponseHeader();
-  CPPUNIT_ASSERT_EQUAL(200, header->getStatusCode());
+  SharedHandle<HttpHeader> header = proc.getResult();
+  CPPUNIT_ASSERT_EQUAL(404, header->getStatusCode());
+  CPPUNIT_ASSERT_EQUAL(std::string("Not Found"), header->getReasonPhrase());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
   CPPUNIT_ASSERT_EQUAL(std::string("Mon, 25 Jun 2007 16:04:59 GMT"),
                        header->find("date"));
@@ -124,66 +149,50 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
   CPPUNIT_ASSERT(!header->defined("entity"));
 }
 
-void HttpHeaderProcessorTest::testGetHttpResponseHeader_empty()
-{
-  HttpHeaderProcessor proc;
-
-  try {
-    proc.getHttpResponseHeader();
-    CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlRetryEx& ex) {
-    std::cout << ex.stackTrace() << std::endl;
-  }
-  
-}
-
 void HttpHeaderProcessorTest::testGetHttpResponseHeader_statusOnly()
 {
-  HttpHeaderProcessor proc;
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
 
   std::string hd = "HTTP/1.1 200\r\n\r\n";
-  proc.update(hd);
-  SharedHandle<HttpHeader> header = proc.getHttpResponseHeader();
+  CPPUNIT_ASSERT(proc.parse(hd));
+  SharedHandle<HttpHeader> header = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(200, header->getStatusCode());
 }
 
 void HttpHeaderProcessorTest::testGetHttpResponseHeader_insufficientStatusLength()
 {
-  HttpHeaderProcessor proc;
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
 
   std::string hd = "HTTP/1.1 20\r\n\r\n";
-  proc.update(hd);  
   try {
-    proc.getHttpResponseHeader();
+    proc.parse(hd);
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlRetryEx& ex) {
-    std::cout << ex.stackTrace() << std::endl;
+  } catch(DlAbortEx& ex) {
+    // Success
   }
-  
 }
 
 void HttpHeaderProcessorTest::testBeyondLimit()
 {
-  HttpHeaderProcessor proc;
-  proc.setHeaderLimit(20);
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
 
   std::string hd1 = "HTTP/1.1 200 OK\r\n";
-  std::string hd2 = "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n";
+  std::string hd2 = std::string(1025, 'A');
 
-  proc.update(hd1);
-  
+  proc.parse(hd1);
   try {
-    proc.update(hd2);
+    proc.parse(hd2);
     CPPUNIT_FAIL("Exception must be thrown.");
   } catch(DlAbortEx& ex) {
-    std::cout << ex.stackTrace() << std::endl;
+    // Success
   }
 }
 
 void HttpHeaderProcessorTest::testGetHeaderString()
 {
-  HttpHeaderProcessor proc;
-  std::string hd = "HTTP/1.1 200 OK\r\n"
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
+  std::string hd =
+    "HTTP/1.1 200 OK\r\n"
     "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
     "Server: Apache/2.2.3 (Debian)\r\n"
     "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
@@ -194,33 +203,35 @@ void HttpHeaderProcessorTest::testGetHeaderString()
     "Content-Type: text/html; charset=UTF-8\r\n"
     "\r\nputbackme";
 
-  proc.update(hd);
+  CPPUNIT_ASSERT(proc.parse(hd));
 
-  CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1 200 OK\r\n"
-                                   "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
-                                   "Server: Apache/2.2.3 (Debian)\r\n"
-                                   "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
-                                   "ETag: \"594065-23e3-50825cc0\"\r\n"
-                                   "Accept-Ranges: bytes\r\n"
-                                   "Content-Length: 9187\r\n"
-                                   "Connection: close\r\n"
-                                   "Content-Type: text/html; charset=UTF-8"),
-                       proc.getHeaderString());
+  CPPUNIT_ASSERT_EQUAL
+    (std::string("HTTP/1.1 200 OK\r\n"
+                 "Date: Mon, 25 Jun 2007 16:04:59 GMT\r\n"
+                 "Server: Apache/2.2.3 (Debian)\r\n"
+                 "Last-Modified: Tue, 12 Jun 2007 14:28:43 GMT\r\n"
+                 "ETag: \"594065-23e3-50825cc0\"\r\n"
+                 "Accept-Ranges: bytes\r\n"
+                 "Content-Length: 9187\r\n"
+                 "Connection: close\r\n"
+                 "Content-Type: text/html; charset=UTF-8\r\n"
+                 "\r\n"),
+     proc.getHeaderString());
 }
 
 void HttpHeaderProcessorTest::testGetHttpRequestHeader()
 {
-  HttpHeaderProcessor proc;
-  std::string request = "GET /index.html HTTP/1.1\r\n"
+  HttpHeaderProcessor proc(HttpHeaderProcessor::SERVER_PARSER);
+  std::string request =
+    "GET /index.html HTTP/1.1\r\n"
     "Host: host\r\n"
     "Connection: close\r\n"
     "\r\n"
     "Entity: body";
 
-  proc.update(request);
+  CPPUNIT_ASSERT(proc.parse(request));
 
-  SharedHandle<HttpHeader> httpHeader = proc.getHttpRequestHeader();
-  CPPUNIT_ASSERT(httpHeader);
+  SharedHandle<HttpHeader> httpHeader = proc.getResult();
   CPPUNIT_ASSERT_EQUAL(std::string("GET"), httpHeader->getMethod());
   CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());

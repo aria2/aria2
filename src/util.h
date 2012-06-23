@@ -370,6 +370,10 @@ bool isHexDigit(const char c);
 
 bool isHexDigit(const std::string& s);
 
+bool isLws(const char c);
+
+bool isCRLF(const char c);
+
 template<typename InputIterator>
 bool isLowercase(InputIterator first, InputIterator last)
 {

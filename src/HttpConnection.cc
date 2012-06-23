@@ -64,7 +64,7 @@ namespace aria2 {
 HttpRequestEntry::HttpRequestEntry
 (const SharedHandle<HttpRequest>& httpRequest)
   : httpRequest_(httpRequest),
-    proc_(new HttpHeaderProcessor())
+    proc_(new HttpHeaderProcessor(HttpHeaderProcessor::CLIENT_PARSER))
 {}
 
 HttpRequestEntry::~HttpRequestEntry() {}
@@ -130,34 +130,28 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
     throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
   HttpRequestEntryHandle entry = outstandingHttpRequests_.front();
-  HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
+  const SharedHandle<HttpHeaderProcessor>& proc =
+    entry->getHttpHeaderProcessor();
   if(socketRecvBuffer_->bufferEmpty()) {
     if(socketRecvBuffer_->recv() == 0 &&
        !socket_->wantRead() && !socket_->wantWrite()) {
       throw DL_RETRY_EX(EX_GOT_EOF);
     }
   }
-  proc->update(socketRecvBuffer_->getBuffer(),
-               socketRecvBuffer_->getBufferLength());
   SharedHandle<HttpResponse> httpResponse;
-  size_t shiftBufferLength;
-  if(proc->eoh()) {
-    SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
-    size_t putbackDataLength = proc->getPutBackDataLength();
+  if(proc->parse(socketRecvBuffer_->getBuffer(),
+                 socketRecvBuffer_->getBufferLength())) {
+    const SharedHandle<HttpHeader>& httpHeader = proc->getResult();
     A2_LOG_INFO(fmt(MSG_RECEIVE_RESPONSE,
                     cuid_,
                     proc->getHeaderString().c_str()));
-    assert(socketRecvBuffer_->getBufferLength() >= putbackDataLength);
-    shiftBufferLength = socketRecvBuffer_->getBufferLength()-putbackDataLength;
     httpResponse.reset(new HttpResponse());
     httpResponse->setCuid(cuid_);
     httpResponse->setHttpHeader(httpHeader);
     httpResponse->setHttpRequest(entry->getHttpRequest());
     outstandingHttpRequests_.pop_front();
-  } else {
-    shiftBufferLength = socketRecvBuffer_->getBufferLength();
   }
-  socketRecvBuffer_->shiftBuffer(shiftBufferLength);
+  socketRecvBuffer_->shiftBuffer(proc->getLastBytesProcessed());
   return httpResponse;
 }
 

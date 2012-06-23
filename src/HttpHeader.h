@@ -54,6 +54,9 @@ private:
   // HTTP status code, e.g. 200
   int statusCode_;
 
+  // The reason-phrase for the response
+  std::string reasonPhrase_;
+
   // HTTP version, e.g. HTTP/1.1
   std::string version_;
 
@@ -82,6 +85,10 @@ public:
   int getStatusCode() const;
 
   void setStatusCode(int code);
+
+  const std::string& getReasonPhrase() const;
+
+  void setReasonPhrase(const std::string& reasonPhrase);
 
   const std::string& getVersion() const;
 
@@ -112,12 +119,6 @@ public:
   {
     requestPath_.assign(first, last);
   }
-
-  // Parses header fields in [first, last). Field name is stored in
-  // lowercase.
-  void fill
-  (std::string::const_iterator first,
-   std::string::const_iterator last);
 
   // Clears table_. responseStatus_ and version_ are unchanged.
   void clearField();

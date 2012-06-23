@@ -216,53 +216,6 @@ void HttpHeader::setRequestPath(const std::string& requestPath)
   requestPath_ = requestPath;
 }
 
-void HttpHeader::fill
-(std::string::const_iterator first,
- std::string::const_iterator last)
-{
-  std::string name;
-  std::string value;
-  while(first != last) {
-    std::string::const_iterator j = first;
-    while(j != last && *j != '\r' && *j != '\n') {
-      ++j;
-    }
-    if(first != j) {
-      std::string::const_iterator sep = std::find(first, j, ':');
-      if(sep == j) {
-        // multiline header?
-        if(*first == ' ' || *first == '\t') {
-          std::pair<std::string::const_iterator,
-                    std::string::const_iterator> p = util::stripIter(first, j);
-          if(!name.empty() && p.first != p.second) {
-            if(!value.empty()) {
-              value += " ";
-            }
-            value.append(p.first, p.second);
-          }
-        }
-      } else {
-        if(!name.empty()) {
-          put(name, value);
-        }
-        std::pair<std::string::const_iterator,
-                  std::string::const_iterator> p = util::stripIter(first, sep);
-        name.assign(p.first, p.second);
-        util::lowercase(name);
-        p = util::stripIter(sep+1, j);
-        value.assign(p.first, p.second);
-      }
-    }
-    while(j != last && (*j == '\r' || *j == '\n')) {
-      ++j;
-    }
-    first = j;
-  }
-  if(!name.empty()) {
-    put(name, value);
-  }
-}
-
 void HttpHeader::clearField()
 {
   table_.clear();
@@ -291,6 +244,16 @@ const std::string& HttpHeader::getMethod() const
 const std::string& HttpHeader::getRequestPath() const
 {
   return requestPath_;
+}
+
+const std::string& HttpHeader::getReasonPhrase() const
+{
+  return reasonPhrase_;
+}
+
+void HttpHeader::setReasonPhrase(const std::string& reasonPhrase)
+{
+  reasonPhrase_ = reasonPhrase;
 }
 
 bool HttpHeader::fieldContains(const std::string& name,

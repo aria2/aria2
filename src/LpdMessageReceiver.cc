@@ -87,13 +87,12 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
     if(length == 0) {
       return msg;
     }
-    HttpHeaderProcessor proc;
-    proc.update(buf, length);
-    if(!proc.eoh()) {
+    HttpHeaderProcessor proc(HttpHeaderProcessor::SERVER_PARSER);
+    if(!proc.parse(buf, length)) {
       msg.reset(new LpdMessage());
       return msg;
     }
-    SharedHandle<HttpHeader> header = proc.getHttpRequestHeader();
+    const SharedHandle<HttpHeader>& header = proc.getResult();
     static const std::string A2_INFOHASH = "infohash";
     static const std::string A2_PORT = "port";
     const std::string& infoHashString = header->find(A2_INFOHASH);
