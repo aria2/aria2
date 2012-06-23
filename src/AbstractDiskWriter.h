@@ -47,10 +47,17 @@ private:
 
   bool readOnly_;
 
-  ssize_t writeDataInternal(const unsigned char* data, size_t len);
-  ssize_t readDataInternal(unsigned char* data, size_t len);
+  bool enableMmap_;
+  unsigned char* mapaddr_;
+  off_t maplen_;
+
+  ssize_t writeDataInternal(const unsigned char* data, size_t len,
+                            off_t offset);
+  ssize_t readDataInternal(unsigned char* data, size_t len, off_t offset);
 
   void seek(off_t offset);
+
+  void ensureMmapWrite(size_t len, off_t offset);
 protected:
   void createFile(int addFlags = 0);
 public:
@@ -77,6 +84,8 @@ public:
   virtual void enableReadOnly();
 
   virtual void disableReadOnly();
+
+  virtual void enableMmap();
 };
 
 } // namespace aria2

@@ -292,6 +292,21 @@ OptionHandlerFactory::createOptionHandlers()
     op->addTag(TAG_FILE);
     handlers.push_back(op);
   }
+#ifdef HAVE_MMAP
+  {
+    SharedHandle<OptionHandler> op(new BooleanOptionHandler
+                                   (PREF_ENABLE_MMAP,
+                                    TEXT_ENABLE_MMAP,
+                                    A2_V_FALSE,
+                                    OptionHandler::OPT_ARG));
+    op->addTag(TAG_ADVANCED);
+    op->addTag(TAG_EXPERIMENTAL);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+#endif // HAVE_MMAP
   {
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ENABLE_RPC,

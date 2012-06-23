@@ -875,3 +875,5 @@
     "                              selected. Please use this option with care\n" \
     "                              because it will actually remove files from\n" \
     "                              your disk.")
+#define TEXT_ENABLE_MMAP                        \
+  _(" --enable-mmap[=true|false]   Map files into memory.")

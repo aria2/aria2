@@ -79,6 +79,9 @@ public:
   // opens file in read/write mode. This is an optional
   // functionality. The default implementation is do noting.
   virtual void disableReadOnly() {}
+
+  // Enables mmap.
+  virtual void enableMmap() {}
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;

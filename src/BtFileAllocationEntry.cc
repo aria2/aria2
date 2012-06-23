@@ -42,6 +42,10 @@
 #include "DownloadEngine.h"
 #include "DownloadContext.h"
 #include "FileEntry.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
+#include "Option.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -55,6 +59,9 @@ void BtFileAllocationEntry::prepareForNextAction
 {
   BtSetup().setup(commands, getRequestGroup(), e,
                   getRequestGroup()->getOption().get());
+  if(getRequestGroup()->getOption()->getAsBool(PREF_ENABLE_MMAP)) {
+    getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
+  }
   if(!getRequestGroup()->downloadFinished()) {
     // For DownloadContext::resetDownloadStartTime(), see also
     // RequestGroup::createInitialCommand()

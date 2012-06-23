@@ -268,6 +268,8 @@ extern const Pref* PREF_HASH_CHECK_ONLY;
 extern const Pref* PREF_CHECKSUM;
 // value: pid
 extern const Pref* PREF_STOP_WITH_PROCESS;
+// value: true | false
+extern const Pref* PREF_ENABLE_MMAP;
 
 /**
  * FTP related preferences

@@ -112,6 +112,7 @@ private:
   int maxOpenFiles_;
 
   bool readOnly_;
+  bool enableMmap_;
 
   void resetDiskWriterEntries();
 
@@ -148,6 +149,8 @@ public:
   virtual void disableReadOnly();
 
   virtual bool isReadOnlyEnabled() const { return readOnly_; }
+
+  virtual void enableMmap();
 
   void setPieceLength(int32_t pieceLength)
   {

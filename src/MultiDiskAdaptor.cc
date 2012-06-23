@@ -119,7 +119,8 @@ bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
 MultiDiskAdaptor::MultiDiskAdaptor()
   : pieceLength_(0),
     maxOpenFiles_(DEFAULT_MAX_OPEN_FILES),
-    readOnly_(false)
+    readOnly_(false),
+    enableMmap_(false)
 {}
 
 MultiDiskAdaptor::~MultiDiskAdaptor() {}
@@ -229,6 +230,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
       (*i)->setDiskWriter(dwFactory.newDiskWriter((*i)->getFilePath()));
       if(readOnly_) {
         (*i)->getDiskWriter()->enableReadOnly();
+      }
+      if(enableMmap_) {
+        (*i)->getDiskWriter()->enableMmap();
       }
     }
   }
@@ -449,6 +453,11 @@ void MultiDiskAdaptor::enableReadOnly()
 void MultiDiskAdaptor::disableReadOnly()
 {
   readOnly_ = false;
+}
+
+void MultiDiskAdaptor::enableMmap()
+{
+  enableMmap_ = true;
 }
 
 void MultiDiskAdaptor::cutTrailingGarbage()

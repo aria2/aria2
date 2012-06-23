@@ -80,6 +80,8 @@ public:
   virtual void disableReadOnly();
     
   virtual bool isReadOnlyEnabled() const { return readOnly_; }
+
+  virtual void enableMmap();
   
   virtual void cutTrailingGarbage();
 

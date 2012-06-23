@@ -325,6 +325,8 @@ const Pref* PREF_HASH_CHECK_ONLY = makePref("hash-check-only");
 const Pref* PREF_CHECKSUM = makePref("checksum");
 // value: pid
 const Pref* PREF_STOP_WITH_PROCESS = makePref("stop-with-process");
+// value: true | false
+const Pref* PREF_ENABLE_MMAP = makePref("enable-mmap");
 
 /**
  * FTP related preferences

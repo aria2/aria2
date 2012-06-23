@@ -44,6 +44,8 @@
 #include "Command.h"
 #include "PeerStat.h"
 #include "FileEntry.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
 
 namespace aria2 {
 
@@ -61,6 +63,9 @@ void StreamFileAllocationEntry::prepareForNextAction
   // For DownloadContext::resetDownloadStartTime(), see also
   // RequestGroup::createInitialCommand()
   getRequestGroup()->getDownloadContext()->resetDownloadStartTime();
+  if(getRequestGroup()->getOption()->getAsBool(PREF_ENABLE_MMAP)) {
+    getRequestGroup()->getPieceStorage()->getDiskAdaptor()->enableMmap();
+  }
   if(getNextCommand()) {
     // Reset download start time of PeerStat because it is started
     // before file allocation begins.

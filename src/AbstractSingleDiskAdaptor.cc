@@ -126,6 +126,11 @@ void AbstractSingleDiskAdaptor::disableReadOnly()
   readOnly_ = false;
 }
 
+void AbstractSingleDiskAdaptor::enableMmap()
+{
+  diskWriter_->enableMmap();
+}
+
 void AbstractSingleDiskAdaptor::cutTrailingGarbage()
 {
   if(File(getFilePath()).size() > totalLength_) {
