@@ -74,12 +74,16 @@ size_t WinConsoleFile::write(const char* str)
 
 int WinConsoleFile::printf(const char* format, ...)
 {
-  char buf[1024];
+  char buf[2048];
   va_list ap;
   va_start(ap, format);
   int r = vsnprintf(buf, sizeof(buf), format, ap);
   va_end(ap);
-  if(r <= 0) {
+  if(r == -1) {
+    // MINGW32 vsnprintf returns -1 if output is truncated.
+    r = strlen(buf);
+  } else if(r < 0) {
+    // Reachable?
     return 0;
   }
   DWORD written;
