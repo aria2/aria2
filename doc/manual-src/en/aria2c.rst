@@ -1039,6 +1039,13 @@ Advanced Options
   option will be ignored when :option:`--async-dns=false. <--async-dns>`
   Default: ``false``
 
+.. option:: --enable-mmap[=true|false]
+
+   Map files into memory. This option may not work if the file space
+   is not pre-allocated. See :option:`--file-allocation`.
+
+   Default: ``false``
+
 .. option:: --event-poll=<POLL>
 
   Specify the method for polling events.  The possible values are
