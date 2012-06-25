@@ -396,9 +396,9 @@ void RequestGroup::createInitialCommand
           // truncate the file to downloadContext_->getTotalLength()
           A2_LOG_DEBUG
             (fmt("File size not match. File is opened in writable"
-                 " mode. Expected:%lld Actual:%lld",
-                 static_cast<long long int>(downloadContext_->getTotalLength()),
-                 static_cast<long long int>(actualFileSize)));
+                 " mode. Expected:%" PRId64 " Actual:%" PRId64 "",
+                 static_cast<int64_t>(downloadContext_->getTotalLength()),
+                 static_cast<int64_t>(actualFileSize)));
         }
       }
       // Call Load, Save and file allocation command here
@@ -906,8 +906,8 @@ void RequestGroup::validateTotalLength(off_t expectedTotalLength,
   if(expectedTotalLength != actualTotalLength) {
     throw DL_ABORT_EX
       (fmt(EX_SIZE_MISMATCH,
-           static_cast<long long int>(expectedTotalLength),
-           static_cast<long long int>(actualTotalLength)));
+           static_cast<int64_t>(expectedTotalLength),
+           static_cast<int64_t>(actualTotalLength)));
   }
 }
 
@@ -961,7 +961,7 @@ void RequestGroup::decreaseNumCommand()
 {
   --numCommand_;
   if(!numCommand_ && requestGroupMan_) {
-    A2_LOG_DEBUG(fmt("GID#%lld - Request queue check", gid_));
+    A2_LOG_DEBUG(fmt("GID#%" PRId64 " - Request queue check", gid_));
     requestGroupMan_->requestQueueCheck();
   }
 }
@@ -1156,7 +1156,7 @@ bool RequestGroup::needsFileAllocation() const
 
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
-  A2_LOG_DEBUG(fmt("GID#%lld - Creating DownloadResult.", gid_));
+  A2_LOG_DEBUG(fmt("GID#%" PRId64 " - Creating DownloadResult.", gid_));
   TransferStat st = calculateStat();
   SharedHandle<DownloadResult> res(new DownloadResult());
   res->gid = gid_;

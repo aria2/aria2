@@ -201,7 +201,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
     if(remaining == 0 && !socket_->wantRead() && !socket_->wantWrite()) {
       // we got EOF
       A2_LOG_DEBUG
-        (fmt("CUID#%lld - In PeerConnection::receiveHandshake(), remain=%lu",
+        (fmt("CUID#%" PRId64 " - In PeerConnection::receiveHandshake(), remain=%lu",
              cuid_,
              static_cast<unsigned long>(temp)));
       peer_->setDisconnectedGracefully(true);

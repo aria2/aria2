@@ -73,8 +73,7 @@ class BtRuntime;
 class PeerStorage;
 #endif // ENABLE_BITTORRENT
 
-// To make %lld happy, we use long long int instead of int64_t.
-typedef long long int a2_gid_t;
+typedef int64_t a2_gid_t;
 
 class RequestGroup {
 public:

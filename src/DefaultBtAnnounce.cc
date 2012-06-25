@@ -142,7 +142,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     numWant = 0;
   }
   TransferStat stat = peerStorage_->calculateStat();
-  off_t left =
+  int64_t left =
     pieceStorage_->getTotalLength()-pieceStorage_->getCompletedLength();
   // Use last 8 bytes of peer ID as a key
   const size_t keyLen = 8;
@@ -150,9 +150,9 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   uri += uriHasQuery(uri) ? "&" : "?";
   uri += fmt("info_hash=%s&"
              "peer_id=%s&"
-             "uploaded=%lld&"
-             "downloaded=%lld&"
-             "left=%lld&"
+             "uploaded=%" PRId64 "&"
+             "downloaded=%" PRId64 "&"
+             "left=%" PRId64 "&"
              "compact=1&"
              "key=%s&"
              "numwant=%d&"
@@ -162,9 +162,9 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
               INFO_HASH_LENGTH).c_str(),
              util::torrentPercentEncode
              (bittorrent::getStaticPeerId(), PEER_ID_LENGTH).c_str(),
-             static_cast<long long int>(stat.getSessionUploadLength()),
-             static_cast<long long int>(stat.getSessionDownloadLength()),
-             static_cast<long long int>(left),
+             stat.getSessionUploadLength(),
+             stat.getSessionDownloadLength(),
+             left,
              util::torrentPercentEncode
              (bittorrent::getStaticPeerId()+PEER_ID_LENGTH-keyLen,
               keyLen).c_str(),

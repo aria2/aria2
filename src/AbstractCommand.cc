@@ -121,7 +121,7 @@ AbstractCommand::~AbstractCommand() {
 void AbstractCommand::useFasterRequest
 (const SharedHandle<Request>& fasterRequest)
 {
-  A2_LOG_INFO(fmt("CUID#%lld - Use faster Request hostname=%s, port=%u",
+  A2_LOG_INFO(fmt("CUID#%" PRId64 " - Use faster Request hostname=%s, port=%u",
                   getCuid(),
                   fasterRequest->getHost().c_str(),
                   fasterRequest->getPort()));
@@ -135,7 +135,7 @@ void AbstractCommand::useFasterRequest
 }
 
 bool AbstractCommand::execute() {
-  A2_LOG_DEBUG(fmt("CUID#%lld - socket: read:%d, write:%d, hup:%d, err:%d",
+  A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - socket: read:%d, write:%d, hup:%d, err:%d",
                    getCuid(),
                    readEventEnabled(),
                    writeEventEnabled(),
@@ -146,7 +146,7 @@ bool AbstractCommand::execute() {
       return true;
     }
     if(req_ && req_->removalRequested()) {
-      A2_LOG_DEBUG(fmt("CUID#%lld - Discard original URI=%s because it is"
+      A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Discard original URI=%s because it is"
                        " requested.",
                        getCuid(), req_->getUri().c_str()));
       return prepareForRetry(0);
@@ -158,7 +158,7 @@ bool AbstractCommand::execute() {
         // This command previously has assigned segments, but it is
         // canceled. So discard current request chain.  Plus, if no
         // segment is available when http pipelining is used.
-        A2_LOG_DEBUG(fmt("CUID#%lld - It seems previously assigned segments"
+        A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - It seems previously assigned segments"
                          " are canceled. Restart.",
                          getCuid()));
         // Request::isPipeliningEnabled() == true means aria2
@@ -273,7 +273,7 @@ bool AbstractCommand::execute() {
         // empty.
         if(!req_->getConnectedAddr().empty()) {
           // Purging IP address cache to renew IP address.
-          A2_LOG_DEBUG(fmt("CUID#%lld - Marking IP address %s as bad",
+          A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Marking IP address %s as bad",
                            getCuid(),
                            req_->getConnectedAddr().c_str()));
           e_->markBadIPAddress(req_->getConnectedHostname(),
@@ -282,7 +282,7 @@ bool AbstractCommand::execute() {
         }
         if(e_->findCachedIPAddress
            (req_->getConnectedHostname(), req_->getConnectedPort()).empty()) {
-          A2_LOG_DEBUG(fmt("CUID#%lld - All IP addresses were marked bad."
+          A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - All IP addresses were marked bad."
                            " Removing Entry.",
                            getCuid()));
           e_->removeCachedIPAddress
@@ -370,14 +370,14 @@ void AbstractCommand::tryReserved() {
     // and there are no URI left. Because file length is unknown, we
     // can assume that there are no in-flight request object.
     if(entry->getLength() == 0 && entry->getRemainingUris().empty()) {
-      A2_LOG_DEBUG(fmt("CUID#%lld - Not trying next request."
+      A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Not trying next request."
                        " No reserved/pooled request is remaining and"
                        " total length is still unknown.",
                        getCuid()));
       return;
     }
   }
-  A2_LOG_DEBUG(fmt("CUID#%lld - Trying reserved/pooled request.",
+  A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Trying reserved/pooled request.",
                    getCuid()));
   std::vector<Command*> commands;
   requestGroup_->createNextCommand(commands, e_, 1);
@@ -397,7 +397,7 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
     req_->setMaxPipelinedRequest(1);
 
     fileEntry_->poolRequest(req_);
-    A2_LOG_DEBUG(fmt("CUID#%lld - Pooling request URI=%s",
+    A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Pooling request URI=%s",
                      getCuid(), req_->getUri().c_str()));
     if(getSegmentMan()) {
       getSegmentMan()->recognizeSegmentFor(fileEntry_);
@@ -422,7 +422,7 @@ void AbstractCommand::onAbort() {
     fileEntry_->removeIdenticalURI(req_->getUri());
     fileEntry_->removeRequest(req_);
   }
-  A2_LOG_DEBUG(fmt("CUID#%lld - Aborting download",
+  A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Aborting download",
                    getCuid()));
   if(getPieceStorage()) {
     getSegmentMan()->cancelSegment(getCuid());
@@ -440,10 +440,10 @@ void AbstractCommand::onAbort() {
         // Local file exists, but given servers(or at least contacted
         // ones) doesn't support resume. Let's restart download from
         // scratch.
-        A2_LOG_NOTICE(fmt(_("CUID#%lld - Failed to resume download."
+        A2_LOG_NOTICE(fmt(_("CUID#%" PRId64 " - Failed to resume download."
                             " Download from scratch."),
                           getCuid()));
-        A2_LOG_DEBUG(fmt("CUID#%lld - Gathering URIs that has CANNOT_RESUME"
+        A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Gathering URIs that has CANNOT_RESUME"
                          " error",
                          getCuid()));
         // Set PREF_ALWAYS_RESUME to A2_V_TRUE to avoid repeating this
@@ -459,7 +459,7 @@ void AbstractCommand::onAbort() {
           uris.reserve(res.size());
           std::transform(res.begin(), res.end(), std::back_inserter(uris),
                          std::mem_fun_ref(&URIResult::getURI));
-          A2_LOG_DEBUG(fmt("CUID#%lld - %lu URIs found.",
+          A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - %lu URIs found.",
                            getCuid(),
                            static_cast<unsigned long int>(uris.size())));
           fileEntry_->addUris(uris.begin(), uris.end());
@@ -675,9 +675,9 @@ SharedHandle<Request> AbstractCommand::createProxyRequest() const
   if(!proxy.empty()) {
     proxyRequest.reset(new Request());
     if(proxyRequest->setUri(proxy)) {
-      A2_LOG_DEBUG(fmt("CUID#%lld - Using proxy", getCuid()));
+      A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Using proxy", getCuid()));
     } else {
-      A2_LOG_DEBUG(fmt("CUID#%lld - Failed to parse proxy string",
+      A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Failed to parse proxy string",
                        getCuid()));
       proxyRequest.reset();
     }

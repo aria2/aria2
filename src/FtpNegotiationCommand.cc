@@ -265,7 +265,7 @@ bool FtpNegotiationCommand::recvPwd()
                        error_code::FTP_PROTOCOL_ERROR);
   }
   ftp_->setBaseWorkingDir(pwd);
-  A2_LOG_INFO(fmt("CUID#%lld - base working directory is '%s'",
+  A2_LOG_INFO(fmt("CUID#%" PRId64 " - base working directory is '%s'",
                   getCuid(), pwd.c_str()));
   sequence_ = SEQ_SEND_CWD_PREP;
   return true;
@@ -350,7 +350,7 @@ bool FtpNegotiationCommand::recvMdtm()
                    " a time value as in specified in RFC3659.");
     }
   } else {
-    A2_LOG_INFO(fmt("CUID#%lld - MDTM command failed.",
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - MDTM command failed.",
                     getCuid()));
   }
   sequence_ = SEQ_SEND_SIZE;
@@ -502,9 +502,8 @@ bool FtpNegotiationCommand::recvSize() {
   }
   if(status == 213) {
     if(size > std::numeric_limits<off_t>::max()) {
-      throw DL_ABORT_EX2
-        (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(size)),
-         error_code::FTP_PROTOCOL_ERROR);
+      throw DL_ABORT_EX2(fmt(EX_TOO_LARGE_FILE, size),
+                         error_code::FTP_PROTOCOL_ERROR);
     }
     if(!getPieceStorage()) {
 
@@ -516,7 +515,7 @@ bool FtpNegotiationCommand::recvSize() {
     }
 
   } else {
-    A2_LOG_INFO(fmt("CUID#%lld - The remote FTP Server doesn't recognize SIZE"
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - The remote FTP Server doesn't recognize SIZE"
                     " command. Continue.", getCuid()));
     // Even if one of the other servers waiting in the queue supports SIZE
     // command, resuming and segmented downloading are disabled when the first

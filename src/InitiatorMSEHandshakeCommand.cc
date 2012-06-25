@@ -217,14 +217,14 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
     tryNewPeer();
     return true;
   } else if(getOption()->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
-    A2_LOG_INFO(fmt("CUID#%lld - Establishing connection using legacy"
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - Establishing connection using legacy"
                     " BitTorrent handshake is disabled by preference.",
                     getCuid()));
     tryNewPeer();
     return true;
   } else {
     // try legacy BitTorrent handshake
-    A2_LOG_INFO(fmt("CUID#%lld - Retry using legacy BitTorrent handshake.",
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - Retry using legacy BitTorrent handshake.",
                     getCuid()));
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(getCuid(), requestGroup_, getPeer(),

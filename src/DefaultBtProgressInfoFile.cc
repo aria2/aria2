@@ -276,9 +276,9 @@ void DefaultBtProgressInfoFile::load()
   }
   if(totalLength != static_cast<uint64_t>(dctx_->getTotalLength())) {
     throw DL_ABORT_EX
-      (fmt("total length mismatch. expected: %lld, actual: %lld",
-           static_cast<long long int>(dctx_->getTotalLength()),
-           static_cast<long long int>(totalLength)));
+      (fmt("total length mismatch. expected: %" PRId64 ", actual: %" PRId64 "",
+           static_cast<int64_t>(dctx_->getTotalLength()),
+           static_cast<int64_t>(totalLength)));
   }
   uint64_t uploadLength;
   READ_CHECK(fp, &uploadLength, sizeof(uploadLength));

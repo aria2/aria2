@@ -207,7 +207,7 @@ size_t RequestGroupMan::changeReservedGroupPosition
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
   if(i == reservedGroups_.end()) {
-    throw DL_ABORT_EX(fmt("GID#%lld not found in the waiting queue.", gid));
+    throw DL_ABORT_EX(fmt("GID#%" PRId64 " not found in the waiting queue.", gid));
   }
   SharedHandle<RequestGroup> rg = *i;
   const size_t maxPos = reservedGroups_.size()-1;
@@ -387,7 +387,7 @@ public:
 #endif // ENABLE_BITTORRENT
         } else {
           A2_LOG_NOTICE
-            (fmt(_("Download GID#%lld not complete: %s"),
+            (fmt(_("Download GID#%" PRId64 " not complete: %s"),
                  group->getGID(),
                  group->getDownloadContext()->getBasePath().c_str()));
           group->saveControlFile();

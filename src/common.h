@@ -75,5 +75,8 @@
 #define __STDC_LIMIT_MACROS
 // included here for compatibility issues with old compiler/libraries.
 #include <stdint.h>
+// For PRId64
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 
 #endif // D_COMMON_H

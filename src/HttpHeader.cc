@@ -142,7 +142,7 @@ RangeHandle HttpHeader::getRange() const
         throw DL_ABORT_EX("Content-Length must be positive");
       } else if(contentLength > std::numeric_limits<off_t>::max()) {
         throw DOWNLOAD_FAILURE_EXCEPTION
-          (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(contentLength)));
+          (fmt(EX_TOO_LARGE_FILE, contentLength));
       } else if(contentLength == 0) {
         return SharedHandle<Range>(new Range());
       } else {
@@ -187,16 +187,13 @@ RangeHandle HttpHeader::getRange() const
     throw DL_ABORT_EX("byte-range-spec must be positive");
   }
   if(startByte > std::numeric_limits<off_t>::max()) {
-    throw DOWNLOAD_FAILURE_EXCEPTION
-      (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(startByte)));
+    throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, startByte));
   }
   if(endByte > std::numeric_limits<off_t>::max()) {
-    throw DOWNLOAD_FAILURE_EXCEPTION
-      (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(endByte)));
+    throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, endByte));
   }
   if(entityLength > std::numeric_limits<off_t>::max()) {
-    throw DOWNLOAD_FAILURE_EXCEPTION
-      (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(entityLength)));
+    throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, entityLength));
   }
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }

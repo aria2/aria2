@@ -109,7 +109,7 @@ void BtPieceMessage::doReceivedAction()
                      static_cast<unsigned long>(index_),
                      begin_,
                      blockLength_,
-                     static_cast<long long int>(offset),
+                     static_cast<int64_t>(offset),
                      static_cast<unsigned long>(slot.getBlockIndex())));
     if(piece->hasBlock(slot.getBlockIndex())) {
       A2_LOG_DEBUG("Already have this block.");
@@ -133,7 +133,7 @@ void BtPieceMessage::doReceivedAction()
       }
     }
   } else {
-    A2_LOG_DEBUG(fmt("CUID#%lld - RequestSlot not found, index=%lu, begin=%d",
+    A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - RequestSlot not found, index=%lu, begin=%d",
                      getCuid(),
                      static_cast<unsigned long>(index_),
                      begin_));

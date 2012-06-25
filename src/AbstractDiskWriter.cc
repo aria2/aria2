@@ -215,9 +215,9 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, off_t offset)
         mapaddr_ = reinterpret_cast<unsigned char*>
           (mmap(0, size(), PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0));
         if(mapaddr_) {
-          A2_LOG_DEBUG(fmt("mmap for file %s succeeded, length=%lld",
+          A2_LOG_DEBUG(fmt("mmap for file %s succeeded, length=%" PRId64 "",
                            filename_.c_str(),
-                           static_cast<long long int>(filesize)));
+                           static_cast<uint64_t>(filesize)));
           maplen_ = filesize;
         } else {
           int errNum = errno;

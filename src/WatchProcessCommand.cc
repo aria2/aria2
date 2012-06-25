@@ -118,7 +118,7 @@ void WatchProcessCommand::process()
 #endif
   if(!waiting) {
     A2_LOG_INFO
-      (fmt("CUID#%lld - Process %u is not running. Commencing shutdown.",
+      (fmt("CUID#%" PRId64 " - Process %u is not running. Commencing shutdown.",
            getCuid(), pid_));
     if(forceHalt_) {
       getDownloadEngine()->requestForceHalt();

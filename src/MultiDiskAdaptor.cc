@@ -186,9 +186,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
           (fileEntry->getOffset()+fileEntry->getLength()-1)/
           pieceLength_*pieceLength_;
         A2_LOG_DEBUG(fmt("Checking adjacent backward file to %s"
-                         " whose lastPieceStartOffset+pieceLength_=%lld",
+                         " whose lastPieceStartOffset+pieceLength_=%" PRId64 "",
                          fileEntry->getPath().c_str(),
-                         static_cast<long long int>
+                         static_cast<int64_t>
                          (lastPieceStartOffset+pieceLength_)));
         ++itr;
         // adjacent backward files are not needed to be allocated. They
@@ -197,9 +197,9 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
               (!(*itr)->getFileEntry()->isRequested() ||
                (*itr)->getFileEntry()->getLength() == 0); ++itr) {
           A2_LOG_DEBUG
-            (fmt("file=%s, offset=%lld",
+            (fmt("file=%s, offset=%" PRId64 "",
                  (*itr)->getFileEntry()->getPath().c_str(),
-                 static_cast<long long int>
+                 static_cast<int64_t>
                  ((*itr)->getFileEntry()->getOffset())));
           if((*itr)->getFileEntry()->getOffset() <
              static_cast<off_t>(lastPieceStartOffset+pieceLength_)) {
@@ -348,7 +348,7 @@ DiskWriterEntries::const_iterator findFirstDiskWriterEntry
   // In case when offset is out-of-range
   if(!isInRange(*first, offset)) {
     throw DL_ABORT_EX
-      (fmt(EX_FILE_OFFSET_OUT_OF_RANGE, static_cast<long long int>(offset)));
+      (fmt(EX_FILE_OFFSET_OUT_OF_RANGE, static_cast<int64_t>(offset)));
   }
   return first;
 }
@@ -359,8 +359,8 @@ void throwOnDiskWriterNotOpened(const SharedHandle<DiskWriterEntry>& e,
                                 off_t offset)
 {
   throw DL_ABORT_EX
-    (fmt("DiskWriter for offset=%lld, filename=%s is not opened.",
-         static_cast<long long int>(offset),
+    (fmt("DiskWriter for offset=%" PRId64 ", filename=%s is not opened.",
+         static_cast<int64_t>(offset),
          e->getFilePath().c_str()));  
 }
 } // namespace

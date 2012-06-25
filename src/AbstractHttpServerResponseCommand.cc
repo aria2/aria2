@@ -75,19 +75,19 @@ bool AbstractHttpServerResponseCommand::execute()
     httpServer_->sendResponse();
   } catch(RecoverableException& e) {
     A2_LOG_INFO_EX
-      (fmt("CUID#%lld - Error occurred while transmitting response body.",
+      (fmt("CUID#%" PRId64 " - Error occurred while transmitting response body.",
            getCuid()),
        e);
     return true;
   }
   if(httpServer_->sendBufferIsEmpty()) {
-    A2_LOG_INFO(fmt("CUID#%lld - HttpServer: all response transmitted.",
+    A2_LOG_INFO(fmt("CUID#%" PRId64 " - HttpServer: all response transmitted.",
                     getCuid()));
     afterSend(httpServer_, e_);
     return true;
   } else {
     if(timeoutTimer_.difference(global::wallclock()) >= 10) {
-      A2_LOG_INFO(fmt("CUID#%lld - HttpServer: Timeout while trasmitting"
+      A2_LOG_INFO(fmt("CUID#%" PRId64 " - HttpServer: Timeout while trasmitting"
                       " response.",
                       getCuid()));
       return true;

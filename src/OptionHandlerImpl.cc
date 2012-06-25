@@ -165,15 +165,12 @@ void NumberOptionHandler::parseArg(Option& option, int64_t number)
     std::string msg = pref_->k;
     msg += " ";
     if(min_ == -1 && max_ != -1) {
-      msg += fmt(_("must be smaller than or equal to %lld."),
-                 static_cast<long long int>(max_));
+      msg += fmt(_("must be smaller than or equal to %" PRId64 "."), max_);
     } else if(min_ != -1 && max_ != -1) {
-      msg += fmt(_("must be between %lld and %lld."),
-                 static_cast<long long int>(min_),
-                 static_cast<long long int>(max_));
+      msg += fmt(_("must be between %" PRId64 " and %" PRId64 "."),
+                 min_, max_);
     } else if(min_ != -1 && max_ == -1) {
-      msg += fmt(_("must be greater than or equal to %lld."),
-                 static_cast<long long int>(min_));
+      msg += fmt(_("must be greater than or equal to %" PRId64 "."), min_);
     } else {
       msg += _("must be a number.");
     }

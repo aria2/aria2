@@ -254,9 +254,10 @@ bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
 {
   if(socketBuffer_.sendBufferIsEmpty()) {
     std::string request =
-      fmt("REST %lld\r\n",
+      fmt("REST %" PRId64 "\r\n",
           segment ?
-          static_cast<long long int>(segment->getPositionToWrite()) : 0LL);
+          static_cast<int64_t>(segment->getPositionToWrite()) :
+          static_cast<int64_t>(0LL));
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
     socketBuffer_.pushStr(request);
@@ -392,7 +393,7 @@ int FtpConnection::receiveResponse()
 # define LONGLONG_SCANF "%I64d"
 # define ULONGLONG_SCANF "%I64u"
 #else
-# define LONGLONG_PRINTF "%lld"
+# define LONGLONG_PRINTF "%" PRId64 ""
 # define ULONGLONG_PRINTF "%llu"
 # define LONGLONG_SCANF "%Ld"
 // Mac OSX uses "%llu" for 64bits integer.

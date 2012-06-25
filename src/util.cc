@@ -537,7 +537,7 @@ std::string secfmt(time_t sec) {
   time_t tsec = sec;
   std::string str;
   if(sec >= 3600) {
-    str = fmt("%lldh", static_cast<long long int>(sec/3600));
+    str = fmt("%" PRId64 "h", static_cast<int64_t>(sec/3600));
     sec %= 3600;
   }
   if(sec >= 60) {

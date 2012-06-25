@@ -100,12 +100,12 @@ void HttpResponse::validateResponse() const
       if(!httpRequest_->isRangeSatisfied(responseRange)) {
         throw DL_ABORT_EX2
           (fmt(EX_INVALID_RANGE_HEADER,
-               static_cast<long long int>(httpRequest_->getStartByte()),
-               static_cast<long long int>(httpRequest_->getEndByte()),
-               static_cast<long long int>(httpRequest_->getEntityLength()),
-               static_cast<long long int>(responseRange->getStartByte()),
-               static_cast<long long int>(responseRange->getEndByte()),
-               static_cast<long long int>(responseRange->getEntityLength())),
+               static_cast<int64_t>(httpRequest_->getStartByte()),
+               static_cast<int64_t>(httpRequest_->getEndByte()),
+               static_cast<int64_t>(httpRequest_->getEntityLength()),
+               static_cast<int64_t>(responseRange->getStartByte()),
+               static_cast<int64_t>(responseRange->getEndByte()),
+               static_cast<int64_t>(responseRange->getEntityLength())),
            error_code::CANNOT_RESUME);
       }
     }
@@ -170,7 +170,7 @@ void HttpResponse::processRedirect()
                     httpRequest_->getRequest()->getCurrentUri().c_str()));
   } else {
     throw DL_RETRY_EX
-      (fmt("CUID#%lld - Redirect to %s failed. It may not be a valid URI.",
+      (fmt("CUID#%" PRId64 " - Redirect to %s failed. It may not be a valid URI.",
            cuid_,
            httpRequest_->getRequest()->getCurrentUri().c_str()));
   }

@@ -216,10 +216,10 @@ bool HttpServerCommand::execute()
         if(e_->getOption()->getAsInt(PREF_RPC_MAX_REQUEST_SIZE) <
            httpServer_->getContentLength()) {
           A2_LOG_INFO
-            (fmt("Request too long. ContentLength=%lld."
+            (fmt("Request too long. ContentLength=%" PRId64 "."
                  " See --rpc-max-request-size option to loose"
                  " this limitation.",
-                 static_cast<long long int>(httpServer_->getContentLength())));
+                 static_cast<int64_t>(httpServer_->getContentLength())));
           return true;
         }
         Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,
@@ -238,7 +238,7 @@ bool HttpServerCommand::execute()
       }
     }
   } catch(RecoverableException& e) {
-    A2_LOG_INFO_EX(fmt("CUID#%lld - Error occurred while reading HTTP request",
+    A2_LOG_INFO_EX(fmt("CUID#%" PRId64 " - Error occurred while reading HTTP request",
                        getCuid()),
                    e);
     return true;

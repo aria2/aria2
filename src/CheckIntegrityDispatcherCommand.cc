@@ -56,7 +56,7 @@ Command* CheckIntegrityDispatcherCommand::createCommand
 (const SharedHandle<CheckIntegrityEntry>& entry)
 {
   cuid_t newCUID = getDownloadEngine()->newCUID();
-  A2_LOG_INFO(fmt("CUID#%lld - Dispatching CheckIntegrityCommand CUID#%lld.",
+  A2_LOG_INFO(fmt("CUID#%" PRId64 " - Dispatching CheckIntegrityCommand CUID#%" PRId64 ".",
                   getCuid(), newCUID));
   return new CheckIntegrityCommand
     (newCUID, entry->getRequestGroup(), getDownloadEngine(), entry);

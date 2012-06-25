@@ -361,7 +361,7 @@ void DownloadCommand::validatePieceHash(const SharedHandle<Segment>& segment,
   } else {
     A2_LOG_INFO(fmt(EX_INVALID_CHUNK_CHECKSUM,
                     static_cast<unsigned long>(segment->getIndex()),
-                    static_cast<long long int>(segment->getPosition()),
+                    static_cast<int64_t>(segment->getPosition()),
                     util::toHex(expectedHash).c_str(),
                     util::toHex(actualHash).c_str()));
     segment->clear();

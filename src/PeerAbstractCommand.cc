@@ -78,7 +78,7 @@ PeerAbstractCommand::~PeerAbstractCommand()
 
 bool PeerAbstractCommand::execute()
 {
-  A2_LOG_DEBUG(fmt("CUID#%lld -"
+  A2_LOG_DEBUG(fmt("CUID#%" PRId64 " -"
                    " socket: read:%d, write:%d, hup:%d, err:%d, noCheck:%d",
                    getCuid(),
                    readEventEnabled(), writeEventEnabled(),

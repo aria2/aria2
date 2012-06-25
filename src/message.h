@@ -38,70 +38,70 @@
 #include "common.h"
 
 #define MSG_SEGMENT_DOWNLOAD_COMPLETED                                  \
-  "CUID#%lld - The download for one segment completed successfully."
-#define MSG_NO_SEGMENT_AVAILABLE "CUID#%lld - No segment available."
-#define MSG_CONNECTING_TO_SERVER "CUID#%lld - Connecting to %s:%d"
-#define MSG_REDIRECT "CUID#%lld - Redirecting to %s"
-#define MSG_SENDING_REQUEST "CUID#%lld - Requesting:\n%s"
-#define MSG_RECEIVE_RESPONSE "CUID#%lld - Response received:\n%s"
-#define MSG_DOWNLOAD_ABORTED "CUID#%lld - Download aborted. URI=%s"
-#define MSG_RESTARTING_DOWNLOAD "CUID#%lld - Restarting the download. URI=%s"
-#define MSG_TORRENT_DOWNLOAD_ABORTED "CUID#%lld - Download aborted."
+  "CUID#%" PRId64 " - The download for one segment completed successfully."
+#define MSG_NO_SEGMENT_AVAILABLE "CUID#%" PRId64 " - No segment available."
+#define MSG_CONNECTING_TO_SERVER "CUID#%" PRId64 " - Connecting to %s:%d"
+#define MSG_REDIRECT "CUID#%" PRId64 " - Redirecting to %s"
+#define MSG_SENDING_REQUEST "CUID#%" PRId64 " - Requesting:\n%s"
+#define MSG_RECEIVE_RESPONSE "CUID#%" PRId64 " - Response received:\n%s"
+#define MSG_DOWNLOAD_ABORTED "CUID#%" PRId64 " - Download aborted. URI=%s"
+#define MSG_RESTARTING_DOWNLOAD "CUID#%" PRId64 " - Restarting the download. URI=%s"
+#define MSG_TORRENT_DOWNLOAD_ABORTED "CUID#%" PRId64 " - Download aborted."
 #define MSG_MAX_TRY                                                     \
-  "CUID#%lld - %d times attempted, but no success. Download aborted."
-#define MSG_SEND_PEER_MESSAGE "CUID#%lld - To: %s:%d %s"
-#define MSG_RECEIVE_PEER_MESSAGE "CUID#%lld - From: %s:%d %s"
-#define MSG_GOT_NEW_PIECE "CUID#%lld - we got new piece. index=%lu"
-#define MSG_GOT_WRONG_PIECE "CUID#%lld - we got wrong piece. index=%lu"
-#define MSG_DOWNLOAD_NOT_COMPLETE "CUID#%lld - Download not complete: %s"
-#define MSG_DOWNLOAD_ALREADY_COMPLETED _("GID#%lld - Download has already completed: %s")
-#define MSG_RESOLVING_HOSTNAME "CUID#%lld - Resolving hostname %s"
+  "CUID#%" PRId64 " - %d times attempted, but no success. Download aborted."
+#define MSG_SEND_PEER_MESSAGE "CUID#%" PRId64 " - To: %s:%d %s"
+#define MSG_RECEIVE_PEER_MESSAGE "CUID#%" PRId64 " - From: %s:%d %s"
+#define MSG_GOT_NEW_PIECE "CUID#%" PRId64 " - we got new piece. index=%lu"
+#define MSG_GOT_WRONG_PIECE "CUID#%" PRId64 " - we got wrong piece. index=%lu"
+#define MSG_DOWNLOAD_NOT_COMPLETE "CUID#%" PRId64 " - Download not complete: %s"
+#define MSG_DOWNLOAD_ALREADY_COMPLETED _("GID#%" PRId64 " - Download has already completed: %s")
+#define MSG_RESOLVING_HOSTNAME "CUID#%" PRId64 " - Resolving hostname %s"
 #define MSG_NAME_RESOLUTION_COMPLETE                    \
-  "CUID#%lld - Name resolution complete: %s -> %s"
+  "CUID#%" PRId64 " - Name resolution complete: %s -> %s"
 #define MSG_NAME_RESOLUTION_FAILED                      \
-  "CUID#%lld - Name resolution for %s failed:%s"
-#define MSG_DNS_CACHE_HIT "CUID#%lld - DNS cache hit: %s -> %s"
-#define MSG_CONNECTING_TO_PEER "CUID#%lld - Connecting to the peer %s"
+  "CUID#%" PRId64 " - Name resolution for %s failed:%s"
+#define MSG_DNS_CACHE_HIT "CUID#%" PRId64 " - DNS cache hit: %s -> %s"
+#define MSG_CONNECTING_TO_PEER "CUID#%" PRId64 " - Connecting to the peer %s"
 #define MSG_PIECE_RECEIVED                                              \
-  "CUID#%lld - Piece received. index=%lu, begin=%d, length=%d, offset=%lld," \
+  "CUID#%" PRId64 " - Piece received. index=%lu, begin=%d, length=%d, offset=%" PRId64 "," \
   " blockIndex=%lu"
-#define MSG_PIECE_BITFIELD "CUID#%lld - Piece bitfield %s"
+#define MSG_PIECE_BITFIELD "CUID#%" PRId64 " - Piece bitfield %s"
 #define MSG_REJECT_PIECE_CHOKED                                         \
-  "CUID#%lld - Reject piece message in queue because the peer has been" \
+  "CUID#%" PRId64 " - Reject piece message in queue because the peer has been" \
   " choked. index=%lu, begin=%d, length=%d"
 #define MSG_REJECT_PIECE_CANCEL                                         \
-  "CUID#%lld - Reject piece message in queue because cancel message received." \
+  "CUID#%" PRId64 " - Reject piece message in queue because cancel message received." \
   " index=%lu, begin=%d, length=%d"
 #define MSG_FILE_VALIDATION_FAILURE                             \
-  "CUID#%lld - Exception caught while validating file integrity."
-#define MSG_PEER_INTERESTED "CUID#%lld - Interested in the peer"
-#define MSG_PEER_NOT_INTERESTED "CUID#%lld - Not interested in the peer"
-#define MSG_DELETING_REQUEST_SLOT "CUID#%lld - Deleting request slot" \
+  "CUID#%" PRId64 " - Exception caught while validating file integrity."
+#define MSG_PEER_INTERESTED "CUID#%" PRId64 " - Interested in the peer"
+#define MSG_PEER_NOT_INTERESTED "CUID#%" PRId64 " - Not interested in the peer"
+#define MSG_DELETING_REQUEST_SLOT "CUID#%" PRId64 " - Deleting request slot" \
   " index=%lu, begin=%d, blockIndex=%lu"
-#define MSG_DELETING_REQUEST_SLOT_CHOKED "CUID#%lld - Deleting request slot" \
+#define MSG_DELETING_REQUEST_SLOT_CHOKED "CUID#%" PRId64 " - Deleting request slot" \
   " index=%lu, begin=%d, blockIndex=%lu because localhost got choked."
-#define MSG_DELETING_REQUEST_SLOT_TIMEOUT "CUID#%lld - Deleting request slot" \
+#define MSG_DELETING_REQUEST_SLOT_TIMEOUT "CUID#%" PRId64 " - Deleting request slot" \
   " index=%lu, begin=%d, blockIndex=%lu because of time out"
-#define MSG_DELETING_REQUEST_SLOT_ACQUIRED "CUID#%lld - Deleting request slot" \
+#define MSG_DELETING_REQUEST_SLOT_ACQUIRED "CUID#%" PRId64 " - Deleting request slot" \
   " index=%lu, begin=%d, blockIndex=%lu because the block has been acquired."
-#define MSG_FAST_EXTENSION_ENABLED "CUID#%lld - Fast extension enabled."
-#define MSG_EXTENDED_MESSAGING_ENABLED "CUID#%lld - Extended Messaging enabled."
+#define MSG_FAST_EXTENSION_ENABLED "CUID#%" PRId64 " - Fast extension enabled."
+#define MSG_EXTENDED_MESSAGING_ENABLED "CUID#%" PRId64 " - Extended Messaging enabled."
 #define MSG_FILE_ALLOCATION_FAILURE                             \
-  "CUID#%lld - Exception caught while allocating file space."
+  "CUID#%" PRId64 " - Exception caught while allocating file space."
 #define MSG_CONTENT_DISPOSITION_DETECTED                        \
-  "CUID#%lld - Content-Disposition detected. Use %s as filename"
-#define MSG_PEER_BANNED "CUID#%lld - Peer %s:%d banned."
+  "CUID#%" PRId64 " - Content-Disposition detected. Use %s as filename"
+#define MSG_PEER_BANNED "CUID#%" PRId64 " - Peer %s:%d banned."
 #define MSG_LISTENING_PORT                                      \
-  "CUID#%lld - Using port %d for accepting new connections"
-#define MSG_BIND_FAILURE "CUID#%lld - An error occurred while binding port=%d"
+  "CUID#%" PRId64 " - Using port %d for accepting new connections"
+#define MSG_BIND_FAILURE "CUID#%" PRId64 " - An error occurred while binding port=%d"
 #define MSG_INCOMING_PEER_CONNECTION                            \
-  "CUID#%lld - Incoming connection, adding new command CUID#%lld"
-#define MSG_ACCEPT_FAILURE "CUID#%lld - Error in accepting connection"
+  "CUID#%" PRId64 " - Incoming connection, adding new command CUID#%" PRId64 ""
+#define MSG_ACCEPT_FAILURE "CUID#%" PRId64 " - Error in accepting connection"
 #define MSG_TRACKER_RESPONSE_PROCESSING_FAILED                  \
-  "CUID#%lld - Error occurred while processing tracker response."
-#define MSG_DHT_ENABLED_PEER "CUID#%lld - The peer is DHT-enabled."
+  "CUID#%" PRId64 " - Error occurred while processing tracker response."
+#define MSG_DHT_ENABLED_PEER "CUID#%" PRId64 " - The peer is DHT-enabled."
 #define MSG_CONNECT_FAILED_AND_RETRY            \
-  "CUID#%lld - Could not to connect to %s:%u. Trying another address"
+  "CUID#%" PRId64 " - Could not to connect to %s:%u. Trying another address"
 
 #define MSG_UNRECOGNIZED_URI _("Unrecognized URI or unsupported protocol: %s")
 #define MSG_TRACKER_WARNING_MESSAGE _("Tracker returned warning message: %s")
@@ -125,9 +125,9 @@
 #define MSG_DOWNLOAD_COMPLETED _("The download was complete.")
 #define MSG_REMOVED_HAVE_ENTRY _("Removed %lu have entries.")
 #define MSG_VALIDATING_FILE _("Validating file %s")
-#define MSG_ALLOCATION_COMPLETED "%ld seconds to allocate %lld byte(s)"
+#define MSG_ALLOCATION_COMPLETED "%ld seconds to allocate %" PRId64 " byte(s)"
 #define MSG_FILE_ALLOCATION_DISPATCH                    \
-  "Dispatching FileAllocationCommand for CUID#%lld."
+  "Dispatching FileAllocationCommand for CUID#%" PRId64 "."
 #define MSG_METALINK_QUEUEING _("Metalink: Queueing %s for download.")
 #define MSG_FILE_DOWNLOAD_COMPLETED _("Download complete: %s")
 #define MSG_SEEDING_END _("Seeding is over.")
@@ -195,7 +195,7 @@
 #define MSG_DIR_TRAVERSAL_DETECTED _("Detected directory traversal directive in %s")
 #define MSG_HASH_CHECK_NOT_DONE                                         \
   "File has already been downloaded but hash check has not been done yet."
-#define MSG_REMOVING_UNSELECTED_FILE _("GID#%lld - Removing unselected file.")
+#define MSG_REMOVING_UNSELECTED_FILE _("GID#%" PRId64 " - Removing unselected file.")
 #define MSG_FILE_REMOVED _("File %s removed.")
 #define MSG_FILE_COULD_NOT_REMOVED _("File %s could not be removed.")
 
@@ -210,14 +210,14 @@
 #define EX_CONNECTION_FAILED _("Connection failed.")
 #define EX_FILENAME_MISMATCH _("The requested filename and the previously registered one are not same. Expected:%s Actual:%s")
 #define EX_BAD_STATUS _("The response status is not successful. status=%d")
-#define EX_TOO_LARGE_FILE "Too large file size. size=%lld"
+#define EX_TOO_LARGE_FILE "Too large file size. size=%" PRId64 ""
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED _("Transfer encoding %s is not supported.")
 #define EX_SSL_INIT_FAILURE _("SSL initialization failed: %s")
 #define EX_SSL_IO_ERROR _("SSL I/O error")
 #define EX_SSL_PROTOCOL_ERROR _("SSL protocol error")
 #define EX_SSL_UNKNOWN_ERROR _("SSL unknown error %d")
 #define EX_SSL_CONNECT_ERROR _("SSL initialization failed: OpenSSL connect error %d")
-#define EX_SIZE_MISMATCH "Size mismatch Expected:%lld Actual:%lld"
+#define EX_SIZE_MISMATCH "Size mismatch Expected:%" PRId64 " Actual:%" PRId64 ""
 #define EX_AUTH_FAILED _("Authorization failed.")
 #define EX_GOT_EOF _("Got EOF from the server.")
 #define EX_EOF_FROM_PEER _("Got EOF from peer.")
@@ -229,7 +229,7 @@
 #define EX_DATA_READ _("Failed to read data from disk.")
 #define EX_FILE_SHA1SUM _("Failed to calculate SHA1 digest of or a part of the file %s, cause: %s")
 #define EX_FILE_SEEK _("Failed to seek the file %s, cause: %s")
-#define EX_FILE_OFFSET_OUT_OF_RANGE "The offset is out of range, offset=%lld"
+#define EX_FILE_OFFSET_OUT_OF_RANGE "The offset is out of range, offset=%" PRId64 ""
 #define EX_NOT_DIRECTORY _("%s is not a directory.")
 #define EX_MAKE_DIR _("Failed to make the directory %s, cause: %s")
 #define EX_SEGMENT_FILE_WRITE "Failed to write into the segment file %s"
@@ -256,7 +256,7 @@
 #define EX_INVALID_PAYLOAD_SIZE                                 \
   _("Invalid payload size for %s, size=%lu. It should be %lu.")
 #define EX_INVALID_BT_MESSAGE_ID _("Invalid ID=%d for %s. It should be %d.")
-#define EX_INVALID_CHUNK_CHECKSUM "Chunk checksum validation failed. checksumIndex=%lu, offset=%lld, expectedHash=%s, actualHash=%s"
+#define EX_INVALID_CHUNK_CHECKSUM "Chunk checksum validation failed. checksumIndex=%lu, offset=%" PRId64 ", expectedHash=%s, actualHash=%s"
 #define EX_DOWNLOAD_ABORTED _("Download aborted.")
 #define EX_DUPLICATE_FILE_DOWNLOAD _("File %s is being downloaded by other command.")
 #define EX_INSUFFICIENT_CHECKSUM _("Insufficient checksums.")
@@ -270,7 +270,7 @@
 #define EX_TOO_SLOW_DOWNLOAD_SPEED _("Too slow Downloading speed: %d <= %d(B/s), host:%s")
 #define EX_NO_HTTP_REQUEST_ENTRY_FOUND _("No HttpRequestEntry found.")
 #define EX_LOCATION_HEADER_REQUIRED _("Got %d status, but no location header provided.")
-#define EX_INVALID_RANGE_HEADER "Invalid range header. Request: %lld-%lld/%lld, Response: %lld-%lld/%lld"
+#define EX_INVALID_RANGE_HEADER "Invalid range header. Request: %" PRId64 "-%" PRId64 "/%" PRId64 ", Response: %" PRId64 "-%" PRId64 "/%" PRId64 ""
 #define EX_NO_RESULT_WITH_YOUR_PREFS _("No file matched with your preference.")
 #define EX_EXCEPTION_CAUGHT _("Exception caught")
 #define EX_TOO_LONG_PAYLOAD _("Max payload length exceeded or invalid. length = %u")

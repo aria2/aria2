@@ -195,7 +195,7 @@ bool HttpServerBodyCommand::execute()
             req = rpc::xmlParseMemory(body.c_str(), body.size());
           } catch(RecoverableException& e) {
             A2_LOG_INFO_EX
-              (fmt("CUID#%lld - Failed to parse XML-RPC request",
+              (fmt("CUID#%" PRId64 " - Failed to parse XML-RPC request",
                    getCuid()),
                e);
             httpServer_->feedResponse(400);
@@ -228,7 +228,7 @@ bool HttpServerBodyCommand::execute()
             }
           } catch(RecoverableException& e) {
             A2_LOG_INFO_EX
-              (fmt("CUID#%lld - Failed to parse JSON-RPC request",
+              (fmt("CUID#%" PRId64 " - Failed to parse JSON-RPC request",
                    getCuid()),
                e);
             rpc::RpcResponse res
@@ -283,7 +283,7 @@ bool HttpServerBodyCommand::execute()
     }
   } catch(RecoverableException& e) {
     A2_LOG_INFO_EX
-      (fmt("CUID#%lld - Error occurred while reading HTTP request body",
+      (fmt("CUID#%" PRId64 " - Error occurred while reading HTTP request body",
            getCuid()),
        e);
     return true;

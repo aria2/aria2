@@ -124,7 +124,7 @@ bool PeerListenCommand::execute() {
       A2_LOG_DEBUG(fmt("Accepted the connection from %s:%u.",
                        peer->getIPAddress().c_str(),
                        peer->getPort()));
-      A2_LOG_DEBUG(fmt("Added CUID#%lld to receive BitTorrent/MSE handshake.",
+      A2_LOG_DEBUG(fmt("Added CUID#%" PRId64 " to receive BitTorrent/MSE handshake.",
                        cuid));
     } catch(RecoverableException& ex) {
       A2_LOG_DEBUG_EX(fmt(MSG_ACCEPT_FAILURE,

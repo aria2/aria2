@@ -175,7 +175,7 @@ void TrackerWatcherCommand::processTrackerResponse
     command->setPeerStorage(peerStorage_);
     command->setPieceStorage(pieceStorage_);
     e_->addCommand(command);
-    A2_LOG_DEBUG(fmt("CUID#%lld - Adding new command CUID#%lld",
+    A2_LOG_DEBUG(fmt("CUID#%" PRId64 " - Adding new command CUID#%" PRId64 "",
                      getCuid(), peer->usedBy()));
   }
 }
@@ -246,7 +246,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
   util::removeMetalinkContentTypes(rg);
-  A2_LOG_INFO(fmt("Creating tracker request group GID#%lld", rg->getGID()));
+  A2_LOG_INFO(fmt("Creating tracker request group GID#%" PRId64 "", rg->getGID()));
   return rg;
 }
 

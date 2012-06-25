@@ -250,8 +250,7 @@ void extractFileEntries
       }
       length += fileLengthData->i();
       if(length > std::numeric_limits<off_t>::max()) {
-        throw DOWNLOAD_FAILURE_EXCEPTION
-          (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(length)));
+        throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
       }
       std::string pathKey;
       if(fileDict->containsKey(C_PATH_UTF8)) {
@@ -310,8 +309,7 @@ void extractFileEntries
     }
     int64_t totalLength = lengthData->i();
     if(totalLength > std::numeric_limits<off_t>::max()) {
-      throw DOWNLOAD_FAILURE_EXCEPTION
-        (fmt(EX_TOO_LARGE_FILE, static_cast<long long int>(totalLength)));
+      throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, totalLength));
     }
     // For each uri in urlList, if it ends with '/', then
     // concatenate name to it. Specification just says so.
