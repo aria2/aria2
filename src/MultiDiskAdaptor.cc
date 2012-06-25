@@ -199,8 +199,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
           A2_LOG_DEBUG
             (fmt("file=%s, offset=%" PRId64 "",
                  (*itr)->getFileEntry()->getPath().c_str(),
-                 static_cast<int64_t>
-                 ((*itr)->getFileEntry()->getOffset())));
+                 (*itr)->getFileEntry()->getOffset()));
           if((*itr)->getFileEntry()->getOffset() <
              static_cast<off_t>(lastPieceStartOffset+pieceLength_)) {
             A2_LOG_DEBUG

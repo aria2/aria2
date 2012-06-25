@@ -397,8 +397,8 @@ void RequestGroup::createInitialCommand
           A2_LOG_DEBUG
             (fmt("File size not match. File is opened in writable"
                  " mode. Expected:%" PRId64 " Actual:%" PRId64 "",
-                 static_cast<int64_t>(downloadContext_->getTotalLength()),
-                 static_cast<int64_t>(actualFileSize)));
+                 downloadContext_->getTotalLength(),
+                 actualFileSize));
         }
       }
       // Call Load, Save and file allocation command here
@@ -905,9 +905,7 @@ void RequestGroup::validateTotalLength(int64_t expectedTotalLength,
   }
   if(expectedTotalLength != actualTotalLength) {
     throw DL_ABORT_EX
-      (fmt(EX_SIZE_MISMATCH,
-           static_cast<int64_t>(expectedTotalLength),
-           static_cast<int64_t>(actualTotalLength)));
+      (fmt(EX_SIZE_MISMATCH, expectedTotalLength, actualTotalLength));
   }
 }
 

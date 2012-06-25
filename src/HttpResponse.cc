@@ -100,12 +100,12 @@ void HttpResponse::validateResponse() const
       if(!httpRequest_->isRangeSatisfied(responseRange)) {
         throw DL_ABORT_EX2
           (fmt(EX_INVALID_RANGE_HEADER,
-               static_cast<int64_t>(httpRequest_->getStartByte()),
-               static_cast<int64_t>(httpRequest_->getEndByte()),
-               static_cast<int64_t>(httpRequest_->getEntityLength()),
-               static_cast<int64_t>(responseRange->getStartByte()),
-               static_cast<int64_t>(responseRange->getEndByte()),
-               static_cast<int64_t>(responseRange->getEntityLength())),
+               httpRequest_->getStartByte(),
+               httpRequest_->getEndByte(),
+               httpRequest_->getEntityLength(),
+               responseRange->getStartByte(),
+               responseRange->getEndByte(),
+               responseRange->getEntityLength()),
            error_code::CANNOT_RESUME);
       }
     }

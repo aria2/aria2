@@ -219,7 +219,7 @@ bool HttpServerCommand::execute()
             (fmt("Request too long. ContentLength=%" PRId64 "."
                  " See --rpc-max-request-size option to loose"
                  " this limitation.",
-                 static_cast<int64_t>(httpServer_->getContentLength())));
+                 httpServer_->getContentLength()));
           return true;
         }
         Command* command = new HttpServerBodyCommand(getCuid(), httpServer_, e_,

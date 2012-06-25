@@ -256,8 +256,7 @@ bool FtpConnection::sendRest(const SharedHandle<Segment>& segment)
     std::string request =
       fmt("REST %" PRId64 "\r\n",
           segment ?
-          static_cast<int64_t>(segment->getPositionToWrite()) :
-          static_cast<int64_t>(0LL));
+          segment->getPositionToWrite() : static_cast<int64_t>(0LL));
     A2_LOG_INFO(fmt(MSG_SENDING_REQUEST,
                     cuid_, request.c_str()));
     socketBuffer_.pushStr(request);

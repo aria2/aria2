@@ -71,7 +71,7 @@ bool FileAllocationCommand::executeInternal()
     A2_LOG_DEBUG
       (fmt(MSG_ALLOCATION_COMPLETED,
            static_cast<long int>(timer_.difference(global::wallclock())),
-           static_cast<int64_t>(getRequestGroup()->getTotalLength())));
+           getRequestGroup()->getTotalLength()));
     getDownloadEngine()->getFileAllocationMan()->dropPickedEntry();
     
     std::vector<Command*>* commands = new std::vector<Command*>();
