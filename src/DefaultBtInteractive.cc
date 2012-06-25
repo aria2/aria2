@@ -274,7 +274,7 @@ void DefaultBtInteractive::sendKeepAlive() {
 size_t DefaultBtInteractive::receiveMessages() {
   size_t countOldOutstandingRequest = dispatcher_->countOutstandingRequest();
   size_t msgcount = 0;
-  for(int i = 0; i < UB_MAX_OUTSTANDING_REQUEST+50; ++i) {
+  while(1) {
     if(requestGroupMan_->doesOverallDownloadSpeedExceed() ||
        downloadContext_->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;

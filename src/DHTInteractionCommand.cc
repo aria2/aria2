@@ -83,7 +83,7 @@ bool DHTInteractionCommand::execute()
 
   taskQueue_->executeTask();
 
-  for(size_t i = 0; i < 20; ++i) {
+  while(1) {
     SharedHandle<DHTMessage> m = receiver_->receiveMessage();
     if(!m) {
       break;
