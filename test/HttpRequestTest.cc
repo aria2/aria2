@@ -78,12 +78,12 @@ void HttpRequestTest::testGetStartByte()
   SharedHandle<Segment> segment(new PiecedSegment(1024, p));
   SharedHandle<FileEntry> fileEntry(new FileEntry("file", 1024*10, 0));
 
-  CPPUNIT_ASSERT_EQUAL((off_t)0LL, httpRequest.getStartByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getStartByte());
 
   httpRequest.setSegment(segment);
   httpRequest.setFileEntry(fileEntry);
   
-  CPPUNIT_ASSERT_EQUAL((off_t)1024LL, httpRequest.getStartByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024LL, httpRequest.getStartByte());
 }
 
 void HttpRequestTest::testGetEndByte()
@@ -97,11 +97,11 @@ void HttpRequestTest::testGetEndByte()
   SharedHandle<Segment> segment(new PiecedSegment(segmentLength, piece));
   SharedHandle<FileEntry> fileEntry(new FileEntry("file", segmentLength*10, 0));
 
-  CPPUNIT_ASSERT_EQUAL((off_t)0LL, httpRequest.getEndByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getEndByte());
 
   httpRequest.setSegment(segment);
 
-  CPPUNIT_ASSERT_EQUAL((off_t)0LL, httpRequest.getEndByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getEndByte());
 
   SharedHandle<Request> request(new Request());
   request->supportsPersistentConnection(true);
@@ -110,18 +110,18 @@ void HttpRequestTest::testGetEndByte()
   httpRequest.setRequest(request);
   httpRequest.setFileEntry(fileEntry);
 
-  CPPUNIT_ASSERT_EQUAL((off_t)(segmentLength*index+length-1),
+  CPPUNIT_ASSERT_EQUAL((int64_t)(segmentLength*index+length-1),
                        httpRequest.getEndByte());
 
   // The end byte of FileEntry are placed inside segment
   fileEntry->setLength(segmentLength+100);
 
-  CPPUNIT_ASSERT_EQUAL((off_t)(segmentLength*index+100-1),
+  CPPUNIT_ASSERT_EQUAL((int64_t)(segmentLength*index+100-1),
                        httpRequest.getEndByte());
 
   request->setPipeliningHint(false);
 
-  CPPUNIT_ASSERT_EQUAL((off_t)0LL, httpRequest.getEndByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0LL, httpRequest.getEndByte());
 }
 
 void HttpRequestTest::testCreateRequest()

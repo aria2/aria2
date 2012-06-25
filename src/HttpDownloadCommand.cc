@@ -117,9 +117,8 @@ bool HttpDownloadCommand::prepareForNextSegment() {
        !downloadFinished) {
       const SharedHandle<Segment>& segment = getSegments().front();
 
-      off_t lastOffset =getFileEntry()->gtoloff
-        (std::min(static_cast<off_t>
-                  (segment->getPosition()+segment->getLength()),
+      int64_t lastOffset =getFileEntry()->gtoloff
+        (std::min(segment->getPosition()+segment->getLength(),
                   getFileEntry()->getLastOffset()));
       
       if(lastOffset ==
@@ -131,9 +130,9 @@ bool HttpDownloadCommand::prepareForNextSegment() {
   }
 }
 
-off_t HttpDownloadCommand::getRequestEndOffset() const
+int64_t HttpDownloadCommand::getRequestEndOffset() const
 {
-  off_t endByte = httpResponse_->getHttpHeader()->getRange()->getEndByte();
+  int64_t endByte = httpResponse_->getHttpHeader()->getRange()->getEndByte();
   if(endByte > 0) {
     return endByte+1;
   } else {

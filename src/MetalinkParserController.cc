@@ -87,7 +87,7 @@ void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
   }
 }
 
-void MetalinkParserController::setFileLengthOfEntry(off_t length)
+void MetalinkParserController::setFileLengthOfEntry(int64_t length)
 {
   if(!tEntry_) {
     return;

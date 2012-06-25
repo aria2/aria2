@@ -45,13 +45,13 @@ namespace aria2 {
 
 class Range {
 private:
-  off_t startByte_;
-  off_t endByte_;
-  off_t entityLength_;
+  int64_t startByte_;
+  int64_t endByte_;
+  int64_t entityLength_;
 public:
   Range();
 
-  Range(off_t startByte, off_t endByte, off_t entityLength);
+  Range(int64_t startByte, int64_t endByte, int64_t entityLength);
 
   Range(const Range& c);
 
@@ -63,22 +63,22 @@ public:
 
   bool operator!=(const Range& range) const;
 
-  off_t getStartByte() const
+  int64_t getStartByte() const
   {
     return startByte_;
   }
 
-  off_t getEndByte() const
+  int64_t getEndByte() const
   {
     return endByte_;
   }
 
-  off_t getEntityLength() const
+  int64_t getEntityLength() const
   {
     return entityLength_;
   }
 
-  off_t getContentLength() const;
+  int64_t getContentLength() const;
 };
 
 typedef SharedHandle<Range> RangeHandle;

@@ -119,7 +119,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, peer->getExtensionMessageID("a2_dht"));
   CPPUNIT_ASSERT(peer->isSeeder());
   CPPUNIT_ASSERT_EQUAL((size_t)1024, attrs->metadataSize);
-  CPPUNIT_ASSERT_EQUAL((off_t)1024, dctx->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024, dctx->getTotalLength());
   CPPUNIT_ASSERT(dctx->knowsTotalLength());
 
   // See Peer is not marked as seeder if !attrs->metadata.empty()

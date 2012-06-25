@@ -287,9 +287,9 @@ void FtpConnectionTest::testReceiveSizeResponse()
 {
   serverSocket_->writeData("213 4294967296\r\n");
   waitRead(clientSocket_);
-  off_t size;
+  int64_t size;
   CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveSizeResponse(size));
-  CPPUNIT_ASSERT_EQUAL((off_t)4294967296LL, size);
+  CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, size);
 }
 
 void FtpConnectionTest::testSendRetr()

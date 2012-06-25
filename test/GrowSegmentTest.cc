@@ -27,7 +27,7 @@ void GrowSegmentTest::testUpdateWrittenLength()
   GrowSegment segment(SharedHandle<Piece>(new Piece()));
   segment.updateWrittenLength(32*1024);
   
-  CPPUNIT_ASSERT_EQUAL((off_t)32*1024, segment.getPositionToWrite());
+  CPPUNIT_ASSERT_EQUAL((int64_t)32*1024, segment.getPositionToWrite());
   CPPUNIT_ASSERT(!segment.complete());
   CPPUNIT_ASSERT(segment.getPiece()->pieceComplete());
 }

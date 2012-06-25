@@ -19,12 +19,12 @@ public:
     return 0;
   }
 
-  virtual off_t getPosition() const
+  virtual int64_t getPosition() const
   {
     return 0;
   }
   
-  virtual off_t getPositionToWrite() const
+  virtual int64_t getPositionToWrite() const
   {
     return 0;
   }

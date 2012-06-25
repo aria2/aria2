@@ -54,7 +54,7 @@ private:
 
   SharedHandle<DiskWriterFactory> diskWriterFactory_;
 
-  off_t totalLength_;
+  int64_t totalLength_;
 
   bool downloadFinished_;
 
@@ -152,23 +152,23 @@ public:
 
   virtual bool isPieceUsed(size_t index);
 
-  virtual off_t getTotalLength()
+  virtual int64_t getTotalLength()
   {
     return totalLength_;
   }
 
-  virtual off_t getFilteredTotalLength()
+  virtual int64_t getFilteredTotalLength()
   {
     return totalLength_;
   }
 
-  virtual off_t getCompletedLength()
+  virtual int64_t getCompletedLength()
   {
     // TODO we have to return actual completed length here?
     return totalLength_;
   }
 
-  virtual off_t getFilteredCompletedLength()
+  virtual int64_t getFilteredCompletedLength()
   {
     return getCompletedLength();
   }
@@ -259,7 +259,7 @@ public:
    */
   virtual void markAllPiecesDone();
 
-  virtual void markPiecesDone(off_t length);
+  virtual void markPiecesDone(int64_t length);
 
   virtual void markPieceMissing(size_t index);
 

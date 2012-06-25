@@ -93,7 +93,7 @@ public:
   // Convenient constructor that creates single file download.  path
   // should be escaped with util::escapePath(...).
   DownloadContext(int32_t pieceLength,
-                  off_t totalLength,
+                  int64_t totalLength,
                   const std::string& path = A2STR::NIL);
 
   ~DownloadContext();
@@ -114,7 +114,7 @@ public:
     pieceHashes_.assign(first, last);
   }
 
-  off_t getTotalLength() const;
+  int64_t getTotalLength() const;
 
   bool knowsTotalLength() const { return knowsTotalLength_; }
 
@@ -222,7 +222,7 @@ public:
   
   // Returns FileEntry at given offset. SharedHandle<FileEntry>() is
   // returned if no such FileEntry is found.
-  SharedHandle<FileEntry> findFileEntryByOffset(off_t offset) const;
+  SharedHandle<FileEntry> findFileEntryByOffset(int64_t offset) const;
 
   void releaseRuntimeResource();
 

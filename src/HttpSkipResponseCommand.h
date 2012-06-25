@@ -53,9 +53,9 @@ private:
 
   bool sinkFilterOnly_;
 
-  off_t totalLength_;
+  int64_t totalLength_;
 
-  off_t receivedBytes_;
+  int64_t receivedBytes_;
 
   bool processResponse();
 

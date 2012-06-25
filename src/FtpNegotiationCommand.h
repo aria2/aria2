@@ -137,7 +137,7 @@ private:
 
   void poolConnection() const;
 
-  bool onFileSizeDetermined(off_t totalLength);
+  bool onFileSizeDetermined(int64_t totalLength);
 
   void onDryRunFileFound();
 

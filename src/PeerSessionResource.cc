@@ -44,7 +44,7 @@
 
 namespace aria2 {
 
-PeerSessionResource::PeerSessionResource(int32_t pieceLength, off_t totalLength)
+PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLength)
   :
   amChoking_(true),
   amInterested_(false),
@@ -225,7 +225,7 @@ void PeerSessionResource::dhtEnabled(bool b)
   dhtEnabled_ = b;
 }
 
-off_t PeerSessionResource::uploadLength() const
+int64_t PeerSessionResource::uploadLength() const
 {
   return peerStat_.getSessionUploadLength();
 }
@@ -235,7 +235,7 @@ void PeerSessionResource::updateUploadLength(int32_t bytes)
   peerStat_.updateUploadLength(bytes);
 }
 
-off_t PeerSessionResource::downloadLength() const
+int64_t PeerSessionResource::downloadLength() const
 {
   return peerStat_.getSessionDownloadLength();
 }
@@ -247,7 +247,7 @@ void PeerSessionResource::updateDownloadLength(int32_t bytes)
   lastDownloadUpdate_ = global::wallclock();
 }
 
-off_t PeerSessionResource::getCompletedLength() const
+int64_t PeerSessionResource::getCompletedLength() const
 {
   return bitfieldMan_->getCompletedLength();
 }
@@ -263,7 +263,7 @@ size_t PeerSessionResource::countOutstandingUpload() const
   return dispatcher_->countOutstandingUpload();
 }
 
-void PeerSessionResource::reconfigure(int32_t pieceLength, off_t totalLenth)
+void PeerSessionResource::reconfigure(int32_t pieceLength, int64_t totalLenth)
 {
   delete bitfieldMan_;
   bitfieldMan_ = new BitfieldMan(pieceLength, totalLenth);

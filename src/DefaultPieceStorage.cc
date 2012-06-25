@@ -513,28 +513,28 @@ bool DefaultPieceStorage::isPieceUsed(size_t index)
   return bitfieldMan_->isUseBitSet(index);
 }
 
-off_t DefaultPieceStorage::getTotalLength()
+int64_t DefaultPieceStorage::getTotalLength()
 {
   return bitfieldMan_->getTotalLength();
 }
 
-off_t DefaultPieceStorage::getFilteredTotalLength()
+int64_t DefaultPieceStorage::getFilteredTotalLength()
 {
   return bitfieldMan_->getFilteredTotalLength();
 }
 
-off_t DefaultPieceStorage::getCompletedLength()
+int64_t DefaultPieceStorage::getCompletedLength()
 {
-  off_t completedLength =
+  int64_t completedLength =
     bitfieldMan_->getCompletedLength()+getInFlightPieceCompletedLength();
-  off_t totalLength = getTotalLength();
+  int64_t totalLength = getTotalLength();
   if(completedLength > totalLength) {
     completedLength = totalLength;
   }
   return completedLength;
 }
 
-off_t DefaultPieceStorage::getFilteredCompletedLength()
+int64_t DefaultPieceStorage::getFilteredCompletedLength()
 {
   return bitfieldMan_->getFilteredCompletedLength()+
     getInFlightPieceCompletedLength();
@@ -707,7 +707,7 @@ void DefaultPieceStorage::markAllPiecesDone()
   bitfieldMan_->setAllBit();
 }
 
-void DefaultPieceStorage::markPiecesDone(off_t length)
+void DefaultPieceStorage::markPiecesDone(int64_t length)
 {
   if(length == bitfieldMan_->getTotalLength()) {
     bitfieldMan_->setAllBit();

@@ -85,7 +85,7 @@ bool FtpDownloadCommand::prepareForNextSegment()
   }
 }
 
-off_t FtpDownloadCommand::getRequestEndOffset() const
+int64_t FtpDownloadCommand::getRequestEndOffset() const
 {
   return getFileEntry()->getLength();
 }

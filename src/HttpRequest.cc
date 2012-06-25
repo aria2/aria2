@@ -75,7 +75,7 @@ void HttpRequest::setRequest(const SharedHandle<Request>& request)
   request_ = request;
 }
 
-off_t HttpRequest::getStartByte() const
+int64_t HttpRequest::getStartByte() const
 {
   if(!segment_) {
     return 0;
@@ -84,15 +84,15 @@ off_t HttpRequest::getStartByte() const
   }
 }
 
-off_t HttpRequest::getEndByte() const
+int64_t HttpRequest::getEndByte() const
 {
   if(!segment_ || !request_) {
     return 0;
   } else {
     if(request_->isPipeliningEnabled()) {
-      off_t endByte =
+      int64_t endByte =
         fileEntry_->gtoloff(segment_->getPosition()+segment_->getLength()-1);
-      return std::min(endByte, static_cast<off_t>(fileEntry_->getLength()-1));
+      return std::min(endByte, fileEntry_->getLength()-1);
     } else {
       return 0;
     }
@@ -367,7 +367,7 @@ const SharedHandle<AuthConfig>& HttpRequest::getAuthConfig() const
   return authConfig_;
 }
 
-off_t HttpRequest::getEntityLength() const
+int64_t HttpRequest::getEntityLength() const
 {
   assert(fileEntry_);
   return fileEntry_->getLength();

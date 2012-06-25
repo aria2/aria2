@@ -181,7 +181,7 @@ bool HttpResponseCommand::executeInternal()
   int statusCode = httpResponse->getStatusCode();
 
   if(statusCode == 304) {
-    off_t totalLength = httpResponse->getEntityLength();
+    int64_t totalLength = httpResponse->getEntityLength();
     getFileEntry()->setLength(totalLength);
     getRequestGroup()->initPieceStorage();
     getPieceStorage()->markAllPiecesDone();
@@ -246,7 +246,7 @@ bool HttpResponseCommand::executeInternal()
   }
   if(!getPieceStorage()) {
     util::removeMetalinkContentTypes(getRequestGroup());
-    off_t totalLength = httpResponse->getEntityLength();
+    int64_t totalLength = httpResponse->getEntityLength();
     getFileEntry()->setLength(totalLength);
     if(getFileEntry()->getPath().empty()) {
       getFileEntry()->setPath

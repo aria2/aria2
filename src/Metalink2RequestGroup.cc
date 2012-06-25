@@ -293,7 +293,7 @@ Metalink2RequestGroup::createRequestGroup
       // piece length is overridden by the one in torrent file.
       dctx->setPieceLength(option->getAsInt(PREF_PIECE_LENGTH));
       std::vector<SharedHandle<FileEntry> > fileEntries;
-      off_t offset = 0;
+      int64_t offset = 0;
       for(std::vector<SharedHandle<MetalinkEntry> >::const_iterator i =
             mes.begin(), eoi = mes.end(); i != eoi; ++i) {
         A2_LOG_INFO(fmt("Metalink: Queueing %s for download as a member.",

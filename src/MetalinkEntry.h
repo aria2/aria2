@@ -79,7 +79,7 @@ public:
 
   const std::string& getPath() const;
 
-  off_t getLength() const;
+  int64_t getLength() const;
 
   const SharedHandle<FileEntry>& getFile() const
   {

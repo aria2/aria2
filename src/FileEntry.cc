@@ -68,8 +68,8 @@ bool FileEntry::RequestFaster::operator()
 
 FileEntry::FileEntry
 (const std::string& path,
- off_t length,
- off_t offset,
+ int64_t length,
+ int64_t offset,
  const std::vector<std::string>& uris)
   : path_(path),
     uris_(uris.begin(), uris.end()),
@@ -112,7 +112,7 @@ bool FileEntry::exists() const
   return File(getPath()).exists();
 }
 
-off_t FileEntry::gtoloff(off_t goff) const
+int64_t FileEntry::gtoloff(int64_t goff) const
 {
   assert(offset_ <= goff);
   return goff-offset_;

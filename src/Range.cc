@@ -38,7 +38,7 @@ namespace aria2 {
 
 Range::Range():startByte_(0), endByte_(0), entityLength_(0) {}
 
-Range::Range(off_t startByte, off_t endByte, off_t entityLength)
+Range::Range(int64_t startByte, int64_t endByte, int64_t entityLength)
   : startByte_(startByte), endByte_(endByte), entityLength_(entityLength)
 {}
 
@@ -72,7 +72,7 @@ bool Range::operator!=(const Range& range) const
   return !(*this == range);
 }
 
-off_t Range::getContentLength() const
+int64_t Range::getContentLength() const
 {
   if(endByte_ >= startByte_) {
     return endByte_-startByte_+1;

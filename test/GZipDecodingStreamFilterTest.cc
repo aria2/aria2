@@ -26,7 +26,7 @@ class GZipDecodingStreamFilterTest:public CppUnit::TestFixture {
 
   class MockSegment2:public MockSegment {
   private:
-    off_t positionToWrite_;
+    int64_t positionToWrite_;
   public:
     MockSegment2():positionToWrite_(0) {}
 
@@ -35,7 +35,7 @@ class GZipDecodingStreamFilterTest:public CppUnit::TestFixture {
       positionToWrite_ += bytes;
     }
 
-    virtual off_t getPositionToWrite() const
+    virtual int64_t getPositionToWrite() const
     {
       return positionToWrite_;
     }

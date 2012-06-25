@@ -58,7 +58,7 @@ void Metalink2RequestGroupTest::testGenerate()
     const SharedHandle<DownloadContext>& dctx = rg->getDownloadContext();
 
     CPPUNIT_ASSERT(dctx);
-    CPPUNIT_ASSERT_EQUAL((off_t)0LL, dctx->getTotalLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)0LL, dctx->getTotalLength());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha-1"), dctx->getHashType());
     CPPUNIT_ASSERT_EQUAL

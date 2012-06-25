@@ -46,7 +46,7 @@ namespace aria2 {
 class BitfieldMan {
 private:
   int32_t blockLength_;
-  off_t totalLength_;
+  int64_t totalLength_;
   size_t bitfieldLength_;
   size_t blocks_;
   bool filterEnabled_;
@@ -57,9 +57,9 @@ private:
   // for caching
   size_t cachedNumMissingBlock_;
   size_t cachedNumFilteredBlock_;
-  off_t cachedCompletedLength_;
-  off_t cachedFilteredCompletedLength_;
-  off_t cachedFilteredTotalLength_;
+  int64_t cachedCompletedLength_;
+  int64_t cachedFilteredCompletedLength_;
+  int64_t cachedFilteredTotalLength_;
 
   bool setBitInternal(unsigned char* bitfield, size_t index, bool on);
   bool setFilterBit(size_t index);
@@ -67,7 +67,7 @@ private:
   size_t getStartIndex(size_t index) const;
   size_t getEndIndex(size_t index) const;
 
-  off_t getCompletedLength(bool useFilter) const;
+  int64_t getCompletedLength(bool useFilter) const;
 
   // If filterBitfield_ is 0, allocate bitfieldLength_ bytes to it and
   // set 0 to all bytes.
@@ -84,7 +84,7 @@ public:
     bool operator==(const Range& range) const;
   };
 public:
-  BitfieldMan(int32_t blockLength, off_t totalLength);
+  BitfieldMan(int32_t blockLength, int64_t totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);
   ~BitfieldMan();
 
@@ -99,7 +99,7 @@ public:
 
   int32_t getBlockLength(size_t index) const;
 
-  off_t getTotalLength() const { return totalLength_; }
+  int64_t getTotalLength() const { return totalLength_; }
 
   // Returns true iff there is a bit index which is set in bitfield_,
   // but not set in this object.
@@ -238,10 +238,10 @@ public:
   void clearAllUseBit();
   void setAllUseBit();
 
-  void addFilter(off_t offset, off_t length);
-  void removeFilter(off_t offset, off_t length);
+  void addFilter(int64_t offset, int64_t length);
+  void removeFilter(int64_t offset, int64_t length);
   // Add filter not in the range of [offset, offset+length) bytes
-  void addNotFilter(off_t offset, off_t length);
+  void addNotFilter(int64_t offset, int64_t length);
 
   // Clears filter and disables filter
   void clearFilter();
@@ -254,29 +254,29 @@ public:
   }
 
   // affected by filter
-  off_t getFilteredTotalLength() const
+  int64_t getFilteredTotalLength() const
   {
     return cachedFilteredTotalLength_;
   }
 
   // affected by filter
-  off_t getFilteredTotalLengthNow() const;
+  int64_t getFilteredTotalLengthNow() const;
 
-  off_t getCompletedLength() const
+  int64_t getCompletedLength() const
   {
     return cachedCompletedLength_;
   }
 
-  off_t getCompletedLengthNow() const;
+  int64_t getCompletedLengthNow() const;
 
   // affected by filter
-  off_t getFilteredCompletedLength() const
+  int64_t getFilteredCompletedLength() const
   {
     return cachedFilteredCompletedLength_;
   }
 
   // affected by filter
-  off_t getFilteredCompletedLengthNow() const;
+  int64_t getFilteredCompletedLengthNow() const;
 
   void updateCache();
 
@@ -286,13 +286,13 @@ public:
 
   void setBitRange(size_t startIndex, size_t endIndex);
 
-  bool isBitSetOffsetRange(off_t offset, off_t length) const;
+  bool isBitSetOffsetRange(int64_t offset, int64_t length) const;
 
   // Returns completed length in bytes in range [offset,
   // offset+length). This function will not affected by filter.
-  off_t getOffsetCompletedLength(off_t offset, off_t length) const;
+  int64_t getOffsetCompletedLength(int64_t offset, int64_t length) const;
 
-  off_t getMissingUnusedLength(size_t startingIndex) const;
+  int64_t getMissingUnusedLength(size_t startingIndex) const;
 
   const unsigned char* getFilterBitfield() const
   {

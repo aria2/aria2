@@ -192,13 +192,13 @@ public:
 
   virtual bool isPieceUsed(size_t index);
 
-  virtual off_t getTotalLength();
+  virtual int64_t getTotalLength();
 
-  virtual off_t getFilteredTotalLength();
+  virtual int64_t getFilteredTotalLength();
 
-  virtual off_t getCompletedLength();
+  virtual int64_t getCompletedLength();
 
-  virtual off_t getFilteredCompletedLength();
+  virtual int64_t getFilteredCompletedLength();
 
   virtual void initStorage();
 
@@ -251,7 +251,7 @@ public:
 
   virtual void markAllPiecesDone();
 
-  virtual void markPiecesDone(off_t length);
+  virtual void markPiecesDone(int64_t length);
 
   virtual void markPieceMissing(size_t index);
 

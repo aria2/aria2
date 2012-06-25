@@ -66,8 +66,8 @@ private:
   std::string path_;
   std::deque<std::string> uris_;
   std::deque<std::string> spentUris_;
-  off_t length_;
-  off_t offset_;
+  int64_t length_;
+  int64_t offset_;
   bool requested_;
 
   class RequestFaster {
@@ -92,7 +92,7 @@ private:
 public:
   FileEntry();
 
-  FileEntry(const std::string& path, off_t length, off_t offset,
+  FileEntry(const std::string& path, int64_t length, int64_t offset,
             const std::vector<std::string>& uris = std::vector<std::string>());
 
   ~FileEntry();
@@ -107,15 +107,15 @@ public:
 
   void setPath(const std::string& path);
 
-  off_t getLength() const { return length_; }
+  int64_t getLength() const { return length_; }
 
-  void setLength(off_t length) { length_ = length; }
+  void setLength(int64_t length) { length_ = length; }
 
-  off_t getOffset() const { return offset_; }
+  int64_t getOffset() const { return offset_; }
 
-  void setOffset(off_t offset) { offset_ = offset; }
+  void setOffset(int64_t offset) { offset_ = offset; }
 
-  off_t getLastOffset() { return offset_+length_; }
+  int64_t getLastOffset() { return offset_+length_; }
 
   bool isRequested() const { return requested_; }
 
@@ -209,7 +209,7 @@ public:
   bool exists() const;
 
   // Translate global offset goff to file local offset.
-  off_t gtoloff(off_t goff) const;
+  int64_t gtoloff(int64_t goff) const;
 
   void removeURIWhoseHostnameIs(const std::string& hostname);
 

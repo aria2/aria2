@@ -89,7 +89,7 @@ void MetalinkProcessorTest::testParseFileV4()
   CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
   e = m->getEntries()[0];
   CPPUNIT_ASSERT_EQUAL(std::string("example.ext"), e->getPath());
-  CPPUNIT_ASSERT_EQUAL((off_t)786430LL, e->getLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)786430LL, e->getLength());
   CPPUNIT_ASSERT_EQUAL(-1, e->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(std::string("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"),
@@ -500,7 +500,7 @@ void MetalinkProcessorTest::testParseFile()
 
     SharedHandle<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
-    CPPUNIT_ASSERT_EQUAL((off_t)0LL, entry1->getLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)0LL, entry1->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), entry1->version);
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entry1->languages[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entry1->oses[0]);
@@ -550,7 +550,7 @@ void MetalinkProcessorTest::testParseFile()
 
     SharedHandle<MetalinkEntry> entry2 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry2->getPath());
-    CPPUNIT_ASSERT_EQUAL((off_t)345689LL, entry2->getLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)345689LL, entry2->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), entry2->version);
     CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entry2->languages[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entry2->oses[0]);
@@ -697,7 +697,7 @@ void MetalinkProcessorTest::testBadSize()
       m->getEntries().begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
-    CPPUNIT_ASSERT_EQUAL((off_t)0LL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)0LL, e->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), e->version);
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), e->languages[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), e->oses[0]);
@@ -728,7 +728,7 @@ void MetalinkProcessorTest::testBadMaxConn()
     std::vector<SharedHandle<MetalinkEntry> >::const_iterator entryItr =
       m->getEntries().begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
-    CPPUNIT_ASSERT_EQUAL((off_t)43743838LL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)43743838LL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -1008,7 +1008,7 @@ void MetalinkProcessorTest::testLargeFileSize()
   try {
     SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    CPPUNIT_ASSERT_EQUAL((off_t)9223372036854775807LL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }
@@ -1032,7 +1032,7 @@ void MetalinkProcessorTest::testXmlPrefixV3()
     SharedHandle<Metalinker> m = metalink::parseBinaryStream(&dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->getEntries().size());
     SharedHandle<MetalinkEntry> e = m->getEntries()[0];
-    CPPUNIT_ASSERT_EQUAL((off_t)9223372036854775807LL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL, e->getLength());
   } catch(Exception& e) {
     CPPUNIT_FAIL(e.stackTrace());
   }

@@ -775,7 +775,7 @@ void RequestGroupMan::formatDownloadResultFull
     if((*i)->getLength() == 0 || downloadResult->bitfield.empty()) {
       o << "  -|";
     } else {
-      off_t completedLength =
+      int64_t completedLength =
         bt.getOffsetCompletedLength((*i)->getOffset(), (*i)->getLength());
       o << std::setw(3) << 100*completedLength/(*i)->getLength() << "|";
     }

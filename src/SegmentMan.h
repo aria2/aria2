@@ -124,7 +124,7 @@ public:
    * If Transfer-Encoding is Chunked or Content-Length header is not provided,
    * then this value is set to be 0.
    */
-  off_t getTotalLength() const;
+  int64_t getTotalLength() const;
 
   /**
    * Returs true when the download has finished.
@@ -202,7 +202,7 @@ public:
   /**
    * Returns the length of bytes downloaded.
    */
-  off_t getDownloadLength() const;
+  int64_t getDownloadLength() const;
 
 
   // If there is inactive PeerStat in peerStats_, it is replaced with
@@ -238,7 +238,7 @@ public:
   /**
    * Returns the downloaded bytes in this session.
    */
-  off_t calculateSessionDownloadLength() const;
+  int64_t calculateSessionDownloadLength() const;
 
   size_t countFreePieceFrom(size_t index) const;
 

@@ -689,7 +689,7 @@ void computeHeadPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- off_t head)
+ int64_t head)
 {
   if(head == 0) {
     return;
@@ -714,7 +714,7 @@ void computeTailPieces
 (std::vector<size_t>& indexes,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- off_t tail)
+ int64_t tail)
 {
   if(tail == 0) {
     return;
@@ -739,7 +739,7 @@ void parsePrioritizePieceRange
 (std::vector<size_t>& result, const std::string& src,
  const std::vector<SharedHandle<FileEntry> >& fileEntries,
  size_t pieceLength,
- off_t defaultSize)
+ int64_t defaultSize)
 {
   std::vector<size_t> indexes;
   std::vector<Scip> parts;
@@ -1179,7 +1179,7 @@ void convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
 {
   size_t numBlock = dest->countBlock();
   for(size_t index = 0; index < numBlock; ++index) {
-    if(src->isBitSetOffsetRange((off_t)index*dest->getBlockLength(),
+    if(src->isBitSetOffsetRange((int64_t)index*dest->getBlockLength(),
                                 dest->getBlockLength())) {
       dest->setBit(index);
     }

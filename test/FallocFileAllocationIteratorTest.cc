@@ -35,7 +35,7 @@ void FallocFileAllocationIteratorTest::testAllocate()
   of.close();
 
   File f(fn);
-  CPPUNIT_ASSERT_EQUAL((off_t)10, f.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)10, f.size());
 
   DefaultDiskWriter writer(fn);
   int64_t offset = 10;
@@ -48,7 +48,7 @@ void FallocFileAllocationIteratorTest::testAllocate()
   itr.allocateChunk();
   CPPUNIT_ASSERT(itr.finished());
 
-  CPPUNIT_ASSERT_EQUAL((off_t)40960, f.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)40960, f.size());
 #endif // !HAVE_FALLOCATE
 }
 

@@ -58,7 +58,7 @@ void RequestGroupTest::testCreateDownloadResult()
   
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/myfile"),
                          result->fileEntries[0]->getPath());
-    CPPUNIT_ASSERT_EQUAL((off_t)1024*1024,
+    CPPUNIT_ASSERT_EQUAL((int64_t)1024*1024,
                          result->fileEntries.back()->getLastOffset());
     CPPUNIT_ASSERT_EQUAL((uint64_t)0, result->sessionDownloadLength);
     CPPUNIT_ASSERT_EQUAL((int64_t)0, result->sessionTime);

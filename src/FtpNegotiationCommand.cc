@@ -367,7 +367,7 @@ bool FtpNegotiationCommand::sendSize() {
   return false;
 }
 
-bool FtpNegotiationCommand::onFileSizeDetermined(off_t totalLength)
+bool FtpNegotiationCommand::onFileSizeDetermined(int64_t totalLength)
 {
   getFileEntry()->setLength(totalLength);
   if(getFileEntry()->getPath().empty()) {

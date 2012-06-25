@@ -96,9 +96,9 @@ public:
 
   SharedHandle<StreamFilter> getContentEncodingStreamFilter() const;
 
-  off_t getContentLength() const;
+  int64_t getContentLength() const;
 
-  off_t getEntityLength() const;
+  int64_t getEntityLength() const;
 
   // Returns type "/" subtype. The parameter is removed.
   std::string getContentType() const;

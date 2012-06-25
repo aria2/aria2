@@ -58,9 +58,9 @@ public:
 
   virtual size_t getIndex() const;
 
-  virtual off_t getPosition() const;
+  virtual int64_t getPosition() const;
 
-  virtual off_t getPositionToWrite() const;
+  virtual int64_t getPositionToWrite() const;
 
   virtual int32_t getLength() const;
 

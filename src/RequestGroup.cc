@@ -386,7 +386,7 @@ void RequestGroup::createInitialCommand
       }
       removeDefunctControlFile(progressInfoFile);
       {
-        off_t actualFileSize = pieceStorage_->getDiskAdaptor()->size();
+        int64_t actualFileSize = pieceStorage_->getDiskAdaptor()->size();
         if(actualFileSize == downloadContext_->getTotalLength()) {
           // First, make DiskAdaptor read-only mode to allow the
           // program to seed file in read-only media.
@@ -551,7 +551,7 @@ void RequestGroup::processCheckIntegrityEntry
  const SharedHandle<CheckIntegrityEntry>& entry,
  DownloadEngine* e)
 {
-  off_t actualFileSize = pieceStorage_->getDiskAdaptor()->size();
+  int64_t actualFileSize = pieceStorage_->getDiskAdaptor()->size();
   if(actualFileSize > downloadContext_->getTotalLength()) {
     entry->cutTrailingGarbage();
   }
@@ -858,7 +858,7 @@ std::string RequestGroup::getFirstFilePath() const
   }
 }
 
-off_t RequestGroup::getTotalLength() const
+int64_t RequestGroup::getTotalLength() const
 {
   if(!pieceStorage_) {
     return 0;
@@ -871,7 +871,7 @@ off_t RequestGroup::getTotalLength() const
   }
 }
 
-off_t RequestGroup::getCompletedLength() const
+int64_t RequestGroup::getCompletedLength() const
 {
   if(!pieceStorage_) {
     return 0;
@@ -897,8 +897,8 @@ void RequestGroup::validateFilename(const std::string& expectedFilename,
   }
 }
 
-void RequestGroup::validateTotalLength(off_t expectedTotalLength,
-                                       off_t actualTotalLength) const
+void RequestGroup::validateTotalLength(int64_t expectedTotalLength,
+                                       int64_t actualTotalLength) const
 {
   if(expectedTotalLength <= 0) {
     return;
@@ -916,7 +916,7 @@ void RequestGroup::validateFilename(const std::string& actualFilename) const
   validateFilename(downloadContext_->getFileEntries().front()->getBasename(), actualFilename);
 }
 
-void RequestGroup::validateTotalLength(off_t actualTotalLength) const
+void RequestGroup::validateTotalLength(int64_t actualTotalLength) const
 {
   validateTotalLength(getTotalLength(), actualTotalLength);
 }
@@ -1199,7 +1199,7 @@ void RequestGroup::reportDownloadFinished()
 #ifdef ENABLE_BITTORRENT
   if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
     TransferStat stat = calculateStat();
-    off_t completedLength = getCompletedLength();
+    int64_t completedLength = getCompletedLength();
     double shareRatio = completedLength == 0 ? 0.0 :
       1.0*stat.getAllTimeUploadLength()/completedLength;
     SharedHandle<TorrentAttribute> attrs =

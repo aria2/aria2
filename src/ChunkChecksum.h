@@ -60,7 +60,7 @@ public:
   bool validateChunk(const std::string& actualDigest,
                      size_t index) const;
 
-  off_t getEstimatedDataLength() const;
+  int64_t getEstimatedDataLength() const;
 
   size_t countPieceHash() const;
 

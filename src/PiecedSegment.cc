@@ -61,12 +61,12 @@ size_t PiecedSegment::getIndex() const
   return piece_->getIndex();
 }
 
-off_t PiecedSegment::getPosition() const
+int64_t PiecedSegment::getPosition() const
 {
-  return ((off_t)piece_->getIndex())*pieceLength_;
+  return ((int64_t)piece_->getIndex())*pieceLength_;
 }
 
-off_t PiecedSegment::getPositionToWrite() const
+int64_t PiecedSegment::getPositionToWrite() const
 {
   return getPosition()+writtenLength_;
 }

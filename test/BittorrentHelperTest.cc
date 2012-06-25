@@ -205,14 +205,14 @@ void BittorrentHelperTest::testGetTotalLength() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
 
-  CPPUNIT_ASSERT_EQUAL((off_t)384LL, dctx->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)384LL, dctx->getTotalLength());
 }
 
 void BittorrentHelperTest::testGetTotalLengthSingle() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/single.torrent", dctx, option_);
 
-  CPPUNIT_ASSERT_EQUAL((off_t)384LL, dctx->getTotalLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)384LL, dctx->getTotalLength());
 }
 
 void BittorrentHelperTest::testGetFileModeMulti() {

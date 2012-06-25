@@ -227,7 +227,7 @@ SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
   return filter;
 }
 
-off_t HttpResponse::getContentLength() const
+int64_t HttpResponse::getContentLength() const
 {
   if(!httpHeader_) {
     return 0;
@@ -236,7 +236,7 @@ off_t HttpResponse::getContentLength() const
   }
 }
 
-off_t HttpResponse::getEntityLength() const
+int64_t HttpResponse::getEntityLength() const
 {
   if(!httpHeader_) {
     return 0;

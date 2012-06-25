@@ -221,7 +221,7 @@ void BitfieldManTest::testFilter()
   for(size_t i = 0; i < A2_ARRAY_LEN(ans); ++i) {
     CPPUNIT_ASSERT_EQUAL(ans[i], out[i]);
   }
-  CPPUNIT_ASSERT_EQUAL((off_t)12ULL, btman.getFilteredTotalLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)12ULL, btman.getFilteredTotalLength());
 
   // test offset=5, length=2
   out.clear();
@@ -235,13 +235,13 @@ void BitfieldManTest::testFilter()
   CPPUNIT_ASSERT_EQUAL((size_t)3, out[1]);
   btman.setBit(2);
   btman.setBit(3);
-  CPPUNIT_ASSERT_EQUAL((off_t)4ULL, btman.getFilteredTotalLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)4ULL, btman.getFilteredTotalLength());
   CPPUNIT_ASSERT(btman.isFilteredAllBitSet());
 
   BitfieldMan btman2(2, 31);
   btman2.addFilter(0, 31);
   btman2.enableFilter();
-  CPPUNIT_ASSERT_EQUAL((off_t)31ULL, btman2.getFilteredTotalLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)31ULL, btman2.getFilteredTotalLength());
 }
 
 void BitfieldManTest::testAddFilter_zeroLength()
@@ -453,27 +453,27 @@ void BitfieldManTest::testGetOffsetCompletedLength()
 {
   BitfieldMan bt(1024, 1024*20);
   // 00000|00000|00000|00000
-  CPPUNIT_ASSERT_EQUAL((off_t)0, bt.getOffsetCompletedLength(0, 1024));
-  CPPUNIT_ASSERT_EQUAL((off_t)0, bt.getOffsetCompletedLength(0, 0));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bt.getOffsetCompletedLength(0, 1024));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bt.getOffsetCompletedLength(0, 0));
   for(size_t i = 2; i <= 4; ++i) {
     bt.setBit(i);
   }
   // 00111|00000|00000|00000
-  CPPUNIT_ASSERT_EQUAL((off_t)3072, bt.getOffsetCompletedLength(2048, 3072));
-  CPPUNIT_ASSERT_EQUAL((off_t)3071, bt.getOffsetCompletedLength(2047, 3072));
-  CPPUNIT_ASSERT_EQUAL((off_t)3071, bt.getOffsetCompletedLength(2049, 3072));
-  CPPUNIT_ASSERT_EQUAL((off_t)0, bt.getOffsetCompletedLength(2048, 0));
-  CPPUNIT_ASSERT_EQUAL((off_t)1, bt.getOffsetCompletedLength(2048, 1));
-  CPPUNIT_ASSERT_EQUAL((off_t)0, bt.getOffsetCompletedLength(2047, 1));
-  CPPUNIT_ASSERT_EQUAL((off_t)3072, bt.getOffsetCompletedLength(0, 1024*20));
-  CPPUNIT_ASSERT_EQUAL((off_t)3072,
+  CPPUNIT_ASSERT_EQUAL((int64_t)3072, bt.getOffsetCompletedLength(2048, 3072));
+  CPPUNIT_ASSERT_EQUAL((int64_t)3071, bt.getOffsetCompletedLength(2047, 3072));
+  CPPUNIT_ASSERT_EQUAL((int64_t)3071, bt.getOffsetCompletedLength(2049, 3072));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bt.getOffsetCompletedLength(2048, 0));
+  CPPUNIT_ASSERT_EQUAL((int64_t)1, bt.getOffsetCompletedLength(2048, 1));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bt.getOffsetCompletedLength(2047, 1));
+  CPPUNIT_ASSERT_EQUAL((int64_t)3072, bt.getOffsetCompletedLength(0, 1024*20));
+  CPPUNIT_ASSERT_EQUAL((int64_t)3072,
                        bt.getOffsetCompletedLength(0, 1024*20+10));
-  CPPUNIT_ASSERT_EQUAL((off_t)0, bt.getOffsetCompletedLength(1024*20, 1));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bt.getOffsetCompletedLength(1024*20, 1));
 }
 
 void BitfieldManTest::testGetMissingUnusedLength()
 {
-  off_t totalLength = 1024*10+10;
+  int64_t totalLength = 1024*10+10;
   size_t blockLength = 1024;
 
   BitfieldMan bf(blockLength, totalLength);
@@ -482,30 +482,30 @@ void BitfieldManTest::testGetMissingUnusedLength()
   CPPUNIT_ASSERT_EQUAL(totalLength, bf.getMissingUnusedLength(0));
 
   // from index 10 and all blocks are unused and not acquired.
-  CPPUNIT_ASSERT_EQUAL((off_t)10ULL, bf.getMissingUnusedLength(10));
+  CPPUNIT_ASSERT_EQUAL((int64_t)10ULL, bf.getMissingUnusedLength(10));
 
   // from index 11
-  CPPUNIT_ASSERT_EQUAL((off_t)0ULL, bf.getMissingUnusedLength(11));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0ULL, bf.getMissingUnusedLength(11));
 
   // from index 12
-  CPPUNIT_ASSERT_EQUAL((off_t)0ULL, bf.getMissingUnusedLength(12));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0ULL, bf.getMissingUnusedLength(12));
 
   // from index 0 and 5th block is used.
   bf.setUseBit(5);
-  CPPUNIT_ASSERT_EQUAL((off_t)(5LL*blockLength), bf.getMissingUnusedLength(0));
+  CPPUNIT_ASSERT_EQUAL((int64_t)(5LL*blockLength), bf.getMissingUnusedLength(0));
 
   // from index 0 and 4th block is acquired.
   bf.setBit(4);
-  CPPUNIT_ASSERT_EQUAL((off_t)(4LL*blockLength), bf.getMissingUnusedLength(0));
+  CPPUNIT_ASSERT_EQUAL((int64_t)(4LL*blockLength), bf.getMissingUnusedLength(0));
 
   // from index 1
-  CPPUNIT_ASSERT_EQUAL((off_t)(3LL*blockLength), bf.getMissingUnusedLength(1));
+  CPPUNIT_ASSERT_EQUAL((int64_t)(3LL*blockLength), bf.getMissingUnusedLength(1));
 }
 
 void BitfieldManTest::testSetBitRange()
 {
   size_t blockLength = 1024*1024;
-  off_t totalLength = 10*blockLength;
+  int64_t totalLength = 10*blockLength;
 
   BitfieldMan bf(blockLength, totalLength);
 
@@ -517,13 +517,13 @@ void BitfieldManTest::testSetBitRange()
   for(size_t i = 5; i < 10; ++i) {
     CPPUNIT_ASSERT(!bf.isBitSet(i));
   }
-  CPPUNIT_ASSERT_EQUAL((off_t)(5LL*blockLength), bf.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((int64_t)(5LL*blockLength), bf.getCompletedLength());
 }
 
 void BitfieldManTest::testGetAllMissingIndexes_noarg()
 {
   size_t blockLength = 16*1024;
-  off_t totalLength = 1024*1024;
+  int64_t totalLength = 1024*1024;
   size_t nbits = (totalLength+blockLength-1)/blockLength;
   BitfieldMan bf(blockLength, totalLength);
   unsigned char misbitfield[8];
@@ -542,7 +542,7 @@ void BitfieldManTest::testGetAllMissingIndexes_noarg()
 void BitfieldManTest::testGetAllMissingIndexes_checkLastByte()
 {
   size_t blockLength = 16*1024;
-  off_t totalLength = blockLength*2;
+  int64_t totalLength = blockLength*2;
   size_t nbits = (totalLength+blockLength-1)/blockLength;
   BitfieldMan bf(blockLength, totalLength);
   unsigned char misbitfield[1];
@@ -555,7 +555,7 @@ void BitfieldManTest::testGetAllMissingIndexes_checkLastByte()
 void BitfieldManTest::testGetAllMissingIndexes()
 {
   size_t blockLength = 16*1024;
-  off_t totalLength = 1024*1024;
+  int64_t totalLength = 1024*1024;
   size_t nbits = (totalLength+blockLength-1)/blockLength;
   BitfieldMan bf(blockLength, totalLength);
   BitfieldMan peerBf(blockLength, totalLength);
@@ -581,7 +581,7 @@ void BitfieldManTest::testGetAllMissingIndexes()
 void BitfieldManTest::testGetAllMissingUnusedIndexes()
 {
   size_t blockLength = 16*1024;
-  off_t totalLength = 1024*1024;
+  int64_t totalLength = 1024*1024;
   size_t nbits = (totalLength+blockLength-1)/blockLength;
   BitfieldMan bf(blockLength, totalLength);
   BitfieldMan peerBf(blockLength, totalLength);

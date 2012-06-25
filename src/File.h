@@ -94,7 +94,7 @@ public:
    */
   bool mkdirs();
 
-  off_t size();
+  int64_t size();
 
   mode_t mode();
 

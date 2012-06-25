@@ -76,7 +76,7 @@ protected:
   virtual bool prepareForNextSegment();
 
   // This is file local offset
-  virtual off_t getRequestEndOffset() const = 0;
+  virtual int64_t getRequestEndOffset() const = 0;
 public:
   DownloadCommand(cuid_t cuid,
                   const SharedHandle<Request>& req,

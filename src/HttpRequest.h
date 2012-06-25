@@ -87,7 +87,7 @@ private:
 
   bool acceptGzip_;
 
-  off_t endOffsetOverride_;
+  int64_t endOffsetOverride_;
 
   std::string ifModSinceHeader_;
 
@@ -105,7 +105,7 @@ public:
 
   void setRequest(const SharedHandle<Request>& request);
 
-  off_t getEntityLength() const;
+  int64_t getEntityLength() const;
 
   const std::string& getHost() const;
 
@@ -140,9 +140,9 @@ public:
     return request_;
   }
 
-  off_t getStartByte() const;
+  int64_t getStartByte() const;
 
-  off_t getEndByte() const;
+  int64_t getEndByte() const;
 
   /**
    * Returns string representation of http request.  It usually starts
@@ -240,7 +240,7 @@ public:
     return acceptGzip_;
   }
 
-  void setEndOffsetOverride(off_t offset)
+  void setEndOffsetOverride(int64_t offset)
   {
     endOffsetOverride_ = offset;
   }

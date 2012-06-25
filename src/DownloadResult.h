@@ -79,11 +79,11 @@ struct DownloadResult
 
   SharedHandle<MetadataInfo> metadataInfo;
 
-  off_t totalLength;
+  int64_t totalLength;
 
-  off_t completedLength;
+  int64_t completedLength;
 
-  off_t uploadLength;
+  int64_t uploadLength;
 
   std::string bitfield;
 

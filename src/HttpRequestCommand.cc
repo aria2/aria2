@@ -86,13 +86,13 @@ SharedHandle<HttpRequest>
 createHttpRequest(const SharedHandle<Request>& req,
                   const SharedHandle<FileEntry>& fileEntry,
                   const SharedHandle<Segment>& segment,
-                  off_t totalLength,
+                  int64_t totalLength,
                   const SharedHandle<Option>& option,
                   const RequestGroup* rg,
                   const SharedHandle<CookieStorage>& cookieStorage,
                   const SharedHandle<AuthConfigFactory>& authConfigFactory,
                   const SharedHandle<Request>& proxyRequest,
-                  off_t endOffset = 0)
+                  int64_t endOffset = 0)
 {
   SharedHandle<HttpRequest> httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
@@ -180,15 +180,14 @@ bool HttpRequestCommand::executeInternal() {
           itr != eoi; ++itr) {
         const SharedHandle<Segment>& segment = *itr;
         if(!httpConnection_->isIssued(segment)) {
-          off_t endOffset = 0;
-          if(getRequestGroup()->getTotalLength() > 0 &&
-             getPieceStorage()) {
+          int64_t endOffset = 0;
+          if(getRequestGroup()->getTotalLength() > 0 && getPieceStorage()) {
             size_t nextIndex =
               getPieceStorage()->getNextUsedIndex(segment->getIndex());
             endOffset = std::min
-              (static_cast<off_t>(getFileEntry()->getLength()),
+              (getFileEntry()->getLength(),
                getFileEntry()->gtoloff
-               (static_cast<off_t>(segment->getSegmentLength())*nextIndex));
+               (static_cast<int64_t>(segment->getSegmentLength())*nextIndex));
           }
           SharedHandle<HttpRequest> httpRequest
             (createHttpRequest(getRequest(),

@@ -57,7 +57,7 @@ DownloadContext::DownloadContext():
   metalinkServerContacted_(false) {}
 
 DownloadContext::DownloadContext(int32_t pieceLength,
-                                 off_t totalLength,
+                                 int64_t totalLength,
                                  const std::string& path):
   pieceLength_(pieceLength),
   checksumVerified_(false),
@@ -95,7 +95,7 @@ int64_t DownloadContext::calculateSessionTime() const
 }
 
 SharedHandle<FileEntry>
-DownloadContext::findFileEntryByOffset(off_t offset) const
+DownloadContext::findFileEntryByOffset(int64_t offset) const
 {
   if(fileEntries_.empty() ||
      (offset > 0 && fileEntries_.back()->getLastOffset() <= offset)) {
@@ -198,7 +198,7 @@ size_t DownloadContext::getNumPieces() const
   }
 }
 
-off_t DownloadContext::getTotalLength() const
+int64_t DownloadContext::getTotalLength() const
 {
   if(fileEntries_.empty()) {
     return 0;

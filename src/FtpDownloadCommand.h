@@ -48,7 +48,7 @@ private:
   SharedHandle<SocketCore> ctrlSocket_;
 protected:
   virtual bool prepareForNextSegment();
-  virtual off_t getRequestEndOffset() const;
+  virtual int64_t getRequestEndOffset() const;
 public:
   FtpDownloadCommand(cuid_t cuid,
                      const SharedHandle<Request>& req,

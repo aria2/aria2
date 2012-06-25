@@ -386,9 +386,9 @@ void MultiDiskAdaptorTest::testCutTrailingGarbage()
 
   adaptor.cutTrailingGarbage();
 
-  CPPUNIT_ASSERT_EQUAL((off_t)256,
+  CPPUNIT_ASSERT_EQUAL((int64_t)256,
                        File(entries[0]->getPath()).size());
-  CPPUNIT_ASSERT_EQUAL((off_t)512,
+  CPPUNIT_ASSERT_EQUAL((int64_t)512,
                        File(entries[1]->getPath()).size());
 }
 

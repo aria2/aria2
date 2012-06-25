@@ -585,7 +585,7 @@ void createFileEntry
     entry->put(KEY_PATH, (*first)->getPath());
     entry->put(KEY_SELECTED, (*first)->isRequested()?VLB_TRUE:VLB_FALSE);
     entry->put(KEY_LENGTH, util::itos((*first)->getLength()));
-    off_t completedLength = bf->getOffsetCompletedLength
+    int64_t completedLength = bf->getOffsetCompletedLength
       ((*first)->getOffset(), (*first)->getLength());
     entry->put(KEY_COMPLETED_LENGTH, util::itos(completedLength));
 
@@ -602,7 +602,7 @@ template<typename InputIterator>
 void createFileEntry
 (const SharedHandle<List>& files,
  InputIterator first, InputIterator last,
- off_t totalLength,
+ int64_t totalLength,
  int32_t pieceLength,
  const std::string& bitfield)
 {
@@ -618,7 +618,7 @@ template<typename InputIterator>
 void createFileEntry
 (const SharedHandle<List>& files,
  InputIterator first, InputIterator last,
- off_t totalLength,
+ int64_t totalLength,
  int32_t pieceLength,
  const SharedHandle<PieceStorage>& ps)
 {

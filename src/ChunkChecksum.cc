@@ -56,9 +56,9 @@ bool ChunkChecksum::validateChunk
   return !digest.empty() && actualDigest == digest;
 }
 
-off_t ChunkChecksum::getEstimatedDataLength() const
+int64_t ChunkChecksum::getEstimatedDataLength() const
 {
-  return static_cast<off_t>(pieceLength_)*pieceHashes_.size();
+  return static_cast<int64_t>(pieceLength_)*pieceHashes_.size();
 }
 
 size_t ChunkChecksum::countPieceHash() const

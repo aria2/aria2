@@ -96,7 +96,7 @@ public:
 
   void setFileNameOfEntry(const std::string& filename);
 
-  void setFileLengthOfEntry(off_t length);
+  void setFileLengthOfEntry(int64_t length);
 
   void setVersionOfEntry(const std::string& version);
 

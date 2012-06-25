@@ -13,10 +13,10 @@ namespace aria2 {
 
 class MockPieceStorage : public PieceStorage {
 private:
-  off_t totalLength;
-  off_t filteredTotalLength;
-  off_t completedLength;
-  off_t filteredCompletedLength;
+  int64_t totalLength;
+  int64_t filteredTotalLength;
+  int64_t completedLength;
+  int64_t filteredCompletedLength;
   BitfieldMan* bitfieldMan;
   bool selectiveDownloadingMode;
   bool endGame;
@@ -117,7 +117,7 @@ public:
 
   virtual void markPieceMissing(size_t index) {}
 
-  virtual void markPiecesDone(off_t) {}
+  virtual void markPiecesDone(int64_t) {}
 
   virtual SharedHandle<Piece> getPiece(size_t index) {
     return SharedHandle<Piece>(new Piece());
@@ -131,35 +131,35 @@ public:
     return false;
   }
 
-  virtual off_t getTotalLength() {
+  virtual int64_t getTotalLength() {
     return totalLength;
   }
 
-  void setTotalLength(off_t totalLength) {
+  void setTotalLength(int64_t totalLength) {
     this->totalLength = totalLength;
   }
 
-  virtual off_t getFilteredTotalLength() {
+  virtual int64_t getFilteredTotalLength() {
     return filteredTotalLength;
   }
 
-  void setFilteredTotalLength(off_t totalLength) {
+  void setFilteredTotalLength(int64_t totalLength) {
     this->filteredTotalLength = totalLength;
   }
 
-  virtual off_t getCompletedLength() {
+  virtual int64_t getCompletedLength() {
     return completedLength;
   }
 
-  void setCompletedLength(off_t completedLength) {
+  void setCompletedLength(int64_t completedLength) {
     this->completedLength = completedLength;
   }
 
-  virtual off_t getFilteredCompletedLength() {
+  virtual int64_t getFilteredCompletedLength() {
     return filteredCompletedLength;
   }
 
-  void setFilteredCompletedLength(off_t completedLength) {
+  void setFilteredCompletedLength(int64_t completedLength) {
     this->filteredCompletedLength = completedLength;
   }
   

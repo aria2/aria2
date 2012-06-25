@@ -73,7 +73,7 @@ void Peer::usedBy(cuid_t cuid)
   cuid_ = cuid;
 }
 
-void Peer::allocateSessionResource(int32_t pieceLength, off_t totalLength)
+void Peer::allocateSessionResource(int32_t pieceLength, int64_t totalLength)
 {
   delete res_;
   res_ = new PeerSessionResource(pieceLength, totalLength);
@@ -81,7 +81,7 @@ void Peer::allocateSessionResource(int32_t pieceLength, off_t totalLength)
   updateSeeder();
 }
 
-void Peer::reconfigureSessionResource(int32_t pieceLength, off_t totalLength)
+void Peer::reconfigureSessionResource(int32_t pieceLength, int64_t totalLength)
 {
   assert(res_);
   res_->reconfigure(pieceLength, totalLength);
@@ -228,13 +228,13 @@ int Peer::calculateDownloadSpeed()
   return res_->getPeerStat().calculateDownloadSpeed();
 }
 
-off_t Peer::getSessionUploadLength() const
+int64_t Peer::getSessionUploadLength() const
 {
   assert(res_);
   return res_->uploadLength();
 }
 
-off_t Peer::getSessionDownloadLength() const
+int64_t Peer::getSessionDownloadLength() const
 {
   assert(res_);
   return res_->downloadLength();
@@ -388,7 +388,7 @@ const Timer& Peer::getLastAmUnchoking() const
   return res_->getLastAmUnchoking();
 }
 
-off_t Peer::getCompletedLength() const
+int64_t Peer::getCompletedLength() const
 {
   assert(res_);
   return res_->getCompletedLength();

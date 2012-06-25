@@ -234,7 +234,7 @@ void extractFileEntries
   if(filesList) {
     fileEntries.reserve(filesList->size());
     int64_t length = 0;
-    off_t offset = 0;
+    int64_t offset = 0;
     // multi-file mode
     torrent->mode = MULTI;
     for(List::ValueType::const_iterator itr = filesList->begin(),

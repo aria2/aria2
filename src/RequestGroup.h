@@ -230,9 +230,9 @@ public:
 
   std::string getFirstFilePath() const;
 
-  off_t getTotalLength() const;
+  int64_t getTotalLength() const;
 
-  off_t getCompletedLength() const;
+  int64_t getCompletedLength() const;
 
   /**
    * Compares expected filename with specified actualFilename.
@@ -241,10 +241,10 @@ public:
    */
   void validateFilename(const std::string& actualFilename) const;
 
-  void validateTotalLength(off_t expectedTotalLength,
-                           off_t actualTotalLength) const;
+  void validateTotalLength(int64_t expectedTotalLength,
+                           int64_t actualTotalLength) const;
 
-  void validateTotalLength(off_t actualTotalLength) const;
+  void validateTotalLength(int64_t actualTotalLength) const;
 
   void setNumConcurrentCommand(int num)
   {
