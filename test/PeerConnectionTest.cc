@@ -23,13 +23,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(PeerConnectionTest);
 void PeerConnectionTest::testReserveBuffer() {
   PeerConnection con(1, SharedHandle<Peer>(), SharedHandle<SocketCore>());
   con.presetBuffer((unsigned char*)"foo", 3);
-  CPPUNIT_ASSERT_EQUAL((size_t)MAX_PAYLOAD_LEN, con.getMaxPayloadLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)MAX_BUFFER_CAPACITY, con.getBufferCapacity());
   CPPUNIT_ASSERT_EQUAL((size_t)3, con.getBufferLength());
 
   size_t newLength = 32*1024;
   con.reserveBuffer(newLength);
 
-  CPPUNIT_ASSERT_EQUAL(newLength, con.getMaxPayloadLength());
+  CPPUNIT_ASSERT_EQUAL(newLength, con.getBufferCapacity());
   CPPUNIT_ASSERT_EQUAL((size_t)3, con.getBufferLength());
   CPPUNIT_ASSERT(memcmp("foo", con.getBuffer(), 3) == 0);
 }

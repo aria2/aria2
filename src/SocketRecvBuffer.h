@@ -79,6 +79,8 @@ public:
   {
     return bufLen_ == 0;
   }
+
+  void pushBuffer(const unsigned char* data, size_t len);
 private:
   SharedHandle<SocketCore> socket_;
   size_t capacity_;

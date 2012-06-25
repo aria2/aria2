@@ -49,9 +49,10 @@ class Peer;
 class SocketCore;
 class ARC4Encryptor;
 
-// The maximum length of payload. Messages beyond that length are
+// The maximum length of buffer. If the message length (including 4
+// bytes length and payload length) is larger than this value, it is
 // dropped.
-#define MAX_PAYLOAD_LEN (16*1024+128)
+#define MAX_BUFFER_CAPACITY (16*1024+128)
 
 class PeerConnection {
 private:
@@ -59,13 +60,19 @@ private:
   SharedHandle<Peer> peer_;
   SharedHandle<SocketCore> socket_;
 
-  // Maximum payload length
-  size_t maxPayloadLength_;
+  int msgState_;
+  // The capacity of the buffer resbuf_
+  size_t bufferCapacity_;
+  // The internal buffer of incoming handshakes and messages
   unsigned char* resbuf_;
+  // The number of bytes written in resbuf_
   size_t resbufLength_;
-  size_t currentPayloadLength_;
-  unsigned char lenbuf_[4];
-  size_t lenbufLength_;
+  // The length of message (not handshake) currently receiving
+  uint32_t currentPayloadLength_;
+  // The number of bytes processed in resbuf_
+  size_t resbufOffset_;
+  // The offset in resbuf_ where the 4 bytes message length begins
+  size_t msgOffset_;
 
   SocketBuffer socketBuffer_;
 
@@ -123,15 +130,17 @@ public:
     return resbufLength_;
   }
 
-  unsigned char* detachBuffer();
+  // Returns the pointer to the message in wire format.  This method
+  // must be called after receiveMessage() returned true.
+  const unsigned char* getMsgPayloadBuffer() const;
 
   // Reserves buffer at least minSize. Reallocate memory if current
   // buffer length < minSize
   void reserveBuffer(size_t minSize);
 
-  size_t getMaxPayloadLength()
+  size_t getBufferCapacity()
   {
-    return maxPayloadLength_;
+    return bufferCapacity_;
   }
 };
 

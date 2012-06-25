@@ -52,16 +52,29 @@
 
 namespace aria2 {
 
+namespace {
+enum {
+  // Before reading first byte of message length
+  BT_MSG_PREV_READ_LENGTH,
+  // Reading 4 bytes message length
+  BT_MSG_READ_LENGTH,
+  // Reading message payload following message length
+  BT_MSG_READ_PAYLOAD
+};
+} // namespace
+
 PeerConnection::PeerConnection
 (cuid_t cuid, const SharedHandle<Peer>& peer, const SocketHandle& socket)
   : cuid_(cuid),
     peer_(peer),
     socket_(socket),
-    maxPayloadLength_(MAX_PAYLOAD_LEN),
-    resbuf_(new unsigned char[maxPayloadLength_]),
+    msgState_(BT_MSG_PREV_READ_LENGTH),
+    bufferCapacity_(MAX_BUFFER_CAPACITY),
+    resbuf_(new unsigned char[bufferCapacity_]),
     resbufLength_(0),
     currentPayloadLength_(0),
-    lenbufLength_(0),
+    resbufOffset_(0),
+    msgOffset_(0),
     socketBuffer_(socket),
     encryptionEnabled_(false),
     prevPeek_(false)
@@ -80,71 +93,98 @@ void PeerConnection::pushBytes(unsigned char* data, size_t len)
   socketBuffer_.pushBytes(data, len);
 }
 
-bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
-  if(resbufLength_ == 0 && 4 > lenbufLength_) {
-    // read payload size, 32bit unsigned integer
-    size_t remaining = 4-lenbufLength_;
-    size_t temp = remaining;
-    readData(lenbuf_+lenbufLength_, remaining, encryptionEnabled_);
-    if(remaining == 0) {
-      if(socket_->wantRead() || socket_->wantWrite()) {
-        return false;
+bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength)
+{
+  while(1) {
+    bool done = false;
+    size_t i;
+    for(i = resbufOffset_; i < resbufLength_ && !done; ++i) {
+      unsigned char c = resbuf_[i];
+      switch(msgState_) {
+      case(BT_MSG_PREV_READ_LENGTH):
+        msgOffset_ = i;
+        currentPayloadLength_ = 0;
+        msgState_ = BT_MSG_READ_LENGTH;
+        // Fall through
+      case(BT_MSG_READ_LENGTH):
+        currentPayloadLength_ <<= 8;
+        currentPayloadLength_ += c;
+        // The message length is uint32_t
+        if(i - msgOffset_ == 3) {
+          if(currentPayloadLength_ + 4 > bufferCapacity_) {
+            throw DL_ABORT_EX(fmt(EX_TOO_LONG_PAYLOAD, currentPayloadLength_));
+          }
+          if(currentPayloadLength_ == 0) {
+            // Length == 0 means keep-alive message.
+            done = true;
+            msgState_ = BT_MSG_PREV_READ_LENGTH;
+          } else {
+            msgState_ = BT_MSG_READ_PAYLOAD;
+          }
+        }
+        break;
+      case(BT_MSG_READ_PAYLOAD):
+        // We chosen the bufferCapacity_ so that whole message,
+        // including 4 bytes length and payload, in it. So here we
+        // just make sure that it happens.
+        if(resbufLength_ - msgOffset_ >= 4 + currentPayloadLength_) {
+          i = msgOffset_ + 4 + currentPayloadLength_ - 1;
+          done = true;
+          msgState_ = BT_MSG_PREV_READ_LENGTH;
+        } else {
+          // We need another read.
+          i = resbufLength_-1;
+        }
+        break;
       }
-      // we got EOF
-      A2_LOG_DEBUG(fmt("CUID#%lld - In PeerConnection::receiveMessage(),"
-                       " remain=%lu",
-                       cuid_,
-                       static_cast<unsigned long>(temp)));
-      peer_->setDisconnectedGracefully(true);
-      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
     }
-    lenbufLength_ += remaining;
-    if(4 > lenbufLength_) {
-      // still 4-lenbufLength_ bytes to go
-      return false;
-    }
-    uint32_t payloadLength;
-    memcpy(&payloadLength, lenbuf_, sizeof(payloadLength));
-    payloadLength = ntohl(payloadLength);
-    if(payloadLength > maxPayloadLength_) {
-      throw DL_ABORT_EX(fmt(EX_TOO_LONG_PAYLOAD, payloadLength));
-    }
-    currentPayloadLength_ = payloadLength;
-  }
-  if(!socket_->isReadable(0)) {
-    return false;
-  }
-  // we have currentPayloadLen-resbufLen bytes to read
-  size_t remaining = currentPayloadLength_-resbufLength_;
-  size_t temp = remaining;
-  if(remaining > 0) {
-    readData(resbuf_+resbufLength_, remaining, encryptionEnabled_);
-    if(remaining == 0) {
-      if(socket_->wantRead() || socket_->wantWrite()) {
-        return false;
+    resbufOffset_ = i;
+    if(done) {
+      if(data) {
+        memcpy(data, resbuf_ + msgOffset_ + 4, currentPayloadLength_);
       }
-      // we got EOF
-      A2_LOG_DEBUG(fmt("CUID#%lld - In PeerConnection::receiveMessage(),"
-                       " payloadlen=%lu, remaining=%lu",
-                       cuid_,
-                       static_cast<unsigned long>(currentPayloadLength_),
-                       static_cast<unsigned long>(temp)));
-      peer_->setDisconnectedGracefully(true);
-      throw DL_ABORT_EX(EX_EOF_FROM_PEER);
-    }
-    resbufLength_ += remaining;
-    if(currentPayloadLength_ > resbufLength_) {
-      return false;
+      dataLength = currentPayloadLength_;
+      return true;
+    } else {
+      assert(resbufOffset_ == resbufLength_);
+      if(resbufLength_ != 0) {
+        if(msgOffset_ == 0 && resbufLength_ == currentPayloadLength_ + 4) {
+          // All bytes in buffer have been processed, so clear it
+          // away.
+          resbufLength_ = 0;
+          resbufOffset_ = 0;
+          msgOffset_ = 0;
+        } else {
+          // Shift buffer so that resbuf_[msgOffset_] moves to
+          // rebuf_[0].
+          memmove(resbuf_, resbuf_ + msgOffset_, resbufLength_ - msgOffset_);
+          resbufLength_ -= msgOffset_;
+          resbufOffset_ = resbufLength_;
+          msgOffset_ = 0;
+        }
+      }
+      size_t nread;
+      // To reduce the amount of copy involved in buffer shift, large
+      // payload will be read exactly.
+      if(currentPayloadLength_ > 4096) {
+        nread = currentPayloadLength_ + 4 - resbufLength_;
+      } else {
+        nread = bufferCapacity_ - resbufLength_;
+      }
+      readData(resbuf_+resbufLength_, nread, encryptionEnabled_);
+      if(nread == 0) {
+        if(socket_->wantRead() || socket_->wantWrite()) {
+          break;
+        } else {
+          peer_->setDisconnectedGracefully(true);
+          throw DL_ABORT_EX(EX_EOF_FROM_PEER);
+        }
+      } else {
+        resbufLength_ += nread;
+      }
     }
   }
-  // we got whole payload.
-  resbufLength_ = 0;
-  lenbufLength_ = 0;
-  if(data) {
-    memcpy(data, resbuf_, currentPayloadLength_);
-  }
-  dataLength = currentPayloadLength_;
-  return true;
+  return false;
 }
 
 bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
@@ -202,7 +242,7 @@ void PeerConnection::enableEncryption
 
 void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
 {
-  size_t nwrite = std::min(maxPayloadLength_, length);
+  size_t nwrite = std::min(bufferCapacity_, length);
   memcpy(resbuf_, data, nwrite);
   resbufLength_ = length;
 }
@@ -219,18 +259,16 @@ ssize_t PeerConnection::sendPendingData()
   return writtenLength;
 }
 
-unsigned char* PeerConnection::detachBuffer()
+const unsigned char* PeerConnection::getMsgPayloadBuffer() const
 {
-  unsigned char* detachbuf = resbuf_;
-  resbuf_ = new unsigned char[maxPayloadLength_];
-  return detachbuf;
+  return resbuf_ + msgOffset_ + 4;
 }
 
 void PeerConnection::reserveBuffer(size_t minSize)
 {
-  if(maxPayloadLength_ < minSize) {
-    maxPayloadLength_ = minSize;
-    unsigned char *buf = new unsigned char[maxPayloadLength_];
+  if(bufferCapacity_ < minSize) {
+    bufferCapacity_ = minSize;
+    unsigned char *buf = new unsigned char[bufferCapacity_];
     memcpy(buf, resbuf_, resbufLength_);
     delete [] resbuf_;
     resbuf_ = buf;

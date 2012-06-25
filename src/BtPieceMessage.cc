@@ -73,13 +73,10 @@ BtPieceMessage::BtPieceMessage
 }
 
 BtPieceMessage::~BtPieceMessage()
-{
-  delete [] data_;
-}
+{}
 
-void BtPieceMessage::setRawMessage(unsigned char* data)
+void BtPieceMessage::setMsgPayload(const unsigned char* data)
 {
-  delete [] data_;
   data_ = data;
 }
 

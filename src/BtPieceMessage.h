@@ -51,7 +51,7 @@ private:
   size_t index_;
   int32_t begin_;
   int32_t blockLength_;
-  unsigned char* data_;
+  const unsigned char* data_;
   SharedHandle<DownloadContext> downloadContext_;
   SharedHandle<PeerStorage> peerStorage_;
 
@@ -87,10 +87,9 @@ public:
 
   int32_t getBlockLength() const { return blockLength_; }
 
-  // Stores raw message data. After this function call, this object
-  // has ownership of data. Caller must not be free or alter data.
-  // Member block is pointed to block starting position in data.
-  void setRawMessage(unsigned char* data);
+  // Sets message payload data. Caller must not change or free data
+  // before doReceivedAction().
+  void setMsgPayload(const unsigned char* data);
 
   void setBlockLength(int32_t blockLength) { blockLength_ = blockLength; }
 

@@ -121,12 +121,13 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
     return SharedHandle<BtMessage>();
   }
   BtMessageHandle msg =
-    messageFactory_->createBtMessage(peerConnection_->getBuffer(), dataLength);
+    messageFactory_->createBtMessage(peerConnection_->getMsgPayloadBuffer(),
+                                     dataLength);
   msg->validate();
   if(msg->getId() == BtPieceMessage::ID) {
     SharedHandle<BtPieceMessage> piecemsg =
       static_pointer_cast<BtPieceMessage>(msg);
-    piecemsg->setRawMessage(peerConnection_->detachBuffer());
+    piecemsg->setMsgPayload(peerConnection_->getMsgPayloadBuffer());
   }
   return msg;
 }
