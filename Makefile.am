@@ -2,7 +2,7 @@ SUBDIRS =  po intl lib deps src doc test
 
 ACLOCAL_AMFLAGS = -I m4 --install
 
-EXTRA_DIST = config.rpath
+EXTRA_DIST = config.rpath mingw-config
 
 dist_doc_DATA = README README.rst README.html
 
