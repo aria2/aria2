@@ -14,10 +14,10 @@ AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/a2io.h])
 AC_CONFIG_HEADERS([config.h])
 
-case "$target" in
+case "$host" in
   *mingw*|*cygwin*)
     win_build=yes
-    LIBS="-lws2_32 -lwsock32 -lgdi32 -lwinmm $LIBS"
+    LIBS="$LIBS -lws2_32 -lwsock32 -lgdi32 -lwinmm"
     ;;
 esac
 
@@ -48,6 +48,8 @@ AC_ARG_WITH([bashcompletiondir],
                  [Directory to install bash_completion file]),
   [bashcompletiondir=$withval], [bashcompletiondir=$docdir/bash_completion])
 
+AC_ARG_VAR([ARIA2_STATIC], [Set `yes' to build a statically linked aria2])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -75,7 +77,37 @@ AC_LANG([C++])
 # Check pkg-config is available
 PKG_PROG_PKG_CONFIG([0.20])
 
+# Check static build is requested
+if test "x$ARIA2_STATIC" = "xyes"; then
+  case "$host" in
+    i686*mingw*)
+      dnl Define _USE_32BIT_TIME_T because 32bit library of MinGW-w64
+      dnl does not implement many 64bit version functions.
+      CPPFLAGS="-D_USE_32BIT_TIME_T $CPPFLAGS"
+    ;;
+  esac
+else
+  dnl Make variable empty to avoid confusion
+  ARIA2_STATIC=
+fi
+
 # Checks for libraries.
+
+# Check availability of libz
+if test "x$with_libz" = "xyes"; then
+  PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.3], [have_zlib=yes], [have_zlib=no])
+  if test "x$have_zlib" = "xyes"; then
+    AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
+    LIBS="$ZLIB_LIBS $LIBS"
+    CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
+  else
+    AC_MSG_WARN([$ZLIB_PKG_ERRORS])
+    if test "x$with_libz_requested" = "xyes"; then
+      ARIA2_DEP_NOT_MET([libz])
+    fi
+  fi
+fi
+
 if test "x$with_libxml2" = "xyes"; then
   AM_PATH_XML2([2.6.24], [have_libxml2=yes])
   if test "x$have_libxml2" = "xyes"; then
@@ -189,25 +221,14 @@ if test "x$with_libcares" = "xyes"; then
     CPPFLAGS="$LIBCARES_CFLAGS $CPPFLAGS"
     AC_CHECK_TYPES([ares_addr_node], [], [], [[#include <ares.h>]])
     AC_CHECK_FUNCS([ares_set_servers])
+
+    if test "x$ARIA2_STATIC" = "xyes"; then
+      CPPFLAGS="-DCARES_STATICLIB $CPPFLAGS"
+    fi
   else
     AC_MSG_WARN([$LIBCARES_PKG_ERRORS])
     if test "x$with_libcares_requested" = "xyes"; then
       ARIA2_DEP_NOT_MET([libcares])
-    fi
-  fi
-fi
-
-# Check availability of libz
-if test "x$with_libz" = "xyes"; then
-  PKG_CHECK_MODULES([ZLIB], [zlib >= 1.2.3], [have_zlib=yes], [have_zlib=no])
-  if test "x$have_zlib" = "xyes"; then
-    AC_DEFINE([HAVE_ZLIB], [1], [Define to 1 if you have zlib.])
-    LIBS="$ZLIB_LIBS $LIBS"
-    CPPFLAGS="$ZLIB_CFLAGS $CPPFLAGS"
-  else
-    AC_MSG_WARN([$ZLIB_PKG_ERRORS])
-    if test "x$with_libz_requested" = "xyes"; then
-      ARIA2_DEP_NOT_MET([libz])
     fi
   fi
 fi
@@ -301,7 +322,7 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$have_sqlite3" = "xyes"])
 
 AC_SEARCH_LIBS([clock_gettime], [rt])
 
-case "$target" in
+case "$host" in
 	*solaris*)
                 AC_SEARCH_LIBS([getaddrinfo], [nsl socket])
 		;;
@@ -311,7 +332,7 @@ esac
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
 
-case "$target" in
+case "$host" in
 	*mingw*)
                 AC_CHECK_HEADERS([windows.h \
 				  winsock2.h \
@@ -497,7 +518,7 @@ AM_CONDITIONAL([HAVE_MACH_ABSOLUTE_TIME],
 AC_CHECK_FUNCS([poll], [have_poll=yes])
 AM_CONDITIONAL([HAVE_POLL], [test "x$have_poll" = "xyes"])
 
-case "$target" in
+case "$host" in
   *mingw*)
     AM_CONDITIONAL([MINGW_BUILD], true)
     dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
@@ -589,6 +610,14 @@ AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
 AC_SUBST([bashcompletiondir])
 
+if test "x$ARIA2_STATIC" = "xyes"; then
+  LDFLAGS="$LDFLAGS -all-static -static-libgcc -static-libstdc++"
+  dnl For non-MinGW build, we need additional libs for static build.
+  if test "x$win_build" != "xyes"; then
+    LIBS="$LIBS -lpthread -ldl -lrt"
+  fi
+fi
+
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		test/Makefile
@@ -606,6 +635,7 @@ AC_OUTPUT
 
 echo " "
 echo "Build:          $build"
+echo "Host:           $host"
 echo "Target:         $target"
 echo "Install prefix: $prefix"
 echo "CXXFLAGS:       $CXXFLAGS"
@@ -629,3 +659,4 @@ echo "XML-RPC:        $enable_xml_rpc"
 echo "Message Digest: $enable_message_digest"
 echo "WebSocket:      $enable_websocket"
 echo "bash_completion dir: $bashcompletiondir"
+echo "Static build:   $ARIA2_STATIC"
