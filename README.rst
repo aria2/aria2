@@ -184,10 +184,20 @@ Also you need `Sphinx <http://sphinx.pocoo.org/>`_ to build man page.
 If you are building aria2 for Mac OS X, take a look at
 build_osx_release.sh, which builds OSX universal binary DMG.
 
-The quickest way to build aria2 is just type following commands::
+The quickest way to build aria2 is first run configure script::
 
     $ ./configure
+
+To build statically linked aria2, use ``ARIA2_STATIC=yes``
+command-line option::
+
+    $ ./configure ARIA2_STATIC=yes
+
+After configuration is done, run ``make`` to compile the program::
+
     $ make
+
+See `Cross-compiling Windows binary`_ to create Windows binary.
 
 The configure script checks available libraries and enables the features
 as much as possible because all the features are enabled by default.
@@ -219,6 +229,47 @@ The executable is 'aria2c' in src directory.
 aria2 uses CppUnit for automated unit testing. To run the unit test::
 
     $ make check
+
+Cross-compiling Windows binary
+------------------------------
+
+In this section, we describe how to build Windows binary using
+mingw-w64 cross-compiler on Debian Linux.
+
+Basically, after compiling and installing depended libraries, you can
+do cross-compile just passing appropriate ``--host`` option and
+specifying ``CPPFLAGS``, ``LDFLAGS`` and ``PKG_CONFIG_LIBDIR``
+variables to configure. For convenience and lowering our own
+development cost, we provide easier way to configure the build
+settings.
+
+``mingw-config`` script is a configure script wrapper for mingw-w64.
+We use it to create official Windows build.  This script assumes
+following libraries have been built for cross-compile:
+
+* c-ares
+* openssl
+* expat
+* sqlite3
+* zlib
+* cppunit
+
+Some environment variables can be adjusted to change build settings:
+
+* ``HOST``: cross-compile to build programs to run on ``HOST``. It
+        defaults to ``i686-w64-mingw32``. To build 64bit binary,
+        specify ``x86_64-w64-mingw32``.
+
+* ``PREFIX``: Prefix to the directory where dependent libraries are
+        installed.  It defaults to
+        ``/usr/local/$HOST``. ``-I$PREFIX/include`` will be added to
+        ``CPPFLAGS``. ``-L$PREFIX/lib`` will be added to
+        ``LDFLAGS``. ``$PREFIX/lib/pkgconfig`` will be set to
+        ``PKG_CONFIG_LIBDIR``.
+
+For example, to build 64bit binary do this::
+
+    $ HOST=x86_64-w64-mingw32 ./mingw-config
 
 Building documentation
 ----------------------
