@@ -256,16 +256,17 @@ following libraries have been built for cross-compile:
 
 Some environment variables can be adjusted to change build settings:
 
-* ``HOST``: cross-compile to build programs to run on ``HOST``. It
-        defaults to ``i686-w64-mingw32``. To build 64bit binary,
-        specify ``x86_64-w64-mingw32``.
+``HOST``
+  cross-compile to build programs to run on ``HOST``. It defaults to
+  ``i686-w64-mingw32``. To build 64bit binary, specify
+  ``x86_64-w64-mingw32``.
 
-* ``PREFIX``: Prefix to the directory where dependent libraries are
-        installed.  It defaults to
-        ``/usr/local/$HOST``. ``-I$PREFIX/include`` will be added to
-        ``CPPFLAGS``. ``-L$PREFIX/lib`` will be added to
-        ``LDFLAGS``. ``$PREFIX/lib/pkgconfig`` will be set to
-        ``PKG_CONFIG_LIBDIR``.
+``PREFIX``
+  Prefix to the directory where dependent libraries are installed.  It
+  defaults to ``/usr/local/$HOST``. ``-I$PREFIX/include`` will be
+  added to ``CPPFLAGS``. ``-L$PREFIX/lib`` will be added to
+  ``LDFLAGS``. ``$PREFIX/lib/pkgconfig`` will be set to
+  ``PKG_CONFIG_LIBDIR``.
 
 For example, to build 64bit binary do this::
 
