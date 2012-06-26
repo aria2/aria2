@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-05-27 17:21+0900\n"
+"POT-Creation-Date: 2012-06-27 00:55+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -51,7 +51,7 @@ msgstr "Dataa ei voitu vastaanottaa, syy: %s"
 
 #: src/RequestGroupMan.cc:390
 #, fuzzy, c-format
-msgid "Download GID#%lld not complete: %s"
+msgid "Download GID#%<PRId64> not complete: %s"
 msgstr "Lataus on valmis: %s"
 
 #: src/RequestGroupMan.cc:671
@@ -2264,6 +2264,13 @@ msgstr ""
 "jakaminen\n"
 "                             päättyy kun toinen ehdoista täyttyy."
 
+#: src/usage_text.h:879
+#, fuzzy
+msgid " --enable-mmap[=true|false]   Map files into memory."
+msgstr ""
+" --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
+"                              Oletus: false"
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " versio "
@@ -2464,7 +2471,7 @@ msgstr "Virheitä tapahtui sitoessa porttia.\n"
 
 #: src/AbstractCommand.cc:443
 #, c-format
-msgid "CUID#%lld - Failed to resume download. Download from scratch."
+msgid "CUID#%<PRId64> - Failed to resume download. Download from scratch."
 msgstr ""
 
 #: src/AdaptiveURISelector.cc:228
@@ -2483,7 +2490,7 @@ msgstr ""
 
 #: src/BtStopDownloadCommand.cc:64
 #, c-format
-msgid "GID#%lld Stop downloading torrent due to --bt-stop-timeout option."
+msgid "GID#%<PRId64> Stop downloading torrent due to --bt-stop-timeout option."
 msgstr ""
 
 #: src/DHTConnectionImpl.cc:89
@@ -2520,7 +2527,7 @@ msgstr ""
 
 #: src/message.h:57
 #, fuzzy, c-format
-msgid "GID#%lld - Download has already completed: %s"
+msgid "GID#%<PRId64> - Download has already completed: %s"
 msgstr "#%d - Lataus on jo valmistunut: %s"
 
 #: src/message.h:106
@@ -2868,7 +2875,7 @@ msgstr ""
 
 #: src/message.h:198
 #, c-format
-msgid "GID#%lld - Removing unselected file."
+msgid "GID#%<PRId64> - Removing unselected file."
 msgstr ""
 
 #: src/message.h:199
