@@ -1646,6 +1646,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`bt-metadata-only <--bt-metadata-only>`
   * :option:`bt-min-crypto-level <--bt-min-crypto-level>`
   * :option:`bt-prioritize-piece <--bt-prioritize-piece>`
+  * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
   * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`
   * :option:`bt-require-crypto <--bt-require-crypto>`
   * :option:`bt-save-metadata <--bt-save-metadata>`
@@ -1655,8 +1656,8 @@ of URIs. These optional lines must start with white space(s).
   * :option:`bt-tracker-connect-timeout <--bt-tracker-connect-timeout>`
   * :option:`bt-tracker-interval <--bt-tracker-interval>`
   * :option:`bt-tracker-timeout <--bt-tracker-timeout>`
-  * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
   * :option:`check-integrity <-V>`
+  * :option:`checksum <--checksum>`
   * :option:`conditional-get <--conditional-get>`
   * :option:`connect-timeout <--connect-timeout>`
   * :option:`continue <-c>`
@@ -1665,6 +1666,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`enable-async-dns6 <--enable-async-dns6>`
   * :option:`enable-http-keep-alive <--enable-http-keep-alive>`
   * :option:`enable-http-pipelining <--enable-http-pipelining>`
+  * :option:`enable-mmap <--enable-mmap>`
   * :option:`enable-peer-exchange <--enable-peer-exchange>`
   * :option:`file-allocation <--file-allocation>`
   * :option:`follow-metalink <--follow-metalink>`
@@ -1677,6 +1679,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`ftp-reuse-connection <--ftp-reuse-connection>`
   * :option:`ftp-type <--ftp-type>`
   * :option:`ftp-user <--ftp-user>`
+  * :option:`hash-check-only <--hash-check-only>`
   * :option:`header <--header>`
   * :option:`http-accept-gzip <--http-accept-gzip>`
   * :option:`http-auth-challenge <--http-auth-challenge>`
@@ -1697,6 +1700,7 @@ of URIs. These optional lines must start with white space(s).
   * :option:`max-resume-failure-tries <--max-resume-failure-tries>`
   * :option:`max-tries <-m>`
   * :option:`max-upload-limit <-u>`
+  * :option:`metalink-base-uri <--metalink-base-uri>`
   * :option:`metalink-enable-unique-protocol <--metalink-enable-unique-protocol>`
   * :option:`metalink-language <--metalink-language>`
   * :option:`metalink-location <--metalink-location>`
@@ -1709,27 +1713,24 @@ of URIs. These optional lines must start with white space(s).
   * :option:`no-proxy <--no-proxy>`
   * :option:`out <-o>`
   * :option:`parameterized-uri <-P>`
+  * :option:`pause <--pause>`
+  * :option:`piece-length <--piece-length>`
   * :option:`proxy-method <--proxy-method>`
   * :option:`realtime-chunk-checksum <--realtime-chunk-checksum>`
   * :option:`referer <--referer>`
   * :option:`remote-time <-R>`
   * :option:`remove-control-file <--remove-control-file>`
+  * :option:`retry-wait <--retry-wait>`
   * :option:`reuse-uri <--reuse-uri>`
   * :option:`seed-ratio <--seed-ratio>`
   * :option:`seed-time <--seed-time>`
   * :option:`select-file <--select-file>`
   * :option:`split <-s>`
+  * :option:`stream-piece-selector <--stream-piece-selector>`
   * :option:`timeout <-t>`
+  * :option:`uri-selector <--uri-selector>`
   * :option:`use-head <--use-head>`
   * :option:`user-agent <-U>`
-  * :option:`retry-wait <--retry-wait>`
-  * :option:`metalink-base-uri <--metalink-base-uri>`
-  * :option:`pause <--pause>`
-  * :option:`stream-piece-selector <--stream-piece-selector>`
-  * :option:`hash-check-only <--hash-check-only>`
-  * :option:`checksum <--checksum>`
-  * :option:`piece-length <--piece-length>`
-  * :option:`uri-selector <--uri-selector>`
   
 These options have exactly same meaning of the ones in the
 command-line options, but it just applies to the URIs it belongs to.
