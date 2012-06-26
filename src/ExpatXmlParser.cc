@@ -160,26 +160,26 @@ XML_Parser createParser(SessionData* sd)
 
 bool XmlParser::parseFile(const char* filename)
 {
-  BufferedFile* fp = 0;
   if(strcmp(filename, DEV_STDIN) == 0) {
-    fp = new BufferedFile(stdin);
-    auto_delete_d<BufferedFile*> deleter(fp);
+    BufferedFile fp(stdin);
     return parseFile(fp);
   } else {
-    fp = new BufferedFile(filename, BufferedFile::READ);
-    auto_delete_d<BufferedFile*> deleter(fp);
+    BufferedFile fp(filename, BufferedFile::READ);
     return parseFile(fp);
   }
 }
 
-bool XmlParser::parseFile(BufferedFile* fp)
+bool XmlParser::parseFile(BufferedFile& fp)
 {
+  if(!fp) {
+    return false;
+  }
   char buf[4096];
   SessionData sessionData(psm_);
   XML_Parser parser = createParser(&sessionData);
   auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
   while(1) {
-    size_t res = fp->read(buf, sizeof(buf));
+    size_t res = fp.read(buf, sizeof(buf));
     if(XML_Parse(parser, buf, res, 0) == XML_STATUS_ERROR) {
       return false;
     }

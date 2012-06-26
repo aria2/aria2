@@ -54,7 +54,7 @@ public:
   bool parseBinaryStream(BinaryStream* binaryStream);
   bool parseMemory(const char* xml, size_t size);
 private:
-  bool parseFile(BufferedFile* fp);
+  bool parseFile(BufferedFile& fp);
 
   ParserStateMachine* psm_;
 };
