@@ -37,6 +37,7 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCancelPiece);
   CPPUNIT_TEST(testMarkPiecesDone);
   CPPUNIT_TEST(testGetCompletedLength);
+  CPPUNIT_TEST(testGetFilteredCompletedLength);
   CPPUNIT_TEST(testGetNextUsedIndex);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -71,6 +72,7 @@ public:
   void testCancelPiece();
   void testMarkPiecesDone();
   void testGetCompletedLength();
+  void testGetFilteredCompletedLength();
   void testGetNextUsedIndex();
 };
 
@@ -343,6 +345,36 @@ void DefaultPieceStorageTest::testGetCompletedLength()
   ps.markPiecesDone(256*1024*1024);
 
   CPPUNIT_ASSERT_EQUAL((int64_t)256*1024*1024, ps.getCompletedLength());
+}
+
+void DefaultPieceStorageTest::testGetFilteredCompletedLength()
+{
+  const size_t pieceLength = 1024*1024;
+  SharedHandle<DownloadContext> dctx(new DownloadContext());
+  dctx->setPieceLength(pieceLength);
+  SharedHandle<FileEntry> files[] = {
+    SharedHandle<FileEntry>(new FileEntry("foo", 2*pieceLength, 0)),
+    SharedHandle<FileEntry>(new FileEntry("bar", 4*pieceLength, 2*pieceLength))
+  };
+  files[1]->setRequested(false);
+  dctx->setFileEntries(&files[0], &files[2]);
+
+  DefaultPieceStorage ps(dctx, option_.get());
+  std::vector<SharedHandle<Piece> > inflightPieces(2);
+  inflightPieces[0] = SharedHandle<Piece>(new Piece(1, pieceLength));
+  inflightPieces[0]->completeBlock(0);
+  inflightPieces[1] = SharedHandle<Piece>(new Piece(2, pieceLength));
+  inflightPieces[1]->completeBlock(1);
+  inflightPieces[1]->completeBlock(2);
+
+  ps.addInFlightPiece(inflightPieces);
+  ps.setupFileFilter();
+
+  SharedHandle<Piece> piece = ps.getMissingPiece(0, 1);
+  ps.completePiece(piece);
+
+  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength+16*1024,
+                       ps.getFilteredCompletedLength());
 }
 
 void DefaultPieceStorageTest::testGetNextUsedIndex()

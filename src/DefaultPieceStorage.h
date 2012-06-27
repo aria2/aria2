@@ -110,8 +110,11 @@ private:
   void deleteUsedPiece(const SharedHandle<Piece>& piece);
   SharedHandle<Piece> findUsedPiece(size_t index) const;
 
-  size_t getInFlightPieceCompletedLength() const;
-
+  // Returns the sum of completed length of in-flight pieces
+  int64_t getInFlightPieceCompletedLength() const;
+  // Returns the sum of completed length of in-flight pieces
+  // intersecting filter ranges.
+  int64_t getInFlightPieceFilteredCompletedLength() const;
 public:
   // Setting randomPieceStatsOrdering to true means a piece is chosen in
   // random when more than 2 pieces has the same rarity.

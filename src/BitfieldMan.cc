@@ -609,6 +609,14 @@ bool BitfieldMan::isAllFilterBitSet() const
   return testAllBitSet(filterBitfield_, bitfieldLength_, blocks_);
 }
 
+bool BitfieldMan::isFilterBitSet(size_t index) const {
+  if(filterBitfield_) {
+    return bitfield::test(filterBitfield_, blocks_, index);
+  } else {
+    return false;
+  }
+}
+
 bool BitfieldMan::isBitSet(size_t index) const
 {
   return bitfield::test(bitfield_, blocks_, index);

@@ -537,14 +537,29 @@ int64_t DefaultPieceStorage::getCompletedLength()
 int64_t DefaultPieceStorage::getFilteredCompletedLength()
 {
   return bitfieldMan_->getFilteredCompletedLength()+
-    getInFlightPieceCompletedLength();
+    getInFlightPieceFilteredCompletedLength();
 }
 
-size_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
+int64_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 {
-  return std::accumulate(usedPieces_.begin(), usedPieces_.end(),
-                         0, adopt2nd(std::plus<size_t>(),
-                                     mem_fun_sh(&Piece::getCompletedLength)));
+  int64_t len = 0;
+  for(UsedPieceSet::const_iterator i = usedPieces_.begin(),
+        eoi = usedPieces_.end(); i != eoi; ++i) {
+    len += (*i)->getCompletedLength();
+  }
+  return len;
+}
+
+int64_t DefaultPieceStorage::getInFlightPieceFilteredCompletedLength() const
+{
+  int64_t len = 0;
+  for(UsedPieceSet::const_iterator i = usedPieces_.begin(),
+        eoi = usedPieces_.end(); i != eoi; ++i) {
+    if(bitfieldMan_->isFilterBitSet((*i)->getIndex())) {
+      len += (*i)->getCompletedLength();
+    }
+  }
+  return len;
 }
 
 // not unittested

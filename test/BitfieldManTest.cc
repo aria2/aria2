@@ -18,6 +18,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFirstMissingIndex);
   CPPUNIT_TEST(testIsAllBitSet);
   CPPUNIT_TEST(testFilter);
+  CPPUNIT_TEST(testIsFilterBitSet);
   CPPUNIT_TEST(testAddFilter_zeroLength);
   CPPUNIT_TEST(testAddNotFilter);
   CPPUNIT_TEST(testAddNotFilter_zeroLength);
@@ -51,6 +52,7 @@ public:
   
   void testIsAllBitSet();
   void testFilter();
+  void testIsFilterBitSet();
   void testAddFilter_zeroLength();
   void testAddNotFilter();
   void testAddNotFilter_zeroLength();
@@ -242,6 +244,17 @@ void BitfieldManTest::testFilter()
   btman2.addFilter(0, 31);
   btman2.enableFilter();
   CPPUNIT_ASSERT_EQUAL((int64_t)31ULL, btman2.getFilteredTotalLength());
+}
+
+void BitfieldManTest::testIsFilterBitSet()
+{
+  BitfieldMan btman(2, 32);
+  CPPUNIT_ASSERT(!btman.isFilterBitSet(0));
+  btman.addFilter(0, 2);
+  CPPUNIT_ASSERT(btman.isFilterBitSet(0));
+  CPPUNIT_ASSERT(!btman.isFilterBitSet(1));
+  btman.addFilter(2, 4);
+  CPPUNIT_ASSERT(btman.isFilterBitSet(1));
 }
 
 void BitfieldManTest::testAddFilter_zeroLength()

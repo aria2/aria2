@@ -200,6 +200,9 @@ public:
   bool isAllBitSet() const;
 
   bool isAllFilterBitSet() const;
+  // Returns true if index bit is set in filterBitfield_.  If
+  // filterBitfield_ is NULL, returns false.
+  bool isFilterBitSet(size_t index) const;
 
   const unsigned char* getBitfield() const
   {
