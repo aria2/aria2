@@ -872,8 +872,10 @@ void UtilTest::testGetContentDispositionFilename() {
   CPPUNIT_ASSERT_EQUAL(std::string("foo;bar"),
                        util::getContentDispositionFilename(semicolonInside));
 
+  // Unescaping %2E%2E%2F produces "../". But since we won't unescape,
+  // we just accept it as is.
   CPPUNIT_ASSERT_EQUAL
-    (std::string(""),
+    (std::string("%2E%2E%2Ffoo.html"),
      util::getContentDispositionFilename("filename=\"%2E%2E%2Ffoo.html\""));
 
   // RFC2231 Section4

@@ -929,8 +929,9 @@ std::string getContentDispositionFilename(const std::string& header)
         filenameLast = value.end();
       }
       static const std::string TRIMMED("\r\n\t '\"");
-      value = percentDecode(value.begin(), filenameLast);
-      value = strip(value, TRIMMED);
+      std::pair<std::string::iterator, std::string::iterator> vi =
+        util::stripIter(value.begin(), filenameLast, TRIMMED);
+      value.assign(vi.first, vi.second);
       value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
       if(!detectDirTraversal(value) && value.find("/") == std::string::npos) {
         filename = value;
