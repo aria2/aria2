@@ -94,7 +94,11 @@ OptionHandlerFactory::createOptionHandlers()
     SharedHandle<OptionHandler> op(new BooleanOptionHandler
                                    (PREF_ASYNC_DNS,
                                     TEXT_ASYNC_DNS,
+#if defined(__ANDROID__) || defined(ANDROID)
+                                    A2_V_FALSE,
+#else // !__ANDROID__ && !ANDROID
                                     A2_V_TRUE,
+#endif // !__ANDROID__ && !ANDROID
                                     OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);
