@@ -1,0 +1,75 @@
+aria2 for Android devices
+=========================
+
+aria2 is a lightweight multi-protocol & multi-source download utility
+operated in command-line. It supports HTTP/HTTPS, FTP, BitTorrent and
+Metalink.
+
+Install
+-------
+
+aria2 is not an ordinary Android Java application. It is a C++ native
+application and operates in command-line.  You don't have to 'root'
+your device to use aria2.  Because aria2 is a command-line program,
+you need a terminal emulator. First install Android Terminal Emulator
+from Android Market (or build it from source and install. See
+https://github.com/jackpal/Android-Terminal-Emulator/).
+
+1. Copy aria2c executable to ``/mnt/sdcard`` on your device.
+2. Run Android Terminal Emulator.
+3. ``mkdir /data/data/jackpal.androidterm/aria2``
+4. ``cat /mnt/sdcard/aria2c > /data/data/jackpal.androidterm/aria2/aria2c``
+5. ``chmod 744 /data/data/jackpal.androidterm/aria2/aria2c``
+6. Add the following commands to the initial command of Android
+   Terminal Emulator::
+
+       export HOME=/data/data/jackpal.androidterm/aria2; cd $HOME
+
+7. Exit Android Terminal Emulator.
+8. Run Android Terminal Emulator again.
+9. See whether aria2c actually works by invoking ``./aria2c -v``
+
+How to use
+----------
+
+See `the online manual
+<http://aria2.sourceforge.net/manual/en/html/>`_.
+
+Notes
+-----
+
+aria2c executable was generated using android-ndk-r8.
+
+The following libraries were statically linked.
+
+ * openssl 1.0.1c
+ * expat 2.1.0
+ * c-ares 1.9.1
+
+Since Android does not have ``/etc/resolv.conf``, c-ares (asynchronous
+DNS resolver) is disabled by default. But name resolution is sometimes
+a little bit slow, so I recommend to enable c-ares. You can enable it
+using ``--async-dns`` and specify DNS servers using
+``--async-dns-server`` option, like this::
+
+  --async-dns --async-dns-server=`getprop net.dns1`,`getprop net.dns2`
+
+Because it is tedious to type these long parameters every time you use
+aria2c, the following wrapper shell script would be handy::
+
+    #!/system/bin/sh
+    /data/data/jackpal.androidterm/aria2c \
+      --async-dns \
+      --async-dns-server=`getprop net.dns1`,`getprop net.dns2` \
+      "$@"
+
+Please note that you need to add executable file mode bit to this
+wrapper script too. (e.g., ``chmod 744 /PATH/TO/SCRIPT``)
+
+Known Issues
+------------
+
+* Since Android does not have ``/dev/stdout``, ``-l-`` does not work.
+
+* Android Terminal Emulator sometimes stops updating console. It looks
+  like aria2c hangs, but aria2c continues to run.
