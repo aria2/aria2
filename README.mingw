@@ -1,0 +1,47 @@
+aria2 Windows build
+===================
+
+aria2 Windows build is provided in 2 flavors: 32bit version and 64bit
+version. The executable was compiled using mingw-w64 cross compiler on
+Debian Linux.
+
+* gcc-mingw-w64               4.6.2-14+3
+* binutils-mingw-w64-i686     2.22-1+1
+* binutils-mingw-w64-x86-64   2.22-1+1
+
+The executable is statically linked, so no extra DLLs are
+necessary. The linked libraries are:
+
+* openssl 1.0.0h
+* expat 2.1.0
+* sqlite 3.7.11
+* zlib 1.2.6
+* c-ares 1.7.5
+
+This build has the following difference from the original release:
+
+* 32bit version only: ``--disable-ipv6`` is enabled by default. (In
+  other words, IPv6 support is disabled by default).
+
+Known Issues
+------------
+
+* When Ctrl-C is pressed, aria2 shows "Shutdown sequence
+  commencing... Press Ctrl-C again for emergency shutdown." But
+  mingw32 build cannot handle second Ctrl-C properly. The second
+  Ctrl-C just kills aria2 instantly without proper shutdown sequence
+  and you may lose data. So don't press Ctrl-C twice.
+
+* --daemon option doesn't work.
+
+* 32bit version only: When ``--disable-ipv6=false`` is given,
+  BitTorrent DHT may not work properly.
+
+* 32bit version only: Most of the IPv6 functionality does not work
+even if ``--disable-ipv6=false`` is given.
+
+References
+----------
+
+* http://smithii.com/aria2
+* http://kemovitra.blogspot.com/2009/12/download-aria2-163.html
