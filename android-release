@@ -38,18 +38,16 @@ fi
 TOOLCHAIN=$ANDROID_HOME/toolchain
 PATH=$TOOLCHAIN/bin:$PATH
 
-VERSION=$1
-ANDROID_API=$2
+. ./script-helper
+
+get_version
+
 if [ -z "$VERSION" ]; then
-    echo "No version specified"
-    exit 1
-fi
-if [ -z "$ANDROID_API" ]; then
-    echo "No android API specified"
+    echo "No version found"
     exit 1
 fi
 
-DIST_DIR=aria2-$VERSION-$ANDROID_API-build1
+DIST_DIR=aria2-$VERSION-android-build1
 arm-linux-androideabi-strip src/aria2c
 mkdir $DIST_DIR
 cp AUTHORS COPYING ChangeLog LICENSE.OpenSSL NEWS README.html README.android \
