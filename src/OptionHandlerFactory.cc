@@ -2002,10 +2002,14 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    int major, minor, micro;
+    sscanf(PACKAGE_VERSION, "%d.%d.%d", &major, &minor, &micro);
+    char prefix[21];
+    snprintf(prefix, sizeof(prefix), "A2-%d-%d-%d-", major, minor, micro);
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_PEER_ID_PREFIX,
                                     TEXT_PEER_ID_PREFIX,
-                                    "aria2/"PACKAGE_VERSION"-"));
+                                    prefix));
     op->addTag(TAG_BITTORRENT);
     handlers.push_back(op);
   }
