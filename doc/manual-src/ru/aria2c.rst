@@ -576,7 +576,7 @@ FTP, BitTorrent и Metalink. Для загрузки файла, aria2 може�
 
 .. option:: -S, --show-files[=true|false]
 
-  Вывести список файлов из .torrent, .meta4 или .metalink и
+  Вывести список файлов из ".torrent", ".meta4" или ".metalink" и
   выйти. Для файла .torrent будет выведена более детальная
   информация (информация по хэшу, размер блока и др.).
 
@@ -693,10 +693,10 @@ FTP, BitTorrent и Metalink. Для загрузки файла, aria2 може�
 
 .. option:: --bt-save-metadata[=true|false]
 
-  Сохранить метаданные как файл .torrent. Этот параметр
+  Сохранить метаданные как файл ".torrent". Этот параметр
   эффективен только если используется BitTorrent Magnet-ссылка.
   Имя файла шестнадцатеричное представление хэша с расширением
-  .torrent. Файл сохранится в каталог, в тот же самый, куда
+  ".torrent". Файл сохранится в каталог, в тот же самый, куда
   сохранится загружаемый файл. Если тот же самый файл уже
   существует, метаданные не сохранятся. Смотрите также параметр
   :option:`--bt-metadata-only`.
@@ -889,8 +889,8 @@ FTP, BitTorrent и Metalink. Для загрузки файла, aria2 може�
 
 .. option:: -T, --torrent-file=<TORRENT_FILE>
 
-  Путь к файлу .torrent. Вы не обязаны использовать этот параметр, т.к.
-  файл .torrent можно указать без :option:`--torrent-file <-T>`.
+  Путь к файлу ".torrent". Вы не обязаны использовать этот параметр, т.к.
+  файл ".torrent" можно указать без :option:`--torrent-file <-T>`.
 
 Специфические параметры Metalink
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -913,7 +913,7 @@ FTP, BitTorrent и Metalink. Для загрузки файла, aria2 може�
 
 .. option:: -M, --metalink-file=<METALINK_FILE>
 
-  Путь к файлу .meta4 и .metalink. Читает ввод из stdin, если в качестве
+  Путь к файлу ".meta4" и ".metalink". Читает ввод из stdin, если в качестве
   имени файла указано ``-``. Вы не обязаны использовать этот параметр,
   т.к. файлы .metalink можно указать без :option:`--metalink-file <-M>`.
 
@@ -1577,10 +1577,10 @@ RPC-метода :func:`aria2.getFiles`. Если вы хотите получи
 
 25
   Если aria2 не смогла проанализировать закодированный файл (обычно
-  .torrent-файл).
+  файл ".torrent").
 
 26
-  Если файл .torrent был испорчен или потеряна информация, которая необходима
+  Если файл ".torrent" был испорчен или потеряна информация, которая необходима
   aria2.
 
 27
@@ -1755,6 +1755,7 @@ URI. Эти дополнительные строки должны начина�
   * :option:`bt-metadata-only <--bt-metadata-only>`
   * :option:`bt-min-crypto-level <--bt-min-crypto-level>`
   * :option:`bt-prioritize-piece <--bt-prioritize-piece>`
+  * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
   * :option:`bt-request-peer-speed-limit <--bt-request-peer-speed-limit>`
   * :option:`bt-require-crypto <--bt-require-crypto>`
   * :option:`bt-save-metadata <--bt-save-metadata>`
@@ -1764,8 +1765,8 @@ URI. Эти дополнительные строки должны начина�
   * :option:`bt-tracker-connect-timeout <--bt-tracker-connect-timeout>`
   * :option:`bt-tracker-interval <--bt-tracker-interval>`
   * :option:`bt-tracker-timeout <--bt-tracker-timeout>`
-  * :option:`bt-remove-unselected-file <--bt-remove-unselected-file>`
   * :option:`check-integrity <-V>`
+  * :option:`checksum <--checksum>`
   * :option:`conditional-get <--conditional-get>`
   * :option:`connect-timeout <--connect-timeout>`
   * :option:`continue <-c>`
@@ -1774,6 +1775,7 @@ URI. Эти дополнительные строки должны начина�
   * :option:`enable-async-dns6 <--enable-async-dns6>`
   * :option:`enable-http-keep-alive <--enable-http-keep-alive>`
   * :option:`enable-http-pipelining <--enable-http-pipelining>`
+  * :option:`enable-mmap <--enable-mmap>`
   * :option:`enable-peer-exchange <--enable-peer-exchange>`
   * :option:`file-allocation <--file-allocation>`
   * :option:`follow-metalink <--follow-metalink>`
@@ -1786,6 +1788,7 @@ URI. Эти дополнительные строки должны начина�
   * :option:`ftp-reuse-connection <--ftp-reuse-connection>`
   * :option:`ftp-type <--ftp-type>`
   * :option:`ftp-user <--ftp-user>`
+  * :option:`hash-check-only <--hash-check-only>`
   * :option:`header <--header>`
   * :option:`http-accept-gzip <--http-accept-gzip>`
   * :option:`http-auth-challenge <--http-auth-challenge>`
@@ -1806,6 +1809,7 @@ URI. Эти дополнительные строки должны начина�
   * :option:`max-resume-failure-tries <--max-resume-failure-tries>`
   * :option:`max-tries <-m>`
   * :option:`max-upload-limit <-u>`
+  * :option:`metalink-base-uri <--metalink-base-uri>`
   * :option:`metalink-enable-unique-protocol
     <--metalink-enable-unique-protocol>`
   * :option:`metalink-language <--metalink-language>`
@@ -1819,27 +1823,24 @@ URI. Эти дополнительные строки должны начина�
   * :option:`no-proxy <--no-proxy>`
   * :option:`out <-o>`
   * :option:`parameterized-uri <-P>`
+  * :option:`pause <--pause>`
+  * :option:`piece-length <--piece-length>`
   * :option:`proxy-method <--proxy-method>`
   * :option:`realtime-chunk-checksum <--realtime-chunk-checksum>`
   * :option:`referer <--referer>`
   * :option:`remote-time <-R>`
   * :option:`remove-control-file <--remove-control-file>`
+  * :option:`retry-wait <--retry-wait>`
   * :option:`reuse-uri <--reuse-uri>`
   * :option:`seed-ratio <--seed-ratio>`
   * :option:`seed-time <--seed-time>`
   * :option:`select-file <--select-file>`
   * :option:`split <-s>`
+  * :option:`stream-piece-selector <--stream-piece-selector>`
   * :option:`timeout <-t>`
+  * :option:`uri-selector <--uri-selector>`
   * :option:`use-head <--use-head>`
   * :option:`user-agent <-U>`
-  * :option:`retry-wait <--retry-wait>`
-  * :option:`metalink-base-uri <--metalink-base-uri>`
-  * :option:`pause <--pause>`
-  * :option:`stream-piece-selector <--stream-piece-selector>`
-  * :option:`hash-check-only <--hash-check-only>`
-  * :option:`checksum <--checksum>`
-  * :option:`piece-length <--piece-length>`
-  * :option:`uri-selector <--uri-selector>`
   
 Эти параметры имеют точно такой же смысл, что параметры командной строки, но
 это применимо только к URI, к которым они принадлежат. Обратите внимание,
@@ -2024,8 +2025,8 @@ GID
   Этот метод добавляет BitTorrent-загрузку путем загрузки .torrent-файла. Если
   вы хотите добавить BitTorrent Magnet URI, взамен используйте метод
   :func:`aria2.addUri`. Параметр *torrent* имеет тип
-  base64, с содержанием Base64-кодировки 
-  .в .torrent-файле. Параметр *uris* имеет тип массив, элемент которого имеет тип строка и содержит URI.
+  base64, с содержанием Base64-кодировки
+  в .torrent-файле. Параметр *uris* имеет тип массив, элемент которого имеет тип строка и содержит URI.
   Параметр *uris* используется для Web-сидирования. Для однофайловых
   торрентов, URI может быть завершенным, который указывает на ресурс, или же
   если заканчиваться символом /, тогда будет добавлено имя из
@@ -2316,7 +2317,7 @@ GID
   ``belongsTo``
     GID родительской загрузки. Некоторые загрузки являются частью другой
     загрузки. Например, если файл в Metalink содержит BitTorrent-ответ, загрузка
-    .torrent будет частью этого файла. Если эта загрузка не имеет родительской
+    ".torrent" будет частью этого файла. Если эта загрузка не имеет родительской
     загрузки, то значение не будет включено в ответ.
   
   ``dir``
