@@ -543,8 +543,8 @@ BitTorrent/Metalink Options
 
 .. option:: -S, --show-files[=true|false]
 
-  Print file listing of .torrent, .meta4 and .metalink file and exit.
-  In case of .torrent file, additional information
+  Print file listing of ".torrent", ".meta4" and ".metalink" file and exit.
+  In case of ".torrent" file, additional information
   (infohash, piece length, etc) is also printed.
 
 BitTorrent Specific Options
@@ -648,9 +648,9 @@ BitTorrent Specific Options
 
 .. option:: --bt-save-metadata[=true|false]
 
-  Save metadata as .torrent file. This option has effect only when
+  Save metadata as ".torrent" file. This option has effect only when
   BitTorrent Magnet URI is used.  The filename is hex encoded info
-  hash with suffix .torrent. The directory to be saved is the same
+  hash with suffix ".torrent". The directory to be saved is the same
   directory where download file is saved. If the same file already
   exists, metadata is not saved. See also :option:`--bt-metadata-only`
   option. Default: ``false``
@@ -824,8 +824,8 @@ BitTorrent Specific Options
 
 .. option:: -T, --torrent-file=<TORRENT_FILE>
 
-  The path to the .torrent file.  You are not required to use this
-  option because you can specify .torrent files without :option:`--torrent-file <-T>`.
+  The path to the ".torrent" file.  You are not required to use this
+  option because you can specify ".torrent" files without :option:`--torrent-file <-T>`.
 
 Metalink Specific Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -847,9 +847,9 @@ Metalink Specific Options
 
 .. option:: -M, --metalink-file=<METALINK_FILE>
 
-  The file path to .meta4 and .metalink file. Reads input from stdin when ``-`` is
+  The file path to ".meta4" and ".metalink" file. Reads input from stdin when ``-`` is
   specified.  You are not required to use this option because you can
-  specify .metalink files without :option:`--metalink-file <-M>`.
+  specify ".metalink" files without :option:`--metalink-file <-M>`.
 
 .. option:: --metalink-language=<LANGUAGE>
 
@@ -1472,10 +1472,10 @@ based on the last error encountered.
   If HTTP authorization failed.
 
 25
-  If aria2 could not parse bencoded file(usually .torrent file).
+  If aria2 could not parse bencoded file(usually ".torrent" file).
 
 26
-  If .torrent file was corrupted or missing information that aria2 needed.
+  If ".torrent" file was corrupted or missing information that aria2 needed.
 
 27
   If Magnet URI was bad.
@@ -1914,10 +1914,10 @@ All code examples come from Python2.7 interpreter.
   
   
   
-  This method adds BitTorrent download by uploading .torrent file.  If
+  This method adds BitTorrent download by uploading ".torrent" file.  If
   you want to add BitTorrent Magnet URI, use :func:`aria2.addUri` method
   instead.  *torrent* is of type base64 which contains Base64-encoded
-  .torrent file.  *uris* is of type array and its element is URI which
+  ".torrent" file.  *uris* is of type array and its element is URI which
   is of type string. *uris* is used for Web-seeding.  For single file
   torrents, URI can be a complete URI pointing to the resource or if URI
   ends with /, name in torrent file is added. For multi-file torrents,
@@ -1969,8 +1969,8 @@ All code examples come from Python2.7 interpreter.
   
   
   
-  This method adds Metalink download by uploading .metalink file.
-  *metalink* is of type base64 which contains Base64-encoded .metalink
+  This method adds Metalink download by uploading ".metalink" file.
+  *metalink* is of type base64 which contains Base64-encoded ".metalink"
   file.  *options* is of type struct and its members are a pair of
   option name and value. See :ref:`rpc_options` below for more details.  If
   *position* is given as an integer starting from 0, the new download is
@@ -2207,7 +2207,7 @@ All code examples come from Python2.7 interpreter.
   ``belongsTo``
     GID of a parent download. Some downloads are a part of another
     download.  For example, if a file in Metalink has BitTorrent
-    resource, the download of .torrent is a part of that file.  If this
+    resource, the download of ".torrent" is a part of that file.  If this
     download has no parent, this key will not be included in the
     response.
   
@@ -2225,7 +2225,7 @@ All code examples come from Python2.7 interpreter.
     file. BitTorrent only. It contains following keys.
   
     ``announceList``
-      List of lists of announce URI. If .torrent file contains announce
+      List of lists of announce URI. If ".torrent" file contains announce
       and no announce-list, announce is converted to announce-list
       format.
   
@@ -3588,8 +3588,8 @@ Download only selected files using index
 
   The index is printed to the console using -S option.
 
-Download a file using a local .metalink file with user preference
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Download a file using a local metalink file with user preference
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code-block:: console
 
   $ aria2c --metalink-location=jp,us --metalink-version=1.1 --metalink-language=en-US file.metalink
