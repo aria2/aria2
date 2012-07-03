@@ -78,9 +78,14 @@
 // use C99 limit macros
 #define __STDC_LIMIT_MACROS
 // included here for compatibility issues with old compiler/libraries.
-#include <stdint.h>
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif // HAVE_STDINT_H
+
 // For PRId64
 #define __STDC_FORMAT_MACROS
-#include <inttypes.h>
+#ifdef HAVE_INTTYPES_H
+#  include <inttypes.h>
+#endif // HAVE_INTTYPES_H
 
 #endif // D_COMMON_H
