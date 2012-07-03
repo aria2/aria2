@@ -371,6 +371,7 @@ AC_CHECK_HEADERS([argz.h \
                   sys/param.h \
                   sys/socket.h \
                   sys/time.h \
+                  sys/types.h \
                   termios.h \
                   unistd.h \
 		  utime.h \
