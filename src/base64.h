@@ -127,30 +127,30 @@ std::string decode(InputIterator first, InputIterator last)
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
   };
   std::string res;
-  InputIterator k[5];
+  InputIterator k[4];
   int eq = 0;
   for(; first != last;) {
     for(int i = 1; i <= 4; ++i) {
-      k[i] = getNext(first, last, INDEX_TABLE);
-      if(k[i] == last) {
+      k[i-1] = getNext(first, last, INDEX_TABLE);
+      if(k[i-1] == last) {
         // If i == 1, input may look like this: "TWFu\n" (i.e.,
         // garbage at the end)
         if(i != 1) {
           res.clear();
         }
         return res;
-      } else if(*k[i] == '=' && eq == 0) {
+      } else if(*k[i-1] == '=' && eq == 0) {
         eq = i;
       }
-      first = k[i]+1;
+      first = k[i-1]+1;
     }
     if(eq) {
       break;
     }
-    int n = (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 18)+
-      (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 12)+
-      (INDEX_TABLE[static_cast<unsigned char>(*k[3])] << 6)+
-      INDEX_TABLE[static_cast<unsigned char>(*k[4])];
+    int n = (INDEX_TABLE[static_cast<unsigned char>(*k[0])] << 18)+
+      (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 12)+
+      (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 6)+
+      INDEX_TABLE[static_cast<unsigned char>(*k[3])];
     res += n >> 16;
     res += n >> 8 & 0xffu;
     res += n & 0xffu;
@@ -161,19 +161,19 @@ std::string decode(InputIterator first, InputIterator last)
       return res;
     } else {
       for(int i = eq; i <= 4; ++i) {
-        if(*k[i] != '=') {
+        if(*k[i-1] != '=') {
           res.clear();
           return res;
         }
       }
       if(eq == 3) {
-        int n = (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 18)+
-          (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 12);
+        int n = (INDEX_TABLE[static_cast<unsigned char>(*k[0])] << 18)+
+          (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 12);
         res += n >> 16;
       } else if(eq == 4) {
-        int n = (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 18)+
-          (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 12)+
-          (INDEX_TABLE[static_cast<unsigned char>(*k[3])] << 6);
+        int n = (INDEX_TABLE[static_cast<unsigned char>(*k[0])] << 18)+
+          (INDEX_TABLE[static_cast<unsigned char>(*k[1])] << 12)+
+          (INDEX_TABLE[static_cast<unsigned char>(*k[2])] << 6);
         res += n >> 16;
         res += n >> 8 & 0xffu;
       }
