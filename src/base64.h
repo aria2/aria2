@@ -133,7 +133,11 @@ std::string decode(InputIterator first, InputIterator last)
     for(int i = 1; i <= 4; ++i) {
       k[i] = getNext(first, last, INDEX_TABLE);
       if(k[i] == last) {
-        res.clear();
+        // If i == 1, input may look like this: "TWFu\n" (i.e.,
+        // garbage at the end)
+        if(i != 1) {
+          res.clear();
+        }
         return res;
       } else if(*k[i] == '=' && eq == 0) {
         eq = i;

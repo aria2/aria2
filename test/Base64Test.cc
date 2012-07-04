@@ -76,6 +76,9 @@ void Base64Test::testDecode()
   s = "TWFu";
   CPPUNIT_ASSERT_EQUAL(std::string("Man"), base64::decode(s.begin(), s.end()));
 
+  s = "TWFu\n";
+  CPPUNIT_ASSERT_EQUAL(std::string("Man"), base64::decode(s.begin(), s.end()));
+
   s = "TQ==";
   CPPUNIT_ASSERT_EQUAL(std::string("M"), base64::decode(s.begin(), s.end()));
 
