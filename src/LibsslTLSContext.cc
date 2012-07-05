@@ -102,6 +102,18 @@ bool TLSContext::addClientKeyFile(const std::string& certfile,
   return true;
 }
 
+bool TLSContext::addSystemTrustedCACerts()
+{
+  if(SSL_CTX_set_default_verify_paths(sslCtx_) != 1) {
+    A2_LOG_ERROR(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
+                     ERR_error_string(ERR_get_error(), 0)));
+    return false;
+  } else {
+    A2_LOG_INFO("System trusted CA certificates were successfully added.");
+    return true;
+  }
+}
+
 bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   if(SSL_CTX_load_verify_locations(sslCtx_, certfile.c_str(), 0) != 1) {

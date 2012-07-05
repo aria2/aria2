@@ -61,6 +61,8 @@ public:
   bool addClientKeyFile(const std::string& certfile,
                         const std::string& keyfile);
 
+  bool addSystemTrustedCACerts();
+
   // certfile can contain multiple certificates.
   bool addTrustedCACertFile(const std::string& certfile);
 

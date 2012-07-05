@@ -99,6 +99,23 @@ bool TLSContext::addClientKeyFile(const std::string& certfile,
   }
 }
 
+bool TLSContext::addSystemTrustedCACerts()
+{
+#ifdef HAVE_GNUTLS_CERTIFICATE_SET_X509_SYSTEM_TRUST
+  int ret = gnutls_certificate_set_x509_system_trust(certCred_);
+  if(ret < 0) {
+    A2_LOG_ERROR(fmt(MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED,
+                     gnutls_strerror(ret)));
+    return false;
+  } else {
+    A2_LOG_INFO(fmt("%d certificate(s) were imported.", ret));
+    return true;
+  }
+#else
+  return false;
+#endif
+}
+
 bool TLSContext::addTrustedCACertFile(const std::string& certfile)
 {
   int ret = gnutls_certificate_set_x509_trust_file(certCred_,

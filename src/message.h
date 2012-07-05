@@ -169,6 +169,8 @@
 #define MSG_ESTABLISHING_CONNECTION_FAILED              \
   _("Failed to establish connection, cause: %s")
 #define MSG_NETWORK_PROBLEM _("Network problem has occurred. cause:%s")
+#define MSG_LOADING_SYSTEM_TRUSTED_CA_CERTS_FAILED                              \
+  _("Failed to load trusted CA certificates from system. Cause: %s")
 #define MSG_LOADING_TRUSTED_CA_CERT_FAILED                              \
   _("Failed to load trusted CA certificates from %s. Cause: %s")
 #define MSG_CERT_VERIFICATION_FAILED                    \

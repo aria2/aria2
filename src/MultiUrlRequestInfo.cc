@@ -179,12 +179,15 @@ error_code::Value MultiUrlRequestInfo::execute()
       tlsContext->addClientKeyFile(option_->get(PREF_CERTIFICATE),
                                    option_->get(PREF_PRIVATE_KEY));
     }
+
     if(!option_->blank(PREF_CA_CERTIFICATE)) {
       if(!tlsContext->addTrustedCACertFile(option_->get(PREF_CA_CERTIFICATE))) {
         A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
       }
     } else if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
-      A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
+      if(!tlsContext->addSystemTrustedCACerts()) {
+        A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
+      }
     }
     if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
       tlsContext->enablePeerVerification();
