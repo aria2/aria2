@@ -181,13 +181,18 @@ void FtpConnectionTest::testReceiveMdtmResponse()
     CPPUNIT_ASSERT(t.bad());
   }
   {
-    // invalid month: 19, we don't care about invalid month..
+    // invalid month: 19
     Time t;
     serverSocket_->writeData("213 20081908124312\r\n");
     waitRead(clientSocket_);
     CPPUNIT_ASSERT_EQUAL(213, ftp_->receiveMdtmResponse(t));
-    // Wed Jul 8 12:43:12 2009
+#ifdef HAVE_TIMEGM
+    // Time will be normalized. Wed Jul 8 12:43:12 2009
     CPPUNIT_ASSERT_EQUAL((time_t)1247056992, t.getTime());
+#else // !HAVE_TIMEGM
+    // The replacement timegm does not normalize.
+    CPPUNIT_ASSERT_EQUAL((time_t)-1, t.getTime());
+#endif // !HAVE_TIMEGM
   }
   {
     Time t;

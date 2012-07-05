@@ -1,7 +1,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,12 +34,8 @@
 #ifndef D_TIMEGM_H
 #define D_TIMEGM_H
 
-#ifdef __MINGW32__
-# undef SIZE_MAX
-#endif // __MINGW32__
-
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+#  include "config.h"
 #endif // HAVE_CONFIG_H
 
 #ifdef __cplusplus
