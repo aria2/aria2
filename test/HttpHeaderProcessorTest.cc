@@ -21,6 +21,7 @@ class HttpHeaderProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetHttpResponseHeader);
   CPPUNIT_TEST(testGetHttpResponseHeader_statusOnly);
   CPPUNIT_TEST(testGetHttpResponseHeader_insufficientStatusLength);
+  CPPUNIT_TEST(testGetHttpResponseHeader_nameStartsWs);
   CPPUNIT_TEST(testBeyondLimit);
   CPPUNIT_TEST(testGetHeaderString);
   CPPUNIT_TEST(testGetHttpRequestHeader);
@@ -35,6 +36,7 @@ public:
   void testGetHttpResponseHeader();
   void testGetHttpResponseHeader_statusOnly();
   void testGetHttpResponseHeader_insufficientStatusLength();
+  void testGetHttpResponseHeader_nameStartsWs();
   void testBeyondLimit();
   void testGetHeaderString();
   void testGetHttpRequestHeader();
@@ -71,6 +73,7 @@ void HttpHeaderProcessorTest::testParse3()
     "  text3\r\n"
     "Duplicate: foo\r\n"
     "Duplicate: bar\r\n"
+    "No-value:\r\n"
     "\r\n";
   CPPUNIT_ASSERT(proc.parse(s));
   SharedHandle<HttpHeader> h = proc.getResult();
@@ -84,6 +87,8 @@ void HttpHeaderProcessorTest::testParse3()
                        h->findAll("duplicate")[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("bar"),
                        h->findAll("duplicate")[1]);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), h->find("no-value"));
+  CPPUNIT_ASSERT(h->defined("no-value"));
 }
 
 void HttpHeaderProcessorTest::testGetLastBytesProcessed()
@@ -164,6 +169,46 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_insufficientStatusLength
   HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
 
   std::string hd = "HTTP/1.1 20\r\n\r\n";
+  try {
+    proc.parse(hd);
+    CPPUNIT_FAIL("Exception must be thrown.");
+  } catch(DlAbortEx& ex) {
+    // Success
+  }
+}
+
+void HttpHeaderProcessorTest::testGetHttpResponseHeader_nameStartsWs()
+{
+  HttpHeaderProcessor proc(HttpHeaderProcessor::CLIENT_PARSER);
+
+  std::string hd =
+    "HTTP/1.1 200\r\n"
+    " foo:bar\r\n"
+    "\r\n";
+  try {
+    proc.parse(hd);
+    CPPUNIT_FAIL("Exception must be thrown.");
+  } catch(DlAbortEx& ex) {
+    // Success
+  }
+
+  proc.clear();
+  hd =
+    "HTTP/1.1 200\r\n"
+    ":foo:bar\r\n"
+    "\r\n";
+  try {
+    proc.parse(hd);
+    CPPUNIT_FAIL("Exception must be thrown.");
+  } catch(DlAbortEx& ex) {
+    // Success
+  }
+
+  proc.clear();
+  hd =
+    "HTTP/1.1 200\r\n"
+    ":foo\r\n"
+    "\r\n";
   try {
     proc.parse(hd);
     CPPUNIT_FAIL("Exception must be thrown.");

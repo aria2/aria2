@@ -269,6 +269,9 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
       break;
     case PREV_FIELD_NAME:
       if(util::isLws(c)) {
+        if(lastFieldName_.empty()) {
+          throw DL_ABORT_EX("Bad HTTP header: field name starts with LWS");
+        }
         // Evil Multi-line header field
         state_ = FIELD_VALUE;
       } else {
@@ -282,6 +285,8 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
           state_ = HEADERS_COMPLETE;
         } else if(c == '\r') {
           state_ = PREV_EOH;
+        } else if(c == ':') {
+          throw DL_ABORT_EX("Bad HTTP header: field name starts with ':'");
         } else {
           state_ = FIELD_NAME;
           i = getFieldNameToken(lastFieldName_, data, length, i);
