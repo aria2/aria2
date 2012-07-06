@@ -1545,10 +1545,10 @@ FILES
 aria2.conf
 ~~~~~~~~~~
 
-By default, aria2 parses ``$HOME/.aria2/aria2.conf`` as a configuraiton
-file. You can specify the path to configuration file using
-:option:`--conf-path` option.  If you don't want to use the configuraitonf
-file, use :option:`--no-conf` option.
+By default, aria2 parses ``$HOME/.aria2/aria2.conf`` as a
+configuraiton file. You can specify the path to configuration file
+using :option:`--conf-path` option.  If you don't want to use the
+configuraiton file, use :option:`--no-conf` option.
 
 The configuration file is a text file and has 1 option per each
 line. In each line, you can specify name-value pair in the format:
@@ -1563,6 +1563,12 @@ lines beginning ``#`` are treated as comments::
   max-upload-limit=50K
   ftp-pasv=true
 
+.. note::
+
+  The confidential information such as user/password might be included
+  in the configuration file. It is recommended to change file mode
+  bits of the configuration file (e.g., ``chmod 600 aria2.conf``), so
+  that other user cannot see the contents of the file.
 
 dht.dat
 ~~~~~~~~
@@ -3471,6 +3477,56 @@ xmlrpc.client instead) to interact with aria2::
   r = s.aria2.addUri(["http://localhost/aria2.tar.bz2"], {"dir":"/downloads"})
   pprint(r)
 
+MISC
+----
+
+Console Readout
+~~~~~~~~~~~~~~~
+
+While downloading files, aria2 prints the console readout to tell the
+progress of the downloads. The console readout is like this::
+
+    [#1 SIZE:400.0KiB/33.2MiB(1%) CN:1 SPD:115.7KiBs ETA:4m51s]
+
+This section describes what these numbers and strings mean.
+
+``#N``
+  N means GID, which is an unique ID for each download.
+
+``SIZE``
+  Completed length and Total length in bytes. If
+  :option:`--select-file` is used, this is the sum of selected file.
+
+``SEEDING``
+  Share ratio. The client is now seeding. After BitTorrent download
+  finished, ``SIZE`` is replaced with ``SEEDING``.
+
+``CN``
+  The number of connections the client has established.
+
+``SEED``
+  The number of seeders the client has connected to.
+
+``SPD``
+  Download speed.
+
+``UP``
+  Upload speed and the number of uploaded bytes.
+
+``ETA``
+  Expected time to finish.
+
+``TOTAL SPD``
+  The sum of download speed for all parallel downloads.
+
+When aria2 is allocating file space or validating checksum, it
+additionally prints the their progress:
+
+FileAlloc
+  GID, allocated length and total length in bytes.
+
+Checksum
+  GID, validated length and total length in bytes.
 
 EXAMPLE
 -------
