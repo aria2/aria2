@@ -11,4 +11,5 @@ Contents:
 .. toctree::
    :maxdepth: 3
 
+   README
    aria2c
