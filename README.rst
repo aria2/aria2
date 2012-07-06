@@ -316,9 +316,9 @@ DHT
 ~~~
 
 aria2 supports mainline compatible DHT. By default, the routing table
-for IPv4 DHT is saved to $HOME/.aria2/dht.dat and the routing table
-for IPv6 DHT is saved to $HOME/.aria2/dht6.dat. aria2 uses same port
-number to listen on for both IPv4 and IPv6 DHT.
+for IPv4 DHT is saved to ``$HOME/.aria2/dht.dat`` and the routing
+table for IPv6 DHT is saved to ``$HOME/.aria2/dht6.dat``. aria2 uses
+same port number to listen on for both IPv4 and IPv6 DHT.
 
 Other things should be noted
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
