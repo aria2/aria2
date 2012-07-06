@@ -338,6 +338,14 @@ HTTP Specific Options
   certificates.
   Use :option:`--check-certificate` option to enable verification.
 
+  .. note::
+
+    If you build with OpenSSL or the recent version of GnuTLS which
+    has ``gnutls_certificate_set_x509_system_trust()`` function and
+    the library is properly configured to locate the system-wide CA
+    certificates store, aria2 will automatically load those
+    certificates at the startup.
+
 .. option:: --certificate=<FILE>
 
   Use the client certificate in FILE.

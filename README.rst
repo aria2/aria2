@@ -203,11 +203,15 @@ The configure script checks available libraries and enables the features
 as much as possible because all the features are enabled by default.
 
 Since 1.1.0, aria2 checks the certificate of HTTPS servers by default.
-If you build with HTTPS support, I recommend to supply the path to the
-CA bundle file. For example, in Debian the path to CA bundle file is
-'/etc/ssl/certs/ca-certificates.crt' (in ca-certificates package). This
-may vary depending on your distribution. You can give it to
-configure script using ``--with-ca-bundle option``::
+If you build with OpenSSL or the recent version of GnuTLS which has
+``gnutls_certificate_set_x509_system_trust()`` function and the
+library is properly configured to locate the system-wide CA
+certificates store, aria2 will automatically load those certificates
+at the startup. If it is not the case, I recommend to supply the path
+to the CA bundle file. For example, in Debian the path to CA bundle
+file is '/etc/ssl/certs/ca-certificates.crt' (in ca-certificates
+package). This may vary depending on your distribution. You can give
+it to configure script using ``--with-ca-bundle option``::
 
     $ ./configure --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
     $ make
