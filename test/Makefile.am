@@ -74,6 +74,7 @@ aria2c_SOURCES = AllTest.cc\
 	TripletTest.cc\
 	CookieHelperTest.cc\
 	JsonTest.cc\
+	ValueBaseJsonParserTest.cc\
 	RpcResponseTest.cc\
 	RpcMethodTest.cc\
 	BufferedFileTest.cc\

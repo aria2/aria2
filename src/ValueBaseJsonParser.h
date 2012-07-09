@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,73 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
-#define D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
+#ifndef D_VALUE_BASE_JSON_PARSER_H
+#define D_VALUE_BASE_JSON_PARSER_H
 
-#include "common.h"
-
-#include <stack>
-#include <string>
-
-#include "ValueBase.h"
+#include "GenericParser.h"
+#include "JsonParser.h"
+#include "ValueBaseStructParserStateMachine.h"
 
 namespace aria2 {
 
-namespace rpc {
+namespace json {
 
-class XmlRpcRequestParserController {
-private:
+typedef GenericParser<JsonParser, ValueBaseStructParserStateMachine>
+ValueBaseJsonParser;
 
-  struct StateFrame {
-    SharedHandle<ValueBase> value_;
-    std::string name_;
-
-    bool validMember() const
-    {
-      return value_ && !name_.empty();
-    }
-
-    void reset()
-    {
-      value_.reset();
-      name_.clear();
-    }
-  };
-
-  std::stack<StateFrame> frameStack_;
-
-  StateFrame currentFrame_;
-
-  std::string methodName_;
-public:
-  void pushFrame();
-
-  // Pops StateFrame p from frameStack_ and set p[currentFrame_.name_]
-  // = currentFrame_.value_ and currentFrame_ = p;
-  void popStructFrame();
-
-  // Pops StateFrame p from frameStack_ and add currentFrame_.value_
-  // to p and currentFrame_ = p;
-  void popArrayFrame();
-  
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
-
-  void setCurrentFrameName(const std::string& name);
-
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
-
-  void setMethodName(const std::string& methodName)
-  {
-    methodName_ = methodName;
-  }
-
-  const std::string& getMethodName() const { return methodName_; }
-
-  void reset();
-};
-
-} // namespace rpc
+} // namespace json
 
 } // namespace aria2
 
-#endif // D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
+#endif // D_VALUE_BASE_JSON_PARSER_H

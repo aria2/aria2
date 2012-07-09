@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,73 +32,55 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
-#define D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
+#ifndef D_GENERIC_PARSER_H
+#define D_GENERIC_PARSER_H
 
 #include "common.h"
-
-#include <stack>
-#include <string>
-
-#include "ValueBase.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
-namespace rpc {
-
-class XmlRpcRequestParserController {
-private:
-
-  struct StateFrame {
-    SharedHandle<ValueBase> value_;
-    std::string name_;
-
-    bool validMember() const
-    {
-      return value_ && !name_.empty();
-    }
-
-    void reset()
-    {
-      value_.reset();
-      name_.clear();
-    }
-  };
-
-  std::stack<StateFrame> frameStack_;
-
-  StateFrame currentFrame_;
-
-  std::string methodName_;
+template<typename Parser, typename ParserStateMachine>
+class GenericParser {
 public:
-  void pushFrame();
+  GenericParser()
+    : parser_(&psm_)
+  {}
 
-  // Pops StateFrame p from frameStack_ and set p[currentFrame_.name_]
-  // = currentFrame_.value_ and currentFrame_ = p;
-  void popStructFrame();
+  ~GenericParser()
+  {}
 
-  // Pops StateFrame p from frameStack_ and add currentFrame_.value_
-  // to p and currentFrame_ = p;
-  void popArrayFrame();
-  
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
-
-  void setCurrentFrameName(const std::string& name);
-
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
-
-  void setMethodName(const std::string& methodName)
+  // Parses |size| bytes of data |data| and returns the number of
+  // bytes processed. On error, one of the negative error codes is
+  // returned.
+  ssize_t parseUpdate(const char* data, size_t size)
   {
-    methodName_ = methodName;
+    return parser_.parseUpdate(data, size);
   }
 
-  const std::string& getMethodName() const { return methodName_; }
-
-  void reset();
+  // Parses |size| bytes of data |data| and returns result. On error,
+  // null value is returned. On success, the |error| will be the
+  // number of bytes processed (>= 0). On error, it will be one of the
+  // negative error code. This function also resets underlying parser
+  // facility and make it ready to reuse.
+  typename ParserStateMachine::ResultType
+  parseFinal(const char* data, size_t size, ssize_t& error)
+  {
+    typename ParserStateMachine::ResultType res;
+    error = parser_.parseFinal(data, size);
+    if(error < 0) {
+      res = ParserStateMachine::noResult;
+    } else {
+      res = psm_.getResult();
+    }
+    parser_.reset();
+    return res;
+  }
+private:
+  ParserStateMachine psm_;
+  Parser parser_;
 };
-
-} // namespace rpc
 
 } // namespace aria2
 
-#endif // D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
+#endif // D_GENERIC_PARSER_H

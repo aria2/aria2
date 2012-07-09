@@ -92,6 +92,15 @@ XmlRpcRequestParserController::getCurrentFrameValue() const
   return currentFrame_.value_;
 }
 
+void XmlRpcRequestParserController::reset()
+{
+  while(!frameStack_.empty()) {
+    frameStack_.pop();
+  }
+  currentFrame_.reset();
+  methodName_.clear();
+}
+
 } // namespace rpc
   
 } // namespace aria2

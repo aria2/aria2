@@ -199,6 +199,12 @@ SRCS =  Socket.h\
 	Triplet.h\
 	cookie_helper.cc cookie_helper.h\
 	json.cc json.h\
+	JsonParser.cc JsonParser.h\
+	StructParserStateMachine.h\
+	ValueBaseJsonParser.h\
+	ValueBaseStructParserState.h\
+	ValueBaseStructParserStateImpl.cc ValueBaseStructParserStateImpl.h\
+	ValueBaseStructParserStateMachine.cc ValueBaseStructParserStateMachine.h\
 	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
 	RpcRequest.cc RpcRequest.h\
 	RpcMethod.cc RpcMethod.h\

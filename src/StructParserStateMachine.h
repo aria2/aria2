@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,73 +32,39 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
-#define D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
+#ifndef D_STRUCT_PARSER_STATE_MACHINE_H
+#define D_STRUCT_PARSER_STATE_MACHINE_H
 
 #include "common.h"
 
-#include <stack>
-#include <string>
-
-#include "ValueBase.h"
-
 namespace aria2 {
 
-namespace rpc {
-
-class XmlRpcRequestParserController {
-private:
-
-  struct StateFrame {
-    SharedHandle<ValueBase> value_;
-    std::string name_;
-
-    bool validMember() const
-    {
-      return value_ && !name_.empty();
-    }
-
-    void reset()
-    {
-      value_.reset();
-      name_.clear();
-    }
-  };
-
-  std::stack<StateFrame> frameStack_;
-
-  StateFrame currentFrame_;
-
-  std::string methodName_;
-public:
-  void pushFrame();
-
-  // Pops StateFrame p from frameStack_ and set p[currentFrame_.name_]
-  // = currentFrame_.value_ and currentFrame_ = p;
-  void popStructFrame();
-
-  // Pops StateFrame p from frameStack_ and add currentFrame_.value_
-  // to p and currentFrame_ = p;
-  void popArrayFrame();
-  
-  void setCurrentFrameValue(const SharedHandle<ValueBase>& value);
-
-  void setCurrentFrameName(const std::string& name);
-
-  const SharedHandle<ValueBase>& getCurrentFrameValue() const;
-
-  void setMethodName(const std::string& methodName)
-  {
-    methodName_ = methodName;
-  }
-
-  const std::string& getMethodName() const { return methodName_; }
-
-  void reset();
+enum StructElementType {
+  STRUCT_DICT_T,
+  STRUCT_DICT_KEY_T,
+  STRUCT_DICT_DATA_T,
+  STRUCT_ARRAY_T,
+  STRUCT_ARRAY_DATA_T,
+  STRUCT_STRING_T,
+  STRUCT_NUMBER_T,
+  STRUCT_BOOL_T,
+  STRUCT_NULL_T
 };
 
-} // namespace rpc
+// Interface for streaming parser of structured data format (e.g.,
+// JSON, Bencode).
+class StructParserStateMachine {
+public:
+  virtual ~StructParserStateMachine() {}
 
-} // namespace aria2
+  virtual void beginElement(int elementType) = 0;
+  virtual void endElement(int elementType) = 0;
+  virtual void reset() = 0;
+  virtual void charactersCallback(const char* data, size_t len) = 0;
+  virtual void numberCallback(int64_t number, int frac, int exp) = 0;
+  virtual void boolCallback(bool bval) = 0;
+};
 
-#endif // D_XML_RPC_REQUEST_PARSER_CONTROLLER_H
+} //  namespace aria2
+
+#endif // D_STRUCT_PARSER_STATE_MACHINE_H
