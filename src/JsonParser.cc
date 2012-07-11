@@ -117,7 +117,10 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       } else if(isSpace(c)) {
         break;
       } else {
-        pushState(currentState_);
+        int rv = pushState(currentState_);
+        if(rv < 0) {
+          return rv;
+        }
         currentState_ = JSON_VALUE;
         runBeginCallback(STRUCT_ARRAY_DATA_T);
       }
@@ -208,11 +211,15 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       break;
     case JSON_OBJECT_KEY:
       switch(c) {
-      case '"':
-        pushState(currentState_);
+      case '"': {
+        int rv = pushState(currentState_);
+        if(rv < 0) {
+          return rv;
+        }
         currentState_ = JSON_STRING;
         runBeginCallback(STRUCT_DICT_KEY_T);
         break;
+      }
       case '}':
         onObjectEnd();
         break;
@@ -584,9 +591,14 @@ void JsonParser::onValueEnd()
   }
 }
 
-void JsonParser::pushState(int state)
+int JsonParser::pushState(int state)
 {
-  stateStack_.push(state);
+  if(stateStack_.size() >= 50) {
+    return ERR_STRUCTURE_TOO_DEEP;
+  } else {
+    stateStack_.push(state);
+    return 0;
+  }
 }
 
 int JsonParser::stateTop() const

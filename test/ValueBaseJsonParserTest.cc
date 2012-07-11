@@ -288,6 +288,9 @@ void ValueBaseJsonParserTest::testParseUpdate_error()
   checkDecodeError("[1.1e]");
   // bool
   checkDecodeError("[t");
+  // too deep structure
+  checkDecodeError(std::string(51, '[')+std::string(51,']'));
+  checkDecodeError(std::string(50, '[')+"{\"foo\":100}"+std::string(50,']'));
 }
 
 } // namespace aria2

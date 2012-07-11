@@ -55,7 +55,8 @@ enum JsonError {
   ERR_NUMBER_OUT_OF_RANGE = -7,
   ERR_UNEXPECTED_CHAR_BEFORE_ARRAY_SEP = -8,
   ERR_UNEXPECTED_LITERAL = -9,
-  ERR_PREMATURE_DATA = -10
+  ERR_PREMATURE_DATA = -10,
+  ERR_STRUCTURE_TOO_DEEP = -11
 };
 
 class JsonParser {
@@ -76,7 +77,7 @@ public:
   // reuse.
   void reset();
 private:
-  void pushState(int state);
+  int pushState(int state);
   int stateTop() const;
   int popState();
   void runBeginCallback(int elementType);
