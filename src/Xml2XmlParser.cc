@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,28 +36,17 @@
 
 #include <cassert>
 #include <cstring>
-#include <deque>
-
-#include <libxml/parser.h>
 
 #include "a2io.h"
-#include "BinaryStream.h"
 #include "ParserStateMachine.h"
 #include "A2STR.h"
 #include "a2functional.h"
 #include "XmlAttr.h"
+#include "util.h"
 
 namespace aria2 {
 
-namespace {
-struct SessionData {
-  std::deque<std::string> charactersStack_;
-  ParserStateMachine* psm_;
-  SessionData(ParserStateMachine* psm)
-    : psm_(psm)
-  {}
-};
-} // namespace
+namespace xml {
 
 namespace {
 void mlStartElement
@@ -88,13 +77,13 @@ void mlStartElement
     xmlAttr.valueLength = pattrs[i+4]-xmlAttr.value;
     xmlAttrs.push_back(xmlAttr);
   }
-  sd->psm_->beginElement
+  sd->psm->beginElement
     (reinterpret_cast<const char*>(localname),
      reinterpret_cast<const char*>(prefix),
      reinterpret_cast<const char*>(nsUri),
      xmlAttrs);
-  if(sd->psm_->needsCharactersBuffering()) {
-    sd->charactersStack_.push_front(A2STR::NIL);
+  if(sd->psm->needsCharactersBuffering()) {
+    sd->charactersStack.push_front(A2STR::NIL);
   }
 }
 } // namespace
@@ -108,11 +97,11 @@ void mlEndElement
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
-  if(sd->psm_->needsCharactersBuffering()) {
-    characters = sd->charactersStack_.front();
-    sd->charactersStack_.pop_front();
+  if(sd->psm->needsCharactersBuffering()) {
+    characters = sd->charactersStack.front();
+    sd->charactersStack.pop_front();
   }
-  sd->psm_->endElement
+  sd->psm->endElement
     (reinterpret_cast<const char*>(localname),
      reinterpret_cast<const char*>(prefix),
      reinterpret_cast<const char*>(nsUri),
@@ -124,8 +113,8 @@ namespace {
 void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  if(sd->psm_->needsCharactersBuffering()) {
-    sd->charactersStack_.front().append(&ch[0], &ch[len]);
+  if(sd->psm->needsCharactersBuffering()) {
+    sd->charactersStack.front().append(&ch[0], &ch[len]);
   }
 }
 } // namespace
@@ -169,61 +158,85 @@ xmlSAXHandler mySAXHandler =
 } // namespace
 
 XmlParser::XmlParser(ParserStateMachine* psm)
-  : psm_(psm)
+  : psm_(psm),
+    sessionData_(psm),
+    ctx_(xmlCreatePushParserCtxt(&mySAXHandler, &sessionData_, 0, 0, 0)),
+    lastError_(0)
 {}
 
-XmlParser::~XmlParser() {}
-
-bool XmlParser::parseFile(const char* filename)
+XmlParser::~XmlParser()
 {
-  SessionData sessionData(psm_);
-  // Old libxml2(at least 2.7.6, Ubuntu 10.04LTS) does not read stdin
-  // when "/dev/stdin" is passed as filename while 2.7.7 does. So we
-  // convert DEV_STDIN to "-" for compatibility.
-  const char* nfilename;
-  if(strcmp(filename, DEV_STDIN) == 0) {
-    nfilename = "-";
-  } else {
-    nfilename = filename;
-  }
-  int r = xmlSAXUserParseFile(&mySAXHandler, &sessionData, nfilename);
-  return r == 0 && psm_->finished();
+  xmlFreeParserCtxt(ctx_);
 }
 
-bool XmlParser::parseBinaryStream(BinaryStream* bs)
+ssize_t XmlParser::parseUpdate(const char* data, size_t size)
 {
-  const size_t bufSize = 4096;
-  unsigned char buf[bufSize];
-  ssize_t res = bs->readData(buf, 4, 0);
-  if(res != 4) {
-    return false;
+  if(lastError_ != 0) {
+    return lastError_;
   }
-  SessionData sessionData(psm_);
-  xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt
-    (&mySAXHandler, &sessionData,
-     reinterpret_cast<const char*>(buf), res, 0);
-  auto_delete<xmlParserCtxtPtr> deleter(ctx, xmlFreeParserCtxt);
-  off_t readOffset = res;
-  while(1) {
-    ssize_t res = bs->readData(buf, bufSize, readOffset);
-    if(res == 0) {
-      break;
-    }
-    if(xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), res, 0) != 0) {
-      // TODO we need this? Just break is not suffice?
+  int rv = xmlParseChunk(ctx_, data, size, 0);
+  if(rv != 0) {
+    return lastError_ = ERR_XML_PARSE;
+  } else {
+    return size;
+  }
+}
+
+ssize_t XmlParser::parseFinal(const char* data, size_t size)
+{
+  if(lastError_ != 0) {
+    return lastError_;
+  }
+  int rv = xmlParseChunk(ctx_, data, size, 1);
+  if(rv != 0) {
+    return lastError_ = ERR_XML_PARSE;
+  } else {
+    return size;
+  }
+}
+
+int XmlParser::reset()
+{
+  // TODO psm must be reset
+  sessionData_.reset();
+  int rv = xmlCtxtResetPush(ctx_, 0, 0, 0, 0);
+  if(rv != 0) {
+    return lastError_ = ERR_RESET;
+  } else {
+    return 0;
+  }
+}
+
+bool parseFile(const std::string& filename, ParserStateMachine* psm)
+{
+  int fd;
+  if(filename == DEV_STDIN) {
+    fd = STDIN_FILENO;
+  } else {
+    while((fd = a2open(utf8ToWChar(filename).c_str(),
+                       O_BINARY | O_RDONLY, OPEN_MODE)) == -1 && fd != EINTR);
+    if(fd == -1) {
       return false;
     }
-    readOffset += res;
   }
-  xmlParseChunk(ctx, reinterpret_cast<const char*>(buf), 0, 1);
-  return psm_->finished();
+  XmlParser ps(psm);
+  char buf[4096];
+  ssize_t nread;
+  bool retval = true;
+  while((nread = read(fd, buf, sizeof(buf))) > 0) {
+    if(ps.parseUpdate(buf, nread) < 0) {
+      retval = false;
+      break;
+    }
+  }
+  if(nread == 0 && retval) {
+    if(ps.parseFinal(0, 0) < 0) {
+      retval = false;
+    }
+  }
+  return retval;
 }
 
-bool XmlParser::parseMemory(const char* xml, size_t len)
-{
-  SessionData sessionData(psm_);
-  int r = xmlSAXUserParseMemory(&mySAXHandler, &sessionData, xml, len);
-  return r == 0 && psm_->finished();
-}
+} // namespace xml
 
 } // namespace aria2

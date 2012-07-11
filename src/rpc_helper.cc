@@ -53,7 +53,7 @@ namespace rpc {
 RpcRequest xmlParseMemory(const char* xml, size_t size)
 {
   XmlRpcRequestParserStateMachine psm;
-  if(!XmlParser(&psm).parseMemory(xml, size)) {
+  if(xml::XmlParser(&psm).parseFinal(xml, size) < 0) {
     throw DL_ABORT_EX(MSG_CANNOT_PARSE_XML_RPC_REQUEST);
   }
   SharedHandle<List> params;

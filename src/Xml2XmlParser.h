@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,24 +37,55 @@
 
 #include "common.h"
 
+#include <sys/types.h>
+
 #include <cstdlib>
+#include <string>
+#include <deque>
+
+#include <libxml/parser.h>
 
 namespace aria2 {
 
-class BinaryStream;
 class ParserStateMachine;
+
+namespace xml {
+
+enum XmlError {
+  ERR_XML_PARSE = -1,
+  ERR_RESET = -2
+};
+
+struct SessionData {
+  std::deque<std::string> charactersStack;
+  ParserStateMachine* psm;
+  SessionData(ParserStateMachine* psm)
+    : psm(psm)
+  {}
+  void reset()
+  {
+    charactersStack.clear();
+  }
+};
 
 class XmlParser {
 public:
   // This object does not delete psm.
   XmlParser(ParserStateMachine* psm);
   ~XmlParser();
-  bool parseFile(const char* filename);
-  bool parseBinaryStream(BinaryStream* binaryStream);
-  bool parseMemory(const char* xml, size_t size);
+  ssize_t parseUpdate(const char* data, size_t size);
+  ssize_t parseFinal(const char* data, size_t size);
+  int reset();
 private:
   ParserStateMachine* psm_;
+  SessionData sessionData_;
+  xmlParserCtxtPtr ctx_;
+  int lastError_;
 };
+
+bool parseFile(const std::string& filename, ParserStateMachine* psm);
+
+} // namespace xml
 
 } // namespace aria2
 

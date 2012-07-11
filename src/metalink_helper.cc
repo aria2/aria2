@@ -125,7 +125,7 @@ SharedHandle<Metalinker> parseFile
 {
   MetalinkParserStateMachine psm;
   psm.setBaseUri(baseUri);
-  if(!XmlParser(&psm).parseFile(filename.c_str())) {
+  if(!xml::parseFile(filename, &psm)) {
     throw DL_ABORT_EX2("Could not parse Metalink XML document.",
                        error_code::METALINK_PARSE_ERROR);
   }
@@ -142,7 +142,24 @@ SharedHandle<Metalinker> parseBinaryStream
 {
   MetalinkParserStateMachine psm;
   psm.setBaseUri(baseUri);
-  if(!XmlParser(&psm).parseBinaryStream(bs)) {
+  xml::XmlParser ps(&psm);
+  unsigned char buf[4096];
+  ssize_t nread;
+  off_t offread = 0;
+  bool retval = true;
+  while((nread = bs->readData(buf, sizeof(buf), offread)) > 0) {
+    if(ps.parseUpdate(reinterpret_cast<const char*>(buf), nread) < 0) {
+      retval = false;
+      break;
+    }
+    offread += nread;
+  }
+  if(nread == 0 && retval) {
+    if(ps.parseFinal(0, 0) < 0) {
+      retval = false;
+    }
+  }
+  if(!retval) {
     throw DL_ABORT_EX2("Could not parse Metalink XML document.",
                        error_code::METALINK_PARSE_ERROR);
   }
