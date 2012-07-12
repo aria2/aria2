@@ -63,6 +63,10 @@ public:
    const char* prefix,
    const char* nsUri,
    const std::string& characters) = 0;
+
+  // Resets internal state of the object and make it ready for new
+  // parser session.
+  virtual void reset() = 0;
 };
 
 } //  namespace aria2

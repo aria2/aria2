@@ -101,6 +101,15 @@ XmlRpcRequestParserStateMachine::~XmlRpcRequestParserStateMachine()
   delete controller_;
 }
 
+void XmlRpcRequestParserStateMachine::reset()
+{
+  controller_->reset();
+  while(!stateStack_.empty()) {
+    stateStack_.pop();
+  }
+  stateStack_.push(initialState);
+}
+
 bool XmlRpcRequestParserStateMachine::needsCharactersBuffering() const
 {
   return stateStack_.top()->needsCharactersBuffering();

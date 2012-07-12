@@ -112,6 +112,16 @@ MetalinkParserStateMachine::MetalinkParserStateMachine():
 
 MetalinkParserStateMachine::~MetalinkParserStateMachine() {}
 
+void MetalinkParserStateMachine::reset()
+{
+  ctrl_->reset();
+  errors_.clear();
+  while(!stateStack_.empty()) {
+    stateStack_.pop();
+  }
+  stateStack_.push(initialState_);
+}
+
 void MetalinkParserStateMachine::setMetalinkState()
 {
   stateStack_.push(metalinkState_);

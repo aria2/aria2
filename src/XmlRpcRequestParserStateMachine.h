@@ -71,6 +71,8 @@ public:
    const char* nsUri,
    const std::string& characters);
 
+  virtual void reset();
+
   void setMethodName(const std::string& methodName);
   const std::string& getMethodName() const;
   void popArrayFrame();

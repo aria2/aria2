@@ -63,6 +63,11 @@ MetalinkParserController::MetalinkParserController():
 
 MetalinkParserController::~MetalinkParserController() {}
 
+void MetalinkParserController::reset()
+{
+  metalinker_.reset(new Metalinker());
+}
+
 void MetalinkParserController::newEntryTransaction()
 {
   tEntry_.reset(new MetalinkEntry());

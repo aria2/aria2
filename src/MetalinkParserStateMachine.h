@@ -111,6 +111,8 @@ public:
    const char* nsUri,
    const std::string& characters);
 
+  virtual void reset();
+
   void setSkipTagState();
 
   void setMetalinkState();

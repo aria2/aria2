@@ -197,7 +197,7 @@ ssize_t XmlParser::parseFinal(const char* data, size_t size)
 
 int XmlParser::reset()
 {
-  // TODO psm must be reset
+  psm_->reset();
   sessionData_.reset();
   int rv = xmlCtxtResetPush(ctx_, 0, 0, 0, 0);
   if(rv != 0) {

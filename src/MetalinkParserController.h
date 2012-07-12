@@ -87,6 +87,8 @@ public:
 
   ~MetalinkParserController();
 
+  void reset();
+
   const SharedHandle<Metalinker>& getResult() const
   {
     return metalinker_;
