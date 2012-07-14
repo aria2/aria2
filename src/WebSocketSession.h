@@ -40,6 +40,7 @@
 #include <wslay/wslay.h>
 
 #include "SharedHandle.h"
+#include "ValueBaseJsonParser.h"
 
 namespace aria2 {
 
@@ -77,6 +78,15 @@ public:
   bool closeReceived();
   // Returns true if the close frame is sent.
   bool closeSent();
+  // Parses parital request body. This function returns the number of
+  // bytes processed if it succeeds, or negative error code.
+  ssize_t parseUpdate(const uint8_t* data, size_t len);
+  // Parses final part of request body and returns result.  The
+  // |error| will be the number of bytes processed if this function
+  // succeeds, or negative error code. Whether success or failure,
+  // this function resets parser state and receivedLength_.
+  SharedHandle<ValueBase> parseFinal(const uint8_t* data, size_t len,
+                                     ssize_t& error);
 
   const SharedHandle<SocketCore>& getSocket() const
   {
@@ -97,10 +107,23 @@ public:
   {
     command_ = command;
   }
+
+  bool getIgnorePayload() const
+  {
+    return ignorePayload_;
+  }
+
+  void setIgnorePayload(bool flag)
+  {
+    ignorePayload_ = flag;
+  }
 private:
   SharedHandle<SocketCore> socket_;
   DownloadEngine* e_;
   wslay_event_context_ptr wsctx_;
+  bool ignorePayload_;
+  int32_t receivedLength_;
+  json::ValueBaseJsonParser parser_;
   WebSocketInteractionCommand* command_;
 };
 
