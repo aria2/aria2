@@ -51,7 +51,17 @@ class HttpHeader;
 class HttpHeaderProcessor;
 class DownloadEngine;
 class SocketRecvBuffer;
+class DiskWriter;
 
+enum RequestType {
+  RPC_TYPE_NONE,
+  RPC_TYPE_XML,
+  RPC_TYPE_JSON,
+  RPC_TYPE_JSONP
+};
+
+// HTTP server class handling RPC request from the client.  It is not
+// intended to be a generic HTTP server.
 class HttpServer {
 private:
   SharedHandle<SocketCore> socket_;
@@ -61,7 +71,11 @@ private:
   SharedHandle<HttpHeaderProcessor> headerProcessor_;
   SharedHandle<HttpHeader> lastRequestHeader_;
   int64_t lastContentLength_;
-  std::stringstream lastBody_;
+  // How many bytes are consumed. The total number of bytes is
+  // lastContentLength_.
+  int64_t bodyConsumed_;
+  RequestType reqType_;
+  SharedHandle<DiskWriter> lastBody_;
   bool keepAlive_;
   bool gzip_;
   std::string username_;
@@ -78,12 +92,25 @@ public:
 
   bool receiveBody();
 
-  std::string getBody() const;
-
   const std::string& getMethod() const;
 
   const std::string& getRequestPath() const;
 
+  int setupResponseRecv();
+
+  std::string createPath() const;
+
+  std::string createQuery() const;
+
+  const SharedHandle<DiskWriter>& getBody() const
+  {
+    return lastBody_;
+  }
+
+  RequestType getRequestType() const
+  {
+    return reqType_;
+  }
 
   void feedResponse(std::string& text, const std::string& contentType);
 

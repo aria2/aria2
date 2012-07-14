@@ -205,6 +205,7 @@ SRCS =  Socket.h\
 	ValueBaseStructParserState.h\
 	ValueBaseStructParserStateImpl.cc ValueBaseStructParserStateImpl.h\
 	ValueBaseStructParserStateMachine.cc ValueBaseStructParserStateMachine.h\
+	JsonDiskWriter.cc JsonDiskWriter.h\
 	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
 	RpcRequest.cc RpcRequest.h\
 	RpcMethod.cc RpcMethod.h\
@@ -268,7 +269,8 @@ if ENABLE_XML_RPC
 SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
 	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
 	XmlRpcRequestParserState.h\
-	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h
+	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
+	XmlRpcDiskWriter.cc XmlRpcDiskWriter.h
 
 endif # ENABLE_XML_RPC
 
