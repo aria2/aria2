@@ -248,6 +248,9 @@ void extractFileEntries
         throw DL_ABORT_EX2(fmt(MSG_MISSING_BT_INFO, C_LENGTH.c_str()),
                            error_code::BITTORRENT_PARSE_ERROR);
       }
+      if(length > std::numeric_limits<int64_t>::max() - fileLengthData->i()) {
+        throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
+      }
       length += fileLengthData->i();
       if(fileLengthData->i() > std::numeric_limits<off_t>::max()) {
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));

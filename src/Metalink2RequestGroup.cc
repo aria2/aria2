@@ -57,6 +57,7 @@
 #include "download_helper.h"
 #include "fmt.h"
 #include "SegList.h"
+#include "DownloadFailureException.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 # include "download_helper.h"
@@ -313,6 +314,10 @@ Metalink2RequestGroup::createRequestGroup
         }
         fe->setOriginalName((*i)->metaurls[0]->name);
         fileEntries.push_back(fe);
+        if(offset >
+           std::numeric_limits<int64_t>::max() - (*i)->file->getLength()) {
+          throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, offset));
+        }
         offset += (*i)->file->getLength();
       }
       dctx->setFileEntries(fileEntries.begin(), fileEntries.end());
