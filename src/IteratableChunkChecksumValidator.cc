@@ -101,7 +101,7 @@ void IteratableChunkChecksumValidator::validateChunk()
 
 std::string IteratableChunkChecksumValidator::calculateActualChecksum()
 {
-  off_t offset = getCurrentOffset();
+  int64_t offset = getCurrentOffset();
   size_t length;
   // When validating last piece
   if(currentIndex_+1 == dctx_->getNumPieces()) {
@@ -119,14 +119,14 @@ void IteratableChunkChecksumValidator::init()
   currentIndex_ = 0;
 }
 
-std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length)
+std::string IteratableChunkChecksumValidator::digest(int64_t offset, size_t length)
 {
   unsigned char buf[4096];
   ctx_->reset();
-  off_t max = offset+length;
+  int64_t max = offset+length;
   while(offset < max) {
     size_t r = pieceStorage_->getDiskAdaptor()->readData
-      (buf, std::min(static_cast<off_t>(sizeof(buf)), max-offset), offset);
+      (buf, std::min(static_cast<int64_t>(sizeof(buf)), max-offset), offset);
     if(r == 0) {
       throw DL_ABORT_EX
         (fmt(EX_FILE_READ, dctx_->getBasePath().c_str(),
@@ -147,12 +147,12 @@ bool IteratableChunkChecksumValidator::finished() const
   }
 }
 
-off_t IteratableChunkChecksumValidator::getCurrentOffset() const
+int64_t IteratableChunkChecksumValidator::getCurrentOffset() const
 {
-  return static_cast<off_t>(currentIndex_)*dctx_->getPieceLength();
+  return static_cast<int64_t>(currentIndex_)*dctx_->getPieceLength();
 }
 
-off_t IteratableChunkChecksumValidator::getTotalLength() const
+int64_t IteratableChunkChecksumValidator::getTotalLength() const
 {
   return dctx_->getTotalLength();
 }

@@ -60,9 +60,9 @@ public:
 
   virtual bool finished() const = 0;
 
-  virtual off_t getCurrentOffset() const = 0;
+  virtual int64_t getCurrentOffset() const = 0;
 
-  virtual off_t getTotalLength() const = 0;
+  virtual int64_t getTotalLength() const = 0;
 };
 
 typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;

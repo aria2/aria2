@@ -45,7 +45,7 @@ class FileAllocationIterator;
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
 private:
   SharedHandle<DiskWriter> diskWriter_;
-  off_t totalLength_;
+  int64_t totalLength_;
   bool readOnly_;
 public:
   AbstractSingleDiskAdaptor();
@@ -61,15 +61,15 @@ public:
   virtual void openExistingFile();
 
   virtual void writeData(const unsigned char* data, size_t len,
-                         off_t offset);
+                         int64_t offset);
 
-  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset);
 
   virtual bool fileExists();
 
-  virtual off_t size();
+  virtual int64_t size();
 
-  virtual void truncate(off_t length);
+  virtual void truncate(int64_t length);
   
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 
@@ -94,9 +94,9 @@ public:
     return diskWriter_;
   }
 
-  void setTotalLength(const off_t& totalLength);
+  void setTotalLength(int64_t totalLength);
 
-  off_t getTotalLength() const
+  int64_t getTotalLength() const
   {
     return totalLength_;
   }

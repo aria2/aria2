@@ -65,7 +65,7 @@ private:
 
   void erasePieceOnDisk(const SharedHandle<Piece>& piece);
 
-  void pushPieceData(off_t offset, int32_t length) const;
+  void pushPieceData(int64_t offset, int32_t length) const;
 public:
   BtPieceMessage(size_t index = 0, int32_t begin = 0, int32_t blockLength = 0);
 

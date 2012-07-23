@@ -46,13 +46,13 @@ JsonDiskWriter::JsonDiskWriter()
 JsonDiskWriter::~JsonDiskWriter()
 {}
 
-void JsonDiskWriter::initAndOpenFile(off_t totalLength)
+void JsonDiskWriter::initAndOpenFile(int64_t totalLength)
 {
   parser_.reset();
 }
   
 void JsonDiskWriter::writeData(const unsigned char* data, size_t len,
-                                 off_t offset)
+                               int64_t offset)
 {
   // Return value is ignored here but handled in finalize()
   parser_.parseUpdate(reinterpret_cast<const char*>(data), len);

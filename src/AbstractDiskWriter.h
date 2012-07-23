@@ -49,37 +49,37 @@ private:
 
   bool enableMmap_;
   unsigned char* mapaddr_;
-  off_t maplen_;
+  int64_t maplen_;
 
   ssize_t writeDataInternal(const unsigned char* data, size_t len,
-                            off_t offset);
-  ssize_t readDataInternal(unsigned char* data, size_t len, off_t offset);
+                            int64_t offset);
+  ssize_t readDataInternal(unsigned char* data, size_t len, int64_t offset);
 
-  void seek(off_t offset);
+  void seek(int64_t offset);
 
-  void ensureMmapWrite(size_t len, off_t offset);
+  void ensureMmapWrite(size_t len, int64_t offset);
 protected:
   void createFile(int addFlags = 0);
 public:
   AbstractDiskWriter(const std::string& filename);
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(off_t totalLength = 0);
+  virtual void openFile(int64_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(off_t totalLength = 0);
+  virtual void openExistingFile(int64_t totalLength = 0);
 
-  virtual void writeData(const unsigned char* data, size_t len, off_t offset);
+  virtual void writeData(const unsigned char* data, size_t len, int64_t offset);
 
-  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset);
 
-  virtual void truncate(off_t length);
+  virtual void truncate(int64_t length);
 
   // File must be opened before calling this function.
-  virtual void allocate(off_t offset, off_t length);
+  virtual void allocate(int64_t offset, int64_t length);
 
-  virtual off_t size();
+  virtual int64_t size();
   
   virtual void enableReadOnly();
 

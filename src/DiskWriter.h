@@ -51,9 +51,9 @@ public:
   /**
    * Opens file. If the file exists, then it is truncated to 0 length.
    */
-  virtual void initAndOpenFile(off_t totalLength = 0)  = 0;
+  virtual void initAndOpenFile(int64_t totalLength = 0)  = 0;
   
-  virtual void openFile(off_t totalLength = 0) = 0;
+  virtual void openFile(int64_t totalLength = 0) = 0;
 
   /**
    * Closes this output stream.
@@ -65,10 +65,10 @@ public:
    * Opens a file.  If the file doesnot exists, an exception may be
    * thrown.
    */
-  virtual void openExistingFile(off_t totalLength = 0) = 0;
+  virtual void openExistingFile(int64_t totalLength = 0) = 0;
 
   // Returns file length
-  virtual off_t size() = 0;
+  virtual int64_t size() = 0;
 
   // Enables read-only mode. After this call, openExistingFile() opens
   // file in read-only mode. This is an optional functionality. The

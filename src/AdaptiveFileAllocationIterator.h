@@ -48,12 +48,12 @@ private:
 
   BinaryStream* stream_;
 
-  off_t offset_;
+  int64_t offset_;
 
-  off_t totalLength_;
+  int64_t totalLength_;
 public:
   AdaptiveFileAllocationIterator
-  (BinaryStream* stream, off_t offset, off_t totalLength);
+  (BinaryStream* stream, int64_t offset, int64_t totalLength);
 
   virtual ~AdaptiveFileAllocationIterator();
 
@@ -61,9 +61,9 @@ public:
   
   virtual bool finished();
 
-  virtual off_t getCurrentLength();
+  virtual int64_t getCurrentLength();
 
-  virtual off_t getTotalLength();
+  virtual int64_t getTotalLength();
 };
 
 } // namespace aria2

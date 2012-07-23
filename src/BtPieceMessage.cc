@@ -103,7 +103,8 @@ void BtPieceMessage::doReceivedAction()
   if(!RequestSlot::isNull(slot)) {
     getPeer()->snubbing(false);
     SharedHandle<Piece> piece = getPieceStorage()->getPiece(index_);
-    off_t offset = (off_t)index_*downloadContext_->getPieceLength()+begin_;
+    int64_t offset =
+      static_cast<int64_t>(index_)*downloadContext_->getPieceLength()+begin_;
     A2_LOG_DEBUG(fmt(MSG_PIECE_RECEIVED,
                      getCuid(),
                      static_cast<unsigned long>(index_),
@@ -181,8 +182,8 @@ void BtPieceMessage::send()
     A2_LOG_DEBUG(fmt("msglength = %lu bytes",
                      static_cast<unsigned long>(msgHdrLen+blockLength_)));
     getPeerConnection()->pushBytes(msgHdr, msgHdrLen);
-    off_t pieceDataOffset =
-      (off_t)index_*downloadContext_->getPieceLength()+begin_;
+    int64_t pieceDataOffset =
+      static_cast<int64_t>(index_)*downloadContext_->getPieceLength()+begin_;
     pushPieceData(pieceDataOffset, blockLength_);
   }
   writtenLength = getPeerConnection()->sendPendingData();
@@ -190,7 +191,7 @@ void BtPieceMessage::send()
   setSendingInProgress(!getPeerConnection()->sendBufferIsEmpty());
 }
 
-void BtPieceMessage::pushPieceData(off_t offset, int32_t length) const
+void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
 {
   assert(length <= 16*1024);
   unsigned char* buf = new unsigned char[length];
@@ -224,7 +225,8 @@ bool BtPieceMessage::checkPieceHash(const SharedHandle<Piece>& piece)
     return
       piece->getDigest() == downloadContext_->getPieceHash(piece->getIndex());
   } else {
-    off_t offset = (off_t)piece->getIndex()*downloadContext_->getPieceLength();
+    int64_t offset = static_cast<int64_t>(piece->getIndex())
+      *downloadContext_->getPieceLength();
     return message_digest::staticSHA1Digest
       (getPieceStorage()->getDiskAdaptor(), offset, piece->getLength())
       == downloadContext_->getPieceHash(piece->getIndex());
@@ -256,7 +258,8 @@ void BtPieceMessage::erasePieceOnDisk(const SharedHandle<Piece>& piece)
   size_t BUFSIZE = 4096;
   unsigned char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);
-  off_t offset = (off_t)piece->getIndex()*downloadContext_->getPieceLength();
+  int64_t offset =
+    static_cast<int64_t>(piece->getIndex())*downloadContext_->getPieceLength();
   div_t res = div(piece->getLength(), BUFSIZE);
   for(int i = 0; i < res.quot; ++i) {
     getPieceStorage()->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);

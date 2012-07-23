@@ -69,7 +69,7 @@ public:
 
   bool fileExists();
 
-  off_t size() const;
+  int64_t size() const;
 
   const SharedHandle<FileEntry>& getFileEntry() const
   {
@@ -134,13 +134,13 @@ public:
   virtual void closeFile();
 
   virtual void writeData(const unsigned char* data, size_t len,
-                         off_t offset);
+                         int64_t offset);
 
-  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset);
 
   virtual bool fileExists();
 
-  virtual off_t size();
+  virtual int64_t size();
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 

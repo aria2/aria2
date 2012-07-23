@@ -92,7 +92,7 @@ bool IteratableChecksumValidator::finished() const
   }
 }
 
-off_t IteratableChecksumValidator::getTotalLength() const
+int64_t IteratableChecksumValidator::getTotalLength() const
 {
   return dctx_->getTotalLength();
 }

@@ -413,7 +413,7 @@ void MultiDiskAdaptorTest::testSize()
   
   adaptor.openFile();
 
-  CPPUNIT_ASSERT_EQUAL((off_t)2, adaptor.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)2, adaptor.size());
 }
 
 void MultiDiskAdaptorTest::testUtime()

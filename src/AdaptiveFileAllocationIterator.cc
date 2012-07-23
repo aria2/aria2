@@ -45,7 +45,7 @@
 namespace aria2 {
 
 AdaptiveFileAllocationIterator::AdaptiveFileAllocationIterator
-(BinaryStream* stream, off_t offset, off_t totalLength)
+(BinaryStream* stream, int64_t offset, int64_t totalLength)
  : stream_(stream),
    offset_(offset),
    totalLength_(totalLength)
@@ -60,7 +60,8 @@ void AdaptiveFileAllocationIterator::allocateChunk()
     try {
       A2_LOG_DEBUG("Testing file system supports fallocate.");
       if(offset_ < totalLength_) {
-        off_t len = std::min(totalLength_-offset_, static_cast<off_t>(4096));
+        int64_t len = std::min(totalLength_-offset_,
+                               static_cast<int64_t>(4096));
         stream_->allocate(offset_, len);
         offset_ += len;
       }
@@ -95,7 +96,7 @@ bool AdaptiveFileAllocationIterator::finished()
   }
 }
 
-off_t AdaptiveFileAllocationIterator::getCurrentLength()
+int64_t AdaptiveFileAllocationIterator::getCurrentLength()
 {
   if(!allocator_) {
     return offset_;
@@ -104,7 +105,7 @@ off_t AdaptiveFileAllocationIterator::getCurrentLength()
   }
 }
 
-off_t AdaptiveFileAllocationIterator::getTotalLength()
+int64_t AdaptiveFileAllocationIterator::getTotalLength()
 {
   return totalLength_;
 }

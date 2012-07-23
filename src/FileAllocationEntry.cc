@@ -49,12 +49,12 @@ FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* ne
 FileAllocationEntry:: ~FileAllocationEntry()
 {}
 
-off_t FileAllocationEntry::getCurrentLength()
+int64_t FileAllocationEntry::getCurrentLength()
 {
   return fileAllocationIterator_->getCurrentLength();
 }
 
-off_t FileAllocationEntry::getTotalLength()
+int64_t FileAllocationEntry::getTotalLength()
 {
   return fileAllocationIterator_->getTotalLength();
 }

@@ -54,28 +54,28 @@ public:
 
   virtual ~XmlRpcDiskWriter();
 
-  virtual void initAndOpenFile(off_t totalLength = 0);
+  virtual void initAndOpenFile(int64_t totalLength = 0);
   
-  virtual void openFile(off_t totalLength = 0)
+  virtual void openFile(int64_t totalLength = 0)
   {
     initAndOpenFile(totalLength);
   }
 
   virtual void closeFile() {}
 
-  virtual void openExistingFile(off_t totalLength = 0)
+  virtual void openExistingFile(int64_t totalLength = 0)
   {
     initAndOpenFile(totalLength);
   }
 
-  virtual off_t size()
+  virtual int64_t size()
   {
     return 0;
   }
 
-  virtual void writeData(const unsigned char* data, size_t len, off_t offset);
+  virtual void writeData(const unsigned char* data, size_t len, int64_t offset);
 
-  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset)
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
   {
     return 0;
   }

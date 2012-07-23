@@ -48,13 +48,13 @@ XmlRpcDiskWriter::XmlRpcDiskWriter()
 XmlRpcDiskWriter::~XmlRpcDiskWriter()
 {}
 
-void XmlRpcDiskWriter::initAndOpenFile(off_t totalLength)
+void XmlRpcDiskWriter::initAndOpenFile(int64_t totalLength)
 {
   parser_.reset();
 }
   
 void XmlRpcDiskWriter::writeData(const unsigned char* data, size_t len,
-                                 off_t offset)
+                                 int64_t offset)
 {
   // Return value is ignored here but handled in finalize()
   parser_.parseUpdate(reinterpret_cast<const char*>(data), len);

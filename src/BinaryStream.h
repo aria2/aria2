@@ -47,17 +47,18 @@ class BinaryStream {
 public:
   virtual ~BinaryStream() {}
   
-  virtual void writeData(const unsigned char* data, size_t len, off_t offset) = 0;
+  virtual void writeData(const unsigned char* data, size_t len,
+                         int64_t offset) = 0;
 
-  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset) = 0;
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset) = 0;
 
   // Truncates a file to given length. The default implementation does
   // nothing.
-  virtual void truncate(off_t length) {}
+  virtual void truncate(int64_t length) {}
 
   // Allocates given length bytes of disk space from given offset. The
   // default implementation does nothing.
-  virtual void allocate(off_t offset, off_t length) {}
+  virtual void allocate(int64_t offset, int64_t length) {}
 };
 
 typedef SharedHandle<BinaryStream> BinaryStreamHandle;

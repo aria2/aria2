@@ -48,9 +48,9 @@ class ProgressAwareEntry {
 public:
   virtual ~ProgressAwareEntry() {}
 
-  virtual off_t getCurrentLength() = 0;
+  virtual int64_t getCurrentLength() = 0;
 
-  virtual off_t getTotalLength() = 0;
+  virtual int64_t getTotalLength() = 0;
 
   virtual bool finished() = 0;
 };

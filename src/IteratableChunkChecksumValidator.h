@@ -57,7 +57,7 @@ private:
 
   std::string calculateActualChecksum();
 
-  std::string digest(off_t offset, size_t length);
+  std::string digest(int64_t offset, size_t length);
 
 public:
   IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
@@ -71,9 +71,9 @@ public:
 
   virtual bool finished() const;
 
-  virtual off_t getCurrentOffset() const;
+  virtual int64_t getCurrentOffset() const;
 
-  virtual off_t getTotalLength() const;
+  virtual int64_t getTotalLength() const;
 };
 
 typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;

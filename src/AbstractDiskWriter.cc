@@ -69,7 +69,7 @@ AbstractDiskWriter::~AbstractDiskWriter()
   closeFile();
 }
 
-void AbstractDiskWriter::openFile(off_t totalLength)
+void AbstractDiskWriter::openFile(int64_t totalLength)
 {
   try {
     openExistingFile(totalLength);
@@ -104,7 +104,7 @@ void AbstractDiskWriter::closeFile()
   }
 }
 
-void AbstractDiskWriter::openExistingFile(off_t totalLength)
+void AbstractDiskWriter::openExistingFile(int64_t totalLength)
 {
   int flags = O_BINARY;
   if(readOnly_) {
@@ -146,7 +146,7 @@ void AbstractDiskWriter::createFile(int addFlags)
 }
 
 ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
-                                              size_t len, off_t offset)
+                                              size_t len, int64_t offset)
 {
   if(mapaddr_) {
     memcpy(mapaddr_ + offset, data, len);
@@ -168,7 +168,7 @@ ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data,
 }
 
 ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
-                                             off_t offset)
+                                             int64_t offset)
 {
   if(mapaddr_) {
     ssize_t readlen;
@@ -187,7 +187,7 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len,
   }
 }
 
-void AbstractDiskWriter::seek(off_t offset)
+void AbstractDiskWriter::seek(int64_t offset)
 {
   if(a2lseek(fd_, offset, SEEK_SET) == (off_t)-1) {
     int errNum = errno;
@@ -198,20 +198,20 @@ void AbstractDiskWriter::seek(off_t offset)
   }
 }
 
-void AbstractDiskWriter::ensureMmapWrite(size_t len, off_t offset)
+void AbstractDiskWriter::ensureMmapWrite(size_t len, int64_t offset)
 {
 #ifdef HAVE_MMAP
   if(enableMmap_) {
     if(mapaddr_) {
-      if(static_cast<off_t>(len + offset) > maplen_) {
+      if(static_cast<int64_t>(len + offset) > maplen_) {
         munmap(mapaddr_, maplen_);
         mapaddr_ = 0;
         maplen_ = 0;
         enableMmap_ = false;
       }
     } else {
-      off_t filesize = size();
-      if(static_cast<off_t>(len + offset) <= filesize) {
+      int64_t filesize = size();
+      if(static_cast<int64_t>(len + offset) <= filesize) {
         mapaddr_ = reinterpret_cast<unsigned char*>
           (mmap(0, size(), PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0));
         if(mapaddr_) {
@@ -231,7 +231,7 @@ void AbstractDiskWriter::ensureMmapWrite(size_t len, off_t offset)
 #endif // HAVE_MMAP
 }
 
-void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t offset)
+void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, int64_t offset)
 {
   ensureMmapWrite(len, offset);
   if(writeDataInternal(data, len, offset) < 0) {
@@ -256,7 +256,7 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
   }
 }
 
-ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offset)
+ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, int64_t offset)
 {
   ssize_t ret;
   if((ret = readDataInternal(data, len, offset)) < 0) {
@@ -271,7 +271,7 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
   return ret;
 }
 
-void AbstractDiskWriter::truncate(off_t length)
+void AbstractDiskWriter::truncate(int64_t length)
 {
   if(fd_ == -1) {
     throw DL_ABORT_EX("File not opened.");
@@ -297,7 +297,7 @@ void AbstractDiskWriter::truncate(off_t length)
 #endif
 }
 
-void AbstractDiskWriter::allocate(off_t offset, off_t length)
+void AbstractDiskWriter::allocate(int64_t offset, int64_t length)
 {
 #ifdef  HAVE_SOME_FALLOCATE
   if(fd_ == -1) {
@@ -346,7 +346,7 @@ void AbstractDiskWriter::allocate(off_t offset, off_t length)
 #endif // HAVE_SOME_FALLOCATE
 }
 
-off_t AbstractDiskWriter::size()
+int64_t AbstractDiskWriter::size()
 {
   return File(filename_).size();
 }

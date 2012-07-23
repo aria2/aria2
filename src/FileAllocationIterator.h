@@ -50,9 +50,9 @@ public:
 
   virtual bool finished() = 0;
 
-  virtual off_t getCurrentLength() = 0;
+  virtual int64_t getCurrentLength() = 0;
 
-  virtual off_t getTotalLength() = 0;
+  virtual int64_t getTotalLength() = 0;
 };
 
 } // namespace aria2

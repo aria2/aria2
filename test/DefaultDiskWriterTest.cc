@@ -25,7 +25,7 @@ void DefaultDiskWriterTest::testSize()
   DefaultDiskWriter dw(A2_TEST_DIR"/4096chunk.txt");
   dw.enableReadOnly();
   dw.openExistingFile();
-  CPPUNIT_ASSERT_EQUAL((off_t)4096LL, dw.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)4096LL, dw.size());
 }
 
 } // namespace aria2

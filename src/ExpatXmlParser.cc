@@ -197,7 +197,7 @@ bool XmlParser::parseBinaryStream(BinaryStream* bs)
   SessionData sessionData(psm_);
   XML_Parser parser = createParser(&sessionData);
   auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
-  off_t readOffset = 0;
+  int64_t readOffset = 0;
   while(1) {
     ssize_t res = bs->readData(buf, bufSize, readOffset);
     if(res == 0) {

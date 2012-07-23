@@ -49,7 +49,7 @@ private:
   MultiDiskAdaptor* diskAdaptor_;
   std::deque<SharedHandle<DiskWriterEntry> > entries_;
   SharedHandle<FileAllocationIterator> fileAllocationIterator_;
-  off_t offset_;
+  int64_t offset_;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 
@@ -59,9 +59,9 @@ public:
   
   virtual bool finished();
 
-  virtual off_t getCurrentLength();
+  virtual int64_t getCurrentLength();
 
-  virtual off_t getTotalLength();
+  virtual int64_t getTotalLength();
 
   const std::deque<SharedHandle<DiskWriterEntry> >&
   getDiskWriterEntries() const;

@@ -145,7 +145,7 @@ SharedHandle<Metalinker> parseBinaryStream
   xml::XmlParser ps(&psm);
   unsigned char buf[4096];
   ssize_t nread;
-  off_t offread = 0;
+  int64_t offread = 0;
   bool retval = true;
   while((nread = bs->readData(buf, sizeof(buf), offread)) > 0) {
     if(ps.parseUpdate(reinterpret_cast<const char*>(buf), nread) < 0) {

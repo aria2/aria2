@@ -249,7 +249,7 @@ void extractFileEntries
                            error_code::BITTORRENT_PARSE_ERROR);
       }
       length += fileLengthData->i();
-      if(length > std::numeric_limits<off_t>::max()) {
+      if(fileLengthData->i() > std::numeric_limits<off_t>::max()) {
         throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, length));
       }
       std::string pathKey;

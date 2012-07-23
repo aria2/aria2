@@ -43,7 +43,7 @@ void ByteArrayDiskWriterTest::testWriteAndRead() {
   buf[c] = '\0';
 
   CPPUNIT_ASSERT_EQUAL(std::string("ello World !!"), std::string(buf));
-  CPPUNIT_ASSERT_EQUAL((off_t)14, bw.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)14, bw.size());
 }
 
 void ByteArrayDiskWriterTest::testWriteAndRead2() {
@@ -59,7 +59,7 @@ void ByteArrayDiskWriterTest::testWriteAndRead2() {
   buf[c] = '\0';
 
   CPPUNIT_ASSERT_EQUAL(std::string("Hello From Mars"), std::string(buf));
-  CPPUNIT_ASSERT_EQUAL((off_t)15, bw.size());
+  CPPUNIT_ASSERT_EQUAL((int64_t)15, bw.size());
 }
 
 } // namespace aria2

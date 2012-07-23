@@ -95,7 +95,7 @@ bool MultiFileAllocationIterator::finished()
     (!fileAllocationIterator_ || fileAllocationIterator_->finished());
 }
 
-off_t MultiFileAllocationIterator::getCurrentLength()
+int64_t MultiFileAllocationIterator::getCurrentLength()
 {
   if(!fileAllocationIterator_) {
     return 0;
@@ -104,7 +104,7 @@ off_t MultiFileAllocationIterator::getCurrentLength()
   }
 }
 
-off_t MultiFileAllocationIterator::getTotalLength()
+int64_t MultiFileAllocationIterator::getTotalLength()
 {
   if(!fileAllocationIterator_) {
     return 0;

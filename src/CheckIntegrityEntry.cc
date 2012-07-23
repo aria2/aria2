@@ -56,7 +56,7 @@ void CheckIntegrityEntry::validateChunk()
   validator_->validateChunk();
 }
 
-off_t CheckIntegrityEntry::getTotalLength()
+int64_t CheckIntegrityEntry::getTotalLength()
 {
   if(!validator_) {
     return 0;
@@ -65,7 +65,7 @@ off_t CheckIntegrityEntry::getTotalLength()
   }
 }
 
-off_t CheckIntegrityEntry::getCurrentLength()
+int64_t CheckIntegrityEntry::getCurrentLength()
 {
   if(!validator_) {
     return 0;

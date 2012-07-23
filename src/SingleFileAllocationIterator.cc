@@ -50,8 +50,8 @@ namespace aria2 {
 
 SingleFileAllocationIterator::SingleFileAllocationIterator
 (BinaryStream* stream,
- off_t offset,
- off_t totalLength)
+ int64_t offset,
+ int64_t totalLength)
   : stream_(stream),
     offset_(offset),
     totalLength_(totalLength),

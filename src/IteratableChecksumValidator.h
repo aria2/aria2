@@ -50,7 +50,7 @@ private:
 
   SharedHandle<PieceStorage> pieceStorage_;
 
-  off_t currentOffset_;
+  int64_t currentOffset_;
 
   SharedHandle<MessageDigest> ctx_;
 public:
@@ -65,12 +65,12 @@ public:
 
   virtual bool finished() const;
 
-  virtual off_t getCurrentOffset() const
+  virtual int64_t getCurrentOffset() const
   {
     return currentOffset_;
   }
 
-  virtual off_t getTotalLength() const;
+  virtual int64_t getTotalLength() const;
 };
 
 typedef SharedHandle<IteratableChecksumValidator> IteratableChecksumValidatorHandle;

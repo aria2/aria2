@@ -66,7 +66,7 @@ void staticSHA1DigestFree()
 }
 
 std::string staticSHA1Digest
-(const BinaryStreamHandle& bs, off_t offset, off_t length)
+(const BinaryStreamHandle& bs, int64_t offset, int64_t length)
 {
   sha1Ctx_->reset();
   return digest(sha1Ctx_, bs, offset, length);
@@ -75,7 +75,7 @@ std::string staticSHA1Digest
 std::string digest
 (const SharedHandle<MessageDigest>& ctx,
  const SharedHandle<BinaryStream>& bs,
- off_t offset, off_t length)
+ int64_t offset, int64_t length)
 {
   size_t BUFSIZE = 4096;
   unsigned char BUF[BUFSIZE];

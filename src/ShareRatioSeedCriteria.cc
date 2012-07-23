@@ -51,7 +51,7 @@ void ShareRatioSeedCriteria::reset() {}
 
 bool ShareRatioSeedCriteria::evaluate()
 {
-  off_t completedLength = pieceStorage_->getCompletedLength();
+  int64_t completedLength = pieceStorage_->getCompletedLength();
   if(completedLength == 0) {
     return true;
   }
