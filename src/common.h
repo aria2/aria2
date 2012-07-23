@@ -39,10 +39,6 @@
 # include "config.h"
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
-#endif
-
 #ifdef __MINGW32__
 #ifdef malloc
 #       undef malloc
@@ -87,5 +83,9 @@
 #ifdef HAVE_INTTYPES_H
 #  include <inttypes.h>
 #endif // HAVE_INTTYPES_H
+
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif
 
 #endif // D_COMMON_H
