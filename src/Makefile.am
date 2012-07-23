@@ -253,7 +253,7 @@ endif # !ENABLE_WEBSOCKET
 
 if HAVE_SOME_XMLLIB
 SRCS += XmlAttr.cc XmlAttr.h\
-	XmlParser.h\
+	XmlParser.cc XmlParser.h\
 	ParserStateMachine.h
 endif # HAVE_SOME_XMLLIB
 

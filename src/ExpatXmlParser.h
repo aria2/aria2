@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2011 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,27 +37,33 @@
 
 #include "common.h"
 
+#include <sys/types.h>
 #include <cstdlib>
+
+#include <expat.h>
+
+#include "XmlParser.h"
 
 namespace aria2 {
 
-class BinaryStream;
-class ParserStateMachine;
-class BufferedFile;
+namespace xml {
 
 class XmlParser {
 public:
   // This object does not delete psm.
   XmlParser(ParserStateMachine* psm);
   ~XmlParser();
-  bool parseFile(const char* filename);
-  bool parseBinaryStream(BinaryStream* binaryStream);
-  bool parseMemory(const char* xml, size_t size);
+  ssize_t parseUpdate(const char* data, size_t size);
+  ssize_t parseFinal(const char* data, size_t size);
+  int reset();
 private:
-  bool parseFile(BufferedFile& fp);
-
   ParserStateMachine* psm_;
+  SessionData sessionData_;
+  XML_Parser ctx_;
+  int lastError_;
 };
+
+} // namespace xml
 
 } // namespace aria2
 

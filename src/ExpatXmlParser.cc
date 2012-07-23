@@ -36,13 +36,8 @@
 
 #include <cstdio>
 #include <cstring>
-#include <deque>
-
-#include <expat.h>
 
 #include "a2io.h"
-#include "BinaryStream.h"
-#include "BufferedFile.h"
 #include "ParserStateMachine.h"
 #include "A2STR.h"
 #include "a2functional.h"
@@ -50,15 +45,7 @@
 
 namespace aria2 {
 
-namespace {
-struct SessionData {
-  std::deque<std::string> charactersStack_;
-  ParserStateMachine* psm_;
-  SessionData(ParserStateMachine* psm)
-    : psm_(psm)
-  {}
-};
-} // namespace
+namespace xml {
 
 namespace {
 void splitNsName(const char** localname, const char** nsUri, const char* src)
@@ -101,14 +88,14 @@ void mlStartElement(void* userData, const char* nsName, const char** attrs)
   const char* prefix = 0;
   const char* nsUri = 0;
   splitNsName(&localname, &nsUri, nsName);
-  sd->psm_->beginElement(localname, prefix, nsUri, xmlAttrs);
+  sd->psm->beginElement(localname, prefix, nsUri, xmlAttrs);
   delete [] nsUri;
   for(std::vector<XmlAttr>::iterator i = xmlAttrs.begin(),
         eoi = xmlAttrs.end(); i != eoi; ++i) {
     delete [] (*i).nsUri;
   }
-  if(sd->psm_->needsCharactersBuffering()) {
-    sd->charactersStack_.push_front(A2STR::NIL);
+  if(sd->psm->needsCharactersBuffering()) {
+    sd->charactersStack.push_front(A2STR::NIL);
   }
 }
 } // namespace
@@ -122,11 +109,11 @@ void mlEndElement(void* userData, const char* nsName)
   splitNsName(&localname, &nsUri, nsName);
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::string characters;
-  if(sd->psm_->needsCharactersBuffering()) {
-    characters = sd->charactersStack_.front();
-    sd->charactersStack_.pop_front();
+  if(sd->psm->needsCharactersBuffering()) {
+    characters = sd->charactersStack.front();
+    sd->charactersStack.pop_front();
   }
-  sd->psm_->endElement(localname, prefix, nsUri, characters);
+  sd->psm->endElement(localname, prefix, nsUri, characters);
   delete [] nsUri;
 }
 } // namespace
@@ -135,92 +122,74 @@ namespace {
 void mlCharacters(void* userData, const char* ch, int len)
 {
   SessionData* sd = reinterpret_cast<SessionData*>(userData);
-  if(sd->psm_->needsCharactersBuffering()) {
-    sd->charactersStack_.front().append(&ch[0], &ch[len]);
+  if(sd->psm->needsCharactersBuffering()) {
+    sd->charactersStack.front().append(&ch[0], &ch[len]);
   }
+}
+} // namespace
+
+namespace {
+void setupParser(XML_Parser parser, SessionData *sd)
+{
+  XML_SetUserData(parser, sd);
+  XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);
+  XML_SetCharacterDataHandler(parser, &mlCharacters);
 }
 } // namespace
 
 XmlParser::XmlParser(ParserStateMachine* psm)
-  : psm_(psm)
-{}
-
-XmlParser::~XmlParser() {}
-
-namespace {
-XML_Parser createParser(SessionData* sd)
+  : psm_(psm),
+    sessionData_(psm_),
+    ctx_(XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'))),
+    lastError_(0)
 {
-  XML_Parser parser = XML_ParserCreateNS(0, static_cast<const XML_Char>('\t'));
-  XML_SetUserData(parser, sd);
-  XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);
-  XML_SetCharacterDataHandler(parser, &mlCharacters);
-  return parser;
+  setupParser(ctx_, &sessionData_);
 }
-} // namespace
 
-bool XmlParser::parseFile(const char* filename)
+XmlParser::~XmlParser()
 {
-  if(strcmp(filename, DEV_STDIN) == 0) {
-    BufferedFile fp(stdin);
-    return parseFile(fp);
+  XML_ParserFree(ctx_);
+}
+
+ssize_t XmlParser::parseUpdate(const char* data, size_t size)
+{
+  if(lastError_ != 0) {
+    return lastError_;
+  }
+  XML_Status rv = XML_Parse(ctx_, data, size, 0);
+  if(rv == XML_STATUS_ERROR) {
+    return lastError_ = ERR_XML_PARSE;
   } else {
-    BufferedFile fp(filename, BufferedFile::READ);
-    return parseFile(fp);
+    return size;
   }
 }
 
-bool XmlParser::parseFile(BufferedFile& fp)
+ssize_t XmlParser::parseFinal(const char* data, size_t size)
 {
-  if(!fp) {
-    return false;
+  if(lastError_ != 0) {
+    return lastError_;
   }
-  char buf[4096];
-  SessionData sessionData(psm_);
-  XML_Parser parser = createParser(&sessionData);
-  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
-  while(1) {
-    size_t res = fp.read(buf, sizeof(buf));
-    if(XML_Parse(parser, buf, res, 0) == XML_STATUS_ERROR) {
-      return false;
-    }
-    if(res < sizeof(buf)) {
-      break;
-    }
+  XML_Status rv = XML_Parse(ctx_, data, size, 1);
+  if(rv == XML_STATUS_ERROR) {
+    return lastError_ = ERR_XML_PARSE;
+  } else {
+    return size;
   }
-  return XML_Parse(parser, 0, 0, 1) != XML_STATUS_ERROR && psm_->finished();
-}
-         
-bool XmlParser::parseBinaryStream(BinaryStream* bs)
-{
-  const ssize_t bufSize = 4096;
-  unsigned char buf[bufSize];
-  SessionData sessionData(psm_);
-  XML_Parser parser = createParser(&sessionData);
-  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
-  int64_t readOffset = 0;
-  while(1) {
-    ssize_t res = bs->readData(buf, bufSize, readOffset);
-    if(res == 0) {
-      break;
-    }
-    if(XML_Parse(parser, reinterpret_cast<const char*>(buf), res, 0) ==
-       XML_STATUS_ERROR) {
-      return false;
-    }
-    readOffset += res;
-  }
-  return XML_Parse(parser, 0, 0, 1) != XML_STATUS_ERROR && psm_->finished();
 }
 
-bool XmlParser::parseMemory(const char* xml, size_t size)
+int XmlParser::reset()
 {
-  SessionData sessionData(psm_);
-  XML_Parser parser = createParser(&sessionData);
-  auto_delete<XML_Parser> deleter(parser, XML_ParserFree);
-  if(XML_Parse(parser, xml, size, 0) == XML_STATUS_ERROR) {
-    return false;
+  psm_->reset();
+  sessionData_.reset();
+  XML_Bool rv = XML_ParserReset(ctx_, 0);
+  if(rv == XML_FALSE) {
+    return lastError_ = ERR_RESET;
+  } else {
+    setupParser(ctx_, &sessionData_);
+    return 0;
   }
-  return XML_Parse(parser, 0, 0, 1) != XML_STATUS_ERROR && psm_->finished();
 }
+
+} // namespace xml
 
 } // namespace aria2

@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "XmlParser.h"
+#include "Xml2XmlParser.h"
 
 #include <cassert>
 #include <cstring>
@@ -42,7 +42,6 @@
 #include "A2STR.h"
 #include "a2functional.h"
 #include "XmlAttr.h"
-#include "util.h"
 
 namespace aria2 {
 
@@ -205,36 +204,6 @@ int XmlParser::reset()
   } else {
     return 0;
   }
-}
-
-bool parseFile(const std::string& filename, ParserStateMachine* psm)
-{
-  int fd;
-  if(filename == DEV_STDIN) {
-    fd = STDIN_FILENO;
-  } else {
-    while((fd = a2open(utf8ToWChar(filename).c_str(),
-                       O_BINARY | O_RDONLY, OPEN_MODE)) == -1 && fd != EINTR);
-    if(fd == -1) {
-      return false;
-    }
-  }
-  XmlParser ps(psm);
-  char buf[4096];
-  ssize_t nread;
-  bool retval = true;
-  while((nread = read(fd, buf, sizeof(buf))) > 0) {
-    if(ps.parseUpdate(buf, nread) < 0) {
-      retval = false;
-      break;
-    }
-  }
-  if(nread == 0 && retval) {
-    if(ps.parseFinal(0, 0) < 0) {
-      retval = false;
-    }
-  }
-  return retval;
 }
 
 } // namespace xml

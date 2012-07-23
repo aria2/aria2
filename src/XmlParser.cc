@@ -32,38 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_XML2_XML_PARSER_H
-#define D_XML2_XML_PARSER_H
-
-#include "common.h"
-
-#include <sys/types.h>
-
-#include <libxml/parser.h>
-
 #include "XmlParser.h"
+#include "a2io.h"
+#include "util.h"
 
 namespace aria2 {
 
 namespace xml {
 
-class XmlParser {
-public:
-  // This object does not delete psm.
-  XmlParser(ParserStateMachine* psm);
-  ~XmlParser();
-  ssize_t parseUpdate(const char* data, size_t size);
-  ssize_t parseFinal(const char* data, size_t size);
-  int reset();
-private:
-  ParserStateMachine* psm_;
-  SessionData sessionData_;
-  xmlParserCtxtPtr ctx_;
-  int lastError_;
-};
+bool parseFile(const std::string& filename, ParserStateMachine* psm)
+{
+  int fd;
+  if(filename == DEV_STDIN) {
+    fd = STDIN_FILENO;
+  } else {
+    while((fd = a2open(utf8ToWChar(filename).c_str(),
+                       O_BINARY | O_RDONLY, OPEN_MODE)) == -1 && fd != EINTR);
+    if(fd == -1) {
+      return false;
+    }
+  }
+  XmlParser ps(psm);
+  char buf[4096];
+  ssize_t nread;
+  bool retval = true;
+  while((nread = read(fd, buf, sizeof(buf))) > 0) {
+    if(ps.parseUpdate(buf, nread) < 0) {
+      retval = false;
+      break;
+    }
+  }
+  if(nread == 0 && retval) {
+    if(ps.parseFinal(0, 0) < 0) {
+      retval = false;
+    }
+  }
+  return retval;
+}
 
 } // namespace xml
 
 } // namespace aria2
-
-#endif // D_XML2_XML_PARSER_H
