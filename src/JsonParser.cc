@@ -107,7 +107,7 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
   } else if(currentState_ == JSON_ERROR) {
     return lastError_;
   }
-  for(i = 0; i < size; ++i) {
+  for(i = 0; i < size && currentState_ != JSON_FINISH; ++i) {
     char c = data[i];
     switch(currentState_) {
     case JSON_ARRAY:
@@ -498,9 +498,6 @@ ssize_t JsonParser::parseUpdate(const char* data, size_t size)
       i = j - 1;
       break;
     }
-    }
-    if(currentState_ == JSON_FINISH) {
-      break;
     }
   }
   return i;

@@ -220,7 +220,15 @@ void ValueBaseJsonParserTest::testParseUpdate()
     const String* s = downcast<String>(list->get(0));
     CPPUNIT_ASSERT_EQUAL(std::string("foo$b¢€baz"), s->s());
   }
-
+  {
+    // ignore garbage at the end of the input.
+    std::string src = "[]trail";
+    SharedHandle<ValueBase> r = parser.parseFinal(src.c_str(), src.size(),
+                                                  error);
+    const List* list = downcast<List>(r);
+    CPPUNIT_ASSERT(list);
+    CPPUNIT_ASSERT_EQUAL((ssize_t)2, error);
+  }
 }
 
 namespace {
