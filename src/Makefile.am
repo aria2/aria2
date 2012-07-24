@@ -508,7 +508,9 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	LpdMessage.cc LpdMessage.h\
 	LpdReceiveMessageCommand.cc LpdReceiveMessageCommand.h\
 	LpdDispatchMessageCommand.cc LpdDispatchMessageCommand.h\
-	bencode2.cc bencode2.h
+	bencode2.cc bencode2.h\
+	BencodeParser.cc BencodeParser.h\
+	ValueBaseBencodeParser.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
