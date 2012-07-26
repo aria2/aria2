@@ -242,13 +242,14 @@ void createRequestGroupForBitTorrent
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::vector<std::string>& uris,
+ const std::string& metaInfoUri,
  const std::string& torrentData,
  bool adjustAnnounceUri)
 {
   SharedHandle<ValueBase> torrent;
   bittorrent::ValueBaseBencodeParser parser;
   if(torrentData.empty()) {
-    torrent = parseFile(parser, option->get(PREF_TORRENT_FILE));
+    torrent = parseFile(parser, metaInfoUri);
   } else {
     ssize_t error;
     torrent = parser.parseFinal(torrentData.c_str(), torrentData.size(),
@@ -258,10 +259,7 @@ void createRequestGroupForBitTorrent
     throw DL_ABORT_EX2("Bencode decoding failed",
                        error_code::BENCODE_PARSE_ERROR);
   }
-  createRequestGroupForBitTorrent(result, option, uris,
-                                  torrentData.empty() ?
-                                  option->get(PREF_TORRENT_FILE) : "",
-                                  torrent);
+  createRequestGroupForBitTorrent(result, option, uris, metaInfoUri, torrent);
 }
 
 void createRequestGroupForBitTorrent

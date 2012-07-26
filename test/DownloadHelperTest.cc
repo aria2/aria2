@@ -320,8 +320,9 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
   option_->put(PREF_BT_EXCLUDE_TRACKER, "http://tracker1");
   {
     std::vector<SharedHandle<RequestGroup> > result;
-  
-    createRequestGroupForBitTorrent(result, option_, auxURIs);
+
+    createRequestGroupForBitTorrent(result, option_, auxURIs,
+                                    option_->get(PREF_TORRENT_FILE));
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
 
@@ -344,7 +345,8 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
     // no URIs are given
     std::vector<SharedHandle<RequestGroup> > result;
     std::vector<std::string> emptyURIs;
-    createRequestGroupForBitTorrent(result, option_, emptyURIs);
+    createRequestGroupForBitTorrent(result, option_, emptyURIs,
+                                    option_->get(PREF_TORRENT_FILE));
 
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
     SharedHandle<RequestGroup> group = result[0];
@@ -355,8 +357,9 @@ void DownloadHelperTest::testCreateRequestGroupForBitTorrent()
   option_->put(PREF_FORCE_SEQUENTIAL, A2_V_TRUE);
   {
     std::vector<SharedHandle<RequestGroup> > result;
-  
-    createRequestGroupForBitTorrent(result, option_, auxURIs);
+
+    createRequestGroupForBitTorrent(result, option_, auxURIs,
+                                    option_->get(PREF_TORRENT_FILE));
 
     // See --force-requencial is ignored
     CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());

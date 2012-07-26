@@ -54,18 +54,23 @@ class ValueBase;
 
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by
-// torrent-file option.  If non-empty torrentData is specified, then
-// it is used as a content of torrent file instead. If
-// adjustAnnounceUri is true, announce URIs are adjusted using
-// bittorrent::adjustAnnounceUri().  In this function,
+// metaInfoUri, which is treated as local file path. If non-empty
+// torrentData is specified, then it is used as a content of torrent
+// file instead. If adjustAnnounceUri is true, announce URIs are
+// adjusted using bittorrent::adjustAnnounceUri().  In this function,
 // force-sequential is ignored.
 void createRequestGroupForBitTorrent
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,
  const std::vector<std::string>& uris,
+ const std::string& metaInfoUri,
  const std::string& torrentData = "",
  bool adjustAnnounceUri = true);
 
+// Create RequestGroup object using already decoded torrent metainfo
+// structure.  If adjustAnnounceUri is true, announce URIs are
+// adjusted using bittorrent::adjustAnnounceUri().  In this function,
+// force-sequential is ignored.
 void createRequestGroupForBitTorrent
 (std::vector<SharedHandle<RequestGroup> >& result,
  const SharedHandle<Option>& option,

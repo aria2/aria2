@@ -233,7 +233,8 @@ error_code::Value main(int argc, char* argv[])
       showTorrentFile(op->get(PREF_TORRENT_FILE));
       return exitStatus;
     } else {
-      createRequestGroupForBitTorrent(requestGroups, op, args);
+      createRequestGroupForBitTorrent(requestGroups, op, args,
+                                      op->get(PREF_TORRENT_FILE));
     }
   }
   else

@@ -293,13 +293,13 @@ SharedHandle<ValueBase> AddTorrentRpcMethod::process
   if(util::saveAs(filename, torrentParam->s(), true)) {
     A2_LOG_INFO(fmt("Uploaded torrent data was saved as %s", filename.c_str()));
     requestOption->put(PREF_TORRENT_FILE, filename);
-    createRequestGroupForBitTorrent(result, requestOption, uris);
   } else {
     A2_LOG_INFO(fmt("Uploaded torrent data was not saved."
                     " Failed to write file %s", filename.c_str()));
-    createRequestGroupForBitTorrent(result, requestOption,
-                                    uris, torrentParam->s());
+    filename.clear();
   }
+  createRequestGroupForBitTorrent(result, requestOption, uris, filename,
+                                  torrentParam->s());
 
   if(!result.empty()) {
     return addRequestGroup(result.front(), e, posGiven, pos);
