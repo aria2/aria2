@@ -135,7 +135,10 @@ ssize_t BencodeParser::parseUpdate(const char* data, size_t size)
       if(rv < 0) {
         return rv;
       }
+      strLength_ = 0;
+      numConsumed_ = 0;
       runBeginCallback(STRUCT_DICT_KEY_T);
+      currentState_ = BENCODE_STRING_LEN;
       // Fall through
     }
     case BENCODE_STRING_LEN: {
