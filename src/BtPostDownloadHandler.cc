@@ -48,6 +48,10 @@
 #include "DownloadContext.h"
 #include "download_helper.h"
 #include "fmt.h"
+#include "ValueBaseBencodeParser.h"
+#include "DiskWriter.h"
+#include "AbstractSingleDiskAdaptor.h"
+#include "BencodeDiskWriter.h"
 
 namespace aria2 {
 
@@ -70,19 +74,41 @@ void BtPostDownloadHandler::getNextRequestGroups
 {
   A2_LOG_INFO(fmt("Generating RequestGroups for Torrent file %s",
                   requestGroup->getFirstFilePath().c_str()));
-  std::string content;
-  try {
-    requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
-    content = util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
-    requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();    
-  } catch(Exception& e) {
-    requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
-    throw;
+  SharedHandle<ValueBase> torrent;
+  if(requestGroup->inMemoryDownload()) {
+    const SharedHandle<DiskWriter>& dw =
+      static_pointer_cast<AbstractSingleDiskAdaptor>
+      (requestGroup->getPieceStorage()->getDiskAdaptor())->getDiskWriter();
+    const SharedHandle<bittorrent::BencodeDiskWriter>& bdw =
+      static_pointer_cast<bittorrent::BencodeDiskWriter>(dw);
+    int error = bdw->finalize();
+    if(error == 0) {
+      torrent = bdw->getResult();
+    }
+  } else {
+    std::string content;
+    try {
+      requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
+      content = util::toString(requestGroup->getPieceStorage()
+                               ->getDiskAdaptor());
+      requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
+    } catch(Exception& e) {
+      requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
+      throw;
+    }
+    ssize_t error;
+    torrent = bittorrent::ValueBaseBencodeParser().parseFinal
+      (content.c_str(), content.size(), error);
+  }
+  if(!torrent) {
+    throw DL_ABORT_EX2("Could not parse BitTorrent metainfo",
+                       error_code::BENCODE_PARSE_ERROR);
   }
   std::vector<SharedHandle<RequestGroup> > newRgs;
   createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
                                   std::vector<std::string>(),
-                                  content);
+                                  "",
+                                  torrent);
   requestGroup->followedBy(newRgs.begin(), newRgs.end());
   SharedHandle<MetadataInfo> mi =
     createMetadataInfoFromFirstFileEntry(requestGroup->getDownloadContext());

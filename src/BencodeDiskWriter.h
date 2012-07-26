@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,15 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ByteArrayDiskWriterFactory.h"
-#include "ByteArrayDiskWriter.h"
+#ifndef D_BENCODE_DISK_WRITER_H
+#define D_BENCODE_DISK_WRITER_H
+
+#include "ValueBaseDiskWriter.h"
+#include "BencodeParser.h"
 
 namespace aria2 {
 
-DiskWriterHandle ByteArrayDiskWriterFactory::newDiskWriter
-(const std::string& filename)
-{
-  return SharedHandle<DiskWriter>(new ByteArrayDiskWriter());
-}
+namespace bittorrent {
+
+typedef ValueBaseDiskWriter<BencodeParser> BencodeDiskWriter;
+
+} // namespace bittorrent
 
 } // namespace aria2
+
+#endif // D_BENCODE_DISK_WRITER_H

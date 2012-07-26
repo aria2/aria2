@@ -54,7 +54,7 @@ DownloadHandlerFactory::metalinkPostDownloadHandler_;
 
 #ifdef ENABLE_BITTORRENT
 
-SharedHandle<MemoryBufferPreDownloadHandler>
+SharedHandle<bittorrent::MemoryBencodePreDownloadHandler>
 DownloadHandlerFactory::btPreDownloadHandler_;
 
 SharedHandle<BtPostDownloadHandler>
@@ -96,11 +96,12 @@ DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 
 #ifdef ENABLE_BITTORRENT
 
-SharedHandle<MemoryBufferPreDownloadHandler>
+SharedHandle<bittorrent::MemoryBencodePreDownloadHandler>
 DownloadHandlerFactory::getBtPreDownloadHandler()
 {
   if(!btPreDownloadHandler_) {
-    btPreDownloadHandler_.reset(new MemoryBufferPreDownloadHandler());
+    btPreDownloadHandler_.reset
+      (new bittorrent::MemoryBencodePreDownloadHandler());
 
     RequestGroupCriteriaHandle criteria
       (new ContentTypeRequestGroupCriteria

@@ -37,6 +37,8 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "a2io.h"
+#include "util.h"
 
 namespace aria2 {
 
@@ -49,6 +51,9 @@ public:
 
   ~GenericParser()
   {}
+
+  typedef typename ParserStateMachine::ResultType ResultType;
+  typedef ParserStateMachine ParserStateMachineType;
 
   // Parses |size| bytes of data |data| and returns the number of
   // bytes processed. On error, one of the negative error codes is
@@ -63,13 +68,13 @@ public:
   // number of bytes processed (>= 0). On error, it will be one of the
   // negative error code. This function also resets underlying parser
   // facility and make it ready to reuse.
-  typename ParserStateMachine::ResultType
+  ResultType
   parseFinal(const char* data, size_t size, ssize_t& error)
   {
-    typename ParserStateMachine::ResultType res;
+    ResultType res;
     error = parser_.parseFinal(data, size);
     if(error < 0) {
-      res = ParserStateMachine::noResult;
+      res = ParserStateMachine::noResult();
     } else {
       res = psm_.getResult();
     }
@@ -80,6 +85,29 @@ private:
   ParserStateMachine psm_;
   Parser parser_;
 };
+
+template<typename Parser>
+typename Parser::ResultType parseFile(Parser& parser,
+                                      const std::string& filename)
+{
+  int fd;
+  // TODO Overrode a2open(const char*,..) and a2open(const std::wstring&,..)
+  while((fd = a2open(utf8ToWChar(filename).c_str(),
+                     O_BINARY | O_RDONLY, OPEN_MODE)) == -1 && fd != EINTR);
+  if(fd == -1) {
+    return Parser::ParserStateMachineType::noResult();
+  }
+  char buf[4096];
+  ssize_t nread;
+  ssize_t nproc;
+  while((nread = read(fd, buf, sizeof(buf))) > 0) {
+    nproc = parser.parseUpdate(buf, nread);
+    if(nproc < 0) {
+      break;
+    }
+  }
+  return parser.parseFinal(0, 0, nproc);
+}
 
 } // namespace aria2
 

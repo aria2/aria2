@@ -65,8 +65,11 @@ NullValueBaseStructParserState* nullState =
   new NullValueBaseStructParserState();
 } // namespace
 
-const SharedHandle<ValueBase>
-ValueBaseStructParserStateMachine::noResult = ValueBase::none;
+const SharedHandle<ValueBase>&
+ValueBaseStructParserStateMachine::noResult()
+{
+  return ValueBase::none;
+}
 
 ValueBaseStructParserStateMachine::ValueBaseStructParserStateMachine()
   : ctrl_(new rpc::XmlRpcRequestParserController())

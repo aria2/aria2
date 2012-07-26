@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,24 +32,21 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MemoryBufferPreDownloadHandler.h"
-#include "RequestGroup.h"
-#include "ByteArrayDiskWriterFactory.h"
-#include "DownloadContext.h"
+#ifndef D_MEMORY_BENCODE_PRE_DOWNLOAD_HANDLER_H
+#define D_MEMORY_BENCODE_PRE_DOWNLOAD_HANDLER_H
+
+#include "MemoryPreDownloadHandler.h"
+#include "BencodeDiskWriterFactory.h"
 
 namespace aria2 {
 
-MemoryBufferPreDownloadHandler::MemoryBufferPreDownloadHandler() {}
+namespace bittorrent {
 
-MemoryBufferPreDownloadHandler::~MemoryBufferPreDownloadHandler() {}
+typedef MemoryPreDownloadHandler<BencodeDiskWriterFactory>
+MemoryBencodePreDownloadHandler;
 
-void MemoryBufferPreDownloadHandler::execute(RequestGroup* requestGroup)
-{
-  SharedHandle<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());
-  requestGroup->setDiskWriterFactory(dwf);
-  requestGroup->setFileAllocationEnabled(false);
-  requestGroup->setPreLocalFileCheckEnabled(false);
-  requestGroup->markInMemoryDownload();
-}
+} // namespace bittorrent
 
 } // namespace aria2
+
+#endif // D_MEMORY_BENCODE_PRE_DOWNLOAD_HANDLER_H

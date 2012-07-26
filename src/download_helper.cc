@@ -62,9 +62,10 @@
 #include "OptionParser.h"
 #include "SegList.h"
 #ifdef ENABLE_BITTORRENT
-# include "bittorrent_helper.h"
-# include "BtConstants.h"
-# include "UTMetadataPostDownloadHandler.h"
+#  include "bittorrent_helper.h"
+#  include "BtConstants.h"
+#  include "UTMetadataPostDownloadHandler.h"
+#  include "ValueBaseBencodeParser.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -160,23 +161,22 @@ SharedHandle<MetadataInfo> createMetadataInfoDataOnly()
 
 namespace {
 SharedHandle<RequestGroup>
-createBtRequestGroup(const std::string& torrentFilePath,
+createBtRequestGroup(const std::string& metaInfoUri,
                      const SharedHandle<Option>& optionTemplate,
                      const std::vector<std::string>& auxUris,
-                     const std::string& torrentData = "",
+                     const SharedHandle<ValueBase>& torrent,
                      bool adjustAnnounceUri = true)
 {
   SharedHandle<Option> option = util::copy(optionTemplate);
   SharedHandle<RequestGroup> rg(new RequestGroup(option));
   SharedHandle<DownloadContext> dctx(new DownloadContext());
-  if(torrentData.empty()) {
-    // may throw exception
-    bittorrent::load(torrentFilePath, dctx, option, auxUris);
-    rg->setMetadataInfo(createMetadataInfo(torrentFilePath));
-  } else {
-    // may throw exception
-    bittorrent::loadFromMemory(torrentData, dctx, option, auxUris, "default");
+  // may throw exception
+  bittorrent::loadFromMemory(torrent, dctx, option, auxUris,
+                             metaInfoUri.empty() ? "default" : metaInfoUri);
+  if(metaInfoUri.empty()) {
     rg->setMetadataInfo(createMetadataInfoDataOnly());
+  } else {
+    rg->setMetadataInfo(createMetadataInfo(metaInfoUri));
   }
   if(adjustAnnounceUri) {
     bittorrent::adjustAnnounceUri(bittorrent::getTorrentAttrs(dctx), option);
@@ -245,6 +245,33 @@ void createRequestGroupForBitTorrent
  const std::string& torrentData,
  bool adjustAnnounceUri)
 {
+  SharedHandle<ValueBase> torrent;
+  bittorrent::ValueBaseBencodeParser parser;
+  if(torrentData.empty()) {
+    torrent = parseFile(parser, option->get(PREF_TORRENT_FILE));
+  } else {
+    ssize_t error;
+    torrent = parser.parseFinal(torrentData.c_str(), torrentData.size(),
+                                error);
+  }
+  if(!torrent) {
+    throw DL_ABORT_EX2("Bencode decoding failed",
+                       error_code::BENCODE_PARSE_ERROR);
+  }
+  createRequestGroupForBitTorrent(result, option, uris,
+                                  torrentData.empty() ?
+                                  option->get(PREF_TORRENT_FILE) : "",
+                                  torrent);
+}
+
+void createRequestGroupForBitTorrent
+(std::vector<SharedHandle<RequestGroup> >& result,
+ const SharedHandle<Option>& option,
+ const std::vector<std::string>& uris,
+ const std::string& metaInfoUri,
+ const SharedHandle<ValueBase>& torrent,
+ bool adjustAnnounceUri)
+{
   std::vector<std::string> nargs;
   if(option->get(PREF_PARAMETERIZED_URI) == A2_V_TRUE) {
     unfoldURI(nargs, uris);
@@ -254,8 +281,8 @@ void createRequestGroupForBitTorrent
   // we ignore -Z option here
   size_t numSplit = option->getAsInt(PREF_SPLIT);
   SharedHandle<RequestGroup> rg =
-    createBtRequestGroup(option->get(PREF_TORRENT_FILE), option, nargs,
-                         torrentData, adjustAnnounceUri);
+    createBtRequestGroup(metaInfoUri, option, nargs,
+                         torrent, adjustAnnounceUri);
   rg->setNumConcurrentCommand(numSplit);
   result.push_back(rg);
 }
@@ -322,8 +349,15 @@ public:
       requestGroups_.push_back(group);
     } else if(!ignoreLocalPath_ && detector_.guessTorrentFile(uri)) {
       try {
+        bittorrent::ValueBaseBencodeParser parser;
+        SharedHandle<ValueBase> torrent = parseFile(parser, uri);
+        if(!torrent) {
+          throw DL_ABORT_EX2("Bencode decoding failed",
+                             error_code::BENCODE_PARSE_ERROR);
+        }
         requestGroups_.push_back
-          (createBtRequestGroup(uri, option_, std::vector<std::string>()));
+          (createBtRequestGroup(uri, option_, std::vector<std::string>(),
+                                torrent));
       } catch(RecoverableException& e) {
         if(throwOnError_) {
           throw;
@@ -333,7 +367,7 @@ public:
           A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, e);
         }
       }
-    } 
+    }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
     else if(!ignoreLocalPath_ && detector_.guessMetalinkFile(uri)) {

@@ -35,57 +35,14 @@
 #ifndef D_JSON_DISK_WRITER_H
 #define D_JSON_DISK_WRITER_H
 
-#include "DiskWriter.h"
-#include "ValueBaseStructParserStateMachine.h"
+#include "ValueBaseDiskWriter.h"
 #include "JsonParser.h"
 
 namespace aria2 {
 
 namespace json {
 
-// DiskWriter backed with ValueBaseJsonParser. The written bytes are
-// consumed by ValueBaseJsonParser. It is only capable of sequential
-// write so offset argument in write() will be ignored. It also does
-// not offer read().
-class JsonDiskWriter : public DiskWriter {
-public:
-  JsonDiskWriter();
-
-  virtual ~JsonDiskWriter();
-
-  virtual void initAndOpenFile(int64_t totalLength = 0);
-  
-  virtual void openFile(int64_t totalLength = 0)
-  {
-    initAndOpenFile(totalLength);
-  }
-
-  virtual void closeFile() {}
-
-  virtual void openExistingFile(int64_t totalLength = 0)
-  {
-    initAndOpenFile(totalLength);
-  }
-
-  virtual int64_t size()
-  {
-    return 0;
-  }
-
-  virtual void writeData(const unsigned char* data, size_t len, int64_t offset);
-
-  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
-  {
-    return 0;
-  }
-
-  int finalize();
-  SharedHandle<ValueBase> getResult() const;
-  void reset();
-private:
-  ValueBaseStructParserStateMachine psm_;
-  JsonParser parser_;
-};
+typedef ValueBaseDiskWriter<JsonParser> JsonDiskWriter;
 
 } // namespace json
 

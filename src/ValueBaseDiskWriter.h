@@ -32,47 +32,80 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "JsonDiskWriter.h"
-#include "ValueBase.h"
+#ifndef D_VALUE_BASE_DISK_WRITER_H
+#define D_VALUE_BASE_DISK_WRITER_H
+
+#include "DiskWriter.h"
+#include "ValueBaseStructParserStateMachine.h"
 
 namespace aria2 {
 
-namespace json {
+// DiskWriter backed with ValueBaseParser. The written bytes are
+// consumed by ValueBaseParser. It is only capable of sequential write
+// so offset argument in write() will be ignored. It also does not
+// offer read().
+template<class ValueBaseParser>
+class ValueBaseDiskWriter : public DiskWriter {
+public:
+  ValueBaseDiskWriter()
+    : parser_(&psm_)
+  {}
 
-JsonDiskWriter::JsonDiskWriter()
-  : parser_(&psm_)
-{}
+  virtual ~ValueBaseDiskWriter()
+  {}
 
-JsonDiskWriter::~JsonDiskWriter()
-{}
+  virtual void initAndOpenFile(int64_t totalLength = 0)
+  {
+    parser_.reset();
+  }
 
-void JsonDiskWriter::initAndOpenFile(int64_t totalLength)
-{
-  parser_.reset();
-}
-  
-void JsonDiskWriter::writeData(const unsigned char* data, size_t len,
-                               int64_t offset)
-{
-  // Return value is ignored here but handled in finalize()
-  parser_.parseUpdate(reinterpret_cast<const char*>(data), len);
-}
+  virtual void openFile(int64_t totalLength = 0)
+  {
+    initAndOpenFile(totalLength);
+  }
 
-int JsonDiskWriter::finalize()
-{
-  return parser_.parseFinal(0, 0);
-}
+  virtual void closeFile() {}
 
-SharedHandle<ValueBase> JsonDiskWriter::getResult() const
-{
-  return psm_.getResult();
-}
+  virtual void openExistingFile(int64_t totalLength = 0)
+  {
+    initAndOpenFile(totalLength);
+  }
 
-void JsonDiskWriter::reset()
-{
-  parser_.reset();
-}
+  virtual int64_t size()
+  {
+    return 0;
+  }
 
-} // namespace json
+  virtual void writeData(const unsigned char* data, size_t len, int64_t offset)
+  {
+    // Return value is ignored here but handled in finalize()
+    parser_.parseUpdate(reinterpret_cast<const char*>(data), len);
+  }
+
+  virtual ssize_t readData(unsigned char* data, size_t len, int64_t offset)
+  {
+    return 0;
+  }
+
+  int finalize()
+  {
+    return parser_.parseFinal(0, 0);
+  }
+
+  SharedHandle<ValueBase> getResult() const
+  {
+    return psm_.getResult();
+  }
+
+  void reset()
+  {
+    parser_.reset();
+  }
+private:
+  ValueBaseStructParserStateMachine psm_;
+  ValueBaseParser parser_;
+};
 
 } // namespace aria2
+
+#endif // D_VALUE_BASE_DISK_WRITER_H

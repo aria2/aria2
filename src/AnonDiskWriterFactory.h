@@ -32,19 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
-#define D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
+#ifndef D_ANON_DISK_WRITER_FACTORY_H
+#define D_ANON_DISK_WRITER_FACTORY_H
 
-#include "AnonDiskWriterFactory.h"
-#include "ByteArrayDiskWriter.h"
+#include "DiskWriterFactory.h"
 
 namespace aria2 {
 
-typedef AnonDiskWriterFactory<ByteArrayDiskWriter>
-ByteArrayDiskWriterFactory;
+// DiskwriterFactory class template to create DiskWriter derived
+// object, ignoring filename.
+template<class DiskWriterType>
+class AnonDiskWriterFactory:public DiskWriterFactory {
+public:
+  AnonDiskWriterFactory() {}
+  virtual ~AnonDiskWriterFactory() {}
 
-typedef SharedHandle<ByteArrayDiskWriterFactory> ByteArrayDiskWriterFactoryHandle;
+  virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename)
+  {
+    return SharedHandle<DiskWriter>(new DiskWriterType());
+  }
+};
 
 } // namespace aria2
 
-#endif // D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
+#endif // D_ANON_DISK_WRITER_FACTORY_H

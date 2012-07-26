@@ -61,6 +61,7 @@
 #include "error_code.h"
 #include "array_fun.h"
 #include "DownloadFailureException.h"
+#include "ValueBaseBencodeParser.h"
 
 namespace aria2 {
 
@@ -523,8 +524,9 @@ void load(const std::string& torrentFile,
           const SharedHandle<Option>& option,
           const std::string& overrideName)
 {
+  ValueBaseBencodeParser parser;
   processRootDictionary(ctx,
-                        bencode2::decodeFromFile(torrentFile),
+                        parseFile(parser, torrentFile),
                         option,
                         torrentFile,
                         overrideName,
@@ -537,8 +539,9 @@ void load(const std::string& torrentFile,
           const std::vector<std::string>& uris,
           const std::string& overrideName)
 {
+  ValueBaseBencodeParser parser;
   processRootDictionary(ctx,
-                        bencode2::decodeFromFile(torrentFile),
+                        parseFile(parser, torrentFile),
                         option,
                         torrentFile,
                         overrideName,
@@ -553,7 +556,7 @@ void loadFromMemory(const unsigned char* content,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
-                        bencode2::decode(content, content+length),
+                        bencode2::decode(content, length),
                         option,
                         defaultName,
                         overrideName,
@@ -569,7 +572,7 @@ void loadFromMemory(const unsigned char* content,
                     const std::string& overrideName)
 {
   processRootDictionary(ctx,
-                        bencode2::decode(content, content+length),
+                        bencode2::decode(content, length),
                         option,
                         defaultName,
                         overrideName,
@@ -584,7 +587,7 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode2::decode(context.begin(), context.end()),
+     bencode2::decode(context),
      option,
      defaultName, overrideName,
      std::vector<std::string>());
@@ -599,7 +602,22 @@ void loadFromMemory(const std::string& context,
 {
   processRootDictionary
     (ctx,
-     bencode2::decode(context.begin(), context.end()),
+     bencode2::decode(context),
+     option,
+     defaultName, overrideName,
+     uris);
+}
+
+void loadFromMemory(const SharedHandle<ValueBase>& torrent,
+                    const SharedHandle<DownloadContext>& ctx,
+                    const SharedHandle<Option>& option,
+                    const std::vector<std::string>& uris,
+                    const std::string& defaultName,
+                    const std::string& overrideName)
+{
+  processRootDictionary
+    (ctx,
+     torrent,
      option,
      defaultName, overrideName,
      uris);

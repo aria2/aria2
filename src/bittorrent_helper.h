@@ -104,6 +104,13 @@ void loadFromMemory(const std::string& context,
                     const std::string& defaultName,
                     const std::string& overrideName = "");
 
+void loadFromMemory(const SharedHandle<ValueBase>& torrent,
+                    const SharedHandle<DownloadContext>& ctx,
+                    const SharedHandle<Option>& option,
+                    const std::vector<std::string>& uris,
+                    const std::string& defaultName,
+                    const std::string& overrideName = "");
+
 // Parses BitTorrent Magnet URI and returns
 // SharedHandle<TorrentAttribute> which includes infoHash, name and
 // announceList. If parsing operation failed, an RecoverableException

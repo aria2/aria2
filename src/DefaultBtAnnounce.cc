@@ -222,7 +222,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
 {
   A2_LOG_DEBUG("Now processing tracker response.");
   SharedHandle<ValueBase> decodedValue =
-    bencode2::decode(trackerResponse, trackerResponse+trackerResponseLength);
+    bencode2::decode(trackerResponse, trackerResponseLength);
   const Dict* dict = downcast<Dict>(decodedValue);
   if(!dict) {
     throw DL_ABORT_EX(MSG_NULL_TRACKER_RESPONSE);

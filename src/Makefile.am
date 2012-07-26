@@ -116,7 +116,8 @@ SRCS =  Socket.h\
 	DownloadHandler.cc DownloadHandler.h\
 	DownloadHandlerConstants.cc DownloadHandlerConstants.h\
 	DownloadHandlerFactory.cc DownloadHandlerFactory.h\
-	MemoryBufferPreDownloadHandler.cc MemoryBufferPreDownloadHandler.h\
+	MemoryPreDownloadHandler.h\
+	MemoryBufferPreDownloadHandler.h\
 	HaveEraseCommand.cc HaveEraseCommand.h\
 	Piece.cc Piece.h\
 	CheckIntegrityMan.h\
@@ -132,7 +133,7 @@ SRCS =  Socket.h\
 	BtRegistry.cc BtRegistry.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
-	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h\
+	ByteArrayDiskWriterFactory.h\
 	DownloadContext.cc DownloadContext.h\
 	TimedHaltCommand.cc TimedHaltCommand.h\
 	CUIDCounter.cc CUIDCounter.h\
@@ -205,7 +206,7 @@ SRCS =  Socket.h\
 	ValueBaseStructParserState.h\
 	ValueBaseStructParserStateImpl.cc ValueBaseStructParserStateImpl.h\
 	ValueBaseStructParserStateMachine.cc ValueBaseStructParserStateMachine.h\
-	JsonDiskWriter.cc JsonDiskWriter.h\
+	JsonDiskWriter.h\
 	HttpServerBodyCommand.cc HttpServerBodyCommand.h\
 	RpcRequest.cc RpcRequest.h\
 	RpcMethod.cc RpcMethod.h\
@@ -234,7 +235,9 @@ SRCS =  Socket.h\
 	rpc_helper.cc rpc_helper.h\
 	WatchProcessCommand.cc WatchProcessCommand.h\
 	UnknownOptionException.cc UnknownOptionException.h\
-	Notifier.cc Notifier.h
+	Notifier.cc Notifier.h\
+	ValueBaseDiskWriter.h\
+	AnonDiskWriterFactory.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
@@ -510,7 +513,10 @@ SRCS += PeerAbstractCommand.cc PeerAbstractCommand.h\
 	LpdDispatchMessageCommand.cc LpdDispatchMessageCommand.h\
 	bencode2.cc bencode2.h\
 	BencodeParser.cc BencodeParser.h\
-	ValueBaseBencodeParser.h
+	ValueBaseBencodeParser.h\
+	BencodeDiskWriter.h\
+	BencodeDiskWriterFactory.h\
+	MemoryBencodePreDownloadHandler.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

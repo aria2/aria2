@@ -746,8 +746,7 @@ void BittorrentHelperTest::testMetadata() {
   SharedHandle<DownloadContext> dctx(new DownloadContext());
   load(A2_TEST_DIR"/test.torrent", dctx, option_);
   std::string torrentData = readFile(A2_TEST_DIR"/test.torrent");
-  SharedHandle<ValueBase> tr =
-    bencode2::decode(torrentData.begin(), torrentData.end());
+  SharedHandle<ValueBase> tr = bencode2::decode(torrentData);
   SharedHandle<ValueBase> infoDic = downcast<Dict>(tr)->get("info");
   std::string metadata = bencode2::encode(infoDic);
   SharedHandle<TorrentAttribute> attrs = getTorrentAttrs(dctx);
@@ -831,8 +830,7 @@ void BittorrentHelperTest::testExtractPeerFromString()
   std::string hextext = "100210354527354678541237324732171ae1";
   hextext += "20010db8bd0501d2288a1fc0000110ee1ae2";
   std::string peersstr = "36:"+fromHex(hextext);
-  SharedHandle<ValueBase> str =
-    bencode2::decode(peersstr.begin(), peersstr.end());
+  SharedHandle<ValueBase> str = bencode2::decode(peersstr);
   std::deque<SharedHandle<Peer> > peers;
   extractPeer(str, AF_INET6, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
@@ -846,14 +844,14 @@ void BittorrentHelperTest::testExtractPeerFromString()
   hextext = "c0a800011ae1";
   hextext += "c0a800021ae2";
   peersstr = "12:"+fromHex(hextext);
-  str = bencode2::decode(peersstr.begin(), peersstr.end());
+  str = bencode2::decode(peersstr);
   peers.clear();
   extractPeer(str, AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peers[1]->getIPAddress());
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->getPort()); 
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6882, peers[1]->getPort());
 }
 
 void BittorrentHelperTest::testExtractPeerFromList()
@@ -862,9 +860,8 @@ void BittorrentHelperTest::testExtractPeerFromList()
     "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-00000000000000"
     "4:porti2006eeee";
 
-  SharedHandle<ValueBase> dict =
-    bencode2::decode(peersString.begin(), peersString.end());
-  
+  SharedHandle<ValueBase> dict = bencode2::decode(peersString);
+
   std::deque<SharedHandle<Peer> > peers;
   extractPeer(downcast<Dict>(dict)->get("peers"), AF_INET, std::back_inserter(peers));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
@@ -880,8 +877,7 @@ void BittorrentHelperTest::testExtract2PeersFromList()
     "4:porti65535eed2:ip11:192.168.0.27:peer id20:aria2-00000000000000"
     "4:porti2007eeee";
 
-  SharedHandle<ValueBase> dict =
-    bencode2::decode(peersString.begin(), peersString.end());
+  SharedHandle<ValueBase> dict = bencode2::decode(peersString);
 
   std::deque<SharedHandle<Peer> > peers;
   extractPeer(downcast<Dict>(dict)->get("peers"), AF_INET, std::back_inserter(peers));

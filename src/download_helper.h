@@ -50,6 +50,7 @@ class Option;
 class MetadataInfo;
 class DownloadContext;
 class UriListParser;
+class ValueBase;
 
 #ifdef ENABLE_BITTORRENT
 // Create RequestGroup object using torrent file specified by
@@ -64,6 +65,15 @@ void createRequestGroupForBitTorrent
  const std::vector<std::string>& uris,
  const std::string& torrentData = "",
  bool adjustAnnounceUri = true);
+
+void createRequestGroupForBitTorrent
+(std::vector<SharedHandle<RequestGroup> >& result,
+ const SharedHandle<Option>& option,
+ const std::vector<std::string>& uris,
+ const std::string& metaInfoUri,
+ const SharedHandle<ValueBase>& torrent,
+ bool adjustAnnounceUri = true);
+
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK

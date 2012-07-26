@@ -57,7 +57,7 @@ class ValueBaseStructParserState;
 class ValueBaseStructParserStateMachine : public StructParserStateMachine {
 public:
   typedef SharedHandle<ValueBase> ResultType;
-  static const SharedHandle<ValueBase> noResult;
+  static const SharedHandle<ValueBase>& noResult();
 
   struct NumberData {
     int64_t number;

@@ -38,7 +38,6 @@
 #include "common.h"
 
 #include <string>
-#include <iosfwd>
 
 #include "ValueBase.h"
 
@@ -46,28 +45,15 @@ namespace aria2 {
 
 namespace bencode2 {
 
-const size_t MAX_STRUCTURE_DEPTH = 100;
+// Decode the data whose length is len.
+SharedHandle<ValueBase> decode(const unsigned char* data, size_t len);
 
-// Decode the data in [first, last).
-SharedHandle<ValueBase> decode
-(std::string::const_iterator first,
- std::string::const_iterator last);
+SharedHandle<ValueBase> decode(const std::string& data);
 
-// Decode the data in [first, last). After decode is done
+// Decode the data whose length is len. After decode is done
 // successfully, return the bencoded string length in end.
-SharedHandle<ValueBase> decode
-(std::string::const_iterator first,
- std::string::const_iterator last,
- size_t& end);
-
-SharedHandle<ValueBase> decode
-(const unsigned char* first,
- const unsigned char* last);
-
-SharedHandle<ValueBase> decode
-(const unsigned char* first,
- const unsigned char* last,
- size_t& end);
+SharedHandle<ValueBase> decode(const unsigned char* data, size_t len,
+                               size_t& end);
 
 SharedHandle<ValueBase> decodeFromFile(const std::string& filename);
 

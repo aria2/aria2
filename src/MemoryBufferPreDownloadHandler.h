@@ -35,19 +35,13 @@
 #ifndef D_MEMORY_BUFFER_PRE_DOWNLOAD_HANDLER_H
 #define D_MEMORY_BUFFER_PRE_DOWNLOAD_HANDLER_H
 
-#include "PreDownloadHandler.h"
+#include "MemoryPreDownloadHandler.h"
+#include "ByteArrayDiskWriterFactory.h"
 
 namespace aria2 {
 
-class MemoryBufferPreDownloadHandler:public PreDownloadHandler
-{
-public:
-  MemoryBufferPreDownloadHandler();
-
-  virtual ~MemoryBufferPreDownloadHandler();
-
-  virtual void execute(RequestGroup* requestGroup);
-};
+typedef MemoryPreDownloadHandler<ByteArrayDiskWriterFactory>
+MemoryBufferPreDownloadHandler;
 
 } // namespace aria2
 

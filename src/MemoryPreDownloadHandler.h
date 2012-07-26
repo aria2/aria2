@@ -32,19 +32,33 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
-#define D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
+#ifndef D_MEMORY_PRE_DOWNLOAD_HANDLER_H
+#define D_MEMORY_PRE_DOWNLOAD_HANDLER_H
 
-#include "AnonDiskWriterFactory.h"
-#include "ByteArrayDiskWriter.h"
+#include "PreDownloadHandler.h"
+#include "RequestGroup.h"
 
 namespace aria2 {
 
-typedef AnonDiskWriterFactory<ByteArrayDiskWriter>
-ByteArrayDiskWriterFactory;
+template<class DiskWriterFactoryType>
+class MemoryPreDownloadHandler:public PreDownloadHandler
+{
+public:
+  MemoryPreDownloadHandler() {}
 
-typedef SharedHandle<ByteArrayDiskWriterFactory> ByteArrayDiskWriterFactoryHandle;
+  virtual ~MemoryPreDownloadHandler() {}
+
+  virtual void execute(RequestGroup* requestGroup)
+  {
+    SharedHandle<DiskWriterFactory> dwf(new DiskWriterFactoryType());
+    requestGroup->setDiskWriterFactory(dwf);
+    requestGroup->setFileAllocationEnabled(false);
+    requestGroup->setPreLocalFileCheckEnabled(false);
+    requestGroup->markInMemoryDownload();
+    requestGroup->setNumConcurrentCommand(1);
+  }
+};
 
 } // namespace aria2
 
-#endif // D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
+#endif // D_MEMORY_PRE_DOWNLOAD_HANDLER_H

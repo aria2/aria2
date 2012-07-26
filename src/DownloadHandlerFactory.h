@@ -37,10 +37,13 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "MemoryBufferPreDownloadHandler.h"
+#ifdef ENABLE_BITTORRENT
+#  include "MemoryBencodePreDownloadHandler.h"
+#endif // ENABLE_BITTORRENT
 
 namespace aria2 {
 
-class MemoryBufferPreDownloadHandler;
 #ifdef ENABLE_METALINK
 class MetalinkPostDownloadHandler;
 #endif // ENABLE_METALINK
@@ -61,7 +64,7 @@ private:
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-  static SharedHandle<MemoryBufferPreDownloadHandler>
+  static SharedHandle<bittorrent::MemoryBencodePreDownloadHandler>
   btPreDownloadHandler_;
 
   static SharedHandle<BtPostDownloadHandler>
@@ -80,7 +83,7 @@ public:
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-  static SharedHandle<MemoryBufferPreDownloadHandler>
+  static SharedHandle<bittorrent::MemoryBencodePreDownloadHandler>
   getBtPreDownloadHandler();
 
   static SharedHandle<BtPostDownloadHandler>

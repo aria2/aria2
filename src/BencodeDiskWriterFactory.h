@@ -32,19 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
-#define D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
+#ifndef D_BENCODE_DISK_WRITER_FACTORY_H
+#define D_BENCODE_DISK_WRITER_FACTORY_H
 
 #include "AnonDiskWriterFactory.h"
-#include "ByteArrayDiskWriter.h"
+#include "BencodeDiskWriter.h"
 
 namespace aria2 {
 
-typedef AnonDiskWriterFactory<ByteArrayDiskWriter>
-ByteArrayDiskWriterFactory;
+namespace bittorrent {
 
-typedef SharedHandle<ByteArrayDiskWriterFactory> ByteArrayDiskWriterFactoryHandle;
+typedef AnonDiskWriterFactory<BencodeDiskWriter> BencodeDiskWriterFactory;
+
+} // namespace bittorrent
 
 } // namespace aria2
 
-#endif // D_BYTE_ARRAY_DISK_WRITER_FACTORY_H
+#endif // D_BENCODE_DISK_WRITER_FACTORY_H
