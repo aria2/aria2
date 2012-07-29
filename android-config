@@ -52,7 +52,6 @@ PATH=$TOOLCHAIN/bin:$PATH
     --with-libz --with-libz-prefix=$PREFIX \
     CXXFLAGS="-Os -g" \
     CFLAGS="-Os -g" \
-    LIBS="-lstdc++ -lsupc++" \
     LDFLAGS="-L$PREFIX/lib" \
     PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" \
     ZLIB_LIBS="-lz" \

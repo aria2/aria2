@@ -612,6 +612,14 @@ AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
 
 AC_SUBST([bashcompletiondir])
 
+case "$host" in
+  *android*)
+    LIBS="$LIBS -lstdc++ -lsupc++"
+    ;;
+  *)
+    ;;
+esac
+
 if test "x$ARIA2_STATIC" = "xyes"; then
   LDFLAGS="$LDFLAGS -all-static -static-libgcc -static-libstdc++"
   dnl For non-MinGW build, we need additional libs for static build.
