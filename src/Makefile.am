@@ -202,6 +202,7 @@ SRCS =  Socket.h\
 	json.cc json.h\
 	JsonParser.cc JsonParser.h\
 	StructParserStateMachine.h\
+	GenericParser.h\
 	ValueBaseJsonParser.h\
 	ValueBaseStructParserState.h\
 	ValueBaseStructParserStateImpl.cc ValueBaseStructParserStateImpl.h\
