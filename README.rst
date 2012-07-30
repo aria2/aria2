@@ -197,7 +197,8 @@ After configuration is done, run ``make`` to compile the program::
 
     $ make
 
-See `Cross-compiling Windows binary`_ to create Windows binary.
+See `Cross-compiling Windows binary`_ to create Windows binary.  See
+`Cross-compiling Android binary`_ to create Android binary.
 
 The configure script checks available libraries and enables the features
 as much as possible because all the features are enabled by default.
@@ -275,6 +276,41 @@ Some environment variables can be adjusted to change build settings:
 For example, to build 64bit binary do this::
 
     $ HOST=x86_64-w64-mingw32 ./mingw-config
+
+Cross-compiling Android binary
+------------------------------
+
+In this section, we describe how to build Android binary using Android
+NDK cross-compiler on Debian Linux.
+
+``android-config`` script is a configure script wrapper for Android
+build.  We use it to create official Android build.  This script
+assumes the following libraries have been built for cross-compile:
+
+* c-ares
+* openssl
+* expat
+
+When building the above libraries, make sure that disable shared
+library and enable only static library. We are going to link those
+libraries statically.
+
+We use zlib which comes with Android NDK, so we don't have to build it
+by ourselves.
+
+``android-config`` assumes following points:
+
+* Android NDK toolchain is installed under ``$ANDROID_HOME``.  Refer
+  to "3/ Invoking the compiler (the easy way):" section in Android NDK
+  ``docs/STANDALONE-TOOLCHAIN.html`` to install custom toolchain.
+* The dependant libraries must be installed under
+  ``$ANDROID_HOME/usr/local``.
+
+Before running ``android-config`` and ``android-make``,
+``$ANDOIRD_HOME`` environment variable must be set to point to the
+correct path.
+
+After ``android-config``, run ``android-make`` to compile sources.
 
 Building documentation
 ----------------------
