@@ -101,7 +101,9 @@ RequestGroupMan::RequestGroupMan
     removedErrorResult_(0),
     removedLastErrorResult_(error_code::FINISHED),
     maxDownloadResult_(option->getAsInt(PREF_MAX_DOWNLOAD_RESULT))
-{}
+{
+  addRequestGroupIndex(requestGroups);
+}
 
 RequestGroupMan::~RequestGroupMan() {}
 
@@ -123,6 +125,7 @@ void RequestGroupMan::addReservedGroup
 (const std::vector<SharedHandle<RequestGroup> >& groups)
 {
   requestQueueCheck();
+  addRequestGroupIndex(groups);
   reservedGroups_.insert(reservedGroups_.end(), groups.begin(), groups.end());
 }
 
@@ -130,6 +133,7 @@ void RequestGroupMan::addReservedGroup
 (const SharedHandle<RequestGroup>& group)
 {
   requestQueueCheck();
+  addRequestGroupIndex(group);
   reservedGroups_.push_back(group);
 }
 
@@ -137,6 +141,7 @@ void RequestGroupMan::insertReservedGroup
 (size_t pos, const std::vector<SharedHandle<RequestGroup> >& groups)
 {
   requestQueueCheck();
+  addRequestGroupIndex(groups);
   reservedGroups_.insert
     (reservedGroups_.begin()+std::min(reservedGroups_.size(), pos),
      groups.begin(), groups.end());
@@ -146,9 +151,36 @@ void RequestGroupMan::insertReservedGroup
 (size_t pos, const SharedHandle<RequestGroup>& group)
 {
   requestQueueCheck();
+  addRequestGroupIndex(group);
   reservedGroups_.insert
     (reservedGroups_.begin()+std::min(reservedGroups_.size(), pos), group);
 }
+
+void RequestGroupMan::addRequestGroupIndex
+(const SharedHandle<RequestGroup>& group)
+{
+  assert(groupIndex_.count(group->getGID()) == 0);
+  groupIndex_[group->getGID()] = group;
+}
+
+void RequestGroupMan::addRequestGroupIndex
+(const std::vector<SharedHandle<RequestGroup> >& groups)
+{
+  for(std::vector<SharedHandle<RequestGroup> >::const_iterator i =
+        groups.begin(); i != groups.end(); ++i) {
+    addRequestGroupIndex(*i);
+  }
+}
+
+namespace {
+void removeRequestGroupIndex
+(std::map<a2_gid_t, SharedHandle<RequestGroup> >& groupIndex,
+ const SharedHandle<RequestGroup>& group)
+{
+  assert(group->getGID() == 1);
+  groupIndex.erase(group->getGID());
+}
+} // namespace
 
 size_t RequestGroupMan::countRequestGroup() const
 {
@@ -180,24 +212,41 @@ Iterator findByGID(Iterator first, Iterator last, a2_gid_t gid)
 SharedHandle<RequestGroup>
 RequestGroupMan::findRequestGroup(a2_gid_t gid) const
 {
-  std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-    findByGID(requestGroups_.begin(), requestGroups_.end(), gid);
-  if(i == requestGroups_.end()) {
-    return SharedHandle<RequestGroup>();
+  SharedHandle<RequestGroup> res = findGroup(gid);
+  if(res) {
+    if(res->getState() == RequestGroup::STATE_ACTIVE) {
+      return res;
+    } else {
+      return SharedHandle<RequestGroup>();
+    }
   } else {
-    return *i;
+    return res;
   }
 }
 
 SharedHandle<RequestGroup>
 RequestGroupMan::findReservedGroup(a2_gid_t gid) const
 {
-  std::deque<SharedHandle<RequestGroup> >::const_iterator i =
-    findByGID(reservedGroups_.begin(), reservedGroups_.end(), gid);
-  if(i == reservedGroups_.end()) {
-    return SharedHandle<RequestGroup>();
+  SharedHandle<RequestGroup> res = findGroup(gid);
+  if(res) {
+    if(res->getState() == RequestGroup::STATE_WAITING) {
+      return res;
+    } else {
+      return SharedHandle<RequestGroup>();
+    }
   } else {
-    return *i;
+    return res;
+  }
+}
+
+SharedHandle<RequestGroup> RequestGroupMan::findGroup(a2_gid_t gid) const
+{
+  std::map<a2_gid_t, SharedHandle<RequestGroup> >::const_iterator i =
+    groupIndex_.find(gid);
+  if(i != groupIndex_.end()) {
+    return (*i).second;
+  } else {
+    return SharedHandle<RequestGroup>();
   }
 }
 
@@ -250,6 +299,7 @@ bool RequestGroupMan::removeReservedGroup(a2_gid_t gid)
   if(i == reservedGroups_.end()) {
     return false;
   } else {
+    removeRequestGroupIndex(groupIndex_, *i);
     reservedGroups_.erase(i);
     return true;
   }
@@ -300,7 +350,7 @@ private:
   DownloadEngine* e_;
   std::deque<SharedHandle<DownloadResult> >& downloadResults_;
   std::deque<SharedHandle<RequestGroup> >& reservedGroups_;
-  Logger* logger_;
+  std::map<a2_gid_t, SharedHandle<RequestGroup> >& groupIndex_;
 
   void saveSignature(const SharedHandle<RequestGroup>& group)
   {
@@ -321,10 +371,12 @@ public:
   ProcessStoppedRequestGroup
   (DownloadEngine* e,
    std::deque<SharedHandle<DownloadResult> >& downloadResults,
-   std::deque<SharedHandle<RequestGroup> >& reservedGroups)
+   std::deque<SharedHandle<RequestGroup> >& reservedGroups,
+   std::map<a2_gid_t, SharedHandle<RequestGroup> >& groupIndex)
     : e_(e),
       downloadResults_(downloadResults),
-      reservedGroups_(reservedGroups)
+      reservedGroups_(reservedGroups),
+      groupIndex_(groupIndex)
   {}
 
   void operator()(const SharedHandle<RequestGroup>& group)
@@ -396,6 +448,7 @@ public:
         A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       }
       if(group->isPauseRequested()) {
+        group->setState(RequestGroup::STATE_WAITING);
         reservedGroups_.push_front(group);
         group->releaseRuntimeResource(e_);
         group->setForceHaltRequested(false);
@@ -409,6 +462,7 @@ public:
         e_->getRequestGroupMan()->addDownloadResult(dr);
         executeStopHook(group, e_->getOption(), dr->result);
         group->releaseRuntimeResource(e_);
+        removeRequestGroupIndex(groupIndex_, group);
       }
     }
   }
@@ -482,7 +536,7 @@ void RequestGroupMan::removeStoppedGroup(DownloadEngine* e)
 
   std::for_each(requestGroups_.begin(), requestGroups_.end(),
                 ProcessStoppedRequestGroup
-                (e, downloadResults_, reservedGroups_));
+                (e, downloadResults_, reservedGroups_, groupIndex_));
   std::deque<SharedHandle<RequestGroup> >::iterator i =
     std::remove_if(requestGroups_.begin(),
                    requestGroups_.end(),
@@ -540,6 +594,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       bool ok = createRequestGroupFromUriListParser(groups, option_,
                                                     uriListParser_.get());
       if(ok) {
+        addRequestGroupIndex(groups);
         reservedGroups_.insert(reservedGroups_.end(), groups.begin(),
                                groups.end());
       } else {
@@ -567,6 +622,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       if(commands.empty()) {
         requestQueueCheck();
       }
+      groupToAdd->setState(RequestGroup::STATE_ACTIVE);
       requestGroups_.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
@@ -580,6 +636,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       groupToAdd->setLastErrorCode(ex.getErrorCode());
       // We add groupToAdd to e in order to it is processed in
       // removeStoppedGroup().
+      groupToAdd->setState(RequestGroup::STATE_ACTIVE);
       requestGroups_.push_back(groupToAdd);
       requestQueueCheck();
     }

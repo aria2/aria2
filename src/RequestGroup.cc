@@ -124,6 +124,7 @@ a2_gid_t RequestGroup::gidCounter_ = 0;
 
 RequestGroup::RequestGroup(const SharedHandle<Option>& option)
   : gid_(newGID()),
+    state_(STATE_WAITING),
     option_(option),
     numConcurrentCommand_(option->getAsInt(PREF_SPLIT)),
     numStreamConnection_(0),

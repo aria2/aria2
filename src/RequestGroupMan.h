@@ -40,6 +40,7 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <map>
 
 #include "SharedHandle.h"
 #include "DownloadResult.h"
@@ -61,6 +62,8 @@ class RequestGroupMan {
 private:
   std::deque<SharedHandle<RequestGroup> > requestGroups_;
   std::deque<SharedHandle<RequestGroup> > reservedGroups_;
+  // GID => RequestGroup index for faster retrieval.
+  std::map<a2_gid_t, SharedHandle<RequestGroup> > groupIndex_;
   std::deque<SharedHandle<DownloadResult> > downloadResults_;
   int maxSimultaneousDownloads_;
 
@@ -100,6 +103,10 @@ private:
 
   void configureRequestGroup
   (const SharedHandle<RequestGroup>& requestGroup) const;
+
+  void addRequestGroupIndex(const SharedHandle<RequestGroup>& group);
+  void addRequestGroupIndex
+  (const std::vector<SharedHandle<RequestGroup> >& groups);
 public:
   RequestGroupMan(const std::vector<SharedHandle<RequestGroup> >& requestGroups,
                   int maxSimultaneousDownloads,
@@ -121,6 +128,9 @@ public:
 
   void fillRequestGroupFromReserver(DownloadEngine* e);
 
+  // Note that this method does not call addRequestGroupIndex(). This
+  // method should be considered as private, but exposed for unit
+  // testing purpose.
   void addRequestGroup(const SharedHandle<RequestGroup>& group);
 
   void addReservedGroup(const std::vector<SharedHandle<RequestGroup> >& groups);
@@ -141,6 +151,8 @@ public:
     return requestGroups_;
   }
 
+  // Note: Use only for unit testing. Use findGroup() and test
+  // RequestGroup::getState() instead.
   SharedHandle<RequestGroup> findRequestGroup(a2_gid_t gid) const;
 
   const std::deque<SharedHandle<RequestGroup> >& getReservedGroups() const
@@ -148,7 +160,13 @@ public:
     return reservedGroups_;
   }
 
+  // Note: Use only for unit testing. Use findGroup() and test
+  // RequestGroup::getState() instead.
   SharedHandle<RequestGroup> findReservedGroup(a2_gid_t gid) const;
+
+  // Returns RequestGroup object whose gid is gid. This method returns
+  // RequestGroup either in requestGroups_ or reservedGroups_.
+  SharedHandle<RequestGroup> findGroup(a2_gid_t gid) const;
 
   enum HOW {
     POS_SET,

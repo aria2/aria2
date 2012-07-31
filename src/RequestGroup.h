@@ -82,10 +82,18 @@ public:
     SHUTDOWN_SIGNAL,
     USER_REQUEST
   };
+  enum State {
+    // Waiting in the reserved queue
+    STATE_WAITING,
+    // Download has begun
+    STATE_ACTIVE
+  };
 private:
   static a2_gid_t gidCounter_;
 
   a2_gid_t gid_;
+
+  int state_;
 
   SharedHandle<Option> option_;
 
@@ -548,6 +556,16 @@ public:
   const SharedHandle<MetadataInfo>& getMetadataInfo() const
   {
     return metadataInfo_;
+  }
+
+  int getState() const
+  {
+    return state_;
+  }
+
+  void setState(int state)
+  {
+    state_ = state;
   }
 
   static void resetGIDCounter() { gidCounter_ = 0; }
