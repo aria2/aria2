@@ -112,7 +112,7 @@ public:
   void save();
 
   void closeFile();
-  
+
   void halt();
 
   void forceHalt();
@@ -133,9 +133,9 @@ public:
   void insertReservedGroup(size_t pos, const SharedHandle<RequestGroup>& group);
 
   size_t countRequestGroup() const;
-                  
+
   SharedHandle<RequestGroup> getRequestGroup(size_t index) const;
-  
+
   const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const
   {
     return requestGroups_;

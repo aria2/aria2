@@ -454,7 +454,7 @@ public:
           }
         }
       }
-    }    
+    }
   }
 };
 } // namespace
@@ -601,7 +601,7 @@ void RequestGroupMan::save()
 {
   for(std::deque<SharedHandle<RequestGroup> >::const_iterator itr =
         requestGroups_.begin(), eoi = requestGroups_.end(); itr != eoi; ++itr) {
-    if((*itr)->allDownloadFinished() && 
+    if((*itr)->allDownloadFinished() &&
        !(*itr)->getDownloadContext()->isChecksumVerificationNeeded()) {
       (*itr)->removeControlFile();
     } else {
@@ -924,7 +924,7 @@ void RequestGroupMan::addDownloadResult(const SharedHandle<DownloadResult>& dr)
           removedLastErrorResult_ = (*i)->result;
           ++removedErrorResult_;
         }
-      }        
+      }
       downloadResults_.erase(downloadResults_.begin(), last);
     }
     downloadResults_.push_back(dr);
