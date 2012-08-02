@@ -177,7 +177,7 @@ void removeRequestGroupIndex
 (std::map<a2_gid_t, SharedHandle<RequestGroup> >& groupIndex,
  const SharedHandle<RequestGroup>& group)
 {
-  assert(group->getGID() == 1);
+  assert(groupIndex.count(group->getGID()) == 1);
   groupIndex.erase(group->getGID());
 }
 } // namespace
