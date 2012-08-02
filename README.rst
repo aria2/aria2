@@ -440,6 +440,27 @@ References
 * http://aria2.sourceforge.net/
 * http://sourceforge.net/apps/trac/aria2/wiki
 * https://github.com/tatsuhiro-t/aria2
+* `RFC 959 FILE TRANSFER PROTOCOL (FTP) <http://tools.ietf.org/html/rfc959>`_
+* `RFC 1738 Uniform Resource Locators (URL) <http://tools.ietf.org/html/rfc1738>`_
+* `RFC 2428 FTP Extensions for IPv6 and NATs <http://tools.ietf.org/html/rfc2428>`_
+* `RFC 2616 Hypertext Transfer Protocol -- HTTP/1.1 <http://tools.ietf.org/html/rfc2616>`_
+* `RFC 3659 Extensions to FTP <http://tools.ietf.org/html/rfc3659>`_
+* `RFC 3986 Uniform Resource Identifier (URI): Generic Syntax <http://tools.ietf.org/html/rfc3986>`_
+* `RFC 4038 Application Aspects of IPv6 Transition <http://tools.ietf.org/html/rfc4038>`_
 * `RFC 5854 The Metalink Download Description Format <http://tools.ietf.org/html/rfc5854>`_
 * `RFC 6249 Metalink/HTTP: Mirrors and Hashes <http://tools.ietf.org/html/rfc6249>`_
+* `RFC 6265 HTTP State Management Mechanism <http://tools.ietf.org/html/rfc6265>`_
 * `RFC 6455 The WebSocket Protocol <http://tools.ietf.org/html/rfc6455>`_
+
+* `The BitTorrent Protocol Specification <http://www.bittorrent.org/beps/bep_0003.html>`_
+* `BitTorrent: DHT Protocol <http://www.bittorrent.org/beps/bep_0005.html>`_
+* `BitTorrent: Fast Extension <http://www.bittorrent.org/beps/bep_0006.html>`_
+* `BitTorrent: IPv6 Tracker Extension <http://www.bittorrent.org/beps/bep_0007.html>`_
+* `BitTorrent: Extension for Peers to Send Metadata Files <http://www.bittorrent.org/beps/bep_0009.html>`_
+* `BitTorrent: Extension Protocol <http://www.bittorrent.org/beps/bep_0010.html>`_
+* `BitTorrent: Multitracker Metadata Extension <http://www.bittorrent.org/beps/bep_0012.html>`_
+* `BitTorrent: WebSeed - HTTP/FTP Seeding (GetRight style) <http://www.bittorrent.org/beps/bep_0019.html>`_
+* `BitTorrent: Private Torrents <http://www.bittorrent.org/beps/bep_0027.html>`_
+* `BitTorrent: BitTorrent DHT Extensions for IPv6 <http://www.bittorrent.org/beps/bep_0032.html>`_
+* `BitTorrent: Message Stream Encryption <http://wiki.vuze.com/w/Message_Stream_Encryption>`_
+* `Kademlia: A Peer-to-peer Information System Based on the  XOR Metric <http://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf>`_
