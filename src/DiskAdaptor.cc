@@ -38,7 +38,7 @@
 namespace aria2 {
 
 DiskAdaptor::DiskAdaptor()
-  : fallocate_(false)
+  : fileAllocationMethod_(FILE_ALLOC_ADAPTIVE)
 {}
 
 DiskAdaptor::~DiskAdaptor() {}

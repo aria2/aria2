@@ -634,7 +634,7 @@ void DefaultPieceStorage::initStorage()
     diskAdaptor_ = multiDiskAdaptor;
   }
   if(option_->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
-    diskAdaptor_->enableFallocate();
+    diskAdaptor_->setFileAllocationMethod(DiskAdaptor::FILE_ALLOC_FALLOC);
   }
 }
 

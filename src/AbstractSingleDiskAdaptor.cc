@@ -98,20 +98,22 @@ void AbstractSingleDiskAdaptor::truncate(int64_t length)
 SharedHandle<FileAllocationIterator>
 AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
+  switch(getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
-  if(doesFallocate()) {
+  case(DiskAdaptor::FILE_ALLOC_FALLOC): {
     SharedHandle<FallocFileAllocationIterator> h
       (new FallocFileAllocationIterator
        (diskWriter_.get(), size() ,totalLength_));
     return h;
-  } else
+  }
 #endif // HAVE_SOME_FALLOCATE
-    {
-      SharedHandle<AdaptiveFileAllocationIterator> h
-        (new AdaptiveFileAllocationIterator
-         (diskWriter_.get(), size(), totalLength_));
-      return h;
-    }
+  default: {
+    SharedHandle<AdaptiveFileAllocationIterator> h
+      (new AdaptiveFileAllocationIterator
+       (diskWriter_.get(), size(), totalLength_));
+    return h;
+  }
+  }
 }
 
 void AbstractSingleDiskAdaptor::enableReadOnly()

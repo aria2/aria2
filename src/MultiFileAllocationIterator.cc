@@ -67,20 +67,22 @@ void MultiFileAllocationIterator::allocateChunk()
     diskAdaptor_->openIfNot(entry, &DiskWriterEntry::openFile);
     if(entry->needsFileAllocation() && entry->size() < fileEntry->getLength()) {
       // Calling private function of MultiDiskAdaptor.
+      switch(diskAdaptor_->getFileAllocationMethod()) {
 #ifdef HAVE_SOME_FALLOCATE
-      if(diskAdaptor_->doesFallocate()) {
+      case(DiskAdaptor::FILE_ALLOC_FALLOC):
         fileAllocationIterator_.reset
           (new FallocFileAllocationIterator(entry->getDiskWriter().get(),
                                             entry->size(),
                                             fileEntry->getLength()));
-      } else
+        break;
 #endif // HAVE_SOME_FALLOCATE
-        {
-          fileAllocationIterator_.reset
-            (new AdaptiveFileAllocationIterator(entry->getDiskWriter().get(),
-                                                entry->size(),
-                                                fileEntry->getLength()));
-        }
+      default:
+        fileAllocationIterator_.reset
+          (new AdaptiveFileAllocationIterator(entry->getDiskWriter().get(),
+                                              entry->size(),
+                                              fileEntry->getLength()));
+        break;
+      }
     }
   }
   if(finished()) {

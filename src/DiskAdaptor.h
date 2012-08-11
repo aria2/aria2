@@ -48,11 +48,12 @@ class FileEntry;
 class FileAllocationIterator;
 
 class DiskAdaptor:public BinaryStream {
-private:
-  std::vector<SharedHandle<FileEntry> > fileEntries_;
-
-  bool fallocate_;
 public:
+  enum FileAllocationMethod {
+    FILE_ALLOC_ADAPTIVE,
+    FILE_ALLOC_FALLOC
+  };
+
   DiskAdaptor();
   virtual ~DiskAdaptor();
 
@@ -100,20 +101,20 @@ public:
   // successfully changed.
   virtual size_t utime(const Time& actime, const Time& modtime) = 0;
 
-  void enableFallocate()
+  void setFileAllocationMethod(FileAllocationMethod method)
   {
-    fallocate_ = true;
+    fileAllocationMethod_ = method;
   }
 
-  void disableFallocate()
+  int getFileAllocationMethod() const
   {
-    fallocate_ = false;
+    return fileAllocationMethod_;
   }
 
-  bool doesFallocate() const
-  {
-    return fallocate_;
-  }
+private:
+  std::vector<SharedHandle<FileEntry> > fileEntries_;
+
+  FileAllocationMethod fileAllocationMethod_;
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
