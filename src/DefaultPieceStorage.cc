@@ -635,6 +635,8 @@ void DefaultPieceStorage::initStorage()
   }
   if(option_->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
     diskAdaptor_->setFileAllocationMethod(DiskAdaptor::FILE_ALLOC_FALLOC);
+  } else if(option_->get(PREF_FILE_ALLOCATION) == V_TRUNC) {
+    diskAdaptor_->setFileAllocationMethod(DiskAdaptor::FILE_ALLOC_TRUNC);
   }
 }
 

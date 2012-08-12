@@ -1078,7 +1078,11 @@ Advanced Options
   entirely until allocation finishes. ``falloc`` may
   not be available if your system doesn't have
   :manpage:`posix_fallocate(3)` function.
-  Possible Values: ``none``, ``prealloc``, ``falloc``
+  ``trunc`` uses :manpage:`ftruncate(2)` system call or
+  platform-specific counterpart to truncate a file to a specified
+  length.
+
+  Possible Values: ``none``, ``prealloc``, ``trunc``, ``falloc``
   Default: ``prealloc``
 
 .. option:: --hash-check-only[=true|false]

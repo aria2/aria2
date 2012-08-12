@@ -51,7 +51,8 @@ class DiskAdaptor:public BinaryStream {
 public:
   enum FileAllocationMethod {
     FILE_ALLOC_ADAPTIVE,
-    FILE_ALLOC_FALLOC
+    FILE_ALLOC_FALLOC,
+    FILE_ALLOC_TRUNC
   };
 
   DiskAdaptor();

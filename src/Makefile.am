@@ -192,6 +192,7 @@ SRCS =  Socket.h\
 	ContextAttribute.h\
 	TorrentAttribute.cc TorrentAttribute.h\
 	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h\
+	TruncFileAllocationIterator.cc TruncFileAllocationIterator.h\
 	StreamFilter.cc StreamFilter.h\
 	SinkStreamFilter.cc SinkStreamFilter.h\
 	ChunkedDecodingStreamFilter.cc ChunkedDecodingStreamFilter.h\

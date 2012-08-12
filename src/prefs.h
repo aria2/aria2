@@ -75,6 +75,7 @@ extern const std::string A2_V_FULL;
 extern const std::string A2_V_GEOM;
 extern const std::string V_PREALLOC;
 extern const std::string V_FALLOC;
+extern const std::string V_TRUNC;
 extern const std::string V_DEBUG;
 extern const std::string V_INFO;
 extern const std::string V_NOTICE;

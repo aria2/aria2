@@ -137,7 +137,10 @@
     "                              takes almost same time as 'prealloc' and it\n" \
     "                              blocks aria2 entirely until allocation finishes.\n" \
     "                              'falloc' may not be available if your system\n" \
-    "                              doesn't have posix_fallocate() function.")
+    "                              doesn't have posix_fallocate() function.\n" \
+    "                              'trunc' uses ftruncate() system call or\n" \
+    "                              platform-specific counterpart to truncate a file\n" \
+    "                              to a specified length.")
 #define TEXT_NO_FILE_ALLOCATION_LIMIT                                   \
   _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n" \
     "                              size is smaller than SIZE.\n"        \

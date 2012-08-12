@@ -132,6 +132,7 @@ const std::string A2_V_FULL("full");
 const std::string A2_V_GEOM("geom");
 const std::string V_PREALLOC("prealloc");
 const std::string V_FALLOC("falloc");
+const std::string V_TRUNC("trunc");
 const std::string V_DEBUG("debug");
 const std::string V_INFO("info");
 const std::string V_NOTICE("notice");

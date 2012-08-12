@@ -37,6 +37,7 @@
 #include "AdaptiveFileAllocationIterator.h"
 #include "DiskWriter.h"
 #include "FileEntry.h"
+#include "TruncFileAllocationIterator.h"
 #ifdef HAVE_SOME_FALLOCATE
 # include "FallocFileAllocationIterator.h"
 #endif // HAVE_SOME_FALLOCATE
@@ -107,6 +108,12 @@ AbstractSingleDiskAdaptor::fileAllocationIterator()
     return h;
   }
 #endif // HAVE_SOME_FALLOCATE
+  case(DiskAdaptor::FILE_ALLOC_TRUNC): {
+    SharedHandle<TruncFileAllocationIterator> h
+      (new TruncFileAllocationIterator
+       (diskWriter_.get(), size(), totalLength_));
+    return h;
+  }
   default: {
     SharedHandle<AdaptiveFileAllocationIterator> h
       (new AdaptiveFileAllocationIterator

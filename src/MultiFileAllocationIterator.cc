@@ -36,6 +36,7 @@
 #include "MultiDiskAdaptor.h"
 #include "FileEntry.h"
 #include "AdaptiveFileAllocationIterator.h"
+#include "TruncFileAllocationIterator.h"
 #ifdef HAVE_SOME_FALLOCATE
 # include "FallocFileAllocationIterator.h"
 #endif // HAVE_SOME_FALLOCATE
@@ -76,6 +77,12 @@ void MultiFileAllocationIterator::allocateChunk()
                                             fileEntry->getLength()));
         break;
 #endif // HAVE_SOME_FALLOCATE
+      case(DiskAdaptor::FILE_ALLOC_TRUNC):
+        fileAllocationIterator_.reset
+          (new TruncFileAllocationIterator(entry->getDiskWriter().get(),
+                                           entry->size(),
+                                           fileEntry->getLength()));
+        break;
       default:
         fileAllocationIterator_.reset
           (new AdaptiveFileAllocationIterator(entry->getDiskWriter().get(),

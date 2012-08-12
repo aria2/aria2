@@ -354,14 +354,17 @@ OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    const std::string params[] = { V_NONE, V_PREALLOC, V_TRUNC,
+#ifdef HAVE_SOME_FALLOCATE
+                                   V_FALLOC
+#endif // HAVE_SOME_FALLOCATE
+    };
     SharedHandle<OptionHandler> op(new ParameterOptionHandler
                                    (PREF_FILE_ALLOCATION,
                                     TEXT_FILE_ALLOCATION,
                                     V_PREALLOC,
-                                    V_NONE, V_PREALLOC,
-#ifdef HAVE_SOME_FALLOCATE
-                                    V_FALLOC,
-#endif // HAVE_SOME_FALLOCATE
+                                    std::vector<std::string>
+                                    (vbegin(params), vend(params)),
                                     'a'));
     op->addTag(TAG_BASIC);
     op->addTag(TAG_FILE);
