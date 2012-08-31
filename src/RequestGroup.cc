@@ -234,7 +234,7 @@ SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
     // infoFile exists.
     loadAndOpenFile(infoFile);
     checkEntry.reset(new StreamCheckIntegrityEntry(this));
-  } else if(infoFile->exists()) {
+  } else if(isPreLocalFileCheckEnabled() && infoFile->exists()) {
     loadAndOpenFile(infoFile);
     if(downloadFinished()) {
 #ifdef ENABLE_MESSAGE_DIGEST
