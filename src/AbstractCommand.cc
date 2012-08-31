@@ -896,6 +896,11 @@ void AbstractCommand::setRequest(const SharedHandle<Request>& request)
   req_ = request;
 }
 
+void AbstractCommand::resetRequest()
+{
+  req_.reset();
+}
+
 void AbstractCommand::setFileEntry(const SharedHandle<FileEntry>& fileEntry)
 {
   fileEntry_ = fileEntry;

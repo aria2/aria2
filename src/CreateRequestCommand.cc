@@ -101,6 +101,10 @@ bool CreateRequestCommand::executeInternal()
   } else if(getRequest()->getWakeTime() > global::wallclock()) {
     A2_LOG_DEBUG("This request object is still sleeping.");
     getFileEntry()->poolRequest(getRequest());
+    // Reset request of this command. Without this, request is doubly
+    // counted (1 for pooled and another one in this command) and
+    // AbstractCommand::execute() will behave badly.
+    resetRequest();
     getDownloadEngine()->addCommand(this);
     return false;
   }

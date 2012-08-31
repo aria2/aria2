@@ -110,6 +110,10 @@ protected:
 
   void setRequest(const SharedHandle<Request>& request);
 
+  // Resets request_. This method is more efficient than
+  // setRequest(SharedHandle<Request>());
+  void resetRequest();
+
   const SharedHandle<FileEntry>& getFileEntry() const
   {
     return fileEntry_;
