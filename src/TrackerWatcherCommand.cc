@@ -245,6 +245,8 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setDiskWriterFactory(dwf);
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
+  rg->clearPreDownloadHandler();
+  rg->clearPostDownloadHandler();
   util::removeMetalinkContentTypes(rg);
   A2_LOG_INFO(fmt("Creating tracker request group GID#%" PRId64 "", rg->getGID()));
   return rg;
