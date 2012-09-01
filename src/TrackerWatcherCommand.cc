@@ -120,7 +120,7 @@ bool TrackerWatcherCommand::execute() {
       btAnnounce_->announceSuccess();
       btAnnounce_->resetAnnounce();
     } catch(RecoverableException& ex) {
-      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);      
+      A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       btAnnounce_->announceFailure();
       if(btAnnounce_->isAllAnnounceFailed()) {
         btAnnounce_->resetAnnounce();
