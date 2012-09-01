@@ -245,6 +245,8 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   rg->setDiskWriterFactory(dwf);
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
+  // Clearing pre- and post handler is not needed because the
+  // RequestGroup is not handled by RequestGroupMan.
   rg->clearPreDownloadHandler();
   rg->clearPostDownloadHandler();
   util::removeMetalinkContentTypes(rg);
