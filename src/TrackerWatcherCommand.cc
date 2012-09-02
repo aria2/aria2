@@ -112,7 +112,12 @@ bool TrackerWatcherCommand::execute() {
         A2_LOG_ERROR_EX(EX_EXCEPTION_CAUGHT, ex);
       }
     }
-  } else if(trackerRequestGroup_->downloadFinished()){
+  } else if(trackerRequestGroup_->getNumCommand() == 0 &&
+            trackerRequestGroup_->downloadFinished()){
+    // We really want to make sure that tracker request has finished
+    // by checking getNumCommand() == 0. Because we reset
+    // trackerRequestGroup_, if it is still used in other Command, we
+    // will get Segmentation fault.
     try {
       std::string trackerResponse = getTrackerResponse(trackerRequestGroup_);
 
