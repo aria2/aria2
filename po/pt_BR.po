@@ -8,24 +8,26 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2012-09-02 21:24+0900\n"
-"PO-Revision-Date: 2012-04-10 12:55+0000\n"
-"Last-Translator: Eduardo Luis Miliorini <hulkdj@gmail.com>\n"
+"PO-Revision-Date: 2012-06-09 07:15+0000\n"
+"Last-Translator: Aluísio Augusto Silva Gonçalves <Unknown>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-05-27 08:36+0000\n"
-"X-Generator: Launchpad (build 15288)\n"
+"X-Launchpad-Export-Date: 2012-09-02 12:20+0000\n"
+"X-Generator: Launchpad (build 15890)\n"
 
 #: src/DownloadEngine.cc:225
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
+"Sequência de encerramento iniciada... digite Ctrl-C novamente para encerrar "
+"imediatamente."
 
 #: src/DownloadEngine.cc:232
 msgid "Emergency shutdown sequence commencing..."
-msgstr "Sequencia de desligamento emergencial começando..."
+msgstr "Sequência de encerramento de emergência iniciada..."
 
 #: src/MultiUrlRequestInfo.cc:125
 msgid "aria2 will resume download if the transfer is restarted."
@@ -36,6 +38,8 @@ msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
+"Caso tenha havido algum erro, veja o arquivo de log. Veja a opção '-l' na "
+"ajuda/página de manual para detalhes."
 
 #: src/MultiUrlRequestInfo.cc:253
 #, c-format
@@ -48,17 +52,17 @@ msgid "Failed to serialize session to '%s'."
 msgstr ""
 
 #: src/RequestGroupMan.cc:442
-#, fuzzy, c-format
+#, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
-msgstr "Download GID#%lld incompleto: %s"
+msgstr ""
 
 #: src/RequestGroupMan.cc:728
 msgid "Download Results:"
-msgstr "Resultados do Download"
+msgstr "Resultados do Download:"
 
 #: src/RequestGroupMan.cc:771
 msgid "Status Legend:"
-msgstr "Legenda do Status:"
+msgstr "Legenda de estados:"
 
 #: src/RequestGroupMan.cc:773
 msgid "(OK):download completed."
@@ -82,7 +86,7 @@ msgstr "                              Padrão: "
 
 #: src/OptionHandler.cc:39
 msgid "                              Tags: "
-msgstr ""
+msgstr "                              Etiquetas: "
 
 #: src/OptionHandler.cc:40
 msgid "                              Possible Values: "
@@ -143,7 +147,7 @@ msgstr ""
 
 #: src/usage_text.h:64
 msgid " -t, --timeout=SEC            Set timeout in seconds."
-msgstr " -t, --timeout=SEC Define timeout em segundos."
+msgstr " -t, --timeout=SEC Define o tempo limite em segundos."
 
 #: src/usage_text.h:66
 msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
@@ -157,6 +161,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --http-proxy=PROXY           Utilizar um servidor proxy server para HTTP.\n"
+"                              Para ignorar um proxy definido anteriormente,\n"
+"                              use \"\".\n"
+"                              Veja também a opção --all-proxy.\n"
+"                              Esta opção afeta todas as URLs."
 
 #: src/usage_text.h:73
 msgid ""
@@ -165,6 +174,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --https-proxy=PROXY          Utilizar um servidor proxy server para HTTPS.\n"
+"                              Para ignorar um proxy definido anteriormente,\n"
+"                              use \"\".\n"
+"                              Veja também a opção --all-proxy.\n"
+"                              Esta opção afeta todas as URLs."
 
 #: src/usage_text.h:78
 msgid ""
@@ -174,6 +188,11 @@ msgid ""
 "                              See also  --all-proxy option.\n"
 "                              This affects all URLs."
 msgstr ""
+" --ftp-proxy=PROXY            Utilizar um servidor proxy server para FTP.\n"
+"                              Para ignorar um proxy definido anteriormente,\n"
+"                              use \"\".\n"
+"                              Veja também a opção --all-proxy.\n"
+"                              Esta opção afeta todas as URLs."
 
 #: src/usage_text.h:83
 msgid ""
@@ -186,6 +205,15 @@ msgid ""
 "                              options.\n"
 "                              This affects all URLs."
 msgstr ""
+" --all-proxy=PROXY            Utiliza um servidor proxy para todos os\n"
+"                              protocolos. Para ignorar um proxy definido\n"
+"                              anteriormente, use \"\".\n"
+"                              É possível sobrescrever esta opção e "
+"especificar\n"
+"                              um servidor proxy diferente para um protocolo\n"
+"                              específico utilizando as opções --http-proxy,\n"
+"                              --https-proxy e --ftp-proxy.\n"
+"                              Esta opção afeta todas as URLs."
 
 #: src/usage_text.h:91
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -206,14 +234,15 @@ msgstr " --referer=REFERER Define Referer. Afeta todas as URLs."
 #: src/usage_text.h:99
 msgid " --ftp-user=USER              Set FTP user. This affects all URLs."
 msgstr ""
+" --ftp-user=USUÁRIO           Define o usuário FTP. Afeta todas as URLs."
 
 #: src/usage_text.h:101
 msgid " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs."
-msgstr ""
+msgstr " --ftp-passwd=SENHA           Define a senha FTP. Afeta todas as URLs."
 
 #: src/usage_text.h:103
 msgid " --ftp-type=TYPE              Set FTP transfer type."
-msgstr ""
+msgstr " --ftp-type=TIPO              Define o tipo de transferência FTP."
 
 #: src/usage_text.h:105
 msgid ""

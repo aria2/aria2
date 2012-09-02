@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2012-09-02 21:24+0900\n"
-"PO-Revision-Date: 2012-02-26 18:56+0900\n"
-"Last-Translator: Sergio Álvarez <xergio@gmail.com>\n"
+"PO-Revision-Date: 2012-09-02 21:25+0900\n"
+"Last-Translator: Eduardo Alberto Calvo <Unknown>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-26 09:40+0000\n"
-"X-Generator: Launchpad (build 14860)\n"
+"X-Launchpad-Export-Date: 2012-09-02 12:21+0000\n"
+"X-Generator: Launchpad (build 15890)\n"
 
 #: src/DownloadEngine.cc:225
 msgid ""
@@ -52,9 +52,9 @@ msgid "Failed to serialize session to '%s'."
 msgstr "No se pudo sereliar la sesión a '%s'."
 
 #: src/RequestGroupMan.cc:442
-#, fuzzy, c-format
+#, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
-msgstr "Descarga GID#%lld incompleta: %s"
+msgstr ""
 
 #: src/RequestGroupMan.cc:728
 msgid "Download Results:"
@@ -2259,7 +2259,7 @@ msgstr ""
 
 #: src/message.h:179
 msgid "No certificate found."
-msgstr ""
+msgstr "No se ha encontrado un certificado."
 
 #: src/message.h:180
 msgid "Hostname not match."
@@ -2287,7 +2287,7 @@ msgstr "Este archivo no es de tipo Torrent ni Metalink. Saltando."
 #: src/message.h:191
 #, c-format
 msgid "Is '%s' a file?"
-msgstr ""
+msgstr "Es '%s' un archivo?"
 
 #: src/message.h:192
 #, c-format
@@ -2317,12 +2317,12 @@ msgstr ""
 #: src/message.h:201
 #, c-format
 msgid "File %s removed."
-msgstr ""
+msgstr "Archivo %s eliminado."
 
 #: src/message.h:202
 #, c-format
 msgid "File %s could not be removed."
-msgstr ""
+msgstr "El archivo %s no puede ser eliminado."
 
 #: src/message.h:204
 msgid "Timeout."

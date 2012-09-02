@@ -11,15 +11,15 @@ msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2012-09-02 21:24+0900\n"
-"PO-Revision-Date: 2012-04-01 14:41+0000\n"
+"PO-Revision-Date: 2012-06-30 20:19+0000\n"
 "Last-Translator: ITriskTI <Unknown>\n"
 "Language-Team: <ru@li.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-04-08 13:12+0000\n"
-"X-Generator: Launchpad (build 15060)\n"
+"X-Launchpad-Export-Date: 2012-09-02 12:20+0000\n"
+"X-Generator: Launchpad (build 15890)\n"
 
 #: src/DownloadEngine.cc:225
 msgid ""
@@ -55,9 +55,9 @@ msgid "Failed to serialize session to '%s'."
 msgstr "Неудачное преобразование сессии '%s'."
 
 #: src/RequestGroupMan.cc:442
-#, fuzzy, c-format
+#, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
-msgstr "Загрузка с GID#%lld не завершена: %s"
+msgstr "Загрузка GID#%<PRId64> не завершена: %s"
 
 #: src/RequestGroupMan.cc:728
 msgid "Download Results:"
@@ -2595,7 +2595,6 @@ msgstr ""
 "                              параметры."
 
 #: src/usage_text.h:874
-#, fuzzy
 msgid ""
 " --bt-remove-unselected-file[=true|false] Removes the unselected files when\n"
 "                              download is completed in BitTorrent. To\n"
@@ -2607,17 +2606,17 @@ msgid ""
 msgstr ""
 " --bt-remove-unselected-file[=true|false] Удалить невыбранные файлы,\n"
 "                              когда завершена загрузка в BitTorrent.\n"
-"                              Для выбора файлов используйте параметр\n"
-"                              --select-file. Если не использовался этот\n"
-"                              параметр, то предполагается, что все файлы\n"
-"                              выбраны. Пожалуйста, используйте этот\n"
-"                              параметр внимательно, так как это\n"
-"                              фактически удалит файлы с вашего диска."
+"                              Чтобы выбрать файлы, используйте\n"
+"                              параметр --select-file. Если не\n"
+"                              использовался этот параметр, то\n"
+"                              предполагается, что все файлы выбраны.\n"
+"                              Пожалуйста, используйте этот параметр\n"
+"                              внимательно, так как это фактически\n"
+"                              удалит файлы с вашего диска."
 
 #: src/usage_text.h:882
-#, fuzzy
 msgid " --enable-mmap[=true|false]   Map files into memory."
-msgstr " --bt-enable-lpd[=true|false] Разрешить поиск локальных пиров."
+msgstr " --enable-mmap[=true|false]   Отображение файлов в память."
 
 #: src/version_usage.cc:57
 msgid " version "
@@ -2837,9 +2836,9 @@ msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
 #: src/AbstractCommand.cc:443
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%<PRId64> - Failed to resume download. Download from scratch."
-msgstr "CUID#%lld - Неудачное возобновление загрузки. Загрузить с нуля."
+msgstr "CUID#%<PRId64> - Не удалось возобновить загрузку. Загрузить с нуля."
 
 #: src/AdaptiveURISelector.cc:228
 #, c-format
@@ -2860,11 +2859,10 @@ msgstr ""
 "возможной скорости (сейчас: %d была: %d)"
 
 #: src/BtStopDownloadCommand.cc:64
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%<PRId64> Stop downloading torrent due to --bt-stop-timeout option."
 msgstr ""
-"GID#%lld Остановка загрузки торрента обусловлена параметром --bt-stop-"
-"timeout."
+"GID#%<PRId64> Остановка загрузки торрента из-за параметра --bt-stop-timeout."
 
 #: src/DHTConnectionImpl.cc:89
 #, c-format
@@ -2905,9 +2903,9 @@ msgstr ""
 "руководстве."
 
 #: src/message.h:57
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%<PRId64> - Download has already completed: %s"
-msgstr "GID#%lld - Загрузка уже завершена: %s"
+msgstr "GID#%<PRId64> - Загрузка уже завершена: %s"
 
 #: src/message.h:106
 #, c-format
@@ -3266,9 +3264,9 @@ msgid "Detected directory traversal directive in %s"
 msgstr "Обнаружена директива directory traversal (обход каталога) в %s"
 
 #: src/message.h:200
-#, fuzzy, c-format
+#, c-format
 msgid "GID#%<PRId64> - Removing unselected file."
-msgstr "GID#%lld - Удаление невыбранного файла."
+msgstr "GID#%<PRId64> - Удаление невыбранных файлов."
 
 #: src/message.h:201
 #, c-format
