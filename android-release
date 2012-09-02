@@ -38,6 +38,8 @@ fi
 TOOLCHAIN=$ANDROID_HOME/toolchain
 PATH=$TOOLCHAIN/bin:$PATH
 
+# cd to the directory where this script exists.
+cd $(dirname $0)
 . ./script-helper
 
 get_version

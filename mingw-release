@@ -35,6 +35,8 @@ test -z "$HOST" && HOST=i686-w64-mingw32
 test -z "$BUILD_VER" && BUILD_VER=1
 test -z "$LABEL" && LABEL=$HOST
 
+# cd to the directory where this script exists.
+cd $(dirname $0)
 . ./script-helper
 
 get_version
