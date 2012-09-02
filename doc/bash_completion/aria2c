@@ -28,7 +28,7 @@ _aria2c()
             return 0
             ;;
         --file-allocation)
-            COMPREPLY=( $( compgen -W 'none prealloc falloc' -- "$cur" ) )
+            COMPREPLY=( $( compgen -W 'none prealloc trunc falloc' -- "$cur" ) )
             return 0
             ;;
         --log-level)
