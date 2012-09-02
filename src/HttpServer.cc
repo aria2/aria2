@@ -330,19 +330,22 @@ int HttpServer::setupResponseRecv()
       return 0;
     }
   } else if(getMethod() == "POST") {
-    if(path == "/rpc") {
-      if(reqType_ != RPC_TYPE_XML) {
-        reqType_ = RPC_TYPE_XML;
-        lastBody_.reset(new rpc::XmlRpcDiskWriter());
-      }
-      return 0;
-    } else if(path == "/jsonrpc") {
+    if(path == "/jsonrpc") {
       if(reqType_ != RPC_TYPE_JSON) {
         reqType_ = RPC_TYPE_JSON;
         lastBody_.reset(new json::JsonDiskWriter());
       }
       return 0;
     }
+#ifdef ENABLE_XML_RPC
+    if(path == "/rpc") {
+      if(reqType_ != RPC_TYPE_XML) {
+        reqType_ = RPC_TYPE_XML;
+        lastBody_.reset(new rpc::XmlRpcDiskWriter());
+      }
+      return 0;
+    }
+#endif // ENABLE_XML_RPC
   }
   reqType_ = RPC_TYPE_NONE;
   lastBody_.reset();

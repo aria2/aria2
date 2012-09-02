@@ -239,7 +239,8 @@ SRCS =  Socket.h\
 	UnknownOptionException.cc UnknownOptionException.h\
 	Notifier.cc Notifier.h\
 	ValueBaseDiskWriter.h\
-	AnonDiskWriterFactory.h
+	AnonDiskWriterFactory.h\
+	XmlRpcRequestParserController.cc XmlRpcRequestParserController.h
 
 if MINGW_BUILD
 SRCS += WinConsoleFile.cc WinConsoleFile.h
@@ -271,8 +272,7 @@ SRCS +=  ExpatXmlParser.cc ExpatXmlParser.h
 endif # HAVE_LIBEXPAT
 
 if ENABLE_XML_RPC
-SRCS += XmlRpcRequestParserController.cc XmlRpcRequestParserController.h\
-	XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
+SRCS += XmlRpcRequestParserStateMachine.cc XmlRpcRequestParserStateMachine.h\
 	XmlRpcRequestParserState.h\
 	XmlRpcRequestParserStateImpl.cc XmlRpcRequestParserStateImpl.h\
 	XmlRpcDiskWriter.cc XmlRpcDiskWriter.h
