@@ -33,6 +33,7 @@
 
 test -z "$HOST" && HOST=i686-w64-mingw32
 test -z "$BUILD_VER" && BUILD_VER=1
+test -z "$LABEL" && LABEL=$HOST
 
 . ./script-helper
 
@@ -43,7 +44,7 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-DIST_DIR=aria2-${VERSION}-${HOST}-build${BUILD_VER}
+DIST_DIR=aria2-${VERSION}-${LABEL}-build${BUILD_VER}
 
 /usr/bin/$HOST-strip src/aria2c.exe
 mkdir $DIST_DIR
