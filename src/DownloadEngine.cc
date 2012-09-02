@@ -347,6 +347,22 @@ void DownloadEngine::poolSocket
   poolSocket(createSockPoolKey(ipaddr, port, A2STR::NIL,proxyhost,proxyport),e);
 }
 
+namespace {
+bool getPeerInfo(std::pair<std::string, uint16_t>& res,
+                 const SharedHandle<SocketCore>& socket)
+{
+  try {
+    socket->getPeerInfo(res);
+    return true;
+  } catch(RecoverableException& e) {
+    // socket->getPeerInfo() can fail if the socket has been
+    // disconnected.
+    A2_LOG_INFO_EX("Getting peer info failed. Pooling socket canceled.", e);
+    return false;
+  }
+}
+} // namespace
+
 void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
                                 const SharedHandle<Request>& proxyRequest,
                                 const SharedHandle<SocketCore>& socket,
@@ -354,9 +370,10 @@ void DownloadEngine::poolSocket(const SharedHandle<Request>& request,
 {
   if(!proxyRequest) {
     std::pair<std::string, uint16_t> peerInfo;
-    socket->getPeerInfo(peerInfo);
-    poolSocket(peerInfo.first, peerInfo.second,
-               A2STR::NIL, 0, socket, timeout);
+    if(getPeerInfo(peerInfo, socket)) {
+      poolSocket(peerInfo.first, peerInfo.second,
+                 A2STR::NIL, 0, socket, timeout);
+    }
   } else {
     // If proxy is defined, then pool socket with its hostname.
     poolSocket(request->getHost(), request->getPort(),
@@ -375,9 +392,10 @@ void DownloadEngine::poolSocket
 {
   if(!proxyRequest) {
     std::pair<std::string, uint16_t> peerInfo;
-    socket->getPeerInfo(peerInfo);
-    poolSocket(peerInfo.first, peerInfo.second, username,
-               A2STR::NIL, 0, socket, options, timeout);
+    if(getPeerInfo(peerInfo, socket)) {
+      poolSocket(peerInfo.first, peerInfo.second, username,
+                 A2STR::NIL, 0, socket, options, timeout);
+    }
   } else {
     // If proxy is defined, then pool socket with its hostname.
     poolSocket(request->getHost(), request->getPort(), username,
