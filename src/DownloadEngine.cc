@@ -387,7 +387,7 @@ void DownloadEngine::poolSocket
  const std::string& username,
  const SharedHandle<Request>& proxyRequest,
  const SharedHandle<SocketCore>& socket,
- const std::map<std::string, std::string>& options,                             
+ const std::map<std::string, std::string>& options,
  time_t timeout)
 {
   if(!proxyRequest) {
@@ -455,7 +455,7 @@ DownloadEngine::popPooledSocket
     options = (*i).second.getOptions();
     socketPool_.erase(i);
   }
-  return s;  
+  return s;
 }
 
 SharedHandle<SocketCore>
