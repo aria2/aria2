@@ -1,3 +1,97 @@
+aria2 1.15.2
+============
+
+Release Note
+------------
+
+This release fixes several critical bugs. It also adds new features
+such as TLS SNI and CORS support. The --file--allocation option now
+take another value trunc. The new option --enalbe-mmap was added.
+aria2 now uses system-wide SSL/TLS certificates by default, which
+eliminates the requirement to specify --ca-certificate option.
+
+Changes
+-------
+
+* Catch exception from Socket::getPeerInfo() when pooling connection.
+  Socket::getPeerInfo() may fail if its TCP connection has already
+  disconnected. In this case, we log this error. The success or
+  failure of pooling connection should not affect the later execution
+  of the program. This bug may cause segmentation fault if
+  Socket::getPeerInfo() throws exception during pooling connection
+  after successful tracker request.
+
+* Fixed assertion error if --retry-wait is used.  In
+  CreateRequestCommand, if Request object returned from getRequest()
+  is still sleeping, CreateRequestCommand pools it back but still
+  holds its reference. This makes assertion error in
+  UnknownLengthPieceStroage::hasMissingUnusedPiece() from
+  AbstractCommand::execute().
+
+* Added new file allocation method called 'trunc'. --file-allocation
+  option can now take new value 'trunc'. 'trunc' uses ftruncate()
+  system call or platform-specific counterpart to truncate a file to a
+  specified length.
+
+* Use int64_t instead of off_t.  Using off_t, at least, in DiskAdaptor
+  layer is problematic because torrent can contain under 2GiB files
+  but total sum of those files may exceed 2GiB limit, which makes
+  off_t overflow in 32 bit system without large file support. So we
+  use int64_t in API. We'll check the file length before download so
+  that it does not exceed max off_t.
+
+* Added TLS SNI support.
+
+* Rewritten timegm replacement function.  The algorithm is based on
+  Python 2.7 calendar.timegm.
+
+* Use system-wide certificates for SSL.  Use system-wide certificates
+  for SSL.  For GnuTLS it requires the latest version, 3.0.20. OpenSSL
+  had it for longer.  This means that if SSL library is properly
+  configured to locate system-wide certificates store, the user don't
+  have to use --ca-certificate option. Also packagers don't have to
+  use --with-ca-bundle configure option.  Patch from Cristian Morales
+  Vega
+
+* Fixed base64::decode() return "" if input ends with garbage and no
+  padding.
+
+* Changed default Peer ID prefix. The new Peer ID prefix is
+  "A2-$MAJOR-$MINOR-$MICRO-", where $MAJOR, $MINOR and $MICRO are the
+  major version, the minor version and the micro version
+  respectively. For instance, 1.15.2 release of aria2 will use
+  "A2-1-15-2-".
+
+* Don't percent-decode filename value in Content-Disposition.  We only
+  percent-decode filename* value in Content-Disposition because the
+  encoding is fully specified. But since filename value is not, so we
+  just accept it as is.
+
+* Don't sum in-flight piece which does not intersect filtered ranges.
+  When calculating completed length, don't sum the completed length of
+  piece which does not intersect filtered ranges.
+
+* Fixed segmentation fault when logger failed to open log file.
+
+* Added ARIA2_STATIC precious variable to configure option.  To build
+  statically linked aria2 binary, give ARIA2_STATIC=yes to configure,
+  like this:
+  $ ./configure ARIA2_STATIC=yes
+
+* Use PRId64 for int64_t format specifier
+
+* Handle the case when MINGW32 vsnprintf returns -1. MINGW32 vsnprintf
+  returns -1 if output is truncated.  Increased buffer for vsnprintf
+  in WinConsoleFile and fmt.
+
+* Added --enable-mmap option.  If this option is used, map files into
+  memory using mmap(2).  This option is experimental.
+
+* Added CORS preflight request support in RPC interface. This change
+  is based on the patch from binux.
+
+
+
 aria2 1.15.1
 ============
 
