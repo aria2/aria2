@@ -394,9 +394,12 @@ public:
       }
       try {
         group->closeFile();
-        if(group->downloadFinished() &&
+        if(group->isPauseRequested()) {
+          A2_LOG_NOTICE
+            (fmt(_("Download GID#%" PRId64 " paused"), group->getGID()));
+          group->saveControlFile();
+        } else if(group->downloadFinished() &&
            !group->getDownloadContext()->isChecksumVerificationNeeded()) {
-          group->setPauseRequested(false);
           group->applyLastModifiedTimeToLocalFiles();
           group->reportDownloadFinished();
           if(group->allDownloadFinished()) {
