@@ -1514,12 +1514,12 @@ void executeHook
   if(cpid == -1) {
     A2_LOG_ERROR("fork() failed. Cannot execute user command.");
   } else if(cpid == 0) {
-    execl(command.c_str(),
-          command.c_str(),
-          gidStr.c_str(),
-          numFilesStr.c_str(),
-          firstFilename.c_str(),
-          reinterpret_cast<char*>(0));
+    execlp(command.c_str(),
+           command.c_str(),
+           gidStr.c_str(),
+           numFilesStr.c_str(),
+           firstFilename.c_str(),
+           reinterpret_cast<char*>(0));
     perror(("Could not execute user command: "+command).c_str());
     exit(EXIT_FAILURE);
   }
