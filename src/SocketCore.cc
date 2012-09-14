@@ -986,7 +986,10 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
   switch(secure_) {
   case A2_TLS_INITIALIZED:
     secure_ = A2_TLS_HANDSHAKING;
-    if(!util::isNumericHost(hostname)) {
+    // Check hostname is not numeric and it includes ".". Setting
+    // "localhost" will produce TLS alert.
+    if(!util::isNumericHost(hostname) &&
+       hostname.find(".") != std::string::npos) {
       // TLS extensions: SNI
       int ret = gnutls_server_name_set(sslSession_, GNUTLS_NAME_DNS,
                                        hostname.c_str(), hostname.size());
