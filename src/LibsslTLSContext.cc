@@ -56,7 +56,8 @@ TLSContext::TLSContext()
                      ERR_error_string(ERR_get_error(), 0)));
   }
   /* Disable SSLv2 and enable all workarounds for buggy servers */
-  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL|SSL_OP_NO_SSLv2);
+  SSL_CTX_set_options(sslCtx_, SSL_OP_ALL|SSL_OP_NO_SSLv2|
+                      SSL_OP_NO_COMPRESSION);
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_AUTO_RETRY);
   #ifdef SSL_MODE_RELEASE_BUFFERS
   /* keep memory usage low */
