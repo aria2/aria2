@@ -14,13 +14,12 @@ class FeatureConfigTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(FeatureConfigTest);
   CPPUNIT_TEST(testGetDefaultPort);
-  CPPUNIT_TEST(testIsSupported);
+  CPPUNIT_TEST(testStrSupportedFeature);
   CPPUNIT_TEST(testFeatureSummary);
   CPPUNIT_TEST_SUITE_END();
-  
 public:
   void testGetDefaultPort();
-  void testIsSupported();
+  void testStrSupportedFeature();
   void testFeatureSummary();
 };
 
@@ -28,26 +27,19 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(FeatureConfigTest);
 
 void FeatureConfigTest::testGetDefaultPort() {
-  CPPUNIT_ASSERT_EQUAL((uint16_t)80,
-                       FeatureConfig::getInstance()->getDefaultPort("http"));
-  CPPUNIT_ASSERT_EQUAL((uint16_t)443,
-                       FeatureConfig::getInstance()->getDefaultPort("https"));
-  CPPUNIT_ASSERT_EQUAL((uint16_t)21,
-                       FeatureConfig::getInstance()->getDefaultPort("ftp"));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)80, getDefaultPort("http"));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)443, getDefaultPort("https"));
+  CPPUNIT_ASSERT_EQUAL((uint16_t)21, getDefaultPort("ftp"));
 }
 
-void FeatureConfigTest::testIsSupported() {
+void FeatureConfigTest::testStrSupportedFeature() {
+  const char* https = strSupportedFeature(FEATURE_HTTPS);
 #ifdef ENABLE_SSL
-  CPPUNIT_ASSERT_EQUAL(true,
-                       FeatureConfig::getInstance()->isSupported
-                       (FeatureConfig::FEATURE_HTTPS));
+  CPPUNIT_ASSERT(https);
 #else
-  CPPUNIT_ASSERT_EQUAL(false,
-                       FeatureConfig::getInstance()->isSupported
-                       (FeatureConfig::FEATURE_HTTPS));
+  CPPUNIT_ASSERT(!https);
 #endif // ENABLE_SSL
-  CPPUNIT_ASSERT_EQUAL(false,
-                       FeatureConfig::getInstance()->isSupported("FTPS"));
+  CPPUNIT_ASSERT(!strSupportedFeature(MAX_FEATURE));
 }
 
 void FeatureConfigTest::testFeatureSummary() {
@@ -92,9 +84,8 @@ void FeatureConfigTest::testFeatureSummary() {
   std::for_each(vbegin(features), vend(features),
                 StringAppend(featuresString, delim));
   featuresString = util::strip(featuresString, delim);
-  
-  CPPUNIT_ASSERT_EQUAL(featuresString,
-                       FeatureConfig::getInstance()->featureSummary());
+
+  CPPUNIT_ASSERT_EQUAL(featuresString, featureSummary());
 }
 
 } // namespace aria2

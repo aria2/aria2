@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,133 +34,106 @@
 /* copyright --> */
 #include "FeatureConfig.h"
 
-#include <numeric>
-
-#include "array_fun.h"
 #include "util.h"
-#include "Request.h"
 
 namespace aria2 {
 
-SharedHandle<FeatureConfig> FeatureConfig::featureConfig_;
-
-const std::string FeatureConfig::FEATURE_HTTPS("HTTPS");
-const std::string FeatureConfig::FEATURE_BITTORRENT("BitTorrent");
-const std::string FeatureConfig::FEATURE_METALINK("Metalink");
-const std::string FeatureConfig::FEATURE_MESSAGE_DIGEST("Message Digest");
-const std::string FeatureConfig::FEATURE_ASYNC_DNS("Async DNS");
-const std::string FeatureConfig::FEATURE_XML_RPC("XML-RPC");
-const std::string FeatureConfig::FEATURE_GZIP("GZip");
-const std::string FeatureConfig::FEATURE_FIREFOX3_COOKIE("Firefox3 Cookie");
-
-#ifdef ENABLE_SSL
-# define HTTPS_ENABLED true
-#else // !ENABLE_SSL
-# define HTTPS_ENABLED false
-#endif // !ENABLE_SSL
-
-#ifdef ENABLE_BITTORRENT
-# define BITTORRENT_ENABLED true
-#else // !ENABLE_BITTORRENT
-# define BITTORRENT_ENABLED false
-#endif // !ENABLE_BITTORRENT
-
-#ifdef ENABLE_METALINK
-# define METALINK_ENABLED true
-#else // !ENABLE_METALINK
-# define METALINK_ENABLED false
-#endif // !ENABLE_METALINK
-
-#ifdef ENABLE_MESSAGE_DIGEST
-# define MESSAGE_DIGEST_ENABLED true
-#else // !ENABLE_MESSAGE_DIGEST
-# define MESSAGE_DIGEST_ENABLED false
-#endif // !ENABLE_MESSAGE_DIGEST
-
-#ifdef ENABLE_ASYNC_DNS
-# define ASYNC_DNS_ENABLED true
-#else // !ENABLE_ASYNC_DNS
-# define ASYNC_DNS_ENABLED false
-#endif // !ENABLE_ASYNC_DNS
-
-#ifdef ENABLE_XML_RPC
-# define XML_RPC_ENABLED true
-#else // !ENABLE_XML_RPC
-# define XML_RPC_ENABLED false
-#endif // !ENABLE_XML_RPC
-
-#ifdef HAVE_ZLIB
-# define GZIP_ENABLED true
-#else // !HAVE_ZLIB
-# define GZIP_ENABLED false
-#endif // !HAVE_ZLIB
-
-#ifdef HAVE_SQLITE3
-# define FIREFOX3_COOKIE_ENABLED true
-#else // !HAVE_SQLITE3
-# define FIREFOX3_COOKIE_ENABLED false
-#endif // !HAVE_SQLITE3
-
-FeatureConfig::FeatureConfig() {
-  defaultPorts_.insert(PortMap::value_type(Request::PROTO_HTTP, 80));
-  defaultPorts_.insert(PortMap::value_type(Request::PROTO_HTTPS, 443));
-  defaultPorts_.insert(PortMap::value_type(Request::PROTO_FTP, 21));
-
-  FeatureMap::value_type featureArray[] = {
-    FeatureMap::value_type(FEATURE_HTTPS, HTTPS_ENABLED),
-    FeatureMap::value_type(FEATURE_BITTORRENT, BITTORRENT_ENABLED),
-    FeatureMap::value_type(FEATURE_METALINK, METALINK_ENABLED),
-    FeatureMap::value_type(FEATURE_MESSAGE_DIGEST, MESSAGE_DIGEST_ENABLED),
-    FeatureMap::value_type(FEATURE_ASYNC_DNS, ASYNC_DNS_ENABLED),
-    FeatureMap::value_type(FEATURE_XML_RPC, XML_RPC_ENABLED),
-    FeatureMap::value_type(FEATURE_GZIP, GZIP_ENABLED),
-    FeatureMap::value_type(FEATURE_FIREFOX3_COOKIE, FIREFOX3_COOKIE_ENABLED),
-  };
-
-  features_.insert(vbegin(featureArray), vend(featureArray));
-}
-
-FeatureConfig::~FeatureConfig() {}
-
-const SharedHandle<FeatureConfig>& FeatureConfig::getInstance()
+uint16_t getDefaultPort(const std::string& protocol)
 {
-  if(!featureConfig_) {
-    featureConfig_.reset(new FeatureConfig());
-  }
-  return featureConfig_;
-}
-
-uint16_t FeatureConfig::getDefaultPort(const std::string& protocol) const
-{
-  PortMap::const_iterator itr = defaultPorts_.find(protocol);
-  if(itr == defaultPorts_.end()) {
+  if(protocol == "http") {
+    return 80;
+  } else if(protocol == "https") {
+    return 443;
+  } else if(protocol == "ftp") {
+    return 21;
+  } else {
     return 0;
-  } else {
-    return itr->second;
   }
 }
 
-bool FeatureConfig::isSupported(const std::string& feature) const
-{
-  FeatureMap::const_iterator itr = features_.find(feature);
-  if(itr == features_.end()) {
-    return false;
-  } else {
-    return itr->second;
-  }
-}
-
-std::string FeatureConfig::featureSummary() const
+std::string featureSummary()
 {
   std::string s;
-  for(FeatureMap::const_iterator i = features_.begin(), eoi = features_.end();
-      i != eoi; ++i) {
-    if((*i).second) {
-      s += (*i).first;
+  for(int i = 0; i < MAX_FEATURE; ++i) {
+    const char* name = strSupportedFeature(i);
+    if(name) {
+      s += name;
       s += ", ";
     }
   }
   return util::strip(s, ", ");
+}
+
+const char* strSupportedFeature(int feature)
+{
+  switch(feature) {
+  case(FEATURE_ASYNC_DNS):
+#ifdef ENABLE_ASYNC_DNS
+    return "Async DNS";
+#else // !ENABLE_ASYNC_DNS
+    return 0;
+#endif // !ENABLE_ASYNC_DNS
+    break;
+
+  case(FEATURE_BITTORRENT):
+#ifdef ENABLE_BITTORRENT
+    return "BitTorrent";
+#else // !ENABLE_BITTORRENT
+    return 0;
+#endif // !ENABLE_BITTORRENT
+    break;
+
+  case(FEATURE_FF3_COOKIE):
+#ifdef HAVE_SQLITE3
+    return "Firefox3 Cookie";
+#else // !HAVE_SQLITE3
+    return 0;
+#endif // !HAVE_SQLITE3
+    break;
+
+  case(FEATURE_GZIP):
+#ifdef HAVE_ZLIB
+    return "GZip";
+#else // !HAVE_ZLIB
+    return 0;
+#endif // !HAVE_ZLIB
+    break;
+
+  case(FEATURE_HTTPS):
+#ifdef ENABLE_SSL
+    return "HTTPS";
+#else // !ENABLE_SSL
+    return 0;
+#endif // !ENABLE_SSL
+    break;
+
+  case(FEATURE_MESSAGE_DIGEST):
+#ifdef ENABLE_MESSAGE_DIGEST
+    return "Message Digest";
+#else // !ENABLE_MESSAGE_DIGEST
+    return 0;
+#endif // !ENABLE_MESSAGE_DIGEST
+    break;
+
+  case(FEATURE_METALINK):
+#ifdef ENABLE_METALINK
+    return "Metalink";
+#else // !ENABLE_METALINK
+    return 0;
+#endif // !ENABLE_METALINK
+    break;
+
+  case(FEATURE_XML_RPC):
+#ifdef ENABLE_XML_RPC
+    return "XML-RPC";
+#else // !ENABLE_XML_RPC
+    return 0;
+#endif // !ENABLE_XML_RPC
+    break;
+
+  default:
+    return 0;
+  }
 }
 
 } // namespace aria2

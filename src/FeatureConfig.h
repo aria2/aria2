@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,49 +37,31 @@
 
 #include "common.h"
 
-#include <map>
 #include <string>
-
-#include "SharedHandle.h"
 
 namespace aria2 {
 
-typedef std::map<std::string, uint16_t> PortMap;
-typedef std::map<std::string, bool> FeatureMap;
+// Returns default port for the given |protocol|.
+uint16_t getDefaultPort(const std::string& protocol);
 
-class FeatureConfig {
-private:
-  static SharedHandle<FeatureConfig> featureConfig_;
-
-  PortMap defaultPorts_;
-  FeatureMap features_;
-
-  FeatureConfig();
-public:
-  ~FeatureConfig();
-
-  static const SharedHandle<FeatureConfig>& getInstance();
-
-  uint16_t getDefaultPort(const std::string& protocol) const;
-
-  bool isSupported(const std::string& feature) const;
-
-  std::string featureSummary() const;
-
-  const FeatureMap& getFeatures() const
-  {
-    return features_;
-  }
-
-  static const std::string FEATURE_HTTPS;
-  static const std::string FEATURE_BITTORRENT;
-  static const std::string FEATURE_METALINK;
-  static const std::string FEATURE_MESSAGE_DIGEST;
-  static const std::string FEATURE_ASYNC_DNS;
-  static const std::string FEATURE_XML_RPC;
-  static const std::string FEATURE_GZIP;
-  static const std::string FEATURE_FIREFOX3_COOKIE;
+enum FeatureType {
+  FEATURE_ASYNC_DNS,
+  FEATURE_BITTORRENT,
+  FEATURE_FF3_COOKIE,
+  FEATURE_GZIP,
+  FEATURE_HTTPS,
+  FEATURE_MESSAGE_DIGEST,
+  FEATURE_METALINK,
+  FEATURE_XML_RPC,
+  MAX_FEATURE
 };
+
+// Returns summary string of the available features.
+std::string featureSummary();
+
+// Returns the string representation of the given |feature| if it is
+// available in the build. If it is not available, returns NULL.
+const char* strSupportedFeature(int feature);
 
 } // namespace aria2
 

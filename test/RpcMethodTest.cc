@@ -741,9 +741,7 @@ void RpcMethodTest::testGetVersion()
     features += s->s();
     features += ", ";
   }
-  
-  CPPUNIT_ASSERT_EQUAL(FeatureConfig::getInstance()->featureSummary()+", ",
-                       features);
+  CPPUNIT_ASSERT_EQUAL(featureSummary()+", ", features);
 }
 
 void RpcMethodTest::testGatherStoppedDownload()

@@ -1228,11 +1228,10 @@ SharedHandle<ValueBase> GetVersionRpcMethod::process
   SharedHandle<Dict> result = Dict::g();
   result->put(KEY_VERSION, PACKAGE_VERSION);
   SharedHandle<List> featureList = List::g();
-  const FeatureMap& features = FeatureConfig::getInstance()->getFeatures();
-  for(FeatureMap::const_iterator i = features.begin(), eoi = features.end();
-      i != eoi;++i){
-    if((*i).second) {
-      featureList->append((*i).first);
+  for(int feat = 0; feat < MAX_FEATURE; ++feat) {
+    const char* name = strSupportedFeature(feat);
+    if(name) {
+      featureList->append(name);
     }
   }
   result->put(KEY_ENABLED_FEATURES, featureList);

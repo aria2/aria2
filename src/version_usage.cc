@@ -70,7 +70,7 @@ void showVersion() {
             << "\n"
             << _("** Configuration **") << "\n"
             << _("Enabled Features") << ": "
-            << FeatureConfig::getInstance()->featureSummary() << "\n"
+            << featureSummary() << "\n"
 #ifdef ENABLE_MESSAGE_DIGEST
             << _("Hash Algorithms") << ": "
             << MessageDigest::getSupportedHashTypeString() << "\n"

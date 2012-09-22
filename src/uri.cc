@@ -131,8 +131,7 @@ bool parse(UriStruct& result, const std::string& uri)
   if(protocolOffset == std::string::npos) return false;
   result.protocol.assign(uri.begin(), uri.begin()+protocolOffset);
   uint16_t defPort;
-  if((defPort = FeatureConfig::getInstance()->
-      getDefaultPort(result.protocol)) == 0) {
+  if((defPort = getDefaultPort(result.protocol)) == 0) {
     return false;
   }
   // find authority
@@ -268,8 +267,7 @@ std::string construct(const UriStruct& us)
   } else {
     res += us.host;
   }
-  uint16_t defPort= FeatureConfig::getInstance()->
-    getDefaultPort(us.protocol);
+  uint16_t defPort= getDefaultPort(us.protocol);
   if(us.port != 0 && defPort != us.port) {
     res += fmt(":%u", us.port);
   }
