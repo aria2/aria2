@@ -53,7 +53,7 @@ void UTMetadataPostDownloadHandlerTest::testCanHandle()
   CPPUNIT_ASSERT(!handler.canHandle(requestGroup_.get()));
 
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
-  dctx_->setAttribute(bittorrent::BITTORRENT, attrs);
+  dctx_->setAttribute(CTX_ATTR_BT, attrs);
 
   CPPUNIT_ASSERT(handler.canHandle(requestGroup_.get()));
 
@@ -84,7 +84,7 @@ void UTMetadataPostDownloadHandlerTest::testGetNextRequestGroups()
   announceTier.push_back("http://tracker");
   announceList.push_back(announceTier);
   attrs->announceList = announceList;
-  dctx_->setAttribute(bittorrent::BITTORRENT, attrs);
+  dctx_->setAttribute(CTX_ATTR_BT, attrs);
   requestGroup_->setDiskWriterFactory
     (SharedHandle<DiskWriterFactory>(new ByteArrayDiskWriterFactory()));
   requestGroup_->initPieceStorage();

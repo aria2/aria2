@@ -69,10 +69,8 @@ void BtRegistryTest::testGetDownloadContext_infoHash()
   attrs1->infoHash = "hash1";
   SharedHandle<TorrentAttribute> attrs2(new TorrentAttribute());
   attrs2->infoHash = "hash2";
-  btRegistry.getDownloadContext(1)->setAttribute
-    (bittorrent::BITTORRENT, attrs1);
-  btRegistry.getDownloadContext(2)->setAttribute
-    (bittorrent::BITTORRENT, attrs2);
+  btRegistry.getDownloadContext(1)->setAttribute(CTX_ATTR_BT, attrs1);
+  btRegistry.getDownloadContext(2)->setAttribute(CTX_ATTR_BT, attrs2);
 
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1"));
   CPPUNIT_ASSERT(btRegistry.getDownloadContext("hash1").get() ==

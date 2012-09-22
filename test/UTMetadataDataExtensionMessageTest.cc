@@ -84,7 +84,7 @@ void UTMetadataDataExtensionMessageTest::testDoReceivedAction()
                          MessageDigest::sha1(),
                          metadata.data(), metadata.size());
   attrs->infoHash = std::string(&infoHash[0], &infoHash[20]);
-  dctx->setAttribute(bittorrent::BITTORRENT, attrs);
+  dctx->setAttribute(CTX_ATTR_BT, attrs);
 
   UTMetadataDataExtensionMessage m(1);
   m.setPieceStorage(pieceStorage);

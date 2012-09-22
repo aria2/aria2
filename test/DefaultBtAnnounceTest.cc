@@ -59,7 +59,7 @@ public:
     dctx_.reset(new DownloadContext(pieceLength, totalLength));
     SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
     torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
-    dctx_->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
+    dctx_->setAttribute(CTX_ATTR_BT, torrentAttrs);
     bittorrent::setStaticPeerId(peerId);
 
     pieceStorage_.reset(new MockPieceStorage());

@@ -41,7 +41,7 @@ public:
     dispatcher_.reset(new MockBtMessageDispatcher());
     dctx_.reset(new DownloadContext());
     SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
-    dctx_->setAttribute(bittorrent::BITTORRENT, attrs);
+    dctx_->setAttribute(CTX_ATTR_BT, attrs);
     peer_.reset(new Peer("host", 6880));
     peer_->allocateSessionResource(0, 0);
     peer_->setExtension("ut_metadata", 1);

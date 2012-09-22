@@ -64,9 +64,6 @@ extern const std::string SINGLE;
 
 extern const std::string MULTI;
 
-extern const std::string BITTORRENT;
-
-
 void load(const std::string& torrentFile,
           const SharedHandle<DownloadContext>& ctx,
           const SharedHandle<Option>& option,

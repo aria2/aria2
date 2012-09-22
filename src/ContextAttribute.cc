@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,28 +32,18 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_CONTEXT_ATTRIBUTE_H
-#define D_CONTEXT_ATTRIBUTE_H
-
-#include "common.h"
+#include "ContextAttribute.h"
 
 namespace aria2 {
 
-struct ContextAttribute {
-  virtual ~ContextAttribute() {}
-};
-
-enum ContextAttributeType {
-  // For BitTorrent
-  CTX_ATTR_BT,
-  // Max value of attribute type to use allocate vector to hold
-  // attributes.
-  MAX_CTX_ATTR
-};
-
-// Returns human readable string representation of type |key|
-const char* strContextAttributeType(ContextAttributeType key);
+const char* strContextAttributeType(ContextAttributeType key)
+{
+  switch(key) {
+  case CTX_ATTR_BT:
+    return "BitTorrent";
+  default:
+    return "UNKNOWN";
+  }
+}
 
 } // namespace aria2
-
-#endif // D_CONTEXT_ATTRIBUTE_H

@@ -43,7 +43,6 @@
 #include "DlAbortEx.h"
 #include "a2functional.h"
 #include "Signature.h"
-#include "ContextAttribute.h"
 
 namespace aria2 {
 
@@ -52,6 +51,7 @@ DownloadContext::DownloadContext():
   checksumVerified_(false),
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
+  attrs_(MAX_CTX_ATTR),
   downloadStartTime_(0),
   downloadStopTime_(downloadStartTime_),
   metalinkServerContacted_(false) {}
@@ -63,6 +63,7 @@ DownloadContext::DownloadContext(int32_t pieceLength,
   checksumVerified_(false),
   knowsTotalLength_(true),
   ownerRequestGroup_(0),
+  attrs_(MAX_CTX_ATTR),
   downloadStartTime_(0),
   downloadStopTime_(0),
   metalinkServerContacted_(false)
@@ -151,32 +152,29 @@ void DownloadContext::setFileFilter(SegList<int>& sgl)
 }
 
 void DownloadContext::setAttribute
-(const std::string& key, const SharedHandle<ContextAttribute>& value)
+(ContextAttributeType key, const SharedHandle<ContextAttribute>& value)
 {
-  std::map<std::string, SharedHandle<ContextAttribute> >::value_type p =
-    std::make_pair(key, value);
-  std::pair<std::map<std::string, SharedHandle<ContextAttribute> >::iterator,
-            bool> r = attrs_.insert(p);
-  if(!r.second) {
-    (*r.first).second = value;
-  }
+  assert(key < MAX_CTX_ATTR);
+  attrs_[key] = value;
 }
 
 const SharedHandle<ContextAttribute>& DownloadContext::getAttribute
-(const std::string& key)
+(ContextAttributeType key)
 {
-  std::map<std::string, SharedHandle<ContextAttribute> >::const_iterator itr =
-    attrs_.find(key);
-  if(itr == attrs_.end()) {
-    throw DL_ABORT_EX(fmt("No attribute named %s", key.c_str()));
+  assert(key < MAX_CTX_ATTR);
+  const SharedHandle<ContextAttribute>& attr = attrs_[key];
+  if(attr) {
+    return attr;
   } else {
-    return (*itr).second;
+    throw DL_ABORT_EX(fmt("No attribute named %s",
+                          strContextAttributeType(key)));
   }
 }
 
-bool DownloadContext::hasAttribute(const std::string& key) const
+bool DownloadContext::hasAttribute(ContextAttributeType key) const
 {
-  return attrs_.count(key) == 1;
+  assert(key < MAX_CTX_ATTR);
+  return attrs_[key];
 }
 
 void DownloadContext::releaseRuntimeResource()

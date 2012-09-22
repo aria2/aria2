@@ -283,7 +283,7 @@ void RequestGroup::createInitialCommand
   downloadContext_->resetDownloadStartTime();
 #ifdef ENABLE_BITTORRENT
   {
-    if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
+    if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
       SharedHandle<TorrentAttribute> torrentAttrs =
         bittorrent::getTorrentAttrs(downloadContext_);
       bool metadataGetMode = torrentAttrs->metadata.empty();
@@ -584,14 +584,14 @@ void RequestGroup::initPieceStorage()
      // content-length = 0. Google's dl server used this before.
      (downloadContext_->getTotalLength() > 0
 #ifdef ENABLE_BITTORRENT
-      || downloadContext_->hasAttribute(bittorrent::BITTORRENT)
+      || downloadContext_->hasAttribute(CTX_ATTR_BT)
 #endif // ENABLE_BITTORRENT
       )) {
 #ifdef ENABLE_BITTORRENT
     DefaultPieceStorage* ps =
       new DefaultPieceStorage(downloadContext_, option_.get());
     SharedHandle<PieceStorage> psHolder(ps);
-    if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
+    if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
       if(isUriSuppliedForRequsetFileEntry
          (downloadContext_->getFileEntries().begin(),
           downloadContext_->getFileEntries().end())) {
@@ -1179,7 +1179,7 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
     }
   }
 #ifdef ENABLE_BITTORRENT
-  if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
+  if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
     const unsigned char* p = bittorrent::getInfoHash(downloadContext_);
     res->infoHash.assign(p, p+INFO_HASH_LENGTH);
   }
@@ -1196,7 +1196,7 @@ void RequestGroup::reportDownloadFinished()
                     downloadContext_->getBasePath().c_str()));
   uriSelector_->resetCounters();
 #ifdef ENABLE_BITTORRENT
-  if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
+  if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
     TransferStat stat = calculateStat();
     int64_t completedLength = getCompletedLength();
     double shareRatio = completedLength == 0 ? 0.0 :
@@ -1309,7 +1309,7 @@ void RequestGroup::setDownloadContext
 bool RequestGroup::p2pInvolved() const
 {
 #ifdef ENABLE_BITTORRENT
-  return downloadContext_->hasAttribute(bittorrent::BITTORRENT);
+  return downloadContext_->hasAttribute(CTX_ATTR_BT);
 #else // !ENABLE_BITTORRENT
   return false;
 #endif // !ENABLE_BITTORRENT

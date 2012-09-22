@@ -465,7 +465,7 @@ void DefaultPieceStorage::completePiece(const SharedHandle<Piece>& piece)
       A2_LOG_INFO(MSG_DOWNLOAD_COMPLETED);
     }
 #ifdef ENABLE_BITTORRENT
-    if(downloadContext_->hasAttribute(bittorrent::BITTORRENT)) {
+    if(downloadContext_->hasAttribute(CTX_ATTR_BT)) {
       SharedHandle<TorrentAttribute> torrentAttrs =
         bittorrent::getTorrentAttrs(downloadContext_);
       if(!torrentAttrs->metadata.empty()) {

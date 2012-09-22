@@ -110,7 +110,7 @@ void printProgress
     << "#" << rg->getGID() << " ";
 
 #ifdef ENABLE_BITTORRENT
-  if(rg->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT) &&
+  if(rg->getDownloadContext()->hasAttribute(CTX_ATTR_BT) &&
      !bittorrent::getTorrentAttrs(rg->getDownloadContext())->metadata.empty() &&
      rg->downloadFinished()) {
     o << "SEEDING" << "(" << "ratio:";

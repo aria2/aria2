@@ -35,7 +35,7 @@ public:
     memset(infoHash, 0, sizeof(infoHash));
     SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
     torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
-    dctx_->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
+    dctx_->setAttribute(CTX_ATTR_BT, torrentAttrs);
   }
 
   void testHandshake();

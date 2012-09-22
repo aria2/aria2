@@ -94,7 +94,7 @@ void BtSetup::setup(std::vector<Command*>& commands,
                     DownloadEngine* e,
                     const Option* option)
 {
-  if(!requestGroup->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)){
+  if(!requestGroup->getDownloadContext()->hasAttribute(CTX_ATTR_BT)){
     return;
   }
   SharedHandle<TorrentAttribute> torrentAttrs =

@@ -189,7 +189,7 @@ SRCS =  Socket.h\
 	Event.h\
 	timespec.h\
 	ValueBase.cc ValueBase.h\
-	ContextAttribute.h\
+	ContextAttribute.cc ContextAttribute.h\
 	TorrentAttribute.cc TorrentAttribute.h\
 	AdaptiveFileAllocationIterator.cc AdaptiveFileAllocationIterator.h\
 	TruncFileAllocationIterator.cc TruncFileAllocationIterator.h\

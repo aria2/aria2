@@ -423,7 +423,7 @@ public:
           // we don't remove it.
           if(group->getOption()->getAsBool(PREF_BT_REMOVE_UNSELECTED_FILE) &&
              !group->inMemoryDownload() &&
-             dctx->hasAttribute(bittorrent::BITTORRENT)) {
+             dctx->hasAttribute(CTX_ATTR_BT)) {
             A2_LOG_INFO(fmt(MSG_REMOVING_UNSELECTED_FILE, group->getGID()));
             const std::vector<SharedHandle<FileEntry> >& files =
               dctx->getFileEntries();

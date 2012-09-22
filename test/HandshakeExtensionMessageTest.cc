@@ -97,7 +97,7 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   rg.setDownloadContext(dctx);
 
   SharedHandle<TorrentAttribute> attrs(new TorrentAttribute());
-  dctx->setAttribute(bittorrent::BITTORRENT, attrs);
+  dctx->setAttribute(CTX_ATTR_BT, attrs);
   dctx->markTotalLengthIsUnknown();
 
   SharedHandle<Peer> peer(new Peer("192.168.0.1", 0));

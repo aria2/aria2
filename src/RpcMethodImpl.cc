@@ -801,7 +801,7 @@ void gatherProgress
 {
   gatherProgressCommon(entryDict, group, keys);
 #ifdef ENABLE_BITTORRENT
-  if(group->getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) {
+  if(group->getDownloadContext()->hasAttribute(CTX_ATTR_BT)) {
     SharedHandle<TorrentAttribute> torrentAttrs =
       bittorrent::getTorrentAttrs(group->getDownloadContext());
     const SharedHandle<BtObject>& btObject =
@@ -1117,7 +1117,7 @@ void changeOption
   if(option.defined(PREF_DIR) || option.defined(PREF_OUT)) {
     if(dctx->getFileEntries().size() == 1
 #ifdef ENABLE_BITTORRENT
-       && !dctx->hasAttribute(bittorrent::BITTORRENT)
+       && !dctx->hasAttribute(CTX_ATTR_BT)
 #endif // ENABLE_BITTORRENT
        ) {
       dctx->getFirstFileEntry()->setPath
@@ -1127,7 +1127,7 @@ void changeOption
   }
 #ifdef ENABLE_BITTORRENT
   if(option.defined(PREF_DIR) || option.defined(PREF_INDEX_OUT)) {
-    if(dctx->hasAttribute(bittorrent::BITTORRENT)) {
+    if(dctx->hasAttribute(CTX_ATTR_BT)) {
       std::istringstream indexOutIn(grOption->get(PREF_INDEX_OUT));
       std::vector<std::pair<size_t, std::string> > indexPaths =
         util::createIndexPaths(indexOutIn);

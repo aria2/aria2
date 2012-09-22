@@ -72,7 +72,7 @@ public:
     dctx_.reset(new DownloadContext());
     SharedHandle<TorrentAttribute> torrentAttrs(new TorrentAttribute());
     torrentAttrs->infoHash = std::string(vbegin(infoHash), vend(infoHash));
-    dctx_->setAttribute(bittorrent::BITTORRENT, torrentAttrs);
+    dctx_->setAttribute(CTX_ATTR_BT, torrentAttrs);
     const SharedHandle<FileEntry> fileEntries[] = {
       SharedHandle<FileEntry>(new FileEntry("/path/to/file",totalLength,0))
     };

@@ -46,13 +46,13 @@
 #include "A2STR.h"
 #include "ValueBase.h"
 #include "SegList.h"
+#include "ContextAttribute.h"
 
 namespace aria2 {
 
 class RequestGroup;
 class Signature;
 class FileEntry;
-struct ContextAttribute;
 
 class DownloadContext
 {
@@ -77,7 +77,7 @@ private:
 
   RequestGroup* ownerRequestGroup_;
   
-  std::map<std::string, SharedHandle<ContextAttribute> > attrs_;
+  std::vector<SharedHandle<ContextAttribute> > attrs_;
 
   Timer downloadStartTime_;
 
@@ -203,11 +203,11 @@ public:
   }
 
   void setAttribute
-  (const std::string& key, const SharedHandle<ContextAttribute>& value);
+  (ContextAttributeType key, const SharedHandle<ContextAttribute>& value);
 
-  const SharedHandle<ContextAttribute>& getAttribute(const std::string& key);
+  const SharedHandle<ContextAttribute>& getAttribute(ContextAttributeType key);
 
-  bool hasAttribute(const std::string& key) const;
+  bool hasAttribute(ContextAttributeType key) const;
 
   void resetDownloadStartTime();
 

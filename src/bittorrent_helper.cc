@@ -107,8 +107,6 @@ const std::string C_CREATED_BY("created by");
 const std::string DEFAULT_PEER_ID_PREFIX("aria2-");
 } // namespace
 
-const std::string BITTORRENT("bittorrent");
-
 const std::string MULTI("multi");
 
 const std::string SINGLE("single");
@@ -515,7 +513,7 @@ void processRootDictionary
     torrent->createdBy = util::encodeNonUtf8(createdBy->s());
   }
 
-  ctx->setAttribute(BITTORRENT, torrent);
+  ctx->setAttribute(CTX_ATTR_BT, torrent);
 }
 } // namespace
 
@@ -626,7 +624,7 @@ void loadFromMemory(const SharedHandle<ValueBase>& torrent,
 SharedHandle<TorrentAttribute> getTorrentAttrs
 (const SharedHandle<DownloadContext>& dctx)
 {
-  return static_pointer_cast<TorrentAttribute>(dctx->getAttribute(BITTORRENT));
+  return static_pointer_cast<TorrentAttribute>(dctx->getAttribute(CTX_ATTR_BT));
 }
 
 const unsigned char*
@@ -943,7 +941,7 @@ void loadMagnet
 (const std::string& magnet, const SharedHandle<DownloadContext>& dctx)
 {
   SharedHandle<TorrentAttribute> attrs = parseMagnet(magnet);
-  dctx->setAttribute(BITTORRENT, attrs);
+  dctx->setAttribute(CTX_ATTR_BT, attrs);
 }
 
 std::string metadata2Torrent

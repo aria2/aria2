@@ -227,7 +227,7 @@ bool DownloadCommand::executeInternal() {
           if(
 #ifdef ENABLE_BITTORRENT
              (!getPieceStorage()->isEndGame() ||
-              !getDownloadContext()->hasAttribute(bittorrent::BITTORRENT)) &&
+              !getDownloadContext()->hasAttribute(CTX_ATTR_BT)) &&
 #endif // ENABLE_BITTORRENT
              segment->isHashCalculated()) {
             A2_LOG_DEBUG(fmt("Hash is available! index=%lu",
