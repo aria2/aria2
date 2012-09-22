@@ -625,6 +625,9 @@ bool strieq(InputIterator first, InputIterator last, const char* b)
   return first == last && *b == '\0';
 }
 
+bool strieq(const std::string& a, const char* b);
+bool strieq(const std::string& a, const std::string& b);
+
 template<typename InputIterator1, typename InputIterator2>
 bool startsWith
 (InputIterator1 first1,
@@ -761,9 +764,6 @@ std::string escapePath(const std::string& s);
 // length of binary representation of the address*8.
 bool inSameCidrBlock
 (const std::string& ip1, const std::string& ip2, size_t bits);
-
-void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group);
-void removeMetalinkContentTypes(RequestGroup* group);
 
 // No throw
 void executeHookByOptName

@@ -197,7 +197,7 @@ createBtRequestGroup(const std::string& metaInfoUri,
   rg->setPauseRequested(option->getAsBool(PREF_PAUSE));
   // Remove "metalink" from Accept Type list to avoid server from
   // responding Metalink file for web-seeding URIs.
-  util::removeMetalinkContentTypes(rg);
+  dctx->setAcceptMetalink(false);
   removeOneshotOption(option);
   return rg;
 }

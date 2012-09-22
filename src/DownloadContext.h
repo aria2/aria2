@@ -84,9 +84,9 @@ private:
   Timer downloadStopTime_;
 
   SharedHandle<Signature> signature_;
-  // This member variable is required to avoid to parse Metalink/HTTP
-  // Link header fields multiple times.
-  bool metalinkServerContacted_;
+  // This member variable is required to avoid to use parse Metalink
+  // (including both Metalink XML and Metalink/HTTP) twice.
+  bool acceptMetalink_;
 public:
   DownloadContext();
 
@@ -226,13 +226,13 @@ public:
 
   void releaseRuntimeResource();
 
-  void setMetalinkServerContacted(bool f)
+  void setAcceptMetalink(bool f)
   {
-    metalinkServerContacted_ = f;
+    acceptMetalink_ = f;
   }
-  bool getMetalinkServerContacted() const
+  bool getAcceptMetalink() const
   {
-    return metalinkServerContacted_;
+    return acceptMetalink_;
   }
 };
 

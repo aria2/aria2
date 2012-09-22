@@ -58,10 +58,7 @@ MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
   SharedHandle<RequestGroupCriteria> cri
     (new ContentTypeRequestGroupCriteria
-     (DownloadHandlerConstants::getMetalinkContentTypes().begin(),
-      DownloadHandlerConstants::getMetalinkContentTypes().end(),
-      DownloadHandlerConstants::getMetalinkExtensions().begin(),
-      DownloadHandlerConstants::getMetalinkExtensions().end()));
+     (getMetalinkContentTypes(), getMetalinkExtensions()));
   setCriteria(cri);
 }
 

@@ -103,8 +103,8 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setCookieStorage(cookieStorage);
   httpRequest->setAuthConfigFactory(authConfigFactory, option.get());
   httpRequest->setProxyRequest(proxyRequest);
-  httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
-                             rg->getAcceptTypes().end());
+  httpRequest->setAcceptMetalink(rg->getDownloadContext()->
+                                 getAcceptMetalink());
   if(option->getAsBool(PREF_HTTP_ACCEPT_GZIP)) {
     httpRequest->enableAcceptGZip();
   } else {

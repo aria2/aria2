@@ -59,10 +59,7 @@ BtPostDownloadHandler::BtPostDownloadHandler()
 {
   SharedHandle<RequestGroupCriteria> cri
     (new ContentTypeRequestGroupCriteria
-     (DownloadHandlerConstants::getBtContentTypes().begin(),
-      DownloadHandlerConstants::getBtContentTypes().end(),
-      DownloadHandlerConstants::getBtExtensions().begin(),
-      DownloadHandlerConstants::getBtExtensions().end()));
+     (getBtContentTypes(), getBtExtensions()));
   setCriteria(cri);
 }
 

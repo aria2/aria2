@@ -74,10 +74,7 @@ DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 
     RequestGroupCriteriaHandle criteria
       (new ContentTypeRequestGroupCriteria
-       (DownloadHandlerConstants::getMetalinkContentTypes().begin(),
-        DownloadHandlerConstants::getMetalinkContentTypes().end(),
-        DownloadHandlerConstants::getMetalinkExtensions().begin(),
-        DownloadHandlerConstants::getMetalinkExtensions().end()));
+       (getMetalinkContentTypes(), getMetalinkExtensions()));
     metalinkPreDownloadHandler_->setCriteria(criteria);
   }
   return metalinkPreDownloadHandler_;
@@ -105,10 +102,7 @@ DownloadHandlerFactory::getBtPreDownloadHandler()
 
     RequestGroupCriteriaHandle criteria
       (new ContentTypeRequestGroupCriteria
-       (DownloadHandlerConstants::getBtContentTypes().begin(),
-        DownloadHandlerConstants::getBtContentTypes().end(),
-        DownloadHandlerConstants::getBtExtensions().begin(),
-        DownloadHandlerConstants::getBtExtensions().end()));
+       (getBtContentTypes(), getBtExtensions()));
     btPreDownloadHandler_->setCriteria(criteria);
   }
   return btPreDownloadHandler_;

@@ -51,6 +51,7 @@
 #include "TimeA2.h"
 #include "array_fun.h"
 #include "Request.h"
+#include "DownloadHandlerConstants.h"
 
 namespace aria2 {
 
@@ -58,6 +59,7 @@ const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():contentEncodingEnabled_(true),
                            userAgent_(USER_AGENT),
+                           acceptMetalink_(false),
                            noCache_(true),
                            acceptGzip_(false),
                            endOffsetOverride_(0)
@@ -164,10 +166,13 @@ std::string HttpRequest::createRequest()
   builtinHds.reserve(20);
   builtinHds.push_back(std::make_pair("User-Agent:", userAgent_));
   std::string acceptTypes = "*/*";
-  for(std::vector<std::string>::const_iterator i = acceptTypes_.begin(),
-        eoi = acceptTypes_.end(); i != eoi; ++i) {
-    acceptTypes += ",";
-    acceptTypes += *i;
+  if(acceptMetalink_) {
+    // The mime types of Metalink are used for "transparent metalink".
+    const char** metalinkTypes = getMetalinkContentTypes();
+    for(size_t i = 0; metalinkTypes[i]; ++i) {
+      acceptTypes += ",";
+      acceptTypes += metalinkTypes[i];
+    }
   }
   builtinHds.push_back(std::make_pair("Accept:", acceptTypes));
   if(contentEncodingEnabled_) {
@@ -326,11 +331,6 @@ void HttpRequest::addHeader(const std::string& headersString)
 void HttpRequest::clearHeader()
 {
   headers_.clear();
-}
-
-void HttpRequest::addAcceptType(const std::string& type)
-{
-  acceptTypes_.push_back(type);
 }
 
 void HttpRequest::setCookieStorage

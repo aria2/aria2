@@ -34,8 +34,6 @@
 /* copyright --> */
 #include "ContentTypeRequestGroupCriteria.h"
 
-#include <algorithm>
-
 #include "RequestGroup.h"
 #include "util.h"
 #include "FileEntry.h"
@@ -43,19 +41,13 @@
 
 namespace aria2 {
 
-namespace {
-template<typename InputIterator>
-bool tailMatch
-(InputIterator first, InputIterator last, const std::string& target)
-{
-  for(; first != last; ++first) {
-    if(util::endsWith(target, *first)) {
-      return true;
-    }
-  }
-  return false;
-}
-} // namespace
+ContentTypeRequestGroupCriteria::ContentTypeRequestGroupCriteria
+(const char** contentTypes, const char** extensions)
+  : contentTypes_(contentTypes),
+    extensions_(extensions)
+{}
+
+ContentTypeRequestGroupCriteria::~ContentTypeRequestGroupCriteria() {}
 
 bool ContentTypeRequestGroupCriteria::match
 (const RequestGroup* requestGroup) const
@@ -63,15 +55,18 @@ bool ContentTypeRequestGroupCriteria::match
   if(requestGroup->getDownloadContext()->getFileEntries().size() != 1) {
     return false;
   }
-  if(tailMatch(extensions_.begin(), extensions_.end(),
-               requestGroup->getFirstFilePath())) {
-    return true;
-  } else {
-    return
-      std::find(contentTypes_.begin(), contentTypes_.end(),
-                requestGroup->getDownloadContext()->getFirstFileEntry()->
-                getContentType()) != contentTypes_.end();
+  for(size_t i = 0; extensions_[i]; ++i) {
+    if(util::iendsWith(requestGroup->getFirstFilePath(), extensions_[i])) {
+      return true;
+    }
   }
+  for(size_t i = 0; contentTypes_[i]; ++i) {
+    if(util::strieq(requestGroup->getDownloadContext()->getFirstFileEntry()->
+                    getContentType(), contentTypes_[i])) {
+      return true;
+    }
+  }
+  return false;
 }
 
 } // namespace aria2

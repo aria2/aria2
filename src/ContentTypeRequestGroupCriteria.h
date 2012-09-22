@@ -44,16 +44,13 @@ namespace aria2 {
 class ContentTypeRequestGroupCriteria:public RequestGroupCriteria
 {
 private:
-  std::vector<std::string> contentTypes_;
-  std::vector<std::string> extensions_;
+  const char** contentTypes_;
+  const char** extensions_;
 public:
-  template<typename InputIterator>
-  ContentTypeRequestGroupCriteria(InputIterator contentTypeFirst,
-                                  InputIterator contentTypeLast,
-                                  InputIterator extensionFirst,
-                                  InputIterator extensionLast):
-    contentTypes_(contentTypeFirst, contentTypeLast),
-    extensions_(extensionFirst, extensionLast) {}
+  ContentTypeRequestGroupCriteria(const char** contentTypes,
+                                  const char** extensions);
+
+  virtual ~ContentTypeRequestGroupCriteria();
 
   virtual bool match(const RequestGroup* requestGroup) const;
 };

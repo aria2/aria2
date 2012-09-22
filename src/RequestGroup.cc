@@ -154,12 +154,6 @@ RequestGroup::RequestGroup(const SharedHandle<Option>& option)
     resumeFailureCount_(0)
 {
   fileAllocationEnabled_ = option_->get(PREF_FILE_ALLOCATION) != V_NONE;
-  // Add types to be sent as a Accept header value here.
-  // It would be good to put this value in Option so that user can tweak
-  // and add this list.
-  // The mime types of Metalink is used for `transparent metalink'.
-  addAcceptType(DownloadHandlerConstants::getMetalinkContentTypes().begin(),
-		DownloadHandlerConstants::getMetalinkContentTypes().end());
   if(!option_->getAsBool(PREF_DRY_RUN)) {
     initializePreDownloadHandler();
     initializePostDownloadHandler();
@@ -1211,19 +1205,6 @@ void RequestGroup::reportDownloadFinished()
     }
   }
 #endif // ENABLE_BITTORRENT
-}
-
-void RequestGroup::addAcceptType(const std::string& type)
-{
-  if(std::find(acceptTypes_.begin(), acceptTypes_.end(), type) == acceptTypes_.end()) {
-    acceptTypes_.push_back(type);
-  }
-}
-
-void RequestGroup::removeAcceptType(const std::string& type)
-{
-  acceptTypes_.erase(std::remove(acceptTypes_.begin(), acceptTypes_.end(), type),
-                     acceptTypes_.end());
 }
 
 void RequestGroup::setURISelector(const SharedHandle<URISelector>& uriSelector)

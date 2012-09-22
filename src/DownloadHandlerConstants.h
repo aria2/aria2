@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,30 +36,18 @@
 #define D_DOWNLOAD_HANDLER_CONSTANTS_H
 
 #include "common.h"
-#include <string>
-#include <vector>
 
 namespace aria2 {
 
-class DownloadHandlerConstants
-{
-public:
-  static const char* METALINK_EXTENSIONS[];
+// These methods returns NULL-terminated list of c-strings.
 
-  static const std::vector<std::string>& getMetalinkExtensions();
+const char** getMetalinkExtensions();
 
-  static const char* METALINK_CONTENT_TYPES[];
+const char** getMetalinkContentTypes();
 
-  static const std::vector<std::string>& getMetalinkContentTypes();
+const char** getBtExtensions();
 
-  static const char* BT_EXTENSIONS[];
-
-  static const std::vector<std::string>& getBtExtensions();
-
-  static const char* BT_CONTENT_TYPES[];
-
-  static const std::vector<std::string>& getBtContentTypes();
-};
+const char** getBtContentTypes();
 
 } // namespace aria2
 

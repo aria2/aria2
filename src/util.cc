@@ -1479,21 +1479,6 @@ bool inSameCidrBlock
   return (s1[last] & mask) == (s2[last] & mask);
 }
 
-void removeMetalinkContentTypes(const SharedHandle<RequestGroup>& group)
-{
-  removeMetalinkContentTypes(group.get());
-}
-
-void removeMetalinkContentTypes(RequestGroup* group)
-{
-  for(std::vector<std::string>::const_iterator i =
-	DownloadHandlerConstants::getMetalinkContentTypes().begin(),
-        eoi = DownloadHandlerConstants::getMetalinkContentTypes().end();
-      i != eoi; ++i) {
-    group->removeAcceptType(*i);
-  }
-}
-
 namespace {
 
 void executeHook
@@ -1693,6 +1678,16 @@ bool tlsHostnameMatch(const std::string& pattern, const std::string& hostname)
                 pattern.begin(), ptWildcard) &&
     iendsWith(hostname.begin(), hnLeftLabelEnd,
               ptWildcard+1, ptLeftLabelEnd);
+}
+
+bool strieq(const std::string& a, const char* b)
+{
+  return strieq(a.begin(), a.end(), b);
+}
+
+bool strieq(const std::string& a, const std::string& b)
+{
+  return strieq(a.begin(), a.end(), b.begin(), b.end());
 }
 
 bool startsWith(const std::string& a, const char* b)

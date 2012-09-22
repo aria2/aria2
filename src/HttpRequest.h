@@ -71,7 +71,8 @@ private:
 
   std::vector<std::string> headers_;
 
-  std::vector<std::string> acceptTypes_;
+  // If true, metalink content types are sent in Accept header field.
+  bool acceptMetalink_;
 
   SharedHandle<CookieStorage> cookieStorage_;
 
@@ -172,10 +173,9 @@ public:
 
   void addAcceptType(const std::string& type);
 
-  template<typename InputIterator>
-  void addAcceptType(InputIterator first, InputIterator last)
+  void setAcceptMetalink(bool f)
   {
-    acceptTypes_.insert(acceptTypes_.end(), first, last);
+    acceptMetalink_ = f;
   }
 
   void setCookieStorage(const SharedHandle<CookieStorage>& cookieStorage);

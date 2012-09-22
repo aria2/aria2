@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,54 +33,57 @@
  */
 /* copyright --> */
 #include "DownloadHandlerConstants.h"
-#include "array_fun.h"
 
 namespace aria2 {
 
-const char* DownloadHandlerConstants::METALINK_EXTENSIONS[] = {
+namespace {
+const char* METALINK_EXTENSIONS[] = {
   ".metalink", // Metalink3Spec
-  ".meta4" // Metalink4Spec
+  ".meta4", // Metalink4Spec
+  0
 };
+} // namespace
 
-const char* DownloadHandlerConstants::METALINK_CONTENT_TYPES[] = {
+const char** getMetalinkExtensions()
+{
+  return METALINK_EXTENSIONS;
+}
+
+namespace {
+const char* METALINK_CONTENT_TYPES[] = {
   "application/metalink4+xml", // Metalink4Spec
-  "application/metalink+xml" // Metalink3Spec
+  "application/metalink+xml", // Metalink3Spec
+  0
 };
+} // namespace
 
-const char* DownloadHandlerConstants::BT_EXTENSIONS[] = { ".torrent" };
+const char** getMetalinkContentTypes()
+{
+  return METALINK_CONTENT_TYPES;
+}
 
-const char* DownloadHandlerConstants::BT_CONTENT_TYPES[] = {
-  "application/x-bittorrent"
+namespace {
+const char* BT_EXTENSIONS[] = {
+  ".torrent",
+  0
 };
+} // namespace
 
-const std::vector<std::string>&
-DownloadHandlerConstants::getMetalinkExtensions()
+const char** getBtExtensions()
 {
-  static const std::vector<std::string> l
-    (vbegin(METALINK_EXTENSIONS), vend(METALINK_EXTENSIONS));
-  return l;
+  return BT_EXTENSIONS;
 }
 
-const std::vector<std::string>&
-DownloadHandlerConstants::getMetalinkContentTypes()
-{
-  static const std::vector<std::string> l
-    (vbegin(METALINK_CONTENT_TYPES), vend(METALINK_CONTENT_TYPES));
-  return l;
-}
+namespace {
+const char* BT_CONTENT_TYPES[] = {
+  "application/x-bittorrent",
+  0
+};
+} // namespace
 
-const std::vector<std::string>& DownloadHandlerConstants::getBtExtensions()
+const char** getBtContentTypes()
 {
-  static const std::vector<std::string> l
-    (vbegin(BT_EXTENSIONS), vend(BT_EXTENSIONS));
-  return l;
-}
-
-const std::vector<std::string>& DownloadHandlerConstants::getBtContentTypes()
-{
-  static const std::vector<std::string> l
-    (vbegin(BT_CONTENT_TYPES), vend(BT_CONTENT_TYPES));
-  return l;
+  return BT_CONTENT_TYPES;
 }
 
 } // namespace aria2

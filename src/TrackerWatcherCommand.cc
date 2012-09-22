@@ -255,7 +255,7 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   // RequestGroup is not handled by RequestGroupMan.
   rg->clearPreDownloadHandler();
   rg->clearPostDownloadHandler();
-  util::removeMetalinkContentTypes(rg);
+  dctx->setAcceptMetalink(false);
   A2_LOG_INFO(fmt("Creating tracker request group GID#%" PRId64 "", rg->getGID()));
   return rg;
 }

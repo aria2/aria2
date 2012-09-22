@@ -197,9 +197,9 @@ bool HttpResponseCommand::executeInternal()
   }
   if(!getPieceStorage()) {
     // Metalink/HTTP
-    if(!getDownloadContext()->getMetalinkServerContacted()) {
+    if(getDownloadContext()->getAcceptMetalink()) {
       if(httpHeader->defined(HttpHeader::LINK)) {
-        getDownloadContext()->setMetalinkServerContacted(true);
+        getDownloadContext()->setAcceptMetalink(false);
         std::vector<MetalinkHttpEntry> entries;
         httpResponse->getMetalinKHttpEntries(entries, getOption());
         for(std::vector<MetalinkHttpEntry>::iterator i = entries.begin(),
@@ -245,7 +245,7 @@ bool HttpResponseCommand::executeInternal()
     }
   }
   if(!getPieceStorage()) {
-    util::removeMetalinkContentTypes(getRequestGroup());
+    getDownloadContext()->setAcceptMetalink(false);
     int64_t totalLength = httpResponse->getEntityLength();
     getFileEntry()->setLength(totalLength);
     if(getFileEntry()->getPath().empty()) {

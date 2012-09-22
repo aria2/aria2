@@ -54,7 +54,7 @@ DownloadContext::DownloadContext():
   attrs_(MAX_CTX_ATTR),
   downloadStartTime_(0),
   downloadStopTime_(downloadStartTime_),
-  metalinkServerContacted_(false) {}
+  acceptMetalink_(true) {}
 
 DownloadContext::DownloadContext(int32_t pieceLength,
                                  int64_t totalLength,
@@ -66,7 +66,7 @@ DownloadContext::DownloadContext(int32_t pieceLength,
   attrs_(MAX_CTX_ATTR),
   downloadStartTime_(0),
   downloadStopTime_(0),
-  metalinkServerContacted_(false)
+  acceptMetalink_(true)
 {
   SharedHandle<FileEntry> fileEntry(new FileEntry(path, totalLength, 0));
   fileEntries_.push_back(fileEntry);
