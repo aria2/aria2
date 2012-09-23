@@ -278,7 +278,6 @@ const char* INTERESTING_HEADER_NAMES[] = {
   "location",
   "origin",
   "port",
-  "proxy-connection",
   "retry-after",
   "sec-websocket-key",
   "sec-websocket-version",

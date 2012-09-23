@@ -90,7 +90,6 @@ public:
     LOCATION,
     ORIGIN,
     PORT, // Used for BitTorrent LPD
-    PROXY_CONNECTION,
     RETRY_AFTER,
     SEC_WEBSOCKET_KEY,
     SEC_WEBSOCKET_VERSION,
