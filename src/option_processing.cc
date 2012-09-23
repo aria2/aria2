@@ -160,8 +160,8 @@ void showCandidates
   }
   std::sort(cands.begin(), cands.end());
   int threshold = cands[0].first;
-  // threshold value 7 is borrowed from git, help.c.
-  if(threshold >= 7) {
+  // threshold value 12 is a magic value.
+  if(threshold > 12) {
     return;
   }
   global::cerr()->printf("\n");
