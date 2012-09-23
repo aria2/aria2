@@ -37,10 +37,6 @@
 
 #include "OptionHandler.h"
 
-#include <vector>
-
-#include "A2STR.h"
-
 namespace aria2 {
 
 class Option;
@@ -54,21 +50,9 @@ protected:
 
   std::string defaultValue_;
 
-  std::vector<std::string> tags_;
-
   OptionHandler::ARG_TYPE argType_;
 
   char shortName_;
-
-  bool hidden_;
-
-  bool eraseAfterParse_;
-
-  bool initialOption_;
-  bool changeOption_;
-  bool changeOptionForReserved_;
-  bool globalChangeOption_;
-  bool cumulative_;
 
   virtual void parseArg(Option& option, const std::string& arg) = 0;
 public:
@@ -79,12 +63,12 @@ public:
                          char shortName = 0);
 
   virtual ~AbstractOptionHandler();
-  
+
   virtual void parse(Option& option, const std::string& arg);
 
-  virtual bool hasTag(const std::string& tag) const;
+  virtual bool hasTag(uint32_t tag) const;
 
-  virtual void addTag(const std::string& tag);
+  virtual void addTag(uint32_t tag);
 
   virtual std::string toTagString() const;
 
@@ -98,16 +82,6 @@ public:
   virtual const std::string& getDefaultValue() const
   {
     return defaultValue_;
-  }
-
-  virtual bool isHidden() const
-  {
-    return hidden_;
-  }
-
-  virtual void hide()
-  {
-    hidden_ = true;
   }
 
   virtual const Pref* getPref() const
@@ -125,65 +99,51 @@ public:
     return argType_;
   }
 
-  virtual bool getEraseAfterParse() const
-  {
-    return eraseAfterParse_;
-  }
+  virtual bool isHidden() const;
 
-  virtual void setEraseAfterParse(bool eraseAfterParse)
-  {
-    eraseAfterParse_ = eraseAfterParse;
-  }
+  virtual void hide();
 
-  virtual bool getInitialOption() const
-  {
-    return initialOption_;
-  }
+  virtual bool getEraseAfterParse() const;
 
-  virtual void setInitialOption(bool f)
-  {
-    initialOption_ = f;
-  }
+  virtual void setEraseAfterParse(bool f);
 
-  virtual bool getChangeOption() const
-  {
-    return changeOption_;
-  }
+  virtual bool getInitialOption() const;
 
-  virtual void setChangeOption(bool f)
-  {
-    changeOption_ = f;
-  }
+  virtual void setInitialOption(bool f);
 
-  virtual bool getChangeOptionForReserved() const
-  {
-    return changeOptionForReserved_;
-  }
+  virtual bool getChangeOption() const;
 
-  virtual void setChangeOptionForReserved(bool f)
-  {
-    changeOptionForReserved_ = f;
-  }
+  virtual void setChangeOption(bool f);
 
-  virtual bool getChangeGlobalOption() const
-  {
-    return globalChangeOption_;
-  }
+  virtual bool getChangeOptionForReserved() const;
 
-  virtual void setChangeGlobalOption(bool f)
-  {
-    globalChangeOption_ = f;
-  }
+  virtual void setChangeOptionForReserved(bool f);
 
-  virtual bool getCumulative() const
-  {
-    return cumulative_;
-  }
+  virtual bool getChangeGlobalOption() const;
 
-  virtual void setCumulative(bool f)
-  {
-    cumulative_ = f;
-  }
+  virtual void setChangeGlobalOption(bool f);
+
+  virtual bool getCumulative() const;
+
+  virtual void setCumulative(bool f);
+
+  enum Flag {
+    FLAG_HIDDEN = 1,
+    FLAG_ERASE_AFTER_PARSE = 1 << 1,
+    FLAG_INITIAL_OPTION = 1 << 2,
+    FLAG_CHANGE_OPTION = 1 << 3,
+    FLAG_CHANGE_OPTION_FOR_RESERVED = 1 << 4,
+    FLAG_CHANGE_GLOBAL_OPTION = 1 << 5,
+    FLAG_CUMULATIVE = 1 << 6
+  };
+private:
+  // bitwise OR of (1 << HelpTag value) defined in help_tags.h.
+  uint32_t tags_;
+
+  // bitwise OR of Flag values.
+  uint8_t flags_;
+
+  void updateFlags(int flag, bool val);
 };
 
 } // namespace aria2

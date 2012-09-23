@@ -62,14 +62,14 @@ struct Pref;
 class OptionHandler {
 public:
   virtual ~OptionHandler() {}
-  
+
   virtual void parse(Option& option, const std::string& arg) = 0;
 
   virtual std::string createPossibleValuesString() const = 0;
 
-  virtual bool hasTag(const std::string& tag) const = 0;
+  virtual bool hasTag(uint32_t tag) const = 0;
 
-  virtual void addTag(const std::string& tag) = 0;
+  virtual void addTag(uint32_t tag) = 0;
 
   virtual std::string toTagString() const = 0;
 

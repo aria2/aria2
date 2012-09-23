@@ -40,6 +40,7 @@
 #include <vector>
 
 #include "AbstractOptionHandler.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -278,8 +279,8 @@ public:
    SharedHandle<OptionHandler>());
   virtual void parse(Option& option, const std::string& arg);
   virtual std::string createPossibleValuesString() const;
-  virtual bool hasTag(const std::string& tag) const;
-  virtual void addTag(const std::string& tag);
+  virtual bool hasTag(uint32_t tag) const;
+  virtual void addTag(uint32_t tag);
   virtual std::string toTagString() const;
   virtual const char* getName() const;
   virtual const char* getDescription() const;

@@ -268,7 +268,7 @@ void OptionParser::parseDefaultValues(Option& option) const
 }
 
 std::vector<SharedHandle<OptionHandler> >
-OptionParser::findByTag(const std::string& tag) const
+OptionParser::findByTag(uint32_t tag) const
 {
   std::vector<SharedHandle<OptionHandler> > result;
   for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =

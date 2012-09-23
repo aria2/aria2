@@ -76,7 +76,7 @@ public:
 
   // Hidden options are not returned.
   std::vector<SharedHandle<OptionHandler> >
-  findByTag(const std::string& tag) const;
+  findByTag(uint32_t tag) const;
 
   // Hidden options are not returned.
   std::vector<SharedHandle<OptionHandler> >

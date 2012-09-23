@@ -198,7 +198,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       if(op.defined(PREF_HELP)) {
         std::string keyword;
         if(op.get(PREF_HELP).empty()) {
-          keyword = TAG_BASIC;
+          keyword = strHelpTag(TAG_BASIC);
         } else {
           keyword = op.get(PREF_HELP);
           if(util::startsWith(keyword, "--")) {
@@ -217,7 +217,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
     oparser->parseDefaultValues(op);
 
     if(!noConf) {
-      std::string cfname = 
+      std::string cfname =
         ucfname.empty() ?
         oparser->find(PREF_CONF_PATH)->getDefaultValue() : ucfname;
 
@@ -249,7 +249,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
         global::cerr()->printf(_("Configuration file %s is not found."),
                                cfname.c_str());
         global::cerr()->printf("\n");
-        showUsage(TAG_HELP, oparser, global::cerr());
+        showUsage(strHelpTag(TAG_HELP), oparser, global::cerr());
         exit(error_code::UNKNOWN_ERROR);
       }
     }

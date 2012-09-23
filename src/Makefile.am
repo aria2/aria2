@@ -149,7 +149,7 @@ SRCS =  Socket.h\
 	a2netcompat.h\
 	a2time.h\
 	array_fun.h\
-	help_tags.h\
+	help_tags.cc help_tags.h\
 	prefs.cc prefs.h\
 	usage_text.h\
 	ProtocolDetector.cc ProtocolDetector.h\

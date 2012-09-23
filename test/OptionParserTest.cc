@@ -11,6 +11,7 @@
 #include "Option.h"
 #include "array_fun.h"
 #include "prefs.h"
+#include "help_tags.h"
 
 namespace aria2 {
 
@@ -37,28 +38,28 @@ public:
     SharedHandle<OptionHandler> timeout
       (new DefaultOptionHandler(PREF_TIMEOUT, NO_DESCRIPTION, "ALPHA", "",
                                 OptionHandler::REQ_ARG, 'A'));
-    timeout->addTag("apple");
+    timeout->addTag(TAG_BASIC);
     timeout->setEraseAfterParse(true);
     oparser_->addOptionHandler(timeout);
 
     SharedHandle<OptionHandler> dir(new DefaultOptionHandler(PREF_DIR));
-    dir->addTag("apple");
-    dir->addTag("orange");
-    dir->addTag("pineapple");
+    dir->addTag(TAG_BASIC);
+    dir->addTag(TAG_HTTP);
+    dir->addTag(TAG_FILE);
     oparser_->addOptionHandler(dir);
 
     SharedHandle<DefaultOptionHandler> daemon
       (new DefaultOptionHandler(PREF_DAEMON, NO_DESCRIPTION, "CHARLIE", "",
                                 OptionHandler::REQ_ARG, 'C'));
     daemon->hide();
-    daemon->addTag("pineapple");
+    daemon->addTag(TAG_FILE);
     oparser_->addOptionHandler(daemon);
 
     SharedHandle<OptionHandler> out
       (new UnitNumberOptionHandler(PREF_OUT, NO_DESCRIPTION, "1M",
                                    -1, -1, 'D'));
-    out->addTag("pineapple");
-    oparser_->addOptionHandler(out);    
+    out->addTag(TAG_FILE);
+    oparser_->addOptionHandler(out);
   }
 
   void tearDown() {}
@@ -98,7 +99,7 @@ void OptionParserTest::testFindByNameSubstring()
 void OptionParserTest::testFindByTag()
 {
   std::vector<SharedHandle<OptionHandler> > res =
-    oparser_->findByTag("pineapple");
+    oparser_->findByTag(TAG_FILE);
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("dir"), std::string(res[0]->getName()));
   CPPUNIT_ASSERT_EQUAL(std::string("out"), std::string(res[1]->getName()));

@@ -32,41 +32,52 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef D_HELP_TAGS_H
-#define D_HELP_TAGS_H
+#include "help_tags.h"
 
-#include "common.h"
+#include <cstring>
+
+#include "array_fun.h"
 
 namespace aria2 {
 
-enum HelpTag {
-  TAG_BASIC,
-  TAG_ADVANCED,
-  TAG_HTTP,
-  TAG_HTTPS,
-  TAG_FTP,
-  TAG_METALINK,
-  TAG_BITTORRENT,
-  TAG_COOKIE,
-  TAG_HOOK,
-  TAG_FILE,
-  TAG_RPC,
-  TAG_CHECKSUM,
-  TAG_EXPERIMENTAL,
-  TAG_DEPRECATED,
-  TAG_HELP,
-  MAX_HELP_TAG
+namespace {
+const char* HELP_TAG_NAMES[] = {
+  "#basic",
+  "#advanced",
+  "#http",
+  "#https",
+  "#ftp",
+  "#metalink",
+  "#bittorrent",
+  "#cookie",
+  "#hook",
+  "#file",
+  "#rpc",
+  "#checksum",
+  "#experimental",
+  "#deprecated",
+  "#help"
 };
+} // namespace
 
-#define STR_TAG_ALL "#all"
+const char* strHelpTag(uint32_t tag)
+{
+  if(tag >= MAX_HELP_TAG) {
+    return "UNKNOWN";
+  } else {
+    return HELP_TAG_NAMES[tag];
+  }
+}
 
-// Returns tag name of the given |tag| ID.
-const char* strHelpTag(uint32_t tag);
-
-// Returns the corresponding enum value of the given |tagName|.  If
-// there is no such tag, returns MAX_HELP_TAG.
-uint32_t idHelpTag(const char* tagName);
+uint32_t idHelpTag(const char* tagName)
+{
+  for(const char** p = vbegin(HELP_TAG_NAMES), ** eop = vend(HELP_TAG_NAMES);
+      p != eop; ++p) {
+    if(strcmp(*p, tagName) == 0) {
+      return p - vbegin(HELP_TAG_NAMES);
+    }
+  }
+  return MAX_HELP_TAG;
+}
 
 } // namespace aria2
-
-#endif // D_HELP_TAGS_H

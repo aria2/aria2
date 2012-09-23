@@ -2173,29 +2173,16 @@ OptionHandlerFactory::createOptionHandlers()
   }
   // Help Option
   {
-    static std::string tags[] = {
-      TAG_BASIC,
-      TAG_ADVANCED,
-      TAG_HTTP,
-      TAG_HTTPS,
-      TAG_FTP,
-      TAG_METALINK,
-      TAG_BITTORRENT,
-      TAG_COOKIE,
-      TAG_HOOK,
-      TAG_FILE,
-      TAG_RPC,
-      TAG_CHECKSUM,
-      TAG_EXPERIMENTAL,
-      TAG_DEPRECATED,
-      TAG_HELP,
-      TAG_ALL
-    };
-    static std::string tagsStr = strjoin(vbegin(tags), vend(tags), ", ");
+    std::string tagsStr;
+    for(int i = 0; i < MAX_HELP_TAG; ++i) {
+      tagsStr += strHelpTag(i);
+      tagsStr += ", ";
+    }
+    tagsStr += STR_TAG_ALL;
     SharedHandle<OptionHandler> op(new DefaultOptionHandler
                                    (PREF_HELP,
                                     TEXT_HELP,
-                                    TAG_BASIC,
+                                    strHelpTag(TAG_BASIC),
                                     tagsStr,
                                     OptionHandler::OPT_ARG,
                                     'h'));

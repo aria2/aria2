@@ -630,12 +630,12 @@ std::string DeprecatedOptionHandler::createPossibleValuesString() const
   return depOptHandler_->createPossibleValuesString();
 }
 
-bool DeprecatedOptionHandler::hasTag(const std::string& tag) const
+bool DeprecatedOptionHandler::hasTag(uint32_t tag) const
 {
   return depOptHandler_->hasTag(tag);
 }
 
-void DeprecatedOptionHandler::addTag(const std::string& tag)
+void DeprecatedOptionHandler::addTag(uint32_t tag)
 {
   depOptHandler_->addTag(tag);
 }

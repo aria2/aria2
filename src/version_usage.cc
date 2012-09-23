@@ -94,8 +94,9 @@ void showUsage
     return;
   } else if(keyword[0] == '#') {
     std::vector<SharedHandle<OptionHandler> > handlers =
-      keyword == TAG_ALL ? oparser->findAll() : oparser->findByTag(keyword);
-    if(keyword == TAG_ALL) {
+      keyword == STR_TAG_ALL ? oparser->findAll() :
+      oparser->findByTag(idHelpTag(keyword.c_str()));
+    if(keyword == STR_TAG_ALL) {
       out->printf(_("Printing all options."));
     } else {
       out->printf(_("Printing options tagged with '%s'."),
@@ -111,7 +112,7 @@ void showUsage
       write(out, *(*i));
       out->printf("\n");
     }
-  } else {    
+  } else {
     std::vector<SharedHandle<OptionHandler> > handlers =
       oparser->findByNameSubstring(keyword);
     if(!handlers.empty()) {
@@ -132,7 +133,7 @@ void showUsage
       write(out, *oparser->find(PREF_HELP));
     }
   }
-  if(keyword == TAG_BASIC) {
+  if(keyword == strHelpTag(TAG_BASIC)) {
     out->printf("URI, MAGNET, TORRENT_FILE, METALINK_FILE:\n");
     out->printf(_(" You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, all\n"
                   " URIs must point to the same file or downloading will fail."));
