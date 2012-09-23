@@ -209,9 +209,7 @@ std::string HttpRequest::createRequest()
   }
   if(proxyRequest_) {
     if(request_->isKeepAliveEnabled() || request_->isPipeliningEnabled()) {
-      builtinHds.push_back(std::make_pair("Proxy-Connection:", "Keep-Alive"));
-    } else {
-      builtinHds.push_back(std::make_pair("Proxy-Connection:", "close"));
+      builtinHds.push_back(std::make_pair("Connection:", "Keep-Alive"));
     }
   }
   if(proxyRequest_ && !proxyRequest_->getUsername().empty()) {
@@ -276,7 +274,6 @@ std::string HttpRequest::createRequest()
 std::string HttpRequest::createProxyRequest() const
 {
   assert(proxyRequest_);
-  //std::string hostport(fmt("%s:%u", getURIHost().c_str(), getPort()));
   std::string requestLine(fmt("CONNECT %s:%u HTTP/1.1\r\n"
                               "User-Agent: %s\r\n"
                               "Host: %s:%u\r\n",
@@ -285,12 +282,6 @@ std::string HttpRequest::createProxyRequest() const
                               userAgent_.c_str(),
                               getURIHost().c_str(),
                               getPort()));
-  // TODO Is "Proxy-Connection" needed here?
-  //   if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
-  //     requestLine += "Proxy-Connection: Keep-Alive\r\n";
-  //   }else {
-  //     requestLine += "Proxy-Connection: close\r\n";
-  //   }
   if(!proxyRequest_->getUsername().empty()) {
     std::pair<std::string, std::string> auth = getProxyAuthString();
     requestLine += auth.first;

@@ -271,7 +271,6 @@ void HttpRequestTest::testCreateRequest()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
-    "Proxy-Connection: close\r\n"
     "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
@@ -287,7 +286,7 @@ void HttpRequestTest::testCreateRequest()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Range: bytes=0-1048575\r\n"
-    "Proxy-Connection: Keep-Alive\r\n"
+    "Connection: Keep-Alive\r\n"
     "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
@@ -306,7 +305,6 @@ void HttpRequestTest::testCreateRequest()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
-    "Proxy-Connection: close\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
 
@@ -347,7 +345,6 @@ void HttpRequestTest::testCreateRequest_ftp()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
-    "Proxy-Connection: close\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
 
@@ -366,7 +363,6 @@ void HttpRequestTest::testCreateRequest_ftp()
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
-    "Proxy-Connection: close\r\n"
     "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
