@@ -270,9 +270,12 @@ Usage: #{program_name} addUri URI... [options]
        #{program_name} shutdown [options]
        #{program_name} forceShutdown [options]
        #{program_name} getGlobalStat [options]
+       #{program_name} appendUri GID fileIndex URI... [options]
+           This command calls aria2.changeUri(GID, fileIndex, [], [URI,...])
+           internally.
 Options:
 EOS
-  
+
 
   args=opt.parse(ARGV)
 
@@ -307,7 +310,7 @@ options.delete("server")
 options.delete("port")
 options.delete("user")
 options.delete("passwd")
- 
+
 if command == "addUri" then
   result=client.call("aria2."+command, resources, options)
 elsif command == "addTorrent" then
@@ -377,6 +380,9 @@ elsif command == "forceShutdown" then
   result=client.call("aria2."+command)
 elsif command == "getGlobalStat" then
   result=client.call("aria2."+command)
+elsif command == "appendUri" then
+  result=client.call("aria2.changeUri", resources[0], resources[1].to_i(), [],
+                     resources[2..-1])
 else
   puts "Command not recognized"
   exit 1
