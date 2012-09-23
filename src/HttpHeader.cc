@@ -37,25 +37,9 @@
 #include "util.h"
 #include "A2STR.h"
 #include "DownloadFailureException.h"
+#include "array_fun.h"
 
 namespace aria2 {
-
-const std::string HttpHeader::LOCATION("location");
-const std::string HttpHeader::TRANSFER_ENCODING("transfer-encoding");
-const std::string HttpHeader::CONTENT_ENCODING("content-encoding");
-const std::string HttpHeader::CONTENT_DISPOSITION("content-disposition");
-const std::string HttpHeader::SET_COOKIE("set-cookie");
-const std::string HttpHeader::CONTENT_TYPE("content-type");
-const std::string HttpHeader::RETRY_AFTER("retry-after");
-const std::string HttpHeader::CONNECTION("connection");
-const std::string HttpHeader::CONTENT_LENGTH("content-length");
-const std::string HttpHeader::CONTENT_RANGE("content-range");
-const std::string HttpHeader::LAST_MODIFIED("last-modified");
-const std::string HttpHeader::ACCEPT_ENCODING("accept-encoding");
-const std::string HttpHeader::LINK("link");
-const std::string HttpHeader::DIGEST("digest");
-const std::string HttpHeader::PROXY_CONNECTION("proxy-connection");
-const std::string HttpHeader::AUTHORIZATION("authorization");
 
 const std::string HttpHeader::HTTP_1_1 = "HTTP/1.1";
 const std::string HttpHeader::CLOSE = "close";
@@ -67,21 +51,20 @@ const std::string HttpHeader::DEFLATE = "deflate";
 HttpHeader::HttpHeader() {}
 HttpHeader::~HttpHeader() {}
 
-void HttpHeader::put(const std::string& name, const std::string& value)
+void HttpHeader::put(int hdKey, const std::string& value)
 {
-  std::multimap<std::string, std::string>::value_type vt(name, value);
+  std::multimap<int, std::string>::value_type vt(hdKey, value);
   table_.insert(vt);
 }
 
-bool HttpHeader::defined(const std::string& name) const
+bool HttpHeader::defined(int hdKey) const
 {
-  return table_.count(name);
+  return table_.count(hdKey);
 }
 
-const std::string& HttpHeader::find(const std::string& name) const
+const std::string& HttpHeader::find(int hdKey) const
 {
-  std::multimap<std::string, std::string>::const_iterator itr =
-    table_.find(name);
+  std::multimap<int, std::string>::const_iterator itr = table_.find(hdKey);
   if(itr == table_.end()) {
     return A2STR::NIL;
   } else {
@@ -89,12 +72,12 @@ const std::string& HttpHeader::find(const std::string& name) const
   }
 }
 
-std::vector<std::string> HttpHeader::findAll(const std::string& name) const
+std::vector<std::string> HttpHeader::findAll(int hdKey) const
 {
   std::vector<std::string> v;
-  std::pair<std::multimap<std::string, std::string>::const_iterator,
-            std::multimap<std::string, std::string>::const_iterator> itrpair =
-    table_.equal_range(name);
+  std::pair<std::multimap<int, std::string>::const_iterator,
+            std::multimap<int, std::string>::const_iterator> itrpair =
+    table_.equal_range(hdKey);
   while(itrpair.first != itrpair.second) {
     v.push_back((*itrpair.first).second);
     ++itrpair.first;
@@ -102,16 +85,16 @@ std::vector<std::string> HttpHeader::findAll(const std::string& name) const
   return v;
 }
 
-std::pair<std::multimap<std::string, std::string>::const_iterator,
-          std::multimap<std::string, std::string>::const_iterator>
-HttpHeader::equalRange(const std::string& name) const
+std::pair<std::multimap<int, std::string>::const_iterator,
+          std::multimap<int, std::string>::const_iterator>
+HttpHeader::equalRange(int hdKey) const
 {
-  return table_.equal_range(name);
+  return table_.equal_range(hdKey);
 }
 
-int32_t HttpHeader::findAsInt(const std::string& name) const
+int32_t HttpHeader::findAsInt(int hdKey) const
 {
-  const std::string& value = find(name);
+  const std::string& value = find(hdKey);
   if(value.empty()) {
     return 0;
   } else {
@@ -119,9 +102,9 @@ int32_t HttpHeader::findAsInt(const std::string& name) const
   }
 }
 
-int64_t HttpHeader::findAsLLInt(const std::string& name) const
+int64_t HttpHeader::findAsLLInt(int hdKey) const
 {
-  const std::string& value = find(name);
+  const std::string& value = find(hdKey);
   if(value.empty()) {
     return 0;
   } else {
@@ -253,13 +236,12 @@ void HttpHeader::setReasonPhrase(const std::string& reasonPhrase)
   reasonPhrase_ = reasonPhrase;
 }
 
-bool HttpHeader::fieldContains(const std::string& name,
-                               const std::string& value)
+bool HttpHeader::fieldContains(int hdKey, const char* value)
 {
-  std::pair<std::multimap<std::string, std::string>::const_iterator,
-            std::multimap<std::string, std::string>::const_iterator> range =
-    equalRange(name);
-  for(std::multimap<std::string, std::string>::const_iterator i = range.first;
+  std::pair<std::multimap<int, std::string>::const_iterator,
+            std::multimap<int, std::string>::const_iterator> range =
+    equalRange(hdKey);
+  for(std::multimap<int, std::string>::const_iterator i = range.first;
       i != range.second; ++i) {
     std::vector<Scip> values;
     util::splitIter((*i).second.begin(), (*i).second.end(),
@@ -269,12 +251,53 @@ bool HttpHeader::fieldContains(const std::string& name,
                     );
     for(std::vector<Scip>::const_iterator j = values.begin(),
           eoj = values.end(); j != eoj; ++j) {
-      if(util::strieq((*j).first, (*j).second, value.begin(), value.end())) {
+      if(util::strieq((*j).first, (*j).second, value)) {
         return true;
       }
     }
   }
   return false;
+}
+
+namespace {
+const char* INTERESTING_HEADER_NAMES[] = {
+  "accept-encoding",
+  "access-control-request-headers",
+  "access-control-request-method",
+  "authorization",
+  "connection",
+  "content-disposition",
+  "content-encoding",
+  "content-length",
+  "content-range",
+  "content-type",
+  "digest",
+  "infohash",
+  "last-modified",
+  "link",
+  "location",
+  "origin",
+  "port",
+  "proxy-connection",
+  "retry-after",
+  "sec-websocket-key",
+  "sec-websocket-version",
+  "set-cookie",
+  "transfer-encoding",
+  "upgrade",
+};
+} // namespace
+
+int idInterestingHeader(const char* hdName)
+{
+  const char** i = std::lower_bound(vbegin(INTERESTING_HEADER_NAMES),
+                                    vend(INTERESTING_HEADER_NAMES),
+                                    hdName, util::strless);
+  if(i != vend(INTERESTING_HEADER_NAMES) && strcmp(*i, hdName) == 0 ) {
+    return i - vbegin(INTERESTING_HEADER_NAMES);
+  } else {
+    return HttpHeader::MAX_INTERESTING_HEADER;
+  }
 }
 
 } // namespace aria2

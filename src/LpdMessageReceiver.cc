@@ -93,10 +93,8 @@ SharedHandle<LpdMessage> LpdMessageReceiver::receiveMessage()
       return msg;
     }
     const SharedHandle<HttpHeader>& header = proc.getResult();
-    static const std::string A2_INFOHASH = "infohash";
-    static const std::string A2_PORT = "port";
-    const std::string& infoHashString = header->find(A2_INFOHASH);
-    uint16_t port = header->findAsInt(A2_PORT);
+    const std::string& infoHashString = header->find(HttpHeader::INFOHASH);
+    uint16_t port = header->findAsInt(HttpHeader::PORT);
     A2_LOG_INFO(fmt("LPD message received infohash=%s, port=%u from %s",
                     infoHashString.c_str(),
                     port,

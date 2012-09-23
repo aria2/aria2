@@ -169,14 +169,14 @@ bool HttpServerBodyCommand::execute()
           const SharedHandle<HttpHeader>& header =
             httpServer_->getRequestHeader();
           std::string accessControlHeaders;
-          if(!header->find("origin").empty() &&
-             !header->find("access-control-request-method").empty() &&
-             !httpServer_->getAllowOrigin().empty()) {
+          if(!header->find(HttpHeader::ORIGIN).empty() &&
+             !header->find(HttpHeader::ACCESS_CONTROL_REQUEST_METHOD).empty()
+             && !httpServer_->getAllowOrigin().empty()) {
             accessControlHeaders +=
               "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n"
               "Access-Control-Max-Age: 1728000\r\n";
             const std::string& accReqHeaders =
-              header->find("access-control-request-headers");
+              header->find(HttpHeader::ACCESS_CONTROL_REQUEST_HEADERS);
             if(!accReqHeaders.empty()) {
               // We allow all headers requested.
               accessControlHeaders += "Access-Control-Allow-Headers: ";

@@ -133,9 +133,9 @@ namespace {
 int websocketHandshake(const SharedHandle<HttpHeader>& header)
 {
   if(header->getMethod() != "GET" ||
-     header->find("sec-websocket-key").empty()) {
+     header->find(HttpHeader::SEC_WEBSOCKET_KEY).empty()) {
     return 400;
-  } else if(header->find("sec-websocket-version") != "13") {
+  } else if(header->find(HttpHeader::SEC_WEBSOCKET_VERSION) != "13") {
     return 426;
   } else if(header->getRequestPath() != "/jsonrpc") {
     return 404;
@@ -177,14 +177,15 @@ bool HttpServerCommand::execute()
         e_->setNoWait(true);
         return true;
       }
-      if(header->fieldContains("upgrade", "websocket") &&
-         header->fieldContains("connection", "upgrade")) {
+      if(header->fieldContains(HttpHeader::UPGRADE, "websocket") &&
+         header->fieldContains(HttpHeader::CONNECTION, "upgrade")) {
 #ifdef ENABLE_WEBSOCKET
         int status = websocketHandshake(header);
         Command* command;
         if(status == 101) {
           std::string serverKey =
-            createWebSocketServerKey(header->find("sec-websocket-key"));
+            createWebSocketServerKey
+            (header->find(HttpHeader::SEC_WEBSOCKET_KEY));
           httpServer_->feedUpgradeResponse("websocket",
                                            fmt("Sec-WebSocket-Accept: %s\r\n",
                                                serverKey.c_str()));

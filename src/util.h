@@ -714,6 +714,9 @@ bool iendsWith
 bool iendsWith(const std::string& a, const char* b);
 bool iendsWith(const std::string& a, const std::string& b);
 
+// Returns true if strcmp(a, b) < 0
+bool strless(const char* a, const char *b);
+
 void generateRandomData(unsigned char* data, size_t length);
 
 // Saves data to file whose name is filename. If overwrite is true,

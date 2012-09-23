@@ -78,6 +78,7 @@ HttpHeaderProcessor::HttpHeaderProcessor(ParserMode mode)
   : mode_(mode),
     state_(mode == CLIENT_PARSER ? PREV_RES_VERSION : PREV_METHOD),
     lastBytesProcessed_(0),
+    lastFieldHdKey_(HttpHeader::MAX_INTERESTING_HEADER),
     result_(new HttpHeader())
 {}
 
@@ -114,6 +115,16 @@ size_t getText(std::string& buf,
   size_t j;
   for(j = off; j < length && !util::isCRLF(data[j]); ++j);
   buf.append(&data[off], &data[j]);
+  return j-1;
+}
+} // namespace
+
+namespace {
+size_t ignoreText(std::string& buf,
+                  const unsigned char* data, size_t length, size_t off)
+{
+  size_t j;
+  for(j = off; j < length && !util::isCRLF(data[j]); ++j);
   return j-1;
 }
 } // namespace
@@ -276,9 +287,11 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
         state_ = FIELD_VALUE;
       } else {
         if(!lastFieldName_.empty()) {
-          util::lowercase(lastFieldName_);
-          result_->put(lastFieldName_, util::strip(buf_));
+          if(lastFieldHdKey_ != HttpHeader::MAX_INTERESTING_HEADER) {
+            result_->put(lastFieldHdKey_, util::strip(buf_));
+          }
           lastFieldName_.clear();
+          lastFieldHdKey_ = HttpHeader::MAX_INTERESTING_HEADER;
           buf_.clear();
         }
         if(c == '\n') {
@@ -297,6 +310,8 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
       if(util::isLws(c) || util::isCRLF(c)) {
         throw DL_ABORT_EX("Bad HTTP header: missing ':'");
       } else if(c == ':') {
+        util::lowercase(lastFieldName_);
+        lastFieldHdKey_ = idInterestingHeader(lastFieldName_.c_str());
         state_ = PREV_FIELD_VALUE;
       } else {
         i = getFieldNameToken(lastFieldName_, data, length, i);
@@ -309,7 +324,11 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
         state_ = PREV_FIELD_NAME;
       } else if(!util::isLws(c)) {
         state_ = FIELD_VALUE;
-        i = getText(buf_, data, length, i);
+        if(lastFieldHdKey_ == HttpHeader::MAX_INTERESTING_HEADER) {
+          i = ignoreText(buf_, data, length, i);
+        } else {
+          i = getText(buf_, data, length, i);
+        }
       }
       break;
     case FIELD_VALUE:
@@ -318,7 +337,11 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
       } else if(c == '\n') {
         state_ = PREV_FIELD_NAME;
       } else {
-        i = getText(buf_, data, length, i);
+        if(lastFieldHdKey_ == HttpHeader::MAX_INTERESTING_HEADER) {
+          i = ignoreText(buf_, data, length, i);
+        } else {
+          i = getText(buf_, data, length, i);
+        }
       }
       break;
     case PREV_EOH:
@@ -363,6 +386,7 @@ void HttpHeaderProcessor::clear()
   lastBytesProcessed_ = 0;
   buf_.clear();
   lastFieldName_.clear();
+  lastFieldHdKey_ = HttpHeader::MAX_INTERESTING_HEADER;
   result_.reset(new HttpHeader());
   headers_.clear();
 }

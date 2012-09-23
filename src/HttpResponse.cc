@@ -140,8 +140,8 @@ std::string HttpResponse::determinFilename() const
 void HttpResponse::retrieveCookie()
 {
   Time now;
-  std::pair<std::multimap<std::string, std::string>::const_iterator,
-            std::multimap<std::string, std::string>::const_iterator> r =
+  std::pair<std::multimap<int, std::string>::const_iterator,
+            std::multimap<int, std::string>::const_iterator> r =
     httpHeader_->equalRange(HttpHeader::SET_COOKIE);
   for(; r.first != r.second; ++r.first) {
     httpRequest_->getCookieStorage()->parseAndStore
@@ -162,7 +162,6 @@ bool HttpResponse::isRedirect() const
 
 void HttpResponse::processRedirect()
 {
-  
   if(httpRequest_->getRequest()->redirectUri
      (util::percentEncodeMini(getRedirectURI()))) {
     A2_LOG_INFO(fmt(MSG_REDIRECT,
@@ -375,8 +374,8 @@ void HttpResponse::getMetalinKHttpEntries
 (std::vector<MetalinkHttpEntry>& result,
  const SharedHandle<Option>& option) const
 {
-  std::pair<std::multimap<std::string, std::string>::const_iterator,
-            std::multimap<std::string, std::string>::const_iterator> p =
+  std::pair<std::multimap<int, std::string>::const_iterator,
+            std::multimap<int, std::string>::const_iterator> p =
     httpHeader_->equalRange(HttpHeader::LINK);
   for(; p.first != p.second; ++p.first) {
     MetalinkHttpEntry e;
@@ -410,8 +409,8 @@ void HttpResponse::getMetalinKHttpEntries
 void HttpResponse::getDigest(std::vector<Checksum>& result) const
 {
   using std::swap;
-  std::pair<std::multimap<std::string, std::string>::const_iterator,
-            std::multimap<std::string, std::string>::const_iterator> p =
+  std::pair<std::multimap<int, std::string>::const_iterator,
+            std::multimap<int, std::string>::const_iterator> p =
     httpHeader_->equalRange(HttpHeader::DIGEST);
   for(; p.first != p.second; ++p.first) {
     const std::string& s = (*p.first).second;

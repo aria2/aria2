@@ -88,6 +88,7 @@ private:
   size_t lastBytesProcessed_;
   std::string buf_;
   std::string lastFieldName_;
+  int lastFieldHdKey_;
   SharedHandle<HttpHeader> result_;
   std::string headers_;
 };

@@ -26,7 +26,7 @@ class HttpHeaderProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetHeaderString);
   CPPUNIT_TEST(testGetHttpRequestHeader);
   CPPUNIT_TEST_SUITE_END();
-  
+
 public:
   void testParse1();
   void testParse2();
@@ -68,27 +68,24 @@ void HttpHeaderProcessorTest::testParse3()
     "GET / HTTP/1.1\r\n"
     "Host: aria2.sourceforge.net\r\n"
     "Connection: close \r\n" // trailing white space (BWS)
-    "Multi-Line: text1\r\n" // Multi-line header
+    "Accept-Encoding: text1\r\n" // Multi-line header
     "  text2\r\n"
     "  text3\r\n"
-    "Duplicate: foo\r\n"
-    "Duplicate: bar\r\n"
-    "No-value:\r\n"
+    "Authorization: foo\r\n"
+    "Authorization: bar\r\n"
+    "Content-Type:\r\n"
     "\r\n";
   CPPUNIT_ASSERT(proc.parse(s));
   SharedHandle<HttpHeader> h = proc.getResult();
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.sourceforge.net"),
-                       h->find("host"));
-  CPPUNIT_ASSERT_EQUAL(std::string("close"),
-                       h->find("connection"));
+  CPPUNIT_ASSERT_EQUAL(std::string("close"), h->find(HttpHeader::CONNECTION));
   CPPUNIT_ASSERT_EQUAL(std::string("text1 text2 text3"),
-                       h->find("multi-line"));
+                       h->find(HttpHeader::ACCEPT_ENCODING));
   CPPUNIT_ASSERT_EQUAL(std::string("foo"),
-                       h->findAll("duplicate")[0]);
+                       h->findAll(HttpHeader::AUTHORIZATION)[0]);
   CPPUNIT_ASSERT_EQUAL(std::string("bar"),
-                       h->findAll("duplicate")[1]);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), h->find("no-value"));
-  CPPUNIT_ASSERT(h->defined("no-value"));
+                       h->findAll(HttpHeader::AUTHORIZATION)[1]);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), h->find(HttpHeader::CONTENT_TYPE));
+  CPPUNIT_ASSERT(h->defined(HttpHeader::CONTENT_TYPE));
 }
 
 void HttpHeaderProcessorTest::testGetLastBytesProcessed()
@@ -135,7 +132,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
     "Connection: close\r\n"
     "Content-Type: text/html; charset=UTF-8\r\n"
     "\r\n"
-    "Entity: body";
+    "Content-Encoding: body";
 
   CPPUNIT_ASSERT(proc.parse(hd));
 
@@ -143,15 +140,11 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
   CPPUNIT_ASSERT_EQUAL(404, header->getStatusCode());
   CPPUNIT_ASSERT_EQUAL(std::string("Not Found"), header->getReasonPhrase());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
-  CPPUNIT_ASSERT_EQUAL(std::string("Mon, 25 Jun 2007 16:04:59 GMT"),
-                       header->find("date"));
-  CPPUNIT_ASSERT_EQUAL(std::string("Apache/2.2.3 (Debian)"),
-                       header->find("server"));
   CPPUNIT_ASSERT_EQUAL((int64_t)9187LL,
-                       header->findAsLLInt("content-length"));
+                       header->findAsLLInt(HttpHeader::CONTENT_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"),
-                       header->find("content-type"));
-  CPPUNIT_ASSERT(!header->defined("entity"));
+                       header->find(HttpHeader::CONTENT_TYPE));
+  CPPUNIT_ASSERT(!header->defined(HttpHeader::CONTENT_ENCODING));
 }
 
 void HttpHeaderProcessorTest::testGetHttpResponseHeader_statusOnly()
@@ -272,7 +265,7 @@ void HttpHeaderProcessorTest::testGetHttpRequestHeader()
     "Host: host\r\n"
     "Connection: close\r\n"
     "\r\n"
-    "Entity: body";
+    "Content-Encoding: body";
 
   CPPUNIT_ASSERT(proc.parse(request));
 
@@ -280,8 +273,9 @@ void HttpHeaderProcessorTest::testGetHttpRequestHeader()
   CPPUNIT_ASSERT_EQUAL(std::string("GET"), httpHeader->getMethod());
   CPPUNIT_ASSERT_EQUAL(std::string("/index.html"),httpHeader->getRequestPath());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), httpHeader->getVersion());
-  CPPUNIT_ASSERT_EQUAL(std::string("close"),httpHeader->find("connection"));
-  CPPUNIT_ASSERT(!httpHeader->defined("entity"));
+  CPPUNIT_ASSERT_EQUAL(std::string("close"),
+                       httpHeader->find(HttpHeader::CONNECTION));
+  CPPUNIT_ASSERT(!httpHeader->defined(HttpHeader::CONTENT_ENCODING));
 }
 
 } // namespace aria2
