@@ -581,20 +581,12 @@ void HttpResponseTest::testSupportsPersistentConnection()
   httpRequest->setProxyRequest(proxyRequest);
 
   httpHeader->setVersion("HTTP/1.1");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->put(HttpHeader::CONNECTION, "close");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->clearField();
-  httpHeader->put(HttpHeader::CONNECTION, "keep-alive");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->clearField();
-  httpHeader->put(HttpHeader::PROXY_CONNECTION, "keep-alive");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
   httpHeader->put(HttpHeader::CONNECTION, "close");
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
-  httpHeader->put(HttpHeader::PROXY_CONNECTION, "close");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
+  httpHeader->put(HttpHeader::CONNECTION, "keep-alive");
+  CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
 
   httpHeader->setVersion("HTTP/1.0");
@@ -603,15 +595,7 @@ void HttpResponseTest::testSupportsPersistentConnection()
   CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
   httpHeader->put(HttpHeader::CONNECTION, "keep-alive");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->put(HttpHeader::PROXY_CONNECTION, "keep-alive");
   CPPUNIT_ASSERT(httpResponse.supportsPersistentConnection());
-  httpHeader->clearField();
-  httpHeader->put(HttpHeader::PROXY_CONNECTION, "keep-alive");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
-  httpHeader->clearField();
-  httpHeader->put(HttpHeader::PROXY_CONNECTION, "close");
-  CPPUNIT_ASSERT(!httpResponse.supportsPersistentConnection());
   httpHeader->clearField();
 }
 

@@ -158,12 +158,9 @@ public:
   // assumes the values of the header field is delimited by ','.
   bool fieldContains(int hdKey, const char* value);
 
-  static const std::string HTTP_1_1;
-  static const std::string CLOSE;
-  static const std::string KEEP_ALIVE;
-  static const std::string CHUNKED;
-  static const std::string GZIP;
-  static const std::string DEFLATE;
+  // Returns true if the headers indicate that the remote endpoint
+  // keeps connection open.
+  bool isKeepAlive() const;
 };
 
 int idInterestingHeader(const char* hdName);

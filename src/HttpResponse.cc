@@ -197,7 +197,7 @@ SharedHandle<StreamFilter> HttpResponse::getTransferEncodingStreamFilter() const
   // TODO Transfer-Encoding header field can contains multiple tokens. We should
   // parse the field and retrieve each token.
   if(isTransferEncodingSpecified()) {
-    if(getTransferEncoding() == HttpHeader::CHUNKED) {
+    if(util::strieq(getTransferEncoding(), "chunked")) {
       filter.reset(new ChunkedDecodingStreamFilter());
     }
   }
@@ -218,8 +218,8 @@ SharedHandle<StreamFilter> HttpResponse::getContentEncodingStreamFilter() const
 {
   SharedHandle<StreamFilter> filter;
 #ifdef HAVE_ZLIB
-  if(getContentEncoding() == HttpHeader::GZIP ||
-     getContentEncoding() == HttpHeader::DEFLATE) {
+  if(util::strieq(getContentEncoding(), "gzip") ||
+     util::strieq(getContentEncoding(), "deflate")) {
     filter.reset(new GZipDecodingStreamFilter());
   }
 #endif // HAVE_ZLIB
@@ -288,25 +288,7 @@ Time HttpResponse::getLastModifiedTime() const
 
 bool HttpResponse::supportsPersistentConnection() const
 {
-  const std::string& connection = httpHeader_->find(HttpHeader::CONNECTION);
-  const std::string& version = httpHeader_->getVersion();
-  const std::string& proxyConn =
-    httpHeader_->find(HttpHeader::PROXY_CONNECTION);
-  return
-    util::strifind(connection.begin(),
-                   connection.end(),
-                   HttpHeader::CLOSE.begin(),
-                   HttpHeader::CLOSE.end()) == connection.end() &&
-    (version == HttpHeader::HTTP_1_1 ||
-     util::strifind(connection.begin(),
-                    connection.end(),
-                    HttpHeader::KEEP_ALIVE.begin(),
-                    HttpHeader::KEEP_ALIVE.end()) != connection.end()) &&
-    (!httpRequest_->isProxyRequestSet() ||
-     util::strifind(proxyConn.begin(),
-                    proxyConn.end(),
-                    HttpHeader::KEEP_ALIVE.begin(),
-                    HttpHeader::KEEP_ALIVE.end()) != proxyConn.end());
+  return httpHeader_->isKeepAlive();
 }
 
 namespace {

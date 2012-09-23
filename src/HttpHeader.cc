@@ -41,13 +41,6 @@
 
 namespace aria2 {
 
-const std::string HttpHeader::HTTP_1_1 = "HTTP/1.1";
-const std::string HttpHeader::CLOSE = "close";
-const std::string HttpHeader::KEEP_ALIVE = "keep-alive";
-const std::string HttpHeader::CHUNKED = "chunked";
-const std::string HttpHeader::GZIP = "gzip";
-const std::string HttpHeader::DEFLATE = "deflate";
-
 HttpHeader::HttpHeader() {}
 HttpHeader::~HttpHeader() {}
 
@@ -257,6 +250,13 @@ bool HttpHeader::fieldContains(int hdKey, const char* value)
     }
   }
   return false;
+}
+
+bool HttpHeader::isKeepAlive() const
+{
+  const std::string& connection = find(CONNECTION);
+  return !util::strieq(connection, "close") &&
+    (version_ == "HTTP/1.1" || util::strieq(connection, "keep-alive"));
 }
 
 namespace {

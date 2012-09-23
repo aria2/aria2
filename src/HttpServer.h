@@ -80,7 +80,6 @@ private:
   bool gzip_;
   std::string username_;
   std::string password_;
-  bool acceptsPersistentConnection_;
   bool acceptsGZip_;
   std::string allowOrigin_;
 public:
@@ -138,10 +137,7 @@ public:
 
   bool sendBufferIsEmpty() const;
 
-  bool supportsPersistentConnection() const
-  {
-    return keepAlive_ && acceptsPersistentConnection_;
-  }
+  bool supportsPersistentConnection() const;
 
   bool supportsGZip() const
   {

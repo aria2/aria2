@@ -71,7 +71,6 @@ HttpServer::HttpServer
    reqType_(RPC_TYPE_NONE),
    keepAlive_(true),
    gzip_(false),
-   acceptsPersistentConnection_(true),
    acceptsGZip_(false)
 {}
 
@@ -156,19 +155,6 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     }
     headerProcessor_->clear();
 
-    const std::string& connection =
-      lastRequestHeader_->find(HttpHeader::CONNECTION);
-    acceptsPersistentConnection_ =
-      util::strifind(connection.begin(),
-                     connection.end(),
-                     HttpHeader::CLOSE.begin(),
-                     HttpHeader::CLOSE.end()) == connection.end() &&
-      (lastRequestHeader_->getVersion() == HttpHeader::HTTP_1_1 ||
-       util::strifind(connection.begin(),
-                      connection.end(),
-                      HttpHeader::KEEP_ALIVE.begin(),
-                      HttpHeader::KEEP_ALIVE.end()) != connection.end());
-
     std::vector<Scip> acceptEncodings;
     const std::string& acceptEnc =
       lastRequestHeader_->find(HttpHeader::ACCEPT_ENCODING);
@@ -177,8 +163,7 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     acceptsGZip_ = false;
     for(std::vector<Scip>::const_iterator i = acceptEncodings.begin(),
           eoi = acceptEncodings.end(); i != eoi; ++i) {
-      if(util::strieq((*i).first, (*i).second,
-                      HttpHeader::GZIP.begin(), HttpHeader::GZIP.end())) {
+      if(util::strieq((*i).first, (*i).second, "gzip")) {
         acceptsGZip_ = true;
         break;
       }
@@ -390,6 +375,12 @@ std::string HttpServer::createQuery() const
     }
     return reqPath.substr(start, i - start);
   }
+}
+
+bool HttpServer::supportsPersistentConnection() const
+{
+  return keepAlive_ &&
+    lastRequestHeader_ && lastRequestHeader_->isKeepAlive();
 }
 
 } // namespace aria2
