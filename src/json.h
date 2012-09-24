@@ -42,11 +42,6 @@ namespace aria2 {
 
 namespace json {
 
-// Parses JSON text defined in RFC4627.
-SharedHandle<ValueBase> decode(const std::string& json);
-
-SharedHandle<ValueBase> decode(const unsigned char* json, size_t len);
-
 std::string jsonEscape(const std::string& s);
 
 template<typename OutputStream>
