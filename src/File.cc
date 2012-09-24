@@ -294,14 +294,13 @@ std::string File::getCurrentDir()
 #endif // !__MINGW32__
 }
 
-const std::string& File::getPathSeparators()
+const char* File::getPathSeparators()
 {
 #ifdef __MINGW32__
-  static std::string s = "/\\";
+  return "/\\";
 #else // !__MINGW32__
-  static std::string s = "/";
+  return "/";
 #endif // !__MINGW32__
-  return s;
 }
 
 } // namespace aria2

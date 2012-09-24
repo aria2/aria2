@@ -119,8 +119,8 @@ public:
   // directory cannot be retrieved or its length is larger than 2048,
   // returns ".".
   static std::string getCurrentDir();
-  // Returns possible path separators for the underlining platform.
-  static const std::string& getPathSeparators();
+  // Returns possible path separators for the underlying platform.
+  static const char* getPathSeparators();
 };
 
 } // namespace aria2
