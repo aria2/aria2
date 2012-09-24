@@ -48,18 +48,6 @@
 
 namespace aria2 {
 
-namespace {
-static const std::string DEBUG_LABEL("DEBUG");
-
-static const std::string INFO_LABEL("INFO");
-
-static const std::string NOTICE_LABEL("NOTICE");
-
-static const std::string WARN_LABEL("WARN");
-
-static const std::string ERROR_LABEL("ERROR");
-} // namespace
-
 Logger::Logger()
   : logLevel_(Logger::A2_DEBUG),
     stdoutField_(0)
@@ -104,21 +92,21 @@ bool Logger::levelEnabled(LEVEL level)
 }
 
 namespace {
-const std::string& levelToString(Logger::LEVEL level)
+const char* levelToString(Logger::LEVEL level)
 {
   switch(level) {
   case Logger::A2_DEBUG:
-    return DEBUG_LABEL;
+    return "DEBUG";
   case Logger::A2_INFO:
-    return INFO_LABEL;
+    return "INFO";
   case Logger::A2_NOTICE:
-    return NOTICE_LABEL;
+    return "NOTICE";
   case Logger::A2_WARN:
-    return WARN_LABEL;
+    return "WARN";
   case Logger::A2_ERROR:
-    return ERROR_LABEL;
+    return "ERROR";
   default:
-    return A2STR::NIL;
+    return "";
   }
 }
 } // namespace
@@ -138,8 +126,7 @@ void writeHeader
   size_t dateLength =
     strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
   assert(dateLength <= (size_t)20);
-  fp.printf("%s.%06ld %s - ", datestr, tv.tv_usec,
-            levelToString(level).c_str());
+  fp.printf("%s.%06ld %s - ", datestr, tv.tv_usec, levelToString(level));
   if(sourceFile) {
     fp.printf("[%s:%d]", sourceFile, lineNum);
   }

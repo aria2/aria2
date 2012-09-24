@@ -240,11 +240,10 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
               option->get(PREF_BT_TRACKER_CONNECT_TIMEOUT));
   option->put(PREF_REUSE_URI, A2_V_FALSE);
   option->put(PREF_SELECT_LEAST_USED_HOST, A2_V_FALSE);
-  static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SharedHandle<DownloadContext> dctx
     (new DownloadContext(option->getAsInt(PREF_PIECE_LENGTH),
                          0,
-                         TRACKER_ANNOUNCE_FILE));
+                         "[tracker.announce]"));
   dctx->getFileEntries().front()->setUris(uris);
   rg->setDownloadContext(dctx);
   SharedHandle<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());

@@ -61,7 +61,7 @@ protected:
   // must return 6 columns in the following order: host, path,
   // secure(1 for secure, 0 for not), expiry(utc, unix time), name,
   // value, last access time(utc, unix time)
-  virtual const std::string& getQuery() const = 0;
+  virtual const char* getQuery() const = 0;
 private:
   sqlite3* db_;
 };

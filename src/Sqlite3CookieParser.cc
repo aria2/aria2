@@ -146,7 +146,7 @@ void Sqlite3CookieParser::parse(std::vector<Cookie>& cookies)
   }
   std::vector<Cookie> tcookies;
   char* sqlite3ErrMsg = 0;
-  int ret = sqlite3_exec(db_, getQuery().c_str(), cookieRowMapper,
+  int ret = sqlite3_exec(db_, getQuery(), cookieRowMapper,
                          &tcookies, &sqlite3ErrMsg);
   std::string errMsg;
   if(sqlite3ErrMsg) {

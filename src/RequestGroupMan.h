@@ -94,11 +94,11 @@ private:
 
   void formatDownloadResultFull
   (OutputFile& out,
-   const std::string& status,
+   const char* status,
    const DownloadResultHandle& downloadResult) const;
 
   std::string formatDownloadResult
-  (const std::string& status,
+  (const char* status,
    const DownloadResultHandle& downloadResult) const;
 
   void configureRequestGroup

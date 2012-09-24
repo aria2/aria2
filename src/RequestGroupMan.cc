@@ -713,11 +713,6 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
 
 void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
 {
-  static const std::string MARK_OK("OK");
-  static const std::string MARK_ERR("ERR");
-  static const std::string MARK_INPR("INPR");
-  static const std::string MARK_RM("RM");
-
 #ifdef __MINGW32__
   int pathRowSize = 58;
 #else // !__MINGW32__
@@ -749,18 +744,18 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
     if((*itr)->belongsTo != 0) {
       continue;
     }
-    std::string status;
+    const char* status;
     if((*itr)->result == error_code::FINISHED) {
-      status = MARK_OK;
+      status = "OK";
       ++ok;
     } else if((*itr)->result == error_code::IN_PROGRESS) {
-      status = MARK_INPR;
+      status = "INPR";
       ++inpr;
     } else if((*itr)->result == error_code::REMOVED) {
-      status = MARK_RM;
+      status = "RM";
       ++rm;
     } else {
-      status = MARK_ERR;
+      status = "ERR";
       ++err;
     }
     if(full) {
@@ -791,7 +786,7 @@ void RequestGroupMan::showDownloadResults(OutputFile& o, bool full) const
 namespace {
 void formatDownloadResultCommon
 (std::ostream& o,
- const std::string& status,
+ const char* status,
  const DownloadResultHandle& downloadResult)
 {
   o << std::setw(3) << downloadResult->gid << "|"
@@ -810,7 +805,7 @@ void formatDownloadResultCommon
 
 void RequestGroupMan::formatDownloadResultFull
 (OutputFile& out,
- const std::string& status,
+ const char* status,
  const DownloadResultHandle& downloadResult) const
 {
   BitfieldMan bt(downloadResult->pieceLength, downloadResult->totalLength);
@@ -852,7 +847,7 @@ void RequestGroupMan::formatDownloadResultFull
 }
 
 std::string RequestGroupMan::formatDownloadResult
-(const std::string& status,
+(const char* status,
  const DownloadResultHandle& downloadResult) const
 {
   std::stringstream o;

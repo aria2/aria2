@@ -846,8 +846,8 @@ std::string RequestGroup::getFirstFilePath() const
 {
   assert(downloadContext_);
   if(inMemoryDownload()) {
-    static const std::string DIR_MEMORY("[MEMORY]");
-    return DIR_MEMORY+File(downloadContext_->getFirstFileEntry()->getPath()).getBasename();
+    return "[MEMORY]"+
+      File(downloadContext_->getFirstFileEntry()->getPath()).getBasename();
   } else {
     return downloadContext_->getFirstFileEntry()->getPath();
   }

@@ -44,7 +44,7 @@ public:
   Sqlite3MozCookieParser(const std::string& filename);
   virtual ~Sqlite3MozCookieParser();
 protected:
-  virtual const std::string& getQuery() const;
+  virtual const char* getQuery() const;
 };
 
 class Sqlite3ChromiumCookieParser:public Sqlite3CookieParser {
@@ -52,7 +52,7 @@ public:
   Sqlite3ChromiumCookieParser(const std::string& filename);
   virtual ~Sqlite3ChromiumCookieParser();
 protected:
-  virtual const std::string& getQuery() const;
+  virtual const char* getQuery() const;
 };
 
 } // namespace aria2
