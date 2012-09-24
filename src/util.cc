@@ -185,9 +185,9 @@ std::string nativeToUtf8(const std::string& src)
 
 namespace util {
 
-const std::string DEFAULT_STRIP_CHARSET("\r\n\t ");
+const char DEFAULT_STRIP_CHARSET[] = "\r\n\t ";
 
-std::string strip(const std::string& str, const std::string& chars)
+std::string strip(const std::string& str, const char* chars)
 {
   std::pair<std::string::const_iterator,
             std::string::const_iterator> p =
@@ -928,9 +928,8 @@ std::string getContentDispositionFilename(const std::string& header)
       } else {
         filenameLast = value.end();
       }
-      static const std::string TRIMMED("\r\n\t '\"");
       std::pair<std::string::iterator, std::string::iterator> vi =
-        util::stripIter(value.begin(), filenameLast, TRIMMED);
+        util::stripIter(value.begin(), filenameLast, "\r\n\t '\"");
       value.assign(vi.first, vi.second);
       value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
       if(!detectDirTraversal(value) && value.find("/") == std::string::npos) {

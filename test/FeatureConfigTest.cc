@@ -80,10 +80,9 @@ void FeatureConfigTest::testFeatureSummary() {
   };
 
   std::string featuresString;
-  const std::string delim(", ");
   std::for_each(vbegin(features), vend(features),
-                StringAppend(featuresString, delim));
-  featuresString = util::strip(featuresString, delim);
+                StringAppend(featuresString, ", "));
+  featuresString = util::strip(featuresString, ", ");
 
   CPPUNIT_ASSERT_EQUAL(featuresString, featureSummary());
 }

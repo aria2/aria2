@@ -111,21 +111,19 @@ std::string nativeToUtf8(const std::string& src);
 
 namespace util {
 
-extern const std::string DEFAULT_STRIP_CHARSET;
+extern const char DEFAULT_STRIP_CHARSET[];
 
 template<typename InputIterator>
 std::pair<InputIterator, InputIterator> stripIter
 (InputIterator first, InputIterator last,
- const std::string& chars = DEFAULT_STRIP_CHARSET)
+ const char* chars = DEFAULT_STRIP_CHARSET)
 {
-  for(; first != last &&
-        std::find(chars.begin(), chars.end(), *first) != chars.end(); ++first);
+  for(; first != last && strchr(chars, *first) != 0; ++first);
   if(first == last) {
     return std::make_pair(first, last);
   }
   InputIterator left = last-1;
-  for(; left != first &&
-        std::find(chars.begin(), chars.end(), *left) != chars.end(); --left);
+  for(; left != first && strchr(chars, *left) != 0; --left);
   return std::make_pair(first, left+1);
 }
 
@@ -137,12 +135,11 @@ InputIterator lstripIter
   return first;
 }
 
-template<typename InputIterator, typename InputIterator2>
+template<typename InputIterator>
 InputIterator lstripIter
-(InputIterator first, InputIterator last,
- InputIterator2 cfirst, InputIterator2 clast)
+(InputIterator first, InputIterator last, const char* chars)
 {
-  for(; first != last && std::find(cfirst, clast, *first) != clast; ++first);
+  for(; first != last && strchr(chars, *first) != 0; ++first);
   return first;
 }
 
@@ -150,12 +147,11 @@ template<typename InputIterator>
 InputIterator lstripIter
 (InputIterator first, InputIterator last)
 {
-  return lstripIter(first, last,
-                    DEFAULT_STRIP_CHARSET.begin(), DEFAULT_STRIP_CHARSET.end());
+  return lstripIter(first, last, DEFAULT_STRIP_CHARSET);
 }
 
 std::string strip
-(const std::string& str, const std::string& chars = DEFAULT_STRIP_CHARSET);
+(const std::string& str, const char* chars = DEFAULT_STRIP_CHARSET);
 
 template<typename InputIterator>
 void divide
