@@ -38,7 +38,6 @@
 #include <cstdio>
 #include <algorithm>
 #include <iterator>
-#include <map>
 #include <vector>
 
 #include "ServerStat.h"
@@ -114,17 +113,48 @@ bool ServerStatMan::save(const std::string& filename) const
   }
 }
 
+namespace {
+// Field and FIELD_NAMES must have same order except for MAX_FIELD.
+enum Field {
+  S_COUNTER,
+  S_DL_SPEED,
+  S_HOST,
+  S_LAST_UPDATED,
+  S_MC_AVG_SPEED,
+  S_PROTOCOL,
+  S_SC_AVG_SPEED,
+  S_STATUS,
+  MAX_FIELD
+};
+
+const char* FIELD_NAMES[] = {
+  "counter",
+  "dl_speed",
+  "host",
+  "last_updated",
+  "mc_avg_speed",
+  "protocol",
+  "sc_avg_speed",
+  "status",
+};
+} // namespace
+
+namespace {
+int idField(std::string::const_iterator first,
+            std::string::const_iterator last)
+{
+  int i;
+  for(i = 0; i < MAX_FIELD; ++i) {
+    if(util::streq(first, last, FIELD_NAMES[i])) {
+      return i;
+    }
+  }
+  return i;
+}
+} // namespace
+
 bool ServerStatMan::load(const std::string& filename)
 {
-  static const std::string S_HOST = "host";
-  static const std::string S_PROTOCOL = "protocol";
-  static const std::string S_DL_SPEED = "dl_speed";
-  static const std::string S_SC_AVG_SPEED = "sc_avg_speed";
-  static const std::string S_MC_AVG_SPEED = "mc_avg_speed";
-  static const std::string S_LAST_UPDATED = "last_updated";
-  static const std::string S_COUNTER = "counter";
-  static const std::string S_STATUS = "status";
-
   BufferedFile fp(filename, BufferedFile::READ);
   if(!fp) {
     A2_LOG_ERROR(fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED,
@@ -152,13 +182,15 @@ bool ServerStatMan::load(const std::string& filename)
     }
     std::vector<Scip> items;
     util::splitIter(p.first, p.second, std::back_inserter(items), ',');
-    std::map<std::string, std::string> m;
+    std::vector<std::string> m(MAX_FIELD);
     for(std::vector<Scip>::const_iterator i = items.begin(),
           eoi = items.end(); i != eoi; ++i) {
       std::pair<Scip, Scip> p;
       util::divide(p, (*i).first, (*i).second, '=');
-      m[std::string(p.first.first, p.first.second)] =
-        std::string(p.second.first, p.second.second);
+      int id = idField(p.first.first, p.first.second);
+      if(id != MAX_FIELD) {
+        m[id].assign(p.second.first, p.second.second);
+      }
     }
     if(m[S_HOST].empty() || m[S_PROTOCOL].empty()) {
       continue;
@@ -168,17 +200,17 @@ bool ServerStatMan::load(const std::string& filename)
       const std::string& dlSpeed = m[S_DL_SPEED];
       sstat->setDownloadSpeed(util::parseUInt(dlSpeed));
       // Old serverstat file doesn't contains SC_AVG_SPEED
-      if(m.find(S_SC_AVG_SPEED) != m.end()) {
+      if(!m[S_SC_AVG_SPEED].empty()) {
         const std::string& s = m[S_SC_AVG_SPEED];
         sstat->setSingleConnectionAvgSpeed(util::parseUInt(s));
       }
       // Old serverstat file doesn't contains MC_AVG_SPEED
-      if(m.find(S_MC_AVG_SPEED) != m.end()) {
+      if(!m[S_MC_AVG_SPEED].empty()) {
         const std::string& s = m[S_MC_AVG_SPEED];
         sstat->setMultiConnectionAvgSpeed(util::parseUInt(s));
       }
       // Old serverstat file doesn't contains COUNTER_SPEED
-      if(m.find(S_COUNTER) != m.end()) {
+      if(!m[S_COUNTER].empty()) {
         const std::string& s = m[S_COUNTER];
         sstat->setCounter(util::parseUInt(s));
       }
