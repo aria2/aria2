@@ -159,7 +159,6 @@ SRCS =  Socket.h\
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h\
 	A2STR.cc A2STR.h\
 	RarestPieceSelector.cc RarestPieceSelector.h\
-	Decoder.h\
 	Signature.cc Signature.h\
 	ServerStat.cc ServerStat.h\
 	ServerStatMan.cc ServerStatMan.h\
@@ -319,8 +318,7 @@ SRCS += LibsslTLSContext.cc LibsslTLSContext.h\
 endif # HAVE_OPENSSL
 
 if HAVE_ZLIB
-SRCS += GZipDecoder.cc GZipDecoder.h\
-	GZipEncoder.cc GZipEncoder.h\
+SRCS += GZipEncoder.cc GZipEncoder.h\
 	GZipDecodingStreamFilter.cc GZipDecodingStreamFilter.h
 endif # HAVE_ZLIB
 

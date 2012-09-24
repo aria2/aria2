@@ -35,35 +35,38 @@
 #ifndef D_GZIP_DECODER_H
 #define D_GZIP_DECODER_H
 
-#include "Decoder.h"
+#include "common.h"
+
+#include <string>
+
 #include <zlib.h>
 
 namespace aria2 {
 
 // GZipDecoder can decode both gzip and deflate format.
-class GZipDecoder : public Decoder {
+class GZipDecoder {
 private:
   z_stream* strm_;
 
   bool finished_;
 
   static const size_t OUTBUF_LENGTH = 16*1024;
-  
+
   static const std::string NAME;
 public:
   GZipDecoder();
 
-  virtual ~GZipDecoder();
+  ~GZipDecoder();
 
-  virtual void init();
+  void init();
 
-  virtual std::string decode(const unsigned char* inbuf, size_t inlen);
+  std::string decode(const unsigned char* inbuf, size_t inlen);
 
-  virtual bool finished();
+  bool finished();
 
-  virtual void release();
+  void release();
 
-  virtual const std::string& getName() const;
+  const std::string& getName() const;
 
 };
 
