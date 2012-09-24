@@ -1371,7 +1371,7 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
 std::string fixTaintedBasename(const std::string& src)
 {
   static std::string SLASH_REP = "%2F";
-  return escapePath(replace(src, A2STR::SLASH_C, SLASH_REP));
+  return escapePath(replace(src, "/", SLASH_REP));
 }
 
 void generateRandomKey(unsigned char* key)

@@ -38,7 +38,7 @@ void ExceptionTest::testStackTrace()
      ("Exception: [ExceptionTest.cc:34] errorCode=2 exception thrown\n"
       "  -> [ExceptionTest.cc:32] errorCode=2 cause2\n"
       "  -> [ExceptionTest.cc:31] errorCode=2 cause1\n"),
-     util::replace(e.stackTrace(), A2_TEST_DIR+A2STR::SLASH_C, ""));
+     util::replace(e.stackTrace(), std::string(A2_TEST_DIR)+"/", ""));
 }
 
 } // namespace aria2

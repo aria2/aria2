@@ -39,36 +39,12 @@
 
 namespace aria2 {
 
-class A2STR {
-private:
-  A2STR();
-public:
-  static const std::string NIL;
+namespace A2STR {
 
-  static const std::string SHARP_C;
+extern const std::string NIL;
 
-  static const std::string CR_C;
+} // namespace A2STR
 
-  static const std::string LF_C;
-
-  static const std::string CRLF;
-
-  static const std::string SLASH_C;
-
-  static const std::string DOT_C;
-
-  static const std::string COLON_C;
-
-  static const std::string SEMICOLON_C;
-
-  static const std::string EQUAL_C;
-
-  static const std::string UNDERSCORE_C;
-
-  static const std::string BACK_SLASH_C;
-
-  static const std::string COMMA_C;
-};
 } // namespace aria2
 
 #endif // D_A2_STR_H

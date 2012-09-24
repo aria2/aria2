@@ -147,7 +147,7 @@ std::string Cookie::toNsCookieFormat() const
 {
   std::stringstream ss;
   if(!hostOnly_) {
-    ss << A2STR::DOT_C;
+    ss << ".";
   }
   ss << domain_ << "\t";
   if(hostOnly_) {

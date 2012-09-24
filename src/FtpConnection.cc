@@ -314,7 +314,7 @@ FtpConnection::findEndOfResponse
     if(p == std::string::npos) {
       return std::string::npos;
     }
-    p = buf.find(A2STR::CRLF, p+6);
+    p = buf.find("\r\n", p+6);
     if(p == std::string::npos) {
       return std::string::npos;
     } else {
@@ -322,7 +322,7 @@ FtpConnection::findEndOfResponse
     }
   } else {
     // single line response
-    std::string::size_type p = buf.find(A2STR::CRLF);    
+    std::string::size_type p = buf.find("\r\n");
     if(p == std::string::npos) {
       return std::string::npos;
     } else {

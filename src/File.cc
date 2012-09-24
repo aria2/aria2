@@ -216,10 +216,10 @@ std::string File::getDirname() const
     if(name_.empty()) {
       return A2STR::NIL;
     } else {
-      return A2STR::DOT_C;
+      return ".";
     }
   } else if(lastSlashIndex == 0) {
-    return A2STR::SLASH_C;
+    return "/";
   } else {
     return name_.substr(0, lastSlashIndex);
   }
@@ -281,7 +281,7 @@ std::string File::getCurrentDir()
   if(_wgetcwd(buf, buflen)) {
     return wCharToUtf8(buf);
   } else {
-    return A2STR::DOT_C;
+    return ".";
   }
 #else // !__MINGW32__
   const size_t buflen = 2048;
@@ -289,7 +289,7 @@ std::string File::getCurrentDir()
   if(getcwd(buf, buflen)) {
     return std::string(buf);
   } else {
-    return A2STR::DOT_C;
+    return ".";
   }
 #endif // !__MINGW32__
 }

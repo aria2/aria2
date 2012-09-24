@@ -36,30 +36,10 @@
 
 namespace aria2 {
 
-const std::string A2STR::NIL("");
+namespace A2STR {
 
-const std::string A2STR::SHARP_C("#");
+const std::string NIL("");
 
-const std::string A2STR::CR_C("\r");
-
-const std::string A2STR::LF_C("\n");
-
-const std::string A2STR::CRLF("\r\n");
-
-const std::string A2STR::SLASH_C("/");
-
-const std::string A2STR::DOT_C(".");
-
-const std::string A2STR::COLON_C(":");
-
-const std::string A2STR::SEMICOLON_C(";");
-
-const std::string A2STR::EQUAL_C("=");
-
-const std::string A2STR::UNDERSCORE_C("_");
-
-const std::string A2STR::BACK_SLASH_C("\\");
-
-const std::string A2STR::COMMA_C(",");
+} // namespace A2STR
 
 } // namespace aria2
