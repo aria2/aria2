@@ -42,12 +42,6 @@
 
 namespace aria2 {
 
-const std::string AnnounceList::STARTED("started");
-
-const std::string AnnounceList::STOPPED("stopped");
-
-const std::string AnnounceList::COMPLETED("completed");
-
 AnnounceList::AnnounceList():currentTrackerInitialized_(false) {}
 
 AnnounceList::AnnounceList
@@ -146,21 +140,21 @@ void AnnounceList::setEvent(AnnounceTier::AnnounceEvent event) {
   }
 }
 
-std::string AnnounceList::getEventString() const {
+const char* AnnounceList::getEventString() const {
   if(currentTrackerInitialized_) {
     switch((*currentTier_)->event) {
     case AnnounceTier::STARTED:
     case AnnounceTier::STARTED_AFTER_COMPLETION:
-      return STARTED;
+      return "started";
     case AnnounceTier::STOPPED:
-      return STOPPED;
+      return "stopped";
     case AnnounceTier::COMPLETED:
-      return COMPLETED;
+      return "completed";
     default:
-      return A2STR::NIL;
+      return "";
     }
   } else {
-    return A2STR::NIL;
+    return "";
   }
 }
 

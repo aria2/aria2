@@ -172,8 +172,8 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   if(tcpPort_) {
     uri += fmt("&port=%u", tcpPort_);
   }
-  std::string event = announceList_.getEventString();
-  if(!event.empty()) {
+  const char* event = announceList_.getEventString();
+  if(event[0]) {
     uri += "&event=";
     uri += event;
   }
