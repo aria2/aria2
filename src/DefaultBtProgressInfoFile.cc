@@ -63,9 +63,6 @@
 
 namespace aria2 {
 
-const std::string DefaultBtProgressInfoFile::V0000("0000");
-const std::string DefaultBtProgressInfoFile::V0001("0001");
-
 namespace {
 std::string createFilename
 (const SharedHandle<DownloadContext>& dctx, const std::string& suffix)
@@ -220,9 +217,9 @@ void DefaultBtProgressInfoFile::load()
   READ_CHECK(fp, versionBuf, sizeof(versionBuf));
   std::string versionHex = util::toHex(versionBuf, sizeof(versionBuf));
   int version;
-  if(DefaultBtProgressInfoFile::V0000 == versionHex) {
+  if("0000" == versionHex) {
     version = 0;
-  } else if(DefaultBtProgressInfoFile::V0001 == versionHex) {
+  } else if("0001" == versionHex) {
     version = 1;
   } else {
     throw DL_ABORT_EX
