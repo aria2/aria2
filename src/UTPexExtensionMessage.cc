@@ -55,7 +55,7 @@ const size_t DEFAULT_MAX_DROPPED_PEER = 50;
 
 } // namespace
 
-const std::string UTPexExtensionMessage::EXTENSION_NAME = "ut_pex";
+const char UTPexExtensionMessage::EXTENSION_NAME[] = "ut_pex";
 
 UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
   extensionMessageID_(extensionMessageID),
@@ -186,7 +186,7 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
     throw DL_ABORT_EX(fmt(MSG_TOO_SMALL_PAYLOAD_SIZE,
-                          EXTENSION_NAME.c_str(),
+                          EXTENSION_NAME,
                           static_cast<unsigned long>(len)));
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));

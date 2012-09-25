@@ -49,7 +49,7 @@
 
 namespace aria2 {
 
-const std::string HandshakeExtensionMessage::EXTENSION_NAME = "handshake";
+const char HandshakeExtensionMessage::EXTENSION_NAME[] = "handshake";
 
 HandshakeExtensionMessage::HandshakeExtensionMessage()
   : tcpPort_(0),
@@ -83,7 +83,7 @@ std::string HandshakeExtensionMessage::getPayload()
 std::string HandshakeExtensionMessage::toString() const
 {
   std::string s(fmt("%s client=%s, tcpPort=%u, metadataSize=%lu",
-                    getExtensionName().c_str(),
+                    getExtensionName(),
                     util::percentEncode(clientVersion_).c_str(),
                     tcpPort_,
                     static_cast<unsigned long>(metadataSize_)));
@@ -162,8 +162,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   if(length < 1) {
     throw DL_ABORT_EX
       (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE,
-           EXTENSION_NAME.c_str(),
-           static_cast<unsigned long>(length)));
+           EXTENSION_NAME, static_cast<unsigned long>(length)));
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   A2_LOG_DEBUG(fmt("Creating HandshakeExtensionMessage from %s",

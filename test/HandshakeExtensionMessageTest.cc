@@ -51,7 +51,8 @@ void HandshakeExtensionMessageTest::testGetExtensionMessageID()
 void HandshakeExtensionMessageTest::testGetExtensionName()
 {
   HandshakeExtensionMessage msg;
-  CPPUNIT_ASSERT_EQUAL(std::string("handshake"), msg.getExtensionName());
+  CPPUNIT_ASSERT_EQUAL(std::string("handshake"),
+                       std::string(msg.getExtensionName()));
 }
 
 void HandshakeExtensionMessageTest::testGetBencodedData()

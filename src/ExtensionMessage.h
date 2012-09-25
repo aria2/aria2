@@ -49,8 +49,8 @@ public:
   virtual std::string getPayload() = 0;
 
   virtual uint8_t getExtensionMessageID() = 0;
-  
-  virtual const std::string& getExtensionName() const = 0;
+
+  virtual const char* getExtensionName() const = 0;
 
   virtual std::string toString() const = 0;
 

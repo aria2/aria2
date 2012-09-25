@@ -40,9 +40,9 @@ public:
     return extensionMessageID_;
   }
   
-  virtual const std::string& getExtensionName() const
+  virtual const char* getExtensionName() const
   {
-    return extensionName_;
+    return extensionName_.c_str();
   }
 
   virtual std::string toString() const

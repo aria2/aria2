@@ -78,7 +78,8 @@ void UTMetadataRequestExtensionMessageTest::testGetExtensionMessageID()
 void UTMetadataRequestExtensionMessageTest::testGetExtensionName()
 {
   UTMetadataRequestExtensionMessage msg(1);
-  CPPUNIT_ASSERT_EQUAL(std::string("ut_metadata"), msg.getExtensionName());
+  CPPUNIT_ASSERT_EQUAL(std::string("ut_metadata"),
+                       std::string(msg.getExtensionName()));
 }
 
 void UTMetadataRequestExtensionMessageTest::testGetBencodedData()

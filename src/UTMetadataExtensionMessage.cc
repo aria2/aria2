@@ -36,7 +36,7 @@
 
 namespace aria2 {
 
-const std::string UTMetadataExtensionMessage::EXTENSION_NAME = "ut_metadata";
+const char UTMetadataExtensionMessage::EXTENSION_NAME[] = "ut_metadata";
 
 UTMetadataExtensionMessage::UTMetadataExtensionMessage
 (uint8_t extensionMessageID):

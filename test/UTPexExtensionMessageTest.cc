@@ -63,7 +63,8 @@ void UTPexExtensionMessageTest::testGetExtensionMessageID()
 void UTPexExtensionMessageTest::testGetExtensionName()
 {
   UTPexExtensionMessage msg(1);
-  CPPUNIT_ASSERT_EQUAL(std::string("ut_pex"), msg.getExtensionName());
+  CPPUNIT_ASSERT_EQUAL(std::string("ut_pex"),
+                       std::string(msg.getExtensionName()));
 }
 
 void UTPexExtensionMessageTest::testGetBencodedData()
