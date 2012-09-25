@@ -61,7 +61,7 @@ bool ProtocolDetector::isStreamProtocol(const std::string& uri) const
 
 bool ProtocolDetector::guessTorrentFile(const std::string& uri) const
 {
-  BufferedFile fp(uri, BufferedFile::READ);
+  BufferedFile fp(uri.c_str(), BufferedFile::READ);
   if(fp) {
     char head[1];
     if(fp.read(head, sizeof(head)) == sizeof(head)) {
@@ -90,7 +90,7 @@ bool ProtocolDetector::guessTorrentMagnet(const std::string& uri) const
 
 bool ProtocolDetector::guessMetalinkFile(const std::string& uri) const
 {
-  BufferedFile fp(uri, BufferedFile::READ);
+  BufferedFile fp(uri.c_str(), BufferedFile::READ);
   if(fp) {
     char head[5];
     if(fp.read(head, sizeof(head)) == sizeof(head)) {

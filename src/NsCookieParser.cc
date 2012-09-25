@@ -101,7 +101,7 @@ bool parseNsCookie
 std::vector<Cookie> NsCookieParser::parse
 (const std::string& filename, time_t creationTime)
 {
-  BufferedFile fp(filename, BufferedFile::READ);
+  BufferedFile fp(filename.c_str(), BufferedFile::READ);
   if(!fp) {
     throw DL_ABORT_EX(fmt("Failed to open file %s", filename.c_str()));
   }

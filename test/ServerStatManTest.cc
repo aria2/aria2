@@ -79,7 +79,7 @@ void ServerStatManTest::testSave()
   CPPUNIT_ASSERT(ssm.add(localhost_ftp));
   CPPUNIT_ASSERT(ssm.add(mirror));
 
-  std::string filename = A2_TEST_OUT_DIR"/aria2_ServerStatManTest_testSave";
+  const char* filename = A2_TEST_OUT_DIR"/aria2_ServerStatManTest_testSave";
   CPPUNIT_ASSERT(ssm.save(filename));
   CPPUNIT_ASSERT_EQUAL
     (std::string
@@ -111,7 +111,7 @@ void ServerStatManTest::testSave()
 
 void ServerStatManTest::testLoad()
 {
-  std::string filename = A2_TEST_OUT_DIR"/aria2_ServerStatManTest_testLoad";
+  const char* filename = A2_TEST_OUT_DIR"/aria2_ServerStatManTest_testLoad";
   std::string in =
     "host=localhost, protocol=ftp, dl_speed=30000, last_updated=1210000001, status=OK\n"
     "host=localhost, protocol=http, dl_speed=25000, sc_avg_speed=101, mc_avg_speed=102, last_updated=1210000000, counter=6, status=OK\n"

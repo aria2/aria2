@@ -84,7 +84,7 @@ bool ServerStatMan::save(const std::string& filename) const
   std::string tempfile = filename;
   tempfile += "__temp";
   {
-    BufferedFile fp(tempfile, BufferedFile::WRITE);
+    BufferedFile fp(tempfile.c_str(), BufferedFile::WRITE);
     if(!fp) {
       A2_LOG_ERROR(fmt(MSG_OPENING_WRITABLE_SERVER_STAT_FILE_FAILED,
                        filename.c_str()));
@@ -155,7 +155,7 @@ int idField(std::string::const_iterator first,
 
 bool ServerStatMan::load(const std::string& filename)
 {
-  BufferedFile fp(filename, BufferedFile::READ);
+  BufferedFile fp(filename.c_str(), BufferedFile::READ);
   if(!fp) {
     A2_LOG_ERROR(fmt(MSG_OPENING_READABLE_SERVER_STAT_FILE_FAILED,
                      filename.c_str()));

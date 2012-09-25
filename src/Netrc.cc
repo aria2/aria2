@@ -134,7 +134,7 @@ void skipMacdef(BufferedFile& fp)
 void Netrc::parse(const std::string& path)
 {
   authenticators_.clear();
-  BufferedFile fp(path, BufferedFile::READ);
+  BufferedFile fp(path.c_str(), BufferedFile::READ);
   if(!fp) {
     throw DL_ABORT_EX(fmt("Cannot open file: %s", path.c_str()));
   }

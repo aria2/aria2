@@ -1081,7 +1081,7 @@ void UtilTest::testToStream()
   std::deque<SharedHandle<FileEntry> > entries;
   entries.push_back(f1);
   entries.push_back(f2);
-  std::string filename = A2_TEST_OUT_DIR"/aria2_UtilTest_testToStream";
+  const char* filename = A2_TEST_OUT_DIR"/aria2_UtilTest_testToStream";
   BufferedFile fp(filename, BufferedFile::WRITE);
   util::toStream(entries.begin(), entries.end(), fp);
   fp.close();

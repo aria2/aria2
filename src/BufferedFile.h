@@ -49,7 +49,7 @@ private:
   typedef void (BufferedFile::*unspecified_bool_type)() const;
   void good_state() const {}
 public:
-  BufferedFile(const std::string& filename, const std::string& mode);
+  BufferedFile(const char* filename, const char* mode);
   BufferedFile(FILE* fp);
   virtual ~BufferedFile();
   // Returns true if file is opened and ferror returns 0. Otherwise
@@ -78,11 +78,11 @@ public:
   // wrapper for fflush
   virtual int flush();
   // Mode for reading
-  static const std::string READ;
+  static const char READ[];
   // Mode for writing
-  static const std::string WRITE;
+  static const char WRITE[];
   // Mode for append
-  static const std::string APPEND;
+  static const char APPEND[];
 private:
   // Don't allow copying
   BufferedFile(const BufferedFile&);

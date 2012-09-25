@@ -43,15 +43,19 @@
 
 namespace aria2 {
 
-const std::string BufferedFile::READ = "rb";
-const std::string BufferedFile::WRITE = "wb";
-const std::string BufferedFile::APPEND = "ab";
+const char BufferedFile::READ[] = "rb";
+const char BufferedFile::WRITE[] = "wb";
+const char BufferedFile::APPEND[] = "ab";
 
-BufferedFile::BufferedFile(const std::string& filename, const std::string& mode)
-{
-  fp_ = a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str());
-  open_ = fp_;
-}
+BufferedFile::BufferedFile(const char* filename, const char* mode)
+  :
+#ifdef __MINGW32__
+  fp_(a2fopen(utf8ToWChar(filename).c_str(), utf8ToWChar(mode).c_str)),
+#else // !__MINGW32__
+  fp_(a2fopen(filename, mode)),
+#endif // !__MINGW32__
+  open_(fp_)
+{}
 
 BufferedFile::BufferedFile(FILE* fp)
   : fp_(fp), open_(true)

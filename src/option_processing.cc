@@ -224,7 +224,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
       if(File(cfname).isFile()) {
         std::stringstream ss;
         {
-          BufferedFile fp(cfname, BufferedFile::READ);
+          BufferedFile fp(cfname.c_str(), BufferedFile::READ);
           if(fp) {
             fp.transfer(ss);
           }

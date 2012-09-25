@@ -360,7 +360,7 @@ bool CookieStorage::load(const std::string& filename, time_t now)
   char header[16]; // "SQLite format 3" plus \0
   size_t headlen;
   {
-    BufferedFile fp(filename, BufferedFile::READ);
+    BufferedFile fp(filename.c_str(), BufferedFile::READ);
     if(!fp) {
       A2_LOG_ERROR(fmt("Failed to open cookie file %s", filename.c_str()));
       return false;
@@ -402,7 +402,7 @@ bool CookieStorage::saveNsFormat(const std::string& filename)
   std::string tempfilename = filename;
   tempfilename += "__temp";
   {
-    BufferedFile fp(tempfilename, BufferedFile::WRITE);
+    BufferedFile fp(tempfilename.c_str(), BufferedFile::WRITE);
     if(!fp) {
       A2_LOG_ERROR(fmt("Cannot create cookie file %s", filename.c_str()));
       return false;

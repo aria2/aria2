@@ -48,7 +48,7 @@
 namespace aria2 {
 
 UriListParser::UriListParser(const std::string& filename)
-  : fp_(filename, BufferedFile::READ)
+  : fp_(filename.c_str(), BufferedFile::READ)
 {}
 
 UriListParser::~UriListParser() {}

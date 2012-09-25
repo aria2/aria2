@@ -114,7 +114,7 @@ void DefaultBtProgressInfoFile::save()
   std::string filenameTemp = filename_;
   filenameTemp += "__temp";
   {
-    BufferedFile fp(filenameTemp, BufferedFile::WRITE);
+    BufferedFile fp(filenameTemp.c_str(), BufferedFile::WRITE);
     if(!fp) {
       throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_WRITE, filename_.c_str()));
     }
@@ -212,7 +212,7 @@ void DefaultBtProgressInfoFile::save()
 void DefaultBtProgressInfoFile::load() 
 {
   A2_LOG_INFO(fmt(MSG_LOADING_SEGMENT_FILE, filename_.c_str()));
-  BufferedFile fp(filename_, BufferedFile::READ);
+  BufferedFile fp(filename_.c_str(), BufferedFile::READ);
   if(!fp) {
     throw DL_ABORT_EX(fmt(EX_SEGMENT_FILE_READ, filename_.c_str()));
   }

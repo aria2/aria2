@@ -77,7 +77,7 @@ void DHTRoutingTableDeserializer::deserialize(const std::string& filename)
 {
   A2_LOG_INFO(fmt("Loading DHT routing table from %s.",
                   filename.c_str()));
-  BufferedFile fp(filename, BufferedFile::READ);
+  BufferedFile fp(filename.c_str(), BufferedFile::READ);
   if(!fp) {
     throw DL_ABORT_EX(fmt("Failed to load DHT routing table from %s",
                           filename.c_str()));
