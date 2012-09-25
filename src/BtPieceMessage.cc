@@ -59,7 +59,7 @@
 
 namespace aria2 {
 
-const std::string BtPieceMessage::NAME("piece");
+const char BtPieceMessage::NAME[] = "piece";
 
 BtPieceMessage::BtPieceMessage
 (size_t index, int32_t begin, int32_t blockLength)
@@ -212,7 +212,7 @@ void BtPieceMessage::pushPieceData(int64_t offset, int32_t length) const
 std::string BtPieceMessage::toString() const
 {
   return fmt("%s index=%lu, begin=%d, length=%d",
-             NAME.c_str(),
+             NAME,
              static_cast<unsigned long>(index_),
              begin_, blockLength_);
 }

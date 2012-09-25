@@ -53,7 +53,7 @@ public:
 
   static const uint8_t ID = 3;
 
-  static const std::string NAME;
+  static const char NAME[];
 
   static SharedHandle<BtNotInterestedMessage> create
   (const unsigned char* data, size_t dataLength);

@@ -51,7 +51,7 @@ public:
 
   static const uint8_t ID = 99;
 
-  static const std::string NAME;
+  static const char NAME[];
 
   virtual void doReceivedAction() {}
 

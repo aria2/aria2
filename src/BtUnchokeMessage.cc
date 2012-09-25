@@ -37,7 +37,7 @@
 
 namespace aria2 {
 
-const std::string BtUnchokeMessage::NAME("unchoke");
+const char BtUnchokeMessage::NAME[] = "unchoke";
 
 BtUnchokeMessage::BtUnchokeMessage():ZeroBtMessage(ID, NAME) {}
 

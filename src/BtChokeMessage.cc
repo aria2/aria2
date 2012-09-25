@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-const std::string BtChokeMessage::NAME("choke");
+const char BtChokeMessage::NAME[] = "choke";
 
 BtChokeMessage::BtChokeMessage():ZeroBtMessage(ID, NAME) {}
 

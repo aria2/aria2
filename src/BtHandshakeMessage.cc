@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-const std::string BtHandshakeMessage::NAME("handshake");
+const char BtHandshakeMessage::NAME[] = "handshake";
 
 const unsigned char* BtHandshakeMessage::BT_PSTR =
   reinterpret_cast<const unsigned char*>("BitTorrent protocol");
@@ -104,7 +104,7 @@ size_t BtHandshakeMessage::getMessageLength() {
 
 std::string BtHandshakeMessage::toString() const {
   return fmt("%s peerId=%s, reserved=%s",
-             NAME.c_str(),
+             NAME,
              util::percentEncode(peerId_, PEER_ID_LENGTH).c_str(),
              util::toHex(reserved_, RESERVED_LENGTH).c_str());
 }

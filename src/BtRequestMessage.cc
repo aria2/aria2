@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-const std::string BtRequestMessage::NAME("request");
+const char BtRequestMessage::NAME[] = "request";
 
 BtRequestMessage::BtRequestMessage
 (size_t index, int32_t begin, int32_t length, size_t blockIndex):

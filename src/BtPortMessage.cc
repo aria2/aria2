@@ -50,7 +50,7 @@
 
 namespace aria2 {
 
-const std::string BtPortMessage::NAME("port");
+const char BtPortMessage::NAME[] = "port";
 
 BtPortMessage::BtPortMessage(uint16_t port)
   : SimpleBtMessage(ID, NAME),
@@ -118,7 +118,7 @@ size_t BtPortMessage::getMessageLength() {
 }
 
 std::string BtPortMessage::toString() const {
-  return fmt("%s port=%u", NAME.c_str(), port_);
+  return fmt("%s port=%u", NAME, port_);
 }
 
 void BtPortMessage::setLocalNode(DHTNode* localNode)

@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-AbstractBtMessage::AbstractBtMessage(uint8_t id, const std::string& name)
+AbstractBtMessage::AbstractBtMessage(uint8_t id, const char* name)
   : BtMessage(id),
     sendingInProgress_(false),
     invalidate_(false),

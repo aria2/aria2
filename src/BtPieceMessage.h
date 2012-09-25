@@ -73,7 +73,7 @@ public:
 
   static const uint8_t ID = 7;
 
-  static const std::string NAME;
+  static const char NAME[];
 
   size_t getIndex() const { return index_; }
 

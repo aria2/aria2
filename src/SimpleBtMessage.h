@@ -41,7 +41,7 @@ namespace aria2 {
 
 class SimpleBtMessage : public AbstractBtMessage {
 public:
-  SimpleBtMessage(uint8_t id, const std::string& name);
+  SimpleBtMessage(uint8_t id, const char* name);
 
   virtual void send();
 

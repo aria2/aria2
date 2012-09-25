@@ -61,7 +61,7 @@ protected:
     return message;
   }
 public:
-  RangeBtMessage(uint8_t id, const std::string& name,
+  RangeBtMessage(uint8_t id, const char* name,
                  size_t index, int32_t begin, int32_t length);
 
   size_t getIndex() const { return index_; }

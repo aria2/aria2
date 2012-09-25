@@ -48,7 +48,7 @@
 
 namespace aria2 {
 
-const std::string BtExtendedMessage::NAME("extended");
+const char BtExtendedMessage::NAME[] = "extended";
 
 BtExtendedMessage::BtExtendedMessage
 (const ExtensionMessageHandle& extensionMessage):

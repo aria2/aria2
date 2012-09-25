@@ -43,7 +43,7 @@
 
 namespace aria2 {
 
-SimpleBtMessage::SimpleBtMessage(uint8_t id, const std::string& name)
+SimpleBtMessage::SimpleBtMessage(uint8_t id, const char* name)
   : AbstractBtMessage(id, name)
 {}
 

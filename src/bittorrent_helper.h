@@ -215,15 +215,15 @@ unpackcompact(const unsigned char* compact, int family);
 
 // Throws exception if threshold >= actual
 void assertPayloadLengthGreater
-(size_t threshold, size_t actual, const std::string& msgName);
+(size_t threshold, size_t actual, const char* msgName);
 
 // Throws exception if expected != actual
 void assertPayloadLengthEqual
-(size_t expected, size_t actual, const std::string& msgName);
+(size_t expected, size_t actual, const char* msgName);
 
 // Throws exception if expected is not equal to id from data.
 void assertID
-(uint8_t expected, const unsigned char* data, const std::string& msgName);
+(uint8_t expected, const unsigned char* data, const char* msgName);
 
 // Converts attrs into torrent data. This function does not guarantee
 // the returned string is valid torrent data.

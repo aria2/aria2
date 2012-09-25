@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-const std::string BtHaveAllMessage::NAME("have all");
+const char BtHaveAllMessage::NAME[] = "have all";
 
 BtHaveAllMessage::BtHaveAllMessage():ZeroBtMessage(ID, NAME) {}
 

@@ -40,7 +40,7 @@
 namespace aria2 {
 
 RangeBtMessage::RangeBtMessage(uint8_t id,
-                               const std::string& name,
+                               const char* name,
                                size_t index, int32_t begin, int32_t length)
   :SimpleBtMessage(id, name),
    index_(index),
@@ -73,7 +73,7 @@ size_t RangeBtMessage::getMessageLength()
 std::string RangeBtMessage::toString() const
 {
   return fmt("%s index=%lu, begin=%d, length=%d",
-             getName().c_str(),
+             getName(),
              static_cast<unsigned long>(index_),
              begin_, length_);
 }

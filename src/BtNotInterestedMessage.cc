@@ -38,7 +38,7 @@
 
 namespace aria2 {
 
-const std::string BtNotInterestedMessage::NAME("not interested");
+const char BtNotInterestedMessage::NAME[] = "not interested";
 
 BtNotInterestedMessage::BtNotInterestedMessage():ZeroBtMessage(ID, NAME) {}
 

@@ -49,7 +49,7 @@ public:
 
   static const int8_t ID = 8;
 
-  static const std::string NAME;
+  static const char NAME[];
 
   static BtCancelMessageHandle create
   (const unsigned char* data, size_t dataLength);

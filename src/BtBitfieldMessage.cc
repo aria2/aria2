@@ -46,7 +46,7 @@
 
 namespace aria2 {
 
-const std::string BtBitfieldMessage::NAME("bitfield");
+const char BtBitfieldMessage::NAME[] = "bitfield";
 
 BtBitfieldMessage::BtBitfieldMessage():SimpleBtMessage(ID, NAME),
                                        bitfield_(0),

@@ -55,7 +55,7 @@ private:
   bool uploading_;
   cuid_t cuid_;
 
-  std::string name_;
+  const char* name_;
 
   SharedHandle<PieceStorage> pieceStorage_;
 
@@ -103,7 +103,7 @@ protected:
     return metadataGetMode_;
   }
 public:
-  AbstractBtMessage(uint8_t id, const std::string& name);
+  AbstractBtMessage(uint8_t id, const char* name);
 
   virtual ~AbstractBtMessage();
 
@@ -172,7 +172,7 @@ public:
 
   void setBtRequestFactory(BtRequestFactory* factory);
 
-  const std::string& getName() const
+  const char* getName() const
   {
     return name_;
   }

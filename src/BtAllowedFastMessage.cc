@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-const std::string BtAllowedFastMessage::NAME("allowed fast");
+const char BtAllowedFastMessage::NAME[] = "allowed fast";
 
 BtAllowedFastMessage::BtAllowedFastMessage(size_t index):
   IndexBtMessage(ID, NAME, index) {}

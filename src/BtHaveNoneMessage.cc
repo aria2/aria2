@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-const std::string BtHaveNoneMessage::NAME("have none");
+const char BtHaveNoneMessage::NAME[] = "have none";
 
 BtHaveNoneMessage::BtHaveNoneMessage():ZeroBtMessage(ID, NAME) {}
 

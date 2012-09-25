@@ -54,7 +54,7 @@ protected:
   }
 
 public:
-  ZeroBtMessage(uint8_t id, const std::string& name):
+  ZeroBtMessage(uint8_t id, const char* name):
     SimpleBtMessage(id, name) {}
 
   virtual unsigned char* createMessage();

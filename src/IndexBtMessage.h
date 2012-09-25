@@ -56,7 +56,7 @@ protected:
     return message;
   }
 public:
-  IndexBtMessage(uint8_t id, const std::string& name, size_t index)
+  IndexBtMessage(uint8_t id, const char* name, size_t index)
     :SimpleBtMessage(id, name),
      index_(index) {}
 

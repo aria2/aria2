@@ -56,7 +56,7 @@ public:
 
   static const uint8_t ID = 5;
 
-  static const std::string NAME;
+  static const char NAME[];
 
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 

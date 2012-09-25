@@ -49,7 +49,7 @@ public:
 
   static const uint8_t ID = 4;
 
-  static const std::string NAME;
+  static const char NAME[];
 
   static SharedHandle<BtHaveMessage> create
   (const unsigned char* data, size_t dataLength);

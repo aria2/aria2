@@ -41,7 +41,7 @@
 
 namespace aria2 {
 
-const std::string BtRejectMessage::NAME("reject");
+const char BtRejectMessage::NAME[] = "reject";
 
 BtRejectMessage::BtRejectMessage
 (size_t index, int32_t begin, int32_t length):

@@ -847,34 +847,33 @@ std::pair<std::string, uint16_t> unpackcompact
 }
 
 void assertPayloadLengthGreater
-(size_t threshold, size_t actual, const std::string& msgName)
+(size_t threshold, size_t actual, const char* msgName)
 {
   if(actual <= threshold) {
     throw DL_ABORT_EX
-      (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName.c_str(),
+      (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE, msgName,
            static_cast<unsigned long>(actual)));
   }
 }
 
 void assertPayloadLengthEqual
-(size_t expected, size_t actual, const std::string& msgName)
+(size_t expected, size_t actual, const char* msgName)
 {
   if(expected != actual) {
     throw DL_ABORT_EX
-      (fmt(EX_INVALID_PAYLOAD_SIZE, msgName.c_str(),
+      (fmt(EX_INVALID_PAYLOAD_SIZE, msgName,
            static_cast<unsigned long>(actual),
            static_cast<unsigned long>(expected)));
   }
 }
 
 void assertID
-(uint8_t expected, const unsigned char* data, const std::string& msgName)
+(uint8_t expected, const unsigned char* data, const char* msgName)
 {
   uint8_t id = getId(data);
   if(expected != id) {
     throw DL_ABORT_EX
-      (fmt(EX_INVALID_BT_MESSAGE_ID, id, msgName.c_str(),
-           expected));
+      (fmt(EX_INVALID_BT_MESSAGE_ID, id, msgName, expected));
   }
 }
 
