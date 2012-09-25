@@ -127,10 +127,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.addUri";
-    return methodName;
+    return "aria2.addUri";
   }
 };
 
@@ -139,10 +138,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.remove";
-    return methodName;
+    return "aria2.remove";
   }
 };
 
@@ -151,10 +149,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.forceRemove";
-    return methodName;
+    return "aria2.forceRemove";
   }
 };
 
@@ -163,10 +160,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.pause";
-    return methodName;
+    return "aria2.pause";
   }
 };
 
@@ -175,10 +171,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.forcePause";
-    return methodName;
+    return "aria2.forcePause";
   }
 };
 
@@ -187,10 +182,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.pauseAll";
-    return methodName;
+    return "aria2.pauseAll";
   }
 };
 
@@ -199,10 +193,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.forcePauseAll";
-    return methodName;
+    return "aria2.forcePauseAll";
   }
 };
 
@@ -211,10 +204,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.unpause";
-    return methodName;
+    return "aria2.unpause";
   }
 };
 
@@ -223,10 +215,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.unpauseAll";
-    return methodName;
+    return "aria2.unpauseAll";
   }
 };
 
@@ -236,10 +227,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.addTorrent";
-    return methodName;
+    return "aria2.addTorrent";
   }
 };
 #endif // ENABLE_BITTORRENT
@@ -250,10 +240,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.addMetalink";
-    return methodName;
+    return "aria2.addMetalink";
   }
 };
 #endif // ENABLE_METALINK
@@ -263,10 +252,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.purgeDownloadResult";
-    return methodName;
+    return "aria2.purgeDownloadResult";
   }
 };
 
@@ -275,10 +263,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.removeDownloadResult";
-    return methodName;
+    return "aria2.removeDownloadResult";
   }
 };
 
@@ -287,10 +274,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getUris";
-    return methodName;
+    return "aria2.getUris";
   }
 };
 
@@ -299,10 +285,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getFiles";
-    return methodName;
+    return "aria2.getFiles";
   }
 };
 
@@ -312,10 +297,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getPeers";
-    return methodName;
+    return "aria2.getPeers";
   }
 };
 #endif // ENABLE_BITTORRENT
@@ -325,10 +309,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getServers";
-    return methodName;
+    return "aria2.getServers";
   }
 };
 
@@ -337,10 +320,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.tellStatus";
-    return methodName;
+    return "aria2.tellStatus";
   }
 };
 
@@ -349,10 +331,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.tellActive";
-    return methodName;
+    return "aria2.tellActive";
   }
 };
 
@@ -439,10 +420,9 @@ protected:
    DownloadEngine* e,
    const std::vector<std::string>& keys) const;
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.tellWaiting";
-    return methodName;
+    return "aria2.tellWaiting";
   }
 };
 
@@ -458,10 +438,9 @@ protected:
    DownloadEngine* e,
    const std::vector<std::string>& keys) const;
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.tellStopped";
-    return methodName;
+    return "aria2.tellStopped";
   }
 };
 
@@ -470,10 +449,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.changeOption";
-    return methodName;
+    return "aria2.changeOption";
   }
 };
 
@@ -482,10 +460,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.changeGlobalOption";
-    return methodName;
+    return "aria2.changeGlobalOption";
   }
 };
 
@@ -494,10 +471,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getVersion";
-    return methodName;
+    return "aria2.getVersion";
   }
 };
 
@@ -506,10 +482,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getOption";
-    return methodName;
+    return "aria2.getOption";
   }
 };
 
@@ -518,10 +493,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getGlobalOption";
-    return methodName;
+    return "aria2.getGlobalOption";
   }
 };
 
@@ -530,10 +504,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.changePosition";
-    return methodName;
+    return "aria2.changePosition";
   }
 };
 
@@ -542,10 +515,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.changeUri";
-    return methodName;
+    return "aria2.changeUri";
   }
 };
 
@@ -554,10 +526,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getSessionInfo";
-    return methodName;
+    return "aria2.getSessionInfo";
   }
 };
 
@@ -566,10 +537,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.shutdown";
-    return methodName;
+    return "aria2.shutdown";
   }
 };
 
@@ -578,10 +548,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.getGlobalStat";
-    return methodName;
+    return "aria2.getGlobalStat";
   }
 };
 
@@ -590,10 +559,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "aria2.forceShutdown";
-    return methodName;
+    return "aria2.forceShutdown";
   }
 };
 
@@ -602,10 +570,9 @@ protected:
   virtual SharedHandle<ValueBase> process
   (const RpcRequest& req, DownloadEngine* e);
 public:
-  static const std::string& getMethodName()
+  static const char* getMethodName()
   {
-    static std::string methodName = "system.multicall";
-    return methodName;
+    return "system.multicall";
   }
 };
 
