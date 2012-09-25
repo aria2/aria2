@@ -74,10 +74,6 @@ private:
   (int status, const std::string& buf) const;
   bool bulkReceiveResponse(std::pair<int, std::string>& response);
 
-  static const std::string A;
-
-  static const std::string I;
-
   //prepare for large banners
   static const size_t MAX_RECV_BUFFER = 65536;
 public:
