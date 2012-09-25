@@ -47,9 +47,10 @@
 
 namespace aria2 {
 
-const std::string AuthConfigFactory::ANONYMOUS("anonymous");
-
-const std::string AuthConfigFactory::ARIA2USER_AT("ARIA2USER@");
+namespace {
+const std::string AUTH_DEFAULT_USER("anonymous");
+const std::string AUTH_DEFAULT_PASSWD("ARIA2USER@");
+} // namespace
 
 AuthConfigFactory::AuthConfigFactory() {}
 
@@ -160,8 +161,7 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
   resolver->setUserDefinedAuthConfig
     (createAuthConfig(op->get(PREF_FTP_USER), op->get(PREF_FTP_PASSWD)));
   SharedHandle<AuthConfig> defaultAuthConfig
-    (new AuthConfig(AuthConfigFactory::ANONYMOUS,
-                    AuthConfigFactory::ARIA2USER_AT));
+    (new AuthConfig(AUTH_DEFAULT_USER, AUTH_DEFAULT_PASSWD));
   resolver->setDefaultAuthConfig(defaultAuthConfig);
   return resolver;
 }
