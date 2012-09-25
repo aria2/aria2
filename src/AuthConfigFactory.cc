@@ -60,8 +60,7 @@ AuthConfigHandle
 AuthConfigFactory::createAuthConfig
 (const SharedHandle<Request>& request, const Option* op)
 {
-  if(request->getProtocol() == Request::PROTO_HTTP ||
-     request->getProtocol() == Request::PROTO_HTTPS) {
+  if(request->getProtocol() == "http" || request->getProtocol() == "https") {
 
     if(op->getAsBool(PREF_HTTP_AUTH_CHALLENGE)) {
       if(!request->getUsername().empty()) {
@@ -89,7 +88,7 @@ AuthConfigFactory::createAuthConfig
           createHttpAuthResolver(op)->resolveAuthConfig(request->getHost());
       }
     }
-  } else if(request->getProtocol() == Request::PROTO_FTP) {
+  } else if(request->getProtocol() == "ftp") {
     if(!request->getUsername().empty()) {
       if(request->hasPassword()) {
         return createAuthConfig(request->getUsername(), request->getPassword());

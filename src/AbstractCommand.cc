@@ -590,17 +590,17 @@ std::string getProxyOptionFor
 std::string getProxyUri
 (const std::string& protocol, const Option* option)
 {
-  if(protocol == Request::PROTO_HTTP) {
+  if(protocol == "http") {
     return getProxyOptionFor(PREF_HTTP_PROXY,
                              PREF_HTTP_PROXY_USER,
                              PREF_HTTP_PROXY_PASSWD,
                              option);
-  } else if(protocol == Request::PROTO_HTTPS) {
+  } else if(protocol == "https") {
     return getProxyOptionFor(PREF_HTTPS_PROXY,
                              PREF_HTTPS_PROXY_USER,
                              PREF_HTTPS_PROXY_PASSWD,
                              option);
-  } else if(protocol == Request::PROTO_FTP) {
+  } else if(protocol == "ftp") {
     return getProxyOptionFor(PREF_FTP_PROXY,
                              PREF_FTP_PROXY_USER,
                              PREF_FTP_PROXY_PASSWD,
@@ -865,7 +865,7 @@ const std::string& AbstractCommand::resolveProxyMethod
 (const std::string& protocol) const
 {
   if(getOption()->get(PREF_PROXY_METHOD) == V_TUNNEL ||
-     Request::PROTO_HTTPS == protocol) {
+     protocol == "https") {
     return V_TUNNEL;
   } else {
     return V_GET;

@@ -145,7 +145,7 @@ std::string HttpRequest::createRequest()
   std::string requestLine = request_->getMethod();
   requestLine += " ";
   if(proxyRequest_) {
-    if(getProtocol() == Request::PROTO_FTP &&
+    if(getProtocol() == "ftp" &&
        request_->getUsername().empty() && authConfig_) {
       // Insert user into URI, like ftp://USER@host/
       std::string uri = getCurrentURI();
@@ -201,7 +201,7 @@ std::string HttpRequest::createRequest()
     std::string rangeHeader(fmt("bytes=%" PRId64 "-", getStartByte()));
     if(request_->isPipeliningEnabled()) {
       rangeHeader += util::itos(getEndByte());
-    } else if(getProtocol() != Request::PROTO_FTP && endOffsetOverride_ > 0) {
+    } else if(getProtocol() != "ftp" && endOffsetOverride_ > 0) {
       // FTP via http proxy does not support endbytes 
       rangeHeader += util::itos(endOffsetOverride_-1);
     }
@@ -231,7 +231,7 @@ std::string HttpRequest::createRequest()
     std::vector<Cookie> cookies =
       cookieStorage_->criteriaFind(getHost(), path,
                                    Time().getTime(),
-                                   getProtocol() == Request::PROTO_HTTPS);
+                                   getProtocol() == "https");
     for(std::vector<Cookie>::const_iterator itr = cookies.begin(),
           eoi = cookies.end(); itr != eoi; ++itr) {
       cookiesValue += (*itr).toString();

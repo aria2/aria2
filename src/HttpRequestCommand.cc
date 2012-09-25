@@ -122,7 +122,7 @@ createHttpRequest(const SharedHandle<Request>& req,
 
 bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();
-  if(getRequest()->getProtocol() == Request::PROTO_HTTPS) {
+  if(getRequest()->getProtocol() == "https") {
     getSocket()->prepareSecureConnection();
     if(!getSocket()->initiateSecureConnection(getRequest()->getHost())) {
       setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
@@ -150,8 +150,8 @@ bool HttpRequestCommand::executeInternal() {
                            getDownloadEngine()->getAuthConfigFactory(),
                            proxyRequest_));
       if(getOption()->getAsBool(PREF_CONDITIONAL_GET) &&
-         (getRequest()->getProtocol() == Request::PROTO_HTTP ||
-          getRequest()->getProtocol() == Request::PROTO_HTTPS)) {
+         (getRequest()->getProtocol() == "http" ||
+          getRequest()->getProtocol() == "https")) {
         if(getFileEntry()->getPath().empty() &&
            getRequest()->getFile().empty()) {
           A2_LOG_DEBUG("Conditional-Get is disabled because file name"

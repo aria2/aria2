@@ -50,12 +50,6 @@ const std::string Request::METHOD_GET = "GET";
 
 const std::string Request::METHOD_HEAD = "HEAD";
 
-const std::string Request::PROTO_HTTP("http");
-
-const std::string Request::PROTO_HTTPS("https");
-
-const std::string Request::PROTO_FTP("ftp");
-
 Request::Request():
   method_(METHOD_GET),
   tryCount_(0),

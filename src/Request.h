@@ -224,14 +224,7 @@ public:
   static const std::string METHOD_GET;
   static const std::string METHOD_HEAD;
 
-  static const std::string PROTO_HTTP;
-
-  static const std::string PROTO_HTTPS;
-
-  static const std::string PROTO_FTP;
-
   static const int MAX_REDIRECT = 20;
-
 };
 
 } // namespace aria2

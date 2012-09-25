@@ -55,13 +55,13 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand
  RequestGroup* requestGroup,
  DownloadEngine* e)
 {
-  if(req->getProtocol() == Request::PROTO_HTTP
+  if(req->getProtocol() == "http"
 #ifdef ENABLE_SSL
      // for SSL
-     || req->getProtocol() == Request::PROTO_HTTPS
+     || req->getProtocol() == "https"
 #endif // ENABLE_SSL
      ) {
-    
+
     if(requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
       req->setKeepAliveHint(true);
     }
@@ -71,7 +71,7 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand
 
     return
       new HttpInitiateConnectionCommand(cuid, req, fileEntry, requestGroup, e);
-  } else if(req->getProtocol() == Request::PROTO_FTP) {
+  } else if(req->getProtocol() == "ftp") {
     if(req->getFile().empty()) {
       throw DL_ABORT_EX
         (fmt("FTP URI %s doesn't contain file path.",
