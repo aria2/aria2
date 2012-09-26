@@ -44,6 +44,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "fmt.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
@@ -71,7 +72,7 @@ void UTMetadataRequestFactory::create
                      static_cast<unsigned long>(p->getIndex())));
     SharedHandle<UTMetadataRequestExtensionMessage> m
       (new UTMetadataRequestExtensionMessage
-       (peer_->getExtensionMessageID("ut_metadata")));
+       (peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA)));
     m->setIndex(p->getIndex());
     m->setDownloadContext(dctx_);
     m->setBtMessageDispatcher(dispatcher_);

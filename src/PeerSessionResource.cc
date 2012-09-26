@@ -192,32 +192,19 @@ void PeerSessionResource::extendedMessagingEnabled(bool b)
   extendedMessagingEnabled_ = b;
 }
 
-uint8_t
-PeerSessionResource::getExtensionMessageID(const std::string& name) const
+uint8_t PeerSessionResource::getExtensionMessageID(int key) const
 {
-  Extensions::const_iterator itr = extensions_.find(name);
-  if(itr == extensions_.end()) {
-    return 0;
-  } else {
-    return (*itr).second;
-  }
+  return extreg_.getExtensionMessageID(key);
 }
 
-std::string PeerSessionResource::getExtensionName(uint8_t id) const
+const char* PeerSessionResource::getExtensionName(uint8_t id) const
 {
-  for(Extensions::const_iterator itr = extensions_.begin(),
-        eoi = extensions_.end(); itr != eoi; ++itr) {
-    const Extensions::value_type& p = *itr;
-    if(p.second == id) {
-      return p.first;
-    }
-  }
-  return A2STR::NIL;
+  return extreg_.getExtensionName(id);
 }
 
-void PeerSessionResource::addExtension(const std::string& name, uint8_t id)
+void PeerSessionResource::addExtension(int key, uint8_t id)
 {
-  extensions_[name] = id;
+  extreg_.setExtensionMessageID(key, id);
 }
 
 void PeerSessionResource::dhtEnabled(bool b)

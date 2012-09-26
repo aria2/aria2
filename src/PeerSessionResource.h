@@ -43,6 +43,7 @@
 #include "BtConstants.h"
 #include "PeerStat.h"
 #include "TimerA2.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
@@ -73,7 +74,7 @@ private:
   // fast index set which localhost has sent to a peer.
   std::set<size_t> amAllowedIndexSet_;
   bool extendedMessagingEnabled_;
-  Extensions extensions_;
+  ExtensionMessageRegistry extreg_;
   bool dhtEnabled_;
   PeerStat peerStat_;
 
@@ -192,11 +193,11 @@ public:
 
   void extendedMessagingEnabled(bool b);
 
-  uint8_t getExtensionMessageID(const std::string& name) const;
+  uint8_t getExtensionMessageID(int key) const;
 
-  std::string getExtensionName(uint8_t id) const;
+  const char* getExtensionName(uint8_t id) const;
 
-  void addExtension(const std::string& name, uint8_t id);
+  void addExtension(int key, uint8_t id);
 
   bool dhtEnabled() const
   {

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2009 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,16 +37,27 @@
 
 #include "common.h"
 
-#include <string>
-
-#include "BtConstants.h"
+#include <vector>
 
 namespace aria2 {
 
+typedef std::vector<int> Extensions;
+
+// This class stores mapping between BitTorrent entension name and its
+// ID. The BitTorrent Extension Protocol is specified in BEP10.  This
+// class is defined to only stores extensions aria2 supports. See
+// InterestingExtension for supported extensions.
+//
+// See also http://bittorrent.org/beps/bep_0010.html
 class ExtensionMessageRegistry {
-private:
-  Extensions extensions_;
 public:
+  enum InterestingExtension {
+    UT_METADATA,
+    UT_PEX,
+    // The number of extensions.
+    MAX_EXTENSION
+  };
+
   ExtensionMessageRegistry();
 
   ~ExtensionMessageRegistry();
@@ -56,12 +67,37 @@ public:
     return extensions_;
   }
 
-  uint8_t getExtensionMessageID(const std::string& name) const;
+  void setExtensions(const Extensions& extensions);
 
-  const std::string& getExtensionName(uint8_t id) const;
+  // Returns message ID corresponding the given |key|.  The |key| must
+  // be one of InterestingExtension other than MAX_EXTENSION. If
+  // message ID is not defined, returns 0.
+  uint8_t getExtensionMessageID(int key) const;
 
-  void removeExtension(const std::string& name);
+  // Returns extension name corresponding to the given |id|. If no
+  // extension is defined for the given |id|, returns NULL.
+  const char* getExtensionName(uint8_t id) const;
+
+  // Sets association of the |key| and |id|. The |key| must be one of
+  // InterestingExtension other than MAX_EXTENSION.
+  void setExtensionMessageID(int key, uint8_t id);
+
+  // Removes association of the |key|. The |key| must be one of
+  // InterestingExtension other than MAX_EXTENSION. After this call,
+  // getExtensionMessageID(key) returns 0.
+  void removeExtension(int key);
+private:
+  Extensions extensions_;
 };
+
+// Returns the extension name corresponding to the given |key|. The
+// |key| must be one of InterestingExtension other than MAX_EXTENSION.
+const char* strBtExtension(int key);
+
+// Returns extension key corresponding to the given extension |name|.
+// If no such key exists, returns
+// ExtensionMessageRegistry::MAX_EXTENSION.
+int keyBtExtension(const char* name);
 
 } // namespace aria2
 

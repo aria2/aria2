@@ -334,22 +334,22 @@ bool Peer::isGood() const
     difference(global::wallclock()) >= BAD_CONDITION_INTERVAL;
 }
 
-uint8_t Peer::getExtensionMessageID(const std::string& name) const
+uint8_t Peer::getExtensionMessageID(int key) const
 {
   assert(res_);
-  return res_->getExtensionMessageID(name);
+  return res_->getExtensionMessageID(key);
 }
 
-std::string Peer::getExtensionName(uint8_t id) const
+const char* Peer::getExtensionName(uint8_t id) const
 {
   assert(res_);
   return res_->getExtensionName(id);
 }
 
-void Peer::setExtension(const std::string& name, uint8_t id)
+void Peer::setExtension(int key, uint8_t id)
 {
   assert(res_);
-  res_->addExtension(name, id);
+  res_->addExtension(key, id);
 }
 
 void Peer::setExtendedMessagingEnabled(bool enabled)

@@ -16,6 +16,7 @@
 #include "PieceStorage.h"
 #include "extension_message_test_helper.h"
 #include "DlAbortEx.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
@@ -44,7 +45,7 @@ public:
     dctx_->setAttribute(CTX_ATTR_BT, attrs);
     peer_.reset(new Peer("host", 6880));
     peer_->allocateSessionResource(0, 0);
-    peer_->setExtension("ut_metadata", 1);
+    peer_->setExtension(ExtensionMessageRegistry::UT_METADATA, 1);
   }
 
   template<typename T>

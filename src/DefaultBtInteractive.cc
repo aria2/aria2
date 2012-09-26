@@ -140,7 +140,8 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   if(message->isExtendedMessagingEnabled()) {
     peer_->setExtendedMessagingEnabled(true);
     if(!utPexEnabled_) {
-      extensionMessageRegistry_->removeExtension("ut_pex");
+      extensionMessageRegistry_->removeExtension
+        (ExtensionMessageRegistry::UT_PEX);
     }
     A2_LOG_INFO(fmt(MSG_EXTENDED_MESSAGING_ENABLED, cuid_));
   }
@@ -472,7 +473,8 @@ void DefaultBtInteractive::addPeerExchangeMessage()
   if(pexTimer_.
      difference(global::wallclock()) >= UTPexExtensionMessage::DEFAULT_INTERVAL) {
     UTPexExtensionMessageHandle m
-      (new UTPexExtensionMessage(peer_->getExtensionMessageID("ut_pex")));
+      (new UTPexExtensionMessage(peer_->getExtensionMessageID
+                                 (ExtensionMessageRegistry::UT_PEX)));
 
     std::vector<SharedHandle<Peer> > activePeers;
     peerStorage_->getActivePeers(activePeers);
@@ -508,7 +510,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
     // HandshakeExtensionMessage::doReceivedAction().
     pieceStorage_ =
       downloadContext_->getOwnerRequestGroup()->getPieceStorage();
-    if(peer_->getExtensionMessageID("ut_metadata") &&
+    if(peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA) &&
        downloadContext_->getTotalLength() > 0) {
       size_t num = utMetadataRequestTracker_->avail();
       if(num > 0) {
@@ -549,7 +551,8 @@ void DefaultBtInteractive::doInteractionProcessing() {
       addRequests();
     }
   }
-  if(peer_->getExtensionMessageID("ut_pex") && utPexEnabled_) {
+  if(peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_PEX) &&
+     utPexEnabled_) {
     addPeerExchangeMessage();
   }
 

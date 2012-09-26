@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DefaultExtensionMessageFactory.h"
+
+#include <cstring>
+
 #include "Peer.h"
 #include "DlAbortEx.h"
 #include "HandshakeExtensionMessage.h"
@@ -81,19 +84,19 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     m->setDownloadContext(dctx_);
     return m;
   } else {
-    std::string extensionName = registry_->getExtensionName(extensionMessageID);
-    if(extensionName.empty()) {
+    const char* extensionName = registry_->getExtensionName(extensionMessageID);
+    if(!extensionName) {
       throw DL_ABORT_EX
         (fmt("No extension registered for extended message ID %u",
              extensionMessageID));
     }
-    if(extensionName == "ut_pex") {
+    if(strcmp(extensionName, "ut_pex") == 0) {
       // uTorrent compatible Peer-Exchange
       UTPexExtensionMessageHandle m =
         UTPexExtensionMessage::create(data, length);
       m->setPeerStorage(peerStorage_);
       return m;
-    } else if(extensionName == "ut_metadata") {
+    } else if(strcmp(extensionName, "ut_metadata") == 0) {
       if(length == 0) {
         throw DL_ABORT_EX
           (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE,
@@ -160,7 +163,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       throw DL_ABORT_EX
         (fmt("Unsupported extension message received."
              " extensionMessageID=%u, extensionName=%s",
-             extensionMessageID, extensionName.c_str()));
+             extensionMessageID, extensionName));
     }
   }
 }

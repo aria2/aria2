@@ -53,7 +53,7 @@ public:
 
     peer_.reset(new Peer("192.168.0.1", 6969));
     peer_->allocateSessionResource(1024, 1024*1024);
-    peer_->setExtension("ut_pex", 1);
+    peer_->setExtension(ExtensionMessageRegistry::UT_PEX, 1);
 
     registry_.reset(new ExtensionMessageRegistry());
 
@@ -76,9 +76,9 @@ public:
     factory_->setDownloadContext(dctx_);
   }
 
-  std::string getExtensionMessageID(const std::string& name)
+  std::string getExtensionMessageID(int key)
   {
-    unsigned char id[1] = { registry_->getExtensionMessageID(name) };
+    unsigned char id[1] = { registry_->getExtensionMessageID(key) };
     return std::string(&id[0], &id[1]);
   }
 
@@ -103,7 +103,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultExtensionMessageFactoryTest);
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_unknown()
 {
-  peer_->setExtension("foo", 255);
+  peer_->setExtension(ExtensionMessageRegistry::UT_PEX, 255);
 
   unsigned char id[1] = { 255 };
 
@@ -139,7 +139,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
   bittorrent::packcompact(c3, "192.168.0.2", 6882);
   bittorrent::packcompact(c4, "10.1.1.3",10000);
 
-  std::string data = getExtensionMessageID("ut_pex")+"d5:added12:"+
+  registry_->setExtensionMessageID(ExtensionMessageRegistry::UT_PEX, 1);
+
+  std::string data = getExtensionMessageID(ExtensionMessageRegistry::UT_PEX)
+    +"d5:added12:"+
     std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
     "7:added.f2:207:dropped12:"+
     std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
@@ -147,13 +150,17 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
 
   SharedHandle<UTPexExtensionMessage> m =
     createMessage<UTPexExtensionMessage>(data);
-  CPPUNIT_ASSERT_EQUAL(registry_->getExtensionMessageID("ut_pex"),
+  CPPUNIT_ASSERT_EQUAL(registry_->getExtensionMessageID
+                       (ExtensionMessageRegistry::UT_PEX),
                        m->getExtensionMessageID());
 }
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataRequest()
 {
-  std::string data = getExtensionMessageID("ut_metadata")+
+  registry_->setExtensionMessageID(ExtensionMessageRegistry::UT_METADATA, 1);
+
+  std::string data = getExtensionMessageID
+    (ExtensionMessageRegistry::UT_METADATA)+
     "d8:msg_typei0e5:piecei1ee";
   SharedHandle<UTMetadataRequestExtensionMessage> m =
     createMessage<UTMetadataRequestExtensionMessage>(data);
@@ -162,7 +169,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataRequest()
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataData()
 {
-  std::string data = getExtensionMessageID("ut_metadata")+
+  registry_->setExtensionMessageID(ExtensionMessageRegistry::UT_METADATA, 1);
+
+  std::string data = getExtensionMessageID
+    (ExtensionMessageRegistry::UT_METADATA)+
     "d8:msg_typei1e5:piecei1e10:total_sizei300ee0000000000";
   SharedHandle<UTMetadataDataExtensionMessage> m =
     createMessage<UTMetadataDataExtensionMessage>(data);
@@ -173,7 +183,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataData()
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_UTMetadataReject()
 {
-  std::string data = getExtensionMessageID("ut_metadata")+
+  registry_->setExtensionMessageID(ExtensionMessageRegistry::UT_METADATA, 1);
+
+  std::string data = getExtensionMessageID
+    (ExtensionMessageRegistry::UT_METADATA)+
     "d8:msg_typei2e5:piecei1ee";
   SharedHandle<UTMetadataRejectExtensionMessage> m =
     createMessage<UTMetadataRejectExtensionMessage>(data);

@@ -68,10 +68,11 @@ std::string HandshakeExtensionMessage::getPayload()
     dict.put("p", Integer::g(tcpPort_));
   }
   SharedHandle<Dict> extDict = Dict::g();
-  for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
-        eoi = extensions_.end(); itr != eoi; ++itr) {
-    const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    extDict->put(vt.first, Integer::g(vt.second));
+  for(int i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
+    int id = extreg_.getExtensionMessageID(i);
+    if(id) {
+      extDict->put(strBtExtension(i), Integer::g(id));
+    }
   }
   dict.put("m", extDict);
   if(metadataSize_) {
@@ -87,10 +88,11 @@ std::string HandshakeExtensionMessage::toString() const
                     util::percentEncode(clientVersion_).c_str(),
                     tcpPort_,
                     static_cast<unsigned long>(metadataSize_)));
-  for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
-        eoi = extensions_.end(); itr != eoi; ++itr) {
-    const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    s += fmt(", %s=%u", vt.first.c_str(), vt.second);
+  for(int i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
+    int id = extreg_.getExtensionMessageID(i);
+    if(id) {
+      s += fmt(", %s=%u", strBtExtension(i), id);
+    }
   }
   return s;
 }
@@ -101,14 +103,15 @@ void HandshakeExtensionMessage::doReceivedAction()
     peer_->setPort(tcpPort_);
     peer_->setIncomingPeer(false);
   }
-  for(std::map<std::string, uint8_t>::const_iterator itr = extensions_.begin(),
-        eoi = extensions_.end(); itr != eoi; ++itr) {
-    const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    peer_->setExtension(vt.first, vt.second);
+  for(int i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
+    int id = extreg_.getExtensionMessageID(i);
+    if(id) {
+      peer_->setExtension(i, id);
+    }
   }
   SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
   if(attrs->metadata.empty()) {
-    if(!peer_->getExtensionMessageID("ut_metadata")) {
+    if(!peer_->getExtensionMessageID(ExtensionMessageRegistry::UT_METADATA)) {
       // TODO In metadataGetMode, if peer don't support metadata
       // transfer, should we drop connection? There is a possibility
       // that peer can still tell us peers using PEX.
@@ -146,14 +149,19 @@ void HandshakeExtensionMessage::setPeer(const SharedHandle<Peer>& peer)
   peer_ = peer;
 }
 
-uint8_t HandshakeExtensionMessage::getExtensionMessageID(const std::string& name) const
+void HandshakeExtensionMessage::setExtension(int key, uint8_t id)
 {
-  std::map<std::string, uint8_t>::const_iterator i = extensions_.find(name);
-  if(i == extensions_.end()) {
-    return 0;
-  } else {
-    return (*i).second;
-  }
+  extreg_.setExtensionMessageID(key, id);
+}
+
+void HandshakeExtensionMessage::setExtensions(const Extensions& extensions)
+{
+  extreg_.setExtensions(extensions);
+}
+
+uint8_t HandshakeExtensionMessage::getExtensionMessageID(int key) const
+{
+  return extreg_.getExtensionMessageID(key);
 }
 
 HandshakeExtensionMessageHandle
@@ -187,7 +195,13 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
           eoi = extDict->end(); i != eoi; ++i) {
       const Integer* extId = downcast<Integer>((*i).second);
       if(extId) {
-        msg->extensions_[(*i).first] = extId->i();
+        int key = keyBtExtension((*i).first.c_str());
+        if(key == ExtensionMessageRegistry::MAX_EXTENSION) {
+          A2_LOG_DEBUG(fmt("Unsupported BitTorrent extension %s=%" PRId64,
+                           (*i).first.c_str(), extId->i()));
+        } else {
+          msg->setExtension(key, extId->i());
+        }
       }
     }
   }

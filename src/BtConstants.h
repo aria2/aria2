@@ -36,10 +36,7 @@
 #define D_BT_CONSTANTS_H
 
 #include "common.h"
-#include <map>
-#include <string>
-
-typedef std::map<std::string, uint8_t> Extensions;
+#include <vector>
 
 #define INFO_HASH_LENGTH 20
 

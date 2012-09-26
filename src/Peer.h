@@ -283,11 +283,11 @@ public:
 
   bool hasPiece(size_t index) const;
 
-  uint8_t getExtensionMessageID(const std::string& name) const;
+  uint8_t getExtensionMessageID(int key) const;
 
-  std::string getExtensionName(uint8_t id) const;
+  const char* getExtensionName(uint8_t id) const;
 
-  void setExtension(const std::string& name, uint8_t id);
+  void setExtension(int key, uint8_t id);
 
   const Timer& getLastDownloadUpdate() const;
 

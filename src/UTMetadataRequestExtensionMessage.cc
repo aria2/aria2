@@ -48,6 +48,7 @@
 #include "DownloadContext.h"
 #include "BtMessage.h"
 #include "PieceStorage.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
@@ -76,7 +77,8 @@ std::string UTMetadataRequestExtensionMessage::toString() const
 void UTMetadataRequestExtensionMessage::doReceivedAction()
 {
   SharedHandle<TorrentAttribute> attrs = bittorrent::getTorrentAttrs(dctx_);
-  uint8_t id = peer_->getExtensionMessageID("ut_metadata");
+  uint8_t id = peer_->getExtensionMessageID
+    (ExtensionMessageRegistry::UT_METADATA);
   if(attrs->metadata.empty()) {
     SharedHandle<UTMetadataRejectExtensionMessage> m
       (new UTMetadataRejectExtensionMessage(id));

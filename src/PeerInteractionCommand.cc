@@ -120,6 +120,10 @@ PeerInteractionCommand::PeerInteractionCommand
 
   SharedHandle<ExtensionMessageRegistry> exMsgRegistry
     (new ExtensionMessageRegistry());
+  exMsgRegistry->setExtensionMessageID(ExtensionMessageRegistry::UT_PEX, 8);
+  // http://www.bittorrent.org/beps/bep_0009.html
+  exMsgRegistry->setExtensionMessageID(ExtensionMessageRegistry::UT_METADATA,
+                                       9);
 
   SharedHandle<UTMetadataRequestFactory> utMetadataRequestFactory;
   SharedHandle<UTMetadataRequestTracker> utMetadataRequestTracker;

@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2010 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,46 +33,81 @@
  */
 /* copyright --> */
 #include "ExtensionMessageRegistry.h"
-#include "BtConstants.h"
-#include "A2STR.h"
+
+#include <cstring>
+#include <cassert>
 
 namespace aria2 {
 
 ExtensionMessageRegistry::ExtensionMessageRegistry()
-{
-  extensions_["ut_pex"] = 8;
-  // http://www.bittorrent.org/beps/bep_0009.html
-  extensions_["ut_metadata"] = 9;
-}
+  : extensions_(MAX_EXTENSION)
+{}
 
 ExtensionMessageRegistry::~ExtensionMessageRegistry() {}
 
-uint8_t ExtensionMessageRegistry::getExtensionMessageID
-(const std::string& name) const
+namespace {
+const char* EXTENSION_NAMES[] = {
+  "ut_metadata",
+  "ut_pex",
+  0
+};
+} // namespace
+
+uint8_t ExtensionMessageRegistry::getExtensionMessageID(int key) const
 {
-  Extensions::const_iterator itr = extensions_.find(name);
-  if(itr == extensions_.end()) {
-    return 0;
-  } else {
-    return (*itr).second;
-  }
+  assert(key < MAX_EXTENSION);
+  return extensions_[key];
 }
 
-const std::string& ExtensionMessageRegistry::getExtensionName(uint8_t id) const
+const char* ExtensionMessageRegistry::getExtensionName(uint8_t id) const
 {
-  for(Extensions::const_iterator itr = extensions_.begin(),
-        eoi = extensions_.end(); itr != eoi; ++itr) {
-    const Extensions::value_type& p = *itr;
-    if(p.second == id) {
-      return p.first;
+  int i;
+  if(id == 0) {
+    return 0;
+  }
+  for(i = 0; i < MAX_EXTENSION; ++i) {
+    if(extensions_[i] == id) {
+      break;
     }
   }
-  return A2STR::NIL;
+  return EXTENSION_NAMES[i];
 }
 
-void ExtensionMessageRegistry::removeExtension(const std::string& name)
+void ExtensionMessageRegistry::setExtensionMessageID(int key, uint8_t id)
 {
-  extensions_.erase(name);
+  assert(key < MAX_EXTENSION);
+  extensions_[key] = id;
+}
+
+void ExtensionMessageRegistry::removeExtension(int key)
+{
+  assert(key < MAX_EXTENSION);
+  extensions_[key] = 0;
+}
+
+void ExtensionMessageRegistry::setExtensions(const Extensions& extensions)
+{
+  extensions_ = extensions;
+}
+
+const char* strBtExtension(int key)
+{
+  if(key >= ExtensionMessageRegistry::MAX_EXTENSION) {
+    return 0;
+  } else {
+    return EXTENSION_NAMES[key];
+  }
+}
+
+int keyBtExtension(const char* name)
+{
+  int i;
+  for(i = 0; i < ExtensionMessageRegistry::MAX_EXTENSION; ++i) {
+    if(strcmp(EXTENSION_NAMES[i], name) == 0) {
+      break;
+    }
+  }
+  return i;
 }
 
 } // namespace aria2

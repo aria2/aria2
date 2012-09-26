@@ -37,9 +37,8 @@
 
 #include "ExtensionMessage.h"
 
-#include <map>
-
 #include "BtConstants.h"
+#include "ExtensionMessageRegistry.h"
 
 namespace aria2 {
 
@@ -54,7 +53,7 @@ private:
 
   size_t metadataSize_;
 
-  std::map<std::string, uint8_t> extensions_;
+  ExtensionMessageRegistry extreg_;
 
   SharedHandle<DownloadContext> dctx_;
 
@@ -117,17 +116,11 @@ public:
     dctx_ = dctx;
   }
 
-  void setExtension(const std::string& name, uint8_t id)
-  {
-    extensions_[name] = id;
-  }
+  void setExtension(int key, uint8_t id);
 
-  void setExtensions(const Extensions& extensions)
-  {
-    extensions_ = extensions;
-  }
+  void setExtensions(const Extensions& extensions);
 
-  uint8_t getExtensionMessageID(const std::string& name) const;
+  uint8_t getExtensionMessageID(int key) const;
 
   void setPeer(const SharedHandle<Peer>& peer);
 
