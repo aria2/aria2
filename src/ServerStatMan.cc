@@ -196,31 +196,40 @@ bool ServerStatMan::load(const std::string& filename)
       continue;
     }
     SharedHandle<ServerStat> sstat(new ServerStat(m[S_HOST], m[S_PROTOCOL]));
-    try {
-      const std::string& dlSpeed = m[S_DL_SPEED];
-      sstat->setDownloadSpeed(util::parseUInt(dlSpeed));
-      // Old serverstat file doesn't contains SC_AVG_SPEED
-      if(!m[S_SC_AVG_SPEED].empty()) {
-        const std::string& s = m[S_SC_AVG_SPEED];
-        sstat->setSingleConnectionAvgSpeed(util::parseUInt(s));
-      }
-      // Old serverstat file doesn't contains MC_AVG_SPEED
-      if(!m[S_MC_AVG_SPEED].empty()) {
-        const std::string& s = m[S_MC_AVG_SPEED];
-        sstat->setMultiConnectionAvgSpeed(util::parseUInt(s));
-      }
-      // Old serverstat file doesn't contains COUNTER_SPEED
-      if(!m[S_COUNTER].empty()) {
-        const std::string& s = m[S_COUNTER];
-        sstat->setCounter(util::parseUInt(s));
-      }
-      const std::string& lastUpdated = m[S_LAST_UPDATED];
-      sstat->setLastUpdated(Time(util::parseInt(lastUpdated)));
-      sstat->setStatus(m[S_STATUS]);
-      add(sstat);
-    } catch(RecoverableException& e) {
+
+    uint32_t uintval;
+    if(!util::parseUIntNoThrow(uintval, m[S_DL_SPEED])) {
       continue;
     }
+    sstat->setDownloadSpeed(uintval);
+    // Old serverstat file doesn't contains SC_AVG_SPEED
+    if(!m[S_SC_AVG_SPEED].empty()) {
+      if(!util::parseUIntNoThrow(uintval, m[S_SC_AVG_SPEED])) {
+        continue;
+      }
+      sstat->setSingleConnectionAvgSpeed(uintval);
+    }
+    // Old serverstat file doesn't contains MC_AVG_SPEED
+    if(!m[S_MC_AVG_SPEED].empty()) {
+      if(!util::parseUIntNoThrow(uintval, m[S_MC_AVG_SPEED])) {
+        continue;
+      }
+      sstat->setMultiConnectionAvgSpeed(uintval);
+    }
+    // Old serverstat file doesn't contains COUNTER_SPEED
+    if(!m[S_COUNTER].empty()) {
+      if(!util::parseUIntNoThrow(uintval, m[S_COUNTER])) {
+        continue;
+      }
+      sstat->setCounter(uintval);
+    }
+    int32_t intval;
+    if(!util::parseIntNoThrow(intval, m[S_LAST_UPDATED])) {
+      continue;
+    }
+    sstat->setLastUpdated(Time(intval));
+    sstat->setStatus(m[S_STATUS]);
+    add(sstat);
   }
   A2_LOG_NOTICE(fmt(MSG_SERVER_STAT_LOADED, filename.c_str()));
   return true;
