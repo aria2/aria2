@@ -65,6 +65,20 @@ std::string::const_iterator getNextDigit
 }
 } // namespace
 
+namespace {
+template<typename InputIterator>
+int getInteger(InputIterator first, InputIterator last)
+{
+  int res = 0;
+  // We assume *dest won't overflow.
+  for(; first != last; ++first) {
+    res *= 10;
+    res += (*first)-'0';
+  }
+  return res;
+}
+} // namespace
+
 bool parseDate
 (time_t& time,
  std::string::const_iterator first,
@@ -117,9 +131,9 @@ bool parseDate
         goto NOT_TIME;
       }
       foundTime = true;
-      hour = util::parseInt(std::string((*i).begin(), hEnd));
-      minute = util::parseInt(std::string(hEnd+1, mEnd));
-      second = util::parseInt(std::string(mEnd+1, sEnd));
+      hour = getInteger((*i).begin(), hEnd);
+      minute = getInteger(hEnd+1, mEnd);
+      second = getInteger(mEnd+1, sEnd);
       continue;
     NOT_TIME:
       ;
@@ -129,7 +143,7 @@ bool parseDate
       size_t len = std::distance((*i).begin(), j);
       if(1 <= len && len <= 2) {
         foundDayOfMonth = true;
-        dayOfMonth = util::parseInt(std::string((*i).begin(), j));
+        dayOfMonth = getInteger((*i).begin(), j);
         continue;
       }
     }
@@ -160,7 +174,7 @@ bool parseDate
       size_t len = std::distance((*i).begin(), j);
       if(1 <= len && len <= 4) {
         foundYear = true;
-        year = util::parseInt(std::string((*i).begin(), j));
+        year = getInteger((*i).begin(), j);
         continue;
       }
     }
