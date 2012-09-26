@@ -417,6 +417,25 @@ int FtpConnection::receiveSizeResponse(int64_t& size)
   }
 }
 
+namespace {
+template<typename T>
+bool getInteger(T* dest, const char* first, const char* last)
+{
+  int res = 0;
+  // We assume *dest won't overflow.
+  for(; first != last; ++first) {
+    if(util::isDigit(*first)) {
+      res *= 10;
+      res += (*first)-'0';
+    } else {
+      return false;
+    }
+  }
+  *dest = res;
+  return true;
+}
+} // namespace
+
 int FtpConnection::receiveMdtmResponse(Time& time)
 {
   // MDTM command, specified in RFC3659.
@@ -430,13 +449,18 @@ int FtpConnection::receiveMdtmResponse(Time& time)
         // and included strptime doesn't parse data for this format.
         struct tm tm;
         memset(&tm, 0, sizeof(tm));
-        tm.tm_sec = util::parseInt(std::string(&buf[12], &buf[14]));
-        tm.tm_min = util::parseInt(std::string(&buf[10], &buf[12]));
-        tm.tm_hour = util::parseInt(std::string(&buf[8], &buf[10]));
-        tm.tm_mday = util::parseInt(std::string(&buf[6], &buf[8]));
-        tm.tm_mon = util::parseInt(std::string(&buf[4], &buf[6]))-1;
-        tm.tm_year = util::parseInt(std::string(&buf[0], &buf[4]))-1900;
-        time = Time(timegm(&tm));
+        if(getInteger(&tm.tm_sec, &buf[12], &buf[14]) &&
+           getInteger(&tm.tm_min, &buf[10], &buf[12]) &&
+           getInteger(&tm.tm_hour, &buf[8], &buf[10]) &&
+           getInteger(&tm.tm_mday, &buf[6], &buf[8]) &&
+           getInteger(&tm.tm_mon, &buf[4], &buf[6]) &&
+           getInteger(&tm.tm_year, &buf[0], &buf[4])) {
+          tm.tm_mon -= 1;
+          tm.tm_year -= 1900;
+          time = Time(timegm(&tm));
+        } else {
+          time = Time::null();
+        }
       } else {
         time = Time::null();
       }
