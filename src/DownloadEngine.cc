@@ -328,7 +328,7 @@ void DownloadEngine::poolSocket
  const std::string& proxyhost,
  uint16_t proxyport,
  const SharedHandle<SocketCore>& sock,
- const std::map<std::string, std::string>& options,
+ const std::string& options,
  time_t timeout)
 {
   SocketPoolEntry e(sock, options, timeout);
@@ -387,7 +387,7 @@ void DownloadEngine::poolSocket
  const std::string& username,
  const SharedHandle<Request>& proxyRequest,
  const SharedHandle<SocketCore>& socket,
- const std::map<std::string, std::string>& options,
+ const std::string& options,
  time_t timeout)
 {
   if(!proxyRequest) {
@@ -441,7 +441,7 @@ DownloadEngine::popPooledSocket
 
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket
-(std::map<std::string, std::string>& options,
+(std::string& options,
  const std::string& ipaddr, uint16_t port,
  const std::string& username,
  const std::string& proxyhost, uint16_t proxyport)
@@ -475,7 +475,7 @@ DownloadEngine::popPooledSocket
 
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket
-(std::map<std::string, std::string>& options,
+(std::string& options,
  const std::vector<std::string>& ipaddrs, uint16_t port,
  const std::string& username)
 {
@@ -492,16 +492,18 @@ DownloadEngine::popPooledSocket
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
 (const SharedHandle<SocketCore>& socket,
- const std::map<std::string, std::string>& options,
- time_t timeout):
-  socket_(socket),
-  options_(options),
-  timeout_(timeout) {}
+ const std::string& options,
+ time_t timeout)
+  : socket_(socket),
+    options_(options),
+    timeout_(timeout)
+{}
 
 DownloadEngine::SocketPoolEntry::SocketPoolEntry
-(const SharedHandle<SocketCore>& socket, time_t timeout):
-  socket_(socket),
-  timeout_(timeout) {}
+(const SharedHandle<SocketCore>& socket, time_t timeout)
+  : socket_(socket),
+    timeout_(timeout)
+{}
 
 DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
 

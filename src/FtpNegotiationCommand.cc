@@ -959,10 +959,10 @@ bool FtpNegotiationCommand::processSequence
 void FtpNegotiationCommand::poolConnection() const
 {
   if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
-    std::map<std::string, std::string> options;
-    options["baseWorkingDir"] = ftp_->getBaseWorkingDir();
+    // Store ftp_->getBaseWorkingDir() as options
     getDownloadEngine()->poolSocket(getRequest(), ftp_->getUser(),
-                                    createProxyRequest(), getSocket(), options);
+                                    createProxyRequest(), getSocket(),
+                                    ftp_->getBaseWorkingDir());
   }
 }
 

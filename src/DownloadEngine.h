@@ -84,15 +84,15 @@ private:
   class SocketPoolEntry {
   private:
     SharedHandle<SocketCore> socket_;
-
-    std::map<std::string, std::string> options_;
+    // protocol specific option string
+    std::string options_;
 
     time_t timeout_;
 
     Timer registeredTime_;
   public:
     SocketPoolEntry(const SharedHandle<SocketCore>& socket,
-                    const std::map<std::string, std::string>& option,
+                    const std::string& option,
                     time_t timeout);
 
     SocketPoolEntry(const SharedHandle<SocketCore>& socket,
@@ -107,7 +107,7 @@ private:
       return socket_;
     }
 
-    const std::map<std::string, std::string>& getOptions() const
+    const std::string& getOptions() const
     {
       return options_;
     }
@@ -242,16 +242,16 @@ public:
                   const std::string& username,
                   const std::string& proxyhost, uint16_t proxyport,
                   const SharedHandle<SocketCore>& sock,
-                  const std::map<std::string, std::string>& options,
+                  const std::string& options,
                   time_t timeout = 15);
 
   void poolSocket(const SharedHandle<Request>& request,
                   const std::string& username,
                   const SharedHandle<Request>& proxyRequest,
                   const SharedHandle<SocketCore>& socket,
-                  const std::map<std::string, std::string>& options,
+                  const std::string& options,
                   time_t timeout = 15);
-    
+
   void poolSocket(const std::string& ipaddr, uint16_t port,
                   const std::string& proxyhost, uint16_t proxyport,
                   const SharedHandle<SocketCore>& sock,
@@ -268,7 +268,7 @@ public:
    const std::string& proxyhost, uint16_t proxyport);
 
   SharedHandle<SocketCore> popPooledSocket
-  (std::map<std::string, std::string>& options,
+  (std::string& options,
    const std::string& ipaddr,
    uint16_t port,
    const std::string& username,
@@ -280,7 +280,7 @@ public:
 
   SharedHandle<SocketCore>
   popPooledSocket
-  (std::map<std::string, std::string>& options,
+  (std::string& options,
    const std::vector<std::string>& ipaddrs,
    uint16_t port,
    const std::string& username);

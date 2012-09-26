@@ -85,11 +85,9 @@ bool FtpFinishDownloadCommand::execute()
       }
       if(status == 226) {
         if(getOption()->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
-          std::map<std::string, std::string> options;
-          options["baseWorkingDir"] = ftpConnection_->getBaseWorkingDir();
           getDownloadEngine()->poolSocket
             (getRequest(), ftpConnection_->getUser(), createProxyRequest(),
-             getSocket(), options);
+             getSocket(), ftpConnection_->getBaseWorkingDir());
         }
       } else {
         A2_LOG_INFO(fmt("CUID#%" PRId64 " - Bad status for transfer complete.",
