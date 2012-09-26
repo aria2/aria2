@@ -140,8 +140,8 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader()
   CPPUNIT_ASSERT_EQUAL(404, header->getStatusCode());
   CPPUNIT_ASSERT_EQUAL(std::string("Not Found"), header->getReasonPhrase());
   CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
-  CPPUNIT_ASSERT_EQUAL((int64_t)9187LL,
-                       header->findAsLLInt(HttpHeader::CONTENT_LENGTH));
+  CPPUNIT_ASSERT_EQUAL(std::string("9187"),
+                       header->find(HttpHeader::CONTENT_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"),
                        header->find(HttpHeader::CONTENT_TYPE));
   CPPUNIT_ASSERT(!header->defined(HttpHeader::CONTENT_ENCODING));

@@ -271,16 +271,6 @@ int HttpResponse::getStatusCode() const
   return httpHeader_->getStatusCode();
 }
 
-bool HttpResponse::hasRetryAfter() const
-{
-  return httpHeader_->defined(HttpHeader::RETRY_AFTER);
-}
-
-time_t HttpResponse::getRetryAfter() const
-{
-  return httpHeader_->findAsInt(HttpHeader::RETRY_AFTER);
-}
-
 Time HttpResponse::getLastModifiedTime() const
 {
   return Time::parseHTTPDate(httpHeader_->find(HttpHeader::LAST_MODIFIED));

@@ -48,7 +48,6 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testValidateResponse_bad_range);
   CPPUNIT_TEST(testValidateResponse_chunked);
   CPPUNIT_TEST(testValidateResponse_withIfModifiedSince);
-  CPPUNIT_TEST(testHasRetryAfter);
   CPPUNIT_TEST(testProcessRedirect);
   CPPUNIT_TEST(testRetrieveCookie);
   CPPUNIT_TEST(testSupportsPersistentConnection);
@@ -84,7 +83,6 @@ public:
   void testValidateResponse_bad_range();
   void testValidateResponse_chunked();
   void testValidateResponse_withIfModifiedSince();
-  void testHasRetryAfter();
   void testProcessRedirect();
   void testRetrieveCookie();
   void testSupportsPersistentConnection();
@@ -466,18 +464,6 @@ void HttpResponseTest::testValidateResponse_withIfModifiedSince()
   }
   httpRequest->setIfModifiedSinceHeader("Fri, 16 Jul 2010 12:56:59 GMT");
   httpResponse.validateResponse();
-}
-
-void HttpResponseTest::testHasRetryAfter()
-{
-  HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpResponse.setHttpHeader(httpHeader);
-
-  httpHeader->put(HttpHeader::RETRY_AFTER, "60");
-
-  CPPUNIT_ASSERT(httpResponse.hasRetryAfter());
-  CPPUNIT_ASSERT_EQUAL((time_t)60, httpResponse.getRetryAfter());
 }
 
 void HttpResponseTest::testProcessRedirect()

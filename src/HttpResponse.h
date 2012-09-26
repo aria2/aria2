@@ -124,10 +124,6 @@ public:
     cuid_ = cuid;
   }
 
-  bool hasRetryAfter() const;
-
-  time_t getRetryAfter() const;
-
   Time getLastModifiedTime() const;
 
   bool supportsPersistentConnection() const;

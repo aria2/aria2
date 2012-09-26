@@ -107,8 +107,6 @@ public:
   std::pair<std::multimap<int, std::string>::const_iterator,
             std::multimap<int, std::string>::const_iterator>
   equalRange(int hdKey) const;
-  int32_t findAsInt(int hdKey) const;
-  int64_t findAsLLInt(int hdKey) const;
 
   SharedHandle<Range> getRange() const;
 

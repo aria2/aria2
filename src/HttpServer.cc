@@ -148,10 +148,13 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     if(setupResponseRecv() < 0) {
       A2_LOG_INFO("Request path is invaild. Ignore the request body.");
     }
-    lastContentLength_ =
-      lastRequestHeader_->findAsLLInt(HttpHeader::CONTENT_LENGTH);
-    if(lastContentLength_ < 0) {
-      throw DL_ABORT_EX("Content-Length must be positive.");
+    if(!util::parseLLIntNoThrow(lastContentLength_,
+                                lastRequestHeader_->
+                                find(HttpHeader::CONTENT_LENGTH)) ||
+       lastContentLength_ < 0) {
+      throw DL_ABORT_EX(fmt("Invalid Content-Length=%s",
+                            lastRequestHeader_->
+                            find(HttpHeader::CONTENT_LENGTH).c_str()));
     }
     headerProcessor_->clear();
 

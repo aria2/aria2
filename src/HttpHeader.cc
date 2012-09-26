@@ -85,26 +85,6 @@ HttpHeader::equalRange(int hdKey) const
   return table_.equal_range(hdKey);
 }
 
-int32_t HttpHeader::findAsInt(int hdKey) const
-{
-  const std::string& value = find(hdKey);
-  if(value.empty()) {
-    return 0;
-  } else {
-    return util::parseInt(value);
-  }
-}
-
-int64_t HttpHeader::findAsLLInt(int hdKey) const
-{
-  const std::string& value = find(hdKey);
-  if(value.empty()) {
-    return 0;
-  } else {
-    return util::parseLLInt(value);
-  }
-}
-
 RangeHandle HttpHeader::getRange() const
 {
   const std::string& rangeStr = find(CONTENT_RANGE);
