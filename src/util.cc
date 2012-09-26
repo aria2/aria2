@@ -515,24 +515,6 @@ unsigned int hexCharToUInt(unsigned char ch)
   return ch;
 }
 
-FILE* openFile(const std::string& filename, const std::string& mode) {
-  FILE* file = fopen(filename.c_str(), mode.c_str());
-  return file;
-}
-
-bool isPowerOf(int num, int base) {
-  if(base <= 0) { return false; }
-  if(base == 1) { return true; }
-
-  while(num%base == 0) {
-    num /= base;
-    if(num == 1) {
-      return true;
-    }
-  }
-  return false;
-}
-
 std::string secfmt(time_t sec) {
   time_t tsec = sec;
   std::string str;
@@ -548,15 +530,6 @@ std::string secfmt(time_t sec) {
     str += fmt("%ds", static_cast<int>(sec));
   }
   return str;
-}
-
-int getNum(const char* buf, int offset, size_t length) {
-  char* temp = new char[length+1];
-  memcpy(temp, buf+offset, length);
-  temp[length] = '\0';
-  int x = strtol(temp, 0, 10);
-  delete [] temp;
-  return x;
 }
 
 namespace {
@@ -913,26 +886,15 @@ std::string getContentDispositionFilename(const std::string& header)
   return filename;
 }
 
-std::string randomAlpha(size_t length, const RandomizerHandle& randomizer) {
-  static const char randomChars[] =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  std::string str;
-  for(size_t i = 0; i < length; ++i) {
-    size_t index = randomizer->getRandomNumber(sizeof(randomChars)-1);
-    str += randomChars[index];
-  }
-  return str;
-}
-
 std::string toUpper(const std::string& src) {
   std::string temp = src;
-  std::transform(temp.begin(), temp.end(), temp.begin(), toUpperChar);
+  uppercase(temp);
   return temp;
 }
 
 std::string toLower(const std::string& src) {
   std::string temp = src;
-  std::transform(temp.begin(), temp.end(), temp.begin(), toLowerChar);
+  lowercase(temp);
   return temp;
 }
 
@@ -1108,28 +1070,6 @@ void usleep(long microseconds) {
 #else
 #error no usleep function is available (nanosleep?)
 #endif
-}
-
-unsigned int alphaToNum(const std::string& alphabets)
-{
-  if(alphabets.empty()) {
-    return 0;
-  }
-  char base;
-  if(islower(alphabets[0])) {
-    base = 'a';
-  } else {
-    base = 'A';
-  }
-  uint64_t num = 0;
-  for(size_t i = 0, eoi = alphabets.size(); i < eoi; ++i) {
-    unsigned int v = alphabets[i]-base;
-    num = num*26+v;
-    if(num > UINT32_MAX) {
-      return 0;
-    }
-  }
-  return num;
 }
 
 void mkdirs(const std::string& dirpath)

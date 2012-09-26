@@ -255,10 +255,6 @@ std::string fromHex(InputIterator first, InputIterator last)
   return dest;
 }
 
-FILE* openFile(const std::string& filename, const std::string& mode);
-
-bool isPowerOf(int num, int base);
-
 std::string secfmt(time_t sec);
 
 bool parseIntNoThrow(int32_t& res, const std::string& s, int base = 10);
@@ -293,9 +289,6 @@ std::string iso8859ToUtf8(const std::string& src);
 
 std::string getContentDispositionFilename(const std::string& header);
 
-std::string randomAlpha(size_t length,
-                        const SharedHandle<Randomizer>& randomizer);
-  
 std::string toUpper(const std::string& src);
 
 std::string toLower(const std::string& src);
@@ -394,15 +387,6 @@ bool isUppercase(InputIterator first, InputIterator last)
   }
   return true;
 }
-
-/**
- * Converts alphabets to unsigned int, assuming alphabets as a base 26
- * integer and 'a' or 'A' is 0.
- * This function assumes alphabets includes only a-z.
- * Upper case are allowed but all letters must be upper case.
- * If overflow occurs, returns 0.
- */
-unsigned int alphaToNum(const std::string& alphabets);
 
 void mkdirs(const std::string& dirpath);
 

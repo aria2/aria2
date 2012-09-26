@@ -40,7 +40,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIstartsWith);
   // may be moved to other helper class in the future.
   CPPUNIT_TEST(testGetContentDispositionFilename);
-  CPPUNIT_TEST(testRandomAlpha);
   CPPUNIT_TEST(testToUpper);
   CPPUNIT_TEST(testToLower);
   CPPUNIT_TEST(testUppercase);
@@ -52,7 +51,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsNumber);
   CPPUNIT_TEST(testIsLowercase);
   CPPUNIT_TEST(testIsUppercase);
-  CPPUNIT_TEST(testAlphaToNum);
   CPPUNIT_TEST(testMkdirs);
   CPPUNIT_TEST(testConvertBitfield);
   CPPUNIT_TEST(testParseIntSegments);
@@ -109,7 +107,6 @@ public:
   void testIstartsWith();
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
-  void testRandomAlpha();
   void testToUpper();
   void testToLower();
   void testUppercase();
@@ -121,7 +118,6 @@ public:
   void testIsNumber();
   void testIsLowercase();
   void testIsUppercase();
-  void testAlphaToNum();
   void testMkdirs();
   void testConvertBitfield();
   void testParseIntSegments();
@@ -960,12 +956,6 @@ public:
   }
 };
 
-void UtilTest::testRandomAlpha() {
-  SharedHandle<Randomizer> rand(new FixedNumberRandomizer());
-  std::string s = util::randomAlpha(8, rand);
-  CPPUNIT_ASSERT_EQUAL(std::string("AAAAAAAA"), s);
-}
-
 void UtilTest::testToUpper() {
   std::string src = "608cabc0f2fa18c260cafd974516865c772363d5";
   std::string upp = "608CABC0F2FA18C260CAFD974516865C772363D5";
@@ -1132,18 +1122,6 @@ void UtilTest::testIsUppercase()
   CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(s.begin(), s.end()));
   s = " ";
   CPPUNIT_ASSERT_EQUAL(false, util::isUppercase(s.begin(), s.end()));
-}
-
-void UtilTest::testAlphaToNum()
-{
-  CPPUNIT_ASSERT_EQUAL(0U, util::alphaToNum("a"));
-  CPPUNIT_ASSERT_EQUAL(0U, util::alphaToNum("aa"));
-  CPPUNIT_ASSERT_EQUAL(1U, util::alphaToNum("b"));
-  CPPUNIT_ASSERT_EQUAL(675U, util::alphaToNum("zz")); // 25*26+25
-  CPPUNIT_ASSERT_EQUAL(675U, util::alphaToNum("ZZ")); // 25*26+25
-  CPPUNIT_ASSERT_EQUAL(0U, util::alphaToNum(""));
-  CPPUNIT_ASSERT_EQUAL(4294967295U, util::alphaToNum("NXMRLXV"));
-  CPPUNIT_ASSERT_EQUAL(0U, util::alphaToNum("NXMRLXW")); // uint32_t overflow
 }
 
 void UtilTest::testMkdirs()
