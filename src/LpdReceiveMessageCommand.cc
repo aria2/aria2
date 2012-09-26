@@ -77,10 +77,6 @@ bool LpdReceiveMessageCommand::execute()
     if(!m) {
       break;
     }
-    if(!m->peer) {
-      // bad message
-      continue;
-    }
     SharedHandle<BtRegistry> reg = e_->getBtRegistry();
     SharedHandle<DownloadContext> dctx = reg->getDownloadContext(m->infoHash);
     if(!dctx) {

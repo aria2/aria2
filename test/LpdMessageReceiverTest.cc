@@ -67,9 +67,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
 
   rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
-  CPPUNIT_ASSERT(msg);
-  CPPUNIT_ASSERT(!msg->peer);
-  CPPUNIT_ASSERT(msg->infoHash.empty());
+  CPPUNIT_ASSERT(!msg);
 
   // Bad port
   request =
@@ -81,9 +79,7 @@ void LpdMessageReceiverTest::testReceiveMessage()
 
   rcv.getSocket()->isReadable(5);
   msg = rcv.receiveMessage();
-  CPPUNIT_ASSERT(msg);
-  CPPUNIT_ASSERT(!msg->peer);
-  CPPUNIT_ASSERT(msg->infoHash.empty());
+  CPPUNIT_ASSERT(!msg);
 
   // No data available
   msg = rcv.receiveMessage();
