@@ -93,9 +93,10 @@ RangeHandle HttpHeader::getRange() const
     if(clenStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
-      int64_t contentLength = util::parseLLInt(clenStr);
-      if(contentLength < 0) {
-        throw DL_ABORT_EX("Content-Length must be positive");
+      int64_t contentLength;
+      if(!util::parseLLIntNoThrow(contentLength, clenStr) ||
+         contentLength < 0) {
+        throw DL_ABORT_EX("Content-Length must be positive integer");
       } else if(contentLength > std::numeric_limits<off_t>::max()) {
         throw DOWNLOAD_FAILURE_EXCEPTION
           (fmt(EX_TOO_LARGE_FILE, contentLength));
@@ -135,11 +136,12 @@ RangeHandle HttpHeader::getRange() const
   if(minus == slash) {
     return SharedHandle<Range>(new Range());
   }
-  int64_t startByte = util::parseLLInt(std::string(byteRangeSpec, minus));
-  int64_t endByte = util::parseLLInt(std::string(minus+1, slash));
-  int64_t entityLength =
-    util::parseLLInt(std::string(slash+1, rangeStr.end()));
-  if(startByte < 0 || endByte < 0 || entityLength < 0) {
+  int64_t startByte, endByte, entityLength;
+  if(!util::parseLLIntNoThrow(startByte, std::string(byteRangeSpec, minus)) ||
+     !util::parseLLIntNoThrow(endByte, std::string(minus+1, slash)) ||
+     !util::parseLLIntNoThrow(entityLength,
+                              std::string(slash+1, rangeStr.end())) ||
+     startByte < 0 || endByte < 0 || entityLength < 0) {
     throw DL_ABORT_EX("byte-range-spec must be positive");
   }
   if(startByte > std::numeric_limits<off_t>::max()) {

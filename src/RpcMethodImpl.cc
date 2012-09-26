@@ -185,7 +185,12 @@ namespace {
 a2_gid_t str2Gid(const String* str)
 {
   assert(str);
-  return util::parseLLInt(str->s());
+  int64_t gid;
+  if(util::parseLLIntNoThrow(gid, str->s())) {
+    return gid;
+  } else {
+    throw DL_ABORT_EX(fmt("Bad GID %s", str->s().c_str()));
+  }
 }
 } // namespace
 

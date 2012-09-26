@@ -57,9 +57,6 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testConvertBitfield);
   CPPUNIT_TEST(testParseIntSegments);
   CPPUNIT_TEST(testParseIntSegments_invalidRange);
-  CPPUNIT_TEST(testParseInt);
-  CPPUNIT_TEST(testParseUInt);
-  CPPUNIT_TEST(testParseLLInt);
   CPPUNIT_TEST(testParseIntNoThrow);
   CPPUNIT_TEST(testParseUIntNoThrow);
   CPPUNIT_TEST(testParseLLIntNoThrow);
@@ -129,9 +126,6 @@ public:
   void testConvertBitfield();
   void testParseIntSegments();
   void testParseIntSegments_invalidRange();
-  void testParseInt();
-  void testParseUInt();
-  void testParseLLInt();
   void testParseIntNoThrow();
   void testParseUIntNoThrow();
   void testParseLLIntNoThrow();
@@ -1256,100 +1250,6 @@ void UtilTest::testParseIntSegments_invalidRange()
     util::parseIntSegments(sgl, "3x-4");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
-  }
-}
-
-void UtilTest::testParseInt()
-{
-  std::string s;
-  s = " -1 ";
-  CPPUNIT_ASSERT_EQUAL(-1, util::parseInt(s));
-  s = "2147483647";
-  CPPUNIT_ASSERT_EQUAL(2147483647, util::parseInt(s));
-  try {
-    s = "2147483648";
-    util::parseInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-  try {
-    s = "-2147483649";
-    util::parseInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-  try {
-    s = "12x";
-    util::parseInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-  try {
-    s = "";
-    util::parseInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-}
-
-void UtilTest::testParseUInt()
-{
-  std::string s;
-  s = " 2147483647 ";
-  CPPUNIT_ASSERT_EQUAL(2147483647U, util::parseUInt(s));
-  try {
-    s = "-1";
-    util::parseUInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-  try {
-    s = "2147483648";
-    util::parseUInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-}
-
-void UtilTest::testParseLLInt()
-{
-  std::string s;
-  {
-    s = " -1 ";
-    CPPUNIT_ASSERT_EQUAL((int64_t)-1LL, util::parseLLInt(s));
-  }
-  {
-    s = "9223372036854775807";
-    CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
-                         util::parseLLInt(s));
-  }
-  try {
-    s = "9223372036854775808";
-    util::parseLLInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
-  try {
-    s = "-9223372036854775809";
-    util::parseLLInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
-  try {
-    s = "12x";
-    util::parseLLInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
-  }
-  try {
-    s = "";
-    util::parseLLInt(s);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-    std::cerr << e.stackTrace();
   }
 }
 

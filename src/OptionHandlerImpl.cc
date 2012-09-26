@@ -154,7 +154,12 @@ NumberOptionHandler::~NumberOptionHandler() {}
 
 void NumberOptionHandler::parseArg(Option& option, const std::string& optarg)
 {
-  parseArg(option, util::parseLLInt(optarg));
+  int64_t number;
+  if(util::parseLLIntNoThrow(number, optarg)) {
+    parseArg(option, number);
+  } else {
+    throw DL_ABORT_EX(fmt("Bad number %s", optarg.c_str()));
+  }
 }
 
 void NumberOptionHandler::parseArg(Option& option, int64_t number)

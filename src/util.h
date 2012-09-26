@@ -262,14 +262,11 @@ bool isPowerOf(int num, int base);
 std::string secfmt(time_t sec);
 
 bool parseIntNoThrow(int32_t& res, const std::string& s, int base = 10);
-int32_t parseInt(const std::string& s, int base = 10);
 
 // Valid range: [0, INT32_MAX]
 bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base = 10);
-uint32_t parseUInt(const std::string& s, int base = 10);
 
 bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base = 10);
-int64_t parseLLInt(const std::string& s, int base = 10);
 
 void parseIntSegments(SegList<int>& sgl, const std::string& src);
 

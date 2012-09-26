@@ -28,9 +28,9 @@ void GZipEncoderTest::testEncode()
   inputs.push_back("Hello World");
   inputs.push_back("9223372036854775807");
   inputs.push_back("Fox");
-  
+
   encoder << inputs[0];
-  encoder << util::parseLLInt(inputs[1]);
+  encoder << (int64_t)9223372036854775807LL;
   encoder << inputs[2].c_str();
 
   std::string gzippedData = encoder.str();

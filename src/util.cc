@@ -458,7 +458,7 @@ std::string percentDecode
     if(*first == '%') {
       if(first+1 != last && first+2 != last &&
          isHexDigit(*(first+1)) && isHexDigit(*(first+2))) {
-        result += parseInt(std::string(first+1, first+3), 16);
+        result += hexCharToUInt(*(first+1))*16+hexCharToUInt(*(first+2));
         first += 2;
       } else {
         result += *first;
@@ -596,18 +596,6 @@ bool parseIntNoThrow(int32_t& res, const std::string& s, int base)
   }
 }
 
-int32_t parseInt(const std::string& s, int base)
-{
-  int32_t res;
-  if(parseIntNoThrow(res, s, base)) {
-    return res;
-  } else {
-    throw DL_ABORT_EX
-      (fmt("Failed to convert string into 32bit signed integer. '%s'",
-           s.c_str()));
-  }
-}
-
 bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base)
 {
   long int t;
@@ -618,18 +606,6 @@ bool parseUIntNoThrow(uint32_t& res, const std::string& s, int base)
     return true;
   } else {
     return false;
-  }
-}
-
-uint32_t parseUInt(const std::string& s, int base)
-{
-  uint32_t res;
-  if(parseUIntNoThrow(res, s, base)) {
-    return res;
-  } else {
-    throw DL_ABORT_EX
-      (fmt("Failed to convert string into 32bit unsigned integer. '%s'",
-           s.c_str()));
   }
 }
 
@@ -646,18 +622,6 @@ bool parseLLIntNoThrow(int64_t& res, const std::string& s, int base)
   }
 }
 
-int64_t parseLLInt(const std::string& s, int base)
-{
-  int64_t res;
-  if(parseLLIntNoThrow(res, s, base)) {
-    return res;
-  } else {
-    throw DL_ABORT_EX
-      (fmt("Failed to convert string into 64bit signed integer. '%s'",
-           s.c_str()));
-  }
-}
-
 void parseIntSegments(SegList<int>& sgl, const std::string& src)
 {
   for(std::string::const_iterator i = src.begin(), eoi = src.end(); i != eoi;) {
@@ -668,14 +632,22 @@ void parseIntSegments(SegList<int>& sgl, const std::string& src)
     }
     std::string::const_iterator p = std::find(i, j, '-');
     if(p == j) {
-      int a = parseInt(std::string(i, j));
-      sgl.add(a, a+1);
+      int a;
+      if(parseIntNoThrow(a, std::string(i, j))) {
+        sgl.add(a, a+1);
+      } else {
+        throw DL_ABORT_EX(fmt("Bad range %s", std::string(i, j).c_str()));
+      }
     } else if(p == i || p+1 == j) {
       throw DL_ABORT_EX(fmt(MSG_INCOMPLETE_RANGE, std::string(i, j).c_str()));
     } else {
-      int a = parseInt(std::string(i, p));
-      int b = parseInt(std::string(p+1, j));
-      sgl.add(a, b+1);
+      int a, b;
+      if(parseIntNoThrow(a, std::string(i, p)) &&
+         parseIntNoThrow(b, (std::string(p+1, j)))) {
+        sgl.add(a, b+1);
+      } else {
+        throw DL_ABORT_EX(fmt("Bad range %s", std::string(i, j).c_str()));
+      }
     }
     if(j == eoi) {
       break;
@@ -1062,10 +1034,10 @@ int64_t getRealSize(const std::string& sizeWithUnit)
     }
     size.assign(sizeWithUnit.begin(), sizeWithUnit.begin()+p);
   }
-  int64_t v = parseLLInt(size);
-
-  if(v < 0) {
-    throw DL_ABORT_EX(fmt("Negative value detected: %s", sizeWithUnit.c_str()));
+  int64_t v;
+  if(!parseLLIntNoThrow(v, size) || v < 0) {
+    throw DL_ABORT_EX(fmt("Bad or negative value detected: %s",
+                          sizeWithUnit.c_str()));
   } else if(INT64_MAX/mult < v) {
     throw DL_ABORT_EX(fmt(MSG_STRING_INTEGER_CONVERSION_FAILURE,
                           "overflow/underflow"));
@@ -1260,10 +1232,12 @@ parseIndexPath(const std::string& line)
 {
   std::pair<Scip, Scip> p;
   divide(p, line.begin(), line.end(), '=');
-  size_t index = parseUInt(std::string(p.first.first, p.first.second));
+  uint32_t index;
+  if(!parseUIntNoThrow(index, std::string(p.first.first, p.first.second))) {
+    throw DL_ABORT_EX("Bad path index");
+  }
   if(p.second.first == p.second.second) {
-    throw DL_ABORT_EX(fmt("Path with index=%u is empty.",
-                          static_cast<unsigned int>(index)));
+    throw DL_ABORT_EX(fmt("Path with index=%u is empty.", index));
   }
   return std::make_pair(index, std::string(p.second.first, p.second.second));
 }
