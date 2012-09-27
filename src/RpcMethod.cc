@@ -94,7 +94,7 @@ void gatherOption
       throw DL_ABORT_EX
         (fmt("We don't know how to deal with %s option", optionName.c_str()));
     }
-    const SharedHandle<OptionHandler>& handler = optionParser->find(pref);
+    const OptionHandler* handler = optionParser->find(pref);
     if(!handler || !pred(handler)) {
       // Just ignore the unacceptable options in this context.
       continue;
@@ -123,7 +123,7 @@ void RpcMethod::gatherRequestOption(Option* option, const Dict* optionsDict)
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 mem_fun_sh(&OptionHandler::getInitialOption),
+                 std::mem_fun(&OptionHandler::getInitialOption),
                  option, optionParser_);
   }
 }
@@ -132,7 +132,7 @@ void RpcMethod::gatherChangeableOption(Option* option, const Dict* optionsDict)
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 mem_fun_sh(&OptionHandler::getChangeOption),
+                 std::mem_fun(&OptionHandler::getChangeOption),
                  option, optionParser_);
   }
 }
@@ -143,7 +143,7 @@ void RpcMethod::gatherChangeableOptionForReserved
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 mem_fun_sh(&OptionHandler::getChangeOptionForReserved),
+                 std::mem_fun(&OptionHandler::getChangeOptionForReserved),
                  option, optionParser_);
   }
 }
@@ -153,7 +153,7 @@ void RpcMethod::gatherChangeableGlobalOption
 {
   if(optionsDict) {
     gatherOption(optionsDict->begin(), optionsDict->end(),
-                 mem_fun_sh(&OptionHandler::getChangeGlobalOption),
+                 std::mem_fun(&OptionHandler::getChangeGlobalOption),
                  option, optionParser_);
   }
 }

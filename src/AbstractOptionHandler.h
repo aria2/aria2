@@ -54,7 +54,7 @@ protected:
 
   char shortName_;
 
-  virtual void parseArg(Option& option, const std::string& arg) = 0;
+  virtual void parseArg(Option& option, const std::string& arg) const = 0;
 public:
   AbstractOptionHandler(const Pref* pref,
                          const char* description = NO_DESCRIPTION,
@@ -64,7 +64,7 @@ public:
 
   virtual ~AbstractOptionHandler();
 
-  virtual void parse(Option& option, const std::string& arg);
+  virtual void parse(Option& option, const std::string& arg) const;
 
   virtual bool hasTag(uint32_t tag) const;
 

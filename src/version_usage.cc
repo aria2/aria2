@@ -93,7 +93,7 @@ void showUsage
     out->printf("\n");
     return;
   } else if(keyword[0] == '#') {
-    std::vector<SharedHandle<OptionHandler> > handlers =
+    std::vector<const OptionHandler*> handlers =
       keyword == STR_TAG_ALL ? oparser->findAll() :
       oparser->findByTag(idHelpTag(keyword.c_str()));
     if(keyword == STR_TAG_ALL) {
@@ -107,13 +107,13 @@ void showUsage
     out->printf("\n");
     out->printf(_("Options:"));
     out->printf("\n");
-    for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+    for(std::vector<const OptionHandler*>::const_iterator i =
           handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
       write(out, *(*i));
       out->printf("\n");
     }
   } else {
-    std::vector<SharedHandle<OptionHandler> > handlers =
+    std::vector<const OptionHandler*> handlers =
       oparser->findByNameSubstring(keyword);
     if(!handlers.empty()) {
       out->printf(_("Printing options whose name includes '%s'."),
@@ -121,7 +121,7 @@ void showUsage
       out->printf("\n");
       out->printf(_("Options:"));
       out->printf("\n");
-      for(std::vector<SharedHandle<OptionHandler> >::const_iterator i =
+      for(std::vector<const OptionHandler*>::const_iterator i =
             handlers.begin(), eoi = handlers.end(); i != eoi; ++i) {
         write(out, *(*i));
         out->printf("\n");

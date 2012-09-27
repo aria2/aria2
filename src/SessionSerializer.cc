@@ -83,7 +83,7 @@ bool writeOption(BufferedFile& fp, const SharedHandle<Option>& op)
   const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
     const Pref* pref = option::i2p(i);
-    const SharedHandle<OptionHandler>& h = oparser->find(pref);
+    const OptionHandler* h = oparser->find(pref);
     if(h && h->getInitialOption() && op->defined(pref)) {
       if(h->getCumulative()) {
         const std::string& val = op->get(pref);

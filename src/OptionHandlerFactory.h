@@ -39,15 +39,13 @@
 
 #include <vector>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class OptionHandler;
 
 class OptionHandlerFactory {
 public:
-  static std::vector<SharedHandle<OptionHandler> > createOptionHandlers();
+  static std::vector<OptionHandler*> createOptionHandlers();
 };
 
 } // namespace aria2

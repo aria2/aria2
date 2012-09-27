@@ -51,7 +51,7 @@ struct Pref;
 
 class OptionParser {
 private:
-  std::vector<SharedHandle<OptionHandler> > handlers_;
+  std::vector<OptionHandler*> handlers_;
   // Index of handler in handlers_ for option who has short option name.
   std::vector<size_t> shortOpts_;
   static SharedHandle<OptionParser> optionParser_;
@@ -70,29 +70,28 @@ public:
   void parseDefaultValues(Option& option) const;
 
   void setOptionHandlers
-  (const std::vector<SharedHandle<OptionHandler> >& handlers);
+  (const std::vector<OptionHandler*>& handlers);
 
-  void addOptionHandler(const SharedHandle<OptionHandler>& handler);
-
-  // Hidden options are not returned.
-  std::vector<SharedHandle<OptionHandler> >
-  findByTag(uint32_t tag) const;
+  void addOptionHandler(OptionHandler* handler);
 
   // Hidden options are not returned.
-  std::vector<SharedHandle<OptionHandler> >
+  std::vector<const OptionHandler*> findByTag(uint32_t tag) const;
+
+  // Hidden options are not returned.
+  std::vector<const OptionHandler*>
   findByNameSubstring(const std::string& substring) const;
 
   // Hidden options are not returned.
-  std::vector<SharedHandle<OptionHandler> > findAll() const;
+  std::vector<const OptionHandler*> findAll() const;
 
   // Hidden options are not returned.
-  const SharedHandle<OptionHandler>& find(const Pref* pref) const;
+  const OptionHandler* find(const Pref* pref) const;
 
   // Hidden options are not returned.
-  const SharedHandle<OptionHandler>& findById(size_t id) const;
+  const OptionHandler* findById(size_t id) const;
 
   // Hidden options are not returned.
-  const SharedHandle<OptionHandler>& findByShortName(char shortName) const;
+  const OptionHandler* findByShortName(char shortName) const;
 
   static const SharedHandle<OptionParser>& getInstance();
 };

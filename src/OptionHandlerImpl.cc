@@ -79,6 +79,7 @@ BooleanOptionHandler::BooleanOptionHandler
 BooleanOptionHandler::~BooleanOptionHandler() {}
 
 void BooleanOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   if(optarg == "true" ||
      ((argType_ == OptionHandler::OPT_ARG ||
@@ -115,7 +116,7 @@ IntegerRangeOptionHandler::IntegerRangeOptionHandler
 IntegerRangeOptionHandler::~IntegerRangeOptionHandler() {}
 
 void IntegerRangeOptionHandler::parseArg
-(Option& option, const std::string& optarg)
+(Option& option, const std::string& optarg) const
 {
   SegList<int> sgl;
   util::parseIntSegments(sgl, optarg);
@@ -153,6 +154,7 @@ NumberOptionHandler::NumberOptionHandler
 NumberOptionHandler::~NumberOptionHandler() {}
 
 void NumberOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   int64_t number;
   if(util::parseLLIntNoThrow(number, optarg)) {
@@ -162,7 +164,7 @@ void NumberOptionHandler::parseArg(Option& option, const std::string& optarg)
   }
 }
 
-void NumberOptionHandler::parseArg(Option& option, int64_t number)
+void NumberOptionHandler::parseArg(Option& option, int64_t number) const
 {
   if((min_ == -1 || min_ <= number) && (max_ ==  -1 || number <= max_)) {
     option.put(pref_, util::itos(number));
@@ -214,7 +216,7 @@ UnitNumberOptionHandler::UnitNumberOptionHandler
 UnitNumberOptionHandler::~UnitNumberOptionHandler() {}
 
 void UnitNumberOptionHandler::parseArg
-(Option& option, const std::string& optarg)
+(Option& option, const std::string& optarg) const
 {
   int64_t num = util::getRealSize(optarg);
   NumberOptionHandler::parseArg(option, num);
@@ -236,7 +238,7 @@ FloatNumberOptionHandler::FloatNumberOptionHandler
 FloatNumberOptionHandler::~FloatNumberOptionHandler() {}
 
 void FloatNumberOptionHandler::parseArg
-(Option& option, const std::string& optarg)
+(Option& option, const std::string& optarg) const
 {
   double number = strtod(optarg.c_str(), 0);
   if((min_ < 0 || min_ <= number) && (max_ < 0 || number <= max_)) {
@@ -289,6 +291,7 @@ DefaultOptionHandler::DefaultOptionHandler
 DefaultOptionHandler::~DefaultOptionHandler() {}
 
 void DefaultOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   option.put(pref_, optarg);
 }
@@ -315,7 +318,7 @@ CumulativeOptionHandler::CumulativeOptionHandler
 CumulativeOptionHandler::~CumulativeOptionHandler() {}
 
 void CumulativeOptionHandler::parseArg
-(Option& option, const std::string& optarg)
+(Option& option, const std::string& optarg) const
 {
   std::string value = option.get(pref_);
   value += optarg;
@@ -339,6 +342,7 @@ IndexOutOptionHandler::IndexOutOptionHandler
 IndexOutOptionHandler::~IndexOutOptionHandler() {}
 
 void IndexOutOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   // See optarg is in the fomrat of "INDEX=PATH"
   util::parseIndexPath(optarg);
@@ -365,6 +369,7 @@ ChecksumOptionHandler::ChecksumOptionHandler
 ChecksumOptionHandler::~ChecksumOptionHandler() {}
 
 void ChecksumOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   std::pair<Scip, Scip> p;
   util::divide(p, optarg.begin(), optarg.end(), '=');
@@ -436,10 +441,11 @@ ParameterOptionHandler::ParameterOptionHandler
   validParamValues_.push_back(validParamValue2);
   validParamValues_.push_back(validParamValue3);
 }
-   
+
 ParameterOptionHandler::~ParameterOptionHandler() {}
 
 void ParameterOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   std::vector<std::string>::const_iterator itr =
     std::find(validParamValues_.begin(), validParamValues_.end(), optarg);
@@ -488,6 +494,7 @@ HostPortOptionHandler::HostPortOptionHandler
 HostPortOptionHandler::~HostPortOptionHandler() {}
 
 void HostPortOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   std::string uri = "http://";
   uri += optarg;
@@ -500,7 +507,7 @@ void HostPortOptionHandler::parseArg(Option& option, const std::string& optarg)
 }
 
 void HostPortOptionHandler::setHostAndPort
-(Option& option, const std::string& hostname, uint16_t port)
+(Option& option, const std::string& hostname, uint16_t port) const
 {
   option.put(hostOptionName_, hostname);
   option.put(portOptionName_, util::uitos(port));
@@ -525,6 +532,7 @@ HttpProxyOptionHandler::HttpProxyOptionHandler
 HttpProxyOptionHandler::~HttpProxyOptionHandler() {}
 
 void HttpProxyOptionHandler::parseArg(Option& option, const std::string& optarg)
+  const
 {
   if(optarg.empty()) {
     option.put(pref_, optarg);
@@ -564,7 +572,7 @@ LocalFilePathOptionHandler::LocalFilePathOptionHandler
 {}
 
 void LocalFilePathOptionHandler::parseArg
-(Option& option, const std::string& optarg)
+(Option& option, const std::string& optarg) const
 {
   if(acceptStdin_ && optarg == "-") {
     option.put(pref_, DEV_STDIN);
@@ -576,7 +584,7 @@ void LocalFilePathOptionHandler::parseArg
     option.put(pref_, optarg);
   }
 }
-  
+
 std::string LocalFilePathOptionHandler::createPossibleValuesString() const
 {
   if(acceptStdin_) {
@@ -596,7 +604,7 @@ PrioritizePieceOptionHandler::PrioritizePieceOptionHandler
 {}
 
 void PrioritizePieceOptionHandler::parseArg
-(Option& option, const std::string& optarg)
+(Option& option, const std::string& optarg) const
 {
   // Parse optarg against empty FileEntry list to detect syntax
   // error.
@@ -612,12 +620,19 @@ std::string PrioritizePieceOptionHandler::createPossibleValuesString() const
 }
 
 DeprecatedOptionHandler::DeprecatedOptionHandler
-(const SharedHandle<OptionHandler>& depOptHandler,
- const SharedHandle<OptionHandler>& repOptHandler)
+(OptionHandler* depOptHandler,
+ const OptionHandler* repOptHandler)
   : depOptHandler_(depOptHandler), repOptHandler_(repOptHandler)
 {}
 
+DeprecatedOptionHandler::~DeprecatedOptionHandler()
+{
+  delete depOptHandler_;
+  // We don't delete repOptHandler_.
+}
+
 void DeprecatedOptionHandler::parse(Option& option, const std::string& arg)
+  const
 {
   if(repOptHandler_) {
     A2_LOG_WARN(fmt(_("--%s option is deprecated. Use --%s option instead."),

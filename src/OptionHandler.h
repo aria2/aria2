@@ -63,7 +63,7 @@ class OptionHandler {
 public:
   virtual ~OptionHandler() {}
 
-  virtual void parse(Option& option, const std::string& arg) = 0;
+  virtual void parse(Option& option, const std::string& arg) const = 0;
 
   virtual std::string createPossibleValuesString() const = 0;
 

@@ -61,7 +61,7 @@ AbstractOptionHandler::AbstractOptionHandler
 
 AbstractOptionHandler::~AbstractOptionHandler() {}
 
-void AbstractOptionHandler::parse(Option& option, const std::string& arg)
+void AbstractOptionHandler::parse(Option& option, const std::string& arg) const
 {
   try {
     parseArg(option, arg);

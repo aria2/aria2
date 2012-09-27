@@ -465,7 +465,7 @@ bool createRequestGroupFromUriListParser
     const SharedHandle<OptionParser>& oparser = OptionParser::getInstance();
     for(size_t i = 1, len = option::countOption(); i < len; ++i) {
       const Pref* pref = option::i2p(i);
-      const SharedHandle<OptionHandler>& h = oparser->find(pref);
+      const OptionHandler* h = oparser->find(pref);
       if(h && h->getInitialOption() && tempOption.defined(pref)) {
         requestOption->put(pref, tempOption.get(pref));
       }

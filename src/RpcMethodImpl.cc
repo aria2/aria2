@@ -1251,7 +1251,7 @@ void pushRequestOption
 {
   for(size_t i = 1, len = option::countOption(); i < len; ++i) {
     const Pref* pref = option::i2p(i);
-    const SharedHandle<OptionHandler>& h = oparser->find(pref);
+    const OptionHandler* h = oparser->find(pref);
     if(h && h->getInitialOption() && option->defined(pref)) {
       dict->put(pref->k, option->get(pref));
     }
@@ -1284,7 +1284,7 @@ SharedHandle<ValueBase> GetGlobalOptionRpcMethod::process
     if(!e->getOption()->defined(pref)) {
       continue;
     }
-    const SharedHandle<OptionHandler>& h = getOptionParser()->find(pref);
+    const OptionHandler* h = getOptionParser()->find(pref);
     if(h) {
       result->put(pref->k, e->getOption()->get(pref));
     }

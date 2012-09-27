@@ -141,7 +141,7 @@ void showCandidates
   std::vector<std::pair<int, const Pref*> > cands;
   for(int i = 1, len = option::countOption(); i < len; ++i) {
     const Pref* pref = option::i2p(i);
-    const SharedHandle<OptionHandler>& h = parser->find(pref);
+    const OptionHandler* h = parser->find(pref);
     if(!h || h->isHidden()) {
       continue;
     }
@@ -234,7 +234,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
         } catch(OptionHandlerException& e) {
           global::cerr()->printf(_("Parse error in %s"), cfname.c_str());
           global::cerr()->printf("\n%s", e.stackTrace().c_str());
-          const SharedHandle<OptionHandler>& h = oparser->find(e.getPref());
+          const OptionHandler* h = oparser->find(e.getPref());
           if(h) {
             global::cerr()->printf(_("Usage:"));
             global::cerr()->printf("\n%s\n", h->getDescription());
@@ -275,7 +275,7 @@ void option_processing(Option& op, std::vector<std::string>& uris,
 #endif // __MINGW32__
   } catch(OptionHandlerException& e) {
     global::cerr()->printf("%s", e.stackTrace().c_str());
-    const SharedHandle<OptionHandler>& h = oparser->find(e.getPref());
+    const OptionHandler* h = oparser->find(e.getPref());
     if(h) {
       global::cerr()->printf(_("Usage:"));
       global::cerr()->printf("\n");

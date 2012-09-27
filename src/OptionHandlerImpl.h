@@ -55,7 +55,7 @@ public:
                        OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
                        char shortName = 0);
   virtual ~BooleanOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -70,7 +70,7 @@ public:
                             int32_t min, int32_t max,
                             char shortName = 0);
   virtual ~IntegerRangeOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -87,8 +87,8 @@ public:
                       char shortName = 0);
   virtual ~NumberOptionHandler();
 
-  virtual void parseArg(Option& option, const std::string& optarg);
-  void parseArg(Option& option, int64_t number);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
+  void parseArg(Option& option, int64_t number) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -101,7 +101,7 @@ public:
                           int64_t max = -1,
                           char shortName = 0);
   virtual ~UnitNumberOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
 };
 
 class FloatNumberOptionHandler : public AbstractOptionHandler {
@@ -115,7 +115,7 @@ public:
                            double min = -1, double max = -1,
                            char shortName = 0);
   virtual ~FloatNumberOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -130,7 +130,7 @@ public:
                        OptionHandler::ARG_TYPE argType = OptionHandler::REQ_ARG,
                        char shortName = 0);
   virtual ~DefaultOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -148,7 +148,7 @@ public:
                           OptionHandler::REQ_ARG,
                           char shortName = 0);
   virtual ~CumulativeOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -158,7 +158,7 @@ public:
                         const char* description,
                         char shortName = 0);
   virtual ~IndexOutOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -169,7 +169,7 @@ public:
                         const char* description,
                         char shortName = 0);
   virtual ~ChecksumOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 #endif // ENABLE_MESSAGE_DIGEST
@@ -202,7 +202,7 @@ public:
                          const std::string& validParamValue3,
                          char shortName = 0);
   virtual ~ParameterOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -218,9 +218,9 @@ public:
                         const Pref* portOptionName,
                         char shortName = 0);
   virtual ~HostPortOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   void setHostAndPort
-  (Option& option, const std::string& hostname, uint16_t port);
+  (Option& option, const std::string& hostname, uint16_t port) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -234,7 +234,7 @@ public:
                          const std::string& defaultValue,
                          char shortName = 0);
   virtual ~HttpProxyOptionHandler();
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -248,7 +248,7 @@ public:
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    bool acceptStdin = false,
    char shortName = 0);
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -259,7 +259,7 @@ public:
    const char* description = NO_DESCRIPTION,
    const std::string& defaultValue = NO_DEFAULT_VALUE,
    char shortName = 0);
-  virtual void parseArg(Option& option, const std::string& optarg);
+  virtual void parseArg(Option& option, const std::string& optarg) const;
   virtual std::string createPossibleValuesString() const;
 };
 
@@ -267,17 +267,17 @@ public:
 // option value using replacing option.
 class DeprecatedOptionHandler:public OptionHandler {
 private:
-  SharedHandle<OptionHandler> depOptHandler_;
-  SharedHandle<OptionHandler> repOptHandler_;
+  OptionHandler* depOptHandler_;
+  const OptionHandler* repOptHandler_;
 public:
   // depOptHandler is deprecated option and repOptHandler is replacing
   // new option. If there is no replacing option, omit second
   // argument.
   DeprecatedOptionHandler
-  (const SharedHandle<OptionHandler>& depOptHandler,
-   const SharedHandle<OptionHandler>& repOptHandler =
-   SharedHandle<OptionHandler>());
-  virtual void parse(Option& option, const std::string& arg);
+  (OptionHandler* depOptHandler,
+   const OptionHandler* repOptHandler = 0);
+  virtual ~DeprecatedOptionHandler();
+  virtual void parse(Option& option, const std::string& arg) const;
   virtual std::string createPossibleValuesString() const;
   virtual bool hasTag(uint32_t tag) const;
   virtual void addTag(uint32_t tag);

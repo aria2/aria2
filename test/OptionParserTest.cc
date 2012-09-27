@@ -35,27 +35,27 @@ public:
   {
     oparser_.reset(new OptionParser());
 
-    SharedHandle<OptionHandler> timeout
+    OptionHandler* timeout
       (new DefaultOptionHandler(PREF_TIMEOUT, NO_DESCRIPTION, "ALPHA", "",
                                 OptionHandler::REQ_ARG, 'A'));
     timeout->addTag(TAG_BASIC);
     timeout->setEraseAfterParse(true);
     oparser_->addOptionHandler(timeout);
 
-    SharedHandle<OptionHandler> dir(new DefaultOptionHandler(PREF_DIR));
+    OptionHandler* dir(new DefaultOptionHandler(PREF_DIR));
     dir->addTag(TAG_BASIC);
     dir->addTag(TAG_HTTP);
     dir->addTag(TAG_FILE);
     oparser_->addOptionHandler(dir);
 
-    SharedHandle<DefaultOptionHandler> daemon
+    DefaultOptionHandler* daemon
       (new DefaultOptionHandler(PREF_DAEMON, NO_DESCRIPTION, "CHARLIE", "",
                                 OptionHandler::REQ_ARG, 'C'));
     daemon->hide();
     daemon->addTag(TAG_FILE);
     oparser_->addOptionHandler(daemon);
 
-    SharedHandle<OptionHandler> out
+    OptionHandler* out
       (new UnitNumberOptionHandler(PREF_OUT, NO_DESCRIPTION, "1M",
                                    -1, -1, 'D'));
     out->addTag(TAG_FILE);
@@ -80,7 +80,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(OptionParserTest);
 
 void OptionParserTest::testFindAll()
 {
-  std::vector<SharedHandle<OptionHandler> > res = oparser_->findAll();
+  std::vector<const OptionHandler*> res = oparser_->findAll();
   CPPUNIT_ASSERT_EQUAL((size_t)3, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("timeout"), std::string(res[0]->getName()));
   CPPUNIT_ASSERT_EQUAL(std::string("dir"), std::string(res[1]->getName()));
@@ -89,8 +89,7 @@ void OptionParserTest::testFindAll()
 
 void OptionParserTest::testFindByNameSubstring()
 {
-  std::vector<SharedHandle<OptionHandler> > res =
-    oparser_->findByNameSubstring("i");
+  std::vector<const OptionHandler*> res = oparser_->findByNameSubstring("i");
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("timeout"), std::string(res[0]->getName()));
   CPPUNIT_ASSERT_EQUAL(std::string("dir"), std::string(res[1]->getName()));
@@ -98,8 +97,7 @@ void OptionParserTest::testFindByNameSubstring()
 
 void OptionParserTest::testFindByTag()
 {
-  std::vector<SharedHandle<OptionHandler> > res =
-    oparser_->findByTag(TAG_FILE);
+  std::vector<const OptionHandler*> res = oparser_->findByTag(TAG_FILE);
   CPPUNIT_ASSERT_EQUAL((size_t)2, res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("dir"), std::string(res[0]->getName()));
   CPPUNIT_ASSERT_EQUAL(std::string("out"), std::string(res[1]->getName()));
@@ -107,20 +105,20 @@ void OptionParserTest::testFindByTag()
 
 void OptionParserTest::testFind()
 {
-  const SharedHandle<OptionHandler>& dir = oparser_->find(PREF_DIR);
+  const OptionHandler* dir = oparser_->find(PREF_DIR);
   CPPUNIT_ASSERT(dir);
   CPPUNIT_ASSERT_EQUAL(std::string("dir"), std::string(dir->getName()));
 
-  const SharedHandle<OptionHandler>& daemon = oparser_->find(PREF_DAEMON);
+  const OptionHandler* daemon = oparser_->find(PREF_DAEMON);
   CPPUNIT_ASSERT(!daemon);
 
-  const SharedHandle<OptionHandler>& log = oparser_->find(PREF_LOG);
+  const OptionHandler* log = oparser_->find(PREF_LOG);
   CPPUNIT_ASSERT(!log);
 }
 
 void OptionParserTest::testFindByShortName()
 {
-  const SharedHandle<OptionHandler>& timeout = oparser_->findByShortName('A');
+  const OptionHandler* timeout = oparser_->findByShortName('A');
   CPPUNIT_ASSERT(timeout);
   CPPUNIT_ASSERT_EQUAL(std::string("timeout"), std::string(timeout->getName()));
 
@@ -129,8 +127,7 @@ void OptionParserTest::testFindByShortName()
 
 void OptionParserTest::testFindById()
 {
-  const SharedHandle<OptionHandler>& timeout =
-    oparser_->findById(PREF_TIMEOUT->i);
+  const OptionHandler* timeout = oparser_->findById(PREF_TIMEOUT->i);
   CPPUNIT_ASSERT(timeout);
   CPPUNIT_ASSERT_EQUAL(std::string("timeout"), std::string(timeout->getName()));
 

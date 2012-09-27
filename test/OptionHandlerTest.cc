@@ -310,16 +310,15 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
 void OptionHandlerTest::testDeprecatedOptionHandler()
 {
   {
-    DeprecatedOptionHandler handler
-      (SharedHandle<OptionHandler>(new DefaultOptionHandler(PREF_TIMEOUT)));
+    DeprecatedOptionHandler handler(new DefaultOptionHandler(PREF_TIMEOUT));
     Option option;
     handler.parse(option, "foo");
     CPPUNIT_ASSERT(!option.defined(PREF_TIMEOUT));
   }
   {
-    DeprecatedOptionHandler handler
-      (SharedHandle<OptionHandler>(new DefaultOptionHandler(PREF_TIMEOUT)),
-       SharedHandle<OptionHandler>(new DefaultOptionHandler(PREF_DIR)));
+    DefaultOptionHandler dir(PREF_DIR);
+    DeprecatedOptionHandler handler(new DefaultOptionHandler(PREF_TIMEOUT),
+                                    &dir);
     Option option;
     handler.parse(option, "foo");
     CPPUNIT_ASSERT(!option.defined(PREF_TIMEOUT));
