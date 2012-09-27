@@ -278,10 +278,6 @@ DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
 {
   SharedHandle<BtHandshakeMessage> msg
     (new BtHandshakeMessage(infoHash, peerId));
-  BtMessageValidatorHandle validator
-    (new BtHandshakeMessageValidator
-     (msg.get(), bittorrent::getInfoHash(downloadContext_)));
-  msg->setBtMessageValidator(validator);
   msg->setDHTEnabled(dhtEnabled_);
   setCommonProperty(msg.get());
   return msg;
@@ -296,12 +292,6 @@ DefaultBtMessageFactory::createRequestMessage
                           blockIndex*piece->getBlockLength(),
                           piece->getBlockLength(blockIndex),
                           blockIndex));
-  SharedHandle<BtMessageValidator> validator
-    (new RangeBtMessageValidator
-     (msg,
-      downloadContext_->getNumPieces(),
-      pieceStorage_->getPieceLength(msg->getIndex())));
-  msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return SharedHandle<BtMessage>(msg);
 }
@@ -311,12 +301,6 @@ DefaultBtMessageFactory::createCancelMessage
 (size_t index, int32_t begin, int32_t length)
 {
   BtCancelMessage* msg(new BtCancelMessage(index, begin, length));
-  SharedHandle<BtMessageValidator> validator
-    (new RangeBtMessageValidator
-     (msg,
-      downloadContext_->getNumPieces(),
-      pieceStorage_->getPieceLength(index)));
-  msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return SharedHandle<BtMessage>(msg);
 }
@@ -326,11 +310,6 @@ DefaultBtMessageFactory::createPieceMessage
 (size_t index, int32_t begin, int32_t length)
 {
   BtPieceMessage* msg(new BtPieceMessage(index, begin, length));
-  BtMessageValidatorHandle validator
-    (new BtPieceMessageValidator(msg,
-                                 downloadContext_->getNumPieces(),
-                                 pieceStorage_->getPieceLength(index)));
-  msg->setBtMessageValidator(validator);
   msg->setDownloadContext(downloadContext_);
   setCommonProperty(msg);
   return SharedHandle<BtMessage>(msg);
@@ -340,9 +319,6 @@ SharedHandle<BtMessage>
 DefaultBtMessageFactory::createHaveMessage(size_t index)
 {
   BtHaveMessage* msg(new BtHaveMessage(index));
-  SharedHandle<BtMessageValidator> v
-    (new IndexBtMessageValidator(msg, downloadContext_->getNumPieces()));
-  msg->setBtMessageValidator(v);
   setCommonProperty(msg);
   return SharedHandle<BtMessage>(msg);
 }
@@ -385,9 +361,6 @@ DefaultBtMessageFactory::createBitfieldMessage()
   BtBitfieldMessage* msg
     (new BtBitfieldMessage(pieceStorage_->getBitfield(),
                            pieceStorage_->getBitfieldLength()));
-  SharedHandle<BtMessageValidator> v
-    (new BtBitfieldMessageValidator(msg, downloadContext_->getNumPieces()));
-  msg->setBtMessageValidator(v);
   setCommonProperty(msg);
   return SharedHandle<BtMessage>(msg);
 }
@@ -421,12 +394,6 @@ DefaultBtMessageFactory::createRejectMessage
 (size_t index, int32_t begin, int32_t length)
 {
   BtRejectMessage* msg(new BtRejectMessage(index, begin, length));
-  SharedHandle<BtMessageValidator> validator
-    (new RangeBtMessageValidator
-     (msg,
-      downloadContext_->getNumPieces(),
-      pieceStorage_->getPieceLength(index)));
-  msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return SharedHandle<BtMessage>(msg);
 }
@@ -435,9 +402,6 @@ SharedHandle<BtMessage>
 DefaultBtMessageFactory::createAllowedFastMessage(size_t index)
 {
   BtAllowedFastMessage* msg(new BtAllowedFastMessage(index));
-  SharedHandle<BtMessageValidator> validator
-    (new IndexBtMessageValidator(msg, downloadContext_->getNumPieces()));
-  msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return SharedHandle<BtMessage>(msg);
 }
