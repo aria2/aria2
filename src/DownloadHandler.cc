@@ -48,7 +48,8 @@ bool DownloadHandler::canHandle(const RequestGroup* requestGroup) const
   return criteria_ && criteria_->match(requestGroup);
 }
 
-void DownloadHandler::setCriteria(const RequestGroupCriteriaHandle& criteria)
+void DownloadHandler::setCriteria
+(const SharedHandle<RequestGroupCriteria>& criteria)
 {
   criteria_ = criteria;
 }

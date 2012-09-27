@@ -50,8 +50,6 @@ public:
   virtual bool match(const RequestGroup* requestGroup) const = 0;
 };
 
-typedef SharedHandle<RequestGroupCriteria> RequestGroupCriteriaHandle;
-
 } // namespace aria2
 
 #endif // D_REQUEST_GROUP_CRITERIA_H

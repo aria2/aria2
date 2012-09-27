@@ -56,40 +56,40 @@ class DownloadHandlerFactory
 {
 private:
 #ifdef ENABLE_METALINK
-  static SharedHandle<MemoryBufferPreDownloadHandler>
+  static SharedHandle<PreDownloadHandler>
   metalinkPreDownloadHandler_;
 
-  static SharedHandle<MetalinkPostDownloadHandler>
+  static SharedHandle<PostDownloadHandler>
   metalinkPostDownloadHandler_;
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-  static SharedHandle<bittorrent::MemoryBencodePreDownloadHandler>
+  static SharedHandle<PreDownloadHandler>
   btPreDownloadHandler_;
 
-  static SharedHandle<BtPostDownloadHandler>
+  static SharedHandle<PostDownloadHandler>
   btPostDownloadHandler_;
 
-  static SharedHandle<UTMetadataPostDownloadHandler>
+  static SharedHandle<PostDownloadHandler>
   btMetadataPostDownloadHandler_;
 #endif // ENABLE_BITTORRENT
 public:
 #ifdef ENABLE_METALINK
-  static SharedHandle<MemoryBufferPreDownloadHandler>
+  static SharedHandle<PreDownloadHandler>
   getMetalinkPreDownloadHandler();
 
-  static SharedHandle<MetalinkPostDownloadHandler>
+  static SharedHandle<PostDownloadHandler>
   getMetalinkPostDownloadHandler();
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-  static SharedHandle<bittorrent::MemoryBencodePreDownloadHandler>
+  static SharedHandle<PreDownloadHandler>
   getBtPreDownloadHandler();
 
-  static SharedHandle<BtPostDownloadHandler>
+  static SharedHandle<PostDownloadHandler>
   getBtPostDownloadHandler();
 
-  static SharedHandle<UTMetadataPostDownloadHandler>
+  static SharedHandle<PostDownloadHandler>
   getUTMetadataPostDownloadHandler();
 #endif // ENABLE_BITTORRENT
 };
