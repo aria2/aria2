@@ -59,11 +59,11 @@ private:
   DHTMessageDispatcher* dispatcher_;
 
   DHTRoutingTable* routingTable_;
-  
+
   DHTPeerAnnounceStorage* peerAnnounceStorage_;
 
   DHTTokenTracker* tokenTracker_;
-  
+
   // search node in routingTable. If it is not found, create new one.
   SharedHandle<DHTNode> getRemoteNode
   (const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
@@ -76,7 +76,7 @@ private:
   (std::vector<SharedHandle<DHTNode> >& nodes,
    const unsigned char* src, size_t length);
 
-  void setCommonProperty(const SharedHandle<DHTAbstractMessage>& m);
+  void setCommonProperty(DHTAbstractMessage* m);
 
 public:
   DHTMessageFactoryImpl(int family);
