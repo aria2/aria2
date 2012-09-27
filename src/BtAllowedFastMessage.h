@@ -39,10 +39,6 @@
 
 namespace aria2 {
 
-class BtAllowedFastMessage;
-
-typedef SharedHandle<BtAllowedFastMessage> BtAllowedFastMessageHandle;
-
 class BtAllowedFastMessage : public IndexBtMessage {
 public:
   BtAllowedFastMessage(size_t index = 0);
@@ -51,7 +47,7 @@ public:
 
   static const char NAME[];
 
-  static SharedHandle<BtAllowedFastMessage> create
+  static BtAllowedFastMessage* create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

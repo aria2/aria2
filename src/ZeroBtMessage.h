@@ -45,11 +45,11 @@ private:
   static const size_t MESSAGE_LENGTH = 5;
 protected:
   template<typename T>
-  static SharedHandle<T> create(const unsigned char* data, size_t dataLength)
+  static T* create(const unsigned char* data, size_t dataLength)
   {
     bittorrent::assertPayloadLengthEqual(1, dataLength, T::NAME);
     bittorrent::assertID(T::ID, data, T::NAME);
-    SharedHandle<T> message(new T());
+    T* message(new T());
     return message;
   }
 

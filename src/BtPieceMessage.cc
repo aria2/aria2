@@ -80,12 +80,12 @@ void BtPieceMessage::setMsgPayload(const unsigned char* data)
   data_ = data;
 }
 
-BtPieceMessageHandle BtPieceMessage::create
+BtPieceMessage* BtPieceMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthGreater(9, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
-  BtPieceMessageHandle message(new BtPieceMessage());
+  BtPieceMessage* message(new BtPieceMessage());
   message->setIndex(bittorrent::getIntParam(data, 1));
   message->setBegin(bittorrent::getIntParam(data, 5));
   message->setBlockLength(dataLength-9);

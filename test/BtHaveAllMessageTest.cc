@@ -38,7 +38,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveAllMessageTest);
 void BtHaveAllMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 14);
-  SharedHandle<BtHaveAllMessage> pm = BtHaveAllMessage::create(&msg[4], 1);
+  SharedHandle<BtHaveAllMessage> pm(BtHaveAllMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)14, pm->getId());
 
   // case: payload size is wrong

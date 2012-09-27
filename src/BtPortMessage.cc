@@ -61,13 +61,13 @@ BtPortMessage::BtPortMessage(uint16_t port)
     taskFactory_(0)
 {}
 
-SharedHandle<BtPortMessage> BtPortMessage::create
+BtPortMessage* BtPortMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   bittorrent::assertPayloadLengthEqual(3, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   uint16_t port = bittorrent::getShortIntParam(data, 1);
-  SharedHandle<BtPortMessage> message(new BtPortMessage(port));
+  BtPortMessage* message(new BtPortMessage(port));
   return message;
 }
 

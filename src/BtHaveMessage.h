@@ -39,10 +39,6 @@
 
 namespace aria2 {
 
-class BtHaveMessage;
-
-typedef SharedHandle<BtHaveMessage> BtHaveMessageHandle;
-
 class BtHaveMessage : public IndexBtMessage {
 public:
   BtHaveMessage(size_t index = 0);
@@ -51,8 +47,7 @@ public:
 
   static const char NAME[];
 
-  static SharedHandle<BtHaveMessage> create
-  (const unsigned char* data, size_t dataLength);
+  static BtHaveMessage* create(const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();
 };

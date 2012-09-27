@@ -39,10 +39,6 @@
 
 namespace aria2 {
 
-class BtHaveNoneMessage;
-
-typedef SharedHandle<BtHaveNoneMessage> BtHaveNoneMessageHandle;
-
 class BtHaveNoneMessage : public ZeroBtMessage {
 public:
   BtHaveNoneMessage();
@@ -51,7 +47,7 @@ public:
 
   static const char NAME[];
 
-  static SharedHandle<BtHaveNoneMessage> create
+  static BtHaveNoneMessage* create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

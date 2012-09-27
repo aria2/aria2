@@ -44,7 +44,7 @@ void BtBitfieldMessageTest::testCreate() {
   unsigned char bitfield[2];
   memset(bitfield, 0xff, sizeof(bitfield));
   memcpy(&msg[5], bitfield, sizeof(bitfield));
-  SharedHandle<BtBitfieldMessage> pm = BtBitfieldMessage::create(&msg[4], 3);
+  SharedHandle<BtBitfieldMessage> pm(BtBitfieldMessage::create(&msg[4], 3));
   CPPUNIT_ASSERT_EQUAL((uint8_t)5, pm->getId());
   CPPUNIT_ASSERT(memcmp(bitfield, pm->getBitfield(), sizeof(bitfield)) == 0);
   CPPUNIT_ASSERT_EQUAL((size_t)2, pm->getBitfieldLength());
@@ -89,7 +89,7 @@ void BtBitfieldMessageTest::testDoReceivedAction() {
   msg.setPieceStorage(pieceStorage);
   unsigned char bitfield[] = { 0xff, 0xff };
   msg.setBitfield(bitfield, sizeof(bitfield));
-  
+
   CPPUNIT_ASSERT_EQUAL(std::string("0000"), util::toHex(peer->getBitfield(),
                                                         peer->getBitfieldLength()));
   msg.doReceivedAction();

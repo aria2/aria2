@@ -43,7 +43,7 @@ const char BtChokeMessage::NAME[] = "choke";
 
 BtChokeMessage::BtChokeMessage():ZeroBtMessage(ID, NAME) {}
 
-SharedHandle<BtChokeMessage> BtChokeMessage::create
+BtChokeMessage* BtChokeMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtChokeMessage>(data, dataLength);

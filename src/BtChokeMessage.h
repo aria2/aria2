@@ -39,10 +39,6 @@
 
 namespace aria2 {
 
-class BtChokeMessage;
-
-typedef SharedHandle<BtChokeMessage> BtChokeMessageHandle;
-
 class BtChokeMessage : public ZeroBtMessage {
 public:
   BtChokeMessage();
@@ -53,8 +49,7 @@ public:
 
   virtual void doReceivedAction();
 
-  static SharedHandle<BtChokeMessage> create
-  (const unsigned char* data, size_t dataLength);
+  static BtChokeMessage* create(const unsigned char* data, size_t dataLength);
 
   virtual bool sendPredicate() const;
 

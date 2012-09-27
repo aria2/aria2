@@ -44,7 +44,7 @@ BtInterestedMessage::BtInterestedMessage():ZeroBtMessage(ID, NAME) {}
 
 BtInterestedMessage::~BtInterestedMessage() {}
 
-SharedHandle<BtInterestedMessage> BtInterestedMessage::create
+BtInterestedMessage* BtInterestedMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtInterestedMessage>(data, dataLength);

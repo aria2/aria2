@@ -71,7 +71,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtChokeMessageTest);
 void BtChokeMessageTest::testCreate() {
   unsigned char msg[5];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 1, 0);
-  SharedHandle<BtChokeMessage> pm = BtChokeMessage::create(&msg[4], 1);
+  SharedHandle<BtChokeMessage> pm(BtChokeMessage::create(&msg[4], 1));
   CPPUNIT_ASSERT_EQUAL((uint8_t)0, pm->getId());
 
   // case: payload size is wrong

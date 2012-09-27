@@ -39,10 +39,6 @@
 
 namespace aria2 {
 
-class BtSuggestPieceMessage;
-
-typedef SharedHandle<BtSuggestPieceMessage> BtSuggestPieceMessageHandle;
-
 class BtSuggestPieceMessage : public IndexBtMessage {
 public:
   BtSuggestPieceMessage():IndexBtMessage(ID, NAME, 0) {}
@@ -51,7 +47,7 @@ public:
 
   static const char NAME[];
 
-  static SharedHandle<BtSuggestPieceMessage> create
+  static BtSuggestPieceMessage* create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction() {

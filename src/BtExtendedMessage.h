@@ -41,9 +41,6 @@ namespace aria2 {
 class ExtensionMessage;
 class ExtensionMessageFactory;
 
-class BtExtendedMessage;
-typedef SharedHandle<BtExtendedMessage> BtExtendedMessageHandle;
-
 class BtExtendedMessage:public SimpleBtMessage
 {
 private:
@@ -59,7 +56,7 @@ public:
 
   static const char NAME[];
 
-  static BtExtendedMessageHandle create
+  static BtExtendedMessage* create
   (const SharedHandle<ExtensionMessageFactory>& factory,
    const SharedHandle<Peer>& peer,
    const unsigned char* data,

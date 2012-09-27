@@ -110,7 +110,7 @@ void BtPieceMessageTest::testCreate() {
   bittorrent::setIntParam(&msg[5], 12345);
   bittorrent::setIntParam(&msg[9], 256);
   memcpy(&msg[13], data, sizeof(data));
-  SharedHandle<BtPieceMessage> pm = BtPieceMessage::create(&msg[4], 11);
+  SharedHandle<BtPieceMessage> pm(BtPieceMessage::create(&msg[4], 11));
   CPPUNIT_ASSERT_EQUAL((uint8_t)7, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());

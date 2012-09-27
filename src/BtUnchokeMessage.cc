@@ -41,7 +41,7 @@ const char BtUnchokeMessage::NAME[] = "unchoke";
 
 BtUnchokeMessage::BtUnchokeMessage():ZeroBtMessage(ID, NAME) {}
 
-SharedHandle<BtUnchokeMessage> BtUnchokeMessage::create
+BtUnchokeMessage* BtUnchokeMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return ZeroBtMessage::create<BtUnchokeMessage>(data, dataLength);

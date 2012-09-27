@@ -42,8 +42,6 @@ namespace aria2 {
 class PeerStorage;
 class BtNotInterestedMessage;
 
-typedef SharedHandle<BtNotInterestedMessage> BtNotInterestedMessageHandle;
-
 class BtNotInterestedMessage : public ZeroBtMessage {
 private:
   SharedHandle<PeerStorage> peerStorage_;
@@ -55,7 +53,7 @@ public:
 
   static const char NAME[];
 
-  static SharedHandle<BtNotInterestedMessage> create
+  static BtNotInterestedMessage* create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

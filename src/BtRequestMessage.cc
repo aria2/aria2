@@ -48,7 +48,7 @@ BtRequestMessage::BtRequestMessage
   RangeBtMessage(ID, NAME, index, begin, length),
   blockIndex_(blockIndex) {}
 
-SharedHandle<BtRequestMessage> BtRequestMessage::create
+BtRequestMessage* BtRequestMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return RangeBtMessage::create<BtRequestMessage>(data, dataLength);

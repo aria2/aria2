@@ -47,7 +47,7 @@ BtRejectMessage::BtRejectMessage
 (size_t index, int32_t begin, int32_t length):
   RangeBtMessage(ID, NAME, index, begin, length) {}
 
-SharedHandle<BtRejectMessage> BtRejectMessage::create
+BtRejectMessage* BtRejectMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return RangeBtMessage::create<BtRejectMessage>(data, dataLength);

@@ -96,7 +96,7 @@ std::string BtExtendedMessage::toString() const {
   return s;
 }
 
-BtExtendedMessageHandle
+BtExtendedMessage*
 BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
                           const SharedHandle<Peer>& peer,
                           const unsigned char* data, size_t dataLength)
@@ -104,9 +104,9 @@ BtExtendedMessage::create(const SharedHandle<ExtensionMessageFactory>& factory,
   bittorrent::assertPayloadLengthGreater(1, dataLength, NAME);
   bittorrent::assertID(ID, data, NAME);
   assert(factory);
-  ExtensionMessageHandle extmsg = factory->createMessage(data+1,
-                                                         dataLength-1);
-  BtExtendedMessageHandle message(new BtExtendedMessage(extmsg));
+  SharedHandle<ExtensionMessage> extmsg = factory->createMessage(data+1,
+                                                                 dataLength-1);
+  BtExtendedMessage* message(new BtExtendedMessage(extmsg));
   return message;
 }
 

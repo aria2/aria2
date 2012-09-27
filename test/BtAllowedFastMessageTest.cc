@@ -38,7 +38,8 @@ void BtAllowedFastMessageTest::testCreate() {
   unsigned char msg[9];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 17);
   bittorrent::setIntParam(&msg[5], 12345);
-  SharedHandle<BtAllowedFastMessage> pm = BtAllowedFastMessage::create(&msg[4], 5);
+  SharedHandle<BtAllowedFastMessage> pm
+    (BtAllowedFastMessage::create(&msg[4], 5));
   CPPUNIT_ASSERT_EQUAL((uint8_t)17, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
 

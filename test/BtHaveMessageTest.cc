@@ -41,7 +41,7 @@ void BtHaveMessageTest::testCreate() {
   unsigned char msg[9];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 4);
   bittorrent::setIntParam(&msg[5], 12345);
-  SharedHandle<BtHaveMessage> pm = BtHaveMessage::create(&msg[4], 5);
+  SharedHandle<BtHaveMessage> pm(BtHaveMessage::create(&msg[4], 5));
   CPPUNIT_ASSERT_EQUAL((uint8_t)4, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
 

@@ -39,10 +39,6 @@
 
 namespace aria2 {
 
-class BtUnchokeMessage;
-
-typedef SharedHandle<BtUnchokeMessage> BtUnchokeMessageHandle;
-
 class BtUnchokeMessage : public ZeroBtMessage {
 private:
   static const size_t MESSAGE_LENGTH = 5;
@@ -53,7 +49,7 @@ public:
 
   static const char NAME[];
 
-  static SharedHandle<BtUnchokeMessage> create
+  static BtUnchokeMessage* create
   (const unsigned char* data, size_t dataLength);
 
   virtual void doReceivedAction();

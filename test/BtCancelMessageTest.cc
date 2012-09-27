@@ -58,7 +58,7 @@ void BtCancelMessageTest::testCreate() {
   bittorrent::setIntParam(&msg[5], 12345);
   bittorrent::setIntParam(&msg[9], 256);
   bittorrent::setIntParam(&msg[13], 1024);
-  SharedHandle<BtCancelMessage> pm = BtCancelMessage::create(&msg[4], 13);
+  SharedHandle<BtCancelMessage> pm(BtCancelMessage::create(&msg[4], 13));
   CPPUNIT_ASSERT_EQUAL((uint8_t)8, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());

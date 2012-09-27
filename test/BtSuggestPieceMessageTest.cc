@@ -32,7 +32,8 @@ void BtSuggestPieceMessageTest::testCreate() {
   unsigned char msg[9];
   bittorrent::createPeerMessageString(msg, sizeof(msg), 5, 13);
   bittorrent::setIntParam(&msg[5], 12345);
-  SharedHandle<BtSuggestPieceMessage> pm = BtSuggestPieceMessage::create(&msg[4], 5);
+  SharedHandle<BtSuggestPieceMessage> pm
+    (BtSuggestPieceMessage::create(&msg[4], 5));
   CPPUNIT_ASSERT_EQUAL((uint8_t)13, pm->getId());
   CPPUNIT_ASSERT_EQUAL((size_t)12345, pm->getIndex());
 

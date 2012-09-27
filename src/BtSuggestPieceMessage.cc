@@ -38,7 +38,7 @@ namespace aria2 {
 
 const char BtSuggestPieceMessage::NAME[] = "suggest piece";
 
-SharedHandle<BtSuggestPieceMessage> BtSuggestPieceMessage::create
+BtSuggestPieceMessage* BtSuggestPieceMessage::create
 (const unsigned char* data, size_t dataLength)
 {
   return IndexBtMessage::create<BtSuggestPieceMessage>(data, dataLength);

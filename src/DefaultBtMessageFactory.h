@@ -71,7 +71,7 @@ private:
   PeerConnection* peerConnection_;
 
   SharedHandle<ExtensionMessageFactory> extensionMessageFactory_;
-  
+
   DHTNode* localNode_;
 
   DHTRoutingTable* routingTable_;
@@ -82,7 +82,7 @@ private:
 
   bool metadataGetMode_;
 
-  void setCommonProperty(const SharedHandle<AbstractBtMessage>& msg);
+  void setCommonProperty(AbstractBtMessage* msg);
 public:
   DefaultBtMessageFactory();
 
@@ -112,7 +112,7 @@ public:
   virtual SharedHandle<BtMessage> createChokeMessage();
 
   virtual SharedHandle<BtMessage> createUnchokeMessage();
-  
+
   virtual SharedHandle<BtMessage> createInterestedMessage();
 
   virtual SharedHandle<BtMessage> createNotInterestedMessage();
@@ -120,7 +120,7 @@ public:
   virtual SharedHandle<BtMessage> createBitfieldMessage();
 
   virtual SharedHandle<BtMessage> createKeepAliveMessage();
-  
+
   virtual SharedHandle<BtMessage> createHaveAllMessage();
 
   virtual SharedHandle<BtMessage> createHaveNoneMessage();
@@ -154,7 +154,7 @@ public:
 
   void setBtMessageDispatcher
   (BtMessageDispatcher* dispatcher);
-  
+
   void setBtRequestFactory(BtRequestFactory* factory);
 
   void setPeerConnection(PeerConnection* connection);
@@ -165,7 +165,7 @@ public:
   void setLocalNode(DHTNode* localNode);
 
   void setRoutingTable(DHTRoutingTable* routingTable);
-  
+
   void setTaskQueue(DHTTaskQueue* taskQueue);
 
   void setTaskFactory(DHTTaskFactory* taskFactory);
@@ -175,8 +175,6 @@ public:
     metadataGetMode_ = true;
   }
 };
-
-typedef SharedHandle<DefaultBtMessageFactory> DefaultBtMessageFactoryHandle;
 
 } // namespace aria2
 
