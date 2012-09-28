@@ -48,8 +48,6 @@ public:
   virtual void initAndOpenFile(int64_t totalLength = 0);
 };
 
-typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;
-
 } // namespace aria2
 
 #endif // D_DEFAULT_DISK_WRITER_H

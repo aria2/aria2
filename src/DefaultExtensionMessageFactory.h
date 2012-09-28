@@ -98,14 +98,12 @@ public:
   {
     dispatcher_ = disp;
   }
-  
+
   void setUTMetadataRequestTracker(UTMetadataRequestTracker* tracker)
   {
     tracker_ = tracker;
   }
 };
-
-typedef SharedHandle<DefaultExtensionMessageFactory> DefaultExtensionMessageFactoryHandle;
 
 } // namespace aria2
 

@@ -105,8 +105,6 @@ public:
   }
 };
 
-typedef SharedHandle<DefaultBtRequestFactory> DefaultBtRequestFactoryHandle;
-
 } // namespace aria2
 
 #endif // D_DEFAULT_BT_REQUEST_FACTORY_H

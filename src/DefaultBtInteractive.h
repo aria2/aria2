@@ -264,8 +264,6 @@ public:
   }
 };
 
-typedef SharedHandle<DefaultBtInteractive> DefaultBtInteractiveHandle;
-
 } // namespace aria2
 
 #endif // D_DEFAULT_BT_INTERACTIVE_H

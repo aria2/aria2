@@ -47,8 +47,6 @@ public:
   virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename);
 };
 
-typedef SharedHandle<DefaultDiskWriterFactory> DefaultDiskWriterFactoryHandle;
-
 } // namespace aria2
 
 #endif // D_DEFAULT_DISK_WRITER_FACTORY_H

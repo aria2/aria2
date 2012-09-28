@@ -74,8 +74,6 @@ public:
   void setBtMessageFactory(BtMessageFactory* factory);
 };
 
-typedef SharedHandle<DefaultBtMessageReceiver> DefaultBtMessageReceiverHandle;
-
 } // namespace aria2
 
 #endif // D_DEFAULT_BT_MESSAGE_RECEIVER_H

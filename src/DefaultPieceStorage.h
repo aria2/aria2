@@ -306,8 +306,6 @@ public:
   }
 };
 
-typedef SharedHandle<DefaultPieceStorage> DefaultPieceStorageHandle;
-
 } // namespace aria2
 
 #endif // D_DEFAULT_PIECE_STORAGE_H

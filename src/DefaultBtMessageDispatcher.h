@@ -69,7 +69,7 @@ public:
   DefaultBtMessageDispatcher();
 
   virtual ~DefaultBtMessageDispatcher();
-  
+
   virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage);
 
   virtual void addMessageToQueue
@@ -100,7 +100,7 @@ public:
   {
     return requestSlots_.size();
   }
-  
+
   virtual bool isOutstandingRequest(size_t index, size_t blockIndex);
 
   virtual RequestSlot getOutstandingRequest
@@ -144,8 +144,6 @@ public:
     requestTimeout_ = requestTimeout;
   }
 };
-
-typedef SharedHandle<DefaultBtMessageDispatcher> DefaultBtMessageDispatcherHandle;
 
 } // namespace aria2
 

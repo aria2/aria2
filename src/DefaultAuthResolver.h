@@ -45,8 +45,6 @@ public:
   (const std::string& hostname);
 };
 
-typedef SharedHandle<DefaultAuthResolver> DefaultAuthResolverHandle;
-
 } // namespace aria2
 
 #endif // D_DEFAULT_AUTH_RESOLVER_H

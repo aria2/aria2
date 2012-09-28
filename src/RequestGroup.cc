@@ -218,7 +218,7 @@ void RequestGroup::closeFile()
 // that this function open file.
 SharedHandle<CheckIntegrityEntry> RequestGroup::createCheckIntegrityEntry()
 {
-  BtProgressInfoFileHandle infoFile
+  SharedHandle<BtProgressInfoFile> infoFile
     (new DefaultBtProgressInfoFile(downloadContext_, pieceStorage_,
                                    option_.get()));
   SharedHandle<CheckIntegrityEntry> checkEntry;
@@ -309,38 +309,42 @@ void RequestGroup::createInitialCommand
           pieceStorage_->setupFileFilter();
         }
       }
-      
-      SharedHandle<DefaultBtProgressInfoFile> progressInfoFile;
+
+      DefaultBtProgressInfoFile* progressInfoFilePtr = 0;
+      SharedHandle<BtProgressInfoFile> progressInfoFile;
       if(!metadataGetMode) {
-        progressInfoFile.reset(new DefaultBtProgressInfoFile(downloadContext_,
-                                                             pieceStorage_,
-                                                             option_.get()));
+        progressInfoFilePtr = new DefaultBtProgressInfoFile(downloadContext_,
+                                                            pieceStorage_,
+                                                            option_.get());
+        progressInfoFile.reset(progressInfoFilePtr);
       }
-        
+
       BtRuntimeHandle btRuntime(new BtRuntime());
       btRuntime->setMaxPeers(option_->getAsInt(PREF_BT_MAX_PEERS));
       btRuntime_ = btRuntime.get();
-      if(progressInfoFile) {
-        progressInfoFile->setBtRuntime(btRuntime);
+      if(progressInfoFilePtr) {
+        progressInfoFilePtr->setBtRuntime(btRuntime);
       }
 
-      SharedHandle<DefaultPeerStorage> peerStorage(new DefaultPeerStorage());
-      peerStorage->setBtRuntime(btRuntime);
-      peerStorage->setPieceStorage(pieceStorage_);
-      peerStorage_ = peerStorage.get();
-      if(progressInfoFile) {
-        progressInfoFile->setPeerStorage(peerStorage);
+      DefaultPeerStorage* peerStoragePtr(new DefaultPeerStorage());
+      peerStoragePtr->setBtRuntime(btRuntime);
+      peerStoragePtr->setPieceStorage(pieceStorage_);
+      peerStorage_ = peerStoragePtr;
+      SharedHandle<PeerStorage> peerStorage(peerStoragePtr);
+      if(progressInfoFilePtr) {
+        progressInfoFilePtr->setPeerStorage(peerStorage);
       }
 
-      SharedHandle<DefaultBtAnnounce> btAnnounce
+      DefaultBtAnnounce* btAnnouncePtr
         (new DefaultBtAnnounce(downloadContext_, option_.get()));
-      btAnnounce->setBtRuntime(btRuntime);
-      btAnnounce->setPieceStorage(pieceStorage_);
-      btAnnounce->setPeerStorage(peerStorage);
-      btAnnounce->setUserDefinedInterval
+      btAnnouncePtr->setBtRuntime(btRuntime);
+      btAnnouncePtr->setPieceStorage(pieceStorage_);
+      btAnnouncePtr->setPeerStorage(peerStorage);
+      btAnnouncePtr->setUserDefinedInterval
         (option_->getAsInt(PREF_BT_TRACKER_INTERVAL));
-      btAnnounce->shuffleAnnounce();
-      
+      btAnnouncePtr->shuffleAnnounce();
+      SharedHandle<BtAnnounce> btAnnounce(btAnnouncePtr);
+
       assert(!btRegistry->get(gid_));
       btRegistry->put
         (gid_, SharedHandle<BtObject>
@@ -351,8 +355,7 @@ void RequestGroup::createInitialCommand
            btAnnounce,
            btRuntime,
            (progressInfoFile ?
-            SharedHandle<BtProgressInfoFile>(progressInfoFile) :
-            progressInfoFile_))));
+            progressInfoFile : progressInfoFile_))));
       if(metadataGetMode) {
         if(option_->getAsBool(PREF_ENABLE_DHT) ||
            (!e->getOption()->getAsBool(PREF_DISABLE_IPV6) &&
@@ -508,7 +511,7 @@ void RequestGroup::createInitialCommand
     if(downloadContext_->getFileEntries().size() > 1) {
       pieceStorage_->setupFileFilter();
     }
-    SharedHandle<DefaultBtProgressInfoFile> progressInfoFile
+    SharedHandle<BtProgressInfoFile> progressInfoFile
       (new DefaultBtProgressInfoFile(downloadContext_,
                                      pieceStorage_,
                                      option_.get()));
@@ -712,7 +715,8 @@ void RequestGroup::removeDefunctControlFile
   }
 }
 
-void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile)
+void RequestGroup::loadAndOpenFile
+(const SharedHandle<BtProgressInfoFile>& progressInfoFile)
 {
   try {
     if(!isPreLocalFileCheckEnabled()) {
@@ -1135,7 +1139,8 @@ void RequestGroup::setPieceStorage(const PieceStorageHandle& pieceStorage)
   pieceStorage_ = pieceStorage;
 }
 
-void RequestGroup::setProgressInfoFile(const BtProgressInfoFileHandle& progressInfoFile)
+void RequestGroup::setProgressInfoFile
+(const SharedHandle<BtProgressInfoFile>& progressInfoFile)
 {
   progressInfoFile_ = progressInfoFile;
 }
