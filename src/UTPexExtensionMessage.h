@@ -111,7 +111,7 @@ public:
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
-  static SharedHandle<UTPexExtensionMessage>
+  static UTPexExtensionMessage*
   create(const unsigned char* data, size_t len);
 
   void setMaxFreshPeer(size_t maxFreshPeer);

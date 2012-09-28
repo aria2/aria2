@@ -125,7 +125,7 @@ public:
 
   void setPeer(const SharedHandle<Peer>& peer);
 
-  static SharedHandle<HandshakeExtensionMessage>
+  static HandshakeExtensionMessage*
   create(const unsigned char* data, size_t dataLength);
 };
 

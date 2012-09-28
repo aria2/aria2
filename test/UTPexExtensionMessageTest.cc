@@ -202,10 +202,10 @@ void UTPexExtensionMessageTest::testCreate()
     "7:dropped12:"+std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "8:dropped618:"+std::string(&c6[0], &c6[COMPACT_LEN_IPV6])+
     "e";
-  
-  SharedHandle<UTPexExtensionMessage> msg =
-    UTPexExtensionMessage::create
-    (reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
+
+  SharedHandle<UTPexExtensionMessage> msg
+    (UTPexExtensionMessage::create
+     (reinterpret_cast<const unsigned char*>(data.c_str()), data.size()));
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
   CPPUNIT_ASSERT_EQUAL((size_t)3, msg->getFreshPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
@@ -238,7 +238,7 @@ void UTPexExtensionMessageTest::testCreate()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
-  }    
+  }
 }
 
 void UTPexExtensionMessageTest::testAddFreshPeer()

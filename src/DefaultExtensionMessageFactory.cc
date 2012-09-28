@@ -78,11 +78,11 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
   uint8_t extensionMessageID = *data;
   if(extensionMessageID == 0) {
     // handshake
-    SharedHandle<HandshakeExtensionMessage> m =
+    HandshakeExtensionMessage* m =
       HandshakeExtensionMessage::create(data, length);
     m->setPeer(peer_);
     m->setDownloadContext(dctx_);
-    return m;
+    return SharedHandle<ExtensionMessage>(m);
   } else {
     const char* extensionName = registry_->getExtensionName(extensionMessageID);
     if(!extensionName) {
@@ -92,10 +92,9 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     }
     if(strcmp(extensionName, "ut_pex") == 0) {
       // uTorrent compatible Peer-Exchange
-      SharedHandle<UTPexExtensionMessage> m =
-        UTPexExtensionMessage::create(data, length);
+      UTPexExtensionMessage* m = UTPexExtensionMessage::create(data, length);
       m->setPeerStorage(peerStorage_);
-      return m;
+      return SharedHandle<ExtensionMessage>(m);
     } else if(strcmp(extensionName, "ut_metadata") == 0) {
       if(length == 0) {
         throw DL_ABORT_EX
@@ -120,14 +119,14 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       }
       switch(msgType->i()) {
       case 0: {
-        SharedHandle<UTMetadataRequestExtensionMessage> m
+        UTMetadataRequestExtensionMessage* m
           (new UTMetadataRequestExtensionMessage(extensionMessageID));
         m->setIndex(index->i());
         m->setDownloadContext(dctx_);
         m->setPeer(peer_);
         m->setBtMessageFactory(messageFactory_);
         m->setBtMessageDispatcher(dispatcher_);
-        return m;
+        return SharedHandle<ExtensionMessage>(m);
       }
       case 1: {
         if(end == length) {
@@ -137,7 +136,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         if(!totalSize) {
           throw DL_ABORT_EX("Bad ut_metadata data: total_size not found");
         }
-        SharedHandle<UTMetadataDataExtensionMessage> m
+        UTMetadataDataExtensionMessage* m
           (new UTMetadataDataExtensionMessage(extensionMessageID));
         m->setIndex(index->i());
         m->setTotalSize(totalSize->i());
@@ -145,14 +144,14 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
         m->setUTMetadataRequestTracker(tracker_);
         m->setPieceStorage(dctx_->getOwnerRequestGroup()->getPieceStorage());
         m->setDownloadContext(dctx_);
-        return m;
+        return SharedHandle<ExtensionMessage>(m);
       }
       case 2: {
-        SharedHandle<UTMetadataRejectExtensionMessage> m
+        UTMetadataRejectExtensionMessage* m
           (new UTMetadataRejectExtensionMessage(extensionMessageID));
         m->setIndex(index->i());
         // No need to inject tracker because peer will be disconnected.
-        return m;
+        return SharedHandle<ExtensionMessage>(m);
       }
       default:
         throw DL_ABORT_EX

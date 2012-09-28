@@ -136,11 +136,12 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
 
 void HandshakeExtensionMessageTest::testCreate()
 {
-  std::string in = 
+  std::string in =
     "0d1:pi6881e1:v5:aria21:md5:a2dhti2e6:ut_pexi1ee13:metadata_sizei1024ee";
-  SharedHandle<HandshakeExtensionMessage> m =
-    HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
-                                      in.size());
+  SharedHandle<HandshakeExtensionMessage> m
+    (HandshakeExtensionMessage::create
+     (reinterpret_cast<const unsigned char*>(in.c_str()),
+      in.size()));
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getTCPPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1,
@@ -173,16 +174,16 @@ void HandshakeExtensionMessageTest::testCreate()
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception& e) {
     std::cerr << e.stackTrace() << std::endl;
-  }    
+  }
 }
 
 void HandshakeExtensionMessageTest::testCreate_stringnum()
 {
   std::string in = "0d1:p4:68811:v5:aria21:md6:ut_pex1:1ee";
-  SharedHandle<HandshakeExtensionMessage> m =
-    HandshakeExtensionMessage::create
-    (reinterpret_cast<const unsigned char*>(in.c_str()),
-     in.size());
+  SharedHandle<HandshakeExtensionMessage> m
+    (HandshakeExtensionMessage::create
+     (reinterpret_cast<const unsigned char*>(in.c_str()),
+      in.size()));
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
   // port number in string is not allowed
   CPPUNIT_ASSERT_EQUAL((uint16_t)0, m->getTCPPort());
