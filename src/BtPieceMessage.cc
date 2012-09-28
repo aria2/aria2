@@ -281,7 +281,7 @@ void BtPieceMessage::onChokingEvent(const BtChokingEvent& event)
                      begin_,
                      blockLength_));
     if(getPeer()->isFastExtensionEnabled()) {
-      BtMessageHandle rej =
+      SharedHandle<BtMessage> rej =
         getBtMessageFactory()->createRejectMessage
         (index_, begin_, blockLength_);
       getBtMessageDispatcher()->addMessageToQueue(rej);
@@ -304,13 +304,13 @@ void BtPieceMessage::onCancelSendingPieceEvent
                      begin_,
                      blockLength_));
     if(getPeer()->isFastExtensionEnabled()) {
-      BtMessageHandle rej =
+      SharedHandle<BtMessage> rej =
         getBtMessageFactory()->createRejectMessage
         (index_, begin_, blockLength_);
       getBtMessageDispatcher()->addMessageToQueue(rej);
     }
     setInvalidate(true);
-  } 
+  }
 }
 
 void BtPieceMessage::setDownloadContext

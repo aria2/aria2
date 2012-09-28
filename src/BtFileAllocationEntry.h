@@ -49,8 +49,6 @@ public:
                                     DownloadEngine* e);
 };
 
-typedef SharedHandle<BtFileAllocationEntry> BtFileAllocationEntryHandle;
-
 } // namespace aria2
 
 #endif // D_BT_FILE_ALLOCATION_ENTRY_H

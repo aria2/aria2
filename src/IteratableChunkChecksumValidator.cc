@@ -55,7 +55,7 @@ namespace aria2 {
 
 IteratableChunkChecksumValidator::IteratableChunkChecksumValidator
 (const SharedHandle<DownloadContext>& dctx,
- const PieceStorageHandle& pieceStorage)
+ const SharedHandle<PieceStorage>& pieceStorage)
   : dctx_(dctx),
     pieceStorage_(pieceStorage),
     bitfield_(new BitfieldMan(dctx_->getPieceLength(),

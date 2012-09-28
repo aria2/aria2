@@ -48,7 +48,7 @@
 #include "StatCalc.h"
 #include "LogFactory.h"
 #include "Logger.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "util.h"
 #include "a2functional.h"
 #include "DlAbortEx.h"
@@ -176,28 +176,28 @@ void DownloadEngine::waitData()
   eventPoll_->poll(tv);
 }
 
-bool DownloadEngine::addSocketForReadCheck(const SocketHandle& socket,
+bool DownloadEngine::addSocketForReadCheck(const SharedHandle<SocketCore>& socket,
                                            Command* command)
 {
   return eventPoll_->addEvents(socket->getSockfd(), command,
                                EventPoll::EVENT_READ);
 }
 
-bool DownloadEngine::deleteSocketForReadCheck(const SocketHandle& socket,
+bool DownloadEngine::deleteSocketForReadCheck(const SharedHandle<SocketCore>& socket,
                                               Command* command)
 {
   return eventPoll_->deleteEvents(socket->getSockfd(), command,
                                   EventPoll::EVENT_READ);
 }
 
-bool DownloadEngine::addSocketForWriteCheck(const SocketHandle& socket,
+bool DownloadEngine::addSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
                                             Command* command)
 {
   return eventPoll_->addEvents(socket->getSockfd(), command,
                                EventPoll::EVENT_WRITE);
 }
 
-bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
+bool DownloadEngine::deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
                                                Command* command)
 {
   return eventPoll_->deleteEvents(socket->getSockfd(), command,
@@ -249,7 +249,7 @@ void DownloadEngine::requestForceHalt()
   requestGroupMan_->forceHalt();
 }
 
-void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
+void DownloadEngine::setStatCalc(const SharedHandle<StatCalc>& statCalc)
 {
   statCalc_ = statCalc;
 }

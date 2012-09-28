@@ -41,7 +41,7 @@
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "HttpRequestCommand.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "DlRetryEx.h"
 #include "message.h"
 #include "HttpHeader.h"
@@ -55,9 +55,9 @@ AbstractProxyResponseCommand::AbstractProxyResponseCommand
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const HttpConnectionHandle& httpConnection,
+ const SharedHandle<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
   :AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
    httpConnection_(httpConnection) {}
 

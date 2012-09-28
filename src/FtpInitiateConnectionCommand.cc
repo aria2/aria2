@@ -50,7 +50,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "HttpConnection.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "util.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"

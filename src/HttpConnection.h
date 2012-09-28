@@ -74,8 +74,7 @@ public:
   }
 };
 
-typedef SharedHandle<HttpRequestEntry> HttpRequestEntryHandle;
-typedef std::deque<HttpRequestEntryHandle> HttpRequestEntries;
+typedef std::deque<SharedHandle<HttpRequestEntry> > HttpRequestEntries;
 
 class HttpConnection {
 private:
@@ -114,10 +113,10 @@ public:
    * object which contains response header and HttpRequestHandle object
    * for this response.
    * If a response is not fully received, received header is buffured
-   * in this object and returns 0. 
+   * in this object and returns 0.
    * You should continue to call this method until whole response header is
    * received and this method returns non-null HttpResponseHandle object.
-   * 
+   *
    * @return HttpResponse or 0 if whole response header is not received
    */
   SharedHandle<HttpResponse> receiveResponse();
@@ -135,8 +134,6 @@ public:
     return socketRecvBuffer_;
   }
 };
-
-typedef SharedHandle<HttpConnection> HttpConnectionHandle;
 
 } // namespace aria2
 

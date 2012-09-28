@@ -71,9 +71,8 @@ public:
   }
 };
 
-typedef SharedHandle<AuthConfig> AuthConfigHandle;
-
-std::ostream& operator<<(std::ostream& o, const AuthConfigHandle& authConfig);
+std::ostream& operator<<(std::ostream& o,
+                         const SharedHandle<AuthConfig>& authConfig);
 
 } // namespace aria2
 

@@ -36,9 +36,11 @@
 #define D_CHECK_INTEGRITY_ENTRY_H
 
 #include "RequestGroupEntry.h"
-#include "ProgressAwareEntry.h"
 
 #include <vector>
+
+#include "SharedHandle.h"
+#include "ProgressAwareEntry.h"
 
 namespace aria2 {
 

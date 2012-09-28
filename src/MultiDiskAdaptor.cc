@@ -305,7 +305,7 @@ void MultiDiskAdaptor::closeFile()
 }
 
 namespace {
-bool isInRange(const DiskWriterEntryHandle entry, int64_t offset)
+bool isInRange(const SharedHandle<DiskWriterEntry> entry, int64_t offset)
 {
   return entry->getFileEntry()->getOffset() <= offset &&
     offset < entry->getFileEntry()->getLastOffset();
@@ -313,7 +313,7 @@ bool isInRange(const DiskWriterEntryHandle entry, int64_t offset)
 } // namespace
 
 namespace {
-ssize_t calculateLength(const DiskWriterEntryHandle entry,
+ssize_t calculateLength(const SharedHandle<DiskWriterEntry> entry,
                         int64_t fileOffset, ssize_t rem)
 {
   if(entry->getFileEntry()->getLength() < fileOffset+rem) {

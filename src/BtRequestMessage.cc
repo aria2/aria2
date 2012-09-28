@@ -63,13 +63,13 @@ void BtRequestMessage::doReceivedAction()
      (!getPeer()->amChoking() ||
       (getPeer()->amChoking() &&
        getPeer()->isInAmAllowedIndexSet(getIndex())))) {
-    BtMessageHandle msg =
+    SharedHandle<BtMessage> msg =
       getBtMessageFactory()->createPieceMessage
       (getIndex(), getBegin(), getLength());
     getBtMessageDispatcher()->addMessageToQueue(msg);
   } else {
     if(getPeer()->isFastExtensionEnabled()) {
-      BtMessageHandle msg =
+      SharedHandle<BtMessage> msg =
         getBtMessageFactory()->createRejectMessage
         (getIndex(), getBegin(), getLength());
       getBtMessageDispatcher()->addMessageToQueue(msg);

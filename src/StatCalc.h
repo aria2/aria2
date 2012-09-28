@@ -49,8 +49,6 @@ public:
   virtual void calculateStat(const DownloadEngine* e) = 0;
 };
 
-typedef SharedHandle<StatCalc> StatCalcHandle;
-
 } // namespace aria2
 
 #endif // D_STAT_CALC_H

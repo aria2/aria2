@@ -36,7 +36,6 @@
 #define D_BT_RUNTIME_H
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -106,8 +105,6 @@ public:
   static const int DEFAULT_MAX_PEERS = 55;
   static const int DEFAULT_MIN_PEERS = 40;
 };
-
-typedef SharedHandle<BtRuntime> BtRuntimeHandle;
 
 } // namespace aria2
 

@@ -73,7 +73,7 @@ public:
   virtual SharedHandle<BtMessage> createChokeMessage() = 0;
 
   virtual SharedHandle<BtMessage> createUnchokeMessage() = 0;
-  
+
   virtual SharedHandle<BtMessage> createInterestedMessage() = 0;
 
   virtual SharedHandle<BtMessage> createNotInterestedMessage() = 0;
@@ -81,7 +81,7 @@ public:
   virtual SharedHandle<BtMessage> createBitfieldMessage() = 0;
 
   virtual SharedHandle<BtMessage> createKeepAliveMessage() = 0;
-  
+
   virtual SharedHandle<BtMessage> createHaveAllMessage() = 0;
 
   virtual SharedHandle<BtMessage> createHaveNoneMessage() = 0;
@@ -96,8 +96,6 @@ public:
   virtual SharedHandle<BtMessage>
   createBtExtendedMessage(const SharedHandle<ExtensionMessage>& msg) = 0;
 };
-
-typedef SharedHandle<BtMessageFactory> BtMessageFactoryHandle;
 
 } // namespace aria2
 

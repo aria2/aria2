@@ -41,13 +41,12 @@
 #include <vector>
 
 #include "a2time.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
 class PeerStorage;
 class Peer;
-class UTPexExtensionMessage;
-typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
 
 class UTPexExtensionMessage:public ExtensionMessage {
 private:
@@ -80,7 +79,7 @@ public:
   {
     return extensionMessageID_;
   }
-  
+
   virtual const char* getExtensionName() const
   {
     return EXTENSION_NAME;
@@ -98,7 +97,7 @@ public:
   {
     return freshPeers_;
   }
-  
+
   bool freshPeersAreFull() const;
 
   bool addDroppedPeer(const SharedHandle<Peer>& peer);
@@ -112,7 +111,7 @@ public:
 
   void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
 
-  static UTPexExtensionMessageHandle
+  static SharedHandle<UTPexExtensionMessage>
   create(const unsigned char* data, size_t len);
 
   void setMaxFreshPeer(size_t maxFreshPeer);
@@ -131,8 +130,6 @@ public:
 
   static const time_t DEFAULT_INTERVAL = 60;
 };
-
-typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
 
 } // namespace aria2
 

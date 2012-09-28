@@ -165,7 +165,7 @@ DefaultBtMessageFactory::createBtMessage
     case BtPieceMessage::ID: {
       BtPieceMessage* m = BtPieceMessage::create(data, dataLength);
       if(!metadataGetMode_) {
-        BtMessageValidatorHandle validator
+        SharedHandle<BtMessageValidator> validator
           (new BtPieceMessageValidator
            (m,
             downloadContext_->getNumPieces(),
@@ -264,7 +264,7 @@ DefaultBtMessageFactory::createHandshakeMessage
 {
   SharedHandle<BtHandshakeMessage> msg =
     BtHandshakeMessage::create(data, dataLength);
-  BtMessageValidatorHandle validator
+  SharedHandle<BtMessageValidator> validator
     (new BtHandshakeMessageValidator
      (msg.get(), bittorrent::getInfoHash(downloadContext_)));
   msg->setBtMessageValidator(validator);
@@ -416,7 +416,7 @@ DefaultBtMessageFactory::createPortMessage(uint16_t port)
 
 SharedHandle<BtMessage>
 DefaultBtMessageFactory::createBtExtendedMessage
-(const ExtensionMessageHandle& msg)
+(const SharedHandle<ExtensionMessage>& msg)
 {
   BtExtendedMessage* m(new BtExtendedMessage(msg));
   setCommonProperty(m);

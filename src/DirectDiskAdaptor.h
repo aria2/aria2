@@ -46,8 +46,6 @@ public:
   virtual size_t utime(const Time& actime, const Time& modtime);
 };
 
-typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;
-
 } // namespace aria2
 
 #endif // D_DIRECT_DISK_ADAPTOR_H

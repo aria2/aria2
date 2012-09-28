@@ -67,8 +67,6 @@ public:
   std::string getString() const;
 };
 
-typedef SharedHandle<ByteArrayDiskWriter> ByteArrayDiskWriterHandle;
-
 } // namespace aria2
 
 #endif // D_BYTE_ARRAY_DISK_WRITER_H

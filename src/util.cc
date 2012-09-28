@@ -1098,7 +1098,7 @@ void convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
   }
 }
 
-std::string toString(const BinaryStreamHandle& binaryStream)
+std::string toString(const SharedHandle<BinaryStream>& binaryStream)
 {
   std::stringstream strm;
   char data[2048];

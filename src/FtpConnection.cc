@@ -50,7 +50,7 @@
 #include "AuthConfig.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "A2STR.h"
 #include "fmt.h"
 #include "AuthConfig.h"
@@ -62,7 +62,7 @@ namespace aria2 {
 
 FtpConnection::FtpConnection
 (cuid_t cuid,
- const SocketHandle& socket,
+ const SharedHandle<SocketCore>& socket,
  const SharedHandle<Request>& req,
  const SharedHandle<AuthConfig>& authConfig,
  const Option* op)

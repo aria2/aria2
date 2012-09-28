@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "FtpDownloadCommand.h"
 #include "Request.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "Segment.h"
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
@@ -55,8 +55,8 @@ FtpDownloadCommand::FtpDownloadCommand
  RequestGroup* requestGroup,
  const SharedHandle<FtpConnection>& ftpConnection,
  DownloadEngine* e,
- const SocketHandle& dataSocket,
- const SocketHandle& ctrlSocket)
+ const SharedHandle<SocketCore>& dataSocket,
+ const SharedHandle<SocketCore>& ctrlSocket)
   :DownloadCommand(cuid, req, fileEntry, requestGroup, e, dataSocket,
                    SharedHandle<SocketRecvBuffer>
                    (new SocketRecvBuffer(dataSocket))),

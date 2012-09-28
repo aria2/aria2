@@ -97,9 +97,7 @@ public:
 
 };
 
-typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
-
-typedef std::vector<DiskWriterEntryHandle> DiskWriterEntries;
+typedef std::vector<SharedHandle<DiskWriterEntry> > DiskWriterEntries;
 
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
@@ -118,7 +116,7 @@ private:
 
   void openIfNot(const SharedHandle<DiskWriterEntry>& entry,
                  void (DiskWriterEntry::*f)());
- 
+
   static const int DEFAULT_MAX_OPEN_FILES = 100;
 
 public:
@@ -174,8 +172,6 @@ public:
   }
 
 };
-
-typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;
 
 } // namespace aria2
 

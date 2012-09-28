@@ -52,7 +52,7 @@ public:
    * Opens file. If the file exists, then it is truncated to 0 length.
    */
   virtual void initAndOpenFile(int64_t totalLength = 0)  = 0;
-  
+
   virtual void openFile(int64_t totalLength = 0) = 0;
 
   /**
@@ -83,8 +83,6 @@ public:
   // Enables mmap.
   virtual void enableMmap() {}
 };
-
-typedef SharedHandle<DiskWriter> DiskWriterHandle;
 
 } // namespace aria2
 

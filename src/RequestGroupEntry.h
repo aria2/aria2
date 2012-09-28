@@ -36,7 +36,6 @@
 #define D_REQUEST_GROUP_ENTRY_H
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -66,14 +65,12 @@ public:
   Command* popNextCommand();
 
   void pushNextCommand(Command* nextCommand);
-  
+
   bool operator==(const RequestGroupEntry& entry) const
   {
     return this == &entry;
   }
 };
-
-typedef SharedHandle<RequestGroupEntry> RequestGroupEntryHandle;
 
 } // namespace aria2
 

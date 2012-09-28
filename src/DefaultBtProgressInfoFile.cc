@@ -75,7 +75,7 @@ std::string createFilename
 
 DefaultBtProgressInfoFile::DefaultBtProgressInfoFile
 (const SharedHandle<DownloadContext>& dctx,
- const PieceStorageHandle& pieceStorage,
+ const SharedHandle<PieceStorage>& pieceStorage,
  const Option* option)
   : dctx_(dctx),
     pieceStorage_(pieceStorage),

@@ -87,8 +87,6 @@ public:
 
 };
 
-typedef SharedHandle<BtRequestFactory> BtRequestFactoryHandle;
-
 } // namespace aria2
 
 #endif // D_BT_REQUEST_FACTORY_H

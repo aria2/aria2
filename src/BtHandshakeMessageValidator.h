@@ -58,8 +58,6 @@ public:
   virtual void validate();
 };
 
-typedef SharedHandle<BtHandshakeMessageValidator> BtHandshakeMessageValidatorHandle;
-
 } // namespace aria2
 
 #endif // D_BT_HANDSHAKE_MESSAGE_VALIDATOR_H

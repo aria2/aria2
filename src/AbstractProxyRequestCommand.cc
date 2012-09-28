@@ -41,7 +41,7 @@
 #include "Segment.h"
 #include "Option.h"
 #include "prefs.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "DownloadContext.h"
 #include "SocketRecvBuffer.h"
 
@@ -54,7 +54,7 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand
  RequestGroup* requestGroup,
  DownloadEngine* e,
  const SharedHandle<Request>& proxyRequest,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
   :
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, s),
   proxyRequest_(proxyRequest),

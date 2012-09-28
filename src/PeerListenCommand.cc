@@ -45,7 +45,7 @@
 #include "ReceiverMSEHandshakeCommand.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "SimpleRandomizer.h"
 #include "util.h"
 #include "fmt.h"
@@ -108,7 +108,7 @@ bool PeerListenCommand::execute() {
     return true;
   }
   for(int i = 0; i < 3 && socket_->isReadable(0); ++i) {
-    SocketHandle peerSocket;
+    SharedHandle<SocketCore> peerSocket;
     try {
       peerSocket.reset(socket_->acceptConnection());
       std::pair<std::string, uint16_t> peerInfo;

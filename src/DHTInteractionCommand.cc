@@ -39,7 +39,7 @@
 #include "DHTMessageReceiver.h"
 #include "DHTTaskQueue.h"
 #include "DHTMessage.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "message.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
@@ -60,7 +60,7 @@ DHTInteractionCommand::~DHTInteractionCommand()
   disableReadCheckSocket(readCheckSocket_);
 }
 
-void DHTInteractionCommand::setReadCheckSocket(const SocketHandle& socket)
+void DHTInteractionCommand::setReadCheckSocket(const SharedHandle<SocketCore>& socket)
 {
   readCheckSocket_ = socket;
   if(socket) {
@@ -68,7 +68,7 @@ void DHTInteractionCommand::setReadCheckSocket(const SocketHandle& socket)
   }
 }
 
-void DHTInteractionCommand::disableReadCheckSocket(const SocketHandle& socket)
+void DHTInteractionCommand::disableReadCheckSocket(const SharedHandle<SocketCore>& socket)
 {
   if(socket) {
     e_->deleteSocketForReadCheck(socket, this);

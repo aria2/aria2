@@ -149,7 +149,7 @@ public:
   virtual void doReceivedAction() {}
 
   virtual void validate();
-  
+
   virtual void onQueued() {}
 
   virtual void onAbortOutstandingRequestEvent
@@ -182,8 +182,6 @@ public:
     metadataGetMode_ = true;
   }
 };
-
-typedef SharedHandle<AbstractBtMessage> AbstractBtMessageHandle;
 
 } // namespace aria2
 

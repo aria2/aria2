@@ -36,7 +36,6 @@
 #define D_DEPENDENCY_H
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -46,8 +45,6 @@ public:
 
   virtual bool resolve() = 0;
 };
-
-typedef SharedHandle<Dependency> DependencyHandle;
 
 } // namespace aria2
 

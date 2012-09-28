@@ -56,8 +56,6 @@ public:
   virtual void validate();
 };
 
-typedef SharedHandle<BtPieceMessageValidator> BtPieceMessageValidatorHandle;
-
 } // namespace aria2
 
 #endif // D_BT_PIECE_MESSAGE_VALIDATOR_H

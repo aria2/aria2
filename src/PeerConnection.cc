@@ -43,7 +43,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "BtHandshakeMessage.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "a2netcompat.h"
 #include "ARC4Encryptor.h"
 #include "fmt.h"
@@ -64,7 +64,7 @@ enum {
 } // namespace
 
 PeerConnection::PeerConnection
-(cuid_t cuid, const SharedHandle<Peer>& peer, const SocketHandle& socket)
+(cuid_t cuid, const SharedHandle<Peer>& peer, const SharedHandle<SocketCore>& socket)
   : cuid_(cuid),
     peer_(peer),
     socket_(socket),

@@ -89,8 +89,6 @@ public:
   virtual size_t countOutstandingUpload() = 0;
 };
 
-typedef SharedHandle<BtMessageDispatcher> BtMessageDispatcherHandle;
-
 } // namespace aria2
 
 #endif // D_BT_MESSAGE_DISPATCHER_H

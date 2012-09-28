@@ -53,7 +53,7 @@
 #include "DownloadContext.h"
 #include "Option.h"
 #include "util.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "message.h"
 #include "prefs.h"
 #include "fmt.h"
@@ -82,7 +82,7 @@ DownloadCommand::DownloadCommand
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const SocketHandle& s,
+ const SharedHandle<SocketCore>& s,
  const SharedHandle<SocketRecvBuffer>& socketRecvBuffer)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s, socketRecvBuffer),
     startupIdleTime_(10),

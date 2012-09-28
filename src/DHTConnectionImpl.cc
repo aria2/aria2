@@ -41,7 +41,7 @@
 #include "Logger.h"
 #include "RecoverableException.h"
 #include "util.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "SimpleRandomizer.h"
 #include "fmt.h"
 

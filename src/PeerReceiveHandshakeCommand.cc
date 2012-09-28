@@ -50,7 +50,7 @@
 #include "BtRuntime.h"
 #include "BtConstants.h"
 #include "message.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "Logger.h"
 #include "LogFactory.h"
 #include "prefs.h"
@@ -65,7 +65,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand
 (cuid_t cuid,
  const SharedHandle<Peer>& peer,
  DownloadEngine* e,
- const SocketHandle& s,
+ const SharedHandle<SocketCore>& s,
  const SharedHandle<PeerConnection>& peerConnection)
   : PeerAbstractCommand(cuid, peer, e, s),
     peerConnection_(peerConnection)

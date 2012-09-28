@@ -52,8 +52,6 @@ public:
   virtual SharedHandle<DiskWriter> newDiskWriter(const std::string& filename)=0;
 };
 
-typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
-
 } // namespace aria2
 
 #endif // D_DISK_WRITER_FACTORY_H

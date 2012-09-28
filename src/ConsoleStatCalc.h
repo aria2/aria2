@@ -83,8 +83,6 @@ public:
   }
 };
 
-typedef SharedHandle<ConsoleStatCalc> ConsoleStatCalcHandle;
-
 } // namespace aria2
 
 #endif // D_CONSOLE_STAT_CALC_H

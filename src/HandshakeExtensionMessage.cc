@@ -164,7 +164,7 @@ uint8_t HandshakeExtensionMessage::getExtensionMessageID(int key) const
   return extreg_.getExtensionMessageID(key);
 }
 
-HandshakeExtensionMessageHandle
+SharedHandle<HandshakeExtensionMessage>
 HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 {
   if(length < 1) {
@@ -172,7 +172,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
       (fmt(MSG_TOO_SMALL_PAYLOAD_SIZE,
            EXTENSION_NAME, static_cast<unsigned long>(length)));
   }
-  HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
+  SharedHandle<HandshakeExtensionMessage> msg(new HandshakeExtensionMessage());
   A2_LOG_DEBUG(fmt("Creating HandshakeExtensionMessage from %s",
                    util::percentEncode(data, length).c_str()));
   SharedHandle<ValueBase> decoded = bencode2::decode(data+1, length - 1);

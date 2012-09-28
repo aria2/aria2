@@ -787,7 +787,7 @@ namespace {
 void formatDownloadResultCommon
 (std::ostream& o,
  const char* status,
- const DownloadResultHandle& downloadResult)
+ const SharedHandle<DownloadResult>& downloadResult)
 {
   o << std::setw(3) << downloadResult->gid << "|"
     << std::setw(4) << status << "|"
@@ -806,7 +806,7 @@ void formatDownloadResultCommon
 void RequestGroupMan::formatDownloadResultFull
 (OutputFile& out,
  const char* status,
- const DownloadResultHandle& downloadResult) const
+ const SharedHandle<DownloadResult>& downloadResult) const
 {
   BitfieldMan bt(downloadResult->pieceLength, downloadResult->totalLength);
   bt.setBitfield(reinterpret_cast<const unsigned char*>
@@ -848,7 +848,7 @@ void RequestGroupMan::formatDownloadResultFull
 
 std::string RequestGroupMan::formatDownloadResult
 (const char* status,
- const DownloadResultHandle& downloadResult) const
+ const SharedHandle<DownloadResult>& downloadResult) const
 {
   std::stringstream o;
   formatDownloadResultCommon(o, status, downloadResult);

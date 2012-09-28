@@ -79,7 +79,7 @@ namespace aria2 {
 
 DownloadEngineFactory::DownloadEngineFactory() {}
 
-DownloadEngineHandle
+SharedHandle<DownloadEngine>
 DownloadEngineFactory::newDownloadEngine
 (Option* op, const std::vector<SharedHandle<RequestGroup> >& requestGroups)
 {
@@ -130,10 +130,10 @@ DownloadEngineFactory::newDownloadEngine
           } else {
             abort();
           }
-  DownloadEngineHandle e(new DownloadEngine(eventPoll));
+  SharedHandle<DownloadEngine> e(new DownloadEngine(eventPoll));
   e->setOption(op);
 
-  RequestGroupManHandle
+  SharedHandle<RequestGroupMan>
     requestGroupMan(new RequestGroupMan(requestGroups, MAX_CONCURRENT_DOWNLOADS,
                                         op));
   e->setRequestGroupMan(requestGroupMan);

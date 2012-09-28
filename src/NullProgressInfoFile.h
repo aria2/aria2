@@ -60,8 +60,6 @@ public:
   virtual void updateFilename() {}
 };
 
-typedef SharedHandle<NullProgressInfoFile> NullProgressInfoFileHandle;
-
 } // namespace aria2
 
 #endif // D_NULL_PROGRESS_INFO_FILE_H

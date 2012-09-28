@@ -69,8 +69,6 @@ public:
   virtual size_t countOutstandingRequest() = 0;
 };
 
-typedef SharedHandle<BtInteractive> BtInteractiveHandle;
-
 } // namespace aria2
 
 #endif // D_BT_INTERACTIVE_H

@@ -44,7 +44,7 @@
 #include "Option.h"
 #include "Logger.h"
 #include "LogFactory.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "message.h"
 #include "prefs.h"
 #include "A2STR.h"

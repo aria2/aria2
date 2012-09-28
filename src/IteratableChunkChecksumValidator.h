@@ -39,6 +39,8 @@
 
 #include <string>
 
+#include "SharedHandle.h"
+
 namespace aria2 {
 
 class DownloadContext;
@@ -75,8 +77,6 @@ public:
 
   virtual int64_t getTotalLength() const;
 };
-
-typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;
 
 } // namespace aria2
 

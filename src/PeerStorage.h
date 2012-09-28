@@ -88,7 +88,7 @@ public:
    * Otherwise returns false.
    */
   virtual bool isPeerAvailable() = 0;
-  
+
   /**
    * Returns the list of peers which are currently connected from localhost.
    */
@@ -123,8 +123,6 @@ public:
 
   virtual void executeChoke() = 0;
 };
-
-typedef SharedHandle<PeerStorage> PeerStorageHandle;
 
 } // namespace aria2
 

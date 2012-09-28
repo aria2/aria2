@@ -43,8 +43,6 @@ namespace aria2 {
 typedef AnonDiskWriterFactory<ByteArrayDiskWriter>
 ByteArrayDiskWriterFactory;
 
-typedef SharedHandle<ByteArrayDiskWriterFactory> ByteArrayDiskWriterFactoryHandle;
-
 } // namespace aria2
 
 #endif // D_BYTE_ARRAY_DISK_WRITER_FACTORY_H

@@ -54,8 +54,6 @@ public:
                                     DownloadEngine* e);
 };
 
-typedef SharedHandle<StreamCheckIntegrityEntry> StreamCheckIntegrityEntryHandle;
-
 } // namespace aria2
 
 #endif // D_STREAM_CHECK_INTEGRITY_ENTRY_H

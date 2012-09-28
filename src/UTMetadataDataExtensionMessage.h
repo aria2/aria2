@@ -36,6 +36,7 @@
 #define D_UT_METADATA_DATA_EXTENSION_MESSAGE_H
 
 #include "UTMetadataExtensionMessage.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 

@@ -39,14 +39,12 @@
 
 #include <unistd.h>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class BinaryStream {
 public:
   virtual ~BinaryStream() {}
-  
+
   virtual void writeData(const unsigned char* data, size_t len,
                          int64_t offset) = 0;
 
@@ -60,8 +58,6 @@ public:
   // default implementation does nothing.
   virtual void allocate(int64_t offset, int64_t length) {}
 };
-
-typedef SharedHandle<BinaryStream> BinaryStreamHandle;
 
 } // namespace aria2
 

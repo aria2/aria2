@@ -146,9 +146,9 @@ void AbstractSingleDiskAdaptor::cutTrailingGarbage()
     diskWriter_->truncate(totalLength_);
   }
 }
-  
+
 void AbstractSingleDiskAdaptor::setDiskWriter
-(const DiskWriterHandle& diskWriter)
+(const SharedHandle<DiskWriter>& diskWriter)
 {
   diskWriter_ = diskWriter;
 }

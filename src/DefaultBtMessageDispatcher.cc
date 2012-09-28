@@ -72,7 +72,7 @@ DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
 }
 
 void DefaultBtMessageDispatcher::addMessageToQueue
-(const BtMessageHandle& btMessage)
+(const SharedHandle<BtMessage>& btMessage)
 {
   btMessage->onQueued();
   messageQueue_.push_back(btMessage);
@@ -90,7 +90,7 @@ void DefaultBtMessageDispatcher::addMessageToQueue
 void DefaultBtMessageDispatcher::sendMessages() {
   std::vector<SharedHandle<BtMessage> > tempQueue;
   while(!messageQueue_.empty()) {
-    BtMessageHandle msg = messageQueue_.front();
+    SharedHandle<BtMessage> msg = messageQueue_.front();
     messageQueue_.pop_front();
     if(msg->isUploading() && !msg->isSendingInProgress()) {
       if(requestGroupMan_->doesOverallUploadSpeedExceed() ||

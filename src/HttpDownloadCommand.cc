@@ -40,7 +40,7 @@
 #include "HttpConnection.h"
 #include "HttpRequest.h"
 #include "Segment.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "prefs.h"
 #include "Option.h"
 #include "HttpResponse.h"
@@ -61,9 +61,9 @@ HttpDownloadCommand::HttpDownloadCommand
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  const SharedHandle<HttpResponse>& httpResponse,
- const HttpConnectionHandle& httpConnection,
+ const SharedHandle<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const SocketHandle& socket)
+ const SharedHandle<SocketCore>& socket)
   : DownloadCommand(cuid, req, fileEntry, requestGroup, e, socket,
                     httpConnection->getSocketRecvBuffer()),
     httpResponse_(httpResponse),

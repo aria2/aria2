@@ -56,7 +56,7 @@ AuthConfigFactory::AuthConfigFactory() {}
 
 AuthConfigFactory::~AuthConfigFactory() {}
 
-AuthConfigHandle
+SharedHandle<AuthConfig>
 AuthConfigFactory::createAuthConfig
 (const SharedHandle<Request>& request, const Option* op)
 {
@@ -119,7 +119,7 @@ AuthConfigFactory::createAuthConfig
   }
 }
 
-AuthConfigHandle
+SharedHandle<AuthConfig>
 AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& password) const
 {
   SharedHandle<AuthConfig> ac;
@@ -129,31 +129,31 @@ AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& 
   return ac;
 }
 
-AuthResolverHandle AuthConfigFactory::createHttpAuthResolver
+SharedHandle<AuthResolver> AuthConfigFactory::createHttpAuthResolver
 (const Option* op) const
 {
-  AbstractAuthResolverHandle resolver;
+  AbstractAuthResolver* resolver;
   if(op->getAsBool(PREF_NO_NETRC)) {
-    resolver.reset(new DefaultAuthResolver());
+    resolver = new DefaultAuthResolver();
   } else {
-    NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
+    NetrcAuthResolver* authResolver(new NetrcAuthResolver());
     authResolver->setNetrc(netrc_);
     authResolver->ignoreDefault();
     resolver = authResolver;
   }
   resolver->setUserDefinedAuthConfig
     (createAuthConfig(op->get(PREF_HTTP_USER), op->get(PREF_HTTP_PASSWD)));
-  return resolver;
+  return SharedHandle<AuthResolver>(resolver);
 }
 
-AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
+SharedHandle<AuthResolver> AuthConfigFactory::createFtpAuthResolver
 (const Option* op) const
 {
-  AbstractAuthResolverHandle resolver;
+  AbstractAuthResolver* resolver;
   if(op->getAsBool(PREF_NO_NETRC)) {
-    resolver.reset(new DefaultAuthResolver());
+    resolver = new DefaultAuthResolver();
   } else {
-    NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
+    NetrcAuthResolver* authResolver(new NetrcAuthResolver());
     authResolver->setNetrc(netrc_);
     resolver = authResolver;
   }
@@ -162,7 +162,7 @@ AuthResolverHandle AuthConfigFactory::createFtpAuthResolver
   SharedHandle<AuthConfig> defaultAuthConfig
     (new AuthConfig(AUTH_DEFAULT_USER, AUTH_DEFAULT_PASSWD));
   resolver->setDefaultAuthConfig(defaultAuthConfig);
-  return resolver;
+  return SharedHandle<AuthResolver>(resolver);
 }
 
 void AuthConfigFactory::setNetrc(const SharedHandle<Netrc>& netrc)

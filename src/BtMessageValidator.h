@@ -39,8 +39,6 @@
 
 #include <string>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class BtMessageValidator {
@@ -50,8 +48,6 @@ public:
   // Throws RecoverableException on error.
   virtual void validate() = 0;
 };
-
-typedef SharedHandle<BtMessageValidator> BtMessageValidatorHandle;
 
 } // namespace aria2
 

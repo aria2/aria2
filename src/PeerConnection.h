@@ -117,7 +117,7 @@ public:
   void presetBuffer(const unsigned char* data, size_t length);
 
   bool sendBufferIsEmpty() const;
-  
+
   ssize_t sendPendingData();
 
   const unsigned char* getBuffer() const
@@ -143,8 +143,6 @@ public:
     return bufferCapacity_;
   }
 };
-
-typedef SharedHandle<PeerConnection> PeerConnectionHandle;
 
 } // namespace aria2
 

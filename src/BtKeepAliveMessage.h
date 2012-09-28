@@ -39,10 +39,6 @@
 
 namespace aria2 {
 
-class BtKeepAliveMessage;
-
-typedef SharedHandle<BtKeepAliveMessage> BtKeepAliveMessageHandle;
-
 class BtKeepAliveMessage : public SimpleBtMessage {
 private:
   static const size_t MESSAGE_LENGTH = 4;

@@ -54,7 +54,7 @@
 #include "File.h"
 #include "Option.h"
 #include "Logger.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "message.h"
 #include "prefs.h"
 #include "fmt.h"
@@ -137,9 +137,9 @@ HttpResponseCommand::HttpResponseCommand
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const HttpConnectionHandle& httpConnection,
+ const SharedHandle<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection)

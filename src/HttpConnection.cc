@@ -49,7 +49,7 @@
 #include "HttpHeaderProcessor.h"
 #include "HttpHeader.h"
 #include "Logger.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "Option.h"
 #include "CookieStorage.h"
 #include "AuthConfigFactory.h"
@@ -71,7 +71,7 @@ HttpRequestEntry::~HttpRequestEntry() {}
 
 HttpConnection::HttpConnection
 (cuid_t cuid,
- const SocketHandle& socket,
+ const SharedHandle<SocketCore>& socket,
  const SharedHandle<SocketRecvBuffer>& socketRecvBuffer)
   : cuid_(cuid),
     socket_(socket),
@@ -129,7 +129,7 @@ SharedHandle<HttpResponse> HttpConnection::receiveResponse()
   if(outstandingHttpRequests_.empty()) {
     throw DL_ABORT_EX(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
-  HttpRequestEntryHandle entry = outstandingHttpRequests_.front();
+  SharedHandle<HttpRequestEntry> entry = outstandingHttpRequests_.front();
   const SharedHandle<HttpHeaderProcessor>& proc =
     entry->getHttpHeaderProcessor();
   if(socketRecvBuffer_->bufferEmpty()) {

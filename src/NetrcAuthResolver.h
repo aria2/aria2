@@ -64,12 +64,10 @@ public:
 
   // Ignores default token of netrc
   void ignoreDefault();
-  
+
   // Uses default token of netrc
   void useDefault();
 };
-
-typedef SharedHandle<NetrcAuthResolver> NetrcAuthResolverHandle;
 
 } // namespace aria2
 

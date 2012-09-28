@@ -297,22 +297,24 @@ void DefaultBtAnnounce::shuffleAnnounce() {
   announceList_.shuffle();
 }
 
-void DefaultBtAnnounce::setRandomizer(const RandomizerHandle& randomizer)
+void DefaultBtAnnounce::setRandomizer
+(const SharedHandle<Randomizer>& randomizer)
 {
   randomizer_ = randomizer;
 }
 
-void DefaultBtAnnounce::setBtRuntime(const BtRuntimeHandle& btRuntime)
+void DefaultBtAnnounce::setBtRuntime(const SharedHandle<BtRuntime>& btRuntime)
 {
   btRuntime_ = btRuntime;
 }
 
-void DefaultBtAnnounce::setPieceStorage(const PieceStorageHandle& pieceStorage)
+void DefaultBtAnnounce::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
 
-void DefaultBtAnnounce::setPeerStorage(const PeerStorageHandle& peerStorage)
+void DefaultBtAnnounce::setPeerStorage
+(const SharedHandle<PeerStorage>& peerStorage)
 {
   peerStorage_ = peerStorage;
 }

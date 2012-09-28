@@ -65,7 +65,7 @@ SegmentEntry::~SegmentEntry() {}
 SegmentMan::SegmentMan
 (const Option* option,
  const SharedHandle<DownloadContext>& downloadContext,
- const PieceStorageHandle& pieceStorage)
+ const SharedHandle<PieceStorage>& pieceStorage)
   : option_(option),
     downloadContext_(downloadContext),
     pieceStorage_(pieceStorage),
@@ -103,7 +103,7 @@ int64_t SegmentMan::getTotalLength() const
   }
 }
 
-void SegmentMan::setPieceStorage(const PieceStorageHandle& pieceStorage)
+void SegmentMan::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
@@ -130,7 +130,7 @@ SharedHandle<Segment> SegmentMan::checkoutSegment
   } else {
     segment.reset(new PiecedSegment(downloadContext_->getPieceLength(), piece));
   }
-  SegmentEntryHandle entry(new SegmentEntry(cuid, segment));
+  SharedHandle<SegmentEntry> entry(new SegmentEntry(cuid, segment));
   usedSegmentEntries_.push_back(entry);
   A2_LOG_DEBUG(fmt("index=%lu, length=%d, segmentLength=%d,"
                    " writtenLength=%d",
@@ -162,7 +162,7 @@ void SegmentMan::getInFlightSegment
 {
   for(SegmentEntries::const_iterator itr = usedSegmentEntries_.begin(),
         eoi = usedSegmentEntries_.end(); itr != eoi; ++itr) {
-    const SegmentEntryHandle& segmentEntry = *itr;
+    const SharedHandle<SegmentEntry>& segmentEntry = *itr;
     if(segmentEntry->cuid == cuid) {
       segments.push_back(segmentEntry->segment);
     }
@@ -314,7 +314,7 @@ private:
 public:
   FindSegmentEntry(const SharedHandle<Segment>& segment):segment_(segment) {}
 
-  bool operator()(const SegmentEntryHandle& segmentEntry) const
+  bool operator()(const SharedHandle<SegmentEntry>& segmentEntry) const
   {
     return segmentEntry->segment->getIndex() == segment_->getIndex();
   }

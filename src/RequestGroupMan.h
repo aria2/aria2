@@ -95,11 +95,11 @@ private:
   void formatDownloadResultFull
   (OutputFile& out,
    const char* status,
-   const DownloadResultHandle& downloadResult) const;
+   const SharedHandle<DownloadResult>& downloadResult) const;
 
   std::string formatDownloadResult
   (const char* status,
-   const DownloadResultHandle& downloadResult) const;
+   const SharedHandle<DownloadResult>& downloadResult) const;
 
   void configureRequestGroup
   (const SharedHandle<RequestGroup>& requestGroup) const;
@@ -334,8 +334,6 @@ public:
 
   void setUriListParser(const SharedHandle<UriListParser>& uriListParser);
 };
-
-typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
 
 } // namespace aria2
 

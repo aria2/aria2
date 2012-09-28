@@ -39,6 +39,7 @@
 
 #include "BtConstants.h"
 #include "ExtensionMessageRegistry.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -69,7 +70,7 @@ public:
   {
     return 0;
   }
-  
+
   virtual const char* getExtensionName() const
   {
     return EXTENSION_NAME;
@@ -127,8 +128,6 @@ public:
   static SharedHandle<HandshakeExtensionMessage>
   create(const unsigned char* data, size_t dataLength);
 };
-
-typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;
 
 } // namespace aria2
 

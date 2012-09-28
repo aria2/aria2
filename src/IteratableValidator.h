@@ -36,7 +36,7 @@
 #define D_ITERATABLE_VALIDATOR_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <unistd.h>
 
 namespace aria2 {
@@ -64,8 +64,6 @@ public:
 
   virtual int64_t getTotalLength() const = 0;
 };
-
-typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;
 
 } // namespace aria2
 

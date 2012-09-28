@@ -296,8 +296,6 @@ public:
   virtual void onDownloadIncomplete() {}
 };
 
-typedef SharedHandle<UnknownLengthPieceStorage> UnknownLengthPieceStorageHandle;
-
 } // namespace aria2
 
 #endif // D_UNKNOWN_LENGTH_PIECE_STORAGE_H

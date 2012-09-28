@@ -35,7 +35,7 @@
 #include "HttpProxyRequestCommand.h"
 #include "HttpProxyResponseCommand.h"
 #include "Request.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "SocketRecvBuffer.h"
 
 namespace aria2 {
@@ -47,7 +47,7 @@ HttpProxyRequestCommand::HttpProxyRequestCommand
  RequestGroup* requestGroup,
  DownloadEngine* e,
  const SharedHandle<Request>& proxyRequest,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
   :
   AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
                               proxyRequest, s)

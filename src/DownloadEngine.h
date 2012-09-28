@@ -341,8 +341,6 @@ public:
 #endif // HAVE_ARES_ADDR_NODE
 };
 
-typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
-
 } // namespace aria2
 
 #endif // D_DOWNLOAD_ENGINE_H

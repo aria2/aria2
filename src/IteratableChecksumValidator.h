@@ -36,6 +36,7 @@
 #define D_ITERATABLE_CHECKSUM_VALIDATOR_H
 
 #include "IteratableValidator.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -72,8 +73,6 @@ public:
 
   virtual int64_t getTotalLength() const;
 };
-
-typedef SharedHandle<IteratableChecksumValidator> IteratableChecksumValidatorHandle;
 
 } // namespace aria2
 

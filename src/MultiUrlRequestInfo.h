@@ -70,7 +70,7 @@ public:
    const SharedHandle<StatCalc>& statCalc,
    const SharedHandle<OutputFile>& summaryOut,
    const SharedHandle<UriListParser>& uriListParser);
-  
+
   virtual ~MultiUrlRequestInfo();
 
   /**
@@ -79,8 +79,6 @@ public:
    */
   error_code::Value execute();
 };
-
-typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;
 
 } // namespace aria2
 

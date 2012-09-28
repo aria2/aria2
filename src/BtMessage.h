@@ -39,7 +39,6 @@
 
 #include <string>
 
-#include "SharedHandle.h"
 #include "BtAbortOutstandingRequestEvent.h"
 #include "BtCancelSendingPieceEvent.h"
 #include "BtChokingEvent.h"
@@ -83,8 +82,6 @@ public:
   virtual std::string toString() const = 0;
 
 };
-
-typedef SharedHandle<BtMessage> BtMessageHandle;
 
 } // namespace aria2
 

@@ -36,7 +36,6 @@
 #define D_RANDOMIZER_H
 
 #include "common.h"
-#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -53,8 +52,6 @@ public:
    */
   virtual long int getRandomNumber(long int to) = 0;
 };
-
-typedef SharedHandle<Randomizer> RandomizerHandle;
 
 } // namespace aria2
 

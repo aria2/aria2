@@ -42,7 +42,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "BtHandshakeMessage.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "a2netcompat.h"
 #include "DHKeyExchange.h"
 #include "ARC4Encryptor.h"
@@ -72,7 +72,7 @@ const unsigned char* GENERATOR = reinterpret_cast<const unsigned char*>("2");
 
 MSEHandshake::MSEHandshake
 (cuid_t cuid,
- const SocketHandle& socket,
+ const SharedHandle<SocketCore>& socket,
  const Option* op)
   : cuid_(cuid),
     socket_(socket),

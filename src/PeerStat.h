@@ -151,8 +151,6 @@ public:
   }
 };
 
-typedef SharedHandle<PeerStat> PeerStatHandle;
-
 } // namespace aria2
 
 #endif // D_PEER_STAT_H

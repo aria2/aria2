@@ -45,7 +45,7 @@
 #include "SegmentMan.h"
 #include "Segment.h"
 #include "Option.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "prefs.h"
 #include "a2functional.h"
 #include "util.h"
@@ -67,9 +67,9 @@ HttpRequestCommand::HttpRequestCommand
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const HttpConnectionHandle& httpConnection,
+ const SharedHandle<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
   : AbstractCommand(cuid, req, fileEntry, requestGroup, e, s,
                     httpConnection->getSocketRecvBuffer()),
     httpConnection_(httpConnection)

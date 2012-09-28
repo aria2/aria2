@@ -37,7 +37,7 @@
 #include "DownloadEngine.h"
 #include "Option.h"
 #include "DlAbortEx.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "Logger.h"
 #include "LogFactory.h"
 #include "message.h"
@@ -53,7 +53,7 @@ PeerAbstractCommand::PeerAbstractCommand
 (cuid_t cuid,
  const SharedHandle<Peer>& peer,
  DownloadEngine* e,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
  : Command(cuid),
    checkPoint_(global::wallclock()),
    // TODO referring global option
@@ -136,7 +136,7 @@ void PeerAbstractCommand::disableReadCheckSocket()
   }  
 }
 
-void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket)
+void PeerAbstractCommand::setReadCheckSocket(const SharedHandle<SocketCore>& socket)
 {
   if(!socket->isOpen()) {
     disableReadCheckSocket();
@@ -164,7 +164,7 @@ void PeerAbstractCommand::disableWriteCheckSocket()
   }
 }
 
-void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket)
+void PeerAbstractCommand::setWriteCheckSocket(const SharedHandle<SocketCore>& socket)
 {
   if(!socket->isOpen()) {
     disableWriteCheckSocket();

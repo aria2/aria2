@@ -52,8 +52,6 @@ public:
                                     DownloadEngine* e);
 };
 
-typedef SharedHandle<BtCheckIntegrityEntry> BtCheckIntegrityEntryHandle;
-
 } // namespace aria2
 
 #endif // D_BT_FILE_ALLOCATION_ENTRY_H

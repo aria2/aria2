@@ -319,7 +319,7 @@ void RequestGroup::createInitialCommand
         progressInfoFile.reset(progressInfoFilePtr);
       }
 
-      BtRuntimeHandle btRuntime(new BtRuntime());
+      SharedHandle<BtRuntime> btRuntime(new BtRuntime());
       btRuntime->setMaxPeers(option_->getAsInt(PREF_BT_MAX_PEERS));
       btRuntime_ = btRuntime.get();
       if(progressInfoFilePtr) {
@@ -1102,12 +1102,13 @@ bool RequestGroup::isDependencyResolved()
   return dependency_->resolve();
 }
 
-void RequestGroup::dependsOn(const DependencyHandle& dep)
+void RequestGroup::dependsOn(const SharedHandle<Dependency>& dep)
 {
   dependency_ = dep;
 }
 
-void RequestGroup::setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory)
+void RequestGroup::setDiskWriterFactory
+(const SharedHandle<DiskWriterFactory>& diskWriterFactory)
 {
   diskWriterFactory_ = diskWriterFactory;
 }
@@ -1134,7 +1135,7 @@ void RequestGroup::clearPreDownloadHandler()
   preDownloadHandlers_.clear();
 }
 
-void RequestGroup::setPieceStorage(const PieceStorageHandle& pieceStorage)
+void RequestGroup::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
 {
   pieceStorage_ = pieceStorage;
 }
@@ -1152,7 +1153,7 @@ bool RequestGroup::needsFileAllocation() const
     !pieceStorage_->getDiskAdaptor()->fileAllocationIterator()->finished();
 }
 
-DownloadResultHandle RequestGroup::createDownloadResult() const
+SharedHandle<DownloadResult> RequestGroup::createDownloadResult() const
 {
   A2_LOG_DEBUG(fmt("GID#%" PRId64 " - Creating DownloadResult.", gid_));
   TransferStat st = calculateStat();
@@ -1188,7 +1189,7 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
   res->dir = option_->get(PREF_DIR);
   return res;
 }
-  
+
 void RequestGroup::reportDownloadFinished()
 {
   A2_LOG_NOTICE(fmt(MSG_FILE_DOWNLOAD_COMPLETED,

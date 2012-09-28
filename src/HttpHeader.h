@@ -162,8 +162,6 @@ public:
 
 int idInterestingHeader(const char* hdName);
 
-typedef SharedHandle<HttpHeader> HttpHeaderHandle;
-
 } // namespace
 
 #endif // D_HTTP_HEADER_H

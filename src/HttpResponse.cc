@@ -96,7 +96,7 @@ void HttpResponse::validateResponse() const
   } else if(statusCode == 200 || statusCode == 206) {
     if(!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
       // compare the received range against the requested range
-      RangeHandle responseRange = httpHeader_->getRange();
+      SharedHandle<Range> responseRange = httpHeader_->getRange();
       if(!httpRequest_->isRangeSatisfied(responseRange)) {
         throw DL_ABORT_EX2
           (fmt(EX_INVALID_RANGE_HEADER,

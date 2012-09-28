@@ -36,6 +36,7 @@
 #define D_BT_DEPENDENCY_H
 
 #include "Dependency.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -55,8 +56,6 @@ public:
 
   virtual bool resolve();
 };
-
-typedef SharedHandle<BtDependency> BtDependencyHandle;
 
 } // namespace aria2
 

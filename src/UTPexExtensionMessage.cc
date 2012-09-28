@@ -181,7 +181,7 @@ void UTPexExtensionMessage::setPeerStorage
   peerStorage_ = peerStorage;
 }
 
-UTPexExtensionMessageHandle
+SharedHandle<UTPexExtensionMessage>
 UTPexExtensionMessage::create(const unsigned char* data, size_t len)
 {
   if(len < 1) {
@@ -189,7 +189,7 @@ UTPexExtensionMessage::create(const unsigned char* data, size_t len)
                           EXTENSION_NAME,
                           static_cast<unsigned long>(len)));
   }
-  UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
+  SharedHandle<UTPexExtensionMessage> msg(new UTPexExtensionMessage(*data));
 
   SharedHandle<ValueBase> decoded = bencode2::decode(data+1, len - 1);
   const Dict* dict = downcast<Dict>(decoded);

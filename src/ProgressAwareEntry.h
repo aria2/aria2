@@ -40,8 +40,6 @@
 #include <stdint.h>
 #include <unistd.h>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class ProgressAwareEntry {
@@ -54,8 +52,6 @@ public:
 
   virtual bool finished() = 0;
 };
-
-typedef SharedHandle<ProgressAwareEntry> ProgressAwareEntryHandle;
 
 } // namespace aria2
 

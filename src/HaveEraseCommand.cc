@@ -58,7 +58,7 @@ void HaveEraseCommand::process()
   size_t numLoop =
     getDownloadEngine()->getRequestGroupMan()->countRequestGroup();
   for(size_t i = 0; i < numLoop; ++i) {
-    PieceStorageHandle ps =
+    SharedHandle<PieceStorage> ps =
       getDownloadEngine()->getRequestGroupMan()->getRequestGroup(i)->
       getPieceStorage();
     if(ps) {

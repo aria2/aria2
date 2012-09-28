@@ -35,7 +35,7 @@
 #include "FtpTunnelRequestCommand.h"
 #include "FtpTunnelResponseCommand.h"
 #include "Request.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "DownloadContext.h"
 #include "SocketRecvBuffer.h"
 
@@ -48,7 +48,7 @@ FtpTunnelRequestCommand::FtpTunnelRequestCommand
  RequestGroup* requestGroup,
  DownloadEngine* e,
  const SharedHandle<Request>& proxyRequest,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
   :
   AbstractProxyRequestCommand(cuid, req, fileEntry, requestGroup, e,
                               proxyRequest, s)

@@ -72,13 +72,13 @@ DefaultExtensionMessageFactory::DefaultExtensionMessageFactory
 
 DefaultExtensionMessageFactory::~DefaultExtensionMessageFactory() {}
 
-ExtensionMessageHandle
+SharedHandle<ExtensionMessage>
 DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t length)
 {
   uint8_t extensionMessageID = *data;
   if(extensionMessageID == 0) {
     // handshake
-    HandshakeExtensionMessageHandle m =
+    SharedHandle<HandshakeExtensionMessage> m =
       HandshakeExtensionMessage::create(data, length);
     m->setPeer(peer_);
     m->setDownloadContext(dctx_);
@@ -92,7 +92,7 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
     }
     if(strcmp(extensionName, "ut_pex") == 0) {
       // uTorrent compatible Peer-Exchange
-      UTPexExtensionMessageHandle m =
+      SharedHandle<UTPexExtensionMessage> m =
         UTPexExtensionMessage::create(data, length);
       m->setPeerStorage(peerStorage_);
       return m;

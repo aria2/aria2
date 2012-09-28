@@ -36,7 +36,7 @@
 #define D_BT_PROGRESS_INFO_FILE_H
 
 #include "common.h"
-#include "SharedHandle.h"
+
 #include <string>
 
 namespace aria2 {
@@ -58,8 +58,6 @@ public:
   // re-set filename
   virtual void updateFilename() = 0;
 };
-
-typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
 
 } // namespace aria2
 

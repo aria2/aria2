@@ -41,6 +41,7 @@
 #include <vector>
 
 #include "TimeA2.h"
+#include "SharedHandle.h"
 
 namespace aria2 {
 
@@ -117,8 +118,6 @@ private:
 
   FileAllocationMethod fileAllocationMethod_;
 };
-
-typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
 
 } // namespace aria2
 

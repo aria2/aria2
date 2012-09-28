@@ -38,7 +38,7 @@
 #include "HttpConnection.h"
 #include "HttpRequest.h"
 #include "Segment.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "SocketRecvBuffer.h"
 
 namespace aria2 {
@@ -48,9 +48,9 @@ FtpTunnelResponseCommand::FtpTunnelResponseCommand
  const SharedHandle<Request>& req,
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
- const HttpConnectionHandle& httpConnection,
+ const SharedHandle<HttpConnection>& httpConnection,
  DownloadEngine* e,
- const SocketHandle& s)
+ const SharedHandle<SocketCore>& s)
   :AbstractProxyResponseCommand(cuid, req, fileEntry, requestGroup,
                                 httpConnection,e, s)
 {}

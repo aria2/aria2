@@ -108,7 +108,7 @@ void DefaultBtInteractive::initiateHandshake() {
   dispatcher_->sendMessages();
 }
 
-BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
+SharedHandle<BtMessage> DefaultBtInteractive::receiveHandshake(bool quickReply) {
   SharedHandle<BtHandshakeMessage> message =
     btMessageReceiver_->receiveHandshake(quickReply);
   if(!message) {
@@ -155,7 +155,7 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   return message;
 }
 
-BtMessageHandle DefaultBtInteractive::receiveAndSendHandshake() {
+SharedHandle<BtMessage> DefaultBtInteractive::receiveAndSendHandshake() {
   return receiveHandshake(true);
 }
 
@@ -188,7 +188,7 @@ void DefaultBtInteractive::addPortMessageToQueue()
 
 void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
 {
-  HandshakeExtensionMessageHandle m(new HandshakeExtensionMessage());
+  SharedHandle<HandshakeExtensionMessage> m(new HandshakeExtensionMessage());
   m->setClientVersion("aria2/" PACKAGE_VERSION);
   m->setTCPPort(tcpPort_);
   m->setExtensions(extensionMessageRegistry_->getExtensions());
@@ -279,7 +279,7 @@ size_t DefaultBtInteractive::receiveMessages() {
        downloadContext_->getOwnerRequestGroup()->doesDownloadSpeedExceed()) {
       break;
     }
-    BtMessageHandle message = btMessageReceiver_->receiveMessage();
+    SharedHandle<BtMessage> message = btMessageReceiver_->receiveMessage();
     if(!message) {
       break;
     }
@@ -472,7 +472,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
 {
   if(pexTimer_.
      difference(global::wallclock()) >= UTPexExtensionMessage::DEFAULT_INTERVAL) {
-    UTPexExtensionMessageHandle m
+    SharedHandle<UTPexExtensionMessage> m
       (new UTPexExtensionMessage(peer_->getExtensionMessageID
                                  (ExtensionMessageRegistry::UT_PEX)));
 
@@ -496,7 +496,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
       }
     }
 
-    BtMessageHandle msg = messageFactory_->createBtExtendedMessage(m);
+    SharedHandle<BtMessage> msg = messageFactory_->createBtExtendedMessage(m);
     dispatcher_->addMessageToQueue(msg);
     pexTimer_ = global::wallclock();
   }

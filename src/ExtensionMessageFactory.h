@@ -50,8 +50,6 @@ public:
   createMessage(const unsigned char* data, size_t length) = 0;
 };
 
-typedef SharedHandle<ExtensionMessageFactory> ExtensionMessageFactoryHandle;
-
 } // namespace aria2
 
 #endif // D_EXTENSION_MESSAGE_FACTORY_H

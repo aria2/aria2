@@ -58,7 +58,7 @@
 #include "DefaultBtProgressInfoFile.h"
 #include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "fmt.h"
 #include "DiskAdaptor.h"
 #include "SegmentMan.h"
@@ -86,7 +86,7 @@ FtpNegotiationCommand::FtpNegotiationCommand
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const SocketHandle& socket,
+ const SharedHandle<SocketCore>& socket,
  Seq seq,
  const std::string& baseWorkingDir):
   AbstractCommand(cuid, req, fileEntry, requestGroup, e, socket),

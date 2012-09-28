@@ -101,7 +101,7 @@ int64_t HttpRequest::getEndByte() const
   }
 }
 
-RangeHandle HttpRequest::getRange() const
+SharedHandle<Range> HttpRequest::getRange() const
 {
   // content-length is always 0
   if(!segment_) {
@@ -112,7 +112,7 @@ RangeHandle HttpRequest::getRange() const
   }
 }
 
-bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
+bool HttpRequest::isRangeSatisfied(const SharedHandle<Range>& range) const
 {
   if(!segment_) {
     return true;

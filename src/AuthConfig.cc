@@ -57,7 +57,8 @@ std::string AuthConfig::getAuthText() const
   return s;
 }
 
-std::ostream& operator<<(std::ostream& o, const AuthConfigHandle& authConfig)
+std::ostream& operator<<(std::ostream& o,
+                         const SharedHandle<AuthConfig>& authConfig)
 {
   o << authConfig->getAuthText();
   return o;

@@ -51,7 +51,7 @@
 #include "SleepCommand.h"
 #include "StreamCheckIntegrityEntry.h"
 #include "PieceStorage.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "message.h"
 #include "prefs.h"
 #include "fmt.h"
@@ -82,7 +82,7 @@ AbstractCommand::AbstractCommand
  const SharedHandle<FileEntry>& fileEntry,
  RequestGroup* requestGroup,
  DownloadEngine* e,
- const SocketHandle& s,
+ const SharedHandle<SocketCore>& s,
  const SharedHandle<SocketRecvBuffer>& socketRecvBuffer,
  bool incNumConnection)
   : Command(cuid), checkPoint_(global::wallclock()),
@@ -475,10 +475,11 @@ void AbstractCommand::disableReadCheckSocket() {
     e_->deleteSocketForReadCheck(readCheckTarget_, this);
     checkSocketIsReadable_ = false;
     readCheckTarget_.reset();
-  }  
+  }
 }
 
-void AbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
+void AbstractCommand::setReadCheckSocket
+(const SharedHandle<SocketCore>& socket) {
   if(!socket->isOpen()) {
     disableReadCheckSocket();
   } else {
@@ -514,7 +515,8 @@ void AbstractCommand::disableWriteCheckSocket() {
   }
 }
 
-void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
+void AbstractCommand::setWriteCheckSocket
+(const SharedHandle<SocketCore>& socket) {
   if(!socket->isOpen()) {
     disableWriteCheckSocket();
   } else {

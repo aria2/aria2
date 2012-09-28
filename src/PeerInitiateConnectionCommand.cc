@@ -39,7 +39,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "Logger.h"
 #include "LogFactory.h"
 #include "Peer.h"

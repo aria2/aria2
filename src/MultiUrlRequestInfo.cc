@@ -137,7 +137,7 @@ error_code::Value MultiUrlRequestInfo::execute()
     Notifier notifier(wsSessionMan);
     SingletonHolder<Notifier>::instance(&notifier);
 
-    DownloadEngineHandle e =
+    SharedHandle<DownloadEngine> e =
       DownloadEngineFactory().newDownloadEngine(option_.get(), requestGroups_);
 
     if(!option_->blank(PREF_LOAD_COOKIES)) {

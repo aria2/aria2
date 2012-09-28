@@ -39,8 +39,6 @@
 
 #include <unistd.h>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 
 class Range {
@@ -80,8 +78,6 @@ public:
 
   int64_t getContentLength() const;
 };
-
-typedef SharedHandle<Range> RangeHandle;
 
 } // namespace aria2
 

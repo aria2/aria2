@@ -7,7 +7,7 @@
 #include "Exception.h"
 #include "util.h"
 #include "prefs.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "Option.h"
 #include "DownloadContext.h"
 #include "FileEntry.h"

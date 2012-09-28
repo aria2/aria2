@@ -53,8 +53,6 @@ public:
   virtual void validate();
 };
 
-typedef SharedHandle<BtBitfieldMessageValidator> BtBitfieldMessageValidatorHandle;
-
 } // namespace aria2
 
 #endif // D_BT_BITFIELD_MESSAGE_VALIDATOR_H

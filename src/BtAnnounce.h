@@ -39,7 +39,6 @@
 
 #include <string>
 
-#include "SharedHandle.h"
 #include "a2time.h"
 
 namespace aria2 {
@@ -131,8 +130,6 @@ public:
 
   static const time_t DEFAULT_ANNOUNCE_INTERVAL = 120;
 };
-
-typedef SharedHandle<BtAnnounce> BtAnnounceHandle;
 
 } // namespace aria2
 

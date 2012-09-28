@@ -59,16 +59,16 @@ UnknownLengthPieceStorage::~UnknownLengthPieceStorage() {}
 
 void UnknownLengthPieceStorage::initStorage()
 {
-  DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
+  DirectDiskAdaptor* directDiskAdaptor(new DirectDiskAdaptor());
   directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
   directDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                     downloadContext_->getFileEntries().end());
 
-  DiskWriterHandle writer =
+  SharedHandle<DiskWriter> writer =
     diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
   directDiskAdaptor->setDiskWriter(writer);
 
-  diskAdaptor_ = directDiskAdaptor;
+  diskAdaptor_.reset(directDiskAdaptor);
 }
 
 #ifdef ENABLE_BITTORRENT
@@ -215,7 +215,7 @@ bool UnknownLengthPieceStorage::isPieceUsed(size_t index)
   }
 }
 
-DiskAdaptorHandle UnknownLengthPieceStorage::getDiskAdaptor()
+SharedHandle<DiskAdaptor> UnknownLengthPieceStorage::getDiskAdaptor()
 {
   return diskAdaptor_;
 }
@@ -255,7 +255,7 @@ void UnknownLengthPieceStorage::getInFlightPieces
 {}
 
 void UnknownLengthPieceStorage::setDiskWriterFactory
-(const DiskWriterFactoryHandle& diskWriterFactory)
+(const SharedHandle<DiskWriterFactory>& diskWriterFactory)
 {
   diskWriterFactory_ = diskWriterFactory;
 }

@@ -114,13 +114,13 @@ void DefaultBtMessageReceiver::sendHandshake() {
   dispatcher_->sendMessages();
 }
 
-BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
+SharedHandle<BtMessage> DefaultBtMessageReceiver::receiveMessage() {
   size_t dataLength = 0;
   // Give 0 to PeerConnection::receiveMessage() to prevent memcpy.
   if(!peerConnection_->receiveMessage(0, dataLength)) {
     return SharedHandle<BtMessage>();
   }
-  BtMessageHandle msg =
+  SharedHandle<BtMessage> msg =
     messageFactory_->createBtMessage(peerConnection_->getMsgPayloadBuffer(),
                                      dataLength);
   msg->validate();

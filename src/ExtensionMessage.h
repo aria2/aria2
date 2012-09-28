@@ -39,8 +39,6 @@
 
 #include <string>
 
-#include "SharedHandle.h"
-
 namespace aria2 {
 class ExtensionMessage {
 public:
@@ -56,8 +54,6 @@ public:
 
   virtual void doReceivedAction() = 0;
 };
-
-typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
 
 } // namespace aria2
 

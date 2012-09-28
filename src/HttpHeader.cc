@@ -85,7 +85,7 @@ HttpHeader::equalRange(int hdKey) const
   return table_.equal_range(hdKey);
 }
 
-RangeHandle HttpHeader::getRange() const
+SharedHandle<Range> HttpHeader::getRange() const
 {
   const std::string& rangeStr = find(CONTENT_RANGE);
   if(rangeStr.empty()) {

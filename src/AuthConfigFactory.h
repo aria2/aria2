@@ -55,12 +55,12 @@ class AuthResolver;
 class AuthConfigFactory {
 private:
   SharedHandle<Netrc> netrc_;
-  
+
   SharedHandle<AuthConfig> createAuthConfig(const std::string& user,
                                             const std::string& password) const;
 
   SharedHandle<AuthResolver> createHttpAuthResolver(const Option* op) const;
-  
+
   SharedHandle<AuthResolver> createFtpAuthResolver(const Option* op) const;
 public:
   class BasicCred {
@@ -90,7 +90,6 @@ public:
 private:
   BasicCredSet basicCreds_;
 public:
-  
   AuthConfigFactory();
 
   ~AuthConfigFactory();
@@ -130,8 +129,6 @@ public:
   // basicCreds_.
   void updateBasicCred(const SharedHandle<BasicCred>& basicCred);
 };
-
-typedef SharedHandle<AuthConfigFactory> AuthConfigFactoryHandle;
 
 } // namespace aria2
 

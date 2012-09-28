@@ -54,8 +54,6 @@ public:
   virtual SharedHandle<BtMessage> receiveMessage() = 0;
 };
 
-typedef SharedHandle<BtMessageReceiver> BtMessageReceiverHandle;
-
 } // namespace aria2
 
 #endif // D_BT_MESSAGE_RECEIVER_H

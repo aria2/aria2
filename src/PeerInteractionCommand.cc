@@ -42,7 +42,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
-#include "Socket.h"
+#include "SocketCore.h"
 #include "Option.h"
 #include "DownloadContext.h"
 #include "Peer.h"
@@ -87,9 +87,9 @@ PeerInteractionCommand::PeerInteractionCommand
  const SharedHandle<BtRuntime>& btRuntime,
  const SharedHandle<PieceStorage>& pieceStorage,
  const SharedHandle<PeerStorage>& peerStorage,
- const SocketHandle& s,
+ const SharedHandle<SocketCore>& s,
  Seq sequence,
- const PeerConnectionHandle& passedPeerConnection)
+ const SharedHandle<PeerConnection>& passedPeerConnection)
   :PeerAbstractCommand(cuid, p, e, s),
    requestGroup_(requestGroup),
    btRuntime_(btRuntime),
@@ -169,7 +169,7 @@ PeerInteractionCommand::PeerInteractionCommand
   SharedHandle<BtMessageFactory> factory(factoryPtr);
 
 
-  PeerConnectionHandle peerConnection;
+  SharedHandle<PeerConnection> peerConnection;
   if(!passedPeerConnection) {
     peerConnection.reset(new PeerConnection(cuid, getPeer(), getSocket()));
   } else {
@@ -327,7 +327,8 @@ bool PeerInteractionCommand::executeInternal() {
           break;
         }
       }
-      BtMessageHandle handshakeMessage = btInteractive_->receiveHandshake();
+      SharedHandle<BtMessage> handshakeMessage =
+        btInteractive_->receiveHandshake();
       if(!handshakeMessage) {
         done = true;
         break;
@@ -337,7 +338,7 @@ bool PeerInteractionCommand::executeInternal() {
       break;
     }
     case RECEIVER_WAIT_HANDSHAKE: {
-      BtMessageHandle handshakeMessage =
+      SharedHandle<BtMessage> handshakeMessage =
         btInteractive_->receiveAndSendHandshake();
       if(!handshakeMessage) {
         done = true;

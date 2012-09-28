@@ -55,7 +55,7 @@ class MetadataInfo;
 struct DownloadResult
 {
   a2_gid_t gid;
- 
+
   std::vector<SharedHandle<FileEntry> > fileEntries;
 
   bool inMemoryDownload;
@@ -102,8 +102,6 @@ struct DownloadResult
   DownloadResult(const DownloadResult& c);
   DownloadResult& operator=(const DownloadResult& c);
 };
-
-typedef SharedHandle<DownloadResult> DownloadResultHandle;
 
 } // namespace aria2
 

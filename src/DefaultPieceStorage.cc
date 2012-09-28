@@ -613,25 +613,25 @@ void DefaultPieceStorage::initStorage()
 {
   if(downloadContext_->getFileEntries().size() == 1) {
     A2_LOG_DEBUG("Instantiating DirectDiskAdaptor");
-    DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
+    DirectDiskAdaptor* directDiskAdaptor(new DirectDiskAdaptor());
     directDiskAdaptor->setTotalLength(downloadContext_->getTotalLength());
     directDiskAdaptor->setFileEntries
       (downloadContext_->getFileEntries().begin(),
        downloadContext_->getFileEntries().end());
 
-    DiskWriterHandle writer =
+    SharedHandle<DiskWriter> writer =
       diskWriterFactory_->newDiskWriter(directDiskAdaptor->getFilePath());
     directDiskAdaptor->setDiskWriter(writer);
-    diskAdaptor_ = directDiskAdaptor;
+    diskAdaptor_.reset(directDiskAdaptor);
   } else {
     A2_LOG_DEBUG("Instantiating MultiDiskAdaptor");
-    MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
+    MultiDiskAdaptor* multiDiskAdaptor(new MultiDiskAdaptor());
     multiDiskAdaptor->setFileEntries(downloadContext_->getFileEntries().begin(),
                                      downloadContext_->getFileEntries().end());
     multiDiskAdaptor->setPieceLength(downloadContext_->getPieceLength());
     multiDiskAdaptor->setMaxOpenFiles
       (option_->getAsInt(PREF_BT_MAX_OPEN_FILES));
-    diskAdaptor_ = multiDiskAdaptor;
+    diskAdaptor_.reset(multiDiskAdaptor);
   }
   if(option_->get(PREF_FILE_ALLOCATION) == V_FALLOC) {
     diskAdaptor_->setFileAllocationMethod(DiskAdaptor::FILE_ALLOC_FALLOC);
@@ -657,7 +657,7 @@ const unsigned char* DefaultPieceStorage::getBitfield()
   return bitfieldMan_->getBitfield();
 }
 
-DiskAdaptorHandle DefaultPieceStorage::getDiskAdaptor() {
+SharedHandle<DiskAdaptor> DefaultPieceStorage::getDiskAdaptor() {
   return diskAdaptor_;
 }
 
@@ -741,7 +741,7 @@ void DefaultPieceStorage::markPiecesDone(int64_t length)
     if(r > 0) {
       SharedHandle<Piece> p
         (new Piece(numPiece, bitfieldMan_->getBlockLength(numPiece)));
-      
+
       for(size_t i = 0; i < r; ++i) {
         p->completeBlock(i);
       }
@@ -780,7 +780,7 @@ void DefaultPieceStorage::getInFlightPieces
 }
 
 void DefaultPieceStorage::setDiskWriterFactory
-(const DiskWriterFactoryHandle& diskWriterFactory)
+(const SharedHandle<DiskWriterFactory>& diskWriterFactory)
 {
   diskWriterFactory_ = diskWriterFactory;
 }

@@ -51,7 +51,7 @@ namespace aria2 {
 
 IteratableChecksumValidator::IteratableChecksumValidator
 (const SharedHandle<DownloadContext>& dctx,
- const PieceStorageHandle& pieceStorage)
+ const SharedHandle<PieceStorage>& pieceStorage)
   : dctx_(dctx),
     pieceStorage_(pieceStorage),
     currentOffset_(0)

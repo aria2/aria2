@@ -65,8 +65,6 @@ public:
 
 };
 
-typedef SharedHandle<AbstractAuthResolver> AbstractAuthResolverHandle;
-
 } // namespace aria2
 
 #endif // D_ABSTRACT_AUTH_RESOLVER_H

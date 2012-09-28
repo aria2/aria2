@@ -51,7 +51,7 @@ namespace aria2 {
 const char BtExtendedMessage::NAME[] = "extended";
 
 BtExtendedMessage::BtExtendedMessage
-(const ExtensionMessageHandle& extensionMessage):
+(const SharedHandle<ExtensionMessage>& extensionMessage):
   SimpleBtMessage(ID, NAME),
   extensionMessage_(extensionMessage),
   msgLength_(0)
