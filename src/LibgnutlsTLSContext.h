@@ -41,6 +41,7 @@
 
 #include <gnutls/gnutls.h>
 
+#include "TLSContext.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
@@ -49,17 +50,19 @@ class TLSContext {
 private:
   gnutls_certificate_credentials_t certCred_;
 
+  TLSSessionSide side_;
+
   bool good_;
 
   bool peerVerificationEnabled_;
 public:
-  TLSContext();
+  TLSContext(TLSSessionSide side);
 
   ~TLSContext();
 
   // private key `keyfile' must be decrypted.
-  bool addClientKeyFile(const std::string& certfile,
-                        const std::string& keyfile);
+  bool addCredentialFile(const std::string& certfile,
+                         const std::string& keyfile);
 
   bool addSystemTrustedCACerts();
 
@@ -71,6 +74,11 @@ public:
   bool bad() const;
 
   gnutls_certificate_credentials_t getCertCred() const;
+
+  TLSSessionSide getSide() const
+  {
+    return side_;
+  }
 
   void enablePeerVerification();
 

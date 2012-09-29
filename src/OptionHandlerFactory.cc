@@ -748,6 +748,15 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(op);
   }
   {
+    OptionHandler* op(new LocalFilePathOptionHandler
+                      (PREF_RPC_CERTIFICATE,
+                       TEXT_RPC_CERTIFICATE,
+                       NO_DEFAULT_VALUE,
+                       false));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
     OptionHandler* op(new BooleanOptionHandler
                       (PREF_RPC_LISTEN_ALL,
                        TEXT_RPC_LISTEN_ALL,
@@ -771,6 +780,24 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
                        TEXT_RPC_MAX_REQUEST_SIZE,
                        "2M",
                        0));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new LocalFilePathOptionHandler
+                      (PREF_RPC_PRIVATE_KEY,
+                       TEXT_RPC_PRIVATE_KEY,
+                       NO_DEFAULT_VALUE,
+                       false));
+    op->addTag(TAG_RPC);
+    handlers.push_back(op);
+  }
+  {
+    OptionHandler* op(new BooleanOptionHandler
+                      (PREF_RPC_SECURE,
+                       TEXT_RPC_SECURE,
+                       A2_V_FALSE,
+                       OptionHandler::OPT_ARG));
     op->addTag(TAG_RPC);
     handlers.push_back(op);
   }

@@ -50,10 +50,12 @@
 
 namespace aria2 {
 
-HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family)
+HttpListenCommand::HttpListenCommand(cuid_t cuid, DownloadEngine* e,
+                                     int family, bool secure)
   : Command(cuid),
     e_(e),
-    family_(family)
+    family_(family),
+    secure_(secure)
 {}
 
 HttpListenCommand::~HttpListenCommand()
@@ -80,7 +82,7 @@ bool HttpListenCommand::execute()
                       peerInfo.first.c_str(), peerInfo.second));
 
       HttpServerCommand* c =
-        new HttpServerCommand(e_->newCUID(), e_, socket);
+        new HttpServerCommand(e_->newCUID(), e_, socket, secure_);
       e_->setNoWait(true);
       e_->addCommand(c);
     }

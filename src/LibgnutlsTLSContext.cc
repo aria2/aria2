@@ -45,8 +45,9 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext()
+TLSContext::TLSContext(TLSSessionSide side)
   : certCred_(0),
+    side_(side),
     peerVerificationEnabled_(false)
 {
   int r = gnutls_certificate_allocate_credentials(&certCred_);
@@ -79,19 +80,20 @@ bool TLSContext::bad() const
   return !good_;
 }
 
-bool TLSContext::addClientKeyFile(const std::string& certfile,
-                                  const std::string& keyfile)
+bool TLSContext::addCredentialFile(const std::string& certfile,
+                                   const std::string& keyfile)
 {
   int ret = gnutls_certificate_set_x509_key_file(certCred_,
                                                  certfile.c_str(),
                                                  keyfile.c_str(),
                                                  GNUTLS_X509_FMT_PEM);
   if(ret == GNUTLS_E_SUCCESS) {
-    A2_LOG_INFO(fmt("Client Key File(cert=%s, key=%s) were successfully added.",
-                    certfile.c_str(), keyfile.c_str()));
+    A2_LOG_INFO(fmt
+                ("Credential files(cert=%s, key=%s) were successfully added.",
+                 certfile.c_str(), keyfile.c_str()));
     return true;
   } else {
-    A2_LOG_ERROR(fmt("Failed to load client certificate from %s and"
+    A2_LOG_ERROR(fmt("Failed to load certificate from %s and"
                      " private key from %s. Cause: %s",
                      certfile.c_str(), keyfile.c_str(),
                      gnutls_strerror(ret)));

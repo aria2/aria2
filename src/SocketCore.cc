@@ -125,8 +125,6 @@ namespace {
 enum TlsState {
   // TLS object is not initialized.
   A2_TLS_NONE = 0,
-  // TLS object is initialized. Ready for handshake.
-  A2_TLS_INITIALIZED = 1,
   // TLS object is now handshaking.
   A2_TLS_HANDSHAKING = 2,
   // TLS object is now connected.
@@ -140,11 +138,19 @@ std::vector<std::pair<sockaddr_union, socklen_t> >
 SocketCore::bindAddrs_;
 
 #ifdef ENABLE_SSL
-SharedHandle<TLSContext> SocketCore::tlsContext_;
+SharedHandle<TLSContext> SocketCore::clTlsContext_;
+SharedHandle<TLSContext> SocketCore::svTlsContext_;
 
-void SocketCore::setTLSContext(const SharedHandle<TLSContext>& tlsContext)
+void SocketCore::setClientTLSContext
+(const SharedHandle<TLSContext>& tlsContext)
 {
-  tlsContext_ = tlsContext;
+  clTlsContext_ = tlsContext;
+}
+
+void SocketCore::setServerTLSContext
+(const SharedHandle<TLSContext>& tlsContext)
+{
+  svTlsContext_ = tlsContext;
 }
 #endif // ENABLE_SSL
 
@@ -818,12 +824,24 @@ void SocketCore::readData(char* data, size_t& len)
   len = ret;
 }
 
-void SocketCore::prepareSecureConnection()
+bool SocketCore::tlsAccept()
 {
-  if(!secure_) {
+  return tlsHandshake(svTlsContext_.get(), A2STR::NIL);
+}
+
+bool SocketCore::tlsConnect(const std::string& hostname)
+{
+  return tlsHandshake(clTlsContext_.get(), hostname);
+}
+
+bool SocketCore::tlsHandshake(TLSContext* tlsctx, const std::string& hostname)
+{
+  wantRead_ = false;
+  wantWrite_ = false;
 #ifdef HAVE_OPENSSL
-    // for SSL
-    ssl = SSL_new(tlsContext_->getSSLCtx());
+  switch(secure_) {
+  case A2_TLS_NONE:
+    ssl = SSL_new(tlsctx->getSSLCtx());
     if(!ssl) {
       throw DL_ABORT_EX
         (fmt(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), 0)));
@@ -832,48 +850,25 @@ void SocketCore::prepareSecureConnection()
       throw DL_ABORT_EX
         (fmt(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), 0)));
     }
-#endif // HAVE_OPENSSL
-#ifdef HAVE_LIBGNUTLS
-    int r;
-    gnutls_init(&sslSession_, GNUTLS_CLIENT);
-    // It seems err is not error message, but the argument string
-    // which causes syntax error.
-    const char* err;
-    // Disables TLS1.1 here because there are servers that don't
-    // understand TLS1.1.
-    r = gnutls_priority_set_direct(sslSession_, "NORMAL:!VERS-TLS1.1", &err);
-    if(r != GNUTLS_E_SUCCESS) {
-      throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE, gnutls_strerror(r)));
-    }
-    // put the x509 credentials to the current session
-    gnutls_credentials_set(sslSession_, GNUTLS_CRD_CERTIFICATE,
-                           tlsContext_->getCertCred());
-    gnutls_transport_set_ptr(sslSession_, (gnutls_transport_ptr_t)sockfd_);
-#endif // HAVE_LIBGNUTLS
-    secure_ = A2_TLS_INITIALIZED;
-  }
-}
-
-bool SocketCore::initiateSecureConnection(const std::string& hostname)
-{
-  wantRead_ = false;
-  wantWrite_ = false;
-#ifdef HAVE_OPENSSL
-  switch(secure_) {
-  case A2_TLS_INITIALIZED:
-    secure_ = A2_TLS_HANDSHAKING;
+    // Fall through
 #ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
-    if(!util::isNumericHost(hostname)) {
+    if(tlsctx->getSide() == TLS_CLIENT && !util::isNumericHost(hostname)) {
       // TLS extensions: SNI.  There is not documentation about the
       // return code for this function (actually this is macro
       // wrapping SSL_ctrl at the time of this writing).
       SSL_set_tlsext_host_name(ssl, hostname.c_str());
     }
 #endif // SSL_CTRL_SET_TLSEXT_HOSTNAME
+    secure_ = A2_TLS_HANDSHAKING;
     // Fall through
   case A2_TLS_HANDSHAKING: {
     ERR_clear_error();
-    int e = SSL_connect(ssl);
+    int e;
+    if(tlsctx->getSide() == TLS_CLIENT) {
+      e = SSL_connect(ssl);
+    } else {
+      e = SSL_accept(ssl);
+    }
 
     if (e <= 0) {
       int ssl_error = SSL_get_error(ssl, e);
@@ -893,9 +888,21 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         }
         break;
 
-      case SSL_ERROR_SYSCALL:
-        throw DL_ABORT_EX(EX_SSL_IO_ERROR);
-
+      case SSL_ERROR_SYSCALL: {
+        int sslErr = ERR_get_error();
+        if(sslErr == 0) {
+          if(e == 0) {
+            throw DL_ABORT_EX("Got EOF in SSL handshake");
+          } else if(e == -1) {
+            throw DL_ABORT_EX(fmt("SSL I/O error: %s", strerror(errno)));
+          } else {
+            throw DL_ABORT_EX(EX_SSL_IO_ERROR);
+          }
+        } else {
+          throw DL_ABORT_EX(fmt("SSL I/O error: %s",
+                                ERR_error_string(sslErr, 0)));
+        }
+      }
       case SSL_ERROR_SSL:
         throw DL_ABORT_EX(EX_SSL_PROTOCOL_ERROR);
 
@@ -903,7 +910,8 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
         throw DL_ABORT_EX(fmt(EX_SSL_UNKNOWN_ERROR, ssl_error));
       }
     }
-    if(tlsContext_->peerVerificationEnabled()) {
+    if(tlsctx->getSide() == TLS_CLIENT &&
+       tlsctx->peerVerificationEnabled()) {
       // verify peer
       X509* peerCert = SSL_get_peer_certificate(ssl);
       if(!peerCert) {
@@ -984,20 +992,44 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
 #endif // HAVE_OPENSSL
 #ifdef HAVE_LIBGNUTLS
   switch(secure_) {
-  case A2_TLS_INITIALIZED:
-    secure_ = A2_TLS_HANDSHAKING;
-    // Check hostname is not numeric and it includes ".". Setting
-    // "localhost" will produce TLS alert.
-    if(!util::isNumericHost(hostname) &&
-       hostname.find(".") != std::string::npos) {
-      // TLS extensions: SNI
-      int ret = gnutls_server_name_set(sslSession_, GNUTLS_NAME_DNS,
-                                       hostname.c_str(), hostname.size());
-      if(ret < 0) {
-        A2_LOG_WARN(fmt("Setting hostname in SNI extension failed. Cause: %s",
-                        gnutls_strerror(ret)));
+  case A2_TLS_NONE:
+    int r;
+    gnutls_init(&sslSession_,
+                tlsctx->getSide() == TLS_CLIENT ?
+                GNUTLS_CLIENT : GNUTLS_SERVER);
+    // It seems err is not error message, but the argument string
+    // which causes syntax error.
+    const char* err;
+    // For client side, disables TLS1.1 here because there are servers
+    // that don't understand TLS1.1.  TODO Is this still necessary?
+    r = gnutls_priority_set_direct(sslSession_,
+                                   tlsctx->getSide() == TLS_CLIENT ?
+                                   "NORMAL:-VERS-TLS1.1" :
+                                   "NORMAL",
+                                   &err);
+    if(r != GNUTLS_E_SUCCESS) {
+      throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE, gnutls_strerror(r)));
+    }
+    // put the x509 credentials to the current session
+    gnutls_credentials_set(sslSession_, GNUTLS_CRD_CERTIFICATE,
+                           tlsctx->getCertCred());
+    gnutls_transport_set_ptr(sslSession_, (gnutls_transport_ptr_t)sockfd_);
+    if(tlsctx->getSide() == TLS_CLIENT) {
+      // Check hostname is not numeric and it includes ".". Setting
+      // "localhost" will produce TLS alert.
+      if(!util::isNumericHost(hostname) &&
+         hostname.find(".") != std::string::npos) {
+        // TLS extensions: SNI
+        int ret = gnutls_server_name_set(sslSession_, GNUTLS_NAME_DNS,
+                                         hostname.c_str(), hostname.size());
+        if(ret < 0) {
+          A2_LOG_WARN(fmt
+                      ("Setting hostname in SNI extension failed. Cause: %s",
+                       gnutls_strerror(ret)));
+        }
       }
     }
+    secure_ = A2_TLS_HANDSHAKING;
     // Fall through
   case A2_TLS_HANDSHAKING: {
     int ret = gnutls_handshake(sslSession_);
@@ -1008,7 +1040,7 @@ bool SocketCore::initiateSecureConnection(const std::string& hostname)
       throw DL_ABORT_EX(fmt(EX_SSL_INIT_FAILURE, gnutls_strerror(ret)));
     }
 
-    if(tlsContext_->peerVerificationEnabled()) {
+    if(tlsctx->getSide() == TLS_CLIENT && tlsctx->peerVerificationEnabled()) {
       // verify peer
       unsigned int status;
       ret = gnutls_certificate_verify_peers2(sslSession_, &status);

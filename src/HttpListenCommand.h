@@ -48,16 +48,17 @@ private:
   DownloadEngine* e_;
   int family_;
   SharedHandle<SocketCore> serverSocket_;
+  bool secure_;
 public:
-  HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family);
+  HttpListenCommand(cuid_t cuid, DownloadEngine* e, int family, bool secure);
 
   virtual ~HttpListenCommand();
-  
+
   virtual bool execute();
 
   bool bindPort(uint16_t port);
 };
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_HTTP_LISTEN_COMMAND_H

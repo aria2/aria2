@@ -73,7 +73,7 @@ WebSocketInteractionCommand::~WebSocketInteractionCommand()
 
 void WebSocketInteractionCommand::updateWriteCheck()
 {
-  if(wsSession_->wantWrite()) {
+  if(socket_->wantWrite() || wsSession_->wantWrite()) {
     if(!writeCheck_) {
       writeCheck_ = true;
       e_->addSocketForWriteCheck(socket_, this);
@@ -91,9 +91,10 @@ bool WebSocketInteractionCommand::execute()
   }
   if(wsSession_->onReadEvent() == -1 || wsSession_->onWriteEvent() == -1) {
     if(wsSession_->closeSent() || wsSession_->closeReceived()) {
-      A2_LOG_INFO(fmt("CUID#%" PRId64 " - WebSocket session terminated.", getCuid()));
+      A2_LOG_INFO(fmt("CUID#%"PRId64" - WebSocket session terminated.",
+                      getCuid()));
     } else {
-      A2_LOG_INFO(fmt("CUID#%" PRId64 " - WebSocket session terminated"
+      A2_LOG_INFO(fmt("CUID#%"PRId64" - WebSocket session terminated"
                       " (Possibly due to EOF).", getCuid()));
     }
     return true;

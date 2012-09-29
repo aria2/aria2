@@ -51,6 +51,10 @@ private:
   SharedHandle<SocketCore> socket_;
   SharedHandle<HttpServer> httpServer_;
   Timer timeoutTimer_;
+  bool readCheck_;
+  bool writeCheck_;
+
+  void updateReadWriteCheck();
 protected:
   DownloadEngine* getDownloadEngine()
   {
@@ -66,10 +70,10 @@ public:
                                     const SharedHandle<SocketCore>& socket);
 
   virtual ~AbstractHttpServerResponseCommand();
-  
+
   virtual bool execute();
 };
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_ABSTRACT_HTTP_SERVER_RESPONSE_COMMAND_H

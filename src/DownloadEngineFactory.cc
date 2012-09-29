@@ -74,6 +74,7 @@
 #include "DlAbortEx.h"
 #include "FileAllocationEntry.h"
 #include "HttpListenCommand.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -170,11 +171,15 @@ DownloadEngineFactory::newDownloadEngine
   }
   if(op->getAsBool(PREF_ENABLE_RPC)) {
     bool ok = false;
+    bool secure = op->getAsBool(PREF_RPC_SECURE);
+    if(secure) {
+      A2_LOG_NOTICE("RPC transport will be encrypted.");
+    }
     static int families[] = { AF_INET, AF_INET6 };
     size_t familiesLength = op->getAsBool(PREF_DISABLE_IPV6)?1:2;
     for(size_t i = 0; i < familiesLength; ++i) {
       HttpListenCommand* httpListenCommand =
-        new HttpListenCommand(e->newCUID(), e.get(), families[i]);
+        new HttpListenCommand(e->newCUID(), e.get(), families[i], secure);
       if(httpListenCommand->bindPort(op->getAsInt(PREF_RPC_LISTEN_PORT))){
         e->addCommand(httpListenCommand);
         ok = true;

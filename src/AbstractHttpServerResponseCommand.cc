@@ -55,15 +55,44 @@ AbstractHttpServerResponseCommand::AbstractHttpServerResponseCommand
  : Command(cuid),
    e_(e),
    socket_(socket),
-   httpServer_(httpServer)
+   httpServer_(httpServer),
+   readCheck_(false),
+   writeCheck_(true)
 {
-  setStatus(Command::STATUS_ONESHOT_REALTIME); 
+  setStatus(Command::STATUS_ONESHOT_REALTIME);
   e_->addSocketForWriteCheck(socket_, this);
 }
 
 AbstractHttpServerResponseCommand::~AbstractHttpServerResponseCommand()
 {
-  e_->deleteSocketForWriteCheck(socket_, this);
+  if(readCheck_) {
+    e_->deleteSocketForReadCheck(socket_, this);
+  }
+  if(writeCheck_) {
+    e_->deleteSocketForWriteCheck(socket_, this);
+  }
+}
+
+void AbstractHttpServerResponseCommand::updateReadWriteCheck()
+{
+  if(httpServer_->wantRead()) {
+    if(!readCheck_) {
+      readCheck_ = true;
+      e_->addSocketForReadCheck(socket_, this);
+    }
+  } else if(readCheck_) {
+    readCheck_ = false;
+    e_->deleteSocketForReadCheck(socket_, this);
+  }
+  if(httpServer_->wantWrite()) {
+    if(!writeCheck_) {
+      writeCheck_ = true;
+      e_->addSocketForWriteCheck(socket_, this);
+    }
+  } else if(writeCheck_) {
+    writeCheck_ = false;
+    e_->deleteSocketForWriteCheck(socket_, this);
+  }
 }
 
 bool AbstractHttpServerResponseCommand::execute()
@@ -72,26 +101,30 @@ bool AbstractHttpServerResponseCommand::execute()
     return true;
   }
   try {
-    httpServer_->sendResponse();
+    ssize_t len = httpServer_->sendResponse();
+    if(len > 0) {
+      timeoutTimer_ = global::wallclock();
+    }
   } catch(RecoverableException& e) {
     A2_LOG_INFO_EX
-      (fmt("CUID#%" PRId64 " - Error occurred while transmitting response body.",
+      (fmt("CUID#%"PRId64" - Error occurred while transmitting response body.",
            getCuid()),
        e);
     return true;
   }
   if(httpServer_->sendBufferIsEmpty()) {
-    A2_LOG_INFO(fmt("CUID#%" PRId64 " - HttpServer: all response transmitted.",
+    A2_LOG_INFO(fmt("CUID#%"PRId64" - HttpServer: all response transmitted.",
                     getCuid()));
     afterSend(httpServer_, e_);
     return true;
   } else {
-    if(timeoutTimer_.difference(global::wallclock()) >= 10) {
-      A2_LOG_INFO(fmt("CUID#%" PRId64 " - HttpServer: Timeout while trasmitting"
+    if(timeoutTimer_.difference(global::wallclock()) >= 30) {
+      A2_LOG_INFO(fmt("CUID#%"PRId64" - HttpServer: Timeout while trasmitting"
                       " response.",
                       getCuid()));
       return true;
     } else {
+      updateReadWriteCheck();
       e_->addCommand(this);
       return false;
     }

@@ -123,8 +123,7 @@ createHttpRequest(const SharedHandle<Request>& req,
 bool HttpRequestCommand::executeInternal() {
   //socket->setBlockingMode();
   if(getRequest()->getProtocol() == "https") {
-    getSocket()->prepareSecureConnection();
-    if(!getSocket()->initiateSecureConnection(getRequest()->getHost())) {
+    if(!getSocket()->tlsConnect(getRequest()->getHost())) {
       setReadCheckSocketIf(getSocket(), getSocket()->wantRead());
       setWriteCheckSocketIf(getSocket(), getSocket()->wantWrite());
       getDownloadEngine()->addCommand(this);

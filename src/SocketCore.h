@@ -85,7 +85,10 @@ private:
   bool wantWrite_;
 
 #if ENABLE_SSL
-  static SharedHandle<TLSContext> tlsContext_;
+  // TLS context for client side
+  static SharedHandle<TLSContext> clTlsContext_;
+  // TLS context for server side
+  static SharedHandle<TLSContext> svTlsContext_;
 #endif // ENABLE_SSL
 
 #ifdef HAVE_OPENSSL
@@ -106,6 +109,15 @@ private:
 
   void setSockOpt(int level, int optname, void* optval, socklen_t optlen);
 
+  /**
+   * Makes this socket secure.
+   * If the system has not OpenSSL, then this method do nothing.
+   * connection must be established  before calling this method.
+   *
+   * If you are going to verify peer's certificate, hostname must be supplied.
+   */
+  bool tlsHandshake(TLSContext* tlsctx, const std::string& hostname);
+
   SocketCore(sock_t sockfd, int sockType);
 public:
   SocketCore(int sockType = SOCK_STREAM);
@@ -124,7 +136,7 @@ public:
   void joinMulticastGroup
   (const std::string& multicastAddr, uint16_t multicastPort,
    const std::string& localAddr);
-  
+
   // Enables TCP_NODELAY socket option if f == true.
   void setTcpNodelay(bool f);
 
@@ -293,16 +305,16 @@ public:
     return readDataFrom(reinterpret_cast<char*>(data), len, sender);
   }
 
-  /**
-   * Makes this socket secure.
-   * If the system has not OpenSSL, then this method do nothing.
-   * connection must be established  before calling this method.
-   *
-   * If you are going to verify peer's certificate, hostname must be supplied.
-   */
-  bool initiateSecureConnection(const std::string& hostname="");
+  // Performs TLS server side handshake. If handshake is completed,
+  // returns true. If handshake has not been done yet, returns false.
+  bool tlsAccept();
 
-  void prepareSecureConnection();
+  // Performs TLS client side handshake. If handshake is completed,
+  // returns true. If handshake has not been done yet, returns false.
+  //
+  // If you are going to verify peer's certificate, hostname must be
+  // supplied.
+  bool tlsConnect(const std::string& hostname);
 
   bool operator==(const SocketCore& s) {
     return sockfd_ == s.sockfd_;
@@ -332,7 +344,8 @@ public:
   bool wantWrite() const;
 
 #ifdef ENABLE_SSL
-  static void setTLSContext(const SharedHandle<TLSContext>& tlsContext);
+  static void setClientTLSContext(const SharedHandle<TLSContext>& tlsContext);
+  static void setServerTLSContext(const SharedHandle<TLSContext>& tlsContext);
 #endif // ENABLE_SSL
 
   static void setProtocolFamily(int protocolFamily)

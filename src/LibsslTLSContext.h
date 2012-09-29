@@ -41,6 +41,7 @@
 
 # include <openssl/ssl.h>
 
+#include "TLSContext.h"
 #include "DlAbortEx.h"
 
 namespace aria2 {
@@ -49,17 +50,19 @@ class TLSContext {
 private:
   SSL_CTX* sslCtx_;
 
+  TLSSessionSide side_;
+
   bool good_;
 
   bool peerVerificationEnabled_;
 public:
-  TLSContext();
+  TLSContext(TLSSessionSide side);
 
   ~TLSContext();
 
   // private key `keyfile' must be decrypted.
-  bool addClientKeyFile(const std::string& certfile,
-                        const std::string& keyfile);
+  bool addCredentialFile(const std::string& certfile,
+                         const std::string& keyfile);
 
   bool addSystemTrustedCACerts();
 
@@ -74,7 +77,12 @@ public:
   {
     return sslCtx_;
   }
-  
+
+  TLSSessionSide getSide() const
+  {
+    return side_;
+  }
+
   void enablePeerVerification();
 
   void disablePeerVerification();

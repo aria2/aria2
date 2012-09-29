@@ -137,6 +137,24 @@ error_code::Value MultiUrlRequestInfo::execute()
     Notifier notifier(wsSessionMan);
     SingletonHolder<Notifier>::instance(&notifier);
 
+#ifdef ENABLE_SSL
+    if(option_->getAsBool(PREF_ENABLE_RPC) &&
+       option_->getAsBool(PREF_RPC_SECURE)) {
+      if(!option_->blank(PREF_RPC_CERTIFICATE) &&
+         !option_->blank(PREF_RPC_PRIVATE_KEY)) {
+        // We set server TLS context to the SocketCore before creating
+        // DownloadEngine instance.
+        SharedHandle<TLSContext> svTlsContext(new TLSContext(TLS_SERVER));
+        svTlsContext->addCredentialFile(option_->get(PREF_RPC_CERTIFICATE),
+                                        option_->get(PREF_RPC_PRIVATE_KEY));
+        SocketCore::setServerTLSContext(svTlsContext);
+      } else {
+        throw DL_ABORT_EX("Specify --rpc-certificate and --rpc-private-key "
+                          "options in order to use secure RPC.");
+      }
+    }
+#endif // ENABLE_SSL
+
     SharedHandle<DownloadEngine> e =
       DownloadEngineFactory().newDownloadEngine(option_.get(), requestGroups_);
 
@@ -173,26 +191,27 @@ error_code::Value MultiUrlRequestInfo::execute()
     e->setAuthConfigFactory(authConfigFactory);
 
 #ifdef ENABLE_SSL
-    SharedHandle<TLSContext> tlsContext(new TLSContext());
+    SharedHandle<TLSContext> clTlsContext(new TLSContext(TLS_CLIENT));
     if(!option_->blank(PREF_CERTIFICATE) &&
        !option_->blank(PREF_PRIVATE_KEY)) {
-      tlsContext->addClientKeyFile(option_->get(PREF_CERTIFICATE),
-                                   option_->get(PREF_PRIVATE_KEY));
+      clTlsContext->addCredentialFile(option_->get(PREF_CERTIFICATE),
+                                      option_->get(PREF_PRIVATE_KEY));
     }
 
     if(!option_->blank(PREF_CA_CERTIFICATE)) {
-      if(!tlsContext->addTrustedCACertFile(option_->get(PREF_CA_CERTIFICATE))) {
+      if(!clTlsContext->addTrustedCACertFile
+         (option_->get(PREF_CA_CERTIFICATE))) {
         A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
       }
     } else if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
-      if(!tlsContext->addSystemTrustedCACerts()) {
+      if(!clTlsContext->addSystemTrustedCACerts()) {
         A2_LOG_INFO(MSG_WARN_NO_CA_CERT);
       }
     }
     if(option_->getAsBool(PREF_CHECK_CERTIFICATE)) {
-      tlsContext->enablePeerVerification();
+      clTlsContext->enablePeerVerification();
     }
-    SocketCore::setTLSContext(tlsContext);
+    SocketCore::setClientTLSContext(clTlsContext);
 #endif
 #ifdef HAVE_ARES_ADDR_NODE
     ares_addr_node* asyncDNSServers =
@@ -219,9 +238,9 @@ error_code::Value MultiUrlRequestInfo::execute()
 #endif // SIGHUP
     util::setGlobalSignalHandler(SIGINT, handler, 0);
     util::setGlobalSignalHandler(SIGTERM, handler, 0);
-    
+
     e->run();
-    
+
     if(!option_->blank(PREF_SAVE_COOKIES)) {
       e->getCookieStorage()->saveNsFormat(option_->get(PREF_SAVE_COOKIES));
     }

@@ -880,3 +880,21 @@
     "                              your disk.")
 #define TEXT_ENABLE_MMAP                        \
   _(" --enable-mmap[=true|false]   Map files into memory.")
+#define TEXT_RPC_CERTIFICATE                                            \
+  _(" --rpc-certificate=FILE       Use the certificate in FILE for RPC server.\n" \
+    "                              The certificate must be in PEM format.\n" \
+    "                              Use --rpc-private-key option to specify the\n" \
+    "                              private key. Use --rpc-secure option to enable\n" \
+    "                              encryption.")
+#define TEXT_RPC_PRIVATE_KEY                                            \
+  _(" --rpc-private-key=FILE       Use the private key in FILE for RPC server.\n" \
+    "                              The private key must be decrypted and in PEM\n" \
+    "                              format. Use --rpc-secure option to enable\n" \
+    "                              encryption. See also --rpc-certificate option.")
+#define TEXT_RPC_SECURE                         \
+  _(" --rpc-secure[=true|false]    RPC transport will be encrypted by SSL/TLS.\n" \
+    "                              The RPC clients must use https scheme to access\n" \
+    "                              the server. For WebSocket client, use wss\n" \
+    "                              scheme. Use --rpc-certificate and\n" \
+    "                              --rpc-private-key options to specify the\n" \
+    "                              server certificate and private key.")

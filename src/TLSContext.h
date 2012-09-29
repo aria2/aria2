@@ -37,6 +37,15 @@
 
 #include "common.h"
 
+namespace aria2 {
+
+enum TLSSessionSide {
+  TLS_CLIENT,
+  TLS_SERVER
+};
+
+} // namespace aria2
+
 #ifdef HAVE_OPENSSL
 # include "LibsslTLSContext.h"
 #elif HAVE_LIBGNUTLS

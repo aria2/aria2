@@ -148,13 +148,16 @@ SharedHandle<HttpHeader> HttpServer::receiveRequest()
     if(setupResponseRecv() < 0) {
       A2_LOG_INFO("Request path is invaild. Ignore the request body.");
     }
-    if(!util::parseLLIntNoThrow(lastContentLength_,
-                                lastRequestHeader_->
-                                find(HttpHeader::CONTENT_LENGTH)) ||
-       lastContentLength_ < 0) {
-      throw DL_ABORT_EX(fmt("Invalid Content-Length=%s",
-                            lastRequestHeader_->
-                            find(HttpHeader::CONTENT_LENGTH).c_str()));
+    const std::string& contentLengthHdr = lastRequestHeader_->
+      find(HttpHeader::CONTENT_LENGTH);
+    if(!contentLengthHdr.empty()) {
+      if(!util::parseLLIntNoThrow(lastContentLength_, contentLengthHdr) ||
+         lastContentLength_ < 0) {
+        throw DL_ABORT_EX(fmt("Invalid Content-Length=%s",
+                              contentLengthHdr.c_str()));
+      }
+    } else {
+      lastContentLength_ = 0;
     }
     headerProcessor_->clear();
 
@@ -384,6 +387,16 @@ bool HttpServer::supportsPersistentConnection() const
 {
   return keepAlive_ &&
     lastRequestHeader_ && lastRequestHeader_->isKeepAlive();
+}
+
+bool HttpServer::wantRead() const
+{
+  return socket_->wantRead();
+}
+
+bool HttpServer::wantWrite() const
+{
+  return socket_->wantWrite();
 }
 
 } // namespace aria2

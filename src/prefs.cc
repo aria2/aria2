@@ -270,6 +270,12 @@ const Pref* PREF_RPC_MAX_REQUEST_SIZE = makePref("rpc-max-request-size");
 const Pref* PREF_RPC_LISTEN_ALL = makePref("rpc-listen-all");
 // value: true | false
 const Pref* PREF_RPC_ALLOW_ORIGIN_ALL = makePref("rpc-allow-origin-all");
+// value: string that your file system recognizes as a file name.
+const Pref* PREF_RPC_CERTIFICATE = makePref("rpc-certificate");
+// value: string that your file system recognizes as a file name.
+const Pref* PREF_RPC_PRIVATE_KEY = makePref("rpc-private-key");
+// value: true | false
+const Pref* PREF_RPC_SECURE = makePref("rpc-secure");
 // value: true | false
 const Pref* PREF_DRY_RUN = makePref("dry-run");
 // value: true | false

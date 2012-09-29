@@ -43,11 +43,12 @@
 
 namespace aria2 {
 
-TLSContext::TLSContext()
+TLSContext::TLSContext(TLSSessionSide side)
   : sslCtx_(0),
+    side_(side),
     peerVerificationEnabled_(false)
 {
-  sslCtx_ = SSL_CTX_new(SSLv23_client_method());
+  sslCtx_ = SSL_CTX_new(SSLv23_method());
   if(sslCtx_) {
     good_ = true;
   } else {
@@ -55,15 +56,15 @@ TLSContext::TLSContext()
     A2_LOG_ERROR(fmt("SSL_CTX_new() failed. Cause: %s",
                      ERR_error_string(ERR_get_error(), 0)));
   }
-  /* Disable SSLv2 and enable all workarounds for buggy servers */
+  // Disable SSLv2 and enable all workarounds for buggy servers
   SSL_CTX_set_options(sslCtx_, SSL_OP_ALL|SSL_OP_NO_SSLv2|
                       SSL_OP_NO_COMPRESSION);
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_AUTO_RETRY);
+  SSL_CTX_set_mode(sslCtx_, SSL_MODE_ENABLE_PARTIAL_WRITE);
   #ifdef SSL_MODE_RELEASE_BUFFERS
   /* keep memory usage low */
   SSL_CTX_set_mode(sslCtx_, SSL_MODE_RELEASE_BUFFERS);
   #endif
-  
 }
 
 TLSContext::~TLSContext()
@@ -81,23 +82,23 @@ bool TLSContext::bad() const
   return !good_;
 }
 
-bool TLSContext::addClientKeyFile(const std::string& certfile,
-                                  const std::string& keyfile)
+bool TLSContext::addCredentialFile(const std::string& certfile,
+                                   const std::string& keyfile)
 {
   if(SSL_CTX_use_PrivateKey_file(sslCtx_, keyfile.c_str(),
                                  SSL_FILETYPE_PEM) != 1) {
-    A2_LOG_ERROR(fmt("Failed to load client private key from %s. Cause: %s",
+    A2_LOG_ERROR(fmt("Failed to load private key from %s. Cause: %s",
                      keyfile.c_str(),
                      ERR_error_string(ERR_get_error(), 0)));
     return false;
   }
   if(SSL_CTX_use_certificate_chain_file(sslCtx_, certfile.c_str()) != 1) {
-    A2_LOG_ERROR(fmt("Failed to load client certificate from %s. Cause: %s",
+    A2_LOG_ERROR(fmt("Failed to load certificate from %s. Cause: %s",
                      certfile.c_str(),
                      ERR_error_string(ERR_get_error(), 0)));
     return false;
   }
-  A2_LOG_INFO(fmt("Client Key File(cert=%s, key=%s) were successfully added.",
+  A2_LOG_INFO(fmt("Credential files(cert=%s, key=%s) were successfully added.",
                   certfile.c_str(),
                   keyfile.c_str()));
   return true;

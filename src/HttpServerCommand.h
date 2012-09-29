@@ -51,11 +51,14 @@ private:
   SharedHandle<SocketCore> socket_;
   SharedHandle<HttpServer> httpServer_;
   Timer timeoutTimer_;
+  bool writeCheck_;
 
   void checkSocketRecvBuffer();
+  void updateWriteCheck();
 public:
   HttpServerCommand(cuid_t cuid, DownloadEngine* e,
-                    const SharedHandle<SocketCore>& socket);
+                    const SharedHandle<SocketCore>& socket,
+                    bool secure);
 
   HttpServerCommand(cuid_t cuid,
                     const SharedHandle<HttpServer>& httpServer,
@@ -63,10 +66,10 @@ public:
                     const SharedHandle<SocketCore>& socket);
 
   virtual ~HttpServerCommand();
-  
+
   virtual bool execute();
 };
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_HTTP_SERVER_COMMAND_H

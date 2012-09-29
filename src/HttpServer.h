@@ -82,6 +82,7 @@ private:
   std::string password_;
   bool acceptsGZip_;
   std::string allowOrigin_;
+  bool secure_;
 public:
   HttpServer(const SharedHandle<SocketCore>& socket, DownloadEngine* e);
 
@@ -178,6 +179,19 @@ public:
   {
     return lastRequestHeader_;
   }
+
+  void setSecure(bool f)
+  {
+    secure_ = f;
+  }
+
+  bool getSecure() const
+  {
+    return secure_;
+  }
+
+  bool wantRead() const;
+  bool wantWrite() const;
 };
 
 } // namespace aria2

@@ -53,6 +53,8 @@ private:
   SharedHandle<SocketCore> socket_;
   SharedHandle<HttpServer> httpServer_;
   Timer timeoutTimer_;
+  bool writeCheck_;
+
   void sendJsonRpcErrorResponse
   (const std::string& httpStatus,
    int code,
@@ -66,6 +68,7 @@ private:
   (const std::vector<rpc::RpcResponse>& results,
    const std::string& callback);
   void addHttpServerResponseCommand();
+  void updateWriteCheck();
 public:
   HttpServerBodyCommand(cuid_t cuid,
                         const SharedHandle<HttpServer>& httpServer,
@@ -73,10 +76,10 @@ public:
                         const SharedHandle<SocketCore>& socket);
 
   virtual ~HttpServerBodyCommand();
-  
+
   virtual bool execute();
 };
 
-} // namespace aria2 
+} // namespace aria2
 
 #endif // D_HTTP_SERVER_BODY_COMMAND_H
