@@ -3869,6 +3869,17 @@ Verify peer in SSL/TLS using given CA certificates
 
   $ aria2c --ca-certificate=/path/to/ca-certificates.crt --check-certificate https://host/file
 
+RPC
+~~~
+
+Encrypt RPC transport by SSL/TLS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Specify server certificate file and private key file as follows:
+
+.. code-block:: console
+
+  $ aria2c --enable-rpc --rpc-certificate=/path/to/server.crt --rpc-private-key=/path/to/server.key --rpc-secure
 
 And more advanced features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
