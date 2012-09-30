@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2012 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,93 +93,38 @@ private:
 
   RefCount* refCount_;
 public:
-  SharedCount():refCount_(new RefCount()) {}
+  SharedCount();
 
-  SharedCount(const SharedCount& s):refCount_(s.refCount_)
-  {
-    refCount_->addRefCount();
-  }
+  SharedCount(const SharedCount& s);
 
-  ~SharedCount() {
-    refCount_->releaseRefCount();
-    if(refCount_->getWeakRefCount() == 0) {
-      delete refCount_;
-    }
-  }
+  ~SharedCount();
 
-  bool reassign(const SharedCount& s) {
-    s.refCount_->addRefCount();
-    refCount_->releaseRefCount();
-    if(refCount_->getWeakRefCount() == 0) {
-      delete refCount_;
-      refCount_ = s.refCount_;
-      return true;
-    }
-    size_t thisCount = refCount_->getStrongRefCount();
-    refCount_ = s.refCount_;
-    return thisCount == 0;
-  }
+  bool reassign(const SharedCount& s);
 
   inline size_t getRefCount() const { return refCount_->getStrongRefCount(); }
 
-  void swap(SharedCount& r)
-  {
-    std::swap(refCount_, r.refCount_);
-  }
+  void swap(SharedCount& r);
 };
 
 class WeakCount {
 private:
   RefCount* refCount_;
 public:
-  WeakCount(const WeakRef& t):refCount_(new RefCount(t)) {}
+  WeakCount(const WeakRef& t);
 
-  WeakCount(const StrongRef& t):refCount_(new RefCount()) {}
+  WeakCount(const StrongRef& t);
 
-  WeakCount(const WeakCount& w):refCount_(w.refCount_)
-  {
-    refCount_->addWeakRefCount();
-  }
+  WeakCount(const WeakCount& w);
 
-  WeakCount(const SharedCount& s):refCount_(s.refCount_)
-  {
-    refCount_->addWeakRefCount();
-  }
+  WeakCount(const SharedCount& s);
 
-  ~WeakCount()
-  {
-    refCount_->releaseWeakRefCount();
-    if(refCount_->getWeakRefCount() == 0) {
-      delete refCount_;
-    }
-  }
+  ~WeakCount();
 
-  bool reassign(const SharedCount& s) {
-    s.refCount_->addWeakRefCount();
-    refCount_->releaseWeakRefCount();
-    if(refCount_->getWeakRefCount() == 0) {
-      delete refCount_;
-      refCount_ = s.refCount_;
-      return true;
-    }
-    refCount_ = s.refCount_;
-    return false;
-  }
+  bool reassign(const SharedCount& s);
 
-  bool reassign(const WeakCount& s) {
-    s.refCount_->addWeakRefCount();
-    refCount_->releaseWeakRefCount();
-    if(refCount_->getWeakRefCount() == 0) {
-      delete refCount_;
-      refCount_ = s.refCount_;
-      return true;
-    }
-    refCount_ = s.refCount_;
-    return false;
-  }
+  bool reassign(const WeakCount& s);
 
   inline size_t getRefCount() const { return refCount_->getStrongRefCount(); }
-
 };
 
 template<typename T>
