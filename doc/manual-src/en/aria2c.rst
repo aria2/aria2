@@ -913,6 +913,12 @@ RPC Options
   RPC response.
   Default: ``false``
 
+.. option:: --rpc-certificate=<FILE>
+
+  Use the certificate in FILE for RPC server. The certificate must be
+  in PEM format. Use :option:`--rpc-private-key` option to specify the
+  private key. Use :option:`--rpc-secure` option to enable encryption.
+
 .. option:: --rpc-listen-all[=true|false]
 
   Listen incoming JSON-RPC/XML-RPC requests on all network interfaces. If false
@@ -931,6 +937,20 @@ RPC Options
 .. option:: --rpc-passwd=<PASSWD>
 
   Set JSON-RPC/XML-RPC password.
+
+.. option:: --rpc-private-key=<FILE>
+
+  Use the private key in FILE for RPC server.  The private key must be
+  decrypted and in PEM format. Use :option:`--rpc-secure` option to
+  enable encryption. See also :option:`--rpc-certificate` option.
+
+.. option:: --rpc-secure[=true|false]
+
+  RPC transport will be encrypted by SSL/TLS.  The RPC clients must
+  use https scheme to access the server. For WebSocket client, use wss
+  scheme. Use :option:`--rpc-certificate` and
+  :option:`--rpc-private-key` options to specify the server
+  certificate and private key.
 
 .. option:: --rpc-user=<USER>
 
