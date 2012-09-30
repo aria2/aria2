@@ -128,13 +128,13 @@ public:
 
   std::string getURIHost() const;
 
-  SharedHandle<Range> getRange() const;
+  Range getRange() const;
 
   /**
    * Inspects whether the specified response range is satisfiable
    * with request range.
    */
-  bool isRangeSatisfied(const SharedHandle<Range>& range) const;
+  bool isRangeSatisfied(const Range& range) const;
 
   const SharedHandle<Request>& getRequest() const
   {

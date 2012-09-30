@@ -36,16 +36,16 @@
 
 namespace aria2 {
 
-Range::Range():startByte_(0), endByte_(0), entityLength_(0) {}
+Range::Range():startByte(0), endByte(0), entityLength(0) {}
 
 Range::Range(int64_t startByte, int64_t endByte, int64_t entityLength)
-  : startByte_(startByte), endByte_(endByte), entityLength_(entityLength)
+  : startByte(startByte), endByte(endByte), entityLength(entityLength)
 {}
 
 Range::Range(const Range& c)
-  : startByte_(c.startByte_),
-    endByte_(c.endByte_),
-    entityLength_(c.entityLength_)
+  : startByte(c.startByte),
+    endByte(c.endByte),
+    entityLength(c.entityLength)
 {}
 
 Range::~Range() {}
@@ -53,18 +53,18 @@ Range::~Range() {}
 Range& Range::operator=(const Range& c)
 {
   if(this != &c) {
-    startByte_ = c.startByte_;
-    endByte_ = c.endByte_;
-    entityLength_ = c.entityLength_;
+    startByte = c.startByte;
+    endByte = c.endByte;
+    entityLength = c.entityLength;
   }
   return *this;
 }
 
 bool Range::operator==(const Range& range) const
 {
-  return startByte_ == range.startByte_ &&
-    endByte_ == range.endByte_ &&
-    entityLength_ == range.entityLength_;
+  return startByte == range.startByte &&
+    endByte == range.endByte &&
+    entityLength == range.entityLength;
 }
 
 bool Range::operator!=(const Range& range) const
@@ -74,8 +74,8 @@ bool Range::operator!=(const Range& range) const
 
 int64_t Range::getContentLength() const
 {
-  if(endByte_ >= startByte_) {
-    return endByte_-startByte_+1;
+  if(endByte >= startByte) {
+    return endByte-startByte+1;
   } else {
     return 0;
   }

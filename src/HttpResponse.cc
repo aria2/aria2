@@ -96,16 +96,16 @@ void HttpResponse::validateResponse() const
   } else if(statusCode == 200 || statusCode == 206) {
     if(!httpHeader_->defined(HttpHeader::TRANSFER_ENCODING)) {
       // compare the received range against the requested range
-      SharedHandle<Range> responseRange = httpHeader_->getRange();
+      Range responseRange = httpHeader_->getRange();
       if(!httpRequest_->isRangeSatisfied(responseRange)) {
         throw DL_ABORT_EX2
           (fmt(EX_INVALID_RANGE_HEADER,
                httpRequest_->getStartByte(),
                httpRequest_->getEndByte(),
                httpRequest_->getEntityLength(),
-               responseRange->getStartByte(),
-               responseRange->getEndByte(),
-               responseRange->getEntityLength()),
+               responseRange.startByte,
+               responseRange.endByte,
+               responseRange.entityLength),
            error_code::CANNOT_RESUME);
       }
     }
@@ -231,7 +231,7 @@ int64_t HttpResponse::getContentLength() const
   if(!httpHeader_) {
     return 0;
   } else {
-    return httpHeader_->getRange()->getContentLength();
+    return httpHeader_->getRange().getContentLength();
   }
 }
 
@@ -240,7 +240,7 @@ int64_t HttpResponse::getEntityLength() const
   if(!httpHeader_) {
     return 0;
   } else {
-    return httpHeader_->getRange()->getEntityLength();
+    return httpHeader_->getRange().entityLength;
   }
 }
 

@@ -649,7 +649,7 @@ void HttpRequestTest::testIsRangeSatisfied()
   httpRequest.setSegment(segment);
   httpRequest.setFileEntry(fileEntry);
 
-  SharedHandle<Range> range(new Range());
+  Range range;
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
@@ -661,7 +661,7 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   uint64_t entityLength = segment->getSegmentLength()*10;
 
-  range.reset(new Range(segment->getPosition(), 0, entityLength));
+  range = Range(segment->getPosition(), 0, entityLength);
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
@@ -677,14 +677,14 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
-  range.reset(new Range(segment->getPosition(),
-                        segment->getPosition()+segment->getLength()-1,
-                        entityLength));
+  range = Range(segment->getPosition(),
+                segment->getPosition()+segment->getLength()-1,
+                entityLength);
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  range.reset(new Range(0, segment->getPosition()+segment->getLength()-1,
-                        entityLength));
+  range = Range(0, segment->getPosition()+segment->getLength()-1,
+                entityLength);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 }

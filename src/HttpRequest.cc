@@ -101,31 +101,30 @@ int64_t HttpRequest::getEndByte() const
   }
 }
 
-SharedHandle<Range> HttpRequest::getRange() const
+Range HttpRequest::getRange() const
 {
   // content-length is always 0
   if(!segment_) {
-    return SharedHandle<Range>(new Range());
+    return Range();
   } else {
-    return SharedHandle<Range>(new Range(getStartByte(), getEndByte(),
-                                         fileEntry_->getLength()));
+    return Range(getStartByte(), getEndByte(), fileEntry_->getLength());
   }
 }
 
-bool HttpRequest::isRangeSatisfied(const SharedHandle<Range>& range) const
+bool HttpRequest::isRangeSatisfied(const Range& range) const
 {
   if(!segment_) {
     return true;
   }
-  if((getStartByte() == range->getStartByte()) &&
+  if((getStartByte() == range.startByte) &&
      ((getEndByte() == 0) ||
-      (getEndByte() == range->getEndByte())) &&
+      (getEndByte() == range.endByte)) &&
      ((fileEntry_->getLength() == 0) ||
-      (fileEntry_->getLength() == range->getEntityLength()))) {
+      (fileEntry_->getLength() == range.entityLength))) {
     return true;
   } else {
     return false;
-  }  
+  }
 }
 
 namespace {

@@ -85,13 +85,13 @@ HttpHeader::equalRange(int hdKey) const
   return table_.equal_range(hdKey);
 }
 
-SharedHandle<Range> HttpHeader::getRange() const
+Range HttpHeader::getRange() const
 {
   const std::string& rangeStr = find(CONTENT_RANGE);
   if(rangeStr.empty()) {
     const std::string& clenStr = find(CONTENT_LENGTH);
     if(clenStr.empty()) {
-      return SharedHandle<Range>(new Range());
+      return Range();
     } else {
       int64_t contentLength;
       if(!util::parseLLIntNoThrow(contentLength, clenStr) ||
@@ -101,10 +101,9 @@ SharedHandle<Range> HttpHeader::getRange() const
         throw DOWNLOAD_FAILURE_EXCEPTION
           (fmt(EX_TOO_LARGE_FILE, contentLength));
       } else if(contentLength == 0) {
-        return SharedHandle<Range>(new Range());
+        return Range();
       } else {
-        return SharedHandle<Range>
-          (new Range(0, contentLength-1, contentLength));
+        return Range(0, contentLength - 1, contentLength);
       }
     }
   }
@@ -130,11 +129,11 @@ SharedHandle<Range> HttpHeader::getRange() const
     // If byte-range-resp-spec or instance-length is "*", we returns
     // empty Range. The former is usually sent with 416 (Request range
     // not satisfiable) status.
-    return SharedHandle<Range>(new Range());
+    return Range();
   }
   std::string::const_iterator minus = std::find(byteRangeSpec, slash, '-');
   if(minus == slash) {
-    return SharedHandle<Range>(new Range());
+    return Range();
   }
   int64_t startByte, endByte, entityLength;
   if(!util::parseLLIntNoThrow(startByte, std::string(byteRangeSpec, minus)) ||
@@ -153,7 +152,7 @@ SharedHandle<Range> HttpHeader::getRange() const
   if(entityLength > std::numeric_limits<off_t>::max()) {
     throw DOWNLOAD_FAILURE_EXCEPTION(fmt(EX_TOO_LARGE_FILE, entityLength));
   }
-  return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
+  return Range(startByte, endByte, entityLength);
 }
 
 void HttpHeader::setVersion(const std::string& version)

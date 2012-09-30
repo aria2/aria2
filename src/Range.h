@@ -41,12 +41,11 @@
 
 namespace aria2 {
 
-class Range {
-private:
-  int64_t startByte_;
-  int64_t endByte_;
-  int64_t entityLength_;
-public:
+struct Range {
+  int64_t startByte;
+  int64_t endByte;
+  int64_t entityLength;
+
   Range();
 
   Range(int64_t startByte, int64_t endByte, int64_t entityLength);
@@ -60,21 +59,6 @@ public:
   bool operator==(const Range& range) const;
 
   bool operator!=(const Range& range) const;
-
-  int64_t getStartByte() const
-  {
-    return startByte_;
-  }
-
-  int64_t getEndByte() const
-  {
-    return endByte_;
-  }
-
-  int64_t getEntityLength() const
-  {
-    return entityLength_;
-  }
 
   int64_t getContentLength() const;
 };

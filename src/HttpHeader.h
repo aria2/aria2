@@ -108,7 +108,7 @@ public:
             std::multimap<int, std::string>::const_iterator>
   equalRange(int hdKey) const;
 
-  SharedHandle<Range> getRange() const;
+  Range getRange() const;
 
   int getStatusCode() const;
 

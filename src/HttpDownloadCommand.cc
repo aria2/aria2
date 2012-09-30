@@ -120,9 +120,8 @@ bool HttpDownloadCommand::prepareForNextSegment() {
       int64_t lastOffset =getFileEntry()->gtoloff
         (std::min(segment->getPosition()+segment->getLength(),
                   getFileEntry()->getLastOffset()));
-      
-      if(lastOffset ==
-         httpResponse_->getHttpHeader()->getRange()->getEndByte()+1) {
+      Range range = httpResponse_->getHttpHeader()->getRange();
+      if(lastOffset == range.endByte + 1) {
         return prepareForRetry(0);
       }
     }
@@ -132,7 +131,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
 
 int64_t HttpDownloadCommand::getRequestEndOffset() const
 {
-  int64_t endByte = httpResponse_->getHttpHeader()->getRange()->getEndByte();
+  int64_t endByte = httpResponse_->getHttpHeader()->getRange().endByte;
   if(endByte > 0) {
     return endByte+1;
   } else {
