@@ -1857,7 +1857,8 @@ WebSocket) is ``/jsonrpc``.  The request path of XML-RPC interface is
 ``/rpc``.
 
 The WebSocket URI for JSON-RPC over WebSocket is
-``ws://HOST:PORT/jsonrpc``.
+``ws://HOST:PORT/jsonrpc``. If you enabled SSL/TLS encryption, use
+``wss://HOST:PORT/jsonrpc`` instead.
 
 The implemented JSON-RPC is based on
 JSON-RPC 2.0 <http://jsonrpc.org/specification>, and
