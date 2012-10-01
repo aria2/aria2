@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-09-02 21:24+0900\n"
+"POT-Creation-Date: 2012-10-01 23:45+0900\n"
 "PO-Revision-Date: 2011-05-21 00:09+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -41,43 +41,48 @@ msgstr ""
 "エラーが表示された場合, ログファイルを見てください. 詳しくはヘルプ/man ページ"
 "の '-l' オプションの項を見てください."
 
-#: src/MultiUrlRequestInfo.cc:253
+#: src/MultiUrlRequestInfo.cc:272
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "ServerStat ファイル %s を保存しました."
 
-#: src/MultiUrlRequestInfo.cc:256
+#: src/MultiUrlRequestInfo.cc:275
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "ServerStat ファイル %s の書き込みに失敗しました."
 
-#: src/RequestGroupMan.cc:442
+#: src/RequestGroupMan.cc:399
+#, fuzzy, c-format
+msgid "Download GID#%<PRId64> paused"
+msgstr "ダウンロード完了: %s"
+
+#: src/RequestGroupMan.cc:445
 #, fuzzy, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
 msgstr "ダウンロード完了: %s"
 
-#: src/RequestGroupMan.cc:728
+#: src/RequestGroupMan.cc:726
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
 
-#: src/RequestGroupMan.cc:771
+#: src/RequestGroupMan.cc:769
 msgid "Status Legend:"
 msgstr "凡例:"
 
-#: src/RequestGroupMan.cc:773
+#: src/RequestGroupMan.cc:771
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "ダウンロードが完了."
 
-#: src/RequestGroupMan.cc:776
+#: src/RequestGroupMan.cc:774
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:779
+#: src/RequestGroupMan.cc:777
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:782
+#: src/RequestGroupMan.cc:780
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "ダウンロードを中止します."
@@ -2594,6 +2599,59 @@ msgstr ""
 msgid " --enable-mmap[=true|false]   Map files into memory."
 msgstr " --bt-enable-lpd[=true|false] ローカルピアディスカバリを有効にします."
 
+#: src/usage_text.h:884
+#, fuzzy
+msgid ""
+" --rpc-certificate=FILE       Use the certificate in FILE for RPC server.\n"
+"                              The certificate must be in PEM format.\n"
+"                              Use --rpc-private-key option to specify the\n"
+"                              private key. Use --rpc-secure option to "
+"enable\n"
+"                              encryption."
+msgstr ""
+" --certificate=FILE           FILE にあるクライアント証明書を使用します. 証明"
+"書\n"
+"                              は PEM 形式でなくてはなりません.\n"
+"                              プライベートキーは --private-key オプションで指"
+"定\n"
+"                              します."
+
+#: src/usage_text.h:890
+#, fuzzy
+msgid ""
+" --rpc-private-key=FILE       Use the private key in FILE for RPC server.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. Use --rpc-secure option to enable\n"
+"                              encryption. See also --rpc-certificate option."
+msgstr ""
+" --private-key=FILE           FILE にあるプライベートキーを使用します. プライ"
+"ベ\n"
+"                              ートキーは暗号化されておらず, また, PEM 形式で"
+"なく\n"
+"                              てはなりません. --certificate オプションも参照"
+"して\n"
+"                              ください."
+
+#: src/usage_text.h:895
+#, fuzzy
+msgid ""
+" --rpc-secure[=true|false]    RPC transport will be encrypted by SSL/TLS.\n"
+"                              The RPC clients must use https scheme to "
+"access\n"
+"                              the server. For WebSocket client, use wss\n"
+"                              scheme. Use --rpc-certificate and\n"
+"                              --rpc-private-key options to specify the\n"
+"                              server certificate and private key."
+msgstr ""
+" --ca-certificate=FILE        FILE にある認証局 (CA) の証明書を使って, ピアを"
+"検\n"
+"                              証します. FILE は PEM 形式でなくてはなりませ"
+"ん. ま\n"
+"                              た, 複数の CA の証明書を含むことができます.\n"
+"                              --check-certificate オプションでピアの検証を有"
+"効に\n"
+"                              します."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " バージョン "
@@ -2645,37 +2703,37 @@ msgstr ""
 msgid "See 'aria2c -h'."
 msgstr ""
 
-#: src/version_usage.cc:99
+#: src/version_usage.cc:100
 #, c-format
 msgid "Printing all options."
 msgstr "すべてのオプションを表示します."
 
-#: src/version_usage.cc:101
+#: src/version_usage.cc:102
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "'%s' タグが付いたオプションのみ表示します."
 
-#: src/version_usage.cc:104
+#: src/version_usage.cc:105
 #, c-format
 msgid "See 'aria2c -h#help' to know all available tags."
 msgstr ""
 
-#: src/version_usage.cc:107 src/version_usage.cc:121
+#: src/version_usage.cc:108 src/version_usage.cc:122
 #, c-format
 msgid "Options:"
 msgstr "オプション:"
 
-#: src/version_usage.cc:118
+#: src/version_usage.cc:119
 #, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr "'%s' を含むオプションを表示しています."
 
-#: src/version_usage.cc:129
+#: src/version_usage.cc:130
 #, c-format
 msgid "No option matching with '%s'."
 msgstr "'%s' にマッチするオプションが見つかりませんでした."
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:138
 #, c-format
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
@@ -2688,7 +2746,7 @@ msgstr ""
 "は失\n"
 " 敗するでしょう."
 
-#: src/version_usage.cc:140
+#: src/version_usage.cc:141
 #, c-format
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
@@ -2701,7 +2759,7 @@ msgstr ""
 "し\n"
 " てください."
 
-#: src/version_usage.cc:144
+#: src/version_usage.cc:145
 #, c-format
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
@@ -2727,7 +2785,7 @@ msgstr ""
 "フ\n"
 " ァイル毎にトレントの 'name' と 'path' が URL に加えられます."
 
-#: src/version_usage.cc:151
+#: src/version_usage.cc:152
 #, c-format
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
@@ -2737,7 +2795,7 @@ msgstr ""
 "オー\n"
 " テーション (') かダブルクオーテーション (\") でクオートしてください."
 
-#: src/version_usage.cc:154
+#: src/version_usage.cc:155
 #, c-format
 msgid ""
 "About the number of connections\n"
@@ -2750,7 +2808,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/version_usage.cc:161
+#: src/version_usage.cc:162
 #, c-format
 msgid "Refer to man page for more information."
 msgstr "より詳しい情報は man ページを参照してください."
@@ -2823,7 +2881,7 @@ msgstr ""
 msgid "IPv%d DHT: listening to port %u"
 msgstr ""
 
-#: src/HttpListenCommand.cc:112
+#: src/HttpListenCommand.cc:114
 #, c-format
 msgid "IPv%d RPC: listening to port %u"
 msgstr ""
@@ -2833,13 +2891,13 @@ msgstr ""
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr ""
 
-#: src/RequestGroup.cc:378
+#: src/RequestGroup.cc:375
 msgid ""
 "For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
 "enable-dht option."
 msgstr ""
 
-#: src/RequestGroup.cc:683
+#: src/RequestGroup.cc:680
 #, fuzzy, c-format
 msgid "Removed control file for %s because it is requested by user."
 msgstr ""

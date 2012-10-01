@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-09-02 21:24+0900\n"
+"POT-Creation-Date: 2012-10-01 23:45+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -39,43 +39,48 @@ msgstr ""
 "Jos virheitä tapahtuu, katso lokitiedostoa. Ks. '-l' parametri ohjeessa/man-"
 "sivulla."
 
-#: src/MultiUrlRequestInfo.cc:253
+#: src/MultiUrlRequestInfo.cc:272
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "Osatiedosto tallennettu onnistuneesti."
 
-#: src/MultiUrlRequestInfo.cc:256
+#: src/MultiUrlRequestInfo.cc:275
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "Dataa ei voitu vastaanottaa, syy: %s"
 
-#: src/RequestGroupMan.cc:442
+#: src/RequestGroupMan.cc:399
+#, fuzzy, c-format
+msgid "Download GID#%<PRId64> paused"
+msgstr "Lataus on valmis: %s"
+
+#: src/RequestGroupMan.cc:445
 #, fuzzy, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
 msgstr "Lataus on valmis: %s"
 
-#: src/RequestGroupMan.cc:728
+#: src/RequestGroupMan.cc:726
 msgid "Download Results:"
 msgstr "Lataustulokset:"
 
-#: src/RequestGroupMan.cc:771
+#: src/RequestGroupMan.cc:769
 msgid "Status Legend:"
 msgstr "Tilalegenda:"
 
-#: src/RequestGroupMan.cc:773
+#: src/RequestGroupMan.cc:771
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "Lataus on valmis."
 
-#: src/RequestGroupMan.cc:776
+#: src/RequestGroupMan.cc:774
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:779
+#: src/RequestGroupMan.cc:777
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:782
+#: src/RequestGroupMan.cc:780
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "Lataus keskeytettiin."
@@ -2285,6 +2290,57 @@ msgstr ""
 " --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
 "                              Oletus: false"
 
+#: src/usage_text.h:884
+#, fuzzy
+msgid ""
+" --rpc-certificate=FILE       Use the certificate in FILE for RPC server.\n"
+"                              The certificate must be in PEM format.\n"
+"                              Use --rpc-private-key option to specify the\n"
+"                              private key. Use --rpc-secure option to "
+"enable\n"
+"                              encryption."
+msgstr ""
+" --file-allocation=METODI Aseta tiedostojen varausmetodi. METODI on joko\n"
+"                              'none' tai 'prealloc'. 'none' ei varaa tilaa "
+"etukäteen.\n"
+"                              'prealloc' varaa tilan etukäteen, ennen "
+"latauksen alkua.\n"
+"                              Tämä voi viedä jonkin verran aikaa, riippuen "
+"tiedoston koosta.\n"
+"                              Oletus: prealloc"
+
+#: src/usage_text.h:890
+#, fuzzy
+msgid ""
+" --rpc-private-key=FILE       Use the private key in FILE for RPC server.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. Use --rpc-secure option to enable\n"
+"                              encryption. See also --rpc-certificate option."
+msgstr ""
+" --retry-wait=SEK Montako sekuntia odotetaan virheen jälkeen.\n"
+"                              Arvon oltava väliltä 0 ja 60.\n"
+"                              Oletus: 5"
+
+#: src/usage_text.h:895
+#, fuzzy
+msgid ""
+" --rpc-secure[=true|false]    RPC transport will be encrypted by SSL/TLS.\n"
+"                              The RPC clients must use https scheme to "
+"access\n"
+"                              the server. For WebSocket client, use wss\n"
+"                              scheme. Use --rpc-certificate and\n"
+"                              --rpc-private-key options to specify the\n"
+"                              server certificate and private key."
+msgstr ""
+" --file-allocation=METODI Aseta tiedostojen varausmetodi. METODI on joko\n"
+"                              'none' tai 'prealloc'. 'none' ei varaa tilaa "
+"etukäteen.\n"
+"                              'prealloc' varaa tilan etukäteen, ennen "
+"latauksen alkua.\n"
+"                              Tämä voi viedä jonkin verran aikaa, riippuen "
+"tiedoston koosta.\n"
+"                              Oletus: prealloc"
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " versio "
@@ -2348,37 +2404,37 @@ msgstr "Käyttö: %s [parametrit] URL ...\n"
 msgid "See 'aria2c -h'."
 msgstr ""
 
-#: src/version_usage.cc:99
+#: src/version_usage.cc:100
 #, c-format
 msgid "Printing all options."
 msgstr "Tulostetaan kaikki valinnat."
 
-#: src/version_usage.cc:101
+#: src/version_usage.cc:102
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "Tulostetaan valinnat merkittynä '%s':llä."
 
-#: src/version_usage.cc:104
+#: src/version_usage.cc:105
 #, c-format
 msgid "See 'aria2c -h#help' to know all available tags."
 msgstr ""
 
-#: src/version_usage.cc:107 src/version_usage.cc:121
+#: src/version_usage.cc:108 src/version_usage.cc:122
 #, c-format
 msgid "Options:"
 msgstr "Asetukset:"
 
-#: src/version_usage.cc:118
+#: src/version_usage.cc:119
 #, fuzzy, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr "Tulostetaan valinnat, joiden nimi alkaa '%s'"
 
-#: src/version_usage.cc:129
+#: src/version_usage.cc:130
 #, fuzzy, c-format
 msgid "No option matching with '%s'."
 msgstr "Ei ohjeosiota tai valintaa nimellä '%s'"
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:138
 #, fuzzy, c-format
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
@@ -2388,7 +2444,7 @@ msgstr ""
 " Voit antaa useita osoitteita. Jos et käytä -Z valintaa, kaikkien\n"
 " osoitteiden täytyy johtaa samaan tiedostoon, tai lataaminen keskeytyy."
 
-#: src/version_usage.cc:140
+#: src/version_usage.cc:141
 #, c-format
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
@@ -2396,7 +2452,7 @@ msgid ""
 " treated as a separate download."
 msgstr ""
 
-#: src/version_usage.cc:144
+#: src/version_usage.cc:145
 #, fuzzy, c-format
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
@@ -2415,7 +2471,7 @@ msgstr ""
 " samaan aikaan, ja jaat http/ftp:ltä saatua dataa torrent-parveen.\n"
 " HUOM: vain yhden tiedoston torrent-tiedostoa voi käyttää näin."
 
-#: src/version_usage.cc:151
+#: src/version_usage.cc:152
 #, fuzzy, c-format
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
@@ -2426,7 +2482,7 @@ msgstr ""
 " siinä on \"&\" tai jokin muu merkki, jolla on erityismerkitys "
 "komentotulkille."
 
-#: src/version_usage.cc:154
+#: src/version_usage.cc:155
 #, c-format
 msgid ""
 "About the number of connections\n"
@@ -2439,7 +2495,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/version_usage.cc:161
+#: src/version_usage.cc:162
 #, c-format
 msgid "Refer to man page for more information."
 msgstr "Ks. man-sivulta lisätietoja."
@@ -2512,7 +2568,7 @@ msgstr ""
 msgid "IPv%d DHT: listening to port %u"
 msgstr ""
 
-#: src/HttpListenCommand.cc:112
+#: src/HttpListenCommand.cc:114
 #, c-format
 msgid "IPv%d RPC: listening to port %u"
 msgstr ""
@@ -2522,13 +2578,13 @@ msgstr ""
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr ""
 
-#: src/RequestGroup.cc:378
+#: src/RequestGroup.cc:375
 msgid ""
 "For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
 "enable-dht option."
 msgstr ""
 
-#: src/RequestGroup.cc:683
+#: src/RequestGroup.cc:680
 #, fuzzy, c-format
 msgid "Removed control file for %s because it is requested by user."
 msgstr "Poistettiin vanha ohjaustiedosto %s koska lataustiedostoa %s ei ole."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-09-02 21:24+0900\n"
+"POT-Creation-Date: 2012-10-01 23:45+0900\n"
 "PO-Revision-Date: 2011-10-09 21:24+0900\n"
 "Last-Translator: Kostas Milonas <milonas.ko@gmail.com>\n"
 "Language-Team: Greek <el@li.org>\n"
@@ -40,43 +40,48 @@ msgstr ""
 "Αν υπάρχουν σφάλματα, δείτε το αρχείο καταγραφών. Για περαιτέρω "
 "λεπτομέρειες, δείτε την παράμετρο -l στη σελίδα βοήθειας/man."
 
-#: src/MultiUrlRequestInfo.cc:253
+#: src/MultiUrlRequestInfo.cc:272
 #, fuzzy, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr "Το αρχείο ServerStat %s αποθηκεύτηκε επιτυχώς."
 
-#: src/MultiUrlRequestInfo.cc:256
+#: src/MultiUrlRequestInfo.cc:275
 #, fuzzy, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr "Αποτυχία εγγραφής του ServerStat στο %s."
 
-#: src/RequestGroupMan.cc:442
+#: src/RequestGroupMan.cc:399
+#, fuzzy, c-format
+msgid "Download GID#%<PRId64> paused"
+msgstr "Η λήψη ολοκληρώθηκε: %s"
+
+#: src/RequestGroupMan.cc:445
 #, fuzzy, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
 msgstr "Η λήψη ολοκληρώθηκε: %s"
 
-#: src/RequestGroupMan.cc:728
+#: src/RequestGroupMan.cc:726
 msgid "Download Results:"
 msgstr "Αποτελέσματα λήψης:"
 
-#: src/RequestGroupMan.cc:771
+#: src/RequestGroupMan.cc:769
 msgid "Status Legend:"
 msgstr "Υπόμνημα Κατάστασης:"
 
-#: src/RequestGroupMan.cc:773
+#: src/RequestGroupMan.cc:771
 #, fuzzy
 msgid "(OK):download completed."
 msgstr "Η λήψη ολοκληρώθηκε."
 
-#: src/RequestGroupMan.cc:776
+#: src/RequestGroupMan.cc:774
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:779
+#: src/RequestGroupMan.cc:777
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:782
+#: src/RequestGroupMan.cc:780
 #, fuzzy
 msgid "(RM):download removed."
 msgstr "Η λήψη ματαιώθηκε."
@@ -2668,6 +2673,61 @@ msgstr ""
 msgid " --enable-mmap[=true|false]   Map files into memory."
 msgstr " --bt-enable-lpd[=true|false] Ενεργοποιείστε το Local Peer Discovery."
 
+#: src/usage_text.h:884
+#, fuzzy
+msgid ""
+" --rpc-certificate=FILE       Use the certificate in FILE for RPC server.\n"
+"                              The certificate must be in PEM format.\n"
+"                              Use --rpc-private-key option to specify the\n"
+"                              private key. Use --rpc-secure option to "
+"enable\n"
+"                              encryption."
+msgstr ""
+" --certificate=FILE           Χρησιμοποιείστε το πιστοποιητικό του πελάτη\n"
+"                              που βρίσκεται στο FILE. Το πιστοποιητικό "
+"πρέπει\n"
+"                              να είναι σε μορφή PEM. Μπορείτε να "
+"χρησιμοποιήσετε\n"
+"                              την επιλογή --private-key για να καθορίσετε "
+"το\n"
+"                              ιδιωτικό κλειδί."
+
+#: src/usage_text.h:890
+#, fuzzy
+msgid ""
+" --rpc-private-key=FILE       Use the private key in FILE for RPC server.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. Use --rpc-secure option to enable\n"
+"                              encryption. See also --rpc-certificate option."
+msgstr ""
+" --private-key=FILE           Χρησιμοποιείστε το ιδιωτικό κλειδί από το "
+"FILE.\n"
+"                              Το ιδιωτικό κλειδί πρέπει να είναι "
+"αποκρυπτογραφημένο\n"
+"                              και στη μορφή PEM. Δείτε ακόμη την επιλογή --"
+"certificate."
+
+#: src/usage_text.h:895
+#, fuzzy
+msgid ""
+" --rpc-secure[=true|false]    RPC transport will be encrypted by SSL/TLS.\n"
+"                              The RPC clients must use https scheme to "
+"access\n"
+"                              the server. For WebSocket client, use wss\n"
+"                              scheme. Use --rpc-certificate and\n"
+"                              --rpc-private-key options to specify the\n"
+"                              server certificate and private key."
+msgstr ""
+" --ca-certificate=FILE        Χρησιμοποιείστε τις αρχές πιστοποιητικών που\n"
+"                              περιέχονται στο FILE για να πιστοποιήσετε τους "
+"χρήστες.\n"
+"                              Το πιστοποιητικό πρέπει να είναι σε μορφή PEM\n"
+"                              και μπορεί να περιέχει πολλαπλά πιστοποιητικά "
+"CA.\n"
+"                              Χρησιμοποιήστε την επιλογή --check-certificate "
+"για\n"
+"                              να ενεργοποιήσετε την πιστοποίηση."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr " έκδοση "
@@ -2718,37 +2778,37 @@ msgstr ""
 msgid "See 'aria2c -h'."
 msgstr ""
 
-#: src/version_usage.cc:99
+#: src/version_usage.cc:100
 #, c-format
 msgid "Printing all options."
 msgstr "Εκτύπωση όλων των επιλογών."
 
-#: src/version_usage.cc:101
+#: src/version_usage.cc:102
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "Εκτύπωση των επιλογών που έχουν ετικέτα '%s'."
 
-#: src/version_usage.cc:104
+#: src/version_usage.cc:105
 #, c-format
 msgid "See 'aria2c -h#help' to know all available tags."
 msgstr ""
 
-#: src/version_usage.cc:107 src/version_usage.cc:121
+#: src/version_usage.cc:108 src/version_usage.cc:122
 #, c-format
 msgid "Options:"
 msgstr "Επιλογές:"
 
-#: src/version_usage.cc:118
+#: src/version_usage.cc:119
 #, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr "Εκτύπωση των επιλογών που το όνομά τους περιέχει '%s'."
 
-#: src/version_usage.cc:129
+#: src/version_usage.cc:130
 #, c-format
 msgid "No option matching with '%s'."
 msgstr "Δεν υπάρχει επιλογή που να ταιριάζει με το '%s'"
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:138
 #, c-format
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
@@ -2759,7 +2819,7 @@ msgstr ""
 " την επιλογή -Z, όλα τα URIs πρέπει να δείχνουν στο ίδιο αρχείο αλλιώς\n"
 " η λήψη θα αποτύχει."
 
-#: src/version_usage.cc:140
+#: src/version_usage.cc:141
 #, c-format
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
@@ -2771,7 +2831,7 @@ msgstr ""
 " τοπικό δίσκο. Παρακαλούμε σημειώστε ότι αντιμετωπίζονται πάντα ως\n"
 " ξεχωριστές λήψεις."
 
-#: src/version_usage.cc:144
+#: src/version_usage.cc:145
 #, c-format
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
@@ -2795,7 +2855,7 @@ msgstr ""
 " το 'name' και το 'path' του torrent προστίθενται ώστε να δημιουργηθεί\n"
 " ένα URI για κάθε αρχείο."
 
-#: src/version_usage.cc:151
+#: src/version_usage.cc:152
 #, c-format
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
@@ -2805,7 +2865,7 @@ msgstr ""
 "αν περιέχει \"&\" ή άλλους χαρακτήρες που έχουν ιδιαίτερη σημασία για το "
 "κέλυφος."
 
-#: src/version_usage.cc:154
+#: src/version_usage.cc:155
 #, c-format
 msgid ""
 "About the number of connections\n"
@@ -2818,7 +2878,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/version_usage.cc:161
+#: src/version_usage.cc:162
 #, c-format
 msgid "Refer to man page for more information."
 msgstr "Για περισσότερες πληροφορίες ανατρέξτε στη σελίδα man."
@@ -2891,7 +2951,7 @@ msgstr ""
 msgid "IPv%d DHT: listening to port %u"
 msgstr ""
 
-#: src/HttpListenCommand.cc:112
+#: src/HttpListenCommand.cc:114
 #, c-format
 msgid "IPv%d RPC: listening to port %u"
 msgstr ""
@@ -2901,13 +2961,13 @@ msgstr ""
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr ""
 
-#: src/RequestGroup.cc:378
+#: src/RequestGroup.cc:375
 msgid ""
 "For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
 "enable-dht option."
 msgstr ""
 
-#: src/RequestGroup.cc:683
+#: src/RequestGroup.cc:680
 #, fuzzy, c-format
 msgid "Removed control file for %s because it is requested by user."
 msgstr ""

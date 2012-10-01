@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2012-09-02 21:24+0900\n"
+"POT-Creation-Date: 2012-10-01 23:45+0900\n"
 "PO-Revision-Date: 2010-11-20 12:18+0000\n"
 "Last-Translator: Josso <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
@@ -39,42 +39,47 @@ msgstr ""
 "Hvis der er nogle fejl, så kig i logfilen. Se '-l' flaget i hjælp/man siden "
 "for mere information."
 
-#: src/MultiUrlRequestInfo.cc:253
+#: src/MultiUrlRequestInfo.cc:272
 #, c-format
 msgid "Serialized session to '%s' successfully."
 msgstr ""
 
-#: src/MultiUrlRequestInfo.cc:256
+#: src/MultiUrlRequestInfo.cc:275
 #, c-format
 msgid "Failed to serialize session to '%s'."
 msgstr ""
 
-#: src/RequestGroupMan.cc:442
+#: src/RequestGroupMan.cc:399
+#, c-format
+msgid "Download GID#%<PRId64> paused"
+msgstr ""
+
+#: src/RequestGroupMan.cc:445
 #, c-format
 msgid "Download GID#%<PRId64> not complete: %s"
 msgstr ""
 
-#: src/RequestGroupMan.cc:728
+#: src/RequestGroupMan.cc:726
 msgid "Download Results:"
 msgstr "Overførsels resultater:"
 
-#: src/RequestGroupMan.cc:771
+#: src/RequestGroupMan.cc:769
 msgid "Status Legend:"
 msgstr "Status forklaring:"
 
-#: src/RequestGroupMan.cc:773
+#: src/RequestGroupMan.cc:771
 msgid "(OK):download completed."
 msgstr ""
 
-#: src/RequestGroupMan.cc:776
+#: src/RequestGroupMan.cc:774
 msgid "(ERR):error occurred."
 msgstr ""
 
-#: src/RequestGroupMan.cc:779
+#: src/RequestGroupMan.cc:777
 msgid "(INPR):download in-progress."
 msgstr ""
 
-#: src/RequestGroupMan.cc:782
+#: src/RequestGroupMan.cc:780
 msgid "(RM):download removed."
 msgstr ""
 
@@ -1872,6 +1877,58 @@ msgstr ""
 msgid " --enable-mmap[=true|false]   Map files into memory."
 msgstr " --enable-dht[=true|false] Aktivere IPv4 DHT funktionaliteten."
 
+#: src/usage_text.h:884
+#, fuzzy
+msgid ""
+" --rpc-certificate=FILE       Use the certificate in FILE for RPC server.\n"
+"                              The certificate must be in PEM format.\n"
+"                              Use --rpc-private-key option to specify the\n"
+"                              private key. Use --rpc-secure option to "
+"enable\n"
+"                              encryption."
+msgstr ""
+" --max-download-limit=HASTIGHED Sæt max download hastigheden for hvert "
+"enkelt download\n"
+"                              i bytes/sek. 0 betyder ubegrænset.\n"
+"                              Du kan tilføje K eller M(1K = 1024, 1M = "
+"1024K).\n"
+"                              For at begrænse den samlede download "
+"hastighed, brug\n"
+"                              --max-overall-download-limit flaget."
+
+#: src/usage_text.h:890
+#, fuzzy
+msgid ""
+" --rpc-private-key=FILE       Use the private key in FILE for RPC server.\n"
+"                              The private key must be decrypted and in PEM\n"
+"                              format. Use --rpc-secure option to enable\n"
+"                              encryption. See also --rpc-certificate option."
+msgstr ""
+" --http-proxy=PROXY Brug denne proxy server til HTTP. For at slette\n"
+"                              tidligere definerede proxy’er, brug \"\".\n"
+"                              Se også --all-proxy flaget.\n"
+"                              Dette påvirker alle URLs."
+
+#: src/usage_text.h:895
+#, fuzzy
+msgid ""
+" --rpc-secure[=true|false]    RPC transport will be encrypted by SSL/TLS.\n"
+"                              The RPC clients must use https scheme to "
+"access\n"
+"                              the server. For WebSocket client, use wss\n"
+"                              scheme. Use --rpc-certificate and\n"
+"                              --rpc-private-key options to specify the\n"
+"                              server certificate and private key."
+msgstr ""
+" -c, --continue Fortsæt med at downloade en delvist hentet\n"
+"                              fil. Brug dette flag til at genoptage et "
+"download\n"
+"                              startet af en web browser eller et andet "
+"program,\n"
+"                              som downloader filer fortløbende fra\n"
+"                              starten. Denne mulighed er virker kun\n"
+"                              til http(s)/ftp forbindelser."
+
 #: src/version_usage.cc:57
 msgid " version "
 msgstr ""
@@ -1921,37 +1978,37 @@ msgstr ""
 msgid "See 'aria2c -h'."
 msgstr ""
 
-#: src/version_usage.cc:99
+#: src/version_usage.cc:100
 #, c-format
 msgid "Printing all options."
 msgstr ""
 
-#: src/version_usage.cc:101
+#: src/version_usage.cc:102
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr ""
 
-#: src/version_usage.cc:104
+#: src/version_usage.cc:105
 #, c-format
 msgid "See 'aria2c -h#help' to know all available tags."
 msgstr ""
 
-#: src/version_usage.cc:107 src/version_usage.cc:121
+#: src/version_usage.cc:108 src/version_usage.cc:122
 #, c-format
 msgid "Options:"
 msgstr ""
 
-#: src/version_usage.cc:118
+#: src/version_usage.cc:119
 #, c-format
 msgid "Printing options whose name includes '%s'."
 msgstr ""
 
-#: src/version_usage.cc:129
+#: src/version_usage.cc:130
 #, c-format
 msgid "No option matching with '%s'."
 msgstr ""
 
-#: src/version_usage.cc:137
+#: src/version_usage.cc:138
 #, c-format
 msgid ""
 " You can specify multiple HTTP(S)/FTP URIs. Unless you specify -Z option, "
@@ -1959,7 +2016,7 @@ msgid ""
 " URIs must point to the same file or downloading will fail."
 msgstr ""
 
-#: src/version_usage.cc:140
+#: src/version_usage.cc:141
 #, c-format
 msgid ""
 " You can also specify arbitrary number of BitTorrent Magnet URIs, torrent/\n"
@@ -1967,7 +2024,7 @@ msgid ""
 " treated as a separate download."
 msgstr ""
 
-#: src/version_usage.cc:144
+#: src/version_usage.cc:145
 #, c-format
 msgid ""
 " You can specify both torrent file with -T option and URIs. By doing this,\n"
@@ -1982,14 +2039,14 @@ msgid ""
 " 'path' in torrent are added to form a URI for each file."
 msgstr ""
 
-#: src/version_usage.cc:151
+#: src/version_usage.cc:152
 #, c-format
 msgid ""
 " Make sure that URI is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 
-#: src/version_usage.cc:154
+#: src/version_usage.cc:155
 #, c-format
 msgid ""
 "About the number of connections\n"
@@ -2002,7 +2059,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/version_usage.cc:161
+#: src/version_usage.cc:162
 #, c-format
 msgid "Refer to man page for more information."
 msgstr ""
@@ -2075,7 +2132,7 @@ msgstr ""
 msgid "IPv%d DHT: listening to port %u"
 msgstr ""
 
-#: src/HttpListenCommand.cc:112
+#: src/HttpListenCommand.cc:114
 #, c-format
 msgid "IPv%d RPC: listening to port %u"
 msgstr ""
@@ -2085,13 +2142,13 @@ msgstr ""
 msgid "IPv%d BitTorrent: listening to port %u"
 msgstr ""
 
-#: src/RequestGroup.cc:378
+#: src/RequestGroup.cc:375
 msgid ""
 "For BitTorrent Magnet URI, enabling DHT is strongly recommended. See --"
 "enable-dht option."
 msgstr ""
 
-#: src/RequestGroup.cc:683
+#: src/RequestGroup.cc:680
 #, c-format
 msgid "Removed control file for %s because it is requested by user."
 msgstr ""
